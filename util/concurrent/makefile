@@ -1,3 +1,4 @@
+concurrentDir = ./util/concurrent
 
 link += condition \
 	executorservice \
@@ -11,17 +12,17 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/mutex.o \
 	$(outtmp)/thread.o \
 
-condition :concurrent/Condition.cpp
-	$(gcc) $(cflags) -c concurrent/Condition.cpp -o $(outtmp)/condition.o
+condition :$(concurrentDir)/Condition.cpp
+	$(gcc) $(cflags) -c $(concurrentDir)/Condition.cpp -o $(outtmp)/condition.o
 
-executorservice :concurrent/ExecutorService.cpp
-	$(gcc) $(cflags) -c concurrent/ExecutorService.cpp -o $(outtmp)/executorservice.o
+executorservice :$(concurrentDir)/ExecutorService.cpp
+	$(gcc) $(cflags) -c $(concurrentDir)/ExecutorService.cpp -o $(outtmp)/executorservice.o
 
-scheduleservice :concurrent/ScheduleService.cpp
-		$(gcc) $(cflags) -c concurrent/ScheduleService.cpp -o $(outtmp)/scheduleservice.o
+scheduleservice :$(concurrentDir)/ScheduleService.cpp
+		$(gcc) $(cflags) -c $(concurrentDir)/ScheduleService.cpp -o $(outtmp)/scheduleservice.o
 
-mutex :concurrent/Mutex.cpp
-	$(gcc) $(cflags) -c concurrent/Mutex.cpp -o $(outtmp)/mutex.o
+mutex :$(concurrentDir)/Mutex.cpp
+	$(gcc) $(cflags) -c $(concurrentDir)/Mutex.cpp -o $(outtmp)/mutex.o
 
-thread :concurrent/Thread.cpp
-	$(gcc) $(cflags) -c concurrent/Thread.cpp -o $(outtmp)/thread.o
+thread :$(concurrentDir)/Thread.cpp
+	$(gcc) $(cflags) -c $(concurrentDir)/Thread.cpp -o $(outtmp)/thread.o

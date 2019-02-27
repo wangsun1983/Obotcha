@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "Integer.hpp"
 
 _Integer::_Integer(int v) : val(v) {
@@ -20,5 +22,12 @@ bool _Integer::equals(int p) {
     return val == p;
 }
 
+/*
+Integer _Integer::valueOf(String v) {
+    std::stringstream ss;
+    ss<<v->toChars();
+    int v = 
+}
+*/
 _Integer::~_Integer() {
 }

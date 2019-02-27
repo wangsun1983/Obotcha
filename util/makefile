@@ -1,20 +1,15 @@
-outlib = ../out/lib
-outtmp = ../out/tmp
+utilDir = ./util
 
-gcc = g++
+include ./util/concurrent/makefile
 
-cflags = -fpic  -I ./concurrent/include/ -I ../lang/include -I ./include
+link += calendar \
+        timezone
 
-external = -lpthread \
-          -L ../out/lib/
+objs += $(outtmp)/calendar.o \
+        $(outtmp)/timezone.o \
 
-objs =
-link =
-libname	= oboutil
+calendar :$(utilDir)/Calendar.cpp
+	$(gcc) $(cflags) -c $(utilDir)/Calendar.cpp -o $(outtmp)/calendar.o
 
-everything : $(libname)
-
-include ./concurrent/makefile
-
-$(libname): $(link)
-	g++ -g -shared $(objs) $(cflags) -o $(outlib)/lib${libname}.so $(external)
+timezone :$(utilDir)/TimeZone.cpp
+	$(gcc) $(cflags) -c $(utilDir)/TimeZone.cpp -o $(outtmp)/timezone.o
