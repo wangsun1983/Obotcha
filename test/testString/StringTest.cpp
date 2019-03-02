@@ -1,9 +1,58 @@
 #include <stdio.h>
+#include <iostream>
+#include <type_traits>
 
 #include "String.hpp"
 #include "ArrayList.hpp"
+#include "Runnable.hpp"
+#include "ExecutorService.hpp"
+
+DECLARE_SIMPLE_CLASS(TT) {
+public:
+  int i;
+};
+
+DECLARE_SIMPLE_CLASS(TT2) {
+public:
+  int j;
+};
+
 
 int main() {
+
+    //String abc = const_str("aaa");
+    /*
+    _TT *p = new _TT();
+    char *mychar;
+    try {
+        _TT2 *q = dynamic_cast<_TT2 *>(mychar);
+        if(q == nullptr) {
+          printf("it is null \n");
+        }
+    } catch(std::bad_cast& bc) {
+
+    }
+    */
+    String qq = "abc";
+    //qq = "abc";
+
+    printf("qq is %s \n",qq->toChars());
+
+
+
+
+/*
+	printf("vv is %d \n",std::is_base_of<_Q2,_Q1>::value);
+	if(std::is_base_of<_Q2,_Q1>::value == 0) {
+		printf("it is 0 \n");
+	} else {
+		printf("it is 1 \n");
+	}
+	*/
+  //printf("value is %d \n",instanceof(q4,q3));
+	//printf("value2 is %d \n",INSTANCE_OF(t,p));
+
+	/*
 	String str = createString("abc");
 
 	//Test toChars();
@@ -66,5 +115,6 @@ int main() {
 	} else {
 		printf("it is true \n");
 	}
+	*/
 
 }

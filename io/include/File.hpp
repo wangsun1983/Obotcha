@@ -47,15 +47,15 @@ public:
 
     int createNewFile();
 
-    bool remove();
+    bool removeAll();
 
     ArrayList<String> list();
 
     ArrayList<File> listFiles();
 
-    bool mkdir();
+    bool createDir();
 
-    bool mkdirs();
+    bool createDirs();
 
     bool rename(String name);
 
@@ -70,12 +70,6 @@ public:
     bool setReadable();
 
     bool setExecutable();
-
-    long getTotalSpace();
-
-    long getFreeSpace();
-
-    long getUsableSpace();
 
     ~_File();
     
@@ -92,12 +86,10 @@ private:
     int mExist;
 
     void updateFileInfo();
+        
+    //std::ofstream *fileStream;
 
-    bool createDirectory();
-
-    std::ofstream *fileStream;
-
-
+    void deleteDir(File f);
 
 };
 

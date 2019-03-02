@@ -8,7 +8,11 @@
 }
 
 _String::_String(String v) {
-    delete m_str;
+    if(v->m_str != nullptr) {
+        m_str = new std::string(v->m_str->data());
+    } else {
+        m_str = new std::string();
+    }
 }
 
 _String::_String(std::string *v) {
@@ -84,7 +88,7 @@ _String::_String(char *v,int start,int length) {
 }
 
 _String::~_String() {
-    if(m_str != nullptr) {
+    if(m_str != nullptr) {        
         delete m_str;
     }
 }
@@ -134,6 +138,11 @@ int _String::size() {
 
 void _String::append(String s) {
     m_str->append(*s->m_str);
+    //printf("string is %s \n",m_str->data());
+}
+
+void _String::append(char *p) {
+    m_str->append(p);
 }
 
 int _String::indexOf(String v) {
@@ -201,12 +210,14 @@ String _String::valueOf(char *p) {
 }
 
 bool _String::equals(String s) {
-    if(m_str->compare(*s->m_str) == 0) {
-        return  true;
-    }
-
-    return  false;
+    return (m_str->compare(*s->m_str) == 0);
 }
+
+/*
+bool _String::equals(const std::string &p) {
+    return (m_str->compare(p) == 0);
+}
+*/
 
 Integer _String::toInteger() {
     int v = toBasicInt();

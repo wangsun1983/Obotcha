@@ -20,7 +20,7 @@ everything : $(libname)
 
 include lang/makefile
 include util/makefile
-#include io/makefile
+include io/makefile
 
 $(libname): $(link)
 	g++ -g -shared $(objs) $(cflags) -o $(outlib)/lib${libname}.so $(external)

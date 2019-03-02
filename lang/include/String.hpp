@@ -13,6 +13,8 @@
 
 using namespace std;
 
+#define const_str(Y) createString(Y)
+
 DECLARE_SIMPLE_CLASS(String)
 {
 public:
@@ -63,6 +65,8 @@ public:
 
     void append(String s);
 
+    void append(char *p);
+
     //opertor overload 
     /*
     String operator+=(String s);
@@ -109,6 +113,9 @@ public:
     static String valueOf(char *p);
 
     bool equals(String s);
+
+    
+    //bool equals(const std::string &p);
 
 private:
     std::string *m_str;

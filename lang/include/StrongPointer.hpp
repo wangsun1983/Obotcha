@@ -3,8 +3,33 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <type_traits>
 
 #include "Object.hpp"
+
+
+//template
+template<bool C, typename T, typename U>
+class PointerChanger;
+
+template<typename T, typename U>
+class PointerChanger<true, T, U>{
+public:
+     static T *convert(U *u) {
+       if (u) ((T*)u)->incStrong(0);
+       return (T*)u;
+     }
+ };
+
+template<typename T, typename U>
+class PointerChanger<false, T, U>{
+public:
+   static T *convert(U *u) {
+     T* t = new T(u);
+     t->incStrong(0);
+     return t;
+   }
+ };
 
 // ---------------------------------------------------------------------------
 #define COMPARE(_op_)                                           \
@@ -59,20 +84,46 @@ public:
     inline  T*      get() const         { return m_ptr; }
 
     // Operators(==)
-    inline bool operator == (const sp<T>& o) const { 
+    inline bool operator == (const sp<T>& o) const {
+        if(o.m_ptr == nullptr) {
+            if(m_ptr = nullptr) {
+                return true;
+            }
+            return false;
+        }
         return m_ptr->equals(o.m_ptr);
     }
+    
     inline bool operator == (const T* o) const {
+        if(o == nullptr) {
+            if(m_ptr == nullptr) {
+                return true;
+            }
+            return false;
+        }
+
         return m_ptr->equals(o);
     }
 
     template<typename U>                                            
     inline bool operator == (const sp<U>& o) const {
+        if(o.m_ptr == nullptr) {
+            if(m_ptr = nullptr) {
+                return true;
+            }
+            return false;
+        }
         return m_ptr->equals(o.m_ptr);
     }
 
     template<typename U>
     inline bool operator == (const U* o) const {
+        if(o->m_ptr == nullptr) {
+            if(o->m_ptr = nullptr) {
+                return true;
+            }
+            return false;
+        }
         return m_ptr->euqals(o);
     }
 
@@ -126,9 +177,11 @@ sp<T>::sp(const sp<T>& other)
   }
 
 template<typename T> template<typename U>
-sp<T>::sp(U* other) : m_ptr(other)
+sp<T>::sp(U* other) 
 {
-    if (other) ((T*)other)->incStrong(this);
+    //m_ptr = other;
+    //if (other) ((T*)other)->incStrong(this);
+    m_ptr = PointerChanger<std::is_base_of<T,U>::value == 1,T,U>::convert(other);
 }
 
 template<typename T> template<typename U>
@@ -154,7 +207,7 @@ sp<T>& sp<T>::operator = (const sp<T>& other) {
     if (otherPtr) otherPtr->incStrong(this);
     
     if (m_ptr) {
-    	if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
+        if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
             delete static_cast<const T*>(m_ptr);
         }
     }
@@ -170,9 +223,10 @@ sp<T>& sp<T>::operator = (T* other)
     if (m_ptr) {
         if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
             delete static_cast<const T*>(m_ptr);
-        }	
+        }   
     }
     m_ptr = other;
+
     return *this;
 }
 
@@ -182,7 +236,7 @@ sp<T>& sp<T>::operator = (const sp<U>& other)
     T* otherPtr(other.m_ptr);
     if (otherPtr) otherPtr->incStrong(this);
     if (m_ptr) {
-    	if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
+        if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
             delete static_cast<const T*>(m_ptr);
         }
     }
@@ -193,13 +247,14 @@ sp<T>& sp<T>::operator = (const sp<U>& other)
 template<typename T> template<typename U>
 sp<T>& sp<T>::operator = (U* other)
 {
-    if (other) ((T*)other)->incStrong(this);
+    //if (other) ((T*)other)->incStrong(this);
     if (m_ptr) {
         if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
             delete static_cast<const T*>(m_ptr);
         }
-    }
-    m_ptr = other;
+    }    
+    m_ptr = PointerChanger<std::is_base_of<T,U>::value == 1,T,U>::convert(other);
+    //m_ptr = other;
     return *this;
 }
 

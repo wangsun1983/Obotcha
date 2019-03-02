@@ -10,9 +10,9 @@ external = -lpthread \
 
 files =
 link =
-libname	= threadtest
+libname	= fileinputstreamTest
 
 everything : $(libname)
 
 $(libname): $(link)
-	g++ -g -O0 *.cpp $(cflags)  $(external) -o mytest
+	g++ -g -o0 *.cpp $(cflags)  $(external) -o mytest

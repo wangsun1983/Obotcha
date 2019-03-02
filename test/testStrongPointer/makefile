@@ -3,11 +3,10 @@ outtmp = ../../out/tmp
 
 gcc = g++ -std=c++11
 
-cflags = -I ../../util/concurrent/include/ -I ../../lang/include/
+cflags = -I ../../util/concurrent/include/ -I ../../lang/include/ -I ../../io/include/ -I ../../util/include/
 
 external = -lpthread \
-           ../../out/lib/liboboutil.so \
-					 ../../out/lib/libobolang.so \
+           ../../out/lib/libobotcha.so \
 
 files =
 link =
