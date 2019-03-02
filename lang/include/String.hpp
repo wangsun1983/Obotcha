@@ -114,7 +114,7 @@ public:
 
     bool equals(String s);
 
-    
+    std::string getStdSring();
     //bool equals(const std::string &p);
 
 private:

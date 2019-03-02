@@ -271,6 +271,10 @@ double _String::toBasicDouble() {
     return value;
 }
 
+std::string _String::getStdSring() {
+    return *m_str;
+}
+
 /*
 String _String::operator+=(const String s) {
 
