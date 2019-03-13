@@ -8,12 +8,10 @@ cflags = -I ../../util/concurrent/include/ -I ../../lang/include/ -I ../../io/in
 external = -lpthread \
            ../../out/lib/libobotcha.so \
 
-
-files =
 link =
-libname	= arrayListTest
+libname	= mutextest
 
 everything : $(libname)
 
 $(libname): $(link)
-	g++ -g -o0 *.cpp $(cflags)  $(external) -o mytest
+	g++ *.cpp $(cflags)  $(external) -o mytest

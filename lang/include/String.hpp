@@ -10,6 +10,7 @@
 #include "Boolean.hpp"
 #include "Double.hpp"
 #include "Float.hpp"
+#include "Long.hpp"
 
 using namespace std;
 
@@ -21,6 +22,8 @@ public:
     _String();
 
     _String(std::string *v);
+
+    _String(std::string v);
 
     _String(String v);
 
@@ -36,6 +39,8 @@ public:
 
     _String(Double v);
 
+    _String(Long v);
+
     _String(int v);
 
     _String(bool v);
@@ -43,6 +48,8 @@ public:
     _String(float v);
 
     _String(double v);
+
+    _String(long v);
 
     template <typename T>
     void split(String v,T t);
@@ -114,7 +121,11 @@ public:
 
     bool equals(String s);
 
-    std::string getStdSring();
+    bool equals(std::string s);
+
+    bool equals(const char *s);
+
+    std::string getStdString();
     //bool equals(const std::string &p);
 
 private:

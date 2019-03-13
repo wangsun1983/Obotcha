@@ -86,7 +86,7 @@ public:
     // Operators(==)
     inline bool operator == (const sp<T>& o) const {
         if(o.m_ptr == nullptr) {
-            if(m_ptr = nullptr) {
+            if(m_ptr == nullptr) {
                 return true;
             }
             return false;
@@ -108,7 +108,7 @@ public:
     template<typename U>                                            
     inline bool operator == (const sp<U>& o) const {
         if(o.m_ptr == nullptr) {
-            if(m_ptr = nullptr) {
+            if(m_ptr == nullptr) {
                 return true;
             }
             return false;
@@ -119,7 +119,7 @@ public:
     template<typename U>
     inline bool operator == (const U* o) const {
         if(o->m_ptr == nullptr) {
-            if(o->m_ptr = nullptr) {
+            if(o->m_ptr == nullptr) {
                 return true;
             }
             return false;
@@ -129,20 +129,44 @@ public:
 
     // Operators(!=)
     inline bool operator != (const sp<T>& o) const { 
+        if(o.m_ptr == nullptr) {
+            if(m_ptr == nullptr) {
+                return false;
+            }
+            return true;
+        }
         return !m_ptr->equals(o.m_ptr);
     }
 
     inline bool operator != (const T* o) const {
+        if(o == nullptr) {
+            if(m_ptr == nullptr) {
+                return false;
+            }
+            return true;
+        }
         return !m_ptr->equals(o);
     }
 
     template<typename U>                                            
     inline bool operator != (const sp<U>& o) const {
+        if(o.m_ptr == nullptr) {
+            if(m_ptr = nullptr) {
+                return false;
+            }
+            return true;
+        }
         return !m_ptr->equals(o.m_ptr);
     }
 
     template<typename U>
     inline bool operator != (const U* o) const {
+        if(o->m_ptr == nullptr) {
+            if(m_ptr = nullptr) {
+                return false;
+            }
+            return true;
+        }
         return !m_ptr->euqals(o);
     }
 
@@ -280,7 +304,14 @@ void sp<T>::clear()
 
 template<typename T>
 void sp<T>::set_pointer(T* ptr) {
+    if(m_ptr) {
+        if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
+            delete static_cast<const T*>(m_ptr);
+        }
+    }
+    
     m_ptr = ptr;
+    m_ptr->incStrong(0);
 }
 
 template<typename T>

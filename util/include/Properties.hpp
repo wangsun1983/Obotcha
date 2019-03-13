@@ -24,6 +24,10 @@ public:
 private:
     HashMap<String,String> mProps;
 
+    const static String gPropEqualString;
+    
+    const static String gPropEnterString;
+
 };
 
 #endif

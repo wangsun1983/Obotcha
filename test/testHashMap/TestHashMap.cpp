@@ -55,5 +55,27 @@ int main() {
         }
     }
 
+    //test iterator
+    {
+      HashMap<String,String> map = createHashMap<String,String>();
+      String tag1 = "a1";
+      String value1 = "v1";
+      map->put(tag1,value1);
+
+      String tag2 = "a2";
+      String value2 = "v2";
+      map->put(tag2,value2);
+
+      MapIterator<String,String> iterator = map->getIterator();
+      while(1){
+        printf("key is %s \n",iterator->getKey()->toChars());
+        printf("value is %s \n",iterator->getValue()->toChars());
+        if(!iterator->next()) {
+          break;
+        }
+      }
+
+    }
+
 
 }

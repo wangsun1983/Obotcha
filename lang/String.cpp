@@ -1,10 +1,11 @@
+#include <iostream>
 #include "String.hpp"
 #include <sys/time.h>
 #include <unistd.h>
 #include <sstream>
 
  _String::_String() {
-    m_str = new std::string();
+    m_str = new std::string("");
 }
 
 _String::_String(String v) {
@@ -15,8 +16,20 @@ _String::_String(String v) {
     }
 }
 
+_String::_String(Long v) {
+    std::stringstream ss;
+    long value = v->toValue();
+    ss<<value;
+
+    m_str = new std::string(ss.str());
+}
+
+_String::_String(std::string v) {
+    m_str = new std::string(v);
+}
+
 _String::_String(std::string *v) {
-    m_str = v;
+    m_str = new std::string(*v);
 }
 
 _String::_String(Integer v) {
@@ -78,6 +91,11 @@ _String::_String(double v) {
     m_str = new std::string(ss.str());
 }
 
+_String::_String(long v) {
+    std::stringstream ss;
+    ss<<v;
+    m_str = new std::string(ss.str());
+}
 
 _String::_String(const char *v) {
     m_str = new std::string(v);
@@ -88,7 +106,7 @@ _String::_String(char *v,int start,int length) {
 }
 
 _String::~_String() {
-    if(m_str != nullptr) {        
+    if(m_str != nullptr) {       
         delete m_str;
     }
 }
@@ -210,14 +228,37 @@ String _String::valueOf(char *p) {
 }
 
 bool _String::equals(String s) {
+    if(m_str == nullptr) {
+        if(s == nullptr) {
+            return true;
+        }
+
+        return false;
+    }
+
     return (m_str->compare(*s->m_str) == 0);
 }
 
-/*
-bool _String::equals(const std::string &p) {
+bool _String::equals(const char *s) {
+    if(m_str == nullptr) {
+        if(s == nullptr) {
+            return true;
+        }
+
+        return false;
+    }
+
+    return (m_str->compare(s) == 0);   
+}
+
+bool _String::equals(const std::string p) {
+    if(m_str == nullptr) {
+        return false;
+    }
+
     return (m_str->compare(p) == 0);
 }
-*/
+
 
 Integer _String::toInteger() {
     int v = toBasicInt();
@@ -271,7 +312,8 @@ double _String::toBasicDouble() {
     return value;
 }
 
-std::string _String::getStdSring() {
+std::string _String::getStdString() {
+    
     return *m_str;
 }
 

@@ -7,7 +7,8 @@ cflags = -fpic \
 		-I ./util/concurrent/include/ \
 		-I ./lang/include \
 		-I ./io/include \
-		-I ./util/include/
+		-I ./util/include/ \
+		-I ./net/include \
 
 external = -lpthread \
 		-L ../out/lib/
@@ -21,6 +22,7 @@ everything : $(libname)
 include lang/makefile
 include util/makefile
 include io/makefile
+include net/makefile
 
 $(libname): $(link)
-	g++ -g -shared $(objs) $(cflags) -o $(outlib)/lib${libname}.so $(external)
+	g++ -g -o0 -shared $(objs) $(cflags) -o $(outlib)/lib${libname}.so $(external)
