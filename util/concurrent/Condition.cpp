@@ -4,6 +4,8 @@
 #include "Condition.hpp"
 #include "Object.hpp"
 
+namespace obotcha {
+
 _Condition::_Condition():cond_t(PTHREAD_COND_INITIALIZER) {
     //TODO nothing
 }
@@ -37,3 +39,4 @@ void _Condition::notifyAll() {
     pthread_cond_broadcast(&cond_t);
 }
 
+}

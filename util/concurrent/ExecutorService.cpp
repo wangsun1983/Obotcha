@@ -4,6 +4,7 @@
 #include "ExecutorService.hpp"
 #include "Thread.hpp"
 
+namespace obotcha {
 _ExecutorServiceHandler::_ExecutorServiceHandler(BlockingQueue<Runnable> pool):mPool(pool),
                                                                          state(idleState),
                                                                          mStop(false),
@@ -108,4 +109,6 @@ void _ExecutorService::awaitTermination() {
 
 void _ExecutorService::awaitTermination(long millseconds) {
     //TODO
+}
+
 }

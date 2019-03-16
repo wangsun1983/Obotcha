@@ -10,6 +10,8 @@
 #include "PrintStream.hpp"
 using namespace std;
 
+namespace obotcha {
+
 class Log {
 public:
     enum LogLevel {
@@ -117,5 +119,7 @@ template <typename T, typename ...Args>
 void LOGE(T head, Args... rest){
    Log::e(head);
    LOGE(rest...);
+}
+
 }
 #endif

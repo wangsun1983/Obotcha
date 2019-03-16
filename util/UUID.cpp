@@ -1,5 +1,7 @@
 #include "UUID.hpp"
 
+namespace obotcha {
+
 _UUID::_UUID() {
     char uuidBuf[UUID4_LEN];
     
@@ -62,4 +64,6 @@ void _UUID::generate(char *dst) {
     }
 
     *dst = '\0';
+}
+
 }

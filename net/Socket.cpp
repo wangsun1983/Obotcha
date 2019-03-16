@@ -13,6 +13,8 @@
 
 #define BUF_SIZE 1024*64
 
+namespace obotcha {
+
 _Socket::_Socket(String ip,int port,SocketListener l) {
 
     serverAddr.sin_family = PF_INET;
@@ -83,4 +85,6 @@ void _Socket::start() {
             }
         }
     }
+}
+
 }

@@ -1,5 +1,7 @@
 #include "Float.hpp"
 
+namespace obotcha {
+
 _Float::_Float(float v) : val(v) {
 
 }
@@ -21,4 +23,6 @@ bool _Float::equals(float p) {
 }
 
 _Float::~_Float() {
+}
+
 }

@@ -5,12 +5,14 @@ link += condition \
 	scheduleservice \
 	mutex \
 	thread \
+	countdownlatch \
 
 objs += $(outtmp)/condition.o \
 	$(outtmp)/executorservice.o \
 	$(outtmp)/scheduleservice.o \
 	$(outtmp)/mutex.o \
 	$(outtmp)/thread.o \
+	$(outtmp)/countdownlatch.o \
 
 condition :$(concurrentDir)/Condition.cpp
 	$(gcc) $(cflags) -c $(concurrentDir)/Condition.cpp -o $(outtmp)/condition.o
@@ -26,3 +28,6 @@ mutex :$(concurrentDir)/Mutex.cpp
 
 thread :$(concurrentDir)/Thread.cpp
 	$(gcc) $(cflags) -c $(concurrentDir)/Thread.cpp -o $(outtmp)/thread.o
+
+countdownlatch :$(concurrentDir)/CountDownLatch.cpp
+	$(gcc) $(cflags) -c $(concurrentDir)/CountDownLatch.cpp -o $(outtmp)/countdownlatch.o	

@@ -7,6 +7,7 @@
 #include "String.hpp"
 #include "InetAddress.hpp"
 #include "SocketListener.hpp"
+namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(Socket) {
 public:
@@ -30,4 +31,5 @@ private:
 
 };
 
+}
 #endif

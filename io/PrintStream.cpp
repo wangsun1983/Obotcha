@@ -2,6 +2,8 @@
 
 #include "PrintStream.hpp"
 
+namespace obotcha {
+
 _PrintStream::_PrintStream(File file) {
     mPath = file->getAbsolutePath();
     isDefaultOut = false;
@@ -88,3 +90,4 @@ void _PrintStream::flush() {
     }
 }
 
+}

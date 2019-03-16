@@ -1,6 +1,8 @@
 #include <initializer_list>
 #include "Log.hpp"
 
+namespace obotcha {
+
 PrintStream Log::stream = createPrintStream();
 int Log::level = Debug;
 
@@ -220,4 +222,6 @@ void LOGW() {
 
 void LOGE() {
      Log::newline();
+}
+
 }

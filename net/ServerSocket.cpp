@@ -14,6 +14,8 @@
 
 #define BUFF_SIZE 1024*64
 
+namespace obotcha {
+
 _ServerSocket::_ServerSocket(int port,SocketListener l) {
     //TODO
 }
@@ -115,4 +117,6 @@ bool _ServerSocket::start() {
 
 void _ServerSocket::close() {
     //TODO
+}
+
 }

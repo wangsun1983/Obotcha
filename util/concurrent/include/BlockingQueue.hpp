@@ -17,6 +17,8 @@
 
 using namespace std;
 
+namespace obotcha {
+
 DECLARE_CLASS(BlockingQueue,1) {
 public:
 	_BlockingQueue(int size);
@@ -215,4 +217,5 @@ int _BlockingQueue<T>::size() {
     return mQueue.size();
 }
 
+}
 #endif

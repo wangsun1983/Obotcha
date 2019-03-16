@@ -17,6 +17,8 @@
 
 #define MAX_INTERFACES 32
 
+namespace obotcha {
+
 String _InetAddress::getHostName() {
     //get hostname;
     char hostname[128];
@@ -105,4 +107,6 @@ ArrayList<InetHostMac> _InetAddress::getMacAddress() {
     }
 
     return list;
+}
+
 }

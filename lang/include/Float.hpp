@@ -4,6 +4,8 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(Float)
 {
 public:
@@ -24,4 +26,5 @@ private:
 
 };
 
+}
 #endif

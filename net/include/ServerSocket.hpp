@@ -11,6 +11,8 @@
 #include "SocketPacket.hpp"
 #include "SocketListener.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(ServerSocket) {
 public:
     _ServerSocket(int port,SocketListener l);
@@ -35,4 +37,5 @@ private:
     int epfd;
 };
 
+}
 #endif

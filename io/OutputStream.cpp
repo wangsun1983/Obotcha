@@ -1,5 +1,7 @@
 #include "OutputStream.hpp"
 
+namespace obotcha {
+
 bool _OutputStream::write(char c) {
     //TODO
     return false;
@@ -21,4 +23,6 @@ void _OutputStream::close() {
 
 void _OutputStream::flush() {
     //TODO
+}
+
 }

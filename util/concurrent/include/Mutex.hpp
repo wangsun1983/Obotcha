@@ -6,6 +6,8 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(Mutex) 
 {
 public:
@@ -23,4 +25,5 @@ private:
     pthread_mutex_t mutex_t;
 };
 
+}
 #endif

@@ -9,8 +9,7 @@
 #define OBJ_DEC_FREE 0
 #define OBJ_DEC_NO_FREE 1
 
-namespace obo
-{
+namespace obotcha {
 
 class Object
 {
@@ -103,7 +102,7 @@ CLASS_PRE_DEF_##U(Y); \
 TYPE_DEF_##U(Y); \
 MAKE_FUNCTION_##U(Y) \
 TEPMLATE_DECLARE_##U \
-class _##Y: virtual public obo::Object\
+class _##Y: virtual public Object\
 
 #define DECLARE_SIMPLE_CLASS(Y) DECLARE_CLASS(Y,0)
 

@@ -2,6 +2,8 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+namespace obotcha {
+
 long int _System::currentTimeMillis() {
     timeval tv;
     gettimeofday(&tv, NULL);
@@ -20,4 +22,6 @@ int _System::onlineProcessors(){
 
 void _System::exit(int reason) {
     exit(reason);
+}
+
 }

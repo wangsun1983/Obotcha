@@ -4,6 +4,8 @@
 #include "Calendar.hpp"
 #include "TimeZone.hpp"
 
+namespace obotcha {
+
 int _Calendar::commonDays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 int _Calendar::leapDays[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -558,4 +560,6 @@ int _Calendar::getMonthDays(int _month) {
     int *_days = getDays(year);
 
     return _days[_month];
+}
+
 }

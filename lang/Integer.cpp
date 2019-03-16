@@ -2,6 +2,8 @@
 
 #include "Integer.hpp"
 
+namespace obotcha {
+
 _Integer::_Integer(int v) : val(v) {
 
 }
@@ -30,4 +32,6 @@ Integer _Integer::valueOf(String v) {
 }
 */
 _Integer::~_Integer() {
+}
+
 }

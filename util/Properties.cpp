@@ -2,6 +2,8 @@
 #include "FileInputStream.hpp"
 #include "FileOutputStream.hpp"
 
+namespace obotcha {
+
 const String _Properties::gPropEqualString = "=";
 const String _Properties::gPropEnterString = "\n";
 
@@ -56,6 +58,7 @@ void _Properties::save(String path) {
     }
      
     stream->flush();
-    stream->close();
-     
+    stream->close();    
+}
+
 }

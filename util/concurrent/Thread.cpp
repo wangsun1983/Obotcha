@@ -4,6 +4,8 @@
 #include "Thread.hpp"
 #include "AutoMutex.hpp"
 
+namespace obotcha {
+
 //------------RecyleThread---------------//
 static void* recycle(void *th) {
     _RecycleThread *thread = static_cast<_RecycleThread *>(th);
@@ -141,19 +143,20 @@ void _Thread::yield() {
     pthread_yield();
 }
 
-void _Thread::sleep(unsigned long t) {
-    sleep(t);
-}
+//void _Thread::sleep(unsigned long t) {
+//    sleep(t);
+//}
 
 void _Thread::msleep(unsigned long t) {
     usleep(t*1000);
 }
     
-void _Thread::usleep(unsigned long t) {
-    usleep(t*1000);
-}
+//void _Thread::usleep(unsigned long t) {
+//    usleep(t*1000);
+//}
 
 RecycleThread _Thread::getRecyleThread(){
     return mRecyle;
 }
 
+}

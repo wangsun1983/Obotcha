@@ -17,6 +17,8 @@
 
 using namespace std;
 
+namespace obotcha {
+    
 template<typename T>
 class _ListIterator;
 
@@ -223,7 +225,7 @@ private:
 
 //----------------- ArrayList<String> ---------------------
 template<>
-class _ArrayList<String>:virtual public obo::Object{
+class _ArrayList<String>:virtual public Object{
 
 public:
     friend class _ListIterator<String>;
@@ -284,7 +286,7 @@ private:
 
 //----------------- ArrayListIterator ---------------------
 template<>
-class _ListIterator<String>:virtual public obo::Object {
+class _ListIterator<String>:virtual public Object {
 public:
     _ListIterator(_ArrayList<String> *list);
 
@@ -304,7 +306,7 @@ private:
 
 //----------------- ArrayList<Integer> ---------------------
 template<>
-class _ArrayList<Integer>:virtual public obo::Object{
+class _ArrayList<Integer>:virtual public Object{
 public:
     friend class _ListIterator<Integer>;
     
@@ -363,7 +365,7 @@ private:
 
 //----------------- ArrayListIterator<Integer> ---------------------
 template<>
-class _ListIterator<Integer>:virtual public obo::Object {
+class _ListIterator<Integer>:virtual public Object {
 public:
     _ListIterator(_ArrayList<Integer> *list);
 
@@ -383,7 +385,7 @@ private:
 
 //----------------- ArrayList<Boolean> ---------------------
 template<>
-class _ArrayList<Boolean>:virtual public obo::Object{
+class _ArrayList<Boolean>:virtual public Object{
 
 public:
     friend class _ListIterator<Boolean>;
@@ -443,7 +445,7 @@ private:
 
 //----------------- ArrayListIterator ---------------------
 template<>
-class _ListIterator<Boolean>:virtual public obo::Object {
+class _ListIterator<Boolean>:virtual public Object {
 public:
     _ListIterator(_ArrayList<Boolean> *list);
 
@@ -462,7 +464,7 @@ private:
 
 //----------------- ArrayList<Float> ---------------------
 template<>
-class _ArrayList<Float>:virtual public obo::Object{
+class _ArrayList<Float>:virtual public Object{
 
 public:
     friend class _ListIterator<Float>;
@@ -521,7 +523,7 @@ private:
 
 //----------------- ArrayListIterator <Float>---------------------
 template<>
-class _ListIterator<Float>:virtual public obo::Object {
+class _ListIterator<Float>:virtual public Object {
 public:
     _ListIterator(_ArrayList<Float> *list);
 
@@ -540,7 +542,7 @@ private:
 
 //----------------- ArrayList<Double> ---------------------
 template<>
-class _ArrayList<Double>:virtual public obo::Object{
+class _ArrayList<Double>:virtual public Object{
 
 public:
     friend class _ListIterator<Double>;
@@ -599,7 +601,7 @@ private:
 
 //----------------- ArrayListIterator <Double>---------------------
 template<>
-class _ListIterator<Double>:virtual public obo::Object {
+class _ListIterator<Double>:virtual public Object {
 public:
     _ListIterator(_ArrayList<Double> *list);
 
@@ -618,7 +620,7 @@ private:
 
 //----------------- ArrayList<Long> ---------------------
 template<>
-class _ArrayList<Long>:virtual public obo::Object{
+class _ArrayList<Long>:virtual public Object{
 public:
     friend class _ListIterator<Long>;
 
@@ -676,7 +678,7 @@ private:
 
 //----------------- ArrayListIterator <Long>---------------------
 template<>
-class _ListIterator<Long>:virtual public obo::Object {
+class _ListIterator<Long>:virtual public Object {
 public:
     _ListIterator(_ArrayList<Long> *list);
 
@@ -692,4 +694,5 @@ private:
     ArrayList<Long> mList;    
     std::vector<long>::iterator iterator;
 };
+}
 #endif

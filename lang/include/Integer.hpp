@@ -6,6 +6,8 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(Integer) {
 public:
     _Integer(int v);
@@ -17,11 +19,14 @@ public:
     bool equals(Integer p);
 
     bool equals(int p);
-
+/*
+    Integer valueOf(String v);
+*/
     ~_Integer();
 
 private:
     int val;
 };
 
+}
 #endif

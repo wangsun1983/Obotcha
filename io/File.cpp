@@ -4,6 +4,8 @@
 
 #include "File.hpp"
 
+namespace obotcha {
+
 int _File::sFileStatusExit = 0;
 
 const String _File::gPathSeparator = createString("/");
@@ -341,4 +343,6 @@ _File::~_File() {
     if(mFileInfo != nullptr) {
         free(mFileInfo);
     }
+}
+
 }

@@ -6,7 +6,8 @@ link += integer \
 	float \
 	system \
 	string \
-	long
+	long \
+	bytearray \
 
 objs += $(outtmp)/integer.o \
 	$(outtmp)/boolean.o \
@@ -15,6 +16,7 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/system.o \
 	$(outtmp)/string.o \
 	$(outtmp)/long.o \
+	$(outtmp)/bytearray.o \
 
 integer :$(langDir)/Integer.cpp
 	$(gcc) $(cflags) -c $(langDir)/Integer.cpp -o $(outtmp)/integer.o $(external)
@@ -35,4 +37,8 @@ string :$(langDir)/String.cpp
 		$(gcc) $(cflags) -c $(langDir)/String.cpp -o $(outtmp)/string.o $(external)
 
 long :$(langDir)/Long.cpp
-		$(gcc) $(cflags) -c $(langDir)/Long.cpp -o $(outtmp)/long.o $(external)		
+		$(gcc) $(cflags) -c $(langDir)/Long.cpp -o $(outtmp)/long.o $(external)
+
+bytearray :$(langDir)/ByteArray.cpp
+		$(gcc) $(cflags) -c $(langDir)/ByteArray.cpp -o $(outtmp)/bytearray.o $(external)
+

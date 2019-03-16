@@ -1,18 +1,27 @@
 #ifndef __RANDOM_HPP__
 #define __RANDOM_HPP__
 
+#include <time.h>
+
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(Random) {
 
 public:
-    _Random();
+    static int nextInt();
 
-    int nextInt();
+    static int nextInt(int min,int max);
 
+    static int nextInt(int min);
+
+    static double nextDouble();
 };
+
+}
 
 #endif

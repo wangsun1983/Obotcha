@@ -6,6 +6,8 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(Long) {
 public:
     _Long(long v);
@@ -26,4 +28,5 @@ private:
     long val;
 };
 
+}
 #endif

@@ -18,6 +18,8 @@
 
 using namespace std;
 
+namespace obotcha {
+
 template<typename T,typename U>
 class _MapIterator;
 
@@ -93,7 +95,7 @@ private:
 
 //----------------------- HashMap<String,U> -----------------------
 template<typename U>  
-class _HashMap<String,U>:virtual public obo::Object{
+class _HashMap<String,U>:virtual public Object{
 public:
     friend class _MapIterator<String,U>;
 
@@ -165,7 +167,7 @@ private:
 
 //----------------------- HashMap<Integer,U> -----------------------
 template<typename U>  
-class _HashMap<Integer,U>:virtual public obo::Object{
+class _HashMap<Integer,U>:virtual public Object{
 public:
     void put(Integer t,U u) {
         hashmap.insert(std::pair<int, U>(t->toValue(),u));
@@ -233,7 +235,7 @@ private:
 
 //----------------------- HashMap<Double,U> -----------------------
 template<typename U>  
-class _HashMap<Double,U>:virtual public obo::Object{
+class _HashMap<Double,U>:virtual public Object{
 public:
     inline void put(Double t,U u) {
         hashmap.insert(std::pair<double, U>(t->toValue(),u));
@@ -298,7 +300,7 @@ private:
 
 //----------------------- HashMap<Float,U> -----------------------
 template<typename U>  
-class _HashMap<Float,U>:virtual public obo::Object{
+class _HashMap<Float,U>:virtual public Object{
 
 public:
     inline void put(Float t,U u) {
@@ -363,7 +365,7 @@ private:
 
 //----------------------- HashMap<Boolean,U> -----------------------
 template<typename U>  
-class _HashMap<Boolean,U>:virtual public obo::Object{
+class _HashMap<Boolean,U>:virtual public Object{
 public:
     inline void put(Boolean t,U u) {
         hashmap.insert(std::pair<bool, U>(t->toValue(),u));
@@ -428,7 +430,7 @@ private:
 
 //----------------------- HashMap<Long,U> -----------------------
 template<typename U>  
-class _HashMap<Long,U>:virtual public obo::Object{
+class _HashMap<Long,U>:virtual public Object{
 public:
     inline void put(Long t,U u) {
         hashmap.insert(std::pair<long, U>(t->toValue(),u));
@@ -536,7 +538,7 @@ private:
 
 //----------------- MapIterator<String,U> ---------------------
 template<typename U>  
-class _MapIterator<String,U>:virtual public obo::Object{
+class _MapIterator<String,U>:virtual public Object{
 public:
     _MapIterator(_HashMap<String,U> *map) {
         mHashMap.set_pointer(map);
@@ -578,7 +580,7 @@ private:
 
 //----------------- MapIterator<Integer,U> ---------------------
 template<typename U>  
-class _MapIterator<Integer,U>:virtual public obo::Object{
+class _MapIterator<Integer,U>:virtual public Object{
 public:    
     _MapIterator(_HashMap<Integer,U> *map) {
         mHashMap.set_pointer(map);
@@ -620,7 +622,7 @@ private:
 
 //----------------- MapIterator<Double,U> ---------------------
 template<typename U>  
-class _MapIterator<Double,U>:virtual public obo::Object{
+class _MapIterator<Double,U>:virtual public Object{
 public:
     _MapIterator(_HashMap<Double,U> *map) {
         mHashMap.set_pointer(map);
@@ -662,7 +664,7 @@ private:
 
 //----------------- MapIterator<Double,U> ---------------------
 template<typename U>  
-class _MapIterator<Float,U>:virtual public obo::Object{
+class _MapIterator<Float,U>:virtual public Object{
 public:
     _MapIterator(_HashMap<Float,U> *map) {
         mHashMap.set_pointer(map);
@@ -704,7 +706,7 @@ private:
 
 //----------------- MapIterator<Boolean,U> ---------------------
 template<typename U>  
-class _MapIterator<Boolean,U>:virtual public obo::Object{
+class _MapIterator<Boolean,U>:virtual public Object{
 public:
     _MapIterator(_HashMap<Boolean,U> *map) {
         mHashMap.set_pointer(map);
@@ -746,7 +748,7 @@ public:
 
 //----------------- MapIterator<Long,U> ---------------------
 template<typename U>  
-class _MapIterator<Long,U>:virtual public obo::Object{
+class _MapIterator<Long,U>:virtual public Object{
 public:
     _MapIterator(_HashMap<Long,U> *map) {
         mHashMap.set_pointer(map);
@@ -786,4 +788,5 @@ private:
     typename std::map<long,U>::iterator iterator;
 };
 
+}
 #endif

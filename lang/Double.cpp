@@ -1,5 +1,7 @@
 #include "Double.hpp"
 
+namespace obotcha {
+
 _Double::_Double(double v) : val(v) {}
 
 _Double::_Double(Double v) {
@@ -19,4 +21,6 @@ bool _Double::equals(double p) {
 }
 
 _Double::~_Double() {
+}
+
 }

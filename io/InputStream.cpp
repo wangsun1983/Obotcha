@@ -1,5 +1,7 @@
 #include "InputStream.hpp"
 
+namespace obotcha {
+
 int _InputStream::read() {
     //TODO
     return -1;
@@ -17,4 +19,6 @@ bool _InputStream::open() {
     
 void _InputStream::close() {
     //TODO
+}
+
 }

@@ -16,6 +16,8 @@
 #include "Collection.hpp"
 #include "HashMap.hpp"
 
+namespace obotcha {
+
 template<typename T>
 class _SetIterator;
 
@@ -75,4 +77,5 @@ SetIterator<T> _HashSet<T>::getIterator() {
     return new _SetIterator<T>(this);
 }
 
+}
 #endif

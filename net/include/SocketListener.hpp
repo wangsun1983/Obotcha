@@ -8,6 +8,8 @@
 #include "InetAddress.hpp"
 #include "SocketPacket.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(SocketListener) {
 public:
     virtual void onAccept(int fd,SocketPacket pack) = 0;
@@ -16,4 +18,6 @@ public:
 
     virtual void onConnect(int fd) = 0;
 };
+
+}
 #endif

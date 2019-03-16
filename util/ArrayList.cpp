@@ -1,6 +1,8 @@
 #include <iostream>
 #include "ArrayList.hpp"
 
+namespace obotcha {
+
 //----------------- ArrayList<String> ---------------------
 void _ArrayList<String>::add(const char *s) {
     if(s != nullptr) {
@@ -1302,4 +1304,6 @@ bool _ListIterator<Long>::next() {
         return false;
     }
     return true;
+}
+
 }

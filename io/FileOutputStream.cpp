@@ -1,5 +1,7 @@
 #include "FileOutputStream.hpp"
 
+namespace obotcha {
+
 _FileOutputStream::_FileOutputStream(File file) {
     mPath = createString(file->getAbsolutePath());    
 }
@@ -13,8 +15,8 @@ bool _FileOutputStream::write(char c) {
     return true;
 }
     
-bool _FileOutputStream::write(char *buffer,int size) {
-    fstream.write(buffer,size);
+bool _FileOutputStream::write(ByteArray buff) {
+    fstream.write(buff->toValue(),buff->size());
     return true;
 }
 
@@ -43,4 +45,6 @@ void _FileOutputStream::close() {
 
 void _FileOutputStream::flush() {
     fstream.flush();
+}
+
 }

@@ -12,9 +12,9 @@
 #include "AutoMutex.hpp"
 #include "Condition.hpp"
 
-
 using namespace std;
 
+namespace obotcha {
 enum State {
     idleState,
     busyState,
@@ -93,4 +93,5 @@ private:
     void init(int size,bool isDyn);
 };
 
+}
 #endif

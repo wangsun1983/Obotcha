@@ -1,0 +1,2 @@
+
+include ./external/jsoncpp/makefile

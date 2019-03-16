@@ -2,6 +2,8 @@
 
 #include "Mutex.hpp"
 
+namespace obotcha {
+
 _Mutex::_Mutex():mutex_t(PTHREAD_MUTEX_INITIALIZER){
 }
 
@@ -21,4 +23,6 @@ bool _Mutex::trylock() {
     //TODO
     pthread_mutex_trylock(&mutex_t);
     return true;
+}
+
 }

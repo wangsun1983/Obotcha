@@ -7,7 +7,7 @@
 
 #include "Object.hpp"
 
-
+namespace obotcha {
 //template
 template<bool C, typename T, typename U>
 class PointerChanger;
@@ -324,4 +324,5 @@ T* sp<T>::get_pointer(){
 //{
 //    return printStrongPointer(to, val.get());
 //}
+}
 #endif

@@ -6,6 +6,8 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(Runnable) {
 
 public:
@@ -14,5 +16,5 @@ public:
     virtual void onInterrupt(){};
 };
 
-
+}
 #endif

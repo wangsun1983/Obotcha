@@ -16,6 +16,8 @@ using namespace std;
 
 #define const_str(Y) createString(Y)
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(String)
 {
 public:
@@ -151,4 +153,5 @@ void _String::split(String v,T t) {
     }
 }
 
+}
 #endif

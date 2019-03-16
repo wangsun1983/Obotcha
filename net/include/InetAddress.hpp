@@ -9,6 +9,8 @@
 
 #define MAX_LENGTH 256
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(InetHostAddress) {
 public:
     String interface;
@@ -39,4 +41,5 @@ private:
 
 };
 
+}
 #endif

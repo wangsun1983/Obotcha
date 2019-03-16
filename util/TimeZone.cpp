@@ -2,6 +2,8 @@
 
 #include "TimeZone.hpp"
 
+namespace obotcha {
+
 int _TimeZone::zone = -1;
 
 int _TimeZone::getZone() {
@@ -19,4 +21,6 @@ int _TimeZone::getZone() {
 
 void _TimeZone::setZone(int z) {
     zone = z;
+}
+
 }

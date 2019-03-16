@@ -8,6 +8,8 @@
 #include "AutoMutex.hpp"
 #include "StrongPointer.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(Condition) {
 
 public:
@@ -21,4 +23,5 @@ private:
     pthread_cond_t cond_t;
 };
 
+}
 #endif

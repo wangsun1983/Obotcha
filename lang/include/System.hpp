@@ -4,6 +4,8 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(System) {
 
 public:
@@ -13,4 +15,5 @@ public:
     static int onlineProcessors();
 };
 
+}
 #endif

@@ -2,6 +2,8 @@
 
 #include <memory.h>
 
+namespace obotcha {
+
 _SocketPacket::_SocketPacket(char *data,int size) {
     sockdata = (char *)malloc(size);
     memset(sockdata,0,size);
@@ -20,4 +22,6 @@ _SocketPacket::~_SocketPacket() {
     if(sockdata != nullptr) {
         free(sockdata);
     }
+}
+
 }

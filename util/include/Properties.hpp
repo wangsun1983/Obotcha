@@ -8,6 +8,8 @@
 #include "HashMap.hpp"
 #include "File.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(Properties) {
 
 public:
@@ -30,4 +32,5 @@ private:
 
 };
 
+}
 #endif

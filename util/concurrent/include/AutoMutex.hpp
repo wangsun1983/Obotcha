@@ -7,6 +7,8 @@
 #include "StrongPointer.hpp"
 #include "Mutex.hpp"
 
+namespace obotcha {
+
 class AutoMutex {
 public:
     AutoMutex(Mutex lock)
@@ -24,4 +26,5 @@ private:
     Mutex mutex_t;
 };
 
+}
 #endif

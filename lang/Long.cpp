@@ -1,5 +1,7 @@
 #include "Long.hpp"
 
+namespace obotcha {
+
 _Long::_Long(long v) : val(v) {}
 
 _Long::_Long(Long v) {
@@ -19,4 +21,6 @@ bool _Long::equals(long p) {
 }
 
 _Long::~_Long() {
+}
+
 }

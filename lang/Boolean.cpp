@@ -1,5 +1,7 @@
 #include "Boolean.hpp"
 
+namespace obotcha {
+
 _Boolean::_Boolean(bool v) : val(v) {}
 
 _Boolean::_Boolean(Boolean v) {
@@ -19,4 +21,6 @@ bool _Boolean::equals(bool p) {
 }
 
 _Boolean::~_Boolean() {
+}
+
 }

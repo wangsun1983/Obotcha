@@ -15,6 +15,8 @@
 
 using namespace std;
 
+namespace obotcha {
+
 DECLARE_CLASS(ConcurrentQueue,1) {
 public:
     inline _ConcurrentQueue();
@@ -151,4 +153,5 @@ int _ConcurrentQueue<T>::size() {
     return mQueue.size();
 }
 
+}
 #endif

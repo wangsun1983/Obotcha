@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <sstream>
 
+namespace obotcha {
+
  _String::_String() {
     m_str = new std::string("");
 }
@@ -313,7 +315,9 @@ double _String::toBasicDouble() {
 }
 
 std::string _String::getStdString() {
-    
+    if(m_str == nullptr) {
+        printf("getStdString is null \n");
+    }
     return *m_str;
 }
 
@@ -346,3 +350,5 @@ bool _String::operator==(const String s) {
     return m_str == s->m_str;
 }
 */
+
+}

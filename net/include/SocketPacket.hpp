@@ -6,6 +6,8 @@
 
 #include "String.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(SocketPacket) {
 public:
     _SocketPacket(char *data,int size);
@@ -22,4 +24,5 @@ private:
 
 };
 
+}
 #endif

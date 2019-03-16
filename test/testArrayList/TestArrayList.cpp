@@ -7,6 +7,8 @@
 #include "Integer.hpp"
 #include "String.hpp"
 
+using namespace obotcha;
+
 void dump(ArrayList<Integer> list) {
     int size = list->size();
     for(int i = 0;i<size;i++) {
@@ -1876,6 +1878,6 @@ int main() {
 
   //--[_ArrayList<Integer> Test {insert(int index,int val)} Start]---
   while(1) {
-    
+
   }
 }

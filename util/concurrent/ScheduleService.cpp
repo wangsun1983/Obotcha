@@ -5,6 +5,8 @@
 #include "Thread.hpp"
 #include "System.hpp"
 
+namespace obotcha {
+
 //---------------TimeTask---------------//
 _TimeTask::_TimeTask(Runnable runnable,long int interval) {
     mRunnable = runnable;
@@ -105,5 +107,7 @@ void _ScheduleService::awaitTermination(long millseconds) {
 }
 
 _ScheduleService::~_ScheduleService() {
+
+}
 
 }

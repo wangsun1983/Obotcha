@@ -1,0 +1,19 @@
+outlib = ../../out/lib
+outtmp = ../../out/tmp
+
+gcc = g++
+
+cflags = -I ../../util/concurrent/include/ -I ../../lang/include/ -I ../../io/include/ -I ../../util/include/ -I ../../util/text/include/ \
+				-I ../../external/jsoncpp/include/
+
+external = -lpthread \
+           ../../out/lib/libobotcha.so \
+
+files =
+link =
+libname	= integerTest
+
+everything : $(libname)
+
+$(libname): $(link)
+	g++ *.cpp $(cflags)  $(external) -o mytest

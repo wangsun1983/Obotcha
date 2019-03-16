@@ -8,6 +8,8 @@
 
 #define UUID4_LEN 37
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(UUID) {
 
 public:
@@ -28,4 +30,5 @@ private:
     void generate(char *);
 };
 
+}
 #endif

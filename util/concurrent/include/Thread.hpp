@@ -13,6 +13,8 @@
 
 using namespace std;
 
+namespace obotcha {
+
 class _Thread;
 
 enum ThreadPriority {
@@ -75,11 +77,11 @@ public:
 
     static void yield();
 
-    static void sleep(unsigned long);
+    //static void sleep(unsigned long);
 
     static void msleep(unsigned long);
     
-    static void usleep(unsigned long);
+    //static void usleep(unsigned long);
 
     static RecycleThread getRecyleThread();
 
@@ -95,5 +97,5 @@ private:
     pthread_t mPthread;
 };
 
-
+}
 #endif

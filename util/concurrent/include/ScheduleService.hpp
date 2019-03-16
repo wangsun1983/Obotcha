@@ -16,6 +16,8 @@
 
 using namespace std;
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(TimeTask) {
 public:
     long int millseconds;
@@ -78,4 +80,5 @@ private:
     void init(int size,bool isDyn);
 };
 
+}
 #endif

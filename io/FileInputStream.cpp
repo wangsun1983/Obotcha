@@ -1,5 +1,7 @@
 #include "FileInputStream.hpp"
 
+namespace obotcha {
+
 _FileInputStream::_FileInputStream(File f) {
     mPath = createString(f->getAbsolutePath());
 }
@@ -12,8 +14,8 @@ int _FileInputStream::read() {
     //TODO
 }
 
-int _FileInputStream::read(char *buffer,int size) {
-    fstream.read(buffer,size);
+int _FileInputStream::read(ByteArray buff) {
+    fstream.read(buff->toValue(),buff->size());
     return fstream.gcount();
 }
 
@@ -33,4 +35,6 @@ String _FileInputStream::readLine() {
     }
 
     return nullptr;
+}
+
 }
