@@ -161,7 +161,7 @@ void _String::append(String s) {
     //printf("string is %s \n",m_str->data());
 }
 
-void _String::append(char *p) {
+void _String::append(const char *p) {
     m_str->append(p);
 }
 

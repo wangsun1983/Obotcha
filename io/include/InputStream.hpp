@@ -4,6 +4,8 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(InputStream) {
 public:
     virtual int read();
@@ -15,4 +17,5 @@ public:
     virtual void close();
 };
 
+}
 #endif

@@ -6,6 +6,9 @@
 
 #include "String.hpp"
 #include "File.hpp"
+#include "ByteArray.hpp"
+
+namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(FileOutputStream) {
 
@@ -21,7 +24,8 @@ public:
 
     bool write(char c);
     
-    bool write(char *buffer,int size);
+    //bool write(char *buffer,int size);
+    bool write(ByteArray buff);
 
     bool writeString(String s);
     
@@ -34,7 +38,8 @@ public:
 private:
     String mPath;
 
-    std::ofstream fstream;    
+    std::ofstream fstream;
 };
 
+}
 #endif

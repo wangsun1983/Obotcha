@@ -12,6 +12,8 @@
 #include "String.hpp"
 #include "ArrayList.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(File) {
 public:
 
@@ -93,4 +95,5 @@ private:
 
 };
 
+}
 #endif

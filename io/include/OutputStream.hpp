@@ -4,6 +4,8 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(OutputStream) {
 public:
     virtual bool write(char c);
@@ -17,4 +19,5 @@ public:
     virtual void flush();
 };
 
+}
 #endif

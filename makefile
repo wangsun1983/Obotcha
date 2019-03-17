@@ -10,6 +10,10 @@ cflags = -fpic \
 		-I ./io/include \
 		-I ./util/include/ \
 		-I ./net/include \
+		-I ./external/iniparser/include \
+		-I ./external/jsoncpp/include \
+		-I ./external/rapidxml/include \
+		-g \
 
 
 external = -lpthread \

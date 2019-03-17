@@ -10,6 +10,9 @@
 #include "String.hpp"
 #include "File.hpp"
 #include "InputStream.hpp"
+#include "ByteArray.hpp"
+
+namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(FileInputStream) IMPLEMENTS(InputStream) {
 public:
@@ -20,7 +23,7 @@ public:
 
     int read();
 
-    int read(char *buffer,int size);
+    int read(ByteArray buffer);
 
     bool open();
 
@@ -34,4 +37,5 @@ private:
     std::ifstream fstream;     
 };
 
+}
 #endif

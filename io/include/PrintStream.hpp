@@ -10,6 +10,8 @@
 #include "File.hpp"
 #include "String.hpp"
 
+namespace obotcha {
+
 DECLARE_SIMPLE_CLASS(PrintStream) IMPLEMENTS(OutputStream) {
 
 public:
@@ -45,4 +47,5 @@ private:
     std::ofstream fstream;
 };
 
+}
 #endif

@@ -1,7 +1,5 @@
 jsoncpp = ./external/jsoncpp
 
-cflags += -I $(jsoncpp)/include \
-
 link += external_json_reader \
 		external_json_value \
 		external_json_writer \

@@ -74,7 +74,7 @@ public:
 
     void append(String s);
 
-    void append(char *p);
+    void append(const char *p);
 
     //opertor overload 
     /*
