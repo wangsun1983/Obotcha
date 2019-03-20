@@ -454,7 +454,7 @@ Integer _ListIterator<Integer>::getValue() {
 }
 
 bool _ListIterator<Integer>::hasValue() {
-    return iterator == mList->end();
+    return iterator != mList->end();
 }
 
 bool _ListIterator<Integer>::next() {
@@ -666,7 +666,7 @@ Boolean _ListIterator<Boolean>::getValue() {
 }
 
 bool _ListIterator<Boolean>::hasValue() {
-    return iterator == mList->end();
+    return iterator != mList->end();
 }
 
 bool _ListIterator<Boolean>::next() {
@@ -875,7 +875,7 @@ Float _ListIterator<Float>::getValue() {
 }
 
 bool _ListIterator<Float>::hasValue() {
-    return iterator == mList->end();
+    return iterator != mList->end();
 }
 
 bool _ListIterator<Float>::next() {
@@ -1086,7 +1086,7 @@ Double _ListIterator<Double>::getValue() {
 }
 
 bool _ListIterator<Double>::hasValue() {
-    return iterator == mList->end();
+    return iterator != mList->end();
 }
 
 bool _ListIterator<Double>::next() {
@@ -1295,7 +1295,7 @@ Long _ListIterator<Long>::getValue() {
 }
 
 bool _ListIterator<Long>::hasValue() {
-    return iterator == mList->end();
+    return iterator != mList->end();
 }
 
 bool _ListIterator<Long>::next() {

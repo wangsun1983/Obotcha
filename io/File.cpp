@@ -17,6 +17,18 @@ _File::_File(String path) {
     //fileStream = nullptr;
 }
 
+_File::_File() {
+    mPath="";
+    mFileInfo = nullptr;
+    mExist = -1;
+}
+
+void _File::setPath(String path) {
+    mPath = path;
+    mFileInfo = nullptr;
+    mExist = -1;
+}
+
 String _File::getName() {
     ArrayList<String> splits = createArrayList<String>();
     mPath->split(gPathSeparator,splits);
@@ -94,9 +106,9 @@ bool _File::canExecute() {
 }
 
 bool _File::exists() {
-    if(mFileInfo == nullptr) {
+    //if(mFileInfo == nullptr) {
         updateFileInfo();
-    }
+    //}
 
     return (mExist == sFileStatusExit);
 }

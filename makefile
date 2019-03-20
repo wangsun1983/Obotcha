@@ -13,6 +13,7 @@ cflags = -fpic \
 		-I ./external/iniparser/include \
 		-I ./external/jsoncpp/include \
 		-I ./external/rapidxml/include \
+		-I ./external/zlib/include \
 		-g \
 
 

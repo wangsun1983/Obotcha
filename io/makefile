@@ -5,7 +5,8 @@ link += file \
 	inputstream \
 	outputstream \
 	fileoutputstream \
-	printstream
+	printstream \
+	zipstream \
 
 
 objs += $(outtmp)/file.o \
@@ -14,6 +15,7 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/outputstream.o \
 	$(outtmp)/fileoutputstream.o \
 	$(outtmp)/printstream.o \
+	$(outtmp)/zipstream.o \
 
 file :$(ioDir)/File.cpp
 	$(gcc) $(cflags) -c $(ioDir)/File.cpp -o $(outtmp)/file.o $(external)
@@ -32,3 +34,7 @@ outputstream :$(ioDir)/OutputStream.cpp
 
 printstream :$(ioDir)/PrintStream.cpp
 	$(gcc) $(cflags) -c $(ioDir)/PrintStream.cpp -o $(outtmp)/printstream.o $(external)
+
+zipstream :$(ioDir)/ZipStream.cpp
+	$(gcc) $(cflags) -c $(ioDir)/ZipStream.cpp -o $(outtmp)/zipstream.o $(external)
+

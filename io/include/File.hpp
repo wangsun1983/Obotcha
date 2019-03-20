@@ -25,6 +25,10 @@ public:
 
     _File(String path);
 
+    _File();
+
+    void setPath(String path);
+
     String getName();
 
     String getAbsolutePath();

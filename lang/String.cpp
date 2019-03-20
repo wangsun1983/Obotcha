@@ -11,10 +11,14 @@ namespace obotcha {
 }
 
 _String::_String(String v) {
-    if(v->m_str != nullptr) {
-        m_str = new std::string(v->m_str->data());
+    if(v.m_ptr == nullptr) {
+        //TOOD
     } else {
-        m_str = new std::string();
+        if(v->m_str != nullptr) {
+            m_str = new std::string(v->m_str->data());
+        } else {
+            m_str = new std::string();
+        }
     }
 }
 

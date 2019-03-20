@@ -6,6 +6,8 @@ link += jsonvalue \
 		jsonreader \
 		inireader \
 		inivalue \
+		xmlreader \
+		xmlvalue \
 
 objs += $(outtmp)/jsonvalue.o \
 		$(outtmp)/jsonarray.o \
@@ -13,6 +15,8 @@ objs += $(outtmp)/jsonvalue.o \
 		$(outtmp)/jsonreader.o \
 		$(outtmp)/inireader.o \
 		$(outtmp)/inivalue.o \
+		$(outtmp)/xmlreader.o \
+		$(outtmp)/xmlvalue.o \
 
 
 jsonvalue :$(textDir)/JsonValue.cpp
@@ -33,3 +37,8 @@ inireader :$(textDir)/IniReader.cpp
 inivalue :$(textDir)/IniValue.cpp
 	$(gcc) $(cflags) -c $(textDir)/IniValue.cpp -o $(outtmp)/inivalue.o
 
+xmlreader :$(textDir)/XmlReader.cpp
+	$(gcc) $(cflags) -c $(textDir)/XmlReader.cpp -o $(outtmp)/xmlreader.o
+
+xmlvalue :$(textDir)/XmlValue.cpp
+	$(gcc) $(cflags) -c $(textDir)/XmlValue.cpp -o $(outtmp)/xmlvalue.o

@@ -204,7 +204,7 @@ public:
     }
 
     bool hasValue() {
-        return iterator == mList->end();
+        return iterator != mList->end();
     }
 
     bool next() {
