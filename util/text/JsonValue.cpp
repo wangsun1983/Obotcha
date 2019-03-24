@@ -153,7 +153,7 @@ _JsonValueIterator::_JsonValueIterator(JsonValue v) {
 
 _JsonValueIterator::_JsonValueIterator(_JsonValue *v) {
     value.set_pointer(v);
-    v->incStrong(0);
+    //v->incStrong(0);
 
     count = 0;
 }

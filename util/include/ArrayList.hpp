@@ -184,8 +184,7 @@ DECLARE_CLASS(ListIterator,1) {
 public:
     _ListIterator(_ArrayList<T> *list) {
         mList.set_pointer(list);
-        list->incStrong(0);
-
+        //list->incStrong(0);
         iterator = list->begin();
     }
 

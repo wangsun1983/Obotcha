@@ -8,6 +8,11 @@ link += jsonvalue \
 		inivalue \
 		xmlreader \
 		xmlvalue \
+		confreader \
+		confvalue \
+		yamlreader \
+		yamlvalue \
+		yamlarray \
 
 objs += $(outtmp)/jsonvalue.o \
 		$(outtmp)/jsonarray.o \
@@ -17,7 +22,11 @@ objs += $(outtmp)/jsonvalue.o \
 		$(outtmp)/inivalue.o \
 		$(outtmp)/xmlreader.o \
 		$(outtmp)/xmlvalue.o \
-
+		$(outtmp)/confreader.o \
+		$(outtmp)/confvalue.o \
+		$(outtmp)/yamlreader.o \
+		$(outtmp)/yamlvalue.o \
+		$(outtmp)/yamlarray.o \
 
 jsonvalue :$(textDir)/JsonValue.cpp
 	$(gcc) $(cflags) -c $(textDir)/JsonValue.cpp -o $(outtmp)/jsonvalue.o
@@ -42,3 +51,18 @@ xmlreader :$(textDir)/XmlReader.cpp
 
 xmlvalue :$(textDir)/XmlValue.cpp
 	$(gcc) $(cflags) -c $(textDir)/XmlValue.cpp -o $(outtmp)/xmlvalue.o
+
+confreader :$(textDir)/ConfReader.cpp
+	$(gcc) $(cflags) -c $(textDir)/ConfReader.cpp -o $(outtmp)/confreader.o
+
+confvalue :$(textDir)/ConfValue.cpp
+	$(gcc) $(cflags) -c $(textDir)/ConfValue.cpp -o $(outtmp)/confvalue.o
+
+yamlreader :$(textDir)/YamlReader.cpp
+	$(gcc) $(cflags) -c $(textDir)/YamlReader.cpp -o $(outtmp)/yamlreader.o
+
+yamlvalue :$(textDir)/YamlValue.cpp
+	$(gcc) $(cflags) -c $(textDir)/YamlValue.cpp -o $(outtmp)/yamlvalue.o
+
+yamlarray :$(textDir)/YamlArray.cpp
+	$(gcc) $(cflags) -c $(textDir)/YamlArray.cpp -o $(outtmp)/yamlarray.o

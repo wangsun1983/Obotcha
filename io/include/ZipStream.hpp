@@ -9,9 +9,11 @@
 #include <sys/types.h>
 #include <dirent.h>
 
+extern "C" {
 #include "zlib.h"
 #include "zip.h"
 #include "unzip.h"
+}
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

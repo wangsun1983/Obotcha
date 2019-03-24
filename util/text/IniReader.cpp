@@ -24,9 +24,6 @@ _IniReader::_IniReader(File file) {
 IniValue _IniReader::parse() {
 
     dictionary *dict = iniparser_load(filepath->toChars());
-    iniparser_dump(dict, stdout);
-    char *p = (char *)iniparser_getstring(dict,"quotes:h1","fff");
-    printf("p is %s \n",p);
     return createIniValue(dict);
 }
 

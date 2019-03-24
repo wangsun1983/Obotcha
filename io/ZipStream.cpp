@@ -1,6 +1,9 @@
 #include "ZipStream.hpp"
+
+extern "C" {
 #include "zip.h"
 #include "zlib.h"
+}
 
 #include <fstream>
 #include <string.h>

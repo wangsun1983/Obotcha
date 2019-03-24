@@ -14,6 +14,8 @@ cflags = -fpic \
 		-I ./external/jsoncpp/include \
 		-I ./external/rapidxml/include \
 		-I ./external/zlib/include \
+		-I ./external/ccl/include \
+		-I ./external/yaml/include \
 		-g \
 
 
