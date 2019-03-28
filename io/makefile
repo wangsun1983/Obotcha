@@ -7,6 +7,7 @@ link += file \
 	fileoutputstream \
 	printstream \
 	zipstream \
+	filewatcher \
 
 
 objs += $(outtmp)/file.o \
@@ -16,6 +17,7 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/fileoutputstream.o \
 	$(outtmp)/printstream.o \
 	$(outtmp)/zipstream.o \
+	$(outtmp)/filewatcher.o \
 
 file :$(ioDir)/File.cpp
 	$(gcc) $(cflags) -c $(ioDir)/File.cpp -o $(outtmp)/file.o $(external)
@@ -37,4 +39,8 @@ printstream :$(ioDir)/PrintStream.cpp
 
 zipstream :$(ioDir)/ZipStream.cpp
 	$(gcc) $(cflags) -c $(ioDir)/ZipStream.cpp -o $(outtmp)/zipstream.o $(external)
+
+filewatcher :$(ioDir)/FileWatcher.cpp
+	$(gcc) $(cflags) -c $(ioDir)/FileWatcher.cpp -o $(outtmp)/filewatcher.o $(external)	
+
 

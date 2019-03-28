@@ -42,7 +42,7 @@ public:
     }
 
     void remove(T t) {
-        hashmap.earse(t);
+        hashmap.erase(t);
     }
 
     bool isEmpty() {

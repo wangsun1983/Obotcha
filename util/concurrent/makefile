@@ -6,6 +6,8 @@ link += condition \
 	mutex \
 	thread \
 	countdownlatch \
+	atomicint \
+	readwritelock \
 
 objs += $(outtmp)/condition.o \
 	$(outtmp)/executorservice.o \
@@ -13,6 +15,8 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/mutex.o \
 	$(outtmp)/thread.o \
 	$(outtmp)/countdownlatch.o \
+	$(outtmp)/atomicint.o \
+	$(outtmp)/readwritelock.o \
 
 condition :$(concurrentDir)/Condition.cpp
 	$(gcc) $(cflags) -c $(concurrentDir)/Condition.cpp -o $(outtmp)/condition.o
@@ -30,4 +34,10 @@ thread :$(concurrentDir)/Thread.cpp
 	$(gcc) $(cflags) -c $(concurrentDir)/Thread.cpp -o $(outtmp)/thread.o
 
 countdownlatch :$(concurrentDir)/CountDownLatch.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/CountDownLatch.cpp -o $(outtmp)/countdownlatch.o	
+	$(gcc) $(cflags) -c $(concurrentDir)/CountDownLatch.cpp -o $(outtmp)/countdownlatch.o
+
+atomicint :$(concurrentDir)/AtomicInteger.cpp
+	$(gcc) $(cflags) -c $(concurrentDir)/AtomicInteger.cpp -o $(outtmp)/atomicint.o
+
+readwritelock :$(concurrentDir)/ReadWriteLock.cpp
+	$(gcc) $(cflags) -std=c++11 -lpthread -c $(concurrentDir)/ReadWriteLock.cpp -o $(outtmp)/readwritelock.o
