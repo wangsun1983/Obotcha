@@ -13,6 +13,18 @@ bool _Boolean::toValue() {
 }
 
 bool _Boolean::equals(Boolean p) {
+    if(p == nullptr) {
+        return false;
+    }
+
+    return val == p->val;
+}
+
+bool _Boolean::equals(_Boolean *p) {
+    if(p == nullptr) {
+        return false;
+    }
+
     return val == p->val;
 }
 

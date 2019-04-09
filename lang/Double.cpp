@@ -13,11 +13,23 @@ double _Double::toValue() {
 }
 
 bool _Double::equals(Double p) {
+    if(p == nullptr) {
+        return false;
+    }
+    
     return val == p->val;
 }
 
 bool _Double::equals(double p) {
     return val == p;
+}
+
+bool _Double::equals(_Double *p) {
+    if(p == nullptr) {
+        return false;
+    }
+
+    return val == p->val;
 }
 
 _Double::~_Double() {

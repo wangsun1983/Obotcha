@@ -26,7 +26,7 @@ external = -lpthread \
 
 files =
 link =
-libname	= booleanTest
+libname	= byteArrayTest
 
 everything : $(libname)
 

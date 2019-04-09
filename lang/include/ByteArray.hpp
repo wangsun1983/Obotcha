@@ -15,6 +15,8 @@ public:
 
     _ByteArray(byte *data,int len);
 
+    _ByteArray(sp<_ByteArray>);
+
     ~_ByteArray();
 
     byte *toValue();
@@ -22,6 +24,14 @@ public:
     int size();
 
     void clear();
+
+    void resize(int size);
+
+    bool isEmpty();
+
+    byte at(int);
+
+    void fill(byte v);
 
 private:
     byte *buff;

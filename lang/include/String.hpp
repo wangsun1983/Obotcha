@@ -76,17 +76,6 @@ public:
 
     void append(const char *p);
 
-    //opertor overload 
-    /*
-    String operator+=(String s);
-    
-    String operator+(String s);
-    
-    String operator=(const String S);
-
-    bool operator==(const String S);
-    */
-
     Integer toInteger();
 
     Boolean toBoolean();
@@ -128,7 +117,30 @@ public:
     bool equals(const char *s);
 
     std::string getStdString();
-    //bool equals(const std::string &p);
+
+    String toLowerCase();
+
+    String toUpperCase();
+
+    bool equalsIgnoreCase(String str);
+
+    bool indexOfIgnoreCase(String str);
+
+    bool containsIgnoreCase(String val);
+
+    bool isEmpty();
+
+    bool matches(String regex);
+    
+    sp<_String> replaceFirst(String regex,String v);
+
+    sp<_String> replaceAll(String regex,String v);
+
+    bool endsWith(String s);
+
+    int lastIndexOf(String v);
+
+    bool startsWith(String v);
 
 private:
     std::string *m_str;

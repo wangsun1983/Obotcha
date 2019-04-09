@@ -1,13 +1,16 @@
 #include <iostream>
-#include "String.hpp"
 #include <sys/time.h>
 #include <unistd.h>
 #include <sstream>
+#include <algorithm>
+#include <regex>
+
+#include "String.hpp"
 
 namespace obotcha {
 
  _String::_String() {
-    m_str = new std::string("");
+    m_str = new std::string();
 }
 
 _String::_String(String v) {
@@ -325,34 +328,123 @@ std::string _String::getStdString() {
     return *m_str;
 }
 
-/*
-String _String::operator+=(const String s) {
+String _String::toLowerCase() {
+    if(m_str == nullptr) {
+        return nullptr;
+    }
 
-    std::string *str = new std::string(*m_str);
-    str->append(*s->m_str);
-
-    String result = new _String(str);
+    String result = createString(*m_str);
+    std::transform(result->m_str->begin(),result->m_str->end(),result->m_str->begin(),::tolower);
     return result;
 }
 
-String _String::operator+(const String s) {
-
-    std::string *str = new std::string(*m_str);
-    str->append(*s->m_str);
-
-    String result = new _String(str);
+String _String::toUpperCase() {
+    if(m_str == nullptr) {
+        return nullptr;
+    }
+    
+    String result = createString(*m_str);
+    std::string strTmp = *result->m_str;
+    std::transform(strTmp.begin(),strTmp.end(),strTmp.begin(),::toupper);
     return result;
 }
-   
-String _String::operator=(const String s) {
-    sp<_String> result = new _String(s->m_str);
+    
+bool _String::equalsIgnoreCase(String str) {
+    if(m_str == nullptr) {
+        if(str == nullptr) {
+            return true;
+        }
+        return true;
+    } 
+    
+    String str1 = createString(*m_str);
+    String str2 = createString(str);
+
+    std::string std_str1 = *str1->m_str;
+    std::string std_str2 = *str2->m_str;
+
+    std::transform(std_str1.begin(),std_str1.end(),std_str1.begin(),::toupper);
+    std::transform(std_str2.begin(),std_str2.end(),std_str2.begin(),::toupper);
+
+    return (std_str1.compare(std_str2) == 0);
+}
+
+bool _String::containsIgnoreCase(String val) {
+    if(m_str == nullptr) {
+        if(val == nullptr) {
+            return true;
+        }
+        return true;
+    }
+
+    String str1 = createString(*m_str);
+    String str2 = createString(val);
+
+    std::string std_str1 = *str1->m_str;
+    std::string std_str2 = *str2->m_str;
+
+    std::transform(std_str1.begin(),std_str1.end(),std_str1.begin(),::toupper);
+    std::transform(std_str2.begin(),std_str2.end(),std_str2.begin(),::toupper);
+    return (std_str1.find(std_str2) != -1);
+}
+
+bool _String::isEmpty() {
+    if(m_str == nullptr) {
+        return true;
+    }
+    return m_str->size() == 0;
+}
+
+bool _String::matches(String regex) {
+    if(m_str == nullptr) {
+        if(regex != nullptr) {
+            return false;    
+        }
+        return true;
+    }
+
+    return std::regex_match(*m_str, std::regex(*regex->m_str));
+}
+
+sp<_String> _String::replaceFirst(String regex,String value) {
+    if(m_str == nullptr || value == nullptr || regex == nullptr) {
+        return nullptr;
+    }
+
+    std::string result = std::regex_replace(*m_str,std::regex(*regex->m_str),*value->m_str,
+        std::regex_constants::format_first_only);
+    return createString(result);
+}
+
+sp<_String> _String::replaceAll(String regex,String value) {
+    if(m_str == nullptr || value == nullptr || regex == nullptr) {
+        return nullptr;
+    }    
+    
+    std::string result = std::regex_replace(*m_str,std::regex(*regex->m_str),*value->m_str);
+    return createString(result);
+}
+
+bool _String::endsWith(String s) {
+    if(m_str == nullptr || m_str->size() == 0) {
+        return false;
+    }
+
+    int result = m_str->find_last_of(*s->m_str);
+    return (result == m_str->size() - 1);
+}
+
+int _String::lastIndexOf(String v) {
+    int result = m_str->find_last_of(*v->m_str);
     return result;
 }
 
-
-bool _String::operator==(const String s) {
-    return m_str == s->m_str;
+bool _String::startsWith(String v) {
+    int result = m_str->find(*v->m_str);
+    return (result == v->size());
 }
-*/
+
+
+
 
 }

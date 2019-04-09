@@ -170,11 +170,11 @@ public:
 private:
     std::vector<T> elements;
 
-    auto begin() {
+    typename std::vector<T>::iterator begin() {
         return elements.begin();
     }
 
-    auto end() {
+    typename std::vector<T>::iterator end() {
         return elements.end();
     }
 };

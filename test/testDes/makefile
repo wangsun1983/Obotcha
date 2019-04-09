@@ -15,20 +15,17 @@ cflags = -fpic \
 		-I ../../external/jsoncpp/include \
 		-I ../../external/rapidxml/include \
 		-I ../../external/zlib/include \
-		-I ../../external/ccl/include \
-		-I ../../external/yaml/include \
-		-I ../../external/crc32/include \
+		-I ../../external/des/include \
 		-g \
 
 external = -lpthread \
            ../../out/lib/libobotcha.so \
 
-
 files =
 link =
-libname	= booleanTest
+libname	= integerTest
 
 everything : $(libname)
 
 $(libname): $(link)
-	g++ *.cpp $(cflags)  $(external) -o mytest
+	g++ $(cflags) *.cpp  $(external) -o mytest

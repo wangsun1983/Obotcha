@@ -8,11 +8,14 @@ link += jsonvalue \
 		inivalue \
 		xmlreader \
 		xmlvalue \
+		xmlwriter \
+		xmldocument \
 		confreader \
 		confvalue \
 		yamlreader \
 		yamlvalue \
 		yamlarray \
+		stringformat \
 
 objs += $(outtmp)/jsonvalue.o \
 		$(outtmp)/jsonarray.o \
@@ -21,12 +24,15 @@ objs += $(outtmp)/jsonvalue.o \
 		$(outtmp)/inireader.o \
 		$(outtmp)/inivalue.o \
 		$(outtmp)/xmlreader.o \
+		$(outtmp)/xmlwriter.o \
 		$(outtmp)/xmlvalue.o \
+		$(outtmp)/xmldocument.o \
 		$(outtmp)/confreader.o \
 		$(outtmp)/confvalue.o \
 		$(outtmp)/yamlreader.o \
 		$(outtmp)/yamlvalue.o \
 		$(outtmp)/yamlarray.o \
+		$(outtmp)/stringformat.o \
 
 jsonvalue :$(textDir)/JsonValue.cpp
 	$(gcc) $(cflags) -c $(textDir)/JsonValue.cpp -o $(outtmp)/jsonvalue.o
@@ -49,8 +55,14 @@ inivalue :$(textDir)/IniValue.cpp
 xmlreader :$(textDir)/XmlReader.cpp
 	$(gcc) $(cflags) -c $(textDir)/XmlReader.cpp -o $(outtmp)/xmlreader.o
 
+xmlwriter :$(textDir)/XmlWriter.cpp
+	$(gcc) $(cflags) -c $(textDir)/XmlWriter.cpp -o $(outtmp)/xmlwriter.o
+
 xmlvalue :$(textDir)/XmlValue.cpp
 	$(gcc) $(cflags) -c $(textDir)/XmlValue.cpp -o $(outtmp)/xmlvalue.o
+
+xmldocument :$(textDir)/XmlDocument.cpp
+	$(gcc) $(cflags) -c $(textDir)/XmlDocument.cpp -o $(outtmp)/xmldocument.o	
 
 confreader :$(textDir)/ConfReader.cpp
 	$(gcc) $(cflags) -c $(textDir)/ConfReader.cpp -o $(outtmp)/confreader.o
@@ -66,3 +78,6 @@ yamlvalue :$(textDir)/YamlValue.cpp
 
 yamlarray :$(textDir)/YamlArray.cpp
 	$(gcc) $(cflags) -c $(textDir)/YamlArray.cpp -o $(outtmp)/yamlarray.o
+
+stringformat :$(textDir)/StringFormat.cpp
+	$(gcc) $(cflags) -c $(textDir)/StringFormat.cpp -o $(outtmp)/stringformat.o

@@ -19,6 +19,9 @@ int _FileInputStream::read(ByteArray buff) {
     return fstream.gcount();
 }
 
+ByteArray _FileInputStream::readAll() {
+    //TODO
+}
 bool _FileInputStream::open() {
     fstream.open(mPath->toChars());
     return fstream.is_open();

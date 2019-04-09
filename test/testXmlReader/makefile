@@ -10,14 +10,10 @@ cflags = -fpic \
 		-I ../../io/include \
 		-I ../../util/include/ \
 		-I ../../net/include \
-		-I ../../security/include \
 		-I ../../external/iniparser/include \
 		-I ../../external/jsoncpp/include \
 		-I ../../external/rapidxml/include \
 		-I ../../external/zlib/include \
-		-I ../../external/ccl/include \
-		-I ../../external/yaml/include \
-		-I ../../external/crc32/include \
 		-g \
 
 external = -lpthread \
@@ -26,7 +22,7 @@ external = -lpthread \
 
 files =
 link =
-libname	= booleanTest
+libname	= integerTest
 
 everything : $(libname)
 

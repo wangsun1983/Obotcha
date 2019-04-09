@@ -18,6 +18,8 @@ public:
 
     bool equals(bool p);
 
+    bool equals(_Boolean *p);
+
     ~_Boolean();
 
 private:

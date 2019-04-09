@@ -12,6 +12,8 @@ using namespace rapidxml;
 
 namespace obotcha {
 
+class _XmlDocument;
+
 DECLARE_SIMPLE_CLASS(XmlReader) {
 
 public:
@@ -21,12 +23,12 @@ public:
 
     _XmlReader(File file);
 
-    XmlValue parse();
+    sp<_XmlDocument> parse();
 
 private:
     File xmlfile;
 
-    xml_document<>  doc;
+    //sp<_XmlDocument> doc;
 };
 
 }

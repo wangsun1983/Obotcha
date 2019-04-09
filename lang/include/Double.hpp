@@ -19,6 +19,8 @@ public:
     
     bool equals(Double p);
 
+    bool equals(_Double *p);
+
     ~_Double();
 
 private:

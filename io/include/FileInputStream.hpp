@@ -25,6 +25,8 @@ public:
 
     int read(ByteArray buffer);
 
+    ByteArray readAll();
+
     bool open();
 
     void close();
