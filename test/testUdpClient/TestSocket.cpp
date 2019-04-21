@@ -1,7 +1,9 @@
-#include "ServerSocket.hpp"
+
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "Socket.hpp"
+#include "UdpClient.hpp"
+
+using namespace obotcha;
 
 DECLARE_SIMPLE_CLASS(ClientServer) IMPLEMENTS(SocketListener) {
 public:
@@ -19,9 +21,9 @@ public:
 };
 
 int main() {
-  Socket sock = createSocket("192.168.1.8",8888,createClientServer());
-  sock->start();
-  while(1) {
-
-  }
+  UdpClient client = createUdpClient("192.168.1.10",1234,createClientServer());
+  client->start();
+  //while(1) {
+//
+  //}
 }

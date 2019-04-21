@@ -6,40 +6,97 @@
 #include "Integer.hpp"
 #include "StrongPointer.hpp"
 
+using namespace obotcha;
 
 int main() {
 
   printf("---[Integer Test Start]--- \n");
-  //Test Construct
-  Integer t0 = createInteger(100);
-  Integer t0_1 = createInteger(t0);
-  if(t0 == t0_1){
-    printf("integer construct test1-------[OK] \n");
-  } else {
-    printf("integer construct test1-------[FAIL] \n");
+  //_Integer(int v);
+  while(1) {
+      Integer v1 = createInteger(10);
+      if(v1->toValue() != 10){
+          printf("Integer construct test1-------[FAIL] \n");
+          break;
+      }
+
+      printf("Boolean construct test-------[OK] \n");
+      break;
   }
 
-  //Test bool equals(Integer p);
-  Integer t1 = createInteger(10);
-  Integer t2 = createInteger(10);
+  //  _Integer(Integer v);
+  while(1) {
+    Integer v1 = createInteger(11);
+    Integer v2 = createInteger(v1);
+    if(v2->toValue() != 11) {
+      printf("Integer construct test3-------[FAIL] \n");
+      break;
+    }
 
-  if(t1->equals(t2)) {
-    printf("integer equal test1-------[OK] \n");
-  } else {
-    printf("integer equal test1-------[FAIL] \n");
+    Integer v3;
+    Integer v4 = createInteger(v3);
+    if(v4->toValue() != 0) {
+      printf("Integer construct test4-------[FAIL] \n");
+      break;
+    }
+
+    printf("Integer construct test5-------[OK] \n");
+    break;
   }
 
-  if(t1 == t2) {
-    printf("integer operator == test1-------[OK] \n");
-  } else {
-    printf("integer operator == test1-------[FAIL] \n");
+  //int toValue();
+  while(1) {
+    Integer v1 = createInteger(11);
+    Integer v2 = createInteger(v1);
+    if(v2->toValue() != 11) {
+      printf("Integer toValue test1-------[FAIL] \n");
+      break;
+    }
+
+    printf("Integer toValue test1-------[OK] \n");
+    break;
   }
 
-  //Test bool equals(int p);
-  Integer t3 = createInteger(1);
-  if(t3->equals(1)) {
-    printf("integer equal test2-------[OK] \n");
-  } else {
-    printf("integer equal test2-------[FAIL] \n");
+  //bool equals(Integer p);
+  while(1) {
+    Integer v1 = createInteger(11);
+    Integer v2 = createInteger(11);
+    if(!v1->equals(v2)) {
+      printf("Integer equals test1-------[FAIL] \n");
+      break;
+    }
+
+    if(v1->equals(nullptr)) {
+      printf("Integer equals test2-------[FAIL] \n");
+      break;
+    }
+
+    printf("Integer equals test3-------[OK] \n");
+    break;
   }
+
+  //bool equals(int p);
+  while(1) {
+    Integer v1 = createInteger(11);
+    if(!v1->equals(11)) {
+      printf("Integer equals test4-------[FAIL] \n");
+      break;
+    }
+
+    printf("Integer equals test5-------[OK] \n");
+    break;
+  }
+
+  //==
+  while(1) {
+    Integer v1 = createInteger(12);
+    Integer v2 = createInteger(12);
+    if(v1 != v2) {
+      printf("Integer [==] test1-------[FAIL] \n");
+      break;
+    }
+
+    printf("Integer [==] test1-------[OK] \n");
+    break;
+  }
+
 }

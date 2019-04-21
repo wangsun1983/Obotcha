@@ -1,0 +1,8 @@
+[lan]
+testBoolean --Complete--
+testInteger --Complete--
+testByteArray --Complete--
+testFloat --Complete--
+testString --Complete--
+testLong 
+

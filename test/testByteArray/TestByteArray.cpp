@@ -104,7 +104,7 @@ int main() {
     }
 
     while(1) {
-        //test size
+        //test resize
         char *v = (char *)malloc(16);
         memset(v,8,16);
         ByteArray array1 = createByteArray(v,16);
@@ -117,8 +117,8 @@ int main() {
 
         char *p2 = array1->toValue();
         bool isOk = true;
-        for(int index = 0;index++;index<32) {
-            if(p2[index] != 0) {
+        for(int index = 0;index++;index<16) {
+            if(p2[index] != 8) {
               printf("ByteArray resize test2 -------[FAIL] \n");
               isOk = false;
               break;
@@ -126,7 +126,7 @@ int main() {
         }
 
         if(isOk) {
-            printf("ByteArray size -------[OK] \n");
+            printf("ByteArray resize -------[OK] \n");
         }
         break;
     }
