@@ -42,14 +42,23 @@ int _ByteArray::size() {
     return _size;
 }
 
-void _ByteArray::resize(int size) {
-    if(buff != nullptr) {
-        free(buff);
+bool _ByteArray::resize(int size) {
+    if(size <= _size) {
+        return false;
     }
+
+    char *toFree = buff;
 
     buff = (char *)malloc(size);
     memset(buff,0,size);
+    memcpy(buff,toFree,_size);
     _size = size;
+
+    if(toFree != nullptr) {
+        free(toFree);
+    }
+
+    return true;
 }
 
 bool _ByteArray::isEmpty() {

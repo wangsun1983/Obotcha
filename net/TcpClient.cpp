@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include <memory.h>
 
-#include "Socket.hpp"
+#include "TcpClient.hpp"
 
 #define EPOLL_SIZE 5000
 
@@ -15,7 +15,7 @@
 
 namespace obotcha {
 
-_Socket::_Socket(String ip,int port,SocketListener l) {
+_TcpClient::_TcpClient(String ip,int port,SocketListener l) {
 
     serverAddr.sin_family = PF_INET;
     serverAddr.sin_port = htons(port);
@@ -27,7 +27,7 @@ _Socket::_Socket(String ip,int port,SocketListener l) {
     listener = l;
 }
 
-bool _Socket::init() {
+bool _TcpClient::init() {
    
     sock = socket(PF_INET, SOCK_STREAM, 0);
     if(sock < 0) {
@@ -47,7 +47,7 @@ bool _Socket::init() {
     addfd(epfd, sock, true);
 }
 
-void _Socket::addfd(int epollfd, int fd, bool enable_et) {
+void _TcpClient::addfd(int epollfd, int fd, bool enable_et) {
     struct epoll_event ev;
     ev.data.fd = fd;
     ev.events = EPOLLIN;
@@ -58,7 +58,7 @@ void _Socket::addfd(int epollfd, int fd, bool enable_et) {
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
 }
 
-void _Socket::start() {
+void _TcpClient::start() {
     
     init();
 

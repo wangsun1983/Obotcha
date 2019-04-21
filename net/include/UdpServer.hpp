@@ -1,5 +1,5 @@
-#ifndef __SERVER_SOCKET_HPP__
-#define __SERVER_SOCKET_HPP__
+#ifndef __UDP_SERVER_HPP__
+#define __UDP_SERVER_HPP__
 
 #include <netinet/in.h>
 
@@ -13,11 +13,11 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ServerSocket) {
+DECLARE_SIMPLE_CLASS(UdpServer) {
 public:
-    _ServerSocket(int port,SocketListener l);
+    _UdpServer(int port,SocketListener l);
 
-    _ServerSocket(String ip,int port,SocketListener l);
+    _UdpServer(String ip,int port,SocketListener l);
 
     bool start();
 

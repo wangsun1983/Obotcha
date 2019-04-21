@@ -19,6 +19,8 @@ public:
     bool equals(Long p);
 
     bool equals(long p);
+
+    bool equals(_Long *p);
 /*
     Integer valueOf(String v);
 */

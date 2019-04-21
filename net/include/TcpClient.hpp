@@ -1,5 +1,5 @@
-#ifndef __SOCKET_HPP__
-#define __SOCKET_HPP__
+#ifndef __TCP_CLIENT_HPP__
+#define __TCP_CLIENT_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -9,9 +9,9 @@
 #include "SocketListener.hpp"
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Socket) {
+DECLARE_SIMPLE_CLASS(TcpClient) {
 public:
-    _Socket(String ip,int port,SocketListener listener);
+    _TcpClient(String ip,int port,SocketListener listener);
 
     void start();
 

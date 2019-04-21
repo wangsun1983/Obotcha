@@ -2,6 +2,7 @@
 #define __STRING_HPP__
 
 #include <string>
+#include <iostream>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -15,6 +16,8 @@
 using namespace std;
 
 #define const_str(Y) createString(Y)
+
+//#define DEBUG_STRING_MEMORY_LEAK
 
 namespace obotcha {
 
@@ -31,7 +34,7 @@ public:
 
     _String(const char *v);
 
-    _String(char *v,int start,int length);
+    _String(const char *v,int start,int length);
 
     _String(Integer v);
 
@@ -68,13 +71,15 @@ public:
 
     String trim();
 
+    String trimAll();
+
     int size();
 
     int indexOf(String v);
 
-    void append(String s);
+    String append(String s);
 
-    void append(const char *p);
+    String append(const char *p);
 
     Integer toInteger();
 
@@ -108,7 +113,7 @@ public:
 
     static String valueOf(float v);
 
-    static String valueOf(char *p);
+    static String valueOf(const char *p);
 
     bool equals(String s);
 
@@ -124,13 +129,13 @@ public:
 
     bool equalsIgnoreCase(String str);
 
-    bool indexOfIgnoreCase(String str);
+    int indexOfIgnoreCase(String str);
 
     bool containsIgnoreCase(String val);
 
     bool isEmpty();
 
-    bool matches(String regex);
+    bool matches(String regex);//Not Test
     
     sp<_String> replaceFirst(String regex,String v);
 
@@ -144,14 +149,30 @@ public:
 
 private:
     std::string *m_str;
+
+    bool isIntNumber(const char *p,int size);
+
+    bool isDoubleNumber(const char *p,int size);
+
+    bool isFloatNumber(const char *p,int size);
+
+#ifdef DEBUG_STRING_MEMORY_LEAK
+    int stringId;
+#endif    
 };
 
 template <typename T>
 void _String::split(String v,T t) {
     int index = 0;
     int last = 0;
+
     index = m_str->find_first_of(*v->m_str,last);
-    while(index != std::string::npos) {
+
+    if(index == -1) {
+        return;
+    }
+
+    while(index != -1) {
         std::string *str = new std::string(m_str->substr(last,index-last));
         t->add(createString(str));
         last = index+1;

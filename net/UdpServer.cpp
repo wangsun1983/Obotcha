@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include <memory.h>
 
-#include "ServerSocket.hpp"
+#include "UdpServer.hpp"
 
 //https://blog.csdn.net/lewis1993_cpapa/article/details/80589717
 #define EPOLL_SIZE 5000
@@ -16,12 +16,12 @@
 
 namespace obotcha {
 
-_ServerSocket::_ServerSocket(int port,SocketListener l) {
+_UdpServer::_UdpServer(int port,SocketListener l) {
     //TODO
 }
 
-_ServerSocket::_ServerSocket(String ip,int port,SocketListener l) {
-    serverAddr.sin_family = PF_INET;
+_UdpServer::_UdpServer(String ip,int port,SocketListener l) {
+    serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port);
     serverAddr.sin_addr.s_addr = inet_addr(ip->toChars());
 
@@ -31,32 +31,43 @@ _ServerSocket::_ServerSocket(String ip,int port,SocketListener l) {
     mListener = l;
 }
 
-bool _ServerSocket::connect() {
-    int opt = 1;
-    sock = socket(AF_INET, SOCK_STREAM, 0);
-    setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
+bool _UdpServer::connect() {
+    //int opt = 1;
+    sock = socket(AF_INET, SOCK_DGRAM, 0);
+    //setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
+    int opt = SO_REUSEADDR;
+    setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,&opt,sizeof(opt));
 
-    if( bind(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
-        printf("bind server faild , error = %s \n", strerror(errno));
-        return false;
-    }
-
-    int ret = listen(sock, 5);
-    if(ret < 0) {
-        return false;
-    }
-
+    //if (fcntl(sockfd, F_SETFL, fcntl(sockfd, F_GETFD, 0)|O_NONBLOCK) == -1) {
+    //    printf("fnctl failed \n");
+    //    return false;
+    //}
     epfd = epoll_create(EPOLL_SIZE);
     if(epfd < 0) {
+        printf("UdpServer create epool fail \n");
         return false;
     }
 
     //add epoll
     addfd(epfd,sock,true);
+
+    if(bind(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
+        printf("bind server faild , error = %s \n", strerror(errno));
+        return false;
+    }
+
+    //int ret = listen(sock, 5);
+    //if(ret < 0) {
+    //    printf("UdpServer bind fail \n");
+    //    return false;
+    //}
+
+
+    
     return true;
 }
 
-void _ServerSocket::addfd(int epollfd, int fd, bool enable_et) {
+void _UdpServer::addfd(int epollfd, int fd, bool enable_et) {
     struct epoll_event ev;
     ev.data.fd = fd;
     ev.events = EPOLLIN;
@@ -67,18 +78,18 @@ void _ServerSocket::addfd(int epollfd, int fd, bool enable_et) {
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
 }
 
-bool _ServerSocket::start() {
+bool _UdpServer::start() {
     // epoll 事件队列
     static struct epoll_event events[EPOLL_SIZE];
-
+    printf("udpserver trace1 \n");
     if(!connect()) {
         return false;
     }
-
+    printf("udpserver trace2 \n");
     while(1) {
-
+        printf("udpserver trace3 \n");
         int epoll_events_count = epoll_wait(epfd, events, EPOLL_SIZE, -1);
- 
+        printf("udpserver trace3_1 \n");
         if(epoll_events_count < 0) {
             //TODO
             break;
@@ -115,7 +126,7 @@ bool _ServerSocket::start() {
     }
 }
 
-void _ServerSocket::close() {
+void _UdpServer::close() {
     //TODO
 }
 

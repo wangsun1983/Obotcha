@@ -9,7 +9,12 @@ _Integer::_Integer(int v) : val(v) {
 }
 
 _Integer::_Integer(Integer v) {
-    val = v->val;
+    if(v != nullptr) {
+        val = v->val;
+        return; 
+    }
+
+    val = 0;
 }
 
 int _Integer::toValue() {
@@ -17,6 +22,10 @@ int _Integer::toValue() {
 }
 
 bool _Integer::equals(Integer p) {
+    if(p == nullptr) {
+        return false;
+    }
+
     return val == p->val;
 }
 

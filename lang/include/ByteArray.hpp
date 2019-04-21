@@ -25,7 +25,7 @@ public:
 
     void clear();
 
-    void resize(int size);
+    bool resize(int size);
 
     bool isEmpty();
 
