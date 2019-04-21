@@ -13,9 +13,11 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(CountDownLatch) {
 public:
     _CountDownLatch(int v);
+    
     int countDown();
-    void await(long);
 
+    void await(long);
+    
 private:
     int count;
     Mutex mutex;

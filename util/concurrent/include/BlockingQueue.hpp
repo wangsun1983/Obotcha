@@ -50,6 +50,8 @@ public:
 
     inline void waitForEmpty();
 
+    inline void clear();
+
 private:
     vector<T> mQueue;
     int mCapacity;
@@ -91,10 +93,10 @@ void _BlockingQueue<T>::enQueueFirst(T val) {
 
     mQueue.insert(mQueue.begin(),val);
 
-    if(size == 0 || size == mCapacity) {
+    //if(size == 0 || size == mCapacity) {
         //pthread_cond_signal(&mDequeueCond);
         mDequeueCond->notify();
-    }
+    //}
 }
 
 template <typename T>
@@ -111,11 +113,11 @@ void _BlockingQueue<T>::enQueueLast(T val) {
     //printf("enqueuelast3 \n");
     mQueue.push_back(val);
 
-    if(size == 0 || size == mCapacity) {
+    //if(size == 0 || size == mCapacity) {
         //pthread_cond_wait(&mCond, &mMutex);
         //pthread_cond_signal(&mDequeueCond);
         mDequeueCond->notify();
-    }
+    //}
 }
 
 template <typename T>
@@ -168,23 +170,26 @@ void _BlockingQueue<T>::enQueueLast(float val) {
 
 template <typename T>
 T _BlockingQueue<T>::deQueueFirst() {
-    //printf("wangsl,deQueueFirst \n");
-    AutoMutex l(mMutex);
+    //printf("wangsl,deQueueFirst \n");    
+    T ret;
+    while(1) {
+        AutoMutex l(mMutex);
+        int size = mQueue.size();
+        //printf("wangsl,deQueueFirst1 \n");
+        if(size == 0) {
+            //pthread_cond_wait(&mDequeueCond, &mMutex);
+            //printf("wangsl,deQueueFirst2,mutex_t is %x \n",mMutex->getMutex_t());
+            mDequeueCond->wait(mMutex);
+            continue;
+        }
 
-    int size = mQueue.size();
-    //printf("wangsl,deQueueFirst1 \n");
-    if(size == 0) {
-        //pthread_cond_wait(&mDequeueCond, &mMutex);
-        //printf("wangsl,deQueueFirst2,mutex_t is %x \n",mMutex->getMutex_t());
-        mDequeueCond->wait(mMutex);
-    }
-
-    T ret = mQueue.at(0);
-    mQueue.erase(mQueue.begin());
-
-    if(size == mCapacity || size == 0) {
-        //pthread_cond_signal(&mEnqueueCond);
-        mEnqueueCond->notify();
+        ret = mQueue.at(0);
+        mQueue.erase(mQueue.begin());
+        //if(size == mCapacity || size == 0) {
+            //pthread_cond_signal(&mEnqueueCond);
+        //    mEnqueueCond->notify();
+        //}
+        break;
     }
 
     return ret;
@@ -192,20 +197,26 @@ T _BlockingQueue<T>::deQueueFirst() {
 
 template <typename T>
 T _BlockingQueue<T>::deQueueLast() {
-    AutoMutex l(mMutex);
-    int size = mQueue.size();
-    if(size == 0) {
-        //pthread_cond_wait(&mDequeueCond, &mMutex);
-        mDequeueCond->wait(mMutex);
-    }
 
-    //T ret = mQueue.pop_back();
-    T ret = mQueue.back();
-    mQueue.pop_back();
+    T ret;
+    while(1) {
+        AutoMutex l(mMutex);
+        int size = mQueue.size();
+        //printf("wangsl,deQueueFirst1 \n");
+        if(size == 0) {
+            //pthread_cond_wait(&mDequeueCond, &mMutex);
+            //printf("wangsl,deQueueFirst2,mutex_t is %x \n",mMutex->getMutex_t());
+            mDequeueCond->wait(mMutex);
+            continue;
+        }
 
-    if(size == mCapacity || size == 0) {
-        //pthread_cond_signal(&mEnqueueCond);
-        mEnqueueCond->notify();
+        ret = mQueue.back();
+        mQueue.pop_back();
+        //if(size == mCapacity || size == 0) {
+            //pthread_cond_signal(&mEnqueueCond);
+        //    mEnqueueCond->notify();
+        //}
+        break;
     }
 
     return ret;
@@ -215,6 +226,12 @@ template <typename T>
 int _BlockingQueue<T>::size() {
     AutoMutex l(mMutex);
     return mQueue.size();
+}
+
+template <typename T>
+void _BlockingQueue<T>::clear() {
+    AutoMutex l(mMutex);
+    mQueue.clear();
 }
 
 }

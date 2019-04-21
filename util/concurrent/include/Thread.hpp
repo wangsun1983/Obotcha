@@ -10,6 +10,7 @@
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "BlockingQueue.hpp"
+#include "String.hpp"
 
 using namespace std;
 
@@ -53,6 +54,8 @@ private:
 DECLARE_SIMPLE_CLASS(Thread) {
 
 public:
+    _Thread(String name,Runnable run);
+
 	_Thread(Runnable run);
 
     _Thread();
@@ -70,6 +73,10 @@ public:
     void exit();
 
     void setPriority(ThreadPriority priority);
+
+    String getName();
+
+    void setName(String name);
 
     Runnable getRunnable();
 
@@ -95,6 +102,8 @@ private:
     pthread_attr_t mThreadAttr;
 
     pthread_t mPthread;
+
+    String mName;
 };
 
 }

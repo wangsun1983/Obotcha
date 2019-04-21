@@ -99,8 +99,10 @@ String _ArrayList<String>::get(int index) {
 }
 
 int _ArrayList<String>::insert(int index,String val) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
     
     std::string str(val->getStdString());
@@ -108,9 +110,12 @@ int _ArrayList<String>::insert(int index,String val) {
 }
 
 int _ArrayList<String>::insert(int index,const char *s) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
+    
     
     std::string str(s);
     elements.insert(elements.begin() + index,str);
@@ -118,8 +123,10 @@ int _ArrayList<String>::insert(int index,const char *s) {
 }
 
 int _ArrayList<String>::insert(int index,const std::string s) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
     
     std::string str(s);
@@ -128,9 +135,12 @@ int _ArrayList<String>::insert(int index,const std::string s) {
 }
 
 int _ArrayList<String>::insert(int index,ArrayList<String> list) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
+    
 
     if(list != nullptr) {
         int size = list->elements.size(); 
@@ -142,8 +152,10 @@ int _ArrayList<String>::insert(int index,ArrayList<String> list) {
 }
 
 int _ArrayList<String>::insert(int index,ArrayList<String> list,int length) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     if(list != nullptr) {
@@ -336,7 +348,9 @@ Integer _ArrayList<Integer>::get(int index) {
 
 int _ArrayList<Integer>::insert(int index,Integer val) {
     if(index >= elements.size() || index < 0 || val == nullptr) {
-        return -1;
+        if(index != 0) {
+            return -1;
+        }
     }
     
     elements.insert(elements.begin() + index,val->toValue());
@@ -344,8 +358,10 @@ int _ArrayList<Integer>::insert(int index,Integer val) {
 }
 
 int _ArrayList<Integer>::insert(int index,int val) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
     
     elements.insert(elements.begin() + index,val);
@@ -354,7 +370,9 @@ int _ArrayList<Integer>::insert(int index,int val) {
 
 int _ArrayList<Integer>::insert(int index,ArrayList<Integer> list) {
     if(index >= elements.size() || index < 0) {
-        return -1;
+        if(index != 0) {
+            return -1;
+        }
     }
     
     if(list != nullptr) {
@@ -369,7 +387,9 @@ int _ArrayList<Integer>::insert(int index,ArrayList<Integer> list) {
 
 int _ArrayList<Integer>::insert(int index,ArrayList<Integer> list,int length) {
     if(index >= elements.size() || index < 0) {
-        return -1;
+        if(index != 0) {
+            return -1;
+        }
     }
     
     if(list != nullptr) {
@@ -554,8 +574,10 @@ Boolean _ArrayList<Boolean>::get(int index) {
 }
 
 int _ArrayList<Boolean>::insert(int index,Boolean val) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     elements.insert(elements.begin() + index,val->toValue());
@@ -563,8 +585,10 @@ int _ArrayList<Boolean>::insert(int index,Boolean val) {
 }
 
 int _ArrayList<Boolean>::insert(int index,bool val) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     elements.insert(elements.begin() + index,val);
@@ -572,8 +596,10 @@ int _ArrayList<Boolean>::insert(int index,bool val) {
 }
 
 int _ArrayList<Boolean>::insert(int index,ArrayList<Boolean> list) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size()|| index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     if(list != nullptr) {
@@ -587,8 +613,10 @@ int _ArrayList<Boolean>::insert(int index,ArrayList<Boolean> list) {
 }
 
 int _ArrayList<Boolean>::insert(int index,ArrayList<Boolean> list,int length) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size()|| index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     if(list != nullptr) {
@@ -764,8 +792,10 @@ Float _ArrayList<Float>::get(int index) {
 }
 
 int _ArrayList<Float>::insert(int index,Float val) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     elements.insert(elements.begin() + index,val->toValue());
@@ -773,8 +803,10 @@ int _ArrayList<Float>::insert(int index,Float val) {
 }
 
 int _ArrayList<Float>::insert(int index,float val) {
-    if(index >= elements.size()) {
-       return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     elements.insert(elements.begin() + index,val);
@@ -782,8 +814,10 @@ int _ArrayList<Float>::insert(int index,float val) {
 }
 
 int _ArrayList<Float>::insert(int index,ArrayList<Float> list) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     if(list != nullptr) {
@@ -797,8 +831,10 @@ int _ArrayList<Float>::insert(int index,ArrayList<Float> list) {
 }
 
 int _ArrayList<Float>::insert(int index,ArrayList<Float> list,int length) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     if(list != nullptr) {
@@ -974,8 +1010,10 @@ Double _ArrayList<Double>::get(int index) {
 }
 
 int _ArrayList<Double>::insert(int index,Double val) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     elements.insert(elements.begin() + index,val->toValue());
@@ -983,8 +1021,10 @@ int _ArrayList<Double>::insert(int index,Double val) {
 }
 
 int _ArrayList<Double>::insert(int index,double val) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     elements.insert(elements.begin() + index,val);
@@ -992,8 +1032,10 @@ int _ArrayList<Double>::insert(int index,double val) {
 }
 
 int _ArrayList<Double>::insert(int index,ArrayList<Double> list) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     if(list != nullptr) {
@@ -1007,8 +1049,10 @@ int _ArrayList<Double>::insert(int index,ArrayList<Double> list) {
 }
 
 int _ArrayList<Double>::insert(int index,ArrayList<Double> list,int length) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     if(list != nullptr) {
@@ -1185,8 +1229,10 @@ Long _ArrayList<Long>::get(int index) {
 }
 
 int _ArrayList<Long>::insert(int index,Long val) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     elements.insert(elements.begin() + index,val->toValue());
@@ -1194,8 +1240,10 @@ int _ArrayList<Long>::insert(int index,Long val) {
 }
 
 int _ArrayList<Long>::insert(int index,long val) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     elements.insert(elements.begin() + index,val);
@@ -1203,8 +1251,10 @@ int _ArrayList<Long>::insert(int index,long val) {
 }
 
 int _ArrayList<Long>::insert(int index,ArrayList<Long> list) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     if(list != nullptr) {
@@ -1218,8 +1268,10 @@ int _ArrayList<Long>::insert(int index,ArrayList<Long> list) {
 }
 
 int _ArrayList<Long>::insert(int index,ArrayList<Long> list,int length) {
-    if(index >= elements.size()) {
-        return -1;
+    if(index >= elements.size() || index < 0) {
+        if(index != 0) {
+            return -1;
+        }
     }
 
     if(list != nullptr) {

@@ -71,6 +71,20 @@ _Thread::_Thread(Runnable run) {
 	mRunnable = run;
 }
 
+_Thread::_Thread(String name,Runnable run) {
+    mName = name;
+    mRecyle->start();
+    mRunnable = run;
+}
+
+void _Thread::setName(String name) {
+    mName = name;
+}
+
+String _Thread::getName() {
+    return mName;
+}
+
 _Thread::_Thread() {
     //Nothing
 }

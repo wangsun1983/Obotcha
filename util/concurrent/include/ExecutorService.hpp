@@ -1,96 +1,43 @@
-#ifndef __EXCUTE_SERVICE_H__
-#define __EXCUTE_SERVICE_H__
+#ifndef __EXECUTOR_SERVICE_H__
+#define __EXECUTOR_SERVICE_H__
 
-#include <vector>
+#include <pthread.h>
+#include <map>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "Runnable.hpp"
-#include "BlockingQueue.hpp"
-#include "ConcurrentQueue.hpp"
-#include "Thread.hpp"
-#include "AutoMutex.hpp"
-#include "Condition.hpp"
-
-using namespace std;
+#include "Executor.hpp"
+#include "ArrayList.hpp"
+#include "Future.hpp"
+#include "Executor.hpp"
+#include "Callable.hpp"
 
 namespace obotcha {
-enum State {
-    idleState,
-    busyState,
-    illegalState,
-};
 
-DECLARE_SIMPLE_CLASS(ExecutorServiceHandler) IMPLEMENTS(Runnable) {
+DECLARE_SIMPLE_CLASS(ExecutorService) IMPLEMENTS(Executor) {
 
 public:
+    virtual void execute(Runnable command) = 0;
 
-    _ExecutorServiceHandler(BlockingQueue<Runnable> pool);
-    
-    Thread mThread;
-    
-    bool isIdle();
+    //can not submit runnable,but we need wati all the 
+    //runnable function complete
+    virtual void shutdown() = 0;
 
-    void run();
-    
-    void stop();
+    //close all thread directly
+    virtual void shutdownNow() = 0;
 
-    void waitForIdle();
+    //if this executor has been shut down
+    virtual bool isShutdown() = 0;
 
-private:
-    BlockingQueue<Runnable> mPool;
+    //if all tasks have completed following shut down
+    virtual bool isTerminated() = 0;
 
-    int state;
+    //blocks until all tasks have completed execution after a shutdown
+    virtual bool awaitTermination(long timeout) = 0;
 
-    bool mIdleWait;
-
-    //pthread_mutex_t wiatIdleMutex;
-    //pthread_cond_t wiatIdleCond;
-    Mutex mStateMutex;
-
-    Condition mWaitCond;
-
-    bool isWaitIdle;
-
-    mutable volatile bool mStop;
-};
-
-
-DECLARE_SIMPLE_CLASS(ExecutorService) {
-
-public:
-    enum ExecuteResult {
-        success,
-        failShutDown,
-        failUnknown
-    };
-
-	_ExecutorService(int size);
-
-	_ExecutorService();
-
-    int execute(Runnable runnable);
-
-    void shutdown();
-
-    //wait for all the task complete.
-    void awaitTermination();
-
-    void awaitTermination(long millseconds);
-
-    ~_ExecutorService() {
-    }
-
-private:
-    BlockingQueue<Runnable> mPool;
-    
-    ConcurrentQueue<ExecutorServiceHandler> mHandlers;
-
-    bool isShutDown;
-
-    bool isDynamic;
-
-    void init(int size,bool isDyn);
+    //virtual Future submit(Runnable task) = 0;
+    virtual Future submit(Runnable task) = 0;
 };
 
 }

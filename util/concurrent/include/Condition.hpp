@@ -14,9 +14,13 @@ DECLARE_SIMPLE_CLASS(Condition) {
 
 public:
     _Condition();
+
     void wait(Mutex m);
+    
     void wait(Mutex m,long int millseconds);
+    
     void notify();
+    
     void notifyAll();
 
 private:

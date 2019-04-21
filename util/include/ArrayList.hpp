@@ -109,9 +109,14 @@ public:
     }
 
     inline int insert(int index,T val) {
+        //printf("insert index is %d,elements.size() is %d \n",index,elements.size());
         if(index >= elements.size() || index < 0) {
-            return -1;
+            if(index != 0) {
+                return -1;    
+            }
         }
+
+        printf("insert trace \n");
 
         elements.insert(elements.begin() + index,val);
         return 0;
@@ -119,7 +124,9 @@ public:
 
     inline int insert(int index,ArrayList<T> list) {
         if(index >= elements.size() || index < 0) {
-            return -1;
+            if(index != 0) {
+                return -1;
+            }
         }
 
         if(list != nullptr) {
@@ -130,7 +137,9 @@ public:
 
     inline int insert(int index,ArrayList<T> list,int length) {
         if(index >= elements.size() || length <= 0 || index < 0) {
-            return -1;
+            if(index != 0) {
+                return -1;
+            }
         }
 
         if(list != nullptr) {

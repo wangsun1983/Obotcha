@@ -13,7 +13,6 @@ _TimeTask::_TimeTask(Runnable runnable,long int interval) {
     millseconds = st(System)::currentTimeMillis() + interval;
 }
 
-
 //---------------TimeThread---------------//
 _TimeThread::_TimeThread() {
     mDatas = createArrayList<TimeTask>();
@@ -22,7 +21,7 @@ _TimeThread::_TimeThread() {
     mCondLock = createMutex();
     mCond = createCondition();
 
-    mExecutorService = createExecutorService();
+    mExecutorService = createThreadPoolExecutor();
 }
 
 void _TimeThread::onUpdate() {
