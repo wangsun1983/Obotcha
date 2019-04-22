@@ -5,6 +5,11 @@ namespace obotcha {
 _Long::_Long(long v) : val(v) {}
 
 _Long::_Long(Long v) {
+    if(v == nullptr) {
+        val = 0;
+        return;
+    }
+    
     val = v->val;
 }
     
@@ -13,6 +18,10 @@ long _Long::toValue() {
 }
 
 bool _Long::equals(Long p) {
+    if(p == nullptr) {
+        return false;
+    }
+
     return val == p->val;
 }
 

@@ -1,8 +1,9 @@
-[lan]
+[lang]
 testBoolean --Complete--
 testInteger --Complete--
 testByteArray --Complete--
 testFloat --Complete--
 testString --Complete--
-testLong 
+testLong --Complete--
+testSystem
 
