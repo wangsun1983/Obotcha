@@ -6,6 +6,8 @@ link += inetaddress \
 		udpclient \
 		udpserver \
 		socketpacket \
+		localsocketclient \
+		localsocketserver \
 
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/tcpclient.o \
@@ -13,6 +15,8 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/udpclient.o \
 		$(outtmp)/udpserver.o \
 		$(outtmp)/socketpacket.o \
+		$(outtmp)/localsocketclient.o \
+		$(outtmp)/localsocketserver.o \
 
 inetaddress :$(netDir)/InetAddress.cpp
 	$(gcc) $(cflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
@@ -32,3 +36,8 @@ udpserver :$(netDir)/UdpServer.cpp
 socketpacket :$(netDir)/SocketPacket.cpp
 	$(gcc) $(cflags) -c $(netDir)/SocketPacket.cpp -o $(outtmp)/socketpacket.o $(external)		
 
+localsocketclient :$(netDir)/LocalSocketClient.cpp
+	$(gcc) $(cflags) -c $(netDir)/LocalSocketClient.cpp -o $(outtmp)/localsocketclient.o $(external)
+
+localsocketserver :$(netDir)/LocalSocketServer.cpp
+	$(gcc) $(cflags) -c $(netDir)/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)			

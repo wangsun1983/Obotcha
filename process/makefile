@@ -3,14 +3,16 @@ processDir = process
 link += pipe \
 		fifopipe \
 		posixmq \
-		localsocketclient \
-		localsocketserver \
+		posixsem \
+		posixanonymoussem \
+		posixsharememory \
 	
 objs += $(outtmp)/pipe.o \
 		$(outtmp)/fifopipe.o \
 		$(outtmp)/posixmq.o \
-		$(outtmp)/localsocketclient.o \
-		$(outtmp)/localsocketserver.o \
+		$(outtmp)/posixsem.o \
+		$(outtmp)/posixanonymoussem.o \
+		$(outtmp)/posixsharememory.o \
 	
 pipe :$(processDir)/Pipe.cpp
 	$(gcc) $(cflags) -c $(processDir)/Pipe.cpp -o $(outtmp)/pipe.o 
@@ -21,9 +23,12 @@ fifopipe :$(processDir)/FifoPipe.cpp
 posixmq :$(processDir)/PosixMq.cpp
 	$(gcc) $(cflags) -c $(processDir)/PosixMq.cpp -o $(outtmp)/posixmq.o
 
-localsocketclient :$(processDir)/LocalSocketClient.cpp
-	$(gcc) $(cflags) -c $(processDir)/LocalSocketClient.cpp -o $(outtmp)/localsocketclient.o 	
+posixsem :$(processDir)/PosixSem.cpp
+	$(gcc) $(cflags) -c $(processDir)/PosixSem.cpp -o $(outtmp)/posixsem.o
 
-localsocketserver :$(processDir)/LocalSocketServer.cpp
-	$(gcc) $(cflags) -c $(processDir)/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o 	
+posixanonymoussem :$(processDir)/PosixAnonymousSem.cpp
+	$(gcc) $(cflags) -c $(processDir)/PosixAnonymousSem.cpp -o $(outtmp)/posixanonymoussem.o
+
+posixsharememory :$(processDir)/PosixShareMemory.cpp
+	$(gcc) $(cflags) -c $(processDir)/PosixShareMemory.cpp -o $(outtmp)/posixsharememory.o
 

@@ -1,6 +1,9 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
 
 #include "FifoPipe.hpp"
 
@@ -13,25 +16,20 @@ _FifoPipe::_FifoPipe(String name,int type) {
 }
 
 bool _FifoPipe::init() {
-    String tempFolder = "/tmp/";
-    String fifoPath = tempFolder->append(mPipeName);
-
-    if(access(fifoPath->toChars(),F_OK) != 0){
-        int err = mkfifo(fifoPath->toChars(),0777);
+    if(access(mPipeName->toChars(),F_OK) != 0){
+        int err = mkfifo(mPipeName->toChars(),S_IFIFO|0666);
         if(err != 0){
             return false;
         }
     }
 
-    int fifoId = -1;
-
     switch(mType) {
-        case WritePipe:
-            fifoId = open(fifoPath->toChars(),O_WRONLY);
+        case FifoWritePipe:
+            fifoId = open(mPipeName->toChars(),O_WRONLY);
         break;
 
-        case ReadPipe:
-            fifoId = open(fifoPath->toChars(),O_WRONLY);
+        case FifoReadPipe:
+            fifoId = open(mPipeName->toChars(),O_RDONLY);
         break;
     }
 
@@ -39,8 +37,8 @@ bool _FifoPipe::init() {
     return isCreated;
 }
 
-bool _FifoPipe::writeTo(int type,ByteArray data) {
-    if(!isCreated || mType == ReadPipe) {
+bool _FifoPipe::writeTo(ByteArray data) {
+    if(!isCreated || mType == FifoReadPipe) {
         return false;
     }
 
@@ -49,11 +47,10 @@ bool _FifoPipe::writeTo(int type,ByteArray data) {
     return (result != -1);
 }
 
-int _FifoPipe::readFrom(int type,ByteArray buff) {
-    if(!isCreated || mType == WritePipe) {
+int _FifoPipe::readFrom(ByteArray buff) {
+    if(!isCreated || mType == FifoWritePipe) {
         return false;
     }
-
     int res = read(fifoId, buff->toValue(), buff->size());
     return res;
 }
@@ -61,6 +58,7 @@ int _FifoPipe::readFrom(int type,ByteArray buff) {
 _FifoPipe::~_FifoPipe() {
     if(fifoId != -1) {
         close(fifoId);
+        unlink(mPipeName->toChars());
     }
 }
 

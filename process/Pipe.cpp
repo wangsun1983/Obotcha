@@ -11,7 +11,7 @@ _Pipe::_Pipe() {
 
 bool _Pipe::init() {
     int result = pipe(pipeFd);
-    isCreated =  (result != -1);
+    isCreated = (result != -1);
     return isCreated;
 }
 

@@ -14,8 +14,8 @@
 namespace obotcha {
 
 enum PipeType {
-    FirstPipe = 0,
-    SecondPipe
+    ReadPipe = 0,
+    WritePipe
 };
 
 DECLARE_SIMPLE_CLASS(Pipe) {

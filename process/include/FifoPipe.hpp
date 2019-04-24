@@ -14,9 +14,10 @@
 namespace obotcha {
 
 enum FifoPipeType {
-    WritePipe = 0,
-    ReadPipe
+    FifoReadPipe = 0,
+    FifoWritePipe
 };
+
 
 DECLARE_SIMPLE_CLASS(FifoPipe) {
 public:
@@ -24,9 +25,9 @@ public:
 
     bool init();
 
-    bool writeTo(int type,ByteArray data);
+    bool writeTo(ByteArray data);
 
-    int readFrom(int type,ByteArray buff);
+    int readFrom(ByteArray buff);
 
     ~_FifoPipe();
 

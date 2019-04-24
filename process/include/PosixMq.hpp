@@ -27,9 +27,16 @@ enum PosixMqPriority {
     PosixMqPriortyUrgent
 };
 
+#define DEFAULT_MQ_MSG_SIZE 1024*4
+#define DEFAULT_MQ_MSG_NUMS 8
+
 DECLARE_SIMPLE_CLASS(PosixMq) {
 public:
-    _PosixMq(String,int);
+    _PosixMq(String name,int type);
+
+    _PosixMq(String name,int type,int msgsize);
+
+    _PosixMq(String name,int type,int msgsize,int maxmsgs);
 
     bool init();
 
@@ -43,6 +50,8 @@ public:
 
 private:
 
+    void initParam(String name,int type,int msgsize,int maxmsgs);
+
     mqd_t mQid;
 
     bool isCreated;
@@ -50,6 +59,10 @@ private:
     String mQName;
 
     int mType;
+
+    int mMsgSize;
+
+    int mMaxMsgs;
    
 };
 
