@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <errno.h>
+#include <pthread.h>
 
 #include "Condition.hpp"
 #include "Object.hpp"
@@ -15,7 +17,7 @@ void _Condition::wait(Mutex m) {
     pthread_cond_wait(&cond_t,mutex_t);
 }
 
-void _Condition::wait(Mutex m,long int millseconds) {
+int _Condition::wait(Mutex m,long int millseconds) {
     struct timespec abstime;
     struct timeval now;
     
@@ -26,7 +28,12 @@ void _Condition::wait(Mutex m,long int millseconds) {
 
     pthread_mutex_t* mutex_t = m->getMutex_t();
 
-    pthread_cond_timedwait(&cond_t,mutex_t,&abstime);
+    int ret = pthread_cond_timedwait(&cond_t,mutex_t,&abstime);
+    if(ret == ETIMEDOUT) {
+        return NotifyByTimeout;
+    }
+
+    return NotifyByThread;
 }
 
 void _Condition::notify() {

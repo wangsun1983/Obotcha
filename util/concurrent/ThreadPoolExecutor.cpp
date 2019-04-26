@@ -27,7 +27,7 @@ _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask>
 
 void _ThreadPoolExecutorHandler::forceStop() {
     mThread->exit();
-    mPool->clear();
+    //mPool->clear();
 }
 
 void _ThreadPoolExecutorHandler::run() {
@@ -77,7 +77,7 @@ void _ThreadPoolExecutorHandler::waitForIdle() {
 
 void _ThreadPoolExecutorHandler::stop() {
     mStop = true;
-    mPool->clear();
+    //mPool->clear();
 }
 
 bool _ThreadPoolExecutorHandler::isIdle() {
@@ -131,6 +131,8 @@ void _ThreadPoolExecutor::shutdown() {
     for(int i = 0;i < size;i++) {
         mHandlers->get(i)->stop();
     }
+
+    mPool->clear();
 }
 
 void _ThreadPoolExecutor::shutdownNow() {
@@ -139,6 +141,8 @@ void _ThreadPoolExecutor::shutdownNow() {
     for(int i = 0;i < size;i++) {
         mHandlers->get(i)->forceStop();
     }
+
+    mPool->clear();
 
     mIsTerminated = true;
 }

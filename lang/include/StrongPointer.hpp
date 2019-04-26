@@ -178,6 +178,8 @@ public:
     COMPARE(>=)
 
     void set_pointer(T* ptr);
+
+    void remove_pointer();
     
     T* get_pointer();
 
@@ -312,6 +314,15 @@ void sp<T>::set_pointer(T* ptr) {
     
     m_ptr = ptr;
     m_ptr->incStrong(0);
+}
+
+template<typename T>
+void sp<T>::remove_pointer() {
+    if(m_ptr) {
+        if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
+            delete static_cast<const T*>(m_ptr);
+        }
+    }
 }
 
 template<typename T>

@@ -3,6 +3,7 @@ concurrentDir = ./util/concurrent
 link += condition \
 	scheduledthreadpoolexecutor \
 	threadpoolexecutor \
+	threadcachedpoolexecutor \
 	mutex \
 	thread \
 	countdownlatch \
@@ -16,6 +17,7 @@ link += condition \
 objs += $(outtmp)/condition.o \
 	$(outtmp)/scheduledthreadpoolexecutor.o \
 	$(outtmp)/threadpoolexecutor.o \
+	$(outtmp)/threadcachedpoolexecutor.o \
 	$(outtmp)/mutex.o \
 	$(outtmp)/thread.o \
 	$(outtmp)/countdownlatch.o \
@@ -32,6 +34,9 @@ condition :$(concurrentDir)/Condition.cpp
 
 threadpoolexecutor :$(concurrentDir)/ThreadPoolExecutor.cpp
 	$(gcc) $(cflags) -c $(concurrentDir)/ThreadPoolExecutor.cpp -o $(outtmp)/threadpoolexecutor.o
+
+threadcachedpoolexecutor :$(concurrentDir)/ThreadCachedPoolExecutor.cpp
+	$(gcc) $(cflags) -c $(concurrentDir)/ThreadCachedPoolExecutor.cpp -o $(outtmp)/threadcachedpoolexecutor.o
 
 scheduledthreadpoolexecutor :$(concurrentDir)/ScheduledThreadPoolExecutor.cpp
 		$(gcc) $(cflags) -c $(concurrentDir)/ScheduledThreadPoolExecutor.cpp -o $(outtmp)/scheduledthreadpoolexecutor.o

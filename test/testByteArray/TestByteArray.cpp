@@ -10,6 +10,11 @@
 
 using namespace obotcha;
 
+struct MyData {
+  int i;
+  int j;
+};
+
 int main() {
 
     printf("---[ByteArray Test Start]--- \n");
@@ -186,4 +191,73 @@ int main() {
         }
         break;
     }
+
+    //bool fill(byte v,int index);
+    while(1) {
+      ByteArray buff1 = createByteArray(6);
+      buff1->fill(2,3);
+
+#if 0
+      printf("buff1[0] is %d \n",buff1->at(0));
+      printf("buff1[1] is %d \n",buff1->at(1));
+      printf("buff1[2] is %d \n",buff1->at(2));
+      printf("buff1[3] is %d \n",buff1->at(3));
+      printf("buff1[4] is %d \n",buff1->at(4));
+      printf("buff1[5] is %d \n",buff1->at(5));
+#endif
+      if(buff1->at(0) != 0
+        ||buff1->at(1) != 0
+        ||buff1->at(2) != 3
+        ||buff1->at(3) != 0
+        ||buff1->at(4) != 0
+        ||buff1->at(5) != 0) {
+          printf("ByteArray fill test 3-------[FAIL] \n");
+          break;
+      }
+
+      ByteArray buff2 = createByteArray(6);
+      buff2->fill(2,2,3);
+      if(buff2->at(0) != 0
+        ||buff2->at(1) != 0
+        ||buff2->at(2) != 3
+        ||buff2->at(3) != 3
+        ||buff2->at(4) != 0
+        ||buff2->at(5) != 0) {
+          printf("ByteArray fill test 4-------[FAIL] \n");
+          break;
+      }
+
+      ByteArray buff3 = createByteArray(6);
+      if(buff2->fill(100,2,3)) {
+        printf("ByteArray fill test 5-------[FAIL] \n");
+        break;
+      }
+
+      ByteArray buff4 = createByteArray(6);
+      if(buff2->fill(0,200,3)) {
+        printf("ByteArray fill test 6-------[FAIL] \n");
+        break;
+      }
+
+      printf("ByteArray fill test 7-------[OK] \n");
+      break;
+    }
+
+    //_ByteArray(T t);
+    while(1) {
+      MyData t;
+      t.i = 100;
+      t.j = 120;
+      ByteArray arr = createByteArray((struct MyData *) &t);
+      struct MyData * t1 = (struct MyData *)arr->toValue();
+      if(t1->i != t.i
+        ||t1->j != t.j) {
+          printf("ByteArray construct<template> test 1-------[FAIL] \n");
+          break;
+      }
+
+      printf("ByteArray construct<template> test 2-------[OK] \n");
+      break;
+    }
+
 }

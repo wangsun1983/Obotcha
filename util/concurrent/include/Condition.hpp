@@ -10,6 +10,11 @@
 
 namespace obotcha {
 
+enum ConditionNotifyType {
+    NotifyByThread,
+    NotifyByTimeout
+};
+
 DECLARE_SIMPLE_CLASS(Condition) {
 
 public:
@@ -17,7 +22,7 @@ public:
 
     void wait(Mutex m);
     
-    void wait(Mutex m,long int millseconds);
+    int wait(Mutex m,long int millseconds);
     
     void notify();
     

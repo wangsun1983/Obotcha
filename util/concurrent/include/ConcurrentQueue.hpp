@@ -27,6 +27,8 @@ public:
 
     inline void enQueueFirst(T val);
     inline void enQueueLast(T val);
+    inline int remove(T val);
+
     //int
     inline void enQueueFirst(int val);
     inline void enQueueLast(int val);
@@ -76,6 +78,18 @@ template <typename T>
 void _ConcurrentQueue<T>::enQueueLast(T val) {
     AutoMutex l(mutex_t);
     mQueue.push_back(val);
+}
+
+template <typename T>
+int _ConcurrentQueue<T>::remove(T val) {
+    AutoMutex l(mutex_t);
+    typename vector<T>::iterator result = find(mQueue.begin( ), mQueue.end( ),val);
+    if(result != mQueue.end()) {
+        mQueue.erase(result);
+        return result - mQueue.begin();
+    }
+
+    return -1;
 }
 
 template <typename T>

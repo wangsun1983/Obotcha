@@ -24,11 +24,11 @@ int main() {
   while(1) {
     int num = st(System)::availableProcessors();
     if(num != CPU_NUMS) {
-        printf("System availableProcessors test1-------[FAIL] \n",times);
+        printf("System availableProcessors test1-------[FAIL] \n");
         break;
     }
 
-    printf("System availableProcessors test1-------[OK] \n",times);
+    printf("System availableProcessors test1-------[OK] \n");
     break;
   }
 
@@ -36,22 +36,33 @@ int main() {
   while(1) {
     int num = st(System)::onlineProcessors();
     if(num != CPU_NUMS) {
-        printf("System Test test1-------[FAIL] \n",times);
+        printf("System Test test1-------[FAIL] \n");
         break;
     }
 
-    printf("System Test test1-------[OK] \n",times);
+    printf("System Test test1-------[OK] \n");
     break;
   }
 
-  //static void exit(int);
+  //String executeForResult(String cmd);
+  while(1) {
+    String cmd = "ls -la";
+    String result = st(System)::executeForResult(cmd);
+    if(result->size() < 10) {
+      printf("System executeForResult test1-------[FAIL] \n");
+      break;
+    }
 
+    printf("System executeForResult test1-------[OK] \n");
+    break;
+  }
 
-
-
-  {
-    printf("cpu total num is %d \n",st(System)::availableProcessors());
-    printf("cpu online num is %d \n",st(System)::onlineProcessors());
+  //String execute
+  while(1) {
+      String cmd = "mkdir abc";
+      st(System)::execute(cmd);
+      printf("System execute test1-------[OK] \n");
+      break;
   }
 
   //while(1){}

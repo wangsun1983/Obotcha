@@ -24,6 +24,9 @@ public:
 */
     ~_Integer();
 
+    static const int MAX_VALUE = 0x7fffffff;
+
+    static const int MIN_VALUE = 0x80000000;
 private:
     int val;
 };

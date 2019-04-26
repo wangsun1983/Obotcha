@@ -116,7 +116,6 @@ public:
             }
         }
 
-        printf("insert trace \n");
 
         elements.insert(elements.begin() + index,val);
         return 0;
@@ -216,12 +215,11 @@ public:
     }
 
     bool next() {
-        iterator++;
         if(iterator ==  mList->end()) {
             return false;
         }
-
-        return true;
+        iterator++;
+        return (iterator != mList->end());
     }
     
 private:

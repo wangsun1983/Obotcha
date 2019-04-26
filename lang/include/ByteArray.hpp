@@ -3,6 +3,7 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
@@ -16,6 +17,11 @@ public:
     _ByteArray(byte *data,int len);
 
     _ByteArray(sp<_ByteArray>);
+
+    _ByteArray(String);
+
+    template<typename T>
+    _ByteArray(T *t);
 
     ~_ByteArray();
 
@@ -31,13 +37,29 @@ public:
 
     byte at(int);
 
-    void fill(byte v);
+    bool fill(byte v);
+
+    bool fill(int index,byte v);
+
+    bool fill(int index,int length,byte v);
 
 private:
     byte *buff;
 
     int _size;
 };
+
+template<typename T>
+_ByteArray::_ByteArray(T *t) {
+    int size = sizeof(T);
+    buff = (byte *)malloc(size);
+    if(t == nullptr) {
+        return;
+    }
+    
+    memcpy(buff,t,size);
+    _size = size;
+}
 
 }
 #endif

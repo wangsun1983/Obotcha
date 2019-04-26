@@ -249,12 +249,12 @@ bool _ListIterator<String>::hasValue() {
 }
 
 bool _ListIterator<String>::next() {
-    iterator++;
     if(iterator ==  mList->end()) {
         return false;
     }
-
-    return true;
+    
+    iterator++;
+    return (iterator != mList->end());
 }
 
 
@@ -450,7 +450,7 @@ std::vector<int>::iterator _ArrayList<Integer>::begin() {
 }
 
 std::vector<int>::iterator _ArrayList<Integer>::end() {
-    return elements.begin();
+    return elements.end();
 }
 
 
@@ -478,17 +478,22 @@ bool _ListIterator<Integer>::hasValue() {
 }
 
 bool _ListIterator<Integer>::next() {
-    iterator++;
     if(iterator ==  mList->end()) {
         return false;
     }
 
-    return true;
+    iterator++;
+
+    return (iterator != mList->end());
 }
 
 //----------------- ArrayList<Boolean> ---------------------
 
 void _ArrayList<Boolean>::add(Boolean val) {
+    if(val == nullptr) {
+        return;
+    }
+
     elements.insert(elements.end(),val->toValue()); 
 }
 
@@ -698,16 +703,19 @@ bool _ListIterator<Boolean>::hasValue() {
 }
 
 bool _ListIterator<Boolean>::next() {
-    iterator++;
     if(iterator ==  mList->end()) {
         return false;
     }
-
-    return true;
+    iterator++;
+    return (iterator != mList->end());
 }
 
 //----------------- ArrayList<Float> ---------------------
 void _ArrayList<Float>::add(Float val) {
+    if(val == nullptr) {
+        return;
+    }
+
     elements.insert(elements.end(),val->toValue()); 
 }
 
@@ -915,16 +923,19 @@ bool _ListIterator<Float>::hasValue() {
 }
 
 bool _ListIterator<Float>::next() {
-    iterator++;
     if(iterator ==  mList->end()) {
         return false;
     }
-
-    return true;
+    iterator++;
+    return (iterator != mList->end());
 }
 
 //----------------- ArrayList<Double> ---------------------
 void _ArrayList<Double>::add(Double val) {
+    if(val == nullptr) {
+        return;
+    }
+
     elements.insert(elements.end(),val->toValue()); 
 }
 
@@ -1134,16 +1145,19 @@ bool _ListIterator<Double>::hasValue() {
 }
 
 bool _ListIterator<Double>::next() {
-    iterator++;
     if(iterator ==  mList->end()) {
         return false;
     }
-
-    return true;
+    iterator++;
+    return (iterator != mList->end());
 }
 
 //----------------- ArrayList<Long> ---------------------
 void _ArrayList<Long>::add(Long val) {
+    if(val == nullptr) {
+        return;
+    }
+    
     elements.insert(elements.end(),val->toValue()); 
 }
 
@@ -1351,11 +1365,13 @@ bool _ListIterator<Long>::hasValue() {
 }
 
 bool _ListIterator<Long>::next() {
-    iterator++;
     if(iterator ==  mList->end()) {
         return false;
     }
-    return true;
+
+    iterator++;
+    return (iterator != mList->end());
 }
+
 
 }

@@ -16,6 +16,15 @@ _ByteArray::_ByteArray(int length) {
     _size = length;
 }
 
+_ByteArray::_ByteArray(String str) {
+    int size = str->size();
+    _size = size + 1;
+    buff = (char *)malloc(_size);
+    memset(buff,0,_size);
+
+    memcpy(buff,str->toChars(),size);
+}
+
 _ByteArray::_ByteArray(byte *data,int len) {
     buff = (char *)malloc(len);
     memset(buff,0,len);
@@ -73,12 +82,44 @@ byte _ByteArray::at(int index) {
     return buff[index];
 }
 
-void _ByteArray::fill(byte v) {
+bool _ByteArray::fill(byte v) {
     if(buff == nullptr) {
-        return;
+        return false;
     }
 
     memset(buff,v,_size);
+    
+    return true;
+}
+
+bool _ByteArray::fill(int index,byte v) {
+    if(buff == nullptr) {
+        return false;
+    }
+
+    if(index >= _size || index < 0) {
+        return false;
+    }
+
+    buff[index] = v;
+
+    return true;
+}
+
+bool _ByteArray::fill(int index,int length,byte v) {
+    if(buff == nullptr) {
+        return false;
+    }
+
+    if((index >= _size) 
+        || (index < 0)
+        || (index + length > _size)) {
+        return false;
+    }
+
+    memset(&buff[index],v,length);
+
+    return true;
 }
 
 }
