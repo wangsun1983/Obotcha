@@ -23,6 +23,7 @@ namespace obotcha {
 enum State {
     idleState,
     busyState,
+    terminateState,
     illegalState,
 };
 
@@ -40,7 +41,7 @@ public:
     
     void stop();
 
-    void waitForIdle();
+    void waitForTerminate();
 
     void forceStop();
 
@@ -57,7 +58,7 @@ private:
 
     Condition mWaitCond;
 
-    bool isWaitIdle;
+    bool isWaitTerminate;
 
     mutable volatile bool mStop;
 };

@@ -5,23 +5,71 @@
 #include "Thread.hpp"
 #include "Object.hpp"
 #include "System.hpp"
+#include "Mutex.hpp"
+#include "AutoMutex.hpp"
 
 #define TEST_DEVIATION 50 //ms
 #define TEST_SLEEP_INTERVAL 1 //s
 
 static int disposeVal = -1;
 
+using namespace obotcha;
+
 DECLARE_SIMPLE_CLASS(Run1) IMPLEMENTS(Runnable) {
 public:
+  _Run1(Mutex m) {
+    mutex = m;
+  }
+
   void run() {
+      printf("Run1 start sleep1 \n");
+      //AutoMutex l(mutex);
+      printf("Run1 start sleep1_1 \n");
       sleep(TEST_SLEEP_INTERVAL);
+      //pthread_exit(nullptr);
+      printf("Run1 start sleep2 \n");
   }
 
   ~_Run1() {
+    printf("remove runn1 \n");
     disposeVal = 10;
   }
+
+private:
+   Mutex mutex;
 };
 
+int main() {
+  {
+      Mutex t = createMutex();
+printf("thread test 1 \n");
+      Thread th = createThread(createRun1(t));
+      printf("t1 start \n");
+      th->start();
+printf("thread test 2 \n");
+#if 0
+      printf("policy is %d \n",th->getSchedPolicy());
+
+      sleep(1);
+      printf("main trace1 \n");
+      //th->exit();
+      printf("main trace2 \n");
+      sleep(2);
+      AutoMutex l(t);
+      printf("main trace3 \n");
+      int status = th->getStatus();
+      printf("main trace4 \n");
+      printf("getStatus is %d \n",status);
+#endif
+  }
+printf("thread test 3 \n");
+  while(1) {
+    sleep(1);
+  };
+
+}
+
+#if 0
 DECLARE_SIMPLE_CLASS(Run2) IMPLEMENTS(Runnable) {
 public:
   void run() {
@@ -105,3 +153,4 @@ int main() {
 
   //while(1){}
 }
+#endif

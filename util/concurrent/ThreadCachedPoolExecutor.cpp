@@ -43,6 +43,7 @@ _ThreadCachedPoolExecutorHandler::_ThreadCachedPoolExecutorHandler(BlockingQueue
 
 void _ThreadCachedPoolExecutorHandler::forceStop() {
     mThread->exit();
+    mStop = true;
     //mPool->clear();
 }
 
@@ -52,6 +53,7 @@ void _ThreadCachedPoolExecutorHandler::run() {
         //no task,so we should remove this thread,and exit;
         if(task == nullptr) {
             mThread->exit();
+            mStop = true;
 
             ThreadCachedPoolExecutorHandler t;
             t.set_pointer(this);
@@ -103,7 +105,7 @@ void _ThreadCachedPoolExecutorHandler::waitForIdle() {
 
 void _ThreadCachedPoolExecutorHandler::stop() {
     mStop = true;
-    mPool->clear();
+    //mPool->clear();
 }
 
 bool _ThreadCachedPoolExecutorHandler::isIdle() {
@@ -119,27 +121,63 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor() {
 }
 
 void _ThreadCachedPoolExecutor::shutdown(){
+    mIsShutDown = true;
+    int size = mHandlers->size();
+    for(int i = 0;i < size;i++) {
+        mHandlers->get(i)->stop();
+    }
 
+    mPool->clear();
 }
 
 void _ThreadCachedPoolExecutor::shutdownNow() {
+    mIsShutDown = true;
+    int size = mHandlers->size();
+    for(int i = 0;i < size;i++) {
+        mHandlers->get(i)->forceStop();
+    }
 
+    mPool->clear();
+
+    mIsTerminated = true;
 }
 
-void _ThreadCachedPoolExecutor::execute(Runnable command) {
+void _ThreadCachedPoolExecutor::execute(Runnable r) {
+    if(mIsShutDown) {
+        return;//ExecuteResult::failShutDown;
+    }
+    
+    //FutureTask task = createFutureTask(FUTURE_TASK_NORMAL,runnable);
 
+    //mPool->enQueueLast(task);
+    submit(r);
 }
 
 bool _ThreadCachedPoolExecutor::isShutdown() {
-
+    return mIsShutDown;
 }
 
 bool _ThreadCachedPoolExecutor::isTerminated() {
-
+    return false;
 }
 
-bool _ThreadCachedPoolExecutor::awaitTermination(long timeout) {
+bool _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
+    if(!mIsShutDown) {
+        return false;
+    }
 
+    if(millseconds == 0) {
+        int size = mHandlers->size();
+        for(int i = 0;i < size;i++) {
+            mHandlers->get(i)->waitForIdle();
+        }
+        mIsTerminated = true;
+        return true;
+    } else {
+        //TODO
+    }
+
+    return false;
 }
 
 Future _ThreadCachedPoolExecutor::submit(Runnable r) {

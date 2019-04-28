@@ -15,7 +15,7 @@ int main() {
   int pid = fork();
   if(pid == 0) {
       printf("child process start trace1 \n");
-      PosixShareMemory memory = createPosixShareMemory("shareMemory",8,PosixShareMemoryWriteRead);
+      PosixShareMemory memory = createPosixShareMemory("/shareMemory£±",8,PosixShareMemoryWriteRead);
       memory->init();
       char *p = new char[8];
       p[0] = 0;
@@ -29,11 +29,11 @@ int main() {
       ByteArray arr = createByteArray(p,8);
       memory->write(arr);
       printf("child process start trace2 \n");
-      while(1) {}
+      //while(1) {}
   } else {
       sleep(1);
-      PosixShareMemory memory = createPosixShareMemory("shareMemory",8,PosixShareMemoryRead);
-      printf("father process start trace1 \n");
+      PosixShareMemory memory = createPosixShareMemory("/shareMemory£±",8,PosixShareMemoryRead);
+      printf("£±£±£±£±¡¡father process start trace1 \n");
       memory->init();
 
       ByteArray b = createByteArray(8);
@@ -49,7 +49,7 @@ int main() {
       printf("t[6] is %d \n",t[6]);
       printf("t[7] is %d \n",t[7]);
 
-      while(1) {}
+      //while(1) {}
   }
 
 }

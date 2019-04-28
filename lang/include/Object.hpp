@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <utility>
+#include <stdio.h>
 
 #define OBJ_DEC_FREE 0
 #define OBJ_DEC_NO_FREE 1

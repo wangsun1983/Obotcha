@@ -3,6 +3,7 @@
 
 #include <pthread.h>
 #include <map>
+#include <linux/sched.h>
 
 #include "Object.hpp"
 #include "Runnable.hpp"
@@ -11,6 +12,7 @@
 #include "Condition.hpp"
 #include "BlockingQueue.hpp"
 #include "String.hpp"
+#include "ThreadLocal.hpp"
 
 using namespace std;
 
@@ -19,12 +21,24 @@ namespace obotcha {
 class _Thread;
 
 enum ThreadPriority {
-    IdlePriority,
-    LowestPriority,
-    LowPriority,
-    NormalPriority,
-    HighPriority,
-    HighestPriority,
+    ThreadLowestPriority = 0,
+    ThreadLowPriority,
+    ThreadNormalPriority,
+    ThreadHighPriority,
+    ThreadHighestPriority,
+    ThreadPriorityMax,
+};
+
+enum ThreadStatus {
+    ThreadNotExist,
+    ThreadRunning,
+};
+
+enum ThreadSchedPolicy {
+    ThreadSchedOTHER = SCHED_NORMAL, //SCHED_NORMAL 0
+    ThreadSchedFIFO = SCHED_FIFO,  //SCHED_FIFO 1
+    ThreadSchedRR = SCHED_RR,    //SCHED_RR 2
+
 };
 
 DECLARE_SIMPLE_CLASS(RecycleThread) {
@@ -33,7 +47,7 @@ public:
 
     void start();
 
-    void submit(_Thread *t);
+    void submit(sp<_Thread> t);
 
     void run();
 
@@ -46,7 +60,7 @@ private:
 
     pthread_t mTid;
 
-    BlockingQueue<_Thread *> queue;
+    BlockingQueue<sp<_Thread>> queue;
 
     bool isRunning;
 };
@@ -54,6 +68,8 @@ private:
 DECLARE_SIMPLE_CLASS(Thread) {
 
 public:
+    friend class _RecycleThread;
+
     _Thread(String name,Runnable run);
 
 	_Thread(Runnable run);
@@ -64,15 +80,21 @@ public:
 	
 	void join();
 
-    bool isFinished();
+    void join(long millseconds);
 
-    bool isRunning();
+    int getStatus();
 
     virtual void run();
 
     void exit();
 
     void setPriority(ThreadPriority priority);
+
+    int getPriority();
+
+    bool setSchedPolicy(int);
+
+    int getSchedPolicy();
 
     String getName();
 
@@ -84,24 +106,45 @@ public:
 
     static void yield();
 
-    //static void sleep(unsigned long);
-
     static void msleep(unsigned long);
-    
-    //static void usleep(unsigned long);
 
     static RecycleThread getRecyleThread();
+        
+    static void setThreadPriority(ThreadPriority priority);
+
+    static int getThreadPriority();
+
+    static bool setThreadSchedPolicy(int);
+
+    static int getThreadSchedPolicy();
 
     ~_Thread();
 
 private:
+
+    int threadPrio2SchePrio(int threadprio);
+
+    int SchePrio2threadPrio(int secheprio);
+
+    int updateThreadPrioTable();
+
+    int mPrioTable[ThreadPriorityMax];
+
     static RecycleThread mRecyle;
+
+    static ThreadLocal<sp<_Thread>> mLocalThreadLocal;
+
+    static void* localRun(void *th);
+
+    static void removeThread(sp<_Thread>);
 
     Runnable mRunnable;
 
     pthread_attr_t mThreadAttr;
 
     pthread_t mPthread;
+
+    int mPolicy;
 
     String mName;
 };

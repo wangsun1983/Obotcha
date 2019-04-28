@@ -1,0 +1,74 @@
+#ifndef __THREAD_LOCAL_HPP__
+#define __THREAD_LOCAL_HPP__
+
+#include <vector>
+#include <pthread.h>
+
+#include "Object.hpp"
+#include "StrongPointer.hpp"
+#include "HashMap.hpp"
+#include "Mutex.hpp"
+#include "AutoMutex.hpp"
+
+namespace obotcha {
+
+DECLARE_CLASS(ThreadLocal,1) {
+public:
+    _ThreadLocal();
+
+    void set(T t);
+
+    void set(pthread_t,T t);
+
+    T get();
+
+    void remove(pthread_t);
+
+    int size();
+
+private:
+
+    Mutex mutex;
+
+    HashMap<pthread_t,T> mLocalMap;
+};
+
+template<typename T>
+_ThreadLocal<T>::_ThreadLocal(){
+    mLocalMap = createHashMap<pthread_t,T>();
+    mutex = createMutex();
+}
+
+template<typename T>
+void _ThreadLocal<T>::set(pthread_t pthread,T t){
+    AutoMutex l(mutex);
+    mLocalMap->put(pthread,t);
+}
+
+
+template<typename T>
+void _ThreadLocal<T>::set(T t){
+    AutoMutex l(mutex);
+    mLocalMap->put(pthread_self(),t);
+}
+
+template<typename T>
+void _ThreadLocal<T>::remove(pthread_t ptread){
+    AutoMutex l(mutex);
+    mLocalMap->remove(ptread);
+}
+
+template<typename T>
+T _ThreadLocal<T>::get(){
+    AutoMutex l(mutex);
+    return mLocalMap->get(pthread_self());
+}
+
+template<typename T>
+int _ThreadLocal<T>::size(){
+    AutoMutex l(mutex);
+    return mLocalMap->size();
+}
+
+}
+#endif

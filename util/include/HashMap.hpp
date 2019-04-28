@@ -42,7 +42,13 @@ public:
     }
 
     void remove(T t) {
-        hashmap.erase(t);
+        //hashmap.erase(t);
+        typename std::map<T,U>::iterator ite = hashmap.find(t);
+        if(ite == hashmap.end()) {
+            printf("hashmap can not find \n");
+            return;
+        }
+        hashmap.erase(ite++);
     }
 
     bool isEmpty() {
@@ -84,11 +90,11 @@ public:
 private:
     std::map<T,U> hashmap;
 
-    auto begin() {
+    typename std::map<T,U>::iterator begin() {
         return hashmap.begin();
     }
 
-    auto end() {
+    typename std::map<T,U>::iterator end() {
         return hashmap.end();
     }
 };
@@ -156,11 +162,11 @@ public:
 private:
     std::map<std::string,U> hashmap;
 
-    auto begin() {
+    typename std::map<std::string,U>::iterator begin() {
         return hashmap.begin();
     }
 
-    auto end() {
+    typename std::map<std::string,U>::iterator end() {
         return hashmap.end();
     }
 };
@@ -224,11 +230,11 @@ public:
 private:
     std::map<int,U> hashmap;
 
-    auto begin() {
+    typename std::map<int,U>::iterator begin() {
         return hashmap.begin();
     }
 
-    auto end() {
+    typename std::map<int,U>::iterator end() {
         return hashmap.end();
     }
 };
@@ -288,11 +294,11 @@ public:
 private:
     std::map<double,U> hashmap;
 
-    auto begin() {
+    typename std::map<double,U>::iterator begin() {
         return hashmap.begin();
     }
 
-    auto end() {
+    typename std::map<double,U>::iterator end() {
         return hashmap.end();
     }
 };
@@ -354,11 +360,11 @@ public:
 private:
     std::map<float,U> hashmap;
 
-    auto begin() {
+    typename std::map<float,U>::iterator begin() {
         return hashmap.begin();
     }
 
-    auto end() {
+    typename std::map<float,U>::iterator end() {
         return hashmap.end();
     }
 };
@@ -418,11 +424,11 @@ public:
 private:
     std::map<bool,U> hashmap;
 
-    auto begin() {
+    typename std::map<bool,U>::iterator begin() {
         return hashmap.begin();
     }
 
-    auto end() {
+    typename std::map<bool,U>::iterator end() {
         return hashmap.end();
     }
 
@@ -483,11 +489,11 @@ public:
 private:
     std::map<long,U> hashmap;
 
-    auto begin() {
+    typename std::map<long,U>::iterator begin() {
         return hashmap.begin();
     }
 
-    auto end() {
+    typename std::map<long,U>::iterator end() {
         return hashmap.end();
     }
 

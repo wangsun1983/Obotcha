@@ -13,7 +13,7 @@ namespace obotcha {
 _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool):mPool(pool),
                                                                          state(idleState),
                                                                          mStop(false),
-                                                                         isWaitIdle(false){
+                                                                         isWaitTerminate(false){
     mStateMutex = createMutex();
     mWaitCond = createCondition();
 
@@ -27,6 +27,7 @@ _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask>
 
 void _ThreadPoolExecutorHandler::forceStop() {
     mThread->exit();
+    mStop = true;
     //mPool->clear();
 }
 
@@ -56,21 +57,22 @@ void _ThreadPoolExecutorHandler::run() {
             }
         }
     }
-
+    
     {
         AutoMutex l(mStateMutex);
-        if(isWaitIdle) {
+        state = terminateState;
+        if(isWaitTerminate) {
             //printf("notify trace \n");
             mWaitCond->notify();
-            isWaitIdle = false;
+            isWaitTerminate = false;
         }
     }
 }
 
-void _ThreadPoolExecutorHandler::waitForIdle() {
+void _ThreadPoolExecutorHandler::waitForTerminate() {
     AutoMutex l(mStateMutex);
-    isWaitIdle = true;
-    if(mPool->size() != 0 || state != idleState) {
+    isWaitTerminate = true;
+    if(state != terminateState) {
         mWaitCond->wait(mStateMutex);
     }
 }
@@ -176,7 +178,7 @@ bool _ThreadPoolExecutor::awaitTermination(long millseconds) {
     if(millseconds == 0) {
         int size = mHandlers->size();
         for(int i = 0;i < size;i++) {
-            mHandlers->get(i)->waitForIdle();
+            mHandlers->get(i)->waitForTerminate();
         }
         mIsTerminated = true;
         return true;
