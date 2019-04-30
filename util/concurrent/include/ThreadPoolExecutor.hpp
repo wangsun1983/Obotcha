@@ -20,12 +20,6 @@
 using namespace std;
 
 namespace obotcha {
-enum State {
-    idleState,
-    busyState,
-    terminateState,
-    illegalState,
-};
 
 DECLARE_SIMPLE_CLASS(ThreadPoolExecutorHandler) IMPLEMENTS(Runnable) {
 
@@ -33,9 +27,7 @@ public:
 
     _ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool);
     
-    Thread mThread;
-    
-    bool isIdle();
+    bool isTerminated();
 
     void run();
     
@@ -43,7 +35,11 @@ public:
 
     void waitForTerminate();
 
+    void waitForTerminate(long);
+
     void forceStop();
+
+    void onInterrupt();
 
 private:
     BlockingQueue<FutureTask> mPool;
@@ -52,8 +48,6 @@ private:
 
     bool mIdleWait;
 
-    //pthread_mutex_t wiatIdleMutex;
-    //pthread_cond_t wiatIdleCond;
     Mutex mStateMutex;
 
     Condition mWaitCond;
@@ -61,6 +55,8 @@ private:
     bool isWaitTerminate;
 
     mutable volatile bool mStop;
+
+    Thread mThread;
 };
 
 
@@ -73,7 +69,7 @@ public:
         failUnknown
     };
 
-	_ThreadPoolExecutor(int size);
+	_ThreadPoolExecutor(int queuesize,int threadnum);
 
 	_ThreadPoolExecutor();
 
@@ -91,6 +87,8 @@ public:
 
     Future submit(Runnable task);
 
+    int getThreadsNum();
+
     //~_ThreadPoolExecutor();
 
 private:
@@ -103,8 +101,9 @@ private:
     bool mIsTerminated;
 
     //bool isDynamic;
+    int mThreadNum;
 
-    void init(int size);
+    void init(int queuesize,int threadnum);
 };
 
 }

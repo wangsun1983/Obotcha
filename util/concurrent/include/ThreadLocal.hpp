@@ -22,6 +22,10 @@ public:
 
     T get();
 
+    T get(pthread_t);
+
+    void remove();
+
     void remove(pthread_t);
 
     int size();
@@ -59,9 +63,21 @@ void _ThreadLocal<T>::remove(pthread_t ptread){
 }
 
 template<typename T>
+void _ThreadLocal<T>::remove(){
+    AutoMutex l(mutex);
+    mLocalMap->remove(pthread_self());
+}
+
+template<typename T>
 T _ThreadLocal<T>::get(){
     AutoMutex l(mutex);
     return mLocalMap->get(pthread_self());
+}
+
+template<typename T>
+T _ThreadLocal<T>::get(pthread_t t){
+    AutoMutex l(mutex);
+    return mLocalMap->get(t);
 }
 
 template<typename T>

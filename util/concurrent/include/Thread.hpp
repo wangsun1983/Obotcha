@@ -92,7 +92,7 @@ public:
 
     int getPriority();
 
-    bool setSchedPolicy(int);
+    bool setSchedPolicy(ThreadSchedPolicy);
 
     int getSchedPolicy();
 
@@ -114,7 +114,7 @@ public:
 
     static int getThreadPriority();
 
-    static bool setThreadSchedPolicy(int);
+    static bool setThreadSchedPolicy(ThreadSchedPolicy policy);
 
     static int getThreadSchedPolicy();
 

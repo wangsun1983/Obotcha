@@ -183,6 +183,11 @@ void _ScheduledThreadPoolExecutor::execute(Runnable runnable) {
     //return 0;
 }
 
+int _ScheduledThreadPoolExecutor::getThreadsNum() {
+    //TODO
+    return 0;
+}
+
 void _ScheduledThreadPoolExecutor::shutdown() {
     mIsShutDown = true;
     mTimeThread->stop();

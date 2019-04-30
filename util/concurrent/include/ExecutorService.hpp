@@ -15,6 +15,13 @@
 
 namespace obotcha {
 
+enum ExecutorState {
+    idleState,
+    busyState,
+    terminateState,
+    illegalState,
+};
+
 DECLARE_SIMPLE_CLASS(ExecutorService) IMPLEMENTS(Executor) {
 
 public:
@@ -38,6 +45,9 @@ public:
 
     //virtual Future submit(Runnable task) = 0;
     virtual Future submit(Runnable task) = 0;
+
+    //get thread num
+    virtual int getThreadsNum() = 0;
 };
 
 }

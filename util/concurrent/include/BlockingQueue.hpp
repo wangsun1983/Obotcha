@@ -155,7 +155,6 @@ template <typename T>
 void _BlockingQueue<T>::enQueueLast(T val) {
     while(1) {
         AutoMutex l(mMutex);
-    
         int size = mQueue.size();
         if(mCapacity != -1 && size == mCapacity) {
             mEnqueueCond->wait(mMutex);
@@ -192,6 +191,7 @@ bool _BlockingQueue<T>::enQueueLast(T val,long timeout) {
     }
 
     mDequeueCond->notify();
+    return true;
 }
 
 template <typename T>
@@ -308,6 +308,7 @@ T _BlockingQueue<T>::deQueueFirst() {
         break;
     }
 
+    mEnqueueCond->notify();
     return ret;
 }
 
@@ -326,7 +327,7 @@ T _BlockingQueue<T>::deQueueFirst(long timeout) {
 
             mDequeueCond->wait(mMutex,timeout);
             waitCount++;
-            continue;
+            continue;a
         }
 
         ret = mQueue.at(0);
@@ -335,6 +336,7 @@ T _BlockingQueue<T>::deQueueFirst(long timeout) {
         break;
     }
 
+    mEnqueueCond->notify();
     return ret;
 }
 

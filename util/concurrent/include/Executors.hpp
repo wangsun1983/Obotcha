@@ -15,11 +15,18 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(Executors) {
 
 public:
-    static ExecutorService newFixedThreadPool(int);
-    static ExecutorService newSingleThreadExecutor();
+    static ExecutorService newFixedThreadPool(int queue_size,int thread_num);
+    static ExecutorService newFixedThreadPool(int thread_num);
+
+    static ExecutorService newSingleThreadExecutor(int queue_size);
     static ExecutorService newWorkStealingPool(int parallelism);
     static ExecutorService newWorkStealingPool();
+    
+    static ExecutorService newCachedThreadPool(int queue_size,int maxthreadnum,int minthreadnum,long timeout);
+    static ExecutorService newCachedThreadPool(int maxthreadnum,long timeout);
     static ExecutorService newCachedThreadPool();
+
+
     static ScheduledExecutorService newSingleThreadScheduledExecutor();
     static ScheduledExecutorService newScheduledThreadPool();
 };

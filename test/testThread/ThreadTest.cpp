@@ -9,7 +9,7 @@
 #include "AutoMutex.hpp"
 
 #define TEST_DEVIATION 50 //ms
-#define TEST_SLEEP_INTERVAL 1 //s
+#define TEST_SLEEP_INTERVAL 100 //s
 
 static int disposeVal = -1;
 
@@ -24,6 +24,8 @@ public:
   void run() {
       printf("Run1 start sleep1 \n");
       //AutoMutex l(mutex);
+      st(Thread)::setThreadSchedPolicy(ThreadSchedFIFO);
+      st(Thread)::setThreadPriority(ThreadHighPriority);
       printf("Run1 start sleep1_1 \n");
       sleep(TEST_SLEEP_INTERVAL);
       //pthread_exit(nullptr);
@@ -46,6 +48,15 @@ printf("thread test 1 \n");
       Thread th = createThread(createRun1(t));
       printf("t1 start \n");
       th->start();
+      //th->setSchedPolicy(ThreadSchedFIFO);
+      //th->setPriority(ThreadHighPriority);
+      //st(Thread)::setThreadPriority(ThreadHighPriority);
+      //sleep(3);
+      printf("th's start join \n");
+      th->join(5000);
+      printf("th's finish join \n");
+      printf("th's priority is %d \n",th->getPriority());
+      printf("th's policy is %d \n",th->getSchedPolicy());
 printf("thread test 2 \n");
 #if 0
       printf("policy is %d \n",th->getSchedPolicy());

@@ -21,11 +21,6 @@
 using namespace std;
 
 namespace obotcha {
-enum State {
-    idleState,
-    busyState,
-    illegalState,
-};
 
 class _ThreadCachedPoolExecutor;
 
@@ -37,15 +32,19 @@ public:
     
     Thread mThread;
     
-    bool isIdle();
+    bool isTerminated();
 
     void run();
     
     void stop();
 
-    void waitForIdle();
+    void waitForTerminate();
+
+    void waitForTerminate(long);
 
     void forceStop();
+
+    void onInterrupt();
 
 private:
     BlockingQueue<FutureTask> mPool;
@@ -54,7 +53,7 @@ private:
 
     int state;
 
-    bool mIdleWait;
+    bool isWaitTerminate;
 
     //pthread_mutex_t wiatIdleMutex;
     //pthread_cond_t wiatIdleCond;
@@ -75,13 +74,17 @@ private:
 DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(ExecutorService) {
 
 public:
+    friend class _ThreadCachedPoolExecutorHandler;
+
     enum CachedExecuteResult {
         success,
         failShutDown,
         failUnknown
     };
 
-	_ThreadCachedPoolExecutor(int size,long timeout);
+	_ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout);
+
+    _ThreadCachedPoolExecutor(int maxthreadnum,long timeout);
 
 	_ThreadCachedPoolExecutor();
 
@@ -99,11 +102,16 @@ public:
 
     Future submit(Runnable task);
 
-    void removeHandler(ThreadCachedPoolExecutorHandler h);
+    int getThreadsNum();
 
     //~_ThreadPoolExecutor();
 
 private:
+
+    bool isOverMinSize();
+
+    void removeHandler(ThreadCachedPoolExecutorHandler h);
+
     BlockingQueue<FutureTask> mPool;
     
     ConcurrentQueue<ThreadCachedPoolExecutorHandler> mHandlers;
@@ -112,14 +120,15 @@ private:
 
     bool mIsTerminated;
 
-    //bool isDynamic;
-
-    void init(int size,long timeout);
+    void init(int queuesize,int maxthreadnum,int minthreadnum,long timeout);
 
     long mThreadTimeout;
 
-    int mPoolCapcity;
+    int maxThreadNum;
 
+    int minThreadNum;
+
+    int mQueueSize;
 };
 
 }

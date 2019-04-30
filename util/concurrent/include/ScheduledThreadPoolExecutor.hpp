@@ -106,6 +106,8 @@ public:
 
     Future schedule(Runnable command,long delay);
 
+    int getThreadsNum();
+
     Future scheduleAtFixedRate(Runnable command,
                                 long initialDelay,
                                 long period);

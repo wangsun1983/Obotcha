@@ -6,6 +6,7 @@
 #include "ThreadPoolExecutor.hpp"
 #include "FutureTask.hpp"
 #include "Future.hpp"
+#include "System.hpp"
 
 static int id = 0;
 
@@ -18,9 +19,6 @@ _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask>
     mWaitCond = createCondition();
 
     mThread = createThread(this);
-    
-    //mThread->setName(createString(id));
-    //id++;
 
     mThread->start();
 }
@@ -28,12 +26,23 @@ _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask>
 void _ThreadPoolExecutorHandler::forceStop() {
     mThread->exit();
     mStop = true;
-    //mPool->clear();
+}
+
+void _ThreadPoolExecutorHandler::onInterrupt() {
+    AutoMutex l(mStateMutex);
+    state = terminateState;
+    if(isWaitTerminate) {
+        //printf("notify trace \n");
+        mWaitCond->notify();
+        isWaitTerminate = false;
+    }
 }
 
 void _ThreadPoolExecutorHandler::run() {
     while(!mStop) {
+        //printf("_ThreadPoolExecutorHandler trace1 \n");
         FutureTask task = mPool->deQueueFirst();
+        //printf("_ThreadPoolExecutorHandler trace2 \n");
         //printf("executor thred name is %s \n",mThread->getName()->toChars());
         {
             AutoMutex l(mStateMutex);
@@ -42,12 +51,12 @@ void _ThreadPoolExecutorHandler::run() {
                 task->onRunning();
             }
         }
-        
+        //printf("_ThreadPoolExecutorHandler trace3 \n");
         Runnable runnable = task->getRunnable();
         if(runnable != nullptr) {
             runnable->run();    
         }
-     
+        //printf("_ThreadPoolExecutorHandler trace4 \n");
         {
             AutoMutex l(mStateMutex);
             state = idleState;
@@ -56,11 +65,13 @@ void _ThreadPoolExecutorHandler::run() {
                 task->onComplete();
             }
         }
+        //printf("_ThreadPoolExecutorHandler trace5 \n");
     }
-    
+    //printf("_ThreadPoolExecutorHandler trace6 \n");
     {
         AutoMutex l(mStateMutex);
         state = terminateState;
+        //printf("_ThreadPoolExecutorHandler trace7 \n");
         if(isWaitTerminate) {
             //printf("notify trace \n");
             mWaitCond->notify();
@@ -77,29 +88,42 @@ void _ThreadPoolExecutorHandler::waitForTerminate() {
     }
 }
 
+void _ThreadPoolExecutorHandler::waitForTerminate(long interval) {
+    AutoMutex l(mStateMutex);
+    isWaitTerminate = true;
+    if(state != terminateState) {
+        mWaitCond->wait(mStateMutex,interval);
+    }
+}
+
 void _ThreadPoolExecutorHandler::stop() {
     mStop = true;
-    //mPool->clear();
 }
 
-bool _ThreadPoolExecutorHandler::isIdle() {
-    return state == idleState;
+bool _ThreadPoolExecutorHandler::isTerminated() {
+    return state == terminateState;
 }
 
-_ThreadPoolExecutor::_ThreadPoolExecutor(int size) {
-    init(size);
+_ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
+    init(queuesize,threadnum);
 }
 
 _ThreadPoolExecutor::_ThreadPoolExecutor() {
-    init(1);
+    init(-1,1);
 }
 
-void _ThreadPoolExecutor::init(int size) {
-
-    mPool = createBlockingQueue<FutureTask>(size);
+void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
+    if(queuesize != -1) {
+        mPool = createBlockingQueue<FutureTask>(queuesize);    
+    } else {
+        mPool = createBlockingQueue<FutureTask>();
+    }
+    
     mHandlers = createConcurrentQueue<ThreadPoolExecutorHandler>();
 
-    for(int i = 0; i < size;i++) {
+    mThreadNum = threadnum;
+
+    for(int i = 0; i < threadnum;i++) {
         ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool);
         mHandlers->enQueueLast(h);
     }
@@ -110,21 +134,12 @@ void _ThreadPoolExecutor::init(int size) {
 
 void _ThreadPoolExecutor::execute(Runnable runnable) {
     if(mIsShutDown) {
-        return;//ExecuteResult::failShutDown;
+        return;
     }
     
     FutureTask task = createFutureTask(FUTURE_TASK_NORMAL,runnable);
 
     mPool->enQueueLast(task);
-    //we should check mHandlers size
-    //if(isDynamic) {
-    //    if(mPool->size() != 0) {
-    //        ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool);           
-    //        mHandlers->enQueueLast(h);
-    //    }
-    //}
-
-    //return ExecuteResult::success;
 }
 
 void _ThreadPoolExecutor::shutdown() {
@@ -151,14 +166,14 @@ void _ThreadPoolExecutor::shutdownNow() {
 
 Future _ThreadPoolExecutor::submit(Runnable r) {
     if(mIsShutDown) {
-        return nullptr;//ExecuteResult::failShutDown;
+        return nullptr;
     }
     
     FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r);
     Future future = createFuture(task);
-
+    //printf("submit 1 \n");
     mPool->enQueueLast(task);
-
+    //printf("submit 2 \n");
     return future;
 }
 
@@ -167,7 +182,19 @@ bool _ThreadPoolExecutor::isShutdown() {
 }
 
 bool _ThreadPoolExecutor::isTerminated() {
-    return false;
+    if(mIsTerminated) {
+        return true;
+    }
+
+    int size = mHandlers->size();
+    for(int i = 0;i < size;i++) {
+        if(!mHandlers->get(i)->isTerminated()) {
+            return false;
+        }
+    }
+
+    mIsTerminated = true;
+    return mIsTerminated;
 }
 
 bool _ThreadPoolExecutor::awaitTermination(long millseconds) {
@@ -175,18 +202,35 @@ bool _ThreadPoolExecutor::awaitTermination(long millseconds) {
         return false;
     }
 
+    if(mIsTerminated) {
+        return true;
+    }
+
+    int size = mHandlers->size();
+
     if(millseconds == 0) {
-        int size = mHandlers->size();
         for(int i = 0;i < size;i++) {
             mHandlers->get(i)->waitForTerminate();
         }
         mIsTerminated = true;
         return true;
     } else {
-        //TODO
+        for(int i = 0;i < size;i++) {
+            long current = st(System)::currentTimeMillis();
+            if(millseconds >= 0) {
+                mHandlers->get(i)->waitForTerminate(millseconds);
+            } else {
+                break;
+            }
+            millseconds -= (st(System)::currentTimeMillis() - current);
+        }
     }
 
     return false;
+}
+
+int _ThreadPoolExecutor::getThreadsNum() {
+    return mThreadNum;
 }
 
 }
