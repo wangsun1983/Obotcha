@@ -1,4 +1,6 @@
 # Obotcha
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/wangsun1983/Obotcha.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/wangsun1983/Obotcha/alerts/)
+
 - **如何声明一个简单类（不含模板）**
 ```
 DECLARE_SIMPLE_CLASS(TestClass1) {
