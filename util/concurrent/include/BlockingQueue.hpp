@@ -327,7 +327,7 @@ T _BlockingQueue<T>::deQueueFirst(long timeout) {
 
             mDequeueCond->wait(mMutex,timeout);
             waitCount++;
-            continue;a
+            continue;
         }
 
         ret = mQueue.at(0);
