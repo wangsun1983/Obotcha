@@ -163,10 +163,10 @@ void _Calendar::increaseSecond(int _second) {
     }
 
     second += _second%60;
-    int _minute = _minute/60;
+    int minuteTmp = second/60;
 
-    if(_minute != 0) {
-        increaseMinute(_minute);
+    if(minuteTmp != 0) {
+        increaseMinute(minuteTmp);
     }
 }
 
@@ -176,7 +176,7 @@ void _Calendar::decreaseSecond(int _second) {
     }
 
     second += _second%60;
-    int _minute = _minute/60;
+    int _minute = second/60;
 
     if(_minute != 0) {
         decreaseMinute(_minute);
@@ -224,7 +224,7 @@ bool _Calendar::onUpdateByMonth(int mon) {
 }
 
 bool _Calendar::onUpdateByDayOfWeek(int day) {
-    if(day <= 0 && day > Sunday) {
+    if(day <= 0 || day > Sunday) {
         return false;
     }
 
@@ -368,6 +368,8 @@ bool _Calendar::set(CalendarType type,int value) {
             break;
         }
     }
+
+    return ret;
 }
 
 int _Calendar::get(CalendarType type) {
@@ -408,6 +410,8 @@ int _Calendar::get(CalendarType type) {
             return msec;
         break;
     }
+
+    return -1;
 }
 
 long int _Calendar::toTimeMillis() {

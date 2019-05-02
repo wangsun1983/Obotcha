@@ -214,7 +214,7 @@ String _ZipStream::combine(String parent,String current) {
 uLong _ZipStream::filetime(const char *file, tm_zip *tmzip, uLong *dt) {
     int ret=0;
     struct stat s;        /* results of stat() */
-    struct tm* filedate;
+    struct tm filedate;
     time_t tm_t=0;
 
     if (strcmp(file,"-")!=0) {
@@ -235,14 +235,15 @@ uLong _ZipStream::filetime(const char *file, tm_zip *tmzip, uLong *dt) {
             ret = 1;
         }
     }
-    filedate = localtime(&tm_t);
 
-    tmzip->tm_sec  = filedate->tm_sec;
-    tmzip->tm_min  = filedate->tm_min;
-    tmzip->tm_hour = filedate->tm_hour;
-    tmzip->tm_mday = filedate->tm_mday;
-    tmzip->tm_mon  = filedate->tm_mon ;
-    tmzip->tm_year = filedate->tm_year;
+    localtime_r(&tm_t,&filedate);
+
+    tmzip->tm_sec  = filedate.tm_sec;
+    tmzip->tm_min  = filedate.tm_min;
+    tmzip->tm_hour = filedate.tm_hour;
+    tmzip->tm_mday = filedate.tm_mday;
+    tmzip->tm_mon  = filedate.tm_mon ;
+    tmzip->tm_year = filedate.tm_year;
     return ret;
 }
 

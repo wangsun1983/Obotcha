@@ -149,6 +149,8 @@ int _ArrayList<String>::insert(int index,ArrayList<String> list) {
             elements.insert(elements.begin() + index + i,str);
         }
     }
+
+    return 0;
 }
 
 int _ArrayList<String>::insert(int index,ArrayList<String> list,int length) {
@@ -168,6 +170,8 @@ int _ArrayList<String>::insert(int index,ArrayList<String> list,int length) {
             elements.insert(elements.begin() + index + i,str);
         }
     }
+
+    return 0;
 }
 
 void _ArrayList<String>::insertFirst(String val) {
@@ -328,6 +332,7 @@ int _ArrayList<Integer>::set(int index,Integer val) {
     }
     
     elements[index] = val->toValue();
+    return 0;
 }
 
 int _ArrayList<Integer>::set(int index,int val) {
@@ -336,6 +341,7 @@ int _ArrayList<Integer>::set(int index,int val) {
     }
     
     elements[index] = val;
+    return 0;
 }
 
 Integer _ArrayList<Integer>::get(int index) {

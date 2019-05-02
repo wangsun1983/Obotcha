@@ -43,6 +43,7 @@ bool _XmlValueIterator::hasValue() {
 
 bool _XmlValueIterator::next() {
     node = node->next_sibling();
+    return true;
 }
 
 XmlValue _XmlValueIterator::getValue() {

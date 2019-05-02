@@ -63,6 +63,8 @@ bool _PosixShareMemory::init() {
         printf("mmap failed \n");
         return false;
     }
+
+    return true;
 }
 
 bool _PosixShareMemory::write(ByteArray arr) {
@@ -85,8 +87,10 @@ bool _PosixShareMemory::write(ByteArray arr) {
         printf("mPtr v[3] is %d \n",mPtr[3]);
         printf("mPtr v[4] is %d \n",mPtr[4]);
 #endif        
-
+        return true;
     }
+
+    return false;
 }
 
 
@@ -100,7 +104,11 @@ int _PosixShareMemory::read(ByteArray arr) {
         printf("mPtr[2] is %d \n",mPtr[2]);
 #endif        
         memcpy(arr->toValue(),mPtr,ll);
+
+        return ll;
     }
+
+    return -1;
 }
 
 _PosixShareMemory::~_PosixShareMemory() {

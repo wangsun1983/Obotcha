@@ -25,7 +25,7 @@ bool _UdpClient::init() {
         printf("udpclient error 1 \n");
         return false;
     }
- printf("udpclient init 2,sock is %d \n",sock);
+    printf("udpclient init 2,sock is %d \n",sock);
     if(connect(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
         printf("udpclient error 2 \n");
         return false;
@@ -38,15 +38,18 @@ bool _UdpClient::init() {
     int ret = sendto(sock,p,12,0,(struct sockaddr *)&serverAddr, sizeof(struct sockaddr_in));
     printf("send value is %d \n",ret);
 */
- printf("udpclient init 3 \n");
+    printf("udpclient init 3 \n");
     epfd = epoll_create(EPOLL_SIZE);
     
     if(epfd < 0) {
         printf("udpclient error 3 \n");
         return false;
     }
- printf("udpclient init 4 \n");
+
+    printf("udpclient init 4 \n");
     addfd(epfd, sock, true);
+
+    return true;
 }
 
 void _UdpClient::addfd(int epollfd, int fd, bool enable_et) {

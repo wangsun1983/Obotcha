@@ -27,6 +27,8 @@ sp<_YamlArray>_YamlValue::getYamlArray(String tag) {
     } catch (std::exception e) {
         return nullptr;
     }
+
+    return nullptr;
 }
 
 sp<_YamlValue> _YamlValue::getYamlValue(String tag) {
@@ -44,6 +46,8 @@ sp<_YamlValue> _YamlValue::getYamlValue(String tag) {
     } catch (std::exception e) {
         return nullptr;
     }
+
+    return nullptr;
 }
     
 int _YamlValue::getInt(String tag,int def) {
@@ -59,6 +63,8 @@ int _YamlValue::getInt(String tag,int def) {
     } catch (std::exception e) {
         return def;
     }
+
+    return def;
 }
 
 String _YamlValue::getString(String tag,String def) {
@@ -74,6 +80,8 @@ String _YamlValue::getString(String tag,String def) {
     } catch (std::exception e) {
         return def;
     }
+
+    return def;
 }
 
 double _YamlValue::getDouble(String tag,double def) {
@@ -88,6 +96,8 @@ double _YamlValue::getDouble(String tag,double def) {
     } catch (std::exception e) {
         return def;
     }
+
+    return def;
 }
 
 long _YamlValue::getLong(String tag,long def) {
@@ -102,6 +112,8 @@ long _YamlValue::getLong(String tag,long def) {
     } catch (std::exception e) {
         return def;
     }
+
+    return def;
 }
 
 bool _YamlValue::getBool(String tag,bool def) {
@@ -116,6 +128,8 @@ bool _YamlValue::getBool(String tag,bool def) {
     } catch (std::exception e) {
         return def;
     }
+
+    return def;
 }
 
 int _YamlValue::size() {

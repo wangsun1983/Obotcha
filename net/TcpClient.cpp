@@ -45,6 +45,8 @@ bool _TcpClient::init() {
     }
  
     addfd(epfd, sock, true);
+
+    return true;
 }
 
 void _TcpClient::addfd(int epollfd, int fd, bool enable_et) {

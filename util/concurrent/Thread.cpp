@@ -282,6 +282,8 @@ int _Thread::updateThreadPrioTable() {
     }
 
     mPrioTable[ThreadHighestPriority] = maxPrio;
+    
+    return 0;
 }
 
 void _Thread::setThreadPriority(ThreadPriority priority) {

@@ -12,6 +12,7 @@ _FileInputStream::_FileInputStream(String path) {
     
 int _FileInputStream::read() {
     //TODO
+    return 0;
 }
 
 int _FileInputStream::read(ByteArray buff) {
@@ -22,6 +23,7 @@ int _FileInputStream::read(ByteArray buff) {
 ByteArray _FileInputStream::readAll() {
     //TODO
 }
+
 bool _FileInputStream::open() {
     fstream.open(mPath->toChars());
     return fstream.is_open();

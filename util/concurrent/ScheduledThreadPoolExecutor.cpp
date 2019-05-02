@@ -208,6 +208,7 @@ bool _ScheduledThreadPoolExecutor::isTerminated() {
 
 bool _ScheduledThreadPoolExecutor::awaitTermination(long timeout) {
     mTimeThread->waitStop(timeout);
+    return true;
 }
 
 Future _ScheduledThreadPoolExecutor::submit(Runnable r) {

@@ -56,6 +56,7 @@ bool _LocalSocketClient::init() {
     }
     printf("LocalSocketClient init trace5 \n");
     addfd(epfd, sock, true);
+    return false;
 }
 
 void _LocalSocketClient::addfd(int epollfd, int fd, bool enable_et) {

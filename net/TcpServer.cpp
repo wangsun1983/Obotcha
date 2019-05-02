@@ -113,6 +113,8 @@ bool _TcpServer::start() {
             }
         }
     }
+
+    return false;
 }
 
 void _TcpServer::close() {

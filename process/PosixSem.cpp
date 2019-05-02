@@ -18,6 +18,8 @@ bool _PosixSem::init() {
         printf("sem_open error is %s \n",strerror(errno));
         return false;
     }
+
+    return true;
 }
 
 void _PosixSem::wait() {

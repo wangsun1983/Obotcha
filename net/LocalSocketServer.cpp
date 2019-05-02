@@ -136,6 +136,8 @@ bool _LocalSocketServer::start() {
             }
         }
     }
+
+    return false;
 }
 
 void _LocalSocketServer::close() {

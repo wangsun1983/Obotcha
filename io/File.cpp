@@ -189,6 +189,8 @@ bool _File::removeAll() {
     }
 
     updateFileInfo();
+
+    return true;
 }
 
 void _File::deleteDir(File f) {
@@ -274,6 +276,7 @@ ArrayList<File> _File::listFiles() {
 
 bool _File::createDir() {
     mkdir(mPath->toChars(),0755);
+    return true;
 }
 
 bool _File::createDirs() {
@@ -313,31 +316,38 @@ bool _File::createDirs() {
 }
 
 bool _File::rename(String name) {
-
+    //TODO
+    return false;
 }
 
 bool _File::setReadOnly() {
-
+    //TODO
+    return false;
 }
 
 bool _File::setWriteOnly() {
-
+    //TODO
+    return false;
 }
 
 bool _File::setExecuteOnly() {
-
+    //TODO
+    return false;
 }
 
 bool _File::setWritable() {
-
+    //TODO
+    return false;
 }
 
 bool _File::setReadable() {
-
+    //TODO
+    return false;
 }
 
 bool _File::setExecutable() {
-
+    //TODO
+    return false;
 }
 
 void _File::updateFileInfo() {

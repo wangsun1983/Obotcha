@@ -124,6 +124,8 @@ bool _UdpServer::start() {
             }
         }
     }
+
+    return false;
 }
 
 void _UdpServer::close() {
