@@ -70,17 +70,19 @@ void _Calendar::init() {
     auto mTime = std::chrono::milliseconds(timeMillis);
     auto tp = std::chrono::time_point<std::chrono::system_clock,std::chrono::milliseconds>(mTime);
     auto tt = std::chrono::system_clock::to_time_t(tp);
-    std::tm* now = std::gmtime(&tt);
+    //std::tm* now = std::gmtime(&tt);
+    struct tm now;
+    gmtime_r(&tt, &now);
 
-    year = now->tm_year;
-    month = now->tm_mon;
+    year = now.tm_year;
+    month = now.tm_mon;
     printf("init month is %d\n",month);
-    dayOfWeek = now->tm_wday;
-    dayOfMonth = now->tm_mday;
-    dayOfYear = now->tm_yday;
-    hour = now->tm_hour + st(TimeZone)::getZone();
-    minute = now->tm_min;
-    second = now->tm_sec;
+    dayOfWeek = now.tm_wday;
+    dayOfMonth = now.tm_mday;
+    dayOfYear = now.tm_yday;
+    hour = now.tm_hour + st(TimeZone)::getZone();
+    minute = now.tm_min;
+    second = now.tm_sec;
     msec = timeMillis%1000;
 
     if(hour >= 24) {

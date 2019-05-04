@@ -46,7 +46,9 @@ _ScheduledThreadPoolThread::_ScheduledThreadPoolThread() {
     mTimeCond = createCondition();
     mTerminatedMutex = createMutex();
     mTerminatedCond = createCondition();
+    int cpuNum = st(System)::availableProcessors();
 
+    cachedExecutor = createThreadCachedPoolExecutor(cpuNum*2,60*1000);
 
     //mExecutorService = createThreadPoolExecutor();
 
@@ -145,11 +147,12 @@ void _ScheduledThreadPoolThread::run() {
                 //we should use dynamic thread pool
                 //Thread t = createThread(r);
                 //t->start();
-                //printf("_ScheduledThreadPoolThread trace6 \n");
+                printf("_ScheduledThreadPoolThread trace6 \n");
                 ScheduledTaskWorker worker = createScheduledTaskWorker(v->task);
-                Thread t = createThread(worker);
-                t->start();
-                //printf("_ScheduledThreadPoolThread trace7 \n");
+                //Thread t = createThread(worker);
+                //t->start();
+                printf("_ScheduledThreadPoolThread trace7 \n");
+                cachedExecutor->execute(worker);
             }
         }
     }

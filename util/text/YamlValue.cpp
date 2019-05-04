@@ -24,7 +24,7 @@ sp<_YamlArray>_YamlValue::getYamlArray(String tag) {
         YamlArray result = createYamlArray(newNode);
         return result;
 
-    } catch (std::exception e) {
+    } catch (std::exception &e) {
         return nullptr;
     }
 
@@ -43,7 +43,7 @@ sp<_YamlValue> _YamlValue::getYamlValue(String tag) {
         YamlValue result = createYamlValue(newNode);
         return result;
 
-    } catch (std::exception e) {
+    } catch (std::exception &e) {
         return nullptr;
     }
 
@@ -60,7 +60,7 @@ int _YamlValue::getInt(String tag,int def) {
         int result = yamlNode[name].as<int>();
         return result;
 
-    } catch (std::exception e) {
+    } catch (std::exception &e) {
         return def;
     }
 
@@ -77,7 +77,7 @@ String _YamlValue::getString(String tag,String def) {
         std::string result = yamlNode[name].as<std::string>();
         return createString(result);
 
-    } catch (std::exception e) {
+    } catch (std::exception &e) {
         return def;
     }
 
@@ -93,7 +93,7 @@ double _YamlValue::getDouble(String tag,double def) {
         const char *name = tag->toChars();
         double result = yamlNode[name].as<double>();
         return result;
-    } catch (std::exception e) {
+    } catch (std::exception &e) {
         return def;
     }
 
@@ -109,7 +109,7 @@ long _YamlValue::getLong(String tag,long def) {
         const char *name = tag->toChars();
         long result = yamlNode[name].as<long>();
         return result;
-    } catch (std::exception e) {
+    } catch (std::exception &e) {
         return def;
     }
 
@@ -125,7 +125,7 @@ bool _YamlValue::getBool(String tag,bool def) {
         const char *name = tag->toChars();
         bool result = yamlNode[name].as<bool>();
         return result;
-    } catch (std::exception e) {
+    } catch (std::exception &e) {
         return def;
     }
 

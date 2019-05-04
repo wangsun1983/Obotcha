@@ -223,18 +223,19 @@ Future _ThreadCachedPoolExecutor::submit(Runnable r) {
     if(mIsShutDown) {
         return nullptr;//ExecuteResult::failShutDown;
     }
-    printf("cachedthread submit 1 \n");
-    if(mPool->size()!= 0 && mHandlers->size() < maxThreadNum) {
-        printf("cachedthread submit 2 \n");
+    //printf("cachedthread submit 1 \n");
+    if((mPool->size()!= 0 && mHandlers->size() < maxThreadNum)
+      ||(mHandlers->size() == 0)) {
+        //printf("cachedthread submit 2 \n");
         ThreadCachedPoolExecutorHandler t = createThreadCachedPoolExecutorHandler(mPool,mThreadTimeout,this);
         mHandlers->enQueueLast(t);
     } 
 
-    printf("cachedthread submit 3 \n");
+    //printf("cachedthread submit 3 \n");
     FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r);
     Future future = createFuture(task);
     mPool->enQueueLast(task); 
-    printf("cachedthread submit 4 \n");
+    //printf("cachedthread submit 4 \n");
     return future;   
 }
 
