@@ -16,6 +16,7 @@
 #include "FutureTask.hpp"
 #include "Future.hpp"
 #include "ScheduledExecutorService.hpp"
+#include "ThreadCachedPoolExecutor.hpp"
 
 using namespace std;
 
@@ -62,6 +63,8 @@ public:
 
 private:
     ArrayList<ScheduledThreadPoolTask> mDatas;
+
+    ThreadCachedPoolExecutor cachedExecutor;
 
     ThreadPoolExecutor mExecutorService;
     

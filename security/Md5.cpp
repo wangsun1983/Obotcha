@@ -2,9 +2,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-extern "C" {
-#include "md5.h"
-}
+//extern "C" {
+//#include "md5.h"
+//}
 
 #include "File.hpp"
 #include "String.hpp"
@@ -42,11 +42,11 @@ int _Md5::computeStringMd5(unsigned char *dest_str, unsigned int dest_len, char 
     MD5_CTX md5;
 
     // init md5
-    MD5Init(&md5);
+    MD5_Init(&md5);
 
-    MD5Update(&md5, dest_str, dest_len);
+    MD5_Update(&md5, dest_str, dest_len);
 
-    MD5Final(&md5, md5_value);
+    MD5_Final(md5_value,&md5);
 
     // convert md5 value to md5 string
     for(i = 0; i < MD5_SIZE; i++)
@@ -73,7 +73,7 @@ int _Md5::computeFileMd5(const char *file_path, char *md5_str) {
     }
 
     // init md5
-    MD5Init(&md5);
+    MD5_Init(&md5);
 
     while (1)
     {
@@ -85,7 +85,7 @@ int _Md5::computeFileMd5(const char *file_path, char *md5_str) {
             return -1;
         }
 
-        MD5Update(&md5, data, ret);
+        MD5_Update(&md5, data, ret);
 
         if (0 == ret || ret < READ_DATA_SIZE)
         {
@@ -95,7 +95,7 @@ int _Md5::computeFileMd5(const char *file_path, char *md5_str) {
 
     close(fd);
 
-    MD5Final(&md5, md5_value);
+    MD5_Final(md5_value,&md5);
 
     // convert md5 value to md5 string
     for(i = 0; i < MD5_SIZE; i++)

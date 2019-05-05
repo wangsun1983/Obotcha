@@ -22,11 +22,15 @@ cflags = -fpic \
 		-I ./external/crc32/include \
 		-I ./external/md5/include \
 		-I ./external/des/include \
+		-I ./external/openssl/include \
 		-g \
 
 
 external = -lpthread \
-		-L ../out/lib/
+		-L ../out/lib/ \
+
+staticlib = ./external/openssl/libcrypto.a \
+			./external/openssl/libssl.a \
 
 objs =
 link =
@@ -43,4 +47,5 @@ include security/makefile
 include process/makefile
 
 $(libname): $(link)
-	g++ -g -o0 -shared $(objs) $(cflags) -o $(outlib)/lib${libname}.so $(external)
+#	cd external/openssl/ && make
+	g++ -g -o0 -shared $(objs) $(cflags) -o $(outlib)/lib${libname}.so $(external) $(staticlib)
