@@ -27,6 +27,8 @@ public:
     //bool write(char *buffer,int size);
     bool write(ByteArray buff);
 
+    bool write(ByteArray buff,long size);
+
     bool writeString(String s);
     
     bool open(FileOpenType opentype);

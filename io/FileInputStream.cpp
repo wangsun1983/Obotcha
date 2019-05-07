@@ -1,3 +1,4 @@
+#include <iostream>
 #include "FileInputStream.hpp"
 
 namespace obotcha {
@@ -20,8 +21,43 @@ int _FileInputStream::read(ByteArray buff) {
     return fstream.gcount();
 }
 
+void _FileInputStream::readAll(ByteArray content) {
+    ifstream fsRead;
+    fsRead.open(mPath->getStdString(), ios::in|ios::binary);
+    cout<<"mPath->getStdString is "<<mPath->getStdString()<<endl;
+    if (!fsRead) {
+        return;
+    }
+
+    fsRead.seekg(0, fsRead.end);
+    long srcSize = fsRead.tellg();
+    printf("readAll size is %ld \n",srcSize);
+
+    long buffSize = content->size();
+
+    long currentSize = buffSize>srcSize?srcSize:buffSize;
+    fstream.read(content->toValue(),currentSize);
+}
+
 ByteArray _FileInputStream::readAll() {
-    //TODO
+    ifstream fsRead;
+    fsRead.open(mPath->getStdString(), ios::in|ios::binary);
+    cout<<"mPath->getStdString is "<<mPath->getStdString()<<endl;
+    if (!fsRead) {
+        return nullptr;
+    }
+
+    fsRead.seekg(0, fsRead.end);
+    long srcSize = fsRead.tellg();
+    printf("readAll size is %ld \n",srcSize);
+    fsRead.close();
+    ByteArray content = createByteArray(srcSize);
+    fstream.read(content->toValue(),srcSize);
+    char *p = content->toValue();
+    printf("read p[0] is %x \n",p[0]);
+    printf("read p[1] is %x \n",p[1]);
+    printf("readAll readsize is %d \n",fstream.gcount());
+    return content;
 }
 
 bool _FileInputStream::open() {

@@ -27,6 +27,8 @@ public:
 
     ByteArray readAll();
 
+    void readAll(ByteArray);
+
     bool open();
 
     void close();
@@ -36,7 +38,9 @@ public:
 private:
     String mPath;
 
-    std::ifstream fstream;     
+    std::ifstream fstream;
+
+    long filesize;
 };
 
 }
