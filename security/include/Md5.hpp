@@ -1,7 +1,7 @@
 #ifndef __MD5_HPP__
 #define __MD5_HPP__
 
-#include <openssl/md5.h>
+#include "openssl/md5.h"
 
 #include "File.hpp"
 #include "String.hpp"

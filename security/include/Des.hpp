@@ -1,7 +1,7 @@
 #ifndef __DES_HPP__
 #define __DES_HPP__
 
-#include <openssl/des.h>
+#include "openssl/des.h"
 
 #include "File.hpp"
 #include "String.hpp"
@@ -12,7 +12,7 @@ namespace obotcha {
 #define DES_KEY_SIZE 8
 
 enum DesType {
-    DesTypeEBC,
+    DesTypeECB,
     DesTypeCBC,
 };
 

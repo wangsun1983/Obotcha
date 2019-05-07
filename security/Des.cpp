@@ -1,8 +1,11 @@
-#include "Des.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
+#include "Des.hpp"
+#include "FileInputStream.hpp"
+#include "FileOutputStream.hpp"
 
 namespace obotcha {
 
@@ -11,11 +14,54 @@ _Des::_Des(int destype) {
 }
 
 _Des::_Des() {
-    mDesType = DesTypeEBC;
+    mDesType = DesTypeECB;
 }
 
 void _Des::encrypt(File src,File des) {
-    //TODO
+    if(!des->exists()) {
+        des->createNewFile();
+    }
+
+    switch(mDesType) {
+        case DesTypeECB:
+        //TODO
+        break;
+
+        case DesTypeCBC: {
+            FileInputStream inputStream = createFileInputStream(src);
+            inputStream->open();
+
+            //calcute size for 8 byte
+            int inputSize = src->length();
+            int length = (inputSize%8 == 0)?(inputSize + 8):(inputSize/8)*8 + 8;
+            ByteArray inputData = createByteArray(length);
+            inputStream->readAll(inputData);
+
+            //we should fill the last 8 byte data;
+            if(inputSize%8 == 0) {
+                char *lastData = inputData->toValue() + (inputData->size() - 1) - 8;
+                memset(lastData,0,8);
+            } else {
+                int padding = inputSize%8;
+                char *p = inputData->toValue();
+                char *lastData = inputData->toValue() + inputData->size()  - 8 + padding;
+                memset(lastData,(char)padding,8-padding);
+            }
+
+            if(inputData != nullptr) {
+                char *p = inputData->toValue();
+                ByteArray outputData = encrypt(inputData);
+                FileOutputStream outputStream = createFileOutputStream(des);
+                outputStream->open(st(FileOutputStream)::FileOpenType::Trunc);
+                char *finalresult = outputData->toValue();
+                outputStream->write(outputData);
+                outputStream->flush();
+                outputStream->close();
+            }
+            inputStream->close();
+            break;
+        }
+    }
 }
 
 ByteArray _Des::encrypt(ByteArray input) {
@@ -24,7 +70,7 @@ ByteArray _Des::encrypt(ByteArray input) {
     DES_set_key_checked(&mKey, &schedule);
 
     switch(mDesType) {
-        case DesTypeEBC:
+        case DesTypeECB:
             return _desECB(input,&schedule,DesEncrypt);
         break;
 
@@ -39,7 +85,49 @@ ByteArray _Des::encrypt(ByteArray input) {
 }
 
 void _Des::decrypt(File src,File des) {
-    //TODO
+    printf("wangsl,decrypt 1 \n");
+    if(!des->exists()) {
+        des->createNewFile();
+    }
+
+    switch(mDesType) {
+        case DesTypeECB:
+        //TODO
+        break;
+
+        case DesTypeCBC:{
+            FileInputStream inputStream = createFileInputStream(src);
+            inputStream->open();
+            ByteArray inputData = inputStream->readAll();
+            if(inputData != nullptr) {
+                ByteArray outputData = decrypt(inputData);
+                char *finalresult = outputData->toValue();
+
+                FileOutputStream outputStream = createFileOutputStream(des);
+                outputStream->open(st(FileOutputStream)::FileOpenType::Trunc);
+
+                //we should check last 8byte
+                char *checkP = outputData->toValue();
+                int length = outputData->size();
+
+                int padding = 0;
+                if(checkP[(length-1)] != 0) {
+                    padding = checkP[(length-1)];
+                }
+                
+                if(padding == 0) {
+                    outputStream->write(outputData,length - 8);
+                } else {
+                    outputStream->write(outputData,length - 8 + padding);
+                }
+                outputStream->flush();
+                outputStream->close();
+            }
+
+            inputStream->close();
+            break;
+        }
+    }
 }
 
 ByteArray _Des::decrypt(ByteArray input) {
@@ -48,7 +136,7 @@ ByteArray _Des::decrypt(ByteArray input) {
     DES_set_key_checked(&mKey, &schedule);
 
     switch(mDesType) {
-        case DesTypeEBC:
+        case DesTypeECB:
             return _desECB(input,&schedule,DesDecrypt);
         break;
 
@@ -121,9 +209,12 @@ void _Des::loadKey(const char *filepath) {
     fclose(key_file);
 }
 
-ByteArray _desECB(ByteArray data,DES_key_schedule *schedule,int mode) {
+ByteArray _Des::_desECB(ByteArray data,DES_key_schedule *schedule,int mode) {
     int inputSize = data->size();
-    ByteArray out = createByteArray(inputSize);
+
+    int length = (inputSize%8 == 0)?inputSize:(inputSize/8)*8 + 8;
+    
+    ByteArray out = createByteArray(length);
     unsigned char *output = (unsigned char*)out->toValue();
     unsigned char *input = (unsigned char*)data->toValue();
     const_DES_cblock inputBuff;
@@ -140,31 +231,33 @@ ByteArray _desECB(ByteArray data,DES_key_schedule *schedule,int mode) {
 
     if (inputSize%8 != 0) {
         memset(inputBuff, 0, 8);  
-        memcpy(inputBuff,input,inputSize%8);  
-        DES_ecb_encrypt(&inputBuff, &outputBuff, schedule, DES_ENCRYPT);
+        memcpy(inputBuff,input,inputSize%8);
+        DES_ecb_encrypt(&inputBuff, &outputBuff, schedule, mode);
         memcpy(output,outputBuff,8);
     }
 
     return out;
 }
 
-ByteArray _desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *ivec,int mode) {
+ByteArray _Des::_desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *ivec,int mode) {
     
     ByteArray out;
     int inputSize = data->size();
     int outputSize = inputSize%8?(inputSize/8 + 1) * 8 : inputSize;  
+    printf("_desCBC outputSize %d,input is %d \n",outputSize,inputSize);
 
     if(mode == DesEncrypt) {
-        out = createByteArray(outputSize + 16);
+        out = createByteArray(outputSize);
     } else {
         out = createByteArray(outputSize);
     }
 
     unsigned char *output = (unsigned char *)out->toValue();
     unsigned char *input = (unsigned char *)data->toValue();
+    printf("_desCBC input is %s \n",input);
 
     DES_ncbc_encrypt(input, output, data->size(), schedule, ivec, mode);
-
+    printf("_desCBC output is %s,length is %d \n",output,out->size());
     return out;
 }
 
