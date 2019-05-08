@@ -22,46 +22,35 @@ void _Des::encrypt(File src,File des) {
         des->createNewFile();
     }
 
-    switch(mDesType) {
-        case DesTypeECB:
-        //TODO
-        break;
+    FileInputStream inputStream = createFileInputStream(src);
+    inputStream->open();
 
-        case DesTypeCBC: {
-            FileInputStream inputStream = createFileInputStream(src);
-            inputStream->open();
+    //calcute size for 8 byte
+    int inputSize = src->length();
+    int length = (inputSize%8 == 0)?(inputSize + 8):(inputSize/8)*8 + 8;
+    ByteArray inputData = createByteArray(length);
+    inputStream->readAll(inputData);
 
-            //calcute size for 8 byte
-            int inputSize = src->length();
-            int length = (inputSize%8 == 0)?(inputSize + 8):(inputSize/8)*8 + 8;
-            ByteArray inputData = createByteArray(length);
-            inputStream->readAll(inputData);
-
-            //we should fill the last 8 byte data;
-            if(inputSize%8 == 0) {
-                char *lastData = inputData->toValue() + (inputData->size() - 1) - 8;
-                memset(lastData,0,8);
-            } else {
-                int padding = inputSize%8;
-                char *p = inputData->toValue();
-                char *lastData = inputData->toValue() + inputData->size()  - 8 + padding;
-                memset(lastData,(char)padding,8-padding);
-            }
-
-            if(inputData != nullptr) {
-                char *p = inputData->toValue();
-                ByteArray outputData = encrypt(inputData);
-                FileOutputStream outputStream = createFileOutputStream(des);
-                outputStream->open(st(FileOutputStream)::FileOpenType::Trunc);
-                char *finalresult = outputData->toValue();
-                outputStream->write(outputData);
-                outputStream->flush();
-                outputStream->close();
-            }
-            inputStream->close();
-            break;
-        }
+    //we should fill the last 8 byte data;
+    if(inputSize%8 == 0) {
+        char *lastData = inputData->toValue() + (inputData->size() - 1) - 8;
+        memset(lastData,0,8);
+    } else {
+        int padding = inputSize%8;
+        char *lastData = inputData->toValue() + inputData->size()  - 8 + padding;
+        memset(lastData,(char)padding,8-padding);
     }
+
+    if(inputData != nullptr) {
+        ByteArray outputData = encrypt(inputData);
+        FileOutputStream outputStream = createFileOutputStream(des);
+        outputStream->open(st(FileOutputStream)::FileOpenType::Trunc);
+        outputStream->write(outputData);
+        outputStream->flush();
+        outputStream->close();
+    }
+
+    inputStream->close();
 }
 
 ByteArray _Des::encrypt(ByteArray input) {
@@ -85,49 +74,40 @@ ByteArray _Des::encrypt(ByteArray input) {
 }
 
 void _Des::decrypt(File src,File des) {
-    printf("wangsl,decrypt 1 \n");
+    //printf("wangsl,decrypt 1 \n");
     if(!des->exists()) {
         des->createNewFile();
     }
 
-    switch(mDesType) {
-        case DesTypeECB:
-        //TODO
-        break;
+    FileInputStream inputStream = createFileInputStream(src);
+    inputStream->open();
+    ByteArray inputData = inputStream->readAll();
 
-        case DesTypeCBC:{
-            FileInputStream inputStream = createFileInputStream(src);
-            inputStream->open();
-            ByteArray inputData = inputStream->readAll();
-            if(inputData != nullptr) {
-                ByteArray outputData = decrypt(inputData);
-                char *finalresult = outputData->toValue();
+    if(inputData != nullptr) {
+        ByteArray outputData = decrypt(inputData);
+        FileOutputStream outputStream = createFileOutputStream(des);
+        outputStream->open(st(FileOutputStream)::FileOpenType::Trunc);
 
-                FileOutputStream outputStream = createFileOutputStream(des);
-                outputStream->open(st(FileOutputStream)::FileOpenType::Trunc);
+        //we should check last 8byte
+        char *checkP = outputData->toValue();
+        int length = outputData->size();
 
-                //we should check last 8byte
-                char *checkP = outputData->toValue();
-                int length = outputData->size();
-
-                int padding = 0;
-                if(checkP[(length-1)] != 0) {
-                    padding = checkP[(length-1)];
-                }
-                
-                if(padding == 0) {
-                    outputStream->write(outputData,length - 8);
-                } else {
-                    outputStream->write(outputData,length - 8 + padding);
-                }
-                outputStream->flush();
-                outputStream->close();
-            }
-
-            inputStream->close();
-            break;
+        int padding = 0;
+        if(checkP[(length-1)] != 0) {
+            padding = checkP[(length-1)];
         }
+                
+        if(padding == 0) {
+            outputStream->write(outputData,length - 8);
+        } else {
+            outputStream->write(outputData,length - 8 + padding);
+        }
+
+        outputStream->flush();
+        outputStream->close();
     }
+
+    inputStream->close();
 }
 
 ByteArray _Des::decrypt(ByteArray input) {
@@ -191,7 +171,7 @@ void _Des::loadKey(String filepath) {
 void _Des::loadKey(const char *filepath) {
     FILE *key_file = fopen(filepath, "rb");
     if (!key_file) {
-        printf("loadKey trace2 \n");
+        //printf("loadKey trace2 \n");
         return;
     }
 
@@ -202,7 +182,7 @@ void _Des::loadKey(const char *filepath) {
     if (bytes_read != DES_KEY_SIZE) {
         fclose(key_file);
         //free(des_key);
-        printf("trace3 \n");
+        //printf("trace3 \n");
         return;
     }
     
@@ -244,7 +224,7 @@ ByteArray _Des::_desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *iv
     ByteArray out;
     int inputSize = data->size();
     int outputSize = inputSize%8?(inputSize/8 + 1) * 8 : inputSize;  
-    printf("_desCBC outputSize %d,input is %d \n",outputSize,inputSize);
+    //printf("_desCBC outputSize %d,input is %d \n",outputSize,inputSize);
 
     if(mode == DesEncrypt) {
         out = createByteArray(outputSize);
@@ -254,10 +234,10 @@ ByteArray _Des::_desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *iv
 
     unsigned char *output = (unsigned char *)out->toValue();
     unsigned char *input = (unsigned char *)data->toValue();
-    printf("_desCBC input is %s \n",input);
+    //printf("_desCBC input is %s \n",input);
 
     DES_ncbc_encrypt(input, output, data->size(), schedule, ivec, mode);
-    printf("_desCBC output is %s,length is %d \n",output,out->size());
+    //printf("_desCBC output is %s,length is %d \n",output,out->size());
     return out;
 }
 

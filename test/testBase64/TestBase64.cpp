@@ -12,7 +12,7 @@
 using namespace obotcha;
 
 int main() {
-  String abc = "hello world1111";
+  String abc = "hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world";
   Base64 base64 = createBase64();
   String r1 = base64->encode(abc);
   LOGD("r1 is ",r1,"r1 size is ",r1->size());

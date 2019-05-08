@@ -27,6 +27,7 @@ cflags = -fpic \
 
 
 external = -lpthread \
+		-ldl \
 		-L ../out/lib/ \
 
 staticlib = ./external/openssl/libcrypto.a \
@@ -48,4 +49,4 @@ include process/makefile
 
 $(libname): $(link)
 #	cd external/openssl/ && make
-	g++ -g -o0 -shared $(objs) $(cflags) -o $(outlib)/lib${libname}.so $(external) $(staticlib)
+	g++ -g -o0 -shared $(objs) $(cflags) -o $(outlib)/lib${libname}.so $(staticlib) $(external)
