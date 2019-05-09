@@ -5,12 +5,14 @@ link += crc32 \
 		des \
 		base64 \
 		aes \
+		rsa
 		
-objs += $(outtmp)/crc32.o \a
+objs += $(outtmp)/crc32.o \
 		$(outtmp)/md5.o \
 		$(outtmp)/des.o \
 		$(outtmp)/base64.o \
 		$(outtmp)/aes.o \
+		$(outtmp)/rsa.o \
 
 crc32 :$(securityDir)/Crc32.cpp
 	$(gcc) $(cflags) -c $(securityDir)/Crc32.cpp -o $(outtmp)/crc32.o $(external)
@@ -26,3 +28,6 @@ base64 :$(securityDir)/Base64.cpp
 
 aes :$(securityDir)/Aes.cpp
 	$(gcc) $(cflags) -c $(securityDir)/Aes.cpp -o $(outtmp)/aes.o $(external)		
+
+rsa :$(securityDir)/Rsa.cpp
+	$(gcc) $(cflags) -c $(securityDir)/Rsa.cpp -o $(outtmp)/rsa.o $(external)		

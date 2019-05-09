@@ -36,6 +36,10 @@ public:
 
     ByteArray decrypt(ByteArray);
 
+    String decrypt(String str);
+
+    String encrypt(String str);
+
     void genKey(File);
 
     void genKey(String filepath);

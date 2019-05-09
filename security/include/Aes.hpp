@@ -34,13 +34,15 @@ public:
 
     void genKey(const char * filepath,String content,int mode);
 
-    String decode(String str);
+    String decrypt(String str);
 
-    String encode(String str);
+    String encrypt(String str);
     
-    ByteArray encode(ByteArray buff);
+    void encrypt(File src,File des);
+    ByteArray encrypt(ByteArray buff);
 
-    ByteArray decode(ByteArray buff);
+    void decrypt(File src,File des);
+    ByteArray decrypt(ByteArray buff);
 
     void loadKey(File,int);
 

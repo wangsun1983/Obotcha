@@ -26,8 +26,8 @@ void _Des::encrypt(File src,File des) {
     inputStream->open();
 
     //calcute size for 8 byte
-    int inputSize = src->length();
-    int length = (inputSize%8 == 0)?(inputSize + 8):(inputSize/8)*8 + 8;
+    long inputSize = src->length();
+    long length = (inputSize%8 == 0)?(inputSize + 8):(inputSize/8)*8 + 8;
     ByteArray inputData = createByteArray(length);
     inputStream->readAll(inputData);
 
@@ -51,6 +51,18 @@ void _Des::encrypt(File src,File des) {
     }
 
     inputStream->close();
+}
+
+String _Des::decrypt(String str) {
+    ByteArray result = decrypt(createByteArray(str));
+    char *p = result->toValue();
+    return createString(p);
+}
+
+String _Des::encrypt(String str) {
+    ByteArray result = encrypt(createByteArray(str));
+    char *p = result->toValue();
+    return createString(p);
 }
 
 ByteArray _Des::encrypt(ByteArray input) {
