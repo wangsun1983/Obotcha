@@ -8,33 +8,80 @@
 
 namespace obotcha {
 //---------------ScheduledTaskWorker-------------------//
-_ScheduledTaskWorker::_ScheduledTaskWorker(FutureTask t) {
+_ScheduledTaskWorker::_ScheduledTaskWorker(sp<_ScheduledThreadPoolTask> t) {
     mTask = t;
 }
 
 void _ScheduledTaskWorker::run() {
     //printf("ScheduledTaskWorker trace1 \n");
-    if(mTask->getType() == FUTURE_TASK_SUBMIT) {
-        mTask->onRunning();
+    long int startMillseconds = 0;
+
+    if(mTask->mScheduleTaskType == ScheduletTaskFixRate) {
+        startMillseconds = st(System)::currentTimeMillis();
+    }
+
+    if(mTask->task->getType() == FUTURE_TASK_SUBMIT) {
+        mTask->task->onRunning();
     }
     //printf("ScheduledTaskWorker trace2 \n");
 
-    Runnable runnable = mTask->getRunnable();
+    Runnable runnable = mTask->task->getRunnable();
     if(runnable != nullptr) {
         runnable->run();    
     }
     //printf("ScheduledTaskWorker trace3 \n");
 
-    if(mTask->getType() == FUTURE_TASK_SUBMIT) {
-        mTask->onComplete();
+    if(mTask->task->getType() == FUTURE_TASK_SUBMIT) {
+        mTask->task->onComplete();
+    }
+
+    //we should check the whether the Task is a repeated task;
+    switch(mTask->mScheduleTaskType) {
+        case ScheduletTaskFixRate: {
+            long int current = st(System)::currentTimeMillis();
+            long int interval = current - startMillseconds;
+
+            printf("interval is %ld,repeatDelay is %ld \n",interval,mTask->repeatDelay);
+
+            if(interval >= mTask->repeatDelay) {
+                mTask->mNextTime = current;
+            } else {
+                mTask->mNextTime = current + (mTask->repeatDelay - interval);
+            }
+
+            mTask->mTimeThread->addTask(mTask);
+        }
+        break;
+
+        case ScheduletTaskFixedDelay: {
+            long int current = st(System)::currentTimeMillis();
+            mTask->mNextTime = current + mTask->repeatDelay;
+            mTask->mTimeThread->addTask(mTask);
+        }
+
+        break;
     }
 }
 
 //---------------ScheduledThreadPoolTask---------------//
 _ScheduledThreadPoolTask::_ScheduledThreadPoolTask(FutureTask t,long int interval) {
     task = t;
-    millseconds = st(System)::currentTimeMillis() + interval;
+    mNextTime = st(System)::currentTimeMillis() + interval;
+    mScheduleTaskType = ScheduletTaskNormal;
 }
+
+_ScheduledThreadPoolTask::_ScheduledThreadPoolTask(FutureTask t,
+                                                   long int interval,
+                                                   int type,
+                                                   long int delay,
+                                                   sp<_ScheduledThreadPoolThread> timethread) {
+    task = t;
+    mNextTime = st(System)::currentTimeMillis() + interval;
+    mScheduleTaskType = type;
+    mTimeThread = timethread;
+    repeatDelay = delay;
+}
+
 
 //---------------TimeThread---------------//
 _ScheduledThreadPoolThread::_ScheduledThreadPoolThread() {
@@ -74,11 +121,11 @@ void _ScheduledThreadPoolThread::addTask(ScheduledThreadPoolTask v) {
     while(start <= end) {
         index = (start+end)/2;
         ScheduledThreadPoolTask m = mDatas->get(index);
-        if(m->millseconds > v->millseconds) {
+        if(m->mNextTime > v->mNextTime) {
             end = index - 1;
-        } else if(m->millseconds < v->millseconds) {
+        } else if(m->mNextTime < v->mNextTime) {
             start = index + 1;
-        } else if(m->millseconds == v->millseconds) {
+        } else if(m->mNextTime == v->mNextTime) {
             break;
         }
     }
@@ -130,7 +177,7 @@ void _ScheduledThreadPoolThread::run() {
         //get first time to wait;
         //ScheduledThreadPoolTask v = mDatas->remove(0);
         long currentTime = st(System)::currentTimeMillis();
-        long interval = v->millseconds - currentTime;
+        long interval = v->mNextTime - currentTime;
         if(interval > 0) {
             //printf("_ScheduledThreadPoolThread trace3 \n");
             AutoMutex l(mTimeLock);
@@ -144,13 +191,13 @@ void _ScheduledThreadPoolThread::run() {
 
             Runnable r = v->task->getRunnable();
             if(r != nullptr) {
-                //we should use dynamic thread pool
-                //Thread t = createThread(r);
-                //t->start();
                 printf("_ScheduledThreadPoolThread trace6 \n");
-                ScheduledTaskWorker worker = createScheduledTaskWorker(v->task);
-                //Thread t = createThread(worker);
-                //t->start();
+                ScheduledTaskWorker worker = createScheduledTaskWorker(v);
+
+                //if(v->mScheduleTaskType != ScheduletTaskNormal) {
+                //    worker->setTimeThread(mTimeThread);
+                //}
+                
                 printf("_ScheduledThreadPoolThread trace7 \n");
                 cachedExecutor->execute(worker);
             }
@@ -230,16 +277,38 @@ Future _ScheduledThreadPoolExecutor::schedule(Runnable r,long delay) {
     return future;
 }
 
-Future _ScheduledThreadPoolExecutor::scheduleAtFixedRate(Runnable command,
+Future _ScheduledThreadPoolExecutor::scheduleAtFixedRate(Runnable r,
                                 long initialDelay,
                                 long period) {
-    //TODO
+
+    FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r);
+    Future future = createFuture(task);
+
+    ScheduledThreadPoolTask pooltask = createScheduledThreadPoolTask(task,
+                                                                     initialDelay,
+                                                                     ScheduletTaskFixRate,
+                                                                     period,
+                                                                     mTimeThread);
+    mTimeThread->addTask(pooltask);
+
+    return future;
 }
 
-Future _ScheduledThreadPoolExecutor::scheduleWithFixedDelay(Runnable command,
+Future _ScheduledThreadPoolExecutor::scheduleWithFixedDelay(Runnable r,
                                 long initialDelay,
                                 long delay) {
-    //TODO        
+
+    FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r);
+    Future future = createFuture(task);
+
+    ScheduledThreadPoolTask pooltask = createScheduledThreadPoolTask(task,
+                                                                     initialDelay,
+                                                                     ScheduletTaskFixedDelay,
+                                                                     delay,
+                                                                     mTimeThread);
+    mTimeThread->addTask(pooltask);  
+
+    return future;   
 }
 
 }

@@ -20,25 +20,55 @@
 
 using namespace std;
 
-namespace obotcha {
+enum ScheduledTaskType {
+    ScheduletTaskNormal,
+    ScheduletTaskFixRate,
+    ScheduletTaskFixedDelay
+};
+
+namespace obotcha { 
+
+class _ScheduledThreadPoolTask;
+class _ScheduledThreadPoolThread;
+class _ScheduledThreadPoolExecutor;
 
 DECLARE_SIMPLE_CLASS(ScheduledTaskWorker) IMPLEMENTS(Runnable){
 public:
-    _ScheduledTaskWorker(FutureTask);
+    _ScheduledTaskWorker(sp<_ScheduledThreadPoolTask>);
+
     void run();
 
 private:
-    FutureTask mTask;
+    sp<_ScheduledThreadPoolTask> mTask;
+
+    sp<_ScheduledThreadPoolThread> mTimeThread;
 };
 
 
 DECLARE_SIMPLE_CLASS(ScheduledThreadPoolTask) {
 public:
+    friend class _ScheduledTaskWorker;
+    friend class _ScheduledThreadPoolThread;
+    friend class _ScheduledThreadPoolExecutor;
+
     _ScheduledThreadPoolTask(FutureTask task,long int interval);
 
-    long int millseconds;
+    _ScheduledThreadPoolTask(FutureTask t,
+                             long int interval,
+                             int type,
+                             long int repeatDelay,
+                             sp<_ScheduledThreadPoolThread> timethread);
+
+private:
+    long int mNextTime;
     
-    FutureTask task;    
+    FutureTask task;
+
+    int mScheduleTaskType;
+
+    long int repeatDelay;
+
+    sp<_ScheduledThreadPoolThread> mTimeThread;
 };
 
 DECLARE_SIMPLE_CLASS(ScheduledThreadPoolThread) EXTENDS(Thread) {
