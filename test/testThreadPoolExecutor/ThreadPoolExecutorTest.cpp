@@ -38,7 +38,21 @@ public:
     }
 };
 
+Future f2;
+Future f3;
+
+void testDestroyFunc() {
+    ExecutorService service = st(Executors)::newFixedThreadPool(1);
+    Future f = service->submit(createMyRun1());
+    f2 = service->submit(createMyRun1());
+    f3 = service->submit(createMyRun1());
+    //while(1) {
+    //  usleep(1000);
+    //}
+}
+
 int main() {
+#if 0
     ExecutorService service = st(Executors)::newFixedThreadPool(1);
     printf("main1,start trace1 \n");
     Future f = service->submit(createMyRun1());
@@ -59,4 +73,13 @@ int main() {
     while(1) {
         usleep(1000);
     }
+#endif
+   printf("testDestroyFunc start \n");
+   testDestroyFunc();
+   printf("testDestroyFunc end \n");
+   f2->wait();
+   printf("testDestroyFunc wait end \n");
+   while(1) {
+     usleep(1000);
+   }
 }

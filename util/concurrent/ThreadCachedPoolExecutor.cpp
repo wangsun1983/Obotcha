@@ -154,7 +154,13 @@ void _ThreadCachedPoolExecutor::shutdown(){
         mHandlers->get(i)->stop();
     }
 
-    mPool->clear();
+    int taskNum = mPool->size();
+    for(int i = 0;i< taskNum;i++) {
+        FutureTask task = mPool->deQueueLast();
+        task->cancel();
+    }
+
+    //mPool->clear();
 }
 
 void _ThreadCachedPoolExecutor::shutdownNow() {
@@ -164,7 +170,13 @@ void _ThreadCachedPoolExecutor::shutdownNow() {
         mHandlers->get(i)->forceStop();
     }
 
-    mPool->clear();
+    int taskNum = mPool->size();
+    for(int i = 0;i< taskNum;i++) {
+        FutureTask task = mPool->deQueueLast();
+        task->cancel();
+    }
+
+    //mPool->clear();
 
     mIsTerminated = true;
 }
@@ -275,6 +287,10 @@ void _ThreadCachedPoolExecutor::removeHandler(ThreadCachedPoolExecutorHandler h)
 
 int _ThreadCachedPoolExecutor::getThreadsNum() {
     return mHandlers->size();
+}
+
+_ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
+    shutdownNow();
 }
 
 }

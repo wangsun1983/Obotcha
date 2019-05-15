@@ -39,8 +39,8 @@ public:
     void loadPrivateKey(String);
     void loadPublicKey(String);
 
-    String encrypt(String);
-    String decrypt(String);
+    ByteArray encrypt(String);
+    ByteArray decrypt(ByteArray);
 
 private:
     RSA *mPubRsaKey;

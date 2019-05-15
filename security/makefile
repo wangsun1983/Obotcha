@@ -1,24 +1,26 @@
 securityDir = security
 
 link += crc32 \
-		md5 \
+		md \
 		des \
 		base64 \
 		aes \
-		rsa
+		rsa \
+		sha \
 		
 objs += $(outtmp)/crc32.o \
-		$(outtmp)/md5.o \
+		$(outtmp)/md.o \
 		$(outtmp)/des.o \
 		$(outtmp)/base64.o \
 		$(outtmp)/aes.o \
 		$(outtmp)/rsa.o \
+		$(outtmp)/sha.o \
 
 crc32 :$(securityDir)/Crc32.cpp
 	$(gcc) $(cflags) -c $(securityDir)/Crc32.cpp -o $(outtmp)/crc32.o $(external)
 
-md5 :$(securityDir)/Md5.cpp
-	$(gcc) $(cflags) -c $(securityDir)/Md5.cpp -o $(outtmp)/md5.o $(external)
+md :$(securityDir)/Md.cpp
+	$(gcc) $(cflags) -c $(securityDir)/Md.cpp -o $(outtmp)/md.o $(external)
 
 des :$(securityDir)/Des.cpp
 	$(gcc) $(cflags) -c $(securityDir)/Des.cpp -o $(outtmp)/des.o $(external)		
@@ -31,3 +33,6 @@ aes :$(securityDir)/Aes.cpp
 
 rsa :$(securityDir)/Rsa.cpp
 	$(gcc) $(cflags) -c $(securityDir)/Rsa.cpp -o $(outtmp)/rsa.o $(external)		
+
+sha :$(securityDir)/Sha.cpp
+	$(gcc) $(cflags) -c $(securityDir)/Sha.cpp -o $(outtmp)/sha.o $(external)	

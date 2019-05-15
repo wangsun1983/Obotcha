@@ -89,7 +89,7 @@ public:
 
     int getThreadsNum();
 
-    //~_ThreadPoolExecutor();
+    ~_ThreadPoolExecutor();
 
 private:
     BlockingQueue<FutureTask> mPool;

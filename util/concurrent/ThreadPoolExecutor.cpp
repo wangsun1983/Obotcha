@@ -149,6 +149,12 @@ void _ThreadPoolExecutor::shutdown() {
         mHandlers->get(i)->stop();
     }
 
+    int taskNum = mPool->size();
+    for(int i = 0;i< taskNum;i++) {
+        FutureTask task = mPool->deQueueLast();
+        task->cancel();
+    }
+
     mPool->clear();
 }
 
@@ -159,7 +165,15 @@ void _ThreadPoolExecutor::shutdownNow() {
         mHandlers->get(i)->forceStop();
     }
 
-    mPool->clear();
+    printf("before mPool size is %d \n",mPool->size());
+    //clear all the task
+    int taskNum = mPool->size();
+    for(int i = 0;i< taskNum;i++) {
+        FutureTask task = mPool->deQueueLast();
+        task->cancel();
+    }
+
+    printf("after mPool size is %d \n",mPool->size());
 
     mIsTerminated = true;
 }
@@ -231,6 +245,11 @@ bool _ThreadPoolExecutor::awaitTermination(long millseconds) {
 
 int _ThreadPoolExecutor::getThreadsNum() {
     return mThreadNum;
+}
+
+_ThreadPoolExecutor::~_ThreadPoolExecutor() {
+    //printf("_ThreadPoolExecutor destroy \n");
+    shutdownNow();
 }
 
 }

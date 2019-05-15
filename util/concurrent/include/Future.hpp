@@ -8,6 +8,7 @@ namespace obotcha {
 enum FutureStatus {
     FUTURE_WAITING,
     FUTURE_RUNNING,
+    FUTURE_CANCEL,
     FUTURE_COMPLETE
 };
 

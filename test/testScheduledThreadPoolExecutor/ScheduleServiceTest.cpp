@@ -27,14 +27,23 @@ public:
   }
 };
 
+void testDestroyFunc() {
+  ScheduledThreadPoolExecutor service = createScheduledThreadPoolExecutor();
+  service->schedule(createRun1(),5000l);
+  service->schedule(createRun1(),5000l);
+  service->schedule(createRun1(),5000l);
+}
 
 int main() {
   printf("---[Thread Test Start]--- \n");
   //Test void start();
+#if 0
   {
       ScheduledThreadPoolExecutor service = createScheduledThreadPoolExecutor();
       service->schedule(createRun1(),5000l);
   }
+#endif
+  testDestroyFunc();
 
   sleep(15);
   while(1){}

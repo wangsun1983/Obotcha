@@ -138,12 +138,32 @@ void _ScheduledThreadPoolThread::addTask(ScheduledThreadPoolTask v) {
 
 void _ScheduledThreadPoolThread::stop() {
     isStop = true;
+
+    //clear all task
+    int size = mDatas->size();
+    for(int i = 0;i < size;i++) {
+        ScheduledThreadPoolTask scheduleTask = mDatas->remove(0);
+        scheduleTask->task->cancel();
+    }
+    //mDatas->clear();
 }
 
 void _ScheduledThreadPoolThread::forceStop() {
+    AutoMutex l(mDataLock);
     isStop = true;
+    //clear all task
+    int size = mDatas->size();
+    //printf("_ScheduledThreadPoolThread stop before size is %d \n",size);
+    for(int i = 0;i < size;i++) {
+        ScheduledThreadPoolTask scheduleTask = mDatas->remove(0);
+        scheduleTask->task->cancel();
+    }
+    //mDatas->clear();
+    //printf("_ScheduledThreadPoolThread stop after size is %d \n",mDatas->size());
+
     this->exit();
-    mDatas->clear();
+
+    //mDatas->clear();
 }
 
 void _ScheduledThreadPoolThread::waitStop(long timeout) {
@@ -309,6 +329,11 @@ Future _ScheduledThreadPoolExecutor::scheduleWithFixedDelay(Runnable r,
     mTimeThread->addTask(pooltask);  
 
     return future;   
+}
+
+_ScheduledThreadPoolExecutor::~_ScheduledThreadPoolExecutor() {
+    printf("_ScheduledThreadPoolExecutor destroy \n");
+    shutdownNow();
 }
 
 }

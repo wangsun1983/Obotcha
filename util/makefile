@@ -10,6 +10,7 @@ link += calendar \
 		arraylist \
 		uuid \
 		random \
+		math \
 
 objs += $(outtmp)/calendar.o \
         $(outtmp)/timezone.o \
@@ -18,6 +19,7 @@ objs += $(outtmp)/calendar.o \
 		$(outtmp)/arraylist.o \
 		$(outtmp)/uuid.o \
 		$(outtmp)/random.o \
+		$(outtmp)/math.o \
 
 calendar :$(utilDir)/Calendar.cpp
 	$(gcc) $(cflags) -c $(utilDir)/Calendar.cpp -o $(outtmp)/calendar.o
@@ -39,6 +41,9 @@ uuid :$(utilDir)/UUID.cpp
 
 random :$(utilDir)/Random.cpp
 	$(gcc) $(cflags) -c $(utilDir)/Random.cpp -o $(outtmp)/random.o
+
+math :$(utilDir)/Math.cpp
+	$(gcc) $(cflags) -c $(utilDir)/Math.cpp -o $(outtmp)/math.o
 
 #base64 :$(utilDir)/Base64.cpp
 #	$(gcc) $(cflags) -c $(utilDir)/Base64.cpp -o $(outtmp)/base64.o

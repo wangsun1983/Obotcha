@@ -148,6 +148,9 @@ public:
     Future scheduleWithFixedDelay(Runnable command,
                                 long initialDelay,
                                 long delay);
+
+    ~_ScheduledThreadPoolExecutor();
+    
 private:
     //ConcurrentQueue<FutureTask> mPool;
 
