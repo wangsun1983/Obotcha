@@ -46,19 +46,15 @@ private:
     RSA *mPubRsaKey;
     RSA *mPrivRsaKey;
 
-    // 私钥加密函数
     int prikey_encrypt(const unsigned char *in, int in_len,
                    unsigned char **out, int &out_len);
 
-    // 公钥解密函数，返回解密后的数据长度
     int pubkey_decrypt(const unsigned char *in, int in_len,
                            unsigned char **out, int &out_len);
 
-    // 公钥加密函数
     int pubkey_encrypt(const unsigned char *in, int in_len,
                            unsigned char **out, int &out_len);
  
-    // 私钥解密函数，返回解密后的长度
     int prikey_decrypt(const unsigned char *in, int in_len,
                            unsigned char **out, int &out_len);
 

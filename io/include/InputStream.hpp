@@ -3,6 +3,7 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "ByteArray.hpp"
 
 namespace obotcha {
 
@@ -10,7 +11,7 @@ DECLARE_SIMPLE_CLASS(InputStream) {
 public:
     virtual int read();
     
-    virtual int read(char *buffer,int size);
+    virtual int read(ByteArray);
 
     virtual bool open();
     

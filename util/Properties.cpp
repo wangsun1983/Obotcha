@@ -39,7 +39,7 @@ void _Properties::save(String path) {
     
     FileOutputStream stream = createFileOutputStream(path);
     MapIterator<String,String> iterator = mProps->getIterator();
-    stream->open(st(FileOutputStream)::FileOpenType::Trunc);
+    stream->open(FileOpenType::Trunc);
 
     while(iterator->hasValue()) {
         String key = createString(iterator->getKey());

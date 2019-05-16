@@ -143,14 +143,16 @@ void _Thread::start() {
     //we should incStrong.after the thread complete,
     //we force decStrong to release;
     //incStrong(0);
+    sp<_Thread> localThread;
+    localThread.set_pointer(this);
+    mLocalThreadLocal->set(mPthread,localThread);
+
     pthread_attr_init(&mThreadAttr);
     pthread_create(&mPthread, &mThreadAttr, localRun, this);
     pthread_attr_getschedpolicy(&mThreadAttr,&mPolicy);
     updateThreadPrioTable();
 
-    sp<_Thread> localThread;
-    localThread.set_pointer(this);
-    mLocalThreadLocal->set(mPthread,localThread);
+
 }
 
 void _Thread::join() {

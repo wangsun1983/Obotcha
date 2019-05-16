@@ -2,6 +2,7 @@ utilDir = ./util
 
 include ./util/concurrent/makefile
 include ./util/text/makefile
+include ./util/coroutine/makefile
 
 link += calendar \
 		timezone \

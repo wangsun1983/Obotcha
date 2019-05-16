@@ -1,5 +1,5 @@
-#ifndef __FILE_OUTPUT_STREAM_HPP__
-#define __FILE_OUTPUT_STREAM_HPP__
+#ifndef __MEMORY_FILE_OUTPUT_STREAM_HPP__
+#define __MEMORY_FILE_OUTPUT_STREAM_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -8,16 +8,17 @@
 #include "File.hpp"
 #include "ByteArray.hpp"
 #include "OutputStream.hpp"
+#include "MemoryFile.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(FileOutputStream) EXTENDS(OutputStream){
+DECLARE_SIMPLE_CLASS(MemoryFileOutputStream) EXTENDS(OutputStream){
 
 public:
 
-    _FileOutputStream(File file);
+    _MemoryFileOutputStream(MemoryFile file);
 
-    _FileOutputStream(String path);
+    _MemoryFileOutputStream(String path);
 
     bool write(char c);
     
@@ -28,7 +29,10 @@ public:
 
     bool writeString(String s);
     
+    //no use
     bool open(FileOpenType opentype);
+
+    bool open(long mapsize);
 
     bool open();
     
@@ -39,7 +43,11 @@ public:
 private:
     String mPath;
 
-    std::ofstream fstream;
+    long filesize;
+
+    char *mPtr;
+
+    long mMapSize;
 };
 
 }

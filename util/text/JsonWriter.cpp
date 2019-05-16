@@ -4,12 +4,12 @@ namespace obotcha {
 
 _JsonWriter::_JsonWriter(File f) {
     stream = createFileOutputStream(f);
-    stream->open(st(FileOutputStream)::FileOpenType::Trunc);
+    stream->open(FileOpenType::Trunc);
 }
 
 _JsonWriter::_JsonWriter(String path) {
     stream = createFileOutputStream(path);
-    stream->open(st(FileOutputStream)::FileOpenType::Trunc);
+    stream->open(FileOpenType::Trunc);
 }
 
 void _JsonWriter::write(JsonValue value) {

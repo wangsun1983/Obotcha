@@ -173,7 +173,6 @@ ByteArray _Rsa::decrypt(ByteArray content) {
     return result;
 }
 
-// 私钥加密函数
 int _Rsa::prikey_encrypt(const unsigned char *in, int in_len,
                    unsigned char **out, int &out_len)
 {
@@ -193,7 +192,8 @@ int _Rsa::prikey_encrypt(const unsigned char *in, int in_len,
  
     return ret;
 }
-// 公钥解密函数，返回解密后的数据长度
+
+
 int _Rsa::pubkey_decrypt(const unsigned char *in, int in_len,
                            unsigned char **out, int &out_len)
 {
@@ -210,7 +210,7 @@ int _Rsa::pubkey_decrypt(const unsigned char *in, int in_len,
  
     return ret;
 }
-// 公钥加密函数
+
 int _Rsa::pubkey_encrypt(const unsigned char *in, int in_len,
                            unsigned char **out, int &out_len)
 {
@@ -230,7 +230,7 @@ int _Rsa::pubkey_encrypt(const unsigned char *in, int in_len,
     return ret;
 }
  
-// 私钥解密函数，返回解密后的长度
+
 int _Rsa::prikey_decrypt(const unsigned char *in, int in_len,
                            unsigned char **out, int &out_len)
 {

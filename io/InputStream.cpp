@@ -7,7 +7,7 @@ int _InputStream::read() {
     return -1;
 }
     
-int _InputStream::read(char *buffer,int size) {
+int _InputStream::read(ByteArray) {
     //TODO
     return  -1;
 }

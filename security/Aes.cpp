@@ -86,7 +86,7 @@ void _Aes::decrypt(File src,File des) {
     if(inputData != nullptr) {
         ByteArray outputData = decrypt(inputData);
         FileOutputStream outputStream = createFileOutputStream(des);
-        outputStream->open(st(FileOutputStream)::FileOpenType::Trunc);
+        outputStream->open(FileOpenType::Trunc);
 
         //we should check last 8byte
         char *checkP = outputData->toValue();
@@ -167,7 +167,7 @@ void _Aes::encrypt(File src,File des) {
         ByteArray outputData = encrypt(inputData);
         printf("encrypt outputData size is %d \n",outputData->size());
         FileOutputStream outputStream = createFileOutputStream(des);
-        outputStream->open(st(FileOutputStream)::FileOpenType::Trunc);
+        outputStream->open(FileOpenType::Trunc);
         outputStream->write(outputData);
         outputStream->flush();
         outputStream->close();

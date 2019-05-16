@@ -24,7 +24,7 @@ _XmlWriter::_XmlWriter(sp<_XmlDocument> doc) {
 void _XmlWriter::write(String filepath) {
     String content = xmlDoc->toString();
     FileOutputStream stream = createFileOutputStream(filepath);
-    stream->open(st(FileOutputStream)::FileOpenType::Trunc);
+    stream->open(FileOpenType::Trunc);
     printf("write filepath is %s \n",filepath->toChars());
     printf("write content is %s \n",content->toChars());
     stream->writeString(content);

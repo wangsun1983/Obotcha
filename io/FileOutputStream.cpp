@@ -37,7 +37,11 @@ bool _FileOutputStream::writeString(String s) {
     fstream<<s->toChars();
     return true;
 }
-   
+
+bool _FileOutputStream::open() {
+    return open(FileOpenType::Append);
+}
+
 bool _FileOutputStream::open(FileOpenType opentype) {
     switch(opentype) {
         case Append:
