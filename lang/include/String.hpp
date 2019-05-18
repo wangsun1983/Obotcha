@@ -89,6 +89,8 @@ public:
 
     Double toDouble();
 
+    Long toLong();
+
     int toBasicInt();
 
     bool toBasicBool();
@@ -96,6 +98,8 @@ public:
     float toBasicFloat();
 
     double toBasicDouble();
+
+    long toBasicLong();
 
     static String valueOf(Integer v);
 
@@ -155,6 +159,8 @@ private:
     bool isDoubleNumber(const char *p,int size);
 
     bool isFloatNumber(const char *p,int size);
+
+    bool isLongNumber(const char *p,int size);
 
 #ifdef DEBUG_STRING_MEMORY_LEAK
     int stringId;

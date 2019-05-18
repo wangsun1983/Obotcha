@@ -230,8 +230,11 @@ String _String::subString(int start,int end) {
         return nullptr;
     }
 
-    std::string *result = new std::string(m_str->substr(start,end));
-    String ret = new _String(result);
+    //printf("substring start is %d,end is %d \n",start,end);
+    //std::cout<<"after substring:"<<m_str->substr(start,end);
+    //std::string *result = new std::string();
+
+    String ret = new _String(m_str->substr(start,end));
     return ret;
 }
 
@@ -508,6 +511,23 @@ Double _String::toDouble() {
     return createDouble(value);
 }
 
+Long _String::toLong() {
+    if(m_str == nullptr) {
+        return nullptr;
+    }
+
+    if(!isLongNumber(m_str->data(),m_str->size())) {
+        return nullptr;
+    }
+
+    std::stringstream ss;
+    ss<<*m_str;
+    long value;
+    ss>>value;
+    
+    return createLong(value);
+}
+
 int _String::toBasicInt() {
     if(m_str == nullptr) {
         return 0;
@@ -579,6 +599,22 @@ double _String::toBasicDouble() {
     std::stringstream ss;
     ss<<*m_str;
     double value;
+    ss>>value;
+    return value;
+}
+
+long _String::toBasicLong() {
+    if(m_str == nullptr) {
+        return 0;
+    }
+
+    if(!isLongNumber(m_str->data(),m_str->size())) {
+        return 0;
+    }
+
+    std::stringstream ss;
+    ss<<*m_str;
+    long value;
     ss>>value;
     return value;
 }
@@ -739,7 +775,19 @@ bool _String::startsWith(String v) {
 
 bool _String::isIntNumber(const char *p,int size) {
     for(int i = 0;i < size;i++) {
-        if(p[i] >= '0' && p[i] < '9') {
+        if(p[i] >= '0' && p[i] <= '9') {
+            continue;
+        } else {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool _String::isLongNumber(const char *p,int size) {
+    for(int i = 0;i < size;i++) {
+        if(p[i] >= '0' && p[i] <= '9') {
             continue;
         }
         return false;
@@ -752,7 +800,7 @@ bool _String::isDoubleNumber(const char *p,int size) {
     int dotCount = 0;
 
     for(int i = 0;i < size;i++) {
-        if(p[i] >= '0' && p[i] < '9') {
+        if(p[i] >= '0' && p[i] <= '9') {
             continue;
         } else if(p[i] == '.') {
             dotCount++;
@@ -771,7 +819,7 @@ bool _String::isFloatNumber(const char *p,int size) {
     int dotCount = 0;
 
     for(int i = 0;i < size;i++) {
-        if(p[i] >= '0' && p[i] < '9') {
+        if(p[i] >= '0' && p[i] <= '9') {
             continue;
         } else if(p[i] == '.') {
             dotCount++;

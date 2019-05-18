@@ -6,45 +6,46 @@
 
 namespace obotcha {
 
+enum MonthEnum{
+    January = 0,
+    February,
+    March,
+    April,
+    May,
+    June,
+    July,
+    August,
+    September,
+    October,
+    November,
+    December
+};
+
+enum WeekDayEnum{
+    Monday = 0,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday,
+    Sunday
+};
+
+enum CalendarType {
+    Year = 0,
+    Month,
+    DayOfWeek,
+    DayOfMonth,
+    DayOfYear,
+    Hour,
+    Minute,
+    Second,
+    MSecond
+};
+
+
 DECLARE_SIMPLE_CLASS(Calendar) {
 public:
-
-    enum MonthEnum{
-        January = 0,
-        February,
-        March,
-        April,
-        May,
-        June,
-        July,
-        August,
-        September,
-        October,
-        November,
-        December
-    };
-
-    enum WeekDayEnum{
-        Monday = 0,
-        Tuesday,
-        Wednesday,
-        Thursday,
-        Friday,
-        Saturday,
-        Sunday
-    };
-
-    enum CalendarType {
-        Year = 0,
-        Month,
-        DayOfWeek,
-        DayOfMonth,
-        DayOfYear,
-        Hour,
-        Minute,
-        Second,
-        MSecond
-    };
 
     _Calendar();
 

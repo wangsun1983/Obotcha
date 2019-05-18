@@ -81,7 +81,7 @@ int _ArrayList<String>::indexOf(String v) {
 }
 
 int _ArrayList<String>::set(int index,String val) {
-    if(index >= elements.size()) {
+    if(index >= elements.size() || index < 0 || val == nullptr) {
         return -1;
     }
 
@@ -92,7 +92,7 @@ int _ArrayList<String>::set(int index,String val) {
 }
 
 String _ArrayList<String>::get(int index) {
-    if(index >= elements.size()) {
+    if(index >= elements.size() || index < 0) {
         return nullptr;
     }
     return createString(elements[index]);
@@ -559,7 +559,7 @@ int _ArrayList<Boolean>::indexOf(Boolean v) {
 }
 
 int _ArrayList<Boolean>::set(int index,Boolean val) {
-    if(index >= elements.size()) {
+    if(index >= elements.size() || index < 0 || val == nullptr) {
         return -1;
     }
 
@@ -568,7 +568,7 @@ int _ArrayList<Boolean>::set(int index,Boolean val) {
 }
 
 int _ArrayList<Boolean>::set(int index,bool val) {
-    if(index >= elements.size()) {
+    if(index >= elements.size() || index < 0) {
         return -1;
     }
     
@@ -614,10 +614,11 @@ int _ArrayList<Boolean>::insert(int index,ArrayList<Boolean> list) {
     }
 
     if(list != nullptr) {
-        int size = list->elements.size(); 
-        for(int i = 0;i < size;i++) {
-            elements.insert(elements.begin() + i,list->elements[i]);
-        }
+        //int size = list->elements.size(); 
+        //for(int i = 0;i < size;i++) {
+        //    elements.insert(elements.begin() + index + i,list->elements[i]);
+        //}
+        elements.insert(elements.begin() + index,list->begin(),list->end());
     }
 
     return 0;
@@ -632,17 +633,19 @@ int _ArrayList<Boolean>::insert(int index,ArrayList<Boolean> list,int length) {
 
     if(list != nullptr) {
         int size = list->elements.size(); 
-        size = length > (size - 1)?(size -1):length;
+        size = length > size?size:length;
 
-        for(int i = 0;i < size;i++) {
-            elements.insert(elements.begin() + i,list->elements[i]);
-        }
+        elements.insert(elements.begin() + index,list->begin(),list->begin() + size);
     }
 
     return 0;
 }
 
 void _ArrayList<Boolean>::insertFirst(Boolean val) {
+    if(val == nullptr) {
+        return;
+    }
+
     elements.insert(elements.begin(),val->toValue()); 
 }
 
@@ -747,7 +750,7 @@ Float _ArrayList<Float>::remove(int index) {
         return nullptr;
     }
 
-    bool val = elements.at(index);
+    float val = elements.at(index);
     elements.erase(elements.begin() + index);
     return createFloat(val);
 }
@@ -781,15 +784,16 @@ int _ArrayList<Float>::indexOf(Float v) {
 }
 
 int _ArrayList<Float>::set(int index,Float val) {
-    if(index >= elements.size()) {
+    if(index >= elements.size() || index < 0 || val == nullptr) {
         return -1;
     }
+
     elements[index] = val->toValue();
     return 0;
 }
 
 int _ArrayList<Float>::set(int index,float val) {
-    if(index >= elements.size()) {
+    if(index >= elements.size() || index < 0) {
         return -1;
     }
 
@@ -837,7 +841,7 @@ int _ArrayList<Float>::insert(int index,ArrayList<Float> list) {
     if(list != nullptr) {
         int size = list->elements.size(); 
         for(int i = 0;i < size;i++) {
-            elements.insert(elements.begin() + i,list->elements[i]);
+            elements.insert(elements.begin() + index + i,list->elements[i]);
         }
     }
 
@@ -852,18 +856,26 @@ int _ArrayList<Float>::insert(int index,ArrayList<Float> list,int length) {
     }
 
     if(list != nullptr) {
-        int size = list->elements.size(); 
-        size = length > (size - 1)?(size -1):length;
+        //int size = list->elements.size(); 
+        //size = length > (size - 1)?(size -1):length;
 
-        for(int i = 0;i < size;i++) {
-            elements.insert(elements.begin() + i,list->elements[i]);
-        }
+        //for(int i = 0;i < size;i++) {
+        //    elements.insert(elements.begin() + index + i,list->elements[i]);
+        //}
+        int size = list->elements.size(); 
+        size = length > size?size:length;
+
+        elements.insert(elements.begin() + index,list->begin(),list->begin() + size);
     }
 
     return 0;
 }
 
 void _ArrayList<Float>::insertFirst(Float val) {
+    if(val == nullptr) {
+        return;
+    }
+
     elements.insert(elements.begin(),val->toValue()); 
 }
 
@@ -1001,7 +1013,7 @@ int _ArrayList<Double>::indexOf(Double v) {
 }
 
 int _ArrayList<Double>::set(int index,Double val) {
-    if(index >= elements.size()) {
+    if(index >= elements.size() || index < 0 || val == nullptr) {
         return -1;
     }
 
@@ -1010,7 +1022,7 @@ int _ArrayList<Double>::set(int index,Double val) {
 }
 
 int _ArrayList<Double>::set(int index,double val) {
-    if(index >= elements.size()) {
+    if(index >= elements.size() || index < 0) {
         return -1;
     }
 
@@ -1058,7 +1070,7 @@ int _ArrayList<Double>::insert(int index,ArrayList<Double> list) {
     if(list != nullptr) {
         int size = list->elements.size(); 
         for(int i = 0;i < size;i++) {
-            elements.insert(elements.begin() + i,list->elements[i]);
+            elements.insert(elements.begin() + index + i,list->elements[i]);
         }
     }
 
@@ -1073,18 +1085,26 @@ int _ArrayList<Double>::insert(int index,ArrayList<Double> list,int length) {
     }
 
     if(list != nullptr) {
-        int size = list->elements.size(); 
-        size = length > (size - 1)?(size -1):length;
+        //int size = list->elements.size(); 
+        //size = length > (size - 1)?(size -1):length;
 
-        for(int i = 0;i < size;i++) {
-            elements.insert(elements.begin() + i,list->elements[i]);
-        }
+        //for(int i = 0;i < size;i++) {
+        //    elements.insert(elements.begin() + index + i,list->elements[i]);
+        //}
+        int size = list->elements.size(); 
+        size = length > size?size:length;
+
+        elements.insert(elements.begin() + index,list->begin(),list->begin() + size);
     }
 
     return 0;
 }
 
 void _ArrayList<Double>::insertFirst(Double val) {
+    if(val == nullptr) {
+        return;
+    }
+
     elements.insert(elements.begin(),val->toValue()); 
 }
 
@@ -1189,7 +1209,7 @@ Long _ArrayList<Long>::remove(int index) {
         return nullptr;
     }
 
-    bool val = elements.at(index);
+    long val = elements.at(index);
     elements.erase(elements.begin() + index);
     return createLong(val);
 }
@@ -1223,7 +1243,7 @@ int _ArrayList<Long>::indexOf(Long v) {
 }
 
 int _ArrayList<Long>::set(int index,Long val) {
-    if(index >= elements.size()) {
+    if(index >= elements.size() || index < 0 || val == nullptr) {
         return -1;
     }
 
@@ -1232,7 +1252,7 @@ int _ArrayList<Long>::set(int index,Long val) {
 }
 
 int  _ArrayList<Long>::set(int index,long val) {
-    if(index >= elements.size()) {
+    if(index >= elements.size() || index < 0) {
         return -1;
     }
 
@@ -1280,7 +1300,7 @@ int _ArrayList<Long>::insert(int index,ArrayList<Long> list) {
     if(list != nullptr) {
         int size = list->elements.size(); 
         for(int i = 0;i < size;i++) {
-            elements.insert(elements.begin() + i,list->elements[i]);
+            elements.insert(elements.begin() + index + i,list->elements[i]);
         }
     }
 
@@ -1295,17 +1315,25 @@ int _ArrayList<Long>::insert(int index,ArrayList<Long> list,int length) {
     }
 
     if(list != nullptr) {
+        //int size = list->elements.size(); 
+        //size = length > (size - 1)?(size -1):length;
+        //for(int i = 0;i < size;i++) {
+        //    elements.insert(elements.begin() + index + i,list->elements[i]);
+        //}
         int size = list->elements.size(); 
-        size = length > (size - 1)?(size -1):length;
-        for(int i = 0;i < size;i++) {
-            elements.insert(elements.begin() + i,list->elements[i]);
-        }
+        size = length > size?size:length;
+
+        elements.insert(elements.begin() + index,list->begin(),list->begin() + size);
     }
 
     return 0;
 }
 
 void _ArrayList<Long>::insertFirst(Long val) {
+    if(val == nullptr) {
+        return;
+    }
+
     elements.insert(elements.begin(),val->toValue()); 
 }
 

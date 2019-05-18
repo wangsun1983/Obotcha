@@ -97,7 +97,7 @@ public:
     }
 
     inline int set(int index,T val) {
-        if(index >= elements.size() || index < 0) {
+        if(index >= elements.size() || index < 0 || val == nullptr) {
             return -1;
         }
 
@@ -143,7 +143,7 @@ public:
 
         if(list != nullptr) {
             int size = list->elements.size(); 
-            size = length > (size - 1)?(size -1):length;
+            size = length > size?size:length;
 
             elements.insert(elements.begin() + index,list->begin(),list->begin() + size);
         }
