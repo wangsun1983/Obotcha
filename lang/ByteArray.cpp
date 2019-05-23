@@ -1,6 +1,3 @@
-#include <stdlib.h>
-#include <memory.h>
-
 #include "ByteArray.hpp"
 
 namespace obotcha {

@@ -1,46 +1,80 @@
-#include <unistd.h>
-#include <stdio.h>
-
 #include "Pipe.hpp"
 
 namespace obotcha {
 
+_Pipe::_Pipe(PipeIoType type) {
+    mIoType = type;
+    isCreated = false;
+
+}
+
 _Pipe::_Pipe() {
+    mIoType = PipeDefault;
     isCreated = false;
 }
 
-bool _Pipe::init() {
-    int result = pipe(pipeFd);
+int _Pipe::init() {
+    int result = -1;
+    switch(mIoType) {
+        case PipeDefault:
+            result = pipe(pipeFd);
+        break;
+
+        case PipeCloseOnExec:
+        case PipeDirect:
+        case PipeNonBlock:
+            result = pipe2(pipeFd,mIoType);
+        break;
+    }
+    
     isCreated = (result != -1);
-    return isCreated;
+    return result;
 }
 
-bool _Pipe::writeTo(int type,ByteArray data) {
+int _Pipe::writeTo(ByteArray data) {
     if(!isCreated) {
-        return false;
+        return PipeNotInit;
     }
 
-    int fd = pipeFd[type];
-    int result = write(fd,data->toValue(),data->size());
+    if(data->size() > PIPE_BUF) {
+        return PipeWriteOversize;
+    }
 
-    return (result != -1);
+    return write(pipeFd[WritePipe],data->toValue(),data->size());
 }
 
-int  _Pipe::readFrom(int type,ByteArray buff) {
+int  _Pipe::readFrom(ByteArray buff) {
     if(!isCreated) {
-        return -1;
+        return PipeNotInit;
     }
 
-    int fd = pipeFd[type];
-    int nbytes = read(fd,buff->toValue(),buff->size());
+    int nbytes = read(pipeFd[ReadPipe],buff->toValue(),buff->size());
     return nbytes;
+}
+
+int _Pipe::closePipe(PipeType type) {
+    if(!isCreated) {
+        return PipeNotInit;
+    }
+    return close(pipeFd[type]);
+}
+
+int _Pipe::getMaxSize() {
+    return PIPE_BUF;
+}
+
+void _Pipe::destroy() {
+    if(isCreated) {
+        close(pipeFd[ReadPipe]);
+        close(pipeFd[WritePipe]);    
+    }
 }
 
 _Pipe::~_Pipe() {
     if(isCreated) {
-        close(pipeFd[0]);
-        close(pipeFd[1]);    
-    }    
+        close(pipeFd[ReadPipe]);
+        close(pipeFd[WritePipe]);    
+    }
 }
 
 }

@@ -1,6 +1,9 @@
 #ifndef __BYTE_ARRAY_HPP__
 #define __BYTE_ARRAY_HPP__
 
+#include <stdlib.h>
+#include <memory.h>
+
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "String.hpp"
