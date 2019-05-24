@@ -11,6 +11,7 @@ link += file \
 	memoryfile \
 	memoryfileinputstream \
 	memoryfileoutputstream \
+	filenodereader
 
 
 objs += $(outtmp)/file.o \
@@ -24,6 +25,7 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/memoryfile.o \
 	$(outtmp)/memoryfileinputstream.o \
 	$(outtmp)/memoryfileoutputstream.o \
+	$(outtmp)/filenodereader.o \
 
 file :$(ioDir)/File.cpp
 	$(gcc) $(cflags) -c $(ioDir)/File.cpp -o $(outtmp)/file.o $(external)
@@ -57,3 +59,6 @@ memoryfileinputstream :$(ioDir)/MemoryFileInputStream.cpp
 
 memoryfileoutputstream :$(ioDir)/MemoryFileOutputStream.cpp
 	$(gcc) $(cflags) -c $(ioDir)/MemoryFileOutputStream.cpp -o $(outtmp)/memoryfileoutputstream.o $(external)
+
+filenodereader :$(ioDir)/FileNodeReader.cpp
+	$(gcc) $(cflags) -c $(ioDir)/FileNodeReader.cpp -o $(outtmp)/filenodereader.o $(external)

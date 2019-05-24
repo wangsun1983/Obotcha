@@ -14,6 +14,10 @@ _Pipe::_Pipe() {
 }
 
 int _Pipe::init() {
+    if(isCreated) {
+        return -PipeAlreadyInit;
+    }
+
     int result = -1;
     switch(mIoType) {
         case PipeDefault:
@@ -33,11 +37,11 @@ int _Pipe::init() {
 
 int _Pipe::writeTo(ByteArray data) {
     if(!isCreated) {
-        return PipeNotInit;
+        return -PipeNotInit;
     }
 
     if(data->size() > PIPE_BUF) {
-        return PipeWriteOversize;
+        return -PipeWriteOversize;
     }
 
     return write(pipeFd[WritePipe],data->toValue(),data->size());
@@ -45,25 +49,33 @@ int _Pipe::writeTo(ByteArray data) {
 
 int  _Pipe::readFrom(ByteArray buff) {
     if(!isCreated) {
-        return PipeNotInit;
+        return -PipeNotInit;
     }
 
     int nbytes = read(pipeFd[ReadPipe],buff->toValue(),buff->size());
     return nbytes;
 }
 
-int _Pipe::closePipe(PipeType type) {
+int _Pipe::closeReadPipe() {
     if(!isCreated) {
-        return PipeNotInit;
+        return -PipeNotInit;
     }
-    return close(pipeFd[type]);
+    return close(pipeFd[ReadPipe]);
+}
+
+int _Pipe::closeWritePipe() {
+    if(!isCreated) {
+        return -PipeNotInit;
+    }
+    return close(pipeFd[WritePipe]);
+
 }
 
 int _Pipe::getMaxSize() {
     return PIPE_BUF;
 }
 
-void _Pipe::destroy() {
+void _Pipe::release() {
     if(isCreated) {
         close(pipeFd[ReadPipe]);
         close(pipeFd[WritePipe]);    

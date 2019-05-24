@@ -1,10 +1,15 @@
 #include <stdio.h>
 #include <string.h>     //for strerror()
 #include <errno.h>
+#include <limits.h>
 
+#include "FileNodeReader.hpp"
 #include "PosixMq.hpp"
 
 namespace obotcha {
+
+int _PosixMq::MAX_MSG_NUMS = -1;
+int _PosixMq::MAX_MSG_SIZE = -1;
 
 _PosixMq::_PosixMq(String name,int type) {
     initParam(name,type,DEFAULT_MQ_MSG_SIZE,DEFAULT_MQ_MSG_NUMS);
@@ -26,10 +31,26 @@ void _PosixMq::initParam(String name,int type,int msgsize,int maxmsgs) {
     mMaxMsgs = maxmsgs;
 }
 
-bool _PosixMq::init() {
+int _PosixMq::init() {
+    if(MAX_MSG_NUMS == -1) {
+        MAX_MSG_NUMS = st(FileNodeReader)::readInt("/proc/sys/fs/mqueue/msg_max");
+    }
+
+    if(MAX_MSG_SIZE == -1) {
+        MAX_MSG_SIZE = st(FileNodeReader)::readInt("/proc/sys/fs/mqueue/msgsize_max");
+    }
+
+    if(mMaxMsgs > MAX_MSG_NUMS) {
+        return -PosixMqNumsOversize;
+    }
+
+    if(mMsgSize > MAX_MSG_SIZE) {
+        return -PosixMqMsgSizeOversize;
+    }
+
     struct mq_attr mqAttr;
-    mqAttr.mq_maxmsg = 10;
-    mqAttr.mq_msgsize = 1024;
+    mqAttr.mq_maxmsg = mMaxMsgs;
+    mqAttr.mq_msgsize = mMsgSize;
 
     mQid = mq_open(mQName->toChars(), O_RDWR|O_CREAT, S_IWUSR|S_IRUSR, &mqAttr);
     if (mQid < 0) {
@@ -44,7 +65,7 @@ bool _PosixMq::init() {
 
 
     printf("init fd is %d \n",mQid);
-    return (mQid > 0);
+    return mQid;
 }
 
 bool _PosixMq::send(ByteArray data,int prio) {

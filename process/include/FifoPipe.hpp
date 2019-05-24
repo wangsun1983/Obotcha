@@ -18,22 +18,39 @@ enum FifoPipeType {
     FifoWritePipe
 };
 
+enum FifoPipeFailReason {
+    FifoPipeNotCreate = 200,
+    FifoPipeWrongType,
+    FifoPipeAlreadyCreate,
+    FifoPipeWriteOversize
+};
 
 DECLARE_SIMPLE_CLASS(FifoPipe) {
 public:
+
+    _FifoPipe(String name,int type,int filemode);
+
     _FifoPipe(String,int type);
 
-    bool init();
+    int init();
 
-    bool writeTo(ByteArray data);
+    int writeTo(ByteArray data);
 
     int readFrom(ByteArray buff);
+
+    int getMaxSize();
+
+    int release();
+
+    int destroy();
 
     ~_FifoPipe();
 
 private:
 
     int mType;
+
+    int mMode;
 
     int fifoId;
 

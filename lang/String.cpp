@@ -778,6 +778,9 @@ bool _String::isIntNumber(const char *p,int size) {
         if(p[i] >= '0' && p[i] <= '9') {
             continue;
         } else {
+            if((i == size - 1) && p[i] == '\n') {
+                return true;
+            }
             return false;
         }
     }

@@ -27,6 +27,11 @@ enum PosixMqPriority {
     PosixMqPriortyUrgent
 };
 
+enum PosixMqFailReason {
+    PosixMqMsgSizeOversize = 200,
+    PosixMqNumsOversize,
+};
+
 #define DEFAULT_MQ_MSG_SIZE 1024*4
 #define DEFAULT_MQ_MSG_NUMS 8
 
@@ -38,7 +43,7 @@ public:
 
     _PosixMq(String name,int type,int msgsize,int maxmsgs);
 
-    bool init();
+    int init();
 
     bool send(ByteArray data,int prio);
 
@@ -63,6 +68,9 @@ private:
     int mMsgSize;
 
     int mMaxMsgs;
+
+    static int MAX_MSG_NUMS;
+    static int MAX_MSG_SIZE;
    
 };
 

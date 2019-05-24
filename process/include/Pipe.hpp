@@ -29,8 +29,9 @@ enum PipeType {
 };
 
 enum PipeFailReason {
-    PipeWriteOversize = -2,
-    PipeNotInit = -3
+    PipeWriteOversize = 256,
+    PipeNotInit,
+    PipeAlreadyInit
 };
 
 DECLARE_SIMPLE_CLASS(Pipe) {
@@ -45,11 +46,13 @@ public:
 
     int readFrom(ByteArray buff);
 
-    int closePipe(PipeType type);
+    int closeReadPipe();
+
+    int closeWritePipe();
 
     int getMaxSize();
 
-    void destroy();
+    void release();
 
     ~_Pipe();
 

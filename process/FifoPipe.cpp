@@ -4,22 +4,35 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <limits.h>
 
 #include "FifoPipe.hpp"
 
 namespace obotcha {
 
+_FifoPipe::_FifoPipe(String name,int type,int filemode) {
+    mPipeName = name;
+    mType = type;
+    isCreated = false;
+    mMode = filemode;
+}
+
 _FifoPipe::_FifoPipe(String name,int type) {
     mPipeName = name;
     mType = type;
     isCreated = false;
+    mMode = S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH;
 }
 
-bool _FifoPipe::init() {
+int _FifoPipe::init() {
+    if(isCreated) {
+        return -FifoPipeAlreadyCreate;
+    }
+
     if(access(mPipeName->toChars(),F_OK) != 0){
-        int err = mkfifo(mPipeName->toChars(),S_IFIFO|0666);
-        if(err != 0){
-            return false;
+        int err = mkfifo(mPipeName->toChars(),S_IFIFO|mMode);
+        if(err < 0){
+            return err;
         }
     }
 
@@ -34,31 +47,63 @@ bool _FifoPipe::init() {
     }
 
     isCreated = (fifoId != -1);
-    return isCreated;
+    return fifoId;
 }
 
-bool _FifoPipe::writeTo(ByteArray data) {
-    if(!isCreated || mType == FifoReadPipe) {
-        return false;
+int _FifoPipe::writeTo(ByteArray data) {
+    if(!isCreated){
+        return -FifoPipeNotCreate;
     }
 
-    int result = write(fifoId, data->toValue(), data->size());
+    if(mType == FifoReadPipe) {
+        return -FifoPipeWrongType;
+    }
 
-    return (result != -1);
+    if(data->size() > PIPE_BUF) {
+        return -FifoPipeWriteOversize;
+    }
+
+    return write(fifoId, data->toValue(), data->size());
 }
 
 int _FifoPipe::readFrom(ByteArray buff) {
-    if(!isCreated || mType == FifoWritePipe) {
-        return false;
+    if(!isCreated) {
+        return -FifoPipeNotCreate;
     }
-    int res = read(fifoId, buff->toValue(), buff->size());
-    return res;
+
+    if(mType == FifoWritePipe) {
+        return -FifoPipeWrongType;
+    }
+
+    return read(fifoId, buff->toValue(), buff->size());
+}
+
+int _FifoPipe::release() {
+    if(fifoId != -1) {
+        close(fifoId);
+        //unlink(mPipeName->toChars());
+    }
+
+    return 0;
+}
+
+int _FifoPipe::destroy() {
+    if(fifoId != -1) {
+        close(fifoId);
+        unlink(mPipeName->toChars());
+    }
+
+    return 0;
+}
+
+int _FifoPipe::getMaxSize() {
+    return PIPE_BUF;
 }
 
 _FifoPipe::~_FifoPipe() {
     if(fifoId != -1) {
         close(fifoId);
-        unlink(mPipeName->toChars());
+        //unlink(mPipeName->toChars());
     }
 }
 
