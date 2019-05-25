@@ -5,6 +5,7 @@
 
 #include "FileNodeReader.hpp"
 #include "PosixMq.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
@@ -34,10 +35,12 @@ void _PosixMq::initParam(String name,int type,int msgsize,int maxmsgs) {
 int _PosixMq::init() {
     if(MAX_MSG_NUMS == -1) {
         MAX_MSG_NUMS = st(FileNodeReader)::readInt("/proc/sys/fs/mqueue/msg_max");
+        //printf("MAX_MSG_NUMS is %d",MAX_MSG_NUMS);
     }
 
     if(MAX_MSG_SIZE == -1) {
         MAX_MSG_SIZE = st(FileNodeReader)::readInt("/proc/sys/fs/mqueue/msgsize_max");
+        //printf("MAX_MSG_SIZE is %d",MAX_MSG_SIZE);
     }
 
     if(mMaxMsgs > MAX_MSG_NUMS) {
@@ -59,55 +62,119 @@ int _PosixMq::init() {
         }
     }
 
-    //mq_attr mqAttr;
-    //mq_getattr(mQid, &mqAttr);
-    //printf("msg size is %d \n",mqAttr.mq_msgsize);
+    mq_getattr(mQid, &mqAttr);
+    if(mqAttr.mq_maxmsg != mMaxMsgs) {
+        close(mQid);
+        mQid = -1;
+        return -PosixMqMaxMgsSetFailed;
+    }
 
+    if(mqAttr.mq_msgsize != mMsgSize) {
+        close(mQid);
+        mQid = -1;
+        return -PosixMqMsgSizeSetFailed;
+    }
 
-    printf("init fd is %d \n",mQid);
     return mQid;
 }
 
-bool _PosixMq::send(ByteArray data,int prio) {
+int _PosixMq::send(ByteArray data,PosixMqPriority prio) {
     if(mType == RecvMq) {
-        return false;
+        return -PosixMqWrongType;
     }
-    printf("mq_send start send mQid is %d\n",mQid);
-    int result = mq_send(mQid, data->toValue(), data->size(), prio);
-    if(result == -1) {
-        printf("mq_send errno: %s \n",strerror(errno));
+
+    if(mQid == -1) {
+        return -PosixMqNotCreate;
     }
-    return (result != -1);
+
+    if(data->size() > mMsgSize) {
+        return -PosixMqSendBufOverSize;
+    }
+
+    return mq_send(mQid, data->toValue(), data->size(), prio);
 }
 
-bool _PosixMq::send(ByteArray data) {
-    return send(data,1);
+int _PosixMq::send(ByteArray data) {
+    return send(data,PosixMqPriortyLow);
 }
 
 int _PosixMq::receive(ByteArray buff) {
     if(mType == SendMq) {
-        return false;
+        return -PosixMqWrongType;
     }
 
-    unsigned int prio;
+    unsigned int priority = 0;
+    return mq_receive(mQid, buff->toValue(),mMsgSize, &priority);;
+}
 
-    mq_attr mqAttr;
-    mq_getattr(mQid, &mqAttr);
-
-    printf("recve buff size is %d,mqAttr.mq_msgsize is %ld mQid is %d \n",buff->size(),mqAttr.mq_msgsize,mQid);
-    int result = mq_receive(mQid, buff->toValue(),buff->size(), NULL);
-
-    if(result == -1) {
-        printf("mq_recv errno: %s \n",strerror(errno));
+int _PosixMq::sendTimeout(ByteArray data,PosixMqPriority prio,long timeInterval) {
+    if(mType == SendMq) {
+        return -PosixMqWrongType;
     }
 
-    return result;
+    if(mQid == -1) {
+        return -PosixMqNotCreate;
+    }
 
+    if(data->size() > mMsgSize) {
+        return -PosixMqSendBufOverSize;
+    }
+
+
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    long secs = timeInterval/1000;
+    timeInterval = timeInterval%1000;
+    
+    long add = 0;
+    timeInterval = timeInterval*1000*1000 + ts.tv_nsec;
+    add = timeInterval / (1000*1000*1000);
+    ts.tv_sec += (add + secs);
+    ts.tv_nsec = timeInterval%(1000*1000*1000);
+
+    return mq_timedsend(mQid, data->toValue(), data->size(), prio,&ts);;
+}
+
+int _PosixMq::sendTimeout(ByteArray data,long waittime) {
+    return sendTimeout(data,PosixMqPriortyLow,waittime);
+}
+
+int _PosixMq::receiveTimeout(ByteArray buff,long timeInterval) {
+    if(mType == SendMq) {
+        return -PosixMqWrongType;
+    }
+
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    long secs = timeInterval/1000;
+    timeInterval = timeInterval%1000;
+    
+    long add = 0;
+    timeInterval = timeInterval*1000*1000 + ts.tv_nsec;
+    add = timeInterval / (1000*1000*1000);
+    ts.tv_sec += (add + secs);
+    ts.tv_nsec = timeInterval%(1000*1000*1000);
+
+    unsigned int priority = 0;
+
+    return mq_timedreceive(mQid, buff->toValue(),mMsgSize, &priority,&ts);
 }
 
 _PosixMq::~_PosixMq() {
-    //mq_close(mQid);
-    //mq_unlink(mQName->toChars());
+    mq_close(mQid);
+}
+
+void _PosixMq::clean() {
+    mq_unlink(mQName->toChars());
+}
+
+void _PosixMq::release() {
+    mq_close(mQid);
+}
+
+void _PosixMq::destroy() {
+    mq_close(mQid);
+    mq_unlink(mQName->toChars());
 }
 
 }

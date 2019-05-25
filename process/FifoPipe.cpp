@@ -78,22 +78,22 @@ int _FifoPipe::readFrom(ByteArray buff) {
     return read(fifoId, buff->toValue(), buff->size());
 }
 
-int _FifoPipe::release() {
+void _FifoPipe::release() {
     if(fifoId != -1) {
         close(fifoId);
         //unlink(mPipeName->toChars());
     }
-
-    return 0;
 }
 
-int _FifoPipe::destroy() {
+void _FifoPipe::destroy() {
     if(fifoId != -1) {
         close(fifoId);
         unlink(mPipeName->toChars());
     }
+}
 
-    return 0;
+void _FifoPipe::clean() {
+    unlink(mPipeName->toChars());
 }
 
 int _FifoPipe::getMaxSize() {

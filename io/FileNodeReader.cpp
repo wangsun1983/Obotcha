@@ -29,6 +29,7 @@ int _FileNodeReader::readInt(String path) {
 
 long _FileNodeReader::readLong(String path) {
     char buff[512];
+    memset(buff,0,512);
 
     int fd = open(path->toChars(),O_RDONLY);
     read(fd,buff,512);
@@ -39,12 +40,23 @@ long _FileNodeReader::readLong(String path) {
 
 String _FileNodeReader::readString(String path) {
     char buff[1024*16];
-
+    memset(buff,0,1024*16);
+    
     int fd = open(path->toChars(),O_RDONLY);
     read(fd,buff,1024*16);
     close(fd);
 
     return createString(buff);
+}
+
+String _FileNodeReader::readString(String path,int buffsize) {
+    char buff[buffsize];
+
+    int fd = open(path->toChars(),O_RDONLY);
+    read(fd,buff,buffsize);
+    close(fd);
+
+    return createString(&buff[0]);
 }
 
 

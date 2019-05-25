@@ -40,9 +40,11 @@ public:
 
     int getMaxSize();
 
-    int release();
+    void release();
 
-    int destroy();
+    void destroy();
+
+    void clean();
 
     ~_FifoPipe();
 

@@ -21,7 +21,7 @@ enum PosixMqType {
 };
 
 enum PosixMqPriority {
-    PosixMqPriortyLow,
+    PosixMqPriortyLow = 0,
     PosixMqPriortyNormal,
     PosixMqPriortyHigh,
     PosixMqPriortyUrgent
@@ -30,6 +30,11 @@ enum PosixMqPriority {
 enum PosixMqFailReason {
     PosixMqMsgSizeOversize = 200,
     PosixMqNumsOversize,
+    PosixMqNotCreate,
+    PosixMqWrongType,
+    PosixMqSendBufOverSize,
+    PosixMqMaxMgsSetFailed,
+    PosixMqMsgSizeSetFailed
 };
 
 #define DEFAULT_MQ_MSG_SIZE 1024*4
@@ -45,11 +50,23 @@ public:
 
     int init();
 
-    bool send(ByteArray data,int prio);
+    void release();
 
-    bool send(ByteArray data);
+    void destroy();
+
+    void clean();
+
+    int send(ByteArray data,PosixMqPriority prio);
+
+    int send(ByteArray data);
 
     int receive(ByteArray buff);
+
+    int sendTimeout(ByteArray data,PosixMqPriority prio,long waittime);
+
+    int sendTimeout(ByteArray data,long waittime);
+
+    int receiveTimeout(ByteArray buff,long waittime);
 
     ~_PosixMq();
 
@@ -70,8 +87,8 @@ private:
     int mMaxMsgs;
 
     static int MAX_MSG_NUMS;
+
     static int MAX_MSG_SIZE;
-   
 };
 
 }

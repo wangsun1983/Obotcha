@@ -20,16 +20,38 @@ enum PosixShareMemoryType {
     PosixShareMemoryWriteRead = O_RDWR,
 };
 
+enum PosixShareMemoryReason {
+    PosixShmCreateFailed = 200,
+    PosixShmMapFailed,
+    PosixShmNotCreate,
+};
+
+
 DECLARE_SIMPLE_CLASS(PosixShareMemory) {
 public:
 
     _PosixShareMemory(String,int,int type);
 
-    bool init();
+    int init();
 
-    bool write(ByteArray);
+    int write(ByteArray);
+
+    int write(int index,ByteArray);
+
+    int write(int index,char v);
+
 
     int read(ByteArray);
+
+    int read(int index,ByteArray);
+
+    int read(int);
+
+    void destroy();
+
+    void release();
+
+    void clean();
 
     ~_PosixShareMemory();
 
@@ -43,6 +65,8 @@ private:
     char *mPtr;
 
     int mType;
+
+    bool isCreated;
    
 };
 

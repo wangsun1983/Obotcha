@@ -4,14 +4,12 @@ link += pipe \
 		fifopipe \
 		posixmq \
 		posixsem \
-		posixanonymoussem \
 		posixsharememory \
 	
 objs += $(outtmp)/pipe.o \
 		$(outtmp)/fifopipe.o \
 		$(outtmp)/posixmq.o \
 		$(outtmp)/posixsem.o \
-		$(outtmp)/posixanonymoussem.o \
 		$(outtmp)/posixsharememory.o \
 	
 pipe :$(processDir)/Pipe.cpp

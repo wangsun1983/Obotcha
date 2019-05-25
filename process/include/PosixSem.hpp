@@ -14,6 +14,12 @@
 
 namespace obotcha {
 
+enum PosixSemFailReason {
+    PosixSemDefaultValueOverSize = 200,
+    PosixSemNotCreat,
+};
+
+
 DECLARE_SIMPLE_CLASS(PosixSem) {
 
 public:
@@ -22,18 +28,22 @@ public:
 
     bool init();
 
-    void tryWait();
+    int tryWait();
 
-    void wait();
+    int wait();
 
-    void wait(long);
+    int wait(long);
 
-    void post();
+    int post();
 
     int getValue();
 
     void destroy();
 
+    void release();
+
+    void clean();
+    
     ~_PosixSem();
 
 private:
@@ -42,6 +52,8 @@ private:
     sem_t *sem;
 
     int num;
+
+    static long SEM_MAX_VALUE;
 };
 
 }
