@@ -12,14 +12,32 @@ _Properties::_Properties() {
 }
     
 void _Properties::set(String key,String value) {
-    mProps->put(key,value);
+    if(value == nullptr) {
+        mProps->remove(key);
+    } else {
+        mProps->put(key,value);
+    }
 }
     
 String _Properties::get(String key) {
     return mProps->get(key);
 }
 
-void _Properties::load(File file) {
+void _Properties::remove(String key) {
+    mProps->remove(key);
+}
+
+int _Properties::load(String path) {
+    File file = createFile(path);
+    if(!file->exists()) {
+        printf("file path is %s \n",file->getAbsolutePath()->toChars());
+        return -PropertiesFailFileNotExit;
+    }
+
+    return load(file);
+}
+
+int _Properties::load(File file) {
     FileInputStream stream = createFileInputStream(file);
     stream->open();
     String line = stream->readLine();
@@ -33,10 +51,17 @@ void _Properties::load(File file) {
 
         line = stream->readLine();
     }
+
+    stream->close();
+
+    return 0;
 }
 
-void _Properties::save(String path) {
-    
+int _Properties::save(File file) {
+   return save(file->getAbsolutePath());
+}
+
+int _Properties::save(String path) {
     FileOutputStream stream = createFileOutputStream(path);
     MapIterator<String,String> iterator = mProps->getIterator();
     stream->open(FileOpenType::Trunc);
@@ -48,17 +73,23 @@ void _Properties::save(String path) {
         String value = createString(iterator->getValue());
         value->trim();
         
-        key->append(gPropEqualString);
-        key->append(value);
-        key->append(gPropEnterString);
-        stream->writeString(key);
+        String outStr = key->append(gPropEqualString);
+        outStr = outStr->append(value);
+        outStr = outStr->append(gPropEnterString);
+        stream->writeString(outStr);
         if(!iterator->next()) {
             break;
         }
     }
      
     stream->flush();
-    stream->close();    
+    stream->close();
+
+    return 0;  
+}
+
+void _Properties::clear() {
+    mProps->clear();
 }
 
 }

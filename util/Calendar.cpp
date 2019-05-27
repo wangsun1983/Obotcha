@@ -20,7 +20,7 @@ _Calendar::_Calendar() {
     init();
 }
 
-_Calendar::_Calendar(long int mseconds) {
+_Calendar::_Calendar(long long mseconds) {
     timeMillis = mseconds;
     init();
 }
@@ -55,31 +55,40 @@ void _Calendar::setTime(long int msec) {
     init();
 }
 
-int _Calendar::caculateDayOfWeek(int y, int m, int d) {  
+int _Calendar::caculateDayOfWeek(int y, int m, int d) {
     m += 1;
-    if(m ==0 || m ==1) {  
+    d += 1;
+
+    if(m == 1 || m == 2) {  
         m += 12;  
         y--;  
     }
 
-    return (d+2*m+3*(m+1)/5+y+y/4-y/100+y/400)%7;
+    int week = (d+2*m+3*(m+1)/5+y+y/4-y/100+y/400)%7;
+	return week;
 }  
 
 void _Calendar::init() {
 
-    auto mTime = std::chrono::milliseconds(timeMillis);
-    auto tp = std::chrono::time_point<std::chrono::system_clock,std::chrono::milliseconds>(mTime);
-    auto tt = std::chrono::system_clock::to_time_t(tp);
+    //auto mTime = std::chrono::milliseconds(timeMillis);
+    //auto tp = std::chrono::time_point<std::chrono::system_clock,std::chrono::milliseconds>(mTime);
+    //auto tt = std::chrono::system_clock::to_time_t(tp);
     //std::tm* now = std::gmtime(&tt);
+    time_t timeT = timeMillis/1000l;
+    
     struct tm now;
-    gmtime_r(&tt, &now);
+    gmtime_r(&timeT, &now);
 
-    year = now.tm_year;
+    year = now.tm_year + GregorianBase;
+    //printf("init year is %d,now.tm_year is %d \n",year,now.tm_year);
     month = now.tm_mon;
-    printf("init month is %d\n",month);
+    //printf("init month is %d\n",month);
     dayOfWeek = now.tm_wday;
+    //printf("init dayOfWeek is %d\n",dayOfWeek);
     dayOfMonth = now.tm_mday;
+    //printf("init dayOfMonth is %d\n",dayOfMonth);
     dayOfYear = now.tm_yday;
+    //printf("init dayOfYear is %d\n",dayOfYear);
     hour = now.tm_hour + st(TimeZone)::getZone();
     minute = now.tm_min;
     second = now.tm_sec;
@@ -89,6 +98,7 @@ void _Calendar::init() {
         hour = hour - 24;
         increaseDay(1);
     }
+    //printf("init year2 is %d \n",year);
 }
 
 bool _Calendar::sameDate(Calendar c) {
@@ -292,8 +302,9 @@ bool _Calendar::onUpdateByDayOfYear(int day) {
 
 
 int _Calendar::caculateDayOfYear(int _year,int _month,int _dayOfMonth) {
+    //printf("caculateDayOfYear,year is %d,month is %d,dayOfMonth is %d \n",_year,_month,_dayOfMonth);
     if(_month == January) {
-        return _dayOfMonth;
+        return _dayOfMonth - 1;
     }
     
     int *_days = getDays(_year);
@@ -303,7 +314,7 @@ int _Calendar::caculateDayOfYear(int _year,int _month,int _dayOfMonth) {
         allDays += _days[mon];
     }
 
-    allDays += DayOfMonth;
+    allDays += (_dayOfMonth - 1);
 
     return allDays;
 }
@@ -377,7 +388,7 @@ bool _Calendar::set(CalendarType type,int value) {
 int _Calendar::get(CalendarType type) {
     switch(type) {
         case Year:
-            return GregorianBase + year;
+            return year;
         break;
 
         case Month:
@@ -523,6 +534,8 @@ void _Calendar::decreaseMonth(int mon) {
 }
 
 void _Calendar::increaseDay(int day) {
+    //printf("1increaseDay dayOfMonth is %d \n",dayOfMonth);
+
     dayOfMonth += day;
     int daysInMonth = getMonthDays(month);
     while (dayOfMonth > daysInMonth) {
@@ -533,12 +546,18 @@ void _Calendar::increaseDay(int day) {
             month = 0;
         }
     }
-
+    //printf("increaseDay month is %d \n",month);
+    //printf("2increaseDay dayOfMonth is %d \n",dayOfMonth);
+    //printf("increaseDay year is %d \n",year);
     //update dayOfWeek
+    //printf("increaseDay1 dayOfWeek is %d \n",dayOfWeek);
     dayOfWeek = caculateDayOfWeek(year,month,dayOfMonth);
-
+    //printf("increaseDay2 dayOfWeek is %d \n",dayOfWeek);
+    
     //update dayOfYear
+    //printf("increaseDay1 dayOfYear is %d \n",dayOfYear);
     dayOfYear = caculateDayOfYear(year,month,dayOfMonth);
+    //printf("increaseDay2 dayOfYear is %d \n",dayOfYear);
 }
 
 void _Calendar::decreaseDay(int day) {

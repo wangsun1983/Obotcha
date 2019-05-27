@@ -12,7 +12,7 @@
 #include "StrongPointer.hpp"
 #include "ByteArray.hpp"
 
-#define DEBUG_SHAREMEM_DUMP
+//#define DEBUG_SHAREMEM_DUMP
 
 namespace obotcha {
 
@@ -68,60 +68,100 @@ int _PosixShareMemory::write(ByteArray arr) {
         return -PosixShmNotCreate;
     }
 
-    //if(mPtr != nullptr) {
-        char *v = arr->toValue();
+    if(arr->size() > size) {
+        return -PosixShmWriteOverSize;
+    }
+
+    char *v = arr->toValue();
 #ifdef DEBUG_SHAREMEM_DUMP
-        printf("write size is %d \n",arr->size());
-        printf("write v[0] is %d \n",v[0]);
-        printf("write v[1] is %d \n",v[1]);
-        printf("write v[2] is %d \n",v[2]);
-        printf("write v[3] is %d \n",v[3]);
-        printf("write v[4] is %d \n",v[4]);
+    printf("write size is %d \n",arr->size());
+    printf("write v[0] is %d \n",v[0]);
+    printf("write v[1] is %d \n",v[1]);
+    printf("write v[2] is %d \n",v[2]);
+    printf("write v[3] is %d \n",v[3]);
+    printf("write v[4] is %d \n",v[4]);
 #endif
-        memcpy(mPtr,arr->toValue(),arr->size());
+    memcpy(mPtr,arr->toValue(),arr->size());
 
 #ifdef DEBUG_SHAREMEM_DUMP
-        printf("mPtr v[0] is %d \n",mPtr[0]);
-        printf("mPtr v[1] is %d \n",mPtr[1]);
-        printf("mPtr v[2] is %d \n",mPtr[2]);
-        printf("mPtr v[3] is %d \n",mPtr[3]);
-        printf("mPtr v[4] is %d \n",mPtr[4]);
+    printf("mPtr v[0] is %d \n",mPtr[0]);
+    printf("mPtr v[1] is %d \n",mPtr[1]);
+    printf("mPtr v[2] is %d \n",mPtr[2]);
+    printf("mPtr v[3] is %d \n",mPtr[3]);
+    printf("mPtr v[4] is %d \n",mPtr[4]);
 #endif        
-        return 0;
-    //}
-
-    //return false;
+    return 0;
 }
 
-int _PosixShareMemory::write(int index,ByteArray v) {
+int _PosixShareMemory::write(int index,ByteArray arr) {
     if(!isCreated) {
         return -PosixShmNotCreate;
     }
+
+    if((index + arr->size()) > size) {
+        return -PosixShmWriteOverSize;
+    }
+
+    memcpy(&mPtr[index],arr->toValue(),arr->size());
+
+    return 0;
 }
 
 int _PosixShareMemory::write(int index,char v) {
+    if(!isCreated) {
+        return -PosixShmNotCreate;
+    }
 
+    if(index >= size) {
+        return -PosixShmWriteOverSize;
+    }
+
+    mPtr[index] = v;
+
+    return 0;
 }
-
-
 
 int _PosixShareMemory::read(ByteArray arr) {
     if(!isCreated) {
         return -PosixShmNotCreate;
     }
 
-    //if(mPtr != nullptr) {
-        int ll = arr->size() > size?size:arr->size();
+    int ll = arr->size() > size?size:arr->size();
 #ifdef DEBUG_SHAREMEM_DUMP        
-        printf("mPtr[0] is %d \n",mPtr[0]);
-        printf("mPtr[1] is %d \n",mPtr[1]);
-        printf("mPtr[2] is %d \n",mPtr[2]);
+    printf("mPtr[0] is %d \n",mPtr[0]);
+    printf("mPtr[1] is %d \n",mPtr[1]);
+    printf("mPtr[2] is %d \n",mPtr[2]);
 #endif        
-        memcpy(arr->toValue(),mPtr,ll);
+    memcpy(arr->toValue(),mPtr,ll);
 
-        return ll;
-    //}
-    //return -1;
+    return ll;
+
+}
+
+int _PosixShareMemory::read(int index,ByteArray arr) {
+    if(!isCreated) {
+        return -PosixShmNotCreate;
+    }
+
+    if(index >= size) {
+        return -PosixShmReadOverSize;
+    }
+
+    int ll = (arr->size() + index) > size?size:(arr->size() + index);
+    memcpy(arr->toValue(),mPtr,ll);
+    return ll;
+}
+
+int _PosixShareMemory::read(int index) {
+    if(!isCreated) {
+        return -PosixShmNotCreate;
+    }
+
+    if(index >= size) {
+        return -PosixShmWriteOverSize;
+    }
+
+    return mPtr[index];
 }
 
 void _PosixShareMemory::destroy() {
@@ -129,15 +169,15 @@ void _PosixShareMemory::destroy() {
 }
 
 void _PosixShareMemory::release() {
-    shm_unlink(mName->toChars());
+    //shm_unlink(mName->toChars());
 }
 
 void _PosixShareMemory::clean() {
-    shm_unlink(mName->toChars());
+    //shm_unlink(mName->toChars());
 }
 
 _PosixShareMemory::~_PosixShareMemory() {
-    shm_unlink(mName->toChars());
+    //shm_unlink(mName->toChars());
 }
 
 }

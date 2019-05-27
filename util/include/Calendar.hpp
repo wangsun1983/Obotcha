@@ -22,13 +22,14 @@ enum MonthEnum{
 };
 
 enum WeekDayEnum{
-    Monday = 0,
+    Sunday = 0,
+    Monday,
     Tuesday,
     Wednesday,
     Thursday,
     Friday,
     Saturday,
-    Sunday
+
 };
 
 enum CalendarType {
@@ -51,7 +52,7 @@ public:
 
     _Calendar(int _year,int _month,int _dayOfMonth,int _hour,int _minute,int _seconds);
 
-    _Calendar(long int timeMillis);
+    _Calendar(long long timeMillis);
 
     bool isLeapYear(int year);
     
@@ -92,17 +93,17 @@ public:
     static int caculateDayOfWeek(int y, int m, int d);
 
 private:
-    long int timeMillis;
+    long long timeMillis;
 
     int year;
 
-    int month;
+    int month; //[0,11]
 
-    int dayOfWeek;
+    int dayOfWeek; //[0,6]
 
-    int dayOfMonth;
+    int dayOfMonth; //[1,31]
 
-    int dayOfYear;
+    int dayOfYear; //[0,365]
 
     int hour;
 

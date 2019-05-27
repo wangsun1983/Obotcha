@@ -24,6 +24,8 @@ enum PosixShareMemoryReason {
     PosixShmCreateFailed = 200,
     PosixShmMapFailed,
     PosixShmNotCreate,
+    PosixShmWriteOverSize,
+    PosixShmReadOverSize
 };
 
 
@@ -39,7 +41,6 @@ public:
     int write(int index,ByteArray);
 
     int write(int index,char v);
-
 
     int read(ByteArray);
 

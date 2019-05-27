@@ -45,7 +45,7 @@ public:
         //hashmap.erase(t);
         typename std::map<T,U>::iterator ite = hashmap.find(t);
         if(ite == hashmap.end()) {
-            printf("hashmap can not find \n");
+            //printf("hashmap can not find \n");
             return;
         }
         hashmap.erase(ite++);
@@ -63,9 +63,9 @@ public:
         return hashmap.size();
     }
 
-    template<typename V>
-    ArrayList<V> keySet() {
-        ArrayList<V> keyset = createArrayList<V>();
+    //template<typename V>
+    ArrayList<T> keySet() {
+        ArrayList<T> keyset = createArrayList<T>();
         for (auto it= hashmap.begin();it != hashmap.end();it++) {
             keyset->add(it->first);
         }
@@ -73,9 +73,9 @@ public:
         return keyset;
     }
     
-    template<typename V>
-    ArrayList<V> entrySet() {
-        ArrayList<V> keyset = createArrayList<V>();
+    //template<typename V>
+    ArrayList<U> entrySet() {
+        ArrayList<U> keyset = createArrayList<U>();
         for (auto it= hashmap.begin();it != hashmap.end();it++) {
             keyset->add(it->second);
         }
@@ -111,6 +111,10 @@ public:
     }
 
     U get(String t) {
+        if(t == nullptr) {
+            return nullptr;
+        }
+
         auto value = hashmap.find(t->getStdString());
         if(value == hashmap.end()) {
             return nullptr;
@@ -121,7 +125,11 @@ public:
 
     void remove(String t) {
         //remember free
-        hashmap->remove(t->getStdString());
+        if(t == nullptr) {
+            return;
+        }
+
+        hashmap.erase(t->getStdString());
     }
     
     bool isEmpty() {
@@ -145,9 +153,9 @@ public:
         return keyset;
     }
     
-    template<typename V>
-    ArrayList<V> entrySet() {
-        ArrayList<V> keyset = createArrayList<V>();
+    //template<typename V>
+    ArrayList<U> entrySet() {
+        ArrayList<U> keyset = createArrayList<U>();
         for (auto it= hashmap.begin();it != hashmap.end();it++) {
             keyset->add(it->second);
         }
@@ -175,11 +183,17 @@ private:
 template<typename U>  
 class _HashMap<Integer,U>:virtual public Object{
 public:
+    friend class _MapIterator<Integer,U>;
+
     void put(Integer t,U u) {
         hashmap.insert(std::pair<int, U>(t->toValue(),u));
     }
 
     U get(Integer t) {
+        if(t == nullptr) {
+            return nullptr;
+        }
+
         auto value = hashmap.find(t->toValue());
         if(value == hashmap.end()) {
             return nullptr;
@@ -189,7 +203,11 @@ public:
     }
 
     void remove(Integer t) {
-        hashmap->remove(t->toValue());
+        if(t == nullptr) {
+            return;
+        }
+
+        hashmap.erase(t->toValue());
     }
 
     bool isEmpty() {
@@ -213,9 +231,9 @@ public:
         return keyset;
     }
     
-    template<typename V>
-    ArrayList<V> entrySet() {
-        ArrayList<V> keyset = createArrayList<V>();
+    //template<typename V>
+    ArrayList<U> entrySet() {
+        ArrayList<U> keyset = createArrayList<U>();
         for (auto it= hashmap.begin();it != hashmap.end();it++) {
             keyset->add(it->second);
         }
@@ -223,7 +241,7 @@ public:
         return keyset;
     }
 
-    sp<_MapIterator<String,U>> getIterator() {
+    sp<_MapIterator<Integer,U>> getIterator() {
         return new _MapIterator<Integer,U>(this);
     }
 
@@ -243,11 +261,17 @@ private:
 template<typename U>  
 class _HashMap<Double,U>:virtual public Object{
 public:
+    friend class _MapIterator<Double,U>;
+
     inline void put(Double t,U u) {
         hashmap.insert(std::pair<double, U>(t->toValue(),u));
     }
 
     U get(Double t) {
+        if(t == nullptr) {
+            return nullptr;
+        }
+
         auto value = hashmap.find(t->toValue());
         if(value == hashmap.end()) {
             return nullptr;
@@ -257,7 +281,10 @@ public:
     }
 
     void remove(Double t) {
-        hashmap->remove(t->toValue());
+        if(t == nullptr) {
+            return;
+        }
+        hashmap.erase(t->toValue());
     }
 
     bool isEmpty() {
@@ -281,14 +308,18 @@ public:
         return keyset;
     }
     
-    template<typename V>
-    ArrayList<V> entrySet() {
-        ArrayList<V> keyset = createArrayList<V>();
+    //template<typename V>
+    ArrayList<U> entrySet() {
+        ArrayList<U> keyset = createArrayList<U>();
         for (auto it= hashmap.begin();it != hashmap.end();it++) {
             keyset->add(it->second);
         }
 
         return keyset;
+    }
+
+    sp<_MapIterator<Double,U>> getIterator() {
+        return new _MapIterator<Double,U>(this);
     }
 
 private:
@@ -309,11 +340,17 @@ template<typename U>
 class _HashMap<Float,U>:virtual public Object{
 
 public:
+    friend class _MapIterator<Float,U>;
+
     inline void put(Float t,U u) {
         hashmap.insert(std::pair<float, U>(t->toValue(),u));
     }
 
     U get(Float t) {
+        if(t == nullptr) {
+            return nullptr;
+        }
+
         auto value = hashmap.find(t->toValue());
         if(value == hashmap.end()) {
             return nullptr;
@@ -323,7 +360,10 @@ public:
     }
 
     void remove(Float t) {
-        hashmap->remove(t->toValue());
+        if(t == nullptr) {
+            return;
+        }
+        hashmap.erase(t->toValue());
     }
 
     bool isEmpty() {
@@ -347,15 +387,20 @@ public:
         return keyset;
     }
     
-    template<typename V>
-    ArrayList<V> entrySet() {
-        ArrayList<V> keyset = createArrayList<V>();
+    //template<typename V>
+    ArrayList<U> entrySet() {
+        ArrayList<U> keyset = createArrayList<U>();
         for (auto it= hashmap.begin();it != hashmap.end();it++) {
             keyset->add(it->second);
         }
 
         return keyset;
     }
+
+    sp<_MapIterator<Float,U>> getIterator() {
+        return new _MapIterator<Float,U>(this);
+    }
+
 
 private:
     std::map<float,U> hashmap;
@@ -373,11 +418,17 @@ private:
 template<typename U>  
 class _HashMap<Boolean,U>:virtual public Object{
 public:
+    friend class _MapIterator<Boolean,U>;
+
     inline void put(Boolean t,U u) {
         hashmap.insert(std::pair<bool, U>(t->toValue(),u));
     }
 
     U get(Boolean t) {
+        if(t == nullptr) {
+            return nullptr;
+        }
+
         auto value = hashmap.find(t->toValue());
         if(value == hashmap.end()) {
             return nullptr;
@@ -387,7 +438,10 @@ public:
     }
 
     void remove(Boolean t) {
-        hashmap->remove(t->toValue());
+        if(t == nullptr) {
+            return;
+        }
+        hashmap.erase(t->toValue());
     }
 
     bool isEmpty() {
@@ -405,20 +459,24 @@ public:
     ArrayList<Boolean> keySet() {
         ArrayList<Boolean> keyset = createArrayList<Boolean>();
         for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(createFloat(it->first));
+            keyset->add(createBoolean(it->first));
         }
 
         return keyset;
     }
     
-    template<typename V>
-    ArrayList<V> entrySet() {
-        ArrayList<V> keyset = createArrayList<V>();
+    //template<typename V>
+    ArrayList<U> entrySet() {
+        ArrayList<U> keyset = createArrayList<U>();
         for (auto it= hashmap.begin();it != hashmap.end();it++) {
             keyset->add(it->second);
         }
 
         return keyset;
+    }
+
+    sp<_MapIterator<Boolean,U>> getIterator() {
+        return new _MapIterator<Boolean,U>(this);
     }
 
 private:
@@ -438,11 +496,17 @@ private:
 template<typename U>  
 class _HashMap<Long,U>:virtual public Object{
 public:
+    friend class _MapIterator<Long,U>;
+
     inline void put(Long t,U u) {
         hashmap.insert(std::pair<long, U>(t->toValue(),u));
     }
 
     U get(Long t) {
+        if(t == nullptr) {
+            return nullptr;
+        }
+
         auto value = hashmap.find(t->toValue());
         if(value == hashmap.end()) {
             return nullptr;
@@ -452,7 +516,11 @@ public:
     }
 
     void remove(Long t) {
-        hashmap->remove(t->toValue());
+        if(t == nullptr) {
+            return;
+        }
+        
+        hashmap.erase(t->toValue());
     }
 
     bool isEmpty() {
@@ -470,20 +538,24 @@ public:
     ArrayList<Long> keySet() {
         ArrayList<Long> keyset = createArrayList<Long>();
         for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(createFloat(it->first));
+            keyset->add(createLong(it->first));
         }
 
         return keyset;
     }
     
-    template<typename V>
-    ArrayList<V> entrySet() {
-        ArrayList<V> keyset = createArrayList<V>();
+    //template<typename V>
+    ArrayList<U> entrySet() {
+        ArrayList<U> keyset = createArrayList<U>();
         for (auto it= hashmap.begin();it != hashmap.end();it++) {
             keyset->add(it->second);
         }
 
         return keyset;
+    }
+
+    sp<_MapIterator<Long,U>> getIterator() {
+        return new _MapIterator<Long,U>(this);
     }
 
 private:

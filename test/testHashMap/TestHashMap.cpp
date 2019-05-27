@@ -7,75 +7,20 @@
 #include "String.hpp"
 
 
-DECLARE_SIMPLE_CLASS(TT1) {
-  int i;
-};
-
-DECLARE_SIMPLE_CLASS(TT2) {
-  int i;
-};
+extern void testHashMapString();
+extern void testHashMapInteger();
+extern void testHashMapDouble();
+extern void testHashMapLong();
+extern void testHashMapFloat();
+extern void testHashMapBoolean();
+extern void testHashMapObject();
 
 int main() {
-
-    printf("---[HashMap Test Start]--- \n");
-    {
-        HashMap<Integer,Integer> map = createHashMap<Integer,Integer>();
-        Integer tag = createInteger(1);
-        map->put(tag,createInteger(100));
-
-        Integer tag2 = createInteger(1);
-        Integer v = map->get(tag2);
-        if(v == nullptr) {
-          printf("not fine \n");
-        } else {
-          int value = map->get(tag2)->toValue();
-          printf("value is %d \n",value);
-        }
-    }
-
-    {
-        HashMap<String,String> map = createHashMap<String,String>();
-        String tag1 = "a1";
-        String value1 = "v1";
-        map->put(tag1,value1);
-
-        String find1 = map->get(tag1);
-        if(find1 == nullptr) {
-          printf("null \n");
-        } else {
-          printf("find is %s \n",find1->toChars());
-        }
-
-        String tag2 = "a1";
-        String find2 = map->get(tag2);
-        if(find2 == nullptr) {
-          printf("find2 is null \n");
-        } else {
-          printf("find2 is %s \n",find2->toChars());
-        }
-    }
-
-    //test iterator
-    {
-      HashMap<String,String> map = createHashMap<String,String>();
-      String tag1 = "a1";
-      String value1 = "v1";
-      map->put(tag1,value1);
-
-      String tag2 = "a2";
-      String value2 = "v2";
-      map->put(tag2,value2);
-
-      MapIterator<String,String> iterator = map->getIterator();
-      while(1){
-        printf("key is %s \n",iterator->getKey()->toChars());
-        printf("value is %s \n",iterator->getValue()->toChars());
-        if(!iterator->next()) {
-          break;
-        }
-      }
-
-    }
-
-
+    testHashMapString();
+    testHashMapInteger();
+    testHashMapDouble();
+    testHashMapLong();
+    testHashMapFloat();
+    testHashMapBoolean();
+    testHashMapObject();
 }

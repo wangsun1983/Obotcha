@@ -28,6 +28,32 @@ public:
   }
 };
 
+int convertDayOfWeekFromJava(int day) {
+  switch(day) {
+    case 1:
+        return Sunday;
+    case 2:
+        return Monday;
+    case 3:
+        return Tuesday;
+    case 4:
+        return Wednesday;
+    case 5:
+        return Thursday;
+    case 6:
+        return Friday;
+    case 7:
+         return Saturday;
+  }
+}
+
+void simpleTest() {
+  Calendar c = createCalendar(9277732677921l);
+  printf("day of week is %d \n",c->get(CalendarType::DayOfWeek));
+  printf("day of year is %d \n",c->get(CalendarType::DayOfYear));
+  printf("day of month is %d \n",c->get(CalendarType::DayOfMonth));
+}
+
 ArrayList<TimeData> analyse(File f) {
     FileInputStream stream = createFileInputStream(f);
     stream->open();
@@ -139,14 +165,21 @@ int main() {
     //Test
     printf("start calndar test \n");
     File dateFile = createFile("./testData/date.txt");
-    //File hourFile = createFile("./testData/hour.txt");
-    //File minuteFile = createFile("./testData/minute.txt");
-    //File secondFile = createFile("./testData/second.txt");
-    //File yearFile = createFile("./testData/year.txt");
+    File hourFile = createFile("./testData/hour.txt");
+    File minuteFile = createFile("./testData/minute.txt");
+    File secondFile = createFile("./testData/second.txt");
+    File yearFile = createFile("./testData/year.txt");
+
     printf("start analyse \n");
     ArrayList<TimeData> dateList = analyse(dateFile);
+    ArrayList<TimeData> hourList = analyse(hourFile);
+    ArrayList<TimeData> minuteList = analyse(minuteFile);
+    ArrayList<TimeData> secondList = analyse(secondFile);
+    ArrayList<TimeData> yearList = analyse(yearFile);
     printf("end analyse \n");
 
+    simpleTest();
+//#if 0
     //Calendar(long int timeMillis)
     while(1) {
         int size = dateList->size();
@@ -157,7 +190,7 @@ int main() {
           if(c1->get(CalendarType::Year) != d1->year ||
              c1->get(CalendarType::Month) != d1->month ||
              c1->get(CalendarType::DayOfYear) != (d1->dayOfYear - 1) ||
-             c1->get(CalendarType::DayOfWeek) != (d1->dayOfWeek - 1) ||
+             c1->get(CalendarType::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek)||
              c1->get(CalendarType::DayOfMonth) != d1->dayOfMonth ||
              c1->get(CalendarType::Hour) != d1->hour ||
              c1->get(CalendarType::Minute) != d1->minute ||
@@ -166,25 +199,139 @@ int main() {
 
                printf("Calndear year is %d,data year is %d \n",c1->get(CalendarType::Year),d1->year);
                printf("Calndear month is %d,data month is %d \n",c1->get(CalendarType::Month),d1->month);
-               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(CalendarType::DayOfYear),d1->dayOfYear);
+               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(CalendarType::DayOfYear),d1->dayOfYear -1);
+               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(CalendarType::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
+               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(CalendarType::DayOfMonth),d1->dayOfMonth);
+               printf("Calndear hour is %d,data hour is %d \n",c1->get(CalendarType::Hour),d1->hour);
+               printf("Calndear minute is %d,data minute is %d \n",c1->get(CalendarType::Minute),d1->minute);
+               printf("Calndear second is %d,data second is %d \n",c1->get(CalendarType::Second),d1->second);
+               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(CalendarType::MSecond),d1->millisecond);
+               printf("current time is %ld \n",d1->time);
+               printf("---[Calendar Test {Calendar(long int timeMillis)} case1] [FAILED]--- \n");
+               break;
+          }
+        }
+
+        size = hourList->size();
+        for(int i = 0;i<size;i++) {
+          TimeData d1 = hourList->get(i);
+          Calendar c1 = createCalendar(d1->time);
+          if(c1->get(CalendarType::Year) != d1->year ||
+             c1->get(CalendarType::Month) != d1->month ||
+             c1->get(CalendarType::DayOfYear) != (d1->dayOfYear - 1) ||
+             c1->get(CalendarType::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek) ||
+             c1->get(CalendarType::DayOfMonth) != d1->dayOfMonth ||
+             c1->get(CalendarType::Hour) != d1->hour ||
+             c1->get(CalendarType::Minute) != d1->minute ||
+             c1->get(CalendarType::Second) != d1->second ||
+             c1->get(CalendarType::MSecond) != d1->millisecond) {
+
+               printf("Calndear year is %d,data year is %d \n",c1->get(CalendarType::Year),d1->year);
+               printf("Calndear month is %d,data month is %d \n",c1->get(CalendarType::Month),d1->month);
+               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(CalendarType::DayOfYear),d1->dayOfYear - 1);
+               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(CalendarType::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
+               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(CalendarType::DayOfMonth),d1->dayOfMonth);
+               printf("Calndear hour is %d,data hour is %d \n",c1->get(CalendarType::Hour),d1->hour);
+               printf("Calndear minute is %d,data minute is %d \n",c1->get(CalendarType::Minute),d1->minute);
+               printf("Calndear second is %d,data second is %d \n",c1->get(CalendarType::Second),d1->second);
+               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(CalendarType::MSecond),d1->millisecond);
+               printf("current time is %ld \n",d1->time);
+               printf("---[Calendar Test {Calendar(long int timeMillis)} case2] [FAILED]--- \n");
+               break;
+          }
+        }
+
+        size = minuteList->size();
+        for(int i = 0;i<size;i++) {
+          TimeData d1 = minuteList->get(i);
+          Calendar c1 = createCalendar(d1->time);
+          if(c1->get(CalendarType::Year) != d1->year ||
+             c1->get(CalendarType::Month) != d1->month ||
+             c1->get(CalendarType::DayOfYear) != (d1->dayOfYear - 1) ||
+             c1->get(CalendarType::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek) ||
+             c1->get(CalendarType::DayOfMonth) != d1->dayOfMonth ||
+             c1->get(CalendarType::Hour) != d1->hour ||
+             c1->get(CalendarType::Minute) != d1->minute ||
+             c1->get(CalendarType::Second) != d1->second ||
+             c1->get(CalendarType::MSecond) != d1->millisecond) {
+
+               printf("Calndear year is %d,data year is %d \n",c1->get(CalendarType::Year),d1->year);
+               printf("Calndear month is %d,data month is %d \n",c1->get(CalendarType::Month),d1->month);
+               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(CalendarType::DayOfYear),d1->dayOfYear-1);
+               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(CalendarType::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
+               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(CalendarType::DayOfMonth),d1->dayOfMonth);
+               printf("Calndear hour is %d,data hour is %d \n",c1->get(CalendarType::Hour),d1->hour);
+               printf("Calndear minute is %d,data minute is %d \n",c1->get(CalendarType::Minute),d1->minute);
+               printf("Calndear second is %d,data second is %d \n",c1->get(CalendarType::Second),d1->second);
+               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(CalendarType::MSecond),d1->millisecond);
+               printf("current time is %ld \n",d1->time);
+               printf("---[Calendar Test {Calendar(long int timeMillis)} case3] [FAILED]--- \n");
+               break;
+          }
+        }
+
+        size = secondList->size();
+        for(int i = 0;i<size;i++) {
+          TimeData d1 = secondList->get(i);
+          Calendar c1 = createCalendar(d1->time);
+          if(c1->get(CalendarType::Year) != d1->year ||
+             c1->get(CalendarType::Month) != d1->month ||
+             c1->get(CalendarType::DayOfYear) != (d1->dayOfYear - 1) ||
+             c1->get(CalendarType::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek) ||
+             c1->get(CalendarType::DayOfMonth) != d1->dayOfMonth ||
+             c1->get(CalendarType::Hour) != d1->hour ||
+             c1->get(CalendarType::Minute) != d1->minute ||
+             c1->get(CalendarType::Second) != d1->second ||
+             c1->get(CalendarType::MSecond) != d1->millisecond) {
+
+               printf("Calndear year is %d,data year is %d \n",c1->get(CalendarType::Year),d1->year);
+               printf("Calndear month is %d,data month is %d \n",c1->get(CalendarType::Month),d1->month);
+               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(CalendarType::DayOfYear),d1->dayOfYear - 1);
                printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(CalendarType::DayOfWeek),d1->dayOfWeek);
                printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(CalendarType::DayOfMonth),d1->dayOfMonth);
                printf("Calndear hour is %d,data hour is %d \n",c1->get(CalendarType::Hour),d1->hour);
                printf("Calndear minute is %d,data minute is %d \n",c1->get(CalendarType::Minute),d1->minute);
                printf("Calndear second is %d,data second is %d \n",c1->get(CalendarType::Second),d1->second);
                printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(CalendarType::MSecond),d1->millisecond);
-
-               printf("---[Calendar Test {Calendar(long int timeMillis)} case1] [FAILED]--- \n");
-               return 0;
+               printf("current time is %ld \n",d1->time);
+               printf("---[Calendar Test {Calendar(long int timeMillis)} case3] [FAILED]--- \n");
+               break;
           }
-
-          printf("i is %d \n",i);
         }
 
+        size = yearList->size();
+        for(int i = 0;i<size;i++) {
+          TimeData d1 = yearList->get(i);
+          Calendar c1 = createCalendar(d1->time);
+          if(c1->get(CalendarType::Year) != d1->year ||
+             c1->get(CalendarType::Month) != d1->month ||
+             c1->get(CalendarType::DayOfYear) != (d1->dayOfYear - 1) ||
+             c1->get(CalendarType::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek) ||
+             c1->get(CalendarType::DayOfMonth) != d1->dayOfMonth ||
+             c1->get(CalendarType::Hour) != d1->hour ||
+             c1->get(CalendarType::Minute) != d1->minute ||
+             c1->get(CalendarType::Second) != d1->second ||
+             c1->get(CalendarType::MSecond) != d1->millisecond) {
+
+               printf("Calndear year is %d,data year is %d \n",c1->get(CalendarType::Year),d1->year);
+               printf("Calndear month is %d,data month is %d \n",c1->get(CalendarType::Month),d1->month);
+               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(CalendarType::DayOfYear),d1->dayOfYear - 1);
+               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(CalendarType::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
+               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(CalendarType::DayOfMonth),d1->dayOfMonth);
+               printf("Calndear hour is %d,data hour is %d \n",c1->get(CalendarType::Hour),d1->hour);
+               printf("Calndear minute is %d,data minute is %d \n",c1->get(CalendarType::Minute),d1->minute);
+               printf("Calndear second is %d,data second is %d \n",c1->get(CalendarType::Second),d1->second);
+               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(CalendarType::MSecond),d1->millisecond);
+               printf("current time is %ld \n",d1->time);
+               printf("---[Calendar Test {Calendar(long int timeMillis)} case4] [FAILED]--- \n");
+               break;
+          }
+        }
+
+        printf("---[Calendar Test {Calendar(long int timeMillis)} case5] [Success]--- \n");
         break;
-
     }
-
+//#endif
     return 0;
 
 

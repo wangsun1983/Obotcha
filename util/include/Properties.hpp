@@ -10,6 +10,10 @@
 
 namespace obotcha {
 
+enum PropertiesFailReason {
+    PropertiesFailFileNotExit = 200,
+};
+
 DECLARE_SIMPLE_CLASS(Properties) {
 
 public:
@@ -19,9 +23,17 @@ public:
     
     String get(String key);
 
-    void load(File file);
+    void remove(String key);
 
-    void save(String path);
+    int load(String path);
+
+    int load(File file);
+
+    int save(String path);
+
+    int save(File file);
+
+    void clear();
 
 private:
     HashMap<String,String> mProps;

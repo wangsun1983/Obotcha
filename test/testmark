@@ -9,6 +9,8 @@ testSystem
 
 [util]
 testArrayList --Complete--
+testHashMap --Complete--
+testProperties --Complete--
 calendar
 
 [util/text]
