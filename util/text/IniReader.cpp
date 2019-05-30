@@ -22,8 +22,12 @@ _IniReader::_IniReader(File file) {
 }
 
 IniValue _IniReader::parse() {
-
     dictionary *dict = iniparser_load(filepath->toChars());
+    
+    if(dict == nullptr) {
+        return nullptr;
+    }
+
     return createIniValue(dict);
 }
 

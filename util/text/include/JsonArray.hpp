@@ -24,6 +24,8 @@ public:
 
     _JsonArray(String s);
 
+    _JsonArray(String s,Json::Value v);
+
     void append(String value);
 
     void append(char *value);
@@ -46,10 +48,14 @@ public:
 
     String getName();
 
+    sp<_JsonValue> getValue(int index);
+
+    int size();
+
     ~_JsonArray();
 
 private:
-    Json::Value *jvalue;
+    Json::Value jvalue;
     String name;
 };
 

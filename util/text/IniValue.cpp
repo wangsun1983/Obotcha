@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "IniValue.hpp"
 
 namespace obotcha {
@@ -37,7 +40,6 @@ int _IniValue::getSectionKeyNum(String sectionName) {
 
 String _IniValue::getString(String section,String tag,String defaultValue) {
     String key = genKey(section,tag);
-
     char *p = (char *)iniparser_getstring(ini,key->toChars(),defaultValue->toChars());
     return createString(p);
 }
@@ -62,7 +64,6 @@ bool _IniValue::getBoolean(String section,String tag,bool defaultValue) {
 
 String _IniValue::getString(const char* section,const char* tag,String defaultValue) {
     String key = genKey(section,tag);
-
     char *p = (char *)iniparser_getstring(ini,key->toChars(),defaultValue->toChars());
     return createString(p);
 }
@@ -85,6 +86,7 @@ bool _IniValue::getBoolean(const char* section,const char* tag,bool defaultValue
     return iniparser_getboolean(ini,key->toChars(),defaultValue);
 }
 
+/*
 int _IniValue::set(String section,String tag,String value) {
     String key = genKey(section,tag);
 
@@ -96,12 +98,12 @@ void _IniValue::remove(String section,String tag) {
 
     iniparser_unset(ini,key->toChars());
 }
+*/
 
 bool _IniValue::contains(String section,String tag) {
-    section->append(":");
-    section->append(tag);
-
-    return iniparser_find_entry(ini,tag->toChars());
+    String key = genKey(section,tag);
+    int ret = iniparser_find_entry(ini,key->toChars());
+    return (1 == ret);
 }
 
 _IniValue::~_IniValue() {
@@ -115,23 +117,36 @@ String _IniValue::genKey(String section,String tag) {
         content = section;
     }
 
-    content->append(":");
-    content->append(tag);
+    String v = content->append(":");
+    v = v->append(tag);
 
-    return content;
+    return v;
 }
     
 String _IniValue::genKey(const char *section,const char *tag) {
-    String content = createString("");
+    String content = nullptr;
 
     if(section != nullptr) {
         content = createString(section);
+    } else {
+        content = createString("");
     }
 
-    content->append(":");
-    content->append(tag);
+    String v = content->append(":");
+    v = v->append(tag);
 
-    return content;
+    return v;
 }
+
+/*
+void _IniValue::save(String file) {
+    
+    FILE *iniFile = fopen(file->toChars(), "wb");
+
+    iniparser_dump_ini(ini,iniFile);
+
+    fclose(iniFile);
+}
+*/
 
 }

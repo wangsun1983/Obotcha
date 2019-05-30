@@ -14,46 +14,73 @@ void _ConfReader::initConfig() {
 _ConfReader::_ConfReader(const char* path) {
     conf_file = createFile(path);
     //initConfig();
+    //mHashMap = createHashMap<String,String>();
 }
 
 
 _ConfReader::_ConfReader(String path) {
     conf_file = createFile(path);
     //initConfig();
+    //mHashMap = createHashMap<String,String>();
 }
 
 
 _ConfReader::_ConfReader(File file) {
     conf_file = file;
-    initConfig();
+    //mHashMap = createHashMap<String,String>();
 }
 
-sp<_ConfValue> _ConfReader::parse() {
+void _ConfReader::setFile(const char* path) {
+    conf_file = createFile(path);
+}
+    
+void _ConfReader::setFile(String path) {
+    conf_file = createFile(path);
+}
+    
+void _ConfReader::setFile(File file) {
+    conf_file = file;
+}
 
-    ConfValue value = createConfValue();
-    value->config.comment_char='#';
-    value->config.sep_char='=';
-    value->config.str_char='"';
+int _ConfReader::refresh() {
+    return parse();
+}
 
-    ccl_t * pair = &(value->config);
-    if(0 == ccl_parse(pair,conf_file->getAbsolutePath()->toChars())) {
-        return value;
+int _ConfReader::parse() {
+    if(!conf_file->exists()) {
+        return -ConfReaderFailNoFile;
     }
 
-    return nullptr;
+    mConfValue = createConfValue();
+    mConfValue->config.comment_char='#';
+    mConfValue->config.sep_char='=';
+    mConfValue->config.str_char='"';
+
+    ccl_t * pair = &(mConfValue->config);
+    if(0 == ccl_parse(pair,(const char *)conf_file->getAbsolutePath()->toChars())) {
+        //ConfIterator iterator = mConfValue->getIterator();
+        //while(iterator->hasValue()) {
+        //    mHashMap->put(iterator->getTag(),iterator->getValue());
+        //    iterator->next();
+        //}
+        return 0;
+    }
+
+    return -ConfReaderFailParseErr;
+}
+
+ConfValue _ConfReader::get() {
+    return mConfValue;
 }
 
 _ConfReader::~_ConfReader() {
 
 }
 
-/*
 String _ConfReader::get(String tag) {
-    char *value = ccl_get(&config,tag->toChars());
-
-    return createString(value)
+    const char *value = ccl_get(&(mConfValue->config),(const char*)tag->toChars());
+    return createString(value);
 }
-*/
 
 
 }

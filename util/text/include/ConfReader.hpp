@@ -7,12 +7,19 @@
 #include "File.hpp"
 #include "rapidxml.hpp"
 #include "XmlValue.hpp"
+#include "HashMap.hpp"
 
 extern "C" {
 #include "ccl.h"
 }
 
 namespace obotcha {
+
+enum ConfReaderFailReason {
+    ConfReaderFailNoFile = 256,
+    ConfReaderFailParseErr,
+
+};
 
 class _ConfValue;
 
@@ -25,7 +32,21 @@ public:
 
     _ConfReader(File file);
 
-    sp<_ConfValue> parse();
+    void setFile(const char* path);
+    
+    void setFile(String path);
+    
+    void setFile(File file);
+
+    int parse();
+
+    //HashMap<String,String>getAll();
+
+    sp<_ConfValue> get();
+
+    String get(String);
+
+    int refresh();
 
     ~_ConfReader();
 
@@ -33,6 +54,10 @@ private:
     File conf_file;
     
     void initConfig();
+
+    //HashMap<String,String> mHashMap;
+
+    sp<_ConfValue> mConfValue;
 };
 
 }

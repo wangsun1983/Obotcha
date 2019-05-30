@@ -291,7 +291,7 @@ String _String::append(String s) {
 
 String _String::append(const char *p) {
     if(m_str == nullptr) {
-        return createString(*m_str);
+        return nullptr;
     }
     
     String newStr = createString(*m_str);

@@ -72,26 +72,27 @@ void _Sha::calc_fileSHA1(const char *filename,unsigned char *dgst) {
     char buf[4096] = {0};
     int len = 0;
 
-    if (NULL == filename || NULL == dgst)
-    {
+    if (NULL == filename || NULL == dgst) {
         printf("Input error...\n");
         return;
     }
 
     FILE *fp = fopen(filename, "rb");
-    if (NULL == fp)
-    {
+    if (NULL == fp) {
         printf("open file:%s error...\n", filename);
         return;
     }
 
     SHA1_Init(&ctx);
-    while ((len = fread(buf, 1, 4096, fp)) > 0)
-    {
+    
+    while ((len = fread(buf, 1, 4096, fp)) > 0) {
         SHA1_Update(&ctx, buf, len);
         memset(buf, 0, len);
     }
+
     SHA1_Final(dgst, &ctx);
+
+    fclose(fp);
 }
 
 void _Sha::calc_fileSHA224(const char *filename,unsigned char *dgst) {
@@ -99,26 +100,26 @@ void _Sha::calc_fileSHA224(const char *filename,unsigned char *dgst) {
     char buf[4096] = {0};
     int len = 0;
 
-    if (NULL == filename || NULL == dgst)
-    {
+    if (NULL == filename || NULL == dgst) {
         printf("Input error...\n");
         return;
     }
 
     FILE *fp = fopen(filename, "rb");
-    if (NULL == fp)
-    {
+    if (NULL == fp) {
         printf("open file:%s error...\n", filename);
         return;
     }
 
     SHA224_Init(&ctx);
-    while ((len = fread(buf, 1, 4096, fp)) > 0)
-    {
+    while ((len = fread(buf, 1, 4096, fp)) > 0) {
         SHA224_Update(&ctx, buf, len);
         memset(buf, 0, len);
     }
+
     SHA224_Final(dgst, &ctx);
+
+    fclose(fp);
 }
 
 void _Sha::calc_fileSHA256(const char *filename,unsigned char *dgst) {
@@ -126,26 +127,27 @@ void _Sha::calc_fileSHA256(const char *filename,unsigned char *dgst) {
     char buf[4096] = {0};
     int len = 0;
 
-    if (NULL == filename || NULL == dgst)
-    {
+    if (NULL == filename || NULL == dgst) {
         printf("Input error...\n");
         return;
     }
 
     FILE *fp = fopen(filename, "rb");
-    if (NULL == fp)
-    {
+    if (NULL == fp) {
         printf("open file:%s error...\n", filename);
         return;
     }
 
     SHA256_Init(&ctx);
-    while ((len = fread(buf, 1, 4096, fp)) > 0)
-    {
+    
+    while ((len = fread(buf, 1, 4096, fp)) > 0) {
         SHA256_Update(&ctx, buf, len);
         memset(buf, 0, len);
     }
+
     SHA256_Final(dgst, &ctx);
+
+    fclose(fp);
 }
 
 void _Sha::calc_fileSHA384(const char *filename,unsigned char *dgst) {
@@ -153,26 +155,26 @@ void _Sha::calc_fileSHA384(const char *filename,unsigned char *dgst) {
     char buf[4096] = {0};
     int len = 0;
 
-    if (NULL == filename || NULL == dgst)
-    {
+    if (NULL == filename || NULL == dgst) {
         printf("Input error...\n");
         return;
     }
 
     FILE *fp = fopen(filename, "rb");
-    if (NULL == fp)
-    {
+    if (NULL == fp) {
         printf("open file:%s error...\n", filename);
         return;
     }
 
     SHA384_Init(&ctx);
-    while ((len = fread(buf, 1, 4096, fp)) > 0)
-    {
+    while ((len = fread(buf, 1, 4096, fp)) > 0) {
         SHA384_Update(&ctx, buf, len);
         memset(buf, 0, len);
     }
+
     SHA384_Final(dgst, &ctx);
+
+    fclose(fp);
 }
 
 void _Sha::calc_fileSHA512(const char *filename,unsigned char *dgst) {
@@ -180,26 +182,27 @@ void _Sha::calc_fileSHA512(const char *filename,unsigned char *dgst) {
     char buf[4096] = {0};
     int len = 0;
 
-    if (NULL == filename || NULL == dgst)
-    {
+    if (NULL == filename || NULL == dgst) {
         printf("Input error...\n");
         return;
     }
 
     FILE *fp = fopen(filename, "rb");
-    if (NULL == fp)
-    {
+
+    if (NULL == fp) {
         printf("open file:%s error...\n", filename);
         return;
     }
 
     SHA512_Init(&ctx);
-    while ((len = fread(buf, 1, 4096, fp)) > 0)
-    {
+    
+    while ((len = fread(buf, 1, 4096, fp)) > 0) {
         SHA512_Update(&ctx, buf, len);
         memset(buf, 0, len);
     }
+
     SHA512_Final(dgst, &ctx);
+    fclose(fp);
 }
 
 void _Sha::calc_stringSHA1(const char *content,int length,unsigned char *dgst) {

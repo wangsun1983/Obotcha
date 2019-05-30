@@ -58,26 +58,42 @@ public:
 
     void put(String tag,double value);
 
+    void put(String tag,sp<_JsonValue> value);
+
     void put(sp<_JsonArray> value);
+
+    void remove(String tag);
 
     String getString(String tag);
 
+    String getString();
+
     Integer getInteger(String tag);
+
+    Integer getInteger();
 
     Boolean getBoolean(String tag);
 
+    Boolean getBoolean();
+
     Double getDouble(String tag);
 
+    Double getDouble();
+
     sp<_JsonValue> getObject(String tag);
+
+    sp<_JsonArray> getArray(String tag);
 
     sp<_JsonValueIterator> getIterator();
 
     bool contains(String tag);
 
+    int size();
+
     ~_JsonValue();
 
 private:
-    Json::Value *jvalue;    
+    Json::Value jvalue;    
 };
 
 

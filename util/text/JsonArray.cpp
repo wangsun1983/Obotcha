@@ -7,55 +7,68 @@ namespace obotcha {
 
 _JsonArray::_JsonArray(String s) {
     name = s;
-    jvalue = new Json::Value();
+    //jvalue = new Json::Value();
+}
+
+_JsonArray::_JsonArray(String s,Json::Value v) {
+    name = s;
+    jvalue = v;
 }
 
 void _JsonArray::append(String value) {
-    (*jvalue)[name->toChars()].append(value->toChars());
+    jvalue.append(value->toChars());
 }
 
 void _JsonArray::append(char *value) {
-    (*jvalue)[name->toChars()].append(value);
+    jvalue.append(value);
 }
 
 void _JsonArray::append(std::string value) {
-    (*jvalue)[name->toChars()].append(value);
+    jvalue.append(value);
 }
 
 void _JsonArray::append(Integer value) {
-    (*jvalue)[name->toChars()].append(value->toValue());
+    jvalue.append(value->toValue());
 }
 
 void _JsonArray::append(int value) {
-    (*jvalue)[name->toChars()].append(value);
+    jvalue.append(value);
 }
 
 void _JsonArray::append(Boolean value) {
-    (*jvalue)[name->toChars()].append(value->toValue());
+    jvalue.append(value->toValue());
 }
 
 void _JsonArray::append(bool value) {
-    (*jvalue)[name->toChars()].append(value);
+    jvalue.append(value);
 }
 
 void _JsonArray::append(Double value) {
-    (*jvalue)[name->toChars()].append(value->toValue());
+    jvalue.append(value->toValue());
 }
 
 void _JsonArray::append(double value) {
-    (*jvalue)[name->toChars()].append(value);
+    jvalue.append(value);
 }
 
 void _JsonArray::append(sp<_JsonValue> value) {
-    (*jvalue)[name->toChars()].append(value->jvalue);
+    jvalue.append(value->jvalue);
 }
 
 String _JsonArray::getName() {
     return name;
 }
 
+sp<_JsonValue> _JsonArray::getValue(int index) {
+    return createJsonValue(jvalue[index]);
+}
+
+int _JsonArray::size() {
+    return jvalue.size();
+}
+
 _JsonArray::~_JsonArray() {
-    delete jvalue;
+    //delete jvalue;
 }
 
 

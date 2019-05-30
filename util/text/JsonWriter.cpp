@@ -13,13 +13,13 @@ _JsonWriter::_JsonWriter(String path) {
 }
 
 void _JsonWriter::write(JsonValue value) {
-    String str = createString(value->jvalue->toStyledString());
+    String str = createString(value->jvalue.toStyledString());
     stream->writeString(str);
     stream->flush();
 }
 
 void _JsonWriter::write(JsonArray value) {
-    String str = createString(value->jvalue->toStyledString());
+    String str = createString(value->jvalue.toStyledString());
     stream->writeString(str);
     stream->flush();
 }

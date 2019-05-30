@@ -46,11 +46,13 @@ public:
 
     bool getBoolean(const char *section,const char* tag,bool defaultValue);
 
-    int set(String section,String tag,String value);
+    //int set(String section,String tag,String value);
 
-    void remove(String section,String tag);
+    //void remove(String section,String tag);
 
     bool contains(String section,String tag);
+
+    //void save(String file);
 
     ~_IniValue();
 

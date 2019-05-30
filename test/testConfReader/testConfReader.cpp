@@ -10,21 +10,73 @@
 using namespace obotcha;
 
 int main() {
+    printf("---[ConfReader Test Start]--- \n");
     ConfReader reader = createConfReader("simple.conf");
-    ConfValue value = reader->parse();
+    //int parse();
+    while(1) {
+        int result = reader->parse();
+        if(result < 0) {
+          printf("---[ConfReader Test {parse()} case1] [FAILED]--- \n");
+          break;
+        }
 
-    if(value == nullptr) {
-      printf("parse value is null \n");
-      return 1;
+        printf("---[ConfReader Test {parse()} case2] [Success]--- \n");
+        break;
     }
 
-    ConfIterator iterator = value->getIterator();
+    //getAll();
+#if 0
+    while(1) {
+      HashMap<String,String> map = reader->getAll();
+      if(map->size()!= 3) {
+        printf("---[ConfReader Test {getAll()} case1] [FAILED]--- \n");
+        break;
+      }
 
-    while(iterator->hasValue()) {
-      LOGD("tag is ",iterator->getTag(),";value is ",iterator->getValue());
-      iterator->next();
+      String v1 = map->get("Desktop-Picture");
+      if(!v1->contains("/usr/images/earth.jpg")) {
+        printf("---[ConfReader Test {getAll()} case2] [FAILED]--- \n");
+        break;
+      }
+
+      String v2 = map->get("Position");
+      if(!v2->contains("Centered")) {
+        printf("---[ConfReader Test {getAll()} case3] [FAILED]--- \n");
+        break;
+      }
+
+      String v3 = map->get("Background Color");
+      if(!v3->contains("Black")) {
+        printf("---[ConfReader Test {getAll()} case4] [FAILED]--- \n");
+        break;
+      }
+
+      printf("---[ConfReader Test {getAll()} case5] [Success]--- \n");
+      break;
+    }
+#endif
+    //getConf(String);
+    while(1) {
+      String v1 = reader->get("Desktop-Picture");
+      if(!v1->contains("/usr/images/earth.jpg")) {
+        printf("---[ConfReader Test {getConf(String)} case2] [FAILED]--- \n");
+        break;
+      }
+
+      String v2 = reader->get("Position");
+      if(!v2->contains("Centered")) {
+        printf("---[ConfReader Test {getConf(String)} case3] [FAILED]--- \n");
+        break;
+      }
+
+      String v3 = reader->get("Background Color");
+      if(!v3->contains("Black")) {
+        printf("---[ConfReader Test {getConf(String)} case4] [FAILED]--- \n");
+        break;
+      }
+
+      printf("---[ConfReader Test {getConf(String)} case5] [Success]--- \n");
+      break;
     }
 
-    String bgvalue = value->getValue("Background Color");
-    LOGD("bgvalue:",bgvalue);
 }
