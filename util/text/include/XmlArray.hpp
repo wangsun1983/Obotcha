@@ -15,6 +15,7 @@ using namespace rapidxml;
 namespace obotcha {
 
 class _XmlReader;
+class _XmlValue;
 
 DECLARE_SIMPLE_CLASS(XmlArray) {
 
@@ -33,15 +34,17 @@ public:
 
     Float getFloatAttr(String attr);
 
-    String getStringValue();
+    String getStringValue(int index);
 
-    Integer getIntegerValue();
+    Integer getIntegerValue(int index);
 
-    Boolean getBooleanValue();
+    Boolean getBooleanValue(int index);
 
-    Double getDoubleValue();
+    Double getDoubleValue(int index);
 
-    Float getFloatValue();
+    Float getFloatValue(int index);
+
+    sp<_XmlValue> getValue(int index);
 
     String getName();
 

@@ -26,8 +26,15 @@ sp<_XmlDocument> _XmlReader::parse() {
         //read xml file
         rapidxml::file<> fdoc(path->toChars());
 
-        XmlDocument document = createXmlDocument();
+        XmlDocument document = createXmlDocument(xmlfile->length());
         document->xmlDoc.parse<0>(fdoc.data());
+
+        xml_node<> *node = document->xmlDoc.first_node();
+        printf("parse,first node content is %s\n",document->toString()->toChars());
+        printf("parse,first node is %s,node is %x\n",node->name(),node);
+
+        //XmlValue v = createXmlValue(node,document,node->name(),nullptr);
+        //printf("parse v name is %s \n",v->getName()->toChars());
         return document;
     }
     

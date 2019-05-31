@@ -1,0 +1,12 @@
+{
+   "a" : 1,
+   "arr" : [ "abc1", "abc2", "abc3" ],
+   "arr2" :
+    {
+       "v1":1,
+       "vv" : "v1"
+    },
+  "c" : "nihao",
+   "ret":true,
+   "ret2":false
+}

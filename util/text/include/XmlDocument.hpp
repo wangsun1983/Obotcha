@@ -34,8 +34,14 @@ public:
 
     String toString();
 
+    _XmlDocument(long size);
+
+    _XmlDocument();
+
 private:
     xml_document<> xmlDoc;
+
+    long mFileSize;
 };
 
 }

@@ -28,7 +28,7 @@ public:
 
     void append(String value);
 
-    void append(char *value);
+    void append(const char *value);
 
     void append(std::string value);
 

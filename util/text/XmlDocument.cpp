@@ -10,6 +10,14 @@ using namespace rapidxml;
 
 namespace obotcha {
 
+_XmlDocument::_XmlDocument(long size) {
+    mFileSize = size;
+}
+
+_XmlDocument::_XmlDocument() {
+    mFileSize = 0;
+}
+
 XmlValue _XmlDocument::newRootNode(String nodename) {
 
     rapidxml::xml_node<>* declaration = xmlDoc.allocate_node(rapidxml::node_declaration);
@@ -41,15 +49,22 @@ sp<_XmlAttribute> _XmlDocument::newAttribute(String name,String value) {
 
 XmlValue _XmlDocument::getRootNode() {
     xml_node<> *node = xmlDoc.first_node();
-    String name = node->name();
+    String name = createString(node->name());
+    printf("nodeName is %s ,node is %x \n",node->name(),node);
     XmlValue root = createXmlValue(node,this,name,nullptr);
     return root;
 }
 
 String _XmlDocument::toString() {
-    std::string text;
-    rapidxml::print(std::back_inserter(text), xmlDoc);
-    return createString(text);
+    //std::string text;
+    //char buff[1024*256];
+    char buff[mFileSize + 1024];
+    memset(buff,0,mFileSize + 1024);
+    //rapidxml::print(std::back_inserter(text), xmlDoc);
+    rapidxml::print(buff, xmlDoc);
+    //std::cout<<"to string is "<<text<<std::endl;
+    printf("file length is %ld \n",mFileSize);
+    return createString(&buff[0]);
 }
 
 };

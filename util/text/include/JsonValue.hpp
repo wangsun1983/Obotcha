@@ -40,9 +40,11 @@ public:
 
     bool isArray();
 
+    bool isObject();
+
     void put(String tag,String value);
 
-    void put(String tag,char *value);
+    void put(String tag,const char *value);
 
     void put(String tag,std::string value);
 
@@ -117,10 +119,28 @@ public:
 
     bool isArray();
 
+    bool isObject();
+
     bool next();
+
+    sp<_JsonValue> getValue();
+
+    String getString();
+
+    Integer getInteger();
+
+    Boolean getBoolean();
+
+    Double getDouble();
+
+    sp<_JsonValue> getObject();
+
+    sp<_JsonArray> getArray();
 
 private:
     JsonValue value;
+
+    Json::Value::Members mMembers;
 
     int count;
 };

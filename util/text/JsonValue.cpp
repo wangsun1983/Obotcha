@@ -32,7 +32,7 @@ void _JsonValue::put(String tag,String value) {
     jvalue[tag->getStdString()] = value->toChars();
 }
 
-void _JsonValue::put(String tag,char *value) {
+void _JsonValue::put(String tag,const char *value) {
     if(value == nullptr || tag == nullptr) {
         return;
     }
@@ -258,6 +258,10 @@ bool _JsonValue::isArray() {
     return jvalue.isArray();
 }
 
+bool _JsonValue::isObject() {
+    return jvalue.isObject();
+}
+
 sp<_JsonValueIterator> _JsonValue::getIterator() {
     return new _JsonValueIterator(this);
 }
@@ -266,31 +270,34 @@ sp<_JsonValueIterator> _JsonValue::getIterator() {
 _JsonValueIterator::_JsonValueIterator(JsonValue v) {
     value = v;
     count = 0;
+
+    mMembers = v->jvalue.getMemberNames();
 }
 
 _JsonValueIterator::_JsonValueIterator(_JsonValue *v) {
     value.set_pointer(v);
     //v->incStrong(0);
+    mMembers = value->jvalue.getMemberNames();
 
     count = 0;
 }
 
 String _JsonValueIterator::getTag() {
     
-    if(count == value->jvalue.getMemberNames().size()) {
+    if(count == mMembers.size()) {
         return nullptr;
     }
     
-    return createString(value->jvalue.getMemberNames()[count]);
+    return createString(mMembers[count]);
 }
 
 bool _JsonValueIterator::hasValue() {
-    return count < value->jvalue.getMemberNames().size();
+    return count < mMembers.size();
 }
 
 bool _JsonValueIterator::next() {
     count++;
-    if(count == value->jvalue.getMemberNames().size()) {
+    if(count == mMembers.size()) {
         return false;
     }
 
@@ -298,33 +305,76 @@ bool _JsonValueIterator::next() {
 }
 
 bool _JsonValueIterator::isBool() {
-    std::string ss = value->jvalue.getMemberNames()[count];
+    std::string ss = mMembers[count];
 
     return (value->jvalue)[ss].isBool();
 }
 
 bool _JsonValueIterator::isInt() {
-    std::string ss = value->jvalue.getMemberNames()[count];
+    std::string ss = mMembers[count];
 
     return (value->jvalue)[ss].isInt();
 }
 
 bool _JsonValueIterator::isString() {
-    std::string ss = value->jvalue.getMemberNames()[count];
+    std::string ss = mMembers[count];
 
     return (value->jvalue)[ss].isString();
 }
 
 bool _JsonValueIterator::isDouble() {
-    std::string ss = value->jvalue.getMemberNames()[count];
+    std::string ss = mMembers[count];
 
     return (value->jvalue)[ss].isDouble();
 }
 
 bool _JsonValueIterator::isArray() {
-    std::string ss = value->jvalue.getMemberNames()[count];
+    std::string ss = mMembers[count];
 
     return (value->jvalue)[ss].isArray();
+}
+
+bool _JsonValueIterator::isObject() {
+    std::string ss = mMembers[count];
+
+    return (value->jvalue)[ss].isObject();
+}
+
+sp<_JsonValue> _JsonValueIterator::getValue() {
+    std::string ss = mMembers[count];
+
+    return createJsonValue((value->jvalue)[ss]);
+}
+
+String _JsonValueIterator::getString() {
+    std::string ss = mMembers[count];
+
+    return createString((value->jvalue)[ss].asString());
+}
+
+Integer _JsonValueIterator::getInteger() {
+    std::string ss = mMembers[count];
+    return createInteger((value->jvalue)[ss].asInt());
+}
+
+Boolean _JsonValueIterator::getBoolean() {
+    std::string ss = mMembers[count];
+    return createBoolean((value->jvalue)[ss].asBool());   
+}
+
+Double _JsonValueIterator::getDouble() {
+    std::string ss = mMembers[count];
+    return createDouble((value->jvalue)[ss].asDouble());
+}
+
+sp<_JsonValue> _JsonValueIterator::getObject() {
+    std::string ss = mMembers[count];
+    return createJsonValue((value->jvalue)[ss]);   
+}
+
+sp<_JsonArray> _JsonValueIterator::getArray() {
+    std::string ss = mMembers[count];
+    return createJsonArray(ss.data(),(value->jvalue)[ss]); 
 }
 
 }

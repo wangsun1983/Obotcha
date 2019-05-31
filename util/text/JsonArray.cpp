@@ -19,7 +19,7 @@ void _JsonArray::append(String value) {
     jvalue.append(value->toChars());
 }
 
-void _JsonArray::append(char *value) {
+void _JsonArray::append(const char *value) {
     jvalue.append(value);
 }
 
