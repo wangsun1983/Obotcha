@@ -8,10 +8,10 @@
 namespace obotcha {
 
 //------------------ XmlAttrIterator -----------------//
-_XmlAttrIterator::_XmlAttrIterator(_XmlValue *v,sp<_XmlDocument> r) {
-    xmlvalue.set_pointer(v);
+_XmlAttrIterator::_XmlAttrIterator(sp<_XmlValue> node,sp<_XmlDocument> r) {
+    xmlvalue = node;
     reader = r;
-    attr = v->node->first_attribute();
+    attr = xmlvalue->node->first_attribute();
 }
 
 bool _XmlAttrIterator::hasValue() {
@@ -23,18 +23,34 @@ bool _XmlAttrIterator::next() {
     return attr != nullptr;
 }
 
-sp<_XmlAttribute> _XmlAttrIterator::getAttribute() {
-    String name = createString(attr->name());
-    String value = createString(attr->value());
-    sp<_XmlAttribute> attribute = createXmlAttribute(attr,reader,name,value);
-    return attribute;
+//sp<_XmlAttribute> _XmlAttrIterator::getAttribute() {
+//    String name = createString(attr->name());
+//    String value = createString(attr->value());
+//    sp<_XmlAttribute> attribute = createXmlAttribute(attr,reader,name,value);
+//    return attribute;
+//}
+String _XmlAttrIterator::getName() {
+    if(attr == nullptr) {
+        return nullptr;
+    }
+
+    return createString(attr->name());
 }
 
+String _XmlAttrIterator::getValue() {
+    if(attr == nullptr) {
+        return nullptr;
+    }
+
+    return createString(attr->value());
+}
+
+
 //------------------ XmlValueIterator ---------------//
-_XmlValueIterator::_XmlValueIterator(_XmlValue *v,sp<_XmlDocument> r) {
-    xmlValue.set_pointer(v);
+_XmlValueIterator::_XmlValueIterator(sp<_XmlValue> n,sp<_XmlDocument> r) {
+    xmlValue = n;
     reader = r;
-    node = v->node->first_node();
+    node = xmlValue->node->first_node();
 }
 
 bool _XmlValueIterator::hasValue() {
@@ -58,31 +74,38 @@ XmlValue _XmlValueIterator::getValue() {
 }
 
 //------------------ XmlAttribute -----------------//
-_XmlAttribute::_XmlAttribute(xml_attribute<char> * attribute,sp<_XmlDocument> r,String n,String v) {
-    attr = attribute;
+_XmlAttribute::_XmlAttribute(sp<_XmlValue> node,sp<_XmlDocument> r,String n,String v) {
+    xmlvalue = node;
     reader = r;
-    name = n;
-    value = v;
 }
 
-String _XmlAttribute::getName() {
-    //return createString(attr->name());
-    return name;
-}
-    
-String _XmlAttribute::getValue() {
-    //return createString(attr->value());
-    return value;
+int _XmlAttribute::updateName(String name,String newname) {
+    if(name == nullptr || newname == nullptr) {
+        return -XmlValueFailWrongParam;
+    }
+
+    xml_attribute<> *attr = xmlvalue->node->first_attribute(name->toChars());
+    if(attr != nullptr) {
+        attr->name(reader->xmlDoc.allocate_string(newname->toChars()),
+                   newname->size());
+        return 0;
+    }
+
+    return -XmlValueFailNotFound;
 }
 
-void _XmlAttribute::updateName(String n) {
-    name = n;
-    return attr->name(name->toChars(),name->size());
-}
+int _XmlAttribute::updateValue(String name,String newvalue) {
+    if(name == nullptr || newvalue == nullptr) {
+        return -XmlValueFailWrongParam;
+    }
 
-void _XmlAttribute::updateValue(String v) {
-    value = v;
-    return attr->value(value->toChars(),value->size());
+    xml_attribute<> *attr = xmlvalue->node->first_attribute(name->toChars());
+    if(attr != nullptr) {
+        attr->value(reader->xmlDoc.allocate_string(newvalue->toChars()),newvalue->size());
+        return 0;
+    }
+
+    return -XmlValueFailNotFound;
 }
 
 //------------------ XmlValue -----------------//
@@ -101,8 +124,8 @@ _XmlValue::_XmlValue(xml_node<> *n,sp<_XmlDocument> d,String _name,String _value
     name = _name;
     value = _value;
 
-    valueCache = createArrayList<XmlValue>();
-    attrCache = createArrayList<XmlAttribute>();
+    //valueCache = createArrayList<XmlValue>();
+    //attrCache = createArrayList<XmlAttribute>();
 }
 
 _XmlValue::_XmlValue(xml_node<> *n,_XmlDocument* r,String _name,String _value) {
@@ -111,8 +134,8 @@ _XmlValue::_XmlValue(xml_node<> *n,_XmlDocument* r,String _name,String _value) {
     name = _name;
     value = _value;
 
-    valueCache = createArrayList<XmlValue>();
-    attrCache = createArrayList<XmlAttribute>();
+    //valueCache = createArrayList<XmlValue>();
+    //attrCache = createArrayList<XmlAttribute>();
 }
 
 //void _XmlValue::setParser(sp<_XmlDocument> r) {
@@ -120,32 +143,54 @@ _XmlValue::_XmlValue(xml_node<> *n,_XmlDocument* r,String _name,String _value) {
 //}
 
 String _XmlValue::getStringAttr(String attr) {
+    //printf("getString arrt is %s,node is %x \n",attr->toChars(),node);
     xml_attribute<> *v = node->first_attribute(attr->toChars());
+
+    if(v == nullptr) {
+        printf("getString arrt is null \n");
+        return nullptr;
+    }
     return createString(v->value());
 }
 
 Integer _XmlValue::getIntegerAttr(String attr) {
     xml_attribute<> *v = node->first_attribute(attr->toChars());
+    if(v == nullptr) {
+        return nullptr;
+    }
     String val = createString(v->value());
     return val->toInteger();
 }
 
 Boolean _XmlValue::getBooleanAttr(String attr) {
     xml_attribute<> *v = node->first_attribute(attr->toChars());
+    if(v == nullptr) {
+        return nullptr;
+    }
     String val = createString(v->value());
     return val->toBoolean();
 }
 
 Double _XmlValue::getDoubleAttr(String attr) {
     xml_attribute<> *v = node->first_attribute(attr->toChars());
+    if(v == nullptr) {
+        return nullptr;
+    }
     String val = createString(v->value());
     return val->toDouble();
 }
 
 Float _XmlValue::getFloatAttr(String attr) {
     xml_attribute<> *v = node->first_attribute(attr->toChars());
+    if(v == nullptr) {
+        return nullptr;
+    }
     String val = createString(v->value());
     return val->toFloat();
+}
+
+sp<_XmlAttribute> _XmlValue::getAttribute() {
+    
 }
 
 String _XmlValue::getStringValue() {
@@ -173,34 +218,132 @@ Float _XmlValue::getFloatValue() {
     return v->toFloat();
 }
 
+
+String _XmlValue::getStringValue(String name) {
+    String value = searchNode(name);
+    if(value != nullptr) {
+        return value;
+    }
+
+    return nullptr;
+}
+
+Integer _XmlValue::getIntegerValue(String name) {
+    String value = searchNode(name);
+    if(value != nullptr) {
+        return value->toInteger();
+    }
+
+    return nullptr;
+}
+
+Boolean _XmlValue::getBooleanValue(String name) {
+    String value = searchNode(name);
+    if(value != nullptr) {
+        return value->toBoolean();
+    }
+
+    return nullptr;
+}
+
+Double _XmlValue::getDoubleValue(String name) {
+    String value = searchNode(name);
+    if(value != nullptr) {
+        return value->toDouble();
+    }
+
+    return nullptr;
+}
+
+Float _XmlValue::getFloatValue(String name) {
+    String value = searchNode(name);
+    if(value != nullptr) {
+        return value->toFloat();
+    }
+
+    return nullptr;
+}
+
+String _XmlValue::searchNode(String name) {
+    if(name == nullptr) {
+        return nullptr;
+    }
+
+    xml_node<> *first = node->first_node(name->toChars());
+    if(first != nullptr) {
+        return createString(first->value());
+    }
+
+    return nullptr;
+}
+
+XmlValue _XmlValue::getNode(String name) {
+    if(name == nullptr) {
+        return nullptr;
+    }
+
+    xml_node<> *first = node->first_node(name->toChars());
+    if(first != nullptr) {
+        return createXmlValue(first,
+            doc,
+            createString(first->name()),
+            createString(first->value()));
+    }
+    
+    return nullptr;
+}
+
+
 String _XmlValue::getName() {
+    //printf("xmlvalue getname is %x \n",node);
     String v = createString(node->name());
     return v;
 }
 
 void _XmlValue::updateName(String n) {
-    node->name(name->toChars(),name->size());
+    if(n == nullptr) {
+        return;
+    }
+
+    //printf("xmlvalue update name is %x \n",node);
+
+    node->name(doc->xmlDoc.allocate_string(n->toChars()),n->size());
     name = n;
 }
 
 void _XmlValue::updateValue(String v) {
-    node->value(value->toChars(),value->size());
+    if(v == nullptr) {
+        return;
+    }
+    
+    node->value(doc->xmlDoc.allocate_string(v->toChars()),v->size());
     value = v;
 }
 
 void _XmlValue::appendNode(XmlValue v) {
+    if(v == nullptr) {
+        return;
+    }
+
     node->append_node(v->node);
-    valueCache->add(v);
+    //valueCache->add(v);
 }
 
-void _XmlValue::appendAttr(XmlAttribute v) {
-    node->append_attribute(v->attr);
-    attrCache->add(v);
+void _XmlValue::appendAttr(String name,String value) {
+    //node->append_attribute(v->attr);
+    //attrCache->add(v);
+    //printf("appendAttr name is %s,value is %s \n",name->toChars(),value->toChars());
+    xml_attribute<> *attr = doc->xmlDoc.allocate_attribute(doc->xmlDoc.allocate_string(name->toChars()),
+        doc->xmlDoc.allocate_string(value->toChars()));
+
+    node->append_attribute(attr);
+    //xml_attribute<> *attr2 = node->first_attribute(name->toChars());
+    //printf("result is %s,node is %x \n",attr2->value(),node);
 }
 
 void _XmlValue::removeNode(XmlValue v) {
     node->remove_node(v->node);
-    valueCache->remove(v);
+    //valueCache->remove(v);
 }
 
 sp<_XmlAttrIterator> _XmlValue::getAttrIterator() {

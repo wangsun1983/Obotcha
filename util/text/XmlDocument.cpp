@@ -33,8 +33,8 @@ XmlValue _XmlDocument::newRootNode(String nodename) {
     
 XmlValue _XmlDocument::newNode(String nodename,String value) {
     xml_node<>* node = xmlDoc.allocate_node(node_element,
-                                            nodename->toChars(),
-                                            value->toChars(),
+                                            xmlDoc.allocate_string(nodename->toChars()),
+                                            xmlDoc.allocate_string(value->toChars()),
                                             nodename->size(),
                                             value->size());
 
@@ -42,28 +42,36 @@ XmlValue _XmlDocument::newNode(String nodename,String value) {
     return xmlnode;
 }
 
-sp<_XmlAttribute> _XmlDocument::newAttribute(String name,String value) {
-    xml_attribute<> *attr = xmlDoc.allocate_attribute(name->toChars(),value->toChars());
-    return createXmlAttribute(attr,this,name,value);
+XmlValue _XmlDocument::newNode(String nodename) {
+    xml_node<>* node = xmlDoc.allocate_node(node_element,
+                                            xmlDoc.allocate_string(nodename->toChars()),
+                                            nullptr,
+                                            nodename->size(),
+                                            0);
+
+    XmlValue xmlnode = createXmlValue(node,this,nodename,nullptr);
+    return xmlnode;
 }
+
+//sp<_XmlAttribute> _XmlDocument::newAttribute(String name,String value) {
+//    xml_attribute<> *attr = xmlDoc.allocate_attribute(name->toChars(),value->toChars());
+//    return createXmlAttribute(attr,this,name,value);
+//}
 
 XmlValue _XmlDocument::getRootNode() {
     xml_node<> *node = xmlDoc.first_node();
     String name = createString(node->name());
-    printf("nodeName is %s ,node is %x \n",node->name(),node);
+    //printf("nodeName is %s ,node is %x \n",node->name(),node);
     XmlValue root = createXmlValue(node,this,name,nullptr);
     return root;
 }
 
 String _XmlDocument::toString() {
-    //std::string text;
-    //char buff[1024*256];
     char buff[mFileSize + 1024];
     memset(buff,0,mFileSize + 1024);
-    //rapidxml::print(std::back_inserter(text), xmlDoc);
+    //printf("mFilesize is %ld \n",mFileSize);
     rapidxml::print(buff, xmlDoc);
-    //std::cout<<"to string is "<<text<<std::endl;
-    printf("file length is %ld \n",mFileSize);
+
     return createString(&buff[0]);
 }
 

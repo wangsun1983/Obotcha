@@ -11,34 +11,25 @@
 using namespace obotcha;
 
 int main() {
+    printf("---[XmlReader Test Start]--- \n");
     XmlReader reader = createXmlReader("test.xml");
     XmlDocument doc = reader->parse();
+
     String content = doc->toString();
-    printf("content is %s \n",content->toChars());
+    //printf("content is %s \n",content->toChars());
 
     XmlValue root = doc->getRootNode();
-    printf("name is %s \n",root->getName()->toChars());
-
-    /*
-    XmlValueIterator iterator = root->getValueIterator();
-    while(iterator->hasValue()) {
-      XmlValue node = iterator->getValue();
-      printf("name is %s \n",node->getName()->toChars());
-      XmlValueIterator iterator2 = node->getValueIterator();
-      while(iterator2->hasValue()) {
-        XmlValue v1 = iterator2->getValue();
-        printf("__name is %s \n",v1->getName()->toChars());
-
-        //get Attribute
-        XmlAttrIterator attrIterator = v1->getAttrIterator();
-        while(attrIterator->hasValue()) {
-          XmlAttribute aa = attrIterator->getAttribute();
-          printf("attr _name is %s , value is %s \n",aa->getName()->toChars(),aa->getValue()->toChars());
-          attrIterator->next();
+    //printf("name is %s \n",root->getName()->toChars());
+    String name = root->getName();
+    while(1) {
+        if(name == nullptr ||!name->equals("EllipsoidParams")) {
+          printf("---[XmlReader Test {parse()} case1] [FAILED]--- \n");
+          break;
         }
 
-        iterator2->next();
-      }
-      iterator->next();
-    }*/
+        printf("---[XmlReader Test {parse()} case1] [Success]--- \n");
+        break;
+    }
+
+    return 0;
 }

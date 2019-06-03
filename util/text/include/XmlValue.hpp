@@ -22,15 +22,23 @@ class _XmlAttribute;
 class _XmlDocument;
 class _XmlWriter;
 
+enum XmlValueFailReason {
+    XmlValueFailWrongParam = 200,
+    XmlValueFailNotFound,
+};
+
 DECLARE_SIMPLE_CLASS(XmlAttrIterator) {
 public:
-    _XmlAttrIterator(_XmlValue *,sp<_XmlDocument> r);
+    _XmlAttrIterator(sp<_XmlValue> node,sp<_XmlDocument> r);
 
     bool hasValue();
 
     bool next();
 
-    sp<_XmlAttribute> getAttribute();
+    //sp<_XmlAttribute> getAttribute();
+    String getName();
+
+    String getValue();
 
 private:
     sp<_XmlValue> xmlvalue;
@@ -42,7 +50,7 @@ private:
 
 DECLARE_SIMPLE_CLASS(XmlValueIterator) {
 public:
-    _XmlValueIterator(_XmlValue *,sp<_XmlDocument> r);
+    _XmlValueIterator(sp<_XmlValue> node,sp<_XmlDocument> r);
 
     bool hasValue();
 
@@ -63,24 +71,19 @@ DECLARE_SIMPLE_CLASS(XmlAttribute) {
 public:
     friend class _XmlValue;
     
-    _XmlAttribute(xml_attribute<char> * attribute,sp<_XmlDocument> r,String n,String v);
+    _XmlAttribute(sp<_XmlValue> node,sp<_XmlDocument> r,String n,String v);
 
-    String getName();
-    
-    String getValue();
+    int updateName(String name,String newname);
 
-    void updateName(String);
-
-    void updateValue(String);
+    int updateValue(String name,String newvalue);
 
 private:
-    String value;
-
-    String name;
-
     sp<_XmlDocument> reader;
 
-    xml_attribute<char> * attr;
+    //xml_attribute<char> * attr;
+    sp<_XmlValue> xmlvalue;
+
+    //xml_node<>*  node; 
 };
 
 
@@ -92,12 +95,13 @@ public:
     friend class _XmlValueIterator;
     friend class _XmlDocument;
     friend class _XmlWriter;
+    friend class _XmlAttribute;
 
     //_XmlValue(xml_node<> *n);
 
     _XmlValue(xml_node<> *n,sp<_XmlDocument> d,String,String);
 
-    _XmlValue(xml_node<> *n,_XmlDocument* r,String,String);
+    _XmlValue(xml_node<> *n,_XmlDocument* r,String,String);    
 
     //_XmlValue(sp<_XmlDocument> r);
 
@@ -115,6 +119,8 @@ public:
 
     Float getFloatAttr(String attr);
 
+    sp<_XmlAttribute> getAttribute();
+
     String getStringValue();
 
     Integer getIntegerValue();
@@ -124,6 +130,18 @@ public:
     Double getDoubleValue();
 
     Float getFloatValue();
+    
+    String getStringValue(String);
+
+    Integer getIntegerValue(String);
+
+    Boolean getBooleanValue(String);
+
+    Double getDoubleValue(String);
+
+    Float getFloatValue(String);
+
+    XmlValue getNode(String);
 
     String getName();
 
@@ -133,15 +151,14 @@ public:
 
     void appendNode(XmlValue v);
 
-    void appendAttr(XmlAttribute v);
+    void appendAttr(String name,String value);
 
     void removeNode(XmlValue v);
 
 private:
     //void setParser(sp<_XmlReader> r);
-    ArrayList<XmlValue> valueCache;
-
-    ArrayList<XmlAttribute> attrCache;
+    //ArrayList<XmlValue> valueCache;
+    //ArrayList<XmlAttribute> attrCache;
 
     String value;
 
@@ -150,6 +167,8 @@ private:
     sp<_XmlDocument> doc; //
 
     xml_node<>*  node;
+
+    String searchNode(String name);
 };
 
 }

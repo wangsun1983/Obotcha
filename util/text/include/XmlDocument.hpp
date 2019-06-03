@@ -28,7 +28,9 @@ public:
     
     sp<_XmlValue> newNode(String name,String value);
 
-    sp<_XmlAttribute> newAttribute(String name,String value);
+    sp<_XmlValue> newNode(String name);
+
+    //sp<_XmlAttribute> newAttribute(String name,String value);
 
     sp<_XmlValue> getRootNode();
 
