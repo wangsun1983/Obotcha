@@ -8,7 +8,7 @@ _FutureTask::_FutureTask(int type,Runnable r) {
     this->mType = type;
     this->mRunnable = r;
 
-    mCompleteMutex = createMutex();
+    mCompleteMutex = createMutex("FutureTaskMutex");
     mCompleteCond = createCondition();
 
     mStatus = FUTURE_WAITING;

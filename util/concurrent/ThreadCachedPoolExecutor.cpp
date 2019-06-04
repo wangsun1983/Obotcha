@@ -29,7 +29,7 @@ _ThreadCachedPoolExecutorHandler::_ThreadCachedPoolExecutorHandler(BlockingQueue
                                                                          state(idleState),
                                                                          mStop(false),
                                                                          isWaitIdle(false){
-    mStateMutex = createMutex();
+    mStateMutex = createMutex("ThreadCachedPoolExeHandlerMutex");
     mWaitCond = createCondition();
 
     mThread = createThread(this);

@@ -15,7 +15,7 @@ _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask>
                                                                          state(idleState),
                                                                          mStop(false),
                                                                          isWaitTerminate(false){
-    mStateMutex = createMutex();
+    mStateMutex = createMutex("ThreadPoolExeHandlerMutex");
     mWaitCond = createCondition();
 
     mThread = createThread(this);

@@ -4,8 +4,8 @@ namespace obotcha {
 
 _CountDownLatch::_CountDownLatch(int v) {
     count = v;
-    mutex = createMutex();
-    waitMutex = createMutex();
+    mutex = createMutex("CountDownLoatchMutex");
+    waitMutex = createMutex("CountDownLatchWaitMutex");
     waitCond = createCondition();
 }
 

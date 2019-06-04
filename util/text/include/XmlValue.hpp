@@ -97,13 +97,9 @@ public:
     friend class _XmlWriter;
     friend class _XmlAttribute;
 
-    //_XmlValue(xml_node<> *n);
+    _XmlValue(xml_node<> *n,sp<_XmlDocument> d);
 
-    _XmlValue(xml_node<> *n,sp<_XmlDocument> d,String,String);
-
-    _XmlValue(xml_node<> *n,_XmlDocument* r,String,String);    
-
-    //_XmlValue(sp<_XmlDocument> r);
+    _XmlValue(xml_node<> *n,_XmlDocument* r);    
 
     sp<_XmlAttrIterator> getAttrIterator();
 
@@ -151,15 +147,15 @@ public:
 
     void appendNode(XmlValue v);
 
+    void appendNode(String name,String value);
+
     void appendAttr(String name,String value);
 
     void removeNode(XmlValue v);
 
-private:
-    //void setParser(sp<_XmlReader> r);
-    //ArrayList<XmlValue> valueCache;
-    //ArrayList<XmlAttribute> attrCache;
+    void removeNode(String);
 
+private:
     String value;
 
     String name;

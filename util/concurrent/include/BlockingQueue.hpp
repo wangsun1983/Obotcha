@@ -69,6 +69,8 @@ public:
     inline T deQueueFirst(long timeout);
     inline T deQueueLast(long timeout);
 
+    ~_BlockingQueue();
+
     //wait for empty
     inline void waitForEmpty();
 
@@ -88,23 +90,34 @@ private:
     Mutex mMutex;
     Condition mEnqueueCond;
     Condition mDequeueCond;
+    bool isDestroy;
 };
+
+template <typename T>
+_BlockingQueue<T>::~_BlockingQueue() {
+    printf("blockingqueue destroy \n");
+    AutoMutex l(mMutex);
+    isDestroy = true;
+    mEnqueueCond->notify();
+    mDequeueCond->notify();
+}
 
 //template class/function must be defined in hpp file.
 template <typename T>
 _BlockingQueue<T>::_BlockingQueue(int size):mCapacity(size){
-    mMutex = createMutex();
+    mMutex = createMutex("BlockingQueueMutex1");
     mEnqueueCond = createCondition();
     mDequeueCond = createCondition();
-
+    isDestroy = false;
     mCapacity = size;
 }
 
 template <typename T>
 _BlockingQueue<T>::_BlockingQueue() {
-    mMutex = createMutex();
+    mMutex = createMutex("BlockingQueueMutex2");
     mEnqueueCond = createCondition();
     mDequeueCond = createCondition();
+    isDestroy = false;
     mCapacity = -1;
 }
 
@@ -115,6 +128,9 @@ void _BlockingQueue<T>::enQueueFirst(T val) {
         int size = mQueue.size();
         if(mCapacity != -1 && size == mCapacity) {
             mEnqueueCond->wait(mMutex);
+            if(isDestroy) {
+                return;
+            }
             continue;
         }
 
@@ -138,6 +154,9 @@ bool _BlockingQueue<T>::enQueueFirst(T val,long timeout) {
             }
 
             mEnqueueCond->wait(mMutex,timeout);
+            if(isDestroy) {
+                return false;
+            }
             waitCount++;
             continue;
         }
@@ -158,6 +177,9 @@ void _BlockingQueue<T>::enQueueLast(T val) {
         int size = mQueue.size();
         if(mCapacity != -1 && size == mCapacity) {
             mEnqueueCond->wait(mMutex);
+            if(isDestroy) {
+                return;
+            }
             continue;
         }
     
@@ -182,6 +204,9 @@ bool _BlockingQueue<T>::enQueueLast(T val,long timeout) {
             }
 
             mEnqueueCond->wait(mMutex,timeout);
+            if(isDestroy) {
+                return false;
+            }
             waitCount++;
             continue;
         }
@@ -299,6 +324,9 @@ T _BlockingQueue<T>::deQueueFirst() {
         int size = mQueue.size();
         if(size == 0) {
             mDequeueCond->wait(mMutex);
+            if(isDestroy) {
+                return nullptr;
+            }
             continue;
         }
 
@@ -326,6 +354,9 @@ T _BlockingQueue<T>::deQueueFirst(long timeout) {
             }
 
             mDequeueCond->wait(mMutex,timeout);
+            if(isDestroy) {
+                return nullptr;
+            }
             waitCount++;
             continue;
         }
@@ -350,6 +381,9 @@ T _BlockingQueue<T>::deQueueLast() {
         
         if(size == 0) {
             mDequeueCond->wait(mMutex);
+            if(isDestroy) {
+                return nullptr;
+            }
             continue;
         }
 
@@ -376,6 +410,9 @@ T _BlockingQueue<T>::deQueueLast(long interval) {
             }
 
             mDequeueCond->wait(mMutex,interval);
+            if(isDestroy) {
+                return nullptr;
+            }
             waitCount++;
             continue;
         }

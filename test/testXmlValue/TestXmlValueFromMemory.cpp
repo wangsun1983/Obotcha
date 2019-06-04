@@ -49,11 +49,13 @@ int testXmlValueFromMemory() {
     XmlValue testDefault = doc->newNode("defaults");
     testDefault->appendAttr("name","BeiJing54");
 
-    XmlValue test1 = doc->newNode("testname","noname");
-    testDefault->appendNode(test1);
+    //XmlValue test1 = doc->newNode("testname","noname");
+    //testDefault->appendNode(test1);
+    testDefault->appendNode("testname","noname");
 
-    XmlValue test2 = doc->newNode("execpath",".");
-    testDefault->appendNode(test2);
+    //XmlValue test2 = doc->newNode("execpath",".");
+    //testDefault->appendNode(test2);
+    testDefault->appendNode("execpath",".");
 
     XmlValue test3 = doc->newNode("testprog","xmllint");
     testDefault->appendNode(test3);
@@ -382,6 +384,40 @@ int testXmlValueFromMemory() {
       }
 
       printf("---[XmlValue TestFromMemory {appendAttr()} case1] [Success]--- \n");
+      break;
+    }
+
+    //void removeNode(XmlValue v);
+    while(1) {
+      XmlValue node = root->getNode("testdouble");
+      root->removeNode(node);
+
+      XmlValue node2 = root->getNode("testdouble");
+      if(node2 != nullptr) {
+        printf("---[XmlValue TestFromMemory {removeNode()} case1] [FAILED]--- \n");
+        break;
+      }
+
+      printf("---[XmlValue TestFromMemory {removeNode()} case2] [Success]--- \n");
+      break;
+    }
+
+    //void removeNode(String v);
+    while(1) {
+      XmlValue node0 = root->getNode("testfloat");
+      if(node0 == nullptr) {
+        printf("---[XmlValue TestFromMemory {removeNode()} case3] [FAILED]--- \n");
+        break;
+      }
+
+      root->removeNode(createString("testfloat"));
+      XmlValue node2 = root->getNode("testfloat");
+      if(node2 != nullptr) {
+        printf("---[XmlValue TestFromMemory {removeNode()} case4] [FAILED]--- \n");
+        break;
+      }
+
+      printf("---[XmlValue TestFromMemory {removeNode()} case5] [Success]--- \n");
       break;
     }
 

@@ -59,7 +59,7 @@ private:
 //template class/function must be defined in hpp file.
 template <typename T>
 _ConcurrentQueue<T>::_ConcurrentQueue(){
-    mutex_t = createMutex();
+    mutex_t = createMutex("ConcurrentQueueMutex");
 }
 
 template <typename T>

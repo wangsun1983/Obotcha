@@ -6,6 +6,7 @@
 #include "XmlWriter.hpp"
 #include "XmlDocument.hpp"
 #include "XmlValue.hpp"
+#include "XmlReader.hpp"
 #include "File.hpp"
 
 #include "rapidxml.hpp"
@@ -15,26 +16,50 @@
 using namespace obotcha;
 using namespace rapidxml;
 int main() {
-
+    printf("---[XmlValue TestFromFile Start]--- \n");
     XmlDocument document = createXmlDocument();
     XmlValue root = document->newRootNode("my root");
     String abc1 = createString("aName");
     String abc2 = createString("bValue");
     XmlValue node1 = document->newNode("aName","bValue");//createXmlValue(document);
-    XmlAttribute attr1 = document->newAttribute("attr1","aaa");
-    node1->appendAttr(attr1);
-
-    XmlAttribute attr2 = document->newAttribute("attr2","bbb");
-    node1->appendAttr(attr2);
-    //node1->updateName("aName");
-    //node1->updateValue("aValue");
+    //XmlAttribute attr1 = document->newAttribute("attr1","aaa");
+    //node1->appendAttr(attr1);
+    node1->appendAttr("attr1","aaa");
+    node1->appendAttr("attr2","bbb");
     root->appendNode(node1);
 
     XmlWriter xmlWriter = createXmlWriter(document);
 
-    File file = createFile("my.xml");
-    file->createNewFile();
+    //File file = createFile("my.xml");
+    //file->createNewFile();
     xmlWriter->write("my.xml");
+
+    while(1) {
+      XmlReader reader = createXmlReader("my.xml");
+      XmlDocument doc = reader->parse();
+      XmlValue myroot = doc->getRootNode();
+
+      XmlValue abcnode1 = myroot->getNode("aName");
+      if(abcnode1 == nullptr||!abcnode1->getStringValue()->equals("bValue")) {
+        printf("---[XmlWriter Test {write()} case1] [FAILED]--- \n");
+        break;
+      }
+
+      String attr1 = abcnode1->getStringAttr("attr1");
+      if(attr1 == nullptr || !attr1->equals("aaa")) {
+        printf("---[XmlWriter Test {write()} case2] [FAILED]--- \n");
+        break;
+      }
+
+      String attr2 = abcnode1->getStringAttr("attr2");
+      if(attr2 == nullptr || !attr2->equals("bbb")) {
+        printf("---[XmlWriter Test {write()} case3] [FAILED]--- \n");
+        break;
+      }
+
+      printf("---[XmlWriter Test {write()} case4] [Success]--- \n");
+      break;
+    }
 /*
     String str1 = document->toString();
     printf("strrrrr1 is %s \n",str1->toChars());

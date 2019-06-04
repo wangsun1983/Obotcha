@@ -16,9 +16,9 @@ _TimeTask::_TimeTask(Runnable runnable,long int interval) {
 //---------------TimeThread---------------//
 _TimeThread::_TimeThread() {
     mDatas = createArrayList<TimeTask>();
-    mDataLock = createMutex();
+    mDataLock = createMutex("TimeThreadDataMutex");
 
-    mCondLock = createMutex();
+    mCondLock = createMutex("TimeThreadCondMutex");
     mCond = createCondition();
 
     mExecutorService = createThreadPoolExecutor();

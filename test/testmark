@@ -21,4 +21,14 @@ InifValue  --Complete--
 JsonValue  --Complete--
 JsonReader --Complete--
 JsonWriter --Complete--
+XmlValue   --Complete--
+XmlReader   --Complete--
+XmlWriter   --Complete--
+XmlDocument   --Complete--
+YamlReader
+YamlValue
+YamlArray
 StringFormat --Complete--
+
+[util/concurrent]
+Thread

@@ -17,13 +17,15 @@ static void* recycle(void *th) {
 }
 
 _RecycleThread::_RecycleThread() {
-    mutex = createMutex();
+    mutex = createMutex("RecyleThreadMutex");
     cond = createCondition();
     queue = createBlockingQueue<Thread>();
     isRunning = false;
 }
 
-void _RecycleThread::start() {    
+void _RecycleThread::start() {
+    AutoMutex l(mutex);
+     
     if(!isRunning) {
         AutoMutex l(mutex);
         pthread_create(&mTid, &mAttr, recycle, this);
@@ -39,6 +41,7 @@ void _RecycleThread::run() {
         //TODO
         //printf("remove thread 1,t count is %d, t addr is %x \n",t->getStrongCount(),t.get_pointer());
         st(Thread)::removeThread(t);
+        //printf("remove thread 2,t count is %d, t addr is %x \n",t->getStrongCount(),t.get_pointer());
       
         //printf("remove thread 2,t count is %d \n",t->getStrongCount());
 
@@ -54,7 +57,7 @@ void _RecycleThread::submit(Thread t){
 //------------Thread Stack function---------------//
 static void cleanup(void *th)
 {
-    //printf("clean up \n");
+    printf("clean up \n");
     _Thread *thread = static_cast<_Thread *>(th);
     thread->onInterrupt();
     if(thread->getRunnable() != nullptr) {
@@ -74,18 +77,23 @@ ThreadLocal<Thread> _Thread::mLocalThreadLocal = createThreadLocal<Thread>();
 void* _Thread::localRun(void *th) {
     _Thread *thread = static_cast<_Thread *>(th);
     //printf("localrun start ,thread count is %d \n",thread->getStrongCount());
+    //put to mthread again
+    sp<_Thread> localThread;
+    localThread.set_pointer(thread);
+    mLocalThreadLocal->set(thread->mPthread,localThread);
 
     pthread_cleanup_push(cleanup, thread);
     if(thread->mRunnable != nullptr) {
         thread->mRunnable->run();
+        thread->mRunnable = nullptr;
     } else {
         thread->run();
     }
     
     //printf("localrun trace1,thread count is %d \n",thread->getStrongCount());
-    Thread recyleTh;
-    recyleTh.set_pointer(thread);
-    mRecyle->submit(recyleTh);
+    //Thread recyleTh;
+    //recyleTh.set_pointer(thread);
+    mRecyle->submit(localThread);
 
     //printf("localrun trace2,thread count is %d \n",thread->getStrongCount());
 
@@ -143,16 +151,15 @@ void _Thread::start() {
     //we should incStrong.after the thread complete,
     //we force decStrong to release;
     //incStrong(0);
-    sp<_Thread> localThread;
-    localThread.set_pointer(this);
-    mLocalThreadLocal->set(mPthread,localThread);
-
+    //sp<_Thread> localThread;
+    //localThread.set_pointer(this);
+    
     pthread_attr_init(&mThreadAttr);
     pthread_create(&mPthread, &mThreadAttr, localRun, this);
     pthread_attr_getschedpolicy(&mThreadAttr,&mPolicy);
     updateThreadPrioTable();
 
-
+    //mLocalThreadLocal->set(mPthread,localThread);
 }
 
 void _Thread::join() {

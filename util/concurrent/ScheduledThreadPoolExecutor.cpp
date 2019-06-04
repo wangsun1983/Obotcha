@@ -87,11 +87,11 @@ _ScheduledThreadPoolTask::_ScheduledThreadPoolTask(FutureTask t,
 _ScheduledThreadPoolThread::_ScheduledThreadPoolThread() {
     mDatas = createArrayList<ScheduledThreadPoolTask>();
 
-    mDataLock = createMutex();
+    mDataLock = createMutex("ScheduledThreadPoolDataMutex");
     mDataCond = createCondition();
-    mTimeLock = createMutex();
+    mTimeLock = createMutex("ScheduledThreadPoolTimeMutex");
     mTimeCond = createCondition();
-    mTerminatedMutex = createMutex();
+    mTerminatedMutex = createMutex("ScheduledThreadPoolTermMutex");
     mTerminatedCond = createCondition();
     int cpuNum = st(System)::availableProcessors();
 

@@ -40,7 +40,7 @@ private:
 template<typename T>
 _ThreadLocal<T>::_ThreadLocal(){
     mLocalMap = createHashMap<pthread_t,T>();
-    mutex = createMutex();
+    mutex = createMutex("ThreadLocalMutex");
 }
 
 template<typename T>

@@ -67,9 +67,9 @@ XmlValue _XmlValueIterator::getValue() {
         return nullptr;
     }
 
-    String n = createString(node->name());
-    String v = createString(node->value());
-    XmlValue value = createXmlValue(node,reader,n,v);
+    //String n = createString(node->name());
+    //String v = createString(node->value());
+    XmlValue value = createXmlValue(node,reader);
     return value;
 }
 
@@ -118,21 +118,23 @@ int _XmlAttribute::updateValue(String name,String newvalue) {
 //    node = doc->xmlDoc.allocate_node(node_element);
 //}
 
-_XmlValue::_XmlValue(xml_node<> *n,sp<_XmlDocument> d,String _name,String _value) {
+//_XmlValue::_XmlValue(xml_node<> *n,sp<_XmlDocument> d,String _name,String _value) {
+_XmlValue::_XmlValue(xml_node<> *n,sp<_XmlDocument> d) {
     node = n;
     doc = d;
-    name = _name;
-    value = _value;
+    //name = _name;
+    //value = _value;
 
     //valueCache = createArrayList<XmlValue>();
     //attrCache = createArrayList<XmlAttribute>();
 }
 
-_XmlValue::_XmlValue(xml_node<> *n,_XmlDocument* r,String _name,String _value) {
+//_XmlValue::_XmlValue(xml_node<> *n,_XmlDocument* r,String _name,String _value) {
+_XmlValue::_XmlValue(xml_node<> *n,_XmlDocument* r) {
     node = n;
     doc.set_pointer(r);
-    name = _name;
-    value = _value;
+    //name = _name;
+    //value = _value;
 
     //valueCache = createArrayList<XmlValue>();
     //attrCache = createArrayList<XmlAttribute>();
@@ -284,10 +286,7 @@ XmlValue _XmlValue::getNode(String name) {
 
     xml_node<> *first = node->first_node(name->toChars());
     if(first != nullptr) {
-        return createXmlValue(first,
-            doc,
-            createString(first->name()),
-            createString(first->value()));
+        return createXmlValue(first,doc);
     }
     
     return nullptr;
@@ -329,11 +328,26 @@ void _XmlValue::appendNode(XmlValue v) {
     //valueCache->add(v);
 }
 
+void _XmlValue::appendNode(String name,String value) {
+    if(name == nullptr || value == nullptr) {
+        return;
+    }
+
+    String trimres = name->trimAll();
+
+    XmlValue newnode = doc->newNode(
+        doc->xmlDoc.allocate_string(trimres->toChars()),
+        doc->xmlDoc.allocate_string(value->toChars()));
+
+    node->append_node(newnode->node);
+}
+
 void _XmlValue::appendAttr(String name,String value) {
     //node->append_attribute(v->attr);
     //attrCache->add(v);
     //printf("appendAttr name is %s,value is %s \n",name->toChars(),value->toChars());
-    xml_attribute<> *attr = doc->xmlDoc.allocate_attribute(doc->xmlDoc.allocate_string(name->toChars()),
+    String newres = name->trimAll();
+    xml_attribute<> *attr = doc->xmlDoc.allocate_attribute(doc->xmlDoc.allocate_string(newres->toChars()),
         doc->xmlDoc.allocate_string(value->toChars()));
 
     node->append_attribute(attr);
@@ -344,6 +358,17 @@ void _XmlValue::appendAttr(String name,String value) {
 void _XmlValue::removeNode(XmlValue v) {
     node->remove_node(v->node);
     //valueCache->remove(v);
+}
+
+void _XmlValue::removeNode(String v) {
+    //node->remove_node(v->node);
+    //valueCache->remove(v);
+    xml_node<>* searchNode = node->first_node(v->toChars());
+    if(searchNode == nullptr) {
+        return;
+    }
+
+    node->remove_node(searchNode);
 }
 
 sp<_XmlAttrIterator> _XmlValue::getAttrIterator() {

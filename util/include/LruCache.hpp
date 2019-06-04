@@ -40,7 +40,7 @@ DECLARE_CLASS(LruCache,2) {
 public:
     _LruCache(int s) {
         mMaxSize = s;
-        mLock = createMutex();
+        mLock = createMutex("LruCacheMutex");
         mCurrent = nullptr;
         mHead = nullptr;
         mCurrentSize = 0;

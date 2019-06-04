@@ -7,7 +7,7 @@ _Barrier::_Barrier(int n) {
     mBarrierNums = n;
     mBarrierBack = n;
 
-    mutex = createMutex();
+    mutex = createMutex("BarrierMutex");
     cond = createCondition();
 }
 

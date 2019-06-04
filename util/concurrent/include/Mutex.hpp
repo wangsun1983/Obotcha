@@ -5,12 +5,15 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(Mutex) 
 {
 public:
+    _Mutex(String);
+
     _Mutex();
 
     void lock();
@@ -19,10 +22,14 @@ public:
 
     bool trylock();
 
-    pthread_mutex_t *getMutex_t(); 
+    pthread_mutex_t *getMutex_t();
+
+    ~_Mutex();
 
 private:
     pthread_mutex_t mutex_t;
+
+    String mMutexName;
 };
 
 }

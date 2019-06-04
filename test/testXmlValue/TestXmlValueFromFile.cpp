@@ -329,5 +329,39 @@ int testXmlValueFromFile() {
       break;
     }
 
+    //void removeNode(XmlValue v);
+    while(1) {
+      XmlValue node = root->getNode("testdouble");
+      root->removeNode(node);
+
+      XmlValue node2 = root->getNode("testdouble");
+      if(node2 != nullptr) {
+        printf("---[XmlValue TestFromFile {removeNode()} case1] [FAILED]--- \n");
+        break;
+      }
+
+      printf("---[XmlValue TestFromFile {removeNode()} case2] [Success]--- \n");
+      break;
+    }
+
+    //void removeNode(String v);
+    while(1) {
+      XmlValue node0 = root->getNode("testfloat");
+      if(node0 == nullptr) {
+        printf("---[XmlValue TestFromFile {removeNode()} case3] [FAILED]--- \n");
+        break;
+      }
+
+      root->removeNode(createString("testfloat"));
+      XmlValue node2 = root->getNode("testfloat");
+      if(node2 != nullptr) {
+        printf("---[XmlValue TestFromFile {removeNode()} case4] [FAILED]--- \n");
+        break;
+      }
+
+      printf("---[XmlValue TestFromFile {removeNode()} case5] [Success]--- \n");
+      break;
+    }
+
     return 0;
 }

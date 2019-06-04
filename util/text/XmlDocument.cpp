@@ -25,31 +25,36 @@ XmlValue _XmlDocument::newRootNode(String nodename) {
     declaration->append_attribute(xmlDoc.allocate_attribute("encoding", "utf-8"));
     xmlDoc.append_node(declaration);
 
-    xml_node<>* rot = xmlDoc.allocate_node(rapidxml::node_element,xmlDoc.allocate_string(nodename->toChars()));
+    String trimres = nodename->trimAll();
+
+    xml_node<>* rot = xmlDoc.allocate_node(rapidxml::node_element,xmlDoc.allocate_string(trimres->toChars()));
     xmlDoc.append_node(rot);
-    XmlValue xmlnode = createXmlValue(rot,this,nodename,nullptr);
+    XmlValue xmlnode = createXmlValue(rot,this);
     return xmlnode;
 }
     
 XmlValue _XmlDocument::newNode(String nodename,String value) {
+    String trimres = nodename->trimAll();
+
     xml_node<>* node = xmlDoc.allocate_node(node_element,
-                                            xmlDoc.allocate_string(nodename->toChars()),
+                                            xmlDoc.allocate_string(trimres->toChars()),
                                             xmlDoc.allocate_string(value->toChars()),
-                                            nodename->size(),
+                                            trimres->size(),
                                             value->size());
 
-    XmlValue xmlnode = createXmlValue(node,this,nodename,value);
+    XmlValue xmlnode = createXmlValue(node,this);
     return xmlnode;
 }
 
 XmlValue _XmlDocument::newNode(String nodename) {
+    String trimres = nodename->trimAll();
     xml_node<>* node = xmlDoc.allocate_node(node_element,
-                                            xmlDoc.allocate_string(nodename->toChars()),
+                                            xmlDoc.allocate_string(trimres->toChars()),
                                             nullptr,
-                                            nodename->size(),
+                                            trimres->size(),
                                             0);
 
-    XmlValue xmlnode = createXmlValue(node,this,nodename,nullptr);
+    XmlValue xmlnode = createXmlValue(node,this);
     return xmlnode;
 }
 
@@ -60,9 +65,9 @@ XmlValue _XmlDocument::newNode(String nodename) {
 
 XmlValue _XmlDocument::getRootNode() {
     xml_node<> *node = xmlDoc.first_node();
-    String name = createString(node->name());
+    //String name = createString(node->name());
     //printf("nodeName is %s ,node is %x \n",node->name(),node);
-    XmlValue root = createXmlValue(node,this,name,nullptr);
+    XmlValue root = createXmlValue(node,this);
     return root;
 }
 

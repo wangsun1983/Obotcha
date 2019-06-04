@@ -17,16 +17,17 @@ namespace obotcha {
 
 _XmlWriter::_XmlWriter(sp<_XmlDocument> doc) {
     xmlDoc = doc;
-    String content = xmlDoc->toString();
-    printf("xml construct content is %s \n",content->toChars());
 }
 
 void _XmlWriter::write(String filepath) {
+    File file = createFile(filepath);
+    if(!file->exists()) {
+        return;
+    }
+
     String content = xmlDoc->toString();
     FileOutputStream stream = createFileOutputStream(filepath);
     stream->open(FileOpenType::Trunc);
-    printf("write filepath is %s \n",filepath->toChars());
-    printf("write content is %s \n",content->toChars());
     stream->writeString(content);
     stream->flush();
     stream->close();

@@ -19,7 +19,7 @@
 
 namespace obotcha {
 
-static Mutex mutex = createMutex();
+static Mutex mutex = createMutex("FileWatchMutex");
 
 _FileWatcher *_FileWatcher::instance = nullptr;
 

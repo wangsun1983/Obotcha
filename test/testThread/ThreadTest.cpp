@@ -15,70 +15,102 @@ static int disposeVal = -1;
 
 using namespace obotcha;
 
+int TestData1 = 1;
+
+int TestData2 = 2;
+int disposeData2 = -1;
+
 DECLARE_SIMPLE_CLASS(Run1) IMPLEMENTS(Runnable) {
 public:
-  _Run1(Mutex m) {
-    mutex = m;
-  }
 
   void run() {
-      printf("Run1 start sleep1 \n");
-      //AutoMutex l(mutex);
-      st(Thread)::setThreadSchedPolicy(ThreadSchedFIFO);
-      st(Thread)::setThreadPriority(ThreadHighPriority);
-      printf("Run1 start sleep1_1 \n");
-      sleep(TEST_SLEEP_INTERVAL);
-      //pthread_exit(nullptr);
-      printf("Run1 start sleep2 \n");
+      TestData1 = 100;
   }
 
   ~_Run1() {
-    printf("remove runn1 \n");
-    disposeVal = 10;
+    disposeVal = 0;
+  }
+};
+
+DECLARE_SIMPLE_CLASS(Thread1) IMPLEMENTS(Thread) {
+public:
+
+  void run() {
+      TestData2 = 100;
   }
 
-private:
-   Mutex mutex;
+  ~_Thread1() {
+    disposeData2 = 0;
+  }
 };
 
 int main() {
-  {
-      Mutex t = createMutex();
-printf("thread test 1 \n");
-      Thread th = createThread(createRun1(t));
-      printf("t1 start \n");
-      th->start();
-      //th->setSchedPolicy(ThreadSchedFIFO);
-      //th->setPriority(ThreadHighPriority);
-      //st(Thread)::setThreadPriority(ThreadHighPriority);
-      //sleep(3);
-      printf("th's start join \n");
-      th->join(5000);
-      printf("th's finish join \n");
-      printf("th's priority is %d \n",th->getPriority());
-      printf("th's policy is %d \n",th->getSchedPolicy());
-printf("thread test 2 \n");
-#if 0
-      printf("policy is %d \n",th->getSchedPolicy());
-
-      sleep(1);
-      printf("main trace1 \n");
-      //th->exit();
-      printf("main trace2 \n");
-      sleep(2);
-      AutoMutex l(t);
-      printf("main trace3 \n");
-      int status = th->getStatus();
-      printf("main trace4 \n");
-      printf("getStatus is %d \n",status);
-#endif
-  }
-printf("thread test 3 \n");
+  printf("---[Thread Test Start]--- \n");
+  //_Thread(String name,Runnable run);
   while(1) {
-    sleep(1);
-  };
+    {
+        printf("abc1 \n");
+        Run1 r1 = createRun1();
+        Thread t = createThread("Test",r1);
+        printf("abc1 \n");
+        t->start();
+        printf("abc2 \n");
+        t->join();
+        printf("abc3 \n");
+    }
 
+    if(TestData1 != 100 || disposeVal != 0) {
+      printf("---[Thread Test {create()} case1] [FAILED]--- \n");
+      break;
+    }
+
+    printf("---[Thread Test {create()} case2] [Success]--- \n");
+    break;
+  }
+
+
+#if 0
+  //_Thread(Runnable run);
+  while(1){
+    disposeVal = -1;
+    {
+        Run1 r1 = createRun1();
+        Thread t = createThread(r1);
+        t->start();
+        t->join();
+    }
+
+    if(TestData1 != 100 || disposeVal != 0) {
+      printf("---[Thread Test {create()} case3] [FAILED]--- \n");
+      break;
+    }
+
+    printf("---[Thread Test {create()} case4] [Success]--- \n");
+    break;
+  }
+
+  //_Thread()
+  while(1) {
+    {
+      Thread1 t1 = createThread1();
+      t1->start();
+      t1->join();
+    }
+
+    if(TestData2 != 100 || disposeData2 != 0) {
+      printf("TestData2 is %d,disposeData2 is %d \n",TestData2,disposeData2);
+      printf("---[Thread Test {create()} case5] [FAILED]--- \n");
+      break;
+    }
+
+    printf("---[Thread Test {create()} case6] [Success]--- \n");
+    break;
+  }
+
+  //printf("---[Thread Test {create()} case6] [End]--- \n");
+#endif
 }
+
 
 #if 0
 DECLARE_SIMPLE_CLASS(Run2) IMPLEMENTS(Runnable) {
