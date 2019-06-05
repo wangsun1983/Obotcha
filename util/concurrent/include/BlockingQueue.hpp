@@ -124,11 +124,13 @@ _BlockingQueue<T>::_BlockingQueue() {
 template <typename T>
 void _BlockingQueue<T>::enQueueFirst(T val) {
     while(1) {
+        printf("enQueueFirst 1 \n");
         AutoMutex l(mMutex);
         int size = mQueue.size();
         if(mCapacity != -1 && size == mCapacity) {
             mEnqueueCond->wait(mMutex);
             if(isDestroy) {
+                printf("enQueueFirst 2 \n");
                 return;
             }
             continue;
@@ -320,11 +322,15 @@ template <typename T>
 T _BlockingQueue<T>::deQueueFirst() {
     T ret;
     while(1) {
+        printf("deQueueFirst 1 \n");
         AutoMutex l(mMutex);
+        printf("deQueueFirst 2 \n");
         int size = mQueue.size();
         if(size == 0) {
             mDequeueCond->wait(mMutex);
+            printf("deQueueFirst 3 \n");
             if(isDestroy) {
+                printf("deQueueFirst 4 \n");
                 return nullptr;
             }
             continue;

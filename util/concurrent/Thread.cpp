@@ -17,17 +17,20 @@ static void* recycle(void *th) {
 }
 
 _RecycleThread::_RecycleThread() {
+    printf("_RecycleThread start \n");
     mutex = createMutex("RecyleThreadMutex");
     cond = createCondition();
     queue = createBlockingQueue<Thread>();
     isRunning = false;
+    mThreadLocal = createThreadLocal<sp<_Thread>>();
 }
 
 void _RecycleThread::start() {
+    printf("RecyleThread start \n");
+
     AutoMutex l(mutex);
-     
+    printf("RecyleThread start2 \n");
     if(!isRunning) {
-        AutoMutex l(mutex);
         pthread_create(&mTid, &mAttr, recycle, this);
         isRunning = true;
     }
@@ -37,21 +40,35 @@ void _RecycleThread::run() {
     while(1) {
       
         Thread t = queue->deQueueFirst();
+        printf("remove thread \n");
         //t->decStrong(0);
         //TODO
         //printf("remove thread 1,t count is %d, t addr is %x \n",t->getStrongCount(),t.get_pointer());
-        st(Thread)::removeThread(t);
+        if(t == nullptr) {
+            return;
+        }
+
+        //st(Thread)::removeThread(t);
         //printf("remove thread 2,t count is %d, t addr is %x \n",t->getStrongCount(),t.get_pointer());
       
         //printf("remove thread 2,t count is %d \n",t->getStrongCount());
-
+        mThreadLocal->remove(t->mPthread);
     }
+}
+
+void _RecycleThread::keepAlive(sp<_Thread> s) {
+    mThreadLocal->set(s->mPthread,s);
 }
 
 void _RecycleThread::submit(Thread t){
     //printf("submit trace1,thread count is %d \n",t->getStrongCount());
     queue->enQueueLast(t);
     //printf("submit trace2,thread count is %d \n",t->getStrongCount());
+}
+
+_RecycleThread::~_RecycleThread() {
+    //this->exit();
+    //pthread_cancel(mTid);
 }
 
 //------------Thread Stack function---------------//
@@ -72,7 +89,7 @@ static void cleanup(void *th)
 
 //------------Thread---------------//
 RecycleThread _Thread::mRecyle = createRecycleThread();
-ThreadLocal<Thread> _Thread::mLocalThreadLocal = createThreadLocal<Thread>();
+//ThreadLocal<Thread> _Thread::mLocalThreadLocal = createThreadLocal<Thread>();
 
 void* _Thread::localRun(void *th) {
     _Thread *thread = static_cast<_Thread *>(th);
@@ -80,7 +97,8 @@ void* _Thread::localRun(void *th) {
     //put to mthread again
     sp<_Thread> localThread;
     localThread.set_pointer(thread);
-    mLocalThreadLocal->set(thread->mPthread,localThread);
+    //mLocalThreadLocal->set(thread->mPthread,localThread);
+    mRecyle->keepAlive(localThread);
 
     pthread_cleanup_push(cleanup, thread);
     if(thread->mRunnable != nullptr) {
@@ -108,9 +126,13 @@ _Thread::_Thread(Runnable run) {
 }
 
 _Thread::_Thread(String name,Runnable run) {
+    printf("thread create 1 \n");
     mName = name;
+    printf("thread create 2 \n");
     mRecyle->start();
+    printf("thread create 3 \n");
     mRunnable = run;
+    printf("thread create 4 \n");
 }
 
 void _Thread::setName(String name) {
@@ -127,7 +149,13 @@ _Thread::_Thread() {
 }
 
 _Thread::~_Thread(){
-    //Nothing    
+    //Nothing 
+    if(mName != nullptr) {
+      printf("thread destroy name is %s \n",mName->toChars());    
+    } else{
+      printf("thread destroy \n");  
+    }
+       
 }
 
 Runnable _Thread::getRunnable() {
@@ -296,33 +324,36 @@ int _Thread::updateThreadPrioTable() {
 }
 
 void _Thread::setThreadPriority(ThreadPriority priority) {
-    Thread th = mLocalThreadLocal->get();
-    if(th != nullptr) {
-        th->setPriority(priority);
-    }
+    //Thread th = mLocalThreadLocal->get();
+    //if(th != nullptr) {
+    //    th->setPriority(priority);
+    //}
     //th->setPriority(priority);
     //TODO:main process
 }
 
 int _Thread::getThreadPriority() {
-    Thread th = mLocalThreadLocal->get();
-    if(th != nullptr) {
-        return th->getPriority();
-    }
+    //Thread th = mLocalThreadLocal->get();
+    //if(th != nullptr) {
+    //    return th->getPriority();
+    //}
 }
 
 bool _Thread::setThreadSchedPolicy(ThreadSchedPolicy policy) {
-    Thread th = mLocalThreadLocal->get();
-    return th->setSchedPolicy(policy);
+    //Thread th = mLocalThreadLocal->get();
+    //return th->setSchedPolicy(policy);
 }
 
 int _Thread::getThreadSchedPolicy() {
-    Thread th = mLocalThreadLocal->get();
-    return th->getSchedPolicy();
+    //Thread th = mLocalThreadLocal->get();
+    //return th->getSchedPolicy();
 }
 
 void _Thread::removeThread(sp<_Thread> t) {
-    mLocalThreadLocal->remove(t->mPthread);
+    //if(t->mName != nullptr) {
+    //    printf("remvoeThread t->mName is %s \n",t->mName->toChars());
+    //}
+    //mLocalThreadLocal->remove(t->mPthread);
 }
 
 

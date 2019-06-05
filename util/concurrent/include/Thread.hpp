@@ -51,6 +51,10 @@ public:
 
     void run();
 
+    ~_RecycleThread();
+
+    void keepAlive(sp<_Thread>);
+
 private:
     Mutex mutex;
 
@@ -61,6 +65,8 @@ private:
     pthread_t mTid;
 
     BlockingQueue<sp<_Thread>> queue;
+
+    ThreadLocal<sp<_Thread>> mThreadLocal;
 
     bool isRunning;
 };
@@ -132,7 +138,7 @@ private:
 
     static RecycleThread mRecyle;
 
-    static ThreadLocal<sp<_Thread>> mLocalThreadLocal;
+    //static ThreadLocal<sp<_Thread>> mLocalThreadLocal;
 
     static void* localRun(void *th);
 
