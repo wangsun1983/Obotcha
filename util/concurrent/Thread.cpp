@@ -23,6 +23,8 @@ _RecycleThread::_RecycleThread() {
     queue = createBlockingQueue<Thread>();
     isRunning = false;
     mThreadLocal = createThreadLocal<sp<_Thread>>();
+    mDestroyMutex = createMutex("RecyleThreadMutex");
+    mDestroyBarrier = 0;
 }
 
 void _RecycleThread::start() {
@@ -37,9 +39,19 @@ void _RecycleThread::start() {
 }
 
 void _RecycleThread::run() {
+    printf("RecyleThread run \n");
+    mDestroyMutex->lock();
+    if(mDestroyBarrier == 1) {
+        mDestroyMutex->unlock();
+        return;
+    }
+
+    ThreadLocal<Thread> tLocal = mThreadLocal;
+    BlockingQueue<Thread> mQueue = queue;
+    mDestroyMutex->unlock();
+
     while(1) {
-      
-        Thread t = queue->deQueueFirst();
+        Thread t = mQueue->deQueueFirst();
         printf("remove thread \n");
         //t->decStrong(0);
         //TODO
@@ -52,7 +64,7 @@ void _RecycleThread::run() {
         //printf("remove thread 2,t count is %d, t addr is %x \n",t->getStrongCount(),t.get_pointer());
       
         //printf("remove thread 2,t count is %d \n",t->getStrongCount());
-        mThreadLocal->remove(t->mPthread);
+        tLocal->remove(t->mPthread);
     }
 }
 
@@ -68,7 +80,11 @@ void _RecycleThread::submit(Thread t){
 
 _RecycleThread::~_RecycleThread() {
     //this->exit();
-    //pthread_cancel(mTid);
+    mDestroyMutex->lock();
+    mDestroyBarrier = 1;
+    mDestroyMutex->unlock();
+
+    pthread_cancel(mTid);
 }
 
 //------------Thread Stack function---------------//
@@ -149,13 +165,12 @@ _Thread::_Thread() {
 }
 
 _Thread::~_Thread(){
-    //Nothing 
-    if(mName != nullptr) {
-      printf("thread destroy name is %s \n",mName->toChars());    
-    } else{
-      printf("thread destroy \n");  
-    }
-       
+    //Nothing
+    //if(mName != nullptr) {
+    //  printf("thread destroy name is %s \n",mName->toChars());    
+    //} else{
+    //  printf("thread destroy \n");  
+    //}
 }
 
 Runnable _Thread::getRunnable() {

@@ -7,6 +7,8 @@
 #include <sys/un.h>
 #include <sys/epoll.h>
 #include <errno.h>
+#include <stddef.h>
+#include <sys/ioctl.h>
 
 
 #include "Object.hpp"

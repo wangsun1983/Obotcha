@@ -24,6 +24,7 @@ cflags = -fpic \
 		-I ./external/openssl/include \
 		-I ./external/libco \
 		-g \
+		-std=c++11 \
 
 
 external = -lpthread \

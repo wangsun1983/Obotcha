@@ -8,7 +8,7 @@
 #include <memory.h>
 #include <sys/un.h>
 #include <sys/epoll.h>
-
+#include <stddef.h>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

@@ -69,6 +69,9 @@ private:
     ThreadLocal<sp<_Thread>> mThreadLocal;
 
     bool isRunning;
+    
+    Mutex mDestroyMutex;
+    int mDestroyBarrier;
 };
 
 DECLARE_SIMPLE_CLASS(Thread) {

@@ -20,6 +20,7 @@ cflags = -fpic \
 		-I ../../external/yaml/include \
 		-I ../../external/crc32/include \
 		-g \
+		-std=c++11 \
 
 external = -lpthread \
            ../../out/lib/libobotcha.so \
