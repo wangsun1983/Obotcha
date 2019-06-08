@@ -38,22 +38,29 @@ enum ThreadSchedPolicy {
     ThreadSchedOTHER = SCHED_NORMAL, //SCHED_NORMAL 0
     ThreadSchedFIFO = SCHED_FIFO,  //SCHED_FIFO 1
     ThreadSchedRR = SCHED_RR,    //SCHED_RR 2
-
 };
 
-DECLARE_SIMPLE_CLASS(RecycleThread) {
+enum ThreadFailReason {
+    ThreadFailUnknowPolicy = 200,
+    ThreadFailNoPrioritySupport,
+    
+};
+
+DECLARE_SIMPLE_CLASS(KeepAliveThread) {
 public:
-    _RecycleThread();
+    _KeepAliveThread();
 
     void start();
 
-    void submit(sp<_Thread> t);
+    void drop(sp<_Thread> t);
 
     void run();
 
-    ~_RecycleThread();
+    ~_KeepAliveThread();
 
-    void keepAlive(sp<_Thread>);
+    void save(sp<_Thread>);
+
+    sp<_Thread> getSavedThread();
 
 private:
     Mutex mutex;
@@ -70,14 +77,15 @@ private:
 
     bool isRunning;
     
-    Mutex mDestroyMutex;
+    //Mutex mDestroyMutex;
+
     int mDestroyBarrier;
 };
 
 DECLARE_SIMPLE_CLASS(Thread) {
 
 public:
-    friend class _RecycleThread;
+    friend class _KeepAliveThread;
 
     _Thread(String name,Runnable run);
 
@@ -97,11 +105,11 @@ public:
 
     void exit();
 
-    void setPriority(ThreadPriority priority);
+    int setPriority(ThreadPriority priority);
 
     int getPriority();
 
-    bool setSchedPolicy(ThreadSchedPolicy);
+    int setSchedPolicy(ThreadSchedPolicy);
 
     int getSchedPolicy();
 
@@ -117,7 +125,7 @@ public:
 
     static void msleep(unsigned long);
 
-    static RecycleThread getRecyleThread();
+    static KeepAliveThread getKeepAliveThread();
         
     static void setThreadPriority(ThreadPriority priority);
 
@@ -130,22 +138,19 @@ public:
     ~_Thread();
 
 private:
+    void initPolicyAndPriority();
 
     int threadPrio2SchePrio(int threadprio);
 
     int SchePrio2threadPrio(int secheprio);
 
-    int updateThreadPrioTable();
+    int updateThreadPrioTable(int policy);
 
     int mPrioTable[ThreadPriorityMax];
 
-    static RecycleThread mRecyle;
-
-    //static ThreadLocal<sp<_Thread>> mLocalThreadLocal;
+    static KeepAliveThread mKeepAliveThread;
 
     static void* localRun(void *th);
-
-    static void removeThread(sp<_Thread>);
 
     Runnable mRunnable;
 
@@ -153,7 +158,9 @@ private:
 
     pthread_t mPthread;
 
-    int mPolicy;
+    ThreadSchedPolicy mPolicy;
+
+    ThreadPriority mPriority;
 
     String mName;
 };
