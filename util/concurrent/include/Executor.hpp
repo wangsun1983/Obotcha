@@ -13,7 +13,7 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(Executor) {
 
 public:
-    virtual void execute(Runnable command) = 0;
+    virtual int execute(Runnable command) = 0;
 };
 
 }

@@ -90,7 +90,7 @@ int _ThreadLocal<T>::size(){
 
 template<typename T>
 _ThreadLocal<T>::~_ThreadLocal(){
-    printf("thread local distroy \n");
+    //printf("thread local distroy \n");
 }
 
 

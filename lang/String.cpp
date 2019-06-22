@@ -201,8 +201,7 @@ _String::~_String() {
 
 #ifdef DEBUG_STRING_MEMORY_LEAK  
         printf("wangsl,delete count is %d \n",stringId);
-#endif        
-        //std::cout<<"delete string is "<<*m_str<<std::endl;
+#endif
         delete m_str;
         m_str = nullptr;
         //m_str = nullptr;
@@ -210,6 +209,9 @@ _String::~_String() {
 }
 
 const char * _String::toChars() {
+    if(m_str == nullptr) {
+        return nullptr;
+    }
     return m_str->data();
 }
 
@@ -393,6 +395,7 @@ String _String::valueOf(const char *p) {
 }
 
 bool _String::equals(String s) {
+    //printf("string equals a \n");
     if(m_str == nullptr) {
         if(s == nullptr) {
             return true;
@@ -409,6 +412,7 @@ bool _String::equals(String s) {
 }
 
 bool _String::equals(const char *s) {
+    //printf("string equals b \n");
     if(m_str == nullptr) {
         if(s == nullptr) {
             return true;
@@ -425,6 +429,8 @@ bool _String::equals(const char *s) {
 }
 
 bool _String::equals(const std::string p) {
+    //printf("string equals c \n");
+
     if(m_str == nullptr) {
         return false;
     }
@@ -526,6 +532,138 @@ Long _String::toLong() {
     ss>>value;
     
     return createLong(value);
+}
+
+Uint8 _String::toUint8() {
+    if(m_str == nullptr) {
+        return nullptr;
+    }
+
+    if(!isIntNumber(m_str->data(),m_str->size())) {
+        return nullptr;
+    }
+
+    std::stringstream ss;
+    ss<<*m_str;
+    uint8_t value;
+    ss>>value;
+    
+    return createUint8(value);
+}
+
+Uint16 _String::toUint16() {
+    if(m_str == nullptr) {
+        return nullptr;
+    }
+
+    if(!isIntNumber(m_str->data(),m_str->size())) {
+        return nullptr;
+    }
+
+    std::stringstream ss;
+    ss<<*m_str;
+    uint16_t value;
+    ss>>value;
+    
+    return createUint16(value);
+}
+
+Uint32 _String::toUint32() {
+    if(m_str == nullptr) {
+        return nullptr;
+    }
+
+    if(!isIntNumber(m_str->data(),m_str->size())) {
+        return nullptr;
+    }
+
+    std::stringstream ss;
+    ss<<*m_str;
+    uint32_t value;
+    ss>>value;
+    
+    return createUint32(value);
+}
+
+Uint64 _String::toUint64() {
+    if(m_str == nullptr) {
+        return nullptr;
+    }
+
+    if(!isIntNumber(m_str->data(),m_str->size())) {
+        return nullptr;
+    }
+
+    std::stringstream ss;
+    ss<<*m_str;
+    uint64_t value;
+    ss>>value;
+    
+    return createUint64(value);
+}
+
+uint8_t _String::toBasicUint8() {
+    if(m_str == nullptr) {
+        return 0;
+    }
+
+    if(!isIntNumber(m_str->data(),m_str->size())) {
+        return 0;
+    }
+
+    std::stringstream ss;
+    ss<<*m_str;
+    uint8_t value;
+    ss>>value;
+    return value;
+}
+
+uint16_t _String::toBasicUint16() {
+    if(m_str == nullptr) {
+        return 0;
+    }
+
+    if(!isIntNumber(m_str->data(),m_str->size())) {
+        return 0;
+    }
+
+    std::stringstream ss;
+    ss<<*m_str;
+    uint16_t value;
+    ss>>value;
+    return value;
+}
+
+uint32_t _String::toBasicUint32() {
+    if(m_str == nullptr) {
+        return 0;
+    }
+
+    if(!isIntNumber(m_str->data(),m_str->size())) {
+        return 0;
+    }
+
+    std::stringstream ss;
+    ss<<*m_str;
+    uint32_t value;
+    ss>>value;
+    return value;
+}
+
+uint64_t _String::toBasicUint64() {
+    if(m_str == nullptr) {
+        return 0;
+    }
+
+    if(!isIntNumber(m_str->data(),m_str->size())) {
+        return 0;
+    }
+
+    std::stringstream ss;
+    ss<<*m_str;
+    uint64_t value;
+    ss>>value;
+    return value;
 }
 
 int _String::toBasicInt() {

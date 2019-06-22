@@ -12,6 +12,10 @@
 #include "Double.hpp"
 #include "Float.hpp"
 #include "Long.hpp"
+#include "Uint8.hpp"
+#include "Uint16.hpp"
+#include "Uint32.hpp"
+#include "Uint64.hpp"
 
 using namespace std;
 
@@ -91,6 +95,14 @@ public:
 
     Long toLong();
 
+    Uint8 toUint8();
+
+    Uint16 toUint16();
+
+    Uint32 toUint32();
+
+    Uint64 toUint64();
+
     int toBasicInt();
 
     bool toBasicBool();
@@ -98,6 +110,14 @@ public:
     float toBasicFloat();
 
     double toBasicDouble();
+
+    uint8_t toBasicUint8();
+
+    uint16_t toBasicUint16();
+
+    uint32_t toBasicUint32();
+
+    uint64_t toBasicUint64();
 
     long toBasicLong();
 

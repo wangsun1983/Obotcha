@@ -18,9 +18,8 @@ public:
   }
 
   void run() {
-      printf("run1 start wait \n");
+      sleep(3);
       barrier->await();
-      printf("run1 abc \n");
   }
 
   ~_Run1() {
@@ -38,10 +37,9 @@ public:
   }
 
   void run() {
-      printf("run2 start wait \n");
-
+      sleep(3);
       barrier->await();
-      printf("run2 abc \n");
+      
   }
 
   ~_Run2() {
@@ -51,23 +49,126 @@ private:
   Barrier barrier;
 };
 
+DECLARE_SIMPLE_CLASS(Run3) IMPLEMENTS(Runnable) {
+public:
+  _Run3(Barrier v) {
+    barrier = v;
+  }
+
+  void run() {
+      barrier->await();
+  }
+
+  ~_Run3() {
+    //disposeVal = 10;
+  }
+private:
+  Barrier barrier;
+};
+
+int mtestCount = 0;
+DECLARE_SIMPLE_CLASS(Run4) IMPLEMENTS(Runnable) {
+public:
+  _Run4(Barrier v) {
+    barrier = v;
+  }
+
+  void run() {
+      barrier->await();
+      mtestCount = 1;
+  }
+
+  ~_Run4() {
+    //disposeVal = 10;
+  }
+private:
+  Barrier barrier;
+};
+
 int main() {
   printf("---[Barrier Test Start]--- \n");
-  Barrier barrier = createBarrier(2);
 
-  Run1 r1 = createRun1(barrier);
-  Thread t1 = createThread(r1);
+  //Barrier()/getWaitNums()
+  while(1) {
+      Barrier barrier = createBarrier(2);
+      int num = barrier->getWaitNums();
+      if(num != 0) {
+        printf("---[Barrier Test {construct()} case1] [FAIL]--- \n");
+        break;
+      }
 
-  Run2 r2 = createRun2(barrier);
-  Thread t2 = createThread(r2);
+      printf("---[Barrier Test {construct()} case2] [Success]--- \n");
+      break;
+  }
 
-  printf("start t1 \n");
-  t1->start();
-  sleep(2);
+  //await()
+  while(1) {
+      Barrier b = createBarrier(3);
+      Thread t1 = createThread(createRun1(b));
+      t1->start();
 
-  printf("start t2 \n");
-  t2->start();
+      Thread t2 = createThread(createRun1(b));
+      t2->start();
+      long current = st(System)::currentTimeMillis();
+      b->await();
 
-  sleep(15);
-  while(1){}
+      int v = st(System)::currentTimeMillis() - current;
+      if(v > 3005) {
+        printf("---[Barrier Test {await()} case1] [FAIL]--- \n");
+        break;
+      }
+
+      printf("---[Barrier Test {await()} case2] [Success]--- \n");
+      break;
+  }
+
+  //await(long)
+  while(1) {
+      Barrier b = createBarrier(3);
+      Thread t1 = createThread(createRun1(b));
+      t1->start();
+
+      long current = st(System)::currentTimeMillis();
+      b->await(1000);
+      int v = st(System)::currentTimeMillis() - current;
+      if(v > 1005) {
+        printf("---[Barrier Test {await(long)} case1] [FAIL]--- \n");
+        break;
+      }
+
+      printf("---[Barrier Test {await(long)} case2] [Success]--- \n");
+      break;
+  }
+
+  //getWaitNums()
+  while(1) {
+    Barrier b = createBarrier(2);
+    Thread t1 = createThread(createRun3(b));
+    t1->start();
+    sleep(1);
+    int num = b->getWaitNums();
+    if(num != 1) {
+        printf("---[Barrier Test {getWaitNums()} case1] [FAIL]--- \n");
+        break;
+    }
+
+    printf("---[Barrier Test {getWaitNums()} case2] [Success]--- \n");
+    break;
+  }
+
+  //await()
+  while(1) {
+    Barrier b = createBarrier(2);
+    Thread t1 = createThread(createRun4(b));
+    t1->start();
+
+    sleep(2);
+    if(mtestCount == 1) {
+        printf("---[Barrier Test func {await()} case1] [FAIL]--- \n");
+        break;
+    }
+
+    printf("---[Barrier Test func {await()} case2] [Success]--- \n");
+    break;
+  }
 }

@@ -5,14 +5,16 @@
 
 #include "ByteArray.hpp"
 #include "String.hpp"
+#include "File.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(Crc32) {
 
 public:
-    long verify(ByteArray);
-    long verify(String);
+    long encode(ByteArray);
+    long encode(String);
+    long encode(File);
 };
 
 }

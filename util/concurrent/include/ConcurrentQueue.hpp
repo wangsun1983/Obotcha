@@ -47,6 +47,7 @@ public:
 
     inline T deQueueFirst();
     inline T deQueueLast();
+
     
 private:
     vector<T> mQueue;
@@ -143,6 +144,10 @@ void _ConcurrentQueue<T>::enQueueLast(float val) {
 template <typename T>
 T _ConcurrentQueue<T>::deQueueFirst() {
     AutoMutex l(mutex_t);
+
+    if(mQueue.size() == 0) {
+        return nullptr;
+    }
     
     T ret = mQueue.at(0);
     mQueue.erase(mQueue.begin());
@@ -153,6 +158,10 @@ T _ConcurrentQueue<T>::deQueueFirst() {
 template <typename T>
 T _ConcurrentQueue<T>::deQueueLast() {
     AutoMutex l(mutex_t);
+
+    if(mQueue.size() == 0) {
+        return nullptr;
+    }
     
     //return mQueue.pop_back();
     T ret = mQueue.back();

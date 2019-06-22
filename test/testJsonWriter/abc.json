@@ -1,6 +1,5 @@
 {
    "a" : 1,
-   "arr" : [ "abc1", "abc2", "abc3" ],
-   "b" : 2,
-   "c" : "nihao"
+   "c" : "nihao",
+   "darr" : [ "abc1", "abc2", "abc3" ]
 }

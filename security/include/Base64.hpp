@@ -24,9 +24,13 @@ public:
 
     ByteArray decode(ByteArray buff);
 
+    ByteArray encode(File f);
+
+    ByteArray decode(File f);
+
 private:
-   char * _encode(const char * input, int length, bool with_new_line);
-   char * _decode(const char * input, int length, bool with_new_line);
+   char * _encode(const char * input, int length, bool with_new_line,int *);
+   char * _decode(const char * input, int length, bool with_new_line,int *);
 };
 
 }

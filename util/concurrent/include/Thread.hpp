@@ -13,6 +13,8 @@
 #include "BlockingQueue.hpp"
 #include "String.hpp"
 #include "ThreadLocal.hpp"
+#include "Uint64.hpp"
+#include "AtomicInteger.hpp"
 
 using namespace std;
 
@@ -30,8 +32,12 @@ enum ThreadPriority {
 };
 
 enum ThreadStatus {
-    ThreadNotExist,
+    ThreadNotExist = 0,
+    ThreadNotStart,
+    ThreadIdle,
     ThreadRunning,
+    ThreadComplete,
+    ThreadDestroy,
 };
 
 enum ThreadSchedPolicy {
@@ -43,6 +49,10 @@ enum ThreadSchedPolicy {
 enum ThreadFailReason {
     ThreadFailUnknowPolicy = 200,
     ThreadFailNoPrioritySupport,
+    ThreadFailNotStart,
+    ThreadFailAllreadyComplete,
+    ThreadFailAllreadyDestroy,
+    ThreadFailActionFail,
     
 };
 
@@ -52,7 +62,9 @@ public:
 
     void start();
 
-    void drop(sp<_Thread> t);
+    void drop(pthread_t t);
+
+    void dropDirect(pthread_t t);
 
     void run();
 
@@ -71,7 +83,7 @@ private:
 
     pthread_t mTid;
 
-    BlockingQueue<sp<_Thread>> queue;
+    BlockingQueue<Uint64> queue;
 
     ThreadLocal<sp<_Thread>> mThreadLocal;
 
@@ -86,6 +98,8 @@ DECLARE_SIMPLE_CLASS(Thread) {
 
 public:
     friend class _KeepAliveThread;
+    
+    friend void cleanup(void *th);
 
     _Thread(String name,Runnable run);
 
@@ -93,7 +107,7 @@ public:
 
     _Thread();
 
-	void start();
+	int start();
 	
 	void join();
 
@@ -115,7 +129,11 @@ public:
 
     String getName();
 
-    void setName(String name);
+    //int getThreadStatus();
+
+    //void setThreadStatus(int);
+
+    int setName(String name);
 
     Runnable getRunnable();
 
@@ -146,23 +164,33 @@ private:
 
     int updateThreadPrioTable(int policy);
 
-    int mPrioTable[ThreadPriorityMax];
+    //int mPrioTable[ThreadPriorityMax];
 
     static KeepAliveThread mKeepAliveThread;
 
+    static HashMap<int,int *> mPriorityTable;
+
     static void* localRun(void *th);
 
+    //static void cleanup(void *th);
+
     Runnable mRunnable;
+    
+    pthread_t mPthread;
 
     pthread_attr_t mThreadAttr;
-
-    pthread_t mPthread;
 
     ThreadSchedPolicy mPolicy;
 
     ThreadPriority mPriority;
 
     String mName;
+
+    int mStatus;
+
+    Mutex mNameMutex;
+
+    AtomicInteger bootFlag;
 };
 
 }

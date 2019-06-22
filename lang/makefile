@@ -8,6 +8,10 @@ link += integer \
 	string \
 	long \
 	bytearray \
+	uint64 \
+	uint32 \
+	uint16 \
+	uint8 \
 
 objs += $(outtmp)/integer.o \
 	$(outtmp)/boolean.o \
@@ -17,9 +21,26 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/string.o \
 	$(outtmp)/long.o \
 	$(outtmp)/bytearray.o \
+	$(outtmp)/uint64.o \
+	$(outtmp)/uint32.o \
+	$(outtmp)/uint16.o \
+	$(outtmp)/uint8.o \
+
 
 integer :$(langDir)/Integer.cpp
 	$(gcc) $(cflags) -c $(langDir)/Integer.cpp -o $(outtmp)/integer.o $(external)
+
+uint64 :$(langDir)/Uint64.cpp
+	$(gcc) $(cflags) -c $(langDir)/Uint64.cpp -o $(outtmp)/uint64.o $(external)
+
+uint32 :$(langDir)/Uint32.cpp
+	$(gcc) $(cflags) -c $(langDir)/Uint32.cpp -o $(outtmp)/uint32.o $(external)
+
+uint16 :$(langDir)/Uint16.cpp
+	$(gcc) $(cflags) -c $(langDir)/Uint16.cpp -o $(outtmp)/uint16.o $(external)
+
+uint8 :$(langDir)/Uint8.cpp
+	$(gcc) $(cflags) -c $(langDir)/Uint8.cpp -o $(outtmp)/uint8.o $(external)
 
 boolean :$(langDir)/Boolean.cpp
 	$(gcc) $(cflags) -c $(langDir)/Boolean.cpp -o $(outtmp)/boolean.o $(external)

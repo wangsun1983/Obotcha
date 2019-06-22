@@ -22,17 +22,24 @@ enum ExecutorState {
     illegalState,
 };
 
+enum ExecutorFailReason {
+    ExecutorFailNotStart = 200,
+    ExecutorFailAlreadyDestroy,
+    ExecutorFailIsRunning,
+    ExecutorFailWaitTimeout
+};
+
 DECLARE_SIMPLE_CLASS(ExecutorService) IMPLEMENTS(Executor) {
 
 public:
-    virtual void execute(Runnable command) = 0;
+    virtual int execute(Runnable command) = 0;
 
     //can not submit runnable,but we need wati all the 
     //runnable function complete
-    virtual void shutdown() = 0;
+    virtual int shutdown() = 0;
 
     //close all thread directly
-    virtual void shutdownNow() = 0;
+    virtual int shutdownNow() = 0;
 
     //if this executor has been shut down
     virtual bool isShutdown() = 0;
@@ -41,7 +48,7 @@ public:
     virtual bool isTerminated() = 0;
 
     //blocks until all tasks have completed execution after a shutdown
-    virtual bool awaitTermination(long timeout) = 0;
+    virtual int awaitTermination(long timeout) = 0;
 
     //virtual Future submit(Runnable task) = 0;
     virtual Future submit(Runnable task) = 0;

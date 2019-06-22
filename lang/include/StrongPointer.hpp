@@ -313,7 +313,9 @@ void sp<T>::set_pointer(T* ptr) {
     }
     
     m_ptr = ptr;
-    m_ptr->incStrong(0);
+    if(m_ptr != nullptr) {
+        m_ptr->incStrong(0);
+    }
 }
 
 template<typename T>
@@ -323,6 +325,7 @@ void sp<T>::remove_pointer() {
             delete static_cast<const T*>(m_ptr);
         }
     }
+    m_ptr = nullptr;
 }
 
 template<typename T>

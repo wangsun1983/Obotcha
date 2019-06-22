@@ -6,8 +6,16 @@
 
 #include "StrongPointer.hpp"
 #include "Object.hpp"
+#include "String.hpp"
 
 namespace obotcha {
+
+enum ReadWriteLockFailReason {
+    ReadLockTimeout = 200,
+    WriteLockTimeout,
+    ReadLockLockFail,
+    WriteLockLockFail
+};
 
 class _ReadWriteLock;
 
@@ -15,24 +23,44 @@ DECLARE_SIMPLE_CLASS(ReadLock) {
 public:
     _ReadLock(_ReadWriteLock *);
 
+    _ReadLock(_ReadWriteLock *,String);
+
     void lock();
 
     void unlock();
 
+    int tryLock();
+
+    int lock(long);
+
+    String getName();
+
 private:
     sp<_ReadWriteLock> rwlock;
+
+    String mName;
 };
 
 DECLARE_SIMPLE_CLASS(WriteLock) {
 public:
     _WriteLock(_ReadWriteLock *);
 
+    _WriteLock(_ReadWriteLock *,String);
+
     void lock();
 
     void unlock();
 
+    int tryLock();
+
+    int lock(long);
+
+    String getName();
+
 private:
     sp<_ReadWriteLock> rwlock;
+
+    String mName;
 };
 
 DECLARE_SIMPLE_CLASS(ReadWriteLock) {
@@ -44,14 +72,19 @@ public:
 
     _ReadWriteLock();
 
+    _ReadWriteLock(String);
+
     sp<_ReadLock> getReadLock();
 
-    sp<_WriteLock> getWriteLock(); 
+    sp<_WriteLock> getWriteLock();
+
+    String getName();
 
     void destroy();
 
 private:
     pthread_rwlock_t rwlock;
+    String mName;
 };
 
 }

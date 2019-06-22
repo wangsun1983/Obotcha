@@ -40,7 +40,7 @@ DECLARE_CLASS(LruCache,2) {
 public:
     _LruCache(int s) {
         mMaxSize = s;
-        mLock = createMutex("LruCacheMutex");
+        //mLock = createMutex("LruCacheMutex");
         mCurrent = nullptr;
         mHead = nullptr;
         mCurrentSize = 0;
@@ -140,7 +140,7 @@ private:
 
     sp<_LruNode<T,U>> mCurrent;
 
-    Mutex mLock;
+    //Mutex mLock;
 
     void removeNode(sp<_LruNode<T,U>> node) {
         mHashMap->remove(node->tag);

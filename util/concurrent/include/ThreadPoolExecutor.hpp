@@ -73,17 +73,17 @@ public:
 
 	_ThreadPoolExecutor();
 
-    void shutdown();
+    int shutdown();
 
-    void shutdownNow();
+    int shutdownNow();
 
-    void execute(Runnable command);
+    int execute(Runnable command);
 
     bool isShutdown();
 
     bool isTerminated();
 
-    bool awaitTermination(long timeout);
+    int awaitTermination(long timeout);
 
     Future submit(Runnable task);
 

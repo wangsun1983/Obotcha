@@ -18,6 +18,10 @@ public:
         //printf("auto mutex1 lock,after mutex is %x \n",mutex_t->getMutex_t());
     }
 
+    AutoMutex(Mutex lock,long v): mutex_t(lock) {
+        lock->lock(v);
+    }
+
     ~AutoMutex() {
         mutex_t->unlock();
     }

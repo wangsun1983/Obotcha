@@ -94,7 +94,6 @@ _ScheduledThreadPoolThread::_ScheduledThreadPoolThread() {
     mTerminatedMutex = createMutex("ScheduledThreadPoolTermMutex");
     mTerminatedCond = createCondition();
     int cpuNum = st(System)::availableProcessors();
-
     cachedExecutor = createThreadCachedPoolExecutor(cpuNum*2,60*1000);
 
     //mExecutorService = createThreadPoolExecutor();
@@ -137,6 +136,7 @@ void _ScheduledThreadPoolThread::addTask(ScheduledThreadPoolTask v) {
 }
 
 void _ScheduledThreadPoolThread::stop() {
+    AutoMutex l(mDataLock);
     isStop = true;
 
     //clear all task
@@ -145,7 +145,12 @@ void _ScheduledThreadPoolThread::stop() {
         ScheduledThreadPoolTask scheduleTask = mDatas->remove(0);
         scheduleTask->task->cancel();
     }
-    //mDatas->clear();
+    
+    mDatas->clear();
+
+    //we should notify
+    mDataCond->notify();
+    
 }
 
 void _ScheduledThreadPoolThread::forceStop() {
@@ -153,45 +158,68 @@ void _ScheduledThreadPoolThread::forceStop() {
     isStop = true;
     //clear all task
     int size = mDatas->size();
-    //printf("_ScheduledThreadPoolThread stop before size is %d \n",size);
+    printf("_ScheduledThreadPoolThread stop before size is %d \n",size);
     for(int i = 0;i < size;i++) {
         ScheduledThreadPoolTask scheduleTask = mDatas->remove(0);
         scheduleTask->task->cancel();
     }
+
+    mDatas->clear();
+    //we should notify
+    mDataCond->notify();
+
     //mDatas->clear();
-    //printf("_ScheduledThreadPoolThread stop after size is %d \n",mDatas->size());
-
-    this->exit();
-
+    printf("_ScheduledThreadPoolThread stop after size is %d \n",mDatas->size());
+    //this->exit();
     //mDatas->clear();
 }
 
 void _ScheduledThreadPoolThread::waitStop(long timeout) {
     AutoMutex l(mTerminatedMutex);
     if(!isTerminated) {
-        mTerminatedCond->wait(mTerminatedMutex,timeout);
+        if(timeout == 0) {
+            mTerminatedCond->wait(mTerminatedMutex);
+        } else {
+            mTerminatedCond->wait(mTerminatedMutex,timeout);
+        }
     }
+}
+
+void _ScheduledThreadPoolThread::onInterrupt() {
+    mDatas->clear();
+
+    AutoMutex l(mTerminatedMutex);
+    isTerminated = true;
+    mTerminatedCond->notify();
 }
 
 void _ScheduledThreadPoolThread::run() {
     while(!isStop) {
-        //printf("_ScheduledThreadPoolThread trace1 \n");
+        printf("_ScheduledThreadPoolThread trace1 \n");
         ScheduledThreadPoolTask v;
         while(1) {
-            //printf("_ScheduledThreadPoolThread trace1_1 \n");
+            printf("_ScheduledThreadPoolThread trace1_1 \n");
             AutoMutex l(mDataLock);
-            //printf("_ScheduledThreadPoolThread trace1_2 \n");
+            if(isStop) {
+                mDatas->clear();
+                AutoMutex l(mTerminatedMutex);
+                isTerminated = true;
+                mTerminatedCond->notify();
+                return;
+            }
+
+            printf("_ScheduledThreadPoolThread trace1_2 \n");
             if(mDatas->size() == 0) {
-                //printf("_ScheduledThreadPoolThread trace1_3 \n");
+                printf("_ScheduledThreadPoolThread trace1_3 \n");
                 mDataCond->wait(mDataLock);
-                //printf("_ScheduledThreadPoolThread trace1_4 \n");
+                printf("_ScheduledThreadPoolThread trace1_4 \n");
                 continue;
             }
-            //printf("_ScheduledThreadPoolThread trace1_5 \n");
+            printf("_ScheduledThreadPoolThread trace1_5 \n");
             v = mDatas->get(0);
             break;
         }
-        //printf("_ScheduledThreadPoolThread trace2 \n");
+        printf("_ScheduledThreadPoolThread trace2 \n");
         
 
         //get first time to wait;
@@ -223,7 +251,7 @@ void _ScheduledThreadPoolThread::run() {
             }
         }
     }
-
+    printf("_ScheduledThreadPoolThread trace8 \n");
     //mExecutorService->execute(v->mRunnable);
     mDatas->clear();
     AutoMutex l(mTerminatedMutex);
@@ -246,11 +274,17 @@ _ScheduledThreadPoolExecutor::_ScheduledThreadPoolExecutor() {
     mIsShutDown = false;
 }
 
-void _ScheduledThreadPoolExecutor::execute(Runnable runnable) {
+int _ScheduledThreadPoolExecutor::execute(Runnable runnable) {
+    if(mIsShutDown ||mIsTerminated) {
+        return -ExecutorFailAlreadyDestroy;
+    }
+
     //TODO
     //ScheduledThreadPoolTask task = createScheduledThreadPoolTask(runnable,millseconds);
     //mTimeThread->addTask(task);
     //return 0;
+
+    return 0;
 }
 
 int _ScheduledThreadPoolExecutor::getThreadsNum() {
@@ -258,14 +292,26 @@ int _ScheduledThreadPoolExecutor::getThreadsNum() {
     return 0;
 }
 
-void _ScheduledThreadPoolExecutor::shutdown() {
+int _ScheduledThreadPoolExecutor::shutdown() {
+    if(mIsShutDown ||mIsTerminated) {
+        return -ExecutorFailAlreadyDestroy;
+    }
+
     mIsShutDown = true;
     mTimeThread->stop();
+
+    return 0;
 }
 
-void _ScheduledThreadPoolExecutor::shutdownNow() {
+int _ScheduledThreadPoolExecutor::shutdownNow() {
+    if(mIsShutDown ||mIsTerminated) {
+        return -ExecutorFailAlreadyDestroy;
+    }
+
     mIsShutDown = true;
     mTimeThread->forceStop();
+
+    return 0;
 }
 
 bool _ScheduledThreadPoolExecutor::isShutdown() {
@@ -276,15 +322,30 @@ bool _ScheduledThreadPoolExecutor::isTerminated() {
     return mTimeThread->isTerminated;
 }
 
-bool _ScheduledThreadPoolExecutor::awaitTermination(long timeout) {
+int _ScheduledThreadPoolExecutor::awaitTermination(long timeout) {
+    if(!mIsShutDown) {
+        return -ExecutorFailIsRunning;
+    }
+
+    if(mIsTerminated) {
+        return 0;
+    }
+
     mTimeThread->waitStop(timeout);
-    return true;
+
+    if(isTerminated()) {
+        return 0;
+    } else {
+        return -ExecutorFailWaitTimeout;
+    }
 }
 
 Future _ScheduledThreadPoolExecutor::submit(Runnable r) {
-    //FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r);
-    //Future future = createFuture(task);
-    //return future;
+    if(mIsShutDown) {
+        return nullptr;
+    }
+
+    return schedule(r,0);
 }
 
 Future _ScheduledThreadPoolExecutor::schedule(Runnable r,long delay) {

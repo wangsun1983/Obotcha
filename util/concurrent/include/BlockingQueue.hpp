@@ -69,6 +69,13 @@ public:
     inline T deQueueFirst(long timeout);
     inline T deQueueLast(long timeout);
 
+    //add interface for async
+    inline T deQueueFirstNoBlock();
+    inline T deQueueLastNoBlock();
+
+    inline T deQueueFirstNoBlock(long timeout);
+    inline T deQueueLastNoBlock(long timeout);
+
     ~_BlockingQueue();
 
     //wait for empty
@@ -95,7 +102,7 @@ private:
 
 template <typename T>
 _BlockingQueue<T>::~_BlockingQueue() {
-    printf("blockingqueue destroy \n");
+    //printf("blockingqueue destroy \n");
     AutoMutex l(mMutex);
     isDestroy = true;
     mEnqueueCond->notify();
@@ -124,13 +131,13 @@ _BlockingQueue<T>::_BlockingQueue() {
 template <typename T>
 void _BlockingQueue<T>::enQueueFirst(T val) {
     while(1) {
-        printf("enQueueFirst 1 \n");
+        //printf("enQueueFirst 1 \n");
         AutoMutex l(mMutex);
         int size = mQueue.size();
         if(mCapacity != -1 && size == mCapacity) {
             mEnqueueCond->wait(mMutex);
             if(isDestroy) {
-                printf("enQueueFirst 2 \n");
+                //printf("enQueueFirst 2 \n");
                 return;
             }
             continue;
@@ -322,15 +329,15 @@ template <typename T>
 T _BlockingQueue<T>::deQueueFirst() {
     T ret;
     while(1) {
-        printf("deQueueFirst 1 \n");
+        //printf("deQueueFirst 1 \n");
         AutoMutex l(mMutex);
-        printf("deQueueFirst 2 \n");
+        //printf("deQueueFirst 2 \n");
         int size = mQueue.size();
         if(size == 0) {
             mDequeueCond->wait(mMutex);
-            printf("deQueueFirst 3 \n");
+            //printf("deQueueFirst 3 \n");
             if(isDestroy) {
-                printf("deQueueFirst 4 \n");
+                //printf("deQueueFirst 4 \n");
                 return nullptr;
             }
             continue;
@@ -421,6 +428,92 @@ T _BlockingQueue<T>::deQueueLast(long interval) {
             }
             waitCount++;
             continue;
+        }
+
+        ret = mQueue.back();
+        mQueue.pop_back();
+        break;
+    }
+
+    return ret;
+}
+
+//wangsl
+template <typename T>
+T _BlockingQueue<T>::deQueueFirstNoBlock() {
+    T ret;
+    while(1) {
+        //printf("deQueueFirst 1 \n");
+        AutoMutex l(mMutex);
+        //printf("deQueueFirst 2 \n");
+        int size = mQueue.size();
+        if(size == 0) {
+            return nullptr;
+        }
+
+        ret = mQueue.at(0);
+        mQueue.erase(mQueue.begin());
+        
+        break;
+    }
+
+    mEnqueueCond->notify();
+    return ret;
+}
+
+template <typename T>
+T _BlockingQueue<T>::deQueueFirstNoBlock(long timeout) {
+    T ret;
+    int waitCount = 0;
+
+    while(1) {
+        AutoMutex l(mMutex);
+        int size = mQueue.size();
+        if(size == 0) {
+            return nullptr;
+        }
+
+        ret = mQueue.at(0);
+        mQueue.erase(mQueue.begin());
+        
+        break;
+    }
+
+    mEnqueueCond->notify();
+    return ret;
+}
+
+template <typename T>
+T _BlockingQueue<T>::deQueueLastNoBlock() {
+    T ret;
+
+    while(1) {
+        AutoMutex l(mMutex);
+        int size = mQueue.size();
+        
+        if(size == 0) {
+            return nullptr;
+        }
+
+        ret = mQueue.back();
+        mQueue.pop_back();
+        break;
+    }
+
+    return ret;
+}
+
+template <typename T>
+T _BlockingQueue<T>::deQueueLastNoBlock(long interval) {
+    T ret;
+    int waitCount = 0;
+
+    while(1) {
+        AutoMutex l(mMutex);
+        int size = mQueue.size();
+        
+        if(size == 0) {
+            return nullptr;
         }
 
         ret = mQueue.back();

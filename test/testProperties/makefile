@@ -4,7 +4,9 @@ outtmp = ../../out/tmp
 gcc = g++
 
 cflags = -fpic \
+		-lrt \
 		-I ../../util/concurrent/include/ \
+		-I ../../util/coroutine/include/ \
 		-I ../../util/text/include/ \
 		-I ../../lang/include \
 		-I ../../io/include \
@@ -19,16 +21,21 @@ cflags = -fpic \
 		-I ../../external/ccl/include \
 		-I ../../external/yaml/include \
 		-I ../../external/crc32/include \
+		-I ../../external/openssl/include \
+		-I ../../external/libco \
 		-g \
+		-std=c++11 \
 
 external = -lpthread \
-           ../../out/lib/libobotcha.so \
+				-ldl \
+				../../out/lib/libobotcha.so \
+
 
 files =
 link =
-libname	= integerTest
+libname	= testProperties
 
 everything : $(libname)
 
 $(libname): $(link)
-	g++ *.cpp $(cflags)  $(external) -o mytest
+	g++ *.cpp $(cflags) -o mytest $(external)

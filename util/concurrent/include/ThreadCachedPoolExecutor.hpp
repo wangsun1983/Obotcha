@@ -88,17 +88,17 @@ public:
 
 	_ThreadCachedPoolExecutor();
 
-    void shutdown();
+    int shutdown();
 
-    void shutdownNow();
+    int shutdownNow();
 
-    void execute(Runnable command);
+    int execute(Runnable command);
 
     bool isShutdown();
 
     bool isTerminated();
 
-    bool awaitTermination(long timeout);
+    int awaitTermination(long timeout);
 
     Future submit(Runnable task);
 
@@ -107,6 +107,11 @@ public:
     ~_ThreadCachedPoolExecutor();
 
 private:
+    AtomicInteger mIdleThreadNum ;
+    
+    void increaseIdleThreadNum();
+
+    void decreaseIdleThreadNum();
 
     bool isOverMinSize();
 
@@ -129,6 +134,8 @@ private:
     int minThreadNum;
 
     int mQueueSize;
+
+    Mutex mInputMutex;
 };
 
 }

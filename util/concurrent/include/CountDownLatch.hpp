@@ -10,13 +10,20 @@
 
 namespace obotcha {
 
+enum CountDownLatchFailReason {
+    CountDownLatchWaitTimeout = 200,
+    CountDownLatchAlreadyZero,
+};
+
 DECLARE_SIMPLE_CLASS(CountDownLatch) {
 public:
     _CountDownLatch(int v);
     
     int countDown();
 
-    void await(long);
+    int await(long);
+
+    int await();
     
 private:
     int count;

@@ -45,7 +45,7 @@ public:
         //hashmap.erase(t);
         typename std::map<T,U>::iterator ite = hashmap.find(t);
         if(ite == hashmap.end()) {
-            printf("hashmap can not find \n");
+            //printf("hashmap can not find \n");
             return;
         }
         hashmap.erase(ite);

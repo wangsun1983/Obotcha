@@ -17,18 +17,22 @@ void _Condition::wait(Mutex m) {
     pthread_cond_wait(&cond_t,mutex_t);
 }
 
-int _Condition::wait(Mutex m,long int millseconds) {
-    struct timespec abstime;
-    struct timeval now;
-    
-    gettimeofday(&now, NULL);
+int _Condition::wait(Mutex m,long int timeInterval) {
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
 
-    abstime.tv_sec = now.tv_sec + millseconds/1000;
-    abstime.tv_nsec = now.tv_usec + (millseconds%1000)*1000;
+    long secs = timeInterval/1000;
+    timeInterval = timeInterval%1000;
+
+    long add = 0;
+    timeInterval = timeInterval*1000*1000 + ts.tv_nsec;
+    add = timeInterval / (1000*1000*1000);
+    ts.tv_sec += (add + secs);
+    ts.tv_nsec = timeInterval%(1000*1000*1000);
 
     pthread_mutex_t* mutex_t = m->getMutex_t();
 
-    int ret = pthread_cond_timedwait(&cond_t,mutex_t,&abstime);
+    int ret = pthread_cond_timedwait(&cond_t,mutex_t,&ts);
     if(ret == ETIMEDOUT) {
         return NotifyByTimeout;
     }

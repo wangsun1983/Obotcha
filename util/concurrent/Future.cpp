@@ -14,8 +14,14 @@ void _Future::wait(long t) {
     mTask->wait(t);
 }
     
-void _Future::cancel() {
+int _Future::cancel() {
+    int result = 0;
+    if(mTask->getStatus() != FUTURE_WAITING) {
+        result = -FutureFailThreadAlreadyIsRunning;
+    }
+
     mTask->cancel();
+    return result;
 }
 
 }

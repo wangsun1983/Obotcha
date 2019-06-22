@@ -13,7 +13,7 @@ int _CountDownLatch::countDown() {
     AutoMutex l(mutex);
 
     if(count < 1) {
-        return -1;
+        return -CountDownLatchAlreadyZero;
     }
 
     count--;
@@ -25,13 +25,28 @@ int _CountDownLatch::countDown() {
     return 0;
 }
 
-void _CountDownLatch::await(long v) {
+int _CountDownLatch::await(long v) {
     AutoMutex l(waitMutex);
     if(count == 0) {
-        return;
+        return -CountDownLatchAlreadyZero;
     }
     
-    waitCond->wait(waitMutex,v);
+    if(NotifyByTimeout == waitCond->wait(waitMutex,v)) {
+        return -CountDownLatchWaitTimeout;
+    }
+
+    return 0;
+}
+
+int _CountDownLatch::await() {
+    AutoMutex l(waitMutex);
+    if(count == 0) {
+        return -CountDownLatchAlreadyZero;
+    }
+    
+    waitCond->wait(waitMutex);
+
+    return 0;
 }
 
 }

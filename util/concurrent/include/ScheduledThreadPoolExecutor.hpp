@@ -88,7 +88,9 @@ public:
 
     void forceStop();
 
-    void waitStop(long timeout);
+    void waitStop(long);
+
+    void onInterrupt();
 
 
 private:
@@ -123,13 +125,13 @@ public:
 
 	_ScheduledThreadPoolExecutor();
 
-    void shutdown();
+    int shutdown();
 
-    void shutdownNow();
+    int shutdownNow();
 
-    void execute(Runnable command);
+    int execute(Runnable command);
 
-    bool awaitTermination(long timeout);
+    int awaitTermination(long timeout);
 
     bool isShutdown();
 
@@ -157,6 +159,8 @@ private:
     ScheduledThreadPoolThread  mTimeThread;
 
     bool mIsShutDown;
+
+    bool mIsTerminated;
 
     //bool mIsTerminated;
 
