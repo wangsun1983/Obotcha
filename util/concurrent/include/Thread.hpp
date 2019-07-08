@@ -91,7 +91,7 @@ private:
     
     //Mutex mDestroyMutex;
 
-    int mDestroyBarrier;
+    AtomicInteger mStartBarrier;
 };
 
 DECLARE_SIMPLE_CLASS(Thread) {

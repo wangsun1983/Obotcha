@@ -122,6 +122,7 @@ int _PosixMq::sendTimeout(ByteArray data,PosixMqPriority prio,long timeInterval)
 
 
     struct timespec ts;
+    /* 
     clock_gettime(CLOCK_REALTIME, &ts);
     long secs = timeInterval/1000;
     timeInterval = timeInterval%1000;
@@ -130,7 +131,8 @@ int _PosixMq::sendTimeout(ByteArray data,PosixMqPriority prio,long timeInterval)
     timeInterval = timeInterval*1000*1000 + ts.tv_nsec;
     add = timeInterval / (1000*1000*1000);
     ts.tv_sec += (add + secs);
-    ts.tv_nsec = timeInterval%(1000*1000*1000);
+    ts.tv_nsec = timeInterval%(1000*1000*1000);*/
+    st(System)::getNextTime(timeInterval,&ts);
 
     return mq_timedsend(mQid, data->toValue(), data->size(), prio,&ts);;
 }
@@ -145,6 +147,7 @@ int _PosixMq::receiveTimeout(ByteArray buff,long timeInterval) {
     }
 
     struct timespec ts;
+    /*
     clock_gettime(CLOCK_REALTIME, &ts);
     long secs = timeInterval/1000;
     timeInterval = timeInterval%1000;
@@ -154,7 +157,8 @@ int _PosixMq::receiveTimeout(ByteArray buff,long timeInterval) {
     add = timeInterval / (1000*1000*1000);
     ts.tv_sec += (add + secs);
     ts.tv_nsec = timeInterval%(1000*1000*1000);
-
+    */
+    st(System)::getNextTime(timeInterval,&ts);
     unsigned int priority = 0;
 
     return mq_timedreceive(mQid, buff->toValue(),mMsgSize, &priority,&ts);

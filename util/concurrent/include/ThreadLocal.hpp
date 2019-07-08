@@ -30,6 +30,8 @@ public:
 
     int size();
 
+    void clear();
+
     ~_ThreadLocal();
 
 private:
@@ -91,8 +93,15 @@ int _ThreadLocal<T>::size(){
 template<typename T>
 _ThreadLocal<T>::~_ThreadLocal(){
     //printf("thread local distroy \n");
+    AutoMutex l(mutex);
+    mLocalMap->clear(); 
 }
 
+template<typename T>
+void _ThreadLocal<T>::clear(){
+    AutoMutex l(mutex);
+    mLocalMap->clear();
+}
 
 }
 #endif

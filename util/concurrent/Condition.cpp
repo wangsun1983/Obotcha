@@ -5,6 +5,7 @@
 
 #include "Condition.hpp"
 #include "Object.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
@@ -19,6 +20,7 @@ void _Condition::wait(Mutex m) {
 
 int _Condition::wait(Mutex m,long int timeInterval) {
     struct timespec ts;
+    /*
     clock_gettime(CLOCK_REALTIME, &ts);
 
     long secs = timeInterval/1000;
@@ -29,7 +31,8 @@ int _Condition::wait(Mutex m,long int timeInterval) {
     add = timeInterval / (1000*1000*1000);
     ts.tv_sec += (add + secs);
     ts.tv_nsec = timeInterval%(1000*1000*1000);
-
+    */
+    st(System)::getNextTime(timeInterval,&ts);
     pthread_mutex_t* mutex_t = m->getMutex_t();
 
     int ret = pthread_cond_timedwait(&cond_t,mutex_t,&ts);

@@ -40,17 +40,21 @@ void _FileInputStream::readAll(ByteArray content) {
 }
 
 ByteArray _FileInputStream::readAll() {
-    ifstream fsRead;
-    fsRead.open(mPath->getStdString(), ios::in|ios::binary);
+    //ifstream fsRead;
+    //fsRead.open(mPath->getStdString(), ios::in|ios::binary);
     //cout<<"mPath->getStdString is "<<mPath->getStdString()<<endl;
-    if (!fsRead) {
-        return nullptr;
-    }
+    //if (!fsRead) {
+    //    return nullptr;
+    //}
 
-    fsRead.seekg(0, fsRead.end);
-    long srcSize = fsRead.tellg();
-    printf("readAll size is %ld \n",srcSize);
-    fsRead.close();
+    //fsRead.seekg(0, fsRead.end);
+    //long srcSize = fsRead.tellg();
+    //printf("readAll size is %ld \n",srcSize);
+    //fsRead.close();
+    fstream.seekg (0, fstream.end);
+    long srcSize = fstream.tellg();
+    fstream.seekg (0, fstream.beg);
+
     ByteArray content = createByteArray(srcSize);
     fstream.read(content->toValue(),srcSize);
     //char *p = content->toValue();
@@ -61,7 +65,7 @@ ByteArray _FileInputStream::readAll() {
 }
 
 bool _FileInputStream::open() {
-    fstream.open(mPath->toChars());
+    fstream.open(mPath->toChars(),ios::in|ios::binary);
     return fstream.is_open();
 }
 

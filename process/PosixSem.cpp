@@ -3,6 +3,7 @@
 #include <unistd.h>  
 
 #include "PosixSem.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
@@ -42,6 +43,7 @@ int _PosixSem::wait(long timeInterval) {
     }
 
     struct timespec ts;
+    /*
     clock_gettime(CLOCK_REALTIME, &ts);
     long secs = timeInterval/1000;
     timeInterval = timeInterval%1000;
@@ -51,6 +53,8 @@ int _PosixSem::wait(long timeInterval) {
     add = timeInterval / (1000*1000*1000);
     ts.tv_sec += (add + secs);
     ts.tv_nsec = timeInterval%(1000*1000*1000);
+    */
+    st(System)::getNextTime(timeInterval,&ts);
     return sem_timedwait(sem, &ts);
 }
 

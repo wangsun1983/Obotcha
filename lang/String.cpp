@@ -1,3 +1,15 @@
+/**
+ * @file String.cpp
+ * @brief this class used for String
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_198£³£Àyahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include <iostream>
 #include <sys/time.h>
 #include <unistd.h>
@@ -26,7 +38,7 @@ _String::_String() {
     stringCount++;
     stringId = stringCount;
     printf("wangsl,a count is %d,str is %s \n",stringId,m_str->data());
-#endif    
+#endif
 }
 
 _String::_String(String v) {
@@ -236,8 +248,7 @@ String _String::subString(int start,int end) {
     //std::cout<<"after substring:"<<m_str->substr(start,end);
     //std::string *result = new std::string();
 
-    String ret = new _String(m_str->substr(start,end));
-    return ret;
+    return createString(m_str->substr(start,end));
 }
 
 bool _String::contains(String val) {
@@ -353,19 +364,19 @@ String _String::valueOf(int v) {
     stringstream ss;
     ss<< v;
     std::string *temp = new std::string(ss.str());
-    String value = new _String(temp);
+    String value = createString(temp);
     return value;
 }
 
 String _String::valueOf(bool v) {
     if(v) {
         std::string *temp = new std::string("true");
-        String value = new _String(temp);
+        String value = createString(temp);
         return value;
     }
 
     std::string *temp = new std::string("false");
-    String value = new _String(temp);
+    String value = createString(temp);
     return value;
 }
 
@@ -373,7 +384,7 @@ String _String::valueOf(double v) {
     stringstream ss;
     ss<< v;
     std::string *temp = new std::string(ss.str());
-    String value = new _String(temp);
+    String value = createString(temp);
     return value;
 }
 
@@ -381,7 +392,7 @@ String _String::valueOf(float v) {
     stringstream ss;
     ss<< v;
     std::string *temp = new std::string(ss.str());
-    String value = new _String(temp);
+    String value = createString(temp);
     return value;
 }
 

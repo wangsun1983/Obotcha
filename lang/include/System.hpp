@@ -22,6 +22,8 @@ public:
     static String executeForResult(String cmd);
 
     static void execute(String cmd);
+
+    static void getNextTime(long timeInterval,struct timespec *ts);
 };
 
 }

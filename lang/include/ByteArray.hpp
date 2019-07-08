@@ -12,6 +12,11 @@ namespace obotcha {
 
 #define byte char
 
+enum ByteArrayExecuteResult {
+    ByteArrayNoMemory = 200,
+    ByteArrayWrongParam,
+};
+
 DECLARE_SIMPLE_CLASS(ByteArray)
 {
 public:
@@ -34,17 +39,17 @@ public:
 
     void clear();
 
-    bool resize(int size);
+    int resize(int size);
 
     bool isEmpty();
 
     byte at(int);
 
-    bool fill(byte v);
+    int fill(byte v);
 
-    bool fill(int index,byte v);
+    int fill(int index,byte v);
 
-    bool fill(int index,int length,byte v);
+    int fill(int index,int length,byte v);
 
 private:
     byte *buff;

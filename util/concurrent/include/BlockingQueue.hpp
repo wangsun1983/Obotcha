@@ -536,5 +536,15 @@ void _BlockingQueue<T>::clear() {
     mQueue.clear();
 }
 
+template <typename T>
+void _BlockingQueue<T>::destroy() {
+    AutoMutex l(mMutex);
+    isDestroy = true;
+    mQueue.clear();
+    mEnqueueCond->notify();
+    mDequeueCond->notify();
+}
+
+
 }
 #endif

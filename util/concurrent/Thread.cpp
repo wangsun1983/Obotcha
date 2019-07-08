@@ -6,6 +6,7 @@
 #include "Thread.hpp"
 #include "AutoMutex.hpp"
 #include "ThreadLocal.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
@@ -17,22 +18,25 @@ static void* recycle(void *th) {
 }
 
 _KeepAliveThread::_KeepAliveThread() {
-    //printf("_RecycleThread start \n");
     mutex = createMutex("RecyleThreadMutex");
-    cond = createCondition();
     queue = createBlockingQueue<Uint64>();
     isRunning = false;
     mThreadLocal = createThreadLocal<sp<_Thread>>();
-    //mDestroyMutex = createMutex("RecyleThreadMutex");
-    mDestroyBarrier = 0;
+    mStartBarrier = createAtomicInteger(0);
 }
 
 void _KeepAliveThread::start() {
-    //printf("RecyleThread start \n");
+    if(isRunning) {
+        return;
+    }
+
     AutoMutex l(mutex);
     //printf("RecyleThread start2 \n");
     if(!isRunning) {
         pthread_create(&mTid, &mAttr, recycle, this);
+        while(mStartBarrier->orAndGet(0) == 0) {
+            //wait
+        }
         isRunning = true;
     }
 }
@@ -40,16 +44,17 @@ void _KeepAliveThread::start() {
 void _KeepAliveThread::run() {
     //printf("RecyleThread run \n");
     //mDestroyMutex->lock();
-    if(mDestroyBarrier == 1) {
+    //if(mDestroyBarrier == 1) {
         //mDestroyMutex->unlock();
-        return;
-    }
+    //    return;
+    //}
 
     ThreadLocal<Thread> tLocal = mThreadLocal;
     BlockingQueue<Uint64> mQueue = queue;
     //mDestroyMutex->unlock();
 
     while(1) {
+        mStartBarrier->orAndGet(1);
         Uint64 t = mQueue->deQueueFirst();
         //printf("remove thread \n");
         //t->decStrong(0);
@@ -58,11 +63,6 @@ void _KeepAliveThread::run() {
         if(t == nullptr) {
             return;
         }
-
-        //st(Thread)::removeThread(t);
-        //printf("remove thread 2,t count is %d, t addr is %x \n",t->getStrongCount(),t.get_pointer());
-      
-        //printf("remove thread 2,t count is %d \n",t->getStrongCount());
         
         tLocal->remove(t->toValue());
         //can not print thread's infor,because thread may be released!!
@@ -97,11 +97,12 @@ void _KeepAliveThread::dropDirect(pthread_t t) {
 _KeepAliveThread::~_KeepAliveThread() {
     //this->exit();
     //mDestroyMutex->lock();
-    mDestroyBarrier = 1;
+    //mDestroyBarrier = 1;
     //mDestroyMutex->unlock();
-
+    mThreadLocal->clear();
+    queue->destroy();
+    
     pthread_cancel(mTid);
-
 }
 
 //------------Thread Stack function---------------//
@@ -158,14 +159,12 @@ void* _Thread::localRun(void *th) {
             break;
     }
 
-
-
     thread->initPolicyAndPriority();
 
     thread->setSchedPolicy(thread->mPolicy);
     thread->setPriority(thread->mPriority);
     {
-        AutoMutex l(thread->mNameMutex);
+        //AutoMutex l(thread->mNameMutex);
         if(thread->mName != nullptr) {
             pthread_setname_np(thread->mPthread,thread->mName->toChars());
         }
@@ -192,7 +191,7 @@ _Thread::_Thread(Runnable run) {
     mKeepAliveThread->start();
 	mRunnable = run;
     mStatus = ThreadNotStart;
-    mNameMutex = createMutex("theradNameMutex");
+    //mNameMutex = createMutex("theradNameMutex");
     bootFlag = createAtomicInteger(0);
 }
 
@@ -202,7 +201,7 @@ _Thread::_Thread(String name,Runnable run) {
     mRunnable = run;
     mStatus = ThreadNotStart;
 
-    mNameMutex = createMutex("theradNameMutex");
+    //mNameMutex = createMutex("theradNameMutex");
     bootFlag = createAtomicInteger(0);
 }
 
@@ -212,12 +211,12 @@ _Thread::_Thread() {
     mPriority = ThreadLowPriority;
     mStatus = ThreadNotStart;
 
-    mNameMutex = createMutex("theradNameMutex");
+    //mNameMutex = createMutex("theradNameMutex");
     bootFlag = createAtomicInteger(0);
 }
 
 int _Thread::setName(String name) {
-    AutoMutex l(mNameMutex);
+    //AutoMutex l(mNameMutex);
     mName = name;
 
     switch(mStatus) {
@@ -237,7 +236,7 @@ int _Thread::setName(String name) {
 }
 
 String _Thread::getName() {
-    AutoMutex l(mNameMutex);
+    //AutoMutex l(mNameMutex);
     return mName;
 }
 
@@ -307,6 +306,7 @@ void _Thread::join() {
 
 void _Thread::join(long timeInterval) {
     struct timespec ts;
+    /*
     clock_gettime(CLOCK_REALTIME, &ts);
 
     long secs = timeInterval/1000;
@@ -317,7 +317,8 @@ void _Thread::join(long timeInterval) {
     add = timeInterval / (1000*1000*1000);
     ts.tv_sec += (add + secs);
     ts.tv_nsec = timeInterval%(1000*1000*1000);
-
+    */
+    st(System)::getNextTime(timeInterval,&ts);
     pthread_timedjoin_np(mPthread,nullptr,&ts);
 }
 

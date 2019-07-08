@@ -273,6 +273,7 @@ sp<T>& sp<T>::operator = (const sp<U>& other)
 template<typename T> template<typename U>
 sp<T>& sp<T>::operator = (U* other)
 {
+    //printf("StrongPointer trace 4 \n");
     //if (other) ((T*)other)->incStrong(this);
     if (m_ptr) {
         if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
