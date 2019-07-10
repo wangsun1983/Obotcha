@@ -8,6 +8,9 @@ link += condition \
 	thread \
 	countdownlatch \
 	atomicint \
+	atomicbool \
+	atomiclong \
+	atomicuint64 \
 	readwritelock \
 	executors \
 	future \
@@ -22,6 +25,9 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/thread.o \
 	$(outtmp)/countdownlatch.o \
 	$(outtmp)/atomicint.o \
+	$(outtmp)/atomicbool.o \
+	$(outtmp)/atomiclong.o \
+	$(outtmp)/atomicuint64.o \
 	$(outtmp)/readwritelock.o \
 	$(outtmp)/executors.o \
 	$(outtmp)/future.o \
@@ -52,6 +58,15 @@ countdownlatch :$(concurrentDir)/CountDownLatch.cpp
 
 atomicint :$(concurrentDir)/AtomicInteger.cpp
 	$(gcc) $(cflags) -c $(concurrentDir)/AtomicInteger.cpp -o $(outtmp)/atomicint.o
+
+atomiclong :$(concurrentDir)/AtomicLong.cpp
+	$(gcc) $(cflags) -c $(concurrentDir)/AtomicLong.cpp -o $(outtmp)/atomiclong.o
+
+atomicuint64 :$(concurrentDir)/AtomicUint64.cpp
+	$(gcc) $(cflags) -c $(concurrentDir)/AtomicUint64.cpp -o $(outtmp)/atomicuint64.o
+
+atomicbool :$(concurrentDir)/AtomicBoolean.cpp
+	$(gcc) $(cflags) -c $(concurrentDir)/AtomicBoolean.cpp -o $(outtmp)/atomicbool.o
 
 future :$(concurrentDir)/Future.cpp
 	$(gcc) $(cflags) -c $(concurrentDir)/Future.cpp -o $(outtmp)/future.o	

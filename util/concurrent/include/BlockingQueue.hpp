@@ -76,6 +76,9 @@ public:
     inline T deQueueFirstNoBlock(long timeout);
     inline T deQueueLastNoBlock(long timeout);
 
+    //destroy
+    inline void destroy();
+
     ~_BlockingQueue();
 
     //wait for empty

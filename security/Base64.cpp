@@ -33,7 +33,7 @@ ByteArray _Base64::encode(ByteArray buff) {
     int size;
 
     char *p = _encode(buff->toValue(),buff->size(),false,&size);
-    printf("encode buff size is %d \n",size);
+    //printf("encode buff size is %d \n",size);
     ByteArray result = createByteArray(p,size);
     free(p);
     return result;
@@ -64,7 +64,7 @@ ByteArray _Base64::decode(File f) {
 }
 
 char * _Base64::_encode(const char * input, int length, bool with_new_line,int *retLength) {
-    printf("input is %s,length is %d \n",input,length);
+    //printf("input is %s,length is %d \n",input,length);
     BIO * bmem = nullptr;
     BIO * b64 = nullptr;
     BUF_MEM * bptr = nullptr;
@@ -80,7 +80,7 @@ char * _Base64::_encode(const char * input, int length, bool with_new_line,int *
     BIO_write(b64, input, length);
     BIO_flush(b64);
     BIO_get_mem_ptr(b64, &bptr);
-    printf("length is %d \n",length);
+    //printf("length is %d \n",length);
     
     int encodeLength = bptr->length + 1;  //strlen(bptr->data) + 1;
 
@@ -94,7 +94,7 @@ char * _Base64::_encode(const char * input, int length, bool with_new_line,int *
     BIO_free_all(b64);
     //BIO_free_all(bmem);
     *retLength = encodeLength;
-    printf("bptr->length is %d \n",encodeLength);
+    //printf("bptr->length is %d \n",encodeLength);
 
     return buff;
 }
