@@ -1,10 +1,95 @@
-#include "UdpClient.hpp"
+#include <iostream>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/epoll.h>
+#include <fcntl.h>
+#include <memory.h>
+#include <sys/un.h>
+#include <sys/epoll.h>
+#include <stddef.h>
 
-#define EPOLL_SIZE 5000
+#include "UdpClient.hpp"
+#include "NetUtils.hpp"
+
+#define EPOLL_SIZE 128
 
 #define BUF_SIZE 1024*64
 
 namespace obotcha {
+
+_UdpClientThread::_UdpClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status) {
+    mSock = sock;
+    mEpfd = epfd;
+    mListener = l;
+    mPipe = pi;
+    mStatus = status;
+}
+
+void _UdpClientThread::run() {
+    
+    struct epoll_event events[EPOLL_SIZE];
+    char recv_buf[BUF_SIZE];
+    struct sockaddr_in src;
+    socklen_t len;
+
+    while(1) {
+        if(mStatus->get() == UdpClientWaitingThreadExit) {
+            mStatus->set(UdpClientThreadExited);
+            return;
+        }
+        printf("udp accept sockfd trace1 !!!! \n");
+        int epoll_events_count = epoll_wait(mEpfd, events, EPOLL_SIZE, -1);
+        printf("udp accept sockfd trace2,epoll_events_count is %d !!!! \n",epoll_events_count);
+        
+
+        for(int i = 0; i < epoll_events_count ; ++i) {
+
+            int sockfd = events[i].data.fd;
+            int event = events[i].events;
+            printf("udp accept sockfd trace3,sockfd is %d,events is %d !!!! \n",sockfd,events);
+
+            //check whether thread need exit
+            if(sockfd == mPipe->getReadPipe()) {
+                printf("wangsl,mPipe event is %x \n",event);
+                if(mStatus->get() == UdpClientWaitingThreadExit) {
+                    mStatus->set(UdpClientThreadExited);
+                    printf("wangsl,mPipe exit \n");
+                    return;
+                }
+                
+                continue;
+            }
+
+            memset(recv_buf,0,BUF_SIZE);
+            if(events[i].data.fd == mSock) {
+                //int ret = recv(mSock, recv_buf, BUF_SIZE, 0);
+                int ret = recvfrom(mSock, recv_buf, BUF_SIZE, 0, (struct sockaddr*)&src, &len);  //接收来自server的信息
+                //if(ret > 0) {
+                //    cout << "Server closed connection: " << mSock << endl;
+                //    st(NetUtils)::delEpollFd(mEpfd,sockfd);
+                //    mListener->onDisconnect(sockfd);
+                //    close(sockfd);
+                //    mStatus->set(UdpClientThreadExited);
+                //    return;
+                //} else {
+                    //onAcceptUdp(int fd,String ip,int port,ByteArray pack) {};
+                printf("client receive from result is %d \n",ret);
+
+                if(ret > 0) {
+                    printf("client accept recv_buf is %s \n",recv_buf);
+                    ByteArray pack = createByteArray(recv_buf,ret);
+                    mListener->onAccept(mSock,
+                                        createString(inet_ntoa(src.sin_addr)), 
+                                        ntohs(src.sin_port), 
+                                        pack);
+                }                        
+                //}
+            }
+        }
+    }
+}
 
 _UdpClient::_UdpClient(String ip,int port,SocketListener l) {
 
@@ -16,97 +101,64 @@ _UdpClient::_UdpClient(String ip,int port,SocketListener l) {
     sock = 0;
 
     listener = l;
+
+    mPipe = createPipe();
+    mPipe->init();
+
+    mStatus = createAtomicInteger(UdpClientWorking);
 }
 
 bool _UdpClient::init() {
-    printf("udpclient init 1 \n");
-    sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    printf("UdpClient init start \n");
+    sock = socket(AF_INET, SOCK_DGRAM, 0);
     if(sock < 0) {
-        printf("udpclient error 1 \n");
         return false;
     }
-    printf("udpclient init 2,sock is %d \n",sock);
-    if(connect(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
-        printf("udpclient error 2 \n");
-        return false;
-    }
-
-/*
-    char p[12];
-    p[0] = 1;
-    p[2] = 2;
-    int ret = sendto(sock,p,12,0,(struct sockaddr *)&serverAddr, sizeof(struct sockaddr_in));
-    printf("send value is %d \n",ret);
-*/
-    printf("udpclient init 3 \n");
+    printf("UdpClient init trace1 \n");
+    //if(connect(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
+    //    return false;
+    //}
+ 
     epfd = epoll_create(EPOLL_SIZE);
-    
+    printf("UdpClient init trace2 \n");
     if(epfd < 0) {
-        printf("udpclient error 3 \n");
         return false;
     }
-
-    printf("udpclient init 4 \n");
-    addfd(epfd, sock, true);
-
+ 
+    //addfd(epfd, sock, true);
+    st(NetUtils)::addEpollFd(epfd, sock, true);
+    st(NetUtils)::addEpollFd(epfd, mPipe->getReadPipe(), true);
+    printf("UdpClient init end \n");
     return true;
 }
 
-void _UdpClient::addfd(int epollfd, int fd, bool enable_et) {
-    struct epoll_event ev;
-    ev.data.fd = fd;
-    ev.events = EPOLLIN;
-    if( enable_et )
-        ev.events = EPOLLIN | EPOLLET;
-    epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);
-
-    fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
-}
-
-int _UdpClient::send(SocketPacket p) {
-    char *data = p->data();
-    int ret = sendto(sock,data,p->size(),0,(struct sockaddr *)&serverAddr, sizeof(struct sockaddr_in));
-    return ret;
-}
-
-int _UdpClient::send(String p) {
-    const char *data = p->toChars();
-    int ret = sendto(sock,data,p->size(),0,(struct sockaddr *)&serverAddr, sizeof(struct sockaddr_in));
-    return ret;
+int _UdpClient::send(ByteArray data) {
+    //return st(NetUtils)::sendUdpPacket(sock,data);
+    return st(NetUtils)::sendUdpPacket(sock,&serverAddr,data);
 }
 
 void _UdpClient::start() {
-    printf("udpclient start trace1 \n");
+    
     init();
-    printf("udpclient start trace2 \n");
+    mUdpClientThread = createUdpClientThread(sock,epfd,listener,mPipe,mStatus);
+    mUdpClientThread->start();
+}
 
-    static struct epoll_event events[2];
-    char recv_buf[BUF_SIZE];
+void _UdpClient::release() {
+    close(sock);
+    sock = 0;
 
-    while(1) {
-        printf("udpclient start trace3\n");
-        int epoll_events_count = epoll_wait( epfd, events, 2, -1 );
-        printf("udpclient start trace4 \n");
-
-        for(int i = 0; i < epoll_events_count ; ++i) {
-            memset(recv_buf,0,BUF_SIZE);
-            if(events[i].data.fd == sock) {
-                printf("udpclient start 3 \n");
-                int ret = recv(sock, recv_buf, BUF_SIZE, 0);
-                printf("udpclient start 4 \n");
-
-                if(ret == 0) {
-                    cout << "Server closed connection: " << sock << endl;
-                    //close(sock);
-                    //isClientwork = 0;
-                    listener->onDisconnect(sock);
-                } else {
-                    SocketPacket pack = createSocketPacket(recv_buf,ret);
-                    listener->onAccept(sock,pack);
-                }
-            }
-        }
+    if(mStatus->get() != UdpClientThreadExited) {
+        mStatus->set(UdpClientWaitingThreadExit);
     }
+
+    mPipe->writeTo(createByteArray(1));
+
+    while(mStatus->get() != UdpClientThreadExited) {
+
+    }
+
+    close(epfd);
 }
 
 }

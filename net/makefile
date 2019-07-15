@@ -5,18 +5,18 @@ link += inetaddress \
 		tcpserver \
 		udpclient \
 		udpserver \
-		socketpacket \
 		localsocketclient \
 		localsocketserver \
+		netutils
 
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/tcpclient.o \
 		$(outtmp)/tcpserver.o \
 		$(outtmp)/udpclient.o \
 		$(outtmp)/udpserver.o \
-		$(outtmp)/socketpacket.o \
 		$(outtmp)/localsocketclient.o \
 		$(outtmp)/localsocketserver.o \
+		$(outtmp)/netutils.o \
 
 inetaddress :$(netDir)/InetAddress.cpp
 	$(gcc) $(cflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
@@ -33,11 +33,11 @@ udpclient :$(netDir)/UdpClient.cpp
 udpserver :$(netDir)/UdpServer.cpp
 	$(gcc) $(cflags) -c $(netDir)/UdpServer.cpp -o $(outtmp)/udpserver.o $(external)
 
-socketpacket :$(netDir)/SocketPacket.cpp
-	$(gcc) $(cflags) -c $(netDir)/SocketPacket.cpp -o $(outtmp)/socketpacket.o $(external)		
-
 localsocketclient :$(netDir)/LocalSocketClient.cpp
 	$(gcc) $(cflags) -c $(netDir)/LocalSocketClient.cpp -o $(outtmp)/localsocketclient.o $(external)
 
 localsocketserver :$(netDir)/LocalSocketServer.cpp
 	$(gcc) $(cflags) -c $(netDir)/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)			
+
+netutils :$(netDir)/NetUtils.cpp
+	$(gcc) $(cflags) -c $(netDir)/NetUtils.cpp -o $(outtmp)/netutils.o $(external)				

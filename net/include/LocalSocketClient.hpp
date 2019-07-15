@@ -1,37 +1,63 @@
-#ifndef __LOCAL_SOCKET_CLIENT_HPP__
-#define __LOCAL_SOCKET_CLIENT_HPP__
+#ifndef __TCP_CLIENT_HPP__
+#define __TCP_CLIENT_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    
 #include <sys/types.h>
+#include <netinet/in.h>
 #include <mqueue.h>
 #include <fstream>
 #include <sys/un.h>
 
-
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "ByteArray.hpp"
-#include "ArrayList.hpp"
+
+#include "String.hpp"
+#include "InetAddress.hpp"
 #include "SocketListener.hpp"
+#include "Thread.hpp"
+#include "Pipe.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(LocalSocketClient) {
+enum LocalSocketClientStatus {
+    LocalSocketClientWorking = 1,
+    LocalSocketClientWaitingThreadExit,
+    LocalSocketClientThreadExited,
+};
 
+DECLARE_SIMPLE_CLASS(LocalSocketClientThread) EXTENDS(Thread){
 public:
+    _LocalSocketClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status);
 
+    void run();
+
+private:
+    int mSock;
+
+    int mEpfd;
+
+    SocketListener mListener;
+
+    Pipe mPipe;
+
+    AtomicInteger mStatus;
+    
+};
+
+DECLARE_SIMPLE_CLASS(LocalSocketClient) {
+public:
     _LocalSocketClient(String domain,SocketListener listener);
 
     void start();
 
-    void send(ByteArray);
+    void release();
+
+    int send(ByteArray);
 
 private:
 
     bool init();
-
-    void addfd(int epollfd, int fd, bool enable_et);
 
     int sock;
 
@@ -41,10 +67,13 @@ private:
 
     SocketListener listener;
 
-    String mDomain;
+    LocalSocketClientThread mLocalSocketClientThread;
+
+    Pipe mPipe;
+
+    AtomicInteger mStatus;
 
 };
-
 
 }
 #endif

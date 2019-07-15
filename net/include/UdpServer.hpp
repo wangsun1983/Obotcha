@@ -1,32 +1,85 @@
 #ifndef __UDP_SERVER_HPP__
 #define __UDP_SERVER_HPP__
 
+#include <sys/stat.h>
+#include <unistd.h>    
+#include <sys/types.h>
 #include <netinet/in.h>
+#include <mqueue.h>
+#include <fstream>
+#include <sys/un.h>
+
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
 #include "InetAddress.hpp"
-#include "SocketPacket.hpp"
 #include "SocketListener.hpp"
+#include "Mutex.hpp"
+#include "Pipe.hpp"
+#include "AtomicInteger.hpp"
+#include "Thread.hpp"
 
 namespace obotcha {
 
+enum UdpServerFailReason {
+    UdpServerBindFailed = 200,
+    UdpServerListenFailed,
+    UdpServerCreateEpollFailed,
+    UdpServerEpollWaitFailed,
+    UdpServerEpollForceExit,
+};
+
+enum UdpServerStatus {
+    UdpServerWorking = 1,
+    UdpServerWaitingThreadExit,
+    UdpServerThreadExited,
+};
+
+DECLARE_SIMPLE_CLASS(UdpServerThread) EXTENDS(Thread){
+
+public:
+    _UdpServerThread(int sock,
+                    int epfd,
+                    AtomicInteger status,
+                    Pipe pi,
+                    SocketListener listener,
+                    ArrayList<Integer> clients,
+                    Mutex mutex);
+    void run();
+
+private:
+    int mSocket;
+    int mEpollfd;
+    AtomicInteger mStatus;
+    Pipe mPipe;
+    SocketListener mListener;
+    ArrayList<Integer> mClients;
+    Mutex mClientMutex;
+
+    void addClientFd(int fd);
+
+    void removeClientFd(int fd);
+};
+
 DECLARE_SIMPLE_CLASS(UdpServer) {
+    
 public:
     _UdpServer(int port,SocketListener l);
 
     _UdpServer(String ip,int port,SocketListener l);
 
-    bool start();
+    int start();
 
-    void close();
+    void release();
+
+    int send(String ip,int port,ByteArray data);
+
+    ~_UdpServer();
 
 private:
-    bool connect();
-
-    void addfd(int epollfd, int fd, bool enable_et);
+    int connect();
 
     SocketListener mListener;
 
@@ -35,6 +88,16 @@ private:
     int sock;
 
     int epfd;
+
+    Pipe mPipe;
+
+    AtomicInteger mStatus;
+
+    UdpServerThread mServerThread;
+
+    Mutex mClientsMutex;
+
+    ArrayList<Integer> mClients;
 };
 
 }

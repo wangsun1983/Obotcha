@@ -1,49 +1,113 @@
-#include <sys/stat.h>
-#include <unistd.h>    
+#include <iostream>
 #include <sys/types.h>
-#include <mqueue.h>
-#include <fstream>
-#include <sys/socket.h>  
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/epoll.h>
+#include <fcntl.h>
+#include <memory.h>
 #include <sys/un.h>
 #include <sys/epoll.h>
-#include <errno.h>
 #include <stddef.h>
-#include <sys/ioctl.h>
 
-
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "ByteArray.hpp"
-#include "ArrayList.hpp"
 #include "LocalSocketClient.hpp"
+#include "NetUtils.hpp"
 
-namespace obotcha {
-
-#define EPOLL_SIZE 5000
+#define EPOLL_SIZE 128
 
 #define BUF_SIZE 1024*64
 
+namespace obotcha {
+
+_LocalSocketClientThread::_LocalSocketClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status) {
+    mSock = sock;
+    mEpfd = epfd;
+    mListener = l;
+    mPipe = pi;
+    mStatus = status;
+}
+
+void _LocalSocketClientThread::run() {
+    
+    struct epoll_event events[EPOLL_SIZE];
+    char recv_buf[BUF_SIZE];
+
+    while(1) {
+        if(mStatus->get() == LocalSocketClientWaitingThreadExit) {
+            mStatus->set(LocalSocketClientThreadExited);
+            return;
+        }
+
+        int epoll_events_count = epoll_wait(mEpfd, events, EPOLL_SIZE, -1);
+
+        for(int i = 0; i < epoll_events_count ; ++i) {
+
+            int sockfd = events[i].data.fd;
+            int event = events[i].events;
+
+            if(((event&EPOLLIN) != 0) 
+            && ((event &EPOLLRDHUP) != 0)) {
+                printf("hangup sockfd!!!! \n");
+                if(sockfd == mSock) {
+                    st(NetUtils)::delEpollFd(mEpfd,sockfd);
+                    mListener->onDisconnect(sockfd);
+                    close(sockfd);
+                    mStatus->set(LocalSocketClientThreadExited);
+                    return;
+                }
+            }
+
+            //check whether thread need exit
+            if(sockfd == mPipe->getReadPipe()) {
+                printf("wangsl,mPipe event is %x \n",event);
+                if(mStatus->get() == LocalSocketClientWaitingThreadExit) {
+                    mStatus->set(LocalSocketClientThreadExited);
+                    printf("wangsl,mPipe exit \n");
+                    return;
+                }
+                
+                continue;
+            }
+
+            memset(recv_buf,0,BUF_SIZE);
+            if(events[i].data.fd == mSock) {
+                int ret = recv(mSock, recv_buf, BUF_SIZE, 0);
+                if(ret == 0) {
+                    cout << "Server closed connection: " << mSock << endl;
+                    st(NetUtils)::delEpollFd(mEpfd,sockfd);
+                    mListener->onDisconnect(sockfd);
+                    close(sockfd);
+                    mStatus->set(LocalSocketClientThreadExited);
+                    return;
+                } else {
+                    ByteArray pack = createByteArray(recv_buf,ret);
+                    mListener->onAccept(mSock,nullptr,-1,pack);
+                }
+            }
+        }
+    }
+}
 
 _LocalSocketClient::_LocalSocketClient(String domain,SocketListener l) {
 
     serverAddr.sun_family = AF_UNIX;
-    strcpy(serverAddr.sun_path, domain->toChars());  
+    strcpy(serverAddr.sun_path, domain->toChars()); 
 
     epfd = 0;
     sock = 0;
 
     listener = l;
 
-    mDomain = domain;
+    mPipe = createPipe();
+    mPipe->init();
+
+    mStatus = createAtomicInteger(LocalSocketClientWorking);
+    epfd = epoll_create(EPOLL_SIZE);
+    sock = socket(AF_UNIX, SOCK_STREAM, 0);
 }
 
 bool _LocalSocketClient::init() {
-    printf("LocalSocketClient init trace1 \n");
-    sock = socket(AF_UNIX, SOCK_STREAM, 0);
-    if(sock < 0) {
-        return false;
-    }
-    printf("LocalSocketClient init trace2 \n");
+    printf("TcpClient init start \n");
     int len = offsetof(struct sockaddr_un, sun_path) + strlen(serverAddr.sun_path);  
     printf("LocalSocketClient init trace3 \n");
     if(connect(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
@@ -51,62 +115,37 @@ bool _LocalSocketClient::init() {
         return false;
     }
     printf("LocalSocketClient init trace4 \n");
-    epfd = epoll_create(EPOLL_SIZE);
-    
-    if(epfd < 0) {
-        return false;
-    }
-    printf("LocalSocketClient init trace5 \n");
-    addfd(epfd, sock, true);
-    return false;
+
+    st(NetUtils)::addEpollFd(epfd, sock,true);
+    return true;
 }
 
-void _LocalSocketClient::addfd(int epollfd, int fd, bool enable_et) {
-    struct epoll_event ev;
-    ev.data.fd = fd;
-    ev.events = EPOLLIN;
-    if( enable_et )
-        ev.events = EPOLLIN | EPOLLET;
-    epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);
-
-    fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
+int _LocalSocketClient::send(ByteArray data) {
+    return st(NetUtils)::sendTcpPacket(sock,data);
 }
 
 void _LocalSocketClient::start() {
-    printf("LocalSocketClient start trace1 \n");
+    
     init();
-    if(1) {
-        return;
+    mLocalSocketClientThread = createLocalSocketClientThread(sock,epfd,listener,mPipe,mStatus);
+    mLocalSocketClientThread->start();
+}
+
+void _LocalSocketClient::release() {
+    close(sock);
+    sock = 0;
+
+    if(mStatus->get() != LocalSocketClientThreadExited) {
+        mStatus->set(LocalSocketClientWaitingThreadExit);
     }
-    printf("LocalSocketClient start trace2 \n");
-    static struct epoll_event events[2];
-    char recv_buf[BUF_SIZE];
-    printf("LocalSocketClient start trace3 \n");
-    while(1) {
-        int epoll_events_count = epoll_wait( epfd, events, 2, -1 );
-        printf("LocalSocketClient start trace4 \n");
-        for(int i = 0; i < epoll_events_count ; ++i) {
-            memset(recv_buf,0,BUF_SIZE);
-            if(events[i].data.fd == sock) {
 
-                int ret = recv(sock, recv_buf, BUF_SIZE, 0);
-                if(ret == 0) {
-                    cout << "Server closed connection: " << sock << endl;
-                    //close(sock);
-                    //isClientwork = 0;
-                    listener->onDisconnect(sock);
-                } else {
-                    SocketPacket pack = createSocketPacket(recv_buf,ret);
-                    listener->onAccept(sock,pack);
-                }
-            }
-        }
+    mPipe->writeTo(createByteArray(1));
+
+    while(mStatus->get() != LocalSocketClientThreadExited) {
+
     }
-}
 
-void _LocalSocketClient::send(ByteArray arr) {
-    write(sock, arr->toValue(), arr->size());
+    close(epfd);
 }
 
 }
-

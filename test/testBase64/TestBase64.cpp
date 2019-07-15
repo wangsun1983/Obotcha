@@ -37,7 +37,7 @@ int main() {
         array->fill(i,'a');
       }
 
-      printf("array is %s \n",array->toValue());
+      //printf("array is %s \n",array->toValue());
 
       //for(int i = 0;i < 1023;i++) {
       //  printf("v[i] is %d \n",array->at(i));
@@ -45,17 +45,17 @@ int main() {
 
 
       Base64 base64 = createBase64();
-      printf("encode array is %s,size is %d\n",array->toValue(),array->size());
+      //printf("encode array is %s,size is %d\n",array->toValue(),array->size());
       ByteArray r1 = base64->encode(array);
 
 
       ByteArray r2 = base64->decode(r1);
 
-      printf("r2 is %s,r2 size is %d \n",r2->toValue(),r2->size());
+      //printf("r2 is %s,r2 size is %d \n",r2->toValue(),r2->size());
 
       for(int i = 0;i<32;i++) {
         if(r2->at(i) != array->at(i)) {
-          printf("r2[%d] is %d,array[%d] is %d \n",i,r2->at(i),i,array->at(i));
+          //printf("r2[%d] is %d,array[%d] is %d \n",i,r2->at(i),i,array->at(i));
           printf("---[ByteArray Test {decode(ByteArray)/encode(ByteArray)} case1] [FAILED]--- \n");
           break;
        }
@@ -84,9 +84,9 @@ int main() {
       FileInputStream stream = createFileInputStream(f);
       stream->open();
       ByteArray fcontent = stream->readAll();
-      printf("fcontent is %s \n",fcontent->toValue());
+      //printf("fcontent is %s \n",fcontent->toValue());
       int size = fcontent->size();
-      printf("encode file size is %d \n",size);
+      //printf("encode file size is %d \n",size);
 
       for(int index = 0;index++;index <size) {
         if(r2->at(index) != fcontent->at(index)) {

@@ -6,17 +6,21 @@
 
 #include "String.hpp"
 #include "InetAddress.hpp"
-#include "SocketPacket.hpp"
+#include "ByteArray.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(SocketListener) {
 public:
-    virtual void onAccept(int fd,SocketPacket pack) = 0;
+    //virtual void onAcceptTcp(int fd,ByteArray pack) {};
+    
+    virtual void onAccept(int fd,String ip,int port,ByteArray pack) = 0;
 
     virtual void onDisconnect(int fd) = 0;
 
-    virtual void onConnect(int fd) = 0;
+    virtual void onConnect(int fd,String ip,int port) = 0;
+
+    virtual void onConnect(int fd,String domain) = 0;
 };
 
 }

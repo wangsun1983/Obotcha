@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <unistd.h>    
 #include <sys/types.h>
+#include <netinet/in.h>
 #include <mqueue.h>
 #include <fstream>
 #include <sys/un.h>
@@ -11,26 +12,74 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "ByteArray.hpp"
-#include "ArrayList.hpp"
-#include "LocalSocketServer.hpp"
+
+#include "String.hpp"
+#include "InetAddress.hpp"
 #include "SocketListener.hpp"
+#include "Mutex.hpp"
+#include "Pipe.hpp"
+#include "AtomicInteger.hpp"
+#include "Thread.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(LocalSocketServer) {
+enum LocalSocketServerFailReason {
+    LocalSocketServerBindFailed = 200,
+    LocalSocketServerListenFailed,
+    LocalSocketServerCreateEpollFailed,
+    LocalSocketServerEpollWaitFailed,
+    LocalSocketServerEpollForceExit,
+};
 
+enum LocalSocketServerStatus {
+    LocalServerWorking = 1,
+    LocalServerWaitingThreadExit,
+    LocalServerThreadExited,
+};
+
+DECLARE_SIMPLE_CLASS(LocalSocketServerThread) EXTENDS(Thread){
+
+public:
+    _LocalSocketServerThread(int sock,
+                    int epfd,
+                    AtomicInteger status,
+                    Pipe pi,
+                    SocketListener listener,
+                    ArrayList<Integer> clients,
+                    Mutex mutex,
+                    String domain);
+    void run();
+
+private:
+    int mSocket;
+    int mEpollfd;
+    AtomicInteger mStatus;
+    Pipe mPipe;
+    SocketListener mListener;
+    ArrayList<Integer> mClients;
+    Mutex mClientMutex;
+    String mDomain;
+
+    void addClientFd(int fd);
+
+    void removeClientFd(int fd);
+};
+
+DECLARE_SIMPLE_CLASS(LocalSocketServer) {
+    
 public:
     _LocalSocketServer(String domain,SocketListener l);
 
-    bool start();
+    int start();
 
-    void close();
+    void release();
+
+    int send(int fd,ByteArray data);
+
+    ~_LocalSocketServer();
 
 private:
-    bool connect();
-
-    void addfd(int epollfd, int fd, bool enable_et);
+    int connect();
 
     SocketListener mListener;
 
@@ -40,8 +89,17 @@ private:
 
     int epfd;
 
-    String mDomain;
+    Pipe mPipe;
 
+    AtomicInteger mStatus;
+
+    LocalSocketServerThread mServerThread;
+
+    Mutex mClientsMutex;
+
+    ArrayList<Integer> mClients;
+
+    String mDomain;
 };
 
 }

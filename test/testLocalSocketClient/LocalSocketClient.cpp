@@ -13,15 +13,15 @@ using namespace obotcha;
 
 DECLARE_SIMPLE_CLASS(ClientServer) IMPLEMENTS(SocketListener) {
 public:
-    void onAccept(int fd,SocketPacket pack) {
-      printf("on accept pack is %s\n",pack->data());
+    void onAccept(int fd,ByteArray pack) {
+      printf("on accept pack is %s\n",pack->toValue());
     }
 
     void onDisconnect(int fd){
       printf("onDisconnect \n");
     }
 
-    void onConnect(int fd) {
+    void onConnect(int fd,String domain) {
       printf("onConnect \n");
     }
 };
