@@ -50,6 +50,10 @@ public:
 
     int closeWritePipe();
 
+    int getReadPipe();
+
+    int getWritePipe();
+
     int getMaxSize();
 
     void release();

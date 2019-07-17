@@ -28,7 +28,7 @@ enum TcpClientStatus {
 
 DECLARE_SIMPLE_CLASS(TcpClientThread) EXTENDS(Thread){
 public:
-    _TcpClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status);
+    _TcpClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status,int timeout);
 
     void run();
 
@@ -42,22 +42,30 @@ private:
     Pipe mPipe;
 
     AtomicInteger mStatus;
+
+    int mTimeOut;
     
 };
 
 DECLARE_SIMPLE_CLASS(TcpClient) {
 public:
+    _TcpClient(String ip,int port,int recv_time,SocketListener listener);
+    
     _TcpClient(String ip,int port,SocketListener listener);
 
     void start();
 
     void release();
 
+    void wait();
+
     int send(ByteArray);
+
+    ~_TcpClient();
 
 private:
 
-    bool init();
+    bool init(String ip,int port,int recv_time,SocketListener l);
 
     int sock;
 
@@ -72,6 +80,8 @@ private:
     Pipe mPipe;
 
     AtomicInteger mStatus;
+
+    int mRecvtimeout;
 
 };
 

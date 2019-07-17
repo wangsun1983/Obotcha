@@ -43,6 +43,7 @@ int _Pipe::writeTo(ByteArray data) {
     if(data->size() > PIPE_BUF) {
         return -PipeWriteOversize;
     }
+    printf("wirteTo content is %s \n",data->toValue());
 
     return write(pipeFd[WritePipe],data->toValue(),data->size());
 }
@@ -68,7 +69,20 @@ int _Pipe::closeWritePipe() {
         return -PipeNotInit;
     }
     return close(pipeFd[WritePipe]);
+}
 
+int _Pipe::getReadPipe() {
+    if(!isCreated) {
+        return -PipeNotInit;
+    }
+    return pipeFd[ReadPipe];
+}
+
+int _Pipe::getWritePipe() {
+    if(!isCreated) {
+        return -PipeNotInit;
+    }
+    return pipeFd[WritePipe];
 }
 
 int _Pipe::getMaxSize() {

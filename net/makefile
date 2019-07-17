@@ -7,7 +7,11 @@ link += inetaddress \
 		udpserver \
 		localsocketclient \
 		localsocketserver \
-		netutils
+		netutils \
+		httpparser \
+		httpheaderparser \
+		httpurlparser \
+		httpurl \
 
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/tcpclient.o \
@@ -17,6 +21,10 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/localsocketclient.o \
 		$(outtmp)/localsocketserver.o \
 		$(outtmp)/netutils.o \
+		$(outtmp)/httpparser.o \
+		$(outtmp)/httpheaderparser.o \
+		$(outtmp)/httpurlparser.o \
+		$(outtmp)/httpurl.o \
 
 inetaddress :$(netDir)/InetAddress.cpp
 	$(gcc) $(cflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
@@ -41,3 +49,15 @@ localsocketserver :$(netDir)/LocalSocketServer.cpp
 
 netutils :$(netDir)/NetUtils.cpp
 	$(gcc) $(cflags) -c $(netDir)/NetUtils.cpp -o $(outtmp)/netutils.o $(external)				
+
+httpparser :$(netDir)/HttpParser.cpp
+	$(gcc) $(cflags) -c $(netDir)/HttpParser.cpp -o $(outtmp)/httpparser.o $(external)	
+
+httpheaderparser :$(netDir)/HttpHeaderParser.cpp
+	$(gcc) $(cflags) -c $(netDir)/HttpHeaderParser.cpp -o $(outtmp)/httpheaderparser.o $(external)
+
+httpurlparser :$(netDir)/HttpUrlParser.cpp
+	$(gcc) $(cflags) -c $(netDir)/HttpUrlParser.cpp -o $(outtmp)/httpurlparser.o $(external)
+
+httpurl :$(netDir)/HttpUrl.cpp
+	$(gcc) $(cflags) -c $(netDir)/HttpUrl.cpp -o $(outtmp)/httpurl.o $(external)

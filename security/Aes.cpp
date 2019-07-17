@@ -229,13 +229,22 @@ ByteArray _Aes::decrypt(ByteArray buff) {
 
 void _Aes::_genKey(String content,int mode) {
     const char *c = content->toChars();
+    char keyBuff[AES_BLOCK_SIZE + 1];
+    memset(keyBuff,0,AES_BLOCK_SIZE + 1);
+    
+    if(content->size() > AES_BLOCK_SIZE) {
+        memcpy(keyBuff,c,AES_BLOCK_SIZE);
+    } else {
+        memcpy(keyBuff,c,content->size());
+    }
+
     switch(mode) {
         case AES_ENCRYPT:
-            AES_set_encrypt_key((const unsigned char*)c,128,&mEncryptKey);
+            AES_set_encrypt_key((const unsigned char*)keyBuff,128,&mEncryptKey);
         break;
 
         case AES_DECRYPT:
-            AES_set_decrypt_key((const unsigned char*)c,128,&mDecryptKey);
+            AES_set_decrypt_key((const unsigned char*)keyBuff,128,&mDecryptKey);
         break;
     }
 }
@@ -243,7 +252,7 @@ void _Aes::_genKey(String content,int mode) {
 void _Aes::_genKey(int mode) {
     UUID uuid = createUUID();
     const char *c = uuid->toValue()->toChars();
-
+    
     switch(mode) {
         case AES_ENCRYPT:
             AES_set_encrypt_key((const unsigned char*)c,128,&mEncryptKey);
