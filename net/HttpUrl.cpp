@@ -9,8 +9,21 @@
 
 namespace obotcha {
 
+_HttpQuery::_HttpQuery(String name,String value) {
+    mName = name;
+    mValue = value;
+}
+
+String _HttpQuery::getName() {
+  return mName;
+}
+
+String _HttpQuery::getValue() {
+  return mValue;
+}
+
 _HttpUrl::_HttpUrl() {
-    mQuery = createHashMap<String,String>();
+    mQuery = createArrayList<HttpQuery>();
 }
 
 void _HttpUrl::setSchema(String data) {
@@ -29,8 +42,13 @@ void _HttpUrl::setPath(String data) {
     mPath = data;
 }
 
-void _HttpUrl::addQuery(String tag,String value) {
-    mQuery->put(tag,value);
+void _HttpUrl::addQuery(String name,String value) {
+    HttpQuery query = createHttpQuery(name,value);
+    mQuery->add(query);
+}
+
+void _HttpUrl::setQuery(ArrayList<HttpQuery> query) {
+    mQuery = query;
 }
 
 void _HttpUrl::setFragment(String data) {
@@ -57,11 +75,7 @@ String _HttpUrl::getPath() {
     return mPath;
 }
 
-String _HttpUrl::getQuery(String tag) {
-    return mQuery->get(tag);
-}
-
-HashMap<String,String> _HttpUrl::getQuery() {
+ArrayList<HttpQuery> _HttpUrl::getQuery() {
     return mQuery;
 }
 

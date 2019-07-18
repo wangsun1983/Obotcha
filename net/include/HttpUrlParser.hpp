@@ -7,16 +7,19 @@
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
-#include "ArrayList.hpp"
-#include "String.hpp"
 #include "HashMap.hpp"
+#include "ArrayList.hpp"
+#include "HttpUrl.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(HttpUrlParser) {
 
 public:
-    static HashMap<String,String> parseUrl(String);
+    static HttpUrl parseUrl(String);
+
+private:
+    static ArrayList<HttpQuery> parseQuery(String);
 };
 
 }

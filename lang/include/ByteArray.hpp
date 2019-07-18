@@ -22,7 +22,7 @@ DECLARE_SIMPLE_CLASS(ByteArray)
 public:
     _ByteArray(int length);
 
-    _ByteArray(byte *data,int len);
+    _ByteArray(const byte *data,int len);
 
     _ByteArray(sp<_ByteArray>);
 

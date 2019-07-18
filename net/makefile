@@ -12,6 +12,9 @@ link += inetaddress \
 		httpheaderparser \
 		httpurlparser \
 		httpurl \
+		httpheader \
+		httpresponse \
+		httprequest \
 
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/tcpclient.o \
@@ -25,6 +28,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheaderparser.o \
 		$(outtmp)/httpurlparser.o \
 		$(outtmp)/httpurl.o \
+		$(outtmp)/httpheader.o \
+		$(outtmp)/httpresponse.o \
+		$(outtmp)/httprequest.o \
 
 inetaddress :$(netDir)/InetAddress.cpp
 	$(gcc) $(cflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
@@ -61,3 +67,12 @@ httpurlparser :$(netDir)/HttpUrlParser.cpp
 
 httpurl :$(netDir)/HttpUrl.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpUrl.cpp -o $(outtmp)/httpurl.o $(external)
+
+httpheader :$(netDir)/HttpHeader.cpp
+	$(gcc) $(cflags) -c $(netDir)/HttpHeader.cpp -o $(outtmp)/httpheader.o $(external)
+
+httpresponse :$(netDir)/HttpResponse.cpp
+	$(gcc) $(cflags) -c $(netDir)/HttpResponse.cpp -o $(outtmp)/httpresponse.o $(external)
+
+httprequest :$(netDir)/HttpRequest.cpp
+	$(gcc) $(cflags) -c $(netDir)/HttpRequest.cpp -o $(outtmp)/httprequest.o $(external)	

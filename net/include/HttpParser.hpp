@@ -8,6 +8,7 @@
 #include "ArrayList.hpp"
 #include "http_parser.h"
 #include "HttpRequest.hpp"
+#include "HttpHeader.hpp"
 
 namespace obotcha {
 
@@ -22,6 +23,9 @@ private:
     HttpRequest mRequest;
     http_parser mParser;
 
+    String mHeaderName;
+    String mHeaderValue;
+
     static int on_message_begin(http_parser *);
     static int on_url(http_parser*, const char *at, size_t length);
     static int on_header_field(http_parser*, const char *at, size_t length);
@@ -33,7 +37,6 @@ private:
     static int on_chunk_header(http_parser*);
     static int on_chunk_complete(http_parser*);
     static http_parser_settings settings;
-    
 };
 
 }

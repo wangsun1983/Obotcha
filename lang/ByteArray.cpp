@@ -51,7 +51,7 @@ _ByteArray::_ByteArray(String str) {
  * @param data source data
  * @param len save data len
  */
-_ByteArray::_ByteArray(byte *data,int len) {
+_ByteArray::_ByteArray(const byte *data,int len) {
     buff = (char *)malloc(len);
     memset(buff,0,len);
     _size = len;

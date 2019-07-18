@@ -1,5 +1,5 @@
-#ifndef __HTTP_HEADER_PARSER_HPP__
-#define __HTTP_HEADER_PARSER_HPP__
+#ifndef __HTTP_RESPONSE_STATUS_HPP__
+#define __HTTP_RESPONSE_STATUS_HPP__
 
 #include <map>
 
@@ -13,12 +13,18 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpHeaderParser) {
+enum HTTP_HEADER {
+    
+};
+
+DECLARE_SIMPLE_CLASS(HttpResponseStatus) {
 
 public:
+    static String getHeaderString(int header);
     static int parseHttpHeader(String header);
 
 private:
+    static String HttpHeaderList[];
     static HashMap<String,int> HttpHeaderMap;
 
     static int parse_with_colon(const char *);

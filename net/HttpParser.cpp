@@ -8,6 +8,7 @@
 #include "ArrayList.hpp"
 #include "http_parser.h"
 #include "HttpParser.hpp"
+#include "HttpHeaderParser.hpp"
 
 namespace obotcha {
 
@@ -24,18 +25,22 @@ http_parser_settings _HttpParser::settings = {
     .on_chunk_complete = _HttpParser::on_chunk_complete
 };
 
+
 _HttpParser::_HttpParser() {
     memset(&mParser,0,sizeof(http_parser));
+    mRequest = createHttpRequest();
 }
 
 HttpRequest _HttpParser::parseRequest(String request) {
     printf("request is %s \n",request->toChars());
     memset(&mParser,0,sizeof(http_parser));
+    mParser.data = reinterpret_cast<void *>(this);
     mRequest = createHttpRequest();
+    
     http_parser_init(&mParser, HTTP_REQUEST);
-    int parsed = http_parser_execute(&mParser, &settings, request->toChars(), request->size());
+    int parsed = http_parser_execute(&mParser,&settings, request->toChars(), request->size());
     printf("parsed is %d,method is %d,version is %d.%d \n",parsed,mParser.method,mParser.http_major,mParser.http_minor);
-    return nullptr;
+    return mRequest;
 }
 
 
@@ -45,20 +50,19 @@ int _HttpParser::on_message_begin(http_parser *parser) {
 }
 
 int _HttpParser::on_url(http_parser*parser, const char *at, size_t length) {
-    String str = createString(at,0,length);
-    printf("on_url is %s \n",str->toChars());
+    //mRequest->setUrl(createString(at,0,length));
     return 0;
 }
 
 int _HttpParser::on_header_field(http_parser*parser, const char *at, size_t length) {
-    String str = createString(at,0,length);
-    printf("on_header_field is %s \n",str->toChars());
+    _HttpParser *p = reinterpret_cast<_HttpParser *>(parser->data);
+    p->mHeaderName = createString(at,0,length);
     return 0;
 }
 
 int _HttpParser::on_header_value(http_parser*parser, const char *at, size_t length) {
-    String str = createString(at,0,length);
-    printf("on_header_value is %s \n",str->toChars());
+    _HttpParser *p = reinterpret_cast<_HttpParser *>(parser->data);
+    p->mRequest->insertHeader(p->mHeaderName,createString(at,0,length));
     return 0;
 }
 
@@ -69,6 +73,8 @@ int _HttpParser::on_headers_complete(http_parser*parser, const char *at, size_t 
 
 int _HttpParser::on_body(http_parser*parser, const char *at, size_t length) {
     printf("on_body \n");
+    _HttpParser *p = reinterpret_cast<_HttpParser *>(parser->data);
+    p->mRequest->setBody(createByteArray(at,(int)length));
     return 0;
 }
 
