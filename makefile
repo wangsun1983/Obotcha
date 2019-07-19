@@ -8,6 +8,7 @@ cflags = -fpic \
 		-I ./util/concurrent/include/ \
 		-I ./util/coroutine/include/ \
 		-I ./util/text/include/ \
+		-I ./util/sql/include/ \
 		-I ./lang/include \
 		-I ./io/include \
 		-I ./util/include/ \

@@ -10,10 +10,11 @@ using namespace obotcha;
 
 
 int main() {
-    String request =  "http://baidu.com/post_identity_body_world?q=search&&p=123";
+    String request =  "http://localhost/test.cgi?a=b&c=d";
     HttpUrlParser parser = createHttpUrlParser();
     parser->parseUrl(request);
+    //parser->parseQuery("q=search&p=123");
 
-    while(1) {}
+    //while(1) {}
 
 }

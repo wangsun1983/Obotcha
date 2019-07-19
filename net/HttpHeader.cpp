@@ -117,11 +117,13 @@ _HttpHeader::_HttpHeader() {
 }
 
 void _HttpHeader::setValue(int header,String value) {
+    printf("setValue header is %d,value is %s \n",header,value->toChars());
     mValues->put(createInteger(header),value);
 }
 
 String _HttpHeader::getValue(int header) {
-    mValues->get(createInteger(header));
+    printf("setHeader header is %d \n",header);
+    return mValues->get(createInteger(header));
 }
 
 MapIterator<Integer,String> _HttpHeader::getIterator() {

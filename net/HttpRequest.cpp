@@ -13,15 +13,11 @@ _HttpRequest::_HttpRequest() {
     mHeader = createHttpHeader();
 }
 
-void _HttpRequest::insertHeader(String,String) {
-
-}
-
 void _HttpRequest::setHeader(HttpHeader h) {
     mHeader = h;
 }
 
-HttpHeader _HttpRequest::getHeader(HttpHeader) {
+HttpHeader _HttpRequest::getHeader() {
     return mHeader;
 }
     
@@ -35,6 +31,14 @@ void _HttpRequest::setBody(ByteArray body) {
 
 String _HttpRequest::getUrl() {
     return mUrl;
+}
+
+void _HttpRequest::setReason(String reason) {
+    mReason = reason;
+}
+
+String _HttpRequest::getReason() {
+    return mReason;
 }
 
 }

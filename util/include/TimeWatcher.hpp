@@ -8,6 +8,10 @@
 
 namespace obotcha {
 
+#define startAutoTimeWatcher(X) \
+    AutoTimeWatcher autoTime = createAutoTimeWatcher(#X); \
+
+
 DECLARE_SIMPLE_CLASS(AutoTimeWatcher) {
 
 public:
@@ -24,8 +28,6 @@ private:
 DECLARE_SIMPLE_CLASS(TimeWatcher) {
 
 public:
-    _TimeWatcher();
-
     void start();
 
     long stop();

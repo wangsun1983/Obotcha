@@ -58,4 +58,58 @@ String _HttpResponse::statusToString(int status) {
 	}
 }
 
+_HttpResponse::_HttpResponse() {
+    mHeader = createHttpHeader();
+}
+
+String _HttpResponse::generateResponse() {
+	String responseStr = generateStatusAck();
+    String headerStr =generateHeaderAck();
+	printf("headerStr is %s \n",headerStr->toChars());
+	String bodyStr = generateBody();
+	printf("bodyStr is %s \n",bodyStr->toChars());
+	return responseStr->append(headerStr)->append(bodyStr);
+}
+
+String _HttpResponse::generateStatusAck() {
+	String statusString = mHeader->getValue(Http_Header_Status);
+	if(statusString == nullptr) {
+		return nullptr;
+	}
+
+	//printf("statusString is %s \n",statusString->toChars());
+    
+	String status = statusToString(statusString->toBasicInt());
+	return createString("HTTP/1.1 ")->append(statusString)->append(" ")->append(status)->append("\r\n");
+}
+
+String _HttpResponse::generateHeaderAck() {
+	MapIterator<Integer,String> iterator = mHeader->getIterator();
+	String responseString = createString();
+
+	while(iterator->hasValue()) {
+		String header = st(HttpHeader)::getHeaderString(iterator->getKey()->toValue());
+        responseString = responseString->append(header)->append(":")->append(iterator->getValue())->append("\r\n");
+		iterator->next();
+	}
+
+	return responseString->append("\r\n");
+}
+
+String _HttpResponse::generateBody() {
+	printf("mBody is %s,size is %d \n",mBody->toValue(),mBody->size());
+	String result = createString(mBody->toValue(),0,mBody->size());
+	printf("generateBody result is %s \n",result->toChars());
+	return result;
+}
+
+void _HttpResponse::setBody(ByteArray arr) {
+    mBody = arr;
+}
+
+void _HttpResponse::setHeaderValue(int name,String value) {
+	mHeader->setValue(name,value);
+}
+
+
 }

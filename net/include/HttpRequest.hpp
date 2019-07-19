@@ -16,12 +16,10 @@ DECLARE_SIMPLE_CLASS(HttpRequest) {
 
 public:
     _HttpRequest();
-
-    void insertHeader(String,String);
     
     void setHeader(HttpHeader);
     
-    HttpHeader getHeader(HttpHeader);
+    HttpHeader getHeader();
 
     void setBody(ByteArray);
     
@@ -29,10 +27,15 @@ public:
     
     String getUrl();
 
+    void setReason(String);
+    
+    String getReason();
+
 private:
     String mUrl;
     HttpHeader mHeader;
     ByteArray mBody;
+    String mReason;
 
     
 

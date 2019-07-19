@@ -11,6 +11,7 @@
 #include "http_parser.h"
 #include "HashMap.hpp"
 #include "HttpHeader.hpp"
+#include "ByteArray.hpp"
 
 namespace obotcha {
 
@@ -60,12 +61,25 @@ enum HTTP_RESPONSE_STATUS {
 DECLARE_SIMPLE_CLASS(HttpResponse) {
 
 public:
+    _HttpResponse();
+	
     static String statusToString(int);
 
     String generateResponse();
+
+	void setBody(ByteArray);
+
+	void setHeaderValue(int name,String value);
+	
   
 private:
     HttpHeader mHeader;
+
+	String generateStatusAck();
+	String generateHeaderAck();
+	String generateBody();
+
+	ByteArray mBody;
     
 };
 }

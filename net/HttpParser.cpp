@@ -36,7 +36,7 @@ HttpRequest _HttpParser::parseRequest(String request) {
     memset(&mParser,0,sizeof(http_parser));
     mParser.data = reinterpret_cast<void *>(this);
     mRequest = createHttpRequest();
-    
+
     http_parser_init(&mParser, HTTP_REQUEST);
     int parsed = http_parser_execute(&mParser,&settings, request->toChars(), request->size());
     printf("parsed is %d,method is %d,version is %d.%d \n",parsed,mParser.method,mParser.http_major,mParser.http_minor);
@@ -62,7 +62,7 @@ int _HttpParser::on_header_field(http_parser*parser, const char *at, size_t leng
 
 int _HttpParser::on_header_value(http_parser*parser, const char *at, size_t length) {
     _HttpParser *p = reinterpret_cast<_HttpParser *>(parser->data);
-    p->mRequest->insertHeader(p->mHeaderName,createString(at,0,length));
+    p->mRequest->getHeader()->setValue(st(HttpHeaderParser)::parseHttpHeader(p->mHeaderName),createString(at,0,length));
     return 0;
 }
 
@@ -84,7 +84,8 @@ int _HttpParser::on_message_complete(http_parser *parser) {
 }
 
 int _HttpParser::on_reason(http_parser*parser, const char *at, size_t length) {
-    printf("on_reason \n");
+    _HttpParser *p = reinterpret_cast<_HttpParser *>(parser->data);
+    p->mRequest->setReason(createString(at,0,length));
     return 0;
 }
 

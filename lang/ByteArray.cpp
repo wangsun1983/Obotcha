@@ -39,9 +39,9 @@ _ByteArray::_ByteArray(int length) {
  */
 _ByteArray::_ByteArray(String str) {
     int size = str->size();
-    _size = size + 1;
-    buff = (char *)malloc(_size);
-    memset(buff,0,_size);
+    _size = size;
+    buff = (char *)malloc(_size + 1);
+    memset(buff,0,_size + 1);
 
     memcpy(buff,str->toChars(),size);
 }
