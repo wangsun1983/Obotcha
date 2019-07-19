@@ -148,4 +148,8 @@ void _LocalSocketClient::release() {
     close(epfd);
 }
 
+ _LocalSocketClient::~_LocalSocketClient() {
+     release();
+ }
+
 }

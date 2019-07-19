@@ -156,9 +156,9 @@ void _ThreadCachedPoolExecutorHandler::waitForTerminate(long interval) {
     AutoMutex l(mStateMutex);
     isWaitTerminate = true;
     if(state == busyState) {
-        printf("wait internal start is %d \n",interval);
+        //printf("wait internal start is %ld \n",interval);
         mWaitCond->wait(mStateMutex,interval);
-        printf("wait internal end is %d \n",interval);
+        //printf("wait internal end is %ld \n",interval);
     }
 }
 

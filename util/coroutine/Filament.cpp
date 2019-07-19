@@ -18,6 +18,8 @@ void *_Filament::localFilaRun(void *args) {
     if(fila->mRun != nullptr) {
         fila->mRun->run();
     }
+
+    return nullptr;
 }
 
 //void _Filament::create(FilaRunnable r) {

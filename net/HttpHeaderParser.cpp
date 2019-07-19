@@ -207,6 +207,8 @@ int _HttpHeaderParser::parse_with_A_C_T(const char *content) {
         case 'r':
         return Http_Header_Accept_Ranges;
     }
+
+    return -1;
 }
 
 int _HttpHeaderParser::parse_with_A_C_S(const char *content) {

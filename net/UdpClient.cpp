@@ -48,7 +48,7 @@ void _UdpClientThread::run() {
 
             int sockfd = events[i].data.fd;
             int event = events[i].events;
-            printf("udp accept sockfd trace3,sockfd is %d,events is %d !!!! \n",sockfd,events);
+            //printf("udp accept sockfd trace3,sockfd is %d,events is %d !!!! \n",sockfd,events);
 
             //check whether thread need exit
             if(sockfd == mPipe->getReadPipe()) {

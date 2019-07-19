@@ -31,19 +31,23 @@ _MemoryFileOutputStream::_MemoryFileOutputStream(String path) {
 }
 
 bool _MemoryFileOutputStream::write(char c) {
-
+    //TODO
+    return false;
 }
     
 bool _MemoryFileOutputStream::write(ByteArray buff) {
     memcpy(mPtr,buff->toValue(),buff->size());
+    return true;
 }
 
 bool _MemoryFileOutputStream::write(ByteArray buff,long size) {
     //TODO
+    return false;
 }
 
 bool _MemoryFileOutputStream::writeString(String s) {
     memcpy(mPtr,s->toChars(),s->size());
+    return true;
 }
     
 bool _MemoryFileOutputStream::open(FileOpenType opentype) {
@@ -55,10 +59,10 @@ bool _MemoryFileOutputStream::open() {
 }
 
 bool _MemoryFileOutputStream::open(long size) {
-    printf("memory123 file open start,size is %d \n",size);
+    //printf("memory123 file open start,size is %ld \n",size);
 
     mMapSize = size;
-    printf("memory123 file open start,mMapSize is %d \n",mMapSize);
+    //printf("memory123 file open start,mMapSize is %ld \n",mMapSize);
 
     FILE *fp = fopen(mPath->toChars(), "a+");
     if (fp == nullptr) {
@@ -66,10 +70,10 @@ bool _MemoryFileOutputStream::open(long size) {
     }
 
     int fd = fileno(fp);
-    printf("filesize is %d,fd is %d \n",filesize,fd);
+    //printf("filesize is %ld,fd is %d \n",filesize,fd);
 
     mPtr = (char *)mmap(NULL, mMapSize, PROT_WRITE, MAP_SHARED, fd, 0);
-    printf("mPtr is %lx \n",mPtr);    
+    //printf("mPtr is %x \n",mPtr);    
 
     if (mPtr == MAP_FAILED) {
         printf("map failed reason is %s \n",strerror(errno));

@@ -36,6 +36,8 @@ int _MemoryFileInputStream::read(ByteArray buffer) {
     long size = buffer->size() > filesize?filesize:buffer->size();
 
     memcpy(buffer->toValue(),mPtr,size);
+
+    return 0;
 }
 
 int _MemoryFileInputStream::read(int index,ByteArray buffer) {
@@ -43,6 +45,8 @@ int _MemoryFileInputStream::read(int index,ByteArray buffer) {
     long size = buffer->size() > (filesize-index)?(filesize -index):buffer->size();
 
     memcpy(buffer->toValue(),(mPtr+index),size);
+
+    return 0;
 }
 
 ByteArray _MemoryFileInputStream::readAll() {

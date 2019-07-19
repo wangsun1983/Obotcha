@@ -338,7 +338,7 @@ void _Thread::exit() {
     }
 
     if(mStatus == ThreadIdle) {
-        mStatus == ThreadDestroy;
+        mStatus = ThreadDestroy;
         while(1) {
             join(100);
             if(mStatus == ThreadRunning) {
