@@ -1,8 +1,18 @@
-coroutineDir = ./util/coroutine
+sqlDir = ./util/sql
 
-link += filament \
+link += sqlite3connection \
+		mysqlconnection \
+		sqlconnectionfactory \
 
-objs += $(outtmp)/filament.o \
+objs += $(outtmp)/sqlite3connection.o \
+		$(outtmp)/mysqlconnection.o \
+		$(outtmp)/sqlconnectionfactory.o \
 
-filament :$(coroutineDir)/Filament.cpp
-	$(gcc) $(cflags) -c $(coroutineDir)/Filament.cpp -o $(outtmp)/filament.o
+sqlite3connection :$(sqlDir)/sqlite3/Sqlite3Connection.cpp
+	$(gcc) $(cflags) -c $(sqlDir)/sqlite3/Sqlite3Connection.cpp -o $(outtmp)/sqlite3connection.o
+
+mysqlconnection :$(sqlDir)/mysql/MySqlConnection.cpp
+	$(gcc) $(cflags) -c $(sqlDir)/mysql/MySqlConnection.cpp -o $(outtmp)/mysqlconnection.o
+
+sqlconnectionfactory :$(sqlDir)/SqlConnectionFactory.cpp
+	$(gcc) $(cflags) -c $(sqlDir)/SqlConnectionFactory.cpp -o $(outtmp)/sqlconnectionfactory.o	

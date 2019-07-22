@@ -1,5 +1,5 @@
-#ifndef __TCP_CLIENT_HPP__
-#define __TCP_CLIENT_HPP__
+#ifndef __LOCAL_SOCKET_CLIENT_HPP__
+#define __LOCAL_SOCKET_CLIENT_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    
@@ -54,6 +54,8 @@ public:
     void release();
 
     int send(ByteArray);
+
+    ~_LocalSocketClient();
 
 private:
 

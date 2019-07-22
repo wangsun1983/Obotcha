@@ -15,6 +15,7 @@ link += inetaddress \
 		httpheader \
 		httpresponse \
 		httprequest \
+		httpresponsewriter \
 
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/tcpclient.o \
@@ -31,6 +32,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheader.o \
 		$(outtmp)/httpresponse.o \
 		$(outtmp)/httprequest.o \
+		$(outtmp)/httpresponsewriter.o \
 
 inetaddress :$(netDir)/InetAddress.cpp
 	$(gcc) $(cflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
@@ -76,3 +78,6 @@ httpresponse :$(netDir)/HttpResponse.cpp
 
 httprequest :$(netDir)/HttpRequest.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpRequest.cpp -o $(outtmp)/httprequest.o $(external)	
+
+httpresponsewriter :$(netDir)/HttpResponseWriter.cpp
+	$(gcc) $(cflags) -c $(netDir)/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o $(external)

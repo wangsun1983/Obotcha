@@ -11,27 +11,27 @@ DECLARE_SIMPLE_CLASS(ServerListener) IMPLEMENTS(SocketListener) {
 public:
     void onAccept(int fd,String ip,int port,ByteArray pack) {
       printf("on accept pack is %s \n",pack->toValue());
-      
-//#if 0      
+
+//#if 0
       HttpResponse response = createHttpResponse();
       response->setHeaderValue(Http_Header_Status,"200");
 
-      String body = createString("<h2>This is a heading</h2>");
-      body = body->append("<h2>This is a heading</h2> \r\n");
-      body = body->append("<h2>This is a heading</h2> \r\n");
-      
+      String body = createString("<h1>Response from Gagira</h1>");
+      body = body->append("<h2>Response from Gagira</h2> \r\n");
+      body = body->append("<h3>Response from Gagira</h3> \r\n");
+
       response->setHeaderValue(Http_Header_Content_Length,createString(body->size()));
       response->setBody(createByteArray(body));
       String resp = response->generateResponse();
       ByteArray arr = createByteArray(resp);
       printf("response is %s \n",resp->toChars());
       st(NetUtils)::sendTcpPacket(fd,arr);
- //#endif     
+ //#endif
 
       //ByteArray arr = createByteArray(createString("nihao from server \n" ));
-      //int rest = st(NetUtils)::sendTcpPacket(fd,arr);      
+      //int rest = st(NetUtils)::sendTcpPacket(fd,arr);
       //printf("on accept end,rest is %d \n",rest);
-      
+
     }
 
     void onDisconnect(int fd){
@@ -42,7 +42,7 @@ public:
       printf("onConnect,ip is %s,port is %d,fd is %d \n",ip->toChars(),port,fd);
       //ByteArray arr = createByteArray(createString("nihao from server"));
       //st(NetUtils)::sendTcpPacket(fd,arr);
-      
+
       printf("onConnect end \n");
     }
 
@@ -64,7 +64,7 @@ public:
     }
 
 private:
-    TcpServer server;    
+    TcpServer server;
 };
 
 //void testTcpServer() {

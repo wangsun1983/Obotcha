@@ -1,0 +1,74 @@
+#include "Sqlite3Connection.hpp"
+#include "sqlite3.h"
+
+namespace obotcha {
+
+String _Sqlite3Connection::SQLITE3_CONNECT_TAG_PATH = "path";
+
+int _Sqlite3Connection::connect(HashMap<String,String>args) {
+    mPath = args->get(SQLITE3_CONNECT_TAG_PATH);
+    if(mPath == nullptr) {
+        return -Sqlite3FailWrongParam;
+    }
+
+    int result = sqlite3_open(mPath->toChars(), &mSqlDb);
+    if(result < 0) {
+        return -Sqlite3FailOpen;
+    }
+
+    return 0;
+}
+
+ArrayList<SqlRecord> _Sqlite3Connection::query(String sqlString,SqlRecordBuilder rec) {
+    ArrayList<SqlRecord> records = createArrayList<SqlRecord>();
+    SqliteQueryParam param;
+    param.l = records;
+    param.r = rec;
+    printf("param data is %x \n", &param);
+
+    if (sqlite3_exec(mSqlDb, sqlString->toChars(), sqlQueryCallback, &param,NULL) != SQLITE_OK) {
+        printf("sqlite3_exec fail \n");
+        return nullptr;
+    }
+    printf("query sqlite3 \n");
+
+    return records;
+}
+
+
+int _Sqlite3Connection::exec(String sqlstring) {
+    if(mPath == nullptr) {
+        return -Sqlite3FailNoDb;
+    }
+
+    if(SQLITE_OK != sqlite3_exec(mSqlDb, sqlstring->toChars(), NULL,NULL,NULL)) {
+        return -Sqlite3FailExecErr;
+    }
+
+    return 0;
+}
+
+int _Sqlite3Connection::sqlQueryCallback(void *ctx, int argc, char *argv[], char *col[]) {
+    printf("param ctx is %x argc is %d \n", ctx,argc);
+    SqliteQueryParam *param = (SqliteQueryParam *)ctx;
+    SqlRecord r = param->r->create();
+    for (int i = 0; i < argc; i++) {
+        printf("argv is %s,col is %s \n",argv[i],col[i]);
+
+        sql_data_set m = r->getSqlAssignment(i,col[i]);
+        if(m == nullptr) {
+            continue;
+        }
+        m(r.get_pointer(),argv[i]);
+    }
+
+    param->l->add(r);
+
+    return 0;
+}
+
+int _Sqlite3Connection::close() {
+    //TODO
+}
+
+};
