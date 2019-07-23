@@ -19,8 +19,11 @@ public:
 
     virtual int close() = 0;
 
-    
+    virtual int startTransaction(){};
 
+    virtual int commitTransaction(){};
+
+    virtual int rollabckTransaction(){};
 };
 
 }

@@ -16,6 +16,7 @@ enum Sqlite3FailReason {
     Sqlite3FailNoDb,
     Sqlite3FailExecErr,
     Sqlite3FailQueryErr,
+    Sqlite3FailTransactionErr,
 };
 
 struct SqliteQueryParam {
@@ -33,6 +34,12 @@ public:
     int exec(String);
 
     int close();
+
+    int startTransaction();
+
+    int commitTransaction();
+
+    int rollabckTransaction();
 
     static String SQLITE3_CONNECT_TAG_PATH;
 

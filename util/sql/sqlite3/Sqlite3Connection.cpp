@@ -67,6 +67,33 @@ int _Sqlite3Connection::sqlQueryCallback(void *ctx, int argc, char *argv[], char
     return 0;
 }
 
+int _Sqlite3Connection::startTransaction() {
+    int ret = sqlite3_exec(mSqlDb,"begin transaction",0,0,nullptr);
+    if(ret != SQLITE_OK) {
+        return -Sqlite3FailTransactionErr;
+    }
+
+    return 0;
+}
+
+int _Sqlite3Connection::commitTransaction() {
+    int ret = sqlite3_exec(mSqlDb,"commit transaction",0,0,nullptr);
+    if(ret != SQLITE_OK) {
+        return -Sqlite3FailTransactionErr;
+    }
+
+    return 0;
+}
+
+int _Sqlite3Connection::rollabckTransaction() {
+    int ret = sqlite3_exec(mSqlDb,"rollback transaction",0,0,nullptr);
+    if(ret != SQLITE_OK) {
+        return -Sqlite3FailTransactionErr;
+    }
+
+    return 0;
+}
+
 int _Sqlite3Connection::close() {
     //TODO
 }
