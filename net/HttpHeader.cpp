@@ -105,6 +105,8 @@ String _HttpHeader::mHeaderList[] = {
     "X-UA-Compatible",
     "X-Wap-Profile",
     "X-XSS-Protection",
+    "Sec-WebSocket-Version",
+    "Sec-WebSocket-Extensions",
 };
 
 //static method

@@ -23,6 +23,8 @@ public:
     String encrypt(String str);
 
     String encrypt(File);
+
+    ByteArray encryptRawData(ByteArray);
     
 private:
 

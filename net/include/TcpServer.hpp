@@ -76,6 +76,12 @@ public:
 
     int send(int fd,ByteArray data);
 
+    int getTcpEpollfd();
+
+    void removeClientFd(int fd);
+
+    void addClientFd(int fd);
+
     ~_TcpServer();
 
 private:

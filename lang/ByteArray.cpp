@@ -154,4 +154,9 @@ int _ByteArray::fill(int index,int length,byte v) {
     return 0;
 }
 
+String _ByteArray::toString() {
+    printf("buff buff is %s ,_size is %d\n",buff,_size);
+    return createString(buff,0,_size);
+}
+
 }

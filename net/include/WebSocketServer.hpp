@@ -21,19 +21,69 @@
 #include "AtomicInteger.hpp"
 #include "Thread.hpp"
 #include "TcpServer.hpp"
+#include "WebSocketListener.hpp"
+#include "SocketListener.hpp"
+#include "EPollFileObserver.hpp"
+#include "Mutex.hpp"
+#include "HttpParser.hpp"
+#include "WebSocketResponse.hpp"
 
 namespace obotcha {
+
+enum WebSocketServerFailReason {
+    WebSocketServerFailAlreadBind = 200,
+};
+
+DECLARE_SIMPLE_CLASS(WebSocketHttpListener) IMPLEMENTS(SocketListener){
+public:
+    _WebSocketHttpListener();
+
+    void setHttpEpollFd(int fd);
+
+    void setWsEpollObserver(EPollFileObserver);
+
+    void onAccept(int fd,String ip,int port,ByteArray pack);
+
+    void onDisconnect(int fd);
+
+    void onConnect(int fd,String ip,int port);
+
+    void onConnect(int fd,String domain);
+
+private:
+    int httpEpollfd;
+
+    EPollFileObserver mWsObserver;  
+    
+    HttpParser mParser;
+
+    WebSocketResponse mResponse;
+};
+
+DECLARE_SIMPLE_CLASS(WebSocketEpollListener) IMPLEMENTS(EPollFileObserverListener) {
+public:
+    _WebSocketEpollListener();
+    void onEvent(int fd,int events);
+};
 
 DECLARE_SIMPLE_CLASS(WebSocketServer) {
 public:
     _WebSocketServer();
-    void bind(String ip,int port,String path);
-    void bind(int port,String path);
-    void start();
+    int bind(String ip,int port,String path,WebSocketListener listener);
+    int bind(int port,String path,WebSocketListener listener);
+    int start();
 
 private:
     String mPath;
-    //TcpServer mServer;
+    TcpServer mServer;
+    WebSocketListener mWsListener;
+    
+    EPollFileObserver mEpollObserver;
+    WebSocketEpollListener mEpollListener;
+
+    WebSocketHttpListener mHttpListener;
+    
+    TcpServer mHttpServer;
 };
 
 

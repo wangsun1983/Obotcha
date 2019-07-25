@@ -11,7 +11,8 @@ link += file \
 	memoryfile \
 	memoryfileinputstream \
 	memoryfileoutputstream \
-	filenodereader
+	filenodereader \
+	epollfileobserver \
 
 
 objs += $(outtmp)/file.o \
@@ -26,6 +27,7 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/memoryfileinputstream.o \
 	$(outtmp)/memoryfileoutputstream.o \
 	$(outtmp)/filenodereader.o \
+	$(outtmp)/epollfileobserver.o \
 
 file :$(ioDir)/File.cpp
 	$(gcc) $(cflags) -c $(ioDir)/File.cpp -o $(outtmp)/file.o $(external)
@@ -62,3 +64,6 @@ memoryfileoutputstream :$(ioDir)/MemoryFileOutputStream.cpp
 
 filenodereader :$(ioDir)/FileNodeReader.cpp
 	$(gcc) $(cflags) -c $(ioDir)/FileNodeReader.cpp -o $(outtmp)/filenodereader.o $(external)
+
+epollfileobserver :$(ioDir)/EPollFileObserver.cpp
+	$(gcc) $(cflags) -c $(ioDir)/EPollFileObserver.cpp -o $(outtmp)/epollfileobserver.o $(external)

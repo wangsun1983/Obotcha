@@ -39,6 +39,34 @@ String _Sha::encrypt(String str) {
     return convert(encryptData,SHA_DIGEST_LENGTH);
 }
 
+ByteArray _Sha::encryptRawData(ByteArray data) {
+    unsigned char encryptData[SHA_DIGEST_LENGTH] = {0};
+    printf("wangsl,encrypt raw data1 \n");
+    switch(mType) {
+        case AbstractSHA1:
+            calc_stringSHA1(data->toValue(),data->size(),encryptData);
+        break;
+
+        case AbstractSHA224:
+            calc_stringSHA224(data->toValue(),data->size(),encryptData);
+        break;
+
+        case AbstractSHA256:
+            calc_stringSHA256(data->toValue(),data->size(),encryptData);
+        break;
+
+        case AbstractSHA384:
+            calc_stringSHA384(data->toValue(),data->size(),encryptData);
+        break;
+
+        case AbstractSHA512:
+            calc_stringSHA512(data->toValue(),data->size(),encryptData);
+        break;
+    }
+    printf("wangsl,encrypt raw data2 \n");
+    return createByteArray((char *)encryptData,SHA_DIGEST_LENGTH);
+}
+
 String _Sha::encrypt(File file) {
     unsigned char encryptData[SHA_DIGEST_LENGTH] = {0};
     switch(mType) {

@@ -189,6 +189,18 @@ _TcpServer::_TcpServer(String ip,int port,SocketListener l) {
     mServerThread = createTcpServerThread(sock,epfd,mStatus,mPipe,l,mClients,mClientsMutex);
 }
 
+void _TcpServer::removeClientFd(int fd) {
+    st(NetUtils)::delEpollFd(epfd,fd);
+}
+
+void _TcpServer::addClientFd(int fd) {
+    st(NetUtils)::addEpollFd(epfd,fd,true);
+}
+
+int _TcpServer::getTcpEpollfd() {
+    return epfd;
+}
+
 int _TcpServer::connect() {
     int opt = 1;
     

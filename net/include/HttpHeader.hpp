@@ -107,6 +107,8 @@ enum HTTP_HEADER {
     Http_Header_X_UA_Compatible,
     Http_Header_X_Wap_Profile,
     Http_Header_X_XSS_Protection,
+    Http_Header_Sec_WebSocket_Version,
+    Http_Header_Sec_WebSocket_Extensions,
     Http_Header_MAX,
 };
 

@@ -606,6 +606,14 @@ int _HttpHeaderParser::parse_with_S_E_C_W(const char *content) {
         case 'A':
         case 'a':
         return Http_Header_Sec_WebSocket_Accept;
+
+        case 'V':
+        case 'v':
+        return Http_Header_Sec_WebSocket_Version;
+
+        case 'E':
+        case 'e':
+        return Http_Header_Sec_WebSocket_Extensions;
     }
 
     return -1;

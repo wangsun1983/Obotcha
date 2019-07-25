@@ -51,6 +51,8 @@ public:
 
     int fill(int index,int length,byte v);
 
+    String toString();
+
 private:
     byte *buff;
 

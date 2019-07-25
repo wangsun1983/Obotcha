@@ -16,6 +16,10 @@ link += inetaddress \
 		httpresponse \
 		httprequest \
 		httpresponsewriter \
+		websocketserver \
+		websocketprotocol \
+		websocketresponse \
+
 
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/tcpclient.o \
@@ -33,6 +37,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpresponse.o \
 		$(outtmp)/httprequest.o \
 		$(outtmp)/httpresponsewriter.o \
+		$(outtmp)/websocketserver.o \
+		$(outtmp)/websocketprotocol.o \
+		$(outtmp)/websocketresponse.o \
 
 inetaddress :$(netDir)/InetAddress.cpp
 	$(gcc) $(cflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
@@ -81,3 +88,12 @@ httprequest :$(netDir)/HttpRequest.cpp
 
 httpresponsewriter :$(netDir)/HttpResponseWriter.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o $(external)
+
+websocketserver :$(netDir)/WebSocketServer.cpp
+	$(gcc) $(cflags) -c $(netDir)/WebSocketServer.cpp -o $(outtmp)/websocketserver.o $(external)
+
+websocketprotocol :$(netDir)/WebSocketProtocol.cpp
+	$(gcc) $(cflags) -c $(netDir)/WebSocketProtocol.cpp -o $(outtmp)/websocketprotocol.o $(external)
+
+websocketresponse :$(netDir)/WebSocketResponse.cpp
+	$(gcc) $(cflags) -c $(netDir)/WebSocketResponse.cpp -o $(outtmp)/websocketresponse.o $(external)
