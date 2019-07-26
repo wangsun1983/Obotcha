@@ -17,12 +17,14 @@
 
 namespace obotcha {
 
-_WebSocketResponse::_WebSocketResponse() {
+_WebSocketResponse::_WebSocketResponse(bool isclient) {
     mSha = createSha(AbstractSHA1);
     mBase64 = createBase64();
+    mIsClient = isclient;
 }
 
-String _WebSocketResponse::generateResponse() {
+ByteArray _WebSocketResponse::generateResponse(int opcode, ByteArray payload) {
+    int length = 0;
     //TODO
     return nullptr;
 }

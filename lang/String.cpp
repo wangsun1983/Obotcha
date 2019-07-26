@@ -201,7 +201,7 @@ _String::_String(const char *v,int start,int length) {
     }
 
     if(start + length > len) {
-        m_str = new std::string();
+        m_str = new std::string(v);
         return;
     }
 

@@ -13,6 +13,8 @@ link += file \
 	memoryfileoutputstream \
 	filenodereader \
 	epollfileobserver \
+	bytearrayreader \
+	bytearraywriter \
 
 
 objs += $(outtmp)/file.o \
@@ -28,6 +30,8 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/memoryfileoutputstream.o \
 	$(outtmp)/filenodereader.o \
 	$(outtmp)/epollfileobserver.o \
+	$(outtmp)/bytearrayreader.o \
+	$(outtmp)/bytearraywriter.o \
 
 file :$(ioDir)/File.cpp
 	$(gcc) $(cflags) -c $(ioDir)/File.cpp -o $(outtmp)/file.o $(external)
@@ -67,3 +71,9 @@ filenodereader :$(ioDir)/FileNodeReader.cpp
 
 epollfileobserver :$(ioDir)/EPollFileObserver.cpp
 	$(gcc) $(cflags) -c $(ioDir)/EPollFileObserver.cpp -o $(outtmp)/epollfileobserver.o $(external)
+
+bytearrayreader :$(ioDir)/ByteArrayReader.cpp
+	$(gcc) $(cflags) -c $(ioDir)/ByteArrayReader.cpp -o $(outtmp)/bytearrayreader.o $(external)	
+
+bytearraywriter :$(ioDir)/ByteArrayWriter.cpp
+	$(gcc) $(cflags) -c $(ioDir)/ByteArrayWriter.cpp -o $(outtmp)/bytearraywriter.o $(external)		

@@ -17,11 +17,6 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(WebSocketHeader) {
-
-public:
-
-}; 
 
 DECLARE_SIMPLE_CLASS(WebSocketProtocol) {
 public:

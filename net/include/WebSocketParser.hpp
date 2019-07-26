@@ -7,16 +7,26 @@
 #include "String.hpp"
 #include "InetAddress.hpp"
 #include "ByteArray.hpp"
+#include "WebSocketFrame.hpp"
+#include "ByteArrayReader.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(WebSocketFrame) {
-//TODO
-};
 
 DECLARE_SIMPLE_CLASS(WebSocketParser) {
 public:
+    void setParseData(ByteArray);
+    void setAsClient();
 
+    virtual WebSocketHeader parseHeader() = 0;
+    virtual String parseMessage() = 0;
+ 
+protected:
+    ByteArray mData;
+    ByteArrayReader mReader;
+    bool isClient;
+
+    WebSocketHeader mHeader;
 };
 
 }

@@ -18,6 +18,10 @@ public:
     virtual int onConnect(int fd) = 0;
 
     virtual int onDisconnect(int fd) = 0;
+
+    virtual int onPong(int fd);
+
+    virtual int onPing(int fd);
 };
 
 }

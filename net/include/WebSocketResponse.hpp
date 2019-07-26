@@ -22,13 +22,14 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(WebSocketResponse) {
 
 public:
-    _WebSocketResponse();
-    String generateResponse();
+    _WebSocketResponse(bool isClient);
+    ByteArray generateResponse(int opcode, ByteArray payload);
     String generateShakeHandResponse(String key);
 
 private:
     Sha mSha;
     Base64 mBase64;
+    bool mIsClient;
 
 }; 
 

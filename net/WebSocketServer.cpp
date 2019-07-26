@@ -2,6 +2,8 @@
 
 #include "WebSocketServer.hpp"
 #include "NetUtils.hpp"
+#include "WebSocketHybi13Parser.hpp"
+#include "WebSocketProtocol.hpp"
 
 namespace obotcha {
 
@@ -62,7 +64,7 @@ void _WebSocketHttpListener::onConnect(int fd,String domain) {
 
 //-----WebSocketEpollListener-----
 _WebSocketEpollListener::_WebSocketEpollListener() {
-
+    mHybi13Parser = createWebSocketHybi13Parser();
 }
 
 void _WebSocketEpollListener::onEvent(int fd,int events){
@@ -77,7 +79,20 @@ void _WebSocketEpollListener::onEvent(int fd,int events){
     int len = recv(fd, recv_buf, BUFF_SIZE, 0);
     printf("wal is %s \n",recv_buf);
     ByteArray pack = createByteArray(recv_buf,len);
-    //TODO
+    mHybi13Parser->setParseData(pack);
+    WebSocketHeader header = mHybi13Parser->parseHeader();
+    int opcode = header->getOpCode();
+
+    if(opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
+        String msg = mHybi13Parser->parseMessage();
+        printf("recv websocket from client msg is %s \n",msg->toChars());
+    } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PING) {
+        //TODO
+    } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PONG) {
+        //TODO
+    } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE) {
+        //TODO
+    }
 }
 
 //-----WebSocketServer-----
@@ -121,6 +136,7 @@ int _WebSocketServer::bind(int port,String path,WebSocketListener listener) {
 
 int _WebSocketServer::start() {
     mServer->start();
+    mEpollObserver->start();
 }
 
 

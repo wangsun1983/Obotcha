@@ -27,6 +27,7 @@
 #include "Mutex.hpp"
 #include "HttpParser.hpp"
 #include "WebSocketResponse.hpp"
+#include "WebSocketParser.hpp"
 
 namespace obotcha {
 
@@ -64,6 +65,9 @@ DECLARE_SIMPLE_CLASS(WebSocketEpollListener) IMPLEMENTS(EPollFileObserverListene
 public:
     _WebSocketEpollListener();
     void onEvent(int fd,int events);
+
+private:
+    WebSocketParser mHybi13Parser;
 };
 
 DECLARE_SIMPLE_CLASS(WebSocketServer) {
