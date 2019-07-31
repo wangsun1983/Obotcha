@@ -86,6 +86,13 @@ int _ByteArray::size() {
     return _size;
 }
 
+void _ByteArray::qucikShrink(int size) {
+    if(size >= _size) {
+        return;
+    }
+
+    _size = size;
+}
 int _ByteArray::resize(int size) {
     if(size <= _size) {
         return -ByteArrayWrongParam;

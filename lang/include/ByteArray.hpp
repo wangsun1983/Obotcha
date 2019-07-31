@@ -39,6 +39,8 @@ public:
 
     int resize(int size);
 
+    void qucikShrink(int size);
+
     bool isEmpty();
 
     char at(int);

@@ -58,7 +58,7 @@ ByteArray _WebSocketFrameComposer::generateControlFrame(int opcode, ByteArray pa
 }
 
 ByteArray _WebSocketFrameComposer::generateMessageFrame(int formatOpcode,ByteArray message) {
-    ByteArray sink = createByteArray(message->size() + 16);
+    ByteArray sink = createByteArray(message->size() + 14);
     ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
 
     //int b0 = formatOpcode|st(WebSocketProtocol)::B0_FLAG_FIN;
@@ -102,6 +102,8 @@ ByteArray _WebSocketFrameComposer::generateMessageFrame(int formatOpcode,ByteArr
         sinkWriter->writeByteArray(message);
     }
 
+    sink->qucikShrink(sinkWriter->getIndex());
+    
     return sink;
 }
 
