@@ -7,6 +7,7 @@
 #include "StrongPointer.hpp"
 #include "Long.hpp"
 #include "WebSocketServer.hpp"
+#include "WebSocketClient.hpp"
 #include "WebSocketListener.hpp"
 
 using namespace obotcha;
@@ -42,11 +43,14 @@ public:
 int main() {
     MyWsListener l = createMyWsListener();
 
-    WebSocketServer server = createWebSocketServer();
-    server->bind(1111,"/mytest",l);
-    server->start();
+    WebSocketClient client = createWebSocketClient();
+    client->bind("ws://192.168.43.90:1111/mytest",l);
+    //server->start();
 
-
+    sleep(5);
+    client->sendMessage(createString("hello world1"));
+    sleep(5);
+    client->sendMessage(createString("hello world2"));
     while(1){}
 
 }

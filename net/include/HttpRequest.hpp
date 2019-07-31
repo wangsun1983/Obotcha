@@ -12,6 +12,40 @@
 
 namespace obotcha {
 
+/* Request Methods */
+enum HttpMethodType { 
+    HttpMethodDelete = HTTP_DELETE,
+    HttpMethodGet = HTTP_GET,
+    HttpMethodHead = HTTP_HEAD,
+    HttpMethodPost = HTTP_POST,
+    HttpMethodPut = HTTP_PUT,
+    /* pathological */
+    HttpMethodConnect = HTTP_CONNECT,
+    HttpMethodOptions = HTTP_OPTIONS,
+    HttpMethodTrace = HTTP_TRACE,
+    /* webdav */
+    HttpMethodCopy = HTTP_COPY,
+    HttpMethodLock = HTTP_LOCK,
+    HttpMethodMkcol = HTTP_MKCOL,
+    HttpMethodMove = HTTP_MOVE,
+    HttpMethodPropFind = HTTP_PROPFIND,
+    HttpMethodPropPatch = HTTP_PROPPATCH,
+    HttpMethodUnlock = HTTP_UNLOCK,
+    /* subversion */
+    HttpMethodReport = HTTP_REPORT,
+    HttpMethodMkActivity = HTTP_MKACTIVITY,
+    HttpMethodCheckOut = HTTP_CHECKOUT,
+    HttpMethodMerge = HTTP_MERGE,
+    /* upnp */
+    HttpMethodMsearch = HTTP_MSEARCH,
+    HttpMethodNotify = HTTP_NOTIFY,
+    HttpMethodSubscribe = HTTP_SUBSCRIBE,
+    HttpMethodUnSubscribe = HTTP_UNSUBSCRIBE,
+    /* RFC-5789 */
+    HttpMethodPatch = HTTP_PATCH,
+  };
+
+
 DECLARE_SIMPLE_CLASS(HttpRequest) {
 
 public:
@@ -31,13 +65,34 @@ public:
     
     String getReason();
 
+    void setMethod(int);
+
+    int getMethod();
+
+    void setMajorVersion(int);
+
+    int getMajorVersion();
+
+    void setMinorVersion(int);
+
+    int getMinorVersion();
+
+    String genHttpString();
+
 private:
     String mUrl;
+    
     HttpHeader mHeader;
+    
     ByteArray mBody;
+
     String mReason;
 
-    
+    int mMethod;
+
+    int mMajorVer;
+
+    int mMinorVer;
 
 };
 

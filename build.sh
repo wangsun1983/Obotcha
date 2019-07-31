@@ -8,4 +8,4 @@ mkdir $OUT_DIR/lib
 mkdir $OUT_DIR/tmp
 
 
-make
+make -j32

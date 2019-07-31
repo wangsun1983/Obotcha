@@ -18,6 +18,9 @@ public:
     _HttpParser();
     
     HttpRequest parseRequest(String);
+
+    void setUrl(String);
+    String getUrl();
    
 private:
     HttpRequest mRequest;
@@ -25,6 +28,8 @@ private:
 
     String mHeaderName;
     String mHeaderValue;
+
+    String mUrl;
 
     static int on_message_begin(http_parser *);
     static int on_url(http_parser*, const char *at, size_t length);

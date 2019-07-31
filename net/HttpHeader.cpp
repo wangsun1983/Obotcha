@@ -124,7 +124,7 @@ void _HttpHeader::setValue(int header,String value) {
 }
 
 String _HttpHeader::getValue(int header) {
-    printf("setHeader header is %d \n",header);
+    printf("getValue header is %d \n",header);
     return mValues->get(createInteger(header));
 }
 

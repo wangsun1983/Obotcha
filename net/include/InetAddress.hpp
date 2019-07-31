@@ -28,6 +28,8 @@ DECLARE_SIMPLE_CLASS(InetAddress) {
 public:
     
     static String getHostName();
+
+    static ArrayList<String> getHostByName(String url);
     
     static ArrayList<InetHostAddress> getHostAddress();
 

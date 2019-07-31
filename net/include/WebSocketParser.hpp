@@ -20,6 +20,7 @@ public:
 
     virtual WebSocketHeader parseHeader() = 0;
     virtual String parseMessage() = 0;
+    virtual ByteArray parsePingBuff() = 0;
  
 protected:
     ByteArray mData;

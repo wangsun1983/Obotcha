@@ -30,6 +30,31 @@ String _InetAddress::getHostName() {
     return nullptr;
 }
 
+ArrayList<String> _InetAddress::getHostByName(String url) {
+    ArrayList<String> hosts = createArrayList<String>();
+    printf("gethostbyname url is %s \n",url->toChars());
+    struct hostent *hptr = gethostbyname(url->toChars());
+    if(hptr == nullptr) {
+        return nullptr;
+    }
+
+    char **pptr;
+    switch(hptr->h_addrtype) {
+        case AF_INET:
+        case AF_INET6:{
+            pptr=hptr->h_addr_list;
+            char  str[64];
+            for(; *pptr!=NULL; pptr++) {
+                inet_ntop(hptr->h_addrtype, *pptr, str, sizeof(str));
+                String ip = createString(str);
+                hosts->add(ip);
+            }
+        }       
+    }
+
+    return hosts;
+}
+
 ArrayList<InetHostAddress> _InetAddress::getHostAddress() {
     char ipAddr[MAX_LENGTH];
     ipAddr[0] = '\0';

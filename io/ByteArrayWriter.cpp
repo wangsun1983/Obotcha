@@ -11,6 +11,7 @@ _ByteArrayWriter::_ByteArrayWriter(ByteArray data) {
     mData = data;
     mDataP = data->toValue();
     mSize = data->size();
+    mIndex = 0;
 }
 
 int _ByteArrayWriter::writeShort(int s) {

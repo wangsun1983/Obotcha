@@ -10,6 +10,11 @@
 
 namespace obotcha {
 
+enum PingResult {
+    PingResultResponse,
+    PingResultNoResponse
+};
+
 DECLARE_SIMPLE_CLASS(WebSocketListener) {
 public:
 
@@ -19,9 +24,9 @@ public:
 
     virtual int onDisconnect(int fd) = 0;
 
-    virtual int onPong(int fd);
+    virtual int onPong(int fd) {return PingResultResponse;}
 
-    virtual int onPing(int fd);
+    virtual int onPing(int fd)  {return PingResultResponse;};
 };
 
 }

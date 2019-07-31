@@ -1,5 +1,5 @@
-#ifndef __WEBSOCKET_RESPONSE_HPP__
-#define __WEBSOCKET_RESPONSE_HPP__
+#ifndef __WEBSOCKET_FRAME_COMPOSER_HPP__
+#define __WEBSOCKET_FRAME_COMPOSER_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    
@@ -19,18 +19,19 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(WebSocketResponse) {
+DECLARE_SIMPLE_CLASS(WebSocketFrameComposer) {
 
 public:
-    _WebSocketResponse(bool isClient);
-    ByteArray generateResponse(int opcode, ByteArray payload);
-    String generateShakeHandResponse(String key);
+    _WebSocketFrameComposer(bool isClient);
+    ByteArray generateControlFrame(int opcode, ByteArray payload);
+    ByteArray generateMessageFrame(int formatOpcode,ByteArray message);
+
+    String generateShakeHandFrame(String key);
 
 private:
     Sha mSha;
     Base64 mBase64;
     bool mIsClient;
-
 }; 
 
 }

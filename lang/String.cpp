@@ -74,6 +74,19 @@ _String::_String(Long v) {
     m_str = new std::string(ss.str());
 }
 
+_String::_String(Byte v) {
+    if(v == nullptr) {
+        m_str = new std::string();
+        return;
+    }
+
+    std::stringstream ss;
+    byte value = v->toValue();
+    ss<<value;
+
+    m_str = new std::string(ss.str());
+}
+
 _String::_String(std::string v) {
     m_str = new std::string(v);
 
@@ -174,6 +187,12 @@ _String::_String(double v) {
 }
 
 _String::_String(long v) {
+    std::stringstream ss;
+    ss<<v;
+    m_str = new std::string(ss.str());
+}
+
+_String::_String(byte v) {
     std::stringstream ss;
     ss<<v;
     m_str = new std::string(ss.str());

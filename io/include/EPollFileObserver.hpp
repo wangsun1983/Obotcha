@@ -23,9 +23,14 @@ enum EPollFileObserverFailResaon {
     EPollFileObserverAlreadyStart,
 };
 
+enum EPollOnEventResult {
+    EPollOnEventResultOK = 1,
+    EPollOnEventResultRemoveFd,
+};
+
 DECLARE_SIMPLE_CLASS(EPollFileObserverListener) {
 public:
-    virtual void onEvent(int fd,int events) = 0;    
+    virtual int onEvent(int fd,int events) = 0;    
 };
 
 DECLARE_SIMPLE_CLASS(EPollThread) EXTENDS(Thread) {

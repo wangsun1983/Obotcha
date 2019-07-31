@@ -16,13 +16,15 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
 
     int b0 = mReader->readByte() & 0xff;
     header->setOpCode(b0 & st(WebSocketProtocol)::B0_MASK_OPCODE);
+    printf("opcode is %d \n",header->getOpCode());
+
     header->setIsFinalFrame((b0 & st(WebSocketProtocol)::B0_FLAG_FIN) != 0);
     header->setIsControlFrame((b0 & st(WebSocketProtocol)::OPCODE_FLAG_CONTROL) != 0);
-    printf("parseHeader start \n");
+
     // Control frames must be final frames (cannot contain continuations).
     if (header->getIsControlFrame() && !header->getIsFinalFrame()) {
         //throw new ProtocolException("Control frames must be final.");
-        return nullptr;
+        return header;
     }
     printf("parseHeader trace1 \n");
     header->setReservedFlag1((b0 & st(WebSocketProtocol)::B0_FLAG_RSV1) != 0);
@@ -31,7 +33,7 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
 
     if (header->getReservedFlag1() || header->getReservedFlag2() || header->getReservedFlag3()) {
         // Reserved flags are for extensions which we currently do not support.
-        return nullptr;
+        return header;
     }
     printf("parseHeader trace2 \n");
 
@@ -39,10 +41,11 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
     
     header->setMasked((b1 & st(WebSocketProtocol)::B1_FLAG_MASK) != 0);
     
+
     if (header->getMasked() == isClient) {
-        // Masked payloads must be read on the server. Unmasked payloads must be read on the client.
+        //Masked payloads must be read on the server. Unmasked payloads must be read on the client.
         //throw new ProtocolException("Client-sent frames must be masked. Server sent must not.");
-        return nullptr;
+        return header;
     }
     printf("parseHeader trace3 \n");
 
@@ -76,7 +79,7 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
     if (header->getIsControlFrame() 
         && header->getFrameLength() > st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
         //throw new ProtocolException("Control frame must be less than " + PAYLOAD_BYTE_MAX + "B.");
-        return nullptr;
+        return header;
     }
     printf("parseHeader trace5 \n");
 
@@ -115,6 +118,19 @@ String _WebSocketHybi13Parser::parseMessage() {
 	}
 
 	return load->toString();
+}
+
+ByteArray _WebSocketHybi13Parser::parsePingBuff(){
+    int frameSize = mHeader->getFrameLength();
+    char *msg = mData->toValue();
+    int pos = mReader->getIndex();
+
+    if(frameSize == 0) {
+        return nullptr;
+    }
+
+    return createByteArray(&msg[pos],frameSize);
+
 }
 
 }

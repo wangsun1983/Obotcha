@@ -12,6 +12,7 @@
 #include "String.hpp"
 
 #include "WebSocketProtocol.hpp"
+#include "ByteArray.hpp"
 
 namespace obotcha {
 
@@ -52,6 +53,20 @@ namespace obotcha {
     const long _WebSocketProtocol::PAYLOAD_SHORT_MAX = 0xffffL;
   
     const int _WebSocketProtocol::PAYLOAD_LONG = 127;
+
+    void _WebSocketProtocol::toggleMask(ByteArray buffer, ByteArray key) {
+        printf("_WebSocketProtocol toggleMask start\n");
+        int keyLength = key->size();
+        int byteCount = buffer->size();
+        int frameBytesRead = 0;
+        printf("_WebSocketProtocol toggleMask trace1\n");
+        for (int i = 0; i < byteCount; i++, frameBytesRead++) {
+            printf("_WebSocketProtocol toggleMast i is %d \n",i);
+            int keyIndex = (int) (frameBytesRead % keyLength);
+            buffer->fill(i,(byte) (buffer->at(i) ^ key->at(keyIndex)));
+        }
+        printf("_WebSocketProtocol toggleMask trace2\n");
+    }
 
 }
 

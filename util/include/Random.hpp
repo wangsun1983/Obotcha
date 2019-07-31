@@ -7,6 +7,7 @@
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
+#include "ByteArray.hpp"
 
 namespace obotcha {
 
@@ -20,6 +21,8 @@ public:
     static int nextInt(int min);
 
     static double nextDouble();
+
+    static void nextBytes(ByteArray);
 };
 
 }

@@ -10,8 +10,6 @@
 
 namespace obotcha {
 
-#define byte char
-
 enum ByteArrayExecuteResult {
     ByteArrayNoMemory = 200,
     ByteArrayWrongParam,
@@ -22,7 +20,7 @@ DECLARE_SIMPLE_CLASS(ByteArray)
 public:
     _ByteArray(int length);
 
-    _ByteArray(const byte *data,int len);
+    _ByteArray(const char *data,int len);
 
     _ByteArray(sp<_ByteArray>);
 
@@ -33,7 +31,7 @@ public:
 
     ~_ByteArray();
 
-    byte *toValue();
+    char *toValue();
 
     int size();
 
@@ -43,18 +41,18 @@ public:
 
     bool isEmpty();
 
-    byte at(int);
+    char at(int);
 
-    int fill(byte v);
+    int fill(char v);
 
-    int fill(int index,byte v);
+    int fill(int index,char v);
 
-    int fill(int index,int length,byte v);
+    int fill(int index,int length,char v);
 
     String toString();
 
 private:
-    byte *buff;
+    char *buff;
 
     int _size;
 };

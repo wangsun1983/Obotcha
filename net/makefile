@@ -18,10 +18,11 @@ link += inetaddress \
 		httpresponsewriter \
 		websocketserver \
 		websocketprotocol \
-		websocketresponse \
+		websocketframecomposer \
 		websocketframe \
 		websocketparser \
 		websockethybi13parser \
+		websocketclient \
 
 
 objs += $(outtmp)/inetaddress.o \
@@ -42,10 +43,11 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpresponsewriter.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketprotocol.o \
-		$(outtmp)/websocketresponse.o \
+		$(outtmp)/websocketframecomposer.o \
 		$(outtmp)/websocketframe.o \
 		$(outtmp)/websocketparser.o \
 		$(outtmp)/websockethybi13parser.o \
+		$(outtmp)/websocketclient.o \
 
 inetaddress :$(netDir)/InetAddress.cpp
 	$(gcc) $(cflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
@@ -101,8 +103,8 @@ websocketserver :$(netDir)/WebSocketServer.cpp
 websocketprotocol :$(netDir)/WebSocketProtocol.cpp
 	$(gcc) $(cflags) -c $(netDir)/WebSocketProtocol.cpp -o $(outtmp)/websocketprotocol.o $(external)
 
-websocketresponse :$(netDir)/WebSocketResponse.cpp
-	$(gcc) $(cflags) -c $(netDir)/WebSocketResponse.cpp -o $(outtmp)/websocketresponse.o $(external)
+websocketframecomposer :$(netDir)/WebSocketFrameComposer.cpp
+	$(gcc) $(cflags) -c $(netDir)/WebSocketFrameComposer.cpp -o $(outtmp)/websocketframecomposer.o $(external)
 
 websocketframe :$(netDir)/WebSocketFrame.cpp
 	$(gcc) $(cflags) -c $(netDir)/WebSocketFrame.cpp -o $(outtmp)/websocketframe.o $(external)	
@@ -112,3 +114,6 @@ websocketparser :$(netDir)/WebSocketParser.cpp
 
 websockethybi13parser :$(netDir)/WebSocketHybi13Parser.cpp
 	$(gcc) $(cflags) -c $(netDir)/WebSocketHybi13Parser.cpp -o $(outtmp)/websockethybi13parser.o $(external)		
+
+websocketclient :$(netDir)/WebSocketClient.cpp
+	$(gcc) $(cflags) -c $(netDir)/WebSocketClient.cpp -o $(outtmp)/websocketclient.o $(external)		

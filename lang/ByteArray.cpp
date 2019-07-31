@@ -21,6 +21,7 @@ namespace obotcha {
 _ByteArray::_ByteArray(sp<_ByteArray> b) {
     buff = (char *)malloc(b->size());
     memcpy(buff,b->toValue(),b->size());
+    _size = b->size();
 }
 
 /**
@@ -51,7 +52,7 @@ _ByteArray::_ByteArray(String str) {
  * @param data source data
  * @param len save data len
  */
-_ByteArray::_ByteArray(const byte *data,int len) {
+_ByteArray::_ByteArray(const char *data,int len) {
     buff = (char *)malloc(len);
     memset(buff,0,len);
     _size = len;
@@ -77,7 +78,7 @@ _ByteArray::~_ByteArray() {
 }
 
 
-byte *_ByteArray::toValue() {
+char *_ByteArray::toValue() {
     return buff;
 }
 
@@ -110,11 +111,11 @@ bool _ByteArray::isEmpty() {
     return false;
 }
 
-byte _ByteArray::at(int index) {
+char _ByteArray::at(int index) {
     return buff[index];
 }
 
-int _ByteArray::fill(byte v) {
+int _ByteArray::fill(char v) {
     if(buff == nullptr) {
         return -ByteArrayNoMemory;
     }
@@ -124,7 +125,7 @@ int _ByteArray::fill(byte v) {
     return 0;
 }
 
-int _ByteArray::fill(int index,byte v) {
+int _ByteArray::fill(int index,char v) {
     if(buff == nullptr) {
         return -ByteArrayNoMemory;
     }
@@ -138,7 +139,7 @@ int _ByteArray::fill(int index,byte v) {
     return 0;
 }
 
-int _ByteArray::fill(int index,int length,byte v) {
+int _ByteArray::fill(int index,int length,char v) {
     if(buff == nullptr) {
         return -ByteArrayNoMemory;
     }

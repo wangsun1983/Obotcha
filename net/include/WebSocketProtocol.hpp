@@ -12,6 +12,7 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "ByteArray.hpp"
 
 #include "String.hpp"
 
@@ -96,10 +97,9 @@ public:
      * length.
      */
     static const int PAYLOAD_LONG;
+
+    static void toggleMask(ByteArray buffer, ByteArray key);
 };
-
-
-
 
 }
 #endif

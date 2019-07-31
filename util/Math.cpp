@@ -4,6 +4,10 @@
 
 namespace obotcha {
 
+const double _Math::E = 2.718281828459045;
+
+const double _Math::PI = 3.141592653589793;
+
 long _Math::abs(long v) {
     return std::abs(v);
 }

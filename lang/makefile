@@ -12,6 +12,7 @@ link += integer \
 	uint32 \
 	uint16 \
 	uint8 \
+	byte \
 
 objs += $(outtmp)/integer.o \
 	$(outtmp)/boolean.o \
@@ -25,6 +26,7 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/uint32.o \
 	$(outtmp)/uint16.o \
 	$(outtmp)/uint8.o \
+	$(outtmp)/byte.o \
 
 
 integer :$(langDir)/Integer.cpp
@@ -63,3 +65,5 @@ long :$(langDir)/Long.cpp
 bytearray :$(langDir)/ByteArray.cpp
 		$(gcc) $(cflags) -c $(langDir)/ByteArray.cpp -o $(outtmp)/bytearray.o $(external)
 
+byte :$(langDir)/Byte.cpp
+		$(gcc) $(cflags) -c $(langDir)/Byte.cpp -o $(outtmp)/byte.o $(external)

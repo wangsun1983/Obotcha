@@ -26,8 +26,9 @@
 #include "EPollFileObserver.hpp"
 #include "Mutex.hpp"
 #include "HttpParser.hpp"
-#include "WebSocketResponse.hpp"
+#include "WebSocketFrameComposer.hpp"
 #include "WebSocketParser.hpp"
+#include "HashMap.hpp"
 
 namespace obotcha {
 
@@ -41,7 +42,7 @@ public:
 
     void setHttpEpollFd(int fd);
 
-    void setWsEpollObserver(EPollFileObserver);
+    void setWsEpollObserver(HashMap<String,EPollFileObserver>);
 
     void onAccept(int fd,String ip,int port,ByteArray pack);
 
@@ -54,20 +55,22 @@ public:
 private:
     int httpEpollfd;
 
-    EPollFileObserver mWsObserver;  
+    HashMap<String,EPollFileObserver> mWsObservers;  
     
     HttpParser mParser;
 
-    WebSocketResponse mResponse;
+    WebSocketFrameComposer mResponse;
 };
 
 DECLARE_SIMPLE_CLASS(WebSocketEpollListener) IMPLEMENTS(EPollFileObserverListener) {
 public:
-    _WebSocketEpollListener();
-    void onEvent(int fd,int events);
+    _WebSocketEpollListener(WebSocketListener);
+    int onEvent(int fd,int events);
 
 private:
     WebSocketParser mHybi13Parser;
+    WebSocketListener mWsSocketListener;
+    WebSocketFrameComposer mResponse;
 };
 
 DECLARE_SIMPLE_CLASS(WebSocketServer) {
@@ -82,7 +85,8 @@ private:
     TcpServer mServer;
     WebSocketListener mWsListener;
     
-    EPollFileObserver mEpollObserver;
+    HashMap<String,EPollFileObserver> mEpollObservers;
+
     WebSocketEpollListener mEpollListener;
 
     WebSocketHttpListener mHttpListener;

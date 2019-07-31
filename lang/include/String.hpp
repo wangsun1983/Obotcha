@@ -12,6 +12,7 @@
 #include "Double.hpp"
 #include "Float.hpp"
 #include "Long.hpp"
+#include "Byte.hpp"
 #include "Uint8.hpp"
 #include "Uint16.hpp"
 #include "Uint32.hpp"
@@ -50,6 +51,8 @@ public:
 
     _String(Long v);
 
+    _String(Byte v);
+
     _String(int v);
 
     _String(bool v);
@@ -59,6 +62,8 @@ public:
     _String(double v);
 
     _String(long v);
+
+    _String(byte v);
 
     template <typename T>
     void split(String v,T t);

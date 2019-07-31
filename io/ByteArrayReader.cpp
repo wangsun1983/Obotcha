@@ -12,6 +12,7 @@ _ByteArrayReader::_ByteArrayReader(ByteArray data) {
     mDataP = data->toValue();
     mSize = data->size();
     mResult = ByteArrayReadSuccess;
+    mIndex = 0;
 }
 
 int _ByteArrayReader::readShort() {

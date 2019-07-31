@@ -46,7 +46,9 @@ void _EPollThread::run() {
                 return;
             }
 
-            mListener->onEvent(fd,event);
+            if(mListener->onEvent(fd,event) == EPollOnEventResultRemoveFd) {
+                epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
+            };
         }
     }
 }
