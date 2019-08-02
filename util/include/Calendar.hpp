@@ -50,7 +50,7 @@ public:
 
     _Calendar();
 
-    _Calendar(int _year,int _month,int _dayOfMonth,int _hour,int _minute,int _seconds);
+    _Calendar(int _year,int _month,int _dayOfMonth,int _hour,int _minute,int _seconds,int mseconds);
 
     _Calendar(long long timeMillis);
 

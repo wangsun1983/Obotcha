@@ -1,6 +1,7 @@
 netDir = net
 
 link += inetaddress \
+		ntpclient \
 		tcpclient \
 		tcpserver \
 		udpclient \
@@ -26,6 +27,7 @@ link += inetaddress \
 
 
 objs += $(outtmp)/inetaddress.o \
+		$(outtmp)/ntpclient.o \
 		$(outtmp)/tcpclient.o \
 		$(outtmp)/tcpserver.o \
 		$(outtmp)/udpclient.o \
@@ -117,3 +119,6 @@ websockethybi13parser :$(netDir)/WebSocketHybi13Parser.cpp
 
 websocketclient :$(netDir)/WebSocketClient.cpp
 	$(gcc) $(cflags) -c $(netDir)/WebSocketClient.cpp -o $(outtmp)/websocketclient.o $(external)		
+
+ntpclient :$(netDir)/NtpClient.cpp
+	$(gcc) $(cflags) -c $(netDir)/NtpClient.cpp -o $(outtmp)/ntpclient.o $(external)			

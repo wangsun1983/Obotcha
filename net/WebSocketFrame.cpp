@@ -9,6 +9,10 @@
 namespace obotcha {
 
 //------------WebSocketHeader------------
+_WebSocketHeader::_WebSocketHeader() {
+    mHeadSize = 0;
+}
+
 void _WebSocketHeader::setOpCode(int v) {
     mOpcode = v;
 }
@@ -81,6 +85,14 @@ void _WebSocketHeader::setMaskKey(ByteArray v) {
 
 ByteArray _WebSocketHeader::getMaskKey() {
     return mMaskKey;
+}
+
+int _WebSocketHeader::getHeadSize() {
+    return mHeadSize;
+}
+
+void _WebSocketHeader::setHeadSize(int v) {
+    mHeadSize = v;
 }
 
 //------------WebSocketFrame------------

@@ -92,6 +92,7 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
     printf("parseHeader trace6 \n");
 
     mHeader = header;
+    header->setHeadSize(mReader->getIndex());
     return header;
 }
 

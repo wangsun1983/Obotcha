@@ -38,7 +38,7 @@ void _EPollThread::run() {
             return;
         }
 
-        for(int i = 0; i < epoll_events_count; ++i) {
+        for(int i = 0; i < epoll_events_count; i++) {
             int fd = events[i].data.fd;
             int event = events[i].events;
 

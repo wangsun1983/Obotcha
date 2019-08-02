@@ -25,15 +25,17 @@ _Calendar::_Calendar(long long mseconds) {
     init();
 }
 
-_Calendar::_Calendar(int _year,int _month,int _dayOfMonth,int _hour = 0,int _minute = 0,int _second = 0) {
+_Calendar::_Calendar(int _year,int _month,int _dayOfMonth,int _hour = 0,int _minute = 0,int _second = 0,int msecond = 0) {
     year = _year;
 
-    if(month > December) {
+    if(_month > December) {
         month = December;
+    } else {
+        month = _month;
     }
 
     int *_days = getDays(year);
-    dayOfMonth = _days[_month];
+    dayOfMonth = _days[month];
 
     if(_dayOfMonth < dayOfMonth) {
         dayOfMonth = _dayOfMonth;
@@ -42,12 +44,12 @@ _Calendar::_Calendar(int _year,int _month,int _dayOfMonth,int _hour = 0,int _min
     dayOfWeek = caculateDayOfWeek(year,month,dayOfMonth);
 
     //update dayOfYear
-    onUpdateByYear(year);
+    //onUpdateByYear(year);
 
     hour = _hour;
     minute = _minute;
     second = _second;
-    msec = 0;
+    msec = msecond;
 }
 
 void _Calendar::setTime(long int msec) {
@@ -120,9 +122,10 @@ void _Calendar::increaseHour(int _hour) {
     if(_hour < 0) {
         return decreaseHour(-_hour);
     }
-
-    hour += _hour%24;
-    int _day = hour/24;
+    //printf("hour is %d \n",hour);
+    int _day = (hour + _hour)/24;
+    hour = (hour+_hour)%24;
+    //printf("hour is %d,day is %d \n",hour,_day);
 
     if(_day != 0) {
         increaseDay(_day);
@@ -135,11 +138,11 @@ void _Calendar::decreaseHour(int _hour) {
         return increaseHour(-_hour);
     }
 
-    hour -= hour%24;
-    int _day = hour/24;
-
-    if(_day != 0) {
+    hour -= _hour;
+    if(hour < 0) {
+        int _day = (-hour)/24 + 1;
         decreaseDay(_day);
+        hour = 24*_day + hour;
     }
 }
 
@@ -148,9 +151,9 @@ void _Calendar::increaseMinute(int _minute) {
         return decreaseMinute(-_minute);
     }
 
-    minute += _minute%60;
+    int _hour = (minute+_minute)/60;
+    minute = (minute+_minute)%60;
 
-    int _hour = _minute/60;
     if(_hour != 0) {
         increaseHour(_hour);
     }
@@ -161,11 +164,12 @@ void _Calendar::decreaseMinute(int _minute) {
         return increaseMinute(-_minute);
     }
 
-    minute += _minute%60;
-    int _hour = _minute/60;
+    minute -= _minute;
 
-    if(_hour != 0) {
+    if(minute < 0) {
+        int _hour = (-minute)/60 + 1;
         decreaseHour(_hour);
+        minute = 60*_hour + minute;
     }
 }
 
@@ -174,8 +178,8 @@ void _Calendar::increaseSecond(int _second) {
         return decreaseSecond(-_second);
     }
 
-    second += _second%60;
-    int minuteTmp = second/60;
+    int minuteTmp = (second+_second)/60;
+    second = (second+_second)%60;
 
     if(minuteTmp != 0) {
         increaseMinute(minuteTmp);
@@ -187,11 +191,12 @@ void _Calendar::decreaseSecond(int _second) {
         return increaseSecond(-_second);
     }
 
-    second += _second%60;
-    int _minute = second/60;
+    second -= _second;
 
-    if(_minute != 0) {
+    if(second < 0) {
+        int _minute = (-second)/60 + 1;
         decreaseMinute(_minute);
+        second = 60*_minute + second;
     }
 }
 
@@ -431,7 +436,7 @@ long int _Calendar::toTimeMillis() {
 
     std::tm time;
 
-    time.tm_year = year;
+    time.tm_year = year - _Calendar::GregorianBase;
     time.tm_mon = month;
     time.tm_wday = dayOfWeek;
     time.tm_mday = dayOfMonth;
@@ -440,7 +445,7 @@ long int _Calendar::toTimeMillis() {
     time.tm_min = minute;
     time.tm_sec = second;
     
-    return std::mktime(&time) *1000 + timeMillis%1000;
+    return std::mktime(&time) *1000 + msec;
 
 }
 
@@ -453,6 +458,7 @@ bool _Calendar::isLeapYear(int _year) {
     
 void _Calendar::increaseYear(int _year) {
     year += _year;
+    //printf("increaseYear year is %d \n",year);
     
     //update dayOfMonth
     int *_days = getDays(year);
@@ -496,15 +502,15 @@ void _Calendar::decreaseYear(int _year) {
 
 void _Calendar::increaseMonth(int mon) {
     
-    year += mon/11;
-    month += mon%11;
+    year += (month + mon)/12;
+    month = (month + mon)%12;
 
     //update dayOfMonth
     int *_days = getDays(year);
 
     //update dayOfMonth
-    if(dayOfMonth > _days[mon]) {
-        dayOfMonth = _days[mon];
+    if(dayOfMonth > _days[month]) {
+        dayOfMonth = _days[month];
     }
 
     //update dayOfWeek
@@ -515,15 +521,24 @@ void _Calendar::increaseMonth(int mon) {
 }
 
 void _Calendar::decreaseMonth(int mon) {
-    year -= mon/11;
-    month -= mon%11;
+    month -= mon;
+    if(month < 0) {
+        year -= (-month)/12;
+
+        if(-month%12 != 0) {
+            year--;
+            month = 12 + month;
+        } else {
+            month = 0;
+        }
+    }
 
     //update dayOfMonth
     int *_days = getDays(year);
 
     //update dayOfMonth
-    if(dayOfMonth > _days[mon]) {
-        dayOfMonth = _days[mon];
+    if(dayOfMonth > _days[month]) {
+        dayOfMonth = _days[month];
     }
 
     //update dayOfWeek

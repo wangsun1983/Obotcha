@@ -34,7 +34,7 @@ void _Random::nextBytes(ByteArray bytes) {
              n = st(Math)::min(len - i, sizeof(int)/sizeof(byte));
              n-- > 0; rnd >>= 8) {
                 //bytes[i++] = (byte)rnd;
-                printf("rnd is %d \n",(byte)rnd);
+                //printf("rnd is %d \n",(byte)rnd);
                 bytes->fill(i++,(byte)rnd);
         }
     }

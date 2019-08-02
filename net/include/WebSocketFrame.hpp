@@ -12,6 +12,7 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(WebSocketHeader) {
 public:
+    _WebSocketHeader();
     
     void setOpCode(int);
     int getOpCode();
@@ -39,6 +40,9 @@ public:
 
     void setMaskKey(ByteArray);
     ByteArray getMaskKey();
+
+    int getHeadSize();
+    void setHeadSize(int);
     
 private:
     int mOpcode;
@@ -50,6 +54,7 @@ private:
     bool mIsMasked;
     long mFrameLength;
     ByteArray mMaskKey;
+    int mHeadSize;
 };
 
 DECLARE_SIMPLE_CLASS(WebSocketFrame) {
