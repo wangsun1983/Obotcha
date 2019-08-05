@@ -33,17 +33,74 @@ _NtpSocketClientListener::~_NtpSocketClientListener() {
 
 
 void _NtpSocketClientListener::onAccept(int fd,String ip,int port,ByteArray pack) {
-    struct tm t;
+    int  ret;
+    unsigned int *data = (unsigned int *)pack->toValue(); 
 
-    NtpPacket *p = (NtpPacket *)pack->toValue();
-    long int txTm_s = ntohl(p->txTm_s) - NTP_TIMESTAMP_DELTA;
-    long int txTm_f = ntohl(p->txTm_f);
-    printf("txTm_f is %ld \n",txTm_f);
+    NtpTime oritime, rectime, tratime, destime;
+    struct  timeval offtime, dlytime;
+    struct  timeval now;
 
-    localtime_r((const time_t*)&txTm_s,&t);
-    milliseconds = mktime(&t) *1000;
-    printf("milliseconds is %ld \n",milliseconds);
-    printf("current time is %ld \n",st(System)::currentTimeMillis());
+    gettimeofday(&now, NULL);
+    destime.integer  = now.tv_sec + JAN_1970;
+    destime.fraction = NTPFRAC (now.tv_usec);
+
+#define  DATA(i) ntohl((( unsigned   int  *)data)[i])
+
+    oritime.integer  = DATA(6);
+    oritime.fraction = DATA(7);
+    rectime.integer  = DATA(8);
+    rectime.fraction = DATA(9);
+    tratime.integer  = DATA(10);
+    tratime.fraction = DATA(11);
+    //printf("oritime.integer is %ld \n",oritime.integer);
+    //printf("oritime.fraction is %ld \n",oritime.fraction);
+    //printf("rectime.integer is %ld \n",rectime.integer);
+    //printf("rectime.fraction is %ld \n",oritime.fraction);
+    //printf("tratime.integer is %ld \n",tratime.integer);
+    //printf("tratime.fraction is %ld \n",oritime.fraction);
+
+#undef  DATA
+
+    //Originate Timestamp       T1        client send time 
+    //Receive Timestamp         T2        server receive time
+    //Transmit Timestamp        T3        server response time
+    //Destination Timestamp     T4        client receive time
+    //net delay(d)
+    //d = (T2 - T1) + (T4 - T3); t = [(T2 - T1) + (T3 - T4)] / 2;
+
+#define  MKSEC(ntpt)   ((ntpt).integer - JAN_1970)
+
+#define  MKUSEC(ntpt)  (USEC((ntpt).fraction))
+
+#define  TTLUSEC(sec,usec)   (( long   long )(sec)*1000000 + (usec))
+
+#define  GETSEC(us)    ((us)/1000000) 
+
+#define  GETUSEC(us)   ((us)%1000000) 
+    long   long  orius, recus, traus, desus, offus, dlyus;
+    orius = TTLUSEC(MKSEC(oritime), MKUSEC(oritime));
+    recus = TTLUSEC(MKSEC(rectime), MKUSEC(rectime));
+    traus = TTLUSEC(MKSEC(tratime), MKUSEC(tratime));
+    desus = TTLUSEC(now.tv_sec, now.tv_usec);
+
+    offus = ((recus - orius) + (traus - desus))/2;
+    dlyus = (recus - orius) + (desus - traus);
+
+    offtime.tv_sec  = GETSEC(offus);
+    offtime.tv_usec = GETUSEC(offus);
+    dlytime.tv_sec  = GETSEC(dlyus);
+    dlytime.tv_usec = GETUSEC(dlyus);
+
+    struct  timeval  newTime ;
+    //corse time
+    //new.tv_sec = tratime.integer - JAN_1970;
+    //new.tv_usec = USEC(tratime.fraction);
+    
+    //fine time
+    newTime.tv_sec = destime.integer - JAN_1970 + offtime.tv_sec;
+    newTime.tv_usec = USEC(destime.fraction) + offtime.tv_usec;
+
+    milliseconds = newTime.tv_sec*1000 + newTime.tv_usec/1000;
     mCondition->notify();
     
     if(mListener != nullptr) {
@@ -91,12 +148,12 @@ int _NtpClient::bind(String url,int port = 123) {
 }
 
 long _NtpClient::getCurrentTimeSync() {
-    memset(&mNtpPacket,0,sizeof(NtpPacket));
+    char mNtpPacket[NTP_DATA_SIZE];
+    memset(mNtpPacket,0,sizeof(mNtpPacket));
+    generateNtpPacket(mNtpPacket);
+    unsigned int *v = (unsigned int *)mNtpPacket;
 
-    // Set the first byte's bits to 00,011,011 for li = 0, vn = 3, and mode = 3. The rest will be left set to zero.
-   *((char*) &mNtpPacket + 0) = 0x1b; // Represents 27 in base 10 or 00011011 in base 2.
-    
-    ByteArray packet = createByteArray((char *)&mNtpPacket,sizeof(NtpPacket));
+    ByteArray packet = createByteArray((char *)mNtpPacket,NTP_DATA_SIZE);
     mClient->send(packet);
     {
         AutoMutex l(mMutex);
@@ -108,13 +165,35 @@ long _NtpClient::getCurrentTimeSync() {
 
 void _NtpClient::getCurrentTimeAsync(NtpListener l) {
     mListener->setTimeCallback(l);
-    memset(&mNtpPacket,0,sizeof(NtpPacket));
+    char mNtpPacket[NTP_DATA_SIZE];
+    memset(mNtpPacket,0,sizeof(mNtpPacket));
+    generateNtpPacket(mNtpPacket);
 
-    // Set the first byte's bits to 00,011,011 for li = 0, vn = 3, and mode = 3. The rest will be left set to zero.
-    *((char*) &mNtpPacket + 0) = 0x1b; // Represents 27 in base 10 or 00011011 in base 2.
-    
-    ByteArray packet = createByteArray((char *)&mNtpPacket,sizeof(NtpPacket));
+    ByteArray packet = createByteArray((char *)mNtpPacket,NTP_DATA_SIZE);
     mClient->send(packet);
+}
+
+void _NtpClient::generateNtpPacket(char *v) {
+    int  ret;
+    struct  timeval now;
+
+#define  LI 0             //head
+#define  VN 3             //version
+#define  MODE 3           //mode: client request
+#define  STRATUM 0
+#define  POLL 4           //max interval
+#define  PREC -6          
+    unsigned int *data = (unsigned int *)v;
+
+    data[0] = htonl((LI << 30) | (VN << 27) | (MODE << 24) 
+        | (STRATUM << 16) | (POLL << 8) | (PREC & 0xff));
+    data[1] = htonl(1 << 16);
+    data[2] = htonl(1 << 16);
+
+    gettimeofday(&now, NULL);
+
+    data[10] = htonl(now.tv_sec + JAN_1970);
+    data[11] = htonl(NTPFRAC(now.tv_usec));
 }
 
 void _NtpClient::release() {
