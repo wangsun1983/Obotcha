@@ -15,7 +15,7 @@ link += inetaddress \
 		httpurl \
 		httpheader \
 		httpresponse \
-		httprequest \
+		httppacket \
 		httpresponsewriter \
 		websocketserver \
 		websocketprotocol \
@@ -41,7 +41,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpurl.o \
 		$(outtmp)/httpheader.o \
 		$(outtmp)/httpresponse.o \
-		$(outtmp)/httprequest.o \
+		$(outtmp)/httppacket.o \
 		$(outtmp)/httpresponsewriter.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketprotocol.o \
@@ -93,8 +93,8 @@ httpheader :$(netDir)/HttpHeader.cpp
 httpresponse :$(netDir)/HttpResponse.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpResponse.cpp -o $(outtmp)/httpresponse.o $(external)
 
-httprequest :$(netDir)/HttpRequest.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpRequest.cpp -o $(outtmp)/httprequest.o $(external)	
+httppacket :$(netDir)/HttpPacket.cpp
+	$(gcc) $(cflags) -c $(netDir)/HttpPacket.cpp -o $(outtmp)/httppacket.o $(external)	
 
 httpresponsewriter :$(netDir)/HttpResponseWriter.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o $(external)

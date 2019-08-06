@@ -24,9 +24,9 @@ public:
 
     virtual int onDisconnect(int fd) = 0;
 
-    virtual int onPong(int fd) {return PingResultResponse;}
+    virtual int onPong(int fd,String) {return PingResultResponse;}
 
-    virtual int onPing(int fd)  {return PingResultResponse;};
+    virtual int onPing(int fd,String)  {return PingResultResponse;};
 };
 
 }

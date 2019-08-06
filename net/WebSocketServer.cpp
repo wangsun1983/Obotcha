@@ -28,7 +28,7 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
     //TODO
     printf("onAccept content is %s \n",pack->toValue());
     String req = createString(pack->toValue(),0,pack->size());
-    HttpRequest request = mParser->parseRequest(req);
+    HttpPacket request = mParser->parseRequest(req);
     HttpHeader header = request->getHeader();
 
     String upgrade = header->getValue(Http_Header_Upgrade);
@@ -51,7 +51,7 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
 
         EPollFileObserver observer = mWsObservers->get(request->getUrl());
         if(observer != nullptr) {
-            observer->addFd(fd,EPOLLIN|EPOLLRDHUP|EPOLLHUP|EPOLLET);
+            observer->addFd(fd,EPOLLIN|EPOLLRDHUP|EPOLLHUP|EPOLLMSG|EPOLLET);
         } 
 
         String shakeresponse = mResponse->generateShakeHandFrame(key);
@@ -78,6 +78,7 @@ void _WebSocketHttpListener::onConnect(int fd,String domain) {
 _WebSocketEpollListener::_WebSocketEpollListener(WebSocketListener l) {
     mHybi13Parser = createWebSocketHybi13Parser();
     mWsSocketListener = l;
+    mResponse = createWebSocketFrameComposer(false);
 }
 
 int _WebSocketEpollListener::onEvent(int fd,int events){
@@ -91,40 +92,55 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
 
     char recv_buf[BUFF_SIZE];
     int len = recv(fd, recv_buf, BUFF_SIZE, 0);
+    printf("len is %d \n",len);
+    if(len == BUFF_SIZE) {
+        printf("error!!!!!! buff is oversize \n");
+    }
+    
     ByteArray pack = createByteArray(recv_buf,len);
-
+    ByteArray continuePack;
+    int readIndex = 0;
     while(1) {
         mHybi13Parser->setParseData(pack);
         WebSocketHeader header = mHybi13Parser->parseHeader();
         int framesize = header->getFrameLength();
         int headersize = header->getHeadSize();
         int opcode = header->getOpCode();
+        printf("framesize is %d,headersize is %d,opcode is %d \n",framesize,headersize,opcode);
 
         if(opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
-            String msg = mHybi13Parser->parseMessage();
+            ByteArray msgData = mHybi13Parser->parseContent();
+            String msg = msgData->toString();
             printf("recv websocket from client msg is %s,fd is %d \n",msg->toChars(),fd);
             mWsSocketListener->onMessage(fd,msg);
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PING) {
             printf("on ping start !!! \n");
-            if(mWsSocketListener->onPing(fd) == PingResultResponse) {
-                printf("on ping trace !!! \n");
-                ByteArray buff = mHybi13Parser->parsePingBuff();
+            ByteArray buff = mHybi13Parser->parsePingBuff();
+            if(mWsSocketListener->onPing(fd,buff->toString()) == PingResultResponse) {
                 ByteArray resp = mResponse->generateControlFrame(st(WebSocketProtocol)::OPCODE_CONTROL_PONG,
                                             buff);
                 st(NetUtils)::sendTcpPacket(fd,resp);
             }
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PONG) {
             //TODO
+            printf("OPCODE_CONTROL_PONG \n");
             mWsSocketListener->onPong(fd);
 
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE) {
+            printf("OPCODE_CONTROL_CLOSE \n");
+            return EPollOnEventResultRemoveFd;
+        } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
             //TODO
+            printf("OPCODE_CONTINUATION trace !!! \n");
+            ByteArray msgData = mHybi13Parser->parseContent();
+            continuePack->append(msgData);
         }
 
         len -= (framesize + headersize);
+        readIndex += (framesize + headersize);
         if(len > 0) {
             printf("rest len is %d \n",len);
-            pack = createByteArray(&recv_buf[framesize + headersize],len);
+            pack = createByteArray(&recv_buf[readIndex],len);
             continue;
         } 
         

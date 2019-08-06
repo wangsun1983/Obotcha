@@ -51,6 +51,8 @@ public:
 
     int fill(int index,int length,char v);
 
+    int append(sp<_ByteArray>);
+
     String toString();
 
 private:

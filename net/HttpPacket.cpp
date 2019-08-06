@@ -5,67 +5,75 @@
 #include "ArrayList.hpp"
 #include "http_parser.h"
 #include "HttpHeader.hpp"
-#include "HttpRequest.hpp"
+#include "HttpPacket.hpp"
 
 namespace obotcha {
 
-_HttpRequest::_HttpRequest() {
+_HttpPacket::_HttpPacket() {
     mHeader = createHttpHeader();
 }
 
-void _HttpRequest::setHeader(HttpHeader h) {
+void _HttpPacket::setHeader(HttpHeader h) {
     mHeader = h;
 }
 
-HttpHeader _HttpRequest::getHeader() {
+HttpHeader _HttpPacket::getHeader() {
     return mHeader;
 }
     
-void _HttpRequest::setUrl(String url) {
+void _HttpPacket::setUrl(String url) {
     mUrl = url;
 }
 
-void _HttpRequest::setBody(ByteArray body) {
+void _HttpPacket::setBody(ByteArray body) {
     mBody = body;
 }
 
-String _HttpRequest::getUrl() {
+String _HttpPacket::getUrl() {
     return mUrl;
 }
 
-void _HttpRequest::setReason(String reason) {
+void _HttpPacket::setReason(String reason) {
     mReason = reason;
 }
 
-String _HttpRequest::getReason() {
+String _HttpPacket::getReason() {
     return mReason;
 }
 
-void _HttpRequest::setMethod(int v) {
+void _HttpPacket::setMethod(int v) {
     mMethod = v;
 }
 
-int _HttpRequest::getMethod() {
+int _HttpPacket::getMethod() {
     return mMethod;
 }
 
-void _HttpRequest::setMajorVersion(int v) {
+void _HttpPacket::setMajorVersion(int v) {
     mMajorVer = v;
 }
 
-int _HttpRequest::getMajorVersion() {
+int _HttpPacket::getMajorVersion() {
     return mMajorVer;
 }
 
-void _HttpRequest::setMinorVersion(int v) {
+void _HttpPacket::setMinorVersion(int v) {
     mMinorVer = v;
 }
 
-int _HttpRequest::getMinorVersion() {
+int _HttpPacket::getMinorVersion() {
     return mMinorVer;
 }
 
-String _HttpRequest::genHttpString() {
+int _HttpPacket::getStatusCode() {
+    return mStatusCode;
+}
+
+void _HttpPacket::setStatusCode(int v) {
+    mStatusCode = v;
+}
+
+String _HttpPacket::genHttpString() {
     String req = createString();
     switch(mMethod) {
         case HttpMethodGet:

@@ -29,8 +29,15 @@
 #include "WebSocketFrameComposer.hpp"
 #include "WebSocketParser.hpp"
 #include "TcpClient.hpp"
+#include "WebSocketHybi13Parser.hpp"
+#include "HttpHeaderParser.hpp"
 
 namespace obotcha {
+
+enum WsClientProtocolType {
+    WsClientProtocolHttp,
+    WsClientProtocolWebSocket
+};
 
 DECLARE_SIMPLE_CLASS(WebSocketTcpClientListener) IMPLEMENTS(SocketListener) {
 
@@ -46,7 +53,13 @@ public:
     void onConnect(int fd,String domain);
 
 private:
-    WebSocketListener mWsListener;    
+    WebSocketListener mWsListener;
+
+    WebSocketHybi13Parser mHybi13Parser;
+
+    int mProtoclType;
+
+    HttpParser mHttpParser;
 };
 
 DECLARE_SIMPLE_CLASS(WebSocketClient) {
@@ -54,6 +67,8 @@ public:
     _WebSocketClient();
     int bind(String url,WebSocketListener l);
     int sendMessage(String msg);
+
+    int sendPing(String msg);
 
 private:
     TcpClient mTcpClient;
@@ -65,6 +80,8 @@ private:
     bool isConnected;
 
     WebSocketFrameComposer mComposer;
+
+    
 };
 
 

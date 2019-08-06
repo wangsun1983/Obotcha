@@ -16,7 +16,7 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
 
     int b0 = mReader->readByte() & 0xff;
     header->setOpCode(b0 & st(WebSocketProtocol)::B0_MASK_OPCODE);
-    printf("opcode is %d \n",header->getOpCode());
+    printf("opcode is %d,b0 is %d \n",header->getOpCode(),b0);
 
     header->setIsFinalFrame((b0 & st(WebSocketProtocol)::B0_FLAG_FIN) != 0);
     header->setIsControlFrame((b0 & st(WebSocketProtocol)::OPCODE_FLAG_CONTROL) != 0);
@@ -41,12 +41,12 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
     
     header->setMasked((b1 & st(WebSocketProtocol)::B1_FLAG_MASK) != 0);
     
-
-    if (header->getMasked() == isClient) {
+    //if (header->getMasked() == isClient) {
         //Masked payloads must be read on the server. Unmasked payloads must be read on the client.
         //throw new ProtocolException("Client-sent frames must be masked. Server sent must not.");
-        return header;
-    }
+    //    return header;
+    //}
+
     printf("parseHeader trace3 \n");
 
     // Get frame length, optionally reading from follow-up bytes if indicated by special values.
@@ -96,8 +96,8 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
     return header;
 }
 
-String _WebSocketHybi13Parser::parseMessage() {
-    ByteArray load = createByteArray(1024*8);
+ByteArray _WebSocketHybi13Parser::parseContent() {
+    ByteArray load = createByteArray(mHeader->getFrameLength());
     char *payload = load->toValue();
     char *msg = mData->toValue();
     int pos = mReader->getIndex();
@@ -118,20 +118,57 @@ String _WebSocketHybi13Parser::parseMessage() {
 		}
 	}
 
-	return load->toString();
+	return load;
 }
 
 ByteArray _WebSocketHybi13Parser::parsePingBuff(){
-    int frameSize = mHeader->getFrameLength();
+    ByteArray load = createByteArray(mHeader->getFrameLength());
+    char *payload = load->toValue();
     char *msg = mData->toValue();
     int pos = mReader->getIndex();
+    printf("parsePingBuff pos is %d,msg is %s \n",pos,&msg[pos]);
 
-    if(frameSize == 0) {
-        return nullptr;
-    }
+	if(!mHeader->getMasked()){
+		memcpy(payload, 
+        (const char *)&msg[pos], 
+        mHeader->getFrameLength());
+	} else {
+        int framesize = mHeader->getFrameLength();
+        char *masking_key_ = mHeader->getMaskKey()->toValue();
+        printf("framesize is %d,masking_key is %s \n",framesize,masking_key_);
 
-    return createByteArray(&msg[pos],frameSize);
+		for(uint i = 0; i < framesize; i++){
+			int j = i % 4;
+			payload[i] = msg[pos + i] ^ masking_key_[j];
+		}
+	}
 
+	return load;
+}
+
+ByteArray _WebSocketHybi13Parser::parsePongBuff() {
+    ByteArray load = createByteArray(mHeader->getFrameLength());
+    char *payload = load->toValue();
+    char *msg = mData->toValue();
+    int pos = mReader->getIndex();
+    printf("parsePongBuff pos is %d,msg is %s \n",pos,&msg[pos]);
+
+	if(!mHeader->getMasked()){
+		memcpy(payload, 
+        (const char *)&msg[pos], 
+        mHeader->getFrameLength());
+	} else {
+        int framesize = mHeader->getFrameLength();
+        char *masking_key_ = mHeader->getMaskKey()->toValue();
+        printf("framesize is %d,masking_key is %s \n",framesize,masking_key_);
+
+		for(uint i = 0; i < framesize; i++){
+			int j = i % 4;
+			payload[i] = msg[pos + i] ^ masking_key_[j];
+		}
+	}
+
+	return load;
 }
 
 }

@@ -15,9 +15,9 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(WebSocketHybi13Parser) IMPLEMENTS(WebSocketParser){
 public:
     WebSocketHeader parseHeader();
-    String parseMessage();
+    ByteArray parseContent();
     ByteArray parsePingBuff();
-
+    ByteArray parsePongBuff();
 };
 
 }

@@ -1,5 +1,5 @@
-#ifndef __HTTP_REQUEST_HPP__
-#define __HTTP_REQUEST_HPP__
+#ifndef __HTTP_PACKET_HPP__
+#define __HTTP_PACKET_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -46,10 +46,10 @@ enum HttpMethodType {
   };
 
 
-DECLARE_SIMPLE_CLASS(HttpRequest) {
+DECLARE_SIMPLE_CLASS(HttpPacket) {
 
 public:
-    _HttpRequest();
+    _HttpPacket();
     
     void setHeader(HttpHeader);
     
@@ -77,7 +77,13 @@ public:
 
     int getMinorVersion();
 
+    int getStatusCode();
+
+    void setStatusCode(int);
+
     String genHttpString();
+
+    
 
 private:
     String mUrl;
@@ -93,6 +99,8 @@ private:
     int mMajorVer;
 
     int mMinorVer;
+
+    int mStatusCode;
 
 };
 

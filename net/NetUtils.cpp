@@ -19,7 +19,7 @@ namespace obotcha {
 void _NetUtils::addEpollFd(int epollfd, int fd, bool enable_et) {
     struct epoll_event ev;
     ev.data.fd = fd;
-    ev.events = EPOLLIN | EPOLLRDHUP |EPOLLHUP |EPOLLMSG;
+    ev.events = EPOLLIN | EPOLLRDHUP |EPOLLHUP;
     if( enable_et )
         ev.events |= EPOLLET;
     epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);

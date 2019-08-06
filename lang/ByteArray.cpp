@@ -12,6 +12,7 @@
 
 #include "ByteArray.hpp"
 
+
 namespace obotcha {
 
 /**
@@ -93,6 +94,7 @@ void _ByteArray::qucikShrink(int size) {
 
     _size = size;
 }
+
 int _ByteArray::resize(int size) {
     if(size <= _size) {
         return -ByteArrayWrongParam;
@@ -159,6 +161,26 @@ int _ByteArray::fill(int index,int length,char v) {
 
     memset(&buff[index],v,length);
 
+    return 0;
+}
+
+int _ByteArray::append(sp<_ByteArray> b) {
+    if(b == nullptr) {
+        return -ByteArrayWrongParam;
+    }
+
+    if(buff == nullptr) {
+        buff = (char *)malloc(b->size());
+        memcpy(buff,b->toValue(),b->size());
+        return 0;
+    }
+
+    char *newData = (char *)malloc(_size + b->size());
+    memcpy(newData,buff,_size);
+    memcpy(newData+_size,b->toValue(),b->size());
+
+    free(buff);
+    buff = newData;
     return 0;
 }
 

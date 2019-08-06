@@ -37,7 +37,7 @@ ByteArray _WebSocketFrameComposer::generateControlFrame(int opcode, ByteArray pa
         b1 |= st(WebSocketProtocol)::B1_FLAG_MASK;
         sinkWriter->writeByte(b1);
 
-        ByteArray maskKey = createByte(4);
+        ByteArray maskKey = createByteArray(4);
         st(Random)::nextBytes(maskKey);
         sinkWriter->writeByteArray(maskKey);
 
@@ -54,6 +54,7 @@ ByteArray _WebSocketFrameComposer::generateControlFrame(int opcode, ByteArray pa
         }
     }
 
+    sink->qucikShrink(sinkWriter->getIndex());
     return sink;
 }
 

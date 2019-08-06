@@ -28,21 +28,37 @@ http_parser_settings _HttpParser::settings = {
 
 _HttpParser::_HttpParser() {
     memset(&mParser,0,sizeof(http_parser));
-    mRequest = createHttpRequest();
+    mPacket = createHttpPacket();
 }
 
-HttpRequest _HttpParser::parseRequest(String request) {
+HttpPacket _HttpParser::parseRequest(String request) {
     printf("request is %s \n",request->toChars());
     memset(&mParser,0,sizeof(http_parser));
     mParser.data = reinterpret_cast<void *>(this);
-    mRequest = createHttpRequest();
+    mPacket = createHttpPacket();
 
     http_parser_init(&mParser, HTTP_REQUEST);
     int parsed = http_parser_execute(&mParser,&settings, request->toChars(), request->size());
-    printf("parsed is %d,method is %d,version is %d.%d \n",parsed,mParser.method,mParser.http_major,mParser.http_minor);
-    mRequest->setMethod(mParser.method);
+    //printf("parsed is %d,method is %d,version is %d.%d \n",parsed,mParser.method,mParser.http_major,mParser.http_minor);
+    printf("mParser.status_code is %d \n",mParser.status_code);
+    mPacket->setMethod(mParser.method);
+    //mPacket->setStatusCode(mParser.status_code);
+    return mPacket;
+}
 
-    return mRequest;
+HttpPacket _HttpParser::parseResponse(String response) {
+    printf("request is %s \n",response->toChars());
+    memset(&mParser,0,sizeof(http_parser));
+    mParser.data = reinterpret_cast<void *>(this);
+    mPacket = createHttpPacket();
+
+    http_parser_init(&mParser, HTTP_RESPONSE);
+    int parsed = http_parser_execute(&mParser,&settings, response->toChars(), response->size());
+    //printf("parsed is %d,method is %d,version is %d.%d \n",parsed,mParser.method,mParser.http_major,mParser.http_minor);
+    printf("mParser.status_code is %d \n",mParser.status_code);
+    mPacket->setMethod(mParser.method);
+    mPacket->setStatusCode(mParser.status_code);
+    return mPacket;
 }
 
 
@@ -54,7 +70,7 @@ int _HttpParser::on_message_begin(http_parser *parser) {
 int _HttpParser::on_url(http_parser*parser, const char *at, size_t length) {
     _HttpParser *p = reinterpret_cast<_HttpParser *>(parser->data);
     String myurl = createString(at,0,length);
-    p->mRequest->setUrl(myurl);
+    p->mPacket->setUrl(myurl);
     printf("on_url is %s \n",myurl->toChars());
     return 0;
 }
@@ -71,7 +87,7 @@ int _HttpParser::on_header_value(http_parser*parser, const char *at, size_t leng
     printf("parse value is %s",str->toChars());
     printf("parse name is %s",p->mHeaderName->toChars());
 
-    p->mRequest->getHeader()->setValue(st(HttpHeaderParser)::parseHttpHeader(p->mHeaderName),createString(at,0,length));
+    p->mPacket->getHeader()->setValue(st(HttpHeaderParser)::parseHttpHeader(p->mHeaderName),createString(at,0,length));
     return 0;
 }
 
@@ -83,7 +99,7 @@ int _HttpParser::on_headers_complete(http_parser*parser, const char *at, size_t 
 int _HttpParser::on_body(http_parser*parser, const char *at, size_t length) {
     printf("on_body \n");
     _HttpParser *p = reinterpret_cast<_HttpParser *>(parser->data);
-    p->mRequest->setBody(createByteArray(at,(int)length));
+    p->mPacket->setBody(createByteArray(at,(int)length));
     return 0;
 }
 
@@ -94,7 +110,7 @@ int _HttpParser::on_message_complete(http_parser *parser) {
 
 int _HttpParser::on_reason(http_parser*parser, const char *at, size_t length) {
     _HttpParser *p = reinterpret_cast<_HttpParser *>(parser->data);
-    p->mRequest->setReason(createString(at,0,length));
+    p->mPacket->setReason(createString(at,0,length));
     return 0;
 }
 

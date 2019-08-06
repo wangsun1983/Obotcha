@@ -51,6 +51,8 @@ int main() {
     client->sendMessage(createString("hello world1"));
     sleep(5);
     client->sendMessage(createString("hello world2"));
+    sleep(5);
+    client->sendPing(createString("wangsl12312312312312312312ping!!!!"));
     while(1){}
 
 }

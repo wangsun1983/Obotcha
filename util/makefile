@@ -14,6 +14,7 @@ link += calendar \
 		random \
 		math \
 		timewatcher \
+		stacktrace \
 
 objs += $(outtmp)/calendar.o \
         $(outtmp)/timezone.o \
@@ -24,9 +25,13 @@ objs += $(outtmp)/calendar.o \
 		$(outtmp)/random.o \
 		$(outtmp)/math.o \
 		$(outtmp)/timewatcher.o \
+		$(outtmp)/stacktrace.o \
 
 calendar :$(utilDir)/Calendar.cpp
 	$(gcc) $(cflags) -c $(utilDir)/Calendar.cpp -o $(outtmp)/calendar.o
+
+stacktrace :$(utilDir)/StackTrace.cpp
+	$(gcc) $(cflags) -c $(utilDir)/StackTrace.cpp -o $(outtmp)/stacktrace.o
 
 timezone :$(utilDir)/TimeZone.cpp
 	$(gcc) $(cflags) -c $(utilDir)/TimeZone.cpp -o $(outtmp)/timezone.o

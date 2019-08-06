@@ -27,6 +27,7 @@ cflags = -fpic \
 		-I ./external/http_parser/include \
 		-I ./external/libco \
 		-g \
+		-rdynamic \
 		-std=c++11 \
 
 

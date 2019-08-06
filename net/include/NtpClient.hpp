@@ -8,18 +8,7 @@
 #include <mqueue.h>
 #include <fstream>
 #include <sys/un.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
 
-#include <unistd.h>
-#include <sys/select.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <errno.h>
-#include <endian.h>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -37,7 +26,18 @@ enum NtpFailReason {
     NtpFailConnectFail = 200,
 };
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
+#include <unistd.h>
+#include <sys/select.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <errno.h>
+#include <endian.h>
 
 #define NTP_DATA_SIZE 48
 

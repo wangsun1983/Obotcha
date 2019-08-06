@@ -7,7 +7,7 @@
 #include "String.hpp"
 #include "ArrayList.hpp"
 #include "http_parser.h"
-#include "HttpRequest.hpp"
+#include "HttpPacket.hpp"
 #include "HttpHeader.hpp"
 
 namespace obotcha {
@@ -17,13 +17,15 @@ DECLARE_SIMPLE_CLASS(HttpParser) {
 public:
     _HttpParser();
     
-    HttpRequest parseRequest(String);
+    HttpPacket parseRequest(String);
+
+    HttpPacket parseResponse(String);
 
     void setUrl(String);
     String getUrl();
    
 private:
-    HttpRequest mRequest;
+    HttpPacket mPacket;
     http_parser mParser;
 
     String mHeaderName;
