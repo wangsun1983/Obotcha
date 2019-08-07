@@ -96,16 +96,7 @@ String _HttpPacket::genHttpString() {
              ->append(createString(mMinorVer))
              ->append("\r\n");
 
-    //conver header
-    MapIterator<Integer,String> headerIte = mHeader->getIterator();
-    while(headerIte->hasValue()) {
-        String headSting = st(HttpHeader)::getHeaderString(headerIte->getKey()->toValue());
-        req = req->append(headSting)
-                 ->append(": ")
-                 ->append(headerIte->getValue())
-                 ->append("\r\n");
-        headerIte->next();
-    }
+    req = req->append(mHeader->genHtml());
 
     req = req->append("\r\n\r\n");
 

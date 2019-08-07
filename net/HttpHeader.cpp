@@ -116,6 +116,7 @@ String _HttpHeader::getHeaderString(int header) {
 
 _HttpHeader::_HttpHeader() {
     mValues = createHashMap<Integer,String>();
+    mCookies = createArrayList<HttpCookie>();
 }
 
 void _HttpHeader::setValue(int header,String value) {
@@ -128,8 +129,32 @@ String _HttpHeader::getValue(int header) {
     return mValues->get(createInteger(header));
 }
 
+void _HttpHeader::addCookie(HttpCookie c) {
+    mCookies->add(c);
+}
+
+ArrayList<HttpCookie> _HttpHeader::getCookies() {
+    return mCookies;
+}
+
 MapIterator<Integer,String> _HttpHeader::getIterator() {
     return mValues->getIterator();
+}
+
+String _HttpHeader::genHtml() {
+    //conver header
+    MapIterator<Integer,String> headerIte = mValues->getIterator();;
+    String html = createString("");
+    while(headerIte->hasValue()) {
+        String headSting = st(HttpHeader)::getHeaderString(headerIte->getKey()->toValue());
+        html = html->append(headSting)
+                 ->append(": ")
+                 ->append(headerIte->getValue())
+                 ->append("\r\n");
+        headerIte->next();
+    }
+
+    return html;
 }
 
 

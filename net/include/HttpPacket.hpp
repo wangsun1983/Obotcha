@@ -9,6 +9,7 @@
 #include "http_parser.h"
 #include "HttpHeader.hpp"
 #include "ByteArray.hpp"
+#include "HttpCookie.hpp"
 
 namespace obotcha {
 
@@ -83,13 +84,14 @@ public:
 
     String genHttpString();
 
-    
 
 private:
     String mUrl;
     
     HttpHeader mHeader;
     
+    HttpCookie mCookie;
+
     ByteArray mBody;
 
     String mReason;

@@ -21,6 +21,7 @@ public:
     virtual WebSocketHeader parseHeader() = 0;
     virtual ByteArray parseContent() = 0;
     virtual ByteArray parsePingBuff() = 0;
+    virtual ByteArray parsePongBuff() = 0;
  
 protected:
     ByteArray mData;

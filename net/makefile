@@ -17,6 +17,7 @@ link += inetaddress \
 		httpresponse \
 		httppacket \
 		httpresponsewriter \
+		httpcookie \
 		websocketserver \
 		websocketprotocol \
 		websocketframecomposer \
@@ -24,6 +25,7 @@ link += inetaddress \
 		websocketparser \
 		websockethybi13parser \
 		websocketclient \
+		
 
 
 objs += $(outtmp)/inetaddress.o \
@@ -43,6 +45,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpresponse.o \
 		$(outtmp)/httppacket.o \
 		$(outtmp)/httpresponsewriter.o \
+		$(outtmp)/httpcookie.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketprotocol.o \
 		$(outtmp)/websocketframecomposer.o \
@@ -86,6 +89,9 @@ httpurlparser :$(netDir)/HttpUrlParser.cpp
 
 httpurl :$(netDir)/HttpUrl.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpUrl.cpp -o $(outtmp)/httpurl.o $(external)
+
+httpcookie :$(netDir)/HttpCookie.cpp
+	$(gcc) $(cflags) -c $(netDir)/HttpCookie.cpp -o $(outtmp)/httpcookie.o $(external)
 
 httpheader :$(netDir)/HttpHeader.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpHeader.cpp -o $(outtmp)/httpheader.o $(external)

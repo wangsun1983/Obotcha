@@ -10,6 +10,7 @@
 #include "ArrayList.hpp"
 #include "http_parser.h"
 #include "HashMap.hpp"
+#include "HttpCookie.hpp"
 
 namespace obotcha {
 
@@ -116,14 +117,26 @@ DECLARE_SIMPLE_CLASS(HttpHeader) {
 
 public:
     _HttpHeader();
+    
     static String getHeaderString(int header);
+    
     void setValue(int,String);
+    
     String getValue(int);
+
     MapIterator<Integer,String> getIterator();
+
+    void addCookie(HttpCookie);
+
+    ArrayList<HttpCookie> getCookies();
+
+    String genHtml();
 
 private:
     static String mHeaderList[];
     HashMap<Integer,String> mValues;
+
+    ArrayList<HttpCookie> mCookies;
 };
 
 }
