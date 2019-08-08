@@ -21,7 +21,6 @@ cflags = -fpic \
 		-I ./external/zlib/include \
 		-I ./external/ccl/include \
 		-I ./external/yaml/include \
-		-I ./external/crc32/include \
 		-I ./external/openssl/include \
 		-I ./external/sqlite3/include \
 		-I ./external/http_parser/include \

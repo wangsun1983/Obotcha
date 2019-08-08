@@ -21,6 +21,14 @@ enum DesMode {
     DesDecrypt = DES_DECRYPT
 };
 
+enum DesFailReason {
+    DesGenKeyFail = 200,
+    DesSaveKeyFail,
+    DesNotExistFail,
+    DesFileOpenFail,
+    DesWrongParamFail,
+};
+
 DECLARE_SIMPLE_CLASS(Des) {
 
 public:
@@ -29,34 +37,32 @@ public:
     _Des();
 
     void encrypt(File src,File des);
-
-    ByteArray encrypt(ByteArray);
-
     void decrypt(File src,File des);
-
+    
+    ByteArray encrypt(ByteArray);
     ByteArray decrypt(ByteArray);
 
     String decrypt(String str);
 
     String encrypt(String str);
 
-    void genKey(File);
+    int genKey(File);
 
-    void genKey(String filepath);
+    int genKey(String filepath);
 
-    void genKey(const char * filepath);
+    int genKey(const char * filepath);
 
-    void genKey(File,String content);
+    int genKey(File,String content);
 
-    void genKey(String filepath,String content);
+    int genKey(String filepath,String content);
 
-    void genKey(const char * filepath,String content);
+    int genKey(const char * filepath,String content);
 
-    void loadKey(File);
+    int loadKey(File);
 
-    void loadKey(String);
+    int loadKey(String);
 
-    void loadKey(const char *);
+    int loadKey(const char *);
 
 private:
 
@@ -68,11 +74,11 @@ private:
 
     ByteArray _desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *ivec,int mode);
 
-    void _genKey(String content);
+    int _genKey(String content);
 
-    void _genKey();
+    int _genKey();
 
-    void _saveKey(String filepath);
+    int _saveKey(String filepath);
     
     DES_cblock mKey;
 

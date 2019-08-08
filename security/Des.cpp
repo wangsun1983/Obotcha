@@ -27,13 +27,15 @@ void _Des::encrypt(File src,File des) {
 
     //calcute size for 8 byte
     long inputSize = src->length();
+    //printf("encrypt file inputsize is %d \n",inputSize);
+    
     long length = (inputSize%8 == 0)?(inputSize + 8):(inputSize/8)*8 + 8;
     ByteArray inputData = createByteArray(length);
     inputStream->readAll(inputData);
 
     //we should fill the last 8 byte data;
     if(inputSize%8 == 0) {
-        char *lastData = inputData->toValue() + (inputData->size() - 1) - 8;
+        char *lastData = inputData->toValue() + (inputData->size()) - 8;
         memset(lastData,0,8);
     } else {
         int padding = inputSize%8;
@@ -142,49 +144,90 @@ ByteArray _Des::decrypt(ByteArray input) {
     return nullptr;
 }
 
-void _Des::genKey(File file) {
-    _genKey();
-    _saveKey(file->getAbsolutePath());
+int _Des::genKey(File file) {
+    if(file == nullptr) {
+        return -DesWrongParamFail;
+    }
+
+    if(_genKey() != 0){
+        return -DesGenKeyFail;
+    }
+
+    return _saveKey(file->getAbsolutePath());
 }
 
-void _Des::genKey(String filepath) {
-    _genKey();
-    _saveKey(filepath);
+int _Des::genKey(String filepath) {
+    if(filepath == nullptr) {
+        return -DesWrongParamFail;
+    }
+
+    if(_genKey() != 0) {
+        return -DesGenKeyFail;
+    }
+
+    return _saveKey(filepath);
 }
 
-void _Des::genKey(const char * filepath) {
-    _genKey();
-    _saveKey(createString(filepath));
+int _Des::genKey(const char * filepath) {
+    if(filepath == nullptr) {
+        return -DesWrongParamFail;
+    }
+
+    if(_genKey() != 0) {
+        return -DesGenKeyFail;
+    }
+
+    return _saveKey(createString(filepath));
 }
 
-void _Des::genKey(File file,String content) {
-    _genKey(content);
-    _saveKey(file->getAbsolutePath());
+int _Des::genKey(File file,String content) {
+    if(file == nullptr || content == nullptr) {
+        return -DesWrongParamFail;
+    }
+
+    if(_genKey(content) != 0) {
+        return -DesGenKeyFail;
+    }
+
+    return _saveKey(file->getAbsolutePath());
 }
 
-void _Des::genKey(String filepath,String content) {
-    _genKey(content);
-    _saveKey(filepath);
+int _Des::genKey(String filepath,String content) {
+    if(filepath == nullptr || content == nullptr) {
+        return -DesWrongParamFail;
+    }
+
+    if(_genKey(content) != 0) {
+        return -DesGenKeyFail;
+    }
+
+    return _saveKey(filepath);
 }
 
-void _Des::genKey(const char * filepath,String content) {
-    _genKey(content);
-    _saveKey(createString(filepath));
+int _Des::genKey(const char * filepath,String content) {
+    if(filepath == nullptr || content == nullptr) {
+        return -DesWrongParamFail;
+    }
+
+    if(_genKey(content) != 0) {
+        return -DesGenKeyFail;
+    }
+
+    return _saveKey(createString(filepath));
 }
 
-void _Des::loadKey(File file) {
-    loadKey(file->getAbsolutePath()->toChars());
+int _Des::loadKey(File file) {
+    return loadKey(file->getAbsolutePath()->toChars());
 }
 
-void _Des::loadKey(String filepath) {
-    loadKey(filepath->toChars());
+int _Des::loadKey(String filepath) {
+    return loadKey(filepath->toChars());
 }
 
-void _Des::loadKey(const char *filepath) {
+int _Des::loadKey(const char *filepath) {
     FILE *key_file = fopen(filepath, "rb");
     if (!key_file) {
-        //printf("loadKey trace2 \n");
-        return;
+        return -DesNotExistFail;
     }
 
     short int bytes_read;
@@ -193,17 +236,17 @@ void _Des::loadKey(const char *filepath) {
     bytes_read = fread(&mKey, sizeof(unsigned char), DES_KEY_SIZE, key_file);
     if (bytes_read != DES_KEY_SIZE) {
         fclose(key_file);
-        //free(des_key);
-        //printf("trace3 \n");
-        return;
+        return -DesFileOpenFail;
     }
     
     fclose(key_file);
+    return 0;
 }
 
 ByteArray _Des::_desECB(ByteArray data,DES_key_schedule *schedule,int mode) {
     int inputSize = data->size();
 
+    //printf("input size is %d \n",inputSize);
     int length = (inputSize%8 == 0)?inputSize:(inputSize/8)*8 + 8;
     
     ByteArray out = createByteArray(length);
@@ -253,25 +296,32 @@ ByteArray _Des::_desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *iv
     return out;
 }
 
-void _Des::_genKey(String content) {
+int _Des::_genKey(String content) {
     DES_string_to_key(content->toChars(), &mKey);
+    return 0;
 }
 
-void _Des::_genKey() {
-    DES_random_key(&mKey);
+int _Des::_genKey() {
+    if(DES_random_key(&mKey) == 0) {
+        return -1;
+    }
+
+    return  0;
 }
 
-void _Des::_saveKey(String filepath) {
+int _Des::_saveKey(String filepath) {
     FILE *key_file = fopen(filepath->toChars(), "wb");
+    if(key_file == nullptr) {
+        return -DesSaveKeyFail;
+    }
     short int bytes_written = fwrite(&mKey, 1, DES_KEY_SIZE, key_file);
     if (bytes_written != DES_KEY_SIZE) {
         fclose(key_file);
-        //free(des_key);
-        return;
+        return -DesSaveKeyFail;
     }
 
-    //free(des_key);
     fclose(key_file);
+    return 0;
 }
 
 }

@@ -1,7 +1,7 @@
 #ifndef __CRC32_HPP__
 #define __CRC32_HPP__
 
-#include "crc32c/crc32c.h"
+#include "zlib.h"
 
 #include "ByteArray.hpp"
 #include "String.hpp"
