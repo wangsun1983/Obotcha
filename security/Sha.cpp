@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <openssl/sha.h>
+#include <openssl/crypto.h>
 
-
+#include "FileInputStream.hpp"
 #include "Sha.hpp"
 
 namespace obotcha {
@@ -13,114 +14,171 @@ _Sha::_Sha(int type) {
 }
 
 String _Sha::encrypt(String str) {
-    unsigned char encryptData[SHA_DIGEST_LENGTH] = {0};
+    unsigned char *data;
+    int length;
+
     switch(mType) {
-        case AbstractSHA1:
+        case SHA_1: {
+            unsigned char encryptData[SHA_DIGEST_LENGTH] = {0};
             calc_stringSHA1(str->toChars(),str->size(),encryptData);
+            data = encryptData;
+            length = SHA_DIGEST_LENGTH;
+        }
         break;
 
-        case AbstractSHA224:
+        case SHA_224: {
+            unsigned char encryptData[SHA224_DIGEST_LENGTH] = {0};
             calc_stringSHA224(str->toChars(),str->size(),encryptData);
+            data = encryptData;
+            length = SHA224_DIGEST_LENGTH;
+        }
         break;
 
-        case AbstractSHA256:
+        case SHA_256: {
+            unsigned char encryptData[SHA256_DIGEST_LENGTH] = {0};
             calc_stringSHA256(str->toChars(),str->size(),encryptData);
+            data = encryptData;
+            length = SHA256_DIGEST_LENGTH;
+        }
         break;
 
-        case AbstractSHA384:
+        case SHA_384: {
+            unsigned char encryptData[SHA384_DIGEST_LENGTH] = {0};
             calc_stringSHA384(str->toChars(),str->size(),encryptData);
+            data = encryptData;
+            length = SHA384_DIGEST_LENGTH;
+        }
         break;
 
-        case AbstractSHA512:
+        case SHA_512: {
+            unsigned char encryptData[SHA512_DIGEST_LENGTH] = {0};
             calc_stringSHA512(str->toChars(),str->size(),encryptData);
+            data = encryptData;
+            length = SHA512_DIGEST_LENGTH;
+        }
         break;
     }
 
-    return convert(encryptData,SHA_DIGEST_LENGTH);
+    return convert(data,length);
 }
 
 ByteArray _Sha::encryptRawData(ByteArray data) {
-    unsigned char encryptData[SHA_DIGEST_LENGTH] = {0};
-    printf("wangsl,encrypt raw data1 \n");
+    unsigned char *encdata;
+    int length;
+
     switch(mType) {
-        case AbstractSHA1:
+        case SHA_1: {
+            unsigned char encryptData[SHA_DIGEST_LENGTH] = {0};
             calc_stringSHA1(data->toValue(),data->size(),encryptData);
+            encdata = encryptData;
+            length = SHA_DIGEST_LENGTH;
+        }
         break;
 
-        case AbstractSHA224:
+        case SHA_224: {
+            unsigned char encryptData[SHA224_DIGEST_LENGTH] = {0};
             calc_stringSHA224(data->toValue(),data->size(),encryptData);
+            encdata = encryptData;
+            length = SHA224_DIGEST_LENGTH;
+        }
         break;
 
-        case AbstractSHA256:
+        case SHA_256: {
+            unsigned char encryptData[SHA256_DIGEST_LENGTH] = {0};
             calc_stringSHA256(data->toValue(),data->size(),encryptData);
+            encdata = encryptData;
+            length = SHA256_DIGEST_LENGTH;
+        }
         break;
 
-        case AbstractSHA384:
+        case SHA_384: {
+            unsigned char encryptData[SHA384_DIGEST_LENGTH] = {0};
             calc_stringSHA384(data->toValue(),data->size(),encryptData);
+            encdata = encryptData;
+            length = SHA384_DIGEST_LENGTH;
+        }
         break;
 
-        case AbstractSHA512:
+        case SHA_512: {
+            unsigned char encryptData[SHA512_DIGEST_LENGTH] = {0};
             calc_stringSHA512(data->toValue(),data->size(),encryptData);
+            encdata = encryptData;
+            length = SHA512_DIGEST_LENGTH;
+        }
         break;
     }
-    printf("wangsl,encrypt raw data2 \n");
-    return createByteArray((char *)encryptData,SHA_DIGEST_LENGTH);
+    return createByteArray((char *)encdata,length);
 }
 
 String _Sha::encrypt(File file) {
-    unsigned char encryptData[SHA_DIGEST_LENGTH] = {0};
+    unsigned char *encdata;
+    int length;
+
     switch(mType) {
-        case AbstractSHA1:
+        case SHA_1: {
+            unsigned char encryptData[SHA_DIGEST_LENGTH] = {0};
             calc_fileSHA1(file->getAbsolutePath()->toChars(),encryptData);
+            encdata = encryptData;
+            length = SHA_DIGEST_LENGTH;
+        }
         break;
 
-        case AbstractSHA224:
+        case SHA_224: {
+            unsigned char encryptData[SHA224_DIGEST_LENGTH] = {0};
             calc_fileSHA224(file->getAbsolutePath()->toChars(),encryptData);
+            encdata = encryptData;
+            length = SHA224_DIGEST_LENGTH;
+        }
         break;
 
-        case AbstractSHA256:
+        case SHA_256: {
+            unsigned char encryptData[SHA256_DIGEST_LENGTH] = {0};
             calc_fileSHA256(file->getAbsolutePath()->toChars(),encryptData);
+            encdata = encryptData;
+            length = SHA256_DIGEST_LENGTH;
+        }
         break;
 
-        case AbstractSHA384:
+        case SHA_384: {
+            unsigned char encryptData[SHA384_DIGEST_LENGTH] = {0};
             calc_fileSHA384(file->getAbsolutePath()->toChars(),encryptData);
+            encdata = encryptData;
+            length = SHA384_DIGEST_LENGTH;
+        }
         break;
 
-        case AbstractSHA512:
+        case SHA_512: {
+            unsigned char encryptData[SHA512_DIGEST_LENGTH] = {0};
             calc_fileSHA512(file->getAbsolutePath()->toChars(),encryptData);
+            encdata = encryptData;
+            length = SHA512_DIGEST_LENGTH;
+        }
         break;
     }
 
-    return convert(encryptData,SHA_DIGEST_LENGTH);
+    return convert(encdata,length);
 }
 
 void _Sha::calc_fileSHA1(const char *filename,unsigned char *dgst) {
 
     SHA_CTX ctx;
-    char buf[4096] = {0};
-    int len = 0;
-
+    
     if (NULL == filename || NULL == dgst) {
         printf("Input error...\n");
         return;
     }
 
-    FILE *fp = fopen(filename, "rb");
-    if (NULL == fp) {
-        printf("open file:%s error...\n", filename);
-        return;
-    }
-
     SHA1_Init(&ctx);
     
-    while ((len = fread(buf, 1, 4096, fp)) > 0) {
-        SHA1_Update(&ctx, buf, len);
-        memset(buf, 0, len);
-    }
+    File file = createFile(filename);
+    FileInputStream inputstream = createFileInputStream(file);
+    inputstream->open();
 
+    ByteArray content = inputstream->readAll();
+    SHA1_Update(&ctx, content->toValue(), content->size());
+    inputstream->close();
+    
     SHA1_Final(dgst, &ctx);
-
-    fclose(fp);
 }
 
 void _Sha::calc_fileSHA224(const char *filename,unsigned char *dgst) {

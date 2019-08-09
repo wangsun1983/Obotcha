@@ -20,7 +20,7 @@
 namespace obotcha {
 
 _WebSocketFrameComposer::_WebSocketFrameComposer(bool isclient) {
-    mSha = createSha(AbstractSHA1);
+    mSha = createSha(SHA_1);
     mBase64 = createBase64();
     mIsClient = isclient;
 }

@@ -16,65 +16,73 @@ namespace obotcha {
 //static const unsigned char default_iv[] =
 //    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
+_Aes::_Aes() {
+    mType = AesTypeECB;
+}
+
 _Aes::_Aes(int aestype) {
     mType = aestype;
 }
 
-void _Aes::genKey(String filepath,int mode) {
-    _genKey(mode);
-    _saveKey(filepath,mode);
-}
-
-void _Aes::genKey(const char * filepath,int mode) {
-    _genKey(mode);
-    _saveKey(createString(filepath),mode);
-}
-
-void _Aes::genKey(File file,String content,int mode) {
-    _genKey(content,mode);
-    _saveKey(file->getAbsolutePath(),mode);
-}
-
-void _Aes::genKey(String filepath,String content,int mode) {
-    _genKey(content,mode);
-    _saveKey(filepath,mode);
-}
-
-void _Aes::genKey(const char * filepath,String content,int mode) {
-    _genKey(content,mode);
-    _saveKey(createString(filepath),mode);
-}
-
-void _Aes::loadKey(File file,int mode) {
-    loadKey(file->getAbsolutePath(),mode);
-}
-
-void _Aes::loadKey(String path,int mode) {
-    loadKey(path->toChars(),mode);
-}
-
-void _Aes::loadKey(const char *filepath,int mode) {
-    FILE *key_file = fopen(filepath, "rb");
-    if (!key_file) {
-        return;
+int _Aes::genKey(String decKeyFile,String encKeyFile) {
+    int result = _genKey();
+    if(result != 0) {
+        return result;
     }
     
+    result = _saveKey(encKeyFile,AesEncrypt);
+    result = _saveKey(decKeyFile,AesDecrypt);
+
+    return result;
+}
+
+int _Aes::genKey(String decKeyFile,String encKeyFile,String content) {
+    int result = _genKey(content);
+    if(result != 0) {
+        return result;
+    }
+
+    result = _saveKey(encKeyFile,AesEncrypt);
+    result = _saveKey(decKeyFile,AesDecrypt);
+
+    return result;
+}
+
+int _Aes::loadKey(File file,int mode) {
+    return loadKey(file->getAbsolutePath(),mode);
+}
+
+int _Aes::loadKey(String path,int mode) {
+    return loadKey(path->toChars(),mode);
+}
+
+int _Aes::loadKey(const char *filepath,int mode) {
+    FILE *key_file = fopen(filepath, "rb");
+    if (!key_file) {
+        return -AesFailKeyNotExits;
+    }
+    
+    int size = 0;
     switch(mode) {
         case AES_ENCRYPT:
-            fread(&mEncryptKey, 1, sizeof(AES_KEY), key_file);
+            size = fread(&mEncryptKey, 1, sizeof(AES_KEY), key_file);
         break;
 
         case AES_DECRYPT:
-            fread(&mDecryptKey, 1, sizeof(AES_KEY), key_file);
+            size = fread(&mDecryptKey, 1, sizeof(AES_KEY), key_file);
         break;
     }
     
     fclose(key_file);
+
+    if(size <= 0) {
+        return -AesFailKeyReadError;
+    }
+
+    return 0;
 }
 
 void _Aes::decrypt(File src,File des) {
-    //printf("wangsl,decrypt 1 \n");
-    //printf("src path is %s,des path is %s \n",src->getAbsolutePath()->toChars(),des->getAbsolutePath()->toChars());
     if(!des->exists()) {
         des->createNewFile();
     }
@@ -227,7 +235,7 @@ ByteArray _Aes::decrypt(ByteArray buff) {
     return nullptr;
 }
 
-void _Aes::_genKey(String content,int mode) {
+int _Aes::_genKey(String content) {
     const char *c = content->toChars();
     char keyBuff[AES_BLOCK_SIZE + 1];
     memset(keyBuff,0,AES_BLOCK_SIZE + 1);
@@ -238,46 +246,54 @@ void _Aes::_genKey(String content,int mode) {
         memcpy(keyBuff,c,content->size());
     }
 
-    switch(mode) {
-        case AES_ENCRYPT:
-            AES_set_encrypt_key((const unsigned char*)keyBuff,128,&mEncryptKey);
-        break;
-
-        case AES_DECRYPT:
-            AES_set_decrypt_key((const unsigned char*)keyBuff,128,&mDecryptKey);
-        break;
+    if(AES_set_encrypt_key((const unsigned char*)keyBuff,128,&mEncryptKey) != 0) {
+        return -AesFailGenEncrypteKey;
     }
+
+    if(AES_set_decrypt_key((const unsigned char*)keyBuff,128,&mDecryptKey) != 0) {
+        return -AesFailGenDecrypteKey;
+    }
+
+    return 0;
+
 }
 
-void _Aes::_genKey(int mode) {
+int _Aes::_genKey() {
     UUID uuid = createUUID();
     const char *c = uuid->toValue()->toChars();
     
-    switch(mode) {
-        case AES_ENCRYPT:
-            AES_set_encrypt_key((const unsigned char*)c,128,&mEncryptKey);
-        break;
-
-        case AES_DECRYPT:
-            AES_set_decrypt_key((const unsigned char*)c,128,&mDecryptKey);
-        break;
+    if(AES_set_encrypt_key((const unsigned char*)c,128,&mEncryptKey) != 0) {
+        return -AesFailGenEncrypteKey;
     }
+
+    if(AES_set_decrypt_key((const unsigned char*)c,128,&mDecryptKey) != 0) {
+        return -AesFailGenDecrypteKey;
+    }
+
+    return 0;
 }
 
-void _Aes::_saveKey(String filepath,int mode) {
+int _Aes::_saveKey(String filepath,int mode) {
     FILE *key_file = fopen(filepath->toChars(), "wb");
     short int bytes_written = 0;
+    int size = 0;
     switch(mode) {
         case AES_ENCRYPT:
-            fwrite(&mEncryptKey, 1, sizeof(AES_KEY), key_file);
+            size = fwrite(&mEncryptKey, 1, sizeof(AES_KEY), key_file);
         break;
 
         case AES_DECRYPT:
-            fwrite(&mDecryptKey, 1, sizeof(AES_KEY), key_file);
+            size = fwrite(&mDecryptKey, 1, sizeof(AES_KEY), key_file);
         break;
     }
     
     fclose(key_file);
+
+    if(size <= 0) {
+        return  -1;
+    }
+    
+    return 0;
 }
 
 ByteArray _Aes::_aesECB(ByteArray data,int mode) {

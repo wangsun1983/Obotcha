@@ -8,11 +8,11 @@
 namespace obotcha {
 
 enum ShaAbstractType {
-    AbstractSHA1,
-    AbstractSHA224,
-    AbstractSHA256,
-    AbstractSHA384,
-    AbstractSHA512,
+    SHA_1,
+    SHA_224,
+    SHA_256,
+    SHA_384,
+    SHA_512,
 };
 
 DECLARE_SIMPLE_CLASS(Sha) {

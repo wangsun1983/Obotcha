@@ -19,20 +19,23 @@ enum DesMode {
     AesDecrypt = AES_DECRYPT
 };
 
+enum AesFailReason {
+    AesFailGenEncrypteKey = 200,
+    AesFailGenDecrypteKey,
+    AesFailKeyNotExits,
+    AesFailKeyReadError,
+};
+
 DECLARE_SIMPLE_CLASS(Aes) {
 
 public:
+    _Aes();
+    
     _Aes(int);
 
-    void genKey(String filepath,int mode);
+    int genKey(String decKeyFile,String encKeyFile);
 
-    void genKey(const char * filepath,int mode);
-
-    void genKey(File,String content,int mode);
-
-    void genKey(String filepath,String content,int mode);
-
-    void genKey(const char * filepath,String content,int mode);
+    int genKey(String decKeyFile,String encKeyFile,String content);
 
     String decrypt(String str);
 
@@ -44,11 +47,11 @@ public:
     void decrypt(File src,File des);
     ByteArray decrypt(ByteArray buff);
 
-    void loadKey(File,int);
+    int loadKey(File,int);
 
-    void loadKey(String,int);
+    int loadKey(String,int);
 
-    void loadKey(const char *,int);
+    int loadKey(const char *,int);
 
 private:
 
@@ -58,11 +61,11 @@ private:
 
     AES_KEY mDecryptKey;
 
-    void _genKey(String content,int mode);
+    int _genKey(String content);
 
-    void _genKey(int);
+    int _genKey();
 
-    void _saveKey(String filepath,int mode);
+    int _saveKey(String filepath,int mode);
 
     ByteArray _aesECB(ByteArray data,int mode);
 
