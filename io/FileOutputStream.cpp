@@ -10,6 +10,10 @@ _FileOutputStream::_FileOutputStream(String path) {
     mPath = createString(path);
 }
 
+_FileOutputStream::_FileOutputStream(const char *path) {
+    mPath = createString(path);
+}
+
 bool _FileOutputStream::write(char c) {
     fstream << c;
     return true;
@@ -17,7 +21,7 @@ bool _FileOutputStream::write(char c) {
     
 bool _FileOutputStream::write(ByteArray buff) {
     char *p = buff->toValue();
-    printf("write %s,size is %d \n",p,buff->size());
+    //printf("write %s,size is %d \n",p,buff->size());
     
     
     fstream.write(buff->toValue(),buff->size());
@@ -26,7 +30,7 @@ bool _FileOutputStream::write(ByteArray buff) {
 
 bool _FileOutputStream::write(ByteArray buff,long size) {
     char *p = buff->toValue();
-    printf("write %s,size is %d \n",p,buff->size());
+    //printf("write %s,size is %d \n",p,buff->size());
     
     
     fstream.write(buff->toValue(),size);
@@ -44,11 +48,11 @@ bool _FileOutputStream::open() {
 
 bool _FileOutputStream::open(FileOpenType opentype) {
     switch(opentype) {
-        case Append:
+        case FileOpenType::Append:
             fstream.open(mPath->toChars(),std::ios::app);
         break;
 
-        case Trunc:
+        case FileOpenType::Trunc:
             fstream.open(mPath->toChars(),std::ios::trunc);
         break;
     }

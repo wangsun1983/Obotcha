@@ -28,8 +28,8 @@ public:
     void setDomain(String);
     String getDomain();
 
-    void setExpires(String);
-    String getExpires();
+    void setExpires(long millsconds);
+    long getExpires();
 
     void setRawExpres(String);
     String getRawExpires();
@@ -63,6 +63,8 @@ private:
     String mDomain;            // optional
     String mExpires;           // optional
     String mRawExpires;        // for reading cookies only
+
+    long mExpiresMillseocnds;
 
     // MaxAge=0 means no 'Max-Age' attribute specified.
     // MaxAge<0 means delete cookie now, equivalently 'Max-Age: 0'

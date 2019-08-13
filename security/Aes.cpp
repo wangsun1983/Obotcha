@@ -95,94 +95,45 @@ void _Aes::decrypt(File src,File des) {
         ByteArray outputData = decrypt(inputData);
         FileOutputStream outputStream = createFileOutputStream(des);
         outputStream->open(FileOpenType::Trunc);
-
-        //we should check last 8byte
-        char *checkP = outputData->toValue();
-        printf("decrypt checkP is %s \n",checkP);
-        int length = outputData->size();
-
-        int padding = 0;
-        if(checkP[(length-1)] != 0) {
-            padding = checkP[(length-1)];
-        }
-        printf("padding is %d \n",padding);
-                
-        if(padding == 0) {
-            outputStream->write(outputData,length - AES_BLOCK_SIZE);
-        } else {
-            outputStream->write(outputData,length - AES_BLOCK_SIZE + padding);
-        }
-
+        outputStream->write(outputData,outputData->size());
+        
         //outputStream->write(outputData);
         outputStream->flush();
         outputStream->close();
     }
 }
 
-
-String _Aes::decrypt(String str) {
-    ByteArray result;
-
-    switch(mType) {
-        case AesTypeECB:
-        printf("encrypt ecb \n");
-            result = _aesECB(createByteArray(str),AES_DECRYPT);
-        break;
-
-        case AesTypeCBC:
-        printf("encrypt cbc \n");
-            unsigned char default_iv[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            result = _aesCBC(createByteArray(str),default_iv,AES_DECRYPT);
-        break;
-    }
-
-    char *p = result->toValue();
-    return createString(p);
-}
-
-
 void _Aes::encrypt(File src,File des) {
-    //printf("wangsl,decrypt 1 \n");
-    printf("wangsl,encrypt 1 \n");
-    printf("encrypt src path is %s,des path is %s \n",src->getAbsolutePath()->toChars(),des->getAbsolutePath()->toChars());
     
     if(!des->exists()) {
         des->createNewFile();
     }
-
+    
     FileInputStream inputStream = createFileInputStream(src);
     inputStream->open();
-    //calcute size for 8 byte
-    long inputSize = src->length();
-    long length = (inputSize%AES_BLOCK_SIZE == 0)?(inputSize + AES_BLOCK_SIZE):(inputSize/AES_BLOCK_SIZE)*AES_BLOCK_SIZE + AES_BLOCK_SIZE;
-    ByteArray inputData = createByteArray(length);
-    inputStream->readAll(inputData);
+    ByteArray inputData = inputStream->readAll();
+    ByteArray outData;
+    switch(mType) {
+        case AesTypeECB:
+            outData = _aesECB(inputData,AES_ENCRYPT);
+        break;
 
-    if(inputSize%AES_BLOCK_SIZE == 0) {
-        char *lastData = inputData->toValue() + (inputData->size() - 1) - AES_BLOCK_SIZE;
-        memset(lastData,0,AES_BLOCK_SIZE);
-        printf("encrypt padding is %d \n",0);
-    } else {
-        int padding = inputSize%AES_BLOCK_SIZE;
-        printf("encrypt padding is %d \n",padding);
-        char *lastData = inputData->toValue() + inputData->size()  - AES_BLOCK_SIZE + padding;
-        memset(lastData,(char)padding,AES_BLOCK_SIZE-padding);
+        case AesTypeCBC:
+            unsigned char default_iv[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            outData = _aesCBC(inputData,default_iv,AES_ENCRYPT);
+        break;
     }
-    //ByteArray inputData = inputStream->readAll();
-    printf("encrypt inputData size is %d \n",inputData->size());
 
-    if(inputData != nullptr) {
-        ByteArray outputData = encrypt(inputData);
-        printf("encrypt outputData size is %d \n",outputData->size());
+    if(outData != nullptr) {
         FileOutputStream outputStream = createFileOutputStream(des);
         outputStream->open(FileOpenType::Trunc);
-        outputStream->write(outputData);
+        outputStream->write(outData);
         outputStream->flush();
         outputStream->close();
     }
 }
 
-String _Aes::encrypt(String str) {
+ByteArray _Aes::encrypt(String str) {
     printf("ase encrypt str\n");
     ByteArray result;
 
@@ -197,20 +148,19 @@ String _Aes::encrypt(String str) {
         break;
     }
 
-    char *p = result->toValue();
-    return createString(p);
+    return result;
 }
     
 ByteArray _Aes::encrypt(ByteArray buff) {
-    printf("ase encrypt buff\n");
+    //printf("ase encrypt buff\n");
     switch(mType) {
         case AesTypeECB:
-            printf("ase encrypt buff1\n");
+            //printf("ase encrypt buff1\n");
             return _aesECB(buff,AES_ENCRYPT);
         break;
 
         case AesTypeCBC:
-            printf("ase encrypt buff2\n");
+            //printf("ase encrypt buff2\n");
             unsigned char default_iv[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             return _aesCBC(buff,default_iv,AES_ENCRYPT);
             //return buff;
@@ -297,38 +247,115 @@ int _Aes::_saveKey(String filepath,int mode) {
 }
 
 ByteArray _Aes::_aesECB(ByteArray data,int mode) {
-    unsigned char *in = (unsigned char *)data->toValue();
-    ByteArray outData = createByteArray(data->size());
-    unsigned char *out = (unsigned char *)outData->toValue();
-    switch(mode) {
-        case AES_ENCRYPT:
-            AES_ecb_encrypt(in,out,&mEncryptKey,AES_ENCRYPT);
-        break;
+    int inputSize = data->size();
 
-        case AES_DECRYPT:
-            AES_ecb_encrypt(in,out,&mDecryptKey,AES_DECRYPT);
-        break;
+    switch(mode) {
+        case AES_ENCRYPT: {
+            //printf("input size is %d \n",inputSize);
+            int length = (inputSize%AES_BLOCK_SIZE == 0)?inputSize + AES_BLOCK_SIZE:(inputSize/AES_BLOCK_SIZE)*AES_BLOCK_SIZE + AES_BLOCK_SIZE;
+    
+            ByteArray out = createByteArray(length);
+            ByteArray in = createByteArray(data->toValue(),length);
+
+            char *output = out->toValue();
+            char *input = in->toValue();
+            //we should fill the last 8 byte data;
+            if(inputSize%AES_BLOCK_SIZE == 0) {
+                char *lastData = input + length - AES_BLOCK_SIZE;
+                memset(lastData,0,AES_BLOCK_SIZE);
+            } else {
+                int padding = inputSize%AES_BLOCK_SIZE;
+                char *lastData = input + inputSize;
+                //printf("inputsize is %d,padding is %d,offset is %d \n",inputSize,padding,length  - AES_BLOCK_SIZE + padding);
+                memset(lastData,(char)padding,AES_BLOCK_SIZE-padding);
+            }
+
+            for(int i = 0; i < length/AES_BLOCK_SIZE; i++){
+                //memcpy(input,input,AES_BLOCK_SIZE);
+                AES_ecb_encrypt((unsigned char*)input,(unsigned char*)output,&mEncryptKey,AES_ENCRYPT);
+                input += AES_BLOCK_SIZE;
+                output += AES_BLOCK_SIZE;
+            }
+
+            return out;
+        }
+
+        case AES_DECRYPT: {
+            //printf("AES_DECRYPT!!! inputSize is %d \n",inputSize);
+            ByteArray out = createByteArray(inputSize);
+            char *input = data->toValue();
+            char *output = out->toValue();
+            for(int i = 0;i<inputSize/AES_BLOCK_SIZE;i++) {
+                AES_ecb_encrypt((unsigned char *)input,(unsigned char *)output,&mDecryptKey,AES_DECRYPT);
+                input+= AES_BLOCK_SIZE;
+                output += AES_BLOCK_SIZE;
+            }
+
+            int padding = 0;
+            if(out->toValue()[(inputSize-1)] != 0) {
+                padding = out->toValue()[(inputSize-1)];
+            }
+            //printf("AES_DECRYPT!!! padding is %d \n",padding);
+                
+            if(padding == 0) {
+                out->qucikShrink(inputSize - AES_BLOCK_SIZE);
+            } else {
+                //printf("padding is %d,inputsize is %d,AES_BLOCK is %d \n",padding,inputSize,AES_BLOCK_SIZE);
+                out->qucikShrink(inputSize - AES_BLOCK_SIZE + padding);
+            }
+
+            return out;
+        }
+
     }
     
-    return outData;
+    return nullptr;
+    
 }
 
 ByteArray _Aes::_aesCBC(ByteArray data,unsigned char *ivec,int mode) {
-    unsigned char *in = (unsigned char *)data->toValue();
-    printf("_aesCBC size is %d \n",data->size());
-    ByteArray outData = createByteArray(data->size());
-    unsigned char *out = (unsigned char *)outData->toValue();
+    int inputSize = data->size();
+    //int outputSize = inputSize%AES_BLOCK_SIZE?(inputSize/AES_BLOCK_SIZE + 1) * AES_BLOCK_SIZE : inputSize;
     switch(mode) {
-        case AES_ENCRYPT:
-            AES_cbc_encrypt(in,out,data->size(),&mEncryptKey,ivec,AES_ENCRYPT);
+        case AES_ENCRYPT:{
+            int length = (inputSize%AES_BLOCK_SIZE == 0)?inputSize + AES_BLOCK_SIZE:(inputSize/AES_BLOCK_SIZE)*AES_BLOCK_SIZE + AES_BLOCK_SIZE;
+    
+            ByteArray out = createByteArray(length);
+            ByteArray in = createByteArray(data->toValue(),length);
+
+            char *output = out->toValue();
+            char *input = in->toValue();
+            //we should fill the last 8 byte data;
+            if(inputSize%AES_BLOCK_SIZE == 0) {
+                char *lastData = input + length - AES_BLOCK_SIZE;
+                memset(lastData,0,AES_BLOCK_SIZE);
+            } else {
+                int padding = inputSize%AES_BLOCK_SIZE;
+                char *lastData = input + inputSize;
+                //printf("inputsize is %d,padding is %d,offset is %d \n",inputSize,padding,length  - AES_BLOCK_SIZE + padding);
+                memset(lastData,(char)padding,AES_BLOCK_SIZE-padding);
+            }
+
+            AES_cbc_encrypt((unsigned char *)input,(unsigned char *)output,length,&mEncryptKey,ivec,AES_ENCRYPT);
+            return out;
+        }
         break;
 
-        case AES_DECRYPT:
-            AES_cbc_encrypt(in,out,data->size(),&mDecryptKey,ivec,AES_DECRYPT);
+        case AES_DECRYPT:{
+            ByteArray out = createByteArray(inputSize);
+            char *output = out->toValue();
+            char *input = data->toValue();
+            AES_cbc_encrypt((unsigned char *)input,(unsigned char *)output,inputSize,&mDecryptKey,ivec,AES_DECRYPT);
+            int padding = output[inputSize - 1];
+
+            out->qucikShrink(inputSize - AES_BLOCK_SIZE + padding);
+            return out;
+        }
+            
         break;
     }
-    
-    return outData;
+
+    return nullptr;
 }
 
 }

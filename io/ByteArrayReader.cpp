@@ -109,20 +109,22 @@ int _ByteArrayReader::readByteArray(ByteArray d) {
         mResult = ByteArrayReadFail;
         return -1;
     }
-    printf("readByteArray \n");
+    //printf("readByteArray \n");
     
     int ss = mSize - mIndex;
     if(d->size() < ss) {
         memcpy(d->toValue(),&mDataP[mIndex],d->size());
-        printf("copy trace1 ,length is %d,mIndex is %d \n",d->size(),mIndex);
+        //printf("copy trace1 ,length is %d,mIndex is %d \n",d->size(),mIndex);
         mIndex += d->size();
+        return d->size();
     } else {
-        printf("copy trace2,ss is %d,mIndex is %d \n",ss,mIndex);
+        //printf("copy trace2,ss is %d,mIndex is %d \n",ss,mIndex);
         memcpy(d->toValue(),&mDataP[mIndex],ss);
         mIndex += ss;
+        return ss;
     }
 
-    return 0;
+    return -1;
 }
 
 int _ByteArrayReader::getIndex() {

@@ -3,6 +3,7 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "DateTime.hpp"
 
 namespace obotcha {
 
@@ -89,6 +90,8 @@ public:
     long int toTimeMillis();
 
     void setTime(long int msec);
+
+    DateTime getDateTime();
 
     static int caculateDayOfWeek(int y, int m, int d);
 

@@ -10,6 +10,13 @@ int _File::sFileStatusExit = 0;
 
 const String _File::gPathSeparator = createString("/");
 
+_File::_File(const char * s) {
+    mPath = createString(s);
+    mFileInfo = nullptr;
+    mExist = -1;
+}
+
+
 _File::_File(String path) {
     mPath = path;
     mFileInfo = nullptr;

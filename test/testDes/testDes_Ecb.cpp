@@ -21,7 +21,7 @@ int test_des_ecb() {
     //String encrypt(String str)/ String decrypt(String str);
     while(1) {
         Des des = createDes(DesTypeECB);
-        String testString = "hello world";
+        String testString = "hello worldaaaaaaaaaaaaaaaaaaaaaaaaa";
         des->loadKey("TestEcbKey.file");
         String t1 = des->encrypt(testString);
         if(t1 == nullptr) {
@@ -34,7 +34,7 @@ int test_des_ecb() {
             break;
         }
 
-        if(!t2->equals("hello world")) {
+        if(!t2->equals("hello worldaaaaaaaaaaaaaaaaaaaaaaaaa")) {
             printf("---[TestDesEcb Test {encrypt(String)/decrypt(String)} case3] [FAILED]--- \n");
             break;
         }

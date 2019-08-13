@@ -23,6 +23,8 @@ public:
         CreateFail
     };
 
+    _File(const char *);
+    
     _File(String path);
 
     _File();

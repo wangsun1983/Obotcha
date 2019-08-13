@@ -37,9 +37,7 @@ public:
 
     int genKey(String decKeyFile,String encKeyFile,String content);
 
-    String decrypt(String str);
-
-    String encrypt(String str);
+    ByteArray encrypt(String str);
     
     void encrypt(File src,File des);
     ByteArray encrypt(ByteArray buff);

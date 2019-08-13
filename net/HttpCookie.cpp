@@ -51,12 +51,12 @@ String _HttpCookie::getDomain() {
     return mDomain;
 }
 
-void _HttpCookie::setExpires(String v) {
-    mExpires = v;
+void _HttpCookie::setExpires(long v) {
+    mExpiresMillseocnds = v;
 }
 
-String _HttpCookie::getExpires() {
-    return mExpires;
+long _HttpCookie::getExpires() {
+    return mExpiresMillseocnds;
 }
 
 void _HttpCookie::setRawExpres(String v) {

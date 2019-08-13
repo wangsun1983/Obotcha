@@ -15,6 +15,9 @@ link += calendar \
 		math \
 		timewatcher \
 		stacktrace \
+		datetime \
+		datetimeformatter \
+		numberformatter \
 
 objs += $(outtmp)/calendar.o \
         $(outtmp)/timezone.o \
@@ -26,6 +29,9 @@ objs += $(outtmp)/calendar.o \
 		$(outtmp)/math.o \
 		$(outtmp)/timewatcher.o \
 		$(outtmp)/stacktrace.o \
+		$(outtmp)/datetime.o \
+		$(outtmp)/datetimeformatter.o \
+		$(outtmp)/numberformatter.o \
 
 calendar :$(utilDir)/Calendar.cpp
 	$(gcc) $(cflags) -c $(utilDir)/Calendar.cpp -o $(outtmp)/calendar.o
@@ -56,6 +62,15 @@ math :$(utilDir)/Math.cpp
 
 timewatcher :$(utilDir)/TimeWatcher.cpp
 	$(gcc) $(cflags) -c $(utilDir)/TimeWatcher.cpp -o $(outtmp)/timewatcher.o
+
+datetime :$(utilDir)/DateTime.cpp
+	$(gcc) $(cflags) -c $(utilDir)/DateTime.cpp -o $(outtmp)/datetime.o
+
+datetimeformatter :$(utilDir)/DateTimeFormatter.cpp
+	$(gcc) $(cflags) -c $(utilDir)/DateTimeFormatter.cpp -o $(outtmp)/datetimeformatter.o
+
+numberformatter :$(utilDir)/NumberFormatter.cpp
+	$(gcc) $(cflags) -c $(utilDir)/NumberFormatter.cpp -o $(outtmp)/numberformatter.o
 
 #base64 :$(utilDir)/Base64.cpp
 #	$(gcc) $(cflags) -c $(utilDir)/Base64.cpp -o $(outtmp)/base64.o

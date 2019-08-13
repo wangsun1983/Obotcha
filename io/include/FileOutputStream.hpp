@@ -19,6 +19,8 @@ public:
 
     _FileOutputStream(String path);
 
+    _FileOutputStream(const char *);
+
     bool write(char c);
     
     //bool write(char *buffer,int size);

@@ -38,7 +38,7 @@ int test_aes_key_load() {
         }
 
         File errFile = createFile("tt");
-        result = aes->loadKey(encFile,AesDecrypt);
+        result = aes->loadKey(errFile,AesDecrypt);
         if(result == 0) {
             printf("---[TestAes Test {Aes:loadKey(File,int)} case3] [FAILED]--- \n");
             break;   

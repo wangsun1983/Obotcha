@@ -602,4 +602,19 @@ int _Calendar::getMonthDays(int _month) {
     return _days[_month];
 }
 
+DateTime _Calendar::getDateTime() {
+    DateTime date = createDateTime(year,
+                                   month,
+                                   dayOfMonth,
+                                   hour,
+                                   minute,
+                                   second,
+                                   msec,
+                                   dayOfWeek,
+                                   dayOfMonth,
+                                   dayOfYear);
+
+    return date;                                   
+}
+
 }

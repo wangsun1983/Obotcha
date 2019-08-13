@@ -9,9 +9,20 @@
 
 using namespace obotcha;
 
+extern int test_sha1();
+extern int test_sha224();
+extern int test_sha256();
+extern int test_sha384();
+extern int test_sha512();
+
 int main() {
-    Sha sha1 = createSha(AbstractSHA1);
-    String abc = "hello world";
-    String result = sha1->encrypt(abc);
-    printf("sha1 is %s \n",result->toChars());
+    test_sha1();
+
+    test_sha224();
+
+    test_sha256();
+
+    test_sha384();
+    
+    test_sha512();
 }
