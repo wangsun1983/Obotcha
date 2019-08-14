@@ -1,4 +1,6 @@
 #include "HttpCookie.hpp"
+#include "DateTimeFormatter.hpp"
+#include "Calendar.hpp"
 
 namespace obotcha {
 
@@ -17,6 +19,7 @@ const String _HttpCookie::COOKIE_MAX_AGE = "Max-Age";
 
 _HttpCookie::_HttpCookie() {
     //mCookies = createHashMap<String,String>();
+    mExpiresMillseocnds = 0;
 }
 
 void _HttpCookie::setName(String v) {
@@ -145,6 +148,16 @@ String _HttpCookie::genHtml() {
         html = html->append(COOKIE_MAX_AGE)
                    ->append("=")
                    ->append(createString(mMaxAge))
+                   ->append(";");
+    }
+
+    if(mExpiresMillseocnds != 0) {
+        Calendar c = createCalendar(mExpiresMillseocnds);
+        DateTime date = c->getGmtDateTime();
+        String time = st(DateTimeFormatter)::format(date,DateTimeFormatHTTP);
+        html = html->append(COOKIE_EXPIRES)
+                   ->append("=")
+                   ->append(time)
                    ->append(";");
     }
 

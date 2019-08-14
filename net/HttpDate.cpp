@@ -1,6 +1,3 @@
-#ifndef __HTTP_DATE_HPP__
-#define __HTTP_DATE_HPP__
-
 #include <map>
 
 #include "Object.hpp"
@@ -11,21 +8,17 @@
 #include "http_parser.h"
 #include "HashMap.hpp"
 #include "HttpDate.hpp"
+#include "DateTimeFormatter.hpp"
 #include "DateTime.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpDate) {
-
-public:
-    _HttpDate(DateTime);
+_HttpDate::_HttpDate(DateTime t) {
+    mDate = t;
+}
     
-    String genHtml();
-
-private:
-    DateTime mDate;
-};
-
+String _HttpDate::genHtml() {
+    return st(DateTimeFormatter)::format(mDate,DateTimeFormatHTTP);
 }
 
-#endif
+}

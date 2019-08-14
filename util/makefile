@@ -16,6 +16,7 @@ link += calendar \
 		timewatcher \
 		stacktrace \
 		datetime \
+		datetimeparser \
 		datetimeformatter \
 		numberformatter \
 
@@ -30,6 +31,7 @@ objs += $(outtmp)/calendar.o \
 		$(outtmp)/timewatcher.o \
 		$(outtmp)/stacktrace.o \
 		$(outtmp)/datetime.o \
+		$(outtmp)/datetimeparser.o \
 		$(outtmp)/datetimeformatter.o \
 		$(outtmp)/numberformatter.o \
 
@@ -65,6 +67,9 @@ timewatcher :$(utilDir)/TimeWatcher.cpp
 
 datetime :$(utilDir)/DateTime.cpp
 	$(gcc) $(cflags) -c $(utilDir)/DateTime.cpp -o $(outtmp)/datetime.o
+
+datetimeparser 	:$(utilDir)/DateTimeParser.cpp
+	$(gcc) $(cflags) -c $(utilDir)/DateTimeParser.cpp -o $(outtmp)/datetimeparser.o
 
 datetimeformatter :$(utilDir)/DateTimeFormatter.cpp
 	$(gcc) $(cflags) -c $(utilDir)/DateTimeFormatter.cpp -o $(outtmp)/datetimeformatter.o

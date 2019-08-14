@@ -1,6 +1,7 @@
 #include <vector>
 #include <algorithm>
 #include <sys/time.h>
+#include <regex>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -12,151 +13,38 @@
 #include "String.hpp"
 #include "DateTimeFormatter.hpp"
 #include "NumberFormatter.hpp"
+#include "TimeZone.hpp"
 
 namespace obotcha {
-    
-const std::string _DateTimeFormatter::ISO8601_FORMAT("%Y-%m-%dT%H:%M:%S%z");
-const std::string _DateTimeFormatter::ISO8601_FRAC_FORMAT("%Y-%m-%dT%H:%M:%s%z");
-const std::string _DateTimeFormatter::ISO8601_REGEX("([\\+-]?\\d{4}(?!\\d{2}\\b))"
-	"((-?)"
-	"((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|"
-	"(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))"
-	"([T\\s]"
-	"((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?"
-	"(\\17[0-5]\\d([\\.,]\\d+)?)?([A-I]|[K-Z]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?");
-
-const std::string _DateTimeFormatter::RFC822_FORMAT("%w, %e %b %y %H:%M:%S %Z");
-const std::string _DateTimeFormatter::RFC822_REGEX("(((Mon)|(Tue)|(Wed)|(Thu)|(Fri)|(Sat)|(Sun)), *)?"
-	"\\d\\d? +"
-	"((Jan)|(Feb)|(Mar)|(Apr)|(May)|(Jun)|(Jul)|(Aug)|(Sep)|(Oct)|(Nov)|(Dec)) +"
-	"\\d\\d(\\d\\d)? +"
-	"\\d\\d:\\d\\d(:\\d\\d)? +"
-	"(([+\\-]?\\d\\d\\d\\d)|(UT)|(GMT)|(EST)|(EDT)|(CST)|(CDT)|(MST)|(MDT)|(PST)|(PDT)|\\w)");
-
-const std::string _DateTimeFormatter::RFC1123_FORMAT("%w, %e %b %Y %H:%M:%S %Z");
-const std::string _DateTimeFormatter::RFC1123_REGEX(_DateTimeFormatter::RFC822_REGEX);
-
-const std::string _DateTimeFormatter::HTTP_FORMAT("%w, %d %b %Y %H:%M:%S %Z");
-const std::string _DateTimeFormatter::HTTP_REGEX("(((Mon)|(Tue)|(Wed)|(Thu)|(Fri)|(Sat)|(Sun)), *)?"
-	"\\d\\d? +"
-	"((Jan)|(Feb)|(Mar)|(Apr)|(May)|(Jun)|(Jul)|(Aug)|(Sep)|(Oct)|(Nov)|(Dec)) +"
-	"\\d\\d(\\d\\d)? +\\d\\d:\\d\\d(:\\d\\d)? "
-	"((UT)|(GMT)|(EST)|(EDT)|(CST)|(CDT)|(MST)|(MDT)|(PST)|(PDT)|)?+"
-	"(([+\\-]?\\d\\d\\d\\d)?|(UT)|(GMT)|(EST)|(EDT)|(CST)|(CDT)|(MST)|(MDT)|(PST)|(PDT)|\\w)");
-
-const std::string _DateTimeFormatter::RFC850_FORMAT("%W, %e-%b-%y %H:%M:%S %Z");
-const std::string _DateTimeFormatter::RFC850_REGEX(
-	"(((Monday)|(Tuesday)|(Wednesday)|(Thursday)|(Friday)|(Saturday)|(Sunday)|"
-	"(Mon)|(Tue)|(Wed)|(Thu)|(Fri)|(Sat)|(Sun)), *)?"
-	"\\d\\d?-((Jan)|(Feb)|(Mar)|(Apr)|(May)|(Jun)|(Jul)|(Aug)|(Sep)|(Oct)|(Nov)|(Dec))-"
-	"\\d\\d(\\d\\d)? +\\d\\d:\\d\\d(:\\d\\d)? "
-	"((UT)|(GMT)|(EST)|(EDT)|(CST)|(CDT)|(MST)|(MDT)|(PST)|(PDT)|)?+"
-	"(([+\\-]?\\d\\d\\d\\d)?|(UT)|(GMT)|(EST)|(EDT)|(CST)|(CDT)|(MST)|(MDT)|(PST)|(PDT)|\\w)");
-
-const std::string _DateTimeFormatter::RFC1036_FORMAT("%W, %e %b %y %H:%M:%S %Z");
-const std::string _DateTimeFormatter::RFC1036_REGEX(
-	"(((Monday)|(Tuesday)|(Wednesday)|(Thursday)|(Friday)|(Saturday)|(Sunday)), *)?"
-	"\\d\\d? +"
-	"((Jan)|(Feb)|(Mar)|(Apr)|(May)|(Jun)|(Jul)|(Aug)|(Sep)|(Oct)|(Nov)|(Dec)) +"
-	"\\d\\d(\\d\\d)? +\\d\\d:\\d\\d(:\\d\\d)? "
-	"((UT)|(GMT)|(EST)|(EDT)|(CST)|(CDT)|(MST)|(MDT)|(PST)|(PDT)|)?+"
-	"(([+\\-]?\\d\\d\\d\\d)?|(UT)|(GMT)|(EST)|(EDT)|(CST)|(CDT)|(MST)|(MDT)|(PST)|(PDT)|\\w)");
-
-const std::string _DateTimeFormatter::ASCTIME_FORMAT("%w %b %f %H:%M:%S %Y");
-const std::string _DateTimeFormatter::ASCTIME_REGEX("((Mon)|(Tue)|(Wed)|(Thu)|(Fri)|(Sat)|(Sun)) +"
-	"((Jan)|(Feb)|(Mar)|(Apr)|(May)|(Jun)|(Jul)|(Aug)|(Sep)|(Oct)|(Nov)|(Dec)) +"
-	"\\d\\d? +\\d\\d:\\d\\d:\\d\\d +(\\d\\d\\d\\d)");
-
-const std::string _DateTimeFormatter::SORTABLE_FORMAT("%Y-%m-%d %H:%M:%S");
-const std::string _DateTimeFormatter::SORTABLE_REGEX("(\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d)");
-
-
-const std::string _DateTimeFormatter::FORMAT_LIST[] =
-{
-	_DateTimeFormatter::ISO8601_FORMAT,
-	_DateTimeFormatter::ISO8601_FRAC_FORMAT,
-	_DateTimeFormatter::RFC822_FORMAT,
-	_DateTimeFormatter::RFC1123_FORMAT,
-	_DateTimeFormatter::HTTP_FORMAT,
-	_DateTimeFormatter::RFC850_FORMAT,
-	_DateTimeFormatter::RFC1036_FORMAT,
-	_DateTimeFormatter::ASCTIME_FORMAT,
-	_DateTimeFormatter::SORTABLE_FORMAT
-};
-
-
-const std::string _DateTimeFormatter::WEEKDAY_NAMES[] =
-{
-	"Sunday",
-	"Monday",
-	"Tuesday",
-	"Wednesday",
-	"Thursday",
-	"Friday",
-	"Saturday"
-};
-
-
-const std::string _DateTimeFormatter::MONTH_NAMES[] =
-{
-	"January",
-	"February",
-	"March",
-	"April",
-	"May",
-	"June",
-	"July",
-	"August",
-	"September",
-	"October",
-	"November",
-	"December"
-};
-
-
-const std::string _DateTimeFormatter::REGEX_LIST[] =
-{
-	_DateTimeFormatter::ISO8601_REGEX,
-	_DateTimeFormatter::RFC822_REGEX,
-	_DateTimeFormatter::RFC1123_REGEX,
-	_DateTimeFormatter::HTTP_REGEX,
-	_DateTimeFormatter::RFC850_REGEX,
-	_DateTimeFormatter::RFC1036_REGEX,
-	_DateTimeFormatter::ASCTIME_REGEX,
-	_DateTimeFormatter::SORTABLE_REGEX
-};
-
-
-String _DateTimeFormatter::format(DateTime datetime,int type) {
-	std::string fmt = FORMAT_LIST[type];
+    	
+String _DateTimeFormatter::format(DateTime datetime,int type,int timeZoneDifferential) {
+	std::string fmt = st(DateTime)::FORMAT_LIST[type];
 	std::string::const_iterator it  = fmt.begin();
 	std::string::const_iterator end = fmt.end();
 	std::string str;
-	while (it != end)
-	{
-		if (*it == '%')
-		{
+	while (it != end) {
+		if (*it == '%') {
 			if (++it != end)
 			{
 				switch (*it)
 				{
 				case 'w': {
-				    str.append(_DateTimeFormatter::WEEKDAY_NAMES[datetime->dayOfWeek()], 0, 3); 
+				    str.append(st(DateTime)::WEEKDAY_NAMES[datetime->dayOfWeek()], 0, 3); 
 					break;
 				}
 
 				case 'W': {
-					str.append(_DateTimeFormatter::WEEKDAY_NAMES[datetime->dayOfWeek()]); 
+					str.append(st(DateTime)::WEEKDAY_NAMES[datetime->dayOfWeek()]); 
 					break;
 				}
 
 				case 'b': {
-					str.append(_DateTimeFormatter::MONTH_NAMES[datetime->month() - 1], 0, 3);
+					str.append(st(DateTime)::MONTH_NAMES[datetime->month()], 0, 3);
 					break;
 				}
 
 				case 'B': {
-					str.append(_DateTimeFormatter::MONTH_NAMES[datetime->month() - 1]); 
+					str.append(st(DateTime)::MONTH_NAMES[datetime->month()]); 
 					break;
 				}
 
@@ -190,14 +78,14 @@ String _DateTimeFormatter::format(DateTime datetime,int type) {
 
 				case 'n': {
 					//NumberFormatter::append(str, dateTime.month()); 
-					String number = st(NumberFormatter)::format(datetime->month());
+					String number = st(NumberFormatter)::format(datetime->month() + 1);
 					str.append(number->getStdString());
 					break;
 				}
 
 				case 'o': {
 					//NumberFormatter::append(str, dateTime.month(), 2); 
-					String number = st(NumberFormatter)::format(datetime->month(),2);
+					String number = st(NumberFormatter)::format(datetime->month() + 1,2);
 					str.append(number->getStdString());
 					break;
 				}
@@ -288,12 +176,12 @@ String _DateTimeFormatter::format(DateTime datetime,int type) {
 				}
 
 				case 'z': {
-					//tzdISO(str, timeZoneDifferential); 
+					tzdISO(str, timeZoneDifferential); 
 					break;
 				}
 
 				case 'Z': {
-					//tzdRFC(str, timeZoneDifferential); 
+					tzdRFC(str, timeZoneDifferential); 
 					break;
 				}
 
@@ -307,5 +195,82 @@ String _DateTimeFormatter::format(DateTime datetime,int type) {
 
 	return createString(str);
 }
+
+void _DateTimeFormatter::tzdISO(std::string& str, int timeZoneDifferential)
+{
+	if (timeZoneDifferential != 0xFFFF)
+	{
+		if (timeZoneDifferential >= 0)
+		{
+			str += '+';
+			String number = st(NumberFormatter)::format0(timeZoneDifferential/3600, 2);
+			str.append(number->getStdString());
+			str += ':';
+			number = st(NumberFormatter)::format0((timeZoneDifferential%3600)/60, 2);
+			str.append(number->getStdString());
+		}
+		else
+		{
+			str += '-';
+			String number = st(NumberFormatter)::format0(-timeZoneDifferential/3600, 2);
+			str.append(number->getStdString());
+			str += ':';
+			number = st(NumberFormatter)::format0((-timeZoneDifferential%3600)/60, 2);
+			str.append(number->getStdString());
+		}
+	}
+	else str += 'Z';
+}
+
+
+void _DateTimeFormatter::tzdRFC(std::string& str, int timeZoneDifferential)
+{
+	if (timeZoneDifferential != 0xFFFF)
+	{
+		if (timeZoneDifferential >= 0)
+		{
+			str += '+';
+			String number = st(NumberFormatter)::format0(timeZoneDifferential/3600, 2);
+			str.append(number->getStdString());
+
+			number = st(NumberFormatter)::format0((timeZoneDifferential%3600)/60, 2);
+			str.append(number->getStdString());
+		}
+		else
+		{
+			str += '-';
+			String number = st(NumberFormatter)::format0(-timeZoneDifferential/3600, 2);
+			str.append(number->getStdString());
+
+			number = st(NumberFormatter)::format0((-timeZoneDifferential%3600)/60, 2);
+			str.append(number->getStdString());
+		}		
+	}
+	else str += "GMT";
+}
+
+int _DateTimeFormatter::isValid(String content) {
+	//printf("dateFormatter1 is isValid \n");
+	for(int i = 0; i < DateTimeFormatMax;i++) {
+		//printf("dateFormatter2 is isValid \n");
+		std::string f = st(DateTime)::REGEX_LIST[i];
+		if(std::regex_match(content->getStdString(),std::regex(f))) {
+			//printf("dateFormatter3 is isValid, i is %d \n",i);
+			return i;
+		}
+	}
+	return -1;
+}
+
+int _DateTimeFormatter::isValid(String fmt,String content) {
+    //printf("dateFormatter is isValid \n");
+	if(std::regex_match(content->getStdString(),std::regex(fmt->getStdString()))) {
+		//printf("dateFormatter is isValid trace1\n");
+		return 0;
+	}
+
+	return -1;
+}
+
 
 }

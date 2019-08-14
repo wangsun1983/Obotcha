@@ -55,8 +55,6 @@ public:
 
     _Calendar(long long timeMillis);
 
-    bool isLeapYear(int year);
-    
     void increaseYear(int year);
 
     void decreaseYear(int year);
@@ -93,7 +91,13 @@ public:
 
     DateTime getDateTime();
 
+    DateTime getGmtDateTime();
+
+    static bool isLeapYear(int year);
+
     static int caculateDayOfWeek(int y, int m, int d);
+
+    static bool isValid(int year, int month, int day, int hour, int minute, int second, int millisecond);
 
 private:
     long long timeMillis;

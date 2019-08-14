@@ -70,6 +70,25 @@ int _Calendar::caculateDayOfWeek(int y, int m, int d) {
 	return week;
 }  
 
+bool _Calendar::isValid(int year, int month, int day, int hour, int minute, int second, int millisecond) {
+    int *_days = nullptr;
+    bool isLeap = isLeapYear(year);
+    if(isLeap) {
+        _days = leapDays;
+    } else {
+        _days = commonDays;
+    }
+
+    return
+		(year >= 0 && year <= 9999) &&
+		(month >= 1 && month <= 12) &&
+		(day >= 1 && day <= _days[month]) &&
+		(hour >= 0 && hour <= 23) &&
+		(minute >= 0 && minute <= 59) &&
+		(second >= 0 && second <= 60) &&
+		(millisecond >= 0 && millisecond <= 999);
+}
+
 void _Calendar::init() {
 
     //auto mTime = std::chrono::milliseconds(timeMillis);
@@ -615,6 +634,19 @@ DateTime _Calendar::getDateTime() {
                                    dayOfYear);
 
     return date;                                   
+}
+
+DateTime _Calendar::getGmtDateTime() {
+    Calendar c = createCalendar(year,
+                                   month,
+                                   dayOfMonth,
+                                   hour,
+                                   minute,
+                                   second,
+                                   msec);
+    int hour = st(TimeZone)::getZone();                                   
+    c->decreaseHour(hour);
+    return c->getDateTime();               
 }
 
 }
