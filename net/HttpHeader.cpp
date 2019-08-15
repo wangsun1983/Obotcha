@@ -154,6 +154,18 @@ String _HttpHeader::genHtml() {
         headerIte->next();
     }
 
+    //ArrayList<HttpCookie> getCookies();
+    int size = mCookies->size();
+    for(int i=0;i<size;i++) {
+        String cookieStr = mCookies->get(i)->genHtml();       
+        String headSting = st(HttpHeader)::getHeaderString(Http_Header_Set_Cookie);
+        
+        html = html->append(headSting)
+                   ->append(": ")
+                   ->append(cookieStr)
+                   ->append("\r\n");
+    }
+
     return html;
 }
 

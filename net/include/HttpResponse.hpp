@@ -12,6 +12,7 @@
 #include "HashMap.hpp"
 #include "HttpHeader.hpp"
 #include "ByteArray.hpp"
+#include "HttpCookie.hpp"
 
 namespace obotcha {
 
@@ -71,6 +72,7 @@ public:
 
 	void setHeaderValue(int name,String value);
 	
+	void addCookie(HttpCookie cookie);
   
 private:
     HttpHeader mHeader;

@@ -185,7 +185,7 @@ int _ByteArray::append(sp<_ByteArray> b) {
 }
 
 String _ByteArray::toString() {
-    printf("buff buff is %s ,_size is %d\n",buff,_size);
+    //printf("buff buff is %s ,_size is %d\n",buff,_size);
     return createString(buff,0,_size);
 }
 

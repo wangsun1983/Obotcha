@@ -20,69 +20,26 @@
 
 namespace obotcha {
 
-enum TcpClientStatus {
-    ClientWorking = 1,
-    ClientWaitingThreadExit,
-    ClientThreadExited,
-};
-
-DECLARE_SIMPLE_CLASS(TcpClientThread) EXTENDS(Thread){
-public:
-    _TcpClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status,int timeout);
-
-    void run();
-
-private:
-    int mSock;
-
-    int mEpfd;
-
-    SocketListener mListener;
-
-    Pipe mPipe;
-
-    AtomicInteger mStatus;
-
-    int mTimeOut;
-    
-};
-
 DECLARE_SIMPLE_CLASS(TcpClient) {
 public:
-    _TcpClient(String ip,int port,int recv_time,SocketListener listener);
+    _TcpClient(String ip,int port,int recv_time);
     
-    _TcpClient(String ip,int port,SocketListener listener);
+    int doConnect();
 
-    void start();
+    int doSend(ByteArray);
+
+    ByteArray doReceive();
 
     void release();
-
-    void wait();
-
-    int send(ByteArray);
 
     ~_TcpClient();
 
 private:
-
-    bool init(String ip,int port,int recv_time,SocketListener l);
-
-    int sock;
-
-    int epfd;
+    int mReceiveTimeout;
+    
+    int mSock;
 
     struct sockaddr_in serverAddr;
-
-    SocketListener listener;
-
-    TcpClientThread mTcpClientThread;
-
-    Pipe mPipe;
-
-    AtomicInteger mStatus;
-
-    int mRecvtimeout;
-
 };
 
 }

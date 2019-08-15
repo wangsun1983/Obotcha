@@ -213,6 +213,7 @@ int _DateTime::second() const {
 }
 		
 int _DateTime::millisecond() const {
-    return _millisecond;}
+    return _millisecond;
+}
 
 }

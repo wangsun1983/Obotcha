@@ -64,11 +64,12 @@ _HttpResponse::_HttpResponse() {
 
 String _HttpResponse::generateResponse() {
 	String responseStr = generateStatusAck();
-    String headerStr =generateHeaderAck();
-	printf("headerStr is %s \n",headerStr->toChars());
+    
+	String headerStr =generateHeaderAck();
 	String bodyStr = generateBody();
-	printf("bodyStr is %s \n",bodyStr->toChars());
-	return responseStr->append(headerStr)->append(bodyStr);
+	
+	responseStr = responseStr->append(headerStr)->append("\r\n")->append(bodyStr);
+	return responseStr;
 }
 
 String _HttpResponse::generateStatusAck() {
@@ -84,16 +85,8 @@ String _HttpResponse::generateStatusAck() {
 }
 
 String _HttpResponse::generateHeaderAck() {
-	MapIterator<Integer,String> iterator = mHeader->getIterator();
-	String responseString = createString();
-
-	while(iterator->hasValue()) {
-		String header = st(HttpHeader)::getHeaderString(iterator->getKey()->toValue());
-        responseString = responseString->append(header)->append(":")->append(iterator->getValue())->append("\r\n");
-		iterator->next();
-	}
-
-	return responseString->append("\r\n");
+	String responseString = mHeader->genHtml();
+	return responseString;
 }
 
 String _HttpResponse::generateBody() {
@@ -111,5 +104,8 @@ void _HttpResponse::setHeaderValue(int name,String value) {
 	mHeader->setValue(name,value);
 }
 
+void _HttpResponse::addCookie(HttpCookie cookie) {
+	mHeader->addCookie(cookie);
+}
 
 }

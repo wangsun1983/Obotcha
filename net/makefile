@@ -3,6 +3,7 @@ netDir = net
 link += inetaddress \
 		ntpclient \
 		tcpclient \
+		asynctcpclient \
 		tcpserver \
 		udpclient \
 		udpserver \
@@ -19,6 +20,7 @@ link += inetaddress \
 		httpresponsewriter \
 		httpcookie \
 		httpdate \
+		httprequest \
 		websocketserver \
 		websocketprotocol \
 		websocketframecomposer \
@@ -30,6 +32,7 @@ link += inetaddress \
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/ntpclient.o \
 		$(outtmp)/tcpclient.o \
+		$(outtmp)/asynctcpclient.o \
 		$(outtmp)/tcpserver.o \
 		$(outtmp)/udpclient.o \
 		$(outtmp)/udpserver.o \
@@ -46,6 +49,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpresponsewriter.o \
 		$(outtmp)/httpcookie.o \
 		$(outtmp)/httpdate.o \
+		$(outtmp)/httprequest.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketprotocol.o \
 		$(outtmp)/websocketframecomposer.o \
@@ -59,6 +63,9 @@ inetaddress :$(netDir)/InetAddress.cpp
 
 tcpserver :$(netDir)/TcpServer.cpp
 	$(gcc) $(cflags) -c $(netDir)/TcpServer.cpp -o $(outtmp)/tcpserver.o $(external)
+
+asynctcpclient :$(netDir)/AsyncTcpClient.cpp
+	$(gcc) $(cflags) -c $(netDir)/AsyncTcpClient.cpp -o $(outtmp)/asynctcpclient.o $(external)
 
 tcpclient :$(netDir)/TcpClient.cpp
 	$(gcc) $(cflags) -c $(netDir)/TcpClient.cpp -o $(outtmp)/tcpclient.o $(external)
@@ -104,6 +111,9 @@ httpresponse :$(netDir)/HttpResponse.cpp
 
 httppacket :$(netDir)/HttpPacket.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpPacket.cpp -o $(outtmp)/httppacket.o $(external)	
+
+httprequest	:$(netDir)/HttpRequest.cpp
+	$(gcc) $(cflags) -c $(netDir)/HttpRequest.cpp -o $(outtmp)/httprequest.o $(external)	
 
 httpresponsewriter :$(netDir)/HttpResponseWriter.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o $(external)
