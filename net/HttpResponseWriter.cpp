@@ -6,7 +6,7 @@ _HttpResponseWriter::_HttpResponseWriter(int fd) {
     mFd = fd;
 }
 
-int _HttpResponseWriter::write(HttpResponse) {
+int _HttpResponseWriter::write(HttpPacket) {
     //TODO
 }
 

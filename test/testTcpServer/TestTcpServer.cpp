@@ -10,6 +10,8 @@ DECLARE_SIMPLE_CLASS(ServerListener) IMPLEMENTS(SocketListener) {
 public:
     void onAccept(int fd,String ip,int port,ByteArray pack) {
       printf("on accept pack is %s \n",pack->toValue());
+      ByteArray arr = createByteArray(createString("nihao from server"));
+      st(NetUtils)::sendTcpPacket(fd,arr);
     }
 
     void onDisconnect(int fd){
@@ -18,8 +20,7 @@ public:
 
     void onConnect(int fd,String ip,int port) {
       printf("onConnect,ip is %s,port is %d,fd is %d \n",ip->toChars(),port,fd);
-      ByteArray arr = createByteArray(createString("nihao from server"));
-      st(NetUtils)::sendTcpPacket(fd,arr);
+      
     }
 
     void onConnect(int fd,String domain) {}

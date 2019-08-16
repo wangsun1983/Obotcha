@@ -9,21 +9,9 @@
 
 namespace obotcha {
 
-_HttpQuery::_HttpQuery(String name,String value) {
-    mName = name;
-    mValue = value;
-}
-
-String _HttpQuery::getName() {
-  return mName;
-}
-
-String _HttpQuery::getValue() {
-  return mValue;
-}
-
 _HttpUrl::_HttpUrl() {
-    mQuery = createArrayList<HttpQuery>();
+    mQuery = createHashMap<String,String>();
+    mPort = -1;
 }
 
 void _HttpUrl::setSchema(String data) {
@@ -43,20 +31,28 @@ void _HttpUrl::setPath(String data) {
 }
 
 void _HttpUrl::addQuery(String name,String value) {
-    HttpQuery query = createHttpQuery(name,value);
-    mQuery->add(query);
+    mQuery->put(name,value);
 }
 
-void _HttpUrl::setQuery(ArrayList<HttpQuery> query) {
-    mQuery = query;
-}
 
 void _HttpUrl::setFragment(String data) {
     mFragment = data;
 }
 
-void _HttpUrl::setUserInfo(String data) {
-    mUserInfo = data;
+void _HttpUrl::setUser(String data) {
+    mUser = data;
+}
+
+String _HttpUrl::getUser() {
+    return mUser;
+}
+
+void _HttpUrl::setPassword(String data) {
+    mPassword = data;
+}
+
+String _HttpUrl::getPassword() {
+    return mPassword;
 }
 
 String _HttpUrl::getSchema() {
@@ -75,7 +71,7 @@ String _HttpUrl::getPath() {
     return mPath;
 }
 
-ArrayList<HttpQuery> _HttpUrl::getQuery() {
+HashMap<String,String> _HttpUrl::getQuery() {
     return mQuery;
 }
 
@@ -83,8 +79,73 @@ String _HttpUrl::getFragment() {
     return mFragment;
 }
 
-String _HttpUrl::getUserInfo() {
-    return mUserInfo;
+String _HttpUrl::toString() {
+    if(mSchema == nullptr || mHostName == nullptr) {
+        return nullptr;
+    }
+
+    String url = createString("")->append(mSchema)
+                ->append("://");
+    
+    if(mUser != nullptr) {
+        if(mPassword != nullptr) {
+            url = url->append(mUser)
+                     ->append(":")
+                     ->append(mPassword)
+                     ->append("@");
+        } else {
+            url = url->append(mUser)
+                     ->append("@");
+        }
+    }
+
+    url = url->append(mHostName);
+
+    if(mPort != -1) {
+        url = url->append(":")
+                 ->append(createString(mPort));
+    }
+
+    if(mPath != nullptr) {
+        url = url->append("/")
+                 ->append(mPath);
+    }
+
+    String query = toQueryString();
+    if(query != nullptr) {
+        url = url->append(query);
+    }
+}
+
+String _HttpUrl::toQueryString() {
+    if(mQuery->size() == 0) {
+        return nullptr;
+    }
+
+    String url = createString("");
+    if(mQuery->size() != 0) {
+        url = url->append("?");
+        bool isFirst = true;
+        MapIterator<String,String> iterator = mQuery->getIterator();
+        if(iterator->hasValue()) {
+            String key = iterator->getKey();
+            String value = iterator->getValue();
+            iterator->next();
+            if(isFirst) {
+                url->append(key)
+                   ->append("=")
+                   ->append(value);
+                isFirst = false;
+            } else {
+                url->append("&")
+                   ->append(key)
+                   ->append("=")
+                   ->append(value);
+            }
+        }
+    }
+
+    return url;
 }
 
 }

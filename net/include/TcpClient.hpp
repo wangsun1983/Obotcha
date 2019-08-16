@@ -22,7 +22,7 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(TcpClient) {
 public:
-    _TcpClient(String ip,int port,int recv_time);
+    _TcpClient(String ip,int port,int recv_time,int buff_size = 1024*64);
     
     int doConnect();
 
@@ -40,6 +40,8 @@ private:
     int mSock;
 
     struct sockaddr_in serverAddr;
+
+    int mBufferSize;
 };
 
 }

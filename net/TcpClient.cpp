@@ -21,13 +21,13 @@
 
 namespace obotcha {
 
-_TcpClient::_TcpClient(String ip,int port,int recv_time) {
+_TcpClient::_TcpClient(String ip,int port,int recv_time,int buff_size) {
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port);
     serverAddr.sin_addr.s_addr = inet_addr(ip->toChars());
     std::cout << "Connect Server: " << ip->toChars() << " : " << port << endl;
     mReceiveTimeout = recv_time;
-    
+    mBufferSize = buff_size;
     mSock = socket(AF_INET, SOCK_STREAM, 0);
 }
     
@@ -49,15 +49,17 @@ int _TcpClient::doSend(ByteArray data) {
 }
 
 ByteArray _TcpClient::doReceive() {
-    
+    ByteArray data = createByteArray(mBufferSize);
+    recv(mSock, data->toValue(), mBufferSize, 0);
+    return data;
 }
 
 void _TcpClient::release() {
-
+    close(mSock);
 }
 
 _TcpClient::~_TcpClient() {
-
+    close(mSock);
 }
 
 }

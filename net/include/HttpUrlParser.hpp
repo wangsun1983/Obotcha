@@ -19,7 +19,7 @@ public:
     static HttpUrl parseUrl(String);
 
 private:
-    static ArrayList<HttpQuery> parseQuery(String);
+    static void parseQuery(HttpUrl,String);
 };
 
 }

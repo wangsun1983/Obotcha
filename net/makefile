@@ -14,13 +14,13 @@ link += inetaddress \
 		httpheaderparser \
 		httpurlparser \
 		httpurl \
+		httpurlbuilder \
+		httpclient \
 		httpheader \
-		httpresponse \
 		httppacket \
 		httpresponsewriter \
 		httpcookie \
 		httpdate \
-		httprequest \
 		websocketserver \
 		websocketprotocol \
 		websocketframecomposer \
@@ -43,13 +43,13 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheaderparser.o \
 		$(outtmp)/httpurlparser.o \
 		$(outtmp)/httpurl.o \
+		$(outtmp)/httpurlbuilder.o \
+		$(outtmp)/httpclient.o \
 		$(outtmp)/httpheader.o \
-		$(outtmp)/httpresponse.o \
 		$(outtmp)/httppacket.o \
 		$(outtmp)/httpresponsewriter.o \
 		$(outtmp)/httpcookie.o \
 		$(outtmp)/httpdate.o \
-		$(outtmp)/httprequest.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketprotocol.o \
 		$(outtmp)/websocketframecomposer.o \
@@ -88,6 +88,9 @@ netutils :$(netDir)/NetUtils.cpp
 httpparser :$(netDir)/HttpParser.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpParser.cpp -o $(outtmp)/httpparser.o $(external)	
 
+httpclient :$(netDir)/HttpClient.cpp
+	$(gcc) $(cflags) -c $(netDir)/HttpClient.cpp -o $(outtmp)/httpclient.o $(external)	
+
 httpheaderparser :$(netDir)/HttpHeaderParser.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpHeaderParser.cpp -o $(outtmp)/httpheaderparser.o $(external)
 
@@ -96,6 +99,9 @@ httpurlparser :$(netDir)/HttpUrlParser.cpp
 
 httpurl :$(netDir)/HttpUrl.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpUrl.cpp -o $(outtmp)/httpurl.o $(external)
+
+httpurlbuilder :$(netDir)/HttpUrlBuilder.cpp
+	$(gcc) $(cflags) -c $(netDir)/HttpUrlBuilder.cpp -o $(outtmp)/httpurlbuilder.o $(external)
 
 httpcookie :$(netDir)/HttpCookie.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpCookie.cpp -o $(outtmp)/httpcookie.o $(external)
@@ -106,14 +112,8 @@ httpdate :$(netDir)/HttpDate.cpp
 httpheader :$(netDir)/HttpHeader.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpHeader.cpp -o $(outtmp)/httpheader.o $(external)
 
-httpresponse :$(netDir)/HttpResponse.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpResponse.cpp -o $(outtmp)/httpresponse.o $(external)
-
 httppacket :$(netDir)/HttpPacket.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpPacket.cpp -o $(outtmp)/httppacket.o $(external)	
-
-httprequest	:$(netDir)/HttpRequest.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpRequest.cpp -o $(outtmp)/httprequest.o $(external)	
 
 httpresponsewriter :$(netDir)/HttpResponseWriter.cpp
 	$(gcc) $(cflags) -c $(netDir)/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o $(external)

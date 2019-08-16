@@ -30,7 +30,6 @@
 #include "HttpUrl.hpp"
 #include "HttpUrlParser.hpp"
 #include "WebSocketProtocol.hpp"
-#include "HttpResponse.hpp"
 
 namespace obotcha {
 
@@ -154,12 +153,12 @@ int _WebSocketClient::bind(String url,WebSocketListener l) {
     request->getHeader()->setValue(Http_Header_Pragma,"no-cache");
     request->getHeader()->setValue(Http_Header_Cache_Control,"no-cache");
 
-    String shakeHandMsg = request->genHttpString();
+    String shakeHandMsg = request->genHttpRequest();
     //printf("request is %s \n",shakeHandMsg->toChars());
 
     mListener = createWebSocketTcpClientListener(l);
 
-    mTcpClient = createTcpClient(httpUrl->getHost(),httpUrl->getPort(),mListener);
+    mTcpClient = createAsyncTcpClient(httpUrl->getHost(),httpUrl->getPort(),mListener);
     mTcpClient->start();
 
     mTcpClient->send(createByteArray(shakeHandMsg));

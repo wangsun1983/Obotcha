@@ -28,7 +28,7 @@
 #include "HttpParser.hpp"
 #include "WebSocketFrameComposer.hpp"
 #include "WebSocketParser.hpp"
-#include "TcpClient.hpp"
+#include "AsyncTcpClient.hpp"
 #include "WebSocketHybi13Parser.hpp"
 #include "HttpHeaderParser.hpp"
 
@@ -71,7 +71,7 @@ public:
     int sendPing(String msg);
 
 private:
-    TcpClient mTcpClient;
+    AsyncTcpClient mTcpClient;
 
     WebSocketTcpClientListener mListener;
 

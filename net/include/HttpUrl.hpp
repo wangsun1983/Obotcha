@@ -11,15 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpQuery){
-public:
-    _HttpQuery(String,String);
-    String getName();
-    String getValue();
-private:
-    String mName;
-    String mValue;
-};
+//<scheme>://<user>:<password>@<host>:<port>/<path>;<params>?<query>#<frag>
 
 DECLARE_SIMPLE_CLASS(HttpUrl) {
 public:
@@ -30,26 +22,31 @@ public:
     void setPort(int);
     void setPath(String);
     void addQuery(String,String);
-    void setQuery(ArrayList<HttpQuery>);
     void setFragment(String);
-    void setUserInfo(String);
+    void setUser(String);
+    void setPassword(String);
 
     String getSchema();
     String getHost();
     int getPort();
     String getPath();
-    ArrayList<HttpQuery> getQuery();
+    HashMap<String,String> getQuery();
     String getFragment();
-    String getUserInfo();
+    String getUser();
+    String getPassword();
+
+    String toString();
+    String toQueryString();
     
 private:
     String mSchema;
     String mHostName;
     int mPort;
     String mPath;
-    ArrayList<HttpQuery> mQuery;
+    HashMap<String,String> mQuery;
     String mFragment;
-    String mUserInfo;
+    String mUser;
+    String mPassword;
 };
 }
 

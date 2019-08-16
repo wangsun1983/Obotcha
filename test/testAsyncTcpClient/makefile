@@ -33,7 +33,7 @@ external = -lpthread \
 
 files =
 link =
-libname	= testTcpClient
+libname	= testUdpClient
 
 everything : $(libname)
 

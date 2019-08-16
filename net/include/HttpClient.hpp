@@ -9,9 +9,10 @@
 #include "http_parser.h"
 #include "HashMap.hpp"
 #include "HttpCookie.hpp"
+#include "TcpClient.hpp"
+#include "HttpUrl.hpp"
 
 namespace obotcha {
-
 
 DECLARE_SIMPLE_CLASS(HttpClient) {
 
@@ -40,14 +41,22 @@ public:
 
     int connect();
 
-    int execute();
+    int execute(int,HttpUrl);
+
+    int execute(int,String url);
 
 private:
     String mIp;
+
     String mUrl;
+    
     int mPort;
+    
     int mTimeout;
+    
     bool mKeepAlive; 
+
+    TcpClient mTcpClient;
 };
 
 }

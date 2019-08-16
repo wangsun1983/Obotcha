@@ -7,6 +7,8 @@
 #include "HashMap.hpp"
 #include "HttpCookie.hpp"
 #include "HttpClient.hpp"
+#include "HttpPacket.hpp"
+#include "InetAddress.hpp"
 
 namespace obotcha {
 
@@ -58,12 +60,23 @@ int _HttpClient::connect() {
 
 }
 
-int _HttpClient::connect() {
+int _HttpClient::execute(int method,HttpUrl url) {
+    HttpPacket packet = createHttpPacket();
+    packet->setMethod(method);
+    packet->setUrl(url->getPath());
 
+    //we need get ip for url
+    ArrayList<String> ips = st(InetAddress)::getHostByName(url->getHost());
+    ListIterator<String> iterator = ips->getIterator();
+    while(iterator->hasValue()) {
+        printf("ip is %s \n",iterator->getValue()->toChars());
+        iterator->next();
+    }
+    //mTcpClient = createTcpClient();
 }
 
-int _HttpClient::execute() {
-    
+int _HttpClient::execute(int,String url) {
+    //TODO
 }
 
 }

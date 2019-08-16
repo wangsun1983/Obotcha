@@ -52,10 +52,16 @@ HttpUrl _HttpUrlParser::parseUrl(String urlstring) {
         }
 
         if(u.field_set & (1 << UF_USERINFO)) {
-            //httpc->path = (char*)malloc(u.field_data[UF_PATH].len + 1);
-            //strncpy(httpc->path, url+u.field_data[UF_PATH].off, u.field_data[UF_PATH].len);
-            //httpc->path[u.field_data[UF_PATH].len] = 0;
-            urlData->setPath(createString(url,u.field_data[UF_USERINFO].off,u.field_data[UF_USERINFO].len));
+            String userInfo = createString(url,u.field_data[UF_USERINFO].off,u.field_data[UF_USERINFO].len);
+            ArrayList<String> user = createArrayList<String>();
+            userInfo->split(":",user);
+
+            if(user->size() == 2) {
+                urlData->setUser(user->get(0));
+                urlData->setPassword(user->get(1));
+            } else {
+                urlData->setUser(userInfo);
+            }
         }
 
         if(u.field_set & (1 << UF_QUERY)) {
@@ -63,7 +69,8 @@ HttpUrl _HttpUrlParser::parseUrl(String urlstring) {
             //strncpy(query, url+u.field_data[UF_QUERY].off, u.field_data[UF_QUERY].len);
             //query[u.field_data[UF_QUERY].len] = 0;
             String query = createString(url,u.field_data[UF_QUERY].off,u.field_data[UF_QUERY].len);
-            urlData->setQuery(parseQuery(query));
+            //urlData->setQuery(parseQuery(query));
+            parseQuery(urlData,query);
             //printf("query is %s \n",query->toChars());
             //ArrayList<HttpQuery> list = urlData->getQuery();
             //int size = list->size();
@@ -78,8 +85,8 @@ HttpUrl _HttpUrlParser::parseUrl(String urlstring) {
     return nullptr;
 }
 
-ArrayList<HttpQuery> _HttpUrlParser::parseQuery(String query) {
-    ArrayList<HttpQuery> mResult = createArrayList<HttpQuery>();
+void _HttpUrlParser::parseQuery(HttpUrl url,String query) {
+    //HashMap<String,String> mResult = createHashMap<String,String>();
     const char *p = query->toChars();
     int index = 0;
     int start = 0;
@@ -94,8 +101,8 @@ ArrayList<HttpQuery> _HttpUrlParser::parseQuery(String query) {
                 value = createString(&p[start],0,index - start);
                 //printf("parseQuery value is %s,start is %d,index is %d p is %s\n",value->toChars(),start,index,&p[start]);
                 start = index;
-                HttpQuery q = createHttpQuery(name,value);
-                mResult->add(q);
+                //HttpQuery q = createHttpQuery(name,value);
+                url->addQuery(name,value);
                 start = ++index;
                 continue;
             }
@@ -116,10 +123,8 @@ ArrayList<HttpQuery> _HttpUrlParser::parseQuery(String query) {
     }
 
     value = createString(&p[start],0,index - start);
-    HttpQuery q = createHttpQuery(name,value);
-    mResult->add(q);
-
-    return mResult;
+    //HttpQuery q = createHttpQuery(name,value);
+    url->addQuery(name,value);
 }
 
 }

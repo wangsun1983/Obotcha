@@ -5,11 +5,21 @@
 #include "Thread.hpp"
 #include "System.hpp"
 #include "HttpUrlParser.hpp"
+#include "HttpClient.hpp"
+#include "HttpUrl.hpp"
 
 using namespace obotcha;
 
 
 int main() {
+
+    String urlstr = "http://sina.com.cn";
+    HttpUrl url = st(HttpUrlParser)::parseUrl(urlstr);
+
+    HttpClient client = createHttpClient();
+    client->execute(0,url);
+    while(1){}
+/*    
     String request =  "http://su:abc@localhost/test.cgi?a=b&c=d";
     HttpUrlParser parser = createHttpUrlParser();
     parser->parseUrl(request);
@@ -18,5 +28,6 @@ int main() {
     //HttpUrlParser parser = createHttpUrlParser();
     parser->parseUrl(request);
     //while(1) {}
+*/    
 
 }
