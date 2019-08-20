@@ -28,7 +28,7 @@ enum TcpClientStatus {
 
 DECLARE_SIMPLE_CLASS(TcpClientThread) EXTENDS(Thread){
 public:
-    _TcpClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status,int timeout);
+    _TcpClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status,int timeout,int buffersize);
 
     void run();
 
@@ -44,16 +44,18 @@ private:
     AtomicInteger mStatus;
 
     int mTimeOut;
+
+    int mBufferSize;
     
 };
 
 DECLARE_SIMPLE_CLASS(AsyncTcpClient) {
 public:
-    _AsyncTcpClient(String ip,int port,int recv_time,SocketListener listener);
+    _AsyncTcpClient(String ip,int port,int recv_time,SocketListener listener,int buffer_size=64*1024);
     
-    _AsyncTcpClient(String ip,int port,SocketListener listener);
+    _AsyncTcpClient(String ip,int port,SocketListener listener,int buffer_size=64*1024);
 
-    _AsyncTcpClient(String ip,int port);
+    _AsyncTcpClient(String ip,int port,int buffer_size=64*1024);
 
     void start();
 
@@ -67,7 +69,7 @@ public:
 
 private:
 
-    bool init(String ip,int port,int recv_time,SocketListener l);
+    bool init(String ip,int port,int recv_time,SocketListener l,int buff_size);
 
     int sock;
 
@@ -84,6 +86,8 @@ private:
     AtomicInteger mStatus;
 
     int mRecvtimeout;
+
+    int mBuffSize;
 
 };
 

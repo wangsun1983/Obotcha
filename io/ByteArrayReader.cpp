@@ -109,8 +109,8 @@ int _ByteArrayReader::readByteArray(ByteArray d) {
         mResult = ByteArrayReadFail;
         return -1;
     }
-    //printf("readByteArray \n");
-    
+
+    //printf("mSize is %d,mIndex is %d,mData is %s \n",mSize,mIndex,mData->toValue());
     int ss = mSize - mIndex;
     if(d->size() < ss) {
         memcpy(d->toValue(),&mDataP[mIndex],d->size());
@@ -131,5 +131,61 @@ int _ByteArrayReader::getIndex() {
     return mIndex;
 }
 
+String _ByteArrayReader::readLine() {
+    int start = mIndex;
+    if(mIndex >= mData->size()) {
+        return nullptr;
+    }
+
+    while(mIndex < mData->size()) {
+        switch(mData->at(mIndex)) {
+            case '\r':{
+                String result = createString(mData->toValue(),start,mIndex - start);
+                mIndex++;
+                if(mIndex < mData->size() && mData->at(mIndex) == '\n') {
+                    mIndex++;
+                }
+                return result;
+            }
+
+            case '\n': {
+                String result = createString(mData->toValue(),start,mIndex - start);
+                mIndex++;
+                return result;
+            }
+            break;
+
+            default:
+            mIndex++;
+        }
+    }
+
+    return nullptr;
+}
+
+int _ByteArrayReader::getRemainSize() {
+    return mSize - mIndex;
+}
+
+int _ByteArrayReader::setIndex(int index) {
+    mIndex = index;
+}
+
+int _ByteArrayReader::appendWithAdjustment(ByteArray d) {
+    //mData->append(d);
+    int size = mData->size() - mIndex + d->size();
+    ByteArray data = createByteArray(size);
+    if(mIndex < mData->size()) {
+        memcpy(data->toValue(),mData->toValue() + mIndex,mData->size() - mIndex);
+    }
+    
+    memcpy((data->toValue() + (mData->size() - mIndex)),d->toValue(),d->size());
+    mData = data;
+    mDataP = mData->toValue();
+    mSize = data->size();
+    mIndex = 0;
+    //printf("appendData is %s \n",mData->toString()->toChars());
+    return 0;
+}
 
 }

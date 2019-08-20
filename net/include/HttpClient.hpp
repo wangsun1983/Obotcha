@@ -14,21 +14,32 @@
 
 namespace obotcha {
 
+enum HttpClientFailReason {
+    HttpClientParamErr = 200,
+    HttpClientConnectFail,
+};
+
 DECLARE_SIMPLE_CLASS(HttpClient) {
 
 public:
     _HttpClient();
     
-    void setIp(String ip);
+    int bindServerByDomain(String host,int port=80);
+
+    int bindServerByIp(String ip,int port);
+
+    int unbindServer(String host);
+
+    //void setIp(String ip);
 
     void setUrl(String url);
 
-    void setPort(int port);
+    //void setPort(int port);
 
     void setTimeout(int timeout);
 
     void setKeepAlive(bool keepalive);
-
+    
     String getIp();
 
     String getUrl();
@@ -41,14 +52,16 @@ public:
 
     int connect();
 
-    int execute(int,HttpUrl);
+    String execute(int,HttpUrl);
 
-    int execute(int,String url);
+    String execute(int,String url);
 
 private:
     String mIp;
 
     String mUrl;
+
+    String mHost;
     
     int mPort;
     
@@ -57,6 +70,10 @@ private:
     bool mKeepAlive; 
 
     TcpClient mTcpClient;
+
+    ByteArray doReceiveChunk(ByteArray firstBlock);
+
+    ByteArray doReceiveEntity(ByteArray firstBlock);
 };
 
 }

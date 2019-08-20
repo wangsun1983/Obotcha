@@ -106,9 +106,11 @@ public:
 
     Uint32 toUint32();
 
-    Uint64 toUint64();
+    Uint64 toUint64();    
 
     int toBasicInt();
+
+    int toHexInt();
 
     bool toBasicBool();
 
@@ -204,16 +206,20 @@ void _String::split(String v,T t) {
     }
 
     while(index != -1) {
-        std::string *str = new std::string(m_str->substr(last,index-last));
-        t->add(createString(str));
+        //std::string str = new std::string(m_str->substr(last,index-last));
+        //std::cout<<"str1 is "<<str<<std::endl;
+        t->add(createString(m_str->substr(last,index-last)));
+        //printf("str1 char is %s \n",t->get(0)->toChars());
         last = index+1;
         index = m_str->find_first_of(*v->m_str,last);
     }
     
     if(last - m_str->size() > 0){
         //ret->push_back(s.substr(last,index-last));
-        std::string *str = new std::string(m_str->substr(last,index-last));
-        t->add(createString(str));
+        //std::string str = new std::string(m_str->substr(last,index-last));
+        //std::cout<<"str2 is "<<str<<std::endl;
+        t->add(createString(m_str->substr(last,index-last)));
+        //printf("str2 char is %s \n",t->get(1)->toChars());
     }
 }
 

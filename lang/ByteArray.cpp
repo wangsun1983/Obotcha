@@ -92,6 +92,8 @@ void _ByteArray::qucikShrink(int size) {
         return;
     }
 
+    buff[size] = 0;
+
     _size = size;
 }
 
@@ -171,16 +173,18 @@ int _ByteArray::append(sp<_ByteArray> b) {
 
     if(buff == nullptr) {
         buff = (char *)malloc(b->size());
+        _size = b->size();
         memcpy(buff,b->toValue(),b->size());
         return 0;
     }
 
     char *newData = (char *)malloc(_size + b->size());
     memcpy(newData,buff,_size);
-    memcpy(newData+_size,b->toValue(),b->size());
+    memcpy(newData + _size,b->toValue(),b->size());
 
     free(buff);
     buff = newData;
+    _size = _size + b->size();
     return 0;
 }
 

@@ -22,8 +22,12 @@ public:
     int readByte();
     int readInt();
     long readLong();
+    String readLine();
     int readByteArray(ByteArray);
     int getIndex();
+    int getRemainSize();
+    int setIndex(int);
+    int appendWithAdjustment(ByteArray);
 
 private:
     ByteArray mData;

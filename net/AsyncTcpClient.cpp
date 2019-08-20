@@ -19,19 +19,20 @@
 
 namespace obotcha {
 
-_TcpClientThread::_TcpClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status,int timeout) {
+_TcpClientThread::_TcpClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status,int timeout,int buffsize) {
     mSock = sock;
     mEpfd = epfd;
     mListener = l;
     mPipe = pi;
     mStatus = status;
     mTimeOut = timeout;
+    mBufferSize = buffsize;
 }
 
 void _TcpClientThread::run() {
     
     struct epoll_event events[EPOLL_SIZE];
-    char recv_buf[BUF_SIZE];
+    char *recv_buf = (char *)malloc(mBufferSize);
     printf("epoll run,mTimeOut is %d \n",mTimeOut);
     while(1) {
         if(mStatus->get() == ClientWaitingThreadExit) {
@@ -78,10 +79,10 @@ void _TcpClientThread::run() {
                 continue;
             }
 
-            memset(recv_buf,0,BUF_SIZE);
+            memset(recv_buf,0,mBufferSize);
             if(events[i].data.fd == mSock) {
                 printf("epoll trace3 \n");
-                int ret = recv(mSock, recv_buf, BUF_SIZE, 0);
+                int ret = recv(mSock, recv_buf, mBufferSize, 0);
                 if(ret == 0) {
                     cout << "Server closed connection: " << mSock << endl;
                     st(NetUtils)::delEpollFd(mEpfd,sockfd);
@@ -96,18 +97,20 @@ void _TcpClientThread::run() {
             }
         }
     }
+
+    free(recv_buf);
 }
 
-_AsyncTcpClient::_AsyncTcpClient(String ip,int port,int recv_time,SocketListener l) {
-    init(ip,port,recv_time,l);
+_AsyncTcpClient::_AsyncTcpClient(String ip,int port,int recv_time,SocketListener l,int buffsize) {
+    init(ip,port,recv_time,l,buffsize);
 }
     
 
-_AsyncTcpClient::_AsyncTcpClient(String ip,int port,SocketListener l) {
-    init(ip,port,-1,l);
+_AsyncTcpClient::_AsyncTcpClient(String ip,int port,SocketListener l,int buffsize) {
+    init(ip,port,-1,l,buffsize);
 }
 
-bool _AsyncTcpClient::init(String ip,int port,int recv_time,SocketListener l) {
+bool _AsyncTcpClient::init(String ip,int port,int recv_time,SocketListener l,int buffsize) {
 
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port);
@@ -119,6 +122,7 @@ bool _AsyncTcpClient::init(String ip,int port,int recv_time,SocketListener l) {
     listener = l;
 
     mRecvtimeout = recv_time;
+    mBuffSize = buffsize;
 
     mPipe = createPipe();
     mPipe->init();
@@ -171,7 +175,7 @@ int _AsyncTcpClient::send(ByteArray data) {
 void _AsyncTcpClient::start() {
     if(mTcpClientThread == nullptr) {
         printf("Tcpclient start \n");
-        mTcpClientThread = createTcpClientThread(sock,epfd,listener,mPipe,mStatus,mRecvtimeout);
+        mTcpClientThread = createTcpClientThread(sock,epfd,listener,mPipe,mStatus,mRecvtimeout,mBuffSize);
         mTcpClientThread->start();
     }
 }

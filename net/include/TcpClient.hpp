@@ -22,13 +22,15 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(TcpClient) {
 public:
-    _TcpClient(String ip,int port,int recv_time,int buff_size = 1024*64);
+    _TcpClient(String ip,int port,int recv_time,int buff_size = 1024);
     
     int doConnect();
 
     int doSend(ByteArray);
 
     ByteArray doReceive();
+
+    int getBuffSize();
 
     void release();
 

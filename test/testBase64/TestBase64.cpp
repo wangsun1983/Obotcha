@@ -16,17 +16,23 @@ int main() {
   printf("---[ByteArray Test Start]--- \n");
   //decode(String)/encode(String)
   while(1) {
-      String abc = "hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world";
+      String abc = "hello world";
       Base64 base64 = createBase64();
       String r1 = base64->encode(abc);
       String r2 = base64->decode(r1);
       if(!r2->equals(abc)) {
           printf("---[ByteArray Test {decode(String)/encode(String)} case1] [FAILED]--- \n");
-          printf("decode result is %s \n",r2->toChars());
           break;
       }
 
-      printf("---[ByteArray Test {decode(String)/encode(String)} case2] [Success]--- \n");
+      //aGVsbG8gd29ybGQ=
+      if(!r1->equals("aGVsbG8gd29ybGQ=")) {
+          printf("---[ByteArray Test {decode(String)/encode(String)} case2] [FAILED]--- \n");
+          printf("r1 is %s \n",r1->toChars());
+          break;
+      }
+
+      printf("---[ByteArray Test {decode(String)/encode(String)} case3] [Success]--- \n");
       break;
   }
 
@@ -37,20 +43,11 @@ int main() {
         array->fill(i,'a');
       }
 
-      //printf("array is %s \n",array->toValue());
-
-      //for(int i = 0;i < 1023;i++) {
-      //  printf("v[i] is %d \n",array->at(i));
-      //}
-
-
       Base64 base64 = createBase64();
       //printf("encode array is %s,size is %d\n",array->toValue(),array->size());
       ByteArray r1 = base64->encode(array);
 
-
       ByteArray r2 = base64->decode(r1);
-
       //printf("r2 is %s,r2 size is %d \n",r2->toValue(),r2->size());
 
       for(int i = 0;i<32;i++) {
@@ -90,7 +87,7 @@ int main() {
 
       for(int index = 0;index++;index <size) {
         if(r2->at(index) != fcontent->at(index)) {
-            printf("r2[%d] is %d,array[%d] is %d \n",index,r2->at(index),index,fcontent->at(index));
+            //printf("r2[%d] is %d,array[%d] is %d \n",index,r2->at(index),index,fcontent->at(index));
             printf("---[ByteArray Test {encode(File)} case1] [FAILED]--- \n");
             break;
         }

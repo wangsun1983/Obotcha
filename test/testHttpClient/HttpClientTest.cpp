@@ -7,17 +7,20 @@
 #include "HttpUrlParser.hpp"
 #include "HttpClient.hpp"
 #include "HttpUrl.hpp"
+#include "HttpPacket.hpp"
 
 using namespace obotcha;
 
 
 int main() {
 
-    String urlstr = "http://sina.com.cn";
+    String urlstr = "http://www.tusvisionai.com/solutions";
     HttpUrl url = st(HttpUrlParser)::parseUrl(urlstr);
 
+    //while(1) {
     HttpClient client = createHttpClient();
-    client->execute(0,url);
+    client->execute(HttpMethodGet,url);
+    //}
     while(1){}
 /*    
     String request =  "http://su:abc@localhost/test.cgi?a=b&c=d";

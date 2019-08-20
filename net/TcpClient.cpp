@@ -54,6 +54,10 @@ ByteArray _TcpClient::doReceive() {
     return data;
 }
 
+int _TcpClient::getBuffSize() {
+    return mBufferSize;
+}
+
 void _TcpClient::release() {
     close(mSock);
 }

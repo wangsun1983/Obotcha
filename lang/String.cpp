@@ -712,6 +712,22 @@ int _String::toBasicInt() {
     return value;
 }
 
+int _String::toHexInt() {
+    if(m_str == nullptr) {
+        return 0;
+    }
+
+    if(!isIntNumber(m_str->data(),m_str->size())) {
+        return 0;
+    }
+
+    std::stringstream ss;
+    ss<< std::hex <<*m_str;
+    int value;
+    ss>>value;
+    return value;
+}
+
 bool _String::toBasicBool() {
     if(m_str == nullptr) {
         return false;

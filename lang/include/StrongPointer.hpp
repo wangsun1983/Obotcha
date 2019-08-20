@@ -212,10 +212,11 @@ sp<T>::sp(U* other)
 
 template<typename T> template<typename U>
 sp<T>::sp(const sp<U>& other)
-: m_ptr(dynamic_cast<T*>(other.m_ptr))
-  {
+//: m_ptr(dynamic_cast<T*>(other.m_ptr))
+: m_ptr(other.m_ptr)
+{
     if (m_ptr) m_ptr->incStrong(this);
-  }
+}
 
 template<typename T>
 sp<T>::~sp()
@@ -229,6 +230,7 @@ sp<T>::~sp()
 
 template<typename T>
 sp<T>& sp<T>::operator = (const sp<T>& other) {
+    //printf("StrongPointer trace 2 \n");
     T* otherPtr(other.m_ptr);
     if (otherPtr) otherPtr->incStrong(this);
     
@@ -245,9 +247,12 @@ sp<T>& sp<T>::operator = (const sp<T>& other) {
 template<typename T>
 sp<T>& sp<T>::operator = (T* other)
 {
+    //printf("StrongPointer trace 1 \n");
     if (other) other->incStrong(this);
     if (m_ptr) {
+        //printf("StrongPointer trace 1_1 \n");
         if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
+            //printf("StrongPointer trace 1_2 \n");
             delete static_cast<const T*>(m_ptr);
         }   
     }
@@ -259,6 +264,7 @@ sp<T>& sp<T>::operator = (T* other)
 template<typename T> template<typename U>
 sp<T>& sp<T>::operator = (const sp<U>& other)
 {
+    //printf("StrongPointer trace 3 \n");
     T* otherPtr(other.m_ptr);
     if (otherPtr) otherPtr->incStrong(this);
     if (m_ptr) {
@@ -339,5 +345,14 @@ T* sp<T>::get_pointer(){
 //{
 //    return printStrongPointer(to, val.get());
 //}
+
+#define tp(X) _##X
+template<typename X,typename V>
+sp<X> transform_cast(sp<V> t) {
+    sp<X> value;
+    value.set_pointer(dynamic_cast<X *>(t.m_ptr));
+    return value;
+}
+
 }
 #endif
