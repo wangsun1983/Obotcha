@@ -19,6 +19,8 @@ link += calendar \
 		datetimeparser \
 		datetimeformatter \
 		numberformatter \
+		message \
+		handler \
 
 objs += $(outtmp)/calendar.o \
         $(outtmp)/timezone.o \
@@ -34,6 +36,8 @@ objs += $(outtmp)/calendar.o \
 		$(outtmp)/datetimeparser.o \
 		$(outtmp)/datetimeformatter.o \
 		$(outtmp)/numberformatter.o \
+		$(outtmp)/message.o \
+		$(outtmp)/handler.o \
 
 calendar :$(utilDir)/Calendar.cpp
 	$(gcc) $(cflags) -c $(utilDir)/Calendar.cpp -o $(outtmp)/calendar.o
@@ -77,6 +81,11 @@ datetimeformatter :$(utilDir)/DateTimeFormatter.cpp
 numberformatter :$(utilDir)/NumberFormatter.cpp
 	$(gcc) $(cflags) -c $(utilDir)/NumberFormatter.cpp -o $(outtmp)/numberformatter.o
 
+message :$(utilDir)/Message.cpp
+	$(gcc) $(cflags) -c $(utilDir)/Message.cpp -o $(outtmp)/message.o
+
+handler :$(utilDir)/Handler.cpp
+	$(gcc) $(cflags) -c $(utilDir)/Handler.cpp -o $(outtmp)/handler.o	
 #base64 :$(utilDir)/Base64.cpp
 #	$(gcc) $(cflags) -c $(utilDir)/Base64.cpp -o $(outtmp)/base64.o
 
