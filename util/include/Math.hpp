@@ -8,6 +8,12 @@
 
 namespace obotcha {
 
+enum CompareResult {
+    CompareParamEqual = 0,
+    CompareParam1Larger,
+    CompareParam2Larger,
+}; 
+
 DECLARE_SIMPLE_CLASS(Math) {
 
 public:
@@ -29,19 +35,22 @@ public:
 
     static long max(long,long);
     static double max(double,double);
-    static int max(int,double);
-    static float max(float,double);
+    static float max(float,float);
 
     static long min(long,long);
     static double min(double,double);
-    static int min(int,double);
-    static float min(float,double);
+    static float min(float,float);
 
     static double pow(double,double);
+    static long pow(long,long);
+
     static double sqrt(double);
 
     static int ceil(double);
     static int floor(double);
+
+    static int compare(double,double);
+    static int compare(float,float);
 
 };
 }

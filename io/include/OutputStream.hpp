@@ -16,9 +16,9 @@ DECLARE_SIMPLE_CLASS(OutputStream) {
 public:
     virtual bool write(char c);
     
-    virtual bool write(ByteArray);
+    virtual long write(ByteArray);
 
-    virtual bool write(ByteArray buff,long size);
+    virtual long write(ByteArray buff,long size);
 
     virtual bool open();
 

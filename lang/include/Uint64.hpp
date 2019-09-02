@@ -27,6 +27,10 @@ public:
 */
     ~_Uint64();
 
+    static const uint64_t MAX_VALUE = 0xFFFFFFFFFFFFFFFF;
+
+    static const uint64_t MIN_VALUE = 0x0;
+
 private:
     uint64_t val;
 };

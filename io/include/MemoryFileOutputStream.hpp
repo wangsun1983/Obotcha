@@ -23,22 +23,23 @@ public:
     bool write(char c);
     
     //bool write(char *buffer,int size);
-    bool write(ByteArray buff);
+    long write(ByteArray buff);
 
-    bool write(ByteArray buff,long size);
+    long write(ByteArray buff,long size);
 
     bool writeString(String s);
     
-    //no use
     bool open(FileOpenType opentype);
 
-    bool open(long mapsize);
+    bool open(long mapsize,FileOpenType opentype = Trunc);
 
     bool open();
     
     void close();
 
     void flush();
+
+    long getMemoryFileSize();
 
 private:
     String mPath;
@@ -48,6 +49,8 @@ private:
     char *mPtr;
 
     long mMapSize;
+
+    FileOpenType mType;
 };
 
 }

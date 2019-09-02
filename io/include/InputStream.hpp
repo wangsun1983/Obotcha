@@ -11,7 +11,7 @@ DECLARE_SIMPLE_CLASS(InputStream) {
 public:
     virtual int read();
     
-    virtual int read(ByteArray);
+    virtual long read(ByteArray); //return size;
 
     virtual bool open();
     

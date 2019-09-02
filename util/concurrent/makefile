@@ -16,6 +16,7 @@ link += condition \
 	future \
 	futuretask \
 	barrier \
+	timer \
 
 objs += $(outtmp)/condition.o \
 	$(outtmp)/scheduledthreadpoolexecutor.o \
@@ -33,6 +34,7 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/future.o \
 	$(outtmp)/futuretask.o \
     $(outtmp)/barrier.o \
+	$(outtmp)/timer.o \
 
 
 condition :$(concurrentDir)/Condition.cpp
@@ -82,3 +84,6 @@ readwritelock :$(concurrentDir)/ReadWriteLock.cpp
 
 executors :$(concurrentDir)/Executors.cpp
 	$(gcc) $(cflags) -std=c++11 -lpthread -c $(concurrentDir)/Executors.cpp -o $(outtmp)/executors.o
+
+timer :$(concurrentDir)/Timer.cpp
+	$(gcc) $(cflags) -std=c++11 -lpthread -c $(concurrentDir)/Timer.cpp -o $(outtmp)/timer.o

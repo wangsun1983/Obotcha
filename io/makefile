@@ -11,10 +11,12 @@ link += file \
 	memoryfile \
 	memoryfileinputstream \
 	memoryfileoutputstream \
+	libraryfileinputstream \
 	filenodereader \
 	epollfileobserver \
 	bytearrayreader \
 	bytearraywriter \
+	filenotfoundexception \
 
 
 objs += $(outtmp)/file.o \
@@ -28,16 +30,24 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/memoryfile.o \
 	$(outtmp)/memoryfileinputstream.o \
 	$(outtmp)/memoryfileoutputstream.o \
+	$(outtmp)/libraryfileinputstream.o \
 	$(outtmp)/filenodereader.o \
 	$(outtmp)/epollfileobserver.o \
 	$(outtmp)/bytearrayreader.o \
 	$(outtmp)/bytearraywriter.o \
+	$(outtmp)/filenotfoundexception.o \
+
+filenotfoundexception :$(ioDir)/FileNotFoundException.cpp
+	$(gcc) $(cflags) -c $(ioDir)/FileNotFoundException.cpp -o $(outtmp)/filenotfoundexception.o $(external)
 
 file :$(ioDir)/File.cpp
 	$(gcc) $(cflags) -c $(ioDir)/File.cpp -o $(outtmp)/file.o $(external)
 
 fileinputstream :$(ioDir)/FileInputStream.cpp
 	$(gcc) $(cflags) -c $(ioDir)/FileInputStream.cpp -o $(outtmp)/fileinputstream.o $(external)
+
+libraryfileinputstream :$(ioDir)/LibraryFileInputStream.cpp
+	$(gcc) $(cflags) -c $(ioDir)/LibraryFileInputStream.cpp -o $(outtmp)/libraryfileinputstream.o $(external)
 
 inputstream :$(ioDir)/InputStream.cpp
 	$(gcc) $(cflags) -c $(ioDir)/InputStream.cpp -o $(outtmp)/inputstream.o $(external)

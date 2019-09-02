@@ -44,7 +44,6 @@ _ByteArray::_ByteArray(String str) {
     _size = size;
     buff = (char *)malloc(_size + 1);
     memset(buff,0,_size + 1);
-
     memcpy(buff,str->toChars(),size);
 }
 
@@ -74,6 +73,7 @@ void _ByteArray::clear() {
 _ByteArray::~_ByteArray() {
     if(buff != nullptr) {
         free(buff);
+        buff = nullptr;
     }
     _size = 0;
 }
@@ -142,7 +142,7 @@ int _ByteArray::fill(int index,char v) {
     }
 
     if(index >= _size || index < 0) {
-        return false;
+        return -ByteArrayWrongParam;
     }
     //printf("fill index is %d,v is %d",index,v);
     buff[index] = v;

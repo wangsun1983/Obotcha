@@ -8,9 +8,31 @@
 #include "Long.hpp"
 #include "UUID.hpp"
 #include "Log.hpp"
+#include "ArrayList.hpp"
+#include "String.hpp"
+
+using namespace obotcha;
 
 int main() {
+    printf("---[UUID Test Start]--- \n");
+    //String toValue();
+    while(1) {
+        ArrayList<String> list = craeteArrayList<String>();
+        UUID uuid = createUUID();
+        bool isOk = true;
+        for(int i = 0;i<list->size();i++) {
+            if(uuid->toString()->equals(list->get(i))) {
+                isOk = false;
+                printf("---[UUID Test {toString()} case1] [FAIL]--- \n");
+                break;
+            }
 
-  UUID uuid = createUUID();
-  LOGD("uuid is ",uuid->toValue());
+            list->add(uuid->toString());
+
+            if(!isOk) {
+                break;
+            }
+        }
+
+    }
 }

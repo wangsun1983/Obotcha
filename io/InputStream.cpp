@@ -7,7 +7,7 @@ int _InputStream::read() {
     return -1;
 }
     
-int _InputStream::read(ByteArray) {
+long _InputStream::read(ByteArray) {
     //TODO
     return  -1;
 }

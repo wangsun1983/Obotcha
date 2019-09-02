@@ -19,22 +19,20 @@ bool _FileOutputStream::write(char c) {
     return true;
 }
     
-bool _FileOutputStream::write(ByteArray buff) {
+long _FileOutputStream::write(ByteArray buff) {
     char *p = buff->toValue();
     //printf("write %s,size is %d \n",p,buff->size());
     
     
     fstream.write(buff->toValue(),buff->size());
-    return true;
+    return buff->size();
 }
 
-bool _FileOutputStream::write(ByteArray buff,long size) {
+long _FileOutputStream::write(ByteArray buff,long size) {
     char *p = buff->toValue();
-    //printf("write %s,size is %d \n",p,buff->size());
-    
-    
-    fstream.write(buff->toValue(),size);
-    return true;
+    long length = buff->size() > size?size:buff->size();    
+    fstream.write(buff->toValue(),length);
+    return length;
 }
 
 bool _FileOutputStream::writeString(String s) {

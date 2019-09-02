@@ -16,6 +16,7 @@
 #include "String.hpp"
 #include "Sha.hpp"
 #include "Base64.hpp"
+#include "Random.hpp"
 
 namespace obotcha {
 
@@ -32,6 +33,8 @@ private:
     Sha mSha;
     Base64 mBase64;
     bool mIsClient;
+    Random mRand;
+
 }; 
 
 }

@@ -23,6 +23,8 @@ public:
 
     ~_Double();
 
+    static const double EPS;
+
 private:
     double val;
 

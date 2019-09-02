@@ -17,7 +17,7 @@ extern int bytearray_read_line();
 int main() {
     printf("---[ByteArrayReader Test Start]--- \n");
     bytearray_read_line();
-#if 0
+
   /*
     for(int i = 0;i<16;i++) {
       array[i] = (byte)i;
@@ -131,5 +131,4 @@ int main() {
     printf("---[TestByteArrayReader Test {readByteArray} case3] [Success]--- \n");
     break;
   }
-#endif  
 }

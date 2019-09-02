@@ -26,8 +26,7 @@ using namespace std;
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(String)
-{
+DECLARE_SIMPLE_CLASS(String) {
 public:
     _String();
 
@@ -53,6 +52,14 @@ public:
 
     _String(Byte v);
 
+    _String(Uint8);
+
+    _String(Uint16);
+
+    _String(Uint32);
+
+    _String(Uint64);
+
     _String(int v);
 
     _String(bool v);
@@ -64,6 +71,14 @@ public:
     _String(long v);
 
     _String(byte v);
+
+    _String(uint8_t);
+
+    _String(uint16_t);
+
+    _String(uint32_t);
+
+    _String(uint64_t);
 
     template <typename T>
     void split(String v,T t);
@@ -179,7 +194,7 @@ public:
     bool startsWith(String v);
 
 private:
-    std::string *m_str;
+    std::string m_str;
 
     bool isIntNumber(const char *p,int size);
 
@@ -199,7 +214,7 @@ void _String::split(String v,T t) {
     int index = 0;
     int last = 0;
 
-    index = m_str->find_first_of(*v->m_str,last);
+    index = m_str.find_first_of(v->m_str,last);
 
     if(index == -1) {
         return;
@@ -208,17 +223,17 @@ void _String::split(String v,T t) {
     while(index != -1) {
         //std::string str = new std::string(m_str->substr(last,index-last));
         //std::cout<<"str1 is "<<str<<std::endl;
-        t->add(createString(m_str->substr(last,index-last)));
+        t->add(createString(m_str.substr(last,index-last)));
         //printf("str1 char is %s \n",t->get(0)->toChars());
         last = index+1;
-        index = m_str->find_first_of(*v->m_str,last);
+        index = m_str.find_first_of(v->m_str,last);
     }
     
-    if(last - m_str->size() > 0){
+    if(last - m_str.size() > 0){
         //ret->push_back(s.substr(last,index-last));
         //std::string str = new std::string(m_str->substr(last,index-last));
         //std::cout<<"str2 is "<<str<<std::endl;
-        t->add(createString(m_str->substr(last,index-last)));
+        t->add(createString(m_str.substr(last,index-last)));
         //printf("str2 char is %s \n",t->get(1)->toChars());
     }
 }

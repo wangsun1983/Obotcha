@@ -17,9 +17,13 @@ public:
 
     bool equals(Float p);
 
+    bool equals(_Float *p);
+
     bool equals(float p);
 
     ~_Float();
+
+    static const float EPS;
 
 private:
     float val;

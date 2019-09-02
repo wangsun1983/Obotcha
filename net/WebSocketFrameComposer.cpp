@@ -23,6 +23,7 @@ _WebSocketFrameComposer::_WebSocketFrameComposer(bool isclient) {
     mSha = createSha(SHA_1);
     mBase64 = createBase64();
     mIsClient = isclient;
+    mRand = createRandom();
 }
 
 ByteArray _WebSocketFrameComposer::generateControlFrame(int opcode, ByteArray payload) {
@@ -38,7 +39,7 @@ ByteArray _WebSocketFrameComposer::generateControlFrame(int opcode, ByteArray pa
         sinkWriter->writeByte(b1);
 
         ByteArray maskKey = createByteArray(4);
-        st(Random)::nextBytes(maskKey);
+        mRand->nextBytes(maskKey);
         sinkWriter->writeByteArray(maskKey);
 
         if (payload != nullptr) {
@@ -73,7 +74,7 @@ ByteArray _WebSocketFrameComposer::generateMessageFrame(int formatOpcode,ByteArr
     if (mIsClient) {
         b1 |= st(WebSocketProtocol)::B1_FLAG_MASK;
         //random.nextBytes(maskKey);
-        st(Random)::nextBytes(maskKey);
+        mRand->nextBytes(maskKey);
     }
 
     int byteCount = message->size();

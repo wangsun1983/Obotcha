@@ -16,7 +16,7 @@ int _FileInputStream::read() {
     return 0;
 }
 
-int _FileInputStream::read(ByteArray buff) {
+long _FileInputStream::read(ByteArray buff) {
     fstream.read(buff->toValue(),buff->size());
     return fstream.gcount();
 }

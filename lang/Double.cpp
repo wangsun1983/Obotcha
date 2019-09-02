@@ -10,10 +10,13 @@
  * @license none
  */
 
-
+#include <cmath>
 #include "Double.hpp"
 
+
 namespace obotcha {
+
+const double _Double::EPS = 1e-8;
 
 _Double::_Double(double v) : val(v) {}
 
@@ -30,11 +33,11 @@ bool _Double::equals(Double p) {
         return false;
     }
     
-    return val == p->val;
+    return std::fabs(val-p->val) <= EPS;
 }
 
 bool _Double::equals(double p) {
-    return val == p;
+    return std::fabs(val-p) <= EPS;
 }
 
 bool _Double::equals(_Double *p) {
@@ -42,7 +45,7 @@ bool _Double::equals(_Double *p) {
         return false;
     }
 
-    return val == p->val;
+    return std::fabs(val-p->val) <= EPS;
 }
 
 _Double::~_Double() {

@@ -27,6 +27,10 @@ public:
 */
     ~_Uint8();
 
+    static const uint8_t MAX_VALUE = 0xFF;
+
+    static const uint8_t MIN_VALUE = 0x0;
+
 private:
     uint8_t val;
 };

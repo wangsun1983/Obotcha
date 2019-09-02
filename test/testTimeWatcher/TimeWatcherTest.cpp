@@ -14,16 +14,21 @@ int main() {
 
   printf("---[TimeWatcher Test Start]--- \n");
   
-  TimeWatcher t = createTimeWatcher();
-  t->start();
-  sleep(2);
-  printf("cost : %ld \n",t->stop());
 
-  {
-    startAutoTimeWatcher("MyTest");
-    sleep(3);
+  while(1) {
+      TimeWatcher t = createTimeWatcher();
+      t->start();
+      sleep(5);
+      //t->stop();
+      long interval = t->stop();
+      if(interval != 5000) {
+          printf("---[TimeWatcher Test {start/stop()} case1] [FAIL]--- \n");
+          break;
+      }
+
+      printf("---[TimeWatcher Test {start/stop()} case1] [Success]--- \n");
+      break;
   }
-
-  while(1){}
+  
 
 }

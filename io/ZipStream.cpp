@@ -41,7 +41,7 @@ int _ZipStream::read() {
     return 0;
 }
 
-int _ZipStream::read(ByteArray buffer) {
+long _ZipStream::read(ByteArray buffer) {
     return  0;
 }
 

@@ -24,9 +24,9 @@ public:
     bool write(char c);
     
     //bool write(char *buffer,int size);
-    bool write(ByteArray buff);
+    long write(ByteArray buff);
 
-    bool write(ByteArray buff,long size);
+    long write(ByteArray buff,long size);
 
     bool writeString(String s);
     

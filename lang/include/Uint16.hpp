@@ -27,6 +27,10 @@ public:
 */
     ~_Uint16();
 
+    static const uint16_t MAX_VALUE = 0xFFFF;
+
+    static const uint16_t MIN_VALUE = 0x0;
+
 private:
     uint16_t val;
 };

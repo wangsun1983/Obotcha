@@ -1,7 +1,10 @@
 #ifndef __RANDOM_HPP__
 #define __RANDOM_HPP__
 
+#include <cmath>
 #include <time.h>
+#include <random>
+
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -14,15 +17,26 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(Random) {
 
 public:
-    static int nextInt();
+    _Random();
 
-    static int nextInt(int min,int max);
+    int nextInt();
 
-    static int nextInt(int min);
+    int nextInt(int min,int max);
 
-    static double nextDouble();
+    int nextInt(int min);
 
-    static void nextBytes(ByteArray);
+    double nextDouble();
+
+    double nextDouble(double min,double max);
+
+    double nextDouble(double min);
+
+    void nextBytes(ByteArray);
+
+private:
+    std::random_device rd;
+    std::mt19937_64 gen;
+
 };
 
 }

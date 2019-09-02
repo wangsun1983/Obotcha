@@ -32,7 +32,10 @@ void _EPollThread::run() {
     struct epoll_event events[mSize];
 
     while(1) {
+        printf("_EPollThread while trace1 \n");
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
+        printf("_EPollThread while trace2,epoll_events_count is %d \n",epoll_events_count);
+
         if(epoll_events_count < 0) {
             printf("_EPollThread trace1 \n");
             return;
@@ -43,10 +46,12 @@ void _EPollThread::run() {
             int event = events[i].events;
 
             if(fd == mPipe->getReadPipe()) {
+                printf("_EPollThread end \n");
                 return;
             }
 
             if(mListener->onEvent(fd,event) == EPollOnEventResultRemoveFd) {
+                printf("_EPollThread remove fd \n");
                 epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
             };
         }

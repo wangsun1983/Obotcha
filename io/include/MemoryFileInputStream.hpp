@@ -15,6 +15,7 @@
 
 namespace obotcha {
 
+
 DECLARE_SIMPLE_CLASS(MemoryFileInputStream) IMPLEMENTS(InputStream) {
 public:
 
@@ -24,9 +25,9 @@ public:
 
     int read();
 
-    int read(ByteArray buffer);
+    long read(ByteArray buffer);
 
-    int read(int index,ByteArray buffer);
+    long read(int index,ByteArray buffer);
 
     ByteArray readAll();
 
@@ -34,6 +35,7 @@ public:
 
     void close();
 
+    ~_MemoryFileInputStream();
 private:
     String mPath;
 

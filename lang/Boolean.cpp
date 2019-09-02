@@ -17,6 +17,11 @@ namespace obotcha {
 _Boolean::_Boolean(bool v) : val(v) {}
 
 _Boolean::_Boolean(Boolean v) {
+    if(v == nullptr) {
+        val = false;
+        return;
+    }
+    
     val = v->val;
 }
     

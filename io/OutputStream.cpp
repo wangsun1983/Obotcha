@@ -7,14 +7,14 @@ bool _OutputStream::write(char c) {
     return false;
 }
 
-bool _OutputStream::write(ByteArray buff) {
+long _OutputStream::write(ByteArray buff) {
     //TODO
-    return false;
+    return -1;
 }
 
-bool _OutputStream::write(ByteArray buff,long size) {
+long _OutputStream::write(ByteArray buff,long size) {
     //TODO
-    return false;
+    return -1;
 }
 
 bool _OutputStream::open(FileOpenType) {

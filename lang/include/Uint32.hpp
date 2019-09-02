@@ -27,6 +27,10 @@ public:
 */
     ~_Uint32();
 
+    static const uint32_t MAX_VALUE = 0xFFFFFFFF;
+
+    static const uint32_t MIN_VALUE = 0x0;
+
 private:
     uint32_t val;
 };

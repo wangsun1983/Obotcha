@@ -6,6 +6,7 @@
 #include "Double.hpp"
 #include "StrongPointer.hpp"
 
+using namespace obotcha;
 
 int main() {
 

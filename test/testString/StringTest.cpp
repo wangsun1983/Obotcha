@@ -122,8 +122,8 @@ int main() {
     }
 
     String str3 = createString("abc",2,2);
-    if(str3->size() != 0) {
-        printf("String construct test15-------[FAIL] \n");
+    if(!str3->equals("c")) {
+        printf("String construct test15-------[FAIL].str3 is %s  \n",str3->toChars());
         break;
     }
 

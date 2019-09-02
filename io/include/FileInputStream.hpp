@@ -23,7 +23,7 @@ public:
 
     int read();
 
-    int read(ByteArray buffer);
+    long read(ByteArray buffer);
 
     ByteArray readAll();
 

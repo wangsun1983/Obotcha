@@ -13,6 +13,7 @@ link += integer \
 	uint16 \
 	uint8 \
 	byte \
+	exception \
 
 objs += $(outtmp)/integer.o \
 	$(outtmp)/boolean.o \
@@ -27,6 +28,7 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/uint16.o \
 	$(outtmp)/uint8.o \
 	$(outtmp)/byte.o \
+	$(outtmp)/exception.o \
 
 
 integer :$(langDir)/Integer.cpp
@@ -67,3 +69,6 @@ bytearray :$(langDir)/ByteArray.cpp
 
 byte :$(langDir)/Byte.cpp
 		$(gcc) $(cflags) -c $(langDir)/Byte.cpp -o $(outtmp)/byte.o $(external)
+
+exception :$(langDir)/Exception.cpp
+		$(gcc) $(cflags) -c $(langDir)/Exception.cpp -o $(outtmp)/exception.o $(external)

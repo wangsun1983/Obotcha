@@ -1,5 +1,5 @@
-#ifndef __MEMORY_FILE_HPP__
-#define __MEMORY_FILE_HPP__
+#ifndef __LIBRARY_FILE_HPP__
+#define __LIBRARY_FILE_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    
@@ -15,7 +15,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(MemoryFile) EXTENDS(File){
+DECLARE_SIMPLE_CLASS(LibraryFile) EXTENDS(File){
 public:
     using _File::_File; //use File's all construct method
 };

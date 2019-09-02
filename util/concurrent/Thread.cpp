@@ -191,7 +191,7 @@ _Thread::_Thread(Runnable run) {
     mKeepAliveThread->start();
 	mRunnable = run;
     mStatus = ThreadNotStart;
-    //mNameMutex = createMutex("theradNameMutex");
+
     bootFlag = createAtomicInteger(0);
 }
 
@@ -201,7 +201,6 @@ _Thread::_Thread(String name,Runnable run) {
     mRunnable = run;
     mStatus = ThreadNotStart;
 
-    //mNameMutex = createMutex("theradNameMutex");
     bootFlag = createAtomicInteger(0);
 }
 
@@ -211,14 +210,10 @@ _Thread::_Thread() {
     mPriority = ThreadLowPriority;
     mStatus = ThreadNotStart;
 
-    //mNameMutex = createMutex("theradNameMutex");
     bootFlag = createAtomicInteger(0);
 }
 
 int _Thread::setName(String name) {
-    //AutoMutex l(mNameMutex);
-    mName = name;
-
     switch(mStatus) {
         case ThreadIdle:
         case ThreadNotStart:
@@ -230,21 +225,18 @@ int _Thread::setName(String name) {
         case ThreadDestroy:
             return -ThreadFailReason::ThreadFailAllreadyDestroy;
     }
-    
-    pthread_setname_np(mPthread,name->toChars());
-    return 0;
+
+    mName = name;
+    return pthread_setname_np(mPthread,name->toChars());
 }
 
 String _Thread::getName() {
-    //AutoMutex l(mNameMutex);
     return mName;
 }
 
 _Thread::~_Thread(){
     if(mStatus == ThreadIdle) {
-        mStatus = ThreadDestroy;
         join();
-        return;
     } else if(mStatus == ThreadNotStart){
         //pthread_cancel(mPthread);
     }
