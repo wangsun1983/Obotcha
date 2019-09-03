@@ -768,4 +768,52 @@ void testArrayList_MyData() {
       break;
     }
 
+  //--[_ListIterator<T> Test {remove()} Start]---
+  while(1) {
+    ArrayList<TestData1> list = createArrayList<TestData1>();
+    TestData1 t1 = createTestData1();
+    t1->i = 1;
+    
+    TestData1 t2 = createTestData1();
+    t2->i = 2;
+
+    TestData1 t3 = createTestData1();
+    t3->i = 3;
+
+    TestData1 t4 = createTestData1();
+    t4->i = 4;
+
+    TestData1 t5 = createTestData1();
+    t5->i = 5;
+
+    list->add(t1);
+    list->add(t2);
+    list->add(t3);
+    list->add(t4);
+    list->add(t5);
+
+    ListIterator<TestData1> iterator = list->getIterator();
+    while(iterator->hasValue()) {
+      if(iterator->getValue()->i == 3) {
+        iterator->remove();
+      }else {
+        iterator->next();
+      }
+    }
+
+    if(list->size() != 4) {
+        printf("---[ListIterator<T> Test {remove()} case0] [FAILED]--- \n");
+        break;
+    }
+
+    if(list->get(0)->i != 1 ||list->get(1)->i != 2 
+      ||list->get(2)->i != 4||list->get(3)->i != 5) {
+        printf("---[ListIterator<T> Test {remove()} case2] [FAILED]--- \n");
+        break;
+    }
+
+    printf("---[ListIterator<T> Test {remove()} case3] [OK]--- \n");
+    break;
+  }
+
 }

@@ -43,7 +43,7 @@ enum NtpFailReason {
 
 #define  JAN_1970   0x83aa7e80      //3600s*24h*(365days*70years+17days)
 
-//x*10^(-6)*2^32 us NtpTime'sfraction ²¿·Ö
+//x*10^(-6)*2^32 us NtpTime'sfraction
 #define  NTPFRAC(x) (4294 * (x) + ((1981 * (x)) >> 11))  
 
 #define  USEC(x) (((x) >> 12) - 759 * ((((x) >> 10) + 32768) >> 16))

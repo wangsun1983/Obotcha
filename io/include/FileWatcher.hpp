@@ -40,6 +40,12 @@ public:
     const static int OverFlow = IN_Q_OVERFLOW;          /* Event queued overflowed.  */
     const static int Ignored = IN_IGNORED;              /* File was ignored.  */
 
+    const static int Full = Access|Modify|Attrib|CloseWrite
+                            |CloseNoWrite|Close|Open|MovedFrom
+                            |MovedTo|Move|Create|Delete
+                            |DeleteSelf|MoveSelf|UnMount|OverFlow
+                            |Ignored;
+
     const static int EventNum = 17;
 };
 
@@ -48,13 +54,19 @@ public:
     virtual void onFileUpdate(String filepath,int op) = 0;
 };
 
+DECLARE_SIMPLE_CLASS(LocalFileObserverMonitor) {
+public:
+    int op;
+    FileObserver mObserver;
+};
+
 DECLARE_SIMPLE_CLASS(FileWatcher) IMPLEMENTS(Thread) {
 public:
     static sp<_FileWatcher> getInstance();
     
     int startWatch(String filepath,int op,sp<_FileObserver> observer);
 
-    void stopWatch(int id);
+    void stopWatch(int id,int op,FileObserver observer);
 
 private:    
 
@@ -75,9 +87,7 @@ private:
     int readEvent();
 
     //HashMap<String,HashMap<int,ArrayList<FileObserver>>> mlisteners;
-    HashMap<int,FileObserver> mlisteners;
-
-
+    HashMap<int,ArrayList<LocalFileObserverMonitor>> mListeners;
 };
 
 }

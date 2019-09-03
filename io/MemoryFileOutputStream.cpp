@@ -24,19 +24,15 @@ namespace obotcha {
 _MemoryFileOutputStream::_MemoryFileOutputStream(MemoryFile file) {
     if(file != nullptr) {
         mPath = createString(file->getAbsolutePath());
-        filesize = file->length();
     } else {
         mPath = nullptr;
-        filesize = 0;
     }
-
     mPtr = nullptr;
 }
 
 _MemoryFileOutputStream::_MemoryFileOutputStream(String path) {
     File f = createFile(path);
     mPath = f->getAbsolutePath();
-    filesize = f->length();
     mPtr = nullptr;
 }
 
@@ -50,7 +46,7 @@ bool _MemoryFileOutputStream::write(char c) {
 }
     
 long _MemoryFileOutputStream::write(ByteArray buff) {
-    if(mPtr == nullptr) {
+    if(mPtr == nullptr||buff == nullptr) {
         return -1;
     }
 
@@ -61,7 +57,7 @@ long _MemoryFileOutputStream::write(ByteArray buff) {
 }
 
 long _MemoryFileOutputStream::write(ByteArray buff,long size) {
-    if(mPtr == nullptr) {
+    if(mPtr == nullptr || buff == nullptr) {
         return -1;
     }
 
@@ -72,50 +68,61 @@ long _MemoryFileOutputStream::write(ByteArray buff,long size) {
     return length;
 }
 
-bool _MemoryFileOutputStream::writeString(String s) {
-    if(mPtr == nullptr) {
-        return false;
+long _MemoryFileOutputStream::writeString(String s) {
+    if(mPtr == nullptr || s == nullptr) {
+        return -1;
     }
 
     long length = s->size()>mMapSize?mMapSize:s->size();
     memcpy(mPtr,s->toChars(),length);
-    return true;
+    return length;
 }
     
-bool _MemoryFileOutputStream::open(FileOpenType opentype) {
-    return open();
-}
-
 bool _MemoryFileOutputStream::open() {
-    return open(MemoryFileOutPutDefaultSize);
+    return open(MemoryFileOutPutDefaultSize,Trunc);
 }
 
 bool _MemoryFileOutputStream::open(long size,FileOpenType opentype) {
     mMapSize = size;
     FILE *fp = nullptr;
+
     switch(opentype) {
-        case Append:
+        case Append:{
             fp = fopen(mPath->toChars(), "a+");
+            int fd = fileno(fp);
+            struct stat statInfo;
+            if(fstat(fd,&statInfo)!= 0) {
+                return false;
+            }
+            
+            if(ftruncate(fd, statInfo.st_size + mMapSize) != 0) {
+                return false;
+            }
+
+            mPtr = (char *)mmap(NULL, statInfo.st_size + mMapSize, PROT_WRITE|PROT_READ, MAP_SHARED, fd, 0);
+            mPtr += statInfo.st_size;
+        }
         break;
 
-        case Trunc:
+        case Trunc:{
             fp = fopen(mPath->toChars(), "w+");
+            int fd = fileno(fp);
+            struct stat statInfo;
+            if(fstat(fd,&statInfo)!= 0) {
+                return false;
+            }
+    
+            ftruncate(fd,mMapSize);
+            mPtr = (char *)mmap(NULL, mMapSize, PROT_WRITE|PROT_READ, MAP_SHARED, fd, 0);
+        }
+            
         break;
     }
 
     if (fp == nullptr) {
         return false;
     }
-
-    int fd = fileno(fp);
-    printf("mMapSize is %ld,fd is %d \n",mMapSize,fd);
-    // solve the bus error problem:
-    // we should allocate space for the file first.
-    fseek(fp, mMapSize, SEEK_SET);
-    fwrite("",1,1,fp);
-
-    mPtr = (char *)mmap(NULL, mMapSize, PROT_WRITE|PROT_READ, MAP_SHARED, fd, 0);
-    //printf("mPtr is %x \n",mPtr);    
+      
     fclose(fp);
 
     if (mPtr == MAP_FAILED) {
@@ -128,7 +135,7 @@ bool _MemoryFileOutputStream::open(long size,FileOpenType opentype) {
     
 void _MemoryFileOutputStream::close() {
     if(mPtr != nullptr) {
-        munmap(mPtr, filesize);
+        munmap(mPtr, mMapSize);
     }
 }
 

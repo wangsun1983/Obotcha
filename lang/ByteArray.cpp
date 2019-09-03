@@ -4,7 +4,7 @@
  * @details none
  * @mainpage none
  * @author sunli.wang
- * @email wang_sun_198£³£Àyahoo.co.jp
+ * @email wang_sun_1983@yahoo.co.jp
  * @version 0.0.1
  * @date 2019-07-12
  * @license none

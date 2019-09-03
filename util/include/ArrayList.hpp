@@ -221,6 +221,15 @@ public:
         iterator++;
         return (iterator != mList->end());
     }
+
+    bool remove() {
+        if(iterator == mList->end()) {
+            return false;
+        }
+
+        iterator = mList->elements.erase(iterator);
+        return true;
+    }
     
 private:
     ArrayList<T> mList;    
@@ -303,6 +312,8 @@ public:
     bool hasValue();
 
     bool next();
+
+    bool remove();
     
 private:
     ArrayList<String> mList;    
@@ -382,6 +393,8 @@ public:
     bool hasValue();
 
     bool next();
+
+    bool remove();
     
 private:
     ArrayList<Integer> mList;    
@@ -462,6 +475,8 @@ public:
     bool hasValue();
 
     bool next();
+
+    bool remove();
     
 private:
     ArrayList<Boolean> mList;    
@@ -540,6 +555,8 @@ public:
     bool hasValue();
 
     bool next();
+
+    bool remove();
     
 private:
     ArrayList<Float> mList;    
@@ -618,6 +635,8 @@ public:
     bool hasValue();
 
     bool next();
+
+    bool remove();
     
 private:
     ArrayList<Double> mList;    
@@ -695,6 +714,8 @@ public:
     bool hasValue();
 
     bool next();
+
+    bool remove();
     
 private:
     ArrayList<Long> mList;    

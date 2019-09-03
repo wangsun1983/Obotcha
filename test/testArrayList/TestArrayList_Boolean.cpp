@@ -1039,4 +1039,37 @@ void testArrayList_Boolean() {
     printf("---[ListIterator<Boolean> Test {next()} case3] [OK]--- \n");
     break;
   }
+
+  //--[_ListIterator<Boolean> Test {remove()} Start]---
+  while(1) {
+    ArrayList<Boolean> list = createArrayList<Boolean>();
+    list->add(createBoolean(true));
+    list->add(createBoolean(false));
+    list->add(createBoolean(true));
+    list->add(createBoolean(false));
+    list->add(createBoolean(true));
+
+    ListIterator<Boolean> iterator = list->getIterator();
+    while(iterator->hasValue()) {
+      if(iterator->getValue()->toValue()) {
+        iterator->remove();
+      }else {
+        iterator->next();
+      }
+    }
+
+    if(list->size() != 2) {
+        printf("---[ListIterator<Boolean> Test {remove()} case0] [FAILED]--- \n");
+        break;
+    }
+
+    if(list->get(0)->toValue()
+      ||list->get(1)->toValue()) {
+        printf("---[ListIterator<Boolean> Test {remove()} case2] [FAILED]--- \n");
+        break;
+    }
+
+    printf("---[ListIterator<Boolean> Test {remove()} case3] [OK]--- \n");
+    break;
+  }
 }

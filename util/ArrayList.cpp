@@ -261,6 +261,15 @@ bool _ListIterator<String>::next() {
     return (iterator != mList->end());
 }
 
+bool _ListIterator<String>::remove() {
+    if(iterator == mList->end()) {
+        return false;
+    }
+
+    iterator = mList->elements.erase(iterator);
+    return true;
+}
+
 
 //----------------- ArrayList<Integer> ---------------------
 void _ArrayList<Integer>::add(Integer val) {
@@ -493,6 +502,16 @@ bool _ListIterator<Integer>::next() {
     return (iterator != mList->end());
 }
 
+bool _ListIterator<Integer>::remove() {
+    if(iterator == mList->end()) {
+        return false;
+    }
+
+    iterator = mList->elements.erase(iterator);
+    return true;
+}
+
+
 //----------------- ArrayList<Boolean> ---------------------
 
 void _ArrayList<Boolean>::add(Boolean val) {
@@ -717,6 +736,15 @@ bool _ListIterator<Boolean>::next() {
     }
     iterator++;
     return (iterator != mList->end());
+}
+
+bool _ListIterator<Boolean>::remove() {
+    if(iterator == mList->end()) {
+        return false;
+    }
+
+    iterator = mList->elements.erase(iterator);
+    return true;
 }
 
 //----------------- ArrayList<Float> ---------------------
@@ -946,6 +974,15 @@ bool _ListIterator<Float>::next() {
     }
     iterator++;
     return (iterator != mList->end());
+}
+
+bool _ListIterator<Float>::remove() {
+    if(iterator == mList->end()) {
+        return false;
+    }
+
+    iterator = mList->elements.erase(iterator);
+    return true;
 }
 
 //----------------- ArrayList<Double> ---------------------
@@ -1178,6 +1215,15 @@ bool _ListIterator<Double>::next() {
     return (iterator != mList->end());
 }
 
+bool _ListIterator<Double>::remove() {
+    if(iterator == mList->end()) {
+        return false;
+    }
+
+    iterator = mList->elements.erase(iterator);
+    return true;
+}
+
 //----------------- ArrayList<Long> ---------------------
 void _ArrayList<Long>::add(Long val) {
     if(val == nullptr) {
@@ -1405,6 +1451,15 @@ bool _ListIterator<Long>::next() {
 
     iterator++;
     return (iterator != mList->end());
+}
+
+bool _ListIterator<Long>::remove() {
+    if(iterator == mList->end()) {
+        return false;
+    }
+
+    iterator = mList->elements.erase(iterator);
+    return true;
 }
 
 

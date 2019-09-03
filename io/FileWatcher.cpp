@@ -24,7 +24,7 @@ static Mutex mutex = createMutex("FileWatchMutex");
 _FileWatcher *_FileWatcher::instance = nullptr;
 
 _FileWatcher::_FileWatcher() {
-    mlisteners = createHashMap<int,FileObserver>();
+    mListeners = createHashMap<int,ArrayList<LocalFileObserverMonitor>>();
     openInotifyDev();
     start();
 }
@@ -37,26 +37,54 @@ sp<_FileWatcher> _FileWatcher::getInstance() {
     }
 
     AutoMutex l(mutex);
-    instance = new _FileWatcher();
+    if(instance == nullptr) {
+        instance = new _FileWatcher();
+    }
     return instance;
 }
 
 int _FileWatcher::startWatch(String filepath,int op,sp<_FileObserver> observer) {
     AutoMutex l(mutex);
+    LocalFileObserverMonitor monitor = createLocalFileObserverMonitor();
+    monitor->op = op;
+    monitor->mObserver = observer;
 
     int id = inotify_add_watch(notifyFd,filepath->toChars(),op);
-    
-    mlisteners->put(id,observer);
+
+    ArrayList<LocalFileObserverMonitor> list = mListeners->get(id);
+    if(list == nullptr) {
+        list = createArrayList<LocalFileObserverMonitor>();
+        mListeners->put(id,list);
+    }
+
+    list->add(monitor);
     return id;
-    //printf("watch file is %s \n",filepath->toChars());
-    //inotify_add_watch(notifyFd,filepath->toChars(),op);
 }
 
-void _FileWatcher::stopWatch(int id) {
+void _FileWatcher::stopWatch(int id,int op,FileObserver observer) {
     AutoMutex l(mutex);
+    ArrayList<LocalFileObserverMonitor> list = mListeners->get(id);
+    if(list != nullptr) {
+        ListIterator<LocalFileObserverMonitor> iterator = list->getIterator();
+        while(iterator->hasValue()) {
+            LocalFileObserverMonitor monitor = iterator->getValue();
+            if(monitor->mObserver == observer) {
+                monitor->op &= ~op;
+            }
 
-    mlisteners->remove(id);
+            if(monitor->op == 0) {
+                iterator->remove();
+                continue;
+            }
+            iterator->next();
+        }
+    }
 
+    if(list->size() == 0) {
+        inotify_rm_watch(notifyFd,id);
+    }
+
+    //mlisteners->remove(id);
     //inotify_rm_watch(filepath->toChars());
 }
 
@@ -90,38 +118,25 @@ void _FileWatcher::run() {
             while(1){
                 AutoMutex l(mutex);
                 int changeid = event->wd;
-                FileObserver observer = mlisteners->get(changeid);
+                ArrayList<LocalFileObserverMonitor> monitors = mListeners->get(changeid);
 
-                if(observer != nullptr) {
-                    observer->onFileUpdate(filepath,event->mask);
+                if(monitors != nullptr) {
+                    ListIterator<LocalFileObserverMonitor> iterator = monitors->getIterator();
+                    while(iterator->hasValue()) {
+                        LocalFileObserverMonitor monitor = iterator->getValue();
+                        int action = (monitor->op & event->mask);
+                        if(action != 0) {
+                            monitor->mObserver->onFileUpdate(filepath,action);
+                        }
+                        iterator->next();
+                    }
                 }
-                /*
-                HashMap<int,ArrayList<FileObserver>> map = mlisteners->get(filepath);
-                printf("inotify ...1 event is %d,path is %s \n",event->mask,event->name);
-                if(map == nullptr) {
-                    break;
-                }
-                printf("inotify ...2 \n");
-                ArrayList<FileObserver> list = map->get(event->mask);
-                if(list == nullptr) {
-                    break;
-                }
-                printf("inotify ...3 \n");
-                ListIterator<FileObserver> iterator = list->getIterator();
-                while(iterator->hasValue()) {
-                    FileObserver observer = iterator->getValue();
-                    printf("inotify ...4 \n");
-                    observer->onFileUpdate(filepath,event->mask);
-                    iterator->next();
-                }
-                */
-
                 break;
             }
             
             nread = nread + sizeof(struct inotify_event) + event->len;
             len = len - sizeof(struct inotify_event) - event->len;
-            printf("len is %d \n",len);
+            //printf("len is %d \n",len);
         }
     }
 }

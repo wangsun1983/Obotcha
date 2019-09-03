@@ -959,4 +959,36 @@ void testArrayList_Integer() {
     printf("---[ListIterator<Integer> Test {next()} case3] [OK]--- \n");
     break;
   }
+
+  //--[_ListIterator<Integer> Test {remove()} Start]---
+  while(1) {
+    ArrayList<Integer> list = createArrayList<Integer>();
+    list->add(createInteger(1));
+    list->add(createInteger(2));
+    list->add(createInteger(3));
+    list->add(createInteger(4));
+    list->add(createInteger(5));
+    ListIterator<Integer> iterator = list->getIterator();
+    while(iterator->hasValue()) {
+      if(iterator->getValue()->toValue() == 3) {
+        iterator->remove();
+      }else {
+        iterator->next();
+      }
+    }
+
+    if(list->size() != 4) {
+        printf("---[ListIterator<Integer> Test {remove()} case0] [FAILED]--- \n");
+        break;
+    }
+
+    if(list->get(0)->toValue() != 1 ||list->get(1)->toValue() != 2 
+      ||list->get(2)->toValue() != 4||list->get(3)->toValue() != 5) {
+        printf("---[ListIterator<Integer> Test {remove()} case2] [FAILED]--- \n");
+        break;
+    }
+
+    printf("---[_ListIterator<Integer> Test {remove()} case3] [OK]--- \n");
+    break;
+  }
 }

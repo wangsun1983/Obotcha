@@ -7,6 +7,7 @@
 #include "Double.hpp"
 #include "String.hpp"
 #include "Double.hpp"
+#include "Math.hpp"
 
 using namespace obotcha;
 
@@ -961,6 +962,40 @@ void testArrayList_Double() {
     }
 
     printf("---[ListIterator<Double> Test {next()} case3] [OK]--- \n");
+    break;
+  }
+
+  //--[_ListIterator<Double> Test {remove()} Start]---
+  while(1) {
+    ArrayList<Double> list = createArrayList<Double>();
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
+    list->add(createDouble(4.1));
+    list->add(createDouble(5.1));
+    ListIterator<Double> iterator = list->getIterator();
+    while(iterator->hasValue()) {
+      if(st(Math)::compare(iterator->getValue()->toValue(),3.1) == CompareParamEqual) {
+        iterator->remove();
+      }else {
+        iterator->next();
+      }
+    }
+
+    if(list->size() != 4) {
+        printf("---[ListIterator<Double> Test {remove()} case0] [FAILED]--- \n");
+        break;
+    }
+
+    if(st(Math)::compare(list->get(0)->toValue(),1.1) != CompareParamEqual
+      ||st(Math)::compare(list->get(1)->toValue(),2.1) != CompareParamEqual
+      ||st(Math)::compare(list->get(2)->toValue(),4.1) != CompareParamEqual
+      ||st(Math)::compare(list->get(3)->toValue(),5.1) != CompareParamEqual) {
+        printf("---[ListIterator<Double> Test {remove()} case2] [FAILED]--- \n");
+        break;
+    }
+
+    printf("---[ListIterator<Double> Test {remove()} case3] [OK]--- \n");
     break;
   }
 }

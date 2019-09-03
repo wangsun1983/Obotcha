@@ -27,11 +27,9 @@ public:
 
     long write(ByteArray buff,long size);
 
-    bool writeString(String s);
+    long writeString(String s);
     
-    bool open(FileOpenType opentype);
-
-    bool open(long mapsize,FileOpenType opentype = Trunc);
+    bool open(long mapsize,FileOpenType opentype);
 
     bool open();
     
@@ -44,7 +42,7 @@ public:
 private:
     String mPath;
 
-    long filesize;
+    //long filesize;
 
     char *mPtr;
 

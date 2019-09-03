@@ -747,4 +747,36 @@ void testArrayList_String() {
     printf("---[ArrayList<String> Test {_ListIterator(_ArrayList<String> *list)}] [OK]--- \n");
     break;
   }
+
+  //--[_ListIterator<String> Test {remove()} Start]---
+  while(1) {
+    ArrayList<String> list = createArrayList<String>();
+    list->add(createString("a"));
+    list->add(createString("b"));
+    list->add(createString("c"));
+    list->add(createString("d"));
+    list->add(createString("e"));
+    ListIterator<String> iterator = list->getIterator();
+    while(iterator->hasValue()) {
+      if(iterator->getValue()->equals("c")) {
+        iterator->remove();
+      }else {
+        iterator->next();
+      }
+    }
+
+    if(list->size() != 4) {
+        printf("---[_ListIterator<String> Test {remove()} case0] [FAILED]--- \n");
+        break;
+    }
+
+    if(!list->get(0)->equals("a") ||!list->get(1)->equals("b") 
+      ||!list->get(2)->equals("d")||!list->get(3)->equals("e")) {
+        printf("---[_ListIterator<String> Test {remove()} case2] [FAILED]--- \n");
+        break;
+    }
+
+    printf("---[_ListIterator<String> Test {remove()} case3] [OK]--- \n");
+    break;
+  }
 }

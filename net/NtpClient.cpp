@@ -108,6 +108,7 @@ void _NtpSocketClientListener::onAccept(int fd,String ip,int port,ByteArray pack
     }
 }
 
+
 void _NtpSocketClientListener::setTimeCallback(NtpListener l) {
     mListener = l;
 }

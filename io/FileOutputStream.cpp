@@ -22,8 +22,6 @@ bool _FileOutputStream::write(char c) {
 long _FileOutputStream::write(ByteArray buff) {
     char *p = buff->toValue();
     //printf("write %s,size is %d \n",p,buff->size());
-    
-    
     fstream.write(buff->toValue(),buff->size());
     return buff->size();
 }

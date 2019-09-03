@@ -7,6 +7,7 @@
 #include "Float.hpp"
 #include "String.hpp"
 #include "Float.hpp"
+#include "Math.hpp"
 
 using namespace obotcha;
 
@@ -961,6 +962,40 @@ void testArrayList_Float() {
     }
 
     printf("---[ListIterator<Float> Test {next()} case3] [OK]--- \n");
+    break;
+  }
+
+  //--[_ListIterator<Float> Test {remove()} Start]---
+  while(1) {
+    ArrayList<Float> list = createArrayList<Float>();
+    list->add(createFloat(1.1f));
+    list->add(createFloat(2.1f));
+    list->add(createFloat(3.1f));
+    list->add(createFloat(4.1f));
+    list->add(createFloat(5.1f));
+    ListIterator<Float> iterator = list->getIterator();
+    while(iterator->hasValue()) {
+      if(st(Math)::compare(iterator->getValue()->toValue(),3.1f) == CompareParamEqual) {
+        iterator->remove();
+      }else {
+        iterator->next();
+      }
+    }
+
+    if(list->size() != 4) {
+        printf("---[ListIterator<Float> Test {remove()} case0] [FAILED],size is %d --- \n",list->size());
+        break;
+    }
+
+    if(st(Math)::compare(list->get(0)->toValue(),1.1f) != CompareParamEqual
+      ||st(Math)::compare(list->get(1)->toValue(),2.1f) != CompareParamEqual
+      ||st(Math)::compare(list->get(2)->toValue(),4.1f) != CompareParamEqual
+      ||st(Math)::compare(list->get(3)->toValue(),5.1f) != CompareParamEqual) {
+        printf("---[ListIterator<Float> Test {remove()} case2] [FAILED]--- \n");
+        break;
+    }
+
+    printf("---[ListIterator<Float> Test {remove()} case3] [OK]--- \n");
     break;
   }
 }

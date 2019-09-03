@@ -65,7 +65,7 @@ void _UdpClientThread::run() {
             memset(recv_buf,0,BUF_SIZE);
             if(events[i].data.fd == mSock) {
                 //int ret = recv(mSock, recv_buf, BUF_SIZE, 0);
-                int ret = recvfrom(mSock, recv_buf, BUF_SIZE, 0, (struct sockaddr*)&src, &len);  //接收来自server的信息
+                int ret = recvfrom(mSock, recv_buf, BUF_SIZE, 0, (struct sockaddr*)&src, &len);
                 //if(ret > 0) {
                 //    cout << "Server closed connection: " << mSock << endl;
                 //    st(NetUtils)::delEpollFd(mEpfd,sockfd);
