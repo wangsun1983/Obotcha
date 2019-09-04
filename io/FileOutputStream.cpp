@@ -15,6 +15,10 @@ _FileOutputStream::_FileOutputStream(const char *path) {
 }
 
 bool _FileOutputStream::write(char c) {
+    if(!fstream.is_open()) {
+        return false;
+    }
+    
     fstream << c;
     return true;
 }
@@ -39,7 +43,7 @@ bool _FileOutputStream::writeString(String s) {
 }
 
 bool _FileOutputStream::open() {
-    return open(FileOpenType::Append);
+    return this->open(FileOpenType::Append);
 }
 
 bool _FileOutputStream::open(FileOpenType opentype) {
@@ -57,11 +61,19 @@ bool _FileOutputStream::open(FileOpenType opentype) {
 }
     
 void _FileOutputStream::close() {
-    fstream.close();
+    if(fstream.is_open()) {
+        fstream.close();
+    }
 }
 
 void _FileOutputStream::flush() {
-    fstream.flush();
+    if(fstream.is_open()) {
+        fstream.flush();
+    }
+}
+
+_FileOutputStream::~_FileOutputStream() {
+    this->close();
 }
 
 }

@@ -33,7 +33,7 @@ ByteArray _Base64::encode(ByteArray buff) {
     int size;
 
     char *p = _encode(buff->toValue(),buff->size(),false,&size);
-    //printf("encode buff size is %d \n",size);
+    //printf("encode buff size is %d,buff is %s  \n",size,p);
     ByteArray result = createByteArray(p,size);
     free(p);
     return result;

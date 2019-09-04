@@ -25,15 +25,21 @@ public:
 
     long read(ByteArray buffer);
 
+    long read(long index,ByteArray buffer);
+
     ByteArray readAll();
 
-    void readAll(ByteArray);
+    //long readAll(ByteArray);
 
     bool open();
 
     void close();
 
+    void reset();
+
     String readLine();
+
+    ~_FileInputStream();
 
 private:
     String mPath;

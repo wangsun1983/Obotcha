@@ -1,5 +1,7 @@
 #include <iostream>
 #include "FileInputStream.hpp"
+#include "Exception.hpp"
+#include "FileNotFoundException.hpp"
 
 namespace obotcha {
 
@@ -12,21 +14,45 @@ _FileInputStream::_FileInputStream(String path) {
 }
     
 int _FileInputStream::read() {
-    //TODO
-    return 0;
+    if(!fstream.is_open()) {
+        throw createFileNotFoundException(createString("inputstream path:")->append(mPath));
+    }
+
+    int value = 0;
+    fstream.read((char *)&value,sizeof(int));
+    return value;
 }
 
 long _FileInputStream::read(ByteArray buff) {
+    if(!fstream.is_open()) {
+        return -1;
+    }
+
     fstream.read(buff->toValue(),buff->size());
     return fstream.gcount();
 }
 
-void _FileInputStream::readAll(ByteArray content) {
+long _FileInputStream::read(long index,ByteArray buffer) {
+    if(!fstream.is_open()) {
+        return -1;
+    }
+
+    fstream.seekg(index);
+    fstream.read(buffer->toValue(),buffer->size());
+    return fstream.gcount();
+}
+
+/*
+long _FileInputStream::readAll(ByteArray content) {
+    if(!fstream.is_open()) {
+        return -1;
+    }
+
     ifstream fsRead;
     fsRead.open(mPath->getStdString(), ios::in|ios::binary);
     //cout<<"mPath->getStdString is "<<mPath->getStdString()<<endl;
     if (!fsRead) {
-        return;
+        return -1;
     }
 
     fsRead.seekg(0, fsRead.end);
@@ -37,30 +63,21 @@ void _FileInputStream::readAll(ByteArray content) {
 
     long currentSize = buffSize>srcSize?srcSize:buffSize;
     fstream.read(content->toValue(),currentSize);
+    return fstream.gcount();
 }
+*/
 
 ByteArray _FileInputStream::readAll() {
-    //ifstream fsRead;
-    //fsRead.open(mPath->getStdString(), ios::in|ios::binary);
-    //cout<<"mPath->getStdString is "<<mPath->getStdString()<<endl;
-    //if (!fsRead) {
-    //    return nullptr;
-    //}
+    if(!fstream.is_open()) {
+        return nullptr;
+    }
 
-    //fsRead.seekg(0, fsRead.end);
-    //long srcSize = fsRead.tellg();
-    //printf("readAll size is %ld \n",srcSize);
-    //fsRead.close();
     fstream.seekg (0, fstream.end);
     long srcSize = fstream.tellg();
     fstream.seekg (0, fstream.beg);
 
     ByteArray content = createByteArray(srcSize);
     fstream.read(content->toValue(),srcSize);
-    //char *p = content->toValue();
-    //printf("read p[0] is %x \n",p[0]);
-    //printf("read p[1] is %x \n",p[1]);
-    //printf("readAll readsize is %d \n",fstream.gcount());
     return content;
 }
 
@@ -70,16 +87,33 @@ bool _FileInputStream::open() {
 }
 
 void _FileInputStream::close() {
-    fstream.close();
+    if(fstream.is_open()) {
+        fstream.close();
+    }
+}
+
+void _FileInputStream::reset() {
+    if(fstream.is_open()) {
+        fstream.clear();
+        fstream.seekg(0,fstream.beg);
+    }
 }
 
 String _FileInputStream::readLine() {
+    if(!fstream.is_open()) {
+        return nullptr;
+    }
+
     std::string s;
     if(std::getline(fstream,s)) {
         return createString(s.data());
     }
 
     return nullptr;
+}
+
+_FileInputStream::~_FileInputStream() {
+    close();
 }
 
 }

@@ -107,7 +107,7 @@ void _Rsa::loadPublicKey(String path) {
     inputStream->open();
 
     ByteArray inputData = createByteArray(size + 1);
-    inputStream->readAll(inputData);
+    inputStream->read(inputData);
 
     printf("load pub key is %s \n",inputData->toValue());
 

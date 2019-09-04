@@ -31,7 +31,7 @@ void _Des::encrypt(File src,File des) {
     
     long length = (inputSize%8 == 0)?(inputSize + 8):(inputSize/8)*8 + 8;
     ByteArray inputData = createByteArray(length);
-    inputStream->readAll(inputData);
+    inputStream->read(inputData);
 
     //we should fill the last 8 byte data;
     if(inputSize%8 == 0) {

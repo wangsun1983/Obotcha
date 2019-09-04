@@ -38,6 +38,8 @@ public:
 
     void flush();
 
+    ~_FileOutputStream();
+
 private:
     String mPath;
 

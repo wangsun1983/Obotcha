@@ -74,9 +74,9 @@ MemoryFileOutputStream           --Complete--
 ByteArrayWriter
 FileWatcher
 EPollFileObserver
-OutputStream
+OutputStream                     --Complete--(Interface)
 File
-InputStream
+InputStream                      --Complete--(Interface)
 PrintStream
 FileInputStream
 ZipStream
