@@ -11,7 +11,7 @@
  */
 
 #include "ByteArray.hpp"
-
+#include "ArrayIndexOutOfBoundsException.hpp"
 
 namespace obotcha {
 
@@ -123,6 +123,9 @@ bool _ByteArray::isEmpty() {
 }
 
 char _ByteArray::at(int index) {
+    if(index >= _size) {
+        throw createArrayIndexOutOfBoundsException(createString("ByteArray"),_size,index);
+    }
     return buff[index];
 }
 

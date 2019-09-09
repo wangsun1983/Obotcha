@@ -2,6 +2,7 @@
 
 #include "Mutex.hpp"
 #include "System.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -23,7 +24,7 @@ int _Mutex::lock() {
         return 0;
     }
 
-    return -MutexLockFail;
+    return -1;
 }
 
 int _Mutex::lock(long timeInterval) {
@@ -44,13 +45,13 @@ int _Mutex::lock(long timeInterval) {
     int result = pthread_mutex_timedlock(&mutex_t,&ts);
     switch(result) {
         case ETIMEDOUT:
-        return -MutexLockTimedOut;
+        return -WaitTimeout;
         
         case 0:
         return 0;
     }
 
-    return -MutexLockFail;
+    return -1;
 }
 
 
@@ -59,7 +60,7 @@ int _Mutex::unlock() {
         return 0;
     }
 
-    return -MutexUnlockFail;
+    return -1;
 }
 
 int _Mutex::trylock() {
@@ -67,7 +68,7 @@ int _Mutex::trylock() {
         return 0;
     }
 
-    return -MutexTryLockFail;
+    return -1;
 }
 
 String _Mutex::toString() {

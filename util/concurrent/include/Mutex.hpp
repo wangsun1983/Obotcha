@@ -9,17 +9,7 @@
 
 namespace obotcha {
 
-
-enum MutexFailReason {
-    MutexTryLockFail = 200,
-    MutexLockFail,
-    MutexUnlockFail,
-    MutexLockTimedOut,
-};
-
-
-DECLARE_SIMPLE_CLASS(Mutex) 
-{
+DECLARE_SIMPLE_CLASS(Mutex) {
 public:
     _Mutex(String);
 

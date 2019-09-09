@@ -16,6 +16,7 @@
 #include "Pipe.hpp"
 #include "NetUtils.hpp"
 #include "AutoMutex.hpp"
+#include "Error.hpp"
 
 #define EPOLL_SIZE 1024*8
 
@@ -195,15 +196,10 @@ int _UdpServer::connect() {
 
     if( bind(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
         printf("bind server faild , error = %s \n", strerror(errno));
-        return -UdpServerBindFailed;
+        return -NetBindFail;
     }
     printf("sock is %d \n",sock);
 
-    //int ret = listen(sock, 5);
-    //if(ret < 0) {
-    //    printf("list error is %s \n",strerror(errno));
-    //    return -UdpServerListenFailed;
-    //}
 
     //add epoll
     printf("UdpServer connect \n");

@@ -10,10 +10,6 @@
 
 namespace obotcha {
 
-enum PropertiesFailReason {
-    PropertiesFailFileNotExit = 200,
-};
-
 DECLARE_SIMPLE_CLASS(Properties) {
 
 public:

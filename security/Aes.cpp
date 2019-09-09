@@ -8,6 +8,7 @@
 #include "ByteArray.hpp"
 #include "FileInputStream.hpp"
 #include "FileOutputStream.hpp"
+#include "Error.hpp"
 
 #include "UUID.hpp"
 
@@ -59,7 +60,7 @@ int _Aes::loadKey(String path,int mode) {
 int _Aes::loadKey(const char *filepath,int mode) {
     FILE *key_file = fopen(filepath, "rb");
     if (!key_file) {
-        return -AesFailKeyNotExits;
+        return -FileNotExists;
     }
     
     int size = 0;
@@ -76,7 +77,7 @@ int _Aes::loadKey(const char *filepath,int mode) {
     fclose(key_file);
 
     if(size <= 0) {
-        return -AesFailKeyReadError;
+        return -ReadFail;
     }
 
     return 0;
@@ -197,11 +198,11 @@ int _Aes::_genKey(String content) {
     }
 
     if(AES_set_encrypt_key((const unsigned char*)keyBuff,128,&mEncryptKey) != 0) {
-        return -AesFailGenEncrypteKey;
+        return -GenKeyFail;
     }
 
     if(AES_set_decrypt_key((const unsigned char*)keyBuff,128,&mDecryptKey) != 0) {
-        return -AesFailGenDecrypteKey;
+        return -GenKeyFail;
     }
 
     return 0;
@@ -213,11 +214,11 @@ int _Aes::_genKey() {
     const char *c = uuid->toValue()->toChars();
     
     if(AES_set_encrypt_key((const unsigned char*)c,128,&mEncryptKey) != 0) {
-        return -AesFailGenEncrypteKey;
+        return -SetKeyFail;
     }
 
     if(AES_set_decrypt_key((const unsigned char*)c,128,&mDecryptKey) != 0) {
-        return -AesFailGenDecrypteKey;
+        return -SetKeyFail;
     }
 
     return 0;

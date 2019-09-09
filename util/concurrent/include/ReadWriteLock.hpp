@@ -10,13 +10,6 @@
 
 namespace obotcha {
 
-enum ReadWriteLockFailReason {
-    ReadLockTimeout = 200,
-    WriteLockTimeout,
-    ReadLockLockFail,
-    WriteLockLockFail
-};
-
 class _ReadWriteLock;
 
 DECLARE_SIMPLE_CLASS(ReadLock) {

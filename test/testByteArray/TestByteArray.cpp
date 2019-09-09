@@ -7,6 +7,7 @@
 //#include "ArrayList.hpp"
 #include "ByteArray.hpp"
 #include "StrongPointer.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
 
 using namespace obotcha;
 
@@ -257,6 +258,21 @@ int main() {
       }
 
       printf("ByteArray construct<template> test 2-------[OK] \n");
+      break;
+    }
+
+    //char at(int);
+    while(1) {
+      ByteArray array = createByteArray(2);
+      try{
+        int value = array->at(3);
+        printf("ByteArray at()) test 1-------[FAIL] \n");
+        break;
+      } catch(ArrayIndexOutOfBoundsException e){
+        //printf("exception is %s \n",e->getErrInfo()->toChars());
+      }
+
+      printf("ByteArray at()) test 2-------[OK] \n");
       break;
     }
 

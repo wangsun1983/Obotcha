@@ -5,6 +5,7 @@
 #include "InetAddress.hpp"
 #include "System.hpp"
 #include "TimeZone.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -138,7 +139,7 @@ _NtpClient::_NtpClient() {
 int _NtpClient::bind(String url,int port = 123) {
     ArrayList<String> servers = st(InetAddress)::getHostByName(url);
     if(servers->size() == 0) {
-        return -NtpFailConnectFail;
+        return -NetConnectFail;
     }
 
     mServerIp = servers->get(0);

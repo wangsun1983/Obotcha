@@ -23,14 +23,6 @@
 
 namespace obotcha {
 
-enum UdpServerFailReason {
-    UdpServerBindFailed = 200,
-    UdpServerListenFailed,
-    UdpServerCreateEpollFailed,
-    UdpServerEpollWaitFailed,
-    UdpServerEpollForceExit,
-};
-
 enum UdpServerStatus {
     UdpServerWorking = 1,
     UdpServerWaitingThreadExit,

@@ -22,13 +22,6 @@ enum ExecutorState {
     illegalState,
 };
 
-enum ExecutorFailReason {
-    ExecutorFailNotStart = 200,
-    ExecutorFailAlreadyDestroy,
-    ExecutorFailIsRunning,
-    ExecutorFailWaitTimeout
-};
-
 DECLARE_SIMPLE_CLASS(ExecutorService) IMPLEMENTS(Executor) {
 
 public:

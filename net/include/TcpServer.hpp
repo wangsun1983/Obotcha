@@ -16,6 +16,7 @@
 #include "String.hpp"
 #include "InetAddress.hpp"
 #include "SocketListener.hpp"
+#include "WebSocketServer.hpp"
 #include "Mutex.hpp"
 #include "Pipe.hpp"
 #include "AtomicInteger.hpp"
@@ -23,16 +24,9 @@
 
 namespace obotcha {
 
-enum TcpServerFailReason {
-    TcpServerBindFailed = 200,
-    TcpServerListenFailed,
-    TcpServerCreateEpollFailed,
-    TcpServerEpollWaitFailed,
-    TcpServerEpollForceExit,
-};
-
 enum TcpServerStatus {
-    ServerWorking = 1,
+    ServerNotStart = 1,
+    ServerWorking,
     ServerWaitingThreadExit,
     ServerThreadExited,
 };
@@ -46,8 +40,11 @@ public:
                     Pipe pi,
                     SocketListener listener,
                     ArrayList<Integer> clients,
-                    Mutex mutex);
+                    Mutex mutex,
+                    int buffsize);
     void run();
+
+    int setRcvBuffSize(int);
 
 private:
     int mSocket;
@@ -58,6 +55,8 @@ private:
     ArrayList<Integer> mClients;
     Mutex mClientMutex;
 
+    int mBuffSize;
+
     void addClientFd(int fd);
 
     void removeClientFd(int fd);
@@ -66,9 +65,15 @@ private:
 DECLARE_SIMPLE_CLASS(TcpServer) {
     
 public:
+    friend class _WebSocketServer;
+
     _TcpServer(int port,SocketListener l);
 
     _TcpServer(String ip,int port,SocketListener l);
+
+    _TcpServer(String ip,int port,int rcvBuffsize,int connectionsNum,SocketListener l);
+
+    int setRcvBuffSize(int);
 
     int start();
 
@@ -76,15 +81,16 @@ public:
 
     int send(int fd,ByteArray data);
 
-    int getTcpEpollfd();
+    int removeClientFd(int fd);
 
-    void removeClientFd(int fd);
-
-    void addClientFd(int fd);
+    int addClientFd(int fd);
 
     ~_TcpServer();
 
 private:
+
+    int getTcpEpollfd();
+
     int connect();
 
     SocketListener mListener;
@@ -104,6 +110,10 @@ private:
     Mutex mClientsMutex;
 
     ArrayList<Integer> mClients;
+
+    int mRcvBuffSize;
+
+    int mConnectionNum;
 };
 
 }

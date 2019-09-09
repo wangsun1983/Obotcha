@@ -20,15 +20,6 @@ enum PosixShareMemoryType {
     PosixShareMemoryWriteRead = O_RDWR,
 };
 
-enum PosixShareMemoryReason {
-    PosixShmCreateFailed = 200,
-    PosixShmMapFailed,
-    PosixShmNotCreate,
-    PosixShmWriteOverSize,
-    PosixShmReadOverSize
-};
-
-
 DECLARE_SIMPLE_CLASS(PosixShareMemory) {
 public:
 

@@ -1,6 +1,7 @@
 #include "XmlValue.hpp"
 #include "XmlReader.hpp"
 #include "XmlDocument.hpp"
+#include "Error.hpp"
 
 #include "rapidxml_utils.hpp"
 #include "rapidxml_print.hpp"
@@ -81,7 +82,7 @@ _XmlAttribute::_XmlAttribute(sp<_XmlValue> node,sp<_XmlDocument> r,String n,Stri
 
 int _XmlAttribute::updateName(String name,String newname) {
     if(name == nullptr || newname == nullptr) {
-        return -XmlValueFailWrongParam;
+        return -InvalidParam;
     }
 
     xml_attribute<> *attr = xmlvalue->node->first_attribute(name->toChars());
@@ -91,12 +92,12 @@ int _XmlAttribute::updateName(String name,String newname) {
         return 0;
     }
 
-    return -XmlValueFailNotFound;
+    return -NotFound;
 }
 
 int _XmlAttribute::updateValue(String name,String newvalue) {
     if(name == nullptr || newvalue == nullptr) {
-        return -XmlValueFailWrongParam;
+        return -InvalidParam;
     }
 
     xml_attribute<> *attr = xmlvalue->node->first_attribute(name->toChars());
@@ -105,7 +106,7 @@ int _XmlAttribute::updateValue(String name,String newvalue) {
         return 0;
     }
 
-    return -XmlValueFailNotFound;
+    return -NotFound;
 }
 
 //------------------ XmlValue -----------------//

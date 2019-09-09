@@ -12,6 +12,7 @@
 #include "HttpHeader.hpp"
 #include "HttpParser.hpp"
 #include "ByteArrayReader.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -59,7 +60,7 @@ int _HttpClient::connect() {
 
 int _HttpClient::bindServerByDomain(String host,int port) {
     if(host == nullptr) {
-        return -HttpClientParamErr;
+        return -InvalidParam;
     }
 
     mHost = host;
@@ -67,7 +68,7 @@ int _HttpClient::bindServerByDomain(String host,int port) {
     ArrayList<String> ips = st(InetAddress)::getHostByName(host);
     if(ips == nullptr || ips->size() == 0) {
         mHost = nullptr;
-        return -HttpClientConnectFail;
+        return -NetConnectFail;
     }
 
     mIp = ips->get(0);
@@ -77,7 +78,7 @@ int _HttpClient::bindServerByDomain(String host,int port) {
 
 int _HttpClient::bindServerByIp(String ip,int port) {
     if(ip == nullptr) {
-        return -HttpClientParamErr;
+        return -InvalidParam;
     }
     mIp = ip;
     mPort = port;

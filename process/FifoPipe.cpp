@@ -7,6 +7,7 @@
 #include <limits.h>
 
 #include "FifoPipe.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -26,7 +27,7 @@ _FifoPipe::_FifoPipe(String name,int type) {
 
 int _FifoPipe::init() {
     if(isCreated) {
-        return -FifoPipeAlreadyCreate;
+        return -AlreadyExists;
     }
 
     if(access(mPipeName->toChars(),F_OK) != 0){
@@ -52,15 +53,15 @@ int _FifoPipe::init() {
 
 int _FifoPipe::writeTo(ByteArray data) {
     if(!isCreated){
-        return -FifoPipeNotCreate;
+        return -NotCreate;
     }
 
     if(mType == FifoReadPipe) {
-        return -FifoPipeWrongType;
+        return -InvalidParam;
     }
 
     if(data->size() > PIPE_BUF) {
-        return -FifoPipeWriteOversize;
+        return -OverSize;
     }
 
     return write(fifoId, data->toValue(), data->size());
@@ -68,11 +69,11 @@ int _FifoPipe::writeTo(ByteArray data) {
 
 int _FifoPipe::readFrom(ByteArray buff) {
     if(!isCreated) {
-        return -FifoPipeNotCreate;
+        return -NotCreate;
     }
 
     if(mType == FifoWritePipe) {
-        return -FifoPipeWrongType;
+        return -InvalidParam;
     }
 
     return read(fifoId, buff->toValue(), buff->size());

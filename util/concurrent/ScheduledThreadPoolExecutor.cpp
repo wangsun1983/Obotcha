@@ -5,6 +5,7 @@
 #include "Thread.hpp"
 #include "System.hpp"
 #include "ScheduledThreadPoolExecutor.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 //---------------ScheduledTaskWorker-------------------//
@@ -276,7 +277,7 @@ _ScheduledThreadPoolExecutor::_ScheduledThreadPoolExecutor() {
 
 int _ScheduledThreadPoolExecutor::execute(Runnable runnable) {
     if(mIsShutDown ||mIsTerminated) {
-        return -ExecutorFailAlreadyDestroy;
+        return -AlreadyDestroy;
     }
 
     //TODO
@@ -294,7 +295,7 @@ int _ScheduledThreadPoolExecutor::getThreadsNum() {
 
 int _ScheduledThreadPoolExecutor::shutdown() {
     if(mIsShutDown ||mIsTerminated) {
-        return -ExecutorFailAlreadyDestroy;
+        return -AlreadyDestroy;
     }
 
     mIsShutDown = true;
@@ -305,7 +306,7 @@ int _ScheduledThreadPoolExecutor::shutdown() {
 
 int _ScheduledThreadPoolExecutor::shutdownNow() {
     if(mIsShutDown ||mIsTerminated) {
-        return -ExecutorFailAlreadyDestroy;
+        return -AlreadyDestroy;
     }
 
     mIsShutDown = true;
@@ -324,7 +325,7 @@ bool _ScheduledThreadPoolExecutor::isTerminated() {
 
 int _ScheduledThreadPoolExecutor::awaitTermination(long timeout) {
     if(!mIsShutDown) {
-        return -ExecutorFailIsRunning;
+        return -InvalidStatus;
     }
 
     if(mIsTerminated) {
@@ -336,7 +337,7 @@ int _ScheduledThreadPoolExecutor::awaitTermination(long timeout) {
     if(isTerminated()) {
         return 0;
     } else {
-        return -ExecutorFailWaitTimeout;
+        return -WaitTimeout;
     }
 }
 

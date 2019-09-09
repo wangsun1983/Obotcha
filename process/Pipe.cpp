@@ -1,4 +1,5 @@
 #include "Pipe.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -15,7 +16,7 @@ _Pipe::_Pipe() {
 
 int _Pipe::init() {
     if(isCreated) {
-        return -PipeAlreadyInit;
+        return -AlreadyExists;
     }
 
     int result = -1;
@@ -37,11 +38,11 @@ int _Pipe::init() {
 
 int _Pipe::writeTo(ByteArray data) {
     if(!isCreated) {
-        return -PipeNotInit;
+        return -NotCreate;
     }
 
     if(data->size() > PIPE_BUF) {
-        return -PipeWriteOversize;
+        return -OverSize;
     }
     printf("wirteTo content is %s \n",data->toValue());
 
@@ -50,7 +51,7 @@ int _Pipe::writeTo(ByteArray data) {
 
 int  _Pipe::readFrom(ByteArray buff) {
     if(!isCreated) {
-        return -PipeNotInit;
+        return -NotCreate;
     }
 
     int nbytes = read(pipeFd[ReadPipe],buff->toValue(),buff->size());
@@ -59,28 +60,28 @@ int  _Pipe::readFrom(ByteArray buff) {
 
 int _Pipe::closeReadPipe() {
     if(!isCreated) {
-        return -PipeNotInit;
+        return -NotCreate;
     }
     return close(pipeFd[ReadPipe]);
 }
 
 int _Pipe::closeWritePipe() {
     if(!isCreated) {
-        return -PipeNotInit;
+        return -NotCreate;
     }
     return close(pipeFd[WritePipe]);
 }
 
 int _Pipe::getReadPipe() {
     if(!isCreated) {
-        return -PipeNotInit;
+        return -NotCreate;
     }
     return pipeFd[ReadPipe];
 }
 
 int _Pipe::getWritePipe() {
     if(!isCreated) {
-        return -PipeNotInit;
+        return -NotCreate;
     }
     return pipeFd[WritePipe];
 }

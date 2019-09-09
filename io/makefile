@@ -8,7 +8,6 @@ link += file \
 	printstream \
 	zipstream \
 	filewatcher \
-	memoryfile \
 	memoryfileinputstream \
 	memoryfileoutputstream \
 	libraryfileinputstream \
@@ -66,9 +65,6 @@ zipstream :$(ioDir)/ZipStream.cpp
 
 filewatcher :$(ioDir)/FileWatcher.cpp
 	$(gcc) $(cflags) -c $(ioDir)/FileWatcher.cpp -o $(outtmp)/filewatcher.o $(external)	
-
-memoryfile :$(ioDir)/MemoryFile.cpp
-	$(gcc) $(cflags) -c $(ioDir)/MemoryFile.cpp -o $(outtmp)/memoryfile.o $(external)
 
 memoryfileinputstream :$(ioDir)/MemoryFileInputStream.cpp
 	$(gcc) $(cflags) -c $(ioDir)/MemoryFileInputStream.cpp -o $(outtmp)/memoryfileinputstream.o $(external)

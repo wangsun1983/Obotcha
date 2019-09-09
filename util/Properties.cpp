@@ -1,6 +1,7 @@
 #include "Properties.hpp"
 #include "FileInputStream.hpp"
 #include "FileOutputStream.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -31,7 +32,7 @@ int _Properties::load(String path) {
     File file = createFile(path);
     if(!file->exists()) {
         printf("file path is %s \n",file->getAbsolutePath()->toChars());
-        return -PropertiesFailFileNotExit;
+        return -FileNotExists;
     }
 
     return load(file);

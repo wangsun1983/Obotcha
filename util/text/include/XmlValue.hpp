@@ -22,10 +22,6 @@ class _XmlAttribute;
 class _XmlDocument;
 class _XmlWriter;
 
-enum XmlValueFailReason {
-    XmlValueFailWrongParam = 200,
-    XmlValueFailNotFound,
-};
 
 DECLARE_SIMPLE_CLASS(XmlAttrIterator) {
 public:

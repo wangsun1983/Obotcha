@@ -19,13 +19,6 @@ enum DesMode {
     AesDecrypt = AES_DECRYPT
 };
 
-enum AesFailReason {
-    AesFailGenEncrypteKey = 200,
-    AesFailGenDecrypteKey,
-    AesFailKeyNotExits,
-    AesFailKeyReadError,
-};
-
 DECLARE_SIMPLE_CLASS(Aes) {
 
 public:

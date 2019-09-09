@@ -6,6 +6,7 @@
 #include "FileNodeReader.hpp"
 #include "PosixMq.hpp"
 #include "System.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -44,11 +45,11 @@ int _PosixMq::init() {
     }
 
     if(mMaxMsgs > MAX_MSG_NUMS) {
-        return -PosixMqNumsOversize;
+        return -OverSize;
     }
 
     if(mMsgSize > MAX_MSG_SIZE) {
-        return -PosixMqMsgSizeOversize;
+        return -OverSize;
     }
 
     struct mq_attr mqAttr;
@@ -66,13 +67,13 @@ int _PosixMq::init() {
     if(mqAttr.mq_maxmsg != mMaxMsgs) {
         close(mQid);
         mQid = -1;
-        return -PosixMqMaxMgsSetFailed;
+        return -AttributeSetFail;
     }
 
     if(mqAttr.mq_msgsize != mMsgSize) {
         close(mQid);
         mQid = -1;
-        return -PosixMqMsgSizeSetFailed;
+        return -AttributeSetFail;
     }
 
     return mQid;
@@ -80,15 +81,15 @@ int _PosixMq::init() {
 
 int _PosixMq::send(ByteArray data,PosixMqPriority prio) {
     if(mType == RecvMq) {
-        return -PosixMqWrongType;
+        return -InvalidParam;
     }
 
     if(mQid == -1) {
-        return -PosixMqNotCreate;
+        return -NotCreate;
     }
 
     if(data->size() > mMsgSize) {
-        return -PosixMqSendBufOverSize;
+        return -OverSize;
     }
 
     return mq_send(mQid, data->toValue(), data->size(), prio);
@@ -100,7 +101,7 @@ int _PosixMq::send(ByteArray data) {
 
 int _PosixMq::receive(ByteArray buff) {
     if(mType == SendMq) {
-        return -PosixMqWrongType;
+        return -InvalidParam;
     }
 
     unsigned int priority = 0;
@@ -109,15 +110,15 @@ int _PosixMq::receive(ByteArray buff) {
 
 int _PosixMq::sendTimeout(ByteArray data,PosixMqPriority prio,long timeInterval) {
     if(mType == SendMq) {
-        return -PosixMqWrongType;
+        return -InvalidParam;
     }
 
     if(mQid == -1) {
-        return -PosixMqNotCreate;
+        return -NotCreate;
     }
 
     if(data->size() > mMsgSize) {
-        return -PosixMqSendBufOverSize;
+        return -OverSize;
     }
 
 
@@ -143,7 +144,7 @@ int _PosixMq::sendTimeout(ByteArray data,long waittime) {
 
 int _PosixMq::receiveTimeout(ByteArray buff,long timeInterval) {
     if(mType == SendMq) {
-        return -PosixMqWrongType;
+        return -InvalidParam;
     }
 
     struct timespec ts;

@@ -7,6 +7,7 @@
 #include "AutoMutex.hpp"
 #include "ThreadLocal.hpp"
 #include "System.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -217,13 +218,13 @@ int _Thread::setName(String name) {
     switch(mStatus) {
         case ThreadIdle:
         case ThreadNotStart:
-            return -ThreadFailReason::ThreadFailNotStart;
+            return -NotStart;
 
         case ThreadComplete:
-            return -ThreadFailReason::ThreadFailAllreadyComplete;
+            return -AlreadyDestroy;
 
         case ThreadDestroy:
-            return -ThreadFailReason::ThreadFailAllreadyDestroy;
+            return -AlreadyDestroy;
     }
 
     mName = name;
@@ -270,10 +271,10 @@ int _Thread::start() {
     switch(mStatus) {
         case ThreadRunning:
         case ThreadComplete:
-            return -ThreadFailReason::ThreadFailAllreadyComplete;
+            return -AlreadyDestroy;
 
         case ThreadDestroy:
-            return -ThreadFailReason::ThreadFailAllreadyDestroy;
+            return -AlreadyDestroy;
     }
 
     mStatus = ThreadIdle;
@@ -354,17 +355,17 @@ int _Thread::setPriority(ThreadPriority priority) {
     switch(mStatus) {
         case ThreadIdle:
         case ThreadNotStart:
-            return -ThreadFailReason::ThreadFailNotStart;
+            return -NotStart;
 
         case ThreadComplete:
-            return -ThreadFailReason::ThreadFailAllreadyComplete;
+            return -AlreadyDestroy;
 
         case ThreadDestroy:
-            return -ThreadFailReason::ThreadFailAllreadyDestroy;
+            return -AlreadyDestroy;
     }
 
     if(mPolicy == ThreadSchedPolicy::ThreadSchedOTHER) {
-        return -ThreadFailReason::ThreadFailNoPrioritySupport;
+        return -NotSupport;
     }
     //printf("setPriority trace2 \n");
     mPriority = priority;
@@ -381,7 +382,7 @@ int _Thread::setPriority(ThreadPriority priority) {
 int _Thread::getPriority() {
     struct sched_param param;
     if(mStatus != ThreadRunning) {
-        return -ThreadFailNotStart;
+        return -NotStart;
     }
 
     int rs = pthread_attr_getschedparam(&mThreadAttr, &param);
@@ -397,24 +398,24 @@ int _Thread::setSchedPolicy(ThreadSchedPolicy policy) {
     switch(mStatus) {
         case ThreadIdle:
         case ThreadNotStart:
-            return -ThreadFailReason::ThreadFailNotStart;
+            return -NotStart;
 
         case ThreadComplete:
-            return -ThreadFailReason::ThreadFailAllreadyComplete;
+            return -AlreadyDestroy;
 
         case ThreadDestroy:
-            return -ThreadFailReason::ThreadFailAllreadyDestroy;
+            return -AlreadyDestroy;
     }
 
     if(policy != ThreadSchedOTHER
         &&policy != ThreadSchedFIFO
         &&policy != ThreadSchedRR) {
-        return -ThreadFailUnknowPolicy;
+        return -NotSupport;
     }
 
     int rs = pthread_attr_setschedpolicy(&mThreadAttr, policy);
     if(rs != 0) {
-        return -ThreadFailActionFail;
+        return -1;
     }
 
     mPolicy = policy;
@@ -423,19 +424,19 @@ int _Thread::setSchedPolicy(ThreadSchedPolicy policy) {
         return 0;
     }
 
-    return -ThreadFailActionFail;
+    return -1;
 
 }
 
 int _Thread::getSchedPolicy() {
     if(mStatus != ThreadRunning) {
-        return ThreadFailNotStart;
+        return -NotStart;
     }
 
     int policy = ThreadSchedOTHER;
     int rs = pthread_attr_getschedpolicy(&mThreadAttr, &policy);
     if(rs != 0) {
-        return -ThreadFailActionFail;
+        return -1;
     }
     return policy;
 }
@@ -510,7 +511,7 @@ int _Thread::getThreadPriority() {
         return thread->getPriority();
     }
 
-    return -ThreadFailActionFail;
+    return -1;
 }
 
 bool _Thread::setThreadSchedPolicy(ThreadSchedPolicy policy) {

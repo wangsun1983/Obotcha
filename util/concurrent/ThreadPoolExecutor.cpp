@@ -7,6 +7,7 @@
 #include "FutureTask.hpp"
 #include "Future.hpp"
 #include "System.hpp"
+#include "Error.hpp"
 
 static int id = 0;
 
@@ -138,7 +139,7 @@ void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
 
 int _ThreadPoolExecutor::execute(Runnable runnable) {
     if(mIsShutDown ||mIsTerminated) {
-        return -ExecutorFailAlreadyDestroy;
+        return -AlreadyDestroy;
     }
     
     FutureTask task = createFutureTask(FUTURE_TASK_NORMAL,runnable);
@@ -148,7 +149,7 @@ int _ThreadPoolExecutor::execute(Runnable runnable) {
 
 int _ThreadPoolExecutor::shutdown() {
     if(mIsShutDown ||mIsTerminated) {
-        return -ExecutorFailAlreadyDestroy;
+        return -AlreadyDestroy;
     }
 
     mIsShutDown = true;
@@ -176,7 +177,7 @@ int _ThreadPoolExecutor::shutdown() {
 
 int _ThreadPoolExecutor::shutdownNow() {
     if(mIsShutDown ||mIsTerminated) {
-        return -ExecutorFailAlreadyDestroy;
+        return -AlreadyDestroy;
     }
 
     mIsShutDown = true;
@@ -240,7 +241,7 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     printf("awaitTermination trace1 \n");
     if(!mIsShutDown) {
         printf("awaitTermination trace1_1 \n");
-        return -ExecutorFailIsRunning;
+        return -InvalidStatus;
     }
 
     if(mIsTerminated) {
@@ -272,7 +273,7 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
         }
 
         if(millseconds <= 0) {
-            return -ExecutorFailWaitTimeout;
+            return -WaitTimeout;
         }
         printf("awaitTermination trace4 \n");
     }

@@ -23,14 +23,6 @@
 
 namespace obotcha {
 
-enum LocalSocketServerFailReason {
-    LocalSocketServerBindFailed = 200,
-    LocalSocketServerListenFailed,
-    LocalSocketServerCreateEpollFailed,
-    LocalSocketServerEpollWaitFailed,
-    LocalSocketServerEpollForceExit,
-};
-
 enum LocalSocketServerStatus {
     LocalServerWorking = 1,
     LocalServerWaitingThreadExit,

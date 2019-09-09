@@ -18,13 +18,6 @@ enum FifoPipeType {
     FifoWritePipe
 };
 
-enum FifoPipeFailReason {
-    FifoPipeNotCreate = 200,
-    FifoPipeWrongType,
-    FifoPipeAlreadyCreate,
-    FifoPipeWriteOversize
-};
-
 DECLARE_SIMPLE_CLASS(FifoPipe) {
 public:
 

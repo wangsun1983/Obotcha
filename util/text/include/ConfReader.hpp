@@ -15,12 +15,6 @@ extern "C" {
 
 namespace obotcha {
 
-enum ConfReaderFailReason {
-    ConfReaderFailNoFile = 256,
-    ConfReaderFailParseErr,
-
-};
-
 class _ConfValue;
 
 DECLARE_SIMPLE_CLASS(ConfReader) {

@@ -16,6 +16,7 @@
 #include "ThreadCachedPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "System.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -180,7 +181,7 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor() {
 
 int _ThreadCachedPoolExecutor::shutdown(){
     if(mIsShutDown ||mIsTerminated) {
-        return -ExecutorFailAlreadyDestroy;
+        return -AlreadyDestroy;
     }
 
     mIsShutDown = true;
@@ -206,7 +207,7 @@ int _ThreadCachedPoolExecutor::shutdown(){
 int _ThreadCachedPoolExecutor::shutdownNow() {
     printf("shutdownNow 1 \n");
     if(mIsShutDown ||mIsTerminated) {
-        return -ExecutorFailAlreadyDestroy;
+        return -AlreadyDestroy;
     }
     printf("shutdownNow 2 \n");
     mIsShutDown = true;
@@ -234,7 +235,7 @@ int _ThreadCachedPoolExecutor::shutdownNow() {
 
 int _ThreadCachedPoolExecutor::execute(Runnable r) {
     if(mIsShutDown || mIsTerminated) {
-        return -ExecutorFailAlreadyDestroy;
+        return -AlreadyDestroy;
     }
  
     //FutureTask task = createFutureTask(FUTURE_TASK_NORMAL,runnable);
@@ -255,7 +256,7 @@ bool _ThreadCachedPoolExecutor::isTerminated() {
 
 int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
     if(!mIsShutDown) {
-        return -ExecutorFailIsRunning;
+        return -InvalidStatus;
     }
 
     //int size = mHandlers->size();
@@ -289,7 +290,7 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
         }
 
         if(millseconds <= 0) {
-            return -ExecutorFailWaitTimeout;
+            return -WaitTimeout;
         }
     }
     

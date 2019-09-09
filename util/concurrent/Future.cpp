@@ -1,4 +1,5 @@
 #include "Future.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -17,7 +18,7 @@ void _Future::wait(long t) {
 int _Future::cancel() {
     int result = 0;
     if(mTask->getStatus() != FUTURE_WAITING) {
-        result = -FutureFailThreadAlreadyIsRunning;
+        result = -InvalidStatus;
     }
 
     mTask->cancel();

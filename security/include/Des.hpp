@@ -21,14 +21,6 @@ enum DesMode {
     DesDecrypt = DES_DECRYPT
 };
 
-enum DesFailReason {
-    DesGenKeyFail = 200,
-    DesSaveKeyFail,
-    DesNotExistFail,
-    DesFileOpenFail,
-    DesWrongParamFail,
-};
-
 DECLARE_SIMPLE_CLASS(Des) {
 
 public:

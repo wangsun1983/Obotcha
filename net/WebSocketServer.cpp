@@ -4,6 +4,8 @@
 #include "NetUtils.hpp"
 #include "WebSocketHybi13Parser.hpp"
 #include "WebSocketProtocol.hpp"
+#include "TcpServer.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -159,7 +161,7 @@ _WebSocketServer::_WebSocketServer() {
 
 int _WebSocketServer::bind(String ip,int port,String path,WebSocketListener listener) {
     if(mServer!= nullptr) {
-        return -WebSocketServerFailAlreadBind;
+        return -AlreadyExists;
     }
 
     mWsListener = listener;
@@ -175,11 +177,13 @@ int _WebSocketServer::bind(String ip,int port,String path,WebSocketListener list
     mHttpListener->setWsEpollObserver(mEpollObservers);
 
     mEpollObserver->start();
+
+    return 0;
 }
 
 int _WebSocketServer::bind(int port,String path,WebSocketListener listener) {
     if(mServer != nullptr) {
-        return -WebSocketServerFailAlreadBind;
+        return -AlreadyExists;
     }
 
     mWsListener = listener;
@@ -195,6 +199,8 @@ int _WebSocketServer::bind(int port,String path,WebSocketListener listener) {
     mHttpListener->setWsEpollObserver(mEpollObservers);
 
     mEpollObserver->start();
+
+    return 0;
 }
 
 int _WebSocketServer::start() {

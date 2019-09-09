@@ -16,19 +16,22 @@
 
 namespace obotcha {
 
-void _NetUtils::addEpollFd(int epollfd, int fd, bool enable_et) {
+int _NetUtils::addEpollFd(int epollfd, int fd, bool enable_et) {
     struct epoll_event ev;
     ev.data.fd = fd;
     ev.events = EPOLLIN | EPOLLRDHUP |EPOLLHUP;
     if( enable_et )
         ev.events |= EPOLLET;
-    epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);
+    int ret = epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);
+    if(ret < 0) {
+        return ret;
+    }
     
-    fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
+    return fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
 }
 
-void _NetUtils::delEpollFd(int epollfd, int fd) {
-    epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, NULL);
+int _NetUtils::delEpollFd(int epollfd, int fd) {
+    return epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, NULL);
 }
 
 int _NetUtils::sendTcpPacket(int fd,ByteArray packet) {

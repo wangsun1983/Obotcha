@@ -4,6 +4,7 @@
 #include "StrongPointer.hpp"
 #include "ReadWriteLock.hpp"
 #include "System.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -31,7 +32,7 @@ int _ReadLock::tryLock() {
       return 0;
     }
 
-    return -ReadLockLockFail;
+    return -1;
 }
 
 String _ReadLock::getName() {
@@ -55,7 +56,7 @@ int _ReadLock::lock(long timeInterval) {
     st(System)::getNextTime(timeInterval,&ts);
     int ret = pthread_rwlock_timedrdlock(&rwlock->rwlock,&ts);
     if(ret == ETIMEDOUT) {
-      return -ReadLockTimeout;
+      return -WaitTimeout;
     }
 
     return 0;
@@ -85,7 +86,7 @@ int _WriteLock::tryLock() {
     return 0;
   }
 
-  return -WriteLockLockFail;
+  return -1;
 }
 
 String _WriteLock::getName() {
@@ -109,7 +110,7 @@ int _WriteLock::lock(long timeInterval) {
     st(System)::getNextTime(timeInterval,&ts);
     int ret = pthread_rwlock_timedwrlock(&rwlock->rwlock,&ts);
     if(ret == ETIMEDOUT) {
-      return -ReadLockTimeout;
+      return -WaitTimeout;
     }
 
     return 0;

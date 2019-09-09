@@ -22,6 +22,7 @@ extern "C" {
 #include "File.hpp"
 #include "InputStream.hpp"
 #include "ByteArray.hpp"
+#include "ZipFile.hpp"
 
 namespace obotcha {
 
@@ -38,16 +39,9 @@ public:
 
     void close();
 
-    void compress(String src,String dest);
+    int compress(String src,String dest);
 
-    void compressWithPassword(String src,String dest,String password);
-
-
-    int uncompress(const char *src);
-
-    int uncompress(const char *src,const char *dest);
-
-    int uncompressWithPassword(const char *src,const char *dest,const char *password);
+    int compressWithPassword(String src,String dest,String password);
 
     int uncompress(String src);
 

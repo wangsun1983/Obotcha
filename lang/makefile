@@ -14,6 +14,10 @@ link += integer \
 	uint8 \
 	byte \
 	exception \
+	outofboundsexception\
+	methodnotsupportexception \
+	initializeexception \
+	error \
 
 objs += $(outtmp)/integer.o \
 	$(outtmp)/boolean.o \
@@ -29,7 +33,10 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/uint8.o \
 	$(outtmp)/byte.o \
 	$(outtmp)/exception.o \
-
+    $(outtmp)/outofboundsexception.o \
+	$(outtmp)/methodnotsupportexception.o \
+	$(outtmp)/initializeexception.o \
+	$(outtmp)/error.o \
 
 integer :$(langDir)/Integer.cpp
 	$(gcc) $(cflags) -c $(langDir)/Integer.cpp -o $(outtmp)/integer.o $(external)
@@ -72,3 +79,15 @@ byte :$(langDir)/Byte.cpp
 
 exception :$(langDir)/Exception.cpp
 		$(gcc) $(cflags) -c $(langDir)/Exception.cpp -o $(outtmp)/exception.o $(external)
+
+outofboundsexception :$(langDir)/ArrayIndexOutOfBoundsException.cpp
+		$(gcc) $(cflags) -c $(langDir)/ArrayIndexOutOfBoundsException.cpp -o $(outtmp)/outofboundsexception.o $(external)
+
+methodnotsupportexception :$(langDir)/MethodNotSupportException.cpp
+		$(gcc) $(cflags) -c $(langDir)/MethodNotSupportException.cpp -o $(outtmp)/methodnotsupportexception.o $(external)
+
+initializeexception :$(langDir)/InitializeException.cpp
+		$(gcc) $(cflags) -c $(langDir)/InitializeException.cpp -o $(outtmp)/initializeexception.o $(external)
+
+error :$(langDir)/Error.cpp
+		$(gcc) $(cflags) -c $(langDir)/Error.cpp -o $(outtmp)/error.o $(external)		

@@ -78,10 +78,10 @@ OutputStream                     --Complete--(Interface)
 File
 InputStream                      --Complete--(Interface)
 PrintStream
-FileInputStream
+FileInputStream                  --Complete--
 ZipStream
 FileNodeReader
-MemoryFile
+MemoryFile                       --Complete--(Interface)
 
 [security]
 Aes                              --Complete--

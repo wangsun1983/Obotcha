@@ -14,11 +14,6 @@
 
 namespace obotcha {
 
-enum HttpClientFailReason {
-    HttpClientParamErr = 200,
-    HttpClientConnectFail,
-};
-
 DECLARE_SIMPLE_CLASS(HttpClient) {
 
 public:

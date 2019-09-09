@@ -28,12 +28,6 @@ enum PipeType {
     WritePipe
 };
 
-enum PipeFailReason {
-    PipeWriteOversize = 256,
-    PipeNotInit,
-    PipeAlreadyInit
-};
-
 DECLARE_SIMPLE_CLASS(Pipe) {
 public:
     _Pipe();

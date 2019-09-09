@@ -1,5 +1,6 @@
 #include "ConfReader.hpp"
 #include "ConfValue.hpp"
+#include "Error.hpp"
 
 extern "C"{
     #include "ccl.h"
@@ -48,7 +49,7 @@ int _ConfReader::refresh() {
 
 int _ConfReader::parse() {
     if(!conf_file->exists()) {
-        return -ConfReaderFailNoFile;
+        return -FileNotExists;
     }
 
     mConfValue = createConfValue();
@@ -66,7 +67,7 @@ int _ConfReader::parse() {
         return 0;
     }
 
-    return -ConfReaderFailParseErr;
+    return -1;
 }
 
 ConfValue _ConfReader::get() {

@@ -20,7 +20,6 @@
 #include "Pipe.hpp"
 #include "AtomicInteger.hpp"
 #include "Thread.hpp"
-#include "TcpServer.hpp"
 #include "WebSocketListener.hpp"
 #include "SocketListener.hpp"
 #include "EPollFileObserver.hpp"
@@ -32,9 +31,7 @@
 
 namespace obotcha {
 
-enum WebSocketServerFailReason {
-    WebSocketServerFailAlreadBind = 200,
-};
+class _TcpServer;    
 
 DECLARE_SIMPLE_CLASS(WebSocketHttpListener) IMPLEMENTS(SocketListener){
 public:
@@ -82,7 +79,7 @@ public:
 
 private:
     String mPath;
-    TcpServer mServer;
+    sp<_TcpServer> mServer;
     WebSocketListener mWsListener;
     
     HashMap<String,EPollFileObserver> mEpollObservers;
@@ -91,7 +88,7 @@ private:
 
     WebSocketHttpListener mHttpListener;
     
-    TcpServer mHttpServer;
+    sp<_TcpServer> mHttpServer;
 };
 
 

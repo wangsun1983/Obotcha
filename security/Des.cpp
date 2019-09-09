@@ -6,6 +6,7 @@
 #include "Des.hpp"
 #include "FileInputStream.hpp"
 #include "FileOutputStream.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -146,11 +147,11 @@ ByteArray _Des::decrypt(ByteArray input) {
 
 int _Des::genKey(File file) {
     if(file == nullptr) {
-        return -DesWrongParamFail;
+        return -InvalidParam;
     }
 
     if(_genKey() != 0){
-        return -DesGenKeyFail;
+        return -GenKeyFail;
     }
 
     return _saveKey(file->getAbsolutePath());
@@ -158,11 +159,11 @@ int _Des::genKey(File file) {
 
 int _Des::genKey(String filepath) {
     if(filepath == nullptr) {
-        return -DesWrongParamFail;
+        return -InvalidParam;
     }
 
     if(_genKey() != 0) {
-        return -DesGenKeyFail;
+        return -GenKeyFail;
     }
 
     return _saveKey(filepath);
@@ -170,11 +171,11 @@ int _Des::genKey(String filepath) {
 
 int _Des::genKey(const char * filepath) {
     if(filepath == nullptr) {
-        return -DesWrongParamFail;
+        return -InvalidParam;
     }
 
     if(_genKey() != 0) {
-        return -DesGenKeyFail;
+        return -GenKeyFail;
     }
 
     return _saveKey(createString(filepath));
@@ -182,11 +183,11 @@ int _Des::genKey(const char * filepath) {
 
 int _Des::genKey(File file,String content) {
     if(file == nullptr || content == nullptr) {
-        return -DesWrongParamFail;
+        return -InvalidParam;
     }
 
     if(_genKey(content) != 0) {
-        return -DesGenKeyFail;
+        return -GenKeyFail;
     }
 
     return _saveKey(file->getAbsolutePath());
@@ -194,11 +195,11 @@ int _Des::genKey(File file,String content) {
 
 int _Des::genKey(String filepath,String content) {
     if(filepath == nullptr || content == nullptr) {
-        return -DesWrongParamFail;
+        return -InvalidParam;
     }
 
     if(_genKey(content) != 0) {
-        return -DesGenKeyFail;
+        return -GenKeyFail;
     }
 
     return _saveKey(filepath);
@@ -206,11 +207,11 @@ int _Des::genKey(String filepath,String content) {
 
 int _Des::genKey(const char * filepath,String content) {
     if(filepath == nullptr || content == nullptr) {
-        return -DesWrongParamFail;
+        return -InvalidParam;
     }
 
     if(_genKey(content) != 0) {
-        return -DesGenKeyFail;
+        return -GenKeyFail;
     }
 
     return _saveKey(createString(filepath));
@@ -227,7 +228,7 @@ int _Des::loadKey(String filepath) {
 int _Des::loadKey(const char *filepath) {
     FILE *key_file = fopen(filepath, "rb");
     if (!key_file) {
-        return -DesNotExistFail;
+        return -FileNotExists;
     }
 
     short int bytes_read;
@@ -236,7 +237,7 @@ int _Des::loadKey(const char *filepath) {
     bytes_read = fread(&mKey, sizeof(unsigned char), DES_KEY_SIZE, key_file);
     if (bytes_read != DES_KEY_SIZE) {
         fclose(key_file);
-        return -DesFileOpenFail;
+        return -OpenFail;
     }
     
     fclose(key_file);
@@ -312,12 +313,12 @@ int _Des::_genKey() {
 int _Des::_saveKey(String filepath) {
     FILE *key_file = fopen(filepath->toChars(), "wb");
     if(key_file == nullptr) {
-        return -DesSaveKeyFail;
+        return -OpenFail;
     }
     short int bytes_written = fwrite(&mKey, 1, DES_KEY_SIZE, key_file);
     if (bytes_written != DES_KEY_SIZE) {
         fclose(key_file);
-        return -DesSaveKeyFail;
+        return -WriteFail;
     }
 
     fclose(key_file);

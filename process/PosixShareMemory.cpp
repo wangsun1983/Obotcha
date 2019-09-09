@@ -11,6 +11,7 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "ByteArray.hpp"
+#include "Error.hpp"
 
 //#define DEBUG_SHAREMEM_DUMP
 
@@ -33,7 +34,7 @@ int _PosixShareMemory::init() {
             continue;
         }
 
-        return -PosixShmCreateFailed;
+        return -OpenFail;
     }
 
     struct stat ss;
@@ -55,7 +56,7 @@ int _PosixShareMemory::init() {
 
     if(mPtr == nullptr) {
         //printf("mmap failed \n");
-        return -PosixShmMapFailed;
+        return -MmapFail;
     }
 
     isCreated = true;
@@ -65,11 +66,11 @@ int _PosixShareMemory::init() {
 
 int _PosixShareMemory::write(ByteArray arr) {
     if(!isCreated) {
-        return -PosixShmNotCreate;
+        return -NotCreate;
     }
 
     if(arr->size() > size) {
-        return -PosixShmWriteOverSize;
+        return -OverSize;
     }
 
     char *v = arr->toValue();
@@ -95,11 +96,11 @@ int _PosixShareMemory::write(ByteArray arr) {
 
 int _PosixShareMemory::write(int index,ByteArray arr) {
     if(!isCreated) {
-        return -PosixShmNotCreate;
+        return -NotCreate;
     }
 
     if((index + arr->size()) > size) {
-        return -PosixShmWriteOverSize;
+        return -OverSize;
     }
 
     memcpy(&mPtr[index],arr->toValue(),arr->size());
@@ -109,11 +110,11 @@ int _PosixShareMemory::write(int index,ByteArray arr) {
 
 int _PosixShareMemory::write(int index,char v) {
     if(!isCreated) {
-        return -PosixShmNotCreate;
+        return -NotCreate;
     }
 
     if(index >= size) {
-        return -PosixShmWriteOverSize;
+        return -OverSize;
     }
 
     mPtr[index] = v;
@@ -123,7 +124,7 @@ int _PosixShareMemory::write(int index,char v) {
 
 int _PosixShareMemory::read(ByteArray arr) {
     if(!isCreated) {
-        return -PosixShmNotCreate;
+        return -NotCreate;
     }
 
     int ll = arr->size() > size?size:arr->size();
@@ -140,11 +141,11 @@ int _PosixShareMemory::read(ByteArray arr) {
 
 int _PosixShareMemory::read(int index,ByteArray arr) {
     if(!isCreated) {
-        return -PosixShmNotCreate;
+        return -NotCreate;
     }
 
     if(index >= size) {
-        return -PosixShmReadOverSize;
+        return -OverSize;
     }
 
     int ll = (arr->size() + index) > size?size:(arr->size() + index);
@@ -154,11 +155,11 @@ int _PosixShareMemory::read(int index,ByteArray arr) {
 
 int _PosixShareMemory::read(int index) {
     if(!isCreated) {
-        return -PosixShmNotCreate;
+        return -NotCreate;
     }
 
     if(index >= size) {
-        return -PosixShmWriteOverSize;
+        return -OverSize;
     }
 
     return mPtr[index];

@@ -27,16 +27,6 @@ enum PosixMqPriority {
     PosixMqPriortyUrgent
 };
 
-enum PosixMqFailReason {
-    PosixMqMsgSizeOversize = 200,
-    PosixMqNumsOversize,
-    PosixMqNotCreate,
-    PosixMqWrongType,
-    PosixMqSendBufOverSize,
-    PosixMqMaxMgsSetFailed,
-    PosixMqMsgSizeSetFailed
-};
-
 #define DEFAULT_MQ_MSG_SIZE 1024*4
 #define DEFAULT_MQ_MSG_NUMS 8
 

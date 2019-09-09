@@ -15,6 +15,7 @@
 #include "Pipe.hpp"
 #include "NetUtils.hpp"
 #include "AutoMutex.hpp"
+#include "Error.hpp"
 
 
 #define EPOLL_SIZE 1024*8
@@ -186,7 +187,7 @@ int _LocalSocketServer::connect() {
 
     if( bind(sock, (struct sockaddr *)&serverAddr, len) < 0) {
         printf("bind server faild , error = %s \n", strerror(errno));
-        return false;
+        return -NetBindFail;
     }
 
     printf("LocalSocketServer connect trace3 \n");
@@ -194,7 +195,7 @@ int _LocalSocketServer::connect() {
     int ret = listen(sock, 5);
 
     if(ret < 0) {
-        return false;
+        return -NetListenFail;
     }
     //add epoll
     st(NetUtils)::addEpollFd(epfd,sock,true);

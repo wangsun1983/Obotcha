@@ -12,10 +12,6 @@ enum FutureStatus {
     FUTURE_COMPLETE
 };
 
-enum FutureFailReason {
-    FutureFailThreadAlreadyIsRunning = 200,
-};
-
 DECLARE_SIMPLE_CLASS(Future) {
 public:
     _Future(FutureTask);

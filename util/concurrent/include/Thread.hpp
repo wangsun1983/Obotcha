@@ -46,16 +46,6 @@ enum ThreadSchedPolicy {
     ThreadSchedRR = SCHED_RR,    //SCHED_RR 2
 };
 
-enum ThreadFailReason {
-    ThreadFailUnknowPolicy = 200,
-    ThreadFailNoPrioritySupport,
-    ThreadFailNotStart,
-    ThreadFailAllreadyComplete,
-    ThreadFailAllreadyDestroy,
-    ThreadFailActionFail,
-    
-};
-
 DECLARE_SIMPLE_CLASS(KeepAliveThread) {
 public:
     _KeepAliveThread();

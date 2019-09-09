@@ -14,12 +14,6 @@
 
 namespace obotcha {
 
-enum PosixSemFailReason {
-    PosixSemDefaultValueOverSize = 200,
-    PosixSemNotCreat,
-};
-
-
 DECLARE_SIMPLE_CLASS(PosixSem) {
 
 public:
