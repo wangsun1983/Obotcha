@@ -59,6 +59,8 @@ void _TcpServerThread::run() {
         if(mStatus->get() == ServerWaitingThreadExit) {
             mStatus->set(ServerThreadExited);
             return;
+        } else {
+            mStatus->set(ServerWorking);
         }
 
         int epoll_events_count = epoll_wait(mEpollfd, events, EPOLL_SIZE, -1);
@@ -68,8 +70,6 @@ void _TcpServerThread::run() {
             return;
         }
 
-        mStatus->set(ServerWorking);
- 
         std::cout << "epoll_events_count =" << epoll_events_count << endl;
 
         for(int i = 0; i < epoll_events_count; ++i) {
@@ -217,6 +217,10 @@ int _TcpServer::removeClientFd(int fd) {
 
 int _TcpServer::addClientFd(int fd) {
     return st(NetUtils)::addEpollFd(epfd,fd,true);
+}
+
+int _TcpServer::getStatus() {
+    return mStatus->get();
 }
 
 int _TcpServer::getTcpEpollfd() {

@@ -148,4 +148,54 @@ String _HttpUrl::toQueryString() {
     return url;
 }
 
+void _HttpUrl::dump() {
+    if(getSchema() != nullptr) {
+        printf("schema is %s \n",getSchema()->toChars());
+    } else {
+        printf("schema is NULL \n");
+    }
+    
+    if(getHost() != nullptr) {
+        printf("host is %s \n",getHost()->toChars());
+    } else {
+        printf("host is NULL \n");
+    }
+
+    printf("port is %d \n",getPort());
+
+    if(getPath() != nullptr) {
+        printf("path is %s \n",getPath()->toChars());
+    } else {
+        printf("path is NULL \n");
+    }
+
+    if(getFragment() != nullptr) {
+        printf("fragment is %s \n",getFragment()->toChars());
+    } else {
+        printf("fragment is NULL \n");
+    }
+    
+    if(getUser() != nullptr) {
+        printf("user is %s \n",getUser()->toChars());
+    } else {
+        printf("user is NULL \n");
+    }
+    
+    if(getPassword() != nullptr) {
+        printf("password is %s \n",getPassword()->toChars());
+    } else {
+        printf("password is NULL \n");
+    }
+    
+    if(mQuery != nullptr) {
+        MapIterator<String,String> iterator = mQuery->getIterator();
+        while(iterator->hasValue()) {
+            printf("query,key is %s,value is %s \n",iterator->getKey()->toChars(),iterator->getValue()->toChars());
+            iterator->next();
+        }
+    } else {
+        printf("query is NULL \n");
+    }
+}
+
 }

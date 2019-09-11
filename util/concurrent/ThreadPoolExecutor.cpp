@@ -11,6 +11,8 @@
 
 static int id = 0;
 
+#define DEFAULT_THREAD_NUM 4
+
 namespace obotcha {
 _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool):mPool(pool),
                                                                          state(idleState),
@@ -18,8 +20,9 @@ _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask>
                                                                          isWaitTerminate(false){
     mStateMutex = createMutex("ThreadPoolExeHandlerMutex");
     mWaitCond = createCondition();
-
-    mThread = createThread(this);
+    Runnable r;
+    r.set_pointer(this);
+    mThread = createThread(r);
 
     mThread->start();
 }
@@ -33,7 +36,6 @@ void _ThreadPoolExecutorHandler::onInterrupt() {
     AutoMutex l(mStateMutex);
     state = terminateState;
     if(isWaitTerminate) {
-        printf("notify trace \n");
         mWaitCond->notify();
         isWaitTerminate = false;
     }
@@ -43,11 +45,14 @@ void _ThreadPoolExecutorHandler::run() {
     while(!mStop) {
         //printf("_ThreadPoolExecutorHandler trace1 \n");
         FutureTask task = mPool->deQueueFirst();
-        printf("_ThreadPoolExecutorHandler trace2 \n");
         if(task == nullptr) {
-            return;
+            break;
         }
-        //printf("executor thred name is %s \n",mThread->getName()->toChars());
+
+        if(task->getStatus() == FUTURE_CANCEL) {
+            continue;
+        }
+        
         {
             AutoMutex l(mStateMutex);
             state = busyState;
@@ -55,12 +60,12 @@ void _ThreadPoolExecutorHandler::run() {
                 task->onRunning();
             }
         }
-        printf("_ThreadPoolExecutorHandler trace3 \n");
+
         Runnable runnable = task->getRunnable();
         if(runnable != nullptr) {
             runnable->run();    
         }
-        printf("_ThreadPoolExecutorHandler trace4 \n");
+
         {
             AutoMutex l(mStateMutex);
             state = idleState;
@@ -69,15 +74,13 @@ void _ThreadPoolExecutorHandler::run() {
                 task->onComplete();
             }
         }
-        //printf("_ThreadPoolExecutorHandler trace5 \n");
     }
-    //printf("_ThreadPoolExecutorHandler trace6 \n");
+
     {
         AutoMutex l(mStateMutex);
         state = terminateState;
-        printf("_ThreadPoolExecutorHandler trace7 \n");
+
         if(isWaitTerminate) {
-            printf("notify trace \n");
             mWaitCond->notify();
             isWaitTerminate = false;
         }
@@ -95,7 +98,6 @@ void _ThreadPoolExecutorHandler::waitForTerminate() {
 void _ThreadPoolExecutorHandler::waitForTerminate(long interval) {
     AutoMutex l(mStateMutex);
     isWaitTerminate = true;
-    //printf("waitForTerminate status is %d \n",state);
     if(state == busyState) {
         mWaitCond->wait(mStateMutex,interval);
     }
@@ -114,11 +116,11 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
 }
 
 _ThreadPoolExecutor::_ThreadPoolExecutor() {
-    init(-1,1);
+    init(-1,DEFAULT_THREAD_NUM);
 }
 
 void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
-    if(queuesize > 0) {
+    if(queuesize != -1) {
         mPool = createBlockingQueue<FutureTask>(queuesize);    
     } else {
         mPool = createBlockingQueue<FutureTask>();
@@ -133,11 +135,24 @@ void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
         mHandlers->enQueueLast(h);
     }
 
+    mProtectMutex = createMutex("ThreadPoolExecutor");
+
     mIsTerminated = false;
+
     mIsShutDown = false;
 }
 
 int _ThreadPoolExecutor::execute(Runnable runnable) {
+    if(runnable == nullptr) {
+        return -InvalidParam;
+    }
+
+    if(mIsShutDown ||mIsTerminated) {
+        return -AlreadyDestroy;
+    }
+
+    AutoMutex l(mProtectMutex);
+
     if(mIsShutDown ||mIsTerminated) {
         return -AlreadyDestroy;
     }
@@ -152,14 +167,19 @@ int _ThreadPoolExecutor::shutdown() {
         return -AlreadyDestroy;
     }
 
+    AutoMutex l(mProtectMutex);
+
+    if(mIsShutDown ||mIsTerminated) {
+        return -AlreadyDestroy;
+    }
+
     mIsShutDown = true;
+
     int size = mHandlers->size();
-    printf("shutdown trace1,mHandlers is %d \n",size);
     for(int i = 0;i < size;i++) {
         mHandlers->get(i)->stop();
     }
 
-    printf("shutdown trace2 \n");
     for(;;) {
         FutureTask task = mPool->deQueueLastNoBlock();
         if(task != nullptr) {
@@ -168,9 +188,8 @@ int _ThreadPoolExecutor::shutdown() {
             break;
         }
     }
-    printf("shutdown trace3 \n");
+
     mPool->clear();
-    printf("shutdown trace4 \n");
 
     return 0;
 }
@@ -180,14 +199,19 @@ int _ThreadPoolExecutor::shutdownNow() {
         return -AlreadyDestroy;
     }
 
+    AutoMutex l(mProtectMutex);
+
+    if(mIsShutDown ||mIsTerminated) {
+        return -AlreadyDestroy;
+    }
+
     mIsShutDown = true;
     int size = mHandlers->size();
-    printf("mHandlers size is %d \n",size);
+
     for(int i = 0;i < size;i++) {
         mHandlers->get(i)->forceStop();
     }
 
-    printf("before mPool size is %d \n",mPool->size());
     for(;;) {
         FutureTask task = mPool->deQueueLastNoBlock();
         if(task != nullptr) {
@@ -197,24 +221,30 @@ int _ThreadPoolExecutor::shutdownNow() {
         }
     }
 
-    printf("after mPool size is %d \n",mPool->size());
-
     mIsTerminated = true;
 
     return 0;
 }
 
 Future _ThreadPoolExecutor::submit(Runnable r) {
+    if(r == nullptr) {
+        return nullptr;
+    }
+
     if(mIsShutDown||mIsTerminated) {
+        return nullptr;
+    }
+
+    AutoMutex l(mProtectMutex);
+
+    if(mIsShutDown ||mIsTerminated) {
         return nullptr;
     }
     
     FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r);
-    Future future = createFuture(task);
-    printf("submit 1 \n");
     mPool->enQueueLast(task);
-    printf("submit 2 \n");
-    return future;
+
+    return createFuture(task);
 }
 
 bool _ThreadPoolExecutor::isShutdown() {
@@ -222,6 +252,12 @@ bool _ThreadPoolExecutor::isShutdown() {
 }
 
 bool _ThreadPoolExecutor::isTerminated() {
+    if(mIsTerminated) {
+        return true;
+    }
+
+    AutoMutex l(mProtectMutex);
+
     if(mIsTerminated) {
         return true;
     }
@@ -238,18 +274,14 @@ bool _ThreadPoolExecutor::isTerminated() {
 }
 
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
-    printf("awaitTermination trace1 \n");
     if(!mIsShutDown) {
-        printf("awaitTermination trace1_1 \n");
         return -InvalidStatus;
     }
 
     if(mIsTerminated) {
-        printf("awaitTermination trace1_2 \n");
         return 0;
     }
 
-    printf("awaitTermination trace2 \n");
     int size = mHandlers->size();
 
     if(millseconds == 0) {
@@ -259,13 +291,10 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
         mIsTerminated = true;
         return 0;
     } else {
-        printf("awaitTermination trace3 \n");
         for(int i = 0;i < size;i++) {
             long current = st(System)::currentTimeMillis();
             if(millseconds >= 0) {
-                printf("awaitTermination trace3_1,millseconds is %ld \n",millseconds);
                 mHandlers->get(i)->waitForTerminate(millseconds);
-                printf("awaitTermination trace3_2 \n");
             } else {
                 break;
             }
@@ -275,7 +304,6 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
         if(millseconds <= 0) {
             return -WaitTimeout;
         }
-        printf("awaitTermination trace4 \n");
     }
 
     return 0;

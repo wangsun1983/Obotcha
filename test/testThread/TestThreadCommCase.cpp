@@ -8,6 +8,7 @@
 #include "Mutex.hpp"
 #include "AutoMutex.hpp"
 #include "System.hpp"
+#include "Error.hpp"
 
 #define TEST_DEVIATION 50 //ms
 #define TEST_SLEEP_INTERVAL 100 //s
@@ -86,9 +87,7 @@ public:
 DECLARE_SIMPLE_CLASS(Thread4) IMPLEMENTS(Thread) {
 public:
     void run() {
-        //printf("thread4 run trace1 \n");
         st(Thread)::setThreadSchedPolicy(ThreadSchedPolicy::ThreadSchedFIFO);
-        //printf("thread4 run trace2 \n");
         sleep(10);
     }
 
@@ -264,7 +263,7 @@ int testThreadCommonCase() {
     sleep(1);
     int result = t2->setPriority(ThreadPriority::ThreadHighestPriority);
     int policy = t2->getSchedPolicy();
-    if(policy != ThreadSchedOTHER || result != -ThreadFailNoPrioritySupport) {
+    if(policy != ThreadSchedOTHER || result == -1) {
       printf("---[Thread Test {setPriority()} case1] [FAILED]--- \n");
       break;
     }
@@ -285,9 +284,17 @@ int testThreadCommonCase() {
     Thread2 t2 = createThread2();
     t2->setName("testsetname");
     t2->start();
+    //printf("t2_1 status is %d \n",t2->getStatus());
     t2->setName("mysetnametest");
+    //printf("t2_2 status is %d \n",t2->getStatus());
     sleep(1);
     String name = t2->getName();
+    //if(name == nullptr) {
+    //  printf("name is nullptr \n");
+    //} else {
+    //  printf("name is %s \n",name->toChars());
+    //}
+
     if(name == nullptr || !name->equals("mysetnametest")) {
       printf("---[Thread Test {setName()} case1] [FAILED]--- \n");
       break;
@@ -373,18 +380,13 @@ int testThreadCommonCase() {
 
   //setThreadSchedPolicy(ThreadPriority priority);
   while(1) {
-    //printf("thread4 start1 \n");
     Thread4 t1 = createThread4();
-    t1->setName("setThreadSchedPolicy");
     t1->start();
-    //printf("thread4 start2 \n");
-    sleep(10);
+    sleep(1);
     if(t1->getSchedPolicy() != ThreadSchedPolicy::ThreadSchedFIFO) {
         printf("---[Thread Test {setThreadSchedPolicy()} case1] [FAILED]--- \n");
         break;
     }
-    //printf("thread4 start3 \n");
-
     printf("---[Thread Test {setThreadSchedPolicy()} case2] [Success]--- \n");
     break;
   }
@@ -412,7 +414,7 @@ int testThreadCommonCase() {
     t1->start();
     sleep(1);
     //t1->setPriority(ThreadPriority::ThreadHighPriority);
-    printf("t1 priority is %d \n",t1->getPriority());
+    //printf("t1 priority is %d \n",t1->getPriority());
     if(t1->getPriority() != ThreadPriority::ThreadHighPriority) {
         printf("---[Thread Test {setThreadPriority()} case1] [FAILED]--- \n");
         break;
@@ -440,6 +442,4 @@ int testThreadCommonCase() {
       printf("---[Thread Test {getThreadPriority()} case2] [Success]--- \n");
       break;
   }
-
-
 }

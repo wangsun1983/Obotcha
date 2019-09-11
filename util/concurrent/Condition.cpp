@@ -20,18 +20,6 @@ void _Condition::wait(Mutex m) {
 
 int _Condition::wait(Mutex m,long int timeInterval) {
     struct timespec ts;
-    /*
-    clock_gettime(CLOCK_REALTIME, &ts);
-
-    long secs = timeInterval/1000;
-    timeInterval = timeInterval%1000;
-
-    long add = 0;
-    timeInterval = timeInterval*1000*1000 + ts.tv_nsec;
-    add = timeInterval / (1000*1000*1000);
-    ts.tv_sec += (add + secs);
-    ts.tv_nsec = timeInterval%(1000*1000*1000);
-    */
     st(System)::getNextTime(timeInterval,&ts);
     pthread_mutex_t* mutex_t = m->getMutex_t();
 

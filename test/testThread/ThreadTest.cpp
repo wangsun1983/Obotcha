@@ -20,6 +20,6 @@ extern int testThreadInterruptCase();
 extern int testThreadCommonCase();
 
 int main() {
-    //testThreadInterruptCase();
+    testThreadInterruptCase();
     testThreadCommonCase();
 }

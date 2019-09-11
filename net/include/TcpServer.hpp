@@ -85,6 +85,8 @@ public:
 
     int addClientFd(int fd);
 
+    int getStatus();
+
     ~_TcpServer();
 
 private:

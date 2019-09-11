@@ -37,6 +37,8 @@ public:
 
     String toString();
     String toQueryString();
+
+    void dump();
     
 private:
     String mSchema;

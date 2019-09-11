@@ -155,17 +155,7 @@ bool _AsyncTcpClient::init(String ip,int port,int recv_time,SocketListener l,int
 }
 
 _AsyncTcpClient::~_AsyncTcpClient() {
-    if(sock != 0) {
-        close(sock);
-        sock = 0;
-    }
-
-    if(epfd != 0) {
-        close(epfd);
-        epfd = 0;
-    }
-
-    mPipe->writeTo(createByteArray(1));
+    release();
 }
 
 int _AsyncTcpClient::send(ByteArray data) {

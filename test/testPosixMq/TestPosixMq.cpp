@@ -30,6 +30,7 @@ int main() {
   int pid = fork();
   if(pid == 0) {
     //child process
+    sleep(10);
     PosixMq mq = createPosixMq("abc",SendMq);
     mq->init();
     ByteArray array = createByteArray(&testData[0],testDatalength);

@@ -33,17 +33,22 @@ _ThreadCachedPoolExecutorHandler::_ThreadCachedPoolExecutorHandler(BlockingQueue
                                                                          mStop(false),
                                                                          isWaitIdle(false){
     mStateMutex = createMutex("ThreadCachedPoolExeHandlerMutex");
+
     mWaitCond = createCondition();
 
-    mThread = createThread(this);
+    Runnable r;
+    r.set_pointer(this);
+
+    mThread = createThread(r);
     
     mThreadTimeout = timeout;
 
     mThread->start();
     
     mPoolExecutor.set_pointer(h);
-    tt = h;
-    printf("mPoolExecutor count is %d \n",mPoolExecutor->getStrongCount());
+
+    //tt = h;
+    //printf("mPoolExecutor count is %d \n",mPoolExecutor->getStrongCount());
 }
 
 void _ThreadCachedPoolExecutorHandler::stop() {
@@ -57,12 +62,10 @@ void _ThreadCachedPoolExecutorHandler::forceStop() {
 
 void _ThreadCachedPoolExecutorHandler::run() {
     while(!mStop) {
-        printf("wangsl,executorhandler run1 \n");
+        mPoolExecutor->increaseIdleThreadNum();
         FutureTask task = mPool->deQueueFirst(mThreadTimeout);
-        //no task,so we should remove this thread,and exit;
         mPoolExecutor->decreaseIdleThreadNum();
         if(task == nullptr) {
-            printf("wangsl,ececutorhandler run1_1 \n");
             if(!mPoolExecutor->isOverMinSize() && !mStop){
                 continue;
             }
@@ -71,8 +74,10 @@ void _ThreadCachedPoolExecutorHandler::run() {
             break;
         }
 
+        if(task->getStatus() == FUTURE_CANCEL) {
+            continue;
+        }
 
-        printf("wangsl,ececutorhandler run2 \n");
         {
             AutoMutex l(mStateMutex);
             state = busyState;
@@ -93,24 +98,9 @@ void _ThreadCachedPoolExecutorHandler::run() {
             if(task->getType() == FUTURE_TASK_SUBMIT) {
                 task->onComplete();
             }
-        }
-        printf("wangsl,ececutorhandler run3 \n");
-        mPoolExecutor->increaseIdleThreadNum();
-        //decreaseIdleThreadNum();
+        }        
     }
-    printf("wangsl,ececutorhandler run4 \n");
-    if(mPoolExecutor != nullptr) {
-        ThreadCachedPoolExecutorHandler t;
-        t.set_pointer(this);
-        printf("wangsl,ececutorhandler run4_1 \n");
-        mPoolExecutor->removeHandler(t);
-        mPoolExecutor.remove_pointer();
-        printf("wangsl,ececutorhandler run4_2 \n");
-        mPoolExecutor = nullptr;
-        printf("wangsl,ececutorhandler run4_3 \n");
-    }
-    printf("wangsl,ececutorhandler run5 \n");
-
+    
     {
         AutoMutex l(mStateMutex);
         state = terminateState;
@@ -119,27 +109,28 @@ void _ThreadCachedPoolExecutorHandler::run() {
             isWaitTerminate = false;
         }
     }
-    printf("wangsl,ececutorhandler run6 \n");
-}
 
-void _ThreadCachedPoolExecutorHandler::onInterrupt() {
-    printf("_ThreadCachedPoolExecutorHandler onInterrupt 1 \n");
     if(mPoolExecutor != nullptr) {
-        printf("_ThreadCachedPoolExecutorHandler onInterrupt 2,count is %d \n",mPoolExecutor->getStrongCount());
         ThreadCachedPoolExecutorHandler t;
         t.set_pointer(this);
         mPoolExecutor->removeHandler(t);
         mPoolExecutor.remove_pointer();
-        printf("_ThreadCachedPoolExecutorHandler onInterrupt 2_1,count is %d \n",tt->getStrongCount());
         mPoolExecutor = nullptr;
-        printf("_ThreadCachedPoolExecutorHandler onInterrupt 2_2,count is %d \n",tt->getStrongCount());
-        mPoolExecutor->increaseIdleThreadNum();
     }
-    printf("_ThreadCachedPoolExecutorHandler onInterrupt 3 \n");
+}
+
+void _ThreadCachedPoolExecutorHandler::onInterrupt() {
+    if(mPoolExecutor != nullptr) {
+        ThreadCachedPoolExecutorHandler t;
+        t.set_pointer(this);
+        mPoolExecutor->removeHandler(t);
+        mPoolExecutor.remove_pointer();
+        mPoolExecutor = nullptr;
+    }
+
     AutoMutex l(mStateMutex);
     state = terminateState;
     if(isWaitTerminate) {
-        //printf("notify trace \n");
         mWaitCond->notify();
         isWaitTerminate = false;
     }
@@ -157,9 +148,7 @@ void _ThreadCachedPoolExecutorHandler::waitForTerminate(long interval) {
     AutoMutex l(mStateMutex);
     isWaitTerminate = true;
     if(state == busyState) {
-        //printf("wait internal start is %ld \n",interval);
         mWaitCond->wait(mStateMutex,interval);
-        //printf("wait internal end is %ld \n",interval);
     }
 }
 
@@ -184,13 +173,18 @@ int _ThreadCachedPoolExecutor::shutdown(){
         return -AlreadyDestroy;
     }
 
+    AutoMutex l(mProtectMutex);
+
+    if(mIsShutDown ||mIsTerminated) {
+        return -AlreadyDestroy;
+    }
+
     mIsShutDown = true;
     int size = mHandlers->size();
     for(int i = 0;i < size;i++) {
         mHandlers->get(i)->stop();
     }
 
-    int taskNum = mPool->size();
     for(;;) {
         FutureTask task = mPool->deQueueLastNoBlock();
         if(task != nullptr) {
@@ -200,23 +194,27 @@ int _ThreadCachedPoolExecutor::shutdown(){
         }
     }
 
-    mPool->clear();
     return 0;
 }
 
 int _ThreadCachedPoolExecutor::shutdownNow() {
-    printf("shutdownNow 1 \n");
+
     if(mIsShutDown ||mIsTerminated) {
         return -AlreadyDestroy;
     }
-    printf("shutdownNow 2 \n");
+
+    AutoMutex l(mProtectMutex);
+
+    if(mIsShutDown ||mIsTerminated) {
+        return -AlreadyDestroy;
+    }
+    
     mIsShutDown = true;
     int size = mHandlers->size();
     for(int i = 0;i < size;i++) {
         mHandlers->get(i)->forceStop();
     }
-    printf("shutdownNow 3 \n");
-    //int taskNum = mPool->size();
+    
     for(;;) {
         FutureTask task = mPool->deQueueLastNoBlock();
         if(task != nullptr) {
@@ -225,8 +223,6 @@ int _ThreadCachedPoolExecutor::shutdownNow() {
             break;
         }
     }
-    printf("shutdownNow 4 \n");
-    //mPool->clear();
 
     mIsTerminated = true;
 
@@ -234,14 +230,10 @@ int _ThreadCachedPoolExecutor::shutdownNow() {
 }
 
 int _ThreadCachedPoolExecutor::execute(Runnable r) {
-    if(mIsShutDown || mIsTerminated) {
-        return -AlreadyDestroy;
+    
+    if(submit(r) == nullptr) {
+        return -InvalidStatus;
     }
- 
-    //FutureTask task = createFutureTask(FUTURE_TASK_NORMAL,runnable);
-
-    //mPool->enQueueLast(task);
-    submit(r);
 
     return 0;
 }
@@ -299,34 +291,32 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
 }
 
 Future _ThreadCachedPoolExecutor::submit(Runnable r) {
-    printf("cachedthread submit 0 \n");
-    AutoMutex l(mInputMutex);
+    if(mIsShutDown ||mIsTerminated) {
+        return nullptr;//ExecuteResult::failShutDown;
+    }
+
+    AutoMutex l(mProtectMutex);
 
     if(mIsShutDown ||mIsTerminated) {
         return nullptr;//ExecuteResult::failShutDown;
     }
-    printf("cachedthread submit 1 \n");
+
     if(mIdleThreadNum->get() == 0 && mHandlers->size() < maxThreadNum) {
-        printf("cachedthread submit 2 \n");
         ThreadCachedPoolExecutorHandler t = createThreadCachedPoolExecutorHandler(mPool,mThreadTimeout,this);
         mHandlers->enQueueLast(t);
         increaseIdleThreadNum();
     }
 
-    printf("cachedthread submit 3 \n");
     FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r);
     Future future = createFuture(task);
     mPool->enQueueLast(task); 
-    printf("cachedthread submit 4 \n");
+
     return future;   
 }
 
 void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthreadnum,long timeout) {
-    //printf("init queue size is %d ,min num is %d,max num is %d,timeout is %ld",queuesize,minthreadnum,maxthreadnum,timeout);
     mIdleThreadNum = createAtomicInteger(0);
-
-    mInputMutex = createMutex("ThreadCachedMutex");
-
+    mProtectMutex = createMutex("ThreadCachedMutex");
     mQueueSize = queuesize;
 
     if(mQueueSize != -1) {
@@ -373,7 +363,6 @@ void _ThreadCachedPoolExecutor::decreaseIdleThreadNum() {
 }
 
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
-    printf("destroy _ThreadCachedPoolExecutor \n");
     shutdownNow();
 }
 

@@ -9,6 +9,7 @@
 #include "Executors.hpp"
 #include "Future.hpp"
 #include "System.hpp"
+#include "Error.hpp"
 
 using namespace obotcha;
 
@@ -83,7 +84,7 @@ int normalTest() {
         }
 
         int result = pool->execute(createRunTest1());
-        if(result != -ExecutorFailAlreadyDestroy) {
+        if(result != -AlreadyDestroy  ) {
             printf("---[TestCachedPoolExecutor Test {shutdownNow()} case3] [FAIL]--- \n");
             break;
         }
@@ -110,7 +111,7 @@ int normalTest() {
         }
 
         int result = pool->execute(createRunTest1());
-        if(result != -ExecutorFailAlreadyDestroy) {
+        if(result != -AlreadyDestroy  ) {
             printf("---[TestCachedPoolExecutor Test {shutdown()} case3] [FAIL]--- \n");
             break;
         }
@@ -124,7 +125,7 @@ int normalTest() {
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
         int result = pool->awaitTermination(1000);
-        if(result != -ExecutorFailIsRunning) {
+        if(result != -InvalidStatus) {
             printf("---[TestCachedPoolExecutor Test {awaitTermination()} case1] [FAIL]--- \n");
             break;
         }
@@ -140,7 +141,7 @@ int normalTest() {
         //printf("awaitTermination start test \n");
         result = pool->awaitTermination(5000);
         //printf("awaitTermination result is %d \n",result);
-        if(result != -ExecutorFailWaitTimeout) {
+        if(result != -WaitTimeout) {
             printf("---[TestCachedPoolExecutor Test {awaitTermination()} case2] [FAIL]--- \n");
             break;
         }
@@ -160,7 +161,7 @@ int normalTest() {
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
         int result = pool->awaitTermination(0);
-        if(result != -ExecutorFailIsRunning) {
+        if(result != -InvalidStatus) {
             printf("---[TestCachedPoolExecutor Test {awaitTermination()} case5] [FAIL]--- \n");
             break;
         }

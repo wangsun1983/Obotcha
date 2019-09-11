@@ -59,4 +59,8 @@ void _System::getNextTime(long timeInterval,struct timespec *ts) {
     ts->tv_nsec = timeInterval%(1000*1000*1000);
 }
 
+int _System::myPid() {
+    return getpid();
+}
+
 }

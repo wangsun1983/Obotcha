@@ -16,6 +16,7 @@ link += file \
 	bytearrayreader \
 	bytearraywriter \
 	filenotfoundexception \
+	stringreader \
 
 
 objs += $(outtmp)/file.o \
@@ -35,6 +36,7 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/bytearrayreader.o \
 	$(outtmp)/bytearraywriter.o \
 	$(outtmp)/filenotfoundexception.o \
+	$(outtmp)/stringreader.o \
 
 filenotfoundexception :$(ioDir)/FileNotFoundException.cpp
 	$(gcc) $(cflags) -c $(ioDir)/FileNotFoundException.cpp -o $(outtmp)/filenotfoundexception.o $(external)
@@ -83,3 +85,6 @@ bytearrayreader :$(ioDir)/ByteArrayReader.cpp
 
 bytearraywriter :$(ioDir)/ByteArrayWriter.cpp
 	$(gcc) $(cflags) -c $(ioDir)/ByteArrayWriter.cpp -o $(outtmp)/bytearraywriter.o $(external)		
+
+stringreader :$(ioDir)/StringReader.cpp
+	$(gcc) $(cflags) -c $(ioDir)/StringReader.cpp -o $(outtmp)/stringreader.o $(external)		

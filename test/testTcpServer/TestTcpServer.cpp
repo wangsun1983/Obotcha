@@ -62,18 +62,9 @@ private:
     TcpServer server;    
 };
 
-//void testTcpServer() {
-//  TcpServer server = createTcpServer(1111,createServerListener());
-  //CloseThread t = createCloseThread(server);
-  //t->start();
-
-//  server->start();
-//}
-
 int main() {
   printf("---[TcpServer Test Start]--- \n");
-  
-#if 0
+
   //_TcpServer(int port,SocketListener l);
   while(1) {
       ServerListener listener = createServerListener();
@@ -88,6 +79,8 @@ int main() {
         printf("---[TcpServer Test {construct()} case2] [FAIL]--- \n");
         break;
       } catch(InitializeException e) {}
+
+      server->release();
       printf("---[TcpServer Test {construct()} case2] [Success]--- \n");
       break;
   }
@@ -108,6 +101,7 @@ int main() {
         printf("---[TcpServer Test {construct(int,int,SocketListener)} case2] [FAIL]--- \n");
         break;
       } catch(InitializeException e) {}
+      server->release();
       printf("---[TcpServer Test {construct(int,int,SocketListener)} case2] [Success]--- \n");
       break;
 
@@ -135,7 +129,6 @@ int main() {
       printf("---[TcpServer Test {start()} case3] [Success]--- \n");
       break;
   }
-#endif
 
   //int send(int fd,ByteArray data);
   while(1) {
@@ -169,7 +162,7 @@ int main() {
 
       server->send(clientfd,createByteArray(str));
       sleep(1);
-      
+
       mutex->lock();
       if(response == nullptr) {
           mCond->wait(mutex);  
@@ -186,26 +179,65 @@ int main() {
       stream->write(sendcontent); //send /0 to server to wait message from server;
       stream->flush();
       stream->close();
-
+      server->release();
       printf("---[TcpServer Test {send()} case2] [Success]--- \n");
       break;
 
   }
 
-  /*
-  _TcpServer(int port,SocketListener l);
+  //Accept Callback
+  while(1) {
+      response = nullptr;
+      system("./../tools/TcpTestTools/TcpClientSender/bin/tcpclientsender &");
+      sleep(1);
+      printf("start test \n");
+      ServerListener listener = createServerListener();
+      TcpServer server = createTcpServer(1111,listener);
+      int ret = server->start();
+      printf("aaa ret is %d \n",ret);
+      File f = createFile("sendcontent.txt");
+      if(!f->exists()) {
+        printf("f is not exists \n");
+      }
 
-    _TcpServer(String ip,int port,SocketListener l);
+      sleep(1);
 
+      FileOutputStream stream = createFileOutputStream(f);
+      stream->open(Trunc);
+      String testString = createString("hello test");
+      ByteArray sendcontent = createByteArray(testString->toChars(),testString->size());
+      stream->write(sendcontent); //send /0 to server to wait message from server;
+      stream->flush();
+      mutex->lock();
+      if(response == nullptr) {
+          mCond->wait(mutex);  
+      }
+      mutex->unlock();
 
-    void release();
+      if(response == nullptr || !response->equals(testString)) {
+          printf("---[TcpServer Test Callback {onAccept()} case1] [FAIL]--- \n");
+          break;
+      }
+      server->release();
+      printf("---[TcpServer Test Callback {onAccept()} case1] [Success]--- \n");
+      break;
+  }
 
-    int send(int fd,ByteArray data);
+  //release()
+  while(1) {
+      ServerListener listener = createServerListener();
+      TcpServer server = createTcpServer(1111,listener);
+      server->start();
+      sleep(1);
+      server->release();
+      sleep(1);
+      if(server->getStatus() != ServerThreadExited) {
+          printf("---[TcpServer Test {release()} case1] [FAIL]--- \n");
+          break;
+      }
+      
+      printf("---[TcpServer Test {release()} case2] [Success]--- \n");
+      break;
+  }
 
-    void removeClientFd(int fd);
-
-    void addClientFd(int fd);
-
-    ~_TcpServer();
-  */
 }

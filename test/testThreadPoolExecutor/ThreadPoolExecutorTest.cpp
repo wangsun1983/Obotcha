@@ -9,6 +9,7 @@
 #include "Executors.hpp"
 #include "Future.hpp"
 #include "System.hpp"
+#include "Error.hpp"
 
 using namespace obotcha;
 
@@ -16,12 +17,17 @@ int runDestory = 1;
 DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        printf("i am running \n");
+        //printf("i am running \n");
         sleep(10);
     }
 
+    void onInterrupt() {
+        //printf("i am interrupt \n");
+        runDestory = 2;
+    }
+
     ~_RunTest1() {
-        printf("i am release \n");
+        //printf("i am release \n");
         runDestory = 0;
     }
 };
@@ -30,9 +36,9 @@ Mutex runTest2Mutex;
 DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        printf("RunTest2 start 1\n");
+        //printf("RunTest2 start 1\n");
         runTest2Mutex->lock();
-        printf("RunTest2 start 2\n");
+        //printf("RunTest2 start 2\n");
     }
 };
 
@@ -58,8 +64,11 @@ int main() {
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
         pool->submit(createRunTest1());
+        sleep(1);
         pool->shutdownNow();
+        //printf("shutdownNot trace1 \n");
         sleep(5);
+        //printf("shutdownNot trace2 \n");
         if(runDestory == 1) {
             printf("---[TestThreadPoolExecutor Test {shutdownNow()} case1] [FAIL]--- \n");
             break;
@@ -72,7 +81,7 @@ int main() {
         }
 
         int result = pool->execute(createRunTest1());
-        if(result != -ExecutorFailAlreadyDestroy) {
+        if(result != -AlreadyDestroy) {
             printf("---[TestThreadPoolExecutor Test {shutdownNow()} case3] [FAIL]--- \n");
             break;
         }
@@ -99,7 +108,7 @@ int main() {
         }
 
         int result = pool->execute(createRunTest1());
-        if(result != -ExecutorFailAlreadyDestroy) {
+        if(result != -AlreadyDestroy) {
             printf("---[TestThreadPoolExecutor Test {shutdown()} case3] [FAIL]--- \n");
             break;
         }
@@ -113,7 +122,7 @@ int main() {
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
         int result = pool->awaitTermination(1000);
-        if(result != -ExecutorFailIsRunning) {
+        if(result != -InvalidStatus) {
             printf("---[TestThreadPoolExecutor Test {awaitTermination()} case1] [FAIL]--- \n");
             break;
         }
@@ -122,13 +131,14 @@ int main() {
         runTest2Mutex->lock();
 
         pool->submit(createRunTest2());
+        sleep(1);
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
         //printf("awaitTermination start test \n");
         result = pool->awaitTermination(5000);
         //printf("awaitTermination result is %d \n",result);
-        if(result != -ExecutorFailWaitTimeout) {
+        if(result != -WaitTimeout) {
             printf("---[TestThreadPoolExecutor Test {awaitTermination()} case2] [FAIL]--- \n");
             break;
         }
@@ -148,7 +158,7 @@ int main() {
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
         int result = pool->awaitTermination(0);
-        if(result != -ExecutorFailIsRunning) {
+        if(result != -InvalidStatus) {
             printf("---[TestThreadPoolExecutor Test {awaitTermination()} case5] [FAIL]--- \n");
             break;
         }
@@ -157,9 +167,9 @@ int main() {
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
-        printf("awaitTermination start test \n");
+        //printf("awaitTermination start test \n");
         result = pool->awaitTermination(0);
-        printf("awaitTermination result is %d \n",result);
+        //printf("awaitTermination result is %d \n",result);
         if(result != 0) {
             printf("---[TestThreadPoolExecutor Test {awaitTermination()} case6] [FAIL]--- \n");
             break;
@@ -226,5 +236,6 @@ int main() {
         printf("---[TestThreadPoolExecutor Test {submit()} case3] [Success]--- \n");
         break;
     }
+
 }
 
