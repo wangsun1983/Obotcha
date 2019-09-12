@@ -98,6 +98,8 @@ public:
 
     bool isTerminated();
 
+    int awaitTermination();
+
     int awaitTermination(long timeout);
 
     Future submit(Runnable task);
@@ -135,7 +137,7 @@ private:
 
     int mQueueSize;
 
-    Mutex mInputMutex;
+    Mutex mProtectMutex;
 };
 
 }

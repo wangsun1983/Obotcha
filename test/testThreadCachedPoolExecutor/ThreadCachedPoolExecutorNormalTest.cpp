@@ -84,7 +84,7 @@ int normalTest() {
         }
 
         int result = pool->execute(createRunTest1());
-        if(result != -AlreadyDestroy  ) {
+        if(result != -InvalidStatus) {
             printf("---[TestCachedPoolExecutor Test {shutdownNow()} case3] [FAIL]--- \n");
             break;
         }
@@ -111,7 +111,7 @@ int normalTest() {
         }
 
         int result = pool->execute(createRunTest1());
-        if(result != -AlreadyDestroy  ) {
+        if(result != -InvalidStatus) {
             printf("---[TestCachedPoolExecutor Test {shutdown()} case3] [FAIL]--- \n");
             break;
         }

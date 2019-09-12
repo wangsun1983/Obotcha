@@ -359,21 +359,18 @@ T _BlockingQueue<T>::deQueueFirst() {
 template <typename T>
 T _BlockingQueue<T>::deQueueFirst(long timeout) {
     T ret;
-    int waitCount = 0;
 
     while(1) {
         AutoMutex l(mMutex);
         int size = mQueue.size();
         if(size == 0) {
-            if(waitCount == 1) {
+            if(NotifyByTimeout == mDequeueCond->wait(mMutex,timeout)) {
                 return nullptr;
-            }
+            } 
 
-            mDequeueCond->wait(mMutex,timeout);
             if(isDestroy) {
                 return nullptr;
             }
-            waitCount++;
             continue;
         }
 
@@ -414,22 +411,18 @@ T _BlockingQueue<T>::deQueueLast() {
 template <typename T>
 T _BlockingQueue<T>::deQueueLast(long interval) {
     T ret;
-    int waitCount = 0;
-
     while(1) {
         AutoMutex l(mMutex);
         int size = mQueue.size();
         
         if(size == 0) {
-            if(waitCount == 1) {
+            if(NotifyByTimeout == mDequeueCond->wait(mMutex,interval)) {
                 return nullptr;
             }
 
-            mDequeueCond->wait(mMutex,interval);
             if(isDestroy) {
                 return nullptr;
             }
-            waitCount++;
             continue;
         }
 

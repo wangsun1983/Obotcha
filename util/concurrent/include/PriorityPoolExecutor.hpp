@@ -1,0 +1,111 @@
+#ifndef __PRIORITY_POOL_EXECUTOR_SERVICE_H__
+#define __PRIORITY_POOL_EXECUTOR_SERVICE_H__
+
+#include <pthread.h>
+#include <map>
+
+#include "Object.hpp"
+#include "StrongPointer.hpp"
+#include "Runnable.hpp"
+#include "Executor.hpp"
+#include "ArrayList.hpp"
+#include "Future.hpp"
+#include "Executor.hpp"
+#include "Callable.hpp"
+#include "ArrayList.hpp"
+#include "ExecutorService.hpp"
+#include "Condition.hpp"
+#include "Thread.hpp"
+
+namespace obotcha {
+
+enum TaskPriority {
+    TaskPriorityLow,
+    TaskPriorityMedium,
+    TaskPriorityHigh
+};
+
+DECLARE_SIMPLE_CLASS(PriorityTask) {
+public:
+    _PriorityTask(int,FutureTask);
+    int priority;
+    FutureTask task;
+};
+
+DECLARE_SIMPLE_CLASS(PriorityPoolThread) EXTENDS(Thread) {
+public:
+    _PriorityPoolThread(ArrayList<PriorityTask>,Mutex,Condition);
+    
+    void run();
+    
+    void onInterrupt();
+
+    void stop();
+
+    void forceStop();
+
+    void waitTermination(long);
+
+private:
+    ArrayList<PriorityTask> mTasks;
+    
+    Mutex mMutex;
+    
+    Condition mCondition;
+
+    Condition mWaitTermCondition;
+
+    Mutex mStateMutex;
+
+    PriorityTask mCurrentTask;
+
+    int mState;
+    
+    mutable volatile bool mStop;
+};
+
+DECLARE_SIMPLE_CLASS(PriorityPoolExecutor) IMPLEMENTS(ExecutorService) {
+
+public:
+    _PriorityPoolExecutor();
+
+    _PriorityPoolExecutor(int threadnum);
+
+    int execute(Runnable command);
+
+    int execute(int level,Runnable command);
+
+    int shutdown();
+
+    int shutdownNow();
+
+    bool isShutdown();
+
+    bool isTerminated();
+
+    int awaitTermination(long timeout);
+
+    Future submit(Runnable task);
+
+    Future submit(int level,Runnable task);
+
+    int getThreadsNum();
+
+private:
+    Mutex mProtectMutex;
+    
+    Mutex mDataLock;
+
+    Condition mDataCond;
+
+    bool isShutDown;
+
+    bool isTermination;
+    
+    ArrayList<PriorityTask> mPriorityTasks;
+
+    ArrayList<PriorityPoolThread> mThreads;
+};
+
+}
+#endif

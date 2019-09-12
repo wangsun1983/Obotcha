@@ -9,6 +9,7 @@
 #include "Executors.hpp"
 #include "Future.hpp"
 #include "System.hpp"
+#include "Error.hpp"
 
 using namespace obotcha;
 
@@ -65,7 +66,7 @@ int baseTest() {
         }
 
         int result = pool->execute(createRunTest1());
-        if(result != -ExecutorFailAlreadyDestroy) {
+        if(result != -AlreadyDestroy) {
             printf("---[ScheduledThreadPoolExecutor Test {shutdown()} case3] [FAIL]--- \n");
             break;
         }
@@ -79,7 +80,7 @@ int baseTest() {
     while(1) {
         ExecutorService pool = st(Executors)::newScheduledThreadPool();
         int result = pool->awaitTermination(1000);
-        if(result != -ExecutorFailIsRunning) {
+        if(result != -InvalidStatus) {
             printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case1] [FAIL]--- \n");
             break;
         }
@@ -115,7 +116,7 @@ int baseTest() {
     while(1) {
         ExecutorService pool = st(Executors)::newScheduledThreadPool();
         int result = pool->awaitTermination(0);
-        if(result != -ExecutorFailIsRunning) {
+        if(result != -InvalidStatus) {
             printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case5] [FAIL]--- \n");
             break;
         }

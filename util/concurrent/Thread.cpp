@@ -104,11 +104,8 @@ void* _Thread::localRun(void *th) {
     pthread_cleanup_push(cleanup, th);
     thread->mStatus = ThreadRunning;
     thread->bootFlag->orAndGet(1);
-    
     if(thread->mIsWaitExit) {
-        localThread.set_pointer(nullptr);
-        thread->mStatus = ThreadComplete;
-        return nullptr;
+        goto end;
     }
     
     thread->initPolicyAndPriority();
@@ -117,7 +114,6 @@ void* _Thread::localRun(void *th) {
     if(thread->mName != nullptr) {
         pthread_setname_np(thread->mPthread,thread->mName->toChars());
     }
-    
     if(thread->mRunnable != nullptr) {
         thread->mRunnable->run();
         thread->mRunnable = nullptr;
@@ -125,12 +121,13 @@ void* _Thread::localRun(void *th) {
         thread->run();
     }
     
+end:
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     pthread_cleanup_pop(0);
-    
     thread->mStatus = ThreadComplete;
 
     mKAThread->drop(localThread->mPthread);
-    
+    localThread.remove_pointer();
     return nullptr;
 }
 
@@ -214,10 +211,8 @@ int _Thread::start() {
     }
 
     mStatus = ThreadIdle;
-
     pthread_attr_init(&mThreadAttr);
     pthread_create(&mPthread, &mThreadAttr, localRun, this);
-    
     while(bootFlag->orAndGet(0) == 0) {
         //wait
     }

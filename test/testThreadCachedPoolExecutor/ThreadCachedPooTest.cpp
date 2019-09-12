@@ -16,6 +16,6 @@ extern int normalTest();
 extern int numTest();
 
 int main() {
-    normalTest();
+    //normalTest();
     numTest();
 }

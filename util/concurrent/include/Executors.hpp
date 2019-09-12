@@ -29,6 +29,9 @@ public:
 
     static ScheduledExecutorService newSingleThreadScheduledExecutor();
     static ScheduledExecutorService newScheduledThreadPool();
+
+    static ExecutorService newPriorityThreadPool(int thread_num);
+    static ExecutorService newPriorityThreadPool();
 };
 
 }

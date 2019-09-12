@@ -4,6 +4,7 @@ link += condition \
 	scheduledthreadpoolexecutor \
 	threadpoolexecutor \
 	threadcachedpoolexecutor \
+	prioritypoolexecutor \
 	mutex \
 	thread \
 	countdownlatch \
@@ -22,6 +23,7 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/scheduledthreadpoolexecutor.o \
 	$(outtmp)/threadpoolexecutor.o \
 	$(outtmp)/threadcachedpoolexecutor.o \
+	$(outtmp)/prioritypoolexecutor.o \
 	$(outtmp)/mutex.o \
 	$(outtmp)/thread.o \
 	$(outtmp)/countdownlatch.o \
@@ -87,3 +89,6 @@ executors :$(concurrentDir)/Executors.cpp
 
 timer :$(concurrentDir)/Timer.cpp
 	$(gcc) $(cflags) -std=c++11 -lpthread -c $(concurrentDir)/Timer.cpp -o $(outtmp)/timer.o
+
+prioritypoolexecutor :$(concurrentDir)/PriorityPoolExecutor.cpp
+	$(gcc) $(cflags) -std=c++11 -lpthread -c $(concurrentDir)/PriorityPoolExecutor.cpp -o $(outtmp)/prioritypoolexecutor.o

@@ -332,6 +332,7 @@ void sp<T>::remove_pointer() {
             delete static_cast<const T*>(m_ptr);
         }
     }
+    
     m_ptr = nullptr;
 }
 

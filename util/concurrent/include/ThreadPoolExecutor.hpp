@@ -104,6 +104,8 @@ private:
     int mThreadNum;
 
     void init(int queuesize,int threadnum);
+
+    Mutex mProtectMutex;
 };
 
 }

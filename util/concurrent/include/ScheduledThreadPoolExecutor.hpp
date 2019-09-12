@@ -121,8 +121,6 @@ DECLARE_SIMPLE_CLASS(ScheduledThreadPoolExecutor) IMPLEMENTS(ScheduledExecutorSe
 
 public:
 
-	//_ScheduledThreadPoolExecutor(int size);
-
 	_ScheduledThreadPoolExecutor();
 
     int shutdown();
@@ -154,15 +152,13 @@ public:
     ~_ScheduledThreadPoolExecutor();
     
 private:
-    //ConcurrentQueue<FutureTask> mPool;
-
     ScheduledThreadPoolThread  mTimeThread;
 
     bool mIsShutDown;
 
     bool mIsTerminated;
 
-    //bool mIsTerminated;
+    Mutex mProtectMutex;
 
     void init(int size,bool isDyn);
 };

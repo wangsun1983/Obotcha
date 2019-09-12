@@ -36,8 +36,8 @@ enum ThreadStatus {
     ThreadNotStart,
     ThreadIdle,
     ThreadRunning,
-    ThreadComplete,
-    ThreadDestroy,
+    ThreadWaitExit,
+    ThreadComplete
 };
 
 enum ThreadSchedPolicy {
@@ -53,8 +53,6 @@ public:
     void start();
 
     void drop(pthread_t t);
-
-    void dropDirect(pthread_t t);
 
     void run();
 
@@ -139,7 +137,7 @@ public:
 
     static int getThreadPriority();
 
-    static bool setThreadSchedPolicy(ThreadSchedPolicy policy);
+    static int setThreadSchedPolicy(ThreadSchedPolicy policy);
 
     static int getThreadSchedPolicy();
 
@@ -178,9 +176,11 @@ private:
 
     int mStatus;
 
-    Mutex mNameMutex;
+    bool mIsWaitExit;
 
     AtomicInteger bootFlag;
+
+    Mutex mProtectMutex;
 };
 
 }

@@ -23,7 +23,7 @@ _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask>
     Runnable r;
     r.set_pointer(this);
     mThread = createThread(r);
-
+    state = idleState;
     mThread->start();
 }
 
