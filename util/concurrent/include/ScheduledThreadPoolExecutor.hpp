@@ -112,6 +112,8 @@ private:
 
     Condition mTerminatedCond;
 
+    ScheduledThreadPoolTask mCurrentTask;
+
     bool isStop;
 
     bool isTerminated;

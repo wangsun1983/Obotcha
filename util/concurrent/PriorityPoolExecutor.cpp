@@ -53,6 +53,10 @@ void _PriorityPoolThread::run() {
             break;
         }
 
+        if(mCurrentTask == nullptr) {
+            break;
+        }
+
         if(mCurrentTask->task->getStatus() == FUTURE_CANCEL) {
             continue;
         }
@@ -77,6 +81,7 @@ void _PriorityPoolThread::run() {
             }
         }
     }
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     {
         AutoMutex l(mStateMutex);
         mState = terminateState;
@@ -85,15 +90,14 @@ void _PriorityPoolThread::run() {
 }
 
 void _PriorityPoolThread::onInterrupt() {
-    printf("onInterrupt \n");
     //st(StackTrace)::dumpStack(createString("oninterrupt"));
     AutoMutex l(mStateMutex);
     mState = terminateState;
     mWaitTermCondition->notify();
 
     if(mCurrentTask != nullptr) {
-        printf("mCurrent is not nullptr \n");
         mCurrentTask->task->getRunnable()->onInterrupt();
+        mCurrentTask = nullptr;
     }
 }
 

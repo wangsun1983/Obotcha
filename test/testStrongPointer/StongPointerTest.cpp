@@ -36,7 +36,7 @@ public:
     }
 };
 
-int main()
+int normaltest()
 {
     /*
     MyClass t = createMyClass(1,2);

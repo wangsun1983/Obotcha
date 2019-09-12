@@ -14,6 +14,8 @@ public:
 	virtual void run() = 0;
     
     virtual void onInterrupt(){};
+
+    virtual ~_Runnable() {}
 };
 
 }

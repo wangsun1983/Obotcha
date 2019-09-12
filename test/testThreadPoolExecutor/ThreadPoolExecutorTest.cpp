@@ -13,11 +13,12 @@
 
 using namespace obotcha;
 
+
 int runDestory = 1;
-DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
+DECLARE_SIMPLE_CLASS(MyRunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        //printf("i am running \n");
+        printf("i am running123 \n");
         sleep(10);
     }
 
@@ -26,8 +27,8 @@ public:
         runDestory = 2;
     }
 
-    ~_RunTest1() {
-        //printf("i am release \n");
+    ~_MyRunTest1() {
+        printf("i am release \n");
         runDestory = 0;
     }
 };
@@ -43,7 +44,7 @@ public:
 };
 
 
-int main() {
+int normalTest() {
     printf("---[TestThreadPoolExecutor Test Start]--- \n");
 
     //_ThreadPoolExecutor(int queuesize,int threadnum);
@@ -63,8 +64,9 @@ int main() {
     //void shutdownNow();
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
-        pool->submit(createRunTest1());
+        pool->submit(createMyRunTest1());
         sleep(1);
+        printf("shutown aaaaaaaa \n");
         pool->shutdownNow();
         //printf("shutdownNot trace1 \n");
         sleep(5);
@@ -74,13 +76,13 @@ int main() {
             break;
         }
 
-        Future task = pool->submit(createRunTest1());
+        Future task = pool->submit(createMyRunTest1());
         if(task != nullptr) {
             printf("---[TestThreadPoolExecutor Test {shutdownNow()} case2] [FAIL]--- \n");
             break;
         }
 
-        int result = pool->execute(createRunTest1());
+        int result = pool->execute(createMyRunTest1());
         if(result != -AlreadyDestroy) {
             printf("---[TestThreadPoolExecutor Test {shutdownNow()} case3] [FAIL]--- \n");
             break;
@@ -90,10 +92,11 @@ int main() {
         break;
     }
 
+
     //void shutdown();
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
-        pool->submit(createRunTest1());
+        pool->submit(createMyRunTest1());
         pool->shutdown();
         sleep(5);
         if(!pool->isShutdown()) {
@@ -101,13 +104,13 @@ int main() {
             break;
         }
 
-        Future task = pool->submit(createRunTest1());
+        Future task = pool->submit(createMyRunTest1());
         if(task != nullptr) {
             printf("---[TestThreadPoolExecutor Test {shutdown()} case2] [FAIL]--- \n");
             break;
         }
 
-        int result = pool->execute(createRunTest1());
+        int result = pool->execute(createMyRunTest1());
         if(result != -AlreadyDestroy) {
             printf("---[TestThreadPoolExecutor Test {shutdown()} case3] [FAIL]--- \n");
             break;
@@ -163,7 +166,7 @@ int main() {
             break;
         }
 
-        pool->submit(createRunTest1());
+        pool->submit(createMyRunTest1());
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
@@ -189,7 +192,7 @@ int main() {
     //int awaitTermination(long timeout = max);
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
-        pool->submit(createRunTest1());
+        pool->submit(createMyRunTest1());
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
@@ -219,14 +222,14 @@ int main() {
     //submit(Runnable task);
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(1,1);
-        Future task = pool->submit(createRunTest1());
+        Future task = pool->submit(createMyRunTest1());
         if(task == nullptr) {
             printf("---[TestThreadPoolExecutor Test {submit()} case1] [FAIL]--- \n");
             break;
         }
 
         long current = st(System)::currentTimeMillis();
-        Future task2 = pool->submit(createRunTest1());
+        Future task2 = pool->submit(createMyRunTest1());
         int v = st(System)::currentTimeMillis() - current;
         if(v >10005) {
             printf("---[TestThreadPoolExecutor Test {submit()} case2] [FAIL]--- \n");

@@ -179,11 +179,16 @@ void _ScheduledThreadPoolThread::onInterrupt() {
     AutoMutex l(mTerminatedMutex);
     isTerminated = true;
     mTerminatedCond->notify();
+
+    if(mCurrentTask != nullptr) {
+        mCurrentTask->task->getRunnable()->onInterrupt();
+        mCurrentTask = nullptr;
+    }
 }
 
 void _ScheduledThreadPoolThread::run() {
     while(!isStop) {
-        ScheduledThreadPoolTask v;
+        mCurrentTask = nullptr;
         while(1) {
             AutoMutex l(mDataLock);
             if(isStop) {
@@ -195,27 +200,27 @@ void _ScheduledThreadPoolThread::run() {
                 continue;
             }
 
-            v = mDatas->get(0);
+            mCurrentTask = mDatas->get(0);
             break;
         }
 
         //get first time to wait;
         long currentTime = st(System)::currentTimeMillis();
-        long interval = v->mNextTime - currentTime;
+        long interval = mCurrentTask->mNextTime - currentTime;
         if(interval > 0) {
             AutoMutex l(mTimeLock);
             mTimeCond->wait(mTimeLock,interval);
             continue;
         } else {
             AutoMutex l(mDataLock);
-            mDatas->remove(v);
-            if(v->task->getStatus() == FUTURE_CANCEL) {
+            mDatas->remove(mCurrentTask);
+            if(mCurrentTask->task->getStatus() == FUTURE_CANCEL) {
                 continue;
             }
 
-            Runnable r = v->task->getRunnable();
+            Runnable r = mCurrentTask->task->getRunnable();
             if(r != nullptr) {
-                ScheduledTaskWorker worker = createScheduledTaskWorker(v);
+                ScheduledTaskWorker worker = createScheduledTaskWorker(mCurrentTask);
                 cachedExecutor->execute(worker);
             }
         }

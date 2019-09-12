@@ -39,29 +39,38 @@ void _ThreadPoolExecutorHandler::onInterrupt() {
         mWaitCond->notify();
         isWaitTerminate = false;
     }
+
+    if(mCurrentTask != nullptr) {
+        Runnable r = mCurrentTask->getRunnable();
+        if(r != nullptr) {
+            r->onInterrupt();
+        }
+        mCurrentTask = nullptr;
+        r = nullptr;
+    }
 }
 
 void _ThreadPoolExecutorHandler::run() {
     while(!mStop) {
-        //printf("_ThreadPoolExecutorHandler trace1 \n");
-        FutureTask task = mPool->deQueueFirst();
-        if(task == nullptr) {
+        mCurrentTask = nullptr;
+        mCurrentTask = mPool->deQueueFirst();
+        if(mCurrentTask == nullptr) {
             break;
         }
 
-        if(task->getStatus() == FUTURE_CANCEL) {
+        if(mCurrentTask->getStatus() == FUTURE_CANCEL) {
             continue;
         }
         
         {
             AutoMutex l(mStateMutex);
             state = busyState;
-            if(task->getType() == FUTURE_TASK_SUBMIT) {
-                task->onRunning();
+            if(mCurrentTask->getType() == FUTURE_TASK_SUBMIT) {
+                mCurrentTask->onRunning();
             }
         }
 
-        Runnable runnable = task->getRunnable();
+        Runnable runnable = mCurrentTask->getRunnable();
         if(runnable != nullptr) {
             runnable->run();    
         }
@@ -70,12 +79,13 @@ void _ThreadPoolExecutorHandler::run() {
             AutoMutex l(mStateMutex);
             state = idleState;
 
-            if(task->getType() == FUTURE_TASK_SUBMIT) {
-                task->onComplete();
+            if(mCurrentTask->getType() == FUTURE_TASK_SUBMIT) {
+                mCurrentTask->onComplete();
             }
         }
     }
 
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     {
         AutoMutex l(mStateMutex);
         state = terminateState;
@@ -206,8 +216,10 @@ int _ThreadPoolExecutor::shutdownNow() {
     }
 
     mIsShutDown = true;
-    int size = mHandlers->size();
 
+    mPool->clear();
+
+    int size = mHandlers->size();
     for(int i = 0;i < size;i++) {
         mHandlers->get(i)->forceStop();
     }
@@ -314,7 +326,6 @@ int _ThreadPoolExecutor::getThreadsNum() {
 }
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
-    //printf("_ThreadPoolExecutor destroy \n");
     shutdownNow();
 }
 

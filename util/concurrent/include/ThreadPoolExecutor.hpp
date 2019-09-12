@@ -54,6 +54,8 @@ private:
 
     bool isWaitTerminate;
 
+    FutureTask mCurrentTask;
+
     mutable volatile bool mStop;
 
     Thread mThread;
