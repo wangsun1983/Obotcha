@@ -37,8 +37,6 @@ public:
 
     void waitForTerminate(long);
 
-    void forceStop();
-
     void onInterrupt();
 
 private:
@@ -76,8 +74,6 @@ public:
 	_ThreadPoolExecutor();
 
     int shutdown();
-
-    int shutdownNow();
 
     int execute(Runnable command);
 

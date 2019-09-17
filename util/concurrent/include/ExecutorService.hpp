@@ -27,12 +27,14 @@ DECLARE_SIMPLE_CLASS(ExecutorService) IMPLEMENTS(Executor) {
 public:
     virtual int execute(Runnable command) = 0;
 
+    virtual int execute(int,Runnable){};
+    
     //can not submit runnable,but we need wati all the 
     //runnable function complete
     virtual int shutdown() = 0;
 
     //close all thread directly
-    virtual int shutdownNow() = 0;
+    //virtual int shutdownNow() = 0;
 
     //if this executor has been shut down
     virtual bool isShutdown() = 0;
@@ -45,6 +47,8 @@ public:
 
     //virtual Future submit(Runnable task) = 0;
     virtual Future submit(Runnable task) = 0;
+
+    virtual Future submit(int,Runnable){};
 
     //get thread num
     virtual int getThreadsNum() = 0;

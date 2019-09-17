@@ -122,7 +122,8 @@ int baseTest() {
         }
 
         pool->submit(createRunTest1());
-        pool->shutdown();
+        int v = pool->shutdown();
+        printf("v is %d \n",v);
 
         long current = st(System)::currentTimeMillis();
         printf("awaitTermination start test \n");

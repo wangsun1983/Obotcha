@@ -27,17 +27,19 @@ _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask>
     mThread->start();
 }
 
-void _ThreadPoolExecutorHandler::forceStop() {
-    mThread->exit();
+void _ThreadPoolExecutorHandler::stop() {
     mStop = true;
+    mThread->quit();
 }
 
 void _ThreadPoolExecutorHandler::onInterrupt() {
-    AutoMutex l(mStateMutex);
-    state = terminateState;
-    if(isWaitTerminate) {
-        mWaitCond->notify();
-        isWaitTerminate = false;
+    {
+        AutoMutex l(mStateMutex);
+        state = terminateState;
+        if(isWaitTerminate) {
+            mWaitCond->notify();
+            isWaitTerminate = false;
+        }
     }
 
     if(mCurrentTask != nullptr) {
@@ -111,10 +113,6 @@ void _ThreadPoolExecutorHandler::waitForTerminate(long interval) {
     if(state == busyState) {
         mWaitCond->wait(mStateMutex,interval);
     }
-}
-
-void _ThreadPoolExecutorHandler::stop() {
-    mStop = true;
 }
 
 bool _ThreadPoolExecutorHandler::isTerminated() {
@@ -204,40 +202,6 @@ int _ThreadPoolExecutor::shutdown() {
     return 0;
 }
 
-int _ThreadPoolExecutor::shutdownNow() {
-    if(mIsShutDown ||mIsTerminated) {
-        return -AlreadyDestroy;
-    }
-
-    AutoMutex l(mProtectMutex);
-
-    if(mIsShutDown ||mIsTerminated) {
-        return -AlreadyDestroy;
-    }
-
-    mIsShutDown = true;
-
-    mPool->clear();
-
-    int size = mHandlers->size();
-    for(int i = 0;i < size;i++) {
-        mHandlers->get(i)->forceStop();
-    }
-
-    for(;;) {
-        FutureTask task = mPool->deQueueLastNoBlock();
-        if(task != nullptr) {
-            task->cancel();
-        } else {
-            break;
-        }
-    }
-
-    mIsTerminated = true;
-
-    return 0;
-}
-
 Future _ThreadPoolExecutor::submit(Runnable r) {
     if(r == nullptr) {
         return nullptr;
@@ -305,7 +269,7 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     } else {
         for(int i = 0;i < size;i++) {
             long current = st(System)::currentTimeMillis();
-            if(millseconds >= 0) {
+            if(millseconds > 0) {
                 mHandlers->get(i)->waitForTerminate(millseconds);
             } else {
                 break;
@@ -326,7 +290,7 @@ int _ThreadPoolExecutor::getThreadsNum() {
 }
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
-    shutdownNow();
+    shutdown();
 }
 
 }

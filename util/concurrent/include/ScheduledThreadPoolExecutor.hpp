@@ -86,9 +86,9 @@ public:
 
     void stop();
 
-    void forceStop();
+    void waitForTerminate();
 
-    void waitStop(long);
+    void waitForTerminate(long);
 
     void onInterrupt();
 
@@ -126,8 +126,6 @@ public:
 	_ScheduledThreadPoolExecutor();
 
     int shutdown();
-
-    int shutdownNow();
 
     int execute(Runnable command);
 

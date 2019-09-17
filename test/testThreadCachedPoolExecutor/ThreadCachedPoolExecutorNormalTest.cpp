@@ -63,6 +63,7 @@ int normalTest() {
         break;
     }  
 
+#if 0
     //void shutdownNow();
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
@@ -92,7 +93,8 @@ int normalTest() {
         printf("---[TestCachedPoolExecutor Test {shutdownNow()} case4] [Success]--- \n");
         break;
     }
-
+#endif
+    
     //void shutdown();
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();

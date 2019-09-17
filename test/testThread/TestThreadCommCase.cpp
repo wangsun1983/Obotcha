@@ -224,7 +224,7 @@ int testThreadCommonCase() {
       break;
     }
 
-    t2->exit();
+    t2->quit();
     sleep(1);
     status = t2->getStatus();
     if(status != ThreadComplete) {
@@ -329,7 +329,7 @@ int testThreadCommonCase() {
     t1->start();
     sleep(1);
     //printf("start onInterrupt t3 \n");
-    t1->exit();
+    t1->quit();
     //printf("start onInterrupt t4 \n");
     sleep(1);
     if(onInterruptCount != 1) {
@@ -341,17 +341,17 @@ int testThreadCommonCase() {
     break;
   }
 
-  //void exit();
+  //void quit();
   while(1) {
-      //printf("exit 1 \n");
+      //printf("quit 1 \n");
       Thread3_1 t1 = createThread3_1();
-      t1->setName("exit");
+      t1->setName("quit");
       t1->start();
-      //printf("exit 2 \n");
-      t1->exit();
-      //printf("exit 3 \n");
+      //printf("quit 2 \n");
+      t1->quit();
+      //printf("quit 3 \n");
 
-      printf("---[Thread Test {exit()} case1] [Success]--- \n");
+      printf("---[Thread Test {quit()} case1] [Success]--- \n");
       break;
   }
 

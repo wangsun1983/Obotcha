@@ -22,6 +22,10 @@ public:
         printf("RunTest1 start,RunTestTime1 is %ld \n",RunTestTime1);
         sleep(5);
     }
+
+    ~_RunTest1() {
+        printf("i am release .......aaaa,p is %x\n",this);
+    }
 };
 
 DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
@@ -45,6 +49,7 @@ public:
 int scheduleTest() {
     //printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
     //schedule test
+#if 0    
     while(1) {
         ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
         long current = st(System)::currentTimeMillis();
@@ -84,7 +89,7 @@ int scheduleTest() {
         printf("---[ScheduledThreadPoolExecutor Test {schedule,cancel()} case2] [Success]--- \n");
         break;
     }
-
+#endif
     //schedule
     while(1) {
         runTest3Val = 0;
@@ -92,7 +97,9 @@ int scheduleTest() {
         ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
         Future f = pool->schedule(createRunTest1(),5000);
         sleep(1);
+        printf("f trace1 \n");
         pool->shutdown();
+        printf("f trace2 \n");
         sleep(8);
         if(runTest3Val == 1) {
             printf("---[ScheduledThreadPoolExecutor Test {schedule,shutdown()} case1] [FAIL]--- \n");
@@ -104,6 +111,7 @@ int scheduleTest() {
     }
 
     //schedule
+#if 0    
     while(1) {
         runTest3Val = 0;
         ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
@@ -119,6 +127,7 @@ int scheduleTest() {
         printf("---[ScheduledThreadPoolExecutor Test {schedule,shutdownNow()} case2] [Success]--- \n");
         break;
     }
+#endif
 
 }
 

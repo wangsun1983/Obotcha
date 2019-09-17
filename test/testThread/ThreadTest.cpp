@@ -18,8 +18,14 @@ using namespace obotcha;
 
 extern int testThreadInterruptCase();
 extern int testThreadCommonCase();
+extern int testThreadNotifyInterruptCase();
+extern int testThreadSleepInterrupt();
+extern int testThreadLoopInterrypt();
 
 int main() {
     testThreadInterruptCase();
     testThreadCommonCase();
+    testThreadNotifyInterruptCase();
+    testThreadSleepInterrupt();
+    //testThreadLoopInterrypt();
 }

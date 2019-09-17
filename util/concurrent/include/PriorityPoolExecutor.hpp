@@ -28,7 +28,9 @@ enum TaskPriority {
 DECLARE_SIMPLE_CLASS(PriorityTask) {
 public:
     _PriorityTask(int,FutureTask);
+
     int priority;
+
     FutureTask task;
 };
 
@@ -42,9 +44,9 @@ public:
 
     void stop();
 
-    void forceStop();
-
     void waitTermination(long);
+
+    ~_PriorityPoolThread();
 
 private:
     ArrayList<PriorityTask> mTasks;
@@ -77,8 +79,6 @@ public:
 
     int shutdown();
 
-    int shutdownNow();
-
     bool isShutdown();
 
     bool isTerminated();
@@ -90,6 +90,8 @@ public:
     Future submit(int level,Runnable task);
 
     int getThreadsNum();
+
+    ~_PriorityPoolExecutor();
 
 private:
     Mutex mProtectMutex;

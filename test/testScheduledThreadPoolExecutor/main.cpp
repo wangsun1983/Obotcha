@@ -18,7 +18,7 @@ extern int scheduleTest();
 
 int main() {
     printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
-    baseTest();
+    //baseTest();
     scheduleTest();
     
 }

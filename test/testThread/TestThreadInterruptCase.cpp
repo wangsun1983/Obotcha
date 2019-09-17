@@ -23,18 +23,24 @@ int myTest1Interrupt = 0;
 DECLARE_SIMPLE_CLASS(MyTest1Thread) IMPLEMENTS(Thread) {
 public:
     void run() {
-        myTest1Mutex->lock();
+        //printf("m1 \n");
+        myTest1Mutex->lock(500);
+        //printf("m1_1 \n");
         while(1) {
+            //printf("m1_2 \n");
             sleep(5);
+            //printf("m1_3 \n");
         }
     }
 
     ~_MyTest1Thread() {
+        //printf("m2 \n");
         myTest1 = 1;
     }
 
     void onInterrupt() {
-        myTest1Interrupt = 1;
+        //printf("m3 \n");
+        myTest1Interrupt = 2;
     }
 };
 
@@ -46,10 +52,10 @@ int testThreadInterruptCase() {
         MyTest1Thread thread = createMyTest1Thread();
         thread->start();
         sleep(1);
-        thread->exit();
+        thread->quit();
         sleep(1);
-         if(myTest1Interrupt != 1) {
-             printf("---[Thread Test {Interrupt()} special case1] [FAILED]--- \n");
+         if(myTest1Interrupt != 2) {
+             printf("---[Thread Test {Interrupt()} special case1,myTest1Interrupt is %d] [FAILED]--- \n",myTest1Interrupt);
              break;
          }
 

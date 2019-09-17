@@ -42,8 +42,6 @@ public:
 
     void waitForTerminate(long);
 
-    void forceStop();
-
     void onInterrupt();
 
 private:
@@ -55,8 +53,8 @@ private:
 
     bool isWaitTerminate;
 
-    //pthread_mutex_t wiatIdleMutex;
-    //pthread_cond_t wiatIdleCond;
+    FutureTask mCurrentTask;
+
     Mutex mStateMutex;
 
     Condition mWaitCond;
@@ -89,8 +87,6 @@ public:
 	_ThreadCachedPoolExecutor();
 
     int shutdown();
-
-    int shutdownNow();
 
     int execute(Runnable command);
 

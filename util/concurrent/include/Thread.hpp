@@ -105,7 +105,7 @@ public:
 
     virtual void run();
 
-    void exit();
+    virtual void quit();
 
     int setPriority(ThreadPriority priority);
 
@@ -143,6 +143,9 @@ public:
 
     ~_Thread();
 
+protected:
+   pthread_t mPthread;
+   
 private:
     void initPolicyAndPriority();
 
@@ -164,7 +167,7 @@ private:
 
     Runnable mRunnable;
     
-    pthread_t mPthread;
+ 
 
     pthread_attr_t mThreadAttr;
 
@@ -176,7 +179,7 @@ private:
 
     int mStatus;
 
-    bool mIsWaitExit;
+    //bool mIsWaitExit;
 
     AtomicInteger bootFlag;
 
