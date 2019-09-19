@@ -48,6 +48,7 @@ public:
     inline T deQueueFirst();
     inline T deQueueLast();
 
+    inline void clear();
     
 private:
     vector<T> mQueue;
@@ -174,6 +175,12 @@ template <typename T>
 int _ConcurrentQueue<T>::size() {
     AutoMutex l(mutex_t);
     return mQueue.size();
+}
+
+template <typename T>
+void _ConcurrentQueue<T>::clear() {
+    AutoMutex l(mutex_t);
+    mQueue.clear();
 }
 
 }

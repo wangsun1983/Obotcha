@@ -14,12 +14,12 @@ namespace obotcha {
 
 //------------KeepAliveThread---------------//
 static void* recycle(void *th) {
-    //printf("recyle 1 \n");
+    ////printf("recyle 1 \n");
     //pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
     _KeepAliveThread *thread = static_cast<_KeepAliveThread *>(th);
-    //printf("recyle 2 \n");
+    ////printf("recyle 2 \n");
     thread->run();
-    //printf("recyle 3 \n");
+    ////printf("recyle 3 \n");
     return nullptr;
 }
 
@@ -48,20 +48,20 @@ void _KeepAliveThread::start() {
 }
 
 void _KeepAliveThread::run() {
-    //printf("keep alive trace \n");
+    ////printf("keep alive trace \n");
     ThreadLocal<Thread> tLocal = mThreadLocal;
     BlockingQueue<Uint64> mQueue = queue;
     while(1) {
-        //printf("keep alive trace2\n");
+        ////printf("keep alive trace2\n");
         mStartBarrier->orAndGet(1);
         Uint64 t = mQueue->deQueueFirst();
-        //printf("keep alive trace3 \n");
+        ////printf("keep alive trace3 \n");
         if(t == nullptr) {
             return;
         }
-        //printf("keep alive trace4 \n");
+        ////printf("keep alive trace4 \n");
         tLocal->remove(t->toValue());
-        //printf("keep alive trace5 \n");
+        ////printf("keep alive trace5 \n");
     }
 }
 
@@ -78,13 +78,13 @@ void _KeepAliveThread::drop(pthread_t t){
 }
 
 _KeepAliveThread::~_KeepAliveThread() {
-    //printf("~keepalivethread 1 \n");
+    ////printf("~keepalivethread 1 \n");
     mThreadLocal->clear();
-    //printf("~keepalivethread 2 \n");
+    ////printf("~keepalivethread 2 \n");
     queue->destroy();
-    //printf("~keepalivethread 3 \n");
+    ////printf("~keepalivethread 3 \n");
     //pthread_cancel(mTid);
-    //printf("~keepalivethread 4 \n");
+    ////printf("~keepalivethread 4 \n");
 }
 
 //------------Thread Stack function---------------//
@@ -119,7 +119,7 @@ void* _Thread::localRun(void *th) {
     thread->mStatus = ThreadRunning;
     thread->bootFlag->orAndGet(1);
     if(thread->mStatus == ThreadWaitExit) {
-        //printf("go to exit \n");
+        ////printf("go to exit \n");
         goto end;
     }
     //pthread_testcancel();
@@ -138,7 +138,7 @@ void* _Thread::localRun(void *th) {
         thread->mRunnable->run();
         thread->mRunnable = nullptr;
     } else {
-        //printf("localRun1 \n");
+        ////printf("localRun1 \n");
         thread->run();
     }
     
@@ -152,6 +152,8 @@ end:
     localThread.remove_pointer();
     return nullptr;
 }
+
+DEBUG_REFERENCE_REALIZATION(Thread)
 
 _Thread::_Thread():_Thread(nullptr,nullptr) {
 }
@@ -175,6 +177,8 @@ _Thread::_Thread(String name,Runnable run){
     mStatus = ThreadNotStart;
     bootFlag = createAtomicInteger(0);
     mProtectMutex = createMutex("ThreadProtectMutex");
+
+    incDebugReferenctCount();
 }
 
 int _Thread::setName(String name) {
@@ -197,6 +201,7 @@ String _Thread::getName() {
 
 _Thread::~_Thread(){
     this->quit();
+    decDebugReferenctCount();
 }
 
 Runnable _Thread::getRunnable() {
@@ -275,7 +280,7 @@ void _Thread::quit() {
     }else if(mStatus == ThreadWaitExit) {
         return;
     }
-    //printf("thread exit2 \n");
+    ////printf("thread exit2 \n");
     if(mStatus == ThreadIdle) {
         mStatus = ThreadWaitExit;
         while(1) {
@@ -283,7 +288,7 @@ void _Thread::quit() {
             if(mStatus == ThreadRunning) {
                 //printf("thread exit3 \n");
                 pthread_cancel(mPthread);
-                mStatus = ThreadComplete;
+                //mStatus = ThreadComplete;
                 return;
             } else if(mStatus == ThreadComplete) {
                 return;
@@ -297,7 +302,7 @@ void _Thread::quit() {
     int ret = pthread_cancel(mPthread);
     //printf("pthread cancel ret is %d,mPthread is %x \n",ret,mPthread);
     //ret = pthread_join(mPthread,nullptr);
-    ////printf("pthread2 cancel ret is %d,mPthread is %x \n",ret,mPthread);
+    //////printf("pthread2 cancel ret is %d,mPthread is %x \n",ret,mPthread);
 }
 
 int _Thread::setPriority(ThreadPriority priority) {
@@ -385,9 +390,12 @@ int _Thread::getSchedPolicy() {
 
 void _Thread::onInterrupt() {
     //need overwrite by child class
-    //printf("thread onInterrupt !!!!!!\n");
+    ////printf("thread onInterrupt !!!!!!\n");
 }
 
+void _Thread::interruptCheck() {
+    pthread_testcancel();
+}
 
 void _Thread::yield() {
     pthread_yield();

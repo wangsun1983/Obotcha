@@ -18,18 +18,19 @@ int interruptVal = 1;
 DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        printf("i am running \n");
+        //printf("i am running \n");
         sleep(10);
     }
 
     void onInterrupt() {
-        printf("i am interrupt \n");
+        //printf("i am interrupt \n");
         interruptVal = 2;
     }
 
     ~_RunTest1() {
         //printf("i am release \n");
         //unDestory = 0;
+        //interruptVal = 1;
     }
 };
 
@@ -42,12 +43,11 @@ int testRunnable_onInterrupt() {
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
         pool->submit(createRunTest1());
-        printf("start shudown now \n");
-        pool->shutdownNow();
-        printf("start shudown now 1\n");
+        sleep(1);
+        pool->shutdown();
         sleep(5);
         if(interruptVal != 2) {
-            printf("---[TestThreadPoolExecutor TestOnInterrupt {onInterrupt()} case1] [FAIL]--- \n");
+            printf("---[TestThreadPoolExecutor TestOnInterrupt {onInterrupt(),interruptVal is %d} case1] [FAIL]--- \n",interruptVal);
             break;
         }
 

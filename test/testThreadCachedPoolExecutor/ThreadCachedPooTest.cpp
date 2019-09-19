@@ -14,8 +14,10 @@ using namespace obotcha;
 
 extern int normalTest();
 extern int numTest();
+extern int releaseTest();
 
 int main() {
-    //normalTest();
+    normalTest();
     numTest();
+    releaseTest();
 }

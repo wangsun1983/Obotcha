@@ -21,11 +21,13 @@ extern int testThreadCommonCase();
 extern int testThreadNotifyInterruptCase();
 extern int testThreadSleepInterrupt();
 extern int testThreadLoopInterrypt();
+extern int testThreadRelease();
 
 int main() {
     testThreadInterruptCase();
     testThreadCommonCase();
     testThreadNotifyInterruptCase();
     testThreadSleepInterrupt();
-    //testThreadLoopInterrypt();
+    testThreadLoopInterrypt();
+    testThreadRelease();
 }

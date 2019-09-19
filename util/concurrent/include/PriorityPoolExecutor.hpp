@@ -16,6 +16,7 @@
 #include "ExecutorService.hpp"
 #include "Condition.hpp"
 #include "Thread.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -34,9 +35,11 @@ public:
     FutureTask task;
 };
 
+class _PriorityPoolExecutor;
+
 DECLARE_SIMPLE_CLASS(PriorityPoolThread) EXTENDS(Thread) {
 public:
-    _PriorityPoolThread(ArrayList<PriorityTask>,Mutex,Condition);
+    _PriorityPoolThread(ArrayList<PriorityTask>,Mutex,Condition,_PriorityPoolExecutor *exe);
     
     void run();
     
@@ -46,7 +49,11 @@ public:
 
     void waitTermination(long);
 
+    void onExecutorDestroy();
+
     ~_PriorityPoolThread();
+
+    DEBUG_REFERENCE_DECLARATION
 
 private:
     ArrayList<PriorityTask> mTasks;
@@ -60,6 +67,10 @@ private:
     Mutex mStateMutex;
 
     PriorityTask mCurrentTask;
+    
+    Mutex mExecutorMutex;
+
+    _PriorityPoolExecutor *mExecutor;
 
     int mState;
     
@@ -69,6 +80,8 @@ private:
 DECLARE_SIMPLE_CLASS(PriorityPoolExecutor) IMPLEMENTS(ExecutorService) {
 
 public:
+    friend class _PriorityPoolThread;
+
     _PriorityPoolExecutor();
 
     _PriorityPoolExecutor(int threadnum);
@@ -93,7 +106,14 @@ public:
 
     ~_PriorityPoolExecutor();
 
+    DEBUG_REFERENCE_DECLARATION
+
 private:
+
+    void onHandlerRelease();
+
+    int mThreadNum;
+
     Mutex mProtectMutex;
     
     Mutex mDataLock;

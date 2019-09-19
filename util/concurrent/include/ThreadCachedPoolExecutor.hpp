@@ -17,6 +17,7 @@
 #include "FutureTask.hpp"
 #include "Future.hpp"
 #include "AtomicInteger.hpp"
+#include "Debug.hpp"
 
 using namespace std;
 
@@ -44,6 +45,12 @@ public:
 
     void onInterrupt();
 
+    void onExecutorDestroy();
+
+    ~_ThreadCachedPoolExecutorHandler();
+
+    DEBUG_REFERENCE_DECLARATION
+
 private:
     BlockingQueue<FutureTask> mPool;
 
@@ -65,7 +72,15 @@ private:
 
     mutable volatile bool mStop;
 
-    sp<_ThreadCachedPoolExecutor> mPoolExecutor;
+    _ThreadCachedPoolExecutor *mExecutor;
+
+    Mutex mExecutorMutex;
+
+    Condition waitStartCond;
+
+    Mutex waitStartMutex;
+
+    bool isFirstBoot;
 };
 
 
@@ -104,6 +119,8 @@ public:
 
     ~_ThreadCachedPoolExecutor();
 
+    DEBUG_REFERENCE_DECLARATION
+
 private:
     AtomicInteger mIdleThreadNum ;
     
@@ -117,7 +134,9 @@ private:
 
     BlockingQueue<FutureTask> mPool;
     
-    ConcurrentQueue<ThreadCachedPoolExecutorHandler> mHandlers;
+    Mutex mHandlerMutex;
+    
+    ArrayList<ThreadCachedPoolExecutorHandler> mHandlers;
 
     bool mIsShutDown;
 

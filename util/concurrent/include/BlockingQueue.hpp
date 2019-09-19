@@ -364,7 +364,9 @@ T _BlockingQueue<T>::deQueueFirst(long timeout) {
         AutoMutex l(mMutex);
         int size = mQueue.size();
         if(size == 0) {
+            //printf("dequeuefirst wait start \n");
             if(NotifyByTimeout == mDequeueCond->wait(mMutex,timeout)) {
+                //printf("dequeuefirst wait trace1 \n");
                 return nullptr;
             } 
 
@@ -373,7 +375,7 @@ T _BlockingQueue<T>::deQueueFirst(long timeout) {
             }
             continue;
         }
-
+        //printf("dequeuefirst wait trace2 \n");
         ret = mQueue.at(0);
         mQueue.erase(mQueue.begin());
         

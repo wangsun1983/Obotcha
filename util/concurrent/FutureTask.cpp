@@ -35,6 +35,12 @@ void _FutureTask::wait(long interval) {
 
 void _FutureTask::cancel() {
     AutoMutex l(mCompleteMutex);
+    //printf("Future cancel \n");
+    if(mRunnable != nullptr) {
+        //printf("Future cancel2 \n");
+        mRunnable->onInterrupt();
+    }
+
     mRunnable = nullptr;
     mStatus = FUTURE_CANCEL;
 

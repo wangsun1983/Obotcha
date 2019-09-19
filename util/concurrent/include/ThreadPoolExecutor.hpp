@@ -16,16 +16,19 @@
 #include "ExecutorService.hpp"
 #include "FutureTask.hpp"
 #include "Future.hpp"
+#include "Debug.hpp"
 
 using namespace std;
 
 namespace obotcha {
 
+class _ThreadPoolExecutor;
+
 DECLARE_SIMPLE_CLASS(ThreadPoolExecutorHandler) IMPLEMENTS(Runnable) {
 
 public:
 
-    _ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool);
+    _ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool,_ThreadPoolExecutor* excutor);
     
     bool isTerminated();
 
@@ -38,6 +41,12 @@ public:
     void waitForTerminate(long);
 
     void onInterrupt();
+
+    void onExecutorDestroy();
+
+    ~_ThreadPoolExecutorHandler();
+
+    DEBUG_REFERENCE_DECLARATION
 
 private:
     BlockingQueue<FutureTask> mPool;
@@ -57,17 +66,18 @@ private:
     mutable volatile bool mStop;
 
     Thread mThread;
+
+    _ThreadPoolExecutor* mExecutor;
+
+    Mutex mExecutorMutex;
 };
 
 
 DECLARE_SIMPLE_CLASS(ThreadPoolExecutor) IMPLEMENTS(ExecutorService) {
 
 public:
-    enum ExecuteResult {
-        success,
-        failShutDown,
-        failUnknown
-    };
+
+    friend class _ThreadPoolExecutorHandler;
 
 	_ThreadPoolExecutor(int queuesize,int threadnum);
 
@@ -89,7 +99,11 @@ public:
 
     ~_ThreadPoolExecutor();
 
+    DEBUG_REFERENCE_DECLARATION
+
 private:
+    void onHandlerRelease();
+
     BlockingQueue<FutureTask> mPool;
     
     ConcurrentQueue<ThreadPoolExecutorHandler> mHandlers;

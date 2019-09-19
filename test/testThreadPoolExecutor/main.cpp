@@ -15,9 +15,13 @@ using namespace obotcha;
 
 extern int normalTest();
 extern int testRunnable_onInterrupt();
+extern int releaseTest();
 
 int main() {
     normalTest();
+    sleep(1);
     testRunnable_onInterrupt();
+    sleep(1);
+    releaseTest();
     return 1;
 }

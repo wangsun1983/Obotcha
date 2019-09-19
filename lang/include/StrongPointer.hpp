@@ -233,9 +233,11 @@ sp<T>& sp<T>::operator = (const sp<T>& other) {
     //printf("StrongPointer trace 2 \n");
     T* otherPtr(other.m_ptr);
     if (otherPtr) otherPtr->incStrong(this);
-    
     if (m_ptr) {
         if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
+            //if(otherPtr == nullptr) {
+                //printf("release 2 \n");
+            //}
             delete static_cast<const T*>(m_ptr);
         }
     }
@@ -250,9 +252,13 @@ sp<T>& sp<T>::operator = (T* other)
     //printf("StrongPointer trace 1 \n");
     if (other) other->incStrong(this);
     if (m_ptr) {
-        //printf("StrongPointer trace 1_1 \n");
+        //if(other == nullptr) {
+            //printf("release 1 \n");
+        //}
         if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
-            //printf("StrongPointer trace 1_2 \n");
+            //if(other == nullptr) {
+            //    printf("release 2 \n");
+            //}
             delete static_cast<const T*>(m_ptr);
         }   
     }

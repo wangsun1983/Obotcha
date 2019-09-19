@@ -15,6 +15,7 @@
 #include "ThreadLocal.hpp"
 #include "Uint64.hpp"
 #include "AtomicInteger.hpp"
+#include "Debug.hpp"
 
 using namespace std;
 
@@ -127,6 +128,8 @@ public:
 
     virtual void onInterrupt();
 
+    static void interruptCheck();
+    
     static void yield();
 
     static void msleep(unsigned long);
@@ -142,6 +145,8 @@ public:
     static int getThreadSchedPolicy();
 
     ~_Thread();
+
+    DEBUG_REFERENCE_DECLARATION
 
 protected:
    pthread_t mPthread;

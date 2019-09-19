@@ -10,6 +10,7 @@
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
+#include "ThreadPoolExecutor.hpp"
 
 using namespace obotcha;
 
@@ -18,7 +19,7 @@ int runDestory = 1;
 DECLARE_SIMPLE_CLASS(MyRunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        printf("i am running123 \n");
+        //printf("i am running123 \n");
         sleep(10);
     }
 
@@ -28,7 +29,7 @@ public:
     }
 
     ~_MyRunTest1() {
-        printf("i am release \n");
+        //printf("i am release \n");
         runDestory = 0;
     }
 };
@@ -49,50 +50,40 @@ int normalTest() {
 
     //_ThreadPoolExecutor(int queuesize,int threadnum);
     while(1) {
-        ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
+        st(ThreadPoolExecutor)::initDebugReferenceCount();
+        st(Thread)::initDebugReferenceCount();
+        {
+            ExecutorService pool = st(Executors)::newFixedThreadPool(1,1);
+        }
+
+        sleep(1);
+        //printf("ThreadPoolExecutor getDebugReferenceCount is %d \n",st(ThreadPoolExecutor)::getDebugReferenceCount());
+        //printf("ThreadPoolExecutorHandler getDebugReferenceCount is %d \n",st(ThreadPoolExecutorHandler)::getDebugReferenceCount());
+        //printf("Thread getDebugReferenceCount is %d \n",st(ThreadPoolExecutorHandler)::getDebugReferenceCount());
+
+        if(st(ThreadPoolExecutor)::getDebugReferenceCount() != 0 
+            || st(ThreadPoolExecutorHandler)::getDebugReferenceCount() != 0
+            || st(Thread)::getDebugReferenceCount() != 0) {
+            printf("---[TestThreadPoolExecutor Test {constructor()} case1] [FAIL]--- \n");
+            break;
+        } else {
+            printf("---[TestThreadPoolExecutor Test {constructor()} case1_1] [Success]--- \n");
+        }
+
         printf("---[TestThreadPoolExecutor Test {constructor()} case1] [Success]--- \n");
         break;
     }
 
+
     //_ThreadPoolExecutor();
     while(1) {
-        ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
+        ExecutorService pool = st(Executors)::newFixedThreadPool(1,1);
         printf("---[TestThreadPoolExecutor Test {constructor2()} case1] [Success]--- \n");
         break;
     }
 
-    //void shutdownNow();
-    while(1) {
-        ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
-        pool->submit(createMyRunTest1());
-        sleep(1);
-        printf("shutown aaaaaaaa \n");
-        pool->shutdownNow();
-        //printf("shutdownNot trace1 \n");
-        sleep(5);
-        //printf("shutdownNot trace2 \n");
-        if(runDestory == 1) {
-            printf("---[TestThreadPoolExecutor Test {shutdownNow()} case1] [FAIL]--- \n");
-            break;
-        }
 
-        Future task = pool->submit(createMyRunTest1());
-        if(task != nullptr) {
-            printf("---[TestThreadPoolExecutor Test {shutdownNow()} case2] [FAIL]--- \n");
-            break;
-        }
-
-        int result = pool->execute(createMyRunTest1());
-        if(result != -AlreadyDestroy) {
-            printf("---[TestThreadPoolExecutor Test {shutdownNow()} case3] [FAIL]--- \n");
-            break;
-        }
-
-        printf("---[TestThreadPoolExecutor Test {shutdownNow()} case4] [Success]--- \n");
-        break;
-    }
-
-
+#if 0
     //void shutdown();
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
@@ -119,8 +110,9 @@ int normalTest() {
         printf("---[TestThreadPoolExecutor Test {shutdown()} case4] [Success]--- \n");
         break;
     }
+#endif
 
-
+#if 0
     //int awaitTermination(long timeout);
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
@@ -138,9 +130,9 @@ int normalTest() {
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
-        //printf("awaitTermination start test \n");
+        printf("awaitTermination start test \n");
         result = pool->awaitTermination(5000);
-        //printf("awaitTermination result is %d \n",result);
+        printf("awaitTermination result is %d \n",result);
         if(result != -WaitTimeout) {
             printf("---[TestThreadPoolExecutor Test {awaitTermination()} case2] [FAIL]--- \n");
             break;
@@ -239,6 +231,6 @@ int normalTest() {
         printf("---[TestThreadPoolExecutor Test {submit()} case3] [Success]--- \n");
         break;
     }
-
+#endif
 }
 
