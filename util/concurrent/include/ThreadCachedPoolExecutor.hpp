@@ -29,7 +29,7 @@ DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutorHandler) IMPLEMENTS(Runnable) {
 
 public:
 
-    _ThreadCachedPoolExecutorHandler(BlockingQueue<FutureTask> pool,long timeout,_ThreadCachedPoolExecutor *h);
+    _ThreadCachedPoolExecutorHandler(BlockingQueue<FutureTask> pool,long timeout,_ThreadCachedPoolExecutor *h,Mutex m);
     
     Thread mThread;
     
@@ -63,6 +63,8 @@ private:
     FutureTask mCurrentTask;
 
     Mutex mStateMutex;
+
+    Mutex mHandlerMutex;
 
     Condition mWaitCond;
 

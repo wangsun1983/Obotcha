@@ -17,6 +17,7 @@
 #include "Future.hpp"
 #include "ScheduledExecutorService.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
+#include "Debug.hpp"
 
 using namespace std;
 
@@ -35,13 +36,20 @@ class _ScheduledThreadPoolExecutor;
 DECLARE_SIMPLE_CLASS(ScheduledTaskWorker) IMPLEMENTS(Runnable){
 public:
     _ScheduledTaskWorker(sp<_ScheduledThreadPoolTask>);
+    
+    ~_ScheduledTaskWorker();
 
     void run();
+
+    void onInterrupt();
+
+    DEBUG_REFERENCE_DECLARATION
 
 private:
     sp<_ScheduledThreadPoolTask> mTask;
 
     sp<_ScheduledThreadPoolThread> mTimeThread;
+
 };
 
 
@@ -57,7 +65,11 @@ public:
                              long int interval,
                              int type,
                              long int repeatDelay,
-                             sp<_ScheduledThreadPoolThread> timethread);
+                             sp<_ScheduledThreadPoolThread> timethread);                             
+
+    ~_ScheduledThreadPoolTask();                     
+
+    DEBUG_REFERENCE_DECLARATION                         
 
 private:
     long int mNextTime;
@@ -78,6 +90,8 @@ public:
 
     _ScheduledThreadPoolThread();
 
+    ~_ScheduledThreadPoolThread();
+
     void onUpdate();
 
     void addTask(ScheduledThreadPoolTask v);
@@ -92,13 +106,14 @@ public:
 
     void onInterrupt();
 
+    DEBUG_REFERENCE_DECLARATION
 
 private:
     ArrayList<ScheduledThreadPoolTask> mDatas;
 
     ThreadCachedPoolExecutor cachedExecutor;
 
-    ThreadPoolExecutor mExecutorService;
+    //ThreadPoolExecutor mExecutorService;
     
     Mutex mDataLock;
 
@@ -125,6 +140,8 @@ public:
 
 	_ScheduledThreadPoolExecutor();
 
+    ~_ScheduledThreadPoolExecutor();
+
     int shutdown();
 
     int execute(Runnable command);
@@ -149,8 +166,8 @@ public:
                                 long initialDelay,
                                 long delay);
 
-    ~_ScheduledThreadPoolExecutor();
-    
+    DEBUG_REFERENCE_DECLARATION
+
 private:
     ScheduledThreadPoolThread  mTimeThread;
 

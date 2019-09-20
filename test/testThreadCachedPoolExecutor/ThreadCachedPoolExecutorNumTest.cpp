@@ -52,7 +52,7 @@ int numTest() {
             break;
         }
 
-        if(maxThreadNum != 32) {
+        if(maxThreadNum != 4) {
             printf("---[TestCachedPoolExecutor NumTest {case2,maxThreadNum is %d] [FAIL]--- \n",maxThreadNum);
             break;
         }

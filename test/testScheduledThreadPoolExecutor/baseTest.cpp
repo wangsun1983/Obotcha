@@ -17,12 +17,12 @@ int runDestory = 1;
 DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        printf("i am running \n");
+        //printf("i am running \n");
         sleep(10);
     }
 
     ~_RunTest1() {
-        printf("i am release \n");
+        //printf("i am release \n");
         runDestory = 0;
     }
 };
@@ -31,15 +31,15 @@ Mutex runTest2Mutex;
 DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        printf("RunTest2 start 1\n");
+        //printf("RunTest2 start 1\n");
         runTest2Mutex->lock();
-        printf("RunTest2 start 2\n");
+        //printf("RunTest2 start 2\n");
     }
 };
 
 
 int baseTest() {
-    printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
+    //printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
 
     //_ScheduledThreadPoolExecutor()
     while(1) {
@@ -66,7 +66,7 @@ int baseTest() {
         }
 
         int result = pool->execute(createRunTest1());
-        if(result != -AlreadyDestroy) {
+        if(result != -InvalidStatus) {
             printf("---[ScheduledThreadPoolExecutor Test {shutdown()} case3] [FAIL]--- \n");
             break;
         }

@@ -17,9 +17,9 @@ int runDestory = 1;
 DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        printf("i am running \n");
+        //printf("i am running \n");
         sleep(10);
-        printf("i am running end\n");
+        //printf("i am running end\n");
     }
 
     ~_RunTest1() {
@@ -32,9 +32,9 @@ Mutex runTest2Mutex;
 DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        printf("RunTest2 start 1\n");
+        //printf("RunTest2 start 1\n");
         runTest2Mutex->lock();
-        printf("RunTest2 start 2\n");
+        //printf("RunTest2 start 2\n");
     }
 };
 

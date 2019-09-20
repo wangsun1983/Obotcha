@@ -108,16 +108,18 @@ HashMap<int,int *> _Thread::mPriorityTable = createHashMap<int,int *>();
 
 void* _Thread::localRun(void *th) {
     //pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, nullptr);
-    //pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     _Thread *thread = static_cast<_Thread *>(th);
     //printf("localRun \n");
     KeepAliveThread mKAThread = mKeepAliveThread; 
     sp<_Thread> localThread;
     localThread.set_pointer(thread);
     mKeepAliveThread->save(localThread);
-    pthread_cleanup_push(cleanup, th);
     thread->mStatus = ThreadRunning;
     thread->bootFlag->orAndGet(1);
+    
+    pthread_cleanup_push(cleanup, th);
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
     if(thread->mStatus == ThreadWaitExit) {
         ////printf("go to exit \n");
         goto end;
@@ -241,7 +243,7 @@ int _Thread::start() {
     pthread_attr_init(&mThreadAttr);
     pthread_create(&mPthread, &mThreadAttr, localRun, this);
     while(bootFlag->orAndGet(0) == 0) {
-        //wait
+        st(Thread)::yield();
     }
     return 0;
 }

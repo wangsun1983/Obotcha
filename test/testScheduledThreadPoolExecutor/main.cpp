@@ -15,11 +15,13 @@ using namespace obotcha;
 
 extern int baseTest();
 extern int scheduleTest();
+extern int ReleaseTest();
 
 int main() {
     printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
-    //baseTest();
+    baseTest();
     scheduleTest();
+    ReleaseTest();
     
 }
 

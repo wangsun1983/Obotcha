@@ -10,8 +10,24 @@
 
 namespace obotcha {
 //---------------ScheduledTaskWorker-------------------//
+DEBUG_REFERENCE_REALIZATION(ScheduledTaskWorker);
+
 _ScheduledTaskWorker::_ScheduledTaskWorker(sp<_ScheduledThreadPoolTask> t) {
+    incDebugReferenctCount();
     mTask = t;
+}
+
+_ScheduledTaskWorker::~_ScheduledTaskWorker() {
+    decDebugReferenctCount();
+}
+
+void _ScheduledTaskWorker::onInterrupt() {
+    if(mTask != nullptr) {
+        Runnable r = mTask->task->getRunnable();
+        if(r != nullptr) {
+            r->onInterrupt();
+        }
+    }
 }
 
 void _ScheduledTaskWorker::run() {
@@ -21,17 +37,9 @@ void _ScheduledTaskWorker::run() {
         startMillseconds = st(System)::currentTimeMillis();
     }
 
-    if(mTask->task->getType() == FUTURE_TASK_SUBMIT) {
-        mTask->task->onRunning();
-    }
-
     Runnable runnable = mTask->task->getRunnable();
     if(runnable != nullptr) {
         runnable->run();    
-    }
-
-    if(mTask->task->getType() == FUTURE_TASK_SUBMIT) {
-        mTask->task->onComplete();
     }
 
     //we should check the whether the Task is a repeated task;
@@ -53,7 +61,9 @@ void _ScheduledTaskWorker::run() {
 }
 
 //---------------ScheduledThreadPoolTask---------------//
+DEBUG_REFERENCE_REALIZATION(ScheduledThreadPoolTask);
 _ScheduledThreadPoolTask::_ScheduledThreadPoolTask(FutureTask t,long int interval) {
+    incDebugReferenctCount();
     task = t;
     mNextTime = st(System)::currentTimeMillis() + interval;
     mScheduleTaskType = ScheduletTaskNormal;
@@ -64,6 +74,7 @@ _ScheduledThreadPoolTask::_ScheduledThreadPoolTask(FutureTask t,
                                                    int type,
                                                    long int delay,
                                                    sp<_ScheduledThreadPoolThread> timethread) {
+    incDebugReferenctCount();
     task = t;
     mNextTime = st(System)::currentTimeMillis() + interval;
     mScheduleTaskType = type;
@@ -71,8 +82,13 @@ _ScheduledThreadPoolTask::_ScheduledThreadPoolTask(FutureTask t,
     repeatDelay = delay;
 }
 
+_ScheduledThreadPoolTask::~_ScheduledThreadPoolTask() {
+    decDebugReferenctCount();
+}
+
 
 //---------------TimeThread---------------//
+DEBUG_REFERENCE_REALIZATION(ScheduledThreadPoolThread);
 _ScheduledThreadPoolThread::_ScheduledThreadPoolThread() {
     mDatas = createArrayList<ScheduledThreadPoolTask>();
 
@@ -90,6 +106,11 @@ _ScheduledThreadPoolThread::_ScheduledThreadPoolThread() {
 
     isStop = false;
     isTerminated = false;
+    incDebugReferenctCount();
+}
+
+_ScheduledThreadPoolThread::~_ScheduledThreadPoolThread() {
+    decDebugReferenctCount();
 }
 
 void _ScheduledThreadPoolThread::onUpdate() {
@@ -121,25 +142,21 @@ void _ScheduledThreadPoolThread::addTask(ScheduledThreadPoolTask v) {
 }
 
 void _ScheduledThreadPoolThread::stop() {
-    AutoMutex l(mDataLock);
-    isStop = true;
-    //clear all task
-    //printf("_ScheduledThreadPoolThread stop 1 \n");
-    int size = mDatas->size();
-    for(int i = 0;i < size;i++) {
-        //printf("stop,mCurrentTask1 count is %d \n",mCurrentTask->getStrongCount());
-        ScheduledThreadPoolTask scheduleTask = mCurrentTask;//mDatas->remove(0);
-        //printf("stop,scheduleTask2 count is %d \n",scheduleTask->getStrongCount());
-        scheduleTask->task->cancel();
-        //printf("stop,scheduleTask3 count is %d \n",scheduleTask->getStrongCount());
-    }
-    //printf("_ScheduledThreadPoolThread stop 2 \n");
-    mDataCond->notify();
-
+    /*
+    {
+        AutoMutex l(mDataLock);
+        isStop = true;
+        //clear all task
+        int size = mDatas->size();
+        for(int i = 0;i < size;i++) {
+            ScheduledThreadPoolTask scheduleTask = mDatas->get(i);
+            scheduleTask->task->cancel();
+        }
+    }*/
+    //mDataCond->notify();
+    //printf("_ScheduledThreadPoolThread stop \n");
     cachedExecutor->shutdown();
-    //printf("_ScheduledThreadPoolThread stop 3 \n");
     this->quit();
-    //printf("_ScheduledThreadPoolThread stop 4 \n");
 }
 
 void _ScheduledThreadPoolThread::waitForTerminate() {
@@ -165,23 +182,36 @@ void _ScheduledThreadPoolThread::waitForTerminate(long timeout) {
 
 void _ScheduledThreadPoolThread::onInterrupt() {
     
-    if(mCurrentTask != nullptr) {
-        Runnable runnable = mCurrentTask->task->getRunnable();
-        if(runnable != nullptr) {
-            runnable->onInterrupt();
-        }
-        
-        mCurrentTask = nullptr;
+    //CachedExector will clear mCurrentTask's runnable;
+    //printf("scheduled onInterrupt \n");
+    mCurrentTask = nullptr;
+    {
+        AutoMutex l(mTerminatedMutex);
+        isTerminated = true;
+        mTerminatedCond->notify();
     }
+    
+    //clear all task
+    {
+        AutoMutex ll(mDataLock);
+        ListIterator<ScheduledThreadPoolTask> iterator = mDatas->getIterator();
+        int i = 0;
+        while(iterator->hasValue()) {
+            ScheduledThreadPoolTask t = iterator->getValue();
+            t->task->cancel();
+            iterator->next();
+            i++;
+        }
 
-    AutoMutex l(mTerminatedMutex);
-    isTerminated = true;
-    mTerminatedCond->notify();
+        //printf("clear not act num is %d \n",i);
+
+        mDatas->clear();
+    }
 }
 
 void _ScheduledThreadPoolThread::run() {
     while(!isStop) {
-        //printf("scheduledthreadpool trace1 \n");
+        st(Thread)::interruptCheck();
         mCurrentTask = nullptr;
         while(1) {
             AutoMutex l(mDataLock);
@@ -193,9 +223,9 @@ void _ScheduledThreadPoolThread::run() {
                 mDataCond->wait(mDataLock);
                 continue;
             }
-            //printf("scheduledthreadpool trace2 \n");
+            ////printf("scheduledthreadpool trace2 \n");
             mCurrentTask = mDatas->get(0);
-            //printf("scheduledthreadpool trace2,mCurrentTask count is %d \n",mCurrentTask->getStrongCount());  
+            ////printf("scheduledthreadpool trace2,mCurrentTask count is %d \n",mCurrentTask->getStrongCount());  
             break;
         }
         
@@ -204,16 +234,16 @@ void _ScheduledThreadPoolThread::run() {
         long interval = mCurrentTask->mNextTime - currentTime;
         if(interval > 0) {
             AutoMutex l(mTimeLock);
-            //printf("scheduledthreadpool trace3,mCurrentTask p: %x \n",mCurrentTask->task->getRunnable().get_pointer());
+            ////printf("scheduledthreadpool trace3,mCurrentTask p: %x \n",mCurrentTask->task->getRunnable().get_pointer());
             mTimeCond->wait(mTimeLock,interval);
-            //printf("scheduledthreadpool trace4 \n");
+            ////printf("scheduledthreadpool trace4 \n");
             continue;
         } else {
             {
-                //printf("scheduledthreadpool trace5 \n");
+                ////printf("scheduledthreadpool trace5 \n");
                 AutoMutex l(mDataLock);
                 mDatas->remove(mCurrentTask);
-                //printf("scheduledthreadpool trace6 \n");
+                ////printf("scheduledthreadpool trace6 \n");
             }
 
             if(mCurrentTask->task->getStatus() == FUTURE_CANCEL) {
@@ -222,18 +252,20 @@ void _ScheduledThreadPoolThread::run() {
 
             Runnable r = mCurrentTask->task->getRunnable();
             if(r != nullptr) {
-                //printf("scheduledthreadpool trace7 \n");
+                ////printf("scheduledthreadpool trace7 \n");
                 ScheduledTaskWorker worker = createScheduledTaskWorker(mCurrentTask);
-                //printf("scheduledthreadpool trace8 \n");
+                ////printf("scheduledthreadpool trace8 \n");
                 cachedExecutor->execute(worker);
-                //printf("scheduledthreadpool trace9 \n");
+                ////printf("scheduledthreadpool trace9 \n");
             }
         }
     }
 
 end:
-    //printf("scheduledthreadpool trace10 \n");
+    ////printf("scheduledthreadpool trace10 \n");
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
+    mCurrentTask = nullptr;
+
     mDatas->clear();
     AutoMutex l(mTerminatedMutex);
     isTerminated = true;
@@ -241,11 +273,13 @@ end:
 }
 
 //---------------ScheduleService---------------//
+DEBUG_REFERENCE_REALIZATION(ScheduledThreadPoolExecutor)
 _ScheduledThreadPoolExecutor::_ScheduledThreadPoolExecutor() {
     mTimeThread = createScheduledThreadPoolThread();
     mTimeThread->start();
     mIsShutDown = false;
     mProtectMutex = createMutex("ScheduledThreadMutex");
+    incDebugReferenctCount();
 }
 
 int _ScheduledThreadPoolExecutor::execute(Runnable runnable) {
@@ -274,7 +308,7 @@ int _ScheduledThreadPoolExecutor::shutdown() {
     }
 
     mIsShutDown = true;
-
+    //printf("mTimeThread stop \n");
     mTimeThread->stop();
 
     return 0;
@@ -365,7 +399,7 @@ Future _ScheduledThreadPoolExecutor::scheduleWithFixedDelay(Runnable r,
 }
 
 _ScheduledThreadPoolExecutor::~_ScheduledThreadPoolExecutor() {
-    //printf("_ScheduledThreadPoolExecutor destroy \n");
+    decDebugReferenctCount();
     shutdown();
 }
 

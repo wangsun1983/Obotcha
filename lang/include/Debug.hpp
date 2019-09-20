@@ -12,6 +12,23 @@ namespace obotcha {
 //config
 #define THREAD_COUNT_DEBUG
 
+
+class DebugInternalAutoLock {
+public:
+    DebugInternalAutoLock(pthread_mutex_t t) {
+        pthread_mutex_lock(&t);
+        mutex = t;
+    }
+
+    ~DebugInternalAutoLock() {
+        pthread_mutex_unlock(&mutex);
+    }
+
+private:
+    pthread_mutex_t mutex;
+
+};
+
 #ifdef THREAD_COUNT_DEBUG
 //Reference Debug Function declaration
 #define DEBUG_REFERENCE_DECLARATION \
@@ -35,14 +52,12 @@ void _##C::initDebugReferenceCount() { \
 }\
 \
 void _##C::incDebugReferenctCount() {\
-    pthread_mutex_lock(&referenceCountMutex);\
+    DebugInternalAutoLock ll(referenceCountMutex);\
     debugReferenceCount++;\
-    pthread_mutex_unlock(&referenceCountMutex);\
 }\
 void _##C::decDebugReferenctCount() {\
-    pthread_mutex_lock(&referenceCountMutex);\
+    DebugInternalAutoLock ll(referenceCountMutex);\
     debugReferenceCount--;\
-    pthread_mutex_unlock(&referenceCountMutex);\
 }\
 int _##C::getDebugReferenceCount() {\
     return debugReferenceCount;\
