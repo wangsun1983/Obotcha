@@ -24,8 +24,6 @@ namespace obotcha {
 #define DEFAULT_CACHED_THREAD_WAIT_TIME 60*1000
 #define DEFAULT_CACHED_THREAD_NUMS 4    
 
-DEBUG_REFERENCE_REALIZATION(ThreadCachedPoolExecutorHandler)
-
 _ThreadCachedPoolExecutorHandler::_ThreadCachedPoolExecutorHandler(BlockingQueue<FutureTask> pool,
                                                                    long timeout,
                                                                    _ThreadCachedPoolExecutor *h,
@@ -54,20 +52,20 @@ _ThreadCachedPoolExecutorHandler::_ThreadCachedPoolExecutorHandler(BlockingQueue
 
     isFirstBoot = true;
 
+    isWaitTerminate = false;
+
     mThread = createThread(r);
     
     mThreadTimeout = timeout;
 
     mThread->start();
-   
+    
     {
         AutoMutex ll(waitStartMutex);
         if(isFirstBoot) {
             waitStartCond->wait(waitStartMutex);
         }
     }
-    
-    incDebugReferenctCount();
 
     ////printf("create ThreadCachedPoolExecutorHandler %lx \n",this);
     ////printf("increase count is %d \n",getDebugReferenceCount());
@@ -75,7 +73,7 @@ _ThreadCachedPoolExecutorHandler::_ThreadCachedPoolExecutorHandler(BlockingQueue
 
 _ThreadCachedPoolExecutorHandler::~_ThreadCachedPoolExecutorHandler() {
     ////printf("~_ThreadCachedPoolExecutorHandler %lx \n",this);
-    decDebugReferenctCount();
+    mCurrentTask = nullptr;
     ////printf("decrease count is %d \n",getDebugReferenceCount());
 }
 
@@ -250,8 +248,6 @@ bool _ThreadCachedPoolExecutorHandler::isTerminated() {
     return state == terminateState;
 }
 
-DEBUG_REFERENCE_REALIZATION(ThreadCachedPoolExecutor)
-
 _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout) {
     init(queuesize,minthreadnum,maxthreadnum,timeout);
 }
@@ -424,8 +420,6 @@ void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthrea
         throw createInitializeException(createString("ThreadCachedPool"));
     }
 
-    incDebugReferenctCount();
-
     mIdleThreadNum = createAtomicInteger(0);
     mProtectMutex = createMutex("ThreadCachedMutex");
     mQueueSize = queuesize;
@@ -452,10 +446,10 @@ void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthrea
         //increaseIdleThreadNum();
     }
 
-    for(int i = 0;i < minThreadNum;i++) {
-        ThreadCachedPoolExecutorHandler t = mHandlers->get(i);
+    //for(int i = 0;i < minThreadNum;i++) {
+    //    ThreadCachedPoolExecutorHandler t = mHandlers->get(i);
         ////printf("list [%d] is %lx \n",i,t.get_pointer());
-    }
+    //}
 
     mIsTerminated = false;
 
@@ -494,8 +488,6 @@ _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
     }
 
     shutdown();
-
-    decDebugReferenctCount();
 }
 
 }

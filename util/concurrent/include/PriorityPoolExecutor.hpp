@@ -53,8 +53,6 @@ public:
 
     ~_PriorityPoolThread();
 
-    DEBUG_REFERENCE_DECLARATION
-
 private:
     ArrayList<PriorityTask> mTasks;
     
@@ -105,8 +103,6 @@ public:
     int getThreadsNum();
 
     ~_PriorityPoolExecutor();
-
-    DEBUG_REFERENCE_DECLARATION
 
 private:
 

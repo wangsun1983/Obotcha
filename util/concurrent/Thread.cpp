@@ -12,6 +12,83 @@
 
 namespace obotcha {
 
+//------------ReleaseThread-----------------
+static void* freethreadmem(void *th) {
+    _ReleaseThread *thread = static_cast<_ReleaseThread *>(th);
+    thread->run();
+    return nullptr;
+}
+
+_ReleaseThread::_ReleaseThread() {
+    mutex = createMutex("ReleaseThreadMutex");
+
+    cond = createCondition();
+
+    mThreadPids = createArrayList<Uint64>();
+
+    mStartBarrier = createAtomicInteger(0);
+}
+
+_ReleaseThread::~_ReleaseThread() {
+    //printf("_ReleaseThread release \n");
+    //Uint64 poison;
+    //mThreadPids->add(poison);
+    //pthread_join(mTid,nullptr);
+}
+
+void _ReleaseThread::stop() {
+    Uint64 poison;
+    //printf("release thread start \n");
+    sendRelease(poison);
+    //printf("release thread trace \n");
+    pthread_join(mTid,nullptr);
+    //printf("release thread trace2 \n");
+}
+
+void _ReleaseThread::sendRelease(Uint64 t) {
+    AutoMutex ll(mutex);
+    mThreadPids->add(t);
+    cond->notify();
+}
+
+void _ReleaseThread::start() {
+
+    AutoMutex l(mutex);
+    pthread_attr_init(&mAttr);
+    pthread_create(&mTid, &mAttr, freethreadmem, this);
+        
+    while(mStartBarrier->orAndGet(0) == 0) {
+        //wait
+    }
+}
+
+
+void _ReleaseThread::run() {
+    mStartBarrier->orAndGet(1);
+
+    while(1) {
+        Uint64 tid = nullptr;
+
+        {   
+            //printf("_ReleaseThread run1 \n");
+            AutoMutex ll(mutex);
+            int size = mThreadPids->size();
+            if(size == 0) {
+                cond->wait(mutex);
+                continue;
+            }
+            tid = mThreadPids->remove(0);
+            if(tid == nullptr) {
+                break;
+            }
+        }
+
+        long time = st(System)::currentTimeMillis();
+        pthread_join(tid->toValue(),nullptr);
+        //printf("release join is %ld \n",st(System)::currentTimeMillis() - time);
+    }
+}
+
 //------------KeepAliveThread---------------//
 static void* recycle(void *th) {
     ////printf("recyle 1 \n");
@@ -29,6 +106,7 @@ _KeepAliveThread::_KeepAliveThread() {
     isRunning = false;
     mThreadLocal = createThreadLocal<sp<_Thread>>();
     mStartBarrier = createAtomicInteger(0);
+    mReleaseThread = createReleaseThread();
 }
 
 void _KeepAliveThread::start() {
@@ -38,6 +116,9 @@ void _KeepAliveThread::start() {
 
     AutoMutex l(mutex);
     if(!isRunning) {
+        mReleaseThread->start();
+
+        pthread_attr_init(&mAttr);
         pthread_create(&mTid, &mAttr, recycle, this);
         
         while(mStartBarrier->orAndGet(0) == 0) {
@@ -51,14 +132,15 @@ void _KeepAliveThread::run() {
     ////printf("keep alive trace \n");
     ThreadLocal<Thread> tLocal = mThreadLocal;
     BlockingQueue<Uint64> mQueue = queue;
+    mStartBarrier->orAndGet(1);
     while(1) {
         ////printf("keep alive trace2\n");
-        mStartBarrier->orAndGet(1);
         Uint64 t = mQueue->deQueueFirst();
         ////printf("keep alive trace3 \n");
         if(t == nullptr) {
             return;
         }
+        mReleaseThread->sendRelease(t);
         ////printf("keep alive trace4 \n");
         tLocal->remove(t->toValue());
         ////printf("keep alive trace5 \n");
@@ -82,6 +164,8 @@ _KeepAliveThread::~_KeepAliveThread() {
     mThreadLocal->clear();
     ////printf("~keepalivethread 2 \n");
     queue->destroy();
+
+    mReleaseThread->stop();
     ////printf("~keepalivethread 3 \n");
     //pthread_cancel(mTid);
     ////printf("~keepalivethread 4 \n");
@@ -155,7 +239,6 @@ end:
     return nullptr;
 }
 
-DEBUG_REFERENCE_REALIZATION(Thread)
 
 _Thread::_Thread():_Thread(nullptr,nullptr) {
 }
@@ -180,7 +263,6 @@ _Thread::_Thread(String name,Runnable run){
     bootFlag = createAtomicInteger(0);
     mProtectMutex = createMutex("ThreadProtectMutex");
 
-    incDebugReferenctCount();
 }
 
 int _Thread::setName(String name) {
@@ -203,7 +285,6 @@ String _Thread::getName() {
 
 _Thread::~_Thread(){
     this->quit();
-    decDebugReferenctCount();
 }
 
 Runnable _Thread::getRunnable() {

@@ -16,7 +16,6 @@
 #include "ExecutorService.hpp"
 #include "FutureTask.hpp"
 #include "Future.hpp"
-#include "Debug.hpp"
 
 using namespace std;
 
@@ -45,8 +44,6 @@ public:
     void onExecutorDestroy();
 
     ~_ThreadPoolExecutorHandler();
-
-    DEBUG_REFERENCE_DECLARATION
 
 private:
     BlockingQueue<FutureTask> mPool;
@@ -98,8 +95,6 @@ public:
     int getThreadsNum();
 
     ~_ThreadPoolExecutor();
-
-    DEBUG_REFERENCE_DECLARATION
 
 private:
     void onHandlerRelease();

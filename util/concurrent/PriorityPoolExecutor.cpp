@@ -23,8 +23,6 @@ namespace obotcha {
 
 
 //============= PriorityPoolThread =================
-DEBUG_REFERENCE_REALIZATION(PriorityPoolThread)
-
 _PriorityPoolThread::_PriorityPoolThread(ArrayList<PriorityTask> l,Mutex m,Condition c,_PriorityPoolExecutor *exe) {
     mTasks = l;
 
@@ -39,8 +37,6 @@ _PriorityPoolThread::_PriorityPoolThread(ArrayList<PriorityTask> l,Mutex m,Condi
     mWaitTermCondition = createCondition();
 
     mExecutor = exe;
-
-    incDebugReferenctCount();
 
     mStateMutex = createMutex(createString("PriorityStateMutex"));
 
@@ -176,7 +172,6 @@ void _PriorityPoolThread::waitTermination(long interval) {
 
 _PriorityPoolThread::~_PriorityPoolThread() {
     //printf("_PriorityPoolThread~~~~ \n");
-    decDebugReferenctCount();
 }
 
 void _PriorityPoolThread::stop() {
@@ -185,17 +180,12 @@ void _PriorityPoolThread::stop() {
 }
 
 //============= PriorityPoolExecutor ================
-DEBUG_REFERENCE_REALIZATION(PriorityPoolExecutor)
-
 _PriorityPoolExecutor::_PriorityPoolExecutor():_PriorityPoolExecutor{
                                       st(System)::availableProcessors()} {
     //do nothing
 }
 
 _PriorityPoolExecutor::_PriorityPoolExecutor(int threadnum) {
-
-    incDebugReferenctCount();
-
     mProtectMutex = createMutex("PriorityMutex");
     mDataLock = createMutex("PriorityData");
     mDataCond = createCondition();
@@ -213,6 +203,7 @@ _PriorityPoolExecutor::_PriorityPoolExecutor(int threadnum) {
     
     isShutDown = false;
     isTermination = false;
+
 }
 
 
@@ -396,7 +387,6 @@ _PriorityPoolExecutor::~_PriorityPoolExecutor() {
 
     shutdown();
 
-    decDebugReferenctCount();
 }
 
 //============== PriorityTask ================
@@ -404,7 +394,5 @@ _PriorityTask::_PriorityTask(int level ,FutureTask f) {
     priority = level;
     task = f;
 }
-
-
 
 }

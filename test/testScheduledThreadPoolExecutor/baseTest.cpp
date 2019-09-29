@@ -32,7 +32,7 @@ DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
         //printf("RunTest2 start 1\n");
-        runTest2Mutex->lock();
+        //runTest2Mutex->lock();
         //printf("RunTest2 start 2\n");
     }
 };
@@ -85,8 +85,8 @@ int baseTest() {
             break;
         }
 
-        runTest2Mutex = createMutex();
-        runTest2Mutex->lock();
+        //runTest2Mutex = createMutex();
+        //runTest2Mutex->lock();
 
         pool->submit(createRunTest2());
         sleep(1);

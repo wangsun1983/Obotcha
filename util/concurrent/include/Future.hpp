@@ -15,6 +15,8 @@ enum FutureStatus {
 DECLARE_SIMPLE_CLASS(Future) {
 public:
     _Future(FutureTask);
+    
+    ~_Future();
 
     void wait();
     

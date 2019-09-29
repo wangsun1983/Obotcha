@@ -19,12 +19,12 @@ DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
         RunTestTime1 = st(System)::currentTimeMillis();
-        printf("RunTest1 start,RunTestTime1 is %ld \n",RunTestTime1);
+        //printf("RunTest1 start,RunTestTime1 is %ld \n",RunTestTime1);
         sleep(5);
     }
 
     ~_RunTest1() {
-        printf("i am release .......aaaa,p is %x\n",this);
+        //printf("i am release .......aaaa,p is %x\n",this);
     }
 };
 
@@ -32,7 +32,7 @@ DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
         RunTestTime2 = st(System)::currentTimeMillis();
-        printf("RunTest2 start,RunTestTime2 is %ld \n",RunTestTime2);   
+        //printf("RunTest2 start,RunTestTime2 is %ld \n",RunTestTime2);   
         sleep(5);
     }
 };
@@ -48,8 +48,7 @@ public:
 
 int scheduleTest() {
     //printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
-    //schedule test
-#if 0    
+    //schedule test   
     while(1) {
         ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
         long current = st(System)::currentTimeMillis();
@@ -89,7 +88,7 @@ int scheduleTest() {
         printf("---[ScheduledThreadPoolExecutor Test {schedule,cancel()} case2] [Success]--- \n");
         break;
     }
-#endif
+
     //schedule
     while(1) {
         runTest3Val = 0;
@@ -109,25 +108,6 @@ int scheduleTest() {
         printf("---[ScheduledThreadPoolExecutor Test {schedule,shutdown()} case2] [Success]--- \n");
         break;
     }
-
-    //schedule
-#if 0    
-    while(1) {
-        runTest3Val = 0;
-        ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
-        Future f = pool->schedule(createRunTest1(),5000);
-        sleep(1);
-        pool->shutdownNow();
-        sleep(8);
-        if(runTest3Val == 1) {
-            printf("---[ScheduledThreadPoolExecutor Test {schedule,shutdownNow()} case1] [FAIL]--- \n");
-            break;
-        }
-
-        printf("---[ScheduledThreadPoolExecutor Test {schedule,shutdownNow()} case2] [Success]--- \n");
-        break;
-    }
-#endif
 
 }
 

@@ -16,6 +16,8 @@ DECLARE_SIMPLE_CLASS(FutureTask) {
 public:
     _FutureTask(int,Runnable);
 
+    ~_FutureTask();
+
     void wait();
 
     void wait(long);
@@ -31,6 +33,7 @@ public:
     void onRunning();
 
     Runnable getRunnable();
+
 
 private:
     Runnable mRunnable;

@@ -14,6 +14,10 @@ _FutureTask::_FutureTask(int type,Runnable r) {
     mStatus = FUTURE_WAITING;
 }
 
+_FutureTask::~_FutureTask() {
+    this->mRunnable = nullptr;
+}
+
 void _FutureTask::wait() {
     AutoMutex l(mCompleteMutex);
     if(mStatus == FUTURE_COMPLETE || mStatus == FUTURE_CANCEL) {

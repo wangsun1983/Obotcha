@@ -10,15 +10,11 @@
 
 namespace obotcha {
 //---------------ScheduledTaskWorker-------------------//
-DEBUG_REFERENCE_REALIZATION(ScheduledTaskWorker);
-
 _ScheduledTaskWorker::_ScheduledTaskWorker(sp<_ScheduledThreadPoolTask> t) {
-    incDebugReferenctCount();
     mTask = t;
 }
 
 _ScheduledTaskWorker::~_ScheduledTaskWorker() {
-    decDebugReferenctCount();
 }
 
 void _ScheduledTaskWorker::onInterrupt() {
@@ -61,9 +57,7 @@ void _ScheduledTaskWorker::run() {
 }
 
 //---------------ScheduledThreadPoolTask---------------//
-DEBUG_REFERENCE_REALIZATION(ScheduledThreadPoolTask);
 _ScheduledThreadPoolTask::_ScheduledThreadPoolTask(FutureTask t,long int interval) {
-    incDebugReferenctCount();
     task = t;
     mNextTime = st(System)::currentTimeMillis() + interval;
     mScheduleTaskType = ScheduletTaskNormal;
@@ -74,7 +68,6 @@ _ScheduledThreadPoolTask::_ScheduledThreadPoolTask(FutureTask t,
                                                    int type,
                                                    long int delay,
                                                    sp<_ScheduledThreadPoolThread> timethread) {
-    incDebugReferenctCount();
     task = t;
     mNextTime = st(System)::currentTimeMillis() + interval;
     mScheduleTaskType = type;
@@ -83,12 +76,11 @@ _ScheduledThreadPoolTask::_ScheduledThreadPoolTask(FutureTask t,
 }
 
 _ScheduledThreadPoolTask::~_ScheduledThreadPoolTask() {
-    decDebugReferenctCount();
+    task = nullptr;
 }
 
 
 //---------------TimeThread---------------//
-DEBUG_REFERENCE_REALIZATION(ScheduledThreadPoolThread);
 _ScheduledThreadPoolThread::_ScheduledThreadPoolThread() {
     mDatas = createArrayList<ScheduledThreadPoolTask>();
 
@@ -106,11 +98,11 @@ _ScheduledThreadPoolThread::_ScheduledThreadPoolThread() {
 
     isStop = false;
     isTerminated = false;
-    incDebugReferenctCount();
 }
 
 _ScheduledThreadPoolThread::~_ScheduledThreadPoolThread() {
-    decDebugReferenctCount();
+    mDatas->clear();
+    mDatas = nullptr;
 }
 
 void _ScheduledThreadPoolThread::onUpdate() {
@@ -184,7 +176,6 @@ void _ScheduledThreadPoolThread::onInterrupt() {
     
     //CachedExector will clear mCurrentTask's runnable;
     //printf("scheduled onInterrupt \n");
-    mCurrentTask = nullptr;
     {
         AutoMutex l(mTerminatedMutex);
         isTerminated = true;
@@ -192,21 +183,30 @@ void _ScheduledThreadPoolThread::onInterrupt() {
     }
     
     //clear all task
+    if(mCurrentTask != nullptr) {
+        if(mCurrentTask->task != nullptr) {
+            mCurrentTask->task->cancel();
+        }
+    }
+
     {
         AutoMutex ll(mDataLock);
         ListIterator<ScheduledThreadPoolTask> iterator = mDatas->getIterator();
-        int i = 0;
+        //int i = 0;
         while(iterator->hasValue()) {
             ScheduledThreadPoolTask t = iterator->getValue();
-            t->task->cancel();
+            if(t != mCurrentTask) {
+                t->task->cancel();
+            }
             iterator->next();
-            i++;
         }
 
         //printf("clear not act num is %d \n",i);
 
         mDatas->clear();
     }
+
+    mCurrentTask = nullptr;
 }
 
 void _ScheduledThreadPoolThread::run() {
@@ -273,13 +273,12 @@ end:
 }
 
 //---------------ScheduleService---------------//
-DEBUG_REFERENCE_REALIZATION(ScheduledThreadPoolExecutor)
 _ScheduledThreadPoolExecutor::_ScheduledThreadPoolExecutor() {
     mTimeThread = createScheduledThreadPoolThread();
     mTimeThread->start();
     mIsShutDown = false;
+    mIsTerminated = false;
     mProtectMutex = createMutex("ScheduledThreadMutex");
-    incDebugReferenctCount();
 }
 
 int _ScheduledThreadPoolExecutor::execute(Runnable runnable) {
@@ -359,6 +358,7 @@ Future _ScheduledThreadPoolExecutor::schedule(Runnable r,long delay) {
     Future future = createFuture(task);
 
     ScheduledThreadPoolTask pooltask = createScheduledThreadPoolTask(task,delay);
+    //printf("schedule task count is %d \n",task->getStrongCount());
     mTimeThread->addTask(pooltask);
     
     return future;
@@ -399,7 +399,6 @@ Future _ScheduledThreadPoolExecutor::scheduleWithFixedDelay(Runnable r,
 }
 
 _ScheduledThreadPoolExecutor::~_ScheduledThreadPoolExecutor() {
-    decDebugReferenctCount();
     shutdown();
 }
 

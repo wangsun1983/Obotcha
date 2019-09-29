@@ -17,7 +17,6 @@
 #include "FutureTask.hpp"
 #include "Future.hpp"
 #include "AtomicInteger.hpp"
-#include "Debug.hpp"
 
 using namespace std;
 
@@ -48,8 +47,6 @@ public:
     void onExecutorDestroy();
 
     ~_ThreadCachedPoolExecutorHandler();
-
-    DEBUG_REFERENCE_DECLARATION
 
 private:
     BlockingQueue<FutureTask> mPool;
@@ -121,7 +118,6 @@ public:
 
     ~_ThreadCachedPoolExecutor();
 
-    DEBUG_REFERENCE_DECLARATION
 
 private:
     AtomicInteger mIdleThreadNum ;

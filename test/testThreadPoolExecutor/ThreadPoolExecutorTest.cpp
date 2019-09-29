@@ -50,25 +50,11 @@ int normalTest() {
 
     //_ThreadPoolExecutor(int queuesize,int threadnum);
     while(1) {
-        st(ThreadPoolExecutor)::initDebugReferenceCount();
-        st(Thread)::initDebugReferenceCount();
         {
             ExecutorService pool = st(Executors)::newFixedThreadPool(1,1);
         }
 
-        sleep(1);
-        //printf("ThreadPoolExecutor getDebugReferenceCount is %d \n",st(ThreadPoolExecutor)::getDebugReferenceCount());
-        //printf("ThreadPoolExecutorHandler getDebugReferenceCount is %d \n",st(ThreadPoolExecutorHandler)::getDebugReferenceCount());
-        //printf("Thread getDebugReferenceCount is %d \n",st(ThreadPoolExecutorHandler)::getDebugReferenceCount());
-
-        if(st(ThreadPoolExecutor)::getDebugReferenceCount() != 0 
-            || st(ThreadPoolExecutorHandler)::getDebugReferenceCount() != 0
-            || st(Thread)::getDebugReferenceCount() != 0) {
-            printf("---[TestThreadPoolExecutor Test {constructor()} case1] [FAIL]--- \n");
-            break;
-        } else {
-            printf("---[TestThreadPoolExecutor Test {constructor()} case1_1] [Success]--- \n");
-        }
+        sleep(1);        
 
         printf("---[TestThreadPoolExecutor Test {constructor()} case1] [Success]--- \n");
         break;
@@ -83,7 +69,6 @@ int normalTest() {
     }
 
 
-#if 0
     //void shutdown();
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
@@ -110,9 +95,7 @@ int normalTest() {
         printf("---[TestThreadPoolExecutor Test {shutdown()} case4] [Success]--- \n");
         break;
     }
-#endif
 
-#if 0
     //int awaitTermination(long timeout);
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
@@ -231,6 +214,6 @@ int normalTest() {
         printf("---[TestThreadPoolExecutor Test {submit()} case3] [Success]--- \n");
         break;
     }
-#endif
+
 }
 

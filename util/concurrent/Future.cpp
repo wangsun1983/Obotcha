@@ -25,4 +25,8 @@ int _Future::cancel() {
     return result;
 }
 
+_Future::~_Future() {
+    mTask = nullptr;
+}
+
 }

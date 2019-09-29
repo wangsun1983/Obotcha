@@ -22,6 +22,8 @@ int main() {
     baseTest();
     scheduleTest();
     ReleaseTest();
+
+    sleep(10);
     
 }
 

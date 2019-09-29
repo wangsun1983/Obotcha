@@ -15,8 +15,6 @@ static int id = 0;
 
 namespace obotcha {
 
-DEBUG_REFERENCE_REALIZATION(ThreadPoolExecutorHandler);
-
 _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool,_ThreadPoolExecutor* exe):mPool(pool),
                                                                          state(idleState),
                                                                          mStop(false),
@@ -32,11 +30,11 @@ _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask>
 
     state = idleState;
     mThread->start();
-    incDebugReferenctCount();
+
 }
 
 _ThreadPoolExecutorHandler::~_ThreadPoolExecutorHandler() {
-    decDebugReferenctCount();
+    
 }
 
 void _ThreadPoolExecutorHandler::stop() {
@@ -164,8 +162,6 @@ bool _ThreadPoolExecutorHandler::isTerminated() {
     return state == terminateState;
 }
 
-DEBUG_REFERENCE_REALIZATION(ThreadPoolExecutor);
-
 _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
     init(queuesize,threadnum);
 }
@@ -175,8 +171,6 @@ _ThreadPoolExecutor::_ThreadPoolExecutor() {
 }
 
 void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
-    incDebugReferenctCount();
-
     mProtectMutex = createMutex("ThreadPoolExecutor");
 
     if(queuesize != -1) {
@@ -353,6 +347,9 @@ int _ThreadPoolExecutor::getThreadsNum() {
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
     //printf("~_ThreadPoolExecutor() \n");
+
+    mPool->destroy();
+    
     int size = mHandlers->size();
 
     for(int i = 0;i < size;i++) {
@@ -360,7 +357,6 @@ _ThreadPoolExecutor::~_ThreadPoolExecutor() {
     }
 
     shutdown();
-    decDebugReferenctCount();
 }
 
 }

@@ -17,7 +17,6 @@
 #include "Future.hpp"
 #include "ScheduledExecutorService.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
-#include "Debug.hpp"
 
 using namespace std;
 
@@ -43,7 +42,6 @@ public:
 
     void onInterrupt();
 
-    DEBUG_REFERENCE_DECLARATION
 
 private:
     sp<_ScheduledThreadPoolTask> mTask;
@@ -68,8 +66,7 @@ public:
                              sp<_ScheduledThreadPoolThread> timethread);                             
 
     ~_ScheduledThreadPoolTask();                     
-
-    DEBUG_REFERENCE_DECLARATION                         
+                   
 
 private:
     long int mNextTime;
@@ -105,8 +102,6 @@ public:
     void waitForTerminate(long);
 
     void onInterrupt();
-
-    DEBUG_REFERENCE_DECLARATION
 
 private:
     ArrayList<ScheduledThreadPoolTask> mDatas;
@@ -165,8 +160,6 @@ public:
     Future scheduleWithFixedDelay(Runnable command,
                                 long initialDelay,
                                 long delay);
-
-    DEBUG_REFERENCE_DECLARATION
 
 private:
     ScheduledThreadPoolThread  mTimeThread;

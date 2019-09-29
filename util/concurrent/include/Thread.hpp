@@ -15,7 +15,6 @@
 #include "ThreadLocal.hpp"
 #include "Uint64.hpp"
 #include "AtomicInteger.hpp"
-#include "Debug.hpp"
 
 using namespace std;
 
@@ -45,6 +44,35 @@ enum ThreadSchedPolicy {
     ThreadSchedOTHER = SCHED_NORMAL, //SCHED_NORMAL 0
     ThreadSchedFIFO = SCHED_FIFO,  //SCHED_FIFO 1
     ThreadSchedRR = SCHED_RR,    //SCHED_RR 2
+};
+
+DECLARE_SIMPLE_CLASS(ReleaseThread) {
+
+public:
+    _ReleaseThread();
+
+    ~_ReleaseThread();
+
+    void sendRelease(Uint64 t);
+
+    void start();
+
+    void stop();
+
+    void run();
+    
+private:
+    ArrayList<Uint64> mThreadPids;
+    
+    Mutex mutex;
+
+    Condition cond;
+
+    pthread_attr_t mAttr;
+
+    pthread_t mTid;
+
+    AtomicInteger mStartBarrier;
 };
 
 DECLARE_SIMPLE_CLASS(KeepAliveThread) {
@@ -81,6 +109,8 @@ private:
     //Mutex mDestroyMutex;
 
     AtomicInteger mStartBarrier;
+
+    sp<_ReleaseThread> mReleaseThread;
 };
 
 DECLARE_SIMPLE_CLASS(Thread) {
@@ -145,8 +175,6 @@ public:
     static int getThreadSchedPolicy();
 
     ~_Thread();
-
-    DEBUG_REFERENCE_DECLARATION
 
 protected:
    pthread_t mPthread;
