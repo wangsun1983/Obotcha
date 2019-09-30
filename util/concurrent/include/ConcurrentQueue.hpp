@@ -67,6 +67,10 @@ _ConcurrentQueue<T>::_ConcurrentQueue(){
 template <typename T>
 T _ConcurrentQueue<T>:: get(int index){
     AutoMutex l(mutex_t);
+    if(index >= mQueue.size()) {
+        return nullptr;
+    }
+    
     return mQueue.at(index);
 }
 

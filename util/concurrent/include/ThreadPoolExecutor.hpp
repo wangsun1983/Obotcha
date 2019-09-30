@@ -113,6 +113,8 @@ private:
     void init(int queuesize,int threadnum);
 
     Mutex mProtectMutex;
+
+    Mutex mHandlerMutex;
 };
 
 }

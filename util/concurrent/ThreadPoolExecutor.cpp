@@ -30,7 +30,6 @@ _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask>
 
     state = idleState;
     mThread->start();
-
 }
 
 _ThreadPoolExecutorHandler::~_ThreadPoolExecutorHandler() {
@@ -43,7 +42,9 @@ void _ThreadPoolExecutorHandler::stop() {
 }
 
 void _ThreadPoolExecutorHandler::onExecutorDestroy() {
+    //printf("onExecutorDestroy 1 \n");
     AutoMutex ll(mExecutorMutex);
+    //printf("onExecutorDestroy 1 \n");
     mExecutor = nullptr;
 }
 
@@ -229,7 +230,10 @@ int _ThreadPoolExecutor::shutdown() {
 
     int size = mHandlers->size();
     for(int i = 0;i < size;i++) {
-        mHandlers->get(i)->stop();
+        ThreadPoolExecutorHandler h = mHandlers->get(i);
+        if(h != nullptr) {
+            h->stop();
+        }
     }
 
     for(;;) {
@@ -284,7 +288,8 @@ bool _ThreadPoolExecutor::isTerminated() {
 
     int size = mHandlers->size();
     for(int i = 0;i < size;i++) {
-        if(!mHandlers->get(i)->isTerminated()) {
+        ThreadPoolExecutorHandler h = mHandlers->get(i);
+        if(h != nullptr && !h->isTerminated()) {
             return false;
         }
     }
@@ -306,7 +311,10 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
 
     if(millseconds == 0) {
         for(int i = 0;i < size;i++) {
-            mHandlers->get(i)->waitForTerminate();
+            ThreadPoolExecutorHandler h = mHandlers->get(i);
+            if(h != nullptr) {
+                h->waitForTerminate();
+            }
         }
         mIsTerminated = true;
         return 0;
@@ -314,7 +322,11 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
         for(int i = 0;i < size;i++) {
             long current = st(System)::currentTimeMillis();
             if(millseconds > 0) {
-                mHandlers->get(i)->waitForTerminate(millseconds);
+                //mHandlers->get(i)->waitForTerminate(millseconds);
+                ThreadPoolExecutorHandler h = mHandlers->get(i);
+                if(h != nullptr) {
+                    h->waitForTerminate(millseconds);
+                }
             } else {
                 break;
             }
@@ -347,13 +359,14 @@ int _ThreadPoolExecutor::getThreadsNum() {
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
     //printf("~_ThreadPoolExecutor() \n");
-
-    mPool->destroy();
-    
     int size = mHandlers->size();
 
     for(int i = 0;i < size;i++) {
-        mHandlers->get(i)->onExecutorDestroy();
+        //printf("~_ThreadPoolExecutor() 3 \n");
+        ThreadPoolExecutorHandler h = mHandlers->get(i);
+        if(h != nullptr) {
+            h->onExecutorDestroy();
+        }
     }
 
     shutdown();
