@@ -23,5 +23,7 @@ int main() {
     testRunnable_onInterrupt();
     sleep(1);
     releaseTest();
+    sleep(10);
+
     return 1;
 }

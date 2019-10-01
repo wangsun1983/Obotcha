@@ -41,8 +41,8 @@ public:
 
 int normalTest() {
     printf("---[TestCachedPoolExecutor Test Start]--- \n");
- 
-    //_ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout);
+#if 0 
+     //_ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout);
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool(1,1,2,60*1000);
         printf("---[TestCachedPoolExecutor Test {constructor()} case1] [Success]--- \n");
@@ -62,39 +62,8 @@ int normalTest() {
         printf("---[TestCachedPoolExecutor Test {constructor2()} case3] [Success]--- \n");
         break;
     }  
-
-#if 0
-    //void shutdownNow();
-    while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
-        printf("submit 1 \n");
-        pool->submit(createRunTest1());
-        printf("submit 2 \n");
-        pool->shutdownNow();
-        printf("submit 3 \n");
-        sleep(5);
-        if(runDestory == 1) {
-            printf("---[TestCachedPoolExecutor Test {shutdownNow()} case1] [FAIL]--- \n");
-            break;
-        }
-        printf("shutdownNow submit again \n");
-        Future task = pool->submit(createRunTest1());
-        if(task != nullptr) {
-            printf("---[TestCachedPoolExecutor Test {shutdownNow()} case2] [FAIL]--- \n");
-            break;
-        }
-
-        int result = pool->execute(createRunTest1());
-        if(result != -InvalidStatus) {
-            printf("---[TestCachedPoolExecutor Test {shutdownNow()} case3] [FAIL]--- \n");
-            break;
-        }
-
-        printf("---[TestCachedPoolExecutor Test {shutdownNow()} case4] [Success]--- \n");
-        break;
-    }
 #endif
-    
+
     //void shutdown();
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
@@ -140,21 +109,24 @@ int normalTest() {
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
-        //printf("awaitTermination start test \n");
+        printf("awaitTermination start test \n");
         result = pool->awaitTermination(5000);
-        //printf("awaitTermination result is %d \n",result);
+        printf("awaitTermination result is %d \n",result);
         if(result != -WaitTimeout) {
             printf("---[TestCachedPoolExecutor Test {awaitTermination()} case2] [FAIL]--- \n");
+            runTest2Mutex->unlock();
             break;
         }
         long current2 = st(System)::currentTimeMillis();
         //printf("current2 - current1 is %d \n",(current2 - current));
         if(current2 - current > 5005) {
             printf("---[TestCachedPoolExecutor Test {awaitTermination()} case3] [FAIL]--- \n");
+            runTest2Mutex->unlock();
             break;
         }
 
         printf("---[TestCachedPoolExecutor Test {awaitTermination()} case4] [Success]--- \n");
+        runTest2Mutex->unlock();
         break;
     }
 

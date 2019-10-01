@@ -12,21 +12,24 @@
 
 using namespace obotcha;
 
-int clientfd;
-String response = nullptr;
-Mutex mutex = createMutex("tcp test");
-Condition mCond = createCondition();
+String testTcpServerSendResult();
+String testTcpServerAcceptResult();
 
 DECLARE_SIMPLE_CLASS(ServerListener) IMPLEMENTS(SocketListener) {
 public:
+    _ServerListener() {
+        clientfd = 0;
+        mutex = createMutex();
+        cond = createCondition();
+
+        acceptMutex = createMutex();
+        acceptCond = createCondition();
+    }
+
     void onAccept(int fd,String ip,int port,ByteArray pack) {
-      printf("on accept pack is %s \n",pack->toValue());
-      mutex->lock();
-      response = createString(pack->toValue());
-      mCond->notify();
-      mutex->unlock();
-      //ByteArray arr = createByteArray(createString("nihao from server"));
-      //st(NetUtils)::sendTcpPacket(fd,arr);
+      printf("on accept pack is %s,size is %d \n",pack->toString()->toChars(),pack->size());
+        acceptStr = pack->toString();
+        acceptCond->notify();
     }
 
     void onDisconnect(int fd){
@@ -35,14 +38,75 @@ public:
 
     void onConnect(int fd,String ip,int port) {
       printf("onConnect,ip is %s,port is %d,fd is %d \n",ip->toChars(),port,fd);
-      mutex->lock();
+      //AutoMutex ll(mutex);
       clientfd = fd;
-      mCond->notify();
-      mutex->unlock();
+      cond->notify();
     }
 
-    void onConnect(int fd,String domain) {}
+    void onConnect(int fd,String domain) {
+      //Do Nothing
+    }
+
+    int getClientFd() {
+        if(clientfd != 0) {
+          return clientfd;
+        }
+
+        AutoMutex ll(mutex);
+        cond->wait(mutex);
+        return clientfd;
+    }
+
+    String getAcceptString() {
+        if(acceptStr != nullptr) {
+          return  acceptStr;
+        }
+
+        AutoMutex ll(acceptMutex);
+        acceptCond->wait(acceptMutex);
+
+        return acceptStr;
+    }
+
+private:
+    int clientfd;
+    Mutex mutex;
+    Condition cond;
+
+    Mutex acceptMutex;
+    Condition acceptCond;
+
+    String acceptStr;
 };
+
+DECLARE_SIMPLE_CLASS(TestSendClient) IMPLEMENTS(Thread) {
+public:
+    _TestSendClient() {
+      mutex = createMutex();
+      mCond = createCondition();
+    }
+
+    void run() {
+        resultStr = testTcpServerSendResult();
+        mCond->notify();
+    }
+
+    String getResult() {
+        if(resultStr != nullptr) {
+          return  resultStr;
+        }
+        AutoMutex ll(mutex);
+        mCond->wait(mutex);
+        return resultStr;
+    }
+
+private:
+    String resultStr;
+    Mutex mutex;
+    Condition mCond;
+
+};
+
 
 DECLARE_SIMPLE_CLASS(CloseThread) EXTENDS(Thread) {
 public:
@@ -130,62 +194,50 @@ int main() {
       break;
   }
 
+
   //int send(int fd,ByteArray data);
   while(1) {
-      //connect TcpTestServer;
-      system("./../tools/TcpTestTools/TcpClientSender/bin/tcpclientsender &");
-      sleep(1);
-      printf("start test \n");
       ServerListener listener = createServerListener();
       TcpServer server = createTcpServer(1111,listener);
       server->start();
-      File f = createFile("sendcontent.txt");
-      if(!f->exists()) {
-        printf("f is not exists \n");
-      }
-
-      FileOutputStream stream = createFileOutputStream(f);
-      stream->open(Trunc);
-      ByteArray sendcontent = createByteArray(1);
-      stream->write(sendcontent); //send /0 to server to wait message from server;
-      stream->flush();
-      mutex->lock();
-      if(response == nullptr) {
-          mCond->wait(mutex);  
-      }
-      mutex->unlock();
-
+      TestSendClient client = createTestSendClient();
+      client->start();
+      
       String str = createString("hello");
-      if(clientfd == 0) {
-        printf("clientfd is 0 \n");
-      }
+      int fd = listener->getClientFd();
+      server->send(fd,createByteArray(str));
 
-      server->send(clientfd,createByteArray(str));
-      sleep(1);
-
-      mutex->lock();
-      if(response == nullptr) {
-          mCond->wait(mutex);  
-      }
-      mutex->unlock();
-
-      if(response == nullptr || !response->equals(str)) {
+      String result = client->getResult();
+      printf("getResult is %s \n",result->toChars());
+      if(!result->equals(str)) {
           printf("---[TcpServer Test {send()} case1] [FAIL]--- \n");
           break;
       }
 
-      //close testserver
-      sendcontent = createByteArray(1);
-      stream->write(sendcontent); //send /0 to server to wait message from server;
-      stream->flush();
-      stream->close();
-      server->release();
-      printf("---[TcpServer Test {send()} case2] [Success]--- \n");
+      printf("---[TcpServer Test {send()} case1] [Success]--- \n");
       break;
 
   }
 
   //Accept Callback
+  while(1) {
+      ServerListener listener = createServerListener();
+      TcpServer server = createTcpServer(1111,listener);
+      server->start();
+      String str = testTcpServerAcceptResult();
+
+      String acceptString = listener->getAcceptString();
+      if(acceptString == nullptr || !acceptString->equals(str)) {
+        printf("---[TcpServer Test {onAccept()} case1] [FAIL]--- \n");
+        break;
+      }
+
+      printf("---[TcpServer Test {onAccept()} case1] [Success]--- \n");
+      break;  
+  }
+
+  //Accept Callback
+  #if 0
   while(1) {
       response = nullptr;
       system("./../tools/TcpTestTools/TcpClientSender/bin/tcpclientsender &");
@@ -222,6 +274,7 @@ int main() {
       printf("---[TcpServer Test Callback {onAccept()} case1] [Success]--- \n");
       break;
   }
+  #endif
 
   //release()
   while(1) {
@@ -239,5 +292,7 @@ int main() {
       printf("---[TcpServer Test {release()} case2] [Success]--- \n");
       break;
   }
+
+  sleep(10);
 
 }

@@ -17,7 +17,10 @@ extern int numTest();
 extern int releaseTest();
 
 int main() {
+
     normalTest();
+    
     numTest();
     releaseTest();
+    sleep(10);
 }

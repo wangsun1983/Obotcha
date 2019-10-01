@@ -38,16 +38,23 @@ Mutex runTest2Mutex;
 DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        //printf("RunTest2 start 1\n");
+        printf("RunTest2 start 1\n");
         runTest2Mutex->lock();
-        //printf("RunTest2 start 2\n");
+        printf("RunTest2 start 2\n");
+    }
+
+    void onInterrupt() {
+        printf("RunTest2 onInterrupt 2\n");
+    }
+
+    ~_RunTest2() {
+        printf("RunTest2 dispose 2\n");
     }
 };
 
 
 int normalTest() {
     printf("---[TestThreadPoolExecutor Test Start]--- \n");
-
     //_ThreadPoolExecutor(int queuesize,int threadnum);
     while(1) {
         {
@@ -96,6 +103,7 @@ int normalTest() {
         break;
     }
 
+
     //int awaitTermination(long timeout);
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
@@ -120,6 +128,7 @@ int normalTest() {
             printf("---[TestThreadPoolExecutor Test {awaitTermination()} case2] [FAIL]--- \n");
             break;
         }
+
         long current2 = st(System)::currentTimeMillis();
         //printf("current2 - current1 is %d \n",(current2 - current));
         if(current2 - current > 5005) {
@@ -130,6 +139,8 @@ int normalTest() {
         printf("---[TestThreadPoolExecutor Test {awaitTermination()} case4] [Success]--- \n");
         break;
     }
+
+    runTest2Mutex->unlock();
 
 
     //int awaitTermination(long timeout = 0);
@@ -164,6 +175,8 @@ int normalTest() {
         break;
     }
 
+   
+
     //int awaitTermination(long timeout = max);
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
@@ -181,6 +194,7 @@ int normalTest() {
         printf("---[TestThreadPoolExecutor Test {awaitTermination()} case10] [Success]--- \n");
         break;
     }
+     
 
     //int getThreadsNum();
     while(1) {
@@ -214,6 +228,5 @@ int normalTest() {
         printf("---[TestThreadPoolExecutor Test {submit()} case3] [Success]--- \n");
         break;
     }
-
 }
 
