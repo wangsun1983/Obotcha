@@ -27,7 +27,6 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/printstream.o \
 	$(outtmp)/zipstream.o \
 	$(outtmp)/filewatcher.o \
-	$(outtmp)/memoryfile.o \
 	$(outtmp)/memoryfileinputstream.o \
 	$(outtmp)/memoryfileoutputstream.o \
 	$(outtmp)/libraryfileinputstream.o \
