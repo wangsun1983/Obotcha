@@ -22,6 +22,8 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(TcpClient) {
 public:
+    _TcpClient(int port,int recv_time,int buff_size = 1024);
+
     _TcpClient(String ip,int port,int recv_time,int buff_size = 1024);
     
     int doConnect();
@@ -34,6 +36,8 @@ public:
 
     void release();
 
+    int getSock();
+
     ~_TcpClient();
 
 private:
@@ -44,6 +48,10 @@ private:
     struct sockaddr_in serverAddr;
 
     int mBufferSize;
+
+    char *mBuff;
+
+    Mutex mConnectMutex;
 };
 
 }

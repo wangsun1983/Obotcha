@@ -18,10 +18,11 @@ namespace obotcha {
 
 int _NetUtils::addEpollFd(int epollfd, int fd, bool enable_et) {
     struct epoll_event ev;
+    memset(&ev.data, 0, sizeof(ev.data));
     ev.data.fd = fd;
     ev.events = EPOLLIN | EPOLLRDHUP |EPOLLHUP;
-    if( enable_et )
-        ev.events |= EPOLLET;
+    //if( enable_et )
+    //    ev.events |= EPOLLET;
     int ret = epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);
     if(ret < 0) {
         return ret;
@@ -35,7 +36,14 @@ int _NetUtils::delEpollFd(int epollfd, int fd) {
 }
 
 int _NetUtils::sendTcpPacket(int fd,ByteArray packet) {
-    return write(fd,packet->toValue(),packet->size());
+    //return write(fd,packet->toValue(),packet->size());
+    return send(fd,packet->toValue(),packet->size(),0);
+}
+
+int _NetUtils::sendUdpPacket(String ip,int port,ByteArray packet) {
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+    sendUdpPacket(sock,ip,port,packet);
+    close(sock);
 }
 
 int _NetUtils::sendUdpPacket(int udpsocket,String ip,int port,ByteArray packet) {
@@ -50,11 +58,17 @@ int _NetUtils::sendUdpPacket(int udpsocket,String ip,int port,ByteArray packet) 
     return result;
 }
 
+int _NetUtils::sendUdpPacket(struct sockaddr_in *serverAddr,ByteArray packet) {
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+    sendUdpPacket(sock,serverAddr,packet);
+    close(sock);
+}
+
 int _NetUtils::sendUdpPacket(int udpsocket,struct sockaddr_in *serverAddr,ByteArray packet) {
     int server_len = sizeof(struct sockaddr_in);
-    printf("send udp2 packet,packet is %s \n",packet->toValue());
+    //printf("send udp2 packet,packet is %s \n",packet->toValue());
     int result = sendto(udpsocket, packet->toValue(),  packet->size(), 0, (struct sockaddr *)serverAddr, server_len);
-    printf("send udp2 result is %d error is %s \n",result,strerror(errno));
+    //printf("send udp2 result is %d error is %s \n",result,strerror(errno));
     return result;
 }
 

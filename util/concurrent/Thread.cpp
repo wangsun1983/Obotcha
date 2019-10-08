@@ -27,6 +27,8 @@ _ReleaseThread::_ReleaseThread() {
     mThreadPids = createArrayList<Uint64>();
 
     mStartBarrier = createAtomicInteger(0);
+
+    mTid = 0;
 }
 
 _ReleaseThread::~_ReleaseThread() {
@@ -34,6 +36,7 @@ _ReleaseThread::~_ReleaseThread() {
     //Uint64 poison;
     //mThreadPids->add(poison);
     //pthread_join(mTid,nullptr);
+    stop();
 }
 
 void _ReleaseThread::stop() {

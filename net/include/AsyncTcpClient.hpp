@@ -51,11 +51,17 @@ private:
 
 DECLARE_SIMPLE_CLASS(AsyncTcpClient) {
 public:
+    _AsyncTcpClient(int port,int recv_time,SocketListener listener,int buffer_size=64*1024);
+    
+    _AsyncTcpClient(int port,SocketListener listener,int buffer_size=64*1024);
+
+    //_AsyncTcpClient(int port,int buffer_size=64*1024);
+
     _AsyncTcpClient(String ip,int port,int recv_time,SocketListener listener,int buffer_size=64*1024);
     
     _AsyncTcpClient(String ip,int port,SocketListener listener,int buffer_size=64*1024);
 
-    _AsyncTcpClient(String ip,int port,int buffer_size=64*1024);
+    //_AsyncTcpClient(String ip,int port,int buffer_size=64*1024);
 
     void start();
 

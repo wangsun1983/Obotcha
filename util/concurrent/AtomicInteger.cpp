@@ -60,7 +60,6 @@ int _AtomicInteger::getAndOr(int val) {
 
 int _AtomicInteger::getAndxor(int val) {
     return __sync_fetch_and_xor(&value,val);
-    
 }
 
 void _AtomicInteger::set(int val) {

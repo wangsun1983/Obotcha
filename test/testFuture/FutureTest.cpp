@@ -128,4 +128,6 @@ int main() {
         printf("---[TestFuture Test {cancel()} case5] [Success]--- \n");
         break;
     }
+
+    sleep(10);
 }

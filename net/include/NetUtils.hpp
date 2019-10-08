@@ -25,7 +25,11 @@ public:
     static int delEpollFd(int epollfd, int fd);
 
     static int sendTcpPacket(int fd,ByteArray packet);
+
+    static int sendUdpPacket(String ip,int port,ByteArray packet);
     static int sendUdpPacket(int udpsocket,String ip,int port,ByteArray packet);
+
+    static int sendUdpPacket(struct sockaddr_in *serverAddr,ByteArray packet);
     static int sendUdpPacket(int udpsocket,struct sockaddr_in *serverAddr,ByteArray packet);
 };
 

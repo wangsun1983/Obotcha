@@ -32,7 +32,11 @@ void _UdpClientThread::run() {
     struct epoll_event events[EPOLL_SIZE];
     char recv_buf[BUF_SIZE];
     struct sockaddr_in src;
-    socklen_t len;
+    socklen_t len = 0;
+
+    memset(&src,0,sizeof(struct sockaddr_in));
+    memset(recv_buf,0,BUF_SIZE);
+    memset(events,0,sizeof(struct epoll_event)*EPOLL_SIZE);
 
     while(1) {
         if(mStatus->get() == UdpClientWaitingThreadExit) {
@@ -62,7 +66,7 @@ void _UdpClientThread::run() {
                 continue;
             }
 
-            memset(recv_buf,0,BUF_SIZE);
+            
             if(events[i].data.fd == mSock) {
                 //int ret = recv(mSock, recv_buf, BUF_SIZE, 0);
                 int ret = recvfrom(mSock, recv_buf, BUF_SIZE, 0, (struct sockaddr*)&src, &len);
@@ -91,12 +95,21 @@ void _UdpClientThread::run() {
     }
 }
 
+_UdpClient::_UdpClient(int port,SocketListener l):_UdpClient{nullptr,port,l} {
+
+}
+
 _UdpClient::_UdpClient(String ip,int port,SocketListener l) {
 
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port);
-    serverAddr.sin_addr.s_addr = inet_addr(ip->toChars());
-    std::cout << "Connect Server: " << ip->toChars() << " : " << port << endl;
+    if(ip != nullptr) {
+        serverAddr.sin_addr.s_addr = inet_addr(ip->toChars());
+    } else {
+        serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    }
+
+    //std::cout << "Connect Server: " << ip->toChars() << " : " << port << endl;
     epfd = 0;
     sock = 0;
 
@@ -106,11 +119,13 @@ _UdpClient::_UdpClient(String ip,int port,SocketListener l) {
     mPipe->init();
 
     mStatus = createAtomicInteger(UdpClientWorking);
+
+    sock = socket(AF_INET, SOCK_DGRAM, 0);
 }
 
 bool _UdpClient::init() {
     printf("UdpClient init start \n");
-    sock = socket(AF_INET, SOCK_DGRAM, 0);
+    //sock = socket(AF_INET, SOCK_DGRAM, 0);
     if(sock < 0) {
         return false;
     }
@@ -137,6 +152,10 @@ int _UdpClient::send(ByteArray data) {
     return st(NetUtils)::sendUdpPacket(sock,&serverAddr,data);
 }
 
+_UdpClient::~_UdpClient() {
+    release();
+}
+
 void _UdpClient::start() {
     
     init();
@@ -145,19 +164,23 @@ void _UdpClient::start() {
 }
 
 void _UdpClient::release() {
+
     close(sock);
+
     sock = 0;
 
-    if(mStatus->get() != UdpClientThreadExited) {
-        mStatus->set(UdpClientWaitingThreadExit);
+    if(mUdpClientThread != nullptr) {
+        if(mStatus->get() != UdpClientThreadExited) {
+            mStatus->set(UdpClientWaitingThreadExit);
+        }
+
+        mPipe->writeTo(createByteArray(1));
+
+        while(mStatus->get() != UdpClientThreadExited) {
+            //TODO
+        }
     }
-
-    mPipe->writeTo(createByteArray(1));
-
-    while(mStatus->get() != UdpClientThreadExited) {
-
-    }
-
+    
     close(epfd);
 }
 

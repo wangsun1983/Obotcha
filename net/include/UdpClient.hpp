@@ -30,6 +30,8 @@ DECLARE_SIMPLE_CLASS(UdpClientThread) EXTENDS(Thread){
 public:
     _UdpClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status);
 
+    void stop();
+    
     void run();
 
 private:
@@ -47,6 +49,9 @@ private:
 
 DECLARE_SIMPLE_CLASS(UdpClient) {
 public:
+
+    _UdpClient(int port,SocketListener l);
+
     _UdpClient(String ip,int port,SocketListener l);
 
     void start();
@@ -54,6 +59,8 @@ public:
     void release();
 
     int send(ByteArray);
+
+    ~_UdpClient();
 
 private:
 

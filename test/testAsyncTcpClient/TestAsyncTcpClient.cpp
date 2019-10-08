@@ -4,67 +4,292 @@
 #include "TcpClient.hpp"
 #include "Thread.hpp"
 #include "System.hpp"
+#include "AsyncTcpClient.hpp"
+#include "NetUtils.hpp"
+#include "TcpServer.hpp"
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(ClientServer) IMPLEMENTS(SocketListener) {
+//server
+DECLARE_SIMPLE_CLASS(ServerListener) IMPLEMENTS(SocketListener) {
 public:
+    _ServerListener() {
+        clientfd = 0;
+        mutex = createMutex();
+        cond = createCondition();
+
+        acceptMutex = createMutex();
+        acceptCond = createCondition();
+    }
+
     void onAccept(int fd,String ip,int port,ByteArray pack) {
-      printf("on accept pack is %s\n",pack->toValue());
-      if(ip != nullptr) {
-          printf("accept ip is %s,port is %d \n",ip->toChars(),port);
-      }
+      AutoMutex ll(acceptMutex);
+      printf("on accept pack is %s,size is %d \n",pack->toString()->toChars(),pack->size());
+        acceptStr = pack->toString();
+        acceptCond->notify();
     }
 
     void onDisconnect(int fd){
       printf("onDisconnect \n");
+      disconnectFd = fd;
     }
 
     void onConnect(int fd,String ip,int port) {
+      AutoMutex ll(mutex);
       printf("onConnect,ip is %s,port is %d,fd is %d \n",ip->toChars(),port,fd);
-
+      //AutoMutex ll(mutex);
+      clientfd = fd;
+      cond->notify();
     }
 
-    void onConnect(int fd,String domain) {}
-};
-
-DECLARE_SIMPLE_CLASS(CloseThread) EXTENDS(Thread) {
-public:
-    _CloseThread(TcpClient c) {
-        server = c;
+    void onConnect(int fd,String domain) {
+      //Do Nothing
     }
 
-    void run() {
-        printf("start thread \n");
-        sleep(5);
-        printf("start release \n");
-        server->release();
-        printf("start finished \n");
+    int getClientFd() {
+        if(clientfd != 0) {
+          return clientfd;
+        }
+
+        AutoMutex ll(mutex);
+        cond->wait(mutex);
+        return clientfd;
+    }
+
+    String getAcceptString() {
+        if(acceptStr != nullptr) {
+          return  acceptStr;
+        }
+
+        AutoMutex ll(acceptMutex);
+        acceptCond->wait(acceptMutex);
+
+        return acceptStr;
+    }
+
+    int getDisconnectSocket() {
+        return disconnectFd;
     }
 
 private:
-    TcpClient server;
+    int clientfd;
+    Mutex mutex;
+    Condition cond;
+
+    Mutex acceptMutex;
+    Condition acceptCond;
+
+    int disconnectFd;
+
+    String acceptStr;
+};
+
+DECLARE_SIMPLE_CLASS(DelayReleaser) IMPLEMENTS(Thread) {
+
+public:
+    _DelayReleaser(AsyncTcpClient c) {
+        client = c;
+    }
+
+    void run() {
+      sleep(5);
+      client->release();
+    }
+
+private:
+    AsyncTcpClient client;
 };
 
 
+DECLARE_SIMPLE_CLASS(DelaySender) IMPLEMENTS(Thread) {
+public:
+    _DelaySender() {
+        mFd = 0;
+    }
+
+    ~_DelaySender() {
+        printf("DelaySender release \n");
+    }
+
+    void sendData(int fd,ByteArray data) {
+        mFd = fd;
+        mData = data;
+    }
+
+    void run() {
+        //while(1) {
+        //  printf("delaysender trace1 \n");
+        //  if(mFd != 0 && mData != nullptr) {
+            printf("delaysender trace2 \n");
+            sleep(5);
+              st(NetUtils)::sendTcpPacket(mFd,mData);
+        //      mFd = 0;
+        //      mData = nullptr;
+        //  } else {
+        //    printf("delaysender trace3 \n");
+        //      sleep(5);
+        //  }
+      //  }
+    }
+
+    void onInterrupt() {
+      printf("delaysender onInterrupt \n");
+    }
+
+private:
+    int mFd;
+    ByteArray mData;    
+};
+
+//client listener
+DECLARE_SIMPLE_CLASS(ClientListener) IMPLEMENTS(SocketListener) {
+
+public:
+  _ClientListener() {
+      connectMutex = createMutex();
+      connectCond = createCondition();
+
+      acceptMutex = createMutex();
+      acceptCond = createCondition();
+  }
+
+  void onAccept(int fd,String ip,int port,ByteArray pack) {
+      printf("cient accept1 \n");
+      AutoMutex ll(acceptMutex);
+      acceptString = pack->toString();
+      acceptCond->notify();
+      printf("cient accept2 \n");
+  }
+
+  void onDisconnect(int fd) {
+      AutoMutex ll(connectMutex);
+      mIsConnect = false;
+      connectCond->notify();
+  }
+
+  void onConnect(int fd,String ip,int port) {
+      AutoMutex ll(connectMutex);
+      mIsConnect = true;
+      connectCond->notify();
+  }
+
+  void onConnect(int fd,String domain) {
+
+  }
+
+  String getAcceptString() {
+      if(acceptString != nullptr) {
+          return acceptString;
+      }
+      printf("cient get accept1 \n");
+      AutoMutex ll(acceptMutex);
+      acceptCond->wait(acceptMutex);
+      printf("cient get accept2 \n");
+      return acceptString;
+  }
+
+  bool isConnect() {
+      return mIsConnect;
+  }
+
+private:
+    Mutex connectMutex;
+    bool mIsConnect;
+    int fd;
+    Condition connectCond;
+
+    Mutex acceptMutex;
+    String acceptString;
+    Condition acceptCond;
+
+};
+
 
 int main() {
-  TcpClient client = createTcpClient("192.168.43.90",1111,createClientServer());
-  //CloseThread t = createCloseThread(client);
-  //t->start();
-  //testTcpClient();
-  client->start();
 
-  ByteArray arr = createByteArray(createString("nihao from client"));
-  client->send(arr);
+  printf("--- AsyncTcpClient Test --- \n");
+  ServerListener listener = createServerListener();
+  TcpServer server = createTcpServer(1111,listener);
+  server->start();
+  //void start();
+  while(1) {
+    {
+        AsyncTcpClient client = createAsyncTcpClient(1111,createClientListener());
+        client->start();
+    }
 
-  long t = st(System)::currentTimeMillis();
-  printf("start wait \n");
-  client->wait();
-  printf("start wait end : %ld \n",st(System)::currentTimeMillis() - t);
-  //client->release();
-  //printf("main end!!!! \n");
-  //while(1) {
-  //
-  //}
+    sleep(1);
+     
+    printf("---[AsyncTcpClient Test {start()} case1] [Success]--- \n");
+    break;
+  }
+
+  //void release();
+  while(1) {
+    AsyncTcpClient client = createAsyncTcpClient(1111,createClientListener());
+    client->start();
+    sleep(1);
+    client->release();
+    client = nullptr;
+
+    printf("---[AsyncTcpClient Test {release()} case1] [Success]--- \n");
+    break;
+  }
+
+  //void wait();
+  while(1) {
+    AsyncTcpClient client = createAsyncTcpClient(1111,createClientListener());
+    client->start();
+    sleep(1);
+    DelayReleaser releaser = createDelayReleaser(client);
+    releaser->start();
+    client->wait();
+    printf("---[AsyncTcpClient Test {wait()} case1] [Success]--- \n");
+    break;
+  }
+
+  //int send(ByteArray);
+  while(1) {
+    AsyncTcpClient client = createAsyncTcpClient(1111,createClientListener());
+    client->start();
+
+    String str = createString("nihao");
+    client->send(createByteArray(str));
+    sleep(1);
+
+    String accept = listener->getAcceptString();
+    if(accept == nullptr || !accept->equals(str)) {
+      printf("---[AsyncTcpClient Test {send(ByteArray)} case1] [Fail]--- \n");
+      break;
+    }
+
+    printf("---[AsyncTcpClient Test {send(ByteArray)} case1] [Success]--- \n");
+    break;
+  }
+
+  //int acceptString
+  while(1) {
+    ClientListener clientLis = createClientListener();
+    AsyncTcpClient client = createAsyncTcpClient(1111,clientLis);
+    client->start();
+
+    DelaySender sender = createDelaySender();
+    int fd = listener->getClientFd();
+    String str = createString("helloworld");
+    sender->sendData(fd,createByteArray(str));
+    sender->start();
+
+    String accept = clientLis->getAcceptString();
+    if(accept == nullptr || !accept->equals(str)) {
+      printf("---[AsyncTcpClient Test {acceptString()} case1] [Fail]--- \n");
+      break;
+    }
+
+    printf("---[AsyncTcpClient Test {acceptString()} case2] [Success]--- \n");
+    break;
+  }
+
+  server->release();
+  sleep(5);  
+
 }

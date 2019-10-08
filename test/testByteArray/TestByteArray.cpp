@@ -44,6 +44,8 @@ int main() {
             }
         }
 
+        free(v);
+
         if(isOk) {
             printf("ByteArray construct -------[OK] \n");
         }
@@ -65,6 +67,8 @@ int main() {
               break;
             }
         }
+
+        free(v);
 
         if(isOk) {
             printf("ByteArray clear -------[OK] \n");
@@ -88,6 +92,8 @@ int main() {
             }
         }
 
+        free(v);
+
         if(isOk) {
             printf("ByteArray toValue -------[OK] \n");
         }
@@ -104,6 +110,8 @@ int main() {
             printf("ByteArray size test1 -------[FAIL] \n");
             break;
         }
+
+        free(v);
 
         printf("ByteArray size -------[OK] \n");
         break;
@@ -134,6 +142,8 @@ int main() {
         if(isOk) {
             printf("ByteArray resize -------[OK] \n");
         }
+
+        free(v);
         break;
     }
 
@@ -167,6 +177,7 @@ int main() {
         if(isOk) {
           printf("ByteArray at -------[OK] \n");
         }
+        free(v);
         break;
     }
 
@@ -190,6 +201,8 @@ int main() {
         if(isOk) {
           printf("ByteArray fill -------[OK] \n");
         }
+
+        free(v);
         break;
     }
 

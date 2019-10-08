@@ -236,46 +236,6 @@ int main() {
       break;  
   }
 
-  //Accept Callback
-  #if 0
-  while(1) {
-      response = nullptr;
-      system("./../tools/TcpTestTools/TcpClientSender/bin/tcpclientsender &");
-      sleep(1);
-      printf("start test \n");
-      ServerListener listener = createServerListener();
-      TcpServer server = createTcpServer(1111,listener);
-      int ret = server->start();
-      printf("aaa ret is %d \n",ret);
-      File f = createFile("sendcontent.txt");
-      if(!f->exists()) {
-        printf("f is not exists \n");
-      }
-
-      sleep(1);
-
-      FileOutputStream stream = createFileOutputStream(f);
-      stream->open(Trunc);
-      String testString = createString("hello test");
-      ByteArray sendcontent = createByteArray(testString->toChars(),testString->size());
-      stream->write(sendcontent); //send /0 to server to wait message from server;
-      stream->flush();
-      mutex->lock();
-      if(response == nullptr) {
-          mCond->wait(mutex);  
-      }
-      mutex->unlock();
-
-      if(response == nullptr || !response->equals(testString)) {
-          printf("---[TcpServer Test Callback {onAccept()} case1] [FAIL]--- \n");
-          break;
-      }
-      server->release();
-      printf("---[TcpServer Test Callback {onAccept()} case1] [Success]--- \n");
-      break;
-  }
-  #endif
-
   //release()
   while(1) {
       ServerListener listener = createServerListener();

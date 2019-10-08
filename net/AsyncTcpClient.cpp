@@ -104,10 +104,21 @@ void _TcpClientThread::run() {
 _AsyncTcpClient::_AsyncTcpClient(String ip,int port,int recv_time,SocketListener l,int buffsize) {
     init(ip,port,recv_time,l,buffsize);
 }
-    
 
 _AsyncTcpClient::_AsyncTcpClient(String ip,int port,SocketListener l,int buffsize) {
     init(ip,port,-1,l,buffsize);
+}
+
+_AsyncTcpClient::_AsyncTcpClient(int port,int recv_time,SocketListener l,int buffsize) {
+    in_addr_t ip = htonl(INADDR_ANY);
+    String ipString =  createString(inet_ntoa(*((struct in_addr*)&ip)));
+    init(ipString,port,recv_time,l,buffsize);
+}
+    
+_AsyncTcpClient::_AsyncTcpClient(int port,SocketListener l,int buffsize) {
+    in_addr_t ip = htonl(INADDR_ANY);
+    String ipString =  createString(inet_ntoa(*((struct in_addr*)&ip)));
+    init(ipString,port,-1,l,buffsize);
 }
 
 bool _AsyncTcpClient::init(String ip,int port,int recv_time,SocketListener l,int buffsize) {
@@ -183,6 +194,11 @@ void _AsyncTcpClient::wait() {
 }
 
 void _AsyncTcpClient::release() {
+    
+    if(mStatus->get() == ClientWaitingThreadExit || mStatus->get() == ClientThreadExited){
+        return;
+    }
+
     close(sock);
     sock = 0;
  

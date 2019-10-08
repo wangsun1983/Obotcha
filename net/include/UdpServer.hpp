@@ -24,7 +24,8 @@
 namespace obotcha {
 
 enum UdpServerStatus {
-    UdpServerWorking = 1,
+    UdpServerIdle = 1,
+    UdpServerWorking,
     UdpServerWaitingThreadExit,
     UdpServerThreadExited,
 };
@@ -66,7 +67,7 @@ public:
 
     void release();
 
-    int send(String ip,int port,ByteArray data);
+    //int send(String ip,int port,ByteArray data);
 
     ~_UdpServer();
 
