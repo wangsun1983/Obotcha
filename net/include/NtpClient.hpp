@@ -71,6 +71,8 @@ public:
 
     void onConnect(int fd,String domain);
 
+    void onTimeout();
+    
     void setTimeCallback(NtpListener);
 
     long int getTimeMillis();

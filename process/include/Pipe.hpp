@@ -60,7 +60,7 @@ private:
 
     PipeIoType mIoType;
 
-    bool isCreated;
+    //bool isCreated;
 };
 
 }

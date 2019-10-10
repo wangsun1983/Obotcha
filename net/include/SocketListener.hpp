@@ -21,6 +21,8 @@ public:
     virtual void onConnect(int fd,String ip,int port) = 0;
 
     virtual void onConnect(int fd,String domain) = 0;
+
+    virtual void onTimeout() = 0;
 };
 
 }

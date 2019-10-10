@@ -52,6 +52,8 @@ public:
 
     void onConnect(int fd,String domain);
 
+    void onTimeout();
+
 private:
     WebSocketListener mWsListener;
 

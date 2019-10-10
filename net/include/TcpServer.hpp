@@ -44,7 +44,7 @@ public:
                     int buffsize);
     void run();
 
-    int setRcvBuffSize(int);
+    void setRcvBuffSize(int);
 
 private:
     int mSocket;
@@ -73,7 +73,7 @@ public:
 
     _TcpServer(String ip,int port,int rcvBuffsize,int connectionsNum,SocketListener l);
 
-    int setRcvBuffSize(int);
+    void setRcvBuffSize(int);
 
     int start();
 

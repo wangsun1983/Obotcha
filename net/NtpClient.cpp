@@ -32,6 +32,10 @@ _NtpSocketClientListener::~_NtpSocketClientListener() {
     mCondition->notify();
 }
 
+void _NtpSocketClientListener::onTimeout() {
+    //TODO
+}
+
 
 void _NtpSocketClientListener::onAccept(int fd,String ip,int port,ByteArray pack) {
     int  ret;

@@ -90,8 +90,8 @@ int _TcpClient::doConnect() {
 
     //AutoMutex ll(mConnectMutex);
 
-    int flags  = fcntl(mSock,F_GETFL,0);                          //»ñÈ¡ÎÄ¼þµÄflagsÖµ¡£
-    int setResult = fcntl(mSock,F_SETFL,flags &~O_NONBLOCK);    //ÉèÖÃ³É×èÈûÄ£Ê½£»
+    int flags  = fcntl(mSock,F_GETFL,0);                          //èŽ·å–æ–‡ä»¶çš„flagså€¼ã€‚
+    int setResult = fcntl(mSock,F_SETFL,flags &~O_NONBLOCK);    //è®¾ç½®æˆé˜»å¡žæ¨¡å¼ï¼›
     //printf("setResult = %d",setResult);
 
     int ret = connect(mSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
@@ -146,15 +146,18 @@ int _TcpClient::getBuffSize() {
 void _TcpClient::release() {
     //AutoMutex ll(mConnectMutex);
     //printf("tcpclient release2\n");
-    close(mSock);
-    free(mBuff);
+    if(mSock >= 0) {
+        close(mSock);
+    }
+
+    if(mBuff == nullptr) {
+        free(mBuff);
+        mBuff = nullptr;
+    }
 }
 
 _TcpClient::~_TcpClient() {
-    //AutoMutex ll(mConnectMutex);
-    //printf("tcpclient release1,mSock is %d \n",mSock);
-    close(mSock);
-    free(mBuff);
+    release();
 }
 
 }

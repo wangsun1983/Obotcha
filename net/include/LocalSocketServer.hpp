@@ -23,8 +23,12 @@
 
 namespace obotcha {
 
+#define gDefaultLocalRcvBuffSize 1024*64
+#define gDefaultLocalClientNums 1024*64
+
 enum LocalSocketServerStatus {
-    LocalServerWorking = 1,
+    LocalServerNotStart = 1,
+    LocalServerWorking ,
     LocalServerWaitingThreadExit,
     LocalServerThreadExited,
 };
@@ -39,8 +43,11 @@ public:
                     SocketListener listener,
                     ArrayList<Integer> clients,
                     Mutex mutex,
-                    String domain);
+                    String domain,
+                    int buffsize);
     void run();
+
+    void setRcvBuffSize(int);
 
 private:
     int mSocket;
@@ -52,21 +59,28 @@ private:
     Mutex mClientMutex;
     String mDomain;
 
+    int mBuffSize;
+
     void addClientFd(int fd);
 
     void removeClientFd(int fd);
 };
 
+
 DECLARE_SIMPLE_CLASS(LocalSocketServer) {
     
 public:
-    _LocalSocketServer(String domain,SocketListener l);
+    _LocalSocketServer(String domain,SocketListener l,int clients = gDefaultLocalClientNums, int recvsize=gDefaultLocalRcvBuffSize);
 
     int start();
 
     void release();
 
     int send(int fd,ByteArray data);
+
+    void setRcvBuffSize(int);
+
+    int getStatus();
 
     ~_LocalSocketServer();
 
@@ -80,6 +94,8 @@ private:
     int sock;
 
     int epfd;
+
+    int mClientsNum;
 
     Pipe mPipe;
 

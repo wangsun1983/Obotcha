@@ -43,9 +43,9 @@ void _UdpClientThread::run() {
             mStatus->set(UdpClientThreadExited);
             return;
         }
-        printf("udp accept sockfd trace1 !!!! \n");
+        printf("client udp accept sockfd trace1 !!!! \n");
         int epoll_events_count = epoll_wait(mEpfd, events, EPOLL_SIZE, -1);
-        printf("udp accept sockfd trace2,epoll_events_count is %d !!!! \n",epoll_events_count);
+        printf("client udp accept sockfd trace2,epoll_events_count is %d !!!! \n",epoll_events_count);
         
 
         for(int i = 0; i < epoll_events_count ; ++i) {
@@ -56,10 +56,10 @@ void _UdpClientThread::run() {
 
             //check whether thread need exit
             if(sockfd == mPipe->getReadPipe()) {
-                printf("wangsl,mPipe event is %x \n",event);
+                printf("client wangsl,mPipe event is %x \n",event);
                 if(mStatus->get() == UdpClientWaitingThreadExit) {
                     mStatus->set(UdpClientThreadExited);
-                    printf("wangsl,mPipe exit \n");
+                    printf("client wangsl,mPipe exit \n");
                     return;
                 }
                 
@@ -110,12 +110,12 @@ _UdpClient::_UdpClient(String ip,int port,SocketListener l) {
     }
 
     //std::cout << "Connect Server: " << ip->toChars() << " : " << port << endl;
-    epfd = 0;
-    sock = 0;
+    epfd = -1;
 
     listener = l;
 
     mPipe = createPipe();
+
     mPipe->init();
 
     mStatus = createAtomicInteger(UdpClientWorking);
@@ -165,10 +165,16 @@ void _UdpClient::start() {
 
 void _UdpClient::release() {
 
-    close(sock);
-
-    sock = 0;
-
+    if(mStatus->get() == UdpClientWaitingThreadExit || mStatus->get() == UdpClientThreadExited) {
+        return;
+    }
+    
+    printf("_UdpClient sock is %d \n",sock);
+    if(sock != -1) {
+        close(sock);
+        sock = -1;
+    }
+    
     if(mUdpClientThread != nullptr) {
         if(mStatus->get() != UdpClientThreadExited) {
             mStatus->set(UdpClientWaitingThreadExit);
@@ -180,8 +186,11 @@ void _UdpClient::release() {
             //TODO
         }
     }
+
+    if(epfd != -1) {
+        close(epfd);
+    }
     
-    close(epfd);
 }
 
 }

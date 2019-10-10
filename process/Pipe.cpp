@@ -5,17 +5,16 @@ namespace obotcha {
 
 _Pipe::_Pipe(PipeIoType type) {
     mIoType = type;
-    isCreated = false;
-
+    pipeFd[WritePipe] = -1;
+    pipeFd[ReadPipe] = -1;
 }
 
-_Pipe::_Pipe() {
-    mIoType = PipeDefault;
-    isCreated = false;
+_Pipe::_Pipe():_Pipe{PipeDefault} {
+
 }
 
 int _Pipe::init() {
-    if(isCreated) {
+    if(pipeFd[WritePipe] != -1 && pipeFd[ReadPipe] != -1) {
         return -AlreadyExists;
     }
 
@@ -31,56 +30,65 @@ int _Pipe::init() {
             result = pipe2(pipeFd,mIoType);
         break;
     }
+
+    //printf("init pipe result is %d \n",result);
+    //printf("init write fd is %x \n",pipeFd[WritePipe]);
+    //printf("init read fd is %x \n",pipeFd[ReadPipe]);
     
-    isCreated = (result != -1);
     return result;
 }
 
 int _Pipe::writeTo(ByteArray data) {
-    if(!isCreated) {
+    if(pipeFd[WritePipe] == -1) {
         return -NotCreate;
     }
 
     if(data->size() > PIPE_BUF) {
         return -OverSize;
     }
-    printf("wirteTo content is %s \n",data->toValue());
+    //printf("wirteTo content is %s,write pipe fd is %x \n",data->toValue(),pipeFd[WritePipe]);
 
     return write(pipeFd[WritePipe],data->toValue(),data->size());
 }
 
 int  _Pipe::readFrom(ByteArray buff) {
-    if(!isCreated) {
+    if(pipeFd[ReadPipe] == -1) {
         return -NotCreate;
     }
-
+    //printf("read from fd is %x \n",pipeFd[ReadPipe]);
     int nbytes = read(pipeFd[ReadPipe],buff->toValue(),buff->size());
     return nbytes;
 }
 
 int _Pipe::closeReadPipe() {
-    if(!isCreated) {
+    if(pipeFd[ReadPipe] == -1) {
         return -NotCreate;
     }
-    return close(pipeFd[ReadPipe]);
+    //printf("close ReadPipe fd is %x \n",pipeFd[ReadPipe]);
+    int ret = close(pipeFd[ReadPipe]);
+    pipeFd[ReadPipe] = -1;
+    return ret;
 }
 
 int _Pipe::closeWritePipe() {
-    if(!isCreated) {
+    if(pipeFd[WritePipe] == -1) {
         return -NotCreate;
     }
-    return close(pipeFd[WritePipe]);
+    //printf("close WritePipe fd is %x \n",pipeFd[WritePipe]);
+    int ret = close(pipeFd[WritePipe]);
+    pipeFd[WritePipe] = -1;
+    return ret;
 }
 
 int _Pipe::getReadPipe() {
-    if(!isCreated) {
+    if(pipeFd[ReadPipe] == -1) {
         return -NotCreate;
     }
     return pipeFd[ReadPipe];
 }
 
 int _Pipe::getWritePipe() {
-    if(!isCreated) {
+    if(pipeFd[WritePipe] == -1) {
         return -NotCreate;
     }
     return pipeFd[WritePipe];
@@ -91,17 +99,12 @@ int _Pipe::getMaxSize() {
 }
 
 void _Pipe::release() {
-    if(isCreated) {
-        close(pipeFd[ReadPipe]);
-        close(pipeFd[WritePipe]);    
-    }
+    closeWritePipe();
+    closeReadPipe();
 }
 
 _Pipe::~_Pipe() {
-    if(isCreated) {
-        close(pipeFd[ReadPipe]);
-        close(pipeFd[WritePipe]);    
-    }
+   release();
 }
 
 }

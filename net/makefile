@@ -8,6 +8,7 @@ link += inetaddress \
 		udpclient \
 		udpserver \
 		localsocketclient \
+		asynclocalsocketclient \
 		localsocketserver \
 		netutils \
 		httpparser \
@@ -37,6 +38,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/udpclient.o \
 		$(outtmp)/udpserver.o \
 		$(outtmp)/localsocketclient.o \
+		$(outtmp)/asynclocalsocketclient.o \
 		$(outtmp)/localsocketserver.o \
 		$(outtmp)/netutils.o \
 		$(outtmp)/httpparser.o \
@@ -78,6 +80,9 @@ udpserver :$(netDir)/UdpServer.cpp
 
 localsocketclient :$(netDir)/LocalSocketClient.cpp
 	$(gcc) $(cflags) -c $(netDir)/LocalSocketClient.cpp -o $(outtmp)/localsocketclient.o $(external)
+
+asynclocalsocketclient :$(netDir)/AsyncLocalSocketClient.cpp
+	$(gcc) $(cflags) -c $(netDir)/AsyncLocalSocketClient.cpp -o $(outtmp)/asynclocalsocketclient.o $(external)
 
 localsocketserver :$(netDir)/LocalSocketServer.cpp
 	$(gcc) $(cflags) -c $(netDir)/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)			

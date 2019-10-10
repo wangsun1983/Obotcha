@@ -94,10 +94,10 @@ Sha                              --Complete--
 
 [net]
 HttpCookie
-UdpClient
+UdpClient                 --Complete--
 HttpHeader
 InetAddress
-UdpServer
+UdpServer                 --Complete--
 HttpHeaderParser
 LocalSocketClient
 WebSocketClient
@@ -116,7 +116,7 @@ HttpUrl
 TcpClient
 WebSocketProtocol
 HttpUrlParser
-TcpServer
+TcpServer                    --Complete--
 WebSocketServer
 
 [process]

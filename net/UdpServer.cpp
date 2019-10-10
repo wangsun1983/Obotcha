@@ -79,6 +79,8 @@ void _UdpServerThread::run() {
                 if(mStatus->get() == UdpServerWaitingThreadExit) {
                     mStatus->set(UdpServerThreadExited);
                     printf("wangsl,mPipe exit \n");
+                    //mPipe->closeReadPipe();
+                    //mPipe->closeWritePipe();
                     return;
                 }
                 
@@ -218,14 +220,17 @@ int _UdpServer::start() {
 }
 
 void _UdpServer::release() {
-    printf("release trace 1 \n");
+    printf("server release trace 1 \n");
     if(mStatus->get() == UdpServerThreadExited || mStatus->get() == UdpServerWaitingThreadExit) {
         return;
     }
 
-    close(sock);
-    sock = 0;
-    printf("release trace 2 \n");
+    if(sock != 0) {
+        close(sock);
+        sock = 0;
+    }
+
+    printf("server release trace 2 \n");
     {
         AutoMutex l(mClientsMutex);
         int size = mClients->size();
@@ -234,7 +239,7 @@ void _UdpServer::release() {
             close(fd);
         }
     }
-    printf("release trace 3 \n");
+    printf("server release trace 3 \n");
     //start to notify server thread exit;
     printf("mStatus is %d \n",mStatus->get());
     
@@ -242,7 +247,7 @@ void _UdpServer::release() {
         if(mStatus->get() != UdpServerThreadExited) {
             mStatus->set(UdpServerWaitingThreadExit);
         }
-        printf("release write pipe \n");
+        printf("server release write pipe \n");
         mPipe->writeTo(createByteArray(1));
 
         while(mStatus->get() != UdpServerThreadExited) {

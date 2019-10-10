@@ -20,61 +20,38 @@
 
 namespace obotcha {
 
-enum LocalSocketClientStatus {
-    LocalSocketClientWorking = 1,
-    LocalSocketClientWaitingThreadExit,
-    LocalSocketClientThreadExited,
-};
-
-DECLARE_SIMPLE_CLASS(LocalSocketClientThread) EXTENDS(Thread){
-public:
-    _LocalSocketClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status);
-
-    void run();
-
-private:
-    int mSock;
-
-    int mEpfd;
-
-    SocketListener mListener;
-
-    Pipe mPipe;
-
-    AtomicInteger mStatus;
-    
-};
-
 DECLARE_SIMPLE_CLASS(LocalSocketClient) {
 public:
-    _LocalSocketClient(String domain,SocketListener listener);
+    _LocalSocketClient(String domain,int recv_time,int buff_size = 1024);
+    
+    int doConnect();
 
-    void start();
+    int doSend(ByteArray);
+
+    ByteArray doReceive();
+
+    int getBuffSize();
 
     void release();
 
-    int send(ByteArray);
+    int getSock();
 
     ~_LocalSocketClient();
 
 private:
-
-    bool init();
-
-    int sock;
-
-    int epfd;
+    int mReceiveTimeout;
+    
+    int mSock;
 
     struct sockaddr_un serverAddr;
 
-    SocketListener listener;
+    int mBufferSize;
 
-    LocalSocketClientThread mLocalSocketClientThread;
+    char *mBuff;
 
-    Pipe mPipe;
+    Mutex mConnectMutex;
 
-    AtomicInteger mStatus;
-
+    String mDomain;
 };
 
 }

@@ -47,7 +47,7 @@ _TcpServerThread::_TcpServerThread(int sock,
     mBuffSize = buffsize;
 }
 
-int _TcpServerThread::setRcvBuffSize(int s) {
+void _TcpServerThread::setRcvBuffSize(int s) {
     mBuffSize = s;
 }
 
@@ -324,8 +324,9 @@ int _TcpServer::send(int fd,ByteArray data) {
     return st(NetUtils)::sendTcpPacket(fd,data);
 }
 
-int _TcpServer::setRcvBuffSize(int size) {
+void _TcpServer::setRcvBuffSize(int size) {
     mRcvBuffSize = size;
+    mServerThread->setRcvBuffSize(mRcvBuffSize);
 }
 
 _TcpServer::~_TcpServer() {

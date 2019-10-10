@@ -21,6 +21,10 @@ void _WebSocketHttpListener::setHttpEpollFd(int fd) {
     httpEpollfd = fd;
 }
 
+void _WebSocketHttpListener::onTimeout() {
+    //TODO
+}
+
 void _WebSocketHttpListener::setWsEpollObserver(HashMap<String,EPollFileObserver> obs) {
     mWsObservers = obs;
 }

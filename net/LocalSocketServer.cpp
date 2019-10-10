@@ -16,11 +16,12 @@
 #include "NetUtils.hpp"
 #include "AutoMutex.hpp"
 #include "Error.hpp"
-
+#include "InitializeException.hpp"
 
 #define EPOLL_SIZE 1024*8
 
 #define BUFF_SIZE 1024*64
+
 
 namespace obotcha {
 
@@ -31,7 +32,8 @@ _LocalSocketServerThread::_LocalSocketServerThread(int sock,
                     SocketListener listener,
                     ArrayList<Integer> clients,
                     Mutex mutex,
-                    String domain) {
+                    String domain,
+                    int buffsize) {
 
     mSocket = sock;
     mEpollfd = epfd;
@@ -41,28 +43,33 @@ _LocalSocketServerThread::_LocalSocketServerThread(int sock,
     mClients = clients;
     mClientMutex = mutex;
     mDomain = domain;
+    mBuffSize = buffsize;
+}
+
+void _LocalSocketServerThread::setRcvBuffSize(int s) {
+    mBuffSize = s;
 }
 
 void _LocalSocketServerThread::run() {
     struct epoll_event events[EPOLL_SIZE];
 
     while(1) {
-        printf("TcpServer start \n");
+        //printf("TcpServer start \n");
         if(mStatus->get() == LocalServerWaitingThreadExit) {
             mStatus->set(LocalServerThreadExited);
-            printf("TcpServer exit111 \n");
             return;
+        } else {
+            mStatus->set(LocalServerWorking);
         }
 
         int epoll_events_count = epoll_wait(mEpollfd, events, EPOLL_SIZE, -1);
-        printf("TcpServer trace1 \n");
+        //printf("TcpServer trace1 \n");
         if(epoll_events_count < 0) {
             mStatus->set(LocalServerThreadExited);
-            printf("TcpServer trace2 \n");
             return;
         }
- 
-        std::cout << "epoll_events_count =" << epoll_events_count << endl;
+
+        //std::cout << "epoll_events_count =" << epoll_events_count << endl;
 
         for(int i = 0; i < epoll_events_count; ++i) {
             int sockfd = events[i].data.fd;
@@ -70,23 +77,24 @@ void _LocalSocketServerThread::run() {
 
             //check whether thread need exit
             if(sockfd == mPipe->getReadPipe()) {
-                printf("wangsl,mPipe event is %x \n",event);
+                //printf("wangsl,mPipe event is %x \n",event);
                 if(mStatus->get() == LocalServerWaitingThreadExit) {
                     mStatus->set(LocalServerThreadExited);
-                    printf("wangsl,mPipe exit \n");
+                    //printf("wangsl,mPipe exit \n");
                     return;
                 }
                 
                 continue;
             }
 
-            if(((event&EPOLLIN) != 0) 
-            && ((event &EPOLLRDHUP) != 0)) {
-                printf("hangup sockfd!!!! \n");
-                //epoll_ctl(mEpollfd, EPOLL_CTL_DEL, sockfd, NULL);
+            if(((event & EPOLLIN) != 0) 
+            && ((event & EPOLLRDHUP) != 0)) {
+                //printf("hangup sockfd!!!!,sockefd is %d \n",sockfd);
+                epoll_ctl(mEpollfd, EPOLL_CTL_DEL, sockfd, NULL);
                 st(NetUtils)::delEpollFd(mEpollfd,sockfd);
                 removeClientFd(sockfd);
                 mListener->onDisconnect(sockfd);
+                close(sockfd);
                 continue;
             }
             
@@ -94,11 +102,11 @@ void _LocalSocketServerThread::run() {
                 struct sockaddr_in client_address;
                 socklen_t client_addrLength = sizeof(struct sockaddr_in);
                 int clientfd = accept( mSocket, ( struct sockaddr* )&client_address, &client_addrLength );
- 
-                std::cout << "client connection from: "
-                     << inet_ntoa(client_address.sin_addr) << ":"
-                     << ntohs(client_address.sin_port) << ", clientfd = "
-                     << clientfd << endl;
+                
+                //std::cout << "client connection from: "
+                //     << inet_ntoa(client_address.sin_addr) << ":"
+                //     << ntohs(client_address.sin_port) << ", clientfd = "
+                //     << clientfd << endl;
  
                 st(NetUtils)::addEpollFd(mEpollfd, clientfd, true);
 
@@ -107,19 +115,24 @@ void _LocalSocketServerThread::run() {
                 mListener->onConnect(clientfd,mDomain);
             }
             else {
-                char recv_buf[BUFF_SIZE];
-                int len = recv(sockfd, recv_buf, BUFF_SIZE, 0);
-                ByteArray pack = createByteArray(recv_buf,len);
+                char recv_buf[mBuffSize];
+                memset(recv_buf,0,mBuffSize);
+                
+                int len = recv(sockfd, recv_buf, mBuffSize, 0);
+                if(len == 0 || len == -1) {
+                    //this sockfd maybe closed!!!!!
+                    //printf("tcpserver error len is %d,sockfd is %d \n",len,sockfd);
+                    continue;
+                }
+                ByteArray pack = createByteArray(&recv_buf[0],len);
                 if(mListener != nullptr) {
                     mListener->onAccept(sockfd,nullptr,-1,pack);
                 }
             }
-            //addfd(epfd, sockfd, true);
         }
       
     }
 
-    printf("thread exit!!!!! \n");
     mStatus->set(LocalServerThreadExited);
 }
 
@@ -141,39 +154,59 @@ void _LocalSocketServerThread::removeClientFd(int fd) {
     }
 }
 
-_LocalSocketServer::_LocalSocketServer(String domain,SocketListener l) {
+_LocalSocketServer::_LocalSocketServer(String domain,SocketListener l,int clients,int recvsize) {
+    String reason;
 
     serverAddr.sun_family = AF_UNIX;
     strcpy(serverAddr.sun_path, domain->toChars());  
-
-    mPipe = createPipe();
-    mPipe->init();
-
-    sock = 0;
-    epfd = 0;
-
-    mListener = l;
-
-    mClientsMutex = createMutex("LocalSocketServer");
-
-    mStatus = createAtomicInteger(LocalServerWorking);
-
-    mClients = createArrayList<Integer>();
-
-    sock = socket(AF_UNIX, SOCK_STREAM, 0);
     
-    epfd = epoll_create(EPOLL_SIZE);
+    while(1) {
+        mPipe = createPipe();
+        if(mPipe->init() == -1) {
+            break;
+        }
 
-    mServerThread = createLocalSocketServerThread(sock,
+        mClientsNum = clients;
+
+        mListener = l;
+
+        mClientsMutex = createMutex("LocalSocketServer");
+
+        mStatus = createAtomicInteger(LocalServerNotStart);
+
+        mClients = createArrayList<Integer>();
+
+        sock = socket(AF_UNIX, SOCK_STREAM, 0);
+        if(sock < 0) {
+            reason = createString("Sock Create Fail");
+            break;
+        }
+    
+        epfd = epoll_create(EPOLL_SIZE);
+        if(epfd < 0) {
+            reason = createString("Epoll Create Fail");
+            break;
+        }
+
+        mServerThread = createLocalSocketServerThread(sock,
                                                 epfd,
                                                 mStatus,
                                                 mPipe,
                                                 l,
                                                 mClients,
                                                 mClientsMutex,
-                                                domain);
+                                                domain,
+                                                recvsize);
 
-    mDomain = domain;
+        mDomain = domain;
+        return;
+    }
+
+    throw createInitializeException(reason);
+}
+
+int _LocalSocketServer::getStatus() {
+    return mStatus->get();
 }
 
 int _LocalSocketServer::connect() {
@@ -192,14 +225,20 @@ int _LocalSocketServer::connect() {
 
     printf("LocalSocketServer connect trace3 \n");
 
-    int ret = listen(sock, 5);
+    int ret = listen(sock, mClientsNum);
 
     if(ret < 0) {
         return -NetListenFail;
     }
     //add epoll
-    st(NetUtils)::addEpollFd(epfd,sock,true);
-    st(NetUtils)::addEpollFd(epfd,mPipe->getReadPipe(),true);
+    if(st(NetUtils)::addEpollFd(epfd,sock,false) < 0) {
+        return -WriteFail;
+    }
+
+    if(st(NetUtils)::addEpollFd(epfd,mPipe->getReadPipe(),false) < 0) {
+        return -WriteFail;
+    };
+
     printf("LocalSocketServer connect trace6 \n");
 
     return 0;
@@ -215,15 +254,24 @@ int _LocalSocketServer::start() {
 
     mServerThread->start();
 
+    while(mStatus->get() == LocalServerNotStart) {
+        //TODO Nothing
+    }
+
     return 0;
 }
 
 void _LocalSocketServer::release() {
     printf("release trace 1 \n");
-    close(sock);
-    sock = 0;
+    if(mStatus->get() == LocalServerThreadExited || mStatus->get() == LocalServerWaitingThreadExit) {
+        return;
+    }
 
-    close(epfd);
+    if(sock >= 0) {
+        close(sock);
+        sock = -1;
+    }
+
     {
         AutoMutex l(mClientsMutex);
         int size = mClients->size();
@@ -234,20 +282,32 @@ void _LocalSocketServer::release() {
     }
 
     //start to notify server thread exit;
-    if(mStatus->get() != LocalServerThreadExited) {
-        mStatus->set(LocalServerWaitingThreadExit);
+    if(mStatus->get() != LocalServerNotStart) {
+        if(mStatus->get() != LocalServerThreadExited) {
+            mStatus->set(LocalServerWaitingThreadExit);
+        }
+
+        mPipe->writeTo(createByteArray(1));
+    
+        while(mStatus->get() != LocalServerThreadExited) {
+            //TODO
+        }
     }
 
-    mPipe->writeTo(createByteArray(1));
-
-    while(mStatus->get() != LocalServerThreadExited) {
-        //TODO nothing
+    if(epfd >= 0) {
+        close(epfd);
+        epfd = -1;
     }
+
     printf("release end \n");
 }
 
 int _LocalSocketServer::send(int fd,ByteArray data) {
     return st(NetUtils)::sendTcpPacket(fd,data);
+}
+
+void _LocalSocketServer::setRcvBuffSize(int size) {
+    mServerThread->setRcvBuffSize(size);
 }
 
 _LocalSocketServer::~_LocalSocketServer() {

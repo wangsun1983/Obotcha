@@ -40,6 +40,10 @@ _WebSocketTcpClientListener::_WebSocketTcpClientListener(WebSocketListener l) {
     mProtoclType = WsClientProtocolHttp;
     mHttpParser = createHttpParser();
 }
+
+void _WebSocketTcpClientListener::onTimeout() {
+    //TODO
+}
     
 void _WebSocketTcpClientListener::onAccept(int fd,String ip,int port,ByteArray pack) {
     printf("11111111 client accept pack is %s \n",pack->toValue());

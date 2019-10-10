@@ -10,6 +10,7 @@
 #include <sys/epoll.h>
 #include <stddef.h>
 
+#include "InitializeException.hpp"
 #include "AsyncTcpClient.hpp"
 #include "NetUtils.hpp"
 
@@ -42,7 +43,7 @@ void _TcpClientThread::run() {
         printf("epoll trace1 \n");
         int epoll_events_count = epoll_wait(mEpfd, events, EPOLL_SIZE, mTimeOut);
         if(epoll_events_count == 0) {
-            printf("epoll_timeout \n");
+            mListener->onTimeout();
             return;
         } else if(epoll_events_count < 0) {
             printf("epoll error is %s \n",strerror(errno));
@@ -97,22 +98,32 @@ void _TcpClientThread::run() {
             }
         }
     }
-
-    free(recv_buf);
+    
+    if(recv_buf != nullptr) {
+        free(recv_buf);
+        recv_buf = nullptr;
+    }
+    
 }
 
 _AsyncTcpClient::_AsyncTcpClient(String ip,int port,int recv_time,SocketListener l,int buffsize) {
-    init(ip,port,recv_time,l,buffsize);
+    if(!init(ip,port,recv_time,l,buffsize)) {
+        throw createInitializeException(createString("AsyncTcpClient init failed"));
+    }
 }
 
 _AsyncTcpClient::_AsyncTcpClient(String ip,int port,SocketListener l,int buffsize) {
-    init(ip,port,-1,l,buffsize);
+    if(!init(ip,port,-1,l,buffsize)) {
+        throw createInitializeException(createString("AsyncTcpClient init failed"));
+    }
 }
 
 _AsyncTcpClient::_AsyncTcpClient(int port,int recv_time,SocketListener l,int buffsize) {
     in_addr_t ip = htonl(INADDR_ANY);
     String ipString =  createString(inet_ntoa(*((struct in_addr*)&ip)));
-    init(ipString,port,recv_time,l,buffsize);
+    if(!init(ipString,port,recv_time,l,buffsize)) {
+        throw createInitializeException(createString("AsyncTcpClient init failed"));
+    }
 }
     
 _AsyncTcpClient::_AsyncTcpClient(int port,SocketListener l,int buffsize) {
@@ -127,8 +138,8 @@ bool _AsyncTcpClient::init(String ip,int port,int recv_time,SocketListener l,int
     serverAddr.sin_port = htons(port);
     serverAddr.sin_addr.s_addr = inet_addr(ip->toChars());
     std::cout << "Connect Server: " << ip->toChars() << " : " << port << endl;
-    epfd = 0;
-    sock = 0;
+    epfd = -1;
+    sock = -1;
 
     listener = l;
 
@@ -158,8 +169,8 @@ bool _AsyncTcpClient::init(String ip,int port,int recv_time,SocketListener l,int
     }
  
     //addfd(epfd, sock, true);
-    st(NetUtils)::addEpollFd(epfd, sock, true);
-    st(NetUtils)::addEpollFd(epfd, mPipe->getReadPipe(), true);
+    st(NetUtils)::addEpollFd(epfd, sock, false);
+    st(NetUtils)::addEpollFd(epfd, mPipe->getReadPipe(), false);
     printf("TcpClient init end \n");
     
     return true;
@@ -198,10 +209,12 @@ void _AsyncTcpClient::release() {
     if(mStatus->get() == ClientWaitingThreadExit || mStatus->get() == ClientThreadExited){
         return;
     }
-
-    close(sock);
-    sock = 0;
- 
+    
+    if(sock != -1) {
+        close(sock);
+        sock = -1;
+    }
+    
     if(mTcpClientThread != nullptr) {
         if(mTcpClientThread->getStatus() == ThreadStatus::ThreadRunning
            ||mTcpClientThread->getStatus() == ThreadStatus::ThreadIdle) {
@@ -219,8 +232,11 @@ void _AsyncTcpClient::release() {
         }
     }
 
-    close(epfd);
-    epfd = 0;
+    if(epfd != -1) {
+        close(epfd);
+        epfd = -1;
+    }
+    
 }
 
 }
