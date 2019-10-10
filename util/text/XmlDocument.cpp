@@ -66,7 +66,6 @@ XmlValue _XmlDocument::newNode(String nodename) {
 XmlValue _XmlDocument::getRootNode() {
     xml_node<> *node = xmlDoc.first_node();
     //String name = createString(node->name());
-    //printf("nodeName is %s ,node is %x \n",node->name(),node);
     XmlValue root = createXmlValue(node,this);
     return root;
 }
@@ -74,7 +73,6 @@ XmlValue _XmlDocument::getRootNode() {
 String _XmlDocument::toString() {
     char buff[mFileSize + 1024];
     memset(buff,0,mFileSize + 1024);
-    //printf("mFilesize is %ld \n",mFileSize);
     rapidxml::print(buff, xmlDoc);
 
     return createString(&buff[0]);

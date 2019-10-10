@@ -28,7 +28,6 @@ String _System::executeForResult(String cmd) {
     fp = popen(cmd->toChars(),"r");
     
     if(fp == nullptr) {
-        //printf("popen fail: %s  \n",strerror(errno));
         return nullptr;
     }
 

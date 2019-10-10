@@ -57,7 +57,6 @@ _ThreadCachedPoolExecutorHandler::_ThreadCachedPoolExecutorHandler(BlockingQueue
     mThread = createThread(r);
     
     mThreadTimeout = timeout;
-
     mThread->start();
     
     {
@@ -66,15 +65,10 @@ _ThreadCachedPoolExecutorHandler::_ThreadCachedPoolExecutorHandler(BlockingQueue
             waitStartCond->wait(waitStartMutex);
         }
     }
-
-    ////printf("create ThreadCachedPoolExecutorHandler %lx \n",this);
-    ////printf("increase count is %d \n",getDebugReferenceCount());
 }
 
 _ThreadCachedPoolExecutorHandler::~_ThreadCachedPoolExecutorHandler() {
-    ////printf("~_ThreadCachedPoolExecutorHandler %lx \n",this);
     mCurrentTask = nullptr;
-    ////printf("decrease count is %d \n",getDebugReferenceCount());
 }
 
 void _ThreadCachedPoolExecutorHandler::stop() {
@@ -85,11 +79,9 @@ void _ThreadCachedPoolExecutorHandler::stop() {
 void _ThreadCachedPoolExecutorHandler::run() {
     while(!mStop) {
         mCurrentTask = nullptr;
-        ////printf("_ThreadCachedPoolExecutorHandler start \n");
         {
             AutoMutex ll(mExecutorMutex);
             if(mExecutor != nullptr) {
-                ////printf("thread increase \n");
                 mExecutor->increaseIdleThreadNum();
                 
                 {
@@ -100,45 +92,32 @@ void _ThreadCachedPoolExecutorHandler::run() {
                     }
                 }
             }
-            
         }
-        ////printf("mThreadTimeout is %d \n",mThreadTimeout);
         long start = st(System)::currentTimeMillis();
 
         mCurrentTask = mPool->deQueueFirst(mThreadTimeout);
         {
             AutoMutex ll(mExecutorMutex);
             if(mExecutor != nullptr) {
-                ////printf("thread increase \n");
                 mExecutor->decreaseIdleThreadNum();
             }
         }
-        ////printf("dequeue cost is %d \n",st(System)::currentTimeMillis() - start);
         
         if(mCurrentTask == nullptr) {
-            ////printf("timeout trace1 \n");
             {
                 AutoMutex ll(mExecutorMutex);
                 if(mExecutor != nullptr) {
-                    ////printf("timeout trace2 \n");
                     if(!mExecutor->isOverMinSize() && !mStop){
-                        ////printf("timeout trace3 \n");
                         continue;
                     }
                 }
-                
             }
-            ////printf("timeout trace4 \n");
             mStop = true;
-            ////printf("timeout trace4_1 \n");
             goto end;
         }
-
-        ////printf("timeout trace4_2 \n");
         if(mCurrentTask->getStatus() == FUTURE_CANCEL) {
             continue;
         }
-        ////printf("timeout trace4_3 \n");
         {
             AutoMutex l(mStateMutex);
             state = busyState;
@@ -146,12 +125,10 @@ void _ThreadCachedPoolExecutorHandler::run() {
                 mCurrentTask->onRunning();
             }
         }
-        ////printf("timeout trace4_4 \n");
         Runnable runnable = mCurrentTask->getRunnable();
         if(runnable != nullptr) {
             runnable->run();    
         }
-        ////printf("timeout trace4_5 \n");
      
         {
             AutoMutex l(mStateMutex);
@@ -161,11 +138,9 @@ void _ThreadCachedPoolExecutorHandler::run() {
                 mCurrentTask->onComplete();
             }
         }
-        ////printf("timeout trace4_6 \n");
     }
 
 end:
-    ////printf("timeout trace5 \n");
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     {
         AutoMutex l(mStateMutex);
@@ -176,7 +151,6 @@ end:
         }
     }
 
-    ////printf("timeout trace6 \n");
     {
         AutoMutex ll1(mHandlerMutex);
         AutoMutex ll2(mExecutorMutex);
@@ -196,12 +170,9 @@ void _ThreadCachedPoolExecutorHandler::onExecutorDestroy() {
 }
 
 void _ThreadCachedPoolExecutorHandler::onInterrupt() {
-    ////printf("_ThreadCachedPoolExecutorHandler onInterrupt \n");
     if(mCurrentTask != nullptr) {
         Runnable r = mCurrentTask->getRunnable();
-        ////printf("_ThreadCachedPoolExecutorHandler onInterrupt1 r is %lx \n",r.get_pointer());
         if(r != nullptr) {
-            ////printf("_wo ThreadCachedPoolExecutorHandler onInterrupt2 \n");
             r->onInterrupt();
         }
 
@@ -264,7 +235,6 @@ int _ThreadCachedPoolExecutor::shutdown(){
     if(mIsShutDown ||mIsTerminated) {
         return -AlreadyDestroy;
     }
-    //printf("cachethread shutdown start \n");
     AutoMutex l(mProtectMutex);
 
     if(mIsShutDown ||mIsTerminated) {
@@ -282,7 +252,7 @@ int _ThreadCachedPoolExecutor::shutdown(){
             handler->stop();
         }
     }
-    //printf("cachethread shutdown trace1 \n");
+    
     int i = 0;
     for(;;) {
         FutureTask task = mPool->deQueueLastNoBlock();
@@ -293,8 +263,6 @@ int _ThreadCachedPoolExecutor::shutdown(){
             break;
         }
     }
-    //printf("clear data num is %d \n",i);
-    //printf("cachethread shutdown trace2 \n");
     return 0;
 }
 
@@ -396,7 +364,6 @@ Future _ThreadCachedPoolExecutor::submit(Runnable r) {
         return nullptr;
     }
     
-    ////printf("mIdleThreadNum size is %d,size is %d,max is %d \n",mIdleThreadNum->get(),mHandlers->size(),maxThreadNum);
     if(mIdleThreadNum->get() == 0 && mHandlers->size() < maxThreadNum) {
         ThreadCachedPoolExecutorHandler t = createThreadCachedPoolExecutorHandler(mPool,
                                                                                   mThreadTimeout,
@@ -446,11 +413,6 @@ void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthrea
         //increaseIdleThreadNum();
     }
 
-    //for(int i = 0;i < minThreadNum;i++) {
-    //    ThreadCachedPoolExecutorHandler t = mHandlers->get(i);
-        ////printf("list [%d] is %lx \n",i,t.get_pointer());
-    //}
-
     mIsTerminated = false;
 
     mIsShutDown = false;
@@ -462,7 +424,6 @@ bool _ThreadCachedPoolExecutor::isOverMinSize() {
 
 void _ThreadCachedPoolExecutor::removeHandler(ThreadCachedPoolExecutorHandler h) {
     mHandlers->remove(h);
-    ////printf("h2 count is %d \n",h->getStrongCount());
 }
 
 int _ThreadCachedPoolExecutor::getThreadsNum() {
@@ -478,7 +439,6 @@ void _ThreadCachedPoolExecutor::decreaseIdleThreadNum() {
 }
 
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
-    //printf("~_ThreadCachedPoolExecutor \n");
     {
         AutoMutex ll(mHandlerMutex);
         int size = mHandlers->size();

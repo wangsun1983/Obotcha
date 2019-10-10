@@ -49,7 +49,6 @@ public:
     
     bool next();
 
-//while((iter = ccl_iterate(&config))!=0){printf("%s=%s\n", iter->key, iter->value);}
 private:
     ConfValue value;
     struct ccl_pair_t* iterator;

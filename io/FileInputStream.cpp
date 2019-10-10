@@ -42,31 +42,6 @@ long _FileInputStream::read(long index,ByteArray buffer) {
     return fstream.gcount();
 }
 
-/*
-long _FileInputStream::readAll(ByteArray content) {
-    if(!fstream.is_open()) {
-        return -1;
-    }
-
-    ifstream fsRead;
-    fsRead.open(mPath->getStdString(), ios::in|ios::binary);
-    //cout<<"mPath->getStdString is "<<mPath->getStdString()<<endl;
-    if (!fsRead) {
-        return -1;
-    }
-
-    fsRead.seekg(0, fsRead.end);
-    long srcSize = fsRead.tellg();
-    //printf("readAll size is %ld \n",srcSize);
-
-    long buffSize = content->size();
-
-    long currentSize = buffSize>srcSize?srcSize:buffSize;
-    fstream.read(content->toValue(),currentSize);
-    return fstream.gcount();
-}
-*/
-
 ByteArray _FileInputStream::readAll() {
     if(!fstream.is_open()) {
         return nullptr;

@@ -126,7 +126,6 @@ bool _MemoryFileOutputStream::open(long size,FileOpenType opentype) {
     fclose(fp);
 
     if (mPtr == MAP_FAILED) {
-        printf("map failed reason is %s \n",strerror(errno));
         return false;
     }
 

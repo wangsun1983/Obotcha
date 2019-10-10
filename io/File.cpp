@@ -181,12 +181,10 @@ bool _File::removeAll() {
         updateFileInfo();
     }
 
-    //printf("file remove all path is %s \n",mPath->toChars());
     if(mExist != sFileStatusExit) {
         return true;
     }
-    //printf("file remove all 2 path is %s \n",mPath->toChars());
-
+    
     if(isFile()) {
         //delete file;
         remove(mPath->toChars());
@@ -208,7 +206,6 @@ void _File::deleteDir(File f) {
 
         int size = files->size();
         for(int i = 0;i < size;i++) {
-            printf("file name is %s \n",f->getAbsolutePath()->toChars());
             deleteDir(files->get(i));
         }
         //delete dir
@@ -238,7 +235,6 @@ ArrayList<String> _File::list() {
         }///current dir OR parrent dir
         
         files->add(createString(ptr->d_name));
-        printf("file is %s \n",ptr->d_name);
     }
 
     closedir(dir);
@@ -273,7 +269,6 @@ ArrayList<File> _File::listFiles() {
 
         File file = createFile(path);
         files->add(file);
-        printf("file is %s \n",path->toChars());
     }
 
     closedir(dir);
@@ -365,7 +360,6 @@ void _File::updateFileInfo() {
     memset(mFileInfo,0,sizeof(struct stat));
 
     mExist = stat(getAbsolutePath()->toChars(),mFileInfo);
-    //printf("mExit is %d,path is %s \n",mExist,getAbsolutePath()->toChars());
 }
 
 _File::~_File() {

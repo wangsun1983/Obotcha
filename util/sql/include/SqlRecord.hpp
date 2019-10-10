@@ -14,12 +14,10 @@ typedef void (*sql_data_set)(void *,char *);
 #define DECLARE_SQL_ASSIGNMENT(Table,Size) \
     public: static int isInit;\
     public: sql_data_set getSqlAssignment(int index,std::string col) { \
-        printf("get trace1,index is %d \n",index);\
         if(Size <= index) { \
             return nullptr;\
         }\
         if(_##Table::funclist_##Table[index] != nullptr) { \
-            printf("get trace2 \n");\
             return _##Table::funclist_##Table[index]; \
         }\
         if(_##Table::isInit == 0) { \
@@ -27,13 +25,10 @@ typedef void (*sql_data_set)(void *,char *);
             _##Table::isInit = 1;\
         }\
         std::map<std::string,sql_data_set>::iterator ite = _##Table::funcmap.find(col);\
-        printf("get trace3 \n");\
         if(ite != _##Table::funcmap.end()) { \
             _##Table::funclist_##Table[index] = ite->second;\
-            printf("get trace4 \n");\
             return ite->second;\
         }\
-        printf("get trace4 \n");\
         return nullptr;\
     }\
     public:SqlRecord createNewData() { \

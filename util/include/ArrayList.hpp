@@ -109,7 +109,6 @@ public:
     }
 
     inline int insert(int index,T val) {
-        //printf("insert index is %d,elements.size() is %d \n",index,elements.size());
         if(index >= elements.size() || index < 0) {
             if(index != 0) {
                 return -1;    

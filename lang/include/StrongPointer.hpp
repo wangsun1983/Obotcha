@@ -230,14 +230,10 @@ sp<T>::~sp()
 
 template<typename T>
 sp<T>& sp<T>::operator = (const sp<T>& other) {
-    //printf("StrongPointer trace 2 \n");
     T* otherPtr(other.m_ptr);
     if (otherPtr) otherPtr->incStrong(this);
     if (m_ptr) {
         if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
-            //if(otherPtr == nullptr) {
-                //printf("release 2 \n");
-            //}
             delete static_cast<const T*>(m_ptr);
         }
     }
@@ -249,16 +245,9 @@ sp<T>& sp<T>::operator = (const sp<T>& other) {
 template<typename T>
 sp<T>& sp<T>::operator = (T* other)
 {
-    //printf("StrongPointer trace 1 \n");
     if (other) other->incStrong(this);
     if (m_ptr) {
-        //if(other == nullptr) {
-            //printf("release 1 \n");
-        //}
         if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
-            //if(other == nullptr) {
-            //    printf("release 2 \n");
-            //}
             delete static_cast<const T*>(m_ptr);
         }   
     }
@@ -270,7 +259,6 @@ sp<T>& sp<T>::operator = (T* other)
 template<typename T> template<typename U>
 sp<T>& sp<T>::operator = (const sp<U>& other)
 {
-    //printf("StrongPointer trace 3 \n");
     T* otherPtr(other.m_ptr);
     if (otherPtr) otherPtr->incStrong(this);
     if (m_ptr) {
@@ -285,15 +273,12 @@ sp<T>& sp<T>::operator = (const sp<U>& other)
 template<typename T> template<typename U>
 sp<T>& sp<T>::operator = (U* other)
 {
-    //printf("StrongPointer trace 4 \n");
-    //if (other) ((T*)other)->incStrong(this);
     if (m_ptr) {
         if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
             delete static_cast<const T*>(m_ptr);
         }
     }    
     m_ptr = PointerChanger<std::is_base_of<T,U>::value == 1,T,U>::convert(other);
-    //m_ptr = other;
     return *this;
 }
 
@@ -346,12 +331,6 @@ template<typename T>
 T* sp<T>::get_pointer(){
     return m_ptr;
 }
-
-//template <typename T>
-//inline TextOutput& operator<<(TextOutput& to, const sp<T>& val)
-//{
-//    return printStrongPointer(to, val.get());
-//}
 
 #define tp(X) _##X
 template<typename X,typename V>

@@ -32,20 +32,13 @@ _ReleaseThread::_ReleaseThread() {
 }
 
 _ReleaseThread::~_ReleaseThread() {
-    //printf("_ReleaseThread release \n");
-    //Uint64 poison;
-    //mThreadPids->add(poison);
-    //pthread_join(mTid,nullptr);
     stop();
 }
 
 void _ReleaseThread::stop() {
     Uint64 poison;
-    //printf("release thread start \n");
     sendRelease(poison);
-    //printf("release thread trace \n");
     pthread_join(mTid,nullptr);
-    //printf("release thread trace2 \n");
 }
 
 void _ReleaseThread::sendRelease(Uint64 t) {
@@ -72,8 +65,7 @@ void _ReleaseThread::run() {
     while(1) {
         Uint64 tid = nullptr;
 
-        {   
-            //printf("_ReleaseThread run1 \n");
+        {
             AutoMutex ll(mutex);
             int size = mThreadPids->size();
             if(size == 0) {
@@ -88,18 +80,14 @@ void _ReleaseThread::run() {
 
         long time = st(System)::currentTimeMillis();
         pthread_join(tid->toValue(),nullptr);
-        //printf("release join is %ld \n",st(System)::currentTimeMillis() - time);
     }
 }
 
 //------------KeepAliveThread---------------//
 static void* recycle(void *th) {
-    ////printf("recyle 1 \n");
     //pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
     _KeepAliveThread *thread = static_cast<_KeepAliveThread *>(th);
-    ////printf("recyle 2 \n");
     thread->run();
-    ////printf("recyle 3 \n");
     return nullptr;
 }
 
@@ -132,21 +120,16 @@ void _KeepAliveThread::start() {
 }
 
 void _KeepAliveThread::run() {
-    ////printf("keep alive trace \n");
     ThreadLocal<Thread> tLocal = mThreadLocal;
     BlockingQueue<Uint64> mQueue = queue;
     mStartBarrier->orAndGet(1);
     while(1) {
-        ////printf("keep alive trace2\n");
         Uint64 t = mQueue->deQueueFirst();
-        ////printf("keep alive trace3 \n");
         if(t == nullptr) {
             return;
         }
         mReleaseThread->sendRelease(t);
-        ////printf("keep alive trace4 \n");
         tLocal->remove(t->toValue());
-        ////printf("keep alive trace5 \n");
     }
 }
 
@@ -163,26 +146,18 @@ void _KeepAliveThread::drop(pthread_t t){
 }
 
 _KeepAliveThread::~_KeepAliveThread() {
-    ////printf("~keepalivethread 1 \n");
     mThreadLocal->clear();
-    ////printf("~keepalivethread 2 \n");
     queue->destroy();
 
     mReleaseThread->stop();
-    ////printf("~keepalivethread 3 \n");
-    //pthread_cancel(mTid);
-    ////printf("~keepalivethread 4 \n");
 }
 
 //------------Thread Stack function---------------//
 void cleanup(void *th) {
-    //printf("onInterrupt \n");
     _Thread *thread = static_cast<_Thread *>(th);
     if(thread->getRunnable() != nullptr) {
-        //printf("onInterrupt 1\n");
         thread->getRunnable()->onInterrupt();
     } else {
-        //printf("onInterrupt 2\n");
         thread->onInterrupt();
     }
     thread->mStatus = ThreadComplete;
@@ -197,7 +172,6 @@ void* _Thread::localRun(void *th) {
     //pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, nullptr);
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     _Thread *thread = static_cast<_Thread *>(th);
-    //printf("localRun \n");
     KeepAliveThread mKAThread = mKeepAliveThread; 
     sp<_Thread> localThread;
     localThread.set_pointer(thread);
@@ -208,13 +182,9 @@ void* _Thread::localRun(void *th) {
     pthread_cleanup_push(cleanup, th);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
     if(thread->mStatus == ThreadWaitExit) {
-        ////printf("go to exit \n");
         goto end;
     }
-    //pthread_testcancel();
-    //pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, nullptr);
 
-    //pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, nullptr);
     thread->initPolicyAndPriority();
     thread->setSchedPolicy(thread->mPolicy);
     thread->setPriority(thread->mPriority);
@@ -227,14 +197,12 @@ void* _Thread::localRun(void *th) {
         thread->mRunnable->run();
         thread->mRunnable = nullptr;
     } else {
-        ////printf("localRun1 \n");
         thread->run();
     }
     
 end:
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     pthread_cleanup_pop(0);
-    //printf("local complete \n");
     thread->mStatus = ThreadComplete;
 
     mKAThread->drop(localThread->mPthread);
@@ -265,7 +233,6 @@ _Thread::_Thread(String name,Runnable run){
     mStatus = ThreadNotStart;
     bootFlag = createAtomicInteger(0);
     mProtectMutex = createMutex("ThreadProtectMutex");
-
 }
 
 int _Thread::setName(String name) {
@@ -353,28 +320,22 @@ int _Thread::getStatus() {
 }
 
 void _Thread::quit() {
-    //printf("thread exit start,status is %d  \n",mStatus);
     if(mStatus == ThreadComplete||mStatus == ThreadNotStart||mStatus == ThreadWaitExit) {
         return;
     }
-    //printf("thread exit \n");
     AutoMutex l(mProtectMutex);
-    //printf("thread exit1 \n");
     if(mStatus == ThreadComplete||mStatus == ThreadNotStart) {
         mStatus = ThreadComplete;
         return;
     }else if(mStatus == ThreadWaitExit) {
         return;
     }
-    ////printf("thread exit2 \n");
     if(mStatus == ThreadIdle) {
         mStatus = ThreadWaitExit;
         while(1) {
             join(100);
             if(mStatus == ThreadRunning) {
-                //printf("thread exit3 \n");
                 pthread_cancel(mPthread);
-                //mStatus = ThreadComplete;
                 return;
             } else if(mStatus == ThreadComplete) {
                 return;
@@ -383,12 +344,8 @@ void _Thread::quit() {
         
         return;
     }
-    //printf("thread exit4 \n");
     mStatus = ThreadComplete;
     int ret = pthread_cancel(mPthread);
-    //printf("pthread cancel ret is %d,mPthread is %x \n",ret,mPthread);
-    //ret = pthread_join(mPthread,nullptr);
-    //////printf("pthread2 cancel ret is %d,mPthread is %x \n",ret,mPthread);
 }
 
 int _Thread::setPriority(ThreadPriority priority) {
@@ -476,7 +433,6 @@ int _Thread::getSchedPolicy() {
 
 void _Thread::onInterrupt() {
     //need overwrite by child class
-    ////printf("thread onInterrupt !!!!!!\n");
 }
 
 void _Thread::interruptCheck() {

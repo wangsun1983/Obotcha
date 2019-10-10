@@ -52,23 +52,15 @@ void _PriorityPoolThread::run() {
 
     while(!mStop) {
         mCurrentTask = nullptr;
-        //printf("priority thread start \n");
         while(1) {
-            //printf("priority thread start0,pthread is %x \n",mPthread);
             AutoMutex l(mMutex);
-            //printf("priority thread start1 \n");
             if(mTasks->size() == 0) {
                 mCondition->wait(mMutex);
-                //printf("priority thread start2 \n");
                 continue;
             }
-            //printf("priority thread start3 \n");
             mCurrentTask = mTasks->remove(0);
-            //printf("priority thread start4 \n");
             break;
         }
-
-        //printf("priority thread start5 \n");
 
         if(mCurrentTask == nullptr) {
             break;
@@ -77,7 +69,6 @@ void _PriorityPoolThread::run() {
         if(mCurrentTask->task->getStatus() == FUTURE_CANCEL) {
             continue;
         }
-        //printf("priority thread trae2 \n");
         {    
             AutoMutex l(mStateMutex);
             mState = busyState;
@@ -85,27 +76,21 @@ void _PriorityPoolThread::run() {
                 mCurrentTask->task->onRunning();
             }
         }
-        //printf("priority thread trae3 \n");
         Runnable runnable = mCurrentTask->task->getRunnable();
         if(runnable != nullptr) {
             runnable->run();    
         }
-        //printf("priority thread trae4 \n");
         {
             AutoMutex l(mStateMutex);
             mState = idleState;
-            //printf("priority thread trae5 \n");
             if(mCurrentTask->task->getType() == FUTURE_TASK_SUBMIT) {
                 mCurrentTask->task->onComplete();
             }
         }
     }
-    //printf("priority thread trae6 \n");
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     {
-        //printf("priority thread trae7 \n");
         AutoMutex l(mStateMutex);
-        //printf("priority thread trae8 \n");
         mState = terminateState;
         mWaitTermCondition->notify();
     }
@@ -119,7 +104,6 @@ void _PriorityPoolThread::run() {
 }
 
 void _PriorityPoolThread::onInterrupt() {
-    //st(StackTrace)::dumpStack(createString("oninterrupt"));
     if(mCurrentTask != nullptr) {
         Runnable r = mCurrentTask->task->getRunnable();
         if(r != nullptr) {
@@ -129,14 +113,11 @@ void _PriorityPoolThread::onInterrupt() {
         r = nullptr;
     }
 
-    //printf("priority onInterrupt,this is %lx \n",this);
     {
         AutoMutex l(mStateMutex);
-        //printf("priority onInterrupt2 \n");
         mState = terminateState;
         mWaitTermCondition->notify();
-    }
-    //printf("priority onInterrupt4 \n");  
+    } 
 
     {
         AutoMutex ll(mExecutorMutex);
@@ -150,28 +131,21 @@ void _PriorityPoolThread::waitTermination(long interval) {
     if(mState == terminateState) {
         return;
     }
-    //printf("thread waitTermination start \n");
     AutoMutex l(mStateMutex);
-    //printf("thread waitTermination start2 \n");
     if(mState == terminateState) {
         return;
     }
 
     if(interval == 0) {
-        //printf("thread waitTermination start3 \n");
         mWaitTermCondition->wait(mStateMutex);
-        //printf("thread waitTermination start4 \n");
     } else {
-        //printf("thread waitTermination start5,mPhtread is %x \n",mPthread);
         mWaitTermCondition->wait(mStateMutex,interval);
-        //printf("thread waitTermination start6 \n");
     }
 
     //this->join();
 }
 
 _PriorityPoolThread::~_PriorityPoolThread() {
-    //printf("_PriorityPoolThread~~~~ \n");
 }
 
 void _PriorityPoolThread::stop() {
@@ -192,7 +166,6 @@ _PriorityPoolExecutor::_PriorityPoolExecutor(int threadnum) {
 
     mPriorityTasks = createArrayList<PriorityTask>();
     mThreads = createArrayList<PriorityPoolThread>();
-    //printf("priority pool threanum is %d \n",st(System)::availableProcessors());
     for(int i = 0;i < threadnum;i++) {
 
         PriorityPoolThread thread = createPriorityPoolThread(mPriorityTasks,mDataLock,mDataCond,this);
@@ -244,7 +217,6 @@ int _PriorityPoolExecutor::shutdown() {
         ListIterator<PriorityTask> iterator = mPriorityTasks->getIterator();
         while(iterator->hasValue()) {
             PriorityTask priTask = iterator->getValue();
-            //printf("cancel task is %x \n",priTask->task->getRunnable().get_pointer());
             priTask->task->cancel();
             iterator->next();
         }
@@ -281,22 +253,17 @@ bool _PriorityPoolExecutor::isTerminated() {
 }
 
 int _PriorityPoolExecutor::awaitTermination(long millseconds) {
-    //printf("awaitTermination trace111111 \n");
     if(!isShutDown) {
         return -InvalidStatus;
     }
-    //printf("awaitTermination trace2 \n");
     if(isTermination) {
         return 0;
     }
-    //printf("awaitTermination trace3 \n");
     int size = mThreads->size();
 
     if(millseconds == 0) {
         for(int i = 0;i < size;i++) {
-            //printf("awaitTermination trace4 \n");
             mThreads->get(i)->waitTermination(0);
-            //printf("awaitTermination trace5\n");
         }
 
         isTermination = true;
@@ -305,10 +272,8 @@ int _PriorityPoolExecutor::awaitTermination(long millseconds) {
         for(int i = 0;i < size;i++) {
             long current = st(System)::currentTimeMillis();
             if(millseconds > 0) {
-                //printf("wait Termination millseconds is %ld trac1 \n",millseconds);
                 mThreads->get(i)->waitTermination(millseconds);
-                //printf("wait Termination2 millseconds is %ld trac1 \n",millseconds);
-               
+                
             } else {
                 break;
             }
@@ -371,14 +336,12 @@ void _PriorityPoolExecutor::onHandlerRelease() {
     AutoMutex ll(mProtectMutex);
     mThreadNum--;
 
-    //printf("onHandler Release mThreadNum is %d \n",mThreadNum);
     if(mThreadNum == 0) {
         mThreads->clear();
     }
 }
 
 _PriorityPoolExecutor::~_PriorityPoolExecutor() {
-    //printf("~_PriorityPoolExecutor \n");
     int size = mThreads->size();
 
     for(int i = 0;i < size;i++) {

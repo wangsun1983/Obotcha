@@ -79,7 +79,6 @@ public:
             mHead->prev = node;
             mHead = node;
         }
-        //printf("mCurrentSize is %d,mMaxSize is %d \n",mCurrentSize,mMaxSize);
         trimNode();
     }
 

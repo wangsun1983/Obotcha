@@ -197,11 +197,6 @@ void _ArrayList<String>::insertFirst(ArrayList<String> list) {
 }
     
 void _ArrayList<String>::insertLast(String v) {
-    //if(v == nullptr) {
-    //    return;
-    //}
-    //printf("length is %d \n",elements.end() - elements.begin());
-    //insert(elements.end() - elements.begin(),v);
     add(v);
 }
 

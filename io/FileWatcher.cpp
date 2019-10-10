@@ -107,13 +107,11 @@ void _FileWatcher::run() {
     int len = 0;
 
     while ((len = read(notifyFd, buf, INOTIFY_EVENT_SIZE - 1)) > 0) {
-        printf("inotify ... len is %d\n",len);
         int nread = 0;
         while (len > 0) {
             struct inotify_event * event = (struct inotify_event *)&buf[nread];
             char *p = event->name;
-            printf("name is %s,event->len is %d \n",p,event->len);
-
+        
             String filepath = createString(event->name);
             while(1){
                 AutoMutex l(mutex);
@@ -136,7 +134,6 @@ void _FileWatcher::run() {
             
             nread = nread + sizeof(struct inotify_event) + event->len;
             len = len - sizeof(struct inotify_event) - event->len;
-            //printf("len is %d \n",len);
         }
     }
 }

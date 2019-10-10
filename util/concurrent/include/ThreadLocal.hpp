@@ -92,7 +92,6 @@ int _ThreadLocal<T>::size(){
 
 template<typename T>
 _ThreadLocal<T>::~_ThreadLocal(){
-    //printf("thread local distroy \n");
     AutoMutex l(mutex);
     mLocalMap->clear(); 
 }

@@ -110,15 +110,12 @@ int _ByteArrayReader::readByteArray(ByteArray d) {
         return -1;
     }
 
-    //printf("mSize is %d,mIndex is %d,mData is %s \n",mSize,mIndex,mData->toValue());
     int ss = mSize - mIndex;
     if(d->size() < ss) {
         memcpy(d->toValue(),&mDataP[mIndex],d->size());
-        //printf("copy trace1 ,length is %d,mIndex is %d \n",d->size(),mIndex);
         mIndex += d->size();
         return d->size();
     } else {
-        //printf("copy trace2,ss is %d,mIndex is %d \n",ss,mIndex);
         memcpy(d->toValue(),&mDataP[mIndex],ss);
         mIndex += ss;
         return ss;
@@ -184,7 +181,6 @@ int _ByteArrayReader::appendWithAdjustment(ByteArray d) {
     mDataP = mData->toValue();
     mSize = data->size();
     mIndex = 0;
-    //printf("appendData is %s \n",mData->toString()->toChars());
     return 0;
 }
 

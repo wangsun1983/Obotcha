@@ -57,7 +57,6 @@ void _Handler::sendEmptyMessageDelayed(int what,long delay) {
     AutoMutex l(mDelayedMutex);
     insertDelayedMessage(msg);
     mCondition->notify();
-    printf("sendEmptyMessageDelayed \n");
 }
 
 void _Handler::sendMessageDelayed(sp<_Message> msg,long delay) {
@@ -141,10 +140,8 @@ void _Handler::run() {
         Message msg;
         {
             AutoMutex l(mMutex);
-            printf("run trace1 \n");
             if(waitTime == 0) {
                 waitTime = scanDelayedMessage();
-                printf("run trace1,waitTime is %ld \n",waitTime);
             }
             
             while(mMessagePool->size() == 0) {
@@ -152,14 +149,11 @@ void _Handler::run() {
                 if(waitTime != 0) {
                     notifyResult = mCondition->wait(mMutex,waitTime - st(System)::currentTimeMillis());
                 } else {
-                    printf("run trace2 \n");
                     mCondition->wait(mMutex);
                 }
-                printf("run trace3 \n");
                 if(notifyResult == NotifyByTimeout) {
                     waitTime = scanDelayedMessage();
                 }
-                printf("run trace4,waitTime is %ld \n",waitTime);
             }
 
             msg = mMessagePool->remove(0);
@@ -237,7 +231,6 @@ void _Handler::insertDelayedMessage(Message msg) {
     
 long _Handler::scanDelayedMessage() {
     if(mHead == nullptr) {
-        printf("scanDelayedMessage mHead is null \n");
         return 0;
     }
 
@@ -250,12 +243,10 @@ long _Handler::scanDelayedMessage() {
         while(item != nullptr) {
             DelayMessageItem next = item->next;
             if(item->msg->time <= time) {
-                printf("scanDelayedMessage trace1 \n");
                 removeDelayedMessage(item);
                 //AutoMutex l(mMutex);
                 mMessagePool->add(item->msg);
             } else {
-                printf("scanDelayedMessage trace2 \n");
                 if(minTime > item->msg->time) {
                     minTime = item->msg->time;
                 }

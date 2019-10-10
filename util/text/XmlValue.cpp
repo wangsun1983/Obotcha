@@ -146,11 +146,9 @@ _XmlValue::_XmlValue(xml_node<> *n,_XmlDocument* r) {
 //}
 
 String _XmlValue::getStringAttr(String attr) {
-    //printf("getString arrt is %s,node is %x \n",attr->toChars(),node);
     xml_attribute<> *v = node->first_attribute(attr->toChars());
 
     if(v == nullptr) {
-        printf("getString arrt is null \n");
         return nullptr;
     }
     return createString(v->value());
@@ -295,7 +293,6 @@ XmlValue _XmlValue::getNode(String name) {
 
 
 String _XmlValue::getName() {
-    //printf("xmlvalue getname is %x \n",node);
     String v = createString(node->name());
     return v;
 }
@@ -304,8 +301,6 @@ void _XmlValue::updateName(String n) {
     if(n == nullptr) {
         return;
     }
-
-    //printf("xmlvalue update name is %x \n",node);
 
     node->name(doc->xmlDoc.allocate_string(n->toChars()),n->size());
     name = n;
@@ -346,14 +341,12 @@ void _XmlValue::appendNode(String name,String value) {
 void _XmlValue::appendAttr(String name,String value) {
     //node->append_attribute(v->attr);
     //attrCache->add(v);
-    //printf("appendAttr name is %s,value is %s \n",name->toChars(),value->toChars());
     String newres = name->trimAll();
     xml_attribute<> *attr = doc->xmlDoc.allocate_attribute(doc->xmlDoc.allocate_string(newres->toChars()),
         doc->xmlDoc.allocate_string(value->toChars()));
 
     node->append_attribute(attr);
     //xml_attribute<> *attr2 = node->first_attribute(name->toChars());
-    //printf("result is %s,node is %x \n",attr2->value(),node);
 }
 
 void _XmlValue::removeNode(XmlValue v) {

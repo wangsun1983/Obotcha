@@ -105,7 +105,6 @@ private:
 
 template <typename T>
 _BlockingQueue<T>::~_BlockingQueue() {
-    //printf("blockingqueue destroy \n");
     AutoMutex l(mMutex);
     isDestroy = true;
     mEnqueueCond->notify();
@@ -134,13 +133,11 @@ _BlockingQueue<T>::_BlockingQueue() {
 template <typename T>
 void _BlockingQueue<T>::enQueueFirst(T val) {
     while(1) {
-        //printf("enQueueFirst 1 \n");
         AutoMutex l(mMutex);
         int size = mQueue.size();
         if(mCapacity != -1 && size == mCapacity) {
             mEnqueueCond->wait(mMutex);
             if(isDestroy) {
-                //printf("enQueueFirst 2 \n");
                 return;
             }
             continue;
@@ -332,15 +329,11 @@ template <typename T>
 T _BlockingQueue<T>::deQueueFirst() {
     T ret;
     while(1) {
-        //printf("deQueueFirst 1 \n");
         AutoMutex l(mMutex);
-        //printf("deQueueFirst 2 \n");
         int size = mQueue.size();
         if(size == 0) {
             mDequeueCond->wait(mMutex);
-            //printf("deQueueFirst 3 \n");
             if(isDestroy) {
-                //printf("deQueueFirst 4 \n");
                 return nullptr;
             }
             continue;
@@ -364,9 +357,7 @@ T _BlockingQueue<T>::deQueueFirst(long timeout) {
         AutoMutex l(mMutex);
         int size = mQueue.size();
         if(size == 0) {
-            //printf("dequeuefirst wait start \n");
             if(NotifyByTimeout == mDequeueCond->wait(mMutex,timeout)) {
-                //printf("dequeuefirst wait trace1 \n");
                 return nullptr;
             } 
 
@@ -375,7 +366,6 @@ T _BlockingQueue<T>::deQueueFirst(long timeout) {
             }
             continue;
         }
-        //printf("dequeuefirst wait trace2 \n");
         ret = mQueue.at(0);
         mQueue.erase(mQueue.begin());
         
@@ -441,9 +431,7 @@ template <typename T>
 T _BlockingQueue<T>::deQueueFirstNoBlock() {
     T ret;
     while(1) {
-        //printf("deQueueFirst 1 \n");
         AutoMutex l(mMutex);
-        //printf("deQueueFirst 2 \n");
         int size = mQueue.size();
         if(size == 0) {
             return nullptr;

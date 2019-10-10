@@ -215,13 +215,10 @@ sp<_JsonValue> _JsonValue::getObject(String tag) {
 }
 
 sp<_JsonArray> _JsonValue::getArray(String tag) {
-    //printf("getArray tag is %s \n",tag->toChars());
     if(tag == nullptr) {
         return nullptr;
     }
-    //printf("getArray trace \n");
     if(contains(tag)) {
-        //printf("getArray trace2 \n");
         Json::Value value = jvalue[tag->toChars()];
         return createJsonArray(tag,value);
     }

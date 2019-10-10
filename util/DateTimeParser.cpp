@@ -41,20 +41,15 @@ namespace obotcha {
 
 DateTime _DateTimeParser::parse(String content) {
     int type = st(DateTimeFormatter)::isValid(content);
-	//printf("datetime type is %d \n",type);
 	return parse(type,content);
 }
 
 DateTime _DateTimeParser::parse(int type,String content) {
-    //printf("parse type is %d,content is %s \n",type,content->toChars());
-
     std::string fmt = st(DateTime)::FORMAT_LIST[type];
 
     if (st(DateTimeFormatter)::isValid(createString(fmt),content) != -1) {
         return nullptr;
     }
-
-	//printf("parse type is %d trace \n",type);
 
 	int year   = 0;
 	int month  = 0;
@@ -171,7 +166,6 @@ DateTime _DateTimeParser::parse(int type,String content) {
 				case 'z':
 				case 'Z':
 					tzd = parseTZD(it, end);
-                    //printf("tzd is %d \n",tzd);
 					break;
 				}
 				++itf;

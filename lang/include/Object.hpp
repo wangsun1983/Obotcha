@@ -44,7 +44,6 @@ public:
 
 protected:
     inline virtual ~Object() {
-        //printf("i release \n");
     }
 
 private:

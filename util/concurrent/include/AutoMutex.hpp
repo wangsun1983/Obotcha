@@ -12,10 +12,8 @@ namespace obotcha {
 class AutoMutex {
 public:
     AutoMutex(Mutex lock){
-        //printf("auto mutex1 lock,mutex is %x \n",mutex_t->getMutex_t());
         lock->lock();
         mutex_t = lock;
-        //printf("auto mutex1 lock,after mutex is %x \n",mutex_t->getMutex_t());
     }
 
     AutoMutex(Mutex lock,long v) {

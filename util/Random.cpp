@@ -68,11 +68,8 @@ void _Random::nextBytes(ByteArray bytes) {
     int size = bytes->size();
     for (int i = 0, len = size; i < len; ) {
         for (int rnd = nextInt(),
-             //n = Math.min(len - i, sizeof(int)/sizeof(byte));
              n = st(Math)::min(len - i, (long)(sizeof(int)/sizeof(byte)));
              n-- > 0; rnd >>= 8) {
-                //bytes[i++] = (byte)rnd;
-                //printf("rnd is %d \n",(byte)rnd);
                 bytes->fill(i++,(byte)rnd);
         }
     }

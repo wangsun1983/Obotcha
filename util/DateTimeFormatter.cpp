@@ -250,12 +250,9 @@ void _DateTimeFormatter::tzdRFC(std::string& str, int timeZoneDifferential)
 }
 
 int _DateTimeFormatter::isValid(String content) {
-	//printf("dateFormatter1 is isValid \n");
 	for(int i = 0; i < DateTimeFormatMax;i++) {
-		//printf("dateFormatter2 is isValid \n");
 		std::string f = st(DateTime)::REGEX_LIST[i];
 		if(std::regex_match(content->getStdString(),std::regex(f))) {
-			//printf("dateFormatter3 is isValid, i is %d \n",i);
 			return i;
 		}
 	}
@@ -263,9 +260,7 @@ int _DateTimeFormatter::isValid(String content) {
 }
 
 int _DateTimeFormatter::isValid(String fmt,String content) {
-    //printf("dateFormatter is isValid \n");
 	if(std::regex_match(content->getStdString(),std::regex(fmt->getStdString()))) {
-		//printf("dateFormatter is isValid trace1\n");
 		return 0;
 	}
 

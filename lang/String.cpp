@@ -32,25 +32,13 @@ const static std::string TRUE_STRING = "true";
 const static std::string FALSE_STRING = "false";
 
 _String::_String() {
-    ////m_str = new std::string();
 
-#ifdef DEBUG_STRING_MEMORY_LEAK    
-    stringCount++;
-    stringId = stringCount;
-    printf("wangsl,a count is %d,str is %s \n",stringId,m_str.data());
-#endif
 }
 
 _String::_String(String v) {
     if(v.m_ptr != nullptr) {
         m_str = v->m_str;
     } 
-
-#ifdef DEBUG_STRING_MEMORY_LEAK    
-    stringCount++;
-    stringId = stringCount;
-    printf("wangsl,b count is %d,str is %s \n",stringId,m_str.data());
-#endif   
 }
 
 _String::_String(Long v) {
@@ -251,11 +239,6 @@ _String::_String(const char *v) {
         m_str = std::string(v);
     }
 
-#ifdef DEBUG_STRING_MEMORY_LEAK    
-    stringCount++;
-    stringId = stringCount;
-    printf("wangsl,e count is %d,str is %s \n",stringId,m_str.data());
-#endif 
 }
 
 
@@ -330,8 +313,6 @@ int _String::size() {
 }
 
 String _String::append(String s) {
-    //m_str.append(*s->m_str);
-    //printf("string is %s \n",m_str.data());
     String str = createString(m_str);
 
     if(s == nullptr) {

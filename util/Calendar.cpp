@@ -101,15 +101,10 @@ void _Calendar::init() {
     gmtime_r(&timeT, &now);
 
     year = now.tm_year + GregorianBase;
-    //printf("init year is %d,now.tm_year is %d \n",year,now.tm_year);
     month = now.tm_mon;
-    //printf("init month is %d\n",month);
     dayOfWeek = now.tm_wday;
-    //printf("init dayOfWeek is %d\n",dayOfWeek);
     dayOfMonth = now.tm_mday;
-    //printf("init dayOfMonth is %d\n",dayOfMonth);
     dayOfYear = now.tm_yday;
-    //printf("init dayOfYear is %d\n",dayOfYear);
     hour = now.tm_hour + st(TimeZone)::getZone();
     minute = now.tm_min;
     second = now.tm_sec;
@@ -119,7 +114,6 @@ void _Calendar::init() {
         hour = hour - 24;
         increaseDay(1);
     }
-    //printf("init year2 is %d \n",year);
 }
 
 bool _Calendar::sameDate(Calendar c) {
@@ -141,10 +135,8 @@ void _Calendar::increaseHour(int _hour) {
     if(_hour < 0) {
         return decreaseHour(-_hour);
     }
-    //printf("hour is %d \n",hour);
     int _day = (hour + _hour)/24;
     hour = (hour+_hour)%24;
-    //printf("hour is %d,day is %d \n",hour,_day);
 
     if(_day != 0) {
         increaseDay(_day);
@@ -326,7 +318,6 @@ bool _Calendar::onUpdateByDayOfYear(int day) {
 
 
 int _Calendar::caculateDayOfYear(int _year,int _month,int _dayOfMonth) {
-    //printf("caculateDayOfYear,year is %d,month is %d,dayOfMonth is %d \n",_year,_month,_dayOfMonth);
     if(_month == January) {
         return _dayOfMonth - 1;
     }
@@ -477,7 +468,6 @@ bool _Calendar::isLeapYear(int _year) {
     
 void _Calendar::increaseYear(int _year) {
     year += _year;
-    //printf("increaseYear year is %d \n",year);
     
     //update dayOfMonth
     int *_days = getDays(year);
@@ -568,7 +558,6 @@ void _Calendar::decreaseMonth(int mon) {
 }
 
 void _Calendar::increaseDay(int day) {
-    //printf("1increaseDay dayOfMonth is %d \n",dayOfMonth);
 
     dayOfMonth += day;
     int daysInMonth = getMonthDays(month);
@@ -580,18 +569,11 @@ void _Calendar::increaseDay(int day) {
             month = 0;
         }
     }
-    //printf("increaseDay month is %d \n",month);
-    //printf("2increaseDay dayOfMonth is %d \n",dayOfMonth);
-    //printf("increaseDay year is %d \n",year);
     //update dayOfWeek
-    //printf("increaseDay1 dayOfWeek is %d \n",dayOfWeek);
     dayOfWeek = caculateDayOfWeek(year,month,dayOfMonth);
-    //printf("increaseDay2 dayOfWeek is %d \n",dayOfWeek);
     
     //update dayOfYear
-    //printf("increaseDay1 dayOfYear is %d \n",dayOfYear);
     dayOfYear = caculateDayOfYear(year,month,dayOfMonth);
-    //printf("increaseDay2 dayOfYear is %d \n",dayOfYear);
 }
 
 void _Calendar::decreaseDay(int day) {

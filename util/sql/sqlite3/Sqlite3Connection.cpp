@@ -24,14 +24,10 @@ ArrayList<SqlRecord> _Sqlite3Connection::query(String sqlString,SqlRecordBuilder
     SqliteQueryParam param;
     param.l = records;
     param.r = rec;
-    printf("param data is %x \n", &param);
 
     if (sqlite3_exec(mSqlDb, sqlString->toChars(), sqlQueryCallback, &param,NULL) != SQLITE_OK) {
-        printf("sqlite3_exec fail \n");
         return nullptr;
     }
-    printf("query sqlite3 \n");
-
     return records;
 }
 
@@ -49,12 +45,9 @@ int _Sqlite3Connection::exec(String sqlstring) {
 }
 
 int _Sqlite3Connection::sqlQueryCallback(void *ctx, int argc, char *argv[], char *col[]) {
-    printf("param ctx is %x argc is %d \n", ctx,argc);
     SqliteQueryParam *param = (SqliteQueryParam *)ctx;
     SqlRecord r = param->r->create();
     for (int i = 0; i < argc; i++) {
-        printf("argv is %s,col is %s \n",argv[i],col[i]);
-
         sql_data_set m = r->getSqlAssignment(i,col[i]);
         if(m == nullptr) {
             continue;
