@@ -32,8 +32,8 @@ void _WebSocketHttpListener::setWsEpollObserver(HashMap<String,EPollFileObserver
 void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) {
     //check whether is http requset for upgrage ws
     //TODO
-    printf("onAccept content is %s \n",pack->toValue());
-    String req = createString(pack->toValue(),0,pack->size());
+    //printf("onAccept content is %s \n",pack->toValue());
+    String req = pack->toString();
     HttpPacket request = mParser->parseRequest(req);
     HttpHeader header = request->getHeader();
 
@@ -99,7 +99,9 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
     char recv_buf[BUFF_SIZE];
     int len = recv(fd, recv_buf, BUFF_SIZE, 0);
     printf("len is %d \n",len);
-    if(len == BUFF_SIZE) {
+    if(len == -1) {
+        return EPollOnEventResultRemoveFd;
+    } if(len == BUFF_SIZE) {
         printf("error!!!!!! buff is oversize \n");
     }
     
@@ -210,6 +212,20 @@ int _WebSocketServer::bind(int port,String path,WebSocketListener listener) {
 int _WebSocketServer::start() {
     mServer->start();
     //mEpollObserver->start();
+}
+
+int _WebSocketServer::release() {
+    printf("websocket release trace1 \n");
+    mServer->release();
+    printf("websocket release trace2 \n");
+    //mEpollObservers
+    MapIterator<String,EPollFileObserver> iterator = mEpollObservers->getIterator();
+    while(iterator->hasValue()) {
+        EPollFileObserver observer = iterator->getValue();
+        observer->release();
+        iterator->next();
+    }
+    printf("websocket release trace3 \n");
 }
 
 

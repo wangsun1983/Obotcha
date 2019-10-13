@@ -39,13 +39,13 @@ int _Exception::getErrCode() {
 
 void _Exception::printStack() {
     printf("-----------------[maps dump start]--------------- \n");
-    char *path = "/proc/self/maps";
+    const char *path = "/proc/self/maps";
     int fd = open(path,O_RDONLY);
     if(fd >=0) {
-        char *buff[1024*256];
+        char buff[1024*256];
         read(fd,buff,1024*256);
         close(fd);
-        printf("%s \n",buff);
+        printf("%s \n",&buff[0]);
     }
     printf("-----------------[maps dump end]---------------- \n");
     printf("\n");

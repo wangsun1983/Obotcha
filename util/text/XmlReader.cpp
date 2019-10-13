@@ -23,12 +23,10 @@ _XmlReader::_XmlReader(File file) {
 sp<_XmlDocument> _XmlReader::parse() {
     String path = xmlfile->getAbsolutePath();
     if(path != nullptr) {
-        //read xml file
-        rapidxml::file<> fdoc(path->toChars());
 
-        XmlDocument document = createXmlDocument(xmlfile->length());
-        document->xmlDoc.parse<0>(fdoc.data());
-
+        XmlDocument document = createXmlDocument(path,xmlfile->length());
+        document->parse();
+        
         xml_node<> *node = document->xmlDoc.first_node();
         return document;
     }

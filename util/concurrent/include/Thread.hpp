@@ -199,8 +199,6 @@ private:
     //static void cleanup(void *th);
 
     Runnable mRunnable;
-    
- 
 
     pthread_attr_t mThreadAttr;
 
@@ -217,6 +215,10 @@ private:
     AtomicInteger bootFlag;
 
     Mutex mProtectMutex;
+
+    Mutex mJoinMutex;
+
+    Condition mJoinDondtion;
 };
 
 }

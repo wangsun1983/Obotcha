@@ -9,6 +9,8 @@
 #include "String.hpp"
 
 #include "rapidxml.hpp"
+#include "rapidxml_print.hpp"
+#include "rapidxml_utils.hpp"
 
 using namespace rapidxml;
 
@@ -30,18 +32,24 @@ public:
 
     sp<_XmlValue> newNode(String name);
 
+    void load(String);
+
+    void parse();
+
     //sp<_XmlAttribute> newAttribute(String name,String value);
 
     sp<_XmlValue> getRootNode();
 
     String toString();
 
-    _XmlDocument(long size);
+    _XmlDocument(String path,long size);
 
     _XmlDocument();
 
 private:
     xml_document<> xmlDoc;
+
+    rapidxml::file<> fdoc;
 
     long mFileSize;
 };

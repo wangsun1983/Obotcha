@@ -117,6 +117,7 @@ void _LocalSocketClient::release() {
     //printf("tcpclient release2\n");
     if(mSock >= 0) {
         close(mSock);
+        mSock = -1;
     }
 
     if(mBuff != nullptr) {

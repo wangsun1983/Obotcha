@@ -74,13 +74,13 @@ Step2:
 void _StackTrace::dumpStack(String tag) {
 
     printf("PROCESS MAPS: \n");
-    char *path = "/proc/self/maps";
+    const char *path = "/proc/self/maps";
     int fd = open(path,O_RDONLY);
     if(fd >=0) {
-        char *buff[1024*256];
+        char buff[1024*256];
         read(fd,buff,1024*256);
         close(fd);
-        printf("%s \n",buff);
+        printf("%s \n",&buff[0]);
     }
 
     printf("PROCESS TRACE: \n");

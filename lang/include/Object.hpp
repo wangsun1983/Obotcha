@@ -58,7 +58,7 @@ template<typename... Args>\
 sp<_##Y> create##Y(Args&&... args)\
 {\
     sp<_##Y> ret = new _##Y(std::forward<Args>(args)...);\
-        return ret;\
+    return ret;\
 }\
 
 #define MAKE_FUNCTION_1(Y) \
@@ -66,7 +66,7 @@ template<typename T,typename... Args>\
 sp<_##Y<T>> create##Y(Args&&... args)\
 {\
     sp<_##Y<T>> ret = new _##Y<T>(std::forward<Args>(args)...);\
-        return ret;\
+    return ret;\
 }\
 
 #define MAKE_FUNCTION_2(Y) \
@@ -74,7 +74,7 @@ template<typename T,typename U,typename... Args>\
 sp<_##Y<T,U>> create##Y(Args&&... args)\
 {\
     sp<_##Y<T,U>> ret = new _##Y<T,U>(std::forward<Args>(args)...);\
-        return ret;\
+    return ret;\
 }\
 
 

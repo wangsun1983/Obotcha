@@ -20,6 +20,7 @@ static void* freethreadmem(void *th) {
 }
 
 _ReleaseThread::_ReleaseThread() {
+
     mutex = createMutex("ReleaseThreadMutex");
 
     cond = createCondition();
@@ -98,6 +99,7 @@ _KeepAliveThread::_KeepAliveThread() {
     mThreadLocal = createThreadLocal<sp<_Thread>>();
     mStartBarrier = createAtomicInteger(0);
     mReleaseThread = createReleaseThread();
+    mTid = -1;
 }
 
 void _KeepAliveThread::start() {
@@ -150,6 +152,9 @@ _KeepAliveThread::~_KeepAliveThread() {
     queue->destroy();
 
     mReleaseThread->stop();
+    if(mTid != -1) {
+        pthread_join(mTid,(void **) nullptr);
+    }
 }
 
 //------------Thread Stack function---------------//
@@ -160,7 +165,13 @@ void cleanup(void *th) {
     } else {
         thread->onInterrupt();
     }
-    thread->mStatus = ThreadComplete;
+    
+    {
+        AutoMutex ll(thread->mJoinMutex);
+        thread->mStatus = ThreadComplete;
+        thread->mJoinDondtion->notifyAll();
+    }
+
     _Thread::getKeepAliveThread()->drop(thread->mPthread);
 }
 
@@ -192,7 +203,6 @@ void* _Thread::localRun(void *th) {
         pthread_setname_np(thread->mPthread,thread->mName->toChars());
     }
     //pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
-
     if(thread->mRunnable != nullptr) {
         thread->mRunnable->run();
         thread->mRunnable = nullptr;
@@ -203,8 +213,11 @@ void* _Thread::localRun(void *th) {
 end:
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     pthread_cleanup_pop(0);
-    thread->mStatus = ThreadComplete;
-
+    {
+        AutoMutex ll(thread->mJoinMutex);
+        thread->mStatus = ThreadComplete;
+        thread->mJoinDondtion->notifyAll();
+    }
     mKAThread->drop(localThread->mPthread);
     localThread.remove_pointer();
     return nullptr;
@@ -222,9 +235,7 @@ _Thread::_Thread(String name,Runnable run){
         mName = name;    
     }
     
-    if(run != nullptr) {
-        mRunnable = run;
-    }
+    mRunnable = run;
 
     mKeepAliveThread->start();
     
@@ -232,7 +243,12 @@ _Thread::_Thread(String name,Runnable run){
     mPriority = ThreadLowPriority;
     mStatus = ThreadNotStart;
     bootFlag = createAtomicInteger(0);
+
     mProtectMutex = createMutex("ThreadProtectMutex");
+
+    mJoinMutex = createMutex("ThreadJoinMutex");
+
+    mJoinDondtion = createCondition();
 }
 
 int _Thread::setName(String name) {
@@ -262,6 +278,7 @@ Runnable _Thread::getRunnable() {
 }
 
 void _Thread::run() {
+    printf("thread run!!!! \n");
     //child thread can overwrite it.
 }                                                                                                    
 
@@ -306,13 +323,17 @@ void _Thread::initPolicyAndPriority() {
 }
 
 void _Thread::join() {
-    pthread_join(mPthread,(void **) nullptr);
+    AutoMutex ll(mJoinMutex);
+    if(getStatus() == ThreadRunning) {
+        mJoinDondtion->wait(mJoinMutex);
+    }
 }
 
 void _Thread::join(long timeInterval) {
-    struct timespec ts;
-    st(System)::getNextTime(timeInterval,&ts);
-    pthread_timedjoin_np(mPthread,nullptr,&ts);
+    AutoMutex ll(mJoinMutex);
+    if(getStatus() == ThreadRunning) {
+        mJoinDondtion->wait(mJoinMutex,timeInterval);
+    }
 }
 
 int _Thread::getStatus() {
@@ -323,6 +344,7 @@ void _Thread::quit() {
     if(mStatus == ThreadComplete||mStatus == ThreadNotStart||mStatus == ThreadWaitExit) {
         return;
     }
+
     AutoMutex l(mProtectMutex);
     if(mStatus == ThreadComplete||mStatus == ThreadNotStart) {
         mStatus = ThreadComplete;
@@ -330,6 +352,7 @@ void _Thread::quit() {
     }else if(mStatus == ThreadWaitExit) {
         return;
     }
+
     if(mStatus == ThreadIdle) {
         mStatus = ThreadWaitExit;
         while(1) {

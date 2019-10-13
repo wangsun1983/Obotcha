@@ -28,6 +28,7 @@
 #include "WebSocketFrameComposer.hpp"
 #include "WebSocketParser.hpp"
 #include "HashMap.hpp"
+#include "TcpServer.hpp"
 
 namespace obotcha {
 
@@ -76,8 +77,12 @@ DECLARE_SIMPLE_CLASS(WebSocketServer) {
 public:
     _WebSocketServer();
     int bind(String ip,int port,String path,WebSocketListener listener);
+    
     int bind(int port,String path,WebSocketListener listener);
+    
     int start();
+
+    int release();
 
 private:
     String mPath;

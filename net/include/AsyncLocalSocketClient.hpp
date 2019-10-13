@@ -30,6 +30,8 @@ DECLARE_SIMPLE_CLASS(AsyncLocalSocketClientThread) EXTENDS(Thread){
 public:
     _AsyncLocalSocketClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status,int timeout,int buffersize);
 
+    ~_AsyncLocalSocketClientThread();
+    
     void run();
 
 private:
@@ -46,6 +48,8 @@ private:
     int mTimeOut;
 
     int mBufferSize;
+
+    char *recvBuff;
     
 };
 

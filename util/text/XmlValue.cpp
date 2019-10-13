@@ -24,12 +24,6 @@ bool _XmlAttrIterator::next() {
     return attr != nullptr;
 }
 
-//sp<_XmlAttribute> _XmlAttrIterator::getAttribute() {
-//    String name = createString(attr->name());
-//    String value = createString(attr->value());
-//    sp<_XmlAttribute> attribute = createXmlAttribute(attr,reader,name,value);
-//    return attribute;
-//}
 String _XmlAttrIterator::getName() {
     if(attr == nullptr) {
         return nullptr;
@@ -123,27 +117,13 @@ int _XmlAttribute::updateValue(String name,String newvalue) {
 _XmlValue::_XmlValue(xml_node<> *n,sp<_XmlDocument> d) {
     node = n;
     doc = d;
-    //name = _name;
-    //value = _value;
-
-    //valueCache = createArrayList<XmlValue>();
-    //attrCache = createArrayList<XmlAttribute>();
 }
 
 //_XmlValue::_XmlValue(xml_node<> *n,_XmlDocument* r,String _name,String _value) {
 _XmlValue::_XmlValue(xml_node<> *n,_XmlDocument* r) {
     node = n;
     doc.set_pointer(r);
-    //name = _name;
-    //value = _value;
-
-    //valueCache = createArrayList<XmlValue>();
-    //attrCache = createArrayList<XmlAttribute>();
 }
-
-//void _XmlValue::setParser(sp<_XmlDocument> r) {
-//    reader = r;
-//}
 
 String _XmlValue::getStringAttr(String attr) {
     xml_attribute<> *v = node->first_attribute(attr->toChars());

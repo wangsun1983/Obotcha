@@ -63,6 +63,8 @@ public:
 
     int release();
     
+    ~_EPollFileObserver();
+    
 private:
     int mEpollFd;
 

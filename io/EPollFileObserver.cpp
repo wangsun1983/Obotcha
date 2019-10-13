@@ -30,26 +30,32 @@ _EPollThread::_EPollThread(int fd,int size,Pipe pipe,EPollFileObserverListener l
 
 void _EPollThread::run() {
     struct epoll_event events[mSize];
+    memset(events,0,sizeof(struct epoll_event) *mSize);
 
     while(1) {
+        printf("EpollThread run1 \n");
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
-        
+        printf("EpollThread run2 \n");
         if(epoll_events_count < 0) {
+            printf("EpollThread exit1 \n");
             return;
         }
-
+        printf("EpollThread run3 \n");
         for(int i = 0; i < epoll_events_count; i++) {
             int fd = events[i].data.fd;
             int event = events[i].events;
 
             if(fd == mPipe->getReadPipe()) {
+                printf("EpollThread exit2 \n");
                 return;
             }
-
+            printf("EpollThread run4 \n");
             if(mListener->onEvent(fd,event) == EPollOnEventResultRemoveFd) {
                 epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
             };
+            printf("EpollThread run5 \n");
         }
+        printf("EpollThread run6 \n");
     }
 }
 
@@ -59,20 +65,17 @@ _EPollFileObserver::_EPollFileObserver(EPollFileObserverListener l,int size) {
     mEpollFd = epoll_create(size);
     mPipe = createPipe();
     mPipe->init();
-    addFd(mPipe->getReadPipe(),true);
+    addFd(mPipe->getReadPipe(),EPOLLIN|EPOLLRDHUP|EPOLLHUP);
 }
 
-_EPollFileObserver::_EPollFileObserver(EPollFileObserverListener l) {
-    this->mListener = l;
-    mSize = EPOLL_DEFAULT_SIZE;
-    mEpollFd = epoll_create(EPOLL_DEFAULT_SIZE);
-    mPipe = createPipe();
-    mPipe->init();
-    addFd(mPipe->getReadPipe(),true);
+_EPollFileObserver::_EPollFileObserver(EPollFileObserverListener l):_EPollFileObserver{l,EPOLL_DEFAULT_SIZE} {
+
 }
 
 int _EPollFileObserver::addFd(int fd,int events) {
     struct epoll_event ev;
+    memset(&ev,0,sizeof(struct epoll_event));
+
     ev.data.fd = fd;
     ev.events = events;
     epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
@@ -87,23 +90,36 @@ int _EPollFileObserver::removeFd(int fd) {
 }
 
 int _EPollFileObserver::start() {
+    printf("EPollFileObserver start 1\n");
     if(mEpollThread != nullptr) {
         return -EPollFileObserverAlreadyStart;
     }
-
+    printf("EPollFileObserver start 2\n");
     mEpollThread = createEPollThread(mEpollFd,mSize,mPipe,mListener);
     mEpollThread->start();
-
+    printf("EPollFileObserver start 3\n");
     return 0;
 }
 
 int _EPollFileObserver::release() {
+    printf("EPollFileObserver release 1\n");
     mPipe->writeTo(createByteArray(1));
+    printf("EPollFileObserver release 2\n");
 
-    close(mEpollFd);
+    mEpollThread->join();
+    printf("EPollFileObserver release 3\n");
 
+    if(mEpollFd != -1) {
+        close(mEpollFd);
+        mEpollFd = -1;
+    }
+    
     return 0;
-} 
+}
+
+_EPollFileObserver::~_EPollFileObserver() {
+
+}
 
 
 }

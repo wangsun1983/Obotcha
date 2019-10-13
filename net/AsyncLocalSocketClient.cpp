@@ -33,12 +33,20 @@ _AsyncLocalSocketClientThread::_AsyncLocalSocketClientThread(int sock,
     mStatus = status;
     mTimeOut = timeout;
     mBufferSize = buffersize;
+    recvBuff = nullptr;
+}
+
+_AsyncLocalSocketClientThread::~_AsyncLocalSocketClientThread() {
+    if(recvBuff != nullptr) {
+        free(recvBuff);
+        recvBuff = nullptr;
+    }
 }
 
 void _AsyncLocalSocketClientThread::run() {
     
     struct epoll_event events[EPOLL_SIZE];
-    char *recv_buf = (char *)malloc(mBufferSize);
+    recvBuff = (char *)malloc(mBufferSize);
     printf("epoll run,mTimeOut is %d \n",mTimeOut);
     while(1) {
         if(mStatus->get() == LocalSocketClientWaitingThreadExit) {
@@ -51,7 +59,7 @@ void _AsyncLocalSocketClientThread::run() {
             mListener->onTimeout();
             return;
         } else if(epoll_events_count < 0) {
-            printf("epoll error is %s \n",strerror(errno));
+            printf("epoll error is %s,mEpfd is %d \n",strerror(errno),mEpfd);
             return;
         }
 
@@ -85,10 +93,10 @@ void _AsyncLocalSocketClientThread::run() {
                 continue;
             }
 
-            memset(recv_buf,0,mBufferSize);
+            memset(recvBuff,0,mBufferSize);
             if(events[i].data.fd == mSock) {
                 printf("epoll trace3 \n");
-                int ret = recv(mSock, recv_buf, mBufferSize, 0);
+                int ret = recv(mSock, recvBuff, mBufferSize, 0);
                 if(ret == 0) {
                     cout << "Server closed connection: " << mSock << endl;
                     st(NetUtils)::delEpollFd(mEpfd,sockfd);
@@ -97,14 +105,12 @@ void _AsyncLocalSocketClientThread::run() {
                     mStatus->set(LocalSocketClientThreadExited);
                     return;
                 } else {
-                    ByteArray pack = createByteArray(recv_buf,ret);
+                    ByteArray pack = createByteArray(recvBuff,ret);
                     mListener->onAccept(mSock,nullptr,-1,pack);
                 }
             }
         }
     }
-
-    free(recv_buf);
 }
 
 _AsyncLocalSocketClient::_AsyncLocalSocketClient(String domain,SocketListener l,int recvtime,int buffsize) {
@@ -136,7 +142,7 @@ bool _AsyncLocalSocketClient::init() {
         printf("connect error :%s \n",strerror(errno));
         return false;
     }
-    printf("LocalSocketClient init trace4 \n");
+    printf("LocalSocketClient init trace4,sock is %d,readpipe is %d \n",sock,mPipe->getReadPipe());
 
     st(NetUtils)::addEpollFd(epfd, sock,false);
     st(NetUtils)::addEpollFd(epfd, mPipe->getReadPipe(), false);
@@ -168,6 +174,7 @@ void _AsyncLocalSocketClient::wait() {
 }
 
 void _AsyncLocalSocketClient::release() {
+    printf("_AsyncLocalSocketClient release trace1 \n");
     if(mStatus->get() == LocalSocketClientWaitingThreadExit || mStatus->get() == LocalSocketClientThreadExited){
         return;
     }
@@ -193,7 +200,7 @@ void _AsyncLocalSocketClient::release() {
             //mTcpClientThread = nullptr;
         }
     }
-
+    printf("_AsyncLocalSocketClient release trace2,epfd is %d  \n",epfd);
     if(epfd != -1) {
         close(epfd);
         epfd = -1;

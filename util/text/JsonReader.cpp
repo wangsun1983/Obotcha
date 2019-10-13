@@ -23,7 +23,7 @@ JsonValue _JsonReader::parse() {
 
     Json::Reader reader;
     JsonValue value = createJsonValue();
-    reader.parse(buff->toValue(),value->jvalue);
+    reader.parse(buff->toString()->toChars(),value->jvalue);
     return value;
 }
 

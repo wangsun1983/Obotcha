@@ -10,8 +10,12 @@ using namespace rapidxml;
 
 namespace obotcha {
 
-_XmlDocument::_XmlDocument(long size) {
+_XmlDocument::_XmlDocument(String path,long size) {
     mFileSize = size;
+    
+    if(path != nullptr) {
+        fdoc = path->toChars();
+    }
 }
 
 _XmlDocument::_XmlDocument() {
@@ -44,6 +48,16 @@ XmlValue _XmlDocument::newNode(String nodename,String value) {
 
     XmlValue xmlnode = createXmlValue(node,this);
     return xmlnode;
+}
+
+void _XmlDocument::load(String path) {
+    if(path != nullptr) {
+        fdoc = path->toChars();
+    }
+}
+
+void _XmlDocument::parse() {
+    this->xmlDoc.parse<0>(fdoc.data());
 }
 
 XmlValue _XmlDocument::newNode(String nodename) {

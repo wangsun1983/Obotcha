@@ -22,12 +22,17 @@ extern int testThreadNotifyInterruptCase();
 extern int testThreadSleepInterrupt();
 extern int testThreadLoopInterrypt();
 extern int testThreadRelease();
+extern int testThreadJoin();
 
 int main() {
-    testThreadInterruptCase();
-    testThreadCommonCase();
-    testThreadNotifyInterruptCase();
-    testThreadSleepInterrupt();
-    testThreadLoopInterrypt();
-    testThreadRelease();
+
+    testThreadJoin(); 
+    //testThreadInterruptCase();
+    //testThreadCommonCase();
+    //testThreadNotifyInterruptCase();
+    //testThreadSleepInterrupt();
+    //testThreadLoopInterrypt();
+    //testThreadRelease();
+
+    sleep(10);
 }

@@ -139,6 +139,7 @@ public:
 int testThreadCommonCase() {
   printf("---[TestThread Test Start]--- \n");
 
+
   //_Thread(String name,Runnable run);
   while(1) {
     {
@@ -156,6 +157,8 @@ int testThreadCommonCase() {
     printf("---[Thread Test {create()} case2] [Success]--- \n");
     break;
   }
+ 
+
 
   //_Thread(Runnable run);
   while(1){
@@ -177,6 +180,7 @@ int testThreadCommonCase() {
     break;
 }
 
+
   //_Thread()
   while(1) {
     {
@@ -194,6 +198,7 @@ int testThreadCommonCase() {
     printf("---[Thread Test {create()} case6] [Success]--- \n");
     break;
   }
+ 
 
   //void join(long millseconds);
   while(1) {
@@ -209,9 +214,11 @@ int testThreadCommonCase() {
       break;
     }
 
+    t2->quit();
     printf("---[Thread Test {join(long)} case1] [Success]--- \n");
     break;
   }
+
 
   //int getStatus();
   while(1) {
@@ -236,7 +243,6 @@ int testThreadCommonCase() {
     break;
   }
 
-
   //int setSchedPolicy(ThreadSchedPolicy);
   while(1) {
     Thread2 t2 = createThread2();
@@ -250,7 +256,7 @@ int testThreadCommonCase() {
       printf("---[Thread Test {setSchedPolicy()} case1] [FAILED]--- \n");
       break;
     }
-
+    t2->quit();
     printf("---[Thread Test {setSchedPolicy()} case2] [Sucess]--- \n");
     break;
   }
@@ -274,7 +280,7 @@ int testThreadCommonCase() {
       printf("---[Thread Test {setPriority()} case2] [FAILED]--- \n");
       break;
     }
-
+    t2->quit();
     printf("---[Thread Test {setPriority()} case3] [Success]--- \n");
     break;
   }
@@ -300,6 +306,7 @@ int testThreadCommonCase() {
       break;
     }
 
+    t2->quit();
     printf("---[Thread Test {setName()} case2] [Success]--- \n");
     break;
   }
@@ -316,6 +323,7 @@ int testThreadCommonCase() {
       break;
     }
 
+    t2->quit();
     printf("---[Thread Test {getName()} case2] [Success]--- \n");
     break;
   }
@@ -387,6 +395,8 @@ int testThreadCommonCase() {
         printf("---[Thread Test {setThreadSchedPolicy()} case1] [FAILED]--- \n");
         break;
     }
+
+    t1->quit();
     printf("---[Thread Test {setThreadSchedPolicy()} case2] [Success]--- \n");
     break;
   }
@@ -402,7 +412,7 @@ int testThreadCommonCase() {
         printf("---[Thread Test {getThreadPriority()} case1] [FAILED]--- \n");
         break;
     }
-
+    t1->quit();
     printf("---[Thread Test {getsetThreadSchedPolicyThreadPriority()} case2] [Success]--- \n");
     break;
   }
@@ -419,7 +429,7 @@ int testThreadCommonCase() {
         printf("---[Thread Test {setThreadPriority()} case1] [FAILED]--- \n");
         break;
     }
-
+    t1->quit();
     printf("---[Thread Test {setThreadPriority()} case1] [Success]--- \n");
     break;
   }
@@ -438,6 +448,7 @@ int testThreadCommonCase() {
           printf("---[Thread Test {getThreadPriority()} case1] [FAILED]--- \n");
           break;
       }
+      t1->quit();
 
       printf("---[Thread Test {getThreadPriority()} case2] [Success]--- \n");
       break;

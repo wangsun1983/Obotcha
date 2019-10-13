@@ -111,14 +111,14 @@ ByteArray _WebSocketFrameComposer::generateMessageFrame(int formatOpcode,ByteArr
 
 
 String _WebSocketFrameComposer::generateShakeHandFrame(String key) {
-    printf("key is %s \n",key->toChars());
-    printf("accept magic is %s \n",st(WebSocketProtocol)::ACCEPT_MAGIC->toChars());
+    //printf("key is %s \n",key->toChars());
+    //printf("accept magic is %s \n",st(WebSocketProtocol)::ACCEPT_MAGIC->toChars());
     String key_mgic = key->append(st(WebSocketProtocol)::ACCEPT_MAGIC);
-    printf("key_mgic is %s \n",key_mgic->toChars());
+    //printf("key_mgic is %s \n",key_mgic->toChars());
     ByteArray sha1_content = mSha->encryptRawData(createByteArray(key_mgic));
-    printf("sha1_content is %s \n",sha1_content->toValue());
+    //printf("sha1_content is %s \n",sha1_content->toValue());
     String base64 = mBase64->encode(sha1_content)->toString();
-    printf("base64 is %s \n",base64->toChars());
+    //printf("base64 is %s \n",base64->toChars());
 
     String head = "HTTP/1.1 101 Switching Protocols\r\n";
     String upgrade = head->append("Upgrade: websocket\r\n");
