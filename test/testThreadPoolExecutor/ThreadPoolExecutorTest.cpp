@@ -38,17 +38,17 @@ Mutex runTest2Mutex;
 DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        printf("RunTest2 start 1\n");
+        //printf("RunTest2 start 1\n");
         runTest2Mutex->lock();
-        printf("RunTest2 start 2\n");
+        //printf("RunTest2 start 2\n");
     }
 
     void onInterrupt() {
-        printf("RunTest2 onInterrupt 2\n");
+        //printf("RunTest2 onInterrupt 2\n");
     }
 
     ~_RunTest2() {
-        printf("RunTest2 dispose 2\n");
+        //printf("RunTest2 dispose 2\n");
     }
 };
 
@@ -121,9 +121,9 @@ int normalTest() {
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
-        printf("awaitTermination start test \n");
+        //printf("awaitTermination start test \n");
         result = pool->awaitTermination(5000);
-        printf("awaitTermination result is %d \n",result);
+        //printf("awaitTermination result is %d \n",result);
         if(result != -WaitTimeout) {
             printf("---[TestThreadPoolExecutor Test {awaitTermination()} case2] [FAIL]--- \n");
             break;

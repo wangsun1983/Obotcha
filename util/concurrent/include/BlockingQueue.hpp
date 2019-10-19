@@ -16,6 +16,7 @@
 #include "Double.hpp"
 #include "Float.hpp"
 #include "Integer.hpp"
+#include "InitializeException.hpp"
 
 using namespace std;
 
@@ -82,9 +83,8 @@ public:
     ~_BlockingQueue();
 
     //wait for empty
-    inline void waitForEmpty();
-
-    inline void waitForEmpty(long timeout);
+    //inline void waitForEmpty();
+    //inline void waitForEmpty(long timeout);
 
     inline void clear();
 
@@ -114,7 +114,11 @@ _BlockingQueue<T>::~_BlockingQueue() {
 //template class/function must be defined in hpp file.
 template <typename T>
 _BlockingQueue<T>::_BlockingQueue(int size):mCapacity(size){
-    mMutex = createMutex("BlockingQueueMutex1");
+    if(size == 0) {
+        throw createInitializeException(createString("BlockingQueue size is 0"));
+    }
+
+    mMutex = createMutex("BlockingQueueMutex");
     mEnqueueCond = createCondition();
     mDequeueCond = createCondition();
     isDestroy = false;
@@ -332,6 +336,10 @@ T _BlockingQueue<T>::deQueueFirst() {
         AutoMutex l(mMutex);
         int size = mQueue.size();
         if(size == 0) {
+            if(isDestroy) {
+                return nullptr;
+            }
+            
             mDequeueCond->wait(mMutex);
             if(isDestroy) {
                 return nullptr;
@@ -382,6 +390,10 @@ T _BlockingQueue<T>::deQueueLast() {
 
     while(1) {
         AutoMutex l(mMutex);
+        if(isDestroy) {
+            return nullptr;
+        }
+
         int size = mQueue.size();
         
         if(size == 0) {
@@ -527,8 +539,8 @@ void _BlockingQueue<T>::destroy() {
     AutoMutex l(mMutex);
     isDestroy = true;
     mQueue.clear();
-    mEnqueueCond->notify();
-    mDequeueCond->notify();
+    mEnqueueCond->notifyAll();
+    mDequeueCond->notifyAll();
 }
 
 

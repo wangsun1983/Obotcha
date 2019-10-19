@@ -16,6 +16,7 @@ using namespace obotcha;
 extern int normalTest();
 extern int testRunnable_onInterrupt();
 extern int releaseTest();
+extern int testThreadShutdown();
 
 int main() {
     normalTest();
@@ -24,6 +25,7 @@ int main() {
     sleep(1);
     releaseTest();
     sleep(10);
-
+    testThreadShutdown();
+    sleep(10);
     return 1;
 }

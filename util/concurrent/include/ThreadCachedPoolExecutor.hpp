@@ -23,24 +23,21 @@ using namespace std;
 namespace obotcha {
 
 class _ThreadCachedPoolExecutor;
+class _CacheThreadManager;
 
-DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutorHandler) IMPLEMENTS(Runnable) {
+DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutorHandler) IMPLEMENTS(Thread) {
 
 public:
 
-    _ThreadCachedPoolExecutorHandler(BlockingQueue<FutureTask> pool,long timeout,_ThreadCachedPoolExecutor *h,Mutex m);
-    
-    Thread mThread;
-    
+    _ThreadCachedPoolExecutorHandler(BlockingQueue<FutureTask>,Mutex taskMutex,sp<_CacheThreadManager>,long timeout);
+        
     bool isTerminated();
 
     void run();
     
     void stop();
 
-    void waitForTerminate();
-
-    void waitForTerminate(long);
+    void doTask(FutureTask);
 
     void onInterrupt();
 
@@ -49,37 +46,77 @@ public:
     ~_ThreadCachedPoolExecutorHandler();
 
 private:
-    BlockingQueue<FutureTask> mPool;
-
-    ConcurrentQueue<sp<_ThreadCachedPoolExecutorHandler>> mHandlers;
-
     int state;
 
-    bool isWaitTerminate;
-
+    //-------------------------
     FutureTask mCurrentTask;
 
-    Mutex mStateMutex;
+    Mutex mTaskWaitMutex;
+
+    Condition mTaskCondition;
+    //-------------------------
+
+    sp<_CacheThreadManager> mCacheManager;
 
     Mutex mHandlerMutex;
 
     Condition mWaitCond;
 
-    bool isWaitIdle;
-
     long mThreadTimeout;
 
     mutable volatile bool mStop;
 
-    _ThreadCachedPoolExecutor *mExecutor;
+    BlockingQueue<FutureTask> mPool;
 
-    Mutex mExecutorMutex;
+    Mutex mTaskMutex;
+};
 
-    Condition waitStartCond;
+//wangsl
+DECLARE_SIMPLE_CLASS(CacheThreadManager) {
+    
+public:
+    _CacheThreadManager(int queueSize,int minThreadNum,int maxThreadNum,int waittimeout);
 
-    Mutex waitStartMutex;
+    _CacheThreadManager();
 
-    bool isFirstBoot;
+    ~_CacheThreadManager();
+
+    void bindTask(FutureTask);
+
+    void idleNotify(ThreadCachedPoolExecutorHandler);
+
+    void timeoutNotify(ThreadCachedPoolExecutorHandler);
+
+    void interruptNotify(ThreadCachedPoolExecutorHandler);
+    //-----------
+    int awaitTermination(long timeout);
+
+    void release();
+
+    int getThreadSum();
+
+private:
+    ArrayList<ThreadCachedPoolExecutorHandler> mIdleHandlers;
+    Mutex mIdleHandlerMutex;
+
+    ArrayList<ThreadCachedPoolExecutorHandler> mRunningHandlers;
+    Mutex mRunningHandlerMutex;
+
+    BlockingQueue<FutureTask> mFutureTasks;
+
+    Mutex mFutureTaskMutex;
+
+    int mQueuesize;
+
+    int mMinThreadNum;
+
+    int mMaxThreadNum;
+
+    int mWaitTimeout;
+
+    Mutex mWaitTermMutex;
+
+    Condition mWaitTermCond;
 };
 
 
@@ -122,19 +159,15 @@ public:
 private:
     AtomicInteger mIdleThreadNum ;
     
-    void increaseIdleThreadNum();
-
-    void decreaseIdleThreadNum();
-
     bool isOverMinSize();
 
     void removeHandler(ThreadCachedPoolExecutorHandler h);
 
-    BlockingQueue<FutureTask> mPool;
-    
     Mutex mHandlerMutex;
     
     ArrayList<ThreadCachedPoolExecutorHandler> mHandlers;
+
+    //ArrayList<ThreadCachedPoolExecutorHandler> mHandlers;
 
     bool mIsShutDown;
 
@@ -151,6 +184,8 @@ private:
     int mQueueSize;
 
     Mutex mProtectMutex;
+
+    CacheThreadManager mCacheManager;
 };
 
 }

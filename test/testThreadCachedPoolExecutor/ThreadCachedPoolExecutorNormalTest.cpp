@@ -41,13 +41,14 @@ public:
 
 int normalTest() {
     printf("---[TestCachedPoolExecutor Test Start]--- \n");
-#if 0 
+#if 0
      //_ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout);
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool(1,1,2,60*1000);
         printf("---[TestCachedPoolExecutor Test {constructor()} case1] [Success]--- \n");
         break;
     }
+
 
     //_ThreadCachedPoolExecutor(int maxthreadnum,long timeout);
     while(1) {
@@ -62,7 +63,6 @@ int normalTest() {
         printf("---[TestCachedPoolExecutor Test {constructor2()} case3] [Success]--- \n");
         break;
     }  
-#endif
 
     //void shutdown();
     while(1) {
@@ -129,7 +129,7 @@ int normalTest() {
         runTest2Mutex->unlock();
         break;
     }
-
+#endif
 
     //int awaitTermination(long timeout = 0);
     while(1) {
@@ -163,6 +163,7 @@ int normalTest() {
         break;
     }
 
+#if 0
     //int awaitTermination(long timeout = max);
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
@@ -235,6 +236,6 @@ int normalTest() {
         printf("---[TestCachedPoolExecutor Test {submit()} case6] [Success]--- \n");
         break;
     }
-
+#endif    
 }
 
