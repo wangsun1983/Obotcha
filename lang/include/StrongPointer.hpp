@@ -151,7 +151,7 @@ public:
     template<typename U>                                            
     inline bool operator != (const sp<U>& o) const {
         if(o.m_ptr == nullptr) {
-            if(m_ptr = nullptr) {
+            if(m_ptr == nullptr) {
                 return false;
             }
             return true;
@@ -162,7 +162,7 @@ public:
     template<typename U>
     inline bool operator != (const U* o) const {
         if(o->m_ptr == nullptr) {
-            if(m_ptr = nullptr) {
+            if(m_ptr == nullptr) {
                 return false;
             }
             return true;

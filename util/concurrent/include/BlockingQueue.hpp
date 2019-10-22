@@ -35,6 +35,8 @@ public:
     inline bool enQueueFirst(T val,long timeout);
     inline bool enQueueLast(T val,long timeout);
 
+    inline bool remove(T val);
+
     //int
     inline void enQueueFirst(int val);
     inline void enQueueLast(int val);
@@ -231,6 +233,22 @@ bool _BlockingQueue<T>::enQueueLast(T val,long timeout) {
     mDequeueCond->notify();
     return true;
 }
+
+template <typename T>
+bool _BlockingQueue<T>::remove(T val) {
+    AutoMutex l(mMutex);
+    int size = mQueue.size();
+    for(int i = 0;i<size;i++) {
+        T t = mQueue.at(0);
+        if(t == val) {
+            mQueue.erase(mQueue.begin() + i);
+            return true;
+        }
+    }
+
+    return false;
+}
+
 
 template <typename T>
 void _BlockingQueue<T>::enQueueFirst(int val) {

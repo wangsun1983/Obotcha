@@ -4,6 +4,7 @@
 
 namespace obotcha {
 
+//remove soon
 _FutureTask::_FutureTask(int type,Runnable r) {
     this->mType = type;
     this->mRunnable = r;
@@ -12,11 +13,22 @@ _FutureTask::_FutureTask(int type,Runnable r) {
     mCompleteCond = createCondition();
 
     mStatus = FUTURE_WAITING;
+}
 
+_FutureTask::_FutureTask(int type,Runnable r,FutureTaskStatusListener l) {
+    this->mType = type;
+    this->mRunnable = r;
+    this->mListener = l;
+
+    mCompleteMutex = createMutex("FutureTaskMutex");
+    mCompleteCond = createCondition();
+
+    mStatus = FUTURE_WAITING;
 }
 
 _FutureTask::~_FutureTask() {
     this->mRunnable = nullptr;
+    this->mListener = nullptr;
 }
 
 void _FutureTask::wait() {
@@ -39,15 +51,31 @@ void _FutureTask::wait(long interval) {
 }
 
 void _FutureTask::cancel() {
+    if(mStatus == FUTURE_CANCEL) {
+        return;
+    }
+
     AutoMutex l(mCompleteMutex);
+    
+    if(mStatus == FUTURE_CANCEL) {
+        return;
+    }
+
+    mStatus = FUTURE_CANCEL;
     if(mRunnable != nullptr) {
         mRunnable->onInterrupt();
     }
 
     mRunnable = nullptr;
-    mStatus = FUTURE_CANCEL;
-
     mCompleteCond->notify();
+
+    if(mListener != nullptr) {
+        FutureTask task;
+        task.set_pointer(this);
+        mListener->onCancel(task);
+        mListener = nullptr;
+        task = nullptr;
+    }
 }
 
 int _FutureTask::getStatus() {

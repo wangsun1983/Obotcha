@@ -20,6 +20,7 @@ public:
     void run() {
         RunTestTime1 = st(System)::currentTimeMillis();
         //printf("RunTest1 start,RunTestTime1 is %ld \n",RunTestTime1);
+        printf("================= thread post %ld \n",st(System)::currentTimeMillis());
         sleep(5);
     }
 
@@ -52,18 +53,19 @@ int scheduleTest() {
     while(1) {
         ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
         long current = st(System)::currentTimeMillis();
+        printf("================= start post %ld \n",st(System)::currentTimeMillis());
         pool->schedule(createRunTest1(),5000);
         pool->schedule(createRunTest2(),5000);
         sleep(15);
-        printf("RunTestTime1 is %ld ",RunTestTime1);
-        printf("RunTestTime2 is %ld ",RunTestTime2);
+        //printf("RunTestTime1 is %ld \n",RunTestTime1);
+        //printf("RunTestTime2 is %ld \n",RunTestTime2);
         long v = (RunTestTime1 - RunTestTime2);
-        printf("v is %ld \n",v);
+        //printf("v is %ld \n",v);
         if(v > 10 || v < -10) {
             printf("---[ScheduledThreadPoolExecutor Test {schedule()} case1,v is %ld] [FAIL]--- \n",v);
             break;
         }
-        int inter = RunTestTime1 - current - 5000;
+        int inter = (RunTestTime1 - current - 5000);
         if(inter > 10) {
             printf("---[ScheduledThreadPoolExecutor Test {schedule(),inter is %d} case2] [FAIL]--- \n",inter);
             break;
@@ -73,6 +75,7 @@ int scheduleTest() {
         break;
     }
 
+#if 0
     //schedule
     while(1) {
         ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
@@ -108,6 +111,6 @@ int scheduleTest() {
         printf("---[ScheduledThreadPoolExecutor Test {schedule,shutdown()} case2] [Success]--- \n");
         break;
     }
-
+#endif
 }
 

@@ -43,6 +43,8 @@ public:
 
     void onExecutorDestroy();
 
+    bool shutdownTask(FutureTask);
+
     ~_ThreadPoolExecutorHandler();
 
 private:
@@ -70,7 +72,8 @@ private:
 };
 
 
-DECLARE_SIMPLE_CLASS(ThreadPoolExecutor) IMPLEMENTS(ExecutorService) {
+DECLARE_SIMPLE_CLASS(ThreadPoolExecutor) IMPLEMENTS(ExecutorService) 
+                                         IMPLEMENTS(FutureTaskStatusListener) {
 
 public:
 
@@ -93,6 +96,8 @@ public:
     Future submit(Runnable task);
 
     int getThreadsNum();
+
+    void onCancel(FutureTask);
 
     ~_ThreadPoolExecutor();
 

@@ -22,7 +22,7 @@ public:
 
     void run() {
         //printf("MyReleaseTest running \n");
-        sleep(5);
+        sleep(1);
     }
 
     void onInterrupt() {
@@ -37,6 +37,7 @@ public:
 
 
 int ReleaseTest() {
+  
     while(1) {
         {
             ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
@@ -47,7 +48,7 @@ int ReleaseTest() {
             sleep(1);
         }
 
-        sleep(10);
+        sleep(60);
         
         printf("---[ScheduledThreadPoolExecutor Test {Release} case6] [Success]--- \n");
         break;
@@ -82,11 +83,12 @@ int ReleaseTest() {
             printf("start another test4 \n");
         
         }
-        sleep(10);
+        sleep(50);
         
 
         printf("---[ScheduledThreadPoolExecutor Test {Release} case10] [Success]--- \n");
         break;
     }
+
 }
 

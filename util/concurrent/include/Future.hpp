@@ -25,7 +25,8 @@ public:
     int cancel();
     
 private:
-    FutureTask mTask;    
+    FutureTask mTask;
+
 };
 
 }

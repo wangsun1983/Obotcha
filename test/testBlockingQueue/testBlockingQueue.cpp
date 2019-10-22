@@ -6,7 +6,9 @@
 #include "BlockingQueue.hpp"
 #include "Integer.hpp"
 
+using namespace obotcha;
 
+#if 0
 DECLARE_SIMPLE_CLASS(ConsumeRunn) IMPLEMENTS(Runnable) {
 public:
 
@@ -54,9 +56,13 @@ DECLARE_SIMPLE_CLASS(Student) {
 public:
     int i;
 };
+#endif
+
+extern int testEnqueueDequeue();
 
 int main() {
 
+#if 0
     BlockingQueue<Integer> qq = createBlockingQueue<Integer>(3);
 
     Thread mThread1 = createThread(createConsumeRunn(qq));
@@ -68,4 +74,8 @@ int main() {
     while(1) {
         usleep(1000);
     }
+#endif
+    testEnqueueDequeue();
+
+
 }

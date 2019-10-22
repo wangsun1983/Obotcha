@@ -46,6 +46,20 @@ void _ThreadPoolExecutorHandler::onExecutorDestroy() {
     mExecutor = nullptr;
 }
 
+bool _ThreadPoolExecutorHandler::shutdownTask(FutureTask task) {
+    if(mCurrentTask != nullptr && mCurrentTask == task) {
+        AutoMutex l(mStateMutex);
+        if(state == terminateState) {
+            return false;
+        }
+
+        stop();
+        return true;
+    }
+
+    return false;
+}
+
 void _ThreadPoolExecutorHandler::onInterrupt() {
     {
         AutoMutex l(mStateMutex);
@@ -64,6 +78,7 @@ void _ThreadPoolExecutorHandler::onInterrupt() {
         mCurrentTask = nullptr;
         r = nullptr;
     }
+
     {
         AutoMutex ll(mExecutorMutex);
         if(mExecutor != nullptr) {
@@ -249,7 +264,10 @@ Future _ThreadPoolExecutor::submit(Runnable r) {
         return nullptr;
     }
     
-    FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r);
+    FutureTaskStatusListener listener;
+    listener.set_pointer(this);
+
+    FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r,listener);
     mPool->enQueueLast(task);
 
     return createFuture(task);
@@ -350,6 +368,37 @@ _ThreadPoolExecutor::~_ThreadPoolExecutor() {
     }
 
     shutdown();
+}
+
+void _ThreadPoolExecutor::onCancel(FutureTask t) {
+    if(mIsShutDown ||mIsTerminated) {
+        return;
+    }
+
+    AutoMutex l(mProtectMutex);
+
+    if(mIsShutDown ||mIsTerminated) {
+        return;
+    }
+
+    ThreadPoolExecutorHandler h = nullptr;
+    int size = mHandlers->size();
+    for(int i = 0;i < size;i++) {
+        h = mHandlers->get(i);
+        if(h != nullptr) {
+            if(h->shutdownTask(t)) {
+                mHandlers->remove(h);
+                break;
+            }
+        }
+    }
+
+    if(h != nullptr) {
+        h->onExecutorDestroy();
+    }
+    //we should insert a new 
+    h = createThreadPoolExecutorHandler(mPool,this);
+    mHandlers->enQueueLast(h);
 }
 
 }

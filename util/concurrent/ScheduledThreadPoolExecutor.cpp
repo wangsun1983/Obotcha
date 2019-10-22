@@ -103,6 +103,7 @@ _ScheduledThreadPoolThread::_ScheduledThreadPoolThread() {
 _ScheduledThreadPoolThread::~_ScheduledThreadPoolThread() {
     mDatas->clear();
     mDatas = nullptr;
+    
 }
 
 void _ScheduledThreadPoolThread::onUpdate() {
@@ -134,18 +135,6 @@ void _ScheduledThreadPoolThread::addTask(ScheduledThreadPoolTask v) {
 }
 
 void _ScheduledThreadPoolThread::stop() {
-    /*
-    {
-        AutoMutex l(mDataLock);
-        isStop = true;
-        //clear all task
-        int size = mDatas->size();
-        for(int i = 0;i < size;i++) {
-            ScheduledThreadPoolTask scheduleTask = mDatas->get(i);
-            scheduleTask->task->cancel();
-        }
-    }*/
-    //mDataCond->notify();
     cachedExecutor->shutdown();
     this->quit();
 }
@@ -243,6 +232,7 @@ void _ScheduledThreadPoolThread::run() {
             Runnable r = mCurrentTask->task->getRunnable();
             if(r != nullptr) {
                 ScheduledTaskWorker worker = createScheduledTaskWorker(mCurrentTask);
+                //printf("submit task current time is %ld \n",st(System)::currentTimeMillis());
                 cachedExecutor->execute(worker);
             }
         }

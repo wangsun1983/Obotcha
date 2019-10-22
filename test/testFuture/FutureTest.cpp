@@ -48,9 +48,7 @@ public:
 };
 
 
-int main() {
-    printf("---[TestFuture Test Start]--- \n");
-
+int testFutureNormal() {
     //wait(long t);
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(5,5);

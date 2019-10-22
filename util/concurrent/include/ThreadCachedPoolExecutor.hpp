@@ -41,7 +41,9 @@ public:
 
     void onInterrupt();
 
-    void onExecutorDestroy();
+    //void onExecutorDestroy();
+
+    bool shutdownTask(FutureTask task);
 
     ~_ThreadCachedPoolExecutorHandler();
 
@@ -85,15 +87,17 @@ public:
 
     void idleNotify(ThreadCachedPoolExecutorHandler);
 
-    void timeoutNotify(ThreadCachedPoolExecutorHandler);
+    void busyNotify(ThreadCachedPoolExecutorHandler);
 
-    void interruptNotify(ThreadCachedPoolExecutorHandler);
+    void completeNotify(ThreadCachedPoolExecutorHandler);
     //-----------
     int awaitTermination(long timeout);
 
     void release();
 
     int getThreadSum();
+
+    void cancelTask(FutureTask task);
 
 private:
     ArrayList<ThreadCachedPoolExecutorHandler> mIdleHandlers;
@@ -120,7 +124,8 @@ private:
 };
 
 
-DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(ExecutorService) {
+DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(ExecutorService)
+                                               IMPLEMENTS(FutureTaskStatusListener) {
 
 public:
     friend class _ThreadCachedPoolExecutorHandler;
@@ -152,6 +157,8 @@ public:
     Future submit(Runnable task);
 
     int getThreadsNum();
+
+    void onCancel(FutureTask);
 
     ~_ThreadCachedPoolExecutor();
 

@@ -49,7 +49,6 @@ void _PriorityPoolThread::onExecutorDestroy() {
 }
 
 void _PriorityPoolThread::run() {
-
     while(!mStop) {
         mCurrentTask = nullptr;
         while(1) {
@@ -141,7 +140,6 @@ void _PriorityPoolThread::waitTermination(long interval) {
     } else {
         mWaitTermCondition->wait(mStateMutex,interval);
     }
-
     //this->join();
 }
 
@@ -176,7 +174,6 @@ _PriorityPoolExecutor::_PriorityPoolExecutor(int threadnum) {
     
     isShutDown = false;
     isTermination = false;
-
 }
 
 
@@ -222,8 +219,6 @@ int _PriorityPoolExecutor::shutdown() {
         }
         mPriorityTasks->clear();
     }
-
-    
 }
 
 bool _PriorityPoolExecutor::isShutdown() {
