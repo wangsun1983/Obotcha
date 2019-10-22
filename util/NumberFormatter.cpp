@@ -151,6 +151,7 @@ String _NumberFormatter::format(const double value, const int width, const int p
 
 String _NumberFormatter::format(const void* ptr) {
     //TODO
+	return nullptr;
 }
 
 std::string _NumberFormatter::intToStr (int number, 

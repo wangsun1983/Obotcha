@@ -35,27 +35,33 @@ void _HttpClient::setKeepAlive(bool keepalive) {
 }
 
 String _HttpClient::getIp() {
-
+    //TODO
+    return nullptr;
 }
 
 String _HttpClient::getUrl() {
-
+    //TODO
+    return nullptr;
 }
 
 int _HttpClient::getPort() {
-
+    //TODO
+    return 0;
 }
 
 int _HttpClient::getTimeout() {
-
+    //TODO
+    return 0;
 }
 
 bool _HttpClient::getKeepAlive() {
-   
+   //TODO
+   return false;
 }
 
 int _HttpClient::connect() {
-
+   //TODO
+   return 0;
 }
 
 int _HttpClient::bindServerByDomain(String host,int port) {
@@ -87,6 +93,8 @@ int _HttpClient::bindServerByIp(String ip,int port) {
 
 int _HttpClient::unbindServer(String host) {
     mHost = nullptr;
+    //TODO
+    return 0;
 }
 
 String _HttpClient::execute(int method,HttpUrl url) {
@@ -143,6 +151,7 @@ String _HttpClient::execute(int method,HttpUrl url) {
 
 String _HttpClient::execute(int,String url) {
     //TODO
+    return nullptr;
 }
 
 ByteArray _HttpClient::doReceiveChunk(ByteArray firstBlock) {

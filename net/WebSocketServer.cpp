@@ -12,7 +12,7 @@ namespace obotcha {
 #define BUFF_SIZE 1024*128
 
 _WebSocketHttpListener::_WebSocketHttpListener() {
-    httpEpollfd == 0;
+    httpEpollfd = 0;
     mParser = createHttpParser();
     mResponse = createWebSocketFrameComposer(false);
 }
@@ -210,8 +210,9 @@ int _WebSocketServer::bind(int port,String path,WebSocketListener listener) {
 }
 
 int _WebSocketServer::start() {
-    mServer->start();
+    return mServer->start();
     //mEpollObserver->start();
+
 }
 
 int _WebSocketServer::release() {

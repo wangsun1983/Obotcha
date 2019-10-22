@@ -164,7 +164,7 @@ int _ByteArrayReader::getRemainSize() {
     return mSize - mIndex;
 }
 
-int _ByteArrayReader::setIndex(int index) {
+void _ByteArrayReader::setIndex(int index) {
     mIndex = index;
 }
 

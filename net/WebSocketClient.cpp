@@ -172,13 +172,13 @@ int _WebSocketClient::bind(String url,WebSocketListener l) {
 }
 
 int _WebSocketClient::sendMessage(String msg) {
-    mTcpClient->send(mComposer->generateMessageFrame(
+    return mTcpClient->send(mComposer->generateMessageFrame(
         st(WebSocketProtocol)::OPCODE_TEXT,
         createByteArray(msg)));
 }
 
 int _WebSocketClient::sendPing(String msg) {
-    mTcpClient->send(mComposer->generateControlFrame(
+    return mTcpClient->send(mComposer->generateControlFrame(
         st(WebSocketProtocol)::OPCODE_CONTROL_PING,
         createByteArray(msg)));
 }

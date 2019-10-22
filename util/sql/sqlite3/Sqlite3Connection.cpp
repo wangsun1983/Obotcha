@@ -89,6 +89,7 @@ int _Sqlite3Connection::rollabckTransaction() {
 
 int _Sqlite3Connection::close() {
     //TODO
+    return 0;
 }
 
 };

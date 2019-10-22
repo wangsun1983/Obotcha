@@ -26,7 +26,7 @@ public:
     int readByteArray(ByteArray);
     int getIndex();
     int getRemainSize();
-    int setIndex(int);
+    void setIndex(int);
     int appendWithAdjustment(ByteArray);
 
 private:

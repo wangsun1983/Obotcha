@@ -8,6 +8,7 @@ _HttpResponseWriter::_HttpResponseWriter(int fd) {
 
 int _HttpResponseWriter::write(HttpPacket) {
     //TODO
+    return 0;
 }
 
 

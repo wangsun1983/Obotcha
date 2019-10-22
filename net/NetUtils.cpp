@@ -42,8 +42,9 @@ int _NetUtils::sendTcpPacket(int fd,ByteArray packet) {
 
 int _NetUtils::sendUdpPacket(String ip,int port,ByteArray packet) {
     int sock = socket(AF_INET, SOCK_DGRAM, 0);
-    sendUdpPacket(sock,ip,port,packet);
+    int size = sendUdpPacket(sock,ip,port,packet);
     close(sock);
+    return size;
 }
 
 int _NetUtils::sendUdpPacket(int udpsocket,String ip,int port,ByteArray packet) {
@@ -60,8 +61,9 @@ int _NetUtils::sendUdpPacket(int udpsocket,String ip,int port,ByteArray packet) 
 
 int _NetUtils::sendUdpPacket(struct sockaddr_in *serverAddr,ByteArray packet) {
     int sock = socket(AF_INET, SOCK_DGRAM, 0);
-    sendUdpPacket(sock,serverAddr,packet);
+    int size = sendUdpPacket(sock,serverAddr,packet);
     close(sock);
+    return size;
 }
 
 int _NetUtils::sendUdpPacket(int udpsocket,struct sockaddr_in *serverAddr,ByteArray packet) {

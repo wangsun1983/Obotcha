@@ -34,6 +34,8 @@ bool _LibraryFileInputStream::open() {
     if ((error = dlerror()) != NULL)  {
        return false;
     }
+
+    return true;
 }
     
 void * _LibraryFileInputStream::getMethod(String method) {

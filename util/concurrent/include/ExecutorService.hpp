@@ -27,7 +27,7 @@ DECLARE_SIMPLE_CLASS(ExecutorService) IMPLEMENTS(Executor) {
 public:
     virtual int execute(Runnable command) = 0;
 
-    virtual int execute(int,Runnable){};
+    virtual int execute(int,Runnable){return 0;};
     
     //can not submit runnable,but we need wati all the 
     //runnable function complete
@@ -48,7 +48,7 @@ public:
     //virtual Future submit(Runnable task) = 0;
     virtual Future submit(Runnable task) = 0;
 
-    virtual Future submit(int,Runnable){};
+    virtual Future submit(int,Runnable){return nullptr;};
 
     //get thread num
     virtual int getThreadsNum() = 0;
