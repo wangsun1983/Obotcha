@@ -1,6 +1,7 @@
 #include <iostream>
 #include "XmlDocument.hpp"
 #include "XmlValue.hpp"
+#include "InitializeException.hpp"
 
 #include "rapidxml.hpp"
 #include "rapidxml_print.hpp"
@@ -11,11 +12,14 @@ using namespace rapidxml;
 namespace obotcha {
 
 _XmlDocument::_XmlDocument(String path,long size) {
+    if(path == nullptr) {
+        throw InitializeException(createString("XmlDocument null path!"));
+    }
+
     mFileSize = size;
     
-    if(path != nullptr) {
-        fdoc = path->toChars();
-    }
+    fdoc = path->toChars();
+
 }
 
 _XmlDocument::_XmlDocument() {
