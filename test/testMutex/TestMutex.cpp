@@ -100,9 +100,7 @@ private:
     Mutex mutex_t;
 };
 
-int main() {
-    printf("---[TestMutex Test Start]--- \n");
-    
+int testMutexNormal() {
     //Mutex()
     while(1) {
         Mutex mutex = createMutex();
@@ -196,4 +194,6 @@ int main() {
         printf("---[TestMutex Test {trylock()} case2] [Success]--- \n");
         break;
     }
+
+    sleep(10);
 }

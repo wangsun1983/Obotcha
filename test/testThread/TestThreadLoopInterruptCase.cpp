@@ -56,6 +56,7 @@ public:
 
 
 int testThreadLoopInterrypt() {
+
 #if 0
     //TestThread onInterrupt case1
     while(1) {
@@ -73,6 +74,7 @@ int testThreadLoopInterrypt() {
          break;
     }
 #endif
+    
     //interruptCheck
     while(1) {
         MyLoopTest2Thread thread = createMyLoopTest2Thread();

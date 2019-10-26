@@ -7,22 +7,31 @@
 #include "Error.hpp"
 #include "AutoMutex.hpp"
 #include "MethodNotSupportException.hpp"
+#include "ExecutorDestructorException.hpp"
 
 namespace obotcha {
 //---------------ScheduledTaskWorker-------------------//
-_ScheduledTaskWorker::_ScheduledTaskWorker(sp<_ScheduledThreadPoolTask> t) {
+_ScheduledTaskWorker::_ScheduledTaskWorker(sp<_ScheduledThreadPoolTask> t,ScheduledThreadPoolThread thread) {
     mTask = t;
+    mTimeThread = thread;
 }
 
 _ScheduledTaskWorker::~_ScheduledTaskWorker() {
+    printf("_ScheduledTaskWorker release \n");
 }
 
 void _ScheduledTaskWorker::onInterrupt() {
+    Runnable r = nullptr;
     if(mTask != nullptr) {
-        Runnable r = mTask->task->getRunnable();
+        r = mTask->task->getRunnable();
         if(r != nullptr) {
             r->onInterrupt();
         }
+    }
+
+    if(mTimeThread != nullptr && r != nullptr) {
+        mTimeThread->onTaskFinished(r);
+        mTimeThread = nullptr;
     }
 }
 
@@ -51,9 +60,18 @@ void _ScheduledTaskWorker::run() {
             mTask->mNextTime = current + mTask->repeatDelay;
             mTask->mTimeThread->addTask(mTask);
         }
+        break;
 
+        case ScheduletTaskNormal:{
+            if(mTimeThread != nullptr) {
+                mTimeThread->onTaskFinished(runnable);
+                mTimeThread = nullptr;
+            }
+        }
         break;
     }
+
+
 }
 
 //---------------ScheduledThreadPoolTask---------------//
@@ -93,6 +111,9 @@ _ScheduledThreadPoolThread::_ScheduledThreadPoolThread() {
     mTerminatedMutex = createMutex("ScheduledThreadPoolTermMutex");
     mTerminatedCond = createCondition();
 
+    mFuturesMutex = createMutex("ScheduledThreadPoolFutureMutex");
+    mFutures = createHashMap<Runnable,Future>();
+
     int cpuNum = st(System)::availableProcessors();
     cachedExecutor = createThreadCachedPoolExecutor(cpuNum*2,60*1000);
 
@@ -101,8 +122,13 @@ _ScheduledThreadPoolThread::_ScheduledThreadPoolThread() {
 }
 
 _ScheduledThreadPoolThread::~_ScheduledThreadPoolThread() {
-    mDatas->clear();
-    mDatas = nullptr;
+    printf("schedulethread start release \n");
+    {
+        AutoMutex ll(mFuturesMutex);
+        mFutures->clear();
+        mFutures = nullptr;
+    }
+    printf("schedulethread release \n");
     
 }
 
@@ -135,7 +161,20 @@ void _ScheduledThreadPoolThread::addTask(ScheduledThreadPoolTask v) {
 }
 
 void _ScheduledThreadPoolThread::stop() {
+    printf("_ScheduledThreadPoolThread stop1 start,count is %d \n",this->getStrongCount());
     cachedExecutor->shutdown();
+
+    {
+        AutoMutex ll(mDataLock);
+        printf("mDatas before size is %d \n",mDatas->size());
+        mDatas->clear();
+        printf("mDatas after size is %d \n",mDatas->size());
+    }
+
+    sleep(5);
+
+    printf("_ScheduledThreadPoolThread stop2 start,count is %d \n",this->getStrongCount());
+    
     this->quit();
 }
 
@@ -194,6 +233,63 @@ void _ScheduledThreadPoolThread::onInterrupt() {
     mCurrentTask = nullptr;
 }
 
+void _ScheduledThreadPoolThread::stopTask(FutureTask task) {
+    {
+        printf("_ScheduledThreadPoolThread stop task trace \n");
+        AutoMutex l(mDataLock);
+        //if(mDatas->remove(task) > 0) {
+        //    return;
+        //}
+        ListIterator<ScheduledThreadPoolTask> iterator = mDatas->getIterator();
+        ScheduledThreadPoolTask t = nullptr;
+        while(iterator->hasValue()) {
+            t = iterator->getValue();
+            if(t->task == task) {
+                break;
+            }
+            iterator->next();
+        }
+
+        if(t != nullptr) {
+            printf("before remove size is %d \n",mDatas->size());
+            mDatas->remove(t);
+            t->mTimeThread = nullptr;
+            printf("after remove size is %d \n",mDatas->size());
+            return;
+        }
+    }
+    
+    {
+        printf("_ScheduledThreadPoolThread stoptask trace2  \n");
+        Runnable r = task->getRunnable();
+        printf("_ScheduledThreadPoolThread stop task trace2_2,runnable is %lld \n",r.get_pointer());
+        AutoMutex ll(mFuturesMutex);
+        Future f = mFutures->get(r);
+        printf("_ScheduledThreadPoolThread stop task trace2_3 \n");
+        if(f != nullptr) {
+            printf("_ScheduledThreadPoolThread stop task trace3 \n");
+            f->cancel();
+        } else if(task == mCurrentTask) {
+            mCurrentTask->task->cancel();
+        }
+        printf("_ScheduledThreadPoolThread stop task trace4 \n");
+        mFutures->remove(r);
+    }
+}
+
+void _ScheduledThreadPoolThread::onTaskFinished(Runnable r) {
+    Future f = nullptr;
+    {
+        AutoMutex ll(mFuturesMutex);
+        f = mFutures->get(r);
+        if(f == nullptr) {
+            return;
+        }
+
+        mFutures->remove(r);
+    }
+}
+
 void _ScheduledThreadPoolThread::run() {
     while(!isStop) {
         st(Thread)::interruptCheck();
@@ -228,12 +324,20 @@ void _ScheduledThreadPoolThread::run() {
             if(mCurrentTask->task->getStatus() == FUTURE_CANCEL) {
                 continue;
             }
-
+            printf("schedule thread do run \n");
             Runnable r = mCurrentTask->task->getRunnable();
             if(r != nullptr) {
-                ScheduledTaskWorker worker = createScheduledTaskWorker(mCurrentTask);
-                //printf("submit task current time is %ld \n",st(System)::currentTimeMillis());
-                cachedExecutor->execute(worker);
+                ScheduledThreadPoolThread t;
+                t.set_pointer(this);
+
+                ScheduledTaskWorker worker = createScheduledTaskWorker(mCurrentTask,t);
+                printf("submit task current time is %ld \n",st(System)::currentTimeMillis());
+                Future future = cachedExecutor->submit(worker);
+                {
+                    printf("add future to mFutures,runnable is %lld \n",r.get_pointer());
+                    AutoMutex ll(mFuturesMutex);
+                    mFutures->put(r,future);
+                }
             }
         }
     }
@@ -250,6 +354,7 @@ end:
 
 //---------------ScheduleService---------------//
 _ScheduledThreadPoolExecutor::_ScheduledThreadPoolExecutor() {
+    printf("_ScheduledThreadPoolExecutor create \n");
     mTimeThread = createScheduledThreadPoolThread();
     mTimeThread->start();
     mIsShutDown = false;
@@ -275,16 +380,17 @@ int _ScheduledThreadPoolExecutor::shutdown() {
     if(mIsShutDown ||mIsTerminated) {
         return -AlreadyDestroy;
     }
-
+    printf("shutdown trace0 \n");
     AutoMutex l(mProtectMutex);
+    printf("shutdown trace1 \n");
 
     if(mIsShutDown ||mIsTerminated) {
         return -AlreadyDestroy;
     }
-
+    printf("shutdown trace2 \n");
     mIsShutDown = true;
     mTimeThread->stop();
-
+    printf("shutdown trace3 \n");
     return 0;
 }
 
@@ -315,6 +421,7 @@ int _ScheduledThreadPoolExecutor::awaitTermination(long timeout) {
 }
 
 Future _ScheduledThreadPoolExecutor::submit(Runnable r) {
+    printf("submit start \n");
     if(mIsShutDown) {
         return nullptr;
     }
@@ -329,8 +436,15 @@ Future _ScheduledThreadPoolExecutor::submit(Runnable r) {
 }
 
 Future _ScheduledThreadPoolExecutor::schedule(Runnable r,long delay) {
-    FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r);
+    printf("schedule start \n");
+
+    FutureTaskStatusListener listener;
+    listener.set_pointer(this);
+    FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r,listener);
+
     Future future = createFuture(task);
+
+    printf("future's runnable is %lld \n",task->getRunnable().get_pointer());
 
     ScheduledThreadPoolTask pooltask = createScheduledThreadPoolTask(task,delay);
     mTimeThread->addTask(pooltask);
@@ -372,8 +486,18 @@ Future _ScheduledThreadPoolExecutor::scheduleWithFixedDelay(Runnable r,
     return future;   
 }
 
+void _ScheduledThreadPoolExecutor::onCancel(FutureTask task) {
+    printf("_ScheduledThreadPoolExecutor,onCancel1,task runnable is %lld \n",task->getRunnable().get_pointer());
+    mTimeThread->stopTask(task);
+    printf("_ScheduledThreadPoolExecutor,onCancel2 \n");
+}
+
 _ScheduledThreadPoolExecutor::~_ScheduledThreadPoolExecutor() {
-    shutdown();
+    printf("~_ScheduledThreadPoolExecutor \n");
+    //shutdown();
+    if(!mIsShutDown) {
+        throw createExecutorDestructorException("Scheduled Thread Pool destruct error");
+    }
 }
 
 }

@@ -17,6 +17,7 @@
 #include "Future.hpp"
 #include "ScheduledExecutorService.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
+#include "HashMap.hpp"
 
 using namespace std;
 
@@ -34,7 +35,9 @@ class _ScheduledThreadPoolExecutor;
 
 DECLARE_SIMPLE_CLASS(ScheduledTaskWorker) IMPLEMENTS(Runnable){
 public:
-    _ScheduledTaskWorker(sp<_ScheduledThreadPoolTask>);
+    friend class _ScheduledThreadPoolThread;
+
+    _ScheduledTaskWorker(sp<_ScheduledThreadPoolTask>,sp<_ScheduledThreadPoolThread>);
     
     ~_ScheduledTaskWorker();
 
@@ -103,10 +106,18 @@ public:
 
     void onInterrupt();
 
+    void onTaskFinished(Runnable);
+
+    void stopTask(FutureTask);
+
 private:
     ArrayList<ScheduledThreadPoolTask> mDatas;
 
     ThreadCachedPoolExecutor cachedExecutor;
+
+    
+    Mutex mFuturesMutex;
+    HashMap<Runnable,Future> mFutures;
 
     //ThreadPoolExecutor mExecutorService;
     
@@ -129,7 +140,8 @@ private:
     bool isTerminated;
 };
 
-DECLARE_SIMPLE_CLASS(ScheduledThreadPoolExecutor) IMPLEMENTS(ScheduledExecutorService) {
+DECLARE_SIMPLE_CLASS(ScheduledThreadPoolExecutor) IMPLEMENTS(ScheduledExecutorService)
+                                                  IMPLEMENTS(FutureTaskStatusListener) {
 
 public:
 
@@ -160,6 +172,8 @@ public:
     Future scheduleWithFixedDelay(Runnable command,
                                 long initialDelay,
                                 long delay);
+
+    void onCancel(FutureTask);                        
 
 private:
     ScheduledThreadPoolThread  mTimeThread;

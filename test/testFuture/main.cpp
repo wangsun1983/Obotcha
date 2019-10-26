@@ -14,12 +14,16 @@ using namespace obotcha;
 
 extern int testThreadExecutorPoolFutureCancel();
 extern int testThreadCachedPoolFutureCancel();
+extern int testThreadScheduleFutureCancel();
 extern int testFutureNormal();
 
 int main() {
     printf("---[TestFuture Test Start]--- \n");
     //testThreadExecutorPoolFutureCancel();
     //testFutureNormal();
-    testThreadCachedPoolFutureCancel();
+    //testThreadCachedPoolFutureCancel();
+    testThreadScheduleFutureCancel();
     sleep(10);
+    printf("end !!!!!!!!\n");
+    //while(1) {}
 }

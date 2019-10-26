@@ -14,21 +14,22 @@
 using namespace obotcha;
 
 int runDestory = 1;
-DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
+DECLARE_SIMPLE_CLASS(BaseRunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        //printf("i am running \n");
-        sleep(10);
+        printf("i am running \n");
+        sleep(5);
+        printf("i am wake \n");
     }
 
-    ~_RunTest1() {
+    ~_BaseRunTest1() {
         //printf("i am release \n");
         runDestory = 0;
     }
 };
 
 Mutex runTest2Mutex;
-DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
+DECLARE_SIMPLE_CLASS(BaseRunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
         //printf("RunTest2 start 1\n");
@@ -40,7 +41,7 @@ public:
 
 int baseTest() {
     //printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
-
+#if 0
     //_ScheduledThreadPoolExecutor()
     while(1) {
         ExecutorService pool = st(Executors)::newScheduledThreadPool();
@@ -164,25 +165,25 @@ int baseTest() {
         printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case10] [Success]--- \n");
         break;
     }
-  
+#endif  
 
     //submit(Runnable task);
     while(1) {
         ExecutorService pool = st(Executors)::newScheduledThreadPool();
-        Future task = pool->submit(createRunTest1());
+        Future task = pool->submit(createBaseRunTest1());
         if(task == nullptr) {
             printf("---[ScheduledThreadPoolExecutor Test {submit()} case1] [FAIL]--- \n");
             break;
         }
 
-        long current = st(System)::currentTimeMillis();
-        Future task2 = pool->submit(createRunTest1());
-        int v = st(System)::currentTimeMillis() - current;
-        if(v >10005) {
-            printf("---[ScheduledThreadPoolExecutor Test {submit()} case2] [FAIL]--- \n");
-            break;
-        }
-
+        //long current = st(System)::currentTimeMillis();
+        //Future task2 = pool->submit(createRunTest1());
+        //int v = st(System)::currentTimeMillis() - current;
+        //if(v >10005) {
+        //    printf("---[ScheduledThreadPoolExecutor Test {submit()} case2] [FAIL]--- \n");
+        //    break;
+        //}
+        pool->shutdown();
         printf("---[ScheduledThreadPoolExecutor Test {submit()} case3] [Success]--- \n");
         break;
     }

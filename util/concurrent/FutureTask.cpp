@@ -66,7 +66,6 @@ void _FutureTask::cancel() {
         mRunnable->onInterrupt();
     }
 
-    mRunnable = nullptr;
     mCompleteCond->notify();
 
     if(mListener != nullptr) {
@@ -76,6 +75,8 @@ void _FutureTask::cancel() {
         mListener = nullptr;
         task = nullptr;
     }
+
+    mRunnable = nullptr;
 }
 
 int _FutureTask::getStatus() {

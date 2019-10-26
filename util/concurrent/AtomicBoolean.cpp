@@ -11,7 +11,6 @@ void _AtomicBoolean::set(bool val) {
     mValue = val;
 }
 
-
 bool _AtomicBoolean::get() {
     return mValue;
 }

@@ -20,8 +20,8 @@ extern int ReleaseTest();
 int main() {
     printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
     baseTest();
-    scheduleTest();
-    ReleaseTest();
+    //scheduleTest();
+    //ReleaseTest();
 
     sleep(10);
     

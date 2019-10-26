@@ -8,6 +8,7 @@
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
+#include "ExecutorDestructorException.hpp"
 
 static int id = 0;
 
@@ -367,7 +368,10 @@ _ThreadPoolExecutor::~_ThreadPoolExecutor() {
         }
     }
 
-    shutdown();
+    //shutdown();
+    if(!mIsShutDown) {
+        throw createExecutorDestructorException("ThreadPoolExecutor destruct error");
+    }
 }
 
 void _ThreadPoolExecutor::onCancel(FutureTask t) {

@@ -13,20 +13,24 @@
 using namespace obotcha;
 
 
-DECLARE_SIMPLE_CLASS(TestCachedCancelRun1) IMPLEMENTS(Runnable) {
+DECLARE_SIMPLE_CLASS(TestScheduleCancelRun1) IMPLEMENTS(Runnable) {
 public:
-    _TestCachedCancelRun1() {
+    _TestScheduleCancelRun1() {
         interrupt = 0;
         value = 0;
     }
 
     void run() {
+        printf("i am running trace1\n");
         sleep(2);
         value = 1;
+        printf("i am running trace2\n");
     }
 
     void onInterrupt() {
+        printf("i am interrupt trace1\n");
         interrupt = 1;
+        printf("i am interrupt trace2\n");
     }
 
     int getValue() {
@@ -42,9 +46,9 @@ private:
     int interrupt; 
 };
 
-DECLARE_SIMPLE_CLASS(TestCachedCancelRun2) IMPLEMENTS(Runnable) {
+DECLARE_SIMPLE_CLASS(TestScheduleCancelRun2) IMPLEMENTS(Runnable) {
 public:
-    _TestCachedCancelRun2() {
+    _TestScheduleCancelRun2() {
         interrupt = 0;
         value = 0;
     }
@@ -81,35 +85,36 @@ private:
     int count;
 };
 
-int testThreadCachedPoolFutureCancel() {
+int testThreadScheduleFutureCancel() {
     //threadExecutorPool
-
+#if 0  
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
-        TestCachedCancelRun1 run1 = createTestCachedCancelRun1();
+        ExecutorService pool = st(Executors)::newScheduledThreadPool();
+        TestScheduleCancelRun1 run1 = createTestScheduleCancelRun1();
         Future f = pool->submit(run1);
         sleep(1);
         f->cancel();
         sleep(5);
         if(run1->getValue() == 1 || run1->getInterrupt() != 1) {
-            printf("---[TestFuture CachedThreadPool Test {cancel()} case1] [FAIL],val is %d,interrupt is %d--- \n",run1->getValue(),run1->getInterrupt());
+            printf("---[TestFuture ScheduledThreadPool Test {cancel()} case1] [FAIL],val is %d,interrupt is %d--- \n",run1->getValue(),run1->getInterrupt());
             break;
         }
 
-        printf("---[TestFuture CachedThreadPool Test {cancel()} case2] [Success]--- \n");
+        printf("---[TestFuture ScheduledThreadPool Test {cancel()} case2] [Success]--- \n");
         break;
     }
+ #endif   
 
-   
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
+        ExecutorService pool = st(Executors)::newScheduledThreadPool();
         ArrayList<Future> futurelist = createArrayList<Future>();
         for(int i = 0;i<50;i++) {
-            Future f = pool->submit(createTestCachedCancelRun1());
+            Future f = pool->submit(createTestScheduleCancelRun1());
             futurelist->add(f);
         }
 
         //for(int j = 0;j<50;j++) {
+        printf("start test cancel \n");
         ListIterator<Future> iterator = futurelist->getIterator();
         while(iterator->hasValue()) {
             Future f = iterator->getValue();
@@ -120,17 +125,22 @@ int testThreadCachedPoolFutureCancel() {
         
 
         sleep(1);
-        printf("---[TestFuture CachedThreadPool Test {cancel()} case3] [Success]--- \n");
+
+        printf("pool count is %d \n",pool->getStrongCount());
+        printf("---[TestFuture ScheduledThreadPool Test {cancel()} case3] [Success]--- \n");
         break;
     }
 
 
 
+ 
+
+#if 0
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
+        ExecutorService pool = st(Executors)::newScheduledThreadPool();
         ArrayList<Future> futurelist = createArrayList<Future>();
         for(int i = 0;i<50;i++) {
-            Future f = pool->submit(createTestCachedCancelRun1());
+            Future f = pool->submit(createTestScheduleCancelRun1());
             futurelist->add(f);
         }
 
@@ -146,16 +156,16 @@ int testThreadCachedPoolFutureCancel() {
         }
         
         sleep(1);
-        printf("---[TestFuture CachedThreadPool Test {cancel()} case4] [Success]--- \n");
+        printf("---[TestFuture ScheduledThreadPool Test {cancel()} case4] [Success]--- \n");
         break;
     }
 
 
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
+        ExecutorService pool = st(Executors)::newScheduledThreadPool();
         ArrayList<Future> futurelist = createArrayList<Future>();
         for(int i = 0;i<55;i++) {
-            Future f = pool->submit(createTestCachedCancelRun1());
+            Future f = pool->submit(createTestScheduleCancelRun1());
             futurelist->add(f);
         }
 
@@ -171,25 +181,25 @@ int testThreadCachedPoolFutureCancel() {
         long start = st(System)::currentTimeMillis();
         //for(int i = 0;i<50;i++) {
         printf("submit testcancel run1 \n");
-        Future f1 = pool->submit(createTestCachedCancelRun1());
-        Future f2 = pool->submit(createTestCachedCancelRun1());
+        Future f1 = pool->submit(createTestScheduleCancelRun1());
+        Future f2 = pool->submit(createTestScheduleCancelRun1());
         long end = st(System)::currentTimeMillis();
         if((end - start) > 10) {
-            printf("---[TestFuture CachedThreadPool Test {cancel()} case5] [Fail],%d --- \n",end-start);
+            printf("---[TestFuture ScheduledThreadPool Test {cancel()} case5] [Fail],%d --- \n",end-start);
             break;
         }
 
-        printf("---[TestFuture CachedThreadPool Test {cancel()} case6] [Success]--- \n");
+        printf("---[TestFuture ScheduledThreadPool Test {cancel()} case6] [Success]--- \n");
         break;
     }
 
 
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
+        ExecutorService pool = st(Executors)::newScheduledThreadPool();
         ArrayList<Future> futurelist = createArrayList<Future>();
-        ArrayList<TestCachedCancelRun2> runlist = createArrayList<TestCachedCancelRun2>();
+        ArrayList<TestScheduleCancelRun2> runlist = createArrayList<TestScheduleCancelRun2>();
         for(int i = 0;i<55;i++) {
-            TestCachedCancelRun2 run2 = createTestCachedCancelRun2();
+            TestScheduleCancelRun2 run2 = createTestScheduleCancelRun2();
             run2->setCount(i);
             runlist->add(run2);
             Future f = pool->submit(run2);
@@ -209,19 +219,19 @@ int testThreadCachedPoolFutureCancel() {
         sleep(100);
 
         
-        ListIterator<TestCachedCancelRun2> iterator2 = runlist->getIterator();
+        ListIterator<TestScheduleCancelRun2> iterator2 = runlist->getIterator();
         while(iterator2->hasValue()) {
-            TestCachedCancelRun2 run_2 = iterator2->getValue();
+            TestScheduleCancelRun2 run_2 = iterator2->getValue();
             if(run_2->getValue() != 0) {
-                printf("---[TestFuture CachedThreadPool Test {cancel()} case7] [Fail],count is %d,value is %d --- \n",run_2->getCount(),run_2->getValue());
+                printf("---[TestFuture ScheduledThreadPool Test {cancel()} case7] [Fail],count is %d,value is %d --- \n",run_2->getCount(),run_2->getValue());
                 //break;
             }
             iterator2->next();
         }
 
-        printf("---[TestFuture CachedThreadPool Test {cancel()} case8] [Success] --- \n");
+        printf("---[TestFuture ScheduledThreadPool Test {cancel()} case8] [Success] --- \n");
         break;
        
     }
-
+#endif
 }
