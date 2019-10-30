@@ -1,29 +1,57 @@
-# Obotcha
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/wangsun1983/Obotcha.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/wangsun1983/Obotcha/alerts/)
+Obotcha:基于C++11的开源工具库
+-----------------------------------
+### 什么是Obotcha
+Obotcha是基于C++11开发的一个工具库，该工具库目前提供了如下的功能。  
 
-- **如何声明一个简单类（不含模板）**
-```
-DECLARE_SIMPLE_CLASS(TestClass1) {
-public:
-    int i;
-    ~_TestClass1() {
-    
-    }
-};
-```
+-   [多线程工具类](https://github.com/wangsun1983/Obotcha/tree/master/util/concurrent)  
+    -  Thread类 （实现了线程的创建，退出）
+    -   线程池类  （实现了ThreadExecutorPool，ThreadCachedPoolExecutor，ScheduledThreadPoolExecutor）  
+    -  线程锁（Mutex，Condition） ，读写锁（ReadWriteLock）
+    -  线程等待锁（CountDownLatch，Barrier）
+    - 基本数据类型的原子操作（AtomicBoolean，AtomicInteger等） 
+-   [IO工具库](https://github.com/wangsun1983/Obotcha/tree/master/io)  
+    - 文件读取/写入类（FileInputStream/FileOutputStream类）
+    - 文件节点读取类（FileNodeReader类）
+    - 文件状态监听类（FileWatcher类）
+    - Zip文件操作类（ZipStream类）
+    - 内存映射文件操作类（MemoryFileInputStream，MemoryFileOutputStream类）  
+    - so库文件读取类（LibraryFileInputStream类）
+-  [文本处理工具库](https://github.com/wangsun1983/Obotcha/tree/master/util/text)
+    - xml文件读写类 （XmlDocument，XmlValue，XmlWriter类）
+    - json文件读写类（JsonArray，JsonReader，JsonWriter类）
+    - ini文件读取类（IniReader，IniValue类）
+    - yaml文件读取类（YamlReader类）
+    - conf文件读取类（ConfReader类）
+-  [网络处理工具库](https://github.com/wangsun1983/Obotcha/tree/master/net)   
+    - 支持Tcp服务端，客户端管理
+    - 支持Udp服务端，客户端管理
+    - 支持WebSocket服务端，客户端管理
+    - 支持HttpUrl解析
+    -支持Http协议解析
+-  [进程间通信工具库 ](https://github.com/wangsun1983/Obotcha/tree/master/process)
+     - 支持Posix标准的进程间通信。
+-  [安全相关工具库](https://github.com/wangsun1983/Obotcha/tree/master/security)
+     - 支持Aes，Base64，Crc32，Des，Md，Rsa，Sha加密。
 
-+ **如何声明一个复杂类（含模板）**
-```
-DECLARE_CLASS(ArrayList,1) {
-public:
-    inline void add(T val) {
-        elements.insert(elements.end(),val); 
-    }
-}`
-```
-- **如何生成实例**
-```
- TestClass1 c1 = createTestClass1();
-```
-Obotcha中不需要用new来生成实例。  
-使用DECLARE_SIMPLE_CLASS/DECLARE_CLASS后系统会自动生成对应的create函数（create+类名）  
+### Obotcha的原由
+2019年初的时候和朋友讨论用C++编写一个后台服务器程序，使用了一段时间发现虽然boost，poco这些工具库提供了很多强大的功能，但是对于初学者来说，使用还是非常的不方便。   
+-  内存管理，这个是C++/C语言老生常谈的问题。
+-  类功能的不聚合，比如说我要进行一个int转std::string的处理，我需要使用stringstream进行转换，std::string没有直接的接口进行相关操作，所以每次字符串的转换都需要写很多冗余代码，不像java的string一样，将所有的字符串操作都集中在一起。  
+-  范型编程后代码会变得非常难理解，例如`sp<HashMap><sp<vector><Integer>>`,这实际上是一个智能指针的代码，但是可读性比较差.  
+基于上面这些原因，所以我就开始了Obotcha的编写。
+
+### Obotcha的设计
+- Obotcha使用了自己的sp智能指针来做内存管理。为了达到这个目的，所有的类申明都需要使用DELCARE_SIMPLE_CLASS和DECLARE_CLASS。前者用于非模板类申明，后者用于模板类申明。
+- Obotcha的整体代码架构均参考了Java的代码结构和实现。目的是能使用Obotcha很快地将java代码转换C++代码。
+- Obotcha使用了部分第三方库（openssl，zlib等），这些使用的开源库代码均存放在external目录下。
+- Obotcha使用g++和gcc作为主要编译器，目前暂时不支持clang。
+
+### Obotcha的编译
+- 第一次编译需要在代码根目录下运行`./build.sh`，这样可以生成对应的out目录。
+- 之后每次编译可以直接使用`make`命令来编译。
+
+### Obotcha的示例
+Obotcha的测试代码是最好的例子，这些代码存放在test目录下 。test目录下存放了Obotcha所有类的接口测试函数。
+
+### Obotcha的未来
+-   预计明年开始使用Obotcha开始进行后台服务器Gagira的开发。
