@@ -17,6 +17,8 @@ const String _FileNotFoundException::EXCEPTION_TAG = createString("File Not Foun
 _FileNotFoundException::_FileNotFoundException(String v):_Exception{v} {
     mErrInfo = EXCEPTION_TAG->append(v);
 }
-    
+
+_FileNotFoundException::_FileNotFoundException(const char *v):_FileNotFoundException{createString(v)} {
+}
 
 }

@@ -15,25 +15,25 @@ using namespace obotcha;
 long RunTestTime1 = 1;
 long RunTestTime2 = 1;
 
-DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
+DECLARE_SIMPLE_CLASS(ScheduleRunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
         RunTestTime1 = st(System)::currentTimeMillis();
-        //printf("RunTest1 start,RunTestTime1 is %ld \n",RunTestTime1);
-        printf("================= thread post %ld \n",st(System)::currentTimeMillis());
+        printf("RunTest1 start,RunTestTime1 is %ld \n",RunTestTime1);
+        //printf("================= thread post %ld \n",st(System)::currentTimeMillis());
         sleep(5);
     }
 
-    ~_RunTest1() {
+    ~_ScheduleRunTest1() {
         //printf("i am release .......aaaa,p is %x\n",this);
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
+DECLARE_SIMPLE_CLASS(ScheduleRunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
         RunTestTime2 = st(System)::currentTimeMillis();
-        //printf("RunTest2 start,RunTestTime2 is %ld \n",RunTestTime2);   
+        printf("RunTest2 start,RunTestTime2 is %ld \n",RunTestTime2);
         sleep(5);
     }
 };
@@ -49,28 +49,29 @@ public:
 
 int scheduleTest() {
     //printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
-    //schedule test   
+    //schedule test
     while(1) {
         ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
         long current = st(System)::currentTimeMillis();
         printf("================= start post %ld \n",st(System)::currentTimeMillis());
-        pool->schedule(createRunTest1(),5000);
-        pool->schedule(createRunTest2(),5000);
+        pool->schedule(createScheduleRunTest1(),5000);
+        pool->schedule(createScheduleRunTest2(),5000);
         sleep(15);
         //printf("RunTestTime1 is %ld \n",RunTestTime1);
         //printf("RunTestTime2 is %ld \n",RunTestTime2);
         long v = (RunTestTime1 - RunTestTime2);
-        //printf("v is %ld \n",v);
-        if(v > 10 || v < -10) {
+        if(v > 50 || v < -50) {
+            pool->shutdown();
             printf("---[ScheduledThreadPoolExecutor Test {schedule()} case1,v is %ld] [FAIL]--- \n",v);
             break;
         }
         int inter = (RunTestTime1 - current - 5000);
         if(inter > 10) {
+            pool->shutdown();
             printf("---[ScheduledThreadPoolExecutor Test {schedule(),inter is %d} case2] [FAIL]--- \n",inter);
             break;
         }
-
+        pool->shutdown();
         printf("---[ScheduledThreadPoolExecutor Test {schedule()} case3] [Success]--- \n");
         break;
     }
@@ -113,4 +114,3 @@ int scheduleTest() {
     }
 #endif
 }
-

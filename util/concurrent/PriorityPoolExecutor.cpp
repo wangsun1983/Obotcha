@@ -17,7 +17,7 @@
 #include "Error.hpp"
 #include "System.hpp"
 #include "StackTrace.hpp"
-
+#include "ExecutorDestructorException.hpp"
 
 namespace obotcha {
 
@@ -219,6 +219,8 @@ int _PriorityPoolExecutor::shutdown() {
         }
         mPriorityTasks->clear();
     }
+
+    startWaitTerminate();
 }
 
 bool _PriorityPoolExecutor::isShutdown() {
@@ -334,6 +336,13 @@ void _PriorityPoolExecutor::onHandlerRelease() {
     if(mThreadNum == 0) {
         mThreads->clear();
     }
+
+    finishWaitTerminate();
+}
+
+void _PriorityPoolExecutor::onCancel(FutureTask) {
+    //TODO
+    
 }
 
 _PriorityPoolExecutor::~_PriorityPoolExecutor() {
@@ -343,7 +352,10 @@ _PriorityPoolExecutor::~_PriorityPoolExecutor() {
         mThreads->get(i)->onExecutorDestroy();
     }
 
-    shutdown();
+    //shutdown();
+    if(!isShutDown) {
+        throw createExecutorDestructorException("Priority Thread Pool destruct error");
+    }
 
 }
 

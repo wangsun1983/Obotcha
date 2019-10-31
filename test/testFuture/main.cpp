@@ -19,10 +19,10 @@ extern int testFutureNormal();
 
 int main() {
     printf("---[TestFuture Test Start]--- \n");
-    //testThreadExecutorPoolFutureCancel();
+    testThreadExecutorPoolFutureCancel();
     //testFutureNormal();
     //testThreadCachedPoolFutureCancel();
-    testThreadScheduleFutureCancel();
+    //testThreadScheduleFutureCancel();
     sleep(10);
     printf("end !!!!!!!!\n");
     //while(1) {}

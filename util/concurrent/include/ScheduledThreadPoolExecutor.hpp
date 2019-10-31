@@ -45,12 +45,10 @@ public:
 
     void onInterrupt();
 
-
 private:
     sp<_ScheduledThreadPoolTask> mTask;
 
     sp<_ScheduledThreadPoolThread> mTimeThread;
-
 };
 
 
@@ -88,7 +86,7 @@ DECLARE_SIMPLE_CLASS(ScheduledThreadPoolThread) EXTENDS(Thread) {
 public:
     friend class _ScheduledThreadPoolExecutor;
 
-    _ScheduledThreadPoolThread();
+    _ScheduledThreadPoolThread(ThreadCachedPoolExecutor m);
 
     ~_ScheduledThreadPoolThread();
 
@@ -114,7 +112,6 @@ private:
     ArrayList<ScheduledThreadPoolTask> mDatas;
 
     ThreadCachedPoolExecutor cachedExecutor;
-
     
     Mutex mFuturesMutex;
     HashMap<Runnable,Future> mFutures;
@@ -177,6 +174,8 @@ public:
 
 private:
     ScheduledThreadPoolThread  mTimeThread;
+
+    ThreadCachedPoolExecutor mCachedExecutor;
 
     bool mIsShutDown;
 

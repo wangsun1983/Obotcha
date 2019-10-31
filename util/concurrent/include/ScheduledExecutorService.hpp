@@ -12,10 +12,11 @@
 #include "Future.hpp"
 #include "Executor.hpp"
 #include "Callable.hpp"
+#include "AutoClose.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ScheduledExecutorService) IMPLEMENTS(ExecutorService) {
+DECLARE_SIMPLE_CLASS(ScheduledExecutorService) IMPLEMENTS(ExecutorService){
 
 public:
     virtual Future schedule(Runnable command,long delay) = 0;
@@ -27,6 +28,10 @@ public:
     virtual Future scheduleWithFixedDelay(Runnable command,
                                                      long initialDelay,
                                                      long delay) = 0;
+
+                                                         
+
+
 };
 
 }

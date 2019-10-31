@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <errno.h>
+#include <string.h>
 
 #include "Thread.hpp"
 #include "Runnable.hpp"
@@ -164,7 +166,7 @@ int testMutexNormal() {
     while(1) {
         Mutex t = createMutex();
         int ret = t->unlock();
-        if(ret != 0) {
+        if(ret == 0) {
             printf("---[TestMutex Test {unlock()} case1] [FAIL]--- \n");
             break;
         }

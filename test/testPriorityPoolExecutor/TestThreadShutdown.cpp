@@ -8,8 +8,9 @@
 #include "Mutex.hpp"
 #include "AutoMutex.hpp"
 #include "System.hpp"
-#include "ThreadPoolExecutor.hpp"
+#include "PriorityPoolExecutor.hpp"
 #include "Error.hpp"
+#include "Executors.hpp"
 
 using namespace obotcha;
 
@@ -59,7 +60,7 @@ public:
 
 DECLARE_SIMPLE_CLASS(MyShutdownRunTest4) IMPLEMENTS(Thread) {
 public:
-    _MyShutdownRunTest4(ThreadPoolExecutor p) {
+    _MyShutdownRunTest4(PriorityPoolExecutor p) {
         mPool = p;
     }
 
@@ -75,37 +76,37 @@ public:
     }
 
 private:
-    ThreadPoolExecutor mPool;
-    long interval;    
+    PriorityPoolExecutor mPool;
+    long interval;
 };
 
 
 
 int testThreadShutdown() {
-    
+
     //TestThread onInterrupt case1
     while(1) {
-        ThreadPoolExecutor pool = createThreadPoolExecutor();
+        ExecutorService pool = st(Executors)::newPriorityThreadPool();
         pool->shutdown();
         int ret = pool->shutdown();
 
         if(ret != -AlreadyDestroy) {
-            printf("---[ThreadPoolExecutor Test {shutdown()} special case1] [FAIL]--- \n");
+            printf("---[PriorityPoolExecutor Test {shutdown()} special case1] [FAIL]--- \n");
             break;
         }
 
         auto mtask = pool->submit(createMyShutdownRunTest1());
         if(mtask != nullptr) {
-            printf("---[ThreadPoolExecutor Test {shutdown()} special case2] [FAIL]--- \n");
+            printf("---[PriorityPoolExecutor Test {shutdown()} special case2] [FAIL]--- \n");
             break;
         }
 
-        printf("---[ThreadPoolExecutor Test {shutdown()} special case3] [Success]--- \n");
+        printf("---[PriorityPoolExecutor Test {shutdown()} special case3] [Success]--- \n");
         break;
     }
 
     while(1) {
-        ThreadPoolExecutor pool = createThreadPoolExecutor();
+        PriorityPoolExecutor pool = createPriorityPoolExecutor();
         MyShutdownRunTest2 run = createMyShutdownRunTest2();
         pool->submit(run);
         pool->submit(run);
@@ -115,31 +116,31 @@ int testThreadShutdown() {
         pool->shutdown();
         sleep(1);
         if(run->getCount() != 5) {
-            printf("---[ThreadPoolExecutor Test {shutdown()} special case4] [FAIL]--- \n");
-            break;   
+            printf("---[PriorityPoolExecutor Test {shutdown()} special case4] [FAIL]--- \n");
+            break;
         }
-        
-        printf("---[ThreadPoolExecutor Test {shutdown()} special case5] [Success]--- \n");
+
+        printf("---[PriorityPoolExecutor Test {shutdown()} special case5] [Success]--- \n");
         break;
     }
 
     while(1) {
-        ThreadPoolExecutor pool = createThreadPoolExecutor();
+        PriorityPoolExecutor pool = createPriorityPoolExecutor();
         long t = st(System)::currentTimeMillis();
         pool->awaitTermination(1000);
         long current = st(System)::currentTimeMillis();
         if((current - t) > 1) {
-            printf("---[ThreadPoolExecutor Test {shutdown()} special case6] [FAIL]--- \n");
+            printf("---[PriorityPoolExecutor Test {shutdown()} special case6] [FAIL]--- \n");
             break;
         }
-        
+
         pool->shutdown();
-        printf("---[ThreadPoolExecutor Test {shutdown()} special case7] [Success]--- \n");
+        printf("---[PriorityPoolExecutor Test {shutdown()} special case7] [Success]--- \n");
         break;
     }
 
     while(1) {
-        ThreadPoolExecutor pool = createThreadPoolExecutor();
+        PriorityPoolExecutor pool = createPriorityPoolExecutor();
         pool->submit(createMyShutdownRunTest3());
         long t = st(System)::currentTimeMillis();
         pool->shutdown();
@@ -147,11 +148,11 @@ int testThreadShutdown() {
         int result = pool->awaitTermination(1000);
         long current = st(System)::currentTimeMillis();
         if((current - t) > 1 || result < 0) {
-            printf("---[ThreadPoolExecutor Test {shutdown()} special case8] [FAIL]--- \n");
+            printf("---[PriorityPoolExecutor Test {shutdown()} special case8] [FAIL]--- \n");
             break;
         }
-        
-        printf("---[ThreadPoolExecutor Test {shutdown()} special case9] [Success]--- \n");
+
+        printf("---[PriorityPoolExecutor Test {shutdown()} special case9] [Success]--- \n");
         break;
     }
 

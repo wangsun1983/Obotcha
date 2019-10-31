@@ -17,6 +17,7 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(ArrayIndexOutOfBoundsException) EXTENDS(Exception) {
 public:
     _ArrayIndexOutOfBoundsException(String,int,int);
+    _ArrayIndexOutOfBoundsException(const char *,int,int);
 
 private:
     static const String EXCEPTION_TAG;

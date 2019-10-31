@@ -21,12 +21,13 @@ public:
     }
 
     void run() {
-        //printf("MyReleaseTest running \n");
+        printf("MyReleaseTest running1 \n");
         sleep(1);
+        printf("MyReleaseTest running2 \n");
     }
 
     void onInterrupt() {
-        //printf("MyReleaseTest interrupt \n");
+        printf("MyReleaseTest interrupt \n");
     }
 
     ~_MyReleaseTest() {
@@ -37,19 +38,19 @@ public:
 
 
 int ReleaseTest() {
-  
+
     while(1) {
         {
             ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
             for(int i = 0; i < 50;i++) {
                 pool->schedule(createMyReleaseTest(),100);
             }
-
-            sleep(1);
+            printf("test1 pool size is %d \n",pool->getStrongCount());
+            sleep(2);
+            printf("test2 pool size is %d \n",pool->getStrongCount());
+            pool->shutdown();
+            printf("test3 pool count is %d \n",pool->getStrongCount());
         }
-
-        sleep(60);
-        
         printf("---[ScheduledThreadPoolExecutor Test {Release} case6] [Success]--- \n");
         break;
     }
@@ -60,35 +61,34 @@ int ReleaseTest() {
 
         {
             printf("start another test1 \n");
-        
+
             ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
             for(int i = 0; i < 50;i++) {
                 pool->schedule(createMyReleaseTest(),100);
             }
 
             sleep(3);
-            
+
             printf("start another test2 \n");
-        
+
             pool->shutdown();
             printf("start another test3 \n");
-        
+
             sleep(5);
 
             pool = nullptr;
 
             //printf("MyReleaseTest is %d \n",st(MyReleaseTest)::getDebugReferenceCount());
             //printf("Thread is %d \n",st(Thread)::getDebugReferenceCount());
-            
+
             printf("start another test4 \n");
-        
+
         }
         sleep(50);
-        
+
 
         printf("---[ScheduledThreadPoolExecutor Test {Release} case10] [Success]--- \n");
         break;
     }
 
 }
-

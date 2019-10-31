@@ -27,7 +27,7 @@ DECLARE_SIMPLE_CLASS(ThreadPoolExecutorHandler) IMPLEMENTS(Runnable) {
 
 public:
 
-    _ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool,_ThreadPoolExecutor* excutor);
+    _ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool,sp<_ThreadPoolExecutor> executor);
     
     bool isTerminated();
 
@@ -40,8 +40,6 @@ public:
     void waitForTerminate(long);
 
     void onInterrupt();
-
-    void onExecutorDestroy();
 
     bool shutdownTask(FutureTask);
 
@@ -66,7 +64,7 @@ private:
 
     Thread mThread;
 
-    _ThreadPoolExecutor* mExecutor;
+    sp<_ThreadPoolExecutor> mExecutor;
 
     Mutex mExecutorMutex;
 };
@@ -102,11 +100,12 @@ public:
     ~_ThreadPoolExecutor();
 
 private:
-    void onHandlerRelease();
+    void onCompleteNotify(ThreadPoolExecutorHandler h);
 
     BlockingQueue<FutureTask> mPool;
     
-    ConcurrentQueue<ThreadPoolExecutorHandler> mHandlers;
+    Mutex mHandlersMutex;
+    ArrayList<ThreadPoolExecutorHandler> mHandlers;
 
     bool mIsShutDown;
 
@@ -119,7 +118,7 @@ private:
 
     Mutex mProtectMutex;
 
-    Mutex mHandlerMutex;
+
 };
 
 }

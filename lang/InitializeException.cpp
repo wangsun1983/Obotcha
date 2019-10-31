@@ -17,5 +17,9 @@ _InitializeException::_InitializeException(String v):_Exception{v} {
     mErrInfo = EXCEPTION_TAG->append(v);
 }
 
+_InitializeException::_InitializeException(const char* v):_InitializeException{createString(v)} {
+}
+
+
 }
 

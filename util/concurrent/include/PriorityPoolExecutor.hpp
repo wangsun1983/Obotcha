@@ -75,7 +75,8 @@ private:
     mutable volatile bool mStop;
 };
 
-DECLARE_SIMPLE_CLASS(PriorityPoolExecutor) IMPLEMENTS(ExecutorService) {
+DECLARE_SIMPLE_CLASS(PriorityPoolExecutor) IMPLEMENTS(ExecutorService)
+                                           IMPLEMENTS(FutureTaskStatusListener) {
 
 public:
     friend class _PriorityPoolThread;
@@ -99,6 +100,8 @@ public:
     Future submit(Runnable task);
 
     Future submit(int level,Runnable task);
+
+    void onCancel(FutureTask);
 
     int getThreadsNum();
 

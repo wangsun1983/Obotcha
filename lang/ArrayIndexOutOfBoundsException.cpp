@@ -23,5 +23,7 @@ _ArrayIndexOutOfBoundsException::_ArrayIndexOutOfBoundsException(String v,int ma
                             ->append(createString(index));
 }
 
-
+_ArrayIndexOutOfBoundsException::_ArrayIndexOutOfBoundsException(const char * v,int maxsize,int index)
+                                :_ArrayIndexOutOfBoundsException{createString(v),maxsize,index}{
+}
 }

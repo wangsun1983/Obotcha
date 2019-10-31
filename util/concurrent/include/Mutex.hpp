@@ -44,13 +44,13 @@ public:
 
 private:
     pthread_mutex_t mutex_t;
+    pthread_mutexattr_t mutex_attr;
 
     String mMutexName;
 
-    std::uint64_t mutexId;
 
-    static pthread_mutex_t mMapLock;
-    static std::map<std::uint64_t,pthread_t> *mOwners;
+    //static pthread_mutex_t mMapLock;
+    //static std::map<std::uint64_t,pthread_t> *mOwners;
 
     static pthread_mutex_t mGenLock;
     static std::uint64_t generateId();

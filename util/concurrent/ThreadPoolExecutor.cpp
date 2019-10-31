@@ -16,7 +16,7 @@ static int id = 0;
 
 namespace obotcha {
 
-_ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool,_ThreadPoolExecutor* exe):mPool(pool),
+_ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool,sp<_ThreadPoolExecutor> exe):mPool(pool),
                                                                          state(idleState),
                                                                          mStop(false),
                                                                          isWaitTerminate(false),
@@ -40,11 +40,6 @@ _ThreadPoolExecutorHandler::~_ThreadPoolExecutorHandler() {
 void _ThreadPoolExecutorHandler::stop() {
     mStop = true;
     mThread->quit();
-}
-
-void _ThreadPoolExecutorHandler::onExecutorDestroy() {
-    AutoMutex ll(mExecutorMutex);
-    mExecutor = nullptr;
 }
 
 bool _ThreadPoolExecutorHandler::shutdownTask(FutureTask task) {
@@ -80,12 +75,11 @@ void _ThreadPoolExecutorHandler::onInterrupt() {
         r = nullptr;
     }
 
-    {
-        AutoMutex ll(mExecutorMutex);
-        if(mExecutor != nullptr) {
-            mExecutor->onHandlerRelease();
-        }
-    }
+    ThreadPoolExecutorHandler h;
+    h.set_pointer(this);
+    mExecutor->onCompleteNotify(h);
+
+    mExecutor.remove_pointer();
     
     mThread = nullptr;
 }
@@ -134,12 +128,10 @@ void _ThreadPoolExecutorHandler::run() {
         }
     }
 
-    {
-        AutoMutex ll(mExecutorMutex);
-        if(mExecutor != nullptr) {
-            mExecutor->onHandlerRelease();
-        }
-    }
+    ThreadPoolExecutorHandler h;
+    h.set_pointer(this);
+
+    mExecutor->onCompleteNotify(h);
     
     mThread = nullptr;
 }
@@ -174,6 +166,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor() {
 
 void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
     mProtectMutex = createMutex("ThreadPoolExecutor");
+    mHandlersMutex = createMutex("ThreadPoolHandlers");
 
     if(queuesize != -1) {
         mPool = createBlockingQueue<FutureTask>(queuesize);    
@@ -181,13 +174,13 @@ void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
         mPool = createBlockingQueue<FutureTask>();
     }
     
-    mHandlers = createConcurrentQueue<ThreadPoolExecutorHandler>();
+    mHandlers = createArrayList<ThreadPoolExecutorHandler>();
 
     mThreadNum = threadnum;
 
     for(int i = 0; i < threadnum;i++) {
         ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool,this);
-        mHandlers->enQueueLast(h);
+        mHandlers->add(h);
     }
 
     mIsTerminated = false;
@@ -216,26 +209,30 @@ int _ThreadPoolExecutor::execute(Runnable runnable) {
 }
 
 int _ThreadPoolExecutor::shutdown() {
+    printf("shutdown trace1\n");
     if(mIsShutDown ||mIsTerminated) {
         return -AlreadyDestroy;
     }
 
-    AutoMutex l(mProtectMutex);
+    {
+        AutoMutex l(mProtectMutex);
 
-    if(mIsShutDown ||mIsTerminated) {
-        return -AlreadyDestroy;
-    }
-
-    mIsShutDown = true;
-
-    int size = mHandlers->size();
-    for(int i = 0;i < size;i++) {
-        ThreadPoolExecutorHandler h = mHandlers->get(i);
-        if(h != nullptr) {
-            h->stop();
+        if(mIsShutDown ||mIsTerminated) {
+            return -AlreadyDestroy;
         }
+
+        mIsShutDown = true;
     }
 
+    AutoMutex ll1(mHandlersMutex);
+    ListIterator<ThreadPoolExecutorHandler> iterator = mHandlers->getIterator();
+    while(iterator->hasValue()) {
+        ThreadPoolExecutorHandler h = iterator->getValue();
+        h->stop();
+        iterator->next();
+    }
+
+    printf("shutdown trace2\n");
     for(;;) {
         FutureTask task = mPool->deQueueLastNoBlock();
         if(task != nullptr) {
@@ -247,6 +244,13 @@ int _ThreadPoolExecutor::shutdown() {
 
     mPool->clear();
 
+    printf("shutdown trace3\n");    
+    AutoMutex ll2(mProtectMutex);
+    if(!mIsTerminated) {
+        printf("shutdown trace4,this is %lx,count is %d \n",this,this->getStrongCount());
+        startWaitTerminate();
+        printf("shutdown trace5,this is %lx,count is %d,count addr is %lx \n",this,this->getStrongCount(),this);
+    }
     return 0;
 }
 
@@ -344,12 +348,24 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     return 0;
 }
 
-void _ThreadPoolExecutor::onHandlerRelease() {
-    AutoMutex ll(mProtectMutex);
-    mThreadNum--;
+void _ThreadPoolExecutor::onCompleteNotify(ThreadPoolExecutorHandler h) {
+    printf("_ThreadPoolExecutor onCompleteNotify!!!! \n");
+    AutoMutex ll(mHandlersMutex);
+    ListIterator<ThreadPoolExecutorHandler>iterator = mHandlers->getIterator();
+    while(iterator->hasValue()) {
+        ThreadPoolExecutorHandler t = iterator->getValue();
+        if(t == h) {
+            iterator->remove();
+            break;
+        }
+        iterator->next();
+    }
 
-    if(mThreadNum == 0) {
-        mHandlers->clear();
+    if(mIsShutDown) {
+        if(mHandlers->size() == 0) {
+            mIsTerminated = true;
+            finishWaitTerminate();
+        }
     }
 }
 
@@ -359,22 +375,16 @@ int _ThreadPoolExecutor::getThreadsNum() {
 }
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
-    int size = mHandlers->size();
-
-    for(int i = 0;i < size;i++) {
-        ThreadPoolExecutorHandler h = mHandlers->get(i);
-        if(h != nullptr) {
-            h->onExecutorDestroy();
-        }
-    }
-
-    //shutdown();
+    
+    printf("~_ThreadPoolExecutor trace4 \n");
     if(!mIsShutDown) {
         throw createExecutorDestructorException("ThreadPoolExecutor destruct error");
     }
+    printf("~_ThreadPoolExecutor trace5 \n");
 }
 
 void _ThreadPoolExecutor::onCancel(FutureTask t) {
+    printf("ThreadPoolExecutor onCancel start \n");
     if(mIsShutDown ||mIsTerminated) {
         return;
     }
@@ -384,25 +394,35 @@ void _ThreadPoolExecutor::onCancel(FutureTask t) {
     if(mIsShutDown ||mIsTerminated) {
         return;
     }
-
-    ThreadPoolExecutorHandler h = nullptr;
-    int size = mHandlers->size();
-    for(int i = 0;i < size;i++) {
-        h = mHandlers->get(i);
-        if(h != nullptr) {
-            if(h->shutdownTask(t)) {
-                mHandlers->remove(h);
-                break;
+    
+    printf("before remove mPool size is %d \n",mPool->size());
+    if(mPool->remove(t)) {
+        printf("after remove mPool size is %d \n",mPool->size());
+    } else {
+        printf("ThreadPoolExecutor onCancel trace1 \n");
+        ThreadPoolExecutorHandler h = nullptr;
+        int size = mHandlers->size();
+        for(int i = 0;i < size;i++) {
+            h = mHandlers->get(i);
+            printf("ThreadPoolExecutor onCancel trace2 \n");
+            if(h != nullptr) {
+                if(h->shutdownTask(t)) {
+                    printf("ThreadPoolExecutor onCancel trace3,before size is %d \n",mHandlers->size());
+                    mHandlers->remove(h);
+                    printf("ThreadPoolExecutor onCancel trace3,after size is %d \n",mHandlers->size());
+                    break;
+                }
             }
         }
     }
 
-    if(h != nullptr) {
-        h->onExecutorDestroy();
+    
+
+    //we should insert a new
+    if(!mIsShutDown) {
+        ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool,this);
+        mHandlers->add(h);
     }
-    //we should insert a new 
-    h = createThreadPoolExecutorHandler(mPool,this);
-    mHandlers->enQueueLast(h);
 }
 
 }

@@ -10,21 +10,29 @@
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
-#include "PriorityPoolExecutor.hpp"
 
 using namespace obotcha;
 
-extern int priorityPoolNormalTest();
+extern int normalTest();
+extern int testRunnable_onInterrupt();
+extern int releaseTest();
+extern int testThreadShutdown();
+extern int testThreadDestroy();
 extern int testSequence();
-extern int priorityPoolReleaseTest();
-extern int priorityPoolInterruptTest();
 
 int main() {
-    priorityPoolNormalTest();
+    normalTest();
+    sleep(1);
+    testRunnable_onInterrupt();
+    sleep(1);
+    releaseTest();
+    sleep(1);
+    testThreadShutdown();
+    sleep(1);
+    testThreadDestroy();
     sleep(1);
     testSequence();
-    sleep(1);
-    priorityPoolReleaseTest();
-    sleep(1);
-    priorityPoolInterruptTest();
+
+    sleep(10);
+    return 1;
 }

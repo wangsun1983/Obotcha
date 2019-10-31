@@ -18,6 +18,8 @@ DECLARE_SIMPLE_CLASS(InitializeException) EXTENDS(Exception) {
 public:
     _InitializeException(String);
 
+    _InitializeException(const char *v);
+
 private:
     static const String EXCEPTION_TAG;
 };

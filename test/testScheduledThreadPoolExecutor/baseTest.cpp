@@ -41,10 +41,12 @@ public:
 
 int baseTest() {
     //printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
-#if 0
+
     //_ScheduledThreadPoolExecutor()
     while(1) {
         ExecutorService pool = st(Executors)::newScheduledThreadPool();
+
+        pool->shutdown();
         printf("---[ScheduledThreadPoolExecutor Test {constructor()} case1] [Success]--- \n");
         break;
     }
@@ -53,7 +55,7 @@ int baseTest() {
     //void shutdown();
     while(1) {
         ExecutorService pool = st(Executors)::newScheduledThreadPool();
-        pool->submit(createRunTest1());
+        pool->submit(createBaseRunTest1());
         pool->shutdown();
         sleep(5);
         if(!pool->isShutdown()) {
@@ -61,13 +63,13 @@ int baseTest() {
             break;
         }
 
-        Future task = pool->submit(createRunTest1());
+        Future task = pool->submit(createBaseRunTest1());
         if(task != nullptr) {
             printf("---[ScheduledThreadPoolExecutor Test {shutdown()} case2] [FAIL]--- \n");
             break;
         }
 
-        int result = pool->execute(createRunTest1());
+        int result = pool->execute(createBaseRunTest1());
         if(result != -InvalidStatus) {
             printf("---[ScheduledThreadPoolExecutor Test {shutdown()} case3] [FAIL]--- \n");
             break;
@@ -90,7 +92,7 @@ int baseTest() {
         //runTest2Mutex = createMutex();
         //runTest2Mutex->lock();
 
-        pool->submit(createRunTest2());
+        pool->submit(createBaseRunTest2());
         sleep(1);
         pool->shutdown();
 
@@ -103,8 +105,8 @@ int baseTest() {
             break;
         }
         long current2 = st(System)::currentTimeMillis();
-        //printf("current2 - current1 is %d \n",(current2 - current));
-        if(current2 - current > 5) {
+        printf("current2 - current1 is %d \n",(current2 - current));
+        if(current2 - current > 15) {
             printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case3] [FAIL]--- \n");
             break;
         }
@@ -123,7 +125,7 @@ int baseTest() {
             break;
         }
 
-        pool->submit(createRunTest1());
+        pool->submit(createBaseRunTest1());
         int v = pool->shutdown();
         printf("v is %d \n",v);
 
@@ -148,15 +150,17 @@ int baseTest() {
     }
 
 
+
     //int awaitTermination(long timeout = max);
     while(1) {
         ExecutorService pool = st(Executors)::newScheduledThreadPool();
-        pool->submit(createRunTest1());
+        pool->submit(createBaseRunTest1());
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
         pool->awaitTermination(100000);
         int v = st(System)::currentTimeMillis() - current;
+        printf("v is %d \n",v);
         if(v > 10005) {
             printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case9] [FAIL]--- \n");
             break;
@@ -165,7 +169,8 @@ int baseTest() {
         printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case10] [Success]--- \n");
         break;
     }
-#endif  
+
+
 
     //submit(Runnable task);
     while(1) {
@@ -187,6 +192,4 @@ int baseTest() {
         printf("---[ScheduledThreadPoolExecutor Test {submit()} case3] [Success]--- \n");
         break;
     }
-   
 }
-

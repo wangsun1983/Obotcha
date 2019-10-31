@@ -22,8 +22,10 @@ DECLARE_SIMPLE_CLASS(MyRunTest5) IMPLEMENTS(Runnable) {
 public:
    void run() {
       //printf("myruntest 5 trace1 \n");
-      AutoMutex l(mutex);
-      num++;
+      {
+          AutoMutex l(mutex);
+          num++;
+      }
       //printf("myruntest 5 trace2 \n");
       sleep(1);
       //printf("myruntest 5 trace3 \n");
@@ -45,14 +47,16 @@ int numTest() {
 
         int maxThreadNum = pool->getThreadsNum();
             
-        sleep(64);
+        sleep(20);
 
         if(num != testNum) {
             printf("---[TestCachedPoolExecutor NumTest {case1,num is %d] [FAIL]--- \n",num);
+            pool->shutdown();
             break;
         }
 
         if(maxThreadNum != 4) {
+            pool->shutdown();
             printf("---[TestCachedPoolExecutor NumTest {case2,maxThreadNum is %d] [FAIL]--- \n",maxThreadNum);
             break;
         }
@@ -60,10 +64,12 @@ int numTest() {
         sleep(80);
         int threadsize = pool->getThreadsNum();
         if(threadsize != 0) {
+            pool->shutdown();
             printf("---[TestCachedPoolExecutor NumTest {case3] [FAIL]---,thread size is  %d \n",threadsize);
             break;
         }
-
+        
+        pool->shutdown();
         printf("---[TestCachedPoolExecutor NumTest {case4] [Success]--- \n");
         break;
     }

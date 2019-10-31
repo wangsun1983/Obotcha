@@ -18,6 +18,8 @@ DECLARE_SIMPLE_CLASS(MethodNotSupportException) EXTENDS(Exception) {
 public:
     _MethodNotSupportException(String);
 
+    _MethodNotSupportException(const char *v);
+
 private:
     static const String EXCEPTION_TAG;
 };

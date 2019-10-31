@@ -39,7 +39,7 @@ int releaseTest() {
         //printf("handler count1 is %d \n",st(ThreadCachedPoolExecutorHandler)::getDebugReferenceCount());
 
         sleep(200);
-        
+        pool->shutdown();
         printf("---[CacheThreadPool Test {release()}case4] [Success]--- \n");
         break;
     }

@@ -138,6 +138,8 @@ public:
 
     virtual void quit();
 
+    virtual void onComplete();
+
     int setPriority(ThreadPriority priority);
 
     int getPriority();

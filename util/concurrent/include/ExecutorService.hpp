@@ -12,6 +12,9 @@
 #include "Future.hpp"
 #include "Executor.hpp"
 #include "Callable.hpp"
+#include "AutoClose.hpp"
+#include "Condition.hpp"
+#include "Thread.hpp"
 
 namespace obotcha {
 
@@ -20,6 +23,41 @@ enum ExecutorState {
     busyState,
     terminateState,
     illegalState,
+};
+
+class _ExecutorService;
+
+DECLARE_SIMPLE_CLASS(ExecutorServiceListener) {
+public:
+    virtual void onTerminate(sp<_ExecutorService>) = 0;
+};
+
+DECLARE_SIMPLE_CLASS(ExecutorServiceRecycle) IMPLEMENTS(ExecutorServiceListener){
+public:
+    _ExecutorServiceRecycle();
+
+    void start();
+
+    void run();
+
+    void addRecycleService(sp<_ExecutorService> s);
+
+    void onTerminate(sp<_ExecutorService>);
+
+    bool isWaiting(_ExecutorService *s);
+
+    ~_ExecutorServiceRecycle();
+
+private:
+    Mutex mWaitingMutex;
+    ArrayList<sp<_ExecutorService>> mWaitServices;
+
+    Mutex mReleaseMutex;
+    Condition mReleaseCondition;
+    ArrayList<sp<_ExecutorService>> mReleaseServices;
+
+    pthread_t mTid;
+    pthread_attr_t mAttr;
 };
 
 DECLARE_SIMPLE_CLASS(ExecutorService) IMPLEMENTS(Executor) {
@@ -52,6 +90,21 @@ public:
 
     //get thread num
     virtual int getThreadsNum() = 0;
+
+protected:
+
+    void finishWaitTerminate();
+
+    void startWaitTerminate();
+
+private:
+    int status;
+    
+    static Mutex mRecylerInitMutex;
+    static bool isRecylerInited;
+    static ExecutorServiceRecycle mRecyler;
+
+    void doRecycle();
 };
 
 }

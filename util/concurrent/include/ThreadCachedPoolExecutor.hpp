@@ -25,6 +25,12 @@ namespace obotcha {
 class _ThreadCachedPoolExecutor;
 class _CacheThreadManager;
 
+enum CachedNotifyResult {
+    CachedNotifySuccess,
+    CachedNotifyFailAlreadyRelease,
+};
+
+
 DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutorHandler) IMPLEMENTS(Thread) {
 
 public:
@@ -71,13 +77,15 @@ private:
     BlockingQueue<FutureTask> mPool;
 
     Mutex mTaskMutex;
+
+    bool isNotifed;
 };
 
 //wangsl
 DECLARE_SIMPLE_CLASS(CacheThreadManager) {
     
 public:
-    _CacheThreadManager(int queueSize,int minThreadNum,int maxThreadNum,int waittimeout);
+    _CacheThreadManager(int queueSize,int minThreadNum,int maxThreadNum,int waittimeout,sp<_ThreadCachedPoolExecutor> executor);
 
     _CacheThreadManager();
 
@@ -85,15 +93,19 @@ public:
 
     void bindTask(FutureTask);
 
-    void idleNotify(ThreadCachedPoolExecutorHandler);
+    int idleNotify(ThreadCachedPoolExecutorHandler);
 
-    void busyNotify(ThreadCachedPoolExecutorHandler);
+    int busyNotify(ThreadCachedPoolExecutorHandler);
 
     void completeNotify(ThreadCachedPoolExecutorHandler);
     //-----------
     int awaitTermination(long timeout);
 
+    bool isTerminated();
+
     void release();
+
+    void removeExecutor();
 
     int getThreadSum();
 
@@ -106,9 +118,18 @@ private:
     ArrayList<ThreadCachedPoolExecutorHandler> mRunningHandlers;
     Mutex mRunningHandlerMutex;
 
+    ArrayList<ThreadCachedPoolExecutorHandler> mCreatingHandlers;
+    Mutex mCreatingHandlerMutex;
+
+    Mutex mCompleteNotifyMutex;
+
     BlockingQueue<FutureTask> mFutureTasks;
 
+    sp<_ThreadCachedPoolExecutor> mExecutor;
+
     Mutex mFutureTaskMutex;
+    
+    AtomicBoolean mIsTerminated;
 
     int mQueuesize;
 
@@ -121,6 +142,9 @@ private:
     Mutex mWaitTermMutex;
 
     Condition mWaitTermCond;
+
+    mutable volatile bool mIsRelease;
+    Mutex mReleaseMutex;
 };
 
 
@@ -129,6 +153,7 @@ DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(ExecutorService)
 
 public:
     friend class _ThreadCachedPoolExecutorHandler;
+    friend class _CacheThreadManager;
 
     enum CachedExecuteResult {
         success,

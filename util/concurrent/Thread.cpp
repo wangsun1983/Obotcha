@@ -48,8 +48,15 @@ void _ReleaseThread::sendRelease(Uint64 t) {
 }
 
 void _ReleaseThread::start() {
+    if(mStartBarrier->get() == 1) {
+        return;
+    }
 
     AutoMutex l(mutex);
+    if(mStartBarrier->get() == 1) {
+        return;
+    }
+    
     pthread_attr_init(&mAttr);
     pthread_create(&mTid, &mAttr, freethreadmem, this);
         
@@ -182,7 +189,6 @@ void* _Thread::localRun(void *th) {
     //pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, nullptr);
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     _Thread *thread = static_cast<_Thread *>(th);
-    printf("run start %lld \n",thread->mPthread);
     KeepAliveThread mKAThread = mKeepAliveThread; 
     sp<_Thread> localThread;
     localThread.set_pointer(thread);
@@ -203,19 +209,18 @@ void* _Thread::localRun(void *th) {
         pthread_setname_np(thread->mPthread,thread->mName->toChars());
     }
     //pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
-    printf("run case0 %lld \n",thread->mPthread);
     if(thread->mRunnable != nullptr) {
         thread->mRunnable->run();
+        printf("thread:runnable onComplete \n");
         thread->mRunnable = nullptr;
     } else {
+        printf("thread:onComplete \n");
         thread->run();
     }
-    printf("run case1 %lld \n",thread->mPthread);
 end:
     pthread_cleanup_pop(0);
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     {
-        printf("run case2 %lld \n",thread->mPthread);
         AutoMutex ll(thread->mJoinMutex);
         thread->mStatus = ThreadComplete;
         thread->mJoinDondtion->notifyAll();
@@ -312,7 +317,6 @@ int _Thread::start() {
     mStatus = ThreadIdle;
     pthread_attr_init(&mThreadAttr);
     pthread_create(&mPthread, &mThreadAttr, localRun, this);
-    printf("create pthread is %lld \n",mPthread);
     while(bootFlag->orAndGet(0) == 0) {
         st(Thread)::yield();
     }
@@ -344,8 +348,11 @@ int _Thread::getStatus() {
     return mStatus;
 }
 
+void _Thread::onComplete(){
+    //Do nothing
+}
+
 void _Thread::quit() {
-    printf("thread start quit status is %d,this is %llx \n",mStatus,this);
     if(mStatus == ThreadComplete||mStatus == ThreadNotStart||mStatus == ThreadWaitExit) {
         return;
     }
@@ -357,16 +364,13 @@ void _Thread::quit() {
     }else if(mStatus == ThreadWaitExit) {
         return;
     }
-    printf("thread trace1 quit status is %d,this is %llx \n",mStatus,this);
+    
     if(mStatus == ThreadIdle) {
         mStatus = ThreadWaitExit;
         while(1) {
             join(100);
-            printf("thread trace2 quit status is %d this is %llx \n",mStatus,this);
             if(mStatus == ThreadRunning) {
-                printf("thread trace3 quit cancel this is %llx \n",mStatus,this);
                 pthread_cancel(mPthread);
-                printf("thread trace4 quit cancel this is %llx \n",mStatus,this);
                 return;
             } else if(mStatus == ThreadComplete) {
                 return;
@@ -376,13 +380,11 @@ void _Thread::quit() {
         return;
     }
 
-    printf("thread trace5 quit status is %d this is %llx,mPthread is %lld \n",mStatus,this,mPthread);
     mStatus = ThreadComplete;
     try {
         int ret = pthread_cancel(mPthread);
     } catch(std::exception ) {}
     
-    printf("thread trace6 quit mStatus is %d this is %llx \n",mStatus,this);
 }
 
 int _Thread::setPriority(ThreadPriority priority) {

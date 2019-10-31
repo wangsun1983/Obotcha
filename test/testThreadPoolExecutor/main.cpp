@@ -20,15 +20,15 @@ extern int testThreadShutdown();
 extern int testThreadDestroy();
 
 int main() {
-    /*
     normalTest();
     sleep(1);
     testRunnable_onInterrupt();
     sleep(1);
     releaseTest();
     sleep(10);
-    testThreadShutdown();*/
+    testThreadShutdown();
     testThreadDestroy();
+   
     sleep(10);
     return 1;
 }

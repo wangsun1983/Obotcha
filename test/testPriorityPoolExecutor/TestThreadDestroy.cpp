@@ -8,9 +8,10 @@
 #include "Mutex.hpp"
 #include "AutoMutex.hpp"
 #include "System.hpp"
-#include "ThreadPoolExecutor.hpp"
+#include "PriorityPoolExecutor.hpp"
 #include "ExecutorDestructorException.hpp"
 #include "Error.hpp"
+#include "Executors.hpp"
 
 using namespace obotcha;
 
@@ -26,23 +27,23 @@ public:
 };
 
 int testThreadDestroy() {
-    
+
     //TestThread onInterrupt case1
     while(1)
     {
         try {
             {
-                ThreadPoolExecutor pool = createThreadPoolExecutor();
+                ExecutorService pool = st(Executors)::newPriorityThreadPool();
                 pool->submit(createMyDestroyTest());
                 pool->shutdown();
             }
             sleep(10);
         } catch(ExecutorDestructorException e) {
-            printf("---[ThreadPoolExecutor Test {destroy()} special case1] [Success]--- \n");
+            printf("---[PriorityPoolExecutor Test {destroy()} special case1] [Success]--- \n");
             break;
         }
-        
-        printf("---[ThreadPoolExecutor Test {destroy()} special case1] [Fail]--- \n");
+
+        printf("---[PriorityPoolExecutor Test {destroy()} special case1] [Fail]--- \n");
         break;
     }
 

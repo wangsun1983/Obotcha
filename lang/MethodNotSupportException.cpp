@@ -18,4 +18,7 @@ _MethodNotSupportException::_MethodNotSupportException(String v):_Exception{v} {
     mErrInfo = EXCEPTION_TAG->append(v);
 }
 
+_MethodNotSupportException::_MethodNotSupportException(const char * v):_MethodNotSupportException{createString(v)} {
+}
+
 }
