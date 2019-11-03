@@ -16,6 +16,7 @@
 #include "ExecutorService.hpp"
 #include "Condition.hpp"
 #include "Thread.hpp"
+#include "Condition.hpp"
 #include "Error.hpp"
 
 namespace obotcha {
@@ -37,59 +38,63 @@ public:
 
 class _PriorityPoolExecutor;
 
-DECLARE_SIMPLE_CLASS(PriorityPoolThread) EXTENDS(Thread) {
+DECLARE_SIMPLE_CLASS(PriorityPoolHandler) IMPLEMENTS(Runnable) {
+
 public:
-    _PriorityPoolThread(ArrayList<PriorityTask>,Mutex,Condition,_PriorityPoolExecutor *exe);
+
+    _PriorityPoolHandler(ArrayList<PriorityTask> pool,Mutex,Condition,sp<_PriorityPoolExecutor> executor);
     
     void run();
     
-    void onInterrupt();
-
     void stop();
 
-    void waitTermination(long);
+    void onInterrupt();
 
-    void onExecutorDestroy();
+    bool shutdownTask(FutureTask);
 
-    ~_PriorityPoolThread();
+    ~_PriorityPoolHandler();
 
 private:
-    ArrayList<PriorityTask> mTasks;
-    
-    Mutex mMutex;
-    
-    Condition mCondition;
+    Mutex mFutureMutex;
+    Condition mFutureCond;
+    ArrayList<PriorityTask> mPool;
 
-    Condition mWaitTermCondition;
+    int state;
+
+    bool mIdleWait;
 
     Mutex mStateMutex;
 
-    PriorityTask mCurrentTask;
-    
-    Mutex mExecutorMutex;
+    Condition mWaitCond;
 
-    _PriorityPoolExecutor *mExecutor;
+    bool isWaitTerminate;
 
-    int mState;
-    
+    FutureTask mCurrentTask;
+
     mutable volatile bool mStop;
+
+    Thread mThread;
+
+    sp<_PriorityPoolExecutor> mExecutor;
+
+    Mutex mExecutorMutex;
 };
 
-DECLARE_SIMPLE_CLASS(PriorityPoolExecutor) IMPLEMENTS(ExecutorService)
+
+DECLARE_SIMPLE_CLASS(PriorityPoolExecutor) IMPLEMENTS(ExecutorService) 
                                            IMPLEMENTS(FutureTaskStatusListener) {
 
 public:
-    friend class _PriorityPoolThread;
 
-    _PriorityPoolExecutor();
+    friend class _PriorityPoolHandler;
 
-    _PriorityPoolExecutor(int threadnum);
+	_PriorityPoolExecutor(int threadnum);
 
-    int execute(Runnable command);
-
-    int execute(int level,Runnable command);
+	_PriorityPoolExecutor();
 
     int shutdown();
+
+    int execute(Runnable command);
 
     bool isShutdown();
 
@@ -101,32 +106,38 @@ public:
 
     Future submit(int level,Runnable task);
 
-    void onCancel(FutureTask);
-
     int getThreadsNum();
+
+    void onCancel(FutureTask);
 
     ~_PriorityPoolExecutor();
 
 private:
+    void onCompleteNotify(PriorityPoolHandler h);
 
-    void onHandlerRelease();
+    //------------
+    Mutex mFutureTaskMutex;
+    Condition mFutureCond;
+    ArrayList<PriorityTask> mPool;
+    
+    Mutex mHandlersMutex;
+    ArrayList<PriorityPoolHandler> mHandlers;
 
+    bool mIsShutDown;
+
+    bool mIsTerminated;
+
+    //bool isDynamic;
     int mThreadNum;
 
+    void init(int threadnum);
+
     Mutex mProtectMutex;
-    
-    Mutex mDataLock;
 
-    Condition mDataCond;
-
-    bool isShutDown;
-
-    bool isTermination;
-    
-    ArrayList<PriorityTask> mPriorityTasks;
-
-    ArrayList<PriorityPoolThread> mThreads;
+    Mutex mWaitMutex;
+    Condition mWaitCond;
 };
+
 
 }
 #endif

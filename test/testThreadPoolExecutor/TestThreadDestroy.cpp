@@ -34,7 +34,6 @@ int testThreadDestroy() {
             {
                 ThreadPoolExecutor pool = createThreadPoolExecutor();
                 pool->submit(createMyDestroyTest());
-                pool->shutdown();
             }
             sleep(10);
         } catch(ExecutorDestructorException e) {

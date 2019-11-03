@@ -16,13 +16,15 @@ extern int testThreadExecutorPoolFutureCancel();
 extern int testThreadCachedPoolFutureCancel();
 extern int testThreadScheduleFutureCancel();
 extern int testFutureNormal();
+extern int testThreadExecutorPoolFutureDelayCancel();
 
 int main() {
     printf("---[TestFuture Test Start]--- \n");
-    testThreadExecutorPoolFutureCancel();
+    //testThreadExecutorPoolFutureCancel();
     //testFutureNormal();
     //testThreadCachedPoolFutureCancel();
     //testThreadScheduleFutureCancel();
+    testThreadExecutorPoolFutureDelayCancel();
     sleep(10);
     printf("end !!!!!!!!\n");
     //while(1) {}

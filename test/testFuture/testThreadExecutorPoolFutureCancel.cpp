@@ -73,7 +73,7 @@ private:
 
 int testThreadExecutorPoolFutureCancel() {
     //threadExecutorPool
-#if 0    
+  
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(5,5);
         TestCancelRun1 run1 = createTestCancelRun1();
@@ -88,7 +88,7 @@ int testThreadExecutorPoolFutureCancel() {
         printf("---[TestFuture ExecutorPool Test {cancel()} case2] [Success]--- \n");
         break;
     }
-#endif
+
 
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(50,5);
@@ -113,7 +113,7 @@ int testThreadExecutorPoolFutureCancel() {
         break;
     }
 
-#if 0
+
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(50,5);
         ArrayList<Future> futurelist = createArrayList<Future>();
@@ -209,5 +209,5 @@ int testThreadExecutorPoolFutureCancel() {
         break;
        
     }
-#endif   
+  
 }

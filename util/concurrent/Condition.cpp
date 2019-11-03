@@ -20,11 +20,17 @@ void _Condition::wait(Mutex m) {
 
 int _Condition::wait(Mutex m,long int timeInterval) {
     struct timespec ts;
-    st(System)::getNextTime(timeInterval,&ts);
-    pthread_mutex_t* mutex_t = m->getMutex_t();
-    int ret = pthread_cond_timedwait(&cond_t,mutex_t,&ts);
-    if(ret == ETIMEDOUT) {
-        return NotifyByTimeout;
+    if(timeInterval == 0) {
+        wait(m);
+    } else {
+        st(System)::getNextTime(timeInterval,&ts);
+        pthread_mutex_t* mutex_t = m->getMutex_t();
+        int ret = pthread_cond_timedwait(&cond_t,mutex_t,&ts);
+
+        printf("condition wait ret is %d \n",ret);
+        if(ret == ETIMEDOUT) {
+            return NotifyByTimeout;
+        }
     }
 
     return NotifyByThread;

@@ -83,7 +83,6 @@ private:
 
 int testThreadCachedPoolFutureCancel() {
     //threadExecutorPool
-
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
         TestCachedCancelRun1 run1 = createTestCachedCancelRun1();
@@ -95,12 +94,12 @@ int testThreadCachedPoolFutureCancel() {
             printf("---[TestFuture CachedThreadPool Test {cancel()} case1] [FAIL],val is %d,interrupt is %d--- \n",run1->getValue(),run1->getInterrupt());
             break;
         }
-
+        pool->shutdown();
         printf("---[TestFuture CachedThreadPool Test {cancel()} case2] [Success]--- \n");
         break;
     }
 
-   
+  
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
         ArrayList<Future> futurelist = createArrayList<Future>();
@@ -120,11 +119,10 @@ int testThreadCachedPoolFutureCancel() {
         
 
         sleep(1);
+        pool->shutdown();
         printf("---[TestFuture CachedThreadPool Test {cancel()} case3] [Success]--- \n");
         break;
     }
-
-
 
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
@@ -146,6 +144,7 @@ int testThreadCachedPoolFutureCancel() {
         }
         
         sleep(1);
+        pool->shutdown();
         printf("---[TestFuture CachedThreadPool Test {cancel()} case4] [Success]--- \n");
         break;
     }
@@ -180,6 +179,7 @@ int testThreadCachedPoolFutureCancel() {
         }
 
         printf("---[TestFuture CachedThreadPool Test {cancel()} case6] [Success]--- \n");
+        pool->shutdown();
         break;
     }
 
@@ -220,6 +220,7 @@ int testThreadCachedPoolFutureCancel() {
         }
 
         printf("---[TestFuture CachedThreadPool Test {cancel()} case8] [Success] --- \n");
+        pool->shutdown();
         break;
        
     }

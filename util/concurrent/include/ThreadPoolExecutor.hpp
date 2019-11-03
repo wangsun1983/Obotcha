@@ -29,15 +29,9 @@ public:
 
     _ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool,sp<_ThreadPoolExecutor> executor);
     
-    bool isTerminated();
-
     void run();
     
     void stop();
-
-    void waitForTerminate();
-
-    void waitForTerminate(long);
 
     void onInterrupt();
 
@@ -65,8 +59,6 @@ private:
     Thread mThread;
 
     sp<_ThreadPoolExecutor> mExecutor;
-
-    Mutex mExecutorMutex;
 };
 
 
@@ -118,7 +110,8 @@ private:
 
     Mutex mProtectMutex;
 
-
+    Mutex mWaitMutex;
+    Condition mWaitCond;
 };
 
 }

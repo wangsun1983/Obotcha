@@ -270,14 +270,14 @@ void _ScheduledThreadPoolThread::stopTask(FutureTask task) {
         Runnable r = task->getRunnable();
         printf("_ScheduledThreadPoolThread stop task trace2_2,runnable is %lld \n",r.get_pointer());
         AutoMutex ll(mFuturesMutex);
-        //Future f = mFutures->get(r);
+        Future f = mFutures->get(r);
         //printf("_ScheduledThreadPoolThread stop task trace2_3 \n");
-        //if(f != nullptr) {
+        if(f != nullptr) {
         //    printf("_ScheduledThreadPoolThread stop task trace3 \n");
-        //    f->cancel();
-        //} else if(task == mCurrentTask) {
-        //    mCurrentTask->task->cancel();
-        //}
+            f->cancel();
+        } else if(task == mCurrentTask) {
+            mCurrentTask->task->cancel();
+        }
         printf("_ScheduledThreadPoolThread stop task trace4 \n");
         mFutures->remove(r);
     }
