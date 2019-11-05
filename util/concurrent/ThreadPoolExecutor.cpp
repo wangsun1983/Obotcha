@@ -22,9 +22,13 @@ _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask>
                                                                          isWaitTerminate(false),
                                                                          mExecutor(exe){
     mStateMutex = createMutex("ThreadPoolExeHandlerMutex");
+    mWaitCond = createCondition();
     Runnable r;
     r.set_pointer(this);
     mThread = createThread(r);
+
+    mExecutorMutex = createMutex("ThreadPoolExecutorMutex");
+
     state = idleState;
     mThread->start();
 }
@@ -132,6 +136,26 @@ void _ThreadPoolExecutorHandler::run() {
     mThread = nullptr;
 }
 
+void _ThreadPoolExecutorHandler::waitForTerminate() {
+    AutoMutex l(mStateMutex);
+    isWaitTerminate = true;
+    if(state == busyState) {
+        mWaitCond->wait(mStateMutex);
+    }
+}
+
+void _ThreadPoolExecutorHandler::waitForTerminate(long interval) {
+    AutoMutex l(mStateMutex);
+    isWaitTerminate = true;
+    if(state == busyState) {
+        mWaitCond->wait(mStateMutex,interval);
+    }
+}
+
+bool _ThreadPoolExecutorHandler::isTerminated() {
+    return state == terminateState;
+}
+
 _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
     init(queuesize,threadnum);
 }
@@ -143,8 +167,6 @@ _ThreadPoolExecutor::_ThreadPoolExecutor() {
 void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
     mProtectMutex = createMutex("ThreadPoolExecutor");
     mHandlersMutex = createMutex("ThreadPoolHandlers");
-    mWaitMutex = createMutex("WaitMutex");
-    mWaitCond = createCondition();
 
     if(queuesize != -1) {
         mPool = createBlockingQueue<FutureTask>(queuesize);    
@@ -155,12 +177,9 @@ void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
     mHandlers = createArrayList<ThreadPoolExecutorHandler>();
 
     mThreadNum = threadnum;
-    
-    ThreadPoolExecutor executor;
-    executor.set_pointer(this);
 
     for(int i = 0; i < threadnum;i++) {
-        ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool,executor);
+        ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool,this);
         mHandlers->add(h);
     }
 
@@ -204,16 +223,6 @@ int _ThreadPoolExecutor::shutdown() {
 
         mIsShutDown = true;
     }
-    
-    printf("shutdown trace1_1\n");
-    {
-        AutoMutex ll2(mProtectMutex);
-        if(!mIsTerminated) {
-            printf("shutdown trace4,this is %lx,count is %d \n",this,this->getStrongCount());
-            startWaitTerminate();
-            printf("shutdown trace5,this is %lx,count is %d,count addr is %lx \n",this,this->getStrongCount(),this);
-        }
-    }
 
     AutoMutex ll1(mHandlersMutex);
     ListIterator<ThreadPoolExecutorHandler> iterator = mHandlers->getIterator();
@@ -236,7 +245,12 @@ int _ThreadPoolExecutor::shutdown() {
     mPool->clear();
 
     printf("shutdown trace3\n");    
-    
+    AutoMutex ll2(mProtectMutex);
+    if(!mIsTerminated) {
+        printf("shutdown trace4,this is %lx,count is %d \n",this,this->getStrongCount());
+        startWaitTerminate();
+        printf("shutdown trace5,this is %lx,count is %d,count addr is %lx \n",this,this->getStrongCount(),this);
+    }
     return 0;
 }
 
@@ -269,6 +283,25 @@ bool _ThreadPoolExecutor::isShutdown() {
 }
 
 bool _ThreadPoolExecutor::isTerminated() {
+    if(mIsTerminated) {
+        return true;
+    }
+
+    AutoMutex l(mProtectMutex);
+
+    if(mIsTerminated) {
+        return true;
+    }
+
+    int size = mHandlers->size();
+    for(int i = 0;i < size;i++) {
+        ThreadPoolExecutorHandler h = mHandlers->get(i);
+        if(h != nullptr && !h->isTerminated()) {
+            return false;
+        }
+    }
+
+    mIsTerminated = true;
     return mIsTerminated;
 }
 
@@ -276,48 +309,61 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     if(!mIsShutDown) {
         return -InvalidStatus;
     }
-    
-    if(mIsTerminated) {
-        return 0;
-    }
-
-    AutoMutex ll(mWaitMutex);
 
     if(mIsTerminated) {
         return 0;
     }
 
-    if(mWaitCond->wait(mWaitMutex,millseconds) == NotifyByThread) {
+    int size = mHandlers->size();
+
+    if(millseconds == 0) {
+        for(int i = 0;i < size;i++) {
+            ThreadPoolExecutorHandler h = mHandlers->get(i);
+            if(h != nullptr) {
+                h->waitForTerminate();
+            }
+        }
+        mIsTerminated = true;
         return 0;
+    } else {
+        for(int i = 0;i < size;i++) {
+            long current = st(System)::currentTimeMillis();
+            if(millseconds > 0) {
+                //mHandlers->get(i)->waitForTerminate(millseconds);
+                ThreadPoolExecutorHandler h = mHandlers->get(i);
+                if(h != nullptr) {
+                    h->waitForTerminate(millseconds);
+                }
+            } else {
+                break;
+            }
+            millseconds -= (st(System)::currentTimeMillis() - current);
+        }
+
+        if(millseconds <= 0) {
+            return -WaitTimeout;
+        }
     }
 
-    return  -1;
-
+    return 0;
 }
 
 void _ThreadPoolExecutor::onCompleteNotify(ThreadPoolExecutorHandler h) {
     printf("_ThreadPoolExecutor onCompleteNotify!!!! \n");
-    {
-        AutoMutex ll(mHandlersMutex);
-        ListIterator<ThreadPoolExecutorHandler>iterator = mHandlers->getIterator();
-        while(iterator->hasValue()) {
-            ThreadPoolExecutorHandler t = iterator->getValue();
-            if(t == h) {
-                iterator->remove();
-                break;
-            }
-            iterator->next();
+    AutoMutex ll(mHandlersMutex);
+    ListIterator<ThreadPoolExecutorHandler>iterator = mHandlers->getIterator();
+    while(iterator->hasValue()) {
+        ThreadPoolExecutorHandler t = iterator->getValue();
+        if(t == h) {
+            iterator->remove();
+            break;
         }
+        iterator->next();
     }
 
     if(mIsShutDown) {
         if(mHandlers->size() == 0) {
-            {
-                AutoMutex ll2(mWaitMutex);
-                mIsTerminated = true;
-                mWaitCond->notifyAll();
-            }
-            
+            mIsTerminated = true;
             finishWaitTerminate();
         }
     }
@@ -374,10 +420,7 @@ void _ThreadPoolExecutor::onCancel(FutureTask t) {
 
     //we should insert a new
     if(!mIsShutDown) {
-        ThreadPoolExecutor executor;
-        executor.set_pointer(this);
-
-        ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool,executor);
+        ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool,this);
         mHandlers->add(h);
     }
 }

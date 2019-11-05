@@ -1,82 +1,110 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <pthread.h>
+#include <map>
 
-#include "ExecutorService.hpp"
-#include "Thread.hpp"
-#include "ThreadPoolExecutor.hpp"
-#include "FutureTask.hpp"
+#include "Object.hpp"
+#include "StrongPointer.hpp"
+#include "Runnable.hpp"
+#include "Executor.hpp"
+#include "ArrayList.hpp"
 #include "Future.hpp"
-#include "System.hpp"
-#include "Error.hpp"
-#include "ExecutorDestructorException.hpp"
+#include "Executor.hpp"
+#include "Callable.hpp"
+#include "ConcurrentQueue.hpp"
+#include "ExecutorService.hpp"
 #include "PriorityPoolExecutor.hpp"
-
-#define DEFAULT_THREAD_NUM 4
+#include "AutoMutex.hpp"
+#include "Error.hpp"
+#include "System.hpp"
+#include "StackTrace.hpp"
+#include "ExecutorDestructorException.hpp"
 
 namespace obotcha {
 
-//------------------PriorityTask-------------------
-_PriorityTask::_PriorityTask(int l,FutureTask t) {
-    priority = l;
-    task = t;
-}
 
-//-------------------PriorityPoolHandler-------------------
-_PriorityPoolHandler::_PriorityPoolHandler(ArrayList<PriorityTask> pool,Mutex m,Condition c,sp<_PriorityPoolExecutor> exe):mPool(pool),
-                                                                         state(idleState),
-                                                                         mStop(false),
-                                                                         isWaitTerminate(false),
-                                                                         mExecutor(exe){
-    mStateMutex = createMutex("ThreadPoolExeHandlerMutex");
-    mFutureMutex = m;
-    mFutureCond = c;
+//============= PriorityPoolThread =================
+_PriorityPoolThread::_PriorityPoolThread(ArrayList<PriorityTask> l,Mutex m,Condition c,_PriorityPoolExecutor *exe) {
+    mTasks = l;
 
-    mWaitCond = createCondition();
-    Runnable r;
-    r.set_pointer(this);
-    mThread = createThread(r);
+    mMutex = m;
 
-    mExecutorMutex = createMutex("ThreadPoolExecutorMutex");
+    mStop = false;
 
-    state = idleState;
-    mThread->start();
-}
+    mState = idleState;
 
-_PriorityPoolHandler::~_PriorityPoolHandler() {
+    mCondition = c;
     
+    mWaitTermCondition = createCondition();
+
+    mExecutor = exe;
+
+    mStateMutex = createMutex(createString("PriorityStateMutex"));
+
+    mExecutorMutex = createMutex(createString("PriorityPoolExecutorMutex"));
 }
 
-void _PriorityPoolHandler::stop() {
-    mStop = true;
-    mThread->quit();
+void _PriorityPoolThread::onExecutorDestroy() {
+    AutoMutex ll(mExecutorMutex);
+    mExecutor = nullptr;
 }
 
-bool _PriorityPoolHandler::shutdownTask(FutureTask task) {
-    if(mCurrentTask != nullptr && mCurrentTask == task) {
-        AutoMutex l(mStateMutex);
-        if(state == terminateState) {
-            return false;
+void _PriorityPoolThread::run() {
+    while(!mStop) {
+        mCurrentTask = nullptr;
+        while(1) {
+            AutoMutex l(mMutex);
+            if(mTasks->size() == 0) {
+                mCondition->wait(mMutex);
+                continue;
+            }
+            mCurrentTask = mTasks->remove(0);
+            break;
         }
 
-        stop();
-        return true;
+        if(mCurrentTask == nullptr) {
+            break;
+        }
+
+        if(mCurrentTask->task->getStatus() == FUTURE_CANCEL) {
+            continue;
+        }
+        {    
+            AutoMutex l(mStateMutex);
+            mState = busyState;
+            if(mCurrentTask->task->getType() == FUTURE_TASK_SUBMIT) {
+                mCurrentTask->task->onRunning();
+            }
+        }
+        Runnable runnable = mCurrentTask->task->getRunnable();
+        if(runnable != nullptr) {
+            runnable->run();    
+        }
+        {
+            AutoMutex l(mStateMutex);
+            mState = idleState;
+            if(mCurrentTask->task->getType() == FUTURE_TASK_SUBMIT) {
+                mCurrentTask->task->onComplete();
+            }
+        }
     }
-
-    return false;
-}
-
-void _PriorityPoolHandler::onInterrupt() {
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     {
         AutoMutex l(mStateMutex);
-        state = terminateState;
-        if(isWaitTerminate) {
-            mWaitCond->notify();
-            isWaitTerminate = false;
+        mState = terminateState;
+        mWaitTermCondition->notify();
+    }
+    
+    {
+        AutoMutex ll(mExecutorMutex);
+        if(mExecutor != nullptr) {
+            mExecutor->onHandlerRelease();
         }
     }
+}
 
+void _PriorityPoolThread::onInterrupt() {
     if(mCurrentTask != nullptr) {
-        Runnable r = mCurrentTask->getRunnable();
+        Runnable r = mCurrentTask->task->getRunnable();
         if(r != nullptr) {
             r->onInterrupt();
         }
@@ -84,181 +112,176 @@ void _PriorityPoolHandler::onInterrupt() {
         r = nullptr;
     }
 
-    PriorityPoolHandler h;
-    h.set_pointer(this);
-    mExecutor->onCompleteNotify(h);
-
-    mExecutor.remove_pointer();
-    
-    mThread = nullptr;
-}
-
-void _PriorityPoolHandler::run() {
-    while(!mStop) {
-        mCurrentTask = nullptr;
-        PriorityTask t = nullptr;
-        {
-            AutoMutex ll(mFutureMutex);
-            if(mPool->size() == 0) {
-                mFutureCond->wait(mFutureMutex);
-                continue;
-            }
-            t = mPool->remove(0);
-        }
-
-        if(t == nullptr) {
-            break;
-        }
-
-        mCurrentTask = t->task;
-        if(mCurrentTask->getStatus() == FUTURE_CANCEL) {
-            continue;
-        }
-        
-        {
-            AutoMutex l(mStateMutex);
-            state = busyState;
-            if(mCurrentTask->getType() == FUTURE_TASK_SUBMIT) {
-                mCurrentTask->onRunning();
-            }
-        }
-        Runnable runnable = mCurrentTask->getRunnable();
-        if(runnable != nullptr) {
-            runnable->run();    
-        }
-
-        {
-            AutoMutex l(mStateMutex);
-            state = idleState;
-
-            if(mCurrentTask->getType() == FUTURE_TASK_SUBMIT) {
-                mCurrentTask->onComplete();
-            }
-        }
-    }
-
-    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     {
         AutoMutex l(mStateMutex);
-        state = terminateState;
+        mState = terminateState;
+        mWaitTermCondition->notify();
+    } 
 
-        if(isWaitTerminate) {
-            mWaitCond->notify();
-            isWaitTerminate = false;
+    {
+        AutoMutex ll(mExecutorMutex);
+        if(mExecutor != nullptr) {
+            mExecutor->onHandlerRelease();
         }
     }
-
-    PriorityPoolHandler h;
-    h.set_pointer(this);
-
-    mExecutor->onCompleteNotify(h);
-    
-    mThread = nullptr;
 }
 
-//----------------PriorityPoolExecutor----------------
+void _PriorityPoolThread::waitTermination(long interval) {
+    if(mState == terminateState) {
+        return;
+    }
+    AutoMutex l(mStateMutex);
+    if(mState == terminateState) {
+        return;
+    }
+
+    if(interval == 0) {
+        mWaitTermCondition->wait(mStateMutex);
+    } else {
+        mWaitTermCondition->wait(mStateMutex,interval);
+    }
+    //this->join();
+}
+
+_PriorityPoolThread::~_PriorityPoolThread() {
+}
+
+void _PriorityPoolThread::stop() {
+    mStop = true;
+    this->quit();
+}
+
+//============= PriorityPoolExecutor ================
+_PriorityPoolExecutor::_PriorityPoolExecutor():_PriorityPoolExecutor{
+                                      st(System)::availableProcessors()} {
+    //do nothing
+}
+
 _PriorityPoolExecutor::_PriorityPoolExecutor(int threadnum) {
-    init(threadnum);
-}
+    mProtectMutex = createMutex("PriorityMutex");
+    mDataLock = createMutex("PriorityData");
+    mDataCond = createCondition();
 
-_PriorityPoolExecutor::_PriorityPoolExecutor() {
-    init(DEFAULT_THREAD_NUM);
-}
+    mPriorityTasks = createArrayList<PriorityTask>();
+    mThreads = createArrayList<PriorityPoolThread>();
+    for(int i = 0;i < threadnum;i++) {
 
-void _PriorityPoolExecutor::init(int threadnum) {
-    mProtectMutex = createMutex("PriorityPoolExecutor");
-    mHandlersMutex = createMutex("PriorityPoolHandlers");
-    mFutureTaskMutex = createMutex("PriorityThreadPoolFuture");
-    mFutureCond = createCondition();
-
-    mWaitMutex = createMutex("WaitMutex");
-    mWaitCond = createCondition();
-
-    mPool = createArrayList<PriorityTask>();
+        PriorityPoolThread thread = createPriorityPoolThread(mPriorityTasks,mDataLock,mDataCond,this);
+       
+        thread->start();
+        mThreads->add(thread);
+    }
     
-    mHandlers = createArrayList<PriorityPoolHandler>();
-
-    mThreadNum = threadnum;
-    
-    PriorityPoolExecutor executor;
-    executor.set_pointer(this);
-
-    for(int i = 0; i < threadnum;i++) {
-        PriorityPoolHandler h = createPriorityPoolHandler(mPool,mFutureTaskMutex,mFutureCond,executor);
-        mHandlers->add(h);
-    }
-
-    mIsTerminated = false;
-
-    mIsShutDown = false;
+    isShutDown = false;
+    isTermination = false;
 }
 
-int _PriorityPoolExecutor::execute(Runnable runnable) {
-    if(runnable == nullptr) {
-        return -InvalidParam;
+
+int _PriorityPoolExecutor::execute(Runnable r) {
+    return execute(TaskPriorityMedium,r);
+}
+
+int _PriorityPoolExecutor::execute(int level,Runnable r) {
+    if(submit(level,r) == nullptr) {
+        return -InvalidStatus;
     }
 
-    if(submit(runnable) != nullptr) {
-        return 0;
-    }
-
-    return -InvalidStatus;
+    return 0;
 }
 
 int _PriorityPoolExecutor::shutdown() {
-
-    printf("shutdown trace1\n");
-    if(mIsShutDown ||mIsTerminated) {
-        return -AlreadyDestroy;
+    if(isShutDown) {
+        return 0;
     }
 
     {
         AutoMutex l(mProtectMutex);
 
-        if(mIsShutDown ||mIsTerminated) {
-            return -AlreadyDestroy;
+        if(isShutDown) {
+            return 0;
         }
 
-        mIsShutDown = true;
-    }
+        isShutDown = true;
 
-    printf("shutdown trace1_1\n");
-    {
-        AutoMutex ll2(mProtectMutex);
-        if(!mIsTerminated) {
-            printf("shutdown trace4,this is %lx,count is %d \n",this,this->getStrongCount());
-            startWaitTerminate();
-            printf("shutdown trace5,this is %lx,count is %d,count addr is %lx \n",this,this->getStrongCount(),this);
+        int size = mThreads->size();
+        for(int i = 0;i < size;i++) {
+            mThreads->get(i)->stop();
         }
     }
     
     {
-        AutoMutex ll1(mHandlersMutex);
-        ListIterator<PriorityPoolHandler> iterator = mHandlers->getIterator();
+        AutoMutex ll(mDataLock);
+        ListIterator<PriorityTask> iterator = mPriorityTasks->getIterator();
         while(iterator->hasValue()) {
-            PriorityPoolHandler h = iterator->getValue();
-            h->stop();
+            PriorityTask priTask = iterator->getValue();
+            priTask->task->cancel();
             iterator->next();
+        }
+        mPriorityTasks->clear();
+    }
+
+    startWaitTerminate();
+}
+
+bool _PriorityPoolExecutor::isShutdown() {
+    return isShutDown;
+}
+
+bool _PriorityPoolExecutor::isTerminated() {
+    if(isTermination) {
+        return true;
+    }
+
+    AutoMutex l(mProtectMutex);
+
+    if(isTermination) {
+        return true;
+    }
+
+    int size = mThreads->size();
+    for(int i = 0;i < size;i++) {
+        if(mThreads->get(i)->getStatus() != terminateState) {
+            return false;
         }
     }
 
-    printf("shutdown trace2\n");
-    {
-        AutoMutex ll2(mFutureTaskMutex);
-        ListIterator<PriorityTask> iterator = mPool->getIterator();
-        while(iterator->hasValue()) {
-            PriorityTask t = iterator->getValue();
-            if(t != nullptr) {
-                t->task->cancel();
+    isTermination = true;
+    return true;
+}
+
+int _PriorityPoolExecutor::awaitTermination(long millseconds) {
+    if(!isShutDown) {
+        return -InvalidStatus;
+    }
+    if(isTermination) {
+        return 0;
+    }
+    int size = mThreads->size();
+
+    if(millseconds == 0) {
+        for(int i = 0;i < size;i++) {
+            mThreads->get(i)->waitTermination(0);
+        }
+
+        isTermination = true;
+        return 0;
+    } else {
+        for(int i = 0;i < size;i++) {
+            long current = st(System)::currentTimeMillis();
+            if(millseconds > 0) {
+                mThreads->get(i)->waitTermination(millseconds);
+                
+            } else {
+                break;
             }
-            iterator->next();
+            millseconds -= (st(System)::currentTimeMillis() - current);
         }
 
-        mPool->clear();
+        if(millseconds <= 0) {
+            return -WaitTimeout;
+        }
     }
 
-    printf("shutdown trace3\n");    
-    
     return 0;
 }
 
@@ -267,23 +290,23 @@ Future _PriorityPoolExecutor::submit(Runnable task) {
 }
 
 Future _PriorityPoolExecutor::submit(int level,Runnable task) {
-    if(mIsShutDown || mIsTerminated) {
+    if(isShutDown || isTermination) {
         return nullptr;
     }
     
     AutoMutex l(mProtectMutex);
     
-    if(mIsTerminated || mIsTerminated) {
+    if(isShutDown || isTermination) {
         return nullptr;
     }
 
-    AutoMutex ll(mFutureTaskMutex);
+    AutoMutex ll(mDataLock);
     int start = 0;
-    int end = mPool->size() - 1;
+    int end = mPriorityTasks->size() - 1;
     int index = 0;
     while(start <= end) {
         index = (start+end)/2;
-        PriorityTask m = mPool->get(index);
+        PriorityTask m = mPriorityTasks->get(index);
         if(level > m->priority) {
             end = index - 1;
         } else if(level < m->priority) {
@@ -293,137 +316,53 @@ Future _PriorityPoolExecutor::submit(int level,Runnable task) {
         }
     }
 
-    FutureTaskStatusListener listener;
-    listener.set_pointer(this);
+    FutureTask futureTask = createFutureTask(FUTURE_TASK_SUBMIT,task);
+    mPriorityTasks->insert(index,createPriorityTask(level,futureTask));
 
-    FutureTask futureTask = createFutureTask(FUTURE_TASK_SUBMIT,task,listener);
-    mPool->insert(index,createPriorityTask(level,futureTask));
-    mFutureCond->notify();
+    mDataCond->notify();
 
     return createFuture(futureTask);
 }
 
-bool _PriorityPoolExecutor::isShutdown() {
-    return mIsShutDown;
-}
-
-bool _PriorityPoolExecutor::isTerminated() {
-    return mIsTerminated;
-}
-
-int _PriorityPoolExecutor::awaitTermination(long millseconds) {
-    if(!mIsShutDown) {
-        return -InvalidStatus;
-    }
-
-    if(mIsTerminated) {
-        return 0;
-    }
-
-    AutoMutex ll(mWaitMutex);
-
-    if(mIsTerminated) {
-        return 0;
-    }
-
-    printf("satart awaitTermination trace1\n");
-    if(mWaitCond->wait(mWaitMutex,millseconds) == NotifyByThread) {
-        return 0;
-    }
-    printf("satart awaitTermination trace2\n");
-
-    return  -1;
-}
-
-void _PriorityPoolExecutor::onCompleteNotify(PriorityPoolHandler h) {
-    printf("_ThreadPoolExecutor onCompleteNotify!!!! \n");
-    {
-        AutoMutex ll(mHandlersMutex);
-        ListIterator<PriorityPoolHandler>iterator = mHandlers->getIterator();
-        while(iterator->hasValue()) {
-            PriorityPoolHandler t = iterator->getValue();
-            if(t == h) {
-                iterator->remove();
-                break;
-            }
-            iterator->next();
-        }
-    }
-
-    if(mIsShutDown) {
-        if(mHandlers->size() == 0) {
-            {
-                AutoMutex ll2(mWaitMutex);
-                mIsTerminated = true;
-                mWaitCond->notifyAll();
-            }
-            finishWaitTerminate();
-        }
-    }
-}
-
 int _PriorityPoolExecutor::getThreadsNum() {
     AutoMutex ll(mProtectMutex);
-    return mHandlers->size();
+    return mThreads->size();
+}
+
+void _PriorityPoolExecutor::onHandlerRelease() {
+    AutoMutex ll(mProtectMutex);
+    mThreadNum--;
+
+    if(mThreadNum == 0) {
+        mThreads->clear();
+    }
+
+    finishWaitTerminate();
+}
+
+void _PriorityPoolExecutor::onCancel(FutureTask) {
+    //TODO
+    
 }
 
 _PriorityPoolExecutor::~_PriorityPoolExecutor() {
-    
-    printf("~_ThreadPoolExecutor trace4 \n");
-    if(!mIsShutDown) {
-        throw createExecutorDestructorException("ThreadPoolExecutor destruct error");
+    int size = mThreads->size();
+
+    for(int i = 0;i < size;i++) {
+        mThreads->get(i)->onExecutorDestroy();
     }
-    printf("~_ThreadPoolExecutor trace5 \n");
+
+    //shutdown();
+    if(!isShutDown) {
+        throw createExecutorDestructorException("Priority Thread Pool destruct error");
+    }
+
 }
 
-void _PriorityPoolExecutor::onCancel(FutureTask t) {
-    printf("ThreadPoolExecutor onCancel start \n");
-    if(mIsShutDown ||mIsTerminated) {
-        return;
-    }
-
-    AutoMutex l(mProtectMutex);
-
-    if(mIsShutDown ||mIsTerminated) {
-        return;
-    }
-    
-    {
-        AutoMutex ll(mFutureTaskMutex);
-        ListIterator<PriorityTask> iterator = mPool->getIterator();
-        while(iterator->hasValue()) {
-            PriorityTask p = iterator->getValue();
-            if(p != nullptr && p->task == t) {
-                iterator->remove();
-                goto end;
-            }
-        }
-    }
-
-    printf("ThreadPoolExecutor onCancel trace1 \n");
-    {
-        AutoMutex ll2(mHandlersMutex);
-        ListIterator<PriorityPoolHandler> iterator = mHandlers->getIterator();
-        while(iterator->hasValue()) {
-            PriorityPoolHandler h = iterator->getValue();
-            if(h->shutdownTask(t)) {
-                iterator->remove();
-                continue;
-            }
-
-            iterator->next();
-        }
-    }
-
-end:
-    //we should insert a new
-    if(!mIsShutDown) {
-        PriorityPoolExecutor executor;
-        executor.set_pointer(this);
-
-        PriorityPoolHandler h = createPriorityPoolHandler(mPool,mFutureTaskMutex,mFutureCond,executor);
-        mHandlers->add(h);
-    }
+//============== PriorityTask ================
+_PriorityTask::_PriorityTask(int level ,FutureTask f) {
+    priority = level;
+    task = f;
 }
 
 }

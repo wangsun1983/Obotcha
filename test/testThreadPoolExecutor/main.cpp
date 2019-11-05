@@ -27,8 +27,8 @@ int main() {
     releaseTest();
     sleep(10);
     testThreadShutdown();
-    //testThreadDestroy();
+    testThreadDestroy();
    
-    //sleep(10);
+    sleep(10);
     return 1;
 }
