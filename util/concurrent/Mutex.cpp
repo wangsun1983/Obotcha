@@ -10,10 +10,10 @@
 namespace obotcha {
 
 //pthread_mutex_t _Mutex::mMapLock = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t _Mutex::mGenLock = PTHREAD_MUTEX_INITIALIZER;
+//pthread_mutex_t _Mutex::mGenLock = PTHREAD_MUTEX_INITIALIZER;
 
 //std::map<std::uint64_t,pthread_t> * _Mutex::mOwners = nullptr;// = new std::map<std::uint64_t,pthread_t>();//use heap to save.no need to release
-std::uint64_t _Mutex::mId = 1;
+//std::uint64_t _Mutex::mId = 1;
 
 //----------- LocalAutoLock -----------
 LocalAutoLock::LocalAutoLock(pthread_mutex_t *t) {

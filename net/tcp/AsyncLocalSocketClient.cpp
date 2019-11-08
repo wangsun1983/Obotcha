@@ -135,14 +135,14 @@ _AsyncLocalSocketClient::_AsyncLocalSocketClient(String domain,SocketListener l,
 }
 
 bool _AsyncLocalSocketClient::init() {
-    printf("TcpClient init start \n");
-    int len = offsetof(struct sockaddr_un, sun_path) + strlen(serverAddr.sun_path);  
-    printf("LocalSocketClient init trace3 \n");
+    //printf("TcpClient init start \n");
+    //int len = offsetof(struct sockaddr_un, sun_path) + strlen(serverAddr.sun_path);  
+    //printf("LocalSocketClient init trace3 \n");
     if(connect(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
-        printf("connect error :%s \n",strerror(errno));
+        //printf("connect error :%s \n",strerror(errno));
         return false;
     }
-    printf("LocalSocketClient init trace4,sock is %d,readpipe is %d \n",sock,mPipe->getReadPipe());
+    //printf("LocalSocketClient init trace4,sock is %d,readpipe is %d \n",sock,mPipe->getReadPipe());
 
     st(NetUtils)::addEpollFd(epfd, sock,false);
     st(NetUtils)::addEpollFd(epfd, mPipe->getReadPipe(), false);

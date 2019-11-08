@@ -225,10 +225,9 @@ bool _NumberFormatter::intToStr(int value,
 	*ptr-- = '\0';
 
 	char* ptrr = result;
-	char tmp;
 	while(ptrr < ptr)
 	{
-		 tmp    = *ptr;
+		char tmp = *ptr;
 		*ptr--  = *ptrr;
 		*ptrr++ = tmp;
 	}
@@ -252,10 +251,9 @@ bool _NumberFormatter::uIntToStr(long value,
 	
 	Ptr ptr(result, size);
 	int thCount = 0;
-	uint64_t tmpVal;
 	do
 	{
-		tmpVal = value;
+		uint64_t tmpVal = value;
 		value /= base;
 		*ptr++ = "FEDCBA9876543210123456789ABCDEF"[15 + (tmpVal - value * base)];
 		if (thSep && (base == 10) && (++thCount == 3))
@@ -290,10 +288,9 @@ bool _NumberFormatter::uIntToStr(long value,
 	*ptr-- = '\0';
 	
 	char* ptrr = result;
-	char tmp;
 	while(ptrr < ptr)
 	{
-		tmp    = *ptr;
+		char tmp = *ptr;
 		*ptr--  = *ptrr;
 		*ptrr++ = tmp;
 	}

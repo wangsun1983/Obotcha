@@ -63,86 +63,86 @@ objs += $(outtmp)/inetaddress.o \
 inetaddress :$(netDir)/InetAddress.cpp
 	$(gcc) $(cflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
 
-tcpserver :$(netDir)/TcpServer.cpp
-	$(gcc) $(cflags) -c $(netDir)/TcpServer.cpp -o $(outtmp)/tcpserver.o $(external)
+tcpserver :$(netDir)/tcp/TcpServer.cpp
+	$(gcc) $(cflags) -c $(netDir)/tcp/TcpServer.cpp -o $(outtmp)/tcpserver.o $(external)
 
-asynctcpclient :$(netDir)/AsyncTcpClient.cpp
-	$(gcc) $(cflags) -c $(netDir)/AsyncTcpClient.cpp -o $(outtmp)/asynctcpclient.o $(external)
+asynctcpclient :$(netDir)/tcp/AsyncTcpClient.cpp
+	$(gcc) $(cflags) -c $(netDir)/tcp/AsyncTcpClient.cpp -o $(outtmp)/asynctcpclient.o $(external)
 
-tcpclient :$(netDir)/TcpClient.cpp
-	$(gcc) $(cflags) -c $(netDir)/TcpClient.cpp -o $(outtmp)/tcpclient.o $(external)
+tcpclient :$(netDir)/tcp/TcpClient.cpp
+	$(gcc) $(cflags) -c $(netDir)/tcp/TcpClient.cpp -o $(outtmp)/tcpclient.o $(external)
 
-udpclient :$(netDir)/UdpClient.cpp
-	$(gcc) $(cflags) -c $(netDir)/UdpClient.cpp -o $(outtmp)/udpclient.o $(external)
+udpclient :$(netDir)/udp/UdpClient.cpp
+	$(gcc) $(cflags) -c $(netDir)/udp/UdpClient.cpp -o $(outtmp)/udpclient.o $(external)
 
-udpserver :$(netDir)/UdpServer.cpp
-	$(gcc) $(cflags) -c $(netDir)/UdpServer.cpp -o $(outtmp)/udpserver.o $(external)
+udpserver :$(netDir)/udp/UdpServer.cpp
+	$(gcc) $(cflags) -c $(netDir)/udp/UdpServer.cpp -o $(outtmp)/udpserver.o $(external)
 
-localsocketclient :$(netDir)/LocalSocketClient.cpp
-	$(gcc) $(cflags) -c $(netDir)/LocalSocketClient.cpp -o $(outtmp)/localsocketclient.o $(external)
+localsocketclient :$(netDir)/tcp/LocalSocketClient.cpp
+	$(gcc) $(cflags) -c $(netDir)/tcp/LocalSocketClient.cpp -o $(outtmp)/localsocketclient.o $(external)
 
-asynclocalsocketclient :$(netDir)/AsyncLocalSocketClient.cpp
-	$(gcc) $(cflags) -c $(netDir)/AsyncLocalSocketClient.cpp -o $(outtmp)/asynclocalsocketclient.o $(external)
+asynclocalsocketclient :$(netDir)/tcp/AsyncLocalSocketClient.cpp
+	$(gcc) $(cflags) -c $(netDir)/tcp/AsyncLocalSocketClient.cpp -o $(outtmp)/asynclocalsocketclient.o $(external)
 
-localsocketserver :$(netDir)/LocalSocketServer.cpp
-	$(gcc) $(cflags) -c $(netDir)/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)			
+localsocketserver :$(netDir)/tcp/LocalSocketServer.cpp
+	$(gcc) $(cflags) -c $(netDir)/tcp/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)			
 
 netutils :$(netDir)/NetUtils.cpp
 	$(gcc) $(cflags) -c $(netDir)/NetUtils.cpp -o $(outtmp)/netutils.o $(external)				
 
-httpparser :$(netDir)/HttpParser.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpParser.cpp -o $(outtmp)/httpparser.o $(external)	
+httpparser :$(netDir)/http/HttpParser.cpp
+	$(gcc) $(cflags) -c $(netDir)/http/HttpParser.cpp -o $(outtmp)/httpparser.o $(external)	
 
-httpclient :$(netDir)/HttpClient.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpClient.cpp -o $(outtmp)/httpclient.o $(external)	
+httpclient :$(netDir)/http/HttpClient.cpp
+	$(gcc) $(cflags) -c $(netDir)/http/HttpClient.cpp -o $(outtmp)/httpclient.o $(external)	
 
-httpheaderparser :$(netDir)/HttpHeaderParser.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpHeaderParser.cpp -o $(outtmp)/httpheaderparser.o $(external)
+httpheaderparser :$(netDir)/http/HttpHeaderParser.cpp
+	$(gcc) $(cflags) -c $(netDir)/http/HttpHeaderParser.cpp -o $(outtmp)/httpheaderparser.o $(external)
 
-httpurlparser :$(netDir)/HttpUrlParser.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpUrlParser.cpp -o $(outtmp)/httpurlparser.o $(external)
+httpurlparser :$(netDir)/http/HttpUrlParser.cpp
+	$(gcc) $(cflags) -c $(netDir)/http/HttpUrlParser.cpp -o $(outtmp)/httpurlparser.o $(external)
 
-httpurl :$(netDir)/HttpUrl.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpUrl.cpp -o $(outtmp)/httpurl.o $(external)
+httpurl :$(netDir)/http/HttpUrl.cpp
+	$(gcc) $(cflags) -c $(netDir)/http/HttpUrl.cpp -o $(outtmp)/httpurl.o $(external)
 
-httpurlbuilder :$(netDir)/HttpUrlBuilder.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpUrlBuilder.cpp -o $(outtmp)/httpurlbuilder.o $(external)
+httpurlbuilder :$(netDir)/http/HttpUrlBuilder.cpp
+	$(gcc) $(cflags) -c $(netDir)/http/HttpUrlBuilder.cpp -o $(outtmp)/httpurlbuilder.o $(external)
 
-httpcookie :$(netDir)/HttpCookie.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpCookie.cpp -o $(outtmp)/httpcookie.o $(external)
+httpcookie :$(netDir)/http/HttpCookie.cpp
+	$(gcc) $(cflags) -c $(netDir)/http/HttpCookie.cpp -o $(outtmp)/httpcookie.o $(external)
 
-httpdate :$(netDir)/HttpDate.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpDate.cpp -o $(outtmp)/httpdate.o $(external)
+httpdate :$(netDir)/http/HttpDate.cpp
+	$(gcc) $(cflags) -c $(netDir)/http/HttpDate.cpp -o $(outtmp)/httpdate.o $(external)
 
-httpheader :$(netDir)/HttpHeader.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpHeader.cpp -o $(outtmp)/httpheader.o $(external)
+httpheader :$(netDir)/http/HttpHeader.cpp
+	$(gcc) $(cflags) -c $(netDir)/http/HttpHeader.cpp -o $(outtmp)/httpheader.o $(external)
 
-httppacket :$(netDir)/HttpPacket.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpPacket.cpp -o $(outtmp)/httppacket.o $(external)	
+httppacket :$(netDir)/http/HttpPacket.cpp
+	$(gcc) $(cflags) -c $(netDir)/http/HttpPacket.cpp -o $(outtmp)/httppacket.o $(external)	
 
-httpresponsewriter :$(netDir)/HttpResponseWriter.cpp
-	$(gcc) $(cflags) -c $(netDir)/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o $(external)
+httpresponsewriter :$(netDir)/http/HttpResponseWriter.cpp
+	$(gcc) $(cflags) -c $(netDir)/http/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o $(external)
 
-websocketserver :$(netDir)/WebSocketServer.cpp
-	$(gcc) $(cflags) -c $(netDir)/WebSocketServer.cpp -o $(outtmp)/websocketserver.o $(external)
+websocketserver :$(netDir)/websocket/WebSocketServer.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketServer.cpp -o $(outtmp)/websocketserver.o $(external)
 
-websocketprotocol :$(netDir)/WebSocketProtocol.cpp
-	$(gcc) $(cflags) -c $(netDir)/WebSocketProtocol.cpp -o $(outtmp)/websocketprotocol.o $(external)
+websocketprotocol :$(netDir)/websocket/WebSocketProtocol.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketProtocol.cpp -o $(outtmp)/websocketprotocol.o $(external)
 
-websocketframecomposer :$(netDir)/WebSocketFrameComposer.cpp
-	$(gcc) $(cflags) -c $(netDir)/WebSocketFrameComposer.cpp -o $(outtmp)/websocketframecomposer.o $(external)
+websocketframecomposer :$(netDir)/websocket/WebSocketFrameComposer.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketFrameComposer.cpp -o $(outtmp)/websocketframecomposer.o $(external)
 
-websocketframe :$(netDir)/WebSocketFrame.cpp
-	$(gcc) $(cflags) -c $(netDir)/WebSocketFrame.cpp -o $(outtmp)/websocketframe.o $(external)	
+websocketframe :$(netDir)/websocket/WebSocketFrame.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketFrame.cpp -o $(outtmp)/websocketframe.o $(external)	
 
-websocketparser :$(netDir)/WebSocketParser.cpp
-	$(gcc) $(cflags) -c $(netDir)/WebSocketParser.cpp -o $(outtmp)/websocketparser.o $(external)
+websocketparser :$(netDir)/websocket/WebSocketParser.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketParser.cpp -o $(outtmp)/websocketparser.o $(external)
 
-websockethybi13parser :$(netDir)/WebSocketHybi13Parser.cpp
-	$(gcc) $(cflags) -c $(netDir)/WebSocketHybi13Parser.cpp -o $(outtmp)/websockethybi13parser.o $(external)		
+websockethybi13parser :$(netDir)/websocket/WebSocketHybi13Parser.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketHybi13Parser.cpp -o $(outtmp)/websockethybi13parser.o $(external)		
 
-websocketclient :$(netDir)/WebSocketClient.cpp
-	$(gcc) $(cflags) -c $(netDir)/WebSocketClient.cpp -o $(outtmp)/websocketclient.o $(external)		
+websocketclient :$(netDir)/websocket/WebSocketClient.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketClient.cpp -o $(outtmp)/websocketclient.o $(external)		
 
 ntpclient :$(netDir)/NtpClient.cpp
 	$(gcc) $(cflags) -c $(netDir)/NtpClient.cpp -o $(outtmp)/ntpclient.o $(external)			

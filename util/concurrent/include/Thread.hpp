@@ -46,78 +46,10 @@ enum ThreadSchedPolicy {
     ThreadSchedRR = SCHED_RR,    //SCHED_RR 2
 };
 
-DECLARE_SIMPLE_CLASS(ReleaseThread) {
-
-public:
-    _ReleaseThread();
-
-    ~_ReleaseThread();
-
-    void sendRelease(Uint64 t);
-
-    void start();
-
-    void stop();
-
-    void run();
-    
-private:
-    ArrayList<Uint64> mThreadPids;
-    
-    Mutex mutex;
-
-    Condition cond;
-
-    pthread_attr_t mAttr;
-
-    pthread_t mTid;
-
-    AtomicInteger mStartBarrier;
-};
-
-DECLARE_SIMPLE_CLASS(KeepAliveThread) {
-public:
-    _KeepAliveThread();
-
-    void start();
-
-    void drop(pthread_t t);
-
-    void run();
-
-    ~_KeepAliveThread();
-
-    void save(sp<_Thread>);
-
-    sp<_Thread> getSavedThread();
-
-private:
-    Mutex mutex;
-
-    Condition cond;
-
-    pthread_attr_t mAttr;
-
-    pthread_t mTid;
-
-    BlockingQueue<Uint64> queue;
-
-    ThreadLocal<sp<_Thread>> mThreadLocal;
-
-    bool isRunning;
-    
-    //Mutex mDestroyMutex;
-
-    AtomicInteger mStartBarrier;
-
-    sp<_ReleaseThread> mReleaseThread;
-};
-
 DECLARE_SIMPLE_CLASS(Thread) {
 
 public:
-    friend class _KeepAliveThread;
-    
+
     friend void cleanup(void *th);
 
     _Thread(String name,Runnable run);
@@ -148,11 +80,9 @@ public:
 
     int getSchedPolicy();
 
+    pthread_t getThreadId();
+
     String getName();
-
-    //int getThreadStatus();
-
-    //void setThreadStatus(int);
 
     int setName(String name);
 
@@ -166,8 +96,6 @@ public:
 
     static void msleep(unsigned long);
 
-    static KeepAliveThread getKeepAliveThread();
-        
     static void setThreadPriority(ThreadPriority priority);
 
     static int getThreadPriority();
@@ -190,15 +118,9 @@ private:
 
     int updateThreadPrioTable(int policy);
 
-    //int mPrioTable[ThreadPriorityMax];
-
-    static KeepAliveThread mKeepAliveThread;
-
     static HashMap<int,int *> mPriorityTable;
 
     static void* localRun(void *th);
-
-    //static void cleanup(void *th);
 
     Runnable mRunnable;
 
@@ -211,8 +133,6 @@ private:
     String mName;
 
     int mStatus;
-
-    //bool mIsWaitExit;
 
     AtomicInteger bootFlag;
 

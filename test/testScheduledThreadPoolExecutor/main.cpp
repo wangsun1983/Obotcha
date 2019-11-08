@@ -16,13 +16,16 @@ using namespace obotcha;
 extern int baseTest();
 extern int scheduleTest();
 extern int ReleaseTest();
+extern int fixRateTest();
+extern int fixDelayTest();
 
 int main() {
     printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
-    baseTest();
-    scheduleTest();
-    ReleaseTest();
-
+    //baseTest();
+    //scheduleTest();
+    //ReleaseTest();
+    //fixRateTest();
+    fixDelayTest();
     sleep(10);
 
 }

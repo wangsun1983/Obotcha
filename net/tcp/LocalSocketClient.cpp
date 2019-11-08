@@ -56,12 +56,6 @@ int _LocalSocketClient::doConnect() {
         return -1;
     }
 
-    //AutoMutex ll(mConnectMutex);
-
-    int flags  = fcntl(mSock,F_GETFL,0);                          //获取文件的flags值。
-    int setResult = fcntl(mSock,F_SETFL,flags &~O_NONBLOCK);    //设置成阻塞模式；
-    //printf("setResult = %d",setResult);
-
     int ret = connect(mSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
     //printf("connect ret is %d,mSock is %d \n",ret,mSock);
     if( ret < 0) {
@@ -85,7 +79,7 @@ int _LocalSocketClient::doConnect() {
     ////printf( "local with ip: %s and port: %d\n",
     //inet_ntop( AF_INET, &local_address.sin_addr, local, INET_ADDRSTRLEN ), ntohs( local_address.sin_port ) );
     
-    return 0;
+    return ret;
 }
 
 int _LocalSocketClient::doSend(ByteArray data) {

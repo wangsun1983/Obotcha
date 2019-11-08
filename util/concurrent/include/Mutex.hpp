@@ -51,10 +51,9 @@ private:
 
     //static pthread_mutex_t mMapLock;
     //static std::map<std::uint64_t,pthread_t> *mOwners;
-
-    static pthread_mutex_t mGenLock;
-    static std::uint64_t generateId();
-    static std::uint64_t mId;
+    //static pthread_mutex_t mGenLock;
+    //static std::uint64_t generateId();
+    //static std::uint64_t mId;
 };
 
 }

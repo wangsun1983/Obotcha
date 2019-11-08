@@ -27,15 +27,15 @@ extern int testThreadStart();
 extern int testThreadClose();
 
 int main() {
-    /*
+
     testThreadStart();
-    testThreadJoin(); 
+    testThreadJoin();
     testThreadInterruptCase();
     testThreadCommonCase();
     testThreadNotifyInterruptCase();
     testThreadSleepInterrupt();
     testThreadLoopInterrypt();
-    testThreadRelease();*/
+    testThreadRelease();
     testThreadClose();
 
     sleep(10);

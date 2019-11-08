@@ -20,9 +20,11 @@ extern int testNoBlockPipe();
 int main() {
 
     printf("---[Pipe Test Start]--- \n");
+
     testDefaultPipe();
     testDirectPipe();
     testCloseOnExecPipe();
     testNoBlockPipe();
+
 
 }

@@ -39,7 +39,7 @@ class _PriorityPoolExecutor;
 
 DECLARE_SIMPLE_CLASS(PriorityPoolThread) EXTENDS(Thread) {
 public:
-    _PriorityPoolThread(ArrayList<PriorityTask>,Mutex,Condition,_PriorityPoolExecutor *exe);
+    _PriorityPoolThread(ArrayList<PriorityTask>,Mutex,Condition,sp<_PriorityPoolExecutor> exe);
     
     void run();
     
@@ -48,8 +48,6 @@ public:
     void stop();
 
     void waitTermination(long);
-
-    void onExecutorDestroy();
 
     ~_PriorityPoolThread();
 
@@ -68,7 +66,7 @@ private:
     
     Mutex mExecutorMutex;
 
-    _PriorityPoolExecutor *mExecutor;
+    sp<_PriorityPoolExecutor> mExecutor;
 
     int mState;
     
@@ -126,6 +124,10 @@ private:
     ArrayList<PriorityTask> mPriorityTasks;
 
     ArrayList<PriorityPoolThread> mThreads;
+
+    Mutex mWaitMutex;
+    
+    Condition mWaitCondition;
 };
 
 }

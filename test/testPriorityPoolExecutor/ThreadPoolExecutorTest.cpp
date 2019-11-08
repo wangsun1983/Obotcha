@@ -56,19 +56,19 @@ public:
 int normalTest() {
     printf("---[PriorityPoolExecutor Normal Test Start]--- \n");
     //_ThreadPoolExecutor(int queuesize,int threadnum);
-   
+
     while(1) {
         {
             ExecutorService pool = st(Executors)::newPriorityThreadPool();
             pool->shutdown();
         }
 
-        sleep(1);        
+        sleep(1);
 
         printf("---[PriorityPoolExecutor Test {constructor()} case1] [Success]--- \n");
         break;
     }
-    
+
     //_ThreadPoolExecutor();
     while(1) {
         ExecutorService pool = st(Executors)::newPriorityThreadPool();
@@ -96,7 +96,7 @@ int normalTest() {
         }
 
         int result = pool->execute(createMyRunTest1());
-        if(result != -AlreadyDestroy) {
+        if(result != -InvalidStatus) {
             printf("---[PriorityPoolExecutor Test {shutdown()} case3] [FAIL]--- \n");
             break;
         }
@@ -124,7 +124,7 @@ int normalTest() {
         long current = st(System)::currentTimeMillis();
         //printf("awaitTermination start test \n");
         result = pool->awaitTermination(5000);
-        //printf("awaitTermination result is %d \n",result);
+        printf("awaitTermination result is %d \n",result);
         if(result != -WaitTimeout) {
             printf("---[PriorityPoolExecutor Test {awaitTermination()} case2] [FAIL]--- \n");
             break;
@@ -141,7 +141,7 @@ int normalTest() {
         runTest2Mutex->unlock();
         break;
     }
-   
+
 
     //int awaitTermination(long timeout = 0);
     while(1) {
@@ -158,7 +158,7 @@ int normalTest() {
         long current = st(System)::currentTimeMillis();
         //printf("awaitTermination start test \n");
         result = pool->awaitTermination(0);
-        //printf("awaitTermination result is %d \n",result);
+        printf("awaitTermination result is %d \n",result);
         if(result != 0) {
             printf("---[PriorityPoolExecutor Test {awaitTermination()} case6] [FAIL]--- \n");
             break;
@@ -175,7 +175,7 @@ int normalTest() {
         break;
     }
 
-  
+
     //int awaitTermination(long timeout = max);
     while(1) {
         ExecutorService pool = st(Executors)::newPriorityThreadPool();
@@ -193,12 +193,12 @@ int normalTest() {
         printf("---[PriorityPoolExecutor Test {awaitTermination()} case10] [Success]--- \n");
         break;
     }
-   
+
 
     //int getThreadsNum();
     while(1) {
         ExecutorService pool = st(Executors)::newPriorityThreadPool();
-        if(pool->getThreadsNum() != 100) {
+        if(pool->getThreadsNum() != st(System)::availableProcessors()) {
             printf("---[PriorityPoolExecutor Test {getThreadsNum()} case1] [FAIL]--- \n");
             break;
         }
@@ -227,6 +227,5 @@ int normalTest() {
         printf("---[PriorityPoolExecutor Test {submit()} case3] [Success]--- \n");
         break;
     }
-   
-}
 
+}

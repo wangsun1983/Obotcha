@@ -11,156 +11,12 @@
 #include "Error.hpp"
 
 namespace obotcha {
-//------------ReleaseThread-----------------
-static void* freethreadmem(void *th) {
-    _ReleaseThread *thread = static_cast<_ReleaseThread *>(th);
-    thread->run();
-    return nullptr;
-}
 
-_ReleaseThread::_ReleaseThread() {
+static ThreadLocal<Thread> mThreads = createThreadLocal<Thread>();
 
-    mutex = createMutex("ReleaseThreadMutex");
-
-    cond = createCondition();
-
-    mThreadPids = createArrayList<Uint64>();
-
-    mStartBarrier = createAtomicInteger(0);
-
-    mTid = 0;
-}
-
-_ReleaseThread::~_ReleaseThread() {
-    stop();
-}
-
-void _ReleaseThread::stop() {
-    Uint64 poison;
-    sendRelease(poison);
-    pthread_join(mTid,nullptr);
-}
-
-void _ReleaseThread::sendRelease(Uint64 t) {
-    AutoMutex ll(mutex);
-    mThreadPids->add(t);
-    cond->notify();
-}
-
-void _ReleaseThread::start() {
-    if(mStartBarrier->get() == 1) {
-        return;
-    }
-
-    AutoMutex l(mutex);
-    if(mStartBarrier->get() == 1) {
-        return;
-    }
-    
-    pthread_attr_init(&mAttr);
-    pthread_create(&mTid, &mAttr, freethreadmem, this);
-        
-    while(mStartBarrier->orAndGet(0) == 0) {
-        //wait
-    }
-}
-
-
-void _ReleaseThread::run() {
-    mStartBarrier->orAndGet(1);
-
-    while(1) {
-        Uint64 tid = nullptr;
-
-        {
-            AutoMutex ll(mutex);
-            int size = mThreadPids->size();
-            if(size == 0) {
-                cond->wait(mutex);
-                continue;
-            }
-            tid = mThreadPids->remove(0);
-            if(tid == nullptr) {
-                break;
-            }
-        }
-
-        long time = st(System)::currentTimeMillis();
-        pthread_join(tid->toValue(),nullptr);
-    }
-}
-
-//------------KeepAliveThread---------------//
-static void* recycle(void *th) {
-    //pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-    _KeepAliveThread *thread = static_cast<_KeepAliveThread *>(th);
-    thread->run();
-    return nullptr;
-}
-
-_KeepAliveThread::_KeepAliveThread() {
-    mutex = createMutex("RecyleThreadMutex");
-    queue = createBlockingQueue<Uint64>();
-    isRunning = false;
-    mThreadLocal = createThreadLocal<sp<_Thread>>();
-    mStartBarrier = createAtomicInteger(0);
-    mReleaseThread = createReleaseThread();
-    mTid = -1;
-}
-
-void _KeepAliveThread::start() {
-    if(isRunning) {
-        return;
-    }
-
-    AutoMutex l(mutex);
-    if(!isRunning) {
-        mReleaseThread->start();
-
-        pthread_attr_init(&mAttr);
-        pthread_create(&mTid, &mAttr, recycle, this);
-        
-        while(mStartBarrier->orAndGet(0) == 0) {
-            //wait
-        }
-        isRunning = true;
-    }
-}
-
-void _KeepAliveThread::run() {
-    ThreadLocal<Thread> tLocal = mThreadLocal;
-    BlockingQueue<Uint64> mQueue = queue;
-    mStartBarrier->orAndGet(1);
-    while(1) {
-        Uint64 t = mQueue->deQueueFirst();
-        if(t == nullptr) {
-            return;
-        }
-        mReleaseThread->sendRelease(t);
-        tLocal->remove(t->toValue());
-    }
-}
-
-void _KeepAliveThread::save(sp<_Thread> s) {
-    mThreadLocal->set(s->mPthread,s);
-}
-
-sp<_Thread> _KeepAliveThread::getSavedThread() {
-    return mThreadLocal->get();
-}
-
-void _KeepAliveThread::drop(pthread_t t){
-    queue->enQueueLast(createUint64(t));
-}
-
-_KeepAliveThread::~_KeepAliveThread() {
-    mThreadLocal->clear();
-    queue->destroy();
-
-    mReleaseThread->stop();
-    if(mTid != -1) {
-        pthread_join(mTid,(void **) nullptr);
-    }
+void doThreadExit(_Thread *thread) {
+    pthread_detach(thread->getThreadId());
+    mThreads->remove(thread->getThreadId());
 }
 
 //------------Thread Stack function---------------//
@@ -177,22 +33,22 @@ void cleanup(void *th) {
         thread->mStatus = ThreadComplete;
         thread->mJoinDondtion->notifyAll();
     }
-
-    _Thread::getKeepAliveThread()->drop(thread->mPthread);
+ 
+    doThreadExit(thread);
 }
 
 //------------Thread---------------//
-KeepAliveThread _Thread::mKeepAliveThread = createKeepAliveThread();
 HashMap<int,int *> _Thread::mPriorityTable = createHashMap<int,int *>();
 
 void* _Thread::localRun(void *th) {
-    //pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, nullptr);
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     _Thread *thread = static_cast<_Thread *>(th);
-    KeepAliveThread mKAThread = mKeepAliveThread; 
+
     sp<_Thread> localThread;
     localThread.set_pointer(thread);
-    mKeepAliveThread->save(localThread);
+
+    mThreads->set(thread->getThreadId(),localThread);
+   
     thread->mStatus = ThreadRunning;
     thread->bootFlag->orAndGet(1);
     
@@ -211,10 +67,8 @@ void* _Thread::localRun(void *th) {
     //pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
     if(thread->mRunnable != nullptr) {
         thread->mRunnable->run();
-        printf("thread:runnable onComplete \n");
         thread->mRunnable = nullptr;
     } else {
-        printf("thread:onComplete \n");
         thread->run();
     }
 end:
@@ -225,8 +79,10 @@ end:
         thread->mStatus = ThreadComplete;
         thread->mJoinDondtion->notifyAll();
     }
-    mKAThread->drop(localThread->mPthread);
+  
     localThread.remove_pointer();
+
+    doThreadExit(thread);
     return nullptr;
 }
 
@@ -243,9 +99,7 @@ _Thread::_Thread(String name,Runnable run){
     }
     
     mRunnable = run;
-
-    mKeepAliveThread->start();
-    
+   
     mPolicy = ThreadSchedOTHER;
     mPriority = ThreadLowPriority;
     mStatus = ThreadNotStart;
@@ -381,10 +235,8 @@ void _Thread::quit() {
     }
 
     mStatus = ThreadComplete;
-    try {
-        int ret = pthread_cancel(mPthread);
-    } catch(std::exception ) {}
-    
+   
+    pthread_cancel(mPthread);
 }
 
 int _Thread::setPriority(ThreadPriority priority) {
@@ -470,6 +322,10 @@ int _Thread::getSchedPolicy() {
     return policy;
 }
 
+pthread_t _Thread::getThreadId() {
+    return mPthread;
+}
+
 void _Thread::onInterrupt() {
     //need overwrite by child class
 }
@@ -531,14 +387,17 @@ int _Thread::updateThreadPrioTable(int policy) {
 }
 
 void _Thread::setThreadPriority(ThreadPriority priority) {
-    Thread thread = mKeepAliveThread->getSavedThread();
+
+    Thread thread = mThreads->get();
     if(thread != nullptr) {
         thread->setPriority(priority);
     }
+
 }
 
 int _Thread::getThreadPriority() {
-    Thread thread = mKeepAliveThread->getSavedThread();
+ 
+    Thread thread = mThreads->get();
     if(thread != nullptr) {
         return thread->getPriority();
     }
@@ -547,23 +406,23 @@ int _Thread::getThreadPriority() {
 }
 
 int _Thread::setThreadSchedPolicy(ThreadSchedPolicy policy) {
-    Thread thread = mKeepAliveThread->getSavedThread();
+
+    Thread thread = mThreads->get();
     if(thread != nullptr) {
         return thread->setSchedPolicy(policy);
     }
+
     return -1;
 }
 
 int _Thread::getThreadSchedPolicy() {
-    Thread thread = mKeepAliveThread->getSavedThread();
+
+    Thread thread = mThreads->get();
     if(thread != nullptr) {
         return thread->getSchedPolicy();
     }
-    return -1;
-}
 
-KeepAliveThread _Thread::getKeepAliveThread(){
-    return mKeepAliveThread;
+    return -1;
 }
 
 }

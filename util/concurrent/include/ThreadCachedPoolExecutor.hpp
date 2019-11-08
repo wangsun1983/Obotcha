@@ -129,7 +129,7 @@ private:
 
     Mutex mFutureTaskMutex;
     
-    AtomicBoolean mIsTerminated;
+    bool mIsTerminated;
 
     int mQueuesize;
 

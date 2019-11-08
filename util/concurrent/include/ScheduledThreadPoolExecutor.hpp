@@ -22,9 +22,9 @@
 using namespace std;
 
 enum ScheduledTaskType {
-    ScheduletTaskNormal,
-    ScheduletTaskFixRate,
-    ScheduletTaskFixedDelay
+    ScheduletTaskNormal, //normal schedule task
+    ScheduletTaskFixRate, //loop time record from task start
+    ScheduletTaskFixedDelay //loop time record from task complete
 };
 
 namespace obotcha { 
@@ -61,7 +61,7 @@ public:
     _ScheduledThreadPoolTask(FutureTask task,long int interval);
 
     _ScheduledThreadPoolTask(FutureTask t,
-                             long int interval,
+                             long int initialdelay,
                              int type,
                              long int repeatDelay,
                              sp<_ScheduledThreadPoolThread> timethread);                             

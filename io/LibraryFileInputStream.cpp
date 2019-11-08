@@ -1,5 +1,6 @@
 #include <dlfcn.h>
 #include "LibraryFileInputStream.hpp"
+#include "MethodNotSupportException.hpp"
 
 namespace obotcha {
 
@@ -14,13 +15,11 @@ _LibraryFileInputStream::_LibraryFileInputStream(String path) {
 
 
 int _LibraryFileInputStream::read() {
-    //Not Support
-    return -1;
+    throw new MethodNotSupportException("LibraryFileInputStream not support read");
 }
     
 long _LibraryFileInputStream::read(ByteArray) {
-    //Not Support
-    return -1;
+    throw new MethodNotSupportException("LibraryFileInputStream not support read");
 }
 
 bool _LibraryFileInputStream::open() {
@@ -39,9 +38,7 @@ bool _LibraryFileInputStream::open() {
 }
     
 void * _LibraryFileInputStream::getMethod(String method) {
-    char *error;
     void *result = dlsym(mHandle, method->toChars());
-
     return result;
 }
 

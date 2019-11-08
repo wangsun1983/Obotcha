@@ -59,7 +59,7 @@ DateTime _DateTimeParser::parse(int type,String content) {
 	int second = 0;
 	int millis = 0;
 	int micros = 0;
-	int tzd    = 0;
+	//int tzd    = 0;
     
     std::string str = content->getStdString();
 
@@ -165,7 +165,7 @@ DateTime _DateTimeParser::parse(int type,String content) {
 					break;
 				case 'z':
 				case 'Z':
-					tzd = parseTZD(it, end);
+					//tzd = parseTZD(it, end);
 					break;
 				}
 				++itf;

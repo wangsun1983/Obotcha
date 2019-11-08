@@ -78,9 +78,7 @@ void _ThreadPoolExecutorHandler::onInterrupt() {
     ThreadPoolExecutorHandler h;
     h.set_pointer(this);
     mExecutor->onCompleteNotify(h);
-
     mExecutor.remove_pointer();
-    
     mThread = nullptr;
 }
 
@@ -130,9 +128,8 @@ void _ThreadPoolExecutorHandler::run() {
 
     ThreadPoolExecutorHandler h;
     h.set_pointer(this);
-
     mExecutor->onCompleteNotify(h);
-    
+    mExecutor.remove_pointer();
     mThread = nullptr;
 }
 
@@ -167,6 +164,8 @@ _ThreadPoolExecutor::_ThreadPoolExecutor() {
 void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
     mProtectMutex = createMutex("ThreadPoolExecutor");
     mHandlersMutex = createMutex("ThreadPoolHandlers");
+    mWaitMutex = createMutex("ThreadPoolWaitMutex");
+    mWaitCondition = createCondition();
 
     if(queuesize != -1) {
         mPool = createBlockingQueue<FutureTask>(queuesize);    
@@ -209,7 +208,7 @@ int _ThreadPoolExecutor::execute(Runnable runnable) {
 }
 
 int _ThreadPoolExecutor::shutdown() {
-    printf("shutdown trace1\n");
+    //printf"shutdown trace1\n");
     if(mIsShutDown ||mIsTerminated) {
         return -AlreadyDestroy;
     }
@@ -232,7 +231,7 @@ int _ThreadPoolExecutor::shutdown() {
         iterator->next();
     }
 
-    printf("shutdown trace2\n");
+    //printf"shutdown trace2\n");
     for(;;) {
         FutureTask task = mPool->deQueueLastNoBlock();
         if(task != nullptr) {
@@ -244,12 +243,14 @@ int _ThreadPoolExecutor::shutdown() {
 
     mPool->clear();
 
-    printf("shutdown trace3\n");    
+    //printf"shutdown trace3\n");    
     AutoMutex ll2(mProtectMutex);
     if(!mIsTerminated) {
-        printf("shutdown trace4,this is %lx,count is %d \n",this,this->getStrongCount());
+        //printf"shutdown trace4,this is %lx,count is %d \n",this,this->getStrongCount());
+#if 0        
         startWaitTerminate();
-        printf("shutdown trace5,this is %lx,count is %d,count addr is %lx \n",this,this->getStrongCount(),this);
+#endif 0        
+        //printf"shutdown trace5,this is %lx,count is %d,count addr is %lx \n",this,this->getStrongCount(),this);
     }
     return 0;
 }
@@ -283,25 +284,6 @@ bool _ThreadPoolExecutor::isShutdown() {
 }
 
 bool _ThreadPoolExecutor::isTerminated() {
-    if(mIsTerminated) {
-        return true;
-    }
-
-    AutoMutex l(mProtectMutex);
-
-    if(mIsTerminated) {
-        return true;
-    }
-
-    int size = mHandlers->size();
-    for(int i = 0;i < size;i++) {
-        ThreadPoolExecutorHandler h = mHandlers->get(i);
-        if(h != nullptr && !h->isTerminated()) {
-            return false;
-        }
-    }
-
-    mIsTerminated = true;
     return mIsTerminated;
 }
 
@@ -314,42 +296,21 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
         return 0;
     }
 
-    int size = mHandlers->size();
+    AutoMutex ll(mWaitMutex);
 
-    if(millseconds == 0) {
-        for(int i = 0;i < size;i++) {
-            ThreadPoolExecutorHandler h = mHandlers->get(i);
-            if(h != nullptr) {
-                h->waitForTerminate();
-            }
-        }
-        mIsTerminated = true;
+    if(mIsTerminated) {
         return 0;
-    } else {
-        for(int i = 0;i < size;i++) {
-            long current = st(System)::currentTimeMillis();
-            if(millseconds > 0) {
-                //mHandlers->get(i)->waitForTerminate(millseconds);
-                ThreadPoolExecutorHandler h = mHandlers->get(i);
-                if(h != nullptr) {
-                    h->waitForTerminate(millseconds);
-                }
-            } else {
-                break;
-            }
-            millseconds -= (st(System)::currentTimeMillis() - current);
-        }
+    }
 
-        if(millseconds <= 0) {
-            return -WaitTimeout;
-        }
+    if(NotifyByTimeout == mWaitCondition->wait(mWaitMutex,millseconds)) {
+        return -WaitTimeout;
     }
 
     return 0;
 }
 
 void _ThreadPoolExecutor::onCompleteNotify(ThreadPoolExecutorHandler h) {
-    printf("_ThreadPoolExecutor onCompleteNotify!!!! \n");
+    //printf"_ThreadPoolExecutor onCompleteNotify!!!! \n");
     AutoMutex ll(mHandlersMutex);
     ListIterator<ThreadPoolExecutorHandler>iterator = mHandlers->getIterator();
     while(iterator->hasValue()) {
@@ -363,8 +324,13 @@ void _ThreadPoolExecutor::onCompleteNotify(ThreadPoolExecutorHandler h) {
 
     if(mIsShutDown) {
         if(mHandlers->size() == 0) {
-            mIsTerminated = true;
+            
+#if 0            
             finishWaitTerminate();
+#endif           
+            AutoMutex ll(mWaitMutex);
+            mIsTerminated = true;
+            mWaitCondition->notifyAll();
         }
     }
 }
@@ -376,15 +342,15 @@ int _ThreadPoolExecutor::getThreadsNum() {
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
     
-    printf("~_ThreadPoolExecutor trace4 \n");
+    //printf"~_ThreadPoolExecutor trace4 \n");
     if(!mIsShutDown) {
         throw createExecutorDestructorException("ThreadPoolExecutor destruct error");
     }
-    printf("~_ThreadPoolExecutor trace5 \n");
+    //printf"~_ThreadPoolExecutor trace5 \n");
 }
 
 void _ThreadPoolExecutor::onCancel(FutureTask t) {
-    printf("ThreadPoolExecutor onCancel start \n");
+    //printf"ThreadPoolExecutor onCancel start \n");
     if(mIsShutDown ||mIsTerminated) {
         return;
     }
@@ -395,21 +361,21 @@ void _ThreadPoolExecutor::onCancel(FutureTask t) {
         return;
     }
     
-    printf("before remove mPool size is %d \n",mPool->size());
+    //printf"before remove mPool size is %d \n",mPool->size());
     if(mPool->remove(t)) {
-        printf("after remove mPool size is %d \n",mPool->size());
+        //printf"after remove mPool size is %d \n",mPool->size());
     } else {
-        printf("ThreadPoolExecutor onCancel trace1 \n");
+        //printf"ThreadPoolExecutor onCancel trace1 \n");
         ThreadPoolExecutorHandler h = nullptr;
         int size = mHandlers->size();
         for(int i = 0;i < size;i++) {
             h = mHandlers->get(i);
-            printf("ThreadPoolExecutor onCancel trace2 \n");
+            //printf"ThreadPoolExecutor onCancel trace2 \n");
             if(h != nullptr) {
                 if(h->shutdownTask(t)) {
-                    printf("ThreadPoolExecutor onCancel trace3,before size is %d \n",mHandlers->size());
+                    //printf"ThreadPoolExecutor onCancel trace3,before size is %d \n",mHandlers->size());
                     mHandlers->remove(h);
-                    printf("ThreadPoolExecutor onCancel trace3,after size is %d \n",mHandlers->size());
+                    //printf"ThreadPoolExecutor onCancel trace3,after size is %d \n",mHandlers->size());
                     break;
                 }
             }

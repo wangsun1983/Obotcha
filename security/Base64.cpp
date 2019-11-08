@@ -66,10 +66,9 @@ ByteArray _Base64::decode(File f) {
 char * _Base64::_encode(const char * input, int length, bool with_new_line,int *retLength) {
     //printf("input is %s,length is %d \n",input,length);
     BIO * bmem = nullptr;
-    BIO * b64 = nullptr;
     BUF_MEM * bptr = nullptr;
  
-    b64 = BIO_new(BIO_f_base64());
+    BIO * b64 = BIO_new(BIO_f_base64());
 
     if(!with_new_line) {
         BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
@@ -100,13 +99,12 @@ char * _Base64::_encode(const char * input, int length, bool with_new_line,int *
 }
 
 char * _Base64::_decode(const char * input, int length, bool with_new_line,int *retLen) {
-    BIO * b64 = nullptr;
     BIO * bmem = nullptr;
 
     char * buffer = (char *)malloc(length);
     memset(buffer, 0, length);
   
-    b64 = BIO_new(BIO_f_base64());
+    BIO * b64 = BIO_new(BIO_f_base64());
     if(!with_new_line) {
         BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
     }

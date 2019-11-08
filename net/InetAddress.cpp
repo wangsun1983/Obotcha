@@ -56,9 +56,6 @@ ArrayList<String> _InetAddress::getHostByName(String url) {
 }
 
 ArrayList<InetHostAddress> _InetAddress::getHostAddress() {
-    char ipAddr[MAX_LENGTH];
-    ipAddr[0] = '\0';
- 
     struct ifaddrs * ifAddrStruct = NULL;
     void * tmpAddrPtr = NULL;
  

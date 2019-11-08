@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <type_traits>
-#include <cstddef>
 
 #include "Object.hpp"
 
@@ -30,7 +29,25 @@ public:
      t->incStrong(0);
      return t;
    }
-};
+ };
+
+// ---------------------------------------------------------------------------
+#define COMPARE(_op_)                                           \
+inline bool operator _op_ (const sp<T>& o) const {              \
+    return m_ptr _op_ o.m_ptr;                                  \
+}                                                               \
+inline bool operator _op_ (const T* o) const {                  \
+    return m_ptr _op_ o;                                        \
+}                                                               \
+template<typename U>                                            \
+inline bool operator _op_ (const sp<U>& o) const {              \
+    return m_ptr _op_ o.m_ptr;                                  \
+}                                                               \
+template<typename U>                                            \
+inline bool operator _op_ (const U* o) const {                  \
+    return m_ptr _op_ o;                                        \
+}                                                               \
+// ---------------------------------------------------------------------------
 
 template <typename T>
 class sp {
@@ -68,41 +85,97 @@ public:
 
     // Operators(==)
     inline bool operator == (const sp<T>& o) const {
+        if(o.m_ptr == nullptr) {
+            if(m_ptr == nullptr) {
+                return true;
+            }
+            return false;
+        }
         return m_ptr->equals(o.m_ptr);
     }
     
     inline bool operator == (const T* o) const {
+        if(o == nullptr) {
+            if(m_ptr == nullptr) {
+                return true;
+            }
+            return false;
+        }
+
         return m_ptr->equals(o);
     }
 
     template<typename U>                                            
     inline bool operator == (const sp<U>& o) const {
+        if(o.m_ptr == nullptr) {
+            if(m_ptr == nullptr) {
+                return true;
+            }
+            return false;
+        }
         return m_ptr->equals(o.m_ptr);
     }
 
     template<typename U>
     inline bool operator == (const U* o) const {
+        if(o->m_ptr == nullptr) {
+            if(o->m_ptr == nullptr) {
+                return true;
+            }
+            return false;
+        }
         return m_ptr->euqals(o);
     }
 
     // Operators(!=)
     inline bool operator != (const sp<T>& o) const { 
+        if(o.m_ptr == nullptr) {
+            if(m_ptr == nullptr) {
+                return false;
+            }
+            return true;
+        }
         return !m_ptr->equals(o.m_ptr);
     }
 
     inline bool operator != (const T* o) const {
+        if(o == nullptr) {
+            if(m_ptr == nullptr) {
+                return false;
+            }
+            return true;
+        }
         return !m_ptr->equals(o);
     }
 
     template<typename U>                                            
     inline bool operator != (const sp<U>& o) const {
+        if(o.m_ptr == nullptr) {
+            if(m_ptr == nullptr) {
+                return false;
+            }
+            return true;
+        }
         return !m_ptr->equals(o.m_ptr);
     }
 
     template<typename U>
     inline bool operator != (const U* o) const {
+        if(o->m_ptr == nullptr) {
+            if(m_ptr == nullptr) {
+                return false;
+            }
+            return true;
+        }
         return !m_ptr->euqals(o);
     }
+
+    //COMPARE(==)
+    //COMPARE(!=)
+    COMPARE(>)
+    COMPARE(<)
+    COMPARE(<=)
+    COMPARE(>=)
 
     void set_pointer(T* ptr);
 
@@ -112,6 +185,8 @@ public:
 
     T* m_ptr;
 };
+
+
 
 template<typename T>
 sp<T>::sp(T* other)
@@ -263,27 +338,6 @@ sp<X> transform_cast(sp<V> t) {
     sp<X> value;
     value.set_pointer(dynamic_cast<X *>(t.m_ptr));
     return value;
-}
-
-//--------------------- compare nullptr -------------------------
-template<typename T>
-inline bool operator==(const sp<T> a,nullptr_t) { 
-    return (a.get() == nullptr);
-}
-
-template<typename _Tp>
-inline bool operator!=(const sp<_Tp> a,nullptr_t) { 
-    return (a.get() != nullptr); 
-}
-
-template<typename _Tp>
-inline bool operator==(nullptr_t,const sp<_Tp> a) { 
-    return (a.get() == nullptr); 
-}
-
-template<typename _Tp>
-inline bool operator!=(nullptr_t,const sp<_Tp> a) { 
-    return (a.get() != nullptr); 
 }
 
 }

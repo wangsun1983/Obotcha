@@ -118,7 +118,9 @@ private:
 
     Mutex mProtectMutex;
 
+    Mutex mWaitMutex;
 
+    Condition mWaitCondition;
 };
 
 }

@@ -30,8 +30,11 @@ String _StringFormat::_format(String fmt,va_list args) {
     if (newlen > oldlen) {
         std::vector<char> newbuffer(newlen);
         vsnprintf(newbuffer.data(), newlen, fmt->toChars(), argscopy);
+        va_end(args);
         return createString(newbuffer.data());
     }
+    
+    va_end(args);
     return createString(buffer);
 }
 

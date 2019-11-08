@@ -185,14 +185,13 @@ int _ZipStream::minizip(File src, File dest, String currentZipFolder, char *pass
         zi.external_fa = 0;
         filetime((const char *)src->getAbsolutePath()->toChars(), &zi.tmz_date, &zi.dosDate);
 
-        int size_buf = WRITEBUFFERSIZE;
         char *buf = nullptr;
         unsigned long crcFile = 0;
 
         if (password != nullptr)
         {
-            buf = (char *)malloc(size_buf);
-            getFileCrc(src->getAbsolutePath()->toChars(), buf, size_buf, &crcFile);
+            buf = (char *)malloc(WRITEBUFFERSIZE);
+            getFileCrc(src->getAbsolutePath()->toChars(), buf, WRITEBUFFERSIZE, &crcFile);
         }
 
         if (buf != nullptr)
@@ -444,7 +443,6 @@ int _ZipStream::do_extract_currentfile(unzFile uf, char *dest, const int *popt_e
     char filename_inzip[256];
     char *filename_withoutpath;
     char *p;
-    int err = UNZ_OK;
     FILE *fout = NULL;
     void *buf;
     uInt size_buf;
@@ -454,7 +452,7 @@ int _ZipStream::do_extract_currentfile(unzFile uf, char *dest, const int *popt_e
     uLong ratio=0;
 #endif
     char _filename[256];
-    err = unzGetCurrentFileInfo64(uf, &file_info, _filename, sizeof(filename_inzip), NULL, 0, NULL, 0);
+    int err = unzGetCurrentFileInfo64(uf, &file_info, _filename, sizeof(filename_inzip), NULL, 0, NULL, 0);
 
     if (err != UNZ_OK)
     {
@@ -495,7 +493,6 @@ int _ZipStream::do_extract_currentfile(unzFile uf, char *dest, const int *popt_e
     else
     {
         const char *write_filename;
-        int skip = 0;
 
         if ((*popt_extract_without_path) == 0)
         {
@@ -525,7 +522,7 @@ int _ZipStream::do_extract_currentfile(unzFile uf, char *dest, const int *popt_e
             *popt_overwrite = 1;
         }
 
-        if ((skip == 0) && (err == UNZ_OK))
+        if(err == UNZ_OK)
         {
             fout = FOPEN_FUNC(write_filename, "wb");
             /* some zipfile don't contain directory alone before file */

@@ -232,7 +232,7 @@ int _Des::loadKey(const char *filepath) {
     }
 
     short int bytes_read;
-    unsigned short int padding; 
+    //unsigned short int padding; 
     //unsigned char* des_key = (unsigned char*) malloc(8*sizeof(char));
     bytes_read = fread(&mKey, sizeof(unsigned char), DES_KEY_SIZE, key_file);
     if (bytes_read != DES_KEY_SIZE) {
@@ -279,7 +279,7 @@ ByteArray _Des::_desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *iv
     
     ByteArray out;
     int inputSize = data->size();
-    int outputSize = inputSize%8?(inputSize/8 + 1) * 8 : inputSize;  
+    int outputSize = (inputSize%8 != 0)?(inputSize/8 + 1) * 8 : inputSize;  
     //printf("_desCBC outputSize %d,input is %d \n",outputSize,inputSize);
 
     if(mode == DesEncrypt) {

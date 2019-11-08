@@ -216,7 +216,7 @@ void _File::deleteDir(File f) {
 ArrayList<String> _File::list() {
     DIR *dir;
     struct dirent *ptr;
-    char base[PATH_MAX];
+    //char base[PATH_MAX];
 
     if(isFile()) {
         return nullptr;
@@ -245,7 +245,7 @@ ArrayList<String> _File::list() {
 ArrayList<File> _File::listFiles() {
     DIR *dir;
     struct dirent *ptr;
-    char base[PATH_MAX];
+    //char base[PATH_MAX];
 
     if(isFile()) {
         return nullptr;

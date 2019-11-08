@@ -15,8 +15,9 @@ using namespace obotcha;
 DECLARE_SIMPLE_CLASS(StartTestThread1) IMPLEMENTS(Thread) {
 public:
     void run() {
-        //TODO
+        printf("startTest trace1 \n");
         sleep(1);
+        printf("startTest trace2 \n");
     }
 };
 
@@ -41,7 +42,7 @@ int testThreadStart() {
         printf("---[Thread TestStart {start()} case3] [Success]--- \n");
         break;
     }
-
+/*
     while(1) {
         StartTestThread1 t1 = createStartTestThread1();
         t1->start();
@@ -53,9 +54,9 @@ int testThreadStart() {
             printf("---[Thread TestStart {start()} case4] [FAILED]--- \n");
             break;
         }
-        
-        printf("---[Thread TestStart {start()} case5] [Success]--- \n");
-        break;    
-    }
 
+        printf("---[Thread TestStart {start()} case5] [Success]--- \n");
+        break;
+    }
+*/
 }

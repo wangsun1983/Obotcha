@@ -11,7 +11,6 @@ int _TimeZone::getZone() {
         time_t time_utc = 0;
         //struct tm *p_tm_time;
 
-        int time_zone = 0;
         struct tm p_tm_time;
         localtime_r(&time_utc,&p_tm_time);   //change to local time
         zone = (p_tm_time.tm_hour > 12)?(p_tm_time.tm_hour-= 24):p_tm_time.tm_hour;

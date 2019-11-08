@@ -89,11 +89,6 @@ int _TcpClient::doConnect() {
     }
 
     //AutoMutex ll(mConnectMutex);
-
-    int flags  = fcntl(mSock,F_GETFL,0);                          //获取文件的flags值。
-    int setResult = fcntl(mSock,F_SETFL,flags &~O_NONBLOCK);    //设置成阻塞模式；
-    //printf("setResult = %d",setResult);
-
     int ret = connect(mSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
     //printf("connect ret is %d,mSock is %d \n",ret,mSock);
     if( ret < 0) {
@@ -106,18 +101,14 @@ int _TcpClient::doConnect() {
 
     socklen_t length = 0;
     ret = getpeername(mSock, ( struct sockaddr* )&local_address, &length);
-    //char local[INET_ADDRSTRLEN ];
-   
+
     while(ntohs( local_address.sin_port ) == 0) {
         st(Thread)::msleep(30);
         memset(&local_address,0,sizeof(struct sockaddr_in));
         ret = getpeername(mSock, ( struct sockaddr* )&local_address, &length);
     }
 
-    ////printf( "local with ip: %s and port: %d\n",
-    //inet_ntop( AF_INET, &local_address.sin_addr, local, INET_ADDRSTRLEN ), ntohs( local_address.sin_port ) );
-    
-    return 0;
+    return ret;
 }
 
 int _TcpClient::doSend(ByteArray data) {

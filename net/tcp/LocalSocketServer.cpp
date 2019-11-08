@@ -210,7 +210,6 @@ int _LocalSocketServer::getStatus() {
 }
 
 int _LocalSocketServer::connect() {
-    int opt = 1;
     
     unlink(mDomain->toChars());
 

@@ -100,6 +100,8 @@ public:
     HttpHeader getHeader();
 
     void setBody(ByteArray);
+
+    ByteArray getBody();
     
     void setUrl(String);
     

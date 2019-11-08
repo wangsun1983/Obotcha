@@ -27,7 +27,7 @@ sp<_XmlDocument> _XmlReader::parse() {
         XmlDocument document = createXmlDocument(path,xmlfile->length());
         document->parse();
         
-        xml_node<> *node = document->xmlDoc.first_node();
+        //xml_node<> *node = document->xmlDoc.first_node();
         return document;
     }
     

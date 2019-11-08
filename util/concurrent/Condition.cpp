@@ -14,13 +14,20 @@ _Condition::_Condition():cond_t(PTHREAD_COND_INITIALIZER) {
 }
 
 void _Condition::wait(Mutex m) {
+    mMutex = m;
     pthread_mutex_t* mutex_t = m->getMutex_t();
     pthread_cond_wait(&cond_t,mutex_t);
 }
 
 int _Condition::wait(Mutex m,long int timeInterval) {
     struct timespec ts;
+    if(timeInterval == 0) {
+        wait(m);
+        return NotifyByThread;
+    }
+    
     st(System)::getNextTime(timeInterval,&ts);
+    mMutex = m;
     pthread_mutex_t* mutex_t = m->getMutex_t();
     int ret = pthread_cond_timedwait(&cond_t,mutex_t,&ts);
     if(ret == ETIMEDOUT) {
@@ -32,12 +39,18 @@ int _Condition::wait(Mutex m,long int timeInterval) {
 
 void _Condition::notify() {
     //cond.notify_one();
-    pthread_cond_signal(&cond_t);
+    if(mMutex != nullptr) {
+        AutoMutex ll(mMutex);
+        pthread_cond_signal(&cond_t);
+    }
 }
 
 void _Condition::notifyAll() {
     //cond.notify_all();
-    pthread_cond_broadcast(&cond_t);
+    if(mMutex != nullptr) {
+        AutoMutex ll(mMutex);
+        pthread_cond_broadcast(&cond_t);
+    }
 }
 
 }

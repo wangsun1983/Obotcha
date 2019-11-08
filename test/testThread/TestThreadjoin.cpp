@@ -128,7 +128,7 @@ int testThreadJoin() {
         printf("---[Thread Test {ThreadJoin()} special case3] [FAILED]--- \n");
         break;
     }
-    
+
     long t1 = st(System)::currentTimeMillis();
     t4->join();
     if((st(System)::currentTimeMillis() - t1)>2) {
@@ -167,8 +167,9 @@ int testThreadJoin() {
 
     long t1 = st(System)::currentTimeMillis();
     t5->join(2000);
-    if((st(System)::currentTimeMillis() - t1)!=2000) {
-        printf("---[Thread Test {ThreadJoin()} special case10] [FAILED]--- \n");
+    long v = st(System)::currentTimeMillis() - t1;
+    if(v > 2010) {
+        printf("---[Thread Test {ThreadJoin()} special case10] [FAILED],v is %ld--- \n",v);
         break;
     }
 

@@ -32,6 +32,10 @@ int _Aes::genKey(String decKeyFile,String encKeyFile) {
     }
     
     result = _saveKey(encKeyFile,AesEncrypt);
+    if(result != 0) {
+        return result;
+    }
+
     result = _saveKey(decKeyFile,AesDecrypt);
 
     return result;
@@ -44,6 +48,10 @@ int _Aes::genKey(String decKeyFile,String encKeyFile,String content) {
     }
 
     result = _saveKey(encKeyFile,AesEncrypt);
+    if(result != 0) {
+        return result;
+    }
+
     result = _saveKey(decKeyFile,AesDecrypt);
 
     return result;

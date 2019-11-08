@@ -73,24 +73,8 @@ int _PosixShareMemory::write(ByteArray arr) {
         return -OverSize;
     }
 
-    char *v = arr->toValue();
-#ifdef DEBUG_SHAREMEM_DUMP
-    printf("write size is %d \n",arr->size());
-    printf("write v[0] is %d \n",v[0]);
-    printf("write v[1] is %d \n",v[1]);
-    printf("write v[2] is %d \n",v[2]);
-    printf("write v[3] is %d \n",v[3]);
-    printf("write v[4] is %d \n",v[4]);
-#endif
     memcpy(mPtr,arr->toValue(),arr->size());
 
-#ifdef DEBUG_SHAREMEM_DUMP
-    printf("mPtr v[0] is %d \n",mPtr[0]);
-    printf("mPtr v[1] is %d \n",mPtr[1]);
-    printf("mPtr v[2] is %d \n",mPtr[2]);
-    printf("mPtr v[3] is %d \n",mPtr[3]);
-    printf("mPtr v[4] is %d \n",mPtr[4]);
-#endif        
     return 0;
 }
 

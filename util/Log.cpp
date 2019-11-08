@@ -201,7 +201,7 @@ void Log::setOutPath(String path) {
 }
 
 void Log::setLogLevel(LogLevel _level) {
-    level = level;
+    level = _level;
 }
 
 void Log::newline() {

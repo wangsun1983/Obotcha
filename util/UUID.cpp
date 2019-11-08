@@ -3,9 +3,8 @@
 namespace obotcha {
 
 _UUID::_UUID() {
-    char uuidBuf[UUID4_LEN];
-    
     if(init() == 0) {
+        char uuidBuf[UUID4_LEN];
         generate(uuidBuf);
         uuid = createString(uuidBuf);
     }
@@ -45,7 +44,7 @@ void _UUID::generate(char *dst) {
     static const char *chars = "0123456789abcdef";
     union { unsigned char b[16]; uint64_t word[2]; } s;
     const char *p;
-    int i, n;
+    int i,n;
     /* get random */
     s.word[0] = xorshift128plus(seed);
     s.word[1] = xorshift128plus(seed);

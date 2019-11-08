@@ -38,7 +38,7 @@ void _NtpSocketClientListener::onTimeout() {
 
 
 void _NtpSocketClientListener::onAccept(int fd,String ip,int port,ByteArray pack) {
-    int  ret;
+    //int  ret;
     unsigned int *data = (unsigned int *)pack->toValue(); 
 
     NtpTime oritime, rectime, tratime, destime;

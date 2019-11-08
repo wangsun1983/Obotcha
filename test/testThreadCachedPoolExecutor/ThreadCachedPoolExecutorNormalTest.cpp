@@ -50,17 +50,18 @@ int normalTest() {
 
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool(1,1,2,60*1000);
-        
+
         pool->shutdown();
         printf("---[TestCachedPoolExecutor Test {constructor()} case1] [Success]--- \n");
         break;
     }
 
 
+
     //_ThreadCachedPoolExecutor(int maxthreadnum,long timeout);
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool(2,60*1000);
-        
+
         printf("---[TestCachedPoolExecutor Test {constructor2()} case2] [Success]--- \n");
         pool->shutdown();
         break;
@@ -72,7 +73,7 @@ int normalTest() {
         pool->shutdown();
         printf("---[TestCachedPoolExecutor Test {constructor2()} case3] [Success]--- \n");
         break;
-    }  
+    }
 
 
     //void shutdown();
@@ -108,10 +109,11 @@ int normalTest() {
 
     }
 
+
     //int awaitTermination(long timeout);
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
-        
+
         int result = pool->awaitTermination(1000);
         if(result != -InvalidStatus) {
             printf("---[TestCachedPoolExecutor Test {awaitTermination()} case1] [FAIL]--- \n");
@@ -153,7 +155,7 @@ int normalTest() {
     //int awaitTermination(long timeout = 0);
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
-        
+
         int result = pool->awaitTermination(0);
         if(result != -InvalidStatus) {
             printf("---[TestCachedPoolExecutor Test {awaitTermination()} case5] [FAIL]--- \n");
@@ -188,7 +190,7 @@ int normalTest() {
     //int awaitTermination(long timeout = max);
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
-        
+
         pool->submit(createRunTest1());
         pool->shutdown();
 
@@ -207,7 +209,7 @@ int normalTest() {
     //int getThreadsNum();
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
-        
+
         printf("thread num is %d \n",pool->getThreadsNum());
         if(pool->getThreadsNum() != 0) {
             printf("---[TestCachedPoolExecutor Test {getThreadsNum()} case1] [FAIL]--- \n");
@@ -217,12 +219,12 @@ int normalTest() {
         printf("---[TestCachedPoolExecutor Test {getThreadsNum()} case2] [Success]--- \n");
         break;
     }
-   
- 
+
+
     //submit(Runnable task);
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
-        
+
         Future task = pool->submit(createRunTest1());
         if(task == nullptr) {
             printf("---[TestCachedPoolExecutor Test {submit()} case1] [FAIL]--- \n");
@@ -241,12 +243,12 @@ int normalTest() {
         printf("---[TestCachedPoolExecutor Test {submit()} case3] [Success]--- \n");
         break;
     }
-     
+
 
     //submit(Runnable task);
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
-        
+
         Future task = pool->submit(createRunTest1());
         sleep(1);
         if(pool->getThreadsNum() != 1) {
@@ -266,4 +268,3 @@ int normalTest() {
     }
 
 }
-

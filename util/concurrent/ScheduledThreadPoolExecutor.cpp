@@ -54,7 +54,13 @@ void _ScheduledTaskWorker::run() {
     //we should check the whether the Task is a repeated task;
     switch(mTask->mScheduleTaskType) {
         case ScheduletTaskFixRate: {
-            mTask->mNextTime = st(System)::currentTimeMillis();
+            long internal = st(System)::currentTimeMillis() - startMillseconds;
+            if(mTask->repeatDelay > internal) {
+                mTask->mNextTime = st(System)::currentTimeMillis() + (mTask->repeatDelay - internal);
+            } else {
+                mTask->mNextTime = st(System)::currentTimeMillis();
+            }
+            
             mTask->mTimeThread->addTask(mTask);
         }
         break;
