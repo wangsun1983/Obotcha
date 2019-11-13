@@ -14,7 +14,27 @@ public:
 };
 
 void testHashMapInteger() {
+    //test null and 0
+    while(1) {
+      HashMap<Integer,TT2> map = createHashMap<Integer,TT2>();
+      TT2 tt = createTT2();
+      tt->i = 100;
+      map->put(nullptr,tt);
 
+      TT2 tt2 = createTT2();
+      tt2->i = 1;
+      map->put(createInteger(0),tt2);
+
+      if(map->get(createInteger(0))->i != 1) {
+        printf("---[HashMap Integer Test {null test} case1] [FAILED]--- \n");
+        break;
+      }
+
+      printf("---[HashMap Integer Test {null test} case2] [Success]--- \n");
+      break;
+    }
+
+#if 0
     //void put(T t,U u)/get(T t)
     while(1) {
         HashMap<Integer,TT2> map = createHashMap<Integer,TT2>();
@@ -247,6 +267,6 @@ void testHashMapInteger() {
       break;
 
     }
-
+#endif
 
 }

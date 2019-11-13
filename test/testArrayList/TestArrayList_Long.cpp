@@ -30,7 +30,7 @@ void testArrayList_Long() {
     Long t;
     int size = list->size();
     list->add(t);
-    if(size != list->size()) {
+    if(size == list->size()) {
       printf("---[ArrayList<Long> Test {add(Long val)} case2] [FAILED]--- \n");
       break;
     }
@@ -42,8 +42,8 @@ void testArrayList_Long() {
   //--[_ArrayList<Long> Test {add(int val)} Start]---
   while(1) {
     ArrayList<Long>list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
+    list->add(createLong(1));
+    list->add(createLong(2));
 
     if(list->size() != 2) {
       printf("---[ArrayList<Long> Test {add(int val)} case0] [FAILED]--- \n");
@@ -63,12 +63,12 @@ void testArrayList_Long() {
   //--[_ArrayList<Long> Test {add(ArrayList<Long> list)} Start]---
   while(1) {
     ArrayList<Long>list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
+    list->add(createLong(1));
+    list->add(createLong(2));
 
     ArrayList<Long>list2 = createArrayList<Long>();
-    list2->add(3);
-    list2->add(4);
+    list2->add(createLong(3));
+    list2->add(createLong(4));
     list->add(list2);
 
     if(list->size() != 4) {
@@ -98,8 +98,8 @@ void testArrayList_Long() {
   //--[_ArrayList<Long> Test {clear()} Start]---
   while(1) {
     ArrayList<Long>list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
+    list->add(createLong(1));
+    list->add(createLong(2));
     int size = list->size();
     list->clear();
     if(size == 0 || list->size() != 0) {
@@ -113,11 +113,11 @@ void testArrayList_Long() {
   //--[_ArrayList<Long> Test {remove(int index)} Start]---
   while(1) {
     ArrayList<Long>list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
-    Long i = list->remove(2);
+    Long i = list->removeAt(2);
     if(i->toValue() != 3) {
       printf("---[ArrayList<Long> Test {remove(int index)} case0] [FAILED]--- \n");
       break;
@@ -128,14 +128,26 @@ void testArrayList_Long() {
       break;
     }
 
-    Long i2 = list->remove(100);
-    if(i2 != nullptr) {
+    bool isException = false;
+    try {
+        Long i2 = list->removeAt(100);
+    } catch(ArrayIndexOutOfBoundsException e) {
+       isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Long> Test {remove(int index)} case2] [FAILED]--- \n");
       break;
     }
 
-    Long i3 = list->remove(-1);
-    if(i2 != nullptr) {
+    isException = false;
+    try {
+        Long i3 = list->removeAt(-1);
+    } catch(ArrayIndexOutOfBoundsException e) {
+        isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Long> Test {remove(int index)} case3] [FAILED]--- \n");
       break;
     }
@@ -147,9 +159,9 @@ void testArrayList_Long() {
   //--[_ArrayList<Long> Test {remove(Long v)} Start]---
   while(1) {
     ArrayList<Long>list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
     int result = list->remove(createLong(2));
     if(result == -1) {
@@ -189,9 +201,9 @@ void testArrayList_Long() {
   //--[_ArrayList<Long> Test {indexOf(Long v)} Start]---
   while(1) {
     ArrayList<Long>list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
     if(list->indexOf(createLong(1)) != 0
       ||list->indexOf(createLong(2)) != 1
@@ -218,9 +230,9 @@ void testArrayList_Long() {
   //--[_ArrayList<Long> Test {set(int index,Long val)} Start]---
   while(1) {
     ArrayList<Long>list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
     list->set(0,createLong(2));
     if(list->get(0)->toValue() != 2
@@ -262,11 +274,11 @@ void testArrayList_Long() {
   //--[_ArrayList<Long> Test {set(int index,int val)} Start]---
   while(1) {
     ArrayList<Long>list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
-    list->set(0,2);
+    list->set(0,createLong(2));
     if(list->get(0)->toValue() != 2
     ||list->get(1)->toValue() != 2
     ||list->get(2)->toValue() != 3) {
@@ -281,7 +293,7 @@ void testArrayList_Long() {
       break;
     }
 
-    result = list->set(100,1);
+    result = list->set(100,createLong(1));
     if(result != -1) {
       printf("---[ArrayList<Long> Test {set(int index,int val)} case3] [FAILED]--- \n");
       break;
@@ -306,9 +318,9 @@ void testArrayList_Long() {
   //--[_ArrayList<Long> Test {get(int index)} Start]---
   while(1) {
     ArrayList<Long>list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
     Long v1 = list->get(1);
     if(v1->toValue() != 2) {
@@ -335,9 +347,9 @@ void testArrayList_Long() {
   //--[_ArrayList<Long> Test {insert(int index,Long val)} Start]---
   while(1) {
     ArrayList<Long>list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
     list->insert(1,createLong(4));
     if(list->get(0)->toValue() != 1
@@ -375,11 +387,11 @@ void testArrayList_Long() {
   //--[_ArrayList<Long> Test {insert(int index,int val)} Start]---
   while(1) {
     ArrayList<Long>list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
-    list->insert(1,4);
+    list->insert(1,createLong(4));
     if(list->get(0)->toValue() != 1
     ||list->get(1)->toValue() != 4
     ||list->get(2)->toValue() != 2
@@ -389,20 +401,20 @@ void testArrayList_Long() {
     }
 
     int size = list->size();
-    int result = list->insert(100,4);
+    int result = list->insert(100,createLong(4));
     if(result != -1 || size != list->size()) {
       printf("---[ArrayList<Long> Test {insert(int index,int val)} case1] [FAILED]--- \n");
       break;
     }
 
-    result = list->insert(-1,4);
+    result = list->insert(-1,createLong(4));
     if(result != -1 || size != list->size()) {
       printf("---[ArrayList<Long> Test {insert(int index,int val)} case2] [FAILED]--- \n");
       break;
     }
 
     int currentSize = list->size();
-    list->insert(0,100);
+    list->insert(0,createLong(100));
     if(list->get(0)->toValue() != 100 && (list->size() != (currentSize + 1))) {
       printf("---[ArrayList<Long> Test {insert(int index,int val)} case3] [FAILED]--- \n");
       break;
@@ -415,14 +427,14 @@ void testArrayList_Long() {
   //int insert(int index,ArrayList<Long> list);
   while(1) {
     ArrayList<Long>list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
     ArrayList<Long> list2 = createArrayList<Long>();
-    list2->add(4);
-    list2->add(5);
-    list2->add(6);
+    list2->add(createLong(4));
+    list2->add(createLong(5));
+    list2->add(createLong(6));
 
     list->insert(1,list2);
     if(list->get(0)->toValue() != 1
@@ -450,14 +462,14 @@ void testArrayList_Long() {
     }
 
     ArrayList<Long>list3 = createArrayList<Long>();
-    list3->add(10);
-    list3->add(11);
-    list3->add(12);
+    list3->add(createLong(10));
+    list3->add(createLong(11));
+    list3->add(createLong(12));
 
     ArrayList<Long>list4 = createArrayList<Long>();
-    list4->add(13);
-    list4->add(14);
-    list4->add(15);
+    list4->add(createLong(13));
+    list4->add(createLong(14));
+    list4->add(createLong(15));
 
     list3->insert(0,list4);
     if(list3->get(0)->toValue() != 13
@@ -477,14 +489,14 @@ void testArrayList_Long() {
   //int insert(int index,ArrayList<Long> list,int length);
   while(1) {
     ArrayList<Long>list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
     ArrayList<Long> list2 = createArrayList<Long>();
-    list2->add(4);
-    list2->add(5);
-    list2->add(6);
+    list2->add(createLong(4));
+    list2->add(createLong(5));
+    list2->add(createLong(6));
 
     list->insert(1,list2,2);
     if(list->get(0)->toValue() != 1
@@ -516,14 +528,14 @@ void testArrayList_Long() {
     }
 
     ArrayList<Long>list3 = createArrayList<Long>();
-    list3->add(10);
-    list3->add(11);
-    list3->add(12);
+    list3->add(createLong(10));
+    list3->add(createLong(11));
+    list3->add(createLong(12));
 
     ArrayList<Long>list4 = createArrayList<Long>();
-    list4->add(13);
-    list4->add(14);
-    list4->add(15);
+    list4->add(createLong(13));
+    list4->add(createLong(14));
+    list4->add(createLong(15));
 
     list3->insert(0,list4,2);
     if(list3->get(0)->toValue() != 13
@@ -541,14 +553,14 @@ void testArrayList_Long() {
     }
 
     ArrayList<Long>list5 = createArrayList<Long>();
-    list5->add(10);
-    list5->add(11);
-    list5->add(12);
+    list5->add(createLong(10));
+    list5->add(createLong(11));
+    list5->add(createLong(12));
 
     ArrayList<Long>list6 = createArrayList<Long>();
-    list6->add(13);
-    list6->add(14);
-    list6->add(15);
+    list6->add(createLong(13));
+    list6->add(createLong(14));
+    list6->add(createLong(15));
 
     result = list5->insert(0,list6,100);
 
@@ -583,9 +595,9 @@ void testArrayList_Long() {
   //void insertFirst(Long val);
   while(1) {
     ArrayList<Long> list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
     list->insertFirst(createLong(4));
     if(list->get(0)->toValue() != 4
@@ -616,7 +628,7 @@ void testArrayList_Long() {
     ArrayList<Long> list3 = createArrayList<Long>();
     Long nt;
     list3->insertFirst(nt);
-    if(list3->size() != 0) {
+    if(list3->size() == 0) {
       printf("---[ArrayList<Long> Test {insertFirst(Long val)} case5] [FAILED]--- \n");
       break;
     }
@@ -628,11 +640,11 @@ void testArrayList_Long() {
   //void insertFirst(int val);
   while(1) {
     ArrayList<Long> list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
-    list->insertFirst(4);
+    list->insertFirst(createLong(4));
     if(list->get(0)->toValue() != 4
        ||list->get(1)->toValue() != 1
        ||list->get(2)->toValue() != 2
@@ -647,7 +659,7 @@ void testArrayList_Long() {
     }
 
     ArrayList<Long> list2 = createArrayList<Long>();
-    list2->insertFirst(4);
+    list2->insertFirst(createLong(4));
     if(list2->get(0)->toValue() != 4) {
       printf("---[ArrayList<Long> Test {insertFirst(int val)} case3] [FAILED]--- \n");
       break;
@@ -665,14 +677,14 @@ void testArrayList_Long() {
   //void insertFirst(ArrayList<Long> list);
   while(1) {
     ArrayList<Long> list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
     ArrayList<Long> list2 = createArrayList<Long>();
-    list2->add(4);
-    list2->add(5);
-    list2->add(6);
+    list2->add(createLong(4));
+    list2->add(createLong(5));
+    list2->add(createLong(6));
     list->insertFirst(list2);
 
     if(list->get(0)->toValue() != 4
@@ -686,8 +698,8 @@ void testArrayList_Long() {
       }
 
     ArrayList<Long> list3 = createArrayList<Long>();
-    list3->add(1);
-    list3->add(2);
+    list3->add(createLong(1));
+    list3->add(createLong(2));
 
     ArrayList<Long> list4 = createArrayList<Long>();
     list4->insertFirst(list4);
@@ -717,9 +729,9 @@ void testArrayList_Long() {
   //void insertLast(Long v);
   while(1) {
     ArrayList<Long> list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
     list->insertLast(createLong(4));
     if(list->get(0)->toValue() != 1
@@ -736,9 +748,9 @@ void testArrayList_Long() {
     }
 
     ArrayList<Long> list2 = createArrayList<Long>();
-    list2->add(1);
-    list2->add(2);
-    list2->add(3);
+    list2->add(createLong(1));
+    list2->add(createLong(2));
+    list2->add(createLong(3));
     Long t2;
     list2->insertLast(t2);
 
@@ -749,7 +761,7 @@ void testArrayList_Long() {
         break;
     }
 
-    if(list2->size() != 3) {
+    if(list2->size() != 4) {
       printf("---[ArrayList<Long> Test {insertLast(Long v)} case4] [FAILED]--- \n");
       break;
     }
@@ -761,11 +773,11 @@ void testArrayList_Long() {
   //void insertLast(int v);
   while(1) {
     ArrayList<Long> list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
-    list->insertLast(4);
+    list->insertLast(createLong(4));
     if(list->get(0)->toValue() != 1
       ||list->get(1)->toValue() != 2
       ||list->get(2)->toValue() != 3
@@ -780,7 +792,7 @@ void testArrayList_Long() {
     }
 
     ArrayList<Long> list2 = createArrayList<Long>();
-    list2->insertLast(1);
+    list2->insertLast(createLong(1));
 
     if(list2->size() != 1) {
       printf("---[ArrayList<Long> Test {insertLast(int v)} case3] [FAILED]--- \n");
@@ -799,14 +811,14 @@ void testArrayList_Long() {
   //insertLast(ArrayList<Long> list);
   while(1) {
     ArrayList<Long> list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
 
     ArrayList<Long> list2 = createArrayList<Long>();
-    list2->add(4);
-    list2->add(5);
-    list2->add(6);
+    list2->add(createLong(4));
+    list2->add(createLong(5));
+    list2->add(createLong(6));
 
     list->insertLast(list2);
     if(list->get(0)->toValue() != 1
@@ -825,9 +837,9 @@ void testArrayList_Long() {
     }
 
     ArrayList<Long> list3 = createArrayList<Long>();
-    list3->add(1);
-    list3->add(2);
-    list3->add(3);
+    list3->add(createLong(1));
+    list3->add(createLong(2));
+    list3->add(createLong(3));
 
     ArrayList<Long> list4;
     list3->insertLast(list4);
@@ -850,9 +862,9 @@ void testArrayList_Long() {
   //int size();
   while(1) {
     ArrayList<Long> list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
     if(list->size() != 3) {
       printf("---[ArrayList<Long> Test {size()} case1] [FAILED]--- \n");
       break;
@@ -871,11 +883,11 @@ void testArrayList_Long() {
   //ListIterator<Long> getValue;
   while(1) {
     ArrayList<Long> list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
-    list->add(4);
-    list->add(5);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
+    list->add(createLong(4));
+    list->add(createLong(5));
 
     ListIterator<Long>iterator = list->getIterator();
     int index = 1;
@@ -905,9 +917,9 @@ void testArrayList_Long() {
   //ListIterator<Long> hasValue();
   while(1) {
     ArrayList<Long> list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
     ListIterator<Long> iterator = list->getIterator();
     if(!iterator->hasValue()) {
       printf("---[ListIterator<Long> Test {hasValue()} case1] [FAILED]--- \n");
@@ -937,9 +949,9 @@ void testArrayList_Long() {
   // ListIterator<Long> next();
   while(1) {
     ArrayList<Long> list = createArrayList<Long>();
-    list->add(1);
-    list->add(2);
-    list->add(3);
+    list->add(createLong(1));
+    list->add(createLong(2));
+    list->add(createLong(3));
     ListIterator<Long> iterator = list->getIterator();
 
     iterator->next();
@@ -982,7 +994,7 @@ void testArrayList_Long() {
         break;
     }
 
-    if(list->get(0)->toValue() != 1 ||list->get(1)->toValue() != 2 
+    if(list->get(0)->toValue() != 1 ||list->get(1)->toValue() != 2
       ||list->get(2)->toValue() != 4||list->get(3)->toValue() != 5) {
         printf("---[ListIterator<Long> Test {remove()} case2] [FAILED]--- \n");
         break;

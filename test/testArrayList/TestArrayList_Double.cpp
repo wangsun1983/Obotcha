@@ -32,7 +32,7 @@ void testArrayList_Double() {
     Double t;
     int size = list->size();
     list->add(t);
-    if(size != list->size()) {
+    if(size == list->size()) {
       printf("---[ArrayList<Double> Test {add(Double val)} case2] [FAILED]--- \n");
       break;
     }
@@ -44,8 +44,8 @@ void testArrayList_Double() {
   //--[_ArrayList<Double> Test {add(Double val)} Start]---
   while(1) {
     ArrayList<Double>list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
 
     if(list->size() != 2) {
       printf("---[ArrayList<Double> Test {add(Double val)} case0] [FAILED]--- \n");
@@ -65,12 +65,12 @@ void testArrayList_Double() {
   //--[_ArrayList<Double> Test {add(ArrayList<Double> list)} Start]---
   while(1) {
     ArrayList<Double>list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
 
     ArrayList<Double>list2 = createArrayList<Double>();
-    list2->add(3.1);
-    list2->add(4.1);
+    list2->add(createDouble(3.1));
+    list2->add(createDouble(4.1));
 
     list->add(list2);
 
@@ -101,8 +101,8 @@ void testArrayList_Double() {
   //--[_ArrayList<Double> Test {clear()} Start]---
   while(1) {
     ArrayList<Double>list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
     int size = list->size();
     list->clear();
     if(size == 0 || list->size() != 0) {
@@ -116,11 +116,11 @@ void testArrayList_Double() {
   //--[_ArrayList<Double> Test {remove(int index)} Start]---
   while(1) {
     ArrayList<Double>list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
-    Double i = list->remove(2);
+    Double i = list->removeAt(2);
     if(i->toValue() != 3.1) {
       printf("---[ArrayList<Double> Test {remove(int index)} case0] [FAILED]--- \n");
       break;
@@ -131,14 +131,26 @@ void testArrayList_Double() {
       break;
     }
 
-    Double i2 = list->remove(100);
-    if(i2 != nullptr) {
+    bool isException = false;
+    try {
+        Double i2 = list->removeAt(100);
+    } catch(ArrayIndexOutOfBoundsException e) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Double> Test {remove(int index)} case2] [FAILED]--- \n");
       break;
     }
 
-    Double i3 = list->remove(-1);
-    if(i2 != nullptr) {
+    isException = false;
+    try {
+        Double i3 = list->removeAt(-1);
+    } catch(ArrayIndexOutOfBoundsException e) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Double> Test {remove(int index)} case3] [FAILED]--- \n");
       break;
     }
@@ -150,9 +162,9 @@ void testArrayList_Double() {
   //--[_ArrayList<Double> Test {remove(Double v)} Start]---
   while(1) {
     ArrayList<Double>list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
     int result = list->remove(createDouble(2.1));
     if(result == -1) {
@@ -192,9 +204,9 @@ void testArrayList_Double() {
   //--[_ArrayList<Double> Test {indexOf(Double v)} Start]---
   while(1) {
     ArrayList<Double>list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
     if(list->indexOf(createDouble(1.1)) != 0
       ||list->indexOf(createDouble(2.1)) != 1
@@ -221,9 +233,9 @@ void testArrayList_Double() {
   //--[_ArrayList<Double> Test {set(int index,Double val)} Start]---
   while(1) {
     ArrayList<Double>list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
     list->set(0,createDouble(2.1));
     if(list->get(0)->toValue() != 2.1
@@ -265,11 +277,11 @@ void testArrayList_Double() {
   //--[_ArrayList<Double> Test {set(int index,int val)} Start]---
   while(1) {
     ArrayList<Double>list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
-    list->set(0,2.1);
+    list->set(0,createDouble(2.1));
     if(list->get(0)->toValue() != 2.1
     ||list->get(1)->toValue() != 2.1
     ||list->get(2)->toValue() != 3.1) {
@@ -284,7 +296,7 @@ void testArrayList_Double() {
       break;
     }
 
-    result = list->set(100,1.1f);
+    result = list->set(100,createDouble(1.1f));
     if(result != -1) {
       printf("---[ArrayList<Double> Test {set(int index,int val)} case3] [FAILED]--- \n");
       break;
@@ -309,9 +321,9 @@ void testArrayList_Double() {
   //--[_ArrayList<Double> Test {get(int index)} Start]---
   while(1) {
     ArrayList<Double>list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
     Double v1 = list->get(1);
     if(v1->toValue() != 2.1) {
@@ -338,9 +350,9 @@ void testArrayList_Double() {
   //--[_ArrayList<Double> Test {insert(int index,Double val)} Start]---
   while(1) {
     ArrayList<Double>list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
     list->insert(1,createDouble(4.1));
     if(list->get(0)->toValue() != 1.1
@@ -378,11 +390,11 @@ void testArrayList_Double() {
   //--[_ArrayList<Double> Test {insert(int index,int val)} Start]---
   while(1) {
     ArrayList<Double>list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
-    list->insert(1,4.1);
+    list->insert(1,createDouble(4.1));
     if(list->get(0)->toValue() != 1.1
     ||list->get(1)->toValue() != 4.1
     ||list->get(2)->toValue() != 2.1
@@ -392,20 +404,20 @@ void testArrayList_Double() {
     }
 
     int size = list->size();
-    int result = list->insert(100,4.1);
+    int result = list->insert(100,createDouble(4.1));
     if(result != -1 || size != list->size()) {
       printf("---[ArrayList<Double> Test {insert(int index,int val)} case1] [FAILED]--- \n");
       break;
     }
 
-    result = list->insert(-1,4.1);
+    result = list->insert(-1,createDouble(4.1));
     if(result != -1 || size != list->size()) {
       printf("---[ArrayList<Double> Test {insert(int index,int val)} case2] [FAILED]--- \n");
       break;
     }
 
     int currentSize = list->size();
-    list->insert(0,100.1);
+    list->insert(0,createDouble(100.1));
     if(list->get(0)->toValue() != 100.1 && (list->size() != (currentSize + 1))) {
       printf("---[ArrayList<Double> Test {insert(int index,int val)} case3] [FAILED]--- \n");
       break;
@@ -418,14 +430,14 @@ void testArrayList_Double() {
   //int insert(int index,ArrayList<Double> list);
   while(1) {
     ArrayList<Double>list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
     ArrayList<Double> list2 = createArrayList<Double>();
-    list2->add(4.1);
-    list2->add(5.1);
-    list2->add(6.1);
+    list2->add(createDouble(4.1));
+    list2->add(createDouble(5.1));
+    list2->add(createDouble(6.1));
 
     list->insert(1,list2);
     if(list->get(0)->toValue() != 1.1
@@ -453,14 +465,14 @@ void testArrayList_Double() {
     }
 
     ArrayList<Double>list3 = createArrayList<Double>();
-    list3->add(10.1);
-    list3->add(11.1);
-    list3->add(12.1);
+    list3->add(createDouble(10.1));
+    list3->add(createDouble(11.1));
+    list3->add(createDouble(12.1));
 
     ArrayList<Double>list4 = createArrayList<Double>();
-    list4->add(13.1);
-    list4->add(14.1);
-    list4->add(15.1);
+    list4->add(createDouble(13.1));
+    list4->add(createDouble(14.1));
+    list4->add(createDouble(15.1));
 
     list3->insert(0,list4);
     if(list3->get(0)->toValue() != 13.1
@@ -480,14 +492,14 @@ void testArrayList_Double() {
   //int insert(int index,ArrayList<Double> list,int length);
   while(1) {
     ArrayList<Double>list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
     ArrayList<Double> list2 = createArrayList<Double>();
-    list2->add(4.1);
-    list2->add(5.1);
-    list2->add(6.1);
+    list2->add(createDouble(4.1));
+    list2->add(createDouble(5.1));
+    list2->add(createDouble(6.1));
 
     list->insert(1,list2,2);
     if(list->get(0)->toValue() != 1.1
@@ -519,14 +531,14 @@ void testArrayList_Double() {
     }
 
     ArrayList<Double>list3 = createArrayList<Double>();
-    list3->add(10.1);
-    list3->add(11.1);
-    list3->add(12.1);
+    list3->add(createDouble(10.1));
+    list3->add(createDouble(11.1));
+    list3->add(createDouble(12.1));
 
     ArrayList<Double>list4 = createArrayList<Double>();
-    list4->add(13.1);
-    list4->add(14.1);
-    list4->add(15.1);
+    list4->add(createDouble(13.1));
+    list4->add(createDouble(14.1));
+    list4->add(createDouble(15.1));
 
     list3->insert(0,list4,2);
     if(list3->get(0)->toValue() != 13.1
@@ -544,14 +556,14 @@ void testArrayList_Double() {
     }
 
     ArrayList<Double>list5 = createArrayList<Double>();
-    list5->add(10.1);
-    list5->add(11.1);
-    list5->add(12.1);
+    list5->add(createDouble(10.1));
+    list5->add(createDouble(11.1));
+    list5->add(createDouble(12.1));
 
     ArrayList<Double>list6 = createArrayList<Double>();
-    list6->add(13.1);
-    list6->add(14.1);
-    list6->add(15.1);
+    list6->add(createDouble(13.1));
+    list6->add(createDouble(14.1));
+    list6->add(createDouble(15.1));
 
     result = list5->insert(0,list6,100);
 
@@ -586,9 +598,9 @@ void testArrayList_Double() {
   //void insertFirst(Double val);
   while(1) {
     ArrayList<Double> list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
     list->insertFirst(createDouble(4.1));
     if(list->get(0)->toValue() != 4.1
@@ -619,7 +631,7 @@ void testArrayList_Double() {
     ArrayList<Double> list3 = createArrayList<Double>();
     Double nt;
     list3->insertFirst(nt);
-    if(list3->size() != 0) {
+    if(list3->size() == 0) {
       printf("---[ArrayList<Double> Test {insertFirst(Double val)} case5] [FAILED]--- \n");
       break;
     }
@@ -631,11 +643,11 @@ void testArrayList_Double() {
   //void insertFirst(int val);
   while(1) {
     ArrayList<Double> list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
-    list->insertFirst(4.1);
+    list->insertFirst(createDouble(4.1));
     if(list->get(0)->toValue() != 4.1
        ||list->get(1)->toValue() != 1.1
        ||list->get(2)->toValue() != 2.1
@@ -650,7 +662,7 @@ void testArrayList_Double() {
     }
 
     ArrayList<Double> list2 = createArrayList<Double>();
-    list2->insertFirst(4.1);
+    list2->insertFirst(createDouble(4.1));
     if(list2->get(0)->toValue() != 4.1) {
       printf("---[ArrayList<Double> Test {insertFirst(int val)} case3] [FAILED]--- \n");
       break;
@@ -668,14 +680,14 @@ void testArrayList_Double() {
   //void insertFirst(ArrayList<Double> list);
   while(1) {
     ArrayList<Double> list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
     ArrayList<Double> list2 = createArrayList<Double>();
-    list2->add(4.1);
-    list2->add(5.1);
-    list2->add(6.1);
+    list2->add(createDouble(4.1));
+    list2->add(createDouble(5.1));
+    list2->add(createDouble(6.1));
     list->insertFirst(list2);
 
     if(list->get(0)->toValue() != 4.1
@@ -689,8 +701,8 @@ void testArrayList_Double() {
       }
 
     ArrayList<Double> list3 = createArrayList<Double>();
-    list3->add(1.1);
-    list3->add(2.1);
+    list3->add(createDouble(1.1));
+    list3->add(createDouble(2.1));
 
     ArrayList<Double> list4 = createArrayList<Double>();
     list4->insertFirst(list4);
@@ -720,9 +732,9 @@ void testArrayList_Double() {
   //void insertLast(Double v);
   while(1) {
     ArrayList<Double> list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
     list->insertLast(createDouble(4.1));
     if(list->get(0)->toValue() != 1.1
@@ -739,9 +751,9 @@ void testArrayList_Double() {
     }
 
     ArrayList<Double> list2 = createArrayList<Double>();
-    list2->add(1.1);
-    list2->add(2.1);
-    list2->add(3.1);
+    list2->add(createDouble(1.1));
+    list2->add(createDouble(2.1));
+    list2->add(createDouble(3.1));
     Double t2;
     list2->insertLast(t2);
 
@@ -752,7 +764,7 @@ void testArrayList_Double() {
         break;
     }
 
-    if(list2->size() != 3) {
+    if(list2->size() != 4) {
       printf("---[ArrayList<Double> Test {insertLast(Double v)} case4] [FAILED]--- \n");
       break;
     }
@@ -764,11 +776,11 @@ void testArrayList_Double() {
   //void insertLast(int v);
   while(1) {
     ArrayList<Double> list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
-    list->insertLast(4.1);
+    list->add(createDouble(4.1));
     if(list->get(0)->toValue() != 1.1
       ||list->get(1)->toValue() != 2.1
       ||list->get(2)->toValue() != 3.1
@@ -783,7 +795,7 @@ void testArrayList_Double() {
     }
 
     ArrayList<Double> list2 = createArrayList<Double>();
-    list2->insertLast(1);
+    list2->add(createDouble(1));
 
     if(list2->size() != 1) {
       printf("---[ArrayList<Double> Test {insertLast(int v)} case3] [FAILED]--- \n");
@@ -802,14 +814,14 @@ void testArrayList_Double() {
   //insertLast(ArrayList<Double> list);
   while(1) {
     ArrayList<Double> list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
 
     ArrayList<Double> list2 = createArrayList<Double>();
-    list2->add(4.1);
-    list2->add(5.1);
-    list2->add(6.1);
+    list2->add(createDouble(4.1));
+    list2->add(createDouble(5.1));
+    list2->add(createDouble(6.1));
 
     list->insertLast(list2);
     if(list->get(0)->toValue() != 1.1
@@ -828,9 +840,9 @@ void testArrayList_Double() {
     }
 
     ArrayList<Double> list3 = createArrayList<Double>();
-    list3->add(1.1);
-    list3->add(2.1);
-    list3->add(3.1);
+    list3->add(createDouble(1.1));
+    list3->add(createDouble(2.1));
+    list3->add(createDouble(3.1));
 
     ArrayList<Double> list4;
     list3->insertLast(list4);
@@ -853,9 +865,9 @@ void testArrayList_Double() {
   //int size();
   while(1) {
     ArrayList<Double> list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
     if(list->size() != 3) {
       printf("---[ArrayList<Double> Test {size()} case1] [FAILED]--- \n");
       break;
@@ -874,11 +886,11 @@ void testArrayList_Double() {
   //ListIterator<Double> getValue;
   while(1) {
     ArrayList<Double> list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
-    list->add(4.1);
-    list->add(5.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
+    list->add(createDouble(4.1));
+    list->add(createDouble(5.1));
 
     ListIterator<Double>iterator = list->getIterator();
     int index = 0;
@@ -910,9 +922,9 @@ void testArrayList_Double() {
   //ListIterator<Double> hasValue();
   while(1) {
     ArrayList<Double> list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
     ListIterator<Double> iterator = list->getIterator();
     if(!iterator->hasValue()) {
       printf("---[ListIterator<Double> Test {hasValue()} case1] [FAILED]--- \n");
@@ -942,9 +954,9 @@ void testArrayList_Double() {
   // ListIterator<Double> next();
   while(1) {
     ArrayList<Double> list = createArrayList<Double>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createDouble(1.1));
+    list->add(createDouble(2.1));
+    list->add(createDouble(3.1));
     ListIterator<Double> iterator = list->getIterator();
 
     iterator->next();

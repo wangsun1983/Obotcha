@@ -12,6 +12,8 @@
 #include "Integer.hpp"
 #include "Long.hpp"
 #include "String.hpp"
+#include "MethodNotSupportException.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
 
 #include "Collection.hpp"
 
@@ -22,32 +24,16 @@ namespace obotcha {
 template<typename T>
 class _ListIterator;
 
-class _ListIterator<String>;
-
-class _ListIterator<Integer>;
-
-class _ListIterator<Boolean>;
-
-class _ListIterator<Float>;
-
-class _ListIterator<Double>;
-
-class _ListIterator<Long>;
-
 template<typename T>
 class _ArrayList;
 
-class _ArrayList<String>;
-
-class _ArrayList<Integer>;
-
-class _ArrayList<Boolean>;
-
-class _ArrayList<Float>;
-
-class _ArrayList<Double>;
-
-class _ArrayList<Long>;
+#define ARRAYLIST_NOT_SUPPORT(V) template<> \
+class _ArrayList<V>:virtual public Object{ \
+public:    \
+    _ArrayList() { \
+        throw createMethodNotSupportException("ArrayList not support int"); \
+    } \
+};\
 
 //----------------- ArrayList ---------------------
 DECLARE_CLASS(ArrayList,1) {
@@ -60,6 +46,10 @@ public:
     }
 
     inline void add(ArrayList<T> list) {
+        if(list == nullptr || list->size() == 0) {
+            return;
+        }
+
         elements.insert(elements.end(),list->elements.begin(),list->elements.end());
     }
 
@@ -67,9 +57,9 @@ public:
         elements.clear();
     }
 
-    inline T remove(int index) {
+    inline T removeAt(int index) {
         if(index >= elements.size() || index < 0) {
-            return nullptr;
+            throw createArrayIndexOutOfBoundsException("Arraylist remove fail",elements.size(),index);
         }
 
         T val = elements.at(index);
@@ -97,22 +87,25 @@ public:
     }
 
     inline int set(int index,T val) {
-        if(index >= elements.size() || index < 0 || val == nullptr) {
-            return -1;
+        if(index >= elements.size() || index < 0) {
+            throw createArrayIndexOutOfBoundsException("Arraylist set fail",elements.size(),index);
         }
 
         elements[index] = val;
+        return 0;
     }
 
     inline T get(int index) {
+         if(index >= elements.size() || index < 0) {
+            throw createArrayIndexOutOfBoundsException("Arraylist get fail",elements.size(),index);
+        }
+
         return elements[index];
     }
 
     inline int insert(int index,T val) {
         if(index >= elements.size() || index < 0) {
-            if(index != 0) {
-                return -1;    
-            }
+            throw createArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
         }
 
 
@@ -122,9 +115,7 @@ public:
 
     inline int insert(int index,ArrayList<T> list) {
         if(index >= elements.size() || index < 0) {
-            if(index != 0) {
-                return -1;
-            }
+            throw createArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
         }
 
         if(list != nullptr) {
@@ -135,9 +126,7 @@ public:
 
     inline int insert(int index,ArrayList<T> list,int length) {
         if(index >= elements.size() || length <= 0 || index < 0) {
-            if(index != 0) {
-                return -1;
-            }
+            throw createArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
         }
 
         if(list != nullptr) {
@@ -155,6 +144,10 @@ public:
 
 
     inline void insertFirst(ArrayList<T> list) {
+        if(list == nullptr || list->size() == 0) {
+            return;
+        }
+
         elements.insert(elements.begin(),list->elements.begin(),list->elements.end());
     }
     
@@ -163,6 +156,10 @@ public:
     }
 
     inline void insertLast(ArrayList<T> list) {
+        if(list == nullptr || list->size() == 0) {
+            return;
+        }
+
         elements.insert(elements.end(),list->begin(),list->end());
     }
 
@@ -203,7 +200,8 @@ public:
     T getValue() {
         //return iterator->second;
         if(iterator == mList->end()) {
-            return nullptr;
+            //return nullptr;
+            throw createArrayIndexOutOfBoundsException("iterator error");
         }
 
         return *iterator;
@@ -235,490 +233,18 @@ private:
     typename std::vector<T>::iterator iterator;
 };
 
+/*
+ARRAYLIST_NOT_SUPPORT(bool);
+ARRAYLIST_NOT_SUPPORT(byte);
+ARRAYLIST_NOT_SUPPORT(double);
+ARRAYLIST_NOT_SUPPORT(float);
+ARRAYLIST_NOT_SUPPORT(int);
+ARRAYLIST_NOT_SUPPORT(long);
+ARRAYLIST_NOT_SUPPORT(std::uint8_t);
+ARRAYLIST_NOT_SUPPORT(std::uint16_t);
+ARRAYLIST_NOT_SUPPORT(std::uint32_t);
+ARRAYLIST_NOT_SUPPORT(std::uint64_t);
+*/
 
-
-//----------------- ArrayList<String> ---------------------
-template<>
-class _ArrayList<String>:virtual public Object{
-
-public:
-    friend class _ListIterator<String>;
-
-    void add(const char *s);
-
-    void add(const std::string s);
-
-    void add(String val);
-
-    void add(ArrayList<String> list);
-
-    void clear();
-
-    String remove(int index);
-
-    int remove(String v);
-
-    int indexOf(String v);
-
-    int set(int index,String val);
-
-    String get(int index);
-
-    int insert(int index,String val);
-
-    int insert(int index,const char *s);
-
-    int insert(int index,const std::string s);
-
-    int insert(int index,ArrayList<String> list);
-
-    int insert(int index,ArrayList<String> list,int length);
-
-    void insertFirst(String val);
-
-    void insertFirst(const char *s);
-
-    void insertFirst(ArrayList<String> list);
-    
-    void insertLast(String v);
-
-    void insertLast(const char *s);
-
-    void insertLast(ArrayList<String> list);
-
-    int size();
-
-    sp<_ListIterator<String>> getIterator();
-
-private:
-    std::vector<std::string> elements;
-
-    std::vector<std::string>::iterator begin();
-
-    std::vector<std::string>::iterator end();
-};
-
-//----------------- ArrayListIterator ---------------------
-template<>
-class _ListIterator<String>:virtual public Object {
-public:
-    _ListIterator(_ArrayList<String> *list);
-
-    _ListIterator(ArrayList<String> list);
-
-    String getValue();
-
-    bool hasValue();
-
-    bool next();
-
-    bool remove();
-    
-private:
-    ArrayList<String> mList;    
-    std::vector<std::string>::iterator iterator;
-};
-
-
-//----------------- ArrayList<Integer> ---------------------
-template<>
-class _ArrayList<Integer>:virtual public Object{
-public:
-    friend class _ListIterator<Integer>;
-    
-    void add(Integer val);
-
-    void add(int val);
-
-    void add(ArrayList<Integer> list);
-
-    void clear();
-
-    Integer remove(int index);
-
-    int remove(Integer v);
-
-    int indexOf(Integer v);
-
-    int set(int index,Integer val);
-
-    int set(int index,int val);
-
-    Integer get(int index);
-
-    int insert(int index,Integer val);
-
-    int insert(int index,int val);
-
-    int insert(int index,ArrayList<Integer> list);
-
-    int insert(int index,ArrayList<Integer> list,int length);
-
-    void insertFirst(Integer val);
-
-    void insertFirst(int val);
-
-    void insertFirst(ArrayList<Integer> list);
-    
-    void insertLast(Integer v);
-
-    void insertLast(int v);
- 
-    void insertLast(ArrayList<Integer> list);
-
-    int size();
-
-    sp<_ListIterator<Integer>> getIterator();
-
-
-private:
-    std::vector<int> elements;
-
-    std::vector<int>::iterator begin();
-
-    std::vector<int>::iterator end();
-};
-
-//----------------- ArrayListIterator<Integer> ---------------------
-template<>
-class _ListIterator<Integer>:virtual public Object {
-public:
-    _ListIterator(_ArrayList<Integer> *list);
-
-    _ListIterator(ArrayList<Integer> list);
-
-    Integer getValue();
-
-    bool hasValue();
-
-    bool next();
-
-    bool remove();
-    
-private:
-    ArrayList<Integer> mList;    
-    std::vector<int>::iterator iterator;
-};
-
-
-//----------------- ArrayList<Boolean> ---------------------
-template<>
-class _ArrayList<Boolean>:virtual public Object{
-
-public:
-    friend class _ListIterator<Boolean>;
-
-    void add(Boolean val);
-
-    void add(bool val);
-
-    void add(ArrayList<Boolean> list);
-
-    void clear();
-
-    Boolean remove(int index);
-
-    int remove(Boolean v);
-
-    int indexOf(Boolean v);
-
-    int set(int index,Boolean val);
-
-    int set(int index,bool val);
-
-    Boolean get(int index);
-
-    int insert(int index,Boolean val);
-
-    int insert(int index,bool val);
-
-    int insert(int index,ArrayList<Boolean> list);
-
-    int insert(int index,ArrayList<Boolean> list,int length);
-
-    void insertFirst(Boolean val);
-
-    void insertFirst(bool val);
-
-    void insertFirst(ArrayList<Boolean> list);
-    
-    void insertLast(Boolean v);
-
-    void insertLast(bool v);
-
-    void insertLast(ArrayList<Boolean> list);
-
-    int size();
-
-    sp<_ListIterator<Boolean>> getIterator();
-
-
-private:
-    std::vector<bool> elements;
-
-    std::vector<bool>::iterator begin();
-
-    std::vector<bool>::iterator end();
-};
-
-//----------------- ArrayListIterator ---------------------
-template<>
-class _ListIterator<Boolean>:virtual public Object {
-public:
-    _ListIterator(_ArrayList<Boolean> *list);
-
-    _ListIterator(ArrayList<Boolean> list);
-
-    Boolean getValue();
-
-    bool hasValue();
-
-    bool next();
-
-    bool remove();
-    
-private:
-    ArrayList<Boolean> mList;    
-    std::vector<bool>::iterator iterator;
-};
-
-//----------------- ArrayList<Float> ---------------------
-template<>
-class _ArrayList<Float>:virtual public Object{
-
-public:
-    friend class _ListIterator<Float>;
-
-    void add(Float val);
-
-    void add(float val);
-
-    void add(ArrayList<Float> list);
-
-    void clear();
-
-    Float remove(int index);
-
-    int remove(Float v);
-
-    int indexOf(Float v);
-
-    int set(int index,Float val);
-
-    int set(int index,float val);
-
-    Float get(int index);
-
-    int insert(int index,Float val);
-
-    int insert(int index,float val);
-
-    int insert(int index,ArrayList<Float> list);
-
-    int insert(int index,ArrayList<Float> list,int length);
-
-    void insertFirst(Float val);
-
-    void insertFirst(float val);
-
-    void insertFirst(ArrayList<Float> list);
-    
-    void insertLast(Float v);
-
-    void insertLast(float v);
-
-    void insertLast(ArrayList<Float> list);
-
-    int size();
-
-    sp<_ListIterator<Float>> getIterator();
-
-private:
-    std::vector<float> elements;
-
-    std::vector<float>::iterator begin();
-
-    std::vector<float>::iterator end();
-};
-
-//----------------- ArrayListIterator <Float>---------------------
-template<>
-class _ListIterator<Float>:virtual public Object {
-public:
-    _ListIterator(_ArrayList<Float> *list);
-
-    _ListIterator(ArrayList<Float> list);
-
-    Float getValue();
-
-    bool hasValue();
-
-    bool next();
-
-    bool remove();
-    
-private:
-    ArrayList<Float> mList;    
-    std::vector<float>::iterator iterator;
-};
-
-//----------------- ArrayList<Double> ---------------------
-template<>
-class _ArrayList<Double>:virtual public Object{
-
-public:
-    friend class _ListIterator<Double>;
-
-    void add(Double val);
-
-    void add(double val);
-
-    void add(ArrayList<Double> list);
-
-    void clear();
-
-    Double remove(int index);
-
-    int remove(Double v);
-
-    int indexOf(Double v);
-
-    int set(int index,Double val);
-
-    int set(int index,double val);
-
-    Double get(int index);
-
-    int insert(int index,Double val);
-
-    int insert(int index,double val);
-
-    int insert(int index,ArrayList<Double> list);
-
-    int insert(int index,ArrayList<Double> list,int length);
-
-    void insertFirst(Double val);
-
-    void insertFirst(double val);
-
-    void insertFirst(ArrayList<Double> list);
-    
-    void insertLast(Double v);
-
-    void insertLast(double v);
-
-    void insertLast(ArrayList<Double> list);
-
-    int size();
-
-    sp<_ListIterator<Double>> getIterator();
-
-private:
-    std::vector<double> elements;
-
-    std::vector<double>::iterator begin();
-
-    std::vector<double>::iterator end();
-};
-
-//----------------- ArrayListIterator <Double>---------------------
-template<>
-class _ListIterator<Double>:virtual public Object {
-public:
-    _ListIterator(_ArrayList<Double> *list);
-
-    _ListIterator(ArrayList<Double> list);
-
-    Double getValue();
-
-    bool hasValue();
-
-    bool next();
-
-    bool remove();
-    
-private:
-    ArrayList<Double> mList;    
-    std::vector<double>::iterator iterator;
-};
-
-//----------------- ArrayList<Long> ---------------------
-template<>
-class _ArrayList<Long>:virtual public Object{
-public:
-    friend class _ListIterator<Long>;
-
-    void add(Long val);
-
-    void add(long val);
-
-    void add(ArrayList<Long> list);
-
-    void clear();
-
-    Long remove(int index);
-
-    int remove(Long v);
-
-    int indexOf(Long v);
-
-    int set(int index,Long val);
-
-    int set(int index,long val);
-
-    Long get(int index);
-
-    int insert(int index,Long val);
-
-    int insert(int index,long val);
-
-    int insert(int index,ArrayList<Long> list);
-
-    int insert(int index,ArrayList<Long> list,int length);
-
-    void insertFirst(Long val);
-
-    void insertFirst(long val);
-
-    void insertFirst(ArrayList<Long> list);
-    
-    void insertLast(Long v);
-
-    void insertLast(long v);
-
-    void insertLast(ArrayList<Long> list);
-
-    int size();
-
-    sp<_ListIterator<Long>> getIterator();
-
-private:
-    std::vector<long> elements;
-
-    std::vector<long>::iterator begin();
-
-    std::vector<long>::iterator end();
-};
-
-//----------------- ArrayListIterator <Long>---------------------
-template<>
-class _ListIterator<Long>:virtual public Object {
-public:
-    _ListIterator(_ArrayList<Long> *list);
-
-    _ListIterator(ArrayList<Long> list);
-
-    Long getValue();
-
-    bool hasValue();
-
-    bool next();
-
-    bool remove();
-    
-private:
-    ArrayList<Long> mList;    
-    std::vector<long>::iterator iterator;
-};
 }
 #endif

@@ -138,7 +138,7 @@ void _LocalSocketServerThread::run() {
 
 void _LocalSocketServerThread::addClientFd(int fd) {
     AutoMutex l(mClientMutex);
-    mClients->insertLast(fd);
+    mClients->insertLast(createInteger(fd));
 }
 
 void _LocalSocketServerThread::removeClientFd(int fd) {
@@ -147,7 +147,7 @@ void _LocalSocketServerThread::removeClientFd(int fd) {
     
     for(int index = 0;index<size;index++) {
         if(mClients->get(index)->toValue() == fd) {
-            mClients->remove(index);
+            mClients->removeAt(index);
             close(fd);
             return;
         }

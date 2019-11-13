@@ -16,6 +16,7 @@ link += integer \
 	exception \
 	outofboundsexception\
 	methodnotsupportexception \
+	nullpointerexception \
 	initializeexception \
 	error \
 
@@ -35,6 +36,7 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/exception.o \
     $(outtmp)/outofboundsexception.o \
 	$(outtmp)/methodnotsupportexception.o \
+	$(outtmp)/nullpointerexception.o \
 	$(outtmp)/initializeexception.o \
 	$(outtmp)/error.o \
 
@@ -88,6 +90,9 @@ methodnotsupportexception :$(langDir)/MethodNotSupportException.cpp
 
 initializeexception :$(langDir)/InitializeException.cpp
 		$(gcc) $(cflags) -c $(langDir)/InitializeException.cpp -o $(outtmp)/initializeexception.o $(external)
+
+nullpointerexception :$(langDir)/NullPointerException.cpp
+		$(gcc) $(cflags) -c $(langDir)/NullPointerException.cpp -o $(outtmp)/nullpointerexception.o $(external)
 
 error :$(langDir)/Error.cpp
 		$(gcc) $(cflags) -c $(langDir)/Error.cpp -o $(outtmp)/error.o $(external)		

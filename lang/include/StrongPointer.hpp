@@ -91,6 +91,15 @@ public:
             }
             return false;
         }
+
+        if(m_ptr == nullptr) {
+            if(o.m_ptr == nullptr) {
+                return true;
+            }
+
+            return false;
+        }
+
         return m_ptr->equals(o.m_ptr);
     }
     
@@ -99,6 +108,14 @@ public:
             if(m_ptr == nullptr) {
                 return true;
             }
+            return false;
+        }
+
+        if(m_ptr == nullptr) {
+            if(o == nullptr) {
+                return true;
+            }
+
             return false;
         }
 
@@ -113,6 +130,15 @@ public:
             }
             return false;
         }
+
+        if(m_ptr == nullptr) {
+            if(o.m_ptr == nullptr) {
+                return true;
+            }
+
+            return false;
+        }
+
         return m_ptr->equals(o.m_ptr);
     }
 
@@ -124,6 +150,16 @@ public:
             }
             return false;
         }
+
+        if(m_ptr == nullptr) {
+            if(o == nullptr) {
+                return true;
+            }
+
+            return false;
+        }
+
+
         return m_ptr->euqals(o);
     }
 
@@ -135,6 +171,14 @@ public:
             }
             return true;
         }
+
+        if(m_ptr == nullptr) {
+            if(o.m_ptr == nullptr) {
+                return false;
+            }
+
+            return true;
+        }
         return !m_ptr->equals(o.m_ptr);
     }
 
@@ -143,6 +187,14 @@ public:
             if(m_ptr == nullptr) {
                 return false;
             }
+            return true;
+        }
+
+        if(m_ptr == nullptr) {
+            if(o == nullptr) {
+                return false;
+            }
+
             return true;
         }
         return !m_ptr->equals(o);
@@ -156,6 +208,14 @@ public:
             }
             return true;
         }
+
+        if(m_ptr == nullptr) {
+            if(o.m_ptr == nullptr) {
+                return false;
+            }
+
+            return true;
+        }
         return !m_ptr->equals(o.m_ptr);
     }
 
@@ -165,6 +225,14 @@ public:
             if(m_ptr == nullptr) {
                 return false;
             }
+            return true;
+        }
+
+        if(m_ptr == nullptr) {
+            if(o == nullptr) {
+                return false;
+            }
+
             return true;
         }
         return !m_ptr->euqals(o);

@@ -156,7 +156,7 @@ void _Handler::run() {
                 }
             }
 
-            msg = mMessagePool->remove(0);
+            msg = mMessagePool->removeAt(0);
         }
 
          

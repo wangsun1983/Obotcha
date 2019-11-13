@@ -27,7 +27,6 @@ void testHashMapString() {
             printf("---[HashMap String Test {put(T t,U u)/get(T t)} case1] [FAILED]--- \n");
             break;
         }
-
         TT1 tt2 = map->get(tag);
         if(tt2 == nullptr || tt2->i != 100) {
           printf("---[HashMap String Test {put(T t,U u)/get(T t)} case2] [FAILED]--- \n");
@@ -39,7 +38,6 @@ void testHashMapString() {
           printf("---[HashMap String Test {put(T t,U u)/get(T t)} case3] [FAILED]--- \n");
           break;
         }
-
         TT1 tt3 = map->get(nullptr);
         if(tt3 != nullptr) {
           printf("---[HashMap String Test {put(T t,U u)/get(T t)} case4] [FAILED]--- \n");
@@ -156,6 +154,7 @@ void testHashMapString() {
       for(int index = 0;index < 100;index++) {
         TT1 tt = createTT1();
         tt->i = index;
+        //printf("put index is %d \n",index);
         map->put(createString(index),tt);
       }
 
@@ -170,7 +169,7 @@ void testHashMapString() {
         String key1 = keys->get(index);
         if(map->get(key1) == nullptr) {
           //printf("key1->int is %d,index is %d \n",key1->toBasicInt(),index);
-          printf("---[HashMap String Test {keySet()} case2] [FAILED]--- \n");
+          printf("---[HashMap String Test {keySet(),index is %d} case2] [FAILED]--- \n",index);
           break;
         }
       }
@@ -248,6 +247,5 @@ void testHashMapString() {
       break;
 
     }
-
 
 }

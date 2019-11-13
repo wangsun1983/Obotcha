@@ -24,7 +24,6 @@ public:
     inline int size();
     inline T get(int index);
     
-
     inline void enQueueFirst(T val);
     inline void enQueueLast(T val);
     inline int remove(T val);

@@ -3,6 +3,7 @@
 
 #include <map>
 #include <algorithm>
+#include <hash_map>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -15,6 +16,7 @@
 
 #include "Collection.hpp"
 #include "ArrayList.hpp"
+#include "NullPointerException.hpp"
 
 using namespace std;
 
@@ -23,28 +25,99 @@ namespace obotcha {
 template<typename T,typename U>
 class _MapIterator;
 
+//compare function of map
+template<typename T>
+class KeyComapre
+{
+public:
+    bool operator()(const T k1, const T k2)const {
+        if(k1 == k2) {
+            return true;
+        }
+        return false;
+    }
+};
+
+//hash function of map
+template<typename T>
+class KeyHash{
+public:    
+    size_t operator()(T A)const{
+        if(A == nullptr) { 
+            return std::hash<int>{}(0);
+        }
+        return std::hash<std::uint64_t>{}((std::uint64_t)A.get_pointer()); 
+    }
+};
+
+#define KeyHashSimpleDataTypeFunc(X) template<> \
+class KeyHash<X> { \
+public: \
+    size_t operator()(const X A)const{ \
+        return std::hash<X>{}(A); \
+    } \
+}\
+
+KeyHashSimpleDataTypeFunc(bool);
+KeyHashSimpleDataTypeFunc(byte);
+KeyHashSimpleDataTypeFunc(double);
+KeyHashSimpleDataTypeFunc(float);
+KeyHashSimpleDataTypeFunc(int);
+KeyHashSimpleDataTypeFunc(long);
+KeyHashSimpleDataTypeFunc(std::uint8_t);
+KeyHashSimpleDataTypeFunc(std::uint16_t);
+KeyHashSimpleDataTypeFunc(std::uint32_t);
+KeyHashSimpleDataTypeFunc(std::uint64_t);
+
+#define KeyHashDataTypeFunc(X,Y) template<> \
+class KeyHash<X> { \
+public: \
+    size_t operator()(const X A)const{ \
+        if(A == nullptr) { \
+            return std::hash<int>{}(0); \
+        } \
+        return std::hash<Y>{}(A->toValue()); \
+    } \
+}\
+
+KeyHashDataTypeFunc(Boolean,bool);
+KeyHashDataTypeFunc(Byte,byte);
+KeyHashDataTypeFunc(Double,double);
+KeyHashDataTypeFunc(Float,float);
+KeyHashDataTypeFunc(Integer,int);
+KeyHashDataTypeFunc(Long,long);
+KeyHashDataTypeFunc(Uint8,std::uint8_t);
+KeyHashDataTypeFunc(Uint16,std::uint16_t);
+KeyHashDataTypeFunc(Uint32,std::uint32_t);
+KeyHashDataTypeFunc(Uint64,std::uint64_t);
+
+template<>
+class KeyHash<String> { 
+public:
+    size_t operator()(String A)const{
+        if(A == nullptr) {
+            return std::hash<int>{}(0);
+        }
+        return std::hash<std::string>{}(A->getStdString()); 
+    } 
+};
+
 //----------------------- HashMap<T,U> -----------------------
 DECLARE_CLASS(HashMap,2) {
 public:
     friend class _MapIterator<T,U>;
 
     void put(T t,U u) {
-        hashmap.insert(std::pair<T, U>(t, u));
+        hashmap[t] = u;
     }
 
     U get(T t) {
-        auto value = hashmap.find(t);
-        if(value == hashmap.end()) {
-            return nullptr;
-        }
-
-        return value->second;
+        return hashmap[t];
     }
 
     void remove(T t) {
-        //hashmap.erase(t);
-        typename std::map<T,U>::iterator ite = hashmap.find(t);
-        if(ite == hashmap.end()) {
+        auto ite = hashmap.find(t);
+        if(ite == hashmap.end()) {   
             return;
         }
         hashmap.erase(ite);
@@ -87,489 +160,16 @@ public:
     }
 
 private:
-    std::map<T,U> hashmap;
+    __gnu_cxx::hash_map<T,U,KeyHash<T>,KeyComapre<T>> hashmap;
 
-    typename std::map<T,U>::iterator begin() {
+    typename __gnu_cxx::hash_map<T,U,KeyHash<T>,KeyComapre<T>>::iterator begin() {
         return hashmap.begin();
     }
 
-    typename std::map<T,U>::iterator end() {
+    typename __gnu_cxx::hash_map<T,U,KeyHash<T>,KeyComapre<T>>::iterator end() {
         return hashmap.end();
     }
 };
-
-//----------------------- HashMap<String,U> -----------------------
-template<typename U>  
-class _HashMap<String,U>:virtual public Object{
-public:
-    friend class _MapIterator<String,U>;
-
-    void put(String t,U u) {
-        std::string str(t->getStdString());
-        hashmap.insert(std::pair<std::string, U>(str,u));
-    }
-
-    U get(String t) {
-        if(t == nullptr) {
-            return nullptr;
-        }
-
-        auto value = hashmap.find(t->getStdString());
-        if(value == hashmap.end()) {
-            return nullptr;
-        }
-
-        return value->second;
-    }
-
-    void remove(String t) {
-        //remember free
-        if(t == nullptr) {
-            return;
-        }
-
-        hashmap.erase(t->getStdString());
-    }
-    
-    bool isEmpty() {
-        return hashmap.size() == 0;
-    }
-
-    void clear() {
-        hashmap.clear();
-    }
-
-    int size() {
-        return hashmap.size();
-    }
-
-    ArrayList<String> keySet() {
-        ArrayList<String> keyset = createArrayList<String>();
-        for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(createString(it->first));
-        }
-
-        return keyset;
-    }
-    
-    //template<typename V>
-    ArrayList<U> entrySet() {
-        ArrayList<U> keyset = createArrayList<U>();
-        for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(it->second);
-        }
-
-        return keyset;
-    }
-
-    sp<_MapIterator<String,U>> getIterator() {
-        return new _MapIterator<String,U>(this);
-    }
-
-private:
-    std::map<std::string,U> hashmap;
-
-    typename std::map<std::string,U>::iterator begin() {
-        return hashmap.begin();
-    }
-
-    typename std::map<std::string,U>::iterator end() {
-        return hashmap.end();
-    }
-};
-
-//----------------------- HashMap<Integer,U> -----------------------
-template<typename U>  
-class _HashMap<Integer,U>:virtual public Object{
-public:
-    friend class _MapIterator<Integer,U>;
-
-    void put(Integer t,U u) {
-        hashmap.insert(std::pair<int, U>(t->toValue(),u));
-    }
-
-    U get(Integer t) {
-        if(t == nullptr) {
-            return nullptr;
-        }
-
-        auto value = hashmap.find(t->toValue());
-        if(value == hashmap.end()) {
-            return nullptr;
-        }
-
-        return value->second;
-    }
-
-    void remove(Integer t) {
-        if(t == nullptr) {
-            return;
-        }
-
-        hashmap.erase(t->toValue());
-    }
-
-    bool isEmpty() {
-        return hashmap.size() == 0;
-    }
-
-    void clear() {
-        hashmap.clear();
-    }
-
-    int size() {
-        return hashmap.size();
-    }
-
-    ArrayList<Integer> keySet() {
-        ArrayList<Integer> keyset = createArrayList<Integer>();
-        for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(createInteger(it->first));
-        }
-
-        return keyset;
-    }
-    
-    //template<typename V>
-    ArrayList<U> entrySet() {
-        ArrayList<U> keyset = createArrayList<U>();
-        for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(it->second);
-        }
-
-        return keyset;
-    }
-
-    sp<_MapIterator<Integer,U>> getIterator() {
-        return new _MapIterator<Integer,U>(this);
-    }
-
-private:
-    std::map<int,U> hashmap;
-
-    typename std::map<int,U>::iterator begin() {
-        return hashmap.begin();
-    }
-
-    typename std::map<int,U>::iterator end() {
-        return hashmap.end();
-    }
-};
-
-//----------------------- HashMap<Double,U> -----------------------
-template<typename U>  
-class _HashMap<Double,U>:virtual public Object{
-public:
-    friend class _MapIterator<Double,U>;
-
-    inline void put(Double t,U u) {
-        hashmap.insert(std::pair<double, U>(t->toValue(),u));
-    }
-
-    U get(Double t) {
-        if(t == nullptr) {
-            return nullptr;
-        }
-
-        auto value = hashmap.find(t->toValue());
-        if(value == hashmap.end()) {
-            return nullptr;
-        }
-
-        return value->second;
-    }
-
-    void remove(Double t) {
-        if(t == nullptr) {
-            return;
-        }
-        hashmap.erase(t->toValue());
-    }
-
-    bool isEmpty() {
-        return hashmap.size() == 0;
-    }
-
-    void clear() {
-        hashmap.clear();
-    }
-
-    int size() {
-        return hashmap.size();
-    }
-
-    ArrayList<Double> keySet() {
-        ArrayList<Double> keyset = createArrayList<Double>();
-        for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(createDouble(it->first));
-        }
-
-        return keyset;
-    }
-    
-    //template<typename V>
-    ArrayList<U> entrySet() {
-        ArrayList<U> keyset = createArrayList<U>();
-        for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(it->second);
-        }
-
-        return keyset;
-    }
-
-    sp<_MapIterator<Double,U>> getIterator() {
-        return new _MapIterator<Double,U>(this);
-    }
-
-private:
-    std::map<double,U> hashmap;
-
-    typename std::map<double,U>::iterator begin() {
-        return hashmap.begin();
-    }
-
-    typename std::map<double,U>::iterator end() {
-        return hashmap.end();
-    }
-};
-
-
-//----------------------- HashMap<Float,U> -----------------------
-template<typename U>  
-class _HashMap<Float,U>:virtual public Object{
-
-public:
-    friend class _MapIterator<Float,U>;
-
-    inline void put(Float t,U u) {
-        hashmap.insert(std::pair<float, U>(t->toValue(),u));
-    }
-
-    U get(Float t) {
-        if(t == nullptr) {
-            return nullptr;
-        }
-
-        auto value = hashmap.find(t->toValue());
-        if(value == hashmap.end()) {
-            return nullptr;
-        }
-
-        return value->second;
-    }
-
-    void remove(Float t) {
-        if(t == nullptr) {
-            return;
-        }
-        hashmap.erase(t->toValue());
-    }
-
-    bool isEmpty() {
-        return hashmap.size() == 0;
-    }
-
-    void clear() {
-        hashmap.clear();
-    }
-
-    int size() {
-        return hashmap.size();
-    }
-
-    ArrayList<Float> keySet() {
-        ArrayList<Float> keyset = createArrayList<Float>();
-        for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(createFloat(it->first));
-        }
-
-        return keyset;
-    }
-    
-    //template<typename V>
-    ArrayList<U> entrySet() {
-        ArrayList<U> keyset = createArrayList<U>();
-        for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(it->second);
-        }
-
-        return keyset;
-    }
-
-    sp<_MapIterator<Float,U>> getIterator() {
-        return new _MapIterator<Float,U>(this);
-    }
-
-
-private:
-    std::map<float,U> hashmap;
-
-    typename std::map<float,U>::iterator begin() {
-        return hashmap.begin();
-    }
-
-    typename std::map<float,U>::iterator end() {
-        return hashmap.end();
-    }
-};
-
-//----------------------- HashMap<Boolean,U> -----------------------
-template<typename U>  
-class _HashMap<Boolean,U>:virtual public Object{
-public:
-    friend class _MapIterator<Boolean,U>;
-
-    inline void put(Boolean t,U u) {
-        hashmap.insert(std::pair<bool, U>(t->toValue(),u));
-    }
-
-    U get(Boolean t) {
-        if(t == nullptr) {
-            return nullptr;
-        }
-
-        auto value = hashmap.find(t->toValue());
-        if(value == hashmap.end()) {
-            return nullptr;
-        }
-
-        return value->second;
-    }
-
-    void remove(Boolean t) {
-        if(t == nullptr) {
-            return;
-        }
-        hashmap.erase(t->toValue());
-    }
-
-    bool isEmpty() {
-        return hashmap.size() == 0;
-    }
-
-    void clear() {
-        hashmap.clear();
-    }
-
-    int size() {
-        return hashmap.size();
-    }
-
-    ArrayList<Boolean> keySet() {
-        ArrayList<Boolean> keyset = createArrayList<Boolean>();
-        for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(createBoolean(it->first));
-        }
-
-        return keyset;
-    }
-    
-    //template<typename V>
-    ArrayList<U> entrySet() {
-        ArrayList<U> keyset = createArrayList<U>();
-        for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(it->second);
-        }
-
-        return keyset;
-    }
-
-    sp<_MapIterator<Boolean,U>> getIterator() {
-        return new _MapIterator<Boolean,U>(this);
-    }
-
-private:
-    std::map<bool,U> hashmap;
-
-    typename std::map<bool,U>::iterator begin() {
-        return hashmap.begin();
-    }
-
-    typename std::map<bool,U>::iterator end() {
-        return hashmap.end();
-    }
-
-};
-
-//----------------------- HashMap<Long,U> -----------------------
-template<typename U>  
-class _HashMap<Long,U>:virtual public Object{
-public:
-    friend class _MapIterator<Long,U>;
-
-    inline void put(Long t,U u) {
-        hashmap.insert(std::pair<long, U>(t->toValue(),u));
-    }
-
-    U get(Long t) {
-        if(t == nullptr) {
-            return nullptr;
-        }
-
-        auto value = hashmap.find(t->toValue());
-        if(value == hashmap.end()) {
-            return nullptr;
-        }
-
-        return value->second;
-    }
-
-    void remove(Long t) {
-        if(t == nullptr) {
-            return;
-        }
-        
-        hashmap.erase(t->toValue());
-    }
-
-    bool isEmpty() {
-        return hashmap.size() == 0;
-    }
-
-    void clear() {
-        hashmap.clear();
-    }
-
-    int size() {
-        return hashmap.size();
-    }
-
-    ArrayList<Long> keySet() {
-        ArrayList<Long> keyset = createArrayList<Long>();
-        for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(createLong(it->first));
-        }
-
-        return keyset;
-    }
-    
-    //template<typename V>
-    ArrayList<U> entrySet() {
-        ArrayList<U> keyset = createArrayList<U>();
-        for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            keyset->add(it->second);
-        }
-
-        return keyset;
-    }
-
-    sp<_MapIterator<Long,U>> getIterator() {
-        return new _MapIterator<Long,U>(this);
-    }
-
-private:
-    std::map<long,U> hashmap;
-
-    typename std::map<long,U>::iterator begin() {
-        return hashmap.begin();
-    }
-
-    typename std::map<long,U>::iterator end() {
-        return hashmap.end();
-    }
-
-};
-
 
 //----------------- MapIterator ---------------------
 DECLARE_CLASS(MapIterator,2) {
@@ -600,269 +200,17 @@ public:
     }
 
     bool next() {
-        iterator++;
         if(iterator ==  mHashMap->end()) {
             return false;
         }
 
+        iterator++;
         return true;
     }
     
 private:
     HashMap<T,U> mHashMap;    
-    typename std::map<T,U>::iterator iterator;
-};
-
-//----------------- MapIterator<String,U> ---------------------
-template<typename U>  
-class _MapIterator<String,U>:virtual public Object{
-public:
-    _MapIterator(_HashMap<String,U> *map) {
-        mHashMap.set_pointer(map);
-        //map->incStrong(0);
-
-        iterator = map->begin();
-    }
-
-    _MapIterator(HashMap<String,U> map) {
-        mHashMap = map;
-        iterator = mHashMap->begin();
-    }
-
-    String getKey() {
-        return createString(iterator->first);
-    }
-
-    U getValue() {
-        return iterator->second;
-    }
-
-    bool hasValue() {
-        return iterator != mHashMap->end();
-    }
-
-    bool next() {
-        iterator++;
-        if(iterator ==  mHashMap->end()) {
-            return false;
-        }
-
-        return true;
-    }
-
-private:
-    HashMap<String,U> mHashMap;    
-    typename std::map<std::string,U>::iterator iterator;
-};
-
-//----------------- MapIterator<Integer,U> ---------------------
-template<typename U>  
-class _MapIterator<Integer,U>:virtual public Object{
-public:    
-    _MapIterator(_HashMap<Integer,U> *map) {
-        mHashMap.set_pointer(map);
-        //map->incStrong(0);
-
-        iterator = map->begin();
-    }
-
-    _MapIterator(HashMap<Integer,U> map) {
-        mHashMap = map;
-        iterator = mHashMap->begin();
-    }
-
-    Integer getKey() {
-        return createInteger(iterator->first);
-    }
-
-    U getValue() {
-        return iterator->second;
-    }
-
-    bool hasValue() {
-        return iterator != mHashMap->end();
-    }
-
-    bool next() {
-        iterator++;
-        if(iterator ==  mHashMap->end()) {
-            return false;
-        }
-
-        return true;
-    }
-
-private:
-    HashMap<Integer,U> mHashMap;    
-    typename std::map<int,U>::iterator iterator;
-};
-
-//----------------- MapIterator<Double,U> ---------------------
-template<typename U>  
-class _MapIterator<Double,U>:virtual public Object{
-public:
-    _MapIterator(_HashMap<Double,U> *map) {
-        mHashMap.set_pointer(map);
-        //map->incStrong(0);
-
-        iterator = map->begin();
-    }
-
-    _MapIterator(HashMap<Double,U> map) {
-        mHashMap = map;
-        iterator = mHashMap->begin();
-    }
-
-    Double getKey() {
-        return createDouble(iterator->first);
-    }
-
-    U getValue() {
-        return iterator->second;
-    }
-
-    bool hasValue() {
-        return iterator != mHashMap->end();
-    }
-
-    bool next() {
-        iterator++;
-        if(iterator ==  mHashMap->end()) {
-            return false;
-        }
-
-        return true;
-    }
-
-private:
-    HashMap<Double,U> mHashMap;    
-    typename std::map<double,U>::iterator iterator;
-};
-
-//----------------- MapIterator<Double,U> ---------------------
-template<typename U>  
-class _MapIterator<Float,U>:virtual public Object{
-public:
-    _MapIterator(_HashMap<Float,U> *map) {
-        mHashMap.set_pointer(map);
-        //map->incStrong(0);
-
-        iterator = map->begin();
-    }
-
-    _MapIterator(HashMap<Float,U> map) {
-        mHashMap = map;
-        iterator = mHashMap->begin();
-    }
-
-    Float getKey() {
-        return createFloat(iterator->first);
-    }
-
-    U getValue() {
-        return iterator->second;
-    }
-
-    bool hasValue() {
-        return iterator != mHashMap->end();
-    }
-
-    bool next() {
-        iterator++;
-        if(iterator ==  mHashMap->end()) {
-            return false;
-        }
-
-        return true;
-    }
-
-private:
-    HashMap<Float,U> mHashMap;    
-    typename std::map<float,U>::iterator iterator;
-};
-
-//----------------- MapIterator<Boolean,U> ---------------------
-template<typename U>  
-class _MapIterator<Boolean,U>:virtual public Object{
-public:
-    _MapIterator(_HashMap<Boolean,U> *map) {
-        mHashMap.set_pointer(map);
-        //map->incStrong(0);
-
-        iterator = map->begin();
-    }
-
-    _MapIterator(HashMap<Boolean,U> map) {
-        mHashMap = map;
-        iterator = mHashMap->begin();
-    }
-
-    Boolean getKey() {
-        return createBoolean(iterator->first);
-    }
-
-    U getValue() {
-        return iterator->second;
-    }
-
-    bool hasValue() {
-        return iterator != mHashMap->end();
-    }
-
-    bool next() {
-        iterator++;
-        if(iterator ==  mHashMap->end()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private:
-    HashMap<Boolean,U> mHashMap;    
-    typename std::map<bool,U>::iterator iterator;
-};
-
-//----------------- MapIterator<Long,U> ---------------------
-template<typename U>  
-class _MapIterator<Long,U>:virtual public Object{
-public:
-    _MapIterator(_HashMap<Long,U> *map) {
-        mHashMap.set_pointer(map);
-        //map->incStrong(0);
-
-        iterator = map->begin();
-    }
-
-    _MapIterator(HashMap<Long,U> map) {
-        mHashMap = map;
-        iterator = mHashMap->begin();
-    }
-
-    Long getKey() {
-        return createLong(iterator->first);
-    }
-
-    U getValue() {
-        return iterator->second;
-    }
-
-    bool hasValue() {
-        return iterator != mHashMap->end();
-    }
-
-    bool next() {
-        iterator++;
-        if(iterator ==  mHashMap->end()) {
-            return false;
-        }
-
-        return true;
-    }
-
-private:
-    HashMap<Long,U> mHashMap;    
-    typename std::map<long,U>::iterator iterator;
+    typename __gnu_cxx::hash_map<T,U,KeyHash<T>,KeyComapre<T>>::iterator iterator;
 };
 
 }

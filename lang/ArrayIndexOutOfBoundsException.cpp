@@ -26,4 +26,9 @@ _ArrayIndexOutOfBoundsException::_ArrayIndexOutOfBoundsException(String v,int ma
 _ArrayIndexOutOfBoundsException::_ArrayIndexOutOfBoundsException(const char * v,int maxsize,int index)
                                 :_ArrayIndexOutOfBoundsException{createString(v),maxsize,index}{
 }
+
+_ArrayIndexOutOfBoundsException::_ArrayIndexOutOfBoundsException(const char *v) :_Exception{v}{
+    mErrInfo = EXCEPTION_TAG->append(v);
+}
+
 }

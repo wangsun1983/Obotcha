@@ -32,7 +32,7 @@ void testArrayList_Float() {
     Float t;
     int size = list->size();
     list->add(t);
-    if(size != list->size()) {
+    if(size == list->size()) {
       printf("---[ArrayList<Float> Test {add(Float val)} case2] [FAILED]--- \n");
       break;
     }
@@ -44,8 +44,8 @@ void testArrayList_Float() {
   //--[_ArrayList<Float> Test {add(float val)} Start]---
   while(1) {
     ArrayList<Float>list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
 
     if(list->size() != 2) {
       printf("---[ArrayList<Float> Test {add(float val)} case0] [FAILED]--- \n");
@@ -65,12 +65,12 @@ void testArrayList_Float() {
   //--[_ArrayList<Float> Test {add(ArrayList<Float> list)} Start]---
   while(1) {
     ArrayList<Float>list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
 
     ArrayList<Float>list2 = createArrayList<Float>();
-    list2->add(3.1);
-    list2->add(4.1);
+    list2->add(createFloat(3.1));
+    list2->add(createFloat(4.1));
 
     list->add(list2);
 
@@ -101,8 +101,8 @@ void testArrayList_Float() {
   //--[_ArrayList<Float> Test {clear()} Start]---
   while(1) {
     ArrayList<Float>list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
     int size = list->size();
     list->clear();
     if(size == 0 || list->size() != 0) {
@@ -116,11 +116,11 @@ void testArrayList_Float() {
   //--[_ArrayList<Float> Test {remove(int index)} Start]---
   while(1) {
     ArrayList<Float>list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
-    Float i = list->remove(2);
+    Float i = list->removeAt(2);
     if(i->toValue() != 3.1f) {
       printf("---[ArrayList<Float> Test {remove(int index)} case0] [FAILED]--- \n");
       break;
@@ -131,14 +131,26 @@ void testArrayList_Float() {
       break;
     }
 
-    Float i2 = list->remove(100);
-    if(i2 != nullptr) {
+    bool isException = false;
+    try {
+      Float i2 = list->removeAt(100);
+    } catch(ArrayIndexOutOfBoundsException e) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Float> Test {remove(int index)} case2] [FAILED]--- \n");
       break;
     }
 
-    Float i3 = list->remove(-1);
-    if(i2 != nullptr) {
+    isException = false;
+    try {
+        Float i3 = list->removeAt(-1);
+    } catch(ArrayIndexOutOfBoundsException e) {
+        isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Float> Test {remove(int index)} case3] [FAILED]--- \n");
       break;
     }
@@ -150,9 +162,9 @@ void testArrayList_Float() {
   //--[_ArrayList<Float> Test {remove(Float v)} Start]---
   while(1) {
     ArrayList<Float>list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
     int result = list->remove(createFloat(2.1));
     if(result == -1) {
@@ -192,9 +204,9 @@ void testArrayList_Float() {
   //--[_ArrayList<Float> Test {indexOf(Float v)} Start]---
   while(1) {
     ArrayList<Float>list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
     if(list->indexOf(createFloat(1.1)) != 0
       ||list->indexOf(createFloat(2.1)) != 1
@@ -221,9 +233,9 @@ void testArrayList_Float() {
   //--[_ArrayList<Float> Test {set(int index,Float val)} Start]---
   while(1) {
     ArrayList<Float>list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
     list->set(0,createFloat(2.1));
     if(list->get(0)->toValue() != 2.1f
@@ -265,11 +277,11 @@ void testArrayList_Float() {
   //--[_ArrayList<Float> Test {set(int index,int val)} Start]---
   while(1) {
     ArrayList<Float>list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
-    list->set(0,2.1f);
+    list->set(0,createFloat(2.1f));
     if(list->get(0)->toValue() != 2.1f
     ||list->get(1)->toValue() != 2.1f
     ||list->get(2)->toValue() != 3.1f) {
@@ -284,7 +296,7 @@ void testArrayList_Float() {
       break;
     }
 
-    result = list->set(100,1.1f);
+    result = list->set(100,createFloat(1.1f));
     if(result != -1) {
       printf("---[ArrayList<Float> Test {set(int index,int val)} case3] [FAILED]--- \n");
       break;
@@ -309,9 +321,9 @@ void testArrayList_Float() {
   //--[_ArrayList<Float> Test {get(int index)} Start]---
   while(1) {
     ArrayList<Float>list = createArrayList<Float>();
-    list->add(1.1f);
-    list->add(2.1f);
-    list->add(3.1f);
+    list->add(createFloat(1.1f));
+    list->add(createFloat(2.1f));
+    list->add(createFloat(3.1f));
 
     Float v1 = list->get(1);
     if(v1->toValue() != 2.1f) {
@@ -338,9 +350,9 @@ void testArrayList_Float() {
   //--[_ArrayList<Float> Test {insert(int index,Float val)} Start]---
   while(1) {
     ArrayList<Float>list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
     list->insert(1,createFloat(4.1));
     if(list->get(0)->toValue() != 1.1f
@@ -378,11 +390,11 @@ void testArrayList_Float() {
   //--[_ArrayList<Float> Test {insert(int index,int val)} Start]---
   while(1) {
     ArrayList<Float>list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
-    list->insert(1,4.1);
+    list->insert(1,createFloat(4.1));
     if(list->get(0)->toValue() != 1.1f
     ||list->get(1)->toValue() != 4.1f
     ||list->get(2)->toValue() != 2.1f
@@ -392,20 +404,20 @@ void testArrayList_Float() {
     }
 
     int size = list->size();
-    int result = list->insert(100,4.1);
+    int result = list->insert(100,createFloat(4.1));
     if(result != -1 || size != list->size()) {
       printf("---[ArrayList<Float> Test {insert(int index,int val)} case1] [FAILED]--- \n");
       break;
     }
 
-    result = list->insert(-1,4.1);
+    result = list->insert(-1,createFloat(4.1));
     if(result != -1 || size != list->size()) {
       printf("---[ArrayList<Float> Test {insert(int index,int val)} case2] [FAILED]--- \n");
       break;
     }
 
     int currentSize = list->size();
-    list->insert(0,100.1);
+    list->insert(0,createFloat(100.1));
     if(list->get(0)->toValue() != 100.1 && (list->size() != (currentSize + 1))) {
       printf("---[ArrayList<Float> Test {insert(int index,int val)} case3] [FAILED]--- \n");
       break;
@@ -418,14 +430,14 @@ void testArrayList_Float() {
   //int insert(int index,ArrayList<Float> list);
   while(1) {
     ArrayList<Float>list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
     ArrayList<Float> list2 = createArrayList<Float>();
-    list2->add(4.1);
-    list2->add(5.1);
-    list2->add(6.1);
+    list2->add(createFloat(4.1));
+    list2->add(createFloat(5.1));
+    list2->add(createFloat(6.1));
 
     list->insert(1,list2);
     if(list->get(0)->toValue() != 1.1f
@@ -453,14 +465,14 @@ void testArrayList_Float() {
     }
 
     ArrayList<Float>list3 = createArrayList<Float>();
-    list3->add(10.1);
-    list3->add(11.1);
-    list3->add(12.1);
+    list3->add(createFloat(10.1));
+    list3->add(createFloat(11.1));
+    list3->add(createFloat(12.1));
 
     ArrayList<Float>list4 = createArrayList<Float>();
-    list4->add(13.1);
-    list4->add(14.1);
-    list4->add(15.1);
+    list4->add(createFloat(13.1));
+    list4->add(createFloat(14.1));
+    list4->add(createFloat(15.1));
 
     list3->insert(0,list4);
     if(list3->get(0)->toValue() != 13.1f
@@ -480,14 +492,14 @@ void testArrayList_Float() {
   //int insert(int index,ArrayList<Float> list,int length);
   while(1) {
     ArrayList<Float>list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
     ArrayList<Float> list2 = createArrayList<Float>();
-    list2->add(4.1);
-    list2->add(5.1);
-    list2->add(6.1);
+    list2->add(createFloat(4.1));
+    list2->add(createFloat(5.1));
+    list2->add(createFloat(6.1));
 
     list->insert(1,list2,2);
     if(list->get(0)->toValue() != 1.1f
@@ -519,14 +531,14 @@ void testArrayList_Float() {
     }
 
     ArrayList<Float>list3 = createArrayList<Float>();
-    list3->add(10.1);
-    list3->add(11.1);
-    list3->add(12.1);
+    list3->add(createFloat(10.1));
+    list3->add(createFloat(11.1));
+    list3->add(createFloat(12.1));
 
     ArrayList<Float>list4 = createArrayList<Float>();
-    list4->add(13.1);
-    list4->add(14.1);
-    list4->add(15.1);
+    list4->add(createFloat(13.1));
+    list4->add(createFloat(14.1));
+    list4->add(createFloat(15.1));
 
     list3->insert(0,list4,2);
     if(list3->get(0)->toValue() != 13.1f
@@ -544,14 +556,14 @@ void testArrayList_Float() {
     }
 
     ArrayList<Float>list5 = createArrayList<Float>();
-    list5->add(10.1);
-    list5->add(11.1);
-    list5->add(12.1);
+    list5->add(createFloat(10.1));
+    list5->add(createFloat(11.1));
+    list5->add(createFloat(12.1));
 
     ArrayList<Float>list6 = createArrayList<Float>();
-    list6->add(13.1);
-    list6->add(14.1);
-    list6->add(15.1);
+    list6->add(createFloat(13.1));
+    list6->add(createFloat(14.1));
+    list6->add(createFloat(15.1));
 
     result = list5->insert(0,list6,100);
 
@@ -586,9 +598,9 @@ void testArrayList_Float() {
   //void insertFirst(Float val);
   while(1) {
     ArrayList<Float> list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
     list->insertFirst(createFloat(4.1));
     if(list->get(0)->toValue() != 4.1f
@@ -619,7 +631,7 @@ void testArrayList_Float() {
     ArrayList<Float> list3 = createArrayList<Float>();
     Float nt;
     list3->insertFirst(nt);
-    if(list3->size() != 0) {
+    if(list3->size() == 0) {
       printf("---[ArrayList<Float> Test {insertFirst(Float val)} case5] [FAILED]--- \n");
       break;
     }
@@ -631,11 +643,11 @@ void testArrayList_Float() {
   //void insertFirst(int val);
   while(1) {
     ArrayList<Float> list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
-    list->insertFirst(4.1);
+    list->insertFirst(createFloat(4.1));
     if(list->get(0)->toValue() != 4.1f
        ||list->get(1)->toValue() != 1.1f
        ||list->get(2)->toValue() != 2.1f
@@ -650,7 +662,7 @@ void testArrayList_Float() {
     }
 
     ArrayList<Float> list2 = createArrayList<Float>();
-    list2->insertFirst(4.1);
+    list2->insertFirst(createFloat(4.1));
     if(list2->get(0)->toValue() != 4.1f) {
       printf("---[ArrayList<Float> Test {insertFirst(int val)} case3] [FAILED]--- \n");
       break;
@@ -668,14 +680,14 @@ void testArrayList_Float() {
   //void insertFirst(ArrayList<Float> list);
   while(1) {
     ArrayList<Float> list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
     ArrayList<Float> list2 = createArrayList<Float>();
-    list2->add(4.1);
-    list2->add(5.1);
-    list2->add(6.1);
+    list2->add(createFloat(4.1));
+    list2->add(createFloat(5.1));
+    list2->add(createFloat(6.1));
     list->insertFirst(list2);
 
     if(list->get(0)->toValue() != 4.1f
@@ -689,8 +701,8 @@ void testArrayList_Float() {
       }
 
     ArrayList<Float> list3 = createArrayList<Float>();
-    list3->add(1.1);
-    list3->add(2.1);
+    list3->add(createFloat(1.1));
+    list3->add(createFloat(2.1));
 
     ArrayList<Float> list4 = createArrayList<Float>();
     list4->insertFirst(list4);
@@ -720,9 +732,9 @@ void testArrayList_Float() {
   //void insertLast(Float v);
   while(1) {
     ArrayList<Float> list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
     list->insertLast(createFloat(4.1));
     if(list->get(0)->toValue() != 1.1f
@@ -739,9 +751,9 @@ void testArrayList_Float() {
     }
 
     ArrayList<Float> list2 = createArrayList<Float>();
-    list2->add(1.1);
-    list2->add(2.1);
-    list2->add(3.1);
+    list2->add(createFloat(1.1));
+    list2->add(createFloat(2.1));
+    list2->add(createFloat(3.1));
     Float t2;
     list2->insertLast(t2);
 
@@ -752,7 +764,7 @@ void testArrayList_Float() {
         break;
     }
 
-    if(list2->size() != 3) {
+    if(list2->size() != 4) {
       printf("---[ArrayList<Float> Test {insertLast(Float v)} case4] [FAILED]--- \n");
       break;
     }
@@ -764,11 +776,11 @@ void testArrayList_Float() {
   //void insertLast(int v);
   while(1) {
     ArrayList<Float> list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
-    list->insertLast(4.1);
+    list->insertLast(createFloat(4.1));
     if(list->get(0)->toValue() != 1.1f
       ||list->get(1)->toValue() != 2.1f
       ||list->get(2)->toValue() != 3.1f
@@ -783,7 +795,7 @@ void testArrayList_Float() {
     }
 
     ArrayList<Float> list2 = createArrayList<Float>();
-    list2->insertLast(1);
+    list2->insertLast(createFloat(1));
 
     if(list2->size() != 1) {
       printf("---[ArrayList<Float> Test {insertLast(int v)} case3] [FAILED]--- \n");
@@ -802,14 +814,14 @@ void testArrayList_Float() {
   //insertLast(ArrayList<Float> list);
   while(1) {
     ArrayList<Float> list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
 
     ArrayList<Float> list2 = createArrayList<Float>();
-    list2->add(4.1);
-    list2->add(5.1);
-    list2->add(6.1);
+    list2->add(createFloat(4.1));
+    list2->add(createFloat(5.1));
+    list2->add(createFloat(6.1));
 
     list->insertLast(list2);
     if(list->get(0)->toValue() != 1.1f
@@ -828,9 +840,9 @@ void testArrayList_Float() {
     }
 
     ArrayList<Float> list3 = createArrayList<Float>();
-    list3->add(1.1);
-    list3->add(2.1);
-    list3->add(3.1);
+    list3->add(createFloat(1.1));
+    list3->add(createFloat(2.1));
+    list3->add(createFloat(3.1));
 
     ArrayList<Float> list4;
     list3->insertLast(list4);
@@ -853,9 +865,9 @@ void testArrayList_Float() {
   //int size();
   while(1) {
     ArrayList<Float> list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
     if(list->size() != 3) {
       printf("---[ArrayList<Float> Test {size()} case1] [FAILED]--- \n");
       break;
@@ -874,11 +886,11 @@ void testArrayList_Float() {
   //ListIterator<Float> getValue;
   while(1) {
     ArrayList<Float> list = createArrayList<Float>();
-    list->add(1.1f);
-    list->add(2.1f);
-    list->add(3.1f);
-    list->add(4.1f);
-    list->add(5.1f);
+    list->add(createFloat(1.1f));
+    list->add(createFloat(2.1f));
+    list->add(createFloat(3.1f));
+    list->add(createFloat(4.1f));
+    list->add(createFloat(5.1f));
 
     ListIterator<Float>iterator = list->getIterator();
     int index = 0;
@@ -910,9 +922,9 @@ void testArrayList_Float() {
   //ListIterator<Float> hasValue();
   while(1) {
     ArrayList<Float> list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
     ListIterator<Float> iterator = list->getIterator();
     if(!iterator->hasValue()) {
       printf("---[ListIterator<Float> Test {hasValue()} case1] [FAILED]--- \n");
@@ -942,9 +954,9 @@ void testArrayList_Float() {
   // ListIterator<Float> next();
   while(1) {
     ArrayList<Float> list = createArrayList<Float>();
-    list->add(1.1);
-    list->add(2.1);
-    list->add(3.1);
+    list->add(createFloat(1.1));
+    list->add(createFloat(2.1));
+    list->add(createFloat(3.1));
     ListIterator<Float> iterator = list->getIterator();
 
     iterator->next();

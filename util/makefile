@@ -86,6 +86,7 @@ message :$(utilDir)/Message.cpp
 
 handler :$(utilDir)/Handler.cpp
 	$(gcc) $(cflags) -c $(utilDir)/Handler.cpp -o $(outtmp)/handler.o	
+	
 #base64 :$(utilDir)/Base64.cpp
 #	$(gcc) $(cflags) -c $(utilDir)/Base64.cpp -o $(outtmp)/base64.o
 

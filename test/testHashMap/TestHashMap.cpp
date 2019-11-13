@@ -14,6 +14,7 @@ extern void testHashMapLong();
 extern void testHashMapFloat();
 extern void testHashMapBoolean();
 extern void testHashMapObject();
+extern void testHashMapInt();
 
 int main() {
     testHashMapString();
@@ -23,4 +24,5 @@ int main() {
     testHashMapFloat();
     testHashMapBoolean();
     testHashMapObject();
+    testHashMapInt();
 }

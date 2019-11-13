@@ -52,7 +52,7 @@ void _PriorityPoolThread::run() {
                 mCondition->wait(mMutex);
                 continue;
             }
-            mCurrentTask = mTasks->remove(0);
+            mCurrentTask = mTasks->removeAt(0);
             break;
         }
 

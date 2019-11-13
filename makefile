@@ -28,6 +28,7 @@ cflags = -fpic \
 		-g \
 		-rdynamic \
 		-std=c++11 \
+		-Wno-deprecated \
 
 
 external = -lpthread \

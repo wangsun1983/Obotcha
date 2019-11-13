@@ -141,7 +141,7 @@ void _TcpServerThread::run() {
 
 void _TcpServerThread::addClientFd(int fd) {
     AutoMutex l(mClientMutex);
-    mClients->insertLast(fd);
+    mClients->insertLast(createInteger(fd));
 }
 
 void _TcpServerThread::removeClientFd(int fd) {
@@ -150,7 +150,7 @@ void _TcpServerThread::removeClientFd(int fd) {
     
     for(int index = 0;index<size;index++) {
         if(mClients->get(index)->toValue() == fd) {
-            mClients->remove(index);
+            mClients->removeAt(index);
             close(fd);
             return;
         }

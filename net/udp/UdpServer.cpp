@@ -133,7 +133,7 @@ void _UdpServerThread::run() {
 
 void _UdpServerThread::addClientFd(int fd) {
     AutoMutex l(mClientMutex);
-    mClients->insertLast(fd);
+    mClients->insertLast(createInteger(fd));
 }
 
 void _UdpServerThread::removeClientFd(int fd) {
@@ -142,7 +142,7 @@ void _UdpServerThread::removeClientFd(int fd) {
     
     for(int index = 0;index<size;index++) {
         if(mClients->get(index)->toValue() == fd) {
-            mClients->remove(index);
+            mClients->removeAt(index);
             close(fd);
             return;
         }

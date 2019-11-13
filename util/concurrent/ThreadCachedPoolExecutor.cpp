@@ -416,7 +416,7 @@ void _CacheThreadManager::bindTask(FutureTask task) {
         AutoMutex ll(mIdleHandlerMutex);
         if(mIdleHandlers->size() != 0) {
             //printf("bindTask trace2 \n");
-            ThreadCachedPoolExecutorHandler handler = mIdleHandlers->remove(0);
+            ThreadCachedPoolExecutorHandler handler = mIdleHandlers->removeAt(0);
             handler->doTask(task);
             return;
         } 
