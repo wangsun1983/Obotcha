@@ -37,8 +37,10 @@ void _File::setPath(String path) {
 }
 
 String _File::getName() {
-    ArrayList<String> splits = createArrayList<String>();
-    mPath->split(gPathSeparator,splits);
+    ArrayList<String> splits = mPath->split(gPathSeparator);
+    if(splits == nullptr) {
+        return nullptr;
+    }
 
     int size = splits->size();
 
@@ -282,8 +284,7 @@ bool _File::createDir() {
 }
 
 bool _File::createDirs() {
-    ArrayList<String> splits = createArrayList<String>();
-    mPath->split(gPathSeparator,splits);
+    ArrayList<String> splits = mPath->split(gPathSeparator);
     if(splits == nullptr) {
         return false;
     }

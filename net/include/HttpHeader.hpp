@@ -110,6 +110,11 @@ enum HTTP_HEADER {
     Http_Header_X_XSS_Protection,
     Http_Header_Sec_WebSocket_Version,
     Http_Header_Sec_WebSocket_Extensions,
+    Http_Header_Sec_WebSocket_Origin,
+    Http_Header_Sec_WebSocket_Key1,
+    Http_Header_Sec_WebSocket_Key2,
+    Http_Header_Sec_WebSocket_Key3,
+    Http_Header_Sec_WebSocket_Protocol,
     Http_Header_MAX,
 };
 
@@ -124,7 +129,7 @@ public:
     
     String getValue(int);
 
-    MapIterator<Integer,String> getIterator();
+    MapIterator<int,String> getIterator();
 
     void addCookie(HttpCookie);
 
@@ -134,7 +139,7 @@ public:
 
 private:
     static String mHeaderList[];
-    HashMap<Integer,String> mValues;
+    HashMap<int,String> mValues;
 
     ArrayList<HttpCookie> mCookies;
 };

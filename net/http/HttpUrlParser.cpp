@@ -53,8 +53,7 @@ HttpUrl _HttpUrlParser::parseUrl(String urlstring) {
 
         if(u.field_set & (1 << UF_USERINFO)) {
             String userInfo = createString(url,u.field_data[UF_USERINFO].off,u.field_data[UF_USERINFO].len);
-            ArrayList<String> user = createArrayList<String>();
-            userInfo->split(":",user);
+            ArrayList<String> user = userInfo->split(":");
 
             if(user->size() == 2) {
                 urlData->setUser(user->get(0));

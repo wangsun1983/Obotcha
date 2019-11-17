@@ -26,6 +26,9 @@ using namespace std;
 
 namespace obotcha {
 
+template<typename T>
+class _ArrayList;
+
 DECLARE_SIMPLE_CLASS(String) {
 public:
     _String();
@@ -80,8 +83,7 @@ public:
 
     _String(uint64_t);
 
-    template <typename T>
-    void split(String v,T t);
+    sp<_ArrayList<String>> split(String v);
 
     ~_String();
 
@@ -179,6 +181,8 @@ public:
 
     bool containsIgnoreCase(String val);
 
+    bool startsWithIgnoreCase(String str);
+
     bool isEmpty();
 
     bool matches(String regex);//Not Test
@@ -208,28 +212,6 @@ private:
     int stringId;
 #endif    
 };
-
-template <typename T>
-void _String::split(String v,T t) {
-    int index = 0;
-    int last = 0;
-
-    index = m_str.find_first_of(v->m_str,last);
-
-    if(index == -1) {
-        return;
-    }
-
-    while(index != -1) {
-        t->add(createString(m_str.substr(last,index-last)));
-        last = index+1;
-        index = m_str.find_first_of(v->m_str,last);
-    }
-    
-    if(last - m_str.size() > 0){
-        t->add(createString(m_str.substr(last,index-last)));
-    }
-}
 
 }
 #endif

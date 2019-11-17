@@ -9,6 +9,8 @@
 #include "ByteArray.hpp"
 #include "WebSocketFrame.hpp"
 #include "ByteArrayReader.hpp"
+#include "HttpHeader.hpp"
+#include "WebSocketPermessageDeflate.hpp"
 
 namespace obotcha {
 
@@ -22,6 +24,11 @@ public:
     virtual ByteArray parseContent() = 0;
     virtual ByteArray parsePingBuff() = 0;
     virtual ByteArray parsePongBuff() = 0;
+    virtual String getOrigin(HttpHeader) = 0;
+    virtual int getVersion() = 0;
+    virtual bool validateHandShake(HttpHeader) = 0;
+    virtual WebSocketPermessageDeflate validateExtensions(HttpHeader);
+    virtual ArrayList<String> extractSubprotocols(HttpHeader);
  
 protected:
     ByteArray mData;

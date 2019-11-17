@@ -1,0 +1,33 @@
+#ifndef __WEB_SOCKET_CLIENT_INFO_HPP__
+#define __WEB_SOCKET_CLIENT_INFO_HPP__
+
+#include "Object.hpp"
+#include "StrongPointer.hpp"
+
+#include "String.hpp"
+#include "InetAddress.hpp"
+#include "ByteArray.hpp"
+#include "WebSocketFrame.hpp"
+#include "ByteArrayReader.hpp"
+#include "HttpHeader.hpp"
+#include "WebSocketParser.hpp"
+#include "WebSocketComposer.hpp"
+
+namespace obotcha {
+
+
+DECLARE_SIMPLE_CLASS(WebSocketClientInfo) {
+public:
+    _WebSocketClientInfo();
+
+    WebSocketParser mParser;
+    WebSocketComposer mComposer;
+    
+    HttpHeader mHttpHeader;
+    WebSocketHeader mWsHeader;
+    WebSocketPermessageDeflate mDeflate;
+    ArrayList<String> mProtocols;
+};
+
+}
+#endif

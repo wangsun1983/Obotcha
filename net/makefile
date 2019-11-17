@@ -25,9 +25,15 @@ link += inetaddress \
 		websocketserver \
 		websocketprotocol \
 		websocketframecomposer \
+		websocketcomposer \
 		websocketframe \
 		websocketparser \
+		websocketclientinfo \
 		websockethybi13parser \
+		websockethybi07parser \
+		websockethybi08parser \
+		websockethybi00parser \
+		websocketpermessagedeflate \
 		websocketclient \
 
 objs += $(outtmp)/inetaddress.o \
@@ -55,9 +61,15 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketprotocol.o \
 		$(outtmp)/websocketframecomposer.o \
+		$(outtmp)/websocketcomposer.o \
 		$(outtmp)/websocketframe.o \
 		$(outtmp)/websocketparser.o \
 		$(outtmp)/websockethybi13parser.o \
+		$(outtmp)/websockethybi07parser.o \
+		$(outtmp)/websockethybi08parser.o \
+		$(outtmp)/websockethybi00parser.o \
+		$(outtmp)/websocketpermessagedeflate.o \
+		$(outtmp)/websocketclientinfo.o \
 		$(outtmp)/websocketclient.o \
 
 inetaddress :$(netDir)/InetAddress.cpp
@@ -141,8 +153,26 @@ websocketparser :$(netDir)/websocket/WebSocketParser.cpp
 websockethybi13parser :$(netDir)/websocket/WebSocketHybi13Parser.cpp
 	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketHybi13Parser.cpp -o $(outtmp)/websockethybi13parser.o $(external)		
 
+websockethybi07parser :$(netDir)/websocket/WebSocketHybi07Parser.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketHybi07Parser.cpp -o $(outtmp)/websockethybi07parser.o $(external)		
+
+websockethybi08parser :$(netDir)/websocket/WebSocketHybi08Parser.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketHybi08Parser.cpp -o $(outtmp)/websockethybi08parser.o $(external)		
+
+websockethybi00parser :$(netDir)/websocket/WebSocketHybi00Parser.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketHybi00Parser.cpp -o $(outtmp)/websockethybi00parser.o $(external)		
+
+websocketpermessagedeflate :$(netDir)/websocket/WebSocketPermessageDeflate.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketPermessageDeflate.cpp -o $(outtmp)/websocketpermessagedeflate.o $(external)		
+
 websocketclient :$(netDir)/websocket/WebSocketClient.cpp
 	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketClient.cpp -o $(outtmp)/websocketclient.o $(external)		
+
+websocketclientinfo :$(netDir)/websocket/WebSocketClientInfo.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketClientInfo.cpp -o $(outtmp)/websocketclientinfo.o $(external)
+
+websocketcomposer :$(netDir)/websocket/WebSocketComposer.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketComposer.cpp -o $(outtmp)/websocketcomposer.o $(external)		
 
 ntpclient :$(netDir)/NtpClient.cpp
 	$(gcc) $(cflags) -c $(netDir)/NtpClient.cpp -o $(outtmp)/ntpclient.o $(external)			

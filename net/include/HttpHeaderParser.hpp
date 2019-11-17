@@ -62,6 +62,7 @@ private:
     static int parse_with_S_E(const char *);
     static int parse_with_S_E_C(const char *);
     static int parse_with_S_E_C_W(const char *);
+    static int parse_with_S_E_C_W_K(const char *);
 
     static int parse_with_T(const char *);
     static int parse_with_T_R(const char *);

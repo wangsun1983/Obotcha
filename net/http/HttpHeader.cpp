@@ -107,6 +107,11 @@ String _HttpHeader::mHeaderList[] = {
     "X-XSS-Protection",
     "Sec-WebSocket-Version",
     "Sec-WebSocket-Extensions",
+    "Sec-WebSocket-Origin",
+    "Sec-WebSocket-Key1",
+    "Sec-WebSocket-Key2",
+    "Sec-WebSocket-Key3",
+    "Sec-WebSocket-Protocol",
 };
 
 //static method
@@ -115,18 +120,18 @@ String _HttpHeader::getHeaderString(int header) {
 }
 
 _HttpHeader::_HttpHeader() {
-    mValues = createHashMap<Integer,String>();
+    mValues = createHashMap<int,String>();
     mCookies = createArrayList<HttpCookie>();
 }
 
 void _HttpHeader::setValue(int header,String value) {
     printf("setValue header is %d,value is %s \n",header,value->toChars());
-    mValues->put(createInteger(header),value);
+    mValues->put(header,value);
 }
 
 String _HttpHeader::getValue(int header) {
     printf("getValue header is %d \n",header);
-    return mValues->get(createInteger(header));
+    return mValues->get(header);
 }
 
 void _HttpHeader::addCookie(HttpCookie c) {
@@ -137,16 +142,16 @@ ArrayList<HttpCookie> _HttpHeader::getCookies() {
     return mCookies;
 }
 
-MapIterator<Integer,String> _HttpHeader::getIterator() {
+MapIterator<int,String> _HttpHeader::getIterator() {
     return mValues->getIterator();
 }
 
 String _HttpHeader::genHtml() {
     //conver header
-    MapIterator<Integer,String> headerIte = mValues->getIterator();;
+    MapIterator<int,String> headerIte = mValues->getIterator();;
     String html = createString("");
     while(headerIte->hasValue()) {
-        String headSting = st(HttpHeader)::getHeaderString(headerIte->getKey()->toValue());
+        String headSting = st(HttpHeader)::getHeaderString(headerIte->getKey());
         html = html->append(headSting)
                  ->append(": ")
                  ->append(headerIte->getValue())

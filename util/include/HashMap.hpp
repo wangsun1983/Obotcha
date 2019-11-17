@@ -31,10 +31,7 @@ class KeyComapre
 {
 public:
     bool operator()(const T k1, const T k2)const {
-        if(k1 == k2) {
-            return true;
-        }
-        return false;
+        return k1 == k2;
     }
 };
 
@@ -206,6 +203,14 @@ public:
 
         iterator++;
         return true;
+    }
+
+    void remove() {
+        if(iterator ==  mHashMap->end()) {
+            return;
+        }
+
+        iterator = mHashMap->hashmap.erase(iterator);
     }
     
 private:

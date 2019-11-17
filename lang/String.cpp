@@ -20,12 +20,9 @@
 #include <string.h>
 
 #include "String.hpp"
+#include "ArrayList.hpp"
 
 namespace obotcha {
-
-#ifdef DEBUG_STRING_MEMORY_LEAK
-static int stringCount;
-#endif
 
 const static std::string TRUE_STRING = "true";
 
@@ -444,6 +441,30 @@ bool _String::equals(const std::string p) {
     return (m_str.compare(p) == 0);
 }
 
+ArrayList<String> _String::split(String v) {
+    ArrayList<String> t = createArrayList<String>();
+    int index = 0;
+    int last = 0;
+
+    index = m_str.find_first_of(v->m_str,last);
+
+    if(index == -1) {
+        return nullptr;
+    }
+
+    while(index != -1) {
+        t->add(createString(m_str.substr(last,index-last)));
+        last = index+1;
+        index = m_str.find_first_of(v->m_str,last);
+    }
+    
+    if(last - m_str.size() > 0){
+        t->add(createString(m_str.substr(last,index-last)));
+    }
+
+    return t;
+}
+
 
 Integer _String::toInteger() {
     if(m_str.size() == 0) {
@@ -852,6 +873,23 @@ bool _String::containsIgnoreCase(String val) {
     std::transform(std_str1.begin(),std_str1.end(),std_str1.begin(),::toupper);
     std::transform(std_str2.begin(),std_str2.end(),std_str2.begin(),::toupper);
     return (std_str1.find(std_str2) != -1);
+}
+
+bool _String::startsWithIgnoreCase(String str) {
+    if(m_str.size() == 0 || m_str.size() == 0 || str == nullptr) {
+        return false;
+    }
+
+    String str1 = createString(m_str);
+    String str2 = createString(str);
+    std::string std_str1 = str1->m_str;
+    std::string std_str2 = str2->m_str;
+
+    std::transform(std_str1.begin(),std_str1.end(),std_str1.begin(),::toupper);
+    std::transform(std_str2.begin(),std_str2.end(),std_str2.begin(),::toupper);
+    
+    int result = std_str1.find(std_str2);
+    return (result == std_str2.size());
 }
 
 bool _String::isEmpty() {

@@ -29,10 +29,40 @@
 #include "WebSocketParser.hpp"
 #include "HashMap.hpp"
 #include "TcpServer.hpp"
+#include "WebSocketClientInfo.hpp"
 
 namespace obotcha {
 
 class _TcpServer;    
+
+DECLARE_SIMPLE_CLASS(WebSocketClientManager) {
+public:
+    static WebSocketClientManager getInstance();
+    
+    bool addClient(int fd,int version);
+
+    WebSocketClientInfo getClient(int fd);
+
+    void setHttpHeader(int fd,HttpHeader h);
+
+    void setWebSocketHeader(int fd,WebSocketHeader h);
+
+    void setWebSocketPermessageDeflate(int fd,WebSocketPermessageDeflate v);
+
+    void setWebSocketProtocols(int fd,ArrayList<String>);
+    
+    void removeClient(int fd);
+
+private:
+   static WebSocketClientManager mInstance;
+   
+   static Mutex mMutex;
+   
+   HashMap<int,WebSocketClientInfo> mClients;
+
+   _WebSocketClientManager();
+
+};
 
 DECLARE_SIMPLE_CLASS(WebSocketHttpListener) IMPLEMENTS(SocketListener){
 public:
@@ -76,6 +106,7 @@ private:
 DECLARE_SIMPLE_CLASS(WebSocketServer) {
 public:
     _WebSocketServer();
+
     int bind(String ip,int port,String path,WebSocketListener listener);
     
     int bind(int port,String path,WebSocketListener listener);
@@ -86,7 +117,9 @@ public:
 
 private:
     String mPath;
+
     sp<_TcpServer> mServer;
+    
     WebSocketListener mWsListener;
     
     HashMap<String,EPollFileObserver> mEpollObservers;

@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-//#include "Thread.hpp"
-//#include "ArrayList.hpp"
 #include "Integer.hpp"
 #include "StrongPointer.hpp"
 #include "Long.hpp"
@@ -11,10 +9,11 @@
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "AutoMutex.hpp"
+#include "NetUtils.hpp"
+#include "WebSocketFrameComposer.hpp"
+#include "WebSocketProtocol.hpp"
 
 using namespace obotcha;
-
-
 
 DECLARE_SIMPLE_CLASS(MyWsListener) IMPLEMENTS(WebSocketListener) {
 public:
@@ -26,6 +25,15 @@ public:
     int onMessage(int fd,String message) {
         printf("message is %s \n",message->toChars());
         mMessage = message;
+        String response = createString("hello from server ");
+        printf("message len is %d \n",response->size());
+        ByteArray array = createByteArray(response);
+        printf("array size is %d \n",array->size());
+        WebSocketFrameComposer mComposer = createWebSocketFrameComposer(false);
+        
+        int ret = st(NetUtils)::sendTcpPacket(fd,mComposer->generateMessageFrame(st(WebSocketProtocol)::OPCODE_TEXT,createByteArray(response)));
+
+        printf("onMessage send result is %d \n",ret);
         mConditaion->notify();
         return 0;
     }
@@ -72,9 +80,10 @@ int main() {
     l->waitMessage();
     printf("websocket start trace2 \n");
 
+    while(1) {sleep(1);}
     server->release();
     printf("websocket start trace3 \n");
 
-    sleep(5);
+    
     printf("websocket start trace4 \n");
 }

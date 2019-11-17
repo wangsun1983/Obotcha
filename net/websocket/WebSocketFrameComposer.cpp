@@ -78,7 +78,7 @@ ByteArray _WebSocketFrameComposer::generateMessageFrame(int formatOpcode,ByteArr
     }
 
     int byteCount = message->size();
-    printf("byteCount is %x \n",byteCount);
+    printf("byteCount is %d£¬message is %s \n",byteCount,message->toString()->toChars());
     if (byteCount <= st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
         b1 |= (int) byteCount;
         sinkWriter->writeByte(b1);

@@ -1,5 +1,5 @@
-#ifndef __WEB_SOCKET_HYBI13_PARSER_HPP__
-#define __WEB_SOCKET_HYBI13_PARSER_HPP__
+#ifndef __WEB_SOCKET_HYBI00_PARSER_HPP__
+#define __WEB_SOCKET_HYBI00_PARSER_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -8,12 +8,15 @@
 #include "InetAddress.hpp"
 #include "ByteArray.hpp"
 #include "WebSocketParser.hpp"
-#include "WebSocketPermessageDeflate.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(WebSocketHybi13Parser) IMPLEMENTS(WebSocketParser) {
-public:
+/// Processor for Hybi Draft version 00
+/**
+ * There are many differences between Hybi 00 and Hybi 13
+ */
+DECLARE_SIMPLE_CLASS(WebSocketHybi00Parser) IMPLEMENTS(WebSocketParser){
+public:    
     WebSocketHeader parseHeader();
 
     ByteArray parseContent();

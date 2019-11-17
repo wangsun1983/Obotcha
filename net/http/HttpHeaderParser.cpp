@@ -1,3 +1,4 @@
+#include <string.h>
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
@@ -601,8 +602,12 @@ int _HttpHeaderParser::parse_with_S_E_C_W(const char *content) {
     switch(content[14]) {
         case 'K':
         case 'k':
-        return Http_Header_Sec_WebSocket_Key;
+        if(strlen(content) == 17) {
+            return Http_Header_Sec_WebSocket_Key;
+        }
 
+        return parse_with_S_E_C_W_K(content);
+        
         case 'A':
         case 'a':
         return Http_Header_Sec_WebSocket_Accept;
@@ -614,6 +619,29 @@ int _HttpHeaderParser::parse_with_S_E_C_W(const char *content) {
         case 'E':
         case 'e':
         return Http_Header_Sec_WebSocket_Extensions;
+
+        case 'O':
+        case 'o':
+        return Http_Header_Sec_WebSocket_Origin;
+
+        case 'P':
+        case 'p':
+        return Http_Header_Sec_WebSocket_Protocol;
+    }
+
+    return -1;
+}
+
+int _HttpHeaderParser::parse_with_S_E_C_W_K(const char *content) {
+    switch(content[18]) {
+        case '1':
+        return Http_Header_Sec_WebSocket_Key1;
+
+        case '2':
+        return Http_Header_Sec_WebSocket_Key2;
+
+        case '3':
+        return Http_Header_Sec_WebSocket_Key3;
     }
 
     return -1;
