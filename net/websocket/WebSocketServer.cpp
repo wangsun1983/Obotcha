@@ -153,10 +153,12 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
             return;
         }
 
-        WebSocketPermessageDeflate deflate = parser->validateExtensions(header);
-        if(deflate == nullptr) {
-            st(WebSocketClientManager)::getInstance()->setWebSocketPermessageDeflate(fd,deflate);
-        }
+        //Try to check whether extension support deflate.
+        parser->validateExtensions(header);
+        //WebSocketPermessageDeflate deflate = parser->validateExtensions(header);
+        //if(deflate == nullptr) {
+        //    st(WebSocketClientManager)::getInstance()->setWebSocketPermessageDeflate(fd,deflate);
+        //}
 
         ArrayList<String> protocols = parser->extractSubprotocols(header);
         if(protocols != nullptr && protocols->size() != 0) {
@@ -207,7 +209,7 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
 
     printf("Event is %d \n",events);
 
-    char recv_buf[BUFF_SIZE];
+    byte recv_buf[BUFF_SIZE];
     int len = recv(fd, recv_buf, BUFF_SIZE, 0);
     printf("len is %d \n",len);
     if(len == -1) {

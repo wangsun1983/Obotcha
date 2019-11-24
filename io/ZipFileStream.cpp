@@ -1,4 +1,4 @@
-#include "ZipStream.hpp"
+#include "ZipFileStream.hpp"
 #include "Error.hpp"
 #include "MethodNotSupportException.hpp"
 #include "Log.hpp"
@@ -92,6 +92,11 @@ int _ZipStream::compress(String src, String dest)
 
     return 0;
 }
+
+ByteArray _ZipStream::compress(ByteArray value) {
+    //TODO
+}
+
 
 int _ZipStream::compressWithPassword(String src, String dest, String password)
 {

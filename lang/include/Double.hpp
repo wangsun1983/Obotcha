@@ -11,15 +11,15 @@ DECLARE_SIMPLE_CLASS(Double)
 public:
     _Double(double v);
 
-    _Double(Double v);
+    _Double(Double &v);
     
     double toValue();
 
     bool equals(double p);
     
-    bool equals(Double p);
+    bool equals(Double &p);
 
-    bool equals(_Double *p);
+    bool equals(const _Double *p);
 
     ~_Double();
 

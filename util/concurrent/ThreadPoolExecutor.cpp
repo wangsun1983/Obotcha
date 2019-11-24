@@ -373,9 +373,8 @@ void _ThreadPoolExecutor::onCancel(FutureTask t) {
             //printf"ThreadPoolExecutor onCancel trace2 \n");
             if(h != nullptr) {
                 if(h->shutdownTask(t)) {
-                    //printf"ThreadPoolExecutor onCancel trace3,before size is %d \n",mHandlers->size());
+                    AutoMutex ll1(mHandlersMutex);
                     mHandlers->remove(h);
-                    //printf"ThreadPoolExecutor onCancel trace3,after size is %d \n",mHandlers->size());
                     break;
                 }
             }
@@ -387,6 +386,7 @@ void _ThreadPoolExecutor::onCancel(FutureTask t) {
     //we should insert a new
     if(!mIsShutDown) {
         ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool,this);
+        AutoMutex ll1(mHandlersMutex);
         mHandlers->add(h);
     }
 }

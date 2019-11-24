@@ -41,7 +41,7 @@ private:
 
     long filesize;
 
-    char *mPtr;
+    unsigned char *mPtr;
 };
 
 }

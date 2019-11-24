@@ -266,8 +266,8 @@ ByteArray _Aes::_aesECB(ByteArray data,int mode) {
             ByteArray out = createByteArray(length);
             ByteArray in = createByteArray(data->toValue(),length);
 
-            char *output = out->toValue();
-            char *input = in->toValue();
+            char *output = (char *)out->toValue();
+            char *input = (char *)in->toValue();
             //we should fill the last 8 byte data;
             if(inputSize%AES_BLOCK_SIZE == 0) {
                 char *lastData = input + length - AES_BLOCK_SIZE;
@@ -292,8 +292,8 @@ ByteArray _Aes::_aesECB(ByteArray data,int mode) {
         case AES_DECRYPT: {
             //printf("AES_DECRYPT!!! inputSize is %d \n",inputSize);
             ByteArray out = createByteArray(inputSize);
-            char *input = data->toValue();
-            char *output = out->toValue();
+            char *input = (char *)data->toValue();
+            char *output = (char *)out->toValue();
             for(int i = 0;i<inputSize/AES_BLOCK_SIZE;i++) {
                 AES_ecb_encrypt((unsigned char *)input,(unsigned char *)output,&mDecryptKey,AES_DECRYPT);
                 input+= AES_BLOCK_SIZE;
@@ -332,8 +332,8 @@ ByteArray _Aes::_aesCBC(ByteArray data,unsigned char *ivec,int mode) {
             ByteArray out = createByteArray(length);
             ByteArray in = createByteArray(data->toValue(),length);
 
-            char *output = out->toValue();
-            char *input = in->toValue();
+            char *output = (char *)out->toValue();
+            char *input = (char *)in->toValue();
             //we should fill the last 8 byte data;
             if(inputSize%AES_BLOCK_SIZE == 0) {
                 char *lastData = input + length - AES_BLOCK_SIZE;
@@ -352,8 +352,8 @@ ByteArray _Aes::_aesCBC(ByteArray data,unsigned char *ivec,int mode) {
 
         case AES_DECRYPT:{
             ByteArray out = createByteArray(inputSize);
-            char *output = out->toValue();
-            char *input = data->toValue();
+            char *output = (char *)out->toValue();
+            char *input = (char *)data->toValue();
             AES_cbc_encrypt((unsigned char *)input,(unsigned char *)output,inputSize,&mDecryptKey,ivec,AES_DECRYPT);
             int padding = output[inputSize - 1];
 

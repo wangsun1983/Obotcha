@@ -22,6 +22,7 @@ enum WebSocketFrameComposerType {
 DECLARE_SIMPLE_CLASS(WebSocketComposer) {
 public:
     virtual String genShakeHandMessage() = 0;
+    //virtual String genMessageFrame() = 0;
     void setType(int);
 
 protected:

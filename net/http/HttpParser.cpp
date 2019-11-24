@@ -99,7 +99,7 @@ int _HttpParser::on_headers_complete(http_parser*parser, const char *at, size_t 
 int _HttpParser::on_body(http_parser*parser, const char *at, size_t length) {
     printf("on_body \n");
     _HttpParser *p = reinterpret_cast<_HttpParser *>(parser->data);
-    p->mPacket->setBody(createByteArray(at,(int)length));
+    p->mPacket->setBody(createByteArray((byte *)at,(int)length));
     return 0;
 }
 

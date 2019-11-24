@@ -98,8 +98,8 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
 
 ByteArray _WebSocketHybi13Parser::parseContent() {
     ByteArray load = createByteArray(mHeader->getFrameLength());
-    char *payload = load->toValue();
-    char *msg = mData->toValue();
+    byte *payload = load->toValue();
+    byte *msg = mData->toValue();
     int pos = mReader->getIndex();
     //printf("pos is %d,msg is %s \n",pos,&msg[pos]);
 
@@ -109,7 +109,7 @@ ByteArray _WebSocketHybi13Parser::parseContent() {
         mHeader->getFrameLength());
 	} else {
         int framesize = mHeader->getFrameLength();
-        char *masking_key_ = mHeader->getMaskKey()->toValue();
+        byte *masking_key_ = mHeader->getMaskKey()->toValue();
         //printf("framesize is %d,masking_key is %s \n",framesize,masking_key_);
 
 		for(uint i = 0; i < framesize; i++){
@@ -118,13 +118,19 @@ ByteArray _WebSocketHybi13Parser::parseContent() {
 		}
 	}
 
+    //whether we need do decompose
+    if(mDeflate != nullptr) {
+        ByteArray out = mDeflate->decompress(load);
+        return out;
+    }
+
 	return load;
 }
 
 ByteArray _WebSocketHybi13Parser::parsePingBuff(){
     ByteArray load = createByteArray(mHeader->getFrameLength());
-    char *payload = load->toValue();
-    char *msg = mData->toValue();
+    byte *payload = load->toValue();
+    byte *msg = mData->toValue();
     int pos = mReader->getIndex();
     //printf("parsePingBuff pos is %d,msg is %s \n",pos,&msg[pos]);
 
@@ -134,7 +140,7 @@ ByteArray _WebSocketHybi13Parser::parsePingBuff(){
         mHeader->getFrameLength());
 	} else {
         int framesize = mHeader->getFrameLength();
-        char *masking_key_ = mHeader->getMaskKey()->toValue();
+        byte *masking_key_ = mHeader->getMaskKey()->toValue();
         printf("framesize is %d,masking_key is %s \n",framesize,masking_key_);
 
 		for(uint i = 0; i < framesize; i++){
@@ -165,11 +171,12 @@ WebSocketPermessageDeflate _WebSocketHybi13Parser::validateExtensions(HttpHeader
         return nullptr;
     }
 
-    WebSocketPermessageDeflate v = createWebSocketPermessageDeflate();
-    if(v->set(list)) {
-        return v;
+    mDeflate = createWebSocketPermessageDeflate();
+    if(mDeflate->fit(list)) {
+        return mDeflate;
     }
-    
+
+    mDeflate = nullptr;
     return nullptr;
 }
 
@@ -198,8 +205,8 @@ ArrayList<String> _WebSocketHybi13Parser::extractSubprotocols(HttpHeader h) {
 
 ByteArray _WebSocketHybi13Parser::parsePongBuff() {
     ByteArray load = createByteArray(mHeader->getFrameLength());
-    char *payload = load->toValue();
-    char *msg = mData->toValue();
+    byte *payload = load->toValue();
+    byte *msg = mData->toValue();
     int pos = mReader->getIndex();
     //printf("parsePongBuff pos is %d,msg is %s \n",pos,&msg[pos]);
 
@@ -209,7 +216,7 @@ ByteArray _WebSocketHybi13Parser::parsePongBuff() {
         mHeader->getFrameLength());
 	} else {
         int framesize = mHeader->getFrameLength();
-        char *masking_key_ = mHeader->getMaskKey()->toValue();
+        byte *masking_key_ = mHeader->getMaskKey()->toValue();
         printf("framesize is %d,masking_key is %s \n",framesize,masking_key_);
 
 		for(uint i = 0; i < framesize; i++){

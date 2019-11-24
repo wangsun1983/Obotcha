@@ -28,7 +28,7 @@ long _FileInputStream::read(ByteArray buff) {
         return -1;
     }
 
-    fstream.read(buff->toValue(),buff->size());
+    fstream.read((char *)buff->toValue(),buff->size());
     return fstream.gcount();
 }
 
@@ -38,7 +38,7 @@ long _FileInputStream::read(long index,ByteArray buffer) {
     }
 
     fstream.seekg(index);
-    fstream.read(buffer->toValue(),buffer->size());
+    fstream.read((char *)buffer->toValue(),buffer->size());
     return fstream.gcount();
 }
 
@@ -52,7 +52,7 @@ ByteArray _FileInputStream::readAll() {
     fstream.seekg (0, fstream.beg);
 
     ByteArray content = createByteArray(srcSize);
-    fstream.read(content->toValue(),srcSize);
+    fstream.read((char *)content->toValue(),srcSize);
     return content;
 }
 

@@ -82,7 +82,7 @@ bool _MemoryFileInputStream::open() {
 
     int fd = fileno(fp);
  
-    mPtr = (char *)mmap(NULL, filesize, PROT_READ, MAP_SHARED, fd, 0);
+    mPtr = (unsigned char *)mmap(NULL, filesize, PROT_READ, MAP_SHARED, fd, 0);
     if (mPtr == MAP_FAILED) {
         return false;
     }

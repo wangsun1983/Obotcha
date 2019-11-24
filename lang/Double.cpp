@@ -12,7 +12,7 @@
 
 #include <cmath>
 #include "Double.hpp"
-
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
@@ -20,7 +20,10 @@ const double _Double::EPS = 1e-8;
 
 _Double::_Double(double v) : val(v) {}
 
-_Double::_Double(Double v) {
+_Double::_Double(Double &v) {
+    if(v == nullptr) {
+        throw createInitializeException("Object is null");
+    }
     val = v->val;
 }
     
@@ -28,7 +31,7 @@ double _Double::toValue() {
     return val;
 }
 
-bool _Double::equals(Double p) {
+bool _Double::equals(Double &p) {
     if(p == nullptr) {
         return false;
     }
@@ -40,7 +43,7 @@ bool _Double::equals(double p) {
     return std::fabs(val-p) <= EPS;
 }
 
-bool _Double::equals(_Double *p) {
+bool _Double::equals(const _Double *p) {
     if(p == nullptr) {
         return false;
     }

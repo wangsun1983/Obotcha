@@ -167,7 +167,7 @@ String _HttpPacket::genHttpResponse() {
 	String responseStr = createString("HTTP/1.1 ")->append(statusString)->append(" ")->append(status)->append("\r\n");
     
 	String headerStr =mHeader->genHtml();
-	String bodyStr = createString(mBody->toValue(),0,mBody->size());
+	String bodyStr = createString((char *)mBody->toValue(),0,mBody->size());
 	
 	responseStr = responseStr->append(headerStr)->append("\r\n")->append(bodyStr);
     return responseStr;

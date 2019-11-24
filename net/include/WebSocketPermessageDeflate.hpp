@@ -7,6 +7,8 @@
 #include "String.hpp"
 #include "InetAddress.hpp"
 #include "ByteArray.hpp"
+#include "ZipFileStream.hpp"
+#include "ZipMemoryStream.hpp"
 
 namespace obotcha {
 
@@ -25,8 +27,11 @@ DECLARE_SIMPLE_CLASS(WebSocketPermessageDeflate) {
 
 public:
     _WebSocketPermessageDeflate();
-    bool set(ArrayList<String>);
+    bool fit(ArrayList<String>);
     void init();
+
+    ByteArray compress(ByteArray);
+    ByteArray decompress(ByteArray);
     
 private:
     void setServerMaxWindowBits(int);
@@ -37,6 +42,8 @@ private:
     int mClientMaxWindowBits;
     int mServerMaxWindowBitsMode;
     int mClientMaxWindowBitsMode;
+
+    ZipMemoryStream mZip;
 };
 
 }

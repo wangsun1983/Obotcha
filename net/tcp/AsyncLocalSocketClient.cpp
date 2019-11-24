@@ -46,7 +46,7 @@ _AsyncLocalSocketClientThread::~_AsyncLocalSocketClientThread() {
 void _AsyncLocalSocketClientThread::run() {
     
     struct epoll_event events[EPOLL_SIZE];
-    recvBuff = (char *)malloc(mBufferSize);
+    recvBuff = (byte *)malloc(mBufferSize);
     printf("epoll run,mTimeOut is %d \n",mTimeOut);
     while(1) {
         if(mStatus->get() == LocalSocketClientWaitingThreadExit) {

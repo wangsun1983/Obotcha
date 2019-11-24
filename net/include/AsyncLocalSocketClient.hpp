@@ -49,7 +49,7 @@ private:
 
     int mBufferSize;
 
-    char *recvBuff;
+    byte *recvBuff;
     
 };
 

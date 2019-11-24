@@ -13,18 +13,16 @@ DECLARE_SIMPLE_CLASS(Uint16) {
 public:
     _Uint16(uint16_t v);
 
-    _Uint16(Uint16 v);
+    _Uint16(Uint16 &v);
 
     uint16_t toValue();
 
-    bool equals(Uint16 p);
+    bool equals(Uint16 &p);
 
     bool equals(uint16_t p);
 
-    bool equals(_Uint16 *p);
-/*
-    Integer valueOf(String v);
-*/
+    bool equals(const _Uint16 *p);
+
     ~_Uint16();
 
     static const uint16_t MAX_VALUE = 0xFFFF;

@@ -12,12 +12,16 @@
 
 
 #include "Byte.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
 _Byte::_Byte(byte v) : val(v) {}
 
-_Byte::_Byte(Byte v) {
+_Byte::_Byte(Byte &v) {
+    if(v == nullptr) {
+        throw createInitializeException("Object is null");
+    }
     val = v->val;
 }
     
@@ -25,7 +29,7 @@ byte _Byte::toValue() {
     return val;
 }
 
-bool _Byte::equals(Byte p) {
+bool _Byte::equals(Byte &p) {
     if(p == nullptr) {
         return false;
     }
@@ -37,7 +41,7 @@ bool _Byte::equals(byte p) {
     return val == p;
 }
 
-bool _Byte::equals(_Byte *p) {
+bool _Byte::equals(const _Byte *p) {
     if(p == nullptr) {
         return false;
     }

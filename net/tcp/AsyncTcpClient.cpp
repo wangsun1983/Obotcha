@@ -33,7 +33,7 @@ _TcpClientThread::_TcpClientThread(int sock,int epfd,SocketListener l,Pipe pi,At
 void _TcpClientThread::run() {
     
     struct epoll_event events[EPOLL_SIZE];
-    char *recv_buf = (char *)malloc(mBufferSize);
+    byte *recv_buf = (byte *)malloc(mBufferSize);
     printf("epoll run,mTimeOut is %d \n",mTimeOut);
     while(1) {
         if(mStatus->get() == ClientWaitingThreadExit) {

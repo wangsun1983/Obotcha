@@ -56,7 +56,7 @@ public: \
 }\
 
 KeyHashSimpleDataTypeFunc(bool);
-KeyHashSimpleDataTypeFunc(byte);
+//KeyHashSimpleDataTypeFunc(byte);=>eaquls uint8
 KeyHashSimpleDataTypeFunc(double);
 KeyHashSimpleDataTypeFunc(float);
 KeyHashSimpleDataTypeFunc(int);

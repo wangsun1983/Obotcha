@@ -11,15 +11,15 @@
  */
 
 #include "Boolean.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
 _Boolean::_Boolean(bool v) : val(v) {}
 
-_Boolean::_Boolean(Boolean v) {
+_Boolean::_Boolean(Boolean &v) {
     if(v == nullptr) {
-        val = false;
-        return;
+        throw createInitializeException("Object is null");
     }
     
     val = v->val;
@@ -29,7 +29,7 @@ bool _Boolean::toValue() {
     return val;
 }
 
-bool _Boolean::equals(Boolean p) {
+bool _Boolean::equals(Boolean &p) {
     if(p == nullptr) {
         return false;
     }
@@ -37,7 +37,7 @@ bool _Boolean::equals(Boolean p) {
     return val == p->val;
 }
 
-bool _Boolean::equals(_Boolean *p) {
+bool _Boolean::equals(const _Boolean *p) {
     if(p == nullptr) {
         return false;
     }

@@ -36,11 +36,11 @@ void _Des::encrypt(File src,File des) {
 
     //we should fill the last 8 byte data;
     if(inputSize%8 == 0) {
-        char *lastData = inputData->toValue() + (inputData->size()) - 8;
+        char *lastData = (char *)inputData->toValue() + (inputData->size()) - 8;
         memset(lastData,0,8);
     } else {
         int padding = inputSize%8;
-        char *lastData = inputData->toValue() + inputData->size()  - 8 + padding;
+        char *lastData = (char *)inputData->toValue() + inputData->size()  - 8 + padding;
         memset(lastData,(char)padding,8-padding);
     }
 
@@ -58,14 +58,12 @@ void _Des::encrypt(File src,File des) {
 
 String _Des::decrypt(String str) {
     ByteArray result = decrypt(createByteArray(str));
-    char *p = result->toValue();
-    return createString(p);
+    return createString((char *)result->toValue());
 }
 
 String _Des::encrypt(String str) {
     ByteArray result = encrypt(createByteArray(str));
-    char *p = result->toValue();
-    return createString(p);
+    return createString((char *)result->toValue());
 }
 
 ByteArray _Des::encrypt(ByteArray input) {
@@ -104,7 +102,7 @@ void _Des::decrypt(File src,File des) {
         outputStream->open(FileOpenType::Trunc);
 
         //we should check last 8byte
-        char *checkP = outputData->toValue();
+        byte *checkP = outputData->toValue();
         int length = outputData->size();
 
         int padding = 0;

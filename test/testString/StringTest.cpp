@@ -5,6 +5,8 @@
 #include <string.h>
 #include "String.hpp"
 #include "ArrayList.hpp"
+#include "NullPointerException.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
 
 using namespace obotcha;
 
@@ -12,6 +14,7 @@ int main() {
 
   printf("---[String Test Start]--- \n");
   //test String()
+
   while(1) {
     String str1 = createString();
     if(str1->size() != 0) {
@@ -97,8 +100,14 @@ int main() {
         break;
     }
 
-    String str2 = createString((const char *)nullptr);
-    if(str2 == nullptr) {
+    bool isException = false;
+    try {
+        String str2 = createString((const char *)nullptr);
+    } catch(NullPointerException e) {
+        isException = true;
+    }
+
+    if(!isException) {
       printf("String construct test11-------[FAIL] \n");
       break;
     }
@@ -141,8 +150,14 @@ int main() {
     }
 
     Integer v2;
-    String str2 = createString(v2);
-    if(str2->size() != 0) {
+    bool isException = false;
+    try {
+        String str2 = createString(v2);
+    } catch(NullPointerException e) {
+        isException = true;
+    }
+
+    if(!isException) {
       printf("String construct test18-------[FAIL] \n");
       break;
     }
@@ -167,8 +182,14 @@ int main() {
     }
 
     Boolean v3;
-    String str3 = createString(v3);
-    if(str3->size() != 0) {
+    bool isException = false;
+    try {
+        String str3 = createString(v3);
+    }catch(NullPointerException e) {
+        isException = true;
+    }
+
+    if(!isException) {
       printf("String construct test21-------[FAIL] \n");
       break;
     }
@@ -194,8 +215,14 @@ int main() {
     }
 
     Float v3;
-    String str3 = createString(v3);
-    if(str3->size() != 0) {
+    bool isException = false;
+    try {
+        String str3 = createString(v3);
+    }catch(NullPointerException e) {
+        isException = true;
+    }
+
+    if(!isException) {
       printf("String construct test25-------[FAIL] \n");
       break;
     }
@@ -221,8 +248,14 @@ int main() {
     }
 
     Double v3;
-    String str3 = createString(v3);
-    if(str3->size() != 0) {
+    bool isException = false;
+    try {
+        String str3 = createString(v3);
+    }catch(NullPointerException e) {
+        isException = true;
+    }
+
+    if(!isException) {
       printf("String construct test29-------[FAIL] \n");
       break;
     }
@@ -248,8 +281,14 @@ int main() {
     }
 
     Long v3;
-    String str3 = createString(v3);
-    if(str3->size() != 0) {
+    bool isException = false;
+    try {
+        String str3 = createString(v3);
+    }catch(NullPointerException e) {
+        isException = true;
+    }
+
+    if(!isException) {
       printf("String construct test33-------[FAIL] \n");
       break;
     }
@@ -347,8 +386,7 @@ int main() {
   //void split(String v,T t);
   while(1) {
     String abc1 = "1,2,3,4,5";
-    ArrayList<String> list = createArrayList<String>();
-    abc1->split(",",list);
+    ArrayList<String> list = abc1->split(",");
     if(list->size() != 5) {
       printf("String split test1-------[FAIL] \n");
       break;
@@ -364,9 +402,8 @@ int main() {
     }
 
     String abc2 = "a,b,c";
-    ArrayList<String> list2 = createArrayList<String>();
-    abc2->split("||",list2);
-    if(list2->size() != 0) {
+    ArrayList<String> list2 = abc2->split("||");
+    if(list2 != nullptr && list2->size() != 0) {
       printf("String split test3-------[FAIL] \n");
       break;
     }
@@ -441,7 +478,14 @@ int main() {
       break;
     }
 
-    if(abc->charAt(90) != -1) {
+    bool isException = false;
+    try {
+        abc->charAt(90);
+    } catch(ArrayIndexOutOfBoundsException e) {
+        isException = true;
+    }
+
+    if(!isException) {
       printf("String charAt test2-------[FAIL] \n");
       break;
     }
@@ -557,15 +601,7 @@ int main() {
       break;
     }
 
-#if 0
-    //null point cannot test
-    String abc4 = nullptr;
-    String abc5 = abc4->append("123");
-    if(!abc5->equals("123")) {
-      printf("String append test2----------[FAIL] \n");
-      break;
-    }
-#endif
+
     String abc6 = "a";
     String abc7 = abc6->append(nullptr);
     if(!abc7->equals("a")) {
@@ -575,7 +611,9 @@ int main() {
 
     printf("String append test3----------[OK] \n");
     break;
+
   }
+
 
   //    String append(const char *p);
   while(1) {
@@ -1173,7 +1211,7 @@ int main() {
      }
 
      String str3;
-     if(str1->indexOfIgnoreCase(str3)) {
+     if(str1->indexOfIgnoreCase(str3) != -1) {
        printf("String indexOfIgnoreCase test2-------[FAIL] \n");
        break;
      }
@@ -1280,7 +1318,5 @@ int main() {
     printf("String startsWith test4-------[OK] \n");
     break;
   }
-
-
 
 }

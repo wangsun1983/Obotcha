@@ -41,70 +41,70 @@ String _Error::toString(int error) {
         case -InvalidStatus:
         return InvalidStatusString;
 
-        case FileNotExists:
+        case -FileNotExists:
         return FileNotExistsString;
     
-        case AlreadyExists:
+        case -AlreadyExists:
         return AlreadyExistsString;
 
-        case AlreadyDestroy:
+        case -AlreadyDestroy:
         return AlreadyDestroyString;
 
-        case NotCreate:
+        case -NotCreate:
         return NotCreateString;
     
-        case NotStart:
+        case -NotStart:
         return NotStartString;
 
-        case OverSize:
+        case -OverSize:
         return OverSizeString;
     
-        case MiniZipFail:
+        case -MiniZipFail:
         return MiniZipFailString;
 
-        case NetBindFail:
+        case -NetBindFail:
         return NetBindFailString;
     
-        case NetListenFail:
+        case -NetListenFail:
         return NetListenFailString;
 
-        case NetConnectFail:
+        case -NetConnectFail:
         return NetConnectFailString;
 
-        case AttributeSetFail:
+        case -AttributeSetFail:
         return AttributeSetFailString;
 
-        case OpenFail:
+        case -OpenFail:
         return OpenFailString;
 
-        case CreateFail:
+        case -CreateFail:
         return CreateFailString;
 
-        case WriteFail:
+        case -WriteFail:
         return WriteFailString;
 
-        case ReadFail:
+        case -ReadFail:
         return ReadFailString;
     
-        case MmapFail:
+        case -MmapFail:
         return MmapFailString;
 
-        case GenKeyFail:
+        case -GenKeyFail:
         return GenKeyFailString;
 
-        case SetKeyFail:
+        case -SetKeyFail:
         return SetKeyFailString;
 
-        case NotFound:
+        case -NotFound:
         return NotFoundString;
 
-        case WaitTimeout:
+        case -WaitTimeout:
         return WaitTimeoutString;
 
-        case WaitFail:
+        case -WaitFail:
         return WaitFailString;
 
-        case NotSupport:
+        case -NotSupport:
         return NotSupportString;
     }
     

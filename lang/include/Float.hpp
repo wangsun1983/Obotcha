@@ -11,13 +11,13 @@ DECLARE_SIMPLE_CLASS(Float)
 public:
     _Float(float v);
 
-    _Float(Float v);
+    _Float(Float &v);
 
     float toValue();
 
-    bool equals(Float p);
+    bool equals(Float &p);
 
-    bool equals(_Float *p);
+    bool equals(const _Float *p);
 
     bool equals(float p);
 

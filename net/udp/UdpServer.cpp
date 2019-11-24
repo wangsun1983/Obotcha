@@ -17,6 +17,7 @@
 #include "NetUtils.hpp"
 #include "AutoMutex.hpp"
 #include "Error.hpp"
+#include "Byte.hpp"
 
 #define EPOLL_SIZE 1024*8
 
@@ -43,7 +44,7 @@ _UdpServerThread::_UdpServerThread(int sock,
 
 void _UdpServerThread::run() {
     struct epoll_event events[EPOLL_SIZE];
-    char recv_buf[BUFF_SIZE];
+    byte recv_buf[BUFF_SIZE];
 
     memset(events,0,sizeof(struct epoll_event) * EPOLL_SIZE);
     memset(recv_buf,0,BUFF_SIZE);

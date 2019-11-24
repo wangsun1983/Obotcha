@@ -43,7 +43,7 @@ _LocalSocketClient::_LocalSocketClient(String domain,int recv_time,int buff_size
     
     mSock = socket(AF_UNIX, SOCK_STREAM, 0);
     //printf("create mSock is %d \n",mSock);
-    mBuff = (char *)malloc(buff_size);
+    mBuff = (byte *)malloc(buff_size);
     mConnectMutex = createMutex("ConncetMutex");
 }
 

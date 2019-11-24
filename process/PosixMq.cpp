@@ -92,7 +92,7 @@ int _PosixMq::send(ByteArray data,PosixMqPriority prio) {
         return -OverSize;
     }
 
-    return mq_send(mQid, data->toValue(), data->size(), prio);
+    return mq_send(mQid, (char *)data->toValue(), data->size(), prio);
 }
 
 int _PosixMq::send(ByteArray data) {
@@ -105,7 +105,7 @@ int _PosixMq::receive(ByteArray buff) {
     }
 
     unsigned int priority = 0;
-    return mq_receive(mQid, buff->toValue(),mMsgSize, &priority);;
+    return mq_receive(mQid, (char *)buff->toValue(),mMsgSize, &priority);;
 }
 
 int _PosixMq::sendTimeout(ByteArray data,PosixMqPriority prio,long timeInterval) {
@@ -135,7 +135,7 @@ int _PosixMq::sendTimeout(ByteArray data,PosixMqPriority prio,long timeInterval)
     ts.tv_nsec = timeInterval%(1000*1000*1000);*/
     st(System)::getNextTime(timeInterval,&ts);
 
-    return mq_timedsend(mQid, data->toValue(), data->size(), prio,&ts);;
+    return mq_timedsend(mQid, (char *)data->toValue(), data->size(), prio,&ts);;
 }
 
 int _PosixMq::sendTimeout(ByteArray data,long waittime) {
@@ -162,7 +162,7 @@ int _PosixMq::receiveTimeout(ByteArray buff,long timeInterval) {
     st(System)::getNextTime(timeInterval,&ts);
     unsigned int priority = 0;
 
-    return mq_timedreceive(mQid, buff->toValue(),mMsgSize, &priority,&ts);
+    return mq_timedreceive(mQid, (char *)buff->toValue(),mMsgSize, &priority,&ts);
 }
 
 _PosixMq::~_PosixMq() {

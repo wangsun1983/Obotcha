@@ -12,15 +12,15 @@ DECLARE_SIMPLE_CLASS(Long) {
 public:
     _Long(long v);
 
-    _Long(Long v);
+    _Long(Long &v);
 
     long toValue();
 
-    bool equals(Long p);
+    bool equals(Long &p);
 
     bool equals(long p);
 
-    bool equals(_Long *p);
+    bool equals(const _Long *p);
 /*
     Integer valueOf(String v);
 */

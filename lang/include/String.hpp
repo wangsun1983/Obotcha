@@ -20,10 +20,6 @@
 
 using namespace std;
 
-#define const_str(Y) createString(Y)
-
-//#define DEBUG_STRING_MEMORY_LEAK
-
 namespace obotcha {
 
 template<typename T>
@@ -73,7 +69,7 @@ public:
 
     _String(long v);
 
-    _String(byte v);
+    _String(char v);
 
     _String(uint8_t);
 
@@ -85,27 +81,17 @@ public:
 
     sp<_ArrayList<String>> split(String v);
 
-    ~_String();
-
     const char * toChars();
 
     char charAt(int index);
 
     String subString(int start,int end);
 
-    bool contains(String val);
-
     String trim();
 
     String trimAll();
 
     int size();
-
-    int indexOf(String v);
-
-    String append(String s);
-
-    String append(const char *p);
 
     Integer toInteger();
 
@@ -163,25 +149,75 @@ public:
 
     static String valueOf(const char *p);
 
-    bool equals(String s);
-
-    bool equals(std::string s);
-
-    bool equals(const char *s);
-
     std::string getStdString();
 
     String toLowerCase();
 
     String toUpperCase();
 
+    //need support String/std::string/char *
+    //----------------------------
+    bool contains(String val);
+
+    bool contains(std::string val);
+    
+    bool contains(const char *val);
+    //----------------------------
+    int indexOf(String v);
+
+    int indexOf(std::string v);
+
+    int indexOf(const char *v);
+    //----------------------------
+    String append(String s);
+
+    String append(std::string s);
+
+    String append(const char *p);
+    //----------------------------
+    bool equals(String s);
+
+    bool equals(std::string s);
+
+    bool equals(const char *s);
+    //----------------------------
     bool equalsIgnoreCase(String str);
 
+    bool equalsIgnoreCase(std::string str);
+
+    bool equalsIgnoreCase(const char * str);
+
+    //----------------------------
     int indexOfIgnoreCase(String str);
 
+    int indexOfIgnoreCase(std::string str);
+
+    int indexOfIgnoreCase(const char * str);
+    //----------------------------
     bool containsIgnoreCase(String val);
 
+    bool containsIgnoreCase(std::string str);
+
+    bool containsIgnoreCase(const char * str);
+    //----------------------------
     bool startsWithIgnoreCase(String str);
+    
+    bool startsWithIgnoreCase(std::string str);
+
+    bool startsWithIgnoreCase(const char * str);
+    //----------------------------
+    bool endsWithIgnoreCase(String s);
+
+    bool endsWithIgnoreCase(std::string str);
+
+    bool endsWithIgnoreCase(const char * str);
+    //----------------------------
+    int lastIndexOfIgnoreCase(String v);
+
+    int lastIndexOfIgnoreCase(std::string v);
+
+    int lastIndexOfIgnoreCase(const char * v);
+    //----------------------------
 
     bool isEmpty();
 
@@ -197,6 +233,8 @@ public:
 
     bool startsWith(String v);
 
+    ~_String();
+
 private:
     std::string m_str;
 
@@ -206,11 +244,7 @@ private:
 
     bool isFloatNumber(const char *p,int size);
 
-    bool isLongNumber(const char *p,int size);
-
-#ifdef DEBUG_STRING_MEMORY_LEAK
-    int stringId;
-#endif    
+    bool isLongNumber(const char *p,int size);    
 };
 
 }

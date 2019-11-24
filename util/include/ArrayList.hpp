@@ -104,7 +104,7 @@ public:
     }
 
     inline int insert(int index,T val) {
-        if(index >= elements.size() || index < 0) {
+        if(index > elements.size() || index < 0) {
             throw createArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
         }
 
@@ -114,7 +114,7 @@ public:
     }
 
     inline int insert(int index,ArrayList<T> list) {
-        if(index >= elements.size() || index < 0) {
+        if(index > elements.size() || index < 0) {
             throw createArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
         }
 
@@ -125,7 +125,7 @@ public:
     }
 
     inline int insert(int index,ArrayList<T> list,int length) {
-        if(index >= elements.size() || length <= 0 || index < 0) {
+        if(index > elements.size() || length <= 0 || index < 0) {
             throw createArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
         }
 

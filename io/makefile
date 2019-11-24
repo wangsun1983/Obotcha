@@ -6,7 +6,8 @@ link += file \
 	outputstream \
 	fileoutputstream \
 	printstream \
-	zipstream \
+	zipfilestream \
+	zipmemorystream \
 	filewatcher \
 	memoryfileinputstream \
 	memoryfileoutputstream \
@@ -25,7 +26,8 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/outputstream.o \
 	$(outtmp)/fileoutputstream.o \
 	$(outtmp)/printstream.o \
-	$(outtmp)/zipstream.o \
+	$(outtmp)/zipfilestream.o \
+	$(outtmp)/zipmemorystream.o \
 	$(outtmp)/filewatcher.o \
 	$(outtmp)/memoryfileinputstream.o \
 	$(outtmp)/memoryfileoutputstream.o \
@@ -61,8 +63,11 @@ outputstream :$(ioDir)/OutputStream.cpp
 printstream :$(ioDir)/PrintStream.cpp
 	$(gcc) $(cflags) -c $(ioDir)/PrintStream.cpp -o $(outtmp)/printstream.o $(external)
 
-zipstream :$(ioDir)/ZipStream.cpp
-	$(gcc) $(cflags) -c $(ioDir)/ZipStream.cpp -o $(outtmp)/zipstream.o $(external)
+zipfilestream :$(ioDir)/ZipFileStream.cpp
+	$(gcc) $(cflags) -c $(ioDir)/ZipFileStream.cpp -o $(outtmp)/zipfilestream.o $(external)
+
+zipmemorystream :$(ioDir)/ZipMemoryStream.cpp
+	$(gcc) $(cflags) -c $(ioDir)/ZipMemoryStream.cpp -o $(outtmp)/zipmemorystream.o $(external)
 
 filewatcher :$(ioDir)/FileWatcher.cpp
 	$(gcc) $(cflags) -c $(ioDir)/FileWatcher.cpp -o $(outtmp)/filewatcher.o $(external)	

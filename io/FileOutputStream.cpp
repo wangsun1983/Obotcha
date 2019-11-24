@@ -25,14 +25,14 @@ bool _FileOutputStream::write(char c) {
     
 long _FileOutputStream::write(ByteArray buff) {
     //char *p = buff->toValue();
-    fstream.write(buff->toValue(),buff->size());
+    fstream.write((char *)buff->toValue(),buff->size());
     return buff->size();
 }
 
 long _FileOutputStream::write(ByteArray buff,long size) {
     //char *p = buff->toValue();
     long length = buff->size() > size?size:buff->size();    
-    fstream.write(buff->toValue(),length);
+    fstream.write((char *)buff->toValue(),length);
     return length;
 }
 

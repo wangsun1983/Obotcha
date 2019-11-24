@@ -13,15 +13,15 @@ DECLARE_SIMPLE_CLASS(Uint8) {
 public:
     _Uint8(uint8_t v);
 
-    _Uint8(Uint8 v);
+    _Uint8(Uint8 &v);
 
     uint8_t toValue();
 
-    bool equals(Uint8 p);
+    bool equals(Uint8 &p);
 
     bool equals(uint8_t p);
 
-    bool equals(_Uint8 *p);
+    bool equals(const _Uint8 *p);
 /*
     Integer valueOf(String v);
 */

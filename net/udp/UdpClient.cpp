@@ -30,7 +30,7 @@ _UdpClientThread::_UdpClientThread(int sock,int epfd,SocketListener l,Pipe pi,At
 void _UdpClientThread::run() {
     
     struct epoll_event events[EPOLL_SIZE];
-    char recv_buf[BUF_SIZE];
+    byte recv_buf[BUF_SIZE];
     struct sockaddr_in src;
     socklen_t len = 0;
 

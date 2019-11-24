@@ -69,7 +69,7 @@ ByteArray _Sha::encryptRawData(ByteArray data) {
     switch(mType) {
         case SHA_1: {
             unsigned char encryptData[SHA_DIGEST_LENGTH] = {0};
-            calc_stringSHA1(data->toValue(),data->size(),encryptData);
+            calc_stringSHA1((char *)data->toValue(),data->size(),encryptData);
             encdata = encryptData;
             length = SHA_DIGEST_LENGTH;
         }
@@ -77,7 +77,7 @@ ByteArray _Sha::encryptRawData(ByteArray data) {
 
         case SHA_224: {
             unsigned char encryptData[SHA224_DIGEST_LENGTH] = {0};
-            calc_stringSHA224(data->toValue(),data->size(),encryptData);
+            calc_stringSHA224((char *)data->toValue(),data->size(),encryptData);
             encdata = encryptData;
             length = SHA224_DIGEST_LENGTH;
         }
@@ -85,7 +85,7 @@ ByteArray _Sha::encryptRawData(ByteArray data) {
 
         case SHA_256: {
             unsigned char encryptData[SHA256_DIGEST_LENGTH] = {0};
-            calc_stringSHA256(data->toValue(),data->size(),encryptData);
+            calc_stringSHA256((char *)data->toValue(),data->size(),encryptData);
             encdata = encryptData;
             length = SHA256_DIGEST_LENGTH;
         }
@@ -93,7 +93,7 @@ ByteArray _Sha::encryptRawData(ByteArray data) {
 
         case SHA_384: {
             unsigned char encryptData[SHA384_DIGEST_LENGTH] = {0};
-            calc_stringSHA384(data->toValue(),data->size(),encryptData);
+            calc_stringSHA384((char *)data->toValue(),data->size(),encryptData);
             encdata = encryptData;
             length = SHA384_DIGEST_LENGTH;
         }
@@ -101,13 +101,13 @@ ByteArray _Sha::encryptRawData(ByteArray data) {
 
         case SHA_512: {
             unsigned char encryptData[SHA512_DIGEST_LENGTH] = {0};
-            calc_stringSHA512(data->toValue(),data->size(),encryptData);
+            calc_stringSHA512((char *)data->toValue(),data->size(),encryptData);
             encdata = encryptData;
             length = SHA512_DIGEST_LENGTH;
         }
         break;
     }
-    return createByteArray((char *)encdata,length);
+    return createByteArray(encdata,length);
 }
 
 String _Sha::encrypt(File file) {

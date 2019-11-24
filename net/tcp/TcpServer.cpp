@@ -118,7 +118,7 @@ void _TcpServerThread::run() {
                                     ntohs(client_address.sin_port));
             }
             else {
-                char recv_buf[mBuffSize];
+                byte recv_buf[mBuffSize];
                 memset(recv_buf,0,mBuffSize);
                 
                 int len = recv(sockfd, recv_buf, mBuffSize, 0);

@@ -9,6 +9,7 @@
 #include "ByteArray.hpp"
 #include "WebSocketParser.hpp"
 #include "WebSocketPermessageDeflate.hpp"
+#include "ZipMemoryStream.hpp"
 
 namespace obotcha {
 
@@ -31,6 +32,9 @@ public:
     WebSocketPermessageDeflate validateExtensions(HttpHeader);
 
     ArrayList<String> extractSubprotocols(HttpHeader);
+
+private:
+    WebSocketPermessageDeflate mDeflate;
 };
 
 }

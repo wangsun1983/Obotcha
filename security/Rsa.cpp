@@ -143,13 +143,13 @@ freeall:
 ByteArray _Rsa::encrypt(String content) {
     //String output = createString();
     int length = 0;
-    unsigned char *output = nullptr;
+    byte *output = nullptr;
     pubkey_encrypt((const unsigned char*)content->toChars(),content->size(),&output,length);
     printf("encrypt output is %s,size is %d \n",output,length);
     //String result = createString((char *)output);
     //printf("encrypt result is %s \n",result->toChars());
     //return result;
-    ByteArray result = createByteArray((char *)output,length);
+    ByteArray result = createByteArray(output,length);
     if(output != nullptr) {
         free(output);
     }
@@ -165,7 +165,7 @@ ByteArray _Rsa::decrypt(ByteArray content) {
     int size = prikey_decrypt((const unsigned char*)content->toValue(),content->size(),&output,length);
     printf("decrypt output is %s,size is %d \n",(char *)output,size);
     //return createString(output);
-    ByteArray result = createByteArray((char *)output,length);
+    ByteArray result = createByteArray(output,length);
     if(output != nullptr) {
         free(output);
     }

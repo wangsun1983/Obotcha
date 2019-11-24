@@ -10,15 +10,15 @@ DECLARE_SIMPLE_CLASS(Boolean) {
 public:
     _Boolean(bool v);
 
-    _Boolean(Boolean v);
+    _Boolean(Boolean &v);
 
     bool toValue();
 
-    bool equals(Boolean p);
+    bool equals(Boolean &p);
 
     bool equals(bool p);
 
-    bool equals(_Boolean *p);
+    bool equals(const _Boolean *p);
 
     ~_Boolean();
 

@@ -12,16 +12,16 @@ DECLARE_SIMPLE_CLASS(Integer) {
 public:
     _Integer(int v);
 
-    _Integer(Integer v);
+    _Integer(Integer &v);
 
     int toValue();
 
-    bool equals(Integer p);
+    bool equals(Integer &p);
 
     bool equals(int p);
-/*
-    Integer valueOf(String v);
-*/
+
+    bool equals(const _Integer *p);
+
     ~_Integer();
 
     static const int MAX_VALUE = 0x7fffffff;

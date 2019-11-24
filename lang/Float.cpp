@@ -1,5 +1,6 @@
 #include <cmath>
 #include "Float.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
@@ -9,10 +10,9 @@ _Float::_Float(float v) : val(v) {
 
 }
 
-_Float::_Float(Float v){
+_Float::_Float(Float &v){
     if(v == nullptr) {
-        val = 0;
-        return;
+        throw createInitializeException("Object is null");
     }
 
     val = v->val;
@@ -22,7 +22,7 @@ float _Float::toValue() {
     return val;
 }
 
-bool _Float::equals(Float p) {
+bool _Float::equals(Float &p) {
     if(p == nullptr) {
         return false;
     }
@@ -30,7 +30,7 @@ bool _Float::equals(Float p) {
     return std::fabs(val-p->val) <= EPS;
 }
 
-bool _Float::equals(_Float *p) {
+bool _Float::equals(const _Float *p) {
     if(p == nullptr) {
         return false;
     }

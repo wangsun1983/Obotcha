@@ -10,6 +10,7 @@
  * @license none
  */
 
+#include "Error.hpp"
 #include "ByteArray.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 
@@ -20,9 +21,10 @@ namespace obotcha {
  * @param b copy value
  */
 _ByteArray::_ByteArray(sp<_ByteArray> b) {
-    buff = (char *)malloc(b->size());
+    buff = (unsigned char *)malloc(b->size());
     memcpy(buff,b->toValue(),b->size());
-    _size = b->size();
+    mSize = b->size();
+    mCursor = 0;
 }
 
 /**
@@ -30,9 +32,10 @@ _ByteArray::_ByteArray(sp<_ByteArray> b) {
  * @param length alloc memory size
  */
 _ByteArray::_ByteArray(int length) {
-    buff = (char *)malloc(length);
+    buff = (unsigned char *)malloc(length);
     memset(buff,0,length);
-    _size = length;
+    mSize = length;
+    mCursor = 0;
 }
 
 /**
@@ -41,10 +44,11 @@ _ByteArray::_ByteArray(int length) {
  */
 _ByteArray::_ByteArray(String str) {
     int size = str->size();
-    _size = size;
-    buff = (char *)malloc(_size + 1);
-    memset(buff,0,_size + 1);
+    mSize = size;
+    buff = (unsigned char *)malloc(mSize + 1);
+    memset(buff,0,mSize + 1);
     memcpy(buff,str->toChars(),size);
+    mCursor = 0;
 }
 
 /**
@@ -52,11 +56,12 @@ _ByteArray::_ByteArray(String str) {
  * @param data source data
  * @param len save data len
  */
-_ByteArray::_ByteArray(const char *data,int len) {
-    buff = (char *)malloc(len);
+_ByteArray::_ByteArray(const byte *data,int len) {
+    buff = (unsigned char *)malloc(len);
     memset(buff,0,len);
-    _size = len;
+    mSize = len;
     memcpy(buff,data,len);
+    mCursor = 0;
 }
 
 
@@ -64,7 +69,8 @@ _ByteArray::_ByteArray(const char *data,int len) {
  * @brief clear memory data
  */
 void _ByteArray::clear() {
-    memset(buff,0,_size);
+    memset(buff,0,mSize);
+    mCursor = 0;
 }
 
 /**
@@ -75,77 +81,75 @@ _ByteArray::~_ByteArray() {
         free(buff);
         buff = nullptr;
     }
-    _size = 0;
+
+    mSize = 0;
+    mCursor = 0;
 }
 
 
-char *_ByteArray::toValue() {
+byte *_ByteArray::toValue() {
     return buff;
 }
 
 int _ByteArray::size() {
-    return _size;
+    return mSize;
 }
 
 void _ByteArray::qucikShrink(int size) {
-    if(size >= _size) {
+    if(size >= mSize) {
         return;
     }
 
     buff[size] = 0;
-
-    _size = size;
+    mSize = size;
+    mCursor = 0;
 }
 
 int _ByteArray::resize(int size) {
-    if(size <= _size) {
-        return -ByteArrayWrongParam;
+    if(size <= mSize) {
+        return -InvalidParam;
     }
 
     if(buff == nullptr) {
-        return -ByteArrayNoMemory;
+        return -NotCreate;
     }
 
-    buff = (char *)realloc(buff,size);
-    //memset(buff,0,size);
-    //memcpy(buff,toFree,_size);
-    _size = size;
+    buff = (byte *)realloc(buff,size);
+
+    mSize = size;
+    mCursor = 0;
     
     return 0;
 }
 
 bool _ByteArray::isEmpty() {
-    if(buff == nullptr || _size == 0) {
-        return true;
-    }
-
-    return false;
+    return (buff == nullptr || mSize == 0);
 }
 
-char _ByteArray::at(int index) {
-    if(index >= _size) {
-        throw createArrayIndexOutOfBoundsException(createString("ByteArray"),_size,index);
+byte _ByteArray::at(int index) {
+    if(index >= mSize) {
+        throw createArrayIndexOutOfBoundsException("ByteArray",mSize,index);
     }
     return buff[index];
 }
 
-int _ByteArray::fill(char v) {
+int _ByteArray::fill(byte v) {
     if(buff == nullptr) {
-        return -ByteArrayNoMemory;
+        return -NotCreate;
     }
 
-    memset(buff,v,_size);
+    memset(buff,v,mSize);
     
     return 0;
 }
 
-int _ByteArray::fill(int index,char v) {
+int _ByteArray::fill(int index,byte v) {
     if(buff == nullptr) {
-        return -ByteArrayNoMemory;
+        return -NotCreate;
     }
 
-    if(index >= _size || index < 0) {
-        return -ByteArrayWrongParam;
+    if(index >= mSize || index < 0) {
+        return -InvalidParam;
     }
 
     buff[index] = v;
@@ -153,15 +157,15 @@ int _ByteArray::fill(int index,char v) {
     return 0;
 }
 
-int _ByteArray::fill(int index,int length,char v) {
+int _ByteArray::fill(int index,int length,byte v) {
     if(buff == nullptr) {
-        return -ByteArrayNoMemory;
+        return -NotCreate;
     }
 
-    if((index >= _size) 
+    if((index >= mSize) 
         || (index < 0)
-        || (index + length > _size)) {
-        return -ByteArrayWrongParam;
+        || (index + length > mSize)) {
+        return -InvalidParam;
     }
 
     memset(&buff[index],v,length);
@@ -170,32 +174,36 @@ int _ByteArray::fill(int index,int length,char v) {
 }
 
 int _ByteArray::append(sp<_ByteArray> b) {
+    printf("_ByteArray append trace1,b is %s,size is %d \n",b->toValue(),b->size());
+
     if(b == nullptr) {
-        return -ByteArrayWrongParam;
+        return -InvalidParam;
+    }
+    
+    return append(b->toValue(),b->size());
+}
+
+int _ByteArray::append(byte *data,int len) {
+    if(data == nullptr) {
+        return -InvalidParam;
     }
 
-    if(buff == nullptr) {
-        buff = (char *)malloc(b->size());
-        _size = b->size();
-        memcpy(buff,b->toValue(),b->size());
-        return 0;
+    if((mCursor + len) <= mSize) {
+        memcpy(&buff[mCursor],data,len);
+        mCursor += len;
     }
 
-    char *newData = (char *)malloc(_size + b->size());
-    memcpy(newData,buff,_size);
-    memcpy(newData + _size,b->toValue(),b->size());
-
-    free(buff);
-    buff = newData;
-    _size = _size + b->size();
-    return 0;
+    int oldCursor = mCursor;
+    resize(mCursor + len);
+    mCursor = oldCursor;
+    memcpy(&buff[mCursor],data,len);
 }
 
 String _ByteArray::toString() {
-    char _buff[_size + 1];
-    memset(_buff,0,_size+1);
-    memcpy(_buff,buff,_size);
-    return createString(&_buff[0],0,_size + 1);
+    char _buff[mSize + 1];
+    memset(_buff,0,mSize+1);
+    memcpy(_buff,buff,mSize);
+    return createString(&_buff[0],0,mSize + 1);
 }
 
 }

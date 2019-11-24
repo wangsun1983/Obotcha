@@ -27,8 +27,8 @@ public:
     virtual String getOrigin(HttpHeader) = 0;
     virtual int getVersion() = 0;
     virtual bool validateHandShake(HttpHeader) = 0;
-    virtual WebSocketPermessageDeflate validateExtensions(HttpHeader);
-    virtual ArrayList<String> extractSubprotocols(HttpHeader);
+    virtual WebSocketPermessageDeflate validateExtensions(HttpHeader) = 0;
+    virtual ArrayList<String> extractSubprotocols(HttpHeader) = 0;
  
 protected:
     ByteArray mData;

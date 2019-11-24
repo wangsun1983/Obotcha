@@ -45,10 +45,10 @@ _WebSocketPermessageDeflate::_WebSocketPermessageDeflate():mServerNoContextTakeo
                                                            mClientMaxWindowBits(15),
                                                            mServerMaxWindowBitsMode(WebSocketModeAccept),
                                                            mClientMaxWindowBitsMode(WebSocketModeAccept) {
-    //TODO
+    mZip = createZipMemoryStream();
 }
 
-bool _WebSocketPermessageDeflate::set(ArrayList<String> l) {
+bool _WebSocketPermessageDeflate::fit(ArrayList<String> l) {
     ListIterator<String>iterator = l->getIterator();
     bool isPermessageDeflat = false;
     while(iterator->hasValue()) {
@@ -118,6 +118,8 @@ void _WebSocketPermessageDeflate::setServerMaxWindowBits(int bits) {
     if (mServerMaxWindowBitsMode == 8) {
         mServerMaxWindowBitsMode = 9;
     }
+
+    //TODO update mZip
 }
 
 void _WebSocketPermessageDeflate::setClientMaxWindowBits(int bits) {
@@ -152,11 +154,21 @@ void _WebSocketPermessageDeflate::setClientMaxWindowBits(int bits) {
     // See note in doc comment
     if (mClientMaxWindowBits == 8) {
         mClientMaxWindowBits = 9;
-    }   
+    }
+
+    //TODO update mZip
 }
 
 void _WebSocketPermessageDeflate::init() {
     //TODO
+}
+
+ByteArray _WebSocketPermessageDeflate::compress(ByteArray b) {
+    return mZip->compress(b);
+}
+
+ByteArray _WebSocketPermessageDeflate::decompress(ByteArray b) {
+    return mZip->decompress(b);
 }
 
 }

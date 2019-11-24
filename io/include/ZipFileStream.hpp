@@ -39,6 +39,8 @@ public:
 
     void close();
 
+    ByteArray compress(ByteArray);
+
     int compress(String src,String dest);
 
     int compressWithPassword(String src,String dest,String password);

@@ -30,7 +30,7 @@ int _ByteArrayWriter::writeShort(int s) {
     return ByteArrayWriteSuccess;
 }
 
-int _ByteArrayWriter::writeByte(char v) {
+int _ByteArrayWriter::writeByte(byte v) {
     if(mIndex == mSize - 1) {
         return -ByteArrayWriteFail;
     }

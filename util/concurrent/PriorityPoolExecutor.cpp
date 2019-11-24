@@ -141,6 +141,15 @@ void _PriorityPoolThread::waitTermination(long interval) {
     //this->join();
 }
 
+bool _PriorityPoolThread::foceStopTask(FutureTask t) {
+    if(mCurrentTask != nullptr && mCurrentTask->task == t) {
+        stop();
+        return true;
+    }
+
+    return false;
+}
+
 _PriorityPoolThread::~_PriorityPoolThread() {
 }
 
@@ -163,6 +172,8 @@ _PriorityPoolExecutor::_PriorityPoolExecutor(int threadnum) {
     mWaitCondition = createCondition();
 
     mPriorityTasks = createArrayList<PriorityTask>();
+
+    mThreadMutex = createMutex("PriorityThread Mutex");
     mThreads = createArrayList<PriorityPoolThread>();
 
     PriorityPoolExecutor exe;
@@ -313,9 +324,54 @@ void _PriorityPoolExecutor::onHandlerRelease() {
     //finishWaitTerminate();
 }
 
-void _PriorityPoolExecutor::onCancel(FutureTask) {
-    //TODO
-    
+void _PriorityPoolExecutor::onCancel(FutureTask task) {
+    //printf"ThreadPoolExecutor onCancel start \n");
+    if(isShutDown ||isTermination) {
+        return;
+    }
+
+    AutoMutex l(mProtectMutex);
+
+    if(isTermination ||isTermination) {
+        return;
+    }
+
+    {
+        AutoMutex ll(mDataLock);
+        ListIterator<PriorityTask> iterator = mPriorityTasks->getIterator();
+        while(iterator->hasValue()) {
+            PriorityTask t = iterator->getValue();
+            if(t->task == task) {
+                iterator->remove();
+                return;
+            }
+        }
+    }
+
+    {
+        bool isNeedCreate = false;
+        ListIterator<PriorityPoolThread> iterator = mThreads->getIterator();
+
+        AutoMutex ll(mThreadMutex);
+        while(iterator->hasValue()) {
+            PriorityPoolThread thread = iterator->getValue();
+            if(thread->foceStopTask(task)) {
+                isNeedCreate = true;
+                iterator->remove();
+                break;
+            }
+        }
+        
+        if(isNeedCreate) {
+            PriorityPoolExecutor exe;
+            exe.set_pointer(this);
+
+            PriorityPoolThread thread = createPriorityPoolThread(mPriorityTasks,mDataLock,mDataCond,exe);
+            thread->start();
+            mThreads->add(thread);
+        }
+    }
+
 }
 
 _PriorityPoolExecutor::~_PriorityPoolExecutor() {

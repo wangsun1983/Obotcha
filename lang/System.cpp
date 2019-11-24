@@ -24,14 +24,14 @@ int _System::onlineProcessors(){
 
 String _System::executeForResult(String cmd) {
     FILE * fp;
-    char buffer[1024*4];
+    char buffer[1024*64];
     fp = popen(cmd->toChars(),"r");
     
     if(fp == nullptr) {
         return nullptr;
     }
 
-    fread(buffer,1,1024*4,fp);
+    fread(buffer,1,1024*64,fp);
     pclose(fp);
 
     return createString(buffer);

@@ -10,17 +10,12 @@
 
 namespace obotcha {
 
-enum ByteArrayExecuteResult {
-    ByteArrayNoMemory = 200,
-    ByteArrayWrongParam,
-};
-
 DECLARE_SIMPLE_CLASS(ByteArray)
 {
 public:
     _ByteArray(int length);
 
-    _ByteArray(const char *data,int len);
+    _ByteArray(const byte *data,int len);
 
     _ByteArray(sp<_ByteArray>);
 
@@ -31,7 +26,7 @@ public:
 
     ~_ByteArray();
 
-    char *toValue();
+    byte *toValue();
 
     int size();
 
@@ -43,22 +38,26 @@ public:
 
     bool isEmpty();
 
-    char at(int);
+    byte at(int);
 
-    int fill(char v);
+    int fill(byte v);
 
-    int fill(int index,char v);
+    int fill(int index,byte v);
 
-    int fill(int index,int length,char v);
+    int fill(int index,int length,byte v);
 
     int append(sp<_ByteArray>);
+
+    int append(byte *data,int len);
 
     String toString();
 
 private:
-    char *buff;
+    byte *buff;
 
-    int _size;
+    int mSize;
+
+    int mCursor;
 };
 
 template<typename T>
@@ -70,7 +69,8 @@ _ByteArray::_ByteArray(T *t) {
     }
     
     memcpy(buff,t,size);
-    _size = size;
+    mSize = size;
+    mCursor = 0;
 }
 
 }

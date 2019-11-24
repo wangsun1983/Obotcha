@@ -49,7 +49,7 @@ private:
 
     int mBufferSize;
 
-    char *mBuff;
+    byte *mBuff;
 
     Mutex mConnectMutex;
 };

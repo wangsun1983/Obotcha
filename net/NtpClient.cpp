@@ -157,9 +157,9 @@ long _NtpClient::getCurrentTimeSync() {
     char mNtpPacket[NTP_DATA_SIZE];
     memset(mNtpPacket,0,sizeof(mNtpPacket));
     generateNtpPacket(mNtpPacket);
-    unsigned int *v = (unsigned int *)mNtpPacket;
+    //unsigned int *v = (unsigned int *)mNtpPacket;
 
-    ByteArray packet = createByteArray((char *)mNtpPacket,NTP_DATA_SIZE);
+    ByteArray packet = createByteArray((byte *)mNtpPacket,NTP_DATA_SIZE);
     mClient->send(packet);
     {
         AutoMutex l(mMutex);
@@ -175,7 +175,7 @@ void _NtpClient::getCurrentTimeAsync(NtpListener l) {
     memset(mNtpPacket,0,sizeof(mNtpPacket));
     generateNtpPacket(mNtpPacket);
 
-    ByteArray packet = createByteArray((char *)mNtpPacket,NTP_DATA_SIZE);
+    ByteArray packet = createByteArray((byte *)mNtpPacket,NTP_DATA_SIZE);
     mClient->send(packet);
 }
 

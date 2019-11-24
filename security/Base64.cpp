@@ -32,17 +32,17 @@ String _Base64::encode(String str) {
 ByteArray _Base64::encode(ByteArray buff) {
     int size;
 
-    char *p = _encode(buff->toValue(),buff->size(),false,&size);
+    char *p = _encode((char *)buff->toValue(),buff->size(),false,&size);
     //printf("encode buff size is %d,buff is %s  \n",size,p);
-    ByteArray result = createByteArray(p,size);
+    ByteArray result = createByteArray((byte *)p,size);
     free(p);
     return result;
 }
 
 ByteArray _Base64::decode(ByteArray buff) {
     int length = 0;
-    char *p = _decode(buff->toValue(),buff->size(),false,&length);
-    ByteArray result = createByteArray(p,length);
+    char *p = _decode((char *)buff->toValue(),buff->size(),false,&length);
+    ByteArray result = createByteArray((byte *)p,length);
     free(p);
     return result;
 }

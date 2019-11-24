@@ -13,15 +13,15 @@ DECLARE_SIMPLE_CLASS(Uint64) {
 public:
     _Uint64(uint64_t v);
 
-    _Uint64(Uint64 v);
+    _Uint64(Uint64 &v);
 
     uint64_t toValue();
 
-    bool equals(Uint64 p);
+    bool equals(Uint64 &p);
 
     bool equals(uint64_t p);
 
-    bool equals(_Uint64 *p);
+    bool equals(const _Uint64 *p);
 /*
     Integer valueOf(String v);
 */

@@ -49,6 +49,8 @@ public:
 
     void waitTermination(long);
 
+    bool foceStopTask(FutureTask);
+
     ~_PriorityPoolThread();
 
 private:
@@ -122,7 +124,8 @@ private:
     bool isTermination;
     
     ArrayList<PriorityTask> mPriorityTasks;
-
+    
+    Mutex mThreadMutex;
     ArrayList<PriorityPoolThread> mThreads;
 
     Mutex mWaitMutex;

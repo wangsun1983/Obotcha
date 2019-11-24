@@ -6,27 +6,27 @@
 
 namespace obotcha {
 
-#define byte char
+#define byte unsigned char
 
 DECLARE_SIMPLE_CLASS(Byte)
 {
 public:
-    _Byte(char v);
+    _Byte(unsigned char v);
 
-    _Byte(Byte v);
+    _Byte(Byte &v);
     
-    char toValue();
+    byte toValue();
 
-    bool equals(char p);
+    bool equals(byte p);
     
-    bool equals(Byte p);
+    bool equals(Byte &p);
 
-    bool equals(_Byte *p);
+    bool equals(const _Byte *p);
 
     ~_Byte();
 
 private:
-    char val;
+    byte val;
 
 };
 

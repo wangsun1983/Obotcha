@@ -21,6 +21,7 @@ DECLARE_SIMPLE_CLASS(WebSocketHybi13Composer) IMPLEMENTS(WebSocketComposer){
 public:
     _WebSocketHybi13Composer();
     String genShakeHandMessage(HttpHeader h);
+    
 
 private:
     String genClientShakeHandMessage(HttpHeader h);

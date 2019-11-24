@@ -21,6 +21,8 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
+#include "NullPointerException.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
 
 namespace obotcha {
 
@@ -35,12 +37,12 @@ _String::_String() {
 _String::_String(String v) {
     if(v.m_ptr != nullptr) {
         m_str = v->m_str;
-    } 
+    }
 }
 
 _String::_String(Long v) {
     if(v == nullptr) {
-        return;
+        throw NullPointerException("Long is null");
     }
 
     std::stringstream ss;
@@ -52,7 +54,7 @@ _String::_String(Long v) {
 
 _String::_String(Byte v) {
     if(v == nullptr) {
-        return;
+        throw NullPointerException("Byte is null");
     }
 
     std::stringstream ss;
@@ -64,7 +66,7 @@ _String::_String(Byte v) {
 
 _String::_String(Uint8 v) {
     if(v == nullptr) {
-        return;
+        throw NullPointerException("Uint8 is null");
     }
 
     std::stringstream ss;
@@ -76,7 +78,7 @@ _String::_String(Uint8 v) {
 
 _String::_String(Uint16 v) {
     if(v == nullptr) {
-        return;
+        throw NullPointerException("Uint16 is null");
     }
 
     std::stringstream ss;
@@ -88,7 +90,7 @@ _String::_String(Uint16 v) {
 
 _String::_String(Uint32 v) {
     if(v == nullptr) {
-        return;
+        throw NullPointerException("Uint32 is null");
     }
 
     std::stringstream ss;
@@ -100,7 +102,7 @@ _String::_String(Uint32 v) {
 
 _String::_String(Uint64 v) {
     if(v == nullptr) {
-        return;
+        throw NullPointerException("Uint64 is null");
     }
 
     std::stringstream ss;
@@ -115,12 +117,15 @@ _String::_String(std::string v) {
 }
 
 _String::_String(std::string *v) {
+    if(v == nullptr) {
+        throw NullPointerException("std::string is null");
+    }
     m_str = *v;
 }
 
 _String::_String(Integer v) {
     if(v == nullptr) {
-        return;
+        throw NullPointerException("Integer is null");
     }
 
     std::stringstream ss;
@@ -132,7 +137,7 @@ _String::_String(Integer v) {
 
 _String::_String(Boolean v) {
     if(v == nullptr) {
-        return;
+        throw NullPointerException("Boolean is null");
     }
 
     bool value = v->toValue();
@@ -145,8 +150,7 @@ _String::_String(Boolean v) {
 
 _String::_String(Float v) {
     if(v == nullptr) {
-        ////m_str = new std::string();
-        return;
+        throw NullPointerException("Float is null");
     }
 
     std::stringstream ss;
@@ -158,8 +162,7 @@ _String::_String(Float v) {
 
 _String::_String(Double v) {
     if(v == nullptr) {
-        //m_str = new std::string();
-        return;
+        throw NullPointerException("Double is null");
     }
     
     std::stringstream ss;
@@ -201,7 +204,7 @@ _String::_String(long v) {
     m_str = ss.str();
 }
 
-_String::_String(byte v) {
+_String::_String(char v) {
     std::stringstream ss;
     ss<<v;
     m_str = ss.str();
@@ -232,13 +235,12 @@ _String::_String(uint64_t v) {
 }
 
 _String::_String(const char *v) {
-    if(v != nullptr) {
-        m_str = std::string(v);
+    if(v == nullptr) {
+        throw NullPointerException("char * is null");
     }
-
+    
+    m_str = std::string(v);
 }
-
-
 
 _String::_String(const char *v,int start,int length) {    
     m_str = std::string(v,start,length);
@@ -253,12 +255,8 @@ const char * _String::toChars() {
 }
 
 char _String::charAt(int index) {
-    if(m_str.size() == 0) {
-        return -1;
-    }
-
     if(index >= m_str.size()) {
-        return -1;    
+        throw createArrayIndexOutOfBoundsException("char At error");
     }
 
     return m_str.data()[index];
@@ -285,6 +283,27 @@ bool _String::contains(String val) {
     return false;
 }
 
+bool _String::contains(std::string val) {
+    if(m_str.find(val) != -1) {
+        return true;
+    }
+
+    return false;
+}
+    
+bool _String::contains(const char *val) {
+    if(val == nullptr) {
+        return false;
+    }
+
+    if(m_str.find(val) != -1) {
+        return true;
+    }
+
+    return false;
+}
+
+
 String _String::trim() {
     if(m_str.size() != 0) {
         std::string trim_str = std::string(m_str);
@@ -310,23 +329,23 @@ int _String::size() {
 }
 
 String _String::append(String s) {
-    String str = createString(m_str);
-
     if(s == nullptr) {
-        return str;
+        return createString(m_str);
     }
 
-    return str->append(s->toChars());
+    String result = append(s->toChars());
+    return result;
+}
+
+String _String::append(std::string s) {
+    return append(s.data());
 }
 
 String _String::append(const char *p) {
-    String newStr = createString(m_str);
     if(p == nullptr) {
-        return newStr;
+        return createString(m_str);
     }
-
-    newStr->m_str.append(p);
-    return newStr;
+    return createString(m_str.append(p));
 }
 
 int _String::indexOf(String v) {
@@ -335,6 +354,18 @@ int _String::indexOf(String v) {
     }
 
     return m_str.find(v->m_str);
+}
+
+int _String::indexOf(std::string v) {
+    return m_str.find(v);
+}
+
+int _String::indexOf(const char *v) {
+    if(v == nullptr) {
+        return -1;
+    }
+
+    return m_str.find(v);
 }
     
 String _String::valueOf(Integer v) {
@@ -413,14 +444,6 @@ bool _String::equals(String s) {
 }
 
 bool _String::equals(const char *s) {
-    if(m_str.size() == 0) {
-        if(s == nullptr) {
-            return true;
-        }
-
-        return false;
-    }
-
     if(s == nullptr) {
         return false;
     }
@@ -429,19 +452,14 @@ bool _String::equals(const char *s) {
 }
 
 bool _String::equals(const std::string p) {
-
-    if(m_str.size() == 0) {
-        if(p.size() == 0) {
-            return true;
-        }
-
-        return false;
-    }
-
     return (m_str.compare(p) == 0);
 }
 
 ArrayList<String> _String::split(String v) {
+    if(v == nullptr) {
+        return nullptr;
+    }
+
     ArrayList<String> t = createArrayList<String>();
     int index = 0;
     int last = 0;
@@ -817,80 +835,209 @@ String _String::toUpperCase() {
 }
     
 bool _String::equalsIgnoreCase(String str) {
-    if(m_str.size() == 0) {
-        if(str == nullptr) {
-            return true;
-        }
+    if(str == nullptr) {
+        return false;
+    }
+
+    return equalsIgnoreCase(str->toChars());
+}
+
+bool _String::equalsIgnoreCase(std::string str) {
+    equalsIgnoreCase(str.data());
+}
+
+bool _String::equalsIgnoreCase(const char * str) {
+    if(str == nullptr) {
         return false;
     }
     
-    String str1 = createString(m_str);
-    String str2 = createString(str);
+    const char *m = m_str.data();
+    int index = 0;
+    while(1) {
+        if(m[index] != str[index]) {
+            if((m[index] != (str[index] + 32)) &&
+               (m[index] != (str[index] - 32))) {
+                return false;
+            }
+        }
 
-    std::string std_str1 = str1->m_str;
-    std::string std_str2 = str2->m_str;
+        if(m[index] == '\0') {
+            break;
+        }
 
-    std::transform(std_str1.begin(),std_str1.end(),std_str1.begin(),::toupper);
-    std::transform(std_str2.begin(),std_str2.end(),std_str2.begin(),::toupper);
+        index++;
+    }
 
-    return (std_str1.compare(std_str2) == 0);
+    return true;
 }
 
 int _String::indexOfIgnoreCase(String str) {
-    if(m_str.size() == 0) {
-        if(str == nullptr) {
-            return true;
-        }
-        return false;
+    if(str == nullptr) {
+        return  -1;
     }
+    return indexOfIgnoreCase(str->toChars());
+}
 
-    String str1 = createString(m_str);
-    String str2 = createString(str);
+int _String::indexOfIgnoreCase(std::string str) {
+    return indexOfIgnoreCase(str.data());
+}
 
-    std::string std_str1 = str1->m_str;
-    std::string std_str2 = str2->m_str;
+int _String::indexOfIgnoreCase(const char * str) {
+    if(str == nullptr) {
+        return  -1;
+    }
+    const char *m = m_str.data();
+    int index = 0;
+    int subIndex = 0;
+    int startIndex = -1;
+    while(1) {
+        if(m[index] == str[subIndex] ||
+           m[index] == str[subIndex] + 32 ||
+           m[index] == str[subIndex] - 32) {
+           if(startIndex == -1) {
+               startIndex = index;
+           }
 
-    std::transform(std_str1.begin(),std_str1.end(),std_str1.begin(),::toupper);
-    std::transform(std_str2.begin(),std_str2.end(),std_str2.begin(),::toupper);
-    
-    return std_str1.find(std_str2);
+           index++;
+           subIndex++;
+           continue;
+        }
+
+        if(str[subIndex] == '\0') {
+            return startIndex;
+        }
+
+        if(m[index] == '\0') {
+            return -1;
+        }
+
+        index++;
+        subIndex = 0;
+        startIndex = -1;
+    }
 }
 
 bool _String::containsIgnoreCase(String val) {
-    if(m_str.size() == 0) {
-        if(val == nullptr) {
-            return true;
-        }
-        return true;
+    if(val == nullptr) {
+        return false;
     }
+    return (indexOfIgnoreCase(val) != -1);
+}
 
-    String str1 = createString(m_str);
-    String str2 = createString(val);
+bool _String::containsIgnoreCase(std::string val) {
+    return (indexOfIgnoreCase(val) != -1);
+}
 
-    std::string std_str1 = str1->m_str;
-    std::string std_str2 = str2->m_str;
-
-    std::transform(std_str1.begin(),std_str1.end(),std_str1.begin(),::toupper);
-    std::transform(std_str2.begin(),std_str2.end(),std_str2.begin(),::toupper);
-    return (std_str1.find(std_str2) != -1);
+bool _String::containsIgnoreCase(const char * val) {
+    if(val == nullptr) {
+        return false;
+    }
+    return (indexOfIgnoreCase(val) != -1);
 }
 
 bool _String::startsWithIgnoreCase(String str) {
-    if(m_str.size() == 0 || m_str.size() == 0 || str == nullptr) {
+    if(str == nullptr) {
+        return false;
+    }
+    return (indexOfIgnoreCase(str) == 0);
+}
+
+bool _String::startsWithIgnoreCase(std::string str) {
+    return (indexOfIgnoreCase(str) == 0);
+}
+
+bool _String::startsWithIgnoreCase(const char * str) {
+    if(str == nullptr) {
+        return false;
+    }
+    return (indexOfIgnoreCase(str) == 0);
+}
+
+bool _String::endsWithIgnoreCase(String s) {
+    if(s == nullptr) {
+        return false;
+    }
+    endsWithIgnoreCase(s->toChars());
+}
+
+bool _String::endsWithIgnoreCase(std::string str) {
+    endsWithIgnoreCase(str.data());
+}
+
+bool _String::endsWithIgnoreCase(const char * str) {
+    if(str == nullptr) {
         return false;
     }
 
-    String str1 = createString(m_str);
-    String str2 = createString(str);
-    std::string std_str1 = str1->m_str;
-    std::string std_str2 = str2->m_str;
+    const char *m = m_str.data();
+    int index = m_str.size() - 1;
+    int subIndex = strlen(str) - 1;
+    while(1) {
+        if((m[index] != str[subIndex]) &&
+           (m[index] != str[subIndex] + 32) &&
+           (m[index] != str[subIndex] - 32)) {
+            return false;
+        }
 
-    std::transform(std_str1.begin(),std_str1.end(),std_str1.begin(),::toupper);
-    std::transform(std_str2.begin(),std_str2.end(),std_str2.begin(),::toupper);
-    
-    int result = std_str1.find(std_str2);
-    return (result == std_str2.size());
+        if(subIndex == 0) {
+            return true;
+        }
+
+        if(index == 0) {
+            return false;
+        }
+
+        index--;
+        subIndex--;
+    }
+
+    return false;
 }
+
+int _String::lastIndexOfIgnoreCase(String v) {
+    if(v == nullptr) {
+        return false;
+    }
+    lastIndexOfIgnoreCase(v->toChars());
+}
+
+int _String::lastIndexOfIgnoreCase(std::string v) {
+    lastIndexOfIgnoreCase(v.data());
+}
+
+int _String::lastIndexOfIgnoreCase(const char * str) {
+    if(str == nullptr) {
+        return false;
+    }
+
+    const char *m = m_str.data();
+    int index = m_str.size() - 1;
+    int strEnd = strlen(str) - 1;
+    int subIndex = strEnd;
+    while(1) {
+        if((m[index] == str[subIndex]) ||
+           (m[index] == str[subIndex] + 32) ||
+           (m[index] == str[subIndex] - 32)) {
+            if(subIndex == 0) {
+                return index;
+            }
+
+            index--;
+            subIndex--;
+            continue;
+        }
+
+        if(index == 0) {
+            return -1;
+        }
+
+        index--;
+        subIndex = strEnd;
+    }
+
+    return -1;
+}
+
 
 bool _String::isEmpty() {
     return m_str.size() == 0;

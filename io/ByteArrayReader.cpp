@@ -137,7 +137,7 @@ String _ByteArrayReader::readLine() {
     while(mIndex < mData->size()) {
         switch(mData->at(mIndex)) {
             case '\r':{
-                String result = createString(mData->toValue(),start,mIndex - start);
+                String result = createString((char *)mData->toValue(),start,mIndex - start);
                 mIndex++;
                 if(mIndex < mData->size() && mData->at(mIndex) == '\n') {
                     mIndex++;
@@ -146,7 +146,7 @@ String _ByteArrayReader::readLine() {
             }
 
             case '\n': {
-                String result = createString(mData->toValue(),start,mIndex - start);
+                String result = createString((char *)mData->toValue(),start,mIndex - start);
                 mIndex++;
                 return result;
             }
