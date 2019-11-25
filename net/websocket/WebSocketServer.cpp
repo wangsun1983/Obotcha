@@ -7,6 +7,12 @@
 #include "WebSocketHybi07Parser.hpp"
 #include "WebSocketHybi08Parser.hpp"
 #include "WebSocketHybi13Parser.hpp"
+
+#include "WebSocketHybi00Composer.hpp"
+#include "WebSocketHybi07Composer.hpp"
+#include "WebSocketHybi08Composer.hpp"
+#include "WebSocketHybi13Composer.hpp"
+
 #include "WebSocketProtocol.hpp"
 #include "TcpServer.hpp"
 #include "Error.hpp"
@@ -49,21 +55,25 @@ bool _WebSocketClientManager::addClient(int fd,int version) {
     switch(version) {
         case 0:{
             data->mParser = createWebSocketHybi00Parser();
+            data->mComposer = createWebSocketHybi00Composer(WsServerComposer);
             break;
         }
         
         case 7:{
             data->mParser = createWebSocketHybi07Parser();
+            data->mComposer = createWebSocketHybi07Composer(WsServerComposer);
             break;
         }
         
         case 8: {
             data->mParser = createWebSocketHybi08Parser();
+            data->mComposer = createWebSocketHybi08Composer(WsServerComposer);
             break;
         }
 
         case 13: {
             data->mParser = createWebSocketHybi13Parser();
+            data->mComposer = createWebSocketHybi13Composer(WsServerComposer);
             break;
         }
         
@@ -150,16 +160,19 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
         WebSocketParser parser = st(WebSocketClientManager)::getInstance()->getClient(fd)->mParser;
 
         if(!parser->validateHandShake(header)) {
+            //invalid connection,we should close.
+            //TODO
             return;
         }
 
         //Try to check whether extension support deflate.
-        parser->validateExtensions(header);
-        //WebSocketPermessageDeflate deflate = parser->validateExtensions(header);
-        //if(deflate == nullptr) {
-        //    st(WebSocketClientManager)::getInstance()->setWebSocketPermessageDeflate(fd,deflate);
-        //}
-
+        printf("deflate check trace1 \n");
+        WebSocketPermessageDeflate deflate = parser->validateExtensions(header);
+        if(deflate != nullptr) {
+            printf("deflate check trace2 \n");
+            st(WebSocketClientManager)::getInstance()->setWebSocketPermessageDeflate(fd,deflate);
+        }
+        
         ArrayList<String> protocols = parser->extractSubprotocols(header);
         if(protocols != nullptr && protocols->size() != 0) {
 
@@ -173,7 +186,9 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
             observer->addFd(fd,EPOLLIN|EPOLLRDHUP|EPOLLHUP|EPOLLMSG|EPOLLET);
         } 
 
-        String shakeresponse = mResponse->generateShakeHandFrame(key);
+        //String shakeresponse = mResponse->generateShakeHandFrame(key);
+        WebSocketComposer composer = st(WebSocketClientManager)::getInstance()->getClient(fd)->mComposer;
+        String shakeresponse = composer->genShakeHandMessage(st(WebSocketClientManager)::getInstance()->getClient(fd));
         printf("shakeresponse is %s \n",shakeresponse->toChars());
         st(NetUtils)::sendTcpPacket(fd,createByteArray(shakeresponse));
     }

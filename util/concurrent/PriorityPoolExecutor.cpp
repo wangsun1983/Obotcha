@@ -38,9 +38,9 @@ _PriorityPoolThread::_PriorityPoolThread(ArrayList<PriorityTask> l,Mutex m,Condi
 
     mExecutor = exe;
 
-    mStateMutex = createMutex(createString("PriorityStateMutex"));
+    mStateMutex = createMutex("PriorityStateMutex");
 
-    mExecutorMutex = createMutex(createString("PriorityPoolExecutorMutex"));
+    mExecutorMutex = createMutex("PriorityPoolExecutorMutex");
 }
 
 void _PriorityPoolThread::run() {
@@ -92,10 +92,11 @@ void _PriorityPoolThread::run() {
     {
         AutoMutex ll(mExecutorMutex);
         if(mExecutor != nullptr) {
-            mExecutor->onHandlerRelease();
+            PriorityPoolThread thread;
+            thread.set_pointer(this);
+            mExecutor->onCompleteNotify(thread);
+            mExecutor.remove_pointer();
         }
-
-        mExecutor.remove_pointer();
     }
 }
 
@@ -118,9 +119,11 @@ void _PriorityPoolThread::onInterrupt() {
     {
         AutoMutex ll(mExecutorMutex);
         if(mExecutor != nullptr) {
-            mExecutor->onHandlerRelease();
+            PriorityPoolThread thread;
+            thread.set_pointer(this);
+            mExecutor->onCompleteNotify(thread);
+            mExecutor.remove_pointer();
         }
-        mExecutor.remove_pointer();
     }
 }
 
@@ -142,7 +145,9 @@ void _PriorityPoolThread::waitTermination(long interval) {
 }
 
 bool _PriorityPoolThread::foceStopTask(FutureTask t) {
+    //printf("ThreadPoolExecutor foceStopTask trace1 \n");
     if(mCurrentTask != nullptr && mCurrentTask->task == t) {
+        //printf("ThreadPoolExecutor foceStopTask trace2 \n");
         stop();
         return true;
     }
@@ -217,9 +222,12 @@ int _PriorityPoolExecutor::shutdown() {
 
         isShutDown = true;
 
-        int size = mThreads->size();
-        for(int i = 0;i < size;i++) {
-            mThreads->get(i)->stop();
+        AutoMutex ll(mThreadMutex);
+        ListIterator<PriorityPoolThread> iterator = mThreads->getIterator();
+        while(iterator->hasValue()) {
+            PriorityPoolThread thread = iterator->getValue();
+            thread->stop();
+            iterator->next();
         }
     }
     
@@ -297,7 +305,10 @@ Future _PriorityPoolExecutor::submit(int level,Runnable task) {
         }
     }
 
-    FutureTask futureTask = createFutureTask(FUTURE_TASK_SUBMIT,task);
+    FutureTaskStatusListener listener;
+    listener.set_pointer(this);
+
+    FutureTask futureTask = createFutureTask(FUTURE_TASK_SUBMIT,task,listener);
     mPriorityTasks->insert(index,createPriorityTask(level,futureTask));
 
     mDataCond->notify();
@@ -310,22 +321,27 @@ int _PriorityPoolExecutor::getThreadsNum() {
     return mThreads->size();
 }
 
-void _PriorityPoolExecutor::onHandlerRelease() {
-    AutoMutex ll(mProtectMutex);
-    mThreadNum--;
+void _PriorityPoolExecutor::onCompleteNotify(PriorityPoolThread t){
+    AutoMutex ll(mThreadMutex);
+    ListIterator<PriorityPoolThread> iterator = mThreads->getIterator();
+    while(iterator->hasValue()) {
+        PriorityPoolThread thread = iterator->getValue();
+        if(thread == t) {
+            iterator->remove();
+            break;
+        }
+        iterator->next();
+    }
 
-    if(mThreadNum == 0) {
+    if(mThreads->size() == 0) {
         mThreads->clear();
         AutoMutex ll(mWaitMutex);
         isTermination = true;
         mWaitCondition->notifyAll();
     }
-
-    //finishWaitTerminate();
 }
 
 void _PriorityPoolExecutor::onCancel(FutureTask task) {
-    //printf"ThreadPoolExecutor onCancel start \n");
     if(isShutDown ||isTermination) {
         return;
     }
@@ -345,21 +361,24 @@ void _PriorityPoolExecutor::onCancel(FutureTask task) {
                 iterator->remove();
                 return;
             }
+            iterator->next();
         }
     }
-
+    
     {
         bool isNeedCreate = false;
-        ListIterator<PriorityPoolThread> iterator = mThreads->getIterator();
-
         AutoMutex ll(mThreadMutex);
+        ListIterator<PriorityPoolThread> iterator = mThreads->getIterator();
         while(iterator->hasValue()) {
             PriorityPoolThread thread = iterator->getValue();
+            
             if(thread->foceStopTask(task)) {
                 isNeedCreate = true;
                 iterator->remove();
                 break;
             }
+
+            iterator->next();
         }
         
         if(isNeedCreate) {
@@ -375,12 +394,7 @@ void _PriorityPoolExecutor::onCancel(FutureTask task) {
 }
 
 _PriorityPoolExecutor::~_PriorityPoolExecutor() {
-    //int size = mThreads->size();
-    //for(int i = 0;i < size;i++) {
-    //    mThreads->get(i)->onExecutorDestroy();
-    //}
-
-    //shutdown();
+    
     if(!isShutDown) {
         throw createExecutorDestructorException("Priority Thread Pool destruct error");
     }

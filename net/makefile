@@ -33,6 +33,10 @@ link += inetaddress \
 		websockethybi07parser \
 		websockethybi08parser \
 		websockethybi00parser \
+		websockethybi13composer \
+		websockethybi07composer \
+		websockethybi08composer \
+		websockethybi00composer \
 		websocketpermessagedeflate \
 		websocketclient \
 
@@ -68,6 +72,10 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/websockethybi07parser.o \
 		$(outtmp)/websockethybi08parser.o \
 		$(outtmp)/websockethybi00parser.o \
+		$(outtmp)/websockethybi13composer.o \
+		$(outtmp)/websockethybi07composer.o \
+		$(outtmp)/websockethybi08composer.o \
+		$(outtmp)/websockethybi00composer.o \
 		$(outtmp)/websocketpermessagedeflate.o \
 		$(outtmp)/websocketclientinfo.o \
 		$(outtmp)/websocketclient.o \
@@ -161,6 +169,18 @@ websockethybi08parser :$(netDir)/websocket/WebSocketHybi08Parser.cpp
 
 websockethybi00parser :$(netDir)/websocket/WebSocketHybi00Parser.cpp
 	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketHybi00Parser.cpp -o $(outtmp)/websockethybi00parser.o $(external)		
+
+websockethybi13composer :$(netDir)/websocket/WebSocketHybi13Composer.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketHybi13Composer.cpp -o $(outtmp)/websockethybi13composer.o $(external)		
+
+websockethybi07composer :$(netDir)/websocket/WebSocketHybi07Composer.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketHybi07Composer.cpp -o $(outtmp)/websockethybi07composer.o $(external)		
+
+websockethybi08composer :$(netDir)/websocket/WebSocketHybi08Composer.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketHybi08Composer.cpp -o $(outtmp)/websockethybi08composer.o $(external)		
+
+websockethybi00composer :$(netDir)/websocket/WebSocketHybi00Composer.cpp
+	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketHybi00Composer.cpp -o $(outtmp)/websockethybi00composer.o $(external)		
 
 websocketpermessagedeflate :$(netDir)/websocket/WebSocketPermessageDeflate.cpp
 	$(gcc) $(cflags) -c $(netDir)/websocket/WebSocketPermessageDeflate.cpp -o $(outtmp)/websocketpermessagedeflate.o $(external)		

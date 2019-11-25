@@ -58,7 +58,7 @@ bool _WebSocketPermessageDeflate::fit(ArrayList<String> l) {
         }
 
         if(isPermessageDeflat) {
-            continue;
+            goto next;
         }
 
         if(v->equalsIgnoreCase("server_no_context_takeover")) {
@@ -169,6 +169,14 @@ ByteArray _WebSocketPermessageDeflate::compress(ByteArray b) {
 
 ByteArray _WebSocketPermessageDeflate::decompress(ByteArray b) {
     return mZip->decompress(b);
+}
+
+int _WebSocketPermessageDeflate::getServerMaxWindowBits() {
+    return mServerMaxWindowBits;
+}
+
+int _WebSocketPermessageDeflate::getClientMaxWindowBits() {
+    return mClientMaxWindowBits;
 }
 
 }

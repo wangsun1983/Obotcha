@@ -17,7 +17,8 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(WebSocketHybi00Composer) IMPLEMENTS(WebSocketComposer) {
 public:
-    String genShakeHandMessage();
+    _WebSocketHybi00Composer(int);
+    String genShakeHandMessage(WebSocketClientInfo);
 };
 
 }

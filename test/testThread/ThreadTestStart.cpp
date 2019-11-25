@@ -42,7 +42,7 @@ int testThreadStart() {
         printf("---[Thread TestStart {start()} case3] [Success]--- \n");
         break;
     }
-/*
+
     while(1) {
         StartTestThread1 t1 = createStartTestThread1();
         t1->start();

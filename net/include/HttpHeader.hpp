@@ -137,11 +137,17 @@ public:
 
     String genHtml();
 
+    int getMethod();
+    
+    void setMethod(int);
+
 private:
     static String mHeaderList[];
     HashMap<int,String> mValues;
 
     ArrayList<HttpCookie> mCookies;
+
+    int mMethod;
 };
 
 }

@@ -8,12 +8,13 @@
 #include "InetAddress.hpp"
 #include "ByteArray.hpp"
 #include "WebSocketParser.hpp"
-#include "WebSocketHybi13Composer.hpp"
+#include "WebSocketHybi08Composer.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(WebSocketHybi07Composer) IMPLEMENTS(WebSocketHybi08Composer){
-
+public:
+    _WebSocketHybi07Composer(int);
 };
 
 }

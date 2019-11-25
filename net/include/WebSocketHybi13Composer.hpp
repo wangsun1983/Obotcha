@@ -19,13 +19,12 @@ namespace obotcha {
  */
 DECLARE_SIMPLE_CLASS(WebSocketHybi13Composer) IMPLEMENTS(WebSocketComposer){
 public:
-    _WebSocketHybi13Composer();
-    String genShakeHandMessage(HttpHeader h);
+    _WebSocketHybi13Composer(int);
+    String genShakeHandMessage(WebSocketClientInfo h);
     
-
 private:
-    String genClientShakeHandMessage(HttpHeader h);
-    String genServerShakeHandMessage(HttpHeader h);
+    String genClientShakeHandMessage(WebSocketClientInfo h);
+    String genServerShakeHandMessage(WebSocketClientInfo h);
 
     Sha mSha;
     Base64 mBase64;

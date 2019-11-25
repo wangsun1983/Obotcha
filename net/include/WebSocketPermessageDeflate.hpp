@@ -32,6 +32,9 @@ public:
 
     ByteArray compress(ByteArray);
     ByteArray decompress(ByteArray);
+
+    int getServerMaxWindowBits();
+    int getClientMaxWindowBits();
     
 private:
     void setServerMaxWindowBits(int);

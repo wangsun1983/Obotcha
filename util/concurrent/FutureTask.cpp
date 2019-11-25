@@ -75,7 +75,6 @@ void _FutureTask::cancel() {
         mListener = nullptr;
         task = nullptr;
     }
-
     mRunnable = nullptr;
 }
 

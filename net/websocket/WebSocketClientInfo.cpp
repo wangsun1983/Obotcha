@@ -10,6 +10,7 @@
 #include "WebSocketParser.hpp"
 #include "WebSocketComposer.hpp"
 #include "WebSocketClientInfo.hpp"
+#include "WebSocketPermessageDeflate.hpp"
 
 namespace obotcha {
 

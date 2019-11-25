@@ -242,16 +242,6 @@ int _ThreadPoolExecutor::shutdown() {
     }
 
     mPool->clear();
-
-    //printf"shutdown trace3\n");    
-    AutoMutex ll2(mProtectMutex);
-    if(!mIsTerminated) {
-        //printf"shutdown trace4,this is %lx,count is %d \n",this,this->getStrongCount());
-#if 0        
-        startWaitTerminate();
-#endif 0        
-        //printf"shutdown trace5,this is %lx,count is %d,count addr is %lx \n",this,this->getStrongCount(),this);
-    }
     return 0;
 }
 
@@ -323,11 +313,7 @@ void _ThreadPoolExecutor::onCompleteNotify(ThreadPoolExecutorHandler h) {
     }
 
     if(mIsShutDown) {
-        if(mHandlers->size() == 0) {
-            
-#if 0            
-            finishWaitTerminate();
-#endif           
+        if(mHandlers->size() == 0) {         
             AutoMutex ll(mWaitMutex);
             mIsTerminated = true;
             mWaitCondition->notifyAll();
@@ -341,16 +327,12 @@ int _ThreadPoolExecutor::getThreadsNum() {
 }
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
-    
-    //printf"~_ThreadPoolExecutor trace4 \n");
     if(!mIsShutDown) {
         throw createExecutorDestructorException("ThreadPoolExecutor destruct error");
     }
-    //printf"~_ThreadPoolExecutor trace5 \n");
 }
 
 void _ThreadPoolExecutor::onCancel(FutureTask t) {
-    //printf"ThreadPoolExecutor onCancel start \n");
     if(mIsShutDown ||mIsTerminated) {
         return;
     }
@@ -361,11 +343,7 @@ void _ThreadPoolExecutor::onCancel(FutureTask t) {
         return;
     }
     
-    //printf"before remove mPool size is %d \n",mPool->size());
-    if(mPool->remove(t)) {
-        //printf"after remove mPool size is %d \n",mPool->size());
-    } else {
-        //printf"ThreadPoolExecutor onCancel trace1 \n");
+    if(!mPool->remove(t)) {
         ThreadPoolExecutorHandler h = nullptr;
         int size = mHandlers->size();
         for(int i = 0;i < size;i++) {

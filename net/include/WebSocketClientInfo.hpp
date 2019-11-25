@@ -10,22 +10,23 @@
 #include "WebSocketFrame.hpp"
 #include "ByteArrayReader.hpp"
 #include "HttpHeader.hpp"
-#include "WebSocketParser.hpp"
-#include "WebSocketComposer.hpp"
 
 namespace obotcha {
 
+class _WebSocketComposer;
+class _WebSocketParser;
+class _WebSocketPermessageDeflate;
 
 DECLARE_SIMPLE_CLASS(WebSocketClientInfo) {
 public:
     _WebSocketClientInfo();
 
-    WebSocketParser mParser;
-    WebSocketComposer mComposer;
+    sp<_WebSocketParser> mParser;
+    sp<_WebSocketComposer> mComposer;
     
     HttpHeader mHttpHeader;
     WebSocketHeader mWsHeader;
-    WebSocketPermessageDeflate mDeflate;
+    sp<_WebSocketPermessageDeflate> mDeflate;
     ArrayList<String> mProtocols;
 };
 

@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-void _WebSocketComposer::setType(int v) {
+_WebSocketComposer::_WebSocketComposer(int v) {
     mType = v;
 }
 

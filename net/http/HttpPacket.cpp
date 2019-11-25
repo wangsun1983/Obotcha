@@ -20,6 +20,7 @@ void _HttpPacket::setHeader(HttpHeader h) {
 }
 
 HttpHeader _HttpPacket::getHeader() {
+	mHeader->setMethod(mMethod);
     return mHeader;
 }
     

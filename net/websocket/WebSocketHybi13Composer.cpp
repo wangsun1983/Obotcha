@@ -10,12 +10,12 @@
 
 namespace obotcha {
 
-_WebSocketHybi13Composer::_WebSocketHybi13Composer() {
+_WebSocketHybi13Composer::_WebSocketHybi13Composer(int type):_WebSocketComposer(type){
     mSha = createSha(SHA_1);
     mBase64 = createBase64();
 }
 
-String _WebSocketHybi13Composer::genShakeHandMessage(HttpHeader h) {
+String _WebSocketHybi13Composer::genShakeHandMessage(WebSocketClientInfo h) {
     
     //TODO
     switch(mType) {
@@ -30,11 +30,12 @@ String _WebSocketHybi13Composer::genShakeHandMessage(HttpHeader h) {
 
 }
 
-String _WebSocketHybi13Composer::genClientShakeHandMessage(HttpHeader h) {
+String _WebSocketHybi13Composer::genClientShakeHandMessage(WebSocketClientInfo info) {
     //TODO
 }
 
-String _WebSocketHybi13Composer::genServerShakeHandMessage(HttpHeader h) {
+String _WebSocketHybi13Composer::genServerShakeHandMessage(WebSocketClientInfo  info) {
+    HttpHeader h = info->mHttpHeader;
     String key = h->getValue(Http_Header_Sec_WebSocket_Key);
 
     String key_mgic = key->append(st(WebSocketProtocol)::ACCEPT_MAGIC);
@@ -52,6 +53,15 @@ String _WebSocketHybi13Composer::genServerShakeHandMessage(HttpHeader h) {
     }
 
     String resp = connection->append("Sec-WebSocket-Accept:")->append(base64)->append("\r\n\r\n");
+
+    //check whetehr we have Deflate
+    printf("genServerShakeHandeMessage trace1 \n");
+    if(info->mDeflate != nullptr) {
+        printf("genServerShakeHandeMessage trace2 \n");
+        resp = resp->append("permessage-deflate")
+                   ->append(",client_max_window_bits=")
+                   ->append(createString(info->mDeflate->getServerMaxWindowBits()));
+    }
 
     return resp;
 }

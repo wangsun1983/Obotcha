@@ -134,6 +134,14 @@ String _HttpHeader::getValue(int header) {
     return mValues->get(header);
 }
 
+int _HttpHeader::getMethod() {
+    return mMethod;
+}
+    
+void _HttpHeader::setMethod(int v) {
+    mMethod = v;
+}
+
 void _HttpHeader::addCookie(HttpCookie c) {
     mCookies->add(c);
 }

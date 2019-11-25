@@ -10,6 +10,7 @@
 #include "WebSocketFrame.hpp"
 #include "ByteArrayReader.hpp"
 #include "HttpHeader.hpp"
+#include "WebSocketClientInfo.hpp"
 
 namespace obotcha {
 
@@ -21,12 +22,11 @@ enum WebSocketFrameComposerType {
 
 DECLARE_SIMPLE_CLASS(WebSocketComposer) {
 public:
-    virtual String genShakeHandMessage() = 0;
+    _WebSocketComposer(int);
+    virtual String genShakeHandMessage(WebSocketClientInfo) = 0;
     //virtual String genMessageFrame() = 0;
-    void setType(int);
-
 protected:
-    int mType;
+    int mType;    
 };
 
 }

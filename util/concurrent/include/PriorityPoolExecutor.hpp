@@ -109,7 +109,7 @@ public:
 
 private:
 
-    void onHandlerRelease();
+    void onCompleteNotify(PriorityPoolThread t);
 
     int mThreadNum;
 

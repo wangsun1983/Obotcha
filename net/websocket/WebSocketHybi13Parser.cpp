@@ -163,26 +163,31 @@ int _WebSocketHybi13Parser::getVersion() {
 WebSocketPermessageDeflate _WebSocketHybi13Parser::validateExtensions(HttpHeader h) {
     String extensions = h->getValue(Http_Header_Sec_WebSocket_Extensions);
     if(extensions == nullptr) {
+        printf("validateExtensions trace1 \n");
         return nullptr;
     }
+    printf("extensions is %s \n",extensions->toChars());
 
-    ArrayList<String> list = extensions->trimAll()->split(",");
+    ArrayList<String> list = extensions->trimAll()->split(";");
     if(list == nullptr || list->size() == 0){
+        printf("validateExtensions trace2 \n");
         return nullptr;
     }
 
     mDeflate = createWebSocketPermessageDeflate();
     if(mDeflate->fit(list)) {
+        printf("validateExtensions trace3 \n");
         return mDeflate;
     }
+
+    printf("validateExtensions trace4 \n");
 
     mDeflate = nullptr;
     return nullptr;
 }
 
 bool _WebSocketHybi13Parser::validateHandShake(HttpHeader h) {
-    String method = h->getValue(Http_Header_Method);
-    if(h == nullptr || !method->equalsIgnoreCase("GET")) {
+    if(h->getMethod() != HTTP_GET) {        
         return false;
     }
 
