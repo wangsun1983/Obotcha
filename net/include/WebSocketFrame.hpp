@@ -18,7 +18,7 @@ public:
     int getOpCode();
 
     void setIsFinalFrame(bool);
-    bool getIsFinalFrame();
+    bool isFinalFrame();
 
     void setIsControlFrame(bool);
     bool getIsControlFrame();

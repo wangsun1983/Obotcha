@@ -22,7 +22,7 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
     header->setIsControlFrame((b0 & st(WebSocketProtocol)::OPCODE_FLAG_CONTROL) != 0);
 
     // Control frames must be final frames (cannot contain continuations).
-    if (header->getIsControlFrame() && !header->getIsFinalFrame()) {
+    if (header->getIsControlFrame() && !header->isFinalFrame()) {
         //throw new ProtocolException("Control frames must be final.");
         return header;
     }
@@ -31,22 +31,18 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
     header->setReservedFlag2((b0 & st(WebSocketProtocol)::B0_FLAG_RSV2) != 0);
     header->setReservedFlag3((b0 & st(WebSocketProtocol)::B0_FLAG_RSV3) != 0);
 
-    if (header->getReservedFlag1() || header->getReservedFlag2() || header->getReservedFlag3()) {
+    //TODO
+    //if (header->getReservedFlag1() || header->getReservedFlag2() || header->getReservedFlag3()) {
         // Reserved flags are for extensions which we currently do not support.
-        return header;
-    }
+    //    return header;
+    //}
+
     printf("parseHeader trace2 \n");
 
     int b1 = mReader->readByte() & 0xff;
     
     header->setMasked((b1 & st(WebSocketProtocol)::B1_FLAG_MASK) != 0);
     
-    //if (header->getMasked() == isClient) {
-        //Masked payloads must be read on the server. Unmasked payloads must be read on the client.
-        //throw new ProtocolException("Client-sent frames must be masked. Server sent must not.");
-    //    return header;
-    //}
-
     printf("parseHeader trace3 \n");
 
     // Get frame length, optionally reading from follow-up bytes if indicated by special values.
@@ -120,7 +116,9 @@ ByteArray _WebSocketHybi13Parser::parseContent() {
 
     //whether we need do decompose
     if(mDeflate != nullptr) {
+        //printf("before decompress is %s \n",load->toString()->toChars());
         ByteArray out = mDeflate->decompress(load);
+        //printf("after decompress is %s \n",out->toString()->toChars());
         return out;
     }
 
@@ -169,9 +167,9 @@ WebSocketPermessageDeflate _WebSocketHybi13Parser::validateExtensions(HttpHeader
     printf("extensions is %s \n",extensions->toChars());
 
     ArrayList<String> list = extensions->trimAll()->split(";");
-    if(list == nullptr || list->size() == 0){
-        printf("validateExtensions trace2 \n");
-        return nullptr;
+    if(list == nullptr){
+        list = createArrayList<String>();
+        list->add(extensions);
     }
 
     mDeflate = createWebSocketPermessageDeflate();

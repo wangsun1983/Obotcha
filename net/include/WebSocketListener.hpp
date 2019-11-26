@@ -20,6 +20,8 @@ public:
 
     virtual int onMessage(int fd,String message) = 0;
 
+    virtual int onData(int fd,ByteArray data) = 0;
+
     virtual int onConnect(int fd) = 0;
 
     virtual int onDisconnect(int fd) = 0;

@@ -8,7 +8,16 @@ namespace obotcha {
 #define ZIP_DECOMPRESS_BUFF_SIZE 1024*4
 
 _ZipMemoryStream::_ZipMemoryStream(int compress_bit,int decompress_bit) {
-    //TODO
+    mCompressStream.zalloc = Z_NULL;
+    mCompressStream.zfree = Z_NULL;
+    mCompressStream.opaque = Z_NULL;
+
+    mDecompressStream.zalloc = Z_NULL;
+    mDecompressStream.zfree = Z_NULL;
+    mDecompressStream.opaque = Z_NULL;
+    mDecompressStream.avail_in = 0;
+    mDecompressStream.next_in = Z_NULL;
+
     int ret = deflateInit2(
             &mCompressStream,
             Z_DEFAULT_COMPRESSION,
@@ -78,9 +87,9 @@ ByteArray _ZipMemoryStream::decompress(ByteArray in,int flush_mode) {
         inflate(&mDecompressStream, flush_mode);
         printf("decompress trace1 zip is %s \n",zipBuff);
 
-        int size = ZIP_COMPRESS_BUFF_SIZE - mCompressStream.avail_out;
-        printf("decompress trace2 size is %d \n",size);
-
+        int size = ZIP_COMPRESS_BUFF_SIZE - mDecompressStream.avail_out;
+        printf("decompress is %d,zip is %s,avail_out is %d,mCompressStream.avail_out is %d \n",size,zipBuff,mDecompressStream.avail_out);
+        
         out->append(zipBuff,size);
     } while (mDecompressStream.avail_out == 0);
 

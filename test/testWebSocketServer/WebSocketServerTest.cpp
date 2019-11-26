@@ -12,6 +12,7 @@
 #include "NetUtils.hpp"
 #include "WebSocketFrameComposer.hpp"
 #include "WebSocketProtocol.hpp"
+#include "WebSocketComposer.hpp"
 
 using namespace obotcha;
 
@@ -31,10 +32,18 @@ public:
         printf("array size is %d \n",array->size());
         WebSocketFrameComposer mComposer = createWebSocketFrameComposer(false);
         
-        int ret = st(NetUtils)::sendTcpPacket(fd,mComposer->generateMessageFrame(st(WebSocketProtocol)::OPCODE_TEXT,createByteArray(response)));
+        //int ret = st(NetUtils)::sendTcpPacket(fd,mComposer->generateMessageFrame(st(WebSocketProtocol)::OPCODE_TEXT,createByteArray(response)));
+        WebSocketComposer composer = st(WebSocketClientManager)::getInstance()->getClient(fd)->mComposer;
 
+        String text = composer->genTextMessage(st(WebSocketClientManager)::getInstance()->getClient(fd),createString("hello world from server"));
+        int ret = st(NetUtils)::sendTcpPacket(fd,createByteArray(text));
         printf("onMessage send result is %d \n",ret);
         mConditaion->notify();
+        return 0;
+    }
+
+    int onData(int fd,ByteArray message) {
+        printf("message size is %d \n",message->size());
         return 0;
     }
 

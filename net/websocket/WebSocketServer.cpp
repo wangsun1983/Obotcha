@@ -232,7 +232,6 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
         return EPollOnEventResultRemoveFd;
     } if(len == BUFF_SIZE) {
         LOGE("WebSocket Receive Buffer Over Size");
-        //TODO
     }
     
     ByteArray pack = createByteArray(recv_buf,len);
@@ -252,6 +251,17 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
             String msg = msgData->toString();
             printf("recv websocket from client msg is %s,fd is %d \n",msg->toChars(),fd);
             mWsSocketListener->onMessage(fd,msg);
+        } else if(opcode == st(WebSocketProtocol)::OPCODE_BINARY) {
+            printf("i accept binary file!!!!! \n");
+            ByteArray msgData = parser->parseContent();
+            if(header->isFinalFrame()) {
+                mWsSocketListener->onData(fd,msgData);
+            } else {
+                WebSocketClientBuffer buff = createWebSocketClientBuffer();
+                buff->mConitnueBuff = msgData;
+                buff->mType = st(WebSocketProtocol)::OPCODE_BINARY;
+                st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer = buff;
+            }
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PING) {
             printf("on ping start !!! \n");
             ByteArray buff = parser->parsePingBuff();
@@ -274,9 +284,14 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
             //TODO
             printf("OPCODE_CONTINUATION trace !!! \n");
             ByteArray msgData = parser->parseContent();
-            continuePack->append(msgData);
+            st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff->append(msgData);
+            if(header->isFinalFrame()) {
+                printf("LastFrame!!!!!!,size is %d \n",st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff->size());
+                mWsSocketListener->onData(fd,msgData);
+            }
         }
 
+        //check whether there are two ws messages received in one buffer!
         len -= (framesize + headersize);
         readIndex += (framesize + headersize);
         if(len > 0) {

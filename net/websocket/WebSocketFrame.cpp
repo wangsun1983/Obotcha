@@ -25,7 +25,7 @@ void _WebSocketHeader::setIsFinalFrame(bool v) {
     mIsFinalFrame = v;
 }
     
-bool _WebSocketHeader::getIsFinalFrame() {
+bool _WebSocketHeader::isFinalFrame() {
     return mIsFinalFrame;
 }
 

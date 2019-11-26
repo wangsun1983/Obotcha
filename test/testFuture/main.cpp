@@ -17,6 +17,7 @@ extern int testThreadCachedPoolFutureCancel();
 extern int testThreadScheduleFutureCancel();
 extern int testFutureNormal();
 extern int testThreadExecutorPoolFutureDelayCancel();
+extern int testThreadPriorityPoolFutureCancel();
 
 int main() {
     printf("---[TestFuture Test Start]--- \n");
@@ -24,7 +25,8 @@ int main() {
     //testFutureNormal();
     //testThreadCachedPoolFutureCancel();
     //testThreadScheduleFutureCancel();
-    testThreadExecutorPoolFutureDelayCancel();
+    //testThreadExecutorPoolFutureDelayCancel();
+    testThreadPriorityPoolFutureCancel();
     sleep(10);
     printf("end !!!!!!!!\n");
     //while(1) {}

@@ -19,6 +19,7 @@ DECLARE_SIMPLE_CLASS(WebSocketHybi00Composer) IMPLEMENTS(WebSocketComposer) {
 public:
     _WebSocketHybi00Composer(int);
     String genShakeHandMessage(WebSocketClientInfo);
+    String genTextMessage(WebSocketClientInfo,String);
 };
 
 }

@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-enum ByteArrayReaderResult {
+enum ByteArrayWriterResult {
    ByteArrayWriteSuccess = 0,
    ByteArrayWritePart,
    ByteArrayWriteFail,

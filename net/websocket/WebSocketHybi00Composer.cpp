@@ -19,5 +19,10 @@ String _WebSocketHybi00Composer::genShakeHandMessage(WebSocketClientInfo) {
     return nullptr;
 }
 
+String _WebSocketHybi00Composer::genTextMessage(WebSocketClientInfo,String) {
+    //TODO
+    return nullptr;
+}
+
 }
 

@@ -24,6 +24,7 @@ DECLARE_SIMPLE_CLASS(WebSocketComposer) {
 public:
     _WebSocketComposer(int);
     virtual String genShakeHandMessage(WebSocketClientInfo) = 0;
+    virtual String genTextMessage(WebSocketClientInfo,String) = 0;
     //virtual String genMessageFrame() = 0;
 protected:
     int mType;    

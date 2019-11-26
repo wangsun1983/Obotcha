@@ -21,10 +21,14 @@ DECLARE_SIMPLE_CLASS(WebSocketHybi13Composer) IMPLEMENTS(WebSocketComposer){
 public:
     _WebSocketHybi13Composer(int);
     String genShakeHandMessage(WebSocketClientInfo h);
+    String genTextMessage(WebSocketClientInfo,String);
     
 private:
     String genClientShakeHandMessage(WebSocketClientInfo h);
     String genServerShakeHandMessage(WebSocketClientInfo h);
+
+    String genClientTextMessage(WebSocketClientInfo,String);
+    String genServerTextMessage(WebSocketClientInfo,String);
 
     Sha mSha;
     Base64 mBase64;
