@@ -19,7 +19,7 @@ WebSocketHeader _WebSocketHybi00Parser::parseHeader(){
     return nullptr;
 }
 
-ByteArray _WebSocketHybi00Parser::parseContent() {
+ByteArray _WebSocketHybi00Parser::parseContent(bool) {
     //TODO
     return nullptr;
 }
@@ -56,6 +56,10 @@ bool _WebSocketHybi00Parser::validateHandShake(HttpHeader h) {
     }
 
     return true;
+}
+
+ByteArray _WebSocketHybi00Parser::validateContinuationContent(ByteArray) {
+    return nullptr;
 }
 
 WebSocketPermessageDeflate _WebSocketHybi00Parser::validateExtensions(HttpHeader) {

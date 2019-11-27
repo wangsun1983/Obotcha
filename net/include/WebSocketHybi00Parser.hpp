@@ -19,7 +19,7 @@ DECLARE_SIMPLE_CLASS(WebSocketHybi00Parser) IMPLEMENTS(WebSocketParser){
 public:    
     WebSocketHeader parseHeader();
 
-    ByteArray parseContent();
+    ByteArray parseContent(bool);
 
     ByteArray parsePingBuff();
 
@@ -30,6 +30,8 @@ public:
     int getVersion();
 
     bool validateHandShake(HttpHeader);
+
+    ByteArray validateContinuationContent(ByteArray);
 
     WebSocketPermessageDeflate validateExtensions(HttpHeader);
 

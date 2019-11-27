@@ -74,23 +74,36 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
 ByteArray _ZipMemoryStream::decompress(ByteArray in,int flush_mode) {
     unsigned char zipBuff[ZIP_DECOMPRESS_BUFF_SIZE];
     memset(zipBuff,0,ZIP_DECOMPRESS_BUFF_SIZE);
-    ByteArray out = createByteArray(ZIP_DECOMPRESS_BUFF_SIZE);
+    //ByteArray out = createByteArray(ZIP_DECOMPRESS_BUFF_SIZE);
+    ByteArray out = nullptr;
     
     mDecompressStream.avail_in = in->size();
-    printf("decompress size is %d,zip is %s \n",in->size(),in->toString());
+    //printf("decompress size is %d,zip is %s \n",in->size(),in->toString());
     mDecompressStream.next_in = in->toValue();
+
+    //printf("in content,size is %d:",in->size());
+    //for(int i = 0;i < in->size();i++) {
+    //    printf("0x%x",mDecompressStream.next_in[i]);
+    //}
+
     do {
         // Output to local buffer
         mDecompressStream.avail_out = ZIP_DECOMPRESS_BUFF_SIZE;
         mDecompressStream.next_out = zipBuff;
 
-        inflate(&mDecompressStream, flush_mode);
-        printf("decompress trace1 zip is %s \n",zipBuff);
+        int ret = inflate(&mDecompressStream, Z_SYNC_FLUSH);
+        //printf("decompress trace1 zip is %s,ret is %d \n",zipBuff,ret);
 
         int size = ZIP_COMPRESS_BUFF_SIZE - mDecompressStream.avail_out;
-        printf("decompress is %d,zip is %s,avail_out is %d,mCompressStream.avail_out is %d \n",size,zipBuff,mDecompressStream.avail_out);
+        printf("decompress is %d,avail_out is %d\n",size,mDecompressStream.avail_out);
         
-        out->append(zipBuff,size);
+        //out->append(zipBuff,size);
+        if(out == nullptr) {
+            out = createByteArray(zipBuff,size);
+        } else {
+            out->append(zipBuff,size);
+        }
+
     } while (mDecompressStream.avail_out == 0);
 
     return out;

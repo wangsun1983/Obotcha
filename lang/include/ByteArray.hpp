@@ -52,6 +52,10 @@ public:
 
     String toString();
 
+    void dump(const char *);
+
+    void dump(String);
+
 private:
     byte *buff;
 
@@ -75,3 +79,4 @@ _ByteArray::_ByteArray(T *t) {
 
 }
 #endif
+

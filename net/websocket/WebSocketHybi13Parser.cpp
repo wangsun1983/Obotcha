@@ -30,7 +30,9 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
     header->setReservedFlag1((b0 & st(WebSocketProtocol)::B0_FLAG_RSV1) != 0);
     header->setReservedFlag2((b0 & st(WebSocketProtocol)::B0_FLAG_RSV2) != 0);
     header->setReservedFlag3((b0 & st(WebSocketProtocol)::B0_FLAG_RSV3) != 0);
-
+    printf("sv1 is %d",header->getReservedFlag1());
+    printf("sv2 is %d",header->getReservedFlag2());
+    printf("sv3 is %d",header->getReservedFlag3());
     //TODO
     //if (header->getReservedFlag1() || header->getReservedFlag2() || header->getReservedFlag3()) {
         // Reserved flags are for extensions which we currently do not support.
@@ -92,31 +94,46 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
     return header;
 }
 
-ByteArray _WebSocketHybi13Parser::parseContent() {
+ByteArray _WebSocketHybi13Parser::parseContent(bool isDeflate) {
     ByteArray load = createByteArray(mHeader->getFrameLength());
     byte *payload = load->toValue();
     byte *msg = mData->toValue();
     int pos = mReader->getIndex();
-    //printf("pos is %d,msg is %s \n",pos,&msg[pos]);
-
+    //printf("pos is %d,msg is %s£¬opcode is %d,framelength is %d \n",pos,&msg[pos],mHeader->getOpCode(),mHeader->getFrameLength());
+    //for(int i = 0;i<mData->size();i++) {
+    //    printf("0x%x ",msg[i]);
+    //}
+    printf("\n");
 	if(!mHeader->getMasked()){
+        printf("binary file,no need unmask!!!! \n");
 		memcpy(payload, 
         (const char *)&msg[pos], 
         mHeader->getFrameLength());
 	} else {
         int framesize = mHeader->getFrameLength();
         byte *masking_key_ = mHeader->getMaskKey()->toValue();
-        //printf("framesize is %d,masking_key is %s \n",framesize,masking_key_);
+        printf("framesize is %d,masking_key is %s \n",framesize,masking_key_);
+        //printf("masking_key[0] is %x \n",masking_key_[0]);
+        //printf("masking_key[1] is %x \n",masking_key_[1]);
+        //printf("masking_key[2] is %x \n",masking_key_[2]);
+        //printf("masking_key[3] is %x \n",masking_key_[3]);
 
 		for(uint i = 0; i < framesize; i++){
 			int j = i % 4;
 			payload[i] = msg[pos + i] ^ masking_key_[j];
 		}
+
+        printf("payload start: ");
+        //for(int i = 0;i<framesize;i++) {
+        //    printf("0x%x ",payload[i]);
+        //}
 	}
 
     //whether we need do decompose
-    if(mDeflate != nullptr) {
-        //printf("before decompress is %s \n",load->toString()->toChars());
+    if(mDeflate != nullptr && isDeflate) {
+        byte trailer[4] = {0x00, 0x00, 0xff, 0xff};
+        ByteArray t = createByteArray(trailer,4);
+        load->append(t);
         ByteArray out = mDeflate->decompress(load);
         //printf("after decompress is %s \n",out->toString()->toChars());
         return out;
@@ -182,6 +199,20 @@ WebSocketPermessageDeflate _WebSocketHybi13Parser::validateExtensions(HttpHeader
 
     mDeflate = nullptr;
     return nullptr;
+}
+
+ByteArray _WebSocketHybi13Parser::validateContinuationContent(ByteArray in) {
+    //whether we need do decompose
+    if(mDeflate != nullptr) {
+        byte trailer[4] = {0x00, 0x00, 0xff, 0xff};
+        ByteArray t = createByteArray(trailer,4);
+        in->append(t);
+        ByteArray out = mDeflate->decompress(in);
+        //printf("after decompress is %s \n",out->toString()->toChars());
+        return out;
+    }
+
+	return in;
 }
 
 bool _WebSocketHybi13Parser::validateHandShake(HttpHeader h) {

@@ -13,6 +13,8 @@
 #include "WebSocketFrameComposer.hpp"
 #include "WebSocketProtocol.hpp"
 #include "WebSocketComposer.hpp"
+#include "File.hpp"
+#include "FileOutputStream.hpp"
 
 using namespace obotcha;
 
@@ -43,7 +45,13 @@ public:
     }
 
     int onData(int fd,ByteArray message) {
-        printf("message size is %d \n",message->size());
+        //printf("data message size is %d,message is %s \n",message->size(),message->toValue());
+        File file = createFile("recvfile");
+        FileOutputStream stream = createFileOutputStream(file);
+        stream->open(FileOpenType::Trunc);
+        stream->write(message);
+        stream->flush();
+        stream->close();
         return 0;
     }
 

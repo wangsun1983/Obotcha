@@ -17,7 +17,7 @@ DECLARE_SIMPLE_CLASS(WebSocketHybi13Parser) IMPLEMENTS(WebSocketParser) {
 public:
     WebSocketHeader parseHeader();
 
-    ByteArray parseContent();
+    ByteArray parseContent(bool forceDecompress);
 
     ByteArray parsePingBuff();
 
@@ -30,6 +30,8 @@ public:
     bool validateHandShake(HttpHeader);
 
     WebSocketPermessageDeflate validateExtensions(HttpHeader);
+
+    ByteArray validateContinuationContent(ByteArray);
 
     ArrayList<String> extractSubprotocols(HttpHeader);
 

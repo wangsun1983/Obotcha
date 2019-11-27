@@ -20,8 +20,6 @@
 
 namespace obotcha {
 
-#define BUFF_SIZE 1024*512
-
 #define TAG "WebSocketServer"
 
 //--------------------WebSocketClientManager-----------------
@@ -213,6 +211,11 @@ _WebSocketEpollListener::_WebSocketEpollListener(WebSocketListener l) {
     //mHybi13Parser = createWebSocketHybi13Parser();
     mWsSocketListener = l;
     mResponse = createWebSocketFrameComposer(false);
+    mRecvBuff = (byte*)malloc(WEBSOCKET_BUFF_SIZE);
+}
+
+_WebSocketEpollListener::~_WebSocketEpollListener() {
+    free(mRecvBuff);
 }
 
 int _WebSocketEpollListener::onEvent(int fd,int events){
@@ -223,19 +226,17 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
     }
 
     printf("Event is %d \n",events);
-
-    byte recv_buf[BUFF_SIZE];
-    int len = recv(fd, recv_buf, BUFF_SIZE, 0);
+    int len = recv(fd, mRecvBuff, WEBSOCKET_BUFF_SIZE, 0);
     printf("len is %d \n",len);
     if(len == -1) {
         st(WebSocketClientManager)::getInstance()->removeClient(fd);
         return EPollOnEventResultRemoveFd;
-    } if(len == BUFF_SIZE) {
+    } if(len == WEBSOCKET_BUFF_SIZE) {
         LOGE("WebSocket Receive Buffer Over Size");
     }
     
-    ByteArray pack = createByteArray(recv_buf,len);
-    ByteArray continuePack;
+    ByteArray pack = createByteArray(mRecvBuff,len);
+
     int readIndex = 0;
     WebSocketParser parser = st(WebSocketClientManager)::getInstance()->getClient(fd)->mParser;
     while(1) {
@@ -247,16 +248,16 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
         printf("framesize is %d,headersize is %d,opcode is %d \n",framesize,headersize,opcode);
 
         if(opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
-            ByteArray msgData = parser->parseContent();
+            ByteArray msgData = parser->parseContent(true);
             String msg = msgData->toString();
-            printf("recv websocket from client msg is %s,fd is %d \n",msg->toChars(),fd);
             mWsSocketListener->onMessage(fd,msg);
         } else if(opcode == st(WebSocketProtocol)::OPCODE_BINARY) {
             printf("i accept binary file!!!!! \n");
-            ByteArray msgData = parser->parseContent();
             if(header->isFinalFrame()) {
+                ByteArray msgData = parser->parseContent(true);
                 mWsSocketListener->onData(fd,msgData);
             } else {
+                ByteArray msgData = parser->parseContent(false);
                 WebSocketClientBuffer buff = createWebSocketClientBuffer();
                 buff->mConitnueBuff = msgData;
                 buff->mType = st(WebSocketProtocol)::OPCODE_BINARY;
@@ -283,11 +284,13 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
             //TODO
             printf("OPCODE_CONTINUATION trace !!! \n");
-            ByteArray msgData = parser->parseContent();
+            ByteArray msgData = parser->parseContent(false);
+            printf("continue size is %d \n",msgData->size());
             st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff->append(msgData);
             if(header->isFinalFrame()) {
                 printf("LastFrame!!!!!!,size is %d \n",st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff->size());
-                mWsSocketListener->onData(fd,msgData);
+                ByteArray out = parser->validateContinuationContent(st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff);
+                mWsSocketListener->onData(fd,out);
             }
         }
 
@@ -296,7 +299,7 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
         readIndex += (framesize + headersize);
         if(len > 0) {
             printf("rest len is %d \n",len);
-            pack = createByteArray(&recv_buf[readIndex],len);
+            pack = createByteArray(&mRecvBuff[readIndex],len);
             continue;
         } 
         

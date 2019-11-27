@@ -73,7 +73,7 @@ void _WebSocketTcpClientListener::onAccept(int fd,String ip,int port,ByteArray p
         printf("framesize is %d,headersize is %d,opcode is %d \n",framesize,headersize,opcode);
 
         if(opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
-            ByteArray msgData = mHybi13Parser->parseContent();
+            ByteArray msgData = mHybi13Parser->parseContent(true);
             String msg = msgData->toString();
             printf("recv websocket from client msg is %s,fd is %d \n",msg->toChars(),fd);
             mWsListener->onMessage(fd,msg);

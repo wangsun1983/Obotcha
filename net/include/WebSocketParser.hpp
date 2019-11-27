@@ -21,7 +21,8 @@ public:
     void setAsClient();
 
     virtual WebSocketHeader parseHeader() = 0;
-    virtual ByteArray parseContent() = 0;
+    virtual ByteArray parseContent(bool forceDecompress) = 0;
+    virtual ByteArray validateContinuationContent(ByteArray) = 0;
     virtual ByteArray parsePingBuff() = 0;
     virtual ByteArray parsePongBuff() = 0;
     virtual String getOrigin(HttpHeader) = 0;

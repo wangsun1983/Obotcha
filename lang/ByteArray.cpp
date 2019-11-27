@@ -24,7 +24,7 @@ _ByteArray::_ByteArray(sp<_ByteArray> b) {
     buff = (unsigned char *)malloc(b->size());
     memcpy(buff,b->toValue(),b->size());
     mSize = b->size();
-    mCursor = 0;
+    //mCursor = 0;
 }
 
 /**
@@ -35,7 +35,7 @@ _ByteArray::_ByteArray(int length) {
     buff = (unsigned char *)malloc(length);
     memset(buff,0,length);
     mSize = length;
-    mCursor = 0;
+    //mCursor = 0;
 }
 
 /**
@@ -48,7 +48,7 @@ _ByteArray::_ByteArray(String str) {
     buff = (unsigned char *)malloc(mSize + 1);
     memset(buff,0,mSize + 1);
     memcpy(buff,str->toChars(),size);
-    mCursor = 0;
+    //mCursor = 0;
 }
 
 /**
@@ -57,20 +57,21 @@ _ByteArray::_ByteArray(String str) {
  * @param len save data len
  */
 _ByteArray::_ByteArray(const byte *data,int len) {
+    printf("create bytearray len is %d \n",len);
     buff = (unsigned char *)malloc(len);
     memset(buff,0,len);
     mSize = len;
     memcpy(buff,data,len);
-    mCursor = 0;
+    //mCursor = 0;
+    printf("create bytearray end len is %d \n",len);
 }
-
 
 /**
  * @brief clear memory data
  */
 void _ByteArray::clear() {
     memset(buff,0,mSize);
-    mCursor = 0;
+    //mCursor = 0;
 }
 
 /**
@@ -83,7 +84,7 @@ _ByteArray::~_ByteArray() {
     }
 
     mSize = 0;
-    mCursor = 0;
+    //mCursor = 0;
 }
 
 
@@ -102,7 +103,7 @@ void _ByteArray::qucikShrink(int size) {
 
     buff[size] = 0;
     mSize = size;
-    mCursor = 0;
+    //mCursor = 0;
 }
 
 int _ByteArray::resize(int size) {
@@ -117,7 +118,7 @@ int _ByteArray::resize(int size) {
     buff = (byte *)realloc(buff,size);
 
     mSize = size;
-    mCursor = 0;
+    //mCursor = 0;
     
     return 0;
 }
@@ -174,7 +175,7 @@ int _ByteArray::fill(int index,int length,byte v) {
 }
 
 int _ByteArray::append(sp<_ByteArray> b) {
-    printf("_ByteArray append trace1,b is %s,size is %d \n",b->toValue(),b->size());
+    //printf("_ByteArray append trace1,b is %s,size is %d \n",b->toValue(),b->size());
 
     if(b == nullptr) {
         return -InvalidParam;
@@ -188,15 +189,10 @@ int _ByteArray::append(byte *data,int len) {
         return -InvalidParam;
     }
 
-    if((mCursor + len) <= mSize) {
-        memcpy(&buff[mCursor],data,len);
-        mCursor += len;
-    }
-
-    int oldCursor = mCursor;
-    resize(mCursor + len);
-    mCursor = oldCursor;
-    memcpy(&buff[mCursor],data,len);
+    buff = (byte *)realloc(buff,mSize + len);
+    memcpy(&buff[mSize],data,len);
+    mSize += len;
+    return mSize;
 }
 
 String _ByteArray::toString() {
@@ -204,6 +200,17 @@ String _ByteArray::toString() {
     memset(_buff,0,mSize+1);
     memcpy(_buff,buff,mSize);
     return createString(&_buff[0],0,mSize + 1);
+}
+
+void _ByteArray::dump(const char *v) {
+    printf("%s is : \n ");
+    for(int i = 0;i < mSize;i++) {
+        printf("0x%x ",this->buff[i]);
+    }
+}
+
+void _ByteArray::dump(String v) {
+    dump(v->toChars());
 }
 
 }

@@ -33,6 +33,8 @@
 
 namespace obotcha {
 
+#define WEBSOCKET_BUFF_SIZE 512*1024
+
 class _TcpServer;    
 
 DECLARE_SIMPLE_CLASS(WebSocketClientManager) {
@@ -96,11 +98,12 @@ DECLARE_SIMPLE_CLASS(WebSocketEpollListener) IMPLEMENTS(EPollFileObserverListene
 public:
     _WebSocketEpollListener(WebSocketListener);
     int onEvent(int fd,int events);
-
+    ~_WebSocketEpollListener();
 private:
     WebSocketParser mHybi13Parser;
     WebSocketListener mWsSocketListener;
     WebSocketFrameComposer mResponse;
+    byte *mRecvBuff;
 };
 
 DECLARE_SIMPLE_CLASS(WebSocketServer) {
