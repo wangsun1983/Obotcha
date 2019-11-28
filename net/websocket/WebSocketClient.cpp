@@ -27,12 +27,24 @@
 #include "WebSocketParser.hpp"
 #include "HashMap.hpp"
 #include "WebSocketClient.hpp"
+#include "WebSocketClientInfo.hpp"
 #include "HttpUrl.hpp"
 #include "HttpUrlParser.hpp"
 #include "WebSocketProtocol.hpp"
+#include "WebSocketHybi00Parser.hpp"
+#include "WebSocketHybi07Parser.hpp"
+#include "WebSocketHybi08Parser.hpp"
+#include "WebSocketHybi13Parser.hpp"
+#include "WebSocketHybi00Composer.hpp"
+#include "WebSocketHybi07Composer.hpp"
+#include "WebSocketHybi08Composer.hpp"
+#include "WebSocketHybi13Composer.hpp"
+#include "Log.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
+#define TAG "WebSocketClient"
 
 _WebSocketTcpClientListener::_WebSocketTcpClientListener(WebSocketListener l) {
     mWsListener = l;
@@ -49,7 +61,7 @@ void _WebSocketTcpClientListener::onAccept(int fd,String ip,int port,ByteArray p
     printf("11111111 client accept pack is %s \n",pack->toValue());
 
     if(mProtoclType == WsClientProtocolHttp) {
-        HttpPacket req = mHttpParser->parseResponse(pack->toValue());
+        HttpPacket req = mHttpParser->parseResponse(pack->toString());
         printf("status code is %d \n",req->getStatusCode());
         if(req->getStatusCode() == HTTP_RESPONSE_SWITCHING_PROTOCLS) {
             mProtoclType = WsClientProtocolWebSocket;
@@ -125,58 +137,94 @@ void _WebSocketTcpClientListener::onConnect(int fd,String domain) {
 
 }
 
-_WebSocketClient::_WebSocketClient() {
-    mComposer = createWebSocketFrameComposer(true);
+_WebSocketClient::_WebSocketClient(int version = 13) {
+    mVersion = version;
+    mClient = createWebSocketClientInfo();
+    switch(version) {
+        case 0:{
+            mClient->mParser = createWebSocketHybi00Parser();
+            mClient->mComposer = createWebSocketHybi00Composer(WsClientComposer);
+            break;
+        }
+        
+        case 7:{
+            mClient->mParser = createWebSocketHybi07Parser();
+            mClient->mComposer = createWebSocketHybi07Composer(WsClientComposer);
+            break;
+        }
+        
+        case 8: {
+            mClient->mParser = createWebSocketHybi08Parser();
+            mClient->mComposer = createWebSocketHybi08Composer(WsClientComposer);
+            break;
+        }
+
+        case 13: {
+            mClient->mParser = createWebSocketHybi13Parser();
+            mClient->mComposer = createWebSocketHybi13Composer(WsClientComposer);
+            break;
+        }
+        
+        default:{
+            throw createInitializeException("Websocket Client not support version!!!");
+            break;
+        }
+    }
 }
 
-int _WebSocketClient::bind(String url,WebSocketListener l) {
+WebSocketClient _WebSocketClient::buildConnectInfo(int header,String value) {
+    mClient->mHttpHeader->setValue(header,value);
+    if(header == Http_Header_Sec_WebSocket_Extensions && value->contains("permessage-deflate")) {
+        //mClient->mDeflate = createWebSocketPermessageDeflate();
+        //we should config client size;
+        ArrayList<String> list = value->trimAll()->split(";");
+        if(list == nullptr){
+            list = createArrayList<String>();
+            list->add(value);
+        }
+
+        mClient->mDeflate = createWebSocketPermessageDeflate();
+        mClient->mDeflate->fit(list);
+    }
+    WebSocketClient client;
+    client.set_pointer(this);
+    return client;
+}
+
+void _WebSocketClient::clearConnectInfo() {
+    mClient->mHttpHeader->clear();
+}
+
+void _WebSocketClient::updateConnectInfo(int header,String value) {
+    mClient->mHttpHeader->setValue(header,value);
+}
+
+int _WebSocketClient::connect(String url,WebSocketListener l) {
     //send http request
-    //mObserver = createEPollFileObserver();
-    HttpPacket request = createHttpPacket();
-    request->setMethod(HttpMethodGet);
+    //HttpPacket request = createHttpPacket();
+    //request->setMethod(HttpMethodGet);
+    mClient->mHttpHeader->setMethod(HttpMethodGet);
+    mClient->mConnectUrl = url;
+
+    String shakeHandMsg = mClient->mComposer->genShakeHandMessage(mClient);
+    mListener = createWebSocketTcpClientListener(l);
     
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(url);
-    //printf("httpUrl path is %s,url is %s \n",httpUrl->getHost()->toChars(),httpUrl->getPath()->toChars());
-    //printf("port is %d \n",httpUrl->getPort());
-    request->setUrl(httpUrl->getPath());
-    request->setMajorVersion(1);
-    request->setMinorVersion(1);
-
-    String host = httpUrl->getHost()->append(":")->append(createString(httpUrl->getPort()));
-    request->getHeader()->setValue(Http_Header_Host,host);
-
-    request->getHeader()->setValue(Http_Header_Accept,"*/*");
-    request->getHeader()->setValue(Http_Header_Accept_Language,"en-US,en;q=0.5");
-    request->getHeader()->setValue(Http_Header_Accept_Encoding,"gzip, deflate");
-    request->getHeader()->setValue(Http_Header_Sec_WebSocket_Version,"13");
-    request->getHeader()->setValue(Http_Header_Origin,"null");
-    request->getHeader()->setValue(Http_Header_Sec_WebSocket_Extensions,"permessage-deflate");
-    request->getHeader()->setValue(Http_Header_Sec_WebSocket_Key,"fYbVEMSirecOe/q+edVT+w==");
-    request->getHeader()->setValue(Http_Header_Connection,"keep-alive, Upgrade");
-    request->getHeader()->setValue(Http_Header_Upgrade,"websocket");
-    request->getHeader()->setValue(Http_Header_Pragma,"no-cache");
-    request->getHeader()->setValue(Http_Header_Cache_Control,"no-cache");
-
-    String shakeHandMsg = request->genHttpRequest();
-    //printf("request is %s \n",shakeHandMsg->toChars());
-
-    mListener = createWebSocketTcpClientListener(l);
-
     mTcpClient = createAsyncTcpClient(httpUrl->getHost(),httpUrl->getPort(),mListener);
     mTcpClient->start();
 
     mTcpClient->send(createByteArray(shakeHandMsg));
-
-
     return 0;
 }
 
 int _WebSocketClient::sendMessage(String msg) {
-#if 0    
-    return mTcpClient->send(mComposer->generateMessageFrame(
-        st(WebSocketProtocol)::OPCODE_TEXT,
-        createByteArray(msg)));
-#endif        
+    String wsPacket = mClient->mComposer->genTextMessage(mClient,msg);
+    return mTcpClient->send(createByteArray(wsPacket));
+}
+
+int _WebSocketClient::sendMessage(const char*msg) {
+    String wsPacket = mClient->mComposer->genTextMessage(mClient,createString(msg));
+    return mTcpClient->send(createByteArray(wsPacket));
 }
 
 int _WebSocketClient::sendPing(String msg) {
@@ -185,6 +233,16 @@ int _WebSocketClient::sendPing(String msg) {
         st(WebSocketProtocol)::OPCODE_CONTROL_PING,
         createByteArray(msg)));
 #endif        
+}
+
+int _WebSocketClient::sendByteArray(ByteArray) {
+    //TODO
+    return 0;
+}
+
+int _WebSocketClient::sendFile(File) {
+    //TODO
+    return 0;
 }
 
 

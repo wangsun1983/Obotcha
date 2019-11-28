@@ -16,13 +16,14 @@
 #include "String.hpp"
 #include "InetAddress.hpp"
 #include "SocketListener.hpp"
-#include "WebSocketServer.hpp"
 #include "Mutex.hpp"
 #include "Pipe.hpp"
 #include "AtomicInteger.hpp"
 #include "Thread.hpp"
 
 namespace obotcha {
+
+class _WebSocketServer;
 
 enum TcpServerStatus {
     ServerNotStart = 1,

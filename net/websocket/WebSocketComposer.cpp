@@ -11,8 +11,17 @@
 
 namespace obotcha {
 
-_WebSocketComposer::_WebSocketComposer(int v) {
+_WebSocketComposer::_WebSocketComposer(int v,int maxframesize) {
     mType = v;
+    mMaxFrameSize = maxframesize;
+}
+
+int _WebSocketComposer::getMaxFrameSize() {
+    return mMaxFrameSize;
+}
+
+void _WebSocketComposer::setMaxFrameSzie(int v) {
+    mMaxFrameSize = v;
 }
 
 }

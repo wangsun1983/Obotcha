@@ -141,6 +141,8 @@ public:
     
     void setMethod(int);
 
+    void clear();
+
 private:
     static String mHeaderList[];
     HashMap<int,String> mValues;

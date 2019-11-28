@@ -10,7 +10,8 @@
 
 namespace obotcha {
 
-_WebSocketHybi00Composer::_WebSocketHybi00Composer(int type):_WebSocketComposer(type) {
+_WebSocketHybi00Composer::_WebSocketHybi00Composer(int type,int maxFrameSize)
+:_WebSocketComposer(type,maxFrameSize) {
 
 }
 

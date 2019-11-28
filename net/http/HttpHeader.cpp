@@ -134,6 +134,10 @@ String _HttpHeader::getValue(int header) {
     return mValues->get(header);
 }
 
+void _HttpHeader::clear() {
+    mValues->clear();
+}
+
 int _HttpHeader::getMethod() {
     return mMethod;
 }

@@ -48,8 +48,6 @@ WebSocketClientManager _WebSocketClientManager::getInstance() {
 
 bool _WebSocketClientManager::addClient(int fd,int version) {
     WebSocketClientInfo data = createWebSocketClientInfo();
-    printf("addClient version is %d !!!!!!!",version);
-    
     switch(version) {
         case 0:{
             data->mParser = createWebSocketHybi00Parser();
@@ -148,7 +146,6 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
     String version = header->getValue(Http_Header_Sec_WebSocket_Version);
     
     if(upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
-        printf("websocket is !!!!!!!");
         //remove fd from http epoll
         st(NetUtils)::delEpollFd(httpEpollfd,fd);
         
@@ -187,7 +184,6 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
         //String shakeresponse = mResponse->generateShakeHandFrame(key);
         WebSocketComposer composer = st(WebSocketClientManager)::getInstance()->getClient(fd)->mComposer;
         String shakeresponse = composer->genShakeHandMessage(st(WebSocketClientManager)::getInstance()->getClient(fd));
-        printf("shakeresponse is %s \n",shakeresponse->toChars());
         st(NetUtils)::sendTcpPacket(fd,createByteArray(shakeresponse));
     }
     
@@ -245,14 +241,12 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
         int framesize = header->getFrameLength();
         int headersize = header->getHeadSize();
         int opcode = header->getOpCode();
-        printf("framesize is %d,headersize is %d,opcode is %d \n",framesize,headersize,opcode);
-
+        
         if(opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
             ByteArray msgData = parser->parseContent(true);
             String msg = msgData->toString();
             mWsSocketListener->onMessage(fd,msg);
         } else if(opcode == st(WebSocketProtocol)::OPCODE_BINARY) {
-            printf("i accept binary file!!!!! \n");
             if(header->isFinalFrame()) {
                 ByteArray msgData = parser->parseContent(true);
                 mWsSocketListener->onData(fd,msgData);
@@ -264,7 +258,6 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
                 st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer = buff;
             }
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PING) {
-            printf("on ping start !!! \n");
             ByteArray buff = parser->parsePingBuff();
             if(mWsSocketListener->onPing(fd,buff->toString()) == PingResultResponse) {
                 ByteArray resp = mResponse->generateControlFrame(st(WebSocketProtocol)::OPCODE_CONTROL_PONG,
@@ -272,7 +265,6 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
                 st(NetUtils)::sendTcpPacket(fd,resp);
             }
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PONG) {
-            //TODO
             printf("OPCODE_CONTROL_PONG \n");
             ByteArray pong = parser->parsePongBuff();
             String msg = pong->toString();
@@ -282,15 +274,13 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
             st(WebSocketClientManager)::getInstance()->removeClient(fd);
             return EPollOnEventResultRemoveFd;
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
-            //TODO
             printf("OPCODE_CONTINUATION trace !!! \n");
             ByteArray msgData = parser->parseContent(false);
-            printf("continue size is %d \n",msgData->size());
             st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff->append(msgData);
             if(header->isFinalFrame()) {
-                printf("LastFrame!!!!!!,size is %d \n",st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff->size());
                 ByteArray out = parser->validateContinuationContent(st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff);
                 mWsSocketListener->onData(fd,out);
+                st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff = nullptr;
             }
         }
 
@@ -298,7 +288,6 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
         len -= (framesize + headersize);
         readIndex += (framesize + headersize);
         if(len > 0) {
-            printf("rest len is %d \n",len);
             pack = createByteArray(&mRecvBuff[readIndex],len);
             continue;
         } 
@@ -365,9 +354,7 @@ int _WebSocketServer::start() {
 }
 
 int _WebSocketServer::release() {
-    printf("websocket release trace1 \n");
     mServer->release();
-    printf("websocket release trace2 \n");
     //mEpollObservers
     MapIterator<String,EPollFileObserver> iterator = mEpollObservers->getIterator();
     while(iterator->hasValue()) {
@@ -375,7 +362,6 @@ int _WebSocketServer::release() {
         observer->release();
         iterator->next();
     }
-    printf("websocket release trace3 \n");
 }
 
 

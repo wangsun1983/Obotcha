@@ -18,8 +18,8 @@ namespace obotcha {
 _WebSocketClientInfo::_WebSocketClientInfo() {
     mParser = nullptr;
     mComposer = nullptr;
-    mHttpHeader = nullptr;
-    mWsHeader = nullptr;
+    mHttpHeader = createHttpHeader();
+    mWsHeader = createWebSocketHeader();
     mDeflate = nullptr;
     mProtocols = nullptr;
 }

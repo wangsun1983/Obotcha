@@ -14,20 +14,30 @@
 
 namespace obotcha {
 
+#define MAX_WEBSOCKET_FRAME_SIZE 256*1024
+
 enum WebSocketFrameComposerType {
     WsClientComposer = 1,
     WsServerComposer
 };
 
-
 DECLARE_SIMPLE_CLASS(WebSocketComposer) {
 public:
-    _WebSocketComposer(int);
+    _WebSocketComposer(int version,int maxframesize);
+    
+    int getMaxFrameSize();
+
+    void setMaxFrameSzie(int);
+
     virtual String genShakeHandMessage(WebSocketClientInfo) = 0;
+    
     virtual String genTextMessage(WebSocketClientInfo,String) = 0;
+    //virtual String genControlMessage(WebSocketClientInfo,int opcode,String);
+    //virtual String genBinaryMessage(WebSocketClientInfo,int opcode,String);
     //virtual String genMessageFrame() = 0;
 protected:
-    int mType;    
+    int mType;
+    int mMaxFrameSize;
 };
 
 }

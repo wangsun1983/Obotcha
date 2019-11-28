@@ -26,11 +26,13 @@
 #include "EPollFileObserver.hpp"
 #include "Mutex.hpp"
 #include "HttpParser.hpp"
-#include "WebSocketFrameComposer.hpp"
+//#include "WebSocketFrameComposer.hpp"
 #include "WebSocketParser.hpp"
 #include "AsyncTcpClient.hpp"
 #include "WebSocketHybi13Parser.hpp"
 #include "HttpHeaderParser.hpp"
+#include "WebSocketClientInfo.hpp"
+#include "WebSocketComposer.hpp"
 
 namespace obotcha {
 
@@ -66,13 +68,30 @@ private:
 
 DECLARE_SIMPLE_CLASS(WebSocketClient) {
 public:
-    _WebSocketClient();
-    int bind(String url,WebSocketListener l);
+    _WebSocketClient(int version);
+
+    WebSocketClient buildConnectInfo(int header,String value);
+
+    void clearConnectInfo();
+
+    void updateConnectInfo(int header,String value);
+
+    int connect(String url,WebSocketListener l);
+
     int sendMessage(String msg);
+
+    int sendMessage(const char*msg);
+
+    int sendByteArray(ByteArray);
+
+    int sendFile(File);
 
     int sendPing(String msg);
 
 private:
+
+    int mVersion;
+
     AsyncTcpClient mTcpClient;
 
     WebSocketTcpClientListener mListener;
@@ -81,9 +100,9 @@ private:
 
     bool isConnected;
 
-    WebSocketFrameComposer mComposer;
+    //WebSocketFrameComposer mComposer;
 
-    
+    WebSocketClientInfo mClient;
 };
 
 

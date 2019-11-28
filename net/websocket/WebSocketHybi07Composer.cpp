@@ -8,9 +8,9 @@
 #include "WebSocketHybi07Composer.hpp"
 
 namespace obotcha {
-_WebSocketHybi07Composer::_WebSocketHybi07Composer(int type):_WebSocketHybi08Composer(type),
-                                                             _WebSocketHybi13Composer(type),
-                                                             _WebSocketComposer(type) {
+_WebSocketHybi07Composer::_WebSocketHybi07Composer(int type,int maxframe):_WebSocketHybi08Composer(type,maxframe),
+                                                             _WebSocketHybi13Composer(type,maxframe),
+                                                             _WebSocketComposer(type,maxframe) {
 
 }
 

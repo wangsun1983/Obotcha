@@ -47,7 +47,7 @@ HttpPacket _HttpParser::parseRequest(String request) {
 }
 
 HttpPacket _HttpParser::parseResponse(String response) {
-    printf("request is %s \n",response->toChars());
+    printf("parseResponse response is %s \n",response->toChars());
     memset(&mParser,0,sizeof(http_parser));
     mParser.data = reinterpret_cast<void *>(this);
     mPacket = createHttpPacket();

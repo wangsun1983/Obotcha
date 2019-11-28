@@ -10,6 +10,7 @@
 #include "WebSocketComposer.hpp"
 #include "Sha.hpp"
 #include "Base64.hpp"
+#include "Random.hpp"
 
 namespace obotcha {
 
@@ -19,7 +20,7 @@ namespace obotcha {
  */
 DECLARE_SIMPLE_CLASS(WebSocketHybi13Composer) IMPLEMENTS(WebSocketComposer){
 public:
-    _WebSocketHybi13Composer(int);
+    _WebSocketHybi13Composer(int,int max = MAX_WEBSOCKET_FRAME_SIZE);
     String genShakeHandMessage(WebSocketClientInfo h);
     String genTextMessage(WebSocketClientInfo,String);
     
@@ -32,6 +33,7 @@ private:
 
     Sha mSha;
     Base64 mBase64;
+    Random mRand;
 };
 
 }

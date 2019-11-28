@@ -6,7 +6,6 @@
 #include "Integer.hpp"
 #include "StrongPointer.hpp"
 #include "Long.hpp"
-#include "WebSocketServer.hpp"
 #include "WebSocketClient.hpp"
 #include "WebSocketListener.hpp"
 
@@ -19,21 +18,25 @@ public:
         return 0;
     }
 
+    int onData(int fd,ByteArray data) {
+        return 0;
+    }
+
     int onConnect(int fd) {
         printf("on connect fd is %d \n",fd);
         return 0;
     }
 
     int onDisconnect(int fd) {
-        printf("on disconnect fd is %d \n",fd);
+        printf("111111 on disconnect fd is %d \n",fd);
         return 0;
     }
 
-    int onPong(int fd) {
+    int onPong(int fd,String) {
         return 0;
     }
 
-    int onPing(int fd) {
+    int onPing(int fd,String) {
         return 0;
     }
 };
@@ -43,8 +46,8 @@ public:
 int main() {
     MyWsListener l = createMyWsListener();
 
-    WebSocketClient client = createWebSocketClient();
-    client->bind("ws://192.168.43.90:1111/mytest",l);
+    WebSocketClient client = createWebSocketClient(13);
+    client->connect("ws://192.168.43.90:1111/mytest",l);
     //server->start();
 
     sleep(5);

@@ -14,7 +14,7 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(WebSocketHybi07Composer) IMPLEMENTS(WebSocketHybi08Composer){
 public:
-    _WebSocketHybi07Composer(int);
+    _WebSocketHybi07Composer(int,int max = MAX_WEBSOCKET_FRAME_SIZE);
 };
 
 }

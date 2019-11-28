@@ -17,7 +17,6 @@ enum PingResult {
 
 DECLARE_SIMPLE_CLASS(WebSocketListener) {
 public:
-
     virtual int onMessage(int fd,String message) = 0;
 
     virtual int onData(int fd,ByteArray data) = 0;

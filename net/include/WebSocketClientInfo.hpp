@@ -37,6 +37,8 @@ public:
     ArrayList<String> mProtocols;  
 
     WebSocketClientBuffer mBuffer;
+
+    String mConnectUrl;
 };
 
 }
