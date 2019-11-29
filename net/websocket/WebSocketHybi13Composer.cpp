@@ -22,7 +22,7 @@ _WebSocketHybi13Composer::_WebSocketHybi13Composer(int type,int maxFrameSize):_W
     mRand = createRandom();
 }
 
-String _WebSocketHybi13Composer::genShakeHandMessage(WebSocketClientInfo h) {
+ByteArray _WebSocketHybi13Composer::genShakeHandMessage(WebSocketClientInfo h) {
     printf("mType is %d \n",mType);
     switch(mType) {
         case WsClientComposer:
@@ -35,7 +35,7 @@ String _WebSocketHybi13Composer::genShakeHandMessage(WebSocketClientInfo h) {
     return nullptr;
 }
 
-String _WebSocketHybi13Composer::genClientShakeHandMessage(WebSocketClientInfo client) {
+ByteArray _WebSocketHybi13Composer::genClientShakeHandMessage(WebSocketClientInfo client) {
     printf("genClientShakeHandMessage trace1\n");
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(client->mConnectUrl);
     HttpPacket packet = createHttpPacket();
@@ -91,102 +91,10 @@ String _WebSocketHybi13Composer::genClientShakeHandMessage(WebSocketClientInfo c
     }
     printf("genClientShakeHandMessage trace2\n");
     
-    return packet->genHttpRequest();
+    return createByteArray(packet->genHttpRequest());
 }
 
-String _WebSocketHybi13Composer::genTextMessage(WebSocketClientInfo info,String content) {
-    switch(mType) {
-        case WsClientComposer:
-        return genClientTextMessage(info,content);
-
-        case WsServerComposer:
-        return genServerTextMessage(info,content);
-    }
-
-    return nullptr;
-}
-
-String _WebSocketHybi13Composer::genClientTextMessage(WebSocketClientInfo info,String content) {
-    ByteArray message = nullptr;
-    if(info->mDeflate != nullptr) {
-        message = info->mDeflate->compress(createByteArray(content));
-    } else {
-        message = createByteArray(content);
-    }
-
-    ByteArray sink = createByteArray(message->size() + 14);
-    ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
-
-    //int b0 = formatOpcode|st(WebSocketProtocol)::B0_FLAG_FIN;
-    int b0 = st(WebSocketProtocol)::OPCODE_TEXT|st(WebSocketProtocol)::B0_FLAG_FIN;
-    printf("b0 is %x \n",b0);
-    sinkWriter->writeByte(b0);
-
-    ByteArray maskKey = createByteArray(4);
-    int b1 = st(WebSocketProtocol)::B1_FLAG_MASK;
-    //random.nextBytes(maskKey);
-    mRand->nextBytes(maskKey);
-    
-    int byteCount = message->size();
-    printf("byteCount is %d£¬message is %s \n",byteCount,message->toString()->toChars());
-    if (byteCount <= st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
-        b1 |= (int) byteCount;
-        sinkWriter->writeByte(b1);
-    } else if (byteCount <= st(WebSocketProtocol)::PAYLOAD_SHORT_MAX) {
-        b1 |= st(WebSocketProtocol)::PAYLOAD_SHORT;
-        sinkWriter->writeByte(b1);
-        sinkWriter->writeShort((int) byteCount);
-    } else {
-        b1 |= st(WebSocketProtocol)::PAYLOAD_LONG;
-        sinkWriter->writeByte(b1);
-        sinkWriter->writeLong(byteCount);
-    }
-
-    sinkWriter->writeByteArray(maskKey);
-    //writeMaskedSynchronized(buffer, byteCount);
-    ByteArray maskBuff = createByteArray(message);
-    printf("start toggleMask,maskBuff size is %d,message size is %d \n",maskBuff->size(),message->size());
-    st(WebSocketProtocol)::toggleMask(maskBuff,maskKey);
-    printf("finish toggleMask \n");
-    sinkWriter->writeByteArray(maskBuff);
-    sink->qucikShrink(sinkWriter->getIndex());
-
-    return sink->toString();
-}
-
-String _WebSocketHybi13Composer::genServerTextMessage(WebSocketClientInfo info,String c) {
-    ByteArray content = createByteArray(c);
-
-    ByteArray sink = createByteArray(content->size() + 14);
-    ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
-
-    int b0 = st(WebSocketProtocol)::OPCODE_TEXT|st(WebSocketProtocol)::B0_FLAG_FIN;
-    printf("b0 is %x \n",b0);
-    sinkWriter->writeByte(b0);
-
-    int b1 = 0;
-    int byteCount = content->size();
-
-    if (byteCount <= st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
-        b1 |= (int) byteCount;
-        sinkWriter->writeByte(b1);
-    } else if (byteCount <= st(WebSocketProtocol)::PAYLOAD_SHORT_MAX) {
-        b1 |= st(WebSocketProtocol)::PAYLOAD_SHORT;
-        sinkWriter->writeByte(b1);
-        sinkWriter->writeShort((int) byteCount);
-    } else {
-        b1 |= st(WebSocketProtocol)::PAYLOAD_LONG;
-        sinkWriter->writeByte(b1);
-        sinkWriter->writeLong(byteCount);
-    }
-
-    sinkWriter->writeByteArray(content);
-    sink->qucikShrink(sinkWriter->getIndex());
-    
-    return sink->toString();
-}
-
-String _WebSocketHybi13Composer::genServerShakeHandMessage(WebSocketClientInfo  info) {
+ByteArray _WebSocketHybi13Composer::genServerShakeHandMessage(WebSocketClientInfo  info) {
     HttpHeader h = info->mHttpHeader;
     String key = h->getValue(Http_Header_Sec_WebSocket_Key);
 
@@ -220,7 +128,152 @@ String _WebSocketHybi13Composer::genServerShakeHandMessage(WebSocketClientInfo  
 
     resp->append("\r\n");
 
-    return resp;
+    return createByteArray(resp);
+}
+
+ArrayList<ByteArray> _WebSocketHybi13Composer::genTextMessage(WebSocketClientInfo info,String content) {
+    switch(mType) {
+        case WsClientComposer:
+        //return genClientTextMessage(info,content);
+        return _genClientMessage(info,createByteArray(content),st(WebSocketProtocol)::OPCODE_TEXT);
+
+        case WsServerComposer:
+        return genServerTextMessage(info,content);
+    }
+
+    return nullptr;
+}
+
+ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClientInfo info,ByteArray content,int type) {
+    ArrayList<ByteArray> genResult = createArrayList<ByteArray>();
+
+    ByteArray entireMessage = nullptr;
+    if(info->mDeflate != nullptr) {
+        entireMessage = info->mDeflate->compress(content);
+    } else {
+        entireMessage = content;
+    }
+
+    const byte *pData = entireMessage->toValue();
+    int index = 0;
+    bool isFirstFrame = true;
+    bool isLastFrame = false;
+    while(1) {
+        int len = (entireMessage->size()-index) > mMaxFrameSize?mMaxFrameSize:(entireMessage->size() - index);
+        printf("index is %d,len is %d \n",index,len);
+        ByteArray message = createByteArray(pData + index,len);
+        index += len;
+        if(index == entireMessage->size()) {
+            isLastFrame = true;
+        }
+
+        ByteArray sink = createByteArray(message->size() + 14);
+        ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
+
+        int b0 = 0;//formatOpcode|st(WebSocketProtocol)::B0_FLAG_FIN;
+        if(isFirstFrame) {
+            b0 = type;
+        } else {
+            b0 = st(WebSocketProtocol)::OPCODE_CONTINUATION;
+        }
+
+        if(isLastFrame) {
+            b0 |= st(WebSocketProtocol)::B0_FLAG_FIN;
+        }
+
+        printf("b0 is %x \n",b0);
+        sinkWriter->writeByte(b0);
+
+        ByteArray maskKey = createByteArray(4);
+        int b1 = st(WebSocketProtocol)::B1_FLAG_MASK;
+        //random.nextBytes(maskKey);
+        mRand->nextBytes(maskKey);
+    
+        int byteCount = message->size();
+        printf("byteCount is %d\n",byteCount);
+        if (byteCount <= st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
+            b1 |= (int) byteCount;
+            sinkWriter->writeByte(b1);
+        } else if (byteCount <= st(WebSocketProtocol)::PAYLOAD_SHORT_MAX) {
+            b1 |= st(WebSocketProtocol)::PAYLOAD_SHORT;
+            sinkWriter->writeByte(b1);
+            sinkWriter->writeShort((int) byteCount);
+        } else {
+            b1 |= st(WebSocketProtocol)::PAYLOAD_LONG;
+            sinkWriter->writeByte(b1);
+            sinkWriter->writeLong(byteCount);
+        }
+
+        sinkWriter->writeByteArray(maskKey);
+        //writeMaskedSynchronized(buffer, byteCount);
+        ByteArray maskBuff = createByteArray(message);
+        printf("start toggleMask,maskBuff size is %d,message size is %d \n",maskBuff->size(),message->size());
+        st(WebSocketProtocol)::toggleMask(maskBuff,maskKey);
+        sinkWriter->writeByteArray(maskBuff);
+        printf("finish toggleMask£¬index is %d \n",sinkWriter->getIndex());
+        sink->qucikShrink(sinkWriter->getIndex());
+
+        genResult->add(sink);
+
+        if(isLastFrame) {
+            break;
+        }
+    }
+
+    return genResult;
+}
+
+ArrayList<ByteArray> _WebSocketHybi13Composer::genServerTextMessage(WebSocketClientInfo info,String c) {
+    ArrayList<ByteArray> genResult = createArrayList<ByteArray>();
+
+    ByteArray content = createByteArray(c);
+
+    ByteArray sink = createByteArray(content->size() + 14);
+    ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
+
+    int b0 = st(WebSocketProtocol)::OPCODE_TEXT|st(WebSocketProtocol)::B0_FLAG_FIN;
+    printf("b0 is %x \n",b0);
+    sinkWriter->writeByte(b0);
+
+    int b1 = 0;
+    int byteCount = content->size();
+
+    if (byteCount <= st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
+        b1 |= (int) byteCount;
+        sinkWriter->writeByte(b1);
+    } else if (byteCount <= st(WebSocketProtocol)::PAYLOAD_SHORT_MAX) {
+        b1 |= st(WebSocketProtocol)::PAYLOAD_SHORT;
+        sinkWriter->writeByte(b1);
+        sinkWriter->writeShort((int) byteCount);
+    } else {
+        b1 |= st(WebSocketProtocol)::PAYLOAD_LONG;
+        sinkWriter->writeByte(b1);
+        sinkWriter->writeLong(byteCount);
+    }
+
+    sinkWriter->writeByteArray(content);
+    sink->qucikShrink(sinkWriter->getIndex());
+    
+    //TODO
+    genResult->add(sink);
+    return genResult;
+}
+
+ArrayList<ByteArray> _WebSocketHybi13Composer::genBinaryMessage(WebSocketClientInfo info,ByteArray content) {
+    switch(mType) {
+        case WsClientComposer:
+        return _genClientMessage(info,content,st(WebSocketProtocol)::OPCODE_BINARY);
+
+        case WsServerComposer:
+        return genServerBinaryMessage(info,content);
+    }
+
+    return nullptr;
+}
+
+
+ArrayList<ByteArray> _WebSocketHybi13Composer::genServerBinaryMessage(WebSocketClientInfo info,ByteArray content) {
+    //TODO
 }
 
 }

@@ -29,9 +29,11 @@ public:
 
     void setMaxFrameSzie(int);
 
-    virtual String genShakeHandMessage(WebSocketClientInfo) = 0;
+    virtual ByteArray genShakeHandMessage(WebSocketClientInfo) = 0;
     
-    virtual String genTextMessage(WebSocketClientInfo,String) = 0;
+    virtual ArrayList<ByteArray> genTextMessage(WebSocketClientInfo,String) = 0;
+
+    virtual ArrayList<ByteArray> genBinaryMessage(WebSocketClientInfo,ByteArray) = 0;
     //virtual String genControlMessage(WebSocketClientInfo,int opcode,String);
     //virtual String genBinaryMessage(WebSocketClientInfo,int opcode,String);
     //virtual String genMessageFrame() = 0;

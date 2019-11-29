@@ -8,6 +8,8 @@
 #include "Long.hpp"
 #include "WebSocketClient.hpp"
 #include "WebSocketListener.hpp"
+#include "File.hpp"
+#include "FileInputStream.hpp"
 
 using namespace obotcha;
 
@@ -50,12 +52,19 @@ int main() {
     client->connect("ws://192.168.43.90:1111/mytest",l);
     //server->start();
 
+    //sleep(5);
+    //client->sendMessage(createString("hello world1"));
+    //sleep(5);
+    //client->sendMessage(createString("hello world2"));
+    printf("start send file ..... \n");
     sleep(5);
-    client->sendMessage(createString("hello world1"));
-    sleep(5);
-    client->sendMessage(createString("hello world2"));
-    sleep(5);
-    client->sendPing(createString("wangsl12312312312312312312ping!!!!"));
+    File file = createFile("log");
+    FileInputStream stream = createFileInputStream(file);
+    stream->open();
+    ByteArray content = stream->readAll();
+    client->sendBinaryData(content);
+
+
     while(1){}
 
 }

@@ -15,12 +15,17 @@ _WebSocketHybi00Composer::_WebSocketHybi00Composer(int type,int maxFrameSize)
 
 }
 
-String _WebSocketHybi00Composer::genShakeHandMessage(WebSocketClientInfo) {
+ByteArray _WebSocketHybi00Composer::genShakeHandMessage(WebSocketClientInfo) {
     //TODO
     return nullptr;
 }
 
-String _WebSocketHybi00Composer::genTextMessage(WebSocketClientInfo,String) {
+ArrayList<ByteArray> _WebSocketHybi00Composer::genTextMessage(WebSocketClientInfo,String) {
+    //TODO
+    return nullptr;
+}
+
+ArrayList<ByteArray> _WebSocketHybi00Composer::genBinaryMessage(WebSocketClientInfo,ByteArray) {
     //TODO
     return nullptr;
 }

@@ -21,15 +21,20 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(WebSocketHybi13Composer) IMPLEMENTS(WebSocketComposer){
 public:
     _WebSocketHybi13Composer(int,int max = MAX_WEBSOCKET_FRAME_SIZE);
-    String genShakeHandMessage(WebSocketClientInfo h);
-    String genTextMessage(WebSocketClientInfo,String);
+    ByteArray genShakeHandMessage(WebSocketClientInfo h);
     
-private:
-    String genClientShakeHandMessage(WebSocketClientInfo h);
-    String genServerShakeHandMessage(WebSocketClientInfo h);
+    ArrayList<ByteArray> genTextMessage(WebSocketClientInfo,String);
 
-    String genClientTextMessage(WebSocketClientInfo,String);
-    String genServerTextMessage(WebSocketClientInfo,String);
+    ArrayList<ByteArray> genBinaryMessage(WebSocketClientInfo,ByteArray);
+
+private:
+    ByteArray genClientShakeHandMessage(WebSocketClientInfo h);
+    ByteArray genServerShakeHandMessage(WebSocketClientInfo h);
+
+    ArrayList<ByteArray> genServerTextMessage(WebSocketClientInfo,String);
+    ArrayList<ByteArray> genServerBinaryMessage(WebSocketClientInfo,ByteArray);
+
+    ArrayList<ByteArray> _genClientMessage(WebSocketClientInfo h,ByteArray,int type);
 
     Sha mSha;
     Base64 mBase64;

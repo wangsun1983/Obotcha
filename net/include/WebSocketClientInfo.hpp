@@ -24,19 +24,32 @@ public:
     int mType;
 };
 
+DECLARE_SIMPLE_CLASS(WebSocketClientEntireBuffer) {
+public:
+    ByteArray mEntireBuff;
+    int mFrameSize;
+    int mHeadSize;
+};
+
 DECLARE_SIMPLE_CLASS(WebSocketClientInfo) {
 public:
     _WebSocketClientInfo();
 
     sp<_WebSocketParser> mParser;
+
     sp<_WebSocketComposer> mComposer;
     
     HttpHeader mHttpHeader;
+    
     WebSocketHeader mWsHeader;
+    
     sp<_WebSocketPermessageDeflate> mDeflate;
+    
     ArrayList<String> mProtocols;  
 
     WebSocketClientBuffer mBuffer;
+
+    WebSocketClientEntireBuffer mEntireBuffer;
 
     String mConnectUrl;
 };

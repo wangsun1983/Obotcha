@@ -206,25 +206,36 @@ int _WebSocketClient::connect(String url,WebSocketListener l) {
     mClient->mHttpHeader->setMethod(HttpMethodGet);
     mClient->mConnectUrl = url;
 
-    String shakeHandMsg = mClient->mComposer->genShakeHandMessage(mClient);
+    ByteArray shakeHandMsg = mClient->mComposer->genShakeHandMessage(mClient);
     mListener = createWebSocketTcpClientListener(l);
     
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(url);
     mTcpClient = createAsyncTcpClient(httpUrl->getHost(),httpUrl->getPort(),mListener);
     mTcpClient->start();
 
-    mTcpClient->send(createByteArray(shakeHandMsg));
+    mTcpClient->send(shakeHandMsg);
     return 0;
 }
 
 int _WebSocketClient::sendMessage(String msg) {
-    String wsPacket = mClient->mComposer->genTextMessage(mClient,msg);
-    return mTcpClient->send(createByteArray(wsPacket));
+    ArrayList<ByteArray> wsPacket = mClient->mComposer->genTextMessage(mClient,msg);
+    printf("wsPacket size is %d \n",wsPacket->size());
+
+    ListIterator<ByteArray> iterator = wsPacket->getIterator();
+    int size = 0;
+    while(iterator->hasValue()) {
+        ByteArray data = iterator->getValue();
+        int sendSize = mTcpClient->send(data);
+        printf("sendSize is %d \n",sendSize);
+        size += sendSize;
+        iterator->next();
+    }
+
+    return size;
 }
 
 int _WebSocketClient::sendMessage(const char*msg) {
-    String wsPacket = mClient->mComposer->genTextMessage(mClient,createString(msg));
-    return mTcpClient->send(createByteArray(wsPacket));
+    return sendMessage(createString(msg));
 }
 
 int _WebSocketClient::sendPing(String msg) {
@@ -235,8 +246,20 @@ int _WebSocketClient::sendPing(String msg) {
 #endif        
 }
 
-int _WebSocketClient::sendByteArray(ByteArray) {
-    //TODO
+int _WebSocketClient::sendBinaryData(ByteArray data) {
+    ArrayList<ByteArray> wsPacket = mClient->mComposer->genBinaryMessage(mClient,data);
+    printf("wsPacket111 size is %d \n",wsPacket->size());
+
+    ListIterator<ByteArray> iterator = wsPacket->getIterator();
+    //int size = 0;
+    while(iterator->hasValue()) {
+        ByteArray data = iterator->getValue();
+        int size = mTcpClient->send(data);
+        printf("send size is %d \n",size);
+        sleep(1);
+        iterator->next();
+    }
+
     return 0;
 }
 

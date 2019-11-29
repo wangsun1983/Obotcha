@@ -183,8 +183,8 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
 
         //String shakeresponse = mResponse->generateShakeHandFrame(key);
         WebSocketComposer composer = st(WebSocketClientManager)::getInstance()->getClient(fd)->mComposer;
-        String shakeresponse = composer->genShakeHandMessage(st(WebSocketClientManager)::getInstance()->getClient(fd));
-        st(NetUtils)::sendTcpPacket(fd,createByteArray(shakeresponse));
+        ByteArray shakeresponse = composer->genShakeHandMessage(st(WebSocketClientManager)::getInstance()->getClient(fd));
+        st(NetUtils)::sendTcpPacket(fd,shakeresponse);
     }
     
 }
@@ -235,18 +235,46 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
 
     int readIndex = 0;
     WebSocketParser parser = st(WebSocketClientManager)::getInstance()->getClient(fd)->mParser;
+
     while(1) {
+        WebSocketClientEntireBuffer entireBuff = st(WebSocketClientManager)::getInstance()->getClient(fd)->mEntireBuffer;
+        if(entireBuff != nullptr) {
+            printf("append buff \n");
+            entireBuff->mEntireBuff->append(pack);
+            if(entireBuff->mEntireBuff->size() < (entireBuff->mFrameSize + entireBuff->mHeadSize)) {
+                printf("wait for entire buff \n");
+                break;
+            }
+
+            pack = entireBuff->mEntireBuff;
+            st(WebSocketClientManager)::getInstance()->getClient(fd)->mEntireBuffer = nullptr;
+        }
+
         parser->setParseData(pack);
         WebSocketHeader header = parser->parseHeader();
+        //we should check whether we received a full frame
         int framesize = header->getFrameLength();
         int headersize = header->getHeadSize();
+        if(framesize + headersize > pack->size()) {
+            //it is not a full packet
+            WebSocketClientEntireBuffer entireBuff = createWebSocketClientEntireBuffer();
+            entireBuff->mEntireBuff = pack;
+            entireBuff->mFrameSize = framesize;
+            entireBuff->mHeadSize = headersize;
+            st(WebSocketClientManager)::getInstance()->getClient(fd)->mEntireBuffer = entireBuff;
+            printf("create entire buff,opcode is %d  \n",header->getOpCode());
+            break;
+        }
+
         int opcode = header->getOpCode();
         
         if(opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
+            printf("OPCODE_TEXT \n");
             ByteArray msgData = parser->parseContent(true);
             String msg = msgData->toString();
             mWsSocketListener->onMessage(fd,msg);
         } else if(opcode == st(WebSocketProtocol)::OPCODE_BINARY) {
+            printf("OPCODE_BINARY len is %d \n",len);
             if(header->isFinalFrame()) {
                 ByteArray msgData = parser->parseContent(true);
                 mWsSocketListener->onData(fd,msgData);

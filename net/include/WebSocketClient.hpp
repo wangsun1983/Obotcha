@@ -82,7 +82,7 @@ public:
 
     int sendMessage(const char*msg);
 
-    int sendByteArray(ByteArray);
+    int sendBinaryData(ByteArray);
 
     int sendFile(File);
 

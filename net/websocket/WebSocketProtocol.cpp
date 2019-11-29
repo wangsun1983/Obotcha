@@ -61,7 +61,7 @@ namespace obotcha {
         int frameBytesRead = 0;
         printf("_WebSocketProtocol toggleMask trace1\n");
         for (int i = 0; i < byteCount; i++, frameBytesRead++) {
-            printf("_WebSocketProtocol toggleMast i is %d \n",i);
+            //printf("_WebSocketProtocol toggleMast i is %d \n",i);
             int keyIndex = (int) (frameBytesRead % keyLength);
             buffer->fill(i,(byte) (buffer->at(i) ^ key->at(keyIndex)));
         }

@@ -18,8 +18,12 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(WebSocketHybi00Composer) IMPLEMENTS(WebSocketComposer) {
 public:
     _WebSocketHybi00Composer(int,int max = MAX_WEBSOCKET_FRAME_SIZE);
-    String genShakeHandMessage(WebSocketClientInfo);
-    String genTextMessage(WebSocketClientInfo,String);
+    
+    ByteArray genShakeHandMessage(WebSocketClientInfo);
+    
+    ArrayList<ByteArray> genTextMessage(WebSocketClientInfo,String);
+    
+    ArrayList<ByteArray> genBinaryMessage(WebSocketClientInfo,ByteArray);
 };
 
 }
