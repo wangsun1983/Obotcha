@@ -163,6 +163,87 @@ ByteArray _WebSocketHybi13Parser::validateContinuationContent(ByteArray in) {
 	return in;
 }
 
+
+/*-----------------------------------------------------------------------------------
+* 1.Masking Head Size:
+*   1.1 FrameSize <= 125
+*       |++++++++++++|++++++++++++++|++++++++++++++++++++++++++++++++|
+*          1byte(op)     1byte(size)         4byte(mask)
+*
+*   1.2 FrameSize = 126
+*       |++++++++++++|++++++++++++++|++++++++++++++++++++++++++++|+++++++++++++++++++++++++++++|
+*          1byte(op)     1byte(size)         2byte(real size)            4byte(mask)
+*
+*   1.3 FrameSize > 126
+*       |++++++++++++|++++++++++++++|++++++++++++++++++++++++++++|+++++++++++++++++++++++++++++|
+*          1byte(op)     1byte(size)         8byte(real size)            4byte(mask)
+*
+* 2.Unmasking Head Size:
+*   2.1 FrameSize <= 125
+*       |++++++++++++|++++++++++++++|
+*          1byte(op)     1byte(size) 
+*
+*   2.2 FrameSize = 126
+*       |++++++++++++|++++++++++++++|++++++++++++++++++++++++++++|
+*          1byte(op)     1byte(size)         2byte(real size)     
+*
+*   2.3 FrameSize > 126
+*       |++++++++++++|++++++++++++++|++++++++++++++++++++++++++++|
+*          1byte(op)     1byte(size)         8byte(real size)     
+*-----------------------------------------------------------------------------------
+*/
+bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
+    if(pack->size() < 2) {
+        return false;
+    }
+
+    ByteArrayReader preReader = createByteArrayReader(pack);
+    //check whether it has an entire header
+    int b0 = preReader->readByte();
+    int b1 = preReader->readByte();
+
+    bool isMask = (b1 & st(WebSocketProtocol)::B1_FLAG_MASK != 0);
+    // Get frame length, optionally reading from follow-up bytes if indicated by special values.
+    long frameLength = b1 & st(WebSocketProtocol)::B1_MASK_LENGTH;
+    int headSize = 0;
+    long contentSize = 0;
+
+    if(isMask) {
+        if(frameLength < st(WebSocketProtocol)::PAYLOAD_SHORT) {
+            headSize = 6;
+            contentSize = frameLength;
+        } else if(frameLength == st(WebSocketProtocol)::PAYLOAD_SHORT) {
+            headSize = 8;
+            contentSize = (preReader->readShort() & 0xffffL);
+        } else if(frameLength == st(WebSocketProtocol)::PAYLOAD_LONG) {
+            headSize = 14;
+            contentSize = preReader->readLong();
+        }
+    } else {
+        if(frameLength < st(WebSocketProtocol)::PAYLOAD_SHORT) {
+            headSize = 2;
+            contentSize = frameLength;
+        } else if(frameLength == st(WebSocketProtocol)::PAYLOAD_SHORT) {
+            headSize = 4;
+            contentSize = (preReader->readShort() & 0xffffL);
+        } else if(frameLength == st(WebSocketProtocol)::PAYLOAD_LONG) {
+            headSize = 10;
+            contentSize = preReader->readLong();
+        }
+    }
+
+    if(headSize >= pack->size()) {
+        return false;
+    }
+
+    //check whether it has an entire frame
+    if((headSize + contentSize) > pack->size()) {
+        return false;
+    }
+
+    return true;
+}
+
 bool _WebSocketHybi13Parser::validateHandShake(HttpHeader h) {
     if(h->getMethod() != HTTP_GET) {        
         return false;

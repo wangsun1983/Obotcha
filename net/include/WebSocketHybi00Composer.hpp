@@ -24,6 +24,11 @@ public:
     ArrayList<ByteArray> genTextMessage(WebSocketClientInfo,String);
     
     ArrayList<ByteArray> genBinaryMessage(WebSocketClientInfo,ByteArray);
+
+    ByteArray genPingMessage(WebSocketClientInfo,String);
+
+    ByteArray genPongMessage(WebSocketClientInfo,String);
+
 };
 
 }

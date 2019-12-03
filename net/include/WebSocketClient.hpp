@@ -44,7 +44,7 @@ enum WsClientProtocolType {
 DECLARE_SIMPLE_CLASS(WebSocketTcpClientListener) IMPLEMENTS(SocketListener) {
 
 public:
-    _WebSocketTcpClientListener(WebSocketListener);
+    _WebSocketTcpClientListener(WebSocketListener,WebSocketClientInfo);
 
     void onAccept(int fd,String ip,int port,ByteArray pack);
 
@@ -64,6 +64,8 @@ private:
     int mProtoclType;
 
     HttpParser mHttpParser;
+
+    WebSocketClientInfo mClient;
 };
 
 DECLARE_SIMPLE_CLASS(WebSocketClient) {

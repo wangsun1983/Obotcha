@@ -14,7 +14,7 @@
 
 namespace obotcha {
 
-#define MAX_WEBSOCKET_FRAME_SIZE 256*1024
+#define MAX_WEBSOCKET_FRAME_SIZE 64*1024
 
 enum WebSocketFrameComposerType {
     WsClientComposer = 1,
@@ -34,6 +34,11 @@ public:
     virtual ArrayList<ByteArray> genTextMessage(WebSocketClientInfo,String) = 0;
 
     virtual ArrayList<ByteArray> genBinaryMessage(WebSocketClientInfo,ByteArray) = 0;
+
+    virtual ByteArray genPingMessage(WebSocketClientInfo,String) = 0;
+
+    virtual ByteArray genPongMessage(WebSocketClientInfo,String) = 0;
+
     //virtual String genControlMessage(WebSocketClientInfo,int opcode,String);
     //virtual String genBinaryMessage(WebSocketClientInfo,int opcode,String);
     //virtual String genMessageFrame() = 0;

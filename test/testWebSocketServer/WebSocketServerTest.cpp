@@ -25,7 +25,7 @@ public:
         mConditaion = createCondition();
     }
 
-    int onMessage(int fd,String message) {
+    int onMessage(WebSocketClientInfo client,String message) {
         printf("message is %s \n",message->toChars());
         mMessage = message;
         String response = createString("hello from server ");
@@ -35,16 +35,18 @@ public:
         WebSocketFrameComposer mComposer = createWebSocketFrameComposer(false);
         
         //int ret = st(NetUtils)::sendTcpPacket(fd,mComposer->generateMessageFrame(st(WebSocketProtocol)::OPCODE_TEXT,createByteArray(response)));
-        WebSocketComposer composer = st(WebSocketClientManager)::getInstance()->getClient(fd)->mComposer;
+        WebSocketComposer composer = client->getComposer();
 
-        ArrayList<ByteArray> text = composer->genTextMessage(st(WebSocketClientManager)::getInstance()->getClient(fd),createString("hello world from server"));
-        int ret = st(NetUtils)::sendTcpPacket(fd,text->get(0));
+        ArrayList<ByteArray> text = composer->genTextMessage(client,createString("hello world from server"));
+        //int ret = st(NetUtils)::sendTcpPacket(fd,text->get(0));
+        int ret = client->sendMessage(text->get(0));
+
         printf("onMessage send result is %d \n",ret);
         mConditaion->notify();
         return 0;
     }
 
-    int onData(int fd,ByteArray message) {
+    int onData(WebSocketClientInfo client,ByteArray message) {
         //printf("data message size is %d,message is %s \n",message->size(),message->toValue());
         File file = createFile("recvfile");
         FileOutputStream stream = createFileOutputStream(file);
@@ -55,21 +57,21 @@ public:
         return 0;
     }
 
-    int onConnect(int fd) {
-        printf("on connect fd is %d \n",fd);
+    int onConnect(WebSocketClientInfo client) {
+        printf("on connect fd is %d \n",client->getClientFd());
         return 0;
     }
 
-    int onDisconnect(int fd) {
-        printf("on disconnect fd is %d \n",fd);
+    int onDisconnect(WebSocketClientInfo client) {
+        printf("on disconnect fd is %d \n",client->getClientFd());
         return 0;
     }
 
-    int onPong(int fd) {
+    int onPong(WebSocketClientInfo client) {
         return 0;
     }
 
-    int onPing(int fd) {
+    int onPing(WebSocketClientInfo client) {
         return 0;
     }
 

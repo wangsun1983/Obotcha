@@ -40,7 +40,7 @@ _String::_String(String v) {
     }
 }
 
-_String::_String(Long v) {
+_String::_String(Long &v) {
     if(v == nullptr) {
         throw NullPointerException("Long is null");
     }
@@ -52,7 +52,7 @@ _String::_String(Long v) {
     m_str = ss.str();
 }
 
-_String::_String(Byte v) {
+_String::_String(Byte &v) {
     if(v == nullptr) {
         throw NullPointerException("Byte is null");
     }
@@ -64,7 +64,7 @@ _String::_String(Byte v) {
     m_str = ss.str();
 }
 
-_String::_String(Uint8 v) {
+_String::_String(Uint8 &v) {
     if(v == nullptr) {
         throw NullPointerException("Uint8 is null");
     }
@@ -76,7 +76,7 @@ _String::_String(Uint8 v) {
     m_str = ss.str();
 }
 
-_String::_String(Uint16 v) {
+_String::_String(Uint16 &v) {
     if(v == nullptr) {
         throw NullPointerException("Uint16 is null");
     }
@@ -88,7 +88,7 @@ _String::_String(Uint16 v) {
     m_str = ss.str();
 }
 
-_String::_String(Uint32 v) {
+_String::_String(Uint32 &v) {
     if(v == nullptr) {
         throw NullPointerException("Uint32 is null");
     }
@@ -100,7 +100,7 @@ _String::_String(Uint32 v) {
     m_str = ss.str();
 }
 
-_String::_String(Uint64 v) {
+_String::_String(Uint64 &v) {
     if(v == nullptr) {
         throw NullPointerException("Uint64 is null");
     }
@@ -112,7 +112,7 @@ _String::_String(Uint64 v) {
     m_str = ss.str();
 }
 
-_String::_String(std::string v) {
+_String::_String(const std::string &v) {
     m_str = v;
 }
 
@@ -123,7 +123,7 @@ _String::_String(std::string *v) {
     m_str = *v;
 }
 
-_String::_String(Integer v) {
+_String::_String(Integer &v) {
     if(v == nullptr) {
         throw NullPointerException("Integer is null");
     }
@@ -135,7 +135,7 @@ _String::_String(Integer v) {
     m_str =  ss.str();
 }
 
-_String::_String(Boolean v) {
+_String::_String(Boolean &v) {
     if(v == nullptr) {
         throw NullPointerException("Boolean is null");
     }
@@ -148,7 +148,7 @@ _String::_String(Boolean v) {
     }
 }
 
-_String::_String(Float v) {
+_String::_String(Float &v) {
     if(v == nullptr) {
         throw NullPointerException("Float is null");
     }
@@ -160,7 +160,7 @@ _String::_String(Float v) {
     m_str = ss.str();
 }
 
-_String::_String(Double v) {
+_String::_String(Double &v) {
     if(v == nullptr) {
         throw NullPointerException("Double is null");
     }
@@ -368,7 +368,7 @@ int _String::indexOf(const char *v) {
     return m_str.find(v);
 }
     
-String _String::valueOf(Integer v) {
+String _String::valueOf(Integer &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -376,7 +376,7 @@ String _String::valueOf(Integer v) {
     return valueOf(v->toValue());
 }
 
-String _String::valueOf(Boolean v) {
+String _String::valueOf(Boolean &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -384,7 +384,7 @@ String _String::valueOf(Boolean v) {
     return valueOf(v->toValue());
 }
 
-String _String::valueOf(Double v) {
+String _String::valueOf(Double &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -392,7 +392,47 @@ String _String::valueOf(Double v) {
     return valueOf(v->toValue());
 }
 
-String _String::valueOf(Float v) {
+String _String::valueOf(Float &v) {
+    if(v == nullptr) {
+        return nullptr;
+    }
+
+    return valueOf(v->toValue());
+}
+
+String _String::valueOf(Long &v) {
+    if(v == nullptr) {
+        return nullptr;
+    }
+
+    return valueOf((uint64_t)v->toValue());
+}
+
+String _String::valueOf(Uint8 &v) {
+    if(v == nullptr) {
+        return nullptr;
+    }
+
+    return valueOf(v->toValue());
+}
+
+String _String::valueOf(Uint16 &v) {
+    if(v == nullptr) {
+        return nullptr;
+    }
+
+    return valueOf(v->toValue());
+}
+
+String _String::valueOf(Uint32 &v) {
+    if(v == nullptr) {
+        return nullptr;
+    }
+
+    return valueOf(v->toValue());
+}
+
+String _String::valueOf(Uint64 &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -401,6 +441,27 @@ String _String::valueOf(Float v) {
 }
 
 String _String::valueOf(int v) {
+    stringstream ss;
+    ss<< v;
+    std::string temp = ss.str();
+    return createString(temp);
+}
+
+String _String::valueOf(std::uint16_t v) {
+    stringstream ss;
+    ss<< v;
+    std::string temp = ss.str();
+    return createString(temp);
+}
+
+String _String::valueOf(std::uint32_t v) {
+    stringstream ss;
+    ss<< v;
+    std::string temp = ss.str();
+    return createString(temp);
+}
+
+String _String::valueOf(std::uint64_t v) {
     stringstream ss;
     ss<< v;
     std::string temp = ss.str();
@@ -456,6 +517,10 @@ bool _String::equals(const std::string p) {
 }
 
 ArrayList<String> _String::split(String v) {
+    return split(v->toChars());
+}
+
+sp<_ArrayList<String>> _String::split(const char* v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -464,7 +529,7 @@ ArrayList<String> _String::split(String v) {
     int index = 0;
     int last = 0;
 
-    index = m_str.find_first_of(v->m_str,last);
+    index = m_str.find_first_of(v,last);
 
     if(index == -1) {
         return nullptr;
@@ -473,7 +538,7 @@ ArrayList<String> _String::split(String v) {
     while(index != -1) {
         t->add(createString(m_str.substr(last,index-last)));
         last = index+1;
-        index = m_str.find_first_of(v->m_str,last);
+        index = m_str.find_first_of(v,last);
     }
     
     if(last - m_str.size() > 0){
@@ -483,6 +548,9 @@ ArrayList<String> _String::split(String v) {
     return t;
 }
 
+sp<_ArrayList<String>> _String::split(std::string v) {
+    return split(v.c_str());
+}
 
 Integer _String::toInteger() {
     if(m_str.size() == 0) {
@@ -1064,6 +1132,24 @@ sp<_String> _String::replaceFirst(String regex,String value) {
     return createString(result);
 }
 
+sp<_String> _String::replaceFirst(const char *regex,const char *v) {
+    if(regex == nullptr || v == nullptr) {
+        return nullptr;
+    }
+
+    std::string result = std::regex_replace(m_str,std::regex(regex),v,
+        std::regex_constants::format_first_only);
+
+    return createString(result);
+}
+
+sp<_String> _String::replaceFirst(std::string regex,std::string v) {
+    std::string result = std::regex_replace(m_str,std::regex(regex),v,
+        std::regex_constants::format_first_only);
+
+    return createString(result);
+}
+
 sp<_String> _String::replaceAll(String regex,String value) {
     if(m_str.size() == 0 || value == nullptr || regex == nullptr) {
         return nullptr;
@@ -1071,6 +1157,21 @@ sp<_String> _String::replaceAll(String regex,String value) {
     std::string result = std::regex_replace(m_str,std::regex(regex->m_str),value->m_str);
     return createString(result);
 }
+
+sp<_String> _String::replaceAll(const char* regex,const char* v) {
+    if(regex == nullptr || v == nullptr) {
+        return nullptr;
+    }
+
+    std::string result = std::regex_replace(m_str,std::regex(regex),v);
+    return createString(result);
+}
+
+sp<_String> _String::replaceAll(std::string regex,std::string v) {
+    std::string result = std::regex_replace(m_str,std::regex(regex),v);
+    return createString(result);
+}
+
 
 bool _String::endsWith(String s) {
     if(m_str.size() == 0 || m_str.size() == 0 || s == nullptr) {
@@ -1081,6 +1182,21 @@ bool _String::endsWith(String s) {
     return (result == m_str.size() - 1);
 }
 
+bool _String::endsWith(const char *s) {
+    if(s == nullptr) {
+        return false;
+    }
+
+    int result = m_str.find_last_of(s);
+    return (result == m_str.size() - 1);
+}
+
+bool _String::endsWith(std::string s) {
+    int result = m_str.find_last_of(s);
+    return (result == m_str.size() - 1);
+}
+
+
 int _String::lastIndexOf(String v) {
     if(m_str.size() == 0 || m_str.size() == 0 || v == nullptr) {
         return -1;
@@ -1089,6 +1205,20 @@ int _String::lastIndexOf(String v) {
     int result = m_str.find_last_of(v->m_str);
     return result;
 }
+
+int _String::lastIndexOf(const char * v) {
+    if(v == nullptr) {
+        return -1;
+    }
+
+    int result = m_str.find_last_of(v);
+    return result;
+}
+
+int _String::lastIndexOf(std::string v) {
+    return m_str.find_last_of(v);
+}
+
 
 bool _String::startsWith(String v) {
     if(m_str.size() == 0 || m_str.size() == 0 || v == nullptr) {
@@ -1099,12 +1229,26 @@ bool _String::startsWith(String v) {
     return (result == v->size());
 }
 
+bool _String::startsWith(const char * v) {
+    if(v == nullptr) {
+        return false;
+    }
+
+    int result = m_str.find(v);
+    return (result == strlen(v));
+}
+
+bool _String::startsWith(std::string v) {
+    int result = m_str.find(v);
+    return (result == v.size());
+}
+
 bool _String::isIntNumber(const char *p,int size) {
     for(int i = 0;i < size;i++) {
         if(p[i] >= '0' && p[i] <= '9') {
             continue;
         } else {
-            if((i == size - 1) && p[i] == '\n') {
+            if((i == size - 1) && p[i] == '\0') {
                 return true;
             }
             return false;

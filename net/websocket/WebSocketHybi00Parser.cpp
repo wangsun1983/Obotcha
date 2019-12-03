@@ -62,6 +62,11 @@ ByteArray _WebSocketHybi00Parser::validateContinuationContent(ByteArray) {
     return nullptr;
 }
 
+bool _WebSocketHybi00Parser::validateEntirePacket(ByteArray pack) {
+    //TODO
+    return false;
+}
+
 WebSocketPermessageDeflate _WebSocketHybi00Parser::validateExtensions(HttpHeader) {
     return nullptr;
 }

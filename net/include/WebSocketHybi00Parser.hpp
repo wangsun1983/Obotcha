@@ -33,6 +33,8 @@ public:
 
     ByteArray validateContinuationContent(ByteArray);
 
+    bool validateEntirePacket(ByteArray pack);
+
     WebSocketPermessageDeflate validateExtensions(HttpHeader);
 
     ArrayList<String> extractSubprotocols(HttpHeader);

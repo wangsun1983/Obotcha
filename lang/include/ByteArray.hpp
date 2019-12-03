@@ -10,8 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ByteArray)
-{
+DECLARE_SIMPLE_CLASS(ByteArray) {
 public:
     _ByteArray(int length);
 
@@ -20,9 +19,6 @@ public:
     _ByteArray(sp<_ByteArray>);
 
     _ByteArray(String);
-
-    template<typename T>
-    _ByteArray(T *t);
 
     ~_ByteArray();
 
@@ -60,22 +56,7 @@ private:
     byte *buff;
 
     int mSize;
-
-    int mCursor;
 };
-
-template<typename T>
-_ByteArray::_ByteArray(T *t) {
-    int size = sizeof(T);
-    buff = (byte *)malloc(size);
-    if(t == nullptr) {
-        return;
-    }
-    
-    memcpy(buff,t,size);
-    mSize = size;
-    mCursor = 0;
-}
 
 }
 #endif

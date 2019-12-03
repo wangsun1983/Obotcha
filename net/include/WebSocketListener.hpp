@@ -10,6 +10,8 @@
 
 namespace obotcha {
 
+class _WebSocketClientInfo;
+
 enum PingResult {
     PingResultResponse,
     PingResultNoResponse
@@ -17,17 +19,17 @@ enum PingResult {
 
 DECLARE_SIMPLE_CLASS(WebSocketListener) {
 public:
-    virtual int onMessage(int fd,String message) = 0;
+    virtual int onMessage(sp<_WebSocketClientInfo> client,String message) = 0;
 
-    virtual int onData(int fd,ByteArray data) = 0;
+    virtual int onData(sp<_WebSocketClientInfo> client,ByteArray data) = 0;
 
-    virtual int onConnect(int fd) = 0;
+    virtual int onConnect(sp<_WebSocketClientInfo> client) = 0;
 
-    virtual int onDisconnect(int fd) = 0;
+    virtual int onDisconnect(sp<_WebSocketClientInfo> client) = 0;
 
-    virtual int onPong(int fd,String) {return PingResultResponse;}
+    virtual int onPong(sp<_WebSocketClientInfo> client,String) {return PingResultResponse;}
 
-    virtual int onPing(int fd,String)  {return PingResultResponse;};
+    virtual int onPing(sp<_WebSocketClientInfo> client,String)  {return PingResultResponse;};
 };
 
 }

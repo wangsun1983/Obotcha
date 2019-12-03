@@ -30,5 +30,16 @@ ArrayList<ByteArray> _WebSocketHybi00Composer::genBinaryMessage(WebSocketClientI
     return nullptr;
 }
 
+ByteArray _WebSocketHybi00Composer::genPingMessage(WebSocketClientInfo,String) {
+    //TODO
+    return nullptr;
+}
+
+ByteArray _WebSocketHybi00Composer::genPongMessage(WebSocketClientInfo,String) {
+    //TODO
+    return nullptr;
+}
+
+
 }
 

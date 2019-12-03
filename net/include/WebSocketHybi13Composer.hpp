@@ -21,23 +21,34 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(WebSocketHybi13Composer) IMPLEMENTS(WebSocketComposer){
 public:
     _WebSocketHybi13Composer(int,int max = MAX_WEBSOCKET_FRAME_SIZE);
+
     ByteArray genShakeHandMessage(WebSocketClientInfo h);
     
     ArrayList<ByteArray> genTextMessage(WebSocketClientInfo,String);
 
     ArrayList<ByteArray> genBinaryMessage(WebSocketClientInfo,ByteArray);
 
-private:
-    ByteArray genClientShakeHandMessage(WebSocketClientInfo h);
-    ByteArray genServerShakeHandMessage(WebSocketClientInfo h);
+    ByteArray genPingMessage(WebSocketClientInfo,String);
 
-    ArrayList<ByteArray> genServerTextMessage(WebSocketClientInfo,String);
-    ArrayList<ByteArray> genServerBinaryMessage(WebSocketClientInfo,ByteArray);
+    ByteArray genPongMessage(WebSocketClientInfo,String);
+
+private:
+    ByteArray _genClientShakeHandMessage(WebSocketClientInfo h);
+
+    ByteArray _genServerShakeHandMessage(WebSocketClientInfo h);
 
     ArrayList<ByteArray> _genClientMessage(WebSocketClientInfo h,ByteArray,int type);
+    
+    ArrayList<ByteArray> _genServerMessage(WebSocketClientInfo h,ByteArray,int type);
+
+    ByteArray _genClientControlMessage(WebSocketClientInfo h,ByteArray,int type);
+
+    ByteArray _genServerControlMessage(WebSocketClientInfo h,ByteArray,int type);
 
     Sha mSha;
+
     Base64 mBase64;
+    
     Random mRand;
 };
 

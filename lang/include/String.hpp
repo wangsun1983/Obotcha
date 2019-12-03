@@ -31,7 +31,7 @@ public:
 
     _String(std::string *v);
 
-    _String(std::string v);
+    _String(const std::string &v);
 
     _String(String v);
 
@@ -39,25 +39,25 @@ public:
 
     _String(const char *v,int start,int length);
 
-    _String(Integer v);
+    _String(Integer &v);
 
-    _String(Boolean v);
+    _String(Boolean &v);
 
-    _String(Float v);
+    _String(Float &v);
 
-    _String(Double v);
+    _String(Double &v);
 
-    _String(Long v);
+    _String(Long &v);
 
-    _String(Byte v);
+    _String(Byte &v);
 
-    _String(Uint8);
+    _String(Uint8 &v);
 
-    _String(Uint16);
+    _String(Uint16 &v);
 
-    _String(Uint32);
+    _String(Uint32 &v);
 
-    _String(Uint64);
+    _String(Uint64 &v);
 
     _String(int v);
 
@@ -78,8 +78,6 @@ public:
     _String(uint32_t);
 
     _String(uint64_t);
-
-    sp<_ArrayList<String>> split(String v);
 
     const char * toChars();
 
@@ -131,13 +129,23 @@ public:
 
     long toBasicLong();
 
-    static String valueOf(Integer v);
+    static String valueOf(Integer &v);
 
-    static String valueOf(Boolean v);
+    static String valueOf(Boolean &v);
 
-    static String valueOf(Double v);
+    static String valueOf(Double &v);
 
-    static String valueOf(Float v);
+    static String valueOf(Float &v);
+
+    static String valueOf(Long &v);
+
+    static String valueOf(Uint8 &v);
+
+    static String valueOf(Uint16 &v);
+
+    static String valueOf(Uint32 &v);
+
+    static String valueOf(Uint64 &v);
 
     static String valueOf(int v);
 
@@ -146,6 +154,12 @@ public:
     static String valueOf(double v);
 
     static String valueOf(float v);
+
+    static String valueOf(std::uint16_t);
+
+    static String valueOf(std::uint32_t);
+
+    static String valueOf(std::uint64_t);
 
     static String valueOf(const char *p);
 
@@ -218,20 +232,46 @@ public:
 
     int lastIndexOfIgnoreCase(const char * v);
     //----------------------------
+    sp<_String> replaceFirst(String regex,String v);
+
+    sp<_String> replaceFirst(const char *regex,const char*v);
+
+    sp<_String> replaceFirst(std::string regex,std::string v);
+    //----------------------------
+    sp<_String> replaceAll(String regex,String v);
+
+    sp<_String> replaceAll(const char* regex,const char* v);
+
+    sp<_String> replaceAll(std::string regex,std::string v);
+    //----------------------------
+    bool endsWith(String s);
+
+    bool endsWith(const char *s);
+
+    bool endsWith(std::string s);
+    //----------------------------
+    int lastIndexOf(String v);
+
+    int lastIndexOf(const char * v);
+
+    int lastIndexOf(std::string v);
+    //----------------------------
+    bool startsWith(String v);
+
+    bool startsWith(const char * v);
+
+    bool startsWith(std::string v);
+    //----------------------------
+    sp<_ArrayList<String>> split(String v);
+
+    sp<_ArrayList<String>> split(const char* v);
+
+    sp<_ArrayList<String>> split(std::string v);
+    //----------------------------
 
     bool isEmpty();
 
     bool matches(String regex);//Not Test
-    
-    sp<_String> replaceFirst(String regex,String v);
-
-    sp<_String> replaceAll(String regex,String v);
-
-    bool endsWith(String s);
-
-    int lastIndexOf(String v);
-
-    bool startsWith(String v);
 
     ~_String();
 

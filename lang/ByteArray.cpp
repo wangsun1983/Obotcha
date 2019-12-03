@@ -24,7 +24,6 @@ _ByteArray::_ByteArray(sp<_ByteArray> b) {
     buff = (unsigned char *)malloc(b->size());
     memcpy(buff,b->toValue(),b->size());
     mSize = b->size();
-    //mCursor = 0;
 }
 
 /**
@@ -35,7 +34,6 @@ _ByteArray::_ByteArray(int length) {
     buff = (unsigned char *)malloc(length);
     memset(buff,0,length);
     mSize = length;
-    //mCursor = 0;
 }
 
 /**
@@ -48,7 +46,6 @@ _ByteArray::_ByteArray(String str) {
     buff = (unsigned char *)malloc(mSize + 1);
     memset(buff,0,mSize + 1);
     memcpy(buff,str->toChars(),size);
-    //mCursor = 0;
 }
 
 /**
@@ -62,7 +59,6 @@ _ByteArray::_ByteArray(const byte *data,int len) {
     memset(buff,0,len);
     mSize = len;
     memcpy(buff,data,len);
-    //mCursor = 0;
     printf("create bytearray end len is %d \n",len);
 }
 
@@ -71,7 +67,6 @@ _ByteArray::_ByteArray(const byte *data,int len) {
  */
 void _ByteArray::clear() {
     memset(buff,0,mSize);
-    //mCursor = 0;
 }
 
 /**
@@ -84,7 +79,6 @@ _ByteArray::~_ByteArray() {
     }
 
     mSize = 0;
-    //mCursor = 0;
 }
 
 
@@ -103,7 +97,6 @@ void _ByteArray::qucikShrink(int size) {
 
     buff[size] = 0;
     mSize = size;
-    //mCursor = 0;
 }
 
 int _ByteArray::resize(int size) {
@@ -117,8 +110,7 @@ int _ByteArray::resize(int size) {
 
     buff = (byte *)realloc(buff,size);
 
-    mSize = size;
-    //mCursor = 0;
+    mSize = size;    
     
     return 0;
 }

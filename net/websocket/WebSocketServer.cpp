@@ -48,28 +48,30 @@ WebSocketClientManager _WebSocketClientManager::getInstance() {
 
 bool _WebSocketClientManager::addClient(int fd,int version) {
     WebSocketClientInfo data = createWebSocketClientInfo();
+    data->setClientFd(fd);
+
     switch(version) {
         case 0:{
-            data->mParser = createWebSocketHybi00Parser();
-            data->mComposer = createWebSocketHybi00Composer(WsServerComposer);
+            data->setParser(createWebSocketHybi00Parser());
+            data->setComposer(createWebSocketHybi00Composer(WsServerComposer));
             break;
         }
         
         case 7:{
-            data->mParser = createWebSocketHybi07Parser();
-            data->mComposer = createWebSocketHybi07Composer(WsServerComposer);
+            data->setParser(createWebSocketHybi07Parser());
+            data->setComposer(createWebSocketHybi07Composer(WsServerComposer));
             break;
         }
         
         case 8: {
-            data->mParser = createWebSocketHybi08Parser();
-            data->mComposer = createWebSocketHybi08Composer(WsServerComposer);
+            data->setParser(createWebSocketHybi08Parser());
+            data->setComposer(createWebSocketHybi08Composer(WsServerComposer));
             break;
         }
 
         case 13: {
-            data->mParser = createWebSocketHybi13Parser();
-            data->mComposer = createWebSocketHybi13Composer(WsServerComposer);
+            data->setParser(createWebSocketHybi13Parser());
+            data->setComposer(createWebSocketHybi13Composer(WsServerComposer));
             break;
         }
         
@@ -91,25 +93,25 @@ WebSocketClientInfo _WebSocketClientManager::getClient(int fd) {
 void _WebSocketClientManager::setHttpHeader(int fd,HttpHeader h) {
     AutoMutex ll(mMutex);
     WebSocketClientInfo data = mClients->get(fd);
-    data->mHttpHeader = h;
+    data->setHttpHeader(h);
 }
 
 void _WebSocketClientManager::setWebSocketHeader(int fd,WebSocketHeader h) {
     AutoMutex ll(mMutex);
     WebSocketClientInfo data = mClients->get(fd);
-    data->mWsHeader = h;
+    data->setWebSocketHeader(h);
 }
 
 void _WebSocketClientManager::setWebSocketPermessageDeflate(int fd,WebSocketPermessageDeflate v) {
     AutoMutex ll(mMutex);
     WebSocketClientInfo data = mClients->get(fd);
-    data->mDeflate = v;
+    data->setDeflater(v);
 }
 
 void _WebSocketClientManager::setWebSocketProtocols(int fd,ArrayList<String> p) {
     AutoMutex ll(mMutex);
     WebSocketClientInfo data = mClients->get(fd);
-    data->mProtocols = p;
+    data->setProtocols(p);
 }
     
 void _WebSocketClientManager::removeClient(int fd) {
@@ -152,7 +154,7 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
         st(WebSocketClientManager)::getInstance()->addClient(fd,version->toBasicInt());
         st(WebSocketClientManager)::getInstance()->setHttpHeader(fd,header);
 
-        WebSocketParser parser = st(WebSocketClientManager)::getInstance()->getClient(fd)->mParser;
+        WebSocketParser parser = st(WebSocketClientManager)::getInstance()->getClient(fd)->getParser();
 
         if(!parser->validateHandShake(header)) {
             //invalid connection,we should close.
@@ -182,7 +184,9 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
         } 
 
         //String shakeresponse = mResponse->generateShakeHandFrame(key);
-        WebSocketComposer composer = st(WebSocketClientManager)::getInstance()->getClient(fd)->mComposer;
+        //WebSocketComposer composer = st(WebSocketClientManager)::getInstance()->getClient(fd)->getComposer;
+        WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->getClient(fd);
+        WebSocketComposer composer = client->getComposer();
         ByteArray shakeresponse = composer->genShakeHandMessage(st(WebSocketClientManager)::getInstance()->getClient(fd));
         st(NetUtils)::sendTcpPacket(fd,shakeresponse);
     }
@@ -234,60 +238,52 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
     ByteArray pack = createByteArray(mRecvBuff,len);
 
     int readIndex = 0;
-    WebSocketParser parser = st(WebSocketClientManager)::getInstance()->getClient(fd)->mParser;
+    WebSocketParser parser = st(WebSocketClientManager)::getInstance()->getClient(fd)->getParser();
+    //check pack
+    WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->getClient(fd);
 
     while(1) {
-        WebSocketClientEntireBuffer entireBuff = st(WebSocketClientManager)::getInstance()->getClient(fd)->mEntireBuffer;
-        if(entireBuff != nullptr) {
-            printf("append buff \n");
-            entireBuff->mEntireBuff->append(pack);
-            if(entireBuff->mEntireBuff->size() < (entireBuff->mFrameSize + entireBuff->mHeadSize)) {
-                printf("wait for entire buff \n");
-                break;
+        if(!parser->validateEntirePacket(pack)) {
+            //it is not a full packet
+            WebSocketEntireBuffer entireBuff = client->getEntireBuffer();
+            if(entireBuff == nullptr) {
+                entireBuff = createWebSocketEntireBuffer();
+                entireBuff->mBuffer = pack;
+                st(WebSocketClientManager)::getInstance()->getClient(fd)->setEntireBuffer(entireBuff);
+            } else {
+                entireBuff->mBuffer->append(pack);
             }
-
-            pack = entireBuff->mEntireBuff;
-            st(WebSocketClientManager)::getInstance()->getClient(fd)->mEntireBuffer = nullptr;
+            printf("it is not a entire packet \n");
+            break;
         }
 
         parser->setParseData(pack);
         WebSocketHeader header = parser->parseHeader();
-        //we should check whether we received a full frame
-        int framesize = header->getFrameLength();
-        int headersize = header->getHeadSize();
-        if(framesize + headersize > pack->size()) {
-            //it is not a full packet
-            WebSocketClientEntireBuffer entireBuff = createWebSocketClientEntireBuffer();
-            entireBuff->mEntireBuff = pack;
-            entireBuff->mFrameSize = framesize;
-            entireBuff->mHeadSize = headersize;
-            st(WebSocketClientManager)::getInstance()->getClient(fd)->mEntireBuffer = entireBuff;
-            printf("create entire buff,opcode is %d  \n",header->getOpCode());
-            break;
-        }
 
         int opcode = header->getOpCode();
+        int framesize = header->getFrameLength();
+        int headersize = header->getHeadSize();
         
         if(opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
             printf("OPCODE_TEXT \n");
             ByteArray msgData = parser->parseContent(true);
             String msg = msgData->toString();
-            mWsSocketListener->onMessage(fd,msg);
+            printf("msg is %s \n",msg->toChars());  
+            mWsSocketListener->onMessage(client,msg);
         } else if(opcode == st(WebSocketProtocol)::OPCODE_BINARY) {
             printf("OPCODE_BINARY len is %d \n",len);
             if(header->isFinalFrame()) {
                 ByteArray msgData = parser->parseContent(true);
-                mWsSocketListener->onData(fd,msgData);
             } else {
                 ByteArray msgData = parser->parseContent(false);
-                WebSocketClientBuffer buff = createWebSocketClientBuffer();
-                buff->mConitnueBuff = msgData;
-                buff->mType = st(WebSocketProtocol)::OPCODE_BINARY;
-                st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer = buff;
+                WebSocketContinueBuffer buff = createWebSocketContinueBuffer();
+                buff->mBuffer = msgData;
+                client->setContinueBuffer(buff);
             }
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PING) {
+            printf("OPCODE_PING \n");
             ByteArray buff = parser->parsePingBuff();
-            if(mWsSocketListener->onPing(fd,buff->toString()) == PingResultResponse) {
+            if(mWsSocketListener->onPing(client,buff->toString()) == PingResultResponse) {
                 ByteArray resp = mResponse->generateControlFrame(st(WebSocketProtocol)::OPCODE_CONTROL_PONG,
                                             buff);
                 st(NetUtils)::sendTcpPacket(fd,resp);
@@ -296,25 +292,35 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
             printf("OPCODE_CONTROL_PONG \n");
             ByteArray pong = parser->parsePongBuff();
             String msg = pong->toString();
-            mWsSocketListener->onPong(fd,msg);
+            mWsSocketListener->onPong(client,msg);
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE) {
             printf("OPCODE_CONTROL_CLOSE \n");
             st(WebSocketClientManager)::getInstance()->removeClient(fd);
             return EPollOnEventResultRemoveFd;
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
-            printf("OPCODE_CONTINUATION trace !!! \n");
+            printf("OPCODE_CONTINUATION trace1 !!! \n");
             ByteArray msgData = parser->parseContent(false);
-            st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff->append(msgData);
+            printf("OPCODE_CONTINUATION trace2,msgData len is %d !!! \n",msgData->size());
+            //st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff->append(msgData);
+            WebSocketContinueBuffer continuebuff = client->getContinueBuffer();
+            continuebuff->mBuffer->append(msgData);
+
+            printf("OPCODE_CONTINUATION trace3!!! \n");
             if(header->isFinalFrame()) {
-                ByteArray out = parser->validateContinuationContent(st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff);
-                mWsSocketListener->onData(fd,out);
-                st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff = nullptr;
+                printf("OPCODE_CONTINUATION trace4!!! \n");
+                ByteArray out = parser->validateContinuationContent(client->getContinueBuffer()->mBuffer);
+                printf("OPCODE_CONTINUATION trace5!!! \n");
+                mWsSocketListener->onData(client,out);
+                printf("OPCODE_CONTINUATION trace6!!! \n");
+                continuebuff->mBuffer = nullptr;
+                printf("OPCODE_CONTINUATION trace7!!! \n");
             }
         }
 
         //check whether there are two ws messages received in one buffer!
         len -= (framesize + headersize);
         readIndex += (framesize + headersize);
+        printf("OPCODE_CONTINUATION trace8!!!,len is %d,readIndex is %d,header size is %d,framesize is %d \n",len,readIndex,headersize,framesize);
         if(len > 0) {
             pack = createByteArray(&mRecvBuff[readIndex],len);
             continue;
