@@ -29,6 +29,8 @@ public:
 
     ByteArray genPongMessage(WebSocketClientInfo,String);
 
+    ByteArray genCloseMessage(WebSocketClientInfo,String);
+
 };
 
 }

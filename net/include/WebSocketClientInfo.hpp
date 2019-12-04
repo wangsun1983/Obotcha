@@ -83,7 +83,15 @@ public:
 
     void setConnectUrl(String);
 
-    int sendMessage(ByteArray);
+    int sendTextMessage(String);
+
+    int sendBinaryMessage(ByteArray);
+
+    int sendPingMessage(ByteArray);
+
+    int sendPongMessage(ByteArray);
+
+    int sendCloseMessage(ByteArray);
 
 private:
     int mClientFd;
@@ -105,6 +113,8 @@ private:
     WebSocketEntireBuffer mEntireBuffer;
 
     String mConnectUrl;
+
+    int _send(int type,ByteArray data);
 };
 
 }

@@ -67,6 +67,7 @@ void _WebSocketTcpClientListener::onAccept(int fd,String ip,int port,ByteArray p
         printf("status code is %d \n",req->getStatusCode());
         if(req->getStatusCode() == HTTP_RESPONSE_SWITCHING_PROTOCLS) {
             mProtoclType = WsClientProtocolWebSocket;
+            mClient->setClientFd(fd);
         } else {
             mWsListener->onDisconnect(mClient);
         }
@@ -132,7 +133,7 @@ void _WebSocketTcpClientListener::onDisconnect(int fd) {
 }
 
 void _WebSocketTcpClientListener::onConnect(int fd,String ip,int port) {
-    mClient->setClientFd(fd);
+    
 }
 
 void _WebSocketTcpClientListener::onConnect(int fd,String domain) {
@@ -142,28 +143,34 @@ void _WebSocketTcpClientListener::onConnect(int fd,String domain) {
 _WebSocketClient::_WebSocketClient(int version = 13) {
     mVersion = version;
     mClient = createWebSocketClientInfo();
+    //client message need use mask.
+    updateMask(true);
+
+    WebSocketParser parser = nullptr;
+    WebSocketComposer composer = nullptr;
+
     switch(version) {
         case 0:{
-            mClient->setParser(createWebSocketHybi00Parser());
-            mClient->setComposer(createWebSocketHybi00Composer(WsClientComposer));
+            parser = createWebSocketHybi00Parser();
+            composer = createWebSocketHybi00Composer(WsClientComposer);
             break;
         }
         
         case 7:{
-            mClient->setParser(createWebSocketHybi07Parser());
-            mClient->setComposer(createWebSocketHybi07Composer(WsClientComposer));
+            parser = createWebSocketHybi07Parser();
+            composer = createWebSocketHybi07Composer(WsClientComposer);
             break;
         }
         
         case 8: {
-            mClient->setParser(createWebSocketHybi08Parser());
-            mClient->setComposer(createWebSocketHybi08Composer(WsClientComposer));
+            parser = createWebSocketHybi08Parser();
+            composer = createWebSocketHybi08Composer(WsClientComposer);
             break;
         }
 
         case 13: {
-            mClient->setParser(createWebSocketHybi13Parser());
-            mClient->setComposer(createWebSocketHybi13Composer(WsClientComposer));
+            parser = createWebSocketHybi13Parser();
+            composer = createWebSocketHybi13Composer(WsClientComposer);
             break;
         }
         
@@ -172,6 +179,10 @@ _WebSocketClient::_WebSocketClient(int version = 13) {
             break;
         }
     }
+
+    parser->setAsClient();
+    mClient->setParser(parser);
+    mClient->setComposer(composer);
 }
 
 WebSocketClient _WebSocketClient::buildConnectInfo(int header,String value) {
@@ -201,6 +212,10 @@ void _WebSocketClient::clearConnectInfo() {
     mClient->getHttpHeader()->clear();
 }
 
+void _WebSocketClient::updateMask(bool v) {
+    mClient->getWebSocketHeader()->setMasked(v);
+}
+
 void _WebSocketClient::updateConnectInfo(int header,String value) {
     mClient->getHttpHeader()->setValue(header,value);
 }
@@ -224,54 +239,28 @@ int _WebSocketClient::connect(String url,WebSocketListener l) {
     return 0;
 }
 
-int _WebSocketClient::sendMessage(String msg) {
-    WebSocketComposer composer = mClient->getComposer();
-    ArrayList<ByteArray> wsPacket = composer->genTextMessage(mClient,msg);
-    printf("wsPacket size is %d \n",wsPacket->size());
-
-    ListIterator<ByteArray> iterator = wsPacket->getIterator();
-    int size = 0;
-
-    while(iterator->hasValue()) {
-        ByteArray data = iterator->getValue();
-        int sendSize = mTcpClient->send(data);
-        printf("sendSize is %d \n",sendSize);
-        size += sendSize;
-        iterator->next();
-    }
-
-    return size;
+int _WebSocketClient::sendTextMessage(String msg) {
+    return mClient->sendTextMessage(msg);
 }
 
-int _WebSocketClient::sendMessage(const char*msg) {
-    return sendMessage(createString(msg));
+int _WebSocketClient::sendTextMessage(const char*msg) {
+    return sendTextMessage(createString(msg));
 }
 
-int _WebSocketClient::sendPing(String msg) {
-#if 0    
-    return mTcpClient->send(mComposer->generateControlFrame(
-        st(WebSocketProtocol)::OPCODE_CONTROL_PING,
-        createByteArray(msg)));
-#endif        
+int _WebSocketClient::sendPingMessage(ByteArray msg) {
+    return mClient->sendPingMessage(msg);
+}
+
+int _WebSocketClient::sendCloseMessage(ByteArray msg) {
+    return mClient->sendCloseMessage(msg);
+}
+
+WebSocketClientInfo _WebSocketClient::getClientInfo() {
+    return mClient;
 }
 
 int _WebSocketClient::sendBinaryData(ByteArray data) {
-    //ArrayList<ByteArray> wsPacket = mClient->mComposer->genBinaryMessage(mClient,data);
-    WebSocketComposer composer = mClient->getComposer();
-    ArrayList<ByteArray> wsPacket = composer->genBinaryMessage(mClient,data);
-    printf("wsPacket111 size is %d \n",wsPacket->size());
-
-    ListIterator<ByteArray> iterator = wsPacket->getIterator();
-    //int size = 0;
-    while(iterator->hasValue()) {
-        ByteArray data = iterator->getValue();
-        int size = mTcpClient->send(data);
-        printf("send size is %d \n",size);
-        sleep(1);
-        iterator->next();
-    }
-
-    return 0;
+    return mClient->sendBinaryMessage(data);
 }
 
 int _WebSocketClient::sendFile(File file) {

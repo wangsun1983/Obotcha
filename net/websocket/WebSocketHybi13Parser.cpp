@@ -199,10 +199,11 @@ bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
 
     ByteArrayReader preReader = createByteArrayReader(pack);
     //check whether it has an entire header
-    int b0 = preReader->readByte();
-    int b1 = preReader->readByte();
+    int b0 = (preReader->readByte() & 0xff);
+    int b1 = (preReader->readByte() & 0xff);
 
-    bool isMask = (b1 & st(WebSocketProtocol)::B1_FLAG_MASK != 0);
+    bool isMask = ((b1 & st(WebSocketProtocol)::B1_FLAG_MASK) != 0);
+
     // Get frame length, optionally reading from follow-up bytes if indicated by special values.
     long frameLength = b1 & st(WebSocketProtocol)::B1_MASK_LENGTH;
     int headSize = 0;
@@ -232,10 +233,12 @@ bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
         }
     }
 
+    printf("headsize is %d ,pack->size is %d \n",headSize,pack->size());
     if(headSize >= pack->size()) {
         return false;
     }
 
+    printf("headSize + contentSize is %d ,pack->size is %d \n",headSize + contentSize,pack->size());
     //check whether it has an entire frame
     if((headSize + contentSize) > pack->size()) {
         return false;

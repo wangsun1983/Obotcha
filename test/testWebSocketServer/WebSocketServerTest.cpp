@@ -37,10 +37,9 @@ public:
         //int ret = st(NetUtils)::sendTcpPacket(fd,mComposer->generateMessageFrame(st(WebSocketProtocol)::OPCODE_TEXT,createByteArray(response)));
         WebSocketComposer composer = client->getComposer();
 
-        ArrayList<ByteArray> text = composer->genTextMessage(client,createString("hello world from server"));
+        //ArrayList<ByteArray> text = composer->genTextMessage(client,createString("hello world from server"));
         //int ret = st(NetUtils)::sendTcpPacket(fd,text->get(0));
-        int ret = client->sendMessage(text->get(0));
-
+        int ret = client->sendTextMessage(createString("hello world from server"));
         printf("onMessage send result is %d \n",ret);
         mConditaion->notify();
         return 0;

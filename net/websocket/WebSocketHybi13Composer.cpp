@@ -187,11 +187,15 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClient
 
         printf("b0 is %x \n",b0);
         sinkWriter->writeByte(b0);
-
+        
         ByteArray maskKey = createByteArray(4);
-        int b1 = st(WebSocketProtocol)::B1_FLAG_MASK;
-        //random.nextBytes(maskKey);
-        mRand->nextBytes(maskKey);
+        int b1 = 0;
+
+        if(info->getWebSocketHeader()->getMasked()) {
+            b1 = st(WebSocketProtocol)::B1_FLAG_MASK;
+            //random.nextBytes(maskKey);
+            mRand->nextBytes(maskKey);
+        }
     
         int byteCount = message->size();
         printf("byteCount is %d\n",byteCount);
@@ -208,12 +212,16 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClient
             sinkWriter->writeLong(byteCount);
         }
 
-        sinkWriter->writeByteArray(maskKey);
-        //writeMaskedSynchronized(buffer, byteCount);
-        ByteArray maskBuff = createByteArray(message);
-        printf("start toggleMask,maskBuff size is %d,message size is %d \n",maskBuff->size(),message->size());
-        st(WebSocketProtocol)::toggleMask(maskBuff,maskKey);
-        sinkWriter->writeByteArray(maskBuff);
+        if(info->getWebSocketHeader()->getMasked()) {
+            sinkWriter->writeByteArray(maskKey);
+            //writeMaskedSynchronized(buffer, byteCount);
+            ByteArray maskBuff = createByteArray(message);
+            printf("start toggleMask,maskBuff size is %d,message size is %d \n",maskBuff->size(),message->size());
+            st(WebSocketProtocol)::toggleMask(maskBuff,maskKey);
+            sinkWriter->writeByteArray(maskBuff);
+        } else {
+            sinkWriter->writeByteArray(message);
+        }
         printf("finish toggleMask£¬index is %d \n",sinkWriter->getIndex());
         sink->qucikShrink(sinkWriter->getIndex());
 
@@ -313,6 +321,7 @@ ByteArray _WebSocketHybi13Composer::genPingMessage(WebSocketClientInfo info ,Str
                                         createByteArray(msg),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PING);
     }
+
     return nullptr;
 }
 
@@ -328,6 +337,23 @@ ByteArray _WebSocketHybi13Composer::genPongMessage(WebSocketClientInfo info ,Str
                                         createByteArray(msg),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PONG);
     }
+
+    return nullptr;
+}
+
+ByteArray _WebSocketHybi13Composer::genCloseMessage(WebSocketClientInfo info,String msg) {
+    switch(mType) {
+        case WsClientComposer:
+        return _genClientControlMessage(info,
+                                        createByteArray(msg),
+                                        st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE);
+
+        case WsServerComposer:
+        return _genServerControlMessage(info,
+                                        createByteArray(msg),
+                                        st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE);
+    }
+
     return nullptr;
 }
 

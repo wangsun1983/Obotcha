@@ -39,6 +39,8 @@ public:
 
     virtual ByteArray genPongMessage(WebSocketClientInfo,String) = 0;
 
+    virtual ByteArray genCloseMessage(WebSocketClientInfo,String) = 0;
+
     //virtual String genControlMessage(WebSocketClientInfo,int opcode,String);
     //virtual String genBinaryMessage(WebSocketClientInfo,int opcode,String);
     //virtual String genMessageFrame() = 0;

@@ -243,6 +243,12 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
     WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->getClient(fd);
 
     while(1) {
+        WebSocketEntireBuffer entireBuff = client->getEntireBuffer();
+        if(entireBuff != nullptr) {
+            entireBuff->mBuffer->append(pack);
+            pack = entireBuff->mBuffer;
+        }
+
         if(!parser->validateEntirePacket(pack)) {
             //it is not a full packet
             WebSocketEntireBuffer entireBuff = client->getEntireBuffer();
@@ -250,8 +256,6 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
                 entireBuff = createWebSocketEntireBuffer();
                 entireBuff->mBuffer = pack;
                 st(WebSocketClientManager)::getInstance()->getClient(fd)->setEntireBuffer(entireBuff);
-            } else {
-                entireBuff->mBuffer->append(pack);
             }
             printf("it is not a entire packet \n");
             break;
@@ -318,11 +322,13 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
         }
 
         //check whether there are two ws messages received in one buffer!
-        len -= (framesize + headersize);
+        //len -= (framesize + headersize);
+        int resetLength = pack->size() - (framesize + headersize);
         readIndex += (framesize + headersize);
-        printf("OPCODE_CONTINUATION trace8!!!,len is %d,readIndex is %d,header size is %d,framesize is %d \n",len,readIndex,headersize,framesize);
-        if(len > 0) {
-            pack = createByteArray(&mRecvBuff[readIndex],len);
+        printf("OPCODE_CONTINUATION trace8!!!,resetLength is %d,readIndex is %d,header size is %d,framesize is %d \n",resetLength,readIndex,headersize,framesize);
+        if(resetLength > 0) {
+            byte *pdata = pack->toValue();
+            pack = createByteArray(&pdata[readIndex],resetLength);
             continue;
         } 
         

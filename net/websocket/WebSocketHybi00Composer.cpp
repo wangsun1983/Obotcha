@@ -40,6 +40,10 @@ ByteArray _WebSocketHybi00Composer::genPongMessage(WebSocketClientInfo,String) {
     return nullptr;
 }
 
+ByteArray _WebSocketHybi00Composer::genCloseMessage(WebSocketClientInfo,String) {
+    //TODO
+    return nullptr;
+}
 
 }
 

@@ -11,6 +11,8 @@
 #include "WebSocketComposer.hpp"
 #include "WebSocketClientInfo.hpp"
 #include "WebSocketPermessageDeflate.hpp"
+#include "WebSocketProtocol.hpp"
+#include "ProtocolNotSupportException.hpp"
 #include "NetUtils.hpp"
 
 namespace obotcha {
@@ -107,13 +109,73 @@ void _WebSocketClientInfo::setConnectUrl(String l) {
     mConnectUrl = l;
 }
 
-int _WebSocketClientInfo::sendMessage(ByteArray content) {
+int _WebSocketClientInfo::_send(int type,ByteArray msg) {
     if(mClientFd != -1) {
-        printf("sendContent is %s \n",content->toString()->toChars());
-        return st(NetUtils)::sendTcpPacket(mClientFd,content);
+        WebSocketClientInfo info;
+        info.set_pointer(this);
+        int size = 0;
+        
+        ArrayList<ByteArray> data = nullptr;
+
+        switch(type) {
+            case st(WebSocketProtocol)::OPCODE_TEXT:
+                data = mComposer->genTextMessage(info,msg->toString());
+                break;
+
+            case st(WebSocketProtocol)::OPCODE_BINARY:
+                data = mComposer->genBinaryMessage(info,msg);
+                break;
+
+            case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
+                data = createArrayList<ByteArray>();
+                data->add(mComposer->genCloseMessage(info,msg->toString()));
+                break;
+            
+            case st(WebSocketProtocol)::OPCODE_CONTROL_PING:
+                data = createArrayList<ByteArray>();
+                data->add(mComposer->genPingMessage(info,msg->toString()));
+                break;
+
+            case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:
+                data = createArrayList<ByteArray>();
+                data->add(mComposer->genPongMessage(info,msg->toString()));
+                break;
+
+            default:
+                throw createProtocolNotSupportException("WebSocketClientInfo not support OPCODE");
+        }
+        
+        ListIterator<ByteArray> iterator = data->getIterator();
+        while(iterator->hasValue()) {
+            ByteArray sendData = iterator->getValue();
+            size += st(NetUtils)::sendTcpPacket(mClientFd,sendData);
+            iterator->next();
+        }
+
+        return size;
     }
 
     return -1;
+}
+
+int _WebSocketClientInfo::sendBinaryMessage(ByteArray data) {
+    return _send(st(WebSocketProtocol)::OPCODE_BINARY,data);
+}
+
+int _WebSocketClientInfo::sendTextMessage(String data) {
+    return _send(st(WebSocketProtocol)::OPCODE_TEXT,createByteArray(data));
+}
+
+int _WebSocketClientInfo::sendPingMessage(ByteArray data) {
+    return _send(st(WebSocketProtocol)::OPCODE_CONTROL_PING,data);
+}
+
+int _WebSocketClientInfo::sendPongMessage(ByteArray data) {
+    return _send(st(WebSocketProtocol)::OPCODE_CONTROL_PONG,data);
+}
+
+int _WebSocketClientInfo::sendCloseMessage(ByteArray data) {
+    return _send(st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE,data);
 }
 
 }

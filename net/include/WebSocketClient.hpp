@@ -78,17 +78,23 @@ public:
 
     void updateConnectInfo(int header,String value);
 
+    void updateMask(bool);
+
     int connect(String url,WebSocketListener l);
 
-    int sendMessage(String msg);
+    int sendTextMessage(String msg);
 
-    int sendMessage(const char*msg);
+    int sendTextMessage(const char*msg);
 
-    int sendBinaryData(ByteArray);
+    int sendPingMessage(ByteArray msg);
+
+    int sendCloseMessage(ByteArray msg);
+
+    int sendBinaryData(ByteArray data);
 
     int sendFile(File);
 
-    int sendPing(String msg);
+    WebSocketClientInfo getClientInfo();
 
 private:
 

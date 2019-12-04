@@ -32,6 +32,8 @@ public:
 
     ByteArray genPongMessage(WebSocketClientInfo,String);
 
+    ByteArray genCloseMessage(WebSocketClientInfo,String);
+
 private:
     ByteArray _genClientShakeHandMessage(WebSocketClientInfo h);
 
