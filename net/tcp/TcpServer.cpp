@@ -329,6 +329,10 @@ void _TcpServer::setRcvBuffSize(int size) {
     mServerThread->setRcvBuffSize(mRcvBuffSize);
 }
 
+int _TcpServer::getRcvBuffSize() {
+    return mRcvBuffSize;
+}
+
 _TcpServer::~_TcpServer() {
     release();
 }

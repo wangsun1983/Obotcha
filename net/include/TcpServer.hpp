@@ -76,6 +76,8 @@ public:
 
     void setRcvBuffSize(int);
 
+    int getRcvBuffSize();
+
     int start();
 
     void release();
