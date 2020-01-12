@@ -15,8 +15,53 @@
 #include "Error.hpp"
 #include "HttpV1Server.hpp"
 #include "InitializeException.hpp"
+#include "AutoMutex.hpp"
+#include "HttpV1ClientInfo.hpp"
 
 namespace obotcha {
+
+//HttpV1ClientManager
+HttpV1ClientManager _HttpV1ClientManager::mInstance = nullptr;
+Mutex _HttpV1ClientManager::mMutex = nullptr;
+
+_HttpV1ClientManager::_HttpV1ClientManager() {
+    mMutex = createMutex("HttpV1Server Mutex");
+    mClients = createHashMap<int,HttpV1ClientInfo>();
+}
+
+sp<_HttpV1ClientManager> _HttpV1ClientManager::getInstance() {
+    if(mInstance != nullptr) {
+        return mInstance;
+    }
+
+    {
+        AutoMutex l(mMutex);
+        if(mInstance != nullptr) {
+            return mInstance;
+        }
+        
+        _HttpV1ClientManager *instance = new _HttpV1ClientManager();
+        mInstance.set_pointer(instance);
+    }
+
+    return mInstance;
+}
+
+HttpV1ClientInfo _HttpV1ClientManager::getClientInfo(int fd) {
+    AutoMutex l(mMutex);
+    return mClients->get(fd);
+}
+
+void _HttpV1ClientManager::addClientInfo(int fd,sp<_HttpV1ClientInfo> info) {
+    AutoMutex l(mMutex);
+    mClients->put(fd,info);
+}
+    
+
+void _HttpV1ClientManager::removeClientInfo(int fd) {
+    AutoMutex l(mMutex);
+    mClients->remove(fd);
+}
 
 _HttpV1SocketListener::_HttpV1SocketListener(HttpV1Server s) {
     mServer = s;
@@ -27,11 +72,12 @@ void _HttpV1SocketListener::onAccept(int fd,String ip,int port,ByteArray pack) {
 }
 
 void _HttpV1SocketListener::onDisconnect(int fd) {
-    //TODO
+    st(HttpV1ClientManager)::getInstance()->removeClientInfo(fd);
 }
 
 void _HttpV1SocketListener::onConnect(int fd,String ip,int port) {
-    //TODO
+    HttpV1ClientInfo info = createHttpV1ClientInfo(mServer->mTcpServer->getRcvBuffSize());
+    st(HttpV1ClientManager)::getInstance()->addClientInfo(fd,info);
 }
 
 void _HttpV1SocketListener::onConnect(int fd,String domain) {
@@ -66,10 +112,25 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpListener l){
         mTcpServer = createTcpServer(mIp,mPort,mSocketListener);
     }
 
-    mBuff = createByteArray(mTcpServer->getRcvBuffSize());
-
     if(mTcpServer->start() != 0) {
         throw createInitializeException("tcp server start fail!!");
+    }
+
+    mBuffPoolMutex = createMutex("HttpV1Server mutex");
+    mBuffPool = createHashMap<int,ByteArray>();
+}
+
+void _HttpV1Server::parseMessage(int fd,ByteArray pack) {
+    HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(fd);
+    switch(info->getParseStatus()) {
+        case HttpClientParseStatusIdle:
+        case HttpClientParseStatusHeadStart:
+        //TODO
+        break;
+
+        case HttpClientParseStatusBodyStart:
+        //TODO
+        break;
     }
 }
 

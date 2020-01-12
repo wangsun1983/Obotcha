@@ -12,12 +12,33 @@
 #include "TcpClient.hpp"
 #include "HttpUrl.hpp"
 #include "TcpServer.hpp"
+#include "HttpV1ClientInfo.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 
 #define DEFAULT_HTTP_PORT 80
 
 class _HttpV1Server;
+
+DECLARE_SIMPLE_CLASS(HttpV1ClientManager) {
+public:
+    static sp<_HttpV1ClientManager> getInstance();
+
+    void addClientInfo(int fd,sp<_HttpV1ClientInfo>);
+
+    HttpV1ClientInfo getClientInfo(int fd);
+
+    void removeClientInfo(int fd);
+private:
+    static Mutex mMutex;
+
+    HashMap<int,HttpV1ClientInfo> mClients;
+
+    static sp<_HttpV1ClientManager> mInstance;
+
+    _HttpV1ClientManager();
+};
 
 DECLARE_SIMPLE_CLASS(HttpV1SocketListener) IMPLEMENTS(SocketListener) {
 public:
@@ -46,6 +67,8 @@ public:
 DECLARE_SIMPLE_CLASS(HttpV1Server) IMPLEMENTS(SocketListener){
 
 public:
+    friend class _HttpV1SocketListener;
+    
     _HttpV1Server(int port,HttpListener);
 
     _HttpV1Server(HttpListener);
@@ -54,6 +77,10 @@ public:
 
     void parseMessage(int fd,ByteArray);
 
+    bool parseHeader(int fd,ByteArray);
+
+    bool parseBody(int fd,ByteArray);
+
 private:
     TcpServer mTcpServer;
 
@@ -61,11 +88,13 @@ private:
 
     HttpListener mHttpListener;
 
-    ByteArray mBuff;
-
     String mIp;
 
     int mPort;
+
+    HashMap<int,ByteArray> mBuffPool;
+
+    Mutex mBuffPoolMutex;
 };
 
 }

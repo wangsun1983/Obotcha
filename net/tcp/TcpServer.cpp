@@ -21,11 +21,10 @@
 
 #define EPOLL_SIZE 1024*8
 
-#define gDefaultRcvBuffSize 1024*64
-
-#define gDefaultClientNums 1024*64
-
 namespace obotcha {
+
+int _TcpServer::gDefaultRcvBuffSize = 1024*64;
+int _TcpServer::gDefaultClientNums = 1024*64;
 
 _TcpServerThread::_TcpServerThread(int sock,
                     int epfd,

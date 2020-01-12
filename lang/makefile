@@ -8,6 +8,7 @@ link += integer \
 	string \
 	long \
 	bytearray \
+	byteringarray \
 	uint64 \
 	uint32 \
 	uint16 \
@@ -29,6 +30,7 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/string.o \
 	$(outtmp)/long.o \
 	$(outtmp)/bytearray.o \
+	$(outtmp)/byteringarray.o \
 	$(outtmp)/uint64.o \
 	$(outtmp)/uint32.o \
 	$(outtmp)/uint16.o \
@@ -77,6 +79,9 @@ long :$(langDir)/Long.cpp
 
 bytearray :$(langDir)/ByteArray.cpp
 		$(gcc) $(cflags) -c $(langDir)/ByteArray.cpp -o $(outtmp)/bytearray.o $(external)
+
+byteringarray :$(langDir)/ByteRingArray.cpp
+		$(gcc) $(cflags) -c $(langDir)/ByteRingArray.cpp -o $(outtmp)/byteringarray.o $(external)
 
 byte :$(langDir)/Byte.cpp
 		$(gcc) $(cflags) -c $(langDir)/Byte.cpp -o $(outtmp)/byte.o $(external)
