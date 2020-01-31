@@ -28,6 +28,7 @@ public:
 DECLARE_SIMPLE_CLASS(WebSocketEntireBuffer) {
 public:
     ByteArray mBuffer;
+
 };
 
 DECLARE_SIMPLE_CLASS(WebSocketClientInfo) {

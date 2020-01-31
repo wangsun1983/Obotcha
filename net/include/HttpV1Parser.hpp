@@ -35,6 +35,10 @@ public:
 
     int getStatus();
 
+    HttpPacket parseEntireResponse(String response);
+
+    HttpPacket parseEntireRequest(String request);
+
 private:
     int mStatus;
 

@@ -122,7 +122,7 @@ void _WebSocketClientManager::removeClient(int fd) {
 //--------------------WebSocketHttpListener-----------------
 _WebSocketHttpListener::_WebSocketHttpListener() {
     httpEpollfd = 0;
-    mParser = createHttpParser();
+    mParser = createHttpV1Parser();
     mResponse = createWebSocketFrameComposer(false);
 }
 
@@ -140,7 +140,7 @@ void _WebSocketHttpListener::setWsEpollObserver(HashMap<String,EPollFileObserver
     
 void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) {
     String req = pack->toString();
-    HttpPacket request = mParser->parseRequest(req);
+    HttpPacket request = mParser->parseEntireRequest(req);
     HttpHeader header = request->getHeader();
 
     String upgrade = header->getValue(Http_Header_Upgrade);
@@ -172,7 +172,7 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
         
         ArrayList<String> protocols = parser->extractSubprotocols(header);
         if(protocols != nullptr && protocols->size() != 0) {
-
+            //TODO
         }
 
         //add fd to ws epoll

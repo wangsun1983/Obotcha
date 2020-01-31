@@ -25,7 +25,7 @@
 #include "SocketListener.hpp"
 #include "EPollFileObserver.hpp"
 #include "Mutex.hpp"
-#include "HttpParser.hpp"
+#include "HttpV1Parser.hpp"
 //#include "WebSocketFrameComposer.hpp"
 #include "WebSocketParser.hpp"
 #include "AsyncTcpClient.hpp"
@@ -63,7 +63,7 @@ private:
 
     int mProtoclType;
 
-    HttpParser mHttpParser;
+    HttpV1Parser mHttpParser;
 
     WebSocketClientInfo mClient;
 };

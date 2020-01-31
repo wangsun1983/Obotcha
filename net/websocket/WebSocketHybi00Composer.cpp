@@ -45,5 +45,6 @@ ByteArray _WebSocketHybi00Composer::genCloseMessage(WebSocketClientInfo,String) 
     return nullptr;
 }
 
+
 }
 

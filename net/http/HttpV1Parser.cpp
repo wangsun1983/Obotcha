@@ -94,6 +94,36 @@ void _HttpV1Parser::pushHttpData(ByteArray data) {
     mBuff->push(data);
 }
 
+HttpPacket _HttpV1Parser::parseEntireRequest(String request) {
+    printf("request is %s \n",request->toChars());
+    memset(&mParser,0,sizeof(http_parser));
+    mParser.data = reinterpret_cast<void *>(this);
+    HttpPacket packet = createHttpPacket();
+
+    http_parser_init(&mParser, HTTP_REQUEST);
+    http_parser_execute(&mParser,&settings, request->toChars(), request->size());
+    //printf("parsed is %d,method is %d,version is %d.%d \n",parsed,mParser.method,mParser.http_major,mParser.http_minor);
+    //printf("mParser.status_code is %d \n",mParser.status_code);
+    packet->setMethod(mParser.method);
+    //mPacket->setStatusCode(mParser.status_code);
+    return packet;
+}
+
+HttpPacket _HttpV1Parser::parseEntireResponse(String response) {
+    printf("parseResponse response is %s \n",response->toChars());
+    memset(&mParser,0,sizeof(http_parser));
+    mParser.data = reinterpret_cast<void *>(this);
+    HttpPacket packet = createHttpPacket();
+
+    http_parser_init(&mParser, HTTP_RESPONSE);
+    http_parser_execute(&mParser,&settings, response->toChars(), response->size());
+    //printf("parsed is %d,method is %d,version is %d.%d \n",parsed,mParser.method,mParser.http_major,mParser.http_minor);
+    //printf("mParser.status_code is %d \n",mParser.status_code);
+    packet->setMethod(mParser.method);
+    packet->setStatusCode(mParser.status_code);
+    return packet;
+}
+
 ArrayList<HttpPacket> _HttpV1Parser::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
     byte end[4] = {'\r','\n','\r','\n'};

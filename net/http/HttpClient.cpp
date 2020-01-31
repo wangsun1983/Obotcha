@@ -10,9 +10,9 @@
 #include "HttpPacket.hpp"
 #include "InetAddress.hpp"
 #include "HttpHeader.hpp"
-#include "HttpParser.hpp"
 #include "ByteArrayReader.hpp"
 #include "Error.hpp"
+#include "HttpV1Parser.hpp"
 
 namespace obotcha {
 
@@ -132,8 +132,8 @@ String _HttpClient::execute(int method,HttpUrl url) {
     //}
 
     //get first block
-    HttpParser parser = createHttpParser();
-    HttpPacket firstBlock = parser->parseResponse(result->toString());
+    HttpV1Parser parser = createHttpV1Parser();
+    HttpPacket firstBlock = parser->parseEntireResponse(result->toString());
     String transferEncoding = firstBlock->getHeader()->getValue(Http_Header_Transfer_Encoding);
     if(transferEncoding!= nullptr && transferEncoding->equals("chunked")) {
         result = doReceiveChunk(result);

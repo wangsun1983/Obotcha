@@ -22,7 +22,7 @@
 #include "SocketListener.hpp"
 #include "EPollFileObserver.hpp"
 #include "Mutex.hpp"
-#include "HttpParser.hpp"
+#include "HttpV1Parser.hpp"
 #include "WebSocketFrameComposer.hpp"
 #include "WebSocketParser.hpp"
 #include "HashMap.hpp"
@@ -52,7 +52,7 @@ _WebSocketTcpClientListener::_WebSocketTcpClientListener(WebSocketListener l,Web
     mClient = info;
     mHybi13Parser = createWebSocketHybi13Parser();
     mProtoclType = WsClientProtocolHttp;
-    mHttpParser = createHttpParser();
+    mHttpParser = createHttpV1Parser();
 }
 
 void _WebSocketTcpClientListener::onTimeout() {
@@ -63,7 +63,7 @@ void _WebSocketTcpClientListener::onAccept(int fd,String ip,int port,ByteArray p
     printf("11111111 client accept pack is %s \n",pack->toValue());
 
     if(mProtoclType == WsClientProtocolHttp) {
-        HttpPacket req = mHttpParser->parseResponse(pack->toString());
+        HttpPacket req = mHttpParser->parseEntireResponse(pack->toString());
         printf("status code is %d \n",req->getStatusCode());
         if(req->getStatusCode() == HTTP_RESPONSE_SWITCHING_PROTOCLS) {
             mProtoclType = WsClientProtocolWebSocket;

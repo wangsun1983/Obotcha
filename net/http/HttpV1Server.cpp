@@ -10,7 +10,6 @@
 #include "HttpPacket.hpp"
 #include "InetAddress.hpp"
 #include "HttpHeader.hpp"
-#include "HttpParser.hpp"
 #include "ByteArrayReader.hpp"
 #include "Error.hpp"
 #include "HttpV1Server.hpp"

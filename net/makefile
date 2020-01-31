@@ -11,7 +11,6 @@ link += inetaddress \
 		asynclocalsocketclient \
 		localsocketserver \
 		netutils \
-		httpparser \
 		httpheaderparser \
 		httpurlparser \
 		httpurl \
@@ -54,7 +53,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/asynclocalsocketclient.o \
 		$(outtmp)/localsocketserver.o \
 		$(outtmp)/netutils.o \
-		$(outtmp)/httpparser.o \
 		$(outtmp)/httpheaderparser.o \
 		$(outtmp)/httpurlparser.o \
 		$(outtmp)/httpurl.o \
@@ -118,9 +116,6 @@ netutils :$(netDir)/NetUtils.cpp
 
 httpv1parser :$(netDir)/http/HttpV1Parser.cpp
 	$(gcc) $(cflags) -c $(netDir)/http/HttpV1Parser.cpp -o $(outtmp)/httpv1parser.o $(external)	
-
-httpparser :$(netDir)/http/HttpParser.cpp
-	$(gcc) $(cflags) -c $(netDir)/http/HttpParser.cpp -o $(outtmp)/httpparser.o $(external)	
 
 httpclient :$(netDir)/http/HttpClient.cpp
 	$(gcc) $(cflags) -c $(netDir)/http/HttpClient.cpp -o $(outtmp)/httpclient.o $(external)	

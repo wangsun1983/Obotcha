@@ -24,7 +24,7 @@
 #include "SocketListener.hpp"
 #include "EPollFileObserver.hpp"
 #include "Mutex.hpp"
-#include "HttpParser.hpp"
+#include "HttpV1Parser.hpp"
 #include "WebSocketFrameComposer.hpp"
 #include "WebSocketParser.hpp"
 #include "HashMap.hpp"
@@ -89,7 +89,7 @@ private:
 
     HashMap<String,EPollFileObserver> mWsObservers;  
     
-    HttpParser mParser;
+    HttpV1Parser mParser;
 
     WebSocketFrameComposer mResponse;
 };
