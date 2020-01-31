@@ -58,5 +58,4 @@ int testThreadStart() {
         printf("---[Thread TestStart {start()} case5] [Success]--- \n");
         break;
     }
-*/
 }

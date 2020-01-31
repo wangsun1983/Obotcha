@@ -10,6 +10,7 @@
 #include "ArrayList.hpp"
 #include "http_parser.h"
 #include "HashMap.hpp"
+#include "HttpHeader.hpp"
 
 namespace obotcha {
 
@@ -17,6 +18,7 @@ DECLARE_SIMPLE_CLASS(HttpHeaderParser) {
 
 public:
     static int parseHttpHeader(String header);
+    static String parseHttpHeader(int header);
 
 private:
     static HashMap<String,int> HttpHeaderMap;
@@ -74,6 +76,8 @@ private:
     static int parse_with_X_R(const char *);
     static int parse_with_X_F(const char *);
     static int parse_with_X_C(const char *);
+
+    static String headerString[Http_Header_MAX];
 };
 }
 

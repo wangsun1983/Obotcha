@@ -14,10 +14,10 @@
 #include "TcpServer.hpp"
 #include "HttpV1ClientInfo.hpp"
 #include "Mutex.hpp"
+#include "SocketListener.hpp"
 
 namespace obotcha {
 
-#define DEFAULT_HTTP_PORT 80
 
 class _HttpV1Server;
 
@@ -64,7 +64,7 @@ public:
     void onMessage(int fd,HttpPacket msg);
 };
 
-DECLARE_SIMPLE_CLASS(HttpV1Server) IMPLEMENTS(SocketListener){
+DECLARE_SIMPLE_CLASS(HttpV1Server) {
 
 public:
     friend class _HttpV1SocketListener;

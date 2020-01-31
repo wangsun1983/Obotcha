@@ -11,6 +11,7 @@
 #include "ByteArrayReader.hpp"
 #include "HttpHeader.hpp"
 #include "ByteArray.hpp"
+#include "ByteRingArray.hpp"
 
 namespace obotcha {
 

@@ -93,6 +93,9 @@ enum HTTP_RESPONSE_STATUS {
 DECLARE_SIMPLE_CLASS(HttpPacket) {
 
 public:
+
+    friend class _HttpV1Parser;
+    
     _HttpPacket();
     
     void setHeader(HttpHeader);
@@ -133,6 +136,8 @@ public:
 
     String genHttpResponse();
 
+    void dump();
+
 private:
     String mUrl;
     
@@ -151,6 +156,11 @@ private:
     int mMinorVer;
 
     int mStatusCode;
+
+    //support for httpv1parse
+    String tempParseValue;
+
+    String tempParseField;
 
 };
 

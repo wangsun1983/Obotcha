@@ -20,6 +20,8 @@ link += integer \
 	protocolnotsupportexception \
 	nullpointerexception \
 	initializeexception \
+	valuenotfoundexception \
+	transformexception \
 	error \
 
 objs += $(outtmp)/integer.o \
@@ -43,6 +45,8 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/nullpointerexception.o \
 	$(outtmp)/initializeexception.o \
 	$(outtmp)/error.o \
+	$(outtmp)/valuenotfoundexception.o \
+	$(outtmp)/transformexception.o \
 
 integer :$(langDir)/Integer.cpp
 	$(gcc) $(cflags) -c $(langDir)/Integer.cpp -o $(outtmp)/integer.o $(external)
@@ -105,4 +109,10 @@ protocolnotsupportexception :$(langDir)/ProtocolNotSupportException.cpp
 		$(gcc) $(cflags) -c $(langDir)/ProtocolNotSupportException.cpp -o $(outtmp)/protocolnotsupportexception.o $(external)
 
 error :$(langDir)/Error.cpp
-		$(gcc) $(cflags) -c $(langDir)/Error.cpp -o $(outtmp)/error.o $(external)		
+		$(gcc) $(cflags) -c $(langDir)/Error.cpp -o $(outtmp)/error.o $(external)
+
+valuenotfoundexception :$(langDir)/ValueNotFoundException.cpp
+		$(gcc) $(cflags) -c $(langDir)/ValueNotFoundException.cpp -o $(outtmp)/valuenotfoundexception.o $(external)
+
+transformexception :$(langDir)/TransformException.cpp
+		$(gcc) $(cflags) -c $(langDir)/TransformException.cpp -o $(outtmp)/transformexception.o $(external)

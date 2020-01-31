@@ -23,6 +23,7 @@
 #include "ArrayList.hpp"
 #include "NullPointerException.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
+#include "TransformException.hpp"
 
 namespace obotcha {
 
@@ -716,12 +717,8 @@ Uint64 _String::toUint64() {
 }
 
 uint8_t _String::toBasicUint8() {
-    if(m_str.size() == 0) {
-        return -1;
-    }
-
-    if(!isIntNumber(m_str.data(),m_str.size())) {
-        return -1;
+    if(m_str.size() == 0 ||!isIntNumber(m_str.data(),m_str.size())) {
+        throw createTransformException("String to Uint8 Fail");
     }
 
     std::stringstream ss;
@@ -732,12 +729,8 @@ uint8_t _String::toBasicUint8() {
 }
 
 uint16_t _String::toBasicUint16() {
-    if(m_str.size() == 0) {
-        return -1;
-    }
-
-    if(!isIntNumber(m_str.data(),m_str.size())) {
-        return -1;
+    if((m_str.size() == 0) || !isIntNumber(m_str.data(),m_str.size())) {
+        throw createTransformException("String to Uint16 Fail");
     }
 
     std::stringstream ss;
@@ -748,12 +741,8 @@ uint16_t _String::toBasicUint16() {
 }
 
 uint32_t _String::toBasicUint32() {
-    if(m_str.size() == 0) {
-        return -1;
-    }
-
-    if(!isIntNumber(m_str.data(),m_str.size())) {
-        return -1;
+    if((m_str.size() == 0) ||!isIntNumber(m_str.data(),m_str.size())) {
+        throw createTransformException("String to Uint32 Fail");
     }
 
     std::stringstream ss;
@@ -764,12 +753,8 @@ uint32_t _String::toBasicUint32() {
 }
 
 uint64_t _String::toBasicUint64() {
-    if(m_str.size() == 0) {
-        return -1;
-    }
-
-    if(!isIntNumber(m_str.data(),m_str.size())) {
-        return -1;
+    if((m_str.size() == 0) ||!isIntNumber(m_str.data(),m_str.size())) {
+        throw createTransformException("String to Uint64 Fail");
     }
 
     std::stringstream ss;
@@ -780,12 +765,8 @@ uint64_t _String::toBasicUint64() {
 }
 
 int _String::toBasicInt() {
-    if(m_str.size() == 0) {
-        return 0;
-    }
-
-    if(!isIntNumber(m_str.data(),m_str.size())) {
-        return 0;
+    if((m_str.size() == 0) || !isIntNumber(m_str.data(),m_str.size())) {
+        throw createTransformException("String to Int Fail");
     }
 
     std::stringstream ss;
@@ -796,12 +777,8 @@ int _String::toBasicInt() {
 }
 
 int _String::toHexInt() {
-    if(m_str.size() == 0) {
-        return 0;
-    }
-
-    if(!isIntNumber(m_str.data(),m_str.size())) {
-        return 0;
+    if(m_str.size() == 0 || !isIntNumber(m_str.data(),m_str.size())) {
+        throw createTransformException("String to Hex Int Fail");
     }
 
     std::stringstream ss;
@@ -813,7 +790,7 @@ int _String::toHexInt() {
 
 bool _String::toBasicBool() {
     if(m_str.size() == 0) {
-        return false;
+        throw createTransformException("String to Boolean Fail");
     }
 
     const char *data = m_str.data();
@@ -832,19 +809,15 @@ bool _String::toBasicBool() {
         &&(data[2] == 'l' || data[2] == 'L')
         &&(data[3] == 's' || data[3] == 'S')
         &&(data[4] == 'e' || data[4] == 'E')) {
-        return false;
+        throw createTransformException("String to Boolean Fail");
     }
 
     return false;
 }
 
 float _String::toBasicFloat() {
-    if(m_str.size() == 0) {
-        return 0;
-    }
-
-    if(!isFloatNumber(m_str.data(),m_str.size())) {
-        return 0;
+    if(m_str.size() == 0 || !isFloatNumber(m_str.data(),m_str.size())) {
+        throw createTransformException("String to Float Fail");
     }
 
     std::stringstream ss;
@@ -855,12 +828,8 @@ float _String::toBasicFloat() {
 }
 
 double _String::toBasicDouble() {
-    if(m_str.size() == 0) {
-        return 0;
-    }
-
-    if(!isDoubleNumber(m_str.data(),m_str.size())) {
-        return 0;
+    if(m_str.size() == 0 || !isDoubleNumber(m_str.data(),m_str.size())) {
+        throw createTransformException("String to Double Fail");
     }
 
     std::stringstream ss;
@@ -871,12 +840,8 @@ double _String::toBasicDouble() {
 }
 
 long _String::toBasicLong() {
-    if(m_str.size() == 0) {
-        return 0;
-    }
-
-    if(!isLongNumber(m_str.data(),m_str.size())) {
-        return 0;
+    if(m_str.size() == 0 || !isLongNumber(m_str.data(),m_str.size())) {
+        throw createTransformException("String to Long Fail");
     }
 
     std::stringstream ss;

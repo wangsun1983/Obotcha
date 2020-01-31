@@ -142,7 +142,7 @@ int _ByteArray::fill(int index,byte v) {
     }
 
     if(index >= mSize || index < 0) {
-        return -InvalidParam;
+        throw createArrayIndexOutOfBoundsException("fill Stack Overflow");
     }
 
     buff[index] = v;
@@ -158,7 +158,7 @@ int _ByteArray::fill(int index,int length,byte v) {
     if((index >= mSize) 
         || (index < 0)
         || (index + length > mSize)) {
-        return -InvalidParam;
+        throw createArrayIndexOutOfBoundsException("fill Stack Overflow");
     }
 
     memset(&buff[index],v,length);

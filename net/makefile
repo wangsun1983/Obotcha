@@ -24,6 +24,7 @@ link += inetaddress \
 		httpdate \
 		httpv1server \
 		httpv1clientinfo \
+		httpv1parser \
 		websocketserver \
 		websocketprotocol \
 		websocketframecomposer \
@@ -66,6 +67,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpdate.o \
 		$(outtmp)/httpv1server.o \
 		$(outtmp)/httpv1clientinfo.o \
+		$(outtmp)/httpv1parser.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketprotocol.o \
 		$(outtmp)/websocketframecomposer.o \
@@ -112,7 +114,10 @@ localsocketserver :$(netDir)/tcp/LocalSocketServer.cpp
 	$(gcc) $(cflags) -c $(netDir)/tcp/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)			
 
 netutils :$(netDir)/NetUtils.cpp
-	$(gcc) $(cflags) -c $(netDir)/NetUtils.cpp -o $(outtmp)/netutils.o $(external)				
+	$(gcc) $(cflags) -c $(netDir)/NetUtils.cpp -o $(outtmp)/netutils.o $(external)		
+
+httpv1parser :$(netDir)/http/HttpV1Parser.cpp
+	$(gcc) $(cflags) -c $(netDir)/http/HttpV1Parser.cpp -o $(outtmp)/httpv1parser.o $(external)	
 
 httpparser :$(netDir)/http/HttpParser.cpp
 	$(gcc) $(cflags) -c $(netDir)/http/HttpParser.cpp -o $(outtmp)/httpparser.o $(external)	

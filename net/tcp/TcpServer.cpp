@@ -17,14 +17,10 @@
 #include "AutoMutex.hpp"
 #include "Error.hpp"
 #include "InitializeException.hpp"
+#include "Enviroment.hpp"
 
-
-#define EPOLL_SIZE 1024*8
 
 namespace obotcha {
-
-int _TcpServer::gDefaultRcvBuffSize = 1024*64;
-int _TcpServer::gDefaultClientNums = 1024*64;
 
 _TcpServerThread::_TcpServerThread(int sock,
                     int epfd,
@@ -51,8 +47,9 @@ void _TcpServerThread::setRcvBuffSize(int s) {
 }
 
 void _TcpServerThread::run() {
+    const int EPOLL_SIZE = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerEpollSize);
     struct epoll_event events[EPOLL_SIZE];
-
+    
     while(1) {
         //printf("TcpServer start \n");
         if(mStatus->get() == ServerWaitingThreadExit) {
@@ -61,7 +58,7 @@ void _TcpServerThread::run() {
         } else {
             mStatus->set(ServerWorking);
         }
-
+        
         int epoll_events_count = epoll_wait(mEpollfd, events, EPOLL_SIZE, -1);
         //printf("TcpServer trace1 \n");
         if(epoll_events_count < 0) {
@@ -160,14 +157,19 @@ _TcpServer::_TcpServer(int port,SocketListener l):_TcpServer{nullptr,port,l} {
     
 }
 
-_TcpServer::_TcpServer(String ip,int port,SocketListener l):_TcpServer{ip,port,gDefaultRcvBuffSize,gDefaultClientNums,l}{
+_TcpServer::_TcpServer(String ip,int port,SocketListener l):
+           _TcpServer{ip,
+                      port,
+                      st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerRcvBuffSize),
+                      st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerClientNums),
+                      l}{
     
 }
 
 _TcpServer::_TcpServer(String ip,int port,int rcvBuffsize,int connectionsNum,SocketListener l) {
 
     String reason;
-
+    const int EPOLL_SIZE = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerEpollSize);
     if(l == nullptr) {
         throw createInitializeException(createString("SocketListener is null"));
     }
@@ -181,6 +183,7 @@ _TcpServer::_TcpServer(String ip,int port,int rcvBuffsize,int connectionsNum,Soc
     }
     
     while(1) {
+        printf("_TcpServer trace1 \n");
         mPipe = createPipe();
         if(mPipe->init() == -1) {
             break;
@@ -200,16 +203,19 @@ _TcpServer::_TcpServer(String ip,int port,int rcvBuffsize,int connectionsNum,Soc
         mStatus = createAtomicInteger(ServerNotStart);
         mClients = createArrayList<Integer>();
         sock = socket(AF_INET, SOCK_STREAM, 0);
+        printf("_TcpServer trace2 \n");
         if(sock < 0) {
+            printf("_TcpServer trace3 \n");
             reason = createString("Sock Create Fail");
             break;
         }
         epfd = epoll_create(EPOLL_SIZE);
         if(epfd < 0) {
+            printf("_TcpServer trace4 \n");
             reason = createString("Epoll Create Fail");
             break;
         }
-
+        printf("_TcpServer trace5 \n");
         mServerThread = createTcpServerThread(sock,epfd,mStatus,mPipe,l,mClients,mClientsMutex,mRcvBuffSize);
         return;
     }
@@ -263,9 +269,11 @@ int _TcpServer::connect() {
 }
 
 int _TcpServer::start() {
+    printf("_TcpServer start \n");
     
     int result = connect();
     if(result != 0) {
+        printf("_TcpServer trace1 \n");
         mStatus->set(ServerThreadExited);
         return result;
     }
@@ -275,7 +283,7 @@ int _TcpServer::start() {
     while(mStatus->get() == ServerNotStart) {
         //TODO Nothing
     }
-
+    printf("_TcpServer trace2 \n");
     return 0;
 }
 

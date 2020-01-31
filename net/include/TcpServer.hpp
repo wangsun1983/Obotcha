@@ -68,10 +68,6 @@ DECLARE_SIMPLE_CLASS(TcpServer) {
 public:
     friend class _WebSocketServer;
 
-    static int gDefaultRcvBuffSize;
-
-    static int gDefaultClientNums;
-
     _TcpServer(int port,SocketListener l);
 
     _TcpServer(String ip,int port,SocketListener l);

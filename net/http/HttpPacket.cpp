@@ -6,6 +6,7 @@
 #include "http_parser.h"
 #include "HttpHeader.hpp"
 #include "HttpPacket.hpp"
+#include "HttpHeaderParser.hpp"
 
 namespace obotcha {
 
@@ -172,6 +173,17 @@ String _HttpPacket::genHttpResponse() {
 	
 	responseStr = responseStr->append(headerStr)->append("\r\n")->append(bodyStr);
     return responseStr;
+}
+
+void _HttpPacket::dump() {
+    //MapIterator<int,String> getIterator();
+	MapIterator<int,String> iterator = mHeader->getIterator();
+	while(iterator->hasValue()) {
+		String key = st(HttpHeaderParser)::parseHttpHeader(iterator->getKey());
+		String value = iterator->getValue();
+        printf("[%s]:%s \n",key->toChars(),value->toChars());
+		iterator->next();
+	}
 }
 
 }

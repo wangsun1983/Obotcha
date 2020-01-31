@@ -22,10 +22,9 @@ namespace obotcha {
 
 //HttpV1ClientManager
 HttpV1ClientManager _HttpV1ClientManager::mInstance = nullptr;
-Mutex _HttpV1ClientManager::mMutex = nullptr;
+Mutex _HttpV1ClientManager::mMutex = createMutex("HttpV1Server Mutex");;
 
 _HttpV1ClientManager::_HttpV1ClientManager() {
-    mMutex = createMutex("HttpV1Server Mutex");
     mClients = createHashMap<int,HttpV1ClientInfo>();
 }
 
@@ -68,15 +67,18 @@ _HttpV1SocketListener::_HttpV1SocketListener(HttpV1Server s) {
 }
 
 void _HttpV1SocketListener::onAccept(int fd,String ip,int port,ByteArray pack) {
+    printf("_HttpV1SocketListener onAccept \n");
     mServer->parseMessage(fd,pack);
 }
 
 void _HttpV1SocketListener::onDisconnect(int fd) {
+    printf("_HttpV1SocketListener onDisconnect \n");
     st(HttpV1ClientManager)::getInstance()->removeClientInfo(fd);
 }
 
 void _HttpV1SocketListener::onConnect(int fd,String ip,int port) {
-    HttpV1ClientInfo info = createHttpV1ClientInfo(mServer->mTcpServer->getRcvBuffSize());
+    printf("_HttpV1SocketListener onConnect \n");
+    HttpV1ClientInfo info = createHttpV1ClientInfo();
     st(HttpV1ClientManager)::getInstance()->addClientInfo(fd,info);
 }
 
@@ -88,7 +90,7 @@ void _HttpV1SocketListener::onTimeout() {
     //TODO
 }
 
-_HttpV1Server::_HttpV1Server(int port,HttpListener l) {
+_HttpV1Server::_HttpV1Server(int port,HttpListener l):_HttpV1Server{nullptr,port,l} {
 
 }
 
@@ -97,11 +99,14 @@ _HttpV1Server::_HttpV1Server(HttpListener l):_HttpV1Server{nullptr,-1,l} {
 }
 
 _HttpV1Server::_HttpV1Server(String ip,int port,HttpListener l){
+    printf("_HttpV1Server start \n");
     HttpV1Server server;
     server.set_pointer(this);
     mSocketListener = createHttpV1SocketListener(server);
-
+    printf("_HttpV1Server trace1 \n");
     mHttpListener = l;
+
+    printf("_HttpV1Server trace1,port is %d \n",port);
 
     mIp = ip;
     mPort = port;
@@ -122,16 +127,9 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpListener l){
 
 void _HttpV1Server::parseMessage(int fd,ByteArray pack) {
     HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(fd);
-    switch(info->getParseStatus()) {
-        case HttpClientParseStatusIdle:
-        case HttpClientParseStatusHeadStart:
-        //TODO
-        break;
-
-        case HttpClientParseStatusBodyStart:
-        //TODO
-        break;
-    }
+    info->pushHttpData(pack);
+    ArrayList<HttpPacket> packets = info->pollHttpPacket();
+    //TODO
 }
 
 }

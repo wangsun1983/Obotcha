@@ -13,18 +13,16 @@
 #include "HttpUrl.hpp"
 #include "TcpServer.hpp"
 #include "HttpHeader.hpp"
+#include "ByteRingArray.hpp"
+#include "ByteRingArrayReader.hpp"
+#include "HttpV1Parser.hpp"
+#include "HttpPacket.hpp"
 
 namespace obotcha {
 
-enum HttpClientParseStatus {
-    HttpClientParseStatusIdle = 0,
-    HttpClientParseStatusHeadStart,
-    HttpClientParseStatusBodyStart,
-};
-
 DECLARE_SIMPLE_CLASS(HttpV1ClientInfo){
 public:
-    _HttpV1ClientInfo(int buffsize);
+    _HttpV1ClientInfo();
 
     //ClientFd
     int getClientFd();
@@ -37,21 +35,18 @@ public:
 
     int getParseStatus();
 
-    void updateParseStatus(HttpClientParseStatus);
+    int pushHttpData(ByteArray array);
 
-    //HttpHeader
-    HttpHeader getCurrentHttpHeader();
+    ArrayList<HttpPacket> pollHttpPacket();
 
 private:
     String mClientIp;
 
     int mClientFd;
 
-    HttpClientParseStatus mStatus;
-    
-    HttpHeader mHttpHeader;
+    HttpV1Parser mV1Parser;
 
-    ByteArray mParseBuff;
+    int mStatus;
 };
 
 
