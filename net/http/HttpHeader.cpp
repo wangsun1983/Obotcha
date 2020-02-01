@@ -12,11 +12,11 @@
 
 namespace obotcha {
 
-const String Method = createString("method");
-const String Path = createString("method");
-const String Scheme = createString("schema");
-const String Status = createString("status");
-const String Protocol = createString("protocol");
+const String Method = createString(":method");
+const String Path = createString(":path");
+const String Scheme = createString(":schema");
+const String Status = createString(":status");
+const String Protocol = createString(":protocol");
 const String Accept = createString("accept");
 const String AcceptCharset= createString("accept-charset");
 const String AcceptDatetime= createString("accept-datetime");
