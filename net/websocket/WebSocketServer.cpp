@@ -143,9 +143,9 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
     HttpPacket request = mParser->parseEntireRequest(req);
     HttpHeader header = request->getHeader();
 
-    String upgrade = header->getValue(Http_Header_Upgrade);
-    String key = header->getValue(Http_Header_Sec_WebSocket_Key);
-    String version = header->getValue(Http_Header_Sec_WebSocket_Version);
+    String upgrade = header->getValue(st(HttpHeader)::Upgrade);
+    String key = header->getValue(st(HttpHeader)::SecWebSocketKey);
+    String version = header->getValue(st(HttpHeader)::SecWebSocketVersion);
     
     if(upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
         //remove fd from http epoll

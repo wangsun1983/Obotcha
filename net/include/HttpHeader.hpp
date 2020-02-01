@@ -14,8 +14,8 @@
 
 namespace obotcha {
 
-enum HTTP_HEADER {
-    Http_Header_Authority = 0,
+#if 0
+Http_Header_Authority = 0,
     Http_Header_Method,
     Http_Header_Path,
     Http_Header_Scheme,
@@ -115,21 +115,21 @@ enum HTTP_HEADER {
     Http_Header_Sec_WebSocket_Key2,
     Http_Header_Sec_WebSocket_Key3,
     Http_Header_Sec_WebSocket_Protocol,
-    Http_Header_MAX,
-};
+    Http_Header_MAX
+#endif
 
 DECLARE_SIMPLE_CLASS(HttpHeader) {
 
 public:
     _HttpHeader();
     
-    static String getHeaderString(int header);
-    
     void setValue(int,String);
-    
-    String getValue(int);
 
-    MapIterator<int,String> getIterator();
+    void setValue(String header,String value);
+    
+    String getValue(String);
+
+    MapIterator<String,String> getIterator();
 
     void addCookie(HttpCookie);
 
@@ -143,9 +143,109 @@ public:
 
     void clear();
 
+    const static String Method;
+    const static String Path;
+    const static String Scheme;
+    const static String Status;
+    const static String Protocol;
+    const static String Accept;
+    const static String AcceptCharset;
+    const static String AcceptDatetime;
+    const static String AcceptEncoding;
+    const static String AcceptLanguage;
+    const static String AcceptRanges;
+    const static String AccessControlAllowCredentials;
+    const static String AccessControlAllowHeaders;
+    const static String AccessControlAllowMethods;
+    const static String AccessControlAllowOrigin;
+    const static String AccessControlExposeHeaders;
+    const static String AccessControlMaxAge;
+    const static String AccessControlRequestHeaders;
+    const static String AccessControlRequestMethod;
+    const static String Age;
+    const static String Allow;
+    const static String AltSvc;
+    const static String Authorization;
+    const static String CacheControl;
+    const static String Connection;
+    const static String ContentDisposition;
+    const static String ContentEncoding;
+    const static String ContentLanguage;
+    const static String ContentLength;
+    const static String ContentLocation;
+    const static String ContentMD5;
+    const static String ContentRange;
+    const static String ContentType;
+    const static String Cookie;
+    const static String DNT;
+    const static String Date;
+    const static String ETag;
+    const static String Expect;
+    const static String Expires;
+    const static String From;
+    const static String FrontEndHttps;
+    const static String Host;
+    const static String IfMatch;
+    const static String IfModifiedSince;
+    const static String IfNoneMatch;
+    const static String IfRange;
+    const static String IfUnmodifiedSince;
+    const static String KeepAlive;
+    const static String LastModified;
+    const static String Link;
+    const static String Location;
+    const static String MaxForwards;
+    const static String Origin;
+    const static String P3P;
+    const static String Pragma;
+    const static String ProxyAuthenticate;
+    const static String ProxyAuthorization;
+    const static String ProxyConnection;
+    const static String Range;
+    const static String Referer;
+    const static String Refresh;
+    const static String RetryAfter;
+    const static String SecWebSocketKey;
+    const static String SecWebSocketAccept;
+    const static String Server;
+    const static String SetCookie;
+    const static String SecTokenBinding;
+    const static String StrictTransportSecurity;
+    const static String TE;
+    const static String Timestamp;
+    const static String Trailer;
+    const static String TransferEncoding;
+    const static String Upgrade;
+    const static String UserAgent;
+    const static String VIP;
+    const static String Vary;
+    const static String Via;
+    const static String WWWAuthenticate;
+    const static String Warning;
+    const static String XAccelRedirect;
+    const static String XContentSecurityPolicyReportOnly;
+    const static String XContentTypeOptions;
+    const static String XForwardedFor;
+    const static String XForwardedProto;
+    const static String XFrameOptions;
+    const static String XPoweredBy;
+    const static String XRealIP;
+    const static String XRequestedWith;
+    const static String XThriftProtocol;
+    const static String XUACompatible;
+    const static String XWapProfile;
+    const static String XXSSProtection;
+    const static String SecWebSocketVersion;
+    const static String SecWebSocketExtensions;
+    const static String SecWebSocketOrigin;
+    const static String SecWebSocketKey1;
+    const static String SecWebSocketKey2;
+    const static String SecWebSocketKey3;
+    const static String SecWebSocketProtocol;
+
 private:
-    static String mHeaderList[];
-    HashMap<int,String> mValues;
+
+    HashMap<String,String> mValues;
 
     ArrayList<HttpCookie> mCookies;
 

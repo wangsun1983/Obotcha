@@ -101,7 +101,7 @@ String _HttpClient::execute(int method,HttpUrl url) {
     HttpPacket packet = createHttpPacket();
     packet->setMethod(method);
     packet->setUrl(url->getPath());
-    packet->getHeader()->setValue(Http_Header_Host,url->getHost());
+    packet->getHeader()->setValue(st(HttpHeader)::Host,url->getHost());
     //packet->getHeader()->setValue(Http_Header_User_Agent,"User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0");
     //packet->getHeader()->setValue(Http_Header_Accept," text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
     //packet->getHeader()->setValue(Http_Header_Accept_Language,"en-US,en;q=0.5");
@@ -134,7 +134,7 @@ String _HttpClient::execute(int method,HttpUrl url) {
     //get first block
     HttpV1Parser parser = createHttpV1Parser();
     HttpPacket firstBlock = parser->parseEntireResponse(result->toString());
-    String transferEncoding = firstBlock->getHeader()->getValue(Http_Header_Transfer_Encoding);
+    String transferEncoding = firstBlock->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
     if(transferEncoding!= nullptr && transferEncoding->equals("chunked")) {
         result = doReceiveChunk(result);
     } else {

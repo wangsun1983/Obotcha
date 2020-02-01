@@ -30,7 +30,6 @@
 #include "WebSocketParser.hpp"
 #include "AsyncTcpClient.hpp"
 #include "WebSocketHybi13Parser.hpp"
-#include "HttpHeaderParser.hpp"
 #include "WebSocketClientInfo.hpp"
 #include "WebSocketComposer.hpp"
 
@@ -72,7 +71,7 @@ DECLARE_SIMPLE_CLASS(WebSocketClient) {
 public:
     _WebSocketClient(int version);
 
-    WebSocketClient buildConnectInfo(int header,String value);
+    WebSocketClient buildConnectInfo(String header,String value);
 
     void clearConnectInfo();
 

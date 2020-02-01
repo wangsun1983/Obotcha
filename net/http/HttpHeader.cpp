@@ -1,4 +1,5 @@
 #include <map>
+#include <string.h>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -11,126 +12,116 @@
 
 namespace obotcha {
 
-String _HttpHeader::mHeaderList[] = {
-    ":Authority",
-    ":Method",
-    ":Path",
-    ":Scheme",
-    ":Status",
-    ":Protocol",
-    "Accept",
-    "Accept-Charset",
-    "Accept-Datetime",
-    "Accept-Encoding",
-    "Accept-Language",
-    "Accept-Ranges",
-    "Access-Control-Allow-Credentials",
-    "Access-Control-Allow-Headers",
-    "Access-Control-Allow-Methods",
-    "Access-Control-Allow-Origin",
-    "Access-Control-Expose-Headers",
-    "Access-Control-Max-Age",
-    "Access-Control-Request-Headers",
-    "Access-Control-Request-Method",
-    "Age",
-    "Allow",
-    "Alt-Svc",
-    "Authorization",
-    "Cache-Control",
-    "Connection",
-    "Content-Disposition",
-    "Content-Encoding",
-    "Content-Language",
-    "Content-Length",
-    "Content-Location",
-    "Content-MD5",
-    "Content-Range",
-    "Content-Type",
-    "Cookie",
-    "DNT",
-    "Date",
-    "ETag",
-    "Expect",
-    "Expires",
-    "From",
-    "Front-End-Https",
-    "Host",
-    "If-Match",
-    "If-Modified-Since",
-    "If-None-Match",
-    "If-Range",
-    "If-Unmodified-Since",
-    "Keep-Alive",
-    "Last-Modified",
-    "Link",
-    "Location",
-    "Max-Forwards",
-    "Origin",
-    "P3P",
-    "Pragma",
-    "Proxy-Authenticate",
-    "Proxy-Authorization",
-    "Proxy-Connection",
-    "Range",
-    "Referer",
-    "Refresh",
-    "Retry-After",
-    "Sec-WebSocket-Key",
-    "Sec-WebSocket-Accept",
-    "Server",
-    "Set-Cookie",
-    "Sec-Token-Binding",
-    "Strict-Transport-Security",
-    "TE",
-    "Timestamp",
-    "Trailer",
-    "Transfer-Encoding",
-    "Upgrade",
-    "User-Agent",
-    "VIP",
-    "Vary",
-    "Via",
-    "WWW-Authenticate",
-    "Warning",
-    "X-Accel-Redirect",
-    "X-Content-Security-Policy-Report-Only",
-    "X-Content-Type-Options",
-    "X-Forwarded-For",
-    "X-Forwarded-Proto",
-    "X-Frame-Options",
-    "X-Powered-By",
-    "X-Real-IP",
-    "X-Requested-With",
-    "X-Thrift-Protocol",
-    "X-UA-Compatible",
-    "X-Wap-Profile",
-    "X-XSS-Protection",
-    "Sec-WebSocket-Version",
-    "Sec-WebSocket-Extensions",
-    "Sec-WebSocket-Origin",
-    "Sec-WebSocket-Key1",
-    "Sec-WebSocket-Key2",
-    "Sec-WebSocket-Key3",
-    "Sec-WebSocket-Protocol",
-};
-
-//static method
-String _HttpHeader::getHeaderString(int header) {
-    return mHeaderList[header];
-}
+const String Method = createString("method");
+const String Path = createString("method");
+const String Scheme = createString("schema");
+const String Status = createString("status");
+const String Protocol = createString("protocol");
+const String Accept = createString("accept");
+const String AcceptCharset= createString("accept-charset");
+const String AcceptDatetime= createString("accept-datetime");
+const String AcceptEncoding= createString("accept-encoding");
+const String AcceptLanguage= createString("accept-language");
+const String AcceptRanges= createString("accept-ranges");
+const String AccessControlAllowCredentials= createString("access-control-allow-credentials");
+const String AccessControlAllowHeaders= createString("access-control-allow-headers");
+const String AccessControlAllowMethods= createString("access-control-allow-methods");
+const String AccessControlAllowOrigin= createString("access-control-allow-origin");
+const String AccessControlExposeHeaders= createString("access-control-expose-headers");
+const String AccessControlMaxAge= createString("access-control-max-age");
+const String AccessControlRequestHeaders= createString("access-control-request-headers");
+const String AccessControlRequestMethod= createString("access-control-request-method");
+const String Age= createString("age");
+const String Allow= createString("allow");
+const String AltSvc= createString("alt-svc");
+const String Authorization= createString("authorization");
+const String CacheControl= createString("cache-control");
+const String Connection= createString("connection");
+const String ContentDisposition= createString("content-disposition");
+const String ContentEncoding= createString("content-encoding");
+const String ContentLanguage= createString("content-language");
+const String ContentLength= createString("content-length");
+const String ContentLocation= createString("content-location");
+const String ContentMD5= createString("content-md5");
+const String ContentRange= createString("content-range");
+const String ContentType= createString("content-type");
+const String Cookie= createString("cookie");
+const String DNT= createString("dnt");
+const String Date= createString("date");
+const String ETag= createString("etag");
+const String Expect= createString("expect");
+const String Expires= createString("expires");
+const String From= createString("from");
+const String FrontEndHttps= createString("front-end-https");
+const String Host= createString("host");
+const String IfMatch= createString("if-match");
+const String IfModifiedSince= createString("if-modified-since");
+const String IfNoneMatch= createString("if-none-match");
+const String IfRange= createString("if-range");
+const String IfUnmodifiedSince= createString("if-unmodified-since");
+const String KeepAlive= createString("keep-alive");
+const String LastModified= createString("last-modified");
+const String Link= createString("link");
+const String Location= createString("location");
+const String MaxForwards= createString("max-forwards");
+const String Origin= createString("origin");
+const String P3P= createString("psp");
+const String Pragma= createString("pragma");
+const String ProxyAuthenticate= createString("proxy-authenticate");
+const String ProxyAuthorization= createString("proxy-authorization");
+const String ProxyConnection= createString("proxy-connection");
+const String Range= createString("range");
+const String Referer= createString("referer");
+const String Refresh= createString("refresh");
+const String RetryAfter= createString("retry-after");
+const String SecWebSocketKey= createString("sec-websocket-key");
+const String SecWebSocketAccept= createString("sec-websocket-accept");
+const String Server= createString("server");
+const String SetCookie= createString("set-cookie");
+const String SecTokenBinding= createString("sec-token-binding");
+const String StrictTransportSecurity= createString("strict-transport-security");
+const String TE= createString("te");
+const String Timestamp= createString("timestamp");
+const String Trailer= createString("trailer");
+const String TransferEncoding= createString("transfer-encoding");
+const String Upgrade= createString("");
+const String UserAgent= createString("user-agent");
+const String VIP= createString("vip");
+const String Vary= createString("vary");
+const String Via= createString("via");
+const String WWWAuthenticate= createString("www-authenticate");
+const String Warning= createString("warning");
+const String XAccelRedirect= createString("x-accel-redirect");
+const String XContentSecurityPolicyReportOnly= createString("x-content-security-policy-report-only");
+const String XContentTypeOptions= createString("x-content-type-options");
+const String XForwardedFor= createString("x-forwarded-for");
+const String XForwardedProto= createString("x-forwarded-proto");
+const String XFrameOptions= createString("x-frame-options");
+const String XPoweredBy= createString("x-powerd-by");
+const String XRealIP= createString("x-real-ip");
+const String XRequestedWith= createString("x-requested-with");
+const String XThriftProtocol= createString("x-thrift-protocol");
+const String XUACompatible= createString("x-ua-compatible");
+const String XWapProfile= createString("x-wap-profile");
+const String XXSSProtection= createString("x-xss-protection");
+const String SecWebSocketVersion= createString("sec-websocket-version");
+const String SecWebSocketExtensions= createString("sec-websocket-extensions");
+const String SecWebSocketOrigin= createString("sec-websocket-origin");
+const String SecWebSocketKey1= createString("sec-websocket-key1");
+const String SecWebSocketKey2= createString("sec-websocket-key2");
+const String SecWebSocketKey3= createString("sec-websocket-key3");
+const String SecWebSocketProtocol= createString("sec-websocket-protocol");
 
 _HttpHeader::_HttpHeader() {
-    mValues = createHashMap<int,String>();
+mValues = createHashMap<String,String>();
     mCookies = createArrayList<HttpCookie>();
 }
 
-void _HttpHeader::setValue(int header,String value) {
-    printf("setValue header is %d,value is %s \n",header,value->toChars());
+void _HttpHeader::setValue(String header,String value) {
     mValues->put(header,value);
 }
 
-String _HttpHeader::getValue(int header) {
-    printf("getValue header is %d \n",header);
+String _HttpHeader::getValue(String header) {
     return mValues->get(header);
 }
 
@@ -154,16 +145,16 @@ ArrayList<HttpCookie> _HttpHeader::getCookies() {
     return mCookies;
 }
 
-MapIterator<int,String> _HttpHeader::getIterator() {
+MapIterator<String,String> _HttpHeader::getIterator() {
     return mValues->getIterator();
 }
 
 String _HttpHeader::genHtml() {
     //conver header
-    MapIterator<int,String> headerIte = mValues->getIterator();;
+    MapIterator<String,String> headerIte = mValues->getIterator();;
     String html = createString("");
     while(headerIte->hasValue()) {
-        String headSting = st(HttpHeader)::getHeaderString(headerIte->getKey());
+        String headSting = headerIte->getKey();
         html = html->append(headSting)
                  ->append(": ")
                  ->append(headerIte->getValue())
@@ -175,9 +166,8 @@ String _HttpHeader::genHtml() {
     int size = mCookies->size();
     for(int i=0;i<size;i++) {
         String cookieStr = mCookies->get(i)->genHtml();       
-        String headSting = st(HttpHeader)::getHeaderString(Http_Header_Set_Cookie);
         
-        html = html->append(headSting)
+        html = html->append(SetCookie)
                    ->append(": ")
                    ->append(cookieStr)
                    ->append("\r\n");
@@ -185,6 +175,5 @@ String _HttpHeader::genHtml() {
 
     return html;
 }
-
 
 }

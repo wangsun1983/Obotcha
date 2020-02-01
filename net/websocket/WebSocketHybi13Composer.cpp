@@ -46,48 +46,48 @@ ByteArray _WebSocketHybi13Composer::_genClientShakeHandMessage(WebSocketClientIn
     packet->setMinorVersion(1);
 
     String host = httpUrl->getHost()->append(":")->append(createString(httpUrl->getPort()));
-    packet->getHeader()->setValue(Http_Header_Host,host);
-    packet->getHeader()->setValue(Http_Header_Sec_WebSocket_Version,"13");
-    if(packet->getHeader()->getValue(Http_Header_Accept) == nullptr) {
-        packet->getHeader()->setValue(Http_Header_Accept,"*/*");
+    packet->getHeader()->setValue(st(HttpHeader)::Host,host);
+    packet->getHeader()->setValue(st(HttpHeader)::SecWebSocketVersion,"13");
+    if(packet->getHeader()->getValue(st(HttpHeader)::Accept) == nullptr) {
+        packet->getHeader()->setValue(st(HttpHeader)::Accept,"*/*");
     }
 
-    if(packet->getHeader()->getValue(Http_Header_Accept_Language) == nullptr) {
-        packet->getHeader()->setValue(Http_Header_Accept_Language,"en-US,en;q=0.5");
+    if(packet->getHeader()->getValue(st(HttpHeader)::AcceptLanguage) == nullptr) {
+        packet->getHeader()->setValue(st(HttpHeader)::AcceptLanguage,"en-US,en;q=0.5");
     }
 
-    if(packet->getHeader()->getValue(Http_Header_Accept_Encoding) == nullptr) {
-        packet->getHeader()->setValue(Http_Header_Accept_Encoding,"gzip, deflate");
+    if(packet->getHeader()->getValue(st(HttpHeader)::AcceptEncoding) == nullptr) {
+        packet->getHeader()->setValue(st(HttpHeader)::AcceptEncoding,"gzip, deflate");
     }
 
-    if(packet->getHeader()->getValue(Http_Header_Origin) == nullptr) {
-        packet->getHeader()->setValue(Http_Header_Origin,"null");
+    if(packet->getHeader()->getValue(st(HttpHeader)::Origin) == nullptr) {
+        packet->getHeader()->setValue(st(HttpHeader)::Origin,"null");
     }
 
-    if(packet->getHeader()->getValue(Http_Header_Sec_WebSocket_Key) == nullptr) {
+    if(packet->getHeader()->getValue(st(HttpHeader)::SecWebSocketKey) == nullptr) {
         //we should gen a sec key
         Random rand = createRandom();
         int v = rand->nextInt();
         Base64 base64key = createBase64();
         String key = base64key->decode(createString(v));
         printf("sec websocket key is %s \n",key->toChars());
-        packet->getHeader()->setValue(Http_Header_Sec_WebSocket_Key,key);
+        packet->getHeader()->setValue(st(HttpHeader)::SecWebSocketKey,key);
     }
 
-    if(packet->getHeader()->getValue(Http_Header_Connection) == nullptr) {
-        packet->getHeader()->setValue(Http_Header_Connection,"keep-alive, Upgrade");
+    if(packet->getHeader()->getValue(st(HttpHeader)::Connection) == nullptr) {
+        packet->getHeader()->setValue(st(HttpHeader)::Connection,"keep-alive, Upgrade");
     }
 
-    if(packet->getHeader()->getValue(Http_Header_Upgrade) == nullptr) {
-        packet->getHeader()->setValue(Http_Header_Upgrade,"websocket");
+    if(packet->getHeader()->getValue(st(HttpHeader)::Upgrade) == nullptr) {
+        packet->getHeader()->setValue(st(HttpHeader)::Upgrade,"websocket");
     }
 
-    if(packet->getHeader()->getValue(Http_Header_Pragma) == nullptr) {
-        packet->getHeader()->setValue(Http_Header_Pragma,"no-cache");
+    if(packet->getHeader()->getValue(st(HttpHeader)::Pragma) == nullptr) {
+        packet->getHeader()->setValue(st(HttpHeader)::Pragma,"no-cache");
     }
 
-    if(packet->getHeader()->getValue(Http_Header_Cache_Control) == nullptr) {
-        packet->getHeader()->setValue(Http_Header_Cache_Control,"no-cache");
+    if(packet->getHeader()->getValue(st(HttpHeader)::CacheControl) == nullptr) {
+        packet->getHeader()->setValue(st(HttpHeader)::CacheControl,"no-cache");
     }
     printf("genClientShakeHandMessage trace2\n");
     
@@ -96,7 +96,7 @@ ByteArray _WebSocketHybi13Composer::_genClientShakeHandMessage(WebSocketClientIn
 
 ByteArray _WebSocketHybi13Composer::_genServerShakeHandMessage(WebSocketClientInfo  info) {
     HttpHeader h = info->getHttpHeader();
-    String key = h->getValue(Http_Header_Sec_WebSocket_Key);
+    String key = h->getValue(st(HttpHeader)::SecWebSocketKey);
 
     String key_mgic = key->append(st(WebSocketProtocol)::ACCEPT_MAGIC);
     ByteArray sha1_content = mSha->encryptRawData(createByteArray(key_mgic));
@@ -106,7 +106,7 @@ ByteArray _WebSocketHybi13Composer::_genServerShakeHandMessage(WebSocketClientIn
     String upgrade = head->append("Upgrade: websocket\r\n");
     String connection = upgrade->append("Connection: Upgrade\r\n");
 
-    String protocols = h->getValue(Http_Header_Sec_WebSocket_Protocol);
+    String protocols = h->getValue(st(HttpHeader)::SecWebSocketProtocol);
     if(protocols != nullptr) {
         //TODO
         connection = connection->append("Sec-WebSocket-Protocol:")->append(protocols)->append("\r\n");

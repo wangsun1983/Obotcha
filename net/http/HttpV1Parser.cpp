@@ -1,6 +1,5 @@
 #include "HttpV1Parser.hpp"
 #include "ArrayList.hpp"
-#include "HttpHeaderParser.hpp"
 
 namespace obotcha {
 
@@ -38,10 +37,9 @@ int _HttpV1Parser::on_header_field(http_parser*parser, const char *at, size_t le
 
 int _HttpV1Parser::on_header_value(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    String str = createString(at,0,length);
-
+    
     p->getHeader()->setValue(
-        st(HttpHeaderParser)::parseHttpHeader(p->tempParseField),
+        p->tempParseField,
         createString(at,0,length));
     return 0;
 }

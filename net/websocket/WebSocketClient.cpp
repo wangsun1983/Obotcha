@@ -185,11 +185,11 @@ _WebSocketClient::_WebSocketClient(int version = 13) {
     mClient->setComposer(composer);
 }
 
-WebSocketClient _WebSocketClient::buildConnectInfo(int header,String value) {
+WebSocketClient _WebSocketClient::buildConnectInfo(String header,String value) {
     HttpHeader httpHeader = mClient->getHttpHeader();
     httpHeader->setValue(header,value);
 
-    if(header == Http_Header_Sec_WebSocket_Extensions && value->contains("permessage-deflate")) {
+    if(header->equals(st(HttpHeader)::SecWebSocketExtensions) && value->contains("permessage-deflate")) {
         //mClient->mDeflate = createWebSocketPermessageDeflate();
         //we should config client size;
         ArrayList<String> list = value->trimAll()->split(";");
