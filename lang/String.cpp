@@ -876,7 +876,7 @@ bool _String::equalsIgnoreCase(String str) {
 }
 
 bool _String::equalsIgnoreCase(std::string str) {
-    equalsIgnoreCase(str.data());
+    return equalsIgnoreCase(str.data());
 }
 
 bool _String::equalsIgnoreCase(const char * str) {
@@ -990,11 +990,12 @@ bool _String::endsWithIgnoreCase(String s) {
     if(s == nullptr) {
         return false;
     }
-    endsWithIgnoreCase(s->toChars());
+    
+    return endsWithIgnoreCase(s->toChars());
 }
 
 bool _String::endsWithIgnoreCase(std::string str) {
-    endsWithIgnoreCase(str.data());
+    return endsWithIgnoreCase(str.data());
 }
 
 bool _String::endsWithIgnoreCase(const char * str) {
@@ -1031,11 +1032,11 @@ int _String::lastIndexOfIgnoreCase(String v) {
     if(v == nullptr) {
         return false;
     }
-    lastIndexOfIgnoreCase(v->toChars());
+    return lastIndexOfIgnoreCase(v->toChars());
 }
 
 int _String::lastIndexOfIgnoreCase(std::string v) {
-    lastIndexOfIgnoreCase(v.data());
+    return lastIndexOfIgnoreCase(v.data());
 }
 
 int _String::lastIndexOfIgnoreCase(const char * str) {

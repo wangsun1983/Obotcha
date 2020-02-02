@@ -95,6 +95,8 @@ int _ZipStream::compress(String src, String dest)
 
 ByteArray _ZipStream::compress(ByteArray value) {
     //TODO
+
+    return nullptr;
 }
 
 

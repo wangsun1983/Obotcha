@@ -62,7 +62,7 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
         }
 
         int size = ZIP_COMPRESS_BUFF_SIZE - mCompressStream.avail_out;
-        printf("size is %d,zip is %s,avail_out is %d,mCompressStream.avail_out is %d \n",size,zipBuff,mCompressStream.avail_out);
+        //printf("size is %d,zip is %s,avail_out is %d,mCompressStream.avail_out is %d \n",size,zipBuff,mCompressStream.avail_out);
         out->append(zipBuff,size);
         zipsize += size;
     } while (mCompressStream.avail_out == 0);

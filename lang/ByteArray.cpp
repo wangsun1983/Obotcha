@@ -195,7 +195,7 @@ String _ByteArray::toString() {
 }
 
 void _ByteArray::dump(const char *v) {
-    printf("%s is : \n ");
+    printf("%s is : \n ",v);
     for(int i = 0;i < mSize;i++) {
         printf("0x%x ",this->buff[i]);
     }
