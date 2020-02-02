@@ -60,7 +60,27 @@ int _ByteRingArrayReader::getCursor() {
     return mCursor;
 }
 
-int _ByteRingArrayReader::jump(int) {}
+int _ByteRingArrayReader::move(int length) {
+    mCursor += length;
+    if(mCursor > mBuff->getSize()) {
+        mCursor = abs(mBuff->getSize() - mCursor);
+    }
+
+    return mCursor;
+}
+
+int _ByteRingArrayReader::getReadableLength() {
+    if(mBuff->getStatus() == ByteRingArrayEmpty) {
+        return 0;
+    }
+
+    int end = mBuff->getEndIndex();
+    if( mCursor >= end) {
+        return mBuff->getSize() - abs(mCursor - end);
+    } else {
+        return end - mCursor;
+    }
+}
     
 
 }

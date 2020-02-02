@@ -82,6 +82,7 @@ _HttpV1Parser::_HttpV1Parser() {
     mBuff = createByteRingArray(mEnv->getInt(st(Enviroment)::gHttpBufferSize));
     mReader = createByteRingArrayReader(mBuff);
     mHeadEndCount = 0;
+    mChunkEndCount = 0;
 }
 
 void _HttpV1Parser::pushHttpData(ByteArray data) {
@@ -124,12 +125,9 @@ HttpPacket _HttpV1Parser::parseEntireResponse(String response) {
 
 ArrayList<HttpPacket> _HttpV1Parser::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
-    byte end[4] = {'\r','\n','\r','\n'};
-    printf("end[0] is %x ",end[0]);
-    printf("end[1] is %x ",end[1]);
-    printf("end[2] is %x ",end[2]);
-    printf("end[3] is %x \n",end[3]);
-    mHeadEndCount = 0;
+    static byte end[4] = {'\r','\n','\r','\n'};
+    static byte chunkEnd[5] = {'\r','\n','0','\r','\n'};
+
     while(1) {
         switch(mStatus) {
             case HttpV1ParseStatusIdle:{
@@ -146,14 +144,13 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
                     if(mHeadEndCount == 4) {
                         printf("headencount is %d \n",mHeadEndCount);
                         mStatus = HttpClientParseStatusHeadStart;
+                        mHeadEndCount = 0;
                         break;
                     }
                 }
 
-                
-
                 if(mStatus != HttpClientParseStatusHeadStart) {
-                    return nullptr;
+                    return packets;
                 }
                 
                 continue;
@@ -162,11 +159,6 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
             case HttpClientParseStatusHeadStart: {
                 printf("status is HttpClientParseStatusHeadStart \n");
                 ByteArray head = mReader->pop();
-                
-                /*
-                for(int i = 0;i < head->size();i++) {
-                    printf("%x",head->at(i));
-                } */
 
                 printf("mReader cursor is %d \n",mReader->getCursor());
                 printf("head size is %d \n",head->size());
@@ -179,12 +171,60 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
                                     &settings, 
                                     (const char *)head->toValue(), 
                                     head->size());
-                mHttpPacket->dump();
+                //mHttpPacket->dump();
                 mStatus = HttpClientParseStatusBodyStart;
                 continue;
             }
 
             case HttpClientParseStatusBodyStart: {
+                String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
+                String transferEncoding = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
+                
+                if(transferEncoding != nullptr) {
+                    byte v = 0;
+                    while(mReader->readNext(v) != ByteRingArrayReadComplete) {
+                        printf("Reader next is %x \n",v);
+                        if(v == end[mChunkEndCount]) {
+                            mChunkEndCount++;
+                        } else {
+                            mChunkEndCount = 0;
+                        }
+
+                        if(mChunkEndCount == 5) {
+                            mStatus = HttpV1ParseStatusIdle;
+                            //this is end of content
+                            ByteArray chunk = mReader->pop();
+                            chunk->qucikShrink(chunk->size()-5);
+                            mHttpPacket->setBody(chunk);
+                            packets->add(mHttpPacket);
+                            mChunkEndCount = 0;
+                            break;
+                        }
+                    }
+
+                    if(mStatus == HttpV1ParseStatusIdle) {
+                        continue;
+                    }
+
+                    return packets;
+                }
+                
+                if(contentlength != nullptr) {
+                    int length = contentlength->toBasicInt();
+                    if(length <= mReader->getReadableLength()) {
+                        mReader->move(length);
+                        mHttpPacket->setBody(mReader->pop());
+                        mStatus = HttpV1ParseStatusIdle;
+                        packets->add(mHttpPacket);
+                        continue;
+                    }
+                } else {
+                    //no contentlength,maybe it is only a html request
+                    mStatus = HttpV1ParseStatusIdle;
+                    packets->add(mHttpPacket);
+                    continue;
+
+                }
                 printf("status is HttpClientParseStatusBodyStart \n");
                 return packets;
             }

@@ -78,6 +78,8 @@ void _HttpV1SocketListener::onDisconnect(int fd) {
 void _HttpV1SocketListener::onConnect(int fd,String ip,int port) {
     printf("_HttpV1SocketListener onConnect \n");
     HttpV1ClientInfo info = createHttpV1ClientInfo();
+    info->setClientFd(fd);
+    
     st(HttpV1ClientManager)::getInstance()->addClientInfo(fd,info);
 }
 
@@ -89,15 +91,15 @@ void _HttpV1SocketListener::onTimeout() {
     //TODO
 }
 
-_HttpV1Server::_HttpV1Server(int port,HttpListener l):_HttpV1Server{nullptr,port,l} {
+_HttpV1Server::_HttpV1Server(int port,HttpV1Listener l):_HttpV1Server{nullptr,port,l} {
 
 }
 
-_HttpV1Server::_HttpV1Server(HttpListener l):_HttpV1Server{nullptr,-1,l} {
+_HttpV1Server::_HttpV1Server(HttpV1Listener l):_HttpV1Server{nullptr,-1,l} {
     
 }
 
-_HttpV1Server::_HttpV1Server(String ip,int port,HttpListener l){
+_HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l){
     printf("_HttpV1Server start \n");
     HttpV1Server server;
     server.set_pointer(this);
@@ -128,7 +130,28 @@ void _HttpV1Server::parseMessage(int fd,ByteArray pack) {
     HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(fd);
     info->pushHttpData(pack);
     ArrayList<HttpPacket> packets = info->pollHttpPacket();
-    //TODO
+    printf("parseMessage start \n");
+    if(packets != nullptr && packets->size() != 0) {
+        ListIterator<HttpPacket> iterator = packets->getIterator();
+        while(iterator->hasValue()) {
+            printf("parseMessage hit \n");
+            mHttpListener->onMessage(info,iterator->getValue());
+            iterator->next();
+        }
+    }
+    
+#if 0
+    if(packets->size() != 0) {
+        ListIterator<HttpPacket> ll = packets->getIterator();
+        while(ll->hasValue()) {
+            HttpPacket pp = ll->getValue();
+            printf("======================== \n");
+            pp->dump();
+            printf("======================== \n");
+            ll->next();
+        }
+    }
+#endif   
 }
 
 }

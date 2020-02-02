@@ -50,6 +50,8 @@ private:
 
     int mHeadEndCount;
 
+    int mChunkEndCount;
+
     http_parser mParser;
 
     String mHeaderName;

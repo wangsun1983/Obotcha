@@ -27,7 +27,9 @@ public:
 
     int getCursor();
 
-    int jump(int);
+    int move(int);
+
+    int getReadableLength();
     
 private:
     ByteRingArray mBuff;

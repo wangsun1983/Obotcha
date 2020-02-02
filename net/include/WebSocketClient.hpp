@@ -75,7 +75,7 @@ public:
 
     void clearConnectInfo();
 
-    void updateConnectInfo(int header,String value);
+    void updateConnectInfo(String header,String value);
 
     void updateMask(bool);
 

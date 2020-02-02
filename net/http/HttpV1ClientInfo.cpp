@@ -1,5 +1,6 @@
 #include "HttpV1ClientInfo.hpp"
 #include "HttpPacket.hpp"
+#include "NetUtils.hpp"
 
 namespace obotcha {
 
@@ -36,6 +37,11 @@ int _HttpV1ClientInfo::pushHttpData(ByteArray array) {
 
 ArrayList<HttpPacket> _HttpV1ClientInfo::pollHttpPacket() {
     return mV1Parser->doParse();
+}
+
+int _HttpV1ClientInfo::send(String html) {
+    ByteArray data = createByteArray(html);
+    return st(NetUtils)::sendTcpPacket(mClientFd,data);
 }
 
 }

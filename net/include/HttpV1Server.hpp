@@ -59,9 +59,9 @@ private:
     sp<_HttpV1Server> mServer;   
 };
 
-DECLARE_SIMPLE_CLASS(HttpListener) {
+DECLARE_SIMPLE_CLASS(HttpV1Listener) {
 public:
-    void onMessage(int fd,HttpPacket msg);
+    virtual void onMessage(HttpV1ClientInfo client,HttpPacket msg) = 0;
 };
 
 DECLARE_SIMPLE_CLASS(HttpV1Server) {
@@ -69,11 +69,11 @@ DECLARE_SIMPLE_CLASS(HttpV1Server) {
 public:
     friend class _HttpV1SocketListener;
     
-    _HttpV1Server(int port,HttpListener);
+    _HttpV1Server(int port,HttpV1Listener);
 
-    _HttpV1Server(HttpListener);
+    _HttpV1Server(HttpV1Listener);
 
-    _HttpV1Server(String ip,int port,HttpListener);
+    _HttpV1Server(String ip,int port,HttpV1Listener);
 
     void parseMessage(int fd,ByteArray);
 
@@ -86,7 +86,7 @@ private:
 
     HttpV1SocketListener mSocketListener;
 
-    HttpListener mHttpListener;
+    HttpV1Listener mHttpListener;
 
     String mIp;
 

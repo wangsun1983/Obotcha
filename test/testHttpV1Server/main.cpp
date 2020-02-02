@@ -9,10 +9,27 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
+DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
 public:
-    void onMessage(int fd,HttpPacket msg) {
-        printf("msg is %s \n",msg->getBody()->toValue());
+    void onMessage(HttpV1ClientInfo client,HttpPacket msg) {
+        if(msg->getBody()!= nullptr) {
+            printf("msg is %s \n",msg->getBody()->toValue());
+        }
+        
+        HttpPacket response = createHttpPacket();
+        response->getHeader()->setValue(st(HttpHeader)::Status,"200");//setHeaderValue(Http_Header_Status,"200");
+
+        String body = createString("<h1>Response from Gagira</h1>");
+        body = body->append("<h2>Response from Gagira</h2> \r\n");
+        body = body->append("<h3>Response from Gagira</h3> \r\n");
+
+        //response->setHeaderValue(Http_Header_Content_Length,createString(body->size()));
+        response->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(body->size()));
+        response->setBody(createByteArray(body));
+        String resp = response->genHttpResponse();
+
+        int v = client->send(resp);
+        printf("v is %d \n",v);
     }
 };
 

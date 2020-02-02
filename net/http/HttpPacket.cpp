@@ -183,6 +183,13 @@ void _HttpPacket::dump() {
         printf("[%s]:%s \n",key->toChars(),value->toChars());
 		iterator->next();
 	}
+
+	//dump body
+	if(mBody != nullptr) {
+		printf("body is %s \n",mBody->toString()->toChars());
+	} else {
+		printf("body is null \n");
+	}
 }
 
 }
