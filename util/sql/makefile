@@ -9,10 +9,10 @@ objs += $(outtmp)/sqlite3connection.o \
 		$(outtmp)/sqlconnectionfactory.o \
 
 sqlite3connection :$(sqlDir)/sqlite3/Sqlite3Connection.cpp
-	$(gcc) $(cflags) -c $(sqlDir)/sqlite3/Sqlite3Connection.cpp -o $(outtmp)/sqlite3connection.o
+	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/sqlite3/Sqlite3Connection.cpp -o $(outtmp)/sqlite3connection.o
 
 mysqlconnection :$(sqlDir)/mysql/MySqlConnection.cpp
-	$(gcc) $(cflags) -c $(sqlDir)/mysql/MySqlConnection.cpp -o $(outtmp)/mysqlconnection.o
+	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/mysql/MySqlConnection.cpp -o $(outtmp)/mysqlconnection.o
 
 sqlconnectionfactory :$(sqlDir)/SqlConnectionFactory.cpp
-	$(gcc) $(cflags) -c $(sqlDir)/SqlConnectionFactory.cpp -o $(outtmp)/sqlconnectionfactory.o	
+	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/SqlConnectionFactory.cpp -o $(outtmp)/sqlconnectionfactory.o	

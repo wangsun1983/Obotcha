@@ -44,61 +44,61 @@ objs += $(outtmp)/condition.o \
 
 
 condition :$(concurrentDir)/Condition.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/Condition.cpp -o $(outtmp)/condition.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Condition.cpp -o $(outtmp)/condition.o
 
 executorservice :$(concurrentDir)/ExecutorService.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/ExecutorService.cpp -o $(outtmp)/executorservice.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ExecutorService.cpp -o $(outtmp)/executorservice.o
 
 threadpoolexecutor :$(concurrentDir)/ThreadPoolExecutor.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/ThreadPoolExecutor.cpp -o $(outtmp)/threadpoolexecutor.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ThreadPoolExecutor.cpp -o $(outtmp)/threadpoolexecutor.o
 
 threadcachedpoolexecutor :$(concurrentDir)/ThreadCachedPoolExecutor.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/ThreadCachedPoolExecutor.cpp -o $(outtmp)/threadcachedpoolexecutor.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ThreadCachedPoolExecutor.cpp -o $(outtmp)/threadcachedpoolexecutor.o
 
 scheduledthreadpoolexecutor :$(concurrentDir)/ScheduledThreadPoolExecutor.cpp
-		$(gcc) $(cflags) -c $(concurrentDir)/ScheduledThreadPoolExecutor.cpp -o $(outtmp)/scheduledthreadpoolexecutor.o
+		$(cppcompiler) $(cppflags) -c $(concurrentDir)/ScheduledThreadPoolExecutor.cpp -o $(outtmp)/scheduledthreadpoolexecutor.o
 
 mutex :$(concurrentDir)/Mutex.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/Mutex.cpp -o $(outtmp)/mutex.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Mutex.cpp -o $(outtmp)/mutex.o
 
 thread :$(concurrentDir)/Thread.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/Thread.cpp -o $(outtmp)/thread.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Thread.cpp -o $(outtmp)/thread.o
 
 countdownlatch :$(concurrentDir)/CountDownLatch.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/CountDownLatch.cpp -o $(outtmp)/countdownlatch.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/CountDownLatch.cpp -o $(outtmp)/countdownlatch.o
 
 atomicint :$(concurrentDir)/AtomicInteger.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/AtomicInteger.cpp -o $(outtmp)/atomicint.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicInteger.cpp -o $(outtmp)/atomicint.o
 
 atomiclong :$(concurrentDir)/AtomicLong.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/AtomicLong.cpp -o $(outtmp)/atomiclong.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicLong.cpp -o $(outtmp)/atomiclong.o
 
 atomicuint64 :$(concurrentDir)/AtomicUint64.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/AtomicUint64.cpp -o $(outtmp)/atomicuint64.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicUint64.cpp -o $(outtmp)/atomicuint64.o
 
 atomicbool :$(concurrentDir)/AtomicBoolean.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/AtomicBoolean.cpp -o $(outtmp)/atomicbool.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicBoolean.cpp -o $(outtmp)/atomicbool.o
 
 future :$(concurrentDir)/Future.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/Future.cpp -o $(outtmp)/future.o	
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Future.cpp -o $(outtmp)/future.o	
 
 futuretask :$(concurrentDir)/FutureTask.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/FutureTask.cpp -o $(outtmp)/futuretask.o		
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/FutureTask.cpp -o $(outtmp)/futuretask.o		
 
 barrier :$(concurrentDir)/Barrier.cpp
-	$(gcc) $(cflags) -c $(concurrentDir)/Barrier.cpp -o $(outtmp)/barrier.o		
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Barrier.cpp -o $(outtmp)/barrier.o		
 
 readwritelock :$(concurrentDir)/ReadWriteLock.cpp
-	$(gcc) $(cflags) -std=c++11 -lpthread -c $(concurrentDir)/ReadWriteLock.cpp -o $(outtmp)/readwritelock.o
+	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/ReadWriteLock.cpp -o $(outtmp)/readwritelock.o
 
 executors :$(concurrentDir)/Executors.cpp
-	$(gcc) $(cflags) -std=c++11 -lpthread -c $(concurrentDir)/Executors.cpp -o $(outtmp)/executors.o
+	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/Executors.cpp -o $(outtmp)/executors.o
 
 executordestructorexception :$(concurrentDir)/ExecutorDestructorException.cpp
-	$(gcc) $(cflags) -std=c++11 -lpthread -c $(concurrentDir)/ExecutorDestructorException.cpp -o $(outtmp)/executordestructorexception.o
+	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/ExecutorDestructorException.cpp -o $(outtmp)/executordestructorexception.o
 
 timer :$(concurrentDir)/Timer.cpp
-	$(gcc) $(cflags) -std=c++11 -lpthread -c $(concurrentDir)/Timer.cpp -o $(outtmp)/timer.o
+	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/Timer.cpp -o $(outtmp)/timer.o
 
 prioritypoolexecutor :$(concurrentDir)/PriorityPoolExecutor.cpp
-	$(gcc) $(cflags) -std=c++11 -lpthread -c $(concurrentDir)/PriorityPoolExecutor.cpp -o $(outtmp)/prioritypoolexecutor.o
+	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/PriorityPoolExecutor.cpp -o $(outtmp)/prioritypoolexecutor.o

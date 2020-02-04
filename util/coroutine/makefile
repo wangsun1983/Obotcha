@@ -5,4 +5,4 @@ link += filament \
 objs += $(outtmp)/filament.o \
 
 filament :$(coroutineDir)/Filament.cpp
-	$(gcc) $(cflags) -c $(coroutineDir)/Filament.cpp -o $(outtmp)/filament.o
+	$(cppcompiler) $(obotchacppflags) -c $(coroutineDir)/Filament.cpp -o $(outtmp)/filament.o

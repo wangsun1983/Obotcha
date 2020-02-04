@@ -42,58 +42,58 @@ objs += $(outtmp)/calendar.o \
 		$(outtmp)/enviroment.o \
 
 calendar :$(utilDir)/Calendar.cpp
-	$(gcc) $(cflags) -c $(utilDir)/Calendar.cpp -o $(outtmp)/calendar.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Calendar.cpp -o $(outtmp)/calendar.o
 
 stacktrace :$(utilDir)/StackTrace.cpp
-	$(gcc) $(cflags) -c $(utilDir)/StackTrace.cpp -o $(outtmp)/stacktrace.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/StackTrace.cpp -o $(outtmp)/stacktrace.o
 
 timezone :$(utilDir)/TimeZone.cpp
-	$(gcc) $(cflags) -c $(utilDir)/TimeZone.cpp -o $(outtmp)/timezone.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/TimeZone.cpp -o $(outtmp)/timezone.o
 
 properties :$(utilDir)/Properties.cpp
-	$(gcc) $(cflags) -c $(utilDir)/Properties.cpp -o $(outtmp)/properties.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Properties.cpp -o $(outtmp)/properties.o
 
 log :$(utilDir)/Log.cpp
-	$(gcc) $(cflags) -c $(utilDir)/Log.cpp -o $(outtmp)/log.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Log.cpp -o $(outtmp)/log.o
 
 arraylist :$(utilDir)/ArrayList.cpp
-	$(gcc) $(cflags) -c $(utilDir)/ArrayList.cpp -o $(outtmp)/arraylist.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/ArrayList.cpp -o $(outtmp)/arraylist.o
 
 uuid :$(utilDir)/UUID.cpp
-	$(gcc) $(cflags) -c $(utilDir)/UUID.cpp -o $(outtmp)/uuid.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/UUID.cpp -o $(outtmp)/uuid.o
 
 random :$(utilDir)/Random.cpp
-	$(gcc) $(cflags) -c $(utilDir)/Random.cpp -o $(outtmp)/random.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Random.cpp -o $(outtmp)/random.o
 
 math :$(utilDir)/Math.cpp
-	$(gcc) $(cflags) -c $(utilDir)/Math.cpp -o $(outtmp)/math.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Math.cpp -o $(outtmp)/math.o
 
 timewatcher :$(utilDir)/TimeWatcher.cpp
-	$(gcc) $(cflags) -c $(utilDir)/TimeWatcher.cpp -o $(outtmp)/timewatcher.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/TimeWatcher.cpp -o $(outtmp)/timewatcher.o
 
 datetime :$(utilDir)/DateTime.cpp
-	$(gcc) $(cflags) -c $(utilDir)/DateTime.cpp -o $(outtmp)/datetime.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/DateTime.cpp -o $(outtmp)/datetime.o
 
 datetimeparser 	:$(utilDir)/DateTimeParser.cpp
-	$(gcc) $(cflags) -c $(utilDir)/DateTimeParser.cpp -o $(outtmp)/datetimeparser.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/DateTimeParser.cpp -o $(outtmp)/datetimeparser.o
 
 datetimeformatter :$(utilDir)/DateTimeFormatter.cpp
-	$(gcc) $(cflags) -c $(utilDir)/DateTimeFormatter.cpp -o $(outtmp)/datetimeformatter.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/DateTimeFormatter.cpp -o $(outtmp)/datetimeformatter.o
 
 numberformatter :$(utilDir)/NumberFormatter.cpp
-	$(gcc) $(cflags) -c $(utilDir)/NumberFormatter.cpp -o $(outtmp)/numberformatter.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/NumberFormatter.cpp -o $(outtmp)/numberformatter.o
 
 message :$(utilDir)/Message.cpp
-	$(gcc) $(cflags) -c $(utilDir)/Message.cpp -o $(outtmp)/message.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Message.cpp -o $(outtmp)/message.o
 
 handler :$(utilDir)/Handler.cpp
-	$(gcc) $(cflags) -c $(utilDir)/Handler.cpp -o $(outtmp)/handler.o	
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Handler.cpp -o $(outtmp)/handler.o	
 
 enviroment :$(utilDir)/Enviroment.cpp
-	$(gcc) $(cflags) -c $(utilDir)/Enviroment.cpp -o $(outtmp)/enviroment.o
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Enviroment.cpp -o $(outtmp)/enviroment.o
 
 #base64 :$(utilDir)/Base64.cpp
-#	$(gcc) $(cflags) -c $(utilDir)/Base64.cpp -o $(outtmp)/base64.o
+#	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Base64.cpp -o $(outtmp)/base64.o
 
 
 

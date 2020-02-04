@@ -17,22 +17,22 @@ objs += $(outtmp)/crc32.o \
 		$(outtmp)/sha.o \
 
 crc32 :$(securityDir)/Crc32.cpp
-	$(gcc) $(cflags) -c $(securityDir)/Crc32.cpp -o $(outtmp)/crc32.o $(external)
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/Crc32.cpp -o $(outtmp)/crc32.o $(external)
 
 md :$(securityDir)/Md.cpp
-	$(gcc) $(cflags) -c $(securityDir)/Md.cpp -o $(outtmp)/md.o $(external)
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/Md.cpp -o $(outtmp)/md.o $(external)
 
 des :$(securityDir)/Des.cpp
-	$(gcc) $(cflags) -c $(securityDir)/Des.cpp -o $(outtmp)/des.o $(external)		
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/Des.cpp -o $(outtmp)/des.o $(external)		
 
 base64 :$(securityDir)/Base64.cpp
-	$(gcc) $(cflags) -c $(securityDir)/Base64.cpp -o $(outtmp)/base64.o $(external)		
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/Base64.cpp -o $(outtmp)/base64.o $(external)		
 
 aes :$(securityDir)/Aes.cpp
-	$(gcc) $(cflags) -c $(securityDir)/Aes.cpp -o $(outtmp)/aes.o $(external)		
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/Aes.cpp -o $(outtmp)/aes.o $(external)		
 
 rsa :$(securityDir)/Rsa.cpp
-	$(gcc) $(cflags) -c $(securityDir)/Rsa.cpp -o $(outtmp)/rsa.o $(external)		
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/Rsa.cpp -o $(outtmp)/rsa.o $(external)		
 
 sha :$(securityDir)/Sha.cpp
-	$(gcc) $(cflags) -c $(securityDir)/Sha.cpp -o $(outtmp)/sha.o $(external)	
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/Sha.cpp -o $(outtmp)/sha.o $(external)	

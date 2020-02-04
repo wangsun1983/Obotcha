@@ -9,10 +9,10 @@ objs += $(outtmp)/extjsonreader.o \
 		$(outtmp)/extjsonwriter.o 
 
 external_json_reader :$(jsoncpp)/json_reader.cpp
-	$(gcc) $(cflags) -c $(jsoncpp)/json_reader.cpp -o $(outtmp)/extjsonreader.o
+	$(cppcompiler) $(cppflags) -c $(jsoncpp)/json_reader.cpp -o $(outtmp)/extjsonreader.o
 
 external_json_value :$(jsoncpp)/json_value.cpp
-	$(gcc) $(cflags) -c $(jsoncpp)/json_value.cpp -o $(outtmp)/extjsonvalue.o
+	$(cppcompiler) $(cppflags) -c $(jsoncpp)/json_value.cpp -o $(outtmp)/extjsonvalue.o
 
 external_json_writer :$(jsoncpp)/json_writer.cpp
-	$(gcc) $(cflags) -c $(jsoncpp)/json_writer.cpp -o $(outtmp)/extjsonwriter.o
+	$(cppcompiler) $(cppflags) -c $(jsoncpp)/json_writer.cpp -o $(outtmp)/extjsonwriter.o

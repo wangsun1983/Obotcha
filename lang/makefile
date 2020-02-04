@@ -49,70 +49,70 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/transformexception.o \
 
 integer :$(langDir)/Integer.cpp
-	$(gcc) $(cflags) -c $(langDir)/Integer.cpp -o $(outtmp)/integer.o $(external)
+	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Integer.cpp -o $(outtmp)/integer.o $(external)
 
 uint64 :$(langDir)/Uint64.cpp
-	$(gcc) $(cflags) -c $(langDir)/Uint64.cpp -o $(outtmp)/uint64.o $(external)
+	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Uint64.cpp -o $(outtmp)/uint64.o $(external)
 
 uint32 :$(langDir)/Uint32.cpp
-	$(gcc) $(cflags) -c $(langDir)/Uint32.cpp -o $(outtmp)/uint32.o $(external)
+	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Uint32.cpp -o $(outtmp)/uint32.o $(external)
 
 uint16 :$(langDir)/Uint16.cpp
-	$(gcc) $(cflags) -c $(langDir)/Uint16.cpp -o $(outtmp)/uint16.o $(external)
+	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Uint16.cpp -o $(outtmp)/uint16.o $(external)
 
 uint8 :$(langDir)/Uint8.cpp
-	$(gcc) $(cflags) -c $(langDir)/Uint8.cpp -o $(outtmp)/uint8.o $(external)
+	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Uint8.cpp -o $(outtmp)/uint8.o $(external)
 
 boolean :$(langDir)/Boolean.cpp
-	$(gcc) $(cflags) -c $(langDir)/Boolean.cpp -o $(outtmp)/boolean.o $(external)
+	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Boolean.cpp -o $(outtmp)/boolean.o $(external)
 
 double :$(langDir)/Double.cpp
-	$(gcc) $(cflags) -c $(langDir)/Double.cpp -o $(outtmp)/double.o $(external)
+	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Double.cpp -o $(outtmp)/double.o $(external)
 
 float :$(langDir)/Float.cpp
-	$(gcc) $(cflags) -c $(langDir)/Float.cpp -o $(outtmp)/float.o $(external)
+	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Float.cpp -o $(outtmp)/float.o $(external)
 
 system :$(langDir)/System.cpp
-		$(gcc) $(cflags) -c $(langDir)/System.cpp -o $(outtmp)/system.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/System.cpp -o $(outtmp)/system.o $(external)
 
 string :$(langDir)/String.cpp
-		$(gcc) $(cflags) -c $(langDir)/String.cpp -o $(outtmp)/string.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/String.cpp -o $(outtmp)/string.o $(external)
 
 long :$(langDir)/Long.cpp
-		$(gcc) $(cflags) -c $(langDir)/Long.cpp -o $(outtmp)/long.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/Long.cpp -o $(outtmp)/long.o $(external)
 
 bytearray :$(langDir)/ByteArray.cpp
-		$(gcc) $(cflags) -c $(langDir)/ByteArray.cpp -o $(outtmp)/bytearray.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/ByteArray.cpp -o $(outtmp)/bytearray.o $(external)
 
 byteringarray :$(langDir)/ByteRingArray.cpp
-		$(gcc) $(cflags) -c $(langDir)/ByteRingArray.cpp -o $(outtmp)/byteringarray.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/ByteRingArray.cpp -o $(outtmp)/byteringarray.o $(external)
 
 byte :$(langDir)/Byte.cpp
-		$(gcc) $(cflags) -c $(langDir)/Byte.cpp -o $(outtmp)/byte.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/Byte.cpp -o $(outtmp)/byte.o $(external)
 
 exception :$(langDir)/Exception.cpp
-		$(gcc) $(cflags) -c $(langDir)/Exception.cpp -o $(outtmp)/exception.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/Exception.cpp -o $(outtmp)/exception.o $(external)
 
 outofboundsexception :$(langDir)/ArrayIndexOutOfBoundsException.cpp
-		$(gcc) $(cflags) -c $(langDir)/ArrayIndexOutOfBoundsException.cpp -o $(outtmp)/outofboundsexception.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/ArrayIndexOutOfBoundsException.cpp -o $(outtmp)/outofboundsexception.o $(external)
 
 methodnotsupportexception :$(langDir)/MethodNotSupportException.cpp
-		$(gcc) $(cflags) -c $(langDir)/MethodNotSupportException.cpp -o $(outtmp)/methodnotsupportexception.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/MethodNotSupportException.cpp -o $(outtmp)/methodnotsupportexception.o $(external)
 
 initializeexception :$(langDir)/InitializeException.cpp
-		$(gcc) $(cflags) -c $(langDir)/InitializeException.cpp -o $(outtmp)/initializeexception.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/InitializeException.cpp -o $(outtmp)/initializeexception.o $(external)
 
 nullpointerexception :$(langDir)/NullPointerException.cpp
-		$(gcc) $(cflags) -c $(langDir)/NullPointerException.cpp -o $(outtmp)/nullpointerexception.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/NullPointerException.cpp -o $(outtmp)/nullpointerexception.o $(external)
 
 protocolnotsupportexception :$(langDir)/ProtocolNotSupportException.cpp
-		$(gcc) $(cflags) -c $(langDir)/ProtocolNotSupportException.cpp -o $(outtmp)/protocolnotsupportexception.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/ProtocolNotSupportException.cpp -o $(outtmp)/protocolnotsupportexception.o $(external)
 
 error :$(langDir)/Error.cpp
-		$(gcc) $(cflags) -c $(langDir)/Error.cpp -o $(outtmp)/error.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/Error.cpp -o $(outtmp)/error.o $(external)
 
 valuenotfoundexception :$(langDir)/ValueNotFoundException.cpp
-		$(gcc) $(cflags) -c $(langDir)/ValueNotFoundException.cpp -o $(outtmp)/valuenotfoundexception.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/ValueNotFoundException.cpp -o $(outtmp)/valuenotfoundexception.o $(external)
 
 transformexception :$(langDir)/TransformException.cpp
-		$(gcc) $(cflags) -c $(langDir)/TransformException.cpp -o $(outtmp)/transformexception.o $(external)
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/TransformException.cpp -o $(outtmp)/transformexception.o $(external)

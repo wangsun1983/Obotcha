@@ -1,7 +1,9 @@
 outlib = ./out/lib
 outtmp = ./out/tmp
 
-gcc = g++
+#gcc = g++
+ccompiler = gcc
+cppcompiler = g++
 
 cflags = -fpic \
 		-lrt \
@@ -27,9 +29,15 @@ cflags = -fpic \
 		-I ./external/libco \
 		-g \
 		-rdynamic \
-		-std=c++11 \
 		-Wno-deprecated \
 
+cppflags=$(cflags) \
+		 -std=c++11
+
+#define obotcha build config
+obotchacflags = $(cflags)
+
+obotchacppflags = $(cppflags)
 
 external = -lpthread \
 		-ldl \
