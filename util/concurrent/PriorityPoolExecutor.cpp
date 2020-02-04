@@ -18,9 +18,11 @@
 #include "System.hpp"
 #include "StackTrace.hpp"
 #include "ExecutorDestructorException.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
+#define TAG "PriorityPool"
 
 //============= PriorityPoolThread =================
 _PriorityPoolThread::_PriorityPoolThread(ArrayList<PriorityTask> l,Mutex m,Condition c,sp<_PriorityPoolExecutor> exe) {
@@ -396,7 +398,9 @@ void _PriorityPoolExecutor::onCancel(FutureTask task) {
 _PriorityPoolExecutor::~_PriorityPoolExecutor() {
     
     if(!isShutDown) {
-        throw ExecutorDestructorException("Priority Thread Pool destruct error");
+        //cannot throw exception in destructor
+        //throw ExecutorDestructorException("Priority Thread Pool destruct error");
+        LOGE(TAG,"Priority Thread Pool destruct error");
     }
 
 }

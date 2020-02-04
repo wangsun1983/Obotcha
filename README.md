@@ -1,4 +1,6 @@
 Obotcha:基于C++11的开源工具库
+-[![Total alerts](https://img.shields.io/lgtm/alerts/g/wangsun1983/Obotcha.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/wangsun1983/Obotcha/alerts/)
+
 -----------------------------------
 ### 什么是Obotcha
 Obotcha是基于C++11开发的一个工具库，该工具库目前提供了如下的功能。  

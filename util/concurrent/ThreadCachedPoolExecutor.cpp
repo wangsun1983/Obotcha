@@ -24,6 +24,8 @@
 
 namespace obotcha {
 
+#define TAG "ThreadCachedPool"
+
 #define DEFAULT_CACHED_THREAD_WAIT_TIME 15*1000
 #define DEFAULT_CACHED_MAX_THREAD_NUMS 4
 #define DEFAULT_CACHED_QUEUE_NUMS 32    
@@ -325,7 +327,9 @@ _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
     //printf("release thread pool \n");
     //shutdown();
     if(!mIsShutDown) {
-        throw ExecutorDestructorException("ThreadCachedPoolExecutor destruct error");
+        //cannot throw exception in destructor
+        //throw ExecutorDestructorException("ThreadCachedPoolExecutor destruct error");
+        LOGE(TAG,"ThreadCachedPoolExecutor destruct error");
     }
 }
 

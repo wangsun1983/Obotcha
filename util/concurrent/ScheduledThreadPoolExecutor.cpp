@@ -8,8 +8,12 @@
 #include "AutoMutex.hpp"
 #include "MethodNotSupportException.hpp"
 #include "ExecutorDestructorException.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
+
+#define TAG "ScheduledThreadPool"
+
 //---------------ScheduledTaskWorker-------------------//
 _ScheduledTaskWorker::_ScheduledTaskWorker(sp<_ScheduledThreadPoolTask> t,ScheduledThreadPoolThread thread) {
     mTask = t;
@@ -496,7 +500,9 @@ void _ScheduledThreadPoolExecutor::onCancel(FutureTask task) {
 _ScheduledThreadPoolExecutor::~_ScheduledThreadPoolExecutor() {
     //shutdown();
     if(!mIsShutDown) {
-        throw ExecutorDestructorException("Scheduled Thread Pool destruct error");
+        //cannot throw exception in destructor
+        //throw ExecutorDestructorException("Scheduled Thread Pool destruct error");
+        LOGE(TAG,"Scheduled Thread Pool destruct error");
     }
 }
 

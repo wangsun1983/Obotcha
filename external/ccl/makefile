@@ -17,19 +17,19 @@ objs += $(outtmp)/extconfbst.o \
         $(outtmp)/extconfcclreset.o 
 
 external_conf_bst :$(confparser)/src/bst.c
-	$(ccompiler) $(cppflags) $(ccl_include) -c $(confparser)/src/bst.c -o $(outtmp)/extconfbst.o
+	$(ccompiler) $(cflags) $(ccl_include) -c $(confparser)/src/bst.c -o $(outtmp)/extconfbst.o
 
 external_conf_ccl_get :$(confparser)/src/ccl_get.c
-	$(ccompiler) $(cppflags) $(ccl_include) -c $(confparser)/src/ccl_get.c -o $(outtmp)/extconfcclget.o
+	$(ccompiler) $(cflags) $(ccl_include) -c $(confparser)/src/ccl_get.c -o $(outtmp)/extconfcclget.o
 
 external_conf_ccl_iterate :$(confparser)/src/ccl_iterate.c
-	$(ccompiler) $(cppflags) $(ccl_include) -c $(confparser)/src/ccl_iterate.c -o $(outtmp)/extconfccliterate.o
+	$(ccompiler) $(cflags) $(ccl_include) -c $(confparser)/src/ccl_iterate.c -o $(outtmp)/extconfccliterate.o
 
 external_conf_ccl_parse :$(confparser)/src/ccl_parse.c
-	$(ccompiler) $(cppflags) $(ccl_include) -c $(confparser)/src/ccl_parse.c -o $(outtmp)/extconfcclparse.o
+	$(ccompiler) $(cflags) $(ccl_include) -c $(confparser)/src/ccl_parse.c -o $(outtmp)/extconfcclparse.o
 
 external_conf_ccl_release :$(confparser)/src/ccl_release.c
-	$(ccompiler) $(cppflags) $(ccl_include) -c $(confparser)/src/ccl_release.c -o $(outtmp)/extconfcclrelease.o
+	$(ccompiler) $(cflags) $(ccl_include) -c $(confparser)/src/ccl_release.c -o $(outtmp)/extconfcclrelease.o
 
 external_conf_ccl_reset :$(confparser)/src/ccl_reset.c
-	$(ccompiler) $(cppflags) $(ccl_include) -c $(confparser)/src/ccl_reset.c -o $(outtmp)/extconfcclreset.o
+	$(ccompiler) $(cflags) $(ccl_include) -c $(confparser)/src/ccl_reset.c -o $(outtmp)/extconfcclreset.o

@@ -15,11 +15,11 @@ _LibraryFileInputStream::_LibraryFileInputStream(String path) {
 
 
 int _LibraryFileInputStream::read() {
-    throw new MethodNotSupportException("LibraryFileInputStream not support read");
+    throw MethodNotSupportException("LibraryFileInputStream not support read");
 }
     
 long _LibraryFileInputStream::read(ByteArray) {
-    throw new MethodNotSupportException("LibraryFileInputStream not support read");
+    throw MethodNotSupportException("LibraryFileInputStream not support read");
 }
 
 bool _LibraryFileInputStream::open() {

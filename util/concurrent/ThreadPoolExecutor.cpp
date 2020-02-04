@@ -9,12 +9,13 @@
 #include "System.hpp"
 #include "Error.hpp"
 #include "ExecutorDestructorException.hpp"
+#include "Log.hpp"
 
-static int id = 0;
-
-#define DEFAULT_THREAD_NUM 4
 
 namespace obotcha {
+
+#define TAG "ThreadPool"
+#define DEFAULT_THREAD_NUM 4
 
 _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool,sp<_ThreadPoolExecutor> exe):mPool(pool),
                                                                          state(idleState),
@@ -328,7 +329,9 @@ int _ThreadPoolExecutor::getThreadsNum() {
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
     if(!mIsShutDown) {
-        throw ExecutorDestructorException("ThreadPoolExecutor destruct error");
+        //cannot throw exception in destructor
+        //throw ExecutorDestructorException("ThreadPoolExecutor destruct error");
+        LOGE(TAG,"ThreadPoolExecutor destruct error");
     }
 }
 
