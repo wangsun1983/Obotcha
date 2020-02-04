@@ -1,26 +1,29 @@
 #ifndef __EXCEPTION_HPP__
 #define __EXCEPTION_HPP__
 
+#include <exception>
+
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-
 #include "String.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Exception) {
+class Exception :public std::exception{
 public:
-    _Exception(const char *);
+    Exception(const char *);
 
-    _Exception(String);
+    Exception(String);
 
-    _Exception(int);
+    Exception(int);
 
     virtual String getErrInfo();   
 
     virtual int getErrCode();
 
     void printStack();
+
+    Exception * operator->();
 
 protected:
     String mErrInfo;

@@ -36,7 +36,7 @@ _Integer::_Integer(int v) : val(v) {
 
 _Integer::_Integer(Integer &v) {
     if(v == nullptr) {
-        throw createInitializeException("Object is null");
+        throw InitializeException("Object is null");
     }
 
     val = 0;
@@ -133,7 +133,7 @@ sp<_String> _Integer::toString(int i) {
 
 int _Integer::parseInt(sp<_String> v) {
     if(v == nullptr) {
-        throw createNullPointerException("Integer parserInt nullptr");
+        throw NullPointerException("Integer parserInt nullptr");
     }
 
     std::stringstream ss;

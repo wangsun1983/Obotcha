@@ -14,11 +14,11 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ArrayIndexOutOfBoundsException) EXTENDS(Exception) {
+class ArrayIndexOutOfBoundsException:public Exception {
 public:
-    _ArrayIndexOutOfBoundsException(String,int,int);
-    _ArrayIndexOutOfBoundsException(const char *,int,int);
-    _ArrayIndexOutOfBoundsException(const char *);
+    ArrayIndexOutOfBoundsException(String,int,int);
+    ArrayIndexOutOfBoundsException(const char *,int,int);
+    ArrayIndexOutOfBoundsException(const char *);
 
 private:
     static const String EXCEPTION_TAG;

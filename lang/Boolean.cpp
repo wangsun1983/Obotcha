@@ -31,7 +31,7 @@ _Boolean::_Boolean(bool v) : val(v) {
 
 _Boolean::_Boolean(Boolean &v) {
     if(v == nullptr) {
-        throw createInitializeException("Object is null");
+        throw InitializeException("Object is null");
     }
     
     val = v->val;
@@ -75,7 +75,7 @@ sp<_String> _Boolean::toString() {
 
 bool _Boolean::compareTo(sp<_Boolean> v) {
     if(v == nullptr) {
-        throw createNullPointerException("compareTo is nullptr");
+        throw NullPointerException("compareTo is nullptr");
     }
 
     return val == v->toValue();
@@ -87,7 +87,7 @@ void _Boolean::logicOr(bool v) {
 
 void _Boolean::logicOr(sp<_Boolean> v) {
     if(v == nullptr) {
-        throw createNullPointerException("logicOr is nullptr");
+        throw NullPointerException("logicOr is nullptr");
     }
 
     val |= v->toValue();
@@ -99,7 +99,7 @@ void _Boolean::logicAnd(bool v) {
 
 void _Boolean::logicAnd(sp<_Boolean> v) {
     if(v == nullptr) {
-        throw createNullPointerException("logicOr is nullptr");
+        throw NullPointerException("logicOr is nullptr");
     }
 
     val &= v->toValue();
@@ -111,7 +111,7 @@ void _Boolean::logicXor(bool v) {
 
 void _Boolean::logicXor(sp<_Boolean> v) {
     if(v == nullptr) {
-        throw createNullPointerException("logicXor is nullptr");
+        throw NullPointerException("logicXor is nullptr");
     }
     
     val ^= v->toValue();
@@ -119,7 +119,7 @@ void _Boolean::logicXor(sp<_Boolean> v) {
 
 sp<_Boolean> _Boolean::valueOf(sp<_String> v) {
     if(v == nullptr) {
-        throw createNullPointerException("valueOf is nullptr");
+        throw NullPointerException("valueOf is nullptr");
     }
 
     if(v->equalsIgnoreCase("true")) {

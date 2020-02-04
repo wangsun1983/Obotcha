@@ -396,7 +396,7 @@ void _PriorityPoolExecutor::onCancel(FutureTask task) {
 _PriorityPoolExecutor::~_PriorityPoolExecutor() {
     
     if(!isShutDown) {
-        throw createExecutorDestructorException("Priority Thread Pool destruct error");
+        throw ExecutorDestructorException("Priority Thread Pool destruct error");
     }
 
 }

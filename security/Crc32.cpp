@@ -7,7 +7,7 @@ namespace obotcha {
     
 long _Crc32::encode(ByteArray b) {
     if(b == nullptr) {
-        throw createNullPointerException("Crc32 encode param is nullptr");
+        throw NullPointerException("Crc32 encode param is nullptr");
     }
 
     std::uint32_t result;
@@ -19,7 +19,7 @@ long _Crc32::encode(ByteArray b) {
 
 long _Crc32::encode(String b) {
     if(b == nullptr) {
-        throw createNullPointerException("Crc32 encode param is nullptr");
+        throw NullPointerException("Crc32 encode param is nullptr");
     }
 
     std::uint32_t result;
@@ -30,11 +30,11 @@ long _Crc32::encode(String b) {
 
 long _Crc32::encode(File f) {
     if(f == nullptr) {
-        throw createNullPointerException("Crc32 encode param is nullptr");
+        throw NullPointerException("Crc32 encode param is nullptr");
     }
 
     if(!f->exists()) {
-        throw createFileNotFoundException("Crc32 encode file not exists");
+        throw FileNotFoundException("Crc32 encode file not exists");
     }
 
     FileInputStream stream = createFileInputStream(f);

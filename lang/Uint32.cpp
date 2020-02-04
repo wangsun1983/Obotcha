@@ -19,7 +19,7 @@ _Uint32::_Uint32(uint32_t v) : val(v) {}
 
 _Uint32::_Uint32(Uint32 &v) {
     if(v == nullptr) {
-        throw createInitializeException("Object is null");
+        throw InitializeException("Object is null");
     }
     
     val = v->val;

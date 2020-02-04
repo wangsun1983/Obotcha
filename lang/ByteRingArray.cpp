@@ -28,7 +28,7 @@ _ByteRingArray::~_ByteRingArray() {
 
 void _ByteRingArray::push(byte b) {
     if(mStatus == ByteRingArrayFull) {
-        throw createArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
+        throw ArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
     }
 
     mBuff[mEnd] = b;
@@ -47,7 +47,7 @@ void _ByteRingArray::push(byte b) {
 
 byte _ByteRingArray::pop() {
     if(mStatus == ByteRingArrayEmpty) {
-        throw createArrayIndexOutOfBoundsException("Ring Array Pop Empty Array!!!");
+        throw ArrayIndexOutOfBoundsException("Ring Array Pop Empty Array!!!");
     }
 
     byte c = mBuff[mStart];
@@ -71,11 +71,11 @@ void _ByteRingArray::push(ByteArray data) {
     push(data,0,data->size());
 #if 0    
     if(mStatus == ByteRingArrayFull) {
-        throw createArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
+        throw ArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
     }
 
     if((mSize - abs(mStart - mEnd)) < data->size()) {
-        throw createArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
+        throw ArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
     }
     
     if(mEnd < mStart) {
@@ -103,11 +103,11 @@ void _ByteRingArray::push(ByteArray data) {
 
 void _ByteRingArray::push(ByteArray array,int start,int length) {
     if(mStatus == ByteRingArrayFull) {
-        throw createArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
+        throw ArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
     }
 
     if((mSize - abs(mStart - mEnd)) < length) {
-        throw createArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
+        throw ArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
     }
     
     if(mEnd < mStart) {
@@ -134,14 +134,14 @@ void _ByteRingArray::push(ByteArray array,int start,int length) {
 
 ByteArray _ByteRingArray::pop(int size) {
     if(mStatus == ByteRingArrayEmpty) {
-        throw createArrayIndexOutOfBoundsException("Ring Array Pop Empty Array!!!");
+        throw ArrayIndexOutOfBoundsException("Ring Array Pop Empty Array!!!");
     }
 
     ByteArray buff = createByteArray(size);
     printf("mStart is %d,mEnd is %d,size is %d \n",mStart,mEnd,mSize);
     if(mStart >= mEnd) {
         if( mSize - (mStart - mEnd) < size) {
-            throw createArrayIndexOutOfBoundsException("Ring Array Pop OverStack!!!");
+            throw ArrayIndexOutOfBoundsException("Ring Array Pop OverStack!!!");
         }
         
         if((mStart + size) < mSize) {
@@ -158,7 +158,7 @@ ByteArray _ByteRingArray::pop(int size) {
     } else if(mEnd > mStart) {
         printf("pop 3 \n");
         if((mEnd -mStart) < size) {
-            throw createArrayIndexOutOfBoundsException("Ring Array Pop OverStack!!!");
+            throw ArrayIndexOutOfBoundsException("Ring Array Pop OverStack!!!");
         }
         
         memcpy(buff->toValue(),mBuff+mStart,size);
@@ -200,7 +200,7 @@ int _ByteRingArray::getEndIndex() {
 
 byte _ByteRingArray::at(int m) {
     if(m >= mSize) {
-        throw createArrayIndexOutOfBoundsException("Ring Array At OverStack!!!");
+        throw ArrayIndexOutOfBoundsException("Ring Array At OverStack!!!");
     }
     return mBuff[m];
 }
@@ -212,7 +212,7 @@ ByteArray _ByteRingArray::popAll() {
 
 ByteArray _ByteRingArray::popByEnd(int end) {
     if(mStatus == ByteRingArrayEmpty) {
-        throw createArrayIndexOutOfBoundsException("Ring Array popAtCursor OverStack!!!");
+        throw ArrayIndexOutOfBoundsException("Ring Array popAtCursor OverStack!!!");
     }
     printf("pop by end at %d \n",end);
 

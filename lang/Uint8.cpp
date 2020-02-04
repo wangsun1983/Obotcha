@@ -19,7 +19,7 @@ _Uint8::_Uint8(uint8_t v) : val(v) {}
 
 _Uint8::_Uint8(Uint8 &v) {
     if(v == nullptr) {
-        throw createInitializeException("Object is null");
+        throw InitializeException("Object is null");
     }
     
     val = v->val;

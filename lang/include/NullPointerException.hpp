@@ -14,11 +14,11 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(NullPointerException) EXTENDS(Exception) {
+class NullPointerException:public Exception {
 public:
-    _NullPointerException(String);
+    NullPointerException(String);
 
-    _NullPointerException(const char *v);
+    NullPointerException(const char *v);
 
 private:
     static const String EXCEPTION_TAG;

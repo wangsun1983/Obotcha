@@ -11,11 +11,11 @@
 
 namespace obotcha {
 
-const String _ArrayIndexOutOfBoundsException::EXCEPTION_TAG = createString("Array Index OutOf Bounds Exception:");
-const String _ArrayIndexOutOfBoundsException::MAX_SIZE = createString("Max Size is :");
-const String _ArrayIndexOutOfBoundsException::CURRENT_INDEX = createString(" ;Current Index is :");
+const String ArrayIndexOutOfBoundsException::EXCEPTION_TAG = createString("Array Index OutOf Bounds Exception:");
+const String ArrayIndexOutOfBoundsException::MAX_SIZE = createString("Max Size is :");
+const String ArrayIndexOutOfBoundsException::CURRENT_INDEX = createString(" ;Current Index is :");
 
-_ArrayIndexOutOfBoundsException::_ArrayIndexOutOfBoundsException(String v,int maxsize,int index):_Exception{v}{
+ArrayIndexOutOfBoundsException::ArrayIndexOutOfBoundsException(String v,int maxsize,int index):Exception{v}{
     mErrInfo = EXCEPTION_TAG->append(v)
                             ->append(MAX_SIZE)
                             ->append(createString(maxsize))
@@ -23,11 +23,11 @@ _ArrayIndexOutOfBoundsException::_ArrayIndexOutOfBoundsException(String v,int ma
                             ->append(createString(index));
 }
 
-_ArrayIndexOutOfBoundsException::_ArrayIndexOutOfBoundsException(const char * v,int maxsize,int index)
-                                :_ArrayIndexOutOfBoundsException{createString(v),maxsize,index}{
+ArrayIndexOutOfBoundsException::ArrayIndexOutOfBoundsException(const char * v,int maxsize,int index)
+                                :ArrayIndexOutOfBoundsException{createString(v),maxsize,index}{
 }
 
-_ArrayIndexOutOfBoundsException::_ArrayIndexOutOfBoundsException(const char *v) :_Exception{v}{
+ArrayIndexOutOfBoundsException::ArrayIndexOutOfBoundsException(const char *v) :Exception{v}{
     mErrInfo = EXCEPTION_TAG->append(v);
 }
 

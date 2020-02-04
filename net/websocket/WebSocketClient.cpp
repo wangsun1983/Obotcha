@@ -175,7 +175,7 @@ _WebSocketClient::_WebSocketClient(int version = 13) {
         }
         
         default:{
-            throw createInitializeException("Websocket Client not support version!!!");
+            throw InitializeException("Websocket Client not support version!!!");
             break;
         }
     }

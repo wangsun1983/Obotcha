@@ -14,11 +14,11 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ExecutorDestructorException) EXTENDS(Exception) {
+class ExecutorDestructorException:public Exception {
 public:
-    _ExecutorDestructorException(String);
+    ExecutorDestructorException(String);
 
-    _ExecutorDestructorException(const char *);
+    ExecutorDestructorException(const char *);
 
 private:
     static const String EXCEPTION_TAG;

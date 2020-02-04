@@ -12,13 +12,13 @@
 
 namespace obotcha {
 
-const String _ProtocolNotSupportException::EXCEPTION_TAG = createString("Protocol Not Support Exception:");
+const String ProtocolNotSupportException::EXCEPTION_TAG = createString("Protocol Not Support Exception:");
 
-_ProtocolNotSupportException::_ProtocolNotSupportException(String v):_Exception{v} {
+ProtocolNotSupportException::ProtocolNotSupportException(String v):Exception{v} {
     mErrInfo = EXCEPTION_TAG->append(v);
 }
 
-_ProtocolNotSupportException::_ProtocolNotSupportException(const char * v):_ProtocolNotSupportException{createString(v)} {
+ProtocolNotSupportException::ProtocolNotSupportException(const char * v):ProtocolNotSupportException{createString(v)} {
 }
 
 }

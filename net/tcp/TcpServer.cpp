@@ -171,7 +171,7 @@ _TcpServer::_TcpServer(String ip,int port,int rcvBuffsize,int connectionsNum,Soc
     String reason;
     const int EPOLL_SIZE = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerEpollSize);
     if(l == nullptr) {
-        throw createInitializeException(createString("SocketListener is null"));
+        throw InitializeException(createString("SocketListener is null"));
     }
 
     serverAddr.sin_family = PF_INET;
@@ -220,7 +220,7 @@ _TcpServer::_TcpServer(String ip,int port,int rcvBuffsize,int connectionsNum,Soc
         return;
     }
     
-    throw createInitializeException(reason);
+    throw InitializeException(reason);
 
 }
 

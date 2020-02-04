@@ -283,7 +283,7 @@ Future _ThreadCachedPoolExecutor::submit(Runnable r) {
 
 void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthreadnum,long timeout) {
     if(queuesize == 0 || minthreadnum > maxthreadnum) {
-        throw createInitializeException(createString("ThreadCachedPool"));
+        throw InitializeException(createString("ThreadCachedPool"));
     }
 
     mProtectMutex = createMutex("ThreadCachedMutex");
@@ -325,7 +325,7 @@ _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
     //printf("release thread pool \n");
     //shutdown();
     if(!mIsShutDown) {
-        throw createExecutorDestructorException("ThreadCachedPoolExecutor destruct error");
+        throw ExecutorDestructorException("ThreadCachedPoolExecutor destruct error");
     }
 }
 

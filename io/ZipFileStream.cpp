@@ -46,13 +46,13 @@ _ZipStream::_ZipStream()
 
 int _ZipStream::read()
 {
-    throw createMethodNotSupportException(createString("ZipStream::read()"));
+    throw MethodNotSupportException(createString("ZipStream::read()"));
     return 0;
 }
 
 long _ZipStream::read(ByteArray buffer)
 {
-    throw createMethodNotSupportException(createString("ZipStream::read(ByteArray)"));
+    throw MethodNotSupportException(createString("ZipStream::read(ByteArray)"));
     return -1;
 }
 

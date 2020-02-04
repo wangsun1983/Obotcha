@@ -19,7 +19,7 @@ _Long::_Long(long v) : val(v) {}
 
 _Long::_Long(Long &v) {
     if(v == nullptr) {
-        throw createInitializeException("Object is null");
+        throw InitializeException("Object is null");
     }
     
     val = v->val;

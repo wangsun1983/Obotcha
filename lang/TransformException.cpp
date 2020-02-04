@@ -11,13 +11,13 @@
 
 namespace obotcha {
 
-const String _TransformException::EXCEPTION_TAG = createString("Transform Exception:");
+const String TransformException::EXCEPTION_TAG = createString("Transform Exception:");
 
-_TransformException::_TransformException(String v):_Exception{v} {
+TransformException::TransformException(String v):Exception{v} {
     mErrInfo = EXCEPTION_TAG->append(v);
 }
 
-_TransformException::_TransformException(const char* v):_TransformException{createString(v)} {
+TransformException::TransformException(const char* v):TransformException{createString(v)} {
 }
 
 

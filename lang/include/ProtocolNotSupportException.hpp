@@ -14,11 +14,11 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ProtocolNotSupportException) EXTENDS(Exception) {
+class ProtocolNotSupportException:public Exception {
 public:
-    _ProtocolNotSupportException(String);
+    ProtocolNotSupportException(String);
 
-    _ProtocolNotSupportException(const char *v);
+    ProtocolNotSupportException(const char *v);
 
 private:
     static const String EXCEPTION_TAG;

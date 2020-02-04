@@ -22,7 +22,7 @@ _Double::_Double(double v) : val(v) {}
 
 _Double::_Double(Double &v) {
     if(v == nullptr) {
-        throw createInitializeException("Object is null");
+        throw InitializeException("Object is null");
     }
     val = v->val;
 }

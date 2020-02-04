@@ -20,7 +20,7 @@ _Byte::_Byte(byte v) : val(v) {}
 
 _Byte::_Byte(Byte &v) {
     if(v == nullptr) {
-        throw createInitializeException("Object is null");
+        throw InitializeException("Object is null");
     }
     val = v->val;
 }

@@ -32,13 +32,13 @@ _LocalSocketClient::_LocalSocketClient(String domain,int recv_time,int buff_size
     if(recv_time > 0) {
         mReceiveTimeout = recv_time;
     } else {
-        throw createInitializeException(createString("error tcp client recv time"));
+        throw InitializeException(createString("error tcp client recv time"));
     }
     
     if(buff_size >0) {
         mBufferSize = buff_size;
     } else {
-        throw createInitializeException(createString("error tcp client buff size"));
+        throw InitializeException(createString("error tcp client buff size"));
     }
     
     mSock = socket(AF_UNIX, SOCK_STREAM, 0);

@@ -328,7 +328,7 @@ int _ThreadPoolExecutor::getThreadsNum() {
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
     if(!mIsShutDown) {
-        throw createExecutorDestructorException("ThreadPoolExecutor destruct error");
+        throw ExecutorDestructorException("ThreadPoolExecutor destruct error");
     }
 }
 

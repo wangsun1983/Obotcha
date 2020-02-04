@@ -12,7 +12,7 @@ _Float::_Float(float v) : val(v) {
 
 _Float::_Float(Float &v){
     if(v == nullptr) {
-        throw createInitializeException("Object is null");
+        throw InitializeException("Object is null");
     }
 
     val = v->val;

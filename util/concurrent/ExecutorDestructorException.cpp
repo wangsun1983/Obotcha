@@ -12,13 +12,13 @@
 
 namespace obotcha {
 
-const String _ExecutorDestructorException::EXCEPTION_TAG = createString("Destructor befor shutdown:");
+const String ExecutorDestructorException::EXCEPTION_TAG = createString("Destructor befor shutdown:");
 
-_ExecutorDestructorException::_ExecutorDestructorException(String v):_Exception{v} {
+ExecutorDestructorException::ExecutorDestructorException(String v):Exception{v} {
     mErrInfo = EXCEPTION_TAG->append(v);
 }
 
-_ExecutorDestructorException::_ExecutorDestructorException(const char * v):_Exception{v} {
+ExecutorDestructorException::ExecutorDestructorException(const char * v):Exception{v} {
     mErrInfo = EXCEPTION_TAG->append(v);
 }  
 

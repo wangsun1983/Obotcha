@@ -121,7 +121,7 @@ bool _ByteArray::isEmpty() {
 
 byte _ByteArray::at(int index) {
     if(index >= mSize) {
-        throw createArrayIndexOutOfBoundsException("ByteArray",mSize,index);
+        throw ArrayIndexOutOfBoundsException("ByteArray",mSize,index);
     }
     return buff[index];
 }
@@ -142,7 +142,7 @@ int _ByteArray::fill(int index,byte v) {
     }
 
     if(index >= mSize || index < 0) {
-        throw createArrayIndexOutOfBoundsException("fill Stack Overflow");
+        throw ArrayIndexOutOfBoundsException("fill Stack Overflow");
     }
 
     buff[index] = v;
@@ -158,7 +158,7 @@ int _ByteArray::fill(int index,int length,byte v) {
     if((index >= mSize) 
         || (index < 0)
         || (index + length > mSize)) {
-        throw createArrayIndexOutOfBoundsException("fill Stack Overflow");
+        throw ArrayIndexOutOfBoundsException("fill Stack Overflow");
     }
 
     memset(&buff[index],v,length);

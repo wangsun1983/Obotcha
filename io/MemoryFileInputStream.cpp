@@ -36,7 +36,7 @@ _MemoryFileInputStream::_MemoryFileInputStream(String path) {
 
 int _MemoryFileInputStream::read() {
     if(mPtr == nullptr) {
-        throw createFileNotFoundException(mPath);
+        throw FileNotFoundException(mPath);
     }
     return *mPtr;
 }

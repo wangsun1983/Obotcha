@@ -15,7 +15,7 @@ _FileInputStream::_FileInputStream(String path) {
     
 int _FileInputStream::read() {
     if(!fstream.is_open()) {
-        throw createFileNotFoundException(createString("inputstream path:")->append(mPath));
+        throw FileNotFoundException(createString("inputstream path:")->append(mPath));
     }
 
     int value = 0;

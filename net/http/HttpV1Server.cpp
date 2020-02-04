@@ -119,7 +119,7 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l){
     }
 
     if(mTcpServer->start() != 0) {
-        throw createInitializeException("tcp server start fail!!");
+        throw InitializeException("tcp server start fail!!");
     }
 
     mBuffPoolMutex = createMutex("HttpV1Server mutex");

@@ -379,7 +379,7 @@ int _ScheduledThreadPoolExecutor::execute(Runnable runnable) {
 }
 
 int _ScheduledThreadPoolExecutor::getThreadsNum() {
-    throw createMethodNotSupportException(createString("getThreadsNum not support"));
+    throw MethodNotSupportException(createString("getThreadsNum not support"));
     return 0;
 }
 
@@ -496,7 +496,7 @@ void _ScheduledThreadPoolExecutor::onCancel(FutureTask task) {
 _ScheduledThreadPoolExecutor::~_ScheduledThreadPoolExecutor() {
     //shutdown();
     if(!mIsShutDown) {
-        throw createExecutorDestructorException("Scheduled Thread Pool destruct error");
+        throw ExecutorDestructorException("Scheduled Thread Pool destruct error");
     }
 }
 

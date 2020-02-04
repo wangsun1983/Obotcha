@@ -14,11 +14,11 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(FileNotFoundException) EXTENDS(Exception) {
+class FileNotFoundException: public Exception {
 public:
-    _FileNotFoundException(String);
+    FileNotFoundException(String);
     
-    _FileNotFoundException(const char *);
+    FileNotFoundException(const char *);
 private:
     static const String EXCEPTION_TAG;
 };

@@ -108,13 +108,13 @@ void _TcpClientThread::run() {
 
 _AsyncTcpClient::_AsyncTcpClient(String ip,int port,int recv_time,SocketListener l,int buffsize) {
     if(!init(ip,port,recv_time,l,buffsize)) {
-        throw createInitializeException(createString("AsyncTcpClient init failed"));
+        throw InitializeException(createString("AsyncTcpClient init failed"));
     }
 }
 
 _AsyncTcpClient::_AsyncTcpClient(String ip,int port,SocketListener l,int buffsize) {
     if(!init(ip,port,-1,l,buffsize)) {
-        throw createInitializeException(createString("AsyncTcpClient init failed"));
+        throw InitializeException(createString("AsyncTcpClient init failed"));
     }
 }
 
@@ -122,7 +122,7 @@ _AsyncTcpClient::_AsyncTcpClient(int port,int recv_time,SocketListener l,int buf
     in_addr_t ip = htonl(INADDR_ANY);
     String ipString =  createString(inet_ntoa(*((struct in_addr*)&ip)));
     if(!init(ipString,port,recv_time,l,buffsize)) {
-        throw createInitializeException(createString("AsyncTcpClient init failed"));
+        throw InitializeException(createString("AsyncTcpClient init failed"));
     }
 }
     

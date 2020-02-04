@@ -142,7 +142,7 @@ int _WebSocketClientInfo::_send(int type,ByteArray msg) {
                 break;
 
             default:
-                throw createProtocolNotSupportException("WebSocketClientInfo not support OPCODE");
+                throw ProtocolNotSupportException("WebSocketClientInfo not support OPCODE");
         }
         
         ListIterator<ByteArray> iterator = data->getIterator();

@@ -11,13 +11,13 @@
 
 namespace obotcha {
 
-const String _InitializeException::EXCEPTION_TAG = createString("Initialize Exception:");
+const String InitializeException::EXCEPTION_TAG = createString("Initialize Exception:");
 
-_InitializeException::_InitializeException(String v):_Exception{v} {
+InitializeException::InitializeException(String v):Exception{v} {
     mErrInfo = EXCEPTION_TAG->append(v);
 }
 
-_InitializeException::_InitializeException(const char* v):_InitializeException{createString(v)} {
+InitializeException::InitializeException(const char* v):InitializeException{createString(v)} {
 }
 
 

@@ -14,11 +14,11 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(InitializeException) EXTENDS(Exception) {
+class InitializeException:public Exception {
 public:
-    _InitializeException(String);
+    InitializeException(String);
 
-    _InitializeException(const char *v);
+    InitializeException(const char *v);
 
 private:
     static const String EXCEPTION_TAG;

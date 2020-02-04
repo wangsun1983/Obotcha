@@ -19,7 +19,7 @@ _Uint64::_Uint64(uint64_t v) : val(v) {}
 
 _Uint64::_Uint64(Uint64 &v) {
     if(v == nullptr) {
-        throw createInitializeException("Object is null");
+        throw InitializeException("Object is null");
     }
     
     val = v->val;

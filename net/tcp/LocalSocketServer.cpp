@@ -202,7 +202,7 @@ _LocalSocketServer::_LocalSocketServer(String domain,SocketListener l,int client
         return;
     }
 
-    throw createInitializeException(reason);
+    throw InitializeException(reason);
 }
 
 int _LocalSocketServer::getStatus() {

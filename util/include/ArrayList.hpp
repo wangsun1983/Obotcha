@@ -31,7 +31,7 @@ class _ArrayList;
 class _ArrayList<V>:virtual public Object{ \
 public:    \
     _ArrayList() { \
-        throw createMethodNotSupportException("ArrayList not support int"); \
+        throw MethodNotSupportException("ArrayList not support int"); \
     } \
 };\
 
@@ -59,7 +59,7 @@ public:
 
     inline T removeAt(int index) {
         if(index >= elements.size() || index < 0) {
-            throw createArrayIndexOutOfBoundsException("Arraylist remove fail",elements.size(),index);
+            throw ArrayIndexOutOfBoundsException("Arraylist remove fail",elements.size(),index);
         }
 
         T val = elements.at(index);
@@ -88,7 +88,7 @@ public:
 
     inline int set(int index,T val) {
         if(index >= elements.size() || index < 0) {
-            throw createArrayIndexOutOfBoundsException("Arraylist set fail",elements.size(),index);
+            throw ArrayIndexOutOfBoundsException("Arraylist set fail",elements.size(),index);
         }
 
         elements[index] = val;
@@ -97,7 +97,7 @@ public:
 
     inline T get(int index) {
          if(index >= elements.size() || index < 0) {
-            throw createArrayIndexOutOfBoundsException("Arraylist get fail",elements.size(),index);
+            throw ArrayIndexOutOfBoundsException("Arraylist get fail",elements.size(),index);
         }
 
         return elements[index];
@@ -105,7 +105,7 @@ public:
 
     inline int insert(int index,T val) {
         if(index > elements.size() || index < 0) {
-            throw createArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
+            throw ArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
         }
 
 
@@ -115,7 +115,7 @@ public:
 
     inline int insert(int index,ArrayList<T> list) {
         if(index > elements.size() || index < 0) {
-            throw createArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
+            throw ArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
         }
 
         if(list != nullptr) {
@@ -126,7 +126,7 @@ public:
 
     inline int insert(int index,ArrayList<T> list,int length) {
         if(index > elements.size() || length <= 0 || index < 0) {
-            throw createArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
+            throw ArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
         }
 
         if(list != nullptr) {
@@ -201,7 +201,7 @@ public:
         //return iterator->second;
         if(iterator == mList->end()) {
             //return nullptr;
-            throw createArrayIndexOutOfBoundsException("iterator error");
+            throw ArrayIndexOutOfBoundsException("iterator error");
         }
 
         return *iterator;

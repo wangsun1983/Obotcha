@@ -17,27 +17,31 @@
 
 namespace obotcha {
 
-_Exception::_Exception(const char * v) {
+Exception::Exception(const char * v) {
     mErrInfo = createString(v);
 }
     
-_Exception::_Exception(String v) {
+Exception::Exception(String v) {
     mErrInfo = v;
 }
 
-_Exception::_Exception(int v) {
+Exception::Exception(int v) {
     mErrCode = v;
 }
 
-String _Exception::getErrInfo() {
+String Exception::getErrInfo() {
     return mErrInfo;
 }
 
-int _Exception::getErrCode() {
+int Exception::getErrCode() {
     return mErrCode;
 }
 
-void _Exception::printStack() {
+Exception * Exception::operator->() {
+    return this;
+}
+
+void Exception::printStack() {
     printf("-----------------[maps dump start]--------------- \n");
     const char *path = "/proc/self/maps";
     int fd = open(path,O_RDONLY);

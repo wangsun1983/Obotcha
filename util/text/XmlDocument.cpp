@@ -13,7 +13,7 @@ namespace obotcha {
 
 _XmlDocument::_XmlDocument(String path,long size) {
     if(path == nullptr) {
-        throw  createInitializeException(createString("XmlDocument null path!"));
+        throw InitializeException(createString("XmlDocument null path!"));
     }
 
     mFileSize = size;

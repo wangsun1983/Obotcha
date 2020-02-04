@@ -11,13 +11,13 @@
 
 namespace obotcha {
 
-const String _NullPointerException::EXCEPTION_TAG = createString("Null Pointer Exception:");
+const String NullPointerException::EXCEPTION_TAG = createString("Null Pointer Exception:");
 
-_NullPointerException::_NullPointerException(String v):_Exception{v} {
+NullPointerException::NullPointerException(String v):Exception{v} {
     mErrInfo = EXCEPTION_TAG->append(v);
 }
 
-_NullPointerException::_NullPointerException(const char* v):_NullPointerException{createString(v)} {
+NullPointerException::NullPointerException(const char* v):NullPointerException{createString(v)} {
 }
 
 

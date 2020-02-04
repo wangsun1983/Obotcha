@@ -12,13 +12,13 @@
 
 namespace obotcha {
 
-const String _MethodNotSupportException::EXCEPTION_TAG = createString("Method Not Support Exception:");
+const String MethodNotSupportException::EXCEPTION_TAG = createString("Method Not Support Exception:");
 
-_MethodNotSupportException::_MethodNotSupportException(String v):_Exception{v} {
+MethodNotSupportException::MethodNotSupportException(String v):Exception{v} {
     mErrInfo = EXCEPTION_TAG->append(v);
 }
 
-_MethodNotSupportException::_MethodNotSupportException(const char * v):_MethodNotSupportException{createString(v)} {
+MethodNotSupportException::MethodNotSupportException(const char * v):MethodNotSupportException{createString(v)} {
 }
 
 }

@@ -12,13 +12,13 @@
 
 namespace obotcha {
 
-const String _ValueNotFoundException::EXCEPTION_TAG = createString("Value Not Found Exception:");
+const String ValueNotFoundException::EXCEPTION_TAG = createString("Value Not Found Exception:");
 
-_ValueNotFoundException::_ValueNotFoundException(String v):_Exception{v} {
+ValueNotFoundException::ValueNotFoundException(String v):Exception{v} {
     mErrInfo = EXCEPTION_TAG->append(v);
 }
 
-_ValueNotFoundException::_ValueNotFoundException(const char * v):_ValueNotFoundException{createString(v)} {
+ValueNotFoundException::ValueNotFoundException(const char * v):ValueNotFoundException{createString(v)} {
 }
 
 }

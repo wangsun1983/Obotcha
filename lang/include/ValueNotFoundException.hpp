@@ -14,10 +14,10 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ValueNotFoundException) EXTENDS(Exception) {
+class ValueNotFoundException:public Exception {
 public:
-    _ValueNotFoundException(String);
-    _ValueNotFoundException(const char *);
+    ValueNotFoundException(String);
+    ValueNotFoundException(const char *);
 
 private:
     static const String EXCEPTION_TAG;

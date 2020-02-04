@@ -28,7 +28,7 @@ _TcpClient::_TcpClient(int port,int recv_time,int buff_size) {
     if(port > 0) {
         serverAddr.sin_port = htons(port);
     } else {
-        throw createInitializeException(createString("error tcp client porte"));
+        throw InitializeException(createString("error tcp client porte"));
     }
 
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -36,13 +36,13 @@ _TcpClient::_TcpClient(int port,int recv_time,int buff_size) {
     if(recv_time > 0) {
         mReceiveTimeout = recv_time;
     } else {
-        throw createInitializeException(createString("error tcp client recv time"));
+        throw InitializeException(createString("error tcp client recv time"));
     }
     
     if(buff_size >0) {
         mBufferSize = buff_size;
     } else {
-        throw createInitializeException(createString("error tcp client buff size"));
+        throw InitializeException(createString("error tcp client buff size"));
     }
     
     mSock = socket(AF_INET, SOCK_STREAM, 0);
@@ -56,7 +56,7 @@ _TcpClient::_TcpClient(String ip,int port,int recv_time,int buff_size) {
     if(port > 0) {
         serverAddr.sin_port = htons(port);
     } else {
-        throw createInitializeException(createString("error tcp client porte"));
+        throw InitializeException(createString("error tcp client porte"));
     }
 
     serverAddr.sin_addr.s_addr = inet_addr(ip->toChars());
@@ -64,13 +64,13 @@ _TcpClient::_TcpClient(String ip,int port,int recv_time,int buff_size) {
     if(recv_time > 0) {
         mReceiveTimeout = recv_time;
     } else {
-        throw createInitializeException(createString("error tcp client recv time"));
+        throw InitializeException(createString("error tcp client recv time"));
     }
     
     if(buff_size >0) {
         mBufferSize = buff_size;
     } else {
-        throw createInitializeException(createString("error tcp client buff size"));
+        throw InitializeException(createString("error tcp client buff size"));
     }
 
     mSock = socket(AF_INET, SOCK_STREAM, 0);

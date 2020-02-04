@@ -12,13 +12,13 @@
 
 namespace obotcha {
 
-const String _FileNotFoundException::EXCEPTION_TAG = createString("File Not Found Exception:");
+const String FileNotFoundException::EXCEPTION_TAG = createString("File Not Found Exception:");
 
-_FileNotFoundException::_FileNotFoundException(String v):_Exception{v} {
+FileNotFoundException::FileNotFoundException(String v):Exception{v} {
     mErrInfo = EXCEPTION_TAG->append(v);
 }
 
-_FileNotFoundException::_FileNotFoundException(const char *v):_FileNotFoundException{createString(v)} {
+FileNotFoundException::FileNotFoundException(const char *v):FileNotFoundException{createString(v)} {
 }
 
 }

@@ -90,22 +90,25 @@ void _Enviroment::set(String tag,String v) {
 int _Enviroment::getInt(String v) {
     String value = mProp->get(v);
     if(value == nullptr) {
-        throw createValueNotFoundException("Env not found");
+        throw ValueNotFoundException("Env not found");
     }
 
     return value->toBasicInt();
 }
 
 int _Enviroment::getInt(String,int defaultvalue) {
-
+    //TODO
+    return -1;
 }
 
 bool getBoolean(String v){
-
+    //TODO
+    return false;
 }
 
 String get(String v) {
-
+    //TODO
+    return nullptr;
 }
 
 }
