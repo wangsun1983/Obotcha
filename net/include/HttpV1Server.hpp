@@ -43,6 +43,8 @@ private:
 DECLARE_SIMPLE_CLASS(HttpV1Listener) {
 public:
     virtual void onMessage(HttpV1ClientInfo client,HttpV1ResponseWriter w,HttpPacket msg) = 0;
+    virtual void onConnect(HttpV1ClientInfo);
+    virtual void onDisconnect(HttpV1ClientInfo);
 };
 
 DECLARE_SIMPLE_CLASS(HttpV1Server) {
@@ -58,9 +60,11 @@ public:
 
     void parseMessage(int fd,ByteArray);
 
-    bool parseHeader(int fd,ByteArray);
+    void addClient(int fd);
 
-    bool parseBody(int fd,ByteArray);
+    void removeClient(int fd);
+
+    void exit();
 
 private:
     TcpServer mTcpServer;

@@ -39,9 +39,14 @@ void _HttpV1ClientManager::addClientInfo(int fd,sp<_HttpV1ClientInfo> info) {
 }
     
 
-void _HttpV1ClientManager::removeClientInfo(int fd) {
+HttpV1ClientInfo _HttpV1ClientManager::removeClientInfo(int fd) {
     AutoMutex l(mMutex);
     mClients->remove(fd);
+}
+
+void _HttpV1ClientManager::clear() {
+    AutoMutex l(mMutex);
+    mClients->clear();
 }
 
 }

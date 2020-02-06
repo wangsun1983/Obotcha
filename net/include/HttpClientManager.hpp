@@ -29,7 +29,10 @@ public:
 
     HttpV1ClientInfo getClientInfo(int fd);
 
-    void removeClientInfo(int fd);
+    HttpV1ClientInfo removeClientInfo(int fd);
+
+    void clear();
+    
 private:
     static Mutex mMutex;
 

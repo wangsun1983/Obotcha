@@ -30,8 +30,7 @@ void _HttpV1SocketListener::onAccept(int fd,String ip,int port,ByteArray pack) {
 }
 
 void _HttpV1SocketListener::onDisconnect(int fd) {
-    printf("_HttpV1SocketListener onDisconnect \n");
-    st(HttpV1ClientManager)::getInstance()->removeClientInfo(fd);
+    mServer->removeClient(fd);
 }
 
 void _HttpV1SocketListener::onConnect(int fd,String ip,int port) {
@@ -43,11 +42,11 @@ void _HttpV1SocketListener::onConnect(int fd,String ip,int port) {
 }
 
 void _HttpV1SocketListener::onConnect(int fd,String domain) {
-    //TODO
+    //Unused
 }
 
 void _HttpV1SocketListener::onTimeout() {
-    //TODO
+    //Unused
 }
 
 _HttpV1Server::_HttpV1Server(int port,HttpV1Listener l):_HttpV1Server{nullptr,port,l} {
@@ -99,19 +98,23 @@ void _HttpV1Server::parseMessage(int fd,ByteArray pack) {
             iterator->next();
         }
     }
-    
-#if 0
-    if(packets->size() != 0) {
-        ListIterator<HttpPacket> ll = packets->getIterator();
-        while(ll->hasValue()) {
-            HttpPacket pp = ll->getValue();
-            printf("======================== \n");
-            pp->dump();
-            printf("======================== \n");
-            ll->next();
-        }
-    }
-#endif   
+
+}
+
+void _HttpV1Server::addClient(int fd) {
+    HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(fd);
+    mHttpListener->onConnect(info);
+}
+
+void _HttpV1Server::removeClient(int fd) {
+    HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->removeClientInfo(fd);
+    mHttpListener->onDisconnect(info);
+}
+
+void _HttpV1Server::exit() {
+    //TODO
+    mTcpServer->release();
+    st(HttpV1ClientManager)::getInstance()->clear();
 }
 
 }
