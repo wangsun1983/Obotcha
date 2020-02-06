@@ -171,7 +171,8 @@ Float _XmlValue::getFloatAttr(String attr) {
 }
 
 sp<_XmlAttribute> _XmlValue::getAttribute() {
-    
+    //TODO
+    return nullptr;
 }
 
 String _XmlValue::getStringValue() {

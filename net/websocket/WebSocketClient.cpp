@@ -65,7 +65,7 @@ void _WebSocketTcpClientListener::onAccept(int fd,String ip,int port,ByteArray p
     if(mProtoclType == WsClientProtocolHttp) {
         HttpPacket req = mHttpParser->parseEntireResponse(pack->toString());
         printf("status code is %d \n",req->getStatusCode());
-        if(req->getStatusCode() == HTTP_RESPONSE_SWITCHING_PROTOCLS) {
+        if(req->getStatusCode() == st(HttpResponse)::SwitchProtocls) {
             mProtoclType = WsClientProtocolWebSocket;
             mClient->setClientFd(fd);
         } else {
@@ -224,7 +224,7 @@ int _WebSocketClient::connect(String url,WebSocketListener l) {
     //send http request
     //HttpPacket request = createHttpPacket();
     //request->setMethod(HttpMethodGet);
-    mClient->getHttpHeader()->setMethod(HttpMethodGet);
+    mClient->getHttpHeader()->setMethod(st(HttpMethod)::Get);
     mClient->setConnectUrl(url);
 
     WebSocketComposer composer = mClient->getComposer();

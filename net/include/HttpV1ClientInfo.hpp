@@ -41,6 +41,8 @@ public:
 
     ArrayList<HttpPacket> pollHttpPacket();
 
+    Mutex getResponseWriteMutex();
+
 private:
     String mClientIp;
 
@@ -49,6 +51,9 @@ private:
     HttpV1Parser mV1Parser;
 
     int mStatus;
+
+    Mutex mResponseWriteMutex;
+
 };
 
 

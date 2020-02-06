@@ -39,7 +39,7 @@ ByteArray _WebSocketHybi13Composer::_genClientShakeHandMessage(WebSocketClientIn
     printf("genClientShakeHandMessage trace1\n");
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(client->getConnectUrl());
     HttpPacket packet = createHttpPacket();
-    packet->setMethod(HttpMethodGet);
+    packet->setMethod(st(HttpMethod)::Get);
     packet->setHeader(client->getHttpHeader());
     packet->setUrl(httpUrl->getPath());
     packet->setMajorVersion(1);
@@ -222,7 +222,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClient
         } else {
             sinkWriter->writeByteArray(message);
         }
-        printf("finish toggleMask£¬index is %d \n",sinkWriter->getIndex());
+        
         sink->qucikShrink(sinkWriter->getIndex());
 
         genResult->add(sink);
@@ -284,7 +284,6 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genServerMessage(WebSocketClient
         }
 
         sinkWriter->writeByteArray(message);
-        printf("finish toggleMask£¬index is %d \n",sinkWriter->getIndex());
         sink->qucikShrink(sinkWriter->getIndex());
 
         genResult->add(sink);

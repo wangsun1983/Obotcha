@@ -16,57 +16,16 @@
 #include "InitializeException.hpp"
 #include "AutoMutex.hpp"
 #include "HttpV1ClientInfo.hpp"
+#include "HttpClientManager.hpp"
 
 namespace obotcha {
-
-//HttpV1ClientManager
-HttpV1ClientManager _HttpV1ClientManager::mInstance = nullptr;
-Mutex _HttpV1ClientManager::mMutex = createMutex("HttpV1Server Mutex");;
-
-_HttpV1ClientManager::_HttpV1ClientManager() {
-    mClients = createHashMap<int,HttpV1ClientInfo>();
-}
-
-sp<_HttpV1ClientManager> _HttpV1ClientManager::getInstance() {
-    if(mInstance != nullptr) {
-        return mInstance;
-    }
-
-    {
-        AutoMutex l(mMutex);
-        if(mInstance != nullptr) {
-            return mInstance;
-        }
-        
-        _HttpV1ClientManager *instance = new _HttpV1ClientManager();
-        mInstance.set_pointer(instance);
-    }
-
-    return mInstance;
-}
-
-HttpV1ClientInfo _HttpV1ClientManager::getClientInfo(int fd) {
-    AutoMutex l(mMutex);
-    return mClients->get(fd);
-}
-
-void _HttpV1ClientManager::addClientInfo(int fd,sp<_HttpV1ClientInfo> info) {
-    AutoMutex l(mMutex);
-    mClients->put(fd,info);
-}
-    
-
-void _HttpV1ClientManager::removeClientInfo(int fd) {
-    AutoMutex l(mMutex);
-    mClients->remove(fd);
-}
 
 _HttpV1SocketListener::_HttpV1SocketListener(HttpV1Server s) {
     mServer = s;
 }
 
 void _HttpV1SocketListener::onAccept(int fd,String ip,int port,ByteArray pack) {
-    printf("_HttpV1SocketListener onAccept \n");
+    printf("_HttpV1SocketListener onAccept,msg is %s \n",pack->toString()->toChars());
     mServer->parseMessage(fd,pack);
 }
 
@@ -135,7 +94,8 @@ void _HttpV1Server::parseMessage(int fd,ByteArray pack) {
         ListIterator<HttpPacket> iterator = packets->getIterator();
         while(iterator->hasValue()) {
             printf("parseMessage hit \n");
-            mHttpListener->onMessage(info,iterator->getValue());
+            HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);
+            mHttpListener->onMessage(info,writer,iterator->getValue());
             iterator->next();
         }
     }

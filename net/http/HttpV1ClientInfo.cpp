@@ -6,6 +6,7 @@ namespace obotcha {
 
 _HttpV1ClientInfo::_HttpV1ClientInfo() {
     mV1Parser = createHttpV1Parser();
+    mResponseWriteMutex = createMutex("HttpResponseMutex");
 }
 
 int _HttpV1ClientInfo::getClientFd() {
@@ -37,6 +38,10 @@ int _HttpV1ClientInfo::pushHttpData(ByteArray array) {
 
 ArrayList<HttpPacket> _HttpV1ClientInfo::pollHttpPacket() {
     return mV1Parser->doParse();
+}
+
+Mutex _HttpV1ClientInfo::getResponseWriteMutex() {
+    return mResponseWriteMutex;
 }
 
 int _HttpV1ClientInfo::send(String html) {

@@ -1912,7 +1912,6 @@ namespace rapidxml
                 // Place zero terminator after name and value
                 if (!(Flags & parse_no_string_terminators))
                 {
-                    printf("i set terminators \n");
                     pi->name()[pi->name_size()] = Ch('\0');
                     pi->value()[pi->value_size()] = Ch('\0');
                 }
@@ -2073,7 +2072,6 @@ namespace rapidxml
             //printf("i not set terminators \n");
             if (!(Flags & parse_no_string_terminators)) {
                 element->name()[element->name_size()] = Ch('\0');
-                printf("i trace1 set terminators,name_size is %d,name is %s \n",element->name_size(),element->name());
             }
                 
 

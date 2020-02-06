@@ -10,6 +10,7 @@
 #include "Integer.hpp"
 #include "Float.hpp"
 #include "Long.hpp"
+#include "Uint32.hpp"
 
 namespace obotcha {
 
@@ -142,7 +143,7 @@ private:
 
     Json::Value::Members mMembers;
 
-    int count;
+    uint32_t count;
 };
 
 }

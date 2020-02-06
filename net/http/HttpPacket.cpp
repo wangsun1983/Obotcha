@@ -6,6 +6,7 @@
 #include "http_parser.h"
 #include "HttpHeader.hpp"
 #include "HttpPacket.hpp"
+#include "HttpMethod.hpp"
 
 namespace obotcha {
 
@@ -76,52 +77,6 @@ int _HttpPacket::getStatusCode() {
     return mStatusCode;
 }
 
-String _HttpPacket::getStatusString(int status) {
-    switch(status) {
-	    case 100: return createString("Continue");
- 	    case 101: return createString("Switching Protocols");
- 	    case 200: return createString("OK");
- 	    case 201: return createString("Created");
- 	    case 202: return createString("Accepted");
- 	    case 203: return createString("Non-Authoritative Information");
- 	    case 204: return createString("No Content");
- 	    case 205: return createString("Reset Content");
- 	    case 206: return createString("Partial Content");
- 	    case 300: return createString("Multiple Choices");
- 	    case 301: return createString("Moved Permanently");
- 	    case 302: return createString("Found");
- 	    case 303: return createString("See Other");
- 	    case 304: return createString("Not Modified");
- 	    case 305: return createString("Use Proxy");
- 	    case 307: return createString("Temporary Redirect");
- 	    case 400: return createString("Bad Request");
- 	    case 401: return createString("Unauthorized");
- 	    case 402: return createString("Payment Required");
- 	    case 403: return createString("Forbidden");
- 	    case 404: return createString("Not Found");
- 	    case 405: return createString("Method Not Allowed");
- 	    case 406: return createString("Not Acceptable");
- 	    case 407: return createString("Proxy Authentication Required");
- 	    case 408: return createString("Request Time-out");
- 	    case 409: return createString("Conflict");
- 	    case 410: return createString("Gone");
- 	    case 411: return createString("Length Required");
- 	    case 412: return createString("Precondition Failed");
- 	    case 413: return createString("Request Entity Too Large");
- 	    case 414: return createString("Request-URI Too Large");
- 	    case 415: return createString("Unsupported Media Type");
- 	    case 416: return createString("Requested range not satisfiable");
- 	    case 417: return createString("Expectation Failed");
- 	    case 500: return createString("Internal Server Error");
- 	    case 501: return createString("Not Implemented");
- 	    case 502: return createString("Bad Gateway");
- 	    case 503: return createString("Service Unavailable");
- 	    case 504: return createString("Gateway Time-out");
- 	    case 505: return createString("HTTP Version not supported");
-	    default:  return createString("Unknown");
-	}
-}
-
 void _HttpPacket::setStatusCode(int v) {
     mStatusCode = v;
 }
@@ -129,11 +84,11 @@ void _HttpPacket::setStatusCode(int v) {
 String _HttpPacket::genHttpRequest() {
     String req = createString();
     switch(mMethod) {
-        case HttpMethodGet:
+        case st(HttpMethod)::Get:
         req = createString("GET");
         break;
 
-        case HttpMethodPost:
+        case st(HttpMethod)::Post:
         req = createString("POST");
         break;
 
@@ -164,7 +119,7 @@ String _HttpPacket::genHttpResponse() {
 
 	//printf("statusString is %s \n",statusString->toChars());
     
-	String status = getStatusString(statusString->toBasicInt());
+	String status = st(HttpResponse)::getStatusString(statusString->toBasicInt());
 	String responseStr = createString("HTTP/1.1 ")->append(statusString)->append(" ")->append(status)->append("\r\n");
     
 	String headerStr =mHeader->genHtml();

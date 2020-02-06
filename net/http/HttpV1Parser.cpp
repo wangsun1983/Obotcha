@@ -87,9 +87,9 @@ _HttpV1Parser::_HttpV1Parser() {
 
 void _HttpV1Parser::pushHttpData(ByteArray data) {
     printf("pushHttpData data is %s \n",data->toString()->toChars());
-    for(int i = 0;i <data->size();i++) {
-        printf("data[%d] is %x \n",i,data->at(i));
-    }
+    //for(int i = 0;i <data->size();i++) {
+    //    printf("data[%d] is %x \n",i,data->at(i));
+    //}
     mBuff->push(data);
 }
 
@@ -134,7 +134,7 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
                 printf("status is HttpV1ParseStatusIdle \n");
                 byte v = 0;
                 while(mReader->readNext(v) != ByteRingArrayReadComplete) {
-                    printf("Reader next is %x \n",v);
+                    //printf("Reader next is %x \n",v);
                     if(v == end[mHeadEndCount]) {
                         mHeadEndCount++;
                     } else {

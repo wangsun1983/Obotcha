@@ -34,10 +34,20 @@ cflags = -fpic \
 cppflags=$(cflags) \
 		 -std=c++11
 
-#define obotcha build config
-obotchacflags = $(cflags)
+#define strict mode
+#STRICT_MODE = yes
 
-obotchacppflags = $(cppflags)
+ifdef STRICT_MODE
+obotchastrict = -Wall \
+				-Werror \
+				-Wextra
+endif				
+
+#define obotcha build config
+obotchacflags = $(cflags) \
+				$(obotchastrict)
+
+obotchacppflags = $(obotchacflags)
 
 external = -lpthread \
 		-ldl \

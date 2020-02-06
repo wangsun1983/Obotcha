@@ -256,7 +256,7 @@ const char * _String::toChars() {
 }
 
 char _String::charAt(int index) {
-    if(index >= m_str.size()) {
+    if(index < 0 || (unsigned int)index >= m_str.size()) {
         throw ArrayIndexOutOfBoundsException("char At error");
     }
 
@@ -264,7 +264,7 @@ char _String::charAt(int index) {
 }
 
 String _String::subString(int start,int end) {
-    if(start > end || end >= m_str.size()) {
+    if(end < 0 ||start > end || (uint32_t)end >= m_str.size()) {
         return nullptr;
     }
 
@@ -277,7 +277,7 @@ bool _String::contains(String val) {
         return false;
     }
 
-    if(m_str.find(val->m_str) != -1) {
+    if(m_str.find(val->m_str) != m_str.npos) {
         return true;
     }
 
@@ -285,7 +285,7 @@ bool _String::contains(String val) {
 }
 
 bool _String::contains(std::string val) {
-    if(m_str.find(val) != -1) {
+    if(m_str.find(val) != m_str.npos) {
         return true;
     }
 
@@ -297,7 +297,7 @@ bool _String::contains(const char *val) {
         return false;
     }
 
-    if(m_str.find(val) != -1) {
+    if(m_str.find(val) != m_str.npos) {
         return true;
     }
 
@@ -1144,8 +1144,8 @@ bool _String::endsWith(String s) {
         return false;
     }
 
-    int result = m_str.find_last_of(s->m_str);
-    return (result == m_str.size() - 1);
+    string::size_type result = m_str.find_last_of(s->m_str);
+    return (result == (m_str.size() - 1));
 }
 
 bool _String::endsWith(const char *s) {
@@ -1153,13 +1153,13 @@ bool _String::endsWith(const char *s) {
         return false;
     }
 
-    int result = m_str.find_last_of(s);
-    return (result == m_str.size() - 1);
+    string::size_type result = m_str.find_last_of(s);
+    return (result == (m_str.size() - 1));
 }
 
 bool _String::endsWith(std::string s) {
-    int result = m_str.find_last_of(s);
-    return (result == m_str.size() - 1);
+    string::size_type result = m_str.find_last_of(s);
+    return (result == (m_str.size() - 1));
 }
 
 
@@ -1200,12 +1200,12 @@ bool _String::startsWith(const char * v) {
         return false;
     }
 
-    int result = m_str.find(v);
+    string::size_type result = m_str.find(v);
     return (result == strlen(v));
 }
 
 bool _String::startsWith(std::string v) {
-    int result = m_str.find(v);
+    string::size_type result = m_str.find(v);
     return (result == v.size());
 }
 

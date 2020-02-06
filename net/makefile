@@ -17,7 +17,9 @@ link += inetaddress \
 		httpclient \
 		httpheader \
 		httppacket \
-		httpresponsewriter \
+		httpresponse \
+		httpv1responsewriter \
+		httpclientmanager \
 		httpcookie \
 		httpdate \
 		httpv1server \
@@ -55,10 +57,12 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpurlparser.o \
 		$(outtmp)/httpurl.o \
 		$(outtmp)/httpurlbuilder.o \
+		$(outtmp)/httpresponse.o \
 		$(outtmp)/httpclient.o \
 		$(outtmp)/httpheader.o \
 		$(outtmp)/httppacket.o \
-		$(outtmp)/httpresponsewriter.o \
+		$(outtmp)/httpv1responsewriter.o \
+		$(outtmp)/httpclientmanager.o \
 		$(outtmp)/httpcookie.o \
 		$(outtmp)/httpdate.o \
 		$(outtmp)/httpv1server.o \
@@ -145,8 +149,14 @@ httpheader :$(netDir)/http/HttpHeader.cpp
 httppacket :$(netDir)/http/HttpPacket.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacket.cpp -o $(outtmp)/httppacket.o $(external)	
 
-httpresponsewriter :$(netDir)/http/HttpResponseWriter.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o $(external)
+httpresponse :$(netDir)/http/HttpResponse.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponse.cpp -o $(outtmp)/httpresponse.o $(external)	
+
+httpv1responsewriter :$(netDir)/http/HttpV1ResponseWriter.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpV1ResponseWriter.cpp -o $(outtmp)/httpv1responsewriter.o $(external)
+
+httpclientmanager :$(netDir)/http/HttpClientManager.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClientManager.cpp -o $(outtmp)/httpclientmanager.o $(external)
 
 websocketserver :$(netDir)/websocket/WebSocketServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketServer.cpp -o $(outtmp)/websocketserver.o $(external)

@@ -15,30 +15,11 @@
 #include "HttpV1ClientInfo.hpp"
 #include "Mutex.hpp"
 #include "SocketListener.hpp"
+#include "HttpV1ResponseWriter.hpp"
 
 namespace obotcha {
 
-
 class _HttpV1Server;
-
-DECLARE_SIMPLE_CLASS(HttpV1ClientManager) {
-public:
-    static sp<_HttpV1ClientManager> getInstance();
-
-    void addClientInfo(int fd,sp<_HttpV1ClientInfo>);
-
-    HttpV1ClientInfo getClientInfo(int fd);
-
-    void removeClientInfo(int fd);
-private:
-    static Mutex mMutex;
-
-    HashMap<int,HttpV1ClientInfo> mClients;
-
-    static sp<_HttpV1ClientManager> mInstance;
-
-    _HttpV1ClientManager();
-};
 
 DECLARE_SIMPLE_CLASS(HttpV1SocketListener) IMPLEMENTS(SocketListener) {
 public:
@@ -61,7 +42,7 @@ private:
 
 DECLARE_SIMPLE_CLASS(HttpV1Listener) {
 public:
-    virtual void onMessage(HttpV1ClientInfo client,HttpPacket msg) = 0;
+    virtual void onMessage(HttpV1ClientInfo client,HttpV1ResponseWriter w,HttpPacket msg) = 0;
 };
 
 DECLARE_SIMPLE_CLASS(HttpV1Server) {

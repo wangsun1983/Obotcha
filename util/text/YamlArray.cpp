@@ -16,11 +16,11 @@ _YamlArray::_YamlArray(YamlArray v) {
 }
 
 sp<_YamlValue> _YamlArray::getYamlValue(int index) {
-    if(index >= yamlNode.size()) {
+    if(index < 0 ||(uint32_t)index >= yamlNode.size()) {
         return nullptr;
     }
 
-    YAML::Node node = yamlNode;
+    YAML::Node node = yamlNode[index];
     return createYamlValue(node);
 }
 
@@ -29,7 +29,7 @@ int _YamlArray::size() {
 }
 
 int _YamlArray::getInt(int index,int def) {
-    if(index >= yamlNode.size()) {
+    if(index < 0 ||(uint32_t)index >= yamlNode.size()) {
         return def;
     }
 
@@ -37,7 +37,7 @@ int _YamlArray::getInt(int index,int def) {
 }
 
 String _YamlArray::getString(int index,String def) {
-    if(index >= yamlNode.size()) {
+    if(index < 0 ||(uint32_t)index >= yamlNode.size()) {
         return def;
     }
 
@@ -47,7 +47,7 @@ String _YamlArray::getString(int index,String def) {
 }
 
 double _YamlArray::getDouble(int index,double def) {
-    if(index >= yamlNode.size()) {
+    if(index < 0 ||(uint32_t)index >= yamlNode.size()) {
         return def;
     }
 
@@ -55,7 +55,7 @@ double _YamlArray::getDouble(int index,double def) {
 }
 
 long _YamlArray::getLong(int index,long def) {
-    if(index >= yamlNode.size()) {
+    if(index < 0 ||(uint32_t)index >= yamlNode.size()) {
         return def;
     }
 
@@ -63,7 +63,7 @@ long _YamlArray::getLong(int index,long def) {
 }
 
 bool _YamlArray::getBool(int index,bool def){
-    if(index >= yamlNode.size()) {
+    if(index < 0 ||(uint32_t)index >= yamlNode.size()) {
         return def;
     }
 
