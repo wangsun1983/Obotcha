@@ -44,6 +44,8 @@ public:
 
     int append(sp<_ByteArray>);
 
+    int append(sp<_ByteArray>,int len);
+
     int append(byte *data,int len);
 
     String toString();

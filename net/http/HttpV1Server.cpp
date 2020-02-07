@@ -98,7 +98,6 @@ void _HttpV1Server::parseMessage(int fd,ByteArray pack) {
             iterator->next();
         }
     }
-
 }
 
 void _HttpV1Server::addClient(int fd) {
@@ -107,8 +106,8 @@ void _HttpV1Server::addClient(int fd) {
 }
 
 void _HttpV1Server::removeClient(int fd) {
-    HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->removeClientInfo(fd);
-    mHttpListener->onDisconnect(info);
+   HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->removeClientInfo(fd);
+   mHttpListener->onDisconnect(info);
 }
 
 void _HttpV1Server::exit() {

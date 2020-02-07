@@ -58,7 +58,7 @@ public:
 
     String genHttpRequest();
 
-    String genHttpResponse();
+    ByteArray genHttpResponse();
 
     void dump();
 

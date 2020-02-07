@@ -21,6 +21,8 @@ public:
     void setStatus(int);
 
 	int write(HttpPacket);
+
+    int write(File);
     
     int flush();
 
@@ -30,6 +32,8 @@ private:
     HttpPacket mPacket;
 
     HttpV1ClientInfo mClient;
+
+    File mFile;
 };
 
 }

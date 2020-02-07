@@ -137,6 +137,9 @@ public:
     const static String SecWebSocketKey3;
     const static String SecWebSocketProtocol;
 
+    //Transfer-Encoding type
+    const static String TransferChunked;
+
 private:
 
     HashMap<String,String> mValues;

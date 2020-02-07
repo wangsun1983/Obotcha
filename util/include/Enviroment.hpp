@@ -28,58 +28,61 @@ public:
     String get(String,String defaultvalue);
 
     static const String gHttpBufferSize;
-    static const int DefaultHttpBufferSize = 512*1024;
+    static const int DefaultHttpBufferSize;
     
     static const String gWebSocketBufferSize;
-    static const int DefaultWebSocketBufferSize = 512*1024;
+    static const int DefaultWebSocketBufferSize;
 
     static const String gWebSocketFrameSize;
-    static const int DefaultWebSocketFrameSize = 64*1024;
+    static const int DefaultWebSocketFrameSize;
 
     static const String gLocalSocketServerRcvBufferSize;
-    static const int DefaultLocalSocketServerRcvBufferSize = 64*1024;
+    static const int DefaultLocalSocketServerRcvBufferSize;
 
     static const String gLocalSocketServerClientNums;
-    static const int DefaultLocalSocketServerClientNums = 64*1024;
+    static const int DefaultLocalSocketServerClientNums;
 
     static const String gTcpServerEpollSize;
-    static const int DefaultTcpServerEpollSize = 8*1024;
+    static const int DefaultTcpServerEpollSize;
 
     static const String gTcpServerRcvBuffSize;
-    static const int DefaultTcpServerRcvBuffSize = 64*1024;
+    static const int DefaultTcpServerRcvBuffSize;
 
     static const String gTcpServerClientNums;
-    static const int DefaultTcpServerClientNums = 64*1024;
+    static const int DefaultTcpServerClientNums;
 
     static const String gLocalSocketServerEpollSize;
-    static const int DefaultLocalSocketServerEpollSize = 8*1024;
+    static const int DefaultLocalSocketServerEpollSize;
 
     static const String gLocalSocketBufferSize;
-    static const int DefaultLocalSocketBufferSize = 64*1024;
+    static const int DefaultLocalSocketBufferSize;
 
     static const String gLocalSocketClientEpollSize;
-    static const int DefaultLocalSocketClientEpollSize = 8*1024;
+    static const int DefaultLocalSocketClientEpollSize;
 
     static const String gAsyncTcpClientEpollSize;
-    static const int DefaultAsyncTcpClientEpollSize = 8*1024;
+    static const int DefaultAsyncTcpClientEpollSize;
 
     static const String gAsyncTcpClientBufferSize;
-    static const int DefaultAsyncTcpClientBufferSize = 64*1024;
+    static const int DefaultAsyncTcpClientBufferSize;
 
     static const String gUdpClientEpollSize;
-    static const int DefaultUdpClientEpollSize = 8*1024;
+    static const int DefaultUdpClientEpollSize;
 
     static const String gUdpClientBufferSize;
-    static const int DefaultUdpClientBufferSize = 64*1024;
+    static const int DefaultUdpClientBufferSize;
 
     static const String gUdpServerEpollSize;
-    static const int DefaultUdpServerEpollSize = 8*1024;
+    static const int DefaultUdpServerEpollSize;
 
     static const String gUdpServerBufferSize;
-    static const int DefaultUdpServerBufferSize = 64*1024;
+    static const int DefaultUdpServerBufferSize;
 
     static const String gHttpServerPort;
-    static const int DefaultHttpServerPort = 80;
+    static const int DefaultHttpServerPort;
+
+    static const String gHttpServerSendFileBufferSize;
+    static const int DefaultHttpServerSendFileBufferSize;
 
 private:
     _Enviroment();

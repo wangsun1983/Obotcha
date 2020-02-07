@@ -121,6 +121,47 @@ int _ByteArrayWriter::writeByteArray(ByteArray b) {
     return -ByteArrayWriteFail;
 }
 
+int _ByteArrayWriter::writeString(String str) {
+    if(mIndex + str->size() < mSize) {
+        memcpy(&mDataP[mIndex],str->toChars(),str->size());
+        mIndex += str->size();
+        return ByteArrayWriteSuccess;
+    } else {
+        memcpy(&mDataP[mIndex],str->toChars(),mSize - mIndex);
+        mIndex = mSize - 1;
+        return -ByteArrayWritePart;
+    }
+
+    return -ByteArrayWriteFail;
+}
+
+int _ByteArrayWriter::writeByteArray(ByteArray b,int length) {
+    if(mIndex + length < mSize) {
+        memcpy(&mDataP[mIndex],b->toValue(),length);
+        mIndex += length;
+        return ByteArrayWriteSuccess;
+    } else {
+        memcpy(&mDataP[mIndex],b->toValue(),mSize - mIndex);
+        mIndex = mSize - 1;
+        return -ByteArrayWritePart;
+    }
+
+    return -ByteArrayWriteFail;
+}
+
+int _ByteArrayWriter::write(byte *data,int length) {
+    if(mIndex + length < mSize) {
+        memcpy(&mDataP[mIndex],data,length);
+        mIndex += length;
+        return ByteArrayWriteSuccess;
+    } else {
+        memcpy(&mDataP[mIndex],data,mSize - mIndex);
+        mIndex = mSize - 1;
+        return -ByteArrayWritePart;
+    }
+    return -ByteArrayWriteFail;
+}
+
 int _ByteArrayWriter::getIndex() {
     return mIndex;
 }

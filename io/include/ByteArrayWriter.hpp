@@ -24,7 +24,11 @@ public:
     int writeInt(int v);
     long writeLong(long v);
     int writeByteArray(ByteArray);
+    int writeByteArray(ByteArray,int);
+    int writeString(String);
     int getIndex();
+
+    int write(byte *,int);
 
 private:
     ByteArray mData;

@@ -6,6 +6,48 @@
 
 using namespace obotcha;
 
+const int _HttpResponse::Continue = 100;
+const int _HttpResponse::SwitchProtocls = 101;
+const int _HttpResponse::Ok = 200;
+const int _HttpResponse::Created = 201;
+const int _HttpResponse::Accepted = 202;
+const int _HttpResponse::NonAuthoritativeInformation = 203;
+const int _HttpResponse::NoContent = 204;
+const int _HttpResponse::ResetContent = 205;
+const int _HttpResponse::PartialContent = 206;
+const int _HttpResponse::MultipleChoices = 300;
+const int _HttpResponse::MovedPermanently = 301;
+const int _HttpResponse::Found = 302;
+const int _HttpResponse::SeeOther = 303;
+const int _HttpResponse::NotModified = 304;
+const int _HttpResponse::UseProxy = 305;
+//const int _HttpResponse::UnUsed = 306;
+const int _HttpResponse::TemporaryRedirect = 307;
+const int _HttpResponse::BadRequest = 400;
+const int _HttpResponse::Unauthorized = 401;
+const int _HttpResponse::PaymentRequired = 402;
+const int _HttpResponse::Forbidden = 403;
+const int _HttpResponse::NotFound = 404;
+const int _HttpResponse::MethodNotAllowed = 405;
+const int _HttpResponse::NotAcceptable = 406;
+const int _HttpResponse::ProxyAuthenticationRequired = 407;
+const int _HttpResponse::RequestTimeTou = 408;
+const int _HttpResponse::Conflict = 409;
+const int _HttpResponse::Gone = 410;
+const int _HttpResponse::LengthRequired = 411;
+const int _HttpResponse::PreconditionFailed = 412;
+const int _HttpResponse::RequestEntityToLarge = 413;
+const int _HttpResponse::RequestUriTooLarge = 414;
+const int _HttpResponse::UnsupportedMediaType = 415;
+const int _HttpResponse::RequestedRangeNotSatisfiable = 416;
+const int _HttpResponse::ExpectationFailed = 417;
+const int _HttpResponse::InternalServerError = 500;
+const int _HttpResponse::NotImplemented = 501;
+const int _HttpResponse::BadGateway = 502;
+const int _HttpResponse::ServiceUnavailable = 503;
+const int _HttpResponse::GatewayTimeOut = 504;
+const int _HttpResponse::VersionNotSupported = 505;
+
 String _HttpResponse::getStatusString(int status){
     switch(status) {
 	    case Continue: return createString("Continue");

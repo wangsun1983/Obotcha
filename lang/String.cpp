@@ -788,6 +788,20 @@ int _String::toHexInt() {
     return value;
 }
 
+String _String::toHexString() {
+    if(m_str.size() == 0 || !isIntNumber(m_str.data(),m_str.size())) {
+        throw TransformException("String to Hex Int Fail");
+    }
+
+    int v = toBasicInt();
+    std::string value;
+    std::stringstream ss;
+    ss<<std::hex<<v;
+    ss>>value;
+    printf("changeHex value is %s \n",value.c_str());
+    return createString(value);
+}
+
 bool _String::toBasicBool() {
     if(m_str.size() == 0) {
         throw TransformException("String to Boolean Fail");

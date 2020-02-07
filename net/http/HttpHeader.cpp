@@ -112,6 +112,9 @@ const String _HttpHeader::SecWebSocketKey2 = createString("sec-websocket-key2");
 const String _HttpHeader::SecWebSocketKey3 = createString("sec-websocket-key3");
 const String _HttpHeader::SecWebSocketProtocol = createString("sec-websocket-protocol");
 
+//Transfer-Encoding type
+const String _HttpHeader::TransferChunked = createString("chunked");
+
 _HttpHeader::_HttpHeader() {
 mValues  = createHashMap<String,String>();
     mCookies = createArrayList<HttpCookie>();
@@ -154,11 +157,14 @@ String _HttpHeader::genHtml() {
     MapIterator<String,String> headerIte = mValues->getIterator();;
     String html = createString("");
     while(headerIte->hasValue()) {
-        String headSting = headerIte->getKey();
-        html = html->append(headSting)
+        String headString = headerIte->getKey();
+        if(headString != nullptr && !headString->equalsIgnoreCase(Status)) {
+            html = html->append(headString)
                  ->append(": ")
                  ->append(headerIte->getValue())
                  ->append("\r\n");
+        }
+        
         headerIte->next();
     }
 
@@ -172,6 +178,8 @@ String _HttpHeader::genHtml() {
                    ->append(cookieStr)
                    ->append("\r\n");
     }
+
+    html = html->append("\r\n");
 
     return html;
 }

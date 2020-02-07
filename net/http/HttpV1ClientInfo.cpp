@@ -44,8 +44,7 @@ Mutex _HttpV1ClientInfo::getResponseWriteMutex() {
     return mResponseWriteMutex;
 }
 
-int _HttpV1ClientInfo::send(String html) {
-    ByteArray data = createByteArray(html);
+int _HttpV1ClientInfo::send(ByteArray data) {
     return st(NetUtils)::sendTcpPacket(mClientFd,data);
 }
 

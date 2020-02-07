@@ -168,12 +168,16 @@ int _ByteArray::fill(int index,int length,byte v) {
 
 int _ByteArray::append(sp<_ByteArray> b) {
     //printf("_ByteArray append trace1,b is %s,size is %d \n",b->toValue(),b->size());
-
+    printf("append trace1 \n");
     if(b == nullptr) {
         return -InvalidParam;
     }
-    
+    printf("append trace2 \n");
     return append(b->toValue(),b->size());
+}
+
+int _ByteArray::append(sp<_ByteArray>b,int len) {
+    return append(b->toValue(),len);
 }
 
 int _ByteArray::append(byte *data,int len) {

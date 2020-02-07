@@ -7,6 +7,7 @@
 #include "HttpHeader.hpp"
 #include "HttpPacket.hpp"
 #include "HttpMethod.hpp"
+#include "ByteArrayWriter.hpp"
 
 namespace obotcha {
 
@@ -111,22 +112,32 @@ String _HttpPacket::genHttpRequest() {
     return req;   
 }
 
-String _HttpPacket::genHttpResponse() {
+ByteArray _HttpPacket::genHttpResponse() {
     String statusString = mHeader->getValue(st(HttpHeader)::Status);
 	if(statusString == nullptr) {
 		return nullptr;
 	}
 
 	//printf("statusString is %s \n",statusString->toChars());
-    
 	String status = st(HttpResponse)::getStatusString(statusString->toBasicInt());
 	String responseStr = createString("HTTP/1.1 ")->append(statusString)->append(" ")->append(status)->append("\r\n");
     
-	String headerStr =mHeader->genHtml();
-	String bodyStr = createString((char *)mBody->toValue(),0,mBody->size());
-	
-	responseStr = responseStr->append(headerStr)->append("\r\n")->append(bodyStr);
-    return responseStr;
+	String headerStr = mHeader->genHtml();
+    
+    ByteArray response = createByteArray(responseStr->size() + headerStr->size() + mBody->size());
+    ByteArrayWriter writer = createByteArrayWriter(response);
+	//String bodyStr = createString((char *)mBody->toValue(),0,mBody->size());
+    writer->writeString(responseStr);
+	writer->write((byte *)headerStr->toChars(),headerStr->size());
+    if(mBody != nullptr) {
+        //response->append(mBody);
+        writer->writeByteArray(mBody);
+    }
+
+    //writer->writeString(createString("\r\n"));
+    printf("response is %s \n",response->toString()->toChars());
+	//responseStr = responseStr->append(headerStr)->append("\r\n")->append(bodyStr);
+    return response;
 }
 
 void _HttpPacket::dump() {

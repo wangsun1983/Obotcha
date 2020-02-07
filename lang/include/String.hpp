@@ -113,6 +113,8 @@ public:
 
     int toHexInt();
 
+    String toHexString();
+
     bool toBasicBool();
 
     float toBasicFloat();
