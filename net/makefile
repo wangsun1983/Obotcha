@@ -13,6 +13,7 @@ link += inetaddress \
 		netutils \
 		httpurlparser \
 		httpurl \
+		httpcontenttype \
 		httpurlbuilder \
 		httpclient \
 		httpheader \
@@ -22,6 +23,7 @@ link += inetaddress \
 		httpclientmanager \
 		httpcookie \
 		httpdate \
+		httpmultipart \
 		httpv1server \
 		httpv1clientinfo \
 		httpv1parser \
@@ -56,6 +58,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/netutils.o \
 		$(outtmp)/httpurlparser.o \
 		$(outtmp)/httpurl.o \
+		$(outtmp)/httpcontenttype.o \
 		$(outtmp)/httpurlbuilder.o \
 		$(outtmp)/httpresponse.o \
 		$(outtmp)/httpclient.o \
@@ -65,6 +68,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpclientmanager.o \
 		$(outtmp)/httpcookie.o \
 		$(outtmp)/httpdate.o \
+		$(outtmp)/httpmultipart.o \
 		$(outtmp)/httpv1server.o \
 		$(outtmp)/httpv1clientinfo.o \
 		$(outtmp)/httpv1parser.o \
@@ -128,6 +132,10 @@ httpurlparser :$(netDir)/http/HttpUrlParser.cpp
 httpurl :$(netDir)/http/HttpUrl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrl.cpp -o $(outtmp)/httpurl.o $(external)
 
+httpcontenttype :$(netDir)/http/HttpContentType.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpContentType.cpp -o $(outtmp)/httpcontenttype.o $(external)
+
+
 httpurlbuilder :$(netDir)/http/HttpUrlBuilder.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlBuilder.cpp -o $(outtmp)/httpurlbuilder.o $(external)
 
@@ -136,6 +144,9 @@ httpcookie :$(netDir)/http/HttpCookie.cpp
 
 httpdate :$(netDir)/http/HttpDate.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpDate.cpp -o $(outtmp)/httpdate.o $(external)
+
+httpmultipart :$(netDir)/http/HttpMultiPart.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMultiPart.cpp -o $(outtmp)/httpmultipart.o $(external)
 
 httpv1server :$(netDir)/http/HttpV1Server.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpV1Server.cpp -o $(outtmp)/httpv1server.o $(external)

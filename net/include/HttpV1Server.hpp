@@ -16,6 +16,7 @@
 #include "Mutex.hpp"
 #include "SocketListener.hpp"
 #include "HttpV1ResponseWriter.hpp"
+#include "HttpMultiPart.hpp"
 
 namespace obotcha {
 
@@ -45,6 +46,7 @@ public:
     virtual void onMessage(HttpV1ClientInfo client,HttpV1ResponseWriter w,HttpPacket msg) = 0;
     virtual void onConnect(HttpV1ClientInfo) = 0;
     virtual void onDisconnect(HttpV1ClientInfo) = 0;
+    virtual void onMultiPart(HttpV1ClientInfo,HttpMultiPart);
 };
 
 DECLARE_SIMPLE_CLASS(HttpV1Server) {

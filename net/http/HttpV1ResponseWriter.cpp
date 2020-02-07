@@ -28,10 +28,12 @@ void _HttpV1ResponseWriter::writeBody(ByteArray content) {
 
 int _HttpV1ResponseWriter::write(HttpPacket packet) {
     mPacket = packet;
+    return 0;
 }
 
 int _HttpV1ResponseWriter::write(File file) {
     mFile = file;
+    return 0;
 }
 
 int _HttpV1ResponseWriter::flush() {
