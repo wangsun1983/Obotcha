@@ -47,23 +47,19 @@ void _AsyncLocalSocketClientThread::run() {
     
     struct epoll_event events[EPOLL_SIZE];
     recvBuff = (byte *)malloc(mBufferSize);
-    printf("epoll run,mTimeOut is %d \n",mTimeOut);
     while(1) {
         if(mStatus->get() == LocalSocketClientWaitingThreadExit) {
             mStatus->set(LocalSocketClientThreadExited);
             return;
         }
-        printf("epoll trace1 \n");
         int epoll_events_count = epoll_wait(mEpfd, events, EPOLL_SIZE, mTimeOut);
         if(epoll_events_count == 0) {
             mListener->onTimeout();
             return;
         } else if(epoll_events_count < 0) {
-            printf("epoll error is %s,mEpfd is %d \n",strerror(errno),mEpfd);
             return;
         }
 
-        printf("epoll trace2 \n");
         for(int i = 0; i < epoll_events_count ; ++i) {
 
             int sockfd = events[i].data.fd;
@@ -71,7 +67,6 @@ void _AsyncLocalSocketClientThread::run() {
 
             if(((event&EPOLLIN) != 0) 
             && ((event &EPOLLRDHUP) != 0)) {
-                printf("hangup sockfd!!!! \n");
                 if(sockfd == mSock) {
                     st(NetUtils)::delEpollFd(mEpfd,sockfd);
                     mListener->onDisconnect(sockfd);
@@ -83,10 +78,8 @@ void _AsyncLocalSocketClientThread::run() {
 
             //check whether thread need exit
             if(sockfd == mPipe->getReadPipe()) {
-                printf("wangsl,mPipe event is %x \n",event);
                 if(mStatus->get() == LocalSocketClientWaitingThreadExit) {
                     mStatus->set(LocalSocketClientThreadExited);
-                    printf("wangsl,mPipe exit \n");
                     return;
                 }
                 
@@ -95,10 +88,8 @@ void _AsyncLocalSocketClientThread::run() {
 
             memset(recvBuff,0,mBufferSize);
             if(events[i].data.fd == mSock) {
-                printf("epoll trace3 \n");
                 int ret = recv(mSock, recvBuff, mBufferSize, 0);
                 if(ret == 0) {
-                    cout << "Server closed connection: " << mSock << endl;
                     st(NetUtils)::delEpollFd(mEpfd,sockfd);
                     mListener->onDisconnect(sockfd);
                     close(sockfd);
@@ -135,15 +126,11 @@ _AsyncLocalSocketClient::_AsyncLocalSocketClient(String domain,SocketListener l,
 }
 
 bool _AsyncLocalSocketClient::init() {
-    //printf("TcpClient init start \n");
     //int len = offsetof(struct sockaddr_un, sun_path) + strlen(serverAddr.sun_path);  
-    //printf("LocalSocketClient init trace3 \n");
     if(connect(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
-        //printf("connect error :%s \n",strerror(errno));
         return false;
     }
-    //printf("LocalSocketClient init trace4,sock is %d,readpipe is %d \n",sock,mPipe->getReadPipe());
-
+    
     st(NetUtils)::addEpollFd(epfd, sock,false);
     st(NetUtils)::addEpollFd(epfd, mPipe->getReadPipe(), false);
     return true;
@@ -162,7 +149,6 @@ void _AsyncLocalSocketClient::start() {
 }
 
 void _AsyncLocalSocketClient::wait() {
-    printf("wait,mTcpClientThread status is %d \n",mAsyncLocalSocketClientThread->getStatus());
     if(mAsyncLocalSocketClientThread == nullptr) {
         return;
     }
@@ -174,7 +160,6 @@ void _AsyncLocalSocketClient::wait() {
 }
 
 void _AsyncLocalSocketClient::release() {
-    printf("_AsyncLocalSocketClient release trace1 \n");
     if(mStatus->get() == LocalSocketClientWaitingThreadExit || mStatus->get() == LocalSocketClientThreadExited){
         return;
     }
@@ -200,7 +185,6 @@ void _AsyncLocalSocketClient::release() {
             //mTcpClientThread = nullptr;
         }
     }
-    printf("_AsyncLocalSocketClient release trace2,epfd is %d  \n",epfd);
     if(epfd != -1) {
         close(epfd);
         epfd = -1;

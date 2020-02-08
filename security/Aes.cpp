@@ -143,7 +143,6 @@ void _Aes::encrypt(File src,File des) {
 }
 
 ByteArray _Aes::encrypt(String str) {
-    printf("ase encrypt str\n");
     ByteArray result;
 
     switch(mType) {
@@ -161,15 +160,12 @@ ByteArray _Aes::encrypt(String str) {
 }
     
 ByteArray _Aes::encrypt(ByteArray buff) {
-    //printf("ase encrypt buff\n");
     switch(mType) {
         case AesTypeECB:
-            //printf("ase encrypt buff1\n");
             return _aesECB(buff,AES_ENCRYPT);
         break;
 
         case AesTypeCBC:
-            //printf("ase encrypt buff2\n");
             unsigned char default_iv[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             return _aesCBC(buff,default_iv,AES_ENCRYPT);
             //return buff;
@@ -260,7 +256,6 @@ ByteArray _Aes::_aesECB(ByteArray data,int mode) {
 
     switch(mode) {
         case AES_ENCRYPT: {
-            //printf("input size is %d \n",inputSize);
             int length = (inputSize%AES_BLOCK_SIZE == 0)?inputSize + AES_BLOCK_SIZE:(inputSize/AES_BLOCK_SIZE)*AES_BLOCK_SIZE + AES_BLOCK_SIZE;
     
             ByteArray out = createByteArray(length);
@@ -275,7 +270,6 @@ ByteArray _Aes::_aesECB(ByteArray data,int mode) {
             } else {
                 int padding = inputSize%AES_BLOCK_SIZE;
                 char *lastData = input + inputSize;
-                //printf("inputsize is %d,padding is %d,offset is %d \n",inputSize,padding,length  - AES_BLOCK_SIZE + padding);
                 memset(lastData,(char)padding,AES_BLOCK_SIZE-padding);
             }
 
@@ -290,7 +284,6 @@ ByteArray _Aes::_aesECB(ByteArray data,int mode) {
         }
 
         case AES_DECRYPT: {
-            //printf("AES_DECRYPT!!! inputSize is %d \n",inputSize);
             ByteArray out = createByteArray(inputSize);
             char *input = (char *)data->toValue();
             char *output = (char *)out->toValue();
@@ -304,12 +297,10 @@ ByteArray _Aes::_aesECB(ByteArray data,int mode) {
             if(out->toValue()[(inputSize-1)] != 0) {
                 padding = out->toValue()[(inputSize-1)];
             }
-            //printf("AES_DECRYPT!!! padding is %d \n",padding);
                 
             if(padding == 0) {
                 out->qucikShrink(inputSize - AES_BLOCK_SIZE);
             } else {
-                //printf("padding is %d,inputsize is %d,AES_BLOCK is %d \n",padding,inputSize,AES_BLOCK_SIZE);
                 out->qucikShrink(inputSize - AES_BLOCK_SIZE + padding);
             }
 
@@ -341,7 +332,6 @@ ByteArray _Aes::_aesCBC(ByteArray data,unsigned char *ivec,int mode) {
             } else {
                 int padding = inputSize%AES_BLOCK_SIZE;
                 char *lastData = input + inputSize;
-                //printf("inputsize is %d,padding is %d,offset is %d \n",inputSize,padding,length  - AES_BLOCK_SIZE + padding);
                 memset(lastData,(char)padding,AES_BLOCK_SIZE-padding);
             }
 

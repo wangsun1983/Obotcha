@@ -209,7 +209,6 @@ int _ThreadPoolExecutor::execute(Runnable runnable) {
 }
 
 int _ThreadPoolExecutor::shutdown() {
-    //printf"shutdown trace1\n");
     if(mIsShutDown ||mIsTerminated) {
         return -AlreadyDestroy;
     }
@@ -232,7 +231,6 @@ int _ThreadPoolExecutor::shutdown() {
         iterator->next();
     }
 
-    //printf"shutdown trace2\n");
     for(;;) {
         FutureTask task = mPool->deQueueLastNoBlock();
         if(task != nullptr) {
@@ -301,7 +299,6 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
 }
 
 void _ThreadPoolExecutor::onCompleteNotify(ThreadPoolExecutorHandler h) {
-    //printf"_ThreadPoolExecutor onCompleteNotify!!!! \n");
     AutoMutex ll(mHandlersMutex);
     ListIterator<ThreadPoolExecutorHandler>iterator = mHandlers->getIterator();
     while(iterator->hasValue()) {
@@ -351,7 +348,6 @@ void _ThreadPoolExecutor::onCancel(FutureTask t) {
         int size = mHandlers->size();
         for(int i = 0;i < size;i++) {
             h = mHandlers->get(i);
-            //printf"ThreadPoolExecutor onCancel trace2 \n");
             if(h != nullptr) {
                 if(h->shutdownTask(t)) {
                     AutoMutex ll1(mHandlersMutex);

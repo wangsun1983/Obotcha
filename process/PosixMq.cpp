@@ -36,12 +36,10 @@ void _PosixMq::initParam(String name,int type,int msgsize,int maxmsgs) {
 int _PosixMq::init() {
     if(MAX_MSG_NUMS == -1) {
         MAX_MSG_NUMS = st(FileNodeReader)::readInt("/proc/sys/fs/mqueue/msg_max");
-        //printf("MAX_MSG_NUMS is %d",MAX_MSG_NUMS);
     }
 
     if(MAX_MSG_SIZE == -1) {
         MAX_MSG_SIZE = st(FileNodeReader)::readInt("/proc/sys/fs/mqueue/msgsize_max");
-        //printf("MAX_MSG_SIZE is %d",MAX_MSG_SIZE);
     }
 
     if(mMaxMsgs > MAX_MSG_NUMS) {

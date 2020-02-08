@@ -70,12 +70,10 @@ bool _WebSocketHeader::getMasked() {
 }
 
 void _WebSocketHeader::setFrameLength(long v) {
-    printf("set frame length is %ld \n",v);
     mFrameLength = v;
 }
 
 long _WebSocketHeader::getFrameLength() {
-    printf("get frame length is %ld \n",mFrameLength);
     return mFrameLength;
 }
 

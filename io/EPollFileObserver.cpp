@@ -33,29 +33,21 @@ void _EPollThread::run() {
     memset(events,0,sizeof(struct epoll_event) *mSize);
 
     while(1) {
-        printf("EpollThread run1 \n");
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
-        printf("EpollThread run2 \n");
         if(epoll_events_count < 0) {
-            printf("EpollThread exit1 \n");
             return;
         }
-        printf("EpollThread run3 \n");
         for(int i = 0; i < epoll_events_count; i++) {
             int fd = events[i].data.fd;
             int event = events[i].events;
 
             if(fd == mPipe->getReadPipe()) {
-                printf("EpollThread exit2 \n");
                 return;
             }
-            printf("EpollThread run4 \n");
             if(mListener->onEvent(fd,event) == EPollOnEventResultRemoveFd) {
                 epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
             };
-            printf("EpollThread run5 \n");
         }
-        printf("EpollThread run6 \n");
     }
 }
 
@@ -90,25 +82,19 @@ int _EPollFileObserver::removeFd(int fd) {
 }
 
 int _EPollFileObserver::start() {
-    printf("EPollFileObserver start 1\n");
     if(mEpollThread != nullptr) {
         return -EPollFileObserverAlreadyStart;
     }
-    printf("EPollFileObserver start 2\n");
     mEpollThread = createEPollThread(mEpollFd,mSize,mPipe,mListener);
     mEpollThread->start();
-    printf("EPollFileObserver start 3\n");
     return 0;
 }
 
 int _EPollFileObserver::release() {
-    printf("EPollFileObserver release 1\n");
     mPipe->writeTo(createByteArray(1));
-    printf("EPollFileObserver release 2\n");
-
+    
     mEpollThread->join();
-    printf("EPollFileObserver release 3\n");
-
+    
     if(mEpollFd != -1) {
         close(mEpollFd);
         mEpollFd = -1;

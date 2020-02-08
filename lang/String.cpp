@@ -798,7 +798,6 @@ String _String::toHexString() {
     std::stringstream ss;
     ss<<std::hex<<v;
     ss>>value;
-    printf("changeHex value is %s \n",value.c_str());
     return createString(value);
 }
 

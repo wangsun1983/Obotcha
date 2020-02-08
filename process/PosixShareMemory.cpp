@@ -55,7 +55,6 @@ int _PosixShareMemory::init() {
     close(shareMemoryFd);
 
     if(mPtr == nullptr) {
-        //printf("mmap failed \n");
         return -MmapFail;
     }
 
@@ -112,15 +111,9 @@ int _PosixShareMemory::read(ByteArray arr) {
     }
 
     int ll = arr->size() > size?size:arr->size();
-#ifdef DEBUG_SHAREMEM_DUMP        
-    printf("mPtr[0] is %d \n",mPtr[0]);
-    printf("mPtr[1] is %d \n",mPtr[1]);
-    printf("mPtr[2] is %d \n",mPtr[2]);
-#endif        
     memcpy(arr->toValue(),mPtr,ll);
 
     return ll;
-
 }
 
 int _PosixShareMemory::read(int index,ByteArray arr) {

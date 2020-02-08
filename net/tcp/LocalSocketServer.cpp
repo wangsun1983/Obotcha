@@ -54,7 +54,6 @@ void _LocalSocketServerThread::run() {
     struct epoll_event events[EPOLL_SIZE];
 
     while(1) {
-        //printf("TcpServer start \n");
         if(mStatus->get() == LocalServerWaitingThreadExit) {
             mStatus->set(LocalServerThreadExited);
             return;
@@ -63,13 +62,10 @@ void _LocalSocketServerThread::run() {
         }
 
         int epoll_events_count = epoll_wait(mEpollfd, events, EPOLL_SIZE, -1);
-        //printf("TcpServer trace1 \n");
         if(epoll_events_count < 0) {
             mStatus->set(LocalServerThreadExited);
             return;
         }
-
-        //std::cout << "epoll_events_count =" << epoll_events_count << endl;
 
         for(int i = 0; i < epoll_events_count; ++i) {
             int sockfd = events[i].data.fd;
@@ -77,10 +73,8 @@ void _LocalSocketServerThread::run() {
 
             //check whether thread need exit
             if(sockfd == mPipe->getReadPipe()) {
-                //printf("wangsl,mPipe event is %x \n",event);
                 if(mStatus->get() == LocalServerWaitingThreadExit) {
                     mStatus->set(LocalServerThreadExited);
-                    //printf("wangsl,mPipe exit \n");
                     return;
                 }
                 
@@ -89,7 +83,6 @@ void _LocalSocketServerThread::run() {
 
             if(((event & EPOLLIN) != 0) 
             && ((event & EPOLLRDHUP) != 0)) {
-                //printf("hangup sockfd!!!!,sockefd is %d \n",sockfd);
                 epoll_ctl(mEpollfd, EPOLL_CTL_DEL, sockfd, NULL);
                 st(NetUtils)::delEpollFd(mEpollfd,sockfd);
                 removeClientFd(sockfd);
@@ -121,7 +114,6 @@ void _LocalSocketServerThread::run() {
                 int len = recv(sockfd, recv_buf, mBuffSize, 0);
                 if(len == 0 || len == -1) {
                     //this sockfd maybe closed!!!!!
-                    //printf("tcpserver error len is %d,sockfd is %d \n",len,sockfd);
                     continue;
                 }
                 ByteArray pack = createByteArray(&recv_buf[0],len);
@@ -215,14 +207,9 @@ int _LocalSocketServer::connect() {
 
     int len = offsetof(struct sockaddr_un, sun_path) + strlen(serverAddr.sun_path);   
 
-    printf("LocalSocketServer connect trace2,len is %d \n",len);
-
     if( bind(sock, (struct sockaddr *)&serverAddr, len) < 0) {
-        printf("bind server faild , error = %s \n", strerror(errno));
         return -NetBindFail;
     }
-
-    printf("LocalSocketServer connect trace3 \n");
 
     int ret = listen(sock, mClientsNum);
 
@@ -237,8 +224,6 @@ int _LocalSocketServer::connect() {
     if(st(NetUtils)::addEpollFd(epfd,mPipe->getReadPipe(),false) < 0) {
         return -WriteFail;
     };
-
-    printf("LocalSocketServer connect trace6 \n");
 
     return 0;
 }
@@ -261,7 +246,6 @@ int _LocalSocketServer::start() {
 }
 
 void _LocalSocketServer::release() {
-    printf("release trace 1 \n");
     if(mStatus->get() == LocalServerThreadExited || mStatus->get() == LocalServerWaitingThreadExit) {
         return;
     }
@@ -298,7 +282,6 @@ void _LocalSocketServer::release() {
         epfd = -1;
     }
 
-    printf("release end \n");
 }
 
 int _LocalSocketServer::send(int fd,ByteArray data) {

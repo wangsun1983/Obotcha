@@ -31,10 +31,6 @@ int _Pipe::init() {
         break;
     }
 
-    //printf("init pipe result is %d \n",result);
-    //printf("init write fd is %x \n",pipeFd[WritePipe]);
-    //printf("init read fd is %x \n",pipeFd[ReadPipe]);
-    
     return result;
 }
 
@@ -46,7 +42,6 @@ int _Pipe::writeTo(ByteArray data) {
     if(data->size() > PIPE_BUF) {
         return -OverSize;
     }
-    //printf("wirteTo content is %s,write pipe fd is %x \n",data->toValue(),pipeFd[WritePipe]);
 
     return write(pipeFd[WritePipe],data->toValue(),data->size());
 }
@@ -55,7 +50,6 @@ int  _Pipe::readFrom(ByteArray buff) {
     if(pipeFd[ReadPipe] == -1) {
         return -NotCreate;
     }
-    //printf("read from fd is %x \n",pipeFd[ReadPipe]);
     int nbytes = read(pipeFd[ReadPipe],buff->toValue(),buff->size());
     return nbytes;
 }
@@ -64,7 +58,6 @@ int _Pipe::closeReadPipe() {
     if(pipeFd[ReadPipe] == -1) {
         return -NotCreate;
     }
-    //printf("close ReadPipe fd is %x \n",pipeFd[ReadPipe]);
     int ret = close(pipeFd[ReadPipe]);
     pipeFd[ReadPipe] = -1;
     return ret;
@@ -74,7 +67,6 @@ int _Pipe::closeWritePipe() {
     if(pipeFd[WritePipe] == -1) {
         return -NotCreate;
     }
-    //printf("close WritePipe fd is %x \n",pipeFd[WritePipe]);
     int ret = close(pipeFd[WritePipe]);
     pipeFd[WritePipe] = -1;
     return ret;

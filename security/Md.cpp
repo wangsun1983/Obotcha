@@ -59,7 +59,6 @@ String _Md::encrypt(File f) {
 }
 
 String _Md::encrypt(String s) {
-    //printf("encrypt trace1,mType is %d,Md5 is %d \n",mType,MdType5);
     switch(mType) {
 #ifndef OPENSSL_NO_MD2
         case MdType2: {
@@ -109,8 +108,6 @@ int _Md::computeStringMd5(unsigned char *dest_str, unsigned int dest_len, char *
     for(i = 0; i < MD5_DIGEST_LENGTH; i++) {
         snprintf(md5_str + i*2, 2+1, "%02x", md5_value[i]);
     }
-
-    //printf("md5_str is %s,MD5_DIGEST_LENGTH is %d \n",md5_str,MD5_DIGEST_LENGTH);
 
     return 0;
 }

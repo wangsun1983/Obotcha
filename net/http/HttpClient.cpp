@@ -122,15 +122,11 @@ String _HttpClient::execute(int method,HttpUrl url) {
     if(!mKeepAlive) {
         mTcpClient->doConnect();
     }
-    //printf("packet->genHttp is %s \n",packet->genHttpRequest()->toChars());
+    
     mTcpClient->doSend(createByteArray(packet->genHttpRequest()));
     
     ByteArray result = mTcpClient->doReceive();
-    //while(1) {
-    //    result = mTcpClient->doReceive();
-    //    printf("%s \n",result->toString()->toChars());
-    //}
-
+    
     //get first block
     HttpV1Parser parser = createHttpV1Parser();
     HttpPacket firstBlock = parser->parseEntireResponse(result->toString());
@@ -140,8 +136,7 @@ String _HttpClient::execute(int method,HttpUrl url) {
     } else {
         //TODO
     }
-    printf("accept result is %s \n",result->toString()->toChars());
-
+    
     if(!mKeepAlive) {
         mTcpClient->release();
     }
@@ -184,7 +179,6 @@ ByteArray _HttpClient::doReceiveChunk(ByteArray firstBlock) {
         ByteArray data = createByteArray(chunksize);
         while(reader->getRemainSize() < chunksize) {
             ByteArray httpdata = mTcpClient->doReceive();
-            //printf("http data is %s \n",httpdata->toString()->toChars());
             reader->appendWithAdjustment(httpdata);
         }
         reader->readByteArray(data);

@@ -23,7 +23,6 @@ _WebSocketHybi13Composer::_WebSocketHybi13Composer(int type,int maxFrameSize):_W
 }
 
 ByteArray _WebSocketHybi13Composer::genShakeHandMessage(WebSocketClientInfo h) {
-    printf("mType is %d \n",mType);
     switch(mType) {
         case WsClientComposer:
         return _genClientShakeHandMessage(h);
@@ -36,7 +35,6 @@ ByteArray _WebSocketHybi13Composer::genShakeHandMessage(WebSocketClientInfo h) {
 }
 
 ByteArray _WebSocketHybi13Composer::_genClientShakeHandMessage(WebSocketClientInfo client) {
-    printf("genClientShakeHandMessage trace1\n");
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(client->getConnectUrl());
     HttpPacket packet = createHttpPacket();
     packet->setMethod(st(HttpMethod)::Get);
@@ -70,7 +68,6 @@ ByteArray _WebSocketHybi13Composer::_genClientShakeHandMessage(WebSocketClientIn
         int v = rand->nextInt();
         Base64 base64key = createBase64();
         String key = base64key->decode(createString(v));
-        printf("sec websocket key is %s \n",key->toChars());
         packet->getHeader()->setValue(st(HttpHeader)::SecWebSocketKey,key);
     }
 
@@ -89,7 +86,6 @@ ByteArray _WebSocketHybi13Composer::_genClientShakeHandMessage(WebSocketClientIn
     if(packet->getHeader()->getValue(st(HttpHeader)::CacheControl) == nullptr) {
         packet->getHeader()->setValue(st(HttpHeader)::CacheControl,"no-cache");
     }
-    printf("genClientShakeHandMessage trace2\n");
     
     return createByteArray(packet->genHttpRequest());
 }
@@ -115,11 +111,8 @@ ByteArray _WebSocketHybi13Composer::_genServerShakeHandMessage(WebSocketClientIn
     String resp = connection->append("Sec-WebSocket-Accept:")->append(base64)->append("\r\n");
 
     //check whetehr we have Deflate
-    printf("genServerShakeHandeMessage trace1 \n");
-    
     WebSocketPermessageDeflate deflater = info->getDeflater();
     if(deflater != nullptr) {
-        printf("genServerShakeHandeMessage trace2 \n");
         resp = resp->append("Sec-WebSocket-Extensions:")
                    ->append("permessage-deflate")
                    ->append(";client_max_window_bits=")
@@ -163,7 +156,6 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClient
     bool isLastFrame = false;
     while(1) {
         int len = (entireMessage->size()-index) > mMaxFrameSize?mMaxFrameSize:(entireMessage->size() - index);
-        printf("index is %d,len is %d \n",index,len);
         ByteArray message = createByteArray(pData + index,len);
         index += len;
         if(index == entireMessage->size()) {
@@ -185,7 +177,6 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClient
             b0 |= st(WebSocketProtocol)::B0_FLAG_FIN;
         }
 
-        printf("b0 is %x \n",b0);
         sinkWriter->writeByte(b0);
         
         ByteArray maskKey = createByteArray(4);
@@ -198,7 +189,6 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClient
         }
     
         int byteCount = message->size();
-        printf("byteCount is %d\n",byteCount);
         if (byteCount <= st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
             b1 |= (int) byteCount;
             sinkWriter->writeByte(b1);
@@ -216,7 +206,6 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClient
             sinkWriter->writeByteArray(maskKey);
             //writeMaskedSynchronized(buffer, byteCount);
             ByteArray maskBuff = createByteArray(message);
-            printf("start toggleMask,maskBuff size is %d,message size is %d \n",maskBuff->size(),message->size());
             st(WebSocketProtocol)::toggleMask(maskBuff,maskKey);
             sinkWriter->writeByteArray(maskBuff);
         } else {
@@ -246,7 +235,6 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genServerMessage(WebSocketClient
     bool isLastFrame = false;
     while(1) {
         int len = (entireMessage->size()-index) > mMaxFrameSize?mMaxFrameSize:(entireMessage->size() - index);
-        printf("index is %d,len is %d \n",index,len);
         ByteArray message = createByteArray(pData + index,len);
         index += len;
         if(index == entireMessage->size()) {
@@ -268,11 +256,9 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genServerMessage(WebSocketClient
             b0 |= st(WebSocketProtocol)::B0_FLAG_FIN;
         }
 
-        printf("b0 is %x \n",b0);
         sinkWriter->writeByte(b0);
 
         int b1 = message->size();
-        printf("byteCount is %d\n",b1);
         if (b1 <= st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
             sinkWriter->writeByte(b1);
         } else if (b1 <= st(WebSocketProtocol)::PAYLOAD_SHORT_MAX) {

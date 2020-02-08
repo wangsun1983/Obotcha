@@ -55,7 +55,6 @@ int _NetUtils::sendUdpPacket(int udpsocket,String ip,int port,ByteArray packet) 
     server.sin_addr.s_addr = inet_addr(ip->toChars());
     int server_len = sizeof(struct sockaddr_in);     
     int result = sendto(udpsocket, packet->toValue(),  packet->size(), 0, (struct sockaddr *)&server, server_len);
-    //printf("send udp1 result is %d error is %s \n",result,strerror(errno));
     return result;
 }
 
@@ -68,9 +67,7 @@ int _NetUtils::sendUdpPacket(struct sockaddr_in *serverAddr,ByteArray packet) {
 
 int _NetUtils::sendUdpPacket(int udpsocket,struct sockaddr_in *serverAddr,ByteArray packet) {
     int server_len = sizeof(struct sockaddr_in);
-    //printf("send udp2 packet,packet is %s \n",packet->toValue());
     int result = sendto(udpsocket, packet->toValue(),  packet->size(), 0, (struct sockaddr *)serverAddr, server_len);
-    //printf("send udp2 result is %d error is %s \n",result,strerror(errno));
     return result;
 }
 

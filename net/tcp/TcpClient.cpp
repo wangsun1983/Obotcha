@@ -46,7 +46,6 @@ _TcpClient::_TcpClient(int port,int recv_time,int buff_size) {
     }
     
     mSock = socket(AF_INET, SOCK_STREAM, 0);
-    //printf("create mSock is %d \n",mSock);
     mBuff = (byte *)malloc(buff_size);
     mConnectMutex = createMutex("ConncetMutex");
 }
@@ -74,7 +73,6 @@ _TcpClient::_TcpClient(String ip,int port,int recv_time,int buff_size) {
     }
 
     mSock = socket(AF_INET, SOCK_STREAM, 0);
-    //printf("create mSock is %d \n",mSock);
     mBuff = (byte *)malloc(buff_size);
     mConnectMutex = createMutex("ConncetMutex");
 }
@@ -90,9 +88,7 @@ int _TcpClient::doConnect() {
 
     //AutoMutex ll(mConnectMutex);
     int ret = connect(mSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
-    //printf("connect ret is %d,mSock is %d \n",ret,mSock);
     if( ret < 0) {
-        //printf("connect fail,reason is %s \n",strerror(errno));
         return -1;
     }
 
@@ -121,7 +117,6 @@ int _TcpClient::doSend(ByteArray data) {
 
 ByteArray _TcpClient::doReceive() {
     int len = recv(mSock, mBuff, mBufferSize, 0);
-    //printf("tcp client len is %d \n",len);
     if(len == 0) {
         return nullptr;
     }
@@ -136,7 +131,6 @@ int _TcpClient::getBuffSize() {
 
 void _TcpClient::release() {
     //AutoMutex ll(mConnectMutex);
-    //printf("tcpclient release2\n");
     if(mSock >= 0) {
         close(mSock);
     }

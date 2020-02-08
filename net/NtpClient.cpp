@@ -57,13 +57,7 @@ void _NtpSocketClientListener::onAccept(int fd,String ip,int port,ByteArray pack
     rectime.fraction = DATA(9);
     tratime.integer  = DATA(10);
     tratime.fraction = DATA(11);
-    //printf("oritime.integer is %ld \n",oritime.integer);
-    //printf("oritime.fraction is %ld \n",oritime.fraction);
-    //printf("rectime.integer is %ld \n",rectime.integer);
-    //printf("rectime.fraction is %ld \n",oritime.fraction);
-    //printf("tratime.integer is %ld \n",tratime.integer);
-    //printf("tratime.fraction is %ld \n",oritime.fraction);
-
+    
 #undef  DATA
 
     //Originate Timestamp       T1        client send time 

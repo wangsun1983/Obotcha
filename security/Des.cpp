@@ -28,7 +28,6 @@ void _Des::encrypt(File src,File des) {
 
     //calcute size for 8 byte
     long inputSize = src->length();
-    //printf("encrypt file inputsize is %d \n",inputSize);
     
     long length = (inputSize%8 == 0)?(inputSize + 8):(inputSize/8)*8 + 8;
     ByteArray inputData = createByteArray(length);
@@ -87,7 +86,6 @@ ByteArray _Des::encrypt(ByteArray input) {
 }
 
 void _Des::decrypt(File src,File des) {
-    //printf("wangsl,decrypt 1 \n");
     if(!des->exists()) {
         des->createNewFile();
     }
@@ -245,7 +243,6 @@ int _Des::loadKey(const char *filepath) {
 ByteArray _Des::_desECB(ByteArray data,DES_key_schedule *schedule,int mode) {
     int inputSize = data->size();
 
-    //printf("input size is %d \n",inputSize);
     int length = (inputSize%8 == 0)?inputSize:(inputSize/8)*8 + 8;
     
     ByteArray out = createByteArray(length);
@@ -278,8 +275,7 @@ ByteArray _Des::_desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *iv
     ByteArray out;
     int inputSize = data->size();
     int outputSize = (inputSize%8 != 0)?(inputSize/8 + 1) * 8 : inputSize;  
-    //printf("_desCBC outputSize %d,input is %d \n",outputSize,inputSize);
-
+    
     if(mode == DesEncrypt) {
         out = createByteArray(outputSize);
     } else {
@@ -288,10 +284,8 @@ ByteArray _Des::_desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *iv
 
     unsigned char *output = (unsigned char *)out->toValue();
     unsigned char *input = (unsigned char *)data->toValue();
-    //printf("_desCBC input is %s \n",input);
-
+    
     DES_ncbc_encrypt(input, output, data->size(), schedule, ivec, mode);
-    //printf("_desCBC output is %s,length is %d \n",output,out->size());
     return out;
 }
 

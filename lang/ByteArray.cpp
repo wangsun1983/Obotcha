@@ -54,12 +54,10 @@ _ByteArray::_ByteArray(String str) {
  * @param len save data len
  */
 _ByteArray::_ByteArray(const byte *data,int len) {
-    printf("create bytearray len is %d \n",len);
     buff = (unsigned char *)malloc(len);
     memset(buff,0,len);
     mSize = len;
     memcpy(buff,data,len);
-    printf("create bytearray end len is %d \n",len);
 }
 
 /**
@@ -167,12 +165,9 @@ int _ByteArray::fill(int index,int length,byte v) {
 }
 
 int _ByteArray::append(sp<_ByteArray> b) {
-    //printf("_ByteArray append trace1,b is %s,size is %d \n",b->toValue(),b->size());
-    printf("append trace1 \n");
     if(b == nullptr) {
         return -InvalidParam;
     }
-    printf("append trace2 \n");
     return append(b->toValue(),b->size());
 }
 

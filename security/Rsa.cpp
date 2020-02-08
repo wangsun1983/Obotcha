@@ -72,11 +72,10 @@ void _Rsa::loadPrivateKey(String path) {
     FileInputStream inputStream = createFileInputStream(path);
     inputStream->open();
     ByteArray inputData = inputStream->readAll();
-    printf("load private key is %s \n",inputData->toValue());
-
+    
     BIO* bio = BIO_new_mem_buf((void*)inputData->toValue(), -1 ) ; // -1: assume string is null terminated
     if(bio == nullptr) {
-        printf("bio fail \n");
+        return;
     }
     
     BIO_set_flags( bio, BIO_FLAGS_BASE64_NO_NL ) ; // NO NL
@@ -87,7 +86,6 @@ void _Rsa::loadPrivateKey(String path) {
     mPrivRsaKey = PEM_read_bio_RSAPrivateKey( bio, NULL, NULL, NULL ) ;
     if(!mPrivRsaKey) {
         //TODO
-        printf("load private key fail \n");
         goto freeall;
         
     }
@@ -109,11 +107,9 @@ void _Rsa::loadPublicKey(String path) {
     ByteArray inputData = createByteArray(size + 1);
     inputStream->read(inputData);
 
-    printf("load pub key is %s \n",inputData->toValue());
-
     BIO* bio = BIO_new_mem_buf((void*)inputData->toValue(), -1 ) ; // -1: assume string is null terminated
     if(bio == nullptr) {
-        printf("bio fail \n");
+        return;
     }
     
     BIO_set_flags( bio, BIO_FLAGS_BASE64_NO_NL ) ; // NO NL
@@ -124,13 +120,11 @@ void _Rsa::loadPublicKey(String path) {
     mPubRsaKey = PEM_read_bio_RSAPublicKey( bio, NULL, NULL, NULL ) ;
     if(!mPubRsaKey) {
         //TODO
-        printf("load pub key fail \n");
         BIO_free(bio);
         BIO* bio = BIO_new_mem_buf((void*)inputData->toValue(), -1 ) ;
         BIO_set_flags( bio, BIO_FLAGS_BASE64_NO_NL ) ; // NO NL
         mPubRsaKey = PEM_read_bio_RSA_PUBKEY(bio, NULL, NULL, NULL);
         if(!mPubRsaKey) {
-            printf("load pub key fail again\n");
             goto freeall;
         }
     }
@@ -145,9 +139,7 @@ ByteArray _Rsa::encrypt(String content) {
     int length = 0;
     byte *output = nullptr;
     pubkey_encrypt((const unsigned char*)content->toChars(),content->size(),&output,length);
-    printf("encrypt output is %s,size is %d \n",output,length);
     //String result = createString((char *)output);
-    //printf("encrypt result is %s \n",result->toChars());
     //return result;
     ByteArray result = createByteArray(output,length);
     if(output != nullptr) {
@@ -161,9 +153,7 @@ ByteArray _Rsa::decrypt(ByteArray content) {
     //String output = createString();
     int length = 0;
     unsigned char *output = nullptr;
-    printf("decrypt content is %s,size is %d \n",content->toValue(),content->size());
     int size = prikey_decrypt((const unsigned char*)content->toValue(),content->size(),&output,length);
-    printf("decrypt output is %s,size is %d \n",(char *)output,size);
     //return createString(output);
     ByteArray result = createByteArray(output,length);
     if(output != nullptr) {
@@ -180,13 +170,10 @@ int _Rsa::prikey_encrypt(const unsigned char *in, int in_len,
     *out =  (unsigned char *)malloc(out_len);
     if(NULL == *out)
     {
-        
-        printf("prikey_encrypt:malloc error!\n");
         return -1;
     }
     memset((void *)*out, 0, out_len);
- 
-    printf("prikey_encrypt:Begin RSA_private_encrypt ...\n");
+    
     int ret =  RSA_private_encrypt(in_len, in, *out, mPrivRsaKey, RSA_PKCS1_PADDING);
     //RSA_public_decrypt(flen, encData, decData, r,  RSA_NO_PADDING);
  
@@ -200,12 +187,10 @@ int _Rsa::pubkey_decrypt(const unsigned char *in, int in_len,
     out_len =  RSA_size(mPubRsaKey);
     *out =  (unsigned char *)malloc(out_len);
     if(nullptr == *out) {
-        printf("pubkey_decrypt:malloc error!\n");
         return -1;
     }
     memset((void *)*out, 0, out_len);
  
-    printf("pubkey_decrypt:Begin RSA_public_decrypt ...\n");
     int ret =  RSA_public_decrypt(in_len, in, *out, mPubRsaKey, RSA_PKCS1_PADDING);
  
     return ret;
@@ -217,16 +202,13 @@ int _Rsa::pubkey_encrypt(const unsigned char *in, int in_len,
     out_len =  RSA_size(mPubRsaKey);
     *out =  (unsigned char *)malloc(out_len + 1);
     if(nullptr == *out) {
-        printf("pubkey_encrypt:malloc error!\n");
         return -1;
     }
 
     memset((void *)*out, 0, out_len + 1);
  
-    printf("pubkey_encrypt:Begin RSA_public_encrypt ...\n");
     int ret =  RSA_public_encrypt(in_len, in, *out, mPubRsaKey, RSA_PKCS1_PADDING/*RSA_NO_PADDING*/);
- 
- 
+
     return ret;
 }
  
@@ -237,14 +219,11 @@ int _Rsa::prikey_decrypt(const unsigned char *in, int in_len,
     OpenSSL_add_all_algorithms();  
     out_len =  RSA_size(mPrivRsaKey);
     *out =  (unsigned char *)malloc(out_len + 1);
-    if(nullptr == *out)
-    {
-        printf("prikey_decrypt:malloc error!\n");
+    if(nullptr == *out) {
         return -1;
     }
     memset((void *)*out, 0, out_len + 1);
  
-    printf("prikey_decrypt:Begin RSA_private_decrypt ...\n");
     int ret =  RSA_private_decrypt(in_len, in, *out, mPrivRsaKey, RSA_PKCS1_PADDING);
  
     return ret;

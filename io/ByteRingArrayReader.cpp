@@ -18,7 +18,6 @@ _ByteRingArrayReader::_ByteRingArrayReader(ByteRingArray b) {
 ByteArray _ByteRingArrayReader::pop() {
     ByteArray result = nullptr;
     try {
-        printf("pop mCursor is %d \n",mCursor);
         result = mBuff->popByEnd(mCursor);
         mStartMark = mBuff->getStartIndex();
     } catch(ArrayIndexOutOfBoundsException e){}

@@ -11,7 +11,6 @@
 namespace obotcha {
 
 _ByteRingArray::_ByteRingArray(int size) {
-    printf("ring buff size is %d \n",size);
     mSize = size;
     mBuff = (byte *)malloc(size);
     mStatus = ByteRingArrayEmpty;
@@ -138,25 +137,21 @@ ByteArray _ByteRingArray::pop(int size) {
     }
 
     ByteArray buff = createByteArray(size);
-    printf("mStart is %d,mEnd is %d,size is %d \n",mStart,mEnd,mSize);
     if(mStart >= mEnd) {
         if( mSize - (mStart - mEnd) < size) {
             throw ArrayIndexOutOfBoundsException("Ring Array Pop OverStack!!!");
         }
         
         if((mStart + size) < mSize) {
-            printf("pop 1 \n");          
             memcpy(buff->toValue(),mBuff + mStart,size);
             mStart += size;
         } else {
-            printf("pop 2 \n");
             int length = mSize - mStart;
             memcpy(buff->toValue(),mBuff + mStart,length);
             memcpy(buff->toValue() + length,mBuff,size - length);
             mStart = (size - length);
         }
     } else if(mEnd > mStart) {
-        printf("pop 3 \n");
         if((mEnd -mStart) < size) {
             throw ArrayIndexOutOfBoundsException("Ring Array Pop OverStack!!!");
         }
@@ -214,16 +209,13 @@ ByteArray _ByteRingArray::popByEnd(int end) {
     if(mStatus == ByteRingArrayEmpty) {
         throw ArrayIndexOutOfBoundsException("Ring Array popAtCursor OverStack!!!");
     }
-    printf("pop by end at %d \n",end);
-
+    
     int length = 0;
     if(mStart >= end) {
         length = mSize - abs(mStart - end);
     } else {
         length = end - mStart;
     }
-
-    printf("pop by end length is %d \n",length);
 
     return pop(length);
 }

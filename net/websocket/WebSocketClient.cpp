@@ -60,11 +60,9 @@ void _WebSocketTcpClientListener::onTimeout() {
 }
     
 void _WebSocketTcpClientListener::onAccept(int fd,String ip,int port,ByteArray pack) {
-    printf("11111111 client accept pack is %s \n",pack->toValue());
-
+    
     if(mProtoclType == WsClientProtocolHttp) {
         HttpPacket req = mHttpParser->parseEntireResponse(pack->toString());
-        printf("status code is %d \n",req->getStatusCode());
         if(req->getStatusCode() == st(HttpResponse)::SwitchProtocls) {
             mProtoclType = WsClientProtocolWebSocket;
             mClient->setClientFd(fd);
@@ -85,29 +83,23 @@ void _WebSocketTcpClientListener::onAccept(int fd,String ip,int port,ByteArray p
         int framesize = header->getFrameLength();
         int headersize = header->getHeadSize();
         int opcode = header->getOpCode();
-        printf("framesize is %d,headersize is %d,opcode is %d \n",framesize,headersize,opcode);
-
+        
         if(opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
             ByteArray msgData = mHybi13Parser->parseContent(true);
             String msg = msgData->toString();
-            printf("recv websocket from client msg is %s,fd is %d \n",msg->toChars(),fd);
             mWsListener->onMessage(mClient,msg);
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PING) {
-            printf("on ping start !!! \n");
             return;
             //TODO
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PONG) {
             //TODO
-            printf("OPCODE_CONTROL_PONG \n");
             ByteArray pong = mHybi13Parser->parsePongBuff();
             String msg = pong->toString();
-            printf("recv pong from client msg is %s,fd is %d \n",msg->toChars(),fd);
             
             mWsListener->onPong(mClient,msg);
             return;
 
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE) {
-            printf("OPCODE_CONTROL_CLOSE \n");
             return;
             //TODO
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
@@ -118,7 +110,6 @@ void _WebSocketTcpClientListener::onAccept(int fd,String ip,int port,ByteArray p
         len -= (framesize + headersize);
         readIndex += (framesize + headersize);
         if(len > 0) {
-            printf("rest len is %d \n",len);
             mPack = createByteArray(&pack->toValue()[readIndex],len);
             continue;
         } 

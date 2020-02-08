@@ -164,7 +164,6 @@ void _Sha::calc_fileSHA1(const char *filename,unsigned char *dgst) {
     SHA_CTX ctx;
     
     if (NULL == filename || NULL == dgst) {
-        printf("Input error...\n");
         return;
     }
 
@@ -187,13 +186,11 @@ void _Sha::calc_fileSHA224(const char *filename,unsigned char *dgst) {
     int len = 0;
 
     if (NULL == filename || NULL == dgst) {
-        printf("Input error...\n");
         return;
     }
 
     FILE *fp = fopen(filename, "rb");
     if (NULL == fp) {
-        printf("open file:%s error...\n", filename);
         return;
     }
 
@@ -214,13 +211,11 @@ void _Sha::calc_fileSHA256(const char *filename,unsigned char *dgst) {
     int len = 0;
 
     if (NULL == filename || NULL == dgst) {
-        printf("Input error...\n");
         return;
     }
 
     FILE *fp = fopen(filename, "rb");
     if (NULL == fp) {
-        printf("open file:%s error...\n", filename);
         return;
     }
 
@@ -242,13 +237,11 @@ void _Sha::calc_fileSHA384(const char *filename,unsigned char *dgst) {
     int len = 0;
 
     if (NULL == filename || NULL == dgst) {
-        printf("Input error...\n");
         return;
     }
 
     FILE *fp = fopen(filename, "rb");
     if (NULL == fp) {
-        printf("open file:%s error...\n", filename);
         return;
     }
 
@@ -269,14 +262,12 @@ void _Sha::calc_fileSHA512(const char *filename,unsigned char *dgst) {
     int len = 0;
 
     if (NULL == filename || NULL == dgst) {
-        printf("Input error...\n");
         return;
     }
 
     FILE *fp = fopen(filename, "rb");
 
     if (NULL == fp) {
-        printf("open file:%s error...\n", filename);
         return;
     }
 
@@ -296,7 +287,6 @@ void _Sha::calc_stringSHA1(const char *content,int length,unsigned char *dgst) {
 
     if (NULL == content || NULL == dgst)
     {
-        printf("Input error...\n");
         return;
     }
 
@@ -310,7 +300,6 @@ void _Sha::calc_stringSHA224(const char *content,int length,unsigned char *dgst)
 
     if (NULL == content || NULL == dgst)
     {
-        printf("Input error...\n");
         return;
     }
 
@@ -324,7 +313,6 @@ void _Sha::calc_stringSHA256(const char *content,int length,unsigned char *dgst)
 
     if (NULL == content || NULL == dgst)
     {
-        printf("Input error...\n");
         return;
     }
 
@@ -338,7 +326,6 @@ void _Sha::calc_stringSHA384(const char *content,int length,unsigned char *dgst)
 
     if (NULL == content || NULL == dgst)
     {
-        printf("Input error...\n");
         return;
     }
 
@@ -352,7 +339,6 @@ void _Sha::calc_stringSHA512(const char *content,int length,unsigned char *dgst)
 
     if (NULL == content || NULL == dgst)
     {
-        printf("Input error...\n");
         return;
     }
 

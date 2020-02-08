@@ -139,7 +139,6 @@ Runnable _Thread::getRunnable() {
 }
 
 void _Thread::run() {
-    //printf("thread run!!!! \n");
     //child thread can overwrite it.
 }                                                                                                    
 
@@ -186,7 +185,6 @@ void _Thread::initPolicyAndPriority() {
 void _Thread::join() {
     AutoMutex ll(mJoinMutex);
     if(getStatus() == ThreadRunning) {
-        //printf("thread join \n");
         mJoinDondtion->wait(mJoinMutex);
     }
 }

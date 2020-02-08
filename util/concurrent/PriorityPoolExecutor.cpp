@@ -147,9 +147,7 @@ void _PriorityPoolThread::waitTermination(long interval) {
 }
 
 bool _PriorityPoolThread::foceStopTask(FutureTask t) {
-    //printf("ThreadPoolExecutor foceStopTask trace1 \n");
     if(mCurrentTask != nullptr && mCurrentTask->task == t) {
-        //printf("ThreadPoolExecutor foceStopTask trace2 \n");
         stop();
         return true;
     }
