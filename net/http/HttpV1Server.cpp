@@ -93,6 +93,7 @@ void _HttpV1Server::parseMessage(int fd,ByteArray pack) {
         ListIterator<HttpPacket> iterator = packets->getIterator();
         while(iterator->hasValue()) {
             printf("parseMessage hit \n");
+            //we should check whether there is a multipart
             HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);
             mHttpListener->onMessage(info,writer,iterator->getValue());
             iterator->next();

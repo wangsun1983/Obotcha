@@ -15,6 +15,7 @@
 #include "Enviroment.hpp"
 #include "HttpPacket.hpp"
 #include "http_parser.h"
+#include "HttpMultiPartParser.hpp"
 
 namespace obotcha {
 
@@ -59,6 +60,8 @@ private:
     String mHeaderValue;
 
     HttpPacket mHttpPacket;
+
+    HttpMultiPartParser mMultiPartParser;
 
     static int on_message_begin(http_parser *);
     static int on_url(http_parser*, const char *at, size_t length);

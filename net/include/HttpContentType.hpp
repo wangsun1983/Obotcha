@@ -12,12 +12,15 @@
 #include "HttpHeader.hpp"
 #include "ByteArray.hpp"
 #include "HttpCookie.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(HttpContentType) {
 
 public:
+    static ArrayList<String> getSupportFileSuffix(String);
+    static String getContentType(String suffix);
 
     //text/html(html htm shtml)
     const static String TextHtml;//text/html(html htm shtml)
@@ -373,6 +376,10 @@ public:
     //video/x-msvideo                                  avi;
     const static String VideoXMsVideo;
     const static String SuffixAvi;
+
+    //multipart/form-data 
+    const static String MultiPareFormData;
+
 };
 
 }

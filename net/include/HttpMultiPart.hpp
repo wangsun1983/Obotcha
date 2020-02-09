@@ -12,6 +12,7 @@
 #include "TcpClient.hpp"
 #include "HttpUrl.hpp"
 #include "File.hpp"
+#include "HttpHeader.hpp"
 
 namespace obotcha {
 
@@ -37,6 +38,9 @@ public:
     const static int MultiPartFile;
 
 private:
+    int mFd;
+
+    HttpHeader mHeader;
     
     
 };

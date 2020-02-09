@@ -21,9 +21,9 @@ _HttpMultiPart::_HttpMultiPart() {
 }
 
 int _HttpMultiPart::getNextPartType() {
-
+    return 0;
 }
 
 HttpMultiPartFile _HttpMultiPart::getNextPartFile() {
-
+    return nullptr;
 }

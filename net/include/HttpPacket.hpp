@@ -13,6 +13,7 @@
 
 #include "HttpMethod.hpp"
 #include "HttpResponse.hpp"
+#include "HttpMultiPart.hpp"
 
 namespace obotcha {
 
@@ -85,6 +86,8 @@ private:
     String tempParseValue;
 
     String tempParseField;
+
+    HttpMultiPart mMultiPart;
 
 };
 

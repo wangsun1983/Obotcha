@@ -1,5 +1,6 @@
 #include "HttpV1Parser.hpp"
 #include "ArrayList.hpp"
+#include "HttpContentType.hpp"
 
 namespace obotcha {
 
@@ -173,11 +174,25 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
                                     head->size());
                 //mHttpPacket->dump();
                 mStatus = HttpClientParseStatusBodyStart;
+
                 continue;
             }
 
             case HttpClientParseStatusBodyStart: {
+                //check whether there is a multipart
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
+                String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
+                if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPareFormData) != 0) {
+                    //TODO
+                    if(mMultiPartParser == nullptr) {
+                        mMultiPartParser = createHttpMultiPartParser(contentlength->toBasicInt(),mReader);
+                    }
+                      
+                    if(mMultiPartParser->parse() == st(HttpMultiPartParser)::ParseComplete) {
+                        //TODO
+                    }
+                }
+                
                 String transferEncoding = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
                 
                 if(transferEncoding != nullptr) {

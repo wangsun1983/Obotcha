@@ -3,6 +3,7 @@
 
 #include "String.hpp"
 #include "HttpContentType.hpp"
+#include "AutoMutex.hpp"
 
 using namespace obotcha;
 
@@ -361,7 +362,9 @@ const String _HttpContentType::SuffixWmv = createString("wmv");
 //video/x-msvideo                                  avi;
 const String _HttpContentType::VideoXMsVideo = createString("video/x-msvideo");
 const String _HttpContentType::SuffixAvi = createString("avi");
-    
+
+//multipart/form-data 
+const String _HttpContentType::MultiPareFormData = createString("multipart/form-data");
 
 
 

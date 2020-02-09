@@ -24,6 +24,7 @@ link += inetaddress \
 		httpcookie \
 		httpdate \
 		httpmultipart \
+		httpmultipartparser \
 		httpv1server \
 		httpv1clientinfo \
 		httpv1parser \
@@ -69,6 +70,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpcookie.o \
 		$(outtmp)/httpdate.o \
 		$(outtmp)/httpmultipart.o \
+		$(outtmp)/httpmultipartparser.o \
 		$(outtmp)/httpv1server.o \
 		$(outtmp)/httpv1clientinfo.o \
 		$(outtmp)/httpv1parser.o \
@@ -147,6 +149,9 @@ httpdate :$(netDir)/http/HttpDate.cpp
 
 httpmultipart :$(netDir)/http/HttpMultiPart.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMultiPart.cpp -o $(outtmp)/httpmultipart.o $(external)
+
+httpmultipartparser :$(netDir)/http/HttpMultiPartParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMultiPartParser.cpp -o $(outtmp)/httpmultipartparser.o $(external)
 
 httpv1server :$(netDir)/http/HttpV1Server.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpV1Server.cpp -o $(outtmp)/httpv1server.o $(external)
