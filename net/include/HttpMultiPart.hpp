@@ -16,33 +16,58 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpMultiPartFile) {
+DECLARE_SIMPLE_CLASS(HttpMultiPartData) {
+public:
+    static const int PartFile;
+    static const int PartBlock;
+
+    int getType();
+
+protected:
+    int mType;
+};
+
+DECLARE_SIMPLE_CLASS(HttpMultiPartFile) EXTENDS(HttpMultiPartData){
 
 public:
-    //TODO
+    _HttpMultiPartFile(File);
+
+    _HttpMultiPartFile(String);
+
+    File getFile();
 
 private:
     File mFile;
+    int mType;
+};
 
-}; 
+DECLARE_SIMPLE_CLASS(HttpMultiPartBlock) EXTENDS(HttpMultiPartData){
+
+public:
+    _HttpMultiPartBlock(ByteArray);
+
+    ByteArray getBlockData();
+
+private:
+    ByteArray mBuff;
+};
 
 DECLARE_SIMPLE_CLASS(HttpMultiPart) {
 
 public:
     _HttpMultiPart();
 
-    int getNextPartType();
+    ArrayList<HttpMultiPartData> getDatas();
 
-    HttpMultiPartFile getNextPartFile();
-
-    const static int MultiPartFile;
+    void addPartData(HttpMultiPartData);
 
 private:
     int mFd;
 
     HttpHeader mHeader;
-    
-    
+
+    ArrayList<HttpMultiPartData> mDatas;
+
 };
 
 }

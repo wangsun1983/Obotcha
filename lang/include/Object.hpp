@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <utility>
 #include <stdio.h>
+#include <typeinfo>
 
 #define OBJ_DEC_FREE 0
 #define OBJ_DEC_NO_FREE 1
@@ -41,6 +42,8 @@ public:
     inline virtual bool equals(Object &m) {
         return this == &m;
     }
+
+    
 
 protected:
     inline virtual ~Object() {
@@ -121,5 +124,8 @@ class _##Y: virtual public Object\
 #define DESTRUCT_IMPLEMENT(X) CLASS(##X)::DESTRUCT(##X)
 
 #define st(Y) _##Y
+
+#define InstanceOf(X,Y) typeid(*X.get_pointer()) == typeid(_##Y)
+
 
 #endif

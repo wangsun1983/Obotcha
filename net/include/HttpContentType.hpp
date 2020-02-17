@@ -19,8 +19,8 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(HttpContentType) {
 
 public:
-    static ArrayList<String> getSupportFileSuffix(String);
-    static String getContentType(String suffix);
+    //static ArrayList<String> getSupportFileSuffix(String);
+    //static String getContentType(String suffix);
 
     //text/html(html htm shtml)
     const static String TextHtml;//text/html(html htm shtml)
