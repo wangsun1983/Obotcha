@@ -75,7 +75,7 @@ String const _Enviroment::gHttpMultiPartContentSize = "http.part.content.size";
 int const  _Enviroment::DefaultHttpMultiContentSize = 32*1024;
 
 String const  _Enviroment::gHttpMultiPartFilePath = "http.part.file.path";
-String const _Enviroment::DefaultMultiPartFilePath = "./tmp";
+String const _Enviroment::DefaultMultiPartFilePath = "./tmp/";
 
 String const  gHttpMultiPartFilePath = "http.";
     static const String DefaultMultiPartFilePath;
@@ -118,39 +118,45 @@ _Enviroment::_Enviroment() {
     mProp->set(gUdpServerBufferSize,st(String)::valueOf(DefaultUdpServerBufferSize));
     mProp->set(gHttpServerPort,st(String)::valueOf(DefaultHttpServerPort));
     mProp->set(gHttpServerSendFileBufferSize,st(String)::valueOf(DefaultHttpServerSendFileBufferSize));
+    mProp->set(gHttpMultiPartDispositionSize,st(String)::valueOf(DefaultHttpMultiPartDispositionSize));
+    mProp->set(gHttpMultiPartContentTypeSize,st(String)::valueOf(DefaultHttpMultiContentTypeSize));
+    mProp->set(gHttpMultiPartContentSize,st(String)::valueOf(DefaultHttpMultiContentSize));
+    mProp->set(gHttpMultiPartFilePath,DefaultMultiPartFilePath);
 }
 
 void _Enviroment::set(String tag,String v) {
     mProp->set(tag,v);
 }
 
-int _Enviroment::getInt(String v) {
+int _Enviroment::getInt(String v,int defaultvalue) {
     String value = mProp->get(v);
-    if(value == nullptr) {
-        throw ValueNotFoundException("Env not found");
+    if(value != nullptr) {
+        return value->toBasicInt();
     }
 
-    return value->toBasicInt();
+    return defaultvalue;
 }
 
-int _Enviroment::getInt(String,int defaultvalue) {
-    //TODO
-    return -1;
-}
+bool _Enviroment::getBoolean(String v,bool defaultvalue){
+    String value = mProp->get(v);
+    if(value != nullptr) {
+        return value->toBasicBool();
+    }
 
-bool _Enviroment::getBoolean(String v){
-    //TODO
-    return false;
+    return defaultvalue;
 }
 
 String _Enviroment::get(String v) {
-    //TODO
-    return nullptr;
+    return mProp->get(v);;
 }
 
-String _Enviroment::get(String,String defaultvalue) {
-    //TODO
-    return nullptr;
+String _Enviroment::get(String v,String defaultvalue) {
+    String value = mProp->get(v);
+    if(value == nullptr) {
+        return defaultvalue;
+    }
+
+    return value;
 }
 
 }

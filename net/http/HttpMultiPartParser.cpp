@@ -10,8 +10,9 @@ const int _HttpMultiPartParser::NotMultiPart = 2;
 const int _HttpMultiPartParser::ParseStartBoundry = 0;
 const int _HttpMultiPartParser::ParseStartBoundryEnd = 1;
 const int _HttpMultiPartParser::ParseContentDisposition = 2;
-const int _HttpMultiPartParser::ParseContentType = 3;
-const int _HttpMultiPartParser::ParseContent = 4;
+const int _HttpMultiPartParser::ParseContentDispositionEnd = 3;
+const int _HttpMultiPartParser::ParseContentType = 4;
+const int _HttpMultiPartParser::ParseContent = 5;
 
 const String _HttpMultiPartParser::NewLine = createString("\r\n");
 const String _HttpMultiPartParser::TwoNewLine = createString("\r\n\r\n");
@@ -23,10 +24,9 @@ _PartContentDisposition::_PartContentDisposition() {
     dispositions = createHashMap<String,String>();
 }
 
-_HttpMultiPartParser::_HttpMultiPartParser(String contenttype,int length,ByteRingArrayReader reader) {
+_HttpMultiPartParser::_HttpMultiPartParser(String contenttype,int length) {
     mMultiPart = createHttpMultiPart();
     mContentLength = length;
-    mReader = reader;
 
     //start parse boundary
     ArrayList<String> strings = contenttype->split(";");
@@ -84,22 +84,25 @@ _HttpMultiPartParser::_HttpMultiPartParser(String contenttype,int length,ByteRin
 //Content-Type: image/png
 //PNG ..... content of chrome.png .....
 //--------WebKitFormBoundaryrGKCBY7qhFd3TrwA--
-HttpMultiPart _HttpMultiPartParser::parse() {
-    printf("parse mBoundary is %s \n",mBoundary->toChars());
+HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
+    printf("parse mBoundary is %s,status is %d \n",mBoundary->toChars(),mStatus);
     if(mBoundary == nullptr) {
         return nullptr;
     }
+    printf("HttpMultiPartParser parse trace1 \n");
 
     byte v = 0;
 
-    while(mReader->readNext(v) == ByteRingArrayReadContinue) {
+    while(reader->readNext(v) == ByteRingArrayReadContinue) {
+        //printf("HttpMultiPartParser parse trace2 \n");
+
         switch(mStatus) {
             case ParseStartBoundry:{
                 printf("ParseStartBoundry v is %x,mBoundaryStr[mBoundaryIndex] is %x \n",v,mBoundaryStr[mBoundaryIndex]);
                 if(v == mBoundaryStr[mBoundaryIndex]) {
                     if(mBoundaryIndex == (mBoundary->size()-1)) {
                         mBoundaryIndex = 0;
-                        mReader->pop();
+                        reader->pop();
                         mStatus = ParseStartBoundryEnd;
                     }
                     mBoundaryIndex++;
@@ -113,28 +116,28 @@ HttpMultiPart _HttpMultiPartParser::parse() {
                 if(v == mNewLineStr[mBoundaryEndLineIndex]) {
                     if(mBoundaryEndLineIndex == (NewLine->size()-1)) {
                         mBoundaryEndLineIndex = 0;
-                        mReader->pop();
+                        reader->pop();
                         mStatus = ParseContentDisposition;
                     }
                     mBoundaryEndLineIndex++;
                 } else if(v == mEndLineStr[mBoundaryEndLineIndex]){
                     mBoundaryEndLineIndex = 0;
-                    mReader->pop();
+                    reader->pop();
                     return mMultiPart;
                 }
             }
             break;
 
             case ParseContentDisposition: {
-                printf("ParseContentDisposition v is %x \n",v);
-                if(v == mTwoNewLine[mNewLineTextIndex]) {
-                    if(mNewLineTextIndex == (TwoNewLine->size()-1)) {
+                printf("ParseContentDisposition v is %c \n",v);
+                if(v == mNewLineStr[mNewLineTextIndex]) {
+                    if(mNewLineTextIndex == (NewLine->size()-1)) {
                         mNewLineTextIndex = 0;
                         
                         if(mContentDispositionBuff == nullptr) {
-                            mContentDispositionBuff = mReader->pop();
+                            mContentDispositionBuff = reader->pop();
                         } else {
-                            mContentDispositionBuff->append(mReader->pop());
+                            mContentDispositionBuff->append(reader->pop());
                         }
                         printf("mContentDispositionBuff v is %s \n",mContentDispositionBuff->toString()->toChars());
                         mContentDisp = parseContentDisposition(mContentDispositionBuff->toString());
@@ -144,10 +147,23 @@ HttpMultiPart _HttpMultiPartParser::parse() {
                         if(mContentDisp->dispositions->get("filename") != nullptr) {
                             mStatus = ParseContentType;
                         } else {
-                            mStatus = ParseContent;
+                            mStatus = ParseContentDispositionEnd;
                         }
 
                         continue;
+                    }
+                    mNewLineTextIndex++;
+                }
+            }
+            break;
+
+            case ParseContentDispositionEnd: {
+                printf("ParseContentDispositionEnd v is %x \n",v);
+                if(v == mNewLineStr[mNewLineTextIndex]) {
+                    if(mNewLineTextIndex == (NewLine->size()-1)) {
+                        mNewLineTextIndex = 0;
+                        reader->pop();
+                        mStatus = ParseContent;
                     }
                     mNewLineTextIndex++;
                 }
@@ -160,9 +176,9 @@ HttpMultiPart _HttpMultiPartParser::parse() {
                     if(mNewLineTextIndex == 1) {
                         mNewLineTextIndex = 0;
                         if(mContentTypeBuff == nullptr) {
-                            mContentTypeBuff = mReader->pop();
+                            mContentTypeBuff = reader->pop();
                         } else {
-                            mContentTypeBuff->append(mReader->pop());
+                            mContentTypeBuff->append(reader->pop());
                         }
 
                         mContentType = parseContentType(mContentTypeBuff->toString());
@@ -179,7 +195,8 @@ HttpMultiPart _HttpMultiPartParser::parse() {
                 if(v == mBoundaryStr[mBoundaryIndex]) {
                     if(mBoundaryIndex == (mBoundary->size()-1)) {
                         //flush data
-                        ByteArray content = mReader->pop();
+                        mBoundaryIndex = 0;
+                        ByteArray content = reader->pop();
                         //content->qucikShrink(content->size() - mBoundary->size());
 
                         if(mContentType == nullptr) {
@@ -201,11 +218,16 @@ HttpMultiPart _HttpMultiPartParser::parse() {
                         } else {
                             //hit complete flush file
                             if(mFileStream == nullptr) {
+                                printf("ParseContent createFile");
                                 String filepath = mEnv->get(st(Enviroment)::gHttpMultiPartFilePath);
                                 String filename = mContentDisp->dispositions->get("filename");
                                 mFile = createFile(filepath->append(filename));
+                                mFile->createNewFile();
                                 mFileStream = createFileOutputStream(mFile);
                                 mFileStream->open();
+                            } 
+                            
+                            if(mContentBuff == nullptr) {
                                 mContentBuff = content;
                             } else {
                                 mContentBuff->append(content);
@@ -220,49 +242,55 @@ HttpMultiPart _HttpMultiPartParser::parse() {
                             HttpMultiPartFile file = createHttpMultiPartFile(mFile);
                             mMultiPart->addPartData(file);
                         }
-
                         mStatus = ParseStartBoundryEnd;
+                        continue;
                     }
                     mBoundaryIndex++;
                 }
                 break;
         }
-
     }
-
+    
+    printf("parse trace3 \n");
     //check whether there is no analyze buff
-    if(mReader->getReadableLength() != 0) {
+    if(reader->getReadableLength() != 0) {
         switch(mStatus) {
             case ParseStartBoundry:{
-                mReader->pop();
+                reader->pop();
             }
             break;
 
             case ParseStartBoundryEnd:{
-                mReader->pop();
+                reader->pop();
             }
             break;
 
             case ParseContentDisposition:{
                 if(mContentDispositionBuff == nullptr) {
-                    mContentDispositionBuff = mReader->pop();
+                    mContentDispositionBuff = reader->pop();
                 } else {
-                    mContentDispositionBuff->append(mReader->pop());
+                    mContentDispositionBuff->append(reader->pop());
                 }
+            }
+            break;
+
+            case ParseContentDispositionEnd:{
+                reader->pop();
             }
             break;
 
             case ParseContentType:{
                 if(mContentTypeBuff == nullptr) {
-                    mContentTypeBuff = mReader->pop();
+                    mContentTypeBuff = reader->pop();
                 } else {
-                    mContentTypeBuff->append(mReader->pop());
+                    mContentTypeBuff->append(reader->pop());
                 }
             }
             break;
 
             case ParseContent:{
                 if(mContentType != nullptr) {
+                    printf("parse trace4 \n");
                     if(mFileStream == nullptr) {
                         String filepath = mEnv->get(st(Enviroment)::gHttpMultiPartFilePath);
                         String filename = mContentDisp->dispositions->get("filename");
@@ -270,13 +298,21 @@ HttpMultiPart _HttpMultiPartParser::parse() {
                         mFileStream->open();
                     }
 
-                    mFileStream->write(mReader->pop());
+                    ByteArray content = reader->pop();
+                    if(mContentBuff != nullptr) {
+                        mContentBuff->append(content);
+                    } else {
+                        mContentBuff = content;
+                    }
+
+                    mFileStream->write(mContentBuff);
                     mFileStream->flush();
+                    mContentBuff = nullptr;
                 } else {
                     if(mContentBuff != nullptr) {
-                        mContentBuff->append(mReader->pop());
+                        mContentBuff->append(reader->pop());
                     } else {
-                        mContentBuff = mReader->pop();
+                        mContentBuff = reader->pop();
                     }
                 }
             }

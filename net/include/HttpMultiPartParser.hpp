@@ -23,9 +23,9 @@ public:
 
 DECLARE_SIMPLE_CLASS(HttpMultiPartParser) {
 public:
-    _HttpMultiPartParser(String,int,ByteRingArrayReader);
+    _HttpMultiPartParser(String,int);
 
-    HttpMultiPart parse();
+    HttpMultiPart parse(ByteRingArrayReader);
     
     static const int Complete;
     static const int Continue;
@@ -34,6 +34,7 @@ public:
     static const int ParseStartBoundry;
     static const int ParseStartBoundryEnd;
     static const int ParseContentDisposition;
+    static const int ParseContentDispositionEnd;
     static const int ParseContentType;
     static const int ParseContent;
 
@@ -72,7 +73,7 @@ private:
 
     int mStatus;
 
-    ByteRingArrayReader mReader;
+    //ByteRingArrayReader mReader;
 
     PartContentDisposition mContentDisp;
 

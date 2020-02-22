@@ -47,7 +47,7 @@ void _TcpServerThread::setRcvBuffSize(int s) {
 }
 
 void _TcpServerThread::run() {
-    const int EPOLL_SIZE = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerEpollSize);
+    const int EPOLL_SIZE = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerEpollSize,1024);
     struct epoll_event events[EPOLL_SIZE];
     
     while(1) {
@@ -160,8 +160,8 @@ _TcpServer::_TcpServer(int port,SocketListener l):_TcpServer{nullptr,port,l} {
 _TcpServer::_TcpServer(String ip,int port,SocketListener l):
            _TcpServer{ip,
                       port,
-                      st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerRcvBuffSize),
-                      st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerClientNums),
+                      st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerRcvBuffSize,1024*32),
+                      st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerClientNums,1024*32),
                       l}{
     
 }
@@ -169,7 +169,7 @@ _TcpServer::_TcpServer(String ip,int port,SocketListener l):
 _TcpServer::_TcpServer(String ip,int port,int rcvBuffsize,int connectionsNum,SocketListener l) {
 
     String reason;
-    const int EPOLL_SIZE = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerEpollSize);
+    const int EPOLL_SIZE = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerEpollSize,1024);
     if(l == nullptr) {
         throw InitializeException(createString("SocketListener is null"));
     }

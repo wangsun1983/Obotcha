@@ -15,13 +15,9 @@ public:
 
     void set(String,String);
 
-    int getInt(String);
-
     int getInt(String,int defaultvalue);
 
-    bool getBoolean(String);
-
-    int getBoolean(String,bool defaultvalue);
+    bool getBoolean(String,bool defaultvalue);
 
     String get(String);
 

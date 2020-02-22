@@ -41,7 +41,7 @@ int _HttpV1ResponseWriter::flush() {
 
     if(mFile != nullptr) {
         Enviroment env = st(Enviroment)::getInstance();
-        int buffsize = env->getInt(st(Enviroment)::gHttpServerSendFileBufferSize);
+        int buffsize = env->getInt(st(Enviroment)::gHttpServerSendFileBufferSize,64*1024);
         if(mFile->exists()) {
             printf("file size is %d \n",buffsize);
 

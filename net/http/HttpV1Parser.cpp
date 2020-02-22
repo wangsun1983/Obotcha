@@ -80,7 +80,7 @@ int _HttpV1Parser::on_chunk_complete(http_parser*parser) {
 
 _HttpV1Parser::_HttpV1Parser() {
     mEnv = st(Enviroment)::getInstance();
-    mBuff = createByteRingArray(mEnv->getInt(st(Enviroment)::gHttpBufferSize));
+    mBuff = createByteRingArray(mEnv->getInt(st(Enviroment)::gHttpBufferSize,64*1024));
     mReader = createByteRingArrayReader(mBuff);
     mHeadEndCount = 0;
     mChunkEndCount = 0;
@@ -183,20 +183,21 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
                 printf("HttpClientParseStatusBodyStart,type is %s \n",contenttype->toChars());
+                
                 if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPareFormData) != -1) {
                     if(mMultiPartParser == nullptr) {
                         printf("HttpClientParseStatusBodyStart create multiparser \n");
-                        mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength->toBasicInt(),mReader);
+                        mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength->toBasicInt());
                     }
 
-                    HttpMultiPart multipart = mMultiPartParser->parse();
+                    HttpMultiPart multipart = mMultiPartParser->parse(mReader);
                     if(multipart != nullptr) {
                         mHttpPacket->setMultiPart(multipart);
                         packets->add(mHttpPacket);
+                        mStatus = HttpV1ParseStatusIdle;
                     }
-
-                    mStatus = HttpV1ParseStatusIdle;
-                    continue;
+                    
+                    return packets;
                 }
                 
                 String transferEncoding = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
