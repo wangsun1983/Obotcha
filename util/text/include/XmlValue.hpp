@@ -18,7 +18,6 @@ namespace obotcha {
 
 class _XmlReader;
 class _XmlValue;
-class _XmlAttribute;
 class _XmlDocument;
 class _XmlWriter;
 
@@ -31,7 +30,6 @@ public:
 
     bool next();
 
-    //sp<_XmlAttribute> getAttribute();
     String getName();
 
     String getValue();
@@ -62,27 +60,6 @@ private:
     xml_node<>*  node; 
 };
 
-DECLARE_SIMPLE_CLASS(XmlAttribute) {
-
-public:
-    friend class _XmlValue;
-    
-    _XmlAttribute(sp<_XmlValue> node,sp<_XmlDocument> r,String n,String v);
-
-    int updateName(String name,String newname);
-
-    int updateValue(String name,String newvalue);
-
-private:
-    sp<_XmlDocument> reader;
-
-    //xml_attribute<char> * attr;
-    sp<_XmlValue> xmlvalue;
-
-    //xml_node<>*  node; 
-};
-
-
 DECLARE_SIMPLE_CLASS(XmlValue) {
 
 public:
@@ -91,7 +68,6 @@ public:
     friend class _XmlValueIterator;
     friend class _XmlDocument;
     friend class _XmlWriter;
-    friend class _XmlAttribute;
 
     _XmlValue(xml_node<> *n,sp<_XmlDocument> d);
 
@@ -110,8 +86,6 @@ public:
     Double getDoubleAttr(String attr);
 
     Float getFloatAttr(String attr);
-
-    sp<_XmlAttribute> getAttribute();
 
     String getStringValue();
 
@@ -146,6 +120,10 @@ public:
     void appendNode(String name,String value);
 
     void appendAttr(String name,String value);
+
+    int updateAttr(String name,String value);
+
+    int renameAttr(String name,String newnanme);
 
     void removeNode(XmlValue v);
 

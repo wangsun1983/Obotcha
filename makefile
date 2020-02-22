@@ -47,7 +47,8 @@ endif
 obotchacflags = $(cflags) \
 				$(obotchastrict)
 
-obotchacppflags = $(obotchacflags)
+obotchacppflags = $(cppflags) \
+                $(obotchastrict)
 
 external = -lpthread \
 		-ldl \

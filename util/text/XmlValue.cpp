@@ -68,41 +68,6 @@ XmlValue _XmlValueIterator::getValue() {
     return value;
 }
 
-//------------------ XmlAttribute -----------------//
-_XmlAttribute::_XmlAttribute(sp<_XmlValue> node,sp<_XmlDocument> r,String n,String v) {
-    xmlvalue = node;
-    reader = r;
-}
-
-int _XmlAttribute::updateName(String name,String newname) {
-    if(name == nullptr || newname == nullptr) {
-        return -InvalidParam;
-    }
-
-    xml_attribute<> *attr = xmlvalue->node->first_attribute(name->toChars());
-    if(attr != nullptr) {
-        attr->name(reader->xmlDoc.allocate_string(newname->toChars()),
-                   newname->size());
-        return 0;
-    }
-
-    return -NotFound;
-}
-
-int _XmlAttribute::updateValue(String name,String newvalue) {
-    if(name == nullptr || newvalue == nullptr) {
-        return -InvalidParam;
-    }
-
-    xml_attribute<> *attr = xmlvalue->node->first_attribute(name->toChars());
-    if(attr != nullptr) {
-        attr->value(reader->xmlDoc.allocate_string(newvalue->toChars()),newvalue->size());
-        return 0;
-    }
-
-    return -NotFound;
-}
-
 //------------------ XmlValue -----------------//
 //_XmlValue::_XmlValue(xml_node<> *n) {
 //    node = n;
@@ -168,11 +133,6 @@ Float _XmlValue::getFloatAttr(String attr) {
     }
     String val = createString(v->value());
     return val->toFloat();
-}
-
-sp<_XmlAttribute> _XmlValue::getAttribute() {
-    //TODO
-    return nullptr;
 }
 
 String _XmlValue::getStringValue() {
@@ -317,6 +277,35 @@ void _XmlValue::appendNode(String name,String value) {
         doc->xmlDoc.allocate_string(value->toChars()));
 
     node->append_node(newnode->node);
+}
+
+int _XmlValue::updateAttr(String name,String newvalue) {
+    if(name == nullptr || newvalue == nullptr) {
+        return -InvalidParam;
+    }
+
+    xml_attribute<> *attr = node->first_attribute(name->toChars());
+    if(attr != nullptr) {
+        attr->value(doc->xmlDoc.allocate_string(newvalue->toChars()),newvalue->size());
+        return 0;
+    }
+
+    return -NotFound;
+}
+
+int _XmlValue::renameAttr(String name,String newname) {
+    if(name == nullptr || newname == nullptr) {
+        return -InvalidParam;
+    }
+
+    xml_attribute<> *attr = node->first_attribute(name->toChars());
+    if(attr != nullptr) {
+        attr->name(doc->xmlDoc.allocate_string(newname->toChars()),
+                   newname->size());
+        return 0;
+    }
+
+    return -NotFound;
 }
 
 void _XmlValue::appendAttr(String name,String value) {

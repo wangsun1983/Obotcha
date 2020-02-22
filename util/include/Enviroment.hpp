@@ -84,6 +84,18 @@ public:
     static const String gHttpServerSendFileBufferSize;
     static const int DefaultHttpServerSendFileBufferSize;
 
+    static const String gHttpMultiPartDispositionSize;
+    static const int DefaultHttpMultiPartDispositionSize;
+
+    static const String gHttpMultiPartContentTypeSize;
+    static const int DefaultHttpMultiContentTypeSize;
+
+    static const String gHttpMultiPartContentSize;
+    static const int DefaultHttpMultiContentSize;
+
+    static const String gHttpMultiPartFilePath;
+    static const String DefaultMultiPartFilePath;
+
 private:
     _Enviroment();
 

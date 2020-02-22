@@ -1,12 +1,12 @@
 sqlDir = ./util/sql
 
 link += sqlite3connection \
-		mysqlconnection \
 		sqlconnectionfactory \
+		mysqlconnection \
 
 objs += $(outtmp)/sqlite3connection.o \
-		$(outtmp)/mysqlconnection.o \
 		$(outtmp)/sqlconnectionfactory.o \
+		$(outtmp)/mysqlconnection.o \
 
 sqlite3connection :$(sqlDir)/sqlite3/Sqlite3Connection.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/sqlite3/Sqlite3Connection.cpp -o $(outtmp)/sqlite3connection.o

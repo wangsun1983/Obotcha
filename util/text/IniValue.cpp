@@ -17,9 +17,10 @@ namespace obotcha {
     ini = dict;
  }
 
-_IniValue::_IniValue(IniValue v) {
+//no use
+//_IniValue::_IniValue(IniValue v) {
     //TODO
-}
+//}
 
 int _IniValue::getSectionNum() {
     if(ini != nullptr) {

@@ -34,8 +34,6 @@ enum DateTimeFormat {
 DECLARE_SIMPLE_CLASS(DateTime) {
 public:
     _DateTime();
-	
-	_DateTime(const tm& tmStruct);
 
     _DateTime(int year, 
               int month, 

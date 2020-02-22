@@ -109,7 +109,12 @@ public:
     }
 
     U get(T t) {
-        return hashmap[t];
+        auto ite = hashmap.find(t);
+        if(ite != hashmap.end()) {  
+            return ite->second;
+        }
+
+        return nullptr;
     }
 
     void remove(T t) {

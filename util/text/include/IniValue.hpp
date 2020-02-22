@@ -19,9 +19,10 @@ public:
     _IniValue(int size);
 
     _IniValue();
-
-    _IniValue(IniValue v);
-
+    
+    //no use
+    //_IniValue(IniValue v);
+    
     _IniValue(dictionary *dict);
 
     int getSectionNum();

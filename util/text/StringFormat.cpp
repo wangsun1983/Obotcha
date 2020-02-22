@@ -11,10 +11,10 @@ _StringFormat::_StringFormat() {
     //TODO
 }
 
-String _StringFormat::format(String fmt, ...) {
+String _StringFormat::format(char *fmt, ...) {
     va_list args;
-    va_start(args, fmt->toChars());
-    String str = _format(fmt->toChars(), args);
+    va_start(args, fmt);
+    String str = _format(fmt, args);
     va_end(args);
 
     return str;

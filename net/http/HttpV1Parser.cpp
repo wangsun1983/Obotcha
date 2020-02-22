@@ -182,15 +182,21 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
                 //check whether there is a multipart
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
-                if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPareFormData) != 0) {
-                    //TODO
+                printf("HttpClientParseStatusBodyStart,type is %s \n",contenttype->toChars());
+                if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPareFormData) != -1) {
                     if(mMultiPartParser == nullptr) {
-                        mMultiPartParser = createHttpMultiPartParser(contentlength->toBasicInt(),mReader);
+                        printf("HttpClientParseStatusBodyStart create multiparser \n");
+                        mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength->toBasicInt(),mReader);
                     }
-                      
-                    if(mMultiPartParser->parse() == st(HttpMultiPartParser)::ParseComplete) {
-                        //TODO
+
+                    HttpMultiPart multipart = mMultiPartParser->parse();
+                    if(multipart != nullptr) {
+                        mHttpPacket->setMultiPart(multipart);
+                        packets->add(mHttpPacket);
                     }
+
+                    mStatus = HttpV1ParseStatusIdle;
+                    continue;
                 }
                 
                 String transferEncoding = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);

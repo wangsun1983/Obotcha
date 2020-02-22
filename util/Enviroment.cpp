@@ -62,8 +62,23 @@ int const _Enviroment::DefaultUdpServerBufferSize = 64*1024;
 String const _Enviroment::gHttpServerPort = "http.server.port";
 int const _Enviroment::DefaultHttpServerPort = 80;
 
-String const  _Enviroment::gHttpServerSendFileBufferSize ="http.server.sendfile.buffer.size";
+String const _Enviroment::gHttpServerSendFileBufferSize ="http.server.sendfile.buffer.size";
 int const _Enviroment::DefaultHttpServerSendFileBufferSize = 1024*128;
+
+String const _Enviroment::gHttpMultiPartDispositionSize = "http.part.disposition.size";
+int const _Enviroment::DefaultHttpMultiPartDispositionSize = 1024;
+
+String const _Enviroment::gHttpMultiPartContentTypeSize = "http.part.contenttype.size";;
+int const _Enviroment::DefaultHttpMultiContentTypeSize = 1024;
+
+String const _Enviroment::gHttpMultiPartContentSize = "http.part.content.size";
+int const  _Enviroment::DefaultHttpMultiContentSize = 32*1024;
+
+String const  _Enviroment::gHttpMultiPartFilePath = "http.part.file.path";
+String const _Enviroment::DefaultMultiPartFilePath = "./tmp";
+
+String const  gHttpMultiPartFilePath = "http.";
+    static const String DefaultMultiPartFilePath;
 
 sp<_Enviroment> _Enviroment::getInstance() {
     if(mInstance != nullptr) {
@@ -123,12 +138,17 @@ int _Enviroment::getInt(String,int defaultvalue) {
     return -1;
 }
 
-bool getBoolean(String v){
+bool _Enviroment::getBoolean(String v){
     //TODO
     return false;
 }
 
-String get(String v) {
+String _Enviroment::get(String v) {
+    //TODO
+    return nullptr;
+}
+
+String _Enviroment::get(String,String defaultvalue) {
     //TODO
     return nullptr;
 }

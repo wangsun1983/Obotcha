@@ -12,7 +12,7 @@ DECLARE_SIMPLE_CLASS(StringFormat)
 public:
     _StringFormat();
 
-    String format(String fmt, ...);
+    String format(char *fmt, ...);
 
 private:
     String _format(String fmt,va_list args);

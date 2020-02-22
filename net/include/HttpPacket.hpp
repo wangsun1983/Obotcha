@@ -57,6 +57,10 @@ public:
 
     void setStatusCode(int);
 
+    void setMultiPart(HttpMultiPart);
+
+    HttpMultiPart getMultiPart();
+
     String genHttpRequest();
 
     ByteArray genHttpResponse();

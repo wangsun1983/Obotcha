@@ -82,6 +82,14 @@ void _HttpPacket::setStatusCode(int v) {
     mStatusCode = v;
 }
 
+void _HttpPacket::setMultiPart(HttpMultiPart p) {
+    mMultiPart = p;
+}
+
+HttpMultiPart _HttpPacket::getMultiPart() {
+    return mMultiPart;
+}
+
 String _HttpPacket::genHttpRequest() {
     String req = createString();
     switch(mMethod) {

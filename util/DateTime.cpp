@@ -126,15 +126,10 @@ const std::string _DateTime::REGEX_LIST[] =
 	_DateTime::RFC1036_REGEX,
 	_DateTime::ASCTIME_REGEX,
 	_DateTime::SORTABLE_REGEX
-
 };
 
 
 _DateTime::_DateTime() {
-    //TODO
-}
-	
-_DateTime::_DateTime(const tm& tmStruct) {
     //TODO
 }
 		
