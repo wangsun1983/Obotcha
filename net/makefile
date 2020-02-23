@@ -45,6 +45,8 @@ link += inetaddress \
 		websockethybi00composer \
 		websocketpermessagedeflate \
 		websocketclient \
+		#httpv2hpackutil \
+		#httpv2huffmandecoder \
 
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/ntpclient.o \
@@ -91,6 +93,8 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/websocketpermessagedeflate.o \
 		$(outtmp)/websocketclientinfo.o \
 		$(outtmp)/websocketclient.o \
+		#$(outtmp)/httpv2hpackutil.o \
+		#$(outtmp)/httpv2huffmandecoder.o \
 
 inetaddress :$(netDir)/InetAddress.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
@@ -226,4 +230,10 @@ websocketcomposer :$(netDir)/websocket/WebSocketComposer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketComposer.cpp -o $(outtmp)/websocketcomposer.o $(external)		
 
 ntpclient :$(netDir)/NtpClient.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/NtpClient.cpp -o $(outtmp)/ntpclient.o $(external)			
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/NtpClient.cpp -o $(outtmp)/ntpclient.o $(external)
+
+#httpv2hpackutil :$(netDir)/http/v2/HttpV2HpackUtil.cpp
+#	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HpackUtil.cpp -o $(outtmp)/httpv2hpackutil.o $(external)
+
+#httpv2huffmandecoder :$(netDir)/http/v2/HttpV2HuffmanDecoder.cpp
+#	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HuffmanDecoder.cpp -o $(outtmp)/httpv2huffmandecoder.o $(external)
