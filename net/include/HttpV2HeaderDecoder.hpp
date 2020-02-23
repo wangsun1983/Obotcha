@@ -7,6 +7,10 @@
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(HttpV2HeaderDecoder) {
+public:
+
+
+private:
 
 };
 
