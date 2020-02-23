@@ -87,7 +87,7 @@ _HttpV1Parser::_HttpV1Parser() {
 }
 
 void _HttpV1Parser::pushHttpData(ByteArray data) {
-    printf("pushHttpData data is %s \n",data->toString()->toChars());
+    //printf("pushHttpData data is %s \n",data->toString()->toChars());
     //for(int i = 0;i <data->size();i++) {
     //    printf("data[%d] is %x \n",i,data->at(i));
     //}
@@ -182,7 +182,7 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
                 //check whether there is a multipart
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
-                printf("HttpClientParseStatusBodyStart,type is %s \n",contenttype->toChars());
+                //printf("HttpClientParseStatusBodyStart,type is %s \n",contenttype->toChars());
                 
                 if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPareFormData) != -1) {
                     if(mMultiPartParser == nullptr) {

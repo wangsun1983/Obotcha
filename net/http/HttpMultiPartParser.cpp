@@ -182,7 +182,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         }
 
                         mContentType = parseContentType(mContentTypeBuff->toString());
-                        mStatus = ParseContent;
+                        mStatus = ParseContentDispositionEnd;
                         continue;
                     }
                     mNewLineTextIndex++;
@@ -191,7 +191,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseContent:
-                printf("ParseContent v is %x \n",v);
+                printf("ParseContent v is %c \n",v);
                 if(v == mBoundaryStr[mBoundaryIndex]) {
                     if(mBoundaryIndex == (mBoundary->size()-1)) {
                         //flush data
@@ -232,12 +232,16 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                             } else {
                                 mContentBuff->append(content);
                             }
-
+                            
+                            printf("mContentBuff size is %d \n",mContentBuff->size());
+                            mContentBuff->qucikShrink(mContentBuff->size() - mBoundary->size() - NewLine->size());
+                            printf("mContentBuff2 size is %d \n",mContentBuff->size());
                             mFileStream->write(mContentBuff);
                             mFileStream->flush();
                             mFileStream->close();
                             mFileStream = nullptr;
                             mContentBuff = nullptr;
+                            mContentType = nullptr;
 
                             HttpMultiPartFile file = createHttpMultiPartFile(mFile);
                             mMultiPart->addPartData(file);
@@ -289,7 +293,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseContent:{
-                if(mContentType != nullptr) {
+                if(mContentType != nullptr && mBoundaryIndex == 0) {
                     printf("parse trace4 \n");
                     if(mFileStream == nullptr) {
                         String filepath = mEnv->get(st(Enviroment)::gHttpMultiPartFilePath);
