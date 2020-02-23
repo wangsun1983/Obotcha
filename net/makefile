@@ -47,6 +47,9 @@ link += inetaddress \
 		websocketclient \
 		httpv2hpackutil \
 		httpv2huffmandecoder \
+		httpv2huffmanencoder \
+		httpv2headerencoder \
+		httpv2headerdecoder \
 
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/ntpclient.o \
@@ -95,6 +98,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/websocketclient.o \
 		$(outtmp)/httpv2hpackutil.o \
 		$(outtmp)/httpv2huffmandecoder.o \
+		$(outtmp)/httpv2huffmanencoder.o \
+		$(outtmp)/httpv2headerencoder.o \
+		$(outtmp)/httpv2headerdecoder.o \
 
 inetaddress :$(netDir)/InetAddress.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
@@ -237,3 +243,12 @@ httpv2hpackutil :$(netDir)/http/v2/HttpV2HpackUtil.cpp
 
 httpv2huffmandecoder :$(netDir)/http/v2/HttpV2HuffmanDecoder.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HuffmanDecoder.cpp -o $(outtmp)/httpv2huffmandecoder.o $(external)
+
+httpv2huffmanencoder :$(netDir)/http/v2/HttpV2HuffmanEncoder.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HuffmanEncoder.cpp -o $(outtmp)/httpv2huffmanencoder.o $(external)
+
+httpv2headerencoder :$(netDir)/http/v2/HttpV2HeaderEncoder.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HeaderEncoder.cpp -o $(outtmp)/httpv2headerencoder.o $(external)
+
+httpv2headerdecoder :$(netDir)/http/v2/HttpV2HeaderDecoder.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HeaderDecoder.cpp -o $(outtmp)/httpv2headerdecoder.o $(external)

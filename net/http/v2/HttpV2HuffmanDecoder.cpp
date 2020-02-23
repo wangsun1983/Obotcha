@@ -53,7 +53,7 @@ void _HuffmanDecoder::insert(Node root, int symbol, int code, byte length) {
             throw IllegalStateException("invalid Huffman code: prefix not unique");
         }
         length -= 8;
-        int i = (st(Math)::abs(code) >> length) & 0xFF;
+        int i = (((unsigned)code) >> length) & 0xFF;
         if (current->children[i] == nullptr) {
             current->children[i] = createNode();
         }
@@ -82,7 +82,7 @@ ByteArray _HuffmanDecoder::decode(ByteArray buf) {
         current = (current << 8) | b;
         bits += 8;
         while (bits >= 8) {
-            int c = (st(Math)::abs(current) >> (bits - 8)) & 0xFF;
+            int c = (((unsigned)current) >> (bits - 8)) & 0xFF;
             node = node->children[c];
             bits -= node->bits;
             if (node->isTerminal()) {
