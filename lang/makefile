@@ -23,6 +23,7 @@ link += integer \
 	valuenotfoundexception \
 	transformexception \
 	illegalstateexception \
+	illegalargumentexception \
 	error \
 
 objs += $(outtmp)/integer.o \
@@ -49,6 +50,7 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/valuenotfoundexception.o \
 	$(outtmp)/transformexception.o \
 	$(outtmp)/illegalstateexception.o \
+	$(outtmp)/illegalargumentexception.o
 
 integer :$(langDir)/Integer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Integer.cpp -o $(outtmp)/integer.o $(external)
@@ -121,4 +123,6 @@ transformexception :$(langDir)/TransformException.cpp
 
 illegalstateexception :$(langDir)/IllegalStateException.cpp
 		$(cppcompiler) $(obotchacppflags) -c $(langDir)/IllegalStateException.cpp -o $(outtmp)/illegalstateexception.o $(external)
-		
+
+illegalargumentexception :$(langDir)/IllegalArgumentException.cpp
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/IllegalArgumentException.cpp -o $(outtmp)/illegalargumentexception.o $(external)

@@ -257,7 +257,6 @@ public:
     //add for list
     auto operator[] (int i) ->decltype((*m_ptr)[0])
     { 
-        printf("abc \n");
         return (*m_ptr)[i];
     }
 };

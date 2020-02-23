@@ -7,16 +7,30 @@
 
 namespace obotcha {
 
+_ByteArrayWriter::_ByteArrayWriter() {
+    mData = createByteArray(DefaultDataSize);
+    mDataP = mData->toValue();
+    mSize = DefaultDataSize;
+    mIndex = 0;
+    mType = Dynamic;
+}
+
 _ByteArrayWriter::_ByteArrayWriter(ByteArray data) {
     mData = data;
     mDataP = data->toValue();
     mSize = data->size();
     mIndex = 0;
+    mType = Static;
 }
 
 int _ByteArrayWriter::writeShort(int s) {
-    if(mIndex == mSize - 1) {
-        return -ByteArrayWriteFail;
+    if(mIndex < (mSize - sizeof(short))) {
+        if(mType == Dynamic) {
+            mSize = mData->size()*7/4;
+            mData->resize(mSize);
+        } else {
+            return -ByteArrayWriteFail;
+        }
     }
 
     mDataP[mIndex++] = (byte) ((s >> 8) & 0xff);
@@ -25,14 +39,19 @@ int _ByteArrayWriter::writeShort(int s) {
         return -ByteArrayWritePart;
     }
 
-    mDataP[mIndex++] = (byte)  (s        & 0xff);
+    mDataP[mIndex++] = (byte)  (s& 0xff);
 
     return ByteArrayWriteSuccess;
 }
 
 int _ByteArrayWriter::writeByte(byte v) {
-    if(mIndex == mSize - 1) {
-        return -ByteArrayWriteFail;
+    if(mIndex < (mSize - 1)) {
+        if(mType == Dynamic) {
+            mSize = mData->size()*7/4;
+            mData->resize(mSize);
+        } else {
+            return -ByteArrayWriteFail;
+        }
     }
 
     mDataP[mIndex++] = v;
@@ -40,8 +59,13 @@ int _ByteArrayWriter::writeByte(byte v) {
 }
 
 int _ByteArrayWriter::writeInt(int v) {
-    if(mIndex == mSize - 1) {
-        return -ByteArrayWriteFail;
+    if(mIndex < (mSize - sizeof(int))) {
+        if(mType == Dynamic) {
+            mSize = mData->size()*7/4;
+            mData->resize(mSize);
+        } else {
+            return -ByteArrayWriteFail;
+        }
     }
 
     mDataP[mIndex++] = (byte) ((v >> 24) & 0xff);
@@ -64,6 +88,15 @@ int _ByteArrayWriter::writeInt(int v) {
 }
 
 long _ByteArrayWriter::writeLong(long v) {
+    if(mIndex < (mSize - sizeof(long))) {
+        if(mType == Dynamic) {
+            mSize = mData->size()*7/4;
+            mData->resize(mSize);
+        } else {
+            return -ByteArrayWriteFail;
+        }
+    }
+
     int bytesize = sizeof(long);
     switch(bytesize) {
         case 4: {
@@ -72,98 +105,88 @@ long _ByteArrayWriter::writeLong(long v) {
 
         case 8: {
             mDataP[mIndex++] = (byte) ((v >> 56L) & 0xff);
-            if(mIndex == mSize - 1) {
-                return -ByteArrayWritePart;
-            }
             mDataP[mIndex++] = (byte) ((v >> 48L) & 0xff);
-            if(mIndex == mSize - 1) {
-                return -ByteArrayWritePart;
-            }
             mDataP[mIndex++] = (byte) ((v >> 40L) & 0xff);
-            if(mIndex == mSize - 1) {
-                return -ByteArrayWritePart;
-            }
             mDataP[mIndex++] = (byte) ((v >> 32L) & 0xff);
-            if(mIndex == mSize - 1) {
-                return -ByteArrayWritePart;
-            }
             mDataP[mIndex++] = (byte) ((v >> 24L) & 0xff);
-            if(mIndex == mSize - 1) {
-                return -ByteArrayWritePart;
-            }
             mDataP[mIndex++] = (byte) ((v >> 16L) & 0xff);
-            if(mIndex == mSize - 1) {
-                return -ByteArrayWritePart;
-            }
             mDataP[mIndex++] = (byte) ((v >>  8L) & 0xff);
-            if(mIndex == mSize - 1) {
-                return -ByteArrayWritePart;
-            }
             mDataP[mIndex++] = (byte)  (v          & 0xff);
             return ByteArrayWriteSuccess;
         }
     }
 
-    return ByteArrayWriteSuccess;
+    return -ByteArrayWriteFail;
 }
 
 int _ByteArrayWriter::writeByteArray(ByteArray b) {
-    if(mIndex + b->size() < mSize) {
-        memcpy(&mDataP[mIndex],b->toValue(),b->size());
-        mIndex += b->size();
-        return ByteArrayWriteSuccess;
-    } else {
-        memcpy(&mDataP[mIndex],b->toValue(),mSize - mIndex);
-        mIndex = mSize - 1;
-        return -ByteArrayWritePart;
+    if(mIndex < (mSize - b->size())) {
+        if(mType == Dynamic) {
+            mSize = (mData->size() + b->size())*7/4;
+            mData->resize(mSize);
+        } else {
+            return -ByteArrayWriteFail;
+        }
     }
 
-    return -ByteArrayWriteFail;
+    memcpy(&mDataP[mIndex],b->toValue(),b->size());
+    mIndex += b->size();
+    return ByteArrayWriteSuccess;
 }
 
 int _ByteArrayWriter::writeString(String str) {
-    if(mIndex + str->size() < mSize) {
-        memcpy(&mDataP[mIndex],str->toChars(),str->size());
-        mIndex += str->size();
-        return ByteArrayWriteSuccess;
-    } else {
-        memcpy(&mDataP[mIndex],str->toChars(),mSize - mIndex);
-        mIndex = mSize - 1;
-        return -ByteArrayWritePart;
+    if(mIndex < (mSize - str->size())) {
+        if(mType == Dynamic) {
+            mSize = (mData->size() + str->size())*7/4;
+            mData->resize(mSize);
+        } else {
+            return -ByteArrayWriteFail;
+        }
     }
 
-    return -ByteArrayWriteFail;
+    memcpy(&mDataP[mIndex],str->toChars(),str->size());
+    mIndex += str->size();
+    return ByteArrayWriteSuccess;
 }
 
 int _ByteArrayWriter::writeByteArray(ByteArray b,int length) {
-    if(mIndex + length < mSize) {
-        memcpy(&mDataP[mIndex],b->toValue(),length);
-        mIndex += length;
-        return ByteArrayWriteSuccess;
-    } else {
-        memcpy(&mDataP[mIndex],b->toValue(),mSize - mIndex);
-        mIndex = mSize - 1;
-        return -ByteArrayWritePart;
+    if(mIndex < (mSize - length)) {
+        if(mType == Dynamic) {
+            mSize = (mData->size() + length)*7/4;
+            mData->resize(mSize);
+        } else {
+            return -ByteArrayWriteFail;
+        }
     }
 
-    return -ByteArrayWriteFail;
+    memcpy(&mDataP[mIndex],b->toValue(),length);
+    mIndex += length;
+    return ByteArrayWriteSuccess;
 }
 
 int _ByteArrayWriter::write(byte *data,int length) {
-    if(mIndex + length < mSize) {
-        memcpy(&mDataP[mIndex],data,length);
-        mIndex += length;
-        return ByteArrayWriteSuccess;
-    } else {
-        memcpy(&mDataP[mIndex],data,mSize - mIndex);
-        mIndex = mSize - 1;
-        return -ByteArrayWritePart;
+    if(mIndex < (mSize - length)) {
+        if(mType == Dynamic) {
+            mSize = (mData->size() + length)*7/4;
+            mData->resize(mSize);
+        } else {
+            return -ByteArrayWriteFail;
+        }
     }
-    return -ByteArrayWriteFail;
+
+    memcpy(&mDataP[mIndex],data,length);
+    mIndex += length;
+    return ByteArrayWriteSuccess;
+    
 }
 
 int _ByteArrayWriter::getIndex() {
     return mIndex;
+}
+
+ByteArray _ByteArrayWriter::getByteArray() {
+    mData->qucikShrink(mSize);
+    return mData;
 }
 
 }

@@ -18,7 +18,9 @@ enum ByteArrayWriterResult {
 DECLARE_SIMPLE_CLASS(ByteArrayWriter) {
 
 public:
+    _ByteArrayWriter(); //dynamic array
     _ByteArrayWriter(ByteArray);
+
     int writeShort(int v);
     int writeByte(byte b);
     int writeInt(int v);
@@ -30,11 +32,18 @@ public:
 
     int write(byte *,int);
 
+    ByteArray getByteArray();
+
 private:
     ByteArray mData;
     byte *mDataP;
     int mIndex;
     int mSize;
+    int mType;
+
+    static const int DefaultDataSize = 1024;
+    static const int Dynamic = 1;
+    static const int Static = 2;
 };
 
 }

@@ -12,7 +12,7 @@ DECLARE_SIMPLE_CLASS(HttpV2HpackUtil) {
 public:
     static const int HuffmanCode[];
     static const byte HuffmanLength[];
-    static const int HUFFMAN_EOS;
+    static const int HUFFMAN_EOS = 256;
 };
 
 }

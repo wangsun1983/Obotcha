@@ -284,6 +284,4 @@ const byte _HttpV2HpackUtil::HuffmanLength[] = {
         30 // EOS
 };
 
-const int _HttpV2HpackUtil::HUFFMAN_EOS = 256;
-
 }
