@@ -50,6 +50,8 @@ link += inetaddress \
 		httpv2huffmanencoder \
 		httpv2headerencoder \
 		httpv2headerdecoder \
+		httpv2headerfield \
+		httpv2dynamictable \
 
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/ntpclient.o \
@@ -101,6 +103,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpv2huffmanencoder.o \
 		$(outtmp)/httpv2headerencoder.o \
 		$(outtmp)/httpv2headerdecoder.o \
+		$(outtmp)/httpv2headerfield.o \
+		$(outtmp)/httpv2dynamictable.o \
+
 
 inetaddress :$(netDir)/InetAddress.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
@@ -252,3 +257,9 @@ httpv2headerencoder :$(netDir)/http/v2/HttpV2HeaderEncoder.cpp
 
 httpv2headerdecoder :$(netDir)/http/v2/HttpV2HeaderDecoder.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HeaderDecoder.cpp -o $(outtmp)/httpv2headerdecoder.o $(external)
+
+httpv2headerfield :$(netDir)/http/v2/HttpV2HeaderField.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HeaderField.cpp -o $(outtmp)/httpv2headerfield.o $(external)
+
+httpv2dynamictable :$(netDir)/http/v2/HttpV2DynamicTable.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2DynamicTable.cpp -o $(outtmp)/httpv2dynamictable.o $(external)

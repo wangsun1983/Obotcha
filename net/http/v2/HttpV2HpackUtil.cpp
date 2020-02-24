@@ -284,4 +284,16 @@ const byte _HttpV2HpackUtil::HuffmanLength[] = {
         30 // EOS
 };
 
+bool _HttpV2HpackUtil::equals(ByteArray s1, ByteArray s2) {
+    if (s1->size() != s2->size()) {
+      return false;
+    }
+    char c = 0;
+    for (int i = 0; i < s1->size(); i++) {
+      c |= (s1->at(i) ^ s2->at(i));
+    }
+
+    return c == 0;
+}
+
 }

@@ -41,6 +41,14 @@ public:
 
     friend class _ListIterator<T>;
 
+    _ArrayList(){
+        //TODO Nothing
+    }
+
+    _ArrayList(int size) {
+        elements.reserve(size);
+    }
+
     inline void add(T val) {
         elements.insert(elements.end(),val); 
     }

@@ -20,17 +20,16 @@ public:
     int size();
 
     bool equals(HttpV2HeaderField);
-    
-private:
+
     // Section 4.1. Calculating Table Size
     // The additional 32 octets account for an estimated
     // overhead associated with the structure.
-    static const int HEADER_ENTRY_OVERHEAD = 32;
-
-    ByteArray name;
-    ByteArray value;
-
+    static const int HeaderEntryOverhead = 32;
     
+private:
+
+    ByteArray mName;
+    ByteArray mValue;    
 };
 
 
