@@ -292,8 +292,8 @@ bool _HttpV2HpackUtil::equals(ByteArray s1, ByteArray s2) {
     for (int i = 0; i < s1->size(); i++) {
       c |= (s1->at(i) ^ s2->at(i));
     }
-
     return c == 0;
-}
+  }
+
 
 }

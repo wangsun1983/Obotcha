@@ -25,7 +25,7 @@ _HttpV1SocketListener::_HttpV1SocketListener(HttpV1Server s) {
 }
 
 void _HttpV1SocketListener::onAccept(int fd,String ip,int port,ByteArray pack) {
-    printf("_HttpV1SocketListener onAccept,msg is %s \n",pack->toString()->toChars());
+    //printf("_HttpV1SocketListener onAccept,msg is %s \n",pack->toString()->toChars());
     mServer->parseMessage(fd,pack);
 }
 

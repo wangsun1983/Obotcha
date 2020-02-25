@@ -7,6 +7,10 @@
 
 namespace obotcha {
 
+const int _ByteArrayWriter::DefaultDataSize = 1024;
+const int _ByteArrayWriter::Dynamic = 1;
+const int _ByteArrayWriter::Static = 2;
+
 _ByteArrayWriter::_ByteArrayWriter() {
     mData = createByteArray(DefaultDataSize);
     mDataP = mData->toValue();
@@ -24,7 +28,7 @@ _ByteArrayWriter::_ByteArrayWriter(ByteArray data) {
 }
 
 int _ByteArrayWriter::writeShort(int s) {
-    if(mIndex < (mSize - sizeof(short))) {
+    if(mIndex > (mSize - sizeof(short))) {
         if(mType == Dynamic) {
             mSize = mData->size()*7/4;
             mData->resize(mSize);
@@ -45,7 +49,7 @@ int _ByteArrayWriter::writeShort(int s) {
 }
 
 int _ByteArrayWriter::writeByte(byte v) {
-    if(mIndex < (mSize - 1)) {
+    if(mIndex > (mSize - 1)) {
         if(mType == Dynamic) {
             mSize = mData->size()*7/4;
             mData->resize(mSize);
@@ -59,7 +63,7 @@ int _ByteArrayWriter::writeByte(byte v) {
 }
 
 int _ByteArrayWriter::writeInt(int v) {
-    if(mIndex < (mSize - sizeof(int))) {
+    if(mIndex > (mSize - sizeof(int))) {
         if(mType == Dynamic) {
             mSize = mData->size()*7/4;
             mData->resize(mSize);
@@ -88,7 +92,7 @@ int _ByteArrayWriter::writeInt(int v) {
 }
 
 long _ByteArrayWriter::writeLong(long v) {
-    if(mIndex < (mSize - sizeof(long))) {
+    if(mIndex > (mSize - sizeof(long))) {
         if(mType == Dynamic) {
             mSize = mData->size()*7/4;
             mData->resize(mSize);
@@ -120,7 +124,8 @@ long _ByteArrayWriter::writeLong(long v) {
 }
 
 int _ByteArrayWriter::writeByteArray(ByteArray b) {
-    if(mIndex < (mSize - b->size())) {
+    printf("mIndex is %d,mSize is %d,b->size is %d \n",mIndex,mSize,b->size());
+    if(mIndex > (mSize - b->size())) {
         if(mType == Dynamic) {
             mSize = (mData->size() + b->size())*7/4;
             mData->resize(mSize);
@@ -135,7 +140,7 @@ int _ByteArrayWriter::writeByteArray(ByteArray b) {
 }
 
 int _ByteArrayWriter::writeString(String str) {
-    if(mIndex < (mSize - str->size())) {
+    if(mIndex > (mSize - str->size())) {
         if(mType == Dynamic) {
             mSize = (mData->size() + str->size())*7/4;
             mData->resize(mSize);
@@ -150,7 +155,7 @@ int _ByteArrayWriter::writeString(String str) {
 }
 
 int _ByteArrayWriter::writeByteArray(ByteArray b,int length) {
-    if(mIndex < (mSize - length)) {
+    if(mIndex > (mSize - length)) {
         if(mType == Dynamic) {
             mSize = (mData->size() + length)*7/4;
             mData->resize(mSize);
@@ -165,7 +170,7 @@ int _ByteArrayWriter::writeByteArray(ByteArray b,int length) {
 }
 
 int _ByteArrayWriter::write(byte *data,int length) {
-    if(mIndex < (mSize - length)) {
+    if(mIndex > (mSize - length)) {
         if(mType == Dynamic) {
             mSize = (mData->size() + length)*7/4;
             mData->resize(mSize);

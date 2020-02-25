@@ -41,9 +41,9 @@ private:
     int mSize;
     int mType;
 
-    static const int DefaultDataSize = 1024;
-    static const int Dynamic = 1;
-    static const int Static = 2;
+    static const int DefaultDataSize;
+    static const int Dynamic;
+    static const int Static;
 };
 
 }
