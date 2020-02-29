@@ -77,8 +77,11 @@ int const  _Enviroment::DefaultHttpMultiContentSize = 32*1024;
 String const  _Enviroment::gHttpMultiPartFilePath = "http.part.file.path";
 String const _Enviroment::DefaultMultiPartFilePath = "./tmp/";
 
-String const  gHttpMultiPartFilePath = "http.";
-    static const String DefaultMultiPartFilePath;
+String const _Enviroment::gHttpSslKeyPath = "https.ssl.key.path";
+String const _Enviroment::DefaultHttpSslKeyPath = "";
+
+String const _Enviroment::gHttpSslCertificatePath = "https.ssl.cert.path";
+String const _Enviroment::DefaultHttpSslCertificatePath = "";
 
 sp<_Enviroment> _Enviroment::getInstance() {
     if(mInstance != nullptr) {
@@ -122,6 +125,8 @@ _Enviroment::_Enviroment() {
     mProp->set(gHttpMultiPartContentTypeSize,st(String)::valueOf(DefaultHttpMultiContentTypeSize));
     mProp->set(gHttpMultiPartContentSize,st(String)::valueOf(DefaultHttpMultiContentSize));
     mProp->set(gHttpMultiPartFilePath,DefaultMultiPartFilePath);
+    mProp->set(gHttpSslKeyPath,DefaultHttpSslKeyPath);
+    mProp->set(gHttpSslCertificatePath,DefaultHttpSslCertificatePath);
 }
 
 void _Enviroment::set(String tag,String v) {

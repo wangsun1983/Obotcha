@@ -61,6 +61,7 @@ private:
     void addClientFd(int fd);
 
     void removeClientFd(int fd);
+
 };
 
 DECLARE_SIMPLE_CLASS(TcpServer) {

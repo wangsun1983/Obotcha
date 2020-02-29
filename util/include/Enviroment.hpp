@@ -92,6 +92,12 @@ public:
     static const String gHttpMultiPartFilePath;
     static const String DefaultMultiPartFilePath;
 
+    static const String gHttpSslKeyPath;
+    static const String DefaultHttpSslKeyPath;
+
+    static const String gHttpSslCertificatePath;
+    static const String DefaultHttpSslCertificatePath;    
+
 private:
     _Enviroment();
 

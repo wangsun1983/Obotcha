@@ -52,6 +52,7 @@ link += inetaddress \
 		httpv2headerdecoder \
 		httpv2headerfield \
 		httpv2dynamictable \
+		httpsserver \
 
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/ntpclient.o \
@@ -104,7 +105,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpv2headerencoder.o \
 		$(outtmp)/httpv2headerdecoder.o \
 		$(outtmp)/httpv2headerfield.o \
-		$(outtmp)/httpv2dynamictable.o \
+		$(outtmp)/httpsserver.o \
 
 
 inetaddress :$(netDir)/InetAddress.cpp
@@ -263,3 +264,6 @@ httpv2headerfield :$(netDir)/http/v2/HttpV2HeaderField.cpp
 
 httpv2dynamictable :$(netDir)/http/v2/HttpV2DynamicTable.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2DynamicTable.cpp -o $(outtmp)/httpv2dynamictable.o $(external)
+
+httpsserver :$(netDir)/http/ssl/HttpsServer.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/ssl/HttpsServer.cpp -o $(outtmp)/httpsserver.o $(external)
