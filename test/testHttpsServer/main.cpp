@@ -5,11 +5,11 @@
 #include "Message.hpp"
 #include "System.hpp"
 #include "ByteRingArray.hpp"
-#include "HttpsServer.hpp"
+#include "HttpV1Server.hpp"
 
 using namespace obotcha;
 
-#if 0
+
 DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
 public:
 
@@ -81,16 +81,16 @@ public:
 
 
 };
-#endif
 
 
 
+#if 0
 DECLARE_SIMPLE_CLASS(MySocketListener) IMPLEMENTS(SocketListener) {
 public:
     //virtual void onAcceptTcp(int fd,ByteArray pack) {};
     
     void onAccept(int fd,String ip,int port,ByteArray pack){
-        printf("pack is %s \n",pack->toValue());
+        printf("pack is %s \n",pack->toString()->toChars());
     };
 
     void onDisconnect(int fd) {
@@ -109,16 +109,16 @@ public:
 
     }
 };
-
+#endif
 
 int main() {
   //MyHttpListener listener = createMyHttpListener();
   //HttpV1Server server = createHttpV1Server(8012,listener);
   //while(1) {sleep(1000);}
-  HttpsServer server = createHttpsServer(8034,
-                                        createMySocketListener(),
+  HttpV1Server server = createHttpV1Server(8012,
+                                        createMyHttpListener(),
                                         createString("/home/sunliwang/mysource/Obotcha/test/testHttpsServer/key/my.cert"),
                                         createString("/home/sunliwang/mysource/Obotcha/test/testHttpsServer/key/my.key"));
-  server->start();
+
   while(1) {sleep(1000);}
 }

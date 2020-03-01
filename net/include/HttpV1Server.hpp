@@ -17,6 +17,7 @@
 #include "SocketListener.hpp"
 #include "HttpV1ResponseWriter.hpp"
 #include "HttpMultiPart.hpp"
+#include "SSLServer.hpp"
 
 namespace obotcha {
 
@@ -53,11 +54,17 @@ DECLARE_SIMPLE_CLASS(HttpV1Server) {
 public:
     friend class _HttpV1SocketListener;
     
+    _HttpV1Server(int port,HttpV1Listener,String certificate,String key);
+
     _HttpV1Server(int port,HttpV1Listener);
 
     _HttpV1Server(HttpV1Listener);
 
+    _HttpV1Server(HttpV1Listener,String certificate,String key);
+
     _HttpV1Server(String ip,int port,HttpV1Listener);
+
+    _HttpV1Server(String ip,int port,HttpV1Listener,String certificate,String key);
 
     void parseMessage(int fd,ByteArray);
 
@@ -69,6 +76,8 @@ public:
 
 private:
     TcpServer mTcpServer;
+
+    SSLServer mSSLServer;
 
     HttpV1SocketListener mSocketListener;
 

@@ -1,28 +1,30 @@
-#include "HttpsServer.hpp"
+#include "SSLServer.hpp"
 #include "Enviroment.hpp"
 #include "NetUtils.hpp"
 #include "InitializeException.hpp"
+#include "SSLManager.hpp"
 
 namespace obotcha {
 
 //----------------- HttpsThread -----------------
-_HttpsThread::_HttpsThread(String ip,int port,SocketListener l,String c,String k) {
+_SSLThread::_SSLThread(String ip,int port,SocketListener l,String c,String k) {
     String mIp = ip;
-
-    int mPort = port;
 
     mCertificate = c;
 
     mKey = k;
-    
-    mClients = createHashMap<int,SSL *>();
+
+    printf("sslthread cer is %s,key is %s \n",mCertificate->toChars(),mKey->toChars());
+
+    int mPort = port;
+
 
     const int EPOLL_SIZE = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerEpollSize,1024);
     if(l == nullptr) {
         throw InitializeException("SocketListener is null");
     }
 
-    mSockAddr.sin_family = PF_INET;
+    mSockAddr.sin_family = AF_INET;
     mSockAddr.sin_port = htons(port);
     if(ip != nullptr) {
         mSockAddr.sin_addr.s_addr = inet_addr(ip->toChars());
@@ -48,7 +50,7 @@ _HttpsThread::_HttpsThread(String ip,int port,SocketListener l,String c,String k
         
         mClientMutex = createMutex("SSLTcpServer");
         
-        mSocket = socket(AF_INET, SOCK_STREAM, 0);
+        mSocket = socket(PF_INET, SOCK_STREAM, 0);
         if(mSocket < 0) {
             break;
         }
@@ -86,7 +88,7 @@ _HttpsThread::_HttpsThread(String ip,int port,SocketListener l,String c,String k
     }
 }
 
-void _HttpsThread::run() {
+void _SSLThread::run() {
     const int EPOLL_SIZE = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerEpollSize,1024);
     struct epoll_event events[EPOLL_SIZE];
     printf("https thread1 start \n");
@@ -111,6 +113,7 @@ void _HttpsThread::run() {
                 epoll_ctl(mEpollfd, EPOLL_CTL_DEL, sockfd, NULL);
                 st(NetUtils)::delEpollFd(mEpollfd,sockfd);
                 mListener->onDisconnect(sockfd);
+                st(SSLManager)::getInstance()->remove(sockfd);
                 close(sockfd);
                 continue;
             }
@@ -120,39 +123,39 @@ void _HttpsThread::run() {
                 socklen_t client_addrLength = sizeof(struct sockaddr_in);
                 int clientfd = accept( mSocket, ( struct sockaddr* )&client_address, &client_addrLength );
                 printf("https thread1 trace1 \n");
-                SSL *ssl = initSSL();
-                if (!SSL_set_fd(ssl, clientfd)) {
-                    continue;
-                }
-
-                mClients->put(clientfd,ssl);
- 
+                
                 st(NetUtils)::addEpollFd(mEpollfd, clientfd, true);
-                printf("https thread1 trace2,connect clientfd is %d.ssl is %p \n",clientfd,ssl);
-                SSL_accept(ssl);
-                printf("https thread1 trace3 \n");
-                mListener->onConnect(clientfd,
+                
+                SSLInfo ssl = createSSLInfo(mCertificate,mKey);
+                if(ssl->bindSocket(clientfd) == 0) {
+                    printf("https thread1 trace3 \n");
+                    //mClients->put(clientfd,ssl);
+                    st(SSLManager)::getInstance()->add(clientfd,ssl);
+
+                    mListener->onConnect(clientfd,
                                     createString(inet_ntoa(client_address.sin_addr)),
                                     ntohs(client_address.sin_port));
+                } else {
+                    //TODO
+                }
             }
             else {
-                byte recv_buf[mBuffSize];
-                memset(recv_buf,0,mBuffSize);
-
-                SSL *ssl = mClients->get(sockfd);
-                printf("https thread1 trace4,sockfd is %d,ssl is %p \n",sockfd,ssl);
-                int len = SSL_read(ssl, recv_buf, mBuffSize);
+                //byte recv_buf[mRcvBuffSize];
+                //memset(recv_buf,0,mRcvBuffSize);
+                SSLInfo info = st(SSLManager)::getInstance()->get(sockfd);
+                ByteArray buff = createByteArray(mRcvBuffSize);
+                int len = info->read(buff);
                 if(len == 0 || len == -1) {
                     //this sockfd maybe closed!!!!!
                     //printf("tcpserver error len is %d,sockfd is %d \n",len,sockfd);
-                    printf("https thread1 trace4_1 len is %d,ssl is %p \n",len,ssl);
+                    //TODO
                     continue;
                 }
-                ByteArray pack = createByteArray(&recv_buf[0],len);
+                
                 printf("https thread1 trace5 \n");
                 if(mListener != nullptr) {
                     printf("https thread1 trace6 \n");
-                    mListener->onAccept(sockfd,nullptr,-1,pack);
+                    mListener->onAccept(sockfd,nullptr,-1,buff);
                 }
             }
         }
@@ -160,50 +163,12 @@ void _HttpsThread::run() {
     }
 }
 
-SSL * _HttpsThread::initSSL() {
-    
-    if(mCertificate == nullptr) {
-        mCertificate = st(Enviroment)::getInstance()->get(st(Enviroment)::gHttpSslCertificatePath);
-    }
-    
-    if(mKey == nullptr) {
-        mKey = st(Enviroment)::getInstance()->get(st(Enviroment)::gHttpSslKeyPath);
-    }
-
-    /* int ssl  */
-    SSL_library_init();
-    /* load SSL algorithms */
-    OpenSSL_add_all_algorithms();
-    /* load SSL error strings */
-    SSL_load_error_strings();
-
-    /*can use SSLv2_server_method() or SSLv3_server_method()*/
-    SSL_CTX *mCtx = SSL_CTX_new(SSLv23_server_method());
-    if (mCtx == NULL) {
-        throw InitializeException("SSL Create error");
-    }
-    /* load user certificate,this certificati is used to send to client,certificate contains public key */
-    if (SSL_CTX_use_certificate_file(mCtx, mCertificate->toChars(), SSL_FILETYPE_PEM) <= 0) {
-	    throw InitializeException("SSL certificate use error");
-    }
-    /* load private key */
-    if (SSL_CTX_use_PrivateKey_file(mCtx, mKey->toChars(), SSL_FILETYPE_PEM) <= 0) {
-        throw InitializeException("SSL private key use error");
-    }
-    /* check whether private is ok */
-    if (!SSL_CTX_check_private_key(mCtx)) {
-        throw InitializeException("SSL private key check error");
-    }
-
-    return SSL_new(mCtx);
-}
-
 //----------------- HttpsServer -----------------
-_HttpsServer::_HttpsServer(int port,SocketListener l,String c,String k):_HttpsServer(nullptr,port,l,c,k) {
+_SSLServer::_SSLServer(int port,SocketListener l,String c,String k):_SSLServer(nullptr,port,l,c,k) {
 
 }
 
-_HttpsServer::_HttpsServer(String ip,int port,SocketListener l,String c,String k):_HttpsServer(ip,
+_SSLServer::_SSLServer(String ip,int port,SocketListener l,String c,String k):_SSLServer(ip,
                       port,
                       st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerRcvBuffSize,1024*32),
                       st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerClientNums,1024*32),
@@ -212,41 +177,41 @@ _HttpsServer::_HttpsServer(String ip,int port,SocketListener l,String c,String k
 
 }
 
-_HttpsServer::_HttpsServer(String ip,int port,int rcvBuffsize,int connectionsNum,SocketListener l,String c,String k) {
-    mHttpThread = createHttpsThread(ip,port,l,c,k);
+_SSLServer::_SSLServer(String ip,int port,int rcvBuffsize,int connectionsNum,SocketListener l,String c,String k) {
+    mSSLThread = createSSLThread(ip,port,l,c,k);
     
 }
 
-void _HttpsServer::setRcvBuffSize(int) {
+void _SSLServer::setRcvBuffSize(int) {
 
 }
 
-int _HttpsServer::getRcvBuffSize() {
+int _SSLServer::getRcvBuffSize() {
 
 }
 
-int _HttpsServer::start() {
-    mHttpThread->start();
+void _SSLServer::start() {
+    mSSLThread->start();
 }
 
-void _HttpsServer::release() {
-
-}
-
-
-int _HttpsServer::removeClientFd(int fd) {
+void _SSLServer::release() {
 
 }
 
-int _HttpsServer::addClientFd(int fd) {
+
+int _SSLServer::removeClientFd(int fd) {
 
 }
 
-int _HttpsServer::getStatus() {
+int _SSLServer::addClientFd(int fd) {
 
 }
 
-_HttpsServer::~_HttpsServer() {
+int _SSLServer::getStatus() {
+
+}
+
+_SSLServer::~_SSLServer() {
 
 }
 

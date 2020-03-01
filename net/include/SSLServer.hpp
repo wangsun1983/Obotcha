@@ -1,5 +1,5 @@
-#ifndef __HTTP_SSL_SERVER_HPP__
-#define __HTTP_SSL_SERVER_HPP__
+#ifndef __SSL_SERVER_HPP__
+#define __SSL_SERVER_HPP__
 
 #include <iostream>
 #include <sys/types.h>
@@ -31,60 +31,47 @@ extern "C" {
 #include "Thread.hpp"
 #include "SocketListener.hpp"
 #include "TcpServer.hpp"
+#include "SSLInfo.hpp"
 
 namespace obotcha {
 
-enum HttpsServerStatus {
-    HttpsServerNotStart = 1,
-    HttpsServerWorking,
-    HttpsServerWaitingThreadExit,
-    HttpsServerThreadExited,
-};  
-
-DECLARE_SIMPLE_CLASS(HttpsThread) IMPLEMENTS(Thread) {
+DECLARE_SIMPLE_CLASS(SSLThread) IMPLEMENTS(Thread) {
 public:
-    _HttpsThread(String ip,int port,SocketListener l,String certificate,String key);
+    _SSLThread(String ip,int port,SocketListener l,String certificate,String key);
 
     void run();
 
 private:
-    SSL * initSSL();
-
     int mSocket;
     int mEpollfd;
     Pipe mPipe;
     SocketListener mListener;
     Mutex mClientMutex;
-    int mBuffSize;
     String mIp;
     int mPort; 
     struct sockaddr_in mSockAddr;
 
-    int mRcvBuffSize;
-    int mClientNums;
-
     String mCertificate;
-
     String mKey;
 
-    HashMap<int,SSL *>mClients;
-
+    int mRcvBuffSize;
+    int mClientNums;
 }; 
 
-DECLARE_SIMPLE_CLASS(HttpsServer) {
+DECLARE_SIMPLE_CLASS(SSLServer) {
 
 public:
-    _HttpsServer(int port,SocketListener l,String certificate,String key);
+    _SSLServer(int port,SocketListener l,String certificate,String key);
 
-    _HttpsServer(String ip,int port,SocketListener l,String certificate,String key);
+    _SSLServer(String ip,int port,SocketListener l,String certificate,String key);
 
-    _HttpsServer(String ip,int port,int rcvBuffsize,int connectionsNum,SocketListener l,String certificate,String key);
+    _SSLServer(String ip,int port,int rcvBuffsize,int connectionsNum,SocketListener l,String certificate,String key);
 
     void setRcvBuffSize(int);
 
     int getRcvBuffSize();
 
-    int start();
+    void start();
 
     void release();
    
@@ -94,13 +81,13 @@ public:
 
     int getStatus();
 
-    ~_HttpsServer();
+    ~_SSLServer();
 
 private:
     
     SocketListener mListener;
 
-    HttpsThread mHttpThread;
+    SSLThread mSSLThread;
 
 };
 

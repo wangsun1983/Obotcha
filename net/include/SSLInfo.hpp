@@ -1,5 +1,5 @@
-#ifndef __HTTPS_RESPONSE_WRITER_HPP__
-#define __HTTPS_RESPONSE_WRITER_HPP__
+#ifndef __SSL_INFO_HPP_
+#define __SSL_INFO_HPP_
 
 #include <sys/stat.h>
 #include <unistd.h>    
@@ -30,8 +30,32 @@ extern "C" {
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpsResponseWriter) {
+DECLARE_SIMPLE_CLASS(SSLInfo) {
+public:
+    _SSLInfo(String certificate,String key);
 
+    _SSLInfo();
+
+    SSL *getSSL();
+    
+    int bindSocket(int sock);
+
+    int getSocket();
+
+    int read(ByteArray);
+
+    int write(ByteArray);
+
+    ~_SSLInfo();
+
+private:
+    SSL *mSSL;
+    SSL_CTX *mCtx;
+
+    String mCertificate;
+    String mKey;
+
+    int mSock;
 };
 
 }

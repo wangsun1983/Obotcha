@@ -17,6 +17,7 @@
 #include "AutoMutex.hpp"
 #include "HttpV1ClientInfo.hpp"
 #include "HttpClientManager.hpp"
+#include "SSLManager.hpp"
 
 namespace obotcha {
 
@@ -37,6 +38,10 @@ void _HttpV1SocketListener::onConnect(int fd,String ip,int port) {
     printf("_HttpV1SocketListener onConnect \n");
     HttpV1ClientInfo info = createHttpV1ClientInfo();
     info->setClientFd(fd);
+    SSLInfo ssl = st(SSLManager)::getInstance()->get(fd);
+    if(info != nullptr) {
+        info->setSSLInfo(ssl);
+    }
     
     st(HttpV1ClientManager)::getInstance()->addClientInfo(fd,info);
 }
@@ -53,11 +58,23 @@ _HttpV1Server::_HttpV1Server(int port,HttpV1Listener l):_HttpV1Server{nullptr,po
 
 }
 
+_HttpV1Server::_HttpV1Server(int port,HttpV1Listener l,String certificate,String key):_HttpV1Server{nullptr,port,l,certificate,key}{
+
+}
+
 _HttpV1Server::_HttpV1Server(HttpV1Listener l):_HttpV1Server{nullptr,-1,l} {
     
 }
 
-_HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l){
+_HttpV1Server::_HttpV1Server(HttpV1Listener l,String certificate,String key):_HttpV1Server{nullptr,-1,l,certificate,key} {
+    
+}
+
+_HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l):_HttpV1Server{ip,port,l,nullptr,nullptr}{
+    
+}
+
+_HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certificate,String key) {
     printf("_HttpV1Server start \n");
     HttpV1Server server;
     server.set_pointer(this);
@@ -70,16 +87,23 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l){
     mIp = ip;
     mPort = port;
 
-    if(mIp == nullptr) {
-        mTcpServer = createTcpServer(mPort,mSocketListener);
+    if(certificate == nullptr) {
+        //http server
+        if(mIp == nullptr) {
+            mTcpServer = createTcpServer(mPort,mSocketListener);
+        } else {
+            mTcpServer = createTcpServer(mIp,mPort,mSocketListener);
+        }
+
+        if(mTcpServer->start() != 0) {
+            throw InitializeException("tcp server start fail!!");
+        }
     } else {
-        mTcpServer = createTcpServer(mIp,mPort,mSocketListener);
+        //https server
+        mSSLServer = createSSLServer(ip,port,mSocketListener,certificate,key);
+        mSSLServer->start();
     }
-
-    if(mTcpServer->start() != 0) {
-        throw InitializeException("tcp server start fail!!");
-    }
-
+    
     mBuffPoolMutex = createMutex("HttpV1Server mutex");
     mBuffPool = createHashMap<int,ByteArray>();
 }
@@ -112,8 +136,14 @@ void _HttpV1Server::removeClient(int fd) {
 }
 
 void _HttpV1Server::exit() {
-    //TODO
-    mTcpServer->release();
+    if(mTcpServer != nullptr) {
+        mTcpServer->release();
+    }
+
+    if(mSSLServer != nullptr) {
+        mSSLServer->release();
+    }
+    
     st(HttpV1ClientManager)::getInstance()->clear();
 }
 

@@ -17,6 +17,7 @@
 #include "ByteRingArrayReader.hpp"
 #include "HttpV1Parser.hpp"
 #include "HttpPacket.hpp"
+#include "SSLInfo.hpp"
 
 namespace obotcha {
 
@@ -43,6 +44,10 @@ public:
 
     Mutex getResponseWriteMutex();
 
+    SSLInfo getSSLInfo();
+
+    void setSSLInfo(SSLInfo);
+
 private:
     String mClientIp;
 
@@ -53,6 +58,8 @@ private:
     int mStatus;
 
     Mutex mResponseWriteMutex;
+
+    SSLInfo mSSLInfo;
 
 };
 

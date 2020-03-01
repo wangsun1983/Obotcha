@@ -52,7 +52,9 @@ link += inetaddress \
 		httpv2headerdecoder \
 		httpv2headerfield \
 		httpv2dynamictable \
-		httpsserver \
+		sslserver \
+		sslinfo \
+		sslmanager \
 
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/ntpclient.o \
@@ -106,6 +108,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpv2headerdecoder.o \
 		$(outtmp)/httpv2headerfield.o \
 		$(outtmp)/httpsserver.o \
+		$(outtmp)/sslserver.o \
+		$(outtmp)/sslinfo.o \
+		$(outtmp)/sslmanager.o \
 
 
 inetaddress :$(netDir)/InetAddress.cpp
@@ -265,5 +270,11 @@ httpv2headerfield :$(netDir)/http/v2/HttpV2HeaderField.cpp
 httpv2dynamictable :$(netDir)/http/v2/HttpV2DynamicTable.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2DynamicTable.cpp -o $(outtmp)/httpv2dynamictable.o $(external)
 
-httpsserver :$(netDir)/http/ssl/HttpsServer.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/ssl/HttpsServer.cpp -o $(outtmp)/httpsserver.o $(external)
+sslserver :$(netDir)/http/ssl/SSLServer.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/ssl/SSLServer.cpp -o $(outtmp)/sslserver.o $(external)
+
+sslinfo :$(netDir)/http/ssl/SSLInfo.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/ssl/SSLInfo.cpp -o $(outtmp)/sslinfo.o $(external)
+
+sslmanager :$(netDir)/http/ssl/SSLManager.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/ssl/SSLManager.cpp -o $(outtmp)/sslmanager.o $(external)

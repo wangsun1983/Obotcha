@@ -45,7 +45,19 @@ Mutex _HttpV1ClientInfo::getResponseWriteMutex() {
 }
 
 int _HttpV1ClientInfo::send(ByteArray data) {
+    if(mSSLInfo != nullptr) {
+        return mSSLInfo->write(data);
+    }
+    
     return st(NetUtils)::sendTcpPacket(mClientFd,data);
+}
+
+SSLInfo _HttpV1ClientInfo::getSSLInfo() {
+    return mSSLInfo;
+}
+
+void _HttpV1ClientInfo::setSSLInfo(SSLInfo info) {
+    mSSLInfo = info;
 }
 
 }
