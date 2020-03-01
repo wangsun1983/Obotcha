@@ -43,11 +43,8 @@ void _UdpClientThread::run() {
             mStatus->set(UdpClientThreadExited);
             return;
         }
-        printf("client udp accept sockfd trace1 !!!! \n");
         int epoll_events_count = epoll_wait(mEpfd, events, EPOLL_SIZE, -1);
-        printf("client udp accept sockfd trace2,epoll_events_count is %d !!!! \n",epoll_events_count);
         
-
         for(int i = 0; i < epoll_events_count ; ++i) {
 
             int sockfd = events[i].data.fd;
@@ -56,10 +53,8 @@ void _UdpClientThread::run() {
 
             //check whether thread need exit
             if(sockfd == mPipe->getReadPipe()) {
-                printf("client wangsl,mPipe event is %x \n",event);
                 if(mStatus->get() == UdpClientWaitingThreadExit) {
                     mStatus->set(UdpClientThreadExited);
-                    printf("client wangsl,mPipe exit \n");
                     return;
                 }
                 
@@ -79,10 +74,8 @@ void _UdpClientThread::run() {
                 //    return;
                 //} else {
                     //onAcceptUdp(int fd,String ip,int port,ByteArray pack) {};
-                printf("client receive from result is %d \n",ret);
-
+                
                 if(ret > 0) {
-                    printf("client accept recv_buf is %s \n",recv_buf);
                     ByteArray pack = createByteArray(recv_buf,ret);
                     mListener->onAccept(mSock,
                                         createString(inet_ntoa(src.sin_addr)), 
@@ -124,18 +117,15 @@ _UdpClient::_UdpClient(String ip,int port,SocketListener l) {
 }
 
 bool _UdpClient::init() {
-    printf("UdpClient init start \n");
     //sock = socket(AF_INET, SOCK_DGRAM, 0);
     if(sock < 0) {
         return false;
     }
-    printf("UdpClient init trace1 \n");
     //if(connect(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
     //    return false;
     //}
  
     epfd = epoll_create(EPOLL_SIZE);
-    printf("UdpClient init trace2 \n");
     if(epfd < 0) {
         return false;
     }
@@ -143,7 +133,6 @@ bool _UdpClient::init() {
     //addfd(epfd, sock, true);
     st(NetUtils)::addEpollFd(epfd, sock, true);
     st(NetUtils)::addEpollFd(epfd, mPipe->getReadPipe(), true);
-    printf("UdpClient init end \n");
     return true;
 }
 
@@ -169,7 +158,6 @@ void _UdpClient::release() {
         return;
     }
     
-    printf("_UdpClient sock is %d \n",sock);
     if(sock != -1) {
         close(sock);
         sock = -1;

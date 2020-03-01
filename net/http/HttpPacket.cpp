@@ -126,7 +126,6 @@ ByteArray _HttpPacket::genHttpResponse() {
 		return nullptr;
 	}
 
-	//printf("statusString is %s \n",statusString->toChars());
 	String status = st(HttpResponse)::getStatusString(statusString->toBasicInt());
 	String responseStr = createString("HTTP/1.1 ")->append(statusString)->append(" ")->append(status)->append("\r\n");
     
@@ -143,8 +142,7 @@ ByteArray _HttpPacket::genHttpResponse() {
     }
 
     //writer->writeString(createString("\r\n"));
-    printf("response is %s \n",response->toString()->toChars());
-	//responseStr = responseStr->append(headerStr)->append("\r\n")->append(bodyStr);
+    //responseStr = responseStr->append(headerStr)->append("\r\n")->append(bodyStr);
     return response;
 }
 

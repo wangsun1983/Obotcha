@@ -14,8 +14,6 @@ _SSLThread::_SSLThread(String ip,int port,SocketListener l,String c,String k) {
 
     mKey = k;
 
-    printf("sslthread cer is %s,key is %s \n",mCertificate->toChars(),mKey->toChars());
-
     int mPort = port;
 
 
@@ -91,7 +89,6 @@ _SSLThread::_SSLThread(String ip,int port,SocketListener l,String c,String k) {
 void _SSLThread::run() {
     const int EPOLL_SIZE = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerEpollSize,1024);
     struct epoll_event events[EPOLL_SIZE];
-    printf("https thread1 start \n");
     while(1) {
         int epoll_events_count = epoll_wait(mEpollfd, events, EPOLL_SIZE, -1);
         if(epoll_events_count < 0) {
@@ -109,7 +106,6 @@ void _SSLThread::run() {
 
             if(((event & EPOLLIN) != 0) 
             && ((event & EPOLLRDHUP) != 0)) {
-                //printf("hangup sockfd!!!!,sockefd is %d \n",sockfd);
                 epoll_ctl(mEpollfd, EPOLL_CTL_DEL, sockfd, NULL);
                 st(NetUtils)::delEpollFd(mEpollfd,sockfd);
                 mListener->onDisconnect(sockfd);
@@ -122,13 +118,11 @@ void _SSLThread::run() {
                 struct sockaddr_in client_address;
                 socklen_t client_addrLength = sizeof(struct sockaddr_in);
                 int clientfd = accept( mSocket, ( struct sockaddr* )&client_address, &client_addrLength );
-                printf("https thread1 trace1 \n");
                 
                 st(NetUtils)::addEpollFd(mEpollfd, clientfd, true);
                 
                 SSLInfo ssl = createSSLInfo(mCertificate,mKey);
                 if(ssl->bindSocket(clientfd) == 0) {
-                    printf("https thread1 trace3 \n");
                     //mClients->put(clientfd,ssl);
                     st(SSLManager)::getInstance()->add(clientfd,ssl);
 
@@ -147,14 +141,11 @@ void _SSLThread::run() {
                 int len = info->read(buff);
                 if(len == 0 || len == -1) {
                     //this sockfd maybe closed!!!!!
-                    //printf("tcpserver error len is %d,sockfd is %d \n",len,sockfd);
                     //TODO
                     continue;
                 }
                 
-                printf("https thread1 trace5 \n");
                 if(mListener != nullptr) {
-                    printf("https thread1 trace6 \n");
                     mListener->onAccept(sockfd,nullptr,-1,buff);
                 }
             }

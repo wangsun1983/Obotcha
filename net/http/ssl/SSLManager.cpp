@@ -22,14 +22,17 @@ SSLManager _SSLManager::getInstance() {
 }
 
 void _SSLManager::add(int fd ,SSLInfo info) {
+    AutoMutex ll(mMutex);
     mSSLMap->put(fd,info);
 }
 
 SSLInfo _SSLManager::get(int fd) {
+    AutoMutex ll(mMutex);
     return mSSLMap->get(fd);
 }
 
 void _SSLManager::remove(int fd) {
+    AutoMutex ll(mMutex);
     mSSLMap->remove(fd);
 }
 

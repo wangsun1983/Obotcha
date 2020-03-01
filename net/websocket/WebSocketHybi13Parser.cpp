@@ -233,12 +233,10 @@ bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
         }
     }
 
-    //printf("headsize is %d ,pack->size is %d \n",headSize,pack->size());
     if(headSize >= pack->size()) {
         return false;
     }
 
-    //printf("headSize + contentSize is %d ,pack->size is %d \n",headSize + contentSize,pack->size());
     //check whether it has an entire frame
     if((headSize + contentSize) > pack->size()) {
         return false;

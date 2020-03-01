@@ -90,9 +90,15 @@ SSL *_SSLInfo::getSSL() {
 }
 
 _SSLInfo::~_SSLInfo() {
+    if(mCtx != nullptr) {
+        SSL_CTX_free(mCtx);
+        mCtx = nullptr;
+    }
+
     if(mSSL != nullptr) {
         SSL_shutdown(mSSL);
         SSL_free(mSSL);
+        mSSL = nullptr;
     }
 }
 

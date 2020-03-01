@@ -30,12 +30,10 @@ _HttpMultiPartParser::_HttpMultiPartParser(String contenttype,int length) {
 
     //start parse boundary
     ArrayList<String> strings = contenttype->split(";");
-    printf("contenttype is %s size is %d \n",contenttype->toChars(),strings->size());
     ListIterator<String> iterator = strings->getIterator();
 
     while(iterator->hasValue()) {
         String v = iterator->getValue();
-        printf("_HttpMultiPartParser v is %s \n",v->toChars());
         if(v->indexOfIgnoreCase(Boundary) == -1) {
             iterator->next();
             continue;
@@ -47,7 +45,6 @@ _HttpMultiPartParser::_HttpMultiPartParser(String contenttype,int length) {
             String start = createString("--");
             mBoundary = start->append(mBoundary);
 
-            printf("_HttpMultiPartParser mBoundary is %s \n",mBoundary->toChars());
             mBoundaryStr = mBoundary->toChars();
             break;
         }
@@ -85,20 +82,15 @@ _HttpMultiPartParser::_HttpMultiPartParser(String contenttype,int length) {
 //PNG ..... content of chrome.png .....
 //--------WebKitFormBoundaryrGKCBY7qhFd3TrwA--
 HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
-    printf("parse mBoundary is %s,status is %d \n",mBoundary->toChars(),mStatus);
     if(mBoundary == nullptr) {
         return nullptr;
     }
-    printf("HttpMultiPartParser parse trace1 \n");
-
+    
     byte v = 0;
 
     while(reader->readNext(v) == ByteRingArrayReadContinue) {
-        //printf("HttpMultiPartParser parse trace2 \n");
-
         switch(mStatus) {
             case ParseStartBoundry:{
-                //printf("ParseStartBoundry v is %x,mBoundaryStr[mBoundaryIndex] is %x \n",v,mBoundaryStr[mBoundaryIndex]);
                 if(v == mBoundaryStr[mBoundaryIndex]) {
                     if(mBoundaryIndex == (mBoundary->size()-1)) {
                         mBoundaryIndex = 0;
@@ -114,7 +106,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseStartBoundryEnd:{
-                //printf("ParseStartBoundryEnd v is %x \n",v);
                 if(v == mNewLineStr[mBoundaryEndLineIndex]) {
                     if(mBoundaryEndLineIndex == (NewLine->size()-1)) {
                         mBoundaryEndLineIndex = 0;
@@ -133,7 +124,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseContentDisposition: {
-                //printf("ParseContentDisposition v is %c \n",v);
                 if(v == mNewLineStr[mNewLineTextIndex]) {
                     if(mNewLineTextIndex == (NewLine->size()-1)) {
                         mNewLineTextIndex = 0;
@@ -143,7 +133,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         } else {
                             mContentDispositionBuff->append(reader->pop());
                         }
-                        printf("mContentDispositionBuff v is %s \n",mContentDispositionBuff->toString()->toChars());
                         mContentDisp = parseContentDisposition(mContentDispositionBuff->toString());
 
                         mContentDispositionBuff = nullptr;
@@ -164,7 +153,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseContentDispositionEnd: {
-                //printf("ParseContentDispositionEnd v is %x \n",v);
                 if(v == mNewLineStr[mNewLineTextIndex]) {
                     if(mNewLineTextIndex == (NewLine->size()-1)) {
                         mNewLineTextIndex = 0;
@@ -179,7 +167,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseContentType:{
-                //printf("ParseContentType v is %x \n",v);
                 if(v == mNewLineStr[mNewLineTextIndex]) {
                     if(mNewLineTextIndex == 1) {
                         mNewLineTextIndex = 0;
@@ -201,7 +188,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseContent:
-                //printf("ParseContent v is %c \n",v);
                 if(v == mBoundaryStr[mBoundaryIndex]) {
                     if(mBoundaryIndex == (mBoundary->size()-1)) {
                         //flush data
@@ -217,7 +203,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                             }
 
                             String value = mContentBuff->toString();
-                            //printf("ParseContent value is %s \n",value->toChars());
                             value = value->subString(0,content->size() - mBoundary->size()- NewLine->size());
                             String name = mContentDisp->dispositions->get(st(HttpMultiPartBlock)::TagName);
                             HttpMultiPartBlock block = createHttpMultiPartBlock(name,value);
@@ -228,7 +213,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         } else {
                             //hit complete flush file
                             if(mFileStream == nullptr) {
-                                printf("ParseContent createFile");
                                 String filepath = mEnv->get(st(Enviroment)::gHttpMultiPartFilePath);
                                 String filename = mContentDisp->dispositions->get("filename");
                                 mFile = createFile(filepath->append(filename));
@@ -243,9 +227,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                                 mContentBuff->append(content);
                             }
                             
-                            printf("mContentBuff size is %d \n",mContentBuff->size());
                             mContentBuff->qucikShrink(mContentBuff->size() - mBoundary->size() - NewLine->size());
-                            printf("mContentBuff2 size is %d \n",mContentBuff->size());
                             mFileStream->write(mContentBuff);
                             mFileStream->flush();
                             mFileStream->close();
@@ -267,7 +249,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
         }
     }
     
-    printf("parse trace3 \n");
     //check whether there is no analyze buff
     if(reader->getReadableLength() != 0) {
         switch(mStatus) {
@@ -306,7 +287,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
             case ParseContent:{
                 if(mContentType != nullptr) {
-                    printf("parse trace4 \n");
                     if(mFileStream == nullptr) {
                         String filepath = mEnv->get(st(Enviroment)::gHttpMultiPartFilePath);
                         String filename = mContentDisp->dispositions->get("filename");
@@ -322,8 +302,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                     } else {
                         mContentBuff = content;
                     }
-
-                    printf("write size is %d \n",content->size());
 
                     mFileStream->write(mContentBuff);
                     mFileStream->flush();
@@ -357,7 +335,6 @@ String _HttpMultiPartParser::parseContentType(String content) {
 //Content-Disposition: form-data;name="file";filename="chrome.png"
 PartContentDisposition _HttpMultiPartParser::parseContentDisposition(String position) {
     PartContentDisposition data = createPartContentDisposition();
-    printf("parseContentDisposition position is %s \n",position->toChars());
     ArrayList<String> split1 = position->split(";");
     ListIterator<String> iterator1 = split1->getIterator();
     while(iterator1->hasValue()) {
@@ -391,14 +368,6 @@ PartContentDisposition _HttpMultiPartParser::parseContentDisposition(String posi
 
         iterator1->next();
     }
-
-    //wangsl
-    //MapIterator<String,String> dumpite = data->dispositions->getIterator();
-    //while(dumpite->hasValue()) {
-    //    printf("key is %s , value is %s \n",dumpite->getKey()->toChars(),dumpite->getValue()->toChars());
-    //    dumpite->next();
-    //}
-    //wangsl
 
     return data;
 }

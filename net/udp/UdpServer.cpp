@@ -50,38 +50,26 @@ void _UdpServerThread::run() {
     memset(recv_buf,0,BUFF_SIZE);
 
     while(1) {
-        printf("UdpServer start \n");
         if(mStatus->get() == UdpServerWaitingThreadExit) {
             mStatus->set(UdpServerThreadExited);
-            printf("UdpServer exit111 \n");
             return;
         } else {
             mStatus->set(UdpServerWorking);
         }
 
-        printf("UdpServer trace0 mEpollfd is %d \n",mEpollfd);
         int epoll_events_count = epoll_wait(mEpollfd, events, EPOLL_SIZE, -1);
-        printf("UdpServer trace1 \n");
         if(epoll_events_count < 0) {
             mStatus->set(UdpServerThreadExited);
-            printf("UdpServer trace2 \n");
             return;
         }
 
-        std::cout << "epoll_events_count =" << epoll_events_count << endl;
-        
         for(int i = 0; i < epoll_events_count; ++i) {
             int sockfd = events[i].data.fd;
             int event = events[i].events;
-            printf("wangsl,sockfd %d,mSocket is %d \n",sockfd,mSocket);
             //check whether thread need exit
             if(sockfd == mPipe->getReadPipe()) {
-                printf("wangsl,mPipe event is %x \n",event);
                 if(mStatus->get() == UdpServerWaitingThreadExit) {
                     mStatus->set(UdpServerThreadExited);
-                    printf("wangsl,mPipe exit \n");
-                    //mPipe->closeReadPipe();
-                    //mPipe->closeWritePipe();
                     return;
                 }
                 
@@ -91,7 +79,6 @@ void _UdpServerThread::run() {
             
 
             if(sockfd == mSocket) {
-                printf("udpserver trace3 \n");
                 struct sockaddr_in client_address;
                 socklen_t client_addrLength = sizeof(struct sockaddr_in);
                                 
@@ -101,34 +88,19 @@ void _UdpServerThread::run() {
                                    0,
                                    (struct sockaddr *)&client_address,
                                    &client_addrLength);
-                printf("udpserver trace4,size is %d \n",size);
                 ByteArray pack = createByteArray(recv_buf,size);
                 if(mListener != nullptr) {
-                    printf("udpserver trace5 \n");
                     mListener->onAccept(sockfd,
                                            createString(inet_ntoa(client_address.sin_addr)),
                                            ntohs(client_address.sin_port),
                                            pack);
                 }
 
-                //mListener->onConnect(clientfd,
-                //                    createString(inet_ntoa(client_address.sin_addr)),
-                //                    ntohs(client_address.sin_port));
             }
-            //else {
-                
-            //    int len = recv(sockfd, recv_buf, BUFF_SIZE, 0);
-            //    ByteArray pack = createByteArray(recv_buf,len);
-            //    if(mListener != nullptr) {
-            //        mListener->onAccept(sockfd,pack);
-            //    }
-            //}
-            //addfd(epfd, sockfd, true);
         }
       
     }
 
-    printf("thread exit!!!!! \n");
     mStatus->set(UdpServerThreadExited);
 }
 
@@ -189,14 +161,10 @@ int _UdpServer::connect() {
     setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
 
     if( bind(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
-        printf("bind server faild , error = %s \n", strerror(errno));
         return -NetBindFail;
     }
-    printf("sock is %d \n",sock);
-
-
+    
     //add epoll
-    printf("UdpServer connect \n");
     st(NetUtils)::addEpollFd(epfd,sock,true);
     st(NetUtils)::addEpollFd(epfd,mPipe->getReadPipe(),true);
 
@@ -221,7 +189,6 @@ int _UdpServer::start() {
 }
 
 void _UdpServer::release() {
-    printf("server release trace 1 \n");
     if(mStatus->get() == UdpServerThreadExited || mStatus->get() == UdpServerWaitingThreadExit) {
         return;
     }
@@ -231,7 +198,6 @@ void _UdpServer::release() {
         sock = 0;
     }
 
-    printf("server release trace 2 \n");
     {
         AutoMutex l(mClientsMutex);
         int size = mClients->size();
@@ -240,15 +206,11 @@ void _UdpServer::release() {
             close(fd);
         }
     }
-    printf("server release trace 3 \n");
-    //start to notify server thread exit;
-    printf("mStatus is %d \n",mStatus->get());
     
     if(mStatus->get() != UdpServerIdle) {
         if(mStatus->get() != UdpServerThreadExited) {
             mStatus->set(UdpServerWaitingThreadExit);
         }
-        printf("server release write pipe \n");
         mPipe->writeTo(createByteArray(1));
 
         while(mStatus->get() != UdpServerThreadExited) {
@@ -258,8 +220,6 @@ void _UdpServer::release() {
 
 
     close(epfd);
-
-    printf("release end \n");
 }
 
 //int _UdpServer::send(String ip,int port,ByteArray data) {

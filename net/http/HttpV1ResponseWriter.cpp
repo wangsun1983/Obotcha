@@ -43,8 +43,6 @@ int _HttpV1ResponseWriter::flush() {
         Enviroment env = st(Enviroment)::getInstance();
         int buffsize = env->getInt(st(Enviroment)::gHttpServerSendFileBufferSize,64*1024);
         if(mFile->exists()) {
-            printf("file size is %d \n",buffsize);
-
             FileInputStream stream = createFileInputStream(mFile);
             stream->open();
             //update HttpHeader
@@ -53,10 +51,7 @@ int _HttpV1ResponseWriter::flush() {
 
             while(1) {
                 int length = stream->read(buff);
-                printf("length is %d \n",length);
-                //printf("buff is %s \n",buff->toString()->toChars());
                 String lengthHexStr = createString(length)->toHexString()->append("\r\n");
-                printf("lengthHex str is %s \n",lengthHexStr->toChars());
                 int hexStrLen = lengthHexStr->size();
                 if(isFirstChunk) {
                     mPacket->getHeader()->setValue(st(HttpHeader)::TransferEncoding,st(HttpHeader)::TransferChunked);
@@ -69,15 +64,12 @@ int _HttpV1ResponseWriter::flush() {
 
                     writer->writeByteArray(createByteArray((const byte *)lengthHexStr->toChars(),
                                                  lengthHexStr->size()));
-                    //printf("1.body is %s \n",body->toString()->toChars());
                     if(length != 0) {
                         writer->writeByteArray(buff,length);               
                     }
-                    //printf("2.boyd is %s \n",body->toString()->toChars());
                     //send
                     mPacket->setBody(body);
                     ByteArray resp = mPacket->genHttpResponse();
-                    printf("send message is %s \n",resp->toString()->toChars());
                     mClient->send(resp);
                     isFirstChunk = false;
                 } else {
@@ -95,16 +87,12 @@ int _HttpV1ResponseWriter::flush() {
                     writer->writeString(line);
                     writer->writeByteArray(createByteArray((const byte *)lengthHexStr->toChars(),
                                                  lengthHexStr->size()));
-                    //printf("1.body is %s \n",body->toString()->toChars());
                     if(length != 0) {
                         writer->writeByteArray(buff,length);               
                     } else {
                         writer->writeString(line);
                     }
 
-                    for(int i = 0;i<body->size();i++) {
-                        printf("body value is %x \n",body->at(i));
-                    }
                     mClient->send(body);
                 }
                 

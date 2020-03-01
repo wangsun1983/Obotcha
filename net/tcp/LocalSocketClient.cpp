@@ -42,7 +42,6 @@ _LocalSocketClient::_LocalSocketClient(String domain,int recv_time,int buff_size
     }
     
     mSock = socket(AF_UNIX, SOCK_STREAM, 0);
-    //printf("create mSock is %d \n",mSock);
     mBuff = (byte *)malloc(buff_size);
     mConnectMutex = createMutex("ConncetMutex");
 }
@@ -57,9 +56,7 @@ int _LocalSocketClient::doConnect() {
     }
 
     int ret = connect(mSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
-    //printf("connect ret is %d,mSock is %d \n",ret,mSock);
     if( ret < 0) {
-        printf("connect fail,reason is %s \n",strerror(errno));
         return -1;
     }
 
@@ -76,9 +73,6 @@ int _LocalSocketClient::doConnect() {
         ret = getpeername(mSock, ( struct sockaddr* )&local_address, &length);
     }
 
-    ////printf( "local with ip: %s and port: %d\n",
-    //inet_ntop( AF_INET, &local_address.sin_addr, local, INET_ADDRSTRLEN ), ntohs( local_address.sin_port ) );
-    
     return ret;
 }
 
@@ -92,9 +86,7 @@ int _LocalSocketClient::doSend(ByteArray data) {
 
 ByteArray _LocalSocketClient::doReceive() {
     int len = recv(mSock, mBuff, mBufferSize, 0);
-    //printf("tcp client len is %d \n",len);
     if(len <= 0) {
-        printf("receive faild , error = %s \n", strerror(errno));
         return nullptr;
     }
     
@@ -107,8 +99,6 @@ int _LocalSocketClient::getBuffSize() {
 }
 
 void _LocalSocketClient::release() {
-    //AutoMutex ll(mConnectMutex);
-    //printf("tcpclient release2\n");
     if(mSock >= 0) {
         close(mSock);
         mSock = -1;

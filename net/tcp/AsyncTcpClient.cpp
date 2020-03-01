@@ -34,23 +34,19 @@ void _TcpClientThread::run() {
     
     struct epoll_event events[EPOLL_SIZE];
     byte *recv_buf = (byte *)malloc(mBufferSize);
-    printf("epoll run,mTimeOut is %d \n",mTimeOut);
     while(1) {
         if(mStatus->get() == ClientWaitingThreadExit) {
             mStatus->set(ClientThreadExited);
             return;
         }
-        printf("epoll trace1 \n");
         int epoll_events_count = epoll_wait(mEpfd, events, EPOLL_SIZE, mTimeOut);
         if(epoll_events_count == 0) {
             mListener->onTimeout();
             return;
         } else if(epoll_events_count < 0) {
-            printf("epoll error is %s \n",strerror(errno));
             return;
         }
 
-        printf("epoll trace2 \n");
         for(int i = 0; i < epoll_events_count ; ++i) {
 
             int sockfd = events[i].data.fd;
@@ -58,7 +54,6 @@ void _TcpClientThread::run() {
 
             if(((event&EPOLLIN) != 0) 
             && ((event &EPOLLRDHUP) != 0)) {
-                printf("hangup sockfd!!!! \n");
                 if(sockfd == mSock) {
                     st(NetUtils)::delEpollFd(mEpfd,sockfd);
                     mListener->onDisconnect(sockfd);
@@ -70,10 +65,8 @@ void _TcpClientThread::run() {
 
             //check whether thread need exit
             if(sockfd == mPipe->getReadPipe()) {
-                printf("wangsl,mPipe event is %x \n",event);
                 if(mStatus->get() == ClientWaitingThreadExit) {
                     mStatus->set(ClientThreadExited);
-                    printf("wangsl,mPipe exit \n");
                     return;
                 }
                 
@@ -82,10 +75,8 @@ void _TcpClientThread::run() {
 
             memset(recv_buf,0,mBufferSize);
             if(events[i].data.fd == mSock) {
-                printf("epoll trace3 \n");
                 int ret = recv(mSock, recv_buf, mBufferSize, 0);
                 if(ret == 0) {
-                    cout << "Server closed connection: " << mSock << endl;
                     st(NetUtils)::delEpollFd(mEpfd,sockfd);
                     mListener->onDisconnect(sockfd);
                     close(sockfd);
@@ -137,7 +128,6 @@ bool _AsyncTcpClient::init(String ip,int port,int recv_time,SocketListener l,int
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port);
     serverAddr.sin_addr.s_addr = inet_addr(ip->toChars());
-    std::cout << "Connect Server: " << ip->toChars() << " : " << port << endl;
     epfd = -1;
     sock = -1;
 
@@ -156,14 +146,11 @@ bool _AsyncTcpClient::init(String ip,int port,int recv_time,SocketListener l,int
         return false;
     }
 
-    printf("TcpClient init trace1 \n");
     if(connect(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
-        printf("connect fail,reason is %s \n",strerror(errno));
         return false;
     }
  
     epfd = epoll_create(EPOLL_SIZE);
-    printf("TcpClient init trace2 \n");
     if(epfd < 0) {
         return false;
     }
@@ -171,7 +158,6 @@ bool _AsyncTcpClient::init(String ip,int port,int recv_time,SocketListener l,int
     //addfd(epfd, sock, true);
     st(NetUtils)::addEpollFd(epfd, sock, false);
     st(NetUtils)::addEpollFd(epfd, mPipe->getReadPipe(), false);
-    printf("TcpClient init end \n");
     
     return true;
 }
@@ -186,14 +172,12 @@ int _AsyncTcpClient::send(ByteArray data) {
 
 void _AsyncTcpClient::start() {
     if(mTcpClientThread == nullptr) {
-        printf("Tcpclient start \n");
         mTcpClientThread = createTcpClientThread(sock,epfd,listener,mPipe,mStatus,mRecvtimeout,mBuffSize);
         mTcpClientThread->start();
     }
 }
 
 void _AsyncTcpClient::wait() {
-    printf("wait,mTcpClientThread status is %d \n",mTcpClientThread->getStatus());
     if(mTcpClientThread == nullptr) {
         return;
     }
@@ -236,7 +220,6 @@ void _AsyncTcpClient::release() {
         close(epfd);
         epfd = -1;
     }
-    
 }
 
 }

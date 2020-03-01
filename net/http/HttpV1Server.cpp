@@ -26,7 +26,6 @@ _HttpV1SocketListener::_HttpV1SocketListener(HttpV1Server s) {
 }
 
 void _HttpV1SocketListener::onAccept(int fd,String ip,int port,ByteArray pack) {
-    //printf("_HttpV1SocketListener onAccept,msg is %s \n",pack->toString()->toChars());
     mServer->parseMessage(fd,pack);
 }
 
@@ -35,7 +34,6 @@ void _HttpV1SocketListener::onDisconnect(int fd) {
 }
 
 void _HttpV1SocketListener::onConnect(int fd,String ip,int port) {
-    printf("_HttpV1SocketListener onConnect \n");
     HttpV1ClientInfo info = createHttpV1ClientInfo();
     info->setClientFd(fd);
     SSLInfo ssl = st(SSLManager)::getInstance()->get(fd);
@@ -75,14 +73,10 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l):_HttpV1Server{
 }
 
 _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certificate,String key) {
-    printf("_HttpV1Server start \n");
     HttpV1Server server;
     server.set_pointer(this);
     mSocketListener = createHttpV1SocketListener(server);
-    printf("_HttpV1Server trace1 \n");
     mHttpListener = l;
-
-    printf("_HttpV1Server trace1,port is %d \n",port);
 
     mIp = ip;
     mPort = port;
@@ -112,11 +106,9 @@ void _HttpV1Server::parseMessage(int fd,ByteArray pack) {
     HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(fd);
     info->pushHttpData(pack);
     ArrayList<HttpPacket> packets = info->pollHttpPacket();
-    printf("parseMessage start \n");
     if(packets != nullptr && packets->size() != 0) {
         ListIterator<HttpPacket> iterator = packets->getIterator();
         while(iterator->hasValue()) {
-            printf("parseMessage hit \n");
             //we should check whether there is a multipart
             HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);           
             mHttpListener->onMessage(info,writer,iterator->getValue());

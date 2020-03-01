@@ -51,7 +51,6 @@ void _TcpServerThread::run() {
     struct epoll_event events[EPOLL_SIZE];
     
     while(1) {
-        //printf("TcpServer start \n");
         if(mStatus->get() == ServerWaitingThreadExit) {
             mStatus->set(ServerThreadExited);
             return;
@@ -60,13 +59,10 @@ void _TcpServerThread::run() {
         }
         
         int epoll_events_count = epoll_wait(mEpollfd, events, EPOLL_SIZE, -1);
-        //printf("TcpServer trace1 \n");
         if(epoll_events_count < 0) {
             mStatus->set(ServerThreadExited);
             return;
         }
-
-        //std::cout << "epoll_events_count =" << epoll_events_count << endl;
 
         for(int i = 0; i < epoll_events_count; ++i) {
             int sockfd = events[i].data.fd;
@@ -74,10 +70,8 @@ void _TcpServerThread::run() {
 
             //check whether thread need exit
             if(sockfd == mPipe->getReadPipe()) {
-                //printf("wangsl,mPipe event is %x \n",event);
                 if(mStatus->get() == ServerWaitingThreadExit) {
                     mStatus->set(ServerThreadExited);
-                    //printf("wangsl,mPipe exit \n");
                     return;
                 }
                 
@@ -86,7 +80,6 @@ void _TcpServerThread::run() {
 
             if(((event & EPOLLIN) != 0) 
             && ((event & EPOLLRDHUP) != 0)) {
-                //printf("hangup sockfd!!!!,sockefd is %d \n",sockfd);
                 epoll_ctl(mEpollfd, EPOLL_CTL_DEL, sockfd, NULL);
                 st(NetUtils)::delEpollFd(mEpollfd,sockfd);
                 removeClientFd(sockfd);
@@ -100,11 +93,6 @@ void _TcpServerThread::run() {
                 socklen_t client_addrLength = sizeof(struct sockaddr_in);
                 int clientfd = accept( mSocket, ( struct sockaddr* )&client_address, &client_addrLength );
                 
-                //std::cout << "client connection from: "
-                //     << inet_ntoa(client_address.sin_addr) << ":"
-                //     << ntohs(client_address.sin_port) << ", clientfd = "
-                //     << clientfd << endl;
- 
                 st(NetUtils)::addEpollFd(mEpollfd, clientfd, true);
 
                 addClientFd(clientfd);
@@ -120,7 +108,6 @@ void _TcpServerThread::run() {
                 int len = recv(sockfd, recv_buf, mBuffSize, 0);
                 if(len == 0 || len == -1) {
                     //this sockfd maybe closed!!!!!
-                    //printf("tcpserver error len is %d,sockfd is %d \n",len,sockfd);
                     continue;
                 }
                 ByteArray pack = createByteArray(&recv_buf[0],len);
@@ -183,7 +170,6 @@ _TcpServer::_TcpServer(String ip,int port,int rcvBuffsize,int connectionsNum,Soc
     }
     
     while(1) {
-        printf("_TcpServer trace1 \n");
         mPipe = createPipe();
         if(mPipe->init() == -1) {
             break;
@@ -203,19 +189,15 @@ _TcpServer::_TcpServer(String ip,int port,int rcvBuffsize,int connectionsNum,Soc
         mStatus = createAtomicInteger(ServerNotStart);
         mClients = createArrayList<Integer>();
         sock = socket(AF_INET, SOCK_STREAM, 0);
-        printf("_TcpServer trace2 \n");
         if(sock < 0) {
-            printf("_TcpServer trace3 \n");
             reason = createString("Sock Create Fail");
             break;
         }
         epfd = epoll_create(EPOLL_SIZE);
         if(epfd < 0) {
-            printf("_TcpServer trace4 \n");
             reason = createString("Epoll Create Fail");
             break;
         }
-        printf("_TcpServer trace5 \n");
         mServerThread = createTcpServerThread(sock,epfd,mStatus,mPipe,l,mClients,mClientsMutex,mRcvBuffSize);
         return;
     }
@@ -269,11 +251,9 @@ int _TcpServer::connect() {
 }
 
 int _TcpServer::start() {
-    printf("_TcpServer start \n");
     
     int result = connect();
     if(result != 0) {
-        printf("_TcpServer trace1 \n");
         mStatus->set(ServerThreadExited);
         return result;
     }
@@ -283,7 +263,6 @@ int _TcpServer::start() {
     while(mStatus->get() == ServerNotStart) {
         //TODO Nothing
     }
-    printf("_TcpServer trace2 \n");
     return 0;
 }
 
@@ -327,7 +306,6 @@ void _TcpServer::release() {
 }
 
 int _TcpServer::send(int fd,ByteArray data) {
-    //printf("send data is %s \n",data->toValue());
     return st(NetUtils)::sendTcpPacket(fd,data);
 }
 
