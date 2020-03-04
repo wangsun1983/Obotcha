@@ -29,11 +29,14 @@ cflags = -fpic \
 
 external = -lpthread \
 				-ldl \
-				../../out/lib/libobotcha.so \
+				../../out/lib/libobotcha.so
 
-staticlib = ../../external/openssl/libcrypto.a \
-			../../external/openssl/libssl.a \
-
+sharelib = -Wl,-rpath=../../out/lib/ \
+           -L ../../out/lib/ \
+           -lcrypto \
+           -L ../../out/lib/ \
+           -lssl \
+           
 files =
 link =
 libname	= testHttpV1Server
@@ -41,4 +44,4 @@ libname	= testHttpV1Server
 everything : $(libname)
 
 $(libname): $(link)
-	g++ *.cpp $(cflags) -o mytest $(external) $(staticlib)
+	g++ *.cpp $(cflags) -o mytest $(external) $(sharelib)

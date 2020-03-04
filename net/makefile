@@ -107,7 +107,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpv2headerencoder.o \
 		$(outtmp)/httpv2headerdecoder.o \
 		$(outtmp)/httpv2headerfield.o \
-		$(outtmp)/httpsserver.o \
 		$(outtmp)/sslserver.o \
 		$(outtmp)/sslinfo.o \
 		$(outtmp)/sslmanager.o \

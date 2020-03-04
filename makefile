@@ -52,10 +52,9 @@ obotchacppflags = $(cppflags) \
 
 external = -lpthread \
 		-ldl \
-		-L ../out/lib/ \
 
-staticlib = ./external/openssl/libcrypto.a \
-			./external/openssl/libssl.a \
+sharelib = 	-L./out/lib/libssl.so \
+			-L./out/lib/libcrypto.so \
 
 objs =
 link =
@@ -72,5 +71,5 @@ include security/makefile
 include process/makefile
 
 $(libname): $(link)
-#	cd external/openssl/ && make
-	g++ -g -o0 -shared $(objs) $(cflags) -o $(outlib)/lib${libname}.so $(staticlib) $(external)
+	${shell cp ./external/openssl/libcrypto.so ./external/openssl/libssl.so ./out/lib/}
+	g++ -g -o0 -shared $(objs) $(cflags) $(sharelib) -o $(outlib)/lib${libname}.so $(external)
