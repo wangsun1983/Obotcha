@@ -31,7 +31,7 @@ public:
 
     _String(std::string *v);
 
-    _String(const std::string &v);
+    _String(const std::string v);
 
     _String(String v);
 
@@ -286,7 +286,16 @@ private:
 
     bool isFloatNumber(const char *p,int size);
 
-    bool isLongNumber(const char *p,int size);    
+    bool isLongNumber(const char *p,int size);
+
+    void checkParam(String &);
+
+    void checkParam(char *p);
+
+    const static  char IgnoreCaseTable[128];
+
+    const static std::string False;
+    const static std::string True;
 };
 
 }
