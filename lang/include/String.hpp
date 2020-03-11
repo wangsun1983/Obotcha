@@ -203,12 +203,17 @@ public:
 
     bool equalsIgnoreCase(const char * str);
 
+    bool equalsIgnoreCase(const char * str,int csize);
+
     //----------------------------
     int indexOfIgnoreCase(String str);
 
     int indexOfIgnoreCase(std::string str);
 
     int indexOfIgnoreCase(const char * str);
+
+    int indexOfIgnoreCase(const char * str,int size);
+
     //----------------------------
     bool containsIgnoreCase(String val);
 
@@ -227,12 +232,16 @@ public:
     bool endsWithIgnoreCase(std::string str);
 
     bool endsWithIgnoreCase(const char * str);
+
+    bool endsWithIgnoreCase(const char * str,int size);
     //----------------------------
     int lastIndexOfIgnoreCase(String v);
 
     int lastIndexOfIgnoreCase(std::string v);
 
     int lastIndexOfIgnoreCase(const char * v);
+
+    int lastIndexOfIgnoreCase(const char * v,int size);
     //----------------------------
     sp<_String> replaceFirst(String regex,String v);
 
@@ -289,8 +298,6 @@ private:
     bool isLongNumber(const char *p,int size);
 
     void checkParam(String &);
-
-    void checkParam(char *p);
 
     const static  char IgnoreCaseTable[128];
 

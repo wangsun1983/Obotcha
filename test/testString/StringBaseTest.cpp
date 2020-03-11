@@ -530,7 +530,12 @@ int basetest() {
       break;
     }
 
-    printf("String trim test1----------[OK] \n");
+    if(!abc2->equals("a b c")) {
+      printf("String trim test2----------[FAIL] \n");
+      break;
+    }
+
+    printf("String trim test3----------[OK] \n");
     break;
   }
 
