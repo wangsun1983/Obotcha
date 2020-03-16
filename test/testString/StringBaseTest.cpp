@@ -5,7 +5,7 @@
 #include <string.h>
 #include "String.hpp"
 #include "ArrayList.hpp"
-#include "NullPointerException.hpp"
+#include "IllegalArgumentException.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "IllegalArgumentException.hpp"
 #include "TransformException.hpp"
@@ -31,15 +31,12 @@ int basetest() {
   //test String(String v)
   while(1) {
     String str1 = nullptr;
-    String str2 = createString(str1);
-    if(str2->size() != 0) {
-      printf("String construct test2-------[FAIL] \n");
-      break;
-    }
+    try {
+        String str2 = createString(str1);
+        printf("String construct test2-------[FAIL] \n");
+        break;
+    } catch(IllegalArgumentException) {
 
-    if(str2 == nullptr) {
-      printf("String construct test2-------[FAIL] \n");
-      break;
     }
 
     printf("String construct test2-------[OK] \n");
@@ -80,9 +77,11 @@ int basetest() {
     }
 
     String str3;
-    String str4 = createString(str3);
-    if(str4->size() != 0) {
+    try {
+        String str4 = createString(str3);
         printf("String construct test8-------[FAIL] \n");
+    } catch(IllegalArgumentException e) {
+
     }
 
     printf("String construct test8-------[OK] \n");
@@ -105,7 +104,7 @@ int basetest() {
     bool isException = false;
     try {
         String str2 = createString((const char *)nullptr);
-    } catch(NullPointerException e) {
+    } catch(IllegalArgumentException e) {
         isException = true;
     }
 
@@ -155,7 +154,7 @@ int basetest() {
     bool isException = false;
     try {
         String str2 = createString(v2);
-    } catch(NullPointerException e) {
+    } catch(IllegalArgumentException e) {
         isException = true;
     }
 
@@ -187,7 +186,7 @@ int basetest() {
     bool isException = false;
     try {
         String str3 = createString(v3);
-    }catch(NullPointerException e) {
+    }catch(IllegalArgumentException e) {
         isException = true;
     }
 
@@ -220,7 +219,7 @@ int basetest() {
     bool isException = false;
     try {
         String str3 = createString(v3);
-    }catch(NullPointerException e) {
+    }catch(IllegalArgumentException e) {
         isException = true;
     }
 
@@ -253,7 +252,7 @@ int basetest() {
     bool isException = false;
     try {
         String str3 = createString(v3);
-    }catch(NullPointerException e) {
+    }catch(IllegalArgumentException e) {
         isException = true;
     }
 
@@ -286,7 +285,7 @@ int basetest() {
     bool isException = false;
     try {
         String str3 = createString(v3);
-    }catch(NullPointerException e) {
+    }catch(IllegalArgumentException e) {
         isException = true;
     }
 
@@ -638,7 +637,6 @@ int basetest() {
         printf("String append test4----------[FAIL] \n");
         break;
       }
-
       if(!abc->equals("aaa")) {
         printf("String append test5----------[FAIL] \n");
         break;
@@ -1203,10 +1201,10 @@ int basetest() {
       }
 
       String str2;
-      if(str->equalsIgnoreCase(str2)) {
-        printf("String equalsIgnoreCase test2-------[FAIL] \n");
-        break;
-      }
+      try {
+          str->equalsIgnoreCase(str2);
+          printf("String equalsIgnoreCase test2-------[FAIL] \n");
+      } catch(IllegalArgumentException e) {}
 
       printf("String equalsIgnoreCase test3-------[OK] \n");
       break;
@@ -1222,10 +1220,10 @@ int basetest() {
      }
 
      String str3;
-     if(str1->indexOfIgnoreCase(str3) != -1) {
+     try {
+       str1->indexOfIgnoreCase(str3);
        printf("String indexOfIgnoreCase test2-------[FAIL] \n");
-       break;
-     }
+     } catch(IllegalArgumentException e) {}
 
      printf("String indexOfIgnoreCase test3-------[OK] \n");
      break;
@@ -1272,11 +1270,11 @@ int basetest() {
       printf("String endsWith test2-------[FAIL] \n");
       break;
     }
-
-    if(abc->endsWith(nullptr)) {
+    
+    try {
+      abc->endsWith(nullptr);
       printf("String endsWith test3-------[FAIL] \n");
-      break;
-    }
+    } catch(IllegalArgumentException e) {}
 
     printf("String endsWith test4-------[OK] \n");
     break;
@@ -1298,11 +1296,10 @@ int basetest() {
       break;
     }
 
-    int index3 = abc->lastIndexOf(nullptr);
-    if(index3 != -1) {
-      printf("String lastIndexof test3-------[FAIL] \n");
-      break;
-    }
+    try {
+        abc->lastIndexOf(nullptr);
+        printf("String lastIndexof test3-------[FAIL] \n");
+    } catch(IllegalArgumentException e) {}
 
     printf("String lastIndexof test4-------[OK] \n");
     break;
@@ -1321,10 +1318,10 @@ int basetest() {
       break;
     }
 
-    if(abc->startsWith(nullptr)) {
-      printf("String startsWith test3-------[FAIL] \n");
-      break;
-    }
+    try {
+        abc->startsWith(nullptr);
+        printf("String startsWith test3-------[FAIL] \n");
+    } catch(IllegalArgumentException e) {}
 
     printf("String startsWith test4-------[OK] \n");
     break;

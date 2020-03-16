@@ -14,11 +14,20 @@ using namespace obotcha;
 
 extern int basetest();
 extern int ignorecasetest();
+extern int trimtest();
+extern int appendtest();
+extern int splittest();
 
 int main() {
 
   //basetest();
 
-  ignorecasetest();
+  //ignorecasetest();
+
+  //trimtest();
+
+  //appendtest();
+
+  splittest();
 
 }

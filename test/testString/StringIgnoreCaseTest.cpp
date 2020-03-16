@@ -76,7 +76,7 @@ int ignorecasetest() {
         }
 
         //case7
-        String testString7 = createString("²âÊÔ£á£ð£ë");
+        String testString7 = createString("æµ‹è¯•ï½ï½ï½‹");
         if(testString->equalsIgnoreCase(testString7)) {
             printf("String equalsIgnoreCase Special test8-------[FAIL] \n");
             break;
@@ -96,8 +96,15 @@ int ignorecasetest() {
             printf("String equalsIgnoreCase Special test10-------[FAIL] \n");
             break;
         }
+
+        //case10
+        String testString11 = createString("a");
+        if(testString->equalsIgnoreCase(testString11)) {
+            printf("String equalsIgnoreCase Special test11-------[FAIL] \n");
+            break;
+        }
         
-        printf("String equalsIgnoreCase Special test11-------[Success] \n");
+        printf("String equalsIgnoreCase Special test12-------[Success] \n");
         break;
     }
 
@@ -161,7 +168,14 @@ int ignorecasetest() {
             break;
         }
 
-        printf("String indexOfIgnoreCase Special test9-------[Success] \n");
+        //case9
+        String testString9 = createString("b");
+        if(testString->indexOfIgnoreCase(testString9) != 1) {
+            printf("String indexOfIgnoreCase Special test9-------[FAIL] \n");
+            break;
+        }
+
+        printf("String indexOfIgnoreCase Special test10-------[Success] \n");
         break;
     }
 
@@ -226,7 +240,14 @@ int ignorecasetest() {
             break;
         }
 
-        printf("String containsIgnoreCase Special test9-------[Success] \n");
+        //case9
+        String testString9 = createString("b");
+        if(!testString->containsIgnoreCase(testString9)) {
+            printf("String containsIgnoreCase Special test9-------[FAIL] \n");
+            break;
+        }
+
+        printf("String containsIgnoreCase Special test10-------[Success] \n");
         break;
     }
 
@@ -292,8 +313,98 @@ int ignorecasetest() {
             break;
         }
 
-        printf("String endsWithIgnoreCase Special test9-------[Success] \n");
+        //case9
+        String testString9 = createString("a");
+        if(testString->endsWithIgnoreCase(testString9)) {
+            printf("String endsWithIgnoreCase Special test9-------[FAIL] \n");
+            break;
+        }
+
+        //case10
+        String testString10 = createString("e");
+        if(!testString->endsWithIgnoreCase(testString10)) {
+            printf("String endsWithIgnoreCase Special test10-------[FAIL] \n");
+            break;
+        }
+
+        printf("String endsWithIgnoreCase Special test11-------[Success] \n");
         break;
+    }
+
+    //lastIndexOfIgnoreCase
+    while(1) {
+        String testString = createString("ABCDABE");
+        
+        //case1
+        String testString1 = createString("AB");
+        if(testString->lastIndexOfIgnoreCase(testString1) != 4) {
+            printf("String lastIndexOfIgnoreCase Special test1-------[FAIL] \n");
+            break;
+        }
+
+        //case2
+        String testString2 = createString("ABCDEF");
+        if(testString->lastIndexOfIgnoreCase(testString2) != -1) {
+            printf("String lastIndexOfIgnoreCase Special test2-------[FAIL] \n");
+            break;
+        }
+
+
+        //case3
+        String testString3 = createString("ABCD");
+        //printf("test3 is %d \n",testString->lastIndexOfIgnoreCase(testString3));
+        if(testString->lastIndexOfIgnoreCase(testString3) != 0) {
+            printf("String lastIndexOfIgnoreCase Special test3-------[FAIL] \n");
+            break;
+        }
+
+
+         //case4
+        String testString4 = createString("ab");
+        if(testString->lastIndexOfIgnoreCase(testString4) != 4) {
+            printf("String lastIndexOfIgnoreCase Special test4-------[FAIL] \n");
+            break;
+        }
+
+        //case5
+        String testString5 = createString("abcdef");
+        if(testString->lastIndexOfIgnoreCase(testString5) != -1) {
+            printf("String lastIndexOfIgnoreCase Special test5-------[FAIL] \n");
+            break;
+        }
+
+        //case6
+        String testString6 = createString("abcdabe");
+        if(testString->lastIndexOfIgnoreCase(testString6) != 0) {
+            printf("String lastIndexOfIgnoreCase Special test6-------[FAIL] \n");
+            break;
+        }
+
+        //case7
+        String testString7;
+        try {
+            testString->lastIndexOfIgnoreCase(testString7);
+            printf("String lastIndexOfIgnoreCase Special test7-------[FAIL] \n");
+            break;
+        } catch(IllegalArgumentException e) {}
+
+        //case8
+        String testString8 = createString("dabe");
+        if(testString->lastIndexOfIgnoreCase(testString8) != 3) {
+            printf("String lastIndexOfIgnoreCase Special test8-------[FAIL] \n");
+            break;
+        }
+
+        //case9
+        String testString9 = createString("a");
+        if(testString->lastIndexOfIgnoreCase(testString9) != 4) {
+            printf("String lastIndexOfIgnoreCase Special test9-------[FAIL] \n");
+            break;
+        }
+
+        printf("String lastIndexOfIgnoreCase Special test10-------[Success] \n");
+        break;
+
     }
 
 }

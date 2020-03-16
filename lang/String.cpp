@@ -243,7 +243,7 @@ char _String::charAt(int index) {
 
 String _String::subString(int start,int end) {
     if(end < 0 ||start > end || (uint32_t)end >= m_str.size()) {
-        throw ArrayIndexOutOfBoundsException("char At error");
+        return nullptr;
     }
 
     return createString(m_str.substr(start,end));
@@ -312,19 +312,30 @@ String _String::append(String s) {
         return createString(m_str);
     }
 
-    String result = append(s->toChars());
-    return result;
+    return append(s->toChars(),s->size());
 }
 
 String _String::append(std::string s) {
-    return append(s.data());
+    return append(s.data(),s.size());
 }
 
 String _String::append(const char *p) {
-    if(p == nullptr) {
-        return createString(m_str);
+    if(p != nullptr) {
+       return append(p,strlen(p));
     }
-    return createString(m_str.append(p));
+
+    return append(p,0);
+}
+
+String _String::append(const char *p,int size) {
+    String appendValue = createString(m_str);
+    if(p == nullptr) {
+        return appendValue;
+    }
+
+    appendValue->m_str.append(p,size);
+    
+    return appendValue;
 }
 
 int _String::indexOf(String v) {
@@ -498,6 +509,7 @@ sp<_ArrayList<String>> _String::split(const char* v) {
     }
 
     ArrayList<String> t = createArrayList<String>();
+    
     int index = 0;
     int last = 0;
 
@@ -512,6 +524,8 @@ sp<_ArrayList<String>> _String::split(const char* v) {
         last = index+1;
         index = m_str.find_first_of(v,last);
     }
+
+    printf("index is %d,last is %d \n",index,last);
     
     if(last - m_str.size() > 0){
         t->add(createString(m_str.substr(last,index-last)));
@@ -1062,9 +1076,10 @@ int _String::lastIndexOfIgnoreCase(const char * str,int csize) {
     int strEnd = csize - 1;
     int subIndex = strEnd;
 
-    while(1) {
+    while(index >= subIndex) {
         int v1 = m[index];
         int v2 = str[subIndex];
+        //printf("v2 is %d,v2 is %d,index is %d \n",v1,v2,index);
         if(IgnoreCaseTable[v1] == IgnoreCaseTable[v2]) {
             if(subIndex == 0) {
                 return index;
@@ -1073,10 +1088,6 @@ int _String::lastIndexOfIgnoreCase(const char * str,int csize) {
             index--;
             subIndex--;
             continue;
-        }
-
-        if(index == 0) {
-            return -1;
         }
 
         index--;
@@ -1103,7 +1114,7 @@ bool _String::matches(String regex) {
 
 sp<_String> _String::replaceFirst(String regex,String value) {
     if(m_str.size() == 0 || value == nullptr || regex == nullptr) {
-        return nullptr;
+        throw IllegalArgumentException("replaceFirst illegalArgument!");
     }
 
     std::string result = std::regex_replace(m_str,std::regex(regex->m_str),value->m_str,
@@ -1113,7 +1124,7 @@ sp<_String> _String::replaceFirst(String regex,String value) {
 
 sp<_String> _String::replaceFirst(const char *regex,const char *v) {
     if(regex == nullptr || v == nullptr) {
-        return nullptr;
+        throw IllegalArgumentException("replaceFirst illegalArgument!");
     }
 
     std::string result = std::regex_replace(m_str,std::regex(regex),v,
@@ -1153,9 +1164,7 @@ sp<_String> _String::replaceAll(std::string regex,std::string v) {
 
 
 bool _String::endsWith(String s) {
-    if(m_str.size() == 0 || m_str.size() == 0 || s == nullptr) {
-        return false;
-    }
+    checkParam(s);
 
     string::size_type result = m_str.find_last_of(s->m_str);
     return (result == (m_str.size() - 1));
@@ -1163,7 +1172,7 @@ bool _String::endsWith(String s) {
 
 bool _String::endsWith(const char *s) {
     if(s == nullptr) {
-        return false;
+        throw IllegalArgumentException("endsWith illegalArgument!");
     }
 
     string::size_type result = m_str.find_last_of(s);
@@ -1178,7 +1187,7 @@ bool _String::endsWith(std::string s) {
 
 int _String::lastIndexOf(String v) {
     if(m_str.size() == 0 || m_str.size() == 0 || v == nullptr) {
-        return -1;
+        throw IllegalArgumentException("lastIndexOf illegalArgument!");
     }
 
     int result = m_str.find_last_of(v->m_str);
@@ -1187,7 +1196,7 @@ int _String::lastIndexOf(String v) {
 
 int _String::lastIndexOf(const char * v) {
     if(v == nullptr) {
-        return -1;
+        throw IllegalArgumentException("lastIndexOf illegalArgument!");
     }
 
     int result = m_str.find_last_of(v);
@@ -1200,9 +1209,7 @@ int _String::lastIndexOf(std::string v) {
 
 
 bool _String::startsWith(String v) {
-    if(m_str.size() == 0 || m_str.size() == 0 || v == nullptr) {
-        return false;
-    }
+    checkParam(v);
 
     int result = m_str.find(v->m_str);
     return (result == v->size());
@@ -1210,7 +1217,7 @@ bool _String::startsWith(String v) {
 
 bool _String::startsWith(const char * v) {
     if(v == nullptr) {
-        return false;
+        throw IllegalArgumentException("startsWith illegalArgument!");
     }
 
     string::size_type result = m_str.find(v);
