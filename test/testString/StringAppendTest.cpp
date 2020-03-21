@@ -127,8 +127,19 @@ int appendtest() {
         break;
     }
 
-    //String append(const char *p,int size);
+    //String _String::append(T...args)
+    while(1) {
+        //case1
+        String str1 = createString("a");
+        String str2 = str1->append("b","c","d");
+        if(!str2->equals("abcd")) {
+            printf("String append Special test11_1-------[FAIL] \n");
+            break;
+        }
 
+        printf("String append Special test11_2-------[Success] \n");
+        break;
+    }
 
     
 

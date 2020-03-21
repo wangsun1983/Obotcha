@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 
+
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
@@ -185,11 +186,8 @@ public:
 
     int indexOf(const char *v);
     //----------------------------
-    String append(String s);
-
-    String append(std::string s);
-
-    String append(const char *p);
+    template<class ...T>
+    String append(T...args);
     //----------------------------
     bool equals(String s);
 
@@ -277,6 +275,8 @@ public:
 
     sp<_ArrayList<String>> split(const char* v);
 
+    sp<_ArrayList<String>> split(const char* v,int size);
+
     sp<_ArrayList<String>> split(std::string v);
     //----------------------------
 
@@ -299,11 +299,52 @@ private:
 
     void checkParam(String &);
 
+    //local function
+    template<typename... Args>
+    void _append(sp<_String> v,Args...args);
+
+    template<typename... Args>
+    void _append(const char *v,Args...args);
+
+    template<typename... Args>
+    void _append(std::string,Args...args);
+
+    void _append();
+
     const static  char IgnoreCaseTable[128];
 
     const static std::string False;
     const static std::string True;
 };
+
+template<class ...Args>
+sp<_String> _String::append(Args... args) {
+    String str = createString(m_str);
+    str->_append(args...);
+    return str;
+}
+
+template<class ...Args>
+void _String::_append(sp<_String> v,Args... args) {
+    if(v != nullptr) {
+        m_str.append(v->m_str);
+        _append(args...);
+    }
+}
+
+template<class ...Args>
+void _String::_append(const char *v,Args... args) {
+    if(v != nullptr) {
+        m_str.append(v);
+        _append(args...);
+    }
+}
+
+template<class ...Args>
+void _String::_append(std::string v,Args... args) {
+    m_str.append(v);
+    _append(args...);
+}
 
 }
 #endif

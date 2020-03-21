@@ -20,13 +20,13 @@ extern int splittest();
 
 int main() {
 
-  //basetest();
+  basetest();
 
-  //ignorecasetest();
+  ignorecasetest();
 
-  //trimtest();
+  trimtest();
 
-  //appendtest();
+  appendtest();
 
   splittest();
 

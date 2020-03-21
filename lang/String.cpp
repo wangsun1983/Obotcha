@@ -307,37 +307,6 @@ int _String::size() {
     return m_str.size();
 }
 
-String _String::append(String s) {
-    if(s == nullptr) {
-        return createString(m_str);
-    }
-
-    return append(s->toChars(),s->size());
-}
-
-String _String::append(std::string s) {
-    return append(s.data(),s.size());
-}
-
-String _String::append(const char *p) {
-    if(p != nullptr) {
-       return append(p,strlen(p));
-    }
-
-    return append(p,0);
-}
-
-String _String::append(const char *p,int size) {
-    String appendValue = createString(m_str);
-    if(p == nullptr) {
-        return appendValue;
-    }
-
-    appendValue->m_str.append(p,size);
-    
-    return appendValue;
-}
-
 int _String::indexOf(String v) {
     if(v == nullptr) {
         return -1;
@@ -500,32 +469,36 @@ bool _String::equals(std::string p) {
 
 ArrayList<String> _String::split(String v) {
     checkParam(v);
-    return split(v->toChars());
+    return split(v->toChars(),v->size());
 }
 
 sp<_ArrayList<String>> _String::split(const char* v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("string split");
+        throw IllegalArgumentException("split illegal param");
     }
+    return split(v,strlen(v));
+}
 
+sp<_ArrayList<String>> _String::split(std::string separator) {
+    
     ArrayList<String> t = createArrayList<String>();
     
     int index = 0;
     int last = 0;
 
-    index = m_str.find_first_of(v,last);
+    index = m_str.find_first_of(separator,last);
 
     if(index == -1) {
         return nullptr;
     }
 
     while(index != -1) {
-        t->add(createString(m_str.substr(last,index-last)));
+        if(index != last) {
+            t->add(createString(m_str.substr(last,index-last)));
+        }
         last = index+1;
-        index = m_str.find_first_of(v,last);
+        index = m_str.find_first_of(separator,last);
     }
-
-    printf("index is %d,last is %d \n",index,last);
     
     if(last - m_str.size() > 0){
         t->add(createString(m_str.substr(last,index-last)));
@@ -534,8 +507,14 @@ sp<_ArrayList<String>> _String::split(const char* v) {
     return t;
 }
 
-sp<_ArrayList<String>> _String::split(std::string v) {
-    return split(v.c_str());
+sp<_ArrayList<String>> _String::split(const char* v,int size) {
+    if(v == nullptr) {
+        throw IllegalArgumentException("split illegal param");
+    }
+
+    std::string str = std::string(v,size);
+
+    return split(str);
 }
 
 Integer _String::toInteger() {
@@ -1296,6 +1275,10 @@ void _String::checkParam(String &v) {
     if(v == nullptr || v->size() == 0) {
         throw IllegalArgumentException("equals ignore illegalArgument!");
     }
+}
+
+void _String::_append() {
+    //Do nothing!!.just for _append
 }
 
 
