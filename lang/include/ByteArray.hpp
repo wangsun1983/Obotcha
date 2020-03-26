@@ -4,17 +4,17 @@
 #include <stdlib.h>
 #include <memory.h>
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "String.hpp"
+#include "ListObject.hpp"
+#include "ListPointer.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ByteArray) {
+DECLARE_BYTE_ARRAY(ByteArray) {
 public:
     _ByteArray(int length);
 
-    _ByteArray(const byte *data,int len);
+    _ByteArray(const byte *data,uint32_t len);
 
     _ByteArray(sp<_ByteArray>);
 
@@ -28,7 +28,13 @@ public:
 
     void clear();
 
+    unsigned char & operator[](int i);
+    
     int resize(int size);
+
+    int growTo(int size);
+
+    int growBy(int size);
 
     void qucikShrink(int size);
 
@@ -54,10 +60,18 @@ public:
 
     void dump(String);
 
+    void setMode(int);
+
+    static const int SafeMode;
+
+    static const int NormalMode;
+
 private:
     byte *buff;
 
     int mSize;
+
+    int mMode;
 };
 
 }

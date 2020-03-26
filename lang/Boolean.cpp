@@ -12,21 +12,49 @@
 
 #include "Boolean.hpp"
 #include "InitializeException.hpp"
+#include "IllegalArgumentException.hpp"
 #include "NullPointerException.hpp"
 #include "String.hpp"
 
 namespace obotcha {
 
-sp<_Boolean> _Boolean::FALSE = createBoolean(false);
+const sp<_Boolean> _Boolean::False = createBoolean(false);
 
-sp<_Boolean> _Boolean::TRUE = createBoolean(true);
+const sp<_Boolean> _Boolean::True = createBoolean(true);
 
-sp<_String> _Boolean::FALSE_STRING = createString("False");
+const sp<_String> _Boolean::FalseString = createString("False");
 
-sp<_String> _Boolean::TRUE_STRING = createString("True");
+const sp<_String> _Boolean::TrueString = createString("True");
     
 _Boolean::_Boolean(bool v) : val(v) {
 
+}
+
+_Boolean::_Boolean(sp<_String> str) {
+    if(str->size() == 0) {
+        throw IllegalArgumentException("Null String");
+    }
+
+    const char *data = str->toChars();
+
+    if((str->size() == 4) &&
+        (data[0] == 't' || data[0] == 'T')
+        &&(data[1] == 'r' || data[1] == 'R')
+        &&(data[2] == 'u' || data[2] == 'U')
+        &&(data[3] == 'e' || data[3] == 'E')) {
+        val = true;
+    }
+
+    if((str->size() == 5) &&
+        (data[0] == 'f' || data[0] == 'F')
+        &&(data[1] == 'a' || data[1] == 'A')
+        &&(data[2] == 'l' || data[2] == 'L')
+        &&(data[3] == 's' || data[3] == 'S')
+        &&(data[4] == 'e' || data[4] == 'E')) {
+        val = true;
+    }
+
+    throw InitializeException("Boolean init failed");
 }
 
 _Boolean::_Boolean(Boolean &v) {
@@ -51,7 +79,7 @@ bool _Boolean::equals(Boolean &p) {
 
 bool _Boolean::equals(const _Boolean *p) {
     if(p == nullptr) {
-        return false;
+        throw IllegalArgumentException("Boolean compares"); 
     }
 
     return val == p->val;
@@ -67,66 +95,66 @@ bool _Boolean::equals(bool p) {
 
 sp<_String> _Boolean::toString() {
     if(val) {
-        return TRUE_STRING;
+        return TrueString;
     }
 
-    return FALSE_STRING;
+    return FalseString;
 }
 
-bool _Boolean::compareTo(sp<_Boolean> v) {
-    if(v == nullptr) {
-        throw NullPointerException("compareTo is nullptr");
-    }
-
-    return val == v->toValue();
-}
-
-void _Boolean::logicOr(bool v) {
+bool _Boolean::logicOr(bool v) {
     val |= v;
+
+    return val;
 }
 
-void _Boolean::logicOr(sp<_Boolean> v) {
+bool _Boolean::logicOr(sp<_Boolean> v) {
     if(v == nullptr) {
-        throw NullPointerException("logicOr is nullptr");
+        throw IllegalArgumentException("logicOr is nullptr");
     }
 
     val |= v->toValue();
+
+    return val;
 }
 
-void _Boolean::logicAnd(bool v) {
+bool _Boolean::logicAnd(bool v) {
     val &= v;
+
+    return val;
 }
 
-void _Boolean::logicAnd(sp<_Boolean> v) {
+bool _Boolean::logicAnd(sp<_Boolean> v) {
     if(v == nullptr) {
-        throw NullPointerException("logicOr is nullptr");
+        throw IllegalArgumentException("logicOr is nullptr");
     }
 
     val &= v->toValue();
+
+    return val;
 }
 
-void _Boolean::logicXor(bool v) {
+bool _Boolean::logicXor(bool v) {
     val ^= v;
+
+    return val;
 }
 
-void _Boolean::logicXor(sp<_Boolean> v) {
+bool _Boolean::logicXor(sp<_Boolean> v) {
     if(v == nullptr) {
-        throw NullPointerException("logicXor is nullptr");
+        throw IllegalArgumentException("logicXor is nullptr");
     }
     
     val ^= v->toValue();
+
+    return val;
 }
 
 sp<_Boolean> _Boolean::valueOf(sp<_String> v) {
     if(v == nullptr) {
-        throw NullPointerException("valueOf is nullptr");
+        throw IllegalArgumentException("valueOf is nullptr");
     }
 
-    if(v->equalsIgnoreCase("true")) {
-        return createBoolean(true);
-    }
-
-    return createBoolean(false);
+    return v->toBoolean();
 }
 
 sp<_Boolean> _Boolean::valueOf(char *v) {

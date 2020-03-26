@@ -16,14 +16,19 @@
 
 namespace obotcha {
 
+const int _ByteArray::SafeMode = 1;
+
+const int _ByteArray::NormalMode = 2;
+
 /**
  * @brief ByteArray construct function
  * @param b copy value
  */
 _ByteArray::_ByteArray(sp<_ByteArray> b) {
-    buff = (unsigned char *)malloc(b->size());
-    memcpy(buff,b->toValue(),b->size());
     mSize = b->size();
+    buff = (unsigned char *)malloc(mSize);
+    memcpy(buff,b->toValue(),mSize);
+    mMode = NormalMode;
 }
 
 /**
@@ -34,6 +39,7 @@ _ByteArray::_ByteArray(int length) {
     buff = (unsigned char *)malloc(length);
     memset(buff,0,length);
     mSize = length;
+    mMode = NormalMode;
 }
 
 /**
@@ -41,11 +47,11 @@ _ByteArray::_ByteArray(int length) {
  * @param str save str as ByteArray
  */
 _ByteArray::_ByteArray(String str) {
-    int size = str->size();
-    mSize = size;
+    mSize = str->size();
     buff = (unsigned char *)malloc(mSize + 1);
     memset(buff,0,mSize + 1);
-    memcpy(buff,str->toChars(),size);
+    memcpy(buff,str->toChars(),mSize);
+    mMode = NormalMode;
 }
 
 /**
@@ -53,11 +59,15 @@ _ByteArray::_ByteArray(String str) {
  * @param data source data
  * @param len save data len
  */
-_ByteArray::_ByteArray(const byte *data,int len) {
+_ByteArray::_ByteArray(const byte *data,uint32_t len) {
     buff = (unsigned char *)malloc(len);
-    memset(buff,0,len);
     mSize = len;
     memcpy(buff,data,len);
+    mMode = NormalMode;
+}
+
+void _ByteArray::setMode(int mode) {
+    mMode = mode;
 }
 
 /**
@@ -65,6 +75,10 @@ _ByteArray::_ByteArray(const byte *data,int len) {
  */
 void _ByteArray::clear() {
     memset(buff,0,mSize);
+}
+
+unsigned char & _ByteArray::operator[] (int i) { 
+        return buff[i];
 }
 
 /**
@@ -81,6 +95,12 @@ _ByteArray::~_ByteArray() {
 
 
 byte *_ByteArray::toValue() {
+    if(mMode == SafeMode) {
+        byte *v = (byte*)malloc(mSize);
+        memcpy(v,buff,mSize);
+        return v;
+    }
+    
     return buff;
 }
 

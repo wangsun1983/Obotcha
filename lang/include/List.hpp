@@ -40,9 +40,7 @@ public:
     }
     
     T& operator[] (int i) {
-        printf("element is %d \n",elements[i]);
-        T &v = elements[i];
-        printf("element2 is %d \n",v);    
+        T &v = elements[i];   
         return v;
     }
 

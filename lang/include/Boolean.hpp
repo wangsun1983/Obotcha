@@ -14,6 +14,8 @@ public:
 
     _Boolean(Boolean &v);
 
+    _Boolean(sp<_String>);
+
     bool toValue();
 
     bool equals(Boolean &p);
@@ -26,19 +28,17 @@ public:
 
     sp<_String> toString();
 
-    bool compareTo(sp<_Boolean>);
+    bool logicOr(bool);
 
-    void logicOr(bool);
+    bool logicOr(sp<_Boolean>);
 
-    void logicOr(sp<_Boolean>);
+    bool logicAnd(bool);
 
-    void logicAnd(bool);
+    bool logicAnd(sp<_Boolean>);
 
-    void logicAnd(sp<_Boolean>);
+    bool logicXor(bool);
 
-    void logicXor(bool);
-
-    void logicXor(sp<_Boolean>);
+    bool logicXor(sp<_Boolean>);
 
     static sp<_Boolean> valueOf(sp<_String>);
 
@@ -46,13 +46,13 @@ public:
 
     static sp<_Boolean> valueOf(bool);
 
-    static sp<_Boolean> FALSE;
+    static const sp<_Boolean> False;
 
-    static sp<_Boolean> TRUE;
+    static const sp<_Boolean> True;
 
-    static sp<_String> FALSE_STRING;
+    static const sp<_String> FalseString;
 
-    static sp<_String> TRUE_STRING;
+    static const sp<_String> TrueString;
 
     ~_Boolean();
 
