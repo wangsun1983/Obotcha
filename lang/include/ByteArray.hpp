@@ -29,8 +29,6 @@ public:
     void clear();
 
     unsigned char & operator[](int i);
-    
-    int resize(int size);
 
     int growTo(int size);
 
@@ -59,6 +57,10 @@ public:
     void dump(const char *);
 
     void dump(String);
+
+    void dumpToFile(const char *);
+
+    void dumpToFile(String);
 
     void setMode(int);
 

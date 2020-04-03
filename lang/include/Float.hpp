@@ -21,6 +21,10 @@ public:
 
     bool equals(float p);
 
+    void update(float v);
+
+    void update(sp<_Float> v);
+
     ~_Float();
 
     static const float EPS;

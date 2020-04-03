@@ -112,8 +112,9 @@ public:
 
     int toBasicInt();
 
+    //TODO Remove
     int toHexInt();
-
+    //TODO Remove
     String toHexString();
 
     bool toBasicBool();

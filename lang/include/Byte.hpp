@@ -14,6 +14,10 @@ public:
     _Byte(unsigned char v);
 
     _Byte(Byte &v);
+
+    void update(byte);
+
+    void update(sp<_Byte>);
     
     byte toValue();
 

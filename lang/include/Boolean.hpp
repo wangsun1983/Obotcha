@@ -26,6 +26,8 @@ public:
 
     void update(bool v);
 
+    void update(sp<_Boolean> v);
+
     sp<_String> toString();
 
     bool logicOr(bool);

@@ -118,36 +118,6 @@ int basetest() {
     }
 
     while(1) {
-        //test resize
-        byte *v = (byte *)malloc(16);
-        memset(v,8,16);
-        ByteArray array1 = createByteArray(v,16);
-        array1->resize(32);
-
-        if(array1->size() != 32) {
-            printf("ByteArray resize test1 -------[FAIL] \n");
-            break;
-        }
-
-        byte *p2 = array1->toValue();
-        bool isOk = true;
-        for(int index = 0;index++;index<16) {
-            if(p2[index] != 8) {
-              printf("ByteArray resize test2 -------[FAIL] \n");
-              isOk = false;
-              break;
-            }
-        }
-
-        if(isOk) {
-            printf("ByteArray resize -------[OK] \n");
-        }
-
-        free(v);
-        break;
-    }
-
-    while(1) {
         //test isEmpty
         ByteArray t = createByteArray(16);
         if(t->isEmpty()) {

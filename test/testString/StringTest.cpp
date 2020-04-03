@@ -17,6 +17,7 @@ extern int ignorecasetest();
 extern int trimtest();
 extern int appendtest();
 extern int splittest();
+extern int equaltest();
 
 int main() {
 
@@ -30,4 +31,5 @@ int main() {
 
   splittest();
 
+  equaltest();
 }

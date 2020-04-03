@@ -1,6 +1,7 @@
 #include <cmath>
 #include "Float.hpp"
 #include "InitializeException.hpp"
+#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 
@@ -24,7 +25,7 @@ float _Float::toValue() {
 
 bool _Float::equals(Float &p) {
     if(p == nullptr) {
-        return false;
+        throw IllegalArgumentException("p is null");
     }
 
     return std::fabs(val-p->val) <= EPS;
@@ -40,6 +41,18 @@ bool _Float::equals(const _Float *p) {
 
 bool _Float::equals(float p) {
     return std::fabs(val-p) <= EPS;
+}
+
+void _Float::update(float v) {
+    val = v;
+}
+
+void _Float::update(sp<_Float> v) {
+    if(v == nullptr) {
+        throw IllegalArgumentException("Boolean equals nullptr"); 
+    }
+
+    val = v->val;
 }
 
 _Float::~_Float() {

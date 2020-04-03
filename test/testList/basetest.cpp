@@ -33,7 +33,7 @@ private:
 
 int value[] = {1,2,3,4,5};
 
-int main() {
+int basetest() {
 
     //MyArray *t = new MyArray(&value[0]);
     //MyArray *t = new MyArray();

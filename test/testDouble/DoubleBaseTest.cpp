@@ -8,7 +8,7 @@
 
 using namespace obotcha;
 
-int main() {
+int basetest() {
 
   printf("---[Double Test Start]--- \n");
   //Test Construct

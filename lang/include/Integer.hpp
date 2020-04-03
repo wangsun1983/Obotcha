@@ -2,6 +2,7 @@
 #define __INTEGER_HPP__
 
 #include <stdio.h>
+#include <sstream>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -26,6 +27,8 @@ public:
 
     void update(int v);
 
+    void update(sp<_Integer> v);
+
     sp<_String> toHexString();
 
     static sp<_String> toHexString(int i);
@@ -42,7 +45,13 @@ public:
 
     static sp<_String> toString(int i);
 
-    static int parseInt(sp<_String>);
+    static int parseDecInt(sp<_String>);
+
+    static int parseHexInt(sp<_String>);
+
+    static int parseOctInt(sp<_String>);
+
+    static int parseBinaryInt(sp<_String>);
 
     ~_Integer();
 
@@ -51,7 +60,7 @@ public:
     static const int MIN_VALUE = 0x80000000;
 
 private:
-    static sp<_String> toString(int i, int radix);
+    static void binaryRecursion(int n,std::stringstream &ss);
 
     int val;
 };

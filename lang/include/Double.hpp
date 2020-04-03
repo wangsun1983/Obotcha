@@ -15,6 +15,10 @@ public:
     
     double toValue();
 
+    void update(double);
+
+    void update(sp<_Double>);
+
     bool equals(double p);
     
     bool equals(Double &p);

@@ -33,7 +33,14 @@ int operatortest() {
         break;
       }
 
-      printf("ByteArray operatortest test 10-------[Success] \n");
+      //case2
+      ByteArray array2 = createByteArray(5);
+      try {
+        array2[100] = 1;
+        printf("ByteArray operatortest test 2-------[FAIL] \n");
+      } catch(ArrayIndexOutOfBoundsException e) {}
+
+      printf("ByteArray operatortest test 3-------[Success] \n");
       break;
   }
     

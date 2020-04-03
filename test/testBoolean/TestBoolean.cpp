@@ -5,10 +5,11 @@
 //#include "ArrayList.hpp"
 #include "Boolean.hpp"
 #include "StrongPointer.hpp"
+#include "IllegalArgumentException.hpp"
 
 using namespace obotcha;
 
-int main() {
+int basetest() {
 
     printf("---[Boolean Test Start]--- \n");
     while(1) {
@@ -59,9 +60,10 @@ int main() {
             printf("Boolean equal test6-------[FAIL] \n");
         }
 
-        if(t1->equals(nullptr)) {
+        try {
+           t1->equals(nullptr);
            printf("Boolean equal test7-------[FAIL] \n");
-        }
+        } catch(IllegalArgumentException e) {}
 
         printf("Boolean equal test-------[OK] \n");
         break;

@@ -71,7 +71,7 @@ bool _Boolean::toValue() {
 
 bool _Boolean::equals(Boolean &p) {
     if(p == nullptr) {
-        return false;
+        throw IllegalArgumentException("Boolean equals nullptr");
     }
 
     return val == p->val;
@@ -79,7 +79,7 @@ bool _Boolean::equals(Boolean &p) {
 
 bool _Boolean::equals(const _Boolean *p) {
     if(p == nullptr) {
-        throw IllegalArgumentException("Boolean compares"); 
+        throw IllegalArgumentException("Boolean equals nullptr"); 
     }
 
     return val == p->val;
@@ -87,6 +87,14 @@ bool _Boolean::equals(const _Boolean *p) {
 
 void _Boolean::update(bool v) {
     val = v;
+}
+
+void _Boolean::update(sp<_Boolean> v) {
+    if(v == nullptr) {
+        throw IllegalArgumentException("Boolean equals nullptr"); 
+    }
+
+    val = v->val;
 }
 
 bool _Boolean::equals(bool p) {

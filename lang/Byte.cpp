@@ -13,6 +13,7 @@
 
 #include "Byte.hpp"
 #include "InitializeException.hpp"
+#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 
@@ -31,7 +32,7 @@ byte _Byte::toValue() {
 
 bool _Byte::equals(Byte &p) {
     if(p == nullptr) {
-        return false;
+        throw IllegalArgumentException("byte equal null");
     }
     
     return val == p->val;
@@ -43,10 +44,22 @@ bool _Byte::equals(byte p) {
 
 bool _Byte::equals(const _Byte *p) {
     if(p == nullptr) {
-        return false;
+        throw IllegalArgumentException("byte equal null");
     }
 
     return val == p->val;
+}
+
+void _Byte::update(byte v) {
+    val = v;
+}
+
+void _Byte::update(sp<_Byte>v) {
+    if(v == nullptr) {
+        throw IllegalArgumentException("byte equal null");
+    }
+
+    val = v->val;
 }
 
 _Byte::~_Byte() {

@@ -13,6 +13,7 @@
 #include <cmath>
 #include "Double.hpp"
 #include "InitializeException.hpp"
+#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 
@@ -33,7 +34,7 @@ double _Double::toValue() {
 
 bool _Double::equals(Double &p) {
     if(p == nullptr) {
-        return false;
+        throw IllegalArgumentException("double update null");
     }
     
     return std::fabs(val-p->val) <= EPS;
@@ -45,10 +46,22 @@ bool _Double::equals(double p) {
 
 bool _Double::equals(const _Double *p) {
     if(p == nullptr) {
-        return false;
+        throw IllegalArgumentException("double update null");
     }
 
     return std::fabs(val-p->val) <= EPS;
+}
+
+void _Double::update(double v) {
+    this->val = v;
+}
+
+void _Double::update(sp<_Double> v) {
+    if(v == nullptr) {
+        throw IllegalArgumentException("double update null");
+    }
+
+    this->val = v->val;
 }
 
 _Double::~_Double() {

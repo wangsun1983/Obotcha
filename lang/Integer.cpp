@@ -13,22 +13,16 @@
 #include <stdio.h>
 #include <memory.h>
 #include <sstream>
+#include <bitset>
+#include <math.h>
 
 #include "Integer.hpp"
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"
 #include "String.hpp"
+#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
-
-const static char digits[] = {
-        '0' , '1' , '2' , '3' , '4' , '5' ,
-        '6' , '7' , '8' , '9' , 'a' , 'b' ,
-        'c' , 'd' , 'e' , 'f' , 'g' , 'h' ,
-        'i' , 'j' , 'k' , 'l' , 'm' , 'n' ,
-        'o' , 'p' , 'q' , 'r' , 's' , 't' ,
-        'u' , 'v' , 'w' , 'x' , 'y' , 'z'
-};    
 
 _Integer::_Integer(int v) : val(v) {
 
@@ -39,7 +33,7 @@ _Integer::_Integer(Integer &v) {
         throw InitializeException("Object is null");
     }
 
-    val = 0;
+    val = v->toValue();
 }
 
 int _Integer::toValue() {
@@ -70,55 +64,49 @@ void _Integer::update(int v) {
     val = v;
 }
 
-String _Integer::toString(int i, int radix) {
-    if (radix == 10) {
-        return toString(i);
+void _Integer::update(sp<_Integer> v) {
+    if(v == nullptr) {
+        throw IllegalArgumentException("integer update null");
     }
 
-    char buf[33];
-    memset(buf,0,33);
-    bool negative = (i < 0);
-    int charPos = 32;
-
-    if (!negative) {
-        i = -i;
-    }
-
-    while (i <= -radix) {
-        buf[charPos--] = digits[-(i % radix)];
-        i = i / radix;
-    }
-    buf[charPos] = digits[-i];
-
-    if (negative) {
-        buf[--charPos] = '-';
-    }
-
-    return createString(buf);
+    val = v->val;
 }
 
 sp<_String> _Integer::toHexString() {
-    return toString(val,16);
+    return toHexString(val);
 }
 
 sp<_String> _Integer::toHexString(int i) {
-    return toString(i,16);
+    std::stringstream ss;
+    ss<<std::hex<<i;
+
+    std::string str;
+    ss>>str;
+    return createString(str);
 }
 
 sp<_String> _Integer::toOctalString() {
-    return toString(val);
+    return toOctalString(val);
 }
 
 sp<_String> _Integer::toOctalString(int i) {
-    return toString(i);
+    std::stringstream ss;
+    ss<<std::oct<<i;
+    std::string str;
+    ss>>str;
+    return createString(str);
 }
 
 sp<_String> _Integer::toBinaryString() {
-    return toString(val,2);
+    return toBinaryString(val);
 }
 
 sp<_String> _Integer::toBinaryString(int i) {
-    return toString(i,2);
+    std::stringstream ss;
+    binaryRecursion(i,ss);
+    std::string str;
+    ss>>str;
+    return createString(str);
 }
 
 sp<_String> _Integer::toString() {
@@ -131,7 +119,7 @@ sp<_String> _Integer::toString(int i) {
     return createString(ss.str());
 }
 
-int _Integer::parseInt(sp<_String> v) {
+int _Integer::parseDecInt(sp<_String> v) {
     if(v == nullptr) {
         throw NullPointerException("Integer parserInt nullptr");
     }
@@ -142,6 +130,60 @@ int _Integer::parseInt(sp<_String> v) {
     ss>>value;
 
     return value;
+}
+
+int _Integer::parseHexInt(sp<_String> v) {
+    if(v == nullptr) {
+        throw IllegalArgumentException("parseHexInt nullptr");
+    }
+    std::stringstream ss;
+    ss<< std::hex <<v->getStdString();
+    int value;
+    ss>>value;
+
+    return value;
+}
+
+int _Integer::parseOctInt(sp<_String> v) {
+    if(v == nullptr) {
+        throw IllegalArgumentException("parseHexInt nullptr");
+    }
+    std::stringstream ss;
+    ss<< std::oct <<v->getStdString();
+    int value;
+    ss>>value;
+
+    return value;
+}
+
+int _Integer::parseBinaryInt(sp<_String> v) {
+    if(v == nullptr) {
+        throw IllegalArgumentException("parseHexInt nullptr");
+    }
+
+    int lastIndex = v->size() - 1;
+    const char *str = v->toChars();
+
+    int parseBinary = 0;
+    for (int i = lastIndex; i >= 0; --i) {
+        if (str[i] == '1') {
+            parseBinary += pow(2.0, lastIndex - i);
+        }
+    }
+    printf("parseBinaryInt v is %s,value is %d \n",v->toChars(),parseBinary);
+    return parseBinary;
+}
+
+void _Integer::binaryRecursion(int n,std::stringstream &ss) {
+    int a;
+    a = n%2;
+    n = n>>1;
+    if (n==0) {
+        //donothing
+    } else {
+        binaryRecursion(n,ss);
+    }
+    ss<<a;
 }
 
 _Integer::~_Integer() {

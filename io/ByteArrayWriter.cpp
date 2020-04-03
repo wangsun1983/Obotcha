@@ -31,7 +31,7 @@ int _ByteArrayWriter::writeShort(int s) {
     if(mIndex > (mSize - sizeof(short))) {
         if(mType == Dynamic) {
             mSize = mData->size()*7/4;
-            mData->resize(mSize);
+            mData->growTo(mSize);
         } else {
             return -ByteArrayWriteFail;
         }
@@ -52,7 +52,7 @@ int _ByteArrayWriter::writeByte(byte v) {
     if(mIndex > (mSize - 1)) {
         if(mType == Dynamic) {
             mSize = mData->size()*7/4;
-            mData->resize(mSize);
+            mData->growTo(mSize);
         } else {
             return -ByteArrayWriteFail;
         }
@@ -66,7 +66,7 @@ int _ByteArrayWriter::writeInt(int v) {
     if(mIndex > (mSize - sizeof(int))) {
         if(mType == Dynamic) {
             mSize = mData->size()*7/4;
-            mData->resize(mSize);
+            mData->growTo(mSize);
         } else {
             return -ByteArrayWriteFail;
         }
@@ -95,7 +95,7 @@ long _ByteArrayWriter::writeLong(long v) {
     if(mIndex > (mSize - sizeof(long))) {
         if(mType == Dynamic) {
             mSize = mData->size()*7/4;
-            mData->resize(mSize);
+            mData->growTo(mSize);
         } else {
             return -ByteArrayWriteFail;
         }
@@ -128,7 +128,7 @@ int _ByteArrayWriter::writeByteArray(ByteArray b) {
     if(mIndex > (mSize - b->size())) {
         if(mType == Dynamic) {
             mSize = (mData->size() + b->size())*7/4;
-            mData->resize(mSize);
+            mData->growTo(mSize);
         } else {
             return -ByteArrayWriteFail;
         }
@@ -143,7 +143,7 @@ int _ByteArrayWriter::writeString(String str) {
     if(mIndex > (mSize - str->size())) {
         if(mType == Dynamic) {
             mSize = (mData->size() + str->size())*7/4;
-            mData->resize(mSize);
+            mData->growTo(mSize);
         } else {
             return -ByteArrayWriteFail;
         }
@@ -158,7 +158,7 @@ int _ByteArrayWriter::writeByteArray(ByteArray b,int length) {
     if(mIndex > (mSize - length)) {
         if(mType == Dynamic) {
             mSize = (mData->size() + length)*7/4;
-            mData->resize(mSize);
+            mData->growTo(mSize);
         } else {
             return -ByteArrayWriteFail;
         }
@@ -173,7 +173,7 @@ int _ByteArrayWriter::write(byte *data,int length) {
     if(mIndex > (mSize - length)) {
         if(mType == Dynamic) {
             mSize = (mData->size() + length)*7/4;
-            mData->resize(mSize);
+            mData->growTo(mSize);
         } else {
             return -ByteArrayWriteFail;
         }

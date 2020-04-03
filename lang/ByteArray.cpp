@@ -9,6 +9,7 @@
  * @date 2019-07-12
  * @license none
  */
+#include <stdio.h>
 
 #include "Error.hpp"
 #include "ByteArray.hpp"
@@ -77,8 +78,12 @@ void _ByteArray::clear() {
     memset(buff,0,mSize);
 }
 
-unsigned char & _ByteArray::operator[] (int i) { 
-        return buff[i];
+unsigned char & _ByteArray::operator[] (int index) {
+    if(index >= mSize) {
+        throw ArrayIndexOutOfBoundsException("ByteArray",mSize,index);
+    }
+    
+    return buff[index];
 }
 
 /**
@@ -117,7 +122,7 @@ void _ByteArray::qucikShrink(int size) {
     mSize = size;
 }
 
-int _ByteArray::resize(int size) {
+int _ByteArray::growTo(int size) {
     if(size <= mSize) {
         return -InvalidParam;
     }
@@ -130,6 +135,22 @@ int _ByteArray::resize(int size) {
 
     mSize = size;    
     
+    return 0;
+}
+
+int _ByteArray::growBy(int size) {
+    if(size == 0) {
+        return 0;
+    }
+
+    if(buff == nullptr) {
+        return -NotCreate;
+    }
+
+    mSize += size;
+
+    buff = (byte *)realloc(buff,mSize);
+
     return 0;
 }
 
@@ -196,7 +217,7 @@ int _ByteArray::append(sp<_ByteArray>b,int len) {
 }
 
 int _ByteArray::append(byte *data,int len) {
-    if(data == nullptr) {
+    if(data == nullptr || len <= 0) {
         return -InvalidParam;
     }
 
@@ -210,7 +231,7 @@ String _ByteArray::toString() {
     char _buff[mSize + 1];
     memset(_buff,0,mSize+1);
     memcpy(_buff,buff,mSize);
-    return createString(&_buff[0],0,mSize + 1);
+    return createString(&_buff[0],0,mSize);
 }
 
 void _ByteArray::dump(const char *v) {
@@ -222,6 +243,18 @@ void _ByteArray::dump(const char *v) {
 
 void _ByteArray::dump(String v) {
     dump(v->toChars());
+}
+
+void _ByteArray::dumpToFile(const char *path) {
+    std::ofstream fstream;
+    fstream.open(path,std::ios::trunc);
+    fstream.write((const char *)buff,mSize);
+    fstream.flush();
+    fstream.close();
+}
+
+void _ByteArray::dumpToFile(String path) {
+    dumpToFile(path->toChars());
 }
 
 }

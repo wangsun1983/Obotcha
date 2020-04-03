@@ -5,10 +5,11 @@
 //#include "ArrayList.hpp"
 #include "Integer.hpp"
 #include "StrongPointer.hpp"
+#include "InitializeException.hpp"
 
 using namespace obotcha;
 
-int main() {
+int basetest() {
 
   printf("---[Integer Test Start]--- \n");
   //_Integer(int v);
@@ -33,12 +34,11 @@ int main() {
     }
 
     Integer v3;
-    Integer v4 = createInteger(v3);
-    if(v4->toValue() != 0) {
+    try {
+      Integer v4 = createInteger(v3);
       printf("Integer construct test4-------[FAIL] \n");
-      break;
-    }
-
+    } catch(InitializeException e) {}
+    
     printf("Integer construct test5-------[OK] \n");
     break;
   }

@@ -12,18 +12,9 @@
 using namespace obotcha;
 
 extern int basetest();
-extern int operatortest();
-extern int dumptest();
-extern int testgrow();
-extern int testappend();
-extern int testsafemode();
+extern int updatetest();
 
 int main() {
-
   basetest();
-  operatortest();
-  dumptest();
-  testgrow();
-  testappend();
-  testsafemode();
+  updatetest();
 }

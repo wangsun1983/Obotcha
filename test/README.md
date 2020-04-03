@@ -1,12 +1,14 @@
-## TestShet
+## Test Sheet
+-   主要用于存放所有类的单元测试case
+-   也可作为示例代码参考
 
-### lang
-- [ ] Boolean
-- [ ] ByteArray
-- [ ] Byte
+##lang
+- [x] Boolean
+- [x] ByteArray
+- [x] Byte
 - [ ] ByteRingArray
-- [ ] Double
-- [ ] Float
+- [x] Double
+- [x] Float
 - [ ] Integer
 - [ ] Long
 - [x] String

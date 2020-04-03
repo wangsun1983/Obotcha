@@ -5,10 +5,11 @@
 //#include "ArrayList.hpp"
 #include "Float.hpp"
 #include "StrongPointer.hpp"
+#include "InitializeException.hpp"
 
 using namespace obotcha;
 
-int main() {
+int basetest() {
 
   printf("---[Float Test Start]--- \n");
   //_Float(float v);
@@ -33,11 +34,10 @@ int main() {
     }
 
     Float v3;
-    Float v4 = createFloat(v3);
-    if(v4->toValue() != 0) {
-      printf("Float construct test4-------[FAIL] \n");
-      break;
-    }
+    try {
+        Float v4 = createFloat(v3);
+        printf("Float construct test4-------[FAIL] \n");
+    } catch(InitializeException e) {}
 
     printf("Float construct test5-------[OK] \n");
     break;
