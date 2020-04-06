@@ -71,5 +71,8 @@ include security/makefile
 include process/makefile
 
 $(libname): $(link)
-	${shell cp ./external/openssl/libcrypto.so ./external/openssl/libssl.so ./out/lib/}
+	${shell cp ./external/openssl/libcrypto.so ./out/lib/libcrypto.so.3}
+	${shell cp ./external/openssl/libssl.so ./out/lib/libssl.so.3}
+	${shell ln -s libcrypto.so.3 ./out/lib/libcrypto.so}
+	${shell ln -s libssl.so.3 ./out/lib/libssl.so}
 	g++ -g -o0 -shared $(objs) $(cflags) $(sharelib) -o $(outlib)/lib${libname}.so $(external)

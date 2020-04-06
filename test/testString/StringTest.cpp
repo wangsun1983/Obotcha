@@ -18,6 +18,7 @@ extern int trimtest();
 extern int appendtest();
 extern int splittest();
 extern int equaltest();
+extern int formattest();
 
 int main() {
 
@@ -32,4 +33,6 @@ int main() {
   splittest();
 
   equaltest();
+
+  formattest();
 }

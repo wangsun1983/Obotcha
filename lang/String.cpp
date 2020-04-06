@@ -32,6 +32,8 @@ const std::string _String::True = "true";
 
 const std::string _String::False = "false";
 
+const int _String::FormatBuffLength = 512;
+
 const char _String::IgnoreCaseTable[128] = {
     0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
     0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
@@ -1280,6 +1282,33 @@ void _String::checkParam(String &v) {
 
 void _String::_append() {
     //Do nothing!!.just for _append
+}
+
+String _String::format(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    String str = _format(fmt, args);
+    va_end(args);
+
+    return str;
+}
+
+String _String::_format(const char *fmt,va_list args) {
+    constexpr size_t oldlen = FormatBuffLength;
+    char buffer[oldlen];
+    va_list argscopy;
+    va_copy(argscopy, args);
+    size_t newlen = vsnprintf(&buffer[0], oldlen, fmt, args) + 1;
+    newlen++;  
+    if (newlen > oldlen) {
+        std::vector<char> newbuffer(newlen);
+        vsnprintf(newbuffer.data(), newlen, fmt, argscopy);
+        va_end(args);
+        return createString(newbuffer.data());
+    }
+    
+    va_end(args);
+    return createString(buffer);
 }
 
 

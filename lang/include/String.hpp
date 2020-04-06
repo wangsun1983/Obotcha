@@ -3,7 +3,7 @@
 
 #include <string>
 #include <iostream>
-
+#include <stdarg.h>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -167,6 +167,8 @@ public:
 
     static String valueOf(const char *p);
 
+    static String format(const char *fmt, ...);
+
     std::string getStdString();
 
     String toLowerCase();
@@ -312,7 +314,10 @@ private:
 
     void _append();
 
+    static String _format(const char *fmt,va_list args);
+
     const static  char IgnoreCaseTable[128];
+    const static  int FormatBuffLength;
 
     const static std::string False;
     const static std::string True;
