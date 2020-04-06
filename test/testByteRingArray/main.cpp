@@ -12,6 +12,6 @@ extern void normal_test();
 extern void push_test();
 
 int main() {
-  //normal_test();
+  normal_test();
   push_test();
 }

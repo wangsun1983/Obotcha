@@ -6,6 +6,7 @@
 #include "Float.hpp"
 #include "StrongPointer.hpp"
 #include "IllegalArgumentException.hpp"
+#include "NullPointerException.hpp"
 
 using namespace obotcha;
 
@@ -35,7 +36,7 @@ int updatetest() {
     Float d3_1;
     try{
       d3->update(d3_1);
-    } catch(IllegalArgumentException e){}
+    } catch(NullPointerException e){}
 
     printf("Float update special test3-------[OK] \n");
     break;

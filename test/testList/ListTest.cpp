@@ -15,7 +15,6 @@ extern int listobjecttest();
 extern int basetest();
 
 int main() {
-
-    //listobjecttest();
+  listobjecttest();
   basetest();
 }

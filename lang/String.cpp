@@ -212,7 +212,7 @@ _String::_String(uint64_t v) {
 
 _String::_String(const char *v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("char * is null");
+        throw InitializeException("char * is null");
     }
     
     m_str = std::string(v);
@@ -220,7 +220,7 @@ _String::_String(const char *v) {
 
 _String::_String(const char *v,int start,int length) {
     if(v == nullptr || start < 0 || length <=0) {
-        throw IllegalArgumentException("char * is null");
+        throw InitializeException("char * is null");
     }
 
     m_str = std::string(v,start,length);

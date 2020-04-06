@@ -34,11 +34,11 @@ public:
             elements.push_back(data[i]);
         }
     }
-
-    int size() {
-        return elements.size();
-    }
     
+    int size() {
+        return elements.capacity();
+    }
+
     T& operator[] (int i) {
         T &v = elements[i];   
         return v;

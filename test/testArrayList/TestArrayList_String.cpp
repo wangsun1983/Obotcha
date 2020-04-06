@@ -6,6 +6,8 @@
 #include "ArrayList.hpp"
 #include "Integer.hpp"
 #include "String.hpp"
+#include "NullPointerException.hpp"
+#include "InitializeException.hpp"
 
 using namespace obotcha;
 
@@ -707,11 +709,10 @@ void testArrayList_String() {
 
     char *p = nullptr;
     int size = list->size();
-    list->insertLast(createString(p));
-    if(size == list->size()) {
+    try {
+      list->insertLast(createString(p));
       printf("---[ArrayList<String> Test {insertLast(const char *s )} case2] [FAILED]--- \n");
-      break;
-    }
+    } catch(InitializeException e) {}
 
     printf("---[ArrayList<String> Test {insertLast(const char *s)}] [OK]--- \n");
     break;

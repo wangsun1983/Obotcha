@@ -7,14 +7,14 @@
 #include "ArrayList.hpp"
 #include "NullPointerException.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
-#include "IllegalArgumentException.hpp"
+#include "NullPointerException.hpp"
 #include "TransformException.hpp"
-#include "IllegalArgumentException.hpp"
+#include "NullPointerException.hpp"
 
 using namespace obotcha;
 
 int ignorecasetest() {
-    
+
     //bool equalsIgnoreCase(String str);
     while(1) {
         //case1
@@ -59,7 +59,7 @@ int ignorecasetest() {
             testString->equalsIgnoreCase(tmp);
             printf("String equalsIgnoreCase Special test5-------[FAIL] \n");
             break;
-        } catch(IllegalArgumentException e) {}
+        } catch(NullPointerException e) {}
 
         //case5
         String testString1 = createString("AB");
@@ -103,7 +103,7 @@ int ignorecasetest() {
             printf("String equalsIgnoreCase Special test11-------[FAIL] \n");
             break;
         }
-        
+
         printf("String equalsIgnoreCase Special test12-------[Success] \n");
         break;
     }
@@ -159,7 +159,7 @@ int ignorecasetest() {
             testString->indexOfIgnoreCase(testString7);
             printf("String indexOfIgnoreCase Special test7-------[FAIL] \n");
             break;
-        } catch(IllegalArgumentException e) {}
+        } catch(NullPointerException e) {}
 
         //case8
         String testString8 = createString("bcde");
@@ -182,7 +182,7 @@ int ignorecasetest() {
     //containsIgnoreCase
     while(1) {
         String testString = createString("ABCDE");
-         
+
         //case1
         String testString1 = createString("AB");
         if(!testString->containsIgnoreCase(testString1)) {
@@ -231,7 +231,7 @@ int ignorecasetest() {
             testString->containsIgnoreCase(testString7);
             printf("String containsIgnoreCase Special test7-------[FAIL] \n");
             break;
-        } catch(IllegalArgumentException e) {}
+        } catch(NullPointerException e) {}
 
         //case8
         String testString8 = createString("bcde");
@@ -255,7 +255,7 @@ int ignorecasetest() {
     while(1) {
 
         String testString = createString("ABCDE");
-         
+
         //case1
         String testString1 = createString("AB");
         if(testString->endsWithIgnoreCase(testString1)) {
@@ -304,7 +304,7 @@ int ignorecasetest() {
             testString->endsWithIgnoreCase(testString7);
             printf("String endsWithIgnoreCase Special test7-------[FAIL] \n");
             break;
-        } catch(IllegalArgumentException e) {}
+        } catch(NullPointerException e) {}
 
         //case8
         String testString8 = createString("bcde");
@@ -334,7 +334,7 @@ int ignorecasetest() {
     //lastIndexOfIgnoreCase
     while(1) {
         String testString = createString("ABCDABE");
-        
+
         //case1
         String testString1 = createString("AB");
         if(testString->lastIndexOfIgnoreCase(testString1) != 4) {
@@ -386,7 +386,7 @@ int ignorecasetest() {
             testString->lastIndexOfIgnoreCase(testString7);
             printf("String lastIndexOfIgnoreCase Special test7-------[FAIL] \n");
             break;
-        } catch(IllegalArgumentException e) {}
+        } catch(NullPointerException e) {}
 
         //case8
         String testString8 = createString("dabe");

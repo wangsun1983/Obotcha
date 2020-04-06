@@ -1,6 +1,13 @@
 #!/bin/bash
 
-UnitTestCase=(testBoolean testByteArray testByte testDouble testFloat testInteger testLong testString testUint16 testUint32 testUint64 testUint8)
+UnitTestCase=(
+#lang
+testBoolean testByteArray testByte testDouble
+testFloat testInteger testLong testString
+testUint16 testUint32 testUint64 testUint8
+testList testByteRingArray
+#util
+testArrayList testCalendar)
 
 function start(){
     echo -----------------------
@@ -37,7 +44,7 @@ function prebuild() {
     rm core
     rm mytest
     echo StartBuild $1
-    make
+    make -j32
     cd ..
 }
 

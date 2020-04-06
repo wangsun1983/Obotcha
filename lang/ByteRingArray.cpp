@@ -7,10 +7,17 @@
 #include "String.hpp"
 #include "ByteRingArray.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
+#include "InitializeException.hpp"
+#include "NullPointerException.hpp"
+#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 
 _ByteRingArray::_ByteRingArray(int size) {
+    if(size <= 0) {
+        throw InitializeException("size is illeagle");
+    }
+    
     mSize = size;
     mBuff = (byte *)malloc(size);
     mStatus = ByteRingArrayEmpty;
@@ -67,10 +74,17 @@ byte _ByteRingArray::pop() {
 }
 
 void _ByteRingArray::push(ByteArray data) {
+    if(data == nullptr) {
+        throw NullPointerException("push data is null");
+    }
     push(data,0,data->size());  
 }
 
 void _ByteRingArray::push(ByteArray array,int start,int length) {
+    if(array == nullptr) {
+        throw NullPointerException("push data is null");
+    }
+
     if(mStatus == ByteRingArrayFull) {
         throw ArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
     }
@@ -102,6 +116,10 @@ void _ByteRingArray::push(ByteArray array,int start,int length) {
 }
 
 ByteArray _ByteRingArray::pop(int size) {
+    if(size <= 0) {
+        throw IllegalArgumentException("pop size is illegal");
+    }
+
     if(mStatus == ByteRingArrayEmpty) {
         throw ArrayIndexOutOfBoundsException("Ring Array Pop Empty Array!!!");
     }

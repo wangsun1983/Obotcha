@@ -6,6 +6,7 @@
 #include "Float.hpp"
 #include "StrongPointer.hpp"
 #include "IllegalArgumentException.hpp"
+#include "NullPointerException.hpp"
 
 using namespace obotcha;
 
@@ -38,7 +39,7 @@ int equaltest() {
     try {
       d3->equals(d3_1);
       printf("Float equal special test3-------[Fail] \n");
-    }catch(IllegalArgumentException e){}
+    }catch(NullPointerException e){}
 
     printf("Float equal special test4-------[Success] \n");
     break;
@@ -69,7 +70,7 @@ int equaltest() {
     if(d3 == d3_1) {
       printf("Float equal special test7-------[Fail] \n");
     }
-    
+
 
     printf("Float equal special test8-------[Success] \n");
     break;
