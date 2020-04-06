@@ -9,6 +9,7 @@
 #include "StrongPointer.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "IllegalArgumentException.hpp"
+#include "NullPointerException.hpp"
 
 using namespace obotcha;
 
@@ -39,12 +40,12 @@ int updatetest() {
       try {
         v1->update(v3);
         printf("Byte update special test3-------[FAIL] \n");
-      }catch(IllegalArgumentException e) {}
+      }catch(NullPointerException e) {}
 
       printf("yte update special test4-------[OK] \n");
       break;
   }
 
-  
+
 
 }

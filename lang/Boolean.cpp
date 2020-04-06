@@ -32,7 +32,7 @@ _Boolean::_Boolean(bool v) : val(v) {
 
 _Boolean::_Boolean(sp<_String> str) {
     if(str->size() == 0) {
-        throw IllegalArgumentException("Null String");
+        throw InitializeException("Null String");
     }
 
     const char *data = str->toChars();
@@ -59,7 +59,7 @@ _Boolean::_Boolean(sp<_String> str) {
 
 _Boolean::_Boolean(Boolean &v) {
     if(v == nullptr) {
-        throw InitializeException("Object is null");
+        throw NullPointerException("Object is null");
     }
     
     val = v->val;
@@ -71,7 +71,7 @@ bool _Boolean::toValue() {
 
 bool _Boolean::equals(Boolean &p) {
     if(p == nullptr) {
-        throw IllegalArgumentException("Boolean equals nullptr");
+        throw NullPointerException("Boolean equals nullptr");
     }
 
     return val == p->val;
@@ -79,7 +79,7 @@ bool _Boolean::equals(Boolean &p) {
 
 bool _Boolean::equals(const _Boolean *p) {
     if(p == nullptr) {
-        throw IllegalArgumentException("Boolean equals nullptr"); 
+        throw NullPointerException("Boolean equals nullptr"); 
     }
 
     return val == p->val;
@@ -91,7 +91,7 @@ void _Boolean::update(bool v) {
 
 void _Boolean::update(sp<_Boolean> v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("Boolean equals nullptr"); 
+        throw NullPointerException("Boolean equals nullptr"); 
     }
 
     val = v->val;
@@ -117,7 +117,7 @@ bool _Boolean::logicOr(bool v) {
 
 bool _Boolean::logicOr(sp<_Boolean> v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("logicOr is nullptr");
+        throw NullPointerException("logicOr is nullptr");
     }
 
     val |= v->toValue();
@@ -133,7 +133,7 @@ bool _Boolean::logicAnd(bool v) {
 
 bool _Boolean::logicAnd(sp<_Boolean> v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("logicOr is nullptr");
+        throw NullPointerException("logicOr is nullptr");
     }
 
     val &= v->toValue();
@@ -149,7 +149,7 @@ bool _Boolean::logicXor(bool v) {
 
 bool _Boolean::logicXor(sp<_Boolean> v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("logicXor is nullptr");
+        throw NullPointerException("logicXor is nullptr");
     }
     
     val ^= v->toValue();
@@ -159,7 +159,7 @@ bool _Boolean::logicXor(sp<_Boolean> v) {
 
 sp<_Boolean> _Boolean::valueOf(sp<_String> v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("valueOf is nullptr");
+        throw NullPointerException("valueOf is nullptr");
     }
 
     return v->toBoolean();

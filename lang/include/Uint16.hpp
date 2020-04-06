@@ -6,10 +6,13 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "Number.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Uint16) {
+class _String;
+
+DECLARE_SIMPLE_CLASS(Uint16) IMPLEMENTS(Number)<uint16_t>{
 public:
     _Uint16(uint16_t v);
 
@@ -22,6 +25,28 @@ public:
     bool equals(uint16_t p);
 
     bool equals(const _Uint16 *p);
+
+    void update(uint16_t v);
+
+    void update(sp<_Uint16> v);
+
+    sp<_String> toHexString();
+
+    sp<_String> toOctalString();
+
+    sp<_String> toBinaryString();
+
+    sp<_String> toString();
+
+    static sp<_String> toString(uint16_t i);
+    
+    static uint16_t parseDecUint16(sp<_String>);
+
+    static uint16_t parseHexUint16(sp<_String>);
+
+    static uint16_t parseOctUint16(sp<_String>);
+
+    static uint16_t parseBinaryUint16(sp<_String>);
 
     ~_Uint16();
 

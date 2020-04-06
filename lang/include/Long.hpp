@@ -5,10 +5,13 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "Number.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Long) {
+class _String;
+
+DECLARE_SIMPLE_CLASS(Long) IMPLEMENTS(Number)<long>{
 public:
     _Long(long v);
 
@@ -21,9 +24,29 @@ public:
     bool equals(long p);
 
     bool equals(const _Long *p);
-/*
-    Integer valueOf(String v);
-*/
+
+    void update(long v);
+
+    void update(sp<_Long> v);
+
+    sp<_String> toHexString();
+
+    sp<_String> toOctalString();
+
+    sp<_String> toBinaryString();
+
+    sp<_String> toString();
+
+    static sp<_String> toString(int i);
+    
+    static long parseDecLong(sp<_String>);
+
+    static long parseHexLong(sp<_String>);
+
+    static long parseOctLong(sp<_String>);
+
+    static long parseBinaryLong(sp<_String>);
+
     ~_Long();
 
 private:

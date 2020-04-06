@@ -67,37 +67,7 @@ byte _ByteRingArray::pop() {
 }
 
 void _ByteRingArray::push(ByteArray data) {
-    push(data,0,data->size());
-#if 0    
-    if(mStatus == ByteRingArrayFull) {
-        throw ArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
-    }
-
-    if((mSize - abs(mStart - mEnd)) < data->size()) {
-        throw ArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
-    }
-    
-    if(mEnd < mStart) {
-        memcpy(mBuff + mEnd,data->toValue(),data->size());
-        mEnd += data->size();
-    } else {
-        if(mEnd + data->size() < mSize) {
-            memcpy(mBuff + mEnd,data->toValue(),data->size());
-            mEnd += data->size();
-        } else {
-            int length = mSize - mEnd;
-            memcpy(mBuff + mEnd,data->toValue(),length);
-            memcpy(mBuff,data->toValue() + length,data->size() - length);
-            mEnd = (data->size() - length);
-        }
-    }
-
-    if(mEnd == mStart) {
-        mStatus = ByteRingArrayFull;
-    } else {
-        mStatus = ByteRingArrayPartial;
-    }
-#endif    
+    push(data,0,data->size());  
 }
 
 void _ByteRingArray::push(ByteArray array,int start,int length) {

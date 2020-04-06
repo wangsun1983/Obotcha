@@ -6,12 +6,13 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "Number.hpp"
 
 namespace obotcha {
 
 class _String;
 
-DECLARE_SIMPLE_CLASS(Integer) {
+DECLARE_SIMPLE_CLASS(Integer) IMPLEMENTS(Number)<int>{
 public:
     _Integer(int v);
 
@@ -31,20 +32,14 @@ public:
 
     sp<_String> toHexString();
 
-    static sp<_String> toHexString(int i);
-
     sp<_String> toOctalString();
 
-    static sp<_String> toOctalString(int i);
-
     sp<_String> toBinaryString();
-
-    static sp<_String> toBinaryString(int i);
 
     sp<_String> toString();
 
     static sp<_String> toString(int i);
-
+    
     static int parseDecInt(sp<_String>);
 
     static int parseHexInt(sp<_String>);
@@ -52,7 +47,7 @@ public:
     static int parseOctInt(sp<_String>);
 
     static int parseBinaryInt(sp<_String>);
-
+    
     ~_Integer();
 
     static const int MAX_VALUE = 0x7fffffff;
@@ -60,8 +55,6 @@ public:
     static const int MIN_VALUE = 0x80000000;
 
 private:
-    static void binaryRecursion(int n,std::stringstream &ss);
-
     int val;
 };
 

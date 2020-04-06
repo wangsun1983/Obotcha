@@ -9,12 +9,11 @@
 - [ ] ByteRingArray
 - [x] Double
 - [x] Float
-- [ ] Integer
-- [ ] Long
+- [x] Integer
+- [x] Long
 - [x] String
 - [ ] System
-- [ ] Uinit16
-- [ ] Uinit32
-- [ ] Uinit64
-- [ ] Uinit8
-
+- [x] Uinit16
+- [x] Uinit32
+- [x] Uinit64
+- [x] Uinit8

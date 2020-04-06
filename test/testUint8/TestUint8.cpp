@@ -6,10 +6,12 @@
 #include "Uint8.hpp"
 #include "StrongPointer.hpp"
 #include "Uint8.hpp"
+#include "InitializeException.hpp"
+#include "NullPointerException.hpp"
 
 using namespace obotcha;
 
-int main() {
+int basetest() {
 
   printf("---[Uint8 Test Start]--- \n");
   //_Uint8(int v);
@@ -34,11 +36,10 @@ int main() {
     }
 
     Uint8 v3;
-    Uint8 v4 = createUint8(v3);
-    if(v4->toValue() != 0) {
+    try {
+      Uint8 v4 = createUint8(v3);
       printf("Uint8 construct test4-------[FAIL] \n");
-      break;
-    }
+    } catch(InitializeException e) {}
 
     printf("Uint8 construct test5-------[OK] \n");
     break;
@@ -66,10 +67,10 @@ int main() {
       break;
     }
 
-    if(v1->equals(nullptr)) {
+    try {
+      v1->equals(nullptr);
       printf("Uint8 equals test2-------[FAIL] \n");
-      break;
-    }
+    } catch(NullPointerException e) {}
 
     printf("Uint8 equals test3-------[OK] \n");
     break;

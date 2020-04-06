@@ -14,6 +14,7 @@
 #include "Error.hpp"
 #include "ByteArray.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
@@ -26,6 +27,9 @@ const int _ByteArray::NormalMode = 2;
  * @param b copy value
  */
 _ByteArray::_ByteArray(sp<_ByteArray> b) {
+    if(b == nullptr) {
+        throw InitializeException("create ByteArray is nullptr");
+    }
     mSize = b->size();
     buff = (unsigned char *)malloc(mSize);
     memcpy(buff,b->toValue(),mSize);
@@ -37,6 +41,9 @@ _ByteArray::_ByteArray(sp<_ByteArray> b) {
  * @param length alloc memory size
  */
 _ByteArray::_ByteArray(int length) {
+    if(length <= 0) {
+        throw InitializeException("create ByteArray is nullptr");
+    }
     buff = (unsigned char *)malloc(length);
     memset(buff,0,length);
     mSize = length;
@@ -48,6 +55,9 @@ _ByteArray::_ByteArray(int length) {
  * @param str save str as ByteArray
  */
 _ByteArray::_ByteArray(String str) {
+    if(str == nullptr) {
+        throw InitializeException("create ByteArray is nullptr");
+    }
     mSize = str->size();
     buff = (unsigned char *)malloc(mSize + 1);
     memset(buff,0,mSize + 1);
@@ -61,6 +71,9 @@ _ByteArray::_ByteArray(String str) {
  * @param len save data len
  */
 _ByteArray::_ByteArray(const byte *data,uint32_t len) {
+    if(data == nullptr) {
+        throw InitializeException("create ByteArray is nullptr");
+    }
     buff = (unsigned char *)malloc(len);
     mSize = len;
     memcpy(buff,data,len);

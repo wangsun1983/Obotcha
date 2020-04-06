@@ -5,10 +5,12 @@
 //#include "ArrayList.hpp"
 #include "Uint16.hpp"
 #include "StrongPointer.hpp"
+#include "InitializeException.hpp"
+#include "NullPointerException.hpp"
 
 using namespace obotcha;
 
-int main() {
+int basetest() {
 
   printf("---[Uint16 Test Start]--- \n");
   //_Uint16(int v);
@@ -33,11 +35,11 @@ int main() {
     }
 
     Uint16 v3;
-    Uint16 v4 = createUint16(v3);
-    if(v4->toValue() != 0) {
+    try {
+      Uint16 v4 = createUint16(v3);
       printf("Uint16 construct test4-------[FAIL] \n");
-      break;
-    }
+    } catch(InitializeException e){}
+
 
     printf("Uint16 construct test5-------[OK] \n");
     break;
@@ -65,10 +67,10 @@ int main() {
       break;
     }
 
-    if(v1->equals(nullptr)) {
+    try {
+      v1->equals(nullptr);
       printf("Uint16 equals test2-------[FAIL] \n");
-      break;
-    }
+    } catch(NullPointerException e) {}
 
     printf("Uint16 equals test3-------[OK] \n");
     break;

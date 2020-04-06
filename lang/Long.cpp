@@ -12,6 +12,8 @@
 
 #include "Long.hpp"
 #include "InitializeException.hpp"
+#include "NullPointerException.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
@@ -43,10 +45,74 @@ bool _Long::equals(long p) {
 
 bool _Long::equals(const _Long *p) {
     if(p == nullptr) {
-        return false;
+        throw NullPointerException("Long parserInt nullptr");
     }
 
     return val == p->val;
+}
+
+void _Long::update(long v) {
+    val = v;
+}
+
+void _Long::update(sp<_Long> v) {
+    if(v == nullptr) {
+        throw NullPointerException("Long update nullptr");
+    }
+
+    val = v->val;
+}
+
+sp<_String> _Long::toHexString() {
+    return createString(_Number::toHexString(val));
+}
+
+sp<_String> _Long::toOctalString() {
+    return createString(_Number::toOctalString(val));
+}
+
+sp<_String> _Long::toBinaryString() {
+    return createString(_Number::toBinaryString(val));
+}
+
+sp<_String> _Long::toString() {
+    return createString(_Number::toDecString(val));
+}
+
+sp<_String> _Long::toString(int i) {
+    return createString(_Number::toDecString(i));
+}
+
+long _Long::parseDecLong(sp<_String> v) {
+    if(v == nullptr) {
+        throw NullPointerException("Long parserInt nullptr");
+    }
+
+    return _Number::parseDecNumber(v->getStdString());
+}
+
+long _Long::parseHexLong(sp<_String> v) {
+    if(v == nullptr) {
+        throw NullPointerException("parseHexLong nullptr");
+    }
+    
+    return _Number::parseHexNumber(v->getStdString());
+}
+
+long _Long::parseOctLong(sp<_String> v) {
+    if(v == nullptr) {
+        throw NullPointerException("parseOctLong nullptr");
+    }
+    
+    return _Number::parseOctNumber(v->getStdString());
+}
+
+long _Long::parseBinaryLong(sp<_String> v) {
+    if(v == nullptr) {
+        throw NullPointerException("parseBinaryLong nullptr");
+    }
+    
+    return _Number::parseBinaryNumber(v->getStdString());
 }
 
 _Long::~_Long() {

@@ -24,6 +24,7 @@
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "TransformException.hpp"
 #include "IllegalArgumentException.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
@@ -64,7 +65,7 @@ _String::_String(String v) {
 
 _String::_String(Long &v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("Long is null");
+        throw InitializeException("Long is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -72,7 +73,7 @@ _String::_String(Long &v) {
 
 _String::_String(Byte &v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("Byte is null");
+        throw InitializeException("Byte is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -80,7 +81,7 @@ _String::_String(Byte &v) {
 
 _String::_String(Uint8 &v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("Uint8 is null");
+        throw InitializeException("Uint8 is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -88,7 +89,7 @@ _String::_String(Uint8 &v) {
 
 _String::_String(Uint16 &v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("Uint16 is null");
+        throw InitializeException("Uint16 is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -96,7 +97,7 @@ _String::_String(Uint16 &v) {
 
 _String::_String(Uint32 &v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("Uint32 is null");
+        throw InitializeException("Uint32 is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -104,7 +105,7 @@ _String::_String(Uint32 &v) {
 
 _String::_String(Uint64 &v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("Uint64 is null");
+        throw InitializeException("Uint64 is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -116,14 +117,14 @@ _String::_String(const std::string v) {
 
 _String::_String(std::string *v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("std::string is null");
+        throw InitializeException("std::string is null");
     }
     m_str = *v;
 }
 
 _String::_String(Integer &v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("Integer is null");
+        throw InitializeException("Integer is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -131,7 +132,7 @@ _String::_String(Integer &v) {
 
 _String::_String(Boolean &v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("Boolean is null");
+        throw InitializeException("Boolean is null");
     }
 
     if(v->toValue()) {
@@ -143,7 +144,7 @@ _String::_String(Boolean &v) {
 
 _String::_String(Float &v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("Float is null");
+        throw InitializeException("Float is null");
     }
 
     stringstream ss;
@@ -153,7 +154,7 @@ _String::_String(Float &v) {
 
 _String::_String(Double &v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("Double is null");
+        throw InitializeException("Double is null");
     }
     
     stringstream ss;
@@ -252,7 +253,7 @@ String _String::subString(int start,int end) {
 bool _String::contains(String val) {
 
     if(val == nullptr) {
-        throw IllegalArgumentException("String contains param error");
+        throw NullPointerException("String contains param error");
     }
 
     if(m_str.find(val->m_str) != m_str.npos) {
@@ -474,7 +475,7 @@ ArrayList<String> _String::split(String v) {
 
 sp<_ArrayList<String>> _String::split(const char* v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("split illegal param");
+        throw NullPointerException("split illegal param");
     }
     return split(v,strlen(v));
 }
@@ -509,7 +510,7 @@ sp<_ArrayList<String>> _String::split(std::string separator) {
 
 sp<_ArrayList<String>> _String::split(const char* v,int size) {
     if(v == nullptr) {
-        throw IllegalArgumentException("split illegal param");
+        throw NullPointerException("split illegal param");
     }
 
     std::string str = std::string(v,size);
@@ -846,7 +847,7 @@ String _String::toUpperCase() {
     
 bool _String::equalsIgnoreCase(String str) {
     if(str == nullptr || str->size() == 0) {
-        throw IllegalArgumentException("equals ignore illegalArgument!");
+        throw NullPointerException("equals ignore illegalArgument!");
     }
 
     return equalsIgnoreCase(str->toChars());
@@ -858,7 +859,7 @@ bool _String::equalsIgnoreCase(std::string str) {
 
 bool _String::equalsIgnoreCase(const char * str) {
     if(str == nullptr) {
-        throw IllegalArgumentException("equals ignore illegalArgument!");
+        throw NullPointerException("equals ignore illegalArgument!");
     }
     
     return equalsIgnoreCase(str,strlen(str));
@@ -886,7 +887,7 @@ bool _String::equalsIgnoreCase(const char * str,int csize) {
 
 int _String::indexOfIgnoreCase(String str) {
     if(str == nullptr || str->size() == 0) {
-        throw IllegalArgumentException("equals ignore illegalArgument!");
+        throw NullPointerException("equals ignore illegalArgument!");
     }
     return indexOfIgnoreCase(str->toChars(),str->size());
 }
@@ -897,7 +898,7 @@ int _String::indexOfIgnoreCase(std::string str) {
 
 int _String::indexOfIgnoreCase(const char * str) {
     if(str == nullptr) {
-        throw IllegalArgumentException("equals ignore illegalArgument!");
+        throw NullPointerException("equals ignore illegalArgument!");
     }
 
     return indexOfIgnoreCase(str,strlen(str));
@@ -947,7 +948,7 @@ int _String::indexOfIgnoreCase(const char * str,int csize) {
 
 bool _String::containsIgnoreCase(String val) {
     if(val == nullptr || val->size() == 0) {
-        throw IllegalArgumentException("equals ignore illegalArgument!");
+        throw NullPointerException("equals ignore illegalArgument!");
     }
 
     return (indexOfIgnoreCase(val) != -1);
@@ -959,14 +960,14 @@ bool _String::containsIgnoreCase(std::string val) {
 
 bool _String::containsIgnoreCase(const char * val) {
     if(val == nullptr) {
-        throw IllegalArgumentException("equals ignore illegalArgument!");
+        throw NullPointerException("equals ignore illegalArgument!");
     }
     return (indexOfIgnoreCase(val) != -1);
 }
 
 bool _String::startsWithIgnoreCase(String str) {
     if(str == nullptr || str->size() == 0) {
-        throw IllegalArgumentException("equals ignore illegalArgument!");
+        throw NullPointerException("equals ignore illegalArgument!");
     }
     return (indexOfIgnoreCase(str) == 0);
 }
@@ -977,14 +978,14 @@ bool _String::startsWithIgnoreCase(std::string str) {
 
 bool _String::startsWithIgnoreCase(const char * str) {
     if(str == nullptr) {
-        throw IllegalArgumentException("equals ignore illegalArgument!");
+        throw NullPointerException("equals ignore illegalArgument!");
     }
     return (indexOfIgnoreCase(str) == 0);
 }
 
 bool _String::endsWithIgnoreCase(String s) {
     if(s == nullptr || s->size() == 0) {
-        throw IllegalArgumentException("equals ignore illegalArgument!");
+        throw NullPointerException("equals ignore illegalArgument!");
     }
     
     return endsWithIgnoreCase(s->toChars(),s->size());
@@ -996,7 +997,7 @@ bool _String::endsWithIgnoreCase(std::string str) {
 
 bool _String::endsWithIgnoreCase(const char * str) {
     if(str == nullptr) {
-        throw IllegalArgumentException("equals ignore illegalArgument!");
+        throw NullPointerException("equals ignore illegalArgument!");
     }
 
     return endsWithIgnoreCase(str,strlen(str));
@@ -1027,7 +1028,7 @@ bool _String::endsWithIgnoreCase(const char * str,int csize) {
 
 int _String::lastIndexOfIgnoreCase(String v) {
     if(v == nullptr || v->size() == 0) {
-        throw IllegalArgumentException("equals ignore illegalArgument!");
+        throw NullPointerException("equals ignore illegalArgument!");
     }
     return lastIndexOfIgnoreCase(v->toChars(),v->size());
 }
@@ -1038,7 +1039,7 @@ int _String::lastIndexOfIgnoreCase(std::string v) {
 
 int _String::lastIndexOfIgnoreCase(const char * str) {
     if(str == nullptr) {
-        throw IllegalArgumentException("equals ignore illegalArgument!");
+        throw NullPointerException("equals ignore illegalArgument!");
     }
 
     return lastIndexOfIgnoreCase(str,strlen(str));
@@ -1093,7 +1094,7 @@ bool _String::matches(String regex) {
 
 sp<_String> _String::replaceFirst(String regex,String value) {
     if(m_str.size() == 0 || value == nullptr || regex == nullptr) {
-        throw IllegalArgumentException("replaceFirst illegalArgument!");
+        throw NullPointerException("replaceFirst illegalArgument!");
     }
 
     std::string result = std::regex_replace(m_str,std::regex(regex->m_str),value->m_str,
@@ -1103,7 +1104,7 @@ sp<_String> _String::replaceFirst(String regex,String value) {
 
 sp<_String> _String::replaceFirst(const char *regex,const char *v) {
     if(regex == nullptr || v == nullptr) {
-        throw IllegalArgumentException("replaceFirst illegalArgument!");
+        throw NullPointerException("replaceFirst illegalArgument!");
     }
 
     std::string result = std::regex_replace(m_str,std::regex(regex),v,
@@ -1151,7 +1152,7 @@ bool _String::endsWith(String s) {
 
 bool _String::endsWith(const char *s) {
     if(s == nullptr) {
-        throw IllegalArgumentException("endsWith illegalArgument!");
+        throw NullPointerException("endsWith illegalArgument!");
     }
 
     string::size_type result = m_str.find_last_of(s);
@@ -1166,7 +1167,7 @@ bool _String::endsWith(std::string s) {
 
 int _String::lastIndexOf(String v) {
     if(m_str.size() == 0 || m_str.size() == 0 || v == nullptr) {
-        throw IllegalArgumentException("lastIndexOf illegalArgument!");
+        throw NullPointerException("lastIndexOf illegalArgument!");
     }
 
     int result = m_str.find_last_of(v->m_str);
@@ -1175,7 +1176,7 @@ int _String::lastIndexOf(String v) {
 
 int _String::lastIndexOf(const char * v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("lastIndexOf illegalArgument!");
+        throw NullPointerException("lastIndexOf illegalArgument!");
     }
 
     int result = m_str.find_last_of(v);
@@ -1196,7 +1197,7 @@ bool _String::startsWith(String v) {
 
 bool _String::startsWith(const char * v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("startsWith illegalArgument!");
+        throw NullPointerException("startsWith illegalArgument!");
     }
 
     string::size_type result = m_str.find(v);
@@ -1273,7 +1274,7 @@ bool _String::isFloatNumber(const char *p,int size) {
 
 void _String::checkParam(String &v) {
     if(v == nullptr || v->size() == 0) {
-        throw IllegalArgumentException("equals ignore illegalArgument!");
+        throw NullPointerException("equals ignore illegalArgument!");
     }
 }
 

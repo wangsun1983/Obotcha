@@ -2,6 +2,7 @@
 #include "Float.hpp"
 #include "InitializeException.hpp"
 #include "IllegalArgumentException.hpp"
+#include "NullPointerException.hpp"
 
 namespace obotcha {
 
@@ -25,7 +26,7 @@ float _Float::toValue() {
 
 bool _Float::equals(Float &p) {
     if(p == nullptr) {
-        throw IllegalArgumentException("p is null");
+        throw NullPointerException("p is null");
     }
 
     return std::fabs(val-p->val) <= EPS;
@@ -49,7 +50,7 @@ void _Float::update(float v) {
 
 void _Float::update(sp<_Float> v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("Boolean equals nullptr"); 
+        throw NullPointerException("Boolean equals nullptr"); 
     }
 
     val = v->val;

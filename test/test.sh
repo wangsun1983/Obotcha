@@ -1,26 +1,51 @@
 #!/bin/bash
 
-function getdir(){
-    for element in `ls $1`
-    do  
-        dir_or_file=$1"/"$element
+UnitTestCase=(testBoolean testByteArray testByte testDouble testFloat testInteger testLong testString testUint16 testUint32 testUint64 testUint8)
+
+function start(){
+    echo -----------------------
+    echo -----Start Prebuild----
+    echo -----------------------
+    for element in ${UnitTestCase[@]};
+    do
+        dir_or_file=$element
         if [ -d $dir_or_file ]
-        then 
-            startTest $dir_or_file     
+        then
+            prebuild $dir_or_file
         else
-            echo $dir_or_file
-        fi  
+            echo ------------No build $dir_or_file !!!!!!!!------------
+        fi
+    done
+
+    echo -----------------------
+    echo -----Start Test----
+    echo -----------------------
+    for element in ${UnitTestCase[@]};
+    do
+        dir_or_file=$element
+        if [ -d $dir_or_file ]
+        then
+            test $dir_or_file
+        else
+            echo ------------No Test $dir_or_file !!!!!!!!------------
+        fi
     done
 }
 
-function startTest() {
+function prebuild() {
     cd $1
     rm core
     rm mytest
+    echo StartBuild $1
     make
-    ./mytest
     cd ..
 }
 
-ulimit -c unlimit
-getdir "./"
+function test() {
+  cd $1
+  ./mytest
+  cd ..
+}
+
+ulimit -c unlimited
+start

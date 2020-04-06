@@ -7,10 +7,12 @@
 #include "StrongPointer.hpp"
 #include "Long.hpp"
 #include "Log.hpp"
+#include "InitializeException.hpp"
+#include "NullPointerException.hpp"
 
 using namespace obotcha;
 
-int main() {
+int basetest() {
 
   printf("---[Long Test Start]--- \n");
   //_Long(long v);
@@ -35,11 +37,10 @@ int main() {
     }
 
     Long v3;
-    Long v4 = createLong(v3);
-    if(v4->toValue() != 0) {
-      printf("Long construct test4-------[FAIL] \n");
-      break;
-    }
+    try {
+        Long v4 = createLong(v3);
+        printf("Long construct test4-------[FAIL] \n");
+    } catch(InitializeException e) {}
 
     printf("Long construct test5-------[OK] \n");
     break;
@@ -67,10 +68,12 @@ int main() {
       break;
     }
 
-    if(v1->equals(nullptr)) {
-      printf("Long equals test2-------[FAIL] \n");
-      break;
-    }
+    try {
+        if(v1->equals(nullptr)) {
+
+        }
+        printf("Long equals test2-------[FAIL] \n");
+    } catch(NullPointerException e) {}
 
     printf("Long equals test3-------[OK] \n");
     break;

@@ -5,10 +5,12 @@
 //#include "ArrayList.hpp"
 #include "Uint64.hpp"
 #include "StrongPointer.hpp"
+#include "InitializeException.hpp"
+#include "NullPointerException.hpp"
 
 using namespace obotcha;
 
-int main() {
+int basetest() {
 
   printf("---[Uint64 Test Start]--- \n");
   //_Uint64(int v);
@@ -33,11 +35,10 @@ int main() {
     }
 
     Uint64 v3;
-    Uint64 v4 = createUint64(v3);
-    if(v4->toValue() != 0) {
-      printf("Uint64 construct test4-------[FAIL] \n");
-      break;
-    }
+    try {
+        Uint64 v4 = createUint64(v3);
+        printf("Uint64 construct test4-------[FAIL] \n");
+    } catch(InitializeException e) {}
 
     printf("Uint64 construct test5-------[OK] \n");
     break;
@@ -65,10 +66,10 @@ int main() {
       break;
     }
 
-    if(v1->equals(nullptr)) {
+    try {
+      v1->equals(nullptr);
       printf("Uint64 equals test2-------[FAIL] \n");
-      break;
-    }
+    } catch(NullPointerException e) {}
 
     printf("Uint64 equals test3-------[OK] \n");
     break;

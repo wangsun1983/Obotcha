@@ -6,10 +6,13 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "Number.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Uint64) {
+class _String;
+
+DECLARE_SIMPLE_CLASS(Uint64) IMPLEMENTS(Number)<uint64_t> {
 public:
     _Uint64(uint64_t v);
 
@@ -22,9 +25,29 @@ public:
     bool equals(uint64_t p);
 
     bool equals(const _Uint64 *p);
-/*
-    Integer valueOf(String v);
-*/
+
+    void update(uint64_t v);
+
+    void update(sp<_Uint64> v);
+
+    sp<_String> toHexString();
+
+    sp<_String> toOctalString();
+
+    sp<_String> toBinaryString();
+
+    sp<_String> toString();
+
+    static sp<_String> toString(uint64_t i);
+    
+    static uint64_t parseDecUint64(sp<_String>);
+
+    static uint64_t parseHexUint64(sp<_String>);
+
+    static uint64_t parseOctUint64(sp<_String>);
+
+    static uint64_t parseBinaryUint64(sp<_String>);
+
     ~_Uint64();
 
     static const uint64_t MAX_VALUE = 0xFFFFFFFFFFFFFFFF;

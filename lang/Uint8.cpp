@@ -12,6 +12,8 @@
 
 #include "Uint8.hpp"
 #include "InitializeException.hpp"
+#include "NullPointerException.hpp"
+#include "Number.hpp"
 
 namespace obotcha {
 
@@ -31,7 +33,7 @@ uint8_t _Uint8::toValue() {
 
 bool _Uint8::equals(Uint8 &p) {
     if(p == nullptr) {
-        return false;
+        throw NullPointerException("Object is null");
     }
 
     return val == p->val;
@@ -43,11 +45,74 @@ bool _Uint8::equals(uint8_t p) {
 
 bool _Uint8::equals(const _Uint8 *p) {
     if(p == nullptr) {
-        return false;
+        throw NullPointerException("Object is null");
     }
 
     return val == p->val;
+}
 
+void _Uint8::update(uint8_t v) {
+    val = v;
+}
+
+void _Uint8::update(sp<_Uint8> v) {
+    if(v == nullptr) {
+        throw NullPointerException("Uint8 update nullptr");
+    }
+
+    val = v->val;
+}
+
+sp<_String> _Uint8::toHexString() {
+    return createString(_Number::toHexString(val));
+}
+
+sp<_String> _Uint8::toOctalString() {
+    return createString(_Number::toOctalString(val));
+}
+
+sp<_String> _Uint8::toBinaryString() {
+    return createString(_Number::toBinaryString(val));
+}
+
+sp<_String> _Uint8::toString() {
+    return createString(_Number::toDecString(val));
+}
+
+sp<_String> _Uint8::toString(uint8_t i) {
+    return createString(_Number::toDecString(i));
+}
+
+uint8_t _Uint8::parseDecUint8(sp<_String> v) {
+    if(v == nullptr) {
+        throw NullPointerException("parseDecUint8 nullptr");
+    }
+
+    return _Number::parseDecNumber(v->getStdString());
+}
+
+uint8_t _Uint8::parseHexUint8(sp<_String> v) {
+    if(v == nullptr) {
+        throw NullPointerException("parseHexUint8 nullptr");
+    }
+    
+    return _Number::parseHexNumber(v->getStdString());
+}
+
+uint8_t _Uint8::parseOctUint8(sp<_String> v) {
+    if(v == nullptr) {
+        throw NullPointerException("parseOctUint8 nullptr");
+    }
+    
+    return _Number::parseOctNumber(v->getStdString());
+}
+
+uint8_t _Uint8::parseBinaryUint8(sp<_String> v) {
+    if(v == nullptr) {
+        throw NullPointerException("parseBinaryUint8 nullptr");
+    }
+    
+    return _Number::parseBinaryNumber(v->getStdString());
 }
 
 _Uint8::~_Uint8() {

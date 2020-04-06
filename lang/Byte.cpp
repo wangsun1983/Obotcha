@@ -14,6 +14,7 @@
 #include "Byte.hpp"
 #include "InitializeException.hpp"
 #include "IllegalArgumentException.hpp"
+#include "NullPointerException.hpp"
 
 namespace obotcha {
 
@@ -32,7 +33,7 @@ byte _Byte::toValue() {
 
 bool _Byte::equals(Byte &p) {
     if(p == nullptr) {
-        throw IllegalArgumentException("byte equal null");
+        throw NullPointerException("byte equal null");
     }
     
     return val == p->val;
@@ -44,7 +45,7 @@ bool _Byte::equals(byte p) {
 
 bool _Byte::equals(const _Byte *p) {
     if(p == nullptr) {
-        throw IllegalArgumentException("byte equal null");
+        throw NullPointerException("byte equal null");
     }
 
     return val == p->val;
@@ -56,10 +57,62 @@ void _Byte::update(byte v) {
 
 void _Byte::update(sp<_Byte>v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("byte equal null");
+        throw NullPointerException("byte equal null");
     }
 
     val = v->val;
+}
+
+sp<_String> _Byte::toHexString() {
+    return createString(_Number::toHexString(val));
+}
+
+sp<_String> _Byte::toOctalString() {
+    return createString(_Number::toOctalString(val));
+}
+
+sp<_String> _Byte::toBinaryString() {
+    return createString(_Number::toBinaryString(val));
+}
+
+sp<_String> _Byte::toString() {
+    return createString(_Number::toDecString(val));
+}
+
+sp<_String> _Byte::toString(byte i) {
+    return createString(_Number::toDecString(i));
+}
+
+byte _Byte::parseDecByte(sp<_String> v) {
+    if(v == nullptr) {
+        throw NullPointerException("parseDecByte nullptr");
+    }
+
+    return _Number::parseDecNumber(v->getStdString());
+}
+
+byte _Byte::parseHexByte(sp<_String> v) {
+    if(v == nullptr) {
+        throw NullPointerException("parseHexByte nullptr");
+    }
+    
+    return _Number::parseHexNumber(v->getStdString());
+}
+
+byte _Byte::parseOctByte(sp<_String> v) {
+    if(v == nullptr) {
+        throw NullPointerException("parseOctByte nullptr");
+    }
+    
+    return _Number::parseOctNumber(v->getStdString());
+}
+
+byte _Byte::parseBinaryByte(sp<_String> v) {
+    if(v == nullptr) {
+        throw NullPointerException("parseBinaryByte nullptr");
+    }
+    
+    return _Number::parseBinaryNumber(v->getStdString());
 }
 
 _Byte::~_Byte() {

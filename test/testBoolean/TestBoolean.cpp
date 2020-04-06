@@ -6,6 +6,7 @@
 #include "Boolean.hpp"
 #include "StrongPointer.hpp"
 #include "IllegalArgumentException.hpp"
+#include "NullPointerException.hpp"
 
 using namespace obotcha;
 
@@ -63,7 +64,7 @@ int basetest() {
         try {
            t1->equals(nullptr);
            printf("Boolean equal test7-------[FAIL] \n");
-        } catch(IllegalArgumentException e) {}
+        } catch(NullPointerException e) {}
 
         printf("Boolean equal test-------[OK] \n");
         break;

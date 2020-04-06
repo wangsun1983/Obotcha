@@ -10,6 +10,7 @@
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "InitializeException.hpp"
 #include "IllegalArgumentException.hpp"
+#include "NullPointerException.hpp"
 
 using namespace obotcha;
 
@@ -42,7 +43,7 @@ int basetest() {
       Byte v4 = createByte(v3);
       printf("Byte construct test4-------[FAIL] \n");
     } catch(InitializeException e){}
-    
+
     printf("Byte construct test5-------[OK] \n");
     break;
   }
@@ -72,7 +73,7 @@ int basetest() {
     try {
       v1->equals(nullptr);
       printf("Byte equals test2-------[FAIL] \n");
-    } catch(IllegalArgumentException e) {}
+    } catch(NullPointerException e) {}
 
     printf("Byte equals test3-------[OK] \n");
     break;

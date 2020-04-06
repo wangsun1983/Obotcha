@@ -5,7 +5,7 @@
 
 //#include "Thread.hpp"
 //#include "ArrayList.hpp"
-#include "Integer.hpp"
+#include "Long.hpp"
 #include "StrongPointer.hpp"
 #include "InitializeException.hpp"
 
@@ -64,81 +64,79 @@ int testtostring() {
    //toString
    while(1) {
      for(int i = 0;i < 100;i++) {
-       Integer t1 = createInteger(i);
+       Long t1 = createLong(i);
        String v1 = t1->toHexString();
-
        String v2 = createString(HexTable[i]);
        if(v1 != v2) {
-         printf("Integer toString test1-------[FAIL] \n");
+         printf("v1 is %s,v2 is %s \n",v1->toChars(),v2->toChars());
+         printf("Long toString test1-------[FAIL] \n");
          break;
        }
      }
 
      for(int i = 0;i < 100;i++) {
-       Integer t1 = createInteger(i);
+       Long t1 = createLong(i);
        String v1 = t1->toOctalString();
 
        String v2 = createString(OctTable[i]);
        if(v1 != v2) {
-         printf("v1 is %s,v2 is %s,i is %d \n",v1->toChars(),v2->toChars(),i);
-         printf("Integer toString test2-------[FAIL] \n");
+         printf("Long toString test2-------[FAIL] \n");
          break;
        }
      }
 
      for(int i = 0;i < 100;i++) {
-       Integer t1 = createInteger(i);
+       Long t1 = createLong(i);
        String v1 = t1->toBinaryString();
-
        String v2 = createString(BinaryTable[i]);
        if(v1 != v2) {
-         printf("Integer toString test3-------[FAIL] \n");
+         printf("Long toString test3-------[FAIL] \n");
          break;
        }
      }
 
-     printf("Integer toString test4-------[OK] \n");
+     printf("Long toString test4-------[OK] \n");
      break;
    }
 
    //toInt
    while(1) {
      for(int i = 0;i < 100;i++) {
-       Integer t1 = createInteger(i);
-       int t2 = st(Integer)::parseHexInt(createString(HexTable[i]));
-       Integer t3 = createInteger(t2);
-
+       Long t1 = createLong(i);
+       int t2 = st(Long)::parseHexLong(createString(HexTable[i]));
+       Long t3 = createLong(t2);
        if(t1 != t3) {
-         printf("Integer toInt test1-------[FAIL] \n");
+         printf("t1 is %d,t3 is %d \n",t1->toValue(),t3->toValue());
+         printf("Long toInt test1-------[FAIL] \n");
          break;
        }
      }
 
      for(int i = 0;i < 100;i++) {
-       Integer t1 = createInteger(i);
-       int t2 = st(Integer)::parseOctInt(createString(OctTable[i]));
-       Integer t3 = createInteger(t2);
+       Long t1 = createLong(i);
+       int t2 = st(Long)::parseOctLong(createString(OctTable[i]));
+       Long t3 = createLong(t2);
 
        if(t1 != t3) {
          printf("t1 is %d,t3 is %d,i is %d \n",t1->toValue(),t3->toValue(),i);
-         printf("Integer toInt test2-------[FAIL] \n");
+         printf("Long toInt test2-------[FAIL] \n");
          break;
        }
      }
 
      for(int i = 0;i < 100;i++) {
-       Integer t1 = createInteger(i);
+       Long t1 = createLong(i);
        String str = createString(BinaryTable[i]);
        //printf("11111 str is %s \n",str->toChars());
-       int t2 = st(Integer)::parseBinaryInt(str);
-       Integer t3 = createInteger(t2);
+       int t2 = st(Long)::parseBinaryLong(str);
+       Long t3 = createLong(t2);
         if(t1 != t3) {
-         printf("Integer toInt test3-------[FAIL] \n");
+         printf("Long toInt test3-------[FAIL] \n");
          break;
        }
      }
 
-     printf("Integer toInt test10-------[OK] \n");
+     printf("Long toInt test10-------[OK] \n");
      break;
    }
 

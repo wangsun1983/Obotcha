@@ -14,6 +14,7 @@
 #include "Double.hpp"
 #include "InitializeException.hpp"
 #include "IllegalArgumentException.hpp"
+#include "NullPointerException.hpp"
 
 namespace obotcha {
 
@@ -34,7 +35,7 @@ double _Double::toValue() {
 
 bool _Double::equals(Double &p) {
     if(p == nullptr) {
-        throw IllegalArgumentException("double update null");
+        throw NullPointerException("double update null");
     }
     
     return std::fabs(val-p->val) <= EPS;
@@ -46,7 +47,7 @@ bool _Double::equals(double p) {
 
 bool _Double::equals(const _Double *p) {
     if(p == nullptr) {
-        throw IllegalArgumentException("double update null");
+        throw NullPointerException("double update null");
     }
 
     return std::fabs(val-p->val) <= EPS;
@@ -58,7 +59,7 @@ void _Double::update(double v) {
 
 void _Double::update(sp<_Double> v) {
     if(v == nullptr) {
-        throw IllegalArgumentException("double update null");
+        throw NullPointerException("double update null");
     }
 
     this->val = v->val;
