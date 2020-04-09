@@ -153,7 +153,7 @@ String _HttpCookie::genHtml() {
     if(mExpiresMillseocnds != 0) {
         Calendar c = createCalendar(mExpiresMillseocnds);
         DateTime date = c->getGmtDateTime();
-        String time = date->toString(DateTimeFormatHTTP);//st(DateTimeFormatter)::format(date,DateTimeFormatHTTP);
+        String time = date->toString(st(DateTime)::FormatHTTP);//st(DateTimeFormatter)::format(date,DateTimeFormatHTTP);
 
         html = html->append(COOKIE_EXPIRES)
                    ->append("=")

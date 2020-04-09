@@ -99,7 +99,7 @@ int _Calendar::caculateDayOfWeek(int y, int m, int d) {
 
     int week = (d+2*m+3*(m+1)/5+y+y/4-y/100+y/400)%7;
 	return week;
-}  
+}
 
 bool _Calendar::isValid(int year, int month, int day, int hour, int minute, int second, int millisecond) {
     int *_days = nullptr;
@@ -642,8 +642,8 @@ DateTime _Calendar::getDateTime() {
                                    minute,
                                    second,
                                    msec,
+                                   0,
                                    dayOfWeek,
-                                   dayOfMonth,
                                    dayOfYear);
 
     return date;                                   

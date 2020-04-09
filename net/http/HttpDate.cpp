@@ -17,7 +17,7 @@ _HttpDate::_HttpDate(DateTime t) {
 }
     
 String _HttpDate::genHtml() {
-    return mDate->toString(DateTimeFormatHTTP);
+    return mDate->toString(st(DateTime)::FormatHTTP);
 }
 
 }

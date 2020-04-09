@@ -93,6 +93,17 @@ const std::string _DateTime::SORTABLE_FORMAT("%Y-%m-%d %H:%M:%S");
 const std::string _DateTime::SORTABLE_REGEX("(\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d)");
 
 
+const int _DateTime::FormatISO8601 = 0;
+const int _DateTime::FormatISO8601Frac = 1;
+const int _DateTime::FormatRFC822 = 2;
+const int _DateTime::FormatRFC1123 = 3;
+const int _DateTime::FormatHTTP = 4;
+const int _DateTime::FormatRFC850 = 5;
+const int _DateTime::FormatRFC1036 = 6;
+const int _DateTime::FormatASCTIME = 7;
+const int _DateTime::FormatSORTABLE = 8;
+const int _DateTime::FormatMax = 9;
+
 const std::string _DateTime::FORMAT_LIST[] =
 {
 	_DateTime::ISO8601_FORMAT,
@@ -120,7 +131,7 @@ const std::string _DateTime::WEEKDAY_NAMES[] =
 
 
 const std::string _DateTime::MONTH_NAMES[] =
-{
+{   
 	"January",
 	"February",
 	"March",
@@ -161,18 +172,20 @@ _DateTime::_DateTime(int year,
               int minute, 
               int second, 
               int millisecond,
+			  int microsecond,
 			  int dayOfWeek,
-			  int dayOfMonth,
 			  int dayOfYear,
 			  long time) {
     _year = year;
 	_month = month;
 	_day = day;
+	_dayOfMonth = day;
 	_hour = hour;
 	_minute = minute;
 	_second = second;
 	_millisecond = millisecond;
-	_dayOfMonth = dayOfMonth;
+	_microsecond = microsecond;
+	//_dayOfMonth = dayOfMonth;
 	_dayOfWeek = dayOfWeek;
 	_dayOfYear = dayOfYear;
 	_time = time;
@@ -252,7 +265,7 @@ int _DateTime::millisecond() const {
 }
 
 int _DateTime::isValid(String content) {
-	for(int i = 0; i < DateTimeFormatMax;i++) {
+	for(int i = 0; i < FormatMax;i++) {
 		std::string f = REGEX_LIST[i];
 		if(std::regex_match(content->getStdString(),std::regex(f))) {
 			return i;
@@ -512,16 +525,38 @@ int _DateTime::parseTZD(std::string::const_iterator& it, const std::string::cons
 }
 
 String _DateTime::toString() {
-    return format(DateTimeFormatHTTP);
+    return format(FormatHTTP);
 }
 
 String _DateTime::toString(int type) {
     return format(type);
 }
 
+String _DateTime::toString(String fmt) {
+	return format(0,fmt);
+}
+
+String _DateTime::toStringWithTimeZone(int timezone) {
+    return format(FormatHTTP,nullptr,timezone);
+}
+
+String _DateTime::toStringWithTimeZone(int type,int timezone) {
+    return format(type,nullptr,timezone);
+}
+
+String _DateTime::toStringWithTimeZone(String fmt,int timezone) {
+    return format(0,fmt,timezone);
+}
+
 //local format function
-String _DateTime::format(int type,int timeZoneDifferential) {
-    std::string fmt = st(DateTime)::FORMAT_LIST[type];
+String _DateTime::format(int type,String format,int timeZoneDifferential) {
+	std::string fmt;
+	if(format == nullptr) {
+        fmt = st(DateTime)::FORMAT_LIST[type];
+	} else {
+		fmt = format->getStdString();
+	}
+    
 	std::string::const_iterator it  = fmt.begin();
 	std::string::const_iterator end = fmt.end();
 	std::string str;
@@ -532,11 +567,17 @@ String _DateTime::format(int type,int timeZoneDifferential) {
 				switch (*it)
 				{
 				case 'w': {
+					if(_dayOfWeek == -1) {
+						_dayOfWeek = caculateDayOfWeek(_year,_month,_day);
+					}
 				    str.append(st(DateTime)::WEEKDAY_NAMES[_dayOfWeek], 0, 3); 
 					break;
 				}
 
 				case 'W': {
+					if(_dayOfWeek == -1) {
+						_dayOfWeek = caculateDayOfWeek(_year,_month,_day);
+					}
 					str.append(st(DateTime)::WEEKDAY_NAMES[_dayOfWeek]); 
 					break;
 				}
@@ -571,7 +612,7 @@ String _DateTime::format(int type,int timeZoneDifferential) {
 					//NumberFormatter::append(str, dateTime.day(), 2);
 					//String number = st(NumberFormatter)::format(_dayOfMonth,2);
 					char buff[4] = {0};
-					formatNumWidth2(_dayOfMonth,buff,4);
+					formatNumWidth2(_dayOfMonth,buff,4,false);
 					str.append(buff);
 					break;
 				}
@@ -580,7 +621,7 @@ String _DateTime::format(int type,int timeZoneDifferential) {
 					//NumberFormatter::append0(str, dateTime.month(), 2); 
 					//String number = st(NumberFormatter)::format0(_month,2);
 					char buff[4] = {0};
-					formatNumWidth2(_month,buff,4);
+					formatNumWidth2(_month + 1,buff,4);
 					str.append(buff);
 					break;
 				}
@@ -598,7 +639,7 @@ String _DateTime::format(int type,int timeZoneDifferential) {
 					//NumberFormatter::append(str, dateTime.month(), 2); 
 					//String number = st(NumberFormatter)::format(_month + 1,2);
 					char buff[4] = {0};
-					formatNumWidth2(_month + 1,buff,4);
+					formatNumWidth2(_month + 1,buff,4,false);
 					str.append(buff);
 					break;
 				}
@@ -679,7 +720,7 @@ String _DateTime::format(int type,int timeZoneDifferential) {
 				    //NumberFormatter::append0(str, dateTime.millisecond()*1000 + dateTime.microsecond(), 6);
 				    //number = st(NumberFormatter)::format0(_millisecond,6);
 					char buff2[8] = {0};
-					formatNumWidth6(_millisecond,buff2,6);
+					formatNumWidth6(_millisecond*1000 + _microsecond,buff2,8);
 					str.append(buff2);
 					break;
 				}
@@ -768,23 +809,23 @@ void _DateTime::tzdRFC(std::string& str, int timeZoneDifferential) {
 			str += '+';
 			char buff[4] = {0};
 			//String number = st(NumberFormatter)::format0(timeZoneDifferential/3600, 2);
-			formatNumWidth2(timeZoneDifferential/3600,buff,2);
+			formatNumWidth2(timeZoneDifferential/3600,buff,4);
 			str.append(buff);
              
 			char buff2[4] = {0};
 			//number = st(NumberFormatter)::format0((timeZoneDifferential%3600)/60, 2);
-			formatNumWidth2((timeZoneDifferential%3600)/60,buff2,2);
+			formatNumWidth2((timeZoneDifferential%3600)/60,buff2,4);
 			str.append(buff2);
 		} else {
 			str += '-';
 			char buff[4] = {0};
 			//String number = st(NumberFormatter)::format0(-timeZoneDifferential/3600, 2);
-			formatNumWidth2(-timeZoneDifferential/3600,buff,2);
+			formatNumWidth2(-timeZoneDifferential/3600,buff,4);
 			str.append(buff);
 
             char buff2[4] = {0};
 			//number = st(NumberFormatter)::format0((-timeZoneDifferential%3600)/60, 2);
-			formatNumWidth2((-timeZoneDifferential%3600)/60,buff2,2);
+			formatNumWidth2((-timeZoneDifferential%3600)/60,buff2,4);
 			str.append(buff2);
 		}		
 	}
@@ -794,20 +835,49 @@ void _DateTime::tzdRFC(std::string& str, int timeZoneDifferential) {
 void _DateTime::formatNum(int value,char *buff,int length) {
     snprintf(buff,length,"%d",value);
 }
-void _DateTime::formatNumWidth2(int value,char *buff,int length) {
-	snprintf(buff,length,"%02d",value);
+void _DateTime::formatNumWidth2(int value,char *buff,int length,bool fillzero) {
+	if(fillzero) {
+        snprintf(buff,length,"%02d",value);
+	} else {
+		snprintf(buff,length,"%2d",value);
+	}
 }
 
-void _DateTime::formatNumWidth3(int value,char *buff,int length) {
-	snprintf(buff,length,"%03d",value);
+void _DateTime::formatNumWidth3(int value,char *buff,int length,bool fillzero) {
+	if(fillzero) {
+	    snprintf(buff,length,"%03d",value);
+	} else {
+        snprintf(buff,length,"%3d",value);
+	}
 }
 
-void _DateTime::formatNumWidth6(long value,char *buff,int length) {
-    snprintf(buff,length,"%06d",value);
+void _DateTime::formatNumWidth6(long value,char *buff,int length,bool fillzero) {
+	if(fillzero) {
+        snprintf(buff,length,"%06d",value);
+	} else {
+        snprintf(buff,length,"%6d",value);
+	}
 }
 
-void _DateTime::formatNumWidth4(int value,char *buff,int length){
-	snprintf(buff,length,"%04d",value);
+void _DateTime::formatNumWidth4(int value,char *buff,int length,bool fillzero){
+	if(fillzero) {
+	    snprintf(buff,length,"%04d",value);
+	} else {
+        snprintf(buff,length,"%4d",value);
+	}
+}
+
+int _DateTime::caculateDayOfWeek(int y, int m, int d) {
+    m += 1;
+    d += 1;
+
+    if(m == 1 || m == 2) {  
+        m += 12;  
+        y--;  
+    }
+
+    int week = (d+2*m+3*(m+1)/5+y+y/4-y/100+y/400)%7;
+	return week;
 }
 
 
