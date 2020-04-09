@@ -12,6 +12,37 @@ int _Calendar::leapDays[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 int _Calendar::GregorianBase = 1900;
 
+const int _Calendar::January = 0;
+const int _Calendar::February = 1;
+const int _Calendar::March = 2;
+const int _Calendar::April = 3;
+const int _Calendar::May = 4;
+const int _Calendar::June = 5;
+const int _Calendar::July = 6;
+const int _Calendar::August = 7;
+const int _Calendar::September = 8;
+const int _Calendar::October = 9;
+const int _Calendar::November = 10;
+const int _Calendar::December = 11;
+
+const int _Calendar::Sunday = 0;
+const int _Calendar::Monday = 1;
+const int _Calendar::Tuesday = 2;
+const int _Calendar::Wednesday = 3;
+const int _Calendar::Thursday = 4;
+const int _Calendar::Friday = 5;
+const int _Calendar::Saturday = 6;
+
+const int _Calendar::Year = 0;
+const int _Calendar::Month = 1;
+const int _Calendar::DayOfWeek = 2;
+const int _Calendar::DayOfMonth = 3;
+const int _Calendar::DayOfYear = 4;
+const int _Calendar::Hour = 5;
+const int _Calendar::Minute = 6;
+const int _Calendar::Second = 7;
+const int _Calendar::MSecond = 8;
+
 
 _Calendar::_Calendar() {
     timeval tv;
@@ -334,7 +365,7 @@ int _Calendar::caculateDayOfYear(int _year,int _month,int _dayOfMonth) {
     return allDays;
 }
 
-bool _Calendar::set(CalendarType type,int value) {
+bool _Calendar::set(int type,int value) {
     bool ret = false;
     switch(type) {
         case Year: {
@@ -400,7 +431,7 @@ bool _Calendar::set(CalendarType type,int value) {
     return ret;
 }
 
-int _Calendar::get(CalendarType type) {
+int _Calendar::get(int type) {
     switch(type) {
         case Year:
             return year;

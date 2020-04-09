@@ -9,16 +9,12 @@ link += calendar \
 		timezone \
 		properties \
 		log \
-		arraylist \
 		uuid \
 		random \
 		math \
 		timewatcher \
 		stacktrace \
 		datetime \
-		datetimeparser \
-		datetimeformatter \
-		numberformatter \
 		message \
 		handler \
 		enviroment \
@@ -27,16 +23,12 @@ objs += $(outtmp)/calendar.o \
         $(outtmp)/timezone.o \
 		$(outtmp)/properties.o \
 		$(outtmp)/log.o \
-		$(outtmp)/arraylist.o \
 		$(outtmp)/uuid.o \
 		$(outtmp)/random.o \
 		$(outtmp)/math.o \
 		$(outtmp)/timewatcher.o \
 		$(outtmp)/stacktrace.o \
 		$(outtmp)/datetime.o \
-		$(outtmp)/datetimeparser.o \
-		$(outtmp)/datetimeformatter.o \
-		$(outtmp)/numberformatter.o \
 		$(outtmp)/message.o \
 		$(outtmp)/handler.o \
 		$(outtmp)/enviroment.o \
@@ -56,9 +48,6 @@ properties :$(utilDir)/Properties.cpp
 log :$(utilDir)/Log.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Log.cpp -o $(outtmp)/log.o
 
-arraylist :$(utilDir)/ArrayList.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/ArrayList.cpp -o $(outtmp)/arraylist.o
-
 uuid :$(utilDir)/UUID.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/UUID.cpp -o $(outtmp)/uuid.o
 
@@ -74,26 +63,14 @@ timewatcher :$(utilDir)/TimeWatcher.cpp
 datetime :$(utilDir)/DateTime.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/DateTime.cpp -o $(outtmp)/datetime.o
 
-datetimeparser 	:$(utilDir)/DateTimeParser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/DateTimeParser.cpp -o $(outtmp)/datetimeparser.o
-
-datetimeformatter :$(utilDir)/DateTimeFormatter.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/DateTimeFormatter.cpp -o $(outtmp)/datetimeformatter.o
-
-numberformatter :$(utilDir)/NumberFormatter.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/NumberFormatter.cpp -o $(outtmp)/numberformatter.o
-
 message :$(utilDir)/Message.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Message.cpp -o $(outtmp)/message.o
 
 handler :$(utilDir)/Handler.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Handler.cpp -o $(outtmp)/handler.o	
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Handler.cpp -o $(outtmp)/handler.o
 
 enviroment :$(utilDir)/Enviroment.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Enviroment.cpp -o $(outtmp)/enviroment.o
 
 #base64 :$(utilDir)/Base64.cpp
 #	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Base64.cpp -o $(outtmp)/base64.o
-
-
-

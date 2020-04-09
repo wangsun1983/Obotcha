@@ -1,5 +1,4 @@
 #include "HttpCookie.hpp"
-#include "DateTimeFormatter.hpp"
 #include "Calendar.hpp"
 
 namespace obotcha {
@@ -154,7 +153,8 @@ String _HttpCookie::genHtml() {
     if(mExpiresMillseocnds != 0) {
         Calendar c = createCalendar(mExpiresMillseocnds);
         DateTime date = c->getGmtDateTime();
-        String time = st(DateTimeFormatter)::format(date,DateTimeFormatHTTP);
+        String time = date->toString(DateTimeFormatHTTP);//st(DateTimeFormatter)::format(date,DateTimeFormatHTTP);
+
         html = html->append(COOKIE_EXPIRES)
                    ->append("=")
                    ->append(time)

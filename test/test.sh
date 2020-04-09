@@ -7,7 +7,7 @@ testFloat testInteger testLong testString
 testUint16 testUint32 testUint64 testUint8
 testList testByteRingArray
 #util
-testArrayList testCalendar)
+testArrayList testCalendar testHashMap)
 
 function start(){
     echo -----------------------

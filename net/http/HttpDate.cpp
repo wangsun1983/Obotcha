@@ -8,7 +8,6 @@
 #include "http_parser.h"
 #include "HashMap.hpp"
 #include "HttpDate.hpp"
-#include "DateTimeFormatter.hpp"
 #include "DateTime.hpp"
 
 namespace obotcha {
@@ -18,7 +17,7 @@ _HttpDate::_HttpDate(DateTime t) {
 }
     
 String _HttpDate::genHtml() {
-    return st(DateTimeFormatter)::format(mDate,DateTimeFormatHTTP);
+    return mDate->toString(DateTimeFormatHTTP);
 }
 
 }

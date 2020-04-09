@@ -36,9 +36,9 @@ extern int convertDayOfWeekFromJava(int);
 
 void simpleTest() {
   Calendar c = createCalendar(9277732677921l);
-  printf("day of week is %d \n",c->get(CalendarType::DayOfWeek));
-  printf("day of year is %d \n",c->get(CalendarType::DayOfYear));
-  printf("day of month is %d \n",c->get(CalendarType::DayOfMonth));
+  printf("day of week is %d \n",c->get(st(Calendar)::DayOfWeek));
+  printf("day of year is %d \n",c->get(st(Calendar)::DayOfYear));
+  printf("day of month is %d \n",c->get(st(Calendar)::DayOfMonth));
 }
 
 ArrayList<TimeData> analyse(File f) {

@@ -26,29 +26,29 @@ int testCalendarIncreaseYear() {
     Calendar c1 = createCalendar(d1->time);
 
     //printf("testCalendarIncreaseYear d1->year is %d \n",d1->year);
-    //printf("testCalendarIncreaseYear c1 is %d \n",c1->get(CalendarType::Year));
+    //printf("testCalendarIncreaseYear c1 is %d \n",c1->get(st(Calendar)::Year));
 
     for(int i = 1;i < size;i++) {
         c1->increaseYear(1);
         d1 = yearList->get(i);
-        if(c1->get(CalendarType::Year) != d1->year ||
-             c1->get(CalendarType::Month) != d1->month ||
-             c1->get(CalendarType::DayOfYear) != (d1->dayOfYear - 1) ||
-             c1->get(CalendarType::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek)||
-             c1->get(CalendarType::DayOfMonth) != d1->dayOfMonth ||
-             c1->get(CalendarType::Hour) != d1->hour ||
-             c1->get(CalendarType::Minute) != d1->minute ||
-             c1->get(CalendarType::Second) != d1->second ||
-             c1->get(CalendarType::MSecond) != d1->millisecond) {
-               printf("Calndear year is %d,data year is %d \n",c1->get(CalendarType::Year),d1->year);
-               printf("Calndear month is %d,data month is %d \n",c1->get(CalendarType::Month),d1->month);
-               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(CalendarType::DayOfYear),d1->dayOfYear -1);
-               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(CalendarType::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
-               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(CalendarType::DayOfMonth),d1->dayOfMonth);
-               printf("Calndear hour is %d,data hour is %d \n",c1->get(CalendarType::Hour),d1->hour);
-               printf("Calndear minute is %d,data minute is %d \n",c1->get(CalendarType::Minute),d1->minute);
-               printf("Calndear second is %d,data second is %d \n",c1->get(CalendarType::Second),d1->second);
-               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(CalendarType::MSecond),d1->millisecond);
+        if(c1->get(st(Calendar)::Year) != d1->year ||
+             c1->get(st(Calendar)::Month) != d1->month ||
+             c1->get(st(Calendar)::DayOfYear) != (d1->dayOfYear - 1) ||
+             c1->get(st(Calendar)::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek)||
+             c1->get(st(Calendar)::DayOfMonth) != d1->dayOfMonth ||
+             c1->get(st(Calendar)::Hour) != d1->hour ||
+             c1->get(st(Calendar)::Minute) != d1->minute ||
+             c1->get(st(Calendar)::Second) != d1->second ||
+             c1->get(st(Calendar)::MSecond) != d1->millisecond) {
+               printf("Calndear year is %d,data year is %d \n",c1->get(st(Calendar)::Year),d1->year);
+               printf("Calndear month is %d,data month is %d \n",c1->get(st(Calendar)::Month),d1->month);
+               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(st(Calendar)::DayOfYear),d1->dayOfYear -1);
+               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(st(Calendar)::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
+               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(st(Calendar)::DayOfMonth),d1->dayOfMonth);
+               printf("Calndear hour is %d,data hour is %d \n",c1->get(st(Calendar)::Hour),d1->hour);
+               printf("Calndear minute is %d,data minute is %d \n",c1->get(st(Calendar)::Minute),d1->minute);
+               printf("Calndear second is %d,data second is %d \n",c1->get(st(Calendar)::Second),d1->second);
+               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(st(Calendar)::MSecond),d1->millisecond);
                printf("current time is %ld \n",d1->time);
                printf("---[Calendar Test {testCalendarIncreaseYear()} case1] [FAILED]--- \n");
                return -1;
@@ -66,24 +66,24 @@ int testCalendarIncreaseDay() {
     for(int i = 1;i < size;i++) {
         c1->increaseDay(1);
         d1 = dateList->get(i);
-        if(c1->get(CalendarType::Year) != d1->year ||
-             c1->get(CalendarType::Month) != d1->month ||
-             c1->get(CalendarType::DayOfYear) != (d1->dayOfYear - 1) ||
-             c1->get(CalendarType::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek)||
-             c1->get(CalendarType::DayOfMonth) != d1->dayOfMonth ||
-             c1->get(CalendarType::Hour) != d1->hour ||
-             c1->get(CalendarType::Minute) != d1->minute ||
-             c1->get(CalendarType::Second) != d1->second ||
-             c1->get(CalendarType::MSecond) != d1->millisecond) {
-               printf("Calndear year is %d,data year is %d \n",c1->get(CalendarType::Year),d1->year);
-               printf("Calndear month is %d,data month is %d \n",c1->get(CalendarType::Month),d1->month);
-               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(CalendarType::DayOfYear),d1->dayOfYear -1);
-               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(CalendarType::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
-               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(CalendarType::DayOfMonth),d1->dayOfMonth);
-               printf("Calndear hour is %d,data hour is %d \n",c1->get(CalendarType::Hour),d1->hour);
-               printf("Calndear minute is %d,data minute is %d \n",c1->get(CalendarType::Minute),d1->minute);
-               printf("Calndear second is %d,data second is %d \n",c1->get(CalendarType::Second),d1->second);
-               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(CalendarType::MSecond),d1->millisecond);
+        if(c1->get(st(Calendar)::Year) != d1->year ||
+             c1->get(st(Calendar)::Month) != d1->month ||
+             c1->get(st(Calendar)::DayOfYear) != (d1->dayOfYear - 1) ||
+             c1->get(st(Calendar)::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek)||
+             c1->get(st(Calendar)::DayOfMonth) != d1->dayOfMonth ||
+             c1->get(st(Calendar)::Hour) != d1->hour ||
+             c1->get(st(Calendar)::Minute) != d1->minute ||
+             c1->get(st(Calendar)::Second) != d1->second ||
+             c1->get(st(Calendar)::MSecond) != d1->millisecond) {
+               printf("Calndear year is %d,data year is %d \n",c1->get(st(Calendar)::Year),d1->year);
+               printf("Calndear month is %d,data month is %d \n",c1->get(st(Calendar)::Month),d1->month);
+               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(st(Calendar)::DayOfYear),d1->dayOfYear -1);
+               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(st(Calendar)::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
+               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(st(Calendar)::DayOfMonth),d1->dayOfMonth);
+               printf("Calndear hour is %d,data hour is %d \n",c1->get(st(Calendar)::Hour),d1->hour);
+               printf("Calndear minute is %d,data minute is %d \n",c1->get(st(Calendar)::Minute),d1->minute);
+               printf("Calndear second is %d,data second is %d \n",c1->get(st(Calendar)::Second),d1->second);
+               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(st(Calendar)::MSecond),d1->millisecond);
                printf("current time is %ld \n",d1->time);
                printf("---[Calendar Test {testCalendarIncreaseDay()} case1] [FAILED]--- \n");
                return -1;
@@ -101,24 +101,24 @@ int testCalendarIncreaseMonth() {
     for(int i = 1;i < size;i++) {
         c1->increaseMonth(1);
         d1 = monthList->get(i);
-        if(c1->get(CalendarType::Year) != d1->year ||
-             c1->get(CalendarType::Month) != d1->month ||
-             c1->get(CalendarType::DayOfYear) != (d1->dayOfYear - 1) ||
-             c1->get(CalendarType::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek)||
-             c1->get(CalendarType::DayOfMonth) != d1->dayOfMonth ||
-             c1->get(CalendarType::Hour) != d1->hour ||
-             c1->get(CalendarType::Minute) != d1->minute ||
-             c1->get(CalendarType::Second) != d1->second ||
-             c1->get(CalendarType::MSecond) != d1->millisecond) {
-               printf("Calndear year is %d,data year is %d \n",c1->get(CalendarType::Year),d1->year);
-               printf("Calndear month is %d,data month is %d \n",c1->get(CalendarType::Month),d1->month);
-               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(CalendarType::DayOfYear),d1->dayOfYear -1);
-               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(CalendarType::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
-               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(CalendarType::DayOfMonth),d1->dayOfMonth);
-               printf("Calndear hour is %d,data hour is %d \n",c1->get(CalendarType::Hour),d1->hour);
-               printf("Calndear minute is %d,data minute is %d \n",c1->get(CalendarType::Minute),d1->minute);
-               printf("Calndear second is %d,data second is %d \n",c1->get(CalendarType::Second),d1->second);
-               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(CalendarType::MSecond),d1->millisecond);
+        if(c1->get(st(Calendar)::Year) != d1->year ||
+             c1->get(st(Calendar)::Month) != d1->month ||
+             c1->get(st(Calendar)::DayOfYear) != (d1->dayOfYear - 1) ||
+             c1->get(st(Calendar)::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek)||
+             c1->get(st(Calendar)::DayOfMonth) != d1->dayOfMonth ||
+             c1->get(st(Calendar)::Hour) != d1->hour ||
+             c1->get(st(Calendar)::Minute) != d1->minute ||
+             c1->get(st(Calendar)::Second) != d1->second ||
+             c1->get(st(Calendar)::MSecond) != d1->millisecond) {
+               printf("Calndear year is %d,data year is %d \n",c1->get(st(Calendar)::Year),d1->year);
+               printf("Calndear month is %d,data month is %d \n",c1->get(st(Calendar)::Month),d1->month);
+               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(st(Calendar)::DayOfYear),d1->dayOfYear -1);
+               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(st(Calendar)::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
+               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(st(Calendar)::DayOfMonth),d1->dayOfMonth);
+               printf("Calndear hour is %d,data hour is %d \n",c1->get(st(Calendar)::Hour),d1->hour);
+               printf("Calndear minute is %d,data minute is %d \n",c1->get(st(Calendar)::Minute),d1->minute);
+               printf("Calndear second is %d,data second is %d \n",c1->get(st(Calendar)::Second),d1->second);
+               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(st(Calendar)::MSecond),d1->millisecond);
                printf("current time is %ld \n",d1->time);
                printf("---[Calendar Test {testCalendarIncreaseMonth()} case1] [FAILED]--- \n");
                return -1;
@@ -138,24 +138,24 @@ int testCalendarIncreaseHour() {
     for(int i = 1;i < size;i++) {
         c1->increaseHour(1);
         d1 = hourList->get(i);
-        if(c1->get(CalendarType::Year) != d1->year ||
-             c1->get(CalendarType::Month) != d1->month ||
-             c1->get(CalendarType::DayOfYear) != (d1->dayOfYear - 1) ||
-             c1->get(CalendarType::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek)||
-             c1->get(CalendarType::DayOfMonth) != d1->dayOfMonth ||
-             c1->get(CalendarType::Hour) != d1->hour ||
-             c1->get(CalendarType::Minute) != d1->minute ||
-             c1->get(CalendarType::Second) != d1->second ||
-             c1->get(CalendarType::MSecond) != d1->millisecond) {
-               printf("Calndear year is %d,data year is %d \n",c1->get(CalendarType::Year),d1->year);
-               printf("Calndear month is %d,data month is %d \n",c1->get(CalendarType::Month),d1->month);
-               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(CalendarType::DayOfYear),d1->dayOfYear -1);
-               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(CalendarType::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
-               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(CalendarType::DayOfMonth),d1->dayOfMonth);
-               printf("Calndear hour is %d,data hour is %d \n",c1->get(CalendarType::Hour),d1->hour);
-               printf("Calndear minute is %d,data minute is %d \n",c1->get(CalendarType::Minute),d1->minute);
-               printf("Calndear second is %d,data second is %d \n",c1->get(CalendarType::Second),d1->second);
-               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(CalendarType::MSecond),d1->millisecond);
+        if(c1->get(st(Calendar)::Year) != d1->year ||
+             c1->get(st(Calendar)::Month) != d1->month ||
+             c1->get(st(Calendar)::DayOfYear) != (d1->dayOfYear - 1) ||
+             c1->get(st(Calendar)::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek)||
+             c1->get(st(Calendar)::DayOfMonth) != d1->dayOfMonth ||
+             c1->get(st(Calendar)::Hour) != d1->hour ||
+             c1->get(st(Calendar)::Minute) != d1->minute ||
+             c1->get(st(Calendar)::Second) != d1->second ||
+             c1->get(st(Calendar)::MSecond) != d1->millisecond) {
+               printf("Calndear year is %d,data year is %d \n",c1->get(st(Calendar)::Year),d1->year);
+               printf("Calndear month is %d,data month is %d \n",c1->get(st(Calendar)::Month),d1->month);
+               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(st(Calendar)::DayOfYear),d1->dayOfYear -1);
+               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(st(Calendar)::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
+               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(st(Calendar)::DayOfMonth),d1->dayOfMonth);
+               printf("Calndear hour is %d,data hour is %d \n",c1->get(st(Calendar)::Hour),d1->hour);
+               printf("Calndear minute is %d,data minute is %d \n",c1->get(st(Calendar)::Minute),d1->minute);
+               printf("Calndear second is %d,data second is %d \n",c1->get(st(Calendar)::Second),d1->second);
+               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(st(Calendar)::MSecond),d1->millisecond);
                printf("current time is %ld \n",d1->time);
                printf("---[Calendar Test {increaseHour()} case1] [FAILED]--- \n");
                return -1;
@@ -174,24 +174,24 @@ int testCalendarIncreaseMinute() {
     for(int i = 1;i < size;i++) {
         c1->increaseMinute(1);
         d1 = minuteList->get(i);
-        if(c1->get(CalendarType::Year) != d1->year ||
-             c1->get(CalendarType::Month) != d1->month ||
-             c1->get(CalendarType::DayOfYear) != (d1->dayOfYear - 1) ||
-             c1->get(CalendarType::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek)||
-             c1->get(CalendarType::DayOfMonth) != d1->dayOfMonth ||
-             c1->get(CalendarType::Hour) != d1->hour ||
-             c1->get(CalendarType::Minute) != d1->minute ||
-             c1->get(CalendarType::Second) != d1->second ||
-             c1->get(CalendarType::MSecond) != d1->millisecond) {
-               printf("Calndear year is %d,data year is %d \n",c1->get(CalendarType::Year),d1->year);
-               printf("Calndear month is %d,data month is %d \n",c1->get(CalendarType::Month),d1->month);
-               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(CalendarType::DayOfYear),d1->dayOfYear -1);
-               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(CalendarType::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
-               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(CalendarType::DayOfMonth),d1->dayOfMonth);
-               printf("Calndear hour is %d,data hour is %d \n",c1->get(CalendarType::Hour),d1->hour);
-               printf("Calndear minute is %d,data minute is %d \n",c1->get(CalendarType::Minute),d1->minute);
-               printf("Calndear second is %d,data second is %d \n",c1->get(CalendarType::Second),d1->second);
-               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(CalendarType::MSecond),d1->millisecond);
+        if(c1->get(st(Calendar)::Year) != d1->year ||
+             c1->get(st(Calendar)::Month) != d1->month ||
+             c1->get(st(Calendar)::DayOfYear) != (d1->dayOfYear - 1) ||
+             c1->get(st(Calendar)::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek)||
+             c1->get(st(Calendar)::DayOfMonth) != d1->dayOfMonth ||
+             c1->get(st(Calendar)::Hour) != d1->hour ||
+             c1->get(st(Calendar)::Minute) != d1->minute ||
+             c1->get(st(Calendar)::Second) != d1->second ||
+             c1->get(st(Calendar)::MSecond) != d1->millisecond) {
+               printf("Calndear year is %d,data year is %d \n",c1->get(st(Calendar)::Year),d1->year);
+               printf("Calndear month is %d,data month is %d \n",c1->get(st(Calendar)::Month),d1->month);
+               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(st(Calendar)::DayOfYear),d1->dayOfYear -1);
+               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(st(Calendar)::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
+               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(st(Calendar)::DayOfMonth),d1->dayOfMonth);
+               printf("Calndear hour is %d,data hour is %d \n",c1->get(st(Calendar)::Hour),d1->hour);
+               printf("Calndear minute is %d,data minute is %d \n",c1->get(st(Calendar)::Minute),d1->minute);
+               printf("Calndear second is %d,data second is %d \n",c1->get(st(Calendar)::Second),d1->second);
+               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(st(Calendar)::MSecond),d1->millisecond);
                printf("current time is %ld \n",d1->time);
                printf("---[Calendar Test {increaseMinute()} case1] [FAILED]--- \n");
                return -1;
@@ -210,24 +210,24 @@ int testCalendarIncreaseSecond() {
     for(int i = 1;i < size;i++) {
         c1->increaseSecond(1);
         d1 = secondList->get(i);
-        if(c1->get(CalendarType::Year) != d1->year ||
-             c1->get(CalendarType::Month) != d1->month ||
-             c1->get(CalendarType::DayOfYear) != (d1->dayOfYear - 1) ||
-             c1->get(CalendarType::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek)||
-             c1->get(CalendarType::DayOfMonth) != d1->dayOfMonth ||
-             c1->get(CalendarType::Hour) != d1->hour ||
-             c1->get(CalendarType::Minute) != d1->minute ||
-             c1->get(CalendarType::Second) != d1->second ||
-             c1->get(CalendarType::MSecond) != d1->millisecond) {
-               printf("Calndear year is %d,data year is %d \n",c1->get(CalendarType::Year),d1->year);
-               printf("Calndear month is %d,data month is %d \n",c1->get(CalendarType::Month),d1->month);
-               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(CalendarType::DayOfYear),d1->dayOfYear -1);
-               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(CalendarType::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
-               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(CalendarType::DayOfMonth),d1->dayOfMonth);
-               printf("Calndear hour is %d,data hour is %d \n",c1->get(CalendarType::Hour),d1->hour);
-               printf("Calndear minute is %d,data minute is %d \n",c1->get(CalendarType::Minute),d1->minute);
-               printf("Calndear second is %d,data second is %d \n",c1->get(CalendarType::Second),d1->second);
-               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(CalendarType::MSecond),d1->millisecond);
+        if(c1->get(st(Calendar)::Year) != d1->year ||
+             c1->get(st(Calendar)::Month) != d1->month ||
+             c1->get(st(Calendar)::DayOfYear) != (d1->dayOfYear - 1) ||
+             c1->get(st(Calendar)::DayOfWeek) != convertDayOfWeekFromJava(d1->dayOfWeek)||
+             c1->get(st(Calendar)::DayOfMonth) != d1->dayOfMonth ||
+             c1->get(st(Calendar)::Hour) != d1->hour ||
+             c1->get(st(Calendar)::Minute) != d1->minute ||
+             c1->get(st(Calendar)::Second) != d1->second ||
+             c1->get(st(Calendar)::MSecond) != d1->millisecond) {
+               printf("Calndear year is %d,data year is %d \n",c1->get(st(Calendar)::Year),d1->year);
+               printf("Calndear month is %d,data month is %d \n",c1->get(st(Calendar)::Month),d1->month);
+               printf("Calndear dayOfYear is %d,data dayOfYear is %d \n",c1->get(st(Calendar)::DayOfYear),d1->dayOfYear -1);
+               printf("Calndear dayOfWeek is %d,data dayOfWeek is %d \n",c1->get(st(Calendar)::DayOfWeek),convertDayOfWeekFromJava(d1->dayOfWeek));
+               printf("Calndear dayOfMonth is %d,data dayOfMonth is %d \n",c1->get(st(Calendar)::DayOfMonth),d1->dayOfMonth);
+               printf("Calndear hour is %d,data hour is %d \n",c1->get(st(Calendar)::Hour),d1->hour);
+               printf("Calndear minute is %d,data minute is %d \n",c1->get(st(Calendar)::Minute),d1->minute);
+               printf("Calndear second is %d,data second is %d \n",c1->get(st(Calendar)::Second),d1->second);
+               printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(st(Calendar)::MSecond),d1->millisecond);
                printf("current time is %ld \n",d1->time);
                printf("---[Calendar Test {increaseSecond()} case1] [FAILED]--- \n");
                return -1;

@@ -21,6 +21,7 @@
 
 ## util
 - [x] ArrayList
+- [x] HashMap
 - [x] Calendar
 - [ ] DateTime
 - [ ] DateTimeFormatter

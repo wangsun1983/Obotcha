@@ -12,18 +12,18 @@ using namespace obotcha;
 int convertDayOfWeekFromJava(int day) {
   switch(day) {
     case 1:
-        return Sunday;
+        return st(Calendar)::Sunday;
     case 2:
-        return Monday;
+        return st(Calendar)::Monday;
     case 3:
-        return Tuesday;
+        return st(Calendar)::Tuesday;
     case 4:
-        return Wednesday;
+        return st(Calendar)::Wednesday;
     case 5:
-        return Thursday;
+        return st(Calendar)::Thursday;
     case 6:
-        return Friday;
+        return st(Calendar)::Friday;
     case 7:
-         return Saturday;
+        return st(Calendar)::Saturday;
   }
 }

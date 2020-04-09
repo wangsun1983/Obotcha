@@ -38,7 +38,7 @@ sharelib = -Wl,-rpath=../../out/lib/ \
 
 files =
 link =
-libname	= testHashMap
+libname	= testDateTime
 
 everything : $(libname)
 

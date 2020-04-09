@@ -7,45 +7,6 @@
 
 namespace obotcha {
 
-enum MonthEnum{
-    January = 0,
-    February,
-    March,
-    April,
-    May,
-    June,
-    July,
-    August,
-    September,
-    October,
-    November,
-    December
-};
-
-enum WeekDayEnum{
-    Sunday = 0,
-    Monday,
-    Tuesday,
-    Wednesday,
-    Thursday,
-    Friday,
-    Saturday,
-
-};
-
-enum CalendarType {
-    Year = 0,
-    Month,
-    DayOfWeek,
-    DayOfMonth,
-    DayOfYear,
-    Hour,
-    Minute,
-    Second,
-    MSecond
-};
-
-
 DECLARE_SIMPLE_CLASS(Calendar) {
 public:
 
@@ -81,9 +42,9 @@ public:
 
     bool sameDate(Calendar c);
 
-    bool set(CalendarType type,int value);
+    bool set(int type,int value);
 
-    int get(CalendarType type);
+    int get(int type);
 
     long int toTimeMillis();
 
@@ -98,6 +59,37 @@ public:
     static int caculateDayOfWeek(int y, int m, int d);
 
     static bool isValid(int year, int month, int day, int hour, int minute, int second, int millisecond);
+    
+    static const int January;
+    static const int February;
+    static const int March;
+    static const int April;
+    static const int May;
+    static const int June;
+    static const int July;
+    static const int August;
+    static const int September;
+    static const int October;
+    static const int November;
+    static const int December;
+
+    static const int Sunday;
+    static const int Monday;
+    static const int Tuesday;
+    static const int Wednesday;
+    static const int Thursday;
+    static const int Friday;
+    static const int Saturday;
+
+    static const int Year;
+    static const int Month;
+    static const int DayOfWeek;
+    static const int DayOfMonth;
+    static const int DayOfYear;
+    static const int Hour;
+    static const int Minute;
+    static const int Second;
+    static const int MSecond;
 
 private:
     long long timeMillis;
