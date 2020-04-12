@@ -25,7 +25,7 @@ int main() {
     printf("---[TimeWatcher Test {start/stop()} case1] [FAIL]--- \n");
     break;
     FileWatcher watcher = st(FileWatcher)::getInstance();
-    watcher->startWatch("/home/dji/mysource/Obotcha/test/testFileWatcher/makefile",
+    watcher->startWatch("/home/test/mysource/Obotcha/test/testFileWatcher/makefile",
     FileObserverType::Modify,
     createMyFileObserver());
 

@@ -24,7 +24,6 @@ void testFunc2() {
 }
 
 
-
 int main() {
     testFunc2();
 

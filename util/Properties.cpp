@@ -10,6 +10,7 @@ const String _Properties::gPropEnterString = "\n";
 
 _Properties::_Properties() {
     mProps = createHashMap<String,String>();
+    mFile = nullptr;
 }
     
 void _Properties::set(String key,String value) {
@@ -29,12 +30,12 @@ void _Properties::remove(String key) {
 }
 
 int _Properties::load(String path) {
-    File file = createFile(path);
-    if(!file->exists()) {
+    mFile = createFile(path);
+    if(!mFile->exists()) {
         return -FileNotExists;
     }
 
-    return load(file);
+    return load(mFile);
 }
 
 int _Properties::load(File file) {
@@ -57,8 +58,24 @@ int _Properties::load(File file) {
     return 0;
 }
 
-int _Properties::save(File file) {
-   return save(file->getAbsolutePath());
+int _Properties::save() {
+    if(mFile == nullptr) {
+        return -NotCreate;
+    }
+
+    return save(mFile->getAbsolutePath());
+}
+
+int _Properties::saveAs(File file) {
+    if(file == nullptr) {
+        return -InvalidParam;
+    }
+
+    return save(file->getAbsolutePath());
+}
+
+int _Properties::saveAs(String path) {
+   return save(path);
 }
 
 int _Properties::save(String path) {

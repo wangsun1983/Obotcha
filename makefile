@@ -41,7 +41,7 @@ ifdef STRICT_MODE
 obotchastrict = -Wall \
 				-Werror \
 				-Wextra
-endif				
+endif
 
 #define obotcha build config
 obotchacflags = $(cflags) \

@@ -16,7 +16,7 @@ using namespace obotcha;
 
 int main() {
     //ZipStream zipstream = createZipStream();
-    //zipstream->compressWithPassword("abc","/home/dji/mysource/Obotcha/test/testZipInputStream/newzip.zip","abcde");
+    //zipstream->compressWithPassword("abc","/home/dsd/mysource/Obotcha/test/testZipInputStream/newzip.zip","abcde");
     printf("---[ZipStream Test Start]--- \n");
 
     //_ZipStream();
@@ -80,11 +80,11 @@ int main() {
 
     //int compress(String src,String dest);
     while(1) {
-        
+
     }
 
     /*
-    
+
     int compress(String src,String dest);
 
     int compressWithPassword(String src,String dest,String password);
@@ -98,6 +98,6 @@ int main() {
 
 #if 0
     ZipStream unzip = createZipStream();
-    unzip->uncompressWithPassword("abc.zip","/home/dji/mysource/Obotcha/test/testZipInputStream/tt1","abcde");
-#endif    
+    unzip->uncompressWithPassword("abc.zip","/home/dsd/mysource/Obotcha/test/testZipInputStream/tt1","abcde");
+#endif
 }

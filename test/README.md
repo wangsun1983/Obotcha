@@ -23,23 +23,20 @@
 - [x] ArrayList
 - [x] HashMap
 - [x] Calendar
-- [ ] DateTime
-- [ ] DateTimeFormatter
-- [ ] DateTimeParser
+- [x] DateTime
 - [ ] Enviroment
 - [ ] Handler
 - [ ] Log
 - [ ] Math
 - [ ] Message
-- [ ] NumberFormatter
-- [ ] Properties
+- [x] Properties
 - [ ] Random
 - [ ] StackTrace
 - [ ] TimeWatcher
 - [ ] TimeZone
 - [ ] UUID
-- [ ] ConfReader
-- [ ] ConfValue
+- [x] ConfReader
+- [x] ConfValue
 - [ ] IniReader
 - [ ] IniValue
 - [ ] JsonArray

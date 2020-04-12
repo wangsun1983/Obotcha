@@ -30,6 +30,11 @@ external = -lpthread \
 				-ldl \
 				../../out/lib/libobotcha.so \
 
+sharelib = -Wl,-rpath=../../out/lib/ \
+           -L ../../out/lib/ \
+           -lcrypto \
+           -L ../../out/lib/ \
+           -lssl \
 
 files =
 link =
@@ -38,4 +43,4 @@ libname	= testConfReader
 everything : $(libname)
 
 $(libname): $(link)
-	g++ *.cpp $(cflags) -o mytest $(external)
+	g++ *.cpp $(cflags) -o mytest $(external) $(sharelib)

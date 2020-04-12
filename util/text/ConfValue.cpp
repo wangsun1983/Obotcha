@@ -65,8 +65,7 @@ bool _ConfIterator::hasValue() {
 bool _ConfIterator::next() {
     ccl_t * pair = &(value->config);
     iterator = (ccl_pair_t *)ccl_iterate(pair);
-
-    return true;
+    return (iterator != nullptr);
 }
 
 }

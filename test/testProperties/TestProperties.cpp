@@ -32,7 +32,7 @@ int main() {
         printf("---[Properties Test {set(String key,String value)} case3] [FAILED]--- \n");
         break;
       }
-      printf("---[Properties Test {set(String key,String value)} case4] [Success]--- \n");
+      printf("---[Properties Test {set(String key,String value)} case4] [OK]--- \n");
       break;
     }
 
@@ -52,7 +52,7 @@ int main() {
         break;
       }
 
-      printf("---[Properties Test {get(String key)} case3] [Success]--- \n");
+      printf("---[Properties Test {get(String key)} case3] [OK]--- \n");
       break;
     }
 
@@ -71,7 +71,7 @@ int main() {
         break;
       }
 
-      printf("---[Properties Test {get(String key)} case3] [Success]--- \n");
+      printf("---[Properties Test {get(String key)} case3] [OK]--- \n");
       break;
     }
 
@@ -94,7 +94,7 @@ int main() {
           break;
       }
 
-      printf("---[Properties Test {load(File file)} case3] [Success]--- \n");
+      printf("---[Properties Test {load(File file)} case3] [OK]--- \n");
       break;
     }
 
@@ -103,7 +103,7 @@ int main() {
       Properties props3 = createProperties();
       props3->set("m1","m1value");
       props3->set("m2","m2value");
-      props3->save(createString("save.txt"));
+      props3->saveAs(createString("save.txt"));
 
       Properties props4 = createProperties();
       props4->load(createString("save.txt"));
@@ -112,12 +112,10 @@ int main() {
         printf("---[Properties Test {load(File file)} case1] [FAILED]--- \n");
         break;
       }
+
+      printf("---[Properties Test {load(File file)} case2] [OK]--- \n");
+      break;
     }
 
-    printf("---[Properties Test {load(File file)} case2] [Success]--- \n");
-
-    //String v2 = props->get(tag);
-    //printf("get v2 is %s \n",v2->toChars());
-
-    //props->save("/home/dji/mysource/Obotcha/test/testProperties/abc.txt");
+    printf("---[Properties Test {load(File file)} case2] [OK]--- \n");
 }

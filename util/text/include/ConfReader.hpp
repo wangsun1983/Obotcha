@@ -26,15 +26,11 @@ public:
 
     _ConfReader(File file);
 
-    void setFile(const char* path);
+    int setFile(const char* path);
     
-    void setFile(String path);
+    int setFile(String path);
     
-    void setFile(File file);
-
-    int parse();
-
-    //HashMap<String,String>getAll();
+    int setFile(File file);
 
     sp<_ConfValue> get();
 
@@ -45,12 +41,10 @@ public:
     ~_ConfReader();
 
 private:
-    File conf_file;
+    int parse();
+
+    File mConfFile;
     
-    void initConfig();
-
-    //HashMap<String,String> mHashMap;
-
     sp<_ConfValue> mConfValue;
 };
 

@@ -41,15 +41,15 @@ Step4:
 
 Step5:
     addr2line -e ../../out/lib/libobotcha.so 4081F8
-    /home/dji/mysource/Obotcha/lang/Exception.cpp:57 -> source file !!
+    /home/user/mysource/Obotcha/lang/Exception.cpp:57 -> source file !!
 
 Method 2:    
 -------------------------------------------------------------
 Step 1:
     find libobotcha.so's address:
-    7f04cdc7b000-7f04ce41d000 r-xp 00000000 103:02 4086477   /home/dji/mysource/Obotcha/out/lib/libobotcha.so
-    7f04ce41d000-7f04ce61d000 ---p 007a2000 103:02 4086477   /home/dji/mysource/Obotcha/out/lib/libobotcha.so
-    7f04ce61d000-7f04ce658000 r--p 007a2000 103:02 4086477   /home/dji/mysource/Obotcha/out/lib/libobotcha.so
+    7f04cdc7b000-7f04ce41d000 r-xp 00000000 103:02 4086477   /home/user/mysource/Obotcha/out/lib/libobotcha.so
+    7f04ce41d000-7f04ce61d000 ---p 007a2000 103:02 4086477   /home/user/mysource/Obotcha/out/lib/libobotcha.so
+    7f04ce61d000-7f04ce658000 r--p 007a2000 103:02 4086477   /home/user/mysource/Obotcha/out/lib/libobotcha.so
 
     so libobotacha.so's start address is 7f04cdc7b000
 
@@ -68,7 +68,7 @@ Step 2:
 
 Step2:
     addr2line -e ../../out/lib/libobotcha.so 4081F8
-    /home/dji/mysource/Obotcha/lang/Exception.cpp:57 -> source file !!     
+    /home/user/mysource/Obotcha/lang/Exception.cpp:57 -> source file !!     
 */
 
 void _StackTrace::dumpStack(String tag) {

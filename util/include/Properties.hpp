@@ -25,18 +25,25 @@ public:
 
     int load(File file);
 
-    int save(String path);
+    int save();
 
-    int save(File file);
+    int saveAs(File file);
+
+    int saveAs(String path);
 
     void clear();
 
 private:
+
+    int save(String path);
+
     HashMap<String,String> mProps;
 
     const static String gPropEqualString;
     
     const static String gPropEnterString;
+    
+    File mFile;
 
 };
 
