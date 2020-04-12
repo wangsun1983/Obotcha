@@ -9,11 +9,14 @@
 #include "StrongPointer.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 
-
 using namespace obotcha;
 
 extern int tostringtest();
+extern int parsetest();
+extern int wrongformat();
 
 int main() {
   tostringtest();
+  parsetest();
+  wrongformat();
 }

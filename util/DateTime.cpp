@@ -18,7 +18,9 @@ using namespace std;
 
 namespace obotcha {
 #define SKIP_JUNK() \
-	while (it != end && !std::isdigit(*it)) ++it
+	while (it != end && !std::isdigit(*it)) { \
+		++it;\
+	}\
 
 
 #define SKIP_DIGITS() \
@@ -30,8 +32,21 @@ namespace obotcha {
 
 
 #define PARSE_NUMBER_N(var, n) \
-	{ int i = 0; while (i++ < n && it != end && std::isdigit(*it)) var = var*10 + ((*it++) - '0'); }
+	{ \
+	int i = 0;\
+	while (i++ < n && it != end && std::isdigit(*it)) {\
+	    var = var*10 + ((*it++) - '0'); \
+	}\
+	}\
 
+#define PARSE_YEAR(var,n,len) \
+    { len = 0; \
+	  int i = 0; \
+	  while (i++ < n && it != end && !std::isspace(*it) && std::isdigit(*it)) {\
+	  len++;\
+	  var = var*10 + ((*it++) - '0');\
+	  }\ 
+	}
 
 #define PARSE_FRACTIONAL_N(var, n) \
 	{ int i = 0; while (i < n && it != end && std::isdigit(*it)) { var = var*10 + ((*it++) - '0'); i++; } while (i++ < n) var *= 10; }
@@ -162,7 +177,7 @@ const std::string _DateTime::REGEX_LIST[] =
 
 
 _DateTime::_DateTime() {
-    //TODO
+    init();
 }
 		
 _DateTime::_DateTime(int year, 
@@ -189,25 +204,34 @@ _DateTime::_DateTime(int year,
 	_dayOfWeek = dayOfWeek;
 	_dayOfYear = dayOfYear;
 	_time = time;
+	_tzd = 0; //TODO?
 }
 
 _DateTime::_DateTime(String content) {
-	_year = 0;
-	_month = 0;
-	_day = 0;
-	_hour = 0;
-	_minute = 0;
-	_second = 0;
-	_millisecond = 0;
-	_dayOfMonth = 0;
-	_dayOfWeek = 0;
-	_dayOfYear = 0;
+	init();
 
     int type = isValid(content);
 	if(type == -1) {
 		throw InitializeException("invalid date string");
 	}
     parse(type,content);
+}
+
+_DateTime::_DateTime(int type,String content) {
+    init();
+	std::string f = REGEX_LIST[type];
+	if(!std::regex_match(content->getStdString(),std::regex(f))) {
+	    throw InitializeException("illegal format");
+	}
+    parse(type,content);
+}
+
+_DateTime::_DateTime(String fmt,String content) {
+	if(fmt == nullptr || content == nullptr || fmt->size() < 1 || content->size() == 0) {
+		throw InitializeException("illegal format");
+	}
+	init();
+    parse(fmt->getStdString(),content->getStdString());
 }
 
 int _DateTime::year() const{
@@ -264,6 +288,14 @@ int _DateTime::millisecond() const {
     return _millisecond;
 }
 
+int _DateTime::microsecond() const {
+    return _microsecond;
+}
+
+int _DateTime::tzd() const {
+	return _tzd;
+}
+
 int _DateTime::isValid(String content) {
 	for(int i = 0; i < FormatMax;i++) {
 		std::string f = REGEX_LIST[i];
@@ -275,11 +307,8 @@ int _DateTime::isValid(String content) {
 }
 
 //date time string parse function
-int _DateTime::parse(int type,String content) {
-    std::string str = content->getStdString();
-    std::string fmt = st(DateTime)::FORMAT_LIST[type];
-
-	std::string::const_iterator it   = str.begin();
+int _DateTime::parse(std::string fmt,std::string str) {
+    std::string::const_iterator it   = str.begin();
 	std::string::const_iterator end  = str.end();
 	std::string::const_iterator itf  = fmt.begin();
 	std::string::const_iterator endf = fmt.end();
@@ -304,26 +333,31 @@ int _DateTime::parse(int type,String content) {
 				case 'd':
 				case 'e':
 				case 'f':
-					SKIP_JUNK();
+				    SKIP_JUNK();
 					PARSE_NUMBER_N(_day, 2);
+					_dayOfMonth = _day;
 					break;
 				case 'm':
 				case 'n':
 				case 'o':
 					SKIP_JUNK();
 					PARSE_NUMBER_N(_month, 2);
+					_month--;
 					break;					
 				case 'y':
+				case 'Y': 
+			    {
 					SKIP_JUNK();
-					PARSE_NUMBER_N(_year, 2);
-					if (_year >= 69)
-						_year += 1900;
-					else
-						_year += 2000;
-					break;
-				case 'Y':
-					SKIP_JUNK();
-					PARSE_NUMBER_N(_year, 4);
+					int len = 0;
+					PARSE_YEAR(_year,4,len);
+					if(len == 2) {
+					    if (_year >= 69) {
+							_year += 1900;
+						} else {
+						    _year += 2000;
+						}
+					}
+				}
 					break;
 				case 'r':
 					SKIP_JUNK();
@@ -350,10 +384,7 @@ int _DateTime::parse(int type,String content) {
 					PARSE_NUMBER_N(_minute, 2);
 					break;
 				case 'S':
-					SKIP_JUNK();
-					PARSE_NUMBER_N(_second, 2);
-					break;
-				case 's':
+				case 's': //ISO89601 Frac is same as ISO8601's analysis..TODO
 					SKIP_JUNK();
 					PARSE_NUMBER_N(_second, 2);
 					if (it != end && (*it == '.' || *it == ','))
@@ -381,7 +412,7 @@ int _DateTime::parse(int type,String content) {
 					break;
 				case 'z':
 				case 'Z':
-					//tzd = parseTZD(it, end);
+					_tzd = parseTZD(it, end);
 					break;
 				}
 				++itf;
@@ -389,8 +420,29 @@ int _DateTime::parse(int type,String content) {
 		}
 		else ++itf;
 	}
-	if (_month == 0) _month = 1;
-	if (_day == 0) _day = 1;
+
+	return 0;
+}
+
+void _DateTime::init() {
+	_year = 0;
+	_month = 0;
+	_day = 0;
+	_hour = 0;
+	_minute = 0;
+	_second = 0;
+	_millisecond = 0;
+	_microsecond = 0;
+	_dayOfMonth = 0;
+	_dayOfWeek = 0;
+	_dayOfYear = 0;
+	_tzd = 0;
+}
+
+int _DateTime::parse(int type,String content) {
+    std::string str = content->getStdString();
+    std::string fmt = st(DateTime)::FORMAT_LIST[type];
+    return parse(fmt,str);
 }
 
 int _DateTime::parseMonth(std::string::const_iterator& it, const std::string::const_iterator& end)

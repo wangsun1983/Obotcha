@@ -36,6 +36,10 @@ public:
 
 	_DateTime(String);
 
+    _DateTime(int,String);
+
+    _DateTime(String,String);
+
     int year() const;
     /// Returns the year.
         
@@ -75,6 +79,8 @@ public:
     /// Returns the millisecond (0 to 999)
 
     int microsecond() const;
+
+    int tzd() const;
 
 	String toString();
 
@@ -143,9 +149,13 @@ private:
     int _dayOfMonth; //[1,31]
     int _dayOfYear; //[0,365]
     long _time;
-
+    int _tzd;
+    //
+    void init();
     // local parse function
     int parse(int type,String content);
+    int parse(std::string format,std::string content);
+
 	int parseMonth(std::string::const_iterator& it, const std::string::const_iterator& end);
     int parseAMPM(std::string::const_iterator& it, const std::string::const_iterator& end, int hour);
     int parseTZD(std::string::const_iterator& it, const std::string::const_iterator& end);
