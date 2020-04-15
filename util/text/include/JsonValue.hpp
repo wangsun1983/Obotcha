@@ -42,7 +42,7 @@ public:
     bool isArray();
 
     bool isObject();
-
+    //for value
     void put(String tag,String value);
 
     void put(String tag,const char *value);
@@ -63,10 +63,8 @@ public:
 
     void put(String tag,sp<_JsonValue> value);
 
-    void put(sp<_JsonArray> value);
-
     void remove(String tag);
-
+    
     String getString(String tag);
 
     String getString();
@@ -83,15 +81,44 @@ public:
 
     Double getDouble();
 
-    sp<_JsonValue> getObject(String tag);
-
-    sp<_JsonArray> getArray(String tag);
+    sp<_JsonValue> getValue(String tag);
 
     sp<_JsonValueIterator> getIterator();
 
     bool contains(String tag);
 
     int size();
+
+    //for array
+    void append(String value);
+
+    void append(const char *value);
+
+    void append(std::string value);
+
+    void append(Integer value);
+
+    void append(int value);
+
+    void append(Boolean value);
+
+    void append(bool value);
+
+    void append(Double value);
+
+    void append(double value);
+
+    void append(sp<_JsonValue> value);
+
+    sp<_JsonValue> getValueAt(int index);
+
+    String getStringAt(int index);
+    
+    Integer getIntegerAt(int index);
+
+    Boolean getBooleanAt(int index);
+
+    Double getDoubleAt(int index);
 
     ~_JsonValue();
 
@@ -135,8 +162,6 @@ public:
     Double getDouble();
 
     sp<_JsonValue> getObject();
-
-    sp<_JsonArray> getArray();
 
 private:
     JsonValue value;

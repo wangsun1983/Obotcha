@@ -7,10 +7,10 @@
 
 using namespace obotcha;
 
-int main() {
+int basetest() {
     printf("---[IniValue Test Start]--- \n");
     IniReader reader = createIniReader("testData.ini");
-    IniValue value = reader->parse();
+    IniValue value = reader->get();
 
     //int getSectionNum();
     while(1) {
@@ -20,7 +20,7 @@ int main() {
           break;
         }
 
-        printf("---[IniValue Test {getSectionNum()} case2] [Success]--- \n");
+        printf("---[IniValue Test {getSectionNum()} case2] [OK]--- \n");
         break;
     }
 
@@ -38,7 +38,7 @@ int main() {
         break;
       }
 
-      printf("---[IniValue Test {getSectionName()} case3] [Success]--- \n");
+      printf("---[IniValue Test {getSectionName()} case3] [OK]--- \n");
       break;
     }
 
@@ -93,12 +93,12 @@ int main() {
       }
 
       v1 = value->getString(nullptr,"abc1","0");
-      if(!v1->equals("1")) {
+      if(!v1->equals("0")) {
         printf("---[IniValue Test {getString()} case8] [FAILED]--- \n");
         break;
       }
 
-      printf("---[IniValue Test {getString()} case9] [Success]--- \n");
+      printf("---[IniValue Test {getString()} case9] [OK]--- \n");
       break;
     }
 
@@ -147,12 +147,12 @@ int main() {
       }
 
       v1 = value->getInteger(nullptr,"abc1",0);
-      if(v1 != 1) {
+      if(v1 != 0) {
         printf("---[IniValue Test {getInteger()} case8] [FAILED]--- \n");
         break;
       }
 
-      printf("---[IniValue Test {getInteger()} case9] [Success]--- \n");
+      printf("---[IniValue Test {getInteger()} case9] [OK]--- \n");
       break;
     }
 
@@ -176,7 +176,7 @@ int main() {
         break;
       }
 
-      printf("---[IniValue Test {getDouble()} case4] [Success]--- \n");
+      printf("---[IniValue Test {getDouble()} case4] [OK]--- \n");
       break;
     }
 
@@ -200,7 +200,7 @@ int main() {
         break;
       }
 
-      printf("---[IniValue Test {getBoolean()} case4] [Success]--- \n");
+      printf("---[IniValue Test {getBoolean()} case4] [OK]--- \n");
       break;
     }
 
@@ -216,7 +216,7 @@ int main() {
         break;
       }
 
-      printf("---[IniValue Test {contains()} case3] [Success]--- \n");
+      printf("---[IniValue Test {contains()} case3] [OK]--- \n");
       break;
     }
 }

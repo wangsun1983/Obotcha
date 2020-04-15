@@ -353,6 +353,10 @@ bool _File::setExecutable() {
     return false;
 }
 
+bool _File::exists(String path) {
+    return (access(path->toChars(),F_OK) == 0);
+}
+
 void _File::updateFileInfo() {
     if(mFileInfo == nullptr) {
         mFileInfo = (struct stat *)malloc(sizeof(struct stat));

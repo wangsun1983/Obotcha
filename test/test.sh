@@ -8,7 +8,8 @@ testUint16 testUint32 testUint64 testUint8
 testList testByteRingArray
 #util
 testArrayList testCalendar testHashMap testDateTime
-testProperties testConfReader testConfValue)
+testProperties testConfReader testConfValue testIniReader
+testIniValue)
 
 function start(){
     echo -----------------------

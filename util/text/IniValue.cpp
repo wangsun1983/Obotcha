@@ -17,11 +17,6 @@ namespace obotcha {
     ini = dict;
  }
 
-//no use
-//_IniValue::_IniValue(IniValue v) {
-    //TODO
-//}
-
 int _IniValue::getSectionNum() {
     if(ini != nullptr) {
         return iniparser_getnsec(ini);
@@ -40,70 +35,126 @@ int _IniValue::getSectionKeyNum(String sectionName) {
 }
 
 String _IniValue::getString(String section,String tag,String defaultValue) {
-    String key = genKey(section,tag);
-    char *p = (char *)iniparser_getstring(ini,key->toChars(),defaultValue->toChars());
+    //String key = genKey(section,tag);
+    char buff[ConvertBuffSize] = {0};
+    getKey(section->toChars(),tag->toChars(),buff,ConvertBuffSize);
+    char *p = (char *)iniparser_getstring(ini,buff,defaultValue->toChars());
     return createString(p);
+}
+
+String _IniValue::getString(String tag,String defaultValue) {
+    return getString(tag->toChars(),defaultValue->toChars());
 }
 
 int _IniValue::getInteger(String section,String tag,int defaultValue) {
-    String key = genKey(section,tag);
+    //String key = genKey(section,tag);
+    char buff[ConvertBuffSize] = {0};
+    getKey(section->toChars(),tag->toChars(),buff,ConvertBuffSize);
+    return iniparser_getint(ini,buff,defaultValue);
+}
 
-    return iniparser_getint(ini,key->toChars(),defaultValue);
+int _IniValue::getInteger(String tag,int defaultValue) {
+    return getInteger(tag->toChars(),defaultValue);
 }
 
 double _IniValue::getDouble(String section,String tag,double defaultValue) {
-    String key = genKey(section,tag);
+    //String key = genKey(section,tag);
+    char buff[ConvertBuffSize] = {0};
+    getKey(section->toChars(),tag->toChars(),buff,ConvertBuffSize);
 
-    return iniparser_getdouble(ini,key->toChars(),defaultValue);
+    return iniparser_getdouble(ini,buff,defaultValue);
+}
+
+double _IniValue::getDouble(String tag,double defaultValue) {
+    return getDouble(tag->toChars(),defaultValue);
 }
 
 bool _IniValue::getBoolean(String section,String tag,bool defaultValue) {
-    String key = genKey(section,tag);
+    //String key = genKey(section,tag);
+    char buff[ConvertBuffSize] = {0};
+    getKey(section->toChars(),tag->toChars(),buff,ConvertBuffSize);
 
-    return iniparser_getboolean(ini,key->toChars(),defaultValue);
+    return iniparser_getboolean(ini,buff,defaultValue);
 }
 
-String _IniValue::getString(const char* section,const char* tag,String defaultValue) {
-    String key = genKey(section,tag);
-    char *p = (char *)iniparser_getstring(ini,key->toChars(),defaultValue->toChars());
+bool _IniValue::getBoolean(String tag,bool defaultValue) {
+    return getBoolean(tag->toChars(),defaultValue);
+}
+
+String _IniValue::getString(const char* section,const char* tag,const char * defaultValue) {
+    //String key = genKey(section,tag);
+    char buff[ConvertBuffSize] = {0};
+    getKey(section,tag,buff,ConvertBuffSize);
+    char *p = (char *)iniparser_getstring(ini,buff,defaultValue);
     return createString(p);
 }
 
-int _IniValue::getInteger(const char* section,const char* tag,int defaultValue) {
-    String key = genKey(section,tag);
+String _IniValue::getString(const char* tag,const char* defaultValue) {
+    String v = searchStringValue(tag);
+    if(v == nullptr) {
+        return defaultValue;
+    }
 
-    return iniparser_getint(ini,key->toChars(),defaultValue);
+    return v;
+}
+
+int _IniValue::getInteger(const char* section,const char* tag,int defaultValue) {
+    //String key = genKey(section,tag);
+    char buff[ConvertBuffSize] = {0};
+    getKey(section,tag,buff,ConvertBuffSize);
+    return iniparser_getint(ini,buff,defaultValue);
+}
+
+int _IniValue::getInteger(const char* tag,int defaultValue) {
+    Integer v = searchIntValue(tag);
+    if(v == nullptr) {
+        return defaultValue;
+    }
+
+    return v->toValue();
 }
 
 double _IniValue::getDouble(const char* section,const char* tag,double defaultValue) {
-    String key = genKey(section,tag);
+    //String key = genKey(section,tag);
+    char buff[ConvertBuffSize] = {0};
+    getKey(section,tag,buff,ConvertBuffSize);
+    return iniparser_getdouble(ini,buff,defaultValue);
+}
 
-    return iniparser_getdouble(ini,key->toChars(),defaultValue);
+double _IniValue::getDouble(const char* tag,double defaultValue) {
+    Double v = searchDoubleValue(tag);
+    if(v == nullptr) {
+        return defaultValue;
+    }
+
+    return v->toValue();
 }
 
 bool _IniValue::getBoolean(const char* section,const char* tag,bool defaultValue) {
-    String key = genKey(section,tag);
-
-    return iniparser_getboolean(ini,key->toChars(),defaultValue);
+    //String key = genKey(section,tag);
+    char buff[ConvertBuffSize] = {0};
+    getKey(section,tag,buff,ConvertBuffSize);
+    return iniparser_getboolean(ini,buff,defaultValue);
 }
 
-/*
-int _IniValue::set(String section,String tag,String value) {
-    String key = genKey(section,tag);
+bool _IniValue::getBoolean(const char* tag,bool defaultValue) {
+    Boolean v = searchBooleanValue(tag);
+    if(v == nullptr) {
+        return defaultValue;
+    }
 
-    return iniparser_set(ini,key->toChars(),value->toChars());
+    return v->toValue();
 }
-
-void _IniValue::remove(String section,String tag) {
-    String key = genKey(section,tag);
-
-    iniparser_unset(ini,key->toChars());
-}
-*/
 
 bool _IniValue::contains(String section,String tag) {
-    String key = genKey(section,tag);
-    int ret = iniparser_find_entry(ini,key->toChars());
+    //String key = genKey(section,tag);
+    return contains(section->toChars(),tag->toChars());
+}
+
+bool _IniValue::contains(const char *section,const char *tag) {
+    char buff[ConvertBuffSize] = {0};
+    getKey(section,tag,buff,ConvertBuffSize);
+    int ret = iniparser_find_entry(ini,buff);
     return (1 == ret);
 }
 
@@ -111,43 +162,82 @@ _IniValue::~_IniValue() {
     iniparser_freedict(ini);
 }
 
-String _IniValue::genKey(String section,String tag) {
-    String content = createString("");
+void _IniValue::getKey(const char *section,const char *tag,char *buff,int length) {
+    snprintf(buff,length,"%s:%s",section,tag);
+}
 
-    if(section != nullptr) {
-        content = section;
+Integer _IniValue::searchIntValue(const char *tag) {
+    //check whether exist values with no section
+    if(contains("",tag)) {
+        return createInteger(getInteger("",tag,1));
     }
 
-    String v = content->append(":");
-    v = v->append(tag);
-
-    return v;
-}
+    int sections = iniparser_getnsec(ini);
     
-String _IniValue::genKey(const char *section,const char *tag) {
-    String content = nullptr;
+    for(int i = 0;i<sections;i++) {
+        char *sectionName = (char *)iniparser_getsecname(ini,i);
 
-    if(section != nullptr) {
-        content = createString(section);
-    } else {
-        content = createString("");
+        if(contains(sectionName,tag)){
+            return createInteger(getInteger(sectionName,tag,1));
+        }
     }
 
-    String v = content->append(":");
-    v = v->append(tag);
-
-    return v;
+    return nullptr;
 }
 
-/*
-void _IniValue::save(String file) {
+Boolean _IniValue::searchBooleanValue(const char *tag) {
+    //check whether exist values with no section
+    if(contains("",tag)) {
+        return createBoolean(getBoolean("",tag,false));
+    }
     
-    FILE *iniFile = fopen(file->toChars(), "wb");
+    int sections = iniparser_getnsec(ini);
+    
+    for(int i = 0;i<sections;i++) {
+        char *sectionName = (char *)iniparser_getsecname(ini,i);
+        if(contains(sectionName,tag)){
+            return createBoolean(getBoolean(sectionName,tag,false));
+        }
+    }
 
-    iniparser_dump_ini(ini,iniFile);
-
-    fclose(iniFile);
+    return nullptr;
 }
-*/
+
+Double _IniValue::searchDoubleValue(const char *tag) {
+    //check whether exist values with no section
+    if(contains("",tag)) {
+        return createDouble(getDouble("",tag,1.0));
+    }
+    
+    int sections = iniparser_getnsec(ini);
+    
+    for(int i = 0;i<sections;i++) {
+        char *sectionName = (char *)iniparser_getsecname(ini,i);
+        if(contains(sectionName,tag)){
+            return createDouble(getDouble(sectionName,tag,1.0));
+        }
+    }
+
+    return nullptr;
+}
+
+String _IniValue::searchStringValue(const char *tag) {
+    //check whether exist values with no section
+    if(contains("",tag)) {
+        return getString("",tag,"");
+    }
+    
+    int sections = iniparser_getnsec(ini);
+    
+    for(int i = 0;i<sections;i++) {
+        char *sectionName = (char *)iniparser_getsecname(ini,i);
+        if(contains(sectionName,tag)){
+            return getString(sectionName,tag,"");
+        }
+    }
+
+    return nullptr;
+}
+
 
 }

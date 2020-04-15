@@ -3,17 +3,16 @@
 
 #include "JsonWriter.hpp"
 #include "JsonReader.hpp"
-#include "JsonArray.hpp"
 #include "JsonValue.hpp"
 
 #include "Log.hpp"
 
 using namespace obotcha;
 
-int main() {
+int basetest() {
     printf("---[JsonReader Test Start]--- \n");
     JsonReader reader = createJsonReader(createString("abc.json"));
-    JsonValue value = reader->parse();
+    JsonValue value = reader->get();
 
     //String getString(String tag);
     while(1) {
@@ -35,22 +34,22 @@ int main() {
           break;
         }
 
-        JsonArray arr3 = value->getArray("arr2");
-        JsonValue vv1 = arr3->getValue(0);
+        JsonValue arr3 = value->getValue("arr2");
+        JsonValue vv1 = arr3->getValueAt(0);
         String strvv1 = vv1->getString("vv");
         Integer intvv1 = vv1->getInteger("v1");
         if(strvv1 == nullptr || !strvv1->equals("v1")
            ||intvv1 == nullptr || intvv1->toValue() != 1) {
-             printf("---[JsonReader SimpleRead {getArray()} case9] [FAILED]--- \n");
+             printf("---[JsonReader SimpleRead {getValue()} case9] [FAILED]--- \n");
              break;
         }
 
-        JsonValue vv2 = arr3->getValue(1);
+        JsonValue vv2 = arr3->getValueAt(1);
         String strvv2 = vv2->getString("vv");
         Integer intvv2 = vv2->getInteger("v1");
         if(strvv2 == nullptr || !strvv2->equals("v2")
            ||intvv2 == nullptr || intvv2->toValue() != 2) {
-             printf("---[JsonReader SimpleRead {getArray()} case10] [FAILED]--- \n");
+             printf("---[JsonReader SimpleRead {getValue()} case10] [FAILED]--- \n");
              break;
         }
 
@@ -58,7 +57,7 @@ int main() {
         Boolean b2 = value->getBoolean("ret2");
         if(b1 == nullptr || b2 == nullptr
           || b1->toValue() != true || b2->toValue() != false) {
-            printf("---[JsonReader SimpleRead {getArray()} case10] [FAILED]--- \n");
+            printf("---[JsonReader SimpleRead {getValue()} case10] [FAILED]--- \n");
             break;
         }
 
@@ -68,13 +67,13 @@ int main() {
 
     //bool isInt();
     while(1) {
-      JsonValue v1 = value->getObject("a");
+      JsonValue v1 = value->getValue("a");
       if(!v1->isInt()) {
         printf("---[JsonReader SimpleRead {isInt()} case1] [FAILED]--- \n");
         break;
       }
 
-      JsonValue v2 = value->getObject("arr");
+      JsonValue v2 = value->getValue("arr");
       if(v2->isInt()) {
         printf("---[JsonReader SimpleRead {isInt()} case2] [FAILED]--- \n");
         break;
@@ -85,13 +84,13 @@ int main() {
 
     //bool isBool();
     while(1) {
-      JsonValue v1 = value->getObject("ret");
+      JsonValue v1 = value->getValue("ret");
       if(!v1->isBool()) {
         printf("---[JsonReader SimpleRead {isBool()} case1] [FAILED]--- \n");
         break;
       }
 
-      JsonValue v2 = value->getObject("arr");
+      JsonValue v2 = value->getValue("arr");
       if(v2->isBool()) {
         printf("---[JsonReader SimpleRead {isBool()} case2] [FAILED]--- \n");
         break;
@@ -102,13 +101,13 @@ int main() {
 
     //bool isString();
     while(1) {
-      JsonValue v1 = value->getObject("c");
+      JsonValue v1 = value->getValue("c");
       if(!v1->isString()) {
         printf("---[JsonReader SimpleRead {isString()} case1] [FAILED]--- \n");
         break;
       }
 
-      JsonValue v2 = value->getObject("arr");
+      JsonValue v2 = value->getValue("arr");
       if(v2->isString()) {
         printf("---[JsonReader SimpleRead {isString()} case2] [FAILED]--- \n");
         break;
@@ -119,13 +118,13 @@ int main() {
 
     //bool isDouble();
     while(1) {
-      JsonValue v1 = value->getObject("b");
+      JsonValue v1 = value->getValue("b");
       if(!v1->isDouble()) {
         printf("---[JsonReader SimpleRead {isDouble()} case1] [FAILED]--- \n");
         break;
       }
 
-      JsonValue v2 = value->getObject("arr");
+      JsonValue v2 = value->getValue("arr");
       if(v2->isDouble()) {
         printf("---[JsonReader SimpleRead {isDouble()} case2] [FAILED]--- \n");
         break;
@@ -136,13 +135,13 @@ int main() {
 
     //bool isArray();
     while(1) {
-      JsonValue v1 = value->getObject("arr2");
+      JsonValue v1 = value->getValue("arr2");
       if(!v1->isArray()) {
         printf("---[JsonReader SimpleRead {isArray()} case1] [FAILED]--- \n");
         break;
       }
 
-      JsonValue v2 = value->getObject("a");
+      JsonValue v2 = value->getValue("a");
       if(v2->isArray()) {
         printf("---[JsonReader SimpleRead {isArray()} case2] [FAILED]--- \n");
         break;
@@ -315,10 +314,10 @@ int main() {
       break;
     }
 
-    //put(sp<_JsonArray> value);
+    //put(sp<_JsonValue> value);
     while(1) {
       //create a array attr
-      JsonArray array = createJsonArray("testarr1");
+      JsonValue array = createJsonValue();
       array->append((char *)"abc1");
       array->append(100);
       JsonValue jvalue = createJsonValue();
@@ -326,24 +325,24 @@ int main() {
       jvalue->put("jv2",2);
       //printf("jvalue size is %d \n",jvalue->size());
       array->append(jvalue);
-      value->put(array);
+      value->put("testarr1",array);
 
       //start check
-      JsonArray testArray = value->getArray("testarr1");
-      String t1 = testArray->getValue(0)->getString();
+      JsonValue testArray = value->getValue("testarr1");
+      String t1 = testArray->getStringAt(0);
       if(!t1->equals("abc1")) {
         printf("---[JsonReader SimpleRead {put()} case24] [FAILED]--- \n");
         break;
       }
 
-      Integer t2 = testArray->getValue(1)->getInteger();
+      Integer t2 = testArray->getIntegerAt(1);
       //printf("t2 is %d \n",t2->toValue());
       if(t2->toValue() != 100) {
         printf("---[JsonReader SimpleRead {put()} case25] [FAILED]--- \n");
         break;
       }
 
-      JsonValue v3 = testArray->getValue(2);
+      JsonValue v3 = testArray->getValueAt(2);
       //printf("v3 is %d \n",v3->size());
       if(!v3->getString("jv1")->equals("jv1")) {
         printf("---[JsonReader SimpleRead {put()} case26] [FAILED]--- \n");
@@ -362,10 +361,10 @@ int main() {
 
     //void remove(String tag);
     while(1) {
-      JsonArray array = createJsonArray("testarr2");
+      JsonValue array = createJsonValue();
       array->append((char *)"abc1");
       array->append(100);
-      value->put(array);
+      value->put("testarr2",array);
 
       bool formexist = false;
       if(value->contains("testarr2")) {
@@ -405,7 +404,7 @@ int main() {
 
     //String getString();
     while(1) {
-      JsonValue v1 = value->getObject("c");
+      JsonValue v1 = value->getValue(createString("c"));
       String str1 = v1->getString();
       if(str1 == nullptr || !str1->equals("nihao")) {
         printf("---[JsonReader SimpleRead {getString()} case4] [FAILED]--- \n");
@@ -436,7 +435,7 @@ int main() {
 
     //Integer getInteger();
     while(1) {
-      JsonValue v1 = value->getObject("a");
+      JsonValue v1 = value->getValue("a");
       Integer str1 = v1->getInteger();
       if(str1 == nullptr || str1->toValue() != 1) {
         printf("---[JsonReader SimpleRead {getInteger()} case4] [FAILED]--- \n");
@@ -467,7 +466,7 @@ int main() {
 
     //Boolean getBoolean();
     while(1) {
-      JsonValue v1 = value->getObject("ret");
+      JsonValue v1 = value->getValue("ret");
       Boolean str1 = v1->getBoolean();
       if(str1 == nullptr || str1->toValue() != true) {
         printf("---[JsonReader SimpleRead {getBoolean()} case4] [FAILED]--- \n");
@@ -498,7 +497,7 @@ int main() {
 
     //getDouble();
     while(1) {
-      JsonValue v1 = value->getObject("b");
+      JsonValue v1 = value->getValue("b");
       Double str1 = v1->getDouble();
       if(str1 == nullptr || str1->toValue() != 2) {
         printf("---[JsonReader SimpleRead {getDouble()} case4] [FAILED]--- \n");
@@ -509,44 +508,44 @@ int main() {
       break;
     }
 
-    //sp<_JsonArray> getArray(String tag);
+    //sp<_JsonValue> getValue(String tag);
     while(1) {
-      JsonArray arr1 = value->getArray("arr");
+      JsonValue arr1 = value->getValue(createString("arr"));
       if(arr1 == nullptr) {
-        printf("---[JsonReader SimpleRead {getArray()} case１] [FAILED]--- \n");
+        printf("---[JsonReader SimpleRead {getValue()} case１] [FAILED]--- \n");
         break;
       }
 
       //printf("arr1->size is %d \n",arr1->size());
       if(arr1->size() != 3) {
-        printf("---[JsonReader SimpleRead {getArray()} case2] [FAILED]--- \n");
+        printf("---[JsonReader SimpleRead {getValue()} case2] [FAILED]--- \n");
         break;
       }
 
-      String str1 = arr1->getValue(0)->getString();
+      String str1 = arr1->getStringAt(0);
       //printf("str1 is %s \n",str1->toChars());
       if(!str1->equals("abc1")) {
-        printf("---[JsonReader SimpleRead {getArray()} case3] [FAILED]--- \n");
+        printf("---[JsonReader SimpleRead {getValue()} case3] [FAILED]--- \n");
         break;
       }
 
-      str1 = arr1->getValue(1)->getString();
+      str1 = arr1->getStringAt(1);
       //printf("str1 is %s \n",str1->toChars());
       if(!str1->equals("abc2")) {
-        printf("---[JsonReader SimpleRead {getArray()} case4] [FAILED]--- \n");
+        printf("---[JsonReader SimpleRead {getValue()} case4] [FAILED]--- \n");
         break;
       }
 
-      str1 = arr1->getValue(2)->getString();
+      str1 = arr1->getStringAt(2);
       //printf("str1 is %s \n",str1->toChars());
       if(!str1->equals("abc3")) {
-        printf("---[JsonReader SimpleRead {getArray()} case5] [FAILED]--- \n");
+        printf("---[JsonReader SimpleRead {getValue()} case5] [FAILED]--- \n");
         break;
       }
 
-      printf("---[JsonReader SimpleRead {getArray()} case6] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {getValue()} case6] [Success]--- \n");
       break;
     }
 
-                                                                     
+
 }

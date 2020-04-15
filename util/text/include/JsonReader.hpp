@@ -10,7 +10,6 @@
 #include "Long.hpp"
 
 #include "JsonValue.hpp"
-#include "JsonArray.hpp"
 
 #include "File.hpp"
 #include "FileInputStream.hpp"
@@ -20,13 +19,21 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(JsonReader) {
 public:
     _JsonReader(File f);
+
     _JsonReader(String path);
 
-    JsonValue parse();
+    _JsonReader(const char *);
+
+    JsonValue get();
     
 private:
     FileInputStream stream;
-    int size; 
+
+    int size;
+
+    JsonValue mValue;
+
+    JsonValue parse();
 };
 
 }

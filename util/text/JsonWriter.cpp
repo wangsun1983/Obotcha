@@ -18,12 +18,6 @@ void _JsonWriter::write(JsonValue value) {
     stream->flush();
 }
 
-void _JsonWriter::write(JsonArray value) {
-    String str = createString(value->jvalue.toStyledString());
-    stream->writeString(str);
-    stream->flush();
-}
-
 void _JsonWriter::close() {
     stream->close();
 }

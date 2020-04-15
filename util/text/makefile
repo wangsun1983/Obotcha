@@ -1,7 +1,6 @@
 textDir = ./util/text
 
 link += jsonvalue \
-		jsonarray \
 		jsonwriter \
 		jsonreader \
 		inireader \
@@ -17,7 +16,6 @@ link += jsonvalue \
 		yamlarray \
 
 objs += $(outtmp)/jsonvalue.o \
-		$(outtmp)/jsonarray.o \
 		$(outtmp)/jsonwriter.o \
 		$(outtmp)/jsonreader.o \
 		$(outtmp)/inireader.o \
@@ -34,9 +32,6 @@ objs += $(outtmp)/jsonvalue.o \
 
 jsonvalue :$(textDir)/JsonValue.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/JsonValue.cpp -o $(outtmp)/jsonvalue.o
-
-jsonarray :$(textDir)/JsonArray.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(textDir)/JsonArray.cpp -o $(outtmp)/jsonarray.o
 
 jsonwriter :$(textDir)/JsonWriter.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/JsonWriter.cpp -o $(outtmp)/jsonwriter.o

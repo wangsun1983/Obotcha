@@ -38,7 +38,7 @@ sharelib = -Wl,-rpath=../../out/lib/ \
 
 files =
 link =
-libname	= testIniValue
+libname	= testIniReader
 
 everything : $(libname)
 

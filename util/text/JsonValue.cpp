@@ -1,7 +1,6 @@
 #include <iostream>
 #include "json/value.h"
 #include "JsonValue.hpp"
-#include "JsonArray.hpp"
 
 #include "Log.hpp"
 
@@ -96,14 +95,6 @@ void _JsonValue::put(String tag,double value) {
     jvalue[tag->toChars()] = value;
 }
 
-void _JsonValue::put(sp<_JsonArray> v) {
-    
-    const char *name = v->getName()->toChars();
-
-    //Json::Value *value = new Json::Value(*v->jvalue);
-    jvalue[name]= v->jvalue;
-}
-
 void _JsonValue::put(String tag,sp<_JsonValue> v) {
     if(tag == nullptr) {
         return;
@@ -117,13 +108,6 @@ void _JsonValue::remove(String tag) {
     if(tag == nullptr) {
         return;
     }
-
-    //Json::Value *v = &jvalue[tag->toChars()];
-    //if(v->isArray()) {
-    //    delete v;
-    //} else if(v->isObject()) {
-    //    delete v;
-    //}
 
     jvalue.removeMember(tag->toChars());
 }
@@ -155,13 +139,13 @@ Integer _JsonValue::getInteger(String tag) {
     return nullptr;
 }
 
-int _JsonValue::size() { 
-    return jvalue.size();
-}
-
 Integer _JsonValue::getInteger() {
     int v = jvalue.asInt();
     return createInteger(v);
+}
+
+int _JsonValue::size() { 
+    return jvalue.size();
 }
 
 Boolean _JsonValue::getBoolean(String tag) {
@@ -201,7 +185,7 @@ Double _JsonValue::getDouble() {
     return createDouble(v);
 }
 
-sp<_JsonValue> _JsonValue::getObject(String tag) {
+sp<_JsonValue> _JsonValue::getValue(String tag) {
     if(tag == nullptr) {
         return nullptr;
     }
@@ -211,18 +195,6 @@ sp<_JsonValue> _JsonValue::getObject(String tag) {
         return createJsonValue(value);
     }
     
-    return nullptr;
-}
-
-sp<_JsonArray> _JsonValue::getArray(String tag) {
-    if(tag == nullptr) {
-        return nullptr;
-    }
-    if(contains(tag)) {
-        Json::Value value = jvalue[tag->toChars()];
-        return createJsonArray(tag,value);
-    }
-
     return nullptr;
 }
 
@@ -259,6 +231,68 @@ bool _JsonValue::isObject() {
     return jvalue.isObject();
 }
 
+void _JsonValue::append(String value) {
+    jvalue.append(value->toChars());
+}
+
+void _JsonValue::append(const char *value) {
+    jvalue.append(value);
+}
+
+void _JsonValue::append(std::string value) {
+    jvalue.append(value);
+}
+
+void _JsonValue::append(Integer value) {
+    jvalue.append(value->toValue());
+}
+
+void _JsonValue::append(int value) {
+    jvalue.append(value);
+}
+
+void _JsonValue::append(Boolean value) {
+    jvalue.append(value->toValue());
+}
+
+void _JsonValue::append(bool value) {
+    jvalue.append(value);
+}
+
+void _JsonValue::append(Double value) {
+    jvalue.append(value->toValue());
+}
+
+void _JsonValue::append(double value) {
+    jvalue.append(value);
+}
+
+void _JsonValue::append(sp<_JsonValue> value) {
+    jvalue.append(value->jvalue);
+}
+
+sp<_JsonValue> _JsonValue::getValueAt(int index) {
+    return createJsonValue(jvalue[index]);
+}
+
+
+String _JsonValue::getStringAt(int index) {
+    return createString(jvalue[index].asString());
+}
+
+Integer _JsonValue::getIntegerAt(int index) {
+    return createInteger(jvalue[index].asInt());
+}
+    
+Boolean _JsonValue::getBooleanAt(int index) {
+    return createBoolean(jvalue[index].asBool());
+}
+
+Double _JsonValue::getDoubleAt(int index) {
+    return createDouble(jvalue[index].asDouble());
+}
+
+//iterator----------------------------
 sp<_JsonValueIterator> _JsonValue::getIterator() {
     return new _JsonValueIterator(this);
 }
@@ -368,10 +402,4 @@ sp<_JsonValue> _JsonValueIterator::getObject() {
     std::string ss = mMembers[count];
     return createJsonValue((value->jvalue)[ss]);   
 }
-
-sp<_JsonArray> _JsonValueIterator::getArray() {
-    std::string ss = mMembers[count];
-    return createJsonArray(ss.data(),(value->jvalue)[ss]); 
-}
-
 }

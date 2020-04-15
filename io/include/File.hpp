@@ -82,10 +82,13 @@ public:
     ~_File();
     
     static const String gPathSeparator;
+    
+    static bool exists(String);
 
 private:
 
     static int sFileStatusExit;
+
 
     String mPath;
 

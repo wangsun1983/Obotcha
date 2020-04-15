@@ -10,7 +10,6 @@
 #include "Long.hpp"
 
 #include "JsonValue.hpp"
-#include "JsonArray.hpp"
 
 #include "File.hpp"
 #include "FileOutputStream.hpp"
@@ -23,7 +22,6 @@ public:
     _JsonWriter(String path);
 
     void write(JsonValue value);
-    void write(JsonArray value);
 
     void close();
     

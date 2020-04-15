@@ -37,8 +37,8 @@
 - [ ] UUID
 - [x] ConfReader
 - [x] ConfValue
-- [ ] IniReader
-- [ ] IniValue
+- [x] IniReader
+- [x] IniValue
 - [ ] JsonArray
 - [ ] JsonReader
 - [ ] JsonValue

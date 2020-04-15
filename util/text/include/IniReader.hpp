@@ -5,10 +5,12 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "IniValue.hpp"
 #include "File.hpp"
+#include "IniValue.hpp"
 
 namespace obotcha {
+
+class _IniValue;
 
 DECLARE_SIMPLE_CLASS(IniReader) {
 
@@ -19,11 +21,15 @@ public:
 
     _IniReader(File file);
 
-    IniValue parse();
+    sp<_IniValue> get();
 
 private:
-    String filepath;    
+    String filepath;
 
+    sp<_IniValue> mIniValue; 
+
+    sp<_IniValue> parse();
+    
 };
 
 }
