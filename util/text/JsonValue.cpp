@@ -95,6 +95,18 @@ void _JsonValue::put(String tag,double value) {
     jvalue[tag->toChars()] = value;
 }
 
+void _JsonValue::put(String tag,Uint64 value) {
+    put(tag,value->toValue());
+}
+
+void _JsonValue::put(String tag,uint64_t value) {
+    if(tag == nullptr) {
+        return;
+    }
+
+    jvalue[tag->toChars()] = (Json::UInt)value;
+}
+
 void _JsonValue::put(String tag,sp<_JsonValue> v) {
     if(tag == nullptr) {
         return;
@@ -142,6 +154,16 @@ Integer _JsonValue::getInteger(String tag) {
 Integer _JsonValue::getInteger() {
     int v = jvalue.asInt();
     return createInteger(v);
+}
+
+Uint64  _JsonValue::getUint64(String tag) {
+    uint64_t v = (uint64_t)jvalue[tag->toChars()].asUInt64();
+    return createUint64(v);
+}
+
+Uint64 _JsonValue::getUint64() {
+    uint64_t v = (uint64_t)jvalue.asUInt64();
+    return createUint64(v);
 }
 
 int _JsonValue::size() { 
@@ -215,6 +237,11 @@ bool _JsonValue::isInt() {
     return jvalue.isInt();
 }
 
+bool _JsonValue::isUint64() {
+    return jvalue.isUInt64();
+}
+
+
 bool _JsonValue::isString() {
     return jvalue.isString();
 }
@@ -245,6 +272,10 @@ void _JsonValue::append(std::string value) {
 
 void _JsonValue::append(Integer value) {
     jvalue.append(value->toValue());
+}
+
+void _JsonValue::append(Uint64 value) {
+    jvalue.append((Json::UInt64)value->toValue());
 }
 
 void _JsonValue::append(int value) {

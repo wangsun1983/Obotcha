@@ -13,6 +13,6 @@ extern int basetest();
 extern int testpass1();
 
 int main(){
-  basetest();
-  //testpass1();
+  //basetest();
+  testpass1();
 }

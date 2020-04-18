@@ -35,6 +35,8 @@ public:
 
     bool isInt();
 
+    bool isUint64();
+
     bool isString();
 
     bool isDouble();
@@ -61,6 +63,10 @@ public:
 
     void put(String tag,double value);
 
+    void put(String tag,Uint64 value);
+
+    void put(String tag,uint64_t value);
+
     void put(String tag,sp<_JsonValue> value);
 
     void remove(String tag);
@@ -72,6 +78,10 @@ public:
     Integer getInteger(String tag);
 
     Integer getInteger();
+
+    Uint64 getUint64(String tag);
+
+    Uint64 getUint64();
 
     Boolean getBoolean(String tag);
 
@@ -97,6 +107,8 @@ public:
     void append(std::string value);
 
     void append(Integer value);
+
+    void append(Uint64 value);
 
     void append(int value);
 

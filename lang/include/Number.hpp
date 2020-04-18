@@ -22,12 +22,12 @@ protected:
         } else {
             binaryRecursion(n,ss);
         }
-        ss<<(long long)a;
+        ss<<a;
     }
 
     static std::string toHexString(T i) {
         std::stringstream ss;
-        ss<<std::hex<<(long long)i;
+        ss<<std::hex<<i;
 
         std::string str;
         ss>>str;
@@ -36,7 +36,7 @@ protected:
 
     static std::string toOctalString(T i) {
         std::stringstream ss;
-        ss<<std::oct<<(long long)i;
+        ss<<std::oct<<i;
         std::string str;
         ss>>str;
         return str;
@@ -53,7 +53,7 @@ protected:
 
     static std::string toDecString(T i) {
         std::stringstream ss;
-        ss<<(long long)i;
+        ss<<i;
         std::string str;
         ss>>str;
         return str;
@@ -62,24 +62,24 @@ protected:
     static T parseDecNumber(std::string v) {
         std::stringstream ss;
         ss<<v;
-        long long value;
+        T value;
         ss>>value;
 
-        return (T)value;
+        return value;
     }
 
     static T parseHexNumber(std::string v) {
         std::stringstream ss;
         ss<< std::hex <<v;
-        long long value;
+        T value;
         ss>>value;
-        return (T)value;
+        return value;
     }
 
     static T parseOctNumber(std::string v) {
         std::stringstream ss;
         ss<< std::oct <<v;
-        long long value;
+        T value;
         ss>>value;
         return (T)value;
     }

@@ -64,19 +64,19 @@ void _Byte::update(sp<_Byte>v) {
 }
 
 sp<_String> _Byte::toHexString() {
-    return createString(_Number::toHexString(val));
+    return createString(_Number::toHexString((int)val));
 }
 
 sp<_String> _Byte::toOctalString() {
-    return createString(_Number::toOctalString(val));
+    return createString(_Number::toOctalString((int)val));
 }
 
 sp<_String> _Byte::toBinaryString() {
-    return createString(_Number::toBinaryString(val));
+    return createString(_Number::toBinaryString((int)val));
 }
 
 sp<_String> _Byte::toString() {
-    return createString(_Number::toDecString(val));
+    return createString(_Number::toDecString((int)val));
 }
 
 sp<_String> _Byte::toString(byte i) {
