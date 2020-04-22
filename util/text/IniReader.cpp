@@ -11,28 +11,17 @@
 
 namespace obotcha {
 
-_IniReader::_IniReader(const char * path) {
-    filepath = createString(path);
-    mIniValue = parse();
-    if(mIniValue == nullptr) {
-        throw InitializeException("parse fail \n");
-    }
-}
-
-_IniReader::_IniReader(String path) {
-    filepath = path;
-    mIniValue = parse();
-    if(mIniValue == nullptr) {
-        throw InitializeException("parse fail \n");
-    }
+_IniReader::_IniReader(String content) {
+    //TODO
 }
 
 _IniReader::_IniReader(File file) {
-    filepath = file->getAbsolutePath();
-    mIniValue = parse();
-    if(mIniValue == nullptr) {
+    if(file == nullptr || !file->exists()) {
         throw InitializeException("parse fail \n");
     }
+
+    filepath = file->getAbsolutePath();
+    mIniValue = parse();
 }
 
 sp<_IniValue> _IniReader::get() {
@@ -43,7 +32,7 @@ IniValue _IniReader::parse() {
     if(!st(File)::exists(filepath)) {
         return nullptr;
     }
-    
+
     dictionary *dict = iniparser_load(filepath->toChars());
     
     if(dict == nullptr) {
@@ -51,6 +40,10 @@ IniValue _IniReader::parse() {
     }
 
     return createIniValue(dict);
+}
+
+sp<_IniValue> _IniReader::parse(String content) {
+    //TODO
 }
 
 

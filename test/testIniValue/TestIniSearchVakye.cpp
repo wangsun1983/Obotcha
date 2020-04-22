@@ -13,10 +13,10 @@ using namespace obotcha;
 int searchvaluetest_char() {
 
     //
-    IniReader reader = createIniReader("testData.ini");
+    IniReader reader = createIniReader(createFile("testData.ini"));
     IniValue v = reader->get();
     int v1 = v->getInteger("spl1",-1);
-    printf("v1 is %d \n",v1);
+    //printf("v1 is %d \n",v1);
     if(v1 != 100) {
       printf("---[IniValue Test {searchValue(char *)} case1] [FAIL]--- \n");
     }
@@ -44,10 +44,10 @@ int searchvaluetest_char() {
 int searchvaluetest_string() {
 
     //
-    IniReader reader = createIniReader("testData.ini");
+    IniReader reader = createIniReader(createFile("testData.ini"));
     IniValue v = reader->get();
     int v1 = v->getInteger(createString("spl1"),-1);
-    printf("v1 is %d \n",v1);
+    //printf("v1 is %d \n",v1);
     if(v1 != 100) {
       printf("---[IniValue Test {searchValue(String)} case] [FAIL]--- \n");
     }

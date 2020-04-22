@@ -15,19 +15,19 @@ int main() {
     value->put("a",1);
     value->put("c","nihao");
 
-    JsonArray array = createJsonArray("darr");
+    JsonValue array = createJsonValue();
     array->append("abc1");
     array->append("abc2");
     array->append("abc3");
 
-    value->put(array);
+    value->put("darr",array);
 
     writer->write(value);
     writer->close();
 
     //read a Json
     JsonReader reader = createJsonReader(createString("abc.json"));
-    JsonValue value2 = reader->parse();
+    JsonValue value2 = reader->get();
     while(1) {
       Integer i1 = value->getInteger("a");
       if(i1 == nullptr || i1->toValue() != 1) {
@@ -41,25 +41,25 @@ int main() {
         break;
       }
 
-      JsonArray arr = value->getArray("darr");
+      JsonValue arr = value->getValue("darr");
       if(arr == nullptr) {
         printf("---[JsonWriter Test {write()} case3] [FAILED]--- \n");
         break;
       }
 
-      String ss1 = arr->getValue(0)->getString();
+      String ss1 = arr->getStringAt(0);
       if(ss1 == nullptr || !ss1->equals("abc1")) {
         printf("---[JsonWriter Test {write()} case4] [FAILED]--- \n");
         break;
       }
 
-      String ss2 = arr->getValue(1)->getString();
+      String ss2 = arr->getStringAt(1);
       if(ss2 == nullptr || !ss2->equals("abc2")) {
         printf("---[JsonWriter Test {write()} case5] [FAILED]--- \n");
         break;
       }
 
-      String ss3 = arr->getValue(2)->getString();
+      String ss3 = arr->getStringAt(2);
       if(ss3 == nullptr || !ss3->equals("abc3")) {
         printf("---[JsonWriter Test {write()} case6] [FAILED]--- \n");
         break;

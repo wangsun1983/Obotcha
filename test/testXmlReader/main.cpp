@@ -1,0 +1,21 @@
+#include <stdio.h>
+#include <unistd.h>
+
+//#include "Thread.hpp"
+//#include "ArrayList.hpp"
+#include "Double.hpp"
+#include "XmlReader.hpp"
+#include "XmlValue.hpp"
+#include "XmlDocument.hpp"
+
+using namespace obotcha;
+
+extern int simpleattrtest();
+extern int testsopenvreader();
+
+int main() {
+
+    simpleattrtest();
+    testsopenvreader();
+    return 0;
+}

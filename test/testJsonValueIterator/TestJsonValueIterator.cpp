@@ -3,7 +3,6 @@
 
 #include "JsonWriter.hpp"
 #include "JsonReader.hpp"
-#include "JsonArray.hpp"
 #include "JsonValue.hpp"
 
 #include "Log.hpp"
@@ -12,16 +11,15 @@ using namespace obotcha;
 
 int main() {
     printf("---[JsonValueIterator Test Start]--- \n");
-    JsonReader reader = createJsonReader(createString("abc.json"));
-    JsonValue value = reader->parse();
+    JsonReader reader = createJsonReader(createFile("abc.json"));
     //String getTag();
-    JsonValueIterator iterator = value->getIterator();
+    JsonValueIterator iterator = reader->get()->getIterator();
     while(1) {
       if(!iterator->getTag()->equals("a")) {
         printf("---[JsonValueIterator Test {getTag()} case1] [FAILED]--- \n");
         break;
       }
-      printf("---[JsonValueIterator Test {getTag()} case2] [Success]--- \n");
+      printf("---[JsonValueIterator Test {getTag()} case2] [OK]--- \n");
       break;
     }
 
@@ -32,7 +30,7 @@ int main() {
         break;
       }
 
-      printf("---[JsonValueIterator Test {hasValue()} case2] [Success]--- \n");
+      printf("---[JsonValueIterator Test {hasValue()} case2] [OK]--- \n");
       break;
     }
 
@@ -43,7 +41,7 @@ int main() {
         break;
       }
 
-      printf("---[JsonValueIterator Test {isInt()} case2] [Success]--- \n");
+      printf("---[JsonValueIterator Test {isInt()} case2] [OK]--- \n");
       break;
     }
 
@@ -55,7 +53,7 @@ int main() {
         break;
       }
 
-      printf("---[JsonValueIterator Test {getInteger()} case2] [Success]--- \n");
+      printf("---[JsonValueIterator Test {getInteger()} case2] [OK]--- \n");
       break;
     }
 
@@ -67,37 +65,37 @@ int main() {
         break;
       }
 
-      printf("---[JsonValueIterator Test {isArray()} case2] [Success]--- \n");
+      printf("---[JsonValueIterator Test {isArray()} case2] [OK]--- \n");
       break;
     }
 
     //sp<_JsonArray> getArray();
     while(1) {
-      JsonArray v1 = iterator->getArray();
+      JsonValue v1 = iterator->getValue();
       if(v1 == nullptr || v1->size() != 3) {
         printf("---[JsonValueIterator Test {getArray()} case1] [FAILED]--- \n");
         break;
       }
 
-      String a1 = v1->getValue(0)->getString();
+      String a1 = v1->getStringAt(0);
       if(a1 == nullptr ||!a1->equals("abc1")) {
         printf("---[JsonValueIterator Test {getArray()} case2] [FAILED]--- \n");
         break;
       }
 
-      String a2 = v1->getValue(1)->getString();
+      String a2 = v1->getStringAt(1);
       if(a2 == nullptr ||!a2->equals("abc2")) {
         printf("---[JsonValueIterator Test {getArray()} case3] [FAILED]--- \n");
         break;
       }
 
-      String a3 = v1->getValue(2)->getString();
+      String a3 = v1->getStringAt(2);
       if(a3 == nullptr ||!a3->equals("abc3")) {
         printf("---[JsonValueIterator Test {getArray()} case4] [FAILED]--- \n");
         break;
       }
 
-      printf("---[JsonValueIterator Test {getArray()} case5] [Success]--- \n");
+      printf("---[JsonValueIterator Test {getArray()} case5] [OK]--- \n");
       break;
     }
 
@@ -109,7 +107,7 @@ int main() {
           break;
         }
 
-        printf("---[JsonValueIterator Test {isObject()} case2] [Success]--- \n");
+        printf("---[JsonValueIterator Test {isObject()} case2] [OK]--- \n");
         break;
     }
 
@@ -133,7 +131,7 @@ int main() {
         break;
       }
 
-      printf("---[JsonValueIterator Test {getObject()} case4] [Success]--- \n");
+      printf("---[JsonValueIterator Test {getObject()} case4] [OK]--- \n");
       break;
     }
 
@@ -148,7 +146,7 @@ int main() {
         break;
       }
 
-      printf("---[JsonValueIterator Test {isString()} case2] [Success]--- \n");
+      printf("---[JsonValueIterator Test {isString()} case2] [OK]--- \n");
       break;
     }
 
@@ -160,7 +158,7 @@ int main() {
         break;
       }
 
-      printf("---[JsonValueIterator Test {getString()} case2] [Success]--- \n");
+      printf("---[JsonValueIterator Test {getString()} case2] [OK]--- \n");
       break;
     }
 
@@ -175,7 +173,7 @@ int main() {
         break;
       }
 
-      printf("---[JsonValueIterator Test {isBool()} case2] [Success]--- \n");
+      printf("---[JsonValueIterator Test {isBool()} case2] [OK]--- \n");
       break;
     }
 
@@ -187,7 +185,7 @@ int main() {
         break;
       }
 
-      printf("---[JsonValueIterator Test {getBoolean()} case2] [Success]--- \n");
+      printf("---[JsonValueIterator Test {getBoolean()} case2] [OK]--- \n");
       break;
     }
 

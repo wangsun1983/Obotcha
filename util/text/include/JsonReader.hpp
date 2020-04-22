@@ -20,20 +20,22 @@ DECLARE_SIMPLE_CLASS(JsonReader) {
 public:
     _JsonReader(File f);
 
-    _JsonReader(String path);
-
-    _JsonReader(const char *);
+    _JsonReader(String content);
 
     JsonValue get();
     
 private:
     FileInputStream stream;
 
+    String mContent;
+
     int size;
 
     JsonValue mValue;
 
     JsonValue parse();
+
+    JsonValue parse(String);
 };
 
 }

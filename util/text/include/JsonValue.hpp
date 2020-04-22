@@ -43,6 +43,8 @@ public:
 
     bool isArray();
 
+    bool isNull();
+
     bool isObject();
     //for value
     void put(String tag,String value);
@@ -135,6 +137,8 @@ public:
     ~_JsonValue();
 
 private:
+    String mTag;
+
     Json::Value jvalue;    
 };
 

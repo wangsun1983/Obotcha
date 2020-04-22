@@ -9,7 +9,7 @@ using namespace obotcha;
 
 int basetest() {
     printf("---[IniValue Test Start]--- \n");
-    IniReader reader = createIniReader("testData.ini");
+    IniReader reader = createIniReader(createFile("testData.ini"));
     IniValue value = reader->get();
 
     //int getSectionNum();

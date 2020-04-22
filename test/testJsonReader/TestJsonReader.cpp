@@ -11,7 +11,7 @@ using namespace obotcha;
 
 int basetest() {
     printf("---[JsonReader Test Start]--- \n");
-    JsonReader reader = createJsonReader(createString("abc.json"));
+    JsonReader reader = createJsonReader(createFile("abc.json"));
     JsonValue value = reader->get();
 
     //String getString(String tag);
@@ -61,7 +61,7 @@ int basetest() {
             break;
         }
 
-        printf("---[JsonReader SimpleRead {getString()} case9] [Success]--- \n");
+        printf("---[JsonReader SimpleRead {getString()} case9] [OK]--- \n");
         break;
     }
 
@@ -78,7 +78,7 @@ int basetest() {
         printf("---[JsonReader SimpleRead {isInt()} case2] [FAILED]--- \n");
         break;
       }
-      printf("---[JsonReader SimpleRead {isInt()} case3] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {isInt()} case3] [OK]--- \n");
       break;
     }
 
@@ -95,7 +95,7 @@ int basetest() {
         printf("---[JsonReader SimpleRead {isBool()} case2] [FAILED]--- \n");
         break;
       }
-      printf("---[JsonReader SimpleRead {isBool()} case3] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {isBool()} case3] [OK]--- \n");
       break;
     }
 
@@ -112,7 +112,7 @@ int basetest() {
         printf("---[JsonReader SimpleRead {isString()} case2] [FAILED]--- \n");
         break;
       }
-      printf("---[JsonReader SimpleRead {isString()} case3] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {isString()} case3] [OK]--- \n");
       break;
     }
 
@@ -129,7 +129,7 @@ int basetest() {
         printf("---[JsonReader SimpleRead {isDouble()} case2] [FAILED]--- \n");
         break;
       }
-      printf("---[JsonReader SimpleRead {isDouble()} case3] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {isDouble()} case3] [OK]--- \n");
       break;
     }
 
@@ -146,7 +146,7 @@ int basetest() {
         printf("---[JsonReader SimpleRead {isArray()} case2] [FAILED]--- \n");
         break;
       }
-      printf("---[JsonReader SimpleRead {isArray()} case3] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {isArray()} case3] [OK]--- \n");
       break;
     }
 
@@ -167,7 +167,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {put()} case3] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {put()} case3] [OK]--- \n");
       break;
     }
 
@@ -188,7 +188,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {put()} case6] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {put()} case6] [OK]--- \n");
       break;
     }
 
@@ -203,7 +203,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {put()} case8] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {put()} case8] [OK]--- \n");
       break;
     }
 
@@ -225,7 +225,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {put()} case11] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {put()} case11] [OK]--- \n");
       break;
     }
 
@@ -239,7 +239,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {put()} case13] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {put()} case13] [OK]--- \n");
       break;
     }
 
@@ -261,7 +261,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {put()} case16] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {put()} case16] [OK]--- \n");
       break;
     }
 
@@ -274,7 +274,7 @@ int basetest() {
         printf("---[JsonReader SimpleRead {put()} case17] [FAILED]--- \n");
         break;
       }
-      printf("---[JsonReader SimpleRead {put()} case18] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {put()} case18] [OK]--- \n");
       break;
     }
 
@@ -296,7 +296,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {put()} case21] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {put()} case21] [OK]--- \n");
       break;
     }
 
@@ -310,7 +310,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {put()} case23] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {put()} case23] [OK]--- \n");
       break;
     }
 
@@ -355,7 +355,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {put()} case27] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {put()} case27] [OK]--- \n");
       break;
     }
 
@@ -380,7 +380,7 @@ int basetest() {
 
       value->remove("tt");
 
-      printf("---[JsonReader SimpleRead {remove()} case2] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {remove()} case2] [OK]--- \n");
       break;
     }
 
@@ -398,7 +398,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {getString()} case3] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {getString()} case3] [OK]--- \n");
       break;
     }
 
@@ -411,7 +411,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {getString()} case5] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {getString()} case5] [OK]--- \n");
       break;
     }
 
@@ -429,7 +429,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {getInteger()} case3] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {getInteger()} case3] [OK]--- \n");
       break;
     }
 
@@ -442,7 +442,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {getInteger()} case5] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {getInteger()} case5] [OK]--- \n");
       break;
     }
 
@@ -460,7 +460,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {getBoolean()} case3] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {getBoolean()} case3] [OK]--- \n");
       break;
     }
 
@@ -473,7 +473,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {getBoolean()} case5] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {getBoolean()} case5] [OK]--- \n");
       break;
     }
 
@@ -491,7 +491,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {getDouble()} case3] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {getDouble()} case3] [OK]--- \n");
       break;
     }
 
@@ -504,7 +504,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {getDouble()} case5] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {getDouble()} case5] [OK]--- \n");
       break;
     }
 
@@ -543,7 +543,7 @@ int basetest() {
         break;
       }
 
-      printf("---[JsonReader SimpleRead {getValue()} case6] [Success]--- \n");
+      printf("---[JsonReader SimpleRead {getValue()} case6] [OK]--- \n");
       break;
     }
 

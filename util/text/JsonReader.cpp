@@ -17,11 +17,8 @@ _JsonReader::_JsonReader(File f) {
     mValue = parse();
 }
 
-_JsonReader::_JsonReader(String path):_JsonReader(createFile(path)) {
-    
-}
-
-_JsonReader::_JsonReader(const char* path):_JsonReader(createFile(path)){
+_JsonReader::_JsonReader(String content){
+    mValue = parse(content);
 }
 
 JsonValue _JsonReader::get() {
@@ -35,6 +32,13 @@ JsonValue _JsonReader::parse() {
     Json::Reader reader;
     JsonValue value = createJsonValue();
     reader.parse(buff->toString()->toChars(),value->jvalue);
+    return value;
+}
+
+JsonValue _JsonReader::parse(String content) {
+    Json::Reader reader;
+    JsonValue value = createJsonValue();
+    reader.parse(content->toChars(),value->jvalue);
     return value;
 }
 

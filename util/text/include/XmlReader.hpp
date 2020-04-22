@@ -17,18 +17,16 @@ class _XmlDocument;
 DECLARE_SIMPLE_CLASS(XmlReader) {
 
 public:
-    _XmlReader(const char* path);
-
-    _XmlReader(String path);
+    _XmlReader(String content);
 
     _XmlReader(File file);
 
-    sp<_XmlDocument> parse();
+    sp<_XmlDocument> get();
 
 private:
     File xmlfile;
 
-    //sp<_XmlDocument> doc;
+    sp<_XmlDocument> mDocument;
 };
 
 }

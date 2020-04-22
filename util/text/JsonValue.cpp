@@ -254,6 +254,10 @@ bool _JsonValue::isArray() {
     return jvalue.isArray();
 }
 
+bool _JsonValue::isNull() {
+    return jvalue.size() == 0;
+}
+
 bool _JsonValue::isObject() {
     return jvalue.isObject();
 }

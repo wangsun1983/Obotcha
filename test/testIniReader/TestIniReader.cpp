@@ -15,21 +15,22 @@ int basetest() {
     while(1) {
         //test Construct
         try {
-            IniReader reader = createIniReader("abc");
+            IniReader reader = createIniReader(createFile("abc"));
             printf("IniReader create test1-------[FAIL] \n");
         } catch(InitializeException e) {
 
         }
 
         try {
-            IniReader reader = createIniReader(nullptr);
+            File f;
+            IniReader reader = createIniReader(f);
             printf("IniReader create test2-------[FAIL] \n");
         } catch(InitializeException e) {
 
         }
 
         //
-        IniReader reader = createIniReader("testData.ini");
+        IniReader reader = createIniReader(createFile("testData.ini"));
         if(reader == nullptr || reader->get() == nullptr) {
             printf("IniReader create test3-------[FAIL] \n");
         }

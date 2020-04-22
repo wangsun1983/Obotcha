@@ -1,0 +1,37 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <soapenv:Body>
+      <ResponseMessage xmlns="http://www.iec.ch/TC57/2008/schema/message">
+         <Header>
+            <Verb>Show</Verb>
+            <Noun>OMSFHYCZCJSJ</Noun>
+            <User>
+               <UserID>DDD</UserID>
+               <Organization>BRUCE</Organization>
+            </User>
+            <Property>
+               <Name>count</Name>
+               <Value>50</Value>
+            </Property>
+         </Header>
+         <Reply>
+            <ReplyCode>OK</ReplyCode>
+         </Reply>
+         <Payload>
+            <rdf:RDF xmlns:cim="http://iec.ch/TC57/CIM-generic#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+               <cim:OMSFHYCZCJSJ rdf:ID="OMSFHYCZCJSJ_0">
+                  <cim:aaa>ZHOGNG</cim:aaa>
+                  <cim:bbb>广州</cim:bbb>
+                  <cim:ccc>2018年第23周 (06.04~06.10)</cim:ccc>
+                  <cim:ddd>16500</cim:ddd>
+                  <cim:eee>8800</cim:eee>
+                  <cim:fff>2200000</cim:fff>
+                  <cim:ggg>0</cim:ggg>
+                  <cim:hhh>0</cim:hhh>
+                  <cim:kkk>16500</cim:kkk>
+                  <cim:mmm>2200000</cim:mmm>
+               </cim:OMSFHYCZCJSJ>
+            </rdf:RDF>
+         </Payload>
+      </ResponseMessage>
+   </soapenv:Body>
+</soapenv:Envelope>

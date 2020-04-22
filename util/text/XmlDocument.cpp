@@ -19,7 +19,13 @@ _XmlDocument::_XmlDocument(String path,long size) {
     mFileSize = size;
     
     fdoc = path->toChars();
+    this->xmlDoc.parse<0>(fdoc.data());
+}
 
+_XmlDocument::_XmlDocument(String content) {
+    
+    mFileSize = 0;
+    this->xmlDoc.parse<0>(fdoc.data());
 }
 
 _XmlDocument::_XmlDocument() {
@@ -52,16 +58,6 @@ XmlValue _XmlDocument::newNode(String nodename,String value) {
 
     XmlValue xmlnode = createXmlValue(node,this);
     return xmlnode;
-}
-
-void _XmlDocument::load(String path) {
-    if(path != nullptr) {
-        fdoc = path->toChars();
-    }
-}
-
-void _XmlDocument::parse() {
-    this->xmlDoc.parse<0>(fdoc.data());
 }
 
 XmlValue _XmlDocument::newNode(String nodename) {

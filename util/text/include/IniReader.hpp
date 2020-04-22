@@ -15,9 +15,7 @@ class _IniValue;
 DECLARE_SIMPLE_CLASS(IniReader) {
 
 public:
-    _IniReader(const char* path);
-
-    _IniReader(String path);
+    _IniReader(String content);
 
     _IniReader(File file);
 
@@ -29,6 +27,8 @@ private:
     sp<_IniValue> mIniValue; 
 
     sp<_IniValue> parse();
+
+    sp<_IniValue> parse(String);
     
 };
 

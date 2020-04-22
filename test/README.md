@@ -39,10 +39,9 @@
 - [x] ConfValue
 - [x] IniReader
 - [x] IniValue
-- [ ] JsonArray
-- [ ] JsonReader
-- [ ] JsonValue
-- [ ] JsonWriter
+- [x] JsonReader
+- [x] JsonValue
+- [x] JsonWriter
 - [ ] StringFormat
 - [ ] XmlDocument
 - [ ] XmlReader

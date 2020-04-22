@@ -26,15 +26,17 @@ public:
     friend class _XmlReader;
     friend class _XmlAttribute;
 
+    _XmlDocument(String path,long size);
+
+    _XmlDocument(String content);
+
+    _XmlDocument();
+
     sp<_XmlValue> newRootNode(String rootNode);
     
     sp<_XmlValue> newNode(String name,String value);
 
     sp<_XmlValue> newNode(String name);
-
-    void load(String);
-
-    void parse();
 
     //sp<_XmlAttribute> newAttribute(String name,String value);
 
@@ -42,9 +44,7 @@ public:
 
     String toString();
 
-    _XmlDocument(String path,long size);
 
-    _XmlDocument();
 
 private:
     xml_document<> xmlDoc;
