@@ -23,13 +23,6 @@ public:
 
     sp<_YamlValue>getYamlValue(String);
 
-    sp<_YamlArray>getYamlArray(String);
-
-    //template<typename T>
-    //void reflect(T *t) {
-    //    yamlNode >> *t;
-    //}
-    
     int getInt(String,int def);
 
     String getString(String,String def);
@@ -40,6 +33,16 @@ public:
 
     bool getBool(String,bool def);
 
+    int getIntAt(int,int def);
+
+    String getStringAt(int,String def);
+
+    double getDoubleAt(int,double def);
+
+    long getLongAt(int,long def);
+
+    bool getBoolAt(int,bool def);
+  
     ~_YamlValue();
 
     int size();

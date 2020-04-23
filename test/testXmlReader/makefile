@@ -38,7 +38,7 @@ sharelib = -Wl,-rpath=../../out/lib/ \
 
 files =
 link =
-libname	= testLong
+libname	= testXmlReader
 
 everything : $(libname)
 

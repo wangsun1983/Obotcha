@@ -43,10 +43,10 @@
 - [x] JsonValue
 - [x] JsonWriter
 - [ ] StringFormat
-- [ ] XmlDocument
-- [ ] XmlReader
-- [ ] XmlValue
-- [ ] XmlWriter
+- [x] XmlDocument
+- [x] XmlReader
+- [x] XmlValue
+- [x] XmlWriter
 - [ ] YamlArray
 - [ ] YamlReader
 - [ ] YamlValue

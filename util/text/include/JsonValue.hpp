@@ -46,6 +46,7 @@ public:
     bool isNull();
 
     bool isObject();
+    
     //for value
     void put(String tag,String value);
 
@@ -72,7 +73,10 @@ public:
     void put(String tag,sp<_JsonValue> value);
 
     void remove(String tag);
-    
+
+    //remove
+    void removeAt(int);
+
     String getString(String tag);
 
     String getString();

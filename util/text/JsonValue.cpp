@@ -124,6 +124,12 @@ void _JsonValue::remove(String tag) {
     jvalue.removeMember(tag->toChars());
 }
 
+void _JsonValue::removeAt(int index) {
+    Json::Value v;
+    jvalue.removeIndex(index,&v);
+}
+
+
 String _JsonValue::getString(String tag) {
     if(tag == nullptr) {
         return nullptr;

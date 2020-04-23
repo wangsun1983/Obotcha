@@ -9,7 +9,8 @@ testList testByteRingArray
 #util
 testArrayList testCalendar testHashMap testDateTime
 testProperties testConfReader testConfValue testIniReader
-testIniValue testJsonReader testJsonWriter testJsonValueIterator)
+testIniValue testJsonReader testJsonWriter testJsonValueIterator
+testXmlReader testXmlValue testXmlWriter)
 
 function start(){
     echo -----------------------

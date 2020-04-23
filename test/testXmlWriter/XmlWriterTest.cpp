@@ -35,8 +35,8 @@ int main() {
     xmlWriter->write("my.xml");
 
     while(1) {
-      XmlReader reader = createXmlReader("my.xml");
-      XmlDocument doc = reader->parse();
+      XmlReader reader = createXmlReader(createFile("my.xml"));
+      XmlDocument doc = reader->get();
       XmlValue myroot = doc->getRootNode();
 
       XmlValue abcnode1 = myroot->getNode("aName");

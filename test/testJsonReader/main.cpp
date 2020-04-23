@@ -11,8 +11,10 @@ using namespace obotcha;
 
 extern int basetest();
 extern int testpass1();
+extern int testremove();
 
 int main(){
   basetest();
   testpass1();
+  testremove();
 }

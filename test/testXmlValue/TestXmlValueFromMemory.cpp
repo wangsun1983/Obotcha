@@ -83,7 +83,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {getName()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {getName()} case2] [OK]--- \n");
       break;
     }
 
@@ -95,7 +95,7 @@ int testXmlValueFromMemory() {
           break;
         }
 
-        printf("---[XmlValue TestFromMemory {getStringAttr()} case2] [Success]--- \n");
+        printf("---[XmlValue TestFromMemory {getStringAttr()} case2] [OK]--- \n");
         break;
     }
 
@@ -107,7 +107,7 @@ int testXmlValueFromMemory() {
           break;
         }
 
-        printf("---[XmlValue TestFromMemory {getIntegerAttr()} case2] [Success]--- \n");
+        printf("---[XmlValue TestFromMemory {getIntegerAttr()} case2] [OK]--- \n");
         break;
     }
 
@@ -119,7 +119,7 @@ int testXmlValueFromMemory() {
           break;
         }
 
-        printf("---[XmlValue TestFromMemory {getBooleanAttr()} case2] [Success]--- \n");
+        printf("---[XmlValue TestFromMemory {getBooleanAttr()} case2] [OK]--- \n");
         break;
     }
 
@@ -131,7 +131,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {getDoubleAttr()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {getDoubleAttr()} case2] [OK]--- \n");
       break;
     }
 
@@ -143,7 +143,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {getFloatAttr()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {getFloatAttr()} case2] [OK]--- \n");
       break;
     }
 
@@ -155,7 +155,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {getStringValue()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {getStringValue()} case2] [OK]--- \n");
       break;
     }
 
@@ -167,7 +167,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {getIntegerValue()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {getIntegerValue()} case2] [OK]--- \n");
       break;
     }
 
@@ -179,7 +179,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {getBooleanValue()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {getBooleanValue()} case2] [OK]--- \n");
       break;
     }
 
@@ -191,7 +191,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {getDoubleValue()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {getDoubleValue()} case2] [OK]--- \n");
       break;
     }
 
@@ -203,7 +203,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {getFloatValue()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {getFloatValue()} case2] [OK]--- \n");
       break;
     }
 
@@ -257,7 +257,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {getNode()} case8] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {getNode()} case8] [OK]--- \n");
       break;
     }
 
@@ -270,7 +270,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {getName()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {getName()} case2] [OK]--- \n");
       break;
     }
 
@@ -332,7 +332,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {updateName()} case9] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {updateName()} case9] [OK]--- \n");
       break;
     }
 
@@ -347,7 +347,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {updateValue()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {updateValue()} case2] [OK]--- \n");
       break;
     }
 
@@ -362,7 +362,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {appendNode()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {appendNode()} case2] [OK]--- \n");
       break;
     }
 
@@ -383,7 +383,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {appendAttr()} case1] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {appendAttr()} case1] [OK]--- \n");
       break;
     }
 
@@ -398,7 +398,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {removeNode()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {removeNode()} case2] [OK]--- \n");
       break;
     }
 
@@ -417,7 +417,7 @@ int testXmlValueFromMemory() {
         break;
       }
 
-      printf("---[XmlValue TestFromMemory {removeNode()} case5] [Success]--- \n");
+      printf("---[XmlValue TestFromMemory {removeNode()} case5] [OK]--- \n");
       break;
     }
 

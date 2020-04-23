@@ -12,8 +12,8 @@ using namespace obotcha;
 
 int testXmlValueFromFile() {
     printf("---[XmlValue TestFromFile Start]--- \n");
-    XmlReader reader = createXmlReader("regressions.xml");
-    XmlDocument doc = reader->parse();
+    XmlReader reader = createXmlReader(createFile("regressions.xml"));
+    XmlDocument doc = reader->get();
     XmlValue root = doc->getRootNode();
 
     //String getName();
@@ -25,7 +25,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {getName()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {getName()} case2] [OK]--- \n");
       break;
     }
 
@@ -37,7 +37,7 @@ int testXmlValueFromFile() {
           break;
         }
 
-        printf("---[XmlValue TestFromFile {getStringAttr()} case2] [Success]--- \n");
+        printf("---[XmlValue TestFromFile {getStringAttr()} case2] [OK]--- \n");
         break;
     }
 
@@ -49,7 +49,7 @@ int testXmlValueFromFile() {
           break;
         }
 
-        printf("---[XmlValue TestFromFile {getIntegerAttr()} case2] [Success]--- \n");
+        printf("---[XmlValue TestFromFile {getIntegerAttr()} case2] [OK]--- \n");
         break;
     }
 
@@ -61,7 +61,7 @@ int testXmlValueFromFile() {
           break;
         }
 
-        printf("---[XmlValue TestFromFile {getBooleanAttr()} case2] [Success]--- \n");
+        printf("---[XmlValue TestFromFile {getBooleanAttr()} case2] [OK]--- \n");
         break;
     }
 
@@ -73,7 +73,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {getDoubleAttr()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {getDoubleAttr()} case2] [OK]--- \n");
       break;
     }
 
@@ -85,7 +85,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {getFloatAttr()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {getFloatAttr()} case2] [OK]--- \n");
       break;
     }
 
@@ -97,7 +97,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {getStringValue()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {getStringValue()} case2] [OK]--- \n");
       break;
     }
 
@@ -109,7 +109,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {getIntegerValue()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {getIntegerValue()} case2] [OK]--- \n");
       break;
     }
 
@@ -121,7 +121,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {getBooleanValue()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {getBooleanValue()} case2] [OK]--- \n");
       break;
     }
 
@@ -133,7 +133,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {getDoubleValue()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {getDoubleValue()} case2] [OK]--- \n");
       break;
     }
 
@@ -145,7 +145,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {getFloatValue()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {getFloatValue()} case2] [OK]--- \n");
       break;
     }
 
@@ -199,7 +199,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {getNode()} case8] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {getNode()} case8] [OK]--- \n");
       break;
     }
 
@@ -212,7 +212,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {getName()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {getName()} case2] [OK]--- \n");
       break;
     }
 
@@ -274,7 +274,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {updateName()} case9] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {updateName()} case9] [OK]--- \n");
       break;
     }
 
@@ -289,7 +289,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {updateValue()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {updateValue()} case2] [OK]--- \n");
       break;
     }
 
@@ -304,7 +304,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {appendNode()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {appendNode()} case2] [OK]--- \n");
       break;
     }
 
@@ -325,7 +325,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {appendAttr()} case1] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {appendAttr()} case1] [OK]--- \n");
       break;
     }
 
@@ -340,7 +340,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {removeNode()} case2] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {removeNode()} case2] [OK]--- \n");
       break;
     }
 
@@ -359,7 +359,7 @@ int testXmlValueFromFile() {
         break;
       }
 
-      printf("---[XmlValue TestFromFile {removeNode()} case5] [Success]--- \n");
+      printf("---[XmlValue TestFromFile {removeNode()} case5] [OK]--- \n");
       break;
     }
 

@@ -1,39 +1,25 @@
 #include "YamlReader.hpp"
 #include "YamlValue.hpp"
 #include "YamlArray.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
- _YamlReader::_YamlReader(const char* path) {
-    yamlfile = createFile(path);
- }
-
-_YamlReader::_YamlReader(String path) {
-    yamlfile = createFile(path);
+_YamlReader::_YamlReader(String content) {
+    mValue = createYamlValue();
+    mValue->yamlNode = YAML::Load(content->getStdString());
 }
 
 _YamlReader::_YamlReader(File file) {
-    yamlfile = file;
-}
-
-sp<_YamlValue> _YamlReader::parseNode() {
-    if(yamlfile == nullptr || !yamlfile->exists()) {
-        return nullptr;
+    if(file == nullptr || !file->exists()) {
+        throw InitializeException("YamlReader File Error");
     }
 
-    YamlValue yaml = createYamlValue();
-    yaml->yamlNode = YAML::LoadFile(yamlfile->getAbsolutePath()->toChars());
-    return yaml;
+    mValue->yamlNode = YAML::LoadFile(file->getAbsolutePath()->getStdString());
 }
 
-sp<_YamlArray> _YamlReader::parseArray() {
-    if(yamlfile == nullptr || !yamlfile->exists()) {
-        return nullptr;
-    }
-
-    YamlArray yaml = createYamlArray();
-    yaml->yamlNode = YAML::LoadFile(yamlfile->getAbsolutePath()->toChars());
-    return yaml;
+sp<_YamlValue> _YamlReader::get() {
+    return mValue;
 }
 
 _YamlReader::~_YamlReader() {
