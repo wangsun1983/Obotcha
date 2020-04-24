@@ -159,6 +159,17 @@ bool _YamlValue::getBoolAt(int index,bool def) {
     } 
 }
 
+sp<_YamlValue> _YamlValue::getYamlValueAt(int index) {
+    try {
+        YAML::Node newNode = yamlNode[index].as<YAML::Node>();
+
+        YamlValue result = createYamlValue(newNode);
+        return result;
+
+    } catch (std::exception &e) {
+        return nullptr;
+    }
+}
 
 int _YamlValue::size() {
     return yamlNode.size();

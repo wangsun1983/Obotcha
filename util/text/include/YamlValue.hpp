@@ -42,6 +42,8 @@ public:
     long getLongAt(int,long def);
 
     bool getBoolAt(int,bool def);
+
+    sp<_YamlValue> getYamlValueAt(int);
   
     ~_YamlValue();
 

@@ -13,7 +13,6 @@ link += jsonvalue \
 		confvalue \
 		yamlreader \
 		yamlvalue \
-		yamlarray \
 
 objs += $(outtmp)/jsonvalue.o \
 		$(outtmp)/jsonwriter.o \
@@ -28,7 +27,6 @@ objs += $(outtmp)/jsonvalue.o \
 		$(outtmp)/confvalue.o \
 		$(outtmp)/yamlreader.o \
 		$(outtmp)/yamlvalue.o \
-		$(outtmp)/yamlarray.o \
 
 jsonvalue :$(textDir)/JsonValue.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/JsonValue.cpp -o $(outtmp)/jsonvalue.o
@@ -68,6 +66,3 @@ yamlreader :$(textDir)/YamlReader.cpp
 
 yamlvalue :$(textDir)/YamlValue.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/YamlValue.cpp -o $(outtmp)/yamlvalue.o
-
-yamlarray :$(textDir)/YamlArray.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(textDir)/YamlArray.cpp -o $(outtmp)/yamlarray.o

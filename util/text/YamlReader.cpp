@@ -14,8 +14,10 @@ _YamlReader::_YamlReader(File file) {
     if(file == nullptr || !file->exists()) {
         throw InitializeException("YamlReader File Error");
     }
-
-    mValue->yamlNode = YAML::LoadFile(file->getAbsolutePath()->getStdString());
+    
+    mValue = createYamlValue();
+    printf("file path is %s \n",file->getAbsolutePath()->toChars());
+    mValue->yamlNode = YAML::LoadFile(file->getAbsolutePath()->toChars());
 }
 
 sp<_YamlValue> _YamlReader::get() {
