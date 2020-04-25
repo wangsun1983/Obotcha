@@ -61,22 +61,63 @@ int main() {
       printf("---[TestYamlReader Test parse()} case6] [FAILED]--- \n");
     }
 
-    printf("---[TestYamlReader Test parse()} case100] [OK]--- \n");
-#if 0
-    YamlArray vv = value->getYamlArray("platform");
-    String str1 = vv->getString(0,"default");
+    YamlValue value4 = root->getYamlValue("platform");
+    String value4_1 = value4->getStringAt(0,createString(""));
+    if(!value4_1->equals("Win32")) {
+      printf("---[TestYamlReader Test parse()} case7] [FAILED]--- \n");
+    }
 
-    int int1 = vv->getInt(2,1122);
+    String value4_2 = value4->getStringAt(1,createString(""));
+    if(!value4_2->equals("x64")) {
+      printf("---[TestYamlReader Test parse()} case8] [FAILED]--- \n");
+    }
 
-    YamlArray artif = value->getYamlArray("artifacts");
-    YamlValue artifV = artif->getYamlValue(0);
-    //struct TestData t;
-    //artifV->reflect(&t);
-    //std::cout<<"path is "<<t.path<<std::endl;
-    //std::cout<<"name is "<<t.name<<std::endl;
+    String value4_3 = value4->getStringAt(2,createString(""));
+    if(!value4_3->equals("111")) {
+      printf("---[TestYamlReader Test parse()} case9] [FAILED]--- \n");
+    }
 
-    LOGD("vv is ",str1);
-    LOGD("vv is ",int1);
-#endif
+    YamlValue value5 = root->getYamlValue("configuration");
+    String value5_1 = value5->getStringAt(0,createString(""));
+    if(!value5_1->equals("Debug")) {
+      printf("---[TestYamlReader Test parse()} case10] [FAILED]--- \n");
+    }
 
+    YamlValue value6 = root->getYamlValue("build");
+    String value6_1 = value6->getString("verbosity",createString(""));
+    if(!value6_1->equals("minimal")) {
+      printf("---[TestYamlReader Test parse()} case11] [FAILED]--- \n");
+    }
+
+    YamlValue value7 = root->getYamlValue("artifacts");
+    YamlValue value7_1 = value7->getYamlValueAt(0);
+    String value7_2 = value7_1->getString("path",createString(""));
+    String value7_3 = value7_1->getString("name",createString(""));
+    if(!value7_2->equals("_build/Testing/Temporary/*") || !value7_3->equals("test_results")) {
+      printf("---[TestYamlReader Test parse()} case12] [FAILED]--- \n");
+    }
+
+    YamlValue value8 = root->getYamlValue("before_build");
+    YamlValue value8_1 = value8->getYamlValueAt(0);
+    String str8_1 = value8_1->getString(createString("ps"),createString(""));
+    String vv = createString("Write-Output \"Configuration: $env:CONFIGURATION\"\n"\
+    "Write-Output \"Platform: $env:PLATFORM\"\n"\
+    "$generator = switch ($env:TOOLSET)\n"\
+    "{\n"\
+    "    \"v140\" {\"Visual Studio 14 2015\"}\n"\
+    "    \"v120\" {\"Visual Studio 12 2013\"}\n"\
+    "    \"v110\" {\"Visual Studio 11 2012\"}\n"\
+    "    \"v100\" {\"Visual Studio 10 2010\"}\n"\
+    "}\n"\
+    "if ($env:PLATFORM -eq \"x64\")\n"\
+    "{\n"\
+    "    $generator = \"$generator Win64\"\n"\
+    "}\n");
+
+    if(!str8_1->equals(vv)) {
+      printf("value is %s \n",vv->toChars());
+      printf("---[TestYamlReader Test parse()} case13] [FAILED]--- \n");
+    }
+
+    printf("---[TestYamlReader Test parse()} case14] [OK]--- \n");
 }

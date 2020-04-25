@@ -47,9 +47,8 @@
 - [x] XmlReader
 - [x] XmlValue
 - [x] XmlWriter
-- [ ] YamlArray
-- [ ] YamlReader
-- [ ] YamlValue
+- [x] YamlReader
+- [x] YamlValue
 - [ ] Filament
 - [ ] AtomicBoolean
 - [ ] AtomicInteger

@@ -16,7 +16,6 @@ _YamlReader::_YamlReader(File file) {
     }
     
     mValue = createYamlValue();
-    printf("file path is %s \n",file->getAbsolutePath()->toChars());
     mValue->yamlNode = YAML::LoadFile(file->getAbsolutePath()->toChars());
 }
 
