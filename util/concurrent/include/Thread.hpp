@@ -22,15 +22,7 @@ namespace obotcha {
 
 class _Thread;
 
-enum ThreadPriority {
-    ThreadLowestPriority = 0,
-    ThreadLowPriority,
-    ThreadNormalPriority,
-    ThreadHighPriority,
-    ThreadHighestPriority,
-    ThreadPriorityMax,
-};
-
+#if 0
 enum ThreadStatus {
     ThreadNotExist = 0,
     ThreadNotStart,
@@ -39,12 +31,7 @@ enum ThreadStatus {
     ThreadWaitExit,
     ThreadComplete
 };
-
-enum ThreadSchedPolicy {
-    ThreadSchedOTHER = SCHED_NORMAL, //SCHED_NORMAL 0
-    ThreadSchedFIFO = SCHED_FIFO,  //SCHED_FIFO 1
-    ThreadSchedRR = SCHED_RR,    //SCHED_RR 2
-};
+#endif
 
 DECLARE_SIMPLE_CLASS(Thread) {
 
@@ -72,11 +59,11 @@ public:
 
     virtual void onComplete();
 
-    int setPriority(ThreadPriority priority);
+    int setPriority(int priority);
 
     int getPriority();
 
-    int setSchedPolicy(ThreadSchedPolicy);
+    int setSchedPolicy(int);
 
     int getSchedPolicy();
 
@@ -96,13 +83,31 @@ public:
 
     static void msleep(unsigned long);
 
-    static void setThreadPriority(ThreadPriority priority);
+    static void setThreadPriority(int priority);
 
     static int getThreadPriority();
 
-    static int setThreadSchedPolicy(ThreadSchedPolicy policy);
+    static int setThreadSchedPolicy(int policy);
 
     static int getThreadSchedPolicy();
+
+    const static int LowestPriority = 0;
+    const static int LowPriority = 1;
+    const static int NormalPriority = 2;
+    const static int HighPriority = 3;
+    const static int HighestPriority = 4;
+    const static int PriorityMax = 5;
+
+    const static int SchedOther = SCHED_NORMAL; //SCHED_NORMAL 0
+    const static int SchedFifo = SCHED_FIFO;  //SCHED_FIFO 1
+    const static int SchedRr = SCHED_RR; //SCHED_RR 2
+
+    const static int NotExist = 0;
+    const static int NotStart = 1;
+    const static int Idle = 2;
+    const static int Running = 3;
+    const static int WaitExit = 4;
+    const static int Complete = 5;
 
     ~_Thread();
 
@@ -112,13 +117,7 @@ protected:
 private:
     void initPolicyAndPriority();
 
-    int threadPrio2SchePrio(int threadprio);
-
-    int SchePrio2threadPrio(int secheprio);
-
     int updateThreadPrioTable(int policy);
-
-    static HashMap<int,int *> mPriorityTable;
 
     static void* localRun(void *th);
 
@@ -126,9 +125,7 @@ private:
 
     pthread_attr_t mThreadAttr;
 
-    ThreadSchedPolicy mPolicy;
-
-    ThreadPriority mPriority;
+    int mPriority;
 
     String mName;
 
@@ -141,6 +138,10 @@ private:
     Mutex mJoinMutex;
 
     Condition mJoinDondtion;
+
+    int mPriorityArray[PriorityMax];
+
+    
 };
 
 }

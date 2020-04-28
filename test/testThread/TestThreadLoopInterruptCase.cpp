@@ -24,7 +24,7 @@ DECLARE_SIMPLE_CLASS(MyLoopTest1Thread) IMPLEMENTS(Thread) {
 public:
     void run() {
         while(1) {
-            
+
         }
     }
 
@@ -70,11 +70,11 @@ int testThreadLoopInterrypt() {
              break;
          }
 
-         printf("---[Thread Test {Loop Interrupt()} special case2] [Success]--- \n");
+         printf("---[Thread Test {Loop Interrupt()} special case2] [OK]--- \n");
          break;
     }
 #endif
-    
+
     //interruptCheck
     while(1) {
         MyLoopTest2Thread thread = createMyLoopTest2Thread();
@@ -87,8 +87,8 @@ int testThreadLoopInterrypt() {
              break;
          }
 
-         printf("---[Thread Test {interruptCheck()} case2] [Success]--- \n");
+         printf("---[Thread Test {interruptCheck()} case2] [OK]--- \n");
          break;
-    } 
+    }
 
 }

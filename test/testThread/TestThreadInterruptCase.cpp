@@ -59,7 +59,7 @@ int testThreadInterruptCase() {
              break;
          }
 
-         printf("---[Thread Test {Interrupt()} special case2] [Success]--- \n");
+         printf("---[Thread Test {Interrupt()} special case2] [OK]--- \n");
          break;
     }
 

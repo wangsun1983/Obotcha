@@ -27,8 +27,10 @@ public:
   }
 
   void run() {
+    printf("thread2 join trace1 \n");
     mThread->join();
     mIsWake = true;
+    printf("thread2 join trace2 \n");
   }
 
   bool isWake() {
@@ -49,8 +51,10 @@ public:
   }
 
   void run() {
+    printf("thread3 join trace1 \n");
     mThread->join();
     mIsWake = true;
+    printf("thread3 join trace2 \n");
   }
 
   bool isWake() {
@@ -116,7 +120,7 @@ int testThreadJoin() {
         break;
     }
 
-    printf("---[Thread Test {ThreadJoin()} special case2] [Success]--- \n");
+    printf("---[Thread Test {ThreadJoin()} special case2] [OK]--- \n");
     break;;
   }
 
@@ -136,7 +140,7 @@ int testThreadJoin() {
         break;
     }
 
-    printf("---[Thread Test {ThreadJoin()} special case5] [Success]--- \n");
+    printf("---[Thread Test {ThreadJoin()} special case5] [OK]--- \n");
     break;
   }
 
@@ -156,7 +160,7 @@ int testThreadJoin() {
         break;
     }
 
-    printf("---[Thread Test {ThreadJoin()} special case9] [Success]--- \n");
+    printf("---[Thread Test {ThreadJoin()} special case9] [OK]--- \n");
     break;
   }
 
@@ -179,9 +183,8 @@ int testThreadJoin() {
     }
 
     t5->quit();
-    printf("---[Thread Test {ThreadJoin()} special case12] [Success]--- \n");
+    printf("---[Thread Test {ThreadJoin()} special case12] [OK]--- \n");
     break;
-
   }
 
   return 0;

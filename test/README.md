@@ -42,7 +42,6 @@
 - [x] JsonReader
 - [x] JsonValue
 - [x] JsonWriter
-- [ ] StringFormat
 - [x] XmlDocument
 - [x] XmlReader
 - [x] XmlValue

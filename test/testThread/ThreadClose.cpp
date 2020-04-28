@@ -17,10 +17,10 @@ public:
     void run() {
         //while(1) {
             sleep(1);
-            printf("CCTest run \n");   
+            //printf("CCTest run \n");
         //}
-        
-    }    
+
+    }
 };
 
 DECLARE_SIMPLE_CLASS(CloseThread1) IMPLEMENTS(Thread) {
@@ -31,7 +31,7 @@ public:
 
     void run() {
         sleep(5);
-        printf("i will kill \n");
+        //printf("i will kill \n");
         mTh->quit();
     }
 
@@ -50,5 +50,5 @@ int testThreadClose() {
     }
 
     sleep(10);
-    printf("stop!!! \n");
+    //printf("stop!!! \n");
 }

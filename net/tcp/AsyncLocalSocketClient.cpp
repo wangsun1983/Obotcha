@@ -153,8 +153,8 @@ void _AsyncLocalSocketClient::wait() {
         return;
     }
 
-    if(mAsyncLocalSocketClientThread->getStatus() == ThreadStatus::ThreadRunning
-       ||mAsyncLocalSocketClientThread->getStatus() == ThreadStatus::ThreadIdle) {
+    if(mAsyncLocalSocketClientThread->getStatus() == st(Thread)::Running
+       ||mAsyncLocalSocketClientThread->getStatus() == st(Thread)::Idle) {
         mAsyncLocalSocketClientThread->join();
     }
 }
@@ -170,8 +170,8 @@ void _AsyncLocalSocketClient::release() {
     }
     
     if(mAsyncLocalSocketClientThread != nullptr) {
-        if(mAsyncLocalSocketClientThread->getStatus() == ThreadStatus::ThreadRunning
-           ||mAsyncLocalSocketClientThread->getStatus() == ThreadStatus::ThreadIdle) {
+        if(mAsyncLocalSocketClientThread->getStatus() == st(Thread)::Running
+           ||mAsyncLocalSocketClientThread->getStatus() == st(Thread)::Idle) {
             if(mStatus->get() != LocalSocketClientThreadExited) {
                 mStatus->set(LocalSocketClientWaitingThreadExit);
             }

@@ -31,7 +31,7 @@ public:
     }
 
     void onInterrupt() {
-        
+
     }
 
 };
@@ -50,7 +50,7 @@ public:
     }
 
     void onInterrupt() {
-        
+
     }
 };
 
@@ -68,7 +68,7 @@ int testThreadRelease() {
             break;
         }
 
-        printf("---[Thread Test {release()} case2] [Success]--- \n");
+        printf("---[Thread Test {release()} case2] [OK]--- \n");
         break;
     }
 
@@ -80,7 +80,7 @@ int testThreadRelease() {
             t->start();
             list->add(t);
         }
-        
+
         sleep(10);
         if(mReleaseCount != 0) {
             printf("---[Thread Test {release()} case3],mReleaseCount is %d [FAILED]--- \n",mReleaseCount);
@@ -93,7 +93,7 @@ int testThreadRelease() {
             break;
         }
 
-        printf("---[Thread Test {release()} case5] [Success]--- \n");
+        printf("---[Thread Test {release()} case5] [OK]--- \n");
         break;
     }
 
@@ -125,7 +125,7 @@ int testThreadRelease() {
             break;
         }
 
-        printf("---[Thread Test {release()} case8] [Success]--- \n");
+        printf("---[Thread Test {release()} case8] [OK]--- \n");
         break;
 
     }

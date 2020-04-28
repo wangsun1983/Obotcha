@@ -32,7 +32,7 @@ public:
     }
 
     ~_MyNotifyTest1Thread() {
-        
+
     }
 
     void onInterrupt() {
@@ -54,7 +54,7 @@ int testThreadNotifyInterruptCase() {
             break;
         }
 
-        printf("---[Thread Test {Interrupt()} special case2] [Success]--- \n");
+        printf("---[Thread Test {Interrupt()} special case2] [OK]--- \n");
         break;
     }
 

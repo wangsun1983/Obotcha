@@ -182,8 +182,8 @@ void _AsyncTcpClient::wait() {
         return;
     }
 
-    if(mTcpClientThread->getStatus() == ThreadStatus::ThreadRunning
-       ||mTcpClientThread->getStatus() == ThreadStatus::ThreadIdle) {
+    if(mTcpClientThread->getStatus() == st(Thread)::Running
+       ||mTcpClientThread->getStatus() == st(Thread)::Idle) {
         mTcpClientThread->join();
     }
 }
@@ -200,8 +200,8 @@ void _AsyncTcpClient::release() {
     }
     
     if(mTcpClientThread != nullptr) {
-        if(mTcpClientThread->getStatus() == ThreadStatus::ThreadRunning
-           ||mTcpClientThread->getStatus() == ThreadStatus::ThreadIdle) {
+        if(mTcpClientThread->getStatus() == st(Thread)::Running
+           ||mTcpClientThread->getStatus() == st(Thread)::Idle) {
             if(mStatus->get() != ClientThreadExited) {
                 mStatus->set(ClientWaitingThreadExit);
             }
