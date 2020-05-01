@@ -24,6 +24,17 @@ public:
   }
 };
 
+DECLARE_SIMPLE_CLASS(LoopThreadJoinRun2) IMPLEMENTS(Runnable) {
+public:
+
+  void run() {
+      //value->incrementAndGet();
+      //printf("sleep1 start\n");
+      sleep(1000);
+      //printf("sleep2 start\n");
+  }
+};
+
 int testThreadLoopJoin() {
   //test1
   ArrayList<Thread> list = createArrayList<Thread>();
@@ -40,6 +51,36 @@ int testThreadLoopJoin() {
       list->get(i)->join();
   }
 
-  printf("---[Thread Test {Loop join()} special case1] [Success]--- \n");
+  list->clear();
+
+  //test2
+  ArrayList<Thread> list2 = createArrayList<Thread>();
+
+  for(int i = 0;i<1024*8;i++) {
+      //printf("create1 i is %d \n",i);
+      Thread t = createThread(createLoopThreadJoinRun2());
+      int ret = t->start();
+      list2->add(t);
+  }
+
+  for(int i = 0;i<1024*8;i++) {
+      list2->get(i)->join(10);
+  }
+
+  for(int i = 0;i<1024*8;i++) {
+      //printf("join1 i is %d \n",i);
+      if(list2->get(i)->getStatus() != st(Thread)::Running) {
+        printf("---[Thread Test {Loop join()} special case1,is is %d,status is %d \n] [Fail]--- \n",i,list->get(i)->getStatus());
+        break;
+      }
+  }
+  for(int i = 0;i<1024*8;i++) {
+      //printf("join1 i is %d \n",i);
+      list2->get(i)->quit();
+  }
+
+  list2->clear();
+
+  printf("---[Thread Test {Loop join()} special case2] [Success]--- \n");
 
 }

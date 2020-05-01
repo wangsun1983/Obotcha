@@ -267,11 +267,7 @@ int _PriorityPoolExecutor::awaitTermination(long millseconds) {
         return 0;
     }
 
-    if(NotifyByTimeout == mWaitCondition->wait(mWaitMutex,millseconds)) {
-        return -WaitTimeout;
-    }
-
-    return 0;
+    return mWaitCondition->wait(mWaitMutex,millseconds);
 }
 
 Future _PriorityPoolExecutor::submit(Runnable task) {

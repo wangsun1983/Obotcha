@@ -6,6 +6,7 @@
 #include "Condition.hpp"
 #include "Object.hpp"
 #include "System.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -23,7 +24,7 @@ int _Condition::wait(Mutex m,long int timeInterval) {
     struct timespec ts;
     if(timeInterval == 0) {
         wait(m);
-        return NotifyByThread;
+        return 0;
     }
     
     st(System)::getNextTime(timeInterval,&ts);
@@ -31,10 +32,10 @@ int _Condition::wait(Mutex m,long int timeInterval) {
     pthread_mutex_t* mutex_t = m->getMutex_t();
     int ret = pthread_cond_timedwait(&cond_t,mutex_t,&ts);
     if(ret == ETIMEDOUT) {
-        return NotifyByTimeout;
+        return -WaitTimeout;
     }
 
-    return NotifyByThread;
+    return 0;
 }
 
 void _Condition::notify() {

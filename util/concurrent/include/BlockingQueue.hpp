@@ -17,6 +17,7 @@
 #include "Float.hpp"
 #include "Integer.hpp"
 #include "InitializeException.hpp"
+#include "Error.hpp"
 
 using namespace std;
 
@@ -383,7 +384,7 @@ T _BlockingQueue<T>::deQueueFirst(long timeout) {
         AutoMutex l(mMutex);
         int size = mQueue.size();
         if(size == 0) {
-            if(NotifyByTimeout == mDequeueCond->wait(mMutex,timeout)) {
+            if(-WaitTimeout == mDequeueCond->wait(mMutex,timeout)) {
                 return nullptr;
             } 
 
@@ -438,7 +439,7 @@ T _BlockingQueue<T>::deQueueLast(long interval) {
         int size = mQueue.size();
         
         if(size == 0) {
-            if(NotifyByTimeout == mDequeueCond->wait(mMutex,interval)) {
+            if(-WaitTimeout == mDequeueCond->wait(mMutex,interval)) {
                 return nullptr;
             }
 

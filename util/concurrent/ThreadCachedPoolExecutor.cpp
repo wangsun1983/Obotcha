@@ -81,8 +81,7 @@ void _ThreadCachedPoolExecutorHandler::run() {
                     goto end;
                 }
 
-                int result = mTaskCondition->wait(mTaskWaitMutex,mThreadTimeout);
-                if(result == NotifyByTimeout) {
+                if(-WaitTimeout == mTaskCondition->wait(mTaskWaitMutex,mThreadTimeout)) {
                     goto end;
                 }
                 isNotifed = true;
@@ -229,7 +228,7 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
         return 0;
     }
 
-    if(mCacheManager->awaitTermination(millseconds) == NotifyByTimeout) {
+    if(mCacheManager->awaitTermination(millseconds) == -WaitTimeout) {
         return -WaitTimeout;
     }
     
@@ -474,20 +473,16 @@ int _CacheThreadManager::awaitTermination(long timeout) {
     {
         AutoMutex ll(mReleaseMutex);
         if(mIsRelease && getThreadSum() == 0) {
-            return NotifyByThread;
+            return 0;
         }
     }
 
     AutoMutex ll(mWaitTermMutex);
     if(mIsTerminated) {
-        return NotifyByThread;
+        return 0;
     }
     
-    if(NotifyByTimeout == mWaitTermCond->wait(mWaitTermMutex,timeout)) {
-        return NotifyByTimeout;
-    }
-    
-    return NotifyByThread;
+    return mWaitTermCond->wait(mWaitTermMutex,timeout);
 }
 
 void _CacheThreadManager::completeNotify(ThreadCachedPoolExecutorHandler h) {

@@ -64,7 +64,7 @@
 - [ ] PriorityPoolExecutor
 - [ ] ReadWriteLock
 - [ ] ScheduledThreadPoolExecutor
-- [ ] Thread
+- [x] Thread
 - [ ] ThreadCachedPoolExecutor
 - [ ] ThreadPoolExecutor
 - [ ] Timer

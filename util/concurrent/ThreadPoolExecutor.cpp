@@ -204,7 +204,6 @@ int _ThreadPoolExecutor::execute(Runnable runnable) {
     }
     
     FutureTask task = createFutureTask(FUTURE_TASK_NORMAL,runnable);
-
     mPool->enQueueLast(task);
 }
 
@@ -276,6 +275,24 @@ bool _ThreadPoolExecutor::isTerminated() {
     return mIsTerminated;
 }
 
+void _ThreadPoolExecutor::awaitTermination() {
+    if(!mIsShutDown) {
+        return;
+    }
+
+    if(mIsTerminated) {
+        return;
+    }
+
+    AutoMutex ll(mWaitMutex);
+
+    if(mIsTerminated) {
+        return;
+    }
+
+    mWaitCondition->wait(mWaitMutex);
+}
+
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     if(!mIsShutDown) {
         return -InvalidStatus;
@@ -291,11 +308,7 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
         return 0;
     }
 
-    if(NotifyByTimeout == mWaitCondition->wait(mWaitMutex,millseconds)) {
-        return -WaitTimeout;
-    }
-
-    return 0;
+    return mWaitCondition->wait(mWaitMutex,millseconds);
 }
 
 void _ThreadPoolExecutor::onCompleteNotify(ThreadPoolExecutorHandler h) {
@@ -333,6 +346,8 @@ _ThreadPoolExecutor::~_ThreadPoolExecutor() {
 }
 
 void _ThreadPoolExecutor::onCancel(FutureTask t) {
+    bool isHit = false;
+
     if(mIsShutDown ||mIsTerminated) {
         return;
     }
@@ -352,16 +367,15 @@ void _ThreadPoolExecutor::onCancel(FutureTask t) {
                 if(h->shutdownTask(t)) {
                     AutoMutex ll1(mHandlersMutex);
                     mHandlers->remove(h);
+                    isHit = true;
                     break;
                 }
             }
         }
     }
 
-    
-
     //we should insert a new
-    if(!mIsShutDown) {
+    if(!mIsShutDown && isHit) {
         ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool,this);
         AutoMutex ll1(mHandlersMutex);
         mHandlers->add(h);

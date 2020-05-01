@@ -60,7 +60,6 @@ void _FutureTask::cancel() {
     if(mStatus == FUTURE_CANCEL) {
         return;
     }
-
     mStatus = FUTURE_CANCEL;
     if(mRunnable != nullptr) {
         mRunnable->onInterrupt();

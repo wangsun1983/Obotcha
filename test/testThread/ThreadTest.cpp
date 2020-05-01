@@ -27,6 +27,7 @@ extern int testThreadStart();
 extern int testThreadClose();
 extern int testThreadLoopCreate();
 extern int testThreadLoopJoin();
+extern int testthreadloopquit();
 
 int main() {
 
@@ -40,6 +41,7 @@ int main() {
     testThreadRelease();
     testThreadClose();
     testThreadLoopCreate();
+    testthreadloopquit();
     testThreadLoopJoin();
 
     sleep(10);

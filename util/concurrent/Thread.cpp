@@ -192,11 +192,13 @@ void _Thread::join() {
     }
 }
 
-void _Thread::join(long timeInterval) {
+int _Thread::join(long timeInterval) {
     AutoMutex ll(mJoinMutex);
     if(getStatus() == Running) {
-        mJoinDondtion->wait(mJoinMutex,timeInterval);
+        return mJoinDondtion->wait(mJoinMutex,timeInterval);
     }
+
+    return 0;
 }
 
 int _Thread::getStatus() {

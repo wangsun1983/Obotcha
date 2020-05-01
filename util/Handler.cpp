@@ -145,13 +145,13 @@ void _Handler::run() {
             }
             
             while(mMessagePool->size() == 0) {
-                int notifyResult = NotifyByThread;
+                int notifyResult = 0;
                 if(waitTime != 0) {
                     notifyResult = mCondition->wait(mMutex,waitTime - st(System)::currentTimeMillis());
                 } else {
                     mCondition->wait(mMutex);
                 }
-                if(notifyResult == NotifyByTimeout) {
+                if(notifyResult == -WaitTimeout) {
                     waitTime = scanDelayedMessage();
                 }
             }

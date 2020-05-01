@@ -1,5 +1,6 @@
 #include "CountDownLatch.hpp"
 #include "Error.hpp"
+#include "Thread.hpp"
 
 namespace obotcha {
 
@@ -32,11 +33,7 @@ int _CountDownLatch::await(long v) {
         return -AlreadyDestroy;
     }
     
-    if(NotifyByTimeout == waitCond->wait(waitMutex,v)) {
-        return -WaitTimeout;
-    }
-
-    return 0;
+    return waitCond->wait(waitMutex,v);
 }
 
 int _CountDownLatch::await() {

@@ -10,11 +10,6 @@
 
 namespace obotcha {
 
-enum ConditionNotifyType {
-    NotifyByThread,
-    NotifyByTimeout
-};
-
 DECLARE_SIMPLE_CLASS(Condition) {
 
 public:

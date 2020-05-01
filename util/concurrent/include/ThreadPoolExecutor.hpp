@@ -89,6 +89,8 @@ public:
 
     bool isTerminated();
 
+    void awaitTermination();
+
     int awaitTermination(long timeout);
 
     Future submit(Runnable task);

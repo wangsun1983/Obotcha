@@ -22,17 +22,6 @@ namespace obotcha {
 
 class _Thread;
 
-#if 0
-enum ThreadStatus {
-    ThreadNotExist = 0,
-    ThreadNotStart,
-    ThreadIdle,
-    ThreadRunning,
-    ThreadWaitExit,
-    ThreadComplete
-};
-#endif
-
 DECLARE_SIMPLE_CLASS(Thread) {
 
 public:
@@ -49,7 +38,7 @@ public:
 	
 	void join();
 
-    void join(long millseconds);
+    int join(long millseconds);
 
     int getStatus();
 
