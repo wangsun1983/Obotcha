@@ -150,6 +150,8 @@ public:
 
     int execute(Runnable command);
 
+    void awaitTermination();
+
     int awaitTermination(long timeout);
 
     bool isShutdown();

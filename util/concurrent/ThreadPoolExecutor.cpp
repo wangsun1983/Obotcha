@@ -267,30 +267,12 @@ Future _ThreadPoolExecutor::submit(Runnable r) {
     return createFuture(task);
 }
 
-bool _ThreadPoolExecutor::isShutdown() {
-    return mIsShutDown;
-}
-
 bool _ThreadPoolExecutor::isTerminated() {
     return mIsTerminated;
 }
 
 void _ThreadPoolExecutor::awaitTermination() {
-    if(!mIsShutDown) {
-        return;
-    }
-
-    if(mIsTerminated) {
-        return;
-    }
-
-    AutoMutex ll(mWaitMutex);
-
-    if(mIsTerminated) {
-        return;
-    }
-
-    mWaitCondition->wait(mWaitMutex);
+    awaitTermination(0);
 }
 
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
@@ -335,6 +317,10 @@ void _ThreadPoolExecutor::onCompleteNotify(ThreadPoolExecutorHandler h) {
 int _ThreadPoolExecutor::getThreadsNum() {
     AutoMutex ll(mProtectMutex);
     return mHandlers->size();
+}
+
+int _ThreadPoolExecutor::getQueueSize() {
+    return mPool->size();
 }
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {

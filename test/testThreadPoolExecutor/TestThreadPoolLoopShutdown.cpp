@@ -61,6 +61,8 @@ int testThreadPoolLoopShutdown() {
       printf("---[ThreadPoolExecutor Loop shutdown} special case2,value is %d] [FAIL]--- \n",interruptCount->get());
     }
 
+    executor2->shutdown();
+
     printf("---[ThreadPoolExecutor Loop Submit} special case100] [OK]--- \n");
 
     return 0;

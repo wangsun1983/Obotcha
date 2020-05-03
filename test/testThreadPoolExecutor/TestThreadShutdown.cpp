@@ -76,13 +76,11 @@ public:
 
 private:
     ThreadPoolExecutor mPool;
-    long interval;    
+    long interval;
 };
 
-
-
 int testThreadShutdown() {
-    
+
     //TestThread onInterrupt case1
     while(1) {
         ThreadPoolExecutor pool = createThreadPoolExecutor();
@@ -100,7 +98,7 @@ int testThreadShutdown() {
             break;
         }
 
-        printf("---[ThreadPoolExecutor Test {shutdown()} special case3] [Success]--- \n");
+        printf("---[ThreadPoolExecutor Test {shutdown()} special case3] [OK]--- \n");
         break;
     }
 
@@ -116,10 +114,10 @@ int testThreadShutdown() {
         sleep(1);
         if(run->getCount() != 5) {
             printf("---[ThreadPoolExecutor Test {shutdown()} special case4] [FAIL]--- \n");
-            break;   
+            break;
         }
-        
-        printf("---[ThreadPoolExecutor Test {shutdown()} special case5] [Success]--- \n");
+        pool->shutdown();
+        printf("---[ThreadPoolExecutor Test {shutdown()} special case5] [OK]--- \n");
         break;
     }
 
@@ -132,9 +130,9 @@ int testThreadShutdown() {
             printf("---[ThreadPoolExecutor Test {shutdown()} special case6] [FAIL]--- \n");
             break;
         }
-        
+
         pool->shutdown();
-        printf("---[ThreadPoolExecutor Test {shutdown()} special case7] [Success]--- \n");
+        printf("---[ThreadPoolExecutor Test {shutdown()} special case7] [OK]--- \n");
         break;
     }
 
@@ -150,8 +148,8 @@ int testThreadShutdown() {
             printf("---[ThreadPoolExecutor Test {shutdown()} special case8] [FAIL]--- \n");
             break;
         }
-        
-        printf("---[ThreadPoolExecutor Test {shutdown()} special case9] [Success]--- \n");
+
+        printf("---[ThreadPoolExecutor Test {shutdown()} special case9] [OK]--- \n");
         break;
     }
 

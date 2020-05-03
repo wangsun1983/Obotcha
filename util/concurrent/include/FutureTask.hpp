@@ -29,7 +29,7 @@ public:
 
     void wait();
 
-    void wait(long);
+    int wait(long);
 
     void cancel();
 

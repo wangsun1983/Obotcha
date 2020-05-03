@@ -36,10 +36,10 @@ public:
         //{
         AutoMutex ll(numMutex);
             //printf("numMutex2 count is %d \n",numMutex->getStrongCount());
-        releaseCount++;    
+        releaseCount++;
         //}
         //printf("numMutex2 count is %d,this is %lx \n",numMutex->getStrongCount(),this);
-        
+
     }
 
 };
@@ -65,16 +65,15 @@ int releaseTest() {
                 break;
             }
 
-            printf("---[TestThreadPoolExecutor Test {release()}, case4] [Success]--- \n");
+            printf("---[TestThreadPoolExecutor Test {release()}, case4] [OK]--- \n");
             break;
         }
 
         sleep(1);
-        printf("---[TestThreadPoolExecutor Test {release()} case5] [Success]--- \n");
+        printf("---[TestThreadPoolExecutor Test {release()} case5] [OK]--- \n");
         break;
     }
 
     sleep(1);
 
 }
-

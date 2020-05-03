@@ -17,7 +17,6 @@ using namespace obotcha;
 int num = 0;
 Mutex mutex;
 
-
 DECLARE_SIMPLE_CLASS(MyRunTest5) IMPLEMENTS(Runnable) {
 public:
    void run() {
@@ -27,7 +26,7 @@ public:
           num++;
       }
       //printf("myruntest 5 trace2 \n");
-      sleep(1);
+      //sleep(1);
       //printf("myruntest 5 trace3 \n");
    }
 };
@@ -38,7 +37,7 @@ int numTest() {
     ExecutorService pool = st(Executors)::newCachedThreadPool();
     while(1) {
         //start test 1
-        int testNum = 64;
+        int testNum = 1024*32;
         //int maxThreadNum = 0;
         for(int i = 0;i < testNum;i++) {
             MyRunTest5 run1 = createMyRunTest5();
@@ -46,7 +45,8 @@ int numTest() {
         }
 
         int maxThreadNum = pool->getThreadsNum();
-            
+        printf("maxtread is %d \n",maxThreadNum);
+
         sleep(20);
 
         if(num != testNum) {
@@ -68,7 +68,7 @@ int numTest() {
             printf("---[TestCachedPoolExecutor NumTest {case3] [FAIL]---,thread size is  %d \n",threadsize);
             break;
         }
-        
+
         pool->shutdown();
         printf("---[TestCachedPoolExecutor NumTest {case4] [Success]--- \n");
         break;

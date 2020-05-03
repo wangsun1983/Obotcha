@@ -25,17 +25,11 @@ namespace obotcha {
 class _ThreadCachedPoolExecutor;
 class _CacheThreadManager;
 
-enum CachedNotifyResult {
-    CachedNotifySuccess,
-    CachedNotifyFailAlreadyRelease,
-};
-
-
 DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutorHandler) IMPLEMENTS(Thread) {
 
 public:
 
-    _ThreadCachedPoolExecutorHandler(BlockingQueue<FutureTask>,Mutex taskMutex,sp<_CacheThreadManager>,long timeout);
+    _ThreadCachedPoolExecutorHandler(BlockingQueue<FutureTask>,sp<_CacheThreadManager>,long timeout);
         
     bool isTerminated();
 
@@ -76,12 +70,9 @@ private:
 
     BlockingQueue<FutureTask> mPool;
 
-    Mutex mTaskMutex;
-
     bool isNotifed;
 };
 
-//wangsl
 DECLARE_SIMPLE_CLASS(CacheThreadManager) {
     
 public:
@@ -144,7 +135,12 @@ private:
     Condition mWaitTermCond;
 
     mutable volatile bool mIsRelease;
+
     Mutex mReleaseMutex;
+
+    Mutex mThreadNumMutex;
+
+    int mThreadNum;
 };
 
 
@@ -154,12 +150,7 @@ DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(ExecutorService)
 public:
     friend class _ThreadCachedPoolExecutorHandler;
     friend class _CacheThreadManager;
-
-    enum CachedExecuteResult {
-        success,
-        failShutDown,
-        failUnknown
-    };
+    friend class _FutureTask;
 
 	_ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout);
 
@@ -171,11 +162,9 @@ public:
 
     int execute(Runnable command);
 
-    bool isShutdown();
-
     bool isTerminated();
 
-    int awaitTermination();
+    void awaitTermination();
 
     int awaitTermination(long timeout);
 
@@ -183,18 +172,18 @@ public:
 
     int getThreadsNum();
 
-    void onCancel(FutureTask);
-
     ~_ThreadCachedPoolExecutor();
 
 
 private:
-    AtomicInteger mIdleThreadNum ;
+    void onCancel(FutureTask);
     
     bool isOverMinSize();
 
     void removeHandler(ThreadCachedPoolExecutorHandler h);
-
+    
+    AtomicInteger mIdleThreadNum ;
+    
     Mutex mHandlerMutex;
     
     ArrayList<ThreadCachedPoolExecutorHandler> mHandlers;

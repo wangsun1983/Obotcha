@@ -26,10 +26,9 @@ public:
 };
 
 int testThreadDestroy() {
-    
+
     //TestThread onInterrupt case1
-    while(1)
-    {
+    while(1) {
         try {
             {
                 ThreadPoolExecutor pool = createThreadPoolExecutor();
@@ -38,11 +37,11 @@ int testThreadDestroy() {
             }
             sleep(10);
         } catch(ExecutorDestructorException e) {
-            printf("---[ThreadPoolExecutor Test {destroy()} special case1] [Success]--- \n");
+            printf("---[ThreadPoolExecutor Test {destroy()} special case1] [FAIL]--- \n");
             break;
         }
-        
-        printf("---[ThreadPoolExecutor Test {destroy()} special case1] [Fail]--- \n");
+
+        printf("---[ThreadPoolExecutor Test {destroy()} special case1] [OK]--- \n");
         break;
     }
 

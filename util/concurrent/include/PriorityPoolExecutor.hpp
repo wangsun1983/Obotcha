@@ -91,9 +91,9 @@ public:
 
     int shutdown();
 
-    bool isShutdown();
-
     bool isTerminated();
+
+    void awaitTermination();
 
     int awaitTermination(long timeout);
 

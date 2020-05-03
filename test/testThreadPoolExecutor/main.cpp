@@ -22,7 +22,6 @@ extern int testThreadPoolLoopSubmit();
 extern int testThreadPoolLoopShutdown();
 
 int main() {
-#if 0
     normalTest();
     sleep(1);
     testRunnable_onInterrupt();
@@ -32,8 +31,7 @@ int main() {
     testThreadShutdown();
     testThreadDestroy();
     testThreadPoolLoopSubmit();
-#endif
     testThreadPoolLoopShutdown();
-    //sleep(10);
+    sleep(10);
     return 1;
 }

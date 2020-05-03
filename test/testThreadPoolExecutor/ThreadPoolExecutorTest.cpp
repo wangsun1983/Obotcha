@@ -56,24 +56,24 @@ public:
 int normalTest() {
     printf("---[TestThreadPoolExecutor Normal Test Start]--- \n");
     //_ThreadPoolExecutor(int queuesize,int threadnum);
-   
+
     while(1) {
         {
             ExecutorService pool = st(Executors)::newFixedThreadPool(1,1);
             pool->shutdown();
         }
 
-        sleep(1);        
+        sleep(1);
 
-        printf("---[TestThreadPoolExecutor Test {constructor()} case1] [Success]--- \n");
+        printf("---[TestThreadPoolExecutor Test {constructor()} case1] [OK]--- \n");
         break;
     }
-    
+
     //_ThreadPoolExecutor();
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(1,1);
         pool->shutdown();
-        printf("---[TestThreadPoolExecutor Test {constructor2()} case1] [Success]--- \n");
+        printf("---[TestThreadPoolExecutor Test {constructor2()} case1] [OK]--- \n");
         break;
     }
 
@@ -101,7 +101,7 @@ int normalTest() {
             break;
         }
 
-        printf("---[TestThreadPoolExecutor Test {shutdown()} case4] [Success]--- \n");
+        printf("---[TestThreadPoolExecutor Test {shutdown()} case4] [OK]--- \n");
         break;
     }
 
@@ -137,11 +137,11 @@ int normalTest() {
             break;
         }
 
-        printf("---[TestThreadPoolExecutor Test {awaitTermination()} case4] [Success]--- \n");
+        printf("---[TestThreadPoolExecutor Test {awaitTermination()} case4] [OK]--- \n");
         runTest2Mutex->unlock();
         break;
     }
-   
+
 
     //int awaitTermination(long timeout = 0);
     while(1) {
@@ -171,11 +171,11 @@ int normalTest() {
             break;
         }
 
-        printf("---[TestThreadPoolExecutor Test {awaitTermination()} case8] [Success]--- \n");
+        printf("---[TestThreadPoolExecutor Test {awaitTermination()} case8] [OK]--- \n");
         break;
     }
 
-  
+
     //int awaitTermination(long timeout = max);
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
@@ -190,10 +190,10 @@ int normalTest() {
             break;
         }
 
-        printf("---[TestThreadPoolExecutor Test {awaitTermination()} case10] [Success]--- \n");
+        printf("---[TestThreadPoolExecutor Test {awaitTermination()} case10] [OK]--- \n");
         break;
     }
-   
+
 
     //int getThreadsNum();
     while(1) {
@@ -203,7 +203,7 @@ int normalTest() {
             break;
         }
         pool->shutdown();
-        printf("---[TestThreadPoolExecutor Test {getThreadsNum()} case2] [Success]--- \n");
+        printf("---[TestThreadPoolExecutor Test {getThreadsNum()} case2] [OK]--- \n");
         break;
     }
 
@@ -224,9 +224,8 @@ int normalTest() {
             break;
         }
         pool->shutdown();
-        printf("---[TestThreadPoolExecutor Test {submit()} case3] [Success]--- \n");
+        printf("---[TestThreadPoolExecutor Test {submit()} case3] [OK]--- \n");
         break;
     }
-   
-}
 
+}

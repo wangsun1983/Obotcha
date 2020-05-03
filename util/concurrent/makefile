@@ -1,7 +1,6 @@
 concurrentDir = ./util/concurrent
 
 link += condition \
-	executorservice \
 	scheduledthreadpoolexecutor \
 	threadpoolexecutor \
 	threadcachedpoolexecutor \
@@ -22,7 +21,6 @@ link += condition \
 	executordestructorexception \
 
 objs += $(outtmp)/condition.o \
-	$(outtmp)/executorservice.o \
 	$(outtmp)/scheduledthreadpoolexecutor.o \
 	$(outtmp)/threadpoolexecutor.o \
 	$(outtmp)/threadcachedpoolexecutor.o \
@@ -45,9 +43,6 @@ objs += $(outtmp)/condition.o \
 
 condition :$(concurrentDir)/Condition.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Condition.cpp -o $(outtmp)/condition.o
-
-executorservice :$(concurrentDir)/ExecutorService.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ExecutorService.cpp -o $(outtmp)/executorservice.o
 
 threadpoolexecutor :$(concurrentDir)/ThreadPoolExecutor.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ThreadPoolExecutor.cpp -o $(outtmp)/threadpoolexecutor.o

@@ -34,7 +34,7 @@ int releaseTest() {
         //printf("start trace \n");
         for(int i = 0;i < 100;i++) {
          //   printf("submit task num is %d \n",i);
-            pool->submit(createReleaseTestRunnable());  
+            pool->submit(createReleaseTestRunnable());
         }
         //printf("handler count1 is %d \n",st(ThreadCachedPoolExecutorHandler)::getDebugReferenceCount());
 

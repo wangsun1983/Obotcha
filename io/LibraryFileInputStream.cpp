@@ -9,10 +9,8 @@ _LibraryFileInputStream::_LibraryFileInputStream(LibraryFile f) {
 }
     
 _LibraryFileInputStream::_LibraryFileInputStream(String path) {
-    mFile = createLibraryFile();
-    mFile->setPath(path);
+    mFile = createLibraryFile(path);
 }
-
 
 int _LibraryFileInputStream::read() {
     throw MethodNotSupportException("LibraryFileInputStream not support read");

@@ -245,12 +245,12 @@ int _PriorityPoolExecutor::shutdown() {
     //startWaitTerminate();
 }
 
-bool _PriorityPoolExecutor::isShutdown() {
-    return isShutDown;
-}
-
 bool _PriorityPoolExecutor::isTerminated() {
     return isTermination;
+}
+
+void _PriorityPoolExecutor::awaitTermination() {
+    awaitTermination(0);
 }
 
 int _PriorityPoolExecutor::awaitTermination(long millseconds) {

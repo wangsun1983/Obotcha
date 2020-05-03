@@ -40,14 +40,14 @@ void _FutureTask::wait() {
     mCompleteCond->wait(mCompleteMutex);
 }
     
-void _FutureTask::wait(long interval) {
+int _FutureTask::wait(long interval) {
     AutoMutex l(mCompleteMutex);
     
     if(mStatus == FUTURE_COMPLETE || mStatus == FUTURE_CANCEL) {
-        return;
+        return 0;
     }
 
-    mCompleteCond->wait(mCompleteMutex,interval);
+    return mCompleteCond->wait(mCompleteMutex,interval);
 }
 
 void _FutureTask::cancel() {

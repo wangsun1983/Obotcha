@@ -76,6 +76,7 @@ DECLARE_SIMPLE_CLASS(ThreadPoolExecutor) IMPLEMENTS(ExecutorService)
 public:
 
     friend class _ThreadPoolExecutorHandler;
+    friend class _FutureTask;
 
 	_ThreadPoolExecutor(int queuesize,int threadnum);
 
@@ -84,8 +85,6 @@ public:
     int shutdown();
 
     int execute(Runnable command);
-
-    bool isShutdown();
 
     bool isTerminated();
 
@@ -97,12 +96,14 @@ public:
 
     int getThreadsNum();
 
-    void onCancel(FutureTask);
+    int getQueueSize();
 
     ~_ThreadPoolExecutor();
 
 private:
     void onCompleteNotify(ThreadPoolExecutorHandler h);
+
+    void onCancel(FutureTask);
 
     BlockingQueue<FutureTask> mPool;
     

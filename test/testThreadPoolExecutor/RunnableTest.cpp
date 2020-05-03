@@ -51,9 +51,8 @@ int testRunnable_onInterrupt() {
             break;
         }
 
-        printf("---[TestThreadPoolExecutor TestOnInterrupt {onInterrupt()} case1] [Success]--- \n");
+        printf("---[TestThreadPoolExecutor TestOnInterrupt {onInterrupt()} case1] [OK]--- \n");
         break;
     }
 
 }
-

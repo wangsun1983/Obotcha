@@ -47,13 +47,16 @@ public:
     //virtual int shutdownNow() = 0;
 
     //if this executor has been shut down
-    virtual bool isShutdown() = 0;
+    //virtual bool isShutdown() = 0;
 
     //if all tasks have completed following shut down
     virtual bool isTerminated() = 0;
 
     //blocks until all tasks have completed execution after a shutdown
     virtual int awaitTermination(long timeout) = 0;
+
+    //wait for thread pool terminatin
+    virtual void awaitTermination() = 0;
 
     //virtual Future submit(Runnable task) = 0;
     virtual Future submit(Runnable task) = 0;

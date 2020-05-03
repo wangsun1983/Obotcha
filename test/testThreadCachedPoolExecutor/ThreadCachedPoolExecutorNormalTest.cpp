@@ -87,7 +87,7 @@ int normalTest() {
         pool->shutdown();
         printf("shutdown start2\n");
         sleep(5);
-        if(!pool->isShutdown()) {
+        if(!pool->isTerminated()) {
             printf("---[TestCachedPoolExecutor Test {shutdown()} case1] [FAIL]--- \n");
             break;
         }

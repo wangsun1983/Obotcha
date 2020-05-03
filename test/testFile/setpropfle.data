@@ -7,15 +7,13 @@
 extern int testFileGetName();
 extern int testFileGetAbsPath();
 extern int testCanRwx();
-extern int testFileSetRwx();
 
 int main() {
 
     testFileGetName();
     testFileGetAbsPath();
     testCanRwx();
-    testFileSetRwx();
-
+    
 #if 0
     char *path = "bb";
 
