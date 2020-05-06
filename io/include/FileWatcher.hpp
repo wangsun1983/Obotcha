@@ -76,7 +76,7 @@ private:
 
     _FileWatcher();
 
-    static _FileWatcher *instance;
+    Mutex mutex;
     
     void openInotifyDev();
 

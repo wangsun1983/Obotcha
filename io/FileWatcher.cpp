@@ -19,28 +19,18 @@
 
 namespace obotcha {
 
-static Mutex mutex = createMutex("FileWatchMutex");
-
-_FileWatcher *_FileWatcher::instance = nullptr;
-
 _FileWatcher::_FileWatcher() {
+    mutex = createMutex("FileWatchMutex");
     mListeners = createHashMap<int,ArrayList<LocalFileObserverMonitor>>();
     openInotifyDev();
     start();
 }
 
 sp<_FileWatcher> _FileWatcher::getInstance() {
-    if(instance != nullptr) {
-        sp<_FileWatcher> s;
-        s.set_pointer(instance);
-        return s;
-    }
-
-    AutoMutex l(mutex);
-    if(instance == nullptr) {
-        instance = new _FileWatcher();
-    }
-    return instance;
+    static _FileWatcher *instance = new _FileWatcher();
+    sp<_FileWatcher> s;
+    s.set_pointer(instance);
+    return s;
 }
 
 int _FileWatcher::startWatch(String filepath,int op,sp<_FileObserver> observer) {

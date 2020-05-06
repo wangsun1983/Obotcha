@@ -34,11 +34,9 @@ public:
     void clear();
     
 private:
-    static Mutex mMutex;
+    Mutex mMutex;
 
     HashMap<int,HttpV1ClientInfo> mClients;
-
-    static sp<_HttpV1ClientManager> mInstance;
 
     _HttpV1ClientManager();
 };

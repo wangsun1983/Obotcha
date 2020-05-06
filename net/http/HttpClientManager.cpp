@@ -3,29 +3,18 @@
 namespace obotcha {
 
 //HttpV1ClientManager
-HttpV1ClientManager _HttpV1ClientManager::mInstance = nullptr;
-Mutex _HttpV1ClientManager::mMutex = createMutex("HttpV1Server Mutex");;
+//HttpV1ClientManager _HttpV1ClientManager::mInstance = nullptr;
+//Mutex _HttpV1ClientManager::mMutex = createMutex("HttpV1Server Mutex");;
 
 _HttpV1ClientManager::_HttpV1ClientManager() {
     mClients = createHashMap<int,HttpV1ClientInfo>();
 }
 
 sp<_HttpV1ClientManager> _HttpV1ClientManager::getInstance() {
-    if(mInstance != nullptr) {
-        return mInstance;
-    }
-
-    {
-        AutoMutex l(mMutex);
-        if(mInstance != nullptr) {
-            return mInstance;
-        }
-        
-        _HttpV1ClientManager *instance = new _HttpV1ClientManager();
-        mInstance.set_pointer(instance);
-    }
-
-    return mInstance;
+    static _HttpV1ClientManager *instance = new _HttpV1ClientManager();
+    HttpV1ClientManager s;
+    s.set_pointer(instance);
+    return s;
 }
 
 HttpV1ClientInfo _HttpV1ClientManager::getClientInfo(int fd) {

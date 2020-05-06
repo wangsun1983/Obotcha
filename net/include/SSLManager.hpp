@@ -19,9 +19,9 @@ public:
 private:
     _SSLManager();
 
-    static SSLManager mInstance;
+    //static SSLManager mInstance;
    
-    static Mutex mMutex;
+    Mutex mMutex;
 
     HashMap<int,SSLInfo> mSSLMap;
 };

@@ -101,9 +101,9 @@ public:
 private:
     _Enviroment();
 
-    static Enviroment mInstance;
+    //static Enviroment mInstance;
    
-    static Mutex mMutex;
+    //static Mutex mMutex;
    
     Properties mProp;
 };

@@ -23,7 +23,7 @@ namespace obotcha {
 #define TAG "WebSocketServer"
 
 //--------------------WebSocketClientManager-----------------
-WebSocketClientManager _WebSocketClientManager::mInstance = nullptr;
+// _WebSocketClientManager::mInstance = nullptr;
 Mutex _WebSocketClientManager::mMutex = createMutex("WebSocketClientManagerMutex");
 
 _WebSocketClientManager::_WebSocketClientManager() {
@@ -31,19 +31,10 @@ _WebSocketClientManager::_WebSocketClientManager() {
 }
 
 WebSocketClientManager _WebSocketClientManager::getInstance() {
-    if(mInstance != nullptr) {
-        return mInstance;
-    }
-
-    AutoMutex ll(mMutex);
-    if(mInstance != nullptr) {
-        return mInstance;
-    }
-
-    //mInstance = createWebSocketClientManager();
-    _WebSocketClientManager *v = new _WebSocketClientManager();
-    mInstance.set_pointer(v);
-    return mInstance;
+    static _WebSocketClientManager *v = new _WebSocketClientManager();
+    WebSocketClientManager s;
+    s.set_pointer(v);
+    return s;
 }
 
 bool _WebSocketClientManager::addClient(int fd,int version) {
