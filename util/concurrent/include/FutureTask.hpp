@@ -1,5 +1,5 @@
-#ifndef __FEATURE_TASK_HPP__
-#define __FEATURE_TASK_HPP__
+#ifndef __OBOTCHA_FUTURE_TASK_HPP__
+#define __OBOTCHA_FUTURE_TASK_HPP__
 
 #include "Mutex.hpp"
 #include "Condition.hpp"

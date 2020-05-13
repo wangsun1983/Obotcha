@@ -1,5 +1,5 @@
-#ifndef __POSIX_MQ_HPP__
-#define __POSIX_MQ_HPP__
+#ifndef __OBOTCHA_POSIX_MQ_HPP__
+#define __OBOTCHA_POSIX_MQ_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

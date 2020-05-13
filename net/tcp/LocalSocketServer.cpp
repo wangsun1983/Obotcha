@@ -10,11 +10,10 @@
 #include <sys/epoll.h>
 #include <stddef.h>
 
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "LocalSocketServer.hpp"
 #include "Pipe.hpp"
 #include "NetUtils.hpp"
-#include "AutoMutex.hpp"
 #include "Error.hpp"
 #include "InitializeException.hpp"
 
@@ -129,12 +128,12 @@ void _LocalSocketServerThread::run() {
 }
 
 void _LocalSocketServerThread::addClientFd(int fd) {
-    AutoMutex l(mClientMutex);
+    AutoLock l(mClientMutex);
     mClients->insertLast(createInteger(fd));
 }
 
 void _LocalSocketServerThread::removeClientFd(int fd) {
-    AutoMutex l(mClientMutex);
+    AutoLock l(mClientMutex);
     int size = mClients->size();
     
     for(int index = 0;index<size;index++) {
@@ -256,7 +255,7 @@ void _LocalSocketServer::release() {
     }
 
     {
-        AutoMutex l(mClientsMutex);
+        AutoLock l(mClientsMutex);
         int size = mClients->size();
         for(int index = 0;index < size;index++) {
             int fd = mClients->get(index)->toValue();

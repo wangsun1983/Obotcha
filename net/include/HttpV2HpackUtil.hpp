@@ -1,5 +1,5 @@
-#ifndef __HTTP_V2_HPACK_UTIL__
-#define __HTTP_V2_HPACK_UTIL__
+#ifndef __OBOTCHA_HTTP_V2_HPACK_UTIL__
+#define __OBOTCHA_HTTP_V2_HPACK_UTIL__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

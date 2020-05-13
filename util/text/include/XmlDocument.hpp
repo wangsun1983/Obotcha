@@ -1,5 +1,5 @@
-#ifndef __XML_DOCUMENT_H__
-#define __XML_DOCUMENT_H__
+#ifndef __OBOTCHA_XML_DOCUMENT_H__
+#define __OBOTCHA_XML_DOCUMENT_H__
 
 #include "iniparser.h"
 #include "dictionary.h"

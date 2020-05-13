@@ -1,5 +1,5 @@
-#ifndef __ENVIROMENT_HPP__
-#define __ENVIROMENT_HPP__
+#ifndef __OBOTCHA_ENVIROMENT_HPP__
+#define __OBOTCHA_ENVIROMENT_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

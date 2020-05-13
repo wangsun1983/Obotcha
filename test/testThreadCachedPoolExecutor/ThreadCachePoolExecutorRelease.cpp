@@ -9,7 +9,7 @@
 #include "Executors.hpp"
 #include "Future.hpp"
 #include "System.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "Mutex.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
 

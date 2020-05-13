@@ -1,5 +1,5 @@
-#ifndef __FILAMENT_HPP__
-#define __FILAMENT_HPP__
+#ifndef __OBOTCHA_FILAMENT_HPP__
+#define __OBOTCHA_FILAMENT_HPP__
 
 #include "co_routine.h"
 

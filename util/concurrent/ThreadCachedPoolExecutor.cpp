@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <vector>
+#include <unistd.h>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -7,7 +8,7 @@
 #include "BlockingQueue.hpp"
 #include "ConcurrentQueue.hpp"
 #include "Thread.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "Condition.hpp"
 #include "Thread.hpp"
 #include "Future.hpp"
@@ -47,6 +48,10 @@ _ThreadCachedPoolExecutorHandler::_ThreadCachedPoolExecutorHandler(BlockingQueue
     mThreadTimeout = timeout;
 
     isNotifed = false;
+
+    mCurrentTask = nullptr;
+
+    mStop = false;
 }
 
 _ThreadCachedPoolExecutorHandler::~_ThreadCachedPoolExecutorHandler() {
@@ -60,35 +65,44 @@ void _ThreadCachedPoolExecutorHandler::stop() {
 }
 
 void _ThreadCachedPoolExecutorHandler::doTask(FutureTask task) {
-    mCurrentTask = task;
-    isNotifed = true;
-    mTaskCondition->notify();
+    //mCurrentTask = task;
+    //isNotifed = true;
+    //mTaskCondition->notify();
 }
 
 void _ThreadCachedPoolExecutorHandler::run() {
     ThreadCachedPoolExecutorHandler h;
     h.set_pointer(this);
-
+    //printf("ThreadCachedPoolExecutorHandler run \n");
     while(!mStop) {
         //long start = st(System)::currentTimeMillis();
         {
-            AutoMutex ll(mTaskWaitMutex);
+            //AutoLock ll(mTaskWaitMutex);
             if(mCurrentTask == nullptr) {
+                //printf("ThreadCachedPoolExecutorHandler run trace1 \n");
                 
                 if(mCacheManager->idleNotify(h) != 0) {
+                    //printf("ThreadCachedPoolExecutorHandler run trace2 \n");
                     goto end;
                 }
 
-                if(-WaitTimeout == mTaskCondition->wait(mTaskWaitMutex,mThreadTimeout)) {
+                //if(-WaitTimeout == mTaskCondition->wait(mTaskWaitMutex,mThreadTimeout)) {
+                mCurrentTask = mPool->deQueueLast(mThreadTimeout);
+                if(mCurrentTask == nullptr) {
+                    //printf("ThreadCachedPoolExecutorHandler run trace3,mThreadTimeout is %d,size is %d \n",mThreadTimeout,mPool->size());
                     goto end;
                 }
+
+                
 
                 isNotifed = true;
             }
         }
 
         if(isNotifed) {
-            if(mCacheManager->busyNotify(h) != 0) {                
+            if(mCacheManager->busyNotify(h) != 0) {  
+                //printf("ThreadCachedPoolExecutorHandler run trace4,mThreadTimeout is %d \n",mThreadTimeout);
+                                  
                 goto end;
             }
         }
@@ -123,6 +137,7 @@ end:
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     if(mCacheManager != nullptr) {
         mCacheManager->completeNotify(h);
+        printf("complent notify \n");
         mCacheManager.remove_pointer();
     }
 }
@@ -176,7 +191,7 @@ int _ThreadCachedPoolExecutor::shutdown(){
         return -AlreadyDestroy;
     }
 
-    AutoMutex l(mProtectMutex);
+    AutoLock l(mProtectMutex);
 
     if(mIsShutDown ||mIsTerminated) {
         return -AlreadyDestroy;
@@ -239,7 +254,7 @@ Future _ThreadCachedPoolExecutor::submit(Runnable r) {
         return nullptr;
     }
 
-    AutoMutex l(mProtectMutex);
+    AutoLock l(mProtectMutex);
 
     if(mIsShutDown ||mIsTerminated) {
         return nullptr;
@@ -284,7 +299,7 @@ void _ThreadCachedPoolExecutor::onCancel(FutureTask task) {
         return;
     }
 
-    AutoMutex l(mProtectMutex);
+    AutoLock l(mProtectMutex);
 
     if(mIsShutDown ||mIsTerminated) {
         return;
@@ -366,29 +381,29 @@ _CacheThreadManager::~_CacheThreadManager() {
 }
 
 void _CacheThreadManager::bindTask(FutureTask task) {
-
+    //printf("_CacheThreadManager bindTask \n");
     //check wether
     {
-        AutoMutex ll(mReleaseMutex);
+        AutoLock ll(mReleaseMutex);
         if(mIsRelease) {
             return;
         }
     }
     
     {
-        AutoMutex ll(mIdleHandlerMutex);
+        //AutoLock ll(mIdleHandlerMutex);
         if(mIdleHandlers->size() != 0) {
-            ThreadCachedPoolExecutorHandler handler = mIdleHandlers->removeAt(0);
-            handler->doTask(task);
+            //printf("_CacheThreadManager bindTask trace1\n");
+            mFutureTasks->enQueueLast(task);
             return;
         } 
     }
 
     {
-        AutoMutex l(mThreadNumMutex);
+        AutoLock l(mThreadNumMutex);
 
         int currentThreadNum = this->getThreadSum();
-
+        //printf("_CacheThreadManager bindTask trace2,currentThreadNum is %d\n",currentThreadNum);
         if(currentThreadNum < mMaxThreadNum) {
             CacheThreadManager m;
             m.set_pointer(this);
@@ -397,41 +412,52 @@ void _CacheThreadManager::bindTask(FutureTask task) {
                     m,
                     mWaitTimeout);
             {
-                AutoMutex ll2(mCreatingHandlerMutex);
+                AutoLock ll2(mCreatingHandlerMutex);
                 mCreatingHandlers->add(handler);
             }
 
-            handler->doTask(task);
+            //handler->doTask(task);
             handler->start();
+            //printf("_CacheThreadManager bindTask trace3\n");
             mThreadNum++;
-            return;
         }
     }
-    
+
+addtask:
+    //printf("_CacheThreadManager bindTask trace4\n");  
     mFutureTasks->enQueueLast(task);
+    //printf("_CacheThreadManager bindTask trace5,task size is %d\n",mFutureTasks->size());  
 }
 
 int _CacheThreadManager::idleNotify(ThreadCachedPoolExecutorHandler handler) {
 
     {
-        AutoMutex ll(mReleaseMutex);
+        AutoLock ll(mReleaseMutex);
         if(mIsRelease) {
             return -InvalidStatus;
         }
     }
 
     {
-        AutoMutex ll(mCreatingHandlerMutex);
+        AutoLock ll(mCreatingHandlerMutex);
         mCreatingHandlers->remove(handler);
     }
 
     {
-        AutoMutex ll(mRunningHandlerMutex);
+        AutoLock ll(mRunningHandlerMutex);
         mRunningHandlers->remove(handler);
     }
 
     {
-        AutoMutex ll(mIdleHandlerMutex);
+        AutoLock ll(mIdleHandlerMutex);
+#if 0        
+        ListIterator<ThreadCachedPoolExecutorHandler> iterator = mIdleHandlers->getIterator();
+        while(iterator->hasValue()) {
+            if(iterator->getValue() == handler) {
+                return 0;
+            }
+        }
+#endif        
         mIdleHandlers->add(handler);
     }
 
@@ -440,24 +466,32 @@ int _CacheThreadManager::idleNotify(ThreadCachedPoolExecutorHandler handler) {
 
 int _CacheThreadManager::busyNotify(ThreadCachedPoolExecutorHandler handler) {
     {
-        AutoMutex ll(mReleaseMutex);
+        AutoLock ll(mReleaseMutex);
         if(mIsRelease) {
             return -InvalidStatus;
         }
     }
 
     {
-        AutoMutex ll(mCreatingHandlerMutex);
+        AutoLock ll(mCreatingHandlerMutex);
         mCreatingHandlers->remove(handler);
     }
 
     {
-        AutoMutex ll(mIdleHandlerMutex);
+        AutoLock ll(mIdleHandlerMutex);
         mIdleHandlers->remove(handler);
     }
 
     {
-        AutoMutex ll(mRunningHandlerMutex);
+        AutoLock ll(mRunningHandlerMutex);
+#if 0        
+        ListIterator<ThreadCachedPoolExecutorHandler> iterator = mRunningHandlers->getIterator();
+        while(iterator->hasValue()) {
+            if(iterator->getValue() == handler) {
+                return 0;
+            }
+        }
+#endif        
         mRunningHandlers->add(handler);
     }
 
@@ -470,13 +504,13 @@ bool _CacheThreadManager::isTerminated() {
 
 int _CacheThreadManager::awaitTermination(long timeout) {
     {
-        AutoMutex ll(mReleaseMutex);
+        AutoLock ll(mReleaseMutex);
         if(mIsRelease && getThreadSum() == 0) {
             return 0;
         }
     }
 
-    AutoMutex ll(mWaitTermMutex);
+    AutoLock ll(mWaitTermMutex);
     if(mIsTerminated) {
         return 0;
     }
@@ -486,21 +520,21 @@ int _CacheThreadManager::awaitTermination(long timeout) {
 
 void _CacheThreadManager::completeNotify(ThreadCachedPoolExecutorHandler h) {
     {
-        AutoMutex ll(mCreatingHandlerMutex);
+        AutoLock ll(mCreatingHandlerMutex);
         if(mCreatingHandlers->remove(h) >= 0) {
             goto end;
         }
     }
 
     {
-        AutoMutex ll(mIdleHandlerMutex);
+        AutoLock ll(mIdleHandlerMutex);
         if(mIdleHandlers->remove(h) >= 0) {
             goto end;
         }
     }
 
     {
-        AutoMutex ll(mRunningHandlerMutex);
+        AutoLock ll(mRunningHandlerMutex);
         if(mRunningHandlers->remove(h) >= 0) {
             goto end;
         }
@@ -510,7 +544,7 @@ void _CacheThreadManager::completeNotify(ThreadCachedPoolExecutorHandler h) {
 
 end:
     {
-        AutoMutex l(mThreadNumMutex);
+        AutoLock l(mThreadNumMutex);
         mThreadNum--;
     }
 
@@ -519,7 +553,7 @@ end:
             goto exit;
         }
 
-        AutoMutex ll(mCompleteNotifyMutex);
+        AutoLock ll(mCompleteNotifyMutex);
         if(mIsTerminated) {
             goto exit;
         }
@@ -543,7 +577,7 @@ void _CacheThreadManager::release() {
     }
 
     {
-        AutoMutex ll(mReleaseMutex);
+        AutoLock ll(mReleaseMutex);
         if(mIsRelease) {
             return;
         }
@@ -552,7 +586,7 @@ void _CacheThreadManager::release() {
     }
 
     {
-        AutoMutex ll(mCreatingHandlerMutex);
+        AutoLock ll(mCreatingHandlerMutex);
         ListIterator<ThreadCachedPoolExecutorHandler> list = mCreatingHandlers->getIterator();
         while(list->hasValue()) {
             ThreadCachedPoolExecutorHandler h = list->getValue();
@@ -562,7 +596,7 @@ void _CacheThreadManager::release() {
     }
 
     {
-        AutoMutex ll(mRunningHandlerMutex);
+        AutoLock ll(mRunningHandlerMutex);
         ListIterator<ThreadCachedPoolExecutorHandler> list = mRunningHandlers->getIterator();
         while(list->hasValue()) {
             ThreadCachedPoolExecutorHandler h = list->getValue();
@@ -572,7 +606,7 @@ void _CacheThreadManager::release() {
     }
     
     {
-        AutoMutex ll(mIdleHandlerMutex);
+        AutoLock ll(mIdleHandlerMutex);
         ListIterator<ThreadCachedPoolExecutorHandler> list = mIdleHandlers->getIterator();
         while(list->hasValue()) {
             ThreadCachedPoolExecutorHandler h = list->getValue();
@@ -603,7 +637,7 @@ void _CacheThreadManager::removeExecutor() {
 }
 
 int _CacheThreadManager::getThreadSum() {
-    AutoMutex l(mThreadNumMutex);
+    AutoLock l(mThreadNumMutex);
     return mThreadNum;
 }
 
@@ -613,7 +647,7 @@ void _CacheThreadManager::cancelTask(FutureTask task) {
     }
 
     {
-        AutoMutex ll(mRunningHandlerMutex);
+        AutoLock ll(mRunningHandlerMutex);
         ListIterator<ThreadCachedPoolExecutorHandler> list = mRunningHandlers->getIterator();
         ThreadCachedPoolExecutorHandler h = nullptr;
         while(list->hasValue()) {

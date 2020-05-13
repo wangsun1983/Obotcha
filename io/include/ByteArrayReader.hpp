@@ -1,5 +1,5 @@
-#ifndef __BYTE_ARRAY_READER_HPP__
-#define __BYTE_ARRAY_READER_HPP__
+#ifndef __OBOTCHA_BYTE_ARRAY_READER_HPP__
+#define __OBOTCHA_BYTE_ARRAY_READER_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

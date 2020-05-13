@@ -1,5 +1,5 @@
-#ifndef __HTTP_URL_BUILDER_HPP__
-#define __HTTP_URL_BUILDER_HPP__
+#ifndef __OBOTCHA_HTTP_URL_BUILDER_HPP__
+#define __OBOTCHA_HTTP_URL_BUILDER_HPP__
 
 #include <map>
 

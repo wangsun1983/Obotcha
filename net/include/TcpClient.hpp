@@ -1,5 +1,5 @@
-#ifndef __TCP_CLIENT_HPP__
-#define __TCP_CLIENT_HPP__
+#ifndef __OBOTCHA_TCP_CLIENT_HPP__
+#define __OBOTCHA_TCP_CLIENT_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

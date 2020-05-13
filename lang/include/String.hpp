@@ -1,5 +1,5 @@
-#ifndef __STRING_HPP__
-#define __STRING_HPP__
+#ifndef __OBOTCHA_STRING_HPP__
+#define __OBOTCHA_STRING_HPP__
 
 #include <string>
 #include <iostream>

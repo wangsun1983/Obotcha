@@ -1,5 +1,5 @@
-#ifndef __METHOD_NOT_SUPPORT_EXCEPTION_HPP__
-#define __METHOD_NOT_SUPPORT_EXCEPTION_HPP__
+#ifndef __OBOTCHA_METHOD_NOT_SUPPORT_EXCEPTION_HPP__
+#define __OBOTCHA_METHOD_NOT_SUPPORT_EXCEPTION_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

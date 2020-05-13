@@ -18,18 +18,18 @@ sp<_HttpV1ClientManager> _HttpV1ClientManager::getInstance() {
 }
 
 HttpV1ClientInfo _HttpV1ClientManager::getClientInfo(int fd) {
-    AutoMutex l(mMutex);
+    AutoLock l(mMutex);
     return mClients->get(fd);
 }
 
 void _HttpV1ClientManager::addClientInfo(int fd,sp<_HttpV1ClientInfo> info) {
-    AutoMutex l(mMutex);
+    AutoLock l(mMutex);
     mClients->put(fd,info);
 }
     
 
 HttpV1ClientInfo _HttpV1ClientManager::removeClientInfo(int fd) {
-    AutoMutex l(mMutex);
+    AutoLock l(mMutex);
     HttpV1ClientInfo ret = mClients->get(fd);
     mClients->remove(fd);
 
@@ -37,7 +37,7 @@ HttpV1ClientInfo _HttpV1ClientManager::removeClientInfo(int fd) {
 }
 
 void _HttpV1ClientManager::clear() {
-    AutoMutex l(mMutex);
+    AutoLock l(mMutex);
     mClients->clear();
 }
 

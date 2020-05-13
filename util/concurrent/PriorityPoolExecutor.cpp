@@ -13,7 +13,7 @@
 #include "ConcurrentQueue.hpp"
 #include "ExecutorService.hpp"
 #include "PriorityPoolExecutor.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "Error.hpp"
 #include "System.hpp"
 #include "StackTrace.hpp"
@@ -49,7 +49,7 @@ void _PriorityPoolThread::run() {
     while(!mStop) {
         mCurrentTask = nullptr;
         while(1) {
-            AutoMutex l(mMutex);
+            AutoLock l(mMutex);
             if(mTasks->size() == 0) {
                 mCondition->wait(mMutex);
                 continue;
@@ -66,7 +66,7 @@ void _PriorityPoolThread::run() {
             continue;
         }
         {    
-            AutoMutex l(mStateMutex);
+            AutoLock l(mStateMutex);
             mState = busyState;
             if(mCurrentTask->task->getType() == FUTURE_TASK_SUBMIT) {
                 mCurrentTask->task->onRunning();
@@ -77,7 +77,7 @@ void _PriorityPoolThread::run() {
             runnable->run();    
         }
         {
-            AutoMutex l(mStateMutex);
+            AutoLock l(mStateMutex);
             mState = idleState;
             if(mCurrentTask->task->getType() == FUTURE_TASK_SUBMIT) {
                 mCurrentTask->task->onComplete();
@@ -86,13 +86,13 @@ void _PriorityPoolThread::run() {
     }
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     {
-        AutoMutex l(mStateMutex);
+        AutoLock l(mStateMutex);
         mState = terminateState;
         mWaitTermCondition->notify();
     }
     
     {
-        AutoMutex ll(mExecutorMutex);
+        AutoLock ll(mExecutorMutex);
         if(mExecutor != nullptr) {
             PriorityPoolThread thread;
             thread.set_pointer(this);
@@ -113,13 +113,13 @@ void _PriorityPoolThread::onInterrupt() {
     }
 
     {
-        AutoMutex l(mStateMutex);
+        AutoLock l(mStateMutex);
         mState = terminateState;
         mWaitTermCondition->notify();
     } 
 
     {
-        AutoMutex ll(mExecutorMutex);
+        AutoLock ll(mExecutorMutex);
         if(mExecutor != nullptr) {
             PriorityPoolThread thread;
             thread.set_pointer(this);
@@ -133,7 +133,7 @@ void _PriorityPoolThread::waitTermination(long interval) {
     if(mState == terminateState) {
         return;
     }
-    AutoMutex l(mStateMutex);
+    AutoLock l(mStateMutex);
     if(mState == terminateState) {
         return;
     }
@@ -214,7 +214,7 @@ int _PriorityPoolExecutor::shutdown() {
     }
 
     {
-        AutoMutex l(mProtectMutex);
+        AutoLock l(mProtectMutex);
 
         if(isShutDown) {
             return 0;
@@ -222,7 +222,7 @@ int _PriorityPoolExecutor::shutdown() {
 
         isShutDown = true;
 
-        AutoMutex ll(mThreadMutex);
+        AutoLock ll(mThreadMutex);
         ListIterator<PriorityPoolThread> iterator = mThreads->getIterator();
         while(iterator->hasValue()) {
             PriorityPoolThread thread = iterator->getValue();
@@ -232,7 +232,7 @@ int _PriorityPoolExecutor::shutdown() {
     }
     
     {
-        AutoMutex ll(mDataLock);
+        AutoLock ll(mDataLock);
         ListIterator<PriorityTask> iterator = mPriorityTasks->getIterator();
         while(iterator->hasValue()) {
             PriorityTask priTask = iterator->getValue();
@@ -262,7 +262,7 @@ int _PriorityPoolExecutor::awaitTermination(long millseconds) {
         return 0;
     }
     
-    AutoMutex ll(mWaitMutex);
+    AutoLock ll(mWaitMutex);
     if(isTermination) {
         return 0;
     }
@@ -279,13 +279,13 @@ Future _PriorityPoolExecutor::submit(int level,Runnable task) {
         return nullptr;
     }
     
-    AutoMutex l(mProtectMutex);
+    AutoLock l(mProtectMutex);
     
     if(isShutDown || isTermination) {
         return nullptr;
     }
 
-    AutoMutex ll(mDataLock);
+    AutoLock ll(mDataLock);
     int start = 0;
     int end = mPriorityTasks->size() - 1;
     int index = 0;
@@ -313,12 +313,12 @@ Future _PriorityPoolExecutor::submit(int level,Runnable task) {
 }
 
 int _PriorityPoolExecutor::getThreadsNum() {
-    AutoMutex ll(mProtectMutex);
+    AutoLock ll(mProtectMutex);
     return mThreads->size();
 }
 
 void _PriorityPoolExecutor::onCompleteNotify(PriorityPoolThread t){
-    AutoMutex ll(mThreadMutex);
+    AutoLock ll(mThreadMutex);
     ListIterator<PriorityPoolThread> iterator = mThreads->getIterator();
     while(iterator->hasValue()) {
         PriorityPoolThread thread = iterator->getValue();
@@ -331,7 +331,7 @@ void _PriorityPoolExecutor::onCompleteNotify(PriorityPoolThread t){
 
     if(mThreads->size() == 0) {
         mThreads->clear();
-        AutoMutex ll(mWaitMutex);
+        AutoLock ll(mWaitMutex);
         isTermination = true;
         mWaitCondition->notifyAll();
     }
@@ -342,14 +342,14 @@ void _PriorityPoolExecutor::onCancel(FutureTask task) {
         return;
     }
 
-    AutoMutex l(mProtectMutex);
+    AutoLock l(mProtectMutex);
 
     if(isTermination ||isTermination) {
         return;
     }
 
     {
-        AutoMutex ll(mDataLock);
+        AutoLock ll(mDataLock);
         ListIterator<PriorityTask> iterator = mPriorityTasks->getIterator();
         while(iterator->hasValue()) {
             PriorityTask t = iterator->getValue();
@@ -363,7 +363,7 @@ void _PriorityPoolExecutor::onCancel(FutureTask task) {
     
     {
         bool isNeedCreate = false;
-        AutoMutex ll(mThreadMutex);
+        AutoLock ll(mThreadMutex);
         ListIterator<PriorityPoolThread> iterator = mThreads->getIterator();
         while(iterator->hasValue()) {
             PriorityPoolThread thread = iterator->getValue();

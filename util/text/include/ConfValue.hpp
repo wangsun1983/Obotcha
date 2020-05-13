@@ -1,5 +1,5 @@
-#ifndef __CONF_VALUE_H__
-#define __CONF_VALUE_H__
+#ifndef __OBOTCHA_CONF_VALUE_H__
+#define __OBOTCHA_CONF_VALUE_H__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

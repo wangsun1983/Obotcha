@@ -1,5 +1,5 @@
-#ifndef __OBJECT_H__
-#define __OBJECT_H__
+#ifndef __OBOTCHA_OBJECT_H__
+#define __OBOTCHA_OBJECT_H__
 
 #include <stdint.h>
 #include <sys/types.h>

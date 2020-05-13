@@ -1,5 +1,5 @@
-#ifndef __HTTP_HEADER_HPP__
-#define __HTTP_HEADER_HPP__
+#ifndef __OBOTCHA_HTTP_HEADER_HPP__
+#define __OBOTCHA_HTTP_HEADER_HPP__
 
 #include <map>
 

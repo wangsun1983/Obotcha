@@ -6,7 +6,7 @@
 #include "Object.hpp"
 #include "System.hpp"
 #include "Mutex.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "System.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "Error.hpp"
@@ -37,7 +37,7 @@ public:
     }
 
     void onInterrupt() {
-        AutoMutex ll(mMutex);
+        AutoLock ll(mMutex);
         count++;
     }
 

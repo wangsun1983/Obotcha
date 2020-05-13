@@ -1,5 +1,5 @@
-#ifndef __POSIX_SEM_HPP__
-#define __POSIX_SEM_HPP__
+#ifndef __OBOTCHA_POSIX_SEM_HPP__
+#define __OBOTCHA_POSIX_SEM_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

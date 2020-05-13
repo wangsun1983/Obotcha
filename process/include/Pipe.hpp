@@ -1,5 +1,5 @@
-#ifndef __PIPE_HPP__
-#define __PIPE_HPP__
+#ifndef __OBOTCHA_PIPE_HPP__
+#define __OBOTCHA_PIPE_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>

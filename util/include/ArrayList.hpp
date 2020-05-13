@@ -1,5 +1,5 @@
-#ifndef __ARRAYLIST_HPP__
-#define __ARRAYLIST_HPP__
+#ifndef __OBOTCHA_ARRAYLIST_HPP__
+#define __OBOTCHA_ARRAYLIST_HPP__
 
 #include <vector>
 #include <algorithm>
@@ -66,8 +66,8 @@ public:
     }
 
     inline T removeAt(int index) {
-        if(index >= elements.size() || index < 0) {
-            throw ArrayIndexOutOfBoundsException("Arraylist remove fail",elements.size(),index);
+        if(index >= elements.capacity() || index < 0) {
+            throw ArrayIndexOutOfBoundsException("Arraylist remove fail",elements.capacity(),index);
         }
 
         T val = elements.at(index);
@@ -95,8 +95,8 @@ public:
     }
 
     inline int set(int index,T val) {
-        if(index >= elements.size() || index < 0) {
-            throw ArrayIndexOutOfBoundsException("Arraylist set fail",elements.size(),index);
+        if(index >= elements.capacity() || index < 0) {
+            throw ArrayIndexOutOfBoundsException("Arraylist set fail",elements.capacity(),index);
         }
 
         elements[index] = val;
@@ -104,16 +104,16 @@ public:
     }
 
     inline T get(int index) {
-         if(index >= elements.size() || index < 0) {
-            throw ArrayIndexOutOfBoundsException("Arraylist get fail",elements.size(),index);
+         if(index >= elements.capacity() || index < 0) {
+            throw ArrayIndexOutOfBoundsException("Arraylist get fail",elements.capacity(),index);
         }
 
         return elements[index];
     }
 
     inline int insert(int index,T val) {
-        if(index > elements.size() || index < 0) {
-            throw ArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
+        if(index > elements.capacity() || index < 0) {
+            throw ArrayIndexOutOfBoundsException("Arraylist insert fail",elements.capacity(),index);
         }
 
 
@@ -122,8 +122,8 @@ public:
     }
 
     inline int insert(int index,ArrayList<T> list) {
-        if(index > elements.size() || index < 0) {
-            throw ArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
+        if(index > elements.capacity() || index < 0) {
+            throw ArrayIndexOutOfBoundsException("Arraylist insert fail",elements.capacity(),index);
         }
 
         if(list != nullptr) {
@@ -133,12 +133,12 @@ public:
     }
 
     inline int insert(int index,ArrayList<T> list,int length) {
-        if(index > elements.size() || length <= 0 || index < 0) {
-            throw ArrayIndexOutOfBoundsException("Arraylist insert fail",elements.size(),index);
+        if(index > elements.capacity() || length <= 0 || index < 0) {
+            throw ArrayIndexOutOfBoundsException("Arraylist insert fail",elements.capacity(),index);
         }
 
         if(list != nullptr) {
-            int size = list->elements.size(); 
+            int size = list->elements.capacity(); 
             size = length > size?size:length;
 
             elements.insert(elements.begin() + index,list->begin(),list->begin() + size);
@@ -172,7 +172,7 @@ public:
     }
 
     inline int size() {
-        return elements.size();
+        return elements.capacity();
     }
 
     sp<_ListIterator<T>> getIterator() {

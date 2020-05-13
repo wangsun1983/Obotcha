@@ -1,5 +1,5 @@
-#ifndef __MATH_HPP__
-#define __MATH_HPP__
+#ifndef __OBOTCHA_MATH_HPP__
+#define __OBOTCHA_MATH_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

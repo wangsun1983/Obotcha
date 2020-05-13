@@ -1,5 +1,5 @@
-#ifndef __HTTP_V1_PARAER_HPP__
-#define __HTTP_V1_PARAER_HPP__
+#ifndef __OBOTCHA_HTTP_V1_PARAER_HPP__
+#define __OBOTCHA_HTTP_V1_PARAER_HPP__
 
 #include <map>
 

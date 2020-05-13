@@ -39,7 +39,7 @@ public:
 
     void onConnect(int fd,String ip,int port) {
       printf("onConnect,ip is %s,port is %d,fd is %d \n",ip->toChars(),port,fd);
-      //AutoMutex ll(mutex);
+      //AutoLock ll(mutex);
       clientfd = fd;
       cond->notify();
     }
@@ -60,7 +60,7 @@ public:
           return clientfd;
         }
 
-        AutoMutex ll(mutex);
+        AutoLock ll(mutex);
         cond->wait(mutex);
         return clientfd;
     }
@@ -70,7 +70,7 @@ public:
           return  acceptStr;
         }
 
-        AutoMutex ll(acceptMutex);
+        AutoLock ll(acceptMutex);
         acceptCond->wait(acceptMutex);
 
         return acceptStr;
@@ -103,7 +103,7 @@ public:
         if(resultStr != nullptr) {
           return  resultStr;
         }
-        AutoMutex ll(mutex);
+        AutoLock ll(mutex);
         mCond->wait(mutex);
         return resultStr;
     }

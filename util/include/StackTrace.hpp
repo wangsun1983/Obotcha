@@ -1,5 +1,5 @@
-#ifndef __STACK_TRACE_HPP__
-#define __STACK_TRACE_HPP__
+#ifndef __OBOTCHA_STACK_TRACE_HPP__
+#define __OBOTCHA_STACK_TRACE_HPP__
 
 #include <execinfo.h>
 #include <stdio.h>

@@ -1,5 +1,5 @@
-#ifndef __HTTP_MULTI_PART_PARSER_HPP__
-#define __HTTP_MULTI_PART_PARSER_HPP__
+#ifndef __OBOTCHA_HTTP_MULTI_PART_PARSER_HPP__
+#define __OBOTCHA_HTTP_MULTI_PART_PARSER_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

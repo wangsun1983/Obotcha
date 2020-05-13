@@ -1,5 +1,5 @@
-#ifndef __CONF_READER_H__
-#define __CONF_READER_H__
+#ifndef __OBOTCHA_CONF_READER_H__
+#define __OBOTCHA_CONF_READER_H__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

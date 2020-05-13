@@ -1,5 +1,5 @@
-#ifndef __LIST_LIST_OBJECT_H__
-#define __LIST_LIST_OBJECT_H__
+#ifndef __OBOTCHA_LIST_LIST_OBJECT_H__
+#define __OBOTCHA_LIST_LIST_OBJECT_H__
 
 #include <stdint.h>
 #include <sys/types.h>

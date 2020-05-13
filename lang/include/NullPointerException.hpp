@@ -1,5 +1,5 @@
-#ifndef __NULL_POINTER_EXCEPTION_HPP__
-#define __NULL_POINTER_EXCEPTION_HPP__
+#ifndef __OBOTCHA_NULL_POINTER_EXCEPTION_HPP__
+#define __OBOTCHA_NULL_POINTER_EXCEPTION_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

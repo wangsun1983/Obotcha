@@ -3,7 +3,7 @@
 
 #include "String.hpp"
 #include "HttpContentType.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 
 using namespace obotcha;
 

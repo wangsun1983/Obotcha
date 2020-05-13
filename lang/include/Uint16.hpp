@@ -1,5 +1,5 @@
-#ifndef __UINT16_HPP__
-#define __UINT16_HPP__
+#ifndef __OBOTCHA_UINT16_HPP__
+#define __OBOTCHA_UINT16_HPP__
 
 #include <stdio.h>
 #include <stdint.h>

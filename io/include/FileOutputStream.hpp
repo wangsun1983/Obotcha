@@ -1,5 +1,5 @@
-#ifndef __FILE_OUTPUT_STREAM_HPP__
-#define __FILE_OUTPUT_STREAM_HPP__
+#ifndef __OBOTCHA_FILE_OUTPUT_STREAM_HPP__
+#define __OBOTCHA_FILE_OUTPUT_STREAM_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

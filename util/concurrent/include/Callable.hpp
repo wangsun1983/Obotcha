@@ -1,5 +1,5 @@
-#ifndef __CALLABLE_H__
-#define __CALLABLE_H__
+#ifndef __OBOTCHA_CALLABLE_H__
+#define __OBOTCHA_CALLABLE_H__
 
 #include "StrongPointer.hpp"
 #include "Object.hpp"

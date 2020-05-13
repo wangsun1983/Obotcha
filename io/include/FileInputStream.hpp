@@ -1,5 +1,5 @@
-#ifndef __FILE_INPUT_STREAM_HPP__
-#define __FILE_INPUT_STREAM_HPP__
+#ifndef __OBOTCHA_FILE_INPUT_STREAM_HPP__
+#define __OBOTCHA_FILE_INPUT_STREAM_HPP__
 
 #include <fstream>
 #include <iostream>

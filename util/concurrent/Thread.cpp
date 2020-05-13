@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #include "Thread.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "ThreadLocal.hpp"
 #include "System.hpp"
 #include "Error.hpp"
@@ -29,7 +29,7 @@ void cleanup(void *th) {
     }
     
     {
-        AutoMutex ll(thread->mJoinMutex);
+        AutoLock ll(thread->mJoinMutex);
         thread->mStatus = st(Thread)::Complete;
         thread->mJoinDondtion->notifyAll();
     }
@@ -75,7 +75,7 @@ end:
     pthread_cleanup_pop(0);
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     {
-        AutoMutex ll(thread->mJoinMutex);
+        AutoLock ll(thread->mJoinMutex);
         thread->mStatus = Complete;
         thread->mJoinDondtion->notifyAll();
     }
@@ -160,7 +160,7 @@ int _Thread::start() {
         return -AlreadyExecute;
     }
 
-    AutoMutex l(mProtectMutex);
+    AutoLock l(mProtectMutex);
 
     if(mStatus != NotStart) {
         return -AlreadyExecute;
@@ -186,14 +186,14 @@ void _Thread::initPolicyAndPriority() {
 }
 
 void _Thread::join() {
-    AutoMutex ll(mJoinMutex);
+    AutoLock ll(mJoinMutex);
     if(getStatus() == Running) {
         mJoinDondtion->wait(mJoinMutex);
     }
 }
 
 int _Thread::join(long timeInterval) {
-    AutoMutex ll(mJoinMutex);
+    AutoLock ll(mJoinMutex);
     if(getStatus() == Running) {
         return mJoinDondtion->wait(mJoinMutex,timeInterval);
     }
@@ -214,7 +214,7 @@ void _Thread::quit() {
         return;
     }
 
-    AutoMutex l(mProtectMutex);
+    AutoLock l(mProtectMutex);
     if(mStatus == Complete||mStatus == NotStart) {
         mStatus = Complete;
         return;

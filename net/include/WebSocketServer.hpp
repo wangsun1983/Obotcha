@@ -1,5 +1,5 @@
-#ifndef __WEBSOCKET_SERVER_HPP__
-#define __WEBSOCKET_SERVER_HPP__
+#ifndef __OBOTCHA_WEBSOCKET_SERVER_HPP__
+#define __OBOTCHA_WEBSOCKET_SERVER_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

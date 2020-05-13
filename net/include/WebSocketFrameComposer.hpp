@@ -1,5 +1,5 @@
-#ifndef __WEBSOCKET_FRAME_COMPOSER_HPP__
-#define __WEBSOCKET_FRAME_COMPOSER_HPP__
+#ifndef __OBOTCHA_WEBSOCKET_FRAME_COMPOSER_HPP__
+#define __OBOTCHA_WEBSOCKET_FRAME_COMPOSER_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

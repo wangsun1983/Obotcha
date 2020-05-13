@@ -1,5 +1,5 @@
-#ifndef __EPOLL_FILE_OBSERVER_HPP__
-#define __EPOLL_FILE_OBSERVER_HPP__
+#ifndef __OBOTCHA_EPOLL_FILE_OBSERVER_HPP__
+#define __OBOTCHA_EPOLL_FILE_OBSERVER_HPP__
 
 #include <fstream>
 #include <iostream>

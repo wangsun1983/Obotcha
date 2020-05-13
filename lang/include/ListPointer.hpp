@@ -1,5 +1,5 @@
-#ifndef __LIST_POINTER_HPP__
-#define __LIST_POINTER_HPP__
+#ifndef __OBOTCHA_LIST_POINTER_HPP__
+#define __OBOTCHA_LIST_POINTER_HPP__
 
 #include <stdio.h>
 #include <stdlib.h>

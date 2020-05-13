@@ -1,5 +1,5 @@
-#ifndef __RSA_HPP__
-#define __RSA_HPP__
+#ifndef __OBOTCHA_RSA_HPP__
+#define __OBOTCHA_RSA_HPP__
 
 extern "C" {
 #include "openssl/rsa.h"

@@ -1,5 +1,5 @@
-#ifndef __THREAD_H__
-#define __THREAD_H__
+#ifndef __OBOTCHA_THREAD_H__
+#define __OBOTCHA_THREAD_H__
 
 #include <pthread.h>
 #include <map>

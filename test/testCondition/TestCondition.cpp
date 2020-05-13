@@ -5,7 +5,7 @@
 #include "Runnable.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "Integer.hpp"
 
 
@@ -20,7 +20,7 @@ public:
     void run() {
         printf("ConsumeRunn start \n");
         //mutex_t.lock();
-        AutoMutex l(mutex_t);
+        AutoLock l(mutex_t);
 
         cond->wait(mutex_t);
         //mutex_t.unlock();
@@ -42,7 +42,7 @@ public:
 
     void run() {
         printf("ProduceRunn start \n");
-        AutoMutex l(mutex_t);
+        AutoLock l(mutex_t);
         cond->notify();
         printf("ProduceRunn end \n");
     }

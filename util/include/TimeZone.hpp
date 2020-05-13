@@ -1,5 +1,5 @@
-#ifndef __TIME_ZONE_HPP__
-#define __TIME_ZONE_HPP__
+#ifndef __OBOTCHA_TIME_ZONE_HPP__
+#define __OBOTCHA_TIME_ZONE_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

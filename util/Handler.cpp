@@ -54,7 +54,7 @@ void _Handler::sendEmptyMessageDelayed(int what,long delay) {
     Message msg = obtainMessage(what);
     msg->mType = NormalMessage;
     msg->time = time + delay;
-    AutoMutex l(mDelayedMutex);
+    AutoLock l(mDelayedMutex);
     insertDelayedMessage(msg);
     mCondition->notify();
 }
@@ -63,7 +63,7 @@ void _Handler::sendMessageDelayed(sp<_Message> msg,long delay) {
     long time = st(System)::currentTimeMillis() + delay;
     msg->time = time + delay;
     msg->mType = NormalMessage;
-    AutoMutex l(mDelayedMutex);
+    AutoLock l(mDelayedMutex);
     insertDelayedMessage(msg);
     mCondition->notify();
 }
@@ -71,7 +71,7 @@ void _Handler::sendMessageDelayed(sp<_Message> msg,long delay) {
 void _Handler::sendMessage(sp<_Message> msg) {
     msg->mType = NormalMessage;
 
-    AutoMutex l(mMutex);
+    AutoLock l(mMutex);
     mMessagePool->add(msg);
     mCondition->notify();
 }
@@ -82,7 +82,7 @@ void _Handler::handleMessage(sp<_Message> msg) {
 
 bool _Handler::hasMessage(int what) {
     {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         ListIterator<Message> iterator = mMessagePool->getIterator();
         while(iterator->hasValue()) {
             if(iterator->getValue()->what == what) {
@@ -94,7 +94,7 @@ bool _Handler::hasMessage(int what) {
     }
 
     {
-        AutoMutex l(mDelayedMutex);
+        AutoLock l(mDelayedMutex);
         DelayMessageItem item = mHead;
         
         while(item != nullptr) {
@@ -110,7 +110,7 @@ bool _Handler::hasMessage(int what) {
 
 void _Handler::removeMessages(int what) {
     {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         ListIterator<Message> iterator = mMessagePool->getIterator();
         while(iterator->hasValue()) {
             if(iterator->getValue()->what == what) {
@@ -121,7 +121,7 @@ void _Handler::removeMessages(int what) {
     }
 
     {
-        AutoMutex l(mDelayedMutex);
+        AutoLock l(mDelayedMutex);
         DelayMessageItem item = mHead;
         
         while(item != nullptr) {
@@ -139,7 +139,7 @@ void _Handler::run() {
     while(!mIsStop) {
         Message msg;
         {
-            AutoMutex l(mMutex);
+            AutoLock l(mMutex);
             if(waitTime == 0) {
                 waitTime = scanDelayedMessage();
             }
@@ -190,7 +190,7 @@ void _Handler::run() {
 
         if(waitTime < st(System)::currentTimeMillis()) {
             {
-                AutoMutex l(mMutex);
+                AutoLock l(mMutex);
                 waitTime = scanDelayedMessage();
             }
         }
@@ -201,7 +201,7 @@ void _Handler::post(Runnable r) {
     Message msg = obtainMessage();
     msg->mType = RunnableMessage;
     msg->mRunnable = r;
-    AutoMutex l(mMutex);
+    AutoLock l(mMutex);
     mMessagePool->add(msg);
     mCondition->notify();
 }
@@ -211,7 +211,7 @@ void _Handler::postDelayed(Runnable r ,long delay) {
     msg->mType = RunnableMessage;
     msg->mRunnable = r;
     msg->time = st(System)::currentTimeMillis() + delay;
-    AutoMutex l(mDelayedMutex);
+    AutoLock l(mDelayedMutex);
     insertDelayedMessage(msg);
 }
 
@@ -236,7 +236,7 @@ long _Handler::scanDelayedMessage() {
 
     long time = st(System)::currentTimeMillis();
     {
-        AutoMutex l(mDelayedMutex);
+        AutoLock l(mDelayedMutex);
         DelayMessageItem item = mHead;
         long minTime = mHead->msg->time;
 
@@ -244,7 +244,7 @@ long _Handler::scanDelayedMessage() {
             DelayMessageItem next = item->next;
             if(item->msg->time <= time) {
                 removeDelayedMessage(item);
-                //AutoMutex l(mMutex);
+                //AutoLock l(mMutex);
                 mMessagePool->add(item->msg);
             } else {
                 if(minTime > item->msg->time) {

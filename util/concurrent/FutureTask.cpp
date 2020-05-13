@@ -1,5 +1,5 @@
 #include "FutureTask.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "Future.hpp"
 
 namespace obotcha {
@@ -32,7 +32,7 @@ _FutureTask::~_FutureTask() {
 }
 
 void _FutureTask::wait() {
-    AutoMutex l(mCompleteMutex);
+    AutoLock l(mCompleteMutex);
     if(mStatus == FUTURE_COMPLETE || mStatus == FUTURE_CANCEL) {
         return;
     }
@@ -41,7 +41,7 @@ void _FutureTask::wait() {
 }
     
 int _FutureTask::wait(long interval) {
-    AutoMutex l(mCompleteMutex);
+    AutoLock l(mCompleteMutex);
     
     if(mStatus == FUTURE_COMPLETE || mStatus == FUTURE_CANCEL) {
         return 0;
@@ -55,7 +55,7 @@ void _FutureTask::cancel() {
         return;
     }
 
-    AutoMutex l(mCompleteMutex);
+    AutoLock l(mCompleteMutex);
     
     if(mStatus == FUTURE_CANCEL) {
         return;
@@ -86,18 +86,18 @@ int _FutureTask::getType() {
 }
 
 void _FutureTask::onRunning() {
-    AutoMutex l(mCompleteMutex);
+    AutoLock l(mCompleteMutex);
     mStatus = FUTURE_RUNNING;
 }
 
 void _FutureTask::onComplete() {
-    AutoMutex l(mCompleteMutex);
+    AutoLock l(mCompleteMutex);
     mCompleteCond->notify();
     mStatus = FUTURE_COMPLETE;
 }
 
 Runnable _FutureTask::getRunnable() {
-    AutoMutex l(mCompleteMutex);
+    AutoLock l(mCompleteMutex);
     return mRunnable;
 }
 

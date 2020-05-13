@@ -1,5 +1,5 @@
-#ifndef __SSL_SERVER_HPP__
-#define __SSL_SERVER_HPP__
+#ifndef __OBOTCHA_SSL_SERVER_HPP__
+#define __OBOTCHA_SSL_SERVER_HPP__
 
 #include <iostream>
 #include <sys/types.h>

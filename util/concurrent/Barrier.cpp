@@ -1,5 +1,5 @@
 #include "Barrier.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 
 namespace obotcha {
 
@@ -12,7 +12,7 @@ _Barrier::_Barrier(int n) {
 }
 
 void _Barrier::await(long v) {
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     mBarrierNums--;
     if(mBarrierNums == 0) {
         cond->notifyAll();
@@ -23,7 +23,7 @@ void _Barrier::await(long v) {
 }
 
 void _Barrier::await() {
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     mBarrierNums--;
     if(mBarrierNums == 0) {
         cond->notifyAll();
@@ -34,7 +34,7 @@ void _Barrier::await() {
 }
 
 int _Barrier::getWaitNums() {
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     return mBarrierBack - mBarrierNums;
 } 
 

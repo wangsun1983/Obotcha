@@ -1,5 +1,5 @@
-#ifndef __HASHMAP_HPP__
-#define __HASHMAP_HPP__
+#ifndef __OBOTCHA_HASHMAP_HPP__
+#define __OBOTCHA_HASHMAP_HPP__
 
 #include <map>
 #include <algorithm>

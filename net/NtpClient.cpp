@@ -156,7 +156,7 @@ long _NtpClient::getCurrentTimeSync() {
     ByteArray packet = createByteArray((byte *)mNtpPacket,NTP_DATA_SIZE);
     mClient->send(packet);
     {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         mCondition->wait(mMutex);
     }
 

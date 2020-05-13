@@ -1,5 +1,5 @@
-#ifndef __STRING_READER_HPP__
-#define __STRING_READER_HPP__
+#ifndef __OBOTCHA_STRING_READER_HPP__
+#define __OBOTCHA_STRING_READER_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

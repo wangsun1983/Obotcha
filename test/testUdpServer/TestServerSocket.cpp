@@ -45,7 +45,7 @@ public:
         return mAccept;
       }
 
-      AutoMutex ll(mAcceptMutex);
+      AutoLock ll(mAcceptMutex);
       mCond->wait(mAcceptMutex);
       return mAccept;
     }
@@ -95,7 +95,7 @@ public:
           return mAccept;
         }
 
-        AutoMutex ll(mAcceptMutex);
+        AutoLock ll(mAcceptMutex);
         mCond->wait(mAcceptMutex);
         return mAccept;
     }

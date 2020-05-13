@@ -1,5 +1,5 @@
-#ifndef __UUID_HPP__
-#define __UUID_HPP__
+#ifndef __OBOTCHA_UUID_HPP__
+#define __OBOTCHA_UUID_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

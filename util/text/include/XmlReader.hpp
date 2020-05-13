@@ -1,5 +1,5 @@
-#ifndef __XML_READER_H__
-#define __XML_READER_H__
+#ifndef __OBOTCHA_XML_READER_H__
+#define __OBOTCHA_XML_READER_H__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

@@ -1,5 +1,5 @@
-#ifndef __BYTE_ARRAY_HPP__
-#define __BYTE_ARRAY_HPP__
+#ifndef __OBOTCHA_BYTE_ARRAY_HPP__
+#define __OBOTCHA_BYTE_ARRAY_HPP__
 
 #include <stdlib.h>
 #include <memory.h>

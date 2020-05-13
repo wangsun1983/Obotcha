@@ -15,10 +15,12 @@ using namespace obotcha;
 extern int normalTest();
 extern int numTest();
 extern int releaseTest();
+extern int loopsubmittest();
 
 int main() {
     //normalTest();
-    numTest();
+    //numTest();
     //releaseTest();
-    sleep(10);
+    loopsubmittest();
+    //sleep(10);
 }

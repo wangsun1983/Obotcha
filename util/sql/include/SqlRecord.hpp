@@ -1,5 +1,5 @@
-#ifndef __SQL_DATA_HPP__
-#define __SQL_DATA_HPP__
+#ifndef __OBOTCHA_SQL_DATA_HPP__
+#define __OBOTCHA_SQL_DATA_HPP__
 
 #include <map>
 #include "String.hpp"

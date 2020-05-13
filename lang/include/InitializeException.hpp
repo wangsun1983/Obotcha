@@ -1,5 +1,5 @@
-#ifndef __INITIALIZE_EXCEPTION_HPP__
-#define __INITIALIZE_EXCEPTION_HPP__
+#ifndef __OBOTCHA_INITIALIZE_EXCEPTION_HPP__
+#define __OBOTCHA_INITIALIZE_EXCEPTION_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

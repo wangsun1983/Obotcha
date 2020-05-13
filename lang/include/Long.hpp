@@ -1,5 +1,5 @@
-#ifndef __LONG_HPP__
-#define __LONG_HPP__
+#ifndef __OBOTCHA_LONG_HPP__
+#define __OBOTCHA_LONG_HPP__
 
 #include <stdio.h>
 

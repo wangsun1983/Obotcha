@@ -1,5 +1,5 @@
-#ifndef __LIST_HPP__
-#define __LIST_HPP__
+#ifndef __OBOTCHA_LIST_HPP__
+#define __OBOTCHA_LIST_HPP__
 
 #include <vector>
 #include <algorithm>

@@ -1,5 +1,5 @@
-#ifndef __AES_HPP__
-#define __AES_HPP__
+#ifndef __OBOTCHA_AES_HPP__
+#define __OBOTCHA_AES_HPP__
 
 #include "openssl/aes.h"
 

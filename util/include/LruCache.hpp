@@ -1,5 +1,5 @@
-#ifndef __LRU_CACHE_HPP__
-#define __LRU_CACHE_HPP__
+#ifndef __OBOTCHA_LRU_CACHE_HPP__
+#define __OBOTCHA_LRU_CACHE_HPP__
 
 #include <map>
 #include <algorithm>

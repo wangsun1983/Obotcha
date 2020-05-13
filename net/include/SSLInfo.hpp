@@ -1,5 +1,5 @@
-#ifndef __SSL_INFO_HPP_
-#define __SSL_INFO_HPP_
+#ifndef __OBOTCHA_SSL_INFO_HPP_
+#define __OBOTCHA_SSL_INFO_HPP_
 
 #include <sys/stat.h>
 #include <unistd.h>    

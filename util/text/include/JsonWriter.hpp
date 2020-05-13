@@ -1,5 +1,5 @@
-#ifndef __JSON_WRITE_H__
-#define __JSON_WRITE_H__
+#ifndef __OBOTCHA_JSON_WRITE_H__
+#define __OBOTCHA_JSON_WRITE_H__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

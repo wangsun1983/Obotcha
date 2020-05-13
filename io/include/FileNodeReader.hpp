@@ -1,5 +1,5 @@
-#ifndef __FILE_NODE_READER_HPP__
-#define __FILE_NODE_READER_HPP__
+#ifndef __OBOTCHA_FILE_NODE_READER_HPP__
+#define __OBOTCHA_FILE_NODE_READER_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

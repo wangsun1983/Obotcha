@@ -1,5 +1,5 @@
-#ifndef __BARRIER_HPP__
-#define __BARRIER_HPP__
+#ifndef __OBOTCHA_BARRIER_HPP__
+#define __OBOTCHA_BARRIER_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

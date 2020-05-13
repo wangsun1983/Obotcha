@@ -1,5 +1,5 @@
-#ifndef __SQL_CONNECTION_H__
-#define __SQL_CONNECTION_H__
+#ifndef __OBOTCHA_SQL_CONNECTION_H__
+#define __OBOTCHA_SQL_CONNECTION_H__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

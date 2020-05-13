@@ -1,5 +1,5 @@
-#ifndef __SQLITE3_CONNECTION_H__
-#define __SQLITE3_CONNECTION_H__
+#ifndef __OBOTCHA_SQLITE3_CONNECTION_H__
+#define __OBOTCHA_SQLITE3_CONNECTION_H__
 
 #include "sqlite3.h"
 #include "Object.hpp"

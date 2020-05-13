@@ -71,42 +71,42 @@ bool _WebSocketClientManager::addClient(int fd,int version) {
         return false;
     }
     
-    AutoMutex ll(mMutex);
+    AutoLock ll(mMutex);
     mClients->put(fd,data);
     return true;
 }
 
 WebSocketClientInfo _WebSocketClientManager::getClient(int fd) {
-    AutoMutex ll(mMutex);
+    AutoLock ll(mMutex);
     return mClients->get(fd);
 }
     
 void _WebSocketClientManager::setHttpHeader(int fd,HttpHeader h) {
-    AutoMutex ll(mMutex);
+    AutoLock ll(mMutex);
     WebSocketClientInfo data = mClients->get(fd);
     data->setHttpHeader(h);
 }
 
 void _WebSocketClientManager::setWebSocketHeader(int fd,WebSocketHeader h) {
-    AutoMutex ll(mMutex);
+    AutoLock ll(mMutex);
     WebSocketClientInfo data = mClients->get(fd);
     data->setWebSocketHeader(h);
 }
 
 void _WebSocketClientManager::setWebSocketPermessageDeflate(int fd,WebSocketPermessageDeflate v) {
-    AutoMutex ll(mMutex);
+    AutoLock ll(mMutex);
     WebSocketClientInfo data = mClients->get(fd);
     data->setDeflater(v);
 }
 
 void _WebSocketClientManager::setWebSocketProtocols(int fd,ArrayList<String> p) {
-    AutoMutex ll(mMutex);
+    AutoLock ll(mMutex);
     WebSocketClientInfo data = mClients->get(fd);
     data->setProtocols(p);
 }
     
 void _WebSocketClientManager::removeClient(int fd) {
-    AutoMutex ll(mMutex);
+    AutoLock ll(mMutex);
     mClients->remove(fd);
 }
 

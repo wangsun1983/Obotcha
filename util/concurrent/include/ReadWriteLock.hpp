@@ -1,5 +1,5 @@
-#ifndef __READ_WRITE_HPP__
-#define __READ_WRITE_HPP__
+#ifndef __OBOTCHA_READ_WRITE_HPP__
+#define __OBOTCHA_READ_WRITE_HPP__
 
 #include <pthread.h>
 #include <sys/time.h>

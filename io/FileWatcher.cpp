@@ -34,7 +34,7 @@ sp<_FileWatcher> _FileWatcher::getInstance() {
 }
 
 int _FileWatcher::startWatch(String filepath,int op,sp<_FileObserver> observer) {
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     LocalFileObserverMonitor monitor = createLocalFileObserverMonitor();
     monitor->op = op;
     monitor->mObserver = observer;
@@ -52,7 +52,7 @@ int _FileWatcher::startWatch(String filepath,int op,sp<_FileObserver> observer) 
 }
 
 void _FileWatcher::stopWatch(int id,int op,FileObserver observer) {
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     ArrayList<LocalFileObserverMonitor> list = mListeners->get(id);
     if(list != nullptr) {
         ListIterator<LocalFileObserverMonitor> iterator = list->getIterator();
@@ -104,7 +104,7 @@ void _FileWatcher::run() {
         
             String filepath = createString(event->name);
             while(1){
-                AutoMutex l(mutex);
+                AutoLock l(mutex);
                 int changeid = event->wd;
                 ArrayList<LocalFileObserverMonitor> monitors = mListeners->get(changeid);
 

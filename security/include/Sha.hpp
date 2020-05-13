@@ -1,5 +1,5 @@
-#ifndef __SHA_HPP__
-#define __SHA_HPP__
+#ifndef __OBOTCHA_SHA_HPP__
+#define __OBOTCHA_SHA_HPP__
 
 #include "File.hpp"
 #include "String.hpp"

@@ -1,5 +1,5 @@
-#ifndef __FUTURE_HPP__
-#define __FUTURE_HPP__
+#ifndef __OBOTCHA_FUTURE_HPP__
+#define __OBOTCHA_FUTURE_HPP__
 
 #include "FutureTask.hpp"
 

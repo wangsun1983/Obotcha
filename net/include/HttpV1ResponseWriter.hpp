@@ -1,5 +1,5 @@
-#ifndef __HTTP_V1_RESPONSE_WRITER_HPP__
-#define __HTTP_V1_RESPONSE_WRITER_HPP__
+#ifndef __OBOTCHA_HTTP_V1_RESPONSE_WRITER_HPP__
+#define __OBOTCHA_HTTP_V1_RESPONSE_WRITER_HPP__
 
 #include "HttpPacket.hpp"
 #include "HttpV1ClientInfo.hpp"

@@ -41,7 +41,7 @@ int _Condition::wait(Mutex m,long int timeInterval) {
 void _Condition::notify() {
     //cond.notify_one();
     if(mMutex != nullptr) {
-        AutoMutex ll(mMutex);
+        AutoLock ll(mMutex);
         pthread_cond_signal(&cond_t);
     }
 }
@@ -49,7 +49,7 @@ void _Condition::notify() {
 void _Condition::notifyAll() {
     //cond.notify_all();
     if(mMutex != nullptr) {
-        AutoMutex ll(mMutex);
+        AutoLock ll(mMutex);
         pthread_cond_broadcast(&cond_t);
     }
 }

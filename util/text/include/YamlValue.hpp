@@ -1,5 +1,5 @@
-#ifndef __YAML_VALUE_H__
-#define __YAML_VALUE_H__
+#ifndef __OBOTCHA_YAML_VALUE_H__
+#define __OBOTCHA_YAML_VALUE_H__
 
 #include "yaml-cpp/yaml.h"
 #include "StrongPointer.hpp"

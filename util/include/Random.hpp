@@ -1,5 +1,5 @@
-#ifndef __RANDOM_HPP__
-#define __RANDOM_HPP__
+#ifndef __OBOTCHA_RANDOM_HPP__
+#define __OBOTCHA_RANDOM_HPP__
 
 #include <cmath>
 #include <time.h>

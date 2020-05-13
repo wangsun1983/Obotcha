@@ -1,11 +1,10 @@
-#ifndef __AUTO_CLOSE_HPP__
-#define __AUTO_CLOSE_HPP__
+#ifndef __OBOTCHA_AUTO_CLOSE_HPP__
+#define __OBOTCHA_AUTO_CLOSE_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "ArrayList.hpp"
 #include "Mutex.hpp"
-#include "AutoMutex.hpp"
 #include "Condition.hpp"
 
 namespace obotcha {

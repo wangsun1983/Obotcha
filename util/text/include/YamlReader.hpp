@@ -1,5 +1,5 @@
-#ifndef __YAML_READER_H__
-#define __YAML_READER_H__
+#ifndef __OBOTCHA_YAML_READER_H__
+#define __OBOTCHA_YAML_READER_H__
 
 #include "File.hpp"
 #include "String.hpp"

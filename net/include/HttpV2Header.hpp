@@ -1,5 +1,5 @@
-#ifndef __HTTP_V2_HEADER_HPP__
-#define __HTTP_V2_HEADER_HPP__
+#ifndef __OBOTCHA_HTTP_V2_HEADER_HPP__
+#define __OBOTCHA_HTTP_V2_HEADER_HPP__
 
 namespace obotcha {
 

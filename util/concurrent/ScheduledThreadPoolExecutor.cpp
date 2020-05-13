@@ -5,7 +5,7 @@
 #include "System.hpp"
 #include "ScheduledThreadPoolExecutor.hpp"
 #include "Error.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "MethodNotSupportException.hpp"
 #include "ExecutorDestructorException.hpp"
 #include "Log.hpp"
@@ -132,7 +132,7 @@ _ScheduledThreadPoolThread::_ScheduledThreadPoolThread(ThreadCachedPoolExecutor 
 
 _ScheduledThreadPoolThread::~_ScheduledThreadPoolThread() {
     {
-        AutoMutex ll(mFuturesMutex);
+        AutoLock ll(mFuturesMutex);
         mFutures->clear();
     }
     
@@ -145,7 +145,7 @@ void _ScheduledThreadPoolThread::onUpdate() {
 
 void _ScheduledThreadPoolThread::addTask(ScheduledThreadPoolTask v) {
     
-    AutoMutex l(mDataLock);
+    AutoLock l(mDataLock);
     int start = 0;
     int end = mDatas->size() - 1;
     int index = 0;
@@ -168,7 +168,7 @@ void _ScheduledThreadPoolThread::addTask(ScheduledThreadPoolTask v) {
 
 void _ScheduledThreadPoolThread::stop() {
     {
-        AutoMutex ll(mDataLock);
+        AutoLock ll(mDataLock);
         mDatas->clear();
     }
 
@@ -189,7 +189,7 @@ void _ScheduledThreadPoolThread::waitForTerminate(long timeout) {
         return;
     }
 
-    AutoMutex l(mTerminatedMutex);
+    AutoLock l(mTerminatedMutex);
 
     if(!isTerminated) {
         if(timeout == 0) {
@@ -205,7 +205,7 @@ void _ScheduledThreadPoolThread::onInterrupt() {
     
     //CachedExector will clear mCurrentTask's runnable;
     {
-        AutoMutex l(mTerminatedMutex);
+        AutoLock l(mTerminatedMutex);
         isTerminated = true;
         mTerminatedCond->notify();
     }
@@ -218,7 +218,7 @@ void _ScheduledThreadPoolThread::onInterrupt() {
     }
 
     {
-        AutoMutex ll(mDataLock);
+        AutoLock ll(mDataLock);
         ListIterator<ScheduledThreadPoolTask> iterator = mDatas->getIterator();
         //int i = 0;
         while(iterator->hasValue()) {
@@ -237,7 +237,7 @@ void _ScheduledThreadPoolThread::onInterrupt() {
 
 void _ScheduledThreadPoolThread::stopTask(FutureTask task) {
     {
-        AutoMutex l(mDataLock);
+        AutoLock l(mDataLock);
         //if(mDatas->remove(task) > 0) {
         //    return;
         //}
@@ -261,7 +261,7 @@ void _ScheduledThreadPoolThread::stopTask(FutureTask task) {
     {
     
         Runnable r = task->getRunnable();
-        AutoMutex ll(mFuturesMutex);
+        AutoLock ll(mFuturesMutex);
         Future f = mFutures->get(r);
         if(f != nullptr) {
             f->cancel();
@@ -275,7 +275,7 @@ void _ScheduledThreadPoolThread::stopTask(FutureTask task) {
 void _ScheduledThreadPoolThread::onTaskFinished(Runnable r) {
     Future f = nullptr;
     {
-        AutoMutex ll(mFuturesMutex);
+        AutoLock ll(mFuturesMutex);
         //f = mFutures->get(r);
         //if(f == nullptr) {
         //    return;
@@ -289,7 +289,7 @@ void _ScheduledThreadPoolThread::run() {
         st(Thread)::interruptCheck();
         mCurrentTask = nullptr;
         while(1) {
-            AutoMutex l(mDataLock);
+            AutoLock l(mDataLock);
             if(isStop) {
                 goto end;
             }
@@ -306,12 +306,12 @@ void _ScheduledThreadPoolThread::run() {
         long currentTime = st(System)::currentTimeMillis();
         long interval = mCurrentTask->mNextTime - currentTime;
         if(interval > 0) {
-            AutoMutex l(mTimeLock);
+            AutoLock l(mTimeLock);
             mTimeCond->wait(mTimeLock,interval);
             continue;
         } else {
             {
-                AutoMutex l(mDataLock);
+                AutoLock l(mDataLock);
                 if(mDatas->remove(mCurrentTask) < 0) {
                     continue;
                 }
@@ -328,7 +328,7 @@ void _ScheduledThreadPoolThread::run() {
                 ScheduledTaskWorker worker = createScheduledTaskWorker(mCurrentTask,t);
                 Future future = cachedExecutor->submit(worker);
                 {
-                    AutoMutex ll(mFuturesMutex);
+                    AutoLock ll(mFuturesMutex);
                     mFutures->put(r,future);
                 }
             }
@@ -340,7 +340,7 @@ end:
     mCurrentTask = nullptr;
 
     mDatas->clear();
-    AutoMutex l(mTerminatedMutex);
+    AutoLock l(mTerminatedMutex);
     isTerminated = true;
     mTerminatedCond->notify();
 }
@@ -376,7 +376,7 @@ int _ScheduledThreadPoolExecutor::shutdown() {
     if(mIsShutDown ||mIsTerminated) {
         return -AlreadyDestroy;
     }
-    AutoMutex l(mProtectMutex);
+    AutoLock l(mProtectMutex);
     
     if(mIsShutDown ||mIsTerminated) {
         return -AlreadyDestroy;
@@ -425,7 +425,7 @@ Future _ScheduledThreadPoolExecutor::submit(Runnable r) {
         return nullptr;
     }
 
-    AutoMutex l(mProtectMutex);
+    AutoLock l(mProtectMutex);
 
     if(mIsShutDown) {
         return nullptr;

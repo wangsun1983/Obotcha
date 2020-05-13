@@ -9,7 +9,7 @@
 #include "Executors.hpp"
 #include "Future.hpp"
 #include "System.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "Mutex.hpp"
 
 using namespace obotcha;
@@ -22,7 +22,7 @@ public:
    void run() {
       //printf("myruntest 5 trace1 \n");
       {
-          AutoMutex l(mutex);
+          AutoLock l(mutex);
           num++;
       }
       //printf("myruntest 5 trace2 \n");

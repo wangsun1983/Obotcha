@@ -1,5 +1,5 @@
-#ifndef __NTP_CLIENT_HPP__
-#define __NTP_CLIENT_HPP__
+#ifndef __OBOTCHA_NTP_CLIENT_HPP__
+#define __OBOTCHA_NTP_CLIENT_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

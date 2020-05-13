@@ -1,5 +1,5 @@
-#ifndef __SCHEDULED_THREAD_POOL_EXECUTOR_HPP__
-#define __SCHEDULED_THREAD_POOL_EXECUTOR_HPP__
+#ifndef __OBOTCHA_SCHEDULED_THREAD_POOL_EXECUTOR_HPP__
+#define __OBOTCHA_SCHEDULED_THREAD_POOL_EXECUTOR_HPP__
 
 #include <vector>
 
@@ -9,7 +9,7 @@
 #include "ConcurrentQueue.hpp"
 #include "ArrayList.hpp"
 #include "Thread.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "ThreadPoolExecutor.hpp"

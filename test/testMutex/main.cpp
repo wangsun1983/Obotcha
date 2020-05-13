@@ -6,7 +6,7 @@
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "Integer.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "Mutex.hpp"
 #include "System.hpp"
 

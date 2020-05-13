@@ -1,5 +1,5 @@
-#ifndef __JSON_VALUE_H__
-#define __JSON_VALUE_H__
+#ifndef __OBOTCHA_JSON_VALUE_H__
+#define __OBOTCHA_JSON_VALUE_H__
 
 #include "json/value.h"
 

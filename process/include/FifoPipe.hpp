@@ -1,5 +1,5 @@
-#ifndef __FIFO_PIPE_HPP__
-#define __FIFO_PIPE_HPP__
+#ifndef __OBOTCHA_FIFO_PIPE_HPP__
+#define __OBOTCHA_FIFO_PIPE_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

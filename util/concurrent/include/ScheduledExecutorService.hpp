@@ -1,5 +1,5 @@
-#ifndef __SCHEDULED_EXECUTOR_SERVICE_H__
-#define __SCHEDULED_EXECUTOR_SERVICE_H__
+#ifndef __OBOTCHA_SCHEDULED_EXECUTOR_SERVICE_H__
+#define __OBOTCHA_SCHEDULED_EXECUTOR_SERVICE_H__
 
 #include <pthread.h>
 #include <map>

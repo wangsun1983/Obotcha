@@ -1,5 +1,5 @@
-#ifndef __FILE_OBSERVER_HPP__
-#define __FILE_OBSERVER_HPP__
+#ifndef __OBOTCHA_FILE_OBSERVER_HPP__
+#define __OBOTCHA_FILE_OBSERVER_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    
@@ -14,7 +14,7 @@
 #include "ArrayList.hpp"
 #include "Thread.hpp"
 #include "Mutex.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "HashMap.hpp"
 #include "ArrayList.hpp"
 

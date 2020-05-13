@@ -1,5 +1,5 @@
-#ifndef __TRANSFORM_EXCEPTION_HPP__
-#define __TRANSFORM_EXCEPTION_HPP__
+#ifndef __OBOTCHA_TRANSFORM_EXCEPTION_HPP__
+#define __OBOTCHA_TRANSFORM_EXCEPTION_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

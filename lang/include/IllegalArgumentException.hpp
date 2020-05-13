@@ -1,5 +1,5 @@
-#ifndef __ILLEGAL_ARGUMENT_EXCEPTION_HPP__
-#define __ILLEGAL_ARGUMENT_EXCEPTION_HPP__
+#ifndef __OBOTCHA_ILLEGAL_ARGUMENT_EXCEPTION_HPP__
+#define __OBOTCHA_ILLEGAL_ARGUMENT_EXCEPTION_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

@@ -8,7 +8,7 @@
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "Integer.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "Mutex.hpp"
 #include "System.hpp"
 
@@ -24,7 +24,7 @@ public:
 
     void run() {
         //printf("Thread1 start \n");
-        AutoMutex l(mutex_t);
+        AutoLock l(mutex_t);
         //mutex_t->lock();
         //cond->wait(mutex_t);
         //printf("Thread1 goto sleep \n");
@@ -48,7 +48,7 @@ public:
     void run() {
         //printf("Thread2 start \n");
         //cond->notify();
-        AutoMutex l(mutex_t);
+        AutoLock l(mutex_t);
         //mutex_t->lock();
         //printf("Thread2 trace \n");
         //mutex_t->unlock();
@@ -59,6 +59,7 @@ private:
     Mutex mutex_t;
 };
 
+#if 0
 DECLARE_SIMPLE_CLASS(MyRun3) IMPLEMENTS(Runnable) {
 public:
 
@@ -69,7 +70,7 @@ public:
     void run() {
         //printf("Thread2 start \n");
         //cond->notify();
-        AutoMutex l(mutex_t,2000);
+        AutoLock l(mutex_t,2000);
         //mutex_t->lock();
         //printf("Thread2 trace \n");
         //mutex_t->unlock();
@@ -79,6 +80,7 @@ public:
 private:
     Mutex mutex_t;
 };
+#endif
 
 DECLARE_SIMPLE_CLASS(MyRun4) IMPLEMENTS(Runnable) {
 public:
@@ -90,7 +92,7 @@ public:
     void run() {
         //printf("Thread2 start \n");
         //cond->notify();
-        //AutoMutex l(mutex_t,2000);
+        //AutoLock l(mutex_t,2000);
         mutex_t->trylock();
         //mutex_t->lock();
         //printf("Thread2 trace \n");
@@ -106,7 +108,7 @@ int testMutexNormal() {
     //Mutex()
     while(1) {
         Mutex mutex = createMutex();
-        printf("---[TestMutex Test {construct()} case1] [Success]--- \n");
+        printf("---[TestMutex Test {construct()} case1] [OK]--- \n");
         break;
     }
 
@@ -115,10 +117,10 @@ int testMutexNormal() {
         Mutex mutex = createMutex("test");
         if(!mutex->toString()->equals("test")) {
             printf("---[TestMutex Test {construct(String)} case1] [FAIL]--- \n");
-            break;       
+            break;
         }
 
-        printf("---[TestMutex Test {construct(String)} case2] [Success]--- \n");
+        printf("---[TestMutex Test {construct(String)} case2] [OK]--- \n");
         break;
     }
 
@@ -139,10 +141,11 @@ int testMutexNormal() {
             break;
         }
 
-        printf("---[TestMutex Test {lock()} case2] [Success]--- \n");
+        printf("---[TestMutex Test {lock()} case2] [OK]--- \n");
         break;
     }
 
+#if 0
     //lock(long)
     while(1) {
         Mutex mutex = createMutex("test");
@@ -158,9 +161,10 @@ int testMutexNormal() {
             break;
         }
 
-        printf("---[TestMutex Test {lock(long)} case2] [Success]--- \n");
+        printf("---[TestMutex Test {lock(long)} case2] [OK]--- \n");
         break;
     }
+#endif
 
     //unlock()
     while(1) {
@@ -171,7 +175,7 @@ int testMutexNormal() {
             break;
         }
 
-        printf("---[TestMutex Test {unlock()} case2] [Success]--- \n");
+        printf("---[TestMutex Test {unlock()} case2] [OK]--- \n");
         break;
     }
 
@@ -193,7 +197,7 @@ int testMutexNormal() {
             break;
         }
 
-        printf("---[TestMutex Test {trylock()} case2] [Success]--- \n");
+        printf("---[TestMutex Test {trylock()} case2] [OK]--- \n");
         break;
     }
 

@@ -1,5 +1,5 @@
-#ifndef __BASE_64_HPP__
-#define __BASE_64_HPP__
+#ifndef __OBOTCHA_BASE_64_HPP__
+#define __OBOTCHA_BASE_64_HPP__
 
 #include "openssl/pem.h"
 #include "openssl/bio.h"

@@ -1,5 +1,5 @@
-#ifndef __JSON_READER_H__
-#define __JSON_READER_H__
+#ifndef __OBOTCHA_JSON_READER_H__
+#define __OBOTCHA_JSON_READER_H__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

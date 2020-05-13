@@ -1,5 +1,5 @@
-#ifndef __SSL_MANAGER_HPP__
-#define __SSL_MANAGER_HPP__
+#ifndef __OBOTCHA_SSL_MANAGER_HPP__
+#define __OBOTCHA_SSL_MANAGER_HPP__
 
 #include "SSLInfo.hpp"
 #include "HashMap.hpp"

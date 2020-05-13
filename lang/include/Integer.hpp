@@ -1,5 +1,5 @@
-#ifndef __INTEGER_HPP__
-#define __INTEGER_HPP__
+#ifndef __OBOTCHA_INTEGER_HPP__
+#define __OBOTCHA_INTEGER_HPP__
 
 #include <stdio.h>
 #include <sstream>

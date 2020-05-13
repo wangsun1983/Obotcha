@@ -1,5 +1,5 @@
-#ifndef __FORK_JOIN_TASK_HPP__
-#define __FORK_JOIN_TASK_HPP__
+#ifndef __OBOTCHA_FORK_JOIN_TASK_HPP__
+#define __OBOTCHA_FORK_JOIN_TASK_HPP__
 
 #include <stdio.h>
 

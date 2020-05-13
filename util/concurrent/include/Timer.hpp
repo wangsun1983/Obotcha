@@ -1,5 +1,5 @@
-#ifndef __TIMER_HPP__
-#define __TIMER_HPP__
+#ifndef __OBOTCHA_TIMER_HPP__
+#define __OBOTCHA_TIMER_HPP__
 
 #include <stdio.h>
 

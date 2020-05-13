@@ -1,5 +1,5 @@
-#ifndef __UDP_SERVER_HPP__
-#define __UDP_SERVER_HPP__
+#ifndef __OBOTCHA_UDP_SERVER_HPP__
+#define __OBOTCHA_UDP_SERVER_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

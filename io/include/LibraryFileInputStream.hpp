@@ -1,5 +1,5 @@
-#ifndef __LIBRARY_INPUT_STREAM_HPP__
-#define __LIBRARY_INPUT_STREAM_HPP__
+#ifndef __OBOTCHA_LIBRARY_INPUT_STREAM_HPP__
+#define __OBOTCHA_LIBRARY_INPUT_STREAM_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

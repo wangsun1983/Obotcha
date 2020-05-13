@@ -1,5 +1,5 @@
-#ifndef __MEMORY_FILE_HPP__
-#define __MEMORY_FILE_HPP__
+#ifndef __OBOTCHA_MEMORY_FILE_HPP__
+#define __OBOTCHA_MEMORY_FILE_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

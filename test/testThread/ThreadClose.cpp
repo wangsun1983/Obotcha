@@ -6,7 +6,7 @@
 #include "Object.hpp"
 #include "System.hpp"
 #include "Mutex.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "System.hpp"
 #include "Error.hpp"
 

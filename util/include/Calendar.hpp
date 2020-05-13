@@ -1,5 +1,5 @@
-#ifndef __CALENDAR_HPP__
-#define __CALENDAR_HPP__
+#ifndef __OBOTCHA_CALENDAR_HPP__
+#define __OBOTCHA_CALENDAR_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

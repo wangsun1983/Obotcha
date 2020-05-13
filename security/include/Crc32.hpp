@@ -1,5 +1,5 @@
-#ifndef __CRC32_HPP__
-#define __CRC32_HPP__
+#ifndef __OBOTCHA_CRC32_HPP__
+#define __OBOTCHA_CRC32_HPP__
 
 #include "zlib.h"
 

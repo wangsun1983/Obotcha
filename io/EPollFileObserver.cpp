@@ -104,7 +104,7 @@ int _EPollFileObserver::release() {
 }
 
 _EPollFileObserver::~_EPollFileObserver() {
-
+    close(mEpollFd);
 }
 
 

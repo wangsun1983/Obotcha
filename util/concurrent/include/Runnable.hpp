@@ -1,5 +1,5 @@
-#ifndef __RUNNABLE_HPP__
-#define __RUNNABLE_HPP__
+#ifndef __OBOTCHA_RUNNABLE_HPP__
+#define __OBOTCHA_RUNNABLE_HPP__
 
 #include <stdio.h>
 

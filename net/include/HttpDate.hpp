@@ -1,5 +1,5 @@
-#ifndef __HTTP_DATE_HPP__
-#define __HTTP_DATE_HPP__
+#ifndef __OBOTCHA_HTTP_DATE_HPP__
+#define __OBOTCHA_HTTP_DATE_HPP__
 
 #include <map>
 

@@ -24,7 +24,7 @@ public:
     }
 
     void onAccept(int fd,String ip,int port,ByteArray pack) {
-      AutoMutex ll(acceptMutex);
+      AutoLock ll(acceptMutex);
       printf("on accept pack is %s,size is %d \n",pack->toString()->toChars(),pack->size());
         acceptStr = pack->toString();
         acceptCond->notify();
@@ -36,17 +36,17 @@ public:
     }
 
     void onConnect(int fd,String ip,int port) {
-      AutoMutex ll(mutex);
+      AutoLock ll(mutex);
       printf("onConnect,ip is %s,port is %d,fd is %d \n",ip->toChars(),port,fd);
-      //AutoMutex ll(mutex);
+      //AutoLock ll(mutex);
       clientfd = fd;
       cond->notify();
     }
 
     void onConnect(int fd,String domain) {
-      AutoMutex ll(mutex);
+      AutoLock ll(mutex);
       printf("onConnect domain is %s,fd is %d \n",domain->toChars(),fd);
-      //AutoMutex ll(mutex);
+      //AutoLock ll(mutex);
       clientfd = fd;
       cond->notify();
     }
@@ -56,7 +56,7 @@ public:
           return clientfd;
         }
 
-        AutoMutex ll(mutex);
+        AutoLock ll(mutex);
         cond->wait(mutex);
         return clientfd;
     }
@@ -66,7 +66,7 @@ public:
           return  acceptStr;
         }
 
-        AutoMutex ll(acceptMutex);
+        AutoLock ll(acceptMutex);
         acceptCond->wait(acceptMutex);
 
         return acceptStr;
@@ -165,20 +165,20 @@ public:
 
   void onAccept(int fd,String ip,int port,ByteArray pack) {
       printf("cient accept1 \n");
-      AutoMutex ll(acceptMutex);
+      AutoLock ll(acceptMutex);
       acceptString = pack->toString();
       acceptCond->notify();
       printf("cient accept2 \n");
   }
 
   void onDisconnect(int fd) {
-      AutoMutex ll(connectMutex);
+      AutoLock ll(connectMutex);
       mIsConnect = false;
       connectCond->notify();
   }
 
   void onConnect(int fd,String ip,int port) {
-      AutoMutex ll(connectMutex);
+      AutoLock ll(connectMutex);
       mIsConnect = true;
       connectCond->notify();
   }
@@ -196,7 +196,7 @@ public:
           return acceptString;
       }
       printf("cient get accept1 \n");
-      AutoMutex ll(acceptMutex);
+      AutoLock ll(acceptMutex);
       acceptCond->wait(acceptMutex);
       printf("cient get accept2 \n");
       return acceptString;

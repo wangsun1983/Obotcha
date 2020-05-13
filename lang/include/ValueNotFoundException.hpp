@@ -1,5 +1,5 @@
-#ifndef __VALUE_NOT_FOUND_EXCEPTION_HPP__
-#define __VALUE_NOT_FOUND_EXCEPTION_HPP__
+#ifndef __OBOTCHA_VALUE_NOT_FOUND_EXCEPTION_HPP__
+#define __OBOTCHA_VALUE_NOT_FOUND_EXCEPTION_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

@@ -1,5 +1,5 @@
-#ifndef __INET_ADDRESS_HPP__
-#define __INET_ADDRESS_HPP__
+#ifndef __OBOTCHA_INET_ADDRESS_HPP__
+#define __OBOTCHA_INET_ADDRESS_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

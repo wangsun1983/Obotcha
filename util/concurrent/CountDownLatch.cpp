@@ -12,7 +12,7 @@ _CountDownLatch::_CountDownLatch(int v) {
 }
 
 int _CountDownLatch::countDown() {
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
 
     if(count < 1) {
         return -AlreadyDestroy;
@@ -21,14 +21,14 @@ int _CountDownLatch::countDown() {
     count--;
 
     if(count == 0) {
-        waitCond->notify();
+        waitCond->notifyAll();
     }
 
     return 0;
 }
 
 int _CountDownLatch::await(long v) {
-    AutoMutex l(waitMutex);
+    AutoLock l(waitMutex);
     if(count == 0) {
         return -AlreadyDestroy;
     }
@@ -37,7 +37,7 @@ int _CountDownLatch::await(long v) {
 }
 
 int _CountDownLatch::await() {
-    AutoMutex l(waitMutex);
+    AutoLock l(waitMutex);
     if(count == 0) {
         return -AlreadyDestroy;
     }

@@ -8,7 +8,7 @@
 #include "WebSocketListener.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "NetUtils.hpp"
 #include "WebSocketFrameComposer.hpp"
 #include "WebSocketProtocol.hpp"
@@ -75,7 +75,7 @@ public:
     }
 
     String waitMessage() {
-        AutoMutex ll(mMutex);
+        AutoLock ll(mMutex);
         mConditaion->wait(mMutex);
         return mMessage;
     }

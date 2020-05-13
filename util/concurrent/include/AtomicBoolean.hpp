@@ -1,5 +1,5 @@
-#ifndef __ATOMIC_BOOLEANR_HPP__
-#define __ATOMIC_BOOLEANR_HPP__
+#ifndef __OBOTCHA_ATOMIC_BOOLEANR_HPP__
+#define __OBOTCHA_ATOMIC_BOOLEANR_HPP__
 
 #include <pthread.h>
 #include <sys/time.h>

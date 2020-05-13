@@ -6,7 +6,7 @@
 #include "Object.hpp"
 #include "System.hpp"
 #include "Mutex.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "System.hpp"
 #include "Condition.hpp"
 
@@ -25,7 +25,7 @@ DECLARE_SIMPLE_CLASS(MyNotifyTest1Thread) IMPLEMENTS(Thread) {
 public:
     void run() {
         //printf("notify run1 \n");
-        AutoMutex ll(myNotifyMutex);
+        AutoLock ll(myNotifyMutex);
         //printf("notify run2 \n");
         mCondition->wait(myNotifyMutex);
         //printf("notify run3 \n");

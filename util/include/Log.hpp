@@ -1,5 +1,5 @@
-#ifndef __LOG_HPP__
-#define __LOG_HPP__
+#ifndef __OBOTCHA_OBOTCHA_LOG_HPP__
+#define __OBOTCHA_OBOTCHA_LOG_HPP__
 
 #include <initializer_list>
 #include <iostream>

@@ -1,5 +1,5 @@
-#ifndef __DES_HPP__
-#define __DES_HPP__
+#ifndef __OBOTCHA_DES_HPP__
+#define __OBOTCHA_DES_HPP__
 
 #include "openssl/des.h"
 

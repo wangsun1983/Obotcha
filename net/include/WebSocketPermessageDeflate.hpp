@@ -1,5 +1,5 @@
-#ifndef __WEB_SOCKET_PERMESSAGE_DEFLATE_HPP__
-#define __WEB_SOCKET_PERMESSAGE_DEFLATE_HPP__
+#ifndef __OBOTCHA_WEB_SOCKET_PERMESSAGE_DEFLATE_HPP__
+#define __OBOTCHA_WEB_SOCKET_PERMESSAGE_DEFLATE_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

@@ -11,11 +11,10 @@
 #include <stddef.h>
 #include <errno.h>
 
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "UdpServer.hpp"
 #include "Pipe.hpp"
 #include "NetUtils.hpp"
-#include "AutoMutex.hpp"
 #include "Error.hpp"
 #include "Byte.hpp"
 
@@ -105,12 +104,12 @@ void _UdpServerThread::run() {
 }
 
 void _UdpServerThread::addClientFd(int fd) {
-    AutoMutex l(mClientMutex);
+    AutoLock l(mClientMutex);
     mClients->insertLast(createInteger(fd));
 }
 
 void _UdpServerThread::removeClientFd(int fd) {
-    AutoMutex l(mClientMutex);
+    AutoLock l(mClientMutex);
     int size = mClients->size();
     
     for(int index = 0;index<size;index++) {
@@ -199,7 +198,7 @@ void _UdpServer::release() {
     }
 
     {
-        AutoMutex l(mClientsMutex);
+        AutoLock l(mClientsMutex);
         int size = mClients->size();
         for(int index = 0;index < size;index++) {
             int fd = mClients->get(index)->toValue();

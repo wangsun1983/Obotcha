@@ -1,17 +1,18 @@
-#ifndef __CONCURRENT_QUEUE_HPP__
-#define __CONCURRENT_QUEUE_HPP__
+#ifndef __OBOTCHA_CONCURRENT_QUEUE_HPP__
+#define __OBOTCHA_CONCURRENT_QUEUE_HPP__
 
 #include <vector>
 #include <pthread.h>
 
 #include "Object.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "StrongPointer.hpp"
 
 #include "Boolean.hpp"
 #include "Double.hpp"
 #include "Float.hpp"
 #include "Integer.hpp"
+#include "Mutex.hpp"
 
 using namespace std;
 
@@ -65,7 +66,7 @@ _ConcurrentQueue<T>::_ConcurrentQueue(){
 
 template <typename T>
 T _ConcurrentQueue<T>:: get(int index){
-    AutoMutex l(mutex_t);
+    AutoLock l(mutex_t);
     if(index >= mQueue.size()) {
         return nullptr;
     }
@@ -75,19 +76,19 @@ T _ConcurrentQueue<T>:: get(int index){
 
 template <typename T>
 void _ConcurrentQueue<T>::enQueueFirst(T val) {
-    AutoMutex l(mutex_t);
+    AutoLock l(mutex_t);
     mQueue.insert(mQueue.begin(),val);
 }
 
 template <typename T>
 void _ConcurrentQueue<T>::enQueueLast(T val) {
-    AutoMutex l(mutex_t);
+    AutoLock l(mutex_t);
     mQueue.push_back(val);
 }
 
 template <typename T>
 int _ConcurrentQueue<T>::remove(T val) {
-    AutoMutex l(mutex_t);
+    AutoLock l(mutex_t);
     typename vector<T>::iterator result = find(mQueue.begin( ), mQueue.end( ),val);
     if(result != mQueue.end()) {
         mQueue.erase(result);
@@ -147,7 +148,7 @@ void _ConcurrentQueue<T>::enQueueLast(float val) {
 
 template <typename T>
 T _ConcurrentQueue<T>::deQueueFirst() {
-    AutoMutex l(mutex_t);
+    AutoLock l(mutex_t);
 
     if(mQueue.size() == 0) {
         return nullptr;
@@ -161,7 +162,7 @@ T _ConcurrentQueue<T>::deQueueFirst() {
 
 template <typename T>
 T _ConcurrentQueue<T>::deQueueLast() {
-    AutoMutex l(mutex_t);
+    AutoLock l(mutex_t);
 
     if(mQueue.size() == 0) {
         return nullptr;
@@ -176,13 +177,13 @@ T _ConcurrentQueue<T>::deQueueLast() {
 
 template <typename T>
 int _ConcurrentQueue<T>::size() {
-    AutoMutex l(mutex_t);
+    AutoLock l(mutex_t);
     return mQueue.size();
 }
 
 template <typename T>
 void _ConcurrentQueue<T>::clear() {
-    AutoMutex l(mutex_t);
+    AutoLock l(mutex_t);
     mQueue.clear();
 }
 

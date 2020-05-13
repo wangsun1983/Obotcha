@@ -1,5 +1,5 @@
-#ifndef __BLOCKING_QUEUE_HPP__
-#define __BLOCKING_QUEUE_HPP__
+#ifndef __OBOTCHA_BLOCKING_QUEUE_HPP__
+#define __OBOTCHA_BLOCKING_QUEUE_HPP__
 
 #include <vector>
 #include <pthread.h>
@@ -8,7 +8,7 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
 
@@ -108,7 +108,7 @@ private:
 
 template <typename T>
 _BlockingQueue<T>::~_BlockingQueue() {
-    AutoMutex l(mMutex);
+    AutoLock l(mMutex);
     isDestroy = true;
     mEnqueueCond->notify();
     mDequeueCond->notify();
@@ -140,7 +140,7 @@ _BlockingQueue<T>::_BlockingQueue() {
 template <typename T>
 void _BlockingQueue<T>::enQueueFirst(T val) {
     while(1) {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         int size = mQueue.size();
         if(mCapacity != -1 && size == mCapacity) {
             mEnqueueCond->wait(mMutex);
@@ -151,10 +151,11 @@ void _BlockingQueue<T>::enQueueFirst(T val) {
         }
 
         mQueue.insert(mQueue.begin(),val);
+        mDequeueCond->notify();
         break;
     }
     
-    mDequeueCond->notify();
+    
 }
 
 template <typename T>
@@ -162,7 +163,7 @@ bool _BlockingQueue<T>::enQueueFirst(T val,long timeout) {
     int waitCount = 0;
 
     while(1) {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         int size = mQueue.size();
         if(mCapacity != -1 && size == mCapacity) {
             if(waitCount == 1) {
@@ -178,18 +179,16 @@ bool _BlockingQueue<T>::enQueueFirst(T val,long timeout) {
         }
 
         mQueue.insert(mQueue.begin(),val);
-        break;
+        mDequeueCond->notify();
+        return true;
     }
-    
-    mDequeueCond->notify();
-
-    return true;
+    return false;
 }
 
 template <typename T>
 void _BlockingQueue<T>::enQueueLast(T val) {
     while(1) {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         int size = mQueue.size();
         if(mCapacity != -1 && size == mCapacity) {
             mEnqueueCond->wait(mMutex);
@@ -198,12 +197,10 @@ void _BlockingQueue<T>::enQueueLast(T val) {
             }
             continue;
         }
-    
         mQueue.push_back(val);
+        mDequeueCond->notify();
         break;
     }
-
-    mDequeueCond->notify();
 }
 
 template <typename T>
@@ -211,7 +208,7 @@ bool _BlockingQueue<T>::enQueueLast(T val,long timeout) {
     int waitCount = 0;
 
     while(1) {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
     
         int size = mQueue.size();
         if(mCapacity != -1 && size == mCapacity) {
@@ -228,16 +225,17 @@ bool _BlockingQueue<T>::enQueueLast(T val,long timeout) {
         }
     
         mQueue.push_back(val);
+        mDequeueCond->notify();
+        return true;
         break;
     }
 
-    mDequeueCond->notify();
-    return true;
+    return false;
 }
 
 template <typename T>
 bool _BlockingQueue<T>::remove(T val) {
-    AutoMutex l(mMutex);
+    AutoLock l(mMutex);
     int size = mQueue.size();
     for(int i = 0;i<size;i++) {
         T t = mQueue.at(0);
@@ -352,7 +350,7 @@ template <typename T>
 T _BlockingQueue<T>::deQueueFirst() {
     T ret;
     while(1) {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         int size = mQueue.size();
         if(size == 0) {
             if(isDestroy) {
@@ -368,11 +366,10 @@ T _BlockingQueue<T>::deQueueFirst() {
 
         ret = mQueue.at(0);
         mQueue.erase(mQueue.begin());
-        
+        mEnqueueCond->notify();        
         break;
     }
 
-    mEnqueueCond->notify();
     return ret;
 }
 
@@ -381,7 +378,7 @@ T _BlockingQueue<T>::deQueueFirst(long timeout) {
     T ret;
 
     while(1) {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         int size = mQueue.size();
         if(size == 0) {
             if(-WaitTimeout == mDequeueCond->wait(mMutex,timeout)) {
@@ -395,11 +392,9 @@ T _BlockingQueue<T>::deQueueFirst(long timeout) {
         }
         ret = mQueue.at(0);
         mQueue.erase(mQueue.begin());
-        
+        mEnqueueCond->notify();    
         break;
     }
-
-    mEnqueueCond->notify();
     return ret;
 }
 
@@ -408,7 +403,7 @@ T _BlockingQueue<T>::deQueueLast() {
     T ret;
 
     while(1) {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         if(isDestroy) {
             return nullptr;
         }
@@ -425,9 +420,9 @@ T _BlockingQueue<T>::deQueueLast() {
 
         ret = mQueue.back();
         mQueue.pop_back();
+        mEnqueueCond->notify();
         break;
     }
-
     return ret;
 }
 
@@ -435,10 +430,10 @@ template <typename T>
 T _BlockingQueue<T>::deQueueLast(long interval) {
     T ret;
     while(1) {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         int size = mQueue.size();
-        
         if(size == 0) {
+
             if(-WaitTimeout == mDequeueCond->wait(mMutex,interval)) {
                 return nullptr;
             }
@@ -448,12 +443,12 @@ T _BlockingQueue<T>::deQueueLast(long interval) {
             }
             continue;
         }
-
+        
         ret = mQueue.back();
         mQueue.pop_back();
+        mEnqueueCond->notify();
         break;
     }
-
     return ret;
 }
 
@@ -462,7 +457,7 @@ template <typename T>
 T _BlockingQueue<T>::deQueueFirstNoBlock() {
     T ret;
     while(1) {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         int size = mQueue.size();
         if(size == 0) {
             return nullptr;
@@ -470,11 +465,9 @@ T _BlockingQueue<T>::deQueueFirstNoBlock() {
 
         ret = mQueue.at(0);
         mQueue.erase(mQueue.begin());
-        
+        mEnqueueCond->notify();   
         break;
     }
-
-    mEnqueueCond->notify();
     return ret;
 }
 
@@ -484,7 +477,7 @@ T _BlockingQueue<T>::deQueueFirstNoBlock(long timeout) {
     int waitCount = 0;
 
     while(1) {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         int size = mQueue.size();
         if(size == 0) {
             return nullptr;
@@ -492,11 +485,9 @@ T _BlockingQueue<T>::deQueueFirstNoBlock(long timeout) {
 
         ret = mQueue.at(0);
         mQueue.erase(mQueue.begin());
-        
+        mEnqueueCond->notify();
         break;
     }
-
-    mEnqueueCond->notify();
     return ret;
 }
 
@@ -505,7 +496,7 @@ T _BlockingQueue<T>::deQueueLastNoBlock() {
     T ret;
 
     while(1) {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         int size = mQueue.size();
         
         if(size == 0) {
@@ -514,9 +505,9 @@ T _BlockingQueue<T>::deQueueLastNoBlock() {
 
         ret = mQueue.back();
         mQueue.pop_back();
+        mEnqueueCond->notify();
         break;
     }
-
     return ret;
 }
 
@@ -526,7 +517,7 @@ T _BlockingQueue<T>::deQueueLastNoBlock(long interval) {
     int waitCount = 0;
 
     while(1) {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         int size = mQueue.size();
         
         if(size == 0) {
@@ -535,27 +526,27 @@ T _BlockingQueue<T>::deQueueLastNoBlock(long interval) {
 
         ret = mQueue.back();
         mQueue.pop_back();
+        mEnqueueCond->notify();
         break;
     }
-
     return ret;
 }
 
 template <typename T>
 int _BlockingQueue<T>::size() {
-    AutoMutex l(mMutex);
+    AutoLock l(mMutex);
     return mQueue.size();
 }
 
 template <typename T>
 void _BlockingQueue<T>::clear() {
-    AutoMutex l(mMutex);
+    AutoLock l(mMutex);
     mQueue.clear();
 }
 
 template <typename T>
 void _BlockingQueue<T>::destroy() {
-    AutoMutex l(mMutex);
+    AutoLock l(mMutex);
     isDestroy = true;
     mQueue.clear();
     mEnqueueCond->notifyAll();

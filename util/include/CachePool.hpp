@@ -1,5 +1,5 @@
-#ifndef __CACHE_POOL_HPP__
-#define __CACHE_POOL_HPP__
+#ifndef __OBOTCHA_CACHE_POOL_HPP__
+#define __OBOTCHA_CACHE_POOL_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

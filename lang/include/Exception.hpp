@@ -1,5 +1,5 @@
-#ifndef __EXCEPTION_HPP__
-#define __EXCEPTION_HPP__
+#ifndef __OBOTCHA_EXCEPTION_HPP__
+#define __OBOTCHA_EXCEPTION_HPP__
 
 #include <exception>
 

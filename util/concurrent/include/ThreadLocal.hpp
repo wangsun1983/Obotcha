@@ -1,5 +1,5 @@
-#ifndef __THREAD_LOCAL_HPP__
-#define __THREAD_LOCAL_HPP__
+#ifndef __OBOTCHA_THREAD_LOCAL_HPP__
+#define __OBOTCHA_THREAD_LOCAL_HPP__
 
 #include <vector>
 #include <pthread.h>
@@ -8,7 +8,7 @@
 #include "StrongPointer.hpp"
 #include "HashMap.hpp"
 #include "Mutex.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 
 namespace obotcha {
 
@@ -49,56 +49,56 @@ _ThreadLocal<T>::_ThreadLocal(){
 
 template<typename T>
 void _ThreadLocal<T>::set(pthread_t pthread,T t){
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     mLocalMap->put(pthread,t);
 }
 
 
 template<typename T>
 void _ThreadLocal<T>::set(T t){
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     mLocalMap->put(pthread_self(),t);
 }
 
 template<typename T>
 void _ThreadLocal<T>::remove(pthread_t ptread){
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     mLocalMap->remove(ptread);
 }
 
 template<typename T>
 void _ThreadLocal<T>::remove(){
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     mLocalMap->remove(pthread_self());
 }
 
 template<typename T>
 T _ThreadLocal<T>::get(){
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     return mLocalMap->get(pthread_self());
 }
 
 template<typename T>
 T _ThreadLocal<T>::get(pthread_t t){
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     return mLocalMap->get(t);
 }
 
 template<typename T>
 int _ThreadLocal<T>::size(){
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     return mLocalMap->size();
 }
 
 template<typename T>
 _ThreadLocal<T>::~_ThreadLocal(){
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     mLocalMap->clear(); 
 }
 
 template<typename T>
 void _ThreadLocal<T>::clear(){
-    AutoMutex l(mutex);
+    AutoLock l(mutex);
     mLocalMap->clear();
 }
 

@@ -1,5 +1,5 @@
-#ifndef __INI_VALUE_H__
-#define __INI_VALUE_H__
+#ifndef __OBOTCHA_INI_VALUE_H__
+#define __OBOTCHA_INI_VALUE_H__
 
 #include "iniparser.h"
 #include "dictionary.h"

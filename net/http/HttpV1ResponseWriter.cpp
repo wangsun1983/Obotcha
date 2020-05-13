@@ -1,5 +1,5 @@
 #include "HttpV1ResponseWriter.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "FileInputStream.hpp"
 #include "Enviroment.hpp"
 #include "HttpResponse.hpp"
@@ -37,7 +37,7 @@ int _HttpV1ResponseWriter::write(File file) {
 }
 
 int _HttpV1ResponseWriter::flush() {
-    AutoMutex l(mClient->getResponseWriteMutex());
+    AutoLock l(mClient->getResponseWriteMutex());
 
     if(mFile != nullptr) {
         Enviroment env = st(Enviroment)::getInstance();

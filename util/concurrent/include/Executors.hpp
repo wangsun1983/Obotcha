@@ -1,5 +1,5 @@
-#ifndef __EXECUTORS_HPP__
-#define __EXECUTORS_HPP__
+#ifndef __OBOTCHA_EXECUTORS_HPP__
+#define __OBOTCHA_EXECUTORS_HPP__
 
 #include <pthread.h>
 #include <map>

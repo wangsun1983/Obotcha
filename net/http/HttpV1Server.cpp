@@ -14,7 +14,7 @@
 #include "Error.hpp"
 #include "HttpV1Server.hpp"
 #include "InitializeException.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "HttpV1ClientInfo.hpp"
 #include "HttpClientManager.hpp"
 #include "SSLManager.hpp"

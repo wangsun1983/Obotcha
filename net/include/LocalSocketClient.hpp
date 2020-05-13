@@ -1,5 +1,5 @@
-#ifndef __LOCAL_SOCKET_CLIENT_HPP__
-#define __LOCAL_SOCKET_CLIENT_HPP__
+#ifndef __OBOTCHA_LOCAL_SOCKET_CLIENT_HPP__
+#define __OBOTCHA_LOCAL_SOCKET_CLIENT_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

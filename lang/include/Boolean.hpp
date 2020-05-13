@@ -1,5 +1,5 @@
-#ifndef __BOOLEAN_HPP__
-#define __BOOLEAN_HPP__
+#ifndef __OBOTCHA_BOOLEAN_HPP__
+#define __OBOTCHA_BOOLEAN_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

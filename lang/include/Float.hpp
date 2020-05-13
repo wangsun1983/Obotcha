@@ -1,5 +1,5 @@
-#ifndef __FLOAT_HPP__
-#define __FLOAT_HPP__
+#ifndef __OBOTCHA_FLOAT_HPP__
+#define __OBOTCHA_FLOAT_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

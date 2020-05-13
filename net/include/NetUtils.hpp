@@ -1,5 +1,5 @@
-#ifndef __NetUtils_HPP__
-#define __NetUtils_HPP__
+#ifndef __OBOTCHA_NETUTILS_HPP__
+#define __OBOTCHA_NETUTILS_HPP__
 
 #include <sys/stat.h>
 #include <unistd.h>    

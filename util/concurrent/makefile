@@ -19,6 +19,7 @@ link += condition \
 	barrier \
 	timer \
 	executordestructorexception \
+	spinlock \
 
 objs += $(outtmp)/condition.o \
 	$(outtmp)/scheduledthreadpoolexecutor.o \
@@ -39,6 +40,7 @@ objs += $(outtmp)/condition.o \
     $(outtmp)/barrier.o \
 	$(outtmp)/timer.o \
 	$(outtmp)/executordestructorexception.o \
+	$(outtmp)/spinlock.o \
 
 
 condition :$(concurrentDir)/Condition.cpp
@@ -55,6 +57,9 @@ scheduledthreadpoolexecutor :$(concurrentDir)/ScheduledThreadPoolExecutor.cpp
 
 mutex :$(concurrentDir)/Mutex.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Mutex.cpp -o $(outtmp)/mutex.o
+
+spinlock :$(concurrentDir)/SpinLock.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/SpinLock.cpp -o $(outtmp)/spinlock.o
 
 thread :$(concurrentDir)/Thread.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Thread.cpp -o $(outtmp)/thread.o

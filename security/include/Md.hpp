@@ -1,5 +1,5 @@
-#ifndef __MD_HPP__
-#define __MD_HPP__
+#ifndef __OBOTCHA_MD_HPP__
+#define __OBOTCHA_MD_HPP__
 
 #include "File.hpp"
 #include "String.hpp"

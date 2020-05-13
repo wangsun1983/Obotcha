@@ -1,5 +1,5 @@
-#ifndef __HTTP_CONTENT_TYPE_HPP__
-#define __HTTP_CONTENT_TYPE_HPP__
+#ifndef __OBOTCHA_HTTP_CONTENT_TYPE_HPP__
+#define __OBOTCHA_HTTP_CONTENT_TYPE_HPP__
 
 //according nginx/conf/mime.types
 
