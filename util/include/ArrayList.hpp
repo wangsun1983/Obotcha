@@ -172,6 +172,10 @@ public:
     }
 
     inline int size() {
+        return elements.size();
+    }
+
+    inline int capacity() {
         return elements.capacity();
     }
 

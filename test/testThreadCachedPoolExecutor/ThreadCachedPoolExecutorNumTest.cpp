@@ -17,51 +17,60 @@ using namespace obotcha;
 int num = 0;
 Mutex mutex;
 
+int test6Num = 0;
+
 DECLARE_SIMPLE_CLASS(MyRunTest5) IMPLEMENTS(Runnable) {
 public:
    void run() {
-      //printf("myruntest 5 trace1 \n");
       {
+          sleep(1);
           AutoLock l(mutex);
           num++;
       }
-      //printf("myruntest 5 trace2 \n");
-      //sleep(1);
-      //printf("myruntest 5 trace3 \n");
+   }
+};
+
+DECLARE_SIMPLE_CLASS(MyRunTest6) IMPLEMENTS(Runnable) {
+public:
+   void run() {
+      {
+          AutoLock l(mutex);
+          test6Num++;
+      }
    }
 };
 
 
 int numTest() {
     mutex = createMutex();
-    ExecutorService pool = st(Executors)::newCachedThreadPool();
+    ExecutorService pool = st(Executors)::newCachedThreadPool(4,1000);
     while(1) {
         //start test 1
-        int testNum = 1024*32;
+        int testNum = 5;//1024*32;
         //int maxThreadNum = 0;
         for(int i = 0;i < testNum;i++) {
             MyRunTest5 run1 = createMyRunTest5();
             pool->execute(run1);
+            usleep(1000);
         }
-
+        sleep(1);
         int maxThreadNum = pool->getThreadsNum();
-        printf("maxtread is %d \n",maxThreadNum);
-
-        sleep(20);
-
-        if(num != testNum) {
-            printf("---[TestCachedPoolExecutor NumTest {case1,num is %d] [FAIL]--- \n",num);
-            pool->shutdown();
-            break;
-        }
-
         if(maxThreadNum != 4) {
             pool->shutdown();
             printf("---[TestCachedPoolExecutor NumTest {case2,maxThreadNum is %d] [FAIL]--- \n",maxThreadNum);
             break;
         }
+        pool->shutdown();
+        sleep(5);
+#if 0
+        //test6
+        pool = st(Executors)::newCachedThreadPool();
+        for(int i = 0;i < testNum;i++) {
+            MyRunTest6 run2 = createMyRunTest6();
+            pool->execute(run2);
+        }
 
-        sleep(80);
+        sleep(5);
         int threadsize = pool->getThreadsNum();
         if(threadsize != 0) {
             pool->shutdown();
@@ -70,6 +79,7 @@ int numTest() {
         }
 
         pool->shutdown();
+#endif
         printf("---[TestCachedPoolExecutor NumTest {case4] [Success]--- \n");
         break;
     }

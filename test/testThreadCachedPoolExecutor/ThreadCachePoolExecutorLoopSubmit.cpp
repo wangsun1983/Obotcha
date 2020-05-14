@@ -45,14 +45,10 @@ int loopsubmittest() {
         ExecutorService pool = st(Executors)::newCachedThreadPool(100,0,20,1000);
         printf("start trace \n");
         for(int i = 0;i < 100000;i++) {
-            //printf("submit task num is %d \n",i);
             pool->submit(createSubmitLoopRun1());
         }
 
-        //printf("handler count1 is %d \n",st(ThreadCachedPoolExecutorHandler)::getDebugReferenceCount());
-
         sleep(10);
-        printf("submit task vv is %d \n",vv);
         pool->shutdown();
 
         for(int i = 0; i < 100000;i++) {
@@ -61,7 +57,6 @@ int loopsubmittest() {
           }
         }
 
-        //if(submitLoopValue1->get() != 100000) {
         if(vv != 100000) {
           printf("---[CacheThreadPool loopsumit case1],value is %d [FAIL]--- \n",vv);
         }

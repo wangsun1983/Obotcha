@@ -16,11 +16,13 @@ extern int normalTest();
 extern int numTest();
 extern int releaseTest();
 extern int loopsubmittest();
+extern int cancelTest();
 
 int main() {
     //normalTest();
     //numTest();
     //releaseTest();
-    loopsubmittest();
+    //loopsubmittest();
+    cancelTest();
     //sleep(10);
 }

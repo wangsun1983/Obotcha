@@ -146,7 +146,6 @@ private:
 
 DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(ExecutorService)
                                                IMPLEMENTS(FutureTaskStatusListener) {
-
 public:
     friend class _ThreadCachedPoolExecutorHandler;
     friend class _CacheThreadManager;
@@ -174,7 +173,6 @@ public:
 
     ~_ThreadCachedPoolExecutor();
 
-
 private:
     void onCancel(FutureTask);
     
@@ -187,8 +185,6 @@ private:
     Mutex mHandlerMutex;
     
     ArrayList<ThreadCachedPoolExecutorHandler> mHandlers;
-
-    //ArrayList<ThreadCachedPoolExecutorHandler> mHandlers;
 
     bool mIsShutDown;
 

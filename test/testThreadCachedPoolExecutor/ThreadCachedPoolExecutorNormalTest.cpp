@@ -18,17 +18,13 @@ int runDestory = 1;
 DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        printf("i am running \n");
         sleep(10);
-        printf("i am running end\n");
     }
 
     void onInterrupt() {
-        printf("i am interrupt \n");
     }
 
     ~_RunTest1() {
-        printf("i am release \n");
         runDestory = 0;
     }
 };
@@ -37,16 +33,13 @@ Mutex runTest2Mutex;
 DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        //printf("RunTest2 start 1\n");
         runTest2Mutex->lock();
-        //printf("RunTest2 start 2\n");
     }
 };
 
 
 int normalTest() {
     printf("---[TestCachedPoolExecutor Test Start]--- \n");
-    //_ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout);
 
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool(1,1,2,60*1000);
@@ -79,13 +72,11 @@ int normalTest() {
     //void shutdown();
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
-        printf("submit count1 is %d \n",pool->getStrongCount());
         pool->submit(createRunTest1());
-        printf("submit count2 is %d \n",pool->getStrongCount());
         sleep(1);
-        printf("shutdown start1\n");
+
         pool->shutdown();
-        printf("shutdown start2\n");
+
         sleep(5);
         if(!pool->isTerminated()) {
             printf("---[TestCachedPoolExecutor Test {shutdown()} case1] [FAIL]--- \n");
@@ -128,9 +119,7 @@ int normalTest() {
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
-        printf("awaitTermination start test \n");
         result = pool->awaitTermination(5000);
-        printf("awaitTermination result is %d \n",result);
         if(result != -WaitTimeout) {
             printf("---[TestCachedPoolExecutor Test {awaitTermination()} case2] [FAIL]--- \n");
             runTest2Mutex->unlock();
@@ -138,7 +127,6 @@ int normalTest() {
             break;
         }
         long current2 = st(System)::currentTimeMillis();
-        printf("current2 - current1 is %d \n",(current2 - current));
         if(current2 - current > 5010) {
             printf("---[TestCachedPoolExecutor Test {awaitTermination()} case3] [FAIL]--- \n");
             runTest2Mutex->unlock();
@@ -167,9 +155,7 @@ int normalTest() {
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
-        printf("awaitTermination start test \n");
         result = pool->awaitTermination(0);
-        printf("awaitTermination result is %d \n",result);
         if(result != 0) {
             printf("---[TestCachedPoolExecutor Test {awaitTermination()} case6] [FAIL]--- \n");
             pool->shutdown();
@@ -210,7 +196,6 @@ int normalTest() {
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
 
-        printf("thread num is %d \n",pool->getThreadsNum());
         if(pool->getThreadsNum() != 0) {
             printf("---[TestCachedPoolExecutor Test {getThreadsNum()} case1] [FAIL]--- \n");
             break;
