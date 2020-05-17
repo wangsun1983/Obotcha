@@ -12,7 +12,7 @@ _FutureTask::_FutureTask(int type,Runnable r) {
     mCompleteMutex = createMutex("FutureTaskMutex");
     mCompleteCond = createCondition();
 
-    mStatus = FUTURE_WAITING;
+    mStatus = st(Future)::Waiting;
 }
 
 _FutureTask::_FutureTask(int type,Runnable r,FutureTaskStatusListener l) {
@@ -23,7 +23,7 @@ _FutureTask::_FutureTask(int type,Runnable r,FutureTaskStatusListener l) {
     mCompleteMutex = createMutex("FutureTaskMutex");
     mCompleteCond = createCondition();
 
-    mStatus = FUTURE_WAITING;
+    mStatus = st(Future)::Waiting;
 }
 
 _FutureTask::~_FutureTask() {
@@ -33,7 +33,7 @@ _FutureTask::~_FutureTask() {
 
 void _FutureTask::wait() {
     AutoLock l(mCompleteMutex);
-    if(mStatus == FUTURE_COMPLETE || mStatus == FUTURE_CANCEL) {
+    if(mStatus == st(Future)::Complete || mStatus == st(Future)::Cancel) {
         return;
     }
 
@@ -43,7 +43,7 @@ void _FutureTask::wait() {
 int _FutureTask::wait(long interval) {
     AutoLock l(mCompleteMutex);
     
-    if(mStatus == FUTURE_COMPLETE || mStatus == FUTURE_CANCEL) {
+    if(mStatus == st(Future)::Complete || mStatus == st(Future)::Cancel) {
         return 0;
     }
 
@@ -51,16 +51,17 @@ int _FutureTask::wait(long interval) {
 }
 
 void _FutureTask::cancel() {
-    if(mStatus == FUTURE_CANCEL) {
+    if(mStatus == st(Future)::Cancel) {
         return;
     }
 
     AutoLock l(mCompleteMutex);
     
-    if(mStatus == FUTURE_CANCEL) {
+    if(mStatus == st(Future)::Cancel) {
         return;
     }
-    mStatus = FUTURE_CANCEL;
+    
+    mStatus = st(Future)::Cancel;
     if(mRunnable != nullptr) {
         mRunnable->onInterrupt();
     }
@@ -87,13 +88,13 @@ int _FutureTask::getType() {
 
 void _FutureTask::onRunning() {
     AutoLock l(mCompleteMutex);
-    mStatus = FUTURE_RUNNING;
+    mStatus = st(Future)::Running;
 }
 
 void _FutureTask::onComplete() {
     AutoLock l(mCompleteMutex);
     mCompleteCond->notify();
-    mStatus = FUTURE_COMPLETE;
+    mStatus = st(Future)::Complete;
 }
 
 Runnable _FutureTask::getRunnable() {

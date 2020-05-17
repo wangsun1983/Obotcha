@@ -36,18 +36,14 @@ _ThreadCachedPoolExecutorHandler::_ThreadCachedPoolExecutorHandler(BlockingQueue
                                                                    CacheThreadManager manager, 
                                                                    long timeout)
                                                                          :mPool(pool),
-                                                                         state(idleState),
                                                                          mStop(false),
                                                                          mCacheManager(manager){
-    mWaitCond = createCondition();
-
-    mTaskWaitMutex = createMutex();
-
-    mTaskCondition = createCondition();
     
     mThreadTimeout = timeout;
 
     isNotifed = false;
+
+    mTaskMutex = createMutex("CachedTaskMutex");
 
     mCurrentTask = nullptr;
 
@@ -64,13 +60,10 @@ void _ThreadCachedPoolExecutorHandler::stop() {
     quit();
 }
 
-void _ThreadCachedPoolExecutorHandler::doTask(FutureTask task) {
-
-}
-
 void _ThreadCachedPoolExecutorHandler::run() {
     ThreadCachedPoolExecutorHandler h;
     h.set_pointer(this);
+
     while(!mStop) {
         {
             if(mCurrentTask == nullptr) {
@@ -94,25 +87,44 @@ void _ThreadCachedPoolExecutorHandler::run() {
         
         
         if(mCurrentTask != nullptr) {
-            if(mCurrentTask->getStatus() == FUTURE_CANCEL) {
-                mCurrentTask = nullptr;
+            if(mCurrentTask->getStatus() == st(Future)::Cancel) {
+                {
+                    AutoLock l(mTaskMutex);
+                    mCurrentTask = nullptr;
+                }
                 goto steal;
+            }
+
+            if(mCurrentTask->getType() == FUTURE_TASK_SUBMIT) {
+                mCurrentTask->onRunning();
             }
 
             Runnable r = mCurrentTask->getRunnable();
             if(r != nullptr) {
                 r->run();
             }
+            
+            {
+                AutoLock l(mTaskMutex);
+                if(mCurrentTask->getType() == FUTURE_TASK_SUBMIT) {
+                    mCurrentTask->onComplete();
+                }
 
-            mCurrentTask->onComplete();
-            mCurrentTask = nullptr;
+                {
+                    AutoLock l(mTaskMutex);
+                    mCurrentTask = nullptr;
+                }
+            }
         }
 
         //start stealing
 steal:        
         {
             if(mPool->size() != 0) {
-                mCurrentTask = mPool->deQueueLastNoBlock();
+                {
+                    AutoLock l(mTaskMutex);
+                    mCurrentTask = mPool->deQueueLastNoBlock();
+                }
                 isNotifed = false;
             }
         }
@@ -127,16 +139,16 @@ end:
 }
 
 void _ThreadCachedPoolExecutorHandler::onInterrupt() {
-    if(mCurrentTask != nullptr) {
-        Runnable r = mCurrentTask->getRunnable();
-        if(r != nullptr) {
-            r->onInterrupt();
+    {
+        AutoLock l(mTaskMutex);
+        if(mCurrentTask != nullptr) {
+            Runnable r = mCurrentTask->getRunnable();
+            if(r != nullptr) {
+                r->onInterrupt();
+            }
+            mCurrentTask = nullptr;
         }
-
-        mCurrentTask = nullptr;
     }
-
-    state = terminateState;
 
     ThreadCachedPoolExecutorHandler h;
     h.set_pointer(this);
@@ -151,10 +163,6 @@ bool _ThreadCachedPoolExecutorHandler::shutdownTask(FutureTask task) {
     }
 
     return false;
-}
-
-bool _ThreadCachedPoolExecutorHandler::isTerminated() {
-    return state == terminateState;
 }
 
 //---------------ThreadCachedPoolExecutor ---------------------
@@ -220,17 +228,13 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
         return 0;
     }
 
-    if(mCacheManager->awaitTermination(millseconds) == -WaitTimeout) {
-        return -WaitTimeout;
-    }
-    
     mIsTerminated = true;
-    return 0;
+
+    return mCacheManager->awaitTermination(millseconds);
 }
 
 int _ThreadCachedPoolExecutor::getThreadsNum() {
-    int size = mCacheManager->getThreadSum();
-    return size;
+    return mCacheManager->getThreadSum();;
 }
 
 Future _ThreadCachedPoolExecutor::submit(Runnable r) {
@@ -274,10 +278,6 @@ void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthrea
     mCacheManager = createCacheThreadManager(queuesize,minthreadnum,maxthreadnum,mThreadTimeout,t);
 }
 
-bool _ThreadCachedPoolExecutor::isOverMinSize() {
-    return mHandlers->size() > minThreadNum;
-}
-
 void _ThreadCachedPoolExecutor::onCancel(FutureTask task) {
     if(mIsShutDown ||mIsTerminated) {
         return;
@@ -295,10 +295,8 @@ void _ThreadCachedPoolExecutor::onCancel(FutureTask task) {
 }
 
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
-    //shutdown();
     if(!mIsShutDown) {
         //cannot throw exception in destructor
-        //throw ExecutorDestructorException("ThreadCachedPoolExecutor destruct error");
         LOGE(TAG,"ThreadCachedPoolExecutor destruct error");
     }
 }
@@ -374,34 +372,13 @@ void _CacheThreadManager::bindTask(FutureTask task) {
     }
     
     {
-        if(mIdleHandlers->size() != 0) {
+        if(mIdleHandlers->size() != 0 && mFutureTasks->size() == 0) {
             mFutureTasks->enQueueLast(task);
             return;
         } 
     }
 
-    {
-        AutoLock l(mThreadNumMutex);
-
-        int currentThreadNum = this->getThreadSum();
-        if(currentThreadNum < mMaxThreadNum) {
-            CacheThreadManager m;
-            m.set_pointer(this);
-            ThreadCachedPoolExecutorHandler handler = createThreadCachedPoolExecutorHandler(
-                    mFutureTasks,
-                    m,
-                    mWaitTimeout);
-            {
-                AutoLock ll2(mCreatingHandlerMutex);
-                mCreatingHandlers->add(handler);
-            }
-
-            handler->start();
-            mThreadNum++;
-        }
-    }
-
-addtask:
+    setupOneIdleThread();
     mFutureTasks->enQueueLast(task);
 }
 
@@ -424,7 +401,7 @@ int _CacheThreadManager::idleNotify(ThreadCachedPoolExecutorHandler handler) {
     }
 
     {
-        AutoLock ll(mIdleHandlerMutex);       
+        AutoLock ll(mIdleHandlerMutex);
         mIdleHandlers->add(handler);
     }
 
@@ -601,6 +578,8 @@ int _CacheThreadManager::getThreadSum() {
 }
 
 void _CacheThreadManager::cancelTask(FutureTask task) {
+    bool isCancelTask = false;
+
     if(mFutureTasks->remove(task)) {
         return;
     }
@@ -612,11 +591,37 @@ void _CacheThreadManager::cancelTask(FutureTask task) {
         while(list->hasValue()) {
             h = list->getValue();
             if(h->shutdownTask(task)) {
+                isCancelTask = true;
                 break;
             }
             list->next();
         }
     }
+
+    if(isCancelTask && mFutureTasks->size() != 0) {
+        setupOneIdleThread();
+    }
 }
+
+void _CacheThreadManager::setupOneIdleThread() {
+    AutoLock l(mThreadNumMutex);
+    int currentThreadNum = this->getThreadSum();
+    if(currentThreadNum < mMaxThreadNum) {
+        CacheThreadManager m;
+        m.set_pointer(this);
+        ThreadCachedPoolExecutorHandler handler = createThreadCachedPoolExecutorHandler(
+                    mFutureTasks,
+                    m,
+                    mWaitTimeout);
+        {
+            AutoLock ll2(mCreatingHandlerMutex);
+            mCreatingHandlers->add(handler);
+        }
+
+        handler->start();
+        mThreadNum++;
+    }
+}
+
 
 }

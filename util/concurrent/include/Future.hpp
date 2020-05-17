@@ -5,13 +5,6 @@
 
 namespace obotcha {
 
-enum FutureStatus {
-    FUTURE_WAITING,
-    FUTURE_RUNNING,
-    FUTURE_CANCEL,
-    FUTURE_COMPLETE
-};
-
 DECLARE_SIMPLE_CLASS(Future) {
 public:
     _Future(FutureTask);
@@ -23,10 +16,14 @@ public:
     void wait(long);
     
     int cancel();
-    
+
+    static const int Waiting = 0;
+    static const int Running = 1;
+    static const int Cancel = 2;
+    static const int Complete = 3;
+
 private:
     FutureTask mTask;
-
 };
 
 }

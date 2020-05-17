@@ -30,39 +30,28 @@ DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutorHandler) IMPLEMENTS(Thread) {
 public:
 
     _ThreadCachedPoolExecutorHandler(BlockingQueue<FutureTask>,sp<_CacheThreadManager>,long timeout);
-        
-    bool isTerminated();
 
     void run();
     
     void stop();
 
-    void doTask(FutureTask);
-
     void onInterrupt();
-
-    //void onExecutorDestroy();
 
     bool shutdownTask(FutureTask task);
 
     ~_ThreadCachedPoolExecutorHandler();
 
 private:
-    int state;
-
     //-------------------------
     FutureTask mCurrentTask;
 
-    Mutex mTaskWaitMutex;
+    Mutex mTaskMutex;
 
-    Condition mTaskCondition;
     //-------------------------
 
     sp<_CacheThreadManager> mCacheManager;
 
     Mutex mHandlerMutex;
-
-    Condition mWaitCond;
 
     long mThreadTimeout;
 
@@ -101,6 +90,8 @@ public:
     int getThreadSum();
 
     void cancelTask(FutureTask task);
+
+    void setupOneIdleThread();
 
 private:
     ArrayList<ThreadCachedPoolExecutorHandler> mIdleHandlers;
@@ -176,8 +167,6 @@ public:
 private:
     void onCancel(FutureTask);
     
-    bool isOverMinSize();
-
     void removeHandler(ThreadCachedPoolExecutorHandler h);
     
     AtomicInteger mIdleThreadNum ;

@@ -46,7 +46,7 @@ int numTest() {
     ExecutorService pool = st(Executors)::newCachedThreadPool(4,1000);
     while(1) {
         //start test 1
-        int testNum = 5;//1024*32;
+        int testNum = 1024*32;
         //int maxThreadNum = 0;
         for(int i = 0;i < testNum;i++) {
             MyRunTest5 run1 = createMyRunTest5();
@@ -62,7 +62,7 @@ int numTest() {
         }
         pool->shutdown();
         sleep(5);
-#if 0
+
         //test6
         pool = st(Executors)::newCachedThreadPool();
         for(int i = 0;i < testNum;i++) {
@@ -70,16 +70,19 @@ int numTest() {
             pool->execute(run2);
         }
 
-        sleep(5);
+        sleep(16);
         int threadsize = pool->getThreadsNum();
         if(threadsize != 0) {
-            pool->shutdown();
             printf("---[TestCachedPoolExecutor NumTest {case3] [FAIL]---,thread size is  %d \n",threadsize);
             break;
         }
 
+        if(test6Num != testNum) {
+            printf("---[TestCachedPoolExecutor NumTest {case4] [FAIL]---,thread size is  %d \n",threadsize);
+            break;
+        }
         pool->shutdown();
-#endif
+
         printf("---[TestCachedPoolExecutor NumTest {case4] [Success]--- \n");
         break;
     }

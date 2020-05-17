@@ -19,10 +19,10 @@ extern int loopsubmittest();
 extern int cancelTest();
 
 int main() {
-    //normalTest();
-    //numTest();
-    //releaseTest();
-    //loopsubmittest();
+    normalTest();
+    numTest();
+    releaseTest();
+    loopsubmittest();
     cancelTest();
     //sleep(10);
 }

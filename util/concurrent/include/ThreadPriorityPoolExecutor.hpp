@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_PRIORITY_POOL_EXECUTOR_SERVICE_H__
-#define __OBOTCHA_PRIORITY_POOL_EXECUTOR_SERVICE_H__
+#ifndef __OBOTCHA_THREAD_PRIORITY_POOL_EXECUTOR_SERVICE_H__
+#define __OBOTCHA_THREAD_PRIORITY_POOL_EXECUTOR_SERVICE_H__
 
 #include <pthread.h>
 #include <map>
@@ -20,12 +20,6 @@
 
 namespace obotcha {
 
-enum TaskPriority {
-    TaskPriorityLow,
-    TaskPriorityMedium,
-    TaskPriorityHigh
-};
-
 DECLARE_SIMPLE_CLASS(PriorityTask) {
 public:
     _PriorityTask(int,FutureTask);
@@ -35,11 +29,11 @@ public:
     FutureTask task;
 };
 
-class _PriorityPoolExecutor;
+class _ThreadPriorityPoolExecutor;
 
 DECLARE_SIMPLE_CLASS(PriorityPoolThread) EXTENDS(Thread) {
 public:
-    _PriorityPoolThread(ArrayList<PriorityTask>,Mutex,Condition,sp<_PriorityPoolExecutor> exe);
+    _PriorityPoolThread(ArrayList<PriorityTask>,Mutex,Condition,sp<_ThreadPriorityPoolExecutor> exe);
     
     void run();
     
@@ -68,22 +62,22 @@ private:
     
     Mutex mExecutorMutex;
 
-    sp<_PriorityPoolExecutor> mExecutor;
+    sp<_ThreadPriorityPoolExecutor> mExecutor;
 
     int mState;
     
     mutable volatile bool mStop;
 };
 
-DECLARE_SIMPLE_CLASS(PriorityPoolExecutor) IMPLEMENTS(ExecutorService)
+DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) IMPLEMENTS(ExecutorService)
                                            IMPLEMENTS(FutureTaskStatusListener) {
 
 public:
     friend class _PriorityPoolThread;
 
-    _PriorityPoolExecutor();
+    _ThreadPriorityPoolExecutor();
 
-    _PriorityPoolExecutor(int threadnum);
+    _ThreadPriorityPoolExecutor(int threadnum);
 
     int execute(Runnable command);
 
@@ -105,7 +99,11 @@ public:
 
     int getThreadsNum();
 
-    ~_PriorityPoolExecutor();
+    ~_ThreadPriorityPoolExecutor();
+
+    static const int PriorityLow = 0;
+    static const int PriorityMedium = 1;
+    static const int PriorityHigh = 2;
 
 private:
 

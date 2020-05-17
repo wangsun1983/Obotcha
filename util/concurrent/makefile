@@ -1,10 +1,10 @@
 concurrentDir = ./util/concurrent
 
 link += condition \
-	scheduledthreadpoolexecutor \
+	threadscheduledpoolexecutor \
 	threadpoolexecutor \
 	threadcachedpoolexecutor \
-	prioritypoolexecutor \
+	threadprioritypoolexecutor \
 	mutex \
 	thread \
 	countdownlatch \
@@ -22,10 +22,10 @@ link += condition \
 	spinlock \
 
 objs += $(outtmp)/condition.o \
-	$(outtmp)/scheduledthreadpoolexecutor.o \
+	$(outtmp)/threadscheduledpoolexecutor.o \
 	$(outtmp)/threadpoolexecutor.o \
 	$(outtmp)/threadcachedpoolexecutor.o \
-	$(outtmp)/prioritypoolexecutor.o \
+	$(outtmp)/threadprioritypoolexecutor.o \
 	$(outtmp)/mutex.o \
 	$(outtmp)/thread.o \
 	$(outtmp)/countdownlatch.o \
@@ -52,8 +52,8 @@ threadpoolexecutor :$(concurrentDir)/ThreadPoolExecutor.cpp
 threadcachedpoolexecutor :$(concurrentDir)/ThreadCachedPoolExecutor.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ThreadCachedPoolExecutor.cpp -o $(outtmp)/threadcachedpoolexecutor.o
 
-scheduledthreadpoolexecutor :$(concurrentDir)/ScheduledThreadPoolExecutor.cpp
-		$(cppcompiler) $(cppflags) -c $(concurrentDir)/ScheduledThreadPoolExecutor.cpp -o $(outtmp)/scheduledthreadpoolexecutor.o
+threadscheduledpoolexecutor :$(concurrentDir)/ThreadScheduledPoolExecutor.cpp
+		$(cppcompiler) $(cppflags) -c $(concurrentDir)/ThreadScheduledPoolExecutor.cpp -o $(outtmp)/threadscheduledpoolexecutor.o
 
 mutex :$(concurrentDir)/Mutex.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Mutex.cpp -o $(outtmp)/mutex.o
@@ -100,5 +100,5 @@ executordestructorexception :$(concurrentDir)/ExecutorDestructorException.cpp
 timer :$(concurrentDir)/Timer.cpp
 	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/Timer.cpp -o $(outtmp)/timer.o
 
-prioritypoolexecutor :$(concurrentDir)/PriorityPoolExecutor.cpp
-	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/PriorityPoolExecutor.cpp -o $(outtmp)/prioritypoolexecutor.o
+threadprioritypoolexecutor :$(concurrentDir)/ThreadPriorityPoolExecutor.cpp
+	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/ThreadPriorityPoolExecutor.cpp -o $(outtmp)/threadprioritypoolexecutor.o

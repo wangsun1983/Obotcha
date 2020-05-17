@@ -35,11 +35,13 @@ void _PosixMq::initParam(String name,int type,int msgsize,int maxmsgs) {
 
 int _PosixMq::init() {
     if(MAX_MSG_NUMS == -1) {
-        MAX_MSG_NUMS = st(FileNodeReader)::readInt("/proc/sys/fs/mqueue/msg_max");
+        FileNodeReader reader = createFileNodeReader("/proc/sys/fs/mqueue/msg_max");
+        MAX_MSG_NUMS = reader->readInt();
     }
 
     if(MAX_MSG_SIZE == -1) {
-        MAX_MSG_SIZE = st(FileNodeReader)::readInt("/proc/sys/fs/mqueue/msgsize_max");
+        FileNodeReader reader = createFileNodeReader("/proc/sys/fs/mqueue/msgsize_max");
+        MAX_MSG_SIZE = reader->readInt();
     }
 
     if(mMaxMsgs > MAX_MSG_NUMS) {

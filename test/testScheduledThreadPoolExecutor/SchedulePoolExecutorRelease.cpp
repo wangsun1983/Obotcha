@@ -10,7 +10,7 @@
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
-#include "ScheduledThreadPoolExecutor.hpp"
+#include "ThreadScheduledPoolExecutor.hpp"
 
 using namespace obotcha;
 

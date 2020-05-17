@@ -18,14 +18,16 @@ extern int scheduleTest();
 extern int ReleaseTest();
 extern int fixRateTest();
 extern int fixDelayTest();
+extern int scheduleloopsubmit();
 
 int main() {
     printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
-    //baseTest();
-    //scheduleTest();
+    baseTest();
+    scheduleTest();
     //ReleaseTest();
     //fixRateTest();
-    fixDelayTest();
+    //fixDelayTest();
+    scheduleloopsubmit();
     sleep(10);
 
 }

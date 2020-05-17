@@ -4,10 +4,10 @@
 #include "Executors.hpp"
 #include "Thread.hpp"
 #include "ThreadPoolExecutor.hpp"
-#include "ScheduledThreadPoolExecutor.hpp"
+#include "ThreadScheduledPoolExecutor.hpp"
 #include "ScheduledExecutorService.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
-#include "PriorityPoolExecutor.hpp"
+#include "ThreadPriorityPoolExecutor.hpp"
 
 namespace obotcha {
 
@@ -34,13 +34,12 @@ ExecutorService _Executors::newWorkStealingPool() {
 }
 
 ExecutorService _Executors::newPriorityThreadPool(int thread_num) {
-    return createPriorityPoolExecutor(thread_num);
+    return createThreadPriorityPoolExecutor(thread_num);
 }
 
 ExecutorService _Executors::newPriorityThreadPool(){
-    return createPriorityPoolExecutor();
+    return createThreadPriorityPoolExecutor();
 }
-
 
 ExecutorService _Executors::newCachedThreadPool(int queuesize,int minthreadnum,int maxthreadnum,long timeout) {
     return createThreadCachedPoolExecutor(queuesize,minthreadnum,maxthreadnum,timeout);
@@ -60,7 +59,7 @@ ScheduledExecutorService _Executors::newSingleThreadScheduledExecutor() {
 }
 
 ScheduledExecutorService _Executors::newScheduledThreadPool() {
-    return createScheduledThreadPoolExecutor();
+    return createThreadScheduledPoolExecutor();
 }
 
 

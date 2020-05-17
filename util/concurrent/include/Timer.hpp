@@ -6,7 +6,7 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "DateTime.hpp"
-#include "ScheduledThreadPoolExecutor.hpp"
+#include "ThreadScheduledPoolExecutor.hpp"
 
 namespace obotcha {
 
@@ -22,7 +22,7 @@ public:
     ~_Timer();
 
 private:
-    ScheduledThreadPoolExecutor mScheduledExecutor;
+    ThreadScheduledPoolExecutor mScheduledExecutor;
 };
 
 }

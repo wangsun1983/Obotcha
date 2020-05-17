@@ -13,6 +13,7 @@ link += file \
 	memoryfileoutputstream \
 	libraryfileinputstream \
 	filenodereader \
+	filenodewriter \
 	epollfileobserver \
 	bytearrayreader \
 	bytearraywriter \
@@ -34,6 +35,7 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/memoryfileoutputstream.o \
 	$(outtmp)/libraryfileinputstream.o \
 	$(outtmp)/filenodereader.o \
+	$(outtmp)/filenodewriter.o \
 	$(outtmp)/epollfileobserver.o \
 	$(outtmp)/bytearrayreader.o \
 	$(outtmp)/bytearraywriter.o \
@@ -82,6 +84,9 @@ memoryfileoutputstream :$(ioDir)/MemoryFileOutputStream.cpp
 
 filenodereader :$(ioDir)/FileNodeReader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileNodeReader.cpp -o $(outtmp)/filenodereader.o $(external)
+
+filenodewriter :$(ioDir)/FileNodeWriter.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileNodeWriter.cpp -o $(outtmp)/filenodewriter.o $(external)
 
 epollfileobserver :$(ioDir)/EPollFileObserver.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/EPollFileObserver.cpp -o $(outtmp)/epollfileobserver.o $(external)

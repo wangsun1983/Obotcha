@@ -90,7 +90,7 @@ void _ThreadPoolExecutorHandler::run() {
         if(mCurrentTask == nullptr) {
             break;
         }
-        if(mCurrentTask->getStatus() == FUTURE_CANCEL) {
+        if(mCurrentTask->getStatus() == st(Future)::Cancel) {
             continue;
         }
         

@@ -6,7 +6,7 @@
 namespace obotcha {
 
 _Timer::_Timer() {
-    mScheduledExecutor = createScheduledThreadPoolExecutor();
+    mScheduledExecutor = createThreadScheduledPoolExecutor();
 }
 
 void _Timer::schedule(Runnable r,long m) {

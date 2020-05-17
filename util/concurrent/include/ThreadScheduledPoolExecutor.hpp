@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_SCHEDULED_THREAD_POOL_EXECUTOR_HPP__
-#define __OBOTCHA_SCHEDULED_THREAD_POOL_EXECUTOR_HPP__
+#ifndef __OBOTCHA_THREAD_SCHEDULED_POOL_EXECUTOR_HPP__
+#define __OBOTCHA_THREAD_SCHEDULED_POOL_EXECUTOR_HPP__
 
 #include <vector>
 
@@ -29,15 +29,15 @@ enum ScheduledTaskType {
 
 namespace obotcha { 
 
-class _ScheduledThreadPoolTask;
+class _WaitingTask;
 class _ScheduledThreadPoolThread;
-class _ScheduledThreadPoolExecutor;
+class _ThreadScheduledPoolExecutor;
 
 DECLARE_SIMPLE_CLASS(ScheduledTaskWorker) IMPLEMENTS(Runnable){
 public:
     friend class _ScheduledThreadPoolThread;
 
-    _ScheduledTaskWorker(sp<_ScheduledThreadPoolTask>,sp<_ScheduledThreadPoolThread>);
+    _ScheduledTaskWorker(sp<_WaitingTask>,sp<_ScheduledThreadPoolThread>);
     
     ~_ScheduledTaskWorker();
 
@@ -46,27 +46,26 @@ public:
     void onInterrupt();
 
 private:
-    sp<_ScheduledThreadPoolTask> mTask;
+    sp<_WaitingTask> mTask;
 
     sp<_ScheduledThreadPoolThread> mTimeThread;
 };
 
 
-DECLARE_SIMPLE_CLASS(ScheduledThreadPoolTask) {
+DECLARE_SIMPLE_CLASS(WaitingTask) {
 public:
     friend class _ScheduledTaskWorker;
     friend class _ScheduledThreadPoolThread;
-    friend class _ScheduledThreadPoolExecutor;
+    friend class _ThreadScheduledPoolExecutor;
 
-    _ScheduledThreadPoolTask(FutureTask task,long int interval);
+    _WaitingTask(FutureTask task,long int interval);
 
-    _ScheduledThreadPoolTask(FutureTask t,
+    _WaitingTask(FutureTask t,
                              long int initialdelay,
                              int type,
-                             long int repeatDelay,
-                             sp<_ScheduledThreadPoolThread> timethread);                             
+                             long int repeatDelay);                             
 
-    ~_ScheduledThreadPoolTask();                     
+    ~_WaitingTask();                     
                    
 
 private:
@@ -84,7 +83,7 @@ private:
 DECLARE_SIMPLE_CLASS(ScheduledThreadPoolThread) EXTENDS(Thread) {
 
 public:
-    friend class _ScheduledThreadPoolExecutor;
+    friend class _ThreadScheduledPoolExecutor;
 
     _ScheduledThreadPoolThread(ThreadCachedPoolExecutor m);
 
@@ -92,7 +91,7 @@ public:
 
     void onUpdate();
 
-    void addTask(ScheduledThreadPoolTask v);
+    void addTask(WaitingTask v);
 
     void run();
 
@@ -109,7 +108,7 @@ public:
     void stopTask(FutureTask);
 
 private:
-    ArrayList<ScheduledThreadPoolTask> mDatas;
+    ArrayList<WaitingTask> mWaitingTasks;
 
     ThreadCachedPoolExecutor cachedExecutor;
     
@@ -130,21 +129,23 @@ private:
 
     Condition mTerminatedCond;
 
-    ScheduledThreadPoolTask mCurrentTask;
+    Mutex mTaskMutex;
+
+    WaitingTask mCurrentTask;
 
     bool isStop;
 
     bool isTerminated;
 };
 
-DECLARE_SIMPLE_CLASS(ScheduledThreadPoolExecutor) IMPLEMENTS(ScheduledExecutorService)
+DECLARE_SIMPLE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(ScheduledExecutorService)
                                                   IMPLEMENTS(FutureTaskStatusListener) {
 
 public:
 
-	_ScheduledThreadPoolExecutor();
+	_ThreadScheduledPoolExecutor();
 
-    ~_ScheduledThreadPoolExecutor();
+    ~_ThreadScheduledPoolExecutor();
 
     int shutdown();
 

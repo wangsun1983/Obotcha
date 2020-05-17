@@ -16,13 +16,28 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(FileNodeReader) {
 public:
-    static int readInt(String);
+    _FileNodeReader(String path,int buffsize = 1024*4);
 
-    static long readLong(String);
+    int readInt();
 
-    static String readString(String);
+    bool readBoolean();
 
-    static String readString(String,int buffsize);
+    long readLong();
+
+    String readString();
+
+    String getPath();
+
+    ~_FileNodeReader();
+
+private:
+	byte *mBuffer;
+
+	int mSize;
+
+	String mPath;
+
+	int mFd;
 };
 
 }

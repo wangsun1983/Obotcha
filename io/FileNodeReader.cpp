@@ -16,47 +16,55 @@
 
 namespace obotcha {
 
-int _FileNodeReader::readInt(String path) {
-    char buff[256];
-    memset(buff,0,256);
+_FileNodeReader::_FileNodeReader(String path,int buffsize) {
+    mBuffer = (byte*)malloc(buffsize);
 
-    int fd = open(path->toChars(),O_RDONLY);
-    read(fd,buff,256);
-    close(fd);
+    mSize = buffsize;
 
-    return createString(buff)->toBasicInt();
+    mPath = path;
+
+    mFd = open(mPath->toChars(),O_RDONLY);
 }
 
-long _FileNodeReader::readLong(String path) {
-    char buff[512];
-    memset(buff,0,512);
-
-    int fd = open(path->toChars(),O_RDONLY);
-    read(fd,buff,512);
-    close(fd);
-
-    return createString(buff)->toBasicLong();
+int _FileNodeReader::readInt() {
+    memset(mBuffer,0,mSize);
+    read(mFd,mBuffer,mSize);
+    return createString(mBuffer)->toBasicInt();
 }
 
-String _FileNodeReader::readString(String path) {
-    char buff[1024*16];
-    memset(buff,0,1024*16);
-    
-    int fd = open(path->toChars(),O_RDONLY);
-    read(fd,buff,1024*16);
-    close(fd);
-
-    return createString(buff);
+long _FileNodeReader::readLong() {
+    memset(mBuffer,0,mSize);
+    read(mFd,mBuffer,mSize);
+    return createString(mBuffer)->toBasicLong();
 }
 
-String _FileNodeReader::readString(String path,int buffsize) {
-    char buff[buffsize];
+bool _FileNodeReader::readBoolean() {
+    memset(mBuffer,0,mSize);
+    read(mFd,mBuffer,mSize);
+    return createString(mBuffer)->toBasicLong();
+}
 
-    int fd = open(path->toChars(),O_RDONLY);
-    read(fd,buff,buffsize);
-    close(fd);
+String _FileNodeReader::readString() {
+    memset(mBuffer,0,mSize);
+    read(mFd,mBuffer,mSize);;
 
-    return createString(&buff[0]);
+    return createString(mBuffer);
+}
+
+String _FileNodeReader::getPath() {
+    return mPath;
+}
+
+_FileNodeReader::~_FileNodeReader() {
+    if(mBuffer != nullptr) {
+        free(mBuffer);
+        mBuffer = nullptr;
+    }
+
+    if(mFd >= 0) {
+        close(mFd);
+        mFd = -1;
+    }
 }
 
 

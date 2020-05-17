@@ -11,7 +11,7 @@
 #include "Runnable.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
-#include "ScheduledThreadPoolExecutor.hpp"
+#include "ThreadScheduledPoolExecutor.hpp"
 
 namespace obotcha {
 
