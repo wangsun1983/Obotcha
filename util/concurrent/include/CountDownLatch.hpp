@@ -22,7 +22,6 @@ public:
     
 private:
     int count;
-    Mutex mutex;
     Condition waitCond;
     Mutex waitMutex;
 };

@@ -55,7 +55,7 @@
 - [ ] AtomicUint64
 - [ ] Barrier
 - [ ] Condition
-- [ ] CountDownLatch
+- [x] CountDownLatch
 - [ ] Executors
 - [ ] ExecutorService
 - [ ] Future
@@ -63,8 +63,8 @@
 - [ ] Mutex
 - [ ] PriorityPoolExecutor
 - [ ] ReadWriteLock
-- [ ] ScheduledThreadPoolExecutor
+- [x] ThreadScheduledPoolExecutor
 - [x] Thread
-- [ ] ThreadCachedPoolExecutor
+- [x] ThreadCachedPoolExecutor
 - [x] ThreadPoolExecutor
 - [ ] Timer

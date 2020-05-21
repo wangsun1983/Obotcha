@@ -66,11 +66,13 @@ void _ThreadCachedPoolExecutorHandler::run() {
 
     while(!mStop) {
         {
+            //step 1
             if(mCurrentTask == nullptr) {
                 if(mCacheManager->idleNotify(h) != 0) {
                     goto end;
                 }
-
+                
+                //step 2
                 mCurrentTask = mPool->deQueueLast(mThreadTimeout);
                 if(mCurrentTask == nullptr) {
                     goto end;
@@ -79,9 +81,18 @@ void _ThreadCachedPoolExecutorHandler::run() {
             }
         }
 
+        //step 3
         if(isNotifed) {
             if(mCacheManager->busyNotify(h) != 0) {  
                 goto end;
+            }
+            
+            //when add task between step2 & step3
+            //mPool is 0 and idleHandlers >0,new task
+            //will be add into list instead of createing
+            //no thread.just try to create a thread~.
+            if(mPool->size() > 0) {
+                mCacheManager->setupOneIdleThread();
             }
         }
         

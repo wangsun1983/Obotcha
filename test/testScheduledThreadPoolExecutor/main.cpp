@@ -24,9 +24,9 @@ int main() {
     printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
     baseTest();
     scheduleTest();
-    //ReleaseTest();
-    //fixRateTest();
-    //fixDelayTest();
+    ReleaseTest();
+    fixRateTest();
+    fixDelayTest();
     scheduleloopsubmit();
     sleep(10);
 

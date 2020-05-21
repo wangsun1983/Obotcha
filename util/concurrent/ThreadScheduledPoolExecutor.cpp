@@ -290,7 +290,8 @@ void _ScheduledThreadPoolThread::run() {
                 continue;
             } else {
                 {
-                    if(mWaitingTasks->remove(mCurrentTask) < 0) {
+                    int result = mWaitingTasks->remove(mCurrentTask);
+                    if(result < 0) {
                         continue;
                     }
                 }
@@ -305,7 +306,6 @@ void _ScheduledThreadPoolThread::run() {
         if(r != nullptr) {
             ScheduledThreadPoolThread t;
             t.set_pointer(this);
-            printf("thread scheduled add one task \n");
             ScheduledTaskWorker worker = createScheduledTaskWorker(mCurrentTask,t);
             Future future = cachedExecutor->submit(worker);
             {
@@ -404,7 +404,6 @@ Future _ThreadScheduledPoolExecutor::submit(Runnable r) {
 }
 
 Future _ThreadScheduledPoolExecutor::schedule(Runnable r,long delay) {
-    
     FutureTaskStatusListener listener;
     listener.set_pointer(this);
     FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r,listener);

@@ -23,7 +23,7 @@ private:
   CountDownLatch latch;
 };
 
-int main() {
+int normaltest() {
     printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
 
     //await()
@@ -42,7 +42,7 @@ int main() {
             break;
         }
 
-        printf("---[TestScheduledThreadPoolExecutor Test {await()} case2] [Success]--- \n");
+        printf("---[TestScheduledThreadPoolExecutor Test {await()} case2] [OK]--- \n");
         break;
     }
 
@@ -62,27 +62,27 @@ int main() {
             break;
         }
 
-        if(waitret != -CountDownLatchWaitTimeout) {
+        if(waitret != -WaitTimeout) {
             printf("---[TestScheduledThreadPoolExecutor Test {await(long)} case2] [FAILED]--- \n");
             break;
         }
 
-        printf("---[TestScheduledThreadPoolExecutor Test {await()} case3] [Success]--- \n");
+        printf("---[TestScheduledThreadPoolExecutor Test {await()} case3] [OK]--- \n");
         break;
     }
-    
+
     //countDown
     while(1) {
       CountDownLatch latch = createCountDownLatch(2);
       latch->countDown();
       latch->countDown();
       int ret = latch->countDown();
-      if(ret != -CountDownLatchAlreadyZero) {
+      if(ret != -AlreadyDestroy) {
           printf("---[TestScheduledThreadPoolExecutor Test {countDown()} case1] [FAILED]--- \n");
           break;
       }
 
-      printf("---[TestScheduledThreadPoolExecutor Test {countDown()} case2] [Success]--- \n");
+      printf("---[TestScheduledThreadPoolExecutor Test {countDown()} case2] [OK]--- \n");
       break;
     }
 }

@@ -6,13 +6,12 @@ namespace obotcha {
 
 _CountDownLatch::_CountDownLatch(int v) {
     count = v;
-    mutex = createMutex("CountDownLoatchMutex");
     waitMutex = createMutex("CountDownLatchWaitMutex");
     waitCond = createCondition();
 }
 
 int _CountDownLatch::countDown() {
-    AutoLock l(mutex);
+    AutoLock l(waitMutex);
 
     if(count < 1) {
         return -AlreadyDestroy;

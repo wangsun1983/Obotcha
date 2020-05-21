@@ -21,13 +21,13 @@ public:
     }
 
     void run() {
-        printf("MyReleaseTest running1 \n");
+        //printf("MyReleaseTest running1 \n");
         sleep(1);
-        printf("MyReleaseTest running2 \n");
+        //printf("MyReleaseTest running2 \n");
     }
 
     void onInterrupt() {
-        printf("MyReleaseTest interrupt \n");
+        //printf("MyReleaseTest interrupt \n");
     }
 
     ~_MyReleaseTest() {
@@ -45,11 +45,11 @@ int ReleaseTest() {
             for(int i = 0; i < 50;i++) {
                 pool->schedule(createMyReleaseTest(),100);
             }
-            printf("test1 pool size is %d \n",pool->getStrongCount());
+            //printf("test1 pool size is %d \n",pool->getStrongCount());
             sleep(2);
-            printf("test2 pool size is %d \n",pool->getStrongCount());
+            //printf("test2 pool size is %d \n",pool->getStrongCount());
             pool->shutdown();
-            printf("test3 pool count is %d \n",pool->getStrongCount());
+            //printf("test3 pool count is %d \n",pool->getStrongCount());
         }
         printf("---[ScheduledThreadPoolExecutor Test {Release} case6] [Success]--- \n");
         break;
@@ -57,10 +57,10 @@ int ReleaseTest() {
 
 
     while(1) {
-        printf("start another test \n");
+        //printf("start another test \n");
 
         {
-            printf("start another test1 \n");
+//printf("start another test1 \n");
 
             ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
             for(int i = 0; i < 50;i++) {
@@ -69,10 +69,10 @@ int ReleaseTest() {
 
             sleep(3);
 
-            printf("start another test2 \n");
+            //printf("start another test2 \n");
 
             pool->shutdown();
-            printf("start another test3 \n");
+            //printf("start another test3 \n");
 
             sleep(5);
 
