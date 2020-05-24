@@ -108,7 +108,11 @@ public:
     void stopTask(FutureTask);
 
 private:
-    ArrayList<WaitingTask> mWaitingTasks;
+    //wangsl
+    std::vector<long> mWaitingTimes;
+    HashMap<long,ArrayList<WaitingTask>> mWaitingTasks;
+    //ArrayList<WaitingTask> mWaitingTasks;
+    //wangsl
 
     ThreadCachedPoolExecutor cachedExecutor;
     
@@ -131,7 +135,8 @@ private:
 
     Mutex mTaskMutex;
 
-    WaitingTask mCurrentTask;
+    ArrayList<WaitingTask> mCurrentTask;
+    long mCurrentTaskTime;
 
     bool isStop;
 

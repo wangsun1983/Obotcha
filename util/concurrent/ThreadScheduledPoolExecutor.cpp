@@ -108,7 +108,8 @@ _WaitingTask::~_WaitingTask() {
 
 //---------------TimeThread---------------//
 _ScheduledThreadPoolThread::_ScheduledThreadPoolThread(ThreadCachedPoolExecutor m) {
-    mWaitingTasks = createArrayList<WaitingTask>();
+    mWaitingTasks = createHashMap<long,ArrayList<WaitingTask>>();
+    mCurrentTask = nullptr;
 
     mDataLock = createMutex("ScheduledThreadPoolDataMutex");
     mDataCond = createCondition();
@@ -136,6 +137,10 @@ _ScheduledThreadPoolThread::~_ScheduledThreadPoolThread() {
         AutoLock ll(mFuturesMutex);
         mFutures->clear();
     }
+
+    if(mWaitingTasks != nullptr) {
+        mWaitingTasks->clear();
+    }
 }
 
 void _ScheduledThreadPoolThread::onUpdate() {
@@ -146,22 +151,37 @@ void _ScheduledThreadPoolThread::onUpdate() {
 void _ScheduledThreadPoolThread::addTask(WaitingTask v) {
     AutoLock l(mDataLock);
     int start = 0;
-    int end = mWaitingTasks->size() - 1;
+    int end = mWaitingTimes.size() - 1;
+    
+    //insert time 
     int index = 0;
+    bool isNeedInsert = true;
     while(start <= end) {
         index = (start+end)/2;
-        WaitingTask m = mWaitingTasks->get(index);
-        if(m->mNextTime > v->mNextTime) {
+        long time = mWaitingTimes.at(index);
+        if(time > v->mNextTime) {
             end = index - 1;
-        } else if(m->mNextTime < v->mNextTime) {
+        } else if(time < v->mNextTime) {
             start = index + 1;
-        } else if(m->mNextTime == v->mNextTime) {
+        } else if(time == v->mNextTime) {
+            isNeedInsert = false;
             break;
         }
     }
+    
+    if(isNeedInsert) {
+        //mWaitingTasks->insert(index,v);
+        mWaitingTimes.insert(mWaitingTimes.begin() + index,v->mNextTime);
+    }
 
-    mWaitingTasks->insert(index,v);
+    //insert task
+    ArrayList<WaitingTask> list = mWaitingTasks->get(v->mNextTime);
+    if(list == nullptr) {
+        list = createArrayList<WaitingTask>();
+        mWaitingTasks->put(v->mNextTime,list);
+    }
 
+    list->add(v);
     onUpdate();
 }
 
@@ -202,8 +222,13 @@ void _ScheduledThreadPoolThread::onInterrupt() {
     {
         AutoLock l(mTaskMutex);
         if(mCurrentTask != nullptr) {
-            if(mCurrentTask->task != nullptr) {
-                mCurrentTask->task->cancel();
+            ListIterator<WaitingTask> iterator = mCurrentTask->getIterator();
+            while(iterator->hasValue()) {
+                WaitingTask waitTask = iterator->getValue();
+                if(waitTask->task != nullptr) {
+                    waitTask->task->cancel();
+                }
+                iterator->next();
             }
         }
         mCurrentTask = nullptr;
@@ -211,13 +236,19 @@ void _ScheduledThreadPoolThread::onInterrupt() {
 
     {
         AutoLock ll(mDataLock);
-        ListIterator<WaitingTask> iterator = mWaitingTasks->getIterator();
-        while(iterator->hasValue()) {
-            WaitingTask t = iterator->getValue();
-            if(t != nullptr) {
-                t->task->cancel();
+        //clear all task
+        MapIterator<long,ArrayList<WaitingTask>> mapiter = mWaitingTasks->getIterator();
+        while(mapiter->hasValue()) {
+            ArrayList<WaitingTask> list = mapiter->getValue();
+            ListIterator<WaitingTask>iterator = list->getIterator();
+            while(iterator->hasValue()) {
+                WaitingTask t = iterator->getValue();
+                if(t != nullptr) {
+                    t->task->cancel();
+                }
+                iterator->next();
             }
-            iterator->next();
+            list->clear();
         }
         mWaitingTasks->clear();
     }
@@ -225,8 +256,9 @@ void _ScheduledThreadPoolThread::onInterrupt() {
 
 void _ScheduledThreadPoolThread::stopTask(FutureTask task) {
     {
+        /*
         AutoLock l(mDataLock);
-
+       
         ListIterator<WaitingTask> iterator = mWaitingTasks->getIterator();
         WaitingTask t = nullptr;
         while(iterator->hasValue()) {
@@ -236,7 +268,8 @@ void _ScheduledThreadPoolThread::stopTask(FutureTask task) {
                 return;
             }
             iterator->next();
-        }
+        } 
+        */
     }
     
     {
@@ -245,8 +278,6 @@ void _ScheduledThreadPoolThread::stopTask(FutureTask task) {
         Future f = mFutures->get(r);
         if(f != nullptr) {
             f->cancel();
-        } else if(task == mCurrentTask) {
-            mCurrentTask->task->cancel();
         }
         mFutures->remove(r);
     }
@@ -274,44 +305,53 @@ void _ScheduledThreadPoolThread::run() {
                     goto end;
                 }
 
-                if(mWaitingTasks->size() == 0) {
+                if(mWaitingTimes.size() == 0) {
                     mDataCond->wait(mDataLock);
                     continue;
                 }
-                mCurrentTask = mWaitingTasks->get(0);
+
+                mCurrentTaskTime = mWaitingTimes.at(0);
+                mCurrentTask = mWaitingTasks->get(mCurrentTaskTime);
                 break;
             }
          
             //get first time to wait;
             long currentTime = st(System)::currentTimeMillis();
-            long interval = mCurrentTask->mNextTime - currentTime;
+            long interval = mCurrentTaskTime - currentTime;
             if(interval > 0) {
                 mTimeCond->wait(mDataLock,interval);
                 continue;
             } else {
-                {
-                    int result = mWaitingTasks->remove(mCurrentTask);
-                    if(result < 0) {
-                        continue;
+                mWaitingTimes.erase(mWaitingTimes.begin());
+                mWaitingTasks->remove(mCurrentTaskTime);
+            }
+        }
+        
+        {
+            AutoLock l(mTaskMutex);
+            ListIterator<WaitingTask> iterator = mCurrentTask->getIterator();
+            while(iterator->hasValue()) {
+                WaitingTask waittask = iterator->getValue();
+                if(waittask->task->getStatus() == st(Future)::Cancel) {
+                    continue;
+                }
+
+                Runnable r = waittask->task->getRunnable();
+                if(r != nullptr) {
+                    ScheduledThreadPoolThread t;
+                    t.set_pointer(this);
+                    ScheduledTaskWorker worker = createScheduledTaskWorker(waittask,t);
+                    Future future = cachedExecutor->submit(worker);
+                    {
+                        AutoLock ll(mFuturesMutex);
+                        mFutures->put(r,future);
                     }
                 }
-            }
-        }
 
-        if(mCurrentTask->task->getStatus() == st(Future)::Cancel) {
-            continue;
-        }
-
-        Runnable r = mCurrentTask->task->getRunnable();
-        if(r != nullptr) {
-            ScheduledThreadPoolThread t;
-            t.set_pointer(this);
-            ScheduledTaskWorker worker = createScheduledTaskWorker(mCurrentTask,t);
-            Future future = cachedExecutor->submit(worker);
-            {
-                AutoLock ll(mFuturesMutex);
-                mFutures->put(r,future);
+                iterator->next();
             }
+
+            mCurrentTask->clear();
         }
     }
 
@@ -319,6 +359,10 @@ end:
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     {
         AutoLock l(mTaskMutex);
+        if(mCurrentTask != nullptr) {
+            mCurrentTask->clear();
+        }
+
         mCurrentTask = nullptr;
     }
 
