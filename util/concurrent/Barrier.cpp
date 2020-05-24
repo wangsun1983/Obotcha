@@ -11,15 +11,17 @@ _Barrier::_Barrier(int n) {
     cond = createCondition();
 }
 
-void _Barrier::await(long v) {
+int _Barrier::await(long v) {
     AutoLock l(mutex);
     mBarrierNums--;
     if(mBarrierNums == 0) {
         cond->notifyAll();
         mBarrierNums = mBarrierBack;
     } else {
-        cond->wait(mutex,v);
+        return cond->wait(mutex,v);
     }
+
+    return  0;
 }
 
 void _Barrier::await() {

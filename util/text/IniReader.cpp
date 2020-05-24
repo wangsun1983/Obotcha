@@ -44,6 +44,7 @@ IniValue _IniReader::parse() {
 
 sp<_IniValue> _IniReader::parse(String content) {
     //TODO
+    return nullptr;
 }
 
 

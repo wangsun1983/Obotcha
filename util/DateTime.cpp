@@ -905,9 +905,9 @@ void _DateTime::formatNumWidth3(int value,char *buff,int length,bool fillzero) {
 
 void _DateTime::formatNumWidth6(long value,char *buff,int length,bool fillzero) {
 	if(fillzero) {
-        snprintf(buff,length,"%06d",value);
+        snprintf(buff,length,"%06ld",value);
 	} else {
-        snprintf(buff,length,"%6d",value);
+        snprintf(buff,length,"%6ld",value);
 	}
 }
 

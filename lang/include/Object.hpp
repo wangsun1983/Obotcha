@@ -20,6 +20,7 @@ public:
 
     inline void incStrong(__attribute__((unused)) const void* id) {
         __sync_fetch_and_add(&mCount, 1);
+        return;
     }
 
     inline int decStrong(__attribute__((unused)) const void* id) {

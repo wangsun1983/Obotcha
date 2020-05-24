@@ -12,7 +12,7 @@ DECLARE_SIMPLE_CLASS(Barrier) {
 public:
     _Barrier(int);
 
-    void await(long);
+    int await(long);
 
     void await();
 

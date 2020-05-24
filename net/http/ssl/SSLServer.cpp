@@ -191,15 +191,18 @@ void _SSLServer::release() {
 
 
 int _SSLServer::removeClientFd(int fd) {
-
+    //TODO
+    return -1;
 }
 
 int _SSLServer::addClientFd(int fd) {
-
+    //TODO
+    return -1;
 }
 
 int _SSLServer::getStatus() {
-
+    //TODO
+    return -1;
 }
 
 _SSLServer::~_SSLServer() {

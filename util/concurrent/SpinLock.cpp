@@ -23,10 +23,12 @@ _SpinLock::_SpinLock() {
 
 int _SpinLock::lock() {
     while(mflag.test_and_set(std::memory_order_acquire));
+    return 0;
 }
 
 int _SpinLock::unlock() {
     mflag.clear(std::memory_order_release);
+    return 0;
 }
 
 _SpinLock::~_SpinLock() {}

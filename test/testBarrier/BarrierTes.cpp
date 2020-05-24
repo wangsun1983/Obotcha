@@ -39,7 +39,7 @@ public:
   void run() {
       sleep(3);
       barrier->await();
-      
+
   }
 
   ~_Run2() {
@@ -85,7 +85,7 @@ private:
   Barrier barrier;
 };
 
-int main() {
+int normaltest() {
   printf("---[Barrier Test Start]--- \n");
 
   //Barrier()/getWaitNums()
@@ -97,7 +97,7 @@ int main() {
         break;
       }
 
-      printf("---[Barrier Test {construct()} case2] [Success]--- \n");
+      printf("---[Barrier Test {construct()} case2] [OK]--- \n");
       break;
   }
 
@@ -118,7 +118,7 @@ int main() {
         break;
       }
 
-      printf("---[Barrier Test {await()} case2] [Success]--- \n");
+      printf("---[Barrier Test {await()} case2] [OK]--- \n");
       break;
   }
 
@@ -136,7 +136,7 @@ int main() {
         break;
       }
 
-      printf("---[Barrier Test {await(long)} case2] [Success]--- \n");
+      printf("---[Barrier Test {await(long)} case2] [OK]--- \n");
       break;
   }
 
@@ -152,7 +152,7 @@ int main() {
         break;
     }
 
-    printf("---[Barrier Test {getWaitNums()} case2] [Success]--- \n");
+    printf("---[Barrier Test {getWaitNums()} case2] [OK]--- \n");
     break;
   }
 
@@ -168,7 +168,7 @@ int main() {
         break;
     }
 
-    printf("---[Barrier Test func {await()} case2] [Success]--- \n");
+    printf("---[Barrier Test func {await()} case2] [OK]--- \n");
     break;
   }
 }

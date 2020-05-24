@@ -42,7 +42,7 @@ int _ConfReader::setFile(const char* path) {
         return -FileNotExists;
     }
 
-    parse();
+    return parse();
 }
     
 int _ConfReader::setFile(String path) {
@@ -51,7 +51,7 @@ int _ConfReader::setFile(String path) {
         return -FileNotExists;
     }
 
-    parse();
+    return parse();
 }
     
 int _ConfReader::setFile(File file) {
@@ -60,7 +60,7 @@ int _ConfReader::setFile(File file) {
         return -FileNotExists;
     }
 
-    parse();
+    return parse();
 }
 
 int _ConfReader::parse() {

@@ -78,10 +78,10 @@ int scheduleloopsubmit() {
 #if 0 //need test
     //test3
     pool = st(Executors)::newScheduledThreadPool();
-    long time = st(System)::currentTimeMillis();
+    time = st(System)::currentTimeMillis();
 
     for(int i = 0; i < 32*1024;i++) {
-        pool->schedule(createMyLoopTimeSubmit(),100);
+        pool->schedule(createMyLoopTimeSubmit(),1);
     }
 
     sleep(5);
