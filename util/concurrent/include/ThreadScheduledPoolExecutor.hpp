@@ -141,6 +141,8 @@ private:
     bool isStop;
 
     bool isTerminated;
+    //TODO
+    //std::_Rb_tree_node<WaitingTask> node;
 };
 
 DECLARE_SIMPLE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(ScheduledExecutorService)

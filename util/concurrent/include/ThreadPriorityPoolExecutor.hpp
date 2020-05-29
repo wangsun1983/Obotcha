@@ -17,6 +17,7 @@
 #include "Condition.hpp"
 #include "Thread.hpp"
 #include "Error.hpp"
+#include "ConcurrentQueue.hpp"
 
 namespace obotcha {
 
@@ -30,10 +31,11 @@ public:
 };
 
 class _ThreadPriorityPoolExecutor;
+class _PriorityTaskManager;
 
 DECLARE_SIMPLE_CLASS(PriorityPoolThread) EXTENDS(Thread) {
 public:
-    _PriorityPoolThread(ArrayList<PriorityTask>,Mutex,Condition,sp<_ThreadPriorityPoolExecutor> exe);
+    _PriorityPoolThread(sp<_PriorityTaskManager>,sp<_ThreadPriorityPoolExecutor> exe);
     
     void run();
     
@@ -41,11 +43,13 @@ public:
 
     void stop();
 
-    void waitTermination(long);
+    //void waitTermination(long);
 
     bool foceStopTask(FutureTask);
 
     ~_PriorityPoolThread();
+
+    sp<_PriorityTaskManager> mTaskMgr;
 
 private:
     ArrayList<PriorityTask> mTasks;
@@ -67,6 +71,27 @@ private:
     int mState;
     
     mutable volatile bool mStop;
+};
+
+DECLARE_SIMPLE_CLASS(PriorityTaskManager) {
+public:
+    _PriorityTaskManager();
+
+    void addTask(PriorityTask);
+
+    int cancel(FutureTask);
+
+    void cancelAll();
+
+    PriorityTask getTask();
+
+private:
+    ConcurrentQueue<PriorityTask> mHighPriorityTasks;
+    ConcurrentQueue<PriorityTask> mMediumPriorityTasks;
+    ConcurrentQueue<PriorityTask> mLowPriorityTasks;
+
+    Mutex mTaskMutex;
+    Condition mTaskCondition;
 };
 
 DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) IMPLEMENTS(ExecutorService)
@@ -109,6 +134,8 @@ private:
 
     void onCompleteNotify(PriorityPoolThread t);
 
+    PriorityTaskManager mPriorityTaskMgr;
+
     int mThreadNum;
 
     Mutex mProtectMutex;
@@ -120,8 +147,6 @@ private:
     bool isShutDown;
 
     bool isTermination;
-    
-    ArrayList<PriorityTask> mPriorityTasks;
     
     Mutex mThreadMutex;
     ArrayList<PriorityPoolThread> mThreads;

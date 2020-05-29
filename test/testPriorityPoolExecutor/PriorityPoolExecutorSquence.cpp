@@ -10,7 +10,7 @@
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
-#include "PriorityPoolExecutor.hpp"
+#include "ThreadPriorityPoolExecutor.hpp"
 
 using namespace obotcha;
 
@@ -45,9 +45,9 @@ public:
         //printf("test2 \n");
         Sequence2 = startValue;
         startValue++;
-        
+
     }
-};  
+};
 
 DECLARE_SIMPLE_CLASS(SequenceTest3) IMPLEMENTS(Runnable) {
 public:
@@ -55,9 +55,9 @@ public:
         //printf("test3 \n");
         Sequence3 = startValue;
         startValue++;
-        
+
     }
-}; 
+};
 
 #if 0
 DECLARE_SIMPLE_CLASS(SequenceTest4) IMPLEMENTS(Runnable) {
@@ -65,7 +65,7 @@ public:
     void run() {
         printf("test4 \n");
         Sequence4 = startValue;
-        startValue++; 
+        startValue++;
     }
 };
 
@@ -74,19 +74,19 @@ public:
     void run() {
         printf("test5 \n");
         Sequence5 = startValue;
-        startValue++; 
+        startValue++;
     }
-}; 
+};
 #endif
 
 int testSequence() {
     while(1) {
         ExecutorService pool = st(Executors)::newPriorityThreadPool(1);
-        pool->submit(TaskPriorityHigh,createSequenceTestIdle());
+        pool->submit(st(ThreadPriorityPoolExecutor)::PriorityHigh,createSequenceTestIdle());
         sleep(1);
-        pool->submit(TaskPriorityLow,createSequenceTest1());
-        pool->submit(TaskPriorityHigh,createSequenceTest2());
-        pool->submit(TaskPriorityMedium,createSequenceTest3());
+        pool->submit(st(ThreadPriorityPoolExecutor)::PriorityLow,createSequenceTest1());
+        pool->submit(st(ThreadPriorityPoolExecutor)::PriorityHigh,createSequenceTest2());
+        pool->submit(st(ThreadPriorityPoolExecutor)::PriorityMedium,createSequenceTest3());
 
         sleep(11);
 

@@ -19,8 +19,10 @@ extern int releaseTest();
 extern int testThreadShutdown();
 extern int testThreadDestroy();
 extern int testSequence();
+extern int submitloop();
 
 int main() {
+
     normalTest();
     sleep(1);
     testRunnable_onInterrupt();
@@ -32,6 +34,8 @@ int main() {
     testThreadDestroy();
     sleep(1);
     testSequence();
+    sleep(1);
+    submitloop();
 
     sleep(10);
     return 1;

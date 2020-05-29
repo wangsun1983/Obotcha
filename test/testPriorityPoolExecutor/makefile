@@ -24,19 +24,23 @@ cflags = -fpic \
 		-I ../../external/openssl/include \
 		-I ../../external/libco \
 		-g \
-		-rdynamic \
 		-std=c++11 \
 
 external = -lpthread \
 				-ldl \
 				../../out/lib/libobotcha.so \
 
+sharelib = -Wl,-rpath=../../out/lib/ \
+           -L ../../out/lib/ \
+           -lcrypto \
+           -L ../../out/lib/ \
+           -lssl \
 
 files =
 link =
-libname	= testThreadPoolExecutor
+libname	= testThreadPriorityPoolExecutor
 
 everything : $(libname)
 
 $(libname): $(link)
-	g++ *.cpp $(cflags) -o mytest $(external)
+	g++ *.cpp $(cflags) -o mytest $(external) $(sharelib)

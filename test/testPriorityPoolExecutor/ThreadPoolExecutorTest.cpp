@@ -44,7 +44,7 @@ public:
     }
 
     void onInterrupt() {
-        //printf("RunTest2 onInterrupt 2\n");
+        printf("RunTest2 onInterrupt 2\n");
     }
 
     ~_RunTest2() {
@@ -84,7 +84,7 @@ int normalTest() {
         pool->submit(createMyRunTest1());
         pool->shutdown();
         sleep(5);
-        if(!pool->isShutdown()) {
+        if(!pool->isTerminated()) {
             printf("---[PriorityPoolExecutor Test {shutdown()} case1] [FAIL]--- \n");
             break;
         }
@@ -198,7 +198,7 @@ int normalTest() {
     //int getThreadsNum();
     while(1) {
         ExecutorService pool = st(Executors)::newPriorityThreadPool();
-        if(pool->getThreadsNum() != st(System)::availableProcessors()) {
+        if(pool->getThreadsNum() != 1) {
             printf("---[PriorityPoolExecutor Test {getThreadsNum()} case1] [FAIL]--- \n");
             break;
         }

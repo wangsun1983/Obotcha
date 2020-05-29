@@ -8,6 +8,7 @@
 namespace obotcha {
 
 class _FutureTask;
+class _PriorityTaskManager;
 
 enum FutureTaskType {
     FUTURE_TASK_NORMAL,
@@ -21,6 +22,8 @@ public:
 
 DECLARE_SIMPLE_CLASS(FutureTask) {
 public:
+    friend class _PriorityTaskManager;
+
     _FutureTask(int,Runnable);//remove soon
 
     _FutureTask(int,Runnable,FutureTaskStatusListener);
@@ -43,8 +46,10 @@ public:
 
     Runnable getRunnable();
 
-
 private:
+    void cancelWithoutCallback();
+
+
     Runnable mRunnable;
 
     int mType;

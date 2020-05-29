@@ -10,7 +10,7 @@
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
-#include "PriorityPoolExecutor.hpp"
+#include "ThreadPriorityPoolExecutor.hpp"
 
 using namespace obotcha;
 
@@ -34,12 +34,12 @@ public:
         //decDebugReferenctCount();
         //printf("numMutex1 count is %d,this is %lx \n",numMutex->getStrongCount(),this);
         //{
-        AutoMutex ll(numMutex);
+        AutoLock ll(numMutex);
             //printf("numMutex2 count is %d \n",numMutex->getStrongCount());
-        releaseCount++;    
+        releaseCount++;
         //}
         //printf("numMutex2 count is %d,this is %lx \n",numMutex->getStrongCount(),this);
-        
+
     }
 
 };
@@ -77,4 +77,3 @@ int releaseTest() {
     sleep(1);
 
 }
-
