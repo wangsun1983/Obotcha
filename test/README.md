@@ -61,7 +61,7 @@
 - [ ] Future
 - [ ] FutureTask
 - [ ] Mutex
-- [ ] PriorityPoolExecutor
+- [x] PriorityPoolExecutor
 - [ ] ReadWriteLock
 - [x] ThreadScheduledPoolExecutor
 - [x] Thread

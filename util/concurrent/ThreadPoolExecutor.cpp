@@ -344,22 +344,21 @@ void _ThreadPoolExecutor::onCancel(FutureTask t) {
         return;
     }
     
-    if(!mPool->remove(t)) {
-        ThreadPoolExecutorHandler h = nullptr;
-        int size = mHandlers->size();
-        for(int i = 0;i < size;i++) {
-            h = mHandlers->get(i);
-            if(h != nullptr) {
-                if(h->shutdownTask(t)) {
-                    AutoLock ll1(mHandlersMutex);
-                    mHandlers->remove(h);
-                    isHit = true;
-                    break;
-                }
+    
+    ThreadPoolExecutorHandler h = nullptr;
+    int size = mHandlers->size();
+    for(int i = 0;i < size;i++) {
+        h = mHandlers->get(i);
+        if(h != nullptr) {
+            if(h->shutdownTask(t)) {
+                AutoLock ll1(mHandlersMutex);
+                mHandlers->remove(h);
+                isHit = true;
+                break;
             }
         }
     }
-
+    
     //we should insert a new
     if(!mIsShutDown && isHit) {
         ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool,this);

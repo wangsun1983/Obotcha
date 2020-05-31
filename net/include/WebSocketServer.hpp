@@ -35,7 +35,8 @@ namespace obotcha {
 
 #define WEBSOCKET_BUFF_SIZE 512*1024
 
-class _TcpServer;    
+class _TcpServer; 
+class _WebSocketEpollListener;   
 
 DECLARE_SIMPLE_CLASS(WebSocketClientManager) {
 public:
@@ -72,7 +73,7 @@ public:
 
     void setHttpEpollFd(int fd);
 
-    void setWsEpollObserver(HashMap<String,EPollFileObserver>);
+    void setWsEpollObserver(HashMap<String,EPollFileObserver>,sp<_WebSocketEpollListener>);
 
     void onAccept(int fd,String ip,int port,ByteArray pack);
 
@@ -87,7 +88,8 @@ public:
 private:
     int httpEpollfd;
 
-    HashMap<String,EPollFileObserver> mWsObservers;  
+    HashMap<String,EPollFileObserver> mWsObservers;
+    sp<_WebSocketEpollListener> mEpollListener;
     
     HttpV1Parser mParser;
 
@@ -97,7 +99,7 @@ private:
 DECLARE_SIMPLE_CLASS(WebSocketEpollListener) IMPLEMENTS(EPollFileObserverListener) {
 public:
     _WebSocketEpollListener(WebSocketListener);
-    int onEvent(int fd,int events);
+    int onEvent(int fd,int events,ByteArray);
     ~_WebSocketEpollListener();
 private:
     WebSocketParser mHybi13Parser;

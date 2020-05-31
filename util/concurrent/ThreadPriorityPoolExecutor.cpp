@@ -19,6 +19,7 @@
 #include "StackTrace.hpp"
 #include "ExecutorDestructorException.hpp"
 #include "Log.hpp"
+#include "TimeWatcher.hpp"
 
 namespace obotcha {
 
@@ -153,7 +154,7 @@ void _PriorityTaskManager::addTask(PriorityTask task) {
 
 int _PriorityTaskManager::cancel(FutureTask task) {
     AutoLock l(mTaskMutex);
-
+    
     int size = mHighPriorityTasks->size();
     for(int i = 0;i<size;i++) {
         if(mHighPriorityTasks->get(i)->task == task) {
@@ -298,8 +299,6 @@ int _ThreadPriorityPoolExecutor::shutdown() {
             iterator->next();
         }
     }
-    
-    
 }
 
 bool _ThreadPriorityPoolExecutor::isTerminated() {
@@ -386,9 +385,10 @@ void _ThreadPriorityPoolExecutor::onCancel(FutureTask task) {
         return;
     }
 
-    if(mPriorityTaskMgr->cancel(task) == 0) {
-        return;
-    }
+    //do not need to remove
+    //if(mPriorityTaskMgr->cancel(task) == 0) {
+    //    return;
+    //}
     
     {
         bool isNeedCreate = false;

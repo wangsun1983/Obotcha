@@ -8,7 +8,7 @@
 
 namespace obotcha {
 
-#define startAutoTimeWatcher(X) \
+#define StartAutoTimeWatcher(X) \
     AutoTimeWatcher autoTime = createAutoTimeWatcher(#X); \
 
 

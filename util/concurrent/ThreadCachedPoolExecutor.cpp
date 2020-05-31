@@ -570,10 +570,11 @@ void _CacheThreadManager::release() {
             }
 
             Runnable r = removeTask->getRunnable();
-            if(r != nullptr) {
+            if(r != nullptr && removeTask->getStatus() != st(Future)::Cancel) {
                 r->onInterrupt();
             }
         }
+        mFutureTasks->clear();
     }
 }
 
@@ -591,9 +592,10 @@ int _CacheThreadManager::getThreadSum() {
 void _CacheThreadManager::cancelTask(FutureTask task) {
     bool isCancelTask = false;
 
-    if(mFutureTasks->remove(task)) {
-        return;
-    }
+    //Do not need to remove
+    //if(mFutureTasks->remove(task)) {
+    //    return;
+    //}
 
     {
         AutoLock ll(mRunningHandlerMutex);

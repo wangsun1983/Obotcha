@@ -125,8 +125,10 @@ void _WebSocketHttpListener::onTimeout() {
     //TODO
 }
 
-void _WebSocketHttpListener::setWsEpollObserver(HashMap<String,EPollFileObserver> obs) {
+void _WebSocketHttpListener::setWsEpollObserver(HashMap<String,EPollFileObserver> obs,WebSocketEpollListener l) {
     mWsObservers = obs;
+
+    mEpollListener = l;
 }
     
 void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) {
@@ -167,7 +169,8 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
         //add fd to ws epoll
         EPollFileObserver observer = mWsObservers->get(request->getUrl());
         if(observer != nullptr) {
-            observer->addFd(fd,EPOLLIN|EPOLLRDHUP|EPOLLHUP|EPOLLMSG|EPOLLET);
+            //observer->addFd(fd,EPOLLIN|EPOLLRDHUP|EPOLLHUP|EPOLLMSG|EPOLLET);
+            observer->addObserver(fd,EPOLLIN|EPOLLRDHUP|EPOLLHUP|EPOLLMSG|EPOLLET,mEpollListener);
         } 
 
         //String shakeresponse = mResponse->generateShakeHandFrame(key);
@@ -204,21 +207,23 @@ _WebSocketEpollListener::~_WebSocketEpollListener() {
     free(mRecvBuff);
 }
 
-int _WebSocketEpollListener::onEvent(int fd,int events){
+int _WebSocketEpollListener::onEvent(int fd,int events,ByteArray pack){
     if((events &EPOLLRDHUP) != 0) {
         st(WebSocketClientManager)::getInstance()->removeClient(fd);
-        return EPollOnEventResultRemoveFd;
+        return st(EPollFileObserver)::OnEventRemoveObserver;
     }
 
-    int len = recv(fd, mRecvBuff, WEBSOCKET_BUFF_SIZE, 0);
-    if(len == -1) {
+    //int len = recv(fd, mRecvBuff, WEBSOCKET_BUFF_SIZE, 0);
+    //if(len == -1) {
+    //    st(WebSocketClientManager)::getInstance()->removeClient(fd);
+    //    return EPollOnEventResultRemoveFd;
+    //} if(len == WEBSOCKET_BUFF_SIZE) {
+    //    LOGE("WebSocket Receive Buffer Over Size");
+    //}
+    if(pack == nullptr || pack->size() == 0) {
         st(WebSocketClientManager)::getInstance()->removeClient(fd);
-        return EPollOnEventResultRemoveFd;
-    } if(len == WEBSOCKET_BUFF_SIZE) {
-        LOGE("WebSocket Receive Buffer Over Size");
+        return st(EPollFileObserver)::OnEventRemoveObserver;
     }
-    
-    ByteArray pack = createByteArray(mRecvBuff,len);
 
     int readIndex = 0;
     WebSocketParser parser = st(WebSocketClientManager)::getInstance()->getClient(fd)->getParser();
@@ -276,7 +281,7 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
             mWsSocketListener->onPong(client,msg);
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE) {
             st(WebSocketClientManager)::getInstance()->removeClient(fd);
-            return EPollOnEventResultRemoveFd;
+            return st(EPollFileObserver)::OnEventRemoveObserver;;
         } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
             ByteArray msgData = parser->parseContent(false);
             //st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff->append(msgData);
@@ -303,7 +308,7 @@ int _WebSocketEpollListener::onEvent(int fd,int events){
         break;
     }
 
-    return EPollOnEventResultOK;
+    return st(EPollFileObserver)::OnEventOK;
 }
 
 //-----WebSocketServer-----
@@ -318,47 +323,31 @@ int _WebSocketServer::bind(String ip,int port,String path,WebSocketListener list
 
     mWsListener = listener;
     mHttpListener = createWebSocketHttpListener();
-    mServer = createTcpServer(ip,port,mHttpListener);
+    if(ip == nullptr) {
+        mServer = createTcpServer(port,mHttpListener);
+    } else {
+        mServer = createTcpServer(ip,port,mHttpListener);
+    }
+    
     mHttpListener->setHttpEpollFd(mServer->getTcpEpollfd());
     //mServer->start();
     mEpollListener = createWebSocketEpollListener(listener);
     
-    EPollFileObserver mEpollObserver = createEPollFileObserver(mEpollListener);
+    EPollFileObserver mEpollObserver = createEPollFileObserver();
     mEpollObservers->put(path,mEpollObserver);
 
-    mHttpListener->setWsEpollObserver(mEpollObservers);
-
-    mEpollObserver->start();
+    mHttpListener->setWsEpollObserver(mEpollObservers,mEpollListener);
 
     return 0;
 }
 
-int _WebSocketServer::bind(int port,String path,WebSocketListener listener) {
-    if(mServer != nullptr) {
-        return -AlreadyExists;
-    }
-
-    mWsListener = listener;
-    mHttpListener = createWebSocketHttpListener();
-    mServer = createTcpServer(port,mHttpListener);
-    mHttpListener->setHttpEpollFd(mServer->getTcpEpollfd());
-    //mServer->start();
-    mEpollListener = createWebSocketEpollListener(listener);
-    
-    EPollFileObserver mEpollObserver = createEPollFileObserver(mEpollListener);
-    mEpollObservers->put(path,mEpollObserver);
-
-    mHttpListener->setWsEpollObserver(mEpollObservers);
-
-    mEpollObserver->start();
-
-    return 0;
+int _WebSocketServer::bind(int port,String path,WebSocketListener listener){
+    return bind(nullptr,port,path,listener);
 }
 
 int _WebSocketServer::start() {
     return mServer->start();
     //mEpollObserver->start();
-
 }
 
 int _WebSocketServer::release() {

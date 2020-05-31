@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <sys/epoll.h>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -16,59 +17,57 @@
 
 namespace obotcha {
 
-#define EPOLL_DEFAULT_SIZE 1024*8
-
-enum EPollFileObserverFailResaon {
-    EPollFileObserverNotInit = 200,
-    EPollFileObserverAlreadyStart,
-};
-
-enum EPollOnEventResult {
-    EPollOnEventResultOK = 1,
-    EPollOnEventResultRemoveFd,
-};
-
 DECLARE_SIMPLE_CLASS(EPollFileObserverListener) {
 public:
-    virtual int onEvent(int fd,int events) = 0;    
+    virtual int onEvent(int fd,int events,ByteArray) = 0;    
 };
 
-DECLARE_SIMPLE_CLASS(EPollThread) EXTENDS(Thread) {
+DECLARE_SIMPLE_CLASS(EPollFileObserver) EXTENDS(Thread) {
 public:
-    _EPollThread(int fd,int size,Pipe pipe,EPollFileObserverListener);
+    friend class _EPollThread;
+    
+    _EPollFileObserver(int size);
 
-    void run();
+    _EPollFileObserver();
 
-private:
-    int mEpollFd;
+    int addObserver(int fd,int events,EPollFileObserverListener l);
 
-    EPollFileObserverListener mListener;
-
-    int mSize;
-
-    Pipe mPipe;
-};
-
-DECLARE_SIMPLE_CLASS(EPollFileObserver) {
-public:
-    _EPollFileObserver(EPollFileObserverListener,int size);
-
-    _EPollFileObserver(EPollFileObserverListener);
-
-    int addFd(int fd,int events);
-
-    int removeFd(int fd);
-
-    int start();
+    int removeObserver(int fd,int events,EPollFileObserverListener l);
 
     int release();
+
+    void run();
     
     ~_EPollFileObserver();
+
+    static const int EpollIn = EPOLLIN;
+    static const int EpollPri = EPOLLPRI;
+    static const int EpollOut = EPOLLOUT;
+    static const int EpollRdNorm = EPOLLRDNORM;
+    static const int EpollRdBand = EPOLLRDBAND;
+    static const int EpollWrNorm = EPOLLWRNORM;
+    static const int EpollWrBand = EPOLLWRBAND;
+    static const int EpollMsg = EPOLLMSG;
+    static const int EpollErr = EPOLLERR;
+    static const int EpollHup = EPOLLHUP;
+    static const int EpollRdHup = EPOLLRDHUP;
+    static const int EpollExClusive = EPOLLEXCLUSIVE;
+    static const int EpollWakeUp = EPOLLWAKEUP;
+    static const int EpollOneShot = EPOLLONESHOT;
+    static const int EpollEt = EPOLLET;
+
+    static const int OnEventOK = 1;
+    static const int OnEventRemoveObserver = 2;
+
+    static const int DefaultEpollSize = 1024*8;
     
 private:
+    static const int DefaultBufferSize = 16*1024;
+    static const int EpollEvent[];
     int mEpollFd;
 
-    EPollFileObserverListener mListener;
+    //EPollFileObserverListener mListener;
+    HashMap<int,HashMap<int,ArrayList<EPollFileObserverListener>>> mListeners;
 
     Thread mEpollThread;
 
