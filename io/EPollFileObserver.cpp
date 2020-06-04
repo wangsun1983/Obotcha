@@ -16,6 +16,8 @@
 #include "InputStream.hpp"
 #include "ByteArray.hpp"
 #include "EPollFileObserver.hpp"
+#include "TimeWatcher.hpp"
+#include "AutoLock.hpp"
 
 namespace obotcha {
 
@@ -41,18 +43,48 @@ void _EPollFileObserver::run() {
     byte readbuff[st(EPollFileObserver)::DefaultBufferSize];
     HashMap<EPollFileObserverListener,Boolean> ll = createHashMap<EPollFileObserverListener,Boolean>();
     while(1) {
+        {
+            AutoLock l(mRequestMutex);
+            ListIterator<EpollObserverRequest> iterator = mReqeusts->getIterator();
+            printf("mReqeusts size is %d \n",mReqeusts->size());
+            while(iterator->hasValue()) {
+                EpollObserverRequest r = iterator->getValue();
+                switch(r->action) {
+                    case st(EpollObserverRequest)::Remove:
+                    _removeObserver(r->fd,r->events,r->l);
+                    break;
+
+                    case st(EpollObserverRequest)::Add:
+                    _addObserver(r->fd,r->events,r->l);
+                    break;
+                }
+                iterator->next();
+            }
+
+            mReqeusts->clear();
+        }
+
+        mStartFlag->set(1);
+        printf("start wait epoll \n");
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
+        
         if(epoll_events_count < 0) {
             return;
         }
+        StartAutoTimeWatcher("do epoll event");
         for(int i = 0; i < epoll_events_count; i++) {
             int fd = events[i].data.fd;
             int recvEvents = events[i].events;
-
             if(fd == mPipe->getReadPipe()) {
-                return;
+                ByteArray pipeData = createByteArray(1);
+                mPipe->readFrom(pipeData);
+                if(pipeData->at(0) == 0) {
+                    break;
+                } else {
+                    return;
+                }
             }
-
+            
             //we need read all data
             int len = read(fd,readbuff,st(EPollFileObserver)::DefaultBufferSize);
 
@@ -64,31 +96,40 @@ void _EPollFileObserver::run() {
                     data->append(readbuff,len);
                 }
             }
-            
+
             HashMap<int,ArrayList<EPollFileObserverListener>> map = mListeners->get(fd);
             if(map == nullptr) {
                 continue;
             }
             
-            
             for(int j = 0;j<sizeof(EpollEvent)/sizeof(int);j++) {
                 int event = recvEvents & EpollEvent[i];
                 if(event != 0) {
                     ArrayList<EPollFileObserverListener> list = map->get(event);
+                    if(list == nullptr) {
+                        continue;
+                    }
+                    
                     ListIterator<EPollFileObserverListener> iterator = list->getIterator();
+                    
                     while(iterator->hasValue()) {
                         EPollFileObserverListener c = iterator->getValue();
                         if(ll->get(c) != nullptr) {
+                            iterator->next();
                             continue;
                         }
 
                         ll->put(c,createBoolean(true));
                         if(c->onEvent(fd,recvEvents,data) == st(EPollFileObserver)::OnEventRemoveObserver) {
-                            for(int k = 0;k<sizeof(EpollEvent)/sizeof(int);k++) {
-                                int rmEvent = recvEvents & EpollEvent[i];
-                                removeObserver(fd,rmEvent,c);
-                            }
+                            iterator->remove();
+                            continue;
                         };
+                        iterator->next();
+                    }
+
+                    if(list->size() == 0) {
+                        map->remove(event);
+                        epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
                     }
                 }
             }
@@ -100,18 +141,53 @@ void _EPollFileObserver::run() {
 _EPollFileObserver::_EPollFileObserver(int size) {
     mListeners = createHashMap<int,HashMap<int,ArrayList<EPollFileObserverListener>>>();
     mSize = size;
+    mRequestMutex = createMutex("Epoll Mutex");
+    mReqeusts = createArrayList<EpollObserverRequest>();
+    printf("create1 mReqeusts size is %d \n",mReqeusts->size());
+
     mEpollFd = epoll_create(size);
     mPipe = createPipe();
     mPipe->init();
     addObserver(mPipe->getReadPipe(),EPOLLIN|EPOLLRDHUP|EPOLLHUP,nullptr);
+    printf("create2 mReqeusts size is %d \n",mReqeusts->size());
+    mStartFlag = createAtomicInteger(0);
     start();
+    while(mStartFlag->getAndAnd(1) != 1) {}
+    printf("create3 mReqeusts size is %d \n",mReqeusts->size());
 }
 
 _EPollFileObserver::_EPollFileObserver():_EPollFileObserver{DefaultEpollSize}{
 }
 
-
 int _EPollFileObserver::addObserver(int fd,int events,EPollFileObserverListener l) {
+    //printf("add!!!! \n");
+    EpollObserverRequest request = createEpollObserverRequest();
+    request->action = st(EpollObserverRequest)::Add;
+    request->fd = fd;
+    request->events = events;
+    request->l = l;
+
+    AutoLock lock(mRequestMutex);
+    mReqeusts->add(request);
+    
+    ByteArray data = createByteArray(1);
+    data->fill(0,0);
+    mPipe->writeTo(data);
+}
+
+int _EPollFileObserver::removeObserver(int fd,int events,EPollFileObserverListener l) {
+    printf("remove!!!! \n");
+    EpollObserverRequest request = createEpollObserverRequest();
+    request->action = st(EpollObserverRequest)::Remove;
+    request->fd = fd;
+    request->events = events;
+    request->l = l;
+
+    AutoLock lock(mRequestMutex);
+    mReqeusts->add(request);
+}
+
+int _EPollFileObserver::_addObserver(int fd,int events,EPollFileObserverListener l) {
     struct epoll_event ev;
     memset(&ev,0,sizeof(struct epoll_event));
 
@@ -119,16 +195,16 @@ int _EPollFileObserver::addObserver(int fd,int events,EPollFileObserverListener 
     ev.events = events;
     epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
-
+    
     if(l != nullptr) {
         HashMap<int,ArrayList<EPollFileObserverListener>> m = mListeners->get(fd);
         if(m == nullptr) {
             m = createHashMap<int,ArrayList<EPollFileObserverListener>>();
             mListeners->put(fd,m);
         }
-
+        
         for(int i = 0;i<sizeof(EpollEvent)/sizeof(int);i++) {
-            int event = events & EpollEvent[i];
+            int event = (events & EpollEvent[i]);
             if(event != 0) {
                 ArrayList<EPollFileObserverListener> ll = m->get(event);
                 if(ll == nullptr) {
@@ -143,7 +219,7 @@ int _EPollFileObserver::addObserver(int fd,int events,EPollFileObserverListener 
     return 0;
 }
 
-int _EPollFileObserver::removeObserver(int fd,int event,EPollFileObserverListener l) {
+int _EPollFileObserver::_removeObserver(int fd,int event,EPollFileObserverListener l) {
 
     HashMap<int,ArrayList<EPollFileObserverListener>> m = mListeners->get(fd);
     ArrayList<EPollFileObserverListener> list;
@@ -159,16 +235,19 @@ int _EPollFileObserver::removeObserver(int fd,int event,EPollFileObserverListene
     list->remove(l);
     if(list->size() == 0) {
         m->remove(event);
-        goto remove;
+    } else {
+        return 0;
     }
-
+    
 remove:
     epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
     return 0;
 }
 
 int _EPollFileObserver::release() {
-    mPipe->writeTo(createByteArray(1));
+    ByteArray data = createByteArray(1);
+    data->fill(0,1);
+    mPipe->writeTo(data);
     
     join();
     
@@ -178,12 +257,15 @@ int _EPollFileObserver::release() {
     }
 
     mListeners->clear();
+    mReqeusts->clear();
     
     return 0;
 }
 
 _EPollFileObserver::~_EPollFileObserver() {
-    close(mEpollFd);
+    if(mEpollFd != -1) {
+        close(mEpollFd);
+    }
 }
 
 

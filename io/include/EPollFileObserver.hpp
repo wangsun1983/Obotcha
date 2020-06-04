@@ -22,6 +22,17 @@ public:
     virtual int onEvent(int fd,int events,ByteArray) = 0;    
 };
 
+DECLARE_SIMPLE_CLASS(EpollObserverRequest) {
+public:
+    static const int Remove = 0;
+    static const int Add = 1;
+
+    int action;
+    int fd;
+    int events;
+    EPollFileObserverListener l;
+};
+
 DECLARE_SIMPLE_CLASS(EPollFileObserver) EXTENDS(Thread) {
 public:
     friend class _EPollThread;
@@ -56,14 +67,21 @@ public:
     static const int EpollOneShot = EPOLLONESHOT;
     static const int EpollEt = EPOLLET;
 
-    static const int OnEventOK = 1;
-    static const int OnEventRemoveObserver = 2;
+    static const int OnEventOK = 0;
+    static const int OnEventRemoveObserver = 1;
 
     static const int DefaultEpollSize = 1024*8;
     
 private:
     static const int DefaultBufferSize = 16*1024;
     static const int EpollEvent[];
+
+    int _addObserver(int fd,int events,EPollFileObserverListener l);
+
+    int _removeObserver(int fd,int events,EPollFileObserverListener l);
+
+    ArrayList<EpollObserverRequest> mReqeusts;
+
     int mEpollFd;
 
     //EPollFileObserverListener mListener;
@@ -74,6 +92,10 @@ private:
     Pipe mPipe;
 
     int mSize;
+
+    Mutex mRequestMutex;
+
+    AtomicInteger mStartFlag;
 };
 
 }
