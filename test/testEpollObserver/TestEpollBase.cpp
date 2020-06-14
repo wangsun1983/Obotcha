@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
-
+#include <string.h>
 //#include "Thread.hpp"
 //#include "ArrayList.hpp"
 #include "EPollFileObserver.hpp"
@@ -10,12 +10,23 @@
 #include "TcpServer.hpp"
 #include "AtomicInteger.hpp"
 #include "TimeWatcher.hpp"
+#include "AutoLock.hpp"
 
 using namespace obotcha;
 
 AtomicInteger baseTestValue1 = createAtomicInteger(0);
 AtomicInteger baseTestValue2 = createAtomicInteger(0);
+AtomicInteger baseTestValue3 = createAtomicInteger(0);
 int baseTestClientfd = 0;
+
+class _BaseTestListener1;
+class _BaseTestListener2;
+
+ArrayList<sp<_BaseTestListener1>> listener1s = createArrayList<sp<_BaseTestListener1>>();
+Mutex listenersMutex1 = createMutex("listeners1");
+
+ArrayList<sp<_BaseTestListener2>> listener2s = createArrayList<sp<_BaseTestListener2>>();
+Mutex listenersMutex2 = createMutex("listeners2");
 
 DECLARE_SIMPLE_CLASS(BaseTestListener2) EXTENDS(EPollFileObserverListener) {
 public:
@@ -23,8 +34,13 @@ public:
 
     }
 
-    int onEvent(int fd,int events,ByteArray data) {
-        //printf("receive fd,data is %s \n",data->toString()->toChars());
+    int onEvent(int fd,uint32_t events,ByteArray data) {
+        //printf("fd is %d,event is %p \n",fd,events);
+        if((events &EPOLLRDHUP) != 0) {
+            baseTestValue3->incrementAndGet();
+            return 0;
+        }
+
         baseTestValue2->incrementAndGet();
         return 0;
     }
@@ -38,17 +54,21 @@ public:
         mObserver = ob;
     }
 
-    int onEvent(int fd,int events,ByteArray data) {
+    int onEvent(int fd,uint32_t events,ByteArray data) {
+        //printf("listener1 fd is %d,mSocket is %d,events is %p \n",fd,mSocket,events);
         if(fd == mSocket) {
             struct sockaddr_in client_address;
             socklen_t client_addrLength = sizeof(struct sockaddr_in);
-            if(baseTestClientfd == 0) {
-                baseTestClientfd = accept( mSocket, ( struct sockaddr* )&client_address, &client_addrLength );
+            int clientfd = accept( mSocket, ( struct sockaddr* )&client_address, &client_addrLength );
+            if(clientfd == -1) {
+                printf("accept fail,error is %s \n",strerror(errno));
             }
-
             baseTestValue1->incrementAndGet();
-            
-            mObserver->addObserver(baseTestClientfd,EPOLLIN|EPOLLRDHUP,createBaseTestListener2());
+            AutoLock l(listenersMutex2);
+            BaseTestListener2 l2 = createBaseTestListener2();
+            listener2s->add(l2);
+            //printf("baseTestClientfd is %d \n",clientfd);
+            mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,l2);
         }
 
         return 0;
@@ -60,48 +80,110 @@ private:
 };
 
 
-
-
 DECLARE_SIMPLE_CLASS(BaseTestServer1) IMPLEMENTS(Thread) {
 public:
     void run() {
         struct sockaddr_in serverAddr;
-        int sock = -1;
         int opt = 1;
+        printf("BaseTest trace1 \n");
         sock = socket(AF_INET, SOCK_STREAM, 0);
         serverAddr.sin_family = PF_INET;
-        serverAddr.sin_port = htons(1234);
+        serverAddr.sin_port = htons(1222);
         serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
         if(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int)) < 0) {
             printf("BaseTestServer1 error1");
             return;
         }
 
+        printf("BaseTest trace2 sock is %d \n",sock);
+
         if(bind(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
             printf("BaseTestServer1 error2");
             return;
         }
+
+        printf("BaseTest trace3 sock is %d \n",sock);
         
         int ret = listen(sock, 1024*64);
         {
             printf("start create epoll \n");
-            EPollFileObserver observer = createEPollFileObserver();
-            printf("trace create epoll \n");
-            for(int i = 0;i<1024*32;i++) {
-                observer->addObserver(sock,EPOLLIN|EPOLLRDHUP,createBaseTestListener1(sock,observer));
-            }
+            observer = createEPollFileObserver();
+            printf("trace create epoll,add epoll hup is %d \n",sock);
+            AutoLock l(listenersMutex1);
+            BaseTestListener1 l1 = createBaseTestListener1(sock,observer);
+            listener1s->add(l1);
+            observer->addObserver(sock,EPOLLIN|EPOLLRDHUP,l1);
             printf("trace create end \n");
         }
-        while(1) {}
+
+        while(1) {sleep(100);}
     }
+
+    EPollFileObserver getObserver() {
+        return observer;
+    }
+
+    int getSock() {
+        return sock;
+    }
+
+private:
+    EPollFileObserver observer;
+    int sock;
 };
 
 int basetest() {
     //test1
     BaseTestServer1 server1 = createBaseTestServer1();
     server1->start();
-    sleep(30);
-    printf("baseTestValue1 is %d \n",baseTestValue1->get());
-    printf("baseTestValue2 is %d \n",baseTestValue2->get());
+    sleep(100);
+    printf("baseTestValue1 is %d,baseTestValue2 is %d,baseTestValue3 is %d \n",baseTestValue1->get(),baseTestValue2->get(),baseTestValue3->get());
+    
+#if 0    
+    system("(echo \"helloworld\";sleep 2) | telnet 192.168.1.11 1212");
+    sleep(1);
+    if(baseTestValue1->get() != 32*1024 || baseTestValue2->get()!=32*1024) {
+        printf("EPollFileObserver baseTest1-------[FAIL],baseTestValue1 is %d,baseTestValue2 is %d \n",baseTestValue1->get(),baseTestValue2->get());
+    }
+  
+
+    baseTestClientfd = 0;
+    system("(echo \"helloworld\";sleep 2) | telnet 192.168.1.11 1212");
+    sleep(1);
+    if(baseTestValue1->get() != 32*1024*2 || baseTestValue2->get()!=32*1024*2) {
+        printf("EPollFileObserver baseTest2-------[FAIL],baseTestValue1 is %d,baseTestValue2 is %d \n",baseTestValue1->get(),baseTestValue2->get());
+    
+    }
+
+
+    printf("remove all \n");
+    baseTestClientfd = 0;
+
+    EPollFileObserver observer = server1->getObserver();
+    ListIterator<BaseTestListener2> iterator2 = listener2s->getIterator();
+    while(iterator2->hasValue()) {
+        observer->removeObserver(iterator2->getValue());
+        iterator2->next();
+    }
+
+    ListIterator<BaseTestListener1> iterator1 = listener1s->getIterator();
+    while(iterator1->hasValue()) {
+        observer->removeObserver(iterator1->getValue());
+        iterator1->next();
+    }
+    printf("remove all complete \n");
+    
+    baseTestValue1 = createAtomicInteger(0);
+    baseTestValue2 = createAtomicInteger(0);
+    system("(echo \"helloworld\";sleep 2) | telnet 192.168.1.11 1212");
+
+    sleep(1);
+    if(baseTestValue1->get() != 0 || baseTestValue2->get()!= 0) {
+        printf("EPollFileObserver baseTest3-------[FAIL],baseTestValue1 is %d,baseTestValue2 is %d \n",baseTestValue1->get(),baseTestValue2->get());
+    }
+
+    printf("EPollFileObserver baseTest100------[OK] \n");
+#endif
+    //sleep(100);
     //while(1){usleep(100000);}
 }

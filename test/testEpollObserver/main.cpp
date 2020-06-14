@@ -10,7 +10,9 @@
 using namespace obotcha;
 
 extern int basetest();
+extern int multitest();
 
 int main() {
     basetest();
+    //multitest();
 }

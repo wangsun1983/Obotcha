@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <sys/epoll.h>
+#include <vector>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -14,12 +15,20 @@
 #include "ByteArray.hpp"
 #include "Thread.hpp"
 #include "Pipe.hpp"
+#include "Uint32.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(EPollFileObserverListener) {
 public:
-    virtual int onEvent(int fd,int events,ByteArray) = 0;    
+    friend class _EpollObserverRequest;
+    friend class _EPollFileObserver;
+
+    virtual int onEvent(int fd,uint32_t events,ByteArray) = 0;
+
+private:
+    std::vector<int> fds;
+    std::vector<uint32_t> events;
 };
 
 DECLARE_SIMPLE_CLASS(EpollObserverRequest) {
@@ -28,8 +37,8 @@ public:
     static const int Add = 1;
 
     int action;
+    uint32_t event;
     int fd;
-    int events;
     EPollFileObserverListener l;
 };
 
@@ -41,9 +50,11 @@ public:
 
     _EPollFileObserver();
 
-    int addObserver(int fd,int events,EPollFileObserverListener l);
+    int addObserver(int fd,uint32_t events,EPollFileObserverListener l);
 
-    int removeObserver(int fd,int events,EPollFileObserverListener l);
+    int removeObserver(int fd,uint32_t events,EPollFileObserverListener l);
+
+    int removeObserver(EPollFileObserverListener l);
 
     int release();
 
@@ -51,21 +62,21 @@ public:
     
     ~_EPollFileObserver();
 
-    static const int EpollIn = EPOLLIN;
-    static const int EpollPri = EPOLLPRI;
-    static const int EpollOut = EPOLLOUT;
-    static const int EpollRdNorm = EPOLLRDNORM;
-    static const int EpollRdBand = EPOLLRDBAND;
-    static const int EpollWrNorm = EPOLLWRNORM;
-    static const int EpollWrBand = EPOLLWRBAND;
-    static const int EpollMsg = EPOLLMSG;
-    static const int EpollErr = EPOLLERR;
-    static const int EpollHup = EPOLLHUP;
-    static const int EpollRdHup = EPOLLRDHUP;
-    static const int EpollExClusive = EPOLLEXCLUSIVE;
-    static const int EpollWakeUp = EPOLLWAKEUP;
-    static const int EpollOneShot = EPOLLONESHOT;
-    static const int EpollEt = EPOLLET;
+    static const uint32_t EpollIn = EPOLLIN;
+    static const uint32_t EpollPri = EPOLLPRI;
+    static const uint32_t EpollOut = EPOLLOUT;
+    static const uint32_t EpollRdNorm = EPOLLRDNORM;
+    static const uint32_t EpollRdBand = EPOLLRDBAND;
+    static const uint32_t EpollWrNorm = EPOLLWRNORM;
+    static const uint32_t EpollWrBand = EPOLLWRBAND;
+    static const uint32_t EpollMsg = EPOLLMSG;
+    static const uint32_t EpollErr = EPOLLERR;
+    static const uint32_t EpollHup = EPOLLHUP;
+    static const uint32_t EpollRdHup = EPOLLRDHUP;
+    static const uint32_t EpollExClusive = EPOLLEXCLUSIVE;
+    static const uint32_t EpollWakeUp = EPOLLWAKEUP;
+    static const uint32_t EpollOneShot = EPOLLONESHOT;
+    static const uint32_t EpollEt = EPOLLET;
 
     static const int OnEventOK = 0;
     static const int OnEventRemoveObserver = 1;
@@ -74,11 +85,17 @@ public:
     
 private:
     static const int DefaultBufferSize = 16*1024;
-    static const int EpollEvent[];
+    static const uint32_t EpollEvent[];
 
-    int _addObserver(int fd,int events,EPollFileObserverListener l);
+    int _addObserver(int fd,uint32_t events,EPollFileObserverListener l);
 
-    int _removeObserver(int fd,int events,EPollFileObserverListener l);
+    int _removeObserver(int fd,uint32_t events,EPollFileObserverListener l);
+
+    void doRequest();
+    
+    void addEpollFd(int fd,uint32_t events);
+
+    void updateEpollFd(int fd,uint32_t events);
 
     ArrayList<EpollObserverRequest> mReqeusts;
 
