@@ -58,6 +58,8 @@ public:
 
     int release();
 
+    void dump();
+
     void run();
     
     ~_EPollFileObserver();

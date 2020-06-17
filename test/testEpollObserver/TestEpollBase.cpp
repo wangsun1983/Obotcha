@@ -11,12 +11,13 @@
 #include "AtomicInteger.hpp"
 #include "TimeWatcher.hpp"
 #include "AutoLock.hpp"
+#include "AtomicLong.hpp"
 
 using namespace obotcha;
 
 AtomicInteger baseTestValue1 = createAtomicInteger(0);
 AtomicInteger baseTestValue2 = createAtomicInteger(0);
-AtomicInteger baseTestValue3 = createAtomicInteger(0);
+AtomicLong baseTestValue3 = createAtomicLong(0);
 int baseTestClientfd = 0;
 
 class _BaseTestListener1;
@@ -36,12 +37,17 @@ public:
 
     int onEvent(int fd,uint32_t events,ByteArray data) {
         //printf("fd is %d,event is %p \n",fd,events);
+        if(data != nullptr) {
+            baseTestValue2->addAndGet(data->size());
+        }
+
         if((events &EPOLLRDHUP) != 0) {
             baseTestValue3->incrementAndGet();
             return 0;
         }
 
-        baseTestValue2->incrementAndGet();
+        //printf("fd is %d,data is %s \n",fd,data->toString()->toChars());
+        
         return 0;
     }
 };
@@ -73,6 +79,7 @@ public:
 
         return 0;
     }
+
 
 private:
     int mSocket;
@@ -127,6 +134,11 @@ public:
         return sock;
     }
 
+
+    void dump() {
+        observer->dump();
+    }
+
 private:
     EPollFileObserver observer;
     int sock;
@@ -137,8 +149,9 @@ int basetest() {
     BaseTestServer1 server1 = createBaseTestServer1();
     server1->start();
     sleep(100);
-    printf("baseTestValue1 is %d,baseTestValue2 is %d,baseTestValue3 is %d \n",baseTestValue1->get(),baseTestValue2->get(),baseTestValue3->get());
-    
+    printf("baseTestValue1 is %d,baseTestValue2 is %ld,baseTestValue3 is %d \n",baseTestValue1->get(),baseTestValue2->get(),baseTestValue3->get());
+    server1->dump();
+
 #if 0    
     system("(echo \"helloworld\";sleep 2) | telnet 192.168.1.11 1212");
     sleep(1);

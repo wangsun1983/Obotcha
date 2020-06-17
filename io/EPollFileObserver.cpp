@@ -378,21 +378,40 @@ void _EPollFileObserver::addEpollFd(int fd,uint32_t events) {
 }
 
 int _EPollFileObserver::release() {
-    ByteArray data = createByteArray(1);
-    data->fill(0,1);
-    mPipe->writeTo(data);
-    
-    join();
-    
     if(mEpollFd != -1) {
         close(mEpollFd);
         mEpollFd = -1;
     }
 
+    ByteArray data = createByteArray(1);
+    data->fill(0,1);
+    mPipe->writeTo(data);
+    
+    join();
+
     mListeners->clear();
     mReqeusts->clear();
     
     return 0;
+}
+
+void _EPollFileObserver::dump() {
+    MapIterator<int,HashMap<int,ArrayList<EPollFileObserverListener>>> iterator = mListeners->getIterator();
+    while(iterator->hasValue()) {
+        int fd = iterator->getKey();
+        HashMap<int,ArrayList<EPollFileObserverListener>> fdmap = iterator->getValue();
+        printf("start fd is %d,regist listener size is %d \n",fd,fdmap->size());
+        if(fdmap != nullptr) {
+            MapIterator<int,ArrayList<EPollFileObserverListener>> iter2 = fdmap->getIterator();
+            while(iter2->hasValue()) {
+                int event = iter2->getKey();
+                ArrayList<EPollFileObserverListener> list = iter2->getValue();
+                printf("    event is %p,listener is %d \n",event,list->size());
+                iter2->next();
+            }
+        }
+        iterator->next();
+    }
 }
 
 _EPollFileObserver::~_EPollFileObserver() {
