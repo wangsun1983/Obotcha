@@ -99,7 +99,7 @@ private:
 DECLARE_SIMPLE_CLASS(WebSocketEpollListener) IMPLEMENTS(EPollFileObserverListener) {
 public:
     _WebSocketEpollListener(WebSocketListener);
-    int onEvent(int fd,int events,ByteArray);
+    int onEvent(int fd,uint32_t events,ByteArray);
     ~_WebSocketEpollListener();
 private:
     WebSocketParser mHybi13Parser;

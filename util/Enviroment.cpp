@@ -4,9 +4,9 @@
 
 namespace obotcha {
 
-//Enviroment _Enviroment::mInstance = nullptr;
+Enviroment _Enviroment::mInstance = nullptr;
 
-//Mutex _Enviroment::mMutex = createMutex("EnviromentMutex");
+Mutex _Enviroment::mMutex = createMutex("EnviromentMutex");
 
 String const _Enviroment::gHttpBufferSize = "env.http.buffer.size";
 int const _Enviroment::DefaultHttpBufferSize = 512*1024;
@@ -84,10 +84,18 @@ String const _Enviroment::gHttpSslCertificatePath = "https.ssl.cert.path";
 String const _Enviroment::DefaultHttpSslCertificatePath = "";
 
 sp<_Enviroment> _Enviroment::getInstance() {
-    static _Enviroment *instance = new _Enviroment();
-    Enviroment s;
-    s.set_pointer(instance);
-    return s;
+    if(mInstance != nullptr) {
+        return mInstance;
+    }
+
+    AutoLock l(mMutex);
+    if(mInstance != nullptr) {
+        return mInstance;
+    }
+
+    _Enviroment *p = new _Enviroment();
+    mInstance.set_pointer(p);
+    return mInstance;
 }
 
 _Enviroment::_Enviroment() {

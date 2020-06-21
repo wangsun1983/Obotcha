@@ -85,9 +85,8 @@ void _HttpV1Parser::pushHttpData(ByteArray data) {
 
 HttpPacket _HttpV1Parser::parseEntireRequest(String request) {
     memset(&mParser,0,sizeof(http_parser));
-    mParser.data = reinterpret_cast<void *>(this);
     HttpPacket packet = createHttpPacket();
-
+    mParser.data = reinterpret_cast<void *>(packet.get_pointer());
     http_parser_init(&mParser, HTTP_REQUEST);
     http_parser_execute(&mParser,&settings, request->toChars(), request->size());
     packet->setMethod(mParser.method);
@@ -96,8 +95,8 @@ HttpPacket _HttpV1Parser::parseEntireRequest(String request) {
 
 HttpPacket _HttpV1Parser::parseEntireResponse(String response) {
     memset(&mParser,0,sizeof(http_parser));
-    mParser.data = reinterpret_cast<void *>(this);
     HttpPacket packet = createHttpPacket();
+    mParser.data = reinterpret_cast<void *>(packet.get_pointer());
 
     http_parser_init(&mParser, HTTP_RESPONSE);
     http_parser_execute(&mParser,&settings, response->toChars(), response->size());

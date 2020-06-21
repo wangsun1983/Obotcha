@@ -333,6 +333,10 @@ Double _JsonValue::getDoubleAt(int index) {
     return createDouble(jvalue[index].asDouble());
 }
 
+String _JsonValue::toString() {
+    return createString(jvalue.toStyledString());
+}
+
 //iterator----------------------------
 sp<_JsonValueIterator> _JsonValue::getIterator() {
     return new _JsonValueIterator(this);

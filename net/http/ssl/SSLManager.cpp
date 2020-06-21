@@ -2,11 +2,23 @@
 
 namespace obotcha {
 
+SSLManager _SSLManager::mInstance = nullptr;
+    
+Mutex _SSLManager::mInitMutex = createMutex();
+
 SSLManager _SSLManager::getInstance() {
-    static _SSLManager *mInstance = new _SSLManager();
-    SSLManager s;
-    s.set_pointer(mInstance);
-    return s;
+    if(mInstance != nullptr) {
+        return mInstance;
+    }
+
+    AutoLock l(mInitMutex);
+    if(mInstance != nullptr) {
+        return mInstance;
+    }
+
+    _SSLManager *p = new _SSLManager();
+    mInstance.set_pointer(p);
+    return mInstance;
 }
 
 void _SSLManager::add(int fd ,SSLInfo info) {

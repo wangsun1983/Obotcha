@@ -138,6 +138,8 @@ public:
 
     Double getDoubleAt(int index);
 
+    String toString();
+
     ~_JsonValue();
 
 private:

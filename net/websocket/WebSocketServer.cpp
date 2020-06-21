@@ -23,7 +23,7 @@ namespace obotcha {
 #define TAG "WebSocketServer"
 
 //--------------------WebSocketClientManager-----------------
-// _WebSocketClientManager::mInstance = nullptr;
+WebSocketClientManager _WebSocketClientManager::mInstance = nullptr;
 Mutex _WebSocketClientManager::mMutex = createMutex("WebSocketClientManagerMutex");
 
 _WebSocketClientManager::_WebSocketClientManager() {
@@ -31,10 +31,19 @@ _WebSocketClientManager::_WebSocketClientManager() {
 }
 
 WebSocketClientManager _WebSocketClientManager::getInstance() {
-    static _WebSocketClientManager *v = new _WebSocketClientManager();
-    WebSocketClientManager s;
-    s.set_pointer(v);
-    return s;
+    if(mInstance != nullptr) {
+        return mInstance;
+    }
+
+    AutoLock l(mMutex);
+
+    if(mInstance != nullptr) {
+        return mInstance;
+    }
+
+    _WebSocketClientManager *v = new _WebSocketClientManager();
+    mInstance.set_pointer(v);
+    return mInstance;
 }
 
 bool _WebSocketClientManager::addClient(int fd,int version) {
@@ -139,10 +148,12 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
     String upgrade = header->getValue(st(HttpHeader)::Upgrade);
     String key = header->getValue(st(HttpHeader)::SecWebSocketKey);
     String version = header->getValue(st(HttpHeader)::SecWebSocketVersion);
+    printf("upgrade is %s,key is %s,version is %s \n",upgrade->toChars(),key->toChars(),version->toChars());
     
     if(upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
         //remove fd from http epoll
         st(NetUtils)::delEpollFd(httpEpollfd,fd);
+        printf("ws socket onAccept trace1 \n");
         
         st(WebSocketClientManager)::getInstance()->addClient(fd,version->toBasicInt());
         st(WebSocketClientManager)::getInstance()->setHttpHeader(fd,header);
@@ -152,6 +163,7 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
         if(!parser->validateHandShake(header)) {
             //invalid connection,we should close.
             //TODO
+            printf("ws socket onAccept trace2 \n");
             return;
         }
 
@@ -167,8 +179,10 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
         }
 
         //add fd to ws epoll
+        printf("ws socket onAccept trace2 \n");
         EPollFileObserver observer = mWsObservers->get(request->getUrl());
         if(observer != nullptr) {
+            printf("ws socket onAccept trace3 \n");
             //observer->addFd(fd,EPOLLIN|EPOLLRDHUP|EPOLLHUP|EPOLLMSG|EPOLLET);
             observer->addObserver(fd,EPOLLIN|EPOLLRDHUP|EPOLLHUP|EPOLLMSG|EPOLLET,mEpollListener);
         } 
@@ -178,7 +192,9 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
         WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->getClient(fd);
         WebSocketComposer composer = client->getComposer();
         ByteArray shakeresponse = composer->genShakeHandMessage(st(WebSocketClientManager)::getInstance()->getClient(fd));
-        st(NetUtils)::sendTcpPacket(fd,shakeresponse);
+        printf("sendresponse is %s \n",shakeresponse->toString()->toChars());
+        int ret = st(NetUtils)::sendTcpPacket(fd,shakeresponse);
+        printf("send response result is %d \n",ret);
     }
     
 }
@@ -207,7 +223,9 @@ _WebSocketEpollListener::~_WebSocketEpollListener() {
     free(mRecvBuff);
 }
 
-int _WebSocketEpollListener::onEvent(int fd,int events,ByteArray pack){
+int _WebSocketEpollListener::onEvent(int fd,uint32_t events,ByteArray pack){
+    printf("ws _WebSocketEpollListener onEvent \n");
+
     if((events &EPOLLRDHUP) != 0) {
         st(WebSocketClientManager)::getInstance()->removeClient(fd);
         return st(EPollFileObserver)::OnEventRemoveObserver;
@@ -221,6 +239,7 @@ int _WebSocketEpollListener::onEvent(int fd,int events,ByteArray pack){
     //    LOGE("WebSocket Receive Buffer Over Size");
     //}
     if(pack == nullptr || pack->size() == 0) {
+        printf("ws _WebSocketEpollListener onEvent trace1\n");
         st(WebSocketClientManager)::getInstance()->removeClient(fd);
         return st(EPollFileObserver)::OnEventRemoveObserver;
     }

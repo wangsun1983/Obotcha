@@ -29,7 +29,7 @@ public:
 
     virtual int onPong(sp<_WebSocketClientInfo> client,String) {return PingResultResponse;}
 
-    virtual int onPing(sp<_WebSocketClientInfo> client,String)  {return PingResultResponse;};
+    virtual int onPing(sp<_WebSocketClientInfo> client,String)  {return PingResultResponse;}
 };
 
 }

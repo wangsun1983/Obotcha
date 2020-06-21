@@ -108,19 +108,19 @@ ByteArray _WebSocketHybi13Composer::_genServerShakeHandMessage(WebSocketClientIn
         connection = connection->append("Sec-WebSocket-Protocol:")->append(protocols)->append("\r\n");
     }
 
-    String resp = connection->append("Sec-WebSocket-Accept:")->append(base64)->append("\r\n");
+    String resp = connection->append("Sec-WebSocket-Accept:",base64,"\r\n");
 
     //check whetehr we have Deflate
     WebSocketPermessageDeflate deflater = info->getDeflater();
     if(deflater != nullptr) {
-        resp = resp->append("Sec-WebSocket-Extensions:")
-                   ->append("permessage-deflate")
-                   ->append(";client_max_window_bits=")
-                   ->append(createString(deflater->getServerMaxWindowBits()))
-                   ->append("\r\n");
+        resp = resp->append("Sec-WebSocket-Extensions:",
+                            "permessage-deflate",
+                            ";client_max_window_bits=",
+                            createString(deflater->getServerMaxWindowBits()),
+                            "\r\n");
     }
 
-    resp->append("\r\n");
+    resp = resp->append("\r\n");
 
     return createByteArray(resp);
 }

@@ -68,7 +68,9 @@ public:
 
     void stopWatch(int id,int op,FileObserver observer);
 
-private:    
+private:
+    static Mutex mInitMutex;
+    static sp<_FileWatcher> mInstance; 
 
     void run();
 
