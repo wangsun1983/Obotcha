@@ -20,48 +20,21 @@
 #include "Pipe.hpp"
 #include "AtomicInteger.hpp"
 #include "Thread.hpp"
+#include "EPollFileObserver.hpp"
 
 namespace obotcha {
 
 class _WebSocketServer;
 
-enum TcpServerStatus {
-    ServerNotStart = 1,
-    ServerWorking,
-    ServerWaitingThreadExit,
-    ServerThreadExited,
-};
-
-DECLARE_SIMPLE_CLASS(TcpServerThread) EXTENDS(Thread){
-
+DECLARE_SIMPLE_CLASS(TcpSocketObserver) EXTENDS(EPollFileObserverListener){
 public:
-    _TcpServerThread(int sock,
-                    int epfd,
-                    AtomicInteger status,
-                    Pipe pi,
-                    SocketListener listener,
-                    ArrayList<Integer> clients,
-                    Mutex mutex,
-                    int buffsize);
-    void run();
-
-    void setRcvBuffSize(int);
+    _TcpSocketObserver(SocketListener,int,EPollFileObserver o);
+    int onEvent(int fd,uint32_t events,ByteArray);
 
 private:
-    int mSocket;
-    int mEpollfd;
-    AtomicInteger mStatus;
-    Pipe mPipe;
     SocketListener mListener;
-    ArrayList<Integer> mClients;
-    Mutex mClientMutex;
-
-    int mBuffSize;
-
-    void addClientFd(int fd);
-
-    void removeClientFd(int fd);
-
+    EPollFileObserver mObserver;
+    int mSock;
 };
 
 DECLARE_SIMPLE_CLASS(TcpServer) {
@@ -71,13 +44,7 @@ public:
 
     _TcpServer(int port,SocketListener l);
 
-    _TcpServer(String ip,int port,SocketListener l);
-
-    _TcpServer(String ip,int port,int rcvBuffsize,int connectionsNum,SocketListener l);
-
-    void setRcvBuffSize(int);
-
-    int getRcvBuffSize();
+    _TcpServer(String ip,int port,SocketListener l,int connect=1024);
 
     int start();
 
@@ -95,8 +62,6 @@ public:
 
 private:
 
-    int getTcpEpollfd();
-
     int connect();
 
     SocketListener mListener;
@@ -105,19 +70,11 @@ private:
 
     int sock;
 
-    int epfd;
-
-    Pipe mPipe;
-
     AtomicInteger mStatus;
 
-    TcpServerThread mServerThread;
+    EPollFileObserver mObserver;
 
-    Mutex mClientsMutex;
-
-    ArrayList<Integer> mClients;
-
-    int mRcvBuffSize;
+    TcpSocketObserver mLocalListener;
 
     int mConnectionNum;
 };

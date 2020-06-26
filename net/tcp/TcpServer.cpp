@@ -21,145 +21,59 @@
 
 namespace obotcha {
 
-_TcpServerThread::_TcpServerThread(int sock,
-                    int epfd,
-                    AtomicInteger status,
-                    Pipe pi,
-                    SocketListener listener,
-                    ArrayList<Integer> clients,
-                    Mutex mutex,
-                    int buffsize) {
-
-    mSocket = sock;
-    mEpollfd = epfd;
-    mStatus = status;
-    mPipe = pi;
-    mListener = listener;
-    mClients = clients;
-    mClientMutex = mutex;
-
-    mBuffSize = buffsize;
+_TcpSocketObserver::_TcpSocketObserver(SocketListener l,int sock,EPollFileObserver o) {
+    mListener = l;
+    mSock = sock;
+    mObserver = o;
 }
 
-void _TcpServerThread::setRcvBuffSize(int s) {
-    mBuffSize = s;
-}
-
-void _TcpServerThread::run() {
-    const int EPOLL_SIZE = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerEpollSize,1024);
-    struct epoll_event events[EPOLL_SIZE];
-    
-    while(1) {
-        if(mStatus->get() == ServerWaitingThreadExit) {
-            mStatus->set(ServerThreadExited);
-            return;
-        } else {
-            mStatus->set(ServerWorking);
+int _TcpSocketObserver::onEvent(int fd,uint32_t events,ByteArray pack) {
+    if(fd == mSock) {
+        struct sockaddr_in client_address;
+        socklen_t client_addrLength = sizeof(struct sockaddr_in);
+        int clientfd = accept(fd,( struct sockaddr* )&client_address, &client_addrLength );
+        if(clientfd == -1) {
+            printf("accept fail,error is %s \n",strerror(errno));
+            return 0;
         }
+
+        mListener->onConnect(clientfd,
+                            createString(inet_ntoa(client_address.sin_addr)),
+                            ntohs(client_address.sin_port));
         
-        int epoll_events_count = epoll_wait(mEpollfd, events, EPOLL_SIZE, -1);
-        if(epoll_events_count < 0) {
-            mStatus->set(ServerThreadExited);
-            return;
-        }
-
-        for(int i = 0; i < epoll_events_count; ++i) {
-            int sockfd = events[i].data.fd;
-            int event = events[i].events;
-
-            //check whether thread need exit
-            if(sockfd == mPipe->getReadPipe()) {
-                if(mStatus->get() == ServerWaitingThreadExit) {
-                    mStatus->set(ServerThreadExited);
-                    return;
-                }
-                
-                continue;
-            }
-
-            if(((event & EPOLLIN) != 0) 
-            && ((event & EPOLLRDHUP) != 0)) {
-                epoll_ctl(mEpollfd, EPOLL_CTL_DEL, sockfd, NULL);
-                st(NetUtils)::delEpollFd(mEpollfd,sockfd);
-                removeClientFd(sockfd);
-                mListener->onDisconnect(sockfd);
-                close(sockfd);
-                continue;
-            }
-            
-            if(sockfd == mSocket) {
-                struct sockaddr_in client_address;
-                socklen_t client_addrLength = sizeof(struct sockaddr_in);
-                int clientfd = accept( mSocket, ( struct sockaddr* )&client_address, &client_addrLength );
-                
-                st(NetUtils)::addEpollFd(mEpollfd, clientfd, true);
-
-                addClientFd(clientfd);
-
-                mListener->onConnect(clientfd,
-                                    createString(inet_ntoa(client_address.sin_addr)),
-                                    ntohs(client_address.sin_port));
-            }
-            else {
-                byte recv_buf[mBuffSize];
-                memset(recv_buf,0,mBuffSize);
-                
-                int len = recv(sockfd, recv_buf, mBuffSize, 0);
-                if(len == 0 || len == -1) {
-                    //this sockfd maybe closed!!!!!
-                    continue;
-                }
-                ByteArray pack = createByteArray(&recv_buf[0],len);
-                if(mListener != nullptr) {
-                    mListener->onAccept(sockfd,nullptr,-1,pack);
-                }
+        TcpSocketObserver v;
+        v.set_pointer(this);
+        printf("add observer by socket!!!! ,clientfd is %d\n",clientfd);
+        mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,v);
+    } else {
+        if((events & EPOLLIN) != 0) {
+            if(mListener != nullptr) {
+                mListener->onAccept(fd,nullptr,-1,pack);
             }
         }
-      
-    }
 
-    mStatus->set(ServerThreadExited);
-}
-
-void _TcpServerThread::addClientFd(int fd) {
-    AutoLock l(mClientMutex);
-    mClients->insertLast(createInteger(fd));
-}
-
-void _TcpServerThread::removeClientFd(int fd) {
-    AutoLock l(mClientMutex);
-    int size = mClients->size();
-    
-    for(int index = 0;index<size;index++) {
-        if(mClients->get(index)->toValue() == fd) {
-            mClients->removeAt(index);
-            close(fd);
-            return;
+        if((events & EPOLLRDHUP) != 0) {
+            if(mListener != nullptr) {
+                mListener->onDisconnect(fd);
+            }
         }
     }
+
+    return  0;
 }
 
 _TcpServer::_TcpServer(int port,SocketListener l):_TcpServer{nullptr,port,l} {
     
 }
 
-_TcpServer::_TcpServer(String ip,int port,SocketListener l):
-           _TcpServer{ip,
-                      port,
-                      st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerRcvBuffSize,1024*32),
-                      st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerClientNums,1024*32),
-                      l}{
-    
-}
-
-_TcpServer::_TcpServer(String ip,int port,int rcvBuffsize,int connectionsNum,SocketListener l) {
+_TcpServer::_TcpServer(String ip,int port,SocketListener l,int connectnum) {
 
     String reason;
-    const int EPOLL_SIZE = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerEpollSize,1024);
+
     if(l == nullptr) {
         throw InitializeException(createString("SocketListener is null"));
     }
-
+    
     serverAddr.sin_family = PF_INET;
     serverAddr.sin_port = htons(port);
     if(ip != nullptr) {
@@ -167,58 +81,23 @@ _TcpServer::_TcpServer(String ip,int port,int rcvBuffsize,int connectionsNum,Soc
     } else {
         serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     }
-    
+
+    mConnectionNum = connectnum;
+
     while(1) {
-        mPipe = createPipe();
-        if(mPipe->init() == -1) {
-            break;
-        }
-
-        mRcvBuffSize = rcvBuffsize;
-
-        mConnectionNum = connectionsNum;
-
-        sock = 0;
-
-        epfd = 0;
-
         mListener = l;
-        mClientsMutex = createMutex("TcpServer");
-
-        mStatus = createAtomicInteger(ServerNotStart);
-        mClients = createArrayList<Integer>();
+        
         sock = socket(AF_INET, SOCK_STREAM, 0);
+
         if(sock < 0) {
             reason = createString("Sock Create Fail");
             break;
         }
-        epfd = epoll_create(EPOLL_SIZE);
-        if(epfd < 0) {
-            reason = createString("Epoll Create Fail");
-            break;
-        }
-        mServerThread = createTcpServerThread(sock,epfd,mStatus,mPipe,l,mClients,mClientsMutex,mRcvBuffSize);
+        
         return;
     }
     
     throw InitializeException(reason);
-
-}
-
-int _TcpServer::removeClientFd(int fd) {
-    return st(NetUtils)::delEpollFd(epfd,fd);
-}
-
-int _TcpServer::addClientFd(int fd) {
-    return st(NetUtils)::addEpollFd(epfd,fd,true);
-}
-
-int _TcpServer::getStatus() {
-    return mStatus->get();
-}
-
-int _TcpServer::getTcpEpollfd() {
-    return epfd;
 }
 
 int _TcpServer::connect() {
@@ -237,14 +116,9 @@ int _TcpServer::connect() {
         return -NetListenFail;
     }
 
-    //add epoll
-    if(st(NetUtils)::addEpollFd(epfd,sock,true) < 0) {
-        return -WriteFail;
-    }
-
-    if(st(NetUtils)::addEpollFd(epfd,mPipe->getReadPipe(),true) < 0) {
-        return -WriteFail;
-    }
+    mObserver = createEPollFileObserver();
+    mLocalListener = createTcpSocketObserver(mListener,sock,mObserver);
+    mObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,mLocalListener);
 
     return 0;
 }
@@ -253,68 +127,23 @@ int _TcpServer::start() {
     
     int result = connect();
     if(result != 0) {
-        mStatus->set(ServerThreadExited);
+        printf("connect fail,result is %d \n",result);
         return result;
     }
 
-    mServerThread->start();
-
-    while(mStatus->get() == ServerNotStart) {
-        //TODO Nothing
-    }
     return 0;
 }
 
 void _TcpServer::release() {
-
-    if(mStatus->get() == ServerThreadExited || mStatus->get() == ServerWaitingThreadExit) {
-        return;
-    }
-
-    if(sock != 0) {
+    mObserver->release();
+    if(sock != -1) {
         close(sock);
-        sock = 0;
-    }
-    
-    {
-        AutoLock l(mClientsMutex);
-        int size = mClients->size();
-        for(int index = 0;index < size;index++) {
-            int fd = mClients->get(index)->toValue();
-            close(fd);
-        }
-    }
-
-    //start to notify server thread exit;
-    if(mStatus->get() != ServerNotStart) {
-        if(mStatus->get() != ServerThreadExited) {
-            mStatus->set(ServerWaitingThreadExit);
-        }
-
-        mPipe->writeTo(createByteArray(1));
-    
-        while(mStatus->get() != ServerThreadExited) {
-            //TODO
-        }
-    }
-
-    if(epfd != 0) {
-        close(epfd);
-        epfd = 0;
+        sock = -1;
     }
 }
 
 int _TcpServer::send(int fd,ByteArray data) {
     return st(NetUtils)::sendTcpPacket(fd,data);
-}
-
-void _TcpServer::setRcvBuffSize(int size) {
-    mRcvBuffSize = size;
-    mServerThread->setRcvBuffSize(mRcvBuffSize);
-}
-
-int _TcpServer::getRcvBuffSize() {
-    return mRcvBuffSize;
 }
 
 _TcpServer::~_TcpServer() {

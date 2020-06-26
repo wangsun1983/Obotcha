@@ -126,8 +126,8 @@ _WebSocketHttpListener::_WebSocketHttpListener() {
     mResponse = createWebSocketFrameComposer(false);
 }
 
-void _WebSocketHttpListener::setHttpEpollFd(int fd) {
-    httpEpollfd = fd;
+void _WebSocketHttpListener::setHttpEpollObserver(EPollFileObserver ob) {
+    mServerObserver = ob;
 }
 
 void _WebSocketHttpListener::onTimeout() {
@@ -149,12 +149,11 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
     String key = header->getValue(st(HttpHeader)::SecWebSocketKey);
     String version = header->getValue(st(HttpHeader)::SecWebSocketVersion);
     printf("upgrade is %s,key is %s,version is %s \n",upgrade->toChars(),key->toChars(),version->toChars());
-    
     if(upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
         //remove fd from http epoll
-        st(NetUtils)::delEpollFd(httpEpollfd,fd);
-        printf("ws socket onAccept trace1 \n");
-        
+        //st(NetUtils)::delEpollFd(httpEpollfd,fd);
+        mServerObserver->removeObserver(fd);
+        printf("ws socket onAccept tracews socket onAccept trace1 \n");
         st(WebSocketClientManager)::getInstance()->addClient(fd,version->toBasicInt());
         st(WebSocketClientManager)::getInstance()->setHttpHeader(fd,header);
 
@@ -185,8 +184,10 @@ void _WebSocketHttpListener::onAccept(int fd,String ip,int port,ByteArray pack) 
             printf("ws socket onAccept trace3 \n");
             //observer->addFd(fd,EPOLLIN|EPOLLRDHUP|EPOLLHUP|EPOLLMSG|EPOLLET);
             observer->addObserver(fd,EPOLLIN|EPOLLRDHUP|EPOLLHUP|EPOLLMSG|EPOLLET,mEpollListener);
-        } 
+            
+        }
 
+        mEpollListener->onConnect(fd);
         //String shakeresponse = mResponse->generateShakeHandFrame(key);
         //WebSocketComposer composer = st(WebSocketClientManager)::getInstance()->getClient(fd)->getComposer;
         WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->getClient(fd);
@@ -205,6 +206,7 @@ void _WebSocketHttpListener::onDisconnect(int fd) {
 
 void _WebSocketHttpListener::onConnect(int fd,String ip,int port) {
     //Do Nothing
+    
 }
 
 void _WebSocketHttpListener::onConnect(int fd,String domain) {
@@ -223,23 +225,20 @@ _WebSocketEpollListener::~_WebSocketEpollListener() {
     free(mRecvBuff);
 }
 
+int _WebSocketEpollListener::onConnect(int fd) {
+    WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->getClient(fd);
+    mWsSocketListener->onConnect(client);
+}
+
 int _WebSocketEpollListener::onEvent(int fd,uint32_t events,ByteArray pack){
-    printf("ws _WebSocketEpollListener onEvent \n");
-
-    if((events &EPOLLRDHUP) != 0) {
-        st(WebSocketClientManager)::getInstance()->removeClient(fd);
-        return st(EPollFileObserver)::OnEventRemoveObserver;
-    }
-
-    //int len = recv(fd, mRecvBuff, WEBSOCKET_BUFF_SIZE, 0);
-    //if(len == -1) {
-    //    st(WebSocketClientManager)::getInstance()->removeClient(fd);
-    //    return EPollOnEventResultRemoveFd;
-    //} if(len == WEBSOCKET_BUFF_SIZE) {
-    //    LOGE("WebSocket Receive Buffer Over Size");
-    //}
-    if(pack == nullptr || pack->size() == 0) {
-        printf("ws _WebSocketEpollListener onEvent trace1\n");
+    printf("ws _WebSocketEpollListener onEvent,fd is %d \n",fd);
+    WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->getClient(fd);
+    
+    if(((events &EPOLLRDHUP) != 0) || 
+       (pack == nullptr || pack->size() == 0)) {
+        if(mWsSocketListener != nullptr) {
+            mWsSocketListener->onDisconnect(client);
+        }
         st(WebSocketClientManager)::getInstance()->removeClient(fd);
         return st(EPollFileObserver)::OnEventRemoveObserver;
     }
@@ -247,7 +246,6 @@ int _WebSocketEpollListener::onEvent(int fd,uint32_t events,ByteArray pack){
     int readIndex = 0;
     WebSocketParser parser = st(WebSocketClientManager)::getInstance()->getClient(fd)->getParser();
     //check pack
-    WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->getClient(fd);
 
     while(1) {
         WebSocketEntireBuffer entireBuff = client->getEntireBuffer();
@@ -348,7 +346,6 @@ int _WebSocketServer::bind(String ip,int port,String path,WebSocketListener list
         mServer = createTcpServer(ip,port,mHttpListener);
     }
     
-    mHttpListener->setHttpEpollFd(mServer->getTcpEpollfd());
     //mServer->start();
     mEpollListener = createWebSocketEpollListener(listener);
     
@@ -365,7 +362,9 @@ int _WebSocketServer::bind(int port,String path,WebSocketListener listener){
 }
 
 int _WebSocketServer::start() {
-    return mServer->start();
+    int ret = mServer->start();
+    mHttpListener->setHttpEpollObserver(mServer->mObserver);
+    return ret;
     //mEpollObserver->start();
 }
 

@@ -73,8 +73,8 @@
 - [ ] ByteArrayReader
 - [ ] ByteArrayWriter
 - [ ] ByteRingArrayReader
-- [ ] EPollFileObserver
-- [ ] File
+- [x] EPollFileObserver
+- [x] File
 - [ ] FileInputStream
 - [ ] FileNodeReader
 - [ ] FileNodeWriter

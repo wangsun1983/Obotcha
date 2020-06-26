@@ -71,7 +71,7 @@ DECLARE_SIMPLE_CLASS(WebSocketHttpListener) IMPLEMENTS(SocketListener){
 public:
     _WebSocketHttpListener();
 
-    void setHttpEpollFd(int fd);
+    void setHttpEpollObserver(EPollFileObserver);
 
     void setWsEpollObserver(HashMap<String,EPollFileObserver>,sp<_WebSocketEpollListener>);
 
@@ -94,12 +94,15 @@ private:
     HttpV1Parser mParser;
 
     WebSocketFrameComposer mResponse;
+
+    EPollFileObserver mServerObserver;
 };
 
 DECLARE_SIMPLE_CLASS(WebSocketEpollListener) IMPLEMENTS(EPollFileObserverListener) {
 public:
     _WebSocketEpollListener(WebSocketListener);
     int onEvent(int fd,uint32_t events,ByteArray);
+    int onConnect(int fd);
     ~_WebSocketEpollListener();
 private:
     WebSocketParser mHybi13Parser;

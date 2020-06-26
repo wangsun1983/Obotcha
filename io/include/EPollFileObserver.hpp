@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sys/epoll.h>
 #include <vector>
+#include <map>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -27,14 +28,17 @@ public:
     virtual int onEvent(int fd,uint32_t events,ByteArray) = 0;
 
 private:
-    std::vector<int> fds;
-    std::vector<uint32_t> events;
+    //std::vector<int> fds;
+    //std::vector<uint32_t> events;
+    std::map<int,uint32_t> fd2eventMap;
 };
 
 DECLARE_SIMPLE_CLASS(EpollObserverRequest) {
 public:
+    _EpollObserverRequest();
     static const int Remove = 0;
     static const int Add = 1;
+    static const int RemoveByFd = 2;
 
     int action;
     uint32_t event;
@@ -54,7 +58,9 @@ public:
 
     int removeObserver(int fd,uint32_t events,EPollFileObserverListener l);
 
-    int removeObserver(EPollFileObserverListener l);
+    //int removeObserver(EPollFileObserverListener l);
+
+    int removeObserver(int fd);
 
     int release();
 
@@ -92,6 +98,8 @@ private:
     int _addObserver(int fd,uint32_t events,EPollFileObserverListener l);
 
     int _removeObserver(int fd,uint32_t events,EPollFileObserverListener l);
+
+    int _removeObserver(int fd);
 
     void doRequest();
     

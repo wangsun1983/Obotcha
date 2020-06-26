@@ -84,11 +84,14 @@ void _HttpV1Parser::pushHttpData(ByteArray data) {
 }
 
 HttpPacket _HttpV1Parser::parseEntireRequest(String request) {
+    printf("parseEntireRequest start ,request is %s \n",request->toChars());
     memset(&mParser,0,sizeof(http_parser));
     HttpPacket packet = createHttpPacket();
     mParser.data = reinterpret_cast<void *>(packet.get_pointer());
+    printf("parseEntireRequest trace2 \n");
     http_parser_init(&mParser, HTTP_REQUEST);
     http_parser_execute(&mParser,&settings, request->toChars(), request->size());
+    printf("parseEntireRequest trace3 \n");
     packet->setMethod(mParser.method);
     return packet;
 }
