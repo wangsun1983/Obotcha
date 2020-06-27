@@ -28,7 +28,6 @@
 #include "HttpV1Parser.hpp"
 //#include "WebSocketFrameComposer.hpp"
 #include "WebSocketParser.hpp"
-#include "AsyncTcpClient.hpp"
 #include "WebSocketHybi13Parser.hpp"
 #include "WebSocketClientInfo.hpp"
 #include "WebSocketComposer.hpp"
@@ -99,7 +98,7 @@ private:
 
     int mVersion;
 
-    AsyncTcpClient mTcpClient;
+    TcpClient mTcpClient;
 
     WebSocketTcpClientListener mListener;
 

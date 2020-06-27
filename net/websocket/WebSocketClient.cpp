@@ -223,10 +223,10 @@ int _WebSocketClient::connect(String url,WebSocketListener l) {
     mListener = createWebSocketTcpClientListener(l,mClient);
     
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(url);
-    mTcpClient = createAsyncTcpClient(httpUrl->getHost(),httpUrl->getPort(),mListener);
-    mTcpClient->start();
+    mTcpClient = createTcpClient(httpUrl->getHost(),httpUrl->getPort(),-1,mListener);
+    mTcpClient->doConnect();
 
-    mTcpClient->send(shakeHandMsg);
+    mTcpClient->doSend(shakeHandMsg);
     return 0;
 }
 

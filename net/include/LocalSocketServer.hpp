@@ -20,52 +20,23 @@
 #include "Pipe.hpp"
 #include "AtomicInteger.hpp"
 #include "Thread.hpp"
+#include "EPollFileObserver.hpp"
 
 namespace obotcha {
 
 #define gDefaultLocalRcvBuffSize 1024*64
 #define gDefaultLocalClientNums 1024*64
 
-enum LocalSocketServerStatus {
-    LocalServerNotStart = 1,
-    LocalServerWorking ,
-    LocalServerWaitingThreadExit,
-    LocalServerThreadExited,
-};
-
-DECLARE_SIMPLE_CLASS(LocalSocketServerThread) EXTENDS(Thread){
-
+DECLARE_SIMPLE_CLASS(SysTcpSocketObserver) EXTENDS(EPollFileObserverListener){
 public:
-    _LocalSocketServerThread(int sock,
-                    int epfd,
-                    AtomicInteger status,
-                    Pipe pi,
-                    SocketListener listener,
-                    ArrayList<Integer> clients,
-                    Mutex mutex,
-                    String domain,
-                    int buffsize);
-    void run();
-
-    void setRcvBuffSize(int);
+    _SysTcpSocketObserver(SocketListener,int,EPollFileObserver o);
+    int onEvent(int fd,uint32_t events,ByteArray);
 
 private:
-    int mSocket;
-    int mEpollfd;
-    AtomicInteger mStatus;
-    Pipe mPipe;
     SocketListener mListener;
-    ArrayList<Integer> mClients;
-    Mutex mClientMutex;
-    String mDomain;
-
-    int mBuffSize;
-
-    void addClientFd(int fd);
-
-    void removeClientFd(int fd);
+    EPollFileObserver mObserver;
+    int mSock;
 };
-
 
 DECLARE_SIMPLE_CLASS(LocalSocketServer) {
     
@@ -89,25 +60,17 @@ private:
 
     SocketListener mListener;
 
+    EPollFileObserver mEpollFileObserver;
+
+    SysTcpSocketObserver mSysTcpListener;
+
     struct sockaddr_un serverAddr;
 
     int sock;
 
-    int epfd;
-
-    int mClientsNum;
-
-    Pipe mPipe;
-
-    AtomicInteger mStatus;
-
-    LocalSocketServerThread mServerThread;
-
-    Mutex mClientsMutex;
-
-    ArrayList<Integer> mClients;
-
     String mDomain;
+
+    int mConectNum;
 };
 
 }

@@ -3,12 +3,10 @@ netDir = net
 link += inetaddress \
 		ntpclient \
 		tcpclient \
-		asynctcpclient \
 		tcpserver \
 		udpclient \
 		udpserver \
 		localsocketclient \
-		asynclocalsocketclient \
 		localsocketserver \
 		netutils \
 		httpurlparser \
@@ -59,12 +57,10 @@ link += inetaddress \
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/ntpclient.o \
 		$(outtmp)/tcpclient.o \
-		$(outtmp)/asynctcpclient.o \
 		$(outtmp)/tcpserver.o \
 		$(outtmp)/udpclient.o \
 		$(outtmp)/udpserver.o \
 		$(outtmp)/localsocketclient.o \
-		$(outtmp)/asynclocalsocketclient.o \
 		$(outtmp)/localsocketserver.o \
 		$(outtmp)/netutils.o \
 		$(outtmp)/httpurlparser.o \
@@ -118,9 +114,6 @@ inetaddress :$(netDir)/InetAddress.cpp
 tcpserver :$(netDir)/tcp/TcpServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/TcpServer.cpp -o $(outtmp)/tcpserver.o $(external)
 
-asynctcpclient :$(netDir)/tcp/AsyncTcpClient.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/AsyncTcpClient.cpp -o $(outtmp)/asynctcpclient.o $(external)
-
 tcpclient :$(netDir)/tcp/TcpClient.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/TcpClient.cpp -o $(outtmp)/tcpclient.o $(external)
 
@@ -132,9 +125,6 @@ udpserver :$(netDir)/udp/UdpServer.cpp
 
 localsocketclient :$(netDir)/tcp/LocalSocketClient.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/LocalSocketClient.cpp -o $(outtmp)/localsocketclient.o $(external)
-
-asynclocalsocketclient :$(netDir)/tcp/AsyncLocalSocketClient.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/AsyncLocalSocketClient.cpp -o $(outtmp)/asynclocalsocketclient.o $(external)
 
 localsocketserver :$(netDir)/tcp/LocalSocketServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)			

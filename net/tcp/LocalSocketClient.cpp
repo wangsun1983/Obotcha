@@ -22,7 +22,23 @@
 
 namespace obotcha {
 
-_LocalSocketClient::_LocalSocketClient(String domain,int recv_time,int buff_size) {
+//MyLocalTcpClientListener-----------------------
+_MyLocalTcpClientListener::_MyLocalTcpClientListener(SocketListener l) {
+    mListener = l;
+}
+
+int _MyLocalTcpClientListener::onEvent(int fd,uint32_t events,ByteArray data) {
+    if((events & EPOLLHUP)!= 0) {
+        mListener->onDisconnect(fd);
+    } else if((events & EPOLLIN) != 0) {
+        mListener->onAccept(fd,nullptr,-1,data);
+    }
+
+    return st(EPollFileObserver)::OnEventOK;
+}
+
+//LocalSocketClient-----------------------
+_LocalSocketClient::_LocalSocketClient(String domain,int recv_time,int buff_size,SocketListener l) {
 
     mDomain = domain;
     
@@ -42,8 +58,8 @@ _LocalSocketClient::_LocalSocketClient(String domain,int recv_time,int buff_size
     }
     
     mSock = socket(AF_UNIX, SOCK_STREAM, 0);
-    mBuff = (byte *)malloc(buff_size);
-    mConnectMutex = createMutex("ConncetMutex");
+    
+    mSocketListener = l;
 }
 
 int _LocalSocketClient::getSock() {
@@ -73,6 +89,14 @@ int _LocalSocketClient::doConnect() {
         ret = getpeername(mSock, ( struct sockaddr* )&local_address, &length);
     }
 
+    //add to epoll fd
+    if(mSocketListener != nullptr) {
+        mEpollListener = createMyLocalTcpClientListener(mSocketListener);
+        mObserver = createEPollFileObserver();
+        mObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,mEpollListener);
+        mObserver->start();
+    }
+
     return ret;
 }
 
@@ -85,29 +109,25 @@ int _LocalSocketClient::doSend(ByteArray data) {
 }
 
 ByteArray _LocalSocketClient::doReceive() {
-    int len = recv(mSock, mBuff, mBufferSize, 0);
-    if(len <= 0) {
-        return nullptr;
+    static int recvsize = 1024*4;
+    byte buff[recvsize];
+    int len = read(mSock,buff,recvsize);
+    ByteArray data = createByteArray((const byte *)buff,len);
+    while(len == recvsize) {
+       len =  read(mSock,buff,recvsize);
+       data->append(buff,len);
     }
-    
-    ByteArray data = createByteArray(mBuff,len);
+
     return data;
 }
 
-int _LocalSocketClient::getBuffSize() {
-    return mBufferSize;
-}
-
 void _LocalSocketClient::release() {
+     
     if(mSock >= 0) {
         close(mSock);
         mSock = -1;
     }
-
-    if(mBuff != nullptr) {
-        free(mBuff);
-        mBuff = nullptr;
-    }
+    this->mObserver->release();
 }
 
 _LocalSocketClient::~_LocalSocketClient() {

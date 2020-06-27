@@ -22,49 +22,41 @@
 
 namespace obotcha {
 
-_TcpClient::_TcpClient(int port,int recv_time,int buff_size) {
-
-    serverAddr.sin_family = AF_INET;
-    if(port > 0) {
-        serverAddr.sin_port = htons(port);
-    } else {
-        throw InitializeException(createString("error tcp client porte"));
-    }
-
-    serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    
-    if(recv_time > 0) {
-        mReceiveTimeout = recv_time;
-    } else {
-        throw InitializeException(createString("error tcp client recv time"));
-    }
-    
-    if(buff_size >0) {
-        mBufferSize = buff_size;
-    } else {
-        throw InitializeException(createString("error tcp client buff size"));
-    }
-    
-    mSock = socket(AF_INET, SOCK_STREAM, 0);
-    mBuff = (byte *)malloc(buff_size);
-    mConnectMutex = createMutex("ConncetMutex");
+//TcpClientObserver--------
+_LocalTcpClientListener::_LocalTcpClientListener(SocketListener l) {
+    mListener = l;
 }
 
-_TcpClient::_TcpClient(String ip,int port,int recv_time,int buff_size) {
+int _LocalTcpClientListener::onEvent(int fd,uint32_t events,ByteArray data) {
+    if((events & EPOLLHUP)!= 0) {
+        mListener->onDisconnect(fd);
+    } else if((events & EPOLLIN) != 0) {
+        mListener->onAccept(fd,nullptr,-1,data);
+    }
+
+    return st(EPollFileObserver)::OnEventOK;
+}
+
+//TcpClient-------------
+_TcpClient::_TcpClient(String ip,int port,int recv_time,SocketListener l,int buff_size) {
     serverAddr.sin_family = AF_INET;
     if(port > 0) {
         serverAddr.sin_port = htons(port);
     } else {
         throw InitializeException(createString("error tcp client porte"));
     }
-
-    serverAddr.sin_addr.s_addr = inet_addr(ip->toChars());
-
-    if(recv_time > 0) {
-        mReceiveTimeout = recv_time;
+    
+    if(ip != nullptr) {
+        serverAddr.sin_addr.s_addr = inet_addr(ip->toChars());
     } else {
-        throw InitializeException(createString("error tcp client recv time"));
+        serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     }
+
+    //if(recv_time > 0) {
+    //    mReceiveTimeout = recv_time;
+    //} else {
+    //    throw InitializeException(createString("error tcp client recv time"));
+    //}
     
     if(buff_size >0) {
         mBufferSize = buff_size;
@@ -75,6 +67,16 @@ _TcpClient::_TcpClient(String ip,int port,int recv_time,int buff_size) {
     mSock = socket(AF_INET, SOCK_STREAM, 0);
     mBuff = (byte *)malloc(buff_size);
     mConnectMutex = createMutex("ConncetMutex");
+    
+    mListener = l;
+}
+
+_TcpClient::_TcpClient(int port,int recv_time,int buff_size):_TcpClient{nullptr,port,recv_time,nullptr,buff_size} {
+
+}
+
+_TcpClient::_TcpClient(String ip,int port,int recv_time,int buff_size):_TcpClient{ip,port,recv_time,nullptr,buff_size} {
+    
 }
 
 int _TcpClient::getSock() {
@@ -104,6 +106,14 @@ int _TcpClient::doConnect() {
         ret = getpeername(mSock, ( struct sockaddr* )&local_address, &length);
     }
 
+    //create epoll observer?
+    if(mListener != nullptr) {
+        mLocalTcpListener = createLocalTcpClientListener(mListener);
+        mEpollObserver = createEPollFileObserver();
+        mEpollObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,mLocalTcpListener);
+        mEpollObserver->start();
+    }
+
     return ret;
 }
 
@@ -116,12 +126,15 @@ int _TcpClient::doSend(ByteArray data) {
 }
 
 ByteArray _TcpClient::doReceive() {
-    int len = recv(mSock, mBuff, mBufferSize, 0);
-    if(len == 0) {
-        return nullptr;
+    static int recvsize = 1024*4;
+    byte buff[recvsize];
+    int len = read(mSock,buff,recvsize);
+    ByteArray data = createByteArray((const byte *)buff,len);
+    while(len == recvsize) {
+       len =  read(mSock,buff,recvsize);
+       data->append(buff,len);
     }
-    
-    ByteArray data = createByteArray(mBuff,len);
+
     return data;
 }
 

@@ -21,13 +21,13 @@
 
 namespace obotcha {
 
-_TcpSocketObserver::_TcpSocketObserver(SocketListener l,int sock,EPollFileObserver o) {
+_LocalTcpSocketObserver::_LocalTcpSocketObserver(SocketListener l,int sock,EPollFileObserver o) {
     mListener = l;
     mSock = sock;
     mObserver = o;
 }
 
-int _TcpSocketObserver::onEvent(int fd,uint32_t events,ByteArray pack) {
+int _LocalTcpSocketObserver::onEvent(int fd,uint32_t events,ByteArray pack) {
     if(fd == mSock) {
         struct sockaddr_in client_address;
         socklen_t client_addrLength = sizeof(struct sockaddr_in);
@@ -41,7 +41,7 @@ int _TcpSocketObserver::onEvent(int fd,uint32_t events,ByteArray pack) {
                             createString(inet_ntoa(client_address.sin_addr)),
                             ntohs(client_address.sin_port));
         
-        TcpSocketObserver v;
+        LocalTcpSocketObserver v;
         v.set_pointer(this);
         printf("add observer by socket!!!! ,clientfd is %d\n",clientfd);
         mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,v);
@@ -62,18 +62,16 @@ int _TcpSocketObserver::onEvent(int fd,uint32_t events,ByteArray pack) {
     return  0;
 }
 
+_TcpServer::_TcpServer(String ip,int port):_TcpServer{ip,port,nullptr} {
+
+}
+
 _TcpServer::_TcpServer(int port,SocketListener l):_TcpServer{nullptr,port,l} {
     
 }
 
 _TcpServer::_TcpServer(String ip,int port,SocketListener l,int connectnum) {
 
-    String reason;
-
-    if(l == nullptr) {
-        throw InitializeException(createString("SocketListener is null"));
-    }
-    
     serverAddr.sin_family = PF_INET;
     serverAddr.sin_port = htons(port);
     if(ip != nullptr) {
@@ -90,14 +88,13 @@ _TcpServer::_TcpServer(String ip,int port,SocketListener l,int connectnum) {
         sock = socket(AF_INET, SOCK_STREAM, 0);
 
         if(sock < 0) {
-            reason = createString("Sock Create Fail");
             break;
         }
         
         return;
     }
     
-    throw InitializeException(reason);
+    throw InitializeException("tcp initialize");
 }
 
 int _TcpServer::connect() {
@@ -116,9 +113,11 @@ int _TcpServer::connect() {
         return -NetListenFail;
     }
 
-    mObserver = createEPollFileObserver();
-    mLocalListener = createTcpSocketObserver(mListener,sock,mObserver);
-    mObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,mLocalListener);
+    if(mListener != nullptr) {
+        mObserver = createEPollFileObserver();
+        mLocalListener = createLocalTcpSocketObserver(mListener,sock,mObserver);
+        mObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,mLocalListener);
+    }
 
     return 0;
 }

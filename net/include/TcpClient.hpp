@@ -17,14 +17,27 @@
 #include "SocketListener.hpp"
 #include "Thread.hpp"
 #include "Pipe.hpp"
+#include "EPollFileObserver.hpp"
 
 namespace obotcha {
+
+DECLARE_SIMPLE_CLASS(LocalTcpClientListener) IMPLEMENTS(EPollFileObserverListener) {
+public:
+    _LocalTcpClientListener(SocketListener l);
+
+    int onEvent(int fd,uint32_t events,ByteArray);
+
+private:
+    SocketListener mListener;
+};
 
 DECLARE_SIMPLE_CLASS(TcpClient) {
 public:
     _TcpClient(int port,int recv_time,int buff_size = 1024);
 
     _TcpClient(String ip,int port,int recv_time,int buff_size = 1024);
+
+    _TcpClient(String ip,int port,int recv_time,SocketListener l,int buff_size = 1024);
     
     int doConnect();
 
@@ -42,6 +55,10 @@ public:
 
 private:
     int mReceiveTimeout;
+
+    EPollFileObserver mEpollObserver;
+
+    LocalTcpClientListener mLocalTcpListener;
     
     int mSock;
 
@@ -52,6 +69,8 @@ private:
     byte *mBuff;
 
     Mutex mConnectMutex;
+
+    SocketListener mListener;
 };
 
 }
