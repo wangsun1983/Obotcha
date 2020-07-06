@@ -628,7 +628,7 @@ size_t http_parser_execute (http_parser *parser,
 
     RETURN(0);
   }
-  printf("parser trace1 \n");
+  //printf("parser trace1 \n");
 
   if (len == 0) {
     switch (state) {

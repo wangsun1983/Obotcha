@@ -21,24 +21,25 @@
 
 namespace obotcha {
 
+class _TcpClient;
+
 DECLARE_SIMPLE_CLASS(LocalTcpClientListener) IMPLEMENTS(EPollFileObserverListener) {
 public:
-    _LocalTcpClientListener(SocketListener l);
+    _LocalTcpClientListener(SocketListener l,sp<_TcpClient> client);
 
     int onEvent(int fd,uint32_t events,ByteArray);
 
 private:
     SocketListener mListener;
+    sp<_TcpClient> mClient;
 };
 
 DECLARE_SIMPLE_CLASS(TcpClient) {
 public:
-    _TcpClient(int port,int recv_time,int buff_size = 1024);
+    _TcpClient(int port,int recv_time,SocketListener l = nullptr,int buff_size = 1024);
 
-    _TcpClient(String ip,int port,int recv_time,int buff_size = 1024);
+    _TcpClient(String ip,int port,int recv_time,SocketListener l = nullptr,int buff_size = 1024);
 
-    _TcpClient(String ip,int port,int recv_time,SocketListener l,int buff_size = 1024);
-    
     int doConnect();
 
     int doSend(ByteArray);

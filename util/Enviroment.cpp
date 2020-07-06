@@ -1,6 +1,7 @@
 #include "Enviroment.hpp"
 #include "AutoLock.hpp"
 #include "ValueNotFoundException.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
@@ -13,6 +14,9 @@ int const _Enviroment::DefaultHttpBufferSize = 512*1024;
     
 String const _Enviroment::gWebSocketBufferSize = "env.ws.buffer.size";
 int const _Enviroment::DefaultWebSocketBufferSize = 512*1024;
+
+String const _Enviroment::gWebSocketRcvThreadsNum = "env.ws.threads.num";
+int const _Enviroment::DefaultWebSocketRcvThreadsNum = st(System)::availableProcessors();
 
 String const _Enviroment::gWebSocketFrameSize = "env.ws.frame.size";
 int const _Enviroment::DefaultWebSocketFrameSize = 64*1024;
@@ -103,6 +107,7 @@ _Enviroment::_Enviroment() {
     
     mProp->set(gHttpBufferSize,st(String)::valueOf(DefaultHttpBufferSize));
     mProp->set(gWebSocketBufferSize,st(String)::valueOf(DefaultWebSocketBufferSize));
+    mProp->set(gWebSocketBufferSize,st(String)::valueOf(DefaultWebSocketRcvThreadsNum));
     mProp->set(gWebSocketFrameSize,st(String)::valueOf(DefaultWebSocketFrameSize));
     mProp->set(gLocalSocketServerRcvBufferSize,st(String)::valueOf(DefaultLocalSocketServerRcvBufferSize));
     mProp->set(gLocalSocketServerClientNums,st(String)::valueOf(DefaultLocalSocketServerClientNums));

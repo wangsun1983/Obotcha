@@ -29,7 +29,8 @@ _EpollObserverRequest::_EpollObserverRequest() {
     fd = -1;;
 }
 
-const uint32_t _EPollFileObserver::EpollEvent[] = {EpollIn,
+const uint32_t _EPollFileObserver::EpollEvent[] = {
+                                     EpollIn,
                                      EpollPri,
                                      EpollOut,
                                      EpollRdNorm,
@@ -40,7 +41,9 @@ const uint32_t _EPollFileObserver::EpollEvent[] = {EpollIn,
                                      EpollErr,
                                      EpollHup,
                                      EpollRdHup,
+#ifdef EPOLLEXCLUSIVE                                     
                                      EpollExClusive,
+#endif
                                      EpollWakeUp,
                                      EpollOneShot,
                                      EpollEt};
@@ -57,7 +60,7 @@ void _EPollFileObserver::run() {
     while(1) {
         //doRequest();
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
-        sleep(1);
+        //sleep(1);
         doRequest();
 
         if(epoll_events_count < 0) {
@@ -68,7 +71,8 @@ void _EPollFileObserver::run() {
         for(int i = 0; i < epoll_events_count; i++) {
             int fd = events[i].data.fd;
             uint32_t recvEvents = events[i].events;
-            printf("epollevent observer fd is %d,recvEvents is %p,epoll_events_count is %d \n",fd,recvEvents,epoll_events_count);
+
+            //printf("epollevent observer fd is %d,recvEvents is %p,epoll_events_count is %d \n",fd,recvEvents,epoll_events_count);
             ByteArray recvData = nullptr;
 
             ll->clear();
@@ -77,17 +81,17 @@ void _EPollFileObserver::run() {
                 ByteArray pipeData = createByteArray(1);
                 mPipe->readFrom(pipeData);
                 if(pipeData->at(0) == 0) {
-                    printf("epollevent break \n");
+                    //printf("epollevent break \n");
                     break;
                 } else {
-                    printf("epollevent return \n");
+                    //printf("epollevent return \n");
                     return;
                 }
             }
         
             HashMap<int,ArrayList<EPollFileObserverListener>> map = mListeners->get(fd);
             if(map == nullptr || map->size() == 0) {
-                printf("epollevent observer fd is %d,return \n",fd);
+                //printf("epollevent observer fd is %d,return \n",fd);
                 continue;
             }
 
@@ -96,12 +100,12 @@ void _EPollFileObserver::run() {
                 if(event != 0) {
                     ArrayList<EPollFileObserverListener> list = map->get(event);
                     if(list == nullptr) {
-                        printf("epollevent observer continue \n");
+                        //printf("epollevent observer continue \n");
                         continue;
                     }
                     
                     ListIterator<EPollFileObserverListener> iterator = list->getIterator();
-                    printf("epollevent observer fd is %d,list size is %d,recvEvents is %p,event is %p \n",fd,list->size(),recvEvents,event);
+                    //printf("epollevent observer fd is %d,list size is %d,recvEvents is %p,event is %p \n",fd,list->size(),recvEvents,event);
                     while(iterator->hasValue()) {
                         EPollFileObserverListener c = iterator->getValue();
                         if(ll->get(c) != nullptr) {
@@ -141,17 +145,17 @@ void _EPollFileObserver::run() {
                 }
             }
             
-            if((recvEvents & (EpollRdHup|EpollHup)) != 0
+            if(((recvEvents & EpollRdHup) != 0)
                ||(map->size() == 0)) {
                 //map->remove(EpollRdHup);
                 //map->remove(EpollHup);
                 //clear listener's fds
-                printf("start remove fd is %d \n",fd);
+                //printf("start remove fd is %d \n",fd);
                 MapIterator<EPollFileObserverListener,Boolean> iterator = ll->getIterator();
                 while(iterator->hasValue()) {
                     EPollFileObserverListener ml = iterator->getKey();
                     if(ml->fd2eventMap.find(fd) != ml->fd2eventMap.end()) {
-                        printf("start remove fd is %d,hit!!!,ml is %x \n",fd,ml.get_pointer());
+                        //printf("start remove fd is %d,hit!!!,ml is %x \n",fd,ml.get_pointer());
                         ml->fd2eventMap[fd] = 0;
                     }
                     iterator->next();
@@ -193,12 +197,12 @@ void _EPollFileObserver::doRequest() {
                 break;
 
             case st(EpollObserverRequest)::Add:
-                printf("start call r->fd is %d,r->event is %p \n",r->fd,r->event);
+                //printf("start call r->fd is %d,r->event is %p \n",r->fd,r->event);
                 _addObserver(r->fd,r->event,r->l);
                 break;
 
             case st(EpollObserverRequest)::RemoveByFd:
-                printf("remove fd is %d \n",r->fd);
+                //printf("remove fd is %d \n",r->fd);
                 _removeObserver(r->fd);
                 break;
         }
@@ -223,7 +227,7 @@ int _EPollFileObserver::addObserver(int fd,uint32_t events,EPollFileObserverList
         if(l->fd2eventMap.find(fd) != l->fd2eventMap.end()) {
             observerEvent = l->fd2eventMap[fd];
             if((events|observerEvent) == observerEvent) {
-                printf("wang,,,,, add Observer fd is %d,events is %p,observerEvent is %d return,l is %x \n",fd,events,observerEvent,l.get_pointer());
+                //printf("wang,,,,, add Observer fd is %d,events is %p,observerEvent is %d return,l is %x \n",fd,events,observerEvent,l.get_pointer());
                 return 0;
             }
 
@@ -233,7 +237,7 @@ int _EPollFileObserver::addObserver(int fd,uint32_t events,EPollFileObserverList
         }
     }
 
-    printf("wang,,,,, add Observer fd is %d,events is %p,observerEvent is %d,l is %x \n",fd,events,observerEvent,l.get_pointer());
+    //printf("wang,,,,, add Observer fd is %d,events is %p,observerEvent is %d,l is %x \n",fd,events,observerEvent,l.get_pointer());
 
     EpollObserverRequest request = createEpollObserverRequest();
     request->action = st(EpollObserverRequest)::Add;
@@ -249,10 +253,10 @@ int _EPollFileObserver::addObserver(int fd,uint32_t events,EPollFileObserverList
 
     struct epoll_event ev;
     memset(&ev,0,sizeof(struct epoll_event));
-    printf("add observer fd is %d \n",fd);
+    //printf("add observer fd is %d \n",fd);
     
     ev.data.fd = fd;
-    ev.events = events;
+    ev.events = events|EpollRdHup;
     epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
     
@@ -266,7 +270,7 @@ int _EPollFileObserver::addObserver(int fd,uint32_t events,EPollFileObserverList
 int _EPollFileObserver::removeObserver(int fd,uint32_t events,EPollFileObserverListener l) {
     int index = 0;
     uint32_t observerEvent = 0;
-    printf("remove observer,fd is %d \n",fd);
+    //printf("remove observer,fd is %d \n",fd);
 
     AutoLock lock(mRequestMutex);
 
@@ -350,10 +354,10 @@ int _EPollFileObserver::removeObserver(int fd) {
 }
 
 int _EPollFileObserver::_addObserver(int fd,uint32_t events,EPollFileObserverListener l) {
-    printf("add observer fd is %d,events is %p \n",fd,events);
+    //printf("add observer fd is %d,events is %p \n",fd,events);
     
     if(l != nullptr) {
-        printf("add observer fd is %d,l is not null\n",fd);
+        //printf("add observer fd is %d,l is not null\n",fd);
         HashMap<int,ArrayList<EPollFileObserverListener>> m = mListeners->get(fd);
         if(m == nullptr) {
             m = createHashMap<int,ArrayList<EPollFileObserverListener>>();
@@ -362,14 +366,14 @@ int _EPollFileObserver::_addObserver(int fd,uint32_t events,EPollFileObserverLis
         
         for(int i = 0;i<sizeof(EpollEvent)/sizeof(int);i++) {
             int event = (events & EpollEvent[i]);
-            printf("add observer fd is %d,check event is %p\n",fd,event);
+            //printf("add observer fd is %d,check event is %p\n",fd,event);
             if(event != 0) {
                 ArrayList<EPollFileObserverListener> ll = m->get(event);
                 if(ll == nullptr) {
                     ll = createArrayList<EPollFileObserverListener>();
                     m->put(event,ll);
                 }
-                printf("really add fd is %d,event is %p \n",fd,event);
+                //printf("really add fd is %d,event is %p \n",fd,event);
                 ll->add(l);
             }
         }

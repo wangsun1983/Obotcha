@@ -29,6 +29,9 @@ public:
     static const String gWebSocketBufferSize;
     static const int DefaultWebSocketBufferSize;
 
+    static const String gWebSocketRcvThreadsNum;
+    static const int DefaultWebSocketRcvThreadsNum;
+
     static const String gWebSocketFrameSize;
     static const int DefaultWebSocketFrameSize;
 

@@ -8,6 +8,7 @@
 #include <mqueue.h>
 #include <fstream>
 #include <sys/un.h>
+#include <unordered_set>
 
 
 #include "Object.hpp"
@@ -36,7 +37,8 @@ namespace obotcha {
 #define WEBSOCKET_BUFF_SIZE 512*1024
 
 class _TcpServer; 
-class _WebSocketEpollListener;   
+class _WebSocketEpollListener;
+class _DispatchManager;
 
 DECLARE_SIMPLE_CLASS(WebSocketClientManager) {
 public:
@@ -91,13 +93,72 @@ private:
     HashMap<String,EPollFileObserver> mWsObservers;
     sp<_WebSocketEpollListener> mEpollListener;
     
-    HttpV1Parser mParser;
-
-    WebSocketFrameComposer mResponse;
-
+    
     EPollFileObserver mServerObserver;
+    sp<_DispatchManager> mDispatchMgr;
 };
 
+//-----------WebSocketDispatchData----------------
+DECLARE_SIMPLE_CLASS(DispatchData) {
+public:
+    _DispatchData(int,int,uint32_t,ByteArray);
+    static const int Http;
+    static const int Ws;
+    
+    int cmd;
+
+    int fd;
+    uint32_t events;
+    ByteArray data;
+
+    //just for http
+    EPollFileObserver mServerObserver;
+    HashMap<String,EPollFileObserver> mWsObservers;
+    sp<_WebSocketEpollListener> mEpollListener;
+
+    //just for ws
+    WebSocketListener mWsSocketListener;
+};
+
+DECLARE_SIMPLE_CLASS(DispatchStatusListener) {
+public:
+    virtual void onComplete(int fd) = 0;
+};
+
+DECLARE_SIMPLE_CLASS(WebSocketDispatchThread) IMPLEMENTS(Thread) {
+public:
+    _WebSocketDispatchThread(DispatchStatusListener);
+    void add(DispatchData);
+    int getWorkQueueSize();
+    void run();
+
+private:
+    BlockingQueue<DispatchData> datas;
+    //WebSocketListener mWsSocketListener;
+    DispatchStatusListener mStatusListener;
+    WebSocketFrameComposer mResponse;
+    
+    HttpV1Parser mParser;
+    
+    HashMap<int,int> fds;
+
+    void handleHttpData(DispatchData);
+    void handleWsData(DispatchData);
+};
+
+DECLARE_SIMPLE_CLASS(DispatchManager) IMPLEMENTS(DispatchStatusListener) {
+public:
+    _DispatchManager();
+    void dispatch(DispatchData);
+private:
+    ArrayList<WebSocketDispatchThread> mThreads;
+    void onComplete(int fd);
+    Mutex mMutex;
+    HashMap<int,Integer> fdmaps;
+    int threadsNum;
+};
+
+//----------------------WebSocketEpollListener
 DECLARE_SIMPLE_CLASS(WebSocketEpollListener) IMPLEMENTS(EPollFileObserverListener) {
 public:
     _WebSocketEpollListener(WebSocketListener);
@@ -107,8 +168,8 @@ public:
 private:
     WebSocketParser mHybi13Parser;
     WebSocketListener mWsSocketListener;
-    WebSocketFrameComposer mResponse;
-    byte *mRecvBuff;
+    //WebSocketFrameComposer mResponse;
+    sp<_DispatchManager> mDispacher;
 };
 
 DECLARE_SIMPLE_CLASS(WebSocketServer) {

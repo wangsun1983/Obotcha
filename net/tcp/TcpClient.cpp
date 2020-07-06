@@ -23,13 +23,16 @@
 namespace obotcha {
 
 //TcpClientObserver--------
-_LocalTcpClientListener::_LocalTcpClientListener(SocketListener l) {
+_LocalTcpClientListener::_LocalTcpClientListener(SocketListener l,TcpClient cl) {
     mListener = l;
+    mClient = cl;
 }
 
 int _LocalTcpClientListener::onEvent(int fd,uint32_t events,ByteArray data) {
     if((events & EPOLLHUP)!= 0) {
         mListener->onDisconnect(fd);
+        mClient->release();
+        mClient = nullptr;
     } else if((events & EPOLLIN) != 0) {
         mListener->onAccept(fd,nullptr,-1,data);
     }
@@ -71,12 +74,8 @@ _TcpClient::_TcpClient(String ip,int port,int recv_time,SocketListener l,int buf
     mListener = l;
 }
 
-_TcpClient::_TcpClient(int port,int recv_time,int buff_size):_TcpClient{nullptr,port,recv_time,nullptr,buff_size} {
+_TcpClient::_TcpClient(int port,int recv_time,SocketListener l,int buff_size):_TcpClient{nullptr,port,recv_time,l,buff_size} {
 
-}
-
-_TcpClient::_TcpClient(String ip,int port,int recv_time,int buff_size):_TcpClient{ip,port,recv_time,nullptr,buff_size} {
-    
 }
 
 int _TcpClient::getSock() {
@@ -84,13 +83,11 @@ int _TcpClient::getSock() {
 }
     
 int _TcpClient::doConnect() {
-    if(mSock < 0) {
-        return -1;
-    }
-
     //AutoMutex ll(mConnectMutex);
     int ret = connect(mSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
     if( ret < 0) {
+        close(mSock);
+        mSock = -1;
         return -1;
     }
 
@@ -108,7 +105,10 @@ int _TcpClient::doConnect() {
 
     //create epoll observer?
     if(mListener != nullptr) {
-        mLocalTcpListener = createLocalTcpClientListener(mListener);
+        TcpClient v;
+        v.set_pointer(this);
+        
+        mLocalTcpListener = createLocalTcpClientListener(mListener,v);
         mEpollObserver = createEPollFileObserver();
         mEpollObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,mLocalTcpListener);
         mEpollObserver->start();
@@ -118,10 +118,9 @@ int _TcpClient::doConnect() {
 }
 
 int _TcpClient::doSend(ByteArray data) {
-    if(data == nullptr || data->size() == 0) {
+    if(data == nullptr || data->size() == 0||mSock == -1) {
         return  0;
     }
-    
     return st(NetUtils)::sendTcpPacket(mSock,data);
 }
 
@@ -146,11 +145,17 @@ void _TcpClient::release() {
     //AutoMutex ll(mConnectMutex);
     if(mSock >= 0) {
         close(mSock);
+        mSock = -1;
     }
 
     if(mBuff == nullptr) {
         free(mBuff);
         mBuff = nullptr;
+    }
+
+    if(mEpollObserver != nullptr) {
+        mEpollObserver->release();
+        mEpollObserver = nullptr;
     }
 }
 

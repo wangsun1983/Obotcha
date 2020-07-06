@@ -81,7 +81,9 @@ public:
     static const uint32_t EpollErr = EPOLLERR;
     static const uint32_t EpollHup = EPOLLHUP;
     static const uint32_t EpollRdHup = EPOLLRDHUP;
+#ifdef EPOLLEXCLUSIVE    
     static const uint32_t EpollExClusive = EPOLLEXCLUSIVE;
+#endif
     static const uint32_t EpollWakeUp = EPOLLWAKEUP;
     static const uint32_t EpollOneShot = EPOLLONESHOT;
     static const uint32_t EpollEt = EPOLLET;

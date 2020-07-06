@@ -43,20 +43,22 @@ int _LocalTcpSocketObserver::onEvent(int fd,uint32_t events,ByteArray pack) {
         
         LocalTcpSocketObserver v;
         v.set_pointer(this);
-        printf("add observer by socket!!!! ,clientfd is %d\n",clientfd);
+        //printf("add observer by socket!!!! ,clientfd is %d\n",clientfd);
         mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,v);
     } else {
-        if((events & EPOLLIN) != 0) {
-            if(mListener != nullptr) {
-                mListener->onAccept(fd,nullptr,-1,pack);
-            }
-        }
-
         if((events & EPOLLRDHUP) != 0) {
             if(mListener != nullptr) {
                 mListener->onDisconnect(fd);
             }
         }
+
+        if(pack != nullptr && pack->size() != 0) {
+            if(mListener != nullptr) {
+                mListener->onAccept(fd,nullptr,-1,pack);
+            }
+        }
+
+        
     }
 
     return  0;
