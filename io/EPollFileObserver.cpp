@@ -335,18 +335,19 @@ int _EPollFileObserver::removeObserver(int fd) {
 
     //we should clear 
     HashMap<int,ArrayList<EPollFileObserverListener>> m = mListeners->get(fd);
-
-    MapIterator<int,ArrayList<EPollFileObserverListener>> iterator = m->getIterator();
-    while(iterator->hasValue()) {
-        ArrayList<EPollFileObserverListener> list = iterator->getValue();
-        ListIterator<EPollFileObserverListener> iterator2 = list->getIterator();
-        while(iterator2->hasValue()) {
-            EPollFileObserverListener ob = iterator2->getValue();
-            ob->fd2eventMap.clear();
-            iterator2->next();
+    if(m != nullptr) {
+        MapIterator<int,ArrayList<EPollFileObserverListener>> iterator = m->getIterator();
+        while(iterator->hasValue()) {
+            ArrayList<EPollFileObserverListener> list = iterator->getValue();
+            ListIterator<EPollFileObserverListener> iterator2 = list->getIterator();
+            while(iterator2->hasValue()) {
+                EPollFileObserverListener ob = iterator2->getValue();
+                ob->fd2eventMap.clear();
+                iterator2->next();
+            }
+            iterator->next();
         }
-        iterator->next();
-    }
+    }    
 
     ByteArray data = createByteArray(1);
     data->fill(0,0);

@@ -25,6 +25,19 @@ _WebSocketClientInfo::_WebSocketClientInfo() {
     mWsHeader = createWebSocketHeader();
     mDeflate = nullptr;
     mProtocols = nullptr;
+    mContinueBuffer = nullptr;
+    mEntireBuffer = nullptr;
+    mClientFd = -1;
+    mWsVersion = -1;
+}
+
+void _WebSocketClientInfo::reset() {
+    mHttpHeader->clear();
+    mWsHeader->clear();
+    mDeflate = nullptr;
+    mProtocols = nullptr;
+    mContinueBuffer = nullptr;
+    mEntireBuffer = nullptr;
     mClientFd = -1;
 }
 
@@ -176,6 +189,14 @@ int _WebSocketClientInfo::sendPongMessage(ByteArray data) {
 
 int _WebSocketClientInfo::sendCloseMessage(ByteArray data) {
     return _send(st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE,data);
+}
+
+int _WebSocketClientInfo::getVersion() {
+    return mWsVersion;
+}
+
+void _WebSocketClientInfo::setVersion(int ver) {
+    mWsVersion = ver;
 }
 
 }

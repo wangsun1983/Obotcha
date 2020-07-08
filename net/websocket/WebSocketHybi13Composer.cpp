@@ -98,14 +98,12 @@ ByteArray _WebSocketHybi13Composer::_genServerShakeHandMessage(WebSocketClientIn
     ByteArray sha1_content = mSha->encryptRawData(createByteArray(key_mgic));
     String base64 = mBase64->encode(sha1_content)->toString();
     
-    String head = "HTTP/1.1 101 Switching Protocols\r\n";
-    String upgrade = head->append("Upgrade: websocket\r\n");
-    String connection = upgrade->append("Connection: Upgrade\r\n");
+    String connection = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n";
 
     String protocols = h->getValue(st(HttpHeader)::SecWebSocketProtocol);
     if(protocols != nullptr) {
         //TODO
-        connection = connection->append("Sec-WebSocket-Protocol:")->append(protocols)->append("\r\n");
+        connection = connection->append("Sec-WebSocket-Protocol:",protocols,"\r\n");
     }
 
     String resp = connection->append("Sec-WebSocket-Accept:",base64,"\r\n");
@@ -117,10 +115,10 @@ ByteArray _WebSocketHybi13Composer::_genServerShakeHandMessage(WebSocketClientIn
                             "permessage-deflate",
                             ";client_max_window_bits=",
                             createString(deflater->getServerMaxWindowBits()),
-                            "\r\n");
+                            "\r\n","\r\n");
+    } else {
+        resp = resp->append("\r\n");
     }
-
-    resp = resp->append("\r\n");
 
     return createByteArray(resp);
 }

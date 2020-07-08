@@ -95,6 +95,12 @@ public:
 
     int sendCloseMessage(ByteArray);
 
+    int getVersion();
+
+    void setVersion(int);
+
+    void reset();
+
 private:
     int mClientFd;
 
@@ -115,6 +121,8 @@ private:
     WebSocketEntireBuffer mEntireBuffer;
 
     String mConnectUrl;
+
+    int mWsVersion;
 
     int _send(int type,ByteArray data);
 };

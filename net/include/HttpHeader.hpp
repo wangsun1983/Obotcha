@@ -18,6 +18,8 @@ DECLARE_SIMPLE_CLASS(HttpHeader) {
 
 public:
     _HttpHeader();
+
+    void reset();
     
     void setValue(String header,String value);
     

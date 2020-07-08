@@ -120,6 +120,11 @@ mValues  = createHashMap<String,String>();
     mCookies = createArrayList<HttpCookie>();
 }
 
+void _HttpHeader::reset() {
+    mValues->clear();
+    mCookies->clear();
+}
+
 void _HttpHeader::setValue(String header,String value) {
     mValues->put(header->toLowerCase(),value);
 }

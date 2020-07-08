@@ -5,20 +5,19 @@
 #include "StrongPointer.hpp"
 #include "ArrayList.hpp"
 #include "Mutex.hpp"
-#include "AutoMutex.hpp"
+#include "AutoLock.hpp"
 #include "Condition.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(CachePool,1) {
-
 enum CachePoolType {
-    CachePoolTypeSync,
+    CachePoolTypeSync = 0,
     CachePoolTypeASync
 };
 
-
+DECLARE_CLASS(CachePool,1) {
 public:
+
     _CachePool(int size,int type = CachePoolTypeASync,int timeout = -1) {
         mCaches = createArrayList<T>();
         mSize = size;
@@ -32,7 +31,7 @@ public:
     }
 
     int addCache(T t) {
-        AutoMutex l(mMutex);
+        AutoLock l(mMutex);
         if(mCaches->size() < mSize) {
             mCaches->add(t);
             if(mType == CachePoolTypeSync) {
@@ -45,21 +44,22 @@ public:
     }
 
     T getCache() {
-        AutoMutex l(mMutex);
-        if(mCaches->size()!= 0) {
-            return mCaches->remove(0);
-        }
+        while(1) {
+            AutoLock l(mMutex);
+            if(mCaches->size()!= 0) {
+                return mCaches->removeAt(mCaches->size() - 1);
+            }
 
-        if(mType == CachePoolTypeSync) {
-            while(mCaches->size()!= 0) {
+            if(mType == CachePoolTypeSync) {
                 if(mTimeout == -1) {
                     mCondtion->wait(mMutex);
                 } else {
                     mCondtion->wait(mMutex,mTimeout);
                 }
-
-                return mCaches->remove(0);
+                continue;
             }
+
+            break;
         }
         
         return nullptr;

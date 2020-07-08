@@ -17,6 +17,7 @@
 #include "WebSocketHybi13Parser.hpp"
 #include "WebSocketProtocol.hpp"
 #include "Enviroment.hpp"
+#include "CachePool.hpp"
 
 namespace obotcha {
 
@@ -53,35 +54,38 @@ WebSocketClientManager _WebSocketClientManager::getInstance() {
 bool _WebSocketClientManager::addClient(int fd, int version) {
   WebSocketClientInfo data = createWebSocketClientInfo();
   data->setClientFd(fd);
+  
+  if(data->getVersion() != version) {
+    data->setVersion(version);
+    switch (version) {
+      case 0: {
+        data->setParser(createWebSocketHybi00Parser());
+        data->setComposer(createWebSocketHybi00Composer(WsServerComposer));
+        break;
+      }
 
-  switch (version) {
-    case 0: {
-      data->setParser(createWebSocketHybi00Parser());
-      data->setComposer(createWebSocketHybi00Composer(WsServerComposer));
-      break;
+      case 7: {
+        data->setParser(createWebSocketHybi07Parser());
+        data->setComposer(createWebSocketHybi07Composer(WsServerComposer));
+        break;
+      }
+
+      case 8: {
+        data->setParser(createWebSocketHybi08Parser());
+        data->setComposer(createWebSocketHybi08Composer(WsServerComposer));
+        break;
+      }
+
+      case 13: {
+        data->setParser(createWebSocketHybi13Parser());
+        data->setComposer(createWebSocketHybi13Composer(WsServerComposer));
+        break;
+      }
+
+      default:
+        LOGE(TAG, "WebSocket Protocol Not Support,Version is ", version);
+        return false;
     }
-
-    case 7: {
-      data->setParser(createWebSocketHybi07Parser());
-      data->setComposer(createWebSocketHybi07Composer(WsServerComposer));
-      break;
-    }
-
-    case 8: {
-      data->setParser(createWebSocketHybi08Parser());
-      data->setComposer(createWebSocketHybi08Composer(WsServerComposer));
-      break;
-    }
-
-    case 13: {
-      data->setParser(createWebSocketHybi13Parser());
-      data->setComposer(createWebSocketHybi13Composer(WsServerComposer));
-      break;
-    }
-
-    default:
-      LOGE(TAG, "WebSocket Protocol Not Support,Version is ", version);
-      return false;
   }
 
   AutoLock ll(mMutex);
@@ -120,9 +124,10 @@ void _WebSocketClientManager::setWebSocketProtocols(int fd,
   data->setProtocols(p);
 }
 
-void _WebSocketClientManager::removeClient(int fd) {
+void _WebSocketClientManager::removeClient(WebSocketClientInfo client) {
+  
   AutoLock ll(mMutex);
-  mClients->remove(fd);
+  mClients->remove(client->getClientFd());
 }
 
 //--------------------WebSocketDispatchData-----------------
@@ -234,27 +239,23 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
 
     WebSocketClientInfo client =
         st(WebSocketClientManager)::getInstance()->getClient(fd);
+    
+    if((events & EPOLLRDHUP) != 0) {
+        if(pack == nullptr || pack->size() == 0) {
+            data->mWsSocketListener->onDisconnect(client);
+            st(WebSocketClientManager)::getInstance()->removeClient(client);
+            return;
+        }
 
-    if (((events & EPOLLRDHUP) != 0) ||
-        (pack == nullptr || pack->size() == 0)) {
-      //if (data->mWsSocketListener != nullptr) {
-      //  data->mWsSocketListener->onDisconnect(client);
-      //}
-      
-      if(data->data == nullptr || data->data->size() == 0) {
-          st(WebSocketClientManager)::getInstance()->removeClient(fd);
-          return;
-      }
-      isRmClient = true;
+        isRmClient = true;
     }
 
-    printf("ws data size is %d \n",data->data->size());
+    //printf("ws data size is %d \n",data->data->size());
     //for(int i = 0;i<data->data->size();i++) {
         //printf(data->data)
-    data->data->dump("pack dump:");
+    //data->data->dump("pack dump:");
     //}
 
-    
     WebSocketParser parser =
         st(WebSocketClientManager)::getInstance()->getClient(fd)->getParser();
     // check pack
@@ -313,7 +314,7 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
         String msg = pong->toString();
         data->mWsSocketListener->onPong(client, msg);
       } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE) {
-        st(WebSocketClientManager)::getInstance()->removeClient(fd);
+        st(WebSocketClientManager)::getInstance()->removeClient(client);
         return;
       } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
         ByteArray msgData = parser->parseContent(false);
@@ -332,24 +333,25 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
       // check whether there are two ws messages received in one buffer!
       // len -= (framesize + headersize);
       int resetLength = (pack->size() - (framesize + headersize));
-      printf("resetLength is %d,framesize is %d,headersize is %d \n",resetLength,framesize,headersize);
+      //printf("resetLength is %d,framesize is %d,headersize is %d \n",resetLength,framesize,headersize);
 
       readIndex += (framesize + headersize);
-      printf("readIndex is %d \n",readIndex);
+      //printf("readIndex is %d \n",readIndex);
 
       if (resetLength > 0) {
         byte *pdata = pack->toValue();
         pack = createByteArray(&pdata[readIndex], resetLength);
-        printf("pdata[0] is %x,pdata[1] is %x \n",pdata[readIndex],pdata[readIndex+1]);
+        //printf("pdata[0] is %x,pdata[1] is %x \n",pdata[readIndex],pdata[readIndex+1]);
         continue;
       }
 
       break;
     }
 
-     if(isRmClient) {
-          st(WebSocketClientManager)::getInstance()->removeClient(fd);
-      }
+    if(isRmClient) {
+        data->mWsSocketListener->onDisconnect(client);
+        st(WebSocketClientManager)::getInstance()->removeClient(client);
+    }
 }
 
 void _WebSocketDispatchThread::run() {
@@ -454,7 +456,7 @@ void _WebSocketHttpListener::setWsEpollObserver(
 
 void _WebSocketHttpListener::onAccept(int fd, String ip, int port,
                                       ByteArray pack) {
-    printf("onAccept fd is %d \n",fd);
+    //printf("onAccept fd is %d \n",fd);
     
     DispatchData data = createDispatchData(st(DispatchData)::Http,fd,0,pack);
     data->mServerObserver = mServerObserver;
@@ -494,7 +496,7 @@ int _WebSocketEpollListener::onConnect(int fd) {
 }
 
 int _WebSocketEpollListener::onEvent(int fd, uint32_t events, ByteArray pack) {
-  printf("ws _WebSocketEpollListener onEvent,fd is %d,events is %p \n",fd,events);
+  //printf("ws _WebSocketEpollListener onEvent,fd is %d,events is %p \n",fd,events);
   DispatchData data = createDispatchData(st(DispatchData)::Ws,fd,events,pack);
   data->mWsSocketListener = mWsSocketListener;
 

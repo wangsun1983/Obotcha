@@ -13,6 +13,8 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(WebSocketHeader) {
 public:
     _WebSocketHeader();
+
+    void clear();
     
     void setOpCode(int);
     int getOpCode();

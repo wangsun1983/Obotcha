@@ -316,7 +316,8 @@ private:
 
     static String _format(const char *fmt,va_list args);
 
-    const static  char IgnoreCaseTable[128];
+    const static  unsigned char IgnoreCaseTable[128];
+    const static  unsigned char toLowCaseTable[128];
     const static  int FormatBuffLength;
 
     const static std::string False;

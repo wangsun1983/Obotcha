@@ -31,6 +31,7 @@
 #include "HashMap.hpp"
 #include "TcpServer.hpp"
 #include "WebSocketClientInfo.hpp"
+#include "CachePool.hpp"
 
 namespace obotcha {
 
@@ -56,7 +57,7 @@ public:
 
     void setWebSocketProtocols(int fd,ArrayList<String>);
     
-    void removeClient(int fd);
+    void removeClient(WebSocketClientInfo);
 
 private:
    static WebSocketClientManager mInstance;

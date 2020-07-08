@@ -13,6 +13,11 @@ _WebSocketHeader::_WebSocketHeader() {
     mHeadSize = 0;
 }
 
+void _WebSocketHeader::clear() {
+    mHeadSize = 0;
+    mOpcode = -1;
+}
+
 void _WebSocketHeader::setOpCode(int v) {
     mOpcode = v;
 }
