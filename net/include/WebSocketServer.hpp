@@ -32,6 +32,7 @@
 #include "TcpServer.hpp"
 #include "WebSocketClientInfo.hpp"
 #include "CachePool.hpp"
+#include "BlockingLinkedList.hpp"
 
 namespace obotcha {
 
@@ -134,7 +135,7 @@ public:
     void run();
 
 private:
-    BlockingQueue<DispatchData> datas;
+    BlockingLinkedList<DispatchData> datas;
     //WebSocketListener mWsSocketListener;
     DispatchStatusListener mStatusListener;
     WebSocketFrameComposer mResponse;

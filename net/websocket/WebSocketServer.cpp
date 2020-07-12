@@ -146,7 +146,7 @@ _DispatchData::_DispatchData(int cmd,int fd, uint32_t events,
 
 //--------------------WebSocketDispatchThread-----------------
 _WebSocketDispatchThread::_WebSocketDispatchThread(DispatchStatusListener m) {
-  datas = createBlockingQueue<DispatchData>();
+  datas = createBlockingLinkedList<DispatchData>();
   mResponse = createWebSocketFrameComposer(false);
   mParser = createHttpV1Parser();
 
@@ -314,8 +314,13 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
         String msg = pong->toString();
         data->mWsSocketListener->onPong(client, msg);
       } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE) {
-        st(WebSocketClientManager)::getInstance()->removeClient(client);
-        return;
+        //st(WebSocketClientManager)::getInstance()->removeClient(client);
+        //return;
+        if(!isRmClient) {
+          isRmClient = true;
+        }
+
+        goto FINISH;
       } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
         ByteArray msgData = parser->parseContent(false);
         // st(WebSocketClientManager)::getInstance()->getClient(fd)->mBuffer->mConitnueBuff->append(msgData);
@@ -348,6 +353,7 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
       break;
     }
 
+FINISH:
     if(isRmClient) {
         data->mWsSocketListener->onDisconnect(client);
         st(WebSocketClientManager)::getInstance()->removeClient(client);
@@ -408,6 +414,7 @@ void _DispatchManager::dispatch(DispatchData data) {
     if(threadId != nullptr) {
         int num = threadId->toValue();
         mThreads->get(num)->add(data);
+        return;
     }
 
     int hit = 0;
@@ -415,7 +422,9 @@ void _DispatchManager::dispatch(DispatchData data) {
 
     for(int i = 0;i<threadsNum;i++) {
         int size = mThreads->get(i)->getWorkQueueSize();
-        if(size < min) {
+        if(i == 0) {
+          min = size;
+        } else if(size < min) {
             hit = i;
             min = size;
         }
