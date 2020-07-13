@@ -54,10 +54,9 @@ WebSocketClientManager _WebSocketClientManager::getInstance() {
 bool _WebSocketClientManager::addClient(int fd, int version) {
   WebSocketClientInfo data = createWebSocketClientInfo();
   data->setClientFd(fd);
+  data->setVersion(version);
   
-  if(data->getVersion() != version) {
-    data->setVersion(version);
-    switch (version) {
+  switch (version) {
       case 0: {
         data->setParser(createWebSocketHybi00Parser());
         data->setComposer(createWebSocketHybi00Composer(WsServerComposer));
@@ -85,7 +84,6 @@ bool _WebSocketClientManager::addClient(int fd, int version) {
       default:
         LOGE(TAG, "WebSocket Protocol Not Support,Version is ", version);
         return false;
-    }
   }
 
   AutoLock ll(mMutex);
@@ -250,14 +248,18 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
         isRmClient = true;
     }
 
+    if(client == nullptr || data->data == nullptr) {
+      //receive hungup before.
+      return;
+    }
+
     //printf("ws data size is %d \n",data->data->size());
     //for(int i = 0;i<data->data->size();i++) {
         //printf(data->data)
     //data->data->dump("pack dump:");
     //}
 
-    WebSocketParser parser =
-        st(WebSocketClientManager)::getInstance()->getClient(fd)->getParser();
+    WebSocketParser parser = client->getParser();
     // check pack
 
     while (1) {
