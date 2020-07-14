@@ -8,6 +8,7 @@ include ./util/sql/makefile
 link += calendar \
 		timezone \
 		properties \
+		systemproperties \
 		log \
 		uuid \
 		random \
@@ -22,6 +23,7 @@ link += calendar \
 objs += $(outtmp)/calendar.o \
         $(outtmp)/timezone.o \
 		$(outtmp)/properties.o \
+		$(outtmp)/systemproperties.o \
 		$(outtmp)/log.o \
 		$(outtmp)/uuid.o \
 		$(outtmp)/random.o \
@@ -44,6 +46,9 @@ timezone :$(utilDir)/TimeZone.cpp
 
 properties :$(utilDir)/Properties.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Properties.cpp -o $(outtmp)/properties.o
+
+systemproperties :$(utilDir)/SystemProperties.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/SystemProperties.cpp -o $(outtmp)/systemproperties.o
 
 log :$(utilDir)/Log.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Log.cpp -o $(outtmp)/log.o
