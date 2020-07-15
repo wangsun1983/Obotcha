@@ -1,7 +1,7 @@
 #ifndef __OBOTCHA_HASHSET_HPP__
 #define __OBOTCHA_HASHSET_HPP__
 
-#include <map>
+#include <hash_set>
 #include <algorithm>
 
 #include "Object.hpp"
@@ -16,66 +16,124 @@
 #include "Collection.hpp"
 #include "HashMap.hpp"
 
+#include<set>
+
 namespace obotcha {
 
 template<typename T>
-class _SetIterator;
+class _HashSetIterator;
 
 DECLARE_CLASS(HashSet,1) {
 
 public:
-    friend class _SetIterator<T>;
+    friend class _HashSetIterator<T>;
 
     _HashSet() {
-        map = createHashMap<T,Integer>();
-        v = createInteger(0);
+        
     }
 
-    void put(T val) {
-        map->put(val,v);
+    void add(T val) {
+        hashset.insert(val);
     }
 
-    sp<_SetIterator<T>> getIterator();
+    void add(HashSet<T> list) {
+        if(list == nullptr || list->size() == 0) {
+            return;
+        }
+
+        hashset.insert(hashset.end(),list->hashset.begin(),list->hashset.end());
+    }
+
+    inline void clear() {
+        hashset.clear();
+    }
+
+    inline int remove(T val) {
+        typename vector<T>::iterator result = find(hashset.begin(), hashset.end(),val);
+        if(result != hashset.end()) {
+            hashset.erase(result);
+            return result - hashset.begin();
+        }
+
+        return -1;
+    }
+
+    inline T get(int index) {
+         if(index >= hashset.size() || index < 0) {
+            throw ArrayIndexOutOfBoundsException("HashSet get fail",hashset.size(),index);
+        }
+
+        return hashset[index];
+    }
+
+    inline int size() {
+        return hashset.size();
+    }
+
+    sp<_HashSetIterator<T>> getIterator() {
+        return new _HashSetIterator<T>(this);
+    }
 
 private:
-    HashMap<T,Integer> map;
-    Integer v;
-};
+    __gnu_cxx::hash_set<T,KeyHash<T>,KeyComapre<T>> hashset;
 
-DECLARE_CLASS(SetIterator,1) {
-public:
-    _SetIterator(_HashSet<T> *set) {
-        mSets.set_pointer(set);
-        iterator = set->map->getIterator();
+    typename __gnu_cxx::hash_set<T,KeyHash<T>,KeyComapre<T>>::iterator begin() {
+        return hashset.begin();
     }
 
-    _SetIterator(_HashSet<T> sets) {
-        mSets = sets;
-        iterator = mSets->map->getIterator();
+    typename __gnu_cxx::hash_set<T,KeyHash<T>,KeyComapre<T>>::iterator end() {
+        return hashset.end();
+    }
+};
+
+DECLARE_CLASS(HashSetIterator,1) {
+public:
+    _HashSetIterator(_HashSet<T> *list) {
+        mList.set_pointer(list);
+        //list->incStrong(0);
+        iterator = list->begin();
+    }
+
+    _HashSetIterator(HashSet<T> list) {
+        mList = list;
+        iterator = mList->begin();
     }
 
     T getValue() {
         //return iterator->second;
-        return iterator->getKey();
+        if(iterator == mList->end()) {
+            //return nullptr;
+            throw ArrayIndexOutOfBoundsException("iterator error");
+        }
+
+        return *iterator;
     }
 
     bool hasValue() {
-        return iterator->hasValue();
+        return iterator != mList->end();
     }
 
     bool next() {
-        return iterator->next();
+        if(iterator ==  mList->end()) {
+            return false;
+        }
+        iterator++;
+        return (iterator != mList->end());
+    }
+
+    bool remove() {
+        if(iterator == mList->end()) {
+            return false;
+        }
+
+        iterator = mList->hashset.erase(iterator);
+        return true;
     }
     
 private:
-    HashSet<T> mSets;
-    MapIterator<T,Integer> iterator;
+    HashSet<T> mList;    
+    typename __gnu_cxx::hash_set<T,KeyHash<T>,KeyComapre<T>>::iterator iterator;
 };
-
-template<typename T>
-SetIterator<T> _HashSet<T>::getIterator() {
-    return new _SetIterator<T>(this);
-}
 
 }
 #endif

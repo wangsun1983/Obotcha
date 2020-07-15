@@ -9,11 +9,16 @@
 #include "File.hpp"
 #include "LocalSocketServer.hpp"
 #include "LocalSocketClient.hpp"
+#include "HashSet.hpp"
 
 namespace obotcha {
 
 class _SystemProperties;
 
+DECLARE_SIMPLE_CLASS(SystemPropertiesListener) {
+public:
+    virtual void onDataChanged(String key,String value) = 0;
+};
 
 
 DECLARE_SIMPLE_CLASS(SystemProperties) IMPLEMENTS(SocketListener){
@@ -25,7 +30,11 @@ public:
 
     String get(String key);
 
-     static const int DataSize = 513;
+    void registListener(String,SystemPropertiesListener);
+    
+    void unregistListener(String,SystemPropertiesListener);
+
+    static const int DataSize = 513;
 
 private:
     struct _SystemPropertiesData {
@@ -38,7 +47,8 @@ private:
 
     static const int GetCommand = 0;
     static const int SetCommand = 1;
-    static const int RespCommand = 2;
+    static const int ListenCommand = 2;
+    static const int RespCommand = 3;
 
     static Mutex initMutex;
     static sp<_SystemProperties> mInstance;
@@ -55,9 +65,13 @@ private:
 
     _SystemProperties();
     
+    
+    //servers
     Mutex mDataMutex;
-
+    
     HashMap<String,String> mValues;
+
+    HashMap<String,HashSet<int>> mListeners;
 
     LocalSocketServer mServer;
 

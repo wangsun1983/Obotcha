@@ -27,6 +27,8 @@ _SystemProperties::_SystemProperties() {
     SocketListener l;
     l.set_pointer(this);
     mServer = createLocalSocketServer(path,l,gDefaultLocalClientNums,sizeof(struct _SystemPropertiesData));
+    mListeners = createHashMap<String,HashSet<int>>();
+
     if(mServer->tryStart() == 0){
         mDataMutex = createMutex("sysprop");
         mValues = createHashMap<String,String>();
@@ -109,8 +111,21 @@ void _SystemProperties::onAccept(int fd,String ip,int port,ByteArray pack) {
             mValues->put(key,value);
         }
         break;
+
+        case ListenCommand: {
+            String key = createString(response->key);
+        }
+        break;
     }
     
+}
+
+void _SystemProperties::registListener(String key,SystemPropertiesListener l) {
+
+}
+    
+void _SystemProperties::unregistListener(String key,SystemPropertiesListener l) {
+
 }
 
 void _SystemProperties::onDisconnect(int fd) {
