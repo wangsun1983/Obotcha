@@ -48,7 +48,9 @@ private:
     static const int GetCommand = 0;
     static const int SetCommand = 1;
     static const int ListenCommand = 2;
-    static const int RespCommand = 3;
+    static const int UnListenCommand = 3;
+    static const int RespCommand = 4;
+    static const int UpdateNotifyCommand = 5;
 
     static Mutex initMutex;
     static sp<_SystemProperties> mInstance;
@@ -64,8 +66,13 @@ private:
     void onTimeout();
 
     _SystemProperties();
+
+    void onServerCommand(int fd,String ip,int port,ByteArray pack);
+    void onClientCommand(int fd,String ip,int port,ByteArray pack);
     
-    
+    //client
+    HashMap<String,ArrayList<SystemPropertiesListener>> mClientListeners;
+
     //servers
     Mutex mDataMutex;
     
