@@ -45,6 +45,8 @@ public:
 
     int start();
 
+    int tryStart();
+
     void release();
 
     int send(int fd,ByteArray data);
@@ -53,10 +55,14 @@ public:
 
     int getStatus();
 
+    int getSock();
+
     ~_LocalSocketServer();
 
 private:
     int connect();
+
+    int tryConnect();
 
     SocketListener mListener;
 

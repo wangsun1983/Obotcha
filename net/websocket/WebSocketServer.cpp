@@ -175,7 +175,7 @@ void _WebSocketDispatchThread::handleHttpData(DispatchData data) {
     // remove fd from http epoll
     // st(NetUtils)::delEpollFd(httpEpollfd,fd);
     data->mServerObserver->removeObserver(fd);
-    //printf("ws socket onAccept tracews socket onAccept trace1 ,fd is %d\n",fd);
+    printf("ws socket onAccept tracews socket onAccept trace1 ,fd is %d\n",fd);
     st(WebSocketClientManager)::getInstance()->addClient(fd,
                                                          version->toBasicInt());
     st(WebSocketClientManager)::getInstance()->setHttpHeader(fd, header);
@@ -241,12 +241,14 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
     if((events & EPOLLRDHUP) != 0) {
         if(pack == nullptr || pack->size() == 0) {
             data->mWsSocketListener->onDisconnect(client);
+            printf("remove fd is %d \n",client->getClientFd());
             st(WebSocketClientManager)::getInstance()->removeClient(client);
             return;
         }
 
         isRmClient = true;
     }
+    
 
     if(client == nullptr || data->data == nullptr) {
       //receive hungup before.
@@ -272,14 +274,14 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
 
       if (!parser->validateEntirePacket(pack)) {
         // it is not a full packet
-        WebSocketEntireBuffer entireBuff = client->getEntireBuffer();
         if (entireBuff == nullptr) {
           entireBuff = createWebSocketEntireBuffer();
-          entireBuff->mBuffer = pack;
-          st(WebSocketClientManager)::getInstance()
+        }
+        
+        entireBuff->mBuffer = pack;
+        st(WebSocketClientManager)::getInstance()
               ->getClient(fd)
               ->setEntireBuffer(entireBuff);
-        }
         break;
       }
 
@@ -293,6 +295,7 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
       if (opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
         ByteArray msgData = parser->parseContent(true);
         String msg = msgData->toString();
+        printf("onmessage,client fd is %d \n",client->getClientFd());
         data->mWsSocketListener->onMessage(client, msg);
       } else if (opcode == st(WebSocketProtocol)::OPCODE_BINARY) {
         if (header->isFinalFrame()) {
@@ -358,6 +361,7 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
 FINISH:
     if(isRmClient) {
         data->mWsSocketListener->onDisconnect(client);
+        printf("remove2 fd is %d \n",client->getClientFd());
         st(WebSocketClientManager)::getInstance()->removeClient(client);
     }
 }

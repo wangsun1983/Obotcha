@@ -125,14 +125,14 @@ int _TcpClient::doSend(ByteArray data) {
 }
 
 ByteArray _TcpClient::doReceive() {
-    static int recvsize = 1024*4;
-    byte buff[recvsize];
-    int len = read(mSock,buff,recvsize);
+    //static int recvsize = 1024*4;
+    byte buff[mBufferSize];
+    int len = read(mSock,buff,mBufferSize);
     ByteArray data = createByteArray((const byte *)buff,len);
-    while(len == recvsize) {
-       len =  read(mSock,buff,recvsize);
-       data->append(buff,len);
-    }
+    //while(len == recvsize) {
+    //   len =  read(mSock,buff,recvsize);
+    //   data->append(buff,len);
+    //}
 
     return data;
 }

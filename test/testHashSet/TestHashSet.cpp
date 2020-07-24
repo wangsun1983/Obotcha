@@ -2,19 +2,22 @@
 #include <unistd.h>
 
 #include "HashSet.hpp"
+#include "HashMap.hpp"
+
+using namespace obotcha;
 
 int main() {
 
     HashSet<String> set = createHashSet<String>();
-    set->put("abc1");
-    set->put("abc2");
-    set->put("abc1");
-    set->put("abc2");
-    set->put("abc3");
+    set->add(createString("abc"));
+    set->add(createString("abc"));
+    set->add(createString("abc1"));
+    set->add(createString("abc2"));
+    set->add(createString("abc3"));
 
     uint64_t tt;
 
-    SetIterator<String> it = set->getIterator();
+    HashSetIterator<String> it = set->getIterator();
     while(it->hasValue()) {
       printf("value is %s \n",it->getValue()->toChars());
       it->next();

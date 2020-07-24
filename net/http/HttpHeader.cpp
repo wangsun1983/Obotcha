@@ -116,7 +116,7 @@ const String _HttpHeader::SecWebSocketProtocol = createString("sec-websocket-pro
 const String _HttpHeader::TransferChunked = createString("chunked");
 
 _HttpHeader::_HttpHeader() {
-mValues  = createHashMap<String,String>();
+    mValues  = createHashMap<String,String>();
     mCookies = createArrayList<HttpCookie>();
 }
 

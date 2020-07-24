@@ -24,101 +24,16 @@
 
 namespace obotcha {
 
-_UdpServerThread::_UdpServerThread(int sock,
-                    int epfd,
-                    AtomicInteger status,
-                    Pipe pi,
-                    SocketListener listener,
-                    ArrayList<Integer> clients,
-                    Mutex mutex) {
-
-    mSocket = sock;
-    mEpollfd = epfd;
-    mStatus = status;
-    mPipe = pi;
-    mListener = listener;
-    mClients = clients;
-    mClientMutex = mutex;
-}
-
-void _UdpServerThread::run() {
-    struct epoll_event events[EPOLL_SIZE];
+int _UdpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
     byte recv_buf[BUFF_SIZE];
-
-    memset(events,0,sizeof(struct epoll_event) * EPOLL_SIZE);
-    memset(recv_buf,0,BUFF_SIZE);
-
-    while(1) {
-        if(mStatus->get() == UdpServerWaitingThreadExit) {
-            mStatus->set(UdpServerThreadExited);
-            return;
-        } else {
-            mStatus->set(UdpServerWorking);
-        }
-
-        int epoll_events_count = epoll_wait(mEpollfd, events, EPOLL_SIZE, -1);
-        if(epoll_events_count < 0) {
-            mStatus->set(UdpServerThreadExited);
-            return;
-        }
-
-        for(int i = 0; i < epoll_events_count; ++i) {
-            int sockfd = events[i].data.fd;
-            int event = events[i].events;
-            //check whether thread need exit
-            if(sockfd == mPipe->getReadPipe()) {
-                if(mStatus->get() == UdpServerWaitingThreadExit) {
-                    mStatus->set(UdpServerThreadExited);
-                    return;
-                }
-                
-                continue;
-            }
-
-            
-
-            if(sockfd == mSocket) {
-                struct sockaddr_in client_address;
-                socklen_t client_addrLength = sizeof(struct sockaddr_in);
-                                
-                int size = recvfrom(sockfd,
-                                   recv_buf,
-                                   sizeof(recv_buf),
-                                   0,
-                                   (struct sockaddr *)&client_address,
-                                   &client_addrLength);
-                ByteArray pack = createByteArray(recv_buf,size);
-                if(mListener != nullptr) {
-                    mListener->onAccept(sockfd,
-                                           createString(inet_ntoa(client_address.sin_addr)),
-                                           ntohs(client_address.sin_port),
-                                           pack);
-                }
-
-            }
-        }
-      
+    printf("fd is %d,sock is %d \n",fd,sock);
+    if(pack != nullptr) {
+        mListener->onAccept(fd,nullptr,
+                                    -1,
+                                    pack);
     }
-
-    mStatus->set(UdpServerThreadExited);
-}
-
-void _UdpServerThread::addClientFd(int fd) {
-    AutoLock l(mClientMutex);
-    mClients->insertLast(createInteger(fd));
-}
-
-void _UdpServerThread::removeClientFd(int fd) {
-    AutoLock l(mClientMutex);
-    int size = mClients->size();
     
-    for(int index = 0;index<size;index++) {
-        if(mClients->get(index)->toValue() == fd) {
-            mClients->removeAt(index);
-            close(fd);
-            return;
-        }
-    }
+    return  0;
 }
 
 _UdpServer::_UdpServer(int port,SocketListener l):_UdpServer{nullptr,port,l} {
@@ -134,25 +49,11 @@ _UdpServer::_UdpServer(String ip,int port,SocketListener l) {
         serverAddr.sin_addr.s_addr = inet_addr(ip->toChars());
     }
 
-    mPipe = createPipe();
-    mPipe->init();
-
-    sock = 0;
-    epfd = 0;
-
-    mListener = l;
-
-    mStatus = createAtomicInteger(UdpServerIdle);
-
-    mClientsMutex = createMutex(createString("UdpServerMutex"));
-
-    mClients = createArrayList<Integer>();
-    
     sock = socket(AF_INET, SOCK_DGRAM, 0);
 
-    epfd = epoll_create(EPOLL_SIZE);
-
-    mServerThread = createUdpServerThread(sock,epfd,mStatus,mPipe,l,mClients,mClientsMutex);
+    mListener = l;
+    
+    mEpollObserver = nullptr;
 }
 
 int _UdpServer::connect() {
@@ -160,12 +61,18 @@ int _UdpServer::connect() {
     setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
 
     if( bind(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
+        printf("bind sock failed,reson is %s \n",strerror(errno));
         return -NetBindFail;
     }
+    printf("sock is %d \n",sock);
     
-    //add epoll
-    st(NetUtils)::addEpollFd(epfd,sock,true);
-    st(NetUtils)::addEpollFd(epfd,mPipe->getReadPipe(),true);
+    if(mListener != nullptr) {
+        mEpollObserver = createEPollFileObserver();
+        EPollFileObserverListener listener;
+        listener.set_pointer(this);
+        mEpollObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,listener);
+        mEpollObserver->start();
+    }
 
     return 0;
 }
@@ -174,51 +81,22 @@ int _UdpServer::start() {
     
     int result = connect();
     if(result != 0) {
-        mStatus->set(UdpServerThreadExited);
         return result;
-    }
-
-    mServerThread->start();
-
-    while(mStatus->get() == UdpServerIdle) {
-        //TODO Nothing
     }
 
     return 0;
 }
 
 void _UdpServer::release() {
-    if(mStatus->get() == UdpServerThreadExited || mStatus->get() == UdpServerWaitingThreadExit) {
-        return;
-    }
-
-    if(sock != 0) {
-        close(sock);
-        sock = 0;
-    }
-
-    {
-        AutoLock l(mClientsMutex);
-        int size = mClients->size();
-        for(int index = 0;index < size;index++) {
-            int fd = mClients->get(index)->toValue();
-            close(fd);
-        }
-    }
     
-    if(mStatus->get() != UdpServerIdle) {
-        if(mStatus->get() != UdpServerThreadExited) {
-            mStatus->set(UdpServerWaitingThreadExit);
-        }
-        mPipe->writeTo(createByteArray(1));
-
-        while(mStatus->get() != UdpServerThreadExited) {
-            //TODO nothing
-        }
+    if(sock != -1) {
+        close(sock);
+        sock = -1;
     }
 
-
-    close(epfd);
+    if(mEpollObserver != nullptr) {
+        mEpollObserver->release();
+    }
 }
 
 //int _UdpServer::send(String ip,int port,ByteArray data) {

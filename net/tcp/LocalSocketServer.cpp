@@ -45,7 +45,7 @@ int _SysTcpSocketObserver::onEvent(int fd,uint32_t events,ByteArray pack) {
         mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,v);
     } else {
         if((events & EPOLLIN) != 0) {
-            if(mListener != nullptr) {
+            if(mListener != nullptr && pack != nullptr) {
                 mListener->onAccept(fd,nullptr,-1,pack);
             }
         }
@@ -58,6 +58,31 @@ int _SysTcpSocketObserver::onEvent(int fd,uint32_t events,ByteArray pack) {
     }
 
     return  0;
+}
+
+
+int _LocalSocketServer::start() {
+    int result = connect();
+    if(result != 0) {
+        printf("connect fail,result is %d \n",result);
+        return result;
+    }
+
+    return 0;
+}
+
+int _LocalSocketServer::tryStart() {
+    int result = tryConnect();
+    if(result != 0) {
+        printf("connect fail,result is %d \n",result);
+        return result;
+    }
+
+    return 0;
+}
+
+int _LocalSocketServer::getSock() {
+    return sock;
 }
 
 _LocalSocketServer::_LocalSocketServer(String domain,SocketListener l,int connectnum,int recvsize) {
@@ -80,6 +105,32 @@ _LocalSocketServer::_LocalSocketServer(String domain,SocketListener l,int connec
     }
 
     throw InitializeException(reason);
+}
+
+int _LocalSocketServer::tryConnect() {
+
+    int len = offsetof(struct sockaddr_un, sun_path) + strlen(serverAddr.sun_path);   
+
+    if( bind(sock, (struct sockaddr *)&serverAddr, len) < 0) {
+        if(errno == EADDRINUSE) {
+            return -NetAddrAlreadyUseFail; 
+        }
+
+        return -NetBindFail;
+    }
+
+    int ret = listen(sock, mConectNum);
+    if(ret < 0) {
+        return -NetListenFail;
+    }
+    
+    if(mListener != nullptr) {
+        mEpollFileObserver = createEPollFileObserver();
+        mSysTcpListener = createSysTcpSocketObserver(mListener,sock,mEpollFileObserver);
+        mEpollFileObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,mSysTcpListener);
+    }
+
+    return 0;
 }
 
 int _LocalSocketServer::connect() {

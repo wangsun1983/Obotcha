@@ -20,43 +20,13 @@
 #include "Pipe.hpp"
 #include "AtomicInteger.hpp"
 #include "Thread.hpp"
+#include "EPollFileObserver.hpp"
 
 namespace obotcha {
 
-enum UdpServerStatus {
-    UdpServerIdle = 1,
-    UdpServerWorking,
-    UdpServerWaitingThreadExit,
-    UdpServerThreadExited,
-};
 
-DECLARE_SIMPLE_CLASS(UdpServerThread) EXTENDS(Thread){
 
-public:
-    _UdpServerThread(int sock,
-                    int epfd,
-                    AtomicInteger status,
-                    Pipe pi,
-                    SocketListener listener,
-                    ArrayList<Integer> clients,
-                    Mutex mutex);
-    void run();
-
-private:
-    int mSocket;
-    int mEpollfd;
-    AtomicInteger mStatus;
-    Pipe mPipe;
-    SocketListener mListener;
-    ArrayList<Integer> mClients;
-    Mutex mClientMutex;
-
-    void addClientFd(int fd);
-
-    void removeClientFd(int fd);
-};
-
-DECLARE_SIMPLE_CLASS(UdpServer) {
+DECLARE_SIMPLE_CLASS(UdpServer) IMPLEMENTS(EPollFileObserverListener) {
     
 public:
     _UdpServer(int port,SocketListener l);
@@ -68,7 +38,7 @@ public:
     void release();
 
     //int send(String ip,int port,ByteArray data);
-
+    
     ~_UdpServer();
 
 private:
@@ -80,13 +50,9 @@ private:
 
     int sock;
 
-    int epfd;
+    int onEvent(int fd,uint32_t events,ByteArray);
 
-    Pipe mPipe;
-
-    AtomicInteger mStatus;
-
-    UdpServerThread mServerThread;
+    EPollFileObserver mEpollObserver;
 
     Mutex mClientsMutex;
 

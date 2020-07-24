@@ -108,15 +108,11 @@ int _LocalSocketClient::doSend(ByteArray data) {
     return st(NetUtils)::sendTcpPacket(mSock,data);
 }
 
+
 ByteArray _LocalSocketClient::doReceive() {
-    static int recvsize = 1024*4;
-    byte buff[recvsize];
-    int len = read(mSock,buff,recvsize);
+    byte buff[mBufferSize];
+    int len = read(mSock,buff,mBufferSize);
     ByteArray data = createByteArray((const byte *)buff,len);
-    while(len == recvsize) {
-       len =  read(mSock,buff,recvsize);
-       data->append(buff,len);
-    }
 
     return data;
 }
@@ -127,7 +123,10 @@ void _LocalSocketClient::release() {
         close(mSock);
         mSock = -1;
     }
-    this->mObserver->release();
+
+    if(mObserver != nullptr) {
+        this->mObserver->release();
+    }
 }
 
 _LocalSocketClient::~_LocalSocketClient() {
