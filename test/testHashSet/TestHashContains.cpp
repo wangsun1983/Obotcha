@@ -6,7 +6,7 @@
 
 using namespace obotcha;
 
-int main() {
+int testHashContains() {
 
     HashSet<String> set = createHashSet<String>();
     set->add(createString("abc"));
@@ -14,13 +14,13 @@ int main() {
     set->add(createString("abc1"));
     set->add(createString("abc2"));
     set->add(createString("abc3"));
-
-    uint64_t tt;
-
-    HashSetIterator<String> it = set->getIterator();
-    while(it->hasValue()) {
-      printf("value is %s \n",it->getValue()->toChars());
-      it->next();
+    if(!set->contains(createString("abc1"))) {
+        printf("HashSet Contains test1-------[FAIL] \n");
     }
 
+    if(set->contains(createString("abcd"))) {
+        printf("HashSet Contains test2-------[FAIL] \n");
+    }
+
+    printf("HashSet Contains test100-------[OK] \n");
 }

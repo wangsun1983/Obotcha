@@ -54,6 +54,7 @@ public:
     _LinkedList(){
         head = nullptr;
         tail = nullptr;
+        count = 0;
     }
 
     int size() {
@@ -91,7 +92,7 @@ public:
 
     T deQueueLast() {
         if(head == nullptr) {
-            return nullptr;
+            throw ArrayIndexOutOfBoundsException("deQueueLast");
         }
 
         T data = tail->data;
@@ -108,7 +109,7 @@ public:
 
     T deQueueFirst() {
         if(head == nullptr) {
-            return nullptr;
+            throw ArrayIndexOutOfBoundsException("deQueueFirst");
         }
         
         T data = head->data;
@@ -176,12 +177,13 @@ public:
         LinkedListData<T> t = current->next;
 
         if(current == mList->head) {
-            mList->dequeueFirst();
+            mList->deQueueFirst();
         } else if(current == mList->tail) {
-            mList->dequeueLast();
+            mList->deQueueLast();
         } else {
             current->next->prev = current->prev;
-            current->prve->next = current->next;
+            current->prev->next = current->next;
+            mList->count--;
         }
 
         current = t;

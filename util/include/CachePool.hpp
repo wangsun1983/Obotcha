@@ -7,6 +7,7 @@
 #include "Mutex.hpp"
 #include "AutoLock.hpp"
 #include "Condition.hpp"
+#include "LinkedList.hpp"
 
 namespace obotcha {
 
@@ -19,7 +20,8 @@ DECLARE_CLASS(CachePool,1) {
 public:
 
     _CachePool(int size,int type = CachePoolTypeASync,int timeout = -1) {
-        mCaches = createArrayList<T>();
+        //mCaches = createArrayList<T>();
+        mCaches = createLinkedList<T>();
         mSize = size;
         mMutex = createMutex("CachePool");
         if(type == CachePoolTypeSync) {
@@ -30,10 +32,10 @@ public:
         mTimeout = timeout;
     }
 
-    int addCache(T t) {
+    int add(T t) {
         AutoLock l(mMutex);
         if(mCaches->size() < mSize) {
-            mCaches->add(t);
+            mCaches->enQueueLast(t);
             if(mType == CachePoolTypeSync) {
                 mCondtion->notify();
             }
@@ -43,11 +45,11 @@ public:
         return  -1;
     }
 
-    T getCache() {
+    T get() {
         while(1) {
             AutoLock l(mMutex);
             if(mCaches->size()!= 0) {
-                return mCaches->removeAt(mCaches->size() - 1);
+                return mCaches->deQueueFirst();
             }
 
             if(mType == CachePoolTypeSync) {
@@ -65,10 +67,16 @@ public:
         return nullptr;
     }
 
+    int size() {
+        AutoLock l(mMutex);
+        return mCaches->size();
+    }
+
 private:
     Mutex mMutex;
     Condition mCondtion;
-    ArrayList<T> mCaches;
+    //ArrayList<T> mCaches;
+    LinkedList<T> mCaches;
     int mSize;
     int mType;
     int mTimeout;

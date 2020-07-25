@@ -36,6 +36,14 @@ public:
         hashset.insert(val);
     }
 
+    bool contains(T val) {
+        if(hashset.find(val) == hashset.end()) {
+            return false;
+        }
+
+        return true;
+    }
+
     void add(HashSet<T> list) {
         if(list == nullptr || list->size() == 0) {
             return;
@@ -49,17 +57,7 @@ public:
     }
 
     inline int remove(T val) {
-        /*
-        typename vector<T>::iterator result = find(hashset.begin(), hashset.end(),val);
-        if(result != hashset.end()) {
-            hashset.erase(result);
-            //return result - hashset.begin();
-            return 0;
-        }
-
-        return -1;
-        */
-       hashset.erase(val);
+        return hashset.erase(val);
     }
 
     inline T get(int index) {
@@ -125,14 +123,15 @@ public:
         return (iterator != mList->end());
     }
 
-    //bool remove() {
-    //    if(iterator == mList->end()) {
-    //        return false;
-    //    }
+    bool remove() {
+        if(iterator == mList->end()) {
+            return false;
+        }
 
-    //    iterator = mList->hashset.erase(iterator);
-    //    return true;
-    //}
+        mList->hashset.erase(iterator);
+        iterator++;
+        return true;
+    }
     
 private:
     HashSet<T> mList;    
