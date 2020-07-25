@@ -15,6 +15,8 @@ make -j32
 cd ../../../
 cp external/openssl/openssl-master/libcrypto.so.3 out/lib/
 cp external/openssl/openssl-master/libssl.so.3 out/lib/
+cp external/openssl/openssl-master/libssl.a out/lib/
+cp external/openssl/openssl-master/libcrypto.a out/lib/
 
 cd out/lib/
 ln -s libcrypto.so.3 libcrypto.so

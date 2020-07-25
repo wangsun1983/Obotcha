@@ -1,26 +1,5 @@
 concurrentDir = ./util/concurrent
 
-link += condition \
-	threadscheduledpoolexecutor \
-	threadpoolexecutor \
-	threadcachedpoolexecutor \
-	threadprioritypoolexecutor \
-	mutex \
-	thread \
-	countdownlatch \
-	atomicint \
-	atomicbool \
-	atomiclong \
-	atomicuint64 \
-	readwritelock \
-	executors \
-	future \
-	futuretask \
-	barrier \
-	timer \
-	executordestructorexception \
-	spinlock \
-
 objs += $(outtmp)/condition.o \
 	$(outtmp)/threadscheduledpoolexecutor.o \
 	$(outtmp)/threadpoolexecutor.o \
@@ -43,62 +22,62 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/spinlock.o \
 
 
-condition :$(concurrentDir)/Condition.cpp
+$(outtmp)/condition.o :$(concurrentDir)/Condition.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Condition.cpp -o $(outtmp)/condition.o
 
-threadpoolexecutor :$(concurrentDir)/ThreadPoolExecutor.cpp
+$(outtmp)/threadpoolexecutor.o :$(concurrentDir)/ThreadPoolExecutor.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ThreadPoolExecutor.cpp -o $(outtmp)/threadpoolexecutor.o
 
-threadcachedpoolexecutor :$(concurrentDir)/ThreadCachedPoolExecutor.cpp
+$(outtmp)/threadcachedpoolexecutor.o :$(concurrentDir)/ThreadCachedPoolExecutor.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ThreadCachedPoolExecutor.cpp -o $(outtmp)/threadcachedpoolexecutor.o
 
-threadscheduledpoolexecutor :$(concurrentDir)/ThreadScheduledPoolExecutor.cpp
+$(outtmp)/threadscheduledpoolexecutor.o :$(concurrentDir)/ThreadScheduledPoolExecutor.cpp
 		$(cppcompiler) $(cppflags) -c $(concurrentDir)/ThreadScheduledPoolExecutor.cpp -o $(outtmp)/threadscheduledpoolexecutor.o
 
-mutex :$(concurrentDir)/Mutex.cpp
+$(outtmp)/mutex.o :$(concurrentDir)/Mutex.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Mutex.cpp -o $(outtmp)/mutex.o
 
-spinlock :$(concurrentDir)/SpinLock.cpp
+$(outtmp)/spinlock.o :$(concurrentDir)/SpinLock.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/SpinLock.cpp -o $(outtmp)/spinlock.o
 
-thread :$(concurrentDir)/Thread.cpp
+$(outtmp)/thread.o :$(concurrentDir)/Thread.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Thread.cpp -o $(outtmp)/thread.o
 
-countdownlatch :$(concurrentDir)/CountDownLatch.cpp
+$(outtmp)/countdownlatch.o :$(concurrentDir)/CountDownLatch.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/CountDownLatch.cpp -o $(outtmp)/countdownlatch.o
 
-atomicint :$(concurrentDir)/AtomicInteger.cpp
+$(outtmp)/atomicint.o :$(concurrentDir)/AtomicInteger.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicInteger.cpp -o $(outtmp)/atomicint.o
 
-atomiclong :$(concurrentDir)/AtomicLong.cpp
+$(outtmp)/atomiclong.o :$(concurrentDir)/AtomicLong.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicLong.cpp -o $(outtmp)/atomiclong.o
 
-atomicuint64 :$(concurrentDir)/AtomicUint64.cpp
+$(outtmp)/atomicuint64.o :$(concurrentDir)/AtomicUint64.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicUint64.cpp -o $(outtmp)/atomicuint64.o
 
-atomicbool :$(concurrentDir)/AtomicBoolean.cpp
+$(outtmp)/atomicbool.o :$(concurrentDir)/AtomicBoolean.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicBoolean.cpp -o $(outtmp)/atomicbool.o
 
-future :$(concurrentDir)/Future.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Future.cpp -o $(outtmp)/future.o	
+$(outtmp)/future.o :$(concurrentDir)/Future.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Future.cpp -o $(outtmp)/future.o
 
-futuretask :$(concurrentDir)/FutureTask.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/FutureTask.cpp -o $(outtmp)/futuretask.o		
+$(outtmp)/futuretask.o :$(concurrentDir)/FutureTask.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/FutureTask.cpp -o $(outtmp)/futuretask.o
 
-barrier :$(concurrentDir)/Barrier.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Barrier.cpp -o $(outtmp)/barrier.o		
+$(outtmp)/barrier.o :$(concurrentDir)/Barrier.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Barrier.cpp -o $(outtmp)/barrier.o
 
-readwritelock :$(concurrentDir)/ReadWriteLock.cpp
+$(outtmp)/readwritelock.o :$(concurrentDir)/ReadWriteLock.cpp
 	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/ReadWriteLock.cpp -o $(outtmp)/readwritelock.o
 
-executors :$(concurrentDir)/Executors.cpp
+$(outtmp)/executors.o :$(concurrentDir)/Executors.cpp
 	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/Executors.cpp -o $(outtmp)/executors.o
 
-executordestructorexception :$(concurrentDir)/ExecutorDestructorException.cpp
+$(outtmp)/executordestructorexception.o :$(concurrentDir)/ExecutorDestructorException.cpp
 	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/ExecutorDestructorException.cpp -o $(outtmp)/executordestructorexception.o
 
-timer :$(concurrentDir)/Timer.cpp
+$(outtmp)/timer.o :$(concurrentDir)/Timer.cpp
 	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/Timer.cpp -o $(outtmp)/timer.o
 
-threadprioritypoolexecutor :$(concurrentDir)/ThreadPriorityPoolExecutor.cpp
+$(outtmp)/threadprioritypoolexecutor.o :$(concurrentDir)/ThreadPriorityPoolExecutor.cpp
 	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/ThreadPriorityPoolExecutor.cpp -o $(outtmp)/threadprioritypoolexecutor.o

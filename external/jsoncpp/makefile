@@ -1,18 +1,15 @@
 jsoncpp = ./external/jsoncpp
 
-link += external_json_reader \
-		external_json_value \
-		external_json_writer \
 
 objs += $(outtmp)/extjsonreader.o \
         $(outtmp)/extjsonvalue.o \
-		$(outtmp)/extjsonwriter.o 
+		$(outtmp)/extjsonwriter.o
 
-external_json_reader :$(jsoncpp)/json_reader.cpp
+$(outtmp)/extjsonreader.o :$(jsoncpp)/json_reader.cpp
 	$(cppcompiler) $(cppflags) -c $(jsoncpp)/json_reader.cpp -o $(outtmp)/extjsonreader.o
 
-external_json_value :$(jsoncpp)/json_value.cpp
+$(outtmp)/extjsonvalue.o :$(jsoncpp)/json_value.cpp
 	$(cppcompiler) $(cppflags) -c $(jsoncpp)/json_value.cpp -o $(outtmp)/extjsonvalue.o
 
-external_json_writer :$(jsoncpp)/json_writer.cpp
+$(outtmp)/extjsonwriter.o :$(jsoncpp)/json_writer.cpp
 	$(cppcompiler) $(cppflags) -c $(jsoncpp)/json_writer.cpp -o $(outtmp)/extjsonwriter.o

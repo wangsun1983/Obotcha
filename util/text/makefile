@@ -1,19 +1,5 @@
 textDir = ./util/text
 
-link += jsonvalue \
-		jsonwriter \
-		jsonreader \
-		inireader \
-		inivalue \
-		xmlreader \
-		xmlvalue \
-		xmlwriter \
-		xmldocument \
-		confreader \
-		confvalue \
-		yamlreader \
-		yamlvalue \
-
 objs += $(outtmp)/jsonvalue.o \
 		$(outtmp)/jsonwriter.o \
 		$(outtmp)/jsonreader.o \
@@ -28,41 +14,41 @@ objs += $(outtmp)/jsonvalue.o \
 		$(outtmp)/yamlreader.o \
 		$(outtmp)/yamlvalue.o \
 
-jsonvalue :$(textDir)/JsonValue.cpp
+$(outtmp)/jsonvalue.o :$(textDir)/JsonValue.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/JsonValue.cpp -o $(outtmp)/jsonvalue.o
 
-jsonwriter :$(textDir)/JsonWriter.cpp
+$(outtmp)/jsonwriter.o :$(textDir)/JsonWriter.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/JsonWriter.cpp -o $(outtmp)/jsonwriter.o
-	
-jsonreader :$(textDir)/JsonReader.cpp
+
+$(outtmp)/jsonreader.o :$(textDir)/JsonReader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/JsonReader.cpp -o $(outtmp)/jsonreader.o
 
-inireader :$(textDir)/IniReader.cpp
+$(outtmp)/inireader.o :$(textDir)/IniReader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/IniReader.cpp -o $(outtmp)/inireader.o
 
-inivalue :$(textDir)/IniValue.cpp
+$(outtmp)/inivalue.o :$(textDir)/IniValue.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/IniValue.cpp -o $(outtmp)/inivalue.o
 
-xmlreader :$(textDir)/XmlReader.cpp
+$(outtmp)/xmlreader.o :$(textDir)/XmlReader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/XmlReader.cpp -o $(outtmp)/xmlreader.o
 
-xmlwriter :$(textDir)/XmlWriter.cpp
+$(outtmp)/xmlwriter.o :$(textDir)/XmlWriter.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/XmlWriter.cpp -o $(outtmp)/xmlwriter.o
 
-xmlvalue :$(textDir)/XmlValue.cpp
+$(outtmp)/xmlvalue.o :$(textDir)/XmlValue.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/XmlValue.cpp -o $(outtmp)/xmlvalue.o
 
-xmldocument :$(textDir)/XmlDocument.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(textDir)/XmlDocument.cpp -o $(outtmp)/xmldocument.o	
+$(outtmp)/xmldocument.o :$(textDir)/XmlDocument.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(textDir)/XmlDocument.cpp -o $(outtmp)/xmldocument.o
 
-confreader :$(textDir)/ConfReader.cpp
+$(outtmp)/confreader.o :$(textDir)/ConfReader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/ConfReader.cpp -o $(outtmp)/confreader.o
 
-confvalue :$(textDir)/ConfValue.cpp
+$(outtmp)/confvalue.o :$(textDir)/ConfValue.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/ConfValue.cpp -o $(outtmp)/confvalue.o
 
-yamlreader :$(textDir)/YamlReader.cpp
+$(outtmp)/yamlreader.o :$(textDir)/YamlReader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/YamlReader.cpp -o $(outtmp)/yamlreader.o
 
-yamlvalue :$(textDir)/YamlValue.cpp
+$(outtmp)/yamlvalue.o :$(textDir)/YamlValue.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/YamlValue.cpp -o $(outtmp)/yamlvalue.o

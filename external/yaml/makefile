@@ -1,36 +1,6 @@
 libyaml = ./external/yaml/src
 
-libyaml_flags = 
-
-link += external_yaml_binary \
-		external_yaml_convert \
-		external_yaml_directives \
-		external_yaml_emit \
-		external_yaml_emitfromevents \
-		external_yaml_emitter \
-		external_yaml_emitterstate \
-		external_yaml_emitterutils \
-		external_yaml_exceptions \
-		external_yaml_exp \
-		external_yaml_memory \
-		external_yaml_nodebuilder \
-		external_yaml_node \
-		external_yaml_node_data \
-		external_yaml_nodeevents \
-		external_yaml_null \
-		external_yaml_ostream_wrapper \
-		external_yaml_parse \
-		external_yaml_parser \
-		external_yaml_regex_yaml \
-		external_yaml_scanner \
-		external_yaml_scanscalar \
-		external_yaml_scantag \
-		external_yaml_scantoken \
-		external_yaml_simplekey \
-		external_yaml_singledocparser \
-		external_yaml_stream \
-		external_yaml_tag \
-
+libyaml_flags =
 
 objs += $(outtmp)/extyamlbinary.o \
 		$(outtmp)/extyamlconvert.o \
@@ -61,87 +31,86 @@ objs += $(outtmp)/extyamlbinary.o \
 		$(outtmp)/extyamlstream.o \
 		$(outtmp)/extyamltag.o \
 
-external_yaml_binary :$(libyaml)/binary.cpp
+$(outtmp)/extyamlbinary.o :$(libyaml)/binary.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/binary.cpp -o $(outtmp)/extyamlbinary.o
 
-external_yaml_convert :$(libyaml)/convert.cpp
+$(outtmp)/extyamlconvert.o :$(libyaml)/convert.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/convert.cpp -o $(outtmp)/extyamlconvert.o
 
-external_yaml_directives :$(libyaml)/directives.cpp
+$(outtmp)/extyamldirectives.o :$(libyaml)/directives.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/directives.cpp -o $(outtmp)/extyamldirectives.o
 
-external_yaml_emit :$(libyaml)/emit.cpp
+$(outtmp)/extyamlemit.o :$(libyaml)/emit.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/emit.cpp -o $(outtmp)/extyamlemit.o
 
-external_yaml_emitfromevents :$(libyaml)/emitfromevents.cpp
+$(outtmp)/extyamlemitfromevents.o :$(libyaml)/emitfromevents.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/emitfromevents.cpp -o $(outtmp)/extyamlemitfromevents.o
 
-external_yaml_emitter :$(libyaml)/emitter.cpp
+$(outtmp)/extyamlemitter.o :$(libyaml)/emitter.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/emitter.cpp -o $(outtmp)/extyamlemitter.o
 
-external_yaml_emitterstate :$(libyaml)/emitterstate.cpp
+$(outtmp)/extyamlemitterstate.o :$(libyaml)/emitterstate.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/emitterstate.cpp -o $(outtmp)/extyamlemitterstate.o
 
-external_yaml_emitterutils :$(libyaml)/emitterutils.cpp
+$(outtmp)/extyamlemitterutils.o :$(libyaml)/emitterutils.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/emitterutils.cpp -o $(outtmp)/extyamlemitterutils.o
 
-external_yaml_exceptions :$(libyaml)/exceptions.cpp
+$(outtmp)/extyamlexceptions.o :$(libyaml)/exceptions.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/exceptions.cpp -o $(outtmp)/extyamlexceptions.o
 
-external_yaml_exp :$(libyaml)/exp.cpp
+$(outtmp)/extyamlexp.o :$(libyaml)/exp.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/exp.cpp -o $(outtmp)/extyamlexp.o
 
-external_yaml_memory :$(libyaml)/memory.cpp
+$(outtmp)/extyamlmemory.o :$(libyaml)/memory.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/memory.cpp -o $(outtmp)/extyamlmemory.o
 
-external_yaml_nodebuilder :$(libyaml)/nodebuilder.cpp
+$(outtmp)/extyamlnodebuilder.o :$(libyaml)/nodebuilder.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/nodebuilder.cpp -o $(outtmp)/extyamlnodebuilder.o
 
-external_yaml_node :$(libyaml)/node.cpp
+$(outtmp)/extyamlnode.o :$(libyaml)/node.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/node.cpp -o $(outtmp)/extyamlnode.o
 
-external_yaml_node_data :$(libyaml)/node_data.cpp
+$(outtmp)/extyamlnode_data.o :$(libyaml)/node_data.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/node_data.cpp -o $(outtmp)/extyamlnode_data.o
 
-external_yaml_nodeevents :$(libyaml)/nodeevents.cpp
+$(outtmp)/extyamlnodeevents.o :$(libyaml)/nodeevents.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/nodeevents.cpp -o $(outtmp)/extyamlnodeevents.o
 
-external_yaml_null :$(libyaml)/null.cpp
+$(outtmp)/extyamlnull.o :$(libyaml)/null.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/null.cpp -o $(outtmp)/extyamlnull.o
 
-external_yaml_ostream_wrapper :$(libyaml)/ostream_wrapper.cpp
+$(outtmp)/extyamlostream_wrapper.o :$(libyaml)/ostream_wrapper.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/ostream_wrapper.cpp -o $(outtmp)/extyamlostream_wrapper.o
 
-external_yaml_parse :$(libyaml)/parse.cpp
+$(outtmp)/extyamlparse.o :$(libyaml)/parse.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/parse.cpp -o $(outtmp)/extyamlparse.o
 
-external_yaml_parser :$(libyaml)/parser.cpp
+$(outtmp)/extyamlparser.o :$(libyaml)/parser.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/parser.cpp -o $(outtmp)/extyamlparser.o
 
-external_yaml_regex_yaml :$(libyaml)/regex_yaml.cpp
+$(outtmp)/extyamlregex_yaml.o :$(libyaml)/regex_yaml.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/regex_yaml.cpp -o $(outtmp)/extyamlregex_yaml.o
 
-external_yaml_scanner :$(libyaml)/scanner.cpp
+$(outtmp)/extyamlscanner.o :$(libyaml)/scanner.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/scanner.cpp -o $(outtmp)/extyamlscanner.o
 
-external_yaml_scanscalar :$(libyaml)/scanscalar.cpp
+$(outtmp)/extyamlscanscalar.o :$(libyaml)/scanscalar.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/scanscalar.cpp -o $(outtmp)/extyamlscanscalar.o
 
-external_yaml_scantag :$(libyaml)/scantag.cpp
+$(outtmp)/extyamlscantag.o :$(libyaml)/scantag.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/scantag.cpp -o $(outtmp)/extyamlscantag.o
 
-external_yaml_scantoken :$(libyaml)/scantoken.cpp
+$(outtmp)/extyamlscantoken.o :$(libyaml)/scantoken.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/scantoken.cpp -o $(outtmp)/extyamlscantoken.o
 
-external_yaml_simplekey :$(libyaml)/simplekey.cpp
+$(outtmp)/extyamlsimplekey.o :$(libyaml)/simplekey.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/simplekey.cpp -o $(outtmp)/extyamlsimplekey.o
 
-external_yaml_singledocparser :$(libyaml)/singledocparser.cpp
+$(outtmp)/extyamlsingledocparser.o :$(libyaml)/singledocparser.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/singledocparser.cpp -o $(outtmp)/extyamlsingledocparser.o
 
-external_yaml_stream :$(libyaml)/stream.cpp
+$(outtmp)/extyamlstream.o :$(libyaml)/stream.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/stream.cpp -o $(outtmp)/extyamlstream.o
 
-external_yaml_tag :$(libyaml)/tag.cpp
+$(outtmp)/extyamltag.o :$(libyaml)/tag.cpp
 		$(cppcompiler) $(cppflags) $(libyaml_flags) -c $(libyaml)/tag.cpp -o $(outtmp)/extyamltag.o
-				

@@ -4,28 +4,6 @@ zlib_flags = -Wall  \
 			-DUSE_MMAP \
 			-DZLIB_CONST \
 
-link += external_zlib_adler32 \
-		external_zlib_compress \
-		external_zlib_crc32 \
-		external_zlib_deflate \
-		external_zlib_gzclose \
-		external_zlib_gzlib \
-		external_zlib_gzread \
-		external_zlib_gzwrite \
-		external_zlib_infback \
-		external_zlib_inflate \
-		external_zlib_inftrees \
-		external_zlib_inffast \
-		external_zlib_trees \
-		external_zlib_uncompr \
-		external_zlib_zutil \
-		external_zlib_ioapi \
-		external_zlib_miniunz \
-		external_zlib_minizip \
-		external_zlib_mztool\
-		external_zlib_unzip \
-		external_zlib_zip \
-
 objs += $(outtmp)/extzlibadler32.o \
 		$(outtmp)/extzlibcompress.o \
 		$(outtmp)/extzlibcrc32.o \
@@ -47,68 +25,68 @@ objs += $(outtmp)/extzlibadler32.o \
 		$(outtmp)/extzlibunzip.o \
 		$(outtmp)/extzlibzip.o \
 
-external_zlib_adler32 :$(zlib)/adler32.c
+$(outtmp)/extzlibadler32.o :$(zlib)/adler32.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/adler32.c -o $(outtmp)/extzlibadler32.o
 
-external_zlib_compress :$(zlib)/compress.c
+$(outtmp)/extzlibcompress.o :$(zlib)/compress.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/compress.c -o $(outtmp)/extzlibcompress.o
 
-external_zlib_crc32 :$(zlib)/crc32.c
+$(outtmp)/extzlibcrc32.o :$(zlib)/crc32.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/crc32.c -o $(outtmp)/extzlibcrc32.o
 
-external_zlib_deflate :$(zlib)/deflate.c
+$(outtmp)/extzlibdeflate.o :$(zlib)/deflate.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/deflate.c -o $(outtmp)/extzlibdeflate.o
 
-external_zlib_gzclose :$(zlib)/gzclose.c
+$(outtmp)/extzlibgzclose.o :$(zlib)/gzclose.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/gzclose.c -o $(outtmp)/extzlibgzclose.o
 
-external_zlib_gzlib :$(zlib)/gzlib.c
+$(outtmp)/extzlibgzlib.o :$(zlib)/gzlib.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/gzlib.c -o $(outtmp)/extzlibgzlib.o
 
-external_zlib_gzread :$(zlib)/gzread.c
+$(outtmp)/extzlibgzread.o :$(zlib)/gzread.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/gzread.c -o $(outtmp)/extzlibgzread.o
 
-external_zlib_gzwrite :$(zlib)/gzwrite.c
+$(outtmp)/extzlibgzwrite.o :$(zlib)/gzwrite.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/gzwrite.c -o $(outtmp)/extzlibgzwrite.o
 
-external_zlib_infback :$(zlib)/infback.c
+$(outtmp)/extzlibinfback.o :$(zlib)/infback.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/infback.c -o $(outtmp)/extzlibinfback.o
 
-external_zlib_inflate :$(zlib)/inflate.c
+$(outtmp)/extzlibinflate.o :$(zlib)/inflate.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/inflate.c -o $(outtmp)/extzlibinflate.o
 
-external_zlib_inftrees :$(zlib)/inftrees.c
+$(outtmp)/extzlibinftrees.o :$(zlib)/inftrees.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/inftrees.c -o $(outtmp)/extzlibinftrees.o
 
-external_zlib_inffast :$(zlib)/inffast.c
+$(outtmp)/extzlibinffast.o :$(zlib)/inffast.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/inffast.c -o $(outtmp)/extzlibinffast.o
 
-external_zlib_trees :$(zlib)/trees.c
+$(outtmp)/extzlibtrees.o :$(zlib)/trees.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/trees.c -o $(outtmp)/extzlibtrees.o
 
-external_zlib_uncompr :$(zlib)/uncompr.c
+$(outtmp)/extzlibuncompr.o :$(zlib)/uncompr.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/uncompr.c -o $(outtmp)/extzlibuncompr.o
 
-external_zlib_zutil :$(zlib)/zutil.c
+$(outtmp)/extzlibzutil.o :$(zlib)/zutil.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/zutil.c -o $(outtmp)/extzlibzutil.o
 
-external_zlib_crypt :$(zlib)/crypt.c
+$(outtmp)/extzlibcrypt.o :$(zlib)/crypt.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/crypt.c -o $(outtmp)/extzlibcrypt.o
 
-external_zlib_ioapi :$(zlib)/ioapi.c
+$(outtmp)/extzlibioapi.o :$(zlib)/ioapi.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/ioapi.c -o $(outtmp)/extzlibioapi.o
 
-external_zlib_mztool :$(zlib)/mztools.c
-	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/mztools.c -o $(outtmp)/extzlibmztool.o				
+$(outtmp)/extzlibmztool.o :$(zlib)/mztools.c
+	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/mztools.c -o $(outtmp)/extzlibmztool.o
 
-external_zlib_unzip :$(zlib)/unzip.c
+$(outtmp)/extzlibunzip.o :$(zlib)/unzip.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/unzip.c -o $(outtmp)/extzlibunzip.o
 
-external_zlib_zip :$(zlib)/zip.c
+$(outtmp)/extzlibzip.o :$(zlib)/zip.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/zip.c -o $(outtmp)/extzlibzip.o
 
-external_zlib_miniunz :$(zlib)/miniunz.c
+$(outtmp)/extzlibminiunz.o :$(zlib)/miniunz.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/miniunz.c -o $(outtmp)/extzlibminiunz.o
 
-external_zlib_minizip :$(zlib)/minizip.c
+$(outtmp)/extzlibminizip.o :$(zlib)/minizip.c
 	$(ccompiler) $(cflags) $(zlib_flags) -c $(zlib)/minizip.c -o $(outtmp)/extzlibminizip.o
