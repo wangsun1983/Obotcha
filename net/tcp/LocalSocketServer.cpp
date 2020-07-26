@@ -19,6 +19,9 @@
 
 namespace obotcha {
 
+const int _LocalSocketServer::DefaultLocalRcvBuffSize = 1024*64;
+const int _LocalSocketServer::DefaultLocalClientNums = 1024*64;
+
 int _LocalSocketServer::onEvent(int fd,uint32_t events,ByteArray pack) {
     if(fd == sock) {
         struct sockaddr_in client_address;

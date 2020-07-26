@@ -27,8 +27,8 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(LocalSocketServer) EXTENDS(EPollFileObserverListener) {
     
 public:
-    static const int DefaultLocalRcvBuffSize = 1024*64;
-    static const int DefaultLocalClientNums = 1024*64;
+    static const int DefaultLocalRcvBuffSize;
+    static const int DefaultLocalClientNums;
 
     _LocalSocketServer(String domain,SocketListener l,int clients = DefaultLocalClientNums, int recvsize=DefaultLocalRcvBuffSize);
 

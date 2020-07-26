@@ -24,6 +24,9 @@ namespace obotcha {
 
 //TcpClient-------------
 _TcpClient::_TcpClient(String ip,int port,int recv_time,SocketListener l,int buff_size) {
+    mServerIp = ip;
+    mServerPort = port;
+
     serverAddr.sin_family = AF_INET;
     if(port > 0) {
         serverAddr.sin_port = htons(port);
@@ -76,6 +79,10 @@ int _TcpClient::doConnect() {
         close(mSock);
         mSock = -1;
         return -1;
+    }
+
+    if(mListener != nullptr) {
+        mListener->onConnect(mSock,mServerIp,mServerPort);
     }
 
     struct sockaddr_in local_address;

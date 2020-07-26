@@ -22,7 +22,16 @@
 
 namespace obotcha {
 
-//LocalSocketClient-----------------------
+int _LocalSocketClient::onEvent(int fd,uint32_t events,ByteArray data) {
+    if((events & EPOLLHUP)!= 0) {
+        mSocketListener->onDisconnect(fd);
+    } else if((events & EPOLLIN) != 0) {
+        mSocketListener->onAccept(fd,nullptr,-1,data);
+    }
+
+    return st(EPollFileObserver)::OnEventOK;
+}
+
 _LocalSocketClient::_LocalSocketClient(String domain,int recv_time,int buff_size,SocketListener l) {
 
     mDomain = domain;
@@ -59,6 +68,10 @@ int _LocalSocketClient::doConnect() {
     int ret = connect(mSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
     if( ret < 0) {
         return -1;
+    }
+
+    if(mSocketListener != nullptr) {
+        mSocketListener->onConnect(mSock,mDomain);
     }
 
     struct sockaddr_in local_address;

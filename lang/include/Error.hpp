@@ -22,6 +22,7 @@ enum ErrorType {
     NetBindFail,
     NetListenFail,
     NetConnectFail,
+    NetAddrAlreadyUseFail,
     AttributeSetFail,
     OpenFail,
     CreateFail,

@@ -52,9 +52,13 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/sslserver.o \
 		$(outtmp)/sslinfo.o \
 		$(outtmp)/sslmanager.o \
+		$(outtmp)/socketresponser.o \
 
 $(outtmp)/inetaddress.o :$(netDir)/InetAddress.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
+
+$(outtmp)/socketresponser.o :$(netDir)/SocketResponser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/SocketResponser.cpp -o $(outtmp)/socketresponser.o $(external)
 
 $(outtmp)/tcpserver.o :$(netDir)/tcp/TcpServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/TcpServer.cpp -o $(outtmp)/tcpserver.o $(external)

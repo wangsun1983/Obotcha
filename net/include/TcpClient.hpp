@@ -61,6 +61,9 @@ private:
     Mutex mConnectMutex;
 
     SocketListener mListener;
+
+    String mServerIp;
+    int mServerPort;
 };
 
 }
