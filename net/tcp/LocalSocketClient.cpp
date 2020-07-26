@@ -22,21 +22,6 @@
 
 namespace obotcha {
 
-//MyLocalTcpClientListener-----------------------
-_MyLocalTcpClientListener::_MyLocalTcpClientListener(SocketListener l) {
-    mListener = l;
-}
-
-int _MyLocalTcpClientListener::onEvent(int fd,uint32_t events,ByteArray data) {
-    if((events & EPOLLHUP)!= 0) {
-        mListener->onDisconnect(fd);
-    } else if((events & EPOLLIN) != 0) {
-        mListener->onAccept(fd,nullptr,-1,data);
-    }
-
-    return st(EPollFileObserver)::OnEventOK;
-}
-
 //LocalSocketClient-----------------------
 _LocalSocketClient::_LocalSocketClient(String domain,int recv_time,int buff_size,SocketListener l) {
 
@@ -91,9 +76,10 @@ int _LocalSocketClient::doConnect() {
 
     //add to epoll fd
     if(mSocketListener != nullptr) {
-        mEpollListener = createMyLocalTcpClientListener(mSocketListener);
+        EPollFileObserverListener l;
+        l.set_pointer(this);
         mObserver = createEPollFileObserver();
-        mObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,mEpollListener);
+        mObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,l);
         mObserver->start();
     }
 

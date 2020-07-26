@@ -26,7 +26,6 @@ namespace obotcha {
 
 int _UdpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
     byte recv_buf[BUFF_SIZE];
-    printf("fd is %d,sock is %d \n",fd,sock);
     if(pack != nullptr) {
         mListener->onAccept(fd,nullptr,
                                     -1,
@@ -61,10 +60,8 @@ int _UdpServer::connect() {
     setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
 
     if( bind(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
-        printf("bind sock failed,reson is %s \n",strerror(errno));
         return -NetBindFail;
     }
-    printf("sock is %d \n",sock);
     
     if(mListener != nullptr) {
         mEpollObserver = createEPollFileObserver();

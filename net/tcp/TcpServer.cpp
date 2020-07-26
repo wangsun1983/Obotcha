@@ -21,49 +21,6 @@
 
 namespace obotcha {
 
-_LocalTcpSocketObserver::_LocalTcpSocketObserver(SocketListener l,int sock,EPollFileObserver o) {
-    mListener = l;
-    mSock = sock;
-    mObserver = o;
-}
-
-int _LocalTcpSocketObserver::onEvent(int fd,uint32_t events,ByteArray pack) {
-    if(fd == mSock) {
-        struct sockaddr_in client_address;
-        socklen_t client_addrLength = sizeof(struct sockaddr_in);
-        int clientfd = accept(fd,( struct sockaddr* )&client_address, &client_addrLength );
-        if(clientfd == -1) {
-            printf("accept fail,error is %s \n",strerror(errno));
-            return 0;
-        }
-
-        mListener->onConnect(clientfd,
-                            createString(inet_ntoa(client_address.sin_addr)),
-                            ntohs(client_address.sin_port));
-        
-        LocalTcpSocketObserver v;
-        v.set_pointer(this);
-        //printf("add observer by socket!!!! ,clientfd is %d\n",clientfd);
-        mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,v);
-    } else {
-        if((events & EPOLLRDHUP) != 0) {
-            if(mListener != nullptr) {
-                mListener->onDisconnect(fd);
-            }
-        }
-
-        if(pack != nullptr && pack->size() != 0) {
-            if(mListener != nullptr) {
-                mListener->onAccept(fd,nullptr,-1,pack);
-            }
-        }
-
-        
-    }
-
-    return  0;
-}
-
 _TcpServer::_TcpServer(String ip,int port):_TcpServer{ip,port,nullptr} {
 
 }
@@ -117,11 +74,50 @@ int _TcpServer::connect() {
 
     if(mListener != nullptr) {
         mObserver = createEPollFileObserver();
-        mLocalListener = createLocalTcpSocketObserver(mListener,sock,mObserver);
-        mObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,mLocalListener);
+        //mLocalListener = createLocalTcpSocketObserver(mListener,sock,mObserver);
+        EPollFileObserverListener listener;
+        listener.set_pointer(this);
+        mObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,listener);
     }
 
     return 0;
+}
+
+int _TcpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
+    if(fd == sock) {
+        struct sockaddr_in client_address;
+        socklen_t client_addrLength = sizeof(struct sockaddr_in);
+        int clientfd = accept(fd,( struct sockaddr* )&client_address, &client_addrLength );
+        if(clientfd == -1) {
+            printf("accept fail,error is %s \n",strerror(errno));
+            return 0;
+        }
+
+        mListener->onConnect(clientfd,
+                            createString(inet_ntoa(client_address.sin_addr)),
+                            ntohs(client_address.sin_port));
+        
+        EPollFileObserverListener v;
+        v.set_pointer(this);
+        //printf("add observer by socket!!!! ,clientfd is %d\n",clientfd);
+        mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,v);
+    } else {
+        if((events & EPOLLRDHUP) != 0) {
+            if(mListener != nullptr) {
+                mListener->onDisconnect(fd);
+            }
+        }
+
+        if(pack != nullptr && pack->size() != 0) {
+            if(mListener != nullptr) {
+                mListener->onAccept(fd,nullptr,-1,pack);
+            }
+        }
+
+        
+    }
+
+    return  0;
 }
 
 int _TcpServer::start() {

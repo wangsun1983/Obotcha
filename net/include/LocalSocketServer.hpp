@@ -24,24 +24,13 @@
 
 namespace obotcha {
 
-#define gDefaultLocalRcvBuffSize 1024*64
-#define gDefaultLocalClientNums 1024*64
-
-DECLARE_SIMPLE_CLASS(SysTcpSocketObserver) EXTENDS(EPollFileObserverListener){
-public:
-    _SysTcpSocketObserver(SocketListener,int,EPollFileObserver o);
-    int onEvent(int fd,uint32_t events,ByteArray);
-
-private:
-    SocketListener mListener;
-    EPollFileObserver mObserver;
-    int mSock;
-};
-
-DECLARE_SIMPLE_CLASS(LocalSocketServer) {
+DECLARE_SIMPLE_CLASS(LocalSocketServer) EXTENDS(EPollFileObserverListener) {
     
 public:
-    _LocalSocketServer(String domain,SocketListener l,int clients = gDefaultLocalClientNums, int recvsize=gDefaultLocalRcvBuffSize);
+    static const int DefaultLocalRcvBuffSize = 1024*64;
+    static const int DefaultLocalClientNums = 1024*64;
+
+    _LocalSocketServer(String domain,SocketListener l,int clients = DefaultLocalClientNums, int recvsize=DefaultLocalRcvBuffSize);
 
     int start();
 
@@ -64,11 +53,11 @@ private:
 
     int tryConnect();
 
+    int onEvent(int fd,uint32_t events,ByteArray);
+
     SocketListener mListener;
 
     EPollFileObserver mEpollFileObserver;
-
-    SysTcpSocketObserver mSysTcpListener;
 
     struct sockaddr_un serverAddr;
 

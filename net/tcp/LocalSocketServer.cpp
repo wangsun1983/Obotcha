@@ -19,14 +19,8 @@
 
 namespace obotcha {
 
-_SysTcpSocketObserver::_SysTcpSocketObserver(SocketListener l,int sock,EPollFileObserver o) {
-    mListener = l;
-    mSock = sock;
-    mObserver = o;
-}
-
-int _SysTcpSocketObserver::onEvent(int fd,uint32_t events,ByteArray pack) {
-    if(fd == mSock) {
+int _LocalSocketServer::onEvent(int fd,uint32_t events,ByteArray pack) {
+    if(fd == sock) {
         struct sockaddr_in client_address;
         socklen_t client_addrLength = sizeof(struct sockaddr_in);
         int clientfd = accept(fd,( struct sockaddr* )&client_address, &client_addrLength );
@@ -39,10 +33,10 @@ int _SysTcpSocketObserver::onEvent(int fd,uint32_t events,ByteArray pack) {
                             createString(inet_ntoa(client_address.sin_addr)),
                             ntohs(client_address.sin_port));
         
-        SysTcpSocketObserver v;
+        EPollFileObserverListener v;
         v.set_pointer(this);
         printf("add observer by socket!!!! ,clientfd is %d\n",clientfd);
-        mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,v);
+        mEpollFileObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,v);
     } else {
         if((events & EPOLLIN) != 0) {
             if(mListener != nullptr && pack != nullptr) {
@@ -59,7 +53,6 @@ int _SysTcpSocketObserver::onEvent(int fd,uint32_t events,ByteArray pack) {
 
     return  0;
 }
-
 
 int _LocalSocketServer::start() {
     int result = connect();
@@ -126,8 +119,9 @@ int _LocalSocketServer::tryConnect() {
     
     if(mListener != nullptr) {
         mEpollFileObserver = createEPollFileObserver();
-        mSysTcpListener = createSysTcpSocketObserver(mListener,sock,mEpollFileObserver);
-        mEpollFileObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,mSysTcpListener);
+        EPollFileObserverListener l;
+        l.set_pointer(this);
+        mEpollFileObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,l);
     }
 
     return 0;
@@ -151,8 +145,9 @@ int _LocalSocketServer::connect() {
     
     if(mListener != nullptr) {
         mEpollFileObserver = createEPollFileObserver();
-        mSysTcpListener = createSysTcpSocketObserver(mListener,sock,mEpollFileObserver);
-        mEpollFileObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,mSysTcpListener);
+        EPollFileObserverListener l;
+        l.set_pointer(this);
+        mEpollFileObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,l);
     }
 
     return 0;

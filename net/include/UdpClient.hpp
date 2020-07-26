@@ -17,37 +17,12 @@
 #include "SocketListener.hpp"
 #include "Thread.hpp"
 #include "Pipe.hpp"
+#include "EPollFileObserver.hpp"
 
 namespace obotcha {
 
-enum UdpClientStatus {
-    UdpClientWorking = 1,
-    UdpClientWaitingThreadExit,
-    UdpClientThreadExited,
-};
 
-DECLARE_SIMPLE_CLASS(UdpClientThread) EXTENDS(Thread){
-public:
-    _UdpClientThread(int sock,int epfd,SocketListener l,Pipe pi,AtomicInteger status);
-
-    void stop();
-    
-    void run();
-
-private:
-    int mSock;
-
-    int mEpfd;
-
-    SocketListener mListener;
-
-    Pipe mPipe;
-
-    AtomicInteger mStatus;
-    
-};
-
-DECLARE_SIMPLE_CLASS(UdpClient) {
+DECLARE_SIMPLE_CLASS(UdpClient) IMPLEMENTS(EPollFileObserverListener) {
 public:
 
     _UdpClient(int port,SocketListener l);
@@ -66,6 +41,8 @@ private:
 
     bool init();
 
+    int onEvent(int fd,uint32_t events,ByteArray);
+
     int sock;
 
     int epfd;
@@ -74,11 +51,7 @@ private:
 
     SocketListener listener;
 
-    UdpClientThread mUdpClientThread;
-
-    Pipe mPipe;
-
-    AtomicInteger mStatus;
+    EPollFileObserver mObserver;
 
 };
 

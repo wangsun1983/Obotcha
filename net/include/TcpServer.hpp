@@ -26,18 +26,8 @@ namespace obotcha {
 
 class _WebSocketServer;
 
-DECLARE_SIMPLE_CLASS(LocalTcpSocketObserver) EXTENDS(EPollFileObserverListener){
-public:
-    _LocalTcpSocketObserver(SocketListener,int,EPollFileObserver o);
-    int onEvent(int fd,uint32_t events,ByteArray);
 
-private:
-    SocketListener mListener;
-    EPollFileObserver mObserver;
-    int mSock;
-};
-
-DECLARE_SIMPLE_CLASS(TcpServer) {
+DECLARE_SIMPLE_CLASS(TcpServer) EXTENDS(EPollFileObserverListener){
     
 public:
     friend class _WebSocketServer;
@@ -60,17 +50,15 @@ private:
 
     int connect();
 
+    int onEvent(int fd,uint32_t events,ByteArray);
+
     SocketListener mListener;
 
     struct sockaddr_in serverAddr;
 
     int sock;
 
-    AtomicInteger mStatus;
-
     EPollFileObserver mObserver;
-
-    LocalTcpSocketObserver mLocalListener;
 
     int mConnectionNum;
 };

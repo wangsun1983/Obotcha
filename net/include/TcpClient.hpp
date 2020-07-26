@@ -23,18 +23,7 @@ namespace obotcha {
 
 class _TcpClient;
 
-DECLARE_SIMPLE_CLASS(LocalTcpClientListener) IMPLEMENTS(EPollFileObserverListener) {
-public:
-    _LocalTcpClientListener(SocketListener l,sp<_TcpClient> client);
-
-    int onEvent(int fd,uint32_t events,ByteArray);
-
-private:
-    SocketListener mListener;
-    sp<_TcpClient> mClient;
-};
-
-DECLARE_SIMPLE_CLASS(TcpClient) {
+DECLARE_SIMPLE_CLASS(TcpClient) EXTENDS(EPollFileObserverListener){
 public:
     _TcpClient(int port,int recv_time,SocketListener l = nullptr,int buff_size = 1024);
 
@@ -55,11 +44,11 @@ public:
     ~_TcpClient();
 
 private:
+    int onEvent(int fd,uint32_t events,ByteArray);
+
     int mReceiveTimeout;
 
     EPollFileObserver mEpollObserver;
-
-    LocalTcpClientListener mLocalTcpListener;
     
     int mSock;
 

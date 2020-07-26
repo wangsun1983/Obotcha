@@ -22,24 +22,6 @@
 
 namespace obotcha {
 
-//TcpClientObserver--------
-_LocalTcpClientListener::_LocalTcpClientListener(SocketListener l,TcpClient cl) {
-    mListener = l;
-    mClient = cl;
-}
-
-int _LocalTcpClientListener::onEvent(int fd,uint32_t events,ByteArray data) {
-    if((events & EPOLLHUP)!= 0) {
-        mListener->onDisconnect(fd);
-        mClient->release();
-        mClient = nullptr;
-    } else if((events & EPOLLIN) != 0) {
-        mListener->onAccept(fd,nullptr,-1,data);
-    }
-
-    return st(EPollFileObserver)::OnEventOK;
-}
-
 //TcpClient-------------
 _TcpClient::_TcpClient(String ip,int port,int recv_time,SocketListener l,int buff_size) {
     serverAddr.sin_family = AF_INET;
@@ -54,13 +36,7 @@ _TcpClient::_TcpClient(String ip,int port,int recv_time,SocketListener l,int buf
     } else {
         serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     }
-
-    //if(recv_time > 0) {
-    //    mReceiveTimeout = recv_time;
-    //} else {
-    //    throw InitializeException(createString("error tcp client recv time"));
-    //}
-    
+  
     if(buff_size >0) {
         mBufferSize = buff_size;
     } else {
@@ -76,6 +52,17 @@ _TcpClient::_TcpClient(String ip,int port,int recv_time,SocketListener l,int buf
 
 _TcpClient::_TcpClient(int port,int recv_time,SocketListener l,int buff_size):_TcpClient{nullptr,port,recv_time,l,buff_size} {
 
+}
+
+int _TcpClient::onEvent(int fd,uint32_t events,ByteArray data) {
+    if((events & EPOLLHUP)!= 0) {
+        mListener->onDisconnect(fd);
+        this->release();
+    } else if((events & EPOLLIN) != 0) {
+        mListener->onAccept(fd,nullptr,-1,data);
+    }
+
+    return st(EPollFileObserver)::OnEventOK;
 }
 
 int _TcpClient::getSock() {
@@ -108,9 +95,10 @@ int _TcpClient::doConnect() {
         TcpClient v;
         v.set_pointer(this);
         
-        mLocalTcpListener = createLocalTcpClientListener(mListener,v);
+        EPollFileObserverListener l;
+        l.set_pointer(this);
         mEpollObserver = createEPollFileObserver();
-        mEpollObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,mLocalTcpListener);
+        mEpollObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,l);
         mEpollObserver->start();
     }
 

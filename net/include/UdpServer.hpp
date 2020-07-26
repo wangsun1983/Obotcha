@@ -24,8 +24,6 @@
 
 namespace obotcha {
 
-
-
 DECLARE_SIMPLE_CLASS(UdpServer) IMPLEMENTS(EPollFileObserverListener) {
     
 public:
