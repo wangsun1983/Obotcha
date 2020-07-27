@@ -469,11 +469,10 @@ void _WebSocketHttpListener::setWsEpollObserver(
   mEpollListener = l;
 }
 
-void _WebSocketHttpListener::onAccept(int fd, String ip, int port,
-                                      ByteArray pack) {
+void _WebSocketHttpListener::onDataReceived(SocketResponser r,ByteArray pack) {
     //printf("onAccept fd is %d \n",fd);
     
-    DispatchData data = createDispatchData(st(DispatchData)::Http,fd,0,pack);
+    DispatchData data = createDispatchData(st(DispatchData)::Http,r->getFd(),0,pack);
     data->mServerObserver = mServerObserver;
     data->mWsObservers = mWsObservers;
     data->mEpollListener = mEpollListener;
@@ -481,15 +480,11 @@ void _WebSocketHttpListener::onAccept(int fd, String ip, int port,
     mDispatchMgr->dispatch(data);
 }
 
-void _WebSocketHttpListener::onDisconnect(int fd) {
-  st(NetUtils)::delEpollFd(httpEpollfd, fd);
+void _WebSocketHttpListener::onDisconnect(SocketResponser r) {
+  st(NetUtils)::delEpollFd(httpEpollfd, r->getFd());
 }
 
-void _WebSocketHttpListener::onConnect(int fd, String ip, int port) {
-  // Do Nothing
-}
-
-void _WebSocketHttpListener::onConnect(int fd, String domain) {
+void _WebSocketHttpListener::onConnect(SocketResponser r) {
   // Do Nothing
 }
 

@@ -59,13 +59,13 @@ void _WebSocketTcpClientListener::onTimeout() {
     //TODO
 }
     
-void _WebSocketTcpClientListener::onAccept(int fd,String ip,int port,ByteArray pack) {
+void _WebSocketTcpClientListener::onDataReceived(SocketResponser r,ByteArray pack) {
     
     if(mProtoclType == WsClientProtocolHttp) {
         HttpPacket req = mHttpParser->parseEntireResponse(pack->toString());
         if(req->getStatusCode() == st(HttpResponse)::SwitchProtocls) {
             mProtoclType = WsClientProtocolWebSocket;
-            mClient->setClientFd(fd);
+            mClient->setClientFd(r->getFd());
         } else {
             mWsListener->onDisconnect(mClient);
         }
@@ -119,16 +119,12 @@ void _WebSocketTcpClientListener::onAccept(int fd,String ip,int port,ByteArray p
 
 }
 
-void _WebSocketTcpClientListener::onDisconnect(int fd) {
+void _WebSocketTcpClientListener::onDisconnect(SocketResponser r) {
 
 }
 
-void _WebSocketTcpClientListener::onConnect(int fd,String ip,int port) {
+void _WebSocketTcpClientListener::onConnect(SocketResponser r) {
     
-}
-
-void _WebSocketTcpClientListener::onConnect(int fd,String domain) {
-
 }
 
 _WebSocketClient::_WebSocketClient(int version = 13) {

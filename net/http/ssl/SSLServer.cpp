@@ -108,7 +108,9 @@ void _SSLThread::run() {
             && ((event & EPOLLRDHUP) != 0)) {
                 epoll_ctl(mEpollfd, EPOLL_CTL_DEL, sockfd, NULL);
                 st(NetUtils)::delEpollFd(mEpollfd,sockfd);
-                mListener->onDisconnect(sockfd);
+                SocketResponser r = createSocketResponser(sockfd);
+                mListener->onDisconnect(r);
+                
                 st(SSLManager)::getInstance()->remove(sockfd);
                 close(sockfd);
                 continue;
@@ -125,10 +127,10 @@ void _SSLThread::run() {
                 if(ssl->bindSocket(clientfd) == 0) {
                     //mClients->put(clientfd,ssl);
                     st(SSLManager)::getInstance()->add(clientfd,ssl);
-
-                    mListener->onConnect(clientfd,
-                                    createString(inet_ntoa(client_address.sin_addr)),
-                                    ntohs(client_address.sin_port));
+                    SocketResponser r = createSocketResponser(clientfd,
+                                                              createString(inet_ntoa(client_address.sin_addr)),
+                                                              ntohs(client_address.sin_port));
+                    mListener->onConnect(r);
                 } else {
                     //TODO
                 }
@@ -146,7 +148,8 @@ void _SSLThread::run() {
                 }
                 
                 if(mListener != nullptr) {
-                    mListener->onAccept(sockfd,nullptr,-1,buff);
+                    SocketResponser r = createSocketResponser(sockfd);
+                    mListener->onDataReceived(r,buff);
                 }
             }
         }

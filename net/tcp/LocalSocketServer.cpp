@@ -32,9 +32,9 @@ int _LocalSocketServer::onEvent(int fd,uint32_t events,ByteArray pack) {
             return 0;
         }
 
-        mListener->onConnect(clientfd,
+        mListener->onConnect(createSocketResponser(clientfd,
                             createString(inet_ntoa(client_address.sin_addr)),
-                            ntohs(client_address.sin_port));
+                            ntohs(client_address.sin_port)));
         
         EPollFileObserverListener v;
         v.set_pointer(this);
@@ -43,13 +43,13 @@ int _LocalSocketServer::onEvent(int fd,uint32_t events,ByteArray pack) {
     } else {
         if((events & EPOLLIN) != 0) {
             if(mListener != nullptr && pack != nullptr) {
-                mListener->onAccept(fd,nullptr,-1,pack);
+                mListener->onDataReceived(createSocketResponser(fd),pack);
             }
         }
 
         if((events & EPOLLRDHUP) != 0) {
             if(mListener != nullptr) {
-                mListener->onDisconnect(fd);
+                mListener->onDisconnect(createSocketResponser(fd));
             }
         }
     }

@@ -44,13 +44,11 @@ DECLARE_SIMPLE_CLASS(WebSocketTcpClientListener) IMPLEMENTS(SocketListener) {
 public:
     _WebSocketTcpClientListener(WebSocketListener,WebSocketClientInfo);
 
-    void onAccept(int fd,String ip,int port,ByteArray pack);
+    void onDataReceived(SocketResponser r,ByteArray pack);
 
-    void onDisconnect(int fd);
+    void onDisconnect(SocketResponser r);
 
-    void onConnect(int fd,String ip,int port);
-
-    void onConnect(int fd,String domain);
+    void onConnect(SocketResponser r);
 
     void onTimeout();
 

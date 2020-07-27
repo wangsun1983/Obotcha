@@ -27,9 +27,7 @@ namespace obotcha {
 int _UdpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
     byte recv_buf[BUFF_SIZE];
     if(pack != nullptr) {
-        mListener->onAccept(fd,nullptr,
-                                    -1,
-                                    pack);
+        mListener->onDataReceived(createSocketResponser(fd),pack);
     }
     
     return  0;

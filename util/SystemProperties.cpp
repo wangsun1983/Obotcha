@@ -23,20 +23,6 @@ sp<_SystemProperties> _SystemProperties::getInstance() {
 }
 
 _SystemProperties::_SystemProperties() {
-    //domain,SocketListener l,int clients = gDefaultLocalClientNums, int recvsize=gDefaultLocalRcvBuffSize
-    SocketListener l;
-    l.set_pointer(this);
-    mServer = createLocalSocketServer(path,l,gDefaultLocalClientNums,sizeof(struct _SystemPropertiesData));
-    mListeners = createHashMap<String,HashSet<int>>();
-
-    if(mServer->tryStart() == 0){
-        mDataMutex = createMutex("sysprop");
-        mValues = createHashMap<String,String>();
-    }
-
-    //(String domain,int recv_time,int buff_size = 1024,SocketListener l = nullptr
-    //mClient = createLocalSocketClient(path,1000,sizeof(struct _SystemPropertiesData),nullptr);
-    //mClient->doConnect();
 }
 
 int _SystemProperties::set(String key,String value) {
@@ -197,14 +183,25 @@ void _SystemProperties::onClientCommand(int fd,String ip,int port,ByteArray pack
     }
 }
 
-void _SystemProperties::onAccept(int fd,String ip,int port,ByteArray pack) {
-    printf("onAccept fd is %d \n",fd);
-    if(mClient != nullptr && mClient->getSock() == fd) {
+void _SystemProperties::onDataReceived(SocketResponser r,ByteArray pack) {
+    if(mClient != nullptr && mClient->getSock() == r->getFd()) {
         printf("mClient fd is %d \n",mClient->getSock());
-        onClientCommand(fd,ip,port,pack);
+        onClientCommand(r->getFd(),r->getIp(),r->getPort(),pack);
     } else {
         printf("mServer fd is %d \n",mServer->getSock());
-        onServerCommand(fd,ip,port,pack);
+        onServerCommand(r->getFd(),r->getIp(),r->getPort(),pack);
+    }
+}
+
+void _SystemProperties::runAsServer() {
+    SocketListener l;
+    l.set_pointer(this);
+    mServer = createLocalSocketServer(path,l,st(LocalSocketServer)::DefaultLocalClientNums,sizeof(struct _SystemPropertiesData));
+    mListeners = createHashMap<String,HashSet<int>>();
+
+    if(mServer->tryStart() == 0){
+        mDataMutex = createMutex("sysprop");
+        mValues = createHashMap<String,String>();
     }
 }
 
@@ -263,16 +260,22 @@ void _SystemProperties::unregistListener(String key,SystemPropertiesListener l) 
     }
 }
 
-void _SystemProperties::onDisconnect(int fd) {
-    close(fd);
+void _SystemProperties::onDisconnect(SocketResponser r) {
+    close(r->getFd());
+    MapIterator<String,HashSet<int>> iterator = mListeners->getIterator();
+    while(iterator->hasValue()) {
+        HashSet<int> l = iterator->getValue();
+        if(l != nullptr) {
+            l->remove(r->getFd());
+            return;        
+        }
+
+        iterator->next();
+    }
 }
 
-void _SystemProperties::onConnect(int fd,String ip,int port) {
+void _SystemProperties::onConnect(SocketResponser r) {
    
-}
-
-void _SystemProperties::onConnect(int fd,String domain) {
-
 }
 
 void _SystemProperties::onTimeout() {

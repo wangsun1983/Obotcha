@@ -59,10 +59,10 @@ _TcpClient::_TcpClient(int port,int recv_time,SocketListener l,int buff_size):_T
 
 int _TcpClient::onEvent(int fd,uint32_t events,ByteArray data) {
     if((events & EPOLLHUP)!= 0) {
-        mListener->onDisconnect(fd);
+        mListener->onDisconnect(createSocketResponser(fd));
         this->release();
     } else if((events & EPOLLIN) != 0) {
-        mListener->onAccept(fd,nullptr,-1,data);
+        mListener->onDataReceived(createSocketResponser(fd),data);
     }
 
     return st(EPollFileObserver)::OnEventOK;
@@ -82,7 +82,7 @@ int _TcpClient::doConnect() {
     }
 
     if(mListener != nullptr) {
-        mListener->onConnect(mSock,mServerIp,mServerPort);
+        mListener->onConnect(createSocketResponser(mSock,mServerIp,mServerPort));
     }
 
     struct sockaddr_in local_address;

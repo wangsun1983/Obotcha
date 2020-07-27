@@ -25,27 +25,23 @@ _HttpV1SocketListener::_HttpV1SocketListener(HttpV1Server s) {
     mServer = s;
 }
 
-void _HttpV1SocketListener::onAccept(int fd,String ip,int port,ByteArray pack) {
-    mServer->parseMessage(fd,pack);
+void _HttpV1SocketListener::onDataReceived(SocketResponser r,ByteArray pack) {
+    mServer->parseMessage(r->getFd(),pack);
 }
 
-void _HttpV1SocketListener::onDisconnect(int fd) {
-    mServer->removeClient(fd);
+void _HttpV1SocketListener::onDisconnect(SocketResponser r) {
+    mServer->removeClient(r->getFd());
 }
 
-void _HttpV1SocketListener::onConnect(int fd,String ip,int port) {
+void _HttpV1SocketListener::onConnect(SocketResponser r) {
     HttpV1ClientInfo info = createHttpV1ClientInfo();
-    info->setClientFd(fd);
-    SSLInfo ssl = st(SSLManager)::getInstance()->get(fd);
+    info->setClientFd(r->getFd());
+    SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
     if(info != nullptr) {
         info->setSSLInfo(ssl);
     }
     
-    st(HttpV1ClientManager)::getInstance()->addClientInfo(fd,info);
-}
-
-void _HttpV1SocketListener::onConnect(int fd,String domain) {
-    //Unused
+    st(HttpV1ClientManager)::getInstance()->addClientInfo(r->getFd(),info);
 }
 
 void _HttpV1SocketListener::onTimeout() {

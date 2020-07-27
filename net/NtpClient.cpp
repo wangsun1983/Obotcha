@@ -37,7 +37,7 @@ void _NtpSocketClientListener::onTimeout() {
 }
 
 
-void _NtpSocketClientListener::onAccept(int fd,String ip,int port,ByteArray pack) {
+void _NtpSocketClientListener::onDataReceived(SocketResponser r,ByteArray pack) {
     //int  ret;
     unsigned int *data = (unsigned int *)pack->toValue(); 
 
@@ -112,15 +112,11 @@ void _NtpSocketClientListener::setTimeCallback(NtpListener l) {
     mListener = l;
 }
     
-void _NtpSocketClientListener::onDisconnect(int fd) {
+void _NtpSocketClientListener::onDisconnect(SocketResponser r) {
 
 }
     
-void _NtpSocketClientListener::onConnect(int fd,String ip,int port) {
-
-}
-
-void _NtpSocketClientListener::onConnect(int fd,String domain) {
+void _NtpSocketClientListener::onConnect(SocketResponser r) {
 
 }
 

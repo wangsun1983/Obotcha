@@ -48,11 +48,12 @@ _UdpClient::_UdpClient(String ip,int port,SocketListener l) {
 
 int _UdpClient::onEvent(int fd,uint32_t events,ByteArray pack) {
     if((events & EPOLLHUP) != 0) {
-        listener->onDisconnect(fd);
+        listener->onDisconnect(createSocketResponser(fd));
     }
     
     if(pack != nullptr) {
-        listener->onAccept(sock,nullptr,-1,pack);
+        //listener->onAccept(sock,nullptr,-1,pack);
+        listener->onDataReceived(createSocketResponser(sock),pack);
     }
 }
 

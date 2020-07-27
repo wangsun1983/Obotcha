@@ -34,6 +34,8 @@ public:
     
     void unregistListener(String,SystemPropertiesListener);
 
+    void runAsServer();
+
     static const int DataSize = 513;
 
 private:
@@ -55,13 +57,11 @@ private:
     static Mutex initMutex;
     static sp<_SystemProperties> mInstance;
 
-    void onAccept(int fd,String ip,int port,ByteArray pack);
+    void onDataReceived(SocketResponser r,ByteArray pack);
 
-    void onDisconnect(int fd);
+    void onDisconnect(SocketResponser r);
 
-    void onConnect(int fd,String ip,int port);
-
-    void onConnect(int fd,String domain);
+    void onConnect(SocketResponser r);
 
     void onTimeout();
 
