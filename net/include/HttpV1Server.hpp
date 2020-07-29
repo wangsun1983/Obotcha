@@ -18,26 +18,22 @@
 #include "HttpV1ResponseWriter.hpp"
 #include "HttpMultiPart.hpp"
 #include "SSLServer.hpp"
+#include "BlockingLinkedList.hpp"
+#include "HashSet.hpp"
 
 namespace obotcha {
 
-class _HttpV1Server;
-
-DECLARE_SIMPLE_CLASS(HttpV1SocketListener) IMPLEMENTS(SocketListener) {
+DECLARE_SIMPLE_CLASS(DispatchHttpWorkData) {
 public:
-    _HttpV1SocketListener(sp<_HttpV1Server>);
+    _DispatchHttpWorkData(int,ByteArray);
 
-    //implement SocketListener
-    void onDataReceived(SocketResponser r,ByteArray pack);
+    int fd;
+    ByteArray pack;
+};
 
-    void onDisconnect(SocketResponser r);
-
-    void onConnect(SocketResponser r);
-
-    void onTimeout();
-
-private:
-    sp<_HttpV1Server> mServer;   
+DECLARE_SIMPLE_CLASS(HttpDispatchStatusListener) {
+public:
+    virtual void onComplete(int fd) = 0;
 };
 
 DECLARE_SIMPLE_CLASS(HttpV1Listener) {
@@ -47,7 +43,21 @@ public:
     virtual void onDisconnect(HttpV1ClientInfo) = 0;
 };
 
-DECLARE_SIMPLE_CLASS(HttpV1Server) {
+DECLARE_SIMPLE_CLASS(HttpDispatchThread) IMPLEMENTS(Thread) {
+public:
+    _HttpDispatchThread(HttpDispatchStatusListener,HttpV1Listener);
+    void add(DispatchHttpWorkData);
+    int getWorkQueueSize();
+    void run();
+
+private:
+    BlockingLinkedList<DispatchHttpWorkData> datas;
+    HttpDispatchStatusListener mListener;
+    HttpV1Listener mV1Listener;
+    HashSet<int> mWorkedFds;
+};
+
+DECLARE_SIMPLE_CLASS(HttpV1Server) IMPLEMENTS(HttpDispatchStatusListener),st(SocketListener) {
 
 public:
     friend class _HttpV1SocketListener;
@@ -73,11 +83,19 @@ public:
     void exit();
 
 private:
+    void onComplete(int fd);
+
+    void onDataReceived(SocketResponser r,ByteArray pack);
+
+    void onDisconnect(SocketResponser r);
+
+    void onConnect(SocketResponser r);
+
+    void onTimeout();
+
     TcpServer mTcpServer;
 
     SSLServer mSSLServer;
-
-    HttpV1SocketListener mSocketListener;
 
     HttpV1Listener mHttpListener;
 
@@ -87,7 +105,15 @@ private:
 
     HashMap<int,ByteArray> mBuffPool;
 
+    int threadsNum;
+
+    ArrayList<HttpDispatchThread> mThreads;
+
     Mutex mBuffPoolMutex;
+
+    Mutex mMutex;
+
+    HashMap<int,Integer> fdmaps;
 };
 
 }

@@ -21,19 +21,100 @@
 
 namespace obotcha {
 
-_HttpV1SocketListener::_HttpV1SocketListener(HttpV1Server s) {
-    mServer = s;
+//------------------DispatchHttpWorkData------------------
+_DispatchHttpWorkData::_DispatchHttpWorkData(int fd,ByteArray pack) {
+    this->fd = fd;
+    this->pack = pack;
 }
 
-void _HttpV1SocketListener::onDataReceived(SocketResponser r,ByteArray pack) {
-    mServer->parseMessage(r->getFd(),pack);
+//------------------HttpDispatchThread------------------
+_HttpDispatchThread::_HttpDispatchThread(HttpDispatchStatusListener l,HttpV1Listener v1listener) {
+    datas = createBlockingLinkedList<DispatchHttpWorkData>();
+    mWorkedFds = createHashSet<int>();
+    mListener = l;
+    mV1Listener = v1listener;
 }
 
-void _HttpV1SocketListener::onDisconnect(SocketResponser r) {
-    mServer->removeClient(r->getFd());
+void _HttpDispatchThread::add(DispatchHttpWorkData data) {
+    datas->enQueueLast(data);
+}
+    
+int _HttpDispatchThread::getWorkQueueSize() {
+    return datas->size();
 }
 
-void _HttpV1SocketListener::onConnect(SocketResponser r) {
+void _HttpDispatchThread::run() {
+    while (1) {
+        if(datas->size() == 0) {
+            HashSetIterator<int>iterator = mWorkedFds->getIterator();
+            while(iterator->hasValue()) {
+                mListener->onComplete(iterator->getValue());
+                iterator->next();
+            }
+        }
+    }
+
+    DispatchHttpWorkData data = datas->deQueueFirst();
+    if (data->fd == -1) {
+      return;
+    }
+
+    mWorkedFds->add(data->fd);
+    HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(data->fd);
+    info->pushHttpData(data->pack);
+
+    ArrayList<HttpPacket> packets = info->pollHttpPacket();
+    if(packets != nullptr && packets->size() != 0) {
+        ListIterator<HttpPacket> iterator = packets->getIterator();
+        while(iterator->hasValue()) {
+            //we should check whether there is a multipart
+            HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);           
+            mV1Listener->onMessage(info,writer,iterator->getValue());
+            iterator->next();
+        }
+    }
+}
+
+void _HttpV1Server::onDataReceived(SocketResponser r,ByteArray pack) {
+    //parseMessage(r->getFd(),pack);
+    Integer threadId = fdmaps->get(r->getFd());
+    if(threadId != nullptr) {
+        int num = threadId->toValue();
+        mThreads->get(num)->add(createDispatchHttpWorkData(r->getFd(),pack));
+        return;
+    }
+
+    int hit = 0;
+    int min = 0;
+
+    for(int i = 0;i<threadsNum;i++) {
+        int size = mThreads->get(i)->getWorkQueueSize();
+        if(i == 0) {
+          min = size;
+        } else if(size < min) {
+            hit = i;
+            min = size;
+        }
+    }
+    
+    {
+        AutoLock l(mMutex);
+        fdmaps->put(hit,createInteger(hit));
+    }
+
+    mThreads->get(hit)->add(createDispatchHttpWorkData(r->getFd(),pack));
+}
+
+void _HttpV1Server::onComplete(int fd) {
+    AutoLock l(mMutex);
+    fdmaps->remove(fd);
+}
+
+void _HttpV1Server::onDisconnect(SocketResponser r) {
+    removeClient(r->getFd());
+}
+
+void _HttpV1Server::onConnect(SocketResponser r) {
     HttpV1ClientInfo info = createHttpV1ClientInfo();
     info->setClientFd(r->getFd());
     SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
@@ -44,7 +125,7 @@ void _HttpV1SocketListener::onConnect(SocketResponser r) {
     st(HttpV1ClientManager)::getInstance()->addClientInfo(r->getFd(),info);
 }
 
-void _HttpV1SocketListener::onTimeout() {
+void _HttpV1Server::onTimeout() {
     //Unused
 }
 
@@ -71,18 +152,29 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l):_HttpV1Server{
 _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certificate,String key) {
     HttpV1Server server;
     server.set_pointer(this);
-    mSocketListener = createHttpV1SocketListener(server);
     mHttpListener = l;
+
+    mMutex = createMutex("httpserver fdmaps");
+    fdmaps = createHashMap<int,Integer>();
+
+    threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
+    mThreads = createArrayList<HttpDispatchThread>();
+    for(int i = 0;i<threadsNum;i++) {
+        HttpDispatchThread thread = createHttpDispatchThread(server,l);
+    }
 
     mIp = ip;
     mPort = port;
 
+    SocketListener sockListener;
+    sockListener.set_pointer(this);
+
     if(certificate == nullptr) {
         //http server
         if(mIp == nullptr) {
-            mTcpServer = createTcpServer(mPort,mSocketListener);
+            mTcpServer = createTcpServer(mPort,sockListener);
         } else {
-            mTcpServer = createTcpServer(mIp,mPort,mSocketListener);
+            mTcpServer = createTcpServer(mIp,mPort,sockListener);
         }
 
         if(mTcpServer->start() != 0) {
@@ -90,7 +182,7 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
         }
     } else {
         //https server
-        mSSLServer = createSSLServer(ip,port,mSocketListener,certificate,key);
+        mSSLServer = createSSLServer(ip,port,sockListener,certificate,key);
         mSSLServer->start();
     }
     
@@ -99,18 +191,7 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
 }
 
 void _HttpV1Server::parseMessage(int fd,ByteArray pack) {
-    HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(fd);
-    info->pushHttpData(pack);
-    ArrayList<HttpPacket> packets = info->pollHttpPacket();
-    if(packets != nullptr && packets->size() != 0) {
-        ListIterator<HttpPacket> iterator = packets->getIterator();
-        while(iterator->hasValue()) {
-            //we should check whether there is a multipart
-            HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);           
-            mHttpListener->onMessage(info,writer,iterator->getValue());
-            iterator->next();
-        }
-    }
+    
 }
 
 void _HttpV1Server::addClient(int fd) {
