@@ -8,6 +8,7 @@ Mutex _HttpV1ClientManager::mInitMutex = createMutex("HttpV1Server Mutex");;
 
 _HttpV1ClientManager::_HttpV1ClientManager() {
     mClients = createHashMap<int,HttpV1ClientInfo>();
+    mMutex = createMutex("http client manager");
 }
 
 sp<_HttpV1ClientManager> _HttpV1ClientManager::getInstance() {

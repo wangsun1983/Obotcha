@@ -52,30 +52,33 @@ void _HttpDispatchThread::run() {
                 iterator->next();
             }
         }
-    }
+        
+        printf("_HttpDispatchThread run1 \n");
+        DispatchHttpWorkData data = datas->deQueueFirst();
+        if (data->fd == -1) {
+        return;
+        }
 
-    DispatchHttpWorkData data = datas->deQueueFirst();
-    if (data->fd == -1) {
-      return;
-    }
-
-    mWorkedFds->add(data->fd);
-    HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(data->fd);
-    info->pushHttpData(data->pack);
-
-    ArrayList<HttpPacket> packets = info->pollHttpPacket();
-    if(packets != nullptr && packets->size() != 0) {
-        ListIterator<HttpPacket> iterator = packets->getIterator();
-        while(iterator->hasValue()) {
-            //we should check whether there is a multipart
-            HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);           
-            mV1Listener->onMessage(info,writer,iterator->getValue());
-            iterator->next();
+        mWorkedFds->add(data->fd);
+        HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(data->fd);
+        info->pushHttpData(data->pack);
+        printf("_HttpDispatchThread run2 \n");
+        ArrayList<HttpPacket> packets = info->pollHttpPacket();
+        if(packets != nullptr && packets->size() != 0) {
+            ListIterator<HttpPacket> iterator = packets->getIterator();
+            while(iterator->hasValue()) {
+                //we should check whether there is a multipart
+                HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);  
+                printf("_HttpDispatchThread run3 \n");         
+                mV1Listener->onMessage(info,writer,iterator->getValue());
+                iterator->next();
+            }
         }
     }
 }
 
 void _HttpV1Server::onDataReceived(SocketResponser r,ByteArray pack) {
+    printf("onDataReceived \n");
     //parseMessage(r->getFd(),pack);
     Integer threadId = fdmaps->get(r->getFd());
     if(threadId != nullptr) {
@@ -101,7 +104,7 @@ void _HttpV1Server::onDataReceived(SocketResponser r,ByteArray pack) {
         AutoLock l(mMutex);
         fdmaps->put(hit,createInteger(hit));
     }
-
+    printf("onDataReceived2 \n");
     mThreads->get(hit)->add(createDispatchHttpWorkData(r->getFd(),pack));
 }
 
@@ -161,6 +164,8 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
     mThreads = createArrayList<HttpDispatchThread>();
     for(int i = 0;i<threadsNum;i++) {
         HttpDispatchThread thread = createHttpDispatchThread(server,l);
+        thread->start();
+        mThreads->add(thread);
     }
 
     mIp = ip;
@@ -168,7 +173,7 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
 
     SocketListener sockListener;
     sockListener.set_pointer(this);
-
+    printf("_HttpV1Server trace1 \n");
     if(certificate == nullptr) {
         //http server
         if(mIp == nullptr) {
@@ -176,8 +181,9 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
         } else {
             mTcpServer = createTcpServer(mIp,mPort,sockListener);
         }
-
+        printf("_HttpV1Server trace2 \n");
         if(mTcpServer->start() != 0) {
+            printf("_HttpV1Server trace3 \n");
             throw InitializeException("tcp server start fail!!");
         }
     } else {
