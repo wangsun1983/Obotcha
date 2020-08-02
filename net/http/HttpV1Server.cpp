@@ -48,19 +48,30 @@ void _HttpDispatchThread::run() {
         if(datas->size() == 0) {
             HashSetIterator<int>iterator = mWorkedFds->getIterator();
             while(iterator->hasValue()) {
-                mListener->onComplete(iterator->getValue());
+                //we should check whether client buff is clear
+                int fd = iterator->getValue();
+                HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(fd);
+                if(info == nullptr || info->isIdle()) {
+                    printf("onIdle,fd is %d \n",fd);
+                    mListener->onComplete(fd);
+                }
                 iterator->next();
             }
+
+            mWorkedFds->clear();
         }
         
         printf("_HttpDispatchThread run1 \n");
         DispatchHttpWorkData data = datas->deQueueFirst();
         if (data->fd == -1) {
-        return;
+            printf("_HttpDispatchThread run1 fd is null \n");
+            continue;
         }
 
         mWorkedFds->add(data->fd);
         HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(data->fd);
+        char *dd = (char *)data->pack->toValue();
+
         info->pushHttpData(data->pack);
         printf("_HttpDispatchThread run2 \n");
         ArrayList<HttpPacket> packets = info->pollHttpPacket();
@@ -79,6 +90,7 @@ void _HttpDispatchThread::run() {
 
 void _HttpV1Server::onDataReceived(SocketResponser r,ByteArray pack) {
     printf("onDataReceived \n");
+    AutoLock l(mMutex);
     //parseMessage(r->getFd(),pack);
     Integer threadId = fdmaps->get(r->getFd());
     if(threadId != nullptr) {
@@ -99,12 +111,9 @@ void _HttpV1Server::onDataReceived(SocketResponser r,ByteArray pack) {
             min = size;
         }
     }
-    
-    {
-        AutoLock l(mMutex);
-        fdmaps->put(hit,createInteger(hit));
-    }
-    printf("onDataReceived2 \n");
+
+    fdmaps->put(r->getFd(),createInteger(hit));
+    printf("onDataReceived2,add work fd is %d \n",r->getFd());
     mThreads->get(hit)->add(createDispatchHttpWorkData(r->getFd(),pack));
 }
 
@@ -114,6 +123,13 @@ void _HttpV1Server::onComplete(int fd) {
 }
 
 void _HttpV1Server::onDisconnect(SocketResponser r) {
+    {
+        AutoLock l(mMutex);
+        fdmaps->remove(r->getFd());
+    }
+
+    HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(r->getFd());
+    this->mHttpListener->onDisconnect(info);
     removeClient(r->getFd());
 }
 

@@ -48,6 +48,8 @@ public:
 
     void setSSLInfo(SSLInfo);
 
+    bool isIdle();
+
 private:
     String mClientIp;
 

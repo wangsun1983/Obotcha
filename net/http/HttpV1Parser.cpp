@@ -77,6 +77,7 @@ _HttpV1Parser::_HttpV1Parser() {
     mReader = createByteRingArrayReader(mBuff);
     mHeadEndCount = 0;
     mChunkEndCount = 0;
+    mStatus = HttpV1ParseStatusIdle;
 }
 
 void _HttpV1Parser::pushHttpData(ByteArray data) {
@@ -233,6 +234,10 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
 
 int _HttpV1Parser::getStatus() {
     return mStatus;
+}
+
+bool _HttpV1Parser::isIdle() {
+    return (mStatus == HttpV1ParseStatusIdle) && mReader->isIdle();
 }
 
 }

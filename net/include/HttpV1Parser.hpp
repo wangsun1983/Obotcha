@@ -20,7 +20,7 @@
 namespace obotcha {
 
 enum HttpV1ParseStatus {
-    HttpV1ParseStatusIdle,
+    HttpV1ParseStatusIdle = 0,
     HttpClientParseStatusHeadStart,
     HttpClientParseStatusBodyStart
 };
@@ -39,6 +39,8 @@ public:
     HttpPacket parseEntireResponse(String response);
 
     HttpPacket parseEntireRequest(String request);
+
+    bool isIdle();
 
 private:
     int mStatus;
