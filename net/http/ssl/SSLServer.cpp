@@ -1,12 +1,31 @@
 #include "SSLServer.hpp"
 #include "Enviroment.hpp"
-#include "NetUtils.hpp"
 #include "InitializeException.hpp"
 #include "SSLManager.hpp"
 
 namespace obotcha {
 
 //----------------- HttpsThread -----------------
+int _SSLThread::addEpollFd(int epollfd, int fd, bool enable_et) {
+    struct epoll_event ev;
+    memset(&ev.data, 0, sizeof(ev.data));
+    ev.data.fd = fd;
+    ev.events = EPOLLIN | EPOLLRDHUP |EPOLLHUP;
+    //if( enable_et )
+    //    ev.events |= EPOLLET;
+    int ret = epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);
+    if(ret < 0) {
+        return ret;
+    }
+    
+    return fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
+}
+
+int _SSLThread::delEpollFd(int epollfd, int fd) {
+    return epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, NULL);
+}
+
+
 _SSLThread::_SSLThread(String ip,int port,SocketListener l,String c,String k) {
     String mIp = ip;
 
@@ -74,11 +93,11 @@ _SSLThread::_SSLThread(String ip,int port,SocketListener l,String c,String k) {
         }
 
         //add epoll
-        if(st(NetUtils)::addEpollFd(mEpollfd,mSocket,true) < 0) {
+        if(addEpollFd(mEpollfd,mSocket,true) < 0) {
             break;
         }
 
-        if(st(NetUtils)::addEpollFd(mEpollfd,mPipe->getReadPipe(),true) < 0) {
+        if(addEpollFd(mEpollfd,mPipe->getReadPipe(),true) < 0) {
             break;
         }
        
@@ -107,7 +126,7 @@ void _SSLThread::run() {
             if(((event & EPOLLIN) != 0) 
             && ((event & EPOLLRDHUP) != 0)) {
                 epoll_ctl(mEpollfd, EPOLL_CTL_DEL, sockfd, NULL);
-                st(NetUtils)::delEpollFd(mEpollfd,sockfd);
+                delEpollFd(mEpollfd,sockfd);
                 SocketResponser r = createSocketResponser(sockfd);
                 mListener->onDisconnect(r);
                 
@@ -121,7 +140,7 @@ void _SSLThread::run() {
                 socklen_t client_addrLength = sizeof(struct sockaddr_in);
                 int clientfd = accept( mSocket, ( struct sockaddr* )&client_address, &client_addrLength );
                 
-                st(NetUtils)::addEpollFd(mEpollfd, clientfd, true);
+                addEpollFd(mEpollfd, clientfd, true);
                 
                 SSLInfo ssl = createSSLInfo(mCertificate,mKey);
                 if(ssl->bindSocket(clientfd) == 0) {

@@ -13,7 +13,6 @@
 #include "AutoLock.hpp"
 #include "TcpServer.hpp"
 #include "Pipe.hpp"
-#include "NetUtils.hpp"
 #include "Error.hpp"
 #include "InitializeException.hpp"
 #include "Enviroment.hpp"
@@ -137,7 +136,8 @@ void _TcpServer::release() {
 }
 
 int _TcpServer::send(int fd,ByteArray data) {
-    return st(NetUtils)::sendTcpPacket(fd,data);
+    //return st(NetUtils)::sendTcpPacket(fd,data);
+    return ::send(fd,data->toValue(),data->size(),0);
 }
 
 _TcpServer::~_TcpServer() {

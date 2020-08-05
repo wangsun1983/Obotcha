@@ -13,7 +13,6 @@
 #include "AutoLock.hpp"
 #include "LocalSocketServer.hpp"
 #include "Pipe.hpp"
-#include "NetUtils.hpp"
 #include "Error.hpp"
 #include "InitializeException.hpp"
 
@@ -165,7 +164,8 @@ void _LocalSocketServer::release() {
 }
 
 int _LocalSocketServer::send(int fd,ByteArray data) {
-    return st(NetUtils)::sendTcpPacket(fd,data);
+    //return st(NetUtils)::sendTcpPacket(fd,data);
+    return ::send(fd,data->toValue(),data->size(),0);
 }
 
 _LocalSocketServer::~_LocalSocketServer() {

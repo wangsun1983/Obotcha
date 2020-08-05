@@ -8,7 +8,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/udpserver.o \
 		$(outtmp)/localsocketclient.o \
 		$(outtmp)/localsocketserver.o \
-		$(outtmp)/netutils.o \
 		$(outtmp)/httpurlparser.o \
 		$(outtmp)/httpurl.o \
 		$(outtmp)/httpcontenttype.o \
@@ -77,9 +76,6 @@ $(outtmp)/localsocketclient.o :$(netDir)/tcp/LocalSocketClient.cpp
 
 $(outtmp)/localsocketserver.o :$(netDir)/tcp/LocalSocketServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)
-
-$(outtmp)/netutils.o :$(netDir)/NetUtils.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/NetUtils.cpp -o $(outtmp)/netutils.o $(external)
 
 $(outtmp)/httpv1parser.o :$(netDir)/http/HttpV1Parser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpV1Parser.cpp -o $(outtmp)/httpv1parser.o $(external)

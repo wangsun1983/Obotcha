@@ -17,7 +17,6 @@
 #include "InetAddress.hpp"
 #include "SocketListener.hpp"
 #include "TcpClient.hpp"
-#include "NetUtils.hpp"
 #include "InitializeException.hpp"
 
 namespace obotcha {
@@ -116,7 +115,7 @@ int _TcpClient::doSend(ByteArray data) {
     if(data == nullptr || data->size() == 0||mSock == -1) {
         return  0;
     }
-    return st(NetUtils)::sendTcpPacket(mSock,data);
+    return send(mSock,data->toValue(),data->size(),0);
 }
 
 ByteArray _TcpClient::doReceive() {

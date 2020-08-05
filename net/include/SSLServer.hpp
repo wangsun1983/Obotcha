@@ -56,6 +56,11 @@ private:
 
     int mRcvBuffSize;
     int mClientNums;
+
+    int addEpollFd(int epollfd, int fd, bool enable_et);
+    
+    int delEpollFd(int epollfd, int fd);
+
 }; 
 
 DECLARE_SIMPLE_CLASS(SSLServer) {
@@ -82,6 +87,8 @@ public:
     int getStatus();
 
     ~_SSLServer();
+
+    
 
 private:
     

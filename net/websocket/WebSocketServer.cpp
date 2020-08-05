@@ -5,7 +5,6 @@
 
 #include "Error.hpp"
 #include "Log.hpp"
-#include "NetUtils.hpp"
 #include "TcpServer.hpp"
 #include "WebSocketHybi00Composer.hpp"
 #include "WebSocketHybi00Parser.hpp"
@@ -28,52 +27,51 @@ const int _DispatchData::Ws = 1;
 
 //--------------------WebSocketClientManager-----------------
 WebSocketClientManager _WebSocketClientManager::mInstance = nullptr;
-Mutex _WebSocketClientManager::mMutex =
-    createMutex("WebSocketClientManagerMutex");
+Mutex _WebSocketClientManager::mMutex = createMutex("WebSocketClientManagerMutex");
 
 _WebSocketClientManager::_WebSocketClientManager() {
-  mClients = createHashMap<int, WebSocketClientInfo>();
+    mClients = createHashMap<int, WebSocketClientInfo>();
 }
 
 WebSocketClientManager _WebSocketClientManager::getInstance() {
-  if (mInstance != nullptr) {
+    if (mInstance != nullptr) {
+        return mInstance;
+    }
+
+    AutoLock l(mMutex);
+
+    if (mInstance != nullptr) {
+        return mInstance;
+    }
+
+    _WebSocketClientManager *v = new _WebSocketClientManager();
+    mInstance.set_pointer(v);
     return mInstance;
-  }
-
-  AutoLock l(mMutex);
-
-  if (mInstance != nullptr) {
-    return mInstance;
-  }
-
-  _WebSocketClientManager *v = new _WebSocketClientManager();
-  mInstance.set_pointer(v);
-  return mInstance;
 }
 
 bool _WebSocketClientManager::addClient(int fd, int version) {
-  WebSocketClientInfo data = createWebSocketClientInfo();
-  data->setClientFd(fd);
-  data->setVersion(version);
-  
-  switch (version) {
-      case 0: {
-        data->setParser(createWebSocketHybi00Parser());
-        data->setComposer(createWebSocketHybi00Composer(WsServerComposer));
-        break;
-      }
+    WebSocketClientInfo data = createWebSocketClientInfo();
+    data->setClientFd(fd);
+    data->setVersion(version);
 
-      case 7: {
-        data->setParser(createWebSocketHybi07Parser());
-        data->setComposer(createWebSocketHybi07Composer(WsServerComposer));
-        break;
-      }
+    switch (version) {
+        case 0: {
+            data->setParser(createWebSocketHybi00Parser());
+            data->setComposer(createWebSocketHybi00Composer(WsServerComposer));
+            break;
+        }
 
-      case 8: {
-        data->setParser(createWebSocketHybi08Parser());
-        data->setComposer(createWebSocketHybi08Composer(WsServerComposer));
-        break;
-      }
+        case 7: {
+            data->setParser(createWebSocketHybi07Parser());
+            data->setComposer(createWebSocketHybi07Composer(WsServerComposer));
+            break;
+        }
+
+        case 8: {
+            data->setParser(createWebSocketHybi08Parser());
+            data->setComposer(createWebSocketHybi08Composer(WsServerComposer));
+            break;
+        }
 
       case 13: {
         data->setParser(createWebSocketHybi13Parser());
@@ -82,153 +80,136 @@ bool _WebSocketClientManager::addClient(int fd, int version) {
       }
 
       default:
-        LOGE(TAG, "WebSocket Protocol Not Support,Version is ", version);
+        LOG(ERROR)<<"WebSocket Protocol Not Support,Version is "<<version;
         return false;
-  }
+    }
 
-  AutoLock ll(mMutex);
-  mClients->put(fd, data);
-  return true;
+    AutoLock ll(mMutex);
+    mClients->put(fd, data);
+    return true;
 }
 
 WebSocketClientInfo _WebSocketClientManager::getClient(int fd) {
-  AutoLock ll(mMutex);
-  return mClients->get(fd);
+    AutoLock ll(mMutex);
+    return mClients->get(fd);
 }
 
 void _WebSocketClientManager::setHttpHeader(int fd, HttpHeader h) {
-  AutoLock ll(mMutex);
-  WebSocketClientInfo data = mClients->get(fd);
-  data->setHttpHeader(h);
+    AutoLock ll(mMutex);
+    WebSocketClientInfo data = mClients->get(fd);
+    data->setHttpHeader(h);
 }
 
 void _WebSocketClientManager::setWebSocketHeader(int fd, WebSocketHeader h) {
-  AutoLock ll(mMutex);
-  WebSocketClientInfo data = mClients->get(fd);
-  data->setWebSocketHeader(h);
+    AutoLock ll(mMutex);
+    WebSocketClientInfo data = mClients->get(fd);
+    data->setWebSocketHeader(h);
 }
 
-void _WebSocketClientManager::setWebSocketPermessageDeflate(
-    int fd, WebSocketPermessageDeflate v) {
-  AutoLock ll(mMutex);
-  WebSocketClientInfo data = mClients->get(fd);
-  data->setDeflater(v);
+void _WebSocketClientManager::setWebSocketPermessageDeflate(int fd, WebSocketPermessageDeflate v) {
+    AutoLock ll(mMutex);
+    WebSocketClientInfo data = mClients->get(fd);
+    data->setDeflater(v);
 }
 
-void _WebSocketClientManager::setWebSocketProtocols(int fd,
-                                                    ArrayList<String> p) {
-  AutoLock ll(mMutex);
-  WebSocketClientInfo data = mClients->get(fd);
-  data->setProtocols(p);
+void _WebSocketClientManager::setWebSocketProtocols(int fd,ArrayList<String> p) {
+    AutoLock ll(mMutex);
+    WebSocketClientInfo data = mClients->get(fd);
+    data->setProtocols(p);
 }
 
 void _WebSocketClientManager::removeClient(WebSocketClientInfo client) {
-  
-  AutoLock ll(mMutex);
-  mClients->remove(client->getClientFd());
+    AutoLock ll(mMutex);
+    mClients->remove(client->getClientFd());
 }
 
 //--------------------WebSocketDispatchData-----------------
-_DispatchData::_DispatchData(int cmd,int fd, uint32_t events,
-                                               ByteArray pack) {
-  this->fd = fd;
-  this->events = events;
-  if(pack != nullptr) {
-      this->data = createByteArray(pack);
-  } else {
-      data = nullptr;
-  }
+_DispatchData::_DispatchData(int cmd,int fd, uint32_t events,ByteArray pack) {
+    this->fd = fd;
+    this->events = events;
+    if(pack != nullptr) {
+        this->data = createByteArray(pack);
+    } else {
+        data = nullptr;
+    }
 
-  this->cmd = cmd;
+    this->cmd = cmd;
 }
 
 //--------------------WebSocketDispatchThread-----------------
 _WebSocketDispatchThread::_WebSocketDispatchThread(DispatchStatusListener m) {
-  datas = createBlockingLinkedList<DispatchData>();
-  mResponse = createWebSocketFrameComposer(false);
-  mParser = createHttpV1Parser();
+    datas = createBlockingLinkedList<DispatchData>();
+    mResponse = createWebSocketFrameComposer(false);
+    mParser = createHttpV1Parser();
 
-  mStatusListener = m;
-  fds = createHashMap<int,int>();
+    mStatusListener = m;
+    fds = createHashMap<int,int>();
 }
 
 void _WebSocketDispatchThread::add(DispatchData data) {
-  datas->enQueueLast(data);
+    datas->enQueueLast(data);
 }
 
-int _WebSocketDispatchThread::getWorkQueueSize() { 
-    return datas->size(); 
+int _WebSocketDispatchThread::getWorkQueueSize() {
+    return datas->size();
 }
 
 void _WebSocketDispatchThread::handleHttpData(DispatchData data) {
-  
-  int fd = data->fd;
-  String req = data->data->toString();
-  HttpPacket request = mParser->parseEntireRequest(req);
-  HttpHeader header = request->getHeader();
 
-  String upgrade = header->getValue(st(HttpHeader)::Upgrade);
-  String key = header->getValue(st(HttpHeader)::SecWebSocketKey);
-  String version = header->getValue(st(HttpHeader)::SecWebSocketVersion);
-  //printf("upgrade is %s,key is %s,version is %s \n",upgrade->toChars(),key->toChars(),version->toChars());
-  if (upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
-    // remove fd from http epoll
-    // st(NetUtils)::delEpollFd(httpEpollfd,fd);
-    data->mServerObserver->removeObserver(fd);
-    printf("ws socket onAccept tracews socket onAccept trace1 ,fd is %d\n",fd);
-    st(WebSocketClientManager)::getInstance()->addClient(fd,
-                                                         version->toBasicInt());
-    st(WebSocketClientManager)::getInstance()->setHttpHeader(fd, header);
+    int fd = data->fd;
+    String req = data->data->toString();
+    HttpPacket request = mParser->parseEntireRequest(req);
+    HttpHeader header = request->getHeader();
 
-    WebSocketParser parser =
-        st(WebSocketClientManager)::getInstance()->getClient(fd)->getParser();
+    String upgrade = header->getValue(st(HttpHeader)::Upgrade);
+    String key = header->getValue(st(HttpHeader)::SecWebSocketKey);
+    String version = header->getValue(st(HttpHeader)::SecWebSocketVersion);
+    if (upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
+      // remove fd from http epoll
+      data->mServerObserver->removeObserver(fd);
+      printf("ws socket onAccept tracews socket onAccept trace1 ,fd is %d\n",fd);
+      st(WebSocketClientManager)::getInstance()->addClient(fd,
+                                                           version->toBasicInt());
+      st(WebSocketClientManager)::getInstance()->setHttpHeader(fd, header);
 
-    if (!parser->validateHandShake(header)) {
-      // invalid connection,we should close.
-      // TODO
-      //printf("ws socket onAccept trace2 \n");
-      return;
+      WebSocketParser parser =
+          st(WebSocketClientManager)::getInstance()->getClient(fd)->getParser();
+
+      if (!parser->validateHandShake(header)) {
+          return;
+      }
+
+      // Try to check whether extension support deflate.
+      WebSocketPermessageDeflate deflate = parser->validateExtensions(header);
+      if (deflate != nullptr) {
+          st(WebSocketClientManager)::getInstance()->setWebSocketPermessageDeflate(
+              fd, deflate);
+      }
+
+      ArrayList<String> protocols = parser->extractSubprotocols(header);
+      if (protocols != nullptr && protocols->size() != 0) {
+          LOG(ERROR)<<"Websocket Server Protocol is null";
+      }
+
+      EPollFileObserver observer = data->mWsObservers->get(request->getUrl());
+      if (observer != nullptr) {
+        observer->addObserver(fd, EPOLLIN | EPOLLRDHUP,
+                              data->mEpollListener);
+      }
+
+      data->mEpollListener->onConnect(fd);
+      WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->getClient(fd);
+      WebSocketComposer composer = client->getComposer();
+      ByteArray shakeresponse = composer->genShakeHandMessage(st(WebSocketClientManager)::getInstance()->getClient(fd));
+      //int ret = st(NetUtils)::sendTcpPacket(fd, shakeresponse);
+      int ret = send(fd,shakeresponse->toValue(),shakeresponse->size(),0);
+      if(ret < 0) {
+          LOG(ERROR)<<"Websocket Server send response fail,reason:"<<strerror(errno);
+      }
     }
-
-    // Try to check whether extension support deflate.
-    WebSocketPermessageDeflate deflate = parser->validateExtensions(header);
-    if (deflate != nullptr) {
-      st(WebSocketClientManager)::getInstance()->setWebSocketPermessageDeflate(
-          fd, deflate);
-    }
-
-    ArrayList<String> protocols = parser->extractSubprotocols(header);
-    if (protocols != nullptr && protocols->size() != 0) {
-      // TODO
-    }
-
-    // add fd to ws epoll
-    //printf("ws socket onAccept trace2 \n");
-    EPollFileObserver observer = data->mWsObservers->get(request->getUrl());
-    if (observer != nullptr) {
-      //printf("ws socket onAccept trace3,add epoll fd is %d \n",fd);
-      // observer->addFd(fd,EPOLLIN|EPOLLRDHUP|EPOLLHUP|EPOLLMSG|EPOLLET);
-      observer->addObserver(fd, EPOLLIN | EPOLLRDHUP,
-                            data->mEpollListener);
-    }
-
-    data->mEpollListener->onConnect(fd);
-    // String shakeresponse = mResponse->generateShakeHandFrame(key);
-    // WebSocketComposer composer =
-    // st(WebSocketClientManager)::getInstance()->getClient(fd)->getComposer;
-    WebSocketClientInfo client =
-        st(WebSocketClientManager)::getInstance()->getClient(fd);
-    WebSocketComposer composer = client->getComposer();
-    ByteArray shakeresponse = composer->genShakeHandMessage(
-        st(WebSocketClientManager)::getInstance()->getClient(fd));
-    // printf("sendresponse is %s \n",shakeresponse->toString()->toChars());
-    int ret = st(NetUtils)::sendTcpPacket(fd, shakeresponse);
-    // printf("send response result is %d \n",ret);
-  }
 }
 
 void _WebSocketDispatchThread::handleWsData(DispatchData data) {
-    
 
     uint32_t events = data->events;
     int fd = data->fd;
@@ -237,7 +218,7 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
 
     WebSocketClientInfo client =
         st(WebSocketClientManager)::getInstance()->getClient(fd);
-    
+
     if((events & EPOLLRDHUP) != 0) {
         if(pack == nullptr || pack->size() == 0) {
             data->mWsSocketListener->onDisconnect(client);
@@ -248,36 +229,28 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
 
         isRmClient = true;
     }
-    
+
 
     if(client == nullptr || data->data == nullptr) {
       //receive hungup before.
       return;
     }
 
-    //printf("ws data size is %d \n",data->data->size());
-    //for(int i = 0;i<data->data->size();i++) {
-        //printf(data->data)
-    //data->data->dump("pack dump:");
-    //}
-
     WebSocketParser parser = client->getParser();
-    // check pack
+    WebSocketEntireBuffer entireBuff = client->getEntireBuffer();
+    if (entireBuff != nullptr) {
+        entireBuff->mBuffer->append(pack);
+        pack = entireBuff->mBuffer;
+    }
 
     while (1) {
       int readIndex = 0;
-      WebSocketEntireBuffer entireBuff = client->getEntireBuffer();
-      if (entireBuff != nullptr) {
-        entireBuff->mBuffer->append(pack);
-        pack = entireBuff->mBuffer;
-      }
-
       if (!parser->validateEntirePacket(pack)) {
         // it is not a full packet
         if (entireBuff == nullptr) {
           entireBuff = createWebSocketEntireBuffer();
         }
-        
+
         entireBuff->mBuffer = pack;
         st(WebSocketClientManager)::getInstance()
               ->getClient(fd)
@@ -312,7 +285,8 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
             PingResultResponse) {
           ByteArray resp = mResponse->generateControlFrame(
               st(WebSocketProtocol)::OPCODE_CONTROL_PONG, buff);
-          st(NetUtils)::sendTcpPacket(fd, resp);
+          //st(NetUtils)::sendTcpPacket(fd, resp);
+          send(fd,resp->toValue(),resp->size(),0);
         }
       } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PONG) {
         ByteArray pong = parser->parsePongBuff();
@@ -355,6 +329,9 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
         continue;
       }
 
+      st(WebSocketClientManager)::getInstance()
+              ->getClient(fd)
+              ->setEntireBuffer(nullptr);
       break;
     }
 
@@ -397,7 +374,7 @@ void _WebSocketDispatchThread::run() {
 //------------_WebSocketDispatchManager
 _DispatchManager::_DispatchManager() {
     threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gWebSocketRcvThreadsNum,4);
-    
+
     DispatchManager m;
     m.set_pointer(this);
 
@@ -405,7 +382,7 @@ _DispatchManager::_DispatchManager() {
     fdmaps = createHashMap<int,Integer>();
 
     mThreads = createArrayList<WebSocketDispatchThread>();
-    
+
     for(int i = 0;i < threadsNum;i++) {
         WebSocketDispatchThread thread = createWebSocketDispatchThread(m);
         mThreads->add(thread);
@@ -415,7 +392,7 @@ _DispatchManager::_DispatchManager() {
 
 void _DispatchManager::dispatch(DispatchData data) {
     //DispatchData data = createDispatchData(st(DispatchData)::Ws,fd,events,pack);
-    
+
     Integer threadId = fdmaps->get(data->fd);
     if(threadId != nullptr) {
         int num = threadId->toValue();
@@ -435,7 +412,7 @@ void _DispatchManager::dispatch(DispatchData data) {
             min = size;
         }
     }
-    
+
     {
         AutoLock l(mMutex);
         fdmaps->put(hit,createInteger(hit));
@@ -471,7 +448,7 @@ void _WebSocketHttpListener::setWsEpollObserver(
 
 void _WebSocketHttpListener::onDataReceived(SocketResponser r,ByteArray pack) {
     //printf("onAccept fd is %d \n",fd);
-    
+
     DispatchData data = createDispatchData(st(DispatchData)::Http,r->getFd(),0,pack);
     data->mServerObserver = mServerObserver;
     data->mWsObservers = mWsObservers;
@@ -481,7 +458,8 @@ void _WebSocketHttpListener::onDataReceived(SocketResponser r,ByteArray pack) {
 }
 
 void _WebSocketHttpListener::onDisconnect(SocketResponser r) {
-  st(NetUtils)::delEpollFd(httpEpollfd, r->getFd());
+    //st(NetUtils)::delEpollFd(httpEpollfd, r->getFd());
+    epoll_ctl(httpEpollfd, EPOLL_CTL_DEL, r->getFd(), NULL);
 }
 
 void _WebSocketHttpListener::onConnect(SocketResponser r) {

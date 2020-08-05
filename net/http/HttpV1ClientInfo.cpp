@@ -1,6 +1,5 @@
 #include "HttpV1ClientInfo.hpp"
 #include "HttpPacket.hpp"
-#include "NetUtils.hpp"
 
 namespace obotcha {
 
@@ -49,7 +48,8 @@ int _HttpV1ClientInfo::send(ByteArray data) {
         return mSSLInfo->write(data);
     }
     
-    return st(NetUtils)::sendTcpPacket(mClientFd,data);
+    //return st(NetUtils)::sendTcpPacket(mClientFd,data);
+    return ::send(mClientFd,data->toValue(),data->size(),0);
 }
 
 SSLInfo _HttpV1ClientInfo::getSSLInfo() {

@@ -11,7 +11,6 @@
 #include <stddef.h>
 
 #include "UdpClient.hpp"
-#include "NetUtils.hpp"
 
 #define EPOLL_SIZE 128
 
@@ -68,7 +67,9 @@ bool _UdpClient::init() {
 
 int _UdpClient::send(ByteArray data) {
     //return st(NetUtils)::sendUdpPacket(sock,data);
-    return st(NetUtils)::sendUdpPacket(sock,&serverAddr,data);
+    //return st(NetUtils)::sendUdpPacket(sock,&serverAddr,data);
+    int server_len = sizeof(struct sockaddr_in);
+    return sendto(sock, data->toValue(), data->size(), 0, (struct sockaddr *)&serverAddr, server_len);
 }
 
 _UdpClient::~_UdpClient() {

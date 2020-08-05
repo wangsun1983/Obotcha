@@ -14,7 +14,6 @@
 #include "AutoLock.hpp"
 #include "UdpServer.hpp"
 #include "Pipe.hpp"
-#include "NetUtils.hpp"
 #include "Error.hpp"
 #include "Byte.hpp"
 

@@ -13,7 +13,6 @@
 #include "WebSocketPermessageDeflate.hpp"
 #include "WebSocketProtocol.hpp"
 #include "ProtocolNotSupportException.hpp"
-#include "NetUtils.hpp"
 
 namespace obotcha {
 
@@ -161,7 +160,8 @@ int _WebSocketClientInfo::_send(int type,ByteArray msg) {
         ListIterator<ByteArray> iterator = data->getIterator();
         while(iterator->hasValue()) {
             ByteArray sendData = iterator->getValue();
-            size += st(NetUtils)::sendTcpPacket(mClientFd,sendData);
+            //size += st(NetUtils)::sendTcpPacket(mClientFd,sendData);
+            size += send(mClientFd,sendData->toValue(),sendData->size(),0);
             iterator->next();
         }
 
