@@ -31,6 +31,8 @@ public:
 
     int getReadableLength();
     
+    bool isIdle();
+    
 private:
     ByteRingArray mBuff;
 

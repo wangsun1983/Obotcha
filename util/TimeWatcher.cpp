@@ -13,7 +13,7 @@ _AutoTimeWatcher::_AutoTimeWatcher(String m) {
 }
 
 _AutoTimeWatcher::~_AutoTimeWatcher() {
-    LOGD("AutoTimeWatcher",mTag," cost :",st(System)::currentTimeMillis() - current);
+    LOG(INFO)<<"AutoTimeWatcher"<<mTag->toChars()<<" cost :"<<st(System)::currentTimeMillis() - current;
 }
 
 

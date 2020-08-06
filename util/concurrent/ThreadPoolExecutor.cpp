@@ -14,7 +14,6 @@
 
 namespace obotcha {
 
-#define TAG "ThreadPool"
 #define DEFAULT_THREAD_NUM 4
 
 _ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool,sp<_ThreadPoolExecutor> exe):mPool(pool),
@@ -327,7 +326,7 @@ _ThreadPoolExecutor::~_ThreadPoolExecutor() {
     if(!mIsShutDown) {
         //cannot throw exception in destructor
         //throw ExecutorDestructorException("ThreadPoolExecutor destruct error");
-        LOGE(TAG,"ThreadPoolExecutor destruct error");
+        //LOGE(TAG,"ThreadPoolExecutor destruct error");
     }
 }
 

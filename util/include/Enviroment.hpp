@@ -25,6 +25,9 @@ public:
 
     static const String gHttpBufferSize;
     static const int DefaultHttpBufferSize;
+
+    static const String gHttpServerThreadsNum;
+    static const int DefaultgHttpServerThreadsNum;
     
     static const String gWebSocketBufferSize;
     static const int DefaultWebSocketBufferSize;

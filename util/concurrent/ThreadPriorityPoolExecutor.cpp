@@ -422,7 +422,7 @@ void _ThreadPriorityPoolExecutor::onCancel(FutureTask task) {
 _ThreadPriorityPoolExecutor::~_ThreadPriorityPoolExecutor() {
     
     if(!isShutDown) {
-        LOGE(TAG,"Priority Thread Pool destruct error");
+        //LOGE(TAG,"Priority Thread Pool destruct error");
     }
 }
 

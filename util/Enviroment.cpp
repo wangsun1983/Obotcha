@@ -11,6 +11,9 @@ Mutex _Enviroment::mMutex = createMutex("EnviromentMutex");
 
 String const _Enviroment::gHttpBufferSize = "env.http.buffer.size";
 int const _Enviroment::DefaultHttpBufferSize = 512*1024;
+
+String const _Enviroment::gHttpServerThreadsNum = "env.http.server.thread.num";
+int const _Enviroment::DefaultgHttpServerThreadsNum = st(System)::availableProcessors();
     
 String const _Enviroment::gWebSocketBufferSize = "env.ws.buffer.size";
 int const _Enviroment::DefaultWebSocketBufferSize = 512*1024;
@@ -106,6 +109,7 @@ _Enviroment::_Enviroment() {
     mProp = createProperties();
     
     mProp->set(gHttpBufferSize,st(String)::valueOf(DefaultHttpBufferSize));
+    mProp->set(gHttpServerThreadsNum,st(String)::valueOf(DefaultgHttpServerThreadsNum));
     mProp->set(gWebSocketBufferSize,st(String)::valueOf(DefaultWebSocketBufferSize));
     mProp->set(gWebSocketBufferSize,st(String)::valueOf(DefaultWebSocketRcvThreadsNum));
     mProp->set(gWebSocketFrameSize,st(String)::valueOf(DefaultWebSocketFrameSize));

@@ -80,6 +80,12 @@ int _ByteRingArrayReader::getReadableLength() {
         return end - mCursor;
     }
 }
+
+bool _ByteRingArrayReader::isIdle() {
+    return ((mBuff->getStartIndex() == 0 && mBuff->getEndIndex() == 0) 
+            ||((mBuff->getEndIndex() - mBuff->getStartIndex()) == 1)
+            ||((mBuff->getStartIndex() == mBuff->getSize() - 1) && (mBuff->getEndIndex() == 0)));
+}
     
 
 }

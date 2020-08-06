@@ -494,7 +494,7 @@ void _ThreadScheduledPoolExecutor::onCancel(FutureTask task) {
 _ThreadScheduledPoolExecutor::~_ThreadScheduledPoolExecutor() { 
     if(!mIsShutDown) {
         //cannot throw exception in destructor
-        LOGE(TAG,"Scheduled Thread Pool destruct error");
+        //LOGE(TAG,"Scheduled Thread Pool destruct error");
     }
 }
 

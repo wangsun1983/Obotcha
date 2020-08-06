@@ -513,7 +513,7 @@ int _ZipStream::do_extract_currentfile(unzFile uf, char *dest, const int *popt_e
         err = unzOpenCurrentFilePassword(uf, password);
         if (err != UNZ_OK)
         {
-            LOGE(TAG, "error is ", err, "with zipfile in unzOpenCurrentFilePassword");
+            LOG(ERROR)<<"error is"<<err<<"with zipfile in unzOpenCurrentFilePassword";
         }
 
         if (((*popt_overwrite) == 0) && (err == UNZ_OK))
@@ -545,7 +545,7 @@ int _ZipStream::do_extract_currentfile(unzFile uf, char *dest, const int *popt_e
 
             if (fout == NULL)
             {
-                LOGE(TAG,"error opening ",write_filename);
+                //LOGE(TAG,"error opening ",write_filename);
             }
         }
 
@@ -556,13 +556,13 @@ int _ZipStream::do_extract_currentfile(unzFile uf, char *dest, const int *popt_e
                 err = unzReadCurrentFile(uf, buf, size_buf);
                 if (err < 0)
                 {
-                    LOGE(TAG,"error ",err,"with zipfile in unzReadCurrentFile");
+                    //LOGE(TAG,"error ",err,"with zipfile in unzReadCurrentFile");
                     break;
                 }
                 if (err > 0)
                     if (fwrite(buf, err, 1, fout) != 1)
                     {
-                        LOGE(TAG,"error in writing extracted file");
+                        //LOGE(TAG,"error in writing extracted file");
                         err = UNZ_ERRNO;
                         break;
                     }
@@ -580,7 +580,7 @@ int _ZipStream::do_extract_currentfile(unzFile uf, char *dest, const int *popt_e
             err = unzCloseCurrentFile(uf);
             if (err != UNZ_OK)
             {
-                LOGE(TAG,"error ",err," with zipfile in unzCloseCurrentFile\n");
+                //LOGE(TAG,"error ",err," with zipfile in unzCloseCurrentFile\n");
             }
         }
         else
@@ -607,7 +607,7 @@ int _ZipStream::do_extract(unzFile uf, char *dest, int opt_extract_without_path,
 
     err = unzGetGlobalInfo64(uf, &gi);
     if (err != UNZ_OK) {
-        LOGE(TAG,"error ",err,"with zipfile in unzGetGlobalInfo \n");
+        //LOGE(TAG,"error ",err,"with zipfile in unzGetGlobalInfo \n");
     }
 
     for (i = 0; i < gi.number_entry; i++)
@@ -622,7 +622,7 @@ int _ZipStream::do_extract(unzFile uf, char *dest, int opt_extract_without_path,
             err = unzGoToNextFile(uf);
             if (err != UNZ_OK)
             {
-                LOGE(TAG,"error ",err," with zipfile in unzGoToNextFile\n");
+                //LOGE(TAG,"error ",err," with zipfile in unzGoToNextFile\n");
                 break;
             }
         }
@@ -684,7 +684,7 @@ int _ZipStream::makedir(char *newdir)
         *p = 0;
         if ((mymkdir(buffer) == -1) && (errno == ENOENT))
         {
-            LOGE(TAG,"couldn't create directory \n");
+            //LOGE(TAG,"couldn't create directory \n");
             free(buffer);
             return 0;
         }

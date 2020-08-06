@@ -205,7 +205,7 @@ int _ThreadCachedPoolExecutor::shutdown(){
     mCacheManager->release();
     
     if(mCacheManager->awaitTermination(500) != 0) {
-        LOGE(TAG,"ThreadCachePoolExecutor release timeout");
+        //LOGE(TAG,"ThreadCachePoolExecutor release timeout");
     }
 
     mCacheManager->removeExecutor();
@@ -308,7 +308,7 @@ void _ThreadCachedPoolExecutor::onCancel(FutureTask task) {
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
     if(!mIsShutDown) {
         //cannot throw exception in destructor
-        LOGE(TAG,"ThreadCachedPoolExecutor destruct error");
+        //LOGE(TAG,"ThreadCachedPoolExecutor destruct error");
     }
 }
 
