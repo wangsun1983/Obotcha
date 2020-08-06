@@ -165,47 +165,47 @@ void _WebSocketDispatchThread::handleHttpData(DispatchData data) {
     String key = header->getValue(st(HttpHeader)::SecWebSocketKey);
     String version = header->getValue(st(HttpHeader)::SecWebSocketVersion);
     if (upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
-      // remove fd from http epoll
-      data->mServerObserver->removeObserver(fd);
-      printf("ws socket onAccept tracews socket onAccept trace1 ,fd is %d\n",fd);
-      st(WebSocketClientManager)::getInstance()->addClient(fd,
-                                                           version->toBasicInt());
-      st(WebSocketClientManager)::getInstance()->setHttpHeader(fd, header);
+        // remove fd from http epoll
+        data->mServerObserver->removeObserver(fd);
+        printf("ws socket onAccept tracews socket onAccept trace1 ,fd is %d\n",fd);
+        st(WebSocketClientManager)::getInstance()->addClient(fd,
+                                                            version->toBasicInt());
+        st(WebSocketClientManager)::getInstance()->setHttpHeader(fd, header);
 
-      WebSocketParser parser =
-          st(WebSocketClientManager)::getInstance()->getClient(fd)->getParser();
+        WebSocketParser parser =
+            st(WebSocketClientManager)::getInstance()->getClient(fd)->getParser();
 
-      if (!parser->validateHandShake(header)) {
-          return;
-      }
+        if (!parser->validateHandShake(header)) {
+            return;
+        }
 
-      // Try to check whether extension support deflate.
-      WebSocketPermessageDeflate deflate = parser->validateExtensions(header);
-      if (deflate != nullptr) {
-          st(WebSocketClientManager)::getInstance()->setWebSocketPermessageDeflate(
-              fd, deflate);
-      }
+        // Try to check whether extension support deflate.
+        WebSocketPermessageDeflate deflate = parser->validateExtensions(header);
+        if (deflate != nullptr) {
+            st(WebSocketClientManager)::getInstance()->setWebSocketPermessageDeflate(
+                fd, deflate);
+        }
 
-      ArrayList<String> protocols = parser->extractSubprotocols(header);
-      if (protocols != nullptr && protocols->size() != 0) {
-          LOG(ERROR)<<"Websocket Server Protocol is null";
-      }
+        ArrayList<String> protocols = parser->extractSubprotocols(header);
+        if (protocols != nullptr && protocols->size() != 0) {
+            LOG(ERROR)<<"Websocket Server Protocol is null";
+        }
 
-      EPollFileObserver observer = data->mWsObservers->get(request->getUrl());
-      if (observer != nullptr) {
-        observer->addObserver(fd, EPOLLIN | EPOLLRDHUP,
-                              data->mEpollListener);
-      }
+        EPollFileObserver observer = data->mWsObservers->get(request->getUrl());
+        if (observer != nullptr) {
+          observer->addObserver(fd, EPOLLIN | EPOLLRDHUP,
+                                data->mEpollListener);
+        }
 
-      data->mEpollListener->onConnect(fd);
-      WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->getClient(fd);
-      WebSocketComposer composer = client->getComposer();
-      ByteArray shakeresponse = composer->genShakeHandMessage(st(WebSocketClientManager)::getInstance()->getClient(fd));
-      //int ret = st(NetUtils)::sendTcpPacket(fd, shakeresponse);
-      int ret = send(fd,shakeresponse->toValue(),shakeresponse->size(),0);
-      if(ret < 0) {
-          LOG(ERROR)<<"Websocket Server send response fail,reason:"<<strerror(errno);
-      }
+        data->mEpollListener->onConnect(fd);
+        WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->getClient(fd);
+        WebSocketComposer composer = client->getComposer();
+        ByteArray shakeresponse = composer->genShakeHandMessage(st(WebSocketClientManager)::getInstance()->getClient(fd));
+        //int ret = st(NetUtils)::sendTcpPacket(fd, shakeresponse);
+        int ret = send(fd,shakeresponse->toValue(),shakeresponse->size(),0);
+        if(ret < 0) {
+            LOG(ERROR)<<"Websocket Server send response fail,reason:"<<strerror(errno);
+        }
     }
 }
 
@@ -345,6 +345,8 @@ FINISH:
 
 void _WebSocketDispatchThread::run() {
   while (1) {
+
+    mStatusListener->lockData();
     if(datas->size() == 0) {
         MapIterator<int,int>iterator = fds->getIterator();
         while(iterator->hasValue()) {
@@ -352,6 +354,7 @@ void _WebSocketDispatchThread::run() {
             iterator->next();
         }
     }
+    mStatusListener->unlockData();
 
     DispatchData data = datas->deQueueFirst();
     if (data->fd == -1) {
@@ -392,6 +395,7 @@ _DispatchManager::_DispatchManager() {
 
 void _DispatchManager::dispatch(DispatchData data) {
     //DispatchData data = createDispatchData(st(DispatchData)::Ws,fd,events,pack);
+    AutoLock ll(mMutex);
 
     Integer threadId = fdmaps->get(data->fd);
     if(threadId != nullptr) {
@@ -422,8 +426,15 @@ void _DispatchManager::dispatch(DispatchData data) {
 }
 
 void _DispatchManager::onComplete(int fd) {
-    AutoLock l(mMutex);
     fdmaps->remove(fd);
+}
+
+void _DispatchManager::lockData() {
+    mMutex->lock();
+}
+
+void _DispatchManager::unlockData() {
+    mMutex->unlock();
 }
 
 //--------------------WebSocketHttpListener-----------------

@@ -34,6 +34,8 @@ public:
 DECLARE_SIMPLE_CLASS(HttpDispatchStatusListener) {
 public:
     virtual void onComplete(int fd) = 0;
+    virtual void lockData() = 0;
+    virtual void unlockData() = 0;
 };
 
 DECLARE_SIMPLE_CLASS(HttpV1Listener) {
@@ -84,6 +86,8 @@ public:
 
 private:
     void onComplete(int fd);
+    void lockData();
+    void unlockData();
 
     void onDataReceived(SocketResponser r,ByteArray pack);
 

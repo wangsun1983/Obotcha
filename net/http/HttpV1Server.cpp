@@ -45,6 +45,8 @@ int _HttpDispatchThread::getWorkQueueSize() {
 
 void _HttpDispatchThread::run() {
     while (1) {
+        //mutex
+        mListener->lockData();
         if(datas->size() == 0) {
             HashSetIterator<int>iterator = mWorkedFds->getIterator();
             while(iterator->hasValue()) {
@@ -60,7 +62,8 @@ void _HttpDispatchThread::run() {
 
             mWorkedFds->clear();
         }
-        
+        mListener->unlockData();
+
         //printf("_HttpDispatchThread run1 \n");
         DispatchHttpWorkData data = datas->deQueueFirst();
         if (data->fd == -1) {
@@ -68,7 +71,6 @@ void _HttpDispatchThread::run() {
             continue;
         }
 
-        
         HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(data->fd);
         if(info == nullptr) {
             continue;
@@ -124,7 +126,6 @@ void _HttpV1Server::onDataReceived(SocketResponser r,ByteArray pack) {
 }
 
 void _HttpV1Server::onComplete(int fd) {
-    AutoLock l(mMutex);
     fdmaps->remove(fd);
 }
 
@@ -242,6 +243,14 @@ void _HttpV1Server::exit() {
     }
     
     st(HttpV1ClientManager)::getInstance()->clear();
+}
+
+void _HttpV1Server::lockData() {
+    mMutex->lock();
+}
+
+void _HttpV1Server::unlockData() {
+    mMutex->unlock();
 }
 
 }

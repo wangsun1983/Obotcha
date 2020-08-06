@@ -123,6 +123,8 @@ public:
 DECLARE_SIMPLE_CLASS(DispatchStatusListener) {
 public:
     virtual void onComplete(int fd) = 0;
+    virtual void lockData() = 0;
+    virtual void unlockData() = 0;
 };
 
 DECLARE_SIMPLE_CLASS(WebSocketDispatchThread) IMPLEMENTS(Thread) {
@@ -153,6 +155,9 @@ public:
 private:
     ArrayList<WebSocketDispatchThread> mThreads;
     void onComplete(int fd);
+    void lockData();
+    void unlockData();
+
     Mutex mMutex;
     HashMap<int,Integer> fdmaps;
     int threadsNum;
