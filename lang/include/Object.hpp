@@ -44,7 +44,7 @@ public:
         return this == &m;
     }
 
-    
+    inline virtual void __ReflectInit(){}
 
 protected:
     inline virtual ~Object() {
@@ -52,32 +52,49 @@ protected:
 
 private:
     mutable volatile int32_t mCount;
-
 };
 
 }
+
+//    sp<_##Y> ret = new _##Y(std::forward<Args>(args)...);\
+    ret->__ReflectInit();\
 
 #define MAKE_FUNCTION_0(Y) \
 template<typename... Args>\
 sp<_##Y> create##Y(Args&&... args)\
 {\
-    sp<_##Y> ret = new _##Y(std::forward<Args>(args)...);\
+    Object* obj = new _##Y(std::forward<Args>(args)...);\
+    obj->__ReflectInit();\
+    sp<_##Y> ret;\
+    ret.set_pointer(dynamic_cast<_##Y *>(obj));\
     return ret;\
 }\
+
+//    sp<_##Y<T>> ret = new _##Y<T>(std::forward<Args>(args)...);\
+    ret->__ReflectInit();\
 
 #define MAKE_FUNCTION_1(Y) \
 template<typename T,typename... Args>\
 sp<_##Y<T>> create##Y(Args&&... args)\
 {\
-    sp<_##Y<T>> ret = new _##Y<T>(std::forward<Args>(args)...);\
+    Object* obj = new _##Y<T>(std::forward<Args>(args)...);\
+    obj->__ReflectInit();\
+    sp<_##Y<T>> ret;\
+    ret.set_pointer(dynamic_cast<_##Y<T> *>(obj));\
     return ret;\
 }\
+
+// sp<_##Y<T,U>> ret = new _##Y<T,U>(std::forward<Args>(args)...);\
+    ret->__ReflectInit();\
 
 #define MAKE_FUNCTION_2(Y) \
 template<typename T,typename U,typename... Args>\
 sp<_##Y<T,U>> create##Y(Args&&... args)\
 {\
-    sp<_##Y<T,U>> ret = new _##Y<T,U>(std::forward<Args>(args)...);\
+    Object* obj = new _##Y<T,U>(std::forward<Args>(args)...);\
+    obj->__ReflectInit();\
+    sp<_##Y<T,U>> ret;\
+    ret.set_pointer(dynamic_cast<_##Y<T,U> *>(obj));\
     return ret;\
 }\
 
