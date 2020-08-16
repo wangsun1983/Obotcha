@@ -243,9 +243,9 @@
    
 #define DECLARE_REFLECT_FIELD(CLASS, ...) \
     std::map<std::string,std::function<void(std::string) >> mSetMaps;\
-    IMPLE_SET_FUNCTION_DETECT(CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
+    IMPLE_SET_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
     void __ReflectInit() {\
-        IMPLE_INIT_FUNCTION_DETECT(CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)\
+        IMPLE_INIT_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)\
     }\
     void setFieldValue(String field,String value) {\
         mSetMaps[field->getStdString()](value->getStdString());\

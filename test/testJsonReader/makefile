@@ -16,12 +16,14 @@ cflags = -fpic \
 		-I ../../process/include \
 		-I ../../external/iniparser/include \
 		-I ../../external/jsoncpp/include \
+		-I ../../external/glog/include \
 		-I ../../external/rapidxml/include \
 		-I ../../external/zlib/include \
 		-I ../../external/ccl/include \
 		-I ../../external/yaml/include \
 		-I ../../external/crc32/include \
 		-I ../../external/openssl/include \
+		-I ../../external/http_parser/include \
 		-I ../../external/libco \
 		-g \
 		-std=c++11 \
@@ -30,11 +32,6 @@ external = -lpthread \
 				-ldl \
 				../../out/lib/libobotcha.so \
 
-sharelib = -Wl,-rpath=../../out/lib/ \
-           -L ../../out/lib/ \
-           -lcrypto \
-           -L ../../out/lib/ \
-           -lssl \
 
 files =
 link =
@@ -43,4 +40,4 @@ libname	= testJsonReader
 everything : $(libname)
 
 $(libname): $(link)
-	g++ *.cpp $(cflags) -o mytest $(external) $(sharelib)
+	g++ *.cpp $(cflags) -o mytest $(external)
