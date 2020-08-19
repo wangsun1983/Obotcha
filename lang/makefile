@@ -3,6 +3,7 @@ langDir = lang
 objs += $(outtmp)/integer.o \
 	$(outtmp)/boolean.o \
 	$(outtmp)/double.o \
+	$(outtmp)/field.o \
 	$(outtmp)/float.o \
 	$(outtmp)/system.o \
 	$(outtmp)/string.o \
@@ -15,7 +16,7 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/uint8.o \
 	$(outtmp)/byte.o \
 	$(outtmp)/exception.o \
-  $(outtmp)/outofboundsexception.o \
+	$(outtmp)/outofboundsexception.o \
 	$(outtmp)/methodnotsupportexception.o \
 	$(outtmp)/protocolnotsupportexception.o \
 	$(outtmp)/nullpointerexception.o \
@@ -28,6 +29,9 @@ objs += $(outtmp)/integer.o \
 
 $(outtmp)/integer.o :$(langDir)/Integer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Integer.cpp -o $(outtmp)/integer.o $(external)
+
+$(outtmp)/field.o :$(langDir)/Field.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Field.cpp -o $(outtmp)/field.o $(external)
 
 $(outtmp)/uint64.o :$(langDir)/Uint64.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Uint64.cpp -o $(outtmp)/uint64.o $(external)

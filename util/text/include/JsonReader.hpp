@@ -23,6 +23,8 @@ public:
     _JsonReader(String content);
 
     JsonValue get();
+
+    /*
     template<typename T>
     sp<T> reflect() {
         sp<T> ret;
@@ -44,7 +46,7 @@ public:
         ret.set_pointer(p);
         return ret;
     }
-    
+ */    
 private:
     FileInputStream stream;
 
@@ -57,6 +59,8 @@ private:
     JsonValue parse();
 
     JsonValue parse(String);
+
+    
 };
 
 }

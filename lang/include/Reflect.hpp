@@ -4,7 +4,10 @@
 #include <map>
 #include <functional>
 #include <sstream>  
-#include <iostream> 
+#include <iostream>
+
+#include "Field.hpp"
+#include "HashMap.hpp"
 
 #define ARG_0(\
         N, ...) N
@@ -103,10 +106,12 @@
 
 //function
 #define IMPLE_SET_VALUE_1(CLASS,MEMBER) \
-    void __ReflectSet##MEMBER(std::string v) { \
-        std::stringstream iss(v);\
-        iss>>this->MEMBER;\
-    }
+    void __ReflectSet##MEMBER(decltype(MEMBER) v) { \
+        MEMBER = v;\
+    }\
+    decltype(MEMBER) __ReflectGet##MEMBER() {\
+        return MEMBER;\
+    }\
 
 #define IMPLE_SET_VALUE_2(CLASS,M1,M2) \
     IMPLE_SET_VALUE_1(CLASS,M1) \
@@ -167,8 +172,12 @@
 //init
 #define IMPLE_INIT_FUNCTION_1(CLASS,MEMBER) \
     {\
-        std::function<void(std::string)> obj = std::bind(&CLASS::__ReflectSet##MEMBER,this,std::placeholders::_1);\
-        mSetMaps[#MEMBER] = obj;\
+        std::function<void(decltype(MEMBER))> setobj = std::bind(&CLASS::__ReflectSet##MEMBER,this,std::placeholders::_1);\
+        std::function<decltype(MEMBER)()> getobj = std::bind(&CLASS::__ReflectGet##MEMBER,this);\
+        FieldContent<decltype(MEMBER)> content = createFieldContent<decltype(MEMBER)>(setobj,getobj);\
+        content->setName(createString(#MEMBER));\
+        content->setType(content->TypeOf(this->MEMBER));\
+        maps->put(content->getName(),content);\
     }
     
 #define IMPLE_INIT_FUNCTION_2(CLASS,M1,M2) \
@@ -242,13 +251,17 @@
 
    
 #define DECLARE_REFLECT_FIELD(CLASS, ...) \
-    std::map<std::string,std::function<void(std::string) >> mSetMaps;\
+    HashMap<String,Field> maps; \
     IMPLE_SET_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
     void __ReflectInit() {\
+        maps = createHashMap<String,Field>();\
         IMPLE_INIT_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)\
     }\
-    void setFieldValue(String field,String value) {\
-        mSetMaps[field->getStdString()](value->getStdString());\
+    Field getField(String name) {\
+        return maps->get(name);\
+    }\
+    ArrayList<Field> getAllFields(){ \
+        return maps->entrySet();\
     }\
 
-    #endif
+#endif
