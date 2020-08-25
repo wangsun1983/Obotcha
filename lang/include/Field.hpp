@@ -14,26 +14,27 @@ namespace obotcha {
 template<typename T>
 class _FieldContent;
 
+enum {
+    FieldTypeInt = 0,
+    FieldTypeByte,
+    FieldTypeDouble,
+    FieldTypeFloat,
+    FieldTypeString,
+    FieldTypeUint8,
+    FieldTypeUint16,
+    FieldTypeUint32,
+    FieldTypeUint64,
+    FieldTypeVector,
+    FieldTypeArrayList,
+    FieldTypeObject,
+    FieldTypeUnKnow,
+};
+
 
 DECLARE_SIMPLE_CLASS(Field) {
 public:
-    static const int FieldTypeInt;
-    static const int FieldTypeByte;
-    static const int FieldTypeByteArray;
-    static const int FieldTypeDouble;
-    static const int FieldTypeFloat;
-    static const int FieldTypeString;
-    static const int FieldTypeUint8;
-    static const int FieldTypeUint16;
-    static const int FieldTypeUint32;
-    static const int FieldTypeUint64;
-    static const int FieldTypeVector;
-    static const int FieldTypeArrayList;
-    static const int FieldTypeObject;
-
     int TypeOf(int v);
     int TypeOf(byte v);
-    int TypeOf(ByteArray v);
     int TypeOf(double v);
     int TypeOf(Float v);
     int TypeOf(String v);
@@ -73,30 +74,55 @@ public:
 
     int getType();
 
+    int getId();
+
     void setName(String);
 
     void setType(int);
 
+    void setId(int);
+    
+    template<typename T,typename Y>
+    void setFieldValue(T obj,Y value) {
+        const int index = this->id;
+        std::get<0>(obj->setFuncTuple)(value);
+    }
+
+#define SWITCH_CASE(V) \
+    case V:\
+    if(tupleTestSize > V) {\
+        return std::get<V>(obj->getFuncTuple)();\
+    }\
+    break;\
+
     template<typename T>
-    void setValue(T value) {
-        _FieldContent<decltype(value)> *t= dynamic_cast<_FieldContent<decltype(value)> *>(this);
-        t->setfunc(value);
+    auto getFieldValue(T obj){
+        int tupleTestSize = std::tuple_size<decltype(obj->getFuncTuple)>::value;
+        switch(this->id) {
+            SWITCH_CASE(0)
+            SWITCH_CASE(1)
+            SWITCH_CASE(2)
+            SWITCH_CASE(3)
+            SWITCH_CASE(4)
+            SWITCH_CASE(5)
+            SWITCH_CASE(6)
+            SWITCH_CASE(7)
+            SWITCH_CASE(8)
+            SWITCH_CASE(9)
+            SWITCH_CASE(10)
+            SWITCH_CASE(11)
+            SWITCH_CASE(12)
+            SWITCH_CASE(13)
+            SWITCH_CASE(14)
+            SWITCH_CASE(15) 
+        }
     }
 
 private:
     int type;
-    String name;    
+    String name;
+    int id;
 };
-
-DECLARE_CLASS(FieldContent,1) EXTENDS(Field)  {
-public:    
-    std::function<void(T)> setfunc;
-    std::function<T(void)> getfunc;
-    _FieldContent(std::function<void(T)> set,std::function<T(void)>get) {
-        setfunc = set;
-        getfunc = get;
-    }
-};    
 
 }
 #endif

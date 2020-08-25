@@ -2,30 +2,12 @@
 
 namespace obotcha {
 
-const int _Field::FieldTypeInt = 0;
-const int _Field::FieldTypeByte = 1;
-const int _Field::FieldTypeByteArray = 2;
-const int _Field::FieldTypeDouble = 3;
-const int _Field::FieldTypeFloat = 4;
-const int _Field::FieldTypeString = 5;
-const int _Field::FieldTypeUint8 = 6;
-const int _Field::FieldTypeUint16 = 7;
-const int _Field::FieldTypeUint32 = 8;
-const int _Field::FieldTypeUint64 = 9;
-const int _Field::FieldTypeVector = 10;
-const int _Field::FieldTypeArrayList = 11;
-const int _Field::FieldTypeObject = 12;
-
 int _Field::TypeOf(int v) {
     return FieldTypeInt;
 }
 
 int _Field::TypeOf(byte v) {
     return FieldTypeByte;
-}
-
-int _Field::TypeOf(ByteArray v) {
-    return FieldTypeByteArray;
 }
 
 int _Field::TypeOf(double v) {
@@ -64,6 +46,10 @@ int _Field::getType() {
     return type;
 }
 
+int _Field::getId() {
+    return id;
+}
+
 void _Field::setName(String n) {
     name = n;
 }
@@ -72,4 +58,7 @@ void _Field::setType(int t) {
     type = t;
 }
 
+void _Field::setId(int d) {
+    id = d;
+}
 }

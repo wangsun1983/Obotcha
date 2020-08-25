@@ -112,6 +112,26 @@
     decltype(MEMBER) __ReflectGet##MEMBER() {\
         return MEMBER;\
     }\
+    decltype(MEMBER) __ReflectCreate##MEMBER() {\
+        Field f = maps->get(#MEMBER);\
+        switch(f->getType()) {\
+            case FieldTypeInt:\
+            case FieldTypeByte:\
+            case FieldTypeDouble:\
+            case FieldTypeFloat:\
+            case FieldTypeString:\
+            case FieldTypeUint8:\
+            case FieldTypeUint16:\
+            case FieldTypeUint32:\
+            case FieldTypeUint64:\
+                return 0;\
+            break;\
+            case FieldTypeObject:\
+                decltype(MEMBER) t;\
+                return t;\
+            break;\
+        }\
+    }\
 
 #define IMPLE_SET_VALUE_2(CLASS,M1,M2) \
     IMPLE_SET_VALUE_1(CLASS,M1) \
@@ -172,12 +192,12 @@
 //init
 #define IMPLE_INIT_FUNCTION_1(CLASS,MEMBER) \
     {\
-        std::function<void(decltype(MEMBER))> setobj = std::bind(&CLASS::__ReflectSet##MEMBER,this,std::placeholders::_1);\
-        std::function<decltype(MEMBER)()> getobj = std::bind(&CLASS::__ReflectGet##MEMBER,this);\
-        FieldContent<decltype(MEMBER)> content = createFieldContent<decltype(MEMBER)>(setobj,getobj);\
+        Field content = createField();\
         content->setName(createString(#MEMBER));\
         content->setType(content->TypeOf(this->MEMBER));\
+        content->setId(index);\
         maps->put(content->getName(),content);\
+        index++;\
     }
     
 #define IMPLE_INIT_FUNCTION_2(CLASS,M1,M2) \
@@ -249,13 +269,1183 @@
 #define IMPLE_SET_FUNCTION_DETECT_TRACE(CLASS,COUNT, ...) IMPLE_SET_FUNCTION_DETECT_TRACE1(CLASS,COUNT, __VA_ARGS__)
 #define IMPLE_SET_FUNCTION_DETECT_TRACE1(CLASS,COUNT, ...) IMPLE_SET_VALUE_##COUNT(CLASS,__VA_ARGS__)
 
-   
+#define DECLARE_INIT_TUPLE_DETECT(CLASS,COUNT, ...) DECLARE_INIT_TUPLE_DETECT_TRACE(CLASS,COUNT, __VA_ARGS__)
+#define DECLARE_INIT_TUPLE_DETECT_TRACE(CLASS,COUNT, ...) DECLARE_INIT_TUPLE_DETECT_TRACE1(CLASS,COUNT, __VA_ARGS__)
+#define DECLARE_INIT_TUPLE_DETECT_TRACE1(CLASS,COUNT, ...) DECLARE_INIT_TUPLE_##COUNT(__VA_ARGS__)
+
+//Set,Get,Create
+#define __S(MEMBER) std::function<void(decltype(MEMBER))>
+#define __G(MEMBER) std::function<decltype(MEMBER)()>
+#define __C(MEMBER) std::function<decltype(MEMBER)()>
+#define __D() std::function<int()>
+
+#define DECLARE_INIT_TUPLE_1(M1) \
+    std::tuple<__S(M1),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple;
+
+#define DECLARE_INIT_TUPLE_2(M1,M2) \
+    std::tuple<__S(M1),__S(M2),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple; 
+
+#define DECLARE_INIT_TUPLE_3(M1,M2,M3) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple; 
+
+#define DECLARE_INIT_TUPLE_4(M1,M2,M3,M4) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__G(M4),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__C(M4),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple; 
+
+#define DECLARE_INIT_TUPLE_5(M1,M2,M3,M4,M5) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__G(M4),__G(M5),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__C(M4),__C(M5),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple;
+
+#define DECLARE_INIT_TUPLE_6(M1,M2,M3,M4,M5,M6) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
+                __S(M6),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__G(M4),__G(M5),\
+                __G(M6),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__C(M4),__C(M5),\
+                __C(M6),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple;
+
+#define DECLARE_INIT_TUPLE_7(M1,M2,M3,M4,M5,M6,M7) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
+                __S(M6),__S(M7),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__G(M4),__G(M5),\
+                __G(M6),__G(M7),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__C(M4),__C(M5),\
+                __C(M6),__C(M7),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple;
+
+
+#define DECLARE_INIT_TUPLE_8(M1,M2,M3,M4,M5,M6,M7,M8) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
+                __S(M6),__S(M7),__S(M8),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__G(M4),__G(M5),\
+                __G(M6),__G(M7),__G(M8),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__C(M4),__C(M5),\
+                __C(M6),__C(M7),__C(M8),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple;
+
+#define DECLARE_INIT_TUPLE_9(M1,M2,M3,M4,M5,M6,M7,M8,M9) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
+                __S(M6),__S(M7),__S(M8),__S(M9),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__G(M4),__G(M5),\
+                __G(M6),__G(M7),__G(M8),__G(M9),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__C(M4),__C(M5),\
+                __C(M6),__C(M7),__C(M8),__C(M9),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple;
+
+#define DECLARE_INIT_TUPLE_10(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
+                __S(M6),__S(M7),__S(M8),__S(M9),__S(M10),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__G(M4),__G(M5),\
+                __G(M6),__G(M7),__G(M8),__G(M9),__G(M10),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__C(M4),__C(M5),\
+                __C(M6),__C(M7),__C(M8),__C(M9),__C(M10),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple;
+
+#define DECLARE_INIT_TUPLE_11(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
+                __S(M6),__S(M7),__S(M8),__S(M9),__S(M10),\
+                __S(M11),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__G(M4),__G(M5),\
+                __G(M6),__G(M7),__G(M8),__G(M9),__G(M10),\
+                __G(M11),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__C(M4),__C(M5),\
+                __C(M6),__C(M7),__C(M8),__C(M9),__C(M10),\
+                __C(M11),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple;
+
+
+#define DECLARE_INIT_TUPLE_12(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
+                __S(M6),__S(M7),__S(M8),__S(M9),__S(M10),\
+                __S(M11),__S(M12),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__G(M4),__G(M5),\
+                __G(M6),__G(M7),__G(M8),__G(M9),__G(M10),\
+                __G(M11),__G(M12),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__C(M4),__C(M5),\
+                __C(M6),__C(M7),__C(M8),__C(M9),__C(M10),\
+                __C(M11),__C(M12),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple;
+
+#define DECLARE_INIT_TUPLE_13(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
+                __S(M6),__S(M7),__S(M8),__S(M9),__S(M10),\
+                __S(M11),__S(M12),__S(M13),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__G(M4),__G(M5),\
+                __G(M6),__G(M7),__G(M8),__G(M9),__G(M10),\
+                __G(M11),__G(M12),__G(M13),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__C(M4),__C(M5),\
+                __C(M6),__C(M7),__C(M8),__C(M9),__C(M10),\
+                __C(M11),__C(M12),__C(M13),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple;
+
+#define DECLARE_INIT_TUPLE_14(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
+                __S(M6),__S(M7),__S(M8),__S(M9),__S(M10),\
+                __S(M11),__S(M12),__S(M13),__S(M14),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__G(M4),__G(M5),\
+                __G(M6),__G(M7),__G(M8),__G(M9),__G(M10),\
+                __G(M11),__G(M12),__G(M13),__G(M14),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__C(M4),__C(M5),\
+                __C(M6),__C(M7),__C(M8),__C(M9),__C(M10),\
+                __C(M11),__C(M12),__C(M13),__C(M14),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple;
+
+#define DECLARE_INIT_TUPLE_15(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14,M15) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
+                __S(M6),__S(M7),__S(M8),__S(M9),__S(M10),\
+                __S(M11),__S(M12),__S(M13),__S(M14),__S(M15),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__G(M4),__G(M5),\
+                __G(M6),__G(M7),__G(M8),__G(M9),__G(M10),\
+                __G(M11),__G(M12),__G(M13),__G(M14),__G(M15),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__C(M4),__C(M5),\
+                __C(M6),__C(M7),__C(M8),__C(M9),__C(M10),\
+                __C(M11),__C(M12),__C(M13),__C(M14),__C(M15),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple;
+
+
+#define DECLARE_INIT_TUPLE_16(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14,M15,M16) \
+    std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
+                __S(M6),__S(M7),__S(M8),__S(M9),__S(M10),\
+                __S(M11),__S(M12),__S(M13),__S(M14),__S(M15),\
+                __S(M16),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> setFuncTuple;\
+    std::tuple<__G(M1),__G(M2),__G(M3),__G(M4),__G(M5),\
+                __G(M6),__G(M7),__G(M8),__G(M9),__G(M10),\
+                __G(M11),__G(M12),__G(M13),__G(M14),__G(M15),\
+                __G(M16),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> getFuncTuple;\
+    std::tuple<__C(M1),__C(M2),__C(M3),__C(M4),__C(M5),\
+                __C(M6),__C(M7),__C(M8),__C(M9),__C(M10),\
+                __C(M11),__C(M12),__C(M13),__C(M14),__C(M15),\
+                __C(M16),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D(),__D(),__D(),__D(),\
+                __D(),__D()> createFuncTuple;
+
+
+#define IMPLE_INIT_TUPLE_DETECT(CLASS,COUNT, ...) IMPLE_INIT_TUPLE_DETECT_TRACE(CLASS,COUNT, __VA_ARGS__)
+#define IMPLE_INIT_TUPLE_DETECT_TRACE(CLASS,COUNT, ...) IMPLE_INIT_TUPLE_DETECT_TRACE1(CLASS,COUNT, __VA_ARGS__)
+#define IMPLE_INIT_TUPLE_DETECT_TRACE1(CLASS,COUNT, ...) IMPLE_INIT_TUPLE_##COUNT(CLASS,__VA_ARGS__)
+
+#define IMPLE_INIT_TUPLE_1(CLASS,M1) \
+    std::function<void(decltype(M1))> setobj = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj = std::bind(&CLASS::__ReflectGet##M1,this);\
+    getFuncTuple = std::make_tuple(getobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    createFuncTuple = std::make_tuple(createobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+#define IMPLE_INIT_TUPLE_2(CLASS,M1,M2) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+#define IMPLE_INIT_TUPLE_3(CLASS,M1,M2,M3) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+#define IMPLE_INIT_TUPLE_4(CLASS,M1,M2,M3,M4) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    std::function<void(decltype(M4))> setobj4 = std::bind(&CLASS::__ReflectSet##M4,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,setobj4,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<decltype(M4)()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+#define IMPLE_INIT_TUPLE_5(CLASS,M1,M2,M3,M4,M5) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    std::function<void(decltype(M4))> setobj4 = std::bind(&CLASS::__ReflectSet##M4,this,std::placeholders::_1);\
+    std::function<void(decltype(M5))> setobj5 = std::bind(&CLASS::__ReflectSet##M5,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,setobj4,setobj5,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<decltype(M4)()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<decltype(M5)()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+#define IMPLE_INIT_TUPLE_6(CLASS,M1,M2,M3,M4,M5,M6) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    std::function<void(decltype(M4))> setobj4 = std::bind(&CLASS::__ReflectSet##M4,this,std::placeholders::_1);\
+    std::function<void(decltype(M5))> setobj5 = std::bind(&CLASS::__ReflectSet##M5,this,std::placeholders::_1);\
+    std::function<void(decltype(M6))> setobj6 = std::bind(&CLASS::__ReflectSet##M6,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,setobj4,setobj5,\
+                                   setobj6,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
+    std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
+                                   getobj6,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<decltype(M4)()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<decltype(M5)()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<decltype(M6)()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+#define IMPLE_INIT_TUPLE_7(CLASS,M1,M2,M3,M4,M5,M6,M7) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    std::function<void(decltype(M4))> setobj4 = std::bind(&CLASS::__ReflectSet##M4,this,std::placeholders::_1);\
+    std::function<void(decltype(M5))> setobj5 = std::bind(&CLASS::__ReflectSet##M5,this,std::placeholders::_1);\
+    std::function<void(decltype(M6))> setobj6 = std::bind(&CLASS::__ReflectSet##M6,this,std::placeholders::_1);\
+    std::function<void(decltype(M7))> setobj7 = std::bind(&CLASS::__ReflectSet##M7,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,setobj4,setobj5,\
+                                   setobj6,setobj7,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
+    std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
+    std::function<decltype(M7)()> getobj7 = std::bind(&CLASS::__ReflectGet##M7,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
+                                   getobj6,getobj7,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<decltype(M4)()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<decltype(M5)()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<decltype(M6)()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<decltype(M7)()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+
+#define IMPLE_INIT_TUPLE_8(CLASS,M1,M2,M3,M4,M5,M6,M7,M8) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    std::function<void(decltype(M4))> setobj4 = std::bind(&CLASS::__ReflectSet##M4,this,std::placeholders::_1);\
+    std::function<void(decltype(M5))> setobj5 = std::bind(&CLASS::__ReflectSet##M5,this,std::placeholders::_1);\
+    std::function<void(decltype(M6))> setobj6 = std::bind(&CLASS::__ReflectSet##M6,this,std::placeholders::_1);\
+    std::function<void(decltype(M7))> setobj7 = std::bind(&CLASS::__ReflectSet##M7,this,std::placeholders::_1);\
+    std::function<void(decltype(M8))> setobj8 = std::bind(&CLASS::__ReflectSet##M8,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,setobj4,setobj5,\
+                                   setobj6,setobj7,setobj8,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
+    std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
+    std::function<decltype(M7)()> getobj7 = std::bind(&CLASS::__ReflectGet##M7,this);\
+    std::function<decltype(M8)()> getobj8 = std::bind(&CLASS::__ReflectGet##M8,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
+                                   getobj6,getobj7,getobj8,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<decltype(M4)()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<decltype(M5)()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<decltype(M6)()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<decltype(M7)()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<decltype(M8)()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+#define IMPLE_INIT_TUPLE_9(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    std::function<void(decltype(M4))> setobj4 = std::bind(&CLASS::__ReflectSet##M4,this,std::placeholders::_1);\
+    std::function<void(decltype(M5))> setobj5 = std::bind(&CLASS::__ReflectSet##M5,this,std::placeholders::_1);\
+    std::function<void(decltype(M6))> setobj6 = std::bind(&CLASS::__ReflectSet##M6,this,std::placeholders::_1);\
+    std::function<void(decltype(M7))> setobj7 = std::bind(&CLASS::__ReflectSet##M7,this,std::placeholders::_1);\
+    std::function<void(decltype(M8))> setobj8 = std::bind(&CLASS::__ReflectSet##M8,this,std::placeholders::_1);\
+    std::function<void(decltype(M9))> setobj9 = std::bind(&CLASS::__ReflectSet##M9,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,setobj4,setobj5,\
+                                   setobj6,setobj7,setobj8,setobj9,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
+    std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
+    std::function<decltype(M7)()> getobj7 = std::bind(&CLASS::__ReflectGet##M7,this);\
+    std::function<decltype(M8)()> getobj8 = std::bind(&CLASS::__ReflectGet##M8,this);\
+    std::function<decltype(M9)()> getobj9 = std::bind(&CLASS::__ReflectGet##M9,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
+                                   getobj6,getobj7,getobj8,getobj9,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<decltype(M4)()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<decltype(M5)()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<decltype(M6)()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<decltype(M7)()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<decltype(M8)()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<decltype(M9)()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+
+#define IMPLE_INIT_TUPLE_10(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    std::function<void(decltype(M4))> setobj4 = std::bind(&CLASS::__ReflectSet##M4,this,std::placeholders::_1);\
+    std::function<void(decltype(M5))> setobj5 = std::bind(&CLASS::__ReflectSet##M5,this,std::placeholders::_1);\
+    std::function<void(decltype(M6))> setobj6 = std::bind(&CLASS::__ReflectSet##M6,this,std::placeholders::_1);\
+    std::function<void(decltype(M7))> setobj7 = std::bind(&CLASS::__ReflectSet##M7,this,std::placeholders::_1);\
+    std::function<void(decltype(M8))> setobj8 = std::bind(&CLASS::__ReflectSet##M8,this,std::placeholders::_1);\
+    std::function<void(decltype(M9))> setobj9 = std::bind(&CLASS::__ReflectSet##M9,this,std::placeholders::_1);\
+    std::function<void(decltype(M10))> setobj10 = std::bind(&CLASS::__ReflectSet##M10,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,setobj4,setobj5,\
+                                   setobj6,setobj7,setobj8,setobj9,setobj10,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
+    std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
+    std::function<decltype(M7)()> getobj7 = std::bind(&CLASS::__ReflectGet##M7,this);\
+    std::function<decltype(M8)()> getobj8 = std::bind(&CLASS::__ReflectGet##M8,this);\
+    std::function<decltype(M9)()> getobj9 = std::bind(&CLASS::__ReflectGet##M9,this);\
+    std::function<decltype(M10)()> getobj10 = std::bind(&CLASS::__ReflectGet##M10,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
+                                   getobj6,getobj7,getobj8,getobj9,getobj10,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<decltype(M4)()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<decltype(M5)()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<decltype(M6)()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<decltype(M7)()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<decltype(M8)()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<decltype(M9)()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<decltype(M10)()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+#define IMPLE_INIT_TUPLE_11(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    std::function<void(decltype(M4))> setobj4 = std::bind(&CLASS::__ReflectSet##M4,this,std::placeholders::_1);\
+    std::function<void(decltype(M5))> setobj5 = std::bind(&CLASS::__ReflectSet##M5,this,std::placeholders::_1);\
+    std::function<void(decltype(M6))> setobj6 = std::bind(&CLASS::__ReflectSet##M6,this,std::placeholders::_1);\
+    std::function<void(decltype(M7))> setobj7 = std::bind(&CLASS::__ReflectSet##M7,this,std::placeholders::_1);\
+    std::function<void(decltype(M8))> setobj8 = std::bind(&CLASS::__ReflectSet##M8,this,std::placeholders::_1);\
+    std::function<void(decltype(M9))> setobj9 = std::bind(&CLASS::__ReflectSet##M9,this,std::placeholders::_1);\
+    std::function<void(decltype(M10))> setobj10 = std::bind(&CLASS::__ReflectSet##M10,this,std::placeholders::_1);\
+    std::function<void(decltype(M11))> setobj11 = std::bind(&CLASS::__ReflectSet##M11,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,setobj4,setobj5,\
+                                   setobj6,setobj7,setobj8,setobj9,setobj10,\
+                                   setobj11,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
+    std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
+    std::function<decltype(M7)()> getobj7 = std::bind(&CLASS::__ReflectGet##M7,this);\
+    std::function<decltype(M8)()> getobj8 = std::bind(&CLASS::__ReflectGet##M8,this);\
+    std::function<decltype(M9)()> getobj9 = std::bind(&CLASS::__ReflectGet##M9,this);\
+    std::function<decltype(M10)()> getobj10 = std::bind(&CLASS::__ReflectGet##M10,this);\
+    std::function<decltype(M11)()> getobj11 = std::bind(&CLASS::__ReflectGet##M11,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
+                                   getobj6,getobj7,getobj8,getobj9,getobj10,\
+                                   getobj11,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<decltype(M4)()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<decltype(M5)()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<decltype(M6)()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<decltype(M7)()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<decltype(M8)()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<decltype(M9)()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<decltype(M10)()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    std::function<decltype(M11)()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   createobj11,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+#define IMPLE_INIT_TUPLE_12(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    std::function<void(decltype(M4))> setobj4 = std::bind(&CLASS::__ReflectSet##M4,this,std::placeholders::_1);\
+    std::function<void(decltype(M5))> setobj5 = std::bind(&CLASS::__ReflectSet##M5,this,std::placeholders::_1);\
+    std::function<void(decltype(M6))> setobj6 = std::bind(&CLASS::__ReflectSet##M6,this,std::placeholders::_1);\
+    std::function<void(decltype(M7))> setobj7 = std::bind(&CLASS::__ReflectSet##M7,this,std::placeholders::_1);\
+    std::function<void(decltype(M8))> setobj8 = std::bind(&CLASS::__ReflectSet##M8,this,std::placeholders::_1);\
+    std::function<void(decltype(M9))> setobj9 = std::bind(&CLASS::__ReflectSet##M9,this,std::placeholders::_1);\
+    std::function<void(decltype(M10))> setobj10 = std::bind(&CLASS::__ReflectSet##M10,this,std::placeholders::_1);\
+    std::function<void(decltype(M11))> setobj11 = std::bind(&CLASS::__ReflectSet##M11,this,std::placeholders::_1);\
+    std::function<void(decltype(M12))> setobj12 = std::bind(&CLASS::__ReflectSet##M12,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,setobj4,setobj5,\
+                                   setobj6,setobj7,setobj8,setobj9,setobj10,\
+                                   setobj11,setobj12,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
+    std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
+    std::function<decltype(M7)()> getobj7 = std::bind(&CLASS::__ReflectGet##M7,this);\
+    std::function<decltype(M8)()> getobj8 = std::bind(&CLASS::__ReflectGet##M8,this);\
+    std::function<decltype(M9)()> getobj9 = std::bind(&CLASS::__ReflectGet##M9,this);\
+    std::function<decltype(M10)()> getobj10 = std::bind(&CLASS::__ReflectGet##M10,this);\
+    std::function<decltype(M11)()> getobj11 = std::bind(&CLASS::__ReflectGet##M11,this);\
+    std::function<decltype(M12)()> getobj12 = std::bind(&CLASS::__ReflectGet##M12,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
+                                   getobj6,getobj7,getobj8,getobj9,getobj10,\
+                                   getobj11,getobj12,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<decltype(M4)()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<decltype(M5)()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<decltype(M6)()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<decltype(M7)()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<decltype(M8)()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<decltype(M9)()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<decltype(M10)()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    std::function<decltype(M11)()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
+    std::function<decltype(M12)()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   createobj11,createobj12,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+
+#define IMPLE_INIT_TUPLE_13(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    std::function<void(decltype(M4))> setobj4 = std::bind(&CLASS::__ReflectSet##M4,this,std::placeholders::_1);\
+    std::function<void(decltype(M5))> setobj5 = std::bind(&CLASS::__ReflectSet##M5,this,std::placeholders::_1);\
+    std::function<void(decltype(M6))> setobj6 = std::bind(&CLASS::__ReflectSet##M6,this,std::placeholders::_1);\
+    std::function<void(decltype(M7))> setobj7 = std::bind(&CLASS::__ReflectSet##M7,this,std::placeholders::_1);\
+    std::function<void(decltype(M8))> setobj8 = std::bind(&CLASS::__ReflectSet##M8,this,std::placeholders::_1);\
+    std::function<void(decltype(M9))> setobj9 = std::bind(&CLASS::__ReflectSet##M9,this,std::placeholders::_1);\
+    std::function<void(decltype(M10))> setobj10 = std::bind(&CLASS::__ReflectSet##M10,this,std::placeholders::_1);\
+    std::function<void(decltype(M11))> setobj11 = std::bind(&CLASS::__ReflectSet##M11,this,std::placeholders::_1);\
+    std::function<void(decltype(M12))> setobj12 = std::bind(&CLASS::__ReflectSet##M12,this,std::placeholders::_1);\
+    std::function<void(decltype(M13))> setobj13 = std::bind(&CLASS::__ReflectSet##M13,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,setobj4,setobj5,\
+                                   setobj6,setobj7,setobj8,setobj9,setobj10,\
+                                   setobj11,setobj12,setobj13,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
+    std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
+    std::function<decltype(M7)()> getobj7 = std::bind(&CLASS::__ReflectGet##M7,this);\
+    std::function<decltype(M8)()> getobj8 = std::bind(&CLASS::__ReflectGet##M8,this);\
+    std::function<decltype(M9)()> getobj9 = std::bind(&CLASS::__ReflectGet##M9,this);\
+    std::function<decltype(M10)()> getobj10 = std::bind(&CLASS::__ReflectGet##M10,this);\
+    std::function<decltype(M11)()> getobj11 = std::bind(&CLASS::__ReflectGet##M11,this);\
+    std::function<decltype(M12)()> getobj12 = std::bind(&CLASS::__ReflectGet##M12,this);\
+    std::function<decltype(M13)()> getobj13 = std::bind(&CLASS::__ReflectGet##M13,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
+                                   getobj6,getobj7,getobj8,getobj9,getobj10,\
+                                   getobj11,getobj12,getobj13,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<decltype(M4)()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<decltype(M5)()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<decltype(M6)()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<decltype(M7)()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<decltype(M8)()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<decltype(M9)()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<decltype(M10)()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    std::function<decltype(M11)()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
+    std::function<decltype(M12)()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
+    std::function<decltype(M13)()> createobj13 = std::bind(&CLASS::__ReflectCreate##M13,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   createobj11,createobj12,createobj13,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+
+#define IMPLE_INIT_TUPLE_14(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    std::function<void(decltype(M4))> setobj4 = std::bind(&CLASS::__ReflectSet##M4,this,std::placeholders::_1);\
+    std::function<void(decltype(M5))> setobj5 = std::bind(&CLASS::__ReflectSet##M5,this,std::placeholders::_1);\
+    std::function<void(decltype(M6))> setobj6 = std::bind(&CLASS::__ReflectSet##M6,this,std::placeholders::_1);\
+    std::function<void(decltype(M7))> setobj7 = std::bind(&CLASS::__ReflectSet##M7,this,std::placeholders::_1);\
+    std::function<void(decltype(M8))> setobj8 = std::bind(&CLASS::__ReflectSet##M8,this,std::placeholders::_1);\
+    std::function<void(decltype(M9))> setobj9 = std::bind(&CLASS::__ReflectSet##M9,this,std::placeholders::_1);\
+    std::function<void(decltype(M10))> setobj10 = std::bind(&CLASS::__ReflectSet##M10,this,std::placeholders::_1);\
+    std::function<void(decltype(M11))> setobj11 = std::bind(&CLASS::__ReflectSet##M11,this,std::placeholders::_1);\
+    std::function<void(decltype(M12))> setobj12 = std::bind(&CLASS::__ReflectSet##M12,this,std::placeholders::_1);\
+    std::function<void(decltype(M13))> setobj13 = std::bind(&CLASS::__ReflectSet##M13,this,std::placeholders::_1);\
+    std::function<void(decltype(M14))> setobj14 = std::bind(&CLASS::__ReflectSet##M14,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,setobj4,setobj5,\
+                                   setobj6,setobj7,setobj8,setobj9,setobj10,\
+                                   setobj11,setobj12,setobj13,setobj14,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
+    std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
+    std::function<decltype(M7)()> getobj7 = std::bind(&CLASS::__ReflectGet##M7,this);\
+    std::function<decltype(M8)()> getobj8 = std::bind(&CLASS::__ReflectGet##M8,this);\
+    std::function<decltype(M9)()> getobj9 = std::bind(&CLASS::__ReflectGet##M9,this);\
+    std::function<decltype(M10)()> getobj10 = std::bind(&CLASS::__ReflectGet##M10,this);\
+    std::function<decltype(M11)()> getobj11 = std::bind(&CLASS::__ReflectGet##M11,this);\
+    std::function<decltype(M12)()> getobj12 = std::bind(&CLASS::__ReflectGet##M12,this);\
+    std::function<decltype(M13)()> getobj13 = std::bind(&CLASS::__ReflectGet##M13,this);\
+    std::function<decltype(M14)()> getobj14 = std::bind(&CLASS::__ReflectGet##M14,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
+                                   getobj6,getobj7,getobj8,getobj9,getobj10,\
+                                   getobj11,getobj12,getobj13,getobj14,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<decltype(M4)()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<decltype(M5)()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<decltype(M6)()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<decltype(M7)()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<decltype(M8)()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<decltype(M9)()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<decltype(M10)()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    std::function<decltype(M11)()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
+    std::function<decltype(M12)()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
+    std::function<decltype(M13)()> createobj13 = std::bind(&CLASS::__ReflectCreate##M13,this);\
+    std::function<decltype(M14)()> createobj14 = std::bind(&CLASS::__ReflectCreate##M14,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   createobj11,createobj12,createobj13,createobj14,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+
+#define IMPLE_INIT_TUPLE_15(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14,M15) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    std::function<void(decltype(M4))> setobj4 = std::bind(&CLASS::__ReflectSet##M4,this,std::placeholders::_1);\
+    std::function<void(decltype(M5))> setobj5 = std::bind(&CLASS::__ReflectSet##M5,this,std::placeholders::_1);\
+    std::function<void(decltype(M6))> setobj6 = std::bind(&CLASS::__ReflectSet##M6,this,std::placeholders::_1);\
+    std::function<void(decltype(M7))> setobj7 = std::bind(&CLASS::__ReflectSet##M7,this,std::placeholders::_1);\
+    std::function<void(decltype(M8))> setobj8 = std::bind(&CLASS::__ReflectSet##M8,this,std::placeholders::_1);\
+    std::function<void(decltype(M9))> setobj9 = std::bind(&CLASS::__ReflectSet##M9,this,std::placeholders::_1);\
+    std::function<void(decltype(M10))> setobj10 = std::bind(&CLASS::__ReflectSet##M10,this,std::placeholders::_1);\
+    std::function<void(decltype(M11))> setobj11 = std::bind(&CLASS::__ReflectSet##M11,this,std::placeholders::_1);\
+    std::function<void(decltype(M12))> setobj12 = std::bind(&CLASS::__ReflectSet##M12,this,std::placeholders::_1);\
+    std::function<void(decltype(M13))> setobj13 = std::bind(&CLASS::__ReflectSet##M13,this,std::placeholders::_1);\
+    std::function<void(decltype(M14))> setobj14 = std::bind(&CLASS::__ReflectSet##M14,this,std::placeholders::_1);\
+    std::function<void(decltype(M15))> setobj15 = std::bind(&CLASS::__ReflectSet##M15,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,setobj4,setobj5,\
+                                   setobj6,setobj7,setobj8,setobj9,setobj10,\
+                                   setobj11,setobj12,setobj13,setobj14,setobj15,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
+    std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
+    std::function<decltype(M7)()> getobj7 = std::bind(&CLASS::__ReflectGet##M7,this);\
+    std::function<decltype(M8)()> getobj8 = std::bind(&CLASS::__ReflectGet##M8,this);\
+    std::function<decltype(M9)()> getobj9 = std::bind(&CLASS::__ReflectGet##M9,this);\
+    std::function<decltype(M10)()> getobj10 = std::bind(&CLASS::__ReflectGet##M10,this);\
+    std::function<decltype(M11)()> getobj11 = std::bind(&CLASS::__ReflectGet##M11,this);\
+    std::function<decltype(M12)()> getobj12 = std::bind(&CLASS::__ReflectGet##M12,this);\
+    std::function<decltype(M13)()> getobj13 = std::bind(&CLASS::__ReflectGet##M13,this);\
+    std::function<decltype(M14)()> getobj14 = std::bind(&CLASS::__ReflectGet##M14,this);\
+    std::function<decltype(M15)()> getobj15 = std::bind(&CLASS::__ReflectGet##M15,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
+                                   getobj6,getobj7,getobj8,getobj9,getobj10,\
+                                   getobj11,getobj12,getobj13,getobj14,getobj15,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<decltype(M4)()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<decltype(M5)()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<decltype(M6)()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<decltype(M7)()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<decltype(M8)()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<decltype(M9)()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<decltype(M10)()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    std::function<decltype(M11)()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
+    std::function<decltype(M12)()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
+    std::function<decltype(M13)()> createobj13 = std::bind(&CLASS::__ReflectCreate##M13,this);\
+    std::function<decltype(M14)()> createobj14 = std::bind(&CLASS::__ReflectCreate##M14,this);\
+    std::function<decltype(M15)()> createobj15 = std::bind(&CLASS::__ReflectCreate##M15,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   createobj11,createobj12,createobj13,createobj14,createobj15,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+#define IMPLE_INIT_TUPLE_16(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14,M15,M16) \
+    std::function<void(decltype(M1))> setobj1 = std::bind(&CLASS::__ReflectSet##M1,this,std::placeholders::_1);\
+    std::function<void(decltype(M2))> setobj2 = std::bind(&CLASS::__ReflectSet##M2,this,std::placeholders::_1);\
+    std::function<void(decltype(M3))> setobj3 = std::bind(&CLASS::__ReflectSet##M3,this,std::placeholders::_1);\
+    std::function<void(decltype(M4))> setobj4 = std::bind(&CLASS::__ReflectSet##M4,this,std::placeholders::_1);\
+    std::function<void(decltype(M5))> setobj5 = std::bind(&CLASS::__ReflectSet##M5,this,std::placeholders::_1);\
+    std::function<void(decltype(M6))> setobj6 = std::bind(&CLASS::__ReflectSet##M6,this,std::placeholders::_1);\
+    std::function<void(decltype(M7))> setobj7 = std::bind(&CLASS::__ReflectSet##M7,this,std::placeholders::_1);\
+    std::function<void(decltype(M8))> setobj8 = std::bind(&CLASS::__ReflectSet##M8,this,std::placeholders::_1);\
+    std::function<void(decltype(M9))> setobj9 = std::bind(&CLASS::__ReflectSet##M9,this,std::placeholders::_1);\
+    std::function<void(decltype(M10))> setobj10 = std::bind(&CLASS::__ReflectSet##M10,this,std::placeholders::_1);\
+    std::function<void(decltype(M11))> setobj11 = std::bind(&CLASS::__ReflectSet##M11,this,std::placeholders::_1);\
+    std::function<void(decltype(M12))> setobj12 = std::bind(&CLASS::__ReflectSet##M12,this,std::placeholders::_1);\
+    std::function<void(decltype(M13))> setobj13 = std::bind(&CLASS::__ReflectSet##M13,this,std::placeholders::_1);\
+    std::function<void(decltype(M14))> setobj14 = std::bind(&CLASS::__ReflectSet##M14,this,std::placeholders::_1);\
+    std::function<void(decltype(M15))> setobj15 = std::bind(&CLASS::__ReflectSet##M15,this,std::placeholders::_1);\
+    std::function<void(decltype(M16))> setobj16 = std::bind(&CLASS::__ReflectSet##M16,this,std::placeholders::_1);\
+    setFuncTuple = std::make_tuple(setobj1,setobj2,setobj3,setobj4,setobj5,\
+                                   setobj6,setobj7,setobj8,setobj9,setobj10,\
+                                   setobj11,setobj12,setobj13,setobj14,setobj15,\
+                                   setobj16,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
+    std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
+    std::function<decltype(M7)()> getobj7 = std::bind(&CLASS::__ReflectGet##M7,this);\
+    std::function<decltype(M8)()> getobj8 = std::bind(&CLASS::__ReflectGet##M8,this);\
+    std::function<decltype(M9)()> getobj9 = std::bind(&CLASS::__ReflectGet##M9,this);\
+    std::function<decltype(M10)()> getobj10 = std::bind(&CLASS::__ReflectGet##M10,this);\
+    std::function<decltype(M11)()> getobj11 = std::bind(&CLASS::__ReflectGet##M11,this);\
+    std::function<decltype(M12)()> getobj12 = std::bind(&CLASS::__ReflectGet##M12,this);\
+    std::function<decltype(M13)()> getobj13 = std::bind(&CLASS::__ReflectGet##M13,this);\
+    std::function<decltype(M14)()> getobj14 = std::bind(&CLASS::__ReflectGet##M14,this);\
+    std::function<decltype(M15)()> getobj15 = std::bind(&CLASS::__ReflectGet##M15,this);\
+    std::function<decltype(M16)()> getobj16 = std::bind(&CLASS::__ReflectGet##M16,this);\
+    getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
+                                   getobj6,getobj7,getobj8,getobj9,getobj10,\
+                                   getobj11,getobj12,getobj13,getobj14,getobj15,\
+                                   getobj16,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    std::function<decltype(M1)()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<decltype(M2)()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<decltype(M3)()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<decltype(M4)()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<decltype(M5)()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<decltype(M6)()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<decltype(M7)()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<decltype(M8)()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<decltype(M9)()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<decltype(M10)()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    std::function<decltype(M11)()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
+    std::function<decltype(M12)()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
+    std::function<decltype(M13)()> createobj13 = std::bind(&CLASS::__ReflectCreate##M13,this);\
+    std::function<decltype(M14)()> createobj14 = std::bind(&CLASS::__ReflectCreate##M14,this);\
+    std::function<decltype(M15)()> createobj15 = std::bind(&CLASS::__ReflectCreate##M15,this);\
+    std::function<decltype(M16)()> createobj16 = std::bind(&CLASS::__ReflectCreate##M16,this);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   createobj11,createobj12,createobj13,createobj14,createobj15,\
+                                   createobj16,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+
+
 #define DECLARE_REFLECT_FIELD(CLASS, ...) \
     HashMap<String,Field> maps; \
     IMPLE_SET_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
+    DECLARE_INIT_TUPLE_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
+    int __ReflectDummy() {return 0;}\
     void __ReflectInit() {\
+        int index = 0;\
+        std::function<int(void)> dummyobj = std::bind(&_##CLASS::__ReflectDummy,this);\
         maps = createHashMap<String,Field>();\
         IMPLE_INIT_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)\
+        IMPLE_INIT_TUPLE_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)\
     }\
     Field getField(String name) {\
         return maps->get(name);\
@@ -263,5 +1453,6 @@
     ArrayList<Field> getAllFields(){ \
         return maps->entrySet();\
     }\
+    
 
 #endif

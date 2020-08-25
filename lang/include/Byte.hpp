@@ -4,12 +4,13 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "Number.hpp"
+#include <cstddef>
 
 namespace obotcha {
 
-#define byte unsigned char
-
 class _String;
+
+#define byte unsigned char
 
 DECLARE_SIMPLE_CLASS(Byte) IMPLEMENTS(Number)<byte>{
 public:
