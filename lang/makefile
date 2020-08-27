@@ -25,7 +25,9 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/valuenotfoundexception.o \
 	$(outtmp)/transformexception.o \
 	$(outtmp)/illegalstateexception.o \
-	$(outtmp)/illegalargumentexception.o
+	$(outtmp)/illegalargumentexception.o \
+	$(outtmp)/reflectexception.o \
+	
 
 $(outtmp)/integer.o :$(langDir)/Integer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Integer.cpp -o $(outtmp)/integer.o $(external)
@@ -104,3 +106,6 @@ $(outtmp)/illegalstateexception.o :$(langDir)/IllegalStateException.cpp
 
 $(outtmp)/illegalargumentexception.o :$(langDir)/IllegalArgumentException.cpp
 		$(cppcompiler) $(obotchacppflags) -c $(langDir)/IllegalArgumentException.cpp -o $(outtmp)/illegalargumentexception.o $(external)
+
+$(outtmp)/reflectexception.o :$(langDir)/ReflectException.cpp
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/ReflectException.cpp -o $(outtmp)/reflectexception.o $(external)

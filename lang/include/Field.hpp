@@ -82,46 +82,66 @@ public:
 
     void setId(int);
     
-    template<typename T,typename Y>
-    void setFieldValue(T obj,Y value) {
-        const int index = this->id;
-        std::get<0>(obj->setFuncTuple)(value);
-    }
-
-#define SWITCH_CASE(V) \
-    case V:\
-    if(tupleTestSize > V) {\
-        return std::get<V>(obj->getFuncTuple)();\
-    }\
-    break;\
-
-    template<typename T>
-    auto getFieldValue(T obj){
-        int tupleTestSize = std::tuple_size<decltype(obj->getFuncTuple)>::value;
-        switch(this->id) {
-            SWITCH_CASE(0)
-            SWITCH_CASE(1)
-            SWITCH_CASE(2)
-            SWITCH_CASE(3)
-            SWITCH_CASE(4)
-            SWITCH_CASE(5)
-            SWITCH_CASE(6)
-            SWITCH_CASE(7)
-            SWITCH_CASE(8)
-            SWITCH_CASE(9)
-            SWITCH_CASE(10)
-            SWITCH_CASE(11)
-            SWITCH_CASE(12)
-            SWITCH_CASE(13)
-            SWITCH_CASE(14)
-            SWITCH_CASE(15) 
-        }
-    }
-
+    std::function<void()> createfunc;
 private:
     int type;
     String name;
     int id;
+};
+
+DECLARE_CLASS(FieldContent,1) EXTENDS(Field)  {
+public:    
+    std::function<void(T)> setfunc;
+
+    _FieldContent(std::function<void(T)> set) {
+        setfunc = set;
+    }
+};    
+
+DECLARE_SIMPLE_CLASS(FieldContentValue) {
+public:
+    int intValue;
+    byte byteValue;
+    double doubleValue;
+    float floatValue;
+    uint8_t uint8Value;
+    uint16_t uint16Value;
+    uint32_t uint32Value;
+    uint64_t uint64Value;
+    Object *objectValue;
+
+    void set(int v) {
+        intValue = v;
+    }
+
+    void set(double v) {
+        doubleValue = v;
+    }
+
+    void set(float v) {
+        floatValue = v;
+    }
+
+    void set(uint8_t v) {
+        uint8Value = v;
+    }
+
+    void set(uint16_t v) {
+        uint16Value = v;
+    }
+
+    void set(uint32_t v) {
+        uint32Value = v;
+    }
+
+    void set(uint64_t v) {
+        uint64Value = v;
+    }
+
+    template<typename T>
+    void set(sp<T> v) {
+        objectValue = (Object *)v.get_pointer();
+    }
 };
 
 }

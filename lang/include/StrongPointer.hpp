@@ -5,9 +5,11 @@
 #include <stdlib.h>
 #include <type_traits>
 
-#include "Object.hpp"
-
 namespace obotcha {
+
+#define POINTER_DEC_FREE 0  //same as Object::OBJ_DEC_FREE
+#define POINTER_DEC_NO_FREE 1//same as Object::OBJ_DEC_NO_FREE
+
 //template
 template<bool C, typename T, typename U>
 class PointerChanger;
@@ -247,7 +249,13 @@ public:
 
     void set_pointer(T* ptr);
 
-    void remove_pointer();
+    void set_value(sp<T> data);
+    void set_value(int){}
+    void set_value(unsigned char){}
+    void set_value(double){}
+    void set_value(float){}
+
+    void remove_pointer(){};
     
     T* get_pointer();
 
@@ -290,7 +298,7 @@ template<typename T>
 sp<T>::~sp()
 {
     if (m_ptr) {
-        if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
+        if(m_ptr->decStrong(this) == POINTER_DEC_FREE) {
             delete m_ptr;
         }
     }
@@ -301,7 +309,7 @@ sp<T>& sp<T>::operator = (const sp<T>& other) {
     T* otherPtr(other.m_ptr);
     if (otherPtr) otherPtr->incStrong(this);
     if (m_ptr) {
-        if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
+        if(m_ptr->decStrong(this) == POINTER_DEC_FREE) {
             delete static_cast<const T*>(m_ptr);
         }
     }
@@ -315,7 +323,7 @@ sp<T>& sp<T>::operator = (T* other)
 {
     if (other) other->incStrong(this);
     if (m_ptr) {
-        if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
+        if(m_ptr->decStrong(this) == POINTER_DEC_FREE) {
             delete static_cast<const T*>(m_ptr);
         }   
     }
@@ -330,7 +338,7 @@ sp<T>& sp<T>::operator = (const sp<U>& other)
     T* otherPtr(other.m_ptr);
     if (otherPtr) otherPtr->incStrong(this);
     if (m_ptr) {
-        if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
+        if(m_ptr->decStrong(this) == POINTER_DEC_FREE) {
             delete static_cast<const T*>(m_ptr);
         }
     }
@@ -342,7 +350,7 @@ template<typename T> template<typename U>
 sp<T>& sp<T>::operator = (U* other)
 {
     if (m_ptr) {
-        if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
+        if(m_ptr->decStrong(this) == POINTER_DEC_FREE) {
             delete static_cast<const T*>(m_ptr);
         }
     }    
@@ -362,7 +370,7 @@ void sp<T>::clear()
 {
     if (m_ptr) {
         //m_ptr->decStrong(this);
-        if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
+        if(m_ptr->decStrong(this) == POINTER_DEC_FREE) {
             delete static_cast<const T*>(m_ptr);
         }
         
@@ -373,7 +381,7 @@ void sp<T>::clear()
 template<typename T>
 void sp<T>::set_pointer(T* ptr) {
     if(m_ptr) {
-        if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
+        if(m_ptr->decStrong(this) == POINTER_DEC_FREE) {
             delete static_cast<const T*>(m_ptr);
         }
     }
@@ -385,14 +393,8 @@ void sp<T>::set_pointer(T* ptr) {
 }
 
 template<typename T>
-void sp<T>::remove_pointer() {
-    if(m_ptr) {
-        if(m_ptr->decStrong(this) == OBJ_DEC_FREE) {
-            delete static_cast<const T*>(m_ptr);
-        }
-    }
-    
-    m_ptr = nullptr;
+void sp<T>::set_value(sp<T> data) {
+    set_pointer(data.get_pointer());
 }
 
 template<typename T>

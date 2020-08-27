@@ -7,6 +7,9 @@
 #include <utility>
 #include <stdio.h>
 #include <typeinfo>
+#include <string>
+
+#include "StrongPointer.hpp"
 
 #define OBJ_DEC_FREE 0
 #define OBJ_DEC_NO_FREE 1
@@ -44,9 +47,29 @@ public:
         return this == &m;
     }
 
+    //reflect function
     inline virtual void __ReflectInit(){}
+    //reflect get function
+    inline virtual int getFieldIntValue(std::string){return 0;}
+    inline virtual unsigned char getFieldByteValue(std::string){return 0;}
+    inline virtual double getFieldDoubleValue(std::string){return 0;}
+    inline virtual float getFieldFloatValue(std::string){return 0;}
+    inline virtual uint8_t getFieldUint8Value(std::string){return 0;}
+    inline virtual uint16_t getFieldUint16Value(std::string){return 0;}
+    inline virtual uint32_t getFieldUint32Value(std::string){return 0;}
+    inline virtual uint64_t getFieldUint64Value(std::string){return 0;}
+    inline virtual sp<Object> getFieldObjectValue(std::string){return nullptr;}
+    //reflect set function
+    inline virtual void setFieldIntValue(std::string,int){}
+    inline virtual void setFieldByteValue(std::string,unsigned char){}
+    inline virtual void setFieldDoubleValue(std::string,double){}
+    inline virtual void setFieldFloatValue(std::string,float){}
+    inline virtual void setFieldUint8Value(std::string,uint8_t){}
+    inline virtual void setFieldUint16Value(std::string,int16_t){}
+    inline virtual void setFieldUint32Value(std::string,int32_t){}
+    inline virtual void setFieldUint64Value(std::string,int64_t){}
+    inline virtual void setFieldObjectValue(std::string,sp<Object>){}  
 
-protected:
     inline virtual ~Object() {
     }
 
