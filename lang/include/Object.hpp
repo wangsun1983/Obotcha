@@ -16,6 +16,9 @@
 
 namespace obotcha {
 
+class _Field;
+class _String;
+
 class Object
 {
 public:
@@ -52,6 +55,7 @@ public:
     //reflect get function
     inline virtual int getFieldIntValue(std::string){return 0;}
     inline virtual unsigned char getFieldByteValue(std::string){return 0;}
+    inline virtual bool getFieldBoolValue(std::string){return true;}
     inline virtual double getFieldDoubleValue(std::string){return 0;}
     inline virtual float getFieldFloatValue(std::string){return 0;}
     inline virtual uint8_t getFieldUint8Value(std::string){return 0;}
@@ -68,7 +72,11 @@ public:
     inline virtual void setFieldUint16Value(std::string,int16_t){}
     inline virtual void setFieldUint32Value(std::string,int32_t){}
     inline virtual void setFieldUint64Value(std::string,int64_t){}
-    inline virtual void setFieldObjectValue(std::string,sp<Object>){}  
+    inline virtual void setFieldObjectValue(std::string,sp<Object>){}
+    inline virtual void setFieldStringValue(std::string name,std::string value){}
+    inline virtual void setFieldBoolValue(std::string name,bool){}
+    inline virtual sp<_Field> getField(sp<_String>){}
+    inline void createFieldValue(std::string name){}
 
     inline virtual ~Object() {
     }

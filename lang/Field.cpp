@@ -38,6 +38,10 @@ int _Field::TypeOf(Uint64 v) {
     return FieldTypeUint64;
 }
 
+int _Field::TypeOf(bool v) {
+    return FieldTypeBool;
+}
+
 String _Field::getName() {
     return name;
 }

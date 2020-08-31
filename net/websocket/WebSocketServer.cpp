@@ -73,15 +73,15 @@ bool _WebSocketClientManager::addClient(int fd, int version) {
             break;
         }
 
-      case 13: {
-        data->setParser(createWebSocketHybi13Parser());
-        data->setComposer(createWebSocketHybi13Composer(WsServerComposer));
-        break;
-      }
+        case 13: {
+            data->setParser(createWebSocketHybi13Parser());
+            data->setComposer(createWebSocketHybi13Composer(WsServerComposer));
+            break;
+        }
 
-      default:
-        LOG(ERROR)<<"WebSocket Protocol Not Support,Version is "<<version;
-        return false;
+        default:
+            LOG(ERROR)<<"WebSocket Protocol Not Support,Version is "<<version;
+            return false;
     }
 
     AutoLock ll(mMutex);
@@ -167,7 +167,6 @@ void _WebSocketDispatchThread::handleHttpData(DispatchData data) {
     if (upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
         // remove fd from http epoll
         data->mServerObserver->removeObserver(fd);
-        printf("ws socket onAccept tracews socket onAccept trace1 ,fd is %d\n",fd);
         st(WebSocketClientManager)::getInstance()->addClient(fd,
                                                             version->toBasicInt());
         st(WebSocketClientManager)::getInstance()->setHttpHeader(fd, header);
@@ -201,7 +200,6 @@ void _WebSocketDispatchThread::handleHttpData(DispatchData data) {
         WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->getClient(fd);
         WebSocketComposer composer = client->getComposer();
         ByteArray shakeresponse = composer->genShakeHandMessage(st(WebSocketClientManager)::getInstance()->getClient(fd));
-        //int ret = st(NetUtils)::sendTcpPacket(fd, shakeresponse);
         int ret = send(fd,shakeresponse->toValue(),shakeresponse->size(),0);
         if(ret < 0) {
             LOG(ERROR)<<"Websocket Server send response fail,reason:"<<strerror(errno);
@@ -268,7 +266,6 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
       if (opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
         ByteArray msgData = parser->parseContent(true);
         String msg = msgData->toString();
-        printf("onmessage,client fd is %d \n",client->getClientFd());
         data->mWsSocketListener->onMessage(client, msg);
       } else if (opcode == st(WebSocketProtocol)::OPCODE_BINARY) {
         if (header->isFinalFrame()) {

@@ -20,7 +20,8 @@ ByteArray _ByteRingArrayReader::pop() {
     try {
         result = mBuff->popByEnd(mCursor);
         mStartMark = mBuff->getStartIndex();
-    } catch(ArrayIndexOutOfBoundsException &e){}
+    } catch(ArrayIndexOutOfBoundsException &e){
+    }
 
     return result;
 }

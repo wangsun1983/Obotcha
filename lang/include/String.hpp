@@ -94,6 +94,8 @@ public:
 
     Integer toInteger();
 
+    Byte toByte();
+
     Boolean toBoolean();
 
     Float toFloat();
@@ -111,6 +113,8 @@ public:
     Uint64 toUint64();    
 
     int toBasicInt();
+
+    byte toBasicByte();
 
     //TODO Remove
     int toHexInt();

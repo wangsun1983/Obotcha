@@ -386,6 +386,7 @@ int _EPollFileObserver::_addObserver(int fd,uint32_t events,EPollFileObserverLis
 int _EPollFileObserver::_removeObserver(int fd) {
     epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
     mListeners->remove(fd);
+    return 0;
 }
 
 int _EPollFileObserver::_removeObserver(int fd,uint32_t events,EPollFileObserverListener l) {
@@ -466,7 +467,6 @@ void _EPollFileObserver::dump() {
             while(iter2->hasValue()) {
                 int event = iter2->getKey();
                 ArrayList<EPollFileObserverListener> list = iter2->getValue();
-                printf("    event is %p,listener is %d \n",event,list->size());
                 iter2->next();
             }
         }

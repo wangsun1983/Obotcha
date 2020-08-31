@@ -24,6 +24,7 @@ enum {
     FieldTypeUint16,
     FieldTypeUint32,
     FieldTypeUint64,
+    FieldTypeBool,
     FieldTypeVector,
     FieldTypeArrayList,
     FieldTypeObject,
@@ -42,6 +43,7 @@ public:
     int TypeOf(Uint16 v);
     int TypeOf(Uint32 v);
     int TypeOf(Uint64 v);
+    int TypeOf(bool v);
 
     template<typename T>
     int TypeOf(std::vector<T> v) {
@@ -103,11 +105,13 @@ public:
     int intValue;
     byte byteValue;
     double doubleValue;
+    bool boolValue;
     float floatValue;
     uint8_t uint8Value;
     uint16_t uint16Value;
     uint32_t uint32Value;
     uint64_t uint64Value;
+    String stringValue;
     Object *objectValue;
 
     void set(int v) {
@@ -116,6 +120,10 @@ public:
 
     void set(double v) {
         doubleValue = v;
+    }
+
+    void set(bool v) {
+        boolValue = v;
     }
 
     void set(float v) {
@@ -136,6 +144,10 @@ public:
 
     void set(uint64_t v) {
         uint64Value = v;
+    }
+
+    void set(String v) {
+        stringValue = v;
     }
 
     template<typename T>

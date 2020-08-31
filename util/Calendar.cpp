@@ -283,7 +283,7 @@ bool _Calendar::onUpdateByMonth(int mon) {
 }
 
 bool _Calendar::onUpdateByDayOfWeek(int day) {
-    if(day <= 0 || day > Sunday) {
+    if(day <= 0 || day > Saturday) {
         return false;
     }
 

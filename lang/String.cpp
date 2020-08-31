@@ -556,6 +556,23 @@ Integer _String::toInteger() {
     return createInteger(value);
 }
 
+Byte _String::toByte() {
+    if(m_str.size() == 0) {
+        return nullptr;
+    }
+
+    if(!isIntNumber(m_str.data(),m_str.size())) {
+        return nullptr;
+    }
+
+    std::stringstream ss;
+    ss<<m_str;
+    byte value;
+    ss>>value;
+    
+    return createByte(value);
+}
+
 Boolean _String::toBoolean() {
     if(m_str.size() == 0) {
         return nullptr;
@@ -762,6 +779,18 @@ int _String::toBasicInt() {
     return value;
 }
 
+byte _String::toBasicByte() {
+    if((m_str.size() == 0) || !isIntNumber(m_str.data(),m_str.size())) {
+        throw TransformException("String to Int Fail");
+    }
+
+    std::stringstream ss;
+    ss<<m_str;
+    byte value;
+    ss>>value;
+    return value;
+}
+
 int _String::toHexInt() {
     if(m_str.size() == 0 || !isIntNumber(m_str.data(),m_str.size())) {
         throw TransformException("String to Hex Int Fail");
@@ -855,9 +884,11 @@ std::string _String::getStdString() {
 }
 
 String _String::toLowerCase() {
-    //String result = createString(m_str);
-    //std::transform(result->m_str.begin(),result->m_str.end(),result->m_str.begin(),::tolower);
-
+    /*String result = createString(m_str);
+    std::transform(result->m_str.begin(),result->m_str.end(),result->m_str.begin(),::tolower);
+    return result; */
+    
+    
     int size = m_str.size();
     char data[m_str.size() + 1];
 
@@ -867,7 +898,7 @@ String _String::toLowerCase() {
     }
     data[size] = 0;
     
-    return createString((const char *)&data);
+    return createString((const char *)&data); 
 }
 
 String _String::toUpperCase() {
@@ -1332,11 +1363,11 @@ String _String::_format(const char *fmt,va_list args) {
     if (newlen > oldlen) {
         std::vector<char> newbuffer(newlen);
         vsnprintf(newbuffer.data(), newlen, fmt, argscopy);
-        va_end(args);
+        va_end(argscopy);
         return createString(newbuffer.data());
     }
     
-    va_end(args);
+    va_end(argscopy);
     return createString(buffer);
 }
 
