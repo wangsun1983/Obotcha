@@ -15,7 +15,52 @@
 namespace obotcha {
 
 class _JsonArray;
-class _JsonValueIterator;
+class _JsonValue;
+
+DECLARE_SIMPLE_CLASS(JsonValueIterator) {
+public:
+    _JsonValueIterator(sp<_JsonValue> value);
+
+    _JsonValueIterator(_JsonValue *value);
+
+    String getTag();
+
+    bool hasValue();
+
+    bool isBool();
+
+    bool isInt();
+
+    bool isString();
+
+    bool isDouble();
+
+    bool isArray();
+
+    bool isObject();
+
+    bool next();
+
+    sp<_JsonValue> getValue();
+
+    String getString();
+
+    Integer getInteger();
+
+    Boolean getBoolean();
+
+    Double getDouble();
+
+    sp<_JsonValue> getObject();
+
+private:
+    sp<_JsonValue> value;
+
+    Json::Value::Members mMembers;
+
+    uint32_t count;
+};
+
 
 DECLARE_SIMPLE_CLASS(JsonValue) {
 
@@ -140,6 +185,130 @@ public:
 
     String toString();
 
+    template<typename T>
+    sp<T> createObjectFromArrayList(ArrayList<T> value) {
+        sp<T> data;
+        T *p = new T();
+        p->__ReflectInit();
+        data.set_pointer(p);
+        return data;
+    }
+
+    template<typename T>
+    void reflectTo(T obj) {
+        if(this->isArray()) {
+            //we should create arraylist
+            
+            obj->createFieldValue(mTag->getStdString());
+            sp<_JsonValueIterator> iterator = this->getIterator();
+            ArrayList<sp<Object>> listvalue = (ArrayList<sp<Object>>)obj->getFieldObjectValue(mTag->getStdString());
+            while(iterator->hasValue()) {
+                auto vv = createObjectFromArrayList(listvalue);
+                JsonValue jsonnode = iterator->getValue();
+                reflectTo(vv,jsonnode);
+                listvalue->add(vv);
+                iterator->next();
+            }
+        } else {
+            sp<_JsonValueIterator> iterator = this->getIterator();
+            while(iterator->hasValue()) {
+                String key = iterator->getTag();
+                
+                Field field = obj->getField(key);
+                if(field == nullptr) {
+                    printf("key is %s \n",key->toChars());
+                    iterator->next();
+                    continue;
+                }
+                std::string name = field->getName()->getStdString();
+                JsonValue jsonnode = iterator->getValue();
+
+                switch(field->getType()) {
+                    case FieldTypeInt: {
+                            String value = jsonnode->getString();
+                            obj->setFieldIntValue(name,value->toBasicInt());
+                        }
+                        break;
+
+                    case FieldTypeByte:{
+                            String value = jsonnode->getString();
+                            obj->setFieldByteValue(name,value->toBasicByte());
+                        }
+                        break;
+
+                    
+                    case FieldTypeBool:{
+                            String value = jsonnode->getString();
+                            obj->setFieldBoolValue(name,value->toBasicBool());
+                        }
+                        break;
+
+                    case FieldTypeDouble:{
+                            String value = jsonnode->getString();
+                            obj->setFieldDoubleValue(name,value->toBasicDouble());
+                        }
+                        break;
+
+                    case FieldTypeFloat:{
+                            String value = jsonnode->getString();
+                            obj->setFieldFloatValue(name,value->toBasicFloat());
+                        }
+                        break;
+
+                    case FieldTypeString:{
+                            String value = jsonnode->getString();
+                            obj->setFieldStringValue(name,value->getStdString());
+                        }
+                        break;
+
+                    case FieldTypeUint8:{
+                            String value = jsonnode->getString();
+                            obj->setFieldUint8Value(name,value->toBasicUint8());
+                        }
+                        break;
+
+                    case FieldTypeUint16:{
+                            String value = jsonnode->getString();
+                            obj->setFieldUint16Value(name,value->toBasicUint16());
+                        }
+                        break;
+
+                    case FieldTypeUint32:{
+                            String value = jsonnode->getString();
+                            obj->setFieldUint32Value(name,value->toBasicUint32());
+                        }
+                        break;
+
+                    case FieldTypeUint64:{
+                            String value = jsonnode->getString();
+                            obj->setFieldUint64Value(name,value->toBasicUint64());
+                        }
+                        break;
+                         
+                    case FieldTypeObject: {
+                            //create Objectt
+                            printf("createobj name is %s\n",name.c_str());
+                            obj->createFieldValue(name);
+                            auto reflectValue = obj->getFieldObjectValue(name);
+                            if(reflectValue != nullptr) {
+                                printf("create obj not null \n");
+                            } else {
+                                printf("create obj null \n");
+                            }
+                            jsonnode->reflectTo(reflectValue);
+                        }
+                        break;
+
+                    case FieldTypeArrayList:
+                        //TODO
+                        break;
+                }
+
+                iterator->next();
+            }
+        }
+    }
+
     ~_JsonValue();
 
 private:
@@ -149,49 +318,6 @@ private:
 };
 
 
-DECLARE_SIMPLE_CLASS(JsonValueIterator) {
-public:
-    _JsonValueIterator(JsonValue value);
-
-    _JsonValueIterator(_JsonValue *value);
-
-    String getTag();
-
-    bool hasValue();
-
-    bool isBool();
-
-    bool isInt();
-
-    bool isString();
-
-    bool isDouble();
-
-    bool isArray();
-
-    bool isObject();
-
-    bool next();
-
-    sp<_JsonValue> getValue();
-
-    String getString();
-
-    Integer getInteger();
-
-    Boolean getBoolean();
-
-    Double getDouble();
-
-    sp<_JsonValue> getObject();
-
-private:
-    JsonValue value;
-
-    Json::Value::Members mMembers;
-
-    uint32_t count;
-};
 
 }
 #endif
