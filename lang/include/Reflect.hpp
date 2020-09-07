@@ -8,6 +8,8 @@
 
 #include "Field.hpp"
 #include "HashMap.hpp"
+#include "StrongPointer.hpp"
+#include "ArrayList.hpp"
 
 #define ARG_0(\
         N, ...) N
@@ -113,6 +115,9 @@
     }\
     void __ReflectCreate##MEMBER() {\
         createReflectObject(MEMBER);\
+    }\
+    sp<Object> __ReflectCreateListMember##MEMBER() {\
+        return genArrayListData<decltype(MEMBER)>(MEMBER);\
     }\
 
 #define IMPLE_SET_VALUE_2(CLASS,M1,M2) \
@@ -1158,6 +1163,18 @@ public:\
         return maps->entrySet();\
     }\
 private:\
+    template<typename T>\
+    sp<Object> genArrayListData(ArrayList<T> t) {\
+        sp<Object> result;\
+        T *data = new T();\
+        data->__ReflectInit();\
+        result.set_pointer(data);\
+        return result;\
+    }\
+    template<typename T>\
+    sp<Object> genArrayListData(T t) {\
+        return nullptr;\
+    }\
     int getFieldIntValue(std::string name){ \
        FieldContentValue v = getFieldContentValue(name);\
        return v->intValue;\
