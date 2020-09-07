@@ -11,6 +11,8 @@
 #include "Float.hpp"
 #include "Long.hpp"
 #include "Uint32.hpp"
+#include "ArrayList.hpp"
+#include "Field.hpp"
 
 namespace obotcha {
 
@@ -185,6 +187,7 @@ public:
 
     String toString();
 
+#if 0
     template<typename T>
     sp<T> createObjectFromArrayList(ArrayList<T> value) {
         sp<T> data;
@@ -193,12 +196,13 @@ public:
         data.set_pointer(p);
         return data;
     }
+#endif
 
     template<typename T>
     void reflectTo(T obj) {
         if(this->isArray()) {
             //we should create arraylist
-            
+            /*
             obj->createFieldValue(mTag->getStdString());
             sp<_JsonValueIterator> iterator = this->getIterator();
             ArrayList<sp<Object>> listvalue = (ArrayList<sp<Object>>)obj->getFieldObjectValue(mTag->getStdString());
@@ -208,7 +212,7 @@ public:
                 reflectTo(vv,jsonnode);
                 listvalue->add(vv);
                 iterator->next();
-            }
+            }*/
         } else {
             sp<_JsonValueIterator> iterator = this->getIterator();
             while(iterator->hasValue()) {
@@ -226,70 +230,70 @@ public:
                 switch(field->getType()) {
                     case FieldTypeInt: {
                             String value = jsonnode->getString();
-                            obj->setFieldIntValue(name,value->toBasicInt());
+                            field->setValue(value->toBasicInt());
                         }
                         break;
 
                     case FieldTypeByte:{
                             String value = jsonnode->getString();
-                            obj->setFieldByteValue(name,value->toBasicByte());
+                            field->setValue(value->toBasicByte());
                         }
                         break;
 
                     
                     case FieldTypeBool:{
                             String value = jsonnode->getString();
-                            obj->setFieldBoolValue(name,value->toBasicBool());
+                            field->setValue(value->toBasicBool());
                         }
                         break;
 
                     case FieldTypeDouble:{
                             String value = jsonnode->getString();
-                            obj->setFieldDoubleValue(name,value->toBasicDouble());
+                            field->setValue(value->toBasicDouble());
                         }
                         break;
 
                     case FieldTypeFloat:{
                             String value = jsonnode->getString();
-                            obj->setFieldFloatValue(name,value->toBasicFloat());
+                            field->setValue(value->toBasicFloat());
                         }
                         break;
 
                     case FieldTypeString:{
                             String value = jsonnode->getString();
-                            obj->setFieldStringValue(name,value->getStdString());
+                            field->setValue(value);
                         }
                         break;
 
                     case FieldTypeUint8:{
                             String value = jsonnode->getString();
-                            obj->setFieldUint8Value(name,value->toBasicUint8());
+                            field->setValue(value->toBasicUint8());
                         }
                         break;
 
                     case FieldTypeUint16:{
                             String value = jsonnode->getString();
-                            obj->setFieldUint16Value(name,value->toBasicUint16());
+                            field->setValue(value->toBasicUint16());
                         }
                         break;
 
                     case FieldTypeUint32:{
                             String value = jsonnode->getString();
-                            obj->setFieldUint32Value(name,value->toBasicUint32());
+                            field->setValue(value->toBasicUint32());
                         }
                         break;
 
                     case FieldTypeUint64:{
                             String value = jsonnode->getString();
-                            obj->setFieldUint64Value(name,value->toBasicUint64());
+                            field->setValue(value->toBasicUint64());
                         }
                         break;
                          
                     case FieldTypeObject: {
                             //create Objectt
                             printf("createobj name is %s\n",name.c_str());
-                            obj->createFieldValue(name);
-                            auto reflectValue = obj->getFieldObjectValue(name);
+                            field->createObject();
+                            auto reflectValue = field->getObjectValue();
                             if(reflectValue != nullptr) {
                                 printf("create obj not null \n");
                             } else {

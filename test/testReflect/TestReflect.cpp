@@ -28,7 +28,25 @@ public:
 int main() {
     MyReflectData data = createMyReflectData();
     //data->data3 = createMyInnerData();
+    Field f = data->getField("data1");
+    f->setValue(123);
 
+    Field f2 = data->getField("data2");
+    f2->setValue(1.234);
+
+    Field f3 = data->getField("data1");
+    Field f4 = data->getField("data2");
+    printf("create start \n");
+    Field f5 = data->getField("data3");
+    f5->createObject();
+
+    //Field f6 = data->getField("data3");
+    auto innerData1 = f5->getObjectValue();
+
+    Field f7 = innerData1->getField("innerData");
+    f7->setValue(99);
+
+#if 0
     data->setFieldIntValue("data1",1);
     data->setFieldDoubleValue("data2",1.125);
     
@@ -41,11 +59,16 @@ int main() {
     printf("i create1 \n");
     v4->setFieldIntValue("innerData",167);
     printf("i create2 \n");
-
+#endif
     //data->setFieldObjectValue("data3",v4);
 
-    std::cout<<"data1 is "<<v1<<std::endl;
-    std::cout<<"data2 is "<<v2<<std::endl;
-    std::cout<<"data3 is "<<data->data3->innerData<<std::endl;
+    std::cout<<"data1 is "<<data->data1<<std::endl;
+    std::cout<<"data2 is "<<data->data2<<std::endl;
+
+    std::cout<<"field data1 is "<<f3->getIntValue()<<std::endl;
+    std::cout<<"field data1 is "<<f4->getDoubleValue()<<std::endl;
+
+    std::cout<<"inner data is "<<data->data3->innerData<<std::endl;
+    //std::cout<<"data3 is "<<data->data3->innerData<<std::endl;
     //std::cout<<"data2 is "<<data->data3->innerData<<std::endl;
 }

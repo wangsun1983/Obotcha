@@ -103,8 +103,6 @@
 #define IMPLE_SET_VALUE_INTERFACE_INTER(CLASS,COUNT,MEMBER, ...) IMPLE_SET_VALUE_INTERFACE_INTER2(CLASS,COUNT,MEMBER,__VA_ARGS__)
 #define IMPLE_SET_VALUE_INTERFACE_INTER2(CLASS,COUNT,MEMBER, ...) IMPLE_SET_VALUE(CLASS,COUNT,MEMBER,__VA_ARGS__)
 
-
-
 //function
 #define IMPLE_SET_VALUE_1(CLASS,MEMBER) \
     void __ReflectSet##MEMBER(decltype(MEMBER) v) { \
@@ -179,10 +177,10 @@
         std::function<void(decltype(MEMBER))> setobj = std::bind(&CLASS::__ReflectSet##MEMBER,this,std::placeholders::_1);\
         std::function<void()> createobj = std::bind(&CLASS::__ReflectCreate##MEMBER,this);\
         FieldContent<decltype(MEMBER)> content = createFieldContent<decltype(MEMBER)>(setobj);\
+        content->setReflectObject(this);\
         content->setName(createString(#MEMBER));\
         content->setType(content->TypeOf(this->MEMBER));\
         content->setId(index);\
-        content->createfunc = createobj;\
         maps->put(content->getName(),content);\
         index++;\
     }
@@ -644,7 +642,15 @@
 
 #define IMPLE_INIT_TUPLE_1(CLASS,M1) \
     std::function<decltype(M1)()> getobj = std::bind(&CLASS::__ReflectGet##M1,this);\
+    std::function<void()> createobj = std::bind(&CLASS::__ReflectCreate##M1,this);\
     getFuncTuple = std::make_tuple(getobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    createFuncTuple = std::make_tuple(createobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -655,6 +661,8 @@
 #define IMPLE_INIT_TUPLE_2(CLASS,M1,M2) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
     std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -662,13 +670,29 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
-
+    createFuncTuple = std::make_tuple(createobj1,createobj2,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
 
 #define IMPLE_INIT_TUPLE_3(CLASS,M1,M2,M3) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
     std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
     std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -681,7 +705,18 @@
     std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
     std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
     std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -695,7 +730,19 @@
     std::function<decltype(M3)()> getobj3 = std::bind(&CLASS::__ReflectGet##M3,this);\
     std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
     std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -711,8 +758,21 @@
     std::function<decltype(M4)()> getobj4 = std::bind(&CLASS::__ReflectGet##M4,this);\
     std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
     std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -727,6 +787,13 @@
     std::function<decltype(M5)()> getobj5 = std::bind(&CLASS::__ReflectGet##M5,this);\
     std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
     std::function<decltype(M7)()> getobj7 = std::bind(&CLASS::__ReflectGet##M7,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -734,7 +801,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
-
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
 
 #define IMPLE_INIT_TUPLE_8(CLASS,M1,M2,M3,M4,M5,M6,M7,M8) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -745,6 +818,14 @@
     std::function<decltype(M6)()> getobj6 = std::bind(&CLASS::__ReflectGet##M6,this);\
     std::function<decltype(M7)()> getobj7 = std::bind(&CLASS::__ReflectGet##M7,this);\
     std::function<decltype(M8)()> getobj8 = std::bind(&CLASS::__ReflectGet##M8,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -752,7 +833,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
-
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
 
 #define IMPLE_INIT_TUPLE_9(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -764,6 +851,15 @@
     std::function<decltype(M7)()> getobj7 = std::bind(&CLASS::__ReflectGet##M7,this);\
     std::function<decltype(M8)()> getobj8 = std::bind(&CLASS::__ReflectGet##M8,this);\
     std::function<decltype(M9)()> getobj9 = std::bind(&CLASS::__ReflectGet##M9,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -771,7 +867,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
-
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
 
 #define IMPLE_INIT_TUPLE_10(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -784,6 +886,16 @@
     std::function<decltype(M8)()> getobj8 = std::bind(&CLASS::__ReflectGet##M8,this);\
     std::function<decltype(M9)()> getobj9 = std::bind(&CLASS::__ReflectGet##M9,this);\
     std::function<decltype(M10)()> getobj10 = std::bind(&CLASS::__ReflectGet##M10,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<void()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -791,7 +903,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
-
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
 
 #define IMPLE_INIT_TUPLE_11(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -805,6 +923,17 @@
     std::function<decltype(M9)()> getobj9 = std::bind(&CLASS::__ReflectGet##M9,this);\
     std::function<decltype(M10)()> getobj10 = std::bind(&CLASS::__ReflectGet##M10,this);\
     std::function<decltype(M11)()> getobj11 = std::bind(&CLASS::__ReflectGet##M11,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<void()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    std::function<void()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -812,7 +941,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
-
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   createobj11,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
 
 #define IMPLE_INIT_TUPLE_12(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -827,9 +962,28 @@
     std::function<decltype(M10)()> getobj10 = std::bind(&CLASS::__ReflectGet##M10,this);\
     std::function<decltype(M11)()> getobj11 = std::bind(&CLASS::__ReflectGet##M11,this);\
     std::function<decltype(M12)()> getobj12 = std::bind(&CLASS::__ReflectGet##M12,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<void()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    std::function<void()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
+    std::function<void()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,getobj12,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   createobj11,createobj12,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
@@ -848,9 +1002,29 @@
     std::function<decltype(M11)()> getobj11 = std::bind(&CLASS::__ReflectGet##M11,this);\
     std::function<decltype(M12)()> getobj12 = std::bind(&CLASS::__ReflectGet##M12,this);\
     std::function<decltype(M13)()> getobj13 = std::bind(&CLASS::__ReflectGet##M13,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<void()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    std::function<void()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
+    std::function<void()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
+    std::function<void()> createobj13 = std::bind(&CLASS::__ReflectCreate##M13,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,getobj12,getobj13,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   createobj11,createobj12,createobj13,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -871,6 +1045,20 @@
     std::function<decltype(M12)()> getobj12 = std::bind(&CLASS::__ReflectGet##M12,this);\
     std::function<decltype(M13)()> getobj13 = std::bind(&CLASS::__ReflectGet##M13,this);\
     std::function<decltype(M14)()> getobj14 = std::bind(&CLASS::__ReflectGet##M14,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<void()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    std::function<void()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
+    std::function<void()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
+    std::function<void()> createobj13 = std::bind(&CLASS::__ReflectCreate##M13,this);\
+    std::function<void()> createobj14 = std::bind(&CLASS::__ReflectCreate##M14,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,getobj12,getobj13,getobj14,dummyobj,\
@@ -878,7 +1066,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
-
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   createobj11,createobj12,createobj13,createobj14,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
 
 #define IMPLE_INIT_TUPLE_15(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14,M15) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -931,6 +1125,7 @@
 
 
 #define DECLARE_REFLECT_FIELD(CLASS, ...) \
+private:\
     HashMap<String,Field> maps; \
     void createReflectObject(int) {}\
     void createReflectObject(byte) {}\
@@ -948,6 +1143,7 @@
     IMPLE_SET_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
     DECLARE_INIT_TUPLE_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
     int __ReflectDummy() {return 0;}\
+public:\
     void __ReflectInit() {\
         int index = 0;\
         std::function<int(void)> dummyobj = std::bind(&_##CLASS::__ReflectDummy,this);\
@@ -961,6 +1157,7 @@
     ArrayList<Field> getAllFields(){ \
         return maps->entrySet();\
     }\
+private:\
     int getFieldIntValue(std::string name){ \
        FieldContentValue v = getFieldContentValue(name);\
        return v->intValue;\
@@ -1010,9 +1207,9 @@
     void setFieldDoubleValue(std::string name,double value){setFieldValue(name,value);}\
     void setFieldFloatValue(std::string name,float value){setFieldValue(name,value);}\
     void setFieldUint8Value(std::string name,uint8_t value){setFieldValue(name,value);}\
-    void setFieldUint16Value(std::string name ,int16_t value){setFieldValue(name,value);}\
-    void setFieldUint32Value(std::string name ,int32_t value){setFieldValue(name,value);}\
-    void setFieldUint64Value(std::string name,int64_t value){setFieldValue(name,value);}\
+    void setFieldUint16Value(std::string name ,uint16_t value){setFieldValue(name,value);}\
+    void setFieldUint32Value(std::string name ,uint32_t value){setFieldValue(name,value);}\
+    void setFieldUint64Value(std::string name,uint64_t value){setFieldValue(name,value);}\
     void setFieldStringValue(std::string name,std::string value){setFieldValue(name,createString(value));}\
     void setFieldObjectValue(std::string name,sp<Object> value){}\
     template<typename T>\
@@ -1079,9 +1276,59 @@
         }\
         return val;\
     }\
-    void createFieldValue(std::string name) {\
+    void createFieldObject(std::string name) {\
         Field f = maps->get(createString(name));\
-        f->createfunc();\
+        printf("createFieldObject id is %d \n",f->getId());\
+        switch(f->getId()) {\
+            case 0:\
+                std::get<0>(createFuncTuple)();\
+            break;\
+            case 1:\
+                std::get<1>(createFuncTuple)();\
+            break;\
+            case 2:\
+                std::get<2>(createFuncTuple)();\
+            break;\
+            case 3:\
+                std::get<3>(createFuncTuple)();\
+            break;\
+            case 4:\
+                std::get<4>(createFuncTuple)();\
+            break;\
+            case 5:\
+                std::get<5>(createFuncTuple)();\
+            break;\
+            case 6:\
+                std::get<6>(createFuncTuple)();\
+            break;\
+            case 7:\
+                std::get<7>(createFuncTuple)();\
+            break;\
+            case 8:\
+                std::get<8>(createFuncTuple)();\
+            break;\
+            case 9:\
+                std::get<9>(createFuncTuple)();\
+            break;\
+            case 10:\
+                std::get<10>(createFuncTuple)();\
+            break;\
+            case 11:\
+                std::get<11>(createFuncTuple)();\
+            break;\
+            case 12:\
+                std::get<12>(createFuncTuple)();\
+            break;\
+            case 13:\
+                std::get<13>(createFuncTuple)();\
+            break;\
+            case 14:\
+                std::get<14>(createFuncTuple)();\
+            break;\
+            case 15:\
+                std::get<15>(createFuncTuple)();\
+            break;\
+        }\
     }\
 
 #endif

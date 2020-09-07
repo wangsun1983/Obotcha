@@ -22,6 +22,7 @@ class _String;
 class Object
 {
 public:
+    friend class _Field;
     Object() : mCount(0) { }
 
     inline void incStrong(__attribute__((unused)) const void* id) {
@@ -50,9 +51,15 @@ public:
         return this == &m;
     }
 
+    inline virtual ~Object() {
+    }
+
     //reflect function
     inline virtual void __ReflectInit(){}
+    inline virtual sp<_Field> getField(sp<_String>){}
+
     //reflect get function
+protected:
     inline virtual int getFieldIntValue(std::string){return 0;}
     inline virtual unsigned char getFieldByteValue(std::string){return 0;}
     inline virtual bool getFieldBoolValue(std::string){return true;}
@@ -69,17 +76,15 @@ public:
     inline virtual void setFieldDoubleValue(std::string,double){}
     inline virtual void setFieldFloatValue(std::string,float){}
     inline virtual void setFieldUint8Value(std::string,uint8_t){}
-    inline virtual void setFieldUint16Value(std::string,int16_t){}
-    inline virtual void setFieldUint32Value(std::string,int32_t){}
-    inline virtual void setFieldUint64Value(std::string,int64_t){}
+    inline virtual void setFieldUint16Value(std::string,uint16_t){}
+    inline virtual void setFieldUint32Value(std::string,uint32_t){}
+    inline virtual void setFieldUint64Value(std::string,uint64_t){}
     inline virtual void setFieldObjectValue(std::string,sp<Object>){}
     inline virtual void setFieldStringValue(std::string name,std::string value){}
     inline virtual void setFieldBoolValue(std::string name,bool){}
-    inline virtual sp<_Field> getField(sp<_String>){}
-    inline void createFieldValue(std::string name){}
-
-    inline virtual ~Object() {
-    }
+    
+    //
+    inline virtual void createFieldObject(std::string name){}
 
 private:
     mutable volatile int32_t mCount;

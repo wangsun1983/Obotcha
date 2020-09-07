@@ -84,11 +84,54 @@ public:
 
     void setId(int);
     
-    std::function<void()> createfunc;
+    void setReflectObject(Object *obj);
+
+    //reflect filed set function
+    void setValue(int);
+    void setValue(unsigned char);
+    void setValue(double);
+    void setValue(float);
+    void setValue(uint16_t);
+    void setValue(uint32_t);
+    void setValue(uint64_t);
+    void setValue(sp<Object>);
+    void setValue(String value);
+    void setValue(bool);
+
+    //reflect filed get function
+    int getIntValue();
+    byte getByteValue();
+    double getDoubleValue();
+    float getFloatValue();
+    uint16_t getUint16Value();
+    uint32_t getUint32Value();
+    uint64_t getUint64Value();
+    sp<Object> getObjectValue();
+    String getStringValue();
+    bool getBoolValue();
+
+    //reflect filed create function
+    void createObject();
+
+    //std::function<void()> createfunc;
 private:
     int type;
     String name;
     int id;
+    Object *object;
+
+    //do not use
+    void setFieldIntValue(std::string,int){}
+    void setFieldByteValue(std::string,unsigned char){}
+    void setFieldDoubleValue(std::string,double){}
+    void setFieldFloatValue(std::string,float){}
+    void setFieldUint8Value(std::string,uint8_t){}
+    void setFieldUint16Value(std::string,uint16_t){}
+    void setFieldUint32Value(std::string,uint32_t){}
+    void setFieldUint64Value(std::string,uint64_t){}
+    void setFieldObjectValue(std::string,sp<Object>){}
+    void setFieldStringValue(std::string name,std::string value){}
+    void setFieldBoolValue(std::string name,bool){}
 };
 
 DECLARE_CLASS(FieldContent,1) EXTENDS(Field)  {
