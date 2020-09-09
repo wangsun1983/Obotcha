@@ -117,7 +117,7 @@
         createReflectObject(MEMBER);\
     }\
     sp<Object> __ReflectCreateListMember##MEMBER() {\
-        return genArrayListData<decltype(MEMBER)>(MEMBER);\
+        return genArrayListData(MEMBER);\
     }\
 
 #define IMPLE_SET_VALUE_2(CLASS,M1,M2) \
@@ -267,7 +267,9 @@
 #define __S(MEMBER) std::function<void(decltype(MEMBER))>
 #define __G(MEMBER) std::function<decltype(MEMBER)()>
 #define __C(MEMBER) std::function<void()>
+#define __L(MEMBER) std::function<sp<Object>()>
 #define __D() std::function<int()>
+#define __LD() std::function<sp<Object>()>
 
 #define DECLARE_INIT_TUPLE_1(M1) \
     std::tuple<__S(M1),__D(),__D(),__D(),__D(),\
@@ -290,7 +292,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple;
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 #define DECLARE_INIT_TUPLE_2(M1,M2) \
     std::tuple<__S(M1),__S(M2),__D(),__D(),__D(),\
@@ -313,7 +322,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple; 
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 #define DECLARE_INIT_TUPLE_3(M1,M2,M3) \
     std::tuple<__S(M1),__S(M2),__S(M3),__D(),__D(),\
@@ -336,7 +352,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple; 
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 #define DECLARE_INIT_TUPLE_4(M1,M2,M3,M4) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__D(),\
@@ -359,7 +382,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple; 
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__L(M4),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 #define DECLARE_INIT_TUPLE_5(M1,M2,M3,M4,M5) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -382,8 +412,15 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple;
-
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__L(M4),__L(M5),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
+    
 #define DECLARE_INIT_TUPLE_6(M1,M2,M3,M4,M5,M6) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
                 __S(M6),__D(),__D(),__D(),__D(),\
@@ -405,7 +442,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple;
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__L(M4),__L(M5),\
+                __L(M6),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 #define DECLARE_INIT_TUPLE_7(M1,M2,M3,M4,M5,M6,M7) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -428,7 +472,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple;
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__L(M4),__L(M5),\
+                __L(M6),__L(M7),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 
 #define DECLARE_INIT_TUPLE_8(M1,M2,M3,M4,M5,M6,M7,M8) \
@@ -452,7 +503,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple;
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__L(M4),__L(M5),\
+                __L(M6),__L(M7),__L(M8),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 #define DECLARE_INIT_TUPLE_9(M1,M2,M3,M4,M5,M6,M7,M8,M9) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -475,7 +533,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple;
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__L(M4),__L(M5),\
+                __L(M6),__L(M7),__L(M8),__L(M9),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 #define DECLARE_INIT_TUPLE_10(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -498,7 +563,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple;
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__L(M4),__L(M5),\
+                __L(M6),__L(M7),__L(M8),__L(M9),__L(M10),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 #define DECLARE_INIT_TUPLE_11(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -521,7 +593,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple;
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__L(M4),__L(M5),\
+                __L(M6),__L(M7),__L(M8),__L(M9),__L(M10),\
+                __L(M11),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 
 #define DECLARE_INIT_TUPLE_12(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12) \
@@ -545,7 +624,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple;
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__L(M4),__L(M5),\
+                __L(M6),__L(M7),__L(M8),__L(M9),__L(M10),\
+                __L(M11),__L(M12),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 #define DECLARE_INIT_TUPLE_13(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -568,7 +654,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple;
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__L(M4),__L(M5),\
+                __L(M6),__L(M7),__L(M8),__L(M9),__L(M10),\
+                __L(M11),__L(M12),__L(M13),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 #define DECLARE_INIT_TUPLE_14(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -591,7 +684,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple;
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__L(M4),__L(M5),\
+                __L(M6),__L(M7),__L(M8),__L(M9),__L(M10),\
+                __L(M11),__L(M12),__L(M13),__L(M14),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 #define DECLARE_INIT_TUPLE_15(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14,M15) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -614,7 +714,14 @@
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple;
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__L(M4),__L(M5),\
+                __L(M6),__L(M7),__L(M8),__L(M9),__L(M10),\
+                __L(M11),__L(M12),__L(M13),__L(M14),__L(M15),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 
 #define DECLARE_INIT_TUPLE_16(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14,M15,M16) \
@@ -638,7 +745,14 @@
                 __C(M16),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
                 __D(),__D(),__D(),__D(),__D(),\
-                __D(),__D()> createFuncTuple;
+                __D(),__D()> createFuncTuple;\
+    std::tuple<__L(M1),__L(M2),__L(M3),__L(M4),__L(M5),\
+                __L(M6),__L(M7),__L(M8),__L(M9),__L(M10),\
+                __L(M11),__L(M12),__L(M13),__L(M14),__L(M15),\
+                __L(M16),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD(),__LD(),__LD(),__LD(),\
+                __LD(),__LD()> createListItemFuncTuple;
 
 
 #define IMPLE_INIT_TUPLE_DETECT(CLASS,COUNT, ...) IMPLE_INIT_TUPLE_DETECT_TRACE(CLASS,COUNT, __VA_ARGS__)
@@ -648,6 +762,7 @@
 #define IMPLE_INIT_TUPLE_1(CLASS,M1) \
     std::function<decltype(M1)()> getobj = std::bind(&CLASS::__ReflectGet##M1,this);\
     std::function<void()> createobj = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<sp<Object>()>genItemObj = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
     getFuncTuple = std::make_tuple(getobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -662,12 +777,21 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_2(CLASS,M1,M2) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
     std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
     std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
     std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -682,6 +806,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_3(CLASS,M1,M2,M3) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -690,6 +821,9 @@
     std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
     std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
     std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -704,6 +838,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_4(CLASS,M1,M2,M3,M4) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -714,6 +855,10 @@
     std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
     std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
     std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -728,6 +873,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,genItemObj4,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_5(CLASS,M1,M2,M3,M4,M5) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -740,6 +892,11 @@
     std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
     std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
     std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -754,7 +911,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
-
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,genItemObj4,genItemObj5,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_6(CLASS,M1,M2,M3,M4,M5,M6) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -769,6 +932,12 @@
     std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
     std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
     std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -783,6 +952,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,genItemObj4,genItemObj5,\
+                                   genItemObj6,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_7(CLASS,M1,M2,M3,M4,M5,M6,M7) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -799,6 +975,13 @@
     std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
     std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
     std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -813,6 +996,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,genItemObj4,genItemObj5,\
+                                   genItemObj6,genItemObj7,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_8(CLASS,M1,M2,M3,M4,M5,M6,M7,M8) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -831,6 +1021,14 @@
     std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
     std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
     std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -845,6 +1043,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,genItemObj4,genItemObj5,\
+                                   genItemObj6,genItemObj7,genItemObj8,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_9(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -865,6 +1070,15 @@
     std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
     std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
     std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -879,6 +1093,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,genItemObj4,genItemObj5,\
+                                   genItemObj6,genItemObj7,genItemObj8,genItemObj9,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_10(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -901,6 +1122,16 @@
     std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
     std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
     std::function<void()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -915,6 +1146,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,genItemObj4,genItemObj5,\
+                                   genItemObj6,genItemObj7,genItemObj8,genItemObj9,genItemObj10,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_11(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -939,6 +1177,17 @@
     std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
     std::function<void()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
     std::function<void()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
+    std::function<sp<Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -953,6 +1202,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,genItemObj4,genItemObj5,\
+                                   genItemObj6,genItemObj7,genItemObj8,genItemObj9,genItemObj10,\
+                                   genItemObj11,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_12(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -979,6 +1235,18 @@
     std::function<void()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
     std::function<void()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
     std::function<void()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
+    std::function<sp<Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
+    std::function<sp<Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,getobj12,dummyobj,dummyobj,dummyobj,\
@@ -992,6 +1260,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,genItemObj4,genItemObj5,\
+                                   genItemObj6,genItemObj7,genItemObj8,genItemObj9,genItemObj10,\
+                                   genItemObj11,genItemObj12,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_13(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1020,6 +1295,19 @@
     std::function<void()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
     std::function<void()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
     std::function<void()> createobj13 = std::bind(&CLASS::__ReflectCreate##M13,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
+    std::function<sp<Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
+    std::function<sp<Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
+    std::function<sp<Object>()>genItemObj13 = std::bind(&CLASS::__ReflectCreateListMember##M13,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,getobj12,getobj13,dummyobj,dummyobj,\
@@ -1034,6 +1322,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,genItemObj4,genItemObj5,\
+                                   genItemObj6,genItemObj7,genItemObj8,genItemObj9,genItemObj10,\
+                                   genItemObj11,genItemObj12,genItemObj13,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_14(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1064,6 +1359,20 @@
     std::function<void()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
     std::function<void()> createobj13 = std::bind(&CLASS::__ReflectCreate##M13,this);\
     std::function<void()> createobj14 = std::bind(&CLASS::__ReflectCreate##M14,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
+    std::function<sp<Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
+    std::function<sp<Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
+    std::function<sp<Object>()>genItemObj13 = std::bind(&CLASS::__ReflectCreateListMember##M13,this);\
+    std::function<sp<Object>()>genItemObj14 = std::bind(&CLASS::__ReflectCreateListMember##M14,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,getobj12,getobj13,getobj14,dummyobj,\
@@ -1078,6 +1387,13 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,genItemObj4,genItemObj5,\
+                                   genItemObj6,genItemObj7,genItemObj8,genItemObj9,genItemObj10,\
+                                   genItemObj11,genItemObj12,genItemObj13,genItemObj14,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_15(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14,M15) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1095,6 +1411,36 @@
     std::function<decltype(M13)()> getobj13 = std::bind(&CLASS::__ReflectGet##M13,this);\
     std::function<decltype(M14)()> getobj14 = std::bind(&CLASS::__ReflectGet##M14,this);\
     std::function<decltype(M15)()> getobj15 = std::bind(&CLASS::__ReflectGet##M15,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<void()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    std::function<void()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
+    std::function<void()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
+    std::function<void()> createobj13 = std::bind(&CLASS::__ReflectCreate##M13,this);\
+    std::function<void()> createobj14 = std::bind(&CLASS::__ReflectCreate##M14,this);\
+    std::function<void()> createobj15 = std::bind(&CLASS::__ReflectCreate##M15,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
+    std::function<sp<Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
+    std::function<sp<Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
+    std::function<sp<Object>()>genItemObj13 = std::bind(&CLASS::__ReflectCreateListMember##M13,this);\
+    std::function<sp<Object>()>genItemObj14 = std::bind(&CLASS::__ReflectCreateListMember##M14,this);\
+    std::function<sp<Object>()>genItemObj15 = std::bind(&CLASS::__ReflectCreateListMember##M15,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,getobj12,getobj13,getobj14,getobj15,\
@@ -1102,6 +1448,20 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   createobj11,createobj12,createobj13,createobj14,createobj15,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,genItemObj4,genItemObj5,\
+                                   genItemObj6,genItemObj7,genItemObj8,genItemObj9,genItemObj10,\
+                                   genItemObj11,genItemObj12,genItemObj13,genItemObj14,genItemObj15,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define IMPLE_INIT_TUPLE_16(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14,M15,M16) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1120,6 +1480,38 @@
     std::function<decltype(M14)()> getobj14 = std::bind(&CLASS::__ReflectGet##M14,this);\
     std::function<decltype(M15)()> getobj15 = std::bind(&CLASS::__ReflectGet##M15,this);\
     std::function<decltype(M16)()> getobj16 = std::bind(&CLASS::__ReflectGet##M16,this);\
+    std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
+    std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
+    std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
+    std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
+    std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
+    std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
+    std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
+    std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
+    std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
+    std::function<void()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
+    std::function<void()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
+    std::function<void()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
+    std::function<void()> createobj13 = std::bind(&CLASS::__ReflectCreate##M13,this);\
+    std::function<void()> createobj14 = std::bind(&CLASS::__ReflectCreate##M14,this);\
+    std::function<void()> createobj15 = std::bind(&CLASS::__ReflectCreate##M15,this);\
+    std::function<void()> createobj16 = std::bind(&CLASS::__ReflectCreate##M16,this);\
+    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
+    std::function<sp<Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
+    std::function<sp<Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
+    std::function<sp<Object>()>genItemObj13 = std::bind(&CLASS::__ReflectCreateListMember##M13,this);\
+    std::function<sp<Object>()>genItemObj14 = std::bind(&CLASS::__ReflectCreateListMember##M14,this);\
+    std::function<sp<Object>()>genItemObj15 = std::bind(&CLASS::__ReflectCreateListMember##M15,this);\
+    std::function<sp<Object>()>genItemObj16 = std::bind(&CLASS::__ReflectCreateListMember##M16,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,getobj12,getobj13,getobj14,getobj15,\
@@ -1127,7 +1519,20 @@
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj);\
-
+    createFuncTuple = std::make_tuple(createobj1,createobj2,createobj3,createobj4,createobj5,\
+                                   createobj6,createobj7,createobj8,createobj9,createobj10,\
+                                   createobj11,createobj12,createobj13,createobj14,createobj15,\
+                                   createobj16,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);\
+    createListItemFuncTuple = std::make_tuple(genItemObj1,genItemObj2,genItemObj3,genItemObj4,genItemObj5,\
+                                   genItemObj6,genItemObj7,genItemObj8,genItemObj9,genItemObj10,\
+                                   genItemObj11,genItemObj12,genItemObj13,genItemObj14,genItemObj15,\
+                                   genItemObj16,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,dummycreateobj,\
+                                   dummycreateobj,dummycreateobj);
 
 #define DECLARE_REFLECT_FIELD(CLASS, ...) \
 private:\
@@ -1140,6 +1545,8 @@ private:\
     void createReflectObject(uint32_t) {}\
     void createReflectObject(uint64_t) {}\
     template<typename V>\
+    void createReflectObject(V){}\
+    template<typename V>\
     void createReflectObject(sp<V> &v) {\
         V *p = new V();\
         p->__ReflectInit();\
@@ -1148,10 +1555,12 @@ private:\
     IMPLE_SET_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
     DECLARE_INIT_TUPLE_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
     int __ReflectDummy() {return 0;}\
+    sp<Object>__ReflectCreateDummy() {return nullptr;}\
 public:\
     void __ReflectInit() {\
         int index = 0;\
         std::function<int(void)> dummyobj = std::bind(&_##CLASS::__ReflectDummy,this);\
+        std::function<sp<Object>(void)> dummycreateobj = std::bind(&_##CLASS::__ReflectCreateDummy,this);\
         maps = createHashMap<String,Field>();\
         IMPLE_INIT_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)\
         IMPLE_INIT_TUPLE_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)\
@@ -1164,20 +1573,32 @@ public:\
     }\
 private:\
     template<typename T>\
-    sp<Object> genArrayListData(ArrayList<T> t) {\
-        sp<Object> result;\
+    T* genArrayListDataPoint(sp<T> t) {\
         T *data = new T();\
         data->__ReflectInit();\
-        result.set_pointer(data);\
-        return result;\
+        return data;\
     }\
     template<typename T>\
-    sp<Object> genArrayListData(T t) {\
+    sp<Object> genArrayListData(ArrayList<T> list) {\
+        printf("genArrayList1 \n");\
+        T param;\
+        auto pointer = genArrayListDataPoint(param);\
+        param.set_pointer(pointer);\
+        list->add(param);\
+        return param;\
+    }\
+    template<typename T>\
+    sp<Object>genArrayListData(T t) {\
+        printf("genArrayList2 \n");\
         return nullptr;\
     }\
     int getFieldIntValue(std::string name){ \
        FieldContentValue v = getFieldContentValue(name);\
        return v->intValue;\
+    }\
+    long getFieldLongValue(std::string name){ \
+       FieldContentValue v = getFieldContentValue(name);\
+       return v->longValue;\
     }\
     unsigned char getFieldByteValue(std::string name){ \
         FieldContentValue v = getFieldContentValue(name);\
@@ -1223,6 +1644,7 @@ private:\
     void setFieldByteValue(std::string name,unsigned char value){setFieldValue(name,value);}\
     void setFieldDoubleValue(std::string name,double value){setFieldValue(name,value);}\
     void setFieldFloatValue(std::string name,float value){setFieldValue(name,value);}\
+    void setFieldLongValue(std::string name,long value){setFieldValue(name,value);}\
     void setFieldUint8Value(std::string name,uint8_t value){setFieldValue(name,value);}\
     void setFieldUint16Value(std::string name ,uint16_t value){setFieldValue(name,value);}\
     void setFieldUint32Value(std::string name ,uint32_t value){setFieldValue(name,value);}\
@@ -1347,5 +1769,59 @@ private:\
             break;\
         }\
     }\
-
+    sp<Object> createListItemObject(std::string name) {\
+        Field f = maps->get(createString(name));\
+        printf("createListItemObject id is %d \n",f->getId());\
+        switch(f->getId()) {\
+            case 0:\
+                return std::get<0>(createListItemFuncTuple)();\
+            break;\
+            case 1:\
+                return std::get<1>(createListItemFuncTuple)();\
+            break;\
+            case 2:\
+                return std::get<2>(createListItemFuncTuple)();\
+            break;\
+            case 3:\
+                return std::get<3>(createListItemFuncTuple)();\
+            break;\
+            case 4:\
+                return std::get<4>(createListItemFuncTuple)();\
+            break;\
+            case 5:\
+                return std::get<5>(createListItemFuncTuple)();\
+            break;\
+            case 6:\
+                return std::get<6>(createListItemFuncTuple)();\
+            break;\
+            case 7:\
+                return std::get<7>(createListItemFuncTuple)();\
+            break;\
+            case 8:\
+                return std::get<8>(createListItemFuncTuple)();\
+            break;\
+            case 9:\
+                return std::get<9>(createListItemFuncTuple)();\
+            break;\
+            case 10:\
+                return std::get<10>(createListItemFuncTuple)();\
+            break;\
+            case 11:\
+                return std::get<11>(createListItemFuncTuple)();\
+            break;\
+            case 12:\
+                return std::get<12>(createListItemFuncTuple)();\
+            break;\
+            case 13:\
+                return std::get<13>(createListItemFuncTuple)();\
+            break;\
+            case 14:\
+                return std::get<14>(createListItemFuncTuple)();\
+            break;\
+            case 15:\
+                return std::get<15>(createListItemFuncTuple)();\
+            break;\
+        }\
+    }\
+    
 #endif

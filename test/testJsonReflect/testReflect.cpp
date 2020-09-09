@@ -25,6 +25,12 @@ public:
     DECLARE_REFLECT_FIELD(Address,street,city,country)
 };
 
+DECLARE_SIMPLE_CLASS(Link) {
+public:
+    String name;
+    String url;
+    DECLARE_REFLECT_FIELD(Link,name,url);
+};
 
 DECLARE_SIMPLE_CLASS(PersonInfo) {
 public:
@@ -33,11 +39,12 @@ public:
     String page;
     Address address;
     bool isNonProfit;
-    DECLARE_REFLECT_FIELD(PersonInfo,name,url,page,address,isNonProfit)
+    ArrayList<Link>links;
+    DECLARE_REFLECT_FIELD(PersonInfo,name,url,page,address,isNonProfit,links)
 };
 
-int main() {
-    
+void testReflect() {
+
     JsonReader reader = createJsonReader(createFile("abc.json"));
     JsonValue value = reader->get();
 
@@ -54,5 +61,15 @@ int main() {
         printf("info isNonProfit is true \n");
     } else {
         printf("info isNonProfit is false \n");
+    }
+
+    if(info->links != nullptr) {
+        printf("size is %d \n",info->links->size());
+        ListIterator<Link> iterator = info->links->getIterator();
+        while(iterator->hasValue()) {
+            Link ll = iterator->getValue();
+            printf("Link name is %s,url is %s \n",ll->name->toChars(),ll->url->toChars());
+            iterator->next();
+        }
     }
 }

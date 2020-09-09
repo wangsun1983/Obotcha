@@ -43,6 +43,10 @@ int _Field::TypeOf(bool v) {
     return FieldTypeBool;
 }
 
+int _Field::TypeOf(long v) {
+    return FieldTypeLong;
+}
+
 String _Field::getName() {
     return name;
 }
@@ -156,6 +160,10 @@ bool _Field::getBoolValue() {
 void _Field::createObject() {
     printf("field create \n");
     object->createFieldObject(name->getStdString());
+}
+
+sp<Object>  _Field::createListItemObject() {
+    return object->createListItemObject(name->getStdString());
 }
 
 

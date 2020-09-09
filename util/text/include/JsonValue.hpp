@@ -187,130 +187,203 @@ public:
 
     String toString();
 
-#if 0
     template<typename T>
-    sp<T> createObjectFromArrayList(ArrayList<T> value) {
-        sp<T> data;
-        T *p = new T();
-        p->__ReflectInit();
-        data.set_pointer(p);
-        return data;
+    void reflectToArrayList(T obj,String name) {
+        printf("reflect list name is %s \n",name->toChars());
+        Field field = obj->getField(name);
+        field->createObject();
+        int size = this->size();
+        printf("array size is %d \n",size);
+        for(int index = 0;index<size;index++) {
+            auto vv = field->createListItemObject();
+            JsonValue value = this->getValueAt(index);
+            value->reflectTo(vv);
+        }
     }
-#endif
 
     template<typename T>
     void reflectTo(T obj) {
-        if(this->isArray()) {
-            //we should create arraylist
-            /*
-            obj->createFieldValue(mTag->getStdString());
-            sp<_JsonValueIterator> iterator = this->getIterator();
-            ArrayList<sp<Object>> listvalue = (ArrayList<sp<Object>>)obj->getFieldObjectValue(mTag->getStdString());
-            while(iterator->hasValue()) {
-                auto vv = createObjectFromArrayList(listvalue);
-                JsonValue jsonnode = iterator->getValue();
-                reflectTo(vv,jsonnode);
-                listvalue->add(vv);
+        sp<_JsonValueIterator> iterator = this->getIterator();
+        while(iterator->hasValue()) {
+            String key = iterator->getTag();
+            
+            Field field = obj->getField(key);
+            if(field == nullptr) {
+                printf("key is %s \n",key->toChars());
                 iterator->next();
-            }*/
-        } else {
-            sp<_JsonValueIterator> iterator = this->getIterator();
-            while(iterator->hasValue()) {
-                String key = iterator->getTag();
-                
-                Field field = obj->getField(key);
-                if(field == nullptr) {
-                    printf("key is %s \n",key->toChars());
-                    iterator->next();
-                    continue;
-                }
-                std::string name = field->getName()->getStdString();
-                JsonValue jsonnode = iterator->getValue();
-
-                switch(field->getType()) {
-                    case FieldTypeInt: {
-                            String value = jsonnode->getString();
-                            field->setValue(value->toBasicInt());
-                        }
-                        break;
-
-                    case FieldTypeByte:{
-                            String value = jsonnode->getString();
-                            field->setValue(value->toBasicByte());
-                        }
-                        break;
-
-                    
-                    case FieldTypeBool:{
-                            String value = jsonnode->getString();
-                            field->setValue(value->toBasicBool());
-                        }
-                        break;
-
-                    case FieldTypeDouble:{
-                            String value = jsonnode->getString();
-                            field->setValue(value->toBasicDouble());
-                        }
-                        break;
-
-                    case FieldTypeFloat:{
-                            String value = jsonnode->getString();
-                            field->setValue(value->toBasicFloat());
-                        }
-                        break;
-
-                    case FieldTypeString:{
-                            String value = jsonnode->getString();
-                            field->setValue(value);
-                        }
-                        break;
-
-                    case FieldTypeUint8:{
-                            String value = jsonnode->getString();
-                            field->setValue(value->toBasicUint8());
-                        }
-                        break;
-
-                    case FieldTypeUint16:{
-                            String value = jsonnode->getString();
-                            field->setValue(value->toBasicUint16());
-                        }
-                        break;
-
-                    case FieldTypeUint32:{
-                            String value = jsonnode->getString();
-                            field->setValue(value->toBasicUint32());
-                        }
-                        break;
-
-                    case FieldTypeUint64:{
-                            String value = jsonnode->getString();
-                            field->setValue(value->toBasicUint64());
-                        }
-                        break;
-                         
-                    case FieldTypeObject: {
-                            //create Objectt
-                            printf("createobj name is %s\n",name.c_str());
-                            field->createObject();
-                            auto reflectValue = field->getObjectValue();
-                            if(reflectValue != nullptr) {
-                                printf("create obj not null \n");
-                            } else {
-                                printf("create obj null \n");
-                            }
-                            jsonnode->reflectTo(reflectValue);
-                        }
-                        break;
-
-                    case FieldTypeArrayList:
-                        //TODO
-                        break;
-                }
-
-                iterator->next();
+                continue;
             }
+            std::string name = field->getName()->getStdString();
+            JsonValue jsonnode = iterator->getValue();
+
+            switch(field->getType()) {
+                case FieldTypeInt: {
+                        String value = jsonnode->getString();
+                        field->setValue(value->toBasicInt());
+                    }
+                    break;
+
+                case FieldTypeByte:{
+                        String value = jsonnode->getString();
+                        field->setValue(value->toBasicByte());
+                    }
+                    break;
+
+                case FieldTypeBool:{
+                        String value = jsonnode->getString();
+                        field->setValue(value->toBasicBool());
+                    }
+                    break;
+
+                case FieldTypeDouble:{
+                        String value = jsonnode->getString();
+                        field->setValue(value->toBasicDouble());
+                    }
+                    break;
+
+                case FieldTypeFloat:{
+                        String value = jsonnode->getString();
+                        field->setValue(value->toBasicFloat());
+                    }
+                    break;
+
+                case FieldTypeString:{
+                        String value = jsonnode->getString();
+                        field->setValue(value);
+                    }
+                    break;
+
+                case FieldTypeUint8:{
+                        String value = jsonnode->getString();
+                        field->setValue(value->toBasicUint8());
+                    }
+                    break;
+
+                case FieldTypeUint16:{
+                        String value = jsonnode->getString();
+                        field->setValue(value->toBasicUint16());
+                    }
+                    break;
+
+                case FieldTypeUint32:{
+                        String value = jsonnode->getString();
+                        field->setValue(value->toBasicUint32());
+                    }
+                    break;
+
+                case FieldTypeUint64:{
+                        String value = jsonnode->getString();
+                        field->setValue(value->toBasicUint64());
+                    }
+                    break;
+                        
+                case FieldTypeObject: {
+                        //create Objectt
+                        printf("createobj name is %s\n",name.c_str());
+                        field->createObject();
+                        auto reflectValue = field->getObjectValue();
+                        if(reflectValue != nullptr) {
+                            printf("create obj not null \n");
+                        } else {
+                            printf("create obj null \n");
+                        }
+                        jsonnode->reflectTo(reflectValue);
+                    }
+                    break;
+
+                case FieldTypeArrayList:
+                    jsonnode->reflectToArrayList(obj,field->getName());
+                    break;
+            }
+
+            iterator->next();
         }
+    }
+
+    template<typename T>
+    void importFrom(T value) {
+        ArrayList<Field> fields = value->getAllFields();
+        ListIterator<Field> iterator = fields->getIterator();
+        while(iterator->hasValue()) {
+            Field field = iterator->getValue();
+            String name = field->getName();
+            switch(field->getType()) {
+                case FieldTypeLong: {
+                    this->put(name,field->getIntValue());
+                }
+                break;
+
+                case FieldTypeInt: {
+                    this->put(name,field->getIntValue());
+                }
+                break;
+
+                case FieldTypeByte:{
+                    this->put(name,field->getByteValue());
+                }
+                break;
+
+                case FieldTypeBool:{
+                    this->put(name,field->getBoolValue());
+                }
+                break;
+
+                case FieldTypeDouble:{
+                    this->put(name,field->getDoubleValue());
+                }
+                break;
+
+                case FieldTypeFloat:{
+                    this->put(name,field->getFloatValue());
+                }
+                break;
+
+                case FieldTypeString:{
+                    this->put(name,field->getStringValue());
+                }
+                break;
+
+                case FieldTypeUint8:{
+                    this->put(name,(uint64_t)field->getByteValue());
+                }
+                break;
+
+                case FieldTypeUint16:{
+                    this->put(name,(uint64_t)field->getUint16Value());
+                }
+                break;
+
+                case FieldTypeUint32:{
+                    this->put(name,(uint64_t)field->getUint32Value());
+                }
+                break;
+
+                case FieldTypeUint64:{
+                    this->put(name,(uint64_t)field->getUint32Value());
+                }
+                break;
+                /*        
+                case FieldTypeObject: {
+                        //create Objectt
+                        printf("createobj name is %s\n",name.c_str());
+                        field->createObject();
+                        auto reflectValue = field->getObjectValue();
+                        if(reflectValue != nullptr) {
+                            printf("create obj not null \n");
+                        } else {
+                            printf("create obj null \n");
+                        }
+                        jsonnode->reflectTo(reflectValue);
+                    }
+                    break;
+
+                case FieldTypeArrayList:
+                    jsonnode->reflectToArrayList(obj,field->getName());
+                    break;*/
+            }
+            iterator->next();
+        }
+        
     }
 
     ~_JsonValue();

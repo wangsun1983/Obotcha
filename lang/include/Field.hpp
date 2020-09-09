@@ -19,6 +19,7 @@ enum {
     FieldTypeByte,
     FieldTypeDouble,
     FieldTypeFloat,
+    FieldTypeLong,
     FieldTypeString,
     FieldTypeUint8,
     FieldTypeUint16,
@@ -44,6 +45,7 @@ public:
     int TypeOf(Uint32 v);
     int TypeOf(Uint64 v);
     int TypeOf(bool v);
+    int TypeOf(long v);
 
     template<typename T>
     int TypeOf(std::vector<T> v) {
@@ -112,6 +114,7 @@ public:
 
     //reflect filed create function
     void createObject();
+    sp<Object> createListItemObject();
 
     //std::function<void()> createfunc;
 private:
@@ -150,12 +153,17 @@ public:
     double doubleValue;
     bool boolValue;
     float floatValue;
+    long longValue;
     uint8_t uint8Value;
     uint16_t uint16Value;
     uint32_t uint32Value;
     uint64_t uint64Value;
     String stringValue;
     Object *objectValue;
+
+    void set(long v) {
+        longValue = v;
+    }
 
     void set(int v) {
         intValue = v;

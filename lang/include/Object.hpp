@@ -64,6 +64,7 @@ protected:
     inline virtual unsigned char getFieldByteValue(std::string){return 0;}
     inline virtual bool getFieldBoolValue(std::string){return true;}
     inline virtual double getFieldDoubleValue(std::string){return 0;}
+    inline virtual long getFieldLongValue(std::string name){return 0;}
     inline virtual float getFieldFloatValue(std::string){return 0;}
     inline virtual uint8_t getFieldUint8Value(std::string){return 0;}
     inline virtual uint16_t getFieldUint16Value(std::string){return 0;}
@@ -75,6 +76,7 @@ protected:
     inline virtual void setFieldByteValue(std::string,unsigned char){}
     inline virtual void setFieldDoubleValue(std::string,double){}
     inline virtual void setFieldFloatValue(std::string,float){}
+    inline virtual void setFieldLongValue(std::string,long){}
     inline virtual void setFieldUint8Value(std::string,uint8_t){}
     inline virtual void setFieldUint16Value(std::string,uint16_t){}
     inline virtual void setFieldUint32Value(std::string,uint32_t){}
@@ -83,8 +85,9 @@ protected:
     inline virtual void setFieldStringValue(std::string name,std::string value){}
     inline virtual void setFieldBoolValue(std::string name,bool){}
     
-    //
+    //create function
     inline virtual void createFieldObject(std::string name){}
+    inline virtual sp<Object> createListItemObject(std::string name){return nullptr;}
 
 private:
     mutable volatile int32_t mCount;
