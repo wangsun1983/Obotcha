@@ -149,8 +149,7 @@ sp<Object> _Field::getObjectValue() {
 }
 
 String _Field::getStringValue() {
-    //return (String)object->getFieldObjectValue(name->getStdString());
-    return transform_cast<tp(String)>(object->getFieldObjectValue(name->getStdString()));
+    return object->getFieldStringValue(name->getStdString());
 }
 
 bool _Field::getBoolValue() {
@@ -158,7 +157,6 @@ bool _Field::getBoolValue() {
 }
 
 void _Field::createObject() {
-    printf("field create \n");
     object->createFieldObject(name->getStdString());
 }
 
@@ -166,5 +164,8 @@ sp<Object>  _Field::createListItemObject() {
     return object->createListItemObject(name->getStdString());
 }
 
+sp<Object> _Field::getListItemObject(int index) {
+    return object->getListItemObject(name->getStdString(),index);
+}
 
 }

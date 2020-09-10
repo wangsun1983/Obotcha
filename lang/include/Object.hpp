@@ -18,6 +18,8 @@ namespace obotcha {
 
 class _Field;
 class _String;
+template<typename T>
+class _ArrayList;
 
 class Object
 {
@@ -56,7 +58,8 @@ public:
 
     //reflect function
     inline virtual void __ReflectInit(){}
-    inline virtual sp<_Field> getField(sp<_String>){}
+    inline virtual sp<_Field> getField(sp<_String>){/*TODO*/}
+    inline virtual sp<_ArrayList<sp<_Field>>> getAllFields(){/*TODO*/}
 
     //reflect get function
 protected:
@@ -70,6 +73,7 @@ protected:
     inline virtual uint16_t getFieldUint16Value(std::string){return 0;}
     inline virtual uint32_t getFieldUint32Value(std::string){return 0;}
     inline virtual uint64_t getFieldUint64Value(std::string){return 0;}
+    inline virtual sp<_String> getFieldStringValue(std::string name){/*TODO*/};
     inline virtual sp<Object> getFieldObjectValue(std::string){return nullptr;}
     //reflect set function
     inline virtual void setFieldIntValue(std::string,int){}
@@ -88,6 +92,7 @@ protected:
     //create function
     inline virtual void createFieldObject(std::string name){}
     inline virtual sp<Object> createListItemObject(std::string name){return nullptr;}
+    inline virtual sp<Object> getListItemObject(std::string name,int index){return nullptr;};
 
 private:
     mutable volatile int32_t mCount;

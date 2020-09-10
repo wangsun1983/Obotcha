@@ -362,24 +362,32 @@ public:
                     this->put(name,(uint64_t)field->getUint32Value());
                 }
                 break;
-                /*        
                 case FieldTypeObject: {
-                        //create Objectt
-                        printf("createobj name is %s\n",name.c_str());
-                        field->createObject();
-                        auto reflectValue = field->getObjectValue();
-                        if(reflectValue != nullptr) {
-                            printf("create obj not null \n");
-                        } else {
-                            printf("create obj null \n");
+                    auto newObject = field->getObjectValue();
+                    JsonValue newValue = createJsonValue();
+                    newValue->importFrom(newObject);
+                    this->put(name,newValue);
+                }
+                break;
+                
+                case FieldTypeArrayList: {
+                    int count = 0;
+                    JsonValue arrayNode = createJsonValue();
+                    while(1) {
+                        auto newObject = field->getListItemObject(count);
+                        if(newObject != nullptr) {
+                            JsonValue newValue = createJsonValue();
+                            newValue->importFrom(newObject);
+                            arrayNode->append(newValue);
+                            printf("append!!!! \n");
+                            count++;
+                            continue;
                         }
-                        jsonnode->reflectTo(reflectValue);
+                        break;
                     }
-                    break;
-
-                case FieldTypeArrayList:
-                    jsonnode->reflectToArrayList(obj,field->getName());
-                    break;*/
+                    this->put(name,arrayNode);
+                }
+                break;
             }
             iterator->next();
         }

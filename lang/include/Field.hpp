@@ -112,6 +112,8 @@ public:
     String getStringValue();
     bool getBoolValue();
 
+    sp<Object> getListItemObject(int);
+
     //reflect filed create function
     void createObject();
     sp<Object> createListItemObject();
