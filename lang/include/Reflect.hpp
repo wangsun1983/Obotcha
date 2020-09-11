@@ -1909,11 +1909,11 @@ private:\
     void createReflectObject(uint16_t) {}\
     void createReflectObject(uint32_t) {}\
     void createReflectObject(uint64_t) {}\
-    template<typename V>\
-    void createReflectObject(V){}\
-    template<typename V>\
-    void createReflectObject(sp<V> &v) {\
-        V *p = new V();\
+    template<typename Q>\
+    void createReflectObject(Q){}\
+    template<typename Q>\
+    void createReflectObject(sp<Q> &v) {\
+        Q *p = new Q();\
         p->__ReflectInit();\
         v.set_pointer(p);\
     }\
@@ -1944,35 +1944,36 @@ public:\
         return maps->entrySet();\
     }\
 private:\
-    template<typename T>\
-    T* genArrayListDataPoint(sp<T> t) {\
-        T *data = new T();\
+    template<typename Q>\
+    Q* genArrayListDataPoint(sp<Q> t) {\
+        Q *data = new Q();\
         data->__ReflectInit();\
         return data;\
     }\
-    template<typename T>\
-    sp<Object> genArrayListData(ArrayList<T> list) {\
+    template<typename Q>\
+    sp<Object> genArrayListData(ArrayList<Q> list) {\
         printf("genArrayList1 \n");\
-        T param;\
+        Q param;\
         auto pointer = genArrayListDataPoint(param);\
         param.set_pointer(pointer);\
         list->add(param);\
         return param;\
     }\
-    template<typename T>\
-    sp<Object>genArrayListData(T t) {\
+    template<typename Q>\
+    sp<Object>genArrayListData(Q t) {\
         printf("genArrayList2 \n");\
         return nullptr;\
     }\
-    template<typename T>\
-    sp<Object> getArrayListItem(ArrayList<T> list,int index){\
-        if(index == list->size()) {\
+    template<typename Q>\
+    sp<Object> getArrayListItem(ArrayList<Q> list,int index){\
+        if(list == nullptr ||index == list->size()) {\
             return nullptr;\
         }\
         return list->get(index);\
     }\
-    template<typename T>\
-    sp<Object> getArrayListItem(T t,int index) {\
+    template<typename Q>\
+    sp<Object> getArrayListItem(Q t,int index) {\
+        printf("get list nullptr \n");\
         return nullptr;\
     }\
     int getFieldIntValue(std::string name){ \
@@ -2034,10 +2035,10 @@ private:\
     void setFieldUint64Value(std::string name,uint64_t value){setFieldValue(name,value);}\
     void setFieldStringValue(std::string name,std::string value){setFieldValue(name,createString(value));}\
     void setFieldObjectValue(std::string name,sp<Object> value){}\
-    template<typename T>\
-    void setFieldValue(std::string name,T value){\
+    template<typename Q>\
+    void setFieldValue(std::string name,Q value){\
         Field f = maps->get(createString(name));\
-        _FieldContent<T>  *content = dynamic_cast<_FieldContent<T>  *>(f.get_pointer());\
+        _FieldContent<Q>  *content = dynamic_cast<_FieldContent<Q>  *>(f.get_pointer());\
         if(content == nullptr) {\
             printf("setFieldValue null,name is %s \n",name.c_str());\
         }\
@@ -2207,7 +2208,7 @@ private:\
     }\
     sp<Object> getListItemObject(std::string name,int index){\
         Field f = maps->get(createString(name));\
-        printf("createListItemObject id is %d \n",f->getId());\
+        printf("getListItemObject id is %d \n",f->getId());\
         switch(f->getId()) {\
             case 0:\
                 return std::get<0>(getListItemFuncTuple)(index);\

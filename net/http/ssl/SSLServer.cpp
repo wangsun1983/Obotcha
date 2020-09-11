@@ -200,7 +200,8 @@ void _SSLServer::setRcvBuffSize(int) {
 }
 
 int _SSLServer::getRcvBuffSize() {
-
+    //TODO
+    return -1;
 }
 
 void _SSLServer::start() {

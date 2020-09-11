@@ -8,34 +8,26 @@
 #include "Long.hpp"
 #include "Sqlite3Connection.hpp"
 #include "SqlConnection.hpp"
+#include "Reflect.hpp"
+#include "Sqlite3Client.hpp"
 
 using namespace obotcha;
 
-//DECLARE_SIMPLE_CLASS(Student) IMPLEMENTS(SqlRecord) {
-//  DECLARE_TABLE_2(Student,age,name);
-//  DECLARE_INT_DATA_MEMBER(Student,age);
-//  DECLARE_STRING_DATA_MEMBER(Student,name);
-//};
-
-DECLARE_SIMPLE_CLASS(Student) IMPLEMENTS(SqlRecord) {
-  DECLARE_TABLE_2(Student,age,name);
-  DECLARE_INT_DATA_MEMBER(Student,age);
-  DECLARE_STRING_DATA_MEMBER(Student,name);
+DECLARE_SIMPLE_CLASS(Student) {
+public:
+    int age;
+    DECLARE_REFLECT_FIELD(Student,age)
 };
 
-PUBLISH_TABLE(Student);
 
 int main() {
 
-    //BuildStudent b = createBuildStudent();
-    //Student t = b->create();
-
     HashMap<String,String> args = createHashMap<String,String>();
     args->put(st(Sqlite3Connection)::SQLITE3_CONNECT_TAG_PATH,"abc");
-    SqlConnection c = createSqlite3Connection();
+    Sqlite3Client c = createSqlite3Client();
     int result = c->connect(args);
     printf("result is %d \n",result);
-
+/*
     ArrayList<SqlRecord> ss = c->query(createString("select * from student;"),RECORD_BUILDER(Student));
     if(ss == nullptr) {
         printf("query nullptr \n");
@@ -49,5 +41,5 @@ int main() {
     }
 
     while(1){}
-
+*/
 }

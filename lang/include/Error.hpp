@@ -35,6 +35,11 @@ enum ErrorType {
     WaitTimeout,
     WaitFail,
     NotSupport,
+	SqlFailWrongParam,
+    SqlFailOpen,
+    SqlFailNoDb,
+    SqlExecFail,
+    SqlTransactionFail,
     ErrorMax,
 }; 
 
@@ -68,7 +73,11 @@ private:
     static const String WaitTimeoutString;
     static const String WaitFailString;
     static const String NotSupportString;
-
+	static const String SqlFailWrongParamString;
+    static const String SqlFailOpenString;
+    static const String SqlFailNoDbString;
+    static const String SqlExecFailString;
+    static const String SqlTransactionFailString;
 };
 
 }

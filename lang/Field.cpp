@@ -79,6 +79,10 @@ void _Field::setValue(int v) {
     object->setFieldIntValue(name->getStdString(),v);
 }
 
+void _Field::setValue(long v) {
+    object->setFieldLongValue(name->getStdString(),v);
+}
+
 void _Field::setValue(unsigned char v) {
     object->setFieldByteValue(name->getStdString(),v);
 }
@@ -126,6 +130,10 @@ byte _Field::getByteValue() {
 
 double _Field::getDoubleValue() {
     return object->getFieldDoubleValue(name->getStdString());
+}
+
+long _Field::getLongValue() {
+    return object->getFieldLongValue(name->getStdString());
 }
 
 float _Field::getFloatValue() {

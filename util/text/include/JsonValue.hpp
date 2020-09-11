@@ -13,6 +13,7 @@
 #include "Uint32.hpp"
 #include "ArrayList.hpp"
 #include "Field.hpp"
+#include "Long.hpp"
 
 namespace obotcha {
 
@@ -117,6 +118,8 @@ public:
 
     void put(String tag,uint64_t value);
 
+    void put(String tag,long value);
+
     void put(String tag,sp<_JsonValue> value);
 
     void remove(String tag);
@@ -135,6 +138,10 @@ public:
     Uint64 getUint64(String tag);
 
     Uint64 getUint64();
+
+    Long getLong(String tag);
+
+    Long getLong();
 
     Boolean getBoolean(String tag);
 
@@ -217,6 +224,12 @@ public:
             JsonValue jsonnode = iterator->getValue();
 
             switch(field->getType()) {
+                case FieldTypeLong:{
+                    String value = jsonnode->getString();
+                    field->setValue(value->toBasicLong());
+                    }
+                    break;
+
                 case FieldTypeInt: {
                         String value = jsonnode->getString();
                         field->setValue(value->toBasicInt());
@@ -303,13 +316,17 @@ public:
     template<typename T>
     void importFrom(T value) {
         ArrayList<Field> fields = value->getAllFields();
+        if(fields == nullptr) {
+            printf("fields is nullptr !!!!! \n");
+        }
         ListIterator<Field> iterator = fields->getIterator();
         while(iterator->hasValue()) {
             Field field = iterator->getValue();
             String name = field->getName();
+            printf("import name is %s \n",name->toChars());
             switch(field->getType()) {
                 case FieldTypeLong: {
-                    this->put(name,field->getIntValue());
+                    this->put(name,field->getLongValue());
                 }
                 break;
 
@@ -374,7 +391,9 @@ public:
                     int count = 0;
                     JsonValue arrayNode = createJsonValue();
                     while(1) {
+                        printf("start getListItem trace1!!!!,field name is %s \n",field->getName()->toChars());
                         auto newObject = field->getListItemObject(count);
+                        printf("start getListItem trace2!!!! \n");
                         if(newObject != nullptr) {
                             JsonValue newValue = createJsonValue();
                             newValue->importFrom(newObject);

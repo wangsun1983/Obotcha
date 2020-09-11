@@ -1,4 +1,36 @@
 {
 	"data1" : 1,
-	"data2" : 0
+	"data2" : 123,
+	"data3" : 
+	{
+		"subData1" : 222,
+		"subData2" : 777,
+		"subData3" : "hello world",
+		"subData4" : null
+	},
+	"data4" : 
+	[
+		{
+			"subData1" : 1,
+			"subData2" : 1111,
+			"subData3" : "this is one",
+			"subData4" : 
+			[
+				{
+					"baseData1" : 1122
+				}
+			]
+		},
+		{
+			"subData1" : 2,
+			"subData2" : 2222,
+			"subData3" : "this is two",
+			"subData4" : 
+			[
+				{
+					"baseData1" : 3344
+				}
+			]
+		}
+	]
 }

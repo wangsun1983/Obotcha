@@ -90,6 +90,7 @@ public:
 
     //reflect filed set function
     void setValue(int);
+    void setValue(long);
     void setValue(unsigned char);
     void setValue(double);
     void setValue(float);
@@ -104,6 +105,7 @@ public:
     int getIntValue();
     byte getByteValue();
     double getDoubleValue();
+    long getLongValue();
     float getFloatValue();
     uint16_t getUint16Value();
     uint32_t getUint32Value();

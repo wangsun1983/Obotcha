@@ -10,7 +10,7 @@ cflags = -fpic \
 		-I ./util/concurrent/include/ \
 		-I ./util/coroutine/include/ \
 		-I ./util/text/include/ \
-		-I ./util/sql/include/ \
+		-I ./sql/include/ \
 		-I ./lang/include \
 		-I ./io/include \
 		-I ./util/include/ \
@@ -73,6 +73,7 @@ include io/makefile
 include net/makefile
 include security/makefile
 include process/makefile
+include sql/makefile
 
 $(libname): $(objs)
 	g++ -g -o0 -shared $(objs) $(cflags) $(sharelib) -o $(outlib)/lib${libname}.so $(staticlib) $(external)

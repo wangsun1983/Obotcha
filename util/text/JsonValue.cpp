@@ -107,6 +107,14 @@ void _JsonValue::put(String tag,uint64_t value) {
     jvalue[tag->toChars()] = (Json::UInt)value;
 }
 
+void _JsonValue::put(String tag,long value) {
+    if(tag == nullptr) {
+        return;
+    }
+
+    jvalue[tag->toChars()] = (Json::LargestInt)value;
+}
+
 void _JsonValue::put(String tag,sp<_JsonValue> v) {
     if(tag == nullptr) {
         return;
@@ -170,6 +178,16 @@ Uint64  _JsonValue::getUint64(String tag) {
 Uint64 _JsonValue::getUint64() {
     uint64_t v = (uint64_t)jvalue.asUInt64();
     return createUint64(v);
+}
+
+Long _JsonValue::getLong(String tag) {
+    long v = (long)jvalue[tag->toChars()].asLargestInt();
+    return createLong(v);
+}
+
+Long _JsonValue::getLong() {
+    long v = (long)jvalue.asLargestInt();
+    return createLong(v);
 }
 
 int _JsonValue::size() { 

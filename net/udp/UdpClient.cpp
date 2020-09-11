@@ -78,7 +78,7 @@ _UdpClient::~_UdpClient() {
 }
 
 void _UdpClient::start() {
-    init();
+    //init();
 }
 
 void _UdpClient::release() {

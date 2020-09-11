@@ -29,6 +29,11 @@ const String _Error::NotFoundString = createString("Not Found");
 const String _Error::WaitTimeoutString = createString("Wait Timeout");
 const String _Error::WaitFailString = createString("Wait Fail");
 const String _Error::NotSupportString = createString("Not Support");
+const String _Error::SqlFailWrongParamString = createString("Sql Wrong Param");
+const String _Error::SqlFailOpenString = createString("Sql Open Fail");
+const String _Error::SqlFailNoDbString = createString("Sql No Db");
+const String _Error::SqlExecFailString = createString("Sql Exec Error");
+const String _Error::SqlTransactionFailString = createString("Sql Transaction Error");
 
 String _Error::toString(int error) {
     switch(error) {
@@ -106,6 +111,21 @@ String _Error::toString(int error) {
 
         case -NotSupport:
         return NotSupportString;
+		
+		case SqlFailWrongParam:
+		return SqlFailWrongParamString;
+		
+        case SqlFailOpen:
+		return SqlFailOpenString;
+		
+        case SqlFailNoDb:
+		return SqlFailNoDbString;
+		
+        case SqlExecFail:
+		return SqlExecFailString;
+    
+        case SqlTransactionFail:
+		return SqlTransactionFailString;
     }
     
     return nullptr;
