@@ -33,23 +33,6 @@ int _Sqlite3Client::exec(String sqlstring) {
     return 0;
 }
 
-int _Sqlite3Client::sqlQueryCallback(void *ctx, int argc, char *argv[], char *col[]) {
-/*    
-    SqliteQueryParam *param = (SqliteQueryParam *)ctx;
-    SqlRecord r = param->r->create();
-    for (int i = 0; i < argc; i++) {
-        sql_data_set m = r->getSqlAssignment(i,col[i]);
-        if(m == nullptr) {
-            continue;
-        }
-        m(r.get_pointer(),argv[i]);
-    }
-
-    param->l->add(r);
-*/
-    return 0;
-}
-
 int _Sqlite3Client::startTransaction() {
     int ret = sqlite3_exec(mSqlDb,"begin transaction",0,0,nullptr);
     if(ret != SQLITE_OK) {

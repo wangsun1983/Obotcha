@@ -20,6 +20,10 @@ using namespace obotcha;
 DECLARE_SIMPLE_CLASS(BaseImportData) {
 public:
   int baseData1;
+
+  void dump() {
+    printf("    [BaseImportData] baseData1 is %d \n",baseData1);
+  }
   DECLARE_REFLECT_FIELD(BaseImportData,baseData1)
 };
 
@@ -29,6 +33,22 @@ public:
   long subData2;
   String subData3;
   ArrayList<BaseImportData> subData4;
+
+  void dump() {
+      printf("  [SubImportData] subData1 is %d \n",subData1);
+      printf("  [SubImportData] subData2 is %ld \n",subData2);
+      printf("  [SubImportData] subData3 is %s \n",subData3->toChars());
+      printf("  [SubImportData] start dump subData4 \n");
+      ListIterator<BaseImportData> iterator = subData4->getIterator();
+      while(iterator->hasValue()) {
+        BaseImportData vv = iterator->getValue();
+        vv->dump();
+        printf("\n");
+        iterator->next();
+      }
+      printf("  [SubImportData] finish dump subData4 \n");
+  }
+
   DECLARE_REFLECT_FIELD(SubImportData,subData1,subData2,subData3,subData4)
 };
 
@@ -38,6 +58,24 @@ public:
   long data2;
   SubImportData data3;
   ArrayList<SubImportData> data4;
+
+  void dump() {
+    printf("[ImportData] data1 is %d \n",data1);
+    printf("[ImportData] data2 is %ld \n",data2);
+    printf("[ImportData] start dump data3 \n");
+    data3->dump();
+    printf("[ImportData] finish dump data3 \n");
+
+    printf("[ImportData] start dump data4 \n");
+    ListIterator<SubImportData> iterator = data4->getIterator();
+    while(iterator->hasValue()) {
+        SubImportData vv = iterator->getValue();
+        vv->dump();
+        printf("\n");
+        iterator->next();
+    }
+    printf("[ImportData] finish dump subData4 \n");
+  }
   DECLARE_REFLECT_FIELD(ImportData,data1,data2,data3,data4)
 };
 
@@ -85,6 +123,7 @@ void testImport() {
     ImportData info = createImportData();
     value->reflectTo(info);
 
-    printf("data1 is %d \n",info->data1);
-    printf("data2 is %ld \n",info->data2);
+    //printf("data1 is %d \n",info->data1);
+    //printf("data2 is %ld \n",info->data2);
+    info->dump();
 }

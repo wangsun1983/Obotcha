@@ -1923,6 +1923,9 @@ private:\
     sp<Object>__ReflectCreateDummy() {return nullptr;}\
     sp<Object>__ReflectListItemGetDummy(int){return nullptr;}\
 public:\
+    sp<_String> __ReflectClassName(){\
+        return createString(#CLASS);\
+    }\
     void __ReflectInit() {\
         int index = 0;\
         std::function<int(void)> dummyobj = std::bind(&_##CLASS::__ReflectDummy,this);\
@@ -1936,11 +1939,6 @@ public:\
         return maps->get(name);\
     }\
     ArrayList<Field> getAllFields(){ \
-        if(maps == nullptr){\
-            printf("maps is nullptr \n");\
-        } else {\
-            printf("maps is not nullptr \n");\
-        }\
         return maps->entrySet();\
     }\
 private:\
@@ -1952,7 +1950,6 @@ private:\
     }\
     template<typename Q>\
     sp<Object> genArrayListData(ArrayList<Q> list) {\
-        printf("genArrayList1 \n");\
         Q param;\
         auto pointer = genArrayListDataPoint(param);\
         param.set_pointer(pointer);\
@@ -1961,7 +1958,6 @@ private:\
     }\
     template<typename Q>\
     sp<Object>genArrayListData(Q t) {\
-        printf("genArrayList2 \n");\
         return nullptr;\
     }\
     template<typename Q>\
@@ -1973,7 +1969,6 @@ private:\
     }\
     template<typename Q>\
     sp<Object> getArrayListItem(Q t,int index) {\
-        printf("get list nullptr \n");\
         return nullptr;\
     }\
     int getFieldIntValue(std::string name){ \
@@ -2039,9 +2034,6 @@ private:\
     void setFieldValue(std::string name,Q value){\
         Field f = maps->get(createString(name));\
         _FieldContent<Q>  *content = dynamic_cast<_FieldContent<Q>  *>(f.get_pointer());\
-        if(content == nullptr) {\
-            printf("setFieldValue null,name is %s \n",name.c_str());\
-        }\
         content->setfunc(value);\
     }\
     FieldContentValue getFieldContentValue(std::string name){\
@@ -2101,7 +2093,6 @@ private:\
     }\
     void createFieldObject(std::string name) {\
         Field f = maps->get(createString(name));\
-        printf("createFieldObject id is %d \n",f->getId());\
         switch(f->getId()) {\
             case 0:\
                 std::get<0>(createFuncTuple)();\
@@ -2208,7 +2199,6 @@ private:\
     }\
     sp<Object> getListItemObject(std::string name,int index){\
         Field f = maps->get(createString(name));\
-        printf("getListItemObject id is %d \n",f->getId());\
         switch(f->getId()) {\
             case 0:\
                 return std::get<0>(getListItemFuncTuple)(index);\

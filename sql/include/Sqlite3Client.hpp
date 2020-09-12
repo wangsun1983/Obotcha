@@ -9,15 +9,20 @@
 #include "ArrayList.hpp"
 #include "Reflect.hpp"
 
-namespace obotcha {
+namespace obotcha
+{
 
-DECLARE_SIMPLE_CLASS(Sqlite3Client) {
+DECLARE_SIMPLE_CLASS(Sqlite3Client)
+{
 
 public:
     int connect(HashMap<String, String> args);
+
     template <typename T>
-    void createObject(sp<T> & value) {
+    void createObject(sp<T> & value)
+    {
         T *data = new T();
+        data->__ReflectInit();
         value.set_pointer(data);
     }
 
@@ -26,23 +31,87 @@ public:
         char **dbResult;
         int nRow, nColumn;
         char *errmsg = NULL;
-        ArrayList<T> reslut = createArrayList<T>();
+        ArrayList<T> queryResult = createArrayList<T>();
         int result = sqlite3_get_table(mSqlDb, sql->toChars(), &dbResult, &nRow, &nColumn, &errmsg);
         if (SQLITE_OK == result) {
             int index = nColumn;
             for (int i = 0; i < nRow; i++) {
-                //printf( “第 %d 条记录\n”, i);
                 T data;
                 createObject(data);
                 for (int j = 0; j < nColumn; j++) {
                     //printf( “字段名:%s ?> 字段值:%s\n”, dbResult[j], dbResult [index] );
-                    //Field field = data->get
-                    index++;
                     // dbResult 的字段值是连续的，从第0索引到第 nColumn - 1索引都是字段名称，
                     //从第 nColumn 索引开始，后面都是字段值，它把一个二维的表（传统的行列表示法）用一个扁平的形式来表示
+                    Field field = data->getField(createString(dbResult[j]));
+                    if (field != nullptr) {
+                        String value = createString(dbResult[index]);
+                        switch (field->getType()) {
+                            case FieldTypeLong: {
+                                field->setValue(value->toBasicLong());
+                            }
+                            break;
+
+                            case FieldTypeInt: {
+                                field->setValue(value->toBasicInt());
+                            }
+                            break;
+
+                            case FieldTypeByte: {
+                                field->setValue(value->toBasicByte());
+                            }
+                            break;
+
+                            case FieldTypeBool: {
+                                field->setValue(value->toBasicBool());
+                            }
+                            break;
+
+                            case FieldTypeDouble: {
+                                field->setValue(value->toBasicDouble());
+                            }
+                            break;
+
+                            case FieldTypeFloat: {
+                                field->setValue(value->toBasicFloat());
+                            }
+                            break;
+
+                            case FieldTypeString: {
+                                field->setValue(value);
+                            }
+                            break;
+
+                            case FieldTypeUint8: {
+                                field->setValue(value->toBasicUint8());
+                            }
+                            break;
+
+                            case FieldTypeUint16: {
+                                field->setValue(value->toBasicUint16());
+                            }
+                            break;
+
+                            case FieldTypeUint32: {
+                                field->setValue(value->toBasicUint32());
+                            }
+                            break;
+
+                            case FieldTypeUint64: {
+                                field->setValue(value->toBasicUint64());
+                            }
+                            break;
+                        }
+                        index++;
+                        
+                    }
                 }
+
+                queryResult->add(data);
             }
+            return queryResult;
         }
+
+        return nullptr;
     }
 
     int exec(String);
@@ -58,8 +127,6 @@ public:
     static String SQLITE3_CONNECT_TAG_PATH;
 
 private:
-    static int sqlQueryCallback(void *ctx, int argc, char *argv[], char *col[]);
-
     sqlite3 *mSqlDb;
 
     String mPath;

@@ -60,6 +60,7 @@ public:
     inline virtual void __ReflectInit(){}
     inline virtual sp<_Field> getField(sp<_String>){/*TODO*/}
     inline virtual sp<_ArrayList<sp<_Field>>> getAllFields(){/*TODO*/}
+    inline virtual sp<_String> __ReflectClassName(){}
 
     //reflect get function
 protected:
