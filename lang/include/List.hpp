@@ -15,28 +15,31 @@
 #include "MethodNotSupportException.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 
+
 #include "Collection.hpp"
 
 using namespace std;
 
 namespace obotcha {
-    
+
 //----------------- ArrayList ---------------------
 DECLARE_LIST(List,1) {
 public:
     _List(int length) {
-        elements.reserve(length);
+        mSize = length;
+        elements = new T[length];
     }
 
     _List(T *data,int nums) {
-        elements.reserve(nums);
+        mSize = nums;
+        elements = new T[nums];
         for(int i = 0;i<nums;i++) {
-            elements.push_back(data[i]);
+            elements[i] = data[i];
         }
     }
     
     int size() {
-        return elements.capacity();
+        return mSize;
     }
 
     T& operator[] (int i) {
@@ -44,8 +47,16 @@ public:
         return v;
     }
 
+    ~_List() {
+        if(elements != nullptr) {
+            delete []elements;
+            elements = nullptr;
+        }
+    }
+
 private:
-    std::vector<T> elements;
+    int mSize;
+    T *elements;
 };
 
 }
