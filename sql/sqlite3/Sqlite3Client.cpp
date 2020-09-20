@@ -21,11 +21,18 @@ int _Sqlite3Client::connect(HashMap<String,String>args) {
     return 0;
 }
 
-int _Sqlite3Client::exec(String sqlstring) {
+int _Sqlite3Client::count(String) {
+    //int result = sqlite3_data_count()
+    //TODO
+    return -1;
+}
+
+int _Sqlite3Client::exec(SqlQuery query) {
     if(mPath == nullptr) {
         return -SqlFailNoDb;
     }
 
+    String sqlstring = query->toString();
     if(SQLITE_OK != sqlite3_exec(mSqlDb, sqlstring->toChars(), NULL,NULL,NULL)) {
         return -SqlExecFail;
     }

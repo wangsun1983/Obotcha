@@ -8,6 +8,8 @@
 #include "HashMap.hpp"
 #include "ArrayList.hpp"
 #include "Reflect.hpp"
+#include "ReflectUtil.hpp"
+#include "SqlQuery.hpp"
 
 namespace obotcha
 {
@@ -17,17 +19,12 @@ DECLARE_SIMPLE_CLASS(Sqlite3Client)
 
 public:
     int connect(HashMap<String, String> args);
+    
+    int count(String);
 
     template <typename T>
-    void createObject(sp<T> & value)
-    {
-        T *data = new T();
-        data->__ReflectInit();
-        value.set_pointer(data);
-    }
-
-    template <typename T>
-    ArrayList<T> query(String sql) {
+    ArrayList<T> query(SqlQuery query) {
+        String sql = query->toString();
         char **dbResult;
         int nRow, nColumn;
         char *errmsg = NULL;
@@ -37,7 +34,7 @@ public:
             int index = nColumn;
             for (int i = 0; i < nRow; i++) {
                 T data;
-                createObject(data);
+                st(ReflectUtil)::createObject(data);
                 for (int j = 0; j < nColumn; j++) {
                     //printf( “字段名:%s ?> 字段值:%s\n”, dbResult[j], dbResult [index] );
                     // dbResult 的字段值是连续的，从第0索引到第 nColumn - 1索引都是字段名称，
@@ -114,7 +111,7 @@ public:
         return nullptr;
     }
 
-    int exec(String);
+    int exec(SqlQuery);
 
     int close();
 
