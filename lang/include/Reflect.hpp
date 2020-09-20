@@ -10,6 +10,7 @@
 #include "HashMap.hpp"
 #include "StrongPointer.hpp"
 #include "ArrayList.hpp"
+#include "ReflectUtil.hpp"
 
 #define ARG_0(\
         N, ...) N
@@ -114,7 +115,7 @@
         return MEMBER;\
     }\
     void __ReflectCreate##MEMBER() {\
-        createReflectObject(MEMBER);\
+        st(ReflectUtil)::createObject(MEMBER);\
     }\
     sp<Object> __ReflectCreateListMember##MEMBER() {\
         return genArrayListData(MEMBER);\
@@ -1902,21 +1903,6 @@
 #define DECLARE_REFLECT_FIELD(CLASS, ...) \
 private:\
     HashMap<String,Field> maps; \
-    void createReflectObject(int) {}\
-    void createReflectObject(byte) {}\
-    void createReflectObject(double) {}\
-    void createReflectObject(float) {}\
-    void createReflectObject(uint16_t) {}\
-    void createReflectObject(uint32_t) {}\
-    void createReflectObject(uint64_t) {}\
-    template<typename Q>\
-    void createReflectObject(Q){}\
-    template<typename Q>\
-    void createReflectObject(sp<Q> &v) {\
-        Q *p = new Q();\
-        p->__ReflectInit();\
-        v.set_pointer(p);\
-    }\
     IMPLE_SET_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
     DECLARE_INIT_TUPLE_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
     int __ReflectDummy() {return 0;}\
