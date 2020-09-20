@@ -22,7 +22,7 @@ _XmlWriter::_XmlWriter(sp<_XmlDocument> doc) {
 void _XmlWriter::write(String filepath) {
     File file = createFile(filepath);
     if(!file->exists()) {
-        return;
+        file->createNewFile();
     }
 
     String content = xmlDoc->toString();
