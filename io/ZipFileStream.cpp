@@ -211,7 +211,8 @@ int _ZipStream::minizip(File src, File dest, String currentZipFolder, char *pass
         //int ret = zipOpenNewFileInZip(zFile, srcName->toChars(), &zi, NULL, 0, NULL, 0, NULL, 0, 0);
         int ret = zipOpenNewFileInZip3_64(zFile, srcName->toChars(), &zi,
                                           NULL, 0, NULL, 0, NULL /* comment*/,
-                                          (opt_compress_level != 0) ? Z_DEFLATED : 0,
+                                          //(opt_compress_level != 0) ? Z_DEFLATED : 0,
+                                          Z_DEFLATED,
                                           opt_compress_level, 0,
                                           /* -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY, */
                                           -MAX_WBITS, DEF_MEM_LEVEL, Z_DEFAULT_STRATEGY,
