@@ -28,6 +28,7 @@ cflags = -fpic \
 		-I ./external/sqlite3/include \
 		-I ./external/http_parser/include \
 		-I ./external/libco \
+		-I ./external/mysql_connector/include \
 		-g \
 		-rdynamic \
 		-Wno-deprecated \
@@ -55,7 +56,7 @@ external = -lpthread \
 		-ldl \
 
 #sharelib = 	-L./out/lib/libssl.so \
-			-L./out/lib/libcrypto.so \
+#			-L./out/lib/libcrypto.so \
 
 staticlib = ./out/lib/libssl.a \
 		./out/lib/libcrypto.a \

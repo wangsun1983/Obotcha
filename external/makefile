@@ -9,6 +9,10 @@ include ./external/http_parser/makefile
 include ./external/sqlite3/makefile
 include ./external/glog/makefile
 
+#https://dev.mysql.com/downloads/file/?id=378028#mirrors
+include ./external/mysql_connector/makefile
+
+
 #include ./external/openssl/makefile
 #include ./external/md5/makefile
 #include ./external/des/makefile
