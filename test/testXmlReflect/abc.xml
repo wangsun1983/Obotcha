@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Student>
+	<age>10</age>
+	<id>123</id>
+	<addr>
+		<url>shanghai</url>
+		<room>888</room>
+	</addr>
+	<schools>
+		<School>
+			<name>school 1</name>
+		</School>
+		<School>
+			<name>school 2</name>
+		</School>
+		<School>
+			<name>school 3</name>
+		</School>
+	</schools>
+	<name>hello</name>
+</Student>
+
