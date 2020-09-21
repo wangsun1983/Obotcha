@@ -12,6 +12,7 @@
 #include "List.hpp"
 #include "ReflectUtil.hpp"
 #include "SqlQuery.hpp"
+#include "SqlRecords.hpp"
 
 namespace obotcha
 {
@@ -20,6 +21,9 @@ DECLARE_SIMPLE_CLASS(MySqlClient)
 {
 public:
     int connect(HashMap<String, String> args);
+    
+    SqlRecords query(SqlQuery query);
+
     template <typename T>
     ArrayList<T> query(SqlQuery query) {
         String sql = query->toString();

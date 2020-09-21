@@ -85,6 +85,31 @@ int _MySqlClient::connect(HashMap<String,String>args) {
     return 0;
 }
 
+SqlRecords _MySqlClient::query(SqlQuery query) {
+    String sql = query->toString();
+    int ret = mysql_real_query(&mysql, sql->toChars(),sql->size());
+    if(ret == 0) {
+        MYSQL_RES *res = nullptr;
+        res = mysql_store_result(&mysql);
+        int columnNum = mysql_num_fields(res);
+        int rowNum = mysql_num_rows(res);
+        SqlRecords records = createSqlRecords(rowNum,columnNum);
+
+        MYSQL_ROW row;
+        int count = 0;
+        while ((row = mysql_fetch_row(res))) {
+            List<String> rowData = createList<String>(rowNum);
+            for (int i = 0; i < columnNum; i++) {
+                rowData[i] = createString(row[i]);
+            }
+            records->setOneRow(count,rowData);
+            count++;
+        }
+
+        //TODO
+    }
+}
+
 int _MySqlClient::exec(SqlQuery) {
     
     return 0;
