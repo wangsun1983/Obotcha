@@ -10,6 +10,7 @@
 #include "Reflect.hpp"
 #include "ReflectUtil.hpp"
 #include "SqlQuery.hpp"
+#include "SqlRecords.hpp"
 
 namespace obotcha
 {
@@ -20,6 +21,8 @@ DECLARE_SIMPLE_CLASS(Sqlite3Client)
 public:
     int connect(HashMap<String, String> args);
     
+    SqlRecords query(SqlQuery query);
+
     int count(String);
 
     template <typename T>

@@ -98,7 +98,7 @@ SqlRecords _MySqlClient::query(SqlQuery query) {
         MYSQL_ROW row;
         int count = 0;
         while ((row = mysql_fetch_row(res))) {
-            List<String> rowData = createList<String>(rowNum);
+            List<String> rowData = createList<String>(columnNum);
             for (int i = 0; i < columnNum; i++) {
                 rowData[i] = createString(row[i]);
             }
@@ -106,8 +106,11 @@ SqlRecords _MySqlClient::query(SqlQuery query) {
             count++;
         }
 
-        //TODO
+        mysql_free_result(res);
+        return records;
     }
+
+    return nullptr;
 }
 
 int _MySqlClient::exec(SqlQuery) {

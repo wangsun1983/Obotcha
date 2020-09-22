@@ -110,7 +110,7 @@ public:
                 }
                 return results;
             }
-
+            mysql_free_result(res);
         }  
         return nullptr;
     }

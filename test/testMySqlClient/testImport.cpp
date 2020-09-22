@@ -40,6 +40,7 @@ int testSimpleSql() {
     param->put(createString("dbname"),createString("student"));
     param->put(createString("port"),createString("3306"));
     int ret = client->connect(param);
+    /*
     ArrayList<Student> list = client->query<Student>(createSqlQuery("select * from information"));
     printf("list size is %d \n",list->size());
     ListIterator<Student> iterator = list->getIterator();
@@ -47,5 +48,18 @@ int testSimpleSql() {
         Student t = iterator->getValue();
         t->dump();
         iterator->next();
+    }*/
+
+    SqlRecords records = client->query(createSqlQuery("select * from information"));
+    SqlRecordsIterator iterator = records->getIterator();
+    printf("wangsl,trace1 \n");
+    while(iterator->hasValue()) {
+        List<String> list = iterator->getRowData();
+        for(int index = 0;index<list->size();index++) {
+            printf("list[%d] is %s \n",index,list[index]->toChars());
+        }
+        iterator->next();
     }
+
+
 }

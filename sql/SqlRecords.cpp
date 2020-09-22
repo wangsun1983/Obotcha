@@ -3,7 +3,7 @@
 namespace obotcha {
 
 bool _SqlRecordsIterator::hasValue() {
-    return (index >= records->getRowNum());
+    return (index < records->getRowNum());
 }
 
 List<String> _SqlRecordsIterator::getRowData() {
@@ -33,5 +33,11 @@ void _SqlRecords::setOneRow(int index,List<String> list) {
     mRecords[index] = list;
 }
 
+sp<_SqlRecordsIterator> _SqlRecords::getIterator() {
+    SqlRecordsIterator iterator = createSqlRecordsIterator();
+    iterator->index = 0;
+    iterator->records.set_pointer(this);
+    return iterator;
+}
 
 }

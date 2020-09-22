@@ -9,9 +9,12 @@
 namespace obotcha {
 
 class _SqlRecords;
+class _SqlRecordsIterator;
 
 DECLARE_SIMPLE_CLASS(SqlRecordsIterator) {
 public:
+    friend class _SqlRecords;
+
     bool hasValue();
 
     List<String>getRowData();
@@ -27,13 +30,15 @@ DECLARE_SIMPLE_CLASS(SqlRecords) {
 public:
     friend class _SqlRecordsIterator;
 
+    _SqlRecords(int row,int col);
+
     int getRowNum();
 
     int getColumnNum();
     
     void setOneRow(int index,List<String>);
-    
-    _SqlRecords(int row,int col);
+
+    sp<_SqlRecordsIterator> getIterator();
 private:
     List<List<String>> mRecords;
     int rows;
