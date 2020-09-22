@@ -4,7 +4,10 @@ objs += $(outtmp)/sqlite3Client.o \
 		$(outtmp)/mysqlClient.o \
 		$(outtmp)/sqlquery.o \
 		$(outtmp)/sqlrecords.o \
-		
+		$(outtmp)/sqlconnection.o \
+
+$(outtmp)/sqlconnection.o :$(sqlDir)/SqlConnection.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/SqlConnection.cpp -o $(outtmp)/sqlconnection.o
 
 $(outtmp)/sqlite3Client.o :$(sqlDir)/sqlite3/Sqlite3Client.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/sqlite3/Sqlite3Client.cpp -o $(outtmp)/sqlite3Client.o

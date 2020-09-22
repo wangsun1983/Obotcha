@@ -1,49 +1,51 @@
-#ifndef __OBOTCHA_SQL_DATA_HPP__
-#define __OBOTCHA_SQL_DATA_HPP__
+#ifndef __OBOTCHA_SQL_CONNECTION_HPP__
+#define __OBOTCHA_SQL_CONNECTION_HPP__
 
 #include <map>
 #include "String.hpp"
 #include "StrongPointer.hpp"
 #include "Object.hpp"
 #include "ArrayList.hpp"
+#include "MySqlClient.hpp"
+#include "Sqlite3Client.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(SqlConnection,1) {
+enum {
+    MySqlConnection = 0,
+    Sqlite3Connection
+};
+
+DECLARE_SIMPLE_CLASS(SqlConnection) {
 
 public:
-    _SqlConnection(T t);
+    _SqlConnection(int);
 
-    template<typename Q>
-    ArrayList<Q> query(String sql) {
-        //TODO
-        //return mClient->query<Q>(sql);
+    int exec(SqlQuery query);
+    
+    SqlRecords query(SqlQuery query);
+
+    int connect(HashMap<String,String>args);
+
+    template <typename T>
+    ArrayList<T> query(SqlQuery query) {
+        switch(mType) {
+        case MySqlConnection:
+            return mMySqlClient->query<T>(query);
+        break;
+
+        case Sqlite3Connection:
+            return mSqlite3Client->query<T>(query);
+        break;
+        }
     }
-
-    int exec(String sql) {
-        return mClient->exec();
-    }
-
-    int close() {
-        return mClient->close();
-    }
-
-    int startTransaction() {
-        return mClient->startTransaction();
-    }
-
-    int commitTransaction() {
-        return mClient->commitTransaction();
-    }
-
-    int rollabckTransaction() {
-        return mClient->rollabckTransaction();
-    }
-
 
 private:
-    T mClient;
+    int mType;
 
+    MySqlClient mMySqlClient;
+    
+    Sqlite3Client mSqlite3Client;
 };
 
 }

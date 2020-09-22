@@ -4,7 +4,6 @@
 #include "sqlite3.h"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "SqlConnection.hpp"
 #include "HashMap.hpp"
 #include "ArrayList.hpp"
 #include "Reflect.hpp"
