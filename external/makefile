@@ -12,6 +12,9 @@ include ./external/glog/makefile
 #https://dev.mysql.com/downloads/file/?id=378028#mirrors
 include ./external/mysql_connector/makefile
 
+#https://sourceforge.net/projects/libuuid/files/
+include ./external/uuid/makefile
+
 
 #include ./external/openssl/makefile
 #include ./external/md5/makefile

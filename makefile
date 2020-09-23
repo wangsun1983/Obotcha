@@ -29,6 +29,7 @@ cflags = -fpic \
 		-I ./external/http_parser/include \
 		-I ./external/libco \
 		-I ./external/mysql_connector/include \
+		-I ./external/uuid/include \
 		-g \
 		-rdynamic \
 		-Wno-deprecated \

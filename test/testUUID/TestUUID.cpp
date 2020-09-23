@@ -16,6 +16,9 @@ using namespace obotcha;
 int main() {
     printf("---[UUID Test Start]--- \n");
     //String toValue();
+    UUID uuid = createUUID();
+	printf("uuid is %s \n",uuid->generate()->toChars());
+    /*
     while(1) {
         ArrayList<String> list = craeteArrayList<String>();
         UUID uuid = createUUID();
@@ -34,5 +37,5 @@ int main() {
             }
         }
 
-    }
+    }*/
 }

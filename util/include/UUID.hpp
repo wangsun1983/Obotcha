@@ -5,29 +5,26 @@
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
+#include "uuid.h"
 
-#define UUID4_LEN 37
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(UUID) {
 
 public:
-    _UUID();
+    static const int Random;
+    static const int Time;
+    static const int TimeSafe;
+    static const int Default;
 
-    String toValue();
+    _UUID();
+    _UUID(int);
+    
+    String generate();
 
 private:
-
-    String uuid;
-
-    uint64_t seed[2];
-
-    uint64_t xorshift128plus(uint64_t *s);
-
-    int init();
-
-    void generate(char *);
+    int mType;
 };
 
 }
