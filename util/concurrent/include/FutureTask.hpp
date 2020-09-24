@@ -46,6 +46,13 @@ public:
 
     Runnable getRunnable();
 
+    template<typename T>
+    T getResult() {
+        T v;
+        mRunnable->getResult(v);
+        return v;
+    }
+
 private:
     void cancelWithoutCallback();
 

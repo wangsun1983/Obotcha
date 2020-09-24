@@ -17,6 +17,11 @@ public:
     
     int cancel();
 
+    template<typename T>
+    T getResult() {
+        return mTask->getResult<T>();
+    }
+
     static const int Waiting = 0;
     static const int Running = 1;
     static const int Cancel = 2;

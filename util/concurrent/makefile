@@ -20,7 +20,14 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/timer.o \
 	$(outtmp)/executordestructorexception.o \
 	$(outtmp)/spinlock.o \
+	$(outtmp)/runnable.o \
+	$(outtmp)/resultduplicateexception.o \
+	
+$(outtmp)/resultduplicateexception.o :$(concurrentDir)/ResultDuplicateException.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ResultDuplicateException.cpp -o $(outtmp)/resultduplicateexception.o
 
+$(outtmp)/runnable.o :$(concurrentDir)/Runnable.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Runnable.cpp -o $(outtmp)/runnable.o
 
 $(outtmp)/condition.o :$(concurrentDir)/Condition.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Condition.cpp -o $(outtmp)/condition.o
