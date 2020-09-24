@@ -3,13 +3,12 @@
 #include "Sqlite3Client.hpp"
 #include "Error.hpp"
 #include "SqlRecords.hpp"
+#include "SqlConnection.hpp"
 
 namespace obotcha {
 
-String _Sqlite3Client::SQLITE3_CONNECT_TAG_PATH = "path";
-
 int _Sqlite3Client::connect(HashMap<String,String>args) {
-    mPath = args->get(SQLITE3_CONNECT_TAG_PATH);
+    mPath = args->get(st(SqlConnection)::Sqlite3ParamPath);
     if(mPath == nullptr) {
         return -SqlFailWrongParam;
     }
@@ -42,6 +41,7 @@ SqlRecords _Sqlite3Client::query(SqlQuery query) {
             records->setOneRow(i,row);
         }
         printf("wangsl,Sqlite3Client trace4\n");
+        sqlite3_free_table(dbResult);
         return records;
     }
 

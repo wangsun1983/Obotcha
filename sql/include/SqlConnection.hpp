@@ -19,6 +19,18 @@ enum {
 DECLARE_SIMPLE_CLASS(SqlConnection) {
 
 public:
+    static const String MySqlParamHost;
+    static const String MySqlParamUser;
+    static const String MySqlParamPassword;
+    static const String MySqlParamDbName;
+    static const String MySqlParamPort;
+    static const String MySqlParamUnixSocketName;
+    static const String MySqlParamClientFlg;
+
+    static const String Sqlite3ParamPath;
+
+    static const String MySqlLocalHost;
+
     _SqlConnection(int);
 
     int exec(SqlQuery query);

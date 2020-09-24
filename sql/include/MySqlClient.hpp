@@ -124,16 +124,6 @@ public:
 
     int rollabckTransaction();
 
-    static const String ParamHost;
-    static const String ParamUser;
-    static const String ParamPassword;
-    static const String ParamDbName;
-    static const String ParamPort;
-    static const String ParamUnixSocketName;
-    static const String ParamClientFlg;
-
-    static const String LocalHost;
-
 private:
     MYSQL mysql;
 };

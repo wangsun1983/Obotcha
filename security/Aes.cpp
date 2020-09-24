@@ -215,7 +215,7 @@ int _Aes::_genKey(String content) {
 
 int _Aes::_genKey() {
     UUID uuid = createUUID();
-    const char *c = uuid->toValue()->toChars();
+    const char *c = uuid->generate()->toChars();
     
     if(AES_set_encrypt_key((const unsigned char*)c,128,&mEncryptKey) != 0) {
         return -SetKeyFail;

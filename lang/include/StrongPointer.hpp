@@ -411,5 +411,10 @@ sp<X> transform_cast(sp<V> t) {
     return value;
 }
 
+template<typename X,typename V>
+void transform_cast(sp<V> t,sp<X> &value) {
+    value.set_pointer(dynamic_cast<X *>(t.m_ptr));
+}
+
 }
 #endif

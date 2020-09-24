@@ -11,11 +11,9 @@
 #include "SqlQuery.hpp"
 #include "SqlRecords.hpp"
 
-namespace obotcha
-{
+namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Sqlite3Client)
-{
+DECLARE_SIMPLE_CLASS(Sqlite3Client) {
 
 public:
     int connect(HashMap<String, String> args);
@@ -107,6 +105,7 @@ public:
 
                 queryResult->add(data);
             }
+            sqlite3_free_table(dbResult);
             return queryResult;
         }
 
@@ -122,8 +121,6 @@ public:
     int commitTransaction();
 
     int rollabckTransaction();
-
-    static String SQLITE3_CONNECT_TAG_PATH;
 
 private:
     sqlite3 *mSqlDb;

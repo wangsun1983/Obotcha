@@ -2,6 +2,18 @@
 
 namespace obotcha {
 
+const String _SqlConnection::MySqlParamHost = createString("host");
+const String _SqlConnection::MySqlParamUser = createString("user");
+const String _SqlConnection::MySqlParamPassword = createString("password");;
+const String _SqlConnection::MySqlParamDbName = createString("dbname");;
+const String _SqlConnection::MySqlParamPort = createString("port");;
+const String _SqlConnection::MySqlParamUnixSocketName = createString("unixsock");
+const String _SqlConnection::MySqlParamClientFlg = createString("flag");
+
+const String _SqlConnection::Sqlite3ParamPath = createString("path");
+
+const String _SqlConnection::MySqlLocalHost = createString("host");
+
 int _SqlConnection::connect(HashMap<String,String>args) {
     switch(mType) {
         case MySqlConnection:
