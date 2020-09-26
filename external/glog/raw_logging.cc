@@ -66,6 +66,8 @@
 # define safe_write(fd, s, len)  write(fd, s, len)
 #endif
 
+using namespace GOOGLE_NAMESPACE::glog_internal_namespace_;
+
 _START_GOOGLE_NAMESPACE_
 
 // CAVEAT: vsnprintf called from *DoRawLog below has some (exotic) code paths

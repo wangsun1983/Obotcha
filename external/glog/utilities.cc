@@ -58,6 +58,8 @@
 
 using std::string;
 
+using namespace GOOGLE_NAMESPACE::glog_internal_namespace_;
+
 _START_GOOGLE_NAMESPACE_
 
 static const char* g_program_invocation_short_name = NULL;

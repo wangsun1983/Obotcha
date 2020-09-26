@@ -233,6 +233,6 @@ void ShutdownGoogleLoggingUtilities();
 
 _END_GOOGLE_NAMESPACE_
 
-using namespace GOOGLE_NAMESPACE::glog_internal_namespace_;
+//using namespace GOOGLE_NAMESPACE::glog_internal_namespace_;
 
 #endif  // UTILITIES_H__

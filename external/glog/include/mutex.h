@@ -326,8 +326,8 @@ class WriterMutexLock {
 
 }  // namespace MUTEX_NAMESPACE
 
-using namespace MUTEX_NAMESPACE;
+//using namespace MUTEX_NAMESPACE;
 
-#undef MUTEX_NAMESPACE
+//#undef MUTEX_NAMESPACE
 
 #endif  /* #define GOOGLE_MUTEX_H__ */

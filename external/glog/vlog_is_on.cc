@@ -48,6 +48,7 @@
 #define ANNOTATE_BENIGN_RACE(address, description)
 
 using std::string;
+using namespace MUTEX_NAMESPACE;
 
 GLOG_DEFINE_int32(v, 0, "Show all VLOG(m) messages for m <= this."
 " Overridable by --vmodule.");

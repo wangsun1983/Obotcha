@@ -98,6 +98,10 @@ using std::fdopen;
 #define fdopen _fdopen
 #endif
 
+
+using namespace GOOGLE_NAMESPACE::glog_internal_namespace_;
+using namespace MUTEX_NAMESPACE;
+
 // There is no thread annotation support.
 #define EXCLUSIVE_LOCKS_REQUIRED(mu)
 
