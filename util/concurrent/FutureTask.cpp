@@ -64,6 +64,7 @@ void _FutureTask::cancel() {
     mStatus = st(Future)::Cancel;
     if(mRunnable != nullptr) {
         mRunnable->onInterrupt();
+        mRunnable->interruptResultWait();
     }
 
     mCompleteCond->notify();

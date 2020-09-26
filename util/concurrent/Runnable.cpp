@@ -2,14 +2,15 @@
 #include "Runnable.hpp"
 #include "AutoLock.hpp"
 #include "ResultDuplicateException.hpp"
+#include "InterruptedException.hpp"
 
 namespace obotcha {
 
 #define SET_RESULT_FUNC(Param,V) \
     AutoLock l(mResultMutex);\
-    if(!resultComplete) {\
+    if(resultComplete == ResultWaiting) {\
         Param = V;\
-        resultComplete = true;\
+        resultComplete = ResultComplete;\
         mResultCond->notifyAll();\
         return;\
     }\
@@ -17,8 +18,11 @@ namespace obotcha {
 
 #define GET_RESULT_FUNC(Param,V) \
     AutoLock l(mResultMutex);\
-    if(!resultComplete) {\
+    if(resultComplete == ResultWaiting) {\
         mResultCond->wait(mResultMutex);\
+    }\
+    if(resultComplete == ResultInterrupt) {\
+        throw InterruptedException("Runnable Interrupt");\
     }\
     v = Param;
 
@@ -26,7 +30,13 @@ namespace obotcha {
 _Runnable::_Runnable() {
     mResultMutex = createMutex("RunnableResultMutex");
     mResultCond = createCondition();
-    resultComplete = false;
+    resultComplete = ResultWaiting;
+}
+
+void _Runnable::interruptResultWait() {
+    AutoLock l(mResultMutex);
+    resultComplete = ResultInterrupt;
+    mResultCond->notifyAll();
 }
 
 void _Runnable::setResult(int v) {

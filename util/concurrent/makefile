@@ -22,7 +22,11 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/spinlock.o \
 	$(outtmp)/runnable.o \
 	$(outtmp)/resultduplicateexception.o \
-	
+	$(outtmp)/interruptedexception.o \
+
+$(outtmp)/interruptedexception.o :$(concurrentDir)/InterruptedException.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/InterruptedException.cpp -o $(outtmp)/interruptedexception.o
+
 $(outtmp)/resultduplicateexception.o :$(concurrentDir)/ResultDuplicateException.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ResultDuplicateException.cpp -o $(outtmp)/resultduplicateexception.o
 

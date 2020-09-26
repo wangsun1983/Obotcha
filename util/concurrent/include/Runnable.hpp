@@ -8,12 +8,25 @@
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "ResultDuplicateException.hpp"
+#include "InterruptedException.hpp"
 
 namespace obotcha {
+
+enum ResultStatus {
+    ResultWaiting = 0,
+    ResultComplete,
+    ResultInterrupt
+};
+
+class _Future;
+class _FutureTask;
 
 DECLARE_SIMPLE_CLASS(Runnable) {
 
 public:
+    friend class _Future;
+    friend class _FutureTask;
+
 	virtual void run() = 0;
     
     virtual void onInterrupt(){};
@@ -25,9 +38,9 @@ public:
     template<typename T>
     void setResult(T value) {
         AutoLock l(mResultMutex);
-        if(!resultComplete) {
+        if(resultComplete == ResultWaiting) {
             objResult = (sp<Object>)value;
-            resultComplete = true;
+            resultComplete = ResultComplete;
             mResultCond->notifyAll();
             return;
         }
@@ -45,31 +58,10 @@ public:
     void setResult(uint64_t);
     void setResult(String);
 
-    template<typename T>
-    void getResult(T &v) {
-        AutoLock l(mResultMutex);
-        if(!resultComplete) {
-            mResultCond->wait(mResultMutex);
-        }
-
-        transform_cast(objResult,v);
-    }
-
-    void getResult(int &);
-    void getResult(byte &);
-    void getResult(double &);
-    void getResult(bool &);
-    void getResult(float &);
-    void getResult(long &);
-    void getResult(uint16_t &);
-    void getResult(uint32_t &);
-    void getResult(uint64_t &);
-    void getResult(String &);
-
 private:
     
     sp<Object> objResult;
-    bool resultComplete;
+    ResultStatus resultComplete;
 
     int intValue;
     byte byteValue;
@@ -85,6 +77,32 @@ private:
 
     Mutex mResultMutex;
     Condition mResultCond;
+
+    void interruptResultWait();
+    template<typename T>
+    void getResult(T &v) {
+        AutoLock l(mResultMutex);
+        if(!resultComplete) {
+            mResultCond->wait(mResultMutex);
+        }
+
+        if(resultComplete == ResultInterrupt) {
+            throw InterruptedException("Runnable Interrupt");
+        }
+
+        transform_cast(objResult,v);
+    }
+
+    void getResult(int &);
+    void getResult(byte &);
+    void getResult(double &);
+    void getResult(bool &);
+    void getResult(float &);
+    void getResult(long &);
+    void getResult(uint16_t &);
+    void getResult(uint32_t &);
+    void getResult(uint64_t &);
+    void getResult(String &);
 };
 
 }
