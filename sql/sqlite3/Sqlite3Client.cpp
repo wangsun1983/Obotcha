@@ -26,21 +26,17 @@ SqlRecords _Sqlite3Client::query(SqlQuery query) {
     char **dbResult;
     int nRow, nColumn;
     char *errmsg = NULL;
-    printf("wangsl,Sqlite3Client trace1\n");
     if(sqlite3_get_table(mSqlDb, sql->toChars(), &dbResult, &nRow, &nColumn, &errmsg) == SQLITE_OK) {
-        printf("wangsl,Sqlite3Client trace2,nRow is %d,nColumn is %d\n",nRow,nColumn);
         SqlRecords records = createSqlRecords(nRow,nColumn);
         int index = nColumn;
         for (int i = 0; i < nRow; i++) {
             List<String> row = createList<String>(nColumn);
             for (int j = 0; j < nColumn; j++) {
-                printf("wangsl,Sqlite3Client trace3,dbResult is %s\n",dbResult[index]);
                 row[j] = createString(dbResult[index]);
                 index++;
             }
             records->setOneRow(i,row);
         }
-        printf("wangsl,Sqlite3Client trace4\n");
         sqlite3_free_table(dbResult);
         return records;
     }
@@ -95,7 +91,7 @@ int _Sqlite3Client::rollabckTransaction() {
 }
 
 int _Sqlite3Client::close() {
-    //TODO
+    sqlite3_close(mSqlDb);
     return 0;
 }
 

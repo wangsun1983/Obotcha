@@ -7,12 +7,6 @@
 
 namespace obotcha {
 
-/*
-(MYSQL *mysql,const char *host, const char *user,
-		       const char *passwd, const char *db,
-		       uint port, const char *unix_socket,ulong client_flag)
-*/
-
 int _MySqlClient::connect(HashMap<String,String>args) {
     if (mysql_init(&mysql) == nullptr) {
         LOG(ERROR)<<"mysql init fail";
@@ -125,7 +119,7 @@ int _MySqlClient::rollabckTransaction() {
 }
 
 int _MySqlClient::close() {
-    //TODO
+    mysql_close(&mysql);
     return 0;
 }
 

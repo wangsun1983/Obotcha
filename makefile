@@ -30,6 +30,7 @@ cflags = -fpic \
 		-I ./external/libco \
 		-I ./external/mysql_connector/include \
 		-I ./external/uuid/include \
+		-I ./external/libpq/ \
 		-g \
 		-rdynamic \
 		-Wno-deprecated \

@@ -15,8 +15,6 @@ include ./external/mysql_connector/makefile
 #https://sourceforge.net/projects/libuuid/files/
 include ./external/uuid/makefile
 
+#https://github.com/jtv/libpqxx/tree/6.3
+include ./external/libpqxx/makefile	
 
-#include ./external/openssl/makefile
-#include ./external/md5/makefile
-#include ./external/des/makefile
-#include ./external/openssl/ 
