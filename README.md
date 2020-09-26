@@ -1,4 +1,4 @@
-Obotcha:基于C++11的开源工具库
+Obotcha:基于C++14的开源工具库
 -[![Total alerts](https://img.shields.io/lgtm/alerts/g/wangsun1983/Obotcha.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/wangsun1983/Obotcha/alerts/)
 
 -----------------------------------
