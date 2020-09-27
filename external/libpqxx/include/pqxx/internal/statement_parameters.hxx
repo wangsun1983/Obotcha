@@ -13,19 +13,19 @@
 #ifndef PQXX_H_STATEMENT_PARAMETER
 #define PQXX_H_STATEMENT_PARAMETER
 
-#include "pqxx/compiler-public.hxx"
-#include "pqxx/compiler-internal-pre.hxx"
+#include "compiler-public.hxx"
+#include "compiler-internal-pre.hxx"
 
 #include <cstring>
 #include <iterator>
 #include <string>
 #include <vector>
 
-#include "pqxx/binarystring"
-#include "pqxx/strconv"
-#include "pqxx/util"
+#include "binarystring"
+#include "strconv"
+#include "util"
 
-#include "pqxx/internal/type_utils.hxx"
+#include "internal/type_utils.hxx"
 
 
 namespace pqxx
@@ -223,5 +223,5 @@ private:
 } // namespace pqxx::internal
 } // namespace pqxx
 
-#include "pqxx/compiler-internal-post.hxx"
+#include "compiler-internal-post.hxx"
 #endif

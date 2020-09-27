@@ -13,9 +13,8 @@
 #include <cstring>
 #include <utility>
 
-#include "array"
+#include "array.hxx"
 #include "except"
-
 
 namespace pqxx
 {

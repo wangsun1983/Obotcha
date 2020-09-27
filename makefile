@@ -4,6 +4,12 @@ outtmp = ./out/tmp
 #gcc = g++
 ccompiler = gcc
 cppcompiler = g++
+clangcompiler = clang++
+
+libpqinc = 	-I ./external/libpqxx/include/pqxx/internal \
+			-I ./external/libpqxx/include/pqxx \
+			-I ./external/libpqxx/include/postgresql \
+			-I ./external/libpqxx/config/sample-headers/compiler/gcc-7.2/pqxx 
 
 cflags = -fpic \
 		-lrt \
@@ -30,7 +36,7 @@ cflags = -fpic \
 		-I ./external/libco \
 		-I ./external/mysql_connector/include \
 		-I ./external/uuid/include \
-		-I ./external/libpq/ \
+		$(libpqinc) \
 		-g \
 		-rdynamic \
 		-Wno-deprecated \

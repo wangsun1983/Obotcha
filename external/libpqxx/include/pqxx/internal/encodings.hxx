@@ -9,9 +9,9 @@
 #ifndef PQXX_H_ENCODINGS
 #define PQXX_H_ENCODINGS
 
-#include "pqxx/compiler-public.hxx"
-#include "pqxx/compiler-internal-pre.hxx"
-#include "pqxx/internal/encoding_group.hxx"
+#include "compiler-public.hxx"
+#include "compiler-internal-pre.hxx"
+#include "internal/encoding_group.hxx"
 
 #include <string>
 
@@ -95,5 +95,5 @@ template<typename CALLABLE> PQXX_LIBEXPORT inline void for_glyphs(
 } // namespace pqxx::internal
 } // namespace pqxx
 
-#include "pqxx/compiler-internal-post.hxx"
+#include "compiler-internal-post.hxx"
 #endif

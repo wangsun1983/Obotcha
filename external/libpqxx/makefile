@@ -40,6 +40,7 @@ objs += $(outtmp)/libpq_array.o \
 		$(outtmp)/libpq_util.o \
 		$(outtmp)/libpq_version.o \
 
+
 $(outtmp)/libpq_version.o :$(libpq)/src/version.cxx
 	$(cppcompiler) $(cppflags)  $(libpq_include) -c $(libpq)/src/version.cxx -o $(outtmp)/libpq_version.o
 
