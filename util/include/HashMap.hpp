@@ -215,7 +215,7 @@ public:
             return;
         }
 
-        iterator = mHashMap->hashmap.erase(iterator);
+        mHashMap->hashmap.erase(iterator++);
     }
     
 private:

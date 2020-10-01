@@ -216,6 +216,10 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
 
     WebSocketClientInfo client =
         st(WebSocketClientManager)::getInstance()->getClient(fd);
+    if(client == nullptr || data->data == nullptr) {
+      //receive hungup before.
+      return;
+    }
 
     if((events & EPOLLRDHUP) != 0) {
         if(pack == nullptr || pack->size() == 0) {
@@ -229,10 +233,6 @@ void _WebSocketDispatchThread::handleWsData(DispatchData data) {
     }
 
 
-    if(client == nullptr || data->data == nullptr) {
-      //receive hungup before.
-      return;
-    }
 
     WebSocketParser parser = client->getParser();
     WebSocketEntireBuffer entireBuff = client->getEntireBuffer();

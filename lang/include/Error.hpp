@@ -11,6 +11,7 @@ enum ErrorType {
     InvalidParam = 200,
     InvalidStatus,
     FileNotExists,
+    AlreadyRegist,
     AlreadyExecute,
     AlreadyExists,
     AlreadyComplete,
