@@ -28,22 +28,9 @@ public:
     virtual int onEvent(int fd,uint32_t events,ByteArray) = 0;
 
 private:
-    //std::vector<int> fds;
-    //std::vector<uint32_t> events;
-    std::map<int,uint32_t> fd2eventMap;
-};
+    std::vector<int> fds;
 
-DECLARE_SIMPLE_CLASS(EpollObserverRequest) {
-public:
-    _EpollObserverRequest();
-    static const int Remove = 0;
-    static const int Add = 1;
-    static const int RemoveByFd = 2;
-
-    int action;
-    uint32_t event;
-    int fd;
-    EPollFileObserverListener l;
+    void removeFd(int fd);
 };
 
 DECLARE_SIMPLE_CLASS(EPollFileObserver) EXTENDS(Thread) {
@@ -56,11 +43,9 @@ public:
 
     int addObserver(int fd,uint32_t events,EPollFileObserverListener l);
 
-    int removeObserver(int fd,uint32_t events,EPollFileObserverListener l);
-
-    //int removeObserver(EPollFileObserverListener l);
-
     int removeObserver(int fd);
+
+    int removeObserver(EPollFileObserverListener l);
 
     int release();
 
@@ -96,33 +81,18 @@ public:
 private:
     static const int DefaultBufferSize = 16*1024;
     static const uint32_t EpollEvent[];
-
-    int _addObserver(int fd,uint32_t events,EPollFileObserverListener l);
-
-    int _removeObserver(int fd,uint32_t events,EPollFileObserverListener l);
-
-    int _removeObserver(int fd);
-
-    void doRequest();
     
     void addEpollFd(int fd,uint32_t events);
 
-    void updateEpollFd(int fd,uint32_t events);
-
-    ArrayList<EpollObserverRequest> mReqeusts;
-
     int mEpollFd;
 
-    //EPollFileObserverListener mListener;
+    //<fd,listener>
+    Mutex mListenerMutex;
     HashMap<int,HashMap<int,ArrayList<EPollFileObserverListener>>> mListeners;
-
-    Thread mEpollThread;
 
     Pipe mPipe;
 
     int mSize;
-
-    Mutex mRequestMutex;
 
     AtomicInteger mStartFlag;
 };
