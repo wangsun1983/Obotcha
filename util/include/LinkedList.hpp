@@ -73,7 +73,7 @@ public:
         tail->next = data;
         data->prev = tail;
         tail = data;
-        tail->next = nullptr;
+        //tail->next = nullptr;
     }
 
     void enQueueFirst(T t) {

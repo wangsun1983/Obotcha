@@ -5,13 +5,9 @@ objs += $(outtmp)/sqlite3Client.o \
 		$(outtmp)/sqlquery.o \
 		$(outtmp)/sqlrecords.o \
 		$(outtmp)/sqlconnection.o \
-		$(outtmp)/postgresqlclient.o \
 
 $(outtmp)/sqlconnection.o :$(sqlDir)/SqlConnection.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/SqlConnection.cpp -o $(outtmp)/sqlconnection.o
-
-$(outtmp)/postgresqlclient.o :$(sqlDir)/postgresql/PostgreSqlClient.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/postgresql/PostgreSqlClient.cpp -o $(outtmp)/postgresqlclient.o
 
 $(outtmp)/sqlite3Client.o :$(sqlDir)/sqlite3/Sqlite3Client.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/sqlite3/Sqlite3Client.cpp -o $(outtmp)/sqlite3Client.o

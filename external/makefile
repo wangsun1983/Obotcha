@@ -16,5 +16,5 @@ include ./external/mysql_connector/makefile
 include ./external/uuid/makefile
 
 #https://github.com/jtv/libpqxx/tree/6.3
-include ./external/libpqxx/makefile	
+#include ./external/libpqxx/makefile	
 
