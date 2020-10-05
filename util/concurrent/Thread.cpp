@@ -24,9 +24,9 @@ void cleanup(void *th) {
     _Thread *thread = static_cast<_Thread *>(th);
     if(thread->getRunnable() != nullptr) {
         thread->getRunnable()->onInterrupt();
-    } else {
-        thread->onInterrupt();
-    }
+    } 
+    
+    thread->onInterrupt();
     
     {
         AutoLock ll(thread->mJoinMutex);

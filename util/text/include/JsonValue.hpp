@@ -196,11 +196,9 @@ public:
 
     template<typename T>
     void reflectToArrayList(T obj,String name) {
-        printf("reflect list name is %s \n",name->toChars());
         Field field = obj->getField(name);
         field->createObject();
         int size = this->size();
-        printf("array size is %d \n",size);
         for(int index = 0;index<size;index++) {
             auto vv = field->createListItemObject();
             JsonValue value = this->getValueAt(index);
@@ -216,7 +214,6 @@ public:
             
             Field field = obj->getField(key);
             if(field == nullptr) {
-                printf("key is %s \n",key->toChars());
                 iterator->next();
                 continue;
             }
@@ -292,14 +289,8 @@ public:
                         
                 case FieldTypeObject: {
                         //create Objectt
-                        printf("createobj name is %s\n",name.c_str());
                         field->createObject();
                         auto reflectValue = field->getObjectValue();
-                        if(reflectValue != nullptr) {
-                            printf("create obj not null \n");
-                        } else {
-                            printf("create obj null \n");
-                        }
                         jsonnode->reflectTo(reflectValue);
                     }
                     break;
@@ -317,13 +308,12 @@ public:
     void importFrom(T value) {
         ArrayList<Field> fields = value->getAllFields();
         if(fields == nullptr) {
-            printf("fields is nullptr !!!!! \n");
+            LOG(ERROR)<<"fields is nullptr !!!!!";
         }
         ListIterator<Field> iterator = fields->getIterator();
         while(iterator->hasValue()) {
             Field field = iterator->getValue();
             String name = field->getName();
-            printf("import name is %s \n",name->toChars());
             switch(field->getType()) {
                 case FieldTypeLong: {
                     this->put(name,field->getLongValue());
@@ -391,14 +381,11 @@ public:
                     int count = 0;
                     JsonValue arrayNode = createJsonValue();
                     while(1) {
-                        printf("start getListItem trace1!!!!,field name is %s \n",field->getName()->toChars());
                         auto newObject = field->getListItemObject(count);
-                        printf("start getListItem trace2!!!! \n");
                         if(newObject != nullptr) {
                             JsonValue newValue = createJsonValue();
                             newValue->importFrom(newObject);
                             arrayNode->append(newValue);
-                            printf("append!!!! \n");
                             count++;
                             continue;
                         }

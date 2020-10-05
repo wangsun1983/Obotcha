@@ -37,6 +37,11 @@ public:
         isDestroy = false;
     }
 
+    bool isEmpty() {
+        AutoLock l(mMutex);
+        return mList->isEmpty();
+    }
+
     int size() {
         AutoLock l(mMutex);
         return mList->size();

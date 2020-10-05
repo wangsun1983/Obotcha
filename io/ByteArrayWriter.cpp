@@ -124,7 +124,6 @@ long _ByteArrayWriter::writeLong(long v) {
 }
 
 int _ByteArrayWriter::writeByteArray(ByteArray b) {
-    printf("mIndex is %d,mSize is %d,b->size is %d \n",mIndex,mSize,b->size());
     if(mIndex > (mSize - b->size())) {
         if(mType == Dynamic) {
             mSize = (mData->size() + b->size())*7/4;

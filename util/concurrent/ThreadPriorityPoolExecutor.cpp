@@ -42,7 +42,7 @@ void _PriorityPoolThread::run() {
         mCurrentTask = mTaskMgr->getTask();
         
         if(mCurrentTask == nullptr) {
-            printf("mCurrentTask is nullptr!!!! \n");
+            LOG(INFO)<<"mCurrentTask is nullptr!!!!";
             break;
         }
 
@@ -82,11 +82,9 @@ void _PriorityPoolThread::run() {
 }
 
 void _PriorityPoolThread::onInterrupt() {
-    //printf("_PriorityPoolThread onInterrupt \n");
     if(mCurrentTask != nullptr) {
         Runnable r = mCurrentTask->task->getRunnable();
         if(r != nullptr) {
-            //printf("_PriorityPoolThread onInterrupt2 \n");
             r->onInterrupt();
         }
         mCurrentTask = nullptr;
@@ -138,7 +136,6 @@ void _PriorityTaskManager::addTask(PriorityTask task) {
 
         case st(ThreadPriorityPoolExecutor)::PriorityMedium:
             mMediumPriorityTasks->enQueueLast(task);
-            //printf("enqueue,mMediumPriorityTasks size is %d \n",mMediumPriorityTasks->size());
         break;
 
         case st(ThreadPriorityPoolExecutor)::PriorityLow:
@@ -203,11 +200,7 @@ PriorityTask _PriorityTaskManager::getTask() {
 
 void _PriorityTaskManager::cancelAll() {
     AutoLock l(mTaskMutex);
-    //printf("cancelAll,mHighPriorityTasks size is %d,mMediumPriorityTasks size is %d,mLowPriorityTasks size is %d \n",
-    //mHighPriorityTasks->size(),
-    //mMediumPriorityTasks->size(),
-    //mLowPriorityTasks->size());
-
+    
     int size = mHighPriorityTasks->size();
     for(int i = 0;i<size;i++) {
         PriorityTask task = mHighPriorityTasks->get(i);

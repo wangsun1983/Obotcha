@@ -23,21 +23,17 @@ namespace obotcha {
 
 class _ThreadPoolExecutor;
 
-DECLARE_SIMPLE_CLASS(ThreadPoolExecutorHandler) IMPLEMENTS(Runnable) {
+DECLARE_SIMPLE_CLASS(ThreadPoolExecutorHandler) IMPLEMENTS(Thread) {
 
 public:
 
-    _ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool,sp<_ThreadPoolExecutor> executor);
+    _ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool);
     
     bool isTerminated();
 
     void run();
     
     void stop();
-
-    void waitForTerminate();
-
-    void waitForTerminate(long);
 
     void onInterrupt();
 
@@ -48,25 +44,25 @@ public:
 private:
     BlockingQueue<FutureTask> mPool;
 
-    int state;
+    //int state;
 
     bool mIdleWait;
 
     Mutex mStateMutex;
 
-    Condition mWaitCond;
+    //Condition mWaitCond;
 
-    bool isWaitTerminate;
+    //bool isWaitTerminate;
 
     FutureTask mCurrentTask;
 
     mutable volatile bool mStop;
 
-    Thread mThread;
+    //Thread mThread;
 
-    sp<_ThreadPoolExecutor> mExecutor;
+    //sp<_ThreadPoolExecutor> mExecutor;
 
-    Mutex mExecutorMutex;
+    //Mutex mExecutorMutex;
 };
 
 
@@ -101,7 +97,7 @@ public:
     ~_ThreadPoolExecutor();
 
 private:
-    void onCompleteNotify(ThreadPoolExecutorHandler h);
+    //void onCompleteNotify(ThreadPoolExecutorHandler h);
 
     void onCancel(FutureTask);
 

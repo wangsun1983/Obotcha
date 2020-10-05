@@ -61,6 +61,10 @@ public:
         return count;
     }
 
+    bool isEmpty() {
+        return head == nullptr;
+    }
+
     void enQueueLast(T t) {
         LinkedListData<T> data = createLinkedListData<T>(t);
         count++;
@@ -125,10 +129,6 @@ public:
         return data;
     }
     
-    int Size() {
-        return count;
-    }
-
     sp<_LinkedListIterator<T>> getIterator() {
         return new _LinkedListIterator<T>(this);
     }

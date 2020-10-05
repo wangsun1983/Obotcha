@@ -11,26 +11,13 @@
 #include "ExecutorDestructorException.hpp"
 #include "Log.hpp"
 
-
 namespace obotcha {
 
 #define DEFAULT_THREAD_NUM 4
 
-_ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool,sp<_ThreadPoolExecutor> exe):mPool(pool),
-                                                                         state(idleState),
-                                                                         mStop(false),
-                                                                         isWaitTerminate(false),
-                                                                         mExecutor(exe){
-    mStateMutex = createMutex("ThreadPoolExeHandlerMutex");
-    mWaitCond = createCondition();
-    Runnable r;
-    r.set_pointer(this);
-    mThread = createThread(r);
-
-    mExecutorMutex = createMutex("ThreadPoolExecutorMutex");
-
-    state = idleState;
-    mThread->start();
+_ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool):mPool(pool),
+                                                                         mStop(false){
+    this->start();
 }
 
 _ThreadPoolExecutorHandler::~_ThreadPoolExecutorHandler() {
@@ -39,16 +26,11 @@ _ThreadPoolExecutorHandler::~_ThreadPoolExecutorHandler() {
 
 void _ThreadPoolExecutorHandler::stop() {
     mStop = true;
-    mThread->quit();
+    quit();
 }
 
 bool _ThreadPoolExecutorHandler::shutdownTask(FutureTask task) {
-    if(mCurrentTask != nullptr && mCurrentTask == task) {
-        AutoLock l(mStateMutex);
-        if(state == terminateState) {
-            return false;
-        }
-
+    if(mCurrentTask != nullptr && task == mCurrentTask) {
         stop();
         return true;
     }
@@ -57,15 +39,6 @@ bool _ThreadPoolExecutorHandler::shutdownTask(FutureTask task) {
 }
 
 void _ThreadPoolExecutorHandler::onInterrupt() {
-    {
-        AutoLock l(mStateMutex);
-        state = terminateState;
-        if(isWaitTerminate) {
-            mWaitCond->notify();
-            isWaitTerminate = false;
-        }
-    }
-
     if(mCurrentTask != nullptr) {
         Runnable r = mCurrentTask->getRunnable();
         if(r != nullptr) {
@@ -74,12 +47,6 @@ void _ThreadPoolExecutorHandler::onInterrupt() {
         mCurrentTask = nullptr;
         r = nullptr;
     }
-
-    ThreadPoolExecutorHandler h;
-    h.set_pointer(this);
-    mExecutor->onCompleteNotify(h);
-    mExecutor.remove_pointer();
-    mThread = nullptr;
 }
 
 void _ThreadPoolExecutorHandler::run() {
@@ -89,68 +56,28 @@ void _ThreadPoolExecutorHandler::run() {
         if(mCurrentTask == nullptr) {
             break;
         }
+
         if(mCurrentTask->getStatus() == st(Future)::Cancel) {
             continue;
         }
         
-        {
-            AutoLock l(mStateMutex);
-            state = busyState;
-            if(mCurrentTask->getType() == FUTURE_TASK_SUBMIT) {
-                mCurrentTask->onRunning();
-            }
+        if(mCurrentTask->getType() == FUTURE_TASK_SUBMIT) {
+            mCurrentTask->onRunning();
         }
+    
         Runnable runnable = mCurrentTask->getRunnable();
         if(runnable != nullptr) {
             runnable->run();    
         }
-
-        {
-            AutoLock l(mStateMutex);
-            state = idleState;
-
-            if(mCurrentTask->getType() == FUTURE_TASK_SUBMIT) {
-                mCurrentTask->onComplete();
-            }
+     
+        if(mCurrentTask->getType() == FUTURE_TASK_SUBMIT) {
+            mCurrentTask->onComplete();
         }
-    }
-
-    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
-    {
-        AutoLock l(mStateMutex);
-        state = terminateState;
-
-        if(isWaitTerminate) {
-            mWaitCond->notify();
-            isWaitTerminate = false;
-        }
-    }
-
-    ThreadPoolExecutorHandler h;
-    h.set_pointer(this);
-    mExecutor->onCompleteNotify(h);
-    mExecutor.remove_pointer();
-    mThread = nullptr;
-}
-
-void _ThreadPoolExecutorHandler::waitForTerminate() {
-    AutoLock l(mStateMutex);
-    isWaitTerminate = true;
-    if(state == busyState) {
-        mWaitCond->wait(mStateMutex);
-    }
-}
-
-void _ThreadPoolExecutorHandler::waitForTerminate(long interval) {
-    AutoLock l(mStateMutex);
-    isWaitTerminate = true;
-    if(state == busyState) {
-        mWaitCond->wait(mStateMutex,interval);
     }
 }
 
 bool _ThreadPoolExecutorHandler::isTerminated() {
-    return state == terminateState;
+    return this->getStatus() == Complete;
 }
 
 _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
@@ -178,7 +105,7 @@ void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
     mThreadNum = threadnum;
 
     for(int i = 0; i < threadnum;i++) {
-        ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool,this);
+        ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool);
         mHandlers->add(h);
     }
 
@@ -204,6 +131,7 @@ int _ThreadPoolExecutor::execute(Runnable runnable) {
     
     FutureTask task = createFutureTask(FUTURE_TASK_NORMAL,runnable);
     mPool->enQueueLast(task);
+    return 0;
 }
 
 int _ThreadPoolExecutor::shutdown() {
@@ -221,21 +149,23 @@ int _ThreadPoolExecutor::shutdown() {
         mIsShutDown = true;
     }
 
-    AutoLock ll1(mHandlersMutex);
-    ListIterator<ThreadPoolExecutorHandler> iterator = mHandlers->getIterator();
-    while(iterator->hasValue()) {
-        ThreadPoolExecutorHandler h = iterator->getValue();
-        h->stop();
-        iterator->next();
+    {
+        AutoLock ll1(mHandlersMutex);
+        ListIterator<ThreadPoolExecutorHandler> iterator = mHandlers->getIterator();
+        while(iterator->hasValue()) {
+            ThreadPoolExecutorHandler h = iterator->getValue();
+            h->stop();
+            iterator->next();
+        }
     }
 
     for(;;) {
         FutureTask task = mPool->deQueueLastNoBlock();
         if(task != nullptr) {
             task->cancel();
-        } else {
-            break;
-        }
+            continue;
+        } 
+        break;
     }
 
     mPool->clear();
@@ -275,47 +205,43 @@ void _ThreadPoolExecutor::awaitTermination() {
 }
 
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
+    AutoLock l(mProtectMutex);
     if(!mIsShutDown) {
         return -InvalidStatus;
     }
 
-    if(mIsTerminated) {
-        return 0;
-    }
-
-    AutoLock ll(mWaitMutex);
-
-    if(mIsTerminated) {
-        return 0;
-    }
-
-    return mWaitCondition->wait(mWaitMutex,millseconds);
-}
-
-void _ThreadPoolExecutor::onCompleteNotify(ThreadPoolExecutorHandler h) {
-    AutoLock ll(mHandlersMutex);
-    ListIterator<ThreadPoolExecutorHandler>iterator = mHandlers->getIterator();
+    bool isWaitForever = (millseconds == 0);
+    ListIterator<ThreadPoolExecutorHandler> iterator = mHandlers->getIterator();
     while(iterator->hasValue()) {
-        ThreadPoolExecutorHandler t = iterator->getValue();
-        if(t == h) {
-            iterator->remove();
-            break;
+        ThreadPoolExecutorHandler handler = iterator->getValue();
+        long current = st(System)::currentTimeMillis();
+        handler->join(millseconds);
+        if(!isWaitForever) {
+            long waitInterval = (st(System)::currentTimeMillis() - current);
+            millseconds -= waitInterval;
+            if(millseconds <= 0) {
+                return -WaitTimeout;
+            }
         }
         iterator->next();
     }
 
-    if(mIsShutDown) {
-        if(mHandlers->size() == 0) {         
-            AutoLock ll(mWaitMutex);
-            mIsTerminated = true;
-            mWaitCondition->notifyAll();
-        }
-    }
+    return 0;
 }
 
 int _ThreadPoolExecutor::getThreadsNum() {
     AutoLock ll(mProtectMutex);
-    return mHandlers->size();
+    ListIterator<ThreadPoolExecutorHandler>iterator = mHandlers->getIterator();
+    int threadNum = 0;
+    while(iterator->hasValue()) {
+        ThreadPoolExecutorHandler handler = iterator->getValue();
+        if(handler->getStatus() != st(Thread)::Complete) {
+            threadNum++;
+        }
+        iterator->next();
+    }
+
+    return threadNum;
 }
 
 int _ThreadPoolExecutor::getQueueSize() {
@@ -343,25 +269,28 @@ void _ThreadPoolExecutor::onCancel(FutureTask t) {
         return;
     }
     
-    
     ThreadPoolExecutorHandler h = nullptr;
-    int size = mHandlers->size();
-    for(int i = 0;i < size;i++) {
-        h = mHandlers->get(i);
-        if(h != nullptr) {
-            if(h->shutdownTask(t)) {
-                AutoLock ll1(mHandlersMutex);
-                mHandlers->remove(h);
-                isHit = true;
-                break;
+
+    {
+        AutoLock ll(mHandlersMutex);
+        int size = mHandlers->size();
+        for(int i = 0;i < size;i++) {
+            h = mHandlers->get(i);
+            if(h != nullptr) {
+                if(h->shutdownTask(t)) {
+                    AutoLock ll1(mHandlersMutex);
+                    mHandlers->remove(h);
+                    isHit = true;
+                    break;
+                }
             }
         }
     }
     
     //we should insert a new
     if(!mIsShutDown && isHit) {
-        ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool,this);
-        AutoLock ll1(mHandlersMutex);
+        ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool);
+        AutoLock ll(mHandlersMutex);
         mHandlers->add(h);
     }
 }

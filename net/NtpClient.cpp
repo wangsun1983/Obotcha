@@ -117,7 +117,6 @@ void _NtpSocketClientListener::onDisconnect(SocketResponser r) {
 }
     
 void _NtpSocketClientListener::onConnect(SocketResponser r) {
-
 }
 
 long int _NtpSocketClientListener::getTimeMillis() {

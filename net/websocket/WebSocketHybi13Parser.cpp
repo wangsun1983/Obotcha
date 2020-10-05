@@ -193,7 +193,7 @@ ByteArray _WebSocketHybi13Parser::validateContinuationContent(ByteArray in) {
 *-----------------------------------------------------------------------------------
 */
 bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
-    if(pack->size() < 2) {
+    if(pack == nullptr || pack->size() < 2) {
         return false;
     }
 
@@ -203,12 +203,6 @@ bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
     int b1 = (preReader->readByte() & 0xff);
     
     bool isMask = ((b1 & st(WebSocketProtocol)::B1_FLAG_MASK) != 0);
-    if(isMask) {
-        printf("it is mask \n");
-    } else {
-        printf("it is not mask \n");
-    }
-
     // Get frame length, optionally reading from follow-up bytes if indicated by special values.
     long frameLength = b1 & st(WebSocketProtocol)::B1_MASK_LENGTH;
     int headSize = 0;

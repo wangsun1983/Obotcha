@@ -182,11 +182,11 @@ _EPollFileObserver::_EPollFileObserver():_EPollFileObserver{DefaultEpollSize}{
 }
 
 int _EPollFileObserver::addObserver(int fd,uint32_t events,EPollFileObserverListener l) {
-    printf("_EPollFileObserver addObserver,fd is %d \n",fd);
+    //printf("_EPollFileObserver addObserver,fd is %d \n",fd);
     if(fd <= -1) {
         return -InvalidParam;
     }
-    printf("_EPollFileObserver addObserver2 \n");
+
     if(l != nullptr) {
         AutoLock mylock(mListenerMutex);
         //check whether allready regist
@@ -196,7 +196,7 @@ int _EPollFileObserver::addObserver(int fd,uint32_t events,EPollFileObserverList
                 return -AlreadyRegist;
             }
         }
-        printf("_EPollFileObserver addObserver3 \n");
+
         l->fds.push_back(fd);
 
         HashMap<int,ArrayList<EPollFileObserverListener>> m = mListeners->get(fd);
@@ -216,7 +216,7 @@ int _EPollFileObserver::addObserver(int fd,uint32_t events,EPollFileObserverList
                 ll->add(l);
             }
         }
-        printf("_EPollFileObserver addObserver4 \n");
+
         struct epoll_event ev;
         memset(&ev,0,sizeof(struct epoll_event));
         //printf("add observer fd is %d \n",fd);
@@ -225,7 +225,6 @@ int _EPollFileObserver::addObserver(int fd,uint32_t events,EPollFileObserverList
         ev.events = events|EpollRdHup;
         epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
         fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
-        printf("_EPollFileObserver addObserver4,events is %lx \n",ev.events);
     }
 
     return 0;
@@ -304,7 +303,6 @@ void _EPollFileObserver::dump() {
     while(iterator->hasValue()) {
         int fd = iterator->getKey();
         HashMap<int,ArrayList<EPollFileObserverListener>> fdmap = iterator->getValue();
-        printf("start fd is %d,regist listener size is %d \n",fd,fdmap->size());
         if(fdmap != nullptr) {
             MapIterator<int,ArrayList<EPollFileObserverListener>> iter2 = fdmap->getIterator();
             while(iter2->hasValue()) {

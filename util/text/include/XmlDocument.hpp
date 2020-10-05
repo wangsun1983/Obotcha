@@ -55,7 +55,6 @@ public:
     template<typename T>
     void importFrom(T value) {
         String name = value->__ReflectClassName();
-        printf("import name is %s \n",name->toChars());
         sp<_XmlValue> root = newRootNode(name);
         importFrom(root,value);
     }
@@ -175,7 +174,6 @@ private:
     template<typename T>
     void importFrom(sp<_XmlValue> parent,T value) {
         String name = value->__ReflectClassName();
-        printf("import name is %s \n",name->toChars());
         ArrayList<Field> fields = value->getAllFields();
         if(fields == nullptr) {
             LOG(ERROR)<<"XmlVale importFrom fields is null!!!";

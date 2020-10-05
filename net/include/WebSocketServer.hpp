@@ -9,6 +9,7 @@
 #include <fstream>
 #include <sys/un.h>
 #include <unordered_set>
+#include <map>
 
 
 #include "Object.hpp"
@@ -133,17 +134,20 @@ public:
     void add(DispatchData);
     int getWorkQueueSize();
     void run();
+    void dump();
 
 private:
     BlockingLinkedList<DispatchData> datas;
     //WebSocketListener mWsSocketListener;
     DispatchStatusListener mStatusListener;
     WebSocketFrameComposer mResponse;
+
+    //Mutex mClearAddMutex;
     
     HttpV1Parser mParser;
     
     HashMap<int,int> fds;
-
+    
     void handleHttpData(DispatchData);
     void handleWsData(DispatchData);
 };

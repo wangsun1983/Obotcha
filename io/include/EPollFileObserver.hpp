@@ -86,6 +86,8 @@ private:
 
     int mEpollFd;
 
+    bool isAutoClose;
+
     //<fd,listener>
     Mutex mListenerMutex;
     HashMap<int,HashMap<int,ArrayList<EPollFileObserverListener>>> mListeners;

@@ -1,5 +1,6 @@
 #include "SystemProperties.hpp"
 #include "Error.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -40,7 +41,6 @@ int _SystemProperties::set(String key,String value) {
     LocalSocketClient cc = createLocalSocketClient(path,1000,sizeof(struct _SystemPropertiesData),nullptr);
     cc->doConnect();
     int result = cc->doSend(packet);
-    printf("set result is %d \n",result);
     cc->release();
     return result;
 }
@@ -51,20 +51,17 @@ String _SystemProperties::get(String key) {
     if(key->size() >= DataSize) {
         return nullptr;
     }
-    printf("start get \n");
     memcpy(data.key,key->toChars(),key->size());
     ByteArray packet = createByteArray((byte*)&data,sizeof(struct _SystemPropertiesData));
 
     LocalSocketClient cc = createLocalSocketClient(path,1000,sizeof(struct _SystemPropertiesData),nullptr);
     cc->doConnect();
     int result = cc->doSend(packet);
-    printf("start get result is %d\n",result);
     if(result > 0) {
         ByteArray recvData = cc->doReceive();
         struct _SystemPropertiesData *response = (struct _SystemPropertiesData *)recvData->toValue();
         cc->release();
         if(response == nullptr) {
-            printf("start get result is nullptr\n");
             return nullptr;
         }
         return createString(response->value);
@@ -78,21 +75,17 @@ void _SystemProperties::onServerCommand(int fd,String ip,int port,ByteArray pack
     struct _SystemPropertiesData *response = (struct _SystemPropertiesData *)pack->toValue();
     if(pack == nullptr) {
         //TODO
-        printf("pack is nullptr \n");
+        LOG(ERROR)<<"pack is nullptr";
         return;
     }
 
-    printf("response command is %d \n",response->command);
-
     switch(response->command) {
         case GetCommand: {
-            printf("on GetCommand ,key is %s\n",response->key);
             String key = createString(response->key);
             String value = nullptr;
             {
                 AutoLock l(mDataMutex);
                 value = mValues->get(key);
-                printf("onGetCommand Value is %s \n",value->toChars());
                 memcpy(response->value,value->toChars(),value->size());
                 response->value[value->size()] = 0;
                 response->command = RespCommand;
@@ -102,8 +95,6 @@ void _SystemProperties::onServerCommand(int fd,String ip,int port,ByteArray pack
         break;
 
         case SetCommand: {
-            printf("on setCommand ,key is %s\n",response->key);
-            printf("on setCommand ,value is %s\n",response->value);
             String key = createString(response->key);
             String value = createString(response->value);
             AutoLock l(mDataMutex);
@@ -114,15 +105,12 @@ void _SystemProperties::onServerCommand(int fd,String ip,int port,ByteArray pack
 
             HashSet<int> ll = mListeners->get(key);
             if(ll != nullptr) {
-                printf("set command ll is not nullptr,ll size is %d \n",ll->size());
                 HashSetIterator<int>iterator = ll->getIterator();
                 std::vector<int> fails;
 
                 while(iterator->hasValue()) {
                     int _fd = iterator->getValue();
-                    printf("write fd is %d \n",fd);
                     int ret = write(_fd,response,sizeof(struct _SystemPropertiesData));
-                    printf("write fd is %d,ret is %d \n",_fd,ret);
                     if(ret <= 0) {
                         fails.push_back(_fd);
                         continue;
@@ -134,7 +122,6 @@ void _SystemProperties::onServerCommand(int fd,String ip,int port,ByteArray pack
         break;
 
         case ListenCommand: {
-            printf("do listen command \n");
             String key = createString(response->key);
             HashSet<int> ll = mListeners->get(key);
             if(ll == nullptr) {
@@ -142,7 +129,6 @@ void _SystemProperties::onServerCommand(int fd,String ip,int port,ByteArray pack
                 mListeners->put(key,ll);
             }
             ll->add(fd);
-            printf("do listen ll size is %d \n",ll->size());
         }
         break;
 
@@ -185,10 +171,8 @@ void _SystemProperties::onClientCommand(int fd,String ip,int port,ByteArray pack
 
 void _SystemProperties::onDataReceived(SocketResponser r,ByteArray pack) {
     if(mClient != nullptr && mClient->getSock() == r->getFd()) {
-        printf("mClient fd is %d \n",mClient->getSock());
         onClientCommand(r->getFd(),r->getIp(),r->getPort(),pack);
     } else {
-        printf("mServer fd is %d \n",mServer->getSock());
         onServerCommand(r->getFd(),r->getIp(),r->getPort(),pack);
     }
 }
