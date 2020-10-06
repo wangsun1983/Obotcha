@@ -21,6 +21,10 @@
 
 namespace obotcha {
 
+const int _ThreadCachedPoolExecutorHandler::HandleIdle = 0;
+const int _ThreadCachedPoolExecutorHandler::HandleBusy = 1;
+const int _ThreadCachedPoolExecutorHandler::HandleDestroy = 2;
+
 _ThreadCachedPoolExecutorHandler::_ThreadCachedPoolExecutorHandler(BlockingQueue<FutureTask> pool,
                                                                    ThreadCachedPoolExecutor service, 
                                                                    long timeout)
@@ -29,9 +33,14 @@ _ThreadCachedPoolExecutorHandler::_ThreadCachedPoolExecutorHandler(BlockingQueue
     
     mThreadTimeout = timeout;
 
+    mServiceExecutor = service;
+
     mCurrentTask = nullptr;
 
     mStop = false;
+
+    mStatusMutex = createMutex("CachedHandlerMutex");
+    mStatus = HandleIdle;
 }
 
 _ThreadCachedPoolExecutorHandler::~_ThreadCachedPoolExecutorHandler() {
@@ -40,7 +49,18 @@ _ThreadCachedPoolExecutorHandler::~_ThreadCachedPoolExecutorHandler() {
 
 void _ThreadCachedPoolExecutorHandler::stop() {
     mStop = true;
+    mStatusMutex = createMutex("CachedHandlerMutex");
+    {
+        AutoLock l(mStatusMutex);
+        mStatus = HandleDestroy;
+    }
+    
     quit();
+}
+
+bool _ThreadCachedPoolExecutorHandler::isIdle() {
+    AutoLock l(mStatusMutex);
+    return mStatus == HandleIdle;
 }
 
 void _ThreadCachedPoolExecutorHandler::run() {
@@ -48,7 +68,22 @@ void _ThreadCachedPoolExecutorHandler::run() {
         //step 1
         if(mCurrentTask == nullptr) {
             //step 2
+            {
+                AutoLock l(mStatusMutex);
+                mStatus = HandleIdle;
+            }
             mCurrentTask = mPool->deQueueLast(mThreadTimeout);
+            {
+                AutoLock l(mStatusMutex);
+                mStatus = HandleBusy;
+            }
+            
+            {
+                if(mPool->size() != 0) {
+                    mServiceExecutor->setUpOneIdleThread();
+                }
+            }
+
             if(mCurrentTask == nullptr) {
                 ThreadCachedPoolExecutorHandler h;
                 h.set_pointer(this);
@@ -66,7 +101,9 @@ void _ThreadCachedPoolExecutorHandler::run() {
 
             Runnable r = mCurrentTask->getRunnable();
             if(r != nullptr) {
+                //printf("cached task run 1 \n");
                 r->run();
+                //printf("cached task run 2 \n");
             }
             
             if(mCurrentTask->getType() == FUTURE_TASK_SUBMIT) {
@@ -86,11 +123,15 @@ end:
 }
 
 void _ThreadCachedPoolExecutorHandler::onInterrupt() {
+    //printf("_ThreadCachedPoolExecutorHandler onInterrupt 1 \n");
     {
         if(mCurrentTask != nullptr) {
-            Runnable r = mCurrentTask->getRunnable();
-            if(r != nullptr) {
-                r->onInterrupt();
+            //printf("current status is %d \n",mCurrentTask->getStatus());
+            if(mCurrentTask->getStatus() == st(Future)::Running) {
+                Runnable r = mCurrentTask->getRunnable();
+                if(r != nullptr) {
+                    r->onInterrupt();
+                }
             }
             mCurrentTask = nullptr;
         }
@@ -139,6 +180,17 @@ int _ThreadCachedPoolExecutor::shutdown(){
     while(iterator->hasValue()) {
         ThreadCachedPoolExecutorHandler handler = iterator->getValue();
         handler->stop();
+        iterator->next();
+    }
+
+    //all task should onInterrupt
+    while(1) {
+        FutureTask task = mTasks->deQueueLastNoBlock();
+        if(task != nullptr) {
+            task->onShutDown();
+            continue;
+        }
+        break;
     }
     return 0;
 }
@@ -153,7 +205,20 @@ int _ThreadCachedPoolExecutor::execute(Runnable r) {
 
 bool _ThreadCachedPoolExecutor::isTerminated() {
     AutoLock l(mHandlerMutex);
-    return (mStatus->get() == StatusShutDown) && mHandlers->size() == 0;
+    if(mStatus->get() != StatusShutDown) {
+        return false;
+    }
+
+    //printf("handler size is %d \n",mHandlers->size());
+    ListIterator<ThreadCachedPoolExecutorHandler> iterator = mHandlers->getIterator();
+    while(iterator->hasValue()) {
+        ThreadCachedPoolExecutorHandler h = iterator->getValue();
+        if(h->getStatus() != st(Thread)::Complete) {
+            return false;
+        }
+        iterator->next();
+    }
+    return true;
 }
 
 void _ThreadCachedPoolExecutor::awaitTermination() {
@@ -168,10 +233,13 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
     bool isWaitForever = (millseconds == 0);
 
     ListIterator<ThreadCachedPoolExecutorHandler> iterator = mHandlers->getIterator();
+    //printf("awaitTermination start 1 \n");
     while(iterator->hasValue()) {
         ThreadCachedPoolExecutorHandler handler = iterator->getValue();
         long current = st(System)::currentTimeMillis();
+        //printf("awaitTermination wait at %ld \n",st(System)::currentTimeMillis());
         handler->join(millseconds);
+        //printf("awaitTermination finish wait at %ld \n",st(System)::currentTimeMillis());
         long interval = (st(System)::currentTimeMillis() - current);
         if(!isWaitForever) {
             millseconds -= interval;
@@ -191,6 +259,7 @@ int _ThreadCachedPoolExecutor::getThreadsNum() {
 }
 
 Future _ThreadCachedPoolExecutor::submit(Runnable r) {
+    //printf("thread cached pool start submit \n");
     if(mStatus->get() == StatusShutDown) {
         return nullptr;
     }
@@ -199,13 +268,32 @@ Future _ThreadCachedPoolExecutor::submit(Runnable r) {
     listener.set_pointer(this);
     FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r,listener);
     Future future = createFuture(task);
-    
+    //printf("thread cached pool start submit 2 \n");
     AutoLock l(mHandlerMutex);
-    if( mTasks->size() > 0 && mHandlers->size() < maxThreadNum) {
+    if( mTasks->size() > 0) {
+        //printf("thread cached pool start submit 3 \n");
         setUpOneIdleThread();
-    }
-    mTasks->enQueueLast(task);
+    } else if(mTasks->size() == 0) {
+        //we should check whether there is a idle thread
+        if(mHandlers->size() == 0) {
+            setUpOneIdleThread();
+        } else {
+            ListIterator<ThreadCachedPoolExecutorHandler> iterator = mHandlers->getIterator();
+            while(iterator->hasValue()) {
+                ThreadCachedPoolExecutorHandler handler = iterator->getValue();
+                if(handler->isIdle()) {
+                    mTasks->enQueueLast(task);
+                    return future;
+                }
+                iterator->next();
+            }
 
+            setUpOneIdleThread();
+        }
+    }
+    //printf("thread cached pool start submit 4\n");
+    
+    mTasks->enQueueLast(task);
     return future;   
 }
 
@@ -232,9 +320,8 @@ void _ThreadCachedPoolExecutor::onCancel(FutureTask task) {
 
     while(iterator->hasValue()) {
         ThreadCachedPoolExecutorHandler handler = iterator->getValue();
-        if(handler == handler) {
+        if(handler->shutdownTask(task)) {
             iterator->remove();
-            handler->stop();
             isFound = true;
             break;
         }
@@ -247,7 +334,8 @@ void _ThreadCachedPoolExecutor::onCancel(FutureTask task) {
 }
 
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
-    //TODO
+    //printf("wait CachePoll Executor release \n");
+    awaitTermination(1000);
 }
 
 void _ThreadCachedPoolExecutor::onThreadComplete(ThreadCachedPoolExecutorHandler h) {
@@ -264,7 +352,12 @@ void _ThreadCachedPoolExecutor::onThreadComplete(ThreadCachedPoolExecutorHandler
 }
 
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
+    //printf("thread cached pool setUpOneIdleThread 1 \n");
     AutoLock l(mHandlerMutex);
+    if(mHandlers->size() >= maxThreadNum) {
+        return;
+    }
+
     ThreadCachedPoolExecutor executor;
     executor.set_pointer(this);
 
@@ -273,11 +366,15 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
                     executor,
                     mThreadTimeout);
     handler->start();
+    //printf("thread cached pool setUpOneIdleThread 2\n");
     while(handler->getStatus() == NotStart) {
+        //printf("thread cached pool setUpOneIdleThread 3 \n");
         usleep(100);
     }
-
+    //printf("thread cached pool setUpOneIdleThread 4 \n");
     mHandlers->add(handler);
 }
+
+
 
 }

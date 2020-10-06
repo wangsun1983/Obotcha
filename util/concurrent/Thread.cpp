@@ -12,7 +12,7 @@
 
 namespace obotcha {
 
-static ThreadLocal<Thread> mThreads = createThreadLocal<Thread>();
+ThreadLocal<Thread> mThreads = createThreadLocal<Thread>();
 
 void doThreadExit(_Thread *thread) {
     pthread_detach(thread->getThreadId());
@@ -24,16 +24,16 @@ void cleanup(void *th) {
     _Thread *thread = static_cast<_Thread *>(th);
     if(thread->getRunnable() != nullptr) {
         thread->getRunnable()->onInterrupt();
-    } 
-    
-    thread->onInterrupt();
+    } else {
+        thread->onInterrupt();
+    }
     
     {
         AutoLock ll(thread->mJoinMutex);
         thread->mStatus = st(Thread)::Complete;
         thread->mJoinDondtion->notifyAll();
     }
- 
+    
     doThreadExit(thread);
 }
 
@@ -197,7 +197,6 @@ int _Thread::join(long timeInterval) {
     if(getStatus() == Running) {
         return mJoinDondtion->wait(mJoinMutex,timeInterval);
     }
-
     return 0;
 }
 
@@ -237,7 +236,7 @@ void _Thread::quit() {
         return;
     }
 
-    mStatus = Complete;
+    //mStatus = Complete;
    
     pthread_cancel(mPthread);
 }

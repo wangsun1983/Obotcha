@@ -16,13 +16,8 @@ void _Future::wait(long t) {
 }
     
 int _Future::cancel() {
-    int result = 0;
-    if(mTask->getStatus() != st(Future)::Waiting) {
-        result = -InvalidStatus;
-    }
-
     mTask->cancel();
-    return result;
+    return 0;
 }
 
 _Future::~_Future() {

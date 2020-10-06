@@ -79,6 +79,26 @@ void _FutureTask::cancel() {
     mRunnable = nullptr;
 }
 
+void _FutureTask::onShutDown() {
+    if(mStatus == st(Future)::Cancel) {
+        return;
+    }
+
+    AutoLock l(mCompleteMutex);
+    
+    if(mStatus == st(Future)::Cancel) {
+        return;
+    }
+    
+    mStatus = st(Future)::Cancel;
+    if(mRunnable != nullptr) {
+        mRunnable->onInterrupt();
+        mRunnable->interruptResultWait();
+    }
+
+    mCompleteCond->notify();
+}
+
 void _FutureTask::cancelWithoutCallback() {
     if(mStatus == st(Future)::Cancel) {
         return;
@@ -100,6 +120,7 @@ void _FutureTask::cancelWithoutCallback() {
 }
 
 int _FutureTask::getStatus() {
+    AutoLock l(mCompleteMutex);
     return mStatus;
 }
 

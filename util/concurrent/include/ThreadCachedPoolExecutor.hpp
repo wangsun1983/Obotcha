@@ -23,7 +23,8 @@ class _ThreadCachedPoolExecutor;
 DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutorHandler) IMPLEMENTS(Thread) {
 
 public:
-
+    friend class _ThreadCachedPoolExecutor;
+    
     _ThreadCachedPoolExecutorHandler(BlockingQueue<FutureTask>,sp<_ThreadCachedPoolExecutor>,long timeout);
 
     void run();
@@ -33,6 +34,8 @@ public:
     void onInterrupt();
 
     bool shutdownTask(FutureTask task);
+
+    bool isIdle();
 
     ~_ThreadCachedPoolExecutorHandler();
 
@@ -49,6 +52,13 @@ private:
     mutable volatile bool mStop;
 
     BlockingQueue<FutureTask> mPool;
+
+    static const int HandleIdle;
+    static const int HandleBusy;
+    static const int HandleDestroy;
+
+    Mutex mStatusMutex;
+    int mStatus;
 };
 
 DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(ExecutorService)
@@ -113,6 +123,7 @@ private:
     int mQueueSize;
 
     BlockingQueue<FutureTask> mTasks;
+
 };
 
 }

@@ -39,14 +39,13 @@ bool _ThreadPoolExecutorHandler::shutdownTask(FutureTask task) {
 }
 
 void _ThreadPoolExecutorHandler::onInterrupt() {
-    if(mCurrentTask != nullptr) {
+    if(mCurrentTask->getStatus() == st(Future)::Running) {
         Runnable r = mCurrentTask->getRunnable();
         if(r != nullptr) {
             r->onInterrupt();
         }
-        mCurrentTask = nullptr;
-        r = nullptr;
     }
+    mCurrentTask = nullptr;
 }
 
 void _ThreadPoolExecutorHandler::run() {
@@ -249,11 +248,7 @@ int _ThreadPoolExecutor::getQueueSize() {
 }
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
-    if(!mIsShutDown) {
-        //cannot throw exception in destructor
-        //throw ExecutorDestructorException("ThreadPoolExecutor destruct error");
-        //LOGE(TAG,"ThreadPoolExecutor destruct error");
-    }
+    awaitTermination(1000);
 }
 
 void _ThreadPoolExecutor::onCancel(FutureTask t) {

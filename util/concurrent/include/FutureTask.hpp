@@ -53,6 +53,8 @@ public:
         return v;
     }
 
+    void onShutDown();
+
 private:
     void cancelWithoutCallback();
 
