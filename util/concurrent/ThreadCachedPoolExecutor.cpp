@@ -18,6 +18,7 @@
 #include "InitializeException.hpp"
 #include "Log.hpp"
 #include "Error.hpp"
+#include "Executors.hpp"
 
 namespace obotcha {
 
@@ -192,6 +193,10 @@ int _ThreadCachedPoolExecutor::shutdown(){
         }
         break;
     }
+
+    ThreadCachedPoolExecutor exe;
+    exe.set_pointer(this);
+    st(ExecutorRecyler)::getInstance()->add(exe);
     return 0;
 }
 
@@ -314,6 +319,10 @@ void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthrea
 }
 
 void _ThreadCachedPoolExecutor::onCancel(FutureTask task) {
+    if(mStatus->get() == StatusShutDown) {
+        return;
+    }
+
     AutoLock l(mHandlerMutex);
     ListIterator<ThreadCachedPoolExecutorHandler> iterator = mHandlers->getIterator();
     bool isFound = false;
@@ -335,7 +344,7 @@ void _ThreadCachedPoolExecutor::onCancel(FutureTask task) {
 
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
     //printf("wait CachePoll Executor release \n");
-    awaitTermination(1000);
+    //awaitTermination(1000);
 }
 
 void _ThreadCachedPoolExecutor::onThreadComplete(ThreadCachedPoolExecutorHandler h) {
@@ -352,6 +361,9 @@ void _ThreadCachedPoolExecutor::onThreadComplete(ThreadCachedPoolExecutorHandler
 }
 
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
+    if(mStatus->get() == StatusShutDown) {
+        return;
+    }
     //printf("thread cached pool setUpOneIdleThread 1 \n");
     AutoLock l(mHandlerMutex);
     if(mHandlers->size() >= maxThreadNum) {

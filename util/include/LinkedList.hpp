@@ -62,7 +62,7 @@ public:
     }
 
     bool isEmpty() {
-        return head == nullptr;
+        return (head == nullptr);
     }
 
     void enQueueLast(T t) {

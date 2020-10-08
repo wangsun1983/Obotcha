@@ -17,7 +17,7 @@
 #include "Condition.hpp"
 #include "Thread.hpp"
 #include "Error.hpp"
-#include "ConcurrentQueue.hpp"
+#include "LinkedList.hpp"
 
 namespace obotcha {
 
@@ -35,7 +35,11 @@ class _PriorityTaskManager;
 
 DECLARE_SIMPLE_CLASS(PriorityPoolThread) EXTENDS(Thread) {
 public:
-    _PriorityPoolThread(sp<_PriorityTaskManager>,sp<_ThreadPriorityPoolExecutor> exe);
+    _PriorityPoolThread(LinkedList<PriorityTask> high,
+                        LinkedList<PriorityTask> mid,
+                        LinkedList<PriorityTask> low,
+                        Mutex listLock,
+                        Condition listcond);
     
     void run();
     
@@ -43,55 +47,24 @@ public:
 
     void stop();
 
-    //void waitTermination(long);
-
-    bool foceStopTask(FutureTask);
+    bool shutdownTask(FutureTask task);
 
     ~_PriorityPoolThread();
 
-    sp<_PriorityTaskManager> mTaskMgr;
 
 private:
-    ArrayList<PriorityTask> mTasks;
-    
     Mutex mMutex;
+    Condition mCond;
     
-    Condition mCondition;
-
-    Condition mWaitTermCondition;
-
-    Mutex mStateMutex;
-
+    Mutex mCurrentTaskMutex;
     PriorityTask mCurrentTask;
+    LinkedList<PriorityTask> highTasks;
+    LinkedList<PriorityTask> midTasks;
+    LinkedList<PriorityTask> lowTasks;
     
-    Mutex mExecutorMutex;
-
-    sp<_ThreadPriorityPoolExecutor> mExecutor;
-
-    int mState;
+    PriorityTask getTask();
     
     mutable volatile bool mStop;
-};
-
-DECLARE_SIMPLE_CLASS(PriorityTaskManager) {
-public:
-    _PriorityTaskManager();
-
-    void addTask(PriorityTask);
-
-    int cancel(FutureTask);
-
-    void cancelAll();
-
-    PriorityTask getTask();
-
-private:
-    ConcurrentQueue<PriorityTask> mHighPriorityTasks;
-    ConcurrentQueue<PriorityTask> mMediumPriorityTasks;
-    ConcurrentQueue<PriorityTask> mLowPriorityTasks;
-
-    Mutex mTaskMutex;
-    Condition mTaskCondition;
 };
 
 DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) IMPLEMENTS(ExecutorService)
@@ -131,18 +104,15 @@ public:
     static const int PriorityHigh = 2;
 
 private:
-
-    void onCompleteNotify(PriorityPoolThread t);
-
-    PriorityTaskManager mPriorityTaskMgr;
+    Mutex mTaskMutex;
+    Condition mTaskCond;
+    LinkedList<PriorityTask>mHighPriorityTasks;
+    LinkedList<PriorityTask>mMidPriorityTasks;
+    LinkedList<PriorityTask>mLowPriorityTasks;
 
     int mThreadNum;
 
     Mutex mProtectMutex;
-    
-    Mutex mDataLock;
-
-    Condition mDataCond;
 
     bool isShutDown;
 

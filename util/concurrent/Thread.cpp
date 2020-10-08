@@ -139,7 +139,11 @@ Runnable _Thread::getRunnable() {
 
 void _Thread::run() {
     //child thread can overwrite it.
-}                                                                                                    
+}
+
+void _Thread::detach() {
+    pthread_detach(getThreadId());
+}
 
 int _Thread::start() {
     //pthread_create(&mPthread, &mThreadAttr, localRun, this);

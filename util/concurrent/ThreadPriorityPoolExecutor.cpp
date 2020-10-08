@@ -20,26 +20,50 @@
 #include "ExecutorDestructorException.hpp"
 #include "Log.hpp"
 #include "TimeWatcher.hpp"
+#include "Executors.hpp"
 
 namespace obotcha {
 
 #define TAG "ThreadPriorityPoolExecutor"
 
 //============= PriorityPoolThread =================
-_PriorityPoolThread::_PriorityPoolThread(PriorityTaskManager mgr,ThreadPriorityPoolExecutor exe) {
+_PriorityPoolThread::_PriorityPoolThread(LinkedList<PriorityTask> high,
+                                         LinkedList<PriorityTask> mid,
+                                         LinkedList<PriorityTask> low,
+                                         Mutex listmutex,
+                                         Condition listcond) {
     
-    mExecutor = exe;
-
-    mTaskMgr = mgr;
-
-    mExecutorMutex = createMutex("ThreadPriorityPoolExecutorMutex");
-
+    highTasks = high;
+    midTasks = mid;
+    lowTasks = low;
+    mMutex = listmutex;
+    mCond = listcond;
+    mCurrentTaskMutex = createMutex("PriorityMutex");
     mStop = false;
+}
+
+PriorityTask _PriorityPoolThread::getTask() {
+    while(1) {
+        AutoLock l(mMutex);
+        if(highTasks->size() > 0) {
+            return highTasks->deQueueFirst();
+        }
+
+        if(midTasks->size() > 0) {
+            return midTasks->deQueueFirst();
+        }
+
+        if(midTasks->size() > 0) {
+            return midTasks->deQueueFirst();
+        }
+
+        mCond->wait(mMutex);
+    }
 }
 
 void _PriorityPoolThread::run() {
     while(!mStop) {
-        mCurrentTask = mTaskMgr->getTask();
+        mCurrentTask = getTask();
         
         if(mCurrentTask == nullptr) {
             LOG(INFO)<<"mCurrentTask is nullptr!!!!";
@@ -66,49 +90,36 @@ void _PriorityPoolThread::run() {
                 mCurrentTask->task->onComplete();
             }
         }
-    }
-
-    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
-    
-    {
-        AutoLock ll(mExecutorMutex);
-        if(mExecutor != nullptr) {
-            PriorityPoolThread thread;
-            thread.set_pointer(this);
-            mExecutor->onCompleteNotify(thread);
-            mExecutor.remove_pointer();
+        
+        {    
+            AutoLock l(mCurrentTaskMutex);
+            mCurrentTask = nullptr;
         }
     }
+
 }
 
-void _PriorityPoolThread::onInterrupt() {
-    if(mCurrentTask != nullptr) {
-        Runnable r = mCurrentTask->task->getRunnable();
-        if(r != nullptr) {
-            r->onInterrupt();
-        }
-        mCurrentTask = nullptr;
-        r = nullptr;
-    }
-
-    {
-        AutoLock ll(mExecutorMutex);
-        if(mExecutor != nullptr) {
-            PriorityPoolThread thread;
-            thread.set_pointer(this);
-            mExecutor->onCompleteNotify(thread);
-            mExecutor.remove_pointer();
-        }
-    }
-}
-
-bool _PriorityPoolThread::foceStopTask(FutureTask t) {
-    if(mCurrentTask != nullptr && mCurrentTask->task == t) {
+bool _PriorityPoolThread::shutdownTask(FutureTask task) {
+    AutoLock l(mCurrentTaskMutex);
+    if(mCurrentTask != nullptr && mCurrentTask->task == task) {
         stop();
         return true;
     }
 
     return false;
+}
+
+void _PriorityPoolThread::onInterrupt() {
+    printf("_PriorityPoolThread onInterrupt");
+    if(mCurrentTask!= nullptr &&mCurrentTask->task->getStatus() == st(Future)::Running) {
+        Runnable r = mCurrentTask->task->getRunnable();
+        printf("_PriorityPoolThread onInterrupt trace1");
+        if(r != nullptr) {
+            r->onInterrupt();
+        }
+    }
+    printf("_PriorityPoolThread onInterrupt trace2");
+    mCurrentTask = nullptr;
 }
 
 _PriorityPoolThread::~_PriorityPoolThread() {
@@ -119,111 +130,6 @@ void _PriorityPoolThread::stop() {
     this->quit();
 }
 
-//============= PriorityTaskManager ================
-_PriorityTaskManager::_PriorityTaskManager() {
-    mHighPriorityTasks = createConcurrentQueue<PriorityTask>();
-    mMediumPriorityTasks = createConcurrentQueue<PriorityTask>();
-    mLowPriorityTasks = createConcurrentQueue<PriorityTask>();
-    mTaskMutex = createMutex();
-    mTaskCondition = createCondition();
-}
-
-void _PriorityTaskManager::addTask(PriorityTask task) {
-    switch(task->priority) {
-        case st(ThreadPriorityPoolExecutor)::PriorityHigh:
-            mHighPriorityTasks->enQueueLast(task);
-        break;
-
-        case st(ThreadPriorityPoolExecutor)::PriorityMedium:
-            mMediumPriorityTasks->enQueueLast(task);
-        break;
-
-        case st(ThreadPriorityPoolExecutor)::PriorityLow:
-            mLowPriorityTasks->enQueueLast(task);
-        break;
-    }
-
-    {
-        AutoLock l(mTaskMutex);
-        mTaskCondition->notify();
-    }
-}
-
-int _PriorityTaskManager::cancel(FutureTask task) {
-    AutoLock l(mTaskMutex);
-    
-    int size = mHighPriorityTasks->size();
-    for(int i = 0;i<size;i++) {
-        if(mHighPriorityTasks->get(i)->task == task) {
-            return 0;
-        }
-    }
-
-    size = mMediumPriorityTasks->size();
-    for(int i = 0;i<size;i++) {
-        if(mMediumPriorityTasks->get(i)->task == task) {
-            return 0;
-        }
-    }
-
-    size = mLowPriorityTasks->size();
-    for(int i = 0;i<size;i++) {
-        if(mLowPriorityTasks->get(i)->task == task) {
-            return 0;
-        }
-    }
-
-    return -1;
-}
-
-PriorityTask _PriorityTaskManager::getTask() {
-    while(1) {
-        AutoLock l(mTaskMutex);
-        PriorityTask t = mHighPriorityTasks->deQueueFirst();
-        if(t != nullptr) {
-            return t;
-        }
-
-        t = mMediumPriorityTasks->deQueueFirst();
-        if(t != nullptr) {
-            return t;
-        }
-
-        t = mLowPriorityTasks->deQueueFirst();
-        if(t != nullptr) {
-            return t;
-        }
-        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
-        mTaskCondition->wait(mTaskMutex);
-    }
-}
-
-void _PriorityTaskManager::cancelAll() {
-    AutoLock l(mTaskMutex);
-    
-    int size = mHighPriorityTasks->size();
-    for(int i = 0;i<size;i++) {
-        PriorityTask task = mHighPriorityTasks->get(i);
-        task->task->cancelWithoutCallback();
-    }
-
-    size = mMediumPriorityTasks->size();
-    for(int i = 0;i<size;i++) {
-        PriorityTask task = mMediumPriorityTasks->get(i);
-        task->task->cancelWithoutCallback();
-    }
-
-    size = mLowPriorityTasks->size();
-    for(int i = 0;i<size;i++) {
-        PriorityTask task = mLowPriorityTasks->get(i);
-        task->task->cancelWithoutCallback();
-    }
-
-    mHighPriorityTasks->clear();
-    mMediumPriorityTasks->clear();
-    mLowPriorityTasks->clear();
-}
-
 
 //============= ThreadPriorityPoolExecutor ================
 _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor():_ThreadPriorityPoolExecutor{1} {
@@ -232,22 +138,23 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor():_ThreadPriorityPoolEx
 
 _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int threadnum) {
     mProtectMutex = createMutex("PriorityMutex");
-    mDataLock = createMutex("PriorityData");
-    mDataCond = createCondition();
-    mWaitMutex = createMutex("PriorityWaitMutex");
-    mWaitCondition = createCondition();
+    mTaskMutex = createMutex("PriorityData");
+    mTaskCond = createCondition();
 
     mThreadMutex = createMutex("PriorityThread Mutex");
     mThreads = createArrayList<PriorityPoolThread>();
 
-    mPriorityTaskMgr = createPriorityTaskManager();
-
-    ThreadPriorityPoolExecutor exe;
-    exe.set_pointer(this);
+    mHighPriorityTasks = createLinkedList<PriorityTask>();
+    mMidPriorityTasks = createLinkedList<PriorityTask>();
+    mLowPriorityTasks = createLinkedList<PriorityTask>();
 
     mThreadNum = threadnum;
     for(int i = 0;i < threadnum;i++) {
-        PriorityPoolThread thread = createPriorityPoolThread(mPriorityTaskMgr,exe);
+        PriorityPoolThread thread = createPriorityPoolThread(mHighPriorityTasks,
+                                                             mMidPriorityTasks,
+                                                             mLowPriorityTasks,
+                                                             mTaskMutex,
+                                                             mTaskCond);
         thread->start();
         mThreads->add(thread);
     }
@@ -273,8 +180,6 @@ int _ThreadPriorityPoolExecutor::shutdown() {
         return 0;
     }
 
-    mPriorityTaskMgr->cancelAll();
-    
     {
         AutoLock l(mProtectMutex);
 
@@ -283,14 +188,36 @@ int _ThreadPriorityPoolExecutor::shutdown() {
         }
 
         isShutDown = true;
-
-        AutoLock ll(mThreadMutex);
-        ListIterator<PriorityPoolThread> iterator = mThreads->getIterator();
-        while(iterator->hasValue()) {
-            PriorityPoolThread thread = iterator->getValue();
-            thread->stop();
-            iterator->next();
+        
+        {
+            AutoLock ll(mThreadMutex);
+            ListIterator<PriorityPoolThread> iterator = mThreads->getIterator();
+            while(iterator->hasValue()) {
+                PriorityPoolThread thread = iterator->getValue();
+                thread->stop();
+                thread->detach();
+                iterator->next();
+            }
         }
+
+        {
+            AutoLock l(mTaskMutex);
+            while(!mHighPriorityTasks->isEmpty()) {
+                mHighPriorityTasks->deQueueLast();
+            }
+
+            while(!mMidPriorityTasks->isEmpty()) {
+                mMidPriorityTasks->deQueueLast();
+            }
+
+            while(!mLowPriorityTasks->isEmpty()) {
+                mLowPriorityTasks->deQueueLast();
+            }
+        }
+
+        ThreadPriorityPoolExecutor exe;
+        exe.set_pointer(this);
+        st(ExecutorRecyler)::getInstance()->add(exe);
     }
 }
 
@@ -307,16 +234,25 @@ int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
         return -InvalidStatus;
     }
 
-    if(isTermination) {
-        return 0;
-    }
-    
-    AutoLock ll(mWaitMutex);
-    if(isTermination) {
-        return 0;
+    bool isWaitForever = (millseconds == 0);
+
+    AutoLock ll(mThreadMutex);
+    ListIterator<PriorityPoolThread> iterator = mThreads->getIterator();
+    while(iterator->hasValue()) {
+        PriorityPoolThread handler = iterator->getValue();
+        long current = st(System)::currentTimeMillis();
+        handler->join(millseconds);
+        long interval = (st(System)::currentTimeMillis() - current);
+        if(!isWaitForever) {
+            millseconds -= interval;
+            if(millseconds <= 0) {
+                return -WaitTimeout;
+            }
+        }
+        iterator->next();
     }
 
-    return mWaitCondition->wait(mWaitMutex,millseconds);
+    return 0;
 }
 
 Future _ThreadPriorityPoolExecutor::submit(Runnable task) {
@@ -324,13 +260,13 @@ Future _ThreadPriorityPoolExecutor::submit(Runnable task) {
 }
 
 Future _ThreadPriorityPoolExecutor::submit(int level,Runnable task) {
-    if(isShutDown || isTermination) {
+    if(isShutDown) {
         return nullptr;
     }
 
     AutoLock l(mProtectMutex);
     
-    if(isShutDown || isTermination) {
+    if(isShutDown) {
         return nullptr;
     }
 
@@ -338,50 +274,45 @@ Future _ThreadPriorityPoolExecutor::submit(int level,Runnable task) {
     listener.set_pointer(this);
 
     FutureTask futureTask = createFutureTask(FUTURE_TASK_SUBMIT,task,listener);
-    mPriorityTaskMgr->addTask(createPriorityTask(level,futureTask));
+    PriorityTask prioTask = createPriorityTask(level,futureTask);
+
+    switch(prioTask->priority) {
+        case st(ThreadPriorityPoolExecutor)::PriorityHigh:
+            mHighPriorityTasks->enQueueLast(prioTask);
+        break;
+
+        case st(ThreadPriorityPoolExecutor)::PriorityMedium:
+            mMidPriorityTasks->enQueueLast(prioTask);
+        break;
+
+        case st(ThreadPriorityPoolExecutor)::PriorityLow:
+            mLowPriorityTasks->enQueueLast(prioTask);
+        break;
+    }
+
+    {
+        AutoLock l(mTaskMutex);
+        mTaskCond->notify();
+    }
+
     return createFuture(futureTask);
 }
 
 int _ThreadPriorityPoolExecutor::getThreadsNum() {
-    AutoLock ll(mProtectMutex);
+    AutoLock ll(mThreadMutex);
     return mThreads->size();
 }
 
-void _ThreadPriorityPoolExecutor::onCompleteNotify(PriorityPoolThread t){
-    AutoLock ll(mThreadMutex);
-    ListIterator<PriorityPoolThread> iterator = mThreads->getIterator();
-    while(iterator->hasValue()) {
-        PriorityPoolThread thread = iterator->getValue();
-        if(thread == t) {
-            iterator->remove();
-            break;
-        }
-        iterator->next();
-    }
-
-    if(mThreads->size() == 0) {
-        mThreads->clear();
-        AutoLock ll(mWaitMutex);
-        isTermination = true;
-        mWaitCondition->notifyAll();
-    }
-}
-
 void _ThreadPriorityPoolExecutor::onCancel(FutureTask task) {
-    if(isShutDown ||isTermination) {
+    if(isShutDown) {
         return;
     }
 
     AutoLock l(mProtectMutex);
 
-    if(isShutDown ||isTermination) {
+    if(isShutDown) {
         return;
     }
-
-    //do not need to remove
-    //if(mPriorityTaskMgr->cancel(task) == 0) {
-    //    return;
-    //}
     
     {
         bool isNeedCreate = false;
@@ -390,7 +321,7 @@ void _ThreadPriorityPoolExecutor::onCancel(FutureTask task) {
         while(iterator->hasValue()) {
             PriorityPoolThread thread = iterator->getValue();
             
-            if(thread->foceStopTask(task)) {
+            if(thread->shutdownTask(task)) {
                 isNeedCreate = true;
                 iterator->remove();
                 break;
@@ -400,11 +331,11 @@ void _ThreadPriorityPoolExecutor::onCancel(FutureTask task) {
         }
         
         if(isNeedCreate) {
-            AutoLock ll(mProtectMutex);
-            ThreadPriorityPoolExecutor exe;
-            exe.set_pointer(this);
-
-            PriorityPoolThread thread = createPriorityPoolThread(mPriorityTaskMgr,exe);
+            PriorityPoolThread thread = createPriorityPoolThread(mHighPriorityTasks,
+                                                             mMidPriorityTasks,
+                                                             mLowPriorityTasks,
+                                                             mTaskMutex,
+                                                             mTaskCond);
             thread->start();
             mThreads->add(thread);
         }
@@ -413,10 +344,9 @@ void _ThreadPriorityPoolExecutor::onCancel(FutureTask task) {
 }
 
 _ThreadPriorityPoolExecutor::~_ThreadPriorityPoolExecutor() {
-    
-    if(!isShutDown) {
-        //LOGE(TAG,"Priority Thread Pool destruct error");
-    }
+    //printf("start desctrue 1\n");
+    //awaitTermination(1000);
+    //printf("start desctrue 2\n");
 }
 
 //============== PriorityTask ================

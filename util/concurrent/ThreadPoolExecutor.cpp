@@ -10,6 +10,7 @@
 #include "Error.hpp"
 #include "ExecutorDestructorException.hpp"
 #include "Log.hpp"
+#include "Executors.hpp"
 
 namespace obotcha {
 
@@ -39,7 +40,7 @@ bool _ThreadPoolExecutorHandler::shutdownTask(FutureTask task) {
 }
 
 void _ThreadPoolExecutorHandler::onInterrupt() {
-    if(mCurrentTask->getStatus() == st(Future)::Running) {
+    if(mCurrentTask != nullptr && mCurrentTask->getStatus() == st(Future)::Running) {
         Runnable r = mCurrentTask->getRunnable();
         if(r != nullptr) {
             r->onInterrupt();
@@ -168,6 +169,11 @@ int _ThreadPoolExecutor::shutdown() {
     }
 
     mPool->clear();
+
+    ThreadPoolExecutor exe;
+    exe.set_pointer(this);
+    st(ExecutorRecyler)::getInstance()->add(exe);
+    
     return 0;
 }
 
@@ -248,7 +254,6 @@ int _ThreadPoolExecutor::getQueueSize() {
 }
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
-    awaitTermination(1000);
 }
 
 void _ThreadPoolExecutor::onCancel(FutureTask t) {

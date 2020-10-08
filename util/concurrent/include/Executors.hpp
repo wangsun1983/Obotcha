@@ -9,8 +9,24 @@
 #include "Runnable.hpp"
 #include "ExecutorService.hpp"
 #include "ScheduledExecutorService.hpp"
+#include "LinkedList.hpp"
 
 namespace obotcha {
+
+DECLARE_SIMPLE_CLASS(ExecutorRecyler) IMPLEMENTS(Thread){
+
+public:
+    static sp<_ExecutorRecyler>getInstance();
+    void add(ExecutorService);
+
+private:
+    _ExecutorRecyler();
+    void run();
+    static ExecutorRecyler mInstance;
+    static Mutex mMutex;
+    Condition mCond;
+    LinkedList<ExecutorService> mRecyleList;
+};
 
 DECLARE_SIMPLE_CLASS(Executors) {
 
@@ -32,6 +48,7 @@ public:
 
     static ExecutorService newPriorityThreadPool(int thread_num);
     static ExecutorService newPriorityThreadPool();
+    
 };
 
 }

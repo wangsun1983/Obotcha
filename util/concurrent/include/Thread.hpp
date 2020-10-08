@@ -64,6 +64,8 @@ public:
 
     Runnable getRunnable();
 
+    void detach();
+
     virtual void onInterrupt();
 
     static void interruptCheck();
