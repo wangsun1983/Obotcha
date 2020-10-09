@@ -19,6 +19,7 @@ using namespace std;
 namespace obotcha {
 
 class _ThreadCachedPoolExecutor;
+class _ThreadScheduledPoolExecutor;
 
 DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutorHandler) IMPLEMENTS(Thread) {
 
@@ -67,6 +68,7 @@ public:
     friend class _ThreadCachedPoolExecutorHandler;
     friend class _CacheThreadManager;
     friend class _FutureTask;
+    friend class _ThreadScheduledPoolExecutor;
 
 	_ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout);
 
@@ -103,6 +105,8 @@ private:
     void onThreadComplete(ThreadCachedPoolExecutorHandler);
 
     void setUpOneIdleThread();
+
+    void submit(FutureTask task);
     
     AtomicInteger mIdleThreadNum;
     

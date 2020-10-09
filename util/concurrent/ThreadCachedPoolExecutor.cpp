@@ -194,6 +194,9 @@ int _ThreadCachedPoolExecutor::shutdown(){
         break;
     }
 
+    //notify all thread to close
+    mTasks->destroy();
+
     ThreadCachedPoolExecutor exe;
     exe.set_pointer(this);
     st(ExecutorRecyler)::getInstance()->add(exe);
@@ -263,17 +266,7 @@ int _ThreadCachedPoolExecutor::getThreadsNum() {
     return mHandlers->size();
 }
 
-Future _ThreadCachedPoolExecutor::submit(Runnable r) {
-    //printf("thread cached pool start submit \n");
-    if(mStatus->get() == StatusShutDown) {
-        return nullptr;
-    }
-
-    FutureTaskStatusListener listener;
-    listener.set_pointer(this);
-    FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r,listener);
-    Future future = createFuture(task);
-    //printf("thread cached pool start submit 2 \n");
+void _ThreadCachedPoolExecutor::submit(FutureTask task) {
     AutoLock l(mHandlerMutex);
     if( mTasks->size() > 0) {
         //printf("thread cached pool start submit 3 \n");
@@ -288,7 +281,7 @@ Future _ThreadCachedPoolExecutor::submit(Runnable r) {
                 ThreadCachedPoolExecutorHandler handler = iterator->getValue();
                 if(handler->isIdle()) {
                     mTasks->enQueueLast(task);
-                    return future;
+                    return;
                 }
                 iterator->next();
             }
@@ -297,8 +290,21 @@ Future _ThreadCachedPoolExecutor::submit(Runnable r) {
         }
     }
     //printf("thread cached pool start submit 4\n");
-    
     mTasks->enQueueLast(task);
+}
+
+Future _ThreadCachedPoolExecutor::submit(Runnable r) {
+    //printf("thread cached pool start submit \n");
+    if(mStatus->get() == StatusShutDown) {
+        return nullptr;
+    }
+
+    FutureTaskStatusListener listener;
+    listener.set_pointer(this);
+    FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r,listener);
+    Future future = createFuture(task);
+    //printf("thread cached pool start submit 2 \n");
+    submit(task);
     return future;   
 }
 

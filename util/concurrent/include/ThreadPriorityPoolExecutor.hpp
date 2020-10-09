@@ -112,7 +112,7 @@ private:
 
     int mThreadNum;
 
-    Mutex mProtectMutex;
+    Mutex mStatusMutex;
 
     bool isShutDown;
 

@@ -167,8 +167,8 @@ int _ThreadPoolExecutor::shutdown() {
         } 
         break;
     }
-
-    mPool->clear();
+    
+    mPool->destroy();
 
     ThreadPoolExecutor exe;
     exe.set_pointer(this);

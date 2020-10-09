@@ -18,11 +18,14 @@
 #include "ScheduledExecutorService.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
 #include "HashMap.hpp"
+#include "Thread.hpp"
+#include "ArrayList.hpp"
+#include "FutureTask.hpp"
 
 using namespace std;
 
 enum ScheduledTaskType {
-    ScheduletTaskNormal, //normal schedule task
+    ScheduletTaskNormal = 0, //normal schedule task
     ScheduletTaskFixRate, //loop time record from task start
     ScheduletTaskFixedDelay //loop time record from task complete
 };
@@ -33,120 +36,35 @@ class _WaitingTask;
 class _ScheduledThreadPoolThread;
 class _ThreadScheduledPoolExecutor;
 
-DECLARE_SIMPLE_CLASS(ScheduledTaskWorker) IMPLEMENTS(Runnable){
-public:
-    friend class _ScheduledThreadPoolThread;
-
-    _ScheduledTaskWorker(sp<_WaitingTask>,sp<_ScheduledThreadPoolThread>);
-    
-    ~_ScheduledTaskWorker();
-
-    void run();
-
-    void onInterrupt();
-
-private:
-    sp<_WaitingTask> mTask;
-
-    sp<_ScheduledThreadPoolThread> mTimeThread;
-};
-
-
-DECLARE_SIMPLE_CLASS(WaitingTask) {
+DECLARE_SIMPLE_CLASS(WaitingTask) EXTENDS(FutureTask){
 public:
     friend class _ScheduledTaskWorker;
     friend class _ScheduledThreadPoolThread;
     friend class _ThreadScheduledPoolExecutor;
 
-    _WaitingTask(FutureTask task,long int interval);
+    _WaitingTask(int,Runnable);
+    _WaitingTask(int,Runnable,FutureTaskStatusListener);
 
-    _WaitingTask(FutureTask t,
-                             long int initialdelay,
-                             int type,
-                             long int repeatDelay);                             
+    void init(long int interval,int type,int repeat);
+    void setExecutor(_ThreadScheduledPoolExecutor *);
 
-    ~_WaitingTask();                     
-                   
+    //~_WaitingTask();
 
+    void onComplete();
+    
+    sp<_WaitingTask> parent;
+    sp<_WaitingTask> left; //smaller or equal 
+    sp<_WaitingTask> right; //larger                 
 private:
     long int mNextTime;
-    
-    FutureTask task;
-
     int mScheduleTaskType;
-
     long int repeatDelay;
-
-    sp<_ScheduledThreadPoolThread> mTimeThread;
-};
-
-DECLARE_SIMPLE_CLASS(ScheduledThreadPoolThread) EXTENDS(Thread) {
-
-public:
-    friend class _ThreadScheduledPoolExecutor;
-
-    _ScheduledThreadPoolThread(ThreadCachedPoolExecutor m);
-
-    ~_ScheduledThreadPoolThread();
-
-    void onUpdate();
-
-    void addTask(WaitingTask v);
-
-    void run();
-
-    void stop();
-
-    void waitForTerminate();
-
-    void waitForTerminate(long);
-
-    void onInterrupt();
-
-    void onTaskFinished(Runnable);
-
-    void stopTask(FutureTask);
-
-private:
-    //wangsl
-    std::vector<long> mWaitingTimes;
-    HashMap<long,ArrayList<WaitingTask>> mWaitingTasks;
-    //ArrayList<WaitingTask> mWaitingTasks;
-    //wangsl
-
-    ThreadCachedPoolExecutor cachedExecutor;
-    
-    Mutex mFuturesMutex;
-    HashMap<Runnable,Future> mFutures;
-
-    //ThreadPoolExecutor mExecutorService;
-    
-    Mutex mDataLock;
-
-    Condition mDataCond;
-
-    Mutex mTimeLock;
-    
-    Condition mTimeCond;
-
-    Mutex mTerminatedMutex;
-
-    Condition mTerminatedCond;
-
-    Mutex mTaskMutex;
-
-    ArrayList<WaitingTask> mCurrentTask;
-    long mCurrentTaskTime;
-
-    bool isStop;
-
-    bool isTerminated;
-    //TODO
-    //std::_Rb_tree_node<WaitingTask> node;
+    _ThreadScheduledPoolExecutor *mExecutor;
 };
 
 DECLARE_SIMPLE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(ScheduledExecutorService)
-                                                  IMPLEMENTS(FutureTaskStatusListener) {
+                                                  IMPLEMENTS(FutureTaskStatusListener)
+                                                  IMPLEMENTS(Thread) {
 
 public:
 
@@ -170,20 +88,32 @@ public:
 
     Future schedule(Runnable command,long delay);
 
-    int getThreadsNum();
-
-    Future scheduleAtFixedRate(Runnable command,
+    Future scheduleAtFixedRate(Runnable r,
                                 long initialDelay,
                                 long period);
 
-    Future scheduleWithFixedDelay(Runnable command,
+    Future scheduleWithFixedDelay(Runnable r,
                                 long initialDelay,
                                 long delay);
+
+    int getThreadsNum();
+
+    void addWaitingTask(WaitingTask);
+    WaitingTask getWaitingTask();
 
     void onCancel(FutureTask);                        
 
 private:
-    ScheduledThreadPoolThread  mTimeThread;
+    //ScheduledThreadPoolThread  mTimeThread;
+    void run();
+
+    WaitingTask newFixedRateWaitingTask(Runnable command,
+                                long initialDelay,
+                                long period);
+
+    WaitingTask newFixedDelayWaitingTask(Runnable command,
+                                long initialDelay,
+                                long delay);
 
     ThreadCachedPoolExecutor mCachedExecutor;
 
@@ -191,9 +121,13 @@ private:
 
     bool mIsTerminated;
 
-    Mutex mProtectMutex;
+    Mutex mStatusMutex;
 
     void init(int size,bool isDyn);
+
+    Mutex mTaskMutex;
+    WaitingTask mRoot;
+    Condition mTaskWaitCond; 
 };
 
 }

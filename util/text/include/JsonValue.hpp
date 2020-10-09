@@ -14,6 +14,7 @@
 #include "ArrayList.hpp"
 #include "Field.hpp"
 #include "Long.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 

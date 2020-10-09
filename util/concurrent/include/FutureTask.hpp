@@ -40,7 +40,7 @@ public:
 
     int getType();
 
-    void onComplete();
+    virtual void onComplete();
 
     void onRunning();
 
@@ -57,8 +57,7 @@ public:
 
 private:
     void cancelWithoutCallback();
-
-
+    
     Runnable mRunnable;
 
     int mType;
