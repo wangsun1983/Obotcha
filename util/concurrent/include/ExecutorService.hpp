@@ -49,6 +49,9 @@ public:
     //if this executor has been shut down
     //virtual bool isShutdown() = 0;
 
+    //update status as terminate
+    virtual void setAsTerminated() = 0;
+    
     //if all tasks have completed following shut down
     virtual bool isTerminated() = 0;
 

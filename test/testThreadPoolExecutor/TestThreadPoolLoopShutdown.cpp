@@ -30,7 +30,7 @@ public:
 int testThreadPoolLoopShutdown() {
     //test1
     ThreadPoolExecutor executor = createThreadPoolExecutor(8*1024,4);
-    for(int i = 0;i<1024*8;i++){
+    for(int i = 0;i<8*1024;i++){
       int v=executor->execute(createMyLoopShutdownRunnable1());
     }
 
@@ -64,7 +64,6 @@ int testThreadPoolLoopShutdown() {
     executor2->shutdown();
 
     printf("---[ThreadPoolExecutor Loop Submit} special case100] [OK]--- \n");
-
     return 0;
 
 }

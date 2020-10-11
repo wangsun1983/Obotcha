@@ -102,6 +102,10 @@ int _ThreadScheduledPoolExecutor::shutdown() {
     return 0;
 }
 
+void _ThreadScheduledPoolExecutor::setAsTerminated() {
+    //Do nothing
+}
+
 bool _ThreadScheduledPoolExecutor::isShutdown() {
     return mIsShutDown;
 }

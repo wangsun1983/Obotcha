@@ -2,7 +2,6 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "Thread.hpp"
-#include "NetUtils.hpp"
 #include "InitializeException.hpp"
 #include "FileOutputStream.hpp"
 #include "File.hpp"
@@ -13,26 +12,23 @@
 
 using namespace obotcha;
 
+/*
+sudo ufw disable
+*/
+
 DECLARE_SIMPLE_CLASS(MyListener) IMPLEMENTS(SocketListener) {
 public:
-    void onAccept(int fd,String ip,int port,ByteArray pack) {
-        if(pack != nullptr) {
-            printf("pack is %s \n",pack->toString()->toChars());
-        }
-
         
-    }
-
-    void onDisconnect(int fd) {
+    void onDataReceived(SocketResponser r,ByteArray pack) {
 
     }
 
-    void onConnect(int fd,String ip,int port) {
+    void onDisconnect(SocketResponser r) {
 
     }
 
-    void onConnect(int fd,String domain) {
-
+    void onConnect(SocketResponser r) {
+        printf("on connect fd is %d \n",r->getFd());
     }
 
     void onTimeout() {
@@ -43,15 +39,16 @@ public:
 int main() {
   MyListener listener = createMyListener();
   //TcpServer server = createTcpServer(1212,listener);
-  TcpServer server = createTcpServer(1212);
+  TcpServer server = createTcpServer(1992,listener);
   server->start();
   while(1) {
-    printf("star read \n");
-    ByteArray data = server->recv();
-    if(data != nullptr) {
-        printf("data is %s \n",data->toString()->toChars());
-    } else {
-        printf("no data \n");
-    }
+    sleep(1000);
+    //printf("star read \n");
+    //ByteArray data = server->recv();
+    //if(data != nullptr) {
+    //    printf("data is %s \n",data->toString()->toChars());
+    //} else {
+    //    printf("no data \n");
+    //}
   }
 }

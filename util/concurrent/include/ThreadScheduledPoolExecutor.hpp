@@ -81,6 +81,8 @@ public:
     int awaitTermination(long timeout);
 
     bool isShutdown();
+    
+    void setAsTerminated();
 
     bool isTerminated();
 

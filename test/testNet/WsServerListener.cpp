@@ -9,7 +9,6 @@
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "AutoLock.hpp"
-#include "NetUtils.hpp"
 #include "WebSocketFrameComposer.hpp"
 #include "WebSocketProtocol.hpp"
 #include "WebSocketComposer.hpp"
@@ -29,10 +28,10 @@ _WsServerListener::_WsServerListener() {
 
 int _WsServerListener::onMessage(sp<_WebSocketClientInfo> client,String message) {
     if(message != nullptr) {
-        printf("message is %s \n",message->toChars());
+        //printf("message is %s \n",message->toChars());
         JsonReader reader = createJsonReader(message);
         JsonValue value = reader->get();
-        printf("value size is %d \n",value->size());
+        //printf("value size is %d \n",value->size());
         Integer req = value->getInteger("command");
         if(req == nullptr) {
             return 0;
@@ -74,12 +73,13 @@ int _WsServerListener::onData(sp<_WebSocketClientInfo> client,ByteArray data) {
 }
 
 int _WsServerListener::onConnect(sp<_WebSocketClientInfo> client) {
-    //printf("wangsl,get an onConnect message \n");
+    printf("wangsl,get an onConnect message,fd is %d \n",client->getClientFd());
     mConnectCounts->incrementAndGet();
 }
 
 int _WsServerListener::onDisconnect(sp<_WebSocketClientInfo> client) {
     //printf("wangsl,get an onDisConnect message \n");
+    printf("wangsl,get an disonConnect message,fd is %d \n",client->getClientFd());
     mDisconnectCounts->incrementAndGet();
 }
 

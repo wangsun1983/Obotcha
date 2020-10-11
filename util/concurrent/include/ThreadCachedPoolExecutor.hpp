@@ -84,6 +84,8 @@ public:
 
     void awaitTermination();
 
+    void setAsTerminated();
+
     int awaitTermination(long timeout);
 
     Future submit(Runnable task);
@@ -93,9 +95,10 @@ public:
     ~_ThreadCachedPoolExecutor();
 
 private:
-    static const int StatusIdle;
     static const int StatusRunning;
     static const int StatusShutDown;
+    static const int StatusTerminate;
+
     static const int DefaultWaitTime;
     static const int DefaultMaxThreadNums;
     static const int DefaultQueueNums;

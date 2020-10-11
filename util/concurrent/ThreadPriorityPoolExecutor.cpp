@@ -52,22 +52,22 @@ PriorityTask _PriorityPoolThread::getTask() {
                 highTasks->enQueueLast(task);
                 return nullptr;
             }
-        }
-
-        if(midTasks->size() > 0) {
+        }else if(midTasks->size() > 0) {
             task = midTasks->deQueueFirst();
             if(task->task == nullptr) {
                 midTasks->enQueueLast(task);
                 return nullptr;
             }
-        }
-
-        if(lowTasks->size() > 0) {
+        }else if(lowTasks->size() > 0) {
             task = lowTasks->deQueueFirst();
             if(task->task == nullptr) {
                 lowTasks->enQueueLast(task);
                 return nullptr;
             }
+        }
+
+        if(task != nullptr) {
+            return task;
         }
 
         mCond->wait(mMutex);
@@ -85,23 +85,15 @@ void _PriorityPoolThread::run() {
         if(mCurrentTask->task->getStatus() == st(Future)::Cancel) {
             continue;
         }
-
-        {
-            if(mCurrentTask->task->getType() == FUTURE_TASK_SUBMIT) {
-                mCurrentTask->task->onRunning();
-            }
-        }
-
+        
+        mCurrentTask->task->onRunning();
+        
         Runnable runnable = mCurrentTask->task->getRunnable();
         if(runnable != nullptr) {
             runnable->run();    
         }
-
-        {
-            if(mCurrentTask->task->getType() == FUTURE_TASK_SUBMIT) {
-                mCurrentTask->task->onComplete();
-            }
-        }
+        
+        mCurrentTask->task->onComplete();
         
         {    
             AutoLock l(mCurrentTaskMutex);
@@ -122,15 +114,12 @@ bool _PriorityPoolThread::shutdownTask(FutureTask task) {
 }
 
 void _PriorityPoolThread::onInterrupt() {
-    printf("_PriorityPoolThread onInterrupt");
     if(mCurrentTask!= nullptr &&mCurrentTask->task->getStatus() == st(Future)::Running) {
         Runnable r = mCurrentTask->task->getRunnable();
-        printf("_PriorityPoolThread onInterrupt trace1");
         if(r != nullptr) {
             r->onInterrupt();
         }
     }
-    printf("_PriorityPoolThread onInterrupt trace2");
     mCurrentTask = nullptr;
 }
 
@@ -204,7 +193,7 @@ int _ThreadPriorityPoolExecutor::shutdown() {
         while(iterator->hasValue()) {
             PriorityPoolThread thread = iterator->getValue();
             thread->stop();
-            thread->detach();
+            //thread->detach();
             iterator->next();
         }
     }
@@ -212,15 +201,18 @@ int _ThreadPriorityPoolExecutor::shutdown() {
     {
         AutoLock l(mTaskMutex);
         while(!mHighPriorityTasks->isEmpty()) {
-            mHighPriorityTasks->deQueueLast();
+            PriorityTask task = mHighPriorityTasks->deQueueLast();
+            task->task->onShutDown();
         }
 
         while(!mMidPriorityTasks->isEmpty()) {
-            mMidPriorityTasks->deQueueLast();
+            PriorityTask task = mMidPriorityTasks->deQueueLast();
+            task->task->onShutDown();
         }
 
         while(!mLowPriorityTasks->isEmpty()) {
-            mLowPriorityTasks->deQueueLast();
+            PriorityTask task = mLowPriorityTasks->deQueueLast();
+            task->task->onShutDown();
         }
     }
 
@@ -239,7 +231,17 @@ int _ThreadPriorityPoolExecutor::shutdown() {
     st(ExecutorRecyler)::getInstance()->add(exe);
 }
 
+void _ThreadPriorityPoolExecutor::setAsTerminated() {
+    {
+        AutoLock l(mStatusMutex);
+        isTermination = true;
+    }
+
+    mThreads->clear();
+}
+
 bool _ThreadPriorityPoolExecutor::isTerminated() {
+    AutoLock l(mStatusMutex);
     return isTermination;
 }
 
@@ -251,10 +253,10 @@ int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
     if(!isShutDown) {
         return -InvalidStatus;
     }
-
+    
     bool isWaitForever = (millseconds == 0);
 
-    AutoLock ll(mThreadMutex);
+    //AutoLock ll(mThreadMutex);
     ListIterator<PriorityPoolThread> iterator = mThreads->getIterator();
     while(iterator->hasValue()) {
         PriorityPoolThread handler = iterator->getValue();
@@ -269,7 +271,6 @@ int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
         }
         iterator->next();
     }
-
     return 0;
 }
 

@@ -45,12 +45,13 @@ int loopsubmittest() {
         ExecutorService pool = st(Executors)::newCachedThreadPool(100,0,20,1000);
         printf("start trace \n");
         for(int i = 0;i < 100000;i++) {
+            //printf("trace 1,i is %d \n",i);
             pool->submit(createSubmitLoopRun1());
         }
-
+        printf("checksubmitList trace1");
         sleep(10);
         pool->shutdown();
-
+        printf("checksubmitList trace2");
         for(int i = 0; i < 100000;i++) {
           if(checksubmitList->get(i) != 1) {
             printf("value is %d,index is %d \n",checksubmitList->get(i),i);

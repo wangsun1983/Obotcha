@@ -126,7 +126,7 @@ int testThreadShutdown() {
         long t = st(System)::currentTimeMillis();
         pool->awaitTermination(1000);
         long current = st(System)::currentTimeMillis();
-        if((current - t) != 1000) {
+        if((current - t) > 1) {
             printf("---[ThreadPoolExecutor Test {shutdown()} special case6, interval is %ld] [FAIL]--- \n",current - t);
             break;
         }

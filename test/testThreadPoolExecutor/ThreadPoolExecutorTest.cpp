@@ -109,7 +109,7 @@ int normalTest() {
     while(1) {
         ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
         int result = pool->awaitTermination(1000);
-        if(result != -WaitTimeout) {
+        if(result != -InvalidStatus) {
             printf("---[TestThreadPoolExecutor Test {awaitTermination()} case1] [FAIL]--- \n");
             break;
         }

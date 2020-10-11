@@ -3,6 +3,11 @@
 
 #include "WsServerListener.hpp"
 
+/*
+if tcp data cannot be received,we should close fire wall.
+command:sudo ufw disable
+*/
+
 using namespace obotcha;
 
 int main() {

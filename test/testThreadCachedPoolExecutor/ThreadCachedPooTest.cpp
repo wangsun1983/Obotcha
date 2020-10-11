@@ -24,5 +24,5 @@ int main() {
     releaseTest();
     loopsubmittest();
     cancelTest();
-    //sleep(10);
+    sleep(10);
 }

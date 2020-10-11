@@ -32,8 +32,6 @@ public:
     bool isTerminated();
 
     void run();
-    
-    void stop();
 
     void onInterrupt();
 
@@ -44,25 +42,13 @@ public:
 private:
     BlockingQueue<FutureTask> mPool;
 
-    //int state;
-
     bool mIdleWait;
 
     Mutex mStateMutex;
 
-    //Condition mWaitCond;
-
-    //bool isWaitTerminate;
-
     FutureTask mCurrentTask;
 
     mutable volatile bool mStop;
-
-    //Thread mThread;
-
-    //sp<_ThreadPoolExecutor> mExecutor;
-
-    //Mutex mExecutorMutex;
 };
 
 
@@ -88,6 +74,8 @@ public:
 
     int awaitTermination(long timeout);
 
+    void setAsTerminated();
+
     Future submit(Runnable task);
 
     int getThreadsNum();
@@ -98,13 +86,17 @@ public:
 
 private:
     //void onCompleteNotify(ThreadPoolExecutorHandler h);
+    static const int DefaultThreadNum;
 
     void onCancel(FutureTask);
 
     BlockingQueue<FutureTask> mPool;
     
-    Mutex mHandlersMutex;
     ArrayList<ThreadPoolExecutorHandler> mHandlers;
+
+    Mutex mStatusMutex;
+
+    Mutex mHandlersMutex;
 
     bool mIsShutDown;
 
@@ -114,12 +106,6 @@ private:
     int mThreadNum;
 
     void init(int queuesize,int threadnum);
-
-    Mutex mProtectMutex;
-
-    Mutex mWaitMutex;
-
-    Condition mWaitCondition;
 };
 
 }

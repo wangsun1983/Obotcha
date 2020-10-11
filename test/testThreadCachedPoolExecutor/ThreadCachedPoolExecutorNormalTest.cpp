@@ -18,7 +18,9 @@ int runDestory = 1;
 DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
+        printf("run test1 start 1\n");
         sleep(10);
+        printf("run test1 start 2\n");
     }
 
     void onInterrupt() {
@@ -33,7 +35,13 @@ Mutex runTest2Mutex;
 DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
+        printf("abc,runTest2Mutex lock \n");
         runTest2Mutex->lock();
+        printf("abc,runTest2Mutex lock2 \n");
+    }
+
+    void onInterrupt() {
+        printf("RunTest2 onInterrupt!!! \n");
     }
 };
 
@@ -107,7 +115,7 @@ int normalTest() {
 
         int result = pool->awaitTermination(1000);
         if(result != -InvalidStatus) {
-            printf("---[TestCachedPoolExecutor Test {awaitTermination()} case1] [FAIL]--- \n");
+            printf("---[TestCachedPoolExecutor Test {awaitTermination()} case1] [FAIL]---,result is %d \n",result);
             break;
         }
 
@@ -119,9 +127,10 @@ int normalTest() {
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
+        printf("start wait complete \n");
         result = pool->awaitTermination(5000);
         if(result != -WaitTimeout) {
-            printf("---[TestCachedPoolExecutor Test {awaitTermination()} case2] [FAIL]--- \n");
+            printf("---[TestCachedPoolExecutor Test {awaitTermination()} case2] [FAIL]---,result is %d \n",result);
             runTest2Mutex->unlock();
             pool->shutdown();
             break;
@@ -139,6 +148,7 @@ int normalTest() {
         runTest2Mutex->unlock();
         break;
     }
+
 
     //int awaitTermination(long timeout = 0);
     while(1) {
@@ -233,11 +243,14 @@ int normalTest() {
     //submit(Runnable task);
     while(1) {
         ExecutorService pool = st(Executors)::newCachedThreadPool();
-
+        printf("start submit task \n");
         Future task = pool->submit(createRunTest1());
         sleep(1);
-        if(pool->getThreadsNum() != 1) {
-            printf("---[TestCachedPoolExecutor Test {submit()} case4] [FAIL]--- \n");
+        printf("start submit task2 \n");
+        int num = pool->getThreadsNum();
+        printf("start submit task3 \n");
+        if(num != 1) {
+            printf("---[TestCachedPoolExecutor Test {submit()} case4] [FAIL]---, num is %d\n",num);
             break;
         }
 

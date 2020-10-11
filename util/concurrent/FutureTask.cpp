@@ -57,7 +57,7 @@ void _FutureTask::cancel() {
 
     AutoLock l(mCompleteMutex);
     
-    if(mStatus == st(Future)::Cancel) {
+    if(mStatus == st(Future)::Cancel || mStatus == st(Future)::Complete) {
         return;
     }
     

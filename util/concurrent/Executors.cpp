@@ -48,9 +48,11 @@ void _ExecutorRecyler::run() {
             service = mRecyleList->deQueueFirst();
         }
         
-        if(service->awaitTermination(1000) != 0) {
+        if(service->awaitTermination(5*1000) != 0) {
             AutoLock l(mMutex);
             mRecyleList->enQueueLast(service);
+        } else {
+            service->setAsTerminated();
         }
     }
 }

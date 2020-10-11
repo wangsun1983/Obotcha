@@ -83,28 +83,6 @@ private:
 
 
 int testThreadShutdown() {
-#if 0
-    //TestThread onInterrupt case1
-    while(1) {
-        ExecutorService pool11 = st(Executors)::newPriorityThreadPool();
-        pool11->shutdown();
-        int ret = pool11->shutdown();
-
-        if(ret != 0) {
-            printf("---[ThreadPriorityPoolExecutor Test {shutdown()} special case1] [FAIL]--- \n");
-            break;
-        }
-
-        auto mtask = pool11->submit(createMyShutdownRunTest1());
-        if(mtask != nullptr) {
-            printf("---[ThreadPriorityPoolExecutor Test {shutdown()} special case2] [FAIL]--- \n");
-            break;
-        }
-
-        printf("---[ThreadPriorityPoolExecutor Test {shutdown()} special case3] [Success]--- \n");
-        break;
-    }
-#endif
 
     while(1) {
         ThreadPriorityPoolExecutor pool123 = createThreadPriorityPoolExecutor();
