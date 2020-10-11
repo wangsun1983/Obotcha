@@ -88,16 +88,23 @@ int _ThreadScheduledPoolExecutor::shutdown() {
     }
     
     //clear all task
-    AutoLock l(mTaskMutex);
-    while(1) {
-        WaitingTask task = getWaitingTask();
-        if(task == nullptr) {
-            break;
-        }
+    {
+        AutoLock l(mTaskMutex);
+        while(1) {
+            WaitingTask task = getWaitingTask();
+            if(task == nullptr) {
+                break;
+            }
 
-        task->onShutDown();
+            task->onShutDown();
+        }
     }
+
     mTaskWaitCond->notify();
+
+    mCachedExecutor->shutdown();
+    
+    this->quit();
 
     return 0;
 }
@@ -117,6 +124,12 @@ bool _ThreadScheduledPoolExecutor::isTerminated() {
 
 void _ThreadScheduledPoolExecutor::awaitTermination() {
     awaitTermination(0);
+}
+
+void _ThreadScheduledPoolExecutor::onInterrupt() {
+    if(mCurrentTask != nullptr) {
+        mCurrentTask->onShutDown();
+    }
 }
 
 int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
@@ -252,29 +265,31 @@ void _ThreadScheduledPoolExecutor::run() {
         }
 
         AutoLock ll(mTaskMutex);
-        WaitingTask waitingTask = getWaitingTask();
-        if(waitingTask == nullptr) {
+        mCurrentTask = getWaitingTask();
+        if(mCurrentTask == nullptr) {
             mTaskWaitCond->wait(mTaskMutex);
             continue;
         }
 
-        if(waitingTask->getStatus() == st(Future)::Cancel) {
+        if(mCurrentTask->getStatus() == st(Future)::Cancel) {
             continue;
         }
 
-        int interval = waitingTask->mNextTime - st(System)::currentTimeMillis();
+        int interval = mCurrentTask->mNextTime - st(System)::currentTimeMillis();
         if(interval <= 0) {
-            mCachedExecutor->submit((FutureTask)waitingTask);
-            if(waitingTask->mScheduleTaskType == ScheduletTaskFixRate) {
-                waitingTask->mNextTime = (st(System)::currentTimeMillis() + waitingTask->repeatDelay);
-                addWaitingTask(waitingTask);
+            mCachedExecutor->submit((FutureTask)mCurrentTask);
+            if(mCurrentTask->mScheduleTaskType == ScheduletTaskFixRate) {
+                mCurrentTask->mNextTime = (st(System)::currentTimeMillis() + mCurrentTask->repeatDelay);
+                addWaitingTask(mCurrentTask);
             }
         } else {
             int ret = mTaskWaitCond->wait(mTaskMutex,interval);
             if(ret != -WaitTimeout) {
-                addWaitingTask(waitingTask);
+                addWaitingTask(mCurrentTask);
             }
         }
+
+        mCurrentTask = nullptr;
     }
 }
 

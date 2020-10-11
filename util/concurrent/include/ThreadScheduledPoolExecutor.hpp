@@ -80,6 +80,8 @@ public:
 
     int awaitTermination(long timeout);
 
+    void onInterrupt();
+
     bool isShutdown();
     
     void setAsTerminated();
@@ -130,6 +132,8 @@ private:
     Mutex mTaskMutex;
     WaitingTask mRoot;
     Condition mTaskWaitCond; 
+
+    WaitingTask mCurrentTask;
 };
 
 }
