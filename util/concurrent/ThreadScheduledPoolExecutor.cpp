@@ -90,6 +90,10 @@ int _ThreadScheduledPoolExecutor::shutdown() {
     //clear all task
     {
         AutoLock l(mTaskMutex);
+        if(mCurrentTask != nullptr) {
+            mCurrentTask->onShutDown();
+        }
+
         while(1) {
             WaitingTask task = getWaitingTask();
             if(task == nullptr) {
@@ -252,7 +256,13 @@ void _ThreadScheduledPoolExecutor::addWaitingTask(WaitingTask t) {
 
 //called from Future->cancel
 void _ThreadScheduledPoolExecutor::onCancel(FutureTask task) {
-    mCachedExecutor->onCancel(task);
+    AutoLock ll(mTaskMutex);
+    if(mCurrentTask == task) {
+        //task is waiting,we should notify this thread.
+        mTaskWaitCond->notify();
+    } else {
+        mCachedExecutor->onCancel(task);
+    }
 }
 
 void _ThreadScheduledPoolExecutor::run() {
