@@ -10,11 +10,6 @@ namespace obotcha {
 class _FutureTask;
 class _PriorityTaskManager;
 
-enum FutureTaskType {
-    FUTURE_TASK_NORMAL,
-    FUTURE_TASK_SUBMIT
-};
-
 DECLARE_SIMPLE_CLASS(FutureTaskStatusListener) {
 public:    
     virtual void onCancel(sp<_FutureTask>) = 0;
@@ -24,9 +19,9 @@ DECLARE_SIMPLE_CLASS(FutureTask) {
 public:
     friend class _PriorityTaskManager;
 
-    _FutureTask(int,Runnable);//remove soon
+    _FutureTask(Runnable);//remove soon
 
-    _FutureTask(int,Runnable,FutureTaskStatusListener);
+    _FutureTask(Runnable,FutureTaskStatusListener);
 
     ~_FutureTask();
 
@@ -37,8 +32,6 @@ public:
     void cancel();
 
     int getStatus();
-
-    int getType();
 
     virtual void onComplete();
 
@@ -59,8 +52,6 @@ private:
     void cancelWithoutCallback();
     
     Runnable mRunnable;
-
-    int mType;
 
     int mStatus;
 

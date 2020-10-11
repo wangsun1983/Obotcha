@@ -11,7 +11,6 @@
 #include "ArrayList.hpp"
 #include "Future.hpp"
 #include "Executor.hpp"
-#include "Callable.hpp"
 #include "ArrayList.hpp"
 #include "ExecutorService.hpp"
 #include "Condition.hpp"
@@ -21,13 +20,11 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(PriorityTask) {
+DECLARE_SIMPLE_CLASS(PriorityTask) EXTENDS(FutureTask) {
 public:
-    _PriorityTask(int,FutureTask);
+    _PriorityTask(int,Runnable,FutureTaskStatusListener);
 
     int priority;
-
-    FutureTask task;
 };
 
 class _ThreadPriorityPoolExecutor;
@@ -55,16 +52,13 @@ public:
 private:
     Mutex mMutex;
     Condition mCond;
-    
-    Mutex mCurrentTaskMutex;
+
     PriorityTask mCurrentTask;
     LinkedList<PriorityTask> highTasks;
     LinkedList<PriorityTask> midTasks;
     LinkedList<PriorityTask> lowTasks;
     
     PriorityTask getTask();
-    
-    mutable volatile bool mStop;
 };
 
 DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) IMPLEMENTS(ExecutorService)
@@ -126,6 +120,8 @@ private:
     Mutex mWaitMutex;
     
     Condition mWaitCondition;
+
+    static const int PriorityNoUse = -100;
 };
 
 }

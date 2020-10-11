@@ -50,8 +50,6 @@ private:
 
     long mThreadTimeout;
 
-    mutable volatile bool mStop;
-
     BlockingQueue<FutureTask> mPool;
 
     static const int HandleIdle;

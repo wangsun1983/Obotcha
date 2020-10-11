@@ -116,7 +116,7 @@ int _ThreadPoolExecutor::execute(Runnable runnable) {
         }
     }
     
-    FutureTask task = createFutureTask(FUTURE_TASK_NORMAL,runnable);
+    FutureTask task = createFutureTask(runnable);
     mPool->enQueueLast(task);
     return 0;
 }
@@ -174,7 +174,7 @@ Future _ThreadPoolExecutor::submit(Runnable r) {
     FutureTaskStatusListener listener;
     listener.set_pointer(this);
 
-    FutureTask task = createFutureTask(FUTURE_TASK_SUBMIT,r,listener);
+    FutureTask task = createFutureTask(r,listener);
     mPool->enQueueLast(task);
 
     return createFuture(task);
@@ -227,18 +227,7 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
 }
 
 int _ThreadPoolExecutor::getThreadsNum() {
-    AutoLock ll(mHandlersMutex);
-    ListIterator<ThreadPoolExecutorHandler>iterator = mHandlers->getIterator();
-    int threadNum = 0;
-    while(iterator->hasValue()) {
-        ThreadPoolExecutorHandler handler = iterator->getValue();
-        if(handler->getStatus() != st(Thread)::Complete) {
-            threadNum++;
-        }
-        iterator->next();
-    }
-
-    return threadNum;
+    return mThreadNum;
 }
 
 int _ThreadPoolExecutor::getQueueSize() {

@@ -13,11 +13,11 @@
 namespace obotcha {
 
 //---------------WaitingTask---------------//
-_WaitingTask::_WaitingTask(int type,Runnable r):_FutureTask(type,r) {
+_WaitingTask::_WaitingTask(Runnable r):_FutureTask(r) {
     //nothing
 }
 
-_WaitingTask::_WaitingTask(int type,Runnable r,FutureTaskStatusListener l):_FutureTask(type,r,l) {
+_WaitingTask::_WaitingTask(Runnable r,FutureTaskStatusListener l):_FutureTask(r,l) {
     //nothing
 }
 
@@ -138,7 +138,7 @@ Future _ThreadScheduledPoolExecutor::submit(Runnable r) {
 Future _ThreadScheduledPoolExecutor::schedule(Runnable r,long delay) {
     FutureTaskStatusListener listener;
     listener.set_pointer(this);
-    WaitingTask task = createWaitingTask(FUTURE_TASK_SUBMIT,r,listener);
+    WaitingTask task = createWaitingTask(r,listener);
     task->init(delay,ScheduletTaskNormal,-1);
     task->setExecutor(this);
 
@@ -152,7 +152,7 @@ Future _ThreadScheduledPoolExecutor::scheduleAtFixedRate(Runnable r,
 
     FutureTaskStatusListener listener;
     listener.set_pointer(this);
-    WaitingTask task = createWaitingTask(FUTURE_TASK_SUBMIT,r,listener);
+    WaitingTask task = createWaitingTask(r,listener);
     task->init(initialDelay,ScheduletTaskFixRate,period);
     task->setExecutor(this);
 
@@ -166,7 +166,7 @@ Future _ThreadScheduledPoolExecutor::scheduleWithFixedDelay(Runnable r,
 
     FutureTaskStatusListener listener;
     listener.set_pointer(this);
-    WaitingTask task = createWaitingTask(FUTURE_TASK_SUBMIT,r,listener);
+    WaitingTask task = createWaitingTask(r,listener);
     task->init(initialDelay,ScheduletTaskFixedDelay,delay);
 
     Future future = createFuture(task);

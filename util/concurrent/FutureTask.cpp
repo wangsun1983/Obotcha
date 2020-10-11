@@ -5,8 +5,7 @@
 namespace obotcha {
 
 //remove soon
-_FutureTask::_FutureTask(int type,Runnable r) {
-    this->mType = type;
+_FutureTask::_FutureTask(Runnable r) {
     this->mRunnable = r;
 
     mCompleteMutex = createMutex("FutureTaskMutex");
@@ -15,8 +14,7 @@ _FutureTask::_FutureTask(int type,Runnable r) {
     mStatus = st(Future)::Waiting;
 }
 
-_FutureTask::_FutureTask(int type,Runnable r,FutureTaskStatusListener l) {
-    this->mType = type;
+_FutureTask::_FutureTask(Runnable r,FutureTaskStatusListener l) {
     this->mRunnable = r;
     this->mListener = l;
 
@@ -122,10 +120,6 @@ void _FutureTask::cancelWithoutCallback() {
 int _FutureTask::getStatus() {
     AutoLock l(mCompleteMutex);
     return mStatus;
-}
-
-int _FutureTask::getType() {
-    return mType;
 }
 
 void _FutureTask::onRunning() {

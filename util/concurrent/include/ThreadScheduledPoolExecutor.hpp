@@ -42,8 +42,8 @@ public:
     friend class _ScheduledThreadPoolThread;
     friend class _ThreadScheduledPoolExecutor;
 
-    _WaitingTask(int,Runnable);
-    _WaitingTask(int,Runnable,FutureTaskStatusListener);
+    _WaitingTask(Runnable);
+    _WaitingTask(Runnable,FutureTaskStatusListener);
 
     void init(long int interval,int type,int repeat);
     void setExecutor(_ThreadScheduledPoolExecutor *);
