@@ -19,26 +19,18 @@ namespace obotcha {
 
 Exception::Exception(const char * v) {
     mErrInfo = createString(v);
+    printf("[Info]:%s \n----------END-----------\n\n",v);
+    fflush(stdout);
 }
     
 Exception::Exception(String v) {
     mErrInfo = v;
-}
-
-Exception::Exception(int v) {
-    mErrCode = v;
+    printf("[Info]:%s \n----------END-----------\n\n",v->toChars());
+    fflush(stdout);
 }
 
 String Exception::getErrInfo() {
     return mErrInfo;
-}
-
-int Exception::getErrCode() {
-    return mErrCode;
-}
-
-Exception * Exception::operator->() {
-    return this;
 }
 
 void Exception::printStack() {

@@ -6,10 +6,9 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-
-#include "PrintStream.hpp"
 #include "utilities.h"
 #include "logging.h"
+#include "String.hpp"
 
 using namespace std;
 

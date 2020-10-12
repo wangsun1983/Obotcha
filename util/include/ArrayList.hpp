@@ -31,7 +31,7 @@ class _ArrayList;
 class _ArrayList<V>:virtual public Object{ \
 public:    \
     _ArrayList() { \
-        throw MethodNotSupportException("ArrayList not support int"); \
+        throwMethodNotSupportException("ArrayList not support int"); \
     } \
 };\
 
@@ -67,7 +67,13 @@ public:
 
     inline T removeAt(int index) {
         if(index >= elements.capacity() || index < 0) {
-            throw ArrayIndexOutOfBoundsException("Arraylist remove fail",elements.capacity(),index);
+            String exception = createString("Arraylist remove fail")
+                            ->append("capacity is",
+                                    createString(elements.capacity()),
+                                    "index is ",
+                                    createString(index));
+
+            throwArrayIndexOutOfBoundsException(exception);
         }
 
         T val = elements.at(index);
@@ -96,7 +102,13 @@ public:
 
     inline int set(int index,T val) {
         if(index >= elements.capacity() || index < 0) {
-            throw ArrayIndexOutOfBoundsException("Arraylist set fail",elements.capacity(),index);
+            String exception = createString("Arraylist set fail")
+                            ->append("capacity is",
+                                    createString(elements.capacity()),
+                                    "index is ",
+                                    createString(index));
+
+            throwArrayIndexOutOfBoundsException(exception);
         }
 
         elements[index] = val;
@@ -105,7 +117,13 @@ public:
 
     inline T get(int index) {
          if(index >= elements.capacity() || index < 0) {
-            throw ArrayIndexOutOfBoundsException("Arraylist get fail",elements.capacity(),index);
+            String exception = createString("Arraylist get fail")
+                            ->append("capacity is",
+                                    createString(elements.capacity()),
+                                    "index is ",
+                                    createString(index));
+
+            throwArrayIndexOutOfBoundsException(exception);
         }
 
         return elements[index];
@@ -113,7 +131,13 @@ public:
 
     inline int insert(int index,T val) {
         if(index > elements.capacity() || index < 0) {
-            throw ArrayIndexOutOfBoundsException("Arraylist insert fail",elements.capacity(),index);
+            String exception = createString("Arraylist insert fail")
+                            ->append("capacity is",
+                                    createString(elements.capacity()),
+                                    "index is ",
+                                    createString(index));
+
+            throwArrayIndexOutOfBoundsException(exception);
         }
 
 
@@ -123,7 +147,13 @@ public:
 
     inline int insert(int index,ArrayList<T> list) {
         if(index > elements.capacity() || index < 0) {
-            throw ArrayIndexOutOfBoundsException("Arraylist insert fail",elements.capacity(),index);
+            String exception = createString("Arraylist insert fail")
+                            ->append("capacity is",
+                                    createString(elements.capacity()),
+                                    "index is ",
+                                    createString(index));
+
+            throwArrayIndexOutOfBoundsException(exception);
         }
 
         if(list != nullptr) {
@@ -134,7 +164,13 @@ public:
 
     inline int insert(int index,ArrayList<T> list,int length) {
         if(index > elements.capacity() || length <= 0 || index < 0) {
-            throw ArrayIndexOutOfBoundsException("Arraylist insert fail",elements.capacity(),index);
+            String exception = createString("Arraylist insert fail")
+                            ->append("capacity is",
+                                    createString(elements.capacity()),
+                                    "index is ",
+                                    createString(index));
+
+            throwArrayIndexOutOfBoundsException(exception);
         }
 
         if(list != nullptr) {
@@ -213,7 +249,7 @@ public:
         //return iterator->second;
         if(iterator == mList->end()) {
             //return nullptr;
-            throw ArrayIndexOutOfBoundsException("iterator error");
+            throwArrayIndexOutOfBoundsException("iterator error");
         }
 
         return *iterator;

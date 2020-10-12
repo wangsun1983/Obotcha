@@ -14,14 +14,10 @@
 
 namespace obotcha {
 
-class TransformException: public Exception {
+DECLARE_EXCEPTION(TransformException) {
 public:
-    TransformException(String);
-
-    TransformException(const char *v);
-
-private:
-    static const String EXCEPTION_TAG;
+	TransformException(const char * str):Exception(str){}
+	TransformException(String str):Exception(str) {}
 };
 
 }

@@ -17,12 +17,8 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/epollfileobserver.o \
 	$(outtmp)/bytearrayreader.o \
 	$(outtmp)/bytearraywriter.o \
-	$(outtmp)/filenotfoundexception.o \
 	$(outtmp)/stringreader.o \
 	$(outtmp)/byteringarrayreader.o \
-
-$(outtmp)/filenotfoundexception.o :$(ioDir)/FileNotFoundException.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileNotFoundException.cpp -o $(outtmp)/filenotfoundexception.o $(external)
 
 $(outtmp)/file.o :$(ioDir)/File.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/File.cpp -o $(outtmp)/file.o $(external)

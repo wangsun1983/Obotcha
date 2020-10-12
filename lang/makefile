@@ -16,18 +16,7 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/uint8.o \
 	$(outtmp)/byte.o \
 	$(outtmp)/exception.o \
-	$(outtmp)/outofboundsexception.o \
-	$(outtmp)/methodnotsupportexception.o \
-	$(outtmp)/protocolnotsupportexception.o \
-	$(outtmp)/nullpointerexception.o \
-	$(outtmp)/initializeexception.o \
 	$(outtmp)/error.o \
-	$(outtmp)/valuenotfoundexception.o \
-	$(outtmp)/transformexception.o \
-	$(outtmp)/illegalstateexception.o \
-	$(outtmp)/illegalargumentexception.o \
-	$(outtmp)/reflectexception.o \
-	
 
 $(outtmp)/integer.o :$(langDir)/Integer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Integer.cpp -o $(outtmp)/integer.o $(external)
@@ -77,35 +66,5 @@ $(outtmp)/byte.o :$(langDir)/Byte.cpp
 $(outtmp)/exception.o :$(langDir)/Exception.cpp
 		$(cppcompiler) $(obotchacppflags) -c $(langDir)/Exception.cpp -o $(outtmp)/exception.o $(external)
 
-$(outtmp)/outofboundsexception.o :$(langDir)/ArrayIndexOutOfBoundsException.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(langDir)/ArrayIndexOutOfBoundsException.cpp -o $(outtmp)/outofboundsexception.o $(external)
-
-$(outtmp)/methodnotsupportexception.o :$(langDir)/MethodNotSupportException.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(langDir)/MethodNotSupportException.cpp -o $(outtmp)/methodnotsupportexception.o $(external)
-
-$(outtmp)/initializeexception.o :$(langDir)/InitializeException.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(langDir)/InitializeException.cpp -o $(outtmp)/initializeexception.o $(external)
-
-$(outtmp)/nullpointerexception.o :$(langDir)/NullPointerException.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(langDir)/NullPointerException.cpp -o $(outtmp)/nullpointerexception.o $(external)
-
-$(outtmp)/protocolnotsupportexception.o :$(langDir)/ProtocolNotSupportException.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(langDir)/ProtocolNotSupportException.cpp -o $(outtmp)/protocolnotsupportexception.o $(external)
-
 $(outtmp)/error.o :$(langDir)/Error.cpp
 		$(cppcompiler) $(obotchacppflags) -c $(langDir)/Error.cpp -o $(outtmp)/error.o $(external)
-
-$(outtmp)/valuenotfoundexception.o :$(langDir)/ValueNotFoundException.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(langDir)/ValueNotFoundException.cpp -o $(outtmp)/valuenotfoundexception.o $(external)
-
-$(outtmp)/transformexception.o :$(langDir)/TransformException.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(langDir)/TransformException.cpp -o $(outtmp)/transformexception.o $(external)
-
-$(outtmp)/illegalstateexception.o :$(langDir)/IllegalStateException.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(langDir)/IllegalStateException.cpp -o $(outtmp)/illegalstateexception.o $(external)
-
-$(outtmp)/illegalargumentexception.o :$(langDir)/IllegalArgumentException.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(langDir)/IllegalArgumentException.cpp -o $(outtmp)/illegalargumentexception.o $(external)
-
-$(outtmp)/reflectexception.o :$(langDir)/ReflectException.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(langDir)/ReflectException.cpp -o $(outtmp)/reflectexception.o $(external)

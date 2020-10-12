@@ -109,7 +109,7 @@ void _Field::setValue(uint64_t v) {
 
 void _Field::setValue(sp<Object> v) {
     //object->setFieldObjectValue(v);
-    throw ReflectException("not support set Object value");
+    throwReflectException("not support set Object value");
 }
 
 void _Field::setValue(String v) {

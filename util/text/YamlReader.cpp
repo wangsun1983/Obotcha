@@ -12,7 +12,7 @@ _YamlReader::_YamlReader(String content) {
 
 _YamlReader::_YamlReader(File file) {
     if(file == nullptr || !file->exists()) {
-        throw InitializeException("YamlReader File Error");
+        throwInitializeException("YamlReader File Error");
     }
     
     mValue = createYamlValue();

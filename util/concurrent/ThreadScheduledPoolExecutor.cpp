@@ -7,7 +7,6 @@
 #include "Error.hpp"
 #include "AutoLock.hpp"
 #include "MethodNotSupportException.hpp"
-#include "ExecutorDestructorException.hpp"
 #include "Log.hpp"
 
 namespace obotcha {
@@ -72,7 +71,7 @@ int _ThreadScheduledPoolExecutor::execute(Runnable runnable) {
 }
 
 int _ThreadScheduledPoolExecutor::getThreadsNum() {
-    throw MethodNotSupportException(createString("getThreadsNum not support"));
+    throwMethodNotSupportException("getThreadsNum not support");
     return 0;
 }
 

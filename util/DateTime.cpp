@@ -212,7 +212,7 @@ _DateTime::_DateTime(String content) {
 
     int type = isValid(content);
 	if(type == -1) {
-		throw InitializeException("invalid date string");
+		throwInitializeException("invalid date string");
 	}
     parse(type,content);
 }
@@ -221,14 +221,14 @@ _DateTime::_DateTime(int type,String content) {
     init();
 	std::string f = REGEX_LIST[type];
 	if(!std::regex_match(content->getStdString(),std::regex(f))) {
-	    throw InitializeException("illegal format");
+	    throwInitializeException("illegal format");
 	}
     parse(type,content);
 }
 
 _DateTime::_DateTime(String fmt,String content) {
 	if(fmt == nullptr || content == nullptr || fmt->size() < 1 || content->size() == 0) {
-		throw InitializeException("illegal format");
+		throwInitializeException("illegal format");
 	}
 	init();
     parse(fmt->getStdString(),content->getStdString());

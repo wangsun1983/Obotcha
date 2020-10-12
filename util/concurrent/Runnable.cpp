@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "Runnable.hpp"
 #include "AutoLock.hpp"
-#include "ResultDuplicateException.hpp"
+#include "IllegalStateException.hpp"
 #include "InterruptedException.hpp"
 
 namespace obotcha {
@@ -14,7 +14,7 @@ namespace obotcha {
         mResultCond->notifyAll();\
         return;\
     }\
-    throw ResultDuplicateException("set int result");
+    throwIllegalStateException("already set int result");
 
 #define GET_RESULT_FUNC(Param,V) \
     AutoLock l(mResultMutex);\
@@ -22,7 +22,7 @@ namespace obotcha {
         mResultCond->wait(mResultMutex);\
     }\
     if(resultComplete == ResultInterrupt) {\
-        throw InterruptedException("Runnable Interrupt");\
+        throwInterruptedException("Runnable Interrupt");\
     }\
     v = Param;
 

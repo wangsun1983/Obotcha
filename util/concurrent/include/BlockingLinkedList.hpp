@@ -140,7 +140,7 @@ public:
         while(1) {
             AutoLock l(mMutex);
             if(isDestroy) {
-                throw IllegalStateException("dequeue");
+                throwIllegalStateException("dequeue");
             }
             
             int size = mList->size();
@@ -162,7 +162,7 @@ public:
         while(1) {
             AutoLock l(mMutex);
             if(isDestroy) {
-                throw IllegalStateException("dequeue");
+                throwIllegalStateException("dequeue");
             }
             int size = mList->size();
             if(size == 0) {
@@ -183,7 +183,7 @@ public:
         while(1) {
             AutoLock l(mMutex);
             if(isDestroy) {
-                throw IllegalStateException("dequeue");
+                throwIllegalStateException("dequeue");
             }
             int size = mList->size();
             if(size == 0) {
@@ -207,7 +207,7 @@ public:
         while(1) {
             AutoLock l(mMutex);
             if(isDestroy) {
-                throw IllegalStateException("dequeue");
+                throwIllegalStateException("dequeue");
             }
             int size = mList->size();
             if(size == 0) {
@@ -232,7 +232,7 @@ public:
         while(1) {
             AutoLock l(mMutex);
             if(isDestroy) {
-                throw IllegalStateException("dequeue");
+                throwIllegalStateException("dequeue");
             }
             int size = mList->size();
             if(size == 0) {
@@ -251,7 +251,7 @@ public:
         while(1) {
             AutoLock l(mMutex);
             if(isDestroy) {
-                throw IllegalStateException("dequeue");
+                throwIllegalStateException("dequeue");
             }
             int size = mList->size();
             if(size == 0) {

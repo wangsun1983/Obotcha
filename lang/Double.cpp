@@ -24,7 +24,7 @@ _Double::_Double(double v) : val(v) {}
 
 _Double::_Double(Double &v) {
     if(v == nullptr) {
-        throw InitializeException("Object is null");
+        throwInitializeException("Object is null");
     }
     val = v->val;
 }
@@ -35,7 +35,7 @@ double _Double::toValue() {
 
 bool _Double::equals(Double &p) {
     if(p == nullptr) {
-        throw NullPointerException("double update null");
+        throwNullPointerException("double update null");
     }
     
     return std::fabs(val-p->val) <= EPS;
@@ -47,7 +47,7 @@ bool _Double::equals(double p) {
 
 bool _Double::equals(const _Double *p) {
     if(p == nullptr) {
-        throw NullPointerException("double update null");
+        throwNullPointerException("double update null");
     }
 
     return std::fabs(val-p->val) <= EPS;
@@ -59,7 +59,7 @@ void _Double::update(double v) {
 
 void _Double::update(sp<_Double> v) {
     if(v == nullptr) {
-        throw NullPointerException("double update null");
+        throwNullPointerException("double update null");
     }
 
     this->val = v->val;

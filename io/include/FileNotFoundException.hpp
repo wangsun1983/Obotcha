@@ -14,13 +14,10 @@
 
 namespace obotcha {
 
-class FileNotFoundException: public Exception {
+DECLARE_EXCEPTION(FileNotFoundException) {
 public:
-    FileNotFoundException(String);
-    
-    FileNotFoundException(const char *);
-private:
-    static const String EXCEPTION_TAG;
+	FileNotFoundException(const char * str):Exception(str){}
+	FileNotFoundException(String str):Exception(str) {}
 };
 
 }

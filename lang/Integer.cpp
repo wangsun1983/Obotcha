@@ -30,7 +30,7 @@ _Integer::_Integer(int v) : val(v) {
 
 _Integer::_Integer(Integer &v) {
     if(v == nullptr) {
-        throw InitializeException("Object is null");
+        throwInitializeException("Object is null");
     }
 
     val = v->toValue();
@@ -66,7 +66,7 @@ void _Integer::update(int v) {
 
 void _Integer::update(sp<_Integer> v) {
     if(v == nullptr) {
-        throw NullPointerException("integer update null");
+        throwNullPointerException("integer update null");
     }
 
     val = v->val;
@@ -94,7 +94,7 @@ sp<_String> _Integer::toString(int i) {
 
 int _Integer::parseDecInt(sp<_String> v) {
     if(v == nullptr) {
-        throw NullPointerException("Integer parserInt nullptr");
+        throwNullPointerException("Integer parserInt nullptr");
     }
 
     return _Number::parseDecNumber(v->getStdString());
@@ -102,7 +102,7 @@ int _Integer::parseDecInt(sp<_String> v) {
 
 int _Integer::parseHexInt(sp<_String> v) {
     if(v == nullptr) {
-        throw NullPointerException("parseHexInt nullptr");
+        throwNullPointerException("parseHexInt nullptr");
     }
     
     return _Number::parseHexNumber(v->getStdString());
@@ -110,7 +110,7 @@ int _Integer::parseHexInt(sp<_String> v) {
 
 int _Integer::parseOctInt(sp<_String> v) {
     if(v == nullptr) {
-        throw NullPointerException("parseHexInt nullptr");
+        throwNullPointerException("parseHexInt nullptr");
     }
     
     return _Number::parseOctNumber(v->getStdString());
@@ -118,7 +118,7 @@ int _Integer::parseOctInt(sp<_String> v) {
 
 int _Integer::parseBinaryInt(sp<_String> v) {
     if(v == nullptr) {
-        throw NullPointerException("parseHexInt nullptr");
+        throwNullPointerException("parseHexInt nullptr");
     }
     
     return _Number::parseBinaryNumber(v->getStdString());

@@ -7,8 +7,8 @@
 #include "StrongPointer.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
-#include "ResultDuplicateException.hpp"
 #include "InterruptedException.hpp"
+#include "IllegalStateException.hpp"
 
 namespace obotcha {
 
@@ -44,7 +44,7 @@ public:
             mResultCond->notifyAll();
             return;
         }
-        throw ResultDuplicateException("set int result");
+        throwIllegalStateException("set int result");
     }
 
     void setResult(int);
@@ -87,7 +87,7 @@ private:
         }
 
         if(resultComplete == ResultInterrupt) {
-            throw InterruptedException("Runnable Interrupt");
+            throwInterruptedException("Runnable Interrupt");
         }
 
         transform_cast(objResult,v);

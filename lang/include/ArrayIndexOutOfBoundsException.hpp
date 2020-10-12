@@ -14,16 +14,10 @@
 
 namespace obotcha {
 
-class ArrayIndexOutOfBoundsException:public Exception {
+DECLARE_EXCEPTION(ArrayIndexOutOfBoundsException){
 public:
-    ArrayIndexOutOfBoundsException(String,int,int);
-    ArrayIndexOutOfBoundsException(const char *,int,int);
-    ArrayIndexOutOfBoundsException(const char *);
-
-private:
-    static const String EXCEPTION_TAG;
-    static const String MAX_SIZE;
-    static const String CURRENT_INDEX;
+	ArrayIndexOutOfBoundsException(const char * str):Exception(str){}
+	ArrayIndexOutOfBoundsException(String str):Exception(str) {}
 };
 
 }

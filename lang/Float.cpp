@@ -14,7 +14,7 @@ _Float::_Float(float v) : val(v) {
 
 _Float::_Float(Float &v){
     if(v == nullptr) {
-        throw InitializeException("Object is null");
+        throwInitializeException("Object is null");
     }
 
     val = v->val;
@@ -26,7 +26,7 @@ float _Float::toValue() {
 
 bool _Float::equals(Float &p) {
     if(p == nullptr) {
-        throw NullPointerException("p is null");
+        throwNullPointerException("p is null");
     }
 
     return std::fabs(val-p->val) <= EPS;
@@ -50,7 +50,7 @@ void _Float::update(float v) {
 
 void _Float::update(sp<_Float> v) {
     if(v == nullptr) {
-        throw NullPointerException("Boolean equals nullptr"); 
+        throwNullPointerException("Boolean equals nullptr"); 
     }
 
     val = v->val;

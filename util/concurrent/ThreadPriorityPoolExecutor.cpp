@@ -115,6 +115,10 @@ void _PriorityPoolThread::stop() {
     this->quit();
 }
 
+const int _ThreadPriorityPoolExecutor::PriorityLow = 0;
+const int _ThreadPriorityPoolExecutor::PriorityMedium = 1;
+const int _ThreadPriorityPoolExecutor::PriorityHigh = 2;
+const int _ThreadPriorityPoolExecutor::PriorityNoUse = -100;
 
 //============= ThreadPriorityPoolExecutor ================
 _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor():_ThreadPriorityPoolExecutor{1} {

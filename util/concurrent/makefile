@@ -18,17 +18,8 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/futuretask.o \
     $(outtmp)/barrier.o \
 	$(outtmp)/timer.o \
-	$(outtmp)/executordestructorexception.o \
 	$(outtmp)/spinlock.o \
 	$(outtmp)/runnable.o \
-	$(outtmp)/resultduplicateexception.o \
-	$(outtmp)/interruptedexception.o \
-
-$(outtmp)/interruptedexception.o :$(concurrentDir)/InterruptedException.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/InterruptedException.cpp -o $(outtmp)/interruptedexception.o
-
-$(outtmp)/resultduplicateexception.o :$(concurrentDir)/ResultDuplicateException.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ResultDuplicateException.cpp -o $(outtmp)/resultduplicateexception.o
 
 $(outtmp)/runnable.o :$(concurrentDir)/Runnable.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Runnable.cpp -o $(outtmp)/runnable.o
@@ -83,9 +74,6 @@ $(outtmp)/readwritelock.o :$(concurrentDir)/ReadWriteLock.cpp
 
 $(outtmp)/executors.o :$(concurrentDir)/Executors.cpp
 	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/Executors.cpp -o $(outtmp)/executors.o
-
-$(outtmp)/executordestructorexception.o :$(concurrentDir)/ExecutorDestructorException.cpp
-	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/ExecutorDestructorException.cpp -o $(outtmp)/executordestructorexception.o
 
 $(outtmp)/timer.o :$(concurrentDir)/Timer.cpp
 	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/Timer.cpp -o $(outtmp)/timer.o

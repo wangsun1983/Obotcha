@@ -62,7 +62,13 @@ public:
 
     inline T get(int index) {
          if(index >= hashset.size() || index < 0) {
-            throw ArrayIndexOutOfBoundsException("HashSet get fail",hashset.size(),index);
+             String exception = createString("HashSet get fail")
+                            ->append("size is",
+                                    createString(hashset.size()),
+                                    "index is ",
+                                    createString(index));
+
+            throwArrayIndexOutOfBoundsException(exception);
         }
 
         return hashset[index];
@@ -105,7 +111,7 @@ public:
         //return iterator->second;
         if(iterator == mList->end()) {
             //return nullptr;
-            throw ArrayIndexOutOfBoundsException("iterator error");
+            throwArrayIndexOutOfBoundsException("iterator error");
         }
 
         return *iterator;

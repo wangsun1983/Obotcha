@@ -14,14 +14,10 @@
 
 namespace obotcha {
 
-class ReflectException:public Exception {
+DECLARE_EXCEPTION(ReflectException) {
 public:
-    ReflectException(String);
-
-    ReflectException(const char *v);
-
-private:
-    static const String EXCEPTION_TAG;
+	ReflectException(const char * str):Exception(str){}
+	ReflectException(String str):Exception(str) {}
 };
 
 }

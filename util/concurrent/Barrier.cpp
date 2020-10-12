@@ -1,11 +1,11 @@
 #include "Barrier.hpp"
 #include "AutoLock.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
 _Barrier::_Barrier(int n) {
     mBarrierNums = n;
-    mBarrierBack = n;
 
     mutex = createMutex("BarrierMutex");
     cond = createCondition();
@@ -13,31 +13,39 @@ _Barrier::_Barrier(int n) {
 
 int _Barrier::await(long v) {
     AutoLock l(mutex);
+    if(mBarrierNums == 0) {
+        return -InvalidStatus;
+    }
+
     mBarrierNums--;
     if(mBarrierNums == 0) {
         cond->notifyAll();
-        mBarrierNums = mBarrierBack;
     } else {
         return cond->wait(mutex,v);
     }
 
-    return  0;
+    return 0;
 }
 
-void _Barrier::await() {
+int _Barrier::await() {
     AutoLock l(mutex);
+    if(mBarrierNums == 0) {
+        return -InvalidStatus;
+    }
+
     mBarrierNums--;
     if(mBarrierNums == 0) {
         cond->notifyAll();
-        mBarrierNums = mBarrierBack;
     } else {
         cond->wait(mutex);
     }
+
+    return 0;
 }
 
 int _Barrier::getWaitNums() {
     AutoLock l(mutex);
-    return mBarrierBack - mBarrierNums;
+    return mBarrierNums;
 } 
 
 }

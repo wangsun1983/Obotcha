@@ -8,7 +8,6 @@
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
-#include "ExecutorDestructorException.hpp"
 #include "Log.hpp"
 #include "Executors.hpp"
 

@@ -86,7 +86,7 @@ _String::_String(String v) {
 
 _String::_String(Long &v) {
     if(v == nullptr) {
-        throw InitializeException("Long is null");
+        throwInitializeException("Long is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -94,7 +94,7 @@ _String::_String(Long &v) {
 
 _String::_String(Byte &v) {
     if(v == nullptr) {
-        throw InitializeException("Byte is null");
+        throwInitializeException("Byte is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -102,7 +102,7 @@ _String::_String(Byte &v) {
 
 _String::_String(Uint8 &v) {
     if(v == nullptr) {
-        throw InitializeException("Uint8 is null");
+        throwInitializeException("Uint8 is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -110,7 +110,7 @@ _String::_String(Uint8 &v) {
 
 _String::_String(Uint16 &v) {
     if(v == nullptr) {
-        throw InitializeException("Uint16 is null");
+        throwInitializeException("Uint16 is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -118,7 +118,7 @@ _String::_String(Uint16 &v) {
 
 _String::_String(Uint32 &v) {
     if(v == nullptr) {
-        throw InitializeException("Uint32 is null");
+        throwInitializeException("Uint32 is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -126,7 +126,7 @@ _String::_String(Uint32 &v) {
 
 _String::_String(Uint64 &v) {
     if(v == nullptr) {
-        throw InitializeException("Uint64 is null");
+        throwInitializeException("Uint64 is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -138,14 +138,14 @@ _String::_String(const std::string v) {
 
 _String::_String(std::string *v) {
     if(v == nullptr) {
-        throw InitializeException("std::string is null");
+        throwInitializeException("std::string is null");
     }
     m_str = *v;
 }
 
 _String::_String(Integer &v) {
     if(v == nullptr) {
-        throw InitializeException("Integer is null");
+        throwInitializeException("Integer is null");
     }
 
     m_str = std::to_string(v->toValue());
@@ -153,7 +153,7 @@ _String::_String(Integer &v) {
 
 _String::_String(Boolean &v) {
     if(v == nullptr) {
-        throw InitializeException("Boolean is null");
+        throwInitializeException("Boolean is null");
     }
 
     if(v->toValue()) {
@@ -165,7 +165,7 @@ _String::_String(Boolean &v) {
 
 _String::_String(Float &v) {
     if(v == nullptr) {
-        throw InitializeException("Float is null");
+        throwInitializeException("Float is null");
     }
 
     stringstream ss;
@@ -175,7 +175,7 @@ _String::_String(Float &v) {
 
 _String::_String(Double &v) {
     if(v == nullptr) {
-        throw InitializeException("Double is null");
+        throwInitializeException("Double is null");
     }
     
     stringstream ss;
@@ -233,7 +233,7 @@ _String::_String(uint64_t v) {
 
 _String::_String(const char *v) {
     if(v == nullptr) {
-        throw InitializeException("char * is null");
+        throwInitializeException("char * is null");
     }
     
     m_str = std::string(v);
@@ -241,7 +241,7 @@ _String::_String(const char *v) {
 
 _String::_String(const char *v,int start,int length) {
     if(v == nullptr || start < 0 || length <=0) {
-        throw InitializeException("char * is null");
+        throwInitializeException("char * is null");
     }
 
     m_str = std::string(v,start,length);
@@ -257,7 +257,7 @@ const char * _String::toChars() {
 
 char _String::charAt(int index) {
     if(index < 0 || (unsigned int)index >= m_str.size()) {
-        throw ArrayIndexOutOfBoundsException("char At error");
+        throwArrayIndexOutOfBoundsException("char At error");
     }
 
     return m_str.data()[index];
@@ -274,7 +274,7 @@ String _String::subString(int start,int end) {
 bool _String::contains(String val) {
 
     if(val == nullptr) {
-        throw NullPointerException("String contains param error");
+        throwNullPointerException("String contains param error");
     }
 
     if(m_str.find(val->m_str) != m_str.npos) {
@@ -496,7 +496,7 @@ ArrayList<String> _String::split(String v) {
 
 sp<_ArrayList<String>> _String::split(const char* v) {
     if(v == nullptr) {
-        throw NullPointerException("split illegal param");
+        throwNullPointerException("split illegal param");
     }
     return split(v,strlen(v));
 }
@@ -531,7 +531,7 @@ sp<_ArrayList<String>> _String::split(std::string separator) {
 
 sp<_ArrayList<String>> _String::split(const char* v,int size) {
     if(v == nullptr) {
-        throw NullPointerException("split illegal param");
+        throwNullPointerException("split illegal param");
     }
 
     std::string str = std::string(v,size);
@@ -721,7 +721,7 @@ Uint64 _String::toUint64() {
 
 uint8_t _String::toBasicUint8() {
     if(m_str.size() == 0 ||!isIntNumber(m_str.data(),m_str.size())) {
-        throw TransformException("String to Uint8 Fail");
+        throwTransformException("String to Uint8 Fail");
     }
 
     std::stringstream ss;
@@ -733,7 +733,7 @@ uint8_t _String::toBasicUint8() {
 
 uint16_t _String::toBasicUint16() {
     if((m_str.size() == 0) || !isIntNumber(m_str.data(),m_str.size())) {
-        throw TransformException("String to Uint16 Fail");
+        throwTransformException("String to Uint16 Fail");
     }
 
     std::stringstream ss;
@@ -745,7 +745,7 @@ uint16_t _String::toBasicUint16() {
 
 uint32_t _String::toBasicUint32() {
     if((m_str.size() == 0) ||!isIntNumber(m_str.data(),m_str.size())) {
-        throw TransformException("String to Uint32 Fail");
+        throwTransformException("String to Uint32 Fail");
     }
 
     std::stringstream ss;
@@ -757,7 +757,7 @@ uint32_t _String::toBasicUint32() {
 
 uint64_t _String::toBasicUint64() {
     if((m_str.size() == 0) ||!isIntNumber(m_str.data(),m_str.size())) {
-        throw TransformException("String to Uint64 Fail");
+        throwTransformException("String to Uint64 Fail");
     }
 
     std::stringstream ss;
@@ -769,7 +769,7 @@ uint64_t _String::toBasicUint64() {
 
 int _String::toBasicInt() {
     if((m_str.size() == 0) || !isIntNumber(m_str.data(),m_str.size())) {
-        throw TransformException("String to Int Fail");
+        throwTransformException("String to Int Fail");
     }
 
     std::stringstream ss;
@@ -781,7 +781,7 @@ int _String::toBasicInt() {
 
 byte _String::toBasicByte() {
     if((m_str.size() == 0) || !isIntNumber(m_str.data(),m_str.size())) {
-        throw TransformException("String to Int Fail");
+        throwTransformException("String to Int Fail");
     }
 
     std::stringstream ss;
@@ -793,7 +793,7 @@ byte _String::toBasicByte() {
 
 int _String::toHexInt() {
     if(m_str.size() == 0 || !isIntNumber(m_str.data(),m_str.size())) {
-        throw TransformException("String to Hex Int Fail");
+        throwTransformException("String to Hex Int Fail");
     }
 
     std::stringstream ss;
@@ -805,7 +805,7 @@ int _String::toHexInt() {
 
 String _String::toHexString() {
     if(m_str.size() == 0 || !isIntNumber(m_str.data(),m_str.size())) {
-        throw TransformException("String to Hex Int Fail");
+        throwTransformException("String to Hex Int Fail");
     }
 
     int v = toBasicInt();
@@ -818,7 +818,7 @@ String _String::toHexString() {
 
 bool _String::toBasicBool() {
     if(m_str.size() == 0) {
-        throw TransformException("String to Boolean Fail");
+        throwTransformException("String to Boolean Fail");
     }
 
     const char *data = m_str.data();
@@ -840,12 +840,12 @@ bool _String::toBasicBool() {
         return false;
     }
 
-    throw TransformException("String to Boolean Fail");
+    throwTransformException("String to Boolean Fail");
 }
 
 float _String::toBasicFloat() {
     if(m_str.size() == 0 || !isFloatNumber(m_str.data(),m_str.size())) {
-        throw TransformException("String to Float Fail");
+        throwTransformException("String to Float Fail");
     }
 
     std::stringstream ss;
@@ -857,7 +857,7 @@ float _String::toBasicFloat() {
 
 double _String::toBasicDouble() {
     if(m_str.size() == 0 || !isDoubleNumber(m_str.data(),m_str.size())) {
-        throw TransformException("String to Double Fail");
+        throwTransformException("String to Double Fail");
     }
 
     std::stringstream ss;
@@ -869,7 +869,7 @@ double _String::toBasicDouble() {
 
 long _String::toBasicLong() {
     if(m_str.size() == 0 || !isLongNumber(m_str.data(),m_str.size())) {
-        throw TransformException("String to Long Fail");
+        throwTransformException("String to Long Fail");
     }
 
     std::stringstream ss;
@@ -909,7 +909,7 @@ String _String::toUpperCase() {
     
 bool _String::equalsIgnoreCase(String str) {
     if(str == nullptr || str->size() == 0) {
-        throw NullPointerException("equals ignore illegalArgument!");
+        throwNullPointerException("equals ignore illegalArgument!");
     }
 
     return equalsIgnoreCase(str->toChars());
@@ -921,7 +921,7 @@ bool _String::equalsIgnoreCase(std::string str) {
 
 bool _String::equalsIgnoreCase(const char * str) {
     if(str == nullptr) {
-        throw NullPointerException("equals ignore illegalArgument!");
+        throwNullPointerException("equals ignore illegalArgument!");
     }
     
     return equalsIgnoreCase(str,strlen(str));
@@ -949,7 +949,7 @@ bool _String::equalsIgnoreCase(const char * str,int csize) {
 
 int _String::indexOfIgnoreCase(String str) {
     if(str == nullptr || str->size() == 0) {
-        throw NullPointerException("equals ignore illegalArgument!");
+        throwNullPointerException("equals ignore illegalArgument!");
     }
     return indexOfIgnoreCase(str->toChars(),str->size());
 }
@@ -960,7 +960,7 @@ int _String::indexOfIgnoreCase(std::string str) {
 
 int _String::indexOfIgnoreCase(const char * str) {
     if(str == nullptr) {
-        throw NullPointerException("equals ignore illegalArgument!");
+        throwNullPointerException("equals ignore illegalArgument!");
     }
 
     return indexOfIgnoreCase(str,strlen(str));
@@ -1010,7 +1010,7 @@ int _String::indexOfIgnoreCase(const char * str,int csize) {
 
 bool _String::containsIgnoreCase(String val) {
     if(val == nullptr || val->size() == 0) {
-        throw NullPointerException("equals ignore illegalArgument!");
+        throwNullPointerException("equals ignore illegalArgument!");
     }
 
     return (indexOfIgnoreCase(val) != -1);
@@ -1022,14 +1022,14 @@ bool _String::containsIgnoreCase(std::string val) {
 
 bool _String::containsIgnoreCase(const char * val) {
     if(val == nullptr) {
-        throw NullPointerException("equals ignore illegalArgument!");
+        throwNullPointerException("equals ignore illegalArgument!");
     }
     return (indexOfIgnoreCase(val) != -1);
 }
 
 bool _String::startsWithIgnoreCase(String str) {
     if(str == nullptr || str->size() == 0) {
-        throw NullPointerException("equals ignore illegalArgument!");
+        throwNullPointerException("equals ignore illegalArgument!");
     }
     return (indexOfIgnoreCase(str) == 0);
 }
@@ -1040,14 +1040,14 @@ bool _String::startsWithIgnoreCase(std::string str) {
 
 bool _String::startsWithIgnoreCase(const char * str) {
     if(str == nullptr) {
-        throw NullPointerException("equals ignore illegalArgument!");
+        throwNullPointerException("equals ignore illegalArgument!");
     }
     return (indexOfIgnoreCase(str) == 0);
 }
 
 bool _String::endsWithIgnoreCase(String s) {
     if(s == nullptr || s->size() == 0) {
-        throw NullPointerException("equals ignore illegalArgument!");
+        throwNullPointerException("equals ignore illegalArgument!");
     }
     
     return endsWithIgnoreCase(s->toChars(),s->size());
@@ -1059,7 +1059,7 @@ bool _String::endsWithIgnoreCase(std::string str) {
 
 bool _String::endsWithIgnoreCase(const char * str) {
     if(str == nullptr) {
-        throw NullPointerException("equals ignore illegalArgument!");
+        throwNullPointerException("equals ignore illegalArgument!");
     }
 
     return endsWithIgnoreCase(str,strlen(str));
@@ -1090,7 +1090,7 @@ bool _String::endsWithIgnoreCase(const char * str,int csize) {
 
 int _String::lastIndexOfIgnoreCase(String v) {
     if(v == nullptr || v->size() == 0) {
-        throw NullPointerException("equals ignore illegalArgument!");
+        throwNullPointerException("equals ignore illegalArgument!");
     }
     return lastIndexOfIgnoreCase(v->toChars(),v->size());
 }
@@ -1101,7 +1101,7 @@ int _String::lastIndexOfIgnoreCase(std::string v) {
 
 int _String::lastIndexOfIgnoreCase(const char * str) {
     if(str == nullptr) {
-        throw NullPointerException("equals ignore illegalArgument!");
+        throwNullPointerException("equals ignore illegalArgument!");
     }
 
     return lastIndexOfIgnoreCase(str,strlen(str));
@@ -1156,7 +1156,7 @@ bool _String::matches(String regex) {
 
 sp<_String> _String::replaceFirst(String regex,String value) {
     if(m_str.size() == 0 || value == nullptr || regex == nullptr) {
-        throw NullPointerException("replaceFirst illegalArgument!");
+        throwNullPointerException("replaceFirst illegalArgument!");
     }
 
     std::string result = std::regex_replace(m_str,std::regex(regex->m_str),value->m_str,
@@ -1166,7 +1166,7 @@ sp<_String> _String::replaceFirst(String regex,String value) {
 
 sp<_String> _String::replaceFirst(const char *regex,const char *v) {
     if(regex == nullptr || v == nullptr) {
-        throw NullPointerException("replaceFirst illegalArgument!");
+        throwNullPointerException("replaceFirst illegalArgument!");
     }
 
     std::string result = std::regex_replace(m_str,std::regex(regex),v,
@@ -1214,7 +1214,7 @@ bool _String::endsWith(String s) {
 
 bool _String::endsWith(const char *s) {
     if(s == nullptr) {
-        throw NullPointerException("endsWith illegalArgument!");
+        throwNullPointerException("endsWith illegalArgument!");
     }
 
     string::size_type result = m_str.find_last_of(s);
@@ -1229,7 +1229,7 @@ bool _String::endsWith(std::string s) {
 
 int _String::lastIndexOf(String v) {
     if(m_str.size() == 0 || m_str.size() == 0 || v == nullptr) {
-        throw NullPointerException("lastIndexOf illegalArgument!");
+        throwNullPointerException("lastIndexOf illegalArgument!");
     }
 
     int result = m_str.find_last_of(v->m_str);
@@ -1238,7 +1238,7 @@ int _String::lastIndexOf(String v) {
 
 int _String::lastIndexOf(const char * v) {
     if(v == nullptr) {
-        throw NullPointerException("lastIndexOf illegalArgument!");
+        throwNullPointerException("lastIndexOf illegalArgument!");
     }
 
     int result = m_str.find_last_of(v);
@@ -1259,7 +1259,7 @@ bool _String::startsWith(String v) {
 
 bool _String::startsWith(const char * v) {
     if(v == nullptr) {
-        throw NullPointerException("startsWith illegalArgument!");
+        throwNullPointerException("startsWith illegalArgument!");
     }
 
     string::size_type result = m_str.find(v);
@@ -1336,7 +1336,7 @@ bool _String::isFloatNumber(const char *p,int size) {
 
 void _String::checkParam(String &v) {
     if(v == nullptr || v->size() == 0) {
-        throw NullPointerException("equals ignore illegalArgument!");
+        throwNullPointerException("equals ignore illegalArgument!");
     }
 }
 

@@ -14,14 +14,10 @@
 
 namespace obotcha {
 
-class IllegalStateException:public Exception {
+DECLARE_EXCEPTION(IllegalStateException) {
 public:
-    IllegalStateException(String);
-
-    IllegalStateException(const char *v);
-
-private:
-    static const String EXCEPTION_TAG;
+	IllegalStateException(const char * str):Exception(str){}
+	IllegalStateException(String str):Exception(str) {}
 };
 
 }

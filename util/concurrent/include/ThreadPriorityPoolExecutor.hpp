@@ -95,9 +95,9 @@ public:
 
     ~_ThreadPriorityPoolExecutor();
 
-    static const int PriorityLow = 0;
-    static const int PriorityMedium = 1;
-    static const int PriorityHigh = 2;
+    static const int PriorityLow;
+    static const int PriorityMedium;
+    static const int PriorityHigh;
 
 private:
     Mutex mTaskMutex;
@@ -121,7 +121,7 @@ private:
     
     Condition mWaitCondition;
 
-    static const int PriorityNoUse = -100;
+    static const int PriorityNoUse;
 };
 
 }

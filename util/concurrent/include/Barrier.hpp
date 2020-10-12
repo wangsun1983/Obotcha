@@ -14,7 +14,7 @@ public:
 
     int await(long);
 
-    void await();
+    int await();
 
     int getWaitNums();
 

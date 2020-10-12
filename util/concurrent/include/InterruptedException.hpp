@@ -14,14 +14,10 @@
 
 namespace obotcha {
 
-class InterruptedException:public Exception {
+DECLARE_EXCEPTION(InterruptedException) {
 public:
-    InterruptedException(String);
-
-    InterruptedException(const char *);
-
-private:
-    static const String EXCEPTION_TAG;
+	InterruptedException(const char * str):Exception(str){}
+	InterruptedException(String str):Exception(str) {}
 };
 
 }

@@ -96,7 +96,7 @@ public:
 
     T deQueueLast() {
         if(head == nullptr) {
-            throw ArrayIndexOutOfBoundsException("deQueueLast");
+            throwArrayIndexOutOfBoundsException("deQueueLast");
         }
 
         T data = tail->data;
@@ -113,7 +113,7 @@ public:
 
     T deQueueFirst() {
         if(head == nullptr) {
-            throw ArrayIndexOutOfBoundsException("deQueueFirst");
+            throwArrayIndexOutOfBoundsException("deQueueFirst");
         }
         
         T data = head->data;

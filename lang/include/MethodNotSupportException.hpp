@@ -14,14 +14,10 @@
 
 namespace obotcha {
 
-class MethodNotSupportException:public Exception {
+DECLARE_EXCEPTION(MethodNotSupportException) {
 public:
-    MethodNotSupportException(String);
-
-    MethodNotSupportException(const char *v);
-
-private:
-    static const String EXCEPTION_TAG;
+	MethodNotSupportException(const char * str):Exception(str){}
+	MethodNotSupportException(String str):Exception(str) {}
 };
 
 }

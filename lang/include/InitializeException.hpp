@@ -14,14 +14,10 @@
 
 namespace obotcha {
 
-class InitializeException:public Exception {
+DECLARE_EXCEPTION(InitializeException) {
 public:
-    InitializeException(String);
-
-    InitializeException(const char *v);
-
-private:
-    static const String EXCEPTION_TAG;
+	InitializeException(const char * str):Exception(str){}
+	InitializeException(String str):Exception(str) {}
 };
 
 }

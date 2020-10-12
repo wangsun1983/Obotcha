@@ -20,7 +20,7 @@ _Uint32::_Uint32(uint32_t v) : val(v) {}
 
 _Uint32::_Uint32(Uint32 &v) {
     if(v == nullptr) {
-        throw InitializeException("Object is null");
+        throwInitializeException("Object is null");
     }
     
     val = v->val;
@@ -32,7 +32,7 @@ uint32_t _Uint32::toValue() {
 
 bool _Uint32::equals(Uint32 &p) {
     if(p == nullptr) {
-        throw NullPointerException("Object is null");
+        throwNullPointerException("Object is null");
     }
 
     return val == p->val;
@@ -44,7 +44,7 @@ bool _Uint32::equals(uint32_t p) {
 
 bool _Uint32::equals(const _Uint32 *p) {
     if(p == nullptr) {
-        throw NullPointerException("Object is null");
+        throwNullPointerException("Object is null");
     }
 
     return val == p->val;
@@ -56,7 +56,7 @@ void _Uint32::update(uint32_t v) {
 
 void _Uint32::update(sp<_Uint32> v) {
     if(v == nullptr) {
-        throw NullPointerException("Uint32 update nullptr");
+        throwNullPointerException("Uint32 update nullptr");
     }
 
     val = v->val;
@@ -84,7 +84,7 @@ sp<_String> _Uint32::toString(uint32_t i) {
 
 uint32_t _Uint32::parseDecUint32(sp<_String> v) {
     if(v == nullptr) {
-        throw NullPointerException("parseDecUint32 nullptr");
+        throwNullPointerException("parseDecUint32 nullptr");
     }
 
     return _Number::parseDecNumber(v->getStdString());
@@ -92,7 +92,7 @@ uint32_t _Uint32::parseDecUint32(sp<_String> v) {
 
 uint32_t _Uint32::parseHexUint32(sp<_String> v) {
     if(v == nullptr) {
-        throw NullPointerException("parseHexUint32 nullptr");
+        throwNullPointerException("parseHexUint32 nullptr");
     }
     
     return _Number::parseHexNumber(v->getStdString());
@@ -100,7 +100,7 @@ uint32_t _Uint32::parseHexUint32(sp<_String> v) {
 
 uint32_t _Uint32::parseOctUint32(sp<_String> v) {
     if(v == nullptr) {
-        throw NullPointerException("parseOctUint32 nullptr");
+        throwNullPointerException("parseOctUint32 nullptr");
     }
     
     return _Number::parseOctNumber(v->getStdString());
@@ -108,7 +108,7 @@ uint32_t _Uint32::parseOctUint32(sp<_String> v) {
 
 uint32_t _Uint32::parseBinaryUint32(sp<_String> v) {
     if(v == nullptr) {
-        throw NullPointerException("parseBinaryUint32 nullptr");
+        throwNullPointerException("parseBinaryUint32 nullptr");
     }
     
     return _Number::parseBinaryNumber(v->getStdString());

@@ -21,7 +21,7 @@ _Long::_Long(long v) : val(v) {}
 
 _Long::_Long(Long &v) {
     if(v == nullptr) {
-        throw InitializeException("Object is null");
+        throwInitializeException("Object is null");
     }
     
     val = v->val;
@@ -45,7 +45,7 @@ bool _Long::equals(long p) {
 
 bool _Long::equals(const _Long *p) {
     if(p == nullptr) {
-        throw NullPointerException("Long parserInt nullptr");
+        throwNullPointerException("Long parserInt nullptr");
     }
 
     return val == p->val;
@@ -57,7 +57,7 @@ void _Long::update(long v) {
 
 void _Long::update(sp<_Long> v) {
     if(v == nullptr) {
-        throw NullPointerException("Long update nullptr");
+        throwNullPointerException("Long update nullptr");
     }
 
     val = v->val;
@@ -85,7 +85,7 @@ sp<_String> _Long::toString(int i) {
 
 long _Long::parseDecLong(sp<_String> v) {
     if(v == nullptr) {
-        throw NullPointerException("Long parserInt nullptr");
+        throwNullPointerException("Long parserInt nullptr");
     }
 
     return _Number::parseDecNumber(v->getStdString());
@@ -93,7 +93,7 @@ long _Long::parseDecLong(sp<_String> v) {
 
 long _Long::parseHexLong(sp<_String> v) {
     if(v == nullptr) {
-        throw NullPointerException("parseHexLong nullptr");
+        throwNullPointerException("parseHexLong nullptr");
     }
     
     return _Number::parseHexNumber(v->getStdString());
@@ -101,7 +101,7 @@ long _Long::parseHexLong(sp<_String> v) {
 
 long _Long::parseOctLong(sp<_String> v) {
     if(v == nullptr) {
-        throw NullPointerException("parseOctLong nullptr");
+        throwNullPointerException("parseOctLong nullptr");
     }
     
     return _Number::parseOctNumber(v->getStdString());
@@ -109,7 +109,7 @@ long _Long::parseOctLong(sp<_String> v) {
 
 long _Long::parseBinaryLong(sp<_String> v) {
     if(v == nullptr) {
-        throw NullPointerException("parseBinaryLong nullptr");
+        throwNullPointerException("parseBinaryLong nullptr");
     }
     
     return _Number::parseBinaryNumber(v->getStdString());
