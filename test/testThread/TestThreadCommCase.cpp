@@ -109,6 +109,7 @@ public:
     }
 };
 
+/*
 DECLARE_SIMPLE_CLASS(Thread6) IMPLEMENTS(Thread) {
 public:
     void run() {
@@ -133,6 +134,7 @@ public:
         //printf("thread7 start 4 \n");
     }
 };
+*/
 
 
 int testThreadCommonCase() {
@@ -260,6 +262,7 @@ int testThreadCommonCase() {
     break;
   }
 
+/*
   //void setPriority(ThreadPriority priority);/getPriority()
   while(1) {
     Thread2 t2 = createThread2();
@@ -283,7 +286,8 @@ int testThreadCommonCase() {
     printf("---[Thread Test {setPriority()} case3] [OK]--- \n");
     break;
   }
-
+*/
+  
   //setName()
   while(1) {
     Thread2 t2 = createThread2();
@@ -416,6 +420,7 @@ int testThreadCommonCase() {
     break;
   }
 
+/*
   //setThreadPriority()
   while(1) {
     Thread6 t1 = createThread6();
@@ -452,4 +457,5 @@ int testThreadCommonCase() {
       printf("---[Thread Test {getThreadPriority()} case2] [OK]--- \n");
       break;
   }
+  */
 }
