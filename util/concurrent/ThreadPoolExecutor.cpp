@@ -15,8 +15,7 @@ namespace obotcha {
 
 const int _ThreadPoolExecutor::DefaultThreadNum = 4;
 
-_ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool):mPool(pool),
-                                                                         mStop(false){
+_ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool):mPool(pool) {
     this->start();
 }
 
@@ -150,9 +149,7 @@ int _ThreadPoolExecutor::shutdown() {
     
     mPool->destroy();
 
-    ThreadPoolExecutor exe;
-    exe.set_pointer(this);
-    st(ExecutorRecyler)::getInstance()->add(exe);
+    st(ExecutorRecyler)::getInstance()->add(AutoClone(this));
     
     return 0;
 }
@@ -170,10 +167,7 @@ Future _ThreadPoolExecutor::submit(Runnable r) {
         }
     }
     
-    FutureTaskStatusListener listener;
-    listener.set_pointer(this);
-
-    FutureTask task = createFutureTask(r,listener);
+    FutureTask task = createFutureTask(r,AutoClone(this));
     mPool->enQueueLast(task);
 
     return createFuture(task);

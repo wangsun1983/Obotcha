@@ -65,9 +65,7 @@ void _ThreadCachedPoolExecutorHandler::run() {
         {
             AutoLock l(mStatusMutex);
             if(mStatus == HandleDestroy) {
-                ThreadCachedPoolExecutorHandler h;
-                h.set_pointer(this);
-                mServiceExecutor->onThreadComplete(h);
+                mServiceExecutor->onThreadComplete(AutoClone(this));
                 break;
             }
         }
@@ -188,9 +186,7 @@ int _ThreadCachedPoolExecutor::shutdown(){
     //notify all thread to close
     mTasks->destroy();
 
-    ThreadCachedPoolExecutor exe;
-    exe.set_pointer(this);
-    st(ExecutorRecyler)::getInstance()->add(exe);
+    st(ExecutorRecyler)::getInstance()->add(AutoClone(this));
     return 0;
 }
 
@@ -278,9 +274,7 @@ Future _ThreadCachedPoolExecutor::submit(Runnable r) {
         return nullptr;
     }
 
-    FutureTaskStatusListener listener;
-    listener.set_pointer(this);
-    FutureTask task = createFutureTask(r,listener);
+    FutureTask task = createFutureTask(r,AutoClone(this));
     Future future = createFuture(task);
     submit(task);
     return future;   
@@ -346,12 +340,9 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
         }
     }
 
-    ThreadCachedPoolExecutor executor;
-    executor.set_pointer(this);
-
     ThreadCachedPoolExecutorHandler handler = createThreadCachedPoolExecutorHandler(
                     mTasks,
-                    executor,
+                    AutoClone(this),
                     mThreadTimeout);
     handler->start();
     while(handler->getStatus() == NotStart) {

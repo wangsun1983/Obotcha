@@ -15,6 +15,16 @@ namespace obotcha {
 ThreadLocal<Thread> mThreads = createThreadLocal<Thread>();
 
 void doThreadExit(_Thread *thread) {
+    {
+        AutoLock l(thread->mStatusMutex);
+        thread->mStatus = st(Thread)::Complete;
+    }
+
+    {
+        AutoLock ll(thread->mJoinMutex);
+        thread->mJoinDondtion->notifyAll();
+    }
+
     pthread_detach(thread->getThreadId());
     mThreads->remove(thread->getThreadId());
 }
@@ -28,17 +38,6 @@ void cleanup(void *th) {
         thread->onInterrupt();
     }
     
-    {
-        AutoLock l(thread->mStatusMutex);
-        thread->mStatus = st(Thread)::Complete;
-    }
-
-    {
-
-        AutoLock ll(thread->mJoinMutex);
-        thread->mJoinDondtion->notifyAll();
-    }
-    
     doThreadExit(thread);
 }
 
@@ -46,10 +45,7 @@ void cleanup(void *th) {
 void* _Thread::localRun(void *th) {
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     _Thread *thread = static_cast<_Thread *>(th);
-
-    sp<_Thread> localThread;
-    localThread.set_pointer(thread);
-    mThreads->set(thread->getThreadId(),localThread);
+    mThreads->set(thread->getThreadId(),AutoClone(thread));
     
     {
         AutoLock l(thread->mStatusMutex);
@@ -60,17 +56,10 @@ void* _Thread::localRun(void *th) {
     
     pthread_cleanup_push(cleanup, th);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
-    {
-        AutoLock l(thread->mStatusMutex);
-        if(thread->mStatus == WaitExit) {
-            goto end;
-        }
-    }
-
     if(thread->mName != nullptr) {
         pthread_setname_np(thread->mPthread,thread->mName->toChars());
     }
-    //pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
+    
     if(thread->mRunnable != nullptr) {
         thread->mRunnable->run();
         thread->mRunnable = nullptr;
@@ -80,19 +69,9 @@ void* _Thread::localRun(void *th) {
 
     thread->onComplete();
 end:
-    pthread_cleanup_pop(0);
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
-    {
-        {
-            AutoLock l(thread->mStatusMutex);
-            thread->mStatus = Complete;
-        }
+    pthread_cleanup_pop(0);
 
-        AutoLock ll(thread->mJoinMutex);
-        thread->mJoinDondtion->notifyAll();
-    }
-  
-    localThread.remove_pointer();
     doThreadExit(thread);
     return nullptr;
 }
@@ -196,21 +175,22 @@ int _Thread::start() {
 }
 
 void _Thread::join() {
-    AutoLock ll(mJoinMutex);
-    if(getStatus() == Running) {
+    if(isRunning()) {
+        AutoLock ll(mJoinMutex);
         mJoinDondtion->wait(mJoinMutex);
     }
 }
 
 int _Thread::join(long timeInterval) {
-    AutoLock ll(mJoinMutex);
-    if(getStatus() == Running) {
+    if(isRunning()) {
+        AutoLock ll(mJoinMutex);
         return mJoinDondtion->wait(mJoinMutex,timeInterval);
     }
     return 0;
 }
 
 int _Thread::getStatus() {
+    AutoLock l(mStatusMutex);
     return mStatus;
 }
 
@@ -251,15 +231,15 @@ int _Thread::getPriority() {
     const int top_prio = max_prio - 1;
     const int low_prio = min_prio + 1;
     if(param.sched_priority == low_prio) {
-        return kLowPriority;
+        return LowPriority;
     } else if(param.sched_priority == (low_prio + top_prio - 1) / 2) {
-        return kNormalPriority;
+        return NormalPriority;
     } else if(param.sched_priority == std::max(top_prio - 2, low_prio)) {
-        return kHighPriority;
+        return HighPriority;
     } else if(param.sched_priority == std::max(top_prio - 1, low_prio)) {
-        return kHighestPriority;
+        return HighestPriority;
     } else if(param.sched_priority == top_prio) {
-        return kRealtimePriority;
+        return RealtimePriority;
     }
 
     return -1;
@@ -285,22 +265,22 @@ int _Thread::setPriority(int priority) {
     const int top_prio = max_prio - 1;
     const int low_prio = min_prio + 1;
     switch (priority) {
-        case kLowPriority:
-        param.sched_priority = low_prio;
+        case LowPriority:
+            param.sched_priority = low_prio;
         break;
-        case kNormalPriority:
-        // The -1 ensures that the kHighPriority is always greater or equal to
-        // kNormalPriority.
-        param.sched_priority = (low_prio + top_prio - 1) / 2;
+        case NormalPriority:
+            // The -1 ensures that the kHighPriority is always greater or equal to
+            // kNormalPriority.
+            param.sched_priority = (low_prio + top_prio - 1) / 2;
         break;
-        case kHighPriority:
-        param.sched_priority = std::max(top_prio - 2, low_prio);
+        case HighPriority:
+            param.sched_priority = std::max(top_prio - 2, low_prio);
         break;
-        case kHighestPriority:
-        param.sched_priority = std::max(top_prio - 1, low_prio);
+        case HighestPriority:
+            param.sched_priority = std::max(top_prio - 1, low_prio);
         break;
-        case kRealtimePriority:
-        param.sched_priority = top_prio;
+        case RealtimePriority:
+            param.sched_priority = top_prio;
         break;
     }
 
@@ -324,6 +304,10 @@ int _Thread::setSchedPolicy(int policy) {
 }
 
 int _Thread::getSchedPolicy() {
+    if(!isRunning()) {
+        return -InvalidStatus;
+    }
+
     int policy = SchedOther;
     if(pthread_attr_getschedpolicy(&mThreadAttr, &policy) != 0) {
         return -1;
@@ -378,7 +362,6 @@ int _Thread::setThreadSchedPolicy(int policy) {
 }
 
 int _Thread::getThreadSchedPolicy() {
-
     Thread thread = mThreads->get();
     if(thread != nullptr) {
         return thread->getSchedPolicy();

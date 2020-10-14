@@ -176,8 +176,8 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l):_HttpV1Server{
 }
 
 _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certificate,String key) {
-    HttpV1Server server;
-    server.set_pointer(this);
+    //HttpV1Server server;
+    //server.set_pointer(this);
     mHttpListener = l;
 
     mMutex = createMutex("httpserver fdmaps");
@@ -186,7 +186,7 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
     threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
     mThreads = createArrayList<HttpDispatchThread>();
     for(int i = 0;i<threadsNum;i++) {
-        HttpDispatchThread thread = createHttpDispatchThread(server,l);
+        HttpDispatchThread thread = createHttpDispatchThread(AutoClone(this),l);
         thread->start();
         mThreads->add(thread);
     }

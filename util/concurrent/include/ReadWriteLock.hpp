@@ -14,9 +14,7 @@ class _ReadWriteLock;
 
 DECLARE_SIMPLE_CLASS(ReadLock) {
 public:
-    _ReadLock(_ReadWriteLock *);
-
-    _ReadLock(_ReadWriteLock *,String);
+    friend class _ReadWriteLock;
 
     void lock();
 
@@ -29,6 +27,10 @@ public:
     String getName();
 
 private:
+    _ReadLock(_ReadWriteLock *);
+
+    _ReadLock(_ReadWriteLock *,String);
+
     sp<_ReadWriteLock> rwlock;
 
     String mName;
@@ -36,9 +38,7 @@ private:
 
 DECLARE_SIMPLE_CLASS(WriteLock) {
 public:
-    _WriteLock(_ReadWriteLock *);
-
-    _WriteLock(_ReadWriteLock *,String);
+    friend class _ReadWriteLock;
 
     void lock();
 
@@ -52,6 +52,10 @@ public:
 
 private:
     sp<_ReadWriteLock> rwlock;
+    
+    _WriteLock(_ReadWriteLock *);
+
+    _WriteLock(_ReadWriteLock *,String);
 
     String mName;
 };

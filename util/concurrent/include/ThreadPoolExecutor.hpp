@@ -42,13 +42,9 @@ public:
 private:
     BlockingQueue<FutureTask> mPool;
 
-    bool mIdleWait;
-
     Mutex mStateMutex;
 
     FutureTask mCurrentTask;
-
-    mutable volatile bool mStop;
 };
 
 
@@ -85,7 +81,6 @@ public:
     ~_ThreadPoolExecutor();
 
 private:
-    //void onCompleteNotify(ThreadPoolExecutorHandler h);
     static const int DefaultThreadNum;
 
     void onCancel(FutureTask);
@@ -102,7 +97,6 @@ private:
 
     bool mIsTerminated;
 
-    //bool isDynamic;
     int mThreadNum;
 
     void init(int queuesize,int threadnum);

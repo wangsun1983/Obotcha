@@ -26,7 +26,6 @@ public:
     static const int Running = 1;
     static const int Cancel = 2;
     static const int Complete = 3;
-    static const int Error = 4;
 
 private:
     FutureTask mTask;

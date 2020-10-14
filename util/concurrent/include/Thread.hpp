@@ -28,6 +28,8 @@ public:
 
     friend void cleanup(void *th);
 
+    friend void doThreadExit(_Thread *thread);
+
     _Thread(String name,Runnable run);
 
 	_Thread(Runnable run);
@@ -82,21 +84,19 @@ public:
 
     static int getThreadSchedPolicy();
 
-    const static int kLowPriority = 1;
-    const static int kNormalPriority = 2;
-    const static int kHighPriority = 3;
-    const static int kHighestPriority = 4;
-    const static int kRealtimePriority = 5;
+    const static int LowPriority = 1;
+    const static int NormalPriority = 2;
+    const static int HighPriority = 3;
+    const static int HighestPriority = 4;
+    const static int RealtimePriority = 5;
 
     const static int SchedOther = SCHED_NORMAL; //SCHED_NORMAL 0
     const static int SchedFifo = SCHED_FIFO;  //SCHED_FIFO 1
     const static int SchedRr = SCHED_RR; //SCHED_RR 2
 
-    const static int NotExist = 0;
     const static int NotStart = 1;
     const static int Idle = 2;
     const static int Running = 3;
-    const static int WaitExit = 4;
     const static int Complete = 5;
     const static int ErrorStatus = 6;
 
@@ -115,11 +115,10 @@ private:
 
     pthread_attr_t mThreadAttr;
 
-    int mPriority;
-
     String mName;
     
     Mutex mStatusMutex;
+
     int mStatus;
 
     AtomicInteger bootFlag;

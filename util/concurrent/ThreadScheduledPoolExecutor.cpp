@@ -38,8 +38,7 @@ void _WaitingTask::onComplete() {
         break;
 
         case ScheduletTaskFixedDelay: {
-            WaitingTask task;
-            task.set_pointer(this);
+            WaitingTask task = AutoClone(this);
             task->mNextTime = (st(System)::currentTimeMillis() + task->repeatDelay);
             mExecutor->addWaitingTask(task);
         }
@@ -152,9 +151,7 @@ Future _ThreadScheduledPoolExecutor::submit(Runnable r) {
 }
 
 Future _ThreadScheduledPoolExecutor::schedule(Runnable r,long delay) {
-    FutureTaskStatusListener listener;
-    listener.set_pointer(this);
-    WaitingTask task = createWaitingTask(r,listener);
+    WaitingTask task = createWaitingTask(r,AutoClone(this));
     task->init(delay,ScheduletTaskNormal,-1);
     task->setExecutor(this);
 
@@ -165,10 +162,7 @@ Future _ThreadScheduledPoolExecutor::schedule(Runnable r,long delay) {
 Future _ThreadScheduledPoolExecutor::scheduleAtFixedRate(Runnable r,
                                 long initialDelay,
                                 long period) {
-
-    FutureTaskStatusListener listener;
-    listener.set_pointer(this);
-    WaitingTask task = createWaitingTask(r,listener);
+    WaitingTask task = createWaitingTask(r,AutoClone(this));
     task->init(initialDelay,ScheduletTaskFixRate,period);
     task->setExecutor(this);
 
@@ -179,10 +173,7 @@ Future _ThreadScheduledPoolExecutor::scheduleAtFixedRate(Runnable r,
 Future _ThreadScheduledPoolExecutor::scheduleWithFixedDelay(Runnable r,
                                 long initialDelay,
                                 long delay) {
-
-    FutureTaskStatusListener listener;
-    listener.set_pointer(this);
-    WaitingTask task = createWaitingTask(r,listener);
+    WaitingTask task = createWaitingTask(r,AutoClone(this));
     task->init(initialDelay,ScheduletTaskFixedDelay,delay);
 
     Future future = createFuture(task);

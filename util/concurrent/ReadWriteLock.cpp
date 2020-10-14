@@ -27,12 +27,7 @@ void _ReadLock::unlock() {
 }
 
 int _ReadLock::tryLock() {
-    int ret = pthread_rwlock_tryrdlock(&rwlock->rwlock);
-    if(ret == 0) {
-      return 0;
-    }
-
-    return -1;
+    return pthread_rwlock_tryrdlock(&rwlock->rwlock);
 }
 
 String _ReadLock::getName() {
@@ -43,9 +38,8 @@ int _ReadLock::lock(long timeInterval) {
     struct timespec ts;
 
     st(System)::getNextTime(timeInterval,&ts);
-    int ret = pthread_rwlock_timedrdlock(&rwlock->rwlock,&ts);
-    if(ret == ETIMEDOUT) {
-      return -WaitTimeout;
+    if(pthread_rwlock_timedrdlock(&rwlock->rwlock,&ts) == ETIMEDOUT) {
+        return -WaitTimeout;
     }
 
     return 0;
@@ -53,7 +47,7 @@ int _ReadLock::lock(long timeInterval) {
 
 //------------ WriteLock ------------//
 _WriteLock::_WriteLock(_ReadWriteLock *l) {
-  rwlock.set_pointer(l);
+    rwlock.set_pointer(l);
 }
 
 _WriteLock::_WriteLock(_ReadWriteLock *l,String s) {
@@ -62,20 +56,19 @@ _WriteLock::_WriteLock(_ReadWriteLock *l,String s) {
 }
 
 void _WriteLock::lock() {
-  pthread_rwlock_wrlock(&rwlock->rwlock);
+    pthread_rwlock_wrlock(&rwlock->rwlock);
 }
 
 void _WriteLock::unlock() {
-  pthread_rwlock_unlock(&rwlock->rwlock);
+    pthread_rwlock_unlock(&rwlock->rwlock);
 }
 
 int _WriteLock::tryLock() {
-  int ret = pthread_rwlock_trywrlock(&rwlock->rwlock);
-  if(ret == 0) {
-    return 0;
-  }
+    if(pthread_rwlock_trywrlock(&rwlock->rwlock) != 0) {
+        return -1;
+    }
 
-  return -1;
+    return 0;
 }
 
 String _WriteLock::getName() {
@@ -88,7 +81,7 @@ int _WriteLock::lock(long timeInterval) {
     st(System)::getNextTime(timeInterval,&ts);
     int ret = pthread_rwlock_timedwrlock(&rwlock->rwlock,&ts);
     if(ret == ETIMEDOUT) {
-      return -WaitTimeout;
+        return -WaitTimeout;
     }
 
     return 0;
@@ -105,11 +98,19 @@ _ReadWriteLock::_ReadWriteLock(String s) {
 }
 
 sp<_ReadLock> _ReadWriteLock::getReadLock() {
-    return createReadLock(this,mName);
+    ReadLock lock;
+    _ReadLock *_lock = new _ReadLock(this,mName);
+    lock.set_pointer(_lock);
+    return lock;
+    //return createReadLock(this,mName);
 }
 
 sp<_WriteLock> _ReadWriteLock::getWriteLock() {
-    return createWriteLock(this,mName);
+    WriteLock lock;
+    _WriteLock *_lock = new _WriteLock(this,mName);
+    lock.set_pointer(_lock);
+    return lock;
+    //return createWriteLock(this,mName);
 }
 
 String _ReadWriteLock::getName() {

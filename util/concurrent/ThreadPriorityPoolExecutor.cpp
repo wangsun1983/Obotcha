@@ -213,9 +213,7 @@ int _ThreadPriorityPoolExecutor::shutdown() {
         mTaskCond->notifyAll();
     }
     
-    ThreadPriorityPoolExecutor exe;
-    exe.set_pointer(this);
-    st(ExecutorRecyler)::getInstance()->add(exe);
+    st(ExecutorRecyler)::getInstance()->add(AutoClone(this));
 }
 
 void _ThreadPriorityPoolExecutor::setAsTerminated() {
@@ -272,10 +270,8 @@ Future _ThreadPriorityPoolExecutor::submit(int level,Runnable task) {
             return nullptr;
         }
     }
-    
-    FutureTaskStatusListener listener;
-    listener.set_pointer(this);
-    PriorityTask prioTask = createPriorityTask(level,task,listener);
+
+    PriorityTask prioTask = createPriorityTask(level,task,AutoClone(this));
     {
         AutoLock l(mTaskMutex);
         switch(prioTask->priority) {

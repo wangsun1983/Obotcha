@@ -99,6 +99,13 @@ private:
     mutable volatile int32_t mCount;
 };
 
+template<typename U>
+sp<U> AutoClone(U *v) {
+    sp<U> data;
+    data.set_pointer(v);
+    return data;
+}
+
 }
 
 //    sp<_##Y> ret = new _##Y(std::forward<Args>(args)...);\

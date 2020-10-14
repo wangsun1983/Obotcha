@@ -122,10 +122,6 @@ void _WebSocketClientManager::setWebSocketProtocols(int fd,ArrayList<String> p) 
 void _WebSocketClientManager::removeClient(WebSocketClientInfo client) {
     AutoLock ll(mMutex);
     mClients->remove(client->getClientFd());
-    //WebSocketClientInfo c = mClients->get(client->getClientFd());
-    //if(c == client) {
-    //  mClients->remove(client->getClientFd());
-    //}
 }
 
 //--------------------WebSocketDispatchData-----------------
