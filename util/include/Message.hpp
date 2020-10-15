@@ -27,6 +27,8 @@ public:
 
     _Message(int);
 
+    _Message(Runnable);
+
     int what;
 
     int arg1;
@@ -42,8 +44,7 @@ private:
 
     Runnable mRunnable;
 
-    long time;
-
+    long nextTime;
 };
 
 }

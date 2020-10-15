@@ -8,11 +8,20 @@ namespace obotcha {
 
 _Message::_Message() {
     mDrop = 0;
+    nextTime = 0;
 }
 
 _Message::_Message(int w) {
     what = w;
     mDrop = 0;
+    nextTime = 0;
 }
+
+_Message::_Message(Runnable r) {
+    mRunnable = r;
+    mDrop = 0;
+    nextTime = 0;
+}
+
 
 }

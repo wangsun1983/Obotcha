@@ -1,6 +1,8 @@
 #ifndef __OBOTCHA_HANDLER_HPP__
 #define __OBOTCHA_HANDLER_HPP__
 
+#include <vector>
+
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "ArrayList.hpp"
@@ -11,18 +13,12 @@
 #include "Runnable.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
-#include "ThreadScheduledPoolExecutor.hpp"
+#include "LinkedList.hpp"
+#include "Message.hpp"
 
 namespace obotcha {
 
 class _Message;
-
-DECLARE_SIMPLE_CLASS(DelayMessageItem) {
-public:
-    DelayMessageItem next;
-    DelayMessageItem prev;
-    sp<_Message> msg;
-};
 
 DECLARE_SIMPLE_CLASS(Handler) EXTENDS(Thread){
 
@@ -58,23 +54,11 @@ public:
 private:
     void insertDelayedMessage(sp<_Message>);
     
-    long scanDelayedMessage();
-
-    void removeDelayedMessage(DelayMessageItem);
-
-    ConcurrentQueue<sp<_Message>> mIdleMessagePool;
-
-    ArrayList<sp<_Message>> mMessagePool;
-    
     Mutex mMutex;
     Condition mCondition;
-    
-    //ArrayList<sp<_Message>> mDelayedMessagePool;
-    DelayMessageItem mHead;
-    DelayMessageItem mCurrent;
-    Mutex mDelayedMutex;
-    
-    mutable volatile bool mIsStop;
+    LinkedList<Message> mMessagePool;
+    std::vector<Message> mDelayedMessagePool;
+
 };
 
 }
