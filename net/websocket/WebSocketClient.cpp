@@ -190,9 +190,7 @@ WebSocketClient _WebSocketClient::buildConnectInfo(String header,String value) {
         mClient->setDeflater(defalter);
     }
 
-    WebSocketClient client;
-    client.set_pointer(this);
-    return client;
+    return AutoClone(this);
 }
 
 void _WebSocketClient::clearConnectInfo() {

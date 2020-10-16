@@ -98,13 +98,8 @@ int _TcpClient::doConnect() {
 
     //create epoll observer?
     if(mListener != nullptr) {
-        TcpClient v;
-        v.set_pointer(this);
-        
-        EPollFileObserverListener l;
-        l.set_pointer(this);
         mEpollObserver = createEPollFileObserver();
-        mEpollObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,l);
+        mEpollObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,AutoClone(this));
         mEpollObserver->start();
     }
 

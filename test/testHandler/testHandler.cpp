@@ -21,6 +21,6 @@ int main() {
   m->sendEmptyMessageDelayed(2,2000);
 
   m->sendEmptyMessage(4);
-  while(1) {}
+  while(1) {sleep(1000);}
   printf("end main!!!! \n");
 }

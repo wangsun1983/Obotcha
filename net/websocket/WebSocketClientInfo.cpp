@@ -123,34 +123,32 @@ void _WebSocketClientInfo::setConnectUrl(String l) {
 
 int _WebSocketClientInfo::_send(int type,ByteArray msg) {
     if(mClientFd != -1) {
-        WebSocketClientInfo info;
-        info.set_pointer(this);
         int size = 0;
         
         ArrayList<ByteArray> data = nullptr;
 
         switch(type) {
             case st(WebSocketProtocol)::OPCODE_TEXT:
-                data = mComposer->genTextMessage(info,msg->toString());
+                data = mComposer->genTextMessage(AutoClone(this),msg->toString());
                 break;
 
             case st(WebSocketProtocol)::OPCODE_BINARY:
-                data = mComposer->genBinaryMessage(info,msg);
+                data = mComposer->genBinaryMessage(AutoClone(this),msg);
                 break;
 
             case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
                 data = createArrayList<ByteArray>();
-                data->add(mComposer->genCloseMessage(info,msg->toString()));
+                data->add(mComposer->genCloseMessage(AutoClone(this),msg->toString()));
                 break;
             
             case st(WebSocketProtocol)::OPCODE_CONTROL_PING:
                 data = createArrayList<ByteArray>();
-                data->add(mComposer->genPingMessage(info,msg->toString()));
+                data->add(mComposer->genPingMessage(AutoClone(this),msg->toString()));
                 break;
 
             case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:
                 data = createArrayList<ByteArray>();
-                data->add(mComposer->genPongMessage(info,msg->toString()));
+                data->add(mComposer->genPongMessage(AutoClone(this),msg->toString()));
                 break;
 
             default:

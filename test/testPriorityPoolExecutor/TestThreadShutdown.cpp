@@ -32,13 +32,13 @@ public:
     }
 
     void run() {
-        //printf("i am running123 \n");
+        printf("i am running123 \n");
         sleep(10);
     }
 
     void onInterrupt() {
         AutoLock ll(mMutex);
-        //printf("i am wait \n");
+        printf("i am wait \n");
         count++;
     }
 

@@ -178,9 +178,11 @@ void _SystemProperties::onDataReceived(SocketResponser r,ByteArray pack) {
 }
 
 void _SystemProperties::runAsServer() {
-    SocketListener l;
-    l.set_pointer(this);
-    mServer = createLocalSocketServer(path,l,st(LocalSocketServer)::DefaultLocalClientNums,sizeof(struct _SystemPropertiesData));
+    mServer = createLocalSocketServer(path,
+                                    AutoClone(this),
+                                    st(LocalSocketServer)::DefaultLocalClientNums,
+                                    sizeof(struct _SystemPropertiesData));
+
     mListeners = createHashMap<String,HashSet<int>>();
 
     if(mServer->tryStart() == 0){
@@ -191,9 +193,7 @@ void _SystemProperties::runAsServer() {
 
 void _SystemProperties::registListener(String key,SystemPropertiesListener l) {
     if(mClient == nullptr) {
-        SocketListener listener;
-        listener.set_pointer(this);
-        mClient = createLocalSocketClient(path,1000,sizeof(struct _SystemPropertiesData),listener);
+        mClient = createLocalSocketClient(path,1000,sizeof(struct _SystemPropertiesData),AutoClone(this));
         mClient->doConnect();
     }
 

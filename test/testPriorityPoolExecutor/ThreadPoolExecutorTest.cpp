@@ -44,7 +44,7 @@ public:
     }
 
     void onInterrupt() {
-        printf("RunTest2 onInterrupt 2\n");
+        //printf("RunTest2 onInterrupt 2\n");
     }
 
     ~_RunTest2() {
@@ -52,11 +52,10 @@ public:
     }
 };
 
-
 int normalTest() {
     printf("---[PriorityPoolExecutor Normal Test Start]--- \n");
     //_ThreadPoolExecutor(int queuesize,int threadnum);
-
+#if 0
     while(1) {
         {
             ExecutorService pool = st(Executors)::newPriorityThreadPool();
@@ -104,8 +103,8 @@ int normalTest() {
         printf("---[PriorityPoolExecutor Test {shutdown()} case4] [Success]--- \n");
         break;
     }
+#endif 
 
-    //int awaitTermination(long timeout);
     while(1) {
         ExecutorService pool = st(Executors)::newPriorityThreadPool();
         int result = pool->awaitTermination(1000);
@@ -122,17 +121,14 @@ int normalTest() {
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
-        //printf("awaitTermination start test \n");
         result = pool->awaitTermination(5000);
-        printf("awaitTermination result is %d \n",result);
         if(result != -WaitTimeout) {
             printf("---[PriorityPoolExecutor Test {awaitTermination()} case2] [FAIL]--- \n");
             break;
         }
 
         long current2 = st(System)::currentTimeMillis();
-        printf("current2 - current1 is %d \n",(current2 - current));
-        if(current2 - current > 5015) {
+        if((current2 - current) > 5015) {
             printf("---[PriorityPoolExecutor Test {awaitTermination()} case3] [FAIL]--- \n");
             break;
         }
@@ -142,19 +138,20 @@ int normalTest() {
         break;
     }
 
-
+#if 0
     //int awaitTermination(long timeout = 0);
     while(1) {
         ExecutorService pool = st(Executors)::newPriorityThreadPool();
+        printf("start trace1 \n");
         int result = pool->awaitTermination(0);
         if(result != -InvalidStatus) {
             printf("---[PriorityPoolExecutor Test {awaitTermination()} case5] [FAIL]--- \n");
             break;
         }
-
+        printf("start trace2 \n");
         pool->submit(createMyRunTest1());
         pool->shutdown();
-
+        printf("start trace3 \n");
         long current = st(System)::currentTimeMillis();
         //printf("awaitTermination start test \n");
         result = pool->awaitTermination(0);
@@ -227,5 +224,5 @@ int normalTest() {
         printf("---[PriorityPoolExecutor Test {submit()} case3] [Success]--- \n");
         break;
     }
-
+#endif
 }

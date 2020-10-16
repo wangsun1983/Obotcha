@@ -89,7 +89,7 @@ void _ByteRingArray::push(ByteArray array,int start,int length) {
         throwArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
     }
 
-    if((mSize - abs(mStart - mEnd)) < length) {
+    if(getAvailDataSize() < length) {
         throwArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
     }
     
@@ -163,7 +163,7 @@ int _ByteRingArray::getAvailDataSize() {
     }
 
     if(mStart >= mEnd) {
-        return mSize - abs(mStart - mEnd);
+        return mSize - (mStart - mEnd);
     } else {
         return mEnd - mStart;
     }

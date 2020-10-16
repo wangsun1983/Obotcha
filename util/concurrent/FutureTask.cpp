@@ -68,11 +68,8 @@ void _FutureTask::cancel() {
     mCompleteCond->notify();
 
     if(mListener != nullptr) {
-        FutureTask task;
-        task.set_pointer(this);
-        mListener->onCancel(task);
+        mListener->onCancel(AutoClone(this));
         mListener = nullptr;
-        task = nullptr;
     }
     mRunnable = nullptr;
 }

@@ -73,9 +73,7 @@ int _TcpServer::connect() {
 
     if(mListener != nullptr) {
         mObserver = createEPollFileObserver();
-        EPollFileObserverListener listener;
-        listener.set_pointer(this);
-        mObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,listener);
+        mObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,AutoClone(this));
     }
 
     return 0;
@@ -94,11 +92,8 @@ int _TcpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
         mListener->onConnect(createSocketResponser(clientfd,
                             createString(inet_ntoa(client_address.sin_addr)),
                             ntohs(client_address.sin_port)));
-        
-        EPollFileObserverListener v;
-        v.set_pointer(this);
-        //printf("add observer by socket!!!! ,clientfd is %d\n",clientfd);
-        mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,v);
+
+        mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,AutoClone(this));
     } else {
         if((events & EPOLLRDHUP) != 0) {
             if(mListener != nullptr) {

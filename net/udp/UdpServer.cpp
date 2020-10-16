@@ -62,9 +62,7 @@ int _UdpServer::connect() {
     
     if(mListener != nullptr) {
         mEpollObserver = createEPollFileObserver();
-        EPollFileObserverListener listener;
-        listener.set_pointer(this);
-        mEpollObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,listener);
+        mEpollObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,AutoClone(this));
         mEpollObserver->start();
     }
 

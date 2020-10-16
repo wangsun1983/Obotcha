@@ -176,8 +176,6 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l):_HttpV1Server{
 }
 
 _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certificate,String key) {
-    //HttpV1Server server;
-    //server.set_pointer(this);
     mHttpListener = l;
 
     mMutex = createMutex("httpserver fdmaps");
@@ -194,24 +192,19 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
     mIp = ip;
     mPort = port;
 
-    SocketListener sockListener;
-    sockListener.set_pointer(this);
-    //printf("_HttpV1Server trace1 \n");
     if(certificate == nullptr) {
         //http server
         if(mIp == nullptr) {
-            mTcpServer = createTcpServer(mPort,sockListener);
+            mTcpServer = createTcpServer(mPort,AutoClone(this));
         } else {
-            mTcpServer = createTcpServer(mIp,mPort,sockListener);
+            mTcpServer = createTcpServer(mIp,mPort,AutoClone(this));
         }
-        //printf("_HttpV1Server trace2 \n");
         if(mTcpServer->start() != 0) {
-            //printf("_HttpV1Server trace3 \n");
             throw InitializeException("tcp server start fail!!");
         }
     } else {
         //https server
-        mSSLServer = createSSLServer(ip,port,sockListener,certificate,key);
+        mSSLServer = createSSLServer(ip,port,AutoClone(this),certificate,key);
         mSSLServer->start();
     }
     

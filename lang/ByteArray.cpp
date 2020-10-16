@@ -27,7 +27,7 @@ const int _ByteArray::NormalMode = 2;
  * @param b copy value
  */
 _ByteArray::_ByteArray(sp<_ByteArray> b) {
-    if(b == nullptr) {
+    if(b == nullptr || b->size() <= 0) {
         throwInitializeException("create ByteArray is nullptr");
     }
     mSize = b->size();
@@ -55,7 +55,7 @@ _ByteArray::_ByteArray(int length) {
  * @param str save str as ByteArray
  */
 _ByteArray::_ByteArray(String str) {
-    if(str == nullptr) {
+    if(str == nullptr || str->size() <= 0) {
         throwInitializeException("create ByteArray is nullptr");
     }
     mSize = str->size();
@@ -219,8 +219,7 @@ int _ByteArray::fill(int index,int length,byte v) {
         return -NotCreate;
     }
 
-    if((index >= mSize) 
-        || (index < 0)
+    if((index < 0)
         || (index + length > mSize)) {
         throwArrayIndexOutOfBoundsException("fill Stack Overflow");
     }
@@ -253,8 +252,7 @@ int _ByteArray::append(byte *data,int len) {
 }
 
 String _ByteArray::toString() {
-    char _buff[mSize + 1];
-    memset(_buff,0,mSize+1);
+    char _buff[mSize + 1] = {0};
     memcpy(_buff,buff,mSize);
     return createString(&_buff[0],0,mSize);
 }

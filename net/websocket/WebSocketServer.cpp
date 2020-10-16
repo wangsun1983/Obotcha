@@ -381,16 +381,13 @@ void _WebSocketDispatchThread::run() {
 _DispatchManager::_DispatchManager() {
     threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gWebSocketRcvThreadsNum,4);
 
-    DispatchManager m;
-    m.set_pointer(this);
-
     mMutex = createMutex("ws dispatch");
     fdmaps = createHashMap<int,Integer>();
 
     mThreads = createArrayList<WebSocketDispatchThread>();
 
     for(int i = 0;i < threadsNum;i++) {
-        WebSocketDispatchThread thread = createWebSocketDispatchThread(m);
+        WebSocketDispatchThread thread = createWebSocketDispatchThread(AutoClone(this));
         mThreads->add(thread);
         thread->start();
     }
@@ -537,7 +534,6 @@ int _WebSocketServer::start() {
     int ret = mServer->start();
     mHttpListener->setHttpEpollObserver(mServer->mObserver);
     return ret;
-    // mEpollObserver->start();
 }
 
 int _WebSocketServer::release() {

@@ -35,10 +35,7 @@ int _LocalSocketServer::onEvent(int fd,uint32_t events,ByteArray pack) {
                             createString(inet_ntoa(client_address.sin_addr)),
                             ntohs(client_address.sin_port)));
         
-        EPollFileObserverListener v;
-        v.set_pointer(this);
-        printf("add observer by socket!!!! ,clientfd is %d\n",clientfd);
-        mEpollFileObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,v);
+        mEpollFileObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,AutoClone(this));
     } else {
         if((events & EPOLLIN) != 0) {
             if(mListener != nullptr && pack != nullptr) {
@@ -121,9 +118,7 @@ int _LocalSocketServer::tryConnect() {
     
     if(mListener != nullptr) {
         mEpollFileObserver = createEPollFileObserver();
-        EPollFileObserverListener l;
-        l.set_pointer(this);
-        mEpollFileObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,l);
+        mEpollFileObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,AutoClone(this));
     }
 
     return 0;
@@ -147,9 +142,7 @@ int _LocalSocketServer::connect() {
     
     if(mListener != nullptr) {
         mEpollFileObserver = createEPollFileObserver();
-        EPollFileObserverListener l;
-        l.set_pointer(this);
-        mEpollFileObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,l);
+        mEpollFileObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,AutoClone(this));
     }
 
     return 0;

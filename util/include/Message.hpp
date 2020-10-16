@@ -45,6 +45,8 @@ private:
     Runnable mRunnable;
 
     long nextTime;
+
+    sp<_Message> next;
 };
 
 }

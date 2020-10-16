@@ -289,7 +289,7 @@ sp<T>::sp(U* other)
 template<typename T> template<typename U>
 sp<T>::sp(const sp<U>& other)
 //: m_ptr(dynamic_cast<T*>(other.m_ptr))
-: m_ptr(other.m_ptr)
+: m_ptr((T *)other.m_ptr)
 {
     if (m_ptr) m_ptr->incStrong(this);
 }

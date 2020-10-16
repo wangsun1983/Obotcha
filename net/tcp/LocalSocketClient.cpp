@@ -88,10 +88,8 @@ int _LocalSocketClient::doConnect() {
 
     //add to epoll fd
     if(mSocketListener != nullptr) {
-        EPollFileObserverListener l;
-        l.set_pointer(this);
         mObserver = createEPollFileObserver();
-        mObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,l);
+        mObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,AutoClone(this));
         mObserver->start();
     }
 

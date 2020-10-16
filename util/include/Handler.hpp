@@ -29,13 +29,13 @@ public:
 
     sp<_Message> obtainMessage();
 
-    void sendEmptyMessage(int what);
+    int sendEmptyMessage(int what);
 
-    void sendEmptyMessageDelayed(int what,long delay);
+    int sendEmptyMessageDelayed(int what,long delay);
 
-    void sendMessageDelayed(sp<_Message>,long delay);
+    int sendMessageDelayed(sp<_Message>,long delay);
 
-    void sendMessage(sp<_Message>);
+    int sendMessage(sp<_Message>);
 
     virtual void handleMessage(sp<_Message> msg);
 
@@ -45,20 +45,24 @@ public:
 
     void run();
 
-    void post(Runnable r);
+    int post(Runnable r);
 
-    void postDelayed(Runnable r,long delay);
+    int postDelayed(Runnable r,long delay);
 
     void destroy();
     
 private:
-    void insertDelayedMessage(sp<_Message>);
-    
+    const static  int StatusRunning;
+    const static  int StatusDestroy;
+
+    bool isRunning();
+
     Mutex mMutex;
     Condition mCondition;
-    LinkedList<Message> mMessagePool;
-    std::vector<Message> mDelayedMessagePool;
-
+    //LinkedList<Message> mMessagePool;
+    Message mMessagePool;
+    
+    AtomicInteger mStatus;
 };
 
 }

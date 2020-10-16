@@ -38,9 +38,7 @@ _UdpClient::_UdpClient(String ip,int port,SocketListener l) {
 
     if(l != nullptr) {
         mObserver = createEPollFileObserver();
-        EPollFileObserverListener ll;
-        ll.set_pointer(this);
-        mObserver->addObserver(sock,EPOLLIN|EPOLLHUP,ll);
+        mObserver->addObserver(sock,EPOLLIN|EPOLLHUP,AutoClone(this));
         mObserver->start();
     }
 }
