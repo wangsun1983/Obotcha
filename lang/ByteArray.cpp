@@ -132,7 +132,7 @@ int _ByteArray::size() {
     return mSize;
 }
 
-void _ByteArray::qucikShrink(int size) {
+void _ByteArray::quickShrink(int size) {
     if(size >= mSize) {
         return;
     }

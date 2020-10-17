@@ -3,16 +3,12 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <sys/epoll.h>
 #include <fcntl.h>
 #include <memory.h>
 #include <sys/un.h>
-#include <sys/epoll.h>
 #include <stddef.h>
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
+#include "System.hpp"
 #include "String.hpp"
 #include "InetAddress.hpp"
 #include "SocketListener.hpp"
@@ -38,19 +34,9 @@ _LocalSocketClient::_LocalSocketClient(String domain,int recv_time,int buff_size
     serverAddr.sun_family = AF_UNIX;
     strcpy(serverAddr.sun_path, domain->toChars()); 
 
-    if(recv_time > 0) {
-        mReceiveTimeout = recv_time;
-    } else {
-        throw InitializeException(createString("error tcp client recv time"));
-    }
-    
-    if(buff_size >0) {
-        mBufferSize = buff_size;
-    } else {
-        throw InitializeException(createString("error tcp client buff size"));
-    }
-    
-    mSock = socket(AF_UNIX, SOCK_STREAM, 0);
+    mReceiveTimeout = recv_time;
+    mBufferSize = buff_size;
+    mSock = TEMP_FAILURE_RETRY(socket(AF_UNIX, SOCK_STREAM, 0));
     
     mSocketListener = l;
 }
@@ -64,8 +50,7 @@ int _LocalSocketClient::doConnect() {
         return -1;
     }
 
-    int ret = connect(mSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
-    if( ret < 0) {
+    if(connect(mSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
         return -1;
     }
 
@@ -77,16 +62,14 @@ int _LocalSocketClient::doConnect() {
     memset(&local_address,0,sizeof(struct sockaddr_in));
 
     socklen_t length = 0;
-    ret = getpeername(mSock, ( struct sockaddr* )&local_address, &length);
-    //char local[INET_ADDRSTRLEN ];
-   
+    int ret = getpeername(mSock, ( struct sockaddr* )&local_address, &length);
+    
     while(ntohs( local_address.sin_port ) == 0) {
         st(Thread)::msleep(30);
         memset(&local_address,0,sizeof(struct sockaddr_in));
-        ret = getpeername(mSock, ( struct sockaddr* )&local_address, &length);
+        getpeername(mSock, ( struct sockaddr* )&local_address, &length);
     }
 
-    //add to epoll fd
     if(mSocketListener != nullptr) {
         mObserver = createEPollFileObserver();
         mObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,AutoClone(this));
@@ -100,22 +83,18 @@ int _LocalSocketClient::doSend(ByteArray data) {
     if(data == nullptr || data->size() == 0) {
         return  0;
     }
-    
-    //return st(NetUtils)::sendTcpPacket(mSock,data);
     return send(mSock,data->toValue(),data->size(),0);
 }
 
 
 ByteArray _LocalSocketClient::doReceive() {
-    byte buff[mBufferSize];
-    int len = read(mSock,buff,mBufferSize);
-    ByteArray data = createByteArray((const byte *)buff,len);
-
-    return data;
+    ByteArray buff = createByteArray(mBufferSize);
+    int len = read(mSock,buff->toValue(),mBufferSize);
+    buff->quickShrink(len);
+    return buff;
 }
 
 void _LocalSocketClient::release() {
-     
     if(mSock >= 0) {
         close(mSock);
         mSock = -1;

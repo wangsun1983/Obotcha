@@ -191,7 +191,7 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
                             mStatus = HttpV1ParseStatusIdle;
                             //this is end of content
                             ByteArray chunk = mReader->pop();
-                            chunk->qucikShrink(chunk->size()-5);
+                            chunk->quickShrink(chunk->size()-5);
                             mHttpPacket->setBody(chunk);
                             packets->add(mHttpPacket);
                             mChunkEndCount = 0;

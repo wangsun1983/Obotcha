@@ -34,7 +34,7 @@ public:
 
     int growBy(int size);
 
-    void qucikShrink(int size);
+    void quickShrink(int size);
 
     bool isEmpty();
 

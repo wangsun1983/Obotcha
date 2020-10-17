@@ -227,7 +227,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                                 mContentBuff->append(content);
                             }
                             
-                            mContentBuff->qucikShrink(mContentBuff->size() - mBoundary->size() - NewLine->size());
+                            mContentBuff->quickShrink(mContentBuff->size() - mBoundary->size() - NewLine->size());
                             mFileStream->write(mContentBuff);
                             mFileStream->flush();
                             mFileStream->close();
@@ -296,7 +296,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
                     ByteArray content = reader->pop();
                     
-                    content->qucikShrink(content->size() - mBoundaryIndex);
+                    content->quickShrink(content->size() - mBoundaryIndex);
                     if(mContentBuff != nullptr) {
                         mContentBuff->append(content);
                     } else {

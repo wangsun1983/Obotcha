@@ -14,6 +14,7 @@
 #include "LocalSocketServer.hpp"
 #include "Pipe.hpp"
 #include "Error.hpp"
+#include "Log.hpp"
 #include "InitializeException.hpp"
 
 namespace obotcha {
@@ -27,8 +28,8 @@ int _LocalSocketServer::onEvent(int fd,uint32_t events,ByteArray pack) {
         socklen_t client_addrLength = sizeof(struct sockaddr_in);
         int clientfd = accept(fd,( struct sockaddr* )&client_address, &client_addrLength );
         if(clientfd == -1) {
-            printf("accept fail,error is %s \n",strerror(errno));
-            return 0;
+            LOG(ERROR)<<"LocalSocketServer Accept fail,error is "<<strerror(errno);
+            return st(EPollFileObserver)::OnEventOK;
         }
 
         mListener->onConnect(createSocketResponser(clientfd,
@@ -38,7 +39,7 @@ int _LocalSocketServer::onEvent(int fd,uint32_t events,ByteArray pack) {
         mEpollFileObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,AutoClone(this));
     } else {
         if((events & EPOLLIN) != 0) {
-            if(mListener != nullptr && pack != nullptr) {
+            if(pack != nullptr && pack->size() != 0) {
                 mListener->onDataReceived(createSocketResponser(fd),pack);
             }
         }
@@ -50,27 +51,15 @@ int _LocalSocketServer::onEvent(int fd,uint32_t events,ByteArray pack) {
         }
     }
 
-    return  0;
+    return  st(EPollFileObserver)::OnEventOK;
 }
 
 int _LocalSocketServer::start() {
-    int result = connect();
-    if(result != 0) {
-        printf("connect fail,result is %d \n",result);
-        return result;
-    }
-
-    return 0;
+    return connect();
 }
 
 int _LocalSocketServer::tryStart() {
-    int result = tryConnect();
-    if(result != 0) {
-        printf("connect fail,result is %d \n",result);
-        return result;
-    }
-
-    return 0;
+    return tryConnect();
 }
 
 int _LocalSocketServer::getSock() {
@@ -78,25 +67,14 @@ int _LocalSocketServer::getSock() {
 }
 
 _LocalSocketServer::_LocalSocketServer(String domain,SocketListener l,int connectnum,int recvsize) {
-    String reason;
-
     serverAddr.sun_family = AF_UNIX;
     strcpy(serverAddr.sun_path, domain->toChars());  
     
-    while(1) {
-        mConectNum = connectnum;
-        mListener = l;
+    mConectNum = connectnum;
+    mListener = l;
 
-        sock = socket(AF_UNIX, SOCK_STREAM, 0);
-        if(sock < 0) {
-            reason = createString("Sock Create Fail");
-            break;
-        }
-        mDomain = domain;
-        return;
-    }
-
-    throw InitializeException(reason);
+    sock = TEMP_FAILURE_RETRY(socket(AF_UNIX, SOCK_STREAM, 0));
+    mDomain = domain;
 }
 
 int _LocalSocketServer::tryConnect() {
@@ -111,53 +89,38 @@ int _LocalSocketServer::tryConnect() {
         return -NetBindFail;
     }
 
-    int ret = listen(sock, mConectNum);
-    if(ret < 0) {
+    if(listen(sock, mConectNum) < 0) {
         return -NetListenFail;
     }
     
     if(mListener != nullptr) {
         mEpollFileObserver = createEPollFileObserver();
         mEpollFileObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,AutoClone(this));
+    } else {
+        mEpollFileObserver = nullptr;
     }
 
     return 0;
 }
 
 int _LocalSocketServer::connect() {
-    
     unlink(mDomain->toChars());
-
-    int len = offsetof(struct sockaddr_un, sun_path) + strlen(serverAddr.sun_path);   
-
-    if( bind(sock, (struct sockaddr *)&serverAddr, len) < 0) {
-        return -NetBindFail;
-    }
-
-    int ret = listen(sock, mConectNum);
-
-    if(ret < 0) {
-        return -NetListenFail;
-    }
-    
-    if(mListener != nullptr) {
-        mEpollFileObserver = createEPollFileObserver();
-        mEpollFileObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,AutoClone(this));
-    }
-
-    return 0;
+    return tryConnect();
 }
 
 void _LocalSocketServer::release() {
-    mEpollFileObserver->release();
+    if(mEpollFileObserver != nullptr) {
+        mEpollFileObserver->release();
+    }
+
     if(sock != -1) {
         close(sock);
         sock = -1;
+        unlink(mDomain->toChars());
     }
 }
 
 int _LocalSocketServer::send(int fd,ByteArray data) {
-    //return st(NetUtils)::sendTcpPacket(fd,data);
     return ::send(fd,data->toValue(),data->size(),0);
 }
 

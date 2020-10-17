@@ -55,7 +55,7 @@ ByteArray _WebSocketFrameComposer::generateControlFrame(int opcode, ByteArray pa
         }
     }
 
-    sink->qucikShrink(sinkWriter->getIndex());
+    sink->quickShrink(sinkWriter->getIndex());
     return sink;
 }
 
@@ -100,7 +100,7 @@ ByteArray _WebSocketFrameComposer::generateMessageFrame(int formatOpcode,ByteArr
         sinkWriter->writeByteArray(message);
     }
 
-    sink->qucikShrink(sinkWriter->getIndex());
+    sink->quickShrink(sinkWriter->getIndex());
     
     return sink;
 }

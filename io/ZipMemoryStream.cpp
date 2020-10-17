@@ -65,7 +65,7 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
         zipsize += size;
     } while (mCompressStream.avail_out == 0);
 
-    out->qucikShrink(zipsize);
+    out->quickShrink(zipsize);
     return out;
 }
 

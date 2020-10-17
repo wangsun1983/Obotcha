@@ -299,9 +299,9 @@ ByteArray _Aes::_aesECB(ByteArray data,int mode) {
             }
                 
             if(padding == 0) {
-                out->qucikShrink(inputSize - AES_BLOCK_SIZE);
+                out->quickShrink(inputSize - AES_BLOCK_SIZE);
             } else {
-                out->qucikShrink(inputSize - AES_BLOCK_SIZE + padding);
+                out->quickShrink(inputSize - AES_BLOCK_SIZE + padding);
             }
 
             return out;
@@ -347,7 +347,7 @@ ByteArray _Aes::_aesCBC(ByteArray data,unsigned char *ivec,int mode) {
             AES_cbc_encrypt((unsigned char *)input,(unsigned char *)output,inputSize,&mDecryptKey,ivec,AES_DECRYPT);
             int padding = output[inputSize - 1];
 
-            out->qucikShrink(inputSize - AES_BLOCK_SIZE + padding);
+            out->quickShrink(inputSize - AES_BLOCK_SIZE + padding);
             return out;
         }
             

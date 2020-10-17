@@ -189,7 +189,7 @@ int _ByteArrayWriter::getIndex() {
 }
 
 ByteArray _ByteArrayWriter::getByteArray() {
-    mData->qucikShrink(mSize);
+    mData->quickShrink(mSize);
     return mData;
 }
 

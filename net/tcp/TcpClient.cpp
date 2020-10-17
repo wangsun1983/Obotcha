@@ -3,25 +3,21 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <sys/epoll.h>
 #include <fcntl.h>
 #include <memory.h>
 #include <sys/un.h>
-#include <sys/epoll.h>
 #include <stddef.h>
-
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 
 #include "String.hpp"
 #include "InetAddress.hpp"
 #include "SocketListener.hpp"
 #include "TcpClient.hpp"
 #include "InitializeException.hpp"
+#include "System.hpp"
+#include "ByteArray.hpp"
 
 namespace obotcha {
 
-//TcpClient-------------
 _TcpClient::_TcpClient(String ip,int port,int recv_time,SocketListener l,int buff_size) {
     mServerIp = ip;
     mServerPort = port;
@@ -39,14 +35,8 @@ _TcpClient::_TcpClient(String ip,int port,int recv_time,SocketListener l,int buf
         serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     }
   
-    if(buff_size >0) {
-        mBufferSize = buff_size;
-    } else {
-        throw InitializeException(createString("error tcp client buff size"));
-    }
-
-    mSock = socket(AF_INET, SOCK_STREAM, 0);
-    mBuff = (byte *)malloc(buff_size);
+    mBufferSize = buff_size;
+    mSock = TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0));
     mConnectMutex = createMutex("ConncetMutex");
     
     mListener = l;
@@ -72,9 +62,7 @@ int _TcpClient::getSock() {
 }
     
 int _TcpClient::doConnect() {
-    //AutoMutex ll(mConnectMutex);
-    int ret = connect(mSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
-    if( ret < 0) {
+    if(TEMP_FAILURE_RETRY(connect(mSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr))) < 0) {
         close(mSock);
         mSock = -1;
         return -1;
@@ -88,19 +76,20 @@ int _TcpClient::doConnect() {
     memset(&local_address,0,sizeof(struct sockaddr_in));
 
     socklen_t length = 0;
-    ret = getpeername(mSock, ( struct sockaddr* )&local_address, &length);
-
-    while(ntohs( local_address.sin_port ) == 0) {
+    int ret = getpeername(mSock, ( struct sockaddr* )&local_address, &length);
+    
+    while(ntohs(local_address.sin_port ) == 0) {
         st(Thread)::msleep(30);
         memset(&local_address,0,sizeof(struct sockaddr_in));
-        ret = getpeername(mSock, ( struct sockaddr* )&local_address, &length);
+        getpeername(mSock, ( struct sockaddr* )&local_address, &length);
     }
-
-    //create epoll observer?
+    
     if(mListener != nullptr) {
         mEpollObserver = createEPollFileObserver();
         mEpollObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,AutoClone(this));
         mEpollObserver->start();
+    } else {
+        mEpollObserver = nullptr;
     }
 
     return ret;
@@ -110,19 +99,14 @@ int _TcpClient::doSend(ByteArray data) {
     if(data == nullptr || data->size() == 0||mSock == -1) {
         return  0;
     }
+
     return send(mSock,data->toValue(),data->size(),0);
 }
 
 ByteArray _TcpClient::doReceive() {
-    //static int recvsize = 1024*4;
-    byte buff[mBufferSize];
-    int len = read(mSock,buff,mBufferSize);
-    ByteArray data = createByteArray((const byte *)buff,len);
-    //while(len == recvsize) {
-    //   len =  read(mSock,buff,recvsize);
-    //   data->append(buff,len);
-    //}
-
+    ByteArray data = createByteArray(mBufferSize);
+    int len = read(mSock,data->toValue(),mBufferSize);
+    data->quickShrink(len);
     return data;
 }
 
@@ -131,15 +115,9 @@ int _TcpClient::getBuffSize() {
 }
 
 void _TcpClient::release() {
-    //AutoMutex ll(mConnectMutex);
     if(mSock >= 0) {
         close(mSock);
         mSock = -1;
-    }
-
-    if(mBuff == nullptr) {
-        free(mBuff);
-        mBuff = nullptr;
     }
 
     if(mEpollObserver != nullptr) {

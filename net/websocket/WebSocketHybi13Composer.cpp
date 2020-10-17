@@ -210,7 +210,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClient
             sinkWriter->writeByteArray(message);
         }
         
-        sink->qucikShrink(sinkWriter->getIndex());
+        sink->quickShrink(sinkWriter->getIndex());
 
         genResult->add(sink);
 
@@ -268,7 +268,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genServerMessage(WebSocketClient
         }
 
         sinkWriter->writeByteArray(message);
-        sink->qucikShrink(sinkWriter->getIndex());
+        sink->quickShrink(sinkWriter->getIndex());
 
         genResult->add(sink);
 
@@ -361,7 +361,7 @@ ByteArray _WebSocketHybi13Composer::_genClientControlMessage(WebSocketClientInfo
         sinkWriter->writeByteArray(maskBuff);
     }
     
-    sink->qucikShrink(sinkWriter->getIndex());
+    sink->quickShrink(sinkWriter->getIndex());
     return sink;
 }
 
@@ -377,7 +377,7 @@ ByteArray _WebSocketHybi13Composer::_genServerControlMessage(WebSocketClientInfo
     if (payload != nullptr) {
         sinkWriter->writeByteArray(payload);
     }
-    sink->qucikShrink(sinkWriter->getIndex());
+    sink->quickShrink(sinkWriter->getIndex());
     return sink;
 }
 

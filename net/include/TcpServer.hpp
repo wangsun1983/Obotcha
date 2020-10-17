@@ -5,7 +5,6 @@
 #include <unistd.h>    
 #include <sys/types.h>
 #include <netinet/in.h>
-#include <mqueue.h>
 #include <fstream>
 #include <sys/un.h>
 
@@ -17,8 +16,6 @@
 #include "InetAddress.hpp"
 #include "SocketListener.hpp"
 #include "Mutex.hpp"
-#include "Pipe.hpp"
-#include "AtomicInteger.hpp"
 #include "Thread.hpp"
 #include "EPollFileObserver.hpp"
 
