@@ -3,6 +3,8 @@
 
 #include <pthread.h>
 #include <map>
+#include <atomic>
+#include <cstdint>
 #include <linux/sched.h>
 
 #include "Object.hpp"
@@ -14,9 +16,7 @@
 #include "String.hpp"
 #include "ThreadLocal.hpp"
 #include "Uint64.hpp"
-#include "AtomicInteger.hpp"
-
-using namespace std;
+#include "Atomic.hpp"
 
 namespace obotcha {
 
@@ -121,12 +121,11 @@ private:
 
     int mStatus;
 
-    AtomicInteger bootFlag;
+    Atomic<int> bootFlag;
 
     Mutex mJoinMutex;
 
     Condition mJoinDondtion;
-    
 };
 
 }

@@ -105,17 +105,11 @@ String _HttpPacket::genHttpRequest() {
         return nullptr;
     }
 
-    req = req->append(" ")
-             ->append(mUrl)
-             ->append(" HTTP/")
-             ->append(createString(mMajorVer))
-             ->append(".")
-             ->append(createString(mMinorVer))
-             ->append("\r\n");
-
-    req = req->append(mHeader->genHtml());
-
-    req = req->append("\r\n\r\n");
+    req = req->append(" ",mUrl,
+                      " HTTP/",createString(mMajorVer),".",createString(mMinorVer),
+                      "\r\n",
+                      mHeader->genHtml(),
+                      "\r\n\r\n");
 
     return req;   
 }
@@ -127,7 +121,7 @@ ByteArray _HttpPacket::genHttpResponse() {
 	}
 
 	String status = st(HttpResponse)::getStatusString(statusString->toBasicInt());
-	String responseStr = createString("HTTP/1.1 ")->append(statusString)->append(" ")->append(status)->append("\r\n");
+	String responseStr = createString("HTTP/1.1 ")->append(statusString," ",status,"\r\n");
     
 	String headerStr = mHeader->genHtml();
     

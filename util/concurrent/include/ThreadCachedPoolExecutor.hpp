@@ -2,6 +2,7 @@
 #define __OBOTCHA_THREAD_CACHED_POOL_EXECUTOR_HPP__
 
 #include <vector>
+#include <atomic>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -12,7 +13,6 @@
 #include "Future.hpp"
 #include "ExecutorService.hpp"
 #include "FutureTask.hpp"
-#include "AtomicInteger.hpp"
 
 using namespace std;
 
@@ -109,13 +109,11 @@ private:
 
     void submit(FutureTask task);
     
-    AtomicInteger mIdleThreadNum;
-    
     Mutex mHandlerMutex;
     int threadNum;
     ArrayList<ThreadCachedPoolExecutorHandler> mHandlers;
 
-    AtomicInteger mStatus;
+    std::atomic<int> mStatus;
 
     void init(int queuesize,int maxthreadnum,int minthreadnum,long timeout);
 

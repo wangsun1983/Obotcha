@@ -7,6 +7,7 @@
 #include "Object.hpp"
 #include "System.hpp"
 #include "Error.hpp"
+#include "AutoLock.hpp"
 
 namespace obotcha {
 

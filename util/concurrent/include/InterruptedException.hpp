@@ -1,11 +1,6 @@
 #ifndef __OBOTCHA_INTERRUPTED_EXCEPTION_HPP__
 #define __OBOTCHA_INTERRUPTED_EXCEPTION_HPP__
 
-#include <sys/stat.h>
-#include <unistd.h>    
-#include <sys/types.h>
-#include <fstream>
-
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 

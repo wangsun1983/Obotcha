@@ -17,6 +17,7 @@
 #include "Thread.hpp"
 #include "Pipe.hpp"
 #include "Uint32.hpp"
+#include "Atomic.hpp"
 
 namespace obotcha {
 
@@ -96,7 +97,7 @@ private:
 
     int mSize;
 
-    AtomicInteger mStartFlag;
+    Atomic<int> mStartFlag;
 };
 
 }

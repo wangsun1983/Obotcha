@@ -2,7 +2,6 @@
 #define __OBOTCHA_BLOCKING_QUEUE_HPP__
 
 #include <vector>
-#include <pthread.h>
 #include <unistd.h>
 #include <errno.h>
 
@@ -11,11 +10,6 @@
 #include "AutoLock.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
-
-#include "Boolean.hpp"
-#include "Double.hpp"
-#include "Float.hpp"
-#include "Integer.hpp"
 #include "InitializeException.hpp"
 #include "Error.hpp"
 #include "System.hpp"
@@ -39,34 +33,6 @@ public:
 
     inline bool remove(T val);
 
-    //int
-    inline void enQueueFirst(int val);
-    inline void enQueueLast(int val);
-
-    inline bool enQueueFirst(int val,long timeout);
-    inline bool enQueueLast(int val,long timeout);
-
-    //bool
-    inline void enQueueFirst(bool val);
-    inline void enQueueLast(bool val);
-
-    inline bool enQueueFirst(bool val,long timeout);
-    inline bool enQueueLast(bool val,long timeout);
-
-    //double
-    inline void enQueueFirst(double val);
-    inline void enQueueLast(double val);
-
-    inline bool enQueueFirst(double val,long timeout);
-    inline bool enQueueLast(double val,long timeout);
-
-    //float
-    inline void enQueueFirst(float val);
-    inline void enQueueLast(float val);
-
-    inline bool enQueueFirst(float val,long timeout);
-    inline bool enQueueLast(float val,long timeout);    
-
     //dequeue
     inline T deQueueFirst();
     inline T deQueueLast();
@@ -86,21 +52,12 @@ public:
 
     ~_BlockingQueue();
 
-    //wait for empty
-    //inline void waitForEmpty();
-    //inline void waitForEmpty(long timeout);
-
     inline void clear();
 
 private:
     vector<T> mQueue;
     int mCapacity;
 
-    //pthread_mutex_t mMutex;
-    //pthread_cond_t mEnqueueCond;
-
-    //pthread_mutex_t mOutMutex;
-    //pthread_cond_t mDequeueCond;
     Mutex mMutex;
     Condition mEnqueueCond;
     Condition mDequeueCond;
@@ -130,32 +87,13 @@ _BlockingQueue<T>::_BlockingQueue(int size):mCapacity(size){
 }
 
 template <typename T>
-_BlockingQueue<T>::_BlockingQueue() {
-    mMutex = createMutex("BlockingQueueMutex2");
-    mEnqueueCond = createCondition();
-    mDequeueCond = createCondition();
-    isDestroy = false;
-    mCapacity = -1;
+_BlockingQueue<T>::_BlockingQueue():_BlockingQueue(-1) {
+    //Nothing
 }
 
 template <typename T>
 void _BlockingQueue<T>::enQueueFirst(T val) {
-    while(1) {
-        AutoLock l(mMutex);
-        if(isDestroy) {
-            return;
-        }
-
-        int size = mQueue.size();
-        if(mCapacity != -1 && size == mCapacity) {
-            mEnqueueCond->wait(mMutex);
-            continue;
-        }
-
-        mQueue.insert(mQueue.begin(),val);
-        mDequeueCond->notify();
-        break;
-    }
+    enQueueFirst(val,0);
 }
 
 template <typename T>
@@ -168,15 +106,9 @@ bool _BlockingQueue<T>::enQueueFirst(T val,long timeout) {
 
         int size = mQueue.size();
         if(mCapacity != -1 && size == mCapacity) {
-            long current = st(System)::currentTimeMillis();
             if(-WaitTimeout == mEnqueueCond->wait(mMutex,timeout)) {
                 return false;
             }
-
-            timeout -=(st(System)::currentTimeMillis() - current);
-            if(timeout <= 0) {
-                return false;
-            } 
             continue;
         }
 
@@ -189,21 +121,7 @@ bool _BlockingQueue<T>::enQueueFirst(T val,long timeout) {
 
 template <typename T>
 void _BlockingQueue<T>::enQueueLast(T val) {
-    while(1) {
-        AutoLock l(mMutex);
-        if(isDestroy) {
-            return;
-        }
-
-        int size = mQueue.size();
-        if(mCapacity != -1 && size == mCapacity) {
-            mEnqueueCond->wait(mMutex);
-            continue;
-        }
-        mQueue.push_back(val);
-        mDequeueCond->notify();
-        break;
-    }
+    enQueueLast(val,0);
 }
 
 template <typename T>
@@ -218,13 +136,7 @@ bool _BlockingQueue<T>::enQueueLast(T val,long timeout) {
 
         int size = mQueue.size();
         if(mCapacity != -1 && size == mCapacity) {
-            long current = st(System)::currentTimeMillis();
             if(-WaitTimeout == mEnqueueCond->wait(mMutex,timeout)) {
-                return false;
-            }
-
-            timeout -=(st(System)::currentTimeMillis() - current);
-            if(timeout <= 0) {
                 return false;
             }
             continue;
@@ -233,7 +145,6 @@ bool _BlockingQueue<T>::enQueueLast(T val,long timeout) {
         mQueue.push_back(val);
         mDequeueCond->notify();
         return true;
-        break;
     }
 
     return false;
@@ -242,198 +153,55 @@ bool _BlockingQueue<T>::enQueueLast(T val,long timeout) {
 template <typename T>
 bool _BlockingQueue<T>::remove(T val) {
     AutoLock l(mMutex);
-    int size = mQueue.size();
-    for(int i = 0;i<size;i++) {
-        T t = mQueue.at(0);
-        if(t == val) {
-            mQueue.erase(mQueue.begin() + i);
-            return true;
+    auto iterator = mQueue.begin();
+    while(iterator != mQueue.end()) {
+        if(*iterator == val) {
+            iterator = mQueue.erase(iterator);
+            continue;
         }
+        iterator++;
     }
 
-    return false;
-}
-
-
-template <typename T>
-void _BlockingQueue<T>::enQueueFirst(int val) {
-    Integer v = createInteger(val);
-    enQueueFirst(v);
-}
-
-template <typename T>
-bool _BlockingQueue<T>::enQueueFirst(int val,long timeout) {
-    Integer v = createInteger(val);
-    return enQueueFirst(v,timeout);
-}
-
-template <typename T>
-void _BlockingQueue<T>::enQueueLast(int val) {
-    Integer v = createInteger(val);
-    enQueueLast(v);
-}
-
-template <typename T>
-bool _BlockingQueue<T>::enQueueLast(int val,long timeout) {
-    Integer v = createInteger(val);
-    return enQueueLast(v,timeout);
-}
-
-
-template <typename T>
-void _BlockingQueue<T>::enQueueFirst(bool val) {
-    Boolean v = createBoolean(val);
-    enQueueFirst(v);
-}
-
-template <typename T>
-bool _BlockingQueue<T>::enQueueFirst(bool val,long timeout) {
-    Boolean v = createBoolean(val);
-    return enQueueFirst(v,timeout);
-}
-
-template <typename T>
-void _BlockingQueue<T>::enQueueLast(bool val) {
-    Boolean v = createBoolean(val);
-    enQueueLast(v);
-}
-
-template <typename T>
-bool _BlockingQueue<T>::enQueueLast(bool val,long timeout) {
-    Boolean v = createBoolean(val);
-    return enQueueLast(v,timeout);
-}
-
-template <typename T>
-void _BlockingQueue<T>::enQueueFirst(double val) {
-    Double v = createDouble(val);
-    enQueueFirst(v);
-}
-
-template <typename T>
-bool _BlockingQueue<T>::enQueueFirst(double val,long timeout) {
-    Double v = createDouble(val);
-    return enQueueFirst(v,timeout);
-}
-
-template <typename T>
-void _BlockingQueue<T>::enQueueLast(double val) {
-    Double v = createDouble(val);
-    enQueueLast(v);
-}
-
-template <typename T>
-bool _BlockingQueue<T>::enQueueLast(double val,long timeout) {
-    Double v = createDouble(val);
-    return enQueueLast(v,timeout);
-}
-
-template <typename T>
-void _BlockingQueue<T>::enQueueFirst(float val) {
-    Float v = createFloat(val);
-    enQueueFirst(v);
-}
-
-template <typename T>
-bool _BlockingQueue<T>::enQueueFirst(float val,long timeout) {
-    Float v = createFloat(val);
-    return enQueueFirst(v,timeout);
-}
-
-template <typename T>
-void _BlockingQueue<T>::enQueueLast(float val) {
-    Float v = createFloat(val);
-    enQueueLast(v);
-}
-
-template <typename T>
-bool _BlockingQueue<T>::enQueueLast(float val,long timeout) {
-    Float v = createFloat(val);
-    return enQueueLast(v,timeout);
+    return true;
 }
 
 template <typename T>
 T _BlockingQueue<T>::deQueueFirst() {
-    T ret;
-    while(1) {
-        AutoLock l(mMutex);
-        if(isDestroy) {
-            return nullptr;
-        }
-
-        int size = mQueue.size();
-        if(size == 0) {            
-            mDequeueCond->wait(mMutex);
-            continue;
-        }
-
-        ret = mQueue.at(0);
-        mQueue.erase(mQueue.begin());
-        mEnqueueCond->notify();        
-        break;
-    }
-
-    return ret;
+    return deQueueFirst(0);
 }
 
 template <typename T>
 T _BlockingQueue<T>::deQueueFirst(long timeout) {
-    T ret;
-
     while(1) {
         AutoLock l(mMutex);
         if(isDestroy) {
             return nullptr;
         }
+
         int size = mQueue.size();
         if(size == 0) {
-            long current = st(System)::currentTimeMillis();
             if(-WaitTimeout == mDequeueCond->wait(mMutex,timeout)) {
                 return nullptr;
             }
-
-            timeout -=(st(System)::currentTimeMillis() - current);
-            if(timeout <= 0) {
-                return false;
-            }
             continue;
         }
-        ret = mQueue.at(0);
+
+        T ret = mQueue.at(0);
         mQueue.erase(mQueue.begin());
         mEnqueueCond->notify();    
-        break;
+        return ret;
     }
-    return ret;
+
+    return nullptr;
 }
 
 template <typename T>
 T _BlockingQueue<T>::deQueueLast() {
-    T ret;
-
-    while(1) {
-        AutoLock l(mMutex);
-        if(isDestroy) {
-            return nullptr;
-        }
-
-        int size = mQueue.size();
-        
-        if(size == 0) {
-            mDequeueCond->wait(mMutex);
-            continue;
-        }
-
-        ret = mQueue.back();
-        mQueue.pop_back();
-        mEnqueueCond->notify();
-        break;
-    }
-    return ret;
+    return deQueueLast(0);
 }
 
 template <typename T>
 T _BlockingQueue<T>::deQueueLast(long interval) {
-    T ret;
     while(1) {
         AutoLock l(mMutex);
         if(isDestroy) {
@@ -442,24 +210,20 @@ T _BlockingQueue<T>::deQueueLast(long interval) {
 
         int size = mQueue.size();
         if(size == 0) {
-            long current = st(System)::currentTimeMillis();
             if(-WaitTimeout == mDequeueCond->wait(mMutex,interval)) {
                 return nullptr;
             }
-
-            interval -=(st(System)::currentTimeMillis() - current);
-            if(interval <= 0) {
-                return nullptr;
-            }
+            
             continue;
         }
         
-        ret = mQueue.back();
+        T ret = mQueue.back();
         mQueue.pop_back();
         mEnqueueCond->notify();
-        break;
+        return ret;
     }
-    return ret;
+
+    return nullptr;
 }
 
 //wangsl
@@ -486,57 +250,8 @@ T _BlockingQueue<T>::deQueueFirstNoBlock() {
 }
 
 template <typename T>
-T _BlockingQueue<T>::deQueueFirstNoBlock(long timeout) {
-    T ret;
-    int waitCount = 0;
-
-    while(1) {
-        AutoLock l(mMutex);
-        if(isDestroy) {
-            return nullptr;
-        }
-
-        int size = mQueue.size();
-        if(size == 0) {
-            return nullptr;
-        }
-
-        ret = mQueue.at(0);
-        mQueue.erase(mQueue.begin());
-        mEnqueueCond->notify();
-        break;
-    }
-    return ret;
-}
-
-template <typename T>
 T _BlockingQueue<T>::deQueueLastNoBlock() {
     T ret;
-
-    while(1) {
-        AutoLock l(mMutex);
-        if(isDestroy) {
-            return nullptr;
-        }
-
-        int size = mQueue.size();
-        
-        if(size == 0) {
-            return nullptr;
-        }
-
-        ret = mQueue.back();
-        mQueue.pop_back();
-        mEnqueueCond->notify();
-        break;
-    }
-    return ret;
-}
-
-template <typename T>
-T _BlockingQueue<T>::deQueueLastNoBlock(long interval) {
-    T ret;
-    int waitCount = 0;
 
     while(1) {
         AutoLock l(mMutex);
@@ -578,7 +293,6 @@ void _BlockingQueue<T>::destroy() {
     mEnqueueCond->notifyAll();
     mDequeueCond->notifyAll();
 }
-
 
 }
 #endif

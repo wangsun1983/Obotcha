@@ -23,7 +23,6 @@ extern "C" {
 #include "SocketListener.hpp"
 #include "Mutex.hpp"
 #include "Pipe.hpp"
-#include "AtomicInteger.hpp"
 #include "Thread.hpp"
 #include "SocketListener.hpp"
 #include "TcpServer.hpp"

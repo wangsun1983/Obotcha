@@ -15,9 +15,6 @@
 #include "MethodNotSupportException.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 
-
-#include "Collection.hpp"
-
 using namespace std;
 
 namespace obotcha {

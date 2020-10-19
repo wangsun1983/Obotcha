@@ -8,10 +8,6 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/mutex.o \
 	$(outtmp)/thread.o \
 	$(outtmp)/countdownlatch.o \
-	$(outtmp)/atomicint.o \
-	$(outtmp)/atomicbool.o \
-	$(outtmp)/atomiclong.o \
-	$(outtmp)/atomicuint64.o \
 	$(outtmp)/readwritelock.o \
 	$(outtmp)/executors.o \
 	$(outtmp)/future.o \
@@ -47,18 +43,6 @@ $(outtmp)/thread.o :$(concurrentDir)/Thread.cpp
 
 $(outtmp)/countdownlatch.o :$(concurrentDir)/CountDownLatch.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/CountDownLatch.cpp -o $(outtmp)/countdownlatch.o
-
-$(outtmp)/atomicint.o :$(concurrentDir)/AtomicInteger.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicInteger.cpp -o $(outtmp)/atomicint.o
-
-$(outtmp)/atomiclong.o :$(concurrentDir)/AtomicLong.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicLong.cpp -o $(outtmp)/atomiclong.o
-
-$(outtmp)/atomicuint64.o :$(concurrentDir)/AtomicUint64.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicUint64.cpp -o $(outtmp)/atomicuint64.o
-
-$(outtmp)/atomicbool.o :$(concurrentDir)/AtomicBoolean.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/AtomicBoolean.cpp -o $(outtmp)/atomicbool.o
 
 $(outtmp)/future.o :$(concurrentDir)/Future.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Future.cpp -o $(outtmp)/future.o

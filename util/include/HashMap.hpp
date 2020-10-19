@@ -14,7 +14,6 @@
 #include "Long.hpp"
 #include "String.hpp"
 
-#include "Collection.hpp"
 #include "ArrayList.hpp"
 #include "NullPointerException.hpp"
 

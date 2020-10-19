@@ -15,7 +15,7 @@ _Handler::_Handler() {
     mMutex = createMutex("HandlerMutex");
     mCondition = createCondition();
     mMessagePool = nullptr;
-    mStatus = createAtomicInteger(StatusRunning);
+    mStatus = StatusRunning;
     start();
 }
 
@@ -44,7 +44,7 @@ int _Handler::sendEmptyMessageDelayed(int what,long delay) {
 }
 
 int _Handler::sendMessageDelayed(sp<_Message> msg,long delay) {
-    if(mStatus->get() != StatusRunning) {
+    if(mStatus != StatusRunning) {
         return -1;
     }
 
@@ -56,7 +56,7 @@ int _Handler::sendMessageDelayed(sp<_Message> msg,long delay) {
         Message p = mMessagePool;
         Message prev = nullptr;
         for (;;) {
-            if(p->nextTime >= msg->nextTime) {
+            if(p->nextTime > msg->nextTime) {
                 if(p == mMessagePool) {
                     msg->next = p;
                     mMessagePool = msg;
@@ -121,7 +121,7 @@ void _Handler::removeMessages(int what) {
 
 void _Handler::run() {
     long waitTime = 0;
-    while(mStatus->get() != StatusDestroy) {
+    while(mStatus != StatusDestroy) {
         Message msg = nullptr;
         printf("handler run trace1 \n");
         {
@@ -164,12 +164,12 @@ int _Handler::postDelayed(Runnable r ,long delay) {
 }
 
 void _Handler::destroy() {
-    mStatus->set(StatusDestroy);
+    mStatus = StatusDestroy;
     quit();
 }
 
 bool _Handler::isRunning() {
-    return mStatus->get() == StatusRunning;
+    return mStatus == StatusRunning;
 }
 
 }

@@ -15,8 +15,6 @@
 #include "MethodNotSupportException.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 
-#include "Collection.hpp"
-
 using namespace std;
 
 namespace obotcha {
@@ -77,7 +75,6 @@ public:
         tail->next = data;
         data->prev = tail;
         tail = data;
-        //tail->next = nullptr;
     }
 
     void enQueueFirst(T t) {
@@ -131,6 +128,19 @@ public:
     
     sp<_LinkedListIterator<T>> getIterator() {
         return new _LinkedListIterator<T>(this);
+    }
+
+    void clear() {
+        LinkedListData<T> current = head;
+        while(head != nullptr) {
+            if(head->next != nullptr) {
+                head->next->prev = nullptr;
+            }
+            head->next = nullptr;
+            head = nullptr;
+
+            head = current->next;
+        }
     }
 
 private:

@@ -15,7 +15,6 @@
 #include "SocketListener.hpp"
 #include "Mutex.hpp"
 #include "Pipe.hpp"
-#include "AtomicInteger.hpp"
 #include "Thread.hpp"
 #include "TcpServer.hpp"
 #include "WebSocketListener.hpp"

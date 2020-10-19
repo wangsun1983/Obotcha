@@ -112,42 +112,29 @@ String _HttpCookie::genHtml() {
     String html;
 
     if(mName != nullptr) {
-        html = mName->append("=")
-                       ->append(mValue)
-                       ->append(";");
+        html = mName->append("=",mValue,";");
     } else {
         html = createString("");
     }
 
     if(mSecure) {
-        html = html->append(COOKIE_SECURE)
-                   ->append(";");
+        html = html->append(COOKIE_SECURE,";");
     }
 
     if(mHttpOnly) {
-        html = html->append(COOKIE_HTTPONLY)
-                   ->append(";");
+        html = html->append(COOKIE_HTTPONLY,";");
     }
 
     if(mDomain != nullptr) {
-        html = html->append(COOKIE_DOMAIN)
-                   ->append("=")
-                   ->append(mDomain)
-                   ->append(";");
+        html = html->append(COOKIE_DOMAIN,"=",mDomain,";");
     }
 
     if(mPath != nullptr) {
-        html = html->append(COOKIE_PATH)
-                   ->append("=")
-                   ->append(mPath)
-                   ->append(";");
+        html = html->append(COOKIE_PATH,"=",mPath,";");
     }
 
     if(mMaxAge != 0) {
-        html = html->append(COOKIE_MAX_AGE)
-                   ->append("=")
-                   ->append(createString(mMaxAge))
-                   ->append(";");
+        html = html->append(COOKIE_MAX_AGE,"=",createString(mMaxAge),";");
     }
 
     if(mExpiresMillseocnds != 0) {
@@ -155,10 +142,7 @@ String _HttpCookie::genHtml() {
         DateTime date = c->getGmtDateTime();
         String time = date->toString(st(DateTime)::FormatHTTP);//st(DateTimeFormatter)::format(date,DateTimeFormatHTTP);
 
-        html = html->append(COOKIE_EXPIRES)
-                   ->append("=")
-                   ->append(time)
-                   ->append(";");
+        html = html->append(COOKIE_EXPIRES,"=",time,";");
     }
 
     return html;

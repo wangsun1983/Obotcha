@@ -61,8 +61,8 @@ void _EPollFileObserver::run() {
     memset(events,0,sizeof(struct epoll_event) *mSize);
     byte readbuff[st(EPollFileObserver)::DefaultBufferSize];
     HashMap<EPollFileObserverListener,Boolean> ll = createHashMap<EPollFileObserverListener,Boolean>();
-    if(mStartFlag->get() == 0) {
-        mStartFlag->set(1);
+    if(mStartFlag == 0) {
+        mStartFlag = 1;
     }
 
     while(1) {
@@ -173,9 +173,9 @@ _EPollFileObserver::_EPollFileObserver(int size) {
     mPipe->init();
     addEpollFd(mPipe->getReadPipe(),EPOLLIN|EPOLLRDHUP|EPOLLHUP);
 
-    mStartFlag = createAtomicInteger(0);
+    mStartFlag = 0;
     start();
-    while(mStartFlag->getAndAnd(1) != 1) {}
+    while(mStartFlag != 1) {}
 }
 
 _EPollFileObserver::_EPollFileObserver():_EPollFileObserver{DefaultEpollSize}{

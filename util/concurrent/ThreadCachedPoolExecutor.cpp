@@ -159,11 +159,11 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor() {
 }
 
 int _ThreadCachedPoolExecutor::shutdown(){
-    if(mStatus->get() == StatusShutDown || mStatus->get() == StatusTerminate) {
+    if(mStatus == StatusShutDown || mStatus == StatusTerminate) {
         return 0;
     }
 
-    mStatus->set(StatusShutDown);
+    mStatus = StatusShutDown;
 
     AutoLock l(mHandlerMutex);
     ListIterator<ThreadCachedPoolExecutorHandler> iterator = mHandlers->getIterator();
@@ -199,11 +199,11 @@ int _ThreadCachedPoolExecutor::execute(Runnable r) {
 }
 
 bool _ThreadCachedPoolExecutor::isTerminated() {
-    return mStatus->get() == StatusTerminate;
+    return mStatus == StatusTerminate;
 }
 
 void _ThreadCachedPoolExecutor::setAsTerminated() {
-    mStatus->set(StatusTerminate);
+    mStatus = StatusTerminate;
     mHandlers->clear();
 }
 
@@ -212,7 +212,7 @@ void _ThreadCachedPoolExecutor::awaitTermination() {
 }
 
 int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
-    switch(mStatus->get()) {
+    switch(mStatus) {
         case StatusRunning:
         return -InvalidStatus;
 
@@ -270,7 +270,7 @@ void _ThreadCachedPoolExecutor::submit(FutureTask task) {
 }
 
 Future _ThreadCachedPoolExecutor::submit(Runnable r) {
-    if(mStatus->get() != StatusRunning) {
+    if(mStatus != StatusRunning) {
         return nullptr;
     }
 
@@ -293,11 +293,11 @@ void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthrea
     mHandlers = createArrayList<ThreadCachedPoolExecutorHandler>();
     mTasks = createBlockingQueue<FutureTask>();
     mHandlerMutex = createMutex("ThreadCachedHandlerMutex");
-    mStatus = createAtomicInteger(StatusRunning);
+    mStatus = StatusRunning;
 }
 
 void _ThreadCachedPoolExecutor::onCancel(FutureTask task) {
-    if(mStatus->get() != StatusRunning) {
+    if(mStatus != StatusRunning) {
         return;
     }
 
@@ -329,7 +329,7 @@ void _ThreadCachedPoolExecutor::onThreadComplete(ThreadCachedPoolExecutorHandler
 }
 
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
-    if(mStatus->get() != StatusRunning) {
+    if(mStatus != StatusRunning) {
         return;
     }
 

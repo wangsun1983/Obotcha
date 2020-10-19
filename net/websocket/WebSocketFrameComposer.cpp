@@ -112,10 +112,11 @@ String _WebSocketFrameComposer::generateShakeHandFrame(String key) {
     String base64 = mBase64->encode(sha1_content)->toString();
     
     String head = "HTTP/1.1 101 Switching Protocols\r\n";
-    String upgrade = head->append("Upgrade: websocket\r\n");
-    String connection = upgrade->append("Connection: Upgrade\r\n");
-    String resp = connection->append("Sec-WebSocket-Accept:")->append(base64)->append("\r\n\r\n");
-
+    String resp = head->append("Upgrade: websocket\r\n",
+                            "Connection: Upgrade\r\n",
+                            "Sec-WebSocket-Accept:",
+                            base64,
+                            "\r\n\r\n");
     return resp;
 }
 

@@ -6,6 +6,7 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "Mutex.hpp"
+#include "AutoLock.hpp"
 #include "Condition.hpp"
 #include "InterruptedException.hpp"
 #include "IllegalStateException.hpp"

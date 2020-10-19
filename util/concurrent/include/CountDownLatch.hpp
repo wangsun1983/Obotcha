@@ -5,7 +5,6 @@
 #include "StrongPointer.hpp"
 
 #include "Mutex.hpp"
-#include "AutoLock.hpp"
 #include "Condition.hpp"
 
 namespace obotcha {

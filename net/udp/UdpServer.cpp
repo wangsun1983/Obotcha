@@ -17,14 +17,10 @@
 #include "Error.hpp"
 #include "Byte.hpp"
 
-#define EPOLL_SIZE 1024*8
-
-#define BUFF_SIZE 1024*64
 
 namespace obotcha {
 
 int _UdpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
-    byte recv_buf[BUFF_SIZE];
     if(pack != nullptr) {
         mListener->onDataReceived(createSocketResponser(fd),pack);
     }
@@ -64,6 +60,8 @@ int _UdpServer::connect() {
         mEpollObserver = createEPollFileObserver();
         mEpollObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,AutoClone(this));
         mEpollObserver->start();
+    } else {
+        mEpollObserver = nullptr;
     }
 
     return 0;
@@ -88,12 +86,9 @@ void _UdpServer::release() {
 
     if(mEpollObserver != nullptr) {
         mEpollObserver->release();
+        mEpollObserver = nullptr;
     }
 }
-
-//int _UdpServer::send(String ip,int port,ByteArray data) {
-//    return st(NetUtils)::sendUdpPacket(sock,ip,port,data);
-//}
 
 _UdpServer::~_UdpServer() {
     release();

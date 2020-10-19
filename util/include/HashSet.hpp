@@ -12,8 +12,6 @@
 #include "Integer.hpp"
 #include "Long.hpp"
 #include "String.hpp"
-
-#include "Collection.hpp"
 #include "HashMap.hpp"
 
 #include<set>

@@ -52,7 +52,7 @@ void* _Thread::localRun(void *th) {
         thread->mStatus = st(Thread)::Running;
     }
     
-    thread->bootFlag->orAndGet(1);
+    thread->bootFlag = 1;
     
     pthread_cleanup_push(cleanup, th);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
@@ -77,7 +77,7 @@ end:
 }
 
 
-_Thread::_Thread():_Thread(nullptr,nullptr) {
+_Thread::_Thread():_Thread(nullptr) {
 }
 
 _Thread::_Thread(Runnable run):_Thread{nullptr,run} {
@@ -93,9 +93,9 @@ _Thread::_Thread(String name,Runnable run){
     mRunnable = run;
 
     mStatus = NotStart;
-    
-    bootFlag = createAtomicInteger(0);
 
+    bootFlag = 0;
+    
     mStatusMutex = createMutex("ThreadStatusMutex");
 
     mJoinMutex = createMutex("ThreadJoinMutex");
@@ -169,7 +169,7 @@ int _Thread::start() {
         return -1;
     } 
 
-    while(bootFlag->orAndGet(0) == 0) {
+    while(bootFlag == 0) {
         st(Thread)::yield();
     }
 

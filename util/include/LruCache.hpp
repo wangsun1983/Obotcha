@@ -14,7 +14,6 @@
 #include "String.hpp"
 #include "Mutex.hpp"
 
-#include "Collection.hpp"
 #include "ArrayList.hpp"
 #include "HashMap.hpp"
 

@@ -3,8 +3,6 @@
 
 #include <stdio.h>
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "Lock.hpp"
 
 namespace obotcha {

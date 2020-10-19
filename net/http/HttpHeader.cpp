@@ -164,10 +164,7 @@ String _HttpHeader::genHtml() {
     while(headerIte->hasValue()) {
         String headString = headerIte->getKey();
         if(headString != nullptr && !headString->equalsIgnoreCase(Status)) {
-            html = html->append(headString)
-                 ->append(": ")
-                 ->append(headerIte->getValue())
-                 ->append("\r\n");
+            html = html->append(headString,": ",headerIte->getValue(),"\r\n");
         }
         
         headerIte->next();
@@ -178,10 +175,7 @@ String _HttpHeader::genHtml() {
     for(int i=0;i<size;i++) {
         String cookieStr = mCookies->get(i)->genHtml();       
         
-        html = html->append(SetCookie)
-                   ->append(": ")
-                   ->append(cookieStr)
-                   ->append("\r\n");
+        html = html->append(SetCookie,": ",cookieStr,"\r\n");
     }
 
     html = html->append("\r\n");

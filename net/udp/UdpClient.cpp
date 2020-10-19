@@ -12,10 +12,6 @@
 
 #include "UdpClient.hpp"
 
-#define EPOLL_SIZE 128
-
-#define BUF_SIZE 1024*64
-
 namespace obotcha {
 
 _UdpClient::_UdpClient(int port,SocketListener l):_UdpClient{nullptr,port,l} {
@@ -40,6 +36,8 @@ _UdpClient::_UdpClient(String ip,int port,SocketListener l) {
         mObserver = createEPollFileObserver();
         mObserver->addObserver(sock,EPOLLIN|EPOLLHUP,AutoClone(this));
         mObserver->start();
+    } else {
+        mObserver = nullptr;
     }
 }
 
@@ -49,24 +47,12 @@ int _UdpClient::onEvent(int fd,uint32_t events,ByteArray pack) {
     }
     
     if(pack != nullptr) {
-        //listener->onAccept(sock,nullptr,-1,pack);
         listener->onDataReceived(createSocketResponser(sock),pack);
     }
     return 0;
 }
 
-bool _UdpClient::init() {
-    //sock = socket(AF_INET, SOCK_DGRAM, 0);
-    if(sock < 0) {
-        return false;
-    }
-    
-    return true;
-}
-
 int _UdpClient::send(ByteArray data) {
-    //return st(NetUtils)::sendUdpPacket(sock,data);
-    //return st(NetUtils)::sendUdpPacket(sock,&serverAddr,data);
     int server_len = sizeof(struct sockaddr_in);
     return sendto(sock, data->toValue(), data->size(), 0, (struct sockaddr *)&serverAddr, server_len);
 }
@@ -76,7 +62,7 @@ _UdpClient::~_UdpClient() {
 }
 
 void _UdpClient::start() {
-    //init();
+    //Nothing
 }
 
 void _UdpClient::release() {
@@ -88,6 +74,7 @@ void _UdpClient::release() {
     
     if(mObserver != nullptr) {
         mObserver->release();
+        mObserver = nullptr;
     }
 }
 

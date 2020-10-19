@@ -1,19 +1,12 @@
 #ifndef __OBOTCHA_EXECUTOR_SERVICE_H__
 #define __OBOTCHA_EXECUTOR_SERVICE_H__
 
-#include <pthread.h>
-#include <map>
-
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "Runnable.hpp"
-#include "Executor.hpp"
 #include "ArrayList.hpp"
 #include "Future.hpp"
 #include "Executor.hpp"
-#include "AutoClose.hpp"
-#include "Condition.hpp"
-#include "Thread.hpp"
 
 namespace obotcha {
 

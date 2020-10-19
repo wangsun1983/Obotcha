@@ -1,26 +1,15 @@
 #ifndef __OBOTCHA_BLOCKING_LINKED_LIST_HPP__
 #define __OBOTCHA_BLOCKING_LINKED_LIST_HPP__
 
-#include <vector>
-#include <pthread.h>
-#include <unistd.h>
-#include <errno.h>
-
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "AutoLock.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
-
-#include "Boolean.hpp"
-#include "Double.hpp"
-#include "Float.hpp"
-#include "Integer.hpp"
 #include "InitializeException.hpp"
 #include "IllegalStateException.hpp"
 #include "LinkedList.hpp"
 #include "Error.hpp"
-#include "AutoLock.hpp"
 
 using namespace std;
 
@@ -48,41 +37,11 @@ public:
     }
 
     inline void enQueueFirst(T val) {
-        while(1) {
-            AutoLock l(mMutex);
-            if(isDestroy) {
-                return;
-            }
-
-            int size = mList.size();
-            if(mCapacity != -1 && size == mCapacity) {
-               mEnqueueCond->wait(mMutex);
-               continue;
-            }
-
-            mList->enQueueFirst(val);
-            mDequeueCond->notify();
-            break;
-        }
+        enQueueFirst(val,0);
     }
 
     inline void enQueueLast(T val) {
-        while(1) {
-            AutoLock l(mMutex);
-            if(isDestroy) {
-                return;
-            }
-            
-            int size = mList->size();
-            if(mCapacity != -1 && size == mCapacity) {
-               mEnqueueCond->wait(mMutex);
-               continue;
-            }
-
-            mList->enQueueLast(val);
-            mDequeueCond->notify();
-            break;
-        }
+        enQueueLast(val,0);
     }
 
     inline bool enQueueFirst(T val,long timeout) {
@@ -92,8 +51,7 @@ public:
                 return false;
             }
             
-            int size = mList.size();
-            if(mCapacity != -1 && size == mCapacity) {
+            if(mCapacity != -1 && mList->size() == mCapacity) {
                if(mEnqueueCond->wait(mMutex,timeout) == -WaitTimeout) {
                    return false;
                }
@@ -116,8 +74,7 @@ public:
                 return false;
             }
             
-            int size = mList.size();
-            if(mCapacity != -1 && size == mCapacity) {
+            if(mCapacity != -1 && mList->size() == mCapacity) {
                if(mEnqueueCond->wait(mMutex,timeout) == -WaitTimeout) {
                    return false;
                }
@@ -132,61 +89,22 @@ public:
         return true;
     }
 
-    //inline bool remove(T val); 
-
-    //dequeue
     inline T deQueueFirst() {
-        T ret;
-        while(1) {
-            AutoLock l(mMutex);
-            if(isDestroy) {
-                throwIllegalStateException("dequeue");
-            }
-            
-            int size = mList->size();
-            if(size == 0) {
-                mDequeueCond->wait(mMutex);
-                continue;
-            }
-
-            ret = mList->deQueueFirst();
-            mEnqueueCond->notify();        
-            break;
-        }
-
-        return ret;
+        return deQueueFirst(0);
     }
 
     inline T deQueueLast() {
-        T ret;
-        while(1) {
-            AutoLock l(mMutex);
-            if(isDestroy) {
-                throwIllegalStateException("dequeue");
-            }
-            int size = mList->size();
-            if(size == 0) {
-                mDequeueCond->wait(mMutex);
-                continue;
-            }
-
-            ret = mList->deQueueLast();
-            mEnqueueCond->notify();        
-            break;
-        }
-
-        return ret;
+        return deQueueLast(0);
     }
 
     inline T deQueueFirst(long timeout) {
-        T ret;
         while(1) {
             AutoLock l(mMutex);
             if(isDestroy) {
-                throwIllegalStateException("dequeue");
+                return nullptr;
             }
-            int size = mList->size();
-            if(size == 0) {
+
+            if(mList->size() == 0) {
                 if(mDequeueCond->wait(mMutex,timeout) == -WaitTimeout) {
                     return nullptr;
                 }
@@ -194,23 +112,22 @@ public:
                 continue;
             }
 
-            ret = mList->deQueueFirst();
+            T data = mList->deQueueFirst();
             mEnqueueCond->notify();        
-            break;
+            return data;
         }
 
-        return ret;
+        return nullptr;
     }
 
     inline T deQueueLast(long timeout) {
-        T ret;
         while(1) {
             AutoLock l(mMutex);
             if(isDestroy) {
-                throwIllegalStateException("dequeue");
+                return nullptr;
             }
-            int size = mList->size();
-            if(size == 0) {
+            
+            if(mList->size() == 0) {
                 if(mDequeueCond->wait(mMutex,timeout) == -WaitTimeout) {
                     return nullptr;
                 }
@@ -218,61 +135,61 @@ public:
                 continue;
             }
 
-            ret = mList->deQueueLast();
+            T data = mList->deQueueLast();
             mEnqueueCond->notify();        
-            break;
+            return data;
         }
 
-        return ret;
+        return nullptr;
     }
 
-    //add interface for async
     inline T deQueueFirstNoBlock() {
-        T ret;
         while(1) {
             AutoLock l(mMutex);
             if(isDestroy) {
-                throwIllegalStateException("dequeue");
-            }
-            int size = mList->size();
-            if(size == 0) {
                 return nullptr;
             }
 
-            ret = mList->deQueueFisrt();
+            if(mList->size() == 0) {
+                return nullptr;
+            }
+
+            T data = mList->deQueueFisrt();
             mEnqueueCond->notify();   
-            break;
+            return data;
         }
-        return ret;
+        return nullptr;
     }
 
     inline T deQueueLastNoBlock() {
-        T ret;
         while(1) {
             AutoLock l(mMutex);
             if(isDestroy) {
-                throwIllegalStateException("dequeue");
+                return nullptr;
             }
             int size = mList->size();
             if(size == 0) {
                 return nullptr;
             }
 
-            ret = mList->deQueueLast();
+            T data = mList->deQueueLast();
             mEnqueueCond->notify();   
-            break;
+            return data;
         }
-        return ret;
+
+        return nullptr;
     }
 
     //destroy
     inline void destroy() {
         AutoLock l(mMutex);
+        mList->clear();
         isDestroy = true;
     }
 
     inline void clear() {
-        //TODO
+        AutoLock l(mMutex);
+        mList->clear();
     }
 
 private:

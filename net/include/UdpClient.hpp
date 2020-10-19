@@ -39,8 +39,6 @@ public:
 
 private:
 
-    bool init();
-
     int onEvent(int fd,uint32_t events,ByteArray);
 
     int sock;

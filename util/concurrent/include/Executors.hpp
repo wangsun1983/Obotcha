@@ -10,6 +10,7 @@
 #include "ExecutorService.hpp"
 #include "ScheduledExecutorService.hpp"
 #include "LinkedList.hpp"
+#include "Thread.hpp"
 
 namespace obotcha {
 

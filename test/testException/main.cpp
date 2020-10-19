@@ -32,7 +32,20 @@ void doException() {
     throwMyException(exception);
 }
 
+DECLARE_SIMPLE_CLASS(MyTT) {
+public:
+    int i;
+    MyTT sayhello() {
+        printf("hello");
+        i = 100;
+        return AutoClone(this);
+    }
+};
+
 int main() {
-    doException();
+    //doException();
+    MyTT q = createMyTT();
+    MyTT q2 = q->sayhello();
+    printf("v is %d \n",q2->i);
     return 1;
 }

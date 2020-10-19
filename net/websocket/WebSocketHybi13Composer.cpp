@@ -43,7 +43,7 @@ ByteArray _WebSocketHybi13Composer::_genClientShakeHandMessage(WebSocketClientIn
     packet->setMajorVersion(1);
     packet->setMinorVersion(1);
 
-    String host = httpUrl->getHost()->append(":")->append(createString(httpUrl->getPort()));
+    String host = httpUrl->getHost()->append(":",createString(httpUrl->getPort()));
     packet->getHeader()->setValue(st(HttpHeader)::Host,host);
     packet->getHeader()->setValue(st(HttpHeader)::SecWebSocketVersion,"13");
     if(packet->getHeader()->getValue(st(HttpHeader)::Accept) == nullptr) {

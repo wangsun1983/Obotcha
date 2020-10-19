@@ -2,11 +2,10 @@
 #define __OBOTCHA_CONDITION_HPP__
 
 #include <pthread.h>
-#include <sys/time.h>
 
-#include "Mutex.hpp"
-#include "AutoLock.hpp"
+#include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 
