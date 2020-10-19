@@ -17,8 +17,6 @@
 #include "ArrayList.hpp"
 #include "HashMap.hpp"
 
-using namespace std;
-
 namespace obotcha {
 
 DECLARE_CLASS(LruNode,2) {

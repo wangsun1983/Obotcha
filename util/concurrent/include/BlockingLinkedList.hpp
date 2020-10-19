@@ -11,8 +11,6 @@
 #include "LinkedList.hpp"
 #include "Error.hpp"
 
-using namespace std;
-
 namespace obotcha {
 
 DECLARE_CLASS(BlockingLinkedList,1) {

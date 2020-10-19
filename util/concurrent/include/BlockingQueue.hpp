@@ -14,8 +14,6 @@
 #include "Error.hpp"
 #include "System.hpp"
 
-using namespace std;
-
 namespace obotcha {
 
 DECLARE_CLASS(BlockingQueue,1) {
@@ -55,7 +53,7 @@ public:
     inline void clear();
 
 private:
-    vector<T> mQueue;
+    std::vector<T> mQueue;
     int mCapacity;
 
     Mutex mMutex;

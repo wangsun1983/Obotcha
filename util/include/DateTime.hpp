@@ -14,8 +14,6 @@
 #include "Long.hpp"
 #include "String.hpp"
 
-using namespace std;
-
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(DateTime) {

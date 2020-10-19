@@ -238,7 +238,7 @@ int _ZipStream::minizip(File src, File dest, String currentZipFolder, char *pass
 
         String mfolder = combine(currentZipFolder, src->getName());
 
-        vector<string> vFiles;
+        std::vector<std::string> vFiles;
         ArrayList<File> files = src->listFiles();
         ListIterator<File> iterator = files->getIterator();
 
@@ -249,7 +249,7 @@ int _ZipStream::minizip(File src, File dest, String currentZipFolder, char *pass
             iterator->next();
         }
 
-        cout << "zip ok" << endl;
+        //std::cout << "zip ok" << std::endl;
     }
     return 0;
 }

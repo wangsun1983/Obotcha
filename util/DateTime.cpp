@@ -14,8 +14,6 @@
 #include "DateTime.hpp"
 #include "InitializeException.hpp"
 
-using namespace std;
-
 namespace obotcha {
 #define SKIP_JUNK() \
 	while (it != end && !std::isdigit(*it)) { \

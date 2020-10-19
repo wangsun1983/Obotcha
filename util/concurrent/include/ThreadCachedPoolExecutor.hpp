@@ -14,8 +14,6 @@
 #include "ExecutorService.hpp"
 #include "FutureTask.hpp"
 
-using namespace std;
-
 namespace obotcha {
 
 class _ThreadCachedPoolExecutor;

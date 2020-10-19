@@ -15,8 +15,6 @@
 #include "MethodNotSupportException.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 
-using namespace std;
-
 namespace obotcha {
     
 template<typename T>

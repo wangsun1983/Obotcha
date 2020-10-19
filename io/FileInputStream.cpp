@@ -57,7 +57,7 @@ ByteArray _FileInputStream::readAll() {
 }
 
 bool _FileInputStream::open() {
-    fstream.open(mPath->toChars(),ios::in|ios::binary);
+    fstream.open(mPath->toChars(),std::ios::in|std::ios::binary);
     return fstream.is_open();
 }
 

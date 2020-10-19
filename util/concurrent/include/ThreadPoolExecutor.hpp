@@ -17,8 +17,6 @@
 #include "FutureTask.hpp"
 #include "Future.hpp"
 
-using namespace std;
-
 namespace obotcha {
 
 class _ThreadPoolExecutor;

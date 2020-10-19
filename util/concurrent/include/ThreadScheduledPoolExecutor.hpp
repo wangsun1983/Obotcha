@@ -22,8 +22,6 @@
 #include "ArrayList.hpp"
 #include "FutureTask.hpp"
 
-using namespace std;
-
 enum ScheduledTaskType {
     ScheduletTaskNormal = 0, //normal schedule task
     ScheduletTaskFixRate, //loop time record from task start

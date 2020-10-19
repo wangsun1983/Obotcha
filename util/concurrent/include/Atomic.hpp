@@ -96,7 +96,7 @@ public:
     }
 
     T get() {
-        return value.load(memory_order_relaxed);
+        return value.load(std::memory_order_relaxed);
     }
 
 private:

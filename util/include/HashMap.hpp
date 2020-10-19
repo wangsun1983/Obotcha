@@ -17,8 +17,6 @@
 #include "ArrayList.hpp"
 #include "NullPointerException.hpp"
 
-using namespace std;
-
 namespace obotcha {
 
 template<typename T,typename U>

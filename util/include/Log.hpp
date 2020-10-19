@@ -10,8 +10,6 @@
 #include "logging.h"
 #include "String.hpp"
 
-using namespace std;
-
 namespace obotcha {
 
 //GLOG_INFO = 0, GLOG_WARNING = 1, GLOG_ERROR = 2, GLOG_FATAL = 3,

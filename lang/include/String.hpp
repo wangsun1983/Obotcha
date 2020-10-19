@@ -19,8 +19,6 @@
 #include "Uint32.hpp"
 #include "Uint64.hpp"
 
-using namespace std;
-
 namespace obotcha {
 
 template<typename T>

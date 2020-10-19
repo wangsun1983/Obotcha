@@ -15,8 +15,6 @@
 #include "MethodNotSupportException.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 
-using namespace std;
-
 namespace obotcha {
     
 template<typename T>
@@ -80,7 +78,7 @@ public:
     }
 
     inline int remove(T val) {
-        typename vector<T>::iterator result = find(elements.begin( ), elements.end( ),val);
+        typename std::vector<T>::iterator result = find(elements.begin( ), elements.end( ),val);
         if(result != elements.end()) {
             elements.erase(result);
             return result - elements.begin();

@@ -27,7 +27,7 @@ public:
     inline void clear();
     
 private:
-    vector<T> mQueue;
+    std::vector<T> mQueue;
 
     Mutex mutex_t;
 };

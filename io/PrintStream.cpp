@@ -46,10 +46,10 @@ bool _PrintStream::write(char *buffer,int size) {
 void _PrintStream::println(String s) {
     if(isDefaultOut) {
         std::cout<<s->toChars();
-        std::cout<<endl;
+        std::cout<<std::endl;
     } else {
         fstream<<s->toChars();
-        fstream<<endl;
+        fstream<<std::endl;
     }
 }
 
@@ -63,9 +63,9 @@ void _PrintStream::print(String s) {
 
 void _PrintStream::newline() {
     if(isDefaultOut) {
-        std::cout<<endl;
+        std::cout<<std::endl;
     } else {
-        fstream<<endl;
+        fstream<<std::endl;
     }
 }
 

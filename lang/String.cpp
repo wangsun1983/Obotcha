@@ -168,7 +168,7 @@ _String::_String(Float &v) {
         throwInitializeException("Float is null");
     }
 
-    stringstream ss;
+    std::stringstream ss;
     ss<< v->toValue();
     ss>>m_str;
 }
@@ -178,7 +178,7 @@ _String::_String(Double &v) {
         throwInitializeException("Double is null");
     }
     
-    stringstream ss;
+    std::stringstream ss;
     ss<< v->toValue();
     ss>>m_str;
 }
@@ -196,13 +196,13 @@ _String::_String(bool v) {
 }
 
 _String::_String(float v) {
-    stringstream ss;
+    std::stringstream ss;
     ss<< v;
     ss>>m_str;
 }
 
 _String::_String(double v) {
-    stringstream ss;
+    std::stringstream ss;
     ss<< v;
     ss>>m_str;
 }
@@ -450,13 +450,13 @@ String _String::valueOf(bool v) {
 }
 
 String _String::valueOf(double v) {
-    stringstream ss;
+    std::stringstream ss;
     ss<< v;
     return createString(ss.str());
 }
 
 String _String::valueOf(float v) {
-    stringstream ss;
+    std::stringstream ss;
     ss<< v;
     return createString(ss.str());
 }
@@ -1208,7 +1208,7 @@ sp<_String> _String::replaceAll(std::string regex,std::string v) {
 bool _String::endsWith(String s) {
     checkParam(s);
 
-    string::size_type result = m_str.find_last_of(s->m_str);
+    std::string::size_type result = m_str.find_last_of(s->m_str);
     return (result == (m_str.size() - 1));
 }
 
@@ -1217,12 +1217,12 @@ bool _String::endsWith(const char *s) {
         throwNullPointerException("endsWith illegalArgument!");
     }
 
-    string::size_type result = m_str.find_last_of(s);
+    std::string::size_type result = m_str.find_last_of(s);
     return (result == (m_str.size() - 1));
 }
 
 bool _String::endsWith(std::string s) {
-    string::size_type result = m_str.find_last_of(s);
+    std::string::size_type result = m_str.find_last_of(s);
     return (result == (m_str.size() - 1));
 }
 
@@ -1262,12 +1262,12 @@ bool _String::startsWith(const char * v) {
         throwNullPointerException("startsWith illegalArgument!");
     }
 
-    string::size_type result = m_str.find(v);
+    std::string::size_type result = m_str.find(v);
     return (result == strlen(v));
 }
 
 bool _String::startsWith(std::string v) {
-    string::size_type result = m_str.find(v);
+    std::string::size_type result = m_str.find(v);
     return (result == v.size());
 }
 
