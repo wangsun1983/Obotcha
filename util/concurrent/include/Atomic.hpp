@@ -11,72 +11,73 @@ namespace obotcha {
 template<typename T>
 class Atomic {
 public:
-    Atomic():value(0) {
-        //TODO
+    Atomic() {
+        value = new std::atomic<T>(0);
     }
 
-    Atomic(T v):value(v) {
-
+    Atomic(T v) {
+        value = new std::atomic<T>(v);
     }
 
-    Atomic(const Atomic<T>&v):value(0) {
-        LOG(ERROR)<<"Atomic not support";
+    Atomic(const Atomic<T>&v) {
+        value = v.value;
     }
 
-    void operator++(T) {
-        value++;
+    //x++
+    bool operator++(int) {
+        *value++;
     }
 
-    void operator--(T) {
-        value--;
+    bool operator--(int) {
+        *value--;
     }
 
     Atomic<T> operator+=(T v) {
-        value += v;
+        *value += v;
         return *this;
     }
 
     Atomic<T> operator-=(T v) {
-        value -= v;
+        *value -= v;
         return *this;
     }
 
     Atomic<T> operator|=(T v) {
-        value |= v;
+        *value |= v;
         return *this;
     }
 
     Atomic<T> operator&=(T v) {
-        value &= v;
+        *value &= v;
         return *this;
     }
 
     Atomic<T> operator-(T v) {
         Atomic<T> vv(0);
-        vv = (value - v);
+        vv = (*value - v);
         return vv;
     }
 
     Atomic<T> operator+(T v) {
         Atomic<T> vv(0);
-        vv = (value + v);
+        vv = (*value + v);
         return vv;
     }
 
     Atomic<T> operator|(T v) {
         Atomic<T> vv(0);
-        vv = (value|v);
+        vv = (*value|v);
         return vv;
     }
 
     Atomic<T> operator&(T v) {
         Atomic<T> vv(0);
-        vv = (value&v);
+        vv = (*value&v);
         return vv;
     }
 
     void operator=(T v) {
-        value = v;
+        *value = v;
     }
 
     Atomic<T>* operator->() {
@@ -84,23 +85,28 @@ public:
     }
 
     void operator=(Atomic<T> v) {
-        value.store(v.value);
+        value->store(*v.value);
     }
 
     bool operator==(int v) {
-        return value == v;
+        return *value == v;
     }
 
     bool operator !=(int v) {
-        return value != v;
+        return *value != v;
     }
 
     T get() {
-        return value.load(std::memory_order_relaxed);
+        return value->load(std::memory_order_relaxed);
     }
-
+    
+    ~Atomic<T>() {
+        if(value != nullptr) {
+            delete value;
+        }
+    }
 private:
-    std::atomic<T> value;
+    std::atomic<T> *value;
 };
 
 }
