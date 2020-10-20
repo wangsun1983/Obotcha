@@ -94,10 +94,13 @@ public:
     int getThreadsNum();
 
     ~_ThreadPriorityPoolExecutor();
-
-    static const int PriorityLow;
-    static const int PriorityMedium;
-    static const int PriorityHigh;
+    
+    enum Priority {
+        PriorityLow = 0,
+        PriorityMedium,
+        PriorityHigh,
+        PriorityNoUse
+    };
 
 private:
     Mutex mTaskMutex;
@@ -120,8 +123,6 @@ private:
     Mutex mWaitMutex;
     
     Condition mWaitCondition;
-
-    static const int PriorityNoUse;
 };
 
 }

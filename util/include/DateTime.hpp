@@ -122,16 +122,18 @@ public:
     static const std::string MONTH_NAMES[];
     static const std::string REGEX_LIST[];
 
-    static const int FormatISO8601;
-    static const int FormatISO8601Frac;
-    static const int FormatRFC822;
-    static const int FormatRFC1123;
-    static const int FormatHTTP;
-    static const int FormatRFC850;
-    static const int FormatRFC1036;
-    static const int FormatASCTIME;
-    static const int FormatSORTABLE;
-    static const int FormatMax;
+    enum FormatType {
+        FormatISO8601 = 0,
+        FormatISO8601Frac,
+        FormatRFC822,
+        FormatRFC1123,
+        FormatHTTP,
+        FormatRFC850,
+        FormatRFC1036,
+        FormatASCTIME,
+        FormatSORTABLE,
+        FormatMax,
+    };
     
 private:
 

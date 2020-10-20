@@ -21,11 +21,13 @@ public:
     T getResult() {
         return mTask->getResult<T>();
     }
-
-    static const int Waiting = 0;
-    static const int Running = 1;
-    static const int Cancel = 2;
-    static const int Complete = 3;
+    
+    enum Status {
+        Waiting = 0,
+        Running,
+        Cancel,
+        Complete,
+    };
 
 private:
     FutureTask mTask;

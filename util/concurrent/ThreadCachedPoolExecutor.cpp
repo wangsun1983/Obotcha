@@ -22,10 +22,6 @@
 
 namespace obotcha {
 
-const int _ThreadCachedPoolExecutorHandler::HandleIdle = 0;
-const int _ThreadCachedPoolExecutorHandler::HandleBusy = 1;
-const int _ThreadCachedPoolExecutorHandler::HandleDestroy = 2;
-
 _ThreadCachedPoolExecutorHandler::_ThreadCachedPoolExecutorHandler(BlockingQueue<FutureTask> pool,
                                                                    ThreadCachedPoolExecutor service, 
                                                                    long timeout)
@@ -138,9 +134,6 @@ bool _ThreadCachedPoolExecutorHandler::shutdownTask(FutureTask task) {
 }
 
 //---------------ThreadCachedPoolExecutor ---------------------
-const int _ThreadCachedPoolExecutor::StatusRunning = 1;
-const int _ThreadCachedPoolExecutor::StatusShutDown = 2;
-const int _ThreadCachedPoolExecutor::StatusTerminate = 3;
 
 const int _ThreadCachedPoolExecutor::DefaultWaitTime = 15*1000;
 const int _ThreadCachedPoolExecutor::DefaultMaxThreadNums = 4;

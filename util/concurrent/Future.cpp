@@ -1,3 +1,15 @@
+/**
+ * @file Future.cpp
+ * @brief Future represents the result of an asynchronous computation
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include "Future.hpp"
 #include "Error.hpp"
 
@@ -21,7 +33,7 @@ int _Future::cancel() {
 }
 
 _Future::~_Future() {
-    mTask = nullptr;
+    mTask->cancel();
 }
 
 }

@@ -1,7 +1,18 @@
+/**
+ * @file Mutex.cpp
+ * @brief  Mutex is a tool for controlling access to a shared resource by multiple threads
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/syscall.h>
-
 
 #include "Mutex.hpp"
 #include "System.hpp"
@@ -16,11 +27,11 @@ _Mutex::_Mutex(){
     pthread_mutex_init(&mutex_t, &mutex_attr);
 }
 
-_Mutex::_Mutex(String v):_Mutex{}{
+_Mutex::_Mutex(String v):_Mutex(){
     mMutexName = v;
 }
 
-_Mutex::_Mutex(const char *v):_Mutex{}{
+_Mutex::_Mutex(const char *v):_Mutex(){
     mMutexName = createString(v);
 }
 
@@ -30,10 +41,7 @@ int _Mutex::lock() {
     //    return 0;
     //}
 
-    if(pthread_mutex_lock(&mutex_t) == 0) {
-        return 0;
-    }
-    return -1;
+    return pthread_mutex_lock(&mutex_t);
 }
 
 int _Mutex::lock(long timeInterval) {
@@ -44,26 +52,16 @@ int _Mutex::lock(long timeInterval) {
     //}
 
     st(System)::getNextTime(timeInterval,&ts);
-    int result = pthread_mutex_timedlock(&mutex_t,&ts);
-    switch(result) {
-        case ETIMEDOUT:
+    if(pthread_mutex_timedlock(&mutex_t,&ts) == ETIMEDOUT) {
         return -WaitTimeout;
-        
-        case 0:
-        default:
-        return 0;
     }
 
-    return -1;
+    return 0;
 }
 
 
 int _Mutex::unlock() {
-    if(pthread_mutex_unlock(&mutex_t) == 0) {
-        return 0;
-    }
-
-    return -1;
+    return pthread_mutex_unlock(&mutex_t);
 }
 
 int _Mutex::trylock() {
@@ -71,11 +69,7 @@ int _Mutex::trylock() {
     //    return 0;
     //}
 
-    if(pthread_mutex_trylock(&mutex_t) == 0) {
-        return 0;
-    }
-
-    return -1;
+    return pthread_mutex_trylock(&mutex_t);
 }
 
 String _Mutex::toString() {

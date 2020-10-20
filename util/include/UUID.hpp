@@ -13,10 +13,12 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(UUID) {
 
 public:
-    static const int Random;
-    static const int Time;
-    static const int TimeSafe;
-    static const int Default;
+    enum Type {
+        Random = 0,
+        Time,
+        TimeSafe,
+        Default,
+    };
 
     _UUID();
     _UUID(int);

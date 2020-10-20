@@ -1,17 +1,22 @@
+/**
+ * @file FutureTask.cpp
+ * @brief A cancellable asynchronous computation.  This class provides a base implementation of Future
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include "FutureTask.hpp"
 #include "AutoLock.hpp"
 #include "Future.hpp"
 
 namespace obotcha {
 
-//remove soon
-_FutureTask::_FutureTask(Runnable r) {
-    this->mRunnable = r;
-
-    mCompleteMutex = createMutex("FutureTaskMutex");
-    mCompleteCond = createCondition();
-
-    mStatus = st(Future)::Waiting;
+_FutureTask::_FutureTask(Runnable r):_FutureTask(r,nullptr) {
 }
 
 _FutureTask::_FutureTask(Runnable r,FutureTaskStatusListener l) {
@@ -30,12 +35,7 @@ _FutureTask::~_FutureTask() {
 }
 
 void _FutureTask::wait() {
-    AutoLock l(mCompleteMutex);
-    if(mStatus == st(Future)::Complete || mStatus == st(Future)::Cancel) {
-        return;
-    }
-
-    mCompleteCond->wait(mCompleteMutex);
+    wait(0);
 }
     
 int _FutureTask::wait(long interval) {
@@ -49,10 +49,18 @@ int _FutureTask::wait(long interval) {
 }
 
 void _FutureTask::cancel() {
-    if(mStatus == st(Future)::Cancel) {
-        return;
-    }
+    AutoLock l(mCompleteMutex);
+    
+    onShutDown();
 
+    if(mListener != nullptr) {
+        mListener->onCancel(AutoClone(this));
+        mListener = nullptr;
+    }
+    mRunnable = nullptr;
+}
+
+void _FutureTask::onShutDown() {
     AutoLock l(mCompleteMutex);
     
     if(mStatus == st(Future)::Cancel || mStatus == st(Future)::Complete) {
@@ -66,52 +74,6 @@ void _FutureTask::cancel() {
     }
 
     mCompleteCond->notify();
-
-    if(mListener != nullptr) {
-        mListener->onCancel(AutoClone(this));
-        mListener = nullptr;
-    }
-    mRunnable = nullptr;
-}
-
-void _FutureTask::onShutDown() {
-    if(mStatus == st(Future)::Cancel) {
-        return;
-    }
-
-    AutoLock l(mCompleteMutex);
-    
-    if(mStatus == st(Future)::Cancel) {
-        return;
-    }
-    
-    mStatus = st(Future)::Cancel;
-    if(mRunnable != nullptr) {
-        mRunnable->onInterrupt();
-        mRunnable->interruptResultWait();
-    }
-
-    mCompleteCond->notify();
-}
-
-void _FutureTask::cancelWithoutCallback() {
-    if(mStatus == st(Future)::Cancel) {
-        return;
-    }
-
-    AutoLock l(mCompleteMutex);
-    
-    if(mStatus == st(Future)::Cancel) {
-        return;
-    }
-    
-    mStatus = st(Future)::Cancel;
-    if(mRunnable != nullptr) {
-        mRunnable->onInterrupt();
-    }
-
-    mCompleteCond->notify();
-    mRunnable = nullptr;
 }
 
 int _FutureTask::getStatus() {

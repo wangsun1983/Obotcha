@@ -43,7 +43,7 @@ namespace obotcha {
 	  while (i++ < n && it != end && !std::isspace(*it) && std::isdigit(*it)) {\
 	  len++;\
 	  var = var*10 + ((*it++) - '0');\
-	  }\ 
+	  }\
 	}
 
 #define PARSE_FRACTIONAL_N(var, n) \
@@ -104,18 +104,6 @@ const std::string _DateTime::ASCTIME_REGEX("((Mon)|(Tue)|(Wed)|(Thu)|(Fri)|(Sat)
 
 const std::string _DateTime::SORTABLE_FORMAT("%Y-%m-%d %H:%M:%S");
 const std::string _DateTime::SORTABLE_REGEX("(\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d)");
-
-
-const int _DateTime::FormatISO8601 = 0;
-const int _DateTime::FormatISO8601Frac = 1;
-const int _DateTime::FormatRFC822 = 2;
-const int _DateTime::FormatRFC1123 = 3;
-const int _DateTime::FormatHTTP = 4;
-const int _DateTime::FormatRFC850 = 5;
-const int _DateTime::FormatRFC1036 = 6;
-const int _DateTime::FormatASCTIME = 7;
-const int _DateTime::FormatSORTABLE = 8;
-const int _DateTime::FormatMax = 9;
 
 const std::string _DateTime::FORMAT_LIST[] =
 {

@@ -8,9 +8,6 @@
 
 namespace obotcha {
 
-const int _Handler::StatusRunning = 1;
-const int _Handler::StatusDestroy = 2;
-
 _Handler::_Handler() {
     mMutex = createMutex("HandlerMutex");
     mCondition = createCondition();

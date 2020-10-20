@@ -1,13 +1,23 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <errno.h>
+/**
+ * @file Condition.cpp
+ * @brief Causes the current thread to wait until it is signalled
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include <pthread.h>
 
-#include "Condition.hpp"
 #include "Object.hpp"
 #include "System.hpp"
 #include "Error.hpp"
 #include "AutoLock.hpp"
+#include "Condition.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 
@@ -16,23 +26,20 @@ _Condition::_Condition():cond_t(PTHREAD_COND_INITIALIZER) {
 }
 
 void _Condition::wait(Mutex m) {
-    mMutex = m;
     pthread_mutex_t* mutex_t = m->getMutex_t();
-    pthread_cond_wait(&cond_t,mutex_t);
+    pthread_cond_wait(&cond_t,m->getMutex_t());
 }
 
 int _Condition::wait(Mutex m,long int timeInterval) {
-    struct timespec ts;
+     pthread_mutex_t* mutex_t = m->getMutex_t();
+
     if(timeInterval == 0) {
-        wait(m);
-        return 0;
+        return pthread_cond_wait(&cond_t,m->getMutex_t());
     }
-    
+
+    struct timespec ts;
     st(System)::getNextTime(timeInterval,&ts);
-    mMutex = m;
-    pthread_mutex_t* mutex_t = m->getMutex_t();
-    int ret = pthread_cond_timedwait(&cond_t,mutex_t,&ts);
-    if(ret == ETIMEDOUT) {
+    if(pthread_cond_timedwait(&cond_t,mutex_t,&ts) == ETIMEDOUT) {
         return -WaitTimeout;
     }
 
@@ -40,19 +47,15 @@ int _Condition::wait(Mutex m,long int timeInterval) {
 }
 
 void _Condition::notify() {
-    //cond.notify_one();
-    if(mMutex != nullptr) {
-        AutoLock ll(mMutex);
-        pthread_cond_signal(&cond_t);
-    }
+    pthread_cond_signal(&cond_t);
 }
 
 void _Condition::notifyAll() {
-    //cond.notify_all();
-    if(mMutex != nullptr) {
-        AutoLock ll(mMutex);
-        pthread_cond_broadcast(&cond_t);
-    }
+    pthread_cond_broadcast(&cond_t);
+}
+
+_Condition::~_Condition() {
+    pthread_cond_destroy(&cond_t);
 }
 
 }

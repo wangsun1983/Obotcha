@@ -1,11 +1,19 @@
-#include <pthread.h>
+/**
+ * @file SpinLock.cpp
+ * @brief  a spinlock is a lock which causes a thread trying to 
+ *         acquire it to simply wait in a loop ("spin") while 
+ *         repeatedly checking if the lock is available
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "Lock.hpp"
 #include "String.hpp"
 #include "SpinLock.hpp"
-
 
 namespace obotcha {
 

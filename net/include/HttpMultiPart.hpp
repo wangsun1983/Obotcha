@@ -18,9 +18,11 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(HttpMultiPartData) {
 public:
-    const static int PartFile = 1;
-    const static int PartBlock = 2;
-
+    enum PartType {
+        PartFile = 1,
+        PartBlock,
+    };
+    
     int getType();
 
 protected:

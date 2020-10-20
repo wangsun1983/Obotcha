@@ -9,6 +9,7 @@ _CountDownLatch::_CountDownLatch(int v) {
     if(v <= 0) {
         throwInitializeException("count down latch is illegal");
     }
+
     count = v;
     waitMutex = createMutex("CountDownLatchWaitMutex");
     waitCond = createCondition();
@@ -40,14 +41,7 @@ int _CountDownLatch::await(long v) {
 }
 
 int _CountDownLatch::await() {
-    AutoLock l(waitMutex);
-    if(count == 0) {
-        return -AlreadyDestroy;
-    }
-    
-    waitCond->wait(waitMutex);
-
-    return 0;
+    return await(0);
 }
 
 }

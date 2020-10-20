@@ -12,6 +12,8 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(Mutex) IMPLEMENTS(Lock) {
 public:
+    friend class _Condition;
+    
     _Mutex(String);
 
     _Mutex(const char *);
@@ -30,9 +32,9 @@ public:
 
     String toString();
 
+private:
     pthread_mutex_t *getMutex_t();
 
-private:
     pthread_mutex_t mutex_t;
 
     pthread_mutexattr_t mutex_attr;

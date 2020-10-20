@@ -27,16 +27,20 @@ public:
 
     HttpMultiPart parse(ByteRingArrayReader);
     
-    static const int Complete;
-    static const int Continue;
-    static const int NotMultiPart;
+    enum Status {
+        Complete = 0,
+        Continue,
+        NotMultiPart,
+    };
 
-    static const int ParseStartBoundry;
-    static const int ParseStartBoundryEnd;
-    static const int ParseContentDisposition;
-    static const int ParseContentDispositionEnd;
-    static const int ParseContentType;
-    static const int ParseContent;
+    enum ParseStatus {
+        ParseStartBoundry = 0,
+        ParseStartBoundryEnd,
+        ParseContentDisposition,
+        ParseContentDispositionEnd,
+        ParseContentType,
+        ParseContent,
+    };
 
 private:
 

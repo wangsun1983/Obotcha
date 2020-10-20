@@ -1,5 +1,16 @@
+/**
+ * @file ReadWriteLock.cpp
+ * @brief  ReadWriteLock is a tool for read/write access to a shared resource by multiple threads
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include <pthread.h>
-#include <errno.h>
 
 #include "StrongPointer.hpp"
 #include "ReadWriteLock.hpp"
@@ -8,13 +19,9 @@
 
 namespace obotcha {
 
-//------------ ReadLock ------------//
-_ReadLock::_ReadLock(_ReadWriteLock *l) {
-    rwlock.set_pointer(l);
-}
-
-_ReadLock::_ReadLock(_ReadWriteLock *l,String s) {
-    rwlock.set_pointer(l);
+//------------ ReadLock ------------
+_ReadLock::_ReadLock(sp<_ReadWriteLock> l,String s) {
+    this->rwlock = l;
     mName = s;
 }
 
@@ -46,12 +53,8 @@ int _ReadLock::lock(long timeInterval) {
 }
 
 //------------ WriteLock ------------//
-_WriteLock::_WriteLock(_ReadWriteLock *l) {
-    rwlock.set_pointer(l);
-}
-
-_WriteLock::_WriteLock(_ReadWriteLock *l,String s) {
-    rwlock.set_pointer(l);
+_WriteLock::_WriteLock(sp<_ReadWriteLock> l,String s) {
+    rwlock = l;
     mName = s;
 }
 
@@ -64,11 +67,7 @@ void _WriteLock::unlock() {
 }
 
 int _WriteLock::tryLock() {
-    if(pthread_rwlock_trywrlock(&rwlock->rwlock) != 0) {
-        return -1;
-    }
-
-    return 0;
+    return pthread_rwlock_trywrlock(&rwlock->rwlock);
 }
 
 String _WriteLock::getName() {
@@ -77,19 +76,17 @@ String _WriteLock::getName() {
 
 int _WriteLock::lock(long timeInterval) {
     struct timespec ts;
-
     st(System)::getNextTime(timeInterval,&ts);
-    int ret = pthread_rwlock_timedwrlock(&rwlock->rwlock,&ts);
-    if(ret == ETIMEDOUT) {
+    
+    if(pthread_rwlock_timedwrlock(&rwlock->rwlock,&ts) == ETIMEDOUT) {
         return -WaitTimeout;
     }
 
     return 0;
 }
 
-//------------ ReadWriteLock ------------//
-_ReadWriteLock::_ReadWriteLock() {
-    pthread_rwlock_init(&rwlock, NULL);
+//------------ ReadWriteLock ------------
+_ReadWriteLock::_ReadWriteLock():_ReadWriteLock(nullptr) {
 }
 
 _ReadWriteLock::_ReadWriteLock(String s) {
@@ -99,18 +96,16 @@ _ReadWriteLock::_ReadWriteLock(String s) {
 
 sp<_ReadLock> _ReadWriteLock::getReadLock() {
     ReadLock lock;
-    _ReadLock *_lock = new _ReadLock(this,mName);
-    lock.set_pointer(_lock);
+    _ReadLock *l = new _ReadLock(AutoClone(this),mName);
+    lock.set_pointer(l);
     return lock;
-    //return createReadLock(this,mName);
 }
 
 sp<_WriteLock> _ReadWriteLock::getWriteLock() {
     WriteLock lock;
-    _WriteLock *_lock = new _WriteLock(this,mName);
-    lock.set_pointer(_lock);
+    _WriteLock *l = new _WriteLock(AutoClone(this),mName);
+    lock.set_pointer(l);
     return lock;
-    //return createWriteLock(this,mName);
 }
 
 String _ReadWriteLock::getName() {

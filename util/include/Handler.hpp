@@ -53,8 +53,10 @@ public:
     void destroy();
     
 private:
-    const static  int StatusRunning;
-    const static  int StatusDestroy;
+    enum Status {
+        StatusRunning = 0,
+        StatusDestroy
+    };
 
     bool isRunning();
 

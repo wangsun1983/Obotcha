@@ -9,12 +9,6 @@
 
 namespace obotcha {
 
-enum ByteArrayWriterResult {
-   ByteArrayWriteSuccess = 0,
-   ByteArrayWritePart,
-   ByteArrayWriteFail,
-};
-
 DECLARE_SIMPLE_CLASS(ByteArrayWriter) {
 
 public:
@@ -33,6 +27,12 @@ public:
     int write(byte *,int);
 
     ByteArray getByteArray();
+
+    enum ByteArrayWriterResult {
+        WriteSuccess = 0,
+        WritePart,
+        WriteFail,
+    };
 
 private:
     ByteArray mData;

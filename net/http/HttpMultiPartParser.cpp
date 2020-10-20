@@ -3,17 +3,6 @@
 
 namespace obotcha {
 
-const int _HttpMultiPartParser::Complete = 0;
-const int _HttpMultiPartParser::Continue = 1;
-const int _HttpMultiPartParser::NotMultiPart = 2;
-
-const int _HttpMultiPartParser::ParseStartBoundry = 0;
-const int _HttpMultiPartParser::ParseStartBoundryEnd = 1;
-const int _HttpMultiPartParser::ParseContentDisposition = 2;
-const int _HttpMultiPartParser::ParseContentDispositionEnd = 3;
-const int _HttpMultiPartParser::ParseContentType = 4;
-const int _HttpMultiPartParser::ParseContent = 5;
-
 const String _HttpMultiPartParser::NewLine = createString("\r\n");
 const String _HttpMultiPartParser::TwoNewLine = createString("\r\n\r\n");
 const String _HttpMultiPartParser::EndLine = createString("--");

@@ -1,5 +1,14 @@
-#include <stdio.h>
-#include <stdlib.h>
+/**
+ * @file Executors.cpp
+ * @brief Executor Factory 
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
 
 #include "Executors.hpp"
 #include "Thread.hpp"
@@ -24,7 +33,9 @@ sp<_ExecutorRecyler>_ExecutorRecyler::getInstance() {
     if(mInstance != nullptr) {
         return mInstance;
     }
+
     AutoLock l(mMutex);
+
     if(mInstance != nullptr) {
         return mInstance;
     }
@@ -43,8 +54,8 @@ void _ExecutorRecyler::run() {
             AutoLock l(mMutex);
             if(mRecyleList->isEmpty()) {
                 mCond->wait(mMutex);
+                continue;
             }
-        
             service = mRecyleList->deQueueFirst();
         }
         
@@ -63,7 +74,6 @@ void _ExecutorRecyler::add(ExecutorService s) {
     mCond->notify();
 }
 
-//_Executors
 ExecutorService _Executors::newFixedThreadPool(int queue_size,int thread_num) {
     return createThreadPoolExecutor(queue_size,thread_num);
 }

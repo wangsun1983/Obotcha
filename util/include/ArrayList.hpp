@@ -46,7 +46,7 @@ public:
     }
 
     inline void add(T val) {
-        elements.insert(elements.end(),val); 
+        elements.push_back(val);
     }
 
     inline void add(ArrayList<T> list) {
@@ -137,7 +137,7 @@ public:
         }
 
 
-        elements.insert(elements.begin() + index,val);
+        elements[index] = val;
         return 0;
     }
 
@@ -232,7 +232,6 @@ DECLARE_CLASS(ListIterator,1) {
 public:
     _ListIterator(_ArrayList<T> *list) {
         mList.set_pointer(list);
-        //list->incStrong(0);
         iterator = list->begin();
     }
 
@@ -242,9 +241,7 @@ public:
     }
 
     T getValue() {
-        //return iterator->second;
         if(iterator == mList->end()) {
-            //return nullptr;
             throwArrayIndexOutOfBoundsException("iterator error");
         }
 

@@ -49,10 +49,12 @@ private:
     long mThreadTimeout;
 
     BlockingQueue<FutureTask> mPool;
-
-    static const int HandleIdle;
-    static const int HandleBusy;
-    static const int HandleDestroy;
+    
+    enum CachedExecutorHandlerStatus {
+        HandleIdle = 0,
+        HandleBusy,
+        HandleDestroy,
+    };
 
     Mutex mStatusMutex;
     int mStatus;
@@ -91,9 +93,11 @@ public:
     ~_ThreadCachedPoolExecutor();
 
 private:
-    static const int StatusRunning;
-    static const int StatusShutDown;
-    static const int StatusTerminate;
+    enum CachedPoolStatus {
+        StatusRunning = 0,
+        StatusShutDown,
+        StatusTerminate,
+    };
 
     static const int DefaultWaitTime;
     static const int DefaultMaxThreadNums;

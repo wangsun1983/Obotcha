@@ -3,6 +3,8 @@
 
 #include "Calendar.hpp"
 #include "TimeZone.hpp"
+#include "System.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
@@ -12,42 +14,8 @@ int _Calendar::leapDays[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 int _Calendar::GregorianBase = 1900;
 
-const int _Calendar::January = 0;
-const int _Calendar::February = 1;
-const int _Calendar::March = 2;
-const int _Calendar::April = 3;
-const int _Calendar::May = 4;
-const int _Calendar::June = 5;
-const int _Calendar::July = 6;
-const int _Calendar::August = 7;
-const int _Calendar::September = 8;
-const int _Calendar::October = 9;
-const int _Calendar::November = 10;
-const int _Calendar::December = 11;
-
-const int _Calendar::Sunday = 0;
-const int _Calendar::Monday = 1;
-const int _Calendar::Tuesday = 2;
-const int _Calendar::Wednesday = 3;
-const int _Calendar::Thursday = 4;
-const int _Calendar::Friday = 5;
-const int _Calendar::Saturday = 6;
-
-const int _Calendar::Year = 0;
-const int _Calendar::Month = 1;
-const int _Calendar::DayOfWeek = 2;
-const int _Calendar::DayOfMonth = 3;
-const int _Calendar::DayOfYear = 4;
-const int _Calendar::Hour = 5;
-const int _Calendar::Minute = 6;
-const int _Calendar::Second = 7;
-const int _Calendar::MSecond = 8;
-
-
 _Calendar::_Calendar() {
-    timeval tv;
-    gettimeofday(&tv, NULL);
-    timeMillis = tv.tv_sec*1000 + tv.tv_usec/1000;
+    timeMillis = st(System)::currentTimeMillis();
     init();
 }
 
@@ -57,25 +25,16 @@ _Calendar::_Calendar(long long mseconds) {
 }
 
 _Calendar::_Calendar(int _year,int _month,int _dayOfMonth,int _hour = 0,int _minute = 0,int _second = 0,int msecond = 0) {
-    year = _year;
-
-    if(_month > December) {
-        month = December;
-    } else {
-        month = _month;
+    if(!isValid(_year,_month,_dayOfMonth,_hour,_minute,_second,msecond)) {
+        throwInitializeException("invalid param");
     }
+
+    month = _month;
 
     int *_days = getDays(year);
     dayOfMonth = _days[month];
-
-    if(_dayOfMonth < dayOfMonth) {
-        dayOfMonth = _dayOfMonth;
-    }
-
+    dayOfMonth = _dayOfMonth;
     dayOfWeek = caculateDayOfWeek(year,month,dayOfMonth);
-
-    //update dayOfYear
-    //onUpdateByYear(year);
 
     hour = _hour;
     minute = _minute;

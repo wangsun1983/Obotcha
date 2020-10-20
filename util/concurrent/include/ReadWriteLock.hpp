@@ -27,9 +27,7 @@ public:
     String getName();
 
 private:
-    _ReadLock(_ReadWriteLock *);
-
-    _ReadLock(_ReadWriteLock *,String);
+    _ReadLock(sp<_ReadWriteLock>,String);
 
     sp<_ReadWriteLock> rwlock;
 
@@ -51,11 +49,9 @@ public:
     String getName();
 
 private:
-    sp<_ReadWriteLock> rwlock;
-    
-    _WriteLock(_ReadWriteLock *);
+    _WriteLock(sp<_ReadWriteLock>,String);
 
-    _WriteLock(_ReadWriteLock *,String);
+    sp<_ReadWriteLock> rwlock;
 
     String mName;
 };
@@ -82,6 +78,9 @@ public:
 private:
     pthread_rwlock_t rwlock;
     String mName;
+
+    sp<_WriteLock> mWriteLock;
+    sp<_ReadLock> mReadLock;
 };
 
 }

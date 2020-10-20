@@ -49,8 +49,7 @@ public:
     void onShutDown();
 
 private:
-    void cancelWithoutCallback();
-    
+
     Runnable mRunnable;
 
     int mStatus;

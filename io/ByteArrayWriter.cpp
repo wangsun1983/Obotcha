@@ -33,19 +33,19 @@ int _ByteArrayWriter::writeShort(int s) {
             mSize = mData->size()*7/4;
             mData->growTo(mSize);
         } else {
-            return -ByteArrayWriteFail;
+            return -WriteFail;
         }
     }
 
     mDataP[mIndex++] = (byte) ((s >> 8) & 0xff);
 
     if(mIndex == mSize - 1) {
-        return -ByteArrayWritePart;
+        return -WritePart;
     }
 
     mDataP[mIndex++] = (byte)  (s& 0xff);
 
-    return ByteArrayWriteSuccess;
+    return WriteSuccess;
 }
 
 int _ByteArrayWriter::writeByte(byte v) {
@@ -54,12 +54,12 @@ int _ByteArrayWriter::writeByte(byte v) {
             mSize = mData->size()*7/4;
             mData->growTo(mSize);
         } else {
-            return -ByteArrayWriteFail;
+            return -WriteFail;
         }
     }
 
     mDataP[mIndex++] = v;
-    return ByteArrayWriteSuccess;
+    return WriteSuccess;
 }
 
 int _ByteArrayWriter::writeInt(int v) {
@@ -68,27 +68,27 @@ int _ByteArrayWriter::writeInt(int v) {
             mSize = mData->size()*7/4;
             mData->growTo(mSize);
         } else {
-            return -ByteArrayWriteFail;
+            return -WriteFail;
         }
     }
 
     mDataP[mIndex++] = (byte) ((v >> 24) & 0xff);
     if(mIndex == mSize - 1) {
-        return -ByteArrayWritePart;
+        return -WritePart;
     }
 
     mDataP[mIndex++] = (byte) ((v >> 16) & 0xff);
     if(mIndex == mSize - 1) {
-        return -ByteArrayWritePart;
+        return -WritePart;
     }
 
     mDataP[mIndex++] = (byte) ((v >>  8) & 0xff);
     if(mIndex == mSize - 1) {
-        return -ByteArrayWritePart;
+        return -WritePart;
     }
 
     mDataP[mIndex++] = (byte)  (v         & 0xff);
-    return ByteArrayWriteSuccess;
+    return WriteSuccess;
 }
 
 long _ByteArrayWriter::writeLong(long v) {
@@ -97,7 +97,7 @@ long _ByteArrayWriter::writeLong(long v) {
             mSize = mData->size()*7/4;
             mData->growTo(mSize);
         } else {
-            return -ByteArrayWriteFail;
+            return -WriteFail;
         }
     }
 
@@ -116,11 +116,11 @@ long _ByteArrayWriter::writeLong(long v) {
             mDataP[mIndex++] = (byte) ((v >> 16L) & 0xff);
             mDataP[mIndex++] = (byte) ((v >>  8L) & 0xff);
             mDataP[mIndex++] = (byte)  (v          & 0xff);
-            return ByteArrayWriteSuccess;
+            return WriteSuccess;
         }
     }
 
-    return -ByteArrayWriteFail;
+    return -WriteFail;
 }
 
 int _ByteArrayWriter::writeByteArray(ByteArray b) {
@@ -129,13 +129,13 @@ int _ByteArrayWriter::writeByteArray(ByteArray b) {
             mSize = (mData->size() + b->size())*7/4;
             mData->growTo(mSize);
         } else {
-            return -ByteArrayWriteFail;
+            return -WriteFail;
         }
     }
 
     memcpy(&mDataP[mIndex],b->toValue(),b->size());
     mIndex += b->size();
-    return ByteArrayWriteSuccess;
+    return WriteSuccess;
 }
 
 int _ByteArrayWriter::writeString(String str) {
@@ -144,13 +144,13 @@ int _ByteArrayWriter::writeString(String str) {
             mSize = (mData->size() + str->size())*7/4;
             mData->growTo(mSize);
         } else {
-            return -ByteArrayWriteFail;
+            return -WriteFail;
         }
     }
 
     memcpy(&mDataP[mIndex],str->toChars(),str->size());
     mIndex += str->size();
-    return ByteArrayWriteSuccess;
+    return WriteSuccess;
 }
 
 int _ByteArrayWriter::writeByteArray(ByteArray b,int length) {
@@ -159,13 +159,13 @@ int _ByteArrayWriter::writeByteArray(ByteArray b,int length) {
             mSize = (mData->size() + length)*7/4;
             mData->growTo(mSize);
         } else {
-            return -ByteArrayWriteFail;
+            return -WriteFail;
         }
     }
 
     memcpy(&mDataP[mIndex],b->toValue(),length);
     mIndex += length;
-    return ByteArrayWriteSuccess;
+    return WriteSuccess;
 }
 
 int _ByteArrayWriter::write(byte *data,int length) {
@@ -174,13 +174,13 @@ int _ByteArrayWriter::write(byte *data,int length) {
             mSize = (mData->size() + length)*7/4;
             mData->growTo(mSize);
         } else {
-            return -ByteArrayWriteFail;
+            return -WriteFail;
         }
     }
 
     memcpy(&mDataP[mIndex],data,length);
     mIndex += length;
-    return ByteArrayWriteSuccess;
+    return WriteSuccess;
     
 }
 

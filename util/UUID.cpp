@@ -2,11 +2,6 @@
 
 namespace obotcha {
 
-const int _UUID::Random = 0;
-const int _UUID::Time = 1;
-const int _UUID::TimeSafe = 2;
-const int _UUID::Default = 3;
-
 _UUID::_UUID() {
     //uuid_generate(uuid1); 
     mType = Default;

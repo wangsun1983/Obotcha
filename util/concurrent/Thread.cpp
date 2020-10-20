@@ -164,7 +164,7 @@ int _Thread::start() {
     if(pthread_create(&mPthread, &mThreadAttr, localRun, this)!= 0) {
         {  
             AutoLock l(mStatusMutex);
-            mStatus = ErrorStatus;
+            mStatus = Error;
         }
         return -1;
     } 

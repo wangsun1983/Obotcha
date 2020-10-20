@@ -5,18 +5,21 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "Mutex.hpp"
 
 namespace obotcha {
+
+class _Mutex;
 
 DECLARE_SIMPLE_CLASS(Condition) {
 
 public:
     _Condition();
-
-    void wait(Mutex m);
     
-    int wait(Mutex m,long int millseconds);
+    ~_Condition();
+
+    void wait(sp<_Mutex> m);
+    
+    int wait(sp<_Mutex> m,long int millseconds);
     
     void notify();
     
@@ -24,8 +27,6 @@ public:
 
 private:
     pthread_cond_t cond_t;
-    
-    Mutex  mMutex;
 };
 
 }
