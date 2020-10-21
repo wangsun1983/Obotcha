@@ -1,8 +1,18 @@
+/**
+ * @file Math.cpp
+ * @brief  A class for arithmetic
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include <cmath>
 
 #include "Math.hpp"
-#include "Float.hpp"
-#include "Double.hpp"
 
 namespace obotcha {
 

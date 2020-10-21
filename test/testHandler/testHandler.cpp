@@ -7,20 +7,46 @@
 
 using namespace obotcha;
 
+#define EMPTY_MESSAGE 1
+#define EMPTY_DELAYED_MESSAGE 2
 DECLARE_SIMPLE_CLASS(MyHandler) EXTENDS(Handler) {
 public:
-  void handleMessage(Message msg) {
-    printf("receive time is %ld \n",st(System)::currentTimeMillis());
-    printf("msg.what is %d \n",msg->what);
+  _MyHandler() {
+    count = 0;
+    delayedCount = 0;
   }
+
+  void handleMessage(Message msg) {
+    switch(msg->what) {
+      case EMPTY_MESSAGE:
+      count += 1;
+      break;
+
+      case EMPTY_DELAYED_MESSAGE:
+      delayedCount+= 1;
+      break;
+    }
+    
+  }
+
+  int count;
+  int delayedCount;
 };
 
-int main() {
+int testHandler() {
   MyHandler m = createMyHandler();
-  printf("start time is %ld \n",st(System)::currentTimeMillis());
-  m->sendEmptyMessageDelayed(2,2000);
+  for(int i = 0;i<1024*32;i++) {
+    m->sendEmptyMessage(EMPTY_MESSAGE);
+  }
 
-  m->sendEmptyMessage(4);
-  while(1) {sleep(1000);}
-  printf("end main!!!! \n");
+  for(int j = 0;j<1024*32;j++) {
+    m->sendEmptyMessageDelayed(EMPTY_DELAYED_MESSAGE,100);
+  }
+
+  sleep(10);
+  if(m->count != 32*1024 || m->delayedCount != 32*1024) {
+    printf("---[Handler Test {Normal sendEmptyMessage/Delayed()} case1] [FAILED]--- \n");
+  }
+
+  printf("---[Handler Test {Normal sendEmptyMessage/Delayed()} case2] [OK]--- \n");
 }

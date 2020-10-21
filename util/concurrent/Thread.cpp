@@ -80,7 +80,7 @@ end:
 _Thread::_Thread():_Thread(nullptr) {
 }
 
-_Thread::_Thread(Runnable run):_Thread{nullptr,run} {
+_Thread::_Thread(Runnable run):_Thread(nullptr,run) {
 }
 
 _Thread::_Thread(String name,Runnable run){

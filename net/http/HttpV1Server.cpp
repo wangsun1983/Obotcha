@@ -155,23 +155,23 @@ void _HttpV1Server::onTimeout() {
     //Unused
 }
 
-_HttpV1Server::_HttpV1Server(int port,HttpV1Listener l):_HttpV1Server{nullptr,port,l} {
+_HttpV1Server::_HttpV1Server(int port,HttpV1Listener l):_HttpV1Server(nullptr,port,l) {
 
 }
 
-_HttpV1Server::_HttpV1Server(int port,HttpV1Listener l,String certificate,String key):_HttpV1Server{nullptr,port,l,certificate,key}{
+_HttpV1Server::_HttpV1Server(int port,HttpV1Listener l,String certificate,String key):_HttpV1Server(nullptr,port,l,certificate,key){
 
 }
 
-_HttpV1Server::_HttpV1Server(HttpV1Listener l):_HttpV1Server{nullptr,-1,l} {
+_HttpV1Server::_HttpV1Server(HttpV1Listener l):_HttpV1Server(nullptr,-1,l) {
     
 }
 
-_HttpV1Server::_HttpV1Server(HttpV1Listener l,String certificate,String key):_HttpV1Server{nullptr,-1,l,certificate,key} {
+_HttpV1Server::_HttpV1Server(HttpV1Listener l,String certificate,String key):_HttpV1Server(nullptr,-1,l,certificate,key) {
     
 }
 
-_HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l):_HttpV1Server{ip,port,l,nullptr,nullptr}{
+_HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l):_HttpV1Server(ip,port,l,nullptr,nullptr){
     
 }
 

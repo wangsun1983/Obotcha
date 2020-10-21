@@ -18,35 +18,22 @@ _Random::_Random() {
 }
 
 int _Random::nextInt() {
-    /*
-    int fd = open("/dev/urandom",O_RDONLY);
-    if(-1 == fd) {
-        fd = open("/dev/random",O_RDONLY);
-    }
-    int randNum = 0;
-    read(fd,(char *)&randNum,sizeof(int));
-    close(fd);
-    return randNum;//rand();
-    */
     std::uniform_int_distribution<> dis;
     int value = dis(gen);
     return value;
 }
 
 int _Random::nextInt(int min,int max) {
-    //srand((int)time(NULL));
     std::uniform_int_distribution<> dis(min,max);
     int value = dis(gen);
     return value;
 }
 
 int _Random::nextInt(int min) {
-    //return random_int_2(min,RAND_MAX);
     return nextInt(min,st(Integer)::MAX_VALUE);
 }
 
 double _Random::nextDouble() {
-    //return (double)(RAND_MAX+1.0)/(nextInt() + 1.0);
     std::uniform_real_distribution<> dis;
     double value = dis(gen);
     return value;
@@ -59,7 +46,6 @@ double _Random::nextDouble(double min,double max) {
 }
 
 double _Random::nextDouble(double min){
-    //return nextDouble(min,RAND_MAX);
     return nextDouble(min,DBL_MAX);
 }
 

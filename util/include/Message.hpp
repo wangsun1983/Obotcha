@@ -9,11 +9,6 @@ namespace obotcha {
 
 class _Handler;
 
-enum MessageInternalType {
-    NormalMessage = 1,
-    RunnableMessage,
-};
-
 DECLARE_SIMPLE_CLASS(MessageData) {
 //TODO
 };
@@ -37,11 +32,11 @@ public:
 
     MessageData data;
 
+    ~_Message();
+
 private:
     int mType;
     
-    int mDrop;
-
     Runnable mRunnable;
 
     long nextTime;

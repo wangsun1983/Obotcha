@@ -42,7 +42,7 @@ _TcpClient::_TcpClient(String ip,int port,int recv_time,SocketListener l,int buf
     mListener = l;
 }
 
-_TcpClient::_TcpClient(int port,int recv_time,SocketListener l,int buff_size):_TcpClient{nullptr,port,recv_time,l,buff_size} {
+_TcpClient::_TcpClient(int port,int recv_time,SocketListener l,int buff_size):_TcpClient(nullptr,port,recv_time,l,buff_size) {
 
 }
 

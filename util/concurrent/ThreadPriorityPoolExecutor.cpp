@@ -116,7 +116,7 @@ void _PriorityPoolThread::stop() {
 }
 
 //============= ThreadPriorityPoolExecutor ================
-_ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor():_ThreadPriorityPoolExecutor{1} {
+_ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor():_ThreadPriorityPoolExecutor(1) {
     //do nothing
 }
 

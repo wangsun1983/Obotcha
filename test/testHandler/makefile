@@ -15,6 +15,7 @@ cflags = -fpic \
 		-I ../../security/include \
 		-I ../../process/include \
 		-I ../../external/iniparser/include \
+		-I ../../external/glog/include \
 		-I ../../external/jsoncpp/include \
 		-I ../../external/rapidxml/include \
 		-I ../../external/zlib/include \

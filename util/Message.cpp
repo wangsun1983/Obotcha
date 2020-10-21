@@ -1,30 +1,45 @@
+/**
+ * @file Message.cpp
+ * @brief Defines a message containing a description and arbitrary data object that 
+ *        can be sent to a handler.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+#include <stdio.h>
+
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "Message.hpp"
 
 namespace obotcha {
 
 _Message::_Message() {
-    mDrop = 0;
     nextTime = 0;
     next = nullptr;
+    mRunnable = nullptr;
 }
 
 _Message::_Message(int w) {
     what = w;
-    mDrop = 0;
     nextTime = 0;
     next = nullptr;
+    mRunnable = nullptr;
 }
 
 _Message::_Message(Runnable r) {
     mRunnable = r;
-    mDrop = 0;
     nextTime = 0;
     next = nullptr;
 }
 
+_Message::~_Message() {
+    //TODO
+}
 
 }

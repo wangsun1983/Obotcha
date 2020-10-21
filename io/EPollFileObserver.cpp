@@ -72,18 +72,18 @@ void _EPollFileObserver::run() {
         if(epoll_events_count < 0) {
             return;
         }
-        
+
         for(int i = 0; i < epoll_events_count; i++) {
             int fd = events[i].data.fd;
             uint32_t recvEvents = events[i].events;
 
             ByteArray recvData = nullptr;
-
-            ll->clear();
-
+            
             if(fd == mPipe->getReadPipe()) {
                 return;
             }
+
+            ll->clear();
             
             AutoLock l(mListenerMutex);
             HashMap<int,ArrayList<EPollFileObserverListener>> map = mListeners->get(fd);
@@ -178,7 +178,7 @@ _EPollFileObserver::_EPollFileObserver(int size) {
     while(mStartFlag != 1) {}
 }
 
-_EPollFileObserver::_EPollFileObserver():_EPollFileObserver{DefaultEpollSize}{
+_EPollFileObserver::_EPollFileObserver():_EPollFileObserver(DefaultEpollSize){
 }
 
 int _EPollFileObserver::addObserver(int fd,uint32_t events,EPollFileObserverListener l) {

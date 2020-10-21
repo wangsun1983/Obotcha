@@ -1,3 +1,15 @@
+/**
+ * @file Message.cpp
+ * @brief  A Handler allows you to send and process Message and Runnable objects associated with a thread
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
@@ -8,12 +20,17 @@
 
 namespace obotcha {
 
-_Handler::_Handler() {
+_Handler::_Handler(){
     mMutex = createMutex("HandlerMutex");
     mCondition = createCondition();
     mMessagePool = nullptr;
     mStatus = StatusRunning;
     start();
+}
+
+_Handler::~_Handler() {
+    destroy();
+    join();
 }
 
 sp<_Message> _Handler::obtainMessage(int w) {
@@ -23,11 +40,11 @@ sp<_Message> _Handler::obtainMessage(int w) {
 }
 
 sp<_Message> _Handler::obtainMessage() {
-    return createMessage();
+    return createMessage(-1);
 }
 
 int _Handler::sendEmptyMessage(int what) {
-    Message msg = obtainMessage(what);
+    Message msg = createMessage(what);
     return sendMessage(msg);
 }
 
@@ -44,14 +61,13 @@ int _Handler::sendMessageDelayed(sp<_Message> msg,long delay) {
     if(mStatus != StatusRunning) {
         return -1;
     }
-
     msg->nextTime = st(System)::currentTimeMillis() + delay;
     AutoLock l(mMutex);
     if(mMessagePool == nullptr) {
         mMessagePool = msg;
     } else {
         Message p = mMessagePool;
-        Message prev = nullptr;
+        Message prev = mMessagePool;
         for (;;) {
             if(p->nextTime > msg->nextTime) {
                 if(p == mMessagePool) {
@@ -63,19 +79,17 @@ int _Handler::sendMessageDelayed(sp<_Message> msg,long delay) {
                 }
                 break;
             } else {
-                if(p->next == nullptr) {
-                    p->next = msg;
+                prev = p;
+                p = p->next;
+                if(p == nullptr) {
+                    prev->next = msg;
                     break;
-                } else {
-                    prev = p;
-                    p = p->next;
                 }
             }
         }
     }
-
     mCondition->notify();
-
+    
     return 0;
 }
 
@@ -86,10 +100,14 @@ void _Handler::handleMessage(sp<_Message> msg) {
 bool _Handler::hasMessage(int what) {
     AutoLock l(mMutex);
     Message p = mMessagePool;
+    int index = 0;
     while(p != nullptr) {
+        printf("index is %d \n",index);
+        index++;
         if(p->what == what) {
             return true;
         }
+        p = p->next;
     }
 
     return false;
@@ -120,7 +138,6 @@ void _Handler::run() {
     long waitTime = 0;
     while(mStatus != StatusDestroy) {
         Message msg = nullptr;
-        printf("handler run trace1 \n");
         {
             AutoLock l(mMutex);
             if(mMessagePool == nullptr) {
@@ -137,13 +154,10 @@ void _Handler::run() {
                 }
             }
         }
-
         if(msg != nullptr) {
             if(msg->mRunnable == nullptr) {
-                printf("handler run trace8 \n");
                 handleMessage(msg);
             } else {
-                printf("handler run trace9 \n");
                 msg->mRunnable->run();
             }
         }
@@ -162,6 +176,7 @@ int _Handler::postDelayed(Runnable r ,long delay) {
 
 void _Handler::destroy() {
     mStatus = StatusDestroy;
+    mCondition->notify();
     quit();
 }
 

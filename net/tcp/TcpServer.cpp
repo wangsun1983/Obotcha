@@ -21,11 +21,11 @@
 
 namespace obotcha {
 
-_TcpServer::_TcpServer(String ip,int port):_TcpServer{ip,port,nullptr} {
+_TcpServer::_TcpServer(String ip,int port):_TcpServer(ip,port,nullptr) {
 
 }
 
-_TcpServer::_TcpServer(int port,SocketListener l):_TcpServer{nullptr,port,l} {
+_TcpServer::_TcpServer(int port,SocketListener l):_TcpServer(nullptr,port,l) {
     
 }
 

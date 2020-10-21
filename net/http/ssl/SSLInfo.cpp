@@ -47,7 +47,7 @@ _SSLInfo::_SSLInfo(String certificate,String key) {
     mSSL = SSL_new(mCtx);
 }
 
-_SSLInfo::_SSLInfo():_SSLInfo{nullptr,nullptr} {
+_SSLInfo::_SSLInfo():_SSLInfo(nullptr,nullptr) {
 
 }
 

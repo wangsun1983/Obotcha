@@ -14,7 +14,7 @@
 
 namespace obotcha {
 
-_UdpClient::_UdpClient(int port,SocketListener l):_UdpClient{nullptr,port,l} {
+_UdpClient::_UdpClient(int port,SocketListener l):_UdpClient(nullptr,port,l) {
 
 }
 

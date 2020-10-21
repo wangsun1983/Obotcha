@@ -9,7 +9,7 @@ _Pipe::_Pipe(PipeIoType type) {
     pipeFd[ReadPipe] = -1;
 }
 
-_Pipe::_Pipe():_Pipe{PipeDefault} {
+_Pipe::_Pipe():_Pipe(PipeDefault) {
 
 }
 

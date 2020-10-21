@@ -26,6 +26,8 @@ DECLARE_SIMPLE_CLASS(Handler) EXTENDS(Thread){
 public:
     _Handler();
 
+    ~_Handler();
+
     sp<_Message> obtainMessage(int);
 
     sp<_Message> obtainMessage();

@@ -28,7 +28,7 @@ int _UdpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
     return  0;
 }
 
-_UdpServer::_UdpServer(int port,SocketListener l):_UdpServer{nullptr,port,l} {
+_UdpServer::_UdpServer(int port,SocketListener l):_UdpServer(nullptr,port,l) {
 
 }
 
