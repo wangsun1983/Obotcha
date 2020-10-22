@@ -96,6 +96,10 @@ public:
     T get() {
         return value.load(std::memory_order_relaxed);
     }
+
+    bool compare_exchange(T exp,T v) {
+        return value.compare_exchange_strong(exp,v);
+    }
     
     ~Atomic<T>() {
         

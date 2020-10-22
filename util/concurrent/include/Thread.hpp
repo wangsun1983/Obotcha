@@ -124,9 +124,7 @@ private:
 
     String mName;
     
-    Mutex mStatusMutex;
-
-    int mStatus;
+    Atomic<int> mStatus;
 
     Atomic<int> bootFlag;
 

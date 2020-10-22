@@ -15,10 +15,8 @@ namespace obotcha {
 ThreadLocal<Thread> mThreads = createThreadLocal<Thread>();
 
 void doThreadExit(_Thread *thread) {
-    {
-        AutoLock l(thread->mStatusMutex);
-        thread->mStatus = st(Thread)::Complete;
-    }
+
+    thread->mStatus = st(Thread)::Complete;
 
     {
         AutoLock ll(thread->mJoinMutex);
@@ -47,10 +45,7 @@ void* _Thread::localRun(void *th) {
     _Thread *thread = static_cast<_Thread *>(th);
     mThreads->set(thread->getThreadId(),AutoClone(thread));
     
-    {
-        AutoLock l(thread->mStatusMutex);
-        thread->mStatus = st(Thread)::Running;
-    }
+    thread->mStatus = st(Thread)::Running;
     
     thread->bootFlag = 1;
     
@@ -96,8 +91,6 @@ _Thread::_Thread(String name,Runnable run){
 
     bootFlag = 0;
     
-    mStatusMutex = createMutex("ThreadStatusMutex");
-
     mJoinMutex = createMutex("ThreadJoinMutex");
 
     mJoinDondtion = createCondition();
@@ -150,22 +143,13 @@ int _Thread::start() {
     //incStrong(0);
     //sp<_Thread> localThread;
     //localThread.set_pointer(this);
-    {
-        AutoLock l(mStatusMutex);
-
-        if(mStatus != NotStart) {
-            return -AlreadyExecute;
-        }
-
-        mStatus = Idle;
+    if(mStatus->compare_exchange(NotStart,Idle)) {
+        return -AlreadyExecute;
     }
 
     pthread_attr_init(&mThreadAttr);
     if(pthread_create(&mPthread, &mThreadAttr, localRun, this)!= 0) {
-        {  
-            AutoLock l(mStatusMutex);
-            mStatus = Error;
-        }
+        mStatus = Error;
         return -1;
     } 
 
@@ -192,8 +176,7 @@ int _Thread::join(long timeInterval) {
 }
 
 int _Thread::getStatus() {
-    AutoLock l(mStatusMutex);
-    return mStatus;
+    return mStatus->get();
 }
 
 void _Thread::onComplete(){
@@ -373,7 +356,6 @@ int _Thread::getThreadSchedPolicy() {
 }
 
 bool _Thread::isRunning() {
-    AutoLock l(mStatusMutex);
     return mStatus == Running;
 }
 
