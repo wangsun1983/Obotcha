@@ -16,39 +16,45 @@ using namespace obotcha;
 sudo ufw disable
 */
 
+//client should use 8 thread to send data
 DECLARE_SIMPLE_CLASS(MyListener) IMPLEMENTS(SocketListener) {
 public:
-        
-    void onDataReceived(SocketResponser r,ByteArray pack) {
+    _MyListener() {
+        connectNum = 0;
+        disconnectNum = 0;
+        dataLength = 0;
+    }
 
+    void onDataReceived(SocketResponser r,ByteArray pack) {
+        //printf("pack is %s \n",pack->toString()->toChars());
+        dataLength += pack->size();
     }
 
     void onDisconnect(SocketResponser r) {
-
+        //printf("onDisconnect \n");
+        disconnectNum++;
     }
 
     void onConnect(SocketResponser r) {
-        printf("on connect fd is %d \n",r->getFd());
+        //printf("onConnect \n");
+        connectNum++;
     }
 
     void onTimeout() {
 
     }
+
+public:
+    Atomic<int> connectNum;
+    Atomic<int> disconnectNum;
+    Atomic<long> dataLength;    
 };
 
-int main() {
+int normaltest() {
   MyListener listener = createMyListener();
-  //TcpServer server = createTcpServer(1212,listener);
   TcpServer server = createTcpServer(1992,listener);
   server->start();
-  while(1) {
-    sleep(1000);
-    //printf("star read \n");
-    //ByteArray data = server->recv();
-    //if(data != nullptr) {
-    //    printf("data is %s \n",data->toString()->toChars());
-    //} else {
-    //    printf("no data \n");
-    //}
-  }
+  sleep(30);
+  printf("connectNum is %d,disconnectNum is %d,dataLength is %ld \n",listener->connectNum->get(),listener->disconnectNum->get(),listener->dataLength->get());
+  return 0;
 }

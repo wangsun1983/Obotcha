@@ -41,7 +41,7 @@ const uint32_t _EPollFileObserver::EpollEvent[] = {
                                      EpollOneShot,
                                      EpollEt};
 
-/////----------------EPollFileObserverListener----------------
+//----------------EPollFileObserverListener----------------
 void _EPollFileObserverListener::removeFd(int fd) {
     auto iter = fds.begin();
     while (iter != fds.end()) {
@@ -55,7 +55,7 @@ void _EPollFileObserverListener::removeFd(int fd) {
 }
 
 
-/////----------------_EPollFileObserver----------------
+//----------------_EPollFileObserver----------------
 void _EPollFileObserver::run() {
     struct epoll_event events[mSize];
     memset(events,0,sizeof(struct epoll_event) *mSize);
@@ -75,19 +75,18 @@ void _EPollFileObserver::run() {
 
         for(int i = 0; i < epoll_events_count; i++) {
             int fd = events[i].data.fd;
-            uint32_t recvEvents = events[i].events;
-
-            ByteArray recvData = nullptr;
-            
             if(fd == mPipe->getReadPipe()) {
                 return;
             }
 
+            uint32_t recvEvents = events[i].events;
+            ByteArray recvData = nullptr;
             ll->clear();
             
             AutoLock l(mListenerMutex);
             HashMap<int,ArrayList<EPollFileObserverListener>> map = mListeners->get(fd);
             if(map == nullptr || map->size() == 0) {
+                LOG(ERROR)<<"Fd not regist,it is "<<fd;
                 continue;
             }
 
@@ -120,6 +119,10 @@ void _EPollFileObserver::run() {
                                             break;
                                         }
                                         recvData->append(readbuff,len);
+                                        //too large content,send part data to observers first.
+                                        if(recvData->size() >= DefaultMaxBuffSize) {
+                                            break;
+                                        }
                                     }
                                 }
                             }

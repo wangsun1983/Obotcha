@@ -22,10 +22,11 @@ cflags = -fpic \
 		-I ../../external/yaml/include \
 		-I ../../external/crc32/include \
 		-I ../../external/openssl/include \
-		-I ../../external/http_parser/include \
 		-I ../../external/libco \
+		-I ../../external/glog/include \
 		-g \
 		-std=c++11 \
+
 
 external = -lpthread \
 				-ldl \

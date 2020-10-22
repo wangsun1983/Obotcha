@@ -81,6 +81,7 @@ public:
     
 private:
     static const int DefaultBufferSize = 16*1024;
+    static const int DefaultMaxBuffSize = 1024*1024;
     static const uint32_t EpollEvent[];
     
     void addEpollFd(int fd,uint32_t events);

@@ -80,17 +80,15 @@ int _TcpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
             LOG(ERROR)<<"Accept fail,error is "<<strerror(errno);
             return st(EPollFileObserver)::OnEventOK;
         }
+       
+        mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,AutoClone(this));
         
         mListener->onConnect(createSocketResponser(clientfd,
                             createString(inet_ntoa(client_address.sin_addr)),
                             ntohs(client_address.sin_port)));
-        
-        mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,AutoClone(this));
     } else {
-        if((events & EPOLLIN) != 0) {
-            if(pack != nullptr && pack->size() != 0) {
-                mListener->onDataReceived(createSocketResponser(fd),pack);
-            }
+        if(pack != nullptr && pack->size() != 0) {
+            mListener->onDataReceived(createSocketResponser(fd),pack);
         }
 
         if((events & EPOLLRDHUP) != 0) {
