@@ -126,7 +126,7 @@ private:
     
     Atomic<int> mStatus;
 
-    Atomic<int> bootFlag;
+    //Atomic<int> bootFlag;
 
     Mutex mJoinMutex;
 

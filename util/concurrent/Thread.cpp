@@ -47,7 +47,7 @@ void* _Thread::localRun(void *th) {
     
     thread->mStatus = st(Thread)::Running;
     
-    thread->bootFlag = 1;
+    //thread->bootFlag = 1;
     
     pthread_cleanup_push(cleanup, th);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
@@ -89,7 +89,7 @@ _Thread::_Thread(String name,Runnable run){
 
     mStatus = NotStart;
 
-    bootFlag = 0;
+    //bootFlag = 0;
     
     mJoinMutex = createMutex("ThreadJoinMutex");
 
@@ -153,7 +153,7 @@ int _Thread::start() {
         return -1;
     } 
 
-    while(bootFlag == 0) {
+    while(mStatus == Idle) {
         st(Thread)::yield();
     }
 
