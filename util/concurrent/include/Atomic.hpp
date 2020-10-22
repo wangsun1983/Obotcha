@@ -82,7 +82,7 @@ public:
     }
 
     void operator=(Atomic<T> v) {
-        value->store(*v.value);
+        value.store(v.value);
     }
 
     bool operator==(int v) {
