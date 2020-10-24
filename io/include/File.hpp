@@ -22,13 +22,6 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(File) {
 public:
-
-    enum FileCreateResult {
-        CreateSuccess = 0,
-        CreateFailAlreadyExist,
-        CreateFail
-    };
-
     _File(const char *);
     
     _File(String path);
@@ -92,39 +85,41 @@ public:
     static const String gPathSeparator;
     
     static bool exists(String);
+    
+    enum OpenType {
+        ReadOnly = O_RDONLY,
+        WriteOnly = O_WRONLY,
+        ReadWriteOnly = O_RDWR,
+        Create = O_CREAT,
+        Excl = O_EXCL,
+        Noctty = O_NOCTTY,
+        Trunc = O_TRUNC,
+        Append = O_APPEND,
+        NonBlock = O_NONBLOCK,
+        NDelay = O_NDELAY,
+        Sync = O_SYNC,
+        NoFollow = O_NOFOLLOW,
+        Directory = O_DIRECTORY,
+    };
 
-    static const int ReadOnly;
-    static const int WriteOnly;
-    static const int ReadWriteOnly;
-    static const int Create;
-    static const int Excl;
-    static const int Noctty;
-    static const int Trunc;
-    static const int Append;
-    static const int NonBlock;
-    static const int NDelay;
-    static const int Sync;
-    static const int NoFollow;
-    static const int Directory;
-
-    static const mode_t IRWXU;
-    static const mode_t IRUSR;
-    static const mode_t IWUSR;
-    static const mode_t IXUSR;
-    static const mode_t IRWXG;
-    static const mode_t IRGRP;
-    static const mode_t IWGRP;
-    static const mode_t IXGRP;
-    static const mode_t IRWXO;
-    static const mode_t IROTH;
-    static const mode_t IWOTH;
-    static const mode_t IXOTH;
-
-    static const int FileAlreadyExist;
+    enum FileMode {
+        IRWXU = S_IRWXU,
+        IRUSR = S_IRUSR,
+        IWUSR = S_IWUSR,
+        IXUSR = S_IXUSR,
+        IRWXG = S_IRWXG,
+        IRGRP = S_IRGRP,
+        IWGRP = S_IWGRP,
+        IXGRP = S_IXGRP,
+        IRWXO = S_IRWXO,
+        IROTH = S_IROTH,
+        IWOTH = S_IWOTH,
+        IXOTH = S_IXOTH,
+    };
 
 private:
 
-    void updateFileInfo();
+    int updateFileInfo(struct stat *info);
 
     void deleteDir(File f);
 
@@ -134,9 +129,9 @@ private:
     
     String mPath;
 
-    struct stat mFileInfo;
+    //struct stat mFileInfo;
 
-    int mExist;
+    //int mExist;
 };
 
 }

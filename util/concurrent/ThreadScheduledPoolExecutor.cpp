@@ -70,7 +70,7 @@ int _ThreadScheduledPoolExecutor::execute(Runnable runnable) {
 }
 
 int _ThreadScheduledPoolExecutor::getThreadsNum() {
-    throwMethodNotSupportException("getThreadsNum not support");
+    Trigger(MethodNotSupportException,"getThreadsNum not support");
     return 0;
 }
 

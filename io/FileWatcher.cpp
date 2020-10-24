@@ -26,7 +26,7 @@ sp<_FileWatcher> _FileWatcher::mInstance = nullptr;
 _FileWatcher::_FileWatcher() {
     mutex = createMutex("FileWatchMutex");
     mListeners = createHashMap<int,ArrayList<LocalFileObserverMonitor>>();
-    openInotifyDev();
+    notifyFd = inotify_init(); 
     start();
 }
 
@@ -88,11 +88,6 @@ void _FileWatcher::stopWatch(int id,int op,FileObserver observer) {
 
     //mlisteners->remove(id);
     //inotify_rm_watch(filepath->toChars());
-}
-
-
-void _FileWatcher::openInotifyDev() {
-    notifyFd = inotify_init(); 
 }
 
 int _FileWatcher::closeInotifyDev() {

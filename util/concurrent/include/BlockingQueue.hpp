@@ -74,7 +74,7 @@ _BlockingQueue<T>::~_BlockingQueue() {
 template <typename T>
 _BlockingQueue<T>::_BlockingQueue(int size):mCapacity(size){
     if(size == 0) {
-        throwInitializeException("BlockingQueue size is 0");
+        Trigger(InitializeException,"BlockingQueue size is 0");
     }
 
     mMutex = createMutex("BlockingQueueMutex");

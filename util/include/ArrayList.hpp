@@ -27,7 +27,7 @@ class _ArrayList;
 class _ArrayList<V>:virtual public Object{ \
 public:    \
     _ArrayList() { \
-        throwMethodNotSupportException("ArrayList not support int"); \
+        TriggerMethodNotSupportException("ArrayList not support int"); \
     } \
 };\
 
@@ -62,14 +62,14 @@ public:
     }
 
     inline T removeAt(int index) {
-        if(index >= elements.capacity() || index < 0) {
+        if(index >= elements.capacity() || index < 0 || index >= elements.size()) {
             String exception = createString("Arraylist remove fail")
                             ->append("capacity is",
                                     createString(elements.capacity()),
                                     "index is ",
                                     createString(index));
 
-            throwArrayIndexOutOfBoundsException(exception);
+            Trigger(ArrayIndexOutOfBoundsException,exception);
         }
 
         T val = elements.at(index);
@@ -97,14 +97,14 @@ public:
     }
 
     inline int set(int index,T val) {
-        if(index >= elements.capacity() || index < 0) {
+        if(index >= elements.capacity() || index < 0 || index >= elements.size()) {
             String exception = createString("Arraylist set fail")
                             ->append("capacity is",
                                     createString(elements.capacity()),
                                     "index is ",
                                     createString(index));
 
-            throwArrayIndexOutOfBoundsException(exception);
+            Trigger(ArrayIndexOutOfBoundsException,exception);
         }
 
         elements[index] = val;
@@ -112,28 +112,28 @@ public:
     }
 
     inline T get(int index) {
-         if(index >= elements.capacity() || index < 0) {
+         if(index >= elements.capacity() || index < 0 || index >= elements.size()) {
             String exception = createString("Arraylist get fail")
                             ->append("capacity is",
                                     createString(elements.capacity()),
                                     "index is ",
                                     createString(index));
 
-            throwArrayIndexOutOfBoundsException(exception);
+            Trigger(ArrayIndexOutOfBoundsException,exception);
         }
 
         return elements[index];
     }
 
     inline int insert(int index,T val) {
-        if(index > elements.capacity() || index < 0) {
+        if(index > elements.capacity() || index < 0 || index >= elements.size()) {
             String exception = createString("Arraylist insert fail")
                             ->append("capacity is",
                                     createString(elements.capacity()),
                                     "index is ",
                                     createString(index));
 
-            throwArrayIndexOutOfBoundsException(exception);
+            Trigger(ArrayIndexOutOfBoundsException,exception);
         }
 
 
@@ -142,14 +142,14 @@ public:
     }
 
     inline int insert(int index,ArrayList<T> list) {
-        if(index > elements.capacity() || index < 0) {
+        if(index >= elements.capacity() || index < 0) {
             String exception = createString("Arraylist insert fail")
                             ->append("capacity is",
                                     createString(elements.capacity()),
                                     "index is ",
                                     createString(index));
 
-            throwArrayIndexOutOfBoundsException(exception);
+            Trigger(ArrayIndexOutOfBoundsException,exception);
         }
 
         if(list != nullptr) {
@@ -159,21 +159,18 @@ public:
     }
 
     inline int insert(int index,ArrayList<T> list,int length) {
-        if(index > elements.capacity() || length <= 0 || index < 0) {
+        if(index >= elements.capacity()|| length <= 0 || index < 0 || (length > list->size())) {
             String exception = createString("Arraylist insert fail")
                             ->append("capacity is",
                                     createString(elements.capacity()),
                                     "index is ",
                                     createString(index));
 
-            throwArrayIndexOutOfBoundsException(exception);
+            Trigger(ArrayIndexOutOfBoundsException,exception);
         }
 
         if(list != nullptr) {
-            int size = list->elements.capacity(); 
-            size = length > size?size:length;
-
-            elements.insert(elements.begin() + index,list->begin(),list->begin() + size);
+            elements.insert(elements.begin() + index,list->begin(),list->begin() + length);
         }
         return 0;
     }
@@ -242,7 +239,7 @@ public:
 
     T getValue() {
         if(iterator == mList->end()) {
-            throwArrayIndexOutOfBoundsException("iterator error");
+            Trigger(ArrayIndexOutOfBoundsException,"iterator error");
         }
 
         return *iterator;

@@ -275,7 +275,7 @@ Future _ThreadCachedPoolExecutor::submit(Runnable r) {
 
 void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthreadnum,long timeout) {
     if(queuesize == 0 || minthreadnum > maxthreadnum) {
-        throwInitializeException("ThreadCachedPool");
+        Trigger(InitializeException,"ThreadCachedPool");
     }
 
     mQueueSize = queuesize;

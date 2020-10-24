@@ -97,8 +97,6 @@ private:
     Pipe mPipe;
 
     int mSize;
-
-    Atomic<int> mStartFlag;
 };
 
 }

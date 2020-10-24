@@ -547,7 +547,16 @@ void testArrayList_String() {
         list->add(createString("a"));
         list->add(createString("b"));
         list->add(createString("c"));
-        list->insert(2,list2,100);
+        bool isException1 = false;
+        try {
+            list->insert(2,list2,100);
+        }catch(ArrayIndexOutOfBoundsException e) {
+            isException1 = true;
+        }
+        
+        if(!isException1) {
+            printf("---[ArrayList<String> Test {insert(int index,ArrayList<String> list,int length)} case2] [FAILED]--- \n");
+        }
         //printf("list->get(0) is %s \n",list->get(0)->toChars());
         //printf("list->get(1) is %s \n",list->get(1)->toChars());
         //printf("list->get(2) is %s \n",list->get(2)->toChars());

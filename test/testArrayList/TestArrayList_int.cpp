@@ -625,7 +625,18 @@ void testArrayList_dataType_int() {
     list6->add(14);
     list6->add(15);
 
-    int result = list5->insert(0,list6,100);
+    bool isException1 = false;
+    try {
+        int result = list5->insert(0,list6,100);
+    }catch(ArrayIndexOutOfBoundsException e) {
+        isException1 = true;
+    }
+    
+    if(!isException1) {
+        printf("---[ArrayList<int> Test {insert(int index,ArrayList<int> list,int length)} case4_1] [FAILED]--- \n");
+    }
+
+
 
 #if 0
     printf("list5[0] is %d \n",list5->get(0));

@@ -17,7 +17,7 @@ _IniReader::_IniReader(String content) {
 
 _IniReader::_IniReader(File file) {
     if(file == nullptr || !file->exists()) {
-        throwInitializeException("parse fail \n");
+        Trigger(InitializeException,"parse fail \n");
     }
 
     filepath = file->getAbsolutePath();

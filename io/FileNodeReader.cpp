@@ -1,3 +1,15 @@
+/**
+ * @file FileNodeReader.cpp
+ * @brief Read data from file node(like dev/xxxxx)
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_198£³£Àyahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include <sys/stat.h>
 #include <unistd.h>    
 #include <sys/types.h>
@@ -5,9 +17,6 @@
 #include <sys/types.h>  
 #include <sys/stat.h>
 #include <fcntl.h>
-
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 
 #include "String.hpp"
 #include "ArrayList.hpp"
@@ -41,13 +50,12 @@ long _FileNodeReader::readLong() {
 bool _FileNodeReader::readBoolean() {
     memset(mBuffer,0,mSize);
     read(mFd,mBuffer,mSize);
-    return createString(mBuffer)->toBasicLong();
+    return createString(mBuffer)->toBasicBool();
 }
 
 String _FileNodeReader::readString() {
     memset(mBuffer,0,mSize);
     read(mFd,mBuffer,mSize);;
-
     return createString(mBuffer);
 }
 

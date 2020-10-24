@@ -510,21 +510,32 @@ void testArrayList_MyData() {
           printf("---[ArrayList<T> Test {insert(int index,ArrayList<T> list,int length)} case3] [FAILED]--- \n");
           break;
         }
+        
+        int isException2 = false;
+        try {
+          result = clist->insert(1,clist2,100);
+        } catch(ArrayIndexOutOfBoundsException e) {
+          isException2 = true;
+        }
 
-        result = clist->insert(1,clist2,100);
         if(tt0->i != 1 || tt1->i != 4 || tt2->i != 5 || tt3->i != 2 || tt4->i != 3) {
           printf("---[ArrayList<T> Test {insert(int index,ArrayList<T> list,int length)} case4] [FAILED]--- \n");
           break;
         }
 
-        isException = false;
+        if(!isException2) {
+          printf("---[ArrayList<T> Test {insert(int index,ArrayList<T> list,int length)} case4_0] [FAILED]--- \n");
+          break;          
+        }
+
+        bool isException3 = false;
         try {
             result = clist->insert(-1,clist2,100);
         } catch(ArrayIndexOutOfBoundsException e) {
-            isException = true;
+            isException3 = true;
         }
 
-        if(!isException) {
+        if(!isException3) {
             printf("---[ArrayList<T> Test {insert(int index,ArrayList<T> list,int length)} case4_1] [FAILED]--- \n");
             break;
         }

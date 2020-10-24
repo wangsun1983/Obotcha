@@ -66,7 +66,7 @@ public:
                                     "index is ",
                                     createString(index));
 
-            throwArrayIndexOutOfBoundsException(exception);
+            Trigger(ArrayIndexOutOfBoundsException,exception);
         }
 
         return hashset[index];
@@ -109,7 +109,7 @@ public:
         //return iterator->second;
         if(iterator == mList->end()) {
             //return nullptr;
-            throwArrayIndexOutOfBoundsException("iterator error");
+            Trigger(ArrayIndexOutOfBoundsException,"iterator error");
         }
 
         return *iterator;

@@ -647,30 +647,28 @@ void testArrayList_Integer() {
     list6->add(createInteger(13));
     list6->add(createInteger(14));
     list6->add(createInteger(15));
+    
+    bool isException2 = false;
+    try {
+      list5->insert(0,list6,100);
+    } catch(ArrayIndexOutOfBoundsException e) {
+      isException = true;
+    }
 
-    int result = list5->insert(0,list6,100);
-
-#if 0
-    printf("list5[0] is %d \n",list5->get(0)->toValue());
-    printf("list5[1] is %d \n",list5->get(1)->toValue());
-    printf("list5[2] is %d \n",list5->get(2)->toValue());
-    printf("list5[3] is %d \n",list5->get(3)->toValue());
-    printf("list5[4] is %d \n",list5->get(4)->toValue());
-    printf("list5[5] is %d \n",list5->get(5)->toValue());
-#endif
-
-    if(list5->get(0)->toValue() != 13
-      ||list5->get(1)->toValue() != 14
-      ||list5->get(2)->toValue() != 15
-      ||list5->get(3)->toValue() != 10
-      ||list5->get(4)->toValue() != 11
-      ||list5->get(5)->toValue() != 12) {
+    if(list5->get(0)->toValue() != 10
+      ||list5->get(1)->toValue() != 11
+      ||list5->get(2)->toValue() != 12) {
       printf("---[ArrayList<Integer> Test {insert(int index,ArrayList<Integer> list,int length)} case5] [FAILED]--- \n");
       break;
     }
 
-    if(list5->size() != 6) {
+    if(!isException2) {
       printf("---[ArrayList<Integer> Test {insert(int index,ArrayList<Integer> list,int length)} case6] [FAILED]--- \n");
+      break;
+    }
+
+    if(list5->size() != 3) {
+      printf("---[ArrayList<Integer> Test {insert(int index,ArrayList<Integer> list,int length)} case7] [FAILED]--- \n");
       break;
     }
 

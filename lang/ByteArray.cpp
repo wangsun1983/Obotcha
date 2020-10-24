@@ -28,7 +28,7 @@ const int _ByteArray::NormalMode = 2;
  */
 _ByteArray::_ByteArray(sp<_ByteArray> b) {
     if(b == nullptr || b->size() <= 0) {
-        throwInitializeException("create ByteArray is nullptr");
+        Trigger(InitializeException,"create ByteArray is nullptr");
     }
     mSize = b->size();
     buff = (unsigned char *)malloc(mSize);
@@ -42,7 +42,7 @@ _ByteArray::_ByteArray(sp<_ByteArray> b) {
  */
 _ByteArray::_ByteArray(int length) {
     if(length <= 0) {
-        throwInitializeException("create ByteArray is nullptr");
+        Trigger(InitializeException,"create ByteArray is nullptr");
     }
     buff = (unsigned char *)malloc(length);
     memset(buff,0,length);
@@ -56,7 +56,7 @@ _ByteArray::_ByteArray(int length) {
  */
 _ByteArray::_ByteArray(String str) {
     if(str == nullptr || str->size() <= 0) {
-        throwInitializeException("create ByteArray is nullptr");
+        Trigger(InitializeException,"create ByteArray is nullptr");
     }
     mSize = str->size();
     buff = (unsigned char *)malloc(mSize + 1);
@@ -72,7 +72,7 @@ _ByteArray::_ByteArray(String str) {
  */
 _ByteArray::_ByteArray(const byte *data,uint32_t len) {
     if(data == nullptr) {
-        throwInitializeException("create ByteArray is nullptr");
+        Trigger(InitializeException,"create ByteArray is nullptr");
     }
     buff = (unsigned char *)malloc(len);
     mSize = len;
@@ -99,7 +99,7 @@ unsigned char & _ByteArray::operator[] (int index) {
                                     "index is ",
                                     createString(index));
 
-        throwArrayIndexOutOfBoundsException(exception);
+        Trigger(ArrayIndexOutOfBoundsException,exception);
     }
     
     return buff[index];
@@ -185,7 +185,7 @@ byte _ByteArray::at(int index) {
                                     "index is ",
                                     createString(index));
 
-        throwArrayIndexOutOfBoundsException(exception);
+        Trigger(ArrayIndexOutOfBoundsException,exception);
     }
     return buff[index];
 }
@@ -206,7 +206,7 @@ int _ByteArray::fill(int index,byte v) {
     }
 
     if(index >= mSize || index < 0) {
-        throwArrayIndexOutOfBoundsException("fill Stack Overflow");
+        Trigger(ArrayIndexOutOfBoundsException,"fill Stack Overflow");
     }
 
     buff[index] = v;
@@ -221,7 +221,7 @@ int _ByteArray::fill(int index,int length,byte v) {
 
     if((index < 0)
         || (index + length > mSize)) {
-        throwArrayIndexOutOfBoundsException("fill Stack Overflow");
+        Trigger(ArrayIndexOutOfBoundsException,"fill Stack Overflow");
     }
 
     memset(&buff[index],v,length);

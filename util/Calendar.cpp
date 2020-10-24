@@ -26,7 +26,7 @@ _Calendar::_Calendar(long long mseconds) {
 
 _Calendar::_Calendar(int _year,int _month,int _dayOfMonth,int _hour = 0,int _minute = 0,int _second = 0,int msecond = 0) {
     if(!isValid(_year,_month,_dayOfMonth,_hour,_minute,_second,msecond)) {
-        throwInitializeException("invalid param");
+        Trigger(InitializeException,"invalid param");
     }
 
     month = _month;

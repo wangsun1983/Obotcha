@@ -15,7 +15,7 @@ namespace obotcha {
 
 _ByteRingArray::_ByteRingArray(int size) {
     if(size <= 0) {
-        throwInitializeException("size is illeagle");
+        Trigger(InitializeException,"size is illeagle");
     }
     
     mSize = size;
@@ -34,7 +34,7 @@ _ByteRingArray::~_ByteRingArray() {
 
 void _ByteRingArray::push(byte b) {
     if(mStatus == ByteRingArrayFull) {
-        throwArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
+        Trigger(ArrayIndexOutOfBoundsException,"Ring Array Push OverStack!!!");
     }
 
     mBuff[mEnd] = b;
@@ -53,7 +53,7 @@ void _ByteRingArray::push(byte b) {
 
 byte _ByteRingArray::pop() {
     if(mStatus == ByteRingArrayEmpty) {
-        throwArrayIndexOutOfBoundsException("Ring Array Pop Empty Array!!!");
+        Trigger(ArrayIndexOutOfBoundsException,"Ring Array Pop Empty Array!!!");
     }
 
     byte c = mBuff[mStart];
@@ -75,22 +75,22 @@ byte _ByteRingArray::pop() {
 
 void _ByteRingArray::push(ByteArray data) {
     if(data == nullptr) {
-        throwNullPointerException("push data is null");
+        Trigger(NullPointerException,"push data is null");
     }
     push(data,0,data->size());  
 }
 
 void _ByteRingArray::push(ByteArray array,int start,int length) {
     if(array == nullptr) {
-        throwNullPointerException("push data is null");
+        Trigger(NullPointerException,"push data is null");
     }
 
     if(mStatus == ByteRingArrayFull) {
-        throwArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
+        Trigger(ArrayIndexOutOfBoundsException,"Ring Array Push OverStack!!!");
     }
 
     if(getAvailDataSize() < length) {
-        throwArrayIndexOutOfBoundsException("Ring Array Push OverStack!!!");
+        Trigger(ArrayIndexOutOfBoundsException,"Ring Array Push OverStack!!!");
     }
     
     if(mEnd < mStart) {
@@ -117,17 +117,17 @@ void _ByteRingArray::push(ByteArray array,int start,int length) {
 
 ByteArray _ByteRingArray::pop(int size) {
     if(size <= 0) {
-        throwIllegalArgumentException("pop size is illegal");
+        Trigger(IllegalArgumentException,"pop size is illegal");
     }
 
     if(mStatus == ByteRingArrayEmpty) {
-        throwArrayIndexOutOfBoundsException("Ring Array Pop Empty Array!!!");
+        Trigger(ArrayIndexOutOfBoundsException,"Ring Array Pop Empty Array!!!");
     }
 
     ByteArray buff = createByteArray(size);
     if(mStart >= mEnd) {
         if( mSize - (mStart - mEnd) < size) {
-            throwArrayIndexOutOfBoundsException("Ring Array Pop OverStack!!!");
+            Trigger(ArrayIndexOutOfBoundsException,"Ring Array Pop OverStack!!!");
         }
         
         if((mStart + size) < mSize) {
@@ -141,7 +141,7 @@ ByteArray _ByteRingArray::pop(int size) {
         }
     } else if(mEnd > mStart) {
         if((mEnd -mStart) < size) {
-            throwArrayIndexOutOfBoundsException("Ring Array Pop OverStack!!!");
+            Trigger(ArrayIndexOutOfBoundsException,"Ring Array Pop OverStack!!!");
         }
         
         memcpy(buff->toValue(),mBuff+mStart,size);
@@ -183,7 +183,7 @@ int _ByteRingArray::getEndIndex() {
 
 byte _ByteRingArray::at(int m) {
     if(m >= mSize) {
-        throwArrayIndexOutOfBoundsException("Ring Array At OverStack!!!");
+        Trigger(ArrayIndexOutOfBoundsException,"Ring Array At OverStack!!!");
     }
     return mBuff[m];
 }
@@ -195,7 +195,7 @@ ByteArray _ByteRingArray::popAll() {
 
 ByteArray _ByteRingArray::popByEnd(int end) {
     if(mStatus == ByteRingArrayEmpty) {
-        throwArrayIndexOutOfBoundsException("Ring Array popAtCursor OverStack!!!");
+        Trigger(ArrayIndexOutOfBoundsException,"Ring Array popAtCursor OverStack!!!");
     }
     
     int length = 0;

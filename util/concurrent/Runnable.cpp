@@ -14,7 +14,7 @@ namespace obotcha {
         mResultCond->notifyAll();\
         return;\
     }\
-    throwIllegalStateException("already set int result");
+    Trigger(IllegalStateException,"already set int result");
 
 #define GET_RESULT_FUNC(Param,V) \
     AutoLock l(mResultMutex);\
@@ -22,7 +22,7 @@ namespace obotcha {
         mResultCond->wait(mResultMutex);\
     }\
     if(resultComplete == ResultInterrupt) {\
-        throwInterruptedException("Runnable Interrupt");\
+        Trigger(InterruptedException,"Runnable Interrupt");\
     }\
     v = Param;
 

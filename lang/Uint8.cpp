@@ -21,7 +21,7 @@ _Uint8::_Uint8(uint8_t v) : val(v) {}
 
 _Uint8::_Uint8(Uint8 &v) {
     if(v == nullptr) {
-        throwInitializeException("Object is null");
+        Trigger(InitializeException,"Object is null");
     }
     
     val = v->val;
@@ -33,7 +33,7 @@ uint8_t _Uint8::toValue() {
 
 bool _Uint8::equals(Uint8 &p) {
     if(p == nullptr) {
-        throwNullPointerException("Object is null");
+        Trigger(NullPointerException,"Object is null");
     }
 
     return val == p->val;
@@ -45,7 +45,7 @@ bool _Uint8::equals(uint8_t p) {
 
 bool _Uint8::equals(const _Uint8 *p) {
     if(p == nullptr) {
-        throwNullPointerException("Object is null");
+        Trigger(NullPointerException,"Object is null");
     }
 
     return val == p->val;
@@ -57,7 +57,7 @@ void _Uint8::update(uint8_t v) {
 
 void _Uint8::update(sp<_Uint8> v) {
     if(v == nullptr) {
-        throwNullPointerException("Uint8 update nullptr");
+        Trigger(NullPointerException,"Uint8 update nullptr");
     }
 
     val = v->val;
@@ -85,7 +85,7 @@ sp<_String> _Uint8::toString(uint8_t i) {
 
 uint8_t _Uint8::parseDecUint8(sp<_String> v) {
     if(v == nullptr) {
-        throwNullPointerException("parseDecUint8 nullptr");
+        Trigger(NullPointerException,"parseDecUint8 nullptr");
     }
 
     return _Number::parseDecNumber(v->getStdString());
@@ -93,7 +93,7 @@ uint8_t _Uint8::parseDecUint8(sp<_String> v) {
 
 uint8_t _Uint8::parseHexUint8(sp<_String> v) {
     if(v == nullptr) {
-        throwNullPointerException("parseHexUint8 nullptr");
+        Trigger(NullPointerException,"parseHexUint8 nullptr");
     }
     
     return _Number::parseHexNumber(v->getStdString());
@@ -101,7 +101,7 @@ uint8_t _Uint8::parseHexUint8(sp<_String> v) {
 
 uint8_t _Uint8::parseOctUint8(sp<_String> v) {
     if(v == nullptr) {
-        throwNullPointerException("parseOctUint8 nullptr");
+        Trigger(NullPointerException,"parseOctUint8 nullptr");
     }
     
     return _Number::parseOctNumber(v->getStdString());
@@ -109,7 +109,7 @@ uint8_t _Uint8::parseOctUint8(sp<_String> v) {
 
 uint8_t _Uint8::parseBinaryUint8(sp<_String> v) {
     if(v == nullptr) {
-        throwNullPointerException("parseBinaryUint8 nullptr");
+        Trigger(NullPointerException,"parseBinaryUint8 nullptr");
     }
     
     return _Number::parseBinaryNumber(v->getStdString());

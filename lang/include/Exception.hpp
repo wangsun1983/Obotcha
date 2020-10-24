@@ -12,6 +12,7 @@ namespace obotcha {
 
 class Exception;
 
+#if 0
 #define DECLARE_EXCEPTION(V) \
 class V;\
 template<typename... Args>\
@@ -20,7 +21,14 @@ void throw##V(Args&&... args) { \
     throw V(std::forward<Args>(args)...);\
 }\
 class V:public Exception
+#endif
 
+#define DECLARE_EXCEPTION(V) \
+class V:public Exception
+
+#define Trigger(V,info) \
+    printf("\n-------%s START-------- \n[File]:%s\n[Line]:%d \n",#V,__FILE__,__LINE__);\
+    throw V(info);\
 
 class Exception :public std::exception{
 public:

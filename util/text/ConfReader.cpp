@@ -12,7 +12,7 @@ namespace obotcha {
 _ConfReader::_ConfReader(const char* path) {
     mConfFile = createFile(path);
     if(!mConfFile->exists()) {
-        throwInitializeException("File Not Exist");
+        Trigger(InitializeException,"File Not Exist");
     }
 
     parse();
@@ -21,7 +21,7 @@ _ConfReader::_ConfReader(const char* path) {
 _ConfReader::_ConfReader(String path) {
     mConfFile = createFile(path);
     if(!mConfFile->exists()) {
-        throwInitializeException("File Not Exist");
+        Trigger(InitializeException,"File Not Exist");
     }
 
     parse();
@@ -30,7 +30,7 @@ _ConfReader::_ConfReader(String path) {
 _ConfReader::_ConfReader(File file) {
     mConfFile = file;
     if(!mConfFile->exists()) {
-        throwInitializeException("File Not Exist");
+        Trigger(InitializeException,"File Not Exist");
     }
 
     parse();

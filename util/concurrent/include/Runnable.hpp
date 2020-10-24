@@ -45,7 +45,7 @@ public:
             mResultCond->notifyAll();
             return;
         }
-        throwIllegalStateException("set int result");
+        Trigger(IllegalStateException,"set int result");
     }
 
     void setResult(int);
@@ -88,7 +88,7 @@ private:
         }
 
         if(resultComplete == ResultInterrupt) {
-            throwInterruptedException("Runnable Interrupt");
+            Trigger(InterruptedException,"Runnable Interrupt");
         }
 
         transform_cast(objResult,v);

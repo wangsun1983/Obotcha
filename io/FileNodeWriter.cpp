@@ -1,7 +1,15 @@
+/**
+ * @file FileNodeReader.cpp
+ * @brief write data to file data(like dev/xxxx)
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_198£³£Àyahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
 #include <fcntl.h>
-
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 
 #include "String.hpp"
 #include "FileNodeWriter.hpp"

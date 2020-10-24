@@ -9,11 +9,6 @@
 
 namespace obotcha {
 
-enum ByteArrayReaderResult {
-   ByteArrayReadSuccess = 0,
-   ByteArrayReadFail,
-};
-
 DECLARE_SIMPLE_CLASS(ByteArrayReader) {
 
 public:

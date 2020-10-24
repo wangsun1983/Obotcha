@@ -11,17 +11,13 @@ _ByteArrayReader::_ByteArrayReader(ByteArray data) {
     this->mData = data;
     mDataP = data->toValue();
     mSize = data->size();
-    mResult = ByteArrayReadSuccess;
     mIndex = 0;
 }
 
 int _ByteArrayReader::readShort() {
     if(mIndex >= mSize) {
-        mResult = ByteArrayReadFail;
-        return 0;
+        return -1;
     }
-
-    mResult = ByteArrayReadSuccess;
 
     if (mSize - mIndex < 2) {
       int s = (readByte() & 0xff) << 8
@@ -35,8 +31,7 @@ int _ByteArrayReader::readShort() {
 
 int _ByteArrayReader::readByte() {
     if(mIndex >= mSize) {
-        mResult = ByteArrayReadFail;
-        return 0;
+        return -1;
     }
     
     int value = mDataP[mIndex];
@@ -47,11 +42,8 @@ int _ByteArrayReader::readByte() {
 
 int _ByteArrayReader::readInt() {
     if(mIndex >= mSize) {
-        mResult = ByteArrayReadFail;
-        return 0;
+        return -1;
     }
-
-    mResult = ByteArrayReadSuccess;
 
     if (mSize - mIndex < 4) {
         int value = (readByte() & 0xff) << 24
@@ -69,11 +61,8 @@ int _ByteArrayReader::readInt() {
 
 long _ByteArrayReader::readLong() {
     if(mIndex >= mSize) {
-        mResult = ByteArrayReadFail;
-        return 0;
+        return -1;
     }
-
-    mResult = ByteArrayReadSuccess;
 
     int bytesize = sizeof(long);
     switch(bytesize) {
@@ -100,13 +89,11 @@ long _ByteArrayReader::readLong() {
         }
     }
 
-    mResult = ByteArrayReadFail;
-    return 0;
+    return -1;
 }
 
 int _ByteArrayReader::readByteArray(ByteArray d) {
     if(mIndex >= mSize) {
-        mResult = ByteArrayReadFail;
         return -1;
     }
 
@@ -126,6 +113,30 @@ int _ByteArrayReader::readByteArray(ByteArray d) {
 
 int _ByteArrayReader::getIndex() {
     return mIndex;
+}
+
+int _ByteArrayReader::getRemainSize() {
+    return mSize - mIndex;
+}
+
+void _ByteArrayReader::setIndex(int index) {
+    mIndex = index;
+}
+
+int _ByteArrayReader::appendWithAdjustment(ByteArray d) {
+    //mData->append(d);
+    int size = mData->size() - mIndex + d->size();
+    ByteArray data = createByteArray(size);
+    if(mIndex < mData->size()) {
+        memcpy(data->toValue(),mData->toValue() + mIndex,mData->size() - mIndex);
+    }
+    
+    memcpy((data->toValue() + (mData->size() - mIndex)),d->toValue(),d->size());
+    mData = data;
+    mDataP = mData->toValue();
+    mSize = data->size();
+    mIndex = 0;
+    return 0;
 }
 
 String _ByteArrayReader::readLine() {
@@ -158,30 +169,6 @@ String _ByteArrayReader::readLine() {
     }
 
     return nullptr;
-}
-
-int _ByteArrayReader::getRemainSize() {
-    return mSize - mIndex;
-}
-
-void _ByteArrayReader::setIndex(int index) {
-    mIndex = index;
-}
-
-int _ByteArrayReader::appendWithAdjustment(ByteArray d) {
-    //mData->append(d);
-    int size = mData->size() - mIndex + d->size();
-    ByteArray data = createByteArray(size);
-    if(mIndex < mData->size()) {
-        memcpy(data->toValue(),mData->toValue() + mIndex,mData->size() - mIndex);
-    }
-    
-    memcpy((data->toValue() + (mData->size() - mIndex)),d->toValue(),d->size());
-    mData = data;
-    mDataP = mData->toValue();
-    mSize = data->size();
-    mIndex = 0;
-    return 0;
 }
 
 }

@@ -7,7 +7,7 @@ namespace obotcha {
 
 _CountDownLatch::_CountDownLatch(int v) {
     if(v <= 0) {
-        throwInitializeException("count down latch is illegal");
+        Trigger(InitializeException,"count down latch is illegal");
     }
 
     count = v;

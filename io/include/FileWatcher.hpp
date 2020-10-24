@@ -79,8 +79,6 @@ private:
     _FileWatcher();
 
     Mutex mutex;
-    
-    void openInotifyDev();
 
     int closeInotifyDev();
 

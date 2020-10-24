@@ -7,7 +7,7 @@ namespace obotcha {
 
 _JsonReader::_JsonReader(File f) {
     if(!f->exists()) {
-        throwInitializeException("file not exist");
+        Trigger(InitializeException,"file not exist");
     }
 
     stream = createFileInputStream(f);

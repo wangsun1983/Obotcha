@@ -11,49 +11,17 @@ namespace obotcha {
 
 const String _File::gPathSeparator = createString("/");
 
-const int _File::FileAlreadyExist = 0;
-
-const int _File::ReadOnly = O_RDONLY;
-const int _File::WriteOnly = O_WRONLY;
-const int _File::ReadWriteOnly = O_RDWR;
-const int _File::Create = O_CREAT;
-const int _File::Excl = O_EXCL;
-const int _File::Noctty = O_NOCTTY;
-const int _File::Trunc = O_TRUNC;
-const int _File::Append = O_APPEND;
-const int _File::NonBlock = O_NONBLOCK;
-const int _File::NDelay = O_NDELAY;
-const int _File::Sync = O_SYNC;
-const int _File::NoFollow = O_NOFOLLOW;
-const int _File::Directory = O_DIRECTORY;
-
-const mode_t _File::IRWXU = S_IRWXU;
-const mode_t _File::IRUSR = S_IRUSR;
-const mode_t _File::IWUSR = S_IWUSR;
-const mode_t _File::IXUSR = S_IXUSR;
-const mode_t _File::IRWXG = S_IRWXG;
-const mode_t _File::IRGRP = S_IRGRP;
-const mode_t _File::IWGRP = S_IWGRP;
-const mode_t _File::IXGRP = S_IXGRP;
-const mode_t _File::IRWXO = S_IRWXO;
-const mode_t _File::IROTH = S_IROTH;
-const mode_t _File::IWOTH = S_IWOTH;
-const mode_t _File::IXOTH = S_IXOTH;
-
 _File::_File(const char * s) {
     mPath = createString(s);
-    updateFileInfo();
 }
 
 
 _File::_File(String path) {
     mPath = path;
-    updateFileInfo();
 }
 
 _File::_File() {
-    mPath="";
-    updateFileInfo();
+    mPath = "";
 }
 
 String _File::getName() {
@@ -84,13 +52,18 @@ bool _File::canRead() {
    if (geteuid() == 0){
        return true;     
     }
-   
-    if (mFileInfo.st_uid == geteuid()) {
-        return (mFileInfo.st_mode & S_IRUSR) != 0;     
-    } else if(mFileInfo.st_gid == getegid()) {
-        return (mFileInfo.st_mode & S_IRGRP) != 0;     
+    
+    struct stat info = {0};
+    if(updateFileInfo(&info) != 0) {
+        return false;
+    }
+
+    if (info.st_uid == geteuid()) {
+        return (info.st_mode & S_IRUSR) != 0;     
+    } else if(info.st_gid == getegid()) {
+        return (info.st_mode & S_IRGRP) != 0;     
     } else {
-        return (mFileInfo.st_mode & S_IROTH) != 0;
+        return (info.st_mode & S_IROTH) != 0;
     }
 
     return false;
@@ -100,80 +73,99 @@ bool _File::canWrite() {
     if (geteuid() == 0){
        return true;     
     }
-   
-    if (mFileInfo.st_uid == geteuid()) {
-        return (mFileInfo.st_mode & S_IWUSR) != 0;     
-    } else if(mFileInfo.st_gid == getegid()) {
-        return (mFileInfo.st_mode & S_IWGRP) != 0;     
+
+    struct stat info = {0};
+    if(updateFileInfo(&info) != 0) {
+        return false;
+    }
+
+    if (info.st_uid == geteuid()) {
+        return (info.st_mode & S_IWUSR) != 0;     
+    } else if(info.st_gid == getegid()) {
+        return (info.st_mode & S_IWGRP) != 0;     
     } else {
-        return (mFileInfo.st_mode & S_IWOTH) != 0;
+        return (info.st_mode & S_IWOTH) != 0;
     }
 
     return false;
 }
 
 bool _File::canExecute() {
+    struct stat info = {0};
+    if(updateFileInfo(&info) != 0) {
+        return false;
+    }
+
     //root may have no permission to execute
-    if (mFileInfo.st_uid == geteuid()|| geteuid() == 0) {
-        return (mFileInfo.st_mode & S_IXUSR) != 0;     
-    } else if(mFileInfo.st_gid == getegid()) {
-        return (mFileInfo.st_mode & S_IXGRP) != 0;     
+    if (info.st_uid == geteuid()|| geteuid() == 0) {
+        return (info.st_mode & S_IXUSR) != 0;     
+    } else if(info.st_gid == getegid()) {
+        return (info.st_mode & S_IXGRP) != 0;     
     } else {
-        return (mFileInfo.st_mode & S_IXOTH) != 0;
+        return (info.st_mode & S_IXOTH) != 0;
     }
 
     return false;
 }
 
 bool _File::exists() {
-    return (mExist == FileAlreadyExist);
+    String path = getAbsolutePath();
+    if(path == nullptr) {
+        return false;
+    }
+
+    return (access(path->toChars(),F_OK) == 0);
 }
 
 bool _File::isDirectory() {
-    return S_ISDIR(mFileInfo.st_mode);
+    struct stat info = {0};
+    if(updateFileInfo(&info) != 0) {
+        return false;
+    }
+
+    return S_ISDIR(info.st_mode);
 }
 
 bool _File::isFile() {
-    return !S_ISDIR(mFileInfo.st_mode);
+    struct stat info = {0};
+    if(updateFileInfo(&info) != 0) {
+        return false;
+    }
+
+    return !S_ISDIR(info.st_mode);
 }
 
 bool _File::isHidden() {
+    //TODO
     return false;
 }
 
 long _File::lastModified() {
-    return false;
+    //TODO
+    return 0;
 }
 
 long _File::length() {
-    updateFileInfo();
-    return mFileInfo.st_size;
+    struct stat info = {0};
+    updateFileInfo(&info);
+    return info.st_size;
 }
 
 int _File::createNewFile(int flag,mode_t mode) {
-    if(mExist == FileAlreadyExist) {
-        return CreateFailAlreadyExist;
-    }
-
     mode_t m = umask(000);
+    flag |= O_CREAT;
     int fd = ::open(mPath->toChars(),flag,mode);
     umask(m);
-
-    updateFileInfo();
-
-    if(mExist != FileAlreadyExist) {
-        return CreateFail;
+    if(fd > 0) {
+        close(fd);
+        return -1;
     }
-    close(fd);
-    return CreateSuccess;
+
+    return 0;
 }
 
 
 bool _File::removeAll() {
-    if(mExist != FileAlreadyExist) {
-        return true;
-    }
-    
     if(isFile()) {
         //delete file;
         remove(mPath->toChars());
@@ -181,8 +173,6 @@ bool _File::removeAll() {
         //delete dir
         deleteDir(this);
     }
-
-    updateFileInfo();
 
     return true;
 }
@@ -205,7 +195,6 @@ void _File::deleteDir(File f) {
 ArrayList<String> _File::list() {
     DIR *dir;
     struct dirent *ptr;
-    //char base[PATH_MAX];
 
     if(isFile()) {
         return nullptr;
@@ -266,8 +255,7 @@ ArrayList<File> _File::listFiles() {
 }
 
 bool _File::createDir() {
-    mkdir(mPath->toChars(),0755);
-    return true;
+    return (mkdir(mPath->toChars(),0755) == 0);
 }
 
 bool _File::createDirs() {
@@ -277,8 +265,6 @@ bool _File::createDirs() {
     }
     
     int size = splits->size();
-    //String path = splits->remove(0);
-
     String path = createString();
     for(int i = 0;i < size;i++) {
         //create...
@@ -325,13 +311,17 @@ int _File::setExecuteOnly() {
 }
 
 int _File::setWritable() {
-    mode_t mode = mFileInfo.st_mode;
+    struct stat info = {0};
+    if(updateFileInfo(&info) != 0) {
+        return -InvalidStatus;
+    }
+
+    mode_t mode = info.st_mode;
     mode |= S_IWUSR;
     mode |= S_IWGRP;
     mode |= S_IWOTH;
 
     if(setMode(mode) == 0) {
-        mFileInfo.st_mode = mode;
         return 0;
     }
 
@@ -339,13 +329,17 @@ int _File::setWritable() {
 }
 
 int _File::setReadable() {
-    mode_t mode = mFileInfo.st_mode;
+    struct stat info = {0};
+    if(updateFileInfo(&info) != 0) {
+        return -InvalidStatus;
+    }
+
+    mode_t mode = info.st_mode;
     mode |= S_IRUSR;
     mode |= S_IRGRP;
     mode |= S_IROTH;
 
      if(setMode(mode) == 0) {
-        mFileInfo.st_mode = mode;
         return 0;
     }
 
@@ -353,13 +347,17 @@ int _File::setReadable() {
 }
 
 int _File::setExecutable() {
-    mode_t mode = mFileInfo.st_mode;
+    struct stat info = {0};
+    if(updateFileInfo(&info) != 0) {
+        return -InvalidStatus;
+    }
+
+    mode_t mode = info.st_mode;
     mode |= S_IXUSR;
     mode |= S_IXGRP;
     mode |= S_IXOTH;
 
      if(setMode(mode) == 0) {
-        mFileInfo.st_mode = mode;
         return 0;
     }
 
@@ -370,29 +368,29 @@ bool _File::exists(String path) {
     return (access(path->toChars(),F_OK) == 0);
 }
 
-void _File::updateFileInfo() {
-    memset(&mFileInfo,0,sizeof(struct stat));
+int _File::updateFileInfo(struct stat *info) {
+    memset(info,0,sizeof(struct stat));
     String path = getAbsolutePath();
     if(path == nullptr) {
-        mExist = -1;
-        return;
+        return -1;
     }
 
-    mExist = stat(getAbsolutePath()->toChars(),&mFileInfo);
+    return stat(getAbsolutePath()->toChars(),info);
 }
 
 mode_t _File::getMode() {
-    if(mExist != FileAlreadyExist ) {
-        return  -1;
+    struct stat info = {0};
+    if(updateFileInfo(&info) != 0) {
+        return -InvalidStatus;
     }
 
-    return mFileInfo.st_mode;
+    return info.st_mode;
+
 }
 
 int _File::setMode(mode_t mode) {
     mode_t mask = umask(0);
     if(chmod(mPath->toChars(),mode) == 0) {
-        mFileInfo.st_mode = mode;
         umask(mask);
         return 0;
     }

@@ -26,10 +26,10 @@ extern "C" {
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ZipStream) IMPLEMENTS(InputStream) {
+DECLARE_SIMPLE_CLASS(ZipFileStream) IMPLEMENTS(InputStream) {
 public:
 
-    _ZipStream();
+    _ZipFileStream();
 
     int read();
 
@@ -38,8 +38,6 @@ public:
     bool open();
 
     void close();
-
-    ByteArray compress(ByteArray);
 
     int compress(String src,String dest);
 
@@ -73,9 +71,7 @@ private:
     int do_extract_currentfile(unzFile uf,char *dest,const int* popt_extract_without_path,int* popt_overwrite,const char* password);
 
     int do_extract(unzFile uf,char *dest,int opt_extract_without_path,int opt_overwrite,const char* password);
-/*
-    int do_extract_onefile(unzFile uf,char *dest,const char* filename,int opt_extract_without_path,int opt_overwrite,const char* password);
-*/
+
     int mymkdir(const char* dirname);
 
     int makedir (char *newdir);
