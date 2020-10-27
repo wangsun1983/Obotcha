@@ -31,7 +31,6 @@ public:
 private:
     template<typename T>
     void _read(T &value) {
-        printf("_read \n");
         switch(mode) {
             case BigEndian:
             _readBigEndian(value);
