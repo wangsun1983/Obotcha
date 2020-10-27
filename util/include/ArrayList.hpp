@@ -61,8 +61,12 @@ public:
         elements.clear();
     }
 
+    bool paramInvalid(int index) {
+        return (index >= elements.capacity() || index < 0 || index >= elements.size());
+    }
+
     inline T removeAt(int index) {
-        if(index >= elements.capacity() || index < 0 || index >= elements.size()) {
+        if(paramInvalid(index)) {
             String exception = createString("Arraylist remove fail")
                             ->append("capacity is",
                                     createString(elements.capacity()),
@@ -97,7 +101,7 @@ public:
     }
 
     inline int set(int index,T val) {
-        if(index >= elements.capacity() || index < 0 || index >= elements.size()) {
+        if(paramInvalid(index)) {
             String exception = createString("Arraylist set fail")
                             ->append("capacity is",
                                     createString(elements.capacity()),
@@ -112,7 +116,7 @@ public:
     }
 
     inline T get(int index) {
-         if(index >= elements.capacity() || index < 0 || index >= elements.size()) {
+        if(paramInvalid(index)) {
             String exception = createString("Arraylist get fail")
                             ->append("capacity is",
                                     createString(elements.capacity()),
@@ -126,7 +130,7 @@ public:
     }
 
     inline int insert(int index,T val) {
-        if(index > elements.capacity() || index < 0 || index >= elements.size()) {
+        if(paramInvalid(index)) {
             String exception = createString("Arraylist insert fail")
                             ->append("capacity is",
                                     createString(elements.capacity()),
@@ -137,12 +141,12 @@ public:
         }
 
 
-        elements[index] = val;
+        elements.insert(elements.begin() + index,val);
         return 0;
     }
 
     inline int insert(int index,ArrayList<T> list) {
-        if(index >= elements.capacity() || index < 0) {
+        if(paramInvalid(index)) {
             String exception = createString("Arraylist insert fail")
                             ->append("capacity is",
                                     createString(elements.capacity()),
@@ -159,13 +163,14 @@ public:
     }
 
     inline int insert(int index,ArrayList<T> list,int length) {
-        if(index >= elements.capacity()|| length <= 0 || index < 0 || (length > list->size())) {
+        printf("insert trace1 \n");
+        if(paramInvalid(index) || list->size() < length || list->capacity() < length) {
             String exception = createString("Arraylist insert fail")
                             ->append("capacity is",
                                     createString(elements.capacity()),
                                     "index is ",
                                     createString(index));
-
+            printf("insert trace2 \n");
             Trigger(ArrayIndexOutOfBoundsException,exception);
         }
 

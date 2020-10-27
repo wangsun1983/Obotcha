@@ -26,9 +26,14 @@ class V:public Exception
 #define DECLARE_EXCEPTION(V) \
 class V:public Exception
 
+void _translateException(char *buff,const char *err);
+void _translateException(char *buff,String err);
+
 #define Trigger(V,info) \
-    printf("\n-------%s START-------- \n[File]:%s\n[Line]:%d \n",#V,__FILE__,__LINE__);\
-    throw V(info);\
+    char buff[256] = {0};\
+    sprintf(buff,"\n-------%s START-------- \n[File]:%s \n[Line]:%d\n",#V,__FILE__,__LINE__);\
+    _translateException(buff,info);\
+    throw V(buff);\
 
 class Exception :public std::exception{
 public:

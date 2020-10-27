@@ -388,6 +388,11 @@ void testArrayList_Integer() {
     ||list->get(1)->toValue() != 4
     ||list->get(2)->toValue() != 2
     ||list->get(3)->toValue() != 3) {
+      printf("list[0] is %d \n",list->get(0)->toValue());
+      printf("list[1] is %d \n",list->get(1)->toValue());
+      printf("list[2] is %d \n",list->get(2)->toValue());
+      printf("list[3] is %d \n",list->get(3)->toValue());
+
       printf("---[ArrayList<Integer> Test {insert(int index,Integer val)} case0] [FAILED]--- \n");
       break;
     }
@@ -647,12 +652,12 @@ void testArrayList_Integer() {
     list6->add(createInteger(13));
     list6->add(createInteger(14));
     list6->add(createInteger(15));
-    
+
     bool isException2 = false;
     try {
       list5->insert(0,list6,100);
     } catch(ArrayIndexOutOfBoundsException e) {
-      isException = true;
+      isException2 = true;
     }
 
     if(list5->get(0)->toValue() != 10

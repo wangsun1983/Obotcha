@@ -553,7 +553,7 @@ void testArrayList_String() {
         }catch(ArrayIndexOutOfBoundsException e) {
             isException1 = true;
         }
-        
+
         if(!isException1) {
             printf("---[ArrayList<String> Test {insert(int index,ArrayList<String> list,int length)} case2] [FAILED]--- \n");
         }
@@ -566,10 +566,7 @@ void testArrayList_String() {
 
         if(!list->get(0)->equals("a")
         ||!list->get(1)->equals("b")
-        ||!list->get(2)->equals("d")
-        ||!list->get(3)->equals("e")
-        ||!list->get(4)->equals("f")
-        ||!list->get(5)->equals("c")){
+        ||!list->get(2)->equals("c")){
           printf("---[ArrayList<String> Test {insert(int index,ArrayList<String> list,int length)}] [FAILED]--- \n");
           break;
         }

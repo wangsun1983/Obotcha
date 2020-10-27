@@ -102,7 +102,6 @@ bool _Handler::hasMessage(int what) {
     Message p = mMessagePool;
     int index = 0;
     while(p != nullptr) {
-        printf("index is %d \n",index);
         index++;
         if(p->what == what) {
             return true;

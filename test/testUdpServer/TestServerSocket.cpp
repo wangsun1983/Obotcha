@@ -2,8 +2,6 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "Thread.hpp"
-#include "NetUtils.hpp"
-#include "UdpClient.hpp"
 
 using namespace obotcha;
 
@@ -12,25 +10,27 @@ public:
     _ServerListener() {
     }
 
-    void onAccept(int fd,String ip,int port,ByteArray pack) {
+    void onDataReceived(SocketResponser r,ByteArray pack){
       //printf("on accept pack is %s \n",pack->toString()->toChars());
       //printf("on accept ip is %s,port is %d \n",ip->toChars(),port);
 
       //ByteArray sendPacket = createByteArray(createString("hahahah hello from server!!!"));
       //st(NetUtils)::sendUdpPacket(ip,port,sendPacket);
+      printf("r fd is %d \n",r->getFd());
       String mAccept = pack->toString();
       printf("mAccept is %s \n",mAccept->toChars());
     }
 
-    void onDisconnect(int fd){
+    void onDisconnect(SocketResponser r){
       printf("onDisconnect \n");
     }
 
-    void onConnect(int fd,String ip,int port) {
-      printf("onConnect,ip is %s,port is %d,fd is %d \n",ip->toChars(),port,fd);
+    void onConnect(SocketResponser r) {
+      printf("onConnect \n");
+      //printf("onConnect,ip is %s,port is %d,fd is %d \n",ip->toChars(),port,fd);
       //ByteArray sendPacket = createByteArray(createString("nihao from server"));
       //st(NetUtils)::sendTcpPacket(fd,sendPacket);
-      mFd = fd;
+      //mFd = fd;
 
     }
 

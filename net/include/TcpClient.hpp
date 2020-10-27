@@ -56,10 +56,6 @@ private:
 
     int mBufferSize;
 
-    byte *mBuff;
-
-    Mutex mConnectMutex;
-
     SocketListener mListener;
 
     String mServerIp;

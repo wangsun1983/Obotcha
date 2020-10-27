@@ -15,6 +15,7 @@
 #include "InitializeException.hpp"
 #include "System.hpp"
 #include "ByteArray.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
@@ -37,7 +38,6 @@ _TcpClient::_TcpClient(String ip,int port,int recv_time,SocketListener l,int buf
   
     mBufferSize = buff_size;
     mSock = TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0));
-    mConnectMutex = createMutex("ConncetMutex");
     
     mListener = l;
 }
@@ -97,7 +97,7 @@ int _TcpClient::doConnect() {
 
 int _TcpClient::doSend(ByteArray data) {
     if(data == nullptr || data->size() == 0||mSock == -1) {
-        return  0;
+        return  -1;
     }
 
     return send(mSock,data->toValue(),data->size(),0);

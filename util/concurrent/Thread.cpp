@@ -47,8 +47,6 @@ void* _Thread::localRun(void *th) {
     
     thread->mStatus = st(Thread)::Running;
     
-    //thread->bootFlag = 1;
-    
     pthread_cleanup_push(cleanup, th);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
     if(thread->mName != nullptr) {
@@ -88,8 +86,6 @@ _Thread::_Thread(String name,Runnable run){
     mRunnable = run;
 
     mStatus = NotStart;
-
-    //bootFlag = 0;
     
     mJoinMutex = createMutex("ThreadJoinMutex");
 
@@ -143,7 +139,7 @@ int _Thread::start() {
     //incStrong(0);
     //sp<_Thread> localThread;
     //localThread.set_pointer(this);
-    if(mStatus->compare_exchange(NotStart,Idle)) {
+    if(!mStatus->compare_exchange(NotStart,Idle)) {
         return -AlreadyExecute;
     }
 

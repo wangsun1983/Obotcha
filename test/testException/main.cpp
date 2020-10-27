@@ -29,7 +29,7 @@ void doException() {
                                     createString(1),
                                     "index is ",
                                     createString(1));
-    throwMyException(exception);
+    Trigger(MyException,exception);
 }
 
 DECLARE_SIMPLE_CLASS(MyTT) {
@@ -43,9 +43,11 @@ public:
 };
 
 int main() {
-    //doException();
-    MyTT q = createMyTT();
-    MyTT q2 = q->sayhello();
-    printf("v is %d \n",q2->i);
+    try {
+		doException();
+	}catch(MyException e) {
+		printf("error !!! \n");
+		printf("msg is %s \n",e.getErrInfo()->toChars());
+	}
     return 1;
 }

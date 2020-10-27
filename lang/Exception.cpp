@@ -8,6 +8,7 @@
 #include <sys/types.h>  
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string.h>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -17,16 +18,24 @@
 
 namespace obotcha {
 
+void _translateException(char *buff,const char *err) {
+    char errormsg[256];
+    sprintf(errormsg,"[Info]:%s \n----------END-----------\n\n",err);
+    strcat(buff,errormsg);
+}
+
+void _translateException(char *buff,String err) {
+    char errormsg[256];
+    sprintf(errormsg,"[Info]:%s \n----------END-----------\n\n",err->toChars());
+    strcat(buff,errormsg);
+}
+
 Exception::Exception(const char * v) {
     mErrInfo = createString(v);
-    printf("[Info]:%s \n----------END-----------\n\n",v);
-    fflush(stdout);
 }
     
 Exception::Exception(String v) {
     mErrInfo = v;
-    printf("[Info]:%s \n----------END-----------\n\n",v->toChars());
-    fflush(stdout);
 }
 
 String Exception::getErrInfo() {

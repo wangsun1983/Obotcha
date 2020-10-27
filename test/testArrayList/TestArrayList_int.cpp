@@ -181,6 +181,7 @@ void testArrayList_dataType_int() {
       break;
     }
 
+/*
     int t2;
     int size = list->size();
     if(list->remove(t2) != -1) {
@@ -191,7 +192,7 @@ void testArrayList_dataType_int() {
     if(size != list->size()) {
       printf("---[ArrayList<int> Test {remove(int v)} case4] [FAILED]--- \n");
       break;
-    }
+    }*/
 
     printf("---[ArrayList<int> Test {remove(int v)}] [OK]--- \n");
     break;
@@ -215,12 +216,12 @@ void testArrayList_dataType_int() {
       printf("---[ArrayList<int> Test {indexOf(int v)} case1] [FAILED]--- \n");
       break;
     }
-
+/*
     int p;
     if(list->indexOf(p) != -1) {
-      printf("---[ArrayList<int> Test {indexOf(int v)} case1] [FAILED]--- \n");
+      printf("---[ArrayList<int> Test {indexOf(int v)} case2] [FAILED]--- \n");
       break;
-    }
+    }*/
 
     printf("---[ArrayList<int> Test {indexOf(int v)}] [OK]--- \n");
     break;
@@ -631,7 +632,7 @@ void testArrayList_dataType_int() {
     }catch(ArrayIndexOutOfBoundsException e) {
         isException1 = true;
     }
-    
+
     if(!isException1) {
         printf("---[ArrayList<int> Test {insert(int index,ArrayList<int> list,int length)} case4_1] [FAILED]--- \n");
     }
@@ -647,17 +648,14 @@ void testArrayList_dataType_int() {
     printf("list5[5] is %d \n",list5->get(5));
 #endif
 
-    if(list5->get(0) != 13
-      ||list5->get(1) != 14
-      ||list5->get(2) != 15
-      ||list5->get(3) != 10
-      ||list5->get(4) != 11
-      ||list5->get(5) != 12) {
+    if(list5->get(0) != 10
+      ||list5->get(1) != 11
+      ||list5->get(2) != 12) {
       printf("---[ArrayList<int> Test {insert(int index,ArrayList<int> list,int length)} case5] [FAILED]--- \n");
       break;
     }
 
-    if(list5->size() != 6) {
+    if(list5->size() != 3) {
       printf("---[ArrayList<int> Test {insert(int index,ArrayList<int> list,int length)} case6] [FAILED]--- \n");
       break;
     }
