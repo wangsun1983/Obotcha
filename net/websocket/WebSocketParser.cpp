@@ -11,7 +11,7 @@ namespace obotcha {
 
 void _WebSocketParser::setParseData(ByteArray data) {
     mData = data;
-    mReader = createByteArrayReader(data);
+    mReader = createByteArrayReader(data,st(ByteArrayReader)::BigEndian);
     isClient = false;
 }
 
