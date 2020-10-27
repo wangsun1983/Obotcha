@@ -12,8 +12,8 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(ByteArrayWriter) {
 
 public:
-    _ByteArrayWriter(); //dynamic array
-    _ByteArrayWriter(ByteArray);
+    _ByteArrayWriter(int mode = LittleEndian);
+    _ByteArrayWriter(ByteArray,int mode = LittleEndian);
 
     int writeShort(int v);
     int writeByte(byte b);
@@ -28,10 +28,9 @@ public:
 
     ByteArray getByteArray();
 
-    enum ByteArrayWriterResult {
-        WriteSuccess = 0,
-        WritePart,
-        WriteFail,
+    enum WriteMode {
+        BigEndian = 0,
+        LittleEndian,
     };
 
 private:
@@ -40,10 +39,46 @@ private:
     int mIndex;
     int mSize;
     int mType;
+    int mode;
 
     static const int DefaultDataSize;
     static const int Dynamic;
     static const int Static;
+
+    bool writeSizeCheck(int size);
+
+    template<typename T>
+    void _write(T &value) {
+        switch(mode) {
+            case BigEndian:
+            _writeBigEndian(value);
+            break;
+
+            case LittleEndian:
+            _writeLittleEndian(value);
+            break;
+        }
+    }
+
+    template<typename T>
+    void _writeLittleEndian(T &value) {
+        int count = 0;
+        while(count <sizeof(T)) {
+            mDataP[mIndex] = (value>>(count*8)&0xff);
+            count++;
+            mIndex++;
+        }
+    }
+
+    template<typename T>
+    void _writeBigEndian(T &value) {
+        int count = sizeof(T) - 1;
+        while(count >= 0) {
+            mDataP[mIndex] = (value>>(count*8)&0xff);
+            count--;
+            mIndex++;
+        }
+    }
 };
 
 }

@@ -19,16 +19,9 @@ extern "C"
 #define MAXFILENAME (256)
 #define WRITEBUFFERSIZE 1024 * 32
 
-#ifdef __APPLE__
-// In darwin and perhaps other BSD variants off_t is a 64 bit value, hence no need for specific 64 bit functions
-#define FOPEN_FUNC(filename, mode) fopen(filename, mode)
-#define FTELLO_FUNC(stream) ftello(stream)
-#define FSEEKO_FUNC(stream, offset, origin) fseeko(stream, offset, origin)
-#else
 #define FOPEN_FUNC(filename, mode) fopen64(filename, mode)
 #define FTELLO_FUNC(stream) ftello64(stream)
 #define FSEEKO_FUNC(stream, offset, origin) fseeko64(stream, offset, origin)
-#endif
 
 namespace obotcha {
 
@@ -349,9 +342,7 @@ int _ZipFileStream::do_extract_currentfile(unzFile uf, char *dest, const int *po
     void *buf;
     uInt size_buf;
     unz_file_info64 file_info;
-#if 0    
-    uLong ratio=0;
-#endif
+
     char _filename[256];
     int err = unzGetCurrentFileInfo64(uf, &file_info, _filename, sizeof(filename_inzip), NULL, 0, NULL, 0);
 
@@ -399,8 +390,7 @@ int _ZipFileStream::do_extract_currentfile(unzFile uf, char *dest, const int *po
             char rep = 0;
             FILE *ftestexist;
             ftestexist = FOPEN_FUNC(write_filename, "rb");
-            if (ftestexist != NULL)
-            {
+            if (ftestexist != NULL) {
                 fclose(ftestexist);
             }
 

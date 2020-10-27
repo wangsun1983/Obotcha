@@ -7,26 +7,18 @@
 
 namespace obotcha {
 
-_ByteArrayReader::_ByteArrayReader(ByteArray data) {
+_ByteArrayReader::_ByteArrayReader(ByteArray data,int mod) {
     this->mData = data;
     mDataP = data->toValue();
     mSize = data->size();
     mIndex = 0;
+    mode = mod;
 }
 
 int _ByteArrayReader::readShort() {
-    if(mIndex >= mSize) {
-        return -1;
-    }
-
-    if (mSize - mIndex < 2) {
-      int s = (readByte() & 0xff) << 8
-          |   (readByte() & 0xff);
-      return s;
-    }
-   
-    return (mDataP[mIndex++] & 0xff) << 8
-        |   (mDataP[mIndex++] & 0xff);
+    short int value = 0;
+    _read(value);
+    return value;
 }
 
 int _ByteArrayReader::readByte() {
@@ -41,55 +33,15 @@ int _ByteArrayReader::readByte() {
 }
 
 int _ByteArrayReader::readInt() {
-    if(mIndex >= mSize) {
-        return -1;
-    }
-
-    if (mSize - mIndex < 4) {
-        int value = (readByte() & 0xff) << 24
-          |  (readByte() & 0xff) << 16
-          |  (readByte() & 0xff) <<  8
-          |  (readByte() & 0xff);
-        return value;
-    }
-
-    return (mDataP[mIndex++] & 0xff) << 24
-        |   (mDataP[mIndex++] & 0xff) << 16
-        |   (mDataP[mIndex++] & 0xff) <<  8
-        |   (mDataP[mIndex++] & 0xff);
+    int value = 0;
+    _read(value);
+    return value;
 }
 
 long _ByteArrayReader::readLong() {
-    if(mIndex >= mSize) {
-        return -1;
-    }
-
-    int bytesize = sizeof(long);
-    switch(bytesize) {
-        case 4:
-        return readInt();
-
-        case 8:
-        {
-            if(mSize - mIndex < 8) {
-                return (readInt() & 0xffffffffL) << 32
-                  |  (readInt() & 0xffffffffL);
-            }
-
-            long v = (mDataP[mIndex++] & 0xffL) << 56
-                |    (mDataP[mIndex++] & 0xffL) << 48
-                |    (mDataP[mIndex++] & 0xffL) << 40
-                |    (mDataP[mIndex++] & 0xffL) << 32
-                |    (mDataP[mIndex++] & 0xffL) << 24
-                |    (mDataP[mIndex++] & 0xffL) << 16
-                |    (mDataP[mIndex++] & 0xffL) <<  8
-                |    (mDataP[mIndex++] & 0xffL);
-
-            return v;
-        }
-    }
-
-    return -1;
+    long value = 0;
+    _read(value);
+    return value;
 }
 
 int _ByteArrayReader::readByteArray(ByteArray d) {
@@ -97,18 +49,13 @@ int _ByteArrayReader::readByteArray(ByteArray d) {
         return -1;
     }
 
-    int ss = mSize - mIndex;
-    if(d->size() < ss) {
-        memcpy(d->toValue(),&mDataP[mIndex],d->size());
-        mIndex += d->size();
-        return d->size();
-    } else {
-        memcpy(d->toValue(),&mDataP[mIndex],ss);
-        mIndex += ss;
-        return ss;
-    }
+    int leftSize = mSize - mIndex;
+    int dataSize = d->size();
 
-    return -1;
+    int copySize = (leftSize < dataSize?leftSize:dataSize);
+    memcpy(d->toValue(),&mDataP[mIndex],copySize);
+    mIndex += copySize;
+    return copySize;
 }
 
 int _ByteArrayReader::getIndex() {
@@ -124,7 +71,6 @@ void _ByteArrayReader::setIndex(int index) {
 }
 
 int _ByteArrayReader::appendWithAdjustment(ByteArray d) {
-    //mData->append(d);
     int size = mData->size() - mIndex + d->size();
     ByteArray data = createByteArray(size);
     if(mIndex < mData->size()) {
