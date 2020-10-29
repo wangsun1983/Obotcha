@@ -21,15 +21,11 @@ public:
     
     _FileInputStream(String path);
 
-    int read();
-
     long read(ByteArray buffer);
 
     long read(long index,ByteArray buffer);
 
     ByteArray readAll();
-
-    //long readAll(ByteArray);
 
     bool open();
 

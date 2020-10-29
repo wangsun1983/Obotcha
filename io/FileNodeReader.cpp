@@ -4,7 +4,7 @@
  * @details none
  * @mainpage none
  * @author sunli.wang
- * @email wang_sun_198£³£Àyahoo.co.jp
+ * @email wang_sun_1983@yahoo.co.jp
  * @version 0.0.1
  * @date 2019-07-12
  * @license none
@@ -26,37 +26,33 @@
 namespace obotcha {
 
 _FileNodeReader::_FileNodeReader(String path,int buffsize) {
-    mBuffer = (byte*)malloc(buffsize);
-
     mSize = buffsize;
-
     mPath = path;
-
     mFd = open(mPath->toChars(),O_RDONLY);
 }
 
 int _FileNodeReader::readInt() {
-    memset(mBuffer,0,mSize);
-    read(mFd,mBuffer,mSize);
-    return createString(mBuffer)->toBasicInt();
+    byte buff[mSize] = {0};
+    read(mFd,buff,mSize);
+    return std::atoi((const char*)buff);
 }
 
 long _FileNodeReader::readLong() {
-    memset(mBuffer,0,mSize);
-    read(mFd,mBuffer,mSize);
-    return createString(mBuffer)->toBasicLong();
+    byte buff[mSize] = {0};
+    read(mFd,buff,mSize);
+    return std::atol((const char*)buff);
 }
 
 bool _FileNodeReader::readBoolean() {
-    memset(mBuffer,0,mSize);
-    read(mFd,mBuffer,mSize);
-    return createString(mBuffer)->toBasicBool();
+    byte buff[mSize] = {0};
+    read(mFd,buff,mSize);
+    return createString((const char *)buff)->toBasicBool();
 }
 
 String _FileNodeReader::readString() {
-    memset(mBuffer,0,mSize);
-    read(mFd,mBuffer,mSize);;
-    return createString(mBuffer);
+    byte buff[mSize] = {0};
+    read(mFd,buff,mSize);;
+    return createString((const char *)buff);
 }
 
 String _FileNodeReader::getPath() {
@@ -64,11 +60,6 @@ String _FileNodeReader::getPath() {
 }
 
 _FileNodeReader::~_FileNodeReader() {
-    if(mBuffer != nullptr) {
-        free(mBuffer);
-        mBuffer = nullptr;
-    }
-
     if(mFd >= 0) {
         close(mFd);
         mFd = -1;

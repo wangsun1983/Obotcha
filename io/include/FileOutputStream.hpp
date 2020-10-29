@@ -23,7 +23,6 @@ public:
 
     bool write(char c);
     
-    //bool write(char *buffer,int size);
     long write(ByteArray buff);
 
     long write(ByteArray buff,long size);

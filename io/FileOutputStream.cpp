@@ -1,13 +1,25 @@
+/**
+ * @file FileInputStream.cpp
+ * @brief A file output stream is an output stream for writing data to File
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include "FileOutputStream.hpp"
 
 namespace obotcha {
 
 _FileOutputStream::_FileOutputStream(File file) {
-    mPath = createString(file->getAbsolutePath());    
+    mPath = file->getAbsolutePath();    
 }
 
 _FileOutputStream::_FileOutputStream(String path) {
-    mPath = createString(path);
+    mPath = path;
 }
 
 _FileOutputStream::_FileOutputStream(const char *path) {
@@ -24,16 +36,21 @@ bool _FileOutputStream::write(char c) {
 }
     
 long _FileOutputStream::write(ByteArray buff) {
-    //char *p = buff->toValue();
+    if(!fstream.is_open()) {
+        return false;
+    }
+    
     fstream.write((char *)buff->toValue(),buff->size());
     return buff->size();
 }
 
 long _FileOutputStream::write(ByteArray buff,long size) {
-    //char *p = buff->toValue();
-    long length = buff->size() > size?size:buff->size();    
-    fstream.write((char *)buff->toValue(),length);
-    return length;
+    if(buff == nullptr || buff->size() < size) {
+        return -1;
+    }
+ 
+    fstream.write((char *)buff->toValue(),size);
+    return size;
 }
 
 bool _FileOutputStream::writeString(String s) {
@@ -42,10 +59,18 @@ bool _FileOutputStream::writeString(String s) {
 }
 
 bool _FileOutputStream::open() {
+    if(fstream.is_open()) {
+        return false;
+    }
+
     return this->open(FileOpenType::Append);
 }
 
 bool _FileOutputStream::open(FileOpenType opentype) {
+    if(fstream.is_open()) {
+        return false;
+    }
+
     switch(opentype) {
         case FileOpenType::Append:
             fstream.open(mPath->toChars(),std::ios::app);

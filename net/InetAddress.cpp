@@ -32,7 +32,6 @@ String _InetAddress::getHostName() {
 
 ArrayList<String> _InetAddress::getHostByName(String url) {
     ArrayList<String> hosts = createArrayList<String>();
-    printf("gethostbyname url is %s \n",url->toChars());
     struct hostent *hptr = gethostbyname(url->toChars());
     if(hptr == nullptr) {
         return nullptr;
@@ -96,7 +95,8 @@ ArrayList<InetHostAddress> _InetAddress::getHostAddress() {
 }
 
 ArrayList<InetHostMac> _InetAddress::getMacAddress() {
-    int fd, interface;
+    int fd = 0;
+    int interface = 0;
     struct ifreq buf[MAX_INTERFACES];
     struct ifconf ifc;
     char mac[32] = {0};
@@ -127,7 +127,10 @@ ArrayList<InetHostMac> _InetAddress::getMacAddress() {
             }
         }
     }
-
+    
+    if(fd != 0) {
+        close(fd);
+    }
     return list;
 }
 

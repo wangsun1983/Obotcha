@@ -31,8 +31,6 @@ public:
     ~_FileNodeReader();
 
 private:
-	byte *mBuffer;
-
 	int mSize;
 
 	String mPath;

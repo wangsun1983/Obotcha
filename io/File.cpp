@@ -3,9 +3,8 @@
 #include <string.h>
 
 #include "Error.hpp"
-
-
 #include "File.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -206,7 +205,7 @@ ArrayList<String> _File::list() {
         return nullptr;
     }
 
-    while ((ptr = readdir(dir)) != NULL) {
+    while ((ptr = readdir(dir)) != nullptr) {
         if(strcmp(ptr->d_name,".")==0 
            || strcmp(ptr->d_name,"..")==0) {
             continue;
@@ -231,7 +230,7 @@ ArrayList<File> _File::listFiles() {
 
     ArrayList<File> files = createArrayList<File>();
 
-    if((dir = opendir(mPath->toChars())) == nullptr) {
+    if((dir = opendir(mPath->toChars())) == NULL) {
         return nullptr;
     }
 
@@ -284,6 +283,7 @@ bool _File::createDirs() {
         if(access(path->toChars(),R_OK) != 0) {
             if(mkdir(path->toChars(),0755)==-1){
                 //return false;
+                LOG(ERROR)<<"create "<<path->toChars()<<" failed";
             }
         }        
     }

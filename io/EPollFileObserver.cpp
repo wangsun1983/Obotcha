@@ -47,13 +47,12 @@ void _EPollFileObserverListener::removeFd(int fd) {
     while (iter != fds.end()) {
         if (*iter == fd) {
             iter = fds.erase(iter);
+            continue;
         }
-        else {
-            ++iter;
-        }
+
+        iter++;
     }
 }
-
 
 //----------------_EPollFileObserver----------------
 void _EPollFileObserver::run() {
@@ -64,9 +63,9 @@ void _EPollFileObserver::run() {
 
     while(1) {
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
-        //doRequest();
 
         if(epoll_events_count < 0) {
+            LOG(ERROR)<<"epoll_wait count is -1";
             return;
         }
 
@@ -143,7 +142,7 @@ void _EPollFileObserver::run() {
                             c->removeFd(fd);
                         }
 
-                        if(recvEvents & EpollRdHup != 0) {
+                        if(recvEvents & (EpollRdHup|EPOLLHUP) != 0) {
                             c->removeFd(fd);
                         }
 
@@ -153,7 +152,7 @@ void _EPollFileObserver::run() {
                 }
             }
             
-            if(((recvEvents & EpollRdHup) != 0)
+            if(((recvEvents & (EpollRdHup|EPOLLHUP)) != 0)
                ||(map->size() == 0)) {
                 mListeners->remove(fd);
                 epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
@@ -220,7 +219,7 @@ int _EPollFileObserver::addObserver(int fd,uint32_t events,EPollFileObserverList
         //printf("add observer fd is %d \n",fd);
         
         ev.data.fd = fd;
-        ev.events = events|EpollRdHup;
+        ev.events = events|EpollRdHup|EPOLLHUP;
         epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
         fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
     }

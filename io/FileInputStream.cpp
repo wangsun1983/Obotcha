@@ -1,26 +1,26 @@
+/**
+ * @file FileInputStream.cpp
+ * @brief FileInputStream obtains input bytes from a file in a file system.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
 #include <iostream>
 #include "FileInputStream.hpp"
-#include "Exception.hpp"
 #include "FileNotFoundException.hpp"
 
 namespace obotcha {
 
 _FileInputStream::_FileInputStream(File f) {
-    mPath = createString(f->getAbsolutePath());
+    mPath = f->getAbsolutePath();
 }
     
 _FileInputStream::_FileInputStream(String path) {
     mPath = createString(path);
-}
-    
-int _FileInputStream::read() {
-    if(!fstream.is_open()) {
-        throw FileNotFoundException(createString("inputstream path:")->append(mPath));
-    }
-
-    int value = 0;
-    fstream.read((char *)&value,sizeof(int));
-    return value;
 }
 
 long _FileInputStream::read(ByteArray buff) {
@@ -57,6 +57,10 @@ ByteArray _FileInputStream::readAll() {
 }
 
 bool _FileInputStream::open() {
+    if(fstream.is_open()) {
+        return false;
+    }
+
     fstream.open(mPath->toChars(),std::ios::in|std::ios::binary);
     return fstream.is_open();
 }
