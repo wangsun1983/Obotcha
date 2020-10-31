@@ -120,7 +120,6 @@ bool _ThreadScheduledPoolExecutor::isShutdown() {
 }
 
 bool _ThreadScheduledPoolExecutor::isTerminated() {
-    //return mTimeThread->isTerminated;
     return mCachedExecutor->isTerminated();
 }
 

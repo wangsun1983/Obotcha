@@ -77,18 +77,11 @@ _Thread::_Thread(Runnable run):_Thread(nullptr,run) {
 }
 
 _Thread::_Thread(String name,Runnable run){
-    if(name != nullptr) {
-        mName = name;    
-    } else {
-        mName = nullptr;
-    }
-    
+    mName = name;    
     mRunnable = run;
-
     mStatus = NotStart;
     
     mJoinMutex = createMutex("ThreadJoinMutex");
-
     mJoinDondtion = createCondition();
 }
 
@@ -117,11 +110,11 @@ void _Thread::run() {
     //child thread can overwrite it.
 }
 
-void _Thread::detach() {
+int _Thread::detach() {
     if(!isRunning()) {
-        return;
+        return 0;
     }
-    pthread_detach(getThreadId());
+    return pthread_detach(getThreadId());
 }
 
 int _Thread::start() {
@@ -150,7 +143,7 @@ int _Thread::start() {
     } 
 
     while(mStatus == Idle) {
-        st(Thread)::yield();
+        yield();
     }
 
     return 0;
@@ -168,6 +161,7 @@ int _Thread::join(long timeInterval) {
         AutoLock ll(mJoinMutex);
         return mJoinDondtion->wait(mJoinMutex,timeInterval);
     }
+    
     return 0;
 }
 

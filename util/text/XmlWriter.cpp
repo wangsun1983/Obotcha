@@ -27,7 +27,7 @@ void _XmlWriter::write(String filepath) {
 
     String content = xmlDoc->toString();
     FileOutputStream stream = createFileOutputStream(filepath);
-    stream->open(FileOpenType::Trunc);
+    stream->open(st(OutputStream)::Trunc);
     stream->writeString(content);
     stream->flush();
     stream->close();
