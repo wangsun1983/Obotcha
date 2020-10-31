@@ -1,3 +1,15 @@
+/**
+ * @file Md.cpp
+ * @brief A class that can be used to compute the Md5/Md4 of a data stream.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -12,10 +24,10 @@
 
 namespace obotcha {
 
-#define READ_DATA_SIZE  1024
+const int _Md::ReadDataSize = 1024;
 
 _Md::_Md() {
-    mType = MdType5;
+    mType = Md5;
 }
 
 _Md::_Md(int type) {
@@ -26,7 +38,7 @@ String _Md::encrypt(File f) {
     switch(mType) {
         
 #ifndef OPENSSL_NO_MD2       
-        case MdType2:{
+        case Md2:{
             char md2_str[MD2_DIGEST_LENGTH * 2 + 1];
             int ret = computeFileMd2(f->getAbsolutePath()->toChars(), md2_str);
             if(ret == 0) {
@@ -36,7 +48,7 @@ String _Md::encrypt(File f) {
         break;
 #endif        
 
-        case MdType5: {
+        case Md5: {
             char md5_str[MD5_DIGEST_LENGTH * 2 + 1];
             int ret = computeFileMd5(f->getAbsolutePath()->toChars(), md5_str);
             if(ret == 0) {
@@ -45,7 +57,7 @@ String _Md::encrypt(File f) {
         }
         break;
 
-        case MdType4: {
+        case Md4: {
             char md4_str[MD4_DIGEST_LENGTH * 2 + 1];
             int ret = computeFileMd4(f->getAbsolutePath()->toChars(), md4_str);
             if(ret == 0) {
@@ -61,7 +73,7 @@ String _Md::encrypt(File f) {
 String _Md::encrypt(String s) {
     switch(mType) {
 #ifndef OPENSSL_NO_MD2
-        case MdType2: {
+        case Md2: {
             char md2_str[MD2_DIGEST_LENGTH*2 + 1];
             int ret = computeStringMd2((unsigned char *)s->toChars(), s->size(), md2_str);
             if(ret == 0) {
@@ -70,7 +82,7 @@ String _Md::encrypt(String s) {
         }
         break;
 #endif
-        case MdType4: {
+        case Md4: {
             char md4_str[MD4_DIGEST_LENGTH*2 + 1];
             int ret = computeStringMd4((unsigned char *)s->toChars(), s->size(), md4_str);
             if(ret == 0) {
@@ -79,7 +91,7 @@ String _Md::encrypt(String s) {
         }
         break;
 
-        case MdType5: {
+        case Md5: {
             char md5_str[MD5_DIGEST_LENGTH*2 + 1];
             int ret = computeStringMd5((unsigned char *)s->toChars(), s->size(), md5_str);
             if(ret == 0) {
@@ -158,7 +170,7 @@ int _Md::computeFileMd5(const char *file_path, char *md5_str) {
     int i;
     int fd;
     int ret;
-    unsigned char data[READ_DATA_SIZE];
+    unsigned char data[ReadDataSize];
     unsigned char md5_value[MD5_DIGEST_LENGTH];
     MD5_CTX md5;
 
@@ -172,7 +184,7 @@ int _Md::computeFileMd5(const char *file_path, char *md5_str) {
     MD5_Init(&md5);
 
     while (1) {
-        ret = read(fd, data, READ_DATA_SIZE);
+        ret = read(fd, data, ReadDataSize);
         if (-1 == ret) {
             perror("read");
             close(fd);
@@ -181,7 +193,7 @@ int _Md::computeFileMd5(const char *file_path, char *md5_str) {
 
         MD5_Update(&md5, data, ret);
 
-        if (0 == ret || ret < READ_DATA_SIZE) {
+        if (0 == ret || ret < ReadDataSize) {
             break;
         }
     }
@@ -202,7 +214,7 @@ int _Md::computeFileMd4(const char *file_path, char *md4_str) {
     int i;
     int fd;
     int ret;
-    unsigned char data[READ_DATA_SIZE];
+    unsigned char data[ReadDataSize];
     unsigned char md4_value[MD4_DIGEST_LENGTH];
     MD4_CTX md4;
 
@@ -216,7 +228,7 @@ int _Md::computeFileMd4(const char *file_path, char *md4_str) {
     MD4_Init(&md4);
 
     while (1) {
-        ret = read(fd, data, READ_DATA_SIZE);
+        ret = read(fd, data, ReadDataSize);
         if (-1 == ret) {
             perror("read");
             close(fd);
@@ -225,7 +237,7 @@ int _Md::computeFileMd4(const char *file_path, char *md4_str) {
 
         MD4_Update(&md4, data, ret);
 
-        if (0 == ret || ret < READ_DATA_SIZE) {
+        if (0 == ret || ret < ReadDataSize) {
             break;
         }
     }
@@ -247,7 +259,7 @@ int _Md::computeFileMd2(const char *file_path, char *md2_str) {
     int i;
     int fd;
     int ret;
-    unsigned char data[READ_DATA_SIZE];
+    unsigned char data[ReadDataSize];
     unsigned char md2_value[MD2_DIGEST_LENGTH];
     MD2_CTX md2;
 
@@ -261,7 +273,7 @@ int _Md::computeFileMd2(const char *file_path, char *md2_str) {
     MD2_Init(&md2);
 
     while (1) {
-        ret = read(fd, data, READ_DATA_SIZE);
+        ret = read(fd, data, ReadDataSize);
         if (-1 == ret) {
             perror("read");
             close(fd);
@@ -270,7 +282,7 @@ int _Md::computeFileMd2(const char *file_path, char *md2_str) {
 
         MD2_Update(&md2, data, ret);
 
-        if (0 == ret || ret < READ_DATA_SIZE) {
+        if (0 == ret || ret < ReadDataSize) {
             break;
         }
     }

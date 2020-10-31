@@ -1,3 +1,15 @@
+/**
+ * @file Crc32.cpp
+ * @brief A class that can be used to compute the CRC-32 of a data stream.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #include "Crc32.hpp"
 #include "FileInputStream.hpp"
 #include "NullPointerException.hpp"
@@ -5,36 +17,25 @@
 
 namespace obotcha {
     
-long _Crc32::encode(ByteArray b) {
+uint32_t _Crc32::encode(ByteArray b) {
     if(b == nullptr) {
-        throw NullPointerException("Crc32 encode param is nullptr");
+        return 0;
     }
 
-    std::uint32_t result;
-    // Process a raw buffer.
-    result = crc32(0L,(const Bytef *)b->toValue(), b->size());
-
-    return result;
+    return crc32(0L,(const Bytef *)b->toValue(), b->size());
 }
 
-long _Crc32::encode(String b) {
+uint32_t _Crc32::encode(String b) {
     if(b == nullptr) {
-        throw NullPointerException("Crc32 encode param is nullptr");
+        return 0;
     }
 
-    std::uint32_t result;
-    // Process a raw buffer.
-    result = crc32(0L,(const Bytef *)b->toChars(), b->size());
-    return result;
+    return crc32(0L,(const Bytef *)b->toChars(), b->size());
 }
 
-long _Crc32::encode(File f) {
-    if(f == nullptr) {
-        throw NullPointerException("Crc32 encode param is nullptr");
-    }
-
-    if(!f->exists()) {
-        throw FileNotFoundException("Crc32 encode file not exists");
+uint32_t _Crc32::encode(File f) {
+    if(f == nullptr || !f->exists()) {
+        return 0;
     }
 
     FileInputStream stream = createFileInputStream(f);

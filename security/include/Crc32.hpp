@@ -12,9 +12,9 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(Crc32) {
 
 public:
-    long encode(ByteArray);
-    long encode(String);
-    long encode(File);
+    uint32_t encode(ByteArray);
+    uint32_t encode(String);
+    uint32_t encode(File);
 };
 
 }

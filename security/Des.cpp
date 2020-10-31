@@ -46,7 +46,7 @@ void _Des::encrypt(File src,File des) {
     if(inputData != nullptr) {
         ByteArray outputData = encrypt(inputData);
         FileOutputStream outputStream = createFileOutputStream(des);
-        outputStream->open(FileOpenType::Trunc);
+        outputStream->open(st(OutputStream)::Trunc);
         outputStream->write(outputData);
         outputStream->flush();
         outputStream->close();
@@ -97,7 +97,7 @@ void _Des::decrypt(File src,File des) {
     if(inputData != nullptr) {
         ByteArray outputData = decrypt(inputData);
         FileOutputStream outputStream = createFileOutputStream(des);
-        outputStream->open(FileOpenType::Trunc);
+        outputStream->open(st(OutputStream)::Trunc);
 
         //we should check last 8byte
         byte *checkP = outputData->toValue();

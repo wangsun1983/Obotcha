@@ -6,15 +6,15 @@
 
 namespace obotcha {
 
-enum MdType {
-    MdType2,
-    MdType4,
-    MdType5,
-};
-
 DECLARE_SIMPLE_CLASS(Md) {
 
 public:
+   enum MdType {
+      Md2,
+      Md4,
+      Md5,
+   };
+
     _Md();
     _Md(int type);
     String encrypt(File);
@@ -22,6 +22,8 @@ public:
 
 private:
    int mType;
+
+   static const int ReadDataSize;
 
    int computeStringMd5(unsigned char *dest_str, unsigned int dest_len, char *md5_str);
    int computeStringMd4(unsigned char *dest_str, unsigned int dest_len, char *md4_str);

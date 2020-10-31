@@ -30,8 +30,7 @@ String _Base64::encode(String str) {
 }
     
 ByteArray _Base64::encode(ByteArray buff) {
-    int size;
-
+    int size = 0;
     char *p = _encode((char *)buff->toValue(),buff->size(),false,&size);
     ByteArray result = createByteArray((byte *)p,size);
     free(p);

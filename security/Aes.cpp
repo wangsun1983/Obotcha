@@ -14,29 +14,18 @@
 
 namespace obotcha {
 
-//static const unsigned char default_iv[] =
-//    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-_Aes::_Aes() {
-    mType = AesTypeECB;
-}
-
-_Aes::_Aes(int aestype) {
-    mType = aestype;
-}
-
 int _Aes::genKey(String decKeyFile,String encKeyFile) {
     int result = _genKey();
     if(result != 0) {
         return result;
     }
     
-    result = _saveKey(encKeyFile,AesEncrypt);
+    result = _saveKey(encKeyFile,st(Cipher)::Encrypt);
     if(result != 0) {
         return result;
     }
 
-    result = _saveKey(decKeyFile,AesDecrypt);
+    result = _saveKey(decKeyFile,st(Cipher)::Decrypt);
 
     return result;
 }
@@ -47,37 +36,34 @@ int _Aes::genKey(String decKeyFile,String encKeyFile,String content) {
         return result;
     }
 
-    result = _saveKey(encKeyFile,AesEncrypt);
+    result = _saveKey(encKeyFile,Encrypt);
     if(result != 0) {
         return result;
     }
 
-    result = _saveKey(decKeyFile,AesDecrypt);
+    result = _saveKey(decKeyFile,Decrypt);
 
     return result;
 }
 
+void _Aes::init(int mode,SecretKey key) {
+    st(Cipher)::init(mode,key);
+    loadKey(key->getFile(),mode);
+}
+
 int _Aes::loadKey(File file,int mode) {
-    return loadKey(file->getAbsolutePath(),mode);
-}
-
-int _Aes::loadKey(String path,int mode) {
-    return loadKey(path->toChars(),mode);
-}
-
-int _Aes::loadKey(const char *filepath,int mode) {
-    FILE *key_file = fopen(filepath, "rb");
+    FILE *key_file = fopen(file->getAbsolutePath()->toChars(), "rb");
     if (!key_file) {
         return -FileNotExists;
     }
     
     int size = 0;
     switch(mode) {
-        case AES_ENCRYPT:
+        case Encrypt:
             size = fread(&mEncryptKey, 1, sizeof(AES_KEY), key_file);
         break;
 
-        case AES_DECRYPT:
+        case Decrypt:
             size = fread(&mDecryptKey, 1, sizeof(AES_KEY), key_file);
         break;
     }
@@ -103,7 +89,7 @@ void _Aes::decrypt(File src,File des) {
     if(inputData != nullptr) {
         ByteArray outputData = decrypt(inputData);
         FileOutputStream outputStream = createFileOutputStream(des);
-        outputStream->open(FileOpenType::Trunc);
+        outputStream->open(st(OutputStream)::Trunc);
         outputStream->write(outputData,outputData->size());
         
         //outputStream->write(outputData);
@@ -122,52 +108,35 @@ void _Aes::encrypt(File src,File des) {
     inputStream->open();
     ByteArray inputData = inputStream->readAll();
     ByteArray outData;
-    switch(mType) {
-        case AesTypeECB:
-            outData = _aesECB(inputData,AES_ENCRYPT);
+    switch(getPattern()) {
+        case ECB:
+            outData = _aesECB(inputData,Encrypt);
         break;
 
-        case AesTypeCBC:
+        case CBC:
             unsigned char default_iv[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            outData = _aesCBC(inputData,default_iv,AES_ENCRYPT);
+            outData = _aesCBC(inputData,default_iv,Encrypt);
         break;
     }
 
     if(outData != nullptr) {
         FileOutputStream outputStream = createFileOutputStream(des);
-        outputStream->open(FileOpenType::Trunc);
+        outputStream->open(st(OutputStream)::Trunc);
         outputStream->write(outData);
         outputStream->flush();
         outputStream->close();
     }
 }
-
-ByteArray _Aes::encrypt(String str) {
-    ByteArray result;
-
-    switch(mType) {
-        case AesTypeECB:
-            result = _aesECB(createByteArray(str),AES_ENCRYPT);
-        break;
-
-        case AesTypeCBC:
-            unsigned char default_iv[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            result = _aesCBC(createByteArray(str),default_iv,AES_ENCRYPT);
-        break;
-    }
-
-    return result;
-}
     
 ByteArray _Aes::encrypt(ByteArray buff) {
-    switch(mType) {
-        case AesTypeECB:
-            return _aesECB(buff,AES_ENCRYPT);
+    switch(getPattern()) {
+        case ECB:
+            return _aesECB(buff,Encrypt);
         break;
 
-        case AesTypeCBC:
+        case CBC:
             unsigned char default_iv[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            return _aesCBC(buff,default_iv,AES_ENCRYPT);
+            return _aesCBC(buff,default_iv,Encrypt);
             //return buff;
         break;
     }
@@ -176,14 +145,14 @@ ByteArray _Aes::encrypt(ByteArray buff) {
 }
 
 ByteArray _Aes::decrypt(ByteArray buff) {
-    switch(mType) {
-        case AesTypeECB:
-            return _aesECB(buff,AES_DECRYPT);
+    switch(getPattern()) {
+        case ECB:
+            return _aesECB(buff,Decrypt);
         break;
 
-        case AesTypeCBC:
+        case CBC:
             unsigned char default_iv[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            return _aesCBC(buff,default_iv,AES_DECRYPT);
+            return _aesCBC(buff,default_iv,Decrypt);
         break;
     }
 
@@ -210,7 +179,6 @@ int _Aes::_genKey(String content) {
     }
 
     return 0;
-
 }
 
 int _Aes::_genKey() {
@@ -233,11 +201,11 @@ int _Aes::_saveKey(String filepath,int mode) {
     short int bytes_written = 0;
     int size = 0;
     switch(mode) {
-        case AES_ENCRYPT:
+        case st(Cipher)::Encrypt:
             size = fwrite(&mEncryptKey, 1, sizeof(AES_KEY), key_file);
         break;
 
-        case AES_DECRYPT:
+        case st(Cipher)::Decrypt:
             size = fwrite(&mDecryptKey, 1, sizeof(AES_KEY), key_file);
         break;
     }
@@ -255,7 +223,7 @@ ByteArray _Aes::_aesECB(ByteArray data,int mode) {
     int inputSize = data->size();
 
     switch(mode) {
-        case AES_ENCRYPT: {
+        case Encrypt: {
             int length = (inputSize%AES_BLOCK_SIZE == 0)?inputSize + AES_BLOCK_SIZE:(inputSize/AES_BLOCK_SIZE)*AES_BLOCK_SIZE + AES_BLOCK_SIZE;
     
             ByteArray out = createByteArray(length);
@@ -275,7 +243,7 @@ ByteArray _Aes::_aesECB(ByteArray data,int mode) {
 
             for(int i = 0; i < length/AES_BLOCK_SIZE; i++){
                 //memcpy(input,input,AES_BLOCK_SIZE);
-                AES_ecb_encrypt((unsigned char*)input,(unsigned char*)output,&mEncryptKey,AES_ENCRYPT);
+                AES_ecb_encrypt((unsigned char*)input,(unsigned char*)output,&mEncryptKey,Encrypt);
                 input += AES_BLOCK_SIZE;
                 output += AES_BLOCK_SIZE;
             }
@@ -283,12 +251,12 @@ ByteArray _Aes::_aesECB(ByteArray data,int mode) {
             return out;
         }
 
-        case AES_DECRYPT: {
+        case Decrypt: {
             ByteArray out = createByteArray(inputSize);
             char *input = (char *)data->toValue();
             char *output = (char *)out->toValue();
             for(int i = 0;i<inputSize/AES_BLOCK_SIZE;i++) {
-                AES_ecb_encrypt((unsigned char *)input,(unsigned char *)output,&mDecryptKey,AES_DECRYPT);
+                AES_ecb_encrypt((unsigned char *)input,(unsigned char *)output,&mDecryptKey,Decrypt);
                 input+= AES_BLOCK_SIZE;
                 output += AES_BLOCK_SIZE;
             }
@@ -317,7 +285,7 @@ ByteArray _Aes::_aesCBC(ByteArray data,unsigned char *ivec,int mode) {
     int inputSize = data->size();
     //int outputSize = inputSize%AES_BLOCK_SIZE?(inputSize/AES_BLOCK_SIZE + 1) * AES_BLOCK_SIZE : inputSize;
     switch(mode) {
-        case AES_ENCRYPT:{
+        case Encrypt:{
             int length = (inputSize%AES_BLOCK_SIZE == 0)?inputSize + AES_BLOCK_SIZE:(inputSize/AES_BLOCK_SIZE)*AES_BLOCK_SIZE + AES_BLOCK_SIZE;
     
             ByteArray out = createByteArray(length);
@@ -335,16 +303,16 @@ ByteArray _Aes::_aesCBC(ByteArray data,unsigned char *ivec,int mode) {
                 memset(lastData,(char)padding,AES_BLOCK_SIZE-padding);
             }
 
-            AES_cbc_encrypt((unsigned char *)input,(unsigned char *)output,length,&mEncryptKey,ivec,AES_ENCRYPT);
+            AES_cbc_encrypt((unsigned char *)input,(unsigned char *)output,length,&mEncryptKey,ivec,Encrypt);
             return out;
         }
         break;
 
-        case AES_DECRYPT:{
+        case Decrypt:{
             ByteArray out = createByteArray(inputSize);
             char *output = (char *)out->toValue();
             char *input = (char *)data->toValue();
-            AES_cbc_encrypt((unsigned char *)input,(unsigned char *)output,inputSize,&mDecryptKey,ivec,AES_DECRYPT);
+            AES_cbc_encrypt((unsigned char *)input,(unsigned char *)output,inputSize,&mDecryptKey,ivec,Decrypt);
             int padding = output[inputSize - 1];
 
             out->quickShrink(inputSize - AES_BLOCK_SIZE + padding);
