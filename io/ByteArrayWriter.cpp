@@ -20,8 +20,6 @@
 namespace obotcha {
 
 const int _ByteArrayWriter::DefaultDataSize = 1024;
-const int _ByteArrayWriter::Dynamic = 1;
-const int _ByteArrayWriter::Static = 2;
 
 _ByteArrayWriter::_ByteArrayWriter(int mod) {
     mData = createByteArray(DefaultDataSize);

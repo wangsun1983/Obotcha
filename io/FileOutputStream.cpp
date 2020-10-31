@@ -66,7 +66,7 @@ bool _FileOutputStream::open() {
     return this->open(FileOpenType::Append);
 }
 
-bool _FileOutputStream::open(FileOpenType opentype) {
+bool _FileOutputStream::open(int opentype) {
     if(fstream.is_open()) {
         return false;
     }

@@ -42,9 +42,11 @@ private:
     int mode;
 
     static const int DefaultDataSize;
-    static const int Dynamic;
-    static const int Static;
-
+    enum ByteArrayWriteType {
+        Dynamic = 0,
+        Static
+    };
+    
     bool writeSizeCheck(int size);
 
     template<typename T>

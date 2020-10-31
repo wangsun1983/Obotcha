@@ -84,6 +84,8 @@ private:
     int readEvent();
 
     HashMap<int,ArrayList<sp<_FileObserver>>> mListeners;
+    HashMap<int,String> mFiles;
+    HashMap<String,Integer> mOps;
 };
 
 }

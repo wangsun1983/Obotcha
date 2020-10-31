@@ -9,11 +9,11 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(InputStream) {
 public:
-    virtual long read(ByteArray); //return size;
+    virtual long read(ByteArray){return -1;} //return size;
 
-    virtual bool open();
+    virtual bool open() {return false;}
     
-    virtual void close();
+    virtual void close() {}
 };
 
 }

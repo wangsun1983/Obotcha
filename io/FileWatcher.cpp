@@ -21,6 +21,8 @@ namespace obotcha {
 _FileWatcher::_FileWatcher() {
     mutex = createMutex("FileWatchMutex");
     mListeners = createHashMap<int,ArrayList<sp<_FileObserver>>>();
+    mFiles = createHashMap<int,String>();
+    mOps = createHashMap<String,Integer>();
     notifyFd = inotify_init(); 
     start();
 }
@@ -28,10 +30,18 @@ _FileWatcher::_FileWatcher() {
 int _FileWatcher::startWatch(String filepath,int op,sp<_FileObserver> observer) {
     AutoLock l(mutex);
     printf("startWatch op code is %x \n",op);
+    Integer formerOp = mOps->get(filepath);
+    if(formerOp != nullptr) {
+        op += formerOp->toValue();
+    }
+
     int id = inotify_add_watch(notifyFd,filepath->toChars(),op);
     if(std::find(observer->ids.begin(),observer->ids.end(),id) != observer->ids.end()) {
         return id;
     }
+
+    mFiles->put(id,filepath);
+    mOps->put(filepath,createInteger(op));
 
     observer->ids.push_back(id);
     printf("startWatch trace \n");
@@ -63,6 +73,9 @@ void _FileWatcher::stopWatch(int id,FileObserver observer) {
 
     if(list->size() == 0) {
         inotify_rm_watch(notifyFd,id);
+        String path = mFiles->get(id);
+        mFiles->remove(id);
+        mOps->remove(path);
     }
 }
 
@@ -82,7 +95,7 @@ void _FileWatcher::run() {
         int event_pos = 0;
         printf("abc trace1 \n");
         int num_bytes = read(notifyFd, event_buf, sizeof(event_buf));
-
+        printf("abc trace2 \n");
         if (num_bytes < (int)sizeof(*event)) {
             if (errno == EINTR)
                 continue;
@@ -90,16 +103,29 @@ void _FileWatcher::run() {
             LOG(ERROR)<<"***** ERROR! got a short event!";
             return;
         }
-
+        printf("abc trace3 \n");
         while (num_bytes >= (int)sizeof(*event)) {
             int event_size;
             event = (struct inotify_event *)(event_buf + event_pos);
-
-            String path = createString(event->name);
-            int wd = event->wd;
+            int changeid = event->wd;
             {
                 AutoLock l(mutex);
-                int changeid = event->wd;
+                String path = mFiles->get(changeid);
+                //when vim/gedit opens a file ,it will create a bak file.
+                //if the edited file is saved,vim/gedit will delete the origin
+                //file,and change the bak file to origin file.
+                //this is the reason why use vim/gedit to modify a file,inotify
+                //only accepts IGNORE event.
+                int ignoreid = -1;
+                if((access(path->toChars(),F_OK) == 0) 
+                    && ((event->mask & Ignored) != 0)) {
+                    printf("ignore!!!! \n");
+                    event->mask &= ~Ignored;
+                    event->mask |= Modify;
+                    Integer regOp = mOps->get(path);
+                    ignoreid = inotify_add_watch(notifyFd,path->toChars(),regOp->toValue());
+                }
+
                 ArrayList<FileObserver> monitors = mListeners->get(changeid);
                 if(monitors != nullptr) {
                     ListIterator<FileObserver> iterator = monitors->getIterator();
@@ -109,17 +135,22 @@ void _FileWatcher::run() {
                         iterator->next();
                     }
                 }
-                printf("abc trace3 \n");
+
+                if(ignoreid != -1) {
+                    inotify_rm_watch(notifyFd,changeid);
+                    mFiles->remove(changeid);
+                    mFiles->put(ignoreid,path);
+                    mListeners->put(ignoreid,monitors);
+                }
+                printf("abc trace4 \n");
             }
 
             event_size = sizeof(*event) + event->len;
             num_bytes -= event_size;
             event_pos += event_size;
-            printf("abc trace4 \n");
+            printf("abc trace5 \n");
         }
     }
 }
-
-
 
 }

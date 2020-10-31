@@ -2,8 +2,6 @@ ioDir = io
 
 objs += $(outtmp)/file.o \
 	$(outtmp)/fileinputstream.o \
-	$(outtmp)/inputstream.o \
-	$(outtmp)/outputstream.o \
 	$(outtmp)/fileoutputstream.o \
 	$(outtmp)/printstream.o \
 	$(outtmp)/zipfilestream.o \
@@ -29,14 +27,8 @@ $(outtmp)/fileinputstream.o :$(ioDir)/FileInputStream.cpp
 $(outtmp)/libraryfileinputstream.o :$(ioDir)/LibraryFileInputStream.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/LibraryFileInputStream.cpp -o $(outtmp)/libraryfileinputstream.o $(external)
 
-$(outtmp)/inputstream.o :$(ioDir)/InputStream.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/InputStream.cpp -o $(outtmp)/inputstream.o $(external)
-
 $(outtmp)/fileoutputstream.o :$(ioDir)/FileOutputStream.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileOutputStream.cpp -o $(outtmp)/fileoutputstream.o $(external)
-
-$(outtmp)/outputstream.o :$(ioDir)/OutputStream.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/OutputStream.cpp -o $(outtmp)/outputstream.o $(external)
 
 $(outtmp)/printstream.o :$(ioDir)/PrintStream.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/PrintStream.cpp -o $(outtmp)/printstream.o $(external)

@@ -29,7 +29,7 @@ public:
 
     bool writeString(String s);
     
-    bool open(FileOpenType opentype);
+    bool open(int opentype);
 
     bool open();
     

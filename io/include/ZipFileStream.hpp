@@ -31,8 +31,6 @@ public:
 
     _ZipFileStream();
 
-    int read();
-
     long read(ByteArray buffer);
 
     bool open();

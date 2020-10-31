@@ -14,20 +14,20 @@
 #include "ByteArray.hpp"
 #include "MemoryFileInputStream.hpp"
 #include "FileNotFoundException.hpp"
+#include "MethodNotSupportException.hpp"
 
 namespace obotcha {
 
-_MemoryFileInputStream::_MemoryFileInputStream(MemoryFile f) {
-    if(f != nullptr) {
-        mPath = createString(f->getAbsolutePath());
-        filesize = f->length();
-    }
-
-    mPtr = nullptr;
+_MemoryFileInputStream::_MemoryFileInputStream(MemoryFile f):_MemoryFileInputStream(f->getAbsolutePath()) {
+    
 }
     
 _MemoryFileInputStream::_MemoryFileInputStream(String path) {
     File f = createFile(path);
+    if(!f->exists()) {
+        Trigger(FileNotFoundException,"file not exists");
+    }
+
     mPath = f->getAbsolutePath();
     filesize = f->length();
 
@@ -35,10 +35,7 @@ _MemoryFileInputStream::_MemoryFileInputStream(String path) {
 }
 
 int _MemoryFileInputStream::read() {
-    if(mPtr == nullptr) {
-        throw FileNotFoundException(mPath);
-    }
-    return *mPtr;
+    Trigger(MethodNotSupportException,"MemoryFileInputStream do not support read");
 }
 
 long _MemoryFileInputStream::read(ByteArray buffer) {
@@ -84,6 +81,7 @@ bool _MemoryFileInputStream::open() {
  
     mPtr = (unsigned char *)mmap(NULL, filesize, PROT_READ, MAP_SHARED, fd, 0);
     if (mPtr == MAP_FAILED) {
+        mPtr == nullptr;
         return false;
     }
 

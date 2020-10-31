@@ -7,26 +7,26 @@
 
 namespace obotcha {
 
-enum FileOpenType {
-    Append,
-    Trunc
-};
-
 DECLARE_SIMPLE_CLASS(OutputStream) {
 public:
-    virtual bool write(char c);
+    virtual bool write(char c){return false;}
     
-    virtual long write(ByteArray);
+    virtual long write(ByteArray){return -1;}
 
-    virtual long write(ByteArray buff,long size);
+    virtual long write(ByteArray buff,long size){return -1;}
 
-    virtual bool open();
+    virtual bool open(){return -false;}
 
-    virtual bool open(FileOpenType);
+    virtual bool open(int){return -false;}
     
-    virtual void close();
+    virtual void close(){}
 
-    virtual void flush();
+    virtual void flush(){}
+
+    enum FileOpenType {
+        Append,
+        Trunc
+    };
 };
 
 }

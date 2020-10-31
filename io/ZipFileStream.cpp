@@ -28,10 +28,6 @@ namespace obotcha {
 _ZipFileStream::_ZipFileStream() {
 }
 
-int _ZipFileStream::read() {
-    throw MethodNotSupportException(createString("ZipStream::read()"));
-}
-
 long _ZipFileStream::read(ByteArray buffer) {
     throw MethodNotSupportException(createString("ZipStream::read(ByteArray)"));
 }
