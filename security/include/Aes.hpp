@@ -38,9 +38,11 @@ private:
 
     int _saveKey(String filepath,int mode);
 
-    ByteArray _aesECB(ByteArray data,int mode);
+    ByteArray _aesECB(ByteArray data);
 
-    ByteArray _aesCBC(ByteArray data,unsigned char *ivec,int mode);
+    ByteArray _aesCBC(ByteArray data,unsigned char *ivec);
+
+    ByteArray _aseFile(File in,File out);
 
     int loadKey(File file,int mode);
 };

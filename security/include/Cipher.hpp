@@ -71,12 +71,21 @@ public:
     virtual void init(int mode,SecretKey key);
 
 protected:
-    void doPKCS7Padding(ByteArray,int blocksize);
+    void doPadding(ByteArray,int blocksize = 8); //PCKS5 is 8bit size
+    void doUnPadding(ByteArray);
 
 private:
     void setAlgorithm(int);
     void setPattern(int);
     void setPadding(int);
+
+    void doPKCS7Padding(ByteArray,int blocksize);
+    void doPKCS5Padding(ByteArray);
+    void doPKCSZeroPadding(ByteArray,int blocksize);
+
+    void doPKCS7UnPadding(ByteArray);
+    void doPKCS5UnPadding(ByteArray);
+    void doPKCSZeroUnPadding(ByteArray);
 
     int algorithmType;
     int patternType;

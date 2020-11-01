@@ -55,11 +55,93 @@ void _Cipher::init(int mode,SecretKey key) {
     mKey = key;
 }
 
+void _Cipher::doPadding(ByteArray data,int blocksize) {
+    switch(paddingType) {
+        case ZeroPadding:
+            doPKCSZeroPadding(data,blocksize);
+        break;
+
+        case PKCS7Padding:
+            doPKCS7Padding(data,blocksize);
+        break;
+
+        case PKCS5Padding:
+            doPKCS5Padding(data);
+        break;
+
+        case PKCS1Padding:
+            //TODO
+        break;
+
+        case PKCS8Padding:
+            //TODO
+        break;    
+    }
+}
+
+void _Cipher::doUnPadding(ByteArray data) {
+    switch(paddingType) {
+        case ZeroPadding:
+            doPKCSZeroUnPadding(data);
+        break;
+
+        case PKCS7Padding:
+            doPKCS7UnPadding(data);
+        break;
+
+        case PKCS5Padding:
+            doPKCS5UnPadding(data);
+        break;
+
+        case PKCS1Padding:
+            //TODO
+        break;
+
+        case PKCS8Padding:
+            //TODO
+        break;    
+    }
+}
+
 void _Cipher::doPKCS7Padding(ByteArray data,int blocksize) {
     byte paddingSize = (blocksize - (data->size()%blocksize));
     ByteArray padding = createByteArray((int)paddingSize);
     padding->fill(paddingSize);
     data->append(padding);
+}
+
+void _Cipher::doPKCS5Padding(ByteArray data) {
+    doPKCS7Padding(data,8);
+}
+
+void _Cipher::doPKCSZeroPadding(ByteArray data,int blocksize) {
+    byte paddingSize = (blocksize - (data->size()%blocksize));
+    if(paddingSize != blocksize) {
+        ByteArray padding = createByteArray((int)paddingSize);
+        padding->fill(0);
+        data->append(padding);
+    }
+}
+
+void _Cipher::doPKCS7UnPadding(ByteArray data) {
+    int paddingsize = data->at(data->size() - 1);
+    data->quickShrink(data->size() - paddingsize);
+}
+
+void _Cipher::doPKCS5UnPadding(ByteArray data) {
+    int paddingsize = data->at(data->size() - 1);
+    data->quickShrink(data->size() - paddingsize);
+}
+
+void _Cipher::doPKCSZeroUnPadding(ByteArray data) {
+    int index = data->size() - 1;
+    for(;index > 0;index--) {
+        if(data->at(index) != 0) {
+            break;
+        }
+    }
+
+    data->quickShrink(index);
 }
 
 }

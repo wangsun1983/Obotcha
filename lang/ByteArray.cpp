@@ -253,7 +253,6 @@ int _ByteArray::append(byte *data,int len) {
 
 String _ByteArray::toString() {
     char _buff[mSize + 1] = {0};
-    memcpy(_buff,buff,mSize);
     return createString(&_buff[0],0,mSize);
 }
 
