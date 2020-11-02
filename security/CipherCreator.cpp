@@ -1,5 +1,6 @@
 #include "CipherCreator.hpp"
 #include "Log.hpp"
+#include "Aes.hpp"
 
 namespace obotcha {
 
@@ -10,33 +11,18 @@ Cipher _CipherCreator::getInstance(String param) {
         return nullptr;
     }
 
-    //get algorithm type
-    String algorithm = params->get(0);
-    int algorithmType = -1;
-    if(algorithm->equalsIgnoreCase(st(Cipher)::AesStr)) {
-        algorithmType = st(Cipher)::AES;
-    } else if(algorithm->equalsIgnoreCase(st(Cipher)::DesStr)) {
-        algorithmType = st(Cipher)::DES;
-    } else if(algorithm->equalsIgnoreCase(st(Cipher)::RsaStr)) {
-        algorithmType = st(Cipher)::RSA;
-    }
-
-    if(algorithmType == -1) {
-        return nullptr;
-    }
-
     //get pattern
     String pattern = params->get(1);
     int patternType = -1;
     if(pattern->equalsIgnoreCase(st(Cipher)::CbcStr)) {
         patternType = st(Cipher)::CBC;
-    } else if(algorithm->equalsIgnoreCase(st(Cipher)::EcbStr)) {
+    } else if(pattern->equalsIgnoreCase(st(Cipher)::EcbStr)) {
         patternType = st(Cipher)::ECB;
-    } else if(algorithm->equalsIgnoreCase(st(Cipher)::CtrStr)) {
+    } else if(pattern->equalsIgnoreCase(st(Cipher)::CtrStr)) {
         patternType = st(Cipher)::CTR;
-    } else if(algorithm->equalsIgnoreCase(st(Cipher)::OcfStr)) {
+    } else if(pattern->equalsIgnoreCase(st(Cipher)::OcfStr)) {
         patternType = st(Cipher)::OCF;
-    }else if(algorithm->equalsIgnoreCase(st(Cipher)::CfbStr)) {
+    }else if(pattern->equalsIgnoreCase(st(Cipher)::CfbStr)) {
         patternType = st(Cipher)::CFB;
     }
 
@@ -63,8 +49,24 @@ Cipher _CipherCreator::getInstance(String param) {
         return nullptr;
     }
 
-    //start create cipher
+    //get algorithm type
+    String algorithm = params->get(0);
+    int algorithmType = -1;
+    if(algorithm->equalsIgnoreCase(st(Cipher)::AesStr)) {
+        algorithmType = st(Cipher)::AES;
+        Aes c = createAes();
+        c->setPadding(paddingType);
+        c->setPattern(patternType);
+        return (Cipher)c;
+    } else if(algorithm->equalsIgnoreCase(st(Cipher)::DesStr)) {
+        algorithmType = st(Cipher)::DES;
+        //TODO
+    } else if(algorithm->equalsIgnoreCase(st(Cipher)::RsaStr)) {
+        algorithmType = st(Cipher)::RSA;
+        //TODO
+    }
 
+    return nullptr;
 }
 
 Cipher _CipherCreator::getInstance(const char *param) {

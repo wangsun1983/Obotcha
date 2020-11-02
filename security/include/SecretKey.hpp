@@ -11,11 +11,18 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(SecretKey) {
 public:
     _SecretKey();
+    
     File getFile();
+    void setFile(File);
+    
     ByteArray getContent();
+    void setContent(ByteArray);
 
 private:
+    int type;
+
     File mSecretFile;
+    
     ByteArray mSecretContent;
 };
 

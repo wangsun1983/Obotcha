@@ -1,0 +1,164 @@
+#include <stdio.h>
+#include <unistd.h>
+
+#include "Handler.hpp"
+#include "Message.hpp"
+#include "System.hpp"
+#include "ByteArrayReader.hpp"
+#include "ByteArrayWriter.hpp"
+
+using namespace obotcha;
+
+#include <thread>
+#include <atomic>
+#include <iostream>
+#include <list>
+
+using namespace std;
+
+
+int main() {
+
+    /*
+    int testSampe = 0x12564;
+    char tt[8];
+    
+    memcpy(&tt[0],&testSampe,sizeof(int));
+    testSampe++;
+    memcpy(&tt[4],&testSampe,sizeof(int));
+
+    printf("t[0] is %x \n",tt[0]);
+    printf("t[1] is %x \n",tt[1]);
+    printf("t[2] is %x \n",tt[2]);
+    printf("t[3] is %x \n",tt[3]);
+    printf("t[4] is %x \n",tt[4]);
+    printf("t[5] is %x \n",tt[5]);
+    printf("t[6] is %x \n",tt[6]);
+    printf("t[7] is %x \n",tt[7]);
+    
+    int a1 = 0;
+    memcpy(&a1,&tt[0],sizeof(int));
+
+    int a2 = 0;
+    memcpy(&a2,&tt[4],sizeof(int));
+
+    printf("a1 is %x,a2 is %x \n",a1,a2);
+
+    ByteArray array = createByteArray((const byte *)tt,8);
+    ByteArrayReader reader = createByteArrayReader(array);
+
+    int b1 = reader->readInt();
+    int b2 = reader->readInt();
+
+    printf("b1 is %x,b2 is %x \n",b1,b2);*/
+
+/*
+    int testSampe = 0x12345;
+    char tt[256];
+    int index = 0;
+    while(1) {
+        memcpy(&tt[index],&testSampe,sizeof(int));
+        index += 4;
+        testSampe++;
+        printf("data is %x \n",testSampe);
+        if(index >= 256) {
+            break;
+        }
+    }
+
+
+    ByteArrayReader reader = createByteArrayReader(createByteArray((const byte *)tt,256));
+    while(reader->getRemainSize() >0) {
+        printf("i get value is %x \n",reader->readInt());
+    }
+
+    printf("remain size is %d \n",reader->getRemainSize());
+    */
+
+/*
+    int testSampe = 0x12345;
+    ByteArrayWriter writer = createByteArrayWriter();
+    writer->writeInt(testSampe);
+    testSampe++;
+    writer->writeInt(testSampe);
+
+    ByteArray array = writer->getByteArray();
+    printf("array size is %d \n",array->size());
+    printf("array[0] is %x \n",array->at(0));
+    printf("array[1] is %x \n",array->at(1));
+    printf("array[2] is %x \n",array->at(2));
+    printf("array[3] is %x \n",array->at(3));
+    printf("array[4] is %x \n",array->at(4));
+    printf("array[5] is %x \n",array->at(5));
+    printf("array[6] is %x \n",array->at(6));
+    printf("array[7] is %x \n",array->at(7));
+
+    byte *arr = array->toValue();
+    int a1 = 0;
+    memcpy(&a1,&arr[0],sizeof(int));
+
+    int a2 = 0;
+    memcpy(&a2,&arr[4],sizeof(int));
+    printf("a1 is %x,a2 is %x \n",a1,a2);*/
+
+/*
+    int testSampe = 0x12345;
+    ByteArrayWriter writer = createByteArrayWriter(st(ByteArrayWriter)::BigEndian);
+    writer->writeInt(testSampe);
+    testSampe++;
+    writer->writeInt(testSampe);
+
+    ByteArray array = writer->getByteArray();
+    printf("array size is %d \n",array->size());
+    printf("array[0] is %x \n",array->at(0));
+    printf("array[1] is %x \n",array->at(1));
+    printf("array[2] is %x \n",array->at(2));
+    printf("array[3] is %x \n",array->at(3));
+    printf("array[4] is %x \n",array->at(4));
+    printf("array[5] is %x \n",array->at(5));
+    printf("array[6] is %x \n",array->at(6));
+    printf("array[7] is %x \n",array->at(7));
+
+    ByteArrayReader reader = createByteArrayReader(array,st(ByteArrayWriter)::BigEndian);
+    printf("v1 is %x \n",reader->readInt());
+    printf("v2 is %x \n",reader->readInt());*/
+
+
+/*
+    long testSampe = 0x12345;
+    ByteArrayWriter writer = createByteArrayWriter(st(ByteArrayWriter)::BigEndian);
+    writer->writeLong(testSampe);
+    testSampe++;
+    writer->writeLong(testSampe);
+    testSampe++;
+    writer->writeLong(testSampe);
+    testSampe++;
+    writer->writeLong(testSampe);
+    testSampe++;
+    writer->writeLong(testSampe);
+    testSampe++;
+    writer->writeLong(testSampe);
+
+    ByteArray array = writer->getByteArray();
+    printf("array size is %d \n",array->size());
+    printf("array[0] is %x \n",array->at(0));
+    printf("array[1] is %x \n",array->at(1));
+    printf("array[2] is %x \n",array->at(2));
+    printf("array[3] is %x \n",array->at(3));
+    printf("array[4] is %x \n",array->at(4));
+    printf("array[5] is %x \n",array->at(5));
+    printf("array[6] is %x \n",array->at(6));
+    printf("array[7] is %x \n",array->at(7));
+
+    ByteArrayReader reader = createByteArrayReader(array,st(ByteArrayWriter)::BigEndian);
+    printf("v1 is %lx \n",reader->readLong());
+    printf("v2 is %lx \n",reader->readLong());
+    printf("v3 is %lx \n",reader->readLong());
+    printf("v4 is %lx \n",reader->readLong());
+    printf("v5 is %lx \n",reader->readLong());
+    printf("v6 is %lx \n",reader->readLong());
+    printf("remain size is %d \n",reader->getRemainSize());*/
+
+
+    
+}

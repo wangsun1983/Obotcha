@@ -103,11 +103,20 @@ void _Cipher::doUnPadding(ByteArray data) {
     }
 }
 
+
+SecretKey _Cipher::getSecretKey() {
+    return mKey;
+}
+
 void _Cipher::doPKCS7Padding(ByteArray data,int blocksize) {
+    printf("doPKCS7Padding start,blocksize is %d \n",blocksize);
     byte paddingSize = (blocksize - (data->size()%blocksize));
+    printf("paddingSize is %d \n",paddingSize);
     ByteArray padding = createByteArray((int)paddingSize);
     padding->fill(paddingSize);
+    printf("padding size is %d \n",padding->size());
     data->append(padding);
+    printf("data size is %d \n",data->size());
 }
 
 void _Cipher::doPKCS5Padding(ByteArray data) {

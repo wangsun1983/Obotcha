@@ -12,11 +12,8 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(Aes) IMPLEMENTS(Cipher) {
 
-public:
-    _Aes();
-    
-    int genKey(String decKeyFile,String encKeyFile);
-    int genKey(String decKeyFile,String encKeyFile,String content);
+public:   
+    int genKey(String decKeyFile,String encKeyFile,ArrayList<String>params);
     
     ByteArray encrypt(ByteArray in);
     void encrypt(File in,File out);
@@ -24,27 +21,15 @@ public:
     ByteArray decrypt(ByteArray in);
     void decrypt(File in,File out);
 
-    void init(int mode,SecretKey key);
-
 private:
 
-    AES_KEY mEncryptKey;
-
-    AES_KEY mDecryptKey;
-
-    int _genKey(String content);
-
-    int _genKey();
-
-    int _saveKey(String filepath,int mode);
+    int _genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt);
 
     ByteArray _aesECB(ByteArray data);
 
     ByteArray _aesCBC(ByteArray data,unsigned char *ivec);
 
-    ByteArray _aseFile(File in,File out);
-
-    int loadKey(File file,int mode);
+    void _aseFile(File in,File out);
 };
 
 }

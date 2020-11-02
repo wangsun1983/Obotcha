@@ -63,16 +63,17 @@ public:
 
     virtual ByteArray decrypt(ByteArray in) = 0;
     virtual void decrypt(File in,File out) = 0;
+    virtual void init(int mode,SecretKey key);
 
     int getAlgorithm();
     int getPattern();
     int getPadding();
     int getMode();
-    virtual void init(int mode,SecretKey key);
 
 protected:
     void doPadding(ByteArray,int blocksize = 8); //PCKS5 is 8bit size
     void doUnPadding(ByteArray);
+    SecretKey getSecretKey();
 
 private:
     void setAlgorithm(int);

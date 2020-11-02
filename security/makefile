@@ -9,6 +9,8 @@ objs += $(outtmp)/crc32.o \
 		$(outtmp)/sha.o \
 		$(outtmp)/ciphercreator.o \
 		$(outtmp)/secretkey.o \
+		$(outtmp)/secretkeygenrator.o \
+		$(outtmp)/cipher.o \
 		
 
 $(outtmp)/crc32.o :$(securityDir)/Crc32.cpp
@@ -16,6 +18,9 @@ $(outtmp)/crc32.o :$(securityDir)/Crc32.cpp
 
 $(outtmp)/ciphercreator.o :$(securityDir)/CipherCreator.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/CipherCreator.cpp -o $(outtmp)/ciphercreator.o $(external)
+
+$(outtmp)/cipher.o :$(securityDir)/Cipher.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/Cipher.cpp -o $(outtmp)/cipher.o $(external)
 
 $(outtmp)/md.o :$(securityDir)/Md.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/Md.cpp -o $(outtmp)/md.o $(external)
@@ -37,3 +42,6 @@ $(outtmp)/sha.o :$(securityDir)/Sha.cpp
 
 $(outtmp)/secretkey.o :$(securityDir)/SecretKey.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/SecretKey.cpp -o $(outtmp)/secretkey.o $(external)
+
+$(outtmp)/secretkeygenrator.o :$(securityDir)/SecretKeyGenerator.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/SecretKeyGenerator.cpp -o $(outtmp)/secretkeygenrator.o $(external)
