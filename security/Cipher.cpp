@@ -3,6 +3,8 @@
 #include "ByteArray.hpp"
 #include "File.hpp"
 #include "Cipher.hpp"
+#include "FileInputStream.hpp"
+#include "FileOutputStream.hpp"
 
 namespace obotcha {
 
@@ -53,6 +55,14 @@ int _Cipher::getMode() {
 void _Cipher::init(int mode,SecretKey key) {
     mMode = mode;
     mKey = key;
+}
+
+void _Cipher::encrypt(File in,File out) {
+    doEncryptOrDescrypt(in,out);
+}
+
+void _Cipher::decrypt(File in,File out) {
+    doEncryptOrDescrypt(in,out);
 }
 
 void _Cipher::doPadding(ByteArray data,int blocksize) {
@@ -134,6 +144,7 @@ void _Cipher::doPKCSZeroPadding(ByteArray data,int blocksize) {
 
 void _Cipher::doPKCS7UnPadding(ByteArray data) {
     int paddingsize = data->at(data->size() - 1);
+    printf("doPKCS7UnPadding paddingsize is %d \n",paddingsize);
     data->quickShrink(data->size() - paddingsize);
 }
 
@@ -151,6 +162,46 @@ void _Cipher::doPKCSZeroUnPadding(ByteArray data) {
     }
 
     data->quickShrink(index);
+}
+
+
+void _Cipher::doEncryptOrDescrypt(File in,File out) {
+    if(!out->exists()) {
+        out->createNewFile();
+    }
+  
+    FileInputStream inputStream = createFileInputStream(in);
+    inputStream->open();
+    ByteArray inputData = inputStream->readAll();
+
+    if(inputData != nullptr) {
+        FileOutputStream outputStream = createFileOutputStream(out);
+        ByteArray outputData = nullptr;
+        
+        switch(getMode()) {
+            case Decrypt: {
+                printf("cipher doDecrypt \n");
+                outputData = decrypt(inputData);
+            }
+            break;
+
+            case Encrypt: {
+                printf("cipher doEncrypt \n");
+                outputData = encrypt(inputData);
+                printf("cipher doEncrypt size is %d \n",outputData->size());
+            }
+            break;
+        }
+
+        if(outputData != nullptr) {
+            outputStream->open(st(OutputStream)::Trunc);
+            outputStream->write(outputData);
+            outputStream->flush();
+            outputStream->close();
+        }
+    }
+
+    inputStream->close();
 }
 
 }

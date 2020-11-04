@@ -1,6 +1,7 @@
 #include "CipherCreator.hpp"
 #include "Log.hpp"
 #include "Aes.hpp"
+#include "Des.hpp"
 
 namespace obotcha {
 
@@ -53,16 +54,19 @@ Cipher _CipherCreator::getInstance(String param) {
     String algorithm = params->get(0);
     int algorithmType = -1;
     if(algorithm->equalsIgnoreCase(st(Cipher)::AesStr)) {
-        algorithmType = st(Cipher)::AES;
+        algorithmType = st(Cipher)::CipherAES;
         Aes c = createAes();
         c->setPadding(paddingType);
         c->setPattern(patternType);
         return (Cipher)c;
     } else if(algorithm->equalsIgnoreCase(st(Cipher)::DesStr)) {
-        algorithmType = st(Cipher)::DES;
-        //TODO
+        algorithmType = st(Cipher)::CipherDES;
+        Des c = createDes();
+        c->setPadding(paddingType);
+        c->setPattern(patternType);
+        return (Cipher)c;
     } else if(algorithm->equalsIgnoreCase(st(Cipher)::RsaStr)) {
-        algorithmType = st(Cipher)::RSA;
+        algorithmType = st(Cipher)::CipherRSA;
         //TODO
     }
 

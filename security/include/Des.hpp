@@ -6,74 +6,26 @@
 #include "File.hpp"
 #include "String.hpp"
 #include "ByteArray.hpp"
+#include "Cipher.hpp"
 
 namespace obotcha {
 
-#define DES_KEY_SIZE 8
-
-enum DesType {
-    DesTypeECB,
-    DesTypeCBC,
-};
-
-enum DesMode {
-    DesEncrypt = DES_ENCRYPT,
-    DesDecrypt = DES_DECRYPT
-};
-
-DECLARE_SIMPLE_CLASS(Des) {
+DECLARE_SIMPLE_CLASS(Des) IMPLEMENTS(Cipher){
 
 public:
-    _Des(int destype);
+    ByteArray encrypt(ByteArray in);
+    void encrypt(File in,File out);
 
-    _Des();
-
-    void encrypt(File src,File des);
-    void decrypt(File src,File des);
-    
-    ByteArray encrypt(ByteArray);
-    ByteArray decrypt(ByteArray);
-
-    String decrypt(String str);
-
-    String encrypt(String str);
-
-    int genKey(File);
-
-    int genKey(String filepath);
-
-    int genKey(const char * filepath);
-
-    int genKey(File,String content);
-
-    int genKey(String filepath,String content);
-
-    int genKey(const char * filepath,String content);
-
-    int loadKey(File);
-
-    int loadKey(String);
-
-    int loadKey(const char *);
+    ByteArray decrypt(ByteArray in);
+    void decrypt(File in,File out);
 
 private:
 
-    int mDesType;
+    ByteArray _desECB(ByteArray data,DES_key_schedule *schedule);
 
-    void fileOperation(int mode,File input,File output);
+    ByteArray _desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *ivec);
 
-    ByteArray _desECB(ByteArray data,DES_key_schedule *schedule,int mode);
-
-    ByteArray _desCBC(ByteArray data,DES_key_schedule *schedule,DES_cblock *ivec,int mode);
-
-    int _genKey(String content);
-
-    int _genKey();
-
-    int _saveKey(String filepath);
-    
-    DES_cblock mKey;
-
+    void _desFile(File in,File out);
 };
 
 }

@@ -16,10 +16,8 @@ public:
     int genKey(String decKeyFile,String encKeyFile,ArrayList<String>params);
     
     ByteArray encrypt(ByteArray in);
-    void encrypt(File in,File out);
 
     ByteArray decrypt(ByteArray in);
-    void decrypt(File in,File out);
 
 private:
 
@@ -28,8 +26,6 @@ private:
     ByteArray _aesECB(ByteArray data);
 
     ByteArray _aesCBC(ByteArray data,unsigned char *ivec);
-
-    void _aseFile(File in,File out);
 };
 
 }

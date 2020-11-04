@@ -9,9 +9,20 @@ objs += $(outtmp)/crc32.o \
 		$(outtmp)/sha.o \
 		$(outtmp)/ciphercreator.o \
 		$(outtmp)/secretkey.o \
-		$(outtmp)/secretkeygenrator.o \
+		$(outtmp)/secretkeycreator.o \
 		$(outtmp)/cipher.o \
+		$(outtmp)/asesecretkey.o \
+		$(outtmp)/dessecretkey.o \
+		$(outtmp)/rsasecretkey.o \
 		
+$(outtmp)/asesecretkey.o :$(securityDir)/AesSecretKey.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/AesSecretKey.cpp -o $(outtmp)/asesecretkey.o $(external)		
+
+$(outtmp)/dessecretkey.o :$(securityDir)/DesSecretKey.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/DesSecretKey.cpp -o $(outtmp)/dessecretkey.o $(external)
+
+$(outtmp)/rsasecretkey.o :$(securityDir)/RsaSecretKey.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/RsaSecretKey.cpp -o $(outtmp)/rsasecretkey.o $(external)	
 
 $(outtmp)/crc32.o :$(securityDir)/Crc32.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/Crc32.cpp -o $(outtmp)/crc32.o $(external)
@@ -43,5 +54,5 @@ $(outtmp)/sha.o :$(securityDir)/Sha.cpp
 $(outtmp)/secretkey.o :$(securityDir)/SecretKey.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/SecretKey.cpp -o $(outtmp)/secretkey.o $(external)
 
-$(outtmp)/secretkeygenrator.o :$(securityDir)/SecretKeyGenerator.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/SecretKeyGenerator.cpp -o $(outtmp)/secretkeygenrator.o $(external)
+$(outtmp)/secretkeycreator.o :$(securityDir)/SecretKeyCreator.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(securityDir)/SecretKeyCreator.cpp -o $(outtmp)/secretkeycreator.o $(external)

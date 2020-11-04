@@ -10,42 +10,24 @@ extern "C" {
 #include "File.hpp"
 #include "String.hpp"
 #include "ByteArray.hpp"
+#include "SecretKey.hpp"
+#include "Cipher.hpp"
 
 namespace obotcha {
 
-enum RsaMode {
-    RsaEncrypt,
-    RsaDecrypt,
-};
 
-enum RsaKeyType {
-    RsaKeyTypeRSA3 = RSA_3,
-    RsaKeyTypeRSAF4 = RSA_F4,
-};
-
-enum RsaKeyHeadType {
-    PKCS_1,
-    PKCS_8
-};
-
-DECLARE_SIMPLE_CLASS(Rsa) {
+DECLARE_SIMPLE_CLASS(Rsa) IMPLEMENTS(Cipher) {
 
 public:
-    _Rsa();
+    ByteArray encrypt(ByteArray in);
+    ByteArray decrypt(ByteArray in);
 
-    void genKey(String pubkey,String privkey,int keytype,int keyheadtype);
-    void genKey(String pubkey,String privkey);
-
-    void loadPrivateKey(String);
-    void loadPublicKey(String);
-
-    ByteArray encrypt(String);
-    ByteArray decrypt(ByteArray);
+    enum RsaKeyType {
+        RSA3 = RSA_3,
+        RSAF4 = RSA_F4,
+    };
 
 private:
-    RSA *mPubRsaKey;
-    RSA *mPrivRsaKey;
-
     int prikey_encrypt(const unsigned char *in, int in_len,
                    unsigned char **out, int &out_len);
 

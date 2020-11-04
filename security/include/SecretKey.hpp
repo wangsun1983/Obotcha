@@ -10,20 +10,13 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(SecretKey) {
 public:
-    _SecretKey();
-    
-    File getFile();
-    void setFile(File);
-    
-    ByteArray getContent();
-    void setContent(ByteArray);
+    virtual void *get() = 0;
+    virtual int loadEncryptKey(String path) = 0;
+    virtual int loadDecryptKey(String path) = 0;
+    int generate(String decKeyFile,String encKeyFile,String params);
+protected:
+    virtual int generate(String decKeyFile,String encKeyFile,ArrayList<String>params) = 0;
 
-private:
-    int type;
-
-    File mSecretFile;
-    
-    ByteArray mSecretContent;
 };
 
 }

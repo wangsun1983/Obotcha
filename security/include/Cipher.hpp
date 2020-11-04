@@ -36,7 +36,9 @@ public:
         PKCS7Padding,
         PKCS5Padding,
         PKCS1Padding,
-        PKCS8Padding   
+        PKCS8Padding,
+        OAEPPadding,
+        PSSPadding,
     };
 
     enum Mode {
@@ -45,9 +47,9 @@ public:
     };
 
     enum CipherType {
-        AES = 0,
-        DES,
-        RSA
+        CipherAES = 0,
+        CipherDES,
+        CipherRSA
     };
 
     enum CipherPattern {
@@ -59,10 +61,10 @@ public:
     };
 
     virtual ByteArray encrypt(ByteArray in) = 0;
-    virtual void encrypt(File in,File out) = 0;
+    void encrypt(File in,File out);
 
     virtual ByteArray decrypt(ByteArray in) = 0;
-    virtual void decrypt(File in,File out) = 0;
+    void decrypt(File in,File out);
     virtual void init(int mode,SecretKey key);
 
     int getAlgorithm();
@@ -72,14 +74,6 @@ public:
 
 protected:
     void doPadding(ByteArray,int blocksize = 8); //PCKS5 is 8bit size
-    void doUnPadding(ByteArray);
-    SecretKey getSecretKey();
-
-private:
-    void setAlgorithm(int);
-    void setPattern(int);
-    void setPadding(int);
-
     void doPKCS7Padding(ByteArray,int blocksize);
     void doPKCS5Padding(ByteArray);
     void doPKCSZeroPadding(ByteArray,int blocksize);
@@ -87,6 +81,15 @@ private:
     void doPKCS7UnPadding(ByteArray);
     void doPKCS5UnPadding(ByteArray);
     void doPKCSZeroUnPadding(ByteArray);
+
+    void doUnPadding(ByteArray);
+    SecretKey getSecretKey();
+
+private:
+    void setAlgorithm(int);
+    void setPattern(int);
+    void setPadding(int);
+    void doEncryptOrDescrypt(File in,File out);
 
     int algorithmType;
     int patternType;

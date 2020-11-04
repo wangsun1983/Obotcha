@@ -3,11 +3,35 @@
 #include "ByteArray.hpp"
 #include "File.hpp"
 #include "IllegalArgumentException.hpp"
-#include "SecretKeyGenerator.hpp"
-#include "Aes.hpp"
+#include "SecretKeyCreator.hpp"
+#include "AesSecretKey.hpp"
+#include "Cipher.hpp"
 
 namespace obotcha {
 
+//RSA or ECB
+SecretKey _SecretKeyCreator::getInstance(String param) {
+    //get algorithm type
+    int algorithmType = -1;
+    if(param->equalsIgnoreCase(st(Cipher)::AesStr)) {
+        algorithmType = st(Cipher)::CipherAES;
+        AesSecretKey c = createAesSecretKey();
+        return (SecretKey)c;
+    } else if(param->equalsIgnoreCase(st(Cipher)::DesStr)) {
+        algorithmType = st(Cipher)::CipherDES;
+        
+    } else if(param->equalsIgnoreCase(st(Cipher)::RsaStr)) {
+        algorithmType = st(Cipher)::CipherRSA;
+        //TODO
+    }
+}
+
+SecretKey _SecretKeyCreator::getInstance(const char * param) {
+    return getInstance(createString(param));
+}
+
+
+#if 0    
 //DES/xxxxx(content)/RSA TYPE/RSA HEAD Type
 int _SecretKeyGenerator::genKey(String encrypt,String decrypt,String param) {
     ArrayList<String> params = param->split("/");
@@ -27,8 +51,8 @@ int _SecretKeyGenerator::genKey(String encrypt,String decrypt,String param) {
     int algorithmType = -1;
     if(algorithm->equalsIgnoreCase(st(Cipher)::AesStr)) {
         algorithmType = st(Cipher)::AES;
-        Aes c = createAes();
-        c->genKey(encrypt,decrypt,restParams);
+        //Aes c = createAes();
+        //c->genKey(encrypt,decrypt,restParams);
     } else if(algorithm->equalsIgnoreCase(st(Cipher)::DesStr)) {
         algorithmType = st(Cipher)::DES;
         //TODO
@@ -59,6 +83,7 @@ SecretKey _SecretKeyGenerator::loadKey(ByteArray content) {
     key->setContent(content);
     return key;
 }
+#endif
 
 }
 
