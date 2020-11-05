@@ -53,14 +53,9 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
 
     const char *c = content->toChars();
 
-    char keyBuff[AES_BLOCK_SIZE + 1];
-    memset(keyBuff,0,AES_BLOCK_SIZE + 1);
-    
-    if(content->size() > AES_BLOCK_SIZE) {
-        memcpy(keyBuff,c,AES_BLOCK_SIZE);
-    } else {
-        memcpy(keyBuff,c,content->size());
-    }
+    char keyBuff[AES_BLOCK_SIZE + 1] = {0};
+    int length = content->size() > AES_BLOCK_SIZE?AES_BLOCK_SIZE:content->size();
+    memcpy(keyBuff,c,length);
 
     if(AES_set_encrypt_key((const unsigned char*)keyBuff,128,encrypt) != 0) {
         return -GenKeyFail;

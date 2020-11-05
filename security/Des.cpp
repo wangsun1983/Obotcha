@@ -51,7 +51,10 @@ ByteArray _Des::decrypt(ByteArray input) {
 }
 
 ByteArray _Des::_desECB(ByteArray data,DES_key_schedule *schedule) {
-    doPadding(data,8);
+    if(getMode() == Encrypt) {
+        doPadding(data,8);
+    }
+
     int inputSize = data->size();
 
     ByteArray out = createByteArray(inputSize);
@@ -78,7 +81,9 @@ ByteArray _Des::_desECB(ByteArray data,DES_key_schedule *schedule) {
         output += 8;
     }
 
-    doUnPadding(out);
+    if(getMode() == Decrypt) {
+        doUnPadding(out);
+    }
     return out;
 }
 

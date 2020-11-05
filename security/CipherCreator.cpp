@@ -2,6 +2,7 @@
 #include "Log.hpp"
 #include "Aes.hpp"
 #include "Des.hpp"
+#include "Rsa.hpp"
 
 namespace obotcha {
 
@@ -67,7 +68,10 @@ Cipher _CipherCreator::getInstance(String param) {
         return (Cipher)c;
     } else if(algorithm->equalsIgnoreCase(st(Cipher)::RsaStr)) {
         algorithmType = st(Cipher)::CipherRSA;
-        //TODO
+        Rsa c = createRsa();
+        c->setPadding(paddingType);
+        c->setPattern(patternType);
+        return (Cipher)c;
     }
 
     return nullptr;
