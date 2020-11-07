@@ -29,7 +29,7 @@ _ZipFileStream::_ZipFileStream() {
 }
 
 long _ZipFileStream::read(ByteArray buffer) {
-    throw MethodNotSupportException(createString("ZipStream::read(ByteArray)"));
+    Trigger(MethodNotSupportException,"ZipStream::read(ByteArray)");
 }
 
 bool _ZipFileStream::open() {

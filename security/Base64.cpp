@@ -9,10 +9,6 @@
 
 namespace obotcha {
 
-_Base64::_Base64() {
-    //nothing
-}
-
 String _Base64::decode(String str) {
     int size = 0;
     char *p = _decode(str->toChars(),str->size(),false,&size);
@@ -77,16 +73,13 @@ char * _Base64::_encode(const char * input, int length, bool with_new_line,int *
     BIO_flush(b64);
     BIO_get_mem_ptr(b64, &bptr);
     
-    int encodeLength = bptr->length + 1;  //strlen(bptr->data) + 1;
+    int encodeLength = bptr->length;  //strlen(bptr->data) + 1;
 
     char * buff = (char *)malloc(encodeLength);
     memset(buff,0,encodeLength);
-
-    memcpy(buff, bptr->data, encodeLength - 1);
-    //buff[bptr->length - 1] = 0;
+    memcpy(buff, bptr->data, encodeLength);
     
     BIO_free_all(b64);
-    //BIO_free_all(bmem);
     *retLength = encodeLength;
     
     return buff;
@@ -104,12 +97,11 @@ char * _Base64::_decode(const char * input, int length, bool with_new_line,int *
     }
     bmem = BIO_new_mem_buf(input, length);
     bmem = BIO_push(b64, bmem);
-    BIO_read(bmem, buffer, length);
-    *retLen = strlen(buffer) + 1;
-
-    BIO_free_all(bmem);
-    //BIO_free_all(b64);
-
+    *retLen = BIO_read(bmem, buffer, length);
+    if(bmem) {
+        BIO_free_all(bmem);
+    }
+    
     return buffer;
 }
 

@@ -27,32 +27,43 @@ PKCS#8
 BASE64 ENCODED DATA
 -----END PUBLIC KEY----- or -----BEGIN PRIVATE KEY-----
 */
+class _Rsa;
 
 DECLARE_SIMPLE_CLASS(RsaSecretKey) IMPLEMENTS(SecretKey){
 
 public:
+    enum KeyType {
+        RsaPublicKey = 0,
+        RsaPrivateKey,
+    };
+
+    friend class _Rsa;
     _RsaSecretKey();
     void * get();
     int loadEncryptKey(String path);
     int loadDecryptKey(String path);
     int generate(String decKeyFile,String encKeyFile,ArrayList<String>params);
     ~_RsaSecretKey();
+
 private:
     RSA *mRsaKey;
+    int mKeyType;
 
     const static String PKCS1PublicKeyTag;
     const static String PKCS1PrivateKeyTag;
     const static String PKCS8PublicKeyTag;
     const static String PKCS8PrivateKeyTag;
 
-    enum PaddingType {
+    enum PKCSKeyType {
         PKCS1PublicKey = 0,
         PKCS1PrivateKey,
         PKCS8PublicKey,
         PKCS8PrivateKey,
     };
 
-    int getPaddingType(String path);
+    int getKeyType();
+
+    int getPaddingType(String);
 };
 
 }

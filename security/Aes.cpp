@@ -15,21 +15,20 @@
 
 namespace obotcha {
 
+static unsigned char default_iv[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
 ByteArray _Aes::encrypt(ByteArray buff) {
     if(getMode() != Encrypt) {
         Trigger(IllegalStateException,"do encrypt,but mode is decrypt");
     }
-    printf("start encrypt \n");
 
     switch(getPattern()) {
         case ECB:
-            printf("start encrypt1 \n");
             return _aesECB(buff);
         break;
 
         case CBC:
-            printf("start encrypt2 \n");
-            unsigned char default_iv[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            
             return _aesCBC(buff,default_iv);
         break;
     }
@@ -48,7 +47,6 @@ ByteArray _Aes::decrypt(ByteArray buff) {
         break;
 
         case CBC:
-            unsigned char default_iv[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             return _aesCBC(buff,default_iv);
         break;
     }
@@ -58,21 +56,17 @@ ByteArray _Aes::decrypt(ByteArray buff) {
 
 ByteArray _Aes::_aesECB(ByteArray data) {
     int inputSize = data->size();
-    printf("_aesECB start \n");
     if(getMode() == Encrypt) {
-        printf("_aesECB trace1 \n");
         doPKCS7Padding(data,AES_BLOCK_SIZE);
     }
-    printf("11111 data size is %d \n",data->size());
-
+    
     ByteArray out = createByteArray(data->size());
     char *output = (char *)out->toValue();
     char *input = (char *)data->toValue();
     int length = data->size();
-    printf("_aesECB trace2 \n");
+    
     switch(getMode()) {
         case Encrypt: {
-            printf("_aesECB trace3,length is %d,AES_BLOCK_SIZE is %d \n",length,AES_BLOCK_SIZE);
             for(int i = 0; i < length/AES_BLOCK_SIZE; i++){
                 AES_ecb_encrypt((unsigned char*)input,
                                 (unsigned char*)output,
@@ -96,14 +90,11 @@ ByteArray _Aes::_aesECB(ByteArray data) {
         }
         break;
     }
-    printf("_aesECB trace4 \n");
-    if(getMode() == Decrypt) {
-        printf("_aesECB trace5 \n");
-        doPKCS7UnPadding(out);
-        printf("_aesECB trace5_1 size is %d \n",out->size());
-    }
     
-     
+    if(getMode() == Decrypt) {
+        doPKCS7UnPadding(out);
+    }
+ 
     return out;
     
 }

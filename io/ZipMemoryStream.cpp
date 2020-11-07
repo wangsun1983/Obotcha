@@ -28,7 +28,7 @@ _ZipMemoryStream::_ZipMemoryStream(int compress_bit,int decompress_bit) {
     );
 
     if(ret != Z_OK){
-        throw InitializeException("Zip init failed");
+        Trigger(InitializeException,"Zip init failed");
     }
 
     ret = inflateInit2(
@@ -37,7 +37,7 @@ _ZipMemoryStream::_ZipMemoryStream(int compress_bit,int decompress_bit) {
     );
 
     if (ret != Z_OK) {
-        throw InitializeException("Zip init failed");
+        Trigger(InitializeException,"Zip init failed");
     }
 }
 

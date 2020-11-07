@@ -5,6 +5,8 @@
 #include "Rsa.hpp"
 #include "File.hpp"
 #include "FileInputStream.hpp"
+#include "Base64.hpp"
+#include "RsaSecretKey.hpp"
 
 extern "C" {
 #include "openssl/pem.h"
@@ -12,103 +14,108 @@ extern "C" {
 
 namespace obotcha {
 
+typedef int (*rsafunc)(int flen, const unsigned char *from, unsigned char *to,
+                       RSA *rsa, int padding);
+
+rsafunc RsaFunctions[2][2] = 
+{                    /*Decrytp*/            /*Encrypt*/
+/*RsaPublicKey*/   {RSA_public_decrypt,    RSA_public_encrypt   },
+/*RsaPrivateKey*/  {RSA_private_decrypt,   RSA_private_encrypt  }
+};
 
 ByteArray _Rsa::decrypt(ByteArray content) {
-    int length = 0;
-    unsigned char *output = nullptr;
-    int size = prikey_decrypt((const unsigned char*)content->toValue(),content->size(),&output,length);
-    ByteArray result = createByteArray(output,length);
-    if(output != nullptr) {
-        free(output);
-    }
-
-    return result;
+    return doRsa(content,st(Cipher)::Decrypt);
 }
 
 ByteArray _Rsa::encrypt(ByteArray content) {
-    int length = 0;
-    unsigned char *output = nullptr;
-    printf("encrypt content is %s \n",content->toString()->toChars());
-    int size = pubkey_encrypt((const unsigned char*)content->toValue(),content->size(),&output,length);
-    ByteArray result = createByteArray(output,length);
-    if(output != nullptr) {
-        free(output);
-    }
-
-    return result;
+    return doRsa(content,st(Cipher)::Encrypt);
 }
 
-int _Rsa::prikey_encrypt(const unsigned char *in, int in_len,
-                   unsigned char **out, int &out_len)
-{
-    out_len =  RSA_size((const RSA*)getSecretKey()->get());
-    *out =  (unsigned char *)malloc(out_len);
-    if(NULL == *out)
-    {
-        return -1;
-    }
-    memset((void *)*out, 0, out_len);
+ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
+    const RSA * key = (const RSA*)getSecretKey()->get();
+    int key_len =  RSA_size(key);
+    int encrypt_len = key_len;
+    int paddingMode = RSA_PKCS1_PADDING;
+    ByteArray out = nullptr;
+    RsaSecretKey rsaKey = transform_cast<tp(RsaSecretKey)>(getSecretKey());
+    Base64 base64 = createBase64();
+
     switch(getPadding()) {
         case PKCS1Padding:
-        return RSA_private_encrypt(in_len, in, *out, (RSA*)getSecretKey()->get(), RSA_PKCS1_PADDING);
+            encrypt_len = key_len - 11;
+            paddingMode = RSA_PKCS1_PADDING;
+        break;
+
+        default:
+        //TODO
         break;
     }
 
-    return -1;
-}
-
-
-int _Rsa::pubkey_decrypt(const unsigned char *in, int in_len,
-                           unsigned char **out, int &out_len)
-{
-    out_len =  RSA_size((const RSA*)getSecretKey()->get());
-    *out =  (unsigned char *)malloc(out_len);
-    if(nullptr == *out) {
-        return -1;
-    }
-    memset((void *)*out, 0, out_len);
-    switch(getPadding()) {
-        case PKCS1Padding:
-        return RSA_public_decrypt(in_len, in, *out, (RSA*)getSecretKey()->get(), RSA_PKCS1_PADDING);
-    }
-    return -1;
-}
-
-int _Rsa::pubkey_encrypt(const unsigned char *in, int in_len,
-                           unsigned char **out, int &out_len)
-{
-    const RSA * key = (const RSA*)getSecretKey()->get();
-    out_len =  RSA_size(key);
-    *out =  (unsigned char *)malloc(out_len + 1);
-    if(nullptr == *out) {
-        return -1;
+    //in Encrypt mode,use key length.
+    if(mode == st(Cipher)::Decrypt) {
+        encrypt_len = key_len;
+        inputdata = base64->decode(inputdata);
     }
 
-    memset((void *)*out, 0, out_len + 1);
-    switch(getPadding()) {
-        case PKCS1Padding:
-        return RSA_public_encrypt(in_len, in, *out, (RSA*)getSecretKey()->get(), RSA_PKCS1_PADDING);
+    int rsaKeyMode = rsaKey->getKeyType();
+    rsafunc rsafunction = RsaFunctions[rsaKeyMode][mode];
+    
+    int inputsize = inputdata->size();
+    
+    if(inputsize > encrypt_len) {
+        int times = inputsize/(encrypt_len); 
+        char *input = (char *)inputdata->toValue();
+        for(int i = 0; i < times; i++) {
+            ByteArray outputdata = createByteArray(key_len * 2);
+            int encryptSize = rsafunction(encrypt_len,
+                                                (unsigned char *)input,
+                                                (unsigned char*)outputdata->toValue(),
+                                                (RSA*)getSecretKey()->get(),
+                                                paddingMode);
+            input += encrypt_len;
+            outputdata->quickShrink(encryptSize);
+            if(out == nullptr) {
+                out = outputdata;
+            } else {
+                out->append(outputdata);
+            } 
+        }
+        
+        int remain = inputsize%encrypt_len;
+        if(remain > 0) {
+            input = (char *)inputdata->toValue();
+            input += times*encrypt_len;
+            ByteArray outputdata = createByteArray(key_len * 2);
+            int encryptSize = rsafunction(remain,
+                                                (unsigned char *)input,
+                                                (unsigned char*)outputdata->toValue(),
+                                                (RSA*)getSecretKey()->get(),
+                                                paddingMode);
+            outputdata->quickShrink(encryptSize);
+            if(out == nullptr) {
+                out = outputdata;
+            } else {
+                out->append(outputdata);
+            }
+        }
+    } else {
+        char *input = (char *)inputdata->toValue();
+        ByteArray outputdata = createByteArray(key_len * 4);
+        int encryptSize = rsafunction(inputsize,
+                                            (unsigned char *)input,
+                                            (unsigned char*)outputdata->toValue(),
+                                            (RSA*)getSecretKey()->get(),
+                                            paddingMode);
+        outputdata->quickShrink(encryptSize);
+        out = outputdata;
     }
-    return -1;
-}
- 
 
-int _Rsa::prikey_decrypt(const unsigned char *in, int in_len,
-                           unsigned char **out, int &out_len)
-{
-    OpenSSL_add_all_algorithms();  
-    out_len =  RSA_size((const RSA*)getSecretKey()->get());
-    *out =  (unsigned char *)malloc(out_len + 1);
-    if(nullptr == *out) {
-        return -1;
+    //in Encrypt mode, the data should do base64 & save
+    if(mode == st(Cipher)::Encrypt) {
+        return base64->encode(out);
     }
-    memset((void *)*out, 0, out_len + 1);
-    switch(getPadding()) {
-        case PKCS1Padding:
-        return RSA_private_decrypt(in_len, in, *out, (RSA*)getSecretKey()->get(), getPadding());
-    }
- 
-    return -1;
+
+    return out;
 }
 
 }

@@ -14,7 +14,6 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(Base64) {
 
 public:
-    _Base64();
 
     String decode(String str);
 

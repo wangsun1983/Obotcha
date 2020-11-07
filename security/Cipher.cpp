@@ -119,14 +119,10 @@ SecretKey _Cipher::getSecretKey() {
 }
 
 void _Cipher::doPKCS7Padding(ByteArray data,int blocksize) {
-    printf("doPKCS7Padding start,blocksize is %d \n",blocksize);
     byte paddingSize = (blocksize - (data->size()%blocksize));
-    printf("paddingSize is %d \n",paddingSize);
     ByteArray padding = createByteArray((int)paddingSize);
     padding->fill(paddingSize);
-    printf("padding size is %d \n",padding->size());
     data->append(padding);
-    printf("data size is %d \n",data->size());
 }
 
 void _Cipher::doPKCS5Padding(ByteArray data) {
@@ -144,7 +140,6 @@ void _Cipher::doPKCSZeroPadding(ByteArray data,int blocksize) {
 
 void _Cipher::doPKCS7UnPadding(ByteArray data) {
     int paddingsize = data->at(data->size() - 1);
-    printf("doPKCS7UnPadding paddingsize is %d \n",paddingsize);
     data->quickShrink(data->size() - paddingsize);
 }
 
@@ -180,15 +175,12 @@ void _Cipher::doEncryptOrDescrypt(File in,File out) {
         
         switch(getMode()) {
             case Decrypt: {
-                printf("cipher doDecrypt \n");
                 outputData = decrypt(inputData);
             }
             break;
 
             case Encrypt: {
-                printf("cipher doEncrypt \n");
                 outputData = encrypt(inputData);
-                printf("cipher doEncrypt size is %d \n",outputData->size());
             }
             break;
         }

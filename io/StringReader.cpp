@@ -12,7 +12,7 @@ namespace obotcha {
 
 _StringReader::_StringReader(String v):mStringStream(v->getStdString()){
     if(v == nullptr) {
-        throw InitializeException(createString("StringReader error"));
+        Trigger(InitializeException,"StringReader error");
     }
 }
     

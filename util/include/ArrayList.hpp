@@ -163,14 +163,12 @@ public:
     }
 
     inline int insert(int index,ArrayList<T> list,int length) {
-        printf("insert trace1 \n");
         if(paramInvalid(index) || list->size() < length || list->capacity() < length) {
             String exception = createString("Arraylist insert fail")
                             ->append("capacity is",
                                     createString(elements.capacity()),
                                     "index is ",
                                     createString(index));
-            printf("insert trace2 \n");
             Trigger(ArrayIndexOutOfBoundsException,exception);
         }
 

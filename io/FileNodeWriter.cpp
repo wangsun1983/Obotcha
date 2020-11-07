@@ -21,7 +21,7 @@ _FileNodeWriter::_FileNodeWriter(String path) {
     mPath = path;
     mFd = open(path->toChars(),O_WRONLY);
     if(mFd < 0) {
-        throw FileNotFoundException("File not exist");
+        Trigger(FileNotFoundException,"File not exist");
     }
 }
 

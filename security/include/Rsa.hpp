@@ -34,11 +34,11 @@ private:
     int pubkey_decrypt(const unsigned char *in, int in_len,
                            unsigned char **out, int &out_len);
 
-    int pubkey_encrypt(const unsigned char *in, int in_len,
-                           unsigned char **out, int &out_len);
+    ByteArray pubkey_encrypt(ByteArray inputdata);
  
-    int prikey_decrypt(const unsigned char *in, int in_len,
-                           unsigned char **out, int &out_len);
+    ByteArray prikey_decrypt(ByteArray inputdata);
+
+    ByteArray doRsa(ByteArray in,int mode /*Decrypt/Encrypt*/);
 
 };
 
