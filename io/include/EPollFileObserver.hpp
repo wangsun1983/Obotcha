@@ -1,43 +1,34 @@
 #ifndef __OBOTCHA_EPOLL_FILE_OBSERVER_HPP__
 #define __OBOTCHA_EPOLL_FILE_OBSERVER_HPP__
 
-#include <fstream>
-#include <iostream>
 #include <sys/epoll.h>
-#include <vector>
 #include <map>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
-#include "File.hpp"
-#include "InputStream.hpp"
 #include "ByteArray.hpp"
 #include "Thread.hpp"
 #include "Pipe.hpp"
-#include "Uint32.hpp"
-#include "Atomic.hpp"
 
 namespace obotcha {
 
+class _EPollFileObserver;
+
 DECLARE_SIMPLE_CLASS(EPollFileObserverListener) {
 public:
-    friend class _EpollObserverRequest;
     friend class _EPollFileObserver;
 
     virtual int onEvent(int fd,uint32_t events,ByteArray) = 0;
 
 private:
-    std::vector<int> fds;
-
-    void removeFd(int fd);
+    int notifyEvent(int fd,uint32_t events,ByteArray);
+    std::map<int,int> mFdEventsMap;
 };
 
 DECLARE_SIMPLE_CLASS(EPollFileObserver) EXTENDS(Thread) {
 public:
-    friend class _EPollThread;
-    
     _EPollFileObserver(int size);
 
     _EPollFileObserver();
@@ -50,29 +41,29 @@ public:
 
     int release();
 
-    void dump();
-
     void run();
     
     ~_EPollFileObserver();
-
-    static const uint32_t EpollIn = EPOLLIN;
-    static const uint32_t EpollPri = EPOLLPRI;
-    static const uint32_t EpollOut = EPOLLOUT;
-    static const uint32_t EpollRdNorm = EPOLLRDNORM;
-    static const uint32_t EpollRdBand = EPOLLRDBAND;
-    static const uint32_t EpollWrNorm = EPOLLWRNORM;
-    static const uint32_t EpollWrBand = EPOLLWRBAND;
-    static const uint32_t EpollMsg = EPOLLMSG;
-    static const uint32_t EpollErr = EPOLLERR;
-    static const uint32_t EpollHup = EPOLLHUP;
-    static const uint32_t EpollRdHup = EPOLLRDHUP;
+    
+    enum EpollEvent {
+        EpollIn = EPOLLIN,
+        EpollPri = EPOLLPRI,
+        EpollOut = EPOLLOUT,
+        EpollRdNorm = EPOLLRDNORM,
+        EpollRdBand = EPOLLRDBAND,
+        EpollWrNorm = EPOLLWRNORM,
+        EpollWrBand = EPOLLWRBAND,
+        EpollMsg = EPOLLMSG,
+        EpollErr = EPOLLERR,
+        EpollHup = EPOLLHUP,
+        EpollRdHup = EPOLLRDHUP,
 #ifdef EPOLLEXCLUSIVE    
-    static const uint32_t EpollExClusive = EPOLLEXCLUSIVE;
+        EpollExClusive = EPOLLEXCLUSIVE,
 #endif
-    static const uint32_t EpollWakeUp = EPOLLWAKEUP;
-    static const uint32_t EpollOneShot = EPOLLONESHOT;
-    static const uint32_t EpollEt = EPOLLET;
+        EpollWakeUp = EPOLLWAKEUP,
+        EpollOneShot = EPOLLONESHOT,
+        EpollEt = EPOLLET,
+    };
 
     static const int OnEventOK = 0;
     static const int OnEventRemoveObserver = 1;
@@ -86,14 +77,14 @@ private:
     
     void addEpollFd(int fd,uint32_t events);
 
+    void updateFdEventsMap(int fd,uint32_t events,std::map<int,int> &maps);
+
     int mEpollFd;
 
-    bool isAutoClose;
-
-    //<fd,listener>
     Mutex mListenerMutex;
-    HashMap<int,HashMap<int,ArrayList<EPollFileObserverListener>>> mListeners;
-
+    HashMap<int,ArrayList<EPollFileObserverListener>> mListeners;
+    std::map<int,int> mFdEventsMap;
+    
     Pipe mPipe;
 
     int mSize;
