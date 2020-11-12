@@ -1,4 +1,6 @@
 #include "Filament.hpp"
+#include "ArrayList.hpp"
+#include "FilaCroutine.hpp"
 #include <unistd.h>
 
 using namespace std;
@@ -9,9 +11,7 @@ public:
     void run() {
         while(1) {
             printf("MyRunn1 start \n");
-            sleep(1);
-            st(Filament)::yieldCurrent();
-            printf("MyRunn1 sleep complete \n");
+            poll(NULL, 0, 500);
         }
     }
 };
@@ -21,9 +21,7 @@ public:
     void run() {
         while(1) {
             printf("MyRunn2 start \n");
-            sleep(1);
-            st(Filament)::yieldCurrent();
-            printf("MyRunn2 sleep complete \n");
+            poll(NULL, 0, 1000);
         }
     }
 };
@@ -33,28 +31,23 @@ public:
     void run() {
         while(1) {
             printf("MyRunn3 start \n");
-            sleep(1);
-            st(Filament)::yieldCurrent();
-            printf("MyRunn3 sleep complete \n");
+            poll(NULL, 0, 200);
         }
     }
 };
 
 int main(void) {
     printf("main thread start \n");
-    MyRun1 r1 = createMyRun1();
-    MyRun2 r2 = createMyRun2();
-    MyRun3 r3 = createMyRun3();
-
-    Filament f1 = createFilament(r1);
-    Filament f2 = createFilament(r2);
-    Filament f3 = createFilament(r3);
-    f1->resume();
-    f2->resume();
-    f3->resume();
+    ArrayList<Filament> list = createArrayList<Filament>();
+    Filament f1 = createFilament(createMyRun1());
+    Filament f2 = createFilament(createMyRun2());
+    Filament f3 = createFilament(createMyRun3());
+    list->add(f1);
+    list->add(f2);
+    list->add(f3);
+    
+    FilaCroutine croutine = createFilaCroutine(list);
+    croutine->start();
     printf("main thread trace1 \n");
-    //f1->resume();
-    //f2->resume();
-    printf("end \n");
-    while(1){}
+    while(1){sleep(100);}
 }

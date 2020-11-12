@@ -2,15 +2,18 @@
 
 namespace obotcha {
 
-_Filament::_Filament(String name,FilaRunnable r) {
+_Filament::_Filament(String name,Runnable r) {
     mName = name;
     mRun = r;
-    co_create(&coa,NULL,localFilaRun,this);
 }
 
-_Filament::_Filament(FilaRunnable r) {
+_Filament::_Filament(Runnable r) {
     mRun = r;
-    co_create(&coa,NULL,localFilaRun,this);
+}
+
+void _Filament::start() {
+    co_create(&coa,nullptr,localFilaRun,this);
+    co_resume(coa);
 }
 
 void *_Filament::localFilaRun(void *args) {
@@ -18,14 +21,8 @@ void *_Filament::localFilaRun(void *args) {
     if(fila->mRun != nullptr) {
         fila->mRun->run();
     }
-
     return nullptr;
 }
-
-//void _Filament::create(FilaRunnable r) {
-//    mRun = r;
-//    co_create(&coa,NULL,localFilaRun,this);
-//}
 
 void _Filament::resume() {
     co_resume(coa);
@@ -37,10 +34,6 @@ void _Filament::yield() {
 
 void _Filament::destroy() {
     co_release(coa);
-}
-
-void _Filament::yieldCurrent() {
-    co_yield_ct();
 }
 
 }

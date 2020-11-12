@@ -6,19 +6,22 @@
 #include "StrongPointer.hpp"
 #include "Object.hpp"
 #include "Runnable.hpp"
-#include "FilaRunnable.hpp"
 #include "String.hpp"
 
 namespace obotcha {
 
+class _FilaCroutine;
+
 DECLARE_SIMPLE_CLASS(Filament) {
 
 public:
-    _Filament(FilaRunnable);
+    friend class _FilaCroutine;
 
-    _Filament(String,FilaRunnable);
+    _Filament(Runnable);
 
-    //void create(FilaRunnable);
+    _Filament(String,Runnable);
+
+    void start();
 
     void resume();
 
@@ -26,15 +29,12 @@ public:
 
     void destroy();
 
-    static void yieldCurrent();
-
 private:
-
-    static void* localFilaRun(void *);
+    static void *localFilaRun(void *args);
 
     stCoRoutine_t *coa;
 
-    FilaRunnable mRun;
+    Runnable mRun;
 
     String mName;
 };

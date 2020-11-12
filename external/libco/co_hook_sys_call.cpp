@@ -577,10 +577,10 @@ extern int co_poll_inner( stCoEpoll_t *ctx,struct pollfd fds[], nfds_t nfds, int
 int poll(struct pollfd fds[], nfds_t nfds, int timeout)
 {
 	HOOK_SYS_FUNC( poll );
-
-	if (!co_is_enable_sys_hook() || timeout == 0) {
+    if (!co_is_enable_sys_hook() || timeout == 0) {
 		return g_sys_poll_func(fds, nfds, timeout);
 	}
+
 	pollfd *fds_merge = NULL;
 	nfds_t nfds_merge = 0;
 	std::map<int, int> m;  // fd --> idx
@@ -991,10 +991,14 @@ struct hostent *co_gethostbyname(const char *name)
 
 void co_enable_hook_sys()
 {
-	stCoRoutine_t *co = GetCurrThreadCo();
-	if( co )
-	{
-		co->cEnableSysHook = 1;
-	}
+	//wangsl
+	//stCoRoutine_t *co = GetCurrThreadCo();
+	//if( co )
+	//{  
+	//	printf("currthread co is %lx \n",co);
+	//	co->cEnableSysHook = 1;
+	//}
+	EnableSysHook();
+	//wangsl
 }
 

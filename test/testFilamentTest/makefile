@@ -23,6 +23,7 @@ cflags = -fpic \
 		-I ../../external/crc32/include \
 		-I ../../external/openssl/include \
 		-I ../../external/libco \
+				-I ../../external/glog/include \
 		-g \
 		-std=c++11 \
 

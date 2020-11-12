@@ -57,6 +57,10 @@ struct stCoRoutineEnv_t
 	//for copy stack log lastco and nextco
 	stCoRoutine_t* pending_co;
 	stCoRoutine_t* occupy_co;
+
+	//wangsl
+	char cEnableSysHook;
+	//wangsl
 };
 //int socket(int domain, int type, int protocol);
 void co_log_err( const char *fmt,... )
@@ -509,7 +513,9 @@ struct stCoRoutine_t *co_create_env( stCoRoutineEnv_t * env, const stCoRoutineAt
 	lp->cStart = 0;
 	lp->cEnd = 0;
 	lp->cIsMain = 0;
-	lp->cEnableSysHook = 0;
+	//wangsl
+	//lp->cEnableSysHook = 0;
+	//wangsl
 	lp->cIsShareStack = at.share_stack != NULL;
 
 	lp->save_size = 0;
@@ -875,7 +881,15 @@ stCoRoutine_t *GetCurrThreadCo( )
 	return GetCurrCo(env);
 }
 
-
+void EnableSysHook()
+{
+	//wangsl
+	stCoRoutineEnv_t *env = co_get_curr_thread_env();
+	if(env) {
+		env->cEnableSysHook = 1;
+	}
+	//wangsl
+}
 
 typedef int (*poll_pfn_t)(struct pollfd fds[], nfds_t nfds, int timeout);
 int co_poll_inner( stCoEpoll_t *ctx,struct pollfd fds[], nfds_t nfds, int timeout, poll_pfn_t pollfunc)
@@ -1042,16 +1056,27 @@ int co_setspecific(pthread_key_t key, const void *value)
 
 void co_disable_hook_sys()
 {
-	stCoRoutine_t *co = GetCurrThreadCo();
-	if( co )
-	{
-		co->cEnableSysHook = 0;
+	//wangsl
+	//stCoRoutine_t *co = GetCurrThreadCo();
+	//if( co )
+	//{
+	//	co->cEnableSysHook = 0;
+	//}
+	stCoRoutineEnv_t *env = co_get_curr_thread_env();
+	if(env) {
+		env->cEnableSysHook = 0;
 	}
+	//wangsl
 }
+
 bool co_is_enable_sys_hook()
 {
-	stCoRoutine_t *co = GetCurrThreadCo();
-	return ( co && co->cEnableSysHook );
+	//wangsl
+	//stCoRoutine_t *co = GetCurrThreadCo();
+	//return ( co && co->cEnableSysHook );
+	stCoRoutineEnv_t *env = co_get_curr_thread_env();
+	return ( env && env->cEnableSysHook );
+	//wangsl
 }
 
 stCoRoutine_t *co_self()
