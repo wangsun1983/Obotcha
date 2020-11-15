@@ -8,16 +8,16 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "Integer.hpp"
 #include "Boolean.hpp"
 #include "Double.hpp"
 #include "Float.hpp"
+#include "Integer.hpp"
 #include "Long.hpp"
-#include "Byte.hpp"
 #include "Uint8.hpp"
 #include "Uint16.hpp"
 #include "Uint32.hpp"
 #include "Uint64.hpp"
+#include "Byte.hpp"
 
 namespace obotcha {
 
@@ -48,8 +48,6 @@ public:
 
     _String(Long &v);
 
-    _String(Byte &v);
-
     _String(Uint8 &v);
 
     _String(Uint16 &v);
@@ -57,6 +55,8 @@ public:
     _String(Uint32 &v);
 
     _String(Uint64 &v);
+
+    _String(Byte &v);
 
     _String(int v);
 

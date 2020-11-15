@@ -14,48 +14,14 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Integer) IMPLEMENTS(Number)<int>{
 public:
-    _Integer(int v);
+    _Integer(int v):_Number(v){}
 
-    _Integer(Integer &v);
-
-    int toValue();
-
-    bool equals(Integer &p);
-
-    bool equals(int p);
-
-    bool equals(const _Integer *p);
-
-    void update(int v);
-
-    void update(sp<_Integer> v);
-
-    sp<_String> toHexString();
-
-    sp<_String> toOctalString();
-
-    sp<_String> toBinaryString();
-
-    sp<_String> toString();
-
-    static sp<_String> toString(int i);
-    
-    static int parseDecInt(sp<_String>);
-
-    static int parseHexInt(sp<_String>);
-
-    static int parseOctInt(sp<_String>);
-
-    static int parseBinaryInt(sp<_String>);
-    
-    ~_Integer();
+    _Integer(Integer &v):_Number(v->toValue()){}
 
     static const int MAX_VALUE = 0x7fffffff;
 
     static const int MIN_VALUE = 0x80000000;
 
-private:
-    int val;
 };
 
 }

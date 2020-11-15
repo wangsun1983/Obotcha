@@ -6,23 +6,60 @@
 #include <sstream>
 #include <string>
 #include <math.h>
+#include <stdint.h>
 
 namespace obotcha {
 
 class _String;
 
 DECLARE_CLASS(Number,1) {
-protected:
-    static void binaryRecursion(T n,std::stringstream &ss) {
-        T a;
-        a = n%2;
-        n = n>>1;
-        if (n==0) {
-            //donothing
-        } else {
-            binaryRecursion(n,ss);
-        }
-        ss<<a;
+public:
+    _Number(T v) {
+        mValue = v;
+    }
+
+    _Number(sp<_Number<T>> &v) {
+        mValue = v->toValue();
+    }
+
+    T toValue() {
+        return mValue;
+    }
+
+    virtual bool equals(sp<_Number<T>> &p) {
+        return mValue == (p->toValue());
+    }
+
+    virtual bool equals(T p) {
+        return mValue == p;
+    }
+
+    virtual bool equals(const _Number<T> *p) const{
+        return mValue == (p->mValue);
+    }
+
+    void update(T v) {
+        mValue = v;
+    }
+
+    void update(sp<_Number<T>> v) {
+        mValue = v->toValue();
+    }
+
+    sp<_String> toHexString() {
+        return toHexString(mValue);
+    }
+
+    sp<_String> toOctalString() {
+        return toOctalString(mValue);
+    }
+
+    sp<_String> toBinaryString() {
+        return toBinaryString(mValue);
+    }
+
+    sp<_String> toString() {
+        return toDecString(mValue);
     }
 
     static std::string toHexString(T i) {
@@ -95,6 +132,21 @@ protected:
             }
         }
         return parseBinary;
+    }
+
+private:
+    T mValue;
+
+    static void binaryRecursion(T n,std::stringstream &ss) {
+        T a;
+        a = n%2;
+        n = n>>1;
+        if (n==0) {
+            //donothing
+        } else {
+            binaryRecursion(n,ss);
+        }
+        ss<<a;
     }
 };
 

@@ -28,10 +28,6 @@ _Double::_Double(Double &v) {
     }
     val = v->val;
 }
-    
-double _Double::toValue() {
-    return val;
-}
 
 bool _Double::equals(Double &p) {
     if(p == nullptr) {

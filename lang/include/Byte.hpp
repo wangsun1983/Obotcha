@@ -14,45 +14,9 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Byte) IMPLEMENTS(Number)<byte>{
 public:
-    _Byte(unsigned char v);
+    _Byte(byte v):_Number(v){}
 
-    _Byte(Byte &v);
-   
-    byte toValue();
-
-    bool equals(byte p);
-    
-    bool equals(Byte &p);
-
-    bool equals(const _Byte *p);
-
-    void update(byte v);
-
-    void update(sp<_Byte> v);
-
-    sp<_String> toHexString();
-
-    sp<_String> toOctalString();
-
-    sp<_String> toBinaryString();
-
-    sp<_String> toString();
-
-    static sp<_String> toString(byte i);
-    
-    static byte parseDecByte(sp<_String>);
-
-    static byte parseHexByte(sp<_String>);
-
-    static byte parseOctByte(sp<_String>);
-
-    static byte parseBinaryByte(sp<_String>);
-
-    ~_Byte();
-
-private:
-    byte val;
-
+    _Byte(Byte &v):_Number(v->toValue()) {}
 };
 
 }
