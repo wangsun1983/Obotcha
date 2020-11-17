@@ -10,6 +10,15 @@ namespace obotcha {
 _HttpV1ResponseWriter::_HttpV1ResponseWriter(HttpV1ClientInfo client) {
     mClient = client;
     mPacket = createHttpPacket();
+    mResponsible = true;
+}
+
+void _HttpV1ResponseWriter::disableResponse() {
+    mResponsible = false;
+}
+
+bool _HttpV1ResponseWriter::isResponsible() {
+    return mResponsible;
 }
     
 void _HttpV1ResponseWriter::writeHeader(String key,String value) {
@@ -37,6 +46,10 @@ int _HttpV1ResponseWriter::write(File file) {
 }
 
 int _HttpV1ResponseWriter::flush() {
+    if(!mResponsible) {
+        return -1;
+    }
+    
     AutoLock l(mClient->getResponseWriteMutex());
 
     if(mFile != nullptr) {

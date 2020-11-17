@@ -29,10 +29,11 @@ class _HttpDispatcherPool;
 
 DECLARE_SIMPLE_CLASS(DispatchHttpWorkData) {
 public:
-    _DispatchHttpWorkData(int,ByteArray);
+    _DispatchHttpWorkData(int,ByteArray,int);
 
     int fd;
     ByteArray pack;
+    uint64_t clientid;
 };
 
 DECLARE_SIMPLE_CLASS(HttpV1Listener) {
@@ -49,9 +50,11 @@ public:
     _HttpDispatchRunnable(int index,sp<_HttpDispatcherPool>);
     void run();
     void addDefferedTask(DispatchHttpWorkData);
+    void release();
 
 private:
     Mutex mDefferedTaskMutex;
+    Mutex mPoolMutex;
     LinkedList<DispatchHttpWorkData> mDefferedTasks;
     sp<_HttpDispatcherPool> mPool;
     int mIndex;

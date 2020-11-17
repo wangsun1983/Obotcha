@@ -17,6 +17,12 @@ _Random::_Random() {
     gen = std::mt19937_64(rd()); //may be support different random strategy
 }
 
+uint32_t _Random::nextUint32() {
+    std::uniform_int_distribution<> dis;
+    uint32_t value = dis(gen);
+    return value;
+}
+
 int _Random::nextInt() {
     std::uniform_int_distribution<> dis;
     int value = dis(gen);

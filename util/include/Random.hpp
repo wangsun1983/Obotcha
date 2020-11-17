@@ -19,6 +19,8 @@ DECLARE_SIMPLE_CLASS(Random) {
 public:
     _Random();
 
+    uint32_t nextUint32();
+
     int nextInt();
 
     int nextInt(int min,int max);

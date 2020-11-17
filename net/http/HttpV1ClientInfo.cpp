@@ -7,6 +7,8 @@ namespace obotcha {
 _HttpV1ClientInfo::_HttpV1ClientInfo() {
     mV1Parser = createHttpV1Parser();
     mResponseWriteMutex = createMutex("HttpResponseMutex");
+    mClientId = -1;
+    mRnd = createRandom();
 }
 
 int _HttpV1ClientInfo::getClientFd() {
@@ -15,6 +17,12 @@ int _HttpV1ClientInfo::getClientFd() {
 
 void _HttpV1ClientInfo::setClientFd(int fd) {
     mClientFd = fd;
+    uint32_t rnd = mRnd->nextUint32();
+    mClientId = (fd<<32|rnd);
+}
+
+uint64_t _HttpV1ClientInfo::getClientId() {
+    return mClientId;
 }
 
 String _HttpV1ClientInfo::getClientIp() {

@@ -19,6 +19,7 @@
 #include "HttpPacket.hpp"
 #include "SSLInfo.hpp"
 #include "HttpV1Server.hpp"
+#include "Random.hpp"
 
 namespace obotcha {
 
@@ -55,6 +56,8 @@ public:
     
     void setHttpV1Listener(sp<_HttpV1Listener>);
 
+    uint64_t getClientId();
+
 private:
     String mClientIp;
 
@@ -69,6 +72,10 @@ private:
     SSLInfo mSSLInfo;
     
     sp<_HttpV1Listener> mHttpV1ServerListener;
+
+    uint64_t mClientId;
+
+    Random mRnd;
 
 
 };

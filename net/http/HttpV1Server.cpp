@@ -23,9 +23,10 @@
 namespace obotcha {
 
 //------------------DispatchHttpWorkData------------------
-_DispatchHttpWorkData::_DispatchHttpWorkData(int fd,ByteArray pack) {
+_DispatchHttpWorkData::_DispatchHttpWorkData(int fd,ByteArray pack,int id) {
     this->fd = fd;
     this->pack = pack;
+    this->clientid = id;
 }
 
 _HttpDispatcherPool::_HttpDispatcherPool(int threadSize) {
@@ -55,7 +56,12 @@ void _HttpDispatcherPool::clearFds(int index) {
 }
 
 void _HttpDispatcherPool::release() {
-    //TODO
+    mExecutors->shutdown();
+    ListIterator<HttpDispatchRunnable> iterator = mRunnables->getIterator();
+    while(iterator->hasValue()) {
+        HttpDispatchRunnable r = iterator->getValue();
+        r->release();
+    }
 }
 
 DispatchHttpWorkData _HttpDispatcherPool::getData(int runnableIndex) {
@@ -88,8 +94,14 @@ DispatchHttpWorkData _HttpDispatcherPool::getData(int runnableIndex) {
 _HttpDispatchRunnable::_HttpDispatchRunnable(int index,HttpDispatcherPool pool) {
     mIndex = index;
     mDefferedTaskMutex = createMutex("HttpDispatchRunnable");
+    mPoolMutex = createMutex("HttpPoolMutex");
     mDefferedTasks = createLinkedList<DispatchHttpWorkData>();
     mPool = pool;
+}
+
+void _HttpDispatchRunnable::release() {
+    AutoLock l(mPoolMutex);
+    mPool = nullptr;
 }
 
 void _HttpDispatchRunnable::run() {
@@ -104,14 +116,17 @@ void _HttpDispatchRunnable::run() {
                 goto doAction;
             }
         }
+        
+        {
+            AutoLock l(mPoolMutex);
+            if(isDoDefferedTask) {
+                //clear fidmaps
+                mPool->clearFds(mIndex);
+            }
 
-        if(isDoDefferedTask) {
-            //clear fidmaps
-            mPool->clearFds(mIndex);
+            isDoDefferedTask = false;
+            data = mPool->getData(mIndex);
         }
-
-        isDoDefferedTask = false;
-        data = mPool->getData(mIndex);
 
 doAction:
         HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(data->fd);
@@ -121,8 +136,12 @@ doAction:
 
         info->pushHttpData(data->pack);
         ArrayList<HttpPacket> packets = info->pollHttpPacket();
+        HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);
+        //printf("data->clientid is %llx,info->clientfd is %llx \n",data->clientid,info->getClientFd());
+        if(data->clientid != info->getClientId()) {
+            writer->disableResponse();
+        }
         if(packets != nullptr && packets->size() != 0) {
-            HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info); 
             ListIterator<HttpPacket> iterator = packets->getIterator();
             while(iterator->hasValue()) {
                 //we should check whether there is a multipart
@@ -139,7 +158,8 @@ void _HttpDispatchRunnable::addDefferedTask(DispatchHttpWorkData data) {
 }
 
 void _HttpV1Server::onDataReceived(SocketResponser r,ByteArray pack) {
-    DispatchHttpWorkData data = createDispatchHttpWorkData(r->getFd(),pack);
+    HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(r->getFd());
+    DispatchHttpWorkData data = createDispatchHttpWorkData(r->getFd(),pack,info->getClientId());
     mPool->addData(data);
 }
 
@@ -218,6 +238,10 @@ void _HttpV1Server::exit() {
 
     if(mSSLServer != nullptr) {
         mSSLServer->release();
+    }
+
+    if(mPool != nullptr) {
+        mPool->release();
     }
     
     st(HttpV1ClientManager)::getInstance()->clear();

@@ -9,6 +9,10 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(HttpV1ResponseWriter) {
 public:
     _HttpV1ResponseWriter(HttpV1ClientInfo client);
+
+    void disableResponse();
+
+    bool isResponsible();
     
     void writeHeader(String,String);
 
@@ -30,6 +34,8 @@ private:
     HttpV1ClientInfo mClient;
 
     File mFile;
+
+    bool mResponsible;
 };
 
 }
