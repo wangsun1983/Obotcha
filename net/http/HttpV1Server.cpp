@@ -16,6 +16,7 @@
 #include "InitializeException.hpp"
 #include "AutoLock.hpp"
 #include "HttpV1ClientInfo.hpp"
+#include "HttpV1ResponseWriter.hpp"
 #include "HttpClientManager.hpp"
 #include "SSLManager.hpp"
 
@@ -27,128 +28,136 @@ _DispatchHttpWorkData::_DispatchHttpWorkData(int fd,ByteArray pack) {
     this->pack = pack;
 }
 
-//------------------HttpDispatchThread------------------
-_HttpDispatchThread::_HttpDispatchThread(HttpDispatchStatusListener l,HttpV1Listener v1listener) {
+_HttpDispatcherPool::_HttpDispatcherPool(int threadSize) {
+    fd2TidsMutex = createMutex("HttpDispatcherPool");
+    mRunnables = createArrayList<HttpDispatchRunnable>();
+    mExecutors = createThreadPoolExecutor(-1,threadSize);
     datas = createBlockingLinkedList<DispatchHttpWorkData>();
-    mWorkedFds = createHashSet<int>();
-    mListener = l;
-    mV1Listener = v1listener;
+    for(int index = 0;index < threadSize;index++) {
+        HttpDispatchRunnable r = createHttpDispatchRunnable(index,AutoClone(this));
+        mExecutors->execute(r);
+        mRunnables->add(r);
+    }
 }
 
-void _HttpDispatchThread::add(DispatchHttpWorkData data) {
+void _HttpDispatcherPool::addData(DispatchHttpWorkData data) {
     datas->enQueueLast(data);
 }
-    
-int _HttpDispatchThread::getWorkQueueSize() {
-    return datas->size();
+
+void _HttpDispatcherPool::clearFds(int index) {
+    for(auto it = fd2Tids.begin();it != fd2Tids.end();) {
+        if(it->second == index) {
+            it = fd2Tids.erase(it);
+            continue;
+        }
+        it++;
+    }
 }
 
-void _HttpDispatchThread::run() {
-    while (1) {
-        //mutex
-        mListener->lockData();
-        if(datas->size() == 0) {
-            HashSetIterator<int>iterator = mWorkedFds->getIterator();
-            while(iterator->hasValue()) {
-                //we should check whether client buff is clear
-                int fd = iterator->getValue();
-                HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(fd);
-                if(info == nullptr || info->isIdle()) {
-                    //printf("onIdle,fd is %d \n",fd);
-                    mListener->onComplete(fd);
-                }
-                iterator->next();
-            }
+void _HttpDispatcherPool::release() {
+    //TODO
+}
 
-            mWorkedFds->clear();
-        }
-        mListener->unlockData();
-
-        //printf("_HttpDispatchThread run1 \n");
+DispatchHttpWorkData _HttpDispatcherPool::getData(int runnableIndex) {
+    while(1) {
         DispatchHttpWorkData data = datas->deQueueFirst();
-        if (data->fd == -1) {
-            printf("_HttpDispatchThread run1 fd is null \n");
+        int runnableIndex = -1;
+        {
+            AutoLock l(fd2TidsMutex);
+            auto iterator = fd2Tids.find(data->fd);
+            if(iterator != fd2Tids.end()) {
+                runnableIndex = iterator->second;
+            }
+        }
+
+        if(runnableIndex != -1) {
+            HttpDispatchRunnable runnable = mRunnables->get(runnableIndex);
+            runnable->addDefferedTask(data);
             continue;
         }
 
+        {
+            AutoLock l(fd2TidsMutex);
+            fd2Tids[data->fd] = runnableIndex;
+        }
+
+        return data;
+    }
+}
+
+_HttpDispatchRunnable::_HttpDispatchRunnable(int index,HttpDispatcherPool pool) {
+    mIndex = index;
+    mDefferedTaskMutex = createMutex("HttpDispatchRunnable");
+    mDefferedTasks = createLinkedList<DispatchHttpWorkData>();
+    mPool = pool;
+}
+
+void _HttpDispatchRunnable::run() {
+    bool isDoDefferedTask = false;
+    while(1) {
+        DispatchHttpWorkData data = nullptr;
+        {
+            AutoLock l(mDefferedTaskMutex);
+            data = mDefferedTasks->deQueueFirst();
+            if(data != nullptr) {
+                isDoDefferedTask = true;
+                goto doAction;
+            }
+        }
+
+        if(isDoDefferedTask) {
+            //clear fidmaps
+            mPool->clearFds(mIndex);
+        }
+
+        isDoDefferedTask = false;
+        data = mPool->getData(mIndex);
+
+doAction:
         HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(data->fd);
         if(info == nullptr) {
             continue;
         }
-        
-        mWorkedFds->add(data->fd);
-        
+
         info->pushHttpData(data->pack);
-        //printf("_HttpDispatchThread run2 \n");
         ArrayList<HttpPacket> packets = info->pollHttpPacket();
         if(packets != nullptr && packets->size() != 0) {
+            HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info); 
             ListIterator<HttpPacket> iterator = packets->getIterator();
             while(iterator->hasValue()) {
                 //we should check whether there is a multipart
-                HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);  
-                //printf("_HttpDispatchThread run3 \n");         
-                mV1Listener->onMessage(info,writer,iterator->getValue());
+                info->getHttpV1Listener()->onMessage(info,writer,iterator->getValue());
                 iterator->next();
             }
         }
     }
 }
 
-void _HttpV1Server::onDataReceived(SocketResponser r,ByteArray pack) {
-    //printf("onDataReceived \n");
-    AutoLock l(mMutex);
-    //parseMessage(r->getFd(),pack);
-    Integer threadId = fdmaps->get(r->getFd());
-    if(threadId != nullptr) {
-        int num = threadId->toValue();
-        printf("onDataReceived,add data,threadid is %d \n",num);
-        
-        mThreads->get(num)->add(createDispatchHttpWorkData(r->getFd(),pack));
-        return;
-    }
-
-    int hit = 0;
-    int min = 0;
-
-    for(int i = 0;i<threadsNum;i++) {
-        int size = mThreads->get(i)->getWorkQueueSize();
-        if(i == 0) {
-          min = size;
-        } else if(size < min) {
-            hit = i;
-            min = size;
-        }
-    }
-
-    fdmaps->put(r->getFd(),createInteger(hit));
-    printf("onDataReceived2,add data,threadid is %d \n",hit);
-    mThreads->get(hit)->add(createDispatchHttpWorkData(r->getFd(),pack));
+void _HttpDispatchRunnable::addDefferedTask(DispatchHttpWorkData data) {
+    AutoLock l(mDefferedTaskMutex);
+    mDefferedTasks->enQueueLast(data);
 }
 
-void _HttpV1Server::onComplete(int fd) {
-    fdmaps->remove(fd);
+void _HttpV1Server::onDataReceived(SocketResponser r,ByteArray pack) {
+    DispatchHttpWorkData data = createDispatchHttpWorkData(r->getFd(),pack);
+    mPool->addData(data);
 }
 
 void _HttpV1Server::onDisconnect(SocketResponser r) {
-    {
-        AutoLock l(mMutex);
-        fdmaps->remove(r->getFd());
-    }
-
     HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(r->getFd());
-    this->mHttpListener->onDisconnect(info);
-    removeClient(r->getFd());
+    mHttpListener->onDisconnect(info);
 }
 
 void _HttpV1Server::onConnect(SocketResponser r) {
     HttpV1ClientInfo info = createHttpV1ClientInfo();
+    info->setHttpV1Listener(mHttpListener);
     info->setClientFd(r->getFd());
     SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
     if(info != nullptr) {
         info->setSSLInfo(ssl);
     }
-    
     st(HttpV1ClientManager)::getInstance()->addClientInfo(r->getFd(),info);
+    mHttpListener->onConnect(info);
 }
 
 void _HttpV1Server::onTimeout() {
@@ -178,16 +187,8 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l):_HttpV1Server(
 _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certificate,String key) {
     mHttpListener = l;
 
-    mMutex = createMutex("httpserver fdmaps");
-    fdmaps = createHashMap<int,Integer>();
-
-    threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
-    mThreads = createArrayList<HttpDispatchThread>();
-    for(int i = 0;i<threadsNum;i++) {
-        HttpDispatchThread thread = createHttpDispatchThread(AutoClone(this),l);
-        thread->start();
-        mThreads->add(thread);
-    }
+    int threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
+    mPool = createHttpDispatcherPool(threadsNum);
 
     mIp = ip;
     mPort = port;
@@ -199,31 +200,15 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
         } else {
             mTcpServer = createTcpServer(mIp,mPort,AutoClone(this));
         }
+
         if(mTcpServer->start() != 0) {
-            throw InitializeException("tcp server start fail!!");
+            Trigger(InitializeException,"tcp server start fail!!");
         }
     } else {
         //https server
         mSSLServer = createSSLServer(ip,port,AutoClone(this),certificate,key);
         mSSLServer->start();
     }
-    
-    mBuffPoolMutex = createMutex("HttpV1Server mutex");
-    mBuffPool = createHashMap<int,ByteArray>();
-}
-
-void _HttpV1Server::parseMessage(int fd,ByteArray pack) {
-    
-}
-
-void _HttpV1Server::addClient(int fd) {
-    HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(fd);
-    mHttpListener->onConnect(info);
-}
-
-void _HttpV1Server::removeClient(int fd) {
-   HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->removeClientInfo(fd);
-   mHttpListener->onDisconnect(info);
 }
 
 void _HttpV1Server::exit() {
@@ -236,14 +221,6 @@ void _HttpV1Server::exit() {
     }
     
     st(HttpV1ClientManager)::getInstance()->clear();
-}
-
-void _HttpV1Server::lockData() {
-    mMutex->lock();
-}
-
-void _HttpV1Server::unlockData() {
-    mMutex->unlock();
 }
 
 }

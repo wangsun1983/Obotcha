@@ -18,6 +18,7 @@
 #include "HttpV1Parser.hpp"
 #include "HttpPacket.hpp"
 #include "SSLInfo.hpp"
+#include "HttpV1Server.hpp"
 
 namespace obotcha {
 
@@ -50,6 +51,10 @@ public:
 
     bool isIdle();
 
+    sp<_HttpV1Listener> getHttpV1Listener();
+    
+    void setHttpV1Listener(sp<_HttpV1Listener>);
+
 private:
     String mClientIp;
 
@@ -62,6 +67,9 @@ private:
     Mutex mResponseWriteMutex;
 
     SSLInfo mSSLInfo;
+    
+    sp<_HttpV1Listener> mHttpV1ServerListener;
+
 
 };
 

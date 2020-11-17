@@ -12,16 +12,20 @@
 #include "TcpClient.hpp"
 #include "HttpUrl.hpp"
 #include "TcpServer.hpp"
-#include "HttpV1ClientInfo.hpp"
 #include "Mutex.hpp"
 #include "SocketListener.hpp"
-#include "HttpV1ResponseWriter.hpp"
 #include "HttpMultiPart.hpp"
 #include "SSLServer.hpp"
 #include "BlockingLinkedList.hpp"
 #include "HashSet.hpp"
+#include "ThreadPoolExecutor.hpp"
+#include "HttpPacket.hpp"
 
 namespace obotcha {
+
+class _HttpV1ClientInfo;
+class _HttpV1ResponseWriter;
+class _HttpDispatcherPool;
 
 DECLARE_SIMPLE_CLASS(DispatchHttpWorkData) {
 public:
@@ -31,35 +35,47 @@ public:
     ByteArray pack;
 };
 
-DECLARE_SIMPLE_CLASS(HttpDispatchStatusListener) {
-public:
-    virtual void onComplete(int fd) = 0;
-    virtual void lockData() = 0;
-    virtual void unlockData() = 0;
-};
-
 DECLARE_SIMPLE_CLASS(HttpV1Listener) {
 public:
-    virtual void onMessage(HttpV1ClientInfo client,HttpV1ResponseWriter w,HttpPacket msg) = 0;
-    virtual void onConnect(HttpV1ClientInfo) = 0;
-    virtual void onDisconnect(HttpV1ClientInfo) = 0;
+    virtual void onMessage(sp<_HttpV1ClientInfo> client,sp<_HttpV1ResponseWriter> w,HttpPacket msg) = 0;
+    virtual void onConnect(sp<_HttpV1ClientInfo>) = 0;
+    virtual void onDisconnect(sp<_HttpV1ClientInfo>) = 0;
+    virtual ~_HttpV1Listener(){}
 };
 
-DECLARE_SIMPLE_CLASS(HttpDispatchThread) IMPLEMENTS(Thread) {
+
+DECLARE_SIMPLE_CLASS(HttpDispatchRunnable) IMPLEMENTS(Runnable) {
 public:
-    _HttpDispatchThread(HttpDispatchStatusListener,HttpV1Listener);
-    void add(DispatchHttpWorkData);
-    int getWorkQueueSize();
+    _HttpDispatchRunnable(int index,sp<_HttpDispatcherPool>);
     void run();
+    void addDefferedTask(DispatchHttpWorkData);
+
+private:
+    Mutex mDefferedTaskMutex;
+    LinkedList<DispatchHttpWorkData> mDefferedTasks;
+    sp<_HttpDispatcherPool> mPool;
+    int mIndex;
+};
+
+DECLARE_SIMPLE_CLASS(HttpDispatcherPool) {
+public:
+    _HttpDispatcherPool(int threadNum = 4);
+    void add(DispatchHttpWorkData);
+    void release();
+    DispatchHttpWorkData getData(int);
+    void addData(DispatchHttpWorkData);
+    void clearFds(int index);
 
 private:
     BlockingLinkedList<DispatchHttpWorkData> datas;
-    HttpDispatchStatusListener mListener;
-    HttpV1Listener mV1Listener;
-    HashSet<int> mWorkedFds;
+    Mutex fd2TidsMutex;
+    std::map<int,int> fd2Tids;
+    ThreadPoolExecutor mExecutors;
+    ArrayList<HttpDispatchRunnable> mRunnables;
 };
 
-DECLARE_SIMPLE_CLASS(HttpV1Server) IMPLEMENTS(HttpDispatchStatusListener),st(SocketListener) {
+
+DECLARE_SIMPLE_CLASS(HttpV1Server) IMPLEMENTS(SocketListener) {
 
 public:
     friend class _HttpV1SocketListener;
@@ -76,18 +92,9 @@ public:
 
     _HttpV1Server(String ip,int port,HttpV1Listener,String certificate,String key);
 
-    void parseMessage(int fd,ByteArray);
-
-    void addClient(int fd);
-
-    void removeClient(int fd);
-
     void exit();
 
 private:
-    void onComplete(int fd);
-    void lockData();
-    void unlockData();
 
     void onDataReceived(SocketResponser r,ByteArray pack);
 
@@ -107,17 +114,7 @@ private:
 
     int mPort;
 
-    HashMap<int,ByteArray> mBuffPool;
-
-    int threadsNum;
-
-    ArrayList<HttpDispatchThread> mThreads;
-
-    Mutex mBuffPoolMutex;
-
-    Mutex mMutex;
-
-    HashMap<int,Integer> fdmaps;
+    HttpDispatcherPool mPool;
 };
 
 }

@@ -1,5 +1,6 @@
 #include "HttpV1ClientInfo.hpp"
 #include "HttpPacket.hpp"
+#include "HttpV1Server.hpp"
 
 namespace obotcha {
 
@@ -62,6 +63,14 @@ void _HttpV1ClientInfo::setSSLInfo(SSLInfo info) {
 
 bool _HttpV1ClientInfo::isIdle() {
     return mV1Parser->isIdle();
+}
+
+HttpV1Listener _HttpV1ClientInfo::getHttpV1Listener() {
+    return mHttpV1ServerListener;
+}
+    
+void _HttpV1ClientInfo::setHttpV1Listener(HttpV1Listener v) {
+    mHttpV1ServerListener = v;
 }
 
 }

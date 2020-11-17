@@ -159,7 +159,7 @@ ByteArray _ByteRingArray::pop(int size) {
 
 int _ByteRingArray::getAvailDataSize() {
     if(mStatus == ByteRingArrayEmpty) {
-        return 0;
+        return mSize;
     }
 
     if(mStart >= mEnd) {

@@ -6,10 +6,6 @@
 
 namespace obotcha {
 
-enum HttpV1ResponseStatus {
-
-};
-
 DECLARE_SIMPLE_CLASS(HttpV1ResponseWriter) {
 public:
     _HttpV1ResponseWriter(HttpV1ClientInfo client);

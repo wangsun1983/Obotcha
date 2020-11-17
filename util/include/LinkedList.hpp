@@ -91,7 +91,7 @@ public:
 
     T deQueueLast() {
         if(head == nullptr) {
-            Trigger(ArrayIndexOutOfBoundsException,"deQueueLast");
+            return nullptr;
         }
 
         T data = tail->data;
@@ -108,7 +108,7 @@ public:
 
     T deQueueFirst() {
         if(head == nullptr) {
-            Trigger(ArrayIndexOutOfBoundsException,"deQueueFirst");
+            return nullptr;
         }
         
         T data = head->data;

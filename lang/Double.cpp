@@ -61,6 +61,10 @@ void _Double::update(sp<_Double> v) {
     this->val = v->val;
 }
 
+double _Double::toValue() {
+    return this->val;
+}
+
 _Double::~_Double() {
 }
 
