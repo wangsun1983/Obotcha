@@ -22,7 +22,6 @@ void _HttpPacket::setHeader(HttpHeader h) {
 }
 
 HttpHeader _HttpPacket::getHeader() {
-	mHeader->setMethod(mMethod);
     return mHeader;
 }
     
@@ -51,11 +50,11 @@ String _HttpPacket::getReason() {
 }
 
 void _HttpPacket::setMethod(int v) {
-    mMethod = v;
+    mHeader->setMethod(v);
 }
 
 int _HttpPacket::getMethod() {
-    return mMethod;
+    return mHeader->getMethod();
 }
 
 void _HttpPacket::setMajorVersion(int v) {
@@ -92,7 +91,7 @@ HttpMultiPart _HttpPacket::getMultiPart() {
 
 String _HttpPacket::genHttpRequest() {
     String req = createString();
-    switch(mMethod) {
+    switch(mHeader->getMethod()) {
         case st(HttpMethod)::Get:
         req = createString("GET");
         break;

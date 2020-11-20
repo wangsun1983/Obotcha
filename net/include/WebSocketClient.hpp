@@ -25,7 +25,6 @@
 #include "EPollFileObserver.hpp"
 #include "Mutex.hpp"
 #include "HttpV1Parser.hpp"
-//#include "WebSocketFrameComposer.hpp"
 #include "WebSocketParser.hpp"
 #include "WebSocketHybi13Parser.hpp"
 #include "WebSocketClientInfo.hpp"

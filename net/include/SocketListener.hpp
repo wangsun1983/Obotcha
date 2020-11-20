@@ -14,7 +14,6 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(SocketListener) {
 public:
     //virtual void onAcceptTcp(int fd,ByteArray pack) {};
-    
     virtual void onDataReceived(SocketResponser r,ByteArray pack) = 0;
 
     virtual void onDisconnect(SocketResponser r) = 0;

@@ -12,24 +12,14 @@
 #include "HttpHeader.hpp"
 #include "ByteArray.hpp"
 #include "ByteRingArray.hpp"
+#include "Random.hpp"
+#include "WebSocketBuffer.hpp"
 
 namespace obotcha {
 
 class _WebSocketComposer;
 class _WebSocketParser;
 class _WebSocketPermessageDeflate;
-
-DECLARE_SIMPLE_CLASS(WebSocketContinueBuffer) {
-public:
-    ByteArray mBuffer;
-    int mType;
-};
-
-DECLARE_SIMPLE_CLASS(WebSocketEntireBuffer) {
-public:
-    ByteArray mBuffer;
-
-};
 
 DECLARE_SIMPLE_CLASS(WebSocketClientInfo) {
 public:
@@ -39,6 +29,8 @@ public:
     int getClientFd();
 
     void setClientFd(int);
+
+    uint64_t getClientId();
 
     //Parser
     sp<_WebSocketParser> getParser();
@@ -71,14 +63,15 @@ public:
     void setProtocols(ArrayList<String>);
 
     //Continue Buffer
-    WebSocketContinueBuffer getContinueBuffer();
-
-    void setContinueBuffer(WebSocketContinueBuffer);
-
+    WebSocketBuffer getContinueBuffer();
+    void setContinueBuffer(WebSocketBuffer);
     //WebSocketEntireBuffer
-    WebSocketEntireBuffer getEntireBuffer();
+    //WebSocketEntireBuffer getEntireBuffer();
+    //void setEntireBuffer(WebSocketEntireBuffer);
 
-    void setEntireBuffer(WebSocketEntireBuffer);
+    //DefferedBuffer
+    WebSocketBuffer getDefferedBuffer();
+    void setDefferedBuffer(WebSocketBuffer);
 
     //ConnectUrl
     String getConnectUrl();
@@ -116,13 +109,18 @@ private:
 
     ArrayList<String> mProtocols;
 
-    WebSocketContinueBuffer mContinueBuffer;
-
-    WebSocketEntireBuffer mEntireBuffer;
+    //WebSocketContinueBuffer mContinueBuffer;
+    //WebSocketEntireBuffer mEntireBuffer;
+    WebSocketBuffer mDefferedBuff;
+    WebSocketBuffer mContinueBuffer;
 
     String mConnectUrl;
 
     int mWsVersion;
+
+    Random mRand;
+
+    uint64_t mClientId;
 
     int _send(int type,ByteArray data);
 };

@@ -71,6 +71,10 @@ int _TcpServer::connect() {
     return 0;
 }
 
+void _TcpServer::deMonitor(int fd) {
+    mObserver->removeObserver(fd);
+}
+
 int _TcpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
     if(fd == sock) {
         struct sockaddr_in client_address;

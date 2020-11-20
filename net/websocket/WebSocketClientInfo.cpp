@@ -25,9 +25,10 @@ _WebSocketClientInfo::_WebSocketClientInfo() {
     mDeflate = nullptr;
     mProtocols = nullptr;
     mContinueBuffer = nullptr;
-    mEntireBuffer = nullptr;
     mClientFd = -1;
     mWsVersion = -1;
+    mRand = createRandom();
+    mClientId = 0;
 }
 
 void _WebSocketClientInfo::reset() {
@@ -36,8 +37,8 @@ void _WebSocketClientInfo::reset() {
     mDeflate = nullptr;
     mProtocols = nullptr;
     mContinueBuffer = nullptr;
-    mEntireBuffer = nullptr;
     mClientFd = -1;
+    mClientId = 0;
 }
 
 int _WebSocketClientInfo::getClientFd() {
@@ -46,8 +47,12 @@ int _WebSocketClientInfo::getClientFd() {
 
 void _WebSocketClientInfo::setClientFd(int fd) {
     this->mClientFd = fd;
+    mClientId = (fd<<32 | mRand->nextUint32());
 }
 
+uint64_t _WebSocketClientInfo::getClientId() {
+    return mClientId;
+}
 
 sp<_WebSocketParser> _WebSocketClientInfo::getParser() {
     return this->mParser;
@@ -97,20 +102,30 @@ void _WebSocketClientInfo::setProtocols(ArrayList<String> p) {
     mProtocols = p;
 }
 
-WebSocketContinueBuffer _WebSocketClientInfo::getContinueBuffer() {
+
+WebSocketBuffer _WebSocketClientInfo::getContinueBuffer() {
     return this->mContinueBuffer;
 }
 
-void _WebSocketClientInfo::setContinueBuffer(WebSocketContinueBuffer c) {
+void _WebSocketClientInfo::setContinueBuffer(WebSocketBuffer c) {
     this->mContinueBuffer = c;
 }
-
+/*
 WebSocketEntireBuffer _WebSocketClientInfo::getEntireBuffer() {
     return this->mEntireBuffer;
 }
 
 void _WebSocketClientInfo::setEntireBuffer(WebSocketEntireBuffer c) {
     this->mEntireBuffer = c;
+}
+*/
+
+WebSocketBuffer _WebSocketClientInfo::getDefferedBuffer() {
+    return mDefferedBuff;
+}
+
+void _WebSocketClientInfo::setDefferedBuffer(WebSocketBuffer buff) {
+    mDefferedBuff = buff;
 }
 
 String _WebSocketClientInfo::getConnectUrl() {

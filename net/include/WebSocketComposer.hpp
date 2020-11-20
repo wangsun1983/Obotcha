@@ -23,11 +23,11 @@ enum WebSocketFrameComposerType {
 
 DECLARE_SIMPLE_CLASS(WebSocketComposer) {
 public:
-    _WebSocketComposer(int version,int maxframesize);
+    _WebSocketComposer(int version,int maxframesize):mType(version),mMaxFrameSize(maxframesize) {}
     
-    int getMaxFrameSize();
+    int getMaxFrameSize() {return mMaxFrameSize;}
 
-    void setMaxFrameSzie(int);
+    void setMaxFrameSzie(int frame) {mMaxFrameSize = frame;}
 
     virtual ByteArray genShakeHandMessage(WebSocketClientInfo) = 0;
     
@@ -41,12 +41,19 @@ public:
 
     virtual ByteArray genCloseMessage(WebSocketClientInfo,String) = 0;
 
-    //virtual String genControlMessage(WebSocketClientInfo,int opcode,String);
-    //virtual String genBinaryMessage(WebSocketClientInfo,int opcode,String);
-    //virtual String genMessageFrame() = 0;
 protected:
     int mType;
     int mMaxFrameSize;
+
+    void toggleMask(ByteArray buffer, ByteArray key) {
+        int keyLength = key->size();
+        int byteCount = buffer->size();
+        int frameBytesRead = 0;
+        for (int i = 0; i < byteCount; i++, frameBytesRead++) {
+            int keyIndex = (int) (frameBytesRead % keyLength);
+            buffer->fill(i,(byte) (buffer->at(i) ^ key->at(keyIndex)));
+        }
+    }
 };
 
 }

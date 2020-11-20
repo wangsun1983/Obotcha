@@ -22,7 +22,6 @@
 #include "EPollFileObserver.hpp"
 #include "Mutex.hpp"
 #include "HttpV1Parser.hpp"
-#include "WebSocketFrameComposer.hpp"
 #include "WebSocketParser.hpp"
 #include "HashMap.hpp"
 #include "WebSocketClient.hpp"
@@ -166,7 +165,7 @@ _WebSocketClient::_WebSocketClient(int version = 13) {
         }
     }
 
-    parser->setAsClient();
+    //parser->setAsClient();
     mClient->setParser(parser);
     mClient->setComposer(composer);
 }

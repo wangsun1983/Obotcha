@@ -95,6 +95,8 @@ public:
 
     _HttpV1Server(String ip,int port,HttpV1Listener,String certificate,String key);
 
+    void deMonitor(int fd);
+    
     void exit();
 
 private:

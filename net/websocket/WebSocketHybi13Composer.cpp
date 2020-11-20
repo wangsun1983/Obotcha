@@ -204,7 +204,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClient
             sinkWriter->writeByteArray(maskKey);
             //writeMaskedSynchronized(buffer, byteCount);
             ByteArray maskBuff = createByteArray(message);
-            st(WebSocketProtocol)::toggleMask(maskBuff,maskKey);
+            toggleMask(maskBuff,maskKey);
             sinkWriter->writeByteArray(maskBuff);
         } else {
             sinkWriter->writeByteArray(message);
@@ -357,7 +357,7 @@ ByteArray _WebSocketHybi13Composer::_genClientControlMessage(WebSocketClientInfo
 
     if (payload != nullptr) {
         ByteArray maskBuff = createByteArray(payload);
-        st(WebSocketProtocol)::toggleMask(maskBuff,maskKey);
+        toggleMask(maskBuff,maskKey);
         sinkWriter->writeByteArray(maskBuff);
     }
     

@@ -64,7 +64,7 @@ void _HttpDispatcherPool::release() {
     }
 }
 
-DispatchHttpWorkData _HttpDispatcherPool::getData(int runnableIndex) {
+DispatchHttpWorkData _HttpDispatcherPool::getData(int requireIndex) {
     while(1) {
         DispatchHttpWorkData data = datas->deQueueFirst();
         int runnableIndex = -1;
@@ -76,7 +76,7 @@ DispatchHttpWorkData _HttpDispatcherPool::getData(int runnableIndex) {
             }
         }
 
-        if(runnableIndex != -1) {
+        if(runnableIndex != -1 && requireIndex != runnableIndex) {
             HttpDispatchRunnable runnable = mRunnables->get(runnableIndex);
             runnable->addDefferedTask(data);
             continue;
@@ -84,7 +84,7 @@ DispatchHttpWorkData _HttpDispatcherPool::getData(int runnableIndex) {
 
         {
             AutoLock l(fd2TidsMutex);
-            fd2Tids[data->fd] = runnableIndex;
+            fd2Tids[data->fd] = requireIndex;
         }
 
         return data;
@@ -229,6 +229,10 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
         mSSLServer = createSSLServer(ip,port,AutoClone(this),certificate,key);
         mSSLServer->start();
     }
+}
+
+void _HttpV1Server::deMonitor(int fd) {
+    mTcpServer->deMonitor(fd);
 }
 
 void _HttpV1Server::exit() {

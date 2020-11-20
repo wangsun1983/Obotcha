@@ -34,6 +34,8 @@ public:
 
     ByteArray genCloseMessage(WebSocketClientInfo,String);
 
+    ByteArray generateControlFrame(int opcode, ByteArray payload);
+
 private:
     ByteArray _genClientShakeHandMessage(WebSocketClientInfo h);
 

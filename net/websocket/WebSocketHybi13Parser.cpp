@@ -273,14 +273,12 @@ ByteArray _WebSocketHybi13Parser::parsePongBuff() {
     int pos = mReader->getIndex();
 
 	if(!mHeader->getMasked()){
-		memcpy(payload, 
-        (const char *)&msg[pos], 
-        mHeader->getFrameLength());
+		memcpy(payload, (const char *)&msg[pos], mHeader->getFrameLength());
 	} else {
         int framesize = mHeader->getFrameLength();
         byte *masking_key_ = mHeader->getMaskKey()->toValue();
 
-		for(uint i = 0; i < framesize; i++){
+		for(uint i = 0; i < framesize; i++) {
 			int j = i % 4;
 			payload[i] = msg[pos + i] ^ masking_key_[j];
 		}

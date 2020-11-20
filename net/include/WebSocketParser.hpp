@@ -18,7 +18,6 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(WebSocketParser) {
 public:
     void setParseData(ByteArray);
-    void setAsClient();
 
     virtual WebSocketHeader parseHeader() = 0;
     virtual ByteArray parseContent(bool forceDecompress) = 0;
@@ -35,7 +34,6 @@ public:
 protected:
     ByteArray mData;
     ByteArrayReader mReader;
-    bool isClient;
 
     WebSocketHeader mHeader;
 };

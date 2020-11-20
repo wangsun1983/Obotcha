@@ -102,7 +102,6 @@ public:
      */
     static const int PAYLOAD_LONG = 127;
 
-    static void toggleMask(ByteArray buffer, ByteArray key);
 };
 
 }

@@ -78,7 +78,7 @@ private:
 
     String mReason;
 
-    int mMethod;
+    //int mMethod;
 
     int mMajorVer;
 

@@ -27,8 +27,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpv1parser.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketprotocol.o \
-		$(outtmp)/websocketframecomposer.o \
-		$(outtmp)/websocketcomposer.o \
 		$(outtmp)/websocketframe.o \
 		$(outtmp)/websocketparser.o \
 		$(outtmp)/websockethybi13parser.o \
@@ -134,9 +132,6 @@ $(outtmp)/websocketserver.o :$(netDir)/websocket/WebSocketServer.cpp
 $(outtmp)/websocketprotocol.o :$(netDir)/websocket/WebSocketProtocol.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketProtocol.cpp -o $(outtmp)/websocketprotocol.o $(external)
 
-$(outtmp)/websocketframecomposer.o :$(netDir)/websocket/WebSocketFrameComposer.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketFrameComposer.cpp -o $(outtmp)/websocketframecomposer.o $(external)
-
 $(outtmp)/websocketframe.o :$(netDir)/websocket/WebSocketFrame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketFrame.cpp -o $(outtmp)/websocketframe.o $(external)
 
@@ -175,9 +170,6 @@ $(outtmp)/websocketclient.o :$(netDir)/websocket/WebSocketClient.cpp
 
 $(outtmp)/websocketclientinfo.o :$(netDir)/websocket/WebSocketClientInfo.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketClientInfo.cpp -o $(outtmp)/websocketclientinfo.o $(external)
-
-$(outtmp)/websocketcomposer.o :$(netDir)/websocket/WebSocketComposer.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketComposer.cpp -o $(outtmp)/websocketcomposer.o $(external)
 
 $(outtmp)/ntpclient.o :$(netDir)/NtpClient.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/NtpClient.cpp -o $(outtmp)/ntpclient.o $(external)

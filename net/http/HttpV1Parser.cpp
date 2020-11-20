@@ -36,7 +36,6 @@ int _HttpV1Parser::on_header_field(http_parser*parser, const char *at, size_t le
 
 int _HttpV1Parser::on_header_value(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    
     p->getHeader()->setValue(
         p->tempParseField,
         createString(at,0,length));
@@ -54,6 +53,11 @@ int _HttpV1Parser::on_body(http_parser*parser, const char *at, size_t length) {
 }
 
 int _HttpV1Parser::on_message_complete(http_parser *parser) {
+    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
+    p->setMethod(parser->method);
+    p->setStatusCode(parser->status_code);
+    p->setMajorVersion(parser->http_major);
+    p->setMinorVersion(parser->http_minor);
     return 0;
 }
 
@@ -93,7 +97,7 @@ HttpPacket _HttpV1Parser::parseEntireRequest(String request) {
     http_parser_init(&mParser, HTTP_REQUEST);
     http_parser_execute(&mParser,&settings, request->toChars(), request->size());
     //printf("parseEntireRequest trace3 \n");
-    packet->setMethod(mParser.method);
+    //packet->setMethod(mParser.method);
     return packet;
 }
 

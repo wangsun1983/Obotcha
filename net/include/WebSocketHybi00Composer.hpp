@@ -31,6 +31,8 @@ public:
 
     ByteArray genCloseMessage(WebSocketClientInfo,String);
 
+    ByteArray generateControlFrame(int opcode, ByteArray payload);
+
 };
 
 }

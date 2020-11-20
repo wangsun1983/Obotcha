@@ -36,6 +36,8 @@ public:
 
     _TcpServer(String ip,int port);
 
+    void deMonitor(int fd);
+
     int start();
 
     void release();
