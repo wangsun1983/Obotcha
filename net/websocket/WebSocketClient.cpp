@@ -196,7 +196,7 @@ void _WebSocketClient::clearConnectInfo() {
 }
 
 void _WebSocketClient::updateMask(bool v) {
-    mClient->getWebSocketHeader()->setMasked(v);
+    //mClient->getWebSocketHeader()->setMasked(v);
 }
 
 void _WebSocketClient::updateConnectInfo(String header,String value) {

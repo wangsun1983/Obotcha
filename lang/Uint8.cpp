@@ -1,0 +1,121 @@
+/**
+ * @file String.cpp
+ * @brief this class used for uint8
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
+#include "Uint8.hpp"
+#include "InitializeException.hpp"
+#include "NullPointerException.hpp"
+#include "Number.hpp"
+
+namespace obotcha {
+
+_Uint8::_Uint8(uint8_t v) : val(v) {}
+
+_Uint8::_Uint8(Uint8 &v) {
+    if(v == nullptr) {
+        Trigger(InitializeException,"Object is null");
+    }
+    
+    val = v->val;
+}
+    
+uint8_t _Uint8::toValue() {
+    return val;
+}
+
+bool _Uint8::equals(Uint8 &p) {
+    if(p == nullptr) {
+        Trigger(NullPointerException,"Object is null");
+    }
+
+    return val == p->val;
+}
+
+bool _Uint8::equals(uint8_t p) {
+    return val == p;
+}
+
+bool _Uint8::equals(const _Uint8 *p) {
+    if(p == nullptr) {
+        Trigger(NullPointerException,"Object is null");
+    }
+
+    return val == p->val;
+}
+
+void _Uint8::update(uint8_t v) {
+    val = v;
+}
+
+void _Uint8::update(sp<_Uint8> v) {
+    if(v == nullptr) {
+        Trigger(NullPointerException,"Uint8 update nullptr");
+    }
+
+    val = v->val;
+}
+
+sp<_String> _Uint8::toHexString() {
+    return createString(_Number::toHexString(val));
+}
+
+sp<_String> _Uint8::toOctalString() {
+    return createString(_Number::toOctalString(val));
+}
+
+sp<_String> _Uint8::toBinaryString() {
+    return createString(_Number::toBinaryString(val));
+}
+
+sp<_String> _Uint8::toString() {
+    return createString(_Number::toDecString(val));
+}
+
+sp<_String> _Uint8::toString(uint8_t i) {
+    return createString(_Number::toDecString(i));
+}
+
+uint8_t _Uint8::parseDecUint8(sp<_String> v) {
+    if(v == nullptr) {
+        Trigger(NullPointerException,"parseDecUint8 nullptr");
+    }
+
+    return _Number::parseDecNumber(v->getStdString());
+}
+
+uint8_t _Uint8::parseHexUint8(sp<_String> v) {
+    if(v == nullptr) {
+        Trigger(NullPointerException,"parseHexUint8 nullptr");
+    }
+    
+    return _Number::parseHexNumber(v->getStdString());
+}
+
+uint8_t _Uint8::parseOctUint8(sp<_String> v) {
+    if(v == nullptr) {
+        Trigger(NullPointerException,"parseOctUint8 nullptr");
+    }
+    
+    return _Number::parseOctNumber(v->getStdString());
+}
+
+uint8_t _Uint8::parseBinaryUint8(sp<_String> v) {
+    if(v == nullptr) {
+        Trigger(NullPointerException,"parseBinaryUint8 nullptr");
+    }
+    
+    return _Number::parseBinaryNumber(v->getStdString());
+}
+
+_Uint8::~_Uint8() {
+}
+
+}

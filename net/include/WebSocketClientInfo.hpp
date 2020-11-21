@@ -47,11 +47,6 @@ public:
 
     void setHttpHeader(HttpHeader);
 
-    //WebSocketHeader
-    WebSocketHeader getWebSocketHeader();
-
-    void setWebSocketHeader(WebSocketHeader);
-
     //PermessageDeflater
     sp<_WebSocketPermessageDeflate> getDeflater();
 
@@ -65,9 +60,6 @@ public:
     //Continue Buffer
     WebSocketBuffer getContinueBuffer();
     void setContinueBuffer(WebSocketBuffer);
-    //WebSocketEntireBuffer
-    //WebSocketEntireBuffer getEntireBuffer();
-    //void setEntireBuffer(WebSocketEntireBuffer);
 
     //DefferedBuffer
     WebSocketBuffer getDefferedBuffer();
@@ -103,14 +95,12 @@ private:
 
     HttpHeader mHttpHeader;
         
-    WebSocketHeader mWsHeader;
+    //WebSocketHeader mWsHeader;
 
     sp<_WebSocketPermessageDeflate> mDeflate;
 
     ArrayList<String> mProtocols;
 
-    //WebSocketContinueBuffer mContinueBuffer;
-    //WebSocketEntireBuffer mEntireBuffer;
     WebSocketBuffer mDefferedBuff;
     WebSocketBuffer mContinueBuffer;
 

@@ -73,9 +73,7 @@ ByteArray _WebSocketHybi13Parser::parseContent(bool isDeflate) {
     int pos = mReader->getIndex();
     
     if(!mHeader->getMasked()){
-        memcpy(payload, 
-        (const char *)&msg[pos], 
-        mHeader->getFrameLength());
+        memcpy(payload,(const char *)&msg[pos],mHeader->getFrameLength());
 	} else {
         int framesize = mHeader->getFrameLength();
         byte *masking_key_ = mHeader->getMaskKey()->toValue();

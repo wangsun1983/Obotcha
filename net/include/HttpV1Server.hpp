@@ -49,28 +49,41 @@ DECLARE_SIMPLE_CLASS(HttpDispatchRunnable) IMPLEMENTS(Runnable) {
 public:
     _HttpDispatchRunnable(int index,sp<_HttpDispatcherPool>);
     void run();
-    void addDefferedTask(DispatchHttpWorkData);
+    //void addDefferedTask(DispatchHttpWorkData);
     void release();
 
 private:
-    Mutex mDefferedTaskMutex;
+    //Mutex mDefferedTaskMutex;
     Mutex mPoolMutex;
-    LinkedList<DispatchHttpWorkData> mDefferedTasks;
+    //LinkedList<DispatchHttpWorkData> mDefferedTasks;
     sp<_HttpDispatcherPool> mPool;
     int mIndex;
+};
+
+DECLARE_SIMPLE_CLASS(HttpDefferedTasks) {
+public:
+    _HttpDefferedTasks();
+
+    bool isDoDefferedTask;
+    Mutex mutex;
+    LinkedList<DispatchHttpWorkData> tasks;
 };
 
 DECLARE_SIMPLE_CLASS(HttpDispatcherPool) {
 public:
     _HttpDispatcherPool(int threadNum = 4);
-    void add(DispatchHttpWorkData);
     void release();
     DispatchHttpWorkData getData(int);
     void addData(DispatchHttpWorkData);
     void clearFds(int index);
 
 private:
-    BlockingLinkedList<DispatchHttpWorkData> datas;
+    Mutex mDataMutex;
+    Condition mDataCondition;
+
+    ArrayList<HttpDefferedTasks> mDefferedTasks;
+    LinkedList<DispatchHttpWorkData> datas;
+
     Mutex fd2TidsMutex;
     std::map<int,int> fd2Tids;
     ThreadPoolExecutor mExecutors;

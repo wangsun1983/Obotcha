@@ -90,7 +90,7 @@ ByteArray _WebSocketHybi13Composer::_genClientShakeHandMessage(WebSocketClientIn
     return createByteArray(packet->genHttpRequest());
 }
 
-ByteArray _WebSocketHybi13Composer::_genServerShakeHandMessage(WebSocketClientInfo  info) {
+ByteArray _WebSocketHybi13Composer::_genServerShakeHandMessage(WebSocketClientInfo info) {
     HttpHeader h = info->getHttpHeader();
     String key = h->getValue(st(HttpHeader)::SecWebSocketKey);
 
@@ -179,12 +179,10 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClient
         
         ByteArray maskKey = createByteArray(4);
         int b1 = 0;
-
-        if(info->getWebSocketHeader()->getMasked()) {
-            b1 = st(WebSocketProtocol)::B1_FLAG_MASK;
-            //random.nextBytes(maskKey);
-            mRand->nextBytes(maskKey);
-        }
+        
+        //client message need use mask.
+        b1 = st(WebSocketProtocol)::B1_FLAG_MASK;
+        mRand->nextBytes(maskKey);
     
         int byteCount = message->size();
         if (byteCount <= st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
@@ -200,15 +198,11 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClient
             sinkWriter->writeLong(byteCount);
         }
 
-        if(info->getWebSocketHeader()->getMasked()) {
-            sinkWriter->writeByteArray(maskKey);
-            //writeMaskedSynchronized(buffer, byteCount);
-            ByteArray maskBuff = createByteArray(message);
-            toggleMask(maskBuff,maskKey);
-            sinkWriter->writeByteArray(maskBuff);
-        } else {
-            sinkWriter->writeByteArray(message);
-        }
+        //client message need use mask.
+        sinkWriter->writeByteArray(maskKey);
+        ByteArray maskBuff = createByteArray(message);
+        toggleMask(maskBuff,maskKey);
+        sinkWriter->writeByteArray(maskBuff);
         
         sink->quickShrink(sinkWriter->getIndex());
 

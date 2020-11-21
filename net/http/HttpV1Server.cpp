@@ -22,6 +22,12 @@
 
 namespace obotcha {
 
+_HttpDefferedTasks::_HttpDefferedTasks() {
+    isDoDefferedTask = false;
+    mutex = createMutex();
+    tasks = createLinkedList<DispatchHttpWorkData>();
+}
+
 //------------------DispatchHttpWorkData------------------
 _DispatchHttpWorkData::_DispatchHttpWorkData(int fd,ByteArray pack,int id) {
     this->fd = fd;
@@ -33,16 +39,30 @@ _HttpDispatcherPool::_HttpDispatcherPool(int threadSize) {
     fd2TidsMutex = createMutex("HttpDispatcherPool");
     mRunnables = createArrayList<HttpDispatchRunnable>();
     mExecutors = createThreadPoolExecutor(-1,threadSize);
-    datas = createBlockingLinkedList<DispatchHttpWorkData>();
+    datas = createLinkedList<DispatchHttpWorkData>();
+    mDefferedTasks = createArrayList<HttpDefferedTasks>();
+    mDataMutex = createMutex();
+    mDataCondition = createCondition();
+    
     for(int index = 0;index < threadSize;index++) {
         HttpDispatchRunnable r = createHttpDispatchRunnable(index,AutoClone(this));
-        mExecutors->execute(r);
         mRunnables->add(r);
+
+        HttpDefferedTasks t = createHttpDefferedTasks();
+        mDefferedTasks->add(t);
     }
+
+    ListIterator<HttpDispatchRunnable> iterator = mRunnables->getIterator();
+    while(iterator->hasValue()) {
+        mExecutors->execute(iterator->getValue());
+        iterator->next();
+    } 
 }
 
 void _HttpDispatcherPool::addData(DispatchHttpWorkData data) {
+    AutoLock l(mDataMutex);
     datas->enQueueLast(data);
+    mDataCondition->notify();
 }
 
 void _HttpDispatcherPool::clearFds(int index) {
@@ -66,36 +86,62 @@ void _HttpDispatcherPool::release() {
 
 DispatchHttpWorkData _HttpDispatcherPool::getData(int requireIndex) {
     while(1) {
-        DispatchHttpWorkData data = datas->deQueueFirst();
-        int runnableIndex = -1;
+        DispatchHttpWorkData data = nullptr;
         {
             AutoLock l(fd2TidsMutex);
-            auto iterator = fd2Tids.find(data->fd);
-            if(iterator != fd2Tids.end()) {
-                runnableIndex = iterator->second;
+            //search deffered tasks
+            HttpDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
+            AutoLock ll(defferedTasks->mutex);
+            data = defferedTasks->tasks->deQueueFirst();
+            if(data == nullptr) {
+                if(defferedTasks->isDoDefferedTask) {
+                    clearFds(requireIndex);
+                    defferedTasks->isDoDefferedTask = false;
+                }
+            } else {
+                defferedTasks->isDoDefferedTask = true;
+                return data;
             }
         }
 
-        if(runnableIndex != -1 && requireIndex != runnableIndex) {
-            HttpDispatchRunnable runnable = mRunnables->get(runnableIndex);
-            runnable->addDefferedTask(data);
+        {
+            AutoLock l(mDataMutex);
+            data = datas->deQueueFirst();
+        }
+        
+        if(data != nullptr) {
+            int runnableIndex = -1;
+            {
+                AutoLock l(fd2TidsMutex);
+                auto iterator = fd2Tids.find(data->fd);
+                if(iterator != fd2Tids.end()) {
+                    runnableIndex = iterator->second;
+                }
+            }
+
+            if(runnableIndex != -1 && requireIndex != runnableIndex) {
+                HttpDefferedTasks defferedTasks = mDefferedTasks->get(runnableIndex);
+                AutoLock ll(defferedTasks->mutex);
+                defferedTasks->tasks->enQueueLast(data);
+                mDataCondition->notifyAll();
+                continue;
+            }
+        } else {
+            AutoLock l(mDataMutex);
+            mDataCondition->wait(mDataMutex);
             continue;
         }
 
-        {
-            AutoLock l(fd2TidsMutex);
-            fd2Tids[data->fd] = requireIndex;
-        }
-
+        AutoLock l(fd2TidsMutex);
+        fd2Tids[data->fd] = requireIndex;
+        
         return data;
     }
 }
 
 _HttpDispatchRunnable::_HttpDispatchRunnable(int index,HttpDispatcherPool pool) {
     mIndex = index;
-    mDefferedTaskMutex = createMutex("HttpDispatchRunnable");
     mPoolMutex = createMutex("HttpPoolMutex");
-    mDefferedTasks = createLinkedList<DispatchHttpWorkData>();
     mPool = pool;
 }
 
@@ -107,28 +153,7 @@ void _HttpDispatchRunnable::release() {
 void _HttpDispatchRunnable::run() {
     bool isDoDefferedTask = false;
     while(1) {
-        DispatchHttpWorkData data = nullptr;
-        {
-            AutoLock l(mDefferedTaskMutex);
-            data = mDefferedTasks->deQueueFirst();
-            if(data != nullptr) {
-                isDoDefferedTask = true;
-                goto doAction;
-            }
-        }
-        
-        {
-            AutoLock l(mPoolMutex);
-            if(isDoDefferedTask) {
-                //clear fidmaps
-                mPool->clearFds(mIndex);
-            }
-
-            isDoDefferedTask = false;
-            data = mPool->getData(mIndex);
-        }
-
-doAction:
+        DispatchHttpWorkData data = mPool->getData(mIndex);
         HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(data->fd);
         if(info == nullptr) {
             continue;
@@ -150,11 +175,6 @@ doAction:
             }
         }
     }
-}
-
-void _HttpDispatchRunnable::addDefferedTask(DispatchHttpWorkData data) {
-    AutoLock l(mDefferedTaskMutex);
-    mDefferedTasks->enQueueLast(data);
 }
 
 void _HttpV1Server::onDataReceived(SocketResponser r,ByteArray pack) {
@@ -208,6 +228,7 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
     mHttpListener = l;
 
     int threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
+
     mPool = createHttpDispatcherPool(threadsNum);
 
     mIp = ip;

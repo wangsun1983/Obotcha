@@ -7,6 +7,7 @@
 #include "String.hpp"
 #include "InetAddress.hpp"
 #include "ByteArray.hpp"
+#include "WebSocketFrame.hpp"
 
 namespace obotcha {
 
@@ -19,9 +20,9 @@ enum PingResult {
 
 DECLARE_SIMPLE_CLASS(WebSocketListener) {
 public:
-    virtual int onMessage(sp<_WebSocketClientInfo> client,String message) = 0;
+    virtual int onMessage(sp<_WebSocketClientInfo> client,WebSocketFrame frame) = 0;
 
-    virtual int onData(sp<_WebSocketClientInfo> client,ByteArray data) = 0;
+    virtual int onData(sp<_WebSocketClientInfo> client,WebSocketFrame frame) = 0;
 
     virtual int onConnect(sp<_WebSocketClientInfo> client) = 0;
 

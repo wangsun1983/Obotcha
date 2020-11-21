@@ -37,18 +37,10 @@ DECLARE_SIMPLE_CLASS(WebSocketClientManager) {
 public:
     static WebSocketClientManager getInstance();
     
-    bool addClient(int fd,int version);
+    WebSocketClientInfo addClient(int fd,int version);
 
     WebSocketClientInfo getClient(int fd);
-
-    void setHttpHeader(int fd,HttpHeader h);
-
-    void setWebSocketHeader(int fd,WebSocketHeader h);
-
-    void setWebSocketPermessageDeflate(int fd,WebSocketPermessageDeflate v);
-
-    void setWebSocketProtocols(int fd,ArrayList<String>);
-    
+  
     void removeClient(WebSocketClientInfo);
 
 private:
@@ -67,8 +59,10 @@ DECLARE_SIMPLE_CLASS(DispatchData) {
 public:
     _DispatchData(uint64_t,int,int,uint32_t,ByteArray);
     _DispatchData(int,int,uint32_t,HttpPacket);
-    static const int Http;
-    static const int Ws;
+    enum DataType {
+        Http = 0,
+        Ws,
+    };
     
     int cmd;
     int fd;
@@ -88,10 +82,7 @@ public:
     void release();
 
 private:
-    Mutex mDefferedTaskMutex;
     Mutex mPoolMutex;
-
-    LinkedList<DispatchData> mDefferedTasks;
     int mIndex;
 
     sp<_WebSocketDispatcherPool> mPool;
@@ -100,6 +91,16 @@ private:
     void handleHttpData(DispatchData data);
 
     HttpV1Parser mParser;
+};
+
+//------------------WebSocketDefferedTasks---------------------------
+DECLARE_SIMPLE_CLASS(WebSocketDefferedTasks) {
+public:
+    _WebSocketDefferedTasks();
+
+    bool isDoDefferedTask;
+    Mutex mutex;
+    LinkedList<DispatchData> tasks;
 };
 
 //------------------------WebSocketServer-------------------------
@@ -122,10 +123,13 @@ public:
 
 private:
     void clearFds(int index);
-
-    BlockingLinkedList<DispatchData> datas;
+    
+    Mutex mDataMutex;
+    Condition mDataCondition;
+    LinkedList<DispatchData> datas;
     ThreadPoolExecutor mExecutor;
     ArrayList<WebSocketDispatchRunnable> mRunnables;
+    ArrayList<WebSocketDefferedTasks> mDefferedTasks;
 
     HttpV1Server mHttpServer;
 
@@ -152,13 +156,7 @@ public:
     
     //WebSocket Epoll listener
     int onEvent(int fd,uint32_t events,ByteArray);
-    //int onConnect(int fd);
 
-    //WebSocket http listener
-    //void onDataReceived(SocketResponser r,ByteArray pack);
-    //void onDisconnect(SocketResponser r);
-    //void onConnect(SocketResponser r);
-    //void onTimeout();
     void onMessage(sp<_HttpV1ClientInfo> client,sp<_HttpV1ResponseWriter> w,HttpPacket msg);
     void onConnect(sp<_HttpV1ClientInfo>);
     void onDisconnect(sp<_HttpV1ClientInfo>);
@@ -166,9 +164,9 @@ public:
 private:
     void monitor(int fd);
 
-    int notifyMessage(sp<_WebSocketClientInfo> client,String message);
+    int notifyMessage(sp<_WebSocketClientInfo> client,WebSocketFrame);
 
-    int notifyData(sp<_WebSocketClientInfo> client,ByteArray data);
+    int notifyData(sp<_WebSocketClientInfo> client,WebSocketFrame);
 
     int notifyConnect(sp<_WebSocketClientInfo> client);
 

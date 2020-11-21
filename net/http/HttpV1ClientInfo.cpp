@@ -18,7 +18,7 @@ int _HttpV1ClientInfo::getClientFd() {
 void _HttpV1ClientInfo::setClientFd(int fd) {
     mClientFd = fd;
     uint32_t rnd = mRnd->nextUint32();
-    mClientId = (fd<<32|rnd);
+    mClientId = ((uint64_t)fd<<32|rnd);
 }
 
 uint64_t _HttpV1ClientInfo::getClientId() {

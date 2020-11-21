@@ -50,7 +50,7 @@ void _Float::update(float v) {
 
 void _Float::update(sp<_Float> v) {
     if(v == nullptr) {
-        Trigger(NullPointerException,"Boolean equals nullptr"); 
+        Trigger(NullPointerException,"Float equals nullptr"); 
     }
 
     val = v->val;

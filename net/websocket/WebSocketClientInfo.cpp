@@ -21,7 +21,7 @@ _WebSocketClientInfo::_WebSocketClientInfo() {
     mParser = nullptr;
     mComposer = nullptr;
     mHttpHeader = createHttpHeader();
-    mWsHeader = createWebSocketHeader();
+    //mWsHeader = createWebSocketHeader();
     mDeflate = nullptr;
     mProtocols = nullptr;
     mContinueBuffer = nullptr;
@@ -33,7 +33,7 @@ _WebSocketClientInfo::_WebSocketClientInfo() {
 
 void _WebSocketClientInfo::reset() {
     mHttpHeader->clear();
-    mWsHeader->clear();
+    //mWsHeader->clear();
     mDeflate = nullptr;
     mProtocols = nullptr;
     mContinueBuffer = nullptr;
@@ -47,7 +47,7 @@ int _WebSocketClientInfo::getClientFd() {
 
 void _WebSocketClientInfo::setClientFd(int fd) {
     this->mClientFd = fd;
-    mClientId = (fd<<32 | mRand->nextUint32());
+    mClientId = ((uint64_t)fd<<32 | mRand->nextUint32());
 }
 
 uint64_t _WebSocketClientInfo::getClientId() {
@@ -78,14 +78,6 @@ void _WebSocketClientInfo::setHttpHeader(HttpHeader header) {
     mHttpHeader = header;
 }
 
-WebSocketHeader _WebSocketClientInfo::getWebSocketHeader() {
-    return mWsHeader;
-}
-
-void _WebSocketClientInfo::setWebSocketHeader(WebSocketHeader header) {
-    mWsHeader = header;
-}
-
 sp<_WebSocketPermessageDeflate> _WebSocketClientInfo::getDeflater() {
     return mDeflate;
 }
@@ -110,15 +102,6 @@ WebSocketBuffer _WebSocketClientInfo::getContinueBuffer() {
 void _WebSocketClientInfo::setContinueBuffer(WebSocketBuffer c) {
     this->mContinueBuffer = c;
 }
-/*
-WebSocketEntireBuffer _WebSocketClientInfo::getEntireBuffer() {
-    return this->mEntireBuffer;
-}
-
-void _WebSocketClientInfo::setEntireBuffer(WebSocketEntireBuffer c) {
-    this->mEntireBuffer = c;
-}
-*/
 
 WebSocketBuffer _WebSocketClientInfo::getDefferedBuffer() {
     return mDefferedBuff;
@@ -173,7 +156,6 @@ int _WebSocketClientInfo::_send(int type,ByteArray msg) {
         ListIterator<ByteArray> iterator = data->getIterator();
         while(iterator->hasValue()) {
             ByteArray sendData = iterator->getValue();
-            //size += st(NetUtils)::sendTcpPacket(mClientFd,sendData);
             size += send(mClientFd,sendData->toValue(),sendData->size(),0);
             iterator->next();
         }

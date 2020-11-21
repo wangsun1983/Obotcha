@@ -99,12 +99,38 @@ void _WebSocketHeader::setHeadSize(int v) {
 }
 
 //------------WebSocketFrame------------
+_WebSocketFrame::_WebSocketFrame(WebSocketHeader h,String m) {
+    mHeader = h;
+    mMessage = m;
+}
+
+_WebSocketFrame::_WebSocketFrame(WebSocketHeader h,ByteArray d) {
+    mHeader = h;
+    mData = d;
+}
+
 void _WebSocketFrame::setHeader(WebSocketHeader h) {
     mHeader = h;
 }
 
 WebSocketHeader _WebSocketFrame::getHeader() {
     return mHeader;
+}
+
+void _WebSocketFrame::setMessage(String message) {
+    mMessage = message;
+}
+
+void _WebSocketFrame::setData(ByteArray data) {
+    mData = data;
+}
+
+String _WebSocketFrame::getMessage() {
+    return mMessage;
+}
+
+ByteArray _WebSocketFrame::getData() {
+    return mData;
 }
 
 }
