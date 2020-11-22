@@ -17,9 +17,13 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/bytearraywriter.o \
 	$(outtmp)/stringreader.o \
 	$(outtmp)/byteringarrayreader.o \
+	$(outtmp)/autoclosefile.o \
 
 $(outtmp)/file.o :$(ioDir)/File.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/File.cpp -o $(outtmp)/file.o $(external)
+
+$(outtmp)/autoclosefile.o :$(ioDir)/AutoCloseFile.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/AutoCloseFile.cpp -o $(outtmp)/autoclosefile.o $(external)
 
 $(outtmp)/fileinputstream.o :$(ioDir)/FileInputStream.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileInputStream.cpp -o $(outtmp)/fileinputstream.o $(external)
