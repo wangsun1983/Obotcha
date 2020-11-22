@@ -175,7 +175,8 @@ int _EPollFileObserver::removeObserver(int fd) {
         l->mFdEventsMap.erase(fd);
         iterator->next();
     }
-
+    
+    mFdEventsMap.erase(fd);
     mListeners->remove(fd);
 }
 
