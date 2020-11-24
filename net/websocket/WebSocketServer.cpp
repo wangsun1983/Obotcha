@@ -132,19 +132,16 @@ void _WebSocketDispatchRunnable::handleHttpData(DispatchData data) {
     int fd = data->fd;
     HttpPacket request = data->packet;
     HttpHeader header = request->getHeader();
-    printf("handleHttpData trace1,request method is %d \n",request->getMethod());
     String upgrade = header->getValue(st(HttpHeader)::Upgrade);
     String key = header->getValue(st(HttpHeader)::SecWebSocketKey);
     String version = header->getValue(st(HttpHeader)::SecWebSocketVersion);
-    printf("handleHttpData trace2 \n");
     if (upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
-        printf("handleHttpData trace3 \n");
         // remove fd from http epoll
         mPool->getHttpV1Server()->deMonitor(fd);
 
         while(st(WebSocketClientManager)::getInstance()->getClient(fd)!= nullptr) {
-            usleep(1000*5);
             LOG(INFO)<<"websocket client is not removed,fd is "<<fd;
+            usleep(1000*5);
         }
         
         WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->addClient(fd,
@@ -153,7 +150,6 @@ void _WebSocketDispatchRunnable::handleHttpData(DispatchData data) {
         WebSocketParser parser = client->getParser();
 
         if (!parser->validateHandShake(header)) {
-            printf("handleHttpData trace4 \n");
             return;
         }
 
@@ -162,7 +158,6 @@ void _WebSocketDispatchRunnable::handleHttpData(DispatchData data) {
         if (deflate != nullptr) {
             client->setDeflater(deflate);
         }
-        printf("handleHttpData trace5 \n");
         ArrayList<String> protocols = parser->extractSubprotocols(header);
         if (protocols != nullptr && protocols->size() != 0) {
             LOG(ERROR)<<"Websocket Server Protocol is not null";
@@ -172,11 +167,9 @@ void _WebSocketDispatchRunnable::handleHttpData(DispatchData data) {
 
         mPool->getWebSocketServer()->monitor(fd);
         mPool->getWebSocketServer()->notifyConnect(client);
-        printf("handleHttpData trace6 \n");
         WebSocketComposer composer = client->getComposer();
         ByteArray shakeresponse = composer->genShakeHandMessage(client);
         int ret = send(fd,shakeresponse->toValue(),shakeresponse->size(),0);
-        printf("handleHttpData trace7 \n");
         if(ret < 0) {
             LOG(ERROR)<<"Websocket Server send response fail,reason:"<<strerror(errno);
         }
@@ -308,7 +301,6 @@ FINISH:
 
 void _WebSocketDispatchRunnable::run() {
     bool isDoDefferedTask = false;
-    printf("websocket run 1 \n");
     DispatchData data = nullptr;
     while(1) {
         {
@@ -318,16 +310,13 @@ void _WebSocketDispatchRunnable::run() {
         
         switch(data->cmd) {
             case st(DispatchData)::Http:
-            printf("websocket run 4 \n");
             handleHttpData(data);
             break;
 
             case st(DispatchData)::Ws:
-            printf("websocket run 5 \n");
             handleWsData(data);
             break;
         }
-        printf("websocket run 6 \n");
     }
 }
 
@@ -366,7 +355,7 @@ _WebSocketDispatcherPool::_WebSocketDispatcherPool(int threadnum) {
 void _WebSocketDispatcherPool::addData(DispatchData data) {
     AutoLock l(mDataMutex);
     datas->enQueueLast(data);
-    mDataCondition->notify();
+    mDataCondition->notifyAll();
 }
 
 void _WebSocketDispatcherPool::setHttpV1Server(HttpV1Server server) {
@@ -401,13 +390,15 @@ DispatchData _WebSocketDispatcherPool::getData(int requireIndex) {
     while(1) {
         DispatchData data = nullptr;
         {
-            AutoLock l(fd2TidsMutex);
             //search deffered tasks
             WebSocketDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
-            AutoLock ll(defferedTasks->mutex);
-            data = defferedTasks->tasks->deQueueFirst();
+            {
+                AutoLock ll(defferedTasks->mutex);
+                data = defferedTasks->tasks->deQueueFirst();
+            }
             if(data == nullptr) {
                 if(defferedTasks->isDoDefferedTask) {
+                    AutoLock l(fd2TidsMutex);
                     clearFds(requireIndex);
                     defferedTasks->isDoDefferedTask = false;
                 }
@@ -416,12 +407,12 @@ DispatchData _WebSocketDispatcherPool::getData(int requireIndex) {
                 return data;
             }
         }
-
+        
         {
             AutoLock l(mDataMutex);
             data = datas->deQueueFirst();
         }
-
+        
         if(data != nullptr) {
             int runnableIndex = -1;
             {
@@ -436,12 +427,20 @@ DispatchData _WebSocketDispatcherPool::getData(int requireIndex) {
                 WebSocketDefferedTasks defferedTasks = mDefferedTasks->get(runnableIndex);
                 AutoLock ll(defferedTasks->mutex);
                 defferedTasks->tasks->enQueueLast(data);
+                {
+                    AutoLock l(fd2TidsMutex);
+                    fd2Tids[data->fd] = runnableIndex;
+                }
                 mDataCondition->notifyAll();
                 continue;
             }
         } else {
-            AutoLock l(mDataMutex);
-            mDataCondition->wait(mDataMutex);
+            WebSocketDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
+            AutoLock l(defferedTasks->mutex);
+            if(defferedTasks->tasks->size() != 0) {
+                continue;
+            }
+            mDataCondition->wait(defferedTasks->mutex);
             continue;
         }
 
@@ -509,6 +508,7 @@ int _WebSocketServer::release() {
 //WebSocket Epoll listener
 int _WebSocketServer::onEvent(int fd,uint32_t events,ByteArray pack) {
     WebSocketClientInfo client = st(WebSocketClientManager)::getInstance()->getClient(fd);
+    
     if(client != nullptr) {
         DispatchData data = createDispatchData(client->getClientId(),st(DispatchData)::Ws,fd,events,pack);
         mDispatchPool->addData(data);
@@ -518,20 +518,19 @@ int _WebSocketServer::onEvent(int fd,uint32_t events,ByteArray pack) {
 
 void _WebSocketServer::onMessage(sp<_HttpV1ClientInfo> client,sp<_HttpV1ResponseWriter> w,HttpPacket msg) {
     //int cmd,int fd, uint32_t events,HttpPacket pack
-    printf("message !!!! method is %d \n",msg->getMethod());
     //_DispatchData::_DispatchData(int cmd,int fd, uint32_t events,HttpPacket pack) {
     DispatchData data = createDispatchData(st(DispatchData)::Http,client->getClientFd(),0,msg);
     mDispatchPool->addData(data);
 }
 
-void _WebSocketServer::onConnect(sp<_HttpV1ClientInfo>) {
+void _WebSocketServer::onConnect(sp<_HttpV1ClientInfo> client) {
     //TODO
-    printf("_WebSocketServer onConnect1 \n");
+    //printf("_WebSocketServer onConnect1,client fd is %d \n",client->getClientFd());
 }
 
-void _WebSocketServer::onDisconnect(sp<_HttpV1ClientInfo>) {
+void _WebSocketServer::onDisconnect(sp<_HttpV1ClientInfo> client) {
     //TODO
-    printf("_WebSocketServer onConnect2 \n");
+    //printf("_WebSocketServer onConnect2 fd is %d\n",client->getClientFd());
 }
 
 int _WebSocketServer::notifyMessage(sp<_WebSocketClientInfo> client,WebSocketFrame frame) {

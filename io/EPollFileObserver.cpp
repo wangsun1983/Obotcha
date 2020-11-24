@@ -49,7 +49,6 @@ void _EPollFileObserver::run() {
 
     while(1) {
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
-
         if(epoll_events_count < 0) {
             LOG(ERROR)<<"epoll_wait count is -1";
             return;
@@ -77,9 +76,7 @@ void _EPollFileObserver::run() {
             }
 
             ListIterator<EPollFileObserverListener> iterator = listeners->getIterator();
-            //printf("start callback \n");
             while(iterator->hasValue()) {
-                //printf("callback trace1\n");
                 EPollFileObserverListener l = iterator->getValue();
                 int result = l->notifyEvent(fd,recvEvents,recvData);
                 if(result == st(EPollFileObserver)::OnEventRemoveObserver) {
@@ -91,7 +88,6 @@ void _EPollFileObserver::run() {
                 iterator->next();
             }
 
-            //printf("finish callback \n");
             if(listeners->size() == 0 ||
                 (recvEvents & (EpollRdHup|EPOLLHUP)) != 0) {
                 epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);

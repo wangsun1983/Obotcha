@@ -62,7 +62,7 @@ _HttpDispatcherPool::_HttpDispatcherPool(int threadSize) {
 void _HttpDispatcherPool::addData(DispatchHttpWorkData data) {
     AutoLock l(mDataMutex);
     datas->enQueueLast(data);
-    mDataCondition->notify();
+    mDataCondition->notifyAll();
 }
 
 void _HttpDispatcherPool::clearFds(int index) {
@@ -88,13 +88,15 @@ DispatchHttpWorkData _HttpDispatcherPool::getData(int requireIndex) {
     while(1) {
         DispatchHttpWorkData data = nullptr;
         {
-            AutoLock l(fd2TidsMutex);
             //search deffered tasks
             HttpDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
-            AutoLock ll(defferedTasks->mutex);
-            data = defferedTasks->tasks->deQueueFirst();
+            {
+                AutoLock ll(defferedTasks->mutex);
+                data = defferedTasks->tasks->deQueueFirst();
+            }
             if(data == nullptr) {
                 if(defferedTasks->isDoDefferedTask) {
+                    AutoLock l(fd2TidsMutex);
                     clearFds(requireIndex);
                     defferedTasks->isDoDefferedTask = false;
                 }
@@ -103,7 +105,7 @@ DispatchHttpWorkData _HttpDispatcherPool::getData(int requireIndex) {
                 return data;
             }
         }
-
+        
         {
             AutoLock l(mDataMutex);
             data = datas->deQueueFirst();
@@ -123,12 +125,21 @@ DispatchHttpWorkData _HttpDispatcherPool::getData(int requireIndex) {
                 HttpDefferedTasks defferedTasks = mDefferedTasks->get(runnableIndex);
                 AutoLock ll(defferedTasks->mutex);
                 defferedTasks->tasks->enQueueLast(data);
+                {
+                    AutoLock l(fd2TidsMutex);
+                    fd2Tids[data->fd] = runnableIndex;
+                }
                 mDataCondition->notifyAll();
                 continue;
             }
         } else {
-            AutoLock l(mDataMutex);
-            mDataCondition->wait(mDataMutex);
+            
+            HttpDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
+            AutoLock l(defferedTasks->mutex);
+            if(defferedTasks->tasks->size() != 0) {
+                continue;
+            }
+            mDataCondition->wait(defferedTasks->mutex);
             continue;
         }
 
@@ -228,7 +239,6 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
     mHttpListener = l;
 
     int threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
-
     mPool = createHttpDispatcherPool(threadsNum);
 
     mIp = ip;
@@ -254,6 +264,7 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
 
 void _HttpV1Server::deMonitor(int fd) {
     mTcpServer->deMonitor(fd);
+    st(HttpV1ClientManager)::getInstance()->removeClientInfo(fd);
 }
 
 void _HttpV1Server::exit() {
