@@ -18,6 +18,7 @@
 #include "HttpV1Parser.hpp"
 #include "HttpPacket.hpp"
 #include "HttpV1ClientInfo.hpp"
+#include "Random.hpp"
 
 namespace obotcha {
 
@@ -30,6 +31,8 @@ public:
     HttpV1ClientInfo getClientInfo(int fd);
 
     HttpV1ClientInfo removeClientInfo(int fd);
+    
+    uint32_t genRandomUint32();
 
     void clear();
     
@@ -42,6 +45,8 @@ private:
     HashMap<int,HttpV1ClientInfo> mClients;
 
     _HttpV1ClientManager();
+
+    Random mRand;
 };
 
 

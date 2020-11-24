@@ -37,6 +37,7 @@ _DispatchHttpWorkData::_DispatchHttpWorkData(int fd,ByteArray pack,int id) {
 
 _HttpDispatcherPool::_HttpDispatcherPool(int threadSize) {
     fd2TidsMutex = createMutex("HttpDispatcherPool");
+    mThreadnum = threadSize;
     mRunnables = createArrayList<HttpDispatchRunnable>();
     mExecutors = createThreadPoolExecutor(-1,threadSize);
     datas = createLinkedList<DispatchHttpWorkData>();
@@ -50,6 +51,8 @@ _HttpDispatcherPool::_HttpDispatcherPool(int threadSize) {
 
         HttpDefferedTasks t = createHttpDefferedTasks();
         mDefferedTasks->add(t);
+
+        tid2fds[index] = -1;
     }
 
     ListIterator<HttpDispatchRunnable> iterator = mRunnables->getIterator();
@@ -66,6 +69,7 @@ void _HttpDispatcherPool::addData(DispatchHttpWorkData data) {
 }
 
 void _HttpDispatcherPool::clearFds(int index) {
+    /*
     for(auto it = fd2Tids.begin();it != fd2Tids.end();) {
         if(it->second == index) {
             it = fd2Tids.erase(it);
@@ -73,6 +77,7 @@ void _HttpDispatcherPool::clearFds(int index) {
         }
         it++;
     }
+     */
 }
 
 void _HttpDispatcherPool::release() {
@@ -87,9 +92,9 @@ void _HttpDispatcherPool::release() {
 DispatchHttpWorkData _HttpDispatcherPool::getData(int requireIndex) {
     while(1) {
         DispatchHttpWorkData data = nullptr;
+        HttpDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
         {
             //search deffered tasks
-            HttpDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
             {
                 AutoLock ll(defferedTasks->mutex);
                 data = defferedTasks->tasks->deQueueFirst();
@@ -97,7 +102,8 @@ DispatchHttpWorkData _HttpDispatcherPool::getData(int requireIndex) {
             if(data == nullptr) {
                 if(defferedTasks->isDoDefferedTask) {
                     AutoLock l(fd2TidsMutex);
-                    clearFds(requireIndex);
+                    //clearFds(requireIndex);
+                    tid2fds[requireIndex] = -1;
                     defferedTasks->isDoDefferedTask = false;
                 }
             } else {
@@ -115,26 +121,31 @@ DispatchHttpWorkData _HttpDispatcherPool::getData(int requireIndex) {
             int runnableIndex = -1;
             {
                 AutoLock l(fd2TidsMutex);
-                auto iterator = fd2Tids.find(data->fd);
-                if(iterator != fd2Tids.end()) {
-                    runnableIndex = iterator->second;
+                //auto iterator = fd2Tids.find(data->fd);
+                //if(iterator != fd2Tids.end()) {
+                //    runnableIndex = iterator->second;
+                //}
+                for(int index = 0;index <mThreadnum;index++) {
+                    if(tid2fds[index] == data->fd) {
+                        runnableIndex = index;
+                        break;
+                    }
                 }
             }
 
             if(runnableIndex != -1 && requireIndex != runnableIndex) {
-                HttpDefferedTasks defferedTasks = mDefferedTasks->get(runnableIndex);
-                AutoLock ll(defferedTasks->mutex);
-                defferedTasks->tasks->enQueueLast(data);
+                HttpDefferedTasks otherDefferedTasks = mDefferedTasks->get(runnableIndex);
+                AutoLock ll(otherDefferedTasks->mutex);
+                otherDefferedTasks->tasks->enQueueLast(data);
                 {
                     AutoLock l(fd2TidsMutex);
-                    fd2Tids[data->fd] = runnableIndex;
+                    //fd2Tids[data->fd] = runnableIndex;
+                    tid2fds[runnableIndex] = data->fd;
                 }
                 mDataCondition->notifyAll();
                 continue;
             }
         } else {
-            
-            HttpDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
             AutoLock l(defferedTasks->mutex);
             if(defferedTasks->tasks->size() != 0) {
                 continue;
@@ -144,7 +155,8 @@ DispatchHttpWorkData _HttpDispatcherPool::getData(int requireIndex) {
         }
 
         AutoLock l(fd2TidsMutex);
-        fd2Tids[data->fd] = requireIndex;
+        //fd2Tids[data->fd] = requireIndex;
+        tid2fds[requireIndex] = data->fd;
         
         return data;
     }

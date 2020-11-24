@@ -27,6 +27,7 @@
 #include "LinkedList.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "HttpV1Server.hpp"
+#include "Random.hpp"
 
 namespace obotcha {
 
@@ -43,6 +44,8 @@ public:
   
     void removeClient(WebSocketClientInfo);
 
+    uint32_t genRandomUint32();
+
 private:
    static WebSocketClientManager mInstance;
    
@@ -51,6 +54,8 @@ private:
    HashMap<int,WebSocketClientInfo> mClients;
 
    _WebSocketClientManager();
+
+   Random mRand;
 
 };
 
@@ -136,7 +141,10 @@ private:
     sp<_WebSocketServer> mWebSocketServer;
 
     Mutex fd2TidsMutex;
-    std::map<int,int> fd2Tids;
+    //std::map<int,int> fd2Tids;
+    int tid2fds[128];
+
+    int mThreadnum;
 };
 
 //------------------------WebSocketServer-------------------------

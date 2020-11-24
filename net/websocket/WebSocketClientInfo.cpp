@@ -13,6 +13,7 @@
 #include "WebSocketPermessageDeflate.hpp"
 #include "WebSocketProtocol.hpp"
 #include "ProtocolNotSupportException.hpp"
+#include "WebSocketServer.hpp"
 
 namespace obotcha {
 
@@ -27,7 +28,7 @@ _WebSocketClientInfo::_WebSocketClientInfo() {
     mContinueBuffer = nullptr;
     mClientFd = -1;
     mWsVersion = -1;
-    mRand = createRandom();
+    //mRand = createRandom();
     mClientId = 0;
 }
 
@@ -47,7 +48,7 @@ int _WebSocketClientInfo::getClientFd() {
 
 void _WebSocketClientInfo::setClientFd(int fd) {
     this->mClientFd = fd;
-    mClientId = ((uint64_t)fd<<32 | mRand->nextUint32());
+    mClientId = ((uint64_t)fd<<32 | st(WebSocketClientManager)::getInstance()->genRandomUint32());
 }
 
 uint64_t _WebSocketClientInfo::getClientId() {

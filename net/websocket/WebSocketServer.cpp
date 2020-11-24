@@ -25,6 +25,12 @@ Mutex _WebSocketClientManager::mMutex = createMutex("WebSocketClientManagerMutex
 
 _WebSocketClientManager::_WebSocketClientManager() {
     mClients = createHashMap<int, WebSocketClientInfo>();
+
+    mRand = createRandom();
+}
+
+uint32_t _WebSocketClientManager::genRandomUint32() {
+    return mRand->nextUint32();
 }
 
 WebSocketClientManager _WebSocketClientManager::getInstance() {
@@ -330,7 +336,7 @@ _WebSocketDefferedTasks::_WebSocketDefferedTasks() {
 //----WebSocketDispatcherPool----
 _WebSocketDispatcherPool::_WebSocketDispatcherPool(int threadnum) {
     fd2TidsMutex = createMutex("WebSocketDispatcherPool");
-
+    mThreadnum = threadnum;
     mDataMutex = createMutex();
     mDataCondition = createCondition();
     datas = createLinkedList<DispatchData>();
@@ -343,6 +349,7 @@ _WebSocketDispatcherPool::_WebSocketDispatcherPool(int threadnum) {
         mRunnables->add(r);
         WebSocketDefferedTasks t = createWebSocketDefferedTasks();
         mDefferedTasks->add(t);
+        tid2fds[index] = -1;
     }
 
     ListIterator<WebSocketDispatchRunnable> iterator = mRunnables->getIterator();
@@ -399,7 +406,8 @@ DispatchData _WebSocketDispatcherPool::getData(int requireIndex) {
             if(data == nullptr) {
                 if(defferedTasks->isDoDefferedTask) {
                     AutoLock l(fd2TidsMutex);
-                    clearFds(requireIndex);
+                    //clearFds(requireIndex);
+                    tid2fds[requireIndex] = -1;
                     defferedTasks->isDoDefferedTask = false;
                 }
             } else {
@@ -417,10 +425,16 @@ DispatchData _WebSocketDispatcherPool::getData(int requireIndex) {
             int runnableIndex = -1;
             {
                 AutoLock l(fd2TidsMutex);
-                auto iterator = fd2Tids.find(data->fd);
-                if(iterator != fd2Tids.end()) {
-                    runnableIndex = iterator->second;
+                for(int index = 0;index <mThreadnum;index++) {
+                    if(tid2fds[index] == data->fd) {
+                        runnableIndex = index;
+                        break;
+                    }
                 }
+                //auto iterator = fd2Tids.find(data->fd);
+                //if(iterator != fd2Tids.end()) {
+                //    runnableIndex = iterator->second;
+                //}
             }
 
             if(runnableIndex != -1 && requireIndex != runnableIndex) {
@@ -429,7 +443,8 @@ DispatchData _WebSocketDispatcherPool::getData(int requireIndex) {
                 defferedTasks->tasks->enQueueLast(data);
                 {
                     AutoLock l(fd2TidsMutex);
-                    fd2Tids[data->fd] = runnableIndex;
+                    //fd2Tids[data->fd] = runnableIndex;
+                    tid2fds[runnableIndex] = data->fd;
                 }
                 mDataCondition->notifyAll();
                 continue;
@@ -445,20 +460,22 @@ DispatchData _WebSocketDispatcherPool::getData(int requireIndex) {
         }
 
         AutoLock l(fd2TidsMutex);
-        fd2Tids[data->fd] = requireIndex;
+        //fd2Tids[data->fd] = requireIndex;
+        tid2fds[requireIndex] = data->fd;
         
         return data;
     }
 }
 
 void _WebSocketDispatcherPool::clearFds(int index) {
+    /*
     for(auto it = fd2Tids.begin();it != fd2Tids.end();) {
         if(it->second == index) {
             it = fd2Tids.erase(it);
             continue;
         }
         it++;
-    }
+    } */
 }
 
 //-----WebSocketServer-----

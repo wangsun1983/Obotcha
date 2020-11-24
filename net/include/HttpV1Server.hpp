@@ -85,7 +85,10 @@ private:
     LinkedList<DispatchHttpWorkData> datas;
 
     Mutex fd2TidsMutex;
-    std::map<int,int> fd2Tids;
+    //std::map<int,int> fd2Tids;
+    int tid2fds[128];
+    int mThreadnum;
+    
     ThreadPoolExecutor mExecutors;
     ArrayList<HttpDispatchRunnable> mRunnables;
 };

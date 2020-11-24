@@ -1,6 +1,7 @@
 #include "HttpV1ClientInfo.hpp"
 #include "HttpPacket.hpp"
 #include "HttpV1Server.hpp"
+#include "HttpClientManager.hpp"
 
 namespace obotcha {
 
@@ -8,7 +9,7 @@ _HttpV1ClientInfo::_HttpV1ClientInfo() {
     mV1Parser = createHttpV1Parser();
     mResponseWriteMutex = createMutex("HttpResponseMutex");
     mClientId = -1;
-    mRnd = createRandom();
+    //mRnd = createRandom();
 }
 
 int _HttpV1ClientInfo::getClientFd() {
@@ -17,7 +18,7 @@ int _HttpV1ClientInfo::getClientFd() {
 
 void _HttpV1ClientInfo::setClientFd(int fd) {
     mClientFd = fd;
-    uint32_t rnd = mRnd->nextUint32();
+    uint32_t rnd = st(HttpV1ClientManager)::getInstance()->genRandomUint32();
     mClientId = ((uint64_t)fd<<32|rnd);
 }
 
