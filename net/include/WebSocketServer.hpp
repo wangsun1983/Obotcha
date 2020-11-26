@@ -28,6 +28,7 @@
 #include "ThreadPoolExecutor.hpp"
 #include "HttpV1Server.hpp"
 #include "Random.hpp"
+#include "SpinLock.hpp"
 
 namespace obotcha {
 
@@ -83,8 +84,7 @@ DECLARE_SIMPLE_CLASS(WebSocketDispatchRunnable) IMPLEMENTS(Runnable) {
 public:
     _WebSocketDispatchRunnable(int index,sp<_WebSocketDispatcherPool>);
     void run();
-    void addDefferedTask(DispatchData);
-    void release();
+    void onInterrupt();
 
 private:
     Mutex mPoolMutex;
@@ -103,7 +103,6 @@ DECLARE_SIMPLE_CLASS(WebSocketDefferedTasks) {
 public:
     _WebSocketDefferedTasks();
 
-    bool isDoDefferedTask;
     Mutex mutex;
     LinkedList<DispatchData> tasks;
 };
@@ -127,9 +126,7 @@ public:
     void release();
 
 private:
-    void clearFds(int index);
-    
-    Mutex mDataMutex;
+    SpinLock mDataMutex;
     Condition mDataCondition;
     LinkedList<DispatchData> datas;
     ThreadPoolExecutor mExecutor;
@@ -139,10 +136,13 @@ private:
     HttpV1Server mHttpServer;
 
     sp<_WebSocketServer> mWebSocketServer;
-
-    Mutex fd2TidsMutex;
-    //std::map<int,int> fd2Tids;
+    
+    mutable volatile bool isStop;
+    
+    Mutex mTidFdsMutex;
     int tid2fds[128];
+
+    int getTidByFd(int);
 
     int mThreadnum;
 };

@@ -9,12 +9,10 @@
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "AutoLock.hpp"
-#include "WebSocketFrameComposer.hpp"
 #include "WebSocketProtocol.hpp"
 #include "WebSocketComposer.hpp"
 #include "File.hpp"
 #include "FileOutputStream.hpp"
-#include "AtomicLong.hpp"
 
 using namespace obotcha;
 

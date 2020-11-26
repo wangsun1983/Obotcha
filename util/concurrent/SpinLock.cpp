@@ -19,27 +19,31 @@ namespace obotcha {
 
 _SpinLock::_SpinLock(String n) {
     mSpinLockName = n;
+    pthread_spin_init(&mLock, 0);
 }
 
 _SpinLock::_SpinLock(const char *n) {
     mSpinLockName = createString(n);
+    pthread_spin_init(&mLock, 0);
 }
 
 _SpinLock::_SpinLock() {
-
+    pthread_spin_init(&mLock, 0);
 }
 
 int _SpinLock::lock() {
-    while(mflag.test_and_set(std::memory_order_acquire));
+    pthread_spin_lock(&mLock);
     return 0;
 }
 
 int _SpinLock::unlock() {
-    mflag.clear(std::memory_order_release);
+    pthread_spin_unlock(&mLock);
     return 0;
 }
 
-_SpinLock::~_SpinLock() {}
+_SpinLock::~_SpinLock() {
+    pthread_spin_destroy(&mLock);
+}
 
 String _SpinLock::toString() {
     return mSpinLockName;

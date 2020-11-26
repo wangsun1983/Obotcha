@@ -2,7 +2,6 @@
 #define __OBOTCHA_SPIN_LOCK_HPP__
 
 #include <pthread.h>
-#include <atomic>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -31,7 +30,7 @@ public:
 private:
     String mSpinLockName;
 
-    std::atomic_flag mflag;
+    pthread_spinlock_t mLock;
 };
 
 }

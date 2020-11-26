@@ -128,11 +128,6 @@ _WebSocketDispatchRunnable::_WebSocketDispatchRunnable(int index,sp<_WebSocketDi
     mParser = createHttpV1Parser();
 }
 
-void _WebSocketDispatchRunnable::release() {
-    AutoLock l(mPoolMutex);
-    mPool = nullptr;
-}
-
 void _WebSocketDispatchRunnable::handleHttpData(DispatchData data) {
 
     int fd = data->fd;
@@ -305,13 +300,19 @@ FINISH:
     }
 }
 
+void _WebSocketDispatchRunnable::onInterrupt() {
+    mPool = nullptr;
+}
+
 void _WebSocketDispatchRunnable::run() {
-    bool isDoDefferedTask = false;
     DispatchData data = nullptr;
     while(1) {
         {
-            AutoLock l(mPoolMutex);
             data  = mPool->getData(mIndex);
+            if(data == nullptr) {
+                mPool = nullptr;
+                return;
+            }
         }
         
         switch(data->cmd) {
@@ -328,21 +329,22 @@ void _WebSocketDispatchRunnable::run() {
 
 //----WebSocketDefferedTasks----
 _WebSocketDefferedTasks::_WebSocketDefferedTasks() {
-    isDoDefferedTask = false;
     mutex = createMutex();
     tasks = createLinkedList<DispatchData>();
 }
 
 //----WebSocketDispatcherPool----
 _WebSocketDispatcherPool::_WebSocketDispatcherPool(int threadnum) {
-    fd2TidsMutex = createMutex("WebSocketDispatcherPool");
+    //fd2TidsMutex = createMutex("WebSocketDispatcherPool");
     mThreadnum = threadnum;
-    mDataMutex = createMutex();
+    mDataMutex = createSpinLock();
+    mTidFdsMutex = createMutex();
     mDataCondition = createCondition();
     datas = createLinkedList<DispatchData>();
     mExecutor = createThreadPoolExecutor(-1,threadnum);
     mRunnables = createArrayList<WebSocketDispatchRunnable>();
     mDefferedTasks = createArrayList<WebSocketDefferedTasks>();
+    isStop = false;
 
     for(int index = 0;index < threadnum;index++) {
         WebSocketDispatchRunnable r = createWebSocketDispatchRunnable(index,AutoClone(this));
@@ -360,7 +362,14 @@ _WebSocketDispatcherPool::_WebSocketDispatcherPool(int threadnum) {
 }
 
 void _WebSocketDispatcherPool::addData(DispatchData data) {
-    AutoLock l(mDataMutex);
+    AutoLock l(mTidFdsMutex);
+    int tid = getTidByFd(data->fd);
+    if(tid != -1) {
+        WebSocketDefferedTasks defferedTasks = mDefferedTasks->get(tid);
+        defferedTasks->tasks->enQueueLast(data);
+        mDataCondition->notifyAll();
+        return;
+    }
     datas->enQueueLast(data);
     mDataCondition->notifyAll();
 }
@@ -383,99 +392,48 @@ WebSocketServer _WebSocketDispatcherPool::getWebSocketServer() {
 
 void _WebSocketDispatcherPool::release() {
     mExecutor->shutdown();
-    ListIterator<WebSocketDispatchRunnable> iterator = mRunnables->getIterator();
-    while(iterator->hasValue()) {
-        WebSocketDispatchRunnable r = iterator->getValue();
-        r->release();
-        iterator->next();
-    }
-
+    isStop = true;
+    mDataCondition->notifyAll();
     mRunnables->clear();
 }
 
-DispatchData _WebSocketDispatcherPool::getData(int requireIndex) {
-    while(1) {
-        DispatchData data = nullptr;
-        {
-            //search deffered tasks
-            WebSocketDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
-            {
-                AutoLock ll(defferedTasks->mutex);
-                data = defferedTasks->tasks->deQueueFirst();
-            }
-            if(data == nullptr) {
-                if(defferedTasks->isDoDefferedTask) {
-                    AutoLock l(fd2TidsMutex);
-                    //clearFds(requireIndex);
-                    tid2fds[requireIndex] = -1;
-                    defferedTasks->isDoDefferedTask = false;
-                }
-            } else {
-                defferedTasks->isDoDefferedTask = true;
-                return data;
-            }
+int _WebSocketDispatcherPool::getTidByFd(int fd) {
+     //try to find an index
+    for(int index = 0;index <mThreadnum;index++) {
+        if(tid2fds[index] == fd) {
+            return index;
         }
-        
-        {
-            AutoLock l(mDataMutex);
-            data = datas->deQueueFirst();
-        }
-        
-        if(data != nullptr) {
-            int runnableIndex = -1;
-            {
-                AutoLock l(fd2TidsMutex);
-                for(int index = 0;index <mThreadnum;index++) {
-                    if(tid2fds[index] == data->fd) {
-                        runnableIndex = index;
-                        break;
-                    }
-                }
-                //auto iterator = fd2Tids.find(data->fd);
-                //if(iterator != fd2Tids.end()) {
-                //    runnableIndex = iterator->second;
-                //}
-            }
-
-            if(runnableIndex != -1 && requireIndex != runnableIndex) {
-                WebSocketDefferedTasks defferedTasks = mDefferedTasks->get(runnableIndex);
-                AutoLock ll(defferedTasks->mutex);
-                defferedTasks->tasks->enQueueLast(data);
-                {
-                    AutoLock l(fd2TidsMutex);
-                    //fd2Tids[data->fd] = runnableIndex;
-                    tid2fds[runnableIndex] = data->fd;
-                }
-                mDataCondition->notifyAll();
-                continue;
-            }
-        } else {
-            WebSocketDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
-            AutoLock l(defferedTasks->mutex);
-            if(defferedTasks->tasks->size() != 0) {
-                continue;
-            }
-            mDataCondition->wait(defferedTasks->mutex);
-            continue;
-        }
-
-        AutoLock l(fd2TidsMutex);
-        //fd2Tids[data->fd] = requireIndex;
-        tid2fds[requireIndex] = data->fd;
-        
-        return data;
     }
+
+    return -1;
 }
 
-void _WebSocketDispatcherPool::clearFds(int index) {
-    /*
-    for(auto it = fd2Tids.begin();it != fd2Tids.end();) {
-        if(it->second == index) {
-            it = fd2Tids.erase(it);
-            continue;
+DispatchData _WebSocketDispatcherPool::getData(int requireIndex) {
+    DispatchData data = nullptr;
+    WebSocketDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
+    while(!isStop) {
+        AutoLock l(mTidFdsMutex);
+        {
+            //search deffered tasks
+            data = defferedTasks->tasks->deQueueFirst();
+
+            if(data == nullptr) {
+                tid2fds[requireIndex] = -1;
+            } else {
+                return data;
+            }
+
+            data = datas->deQueueFirst();
+            if(data != nullptr) {
+                tid2fds[requireIndex] = data->fd;
+                return data;
+            }
+            
         }
-        it++;
-    } */
+        mDataCondition->wait(mTidFdsMutex);
+        continue;
+    }
+    return nullptr;
 }
 
 //-----WebSocketServer-----
@@ -518,8 +476,8 @@ int _WebSocketServer::start() {
 }
 
 int _WebSocketServer::release() {
-    //TODO
     mWsEpollObserver->release();
+    mDispatchPool->release();
 }
 
 //WebSocket Epoll listener

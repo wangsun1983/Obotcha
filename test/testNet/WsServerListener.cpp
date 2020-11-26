@@ -9,7 +9,6 @@
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "AutoLock.hpp"
-#include "WebSocketFrameComposer.hpp"
 #include "WebSocketProtocol.hpp"
 #include "WebSocketComposer.hpp"
 #include "File.hpp"
@@ -17,16 +16,18 @@
 #include "WsServerListener.hpp"
 #include "JsonReader.hpp"
 #include "WsCommands.hpp"
+#include "Atomic.hpp"
 
 using namespace obotcha;
 
 _WsServerListener::_WsServerListener() {
-    mConnectCounts = createAtomicInteger(0);
-    mDisconnectCounts = createAtomicInteger(0);
-    mRcvDataSize = createAtomicLong(0);
+    mConnectCounts = 0;
+    mDisconnectCounts = 0;
+    mRcvDataSize = 0;
 }
 
-int _WsServerListener::onMessage(sp<_WebSocketClientInfo> client,String message) {
+int _WsServerListener::onMessage(sp<_WebSocketClientInfo> client,WebSocketFrame frame) {
+    String message = frame->getMessage();
     if(message != nullptr) {
         //printf("message is %s \n",message->toChars());
         JsonReader reader = createJsonReader(message);
@@ -39,9 +40,9 @@ int _WsServerListener::onMessage(sp<_WebSocketClientInfo> client,String message)
 
         switch(req->toValue()) {
             case st(WsCommands)::RequestClearRecords: {
-                mConnectCounts = createAtomicInteger(0);
-                mDisconnectCounts = createAtomicInteger(0);
-                mRcvDataSize = createAtomicLong(0);
+                mConnectCounts = 0;
+                mDisconnectCounts = 0;
+                mRcvDataSize = 0;
                 break;
             }
 
@@ -68,19 +69,21 @@ int _WsServerListener::onMessage(sp<_WebSocketClientInfo> client,String message)
     return 0;
 }
 
-int _WsServerListener::onData(sp<_WebSocketClientInfo> client,ByteArray data) {
+int _WsServerListener::onData(sp<_WebSocketClientInfo> client,WebSocketFrame data) {
     
 }
 
 int _WsServerListener::onConnect(sp<_WebSocketClientInfo> client) {
-    printf("wangsl,get an onConnect message,fd is %d \n",client->getClientFd());
-    mConnectCounts->incrementAndGet();
+    //printf("wangsl,get an onConnect message,fd is %d \n",client->getClientFd());
+    //mConnectCounts->incrementAndGet();
+    mConnectCounts++;
 }
 
 int _WsServerListener::onDisconnect(sp<_WebSocketClientInfo> client) {
     //printf("wangsl,get an onDisConnect message \n");
-    printf("wangsl,get an disonConnect message,fd is %d \n",client->getClientFd());
-    mDisconnectCounts->incrementAndGet();
+    //printf("wangsl,get an disonConnect message,fd is %d \n",client->getClientFd());
+    //mDisconnectCounts->incrementAndGet();
+    mDisconnectCounts++;
 }
 
 int _WsServerListener::onPong(sp<_WebSocketClientInfo> client,String) {

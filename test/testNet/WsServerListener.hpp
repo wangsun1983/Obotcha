@@ -9,12 +9,11 @@
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "AutoLock.hpp"
-#include "WebSocketFrameComposer.hpp"
 #include "WebSocketProtocol.hpp"
 #include "WebSocketComposer.hpp"
 #include "File.hpp"
 #include "FileOutputStream.hpp"
-#include "AtomicLong.hpp"
+#include "Atomic.hpp"
 
 using namespace obotcha;
 
@@ -22,9 +21,9 @@ DECLARE_SIMPLE_CLASS(WsServerListener) IMPLEMENTS(WebSocketListener) {
 public:
     _WsServerListener();
 
-    int onMessage(sp<_WebSocketClientInfo> client,String message);
+    int onMessage(sp<_WebSocketClientInfo> client,WebSocketFrame frame);
 
-    int onData(sp<_WebSocketClientInfo> client,ByteArray data);
+    int onData(sp<_WebSocketClientInfo> client,WebSocketFrame frame);
 
     int onConnect(sp<_WebSocketClientInfo> client);
 
@@ -35,7 +34,7 @@ public:
     int onPing(sp<_WebSocketClientInfo> client,String);
 
 private:
-    AtomicInteger mConnectCounts;
-    AtomicInteger mDisconnectCounts;
-    AtomicLong mRcvDataSize;
+    Atomic<int> mConnectCounts;
+    Atomic<int> mDisconnectCounts;
+    Atomic<long> mRcvDataSize;
 };

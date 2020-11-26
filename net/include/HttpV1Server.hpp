@@ -20,6 +20,7 @@
 #include "HashSet.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "HttpPacket.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 
@@ -49,13 +50,9 @@ DECLARE_SIMPLE_CLASS(HttpDispatchRunnable) IMPLEMENTS(Runnable) {
 public:
     _HttpDispatchRunnable(int index,sp<_HttpDispatcherPool>);
     void run();
-    //void addDefferedTask(DispatchHttpWorkData);
-    void release();
+    void onInterrupt();
 
 private:
-    //Mutex mDefferedTaskMutex;
-    Mutex mPoolMutex;
-    //LinkedList<DispatchHttpWorkData> mDefferedTasks;
     sp<_HttpDispatcherPool> mPool;
     int mIndex;
 };
@@ -78,13 +75,15 @@ public:
     void clearFds(int index);
 
 private:
+    int getTidByFd(int fd);
     Mutex mDataMutex;
     Condition mDataCondition;
+    mutable volatile bool isStop;
 
     ArrayList<HttpDefferedTasks> mDefferedTasks;
     LinkedList<DispatchHttpWorkData> datas;
 
-    Mutex fd2TidsMutex;
+    //Mutex fd2TidsMutex;
     //std::map<int,int> fd2Tids;
     int tid2fds[128];
     int mThreadnum;

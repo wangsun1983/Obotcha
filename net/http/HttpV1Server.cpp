@@ -36,7 +36,7 @@ _DispatchHttpWorkData::_DispatchHttpWorkData(int fd,ByteArray pack,int id) {
 }
 
 _HttpDispatcherPool::_HttpDispatcherPool(int threadSize) {
-    fd2TidsMutex = createMutex("HttpDispatcherPool");
+    //fd2TidsMutex = createMutex("HttpDispatcherPool");
     mThreadnum = threadSize;
     mRunnables = createArrayList<HttpDispatchRunnable>();
     mExecutors = createThreadPoolExecutor(-1,threadSize);
@@ -44,6 +44,7 @@ _HttpDispatcherPool::_HttpDispatcherPool(int threadSize) {
     mDefferedTasks = createArrayList<HttpDefferedTasks>();
     mDataMutex = createMutex();
     mDataCondition = createCondition();
+    isStop = false;
     
     for(int index = 0;index < threadSize;index++) {
         HttpDispatchRunnable r = createHttpDispatchRunnable(index,AutoClone(this));
@@ -64,112 +65,69 @@ _HttpDispatcherPool::_HttpDispatcherPool(int threadSize) {
 
 void _HttpDispatcherPool::addData(DispatchHttpWorkData data) {
     AutoLock l(mDataMutex);
+    int tid = getTidByFd(data->fd);
+    
+    if(tid != -1) {
+        HttpDefferedTasks defferedTasks = mDefferedTasks->get(tid);
+        defferedTasks->tasks->enQueueLast(data);
+        mDataCondition->notifyAll();
+        return;
+    }
     datas->enQueueLast(data);
     mDataCondition->notifyAll();
 }
 
-void _HttpDispatcherPool::clearFds(int index) {
-    /*
-    for(auto it = fd2Tids.begin();it != fd2Tids.end();) {
-        if(it->second == index) {
-            it = fd2Tids.erase(it);
-            continue;
+int _HttpDispatcherPool::getTidByFd(int fd) {
+     //try to find an index
+    for(int index = 0;index <mThreadnum;index++) {
+        if(tid2fds[index] == fd) {
+            return index;
         }
-        it++;
     }
-     */
+
+    return -1;
 }
 
 void _HttpDispatcherPool::release() {
     mExecutors->shutdown();
-    ListIterator<HttpDispatchRunnable> iterator = mRunnables->getIterator();
-    while(iterator->hasValue()) {
-        HttpDispatchRunnable r = iterator->getValue();
-        r->release();
-    }
+    this->isStop = true;
+    mDataCondition->notifyAll();
+    mRunnables->clear();
 }
 
 DispatchHttpWorkData _HttpDispatcherPool::getData(int requireIndex) {
-    while(1) {
-        DispatchHttpWorkData data = nullptr;
-        HttpDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
-        {
-            //search deffered tasks
-            {
-                AutoLock ll(defferedTasks->mutex);
-                data = defferedTasks->tasks->deQueueFirst();
-            }
-            if(data == nullptr) {
-                if(defferedTasks->isDoDefferedTask) {
-                    AutoLock l(fd2TidsMutex);
-                    //clearFds(requireIndex);
-                    tid2fds[requireIndex] = -1;
-                    defferedTasks->isDoDefferedTask = false;
-                }
-            } else {
-                defferedTasks->isDoDefferedTask = true;
-                return data;
-            }
-        }
-        
-        {
-            AutoLock l(mDataMutex);
-            data = datas->deQueueFirst();
-        }
-        
-        if(data != nullptr) {
-            int runnableIndex = -1;
-            {
-                AutoLock l(fd2TidsMutex);
-                //auto iterator = fd2Tids.find(data->fd);
-                //if(iterator != fd2Tids.end()) {
-                //    runnableIndex = iterator->second;
-                //}
-                for(int index = 0;index <mThreadnum;index++) {
-                    if(tid2fds[index] == data->fd) {
-                        runnableIndex = index;
-                        break;
-                    }
-                }
-            }
+    DispatchHttpWorkData data = nullptr;
+    HttpDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
+    while(!isStop) {
+        AutoLock l(mDataMutex);
+        //search deffered tasks
+        data = defferedTasks->tasks->deQueueFirst();
 
-            if(runnableIndex != -1 && requireIndex != runnableIndex) {
-                HttpDefferedTasks otherDefferedTasks = mDefferedTasks->get(runnableIndex);
-                AutoLock ll(otherDefferedTasks->mutex);
-                otherDefferedTasks->tasks->enQueueLast(data);
-                {
-                    AutoLock l(fd2TidsMutex);
-                    //fd2Tids[data->fd] = runnableIndex;
-                    tid2fds[runnableIndex] = data->fd;
-                }
-                mDataCondition->notifyAll();
-                continue;
-            }
+        if(data == nullptr) {
+            tid2fds[requireIndex] = -1;
         } else {
-            AutoLock l(defferedTasks->mutex);
-            if(defferedTasks->tasks->size() != 0) {
-                continue;
-            }
-            mDataCondition->wait(defferedTasks->mutex);
-            continue;
+            return data;
         }
 
-        AutoLock l(fd2TidsMutex);
-        //fd2Tids[data->fd] = requireIndex;
-        tid2fds[requireIndex] = data->fd;
-        
-        return data;
+        data = datas->deQueueFirst();
+        if(data != nullptr) {
+            tid2fds[requireIndex] = data->fd;
+            return data;
+        }
+
+        mDataCondition->wait(mDataMutex);
+        continue;
     }
+
+    return nullptr;
 }
 
 _HttpDispatchRunnable::_HttpDispatchRunnable(int index,HttpDispatcherPool pool) {
     mIndex = index;
-    mPoolMutex = createMutex("HttpPoolMutex");
     mPool = pool;
 }
 
-void _HttpDispatchRunnable::release() {
-    AutoLock l(mPoolMutex);
+void _HttpDispatchRunnable::onInterrupt() {
     mPool = nullptr;
 }
 
@@ -177,11 +135,15 @@ void _HttpDispatchRunnable::run() {
     bool isDoDefferedTask = false;
     while(1) {
         DispatchHttpWorkData data = mPool->getData(mIndex);
+        
+        if(data == nullptr) {
+            mPool = nullptr;
+            return;
+        }
         HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(data->fd);
         if(info == nullptr) {
             continue;
         }
-
         info->pushHttpData(data->pack);
         ArrayList<HttpPacket> packets = info->pollHttpPacket();
         HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);
@@ -189,6 +151,7 @@ void _HttpDispatchRunnable::run() {
         if(data->clientid != info->getClientId()) {
             writer->disableResponse();
         }
+
         if(packets != nullptr && packets->size() != 0) {
             ListIterator<HttpPacket> iterator = packets->getIterator();
             while(iterator->hasValue()) {
