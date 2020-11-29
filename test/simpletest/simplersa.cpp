@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-int main() {
+int simplersa() {
 
     /*SecretKeyGenerator generator = createSecretKeyGenerator();
     generator->genKey("./encryptKey","./decryptKey","AES/abcdefgh");*/

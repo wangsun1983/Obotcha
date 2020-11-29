@@ -50,8 +50,6 @@ public:
 
     void setSSLInfo(SSLInfo);
 
-    bool isIdle();
-
     sp<_HttpV1Listener> getHttpV1Listener();
     
     void setHttpV1Listener(sp<_HttpV1Listener>);

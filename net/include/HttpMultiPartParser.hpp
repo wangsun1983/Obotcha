@@ -27,6 +27,8 @@ public:
 
     HttpMultiPart parse(ByteRingArrayReader);
     
+    String getHeaderBoundary();
+
     enum Status {
         Complete = 0,
         Continue,
@@ -80,6 +82,8 @@ private:
     //ByteRingArrayReader mReader;
 
     PartContentDisposition mContentDisp;
+    
+    String mBoundaryHeader;
 
     String mContentType;
 

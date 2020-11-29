@@ -30,7 +30,7 @@ class _HttpDispatcherPool;
 
 DECLARE_SIMPLE_CLASS(DispatchHttpWorkData) {
 public:
-    _DispatchHttpWorkData(int,ByteArray,int);
+    _DispatchHttpWorkData(int,ByteArray,uint64_t);
 
     int fd;
     ByteArray pack;

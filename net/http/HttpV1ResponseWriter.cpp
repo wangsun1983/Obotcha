@@ -46,13 +46,15 @@ int _HttpV1ResponseWriter::write(File file) {
 }
 
 int _HttpV1ResponseWriter::flush() {
+    printf("HttpV1ResponseWriter flush start \n");
     if(!mResponsible) {
         return -1;
     }
     
     AutoLock l(mClient->getResponseWriteMutex());
-
+    printf("HttpV1ResponseWriter flush trace1 \n");
     if(mFile != nullptr) {
+        printf("HttpV1ResponseWriter flush trace2 \n");
         Enviroment env = st(Enviroment)::getInstance();
         int buffsize = env->getInt(st(Enviroment)::gHttpServerSendFileBufferSize,64*1024);
         if(mFile->exists()) {
@@ -115,8 +117,11 @@ int _HttpV1ResponseWriter::flush() {
             }
         }
     } else {
+        printf("HttpV1ResponseWriter flush trace2 \n");
         ByteArray resp = mPacket->genHttpResponse();
-        mClient->send(resp);
+        printf("response is %s \n",resp->toString()->toChars());
+        int ret = mClient->send(resp);
+        printf("send result is %d \n",ret);
     }
 
     return  0;

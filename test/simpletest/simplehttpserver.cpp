@@ -6,11 +6,12 @@
 #include "System.hpp"
 #include "ByteRingArray.hpp"
 #include "HttpV1Server.hpp"
+#include "HttpV1ClientInfo.hpp"
 #include "HttpV1ResponseWriter.hpp"
+
 
 using namespace obotcha;
 
-#if 0
 DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
 public:
 
@@ -81,27 +82,6 @@ public:
     }
 
 
-};
-#endif
-
-DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
-
-
-    void onMessage(sp<_HttpV1ClientInfo> client,sp<_HttpV1ResponseWriter> w,HttpPacket msg){
-        printf("on message,msg %s \n");
-        String body = createString("<h1>Response from Gagira</h1>");
-        w->writeBody(createByteArray(body));
-        w->setStatus(st(HttpResponse)::Ok);
-        w->flush();
-    }
-
-    void onConnect(sp<_HttpV1ClientInfo>) {
-        printf("onConnect \n");
-    }
-
-    void onDisconnect(sp<_HttpV1ClientInfo>) {
-        printf("onDisConnect \n");
-    }
 };
 
 int main() {

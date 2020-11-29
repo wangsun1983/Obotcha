@@ -163,9 +163,9 @@ int _ByteRingArray::getAvailDataSize() {
     }
 
     if(mStart >= mEnd) {
-        return mSize - (mStart - mEnd);
+        return mStart - mEnd;
     } else {
-        return mEnd - mStart;
+        return mSize-(mEnd - mStart);
     }
 }
 

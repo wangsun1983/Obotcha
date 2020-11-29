@@ -29,7 +29,7 @@ _HttpDefferedTasks::_HttpDefferedTasks() {
 }
 
 //------------------DispatchHttpWorkData------------------
-_DispatchHttpWorkData::_DispatchHttpWorkData(int fd,ByteArray pack,int id) {
+_DispatchHttpWorkData::_DispatchHttpWorkData(int fd,ByteArray pack,uint64_t id) {
     this->fd = fd;
     this->pack = pack;
     this->clientid = id;
@@ -147,7 +147,7 @@ void _HttpDispatchRunnable::run() {
         info->pushHttpData(data->pack);
         ArrayList<HttpPacket> packets = info->pollHttpPacket();
         HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);
-        //printf("data->clientid is %llx,info->clientfd is %llx \n",data->clientid,info->getClientFd());
+        printf("data->clientid is %llx,info->clientfd is %llx \n",data->clientid,info->getClientId());
         if(data->clientid != info->getClientId()) {
             writer->disableResponse();
         }

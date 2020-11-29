@@ -49,6 +49,8 @@ public:
 
     String genHtml();
 
+    void dump();
+
     const static String COOKIE_SECURE;
     const static String COOKIE_HTTPONLY;
     const static String COOKIE_PATH;

@@ -70,9 +70,9 @@ void _HttpV1ClientInfo::setSSLInfo(SSLInfo info) {
     mSSLInfo = info;
 }
 
-bool _HttpV1ClientInfo::isIdle() {
-    return mV1Parser->isIdle();
-}
+//bool _HttpV1ClientInfo::isIdle() {
+//    return mV1Parser->isIdle();
+//}
 
 HttpV1Listener _HttpV1ClientInfo::getHttpV1Listener() {
     return mHttpV1ServerListener;

@@ -40,8 +40,6 @@ public:
 
     HttpPacket parseEntireRequest(String request);
 
-    bool isIdle();
-
 private:
     int mStatus;
 
