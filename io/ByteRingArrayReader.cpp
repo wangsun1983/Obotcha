@@ -24,14 +24,14 @@ namespace obotcha {
 _ByteRingArrayReader::_ByteRingArrayReader(ByteRingArray b) {
     mBuff = b;
     mCursor = mBuff->getStartIndex();
-    mStartMark = mCursor;
+    //mStartMark = mCursor;
 }
 
 ByteArray _ByteRingArrayReader::pop() {
     ByteArray result = nullptr;
     try {
         result = mBuff->popByEnd(mCursor);
-        mStartMark = mBuff->getStartIndex();
+        //mStartMark = mBuff->getStartIndex();
     } catch(ArrayIndexOutOfBoundsException &e){
     }
 
@@ -39,7 +39,7 @@ ByteArray _ByteRingArrayReader::pop() {
 }
 
 int _ByteRingArrayReader::readNext(byte &value) {
-    if(mBuff->getStatus() == ByteRingArrayEmpty) {
+    if(mBuff->getStatus() == st(ByteRingArray)::ByteRingArrayEmpty) {
         return ByteRingArrayReadComplete;
     }
 
@@ -50,9 +50,9 @@ int _ByteRingArrayReader::readNext(byte &value) {
         return ByteRingArrayReadComplete;
     }
     
-    if(mStartMark != start) {
-        return -InvalidStatus;
-    }
+    //if(mStartMark != start) {
+    //    return -InvalidStatus;
+    //}
 
     value = mBuff->at(mCursor);
     mCursor++;
@@ -75,29 +75,25 @@ int _ByteRingArrayReader::getCursor() {
 int _ByteRingArrayReader::move(int length) {
     mCursor += length;
     if(mCursor > mBuff->getSize()) {
-        mCursor = abs(mBuff->getSize() - mCursor);
+        mCursor = (mCursor - mBuff->getSize());
     }
 
     return mCursor;
 }
 
 int _ByteRingArrayReader::getReadableLength() {
-    if(mBuff->getStatus() == ByteRingArrayEmpty) {
+    if(mBuff->getStatus() == st(ByteRingArray)::ByteRingArrayEmpty) {
         return 0;
     }
 
     int end = mBuff->getEndIndex();
+    int length = mBuff->getSize();
+
     if( mCursor >= end) {
-        return mBuff->getSize() - abs(mCursor - end);
+        return mBuff->getSize() - (mCursor - end);
     } else {
         return end - mCursor;
     }
-}
-
-bool _ByteRingArrayReader::isIdle() {
-    return ((mBuff->getStartIndex() == 0 && mBuff->getEndIndex() == 0) 
-            ||((mBuff->getEndIndex() - mBuff->getStartIndex()) == 1)
-            ||((mBuff->getStartIndex() == mBuff->getSize() - 1) && (mBuff->getEndIndex() == 0)));
 }
     
 

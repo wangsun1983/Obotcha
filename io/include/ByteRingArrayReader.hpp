@@ -31,12 +31,10 @@ public:
 
     int getReadableLength();
     
-    bool isIdle();
-    
 private:
     ByteRingArray mBuff;
 
-    int mStartMark;
+    //int mStartMark;
 
     int mCursor;
 };

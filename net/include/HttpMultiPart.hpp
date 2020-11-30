@@ -16,20 +16,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpMultiPartData) {
-public:
-    enum PartType {
-        PartFile = 1,
-        PartBlock,
-    };
-    
-    int getType();
-
-protected:
-    int mType;
-};
-
-DECLARE_SIMPLE_CLASS(HttpMultiPartFile) EXTENDS(HttpMultiPartData){
+DECLARE_SIMPLE_CLASS(HttpMultiPartFile) {
 
 public:
     _HttpMultiPartFile(File);
@@ -42,16 +29,14 @@ private:
     File mFile;
 };
 
-DECLARE_SIMPLE_CLASS(HttpMultiPartBlock) EXTENDS(HttpMultiPartData){
+DECLARE_SIMPLE_CLASS(HttpMultiPartContent) {
 
 public:
-    _HttpMultiPartBlock(String,String);
+    _HttpMultiPartContent(String,String);
 
     String getName();
 
     String getValue();
-
-    const static String TagName;
 
 private:
     String mValue;
@@ -60,21 +45,10 @@ private:
 };
 
 DECLARE_SIMPLE_CLASS(HttpMultiPart) {
-
 public:
     _HttpMultiPart();
-
-    ArrayList<HttpMultiPartData> getDatas();
-
-    void addPartData(HttpMultiPartData);
-
-private:
-    int mFd;
-
-    HttpHeader mHeader;
-
-    ArrayList<HttpMultiPartData> mDatas;
-
+    ArrayList<HttpMultiPartFile> files;
+    ArrayList<HttpMultiPartContent>contents;
 };
 
 }

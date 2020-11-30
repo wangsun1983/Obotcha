@@ -11,25 +11,25 @@
 
 namespace obotcha {
 
-enum ByteRingArrayStatus {
-    ByteRingArrayFull,
-    ByteRingArrayEmpty,
-    ByteRingArrayPartial
-};
-
 DECLARE_SIMPLE_CLASS(ByteRingArray) {
 public:
+    enum ByteRingArrayStatus {
+        ByteRingArrayFull = 0,
+        ByteRingArrayEmpty,
+        ByteRingArrayPartial
+    };
+
    _ByteRingArray(int size);
 
    ~_ByteRingArray();
 
-   void push(byte b);
+   bool push(byte b);
 
    byte pop();
    
-   void push(ByteArray);
+   bool push(ByteArray);
 
-   void push(ByteArray,int start,int length);
+   bool push(ByteArray,int start,int length);
 
    ByteArray pop(int size);
 
@@ -47,9 +47,14 @@ public:
 
    byte at(int m);
 
-   ByteRingArrayStatus getStatus();
+   int getStatus();
+   
+   //just for test
+   void setStartIndex(int);
+   void setEndIndex(int);
    
 private:
+
     byte *mBuff;
 
     int mStart;
@@ -58,7 +63,7 @@ private:
 
     int mSize;
 
-    ByteRingArrayStatus mStatus;
+    int mStatus;
 
     
 };

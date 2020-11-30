@@ -50,6 +50,7 @@ private:
     static const String TwoNewLine;
     static const String EndLine;
     static const String Boundary;
+    static const String MultiPartNameTag;
 
     const char *mNewLineStr;
     const char *mTwoNewLine;

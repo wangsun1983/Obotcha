@@ -13,54 +13,34 @@
 
 using namespace obotcha;
 
-//-----------------HttpMultiPartData-----------------
-//const int _HttpMultiPartData::PartFile = 1;
-//const int _HttpMultiPartData::PartBlock = 2;
-
-int _HttpMultiPartData::getType() {
-    return mType;
+//_HttpMultiPart();
+_HttpMultiPart::_HttpMultiPart() {
+    files = createArrayList<HttpMultiPartFile>();
+    contents = createArrayList<HttpMultiPartContent>();
 }
 
 //-----------------HttpMultiPartFile-----------------
 _HttpMultiPartFile::_HttpMultiPartFile(File f):mFile(f){
-    mType = PartFile;
 }
 
 _HttpMultiPartFile::_HttpMultiPartFile(String path) {
     mFile = createFile(path);
-    mType = PartFile;
 }
 
 File _HttpMultiPartFile::getFile() {
     return mFile;
 }
 
-//-----------------HttpMultiPartFile-----------------
-const String _HttpMultiPartBlock::TagName = createString("name");
+//-----------------HttpMultiPartContent-----------------
 
-_HttpMultiPartBlock::_HttpMultiPartBlock(String name,String data):mName(name){
-    mType = PartBlock;
-    mValue = data;
-    //mBuff(data),
+_HttpMultiPartContent::_HttpMultiPartContent(String name,String data):mName(name),mValue(data){
+
 }
 
-String _HttpMultiPartBlock::getName() {
+String _HttpMultiPartContent::getName() {
     return mName;
 }
 
-String _HttpMultiPartBlock::getValue() {
+String _HttpMultiPartContent::getValue() {
     return mValue;
-}
-
-//-----------------HttpMultiPart-----------------
-_HttpMultiPart::_HttpMultiPart() {
-    mDatas = createArrayList<HttpMultiPartData>();
-}
-
-ArrayList<HttpMultiPartData> _HttpMultiPart::getDatas() {
-    return mDatas;
-}
-
-void _HttpMultiPart::addPartData(HttpMultiPartData data) {
-    mDatas->add(data);
 }
