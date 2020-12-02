@@ -19,6 +19,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpv1responsewriter.o \
 		$(outtmp)/httpclientmanager.o \
 		$(outtmp)/httpcookie.o \
+		$(outtmp)/httpcookieparser.o \
 		$(outtmp)/httpdate.o \
 		$(outtmp)/httpmultipart.o \
 		$(outtmp)/httpmultipartparser.o \
@@ -95,6 +96,9 @@ $(outtmp)/httpurlbuilder.o :$(netDir)/http/HttpUrlBuilder.cpp
 
 $(outtmp)/httpcookie.o :$(netDir)/http/HttpCookie.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpCookie.cpp -o $(outtmp)/httpcookie.o $(external)
+
+$(outtmp)/httpcookieparser.o :$(netDir)/http/HttpCookieParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpCookieParser.cpp -o $(outtmp)/httpcookieparser.o $(external)
 
 $(outtmp)/httpdate.o :$(netDir)/http/HttpDate.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpDate.cpp -o $(outtmp)/httpdate.o $(external)

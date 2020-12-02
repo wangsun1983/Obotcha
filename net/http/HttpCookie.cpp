@@ -3,114 +3,86 @@
 
 namespace obotcha {
 
-const String _HttpCookie::COOKIE_SECURE = "Secure";
+const String _HttpCookie::COOKIE_PROPERTY_SECURE = "Secure";
 
-const String _HttpCookie::COOKIE_HTTPONLY = "HttpOnly";
+const String _HttpCookie::COOKIE_PROPERTY_HTTPONLY = "HttpOnly";
 
-const String _HttpCookie::COOKIE_PATH = "Path";
+const String _HttpCookie::COOKIE_PROPERTY_PATH = "Path";
 
-const String _HttpCookie::COOKIE_DOMAIN = "Domain";
+const String _HttpCookie::COOKIE_PROPERTY_DOMAIN = "Domain";
 
 //May no use
-const String _HttpCookie::COOKIE_EXPIRES = "Expires";
+const String _HttpCookie::COOKIE_PROPERTY_EXPIRES = "Expires";
 
-const String _HttpCookie::COOKIE_MAX_AGE = "Max-Age";
+const String _HttpCookie::COOKIE_PROPERTY_MAX_AGE = "Max-Age";
 
 _HttpCookie::_HttpCookie() {
-    //mCookies = createHashMap<String,String>();
-    mExpiresMillseocnds = 0;
+    mValues = createHashMap<String,String>();
+    mPropertySecure = false;
+    mPropertyHttpOnly = false;
 }
 
-void _HttpCookie::setName(String v) {
-    mName = v;
+void _HttpCookie::setValue(String key,String value) {
+    mValues->put(key,value);
 }
 
-String _HttpCookie::getName() {
-    return mName;
+String _HttpCookie::get(String key) {
+    return mValues->get(key);
 }
 
-void _HttpCookie::setValue(String v) {
-    mValue = v;
+void _HttpCookie::setPropertySecure(bool flag) {
+    mPropertySecure = flag;
 }
 
-String _HttpCookie::getValue() {
-    return mValue;
+void _HttpCookie::setPropertyHttpOnly(bool flag) {
+    mPropertyHttpOnly = flag;
 }
 
-void _HttpCookie::setPath(String v) {
-    mPath = v;
+void _HttpCookie::setPropertyPath(String data) {
+    mPropertyPath = data;
 }
 
-String _HttpCookie::getPath() {
-    return mPath;
+void _HttpCookie::setPropertyDomain(String data) {
+    mPropertyDomain = data;
 }
 
-void _HttpCookie::setDomain(String v) {
-    mDomain = v;
+void _HttpCookie::setPropertyExpires(String data) {
+    mPropertyExpires = data;
 }
 
-String _HttpCookie::getDomain() {
-    return mDomain;
+void _HttpCookie::setPropertyMaxAge(String data) {
+    mPropertyMaxAge = data->toBasicInt();
 }
 
-void _HttpCookie::setExpires(long v) {
-    mExpiresMillseocnds = v;
+bool _HttpCookie::getPropertySecure() {
+    return mPropertySecure;
 }
 
-long _HttpCookie::getExpires() {
-    return mExpiresMillseocnds;
+bool _HttpCookie::getPropertyHttpOnly() {
+    return mPropertyHttpOnly;
 }
 
-void _HttpCookie::setRawExpres(String v) {
-    mRawExpires = v;
+String _HttpCookie::getPropertyPath() {
+    return mPropertyPath;
 }
 
-String _HttpCookie::getRawExpires() {
-    return mRawExpires;
+String _HttpCookie::getPropertyDomain() {
+    return mPropertyDomain;
 }
 
-void _HttpCookie::setMaxAge(int v) {
-    mMaxAge = v;
+String _HttpCookie::getPropertyExpires() {
+    return mPropertyExpires;
 }
 
-int _HttpCookie::getMaxAge() {
-    return mMaxAge;
+int _HttpCookie::getPropertyMaxAge() {
+    return mPropertyMaxAge;
 }
 
-void _HttpCookie::setSecure(bool v) {
-    mSecure = v;
-}
-
-bool _HttpCookie::getSecure() {
-    return mSecure;
-}
-
-void _HttpCookie::setHttpOnly(bool v) {
-    mHttpOnly = v;
-}
-
-bool _HttpCookie::getHttpOnly() {
-    return mHttpOnly;
-}
-
-/*
-void _HttpCookie::setCookie(String k,String v) {
-    mCookies->put(k,v);
-}
-
-String _HttpCookie::getCookie(String k) {
-    return mCookies->get(k);
-}
-
-void _HttpCookie::removeCookie(String k) {
-    mCookies->remove(k);
-}
-*/
 
 String _HttpCookie::genHtml() {
     //name
     String html;
-
+/*
     if(mName != nullptr) {
         html = mName->append("=",mValue,";");
     } else {
@@ -144,7 +116,7 @@ String _HttpCookie::genHtml() {
 
         html = html->append(COOKIE_EXPIRES,"=",time,";");
     }
-
+ */
     return html;
 }
 

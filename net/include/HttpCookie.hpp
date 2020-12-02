@@ -16,68 +16,54 @@ DECLARE_SIMPLE_CLASS(HttpCookie) {
 public:
     _HttpCookie();
 
-    void setName(String);
-    String getName();
+    void setValue(String key,String value);
+    String get(String key);
 
-    void setValue(String);
-    String getValue();
+    void setPropertySecure(bool);
+    void setPropertyHttpOnly(bool);
+    void setPropertyPath(String);
+    void setPropertyDomain(String);
+    void setPropertyExpires(String);
+    void setPropertyMaxAge(String);
 
-    void setPath(String);
-    String getPath();
-
-    void setDomain(String);
-    String getDomain();
-
-    void setExpires(long millsconds);
-    long getExpires();
-
-    void setRawExpres(String);
-    String getRawExpires();
-
-    void setMaxAge(int);
-    int getMaxAge();
-
-    void setSecure(bool);
-    bool getSecure();
-
-    void setHttpOnly(bool);
-    bool getHttpOnly();
-
-    //void setCookie(String,String);
-    //String getCookie(String);
-    //void removeCookie(String);
+    bool getPropertySecure();
+    bool getPropertyHttpOnly();
+    String getPropertyPath();
+    String getPropertyDomain();
+    String getPropertyExpires();
+    int getPropertyMaxAge();
 
     String genHtml();
 
     void dump();
 
-    const static String COOKIE_SECURE;
-    const static String COOKIE_HTTPONLY;
-    const static String COOKIE_PATH;
-    const static String COOKIE_DOMAIN;
-    const static String COOKIE_EXPIRES;
-    const static String COOKIE_MAX_AGE;
+    const static String COOKIE_PROPERTY_SECURE;
+    const static String COOKIE_PROPERTY_HTTPONLY;
+    const static String COOKIE_PROPERTY_PATH;
+    const static String COOKIE_PROPERTY_DOMAIN;
+    const static String COOKIE_PROPERTY_EXPIRES;
+    const static String COOKIE_PROPERTY_MAX_AGE;
 
 private:
-    String mName;
-    String mValue;
-    String mPath;              // optional
-    String mDomain;            // optional
-    String mExpires;           // optional
-    String mRawExpires;        // for reading cookies only
+    String mPropertyPath;              // optional
+    String mPropertyDomain;            // optional
+    String mPropertyExpires;           // optional
+    String mPropertyRawExpires;        // for reading cookies only
 
-    long mExpiresMillseocnds;
+    long mPropertyExpiresMillseocnds;
 
     // MaxAge=0 means no 'Max-Age' attribute specified.
     // MaxAge<0 means delete cookie now, equivalently 'Max-Age: 0'
     // MaxAge>0 means Max-Age attribute present and given in seconds
-    int mMaxAge;
+    int mPropertyMaxAge;
 
-    bool mSecure;
+    bool mPropertySecure;
 
-    bool mHttpOnly;
+    bool mPropertyHttpOnly;
     
     String mRaw;
+
+    HashMap<String,String> mValues;
 };
 
 }

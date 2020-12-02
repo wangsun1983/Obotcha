@@ -13,6 +13,7 @@ namespace obotcha {
 
 _HttpPacket::_HttpPacket() {
     mHeader = createHttpHeader();
+    mCookies = createArrayList<HttpCookie>();
 	mMinorVer = 1;
 	mMajorVer = 1;
 }

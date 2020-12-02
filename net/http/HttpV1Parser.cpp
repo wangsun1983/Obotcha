@@ -31,14 +31,19 @@ int _HttpV1Parser::on_url(http_parser*parser, const char *at, size_t length) {
 int _HttpV1Parser::on_header_field(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
     p->tempParseField = createString(at,0,length);
-    printf("onheader field start,field is %s \n",p->tempParseField->toChars());
     return 0;
 }
 
 int _HttpV1Parser::on_header_value(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    p->getHeader()->setValue(p->tempParseField,createString(at,0,length));
-    printf("onheader value is %s \n",createString(at,0,length)->toChars());
+    String value = createString(at,0,length);
+    if(p->tempParseField->equalsIgnoreCase("Cookie") 
+        || p->tempParseField->equalsIgnoreCase("Set-Cookie")) {
+        HttpCookie cookie = st(HttpCookieParser)::parseCookie(value);
+        p->mCookies->add(cookie);
+        return 0;
+    }
+    p->getHeader()->setValue(p->tempParseField,value);
     return 0;
 }
 
@@ -48,7 +53,6 @@ int _HttpV1Parser::on_headers_complete(http_parser*parser, const char *at, size_
 
 int _HttpV1Parser::on_body(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    printf("onbody start,at is %s \n",at);
     p->setBody(createByteArray((byte *)at,(int)length));
     return 0;
 }

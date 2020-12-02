@@ -24,6 +24,7 @@ cflags = -fpic \
 		-I ../../external/openssl/include \
 		-I ../../external/http_parser/include \
 		-I ../../external/libco \
+		-I ../../external/glog/include \
 		-g \
 		-std=c++11 \
 

@@ -16,6 +16,7 @@
 #include "HttpPacket.hpp"
 #include "http_parser.h"
 #include "HttpMultiPartParser.hpp"
+#include "HttpCookieParser.hpp"
 
 namespace obotcha {
 

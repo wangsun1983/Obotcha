@@ -10,8 +10,12 @@ using namespace obotcha;
 
 extern void normal_test();
 extern void push_test();
+extern int testByteRingArrayPush2();
+extern int testByteRingArrayPop();
 
 int main() {
   normal_test();
   push_test();
+  testByteRingArrayPush2();
+  testByteRingArrayPop();
 }

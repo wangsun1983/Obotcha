@@ -164,7 +164,7 @@ void testPush_bytearray() {
   array6->fill(5,6);
   bool isException = false;
 
-  try{
+  try {
     ringarray->push(array6);
   } catch(ArrayIndexOutOfBoundsException e) {
     isException = true;
@@ -174,7 +174,7 @@ void testPush_bytearray() {
     printf("---[ByteRingArray Test {pushByte(ByteArray val)} case10] [FAILED]--- \n");
     return;
   }
-  
+
   printf("---[ByteRingArray Test {pushByte(ByteArray val)} case11] [OK]--- \n");
 }
 
@@ -406,7 +406,7 @@ void test_pop() {
 
   printf("---[ByteRingArray Test pop {pop()} cas10] [OK]--- \n");
   return;
-  
+
 }
 
 //pop(int)
@@ -469,7 +469,7 @@ void test_pop_size() {
   ringarray->pop();
   ringarray->pop();
   ringarray->pop();
-  
+
   ringarray->push(7);
   ringarray->push(8);
   ringarray->push(9);
@@ -493,7 +493,7 @@ void test_pop_size() {
     printf("---[ByteRingArray Test pop_size {pop(int)} case4] [FAILED]--- \n");
     return;
   }
-  
+
   b2 = ringarray->pop(4);
 
   if(b2->at(0) != 15 ||

@@ -72,7 +72,7 @@ private:
     
     HttpHeader mHeader;
     
-    HttpCookie mCookie;
+    ArrayList<HttpCookie> mCookies;
 
     ByteArray mBody;
 

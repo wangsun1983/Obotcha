@@ -52,6 +52,7 @@ public:
    //just for test
    void setStartIndex(int);
    void setEndIndex(int);
+   void setStatus(int);
    
 private:
 
