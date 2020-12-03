@@ -78,46 +78,59 @@ int _HttpCookie::getPropertyMaxAge() {
     return mPropertyMaxAge;
 }
 
-
-String _HttpCookie::genHtml() {
+String _HttpCookie::genServerCookieString() {
     //name
-    String html;
-/*
-    if(mName != nullptr) {
-        html = mName->append("=",mValue,";");
-    } else {
-        html = createString("");
+    String content = createString("Set-Cookie: ");
+    MapIterator<String,String> iterator = mValues->getIterator();
+    while(iterator->hasValue()) {
+        String key = iterator->getKey();
+        String value = iterator->getKey();
+        content = content->append(key,"=",value,";");
+        iterator->next();
     }
 
-    if(mSecure) {
-        html = html->append(COOKIE_SECURE,";");
+    if(mPropertyHttpOnly) {
+        content = content->append(COOKIE_PROPERTY_HTTPONLY,";");
     }
 
-    if(mHttpOnly) {
-        html = html->append(COOKIE_HTTPONLY,";");
+    if(mPropertySecure) {
+        content = content->append(COOKIE_PROPERTY_SECURE,";");
     }
 
-    if(mDomain != nullptr) {
-        html = html->append(COOKIE_DOMAIN,"=",mDomain,";");
+    if(mPropertyDomain != nullptr) {
+        content = content->append(COOKIE_PROPERTY_DOMAIN,"=",mPropertyDomain,";");
     }
 
-    if(mPath != nullptr) {
-        html = html->append(COOKIE_PATH,"=",mPath,";");
+    if(mPropertyPath != nullptr) {
+        content = content->append(COOKIE_PROPERTY_PATH,"=",mPropertyPath,";");
     }
 
-    if(mMaxAge != 0) {
-        html = html->append(COOKIE_MAX_AGE,"=",createString(mMaxAge),";");
+    if(mPropertyMaxAge != 0) {
+        content = content->append(COOKIE_PROPERTY_MAX_AGE,"=",createString(mPropertyMaxAge),";");
     }
 
-    if(mExpiresMillseocnds != 0) {
-        Calendar c = createCalendar(mExpiresMillseocnds);
+    if(mPropertyExpiresMillseocnds != 0) {
+        Calendar c = createCalendar(mPropertyExpiresMillseocnds);
         DateTime date = c->getGmtDateTime();
         String time = date->toString(st(DateTime)::FormatHTTP);//st(DateTimeFormatter)::format(date,DateTimeFormatHTTP);
 
-        html = html->append(COOKIE_EXPIRES,"=",time,";");
+        content = content->append(COOKIE_PROPERTY_EXPIRES,"=",time,";");
     }
- */
-    return html;
+
+    return content;
+}
+
+String _HttpCookie::genClientCookieString() {
+    String content = createString("Cookie: ");
+    MapIterator<String,String> iterator = mValues->getIterator();
+    while(iterator->hasValue()) {
+        String key = iterator->getKey();
+        String value = iterator->getKey();
+        content = content->append(key,"=",value,";"); //TODO:Cookie: name=value; name2=value2  
+        iterator->next();
+    }
+
+    return content;
 }
 
 }

@@ -114,6 +114,10 @@ String _HttpPacket::genHttpRequest() {
     return req;   
 }
 
+ArrayList<HttpCookie> _HttpPacket::getCookies() {
+    return mCookies;
+}
+
 ByteArray _HttpPacket::genHttpResponse() {
     String statusString = mHeader->getValue(st(HttpHeader)::Status);
 	if(statusString == nullptr) {

@@ -65,6 +65,8 @@ public:
 
     ByteArray genHttpResponse();
 
+    ArrayList<HttpCookie> getCookies();
+
     void dump();
 
 private:

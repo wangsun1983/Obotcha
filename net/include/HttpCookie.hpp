@@ -33,7 +33,8 @@ public:
     String getPropertyExpires();
     int getPropertyMaxAge();
 
-    String genHtml();
+    String genServerCookieString();
+    String genClientCookieString();
 
     void dump();
 
