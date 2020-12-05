@@ -20,7 +20,7 @@ extern int normaltest();
 extern int recvfiletest();
 
 int main() {
-  //normaltest();
-  recvfiletest();
+  normaltest();
+  //recvfiletest();
   return 0;
 }

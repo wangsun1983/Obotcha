@@ -26,6 +26,7 @@ cflags = -fpic \
 		-I ../../external/libco \
 		-I ../../external/sqlite3/include \
 		-I ../../external/http_parser/include \
+		-I ../../external/glog/include \
 		-g \
 		-std=c++11 \
 

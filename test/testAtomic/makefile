@@ -35,7 +35,7 @@ external = -lpthread \
 
 files =
 link =
-libname	= testTcpClient
+libname	= testHandler
 
 everything : $(libname)
 

@@ -7,6 +7,7 @@
 #include "ByteRingArray.hpp"
 #include "HttpV1Server.hpp"
 #include "HttpV1ResponseWriter.hpp"
+#include "HttpCookie.hpp"
 
 using namespace obotcha;
 
@@ -90,7 +91,13 @@ DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
     void onMessage(sp<_HttpV1ClientInfo> client,sp<_HttpV1ResponseWriter> w,HttpPacket msg){
         printf("on message,msg %s \n");
         String body = createString("<h1>Response from Gagira</h1>");
+        HttpCookie cookie = createHttpCookie();
+        cookie->setValue(createString("key-abc"),createString("value-abc"));
+        w->writeCookie(cookie);
         w->writeBody(createByteArray(body));
+        w->writeHeader("hkey1","hval1");
+        w->writeHeader("hkey2","hval2");
+        w->writeHeader("hkey3","hval3");
         w->setStatus(st(HttpResponse)::Ok);
         w->flush();
     }

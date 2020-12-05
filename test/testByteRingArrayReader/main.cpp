@@ -8,12 +8,15 @@
 
 using namespace obotcha;
 
-extern void test_readnext();
+extern void testReadNext();
 extern void test_pop();
 extern void testpopall();
+extern void testReadableLength();
 
 int main() {
   //test_readnext();
   testpopall();
+  testReadNext();
+  testReadableLength();
   //test_pop();
 }

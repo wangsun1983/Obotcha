@@ -9,7 +9,7 @@
 using namespace obotcha;
 
 
-void testPopAll() {
+void testReadableLength() {
 
     //case1
     //data:[1(start/end/cursor),2,3,4,5]
@@ -23,12 +23,12 @@ void testPopAll() {
 
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
       reader->setCursor(0);
-      ByteArray arr = reader->pop();
-      if(arr != nullptr) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case1] [FAILED]--- \n");
+      int length = reader->getReadableLength();
+      if(length != 0) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case1] [FAILED]--- \n");
         return;
       }
-      printf("---[ByteRingArrayReader Test {testPopAll} case1] [OK]--- \n");
+      printf("---[ByteRingArrayReader Test {testReadableLength} case1] [OK]--- \n");
       break;
     }
 
@@ -46,14 +46,14 @@ void testPopAll() {
 
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
       reader->setCursor(0);
-      ByteArray arr = reader->pop();
-      if(arr != nullptr) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case3] [FAILED]--- \n");
+      int length = reader->getReadableLength();
+      if(length != 0) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case2] [FAILED]--- \n");
         return;
       }
-
-      printf("---[ByteRingArrayReader Test {testPopAll} case5] [OK]--- \n");
+      printf("---[ByteRingArrayReader Test {testReadableLength} case2] [OK]--- \n");
       break;
+
     }
 
     //case3
@@ -69,18 +69,12 @@ void testPopAll() {
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
       reader->setCursor(1);
 
-      ByteArray arr = reader->pop();
-      if(arr->size() != 1) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case6] [FAILED]--- \n");
+      int length = reader->getReadableLength();
+      if(length != 1) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case3] [FAILED]--- \n");
         return;
       }
-
-      if(arr[0] != 1) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case7] [FAILED]--- \n");
-        return;
-      }
-
-      printf("---[ByteRingArrayReader Test {testPopAll} case8] [OK]--- \n");
+      printf("---[ByteRingArrayReader Test {testReadableLength} case3] [OK]--- \n");
       break;
     }
 
@@ -97,18 +91,12 @@ void testPopAll() {
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
       reader->setCursor(2);
 
-      ByteArray arr = reader->pop();
-      if(arr->size() != 2) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case9] [FAILED]--- \n");
+      int length = reader->getReadableLength();
+      if(length != 2) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case4] [FAILED]--- \n");
         return;
       }
-
-      if(arr[0] != 1 || arr[1] != 2) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case10] [FAILED]--- \n");
-        return;
-      }
-
-      printf("---[ByteRingArrayReader Test {testPopAll} case11] [OK]--- \n");
+      printf("---[ByteRingArrayReader Test {testReadableLength} case4] [OK]--- \n");
       break;
     }
 
@@ -125,18 +113,12 @@ void testPopAll() {
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
       reader->setCursor(3);
 
-      ByteArray arr = reader->pop();
-      if(arr->size() != 3) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case10] [FAILED]--- \n");
+      int length = reader->getReadableLength();
+      if(length != 3) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case5] [FAILED]--- \n");
         return;
       }
-
-      if(arr[0] != 1 || arr[1] != 2 || arr[2] != 3) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case11] [FAILED]--- \n");
-        return;
-      }
-
-      printf("---[ByteRingArrayReader Test {testPopAll} case12] [OK]--- \n");
+      printf("---[ByteRingArrayReader Test {testReadableLength} case5] [OK]--- \n");
       break;
     }
 
@@ -155,18 +137,12 @@ void testPopAll() {
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
       reader->setCursor(0);
 
-      ByteArray arr = reader->pop();
-      if(arr->size() != 1) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case13] [FAILED]--- \n");
+      int length = reader->getReadableLength();
+      if(length != 1) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case6] [FAILED]--- \n");
         return;
       }
-
-      if(arr[0] != 5) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case14] [FAILED]--- \n");
-        return;
-      }
-
-      printf("---[ByteRingArrayReader Test {testPopAll} case15] [OK]--- \n");
+      printf("---[ByteRingArrayReader Test {testReadableLength} case6] [OK]--- \n");
       break;
     }
 
@@ -185,18 +161,12 @@ void testPopAll() {
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
       reader->setCursor(1);
 
-      ByteArray arr = reader->pop();
-      if(arr->size() != 2) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case16] [FAILED]--- \n");
+      int length = reader->getReadableLength();
+      if(length != 2) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case7] [FAILED]--- \n");
         return;
       }
-
-      if(arr[0] != 5 || arr[1] != 1) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case17] [FAILED]--- \n");
-        return;
-      }
-
-      printf("---[ByteRingArrayReader Test {testPopAll} case18] [OK]--- \n");
+      printf("---[ByteRingArrayReader Test {testReadableLength} case7] [OK]--- \n");
       break;
     }
 
@@ -215,18 +185,12 @@ void testPopAll() {
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
       reader->setCursor(2);
 
-      ByteArray arr = reader->pop();
-      if(arr->size() != 3) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case19] [FAILED]--- \n");
+      int length = reader->getReadableLength();
+      if(length != 3) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case8] [FAILED]--- \n");
         return;
       }
-
-      if(arr[0] != 5 || arr[1] != 1 || arr[2] != 2) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case20] [FAILED]--- \n");
-        return;
-      }
-
-      printf("---[ByteRingArrayReader Test {testPopAll} case21] [OK]--- \n");
+      printf("---[ByteRingArrayReader Test {testReadableLength} case8] [OK]--- \n");
       break;
     }
 
@@ -245,24 +209,12 @@ void testPopAll() {
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
       reader->setCursor(3);
 
-      ByteArray arr = reader->pop();
-      if(arr->size() != 4) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case22] [FAILED]--- \n");
+      int length = reader->getReadableLength();
+      if(length != 4) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case9] [FAILED]--- \n");
         return;
       }
-
-      if(arr[0] != 5 || arr[1] != 1 || arr[2] != 2 || arr[3] != 3) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case23] [FAILED]--- \n");
-        return;
-      }
-
-      byte value = 0;
-      if(reader->readNext(value) != ByteRingArrayReadComplete) {
-        printf("---[ByteRingArrayReader Test {testPopAll} case24] [FAILED]--- \n");
-        return;
-      }
-
-      printf("---[ByteRingArrayReader Test {testPopAll} case25] [OK]--- \n");
+      printf("---[ByteRingArrayReader Test {testReadableLength} case9] [OK]--- \n");
       break;
     }
 

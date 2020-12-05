@@ -9,8 +9,6 @@
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "AutoLock.hpp"
-#include "NetUtils.hpp"
-#include "WebSocketFrameComposer.hpp"
 #include "WebSocketProtocol.hpp"
 #include "WebSocketComposer.hpp"
 #include "File.hpp"
@@ -25,14 +23,14 @@ public:
         mConditaion = createCondition();
     }
 
-    int onMessage(WebSocketClientInfo client,String message) {
-        printf("message is %s \n",message->toChars());
-        mMessage = message;
+    int onMessage(WebSocketClientInfo client,WebSocketFrame message) {
+        printf("message is %s \n",message->getMessage()->toChars());
+        mMessage = message->getMessage();
         String response = createString("hello from server ");
         printf("message len is %d \n",response->size());
         ByteArray array = createByteArray(response);
         printf("array size is %d \n",array->size());
-        WebSocketFrameComposer mComposer = createWebSocketFrameComposer(false);
+        //WebSocketFrameComposer mComposer = createWebSocketFrameComposer(false);
         
         //int ret = st(NetUtils)::sendTcpPacket(fd,mComposer->generateMessageFrame(st(WebSocketProtocol)::OPCODE_TEXT,createByteArray(response)));
         WebSocketComposer composer = client->getComposer();
@@ -45,14 +43,14 @@ public:
         return 0;
     }
 
-    int onData(WebSocketClientInfo client,ByteArray message) {
+    int onData(WebSocketClientInfo client,WebSocketFrame message) {
         //printf("data message size is %d,message is %s \n",message->size(),message->toValue());
-        File file = createFile("recvfile");
-        FileOutputStream stream = createFileOutputStream(file);
-        stream->open(FileOpenType::Trunc);
-        stream->write(message);
-        stream->flush();
-        stream->close();
+        //File file = createFile("recvfile");
+        //FileOutputStream stream = createFileOutputStream(file);
+        //stream->open(FileOpenType::Trunc);
+        //stream->write(message);
+        //stream->flush();
+        //stream->close();
         return 0;
     }
 

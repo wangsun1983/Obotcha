@@ -25,6 +25,7 @@ int main() {
 
     normalTest();
     sleep(1);
+
     testRunnable_onInterrupt();
     sleep(1);
     releaseTest();
