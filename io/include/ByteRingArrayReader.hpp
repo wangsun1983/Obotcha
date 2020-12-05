@@ -32,9 +32,15 @@ public:
     int getReadableLength();
     
 private:
+    enum ReadMark {
+        Idle,
+        Partial,
+        Complete
+    };
+
     ByteRingArray mBuff;
 
-    //int mStartMark;
+    int mMark;
 
     int mCursor;
 };

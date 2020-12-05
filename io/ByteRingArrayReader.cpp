@@ -24,14 +24,19 @@ namespace obotcha {
 _ByteRingArrayReader::_ByteRingArrayReader(ByteRingArray b) {
     mBuff = b;
     mCursor = mBuff->getStartIndex();
-    //mStartMark = mCursor;
+    mMark = Idle;
 }
 
 ByteArray _ByteRingArrayReader::pop() {
     ByteArray result = nullptr;
+
     try {
-        result = mBuff->popByEnd(mCursor);
-        //mStartMark = mBuff->getStartIndex();
+        if(mMark == Complete) {
+            result = mBuff->popAll();
+            mMark = Idle;
+        } else{
+            result = mBuff->popByEnd(mCursor);
+        }
     } catch(ArrayIndexOutOfBoundsException &e){
     }
 
@@ -47,12 +52,12 @@ int _ByteRingArrayReader::readNext(byte &value) {
     int end = mBuff->getEndIndex();
 
     if(mCursor == end) {
-        return ByteRingArrayReadComplete;
+        if(mMark != Idle) {
+            mMark = Complete;
+            return ByteRingArrayReadComplete;
+        }
     }
-    
-    //if(mStartMark != start) {
-    //    return -InvalidStatus;
-    //}
+    mMark = Partial;
 
     value = mBuff->at(mCursor);
     mCursor++;
