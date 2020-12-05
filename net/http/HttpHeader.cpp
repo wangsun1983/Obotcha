@@ -123,7 +123,6 @@ _HttpHeader::_HttpHeader() {
 
 void _HttpHeader::reset() {
     mValues->clear();
-    mCookies->clear();
 }
 
 void _HttpHeader::setValue(String header,String value) {
@@ -171,12 +170,12 @@ String _HttpHeader::genHtml() {
         headerIte->next();
     }
 
-    //ArrayList<HttpCookie> getCookies();
-    int size = mCookies->size();
-    for(int i=0;i<size;i++) {
-        String cookieStr = mCookies->get(i)->genHtml();       
-        
-        html = html->append(SetCookie,": ",cookieStr,"\r\n");
+    printf("genHttpResponse start ,mCookies is %d \n",mCookies->size());
+    ListIterator<HttpCookie> iterator = mCookies->getIterator();
+    while(iterator->hasValue()) {
+        HttpCookie cookie = iterator->getValue();
+        html = html->append(cookie->genServerCookieString(),"\r\n");
+        iterator->next();
     }
 
     html = html->append("\r\n");

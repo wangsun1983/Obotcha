@@ -20,6 +20,7 @@ _HttpCookie::_HttpCookie() {
     mValues = createHashMap<String,String>();
     mPropertySecure = false;
     mPropertyHttpOnly = false;
+    mPropertyExpiresMillseocnds = -1;
 }
 
 void _HttpCookie::setValue(String key,String value) {
@@ -84,7 +85,7 @@ String _HttpCookie::genServerCookieString() {
     MapIterator<String,String> iterator = mValues->getIterator();
     while(iterator->hasValue()) {
         String key = iterator->getKey();
-        String value = iterator->getKey();
+        String value = iterator->getValue();
         content = content->append(key,"=",value,";");
         iterator->next();
     }
@@ -109,7 +110,7 @@ String _HttpCookie::genServerCookieString() {
         content = content->append(COOKIE_PROPERTY_MAX_AGE,"=",createString(mPropertyMaxAge),";");
     }
 
-    if(mPropertyExpiresMillseocnds != 0) {
+    if(mPropertyExpiresMillseocnds != -1) {
         Calendar c = createCalendar(mPropertyExpiresMillseocnds);
         DateTime date = c->getGmtDateTime();
         String time = date->toString(st(DateTime)::FormatHTTP);//st(DateTimeFormatter)::format(date,DateTimeFormatHTTP);
@@ -125,7 +126,7 @@ String _HttpCookie::genClientCookieString() {
     MapIterator<String,String> iterator = mValues->getIterator();
     while(iterator->hasValue()) {
         String key = iterator->getKey();
-        String value = iterator->getKey();
+        String value = iterator->getValue();
         content = content->append(key,"=",value,";"); //TODO:Cookie: name=value; name2=value2  
         iterator->next();
     }

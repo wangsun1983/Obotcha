@@ -16,6 +16,9 @@ DECLARE_SIMPLE_CLASS(HttpCookieParser) {
 
 public:
     static HttpCookie parseCookie(String);
+
+private:
+    static void parseLine(HttpCookie,String);
 };
 
 }

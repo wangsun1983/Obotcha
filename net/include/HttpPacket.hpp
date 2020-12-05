@@ -67,14 +67,14 @@ public:
 
     ArrayList<HttpCookie> getCookies();
 
+    void addCookie(HttpCookie);
+
     void dump();
 
 private:
     String mUrl;
     
     HttpHeader mHeader;
-    
-    ArrayList<HttpCookie> mCookies;
 
     ByteArray mBody;
 

@@ -16,6 +16,8 @@ public:
     
     void writeHeader(String,String);
 
+    void writeCookie(HttpCookie);
+
     void writeBody(ByteArray);
 
     void setStatus(int);

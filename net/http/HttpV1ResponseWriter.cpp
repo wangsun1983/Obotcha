@@ -25,6 +25,10 @@ void _HttpV1ResponseWriter::writeHeader(String key,String value) {
     mPacket->getHeader()->setValue(key,value);
 }
 
+void _HttpV1ResponseWriter::writeCookie(HttpCookie c) {
+    mPacket->addCookie(c);
+}
+
 void _HttpV1ResponseWriter::setStatus(int status) {
     mPacket->getHeader()->setValue(st(HttpHeader)::Status,createString(status));
 }

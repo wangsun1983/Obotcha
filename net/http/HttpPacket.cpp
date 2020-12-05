@@ -13,8 +13,7 @@ namespace obotcha {
 
 _HttpPacket::_HttpPacket() {
     mHeader = createHttpHeader();
-    mCookies = createArrayList<HttpCookie>();
-	mMinorVer = 1;
+    mMinorVer = 1;
 	mMajorVer = 1;
 }
 
@@ -115,7 +114,11 @@ String _HttpPacket::genHttpRequest() {
 }
 
 ArrayList<HttpCookie> _HttpPacket::getCookies() {
-    return mCookies;
+    return mHeader->getCookies();
+}
+
+void _HttpPacket::addCookie(HttpCookie c) {
+    mHeader->addCookie(c);
 }
 
 ByteArray _HttpPacket::genHttpResponse() {
@@ -141,6 +144,7 @@ ByteArray _HttpPacket::genHttpResponse() {
 
     //writer->writeString(createString("\r\n"));
     //responseStr = responseStr->append(headerStr)->append("\r\n")->append(bodyStr);
+    
     return response;
 }
 

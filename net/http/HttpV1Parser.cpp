@@ -40,7 +40,7 @@ int _HttpV1Parser::on_header_value(http_parser*parser, const char *at, size_t le
     if(p->tempParseField->equalsIgnoreCase("Cookie") 
         || p->tempParseField->equalsIgnoreCase("Set-Cookie")) {
         HttpCookie cookie = st(HttpCookieParser)::parseCookie(value);
-        p->mCookies->add(cookie);
+        p->addCookie(cookie);
         return 0;
     }
     p->getHeader()->setValue(p->tempParseField,value);
