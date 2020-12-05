@@ -147,7 +147,6 @@ void _HttpDispatchRunnable::run() {
         info->pushHttpData(data->pack);
         ArrayList<HttpPacket> packets = info->pollHttpPacket();
         HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);
-        printf("data->clientid is %llx,info->clientfd is %llx \n",data->clientid,info->getClientId());
         if(data->clientid != info->getClientId()) {
             writer->disableResponse();
         }

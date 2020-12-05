@@ -37,7 +37,6 @@ void _HttpCookieParser::parseLine(HttpCookie cookie,String value) {
         name = cookievalue->get(0)->trimAll();
     }
 
-    printf("name is %s \n",name->toChars());
     if(name->equalsIgnoreCase(st(HttpCookie)::COOKIE_PROPERTY_SECURE)) {
         cookie->setPropertySecure(true);
     } else if(name->equalsIgnoreCase(st(HttpCookie)::COOKIE_PROPERTY_HTTPONLY)) {

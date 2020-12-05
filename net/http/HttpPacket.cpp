@@ -138,13 +138,9 @@ ByteArray _HttpPacket::genHttpResponse() {
     writer->writeString(responseStr);
 	writer->write((byte *)headerStr->toChars(),headerStr->size());
     if(mBody != nullptr) {
-        //response->append(mBody);
         writer->writeByteArray(mBody);
     }
-
-    //writer->writeString(createString("\r\n"));
-    //responseStr = responseStr->append(headerStr)->append("\r\n")->append(bodyStr);
-    
+ 
     return response;
 }
 

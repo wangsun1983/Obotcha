@@ -170,7 +170,6 @@ String _HttpHeader::genHtml() {
         headerIte->next();
     }
 
-    printf("genHttpResponse start ,mCookies is %d \n",mCookies->size());
     ListIterator<HttpCookie> iterator = mCookies->getIterator();
     while(iterator->hasValue()) {
         HttpCookie cookie = iterator->getValue();

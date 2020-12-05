@@ -118,11 +118,9 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
     static byte end[4] = {'\r','\n','\r','\n'};
     static byte chunkEnd[5] = {'\r','\n','0','\r','\n'};
-    printf("doParse mStatus is %d \n",mStatus);
     while(1) {
         switch(mStatus) {
             case HttpV1ParseStatusIdle:{
-                printf("HttpV1ParseStatusIdle start \n");
                 byte v = 0;
                 while(mReader->readNext(v) != ByteRingArrayReadComplete) {
                     if(v == end[mHeadEndCount]) {
@@ -139,7 +137,6 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
                 }
 
                 if(mStatus != HttpClientParseStatusHeadStart) {
-                    printf("HttpV1ParseStatusIdle trace1 \n");
                     return packets;
                 }
                 
@@ -147,9 +144,7 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
             }
             
             case HttpClientParseStatusHeadStart: {
-                printf("HttpClientParseStatusHeadStart start \n");
                 ByteArray head = mReader->pop();
-                printf("head is %s \n",head->toString()->toChars());
                 memset(&mParser,0,sizeof(http_parser));
                 mHttpPacket = createHttpPacket();
                 mParser.data = reinterpret_cast<void *>(mHttpPacket.get_pointer());
@@ -158,7 +153,6 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
                                     &settings, 
                                     (const char *)head->toValue(), 
                                     head->size());
-                printf("HttpClientParseStatusHeadStart trace1 \n");
                 mStatus = HttpClientParseStatusBodyStart;
 
                 continue;
@@ -185,7 +179,6 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
                 
                 if(transferEncoding != nullptr) {
                     byte v = 0;
-                    printf("HttpClientParseStatusBodyStart trace3 \n");
                     while(mReader->readNext(v) != ByteRingArrayReadComplete) {
                         if(v == end[mChunkEndCount]) {
                             mChunkEndCount++;
@@ -228,14 +221,12 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
                     continue;
 
                 }
-                printf("HttpClientParseStatusBodyStart trace3 \n");
                 return packets;
             }
 
             break;
         }
     }
-    printf("doParse end \n");
     return packets;
 }
 
