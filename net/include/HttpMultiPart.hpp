@@ -23,10 +23,15 @@ public:
 
     _HttpMultiPartFile(String);
 
+    String getRealFileName();
+    void setRealFileName(String);
+
     File getFile();
 
 private:
     File mFile;
+
+    String mRealFileName;
 };
 
 DECLARE_SIMPLE_CLASS(HttpMultiPartContent) {

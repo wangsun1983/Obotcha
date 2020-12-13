@@ -30,6 +30,10 @@ public:
 
     String getName();
 
+    String getSuffix();
+
+    String getNameWithNoSuffix();
+
     String getAbsolutePath();
 
     bool canRead();
@@ -83,6 +87,7 @@ public:
     ~_File();
     
     static const String gPathSeparator;
+    static const String gPathSuffix;
     
     static bool exists(String);
     
@@ -128,6 +133,7 @@ private:
     mode_t mMode;
     
     String mPath;
+    
 
     //struct stat mFileInfo;
 

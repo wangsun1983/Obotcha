@@ -9,6 +9,7 @@
 namespace obotcha {
 
 const String _File::gPathSeparator = createString("/");
+const String _File::gPathSuffix = createString("/");
 
 _File::_File(const char * s) {
     mPath = createString(s);
@@ -35,6 +36,41 @@ String _File::getName() {
     }
 
     return nullptr;
+}
+
+String _File::getSuffix() {
+    const char *data = mPath->toChars();
+    int index = mPath->size() - 1;
+    for(;index >= 0;index--) {
+        if(data[index] == '.') {
+            break;
+        }
+    }
+
+    if(index != -1 && index != mPath->size() - 1) {
+        return createString(data,index + 1,mPath->size() - index - 1);
+    }
+
+    return nullptr;
+
+}
+
+String _File::getNameWithNoSuffix() {
+    String filename = getName();
+    filename->lastIndexOf(".");
+    const char *data = filename->toChars();
+    int index = filename->size() - 1;
+    for(;index >= 0;index--) {
+        if(data[index] == '.') {
+            break;
+        }
+    }
+
+    if(index != -1) {
+        return createString(data,0,index);
+    }
+
+    return filename;
 }
 
 String _File::getAbsolutePath() {
