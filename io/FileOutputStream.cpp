@@ -36,7 +36,7 @@ bool _FileOutputStream::write(char c) {
 }
     
 long _FileOutputStream::write(ByteArray buff) {
-    if(!fstream.is_open()) {
+    if(!fstream.is_open() || buff == nullptr || buff->size() == 0) {
         return false;
     }
     
@@ -45,7 +45,7 @@ long _FileOutputStream::write(ByteArray buff) {
 }
 
 long _FileOutputStream::write(ByteArray buff,long size) {
-    if(buff == nullptr || buff->size() < size) {
+    if(!fstream.is_open() || buff == nullptr || buff->size() < size) {
         return -1;
     }
  

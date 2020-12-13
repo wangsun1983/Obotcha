@@ -41,6 +41,7 @@ public:
         ParseContentDisposition,
         ParseContentDispositionEnd,
         ParseContentType,
+        ParseContentSkipNewLine,
         ParseContent,
     };
 

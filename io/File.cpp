@@ -44,7 +44,7 @@ String _File::getAbsolutePath() {
         return nullptr;
     }
 
-    return createString(p);
+    return createString((const char *)p);
 }
 
 bool _File::canRead() {
