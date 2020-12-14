@@ -90,6 +90,16 @@ _HttpV1Parser::_HttpV1Parser() {
 }
 
 void _HttpV1Parser::pushHttpData(ByteArray data) {
+    //write data
+#ifdef DUMP_HTTP_DATE
+    File dumpfile = createFile("data.dt");
+    //dumpfile->removeAll();
+    dumpfile->createNewFile();
+    FileOutputStream stream = createFileOutputStream(dumpfile);
+    stream->open();
+    stream->write(data);
+    stream->flush();
+#endif
     mBuff->push(data);
 }
 

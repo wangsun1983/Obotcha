@@ -89,7 +89,22 @@ DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
 
 
     void onMessage(sp<_HttpV1ClientInfo> client,sp<_HttpV1ResponseWriter> w,HttpPacket msg){
-        printf("on message,msg %s \n");
+        String url = msg->getUrl();
+
+        //HttpMultiPart getMultiPart();
+        HttpMultiPart part = msg->getMultiPart();
+        if(part != nullptr) {
+            printf("part is not null \n");
+            ArrayList<HttpMultiPartContent> contents = part->contents;
+            ListIterator<HttpMultiPartContent> iterator = contents->getIterator();
+            while(iterator->hasValue()) {
+                HttpMultiPartContent content = iterator->getValue();
+                printf("content key is %s,value is %s \n",content->getName()->toChars(),content->getValue()->toChars());
+                iterator->next();
+            }
+        }
+
+        printf("getUrl is %s \n",url->toChars());
         String body = createString("<h1>Response from Gagira</h1>");
         HttpCookie cookie = createHttpCookie();
         cookie->setValue(createString("key-abc"),createString("value-abc"));
