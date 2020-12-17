@@ -57,9 +57,12 @@ int _HttpV1ClientInfo::send(ByteArray data) {
     if(mSSLInfo != nullptr) {
         return mSSLInfo->write(data);
     }
-    
+
+    fcntl(mClientFd, F_SETFL, fcntl(mClientFd, F_GETFD, 0)| O_SYNC);
     //return st(NetUtils)::sendTcpPacket(mClientFd,data);
-    return ::send(mClientFd,data->toValue(),data->size(),0);
+    int result = ::send(mClientFd,data->toValue(),data->size(),0);
+    fcntl(mClientFd, F_SETFL, fcntl(mClientFd, F_GETFD, 0)| O_NONBLOCK);
+    return result;
 }
 
 SSLInfo _HttpV1ClientInfo::getSSLInfo() {

@@ -53,7 +53,8 @@ int _HttpV1ResponseWriter::flush() {
     if(!mResponsible) {
         return -1;
     }
-    
+    int totalsend = 0;
+
     AutoLock l(mClient->getResponseWriteMutex());
     if(mFile != nullptr) {
         Enviroment env = st(Enviroment)::getInstance();
@@ -64,9 +65,18 @@ int _HttpV1ResponseWriter::flush() {
             //update HttpHeader
             ByteArray buff = createByteArray(buffsize);
             bool isFirstChunk = true;
-
+            printf("flush trace1 \n");
             while(1) {
                 int length = stream->read(buff);
+                if(length == 0) {
+                    break;
+                }
+                //    printf("finish,length is 0 \n");
+                //    const byte data[] = {0x30,0x0d,0x0a,0x0d,0x0a};
+                //    mClient->send(createByteArray((const byte *)data,5));
+                //    break;
+                //}
+
                 String lengthHexStr = createString(length)->toHexString()->append("\r\n");
                 int hexStrLen = lengthHexStr->size();
                 if(isFirstChunk) {
@@ -92,10 +102,10 @@ int _HttpV1ResponseWriter::flush() {
                     String line = "\r\n";
                     int linesize = 0;
 
-                    if(length == 0) {
-                        linesize = line->size()*2;
-                    } else {
+                    if(length == buffsize) {
                         linesize = line->size();
+                    } else {
+                        linesize = line->size()*2 + 5;//line->size()*2;
                     }
 
                     ByteArray body = createByteArray(linesize + length + hexStrLen);
@@ -103,17 +113,29 @@ int _HttpV1ResponseWriter::flush() {
                     writer->writeString(line);
                     writer->writeByteArray(createByteArray((const byte *)lengthHexStr->toChars(),
                                                  lengthHexStr->size()));
-                    if(length != 0) {
+                    if(length == buffsize) {
                         writer->writeByteArray(buff,length);               
                     } else {
+                        printf("final data,length is %d  \n",length);
+                        writer->writeByteArray(buff,length);
                         writer->writeString(line);
+                        const byte data[] = {0x30,0x0d,0x0a,0x0d,0x0a};
+                        int ret = writer->writeByteArray(createByteArray(data,5),5);
+                        printf("ret is %d \n",ret);
                     }
+                    
+                    while(1) {
+                        int size = mClient->send(body);
+                        if(size < 0) {
+                            printf("i wait!!!!,size is %d \n",size);
+                            st(Thread)::msleep(100);
+                            continue;
+                        }
 
-                    mClient->send(body);
-                }
-                
-                if(length == 0) {
-                    break;
+                        totalsend += size;
+                        printf("flush trace2 totalsend is %d,body size is %d,length is %d,reason is %s \n",totalsend,body->size(),length,strerror(errno));
+                        break;
+                    }
                 }
             }
         }
