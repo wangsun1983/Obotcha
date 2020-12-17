@@ -53,6 +53,8 @@ public:
     int postDelayed(Runnable r,long delay);
 
     void destroy();
+
+    int size();
     
 private:
     enum Status {

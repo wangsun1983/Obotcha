@@ -184,19 +184,19 @@ int testLinkeListBase() {
 
     //case5 String iterator remove
     while(1) {
-      LinkedList<int> mList = createLinkedList<int>();
+      LinkedList<Integer> mList = createLinkedList<Integer>();
       std::vector<int> list;
       list.push_back(4);
       //list.push_back(5);
       list.push_back(6);
 
-      mList->enQueueLast(4);
-      mList->enQueueLast(5);
-      mList->enQueueLast(6);
+      mList->enQueueLast(createInteger(4));
+      mList->enQueueLast(createInteger(5));
+      mList->enQueueLast(createInteger(6));
 
-      LinkedListIterator<int> iterator = mList->getIterator();
+      LinkedListIterator<Integer> iterator = mList->getIterator();
       while(iterator->hasValue()) {
-        int v = iterator->getValue();
+        int v = iterator->getValue()->toValue();
         if(v == 5) {
           iterator->remove();
           continue;
@@ -211,7 +211,7 @@ int testLinkeListBase() {
       iterator = mList->getIterator();
       int count = 0;
       while(iterator->hasValue()) {
-          int v = iterator->getValue();
+          int v = iterator->getValue()->toValue();
           if(v != list[count]) {
             printf("v1 is %d,vv is %d \n",v,list[count]);
             printf("LinkedList base test11-------[FAIL] \n");

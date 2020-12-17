@@ -9,7 +9,6 @@
 #include "AutoLock.hpp"
 #include "System.hpp"
 #include "Error.hpp"
-#include "AtomicInteger.hpp"
 
 using namespace obotcha;
 
@@ -37,48 +36,45 @@ public:
 
 int testThreadLoopJoin() {
   //test1
+  printf("trace1 \n");
   ArrayList<Thread> list = createArrayList<Thread>();
 
   for(int i = 0;i<1024*32;i++) {
-      //printf("create1 i is %d \n",i);
       Thread t = createThread(createLoopThreadJoinRun1());
       int ret = t->start();
       list->add(t);
   }
-
+  printf("trace2 \n");
   for(int i = 0;i<1024*32;i++) {
-      //printf("join1 i is %d \n",i);
       list->get(i)->join();
   }
 
   list->clear();
-
+  printf("trace3 \n");
   //test2
   ArrayList<Thread> list2 = createArrayList<Thread>();
 
   for(int i = 0;i<1024*8;i++) {
-      //printf("create1 i is %d \n",i);
       Thread t = createThread(createLoopThreadJoinRun2());
       int ret = t->start();
       list2->add(t);
   }
-
+  printf("trace4 \n");
   for(int i = 0;i<1024*8;i++) {
       list2->get(i)->join(10);
   }
-
+  printf("trace5 \n");
   for(int i = 0;i<1024*8;i++) {
-      //printf("join1 i is %d \n",i);
       if(list2->get(i)->getStatus() != st(Thread)::Running) {
         printf("---[Thread Test {Loop join()} special case1,is is %d,status is %d \n] [Fail]--- \n",i,list->get(i)->getStatus());
         break;
       }
   }
+  printf("trace6 \n");
   for(int i = 0;i<1024*8;i++) {
-      //printf("join1 i is %d \n",i);
       list2->get(i)->quit();
   }
-
+  printf("trace7 \n");
   list2->clear();
 
   printf("---[Thread Test {Loop join()} special case2] [Success]--- \n");

@@ -10,11 +10,6 @@
  * @date 2019-07-12
  * @license none
  */
-#include <stdio.h>
-
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "Message.hpp"
 
 namespace obotcha {

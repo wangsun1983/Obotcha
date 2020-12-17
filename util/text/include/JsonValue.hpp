@@ -130,29 +130,43 @@ public:
 
     String getString(String tag);
 
+    String getString(const char* valuetag);
+    
     String getString();
 
     Integer getInteger(String tag);
+
+    Integer getInteger(const char* tag);
 
     Integer getInteger();
 
     Uint64 getUint64(String tag);
 
+    Uint64 getUint64(const char* tag);
+
     Uint64 getUint64();
 
     Long getLong(String tag);
+    
+    Long getLong(const char * tag);
 
     Long getLong();
 
     Boolean getBoolean(String tag);
 
+    Boolean getBoolean(const char *);
+
     Boolean getBoolean();
 
     Double getDouble(String tag);
 
+    Double getDouble(const char* tag);
+
     Double getDouble();
 
     sp<_JsonValue> getValue(String tag);
+
+    sp<_JsonValue> getValue(const char *);
 
     sp<_JsonValueIterator> getIterator();
 

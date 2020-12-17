@@ -37,7 +37,6 @@ DECLARE_CLASS(LruCache,2) {
 public:
     _LruCache(int s) {
         mMaxSize = s;
-        //mLock = createMutex("LruCacheMutex");
         mCurrent = nullptr;
         mHead = nullptr;
         mCurrentSize = 0;
@@ -48,63 +47,37 @@ public:
     void put(T t,U u) {
         sp<_LruNode<T,U>> node = mHashMap->get(t);
         if(node != nullptr) {
-            if(node->mData != u) {
-                mHashMap->remove(t);
-                if(node->prev == nullptr) {
-                    mHead = node->next;
-                    node->next = nullptr;
-                } else if(node->next == nullptr) {
-                    node->prev->next = nullptr;
-                    node->next = nullptr;
-                } else {
-                    node->prev->next = node->next;
-                    node->next->prev = node->prev;
-                    node->next = nullptr;
-                    node->prev = nullptr;
-                }
+            removeNode(node);
+        } else {
+            if(mCurrentSize == mMaxSize) {
+                sp<_LruNode<T,U>> tail = removeTail();
+                mHashMap->remove(tail->tag);
             }
         }
-
         node = createLruNode<T,U>(t,u);
         mHashMap->put(t,node);
-        mCurrentSize++;
-        if(mHead == nullptr) {
-            mHead = node;
-            mCurrent = mHead;
-        } else {
-            node->next = mHead;
-            mHead->prev = node;
-            mHead = node;
-        }
-        trimNode();
+        addNode(node);
     }
 
     U get(T t) {
         sp<_LruNode<T,U>> node = mHashMap->get(t);
         if(node != nullptr) {
-            if(node == mHead) {
-                return node->mData;
-            } else if(node == mCurrent) {
-                mCurrent = node->prev;
-                mCurrent->next = nullptr;
-                node->prev = nullptr;
-
-                node->next = mHead;
-                mHead->prev = node;
-                mHead = node;
-            } else {
-                node->prev->next = node->next;
-                node->next->prev = node->prev;
-
-                node->next = mHead;
-                mHead->prev = node;
-                mHead = node;
-            }
-
+            //update node
+            removeNode(node);
+            addNode(node);
             return node->mData;
         }
 
         return nullptr;
+    }
+
+    U at(int index) {
+        sp<_LruNode<T,U>> node = mHead;
+        for(int i = 0;i < index;i++) {
+            node = node->next;
+        }
+
+        return node->mData;
     }
 
     void remove(T t) {
@@ -122,8 +95,6 @@ public:
         return mHashMap->size();
     }
 
-    void destroy();
-
 private:
 
     int mMaxSize;
@@ -136,11 +107,7 @@ private:
 
     sp<_LruNode<T,U>> mCurrent;
 
-    //Mutex mLock;
-
     void removeNode(sp<_LruNode<T,U>> node) {
-        mHashMap->remove(node->tag);
-
         if(node == mHead) {
             if(node->next != nullptr) {
                 mHead = node->next;
@@ -160,15 +127,25 @@ private:
             node->next = nullptr;
             node->prev = nullptr;
         }
-
         mCurrentSize--;
     }
 
-    void trimNode() {
-        while(mCurrentSize > mMaxSize) {
-            removeNode(mCurrent);
-            //mCurrentSize--;
+    void addNode(sp<_LruNode<T,U>> node) {
+        if(mHead == nullptr) {
+            mHead = node;
+            mCurrent = mHead;
+        } else {
+            node->next = mHead;
+            mHead->prev = node;
+            mHead = node;
         }
+        mCurrentSize++;
+    }
+
+    sp<_LruNode<T,U>> removeTail() {
+        sp<_LruNode<T,U>> tail = mCurrent;
+        removeNode(mCurrent);
+        return tail;
     }
 
 };

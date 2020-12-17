@@ -61,10 +61,6 @@ public:
         elements.clear();
     }
 
-    bool paramInvalid(int index) {
-        return (index >= elements.capacity() || index < 0 || index >= elements.size());
-    }
-
     inline T removeAt(int index) {
         if(paramInvalid(index)) {
             String exception = createString("Arraylist remove fail")
@@ -224,6 +220,10 @@ private:
 
     typename std::vector<T>::iterator end() {
         return elements.end();
+    }
+
+    bool paramInvalid(int index) {
+        return (index >= elements.capacity() || index < 0 || index >= elements.size());
     }
 };
 

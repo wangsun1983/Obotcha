@@ -139,12 +139,16 @@ void _JsonValue::removeAt(int index) {
 
 
 String _JsonValue::getString(String tag) {
+    getString(tag->toChars());
+}
+
+String _JsonValue::getString(const char * tag) {
     if(tag == nullptr) {
         return nullptr;
     }
 
-    if(jvalue.isMember(tag->toChars())) {
-        std::string v = jvalue[tag->toChars()].asString();
+    if(jvalue.isMember(tag)) {
+        std::string v = jvalue[tag].asString();
         return createString(v);
     }
 
@@ -157,8 +161,12 @@ String _JsonValue::getString() {
 }
 
 Integer _JsonValue::getInteger(String tag) {
-    if(jvalue.isMember(tag->toChars())) {
-        int v = jvalue[tag->toChars()].asInt();
+    return getInteger(tag->toChars());
+}
+
+Integer _JsonValue::getInteger(const char* tag) {
+    if(jvalue.isMember(tag)) {
+        int v = jvalue[tag].asInt();
         return createInteger(v);
     }
 
@@ -171,18 +179,43 @@ Integer _JsonValue::getInteger() {
 }
 
 Uint64  _JsonValue::getUint64(String tag) {
-    uint64_t v = (uint64_t)jvalue[tag->toChars()].asUInt64();
-    return createUint64(v);
+    return getUint64(tag->toChars());
+}
+
+Uint64  _JsonValue::getUint64(const char* tag) {
+    if(tag!= nullptr && jvalue.isMember(tag)) {
+        Json::Value va = jvalue[tag];
+        if(!va.isNull()) {
+            uint64_t v = (uint64_t)va.asUInt64();
+            return createUint64(v);
+        }
+    }
+
+    return nullptr;
 }
 
 Uint64 _JsonValue::getUint64() {
-    uint64_t v = (uint64_t)jvalue.asUInt64();
-    return createUint64(v);
+    if(!jvalue.isNull()) {
+        uint64_t v = (uint64_t)jvalue.asUInt64();
+        return createUint64(v);
+    }
+    return nullptr;
 }
 
 Long _JsonValue::getLong(String tag) {
-    long v = (long)jvalue[tag->toChars()].asLargestInt();
-    return createLong(v);
+    return getLong(tag->toChars());
+}
+
+Long _JsonValue::getLong(const char* tag) {
+    if(tag!= nullptr && jvalue.isMember(tag)) {
+        Json::Value va = jvalue[tag];
+        if(!va.isNull()) {
+            long v = (long)jvalue[tag].asLargestInt();
+            return createLong(v);
+        }
+    }
+
+    return nullptr;
 }
 
 Long _JsonValue::getLong() {
@@ -195,13 +228,16 @@ int _JsonValue::size() {
 }
 
 Boolean _JsonValue::getBoolean(String tag) {
-    if(tag == nullptr) {
-        return nullptr;
-    }
+    return getBoolean(tag->toChars());
+}
 
-    if(jvalue.isMember(tag->toChars())) {
-        bool v = jvalue[tag->toChars()].asBool();
-        return createBoolean(v);
+Boolean _JsonValue::getBoolean(const char* tag) {
+    if(tag != nullptr && jvalue.isMember(tag)) {
+        Json::Value va = jvalue[tag];
+        if(!va.isNull()) {
+            bool v = va.asBool();
+            return createBoolean(v);
+        }
     }
 
     return nullptr;
@@ -214,13 +250,16 @@ Boolean _JsonValue::getBoolean() {
 
 
 Double _JsonValue::getDouble(String tag) {
-    if(tag == nullptr) {
-        return nullptr;
-    }
+    return getDouble(tag->toChars());
+}
 
-    if(jvalue.isMember(tag->toChars())) {
-        double v = jvalue[tag->toChars()].asDouble();
-        return createDouble(v);
+Double _JsonValue::getDouble(const char *tag) {
+    if(tag!= nullptr && jvalue.isMember(tag)) {
+        Json::Value va = jvalue[tag];
+        if(!va.isNull()) {
+            double v = jvalue[tag].asDouble();
+            return createDouble(v);
+        }
     }
 
     return nullptr; 
@@ -232,12 +271,12 @@ Double _JsonValue::getDouble() {
 }
 
 sp<_JsonValue> _JsonValue::getValue(String tag) {
-    if(tag == nullptr) {
-        return nullptr;
-    }
+    return getValue(tag->toChars());
+}
 
-    if(contains(tag)) {
-        Json::Value value = jvalue[tag->toChars()];
+sp<_JsonValue> _JsonValue::getValue(const char * tag) {
+    if(tag != nullptr && jvalue.isMember(tag)) {
+        Json::Value value = jvalue[tag];
         return createJsonValue(value);
     }
     
@@ -331,23 +370,48 @@ void _JsonValue::append(sp<_JsonValue> value) {
 }
 
 sp<_JsonValue> _JsonValue::getValueAt(int index) {
-    return createJsonValue(jvalue[index]);
+    Json::Value v = jvalue[index];
+    if(!v.isNull()) {
+        return createJsonValue(jvalue[index]);
+    }
+
+    return nullptr;
 }
 
 
 String _JsonValue::getStringAt(int index) {
+    Json::Value v = jvalue[index];
+    if(!v.isNull()) {
+        return createJsonValue(jvalue[index]);
+    }
+    
     return createString(jvalue[index].asString());
 }
 
 Integer _JsonValue::getIntegerAt(int index) {
+    Json::Value v = jvalue[index];
+    if(!v.isNull()) {
+        return createJsonValue(jvalue[index]);
+    }
+
     return createInteger(jvalue[index].asInt());
 }
     
 Boolean _JsonValue::getBooleanAt(int index) {
+    Json::Value v = jvalue[index];
+    if(!v.isNull()) {
+        return createJsonValue(jvalue[index]);
+    }
+    
     return createBoolean(jvalue[index].asBool());
 }
 
 Double _JsonValue::getDoubleAt(int index) {
+    Json::Value v = jvalue[index];
+    if(!v.isNull()) {
+        return createJsonValue(jvalue[index]);
+    }
+    
     return createDouble(jvalue[index].asDouble());
 }
 
@@ -436,33 +500,60 @@ bool _JsonValueIterator::isObject() {
 
 sp<_JsonValue> _JsonValueIterator::getValue() {
     std::string ss = mMembers[count];
+    Json::Value v = (value->jvalue)[ss];
+    if(v.isNull()) {
+        return nullptr;
+    }
 
     return createJsonValue((value->jvalue)[ss]);
 }
 
 String _JsonValueIterator::getString() {
     std::string ss = mMembers[count];
+    Json::Value v = (value->jvalue)[ss];
+    if(v.isNull()) {
+        return nullptr;
+    }
 
     return createString((value->jvalue)[ss].asString());
 }
 
 Integer _JsonValueIterator::getInteger() {
     std::string ss = mMembers[count];
+    Json::Value v = (value->jvalue)[ss];
+    if(v.isNull()) {
+        return nullptr;
+    }
+
     return createInteger((value->jvalue)[ss].asInt());
 }
 
 Boolean _JsonValueIterator::getBoolean() {
     std::string ss = mMembers[count];
+    Json::Value v = (value->jvalue)[ss];
+    if(v.isNull()) {
+        return nullptr;
+    }
+
     return createBoolean((value->jvalue)[ss].asBool());   
 }
 
 Double _JsonValueIterator::getDouble() {
     std::string ss = mMembers[count];
+    Json::Value v = (value->jvalue)[ss];
+    if(v.isNull()) {
+        return nullptr;
+    }
+
     return createDouble((value->jvalue)[ss].asDouble());
 }
 
 sp<_JsonValue> _JsonValueIterator::getObject() {
     std::string ss = mMembers[count];
+    Json::Value v = (value->jvalue)[ss];
+    if(v.isNull()) {
+        return nullptr;
+    }
     return createJsonValue((value->jvalue)[ss]);   
 }
 }

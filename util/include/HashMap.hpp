@@ -40,7 +40,8 @@ public:
         if(A == nullptr) { 
             return std::hash<int>{}(0);
         }
-        return std::hash<std::uint64_t>{}((std::uint64_t)A.get_pointer()); 
+        //return std::hash<std::uint64_t>{}((std::uint64_t)A->hashcode());
+        return A->hashcode();
     }
 };
 

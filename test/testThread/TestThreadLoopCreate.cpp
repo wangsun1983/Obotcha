@@ -9,20 +9,19 @@
 #include "AutoLock.hpp"
 #include "System.hpp"
 #include "Error.hpp"
-#include "AtomicInteger.hpp"
 
 using namespace obotcha;
 
 Mutex t = createMutex("test");
-AtomicInteger value = createAtomicInteger(0);
+Atomic<int> value = 0;
 
-AtomicInteger MyCompleteLoopValue = createAtomicInteger(0);
+Atomic<int> MyCompleteLoopValue = 0;
 
 DECLARE_SIMPLE_CLASS(LoopCreateRun1) IMPLEMENTS(Runnable) {
 public:
 
   void run() {
-      value->incrementAndGet();
+      value++;
   }
 };
 
@@ -33,7 +32,7 @@ public:
   }
 
   void onComplete() {
-    MyCompleteLoopValue->incrementAndGet();
+    MyCompleteLoopValue++;
   }
 };
 

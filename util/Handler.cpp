@@ -100,9 +100,7 @@ void _Handler::handleMessage(sp<_Message> msg) {
 bool _Handler::hasMessage(int what) {
     AutoLock l(mMutex);
     Message p = mMessagePool;
-    int index = 0;
     while(p != nullptr) {
-        index++;
         if(p->what == what) {
             return true;
         }
@@ -181,6 +179,18 @@ void _Handler::destroy() {
 
 bool _Handler::isRunning() {
     return mStatus == StatusRunning;
+}
+
+int _Handler::size() {
+    AutoLock l(mMutex);
+    Message p = mMessagePool;
+    int size = 0;
+    while(p != nullptr) {
+        size++;
+        p = p->next;
+    }
+
+    return size;
 }
 
 }

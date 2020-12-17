@@ -14,6 +14,7 @@
 #include "String.hpp"
 #include "MethodNotSupportException.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
+#include "MethodNotSupportException.hpp"
 
 namespace obotcha {
     
@@ -42,7 +43,7 @@ private:
 
 };
 
-//----------------- ArrayList ---------------------
+//----------------- LinkedList ---------------------
 DECLARE_CLASS(LinkedList,1) {
 public:
     friend class _LinkedListIterator<T>;
@@ -73,6 +74,19 @@ public:
         tail->next = data;
         data->prev = tail;
         tail = data;
+    }
+
+    T at(int index) {
+        sp<_LinkedListData<T>> cursor = head;
+        if(cursor == nullptr || index >= count) {
+            return nullptr;
+        }
+
+        for(int i = 0;i != index;i++) {
+            cursor = cursor->next;
+        }
+
+        return cursor->data;
     }
 
     void enQueueFirst(T t) {
@@ -142,6 +156,7 @@ public:
     }
 
 private:
+
     LinkedListData<T> head;
     LinkedListData<T> tail;
     int count;

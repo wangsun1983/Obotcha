@@ -31,7 +31,10 @@ JsonValue _JsonReader::parse() {
 
     Json::Reader reader;
     JsonValue value = createJsonValue();
-    reader.parse(buff->toString()->toChars(),value->jvalue);
+    if(!reader.parse(buff->toString()->toChars(),value->jvalue)){
+        return nullptr;
+    }
+    
     return value;
 }
 

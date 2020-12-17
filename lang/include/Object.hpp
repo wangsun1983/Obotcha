@@ -56,6 +56,10 @@ public:
     inline virtual ~Object() {
     }
 
+    inline virtual uint64_t hashcode() {
+        return (uint64_t)this;
+    }
+
     //reflect function
     inline virtual void __ReflectInit(){}
     inline virtual sp<_Field> getField(sp<_String>){/*TODO*/}

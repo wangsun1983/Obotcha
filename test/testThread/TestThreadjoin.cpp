@@ -27,10 +27,8 @@ public:
   }
 
   void run() {
-    printf("thread2 join trace1 \n");
     mThread->join();
     mIsWake = true;
-    printf("thread2 join trace2 \n");
   }
 
   bool isWake() {
@@ -51,10 +49,8 @@ public:
   }
 
   void run() {
-    printf("thread3 join trace1 \n");
     mThread->join();
     mIsWake = true;
-    printf("thread3 join trace2 \n");
   }
 
   bool isWake() {

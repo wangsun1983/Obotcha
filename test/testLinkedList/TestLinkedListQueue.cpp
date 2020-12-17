@@ -38,12 +38,12 @@ int testLinkeListQueue() {
 
     //case2 int dequeueFirst
     while(1) {
-      LinkedList<int> list = createLinkedList<int>();
-      list->enQueueLast(1);
-      list->enQueueLast(2);
-      list->enQueueLast(3);
-      list->enQueueLast(4);
-      list->enQueueLast(5);
+      LinkedList<Integer> list = createLinkedList<Integer>();
+      list->enQueueLast(createInteger(1));
+      list->enQueueLast(createInteger(2));
+      list->enQueueLast(createInteger(3));
+      list->enQueueLast(createInteger(4));
+      list->enQueueLast(createInteger(5));
 
       std::vector<int> vect;
       vect.push_back(1);
@@ -55,7 +55,7 @@ int testLinkeListQueue() {
       int size = list->size();
       int count = 0;
       while(size > 0) {
-        int ss = list->deQueueFirst();
+        int ss = list->deQueueFirst()->toValue();
         if(ss != vect[count]) {
           printf("LinkedList queue test2-------[FAIL]\n");
         }
@@ -96,12 +96,12 @@ int testLinkeListQueue() {
 
     //case4 int dequeueFirst
     while(1) {
-      LinkedList<int> list = createLinkedList<int>();
-      list->enQueueLast(1);
-      list->enQueueLast(2);
-      list->enQueueLast(3);
-      list->enQueueLast(4);
-      list->enQueueLast(5);
+      LinkedList<Integer> list = createLinkedList<Integer>();
+      list->enQueueLast(createInteger(1));
+      list->enQueueLast(createInteger(2));
+      list->enQueueLast(createInteger(3));
+      list->enQueueLast(createInteger(4));
+      list->enQueueLast(createInteger(5));
 
       std::vector<int> vect;
       vect.push_back(5);
@@ -113,7 +113,7 @@ int testLinkeListQueue() {
       int size = list->size();
       int count = 0;
       while(size > 0) {
-        int ss = list->deQueueLast();
+        int ss = list->deQueueLast()->toValue();
         if(ss != vect[count]) {
           printf("LinkedList queue test4-------[FAIL]\n");
         }

@@ -10,9 +10,15 @@ using namespace obotcha;
 extern int testHandler();
 extern int testSendMessageDelayed();
 extern int testHasMessage();
+extern int testHandlerSize();
+extern int testHandlerMultiSend();
+extern int testHandlerRemove();
 
 int main() {
-  //testHandler();
-  //testSendMessageDelayed();
+  testHandlerRemove();
+  testHandlerMultiSend();
+  testHandlerSize();
+  testHandler();
+  testSendMessageDelayed();
   testHasMessage();
 }

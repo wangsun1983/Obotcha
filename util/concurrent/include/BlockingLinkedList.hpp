@@ -6,8 +6,6 @@
 #include "AutoLock.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
-#include "InitializeException.hpp"
-#include "IllegalStateException.hpp"
 #include "LinkedList.hpp"
 #include "Error.hpp"
 

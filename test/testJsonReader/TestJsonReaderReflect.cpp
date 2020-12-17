@@ -22,6 +22,8 @@ public:
 
 int testreflect() {
     JsonReader mReader = createJsonReader(createFile("reflect.json"));
-    MyReflectData data = mReader->reflect<st(MyReflectData)>();
+    //MyReflectData data = mReader->reflect<st(MyReflectData)>();
+    MyReflectData data = createMyReflectData();
+    mReader->get()->reflectTo(data);
     std::cout<<"a is "<<data->a<<";d is "<<data->d;
 }

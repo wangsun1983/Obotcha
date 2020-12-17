@@ -25,6 +25,10 @@ public:
   bool equals(_MyKey *s) {
     return s->i == i;
   }
+
+  uint64_t hashcode() {
+    return i;
+  }
 };
 
 DECLARE_SIMPLE_CLASS(MyValue) {
@@ -93,7 +97,7 @@ void testHashMapObject() {
       }
 
       map->remove(createMyKey(1));
-      if(map->size() == 0) {
+      if(map->size() != 0) {
         printf("---[HashMap MyKey Test {remove(T t)} case3] [FAILED]--- \n");
         break;
       }
@@ -116,7 +120,7 @@ void testHashMapObject() {
       }
 
       map->remove(createMyKey(1));
-      if(map->isEmpty()) {
+      if(!map->isEmpty()) {
         printf("---[HashMap MyKey Test {isEmpty()} case2] [FAILED]--- \n");
         break;
       }
@@ -210,15 +214,18 @@ void testHashMapObject() {
       HashMap<MyKey,MyValue> map = createHashMap<MyKey,MyValue>();
       for(int index = 0;index < 100;index++) {
         MyValue tt = createMyValue();
+        MyKey kk = createMyKey(index);
         tt->i = index;
-        map->put(createMyKey(index),tt);
+        map->put(kk,tt);
       }
 
-      ArrayList<MyValue> keys = map->entrySet();
+      ArrayList<MyKey> keys = map->keySet();
       int size = keys->size();
+
       for(int index = 0;index < size;index++) {
-        MyValue key1 = keys->get(index);
-        if(map->get(createMyKey(key1->i)) != nullptr) {
+        MyKey key1 = keys->get(index);
+        MyValue v1 = map->get(createMyKey(key1->i));
+        if(v1 == nullptr) {
           printf("---[HashMap MyKey Test {entrySet()} case1] [FAILED]--- \n");
           break;
         }
