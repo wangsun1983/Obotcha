@@ -38,16 +38,15 @@ int _TcpServerSocket::send(ByteArray data) {
         int result = write(mFd,data->toValue(),data->size());
         if(result < 0) {
             if(errno == EAGAIN) {
-                long start = st(System)::currentTimeMillis();
                 AutoLock l(mMutex);
                 mCondition->wait(mMutex,100);
-                printf("send socket eagain!!!,wait %d  \n",(int)(st(System)::currentTimeMillis() - start));
                 continue;
             }
         }
-        printf("send socket result is %d ! \n",result);
+        long start = st(System)::currentTimeMillis();
         AutoLock l(mMutex);
         mCondition->wait(mMutex,100);
+        printf("send socket eagain!!!,wait %d  \n",(int)(st(System)::currentTimeMillis() - start));
         return result;
     }
 }

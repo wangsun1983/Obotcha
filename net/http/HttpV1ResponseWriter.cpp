@@ -71,11 +71,6 @@ int _HttpV1ResponseWriter::flush() {
                 if(length == 0) {
                     break;
                 }
-                //    printf("finish,length is 0 \n");
-                //    const byte data[] = {0x30,0x0d,0x0a,0x0d,0x0a};
-                //    mClient->send(createByteArray((const byte *)data,5));
-                //    break;
-                //}
 
                 String lengthHexStr = createString(length)->toHexString()->append("\r\n");
                 int hexStrLen = lengthHexStr->size();
@@ -85,7 +80,13 @@ int _HttpV1ResponseWriter::flush() {
 
                     mPacket->getHeader()->setValue(st(HttpHeader)::ContentType,createString("text/plain"));
                     //createByteArray
-                    ByteArray body = createByteArray(length + hexStrLen);
+                    int buffsize = length + hexStrLen;
+
+                    if(length == mFile->length()) {
+                        buffsize += 7;
+                    }
+
+                    ByteArray body = createByteArray(buffsize);
                     ByteArrayWriter writer = createByteArrayWriter(body);
 
                     writer->writeByteArray(createByteArray((const byte *)lengthHexStr->toChars(),
@@ -93,6 +94,12 @@ int _HttpV1ResponseWriter::flush() {
                     if(length != 0) {
                         writer->writeByteArray(buff,length);               
                     }
+                    printf("length is %d,file size is %d \n",length,mFile->length());
+                    if(length == mFile->length()) {
+                        static const byte data[] = {0x0d,0x0a,0x30,0x0d,0x0a,0x0d,0x0a};
+                        writer->writeByteArray(createByteArray(data,7),7);
+                    }
+                    
                     //send
                     mPacket->setBody(body);
                     ByteArray resp = mPacket->genHttpResponse();
@@ -119,7 +126,7 @@ int _HttpV1ResponseWriter::flush() {
                         printf("final data,length is %d  \n",length);
                         writer->writeByteArray(buff,length);
                         writer->writeString(line);
-                        const byte data[] = {0x30,0x0d,0x0a,0x0d,0x0a};
+                        static const byte data[] = {0x30,0x0d,0x0a,0x0d,0x0a};
                         int ret = writer->writeByteArray(createByteArray(data,5),5);
                         printf("ret is %d \n",ret);
                     }
