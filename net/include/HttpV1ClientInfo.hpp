@@ -20,17 +20,18 @@
 #include "SSLInfo.hpp"
 #include "HttpV1Server.hpp"
 #include "Random.hpp"
+#include "TcpServer.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(HttpV1ClientInfo){
 public:
-    _HttpV1ClientInfo();
+    _HttpV1ClientInfo(TcpServerSocket);
 
     //ClientFd
     int getClientFd();
 
-    void setClientFd(int);
+    //void setClientFd(int);
 
     String getClientIp();
 
@@ -75,7 +76,9 @@ private:
 
     Random mRnd;
 
+    Condition mWaitCacheEmpty;
 
+    TcpServerSocket mSocket;
 };
 
 

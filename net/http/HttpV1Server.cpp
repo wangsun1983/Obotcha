@@ -174,9 +174,9 @@ void _HttpV1Server::onDisconnect(SocketResponser r) {
 }
 
 void _HttpV1Server::onConnect(SocketResponser r) {
-    HttpV1ClientInfo info = createHttpV1ClientInfo();
+    HttpV1ClientInfo info = createHttpV1ClientInfo(mTcpServer->getSocket(r->getFd()));
     info->setHttpV1Listener(mHttpListener);
-    info->setClientFd(r->getFd());
+    //info->setClientFd(r->getFd());
     SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
     if(info != nullptr) {
         info->setSSLInfo(ssl);

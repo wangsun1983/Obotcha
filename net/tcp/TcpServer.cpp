@@ -21,6 +21,43 @@
 
 namespace obotcha {
 
+
+//-------------------TcpServerSocket----------------------
+_TcpServerSocket::_TcpServerSocket(int fd) {
+    mFd = fd;
+    mMutex = createMutex();
+    mCondition = createCondition();
+}
+
+int _TcpServerSocket::getFd() {
+    return mFd;
+}
+
+int _TcpServerSocket::send(ByteArray data) {
+    while(1) {
+        int result = write(mFd,data->toValue(),data->size());
+        if(result < 0) {
+            if(errno == EAGAIN) {
+                long start = st(System)::currentTimeMillis();
+                AutoLock l(mMutex);
+                mCondition->wait(mMutex,100);
+                printf("send socket eagain!!!,wait %d  \n",(int)(st(System)::currentTimeMillis() - start));
+                continue;
+            }
+        }
+        printf("send socket result is %d ! \n",result);
+        AutoLock l(mMutex);
+        mCondition->wait(mMutex,100);
+        return result;
+    }
+}
+
+void _TcpServerSocket::enableSend() {
+    //printf("enable !!!!!!!!!!!!!!!!!!!!!!!\n");
+    mCondition->notify();
+}
+
+//-------------------TcpServer----------------------
 _TcpServer::_TcpServer(String ip,int port):_TcpServer(ip,port,nullptr) {
 
 }
@@ -42,6 +79,9 @@ _TcpServer::_TcpServer(String ip,int port,SocketListener l,int connectnum) {
 
     mConnectionNum = connectnum;
     mListener = l;
+
+    mSocketMapMutex = createMutex();
+    mSocketMap = createHashMap<int,sp<_TcpServerSocket>>();
 }
 
 int _TcpServer::connect() {
@@ -63,7 +103,7 @@ int _TcpServer::connect() {
 
     if(mListener != nullptr) {
         mObserver = createEPollFileObserver();
-        mObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,AutoClone(this));
+        mObserver->addObserver(sock,EPOLLOUT|EPOLLIN|EPOLLRDHUP,AutoClone(this));
     } else {
         mObserver = nullptr;
     }
@@ -84,8 +124,14 @@ int _TcpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
             LOG(ERROR)<<"Accept fail,error is "<<strerror(errno);
             return st(EPollFileObserver)::OnEventOK;
         }
-       
-        mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,AutoClone(this));
+        
+        TcpServerSocket tcpsock = createTcpServerSocket(clientfd);
+        {
+            AutoLock l(mSocketMapMutex);
+            mSocketMap->put(clientfd,tcpsock);
+        }
+
+        mObserver->addObserver(clientfd,EPOLLOUT|EPOLLIN|EPOLLRDHUP,AutoClone(this));
         
         mListener->onConnect(createSocketResponser(clientfd,
                             createString(inet_ntoa(client_address.sin_addr)),
@@ -97,6 +143,16 @@ int _TcpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
 
         if((events & EPOLLRDHUP) != 0) {
             mListener->onDisconnect(createSocketResponser(fd));
+            AutoLock l(mSocketMapMutex);
+            mSocketMap->remove(fd);
+        }
+
+        if((events & EPOLLOUT) != 0) {
+            AutoLock l(mSocketMapMutex);
+            TcpServerSocket s = mSocketMap->get(fd);
+            if(s != nullptr) {
+                s->enableSend();
+            }
         }
     }
 
@@ -119,12 +175,13 @@ void _TcpServer::release() {
     }
 }
 
-int _TcpServer::send(int fd,ByteArray data) {
-    return ::send(fd,data->toValue(),data->size(),0);
-}
-
 _TcpServer::~_TcpServer() {
     release();
+}
+
+TcpServerSocket _TcpServer::getSocket(int fd) {
+    AutoLock l(mSocketMapMutex);
+    return mSocketMap->get(fd);
 }
 
 }

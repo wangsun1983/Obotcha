@@ -23,6 +23,24 @@
 namespace obotcha {
 
 class _WebSocketServer;
+class _TcpServer;
+
+DECLARE_SIMPLE_CLASS(TcpServerSocket) {
+public:
+    friend class _TcpServer;
+
+    _TcpServerSocket(int fd);
+    
+    int send(ByteArray);
+    
+    int getFd();
+
+private:
+    void enableSend();
+    Mutex mMutex;
+    Condition mCondition;
+    int mFd;
+};
 
 
 DECLARE_SIMPLE_CLASS(TcpServer) EXTENDS(EPollFileObserverListener){
@@ -42,9 +60,9 @@ public:
 
     void release();
 
-    int send(int fd,ByteArray data);
-
     ~_TcpServer();
+
+    TcpServerSocket getSocket(int);
 
 private:
 
@@ -61,6 +79,9 @@ private:
     EPollFileObserver mObserver;
 
     int mConnectionNum;
+    
+    Mutex mSocketMapMutex;
+    HashMap<int,sp<_TcpServerSocket>> mSocketMap;
 };
 
 }

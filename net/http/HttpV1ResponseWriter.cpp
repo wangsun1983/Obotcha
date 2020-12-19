@@ -124,18 +124,11 @@ int _HttpV1ResponseWriter::flush() {
                         printf("ret is %d \n",ret);
                     }
                     
-                    while(1) {
-                        int size = mClient->send(body);
-                        if(size < 0) {
-                            printf("i wait!!!!,size is %d \n",size);
-                            st(Thread)::msleep(100);
-                            continue;
-                        }
+                    
+                    int size = mClient->send(body);
+                    totalsend += size;
+                    printf("flush trace2 totalsend is %d,body size is %d,length is %d,reason is %s \n",totalsend,body->size(),length,strerror(errno));
 
-                        totalsend += size;
-                        printf("flush trace2 totalsend is %d,body size is %d,length is %d,reason is %s \n",totalsend,body->size(),length,strerror(errno));
-                        break;
-                    }
                 }
             }
         }
