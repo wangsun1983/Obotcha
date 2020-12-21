@@ -1967,7 +1967,7 @@ private:\
     }\
     unsigned char getFieldByteValue(std::string name){ \
         FieldContentValue v = getFieldContentValue(name);\
-        return v->byteValue;\
+        return v->uint8Value;\
     }\
     bool getFieldBoolValue(std::string name){ \
         FieldContentValue v = getFieldContentValue(name);\

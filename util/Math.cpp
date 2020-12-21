@@ -104,7 +104,7 @@ int _Math::floor(double v1) {
     return std::floor(v1);
 }
 
-int _Math::compare(double v1,double v2) {
+int _Math::compareDouble(double v1,double v2) {
     double v = std::fabs(v1 - v2);
 
     if(v <= st(Double)::EPS) {
@@ -116,7 +116,7 @@ int _Math::compare(double v1,double v2) {
     }
 }
 
-int _Math::compare(float v1,float v2) {
+int _Math::compareFloat(float v1,float v2) {
     float v = std::fabs(v1 - v2);
     if(v  <= st(Float)::EPS) {
         return CompareParamEqual;

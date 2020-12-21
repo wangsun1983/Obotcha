@@ -329,6 +329,7 @@ int basetest() {
 
       //start check
       JsonValue testArray = value->getValue("testarr1");
+      printf("testArray trace1 \n");
       String t1 = testArray->getStringAt(0);
       if(!t1->equals("abc1")) {
         printf("---[JsonReader SimpleRead {put()} case24] [FAILED]--- \n");

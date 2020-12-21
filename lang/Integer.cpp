@@ -24,6 +24,10 @@
 
 namespace obotcha {
 
+_Integer::_Integer():val(0) {
+    
+}
+
 _Integer::_Integer(int v) : val(v) {
 
 }

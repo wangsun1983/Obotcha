@@ -35,11 +35,12 @@ void sayhello(ArrayList<T> t) {
     printf("hello2 \n");
 }
 
+#if 0
 int main() {
     ArrayList<String> list = createArrayList<String>();
     sayhello(list);
 
-#if 0    
+#if 0
     MyReflectData data = createMyReflectData();
     Field f = data->getField("data3");
     f->createObject();
@@ -62,3 +63,4 @@ int main() {
     }
 #endif
 }
+#endif

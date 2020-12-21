@@ -24,17 +24,17 @@ extern int stringUnicodeDataTest();
 extern int dataFailTest();
 
 int main(){
-    //basetest();
-    //testpass1();
-    //testremove();
-    //testreflect();
-    //arrayDataTest();
-    //basicDataTest();
-    //integerDataTest();
-    //objectDataTest();
-    //commentTest();
-    //realDataTest();
-    //stringDataTest();
-    //stringUnicodeDataTest();
+    basetest();
+    testpass1();
+    testremove();
+    testreflect();
+    arrayDataTest();
+    basicDataTest();
+    integerDataTest();
+    objectDataTest();
+    commentTest();
+    realDataTest();
+    stringDataTest();
+    stringUnicodeDataTest();
     dataFailTest();
 }

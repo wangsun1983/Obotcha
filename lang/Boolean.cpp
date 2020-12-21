@@ -25,7 +25,9 @@ const sp<_Boolean> _Boolean::True = createBoolean(true);
 const sp<_String> _Boolean::FalseString = createString("False");
 
 const sp<_String> _Boolean::TrueString = createString("True");
-    
+
+_Boolean::_Boolean():val(true) {}
+
 _Boolean::_Boolean(bool v) : val(v) {
 
 }

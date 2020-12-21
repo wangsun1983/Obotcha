@@ -15,13 +15,44 @@ int _Field::TypeOf(double v) {
     return FieldTypeDouble;
 }
 
-int _Field::TypeOf(Float v) {
+int _Field::TypeOf(float v) {
     return FieldTypeFloat;
+}
+
+int _Field::TypeOf(uint16_t v) {
+    return FieldTypeUint16;
+}
+
+int _Field::TypeOf(uint32_t v) {
+    return FieldTypeUint32;
+}
+
+int _Field::TypeOf(uint64_t v) {
+    return FieldTypeUint64;
+}
+
+int _Field::TypeOf(bool v) {
+    return FieldTypeBool;
+}
+
+int _Field::TypeOf(long v) {
+    return FieldTypeLong;
 }
 
 int _Field::TypeOf(String v) {
     return FieldTypeString;
 }
+
+/*
+int _Field::TypeOf(Integer v) {
+    return FieldTypeInt;
+}
+
+int _Field::TypeOf(Float v) {
+    return FieldTypeFloat;
+}
+
+
 
 int _Field::TypeOf(Uint8 v) {
     return FieldTypeUint8;
@@ -46,7 +77,7 @@ int _Field::TypeOf(bool v) {
 int _Field::TypeOf(long v) {
     return FieldTypeLong;
 }
-
+*/
 String _Field::getName() {
     return name;
 }
@@ -138,6 +169,10 @@ long _Field::getLongValue() {
 
 float _Field::getFloatValue() {
     return object->getFieldFloatValue(name->getStdString());
+}
+
+byte _Field::getUint8Value() {
+    return object->getFieldByteValue(name->getStdString());
 }
 
 uint16_t _Field::getUint16Value() {

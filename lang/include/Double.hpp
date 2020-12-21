@@ -9,6 +9,8 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(Double)
 {
 public:
+    _Double();
+    
     _Double(double v);
 
     _Double(Double &v);

@@ -19,6 +19,7 @@
 #include "Mutex.hpp"
 #include "Thread.hpp"
 #include "EPollFileObserver.hpp"
+#include "Atomic.hpp"
 
 namespace obotcha {
 
@@ -38,6 +39,7 @@ public:
 private:
     void enableSend();
     Mutex mMutex;
+    Atomic<bool> isCacheEmpty;
     Condition mCondition;
     int mFd;
 };

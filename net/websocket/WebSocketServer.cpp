@@ -209,6 +209,10 @@ void _WebSocketDispatchRunnable::handleWsData(DispatchData data) {
         isRmClient = true;
     }
 
+    if((events & EPOLLOUT) != 0) {
+        client->enableSend();
+    }
+
     WebSocketParser parser = client->getParser();
     WebSocketBuffer defferedBuff = client->getDefferedBuffer();
     if (defferedBuff != nullptr) {
@@ -468,7 +472,7 @@ int _WebSocketServer::bind(int port, String path, WebSocketListener listener) {
 }
 
 void _WebSocketServer::monitor(int fd) {
-    mWsEpollObserver->addObserver(fd,EPOLLIN | EPOLLRDHUP,AutoClone(this));
+    mWsEpollObserver->addObserver(fd,EPOLLIN|EPOLLRDHUP|EPOLLOUT,AutoClone(this));
 }
 
 int _WebSocketServer::start() {

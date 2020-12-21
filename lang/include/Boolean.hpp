@@ -10,6 +10,8 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Boolean) {
 public:
+    _Boolean();
+    
     _Boolean(bool v);
 
     _Boolean(Boolean &v);

@@ -18,6 +18,8 @@
 
 namespace obotcha {
 
+_Byte::_Byte():val(0) {}
+
 _Byte::_Byte(byte v) : val(v) {}
 
 _Byte::_Byte(Byte &v) {

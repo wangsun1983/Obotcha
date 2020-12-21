@@ -30,6 +30,10 @@ _WebSocketClientInfo::_WebSocketClientInfo() {
     mWsVersion = -1;
     //mRand = createRandom();
     mClientId = 0;
+
+    isSend = true;
+    mSendMutex = createMutex();
+    mSendCond = createCondition();
 }
 
 void _WebSocketClientInfo::reset() {
@@ -40,6 +44,11 @@ void _WebSocketClientInfo::reset() {
     mContinueBuffer = nullptr;
     mClientFd = -1;
     mClientId = 0;
+    isSend = true;
+}
+
+void _WebSocketClientInfo::enableSend() {
+    isSend = true;
 }
 
 int _WebSocketClientInfo::getClientFd() {
@@ -120,6 +129,30 @@ void _WebSocketClientInfo::setConnectUrl(String l) {
     mConnectUrl = l;
 }
 
+int _WebSocketClientInfo::_syncsend(ByteArray data) {
+     while(1) {
+        isSend = false;
+        int result = write(mClientFd,data->toValue(),data->size());
+        if(result < 0) {
+            if(errno == EAGAIN) {
+                if(!isSend->get()) {
+                    AutoLock l(mSendMutex);
+                    mSendCond->wait(mSendMutex,100);
+                }
+                continue;
+            }
+        }
+
+        if(!isSend->get()) {
+            long start = st(System)::currentTimeMillis();
+            AutoLock l(mSendMutex);
+            mSendCond->wait(mSendMutex,100);
+            printf("send socket eagain!!!,wait %d  \n",(int)(st(System)::currentTimeMillis() - start));
+        }
+        return result;
+    }
+}
+
 int _WebSocketClientInfo::_send(int type,ByteArray msg) {
     if(mClientFd != -1) {
         int size = 0;
@@ -157,7 +190,9 @@ int _WebSocketClientInfo::_send(int type,ByteArray msg) {
         ListIterator<ByteArray> iterator = data->getIterator();
         while(iterator->hasValue()) {
             ByteArray sendData = iterator->getValue();
-            size += send(mClientFd,sendData->toValue(),sendData->size(),0);
+            //size += send(mClientFd,sendData->toValue(),sendData->size(),0);
+            size += _syncsend(sendData);
+            
             iterator->next();
         }
 

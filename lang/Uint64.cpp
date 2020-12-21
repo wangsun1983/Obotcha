@@ -16,6 +16,8 @@
 
 namespace obotcha {
 
+_Uint64::_Uint64() : val(0) {}
+
 _Uint64::_Uint64(uint64_t v) : val(v) {}
 
 _Uint64::_Uint64(Uint64 &v) {

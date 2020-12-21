@@ -17,6 +17,10 @@
 
 namespace obotcha {
 
+_Uint8::_Uint8():val(0) {
+
+}
+
 _Uint8::_Uint8(uint8_t v) : val(v) {}
 
 _Uint8::_Uint8(Uint8 &v) {

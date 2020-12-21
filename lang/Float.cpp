@@ -8,6 +8,8 @@ namespace obotcha {
 
 const float _Float::EPS = 1e-6;
 
+_Float::_Float():val(0) {}
+
 _Float::_Float(float v) : val(v) {
 
 }

@@ -14,6 +14,8 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Integer) IMPLEMENTS(Number)<int>{
 public:
+    _Integer();
+    
     _Integer(int v);
 
     _Integer(Integer &v);

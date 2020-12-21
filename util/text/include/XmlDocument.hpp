@@ -80,80 +80,80 @@ private:
             }
 
             switch(field->getType()) {
-                case FieldTypeLong:{
+                case st(Field)::FieldTypeLong:{
                     String value = node->getStringValue();
                     field->setValue(value->toBasicLong());
                     }
                     break;
 
-                case FieldTypeInt: {
+                case st(Field)::FieldTypeInt: {
                         String value = node->getStringValue();
                         field->setValue(value->toBasicInt());
                     }
                     break;
 
-                case FieldTypeByte:{
+                case st(Field)::FieldTypeByte:{
                         String value = node->getStringValue();
                         field->setValue(value->toBasicByte());
                     }
                     break;
 
-                case FieldTypeBool:{
+                case st(Field)::FieldTypeBool:{
                         String value = node->getStringValue();
                         field->setValue(value->toBasicBool());
                     }
                     break;
 
-                case FieldTypeDouble:{
+                case st(Field)::FieldTypeDouble:{
                         String value = node->getStringValue();
                         field->setValue(value->toBasicDouble());
                     }
                     break;
 
-                case FieldTypeFloat:{
+                case st(Field)::FieldTypeFloat:{
                         String value = node->getStringValue();
                         field->setValue(value->toBasicFloat());
                     }
                     break;
 
-                case FieldTypeString:{
+                case st(Field)::FieldTypeString:{
                         String value = node->getStringValue();
                         field->setValue(value);
                     }
                     break;
 
-                case FieldTypeUint8:{
+                case st(Field)::FieldTypeUint8:{
                         String value = node->getStringValue();
                         field->setValue(value->toBasicUint8());
                     }
                     break;
 
-                case FieldTypeUint16:{
+                case st(Field)::FieldTypeUint16:{
                         String value = node->getStringValue();
                         field->setValue(value->toBasicUint16());
                     }
                     break;
 
-                case FieldTypeUint32:{
+                case st(Field)::FieldTypeUint32:{
                         String value = node->getStringValue();
                         field->setValue(value->toBasicUint32());
                     }
                     break;
 
-                case FieldTypeUint64:{
+                case st(Field)::FieldTypeUint64:{
                         String value = node->getStringValue();
                         field->setValue(value->toBasicUint64());
                     }
                     break;
                         
-                case FieldTypeObject: {
+                case st(Field)::FieldTypeObject: {
                         field->createObject();
                         auto reflectValue = field->getObjectValue();
                         reflectTo(node,reflectValue);
                     }
                     break;
 
-                case FieldTypeArrayList:{
+                case st(Field)::FieldTypeArrayList:{
                         sp<_XmlValueIterator> sub_iterator = node->getValueIterator();
                         field->createObject();
                         
@@ -186,68 +186,68 @@ private:
             String name = field->getName();
             sp<_XmlValue> refNode = nullptr;
             switch(field->getType()) {
-                case FieldTypeLong: {
+                case st(Field)::FieldTypeLong: {
                     refNode = newNode(name,createString(field->getLongValue()));
                 }
                 break;
 
-                case FieldTypeInt: {
+                case st(Field)::FieldTypeInt: {
                     refNode = newNode(name,createString(field->getIntValue()));
                 }
                 break;
 
-                case FieldTypeByte:{
+                case st(Field)::FieldTypeByte:{
                     refNode = newNode(name,createString(field->getByteValue()));
                 }
                 break;
 
-                case FieldTypeBool:{
+                case st(Field)::FieldTypeBool:{
                     refNode = newNode(name,createString(field->getBoolValue()));
                 }
                 break;
 
-                case FieldTypeDouble:{
+                case st(Field)::FieldTypeDouble:{
                     refNode = newNode(name,createString(field->getDoubleValue()));
                 }
                 break;
 
-                case FieldTypeFloat:{
+                case st(Field)::FieldTypeFloat:{
                     refNode = newNode(name,createString(field->getFloatValue()));
                 }
                 break;
 
-                case FieldTypeString:{
+                case st(Field)::FieldTypeString:{
                     refNode = newNode(name,field->getStringValue());
                 }
                 break;
 
-                case FieldTypeUint8:{
+                case st(Field)::FieldTypeUint8:{
                     refNode = newNode(name,createString(field->getByteValue()));
                 }
                 break;
 
-                case FieldTypeUint16:{
+                case st(Field)::FieldTypeUint16:{
                     refNode = newNode(name,createString(field->getUint16Value()));
                 }
                 break;
 
-                case FieldTypeUint32:{
+                case st(Field)::FieldTypeUint32:{
                     refNode = newNode(name,createString(field->getUint32Value()));
                 }
                 break;
 
-                case FieldTypeUint64:{
+                case st(Field)::FieldTypeUint64:{
                     refNode = newNode(name,createString(field->getUint64Value()));
                 }
                 break;
-                case FieldTypeObject: {
+                case st(Field)::FieldTypeObject: {
                     auto newObject = field->getObjectValue();
                     refNode = newNode(name);
                     importFrom(refNode,newObject);
                 }
                 break;
                 
-                case FieldTypeArrayList: {
+                case st(Field)::FieldTypeArrayList: {
                     int count = 0;
                     refNode = newNode(name);
                     while(1) {

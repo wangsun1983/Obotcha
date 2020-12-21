@@ -14,6 +14,8 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Uint16) IMPLEMENTS(Number)<uint16_t>{
 public:
+    _Uint16();
+    
     _Uint16(uint16_t v);
 
     _Uint16(Uint16 &v);

@@ -9,6 +9,8 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(Float)
 {
 public:
+    _Float();
+    
     _Float(float v);
 
     _Float(Float &v);

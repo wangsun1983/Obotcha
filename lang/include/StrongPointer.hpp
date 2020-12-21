@@ -404,7 +404,7 @@ T* sp<T>::get_pointer(){
 
 #define tp(X) _##X
 template<typename X,typename V>
-sp<X> transform_cast(sp<V> t) {
+sp<X> cast(sp<V> t) {
     sp<X> value;
     
     value.set_pointer(dynamic_cast<X *>(t.m_ptr));
@@ -412,7 +412,7 @@ sp<X> transform_cast(sp<V> t) {
 }
 
 template<typename X,typename V>
-void transform_cast(sp<V> t,sp<X> &value) {
+void cast(sp<V> t,sp<X> &value) {
     value.set_pointer(dynamic_cast<X *>(t.m_ptr));
 }
 

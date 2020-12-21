@@ -17,6 +17,8 @@
 
 namespace obotcha {
 
+_Long::_Long():val(0) {}
+
 _Long::_Long(long v) : val(v) {}
 
 _Long::_Long(Long &v) {

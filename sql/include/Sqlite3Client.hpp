@@ -43,57 +43,57 @@ public:
                     if (field != nullptr) {
                         String value = createString(dbResult[index]);
                         switch (field->getType()) {
-                            case FieldTypeLong: {
+                            case st(Field)::FieldTypeLong: {
                                 field->setValue(value->toBasicLong());
                             }
                             break;
 
-                            case FieldTypeInt: {
+                            case st(Field)::FieldTypeInt: {
                                 field->setValue(value->toBasicInt());
                             }
                             break;
 
-                            case FieldTypeByte: {
+                            case st(Field)::FieldTypeByte: {
                                 field->setValue(value->toBasicByte());
                             }
                             break;
 
-                            case FieldTypeBool: {
+                            case st(Field)::FieldTypeBool: {
                                 field->setValue(value->toBasicBool());
                             }
                             break;
 
-                            case FieldTypeDouble: {
+                            case st(Field)::FieldTypeDouble: {
                                 field->setValue(value->toBasicDouble());
                             }
                             break;
 
-                            case FieldTypeFloat: {
+                            case st(Field)::FieldTypeFloat: {
                                 field->setValue(value->toBasicFloat());
                             }
                             break;
 
-                            case FieldTypeString: {
+                            case st(Field)::FieldTypeString: {
                                 field->setValue(value);
                             }
                             break;
 
-                            case FieldTypeUint8: {
+                            case st(Field)::FieldTypeUint8: {
                                 field->setValue(value->toBasicUint8());
                             }
                             break;
 
-                            case FieldTypeUint16: {
+                            case st(Field)::FieldTypeUint16: {
                                 field->setValue(value->toBasicUint16());
                             }
                             break;
 
-                            case FieldTypeUint32: {
+                            case st(Field)::FieldTypeUint32: {
                                 field->setValue(value->toBasicUint32());
                             }
                             break;
 
-                            case FieldTypeUint64: {
+                            case st(Field)::FieldTypeUint64: {
                                 field->setValue(value->toBasicUint64());
                             }
                             break;

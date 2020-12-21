@@ -380,39 +380,40 @@ sp<_JsonValue> _JsonValue::getValueAt(int index) {
 
 
 String _JsonValue::getStringAt(int index) {
+    printf("jsonValue start index is %d \n",index);
     Json::Value v = jvalue[index];
     if(!v.isNull()) {
-        return createJsonValue(jvalue[index]);
+        return createString(jvalue[index].asString());
     }
     
-    return createString(jvalue[index].asString());
+    return nullptr;
 }
 
 Integer _JsonValue::getIntegerAt(int index) {
     Json::Value v = jvalue[index];
     if(!v.isNull()) {
-        return createJsonValue(jvalue[index]);
+        return createString(jvalue[index].asString());
     }
 
-    return createInteger(jvalue[index].asInt());
+    return nullptr;
 }
     
 Boolean _JsonValue::getBooleanAt(int index) {
     Json::Value v = jvalue[index];
     if(!v.isNull()) {
-        return createJsonValue(jvalue[index]);
+        return createBoolean(jvalue[index].asBool());
     }
     
-    return createBoolean(jvalue[index].asBool());
+    return nullptr;
 }
 
 Double _JsonValue::getDoubleAt(int index) {
     Json::Value v = jvalue[index];
     if(!v.isNull()) {
-        return createJsonValue(jvalue[index]);
+        return createDouble(jvalue[index].asDouble());
     }
     
-    return createDouble(jvalue[index].asDouble());
+    return nullptr;
 }
 
 String _JsonValue::toString() {

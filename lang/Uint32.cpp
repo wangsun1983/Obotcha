@@ -16,6 +16,10 @@
 
 namespace obotcha {
 
+_Uint32::_Uint32():val(0) {
+
+}
+
 _Uint32::_Uint32(uint32_t v) : val(v) {}
 
 _Uint32::_Uint32(Uint32 &v) {

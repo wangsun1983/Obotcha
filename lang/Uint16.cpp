@@ -17,6 +17,10 @@
 
 namespace obotcha {
 
+_Uint16::_Uint16():val(0) {
+
+}
+
 _Uint16::_Uint16(uint16_t v) : val(v) {}
 
 _Uint16::_Uint16(Uint16 &v) {

@@ -207,7 +207,7 @@ int realDataTest() {
         break;
       }
 
-      Uint64 v_int = value->getUint64();
+      Long v_int = value->getLong();
       if(v_int == nullptr || v_int->toValue() != -2200000001) {
         printf("v_int is %lf \n",v_int->toValue());
         printf("---[JsonReader Real Data Test case20] [FAILED]--- \n");

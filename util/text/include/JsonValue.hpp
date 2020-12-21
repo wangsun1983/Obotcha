@@ -236,73 +236,73 @@ public:
             JsonValue jsonnode = iterator->getValue();
 
             switch(field->getType()) {
-                case FieldTypeLong:{
+                case st(Field)::FieldTypeLong:{
                     String value = jsonnode->getString();
                     field->setValue(value->toBasicLong());
                     }
                     break;
 
-                case FieldTypeInt: {
+                case st(Field)::FieldTypeInt: {
                         String value = jsonnode->getString();
                         field->setValue(value->toBasicInt());
                     }
                     break;
 
-                case FieldTypeByte:{
+                case st(Field)::FieldTypeByte:{
                         String value = jsonnode->getString();
                         field->setValue(value->toBasicByte());
                     }
                     break;
 
-                case FieldTypeBool:{
+                case st(Field)::FieldTypeBool:{
                         String value = jsonnode->getString();
                         field->setValue(value->toBasicBool());
                     }
                     break;
 
-                case FieldTypeDouble:{
+                case st(Field)::FieldTypeDouble:{
                         String value = jsonnode->getString();
                         field->setValue(value->toBasicDouble());
                     }
                     break;
 
-                case FieldTypeFloat:{
+                case st(Field)::FieldTypeFloat:{
                         String value = jsonnode->getString();
                         field->setValue(value->toBasicFloat());
                     }
                     break;
 
-                case FieldTypeString:{
+                case st(Field)::FieldTypeString:{
                         String value = jsonnode->getString();
                         field->setValue(value);
                     }
                     break;
 
-                case FieldTypeUint8:{
-                        String value = jsonnode->getString();
-                        field->setValue(value->toBasicUint8());
-                    }
-                    break;
+                //case st(Field)::FieldTypeUint8:{
+                //        String value = jsonnode->getString();
+                //        field->setValue(value->toBasicUint8());
+                //    }
+                //    break;
 
-                case FieldTypeUint16:{
+                case st(Field)::FieldTypeUint16:{
                         String value = jsonnode->getString();
                         field->setValue(value->toBasicUint16());
                     }
                     break;
 
-                case FieldTypeUint32:{
+                case st(Field)::FieldTypeUint32:{
                         String value = jsonnode->getString();
                         field->setValue(value->toBasicUint32());
                     }
                     break;
 
-                case FieldTypeUint64:{
+                case st(Field)::FieldTypeUint64:{
                         String value = jsonnode->getString();
                         field->setValue(value->toBasicUint64());
                     }
                     break;
                         
-                case FieldTypeObject: {
+                case st(Field)::FieldTypeObject: {
                         //create Objectt
                         field->createObject();
                         auto reflectValue = field->getObjectValue();
@@ -310,7 +310,7 @@ public:
                     }
                     break;
 
-                case FieldTypeArrayList:
+                case st(Field)::FieldTypeArrayList:
                     jsonnode->reflectToArrayList(obj,field->getName());
                     break;
             }
@@ -330,61 +330,61 @@ public:
             Field field = iterator->getValue();
             String name = field->getName();
             switch(field->getType()) {
-                case FieldTypeLong: {
+                case st(Field)::FieldTypeLong: {
                     this->put(name,field->getLongValue());
                 }
                 break;
 
-                case FieldTypeInt: {
+                case st(Field)::FieldTypeInt: {
                     this->put(name,field->getIntValue());
                 }
                 break;
 
-                case FieldTypeByte:{
+                case st(Field)::FieldTypeByte:{
                     this->put(name,field->getByteValue());
                 }
                 break;
 
-                case FieldTypeBool:{
+                case st(Field)::FieldTypeBool:{
                     this->put(name,field->getBoolValue());
                 }
                 break;
 
-                case FieldTypeDouble:{
+                case st(Field)::FieldTypeDouble:{
                     this->put(name,field->getDoubleValue());
                 }
                 break;
 
-                case FieldTypeFloat:{
+                case st(Field)::FieldTypeFloat:{
                     this->put(name,field->getFloatValue());
                 }
                 break;
 
-                case FieldTypeString:{
+                case st(Field)::FieldTypeString:{
                     this->put(name,field->getStringValue());
                 }
                 break;
 
-                case FieldTypeUint8:{
+                case st(Field)::FieldTypeUint8:{
                     this->put(name,(uint64_t)field->getByteValue());
                 }
                 break;
 
-                case FieldTypeUint16:{
+                case st(Field)::FieldTypeUint16:{
                     this->put(name,(uint64_t)field->getUint16Value());
                 }
                 break;
 
-                case FieldTypeUint32:{
+                case st(Field)::FieldTypeUint32:{
                     this->put(name,(uint64_t)field->getUint32Value());
                 }
                 break;
 
-                case FieldTypeUint64:{
+                case st(Field)::FieldTypeUint64:{
                     this->put(name,(uint64_t)field->getUint32Value());
                 }
                 break;
-                case FieldTypeObject: {
+                case st(Field)::FieldTypeObject: {
                     auto newObject = field->getObjectValue();
                     JsonValue newValue = createJsonValue();
                     newValue->importFrom(newObject);
@@ -392,7 +392,7 @@ public:
                 }
                 break;
                 
-                case FieldTypeArrayList: {
+                case st(Field)::FieldTypeArrayList: {
                     int count = 0;
                     JsonValue arrayNode = createJsonValue();
                     while(1) {

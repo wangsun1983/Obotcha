@@ -13,6 +13,8 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Long) IMPLEMENTS(Number)<long>{
 public:
+    _Long();
+    
     _Long(long v);
 
     _Long(Long &v);

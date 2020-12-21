@@ -14,38 +14,52 @@ namespace obotcha {
 template<typename T>
 class _FieldContent;
 
-enum {
-    FieldTypeInt = 0,
-    FieldTypeByte,
-    FieldTypeDouble,
-    FieldTypeFloat,
-    FieldTypeLong,
-    FieldTypeString,
-    FieldTypeUint8,
-    FieldTypeUint16,
-    FieldTypeUint32,
-    FieldTypeUint64,
-    FieldTypeBool,
-    FieldTypeVector,
-    FieldTypeArrayList,
-    FieldTypeObject,
-    FieldTypeUnKnow,
-};
-
-
 DECLARE_SIMPLE_CLASS(Field) {
 public:
+    enum {
+        FieldTypeInt = 0,
+        FieldTypeByte,
+        FieldTypeDouble,
+        FieldTypeFloat,
+        FieldTypeLong,
+        FieldTypeString,
+        FieldTypeUint16,
+        FieldTypeUint32,
+        FieldTypeUint64,
+        FieldTypeBool,
+        FieldTypeVector,//??
+        FieldTypeArrayList,
+        FieldTypeObject,
+        FieldTypeUnKnow,
+    };
+
+    //wangsl
+    static const int FieldTypeUint8 = FieldTypeByte;
+    
     int TypeOf(int v);
     int TypeOf(byte v);
     int TypeOf(double v);
+    int TypeOf(float v);
+    int TypeOf(bool v);
+    int TypeOf(long v);
+    int TypeOf(uint16_t v);
+    int TypeOf(uint32_t v);
+    int TypeOf(uint64_t v);
+
+    int TypeOf(String v);
+/*
+    int TypeOf(Integer v);
+    int TypeOf(Byte v);
+    int TypeOf(Double v);
     int TypeOf(Float v);
+    int TypeOf(Boolean v);
+    int TypeOf(Long v);
     int TypeOf(String v);
     int TypeOf(Uint8 v);
     int TypeOf(Uint16 v);
     int TypeOf(Uint32 v);
     int TypeOf(Uint64 v);
-    int TypeOf(bool v);
-    int TypeOf(long v);
+*/
 
     template<typename T>
     int TypeOf(std::vector<T> v) {
@@ -107,6 +121,7 @@ public:
     double getDoubleValue();
     long getLongValue();
     float getFloatValue();
+    uint8_t getUint8Value();
     uint16_t getUint16Value();
     uint32_t getUint32Value();
     uint64_t getUint64Value();
@@ -153,7 +168,6 @@ public:
 DECLARE_SIMPLE_CLASS(FieldContentValue) {
 public:
     int intValue;
-    byte byteValue;
     double doubleValue;
     bool boolValue;
     float floatValue;

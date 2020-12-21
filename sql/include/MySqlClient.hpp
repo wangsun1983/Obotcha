@@ -48,60 +48,60 @@ public:
                         String val = createString(row[i]);
                         Field field = objvalue->getField(columns[i]);
                         switch(field->getType()) {
-                            case FieldTypeLong:{
-                                    field->setValue(val->toBasicLong());
-                                }
-                                break;
+                            case st(Field)::FieldTypeLong:{
+                                field->setValue(val->toBasicLong());
+                            }
+                            break;
 
-                            case FieldTypeInt: {
-                                    field->setValue(val->toBasicInt());
-                                }
-                                break;
+                            case st(Field)::FieldTypeInt: {
+                                field->setValue(val->toBasicInt());
+                            }
+                            break;
 
-                            case FieldTypeByte:{
-                                    field->setValue(val->toBasicByte());
-                                }
-                                break;
+                            case st(Field)::FieldTypeByte:{
+                                field->setValue(val->toBasicByte());
+                            }
+                            break;
 
-                            case FieldTypeBool:{
-                                    field->setValue(val->toBasicBool());
-                                }
-                                break;
+                            case st(Field)::FieldTypeBool:{
+                                field->setValue(val->toBasicBool());
+                            }
+                            break;
 
-                            case FieldTypeDouble:{
-                                    field->setValue(val->toBasicDouble());
-                                }
-                                break;
+                            case st(Field)::FieldTypeDouble:{
+                                field->setValue(val->toBasicDouble());
+                            }
+                            break;
 
-                            case FieldTypeFloat:{
-                                    field->setValue(val->toBasicFloat());
-                                }
-                                break;
+                            case st(Field)::FieldTypeFloat:{
+                                field->setValue(val->toBasicFloat());
+                            }
+                            break;
 
-                            case FieldTypeString:{
-                                    field->setValue(val);
-                                }
-                                break;
+                            case st(Field)::FieldTypeString:{
+                                field->setValue(val);
+                            }
+                            break;
 
-                            case FieldTypeUint8:{
-                                    field->setValue(val->toBasicUint8());
-                                }
-                                break;
+                            case st(Field)::FieldTypeUint8:{
+                                field->setValue(val->toBasicUint8());
+                            }
+                            break;
 
-                            case FieldTypeUint16:{
-                                    field->setValue(val->toBasicUint16());
-                                }
-                                break;
+                            case st(Field)::FieldTypeUint16:{
+                                field->setValue(val->toBasicUint16());
+                            }
+                            break;
 
-                            case FieldTypeUint32:{
-                                    field->setValue(val->toBasicUint32());
-                                }
-                                break;
+                            case st(Field)::FieldTypeUint32:{
+                                field->setValue(val->toBasicUint32());
+                            }
+                            break;
 
-                            case FieldTypeUint64:{
-                                    field->setValue(val->toBasicUint64());
-                                }
-                                break;
+                            case st(Field)::FieldTypeUint64:{
+                                field->setValue(val->toBasicUint64());
+                            }
+                            break;
                         }
                     }
 

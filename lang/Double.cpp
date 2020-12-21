@@ -20,6 +20,8 @@ namespace obotcha {
 
 const double _Double::EPS = 1e-8;
 
+_Double::_Double():val(0.0) {}
+
 _Double::_Double(double v) : val(v) {}
 
 _Double::_Double(Double &v) {

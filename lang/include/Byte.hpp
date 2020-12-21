@@ -14,6 +14,8 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Byte) IMPLEMENTS(Number)<byte>{
 public:
+    _Byte();
+    
     _Byte(unsigned char v);
 
     _Byte(Byte &v);

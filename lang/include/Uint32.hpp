@@ -14,6 +14,8 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Uint32) IMPLEMENTS(Number)<uint32_t> {
 public:
+    _Uint32();
+    
     _Uint32(uint32_t v);
 
     _Uint32(Uint32 &v);

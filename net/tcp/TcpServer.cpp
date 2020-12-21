@@ -27,6 +27,7 @@ _TcpServerSocket::_TcpServerSocket(int fd) {
     mFd = fd;
     mMutex = createMutex();
     mCondition = createCondition();
+    isCacheEmpty = true;
 }
 
 int _TcpServerSocket::getFd() {
@@ -35,24 +36,31 @@ int _TcpServerSocket::getFd() {
 
 int _TcpServerSocket::send(ByteArray data) {
     while(1) {
+        isCacheEmpty = false;
+
         int result = write(mFd,data->toValue(),data->size());
         if(result < 0) {
             if(errno == EAGAIN) {
-                AutoLock l(mMutex);
-                mCondition->wait(mMutex,100);
+                if(!isCacheEmpty->get()) {
+                    AutoLock l(mMutex);
+                    mCondition->wait(mMutex,100);
+                }
                 continue;
             }
         }
-        long start = st(System)::currentTimeMillis();
-        AutoLock l(mMutex);
-        mCondition->wait(mMutex,100);
-        printf("send socket eagain!!!,wait %d  \n",(int)(st(System)::currentTimeMillis() - start));
+
+        if(!isCacheEmpty->get()) {
+            long start = st(System)::currentTimeMillis();
+            AutoLock l(mMutex);
+            mCondition->wait(mMutex,100);
+            printf("send socket eagain!!!,wait %d  \n",(int)(st(System)::currentTimeMillis() - start));
+        }
         return result;
     }
 }
 
 void _TcpServerSocket::enableSend() {
-    //printf("enable !!!!!!!!!!!!!!!!!!!!!!!\n");
+    isCacheEmpty = true;
     mCondition->notify();
 }
 
