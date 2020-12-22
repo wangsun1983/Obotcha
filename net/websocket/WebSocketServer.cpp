@@ -216,7 +216,11 @@ void _WebSocketDispatchRunnable::handleWsData(DispatchData data) {
     WebSocketParser parser = client->getParser();
     WebSocketBuffer defferedBuff = client->getDefferedBuffer();
     if (defferedBuff != nullptr) {
-        defferedBuff->mBuffer->append(pack);
+        if(defferedBuff->mBuffer != nullptr) {
+            defferedBuff->mBuffer->append(pack);
+        } else {
+            defferedBuff->mBuffer = pack;
+        }
         pack = defferedBuff->mBuffer;
     }
 
