@@ -107,19 +107,53 @@ void _Field::setReflectObject(Object *obj) {
 }
 
 void _Field::setValue(int v) {
-    object->setFieldIntValue(name->getStdString(),v);
+    switch(type) {
+        case FieldTypeInt:
+            object->setFieldIntValue(name->getStdString(),v);
+        break;
+
+        case FieldTypeByte:
+            setValue((uint8_t)v);
+        break;
+
+        case FieldTypeLong:
+            setValue((long)v);
+        break;
+
+        case FieldTypeUint16:
+            setValue((uint16_t)v);
+        break;
+
+        case FieldTypeUint32:
+            setValue((uint32_t)v);
+        break;
+
+        case FieldTypeUint64:
+            setValue((uint64_t)v);
+        break;
+    }
+
+    return;
 }
 
 void _Field::setValue(long v) {
     object->setFieldLongValue(name->getStdString(),v);
 }
 
-void _Field::setValue(unsigned char v) {
+void _Field::setValue(uint8_t v) {
     object->setFieldByteValue(name->getStdString(),v);
 }
 
 void _Field::setValue(double v) {
-    object->setFieldDoubleValue(name->getStdString(),v);
+    switch(type) {
+        case FieldTypeDouble:
+            object->setFieldDoubleValue(name->getStdString(),v);
+        break;
+
+        case FieldTypeFloat:
+            object->setFieldFloatValue(name->getStdString(),v);
+        break;
+    }
 }
 
 void _Field::setValue(float v) {
@@ -139,7 +173,7 @@ void _Field::setValue(uint64_t v) {
 }
 
 void _Field::setValue(sp<Object> v) {
-    //object->setFieldObjectValue(v);
+    //object->setFieldObjectValue(name->getStdString(),v);
     Trigger(ReflectException,"not support set Object value");
 }
 
@@ -199,8 +233,9 @@ bool _Field::getBoolValue() {
     return object->getFieldBoolValue(name->getStdString());
 }
 
-void _Field::createObject() {
+sp<Object> _Field::createObject() {
     object->createFieldObject(name->getStdString());
+    return object->getFieldObjectValue(name->getStdString());
 }
 
 sp<Object>  _Field::createListItemObject() {

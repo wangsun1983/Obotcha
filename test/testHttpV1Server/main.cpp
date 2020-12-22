@@ -91,9 +91,9 @@ DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
     void onMessage(sp<_HttpV1ClientInfo> client,sp<_HttpV1ResponseWriter> w,HttpPacket msg){
         String url = msg->getUrl();
         printf("url is %s \n",url->toChars());
-        if(url->indexOf("zip") != 0) {
+        if(url->indexOf("zip") > 0) {
             printf("start send file");
-            File f = createFile("data2.data");
+            File f = createFile("data.data");
             w->write(f);
             w->flush();
             return;

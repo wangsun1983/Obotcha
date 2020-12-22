@@ -10,7 +10,7 @@ namespace obotcha {
 
 class _String;
 
-#define byte unsigned char
+#define byte uint8_t
 
 DECLARE_SIMPLE_CLASS(Byte) IMPLEMENTS(Number)<byte>{
 public:

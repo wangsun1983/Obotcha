@@ -1965,7 +1965,7 @@ private:\
        FieldContentValue v = getFieldContentValue(name);\
        return v->longValue;\
     }\
-    unsigned char getFieldByteValue(std::string name){ \
+    uint8_t getFieldByteValue(std::string name){ \
         FieldContentValue v = getFieldContentValue(name);\
         return v->uint8Value;\
     }\
@@ -2006,7 +2006,7 @@ private:\
         return v->stringValue;\
     }\
     void setFieldIntValue(std::string name,int value){setFieldValue(name,value);}\
-    void setFieldByteValue(std::string name,unsigned char value){setFieldValue(name,value);}\
+    void setFieldByteValue(std::string name,uint8_t value){setFieldValue(name,value);}\
     void setFieldDoubleValue(std::string name,double value){setFieldValue(name,value);}\
     void setFieldFloatValue(std::string name,float value){setFieldValue(name,value);}\
     void setFieldLongValue(std::string name,long value){setFieldValue(name,value);}\
@@ -2015,7 +2015,7 @@ private:\
     void setFieldUint32Value(std::string name ,uint32_t value){setFieldValue(name,value);}\
     void setFieldUint64Value(std::string name,uint64_t value){setFieldValue(name,value);}\
     void setFieldStringValue(std::string name,std::string value){setFieldValue(name,createString(value));}\
-    void setFieldObjectValue(std::string name,sp<Object> value){}\
+    void setFieldObjectValue(std::string name,sp<Object> value){setFieldValue(name,value);}\
     template<typename Q>\
     void setFieldValue(std::string name,Q value){\
         Field f = maps->get(createString(name));\

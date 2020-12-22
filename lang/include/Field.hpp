@@ -22,7 +22,7 @@ public:
         FieldTypeDouble,
         FieldTypeFloat,
         FieldTypeLong,
-        FieldTypeString,
+        FieldTypeString, 
         FieldTypeUint16,
         FieldTypeUint32,
         FieldTypeUint64,
@@ -45,7 +45,6 @@ public:
     int TypeOf(uint16_t v);
     int TypeOf(uint32_t v);
     int TypeOf(uint64_t v);
-
     int TypeOf(String v);
 /*
     int TypeOf(Integer v);
@@ -105,7 +104,7 @@ public:
     //reflect filed set function
     void setValue(int);
     void setValue(long);
-    void setValue(unsigned char);
+    void setValue(uint8_t);
     void setValue(double);
     void setValue(float);
     void setValue(uint16_t);
@@ -132,7 +131,7 @@ public:
     sp<Object> getListItemObject(int);
 
     //reflect filed create function
-    void createObject();
+    sp<Object> createObject();
     sp<Object> createListItemObject();
 
     //std::function<void()> createfunc;
@@ -144,7 +143,7 @@ private:
 
     //do not use
     void setFieldIntValue(std::string,int){}
-    void setFieldByteValue(std::string,unsigned char){}
+    void setFieldByteValue(std::string,uint8_t){}
     void setFieldDoubleValue(std::string,double){}
     void setFieldFloatValue(std::string,float){}
     void setFieldUint8Value(std::string,uint8_t){}

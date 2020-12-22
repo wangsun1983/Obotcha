@@ -1,7 +1,8 @@
 #include <stdio.h>
 
-extern int testReflectField();
-
+extern int testReflectFieldRead();
+extern int testReflectFieldWrite();
 int main() {
-  testReflectField();
+  testReflectFieldRead();
+  testReflectFieldWrite();
 }
