@@ -128,6 +128,7 @@ public:
     String getStringValue();
     bool getBoolValue();
 
+    int getListObjectSize();
     sp<Object> getListItemObject(int);
 
     //reflect filed create function

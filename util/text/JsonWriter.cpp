@@ -12,6 +12,11 @@ _JsonWriter::_JsonWriter(String path) {
     stream->open(st(OutputStream)::Trunc);
 }
 
+_JsonWriter::_JsonWriter(const char *path) {
+    stream = createFileOutputStream(path);
+    stream->open(st(OutputStream)::Trunc);
+}
+
 void _JsonWriter::write(JsonValue value) {
     String str = createString(value->jvalue.toStyledString());
     stream->writeString(str);

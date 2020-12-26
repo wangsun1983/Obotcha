@@ -78,6 +78,12 @@ public:
 
     _String(uint64_t);
 
+    void update(const char *);
+
+    void update(sp<_String>);
+
+    void update(std::string);
+
     const char * toChars();
 
     char charAt(int index);

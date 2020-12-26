@@ -251,6 +251,18 @@ _String::~_String() {
     //m_str = nullptr;
 }
 
+void _String::update(const char *v) {
+    m_str = std::string(v);
+}
+
+void _String::update(String v) {
+    m_str = v->m_str;
+}
+
+void _String::update(std::string v) {
+    m_str = v;
+}
+
 const char * _String::toChars() {
     return m_str.c_str();
 }

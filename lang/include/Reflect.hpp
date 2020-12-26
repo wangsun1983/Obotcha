@@ -123,6 +123,9 @@
     sp<Object> __ReflectGetListItem##MEMBER(int index) {\
         return getArrayListItem(MEMBER,index);\
     }\
+    int __ReflectGetListSize##MEMBER() {\
+        return __getListSize(MEMBER);\
+    }\
 
 #define IMPLE_SET_VALUE_2(CLASS,M1,M2) \
     IMPLE_SET_VALUE_1(CLASS,M1) \
@@ -275,6 +278,7 @@
 #define __D() std::function<int()>//dummy function
 #define __LD() std::function<sp<Object>()> //list dummy function 
 #define __LIG(MEMBER) std::function<sp<Object>(int)> //list item get function
+#define __OBJSIZE(MEMBER) std::function<int()> //list item get function
 
 #define DECLARE_INIT_TUPLE_1(M1) \
     std::tuple<__S(M1),__D(),__D(),__D(),__D(),\
@@ -311,7 +315,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;
 
 #define DECLARE_INIT_TUPLE_2(M1,M2) \
     std::tuple<__S(M1),__S(M2),__D(),__D(),__D(),\
@@ -348,7 +359,15 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+            __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+            __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+            __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+            __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+            __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+            __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;
+
 
 #define DECLARE_INIT_TUPLE_3(M1,M2,M3) \
     std::tuple<__S(M1),__S(M2),__S(M3),__D(),__D(),\
@@ -385,7 +404,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(),__OBJSIZE(),\
+            __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+            __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+            __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+            __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+            __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+            __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;
 
 #define DECLARE_INIT_TUPLE_4(M1,M2,M3,M4) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__D(),\
@@ -422,7 +448,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(M4),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;
 
 #define DECLARE_INIT_TUPLE_5(M1,M2,M3,M4,M5) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -459,7 +492,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(M4),__OBJSIZE(M5),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;
 
 #define DECLARE_INIT_TUPLE_6(M1,M2,M3,M4,M5,M6) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -496,7 +536,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(M4),__OBJSIZE(M5),\
+                __OBJSIZE(M6),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;
 
 
 #define DECLARE_INIT_TUPLE_7(M1,M2,M3,M4,M5,M6,M7) \
@@ -534,7 +581,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(M4),__OBJSIZE(M5),\
+                __OBJSIZE(M6),__OBJSIZE(M7),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;    
 
 
 #define DECLARE_INIT_TUPLE_8(M1,M2,M3,M4,M5,M6,M7,M8) \
@@ -572,7 +626,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(M4),__OBJSIZE(M5),\
+                __OBJSIZE(M6),__OBJSIZE(M7),__OBJSIZE(M8),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;    
 
 #define DECLARE_INIT_TUPLE_9(M1,M2,M3,M4,M5,M6,M7,M8,M9) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -609,7 +670,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(M4),__OBJSIZE(M5),\
+                __OBJSIZE(M6),__OBJSIZE(M7),__OBJSIZE(M8),__OBJSIZE(M9),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;   
 
 #define DECLARE_INIT_TUPLE_10(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -646,7 +714,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(M4),__OBJSIZE(M5),\
+                __OBJSIZE(M6),__OBJSIZE(M7),__OBJSIZE(M8),__OBJSIZE(M9),__OBJSIZE(M10),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;   
 
 #define DECLARE_INIT_TUPLE_11(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -683,7 +758,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(M4),__OBJSIZE(M5),\
+                __OBJSIZE(M6),__OBJSIZE(M7),__OBJSIZE(M8),__OBJSIZE(M9),__OBJSIZE(M10),\
+                __OBJSIZE(M11),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple; 
 
 
 #define DECLARE_INIT_TUPLE_12(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12) \
@@ -721,7 +803,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(M4),__OBJSIZE(M5),\
+                __OBJSIZE(M6),__OBJSIZE(M7),__OBJSIZE(M8),__OBJSIZE(M9),__OBJSIZE(M10),\
+                __OBJSIZE(M11),__OBJSIZE(M12),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple; 
 
 #define DECLARE_INIT_TUPLE_13(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -758,7 +847,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(M4),__OBJSIZE(M5),\
+                __OBJSIZE(M6),__OBJSIZE(M7),__OBJSIZE(M8),__OBJSIZE(M9),__OBJSIZE(M10),\
+                __OBJSIZE(M11),__OBJSIZE(M12),__OBJSIZE(M13),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;
 
 #define DECLARE_INIT_TUPLE_14(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -795,7 +891,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(M4),__OBJSIZE(M5),\
+                __OBJSIZE(M6),__OBJSIZE(M7),__OBJSIZE(M8),__OBJSIZE(M9),__OBJSIZE(M10),\
+                __OBJSIZE(M11),__OBJSIZE(M12),__OBJSIZE(M13),__OBJSIZE(M14),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;
 
 #define DECLARE_INIT_TUPLE_15(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14,M15) \
     std::tuple<__S(M1),__S(M2),__S(M3),__S(M4),__S(M5),\
@@ -832,7 +935,14 @@
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(M4),__OBJSIZE(M5),\
+                __OBJSIZE(M6),__OBJSIZE(M7),__OBJSIZE(M8),__OBJSIZE(M9),__OBJSIZE(M10),\
+                __OBJSIZE(M11),__OBJSIZE(M12),__OBJSIZE(M13),__OBJSIZE(M14),__OBJSIZE(M15),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;
 
 
 #define DECLARE_INIT_TUPLE_16(M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14,M15,M16) \
@@ -870,7 +980,14 @@
                 __LIG(M16),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
                 __LIG(),__LIG(),__LIG(),__LIG(),__LIG(),\
-                __LIG(),__LIG()> getListItemFuncTuple;
+                __LIG(),__LIG()> getListItemFuncTuple;\
+    std::tuple<__OBJSIZE(M1),__OBJSIZE(M2),__OBJSIZE(M3),__OBJSIZE(M4),__OBJSIZE(M5),\
+                __OBJSIZE(M6),__OBJSIZE(M7),__OBJSIZE(M8),__OBJSIZE(M9),__OBJSIZE(M10),\
+                __OBJSIZE(M11),__OBJSIZE(M12),__OBJSIZE(M13),__OBJSIZE(M14),__OBJSIZE(M15),\
+                __OBJSIZE(M16),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),__OBJSIZE(),\
+                __OBJSIZE(),__OBJSIZE()> getListSizeFuncTuple;
 
 
 #define IMPLE_INIT_TUPLE_DETECT(CLASS,COUNT, ...) IMPLE_INIT_TUPLE_DETECT_TRACE(CLASS,COUNT, __VA_ARGS__)
@@ -882,6 +999,7 @@
     std::function<void()> createobj = std::bind(&CLASS::__ReflectCreate##M1,this);\
     std::function<sp<Object>()>genItemObj = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
     std::function<sp<Object>(int)>getItemObj = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<int()>getListSize = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     getFuncTuple = std::make_tuple(getobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -909,7 +1027,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                   dummyobj,dummyobj);
 
 #define IMPLE_INIT_TUPLE_2(CLASS,M1,M2) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -920,6 +1045,8 @@
     std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
     std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -947,7 +1074,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj);
 
 #define IMPLE_INIT_TUPLE_3(CLASS,M1,M2,M3) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -962,6 +1096,9 @@
     std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -989,7 +1126,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj);
 
 #define IMPLE_INIT_TUPLE_4(CLASS,M1,M2,M3,M4) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1008,6 +1152,10 @@
     std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
+    std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -1035,7 +1183,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,getListSize4,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj);
 
 #define IMPLE_INIT_TUPLE_5(CLASS,M1,M2,M3,M4,M5) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1058,6 +1213,11 @@
     std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
+    std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
+    std::function<int()>getListSize5 = std::bind(&CLASS::__ReflectGetListSize##M5,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -1085,7 +1245,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,getListSize4,getListSize5,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                                dummyobj,dummyobj);                                   
 
 #define IMPLE_INIT_TUPLE_6(CLASS,M1,M2,M3,M4,M5,M6) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1112,6 +1279,12 @@
     std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
+    std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
+    std::function<int()>getListSize5 = std::bind(&CLASS::__ReflectGetListSize##M5,this);\
+    std::function<int()>getListSize6 = std::bind(&CLASS::__ReflectGetListSize##M6,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -1139,7 +1312,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,getListSize4,getListSize5,\
+                            getListSize6,dummyobj,dummyobj,dummyobj,dummyobj,\
+                            dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                            dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                            dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                            dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                            dummyobj,dummyobj);     
 
 #define IMPLE_INIT_TUPLE_7(CLASS,M1,M2,M3,M4,M5,M6,M7) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1170,6 +1350,13 @@
     std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
+    std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
+    std::function<int()>getListSize5 = std::bind(&CLASS::__ReflectGetListSize##M5,this);\
+    std::function<int()>getListSize6 = std::bind(&CLASS::__ReflectGetListSize##M6,this);\
+    std::function<int()>getListSize7 = std::bind(&CLASS::__ReflectGetListSize##M7,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -1197,7 +1384,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,getListSize4,getListSize5,\
+                        getListSize6,getListSize7,dummyobj,dummyobj,dummyobj,\
+                        dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                        dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                        dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                        dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                        dummyobj,dummyobj); 
 
 #define IMPLE_INIT_TUPLE_8(CLASS,M1,M2,M3,M4,M5,M6,M7,M8) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1232,6 +1426,14 @@
     std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
+    std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
+    std::function<int()>getListSize5 = std::bind(&CLASS::__ReflectGetListSize##M5,this);\
+    std::function<int()>getListSize6 = std::bind(&CLASS::__ReflectGetListSize##M6,this);\
+    std::function<int()>getListSize7 = std::bind(&CLASS::__ReflectGetListSize##M7,this);\
+    std::function<int()>getListSize8 = std::bind(&CLASS::__ReflectGetListSize##M8,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -1259,7 +1461,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,getListSize4,getListSize5,\
+                    getListSize6,getListSize7,getListSize8,dummyobj,dummyobj,\
+                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                    dummyobj,dummyobj); 
 
 #define IMPLE_INIT_TUPLE_9(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1298,6 +1507,15 @@
     std::function<sp<Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
+    std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
+    std::function<int()>getListSize5 = std::bind(&CLASS::__ReflectGetListSize##M5,this);\
+    std::function<int()>getListSize6 = std::bind(&CLASS::__ReflectGetListSize##M6,this);\
+    std::function<int()>getListSize7 = std::bind(&CLASS::__ReflectGetListSize##M7,this);\
+    std::function<int()>getListSize8 = std::bind(&CLASS::__ReflectGetListSize##M8,this);\
+    std::function<int()>getListSize9 = std::bind(&CLASS::__ReflectGetListSize##M9,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -1325,7 +1543,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,getListSize4,getListSize5,\
+                getListSize6,getListSize7,getListSize8,getListSize9,dummyobj,\
+                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                dummyobj,dummyobj); 
 
 #define IMPLE_INIT_TUPLE_10(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1368,6 +1593,16 @@
     std::function<sp<Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
+    std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
+    std::function<int()>getListSize5 = std::bind(&CLASS::__ReflectGetListSize##M5,this);\
+    std::function<int()>getListSize6 = std::bind(&CLASS::__ReflectGetListSize##M6,this);\
+    std::function<int()>getListSize7 = std::bind(&CLASS::__ReflectGetListSize##M7,this);\
+    std::function<int()>getListSize8 = std::bind(&CLASS::__ReflectGetListSize##M8,this);\
+    std::function<int()>getListSize9 = std::bind(&CLASS::__ReflectGetListSize##M9,this);\
+    std::function<int()>getListSize10 = std::bind(&CLASS::__ReflectGetListSize##M10,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -1395,7 +1630,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,getListSize4,getListSize5,\
+                getListSize6,getListSize7,getListSize8,getListSize9,getListSize10,\
+                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                dummyobj,dummyobj); 
 
 #define IMPLE_INIT_TUPLE_11(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1442,6 +1684,17 @@
     std::function<sp<Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
+    std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
+    std::function<int()>getListSize5 = std::bind(&CLASS::__ReflectGetListSize##M5,this);\
+    std::function<int()>getListSize6 = std::bind(&CLASS::__ReflectGetListSize##M6,this);\
+    std::function<int()>getListSize7 = std::bind(&CLASS::__ReflectGetListSize##M7,this);\
+    std::function<int()>getListSize8 = std::bind(&CLASS::__ReflectGetListSize##M8,this);\
+    std::function<int()>getListSize9 = std::bind(&CLASS::__ReflectGetListSize##M9,this);\
+    std::function<int()>getListSize10 = std::bind(&CLASS::__ReflectGetListSize##M10,this);\
+    std::function<int()>getListSize11 = std::bind(&CLASS::__ReflectGetListSize##M11,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -1469,7 +1722,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,getListSize4,getListSize5,\
+                getListSize6,getListSize7,getListSize8,getListSize9,getListSize10,\
+                getListSize11,dummyobj,dummyobj,dummyobj,dummyobj,\
+                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+                dummyobj,dummyobj); 
 
 #define IMPLE_INIT_TUPLE_12(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1520,6 +1780,18 @@
     std::function<sp<Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj12 = std::bind(&CLASS::__ReflectGetListItem##M12,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
+    std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
+    std::function<int()>getListSize5 = std::bind(&CLASS::__ReflectGetListSize##M5,this);\
+    std::function<int()>getListSize6 = std::bind(&CLASS::__ReflectGetListSize##M6,this);\
+    std::function<int()>getListSize7 = std::bind(&CLASS::__ReflectGetListSize##M7,this);\
+    std::function<int()>getListSize8 = std::bind(&CLASS::__ReflectGetListSize##M8,this);\
+    std::function<int()>getListSize9 = std::bind(&CLASS::__ReflectGetListSize##M9,this);\
+    std::function<int()>getListSize10 = std::bind(&CLASS::__ReflectGetListSize##M10,this);\
+    std::function<int()>getListSize11 = std::bind(&CLASS::__ReflectGetListSize##M11,this);\
+    std::function<int()>getListSize12 = std::bind(&CLASS::__ReflectGetListSize##M12,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,getobj12,dummyobj,dummyobj,dummyobj,\
@@ -1546,7 +1818,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,getListSize4,getListSize5,\
+            getListSize6,getListSize7,getListSize8,getListSize9,getListSize10,\
+            getListSize11,getListSize12,dummyobj,dummyobj,dummyobj,\
+            dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+            dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+            dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+            dummyobj,dummyobj); 
 
 #define IMPLE_INIT_TUPLE_13(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1601,6 +1880,19 @@
     std::function<sp<Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj12 = std::bind(&CLASS::__ReflectGetListItem##M12,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj13 = std::bind(&CLASS::__ReflectGetListItem##M13,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
+    std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
+    std::function<int()>getListSize5 = std::bind(&CLASS::__ReflectGetListSize##M5,this);\
+    std::function<int()>getListSize6 = std::bind(&CLASS::__ReflectGetListSize##M6,this);\
+    std::function<int()>getListSize7 = std::bind(&CLASS::__ReflectGetListSize##M7,this);\
+    std::function<int()>getListSize8 = std::bind(&CLASS::__ReflectGetListSize##M8,this);\
+    std::function<int()>getListSize9 = std::bind(&CLASS::__ReflectGetListSize##M9,this);\
+    std::function<int()>getListSize10 = std::bind(&CLASS::__ReflectGetListSize##M10,this);\
+    std::function<int()>getListSize11 = std::bind(&CLASS::__ReflectGetListSize##M11,this);\
+    std::function<int()>getListSize12 = std::bind(&CLASS::__ReflectGetListSize##M12,this);\
+    std::function<int()>getListSize13 = std::bind(&CLASS::__ReflectGetListSize##M13,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,getobj12,getobj13,dummyobj,dummyobj,\
@@ -1628,7 +1920,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,getListSize4,getListSize5,\
+            getListSize6,getListSize7,getListSize8,getListSize9,getListSize10,\
+            getListSize11,getListSize12,getListSize13,dummyobj,dummyobj,\
+            dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+            dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+            dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+            dummyobj,dummyobj); 
 
 #define IMPLE_INIT_TUPLE_14(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1687,6 +1986,20 @@
     std::function<sp<Object>(int)>getItemObj12 = std::bind(&CLASS::__ReflectGetListItem##M12,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj13 = std::bind(&CLASS::__ReflectGetListItem##M13,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj14 = std::bind(&CLASS::__ReflectGetListItem##M14,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
+    std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
+    std::function<int()>getListSize5 = std::bind(&CLASS::__ReflectGetListSize##M5,this);\
+    std::function<int()>getListSize6 = std::bind(&CLASS::__ReflectGetListSize##M6,this);\
+    std::function<int()>getListSize7 = std::bind(&CLASS::__ReflectGetListSize##M7,this);\
+    std::function<int()>getListSize8 = std::bind(&CLASS::__ReflectGetListSize##M8,this);\
+    std::function<int()>getListSize9 = std::bind(&CLASS::__ReflectGetListSize##M9,this);\
+    std::function<int()>getListSize10 = std::bind(&CLASS::__ReflectGetListSize##M10,this);\
+    std::function<int()>getListSize11 = std::bind(&CLASS::__ReflectGetListSize##M11,this);\
+    std::function<int()>getListSize12 = std::bind(&CLASS::__ReflectGetListSize##M12,this);\
+    std::function<int()>getListSize13 = std::bind(&CLASS::__ReflectGetListSize##M13,this);\
+    std::function<int()>getListSize14 = std::bind(&CLASS::__ReflectGetListSize##M14,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,getobj12,getobj13,getobj14,dummyobj,\
@@ -1714,7 +2027,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,getListSize4,getListSize5,\
+            getListSize6,getListSize7,getListSize8,getListSize9,getListSize10,\
+            getListSize11,getListSize12,getListSize13,getListSize14,dummyobj,\
+            dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+            dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+            dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+            dummyobj,dummyobj); 
 
 #define IMPLE_INIT_TUPLE_15(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14,M15) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1777,6 +2097,21 @@
     std::function<sp<Object>(int)>getItemObj13 = std::bind(&CLASS::__ReflectGetListItem##M13,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj14 = std::bind(&CLASS::__ReflectGetListItem##M14,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj15 = std::bind(&CLASS::__ReflectGetListItem##M15,this,std::placeholders::_1);\
+    std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
+    std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
+    std::function<int()>getListSize5 = std::bind(&CLASS::__ReflectGetListSize##M5,this);\
+    std::function<int()>getListSize6 = std::bind(&CLASS::__ReflectGetListSize##M6,this);\
+    std::function<int()>getListSize7 = std::bind(&CLASS::__ReflectGetListSize##M7,this);\
+    std::function<int()>getListSize8 = std::bind(&CLASS::__ReflectGetListSize##M8,this);\
+    std::function<int()>getListSize9 = std::bind(&CLASS::__ReflectGetListSize##M9,this);\
+    std::function<int()>getListSize10 = std::bind(&CLASS::__ReflectGetListSize##M10,this);\
+    std::function<int()>getListSize11 = std::bind(&CLASS::__ReflectGetListSize##M11,this);\
+    std::function<int()>getListSize12 = std::bind(&CLASS::__ReflectGetListSize##M12,this);\
+    std::function<int()>getListSize13 = std::bind(&CLASS::__ReflectGetListSize##M13,this);\
+    std::function<int()>getListSize14 = std::bind(&CLASS::__ReflectGetListSize##M14,this);\
+    std::function<int()>getListSize15 = std::bind(&CLASS::__ReflectGetListSize##M15,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,getobj12,getobj13,getobj14,getobj15,\
@@ -1804,7 +2139,14 @@
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,getListSize4,getListSize5,\
+        getListSize6,getListSize7,getListSize8,getListSize9,getListSize10,\
+        getListSize11,getListSize12,getListSize13,getListSize14,getListSize15,\
+        dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+        dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+        dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+        dummyobj,dummyobj); 
 
 #define IMPLE_INIT_TUPLE_16(CLASS,M1,M2,M3,M4,M5,M6,M7,M8,M9,M10,M11,M12,M13,M14,M15,M16) \
     std::function<decltype(M1)()> getobj1 = std::bind(&CLASS::__ReflectGet##M1,this);\
@@ -1871,6 +2213,21 @@
     std::function<sp<Object>(int)>getItemObj14 = std::bind(&CLASS::__ReflectGetListItem##M14,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj15 = std::bind(&CLASS::__ReflectGetListItem##M15,this,std::placeholders::_1);\
     std::function<sp<Object>(int)>getItemObj16 = std::bind(&CLASS::__ReflectGetListItem##M16,this,std::placeholders::_1);\
+    std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
+    std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
+    std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
+    std::function<int()>getListSize5 = std::bind(&CLASS::__ReflectGetListSize##M5,this);\
+    std::function<int()>getListSize6 = std::bind(&CLASS::__ReflectGetListSize##M6,this);\
+    std::function<int()>getListSize7 = std::bind(&CLASS::__ReflectGetListSize##M7,this);\
+    std::function<int()>getListSize8 = std::bind(&CLASS::__ReflectGetListSize##M8,this);\
+    std::function<int()>getListSize9 = std::bind(&CLASS::__ReflectGetListSize##M9,this);\
+    std::function<int()>getListSize10 = std::bind(&CLASS::__ReflectGetListSize##M10,this);\
+    std::function<int()>getListSize11 = std::bind(&CLASS::__ReflectGetListSize##M11,this);\
+    std::function<int()>getListSize12 = std::bind(&CLASS::__ReflectGetListSize##M12,this);\
+    std::function<int()>getListSize13 = std::bind(&CLASS::__ReflectGetListSize##M13,this);\
+    std::function<int()>getListSize14 = std::bind(&CLASS::__ReflectGetListSize##M14,this);\
+    std::function<int()>getListSize15 = std::bind(&CLASS::__ReflectGetListSize##M15,this);\
+    std::function<int()>getListSize16 = std::bind(&CLASS::__ReflectGetListSize##M16,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,getobj3,getobj4,getobj5,\
                                    getobj6,getobj7,getobj8,getobj9,getobj10,\
                                    getobj11,getobj12,getobj13,getobj14,getobj15,\
@@ -1898,7 +2255,14 @@
                                    getItemObj16,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
                                    dummyligobj,dummyligobj,dummyligobj,dummyligobj,dummyligobj,\
-                                   dummyligobj,dummyligobj);
+                                   dummyligobj,dummyligobj);\
+    getListSizeFuncTuple = std::make_tuple(getListSize1,getListSize2,getListSize3,getListSize4,getListSize5,\
+        getListSize6,getListSize7,getListSize8,getListSize9,getListSize10,\
+        getListSize11,getListSize12,getListSize13,getListSize14,getListSize15,\
+        getListSize16,dummyobj,dummyobj,dummyobj,dummyobj,\
+        dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+        dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
+        dummyobj,dummyobj); 
 
 #define DECLARE_REFLECT_FIELD(CLASS, ...) \
 private:\
@@ -1956,6 +2320,17 @@ private:\
     template<typename Q>\
     sp<Object> getArrayListItem(Q t,int index) {\
         return nullptr;\
+    }\
+    template<typename Q>\
+    int __getListSize(ArrayList<Q> list){\
+        if(list == nullptr) {\
+            return 0;\
+        }\
+        return list->size();\
+    }\
+    template<typename Q>\
+    int __getListSize(Q t) {\
+        return -1;\
     }\
     int getFieldIntValue(std::string name){ \
        FieldContentValue v = getFieldContentValue(name);\
@@ -2236,5 +2611,58 @@ private:\
             break;\
         }\
     };\
+    int getListObjectSize(std::string name) {\
+        Field f = maps->get(createString(name));\
+        switch(f->getId()) {\
+            case 0:\
+                return std::get<0>(getListSizeFuncTuple)();\
+            break;\
+            case 1:\
+                return std::get<1>(getListSizeFuncTuple)();\
+            break;\
+            case 2:\
+                return std::get<2>(getListSizeFuncTuple)();\
+            break;\
+            case 3:\
+                return std::get<3>(getListSizeFuncTuple)();\
+            break;\
+            case 4:\
+                return std::get<4>(getListSizeFuncTuple)();\
+            break;\
+            case 5:\
+                return std::get<5>(getListSizeFuncTuple)();\
+            break;\
+            case 6:\
+                return std::get<6>(getListSizeFuncTuple)();\
+            break;\
+            case 7:\
+                return std::get<7>(getListSizeFuncTuple)();\
+            break;\
+            case 8:\
+                return std::get<8>(getListSizeFuncTuple)();\
+            break;\
+            case 9:\
+                return std::get<9>(getListSizeFuncTuple)();\
+            break;\
+            case 10:\
+                return std::get<10>(getListSizeFuncTuple)();\
+            break;\
+            case 11:\
+                return std::get<11>(getListSizeFuncTuple)();\
+            break;\
+            case 12:\
+                return std::get<12>(getListSizeFuncTuple)();\
+            break;\
+            case 13:\
+                return std::get<13>(getListSizeFuncTuple)();\
+            break;\
+            case 14:\
+                return std::get<14>(getListSizeFuncTuple)();\
+            break;\
+            case 15:\
+                return std::get<15>(getListSizeFuncTuple)();\
+            break;\
+        }\
+    }\
     
 #endif

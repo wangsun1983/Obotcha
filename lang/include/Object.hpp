@@ -97,7 +97,8 @@ protected:
     //create function
     inline virtual void createFieldObject(std::string name){}
     inline virtual sp<Object> createListItemObject(std::string name){return nullptr;}
-    inline virtual sp<Object> getListItemObject(std::string name,int index){return nullptr;};
+    inline virtual sp<Object> getListItemObject(std::string name,int index){return nullptr;}
+    inline virtual int getListObjectSize(std::string name) {return 0;}
 
 private:
     mutable volatile int32_t mCount;

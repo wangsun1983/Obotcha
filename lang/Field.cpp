@@ -172,10 +172,10 @@ void _Field::setValue(uint64_t v) {
     object->setFieldUint64Value(name->getStdString(),v);
 }
 
-void _Field::setValue(sp<Object> v) {
+//void _Field::setValue(sp<Object> v) {
     //object->setFieldObjectValue(name->getStdString(),v);
-    Trigger(ReflectException,"not support set Object value");
-}
+//    Trigger(ReflectException,"not support set Object value");
+//}
 
 void _Field::setValue(String v) {
     object->setFieldStringValue(name->getStdString(),v->getStdString());
@@ -244,6 +244,10 @@ sp<Object>  _Field::createListItemObject() {
 
 sp<Object> _Field::getListItemObject(int index) {
     return object->getListItemObject(name->getStdString(),index);
+}
+
+int _Field::getListObjectSize() {
+    return object->getListObjectSize(name->getStdString());
 }
 
 }

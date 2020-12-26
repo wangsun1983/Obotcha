@@ -340,10 +340,10 @@ public:
                 }
                 break;
 
-                case st(Field)::FieldTypeByte:{
-                    this->put(name,field->getByteValue());
-                }
-                break;
+                //case st(Field)::FieldTypeByte:{
+                //    this->put(name,field->getByteValue());
+                //}
+                //break;
 
                 case st(Field)::FieldTypeBool:{
                     this->put(name,field->getBoolValue());

@@ -20,6 +20,7 @@ DECLARE_SIMPLE_CLASS(JsonWriter) {
 public:
     _JsonWriter(File f);
     _JsonWriter(String path);
+    _JsonWriter(const char *);
 
     void write(JsonValue value);
 

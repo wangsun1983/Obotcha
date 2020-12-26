@@ -58,10 +58,10 @@ public:
                             }
                             break;
 
-                            case st(Field)::FieldTypeByte:{
-                                field->setValue(val->toBasicByte());
-                            }
-                            break;
+                            //case st(Field)::FieldTypeByte:{
+                            //    field->setValue(val->toBasicByte());
+                            //}
+                            //break;
 
                             case st(Field)::FieldTypeBool:{
                                 field->setValue(val->toBasicBool());

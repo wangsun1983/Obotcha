@@ -52,7 +52,6 @@ public:
 int testReflectFieldWrite() {
     //test1
     while(1) {
-      printf("abc trace \n");
       MyData3 data1 = createMyData3();
       //check field
       Field f = data1->getField("intData");
@@ -69,10 +68,10 @@ int testReflectFieldWrite() {
 
       f = data1->getField("longData");
       f->setValue(3);
-      printf("abc trace1 \n");
+
       f = data1->getField("stringData");
       f->setValue(createString("a"));
-      printf("abc trace2 \n");
+
       f = data1->getField("uint8Data");
       f->setValue(4);
 
@@ -111,12 +110,11 @@ int testReflectFieldWrite() {
         printf("Reflect Reflect Field Write test5-------[FAIL] \n");
         break;
       }
-      printf("abc trace3 \n");
+
       if(!data1->stringData->equals("a")) {
         printf("Reflect Reflect Field Write test6-------[FAIL] \n");
         break;
       }
-      printf("abc trace4 \n");
 
       if(data1->uint8Data != 4) {
         printf("Reflect Reflect Field Write test7-------[FAIL] \n");
@@ -169,25 +167,30 @@ int testReflectFieldWrite() {
 
       f = data1->getField("longData");
       Long v5 = cast<Long>(f->createObject());
-      v->update(3);
+      v5->update(3);
 
       f = data1->getField("stringData");
       f->setValue(createString("a"));
 
       f = data1->getField("uint8Data");
-      f->setValue(createUint8(4));
+      Uint8 v7 = cast<Uint8>(f->createObject());
+      v7->update(4);
 
       f = data1->getField("uint16Data");
-      f->setValue(createUint16(5));
+      Uint16 v7_1 = cast<Uint16>(f->createObject());
+      v7_1->update(5);
 
       f = data1->getField("uint32Data");
-      f->setValue(createUint32(6));
+      Uint32 v8 = cast<Uint32>(f->createObject());
+      v8->update(6);
 
       f = data1->getField("uint64Data");
-      f->setValue(createUint64(7));
+      Uint64 v9 = cast<Uint64>(f->createObject());
+      v9->update(7);
 
       f = data1->getField("boolData");
-      f->setValue(createBoolean(false));
+      Boolean v10 = cast<Boolean>(f->createObject());
+      v10->update(false);
 
       if(data1->intData == nullptr||data1->intData->toValue() != 1) {
         printf("Reflect Reflect Field Write test13-------[FAIL] \n");
@@ -244,7 +247,7 @@ int testReflectFieldWrite() {
         printf("Reflect Reflect Field Write test23-------[FAIL] \n");
         break;
       }
-#endif
+
       printf("Reflect Reflect Field test24-------[OK] \n");
       break;
     }
