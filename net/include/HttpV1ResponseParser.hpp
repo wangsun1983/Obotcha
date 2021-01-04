@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_HTTP_V1_PARAER_HPP__
-#define __OBOTCHA_HTTP_V1_PARAER_HPP__
+#ifndef __OBOTCHA_HTTP_V1_RESPONSE_PARSER_HPP__
+#define __OBOTCHA_HTTP_V1_RESPONSE_PARSER_HPP__
 
 #include <map>
 
@@ -20,16 +20,10 @@
 
 namespace obotcha {
 
-enum HttpV1ParseStatus {
-    HttpV1ParseStatusIdle = 0,
-    HttpClientParseStatusHeadStart,
-    HttpClientParseStatusBodyStart
-};
-
-DECLARE_SIMPLE_CLASS(HttpV1Parser) {
+DECLARE_SIMPLE_CLASS(HttpV1ResponseParser) {
 
 public:
-    _HttpV1Parser();
+    _HttpV1ResponseParser();
 
     void pushHttpData(ByteArray);
 
@@ -37,11 +31,14 @@ public:
 
     int getStatus();
 
-    HttpPacket parseEntireResponse(String response);
-
-    HttpPacket parseEntireRequest(String request);
 
 private:
+    enum HttpV1ParseStatus {
+        HttpV1ParseStatusIdle = 0,
+        HttpClientParseStatusHeadStart,
+        HttpClientParseStatusBodyStart
+    };
+    
     int mStatus;
 
     ByteRingArray mBuff;
@@ -62,7 +59,6 @@ private:
 
     HttpPacket mHttpPacket;
 
-    HttpMultiPartParser mMultiPartParser;
 
     static int on_message_begin(http_parser *);
     static int on_url(http_parser*, const char *at, size_t length);

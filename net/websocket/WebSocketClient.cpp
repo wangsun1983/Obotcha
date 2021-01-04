@@ -21,7 +21,7 @@
 #include "SocketListener.hpp"
 #include "EPollFileObserver.hpp"
 #include "Mutex.hpp"
-#include "HttpV1Parser.hpp"
+#include "HttpV1ResponseParser.hpp"
 #include "WebSocketParser.hpp"
 #include "HashMap.hpp"
 #include "WebSocketClient.hpp"
@@ -50,7 +50,7 @@ _WebSocketTcpClientListener::_WebSocketTcpClientListener(WebSocketListener l,Web
     mClient = info;
     mHybi13Parser = createWebSocketHybi13Parser();
     mProtoclType = WsClientProtocolHttp;
-    mHttpParser = createHttpV1Parser();
+    mHttpParser = createHttpV1ResponseParser();
 }
 
 void _WebSocketTcpClientListener::onTimeout() {
@@ -58,7 +58,7 @@ void _WebSocketTcpClientListener::onTimeout() {
 }
     
 void _WebSocketTcpClientListener::onDataReceived(SocketResponser r,ByteArray pack) {
-    
+    /*
     if(mProtoclType == WsClientProtocolHttp) {
         HttpPacket req = mHttpParser->parseEntireResponse(pack->toString());
         if(req->getStatusCode() == st(HttpResponse)::SwitchProtocls) {
@@ -114,7 +114,7 @@ void _WebSocketTcpClientListener::onDataReceived(SocketResponser r,ByteArray pac
         
         break;
     }
-
+ */
 }
 
 void _WebSocketTcpClientListener::onDisconnect(SocketResponser r) {

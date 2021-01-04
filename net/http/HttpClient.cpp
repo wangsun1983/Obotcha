@@ -12,13 +12,14 @@
 #include "HttpHeader.hpp"
 #include "ByteArrayReader.hpp"
 #include "Error.hpp"
-#include "HttpV1Parser.hpp"
+#include "HttpV1ResponseParser.hpp"
 
 namespace obotcha {
 
 _HttpClient::_HttpClient() {
     mPort = 80;
     mTimeout = 5000;
+    mParser = createHttpV1ResponseParser();
 }
 
 void _HttpClient::setUrl(String url) {
@@ -128,7 +129,7 @@ String _HttpClient::execute(int method,HttpUrl url) {
     ByteArray result = mTcpClient->doReceive();
     
     //get first block
-    HttpV1Parser parser = createHttpV1Parser();
+    /*
     HttpPacket firstBlock = parser->parseEntireResponse(result->toString());
     String transferEncoding = firstBlock->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
     if(transferEncoding!= nullptr && transferEncoding->equals("chunked")) {
@@ -139,7 +140,7 @@ String _HttpClient::execute(int method,HttpUrl url) {
     
     if(!mKeepAlive) {
         mTcpClient->release();
-    }
+    } */
     
     return result->toString();
 }
@@ -149,6 +150,7 @@ String _HttpClient::execute(int,String url) {
     return nullptr;
 }
 
+/*
 ByteArray _HttpClient::doReceiveChunk(ByteArray firstBlock) {
     //find first data length
     ByteArrayReader reader = createByteArrayReader(firstBlock);
@@ -208,6 +210,6 @@ ByteArray _HttpClient::doReceiveChunk(ByteArray firstBlock) {
     
     return mBody;
 }
-
+ */
 }
 

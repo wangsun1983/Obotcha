@@ -125,7 +125,7 @@ _WebSocketDispatchRunnable::_WebSocketDispatchRunnable(int index,sp<_WebSocketDi
     mIndex = index;
     mPoolMutex = createMutex();
     mPool = pool;
-    mParser = createHttpV1Parser();
+    mParser = createHttpV1RequestParser();
 }
 
 void _WebSocketDispatchRunnable::handleHttpData(DispatchData data) {

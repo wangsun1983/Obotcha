@@ -6,7 +6,7 @@
 namespace obotcha {
 
 _HttpV1ClientInfo::_HttpV1ClientInfo(TcpServerSocket s) {
-    mV1Parser = createHttpV1Parser();
+    mV1Parser = createHttpV1RequestParser();
     mResponseWriteMutex = createMutex("HttpResponseMutex");
     mClientFd = s->getFd();
     mSocket = s;

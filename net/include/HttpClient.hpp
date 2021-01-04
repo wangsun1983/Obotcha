@@ -11,6 +11,7 @@
 #include "HttpCookie.hpp"
 #include "TcpClient.hpp"
 #include "HttpUrl.hpp"
+#include "HttpV1ResponseParser.hpp"
 
 namespace obotcha {
 
@@ -66,9 +67,7 @@ private:
 
     TcpClient mTcpClient;
 
-    ByteArray doReceiveChunk(ByteArray firstBlock);
-
-    ByteArray doReceiveEntity(ByteArray firstBlock);
+    HttpV1ResponseParser mParser;
 };
 
 }

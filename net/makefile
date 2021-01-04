@@ -17,6 +17,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheader.o \
 		$(outtmp)/httppacket.o \
 		$(outtmp)/httpv1responsewriter.o \
+		$(outtmp)/httpv1responseparser.o \
 		$(outtmp)/httpclientmanager.o \
 		$(outtmp)/httpcookie.o \
 		$(outtmp)/httpcookieparser.o \
@@ -25,7 +26,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpmultipartparser.o \
 		$(outtmp)/httpv1server.o \
 		$(outtmp)/httpv1clientinfo.o \
-		$(outtmp)/httpv1parser.o \
+		$(outtmp)/httpv1requestparser.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketprotocol.o \
 		$(outtmp)/websocketframe.o \
@@ -76,8 +77,8 @@ $(outtmp)/localsocketclient.o :$(netDir)/tcp/LocalSocketClient.cpp
 $(outtmp)/localsocketserver.o :$(netDir)/tcp/LocalSocketServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)
 
-$(outtmp)/httpv1parser.o :$(netDir)/http/HttpV1Parser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpV1Parser.cpp -o $(outtmp)/httpv1parser.o $(external)
+$(outtmp)/httpv1requestparser.o :$(netDir)/http/HttpV1RequestParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpV1RequestParser.cpp -o $(outtmp)/httpv1requestparser.o $(external)
 
 $(outtmp)/httpclient.o :$(netDir)/http/HttpClient.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClient.cpp -o $(outtmp)/httpclient.o $(external)
@@ -126,6 +127,9 @@ $(outtmp)/httpresponse.o :$(netDir)/http/HttpResponse.cpp
 
 $(outtmp)/httpv1responsewriter.o :$(netDir)/http/HttpV1ResponseWriter.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpV1ResponseWriter.cpp -o $(outtmp)/httpv1responsewriter.o $(external)
+
+$(outtmp)/httpv1responseparser.o :$(netDir)/http/HttpV1ResponseParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpV1ResponseParser.cpp -o $(outtmp)/httpv1responseparser.o $(external)
 
 $(outtmp)/httpclientmanager.o :$(netDir)/http/HttpClientManager.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClientManager.cpp -o $(outtmp)/httpclientmanager.o $(external)

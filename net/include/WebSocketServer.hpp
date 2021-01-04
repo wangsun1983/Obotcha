@@ -19,7 +19,7 @@
 #include "WebSocketListener.hpp"
 #include "HttpPacket.hpp"
 #include "EPollFileObserver.hpp"
-#include "HttpV1Parser.hpp"
+#include "HttpV1RequestParser.hpp"
 #include "WebSocketParser.hpp"
 #include "TcpServer.hpp"
 #include "WebSocketClientInfo.hpp"
@@ -95,7 +95,7 @@ private:
     void handleWsData(DispatchData data);
     void handleHttpData(DispatchData data);
 
-    HttpV1Parser mParser;
+    HttpV1RequestParser mParser;
 };
 
 //------------------WebSocketDefferedTasks---------------------------

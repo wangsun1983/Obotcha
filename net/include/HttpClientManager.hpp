@@ -15,7 +15,6 @@
 #include "HttpHeader.hpp"
 #include "ByteRingArray.hpp"
 #include "ByteRingArrayReader.hpp"
-#include "HttpV1Parser.hpp"
 #include "HttpPacket.hpp"
 #include "HttpV1ClientInfo.hpp"
 #include "Random.hpp"

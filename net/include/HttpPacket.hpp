@@ -21,8 +21,9 @@ DECLARE_SIMPLE_CLASS(HttpPacket) {
 
 public:
 
-    friend class _HttpV1Parser;
-    
+    friend class _HttpV1RequestParser;
+    friend class _HttpV1ResponseParser;
+
     _HttpPacket();
     
     void setHeader(HttpHeader);

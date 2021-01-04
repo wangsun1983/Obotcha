@@ -15,7 +15,7 @@
 #include "HttpHeader.hpp"
 #include "ByteRingArray.hpp"
 #include "ByteRingArrayReader.hpp"
-#include "HttpV1Parser.hpp"
+#include "HttpV1RequestParser.hpp"
 #include "HttpPacket.hpp"
 #include "SSLInfo.hpp"
 #include "HttpV1Server.hpp"
@@ -62,7 +62,7 @@ private:
 
     int mClientFd;
 
-    HttpV1Parser mV1Parser;
+    HttpV1RequestParser mV1Parser;
 
     int mStatus;
 

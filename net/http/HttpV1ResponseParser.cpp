@@ -1,40 +1,40 @@
-#include "HttpV1Parser.hpp"
+#include "HttpV1ResponseParser.hpp"
 #include "ArrayList.hpp"
 #include "HttpContentType.hpp"
 
 namespace obotcha {
 
-http_parser_settings _HttpV1Parser::settings = {
-    .on_message_begin = _HttpV1Parser::on_message_begin,
-    .on_url = _HttpV1Parser::on_url,
-    .on_header_field = _HttpV1Parser::on_header_field,
-    .on_header_value = _HttpV1Parser::on_header_value,
-    .on_headers_complete = _HttpV1Parser::on_headers_complete,
-    .on_body = _HttpV1Parser::on_body,
-    .on_message_complete = _HttpV1Parser::on_message_complete,
-    .on_reason = _HttpV1Parser::on_reason,
-    .on_chunk_header = _HttpV1Parser::on_chunk_header,
-    .on_chunk_complete = _HttpV1Parser::on_chunk_complete
+http_parser_settings _HttpV1ResponseParser::settings = {
+    .on_message_begin = _HttpV1ResponseParser::on_message_begin,
+    .on_url = _HttpV1ResponseParser::on_url,
+    .on_header_field = _HttpV1ResponseParser::on_header_field,
+    .on_header_value = _HttpV1ResponseParser::on_header_value,
+    .on_headers_complete = _HttpV1ResponseParser::on_headers_complete,
+    .on_body = _HttpV1ResponseParser::on_body,
+    .on_message_complete = _HttpV1ResponseParser::on_message_complete,
+    .on_reason = _HttpV1ResponseParser::on_reason,
+    .on_chunk_header = _HttpV1ResponseParser::on_chunk_header,
+    .on_chunk_complete = _HttpV1ResponseParser::on_chunk_complete
 };
 
-int _HttpV1Parser::on_message_begin(http_parser *parser) {
+int _HttpV1ResponseParser::on_message_begin(http_parser *parser) {
     return 0;
 }
 
-int _HttpV1Parser::on_url(http_parser*parser, const char *at, size_t length) {
+int _HttpV1ResponseParser::on_url(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
     String myurl = createString(at,0,length);
     p->setUrl(myurl);
     return 0;
 }
 
-int _HttpV1Parser::on_header_field(http_parser*parser, const char *at, size_t length) {
+int _HttpV1ResponseParser::on_header_field(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
     p->tempParseField = createString(at,0,length);
     return 0;
 }
 
-int _HttpV1Parser::on_header_value(http_parser*parser, const char *at, size_t length) {
+int _HttpV1ResponseParser::on_header_value(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
     String value = createString(at,0,length);
     if(p->tempParseField->equalsIgnoreCase("Cookie") 
@@ -47,17 +47,17 @@ int _HttpV1Parser::on_header_value(http_parser*parser, const char *at, size_t le
     return 0;
 }
 
-int _HttpV1Parser::on_headers_complete(http_parser*parser, const char *at, size_t length) {
+int _HttpV1ResponseParser::on_headers_complete(http_parser*parser, const char *at, size_t length) {
     return 0;
 }
 
-int _HttpV1Parser::on_body(http_parser*parser, const char *at, size_t length) {
+int _HttpV1ResponseParser::on_body(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
     p->setBody(createByteArray((byte *)at,(int)length));
     return 0;
 }
 
-int _HttpV1Parser::on_message_complete(http_parser *parser) {
+int _HttpV1ResponseParser::on_message_complete(http_parser *parser) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
     p->setMethod(parser->method);
     p->setStatusCode(parser->status_code);
@@ -66,21 +66,21 @@ int _HttpV1Parser::on_message_complete(http_parser *parser) {
     return 0;
 }
 
-int _HttpV1Parser::on_reason(http_parser*parser, const char *at, size_t length) {
+int _HttpV1ResponseParser::on_reason(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
     p->setReason(createString(at,0,length));
     return 0;
 }
 
-int _HttpV1Parser::on_chunk_header(http_parser*parser) {
+int _HttpV1ResponseParser::on_chunk_header(http_parser*parser) {
     return 0;
 }
 
-int _HttpV1Parser::on_chunk_complete(http_parser*parser) {
+int _HttpV1ResponseParser::on_chunk_complete(http_parser*parser) {
     return 0;
 }
 
-_HttpV1Parser::_HttpV1Parser() {
+_HttpV1ResponseParser::_HttpV1ResponseParser() {
     mEnv = st(Enviroment)::getInstance();
     mBuff = createByteRingArray(mEnv->getInt(st(Enviroment)::gHttpBufferSize,64*1024));
     mReader = createByteRingArrayReader(mBuff);
@@ -89,7 +89,7 @@ _HttpV1Parser::_HttpV1Parser() {
     mStatus = HttpV1ParseStatusIdle;
 }
 
-void _HttpV1Parser::pushHttpData(ByteArray data) {
+void _HttpV1ResponseParser::pushHttpData(ByteArray data) {
     //write data
 #ifdef DUMP_HTTP_DATE
     File dumpfile = createFile("data.dt");
@@ -103,28 +103,7 @@ void _HttpV1Parser::pushHttpData(ByteArray data) {
     mBuff->push(data);
 }
 
-HttpPacket _HttpV1Parser::parseEntireRequest(String request) {
-    memset(&mParser,0,sizeof(http_parser));
-    HttpPacket packet = createHttpPacket();
-    mParser.data = reinterpret_cast<void *>(packet.get_pointer());
-    http_parser_init(&mParser, HTTP_REQUEST);
-    http_parser_execute(&mParser,&settings, request->toChars(), request->size());
-    return packet;
-}
-
-HttpPacket _HttpV1Parser::parseEntireResponse(String response) {
-    memset(&mParser,0,sizeof(http_parser));
-    HttpPacket packet = createHttpPacket();
-    mParser.data = reinterpret_cast<void *>(packet.get_pointer());
-
-    http_parser_init(&mParser, HTTP_RESPONSE);
-    http_parser_execute(&mParser,&settings, response->toChars(), response->size());
-    packet->setMethod(mParser.method);
-    packet->setStatusCode(mParser.status_code);
-    return packet;
-}
-
-ArrayList<HttpPacket> _HttpV1Parser::doParse() {
+ArrayList<HttpPacket> _HttpV1ResponseParser::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
     static byte end[4] = {'\r','\n','\r','\n'};
     static byte chunkEnd[5] = {'\r','\n','0','\r','\n'};
@@ -172,21 +151,9 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
                 //check whether there is a multipart
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
-                if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPareFormData) != -1) {
-                    if(mMultiPartParser == nullptr || !contenttype->equalsIgnoreCase(mMultiPartParser->getHeaderBoundary())) {
-                        mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength->toBasicInt());
-                    }
-
-                    HttpMultiPart multipart = mMultiPartParser->parse(mReader);
-                    if(multipart != nullptr) {
-                        mHttpPacket->setMultiPart(multipart);
-                        packets->add(mHttpPacket);
-                        mStatus = HttpV1ParseStatusIdle;
-                    }
-                    return packets;
-                }
-                String transferEncoding = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
                 
+                String transferEncoding = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
+                //TODO
                 if(transferEncoding != nullptr) {
                     byte v = 0;
                     while(mReader->readNext(v) != ByteRingArrayReadComplete) {
@@ -240,7 +207,7 @@ ArrayList<HttpPacket> _HttpV1Parser::doParse() {
     return packets;
 }
 
-int _HttpV1Parser::getStatus() {
+int _HttpV1ResponseParser::getStatus() {
     return mStatus;
 }
 
