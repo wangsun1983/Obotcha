@@ -144,8 +144,11 @@ void _HttpDispatchRunnable::run() {
         if(info == nullptr) {
             continue;
         }
+
         info->pushHttpData(data->pack);
+        printf("HttpDispatchRunnable run trace1,data->pack is %s \n",data->pack->toString()->toChars());
         ArrayList<HttpPacket> packets = info->pollHttpPacket();
+        printf("HttpDispatchRunnable run packets size is %d \n",packets->size());
         HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);
         if(data->clientid != info->getClientId()) {
             writer->disableResponse();
@@ -155,6 +158,8 @@ void _HttpDispatchRunnable::run() {
             ListIterator<HttpPacket> iterator = packets->getIterator();
             while(iterator->hasValue()) {
                 //we should check whether there is a multipart
+                HttpPacket packet = iterator->getValue();
+                packet->dump();
                 info->getHttpV1Listener()->onMessage(info,writer,iterator->getValue());
                 iterator->next();
             }

@@ -163,8 +163,12 @@ ArrayList<HttpPacket> _HttpV1RequestParser::doParse() {
                                     &settings, 
                                     (const char *)head->toValue(), 
                                     head->size());
-                mStatus = HttpClientParseStatusBodyStart;
-
+                if(mHttpPacket->mUrl == nullptr || mHttpPacket->mUrl->size() == 0) {
+                    //this is a null packet
+                    mStatus = HttpV1ParseStatusIdle;
+                } else {
+                    mStatus = HttpClientParseStatusBodyStart;
+                }
                 continue;
             }
 
@@ -180,6 +184,7 @@ ArrayList<HttpPacket> _HttpV1RequestParser::doParse() {
                     HttpMultiPart multipart = mMultiPartParser->parse(mReader);
                     if(multipart != nullptr) {
                         mHttpPacket->setMultiPart(multipart);
+                        printf("add packet trace4 \n");
                         packets->add(mHttpPacket);
                         mStatus = HttpV1ParseStatusIdle;
                     }
@@ -202,6 +207,7 @@ ArrayList<HttpPacket> _HttpV1RequestParser::doParse() {
                             ByteArray chunk = mReader->pop();
                             chunk->quickShrink(chunk->size()-5);
                             mHttpPacket->setBody(chunk);
+                            printf("add packet trace1 \n");
                             packets->add(mHttpPacket);
                             mChunkEndCount = 0;
                             break;
@@ -221,12 +227,14 @@ ArrayList<HttpPacket> _HttpV1RequestParser::doParse() {
                         mReader->move(length);
                         mHttpPacket->setBody(mReader->pop());
                         mStatus = HttpV1ParseStatusIdle;
+                        printf("add packet trace2 \n");
                         packets->add(mHttpPacket);
                         continue;
                     }
                 } else {
                     //no contentlength,maybe it is only a html request
                     mStatus = HttpV1ParseStatusIdle;
+                    printf("add packet trace3 \n");
                     packets->add(mHttpPacket);
                     continue;
 

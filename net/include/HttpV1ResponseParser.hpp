@@ -59,6 +59,8 @@ private:
 
     HttpPacket mHttpPacket;
 
+    int mChunkSize;
+
 
     static int on_message_begin(http_parser *);
     static int on_url(http_parser*, const char *at, size_t length);

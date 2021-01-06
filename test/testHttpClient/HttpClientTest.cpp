@@ -14,12 +14,13 @@ using namespace obotcha;
 
 int main() {
 
-    String urlstr = "http://www.tusvisionai.com/solutions";
+    String urlstr = "http://192.168.1.10:8012/log.zip";
     HttpUrl url = st(HttpUrlParser)::parseUrl(urlstr);
 
     //while(1) {
     HttpClient client = createHttpClient();
-    client->execute(HttpMethodGet,url);
+    String result = client->execute(st(HttpMethod)::Get,url);
+    printf("result is %s \n",result->toChars());
     //}
     while(1){}
 /*    

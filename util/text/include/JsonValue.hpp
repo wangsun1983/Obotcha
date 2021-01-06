@@ -211,10 +211,14 @@ public:
 
     template<typename T>
     void reflectToArrayList(T obj,String name) {
+        printf("reflectToArrayList trace1,name is %s \n",name->toChars());
         Field field = obj->getField(name);
         field->createObject();
+        printf("reflectToArrayList trace2,name is %s \n",name->toChars());
         int size = this->size();
+        printf("reflectToArrayList trace3,size is %d \n",size);
         for(int index = 0;index<size;index++) {
+            printf("reflectToArrayList trace3,index is %d \n",index);
             auto vv = field->createListItemObject();
             JsonValue value = this->getValueAt(index);
             value->reflectTo(vv);
@@ -223,18 +227,23 @@ public:
 
     template<typename T>
     void reflectTo(T obj) {
+        printf("reflectTo trace1 \n");
         sp<_JsonValueIterator> iterator = this->getIterator();
         while(iterator->hasValue()) {
             String key = iterator->getTag();
-            
+            printf("reflectTo trace1,key is %s\n",key->toChars());
             Field field = obj->getField(key);
+            printf("reflectTo trace1_2 \n");
             if(field == nullptr) {
+                printf("reflectTo trace1_3 \n");
                 iterator->next();
                 continue;
             }
+            printf("reflectTo trace1_4 \n");
             std::string name = field->getName()->getStdString();
+            printf("reflectTo trace1_5 \n");
             JsonValue jsonnode = iterator->getValue();
-
+            printf("reflectTo trace1,name is %s\n",name.c_str());
             switch(field->getType()) {
                 case st(Field)::FieldTypeLong:{
                     String value = jsonnode->getString();
@@ -311,6 +320,7 @@ public:
                     break;
 
                 case st(Field)::FieldTypeArrayList:
+                    printf("FieldTypeArrayList trace1,name is %s \n",field->getName()->toChars());
                     jsonnode->reflectToArrayList(obj,field->getName());
                     break;
             }
@@ -381,7 +391,7 @@ public:
                 break;
 
                 case st(Field)::FieldTypeUint64:{
-                    this->put(name,(uint64_t)field->getUint32Value());
+                    this->put(name,(uint64_t)field->getUint64Value());
                 }
                 break;
                 case st(Field)::FieldTypeObject: {

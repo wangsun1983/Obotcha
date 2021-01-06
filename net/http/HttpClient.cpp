@@ -109,40 +109,34 @@ String _HttpClient::execute(int method,HttpUrl url) {
     //packet->getHeader()->setValue(Http_Header_Referer,"http://www.tusvisionai.com/about");
     //packet->getHeader()->setValue(Http_Header_Connection,"keep-alive");
     //this is not bind client
-    String ip = mIp;
-    if(mIp == nullptr) {
-        ArrayList<String> ips = st(InetAddress)::getHostByName(url->getHost());
-        if(ips == nullptr || ips->size() == 0) {
-            return nullptr;
+
+    ArrayList<String> ips = st(InetAddress)::getHostByName(url->getHost());
+    if(ips == nullptr || ips->size() == 0) {
+        return nullptr;
+    }
+
+    String ip = ips->get(0);
+    printf("ip is %s \n",ip->toChars());
+    mTcpClient = createTcpClient(ip,url->getPort(),mTimeout);
+   
+
+    //if(!mKeepAlive) {
+    mTcpClient->doConnect();
+    //}
+    int len = mTcpClient->doSend(createByteArray(packet->genHttpRequest()));
+    printf("len is %d \n",len);
+    while(1) {
+        ByteArray result = mTcpClient->doReceive();
+        printf("receive \n");
+        mParser->pushHttpData(result);
+        ArrayList<HttpPacket> packets = mParser->doParse();
+        if(packets == nullptr || packets->size() == 0) {
+            continue;
         }
-
-        ip = ips->get(0);
-        mTcpClient = createTcpClient(ip,mPort,mTimeout);
-    }
-
-    if(!mKeepAlive) {
-        mTcpClient->doConnect();
+        return packets->get(0)->getBody()->toString();
     }
     
-    mTcpClient->doSend(createByteArray(packet->genHttpRequest()));
-    
-    ByteArray result = mTcpClient->doReceive();
-    
-    //get first block
-    /*
-    HttpPacket firstBlock = parser->parseEntireResponse(result->toString());
-    String transferEncoding = firstBlock->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
-    if(transferEncoding!= nullptr && transferEncoding->equals("chunked")) {
-        result = doReceiveChunk(result);
-    } else {
-        //TODO
-    }
-    
-    if(!mKeepAlive) {
-        mTcpClient->release();
-    } */
-    
-    return result->toString();
+    return nullptr;
 }
 
 String _HttpClient::execute(int,String url) {

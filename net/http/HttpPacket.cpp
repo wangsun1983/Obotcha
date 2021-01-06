@@ -107,8 +107,7 @@ String _HttpPacket::genHttpRequest() {
     req = req->append(" ",mUrl,
                       " HTTP/",createString(mMajorVer),".",createString(mMinorVer),
                       "\r\n",
-                      mHeader->genHtml(),
-                      "\r\n\r\n");
+                      mHeader->genHtml());
 
     return req;   
 }

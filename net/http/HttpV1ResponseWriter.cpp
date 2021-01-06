@@ -54,27 +54,30 @@ int _HttpV1ResponseWriter::flush() {
         return -1;
     }
     int totalsend = 0;
-
+    printf("flush trace1 \n");
     AutoLock l(mClient->getResponseWriteMutex());
     if(mFile != nullptr) {
+        printf("flush trace1_1 \n");
         Enviroment env = st(Enviroment)::getInstance();
         int buffsize = env->getInt(st(Enviroment)::gHttpServerSendFileBufferSize,64*1024);
         if(mFile->exists()) {
+            printf("flush trace2 \n");
             FileInputStream stream = createFileInputStream(mFile);
             stream->open();
             //update HttpHeader
             ByteArray buff = createByteArray(buffsize);
             bool isFirstChunk = true;
-            printf("flush trace1 \n");
+            printf("flush trace2 \n");
             while(1) {
                 int length = stream->read(buff);
                 if(length == 0) {
                     break;
                 }
-
+                printf("flush trace3 \n");
                 String lengthHexStr = createString(length)->toHexString()->append("\r\n");
                 int hexStrLen = lengthHexStr->size();
                 if(isFirstChunk) {
+                    printf("flush trace4 \n");
                     mPacket->getHeader()->setValue(st(HttpHeader)::TransferEncoding,st(HttpHeader)::TransferChunked);
                     mPacket->getHeader()->setValue(st(HttpHeader)::Status,createString(st(HttpResponse)::Ok));
 
@@ -105,6 +108,7 @@ int _HttpV1ResponseWriter::flush() {
                     ByteArray resp = mPacket->genHttpResponse();
                     mClient->send(resp);
                     isFirstChunk = false;
+                    printf("flush trace5 \n");
                 } else {
                     String line = "\r\n";
                     int linesize = 0;

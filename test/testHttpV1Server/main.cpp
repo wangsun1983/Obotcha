@@ -89,15 +89,20 @@ DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
 
 
     void onMessage(sp<_HttpV1ClientInfo> client,sp<_HttpV1ResponseWriter> w,HttpPacket msg){
+        if(msg == nullptr) {
+            return;
+        }
+        
         String url = msg->getUrl();
-        printf("url is %s \n",url->toChars());
+        printf("url11111 is %s \n",url->toChars());
         if(url->indexOf("zip") > 0) {
-            printf("start send file");
+            printf("start send file \n");
             File f = createFile("data.data");
             w->write(f);
             w->flush();
             return;
         }
+        printf("url2 is %s \n",url->toChars());
         //HttpMultiPart getMultiPart();
         HttpMultiPart part = msg->getMultiPart();
         if(part != nullptr) {

@@ -245,6 +245,7 @@ _String::_String(const char *v,int start,int length) {
     }
 
     m_str = std::string(v,start,length);
+    printf("create v is %s,start is %d,length is %d,str is %s, \n",v,start,length,m_str.c_str());
 }
 
 _String::~_String() {
@@ -798,13 +799,13 @@ byte _String::toBasicByte() {
 
     std::stringstream ss;
     ss<<m_str;
-    byte value;
+    int value;
     ss>>value;
     return value;
 }
 
 int _String::toHexInt() {
-    if(m_str.size() == 0 || !isIntNumber(m_str.data(),m_str.size())) {
+    if(m_str.size() == 0) {
         Trigger(TransformException,"String to Hex Int Fail");
     }
 
