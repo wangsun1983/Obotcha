@@ -987,7 +987,7 @@ void testArrayList_Double() {
     list->add(createDouble(5.1));
     ListIterator<Double> iterator = list->getIterator();
     while(iterator->hasValue()) {
-      if(st(Math)::compare(iterator->getValue()->toValue(),3.1) == CompareParamEqual) {
+      if(st(Math)::compareDouble(iterator->getValue()->toValue(),3.1) == st(Math)::CompareParamEqual) {
         iterator->remove();
       }else {
         iterator->next();
@@ -999,10 +999,10 @@ void testArrayList_Double() {
         break;
     }
 
-    if(st(Math)::compare(list->get(0)->toValue(),1.1) != CompareParamEqual
-      ||st(Math)::compare(list->get(1)->toValue(),2.1) != CompareParamEqual
-      ||st(Math)::compare(list->get(2)->toValue(),4.1) != CompareParamEqual
-      ||st(Math)::compare(list->get(3)->toValue(),5.1) != CompareParamEqual) {
+    if(st(Math)::compareDouble(list->get(0)->toValue(),1.1) != st(Math)::CompareParamEqual
+      ||st(Math)::compareDouble(list->get(1)->toValue(),2.1) != st(Math)::CompareParamEqual
+      ||st(Math)::compareDouble(list->get(2)->toValue(),4.1) != st(Math)::CompareParamEqual
+      ||st(Math)::compareDouble(list->get(3)->toValue(),5.1) != st(Math)::CompareParamEqual) {
         printf("---[ListIterator<Double> Test {remove()} case2] [FAILED]--- \n");
         break;
     }

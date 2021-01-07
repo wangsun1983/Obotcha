@@ -183,9 +183,27 @@ public:
 
     void append(Integer value);
 
+    void append(int value);
+
+    void append(Long value);
+
+    void append(long value);
+
+    void append(Uint8 value);
+
+    void append(uint8_t value);
+
+    void append(Uint16 value);
+
+    void append(uint16_t value);
+
+    void append(Uint32 value);
+
+    void append(uint32_t value);
+    
     void append(Uint64 value);
 
-    void append(int value);
+    void append(uint64_t value);
 
     void append(Boolean value);
 
@@ -211,39 +229,54 @@ public:
 
     template<typename T>
     void reflectToArrayList(T obj,String name) {
-        printf("reflectToArrayList trace1,name is %s \n",name->toChars());
         Field field = obj->getField(name);
         field->createObject();
-        printf("reflectToArrayList trace2,name is %s \n",name->toChars());
         int size = this->size();
-        printf("reflectToArrayList trace3,size is %d \n",size);
         for(int index = 0;index<size;index++) {
-            printf("reflectToArrayList trace3,index is %d \n",index);
-            auto vv = field->createListItemObject();
+            auto newObject = field->createListItemObject();
             JsonValue value = this->getValueAt(index);
-            value->reflectTo(vv);
+            if(InstanceOf(newObject,Integer)) {
+                Integer data = cast<Integer>(newObject);
+                data->update(value->getInteger()->toValue());
+            } else if(InstanceOf(newObject,Long)) {
+                Long data = cast<Long>(newObject);
+                data->update(value->getLong()->toValue());
+            } else if(InstanceOf(newObject,Boolean)) {
+                Boolean data = cast<Boolean>(newObject);
+                data->update(value->getBoolean()->toValue());
+            } else if(InstanceOf(newObject,Double)) {
+                Double data = cast<Double>(newObject);
+                data->update(value->getDouble()->toValue());
+            } else if(InstanceOf(newObject,Float)) {
+                Float data = cast<Float>(newObject);
+                data->update(value->getDouble()->toValue());
+            } else if(InstanceOf(newObject,Uint8)) {
+                Uint8 data = cast<Uint8>(newObject);
+                data->update(value->getUint64()->toValue());
+            } else if(InstanceOf(newObject,Uint16)) {
+                Uint16 data = cast<Uint16>(newObject);
+                data->update(value->getUint64()->toValue());
+            } else if(InstanceOf(newObject,Uint32)) {
+                Uint32 data = cast<Uint32>(newObject);
+                data->update(value->getUint64()->toValue());
+            } else {
+                value->reflectTo(newObject);
+            }
         }
     }
 
     template<typename T>
     void reflectTo(T obj) {
-        printf("reflectTo trace1 \n");
         sp<_JsonValueIterator> iterator = this->getIterator();
         while(iterator->hasValue()) {
             String key = iterator->getTag();
-            printf("reflectTo trace1,key is %s\n",key->toChars());
             Field field = obj->getField(key);
-            printf("reflectTo trace1_2 \n");
             if(field == nullptr) {
-                printf("reflectTo trace1_3 \n");
                 iterator->next();
                 continue;
             }
-            printf("reflectTo trace1_4 \n");
             std::string name = field->getName()->getStdString();
-            printf("reflectTo trace1_5 \n");
             JsonValue jsonnode = iterator->getValue();
-            printf("reflectTo trace1,name is %s\n",name.c_str());
             switch(field->getType()) {
                 case st(Field)::FieldTypeLong:{
                     String value = jsonnode->getString();
@@ -320,7 +353,6 @@ public:
                     break;
 
                 case st(Field)::FieldTypeArrayList:
-                    printf("FieldTypeArrayList trace1,name is %s \n",field->getName()->toChars());
                     jsonnode->reflectToArrayList(obj,field->getName());
                     break;
             }
@@ -331,14 +363,18 @@ public:
 
     template<typename T>
     void importFrom(T value) {
+        printf("importFrom trace1 \n");
         ArrayList<Field> fields = value->getAllFields();
         if(fields == nullptr) {
             LOG(ERROR)<<"fields is nullptr !!!!!";
         }
+        printf("importFrom trace2 \n");
         ListIterator<Field> iterator = fields->getIterator();
+        printf("importFrom trace3 \n");
         while(iterator->hasValue()) {
             Field field = iterator->getValue();
             String name = field->getName();
+            printf("name is %s,type is %d \n",name->toChars(),field->getType());
             switch(field->getType()) {
                 case st(Field)::FieldTypeLong: {
                     this->put(name,field->getLongValue());
@@ -395,6 +431,8 @@ public:
                 }
                 break;
                 case st(Field)::FieldTypeObject: {
+                    //check whether it is Number
+                    printf("FieldTypeObject trace1 \n");
                     auto newObject = field->getObjectValue();
                     JsonValue newValue = createJsonValue();
                     newValue->importFrom(newObject);
@@ -408,9 +446,35 @@ public:
                     while(1) {
                         auto newObject = field->getListItemObject(count);
                         if(newObject != nullptr) {
-                            JsonValue newValue = createJsonValue();
-                            newValue->importFrom(newObject);
-                            arrayNode->append(newValue);
+                            if(InstanceOf(newObject,Integer)) {
+                                Integer data = cast<Integer>(newObject);
+                                arrayNode->append(data->toValue());
+                            } else if(InstanceOf(newObject,Long)) {
+                                Long data = cast<Long>(newObject);
+                                arrayNode->append(data->toValue());
+                            } else if(InstanceOf(newObject,Boolean)) {
+                                Boolean data = cast<Boolean>(newObject);
+                                arrayNode->append(data->toValue());
+                            } else if(InstanceOf(newObject,Double)) {
+                                Double data = cast<Double>(newObject);
+                                arrayNode->append(data->toValue());
+                            } else if(InstanceOf(newObject,Float)) {
+                                Float data = cast<Float>(newObject);
+                                arrayNode->append(data->toValue());
+                            } else if(InstanceOf(newObject,Uint8)) {
+                                Uint8 data = cast<Uint8>(newObject);
+                                arrayNode->append(data->toValue());
+                            } else if(InstanceOf(newObject,Uint16)) {
+                                Uint16 data = cast<Uint16>(newObject);
+                                arrayNode->append(data->toValue());
+                            } else if(InstanceOf(newObject,Uint32)) {
+                                Uint32 data = cast<Uint32>(newObject);
+                                arrayNode->append(data->toValue());
+                            } else {
+                                JsonValue newValue = createJsonValue();
+                                newValue->importFrom(newObject);
+                                arrayNode->append(newValue);
+                            }
                             count++;
                             continue;
                         }
@@ -421,8 +485,7 @@ public:
                 break;
             }
             iterator->next();
-        }
-        
+        }        
     }
 
     ~_JsonValue();

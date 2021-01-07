@@ -74,12 +74,14 @@ int testReflectToArrayJson() {
 
     ArrayListMember r1 = rdata3->lists->get(0);
     if(m1->intMember != r1->intMember) {
+      printf("m1->intMember is %d,r1->intMember is %d \n",m1->intMember,r1->intMember);
       printf("Reflect ArrayList To File test2-------[FAIL] \n");
       break;
     }
 
     if(m1->boolMember != r1->boolMember) {
-      printf("Reflect ArrayList To File test2-------[FAIL] \n");
+      printf("m1->boolMember is %d,r1->boolMember is %d \n",m1->boolMember,r1->boolMember);
+      printf("Reflect ArrayList To File test2_1-------[FAIL] \n");
       break;
     }
 
@@ -94,43 +96,43 @@ int testReflectToArrayJson() {
     }
 
     ArrayListMember r2 = rdata3->lists->get(1);
-    if(m1->intMember != r2->intMember) {
+    if(m2->intMember != r2->intMember) {
       printf("Reflect ArrayList To File test5-------[FAIL] \n");
       break;
     }
 
-    if(m1->boolMember != r2->boolMember) {
+    if(m2->boolMember != r2->boolMember) {
       printf("Reflect ArrayList To File test6-------[FAIL] \n");
       break;
     }
 
-    if(m1->uint64Member != r2->uint64Member) {
+    if(m2->uint64Member != r2->uint64Member) {
       printf("Reflect ArrayList To File test7-------[FAIL] \n");
       break;
     }
 
-    if(!m1->stringMember->equals(r2->stringMember)) {
+    if(!m2->stringMember->equals(r2->stringMember)) {
       printf("Reflect ArrayList To File test8-------[FAIL] \n");
       break;
     }
 
     ArrayListMember r3 = rdata3->lists->get(2);
-    if(m1->intMember != r3->intMember) {
+    if(m3->intMember != r3->intMember) {
       printf("Reflect ArrayList To File test9-------[FAIL] \n");
       break;
     }
 
-    if(m1->boolMember != r3->boolMember) {
+    if(m3->boolMember != r3->boolMember) {
       printf("Reflect ArrayList To File test10-------[FAIL] \n");
       break;
     }
 
-    if(m1->uint64Member != r3->uint64Member) {
+    if(m3->uint64Member != r3->uint64Member) {
       printf("Reflect ArrayList To File test11-------[FAIL] \n");
       break;
     }
 
-    if(!m1->stringMember->equals(r3->stringMember)) {
+    if(!m3->stringMember->equals(r3->stringMember)) {
       printf("Reflect ArrayList To File test10-------[FAIL] \n");
       break;
     }

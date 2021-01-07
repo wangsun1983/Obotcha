@@ -987,7 +987,7 @@ void testArrayList_Float() {
     list->add(createFloat(5.1f));
     ListIterator<Float> iterator = list->getIterator();
     while(iterator->hasValue()) {
-      if(st(Math)::compare(iterator->getValue()->toValue(),3.1f) == CompareParamEqual) {
+      if(st(Math)::compareFloat(iterator->getValue()->toValue(),3.1f) == st(Math)::CompareParamEqual) {
         iterator->remove();
       }else {
         iterator->next();
@@ -999,10 +999,10 @@ void testArrayList_Float() {
         break;
     }
 
-    if(st(Math)::compare(list->get(0)->toValue(),1.1f) != CompareParamEqual
-      ||st(Math)::compare(list->get(1)->toValue(),2.1f) != CompareParamEqual
-      ||st(Math)::compare(list->get(2)->toValue(),4.1f) != CompareParamEqual
-      ||st(Math)::compare(list->get(3)->toValue(),5.1f) != CompareParamEqual) {
+    if(st(Math)::compareFloat(list->get(0)->toValue(),1.1f) != st(Math)::CompareParamEqual
+      ||st(Math)::compareFloat(list->get(1)->toValue(),2.1f) != st(Math)::CompareParamEqual
+      ||st(Math)::compareFloat(list->get(2)->toValue(),4.1f) != st(Math)::CompareParamEqual
+      ||st(Math)::compareFloat(list->get(3)->toValue(),5.1f) != st(Math)::CompareParamEqual) {
         printf("---[ListIterator<Float> Test {remove()} case2] [FAILED]--- \n");
         break;
     }

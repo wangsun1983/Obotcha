@@ -341,11 +341,47 @@ void _JsonValue::append(Integer value) {
     jvalue.append(value->toValue());
 }
 
+void _JsonValue::append(int value) {
+    jvalue.append(value);
+}
+
+void _JsonValue::append(Long value) {
+    jvalue.append((Json::Int64)value->toValue());
+}
+
+void _JsonValue::append(long value) {
+    jvalue.append((Json::Int64)value);
+}
+
+void _JsonValue::append(Uint8 value) {
+    jvalue.append((Json::UInt64)value->toValue());
+}
+
+void _JsonValue::append(uint8_t value) {
+    jvalue.append(value);
+}
+
+void _JsonValue::append(Uint16 value) {
+    jvalue.append((Json::UInt64)value->toValue());
+}
+
+void _JsonValue::append(uint16_t value) {
+    jvalue.append(value);
+}
+
+void _JsonValue::append(Uint32 value) {
+    jvalue.append((Json::UInt64)value->toValue());
+}
+
+void _JsonValue::append(uint32_t value) {
+    jvalue.append(value);
+}
+
 void _JsonValue::append(Uint64 value) {
     jvalue.append((Json::UInt64)value->toValue());
 }
 
-void _JsonValue::append(int value) {
+void _JsonValue::append(uint64_t value) {
     jvalue.append(value);
 }
 
