@@ -32,6 +32,7 @@ void _translateException(char *buff,String err);
 #define Trigger(V,info) \
     char buff[256] = {0};\
     sprintf(buff,"\n-------%s START-------- \n[File]:%s \n[Line]:%d\n",#V,__FILE__,__LINE__);\
+    printf("%s \n",buff);\
     _translateException(buff,info);\
     throw V(buff);\
 

@@ -2386,6 +2386,7 @@ private:\
     void setFieldFloatValue(std::string name,float value){setFieldValue(name,value);}\
     void setFieldLongValue(std::string name,long value){setFieldValue(name,value);}\
     void setFieldUint8Value(std::string name,uint8_t value){setFieldValue(name,value);}\
+    void setFieldBoolValue(std::string name,bool value){setFieldValue(name,value);}\
     void setFieldUint16Value(std::string name ,uint16_t value){setFieldValue(name,value);}\
     void setFieldUint32Value(std::string name ,uint32_t value){setFieldValue(name,value);}\
     void setFieldUint64Value(std::string name,uint64_t value){setFieldValue(name,value);}\

@@ -245,7 +245,6 @@ _String::_String(const char *v,int start,int length) {
     }
 
     m_str = std::string(v,start,length);
-    printf("create v is %s,start is %d,length is %d,str is %s, \n",v,start,length,m_str.c_str());
 }
 
 _String::~_String() {

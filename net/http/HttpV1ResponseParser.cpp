@@ -195,7 +195,7 @@ ArrayList<HttpPacket> _HttpV1ResponseParser::doParse() {
                     int readablelength = mReader->getReadableLength();
                     //if(mReader->getReadableLength() >= mChunkSize) {
                     ByteArray body = mHttpPacket->getBody();
-                    mReader->move(mChunkSize);
+                    mReader->move(readablelength);
                     if(body == nullptr) {
                         body = mReader->pop();
                     } else {
@@ -205,7 +205,8 @@ ArrayList<HttpPacket> _HttpV1ResponseParser::doParse() {
                     mHttpPacket->setBody(body);
                     printf("mReader readable length is %d,mChunkSize is %d \n",readablelength,mChunkSize);
                     if(readablelength < mChunkSize) {
-                        printf("HttpClientParseStatusBodyStart trace2_1\n");
+                        mChunkSize -= readablelength;
+                        printf("HttpClientParseStatusBodyStart trace2_1,mChunkSize is %d\n",mChunkSize);
                         return packets;
                     }
                     mChunkSize = -1;
