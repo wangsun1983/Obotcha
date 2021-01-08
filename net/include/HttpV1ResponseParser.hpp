@@ -36,7 +36,8 @@ private:
     enum HttpV1ParseStatus {
         HttpV1ParseStatusIdle = 0,
         HttpClientParseStatusHeadStart,
-        HttpClientParseStatusBodyStart
+        HttpClientParseStatusBodyStart,
+        HttpClientParseStatusChunkJumpLineStart,
     };
     
     int mStatus;

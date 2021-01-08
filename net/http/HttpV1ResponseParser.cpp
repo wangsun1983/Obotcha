@@ -89,7 +89,7 @@ _HttpV1ResponseParser::_HttpV1ResponseParser() {
 
 void _HttpV1ResponseParser::pushHttpData(ByteArray data) {
     //write data
-#ifdef DUMP_HTTP_DATE
+//#ifdef DUMP_HTTP_DATE
     File dumpfile = createFile("data.dt");
     //dumpfile->removeAll();
     dumpfile->createNewFile();
@@ -97,7 +97,7 @@ void _HttpV1ResponseParser::pushHttpData(ByteArray data) {
     stream->open();
     stream->write(data);
     stream->flush();
-#endif
+//#endif
     mBuff->push(data);
 }
 
@@ -157,11 +157,11 @@ ArrayList<HttpPacket> _HttpV1ResponseParser::doParse() {
                 String transferEncoding = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
                 //TODO
                 if(transferEncoding != nullptr && transferEncoding->endsWithIgnoreCase(st(HttpHeader)::TransferChunked)) {
-                    printf("HttpClientParseStatusBodyStart trace0,mChunkSize is %d\n",mChunkSize);
+                    printf("HttpClientParseStatusBodyStart trace0,mChunkSize is %d,reablesize is %d\n",mChunkSize,mReader->getReadableLength());
                     if(mChunkSize == -1) {
                         //read chunksize
                         while(mReader->readNext(v) != ByteRingArrayReadComplete) {
-                            //printf("v is %c \n",v);
+                            printf("v is %x \n",v);
                             if(v == chunksizeEnd[mChunkEndCount]) {
                                 mChunkEndCount++;
                             } else {
@@ -172,7 +172,7 @@ ArrayList<HttpPacket> _HttpV1ResponseParser::doParse() {
                                 mChunkEndCount = 0;
                                 ByteArray dd = mReader->pop();
                                 for(int i = 0;i<dd->size();i++) {
-                                    printf("dd[%d] is %c \n",i,dd->at(i));
+                                    printf("dd[%d] is %x \n",i,dd->at(i));
                                 }
                                 String chunklength = dd->toString();
 
@@ -183,9 +183,9 @@ ArrayList<HttpPacket> _HttpV1ResponseParser::doParse() {
                                 break;
                             }
                         }
-                        printf("HttpClientParseStatusBodyStart trace1\n");
+                        printf("HttpClientParseStatusBodyStart trace1,mChunkSize is %d\n",mChunkSize);
 
-                        if(mChunkSize == -1) {
+                        if(mChunkSize == 0) {
                             //last trunk
                             printf("HttpClientParseStatusBodyStart last trunk\n");
                             packets->add(mHttpPacket);
@@ -193,9 +193,10 @@ ArrayList<HttpPacket> _HttpV1ResponseParser::doParse() {
                         }
                     }
                     int readablelength = mReader->getReadableLength();
-                    //if(mReader->getReadableLength() >= mChunkSize) {
+                    int popsize = (readablelength > mChunkSize)?mChunkSize:readablelength;
+
                     ByteArray body = mHttpPacket->getBody();
-                    mReader->move(readablelength);
+                    mReader->move(popsize);
                     if(body == nullptr) {
                         body = mReader->pop();
                     } else {
@@ -209,9 +210,29 @@ ArrayList<HttpPacket> _HttpV1ResponseParser::doParse() {
                         printf("HttpClientParseStatusBodyStart trace2_1,mChunkSize is %d\n",mChunkSize);
                         return packets;
                     }
+                    printf("remain read length is %d \n",mReader->getReadableLength());
                     mChunkSize = -1;
-                    mStatus = HttpV1ParseStatusIdle;
+                    mStatus = HttpClientParseStatusChunkJumpLineStart;
                     continue;
+                }
+            }
+            break;
+
+            case HttpClientParseStatusChunkJumpLineStart: {
+                printf("HttpClientParseStatusChunkJumpLineStart,mChunkEndCount is %d \n",mChunkEndCount);
+                while(mReader->readNext(v) != ByteRingArrayReadComplete) {
+                    printf("HttpClientParseStatusChunkJumpLineStart v is %d,chunk value is %d\n",v,chunksizeEnd[mChunkEndCount]);
+                    if(v == chunksizeEnd[mChunkEndCount]) {
+                        mChunkEndCount++;
+                    } else {
+                        mChunkEndCount = 0;
+                    }
+
+                    if(mChunkEndCount == 2) {
+                        mChunkEndCount = 0;
+                        mStatus = HttpClientParseStatusBodyStart;
+                        break;
+                    }
                 }
             }
             break;
