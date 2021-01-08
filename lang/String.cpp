@@ -738,7 +738,7 @@ uint8_t _String::toBasicUint8() {
 
     std::stringstream ss;
     ss<<m_str;
-    uint8_t value;
+    int value;
     ss>>value;
     return value;
 }

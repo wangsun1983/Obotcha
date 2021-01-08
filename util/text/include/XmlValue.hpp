@@ -129,6 +129,33 @@ public:
 
     void removeNode(String);
 
+    template<typename T>
+    void importFrom(T value) {
+        ArrayList<Field> fields = value->getAllFields();
+        if(fields == nullptr) {
+            LOG(ERROR)<<"xml value reflect fields is nullptr !!!!!";
+        }
+        ListIterator<Field> iterator = fields->getIterator();
+        while(iterator->hasValue()) {
+            Field field = iterator->getValue();
+            String name = field->getName();
+            printf("xml value name is %s,type is %d \n",name->toChars(),field->getType());
+            switch(field->getType()) {
+                case st(Field)::FieldTypeLong: {
+                    //TODO
+                }
+                break;
+
+                case st(Field)::FieldTypeInt: {
+                    //TODO
+                }
+                break;
+
+            }
+            iterator->next();
+        }
+    }
+
 private:
     String value;
 

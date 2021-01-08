@@ -10,6 +10,7 @@ extern int testReflectArrayListFieldWrite();
 extern int testReflectToSimpleJson();
 extern int testReflectToArrayJson();
 extern int testReflectToSimpleArrayJson();
+extern int testReflectNumber();
 
 int main() {
   //testReflectFieldRead();
@@ -21,5 +22,6 @@ int main() {
   //testReflectArrayListFieldWrite();
   //testReflectToSimpleJson();
   //testReflectToArrayJson();
-  testReflectToSimpleArrayJson();
+  //testReflectToSimpleArrayJson();
+  testReflectNumber();
 }
