@@ -154,6 +154,12 @@ public:
 
     _WebSocketServer();
 
+    void setSendTimeout(long);
+    long getSendTimeout();
+
+    void setRcvTimeout(long);
+    long getRcvTimeout();
+
     int bind(String ip,int port,String path,WebSocketListener listener);
     
     int bind(int port,String path,WebSocketListener listener);
@@ -193,6 +199,9 @@ private:
     EPollFileObserver mWsEpollObserver;
 
     WebSocketDispatcherPool mDispatchPool;
+    
+    long mSendTimeout;
+    long mRcvTimeout;
 };
 
 

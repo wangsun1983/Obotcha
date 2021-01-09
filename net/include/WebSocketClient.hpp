@@ -66,6 +66,12 @@ DECLARE_SIMPLE_CLASS(WebSocketClient) {
 public:
     _WebSocketClient(int version);
 
+    void setSendTimeout(long);
+    long getSendTimeout();
+
+    void setRcvTimeout(long);
+    long getRcvTimeout();
+
     WebSocketClient buildConnectInfo(String header,String value);
 
     void clearConnectInfo();
@@ -105,6 +111,9 @@ private:
     //WebSocketFrameComposer mComposer;
 
     WebSocketClientInfo mClient;
+
+    long mSendTimeout;
+    long mRcvTimeout;
 };
 
 

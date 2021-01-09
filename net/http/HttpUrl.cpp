@@ -55,6 +55,14 @@ String _HttpUrl::getPassword() {
     return mPassword;
 }
 
+void _HttpUrl::setMethod(int m) {
+    mMethod = m;
+}
+
+int _HttpUrl::getMethod() {
+    return mMethod;
+}
+
 String _HttpUrl::getSchema() {
     return mSchema;
 }

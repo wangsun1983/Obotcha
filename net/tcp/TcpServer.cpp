@@ -89,12 +89,47 @@ _TcpServer::_TcpServer(String ip,int port,SocketListener l,int connectnum) {
 
     mSocketMapMutex = createMutex();
     mSocketMap = createHashMap<int,sp<_TcpServerSocket>>();
+
+    mSendTimeout = -1;
+    mRcvTimeout = -1;
+}
+
+void _TcpServer::setSendTimeout(long timeout) {
+    mSendTimeout = timeout;
+}
+
+long _TcpServer::getSendTimeout() {
+    return mSendTimeout;
+}
+
+void _TcpServer::setRcvTimeout(long timeout) {
+    mRcvTimeout = timeout;
+}
+
+long _TcpServer::getRcvTimeout() {
+    return mRcvTimeout;
 }
 
 int _TcpServer::connect() {
     int opt = 1;
     
     sock = TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0));
+
+    if(mRcvTimeout != -1) {
+        struct timeval tv = {
+            .tv_sec = mRcvTimeout/1000,
+            .tv_usec = (mRcvTimeout%1000)*1000,
+        };
+        setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    }
+
+    if(mSendTimeout != -1) {
+        struct timeval tv = {
+            .tv_sec = mSendTimeout/1000,
+            .tv_usec = (mSendTimeout%1000)*1000,
+        };
+        setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+    }
 
     if(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int)) < 0) {
         return -AttributeSetFail;
@@ -131,7 +166,23 @@ int _TcpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
             LOG(ERROR)<<"Accept fail,error is "<<strerror(errno);
             return st(EPollFileObserver)::OnEventOK;
         }
-        
+
+        if(mRcvTimeout != -1) {
+            struct timeval tv = {
+                .tv_sec = mRcvTimeout/1000,
+                .tv_usec = (mRcvTimeout%1000)*1000,
+            };
+            setsockopt(clientfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+        }
+
+        if(mSendTimeout != -1) {
+            struct timeval tv = {
+                .tv_sec = mSendTimeout/1000,
+                .tv_usec = (mSendTimeout%1000)*1000,
+            };
+            setsockopt(clientfd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+        }
+
         TcpServerSocket tcpsock = createTcpServerSocket(clientfd);
         {
             AutoLock l(mSocketMapMutex);

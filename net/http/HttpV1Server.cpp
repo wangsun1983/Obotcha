@@ -222,6 +222,8 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
 
     mIp = ip;
     mPort = port;
+    mTcpServer = nullptr;
+    mSSLServer = nullptr;
 
     if(certificate == nullptr) {
         //http server
@@ -230,15 +232,39 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
         } else {
             mTcpServer = createTcpServer(mIp,mPort,AutoClone(this));
         }
+    } else {
+        //https server
+        mSSLServer = createSSLServer(ip,port,AutoClone(this),certificate,key);
+    }
+}
+
+void _HttpV1Server::start() {
+    if(mTcpServer != nullptr) {
+        mTcpServer->setRcvTimeout(mRcvTimeout);
+        mTcpServer->setSendTimeout(mSendTimeout);
 
         if(mTcpServer->start() != 0) {
             Trigger(InitializeException,"tcp server start fail!!");
         }
-    } else {
-        //https server
-        mSSLServer = createSSLServer(ip,port,AutoClone(this),certificate,key);
+    } else if(mSSLServer != nullptr) {
         mSSLServer->start();
     }
+}
+
+void _HttpV1Server::setSendTimeout(long timeout) {
+    mSendTimeout = timeout;
+}
+
+long _HttpV1Server::getSendTimeout() {
+    return mSendTimeout;
+}
+
+void _HttpV1Server::setRcvTimeout(long timeout) {
+    mRcvTimeout = timeout;
+}
+
+long _HttpV1Server::getRcvTimeout() {
+    return mRcvTimeout;
 }
 
 void _HttpV1Server::deMonitor(int fd) {

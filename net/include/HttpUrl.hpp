@@ -25,6 +25,7 @@ public:
     void setFragment(String);
     void setUser(String);
     void setPassword(String);
+    void setMethod(int);
 
     String getSchema();
     String getHost();
@@ -34,6 +35,7 @@ public:
     String getFragment();
     String getUser();
     String getPassword();
+    int getMethod();
 
     String toString();
     String toQueryString();
@@ -49,6 +51,7 @@ private:
     String mFragment;
     String mUser;
     String mPassword;
+    int mMethod;
 };
 }
 

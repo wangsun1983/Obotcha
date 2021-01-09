@@ -56,6 +56,12 @@ public:
 
     _TcpServer(String ip,int port);
 
+    void setSendTimeout(long);
+    long getSendTimeout();
+
+    void setRcvTimeout(long);
+    long getRcvTimeout();
+
     void deMonitor(int fd);
 
     int start();
@@ -84,6 +90,9 @@ private:
     
     Mutex mSocketMapMutex;
     HashMap<int,sp<_TcpServerSocket>> mSocketMap;
+
+    long mSendTimeout;
+    long mRcvTimeout;
 };
 
 }

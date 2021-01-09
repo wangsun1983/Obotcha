@@ -126,6 +126,9 @@ void _WebSocketTcpClientListener::onConnect(SocketResponser r) {
 }
 
 _WebSocketClient::_WebSocketClient(int version = 13) {
+    mSendTimeout = -1;
+    mRcvTimeout = -1;
+
     mVersion = version;
     mClient = createWebSocketClientInfo();
     //client message need use mask.
@@ -168,6 +171,22 @@ _WebSocketClient::_WebSocketClient(int version = 13) {
     //parser->setAsClient();
     mClient->setParser(parser);
     mClient->setComposer(composer);
+}
+
+void _WebSocketClient::setSendTimeout(long timeout) {
+    mSendTimeout = timeout;
+}
+
+long _WebSocketClient::getSendTimeout() {
+    return mSendTimeout;
+}
+
+void _WebSocketClient::setRcvTimeout(long timeout) {
+    mRcvTimeout = timeout;
+}
+
+long _WebSocketClient::getRcvTimeout() {
+    return mRcvTimeout;
 }
 
 WebSocketClient _WebSocketClient::buildConnectInfo(String header,String value) {
@@ -215,7 +234,10 @@ int _WebSocketClient::connect(String url,WebSocketListener l) {
     mListener = createWebSocketTcpClientListener(l,mClient);
     
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(url);
-    mTcpClient = createTcpClient(httpUrl->getHost(),httpUrl->getPort(),-1,mListener);
+    mTcpClient = createTcpClient(httpUrl->getHost(),httpUrl->getPort(),mListener);
+    mTcpClient->setRcvTimeout(mRcvTimeout);
+    mTcpClient->setSendTimeout(mSendTimeout);
+    
     mTcpClient->doConnect();
 
     mTcpClient->doSend(shakeHandMsg);

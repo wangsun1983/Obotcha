@@ -449,6 +449,24 @@ _WebSocketServer::_WebSocketServer() {
     mDispatchPool = createWebSocketDispatcherPool();
     mWsEpollObserver = createEPollFileObserver();
     mWsEpollObserver->start();
+    mSendTimeout = -1;
+    mRcvTimeout = -1;
+}
+
+void _WebSocketServer::setSendTimeout(long timeout) {
+    mSendTimeout = timeout;
+}
+
+long _WebSocketServer::getSendTimeout() {
+    return mSendTimeout;
+}
+
+void _WebSocketServer::setRcvTimeout(long timeout) {
+    mRcvTimeout = timeout;
+}
+
+long _WebSocketServer::getRcvTimeout() {
+    return mRcvTimeout;
 }
 
 int _WebSocketServer::bind(String ip, int port, String path,
@@ -464,6 +482,10 @@ int _WebSocketServer::bind(String ip, int port, String path,
     } else {
         mHttpServer = createHttpV1Server(ip, port, AutoClone(this));
     }
+
+    mHttpServer->setSendTimeout(mSendTimeout);
+    mHttpServer->setRcvTimeout(mRcvTimeout);
+    mHttpServer->start();
 
     mDispatchPool->setHttpV1Server(mHttpServer);
     mDispatchPool->setWebSocketServer(AutoClone(this));

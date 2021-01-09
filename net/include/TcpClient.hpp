@@ -25,9 +25,15 @@ class _TcpClient;
 
 DECLARE_SIMPLE_CLASS(TcpClient) EXTENDS(EPollFileObserverListener){
 public:
-    _TcpClient(int port,int recv_time,SocketListener l = nullptr,int buff_size = 1024);
+    _TcpClient(int port,SocketListener l = nullptr,int buff_size = 1024);
 
-    _TcpClient(String ip,int port,int recv_time,SocketListener l = nullptr,int buff_size = 1024);
+    _TcpClient(String ip,int port,SocketListener l = nullptr,int buff_size = 1024);
+    
+    void setSendTimeout(long);
+    long getSendTimeout();
+
+    void setRcvTimeout(long);
+    long getRcvTimeout();
 
     int doConnect();
 
@@ -59,7 +65,12 @@ private:
     SocketListener mListener;
 
     String mServerIp;
+
     int mServerPort;
+
+    long mSendTimeout;
+
+    long mRcvTimeout;
 };
 
 }

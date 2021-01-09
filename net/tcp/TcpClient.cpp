@@ -19,7 +19,7 @@
 
 namespace obotcha {
 
-_TcpClient::_TcpClient(String ip,int port,int recv_time,SocketListener l,int buff_size) {
+_TcpClient::_TcpClient(String ip,int port,SocketListener l,int buff_size) {
     mServerIp = ip;
     mServerPort = port;
 
@@ -40,10 +40,28 @@ _TcpClient::_TcpClient(String ip,int port,int recv_time,SocketListener l,int buf
     mSock = TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0));
     
     mListener = l;
+    mSendTimeout = -1;
+    mRcvTimeout = -1;
 }
 
-_TcpClient::_TcpClient(int port,int recv_time,SocketListener l,int buff_size):_TcpClient(nullptr,port,recv_time,l,buff_size) {
+_TcpClient::_TcpClient(int port,SocketListener l,int buff_size):_TcpClient(nullptr,port,l,buff_size) {
 
+}
+
+void _TcpClient::setSendTimeout(long timeout) {
+    mSendTimeout = timeout;
+}
+
+long _TcpClient::getSendTimeout() {
+    return mSendTimeout;
+}
+
+void _TcpClient::setRcvTimeout(long timeout) {
+    mRcvTimeout = timeout;
+}
+
+long _TcpClient::getRcvTimeout() {
+    return mRcvTimeout;
 }
 
 int _TcpClient::onEvent(int fd,uint32_t events,ByteArray data) {
@@ -62,6 +80,22 @@ int _TcpClient::getSock() {
 }
     
 int _TcpClient::doConnect() {
+    if(mRcvTimeout != -1) {
+        struct timeval tv = {
+            .tv_sec = mRcvTimeout/1000,
+            .tv_usec = (mRcvTimeout%1000)*1000,
+        };
+        setsockopt(mSock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    }
+
+    if(mSendTimeout != -1) {
+        struct timeval tv = {
+            .tv_sec = mSendTimeout/1000,
+            .tv_usec = (mSendTimeout%1000)*1000,
+        };
+        setsockopt(mSock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+    }
+
     if(TEMP_FAILURE_RETRY(connect(mSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr))) < 0) {
         close(mSock);
         mSock = -1;

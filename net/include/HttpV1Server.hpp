@@ -110,6 +110,14 @@ public:
 
     _HttpV1Server(String ip,int port,HttpV1Listener,String certificate,String key);
 
+    void start();
+    
+    void setSendTimeout(long);
+    long getSendTimeout();
+
+    void setRcvTimeout(long);
+    long getRcvTimeout();
+
     void deMonitor(int fd);
     
     void exit();
@@ -135,6 +143,9 @@ private:
     int mPort;
 
     HttpDispatcherPool mPool;
+
+    long mSendTimeout;
+    long mRcvTimeout;
 };
 
 }
