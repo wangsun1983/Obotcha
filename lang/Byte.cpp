@@ -117,6 +117,10 @@ byte _Byte::parseBinaryByte(sp<_String> v) {
     return _Number::parseBinaryNumber(v->getStdString());
 }
 
+sp<_String> _Byte::className() {
+    return createString("Byte");
+}
+
 _Byte::~_Byte() {
 }
 

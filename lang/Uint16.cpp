@@ -119,6 +119,10 @@ uint16_t _Uint16::parseBinaryUint16(sp<_String> v) {
     return _Number::parseBinaryNumber(v->getStdString());
 }
 
+sp<_String> _Uint16::className() {
+    return createString("Uint16");
+}
+
 _Uint16::~_Uint16() {
 }
 

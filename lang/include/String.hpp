@@ -177,6 +177,8 @@ public:
 
     static String format(const char *fmt, ...);
 
+    static String className();
+
     std::string getStdString();
 
     String toLowerCase();

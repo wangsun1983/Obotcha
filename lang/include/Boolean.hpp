@@ -58,6 +58,8 @@ public:
 
     static const sp<_String> TrueString;
 
+    static sp<_String> className();
+
     ~_Boolean();
 
 private:

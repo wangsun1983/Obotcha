@@ -50,6 +50,8 @@ public:
 
     static uint32_t parseBinaryUint32(sp<_String>);
 
+    static sp<_String> className();
+
     ~_Uint32();
 
     static const uint32_t MAX_VALUE = 0xFFFFFFFF;

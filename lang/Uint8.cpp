@@ -119,6 +119,10 @@ uint8_t _Uint8::parseBinaryUint8(sp<_String> v) {
     return _Number::parseBinaryNumber(v->getStdString());
 }
 
+sp<_String> _Uint8::className() {
+    return createString("Uint8");
+}
+
 _Uint8::~_Uint8() {
 }
 

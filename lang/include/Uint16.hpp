@@ -50,6 +50,8 @@ public:
 
     static uint16_t parseBinaryUint16(sp<_String>);
 
+    static sp<_String> className();
+    
     ~_Uint16();
 
     static const uint16_t MAX_VALUE = 0xFFFF;

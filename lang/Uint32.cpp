@@ -118,6 +118,10 @@ uint32_t _Uint32::parseBinaryUint32(sp<_String> v) {
     return _Number::parseBinaryNumber(v->getStdString());
 }
 
+sp<_String> _Uint32::className() {
+    return createString("Uint32");
+}
+
 _Uint32::~_Uint32() {
 }
 

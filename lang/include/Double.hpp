@@ -6,6 +6,8 @@
 
 namespace obotcha {
 
+class _String;
+
 DECLARE_SIMPLE_CLASS(Double)
 {
 public:
@@ -26,6 +28,8 @@ public:
     bool equals(Double &p);
 
     bool equals(const _Double *p);
+
+    static sp<_String> className();
 
     ~_Double();
 

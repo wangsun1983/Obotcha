@@ -795,7 +795,6 @@ byte _String::toBasicByte() {
     if((m_str.size() == 0) || !isIntNumber(m_str.data(),m_str.size())) {
         Trigger(TransformException,"String to Int Fail");
     }
-
     std::stringstream ss;
     ss<<m_str;
     int value;
@@ -1363,6 +1362,10 @@ String _String::format(const char *fmt, ...) {
     va_end(args);
 
     return str;
+}
+
+sp<_String> _String::className() {
+    return createString("String");
 }
 
 String _String::_format(const char *fmt,va_list args) {

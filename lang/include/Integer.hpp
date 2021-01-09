@@ -49,6 +49,8 @@ public:
     static int parseOctInt(sp<_String>);
 
     static int parseBinaryInt(sp<_String>);
+
+    static sp<_String> className();
     
     ~_Integer();
 

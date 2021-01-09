@@ -175,6 +175,10 @@ sp<_Boolean> _Boolean::valueOf(bool v) {
     return createBoolean(v);
 }
 
+sp<_String> _Boolean::className() {
+    return createString("Boolean");
+}
+
 _Boolean::~_Boolean() {
 }
 

@@ -6,6 +6,8 @@
 
 namespace obotcha {
 
+class _String;
+
 DECLARE_SIMPLE_CLASS(Float)
 {
 public:
@@ -26,6 +28,8 @@ public:
     void update(float v);
 
     void update(sp<_Float> v);
+
+    static sp<_String> className();
 
     ~_Float();
 

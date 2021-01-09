@@ -67,6 +67,10 @@ void _Double::update(sp<_Double> v) {
     this->val = v->val;
 }
 
+sp<_String> _Double::className() {
+    return createString("Double");
+}
+
 _Double::~_Double() {
 }
 

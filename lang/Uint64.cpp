@@ -116,6 +116,9 @@ uint64_t _Uint64::parseBinaryUint64(sp<_String> v) {
     return _Number::parseBinaryNumber(v->getStdString());
 }
 
+sp<_String> _Uint64::className() {
+    return createString("Uint64");
+}
 
 _Uint64::~_Uint64() {
 }

@@ -58,6 +58,10 @@ void _Float::update(sp<_Float> v) {
     val = v->val;
 }
 
+sp<_String> _Float::className() {
+    return createString("Float");
+}
+
 _Float::~_Float() {
 }
 

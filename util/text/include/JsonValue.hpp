@@ -527,8 +527,9 @@ public:
                 
                 case st(Field)::FieldTypeArrayList: {
                     int count = 0;
+                    int size = field->getListObjectSize();
                     JsonValue arrayNode = createJsonValue();
-                    while(1) {
+                    while(count < size) {
                         auto newObject = field->getListItemObject(count);
                         if(newObject != nullptr) {
                             if(InstanceOf(newObject,Integer)) {
@@ -569,10 +570,8 @@ public:
                                 newValue->importFrom(newObject);
                                 arrayNode->append(newValue);
                             }
-                            count++;
-                            continue;
                         }
-                        break;
+                        count++;
                     }
                     this->put(name,arrayNode);
                 }

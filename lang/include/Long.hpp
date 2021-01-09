@@ -49,6 +49,8 @@ public:
 
     static long parseBinaryLong(sp<_String>);
 
+    static sp<_String> className();
+
     ~_Long();
 
 private:

@@ -50,6 +50,8 @@ public:
 
     static byte parseBinaryByte(sp<_String>);
 
+    static sp<_String> className();
+
     ~_Byte();
 
 private:

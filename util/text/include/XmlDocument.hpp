@@ -81,8 +81,8 @@ private:
 
             switch(field->getType()) {
                 case st(Field)::FieldTypeLong:{
-                    String value = node->getStringValue();
-                    field->setValue(value->toBasicLong());
+                        String value = node->getStringValue();
+                        field->setValue(value->toBasicLong());
                     }
                     break;
 
@@ -92,11 +92,11 @@ private:
                     }
                     break;
 
-                case st(Field)::FieldTypeByte:{
-                        String value = node->getStringValue();
-                        field->setValue(value->toBasicByte());
-                    }
-                    break;
+                //case st(Field)::FieldTypeByte:{
+                //        String value = node->getStringValue();
+                //        field->setValue(value->toBasicByte());
+                //    }
+                //    break;
 
                 case st(Field)::FieldTypeBool:{
                         String value = node->getStringValue();
@@ -147,20 +147,106 @@ private:
                     break;
                         
                 case st(Field)::FieldTypeObject: {
-                        field->createObject();
-                        auto reflectValue = field->getObjectValue();
-                        reflectTo(node,reflectValue);
+                        auto newObject = field->createObject();
+                        if(InstanceOf(newObject,Integer)) {
+                            String value = node->getStringValue();
+                            Integer data = cast<Integer>(newObject);
+                            data->update(value->toBasicInt());
+                        } else if(InstanceOf(newObject,Long)) {
+                            String value = node->getStringValue();
+                            Long data = cast<Long>(newObject);
+                            data->update(value->toBasicLong());
+                        } else if(InstanceOf(newObject,Boolean)) {
+                            String value = node->getStringValue();
+                            Boolean data = cast<Boolean>(newObject);
+                            data->update(value->toBasicBool());
+                        } else if(InstanceOf(newObject,Double)) {
+                            String value = node->getStringValue();
+                            Double data = cast<Double>(newObject);
+                            data->update(value->toBasicDouble());
+                        } else if(InstanceOf(newObject,Float)) {
+                            String value = node->getStringValue();
+                            Float data = cast<Float>(newObject);
+                            data->update(value->toBasicFloat());
+                        } else if(InstanceOf(newObject,Byte)) {
+                            String value = node->getStringValue();
+                            Byte data = cast<Byte>(newObject);
+                            data->update(value->toBasicByte());
+                        } else if(InstanceOf(newObject,Uint8)) {
+                            String value = node->getStringValue();
+                            Uint8 data = cast<Uint8>(newObject);
+                            data->update(value->toBasicByte());
+                        } else if(InstanceOf(newObject,Uint16)) {
+                            String value = node->getStringValue();
+                            Uint16 data = cast<Uint16>(newObject);
+                            data->update(value->toBasicUint16());
+                        } else if(InstanceOf(newObject,Uint32)) {
+                            String value = node->getStringValue();
+                            Uint32 data = cast<Uint32>(newObject);
+                            data->update(value->toBasicUint32());
+                        } else if(InstanceOf(newObject,Uint64)) {
+                            String value = node->getStringValue();
+                            Uint64 data = cast<Uint64>(newObject);
+                            data->update(value->toBasicUint64());
+                        } else {
+                            reflectTo(node,newObject);
+                        }
                     }
                     break;
 
                 case st(Field)::FieldTypeArrayList:{
                         sp<_XmlValueIterator> sub_iterator = node->getValueIterator();
                         field->createObject();
-                        
                         while(sub_iterator->hasValue()) {
                             sp<_XmlValue> xmlnode = sub_iterator->getValue();
-                            auto vv = field->createListItemObject();
-                            reflectTo(xmlnode,vv);
+                            auto newObject = field->createListItemObject();
+                            if(InstanceOf(newObject,Integer)) {
+                                String value = xmlnode->getStringValue();
+                                Integer data = cast<Integer>(newObject);
+                                data->update(value->toBasicInt());
+                            } else if(InstanceOf(newObject,Long)) {
+                                String value = xmlnode->getStringValue();
+                                Long data = cast<Long>(newObject);
+                                data->update(value->toBasicLong());
+                            } else if(InstanceOf(newObject,Boolean)) {
+                                String value = xmlnode->getStringValue();
+                                Boolean data = cast<Boolean>(newObject);
+                                data->update(value->toBasicBool());
+                            } else if(InstanceOf(newObject,Double)) {
+                                String value = xmlnode->getStringValue();
+                                Double data = cast<Double>(newObject);
+                                data->update(value->toBasicDouble());
+                            } else if(InstanceOf(newObject,Float)) {
+                                String value = xmlnode->getStringValue();
+                                Float data = cast<Float>(newObject);
+                                data->update(value->toBasicFloat());
+                            } else if(InstanceOf(newObject,Byte)) {
+                                String value = xmlnode->getStringValue();
+                                Byte data = cast<Byte>(newObject);
+                                data->update(value->toBasicByte());
+                            } else if(InstanceOf(newObject,Uint8)) {
+                                String value = xmlnode->getStringValue();
+                                Uint8 data = cast<Uint8>(newObject);
+                                data->update(value->toBasicUint8());
+                            } else if(InstanceOf(newObject,Uint16)) {
+                                String value = xmlnode->getStringValue();
+                                Uint16 data = cast<Uint16>(newObject);
+                                data->update(value->toBasicUint16());
+                            } else if(InstanceOf(newObject,Uint32)) {
+                                String value = xmlnode->getStringValue();
+                                Uint32 data = cast<Uint32>(newObject);
+                                data->update(value->toBasicUint32());
+                            } else if(InstanceOf(newObject,Uint64)) {
+                                String value = xmlnode->getStringValue();
+                                Uint64 data = cast<Uint64>(newObject);
+                                data->update(value->toBasicUint64());
+                            } else if(InstanceOf(newObject,String)) {
+                                String value = xmlnode->getStringValue();
+                                String data = cast<String>(newObject);
+                                data->update(value);
+                            } else {
+                                reflectTo(xmlnode,newObject);
+                            }
                             sub_iterator->next();
                         }
                     }
@@ -196,10 +282,10 @@ private:
                 }
                 break;
 
-                case st(Field)::FieldTypeByte:{
-                    refNode = newNode(name,createString(field->getByteValue()));
-                }
-                break;
+                //case st(Field)::FieldTypeByte:{
+                //    refNode = newNode(name,createString(field->getByteValue()));
+                //}
+                //break;
 
                 case st(Field)::FieldTypeBool:{
                     refNode = newNode(name,createString(field->getBoolValue()));
@@ -240,27 +326,110 @@ private:
                     refNode = newNode(name,createString(field->getUint64Value()));
                 }
                 break;
+
                 case st(Field)::FieldTypeObject: {
                     auto newObject = field->getObjectValue();
                     refNode = newNode(name);
-                    importFrom(refNode,newObject);
+                    if(InstanceOf(newObject,Integer)) {
+                        Integer data = cast<Integer>(newObject);
+                        refNode->updateValue(createString(data->toValue()));
+                    } else if(InstanceOf(newObject,Long)) {
+                        Long data = cast<Long>(newObject);
+                        refNode->updateValue(createString(data->toValue()));
+                    } else if(InstanceOf(newObject,Boolean)) {
+                        Boolean data = cast<Boolean>(newObject);
+                        refNode->updateValue(createString(data->toValue()));
+                    } else if(InstanceOf(newObject,Double)) {
+                        Double data = cast<Double>(newObject);
+                        refNode->updateValue(createString(data->toValue()));
+                    } else if(InstanceOf(newObject,Float)) {
+                        Float data = cast<Float>(newObject);
+                        refNode->updateValue(createString(data->toValue()));
+                    } else if(InstanceOf(newObject,Byte)) {
+                        Byte data = cast<Byte>(newObject);
+                        refNode->updateValue(createString(data->toValue()));
+                    } else if(InstanceOf(newObject,Uint8)) {
+                        Uint8 data = cast<Uint8>(newObject);
+                        refNode->updateValue(createString(data->toValue()));
+                    } else if(InstanceOf(newObject,Uint16)) {
+                        Uint16 data = cast<Uint16>(newObject);
+                        refNode->updateValue(createString(data->toValue()));
+                    } else if(InstanceOf(newObject,Uint32)) {
+                        Uint32 data = cast<Uint32>(newObject);
+                        refNode->updateValue(createString(data->toValue()));
+                    } else if(InstanceOf(newObject,Uint64)) {
+                        Uint64 data = cast<Uint64>(newObject);
+                        refNode->updateValue(createString(data->toValue()));
+                    } else if(InstanceOf(newObject,String)) {
+                        String data = cast<String>(newObject);
+                        refNode->updateValue(data);
+                    } else {    
+                        auto newObject = field->getObjectValue();
+                        importFrom(refNode,newObject);
+                    }
                 }
                 break;
                 
                 case st(Field)::FieldTypeArrayList: {
                     int count = 0;
+                    int length = field->getListObjectSize();
+
                     refNode = newNode(name);
-                    while(1) {
+                    while(count < length) {
                         auto newObject = field->getListItemObject(count);
                         if(newObject != nullptr) {
-                            //JsonValue newValue = createJsonValue();
-                            sp<_XmlValue> item = newNode(newObject->__ReflectClassName());
-                            importFrom(item,newObject);
+                            sp<_XmlValue> item;
+                            if(InstanceOf(newObject,Integer)) {
+                                item = newNode(st(Integer)::className());
+                                Integer data = cast<Integer>(newObject);
+                                item->updateValue(createString(data->toValue()));
+                            } else if(InstanceOf(newObject,Long)) {
+                                item = newNode(st(Long)::className());
+                                Long data = cast<Long>(newObject);
+                                item->updateValue(createString(data->toValue()));
+                            } else if(InstanceOf(newObject,Boolean)) {
+                                item = newNode(st(Boolean)::className());
+                                Boolean data = cast<Boolean>(newObject);
+                                item->updateValue(createString(data->toValue()));
+                            } else if(InstanceOf(newObject,Double)) {
+                                item = newNode(st(Double)::className());
+                                Double data = cast<Double>(newObject);
+                                item->updateValue(createString(data->toValue()));
+                            } else if(InstanceOf(newObject,Float)) {
+                                item = newNode(st(Float)::className());
+                                Float data = cast<Float>(newObject);
+                                item->updateValue(createString(data->toValue()));
+                            } else if(InstanceOf(newObject,Byte)) {
+                                item = newNode(st(Byte)::className());
+                                Byte data = cast<Byte>(newObject);
+                                item->updateValue(createString(data->toValue()));
+                            } else if(InstanceOf(newObject,Uint8)) {
+                                item = newNode(st(Uint8)::className());
+                                Uint8 data = cast<Uint8>(newObject);
+                                item->updateValue(createString(data->toValue()));
+                            } else if(InstanceOf(newObject,Uint16)) {
+                                item = newNode(st(Uint16)::className());
+                                Uint16 data = cast<Uint16>(newObject);
+                                item->updateValue(createString(data->toValue()));
+                            } else if(InstanceOf(newObject,Uint32)) {
+                                item = newNode(st(Uint32)::className());
+                                Uint32 data = cast<Uint32>(newObject);
+                                item->updateValue(createString(data->toValue()));
+                            } else if(InstanceOf(newObject,Uint64)) {
+                                item = newNode(st(Uint64)::className());
+                                Uint64 data = cast<Uint64>(newObject);
+                                item->updateValue(createString(data->toValue()));
+                            } else if(InstanceOf(newObject,String)) {
+                                item = newNode(st(String)::className());
+                                String data = cast<String>(newObject);
+                                item->updateValue(data);
+                            } else {
+                                item = newNode(newObject->__ReflectClassName());
+                                importFrom(item,newObject);
+                            }
                             refNode->appendNode(item);
-                            count++;
-                            continue;
                         }
-                        break;
+                        count++;
                     }
                 }
                 break;

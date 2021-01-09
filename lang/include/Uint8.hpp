@@ -50,6 +50,8 @@ public:
 
     static uint8_t parseBinaryUint8(sp<_String>);
 
+    static sp<_String> className();
+
     static const uint8_t MAX_VALUE = 0xFF;
 
     static const uint8_t MIN_VALUE = 0x0;

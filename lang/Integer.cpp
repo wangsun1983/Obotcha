@@ -128,6 +128,10 @@ int _Integer::parseBinaryInt(sp<_String> v) {
     return _Number::parseBinaryNumber(v->getStdString());
 }
 
+String _Integer::className() {
+    return createString("Integer");
+}
+
 _Integer::~_Integer() {
 
 }

@@ -117,6 +117,10 @@ long _Long::parseBinaryLong(sp<_String> v) {
     return _Number::parseBinaryNumber(v->getStdString());
 }
 
+sp<_String> _Long::className() {
+    return createString("Long");
+}
+
 _Long::~_Long() {
 }
 
