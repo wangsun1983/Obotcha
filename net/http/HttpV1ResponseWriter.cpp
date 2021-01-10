@@ -105,7 +105,7 @@ int _HttpV1ResponseWriter::flush() {
                     
                     //send
                     mPacket->setBody(body);
-                    ByteArray resp = mPacket->genHttpResponse();
+                    ByteArray resp = compose(mPacket);
                     mClient->send(resp);
                     isFirstChunk = false;
                     printf("flush trace5 \n");
@@ -144,11 +144,34 @@ int _HttpV1ResponseWriter::flush() {
             }
         }
     } else {
-        ByteArray resp = mPacket->genHttpResponse();
+        ByteArray resp = compose(mPacket);
         mClient->send(resp);
     }
 
     return  0;
+}
+
+ByteArray _HttpV1ResponseWriter::compose(HttpPacket packet) {
+    String statusString = packet->getHeader()->getValue(st(HttpHeader)::Status);
+	if(statusString == nullptr) {
+		return nullptr;
+	}
+
+	String status = st(HttpResponse)::castStatus(statusString->toBasicInt());
+	String responseStr = createString("HTTP/1.1 ")->append(statusString," ",status,"\r\n");
+    
+	String headerStr = packet->getHeader()->toString();
+    
+    ByteArray response = createByteArray(responseStr->size() + headerStr->size() + mPacket->getBody()->size());
+    ByteArrayWriter writer = createByteArrayWriter(response);
+	//String bodyStr = createString((char *)mBody->toValue(),0,mBody->size());
+    writer->writeString(responseStr);
+	writer->write((byte *)headerStr->toChars(),headerStr->size());
+    if(packet->getBody() != nullptr) {
+        writer->writeByteArray(packet->getBody());
+    }
+ 
+    return response;
 }
 
 }

@@ -16,6 +16,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpclient.o \
 		$(outtmp)/httpheader.o \
 		$(outtmp)/httppacket.o \
+		$(outtmp)/httptext.o \
+		$(outtmp)/httprequest.o \
+		$(outtmp)/httprequestwriter.o \
 		$(outtmp)/httpv1responsewriter.o \
 		$(outtmp)/httpv1responseparser.o \
 		$(outtmp)/httpclientmanager.o \
@@ -121,6 +124,15 @@ $(outtmp)/httpheader.o :$(netDir)/http/HttpHeader.cpp
 
 $(outtmp)/httppacket.o :$(netDir)/http/HttpPacket.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacket.cpp -o $(outtmp)/httppacket.o $(external)
+
+$(outtmp)/httptext.o :$(netDir)/http/HttpText.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpText.cpp -o $(outtmp)/httptext.o $(external)
+
+$(outtmp)/httprequest.o :$(netDir)/http/HttpRequest.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRequest.cpp -o $(outtmp)/httprequest.o $(external)
+
+$(outtmp)/httprequestwriter.o :$(netDir)/http/HttpRequestWriter.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRequestWriter.cpp -o $(outtmp)/httprequestwriter.o $(external)
 
 $(outtmp)/httpresponse.o :$(netDir)/http/HttpResponse.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponse.cpp -o $(outtmp)/httpresponse.o $(external)

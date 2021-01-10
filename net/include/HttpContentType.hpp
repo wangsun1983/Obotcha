@@ -378,7 +378,8 @@ public:
     const static String SuffixAvi;
 
     //multipart/form-data 
-    const static String MultiPareFormData;
+    const static String MultiPartFormData;
+    const static String FormData;
 
 };
 

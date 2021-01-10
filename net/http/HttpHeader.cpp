@@ -9,6 +9,7 @@
 #include "http_parser.h"
 #include "HashMap.hpp"
 #include "HttpHeader.hpp"
+#include "HttpText.hpp"
 
 namespace obotcha {
 
@@ -157,14 +158,14 @@ MapIterator<String,String> _HttpHeader::getIterator() {
     return mValues->getIterator();
 }
 
-String _HttpHeader::genHtml() {
+String _HttpHeader::toString() {
     //conver header
     MapIterator<String,String> headerIte = mValues->getIterator();;
     String html = createString("");
     while(headerIte->hasValue()) {
         String headString = headerIte->getKey();
         if(headString != nullptr && !headString->equalsIgnoreCase(Status)) {
-            html = html->append(headString,": ",headerIte->getValue(),"\r\n");
+            html = html->append(headString,": ",headerIte->getValue(),st(HttpText)::LineEnd);
         }
         
         headerIte->next();
@@ -173,11 +174,9 @@ String _HttpHeader::genHtml() {
     ListIterator<HttpCookie> iterator = mCookies->getIterator();
     while(iterator->hasValue()) {
         HttpCookie cookie = iterator->getValue();
-        html = html->append(cookie->genServerCookieString(),"\r\n");
+        html = html->append(cookie->genServerCookieString(),st(HttpText)::LineEnd);
         iterator->next();
     }
-
-    html = html->append("\r\n");
 
     return html;
 }

@@ -12,6 +12,8 @@
 #include "TcpClient.hpp"
 #include "HttpUrl.hpp"
 #include "HttpV1ResponseParser.hpp"
+#include "HttpRequest.hpp"
+#include "HttpResponse.hpp"
 
 namespace obotcha {
 
@@ -20,37 +22,13 @@ DECLARE_SIMPLE_CLASS(HttpClient) {
 public:
     _HttpClient();
     
-    int bindServerByDomain(String host,int port=80);
-
-    int bindServerByIp(String ip,int port);
-
-    int unbindServer(String host);
-
-    //void setIp(String ip);
-
-    void setUrl(String url);
-
-    //void setPort(int port);
-
     void setTimeout(int timeout);
 
     void setKeepAlive(bool keepalive);
     
-    String getIp();
+    bool isKeepAlive();
 
-    String getUrl();
-
-    int getPort();
-
-    int getTimeout();
-
-    bool getKeepAlive();
-
-    int connect();
-
-    String execute(int,HttpUrl);
-
-    String execute(int,String url);
+    HttpResponse execute(HttpRequest request);
 
 private:
     String mIp;

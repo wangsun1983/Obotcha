@@ -4,7 +4,7 @@
 #include "String.hpp"
 #include "HttpResponse.hpp"
 
-using namespace obotcha;
+namespace obotcha {
 
 const int _HttpResponse::Continue = 100;
 const int _HttpResponse::SwitchProtocls = 101;
@@ -48,7 +48,7 @@ const int _HttpResponse::ServiceUnavailable = 503;
 const int _HttpResponse::GatewayTimeOut = 504;
 const int _HttpResponse::VersionNotSupported = 505;
 
-String _HttpResponse::getStatusString(int status){
+String _HttpResponse::castStatus(int status){
     switch(status) {
 	    case Continue: return createString("Continue");
  	    case SwitchProtocls: return createString("Switching Protocols");
@@ -92,4 +92,20 @@ String _HttpResponse::getStatusString(int status){
  	    case VersionNotSupported: return createString("HTTP Version not supported");
 	    default:  return createString("Unknown");
 	}
+}
+
+_HttpResponse::_HttpResponse(HttpPacket packet) {
+	mPacket = packet;
+}
+
+_HttpResponse::_HttpResponse() {
+	mPacket = createHttpPacket();
+}
+
+int _HttpResponse::getStatus() {
+    //TODO
+	return mPacket->getStatusCode();    
+	return -1;
+}
+
 }

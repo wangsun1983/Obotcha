@@ -364,7 +364,9 @@ const String _HttpContentType::VideoXMsVideo = createString("video/x-msvideo");
 const String _HttpContentType::SuffixAvi = createString("avi");
 
 //multipart/form-data 
-const String _HttpContentType::MultiPareFormData = createString("multipart/form-data");
+const String _HttpContentType::MultiPartFormData = createString("multipart/form-data");
+
+const String _HttpContentType::FormData = createString("form-data");
 
 
 

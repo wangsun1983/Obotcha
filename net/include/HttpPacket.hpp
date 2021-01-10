@@ -12,7 +12,6 @@
 #include "HttpCookie.hpp"
 
 #include "HttpMethod.hpp"
-#include "HttpResponse.hpp"
 #include "HttpMultiPart.hpp"
 
 namespace obotcha {
@@ -63,8 +62,6 @@ public:
     HttpMultiPart getMultiPart();
 
     String genHttpRequest();
-
-    ByteArray genHttpResponse();
 
     ArrayList<HttpCookie> getCookies();
 

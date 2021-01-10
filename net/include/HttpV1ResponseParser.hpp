@@ -17,6 +17,7 @@
 #include "http_parser.h"
 #include "HttpMultiPartParser.hpp"
 #include "HttpCookieParser.hpp"
+#include "HttpResponse.hpp"
 
 namespace obotcha {
 
@@ -27,7 +28,7 @@ public:
 
     void pushHttpData(ByteArray);
 
-    ArrayList<HttpPacket> doParse();
+    HttpResponse doParse();
 
     int getStatus();
 

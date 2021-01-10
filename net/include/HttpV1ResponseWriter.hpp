@@ -38,6 +38,8 @@ private:
     File mFile;
 
     bool mResponsible;
+
+    ByteArray compose(HttpPacket);
 };
 
 }

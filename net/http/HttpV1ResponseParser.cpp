@@ -101,7 +101,7 @@ void _HttpV1ResponseParser::pushHttpData(ByteArray data) {
     mBuff->push(data);
 }
 
-ArrayList<HttpPacket> _HttpV1ResponseParser::doParse() {
+HttpResponse _HttpV1ResponseParser::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
     static byte end[4] = {'\r','\n','\r','\n'};
     static byte chunksizeEnd[2] = {'\r','\n'};

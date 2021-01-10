@@ -8,6 +8,7 @@
 #include "HttpPacket.hpp"
 #include "HttpMethod.hpp"
 #include "ByteArrayWriter.hpp"
+#include "HttpResponse.hpp"
 
 namespace obotcha {
 
@@ -107,7 +108,7 @@ String _HttpPacket::genHttpRequest() {
     req = req->append(" ",mUrl,
                       " HTTP/",createString(mMajorVer),".",createString(mMinorVer),
                       "\r\n",
-                      mHeader->genHtml());
+                      mHeader->toString());
 
     return req;   
 }
@@ -118,29 +119,6 @@ ArrayList<HttpCookie> _HttpPacket::getCookies() {
 
 void _HttpPacket::addCookie(HttpCookie c) {
     mHeader->addCookie(c);
-}
-
-ByteArray _HttpPacket::genHttpResponse() {
-    String statusString = mHeader->getValue(st(HttpHeader)::Status);
-	if(statusString == nullptr) {
-		return nullptr;
-	}
-
-	String status = st(HttpResponse)::getStatusString(statusString->toBasicInt());
-	String responseStr = createString("HTTP/1.1 ")->append(statusString," ",status,"\r\n");
-    
-	String headerStr = mHeader->genHtml();
-    
-    ByteArray response = createByteArray(responseStr->size() + headerStr->size() + mBody->size());
-    ByteArrayWriter writer = createByteArrayWriter(response);
-	//String bodyStr = createString((char *)mBody->toValue(),0,mBody->size());
-    writer->writeString(responseStr);
-	writer->write((byte *)headerStr->toChars(),headerStr->size());
-    if(mBody != nullptr) {
-        writer->writeByteArray(mBody);
-    }
- 
-    return response;
 }
 
 void _HttpPacket::dump() {

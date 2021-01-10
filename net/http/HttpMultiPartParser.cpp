@@ -328,7 +328,12 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                 if(mContentType != nullptr) {
                     if(mFileStream == nullptr) {
                         String filepath = mEnv->get(st(Enviroment)::gHttpMultiPartFilePath);
+                        printf("filepath is %s \n",filepath->toChars());
+                        File dir = createFile(filepath);
+                        dir->createDirs();
+                        
                         String filename = mContentDisp->dispositions->get("filename");
+                        printf("filename is %s \n",filename->toChars());
                         mFile = createFile(filepath->append(filename));
                         String name = mFile->getNameWithNoSuffix();
                         String suffix = mFile->getSuffix();

@@ -15,6 +15,38 @@
 
 using namespace obotcha;
 
+#if 0
+HttpDispatchRunnable run trace1,data->pack is GET /login HTTP/1.1
+Content-Type: multipart/form-data; boundary=--------------------------712541294259138523003686
+User-Agent: PostmanRuntime/7.22.0
+Accept: */*
+Cache-Control: no-cache
+Postman-Token: 94c4bcd5-cf66-4e2f-809c-24771c74f0df
+Host: 192.168.1.10:8012
+Accept-Encoding: gzip, deflate, br
+Content-Length: 492
+Connection: keep-alive
+
+----------------------------712541294259138523003686
+Content-Disposition: form-data; name="1"
+
+1111
+----------------------------712541294259138523003686
+Content-Disposition: form-data; name="f1"; filename=""
+
+
+----------------------------712541294259138523003686
+Content-Disposition: form-data; name="2"
+
+2222
+----------------------------712541294259138523003686
+Content-Disposition: form-data; name="f2"; filename=""
+
+
+----------------------------712541294259138523003686--
+ 
+#endif
+
 int main() {
 
     char *http = "HTTP/1.1 301 Moved Permanently\r\n"

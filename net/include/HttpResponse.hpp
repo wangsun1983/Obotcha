@@ -10,12 +10,18 @@
 #include "HttpHeader.hpp"
 #include "ByteArray.hpp"
 #include "HttpCookie.hpp"
+#include "HttpPacket.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(HttpResponse) {
 public:
-    static String getStatusString(int);
+    _HttpResponse(HttpPacket packet);
+	_HttpResponse();
+    int getStatus();
+
+    //------------- static method -----------------//
+    static String castStatus(int);
 	
     const static int Continue; //100;
  	const static int SwitchProtocls; //101;
@@ -58,6 +64,9 @@ public:
  	const static int ServiceUnavailable; //503;
  	const static int GatewayTimeOut; //504;
  	const static int VersionNotSupported; //505;
+
+private:
+	HttpPacket mPacket;
 };
 
 }
