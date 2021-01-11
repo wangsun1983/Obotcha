@@ -17,36 +17,36 @@ DECLARE_SIMPLE_CLASS(HttpMethod) {
 
 public:
 
-    const static int Delete = HTTP_DELETE;
+    const static int Delete;
 
-    const static int Get = HTTP_GET;
-    const static int Head = HTTP_HEAD;
-    const static int Post = HTTP_POST;
-    const static int Put = HTTP_PUT;
+    const static int Get;
+    const static int Head;
+    const static int Post;
+    const static int Put;
     /* pathological */
-    const static int Connect = HTTP_CONNECT;
-    const static int Options = HTTP_OPTIONS;
-    const static int Trace = HTTP_TRACE;
+    const static int Connect;
+    const static int Options;
+    const static int Trace;
     /* webdav */
-    const static int Copy = HTTP_COPY;
-    const static int Lock = HTTP_LOCK;
-    const static int Mkcol = HTTP_MKCOL;
-    const static int Move = HTTP_MOVE;
-    const static int PropFind = HTTP_PROPFIND;
-    const static int PropPatch = HTTP_PROPPATCH;
-    const static int Unlock = HTTP_UNLOCK;
+    const static int Copy;
+    const static int Lock;
+    const static int Mkcol;
+    const static int Move;
+    const static int PropFind;
+    const static int PropPatch;
+    const static int Unlock;
     /* subversion */
-    const static int Report = HTTP_REPORT;
-    const static int MkActivity = HTTP_MKACTIVITY;
-    const static int CheckOut = HTTP_CHECKOUT;
-    const static int Merge = HTTP_MERGE;
+    const static int Report;
+    const static int MkActivity;
+    const static int CheckOut;
+    const static int Merge;
     /* upnp */
-    const static int Msearch = HTTP_MSEARCH;
-    const static int Notify = HTTP_NOTIFY;
-    const static int Subscribe = HTTP_SUBSCRIBE;
-    const static int UnSubscribe = HTTP_UNSUBSCRIBE;
+    const static int Msearch;
+    const static int Notify;
+    const static int Subscribe;
+    const static int UnSubscribe;
     /* RFC-5789 */
-    const static int Patch = HTTP_PATCH;
+    const static int Patch;
 
     const static String GetMethodString;
     const static String DeleteMethodString;

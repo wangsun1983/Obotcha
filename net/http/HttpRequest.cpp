@@ -3,9 +3,10 @@
 
 namespace obotcha {
 
-_HttpRequest::_HttpRequest(int,HttpUrl url) {
+_HttpRequest::_HttpRequest(int m,HttpUrl url) {
     mPacket = createHttpPacket();
     mUrl = url;
+    mMethod = m;
 }
 
 void _HttpRequest::setHeader(String key,String value) {

@@ -136,7 +136,9 @@ int _HttpRequestWriter::write(HttpRequest p) {
         AUTO_FLUSH(writer->writeString(boundary));
     }
 
-
+    if(writer->getIndex() != 0) {
+        FORCE_FLUSH();
+    }
     //body
     return 0;
 }
