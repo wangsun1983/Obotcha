@@ -39,6 +39,8 @@ public:
 
     int doSend(ByteArray);
 
+    int doSend(ByteArray,int);
+
     ByteArray doReceive();
 
     int getBuffSize();

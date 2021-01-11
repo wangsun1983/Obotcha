@@ -10,10 +10,12 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/localsocketserver.o \
 		$(outtmp)/httpurlparser.o \
 		$(outtmp)/httpurl.o \
+		$(outtmp)/httpversion.o \
 		$(outtmp)/httpcontenttype.o \
 		$(outtmp)/httpurlbuilder.o \
 		$(outtmp)/httpresponse.o \
 		$(outtmp)/httpclient.o \
+		$(outtmp)/httpmethod.o \
 		$(outtmp)/httpheader.o \
 		$(outtmp)/httppacket.o \
 		$(outtmp)/httptext.o \
@@ -86,11 +88,17 @@ $(outtmp)/httpv1requestparser.o :$(netDir)/http/HttpV1RequestParser.cpp
 $(outtmp)/httpclient.o :$(netDir)/http/HttpClient.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClient.cpp -o $(outtmp)/httpclient.o $(external)
 
+$(outtmp)/httpmethod.o :$(netDir)/http/HttpMethod.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMethod.cpp -o $(outtmp)/httpmethod.o $(external)
+
 $(outtmp)/httpurlparser.o :$(netDir)/http/HttpUrlParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlParser.cpp -o $(outtmp)/httpurlparser.o $(external)
 
 $(outtmp)/httpurl.o :$(netDir)/http/HttpUrl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrl.cpp -o $(outtmp)/httpurl.o $(external)
+
+$(outtmp)/httpversion.o :$(netDir)/http/HttpVersion.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpVersion.cpp -o $(outtmp)/httpversion.o $(external)
 
 $(outtmp)/httpcontenttype.o :$(netDir)/http/HttpContentType.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpContentType.cpp -o $(outtmp)/httpcontenttype.o $(external)

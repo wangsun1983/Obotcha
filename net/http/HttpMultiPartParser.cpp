@@ -1,6 +1,7 @@
 #include "HttpMultiPartParser.hpp"
 #include "Enviroment.hpp"
 #include "Log.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
@@ -20,6 +21,10 @@ _HttpMultiPartParser::_HttpMultiPartParser(String contenttype,int length) {
     mBoundaryHeader = contenttype;
     //start parse boundary
     ArrayList<String> strings = contenttype->split(";");
+    if(strings == nullptr || strings->size() == 0) {
+        Trigger(InitializeException,"MultiPartParser init fail!!");
+    }
+
     ListIterator<String> iterator = strings->getIterator();
 
     while(iterator->hasValue()) {

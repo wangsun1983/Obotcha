@@ -22,8 +22,11 @@ public:
 
     void setVersion(int,int);
 
-    int getMajorVersion();
-    int getMinorVersion();
+    int getMajorVer();
+    int getMinorVer();
+
+    void setMajorVer(int);
+    void setMinorVer(int);
 
     void setMethod(int);
     int getMethod();
@@ -40,8 +43,6 @@ private:
     HttpUrl mUrl;
     HttpPacket mPacket;
     int mMethod;
-    int mMajorVersion;
-    int mMinorVersion;
     
 };
 

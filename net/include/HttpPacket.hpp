@@ -13,6 +13,7 @@
 
 #include "HttpMethod.hpp"
 #include "HttpMultiPart.hpp"
+#include "HttpVersion.hpp"
 
 namespace obotcha {
 
@@ -53,6 +54,8 @@ public:
 
     int getMinorVersion();
 
+    HttpVersion getVersion();
+
     int getStatusCode();
 
     void setStatusCode(int);
@@ -60,8 +63,6 @@ public:
     void setMultiPart(HttpMultiPart);
 
     HttpMultiPart getMultiPart();
-
-    String genHttpRequest();
 
     ArrayList<HttpCookie> getCookies();
 
@@ -78,11 +79,7 @@ private:
 
     String mReason;
 
-    //int mMethod;
-
-    int mMajorVer;
-
-    int mMinorVer;
+    HttpVersion mVersion;
 
     int mStatusCode;
 

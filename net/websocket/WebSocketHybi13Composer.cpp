@@ -13,6 +13,7 @@
 #include "HttpPacket.hpp"
 #include "Random.hpp"
 #include "Base64.hpp"
+#include "HttpRequestWriter.hpp"
 
 namespace obotcha {
 
@@ -86,8 +87,9 @@ ByteArray _WebSocketHybi13Composer::_genClientShakeHandMessage(WebSocketClientIn
     if(packet->getHeader()->getValue(st(HttpHeader)::CacheControl) == nullptr) {
         packet->getHeader()->setValue(st(HttpHeader)::CacheControl,"no-cache");
     }
-    
-    return createByteArray(packet->genHttpRequest());
+    //TODO
+    HttpRequestWriter writer = createHttpRequestWriter();
+    return writer->compose(packet);
 }
 
 ByteArray _WebSocketHybi13Composer::_genServerShakeHandMessage(WebSocketClientInfo info) {

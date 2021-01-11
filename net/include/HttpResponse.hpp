@@ -19,6 +19,9 @@ public:
     _HttpResponse(HttpPacket packet);
 	_HttpResponse();
     int getStatus();
+	
+	ByteArray getBody();
+	HttpMultiPart getMultiPart();
 
     //------------- static method -----------------//
     static String castStatus(int);

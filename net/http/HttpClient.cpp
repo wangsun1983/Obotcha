@@ -58,15 +58,11 @@ HttpResponse _HttpClient::execute(HttpRequest request) {
     String ip = ips->get(0);
     printf("ip is %s \n",ip->toChars());
     mTcpClient = createTcpClient(ip,url->getPort());
-   
-
-    //if(!mKeepAlive) {
     mTcpClient->doConnect();
-    //}
-    HttpRequestWriter writer = createHttpRequestWriter(mTcpClient);
-    int len = writer->write(request);
 
-    printf("len is %d \n",len);
+    HttpRequestWriter writer = createHttpRequestWriter(mTcpClient);
+    writer->write(request);
+
     while(1) {
         ByteArray result = mTcpClient->doReceive();
         printf("receive \n");
@@ -75,7 +71,7 @@ HttpResponse _HttpClient::execute(HttpRequest request) {
         if(packets == nullptr || packets->size() == 0) {
             continue;
         }
-        return packets->get(0)->getBody()->toString();
+        return createHttpResponse(packets->get(0));
     }
 
     if(!mKeepAlive) {

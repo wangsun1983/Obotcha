@@ -103,9 +103,18 @@ _HttpResponse::_HttpResponse() {
 }
 
 int _HttpResponse::getStatus() {
-    //TODO
-	return mPacket->getStatusCode();    
-	return -1;
+	return mPacket->getStatusCode();
 }
+
+ByteArray _HttpResponse::getBody() {
+	return mPacket->getBody();
+}
+
+HttpMultiPart _HttpResponse::getMultiPart() {
+	return mPacket->getMultiPart();
+}
+
+
+
 
 }

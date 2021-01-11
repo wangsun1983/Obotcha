@@ -1,0 +1,43 @@
+#include "Object.hpp"
+#include "StrongPointer.hpp"
+
+#include "String.hpp"
+#include "HttpVersion.hpp"
+#include "HttpText.hpp"
+
+namespace obotcha {
+
+_HttpVersion::_HttpVersion() {
+    mMajorVer = 1;
+    mMinorVer = 1;
+}
+
+_HttpVersion::_HttpVersion(int major,int minor) {
+    mMajorVer = major;
+    mMinorVer = minor;
+}
+    
+int _HttpVersion::getMajorVer() {
+    return mMajorVer;
+}
+
+int _HttpVersion::getMinorVer() {
+    return mMinorVer;
+}
+
+void _HttpVersion::setMajorVer(int v) {
+    mMajorVer = v;
+}
+
+void _HttpVersion::setMinorVer(int v) {
+    mMinorVer = v;
+}
+
+String _HttpVersion::toString() {
+    String version = createString(" HTTP/")->append(
+                    createString(mMajorVer),".",createString(mMinorVer));
+    return version;
+}
+
+}
+

@@ -6,8 +6,6 @@ namespace obotcha {
 _HttpRequest::_HttpRequest(int,HttpUrl url) {
     mPacket = createHttpPacket();
     mUrl = url;
-    mMajorVersion = 1;
-    mMinorVersion = 1;
 }
 
 void _HttpRequest::setHeader(String key,String value) {
@@ -19,16 +17,16 @@ void _HttpRequest::setEntity(String entity) {
 }
 
 void _HttpRequest::setVersion(int major,int minor) {
-    mMajorVersion = major;
-    mMinorVersion = minor;
+    mPacket->setMajorVersion(major);
+    mPacket->setMinorVersion(minor);
 }
 
-int _HttpRequest::getMajorVersion() {
-    return mMajorVersion;
+void _HttpRequest::setMajorVer(int v) {
+    mPacket->setMajorVersion(v);
 }
 
-int _HttpRequest::getMinorVersion() {
-    return mMinorVersion;
+void _HttpRequest::setMinorVer(int v) {
+    mPacket->setMinorVersion(v);
 }
 
 void _HttpRequest::addMultiPartContent(HttpMultiPartContent content) {

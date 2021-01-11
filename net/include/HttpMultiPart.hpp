@@ -25,6 +25,9 @@ public:
 
     String getRealFileName();
     void setRealFileName(String);
+    
+    void setName(String name);
+    String getName();
 
     File getFile();
 
@@ -32,6 +35,8 @@ private:
     File mFile;
 
     String mRealFileName;
+
+    String mName;
 };
 
 DECLARE_SIMPLE_CLASS(HttpMultiPartContent) {

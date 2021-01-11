@@ -47,6 +47,14 @@ public:
     const static int UnSubscribe = HTTP_UNSUBSCRIBE;
     /* RFC-5789 */
     const static int Patch = HTTP_PATCH;
+
+    const static String GetMethodString;
+    const static String DeleteMethodString;
+    const static String PostMethodString;
+    const static String PutMethodString;
+    
+    static String toString(int);
+
 };
 
 }

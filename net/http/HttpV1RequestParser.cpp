@@ -1,6 +1,7 @@
 #include "HttpV1RequestParser.hpp"
 #include "ArrayList.hpp"
 #include "HttpContentType.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
@@ -176,19 +177,24 @@ ArrayList<HttpPacket> _HttpV1RequestParser::doParse() {
                 //check whether there is a multipart
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
-                if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPareFormData) != -1) {
+                if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPartFormData) != -1) {
                     if(mMultiPartParser == nullptr || !contenttype->equalsIgnoreCase(mMultiPartParser->getHeaderBoundary())) {
-                        mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength->toBasicInt());
+                        try {
+                            mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength->toBasicInt());
+                        } catch(InitializeException e){}
+                        
                     }
 
-                    HttpMultiPart multipart = mMultiPartParser->parse(mReader);
-                    if(multipart != nullptr) {
-                        mHttpPacket->setMultiPart(multipart);
-                        printf("add packet trace4 \n");
-                        packets->add(mHttpPacket);
-                        mStatus = HttpV1ParseStatusIdle;
+                    if(mMultiPartParser != nullptr) {
+                        HttpMultiPart multipart = mMultiPartParser->parse(mReader);
+                        if(multipart != nullptr) {
+                            mHttpPacket->setMultiPart(multipart);
+                            printf("add packet trace4 \n");
+                            packets->add(mHttpPacket);
+                            mStatus = HttpV1ParseStatusIdle;
+                        }
+                        return packets;
                     }
-                    return packets;
                 }
                 String transferEncoding = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
                 

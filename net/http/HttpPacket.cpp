@@ -14,8 +14,7 @@ namespace obotcha {
 
 _HttpPacket::_HttpPacket() {
     mHeader = createHttpHeader();
-    mMinorVer = 1;
-	mMajorVer = 1;
+    mVersion = createHttpVersion();
 }
 
 void _HttpPacket::setHeader(HttpHeader h) {
@@ -59,19 +58,23 @@ int _HttpPacket::getMethod() {
 }
 
 void _HttpPacket::setMajorVersion(int v) {
-    mMajorVer = v;
+    mVersion->setMajorVer(v);
 }
 
 int _HttpPacket::getMajorVersion() {
-    return mMajorVer;
+    return mVersion->getMajorVer();
 }
 
 void _HttpPacket::setMinorVersion(int v) {
-    mMinorVer = v;
+    mVersion->setMinorVer(v);
 }
 
 int _HttpPacket::getMinorVersion() {
-    return mMinorVer;
+    return mVersion->getMinorVer();
+}
+
+HttpVersion _HttpPacket::getVersion() {
+    return mVersion;
 }
 
 int _HttpPacket::getStatusCode() {
@@ -88,29 +91,6 @@ void _HttpPacket::setMultiPart(HttpMultiPart p) {
 
 HttpMultiPart _HttpPacket::getMultiPart() {
     return mMultiPart;
-}
-
-String _HttpPacket::genHttpRequest() {
-    String req = createString();
-    switch(mHeader->getMethod()) {
-        case st(HttpMethod)::Get:
-        req = createString("GET");
-        break;
-
-        case st(HttpMethod)::Post:
-        req = createString("POST");
-        break;
-
-        default:
-        return nullptr;
-    }
-
-    req = req->append(" ",mUrl,
-                      " HTTP/",createString(mMajorVer),".",createString(mMinorVer),
-                      "\r\n",
-                      mHeader->toString());
-
-    return req;   
 }
 
 ArrayList<HttpCookie> _HttpPacket::getCookies() {

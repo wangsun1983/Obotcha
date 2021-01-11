@@ -137,6 +137,14 @@ int _TcpClient::doSend(ByteArray data) {
     return send(mSock,data->toValue(),data->size(),0);
 }
 
+int _TcpClient::doSend(ByteArray data,int size) {
+    if(data == nullptr ||mSock == -1) {
+        return  -1;
+    }
+
+    return send(mSock,data->toValue(),size,0);
+}
+
 ByteArray _TcpClient::doReceive() {
     ByteArray data = createByteArray(mBufferSize);
     int len = read(mSock,data->toValue(),mBufferSize);

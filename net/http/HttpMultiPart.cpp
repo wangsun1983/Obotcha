@@ -39,6 +39,14 @@ void _HttpMultiPartFile::setRealFileName(String s) {
     mRealFileName = s;
 }
 
+void _HttpMultiPartFile::setName(String name) {
+    mName = name;
+}
+
+String _HttpMultiPartFile::getName() {
+    return mName;
+}
+
 //-----------------HttpMultiPartContent-----------------
 
 _HttpMultiPartContent::_HttpMultiPartContent(String name,String data):mName(name),mValue(data){

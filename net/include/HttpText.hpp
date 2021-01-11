@@ -19,12 +19,14 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(HttpText) {
 
 public:
-   static String LineEnd;
-   static String BoundaryTag;
-   static String BoundarySeperator;
-   static String BoundaryBeginning;
-   static String PartName;
-   static String PartFileName;
+   static const String LineEnd;
+   static const String ChunkEnd;
+   static const String BoundaryTag;
+   static const String BoundarySeperator;
+   static const String BoundaryBeginning;
+   static const String PartName;
+   static const String PartFileName;
+   static const String ContentSpace;
 };
 
 }
