@@ -14,6 +14,20 @@
 #include "ArrayList.hpp"
 
 using namespace obotcha;
+#if 0
+GET /login HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+User-Agent: PostmanRuntime/7.22.0
+Accept: */*
+Cache-Control: no-cache
+Postman-Token: ff565c13-4cb0-4b67-b564-3366153e8fbf
+Host: 192.168.1.10:8012
+Accept-Encoding: gzip, deflate, br
+Content-Length: 14
+Connection: keep-alive
+
+a1=233&a2=2222
+#endif
 
 #if 0
 HttpDispatchRunnable run trace1,data->pack is GET /login HTTP/1.1
