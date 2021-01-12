@@ -68,6 +68,14 @@ public:
 
     void addCookie(HttpCookie);
 
+    HashMap<String,String> getEncodedKeyValues();
+
+    String getEncodedKeyValue(String);
+
+    void setEncodedKeyValues(HashMap<String,String>);
+    
+    void addEncodedKeyValue(String,String);
+
     void dump();
 
 private:
@@ -89,6 +97,8 @@ private:
     String tempParseField;
 
     HttpMultiPart mMultiPart;
+
+    HashMap<String,String>mFormUrlEncodedMap;
 
 };
 

@@ -34,6 +34,9 @@ public:
     void addMultiPartContent(HttpMultiPartContent);
     void addMultiPartFile(HttpMultiPartFile);
 
+    void addEncodedKeyValue(String,String);
+    String getEncodedKeyValue(String);
+
     String getHeader(String);
     String getEntity();
 

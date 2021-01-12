@@ -381,6 +381,9 @@ public:
     const static String MultiPartFormData;
     const static String FormData;
 
+    //application/x-www-form-urlencoded
+    const static String XFormUrlEncoded;
+
 };
 
 }

@@ -15,6 +15,7 @@ namespace obotcha {
 _HttpPacket::_HttpPacket() {
     mHeader = createHttpHeader();
     mVersion = createHttpVersion();
+    mMultiPart = nullptr;
 }
 
 void _HttpPacket::setHeader(HttpHeader h) {
@@ -99,6 +100,29 @@ ArrayList<HttpCookie> _HttpPacket::getCookies() {
 
 void _HttpPacket::addCookie(HttpCookie c) {
     mHeader->addCookie(c);
+}
+
+HashMap<String,String> _HttpPacket::getEncodedKeyValues() {
+    return mFormUrlEncodedMap;
+}
+
+String _HttpPacket::getEncodedKeyValue(String key) {
+    if(mFormUrlEncodedMap != nullptr) {
+        return mFormUrlEncodedMap->get(key);
+    }
+    
+    return nullptr;
+}
+
+void _HttpPacket::setEncodedKeyValues(HashMap<String,String> map) {
+    mFormUrlEncodedMap = map;
+}
+
+void _HttpPacket::addEncodedKeyValue(String key,String value) {
+    if(mFormUrlEncodedMap == nullptr) {
+        mFormUrlEncodedMap = createHashMap<String,String>();
+    }
+    mFormUrlEncodedMap->put(key,value);
 }
 
 void _HttpPacket::dump() {

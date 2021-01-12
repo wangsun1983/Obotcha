@@ -31,11 +31,31 @@ void _HttpRequest::setMinorVer(int v) {
 }
 
 void _HttpRequest::addMultiPartContent(HttpMultiPartContent content) {
-    mPacket->getMultiPart()->contents->add(content);
+    HttpMultiPart part = mPacket->getMultiPart();
+    if(part == nullptr) {
+        part = createHttpMultiPart();
+        mPacket->setMultiPart(part);
+    }
+
+    part->contents->add(content);
 }
 
 void _HttpRequest::addMultiPartFile(HttpMultiPartFile file) {
-    mPacket->getMultiPart()->files->add(file);
+    HttpMultiPart part = mPacket->getMultiPart();
+    if(part == nullptr) {
+        part = createHttpMultiPart();
+        mPacket->setMultiPart(part);
+    }
+
+    part->files->add(file);
+}
+
+void _HttpRequest::addEncodedKeyValue(String key,String value) {
+    mPacket->addEncodedKeyValue(key,value);
+}
+
+String _HttpRequest::getEncodedKeyValue(String key) {
+    return mPacket->getEncodedKeyValue(key);
 }
 
 String _HttpRequest::getHeader(String key) {

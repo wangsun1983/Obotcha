@@ -109,6 +109,17 @@ int _ByteArrayWriter::writeString(String str) {
     return 0;
 }
 
+int _ByteArrayWriter::writeString(const char *str) {
+    int size = strlen(str);
+    if(!writeSizeCheck(size)) {
+        return -1;
+    }
+
+    memcpy(&mDataP[mIndex],str,size);
+    mIndex += size;
+    return 0;
+}
+
 int _ByteArrayWriter::writeByteArray(ByteArray b,int length) {
     if(!writeSizeCheck(length)) {
         return -1;
@@ -137,6 +148,10 @@ int _ByteArrayWriter::getIndex() {
 ByteArray _ByteArrayWriter::getByteArray() {
     mData->quickShrink(mIndex);
     return mData;
+}
+
+void _ByteArrayWriter::updateSize() {
+    mSize = mData->size();
 }
 
 }

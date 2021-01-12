@@ -365,8 +365,10 @@ const String _HttpContentType::SuffixAvi = createString("avi");
 
 //multipart/form-data 
 const String _HttpContentType::MultiPartFormData = createString("multipart/form-data");
-
 const String _HttpContentType::FormData = createString("form-data");
+
+//x-www-form-urlencoded
+const String _HttpContentType::XFormUrlEncoded = createString("application/x-www-form-urlencoded");
 
 
 

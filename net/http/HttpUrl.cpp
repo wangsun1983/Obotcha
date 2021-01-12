@@ -83,7 +83,6 @@ String _HttpUrl::toString() {
     if(mSchema == nullptr || mHostName == nullptr) {
         return nullptr;
     }
-
     String url = createString("")->append(mSchema)
                 ->append("://");
     
@@ -98,23 +97,25 @@ String _HttpUrl::toString() {
                      ->append("@");
         }
     }
-
+    
     url = url->append(mHostName);
 
     if(mPort != -1) {
         url = url->append(":")
                  ->append(createString(mPort));
     }
-
+    
     if(mPath != nullptr) {
         url = url->append("/")
                  ->append(mPath);
     }
-
+    
     String query = toQueryString();
     if(query != nullptr) {
         url = url->append(query);
     }
+    
+    return url;
 }
 
 String _HttpUrl::toQueryString() {

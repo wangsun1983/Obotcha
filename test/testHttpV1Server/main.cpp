@@ -8,6 +8,7 @@
 #include "HttpV1Server.hpp"
 #include "HttpV1ResponseWriter.hpp"
 #include "HttpCookie.hpp"
+#include "HttpResponse.hpp"
 
 using namespace obotcha;
 
@@ -89,6 +90,7 @@ DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
 
 
     void onMessage(sp<_HttpV1ClientInfo> client,sp<_HttpV1ResponseWriter> w,HttpPacket msg){
+        printf("om message \n");
         if(msg == nullptr) {
             return;
         }
@@ -141,5 +143,6 @@ DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
 int main() {
   MyHttpListener listener = createMyHttpListener();
   HttpV1Server server = createHttpV1Server(8012,listener);
+  server->start();
   while(1) {sleep(1000);}
 }

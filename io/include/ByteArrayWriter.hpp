@@ -22,7 +22,10 @@ public:
     int writeByteArray(ByteArray);
     int writeByteArray(ByteArray,int);
     int writeString(String);
+    int writeString(const char *);
     int getIndex();
+
+    void updateSize();
 
     int write(byte *,int);
 

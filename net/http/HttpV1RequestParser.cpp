@@ -177,12 +177,17 @@ ArrayList<HttpPacket> _HttpV1RequestParser::doParse() {
                 //check whether there is a multipart
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
+                if(contentlength == nullptr) {
+                    packets->add(mHttpPacket);
+                    mStatus = HttpV1ParseStatusIdle;
+                    continue;
+                }
+                
                 if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPartFormData) != -1) {
-                    if(mMultiPartParser == nullptr || !contenttype->equalsIgnoreCase(mMultiPartParser->getHeaderBoundary())) {
+                    if(mMultiPartParser == nullptr) {
                         try {
                             mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength->toBasicInt());
                         } catch(InitializeException e){}
-                        
                     }
 
                     if(mMultiPartParser != nullptr) {
@@ -195,39 +200,7 @@ ArrayList<HttpPacket> _HttpV1RequestParser::doParse() {
                         }
                         return packets;
                     }
-                }
-                String transferEncoding = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
-                
-                if(transferEncoding != nullptr) {
-                    byte v = 0;
-                    while(mReader->readNext(v) != ByteRingArrayReadComplete) {
-                        if(v == end[mChunkEndCount]) {
-                            mChunkEndCount++;
-                        } else {
-                            mChunkEndCount = 0;
-                        }
-
-                        if(mChunkEndCount == 5) {
-                            mStatus = HttpV1ParseStatusIdle;
-                            //this is end of content
-                            ByteArray chunk = mReader->pop();
-                            chunk->quickShrink(chunk->size()-5);
-                            mHttpPacket->setBody(chunk);
-                            printf("add packet trace1 \n");
-                            packets->add(mHttpPacket);
-                            mChunkEndCount = 0;
-                            break;
-                        }
-                    }
-
-                    if(mStatus == HttpV1ParseStatusIdle) {
-                        continue;
-                    }
-
-                    return packets;
-                }
-                
-                if(contentlength != nullptr) {
+                } else if(contentlength != nullptr) {
                     int length = contentlength->toBasicInt();
                     if(length <= mReader->getReadableLength()) {
                         mReader->move(length);
@@ -243,7 +216,6 @@ ArrayList<HttpPacket> _HttpV1RequestParser::doParse() {
                     printf("add packet trace3 \n");
                     packets->add(mHttpPacket);
                     continue;
-
                 }
                 return packets;
             }
