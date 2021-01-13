@@ -71,12 +71,17 @@ int _HttpRequestWriter::write(HttpRequest p) {
             long length = computeContentLength(p);
             p->setHeader(st(HttpHeader)::ContentLength,createString(length));
             p->setHeader(st(HttpHeader)::ContentType,st(HttpContentType)::XFormUrlEncoded);
+        } else {
+            ByteArray body = p->mPacket->getBody();
+            if(body != nullptr && body->size() != 0) {
+                p->setHeader(st(HttpHeader)::ContentLength,createString(body->size()));
+            }
+            p->setHeader(st(HttpHeader)::ContentType,st(HttpContentType)::XFormUrlEncoded);
         }
-        //TODO
     }
     AUTO_FLUSH(writer->writeString(st(HttpMethod)::toString(p->getMethod())));
     AUTO_FLUSH(writer->writeString(st(HttpText)::ContentSpace));
-    AUTO_FLUSH(writer->writeString(p->getUrl()->toString()));
+    AUTO_FLUSH(writer->writeString(p->getUrl()->getPath()));
     AUTO_FLUSH(writer->writeString(st(HttpText)::ContentSpace));
     AUTO_FLUSH(writer->writeString(p->mPacket->getVersion()->toString()));
     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
@@ -172,6 +177,11 @@ int _HttpRequestWriter::write(HttpRequest p) {
             iterator->next();
         }
         AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+    } else {
+        ByteArray body = p->mPacket->getBody();
+        if(body != nullptr && body->size() > 0) {
+            AUTO_FLUSH(writer->writeByteArray(body));
+        }
     }
 
     if(writer->getIndex() != 0) {

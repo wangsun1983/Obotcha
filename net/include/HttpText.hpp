@@ -27,6 +27,7 @@ public:
    static const String PartName;
    static const String PartFileName;
    static const String ContentSpace;
+   static const String ContentHttp;
 };
 
 }

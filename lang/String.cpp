@@ -360,6 +360,10 @@ int _String::indexOf(const char *v) {
 
     return m_str.find(v);
 }
+
+int _String::indexOf(char v) {
+    return m_str.find(v);
+}
     
 String _String::valueOf(Integer &v) {
     if(v == nullptr) {

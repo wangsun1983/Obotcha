@@ -10,5 +10,6 @@ const String _HttpText::BoundaryBeginning = createString("--");
 const String _HttpText::PartName = createString("name");
 const String _HttpText::PartFileName = createString("filename");
 const String _HttpText::ContentSpace = createString(" ");
+const String _HttpText::ContentHttp = createString("HTTP");
 
 }

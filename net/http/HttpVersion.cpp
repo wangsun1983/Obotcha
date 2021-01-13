@@ -34,7 +34,7 @@ void _HttpVersion::setMinorVer(int v) {
 }
 
 String _HttpVersion::toString() {
-    String version = createString(" HTTP/")->append(
+    String version = st(HttpText)::ContentHttp->append("/",
                     createString(mMajorVer),".",createString(mMinorVer));
     return version;
 }

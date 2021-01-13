@@ -17,10 +17,12 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpclient.o \
 		$(outtmp)/httpmethod.o \
 		$(outtmp)/httpheader.o \
+		$(outtmp)/httpheaderparser.o \
 		$(outtmp)/httppacket.o \
 		$(outtmp)/httptext.o \
 		$(outtmp)/httprequest.o \
 		$(outtmp)/httprequestwriter.o \
+		$(outtmp)/httpcachecontrol.o \
 		$(outtmp)/httpv1responsewriter.o \
 		$(outtmp)/httpv1responseparser.o \
 		$(outtmp)/httpclientmanager.o \
@@ -130,6 +132,9 @@ $(outtmp)/httpv1clientinfo.o :$(netDir)/http/HttpV1ClientInfo.cpp
 $(outtmp)/httpheader.o :$(netDir)/http/HttpHeader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeader.cpp -o $(outtmp)/httpheader.o $(external)
 
+$(outtmp)/httpheaderparser.o :$(netDir)/http/HttpHeaderParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeaderParser.cpp -o $(outtmp)/httpheaderparser.o $(external)
+
 $(outtmp)/httppacket.o :$(netDir)/http/HttpPacket.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacket.cpp -o $(outtmp)/httppacket.o $(external)
 
@@ -141,6 +146,9 @@ $(outtmp)/httprequest.o :$(netDir)/http/HttpRequest.cpp
 
 $(outtmp)/httprequestwriter.o :$(netDir)/http/HttpRequestWriter.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRequestWriter.cpp -o $(outtmp)/httprequestwriter.o $(external)
+
+$(outtmp)/httpcachecontrol.o :$(netDir)/http/HttpCacheControl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpCacheControl.cpp -o $(outtmp)/httpcachecontrol.o $(external)
 
 $(outtmp)/httpresponse.o :$(netDir)/http/HttpResponse.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponse.cpp -o $(outtmp)/httpresponse.o $(external)

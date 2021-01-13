@@ -198,6 +198,8 @@ public:
     int indexOf(std::string v);
 
     int indexOf(const char *v);
+
+    int indexOf(char v);
     //----------------------------
     template<class ...T>
     String append(T...args);

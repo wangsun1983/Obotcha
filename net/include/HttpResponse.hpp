@@ -22,6 +22,7 @@ public:
 	
 	ByteArray getBody();
 	HttpMultiPart getMultiPart();
+	String getHeader(String);
 
     //------------- static method -----------------//
     static String castStatus(int);

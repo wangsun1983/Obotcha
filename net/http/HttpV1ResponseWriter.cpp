@@ -4,6 +4,7 @@
 #include "Enviroment.hpp"
 #include "HttpResponse.hpp"
 #include "ByteArrayWriter.hpp"
+#include "HttpText.hpp"
 
 namespace obotcha {
 
@@ -144,7 +145,9 @@ int _HttpV1ResponseWriter::flush() {
             }
         }
     } else {
+        printf("flush trace 333 \n");
         ByteArray resp = compose(mPacket);
+        printf("flush resp is %s \n",resp->toString()->toChars());
         mClient->send(resp);
     }
 
@@ -162,11 +165,20 @@ ByteArray _HttpV1ResponseWriter::compose(HttpPacket packet) {
     
 	String headerStr = packet->getHeader()->toString();
     
-    ByteArray response = createByteArray(responseStr->size() + headerStr->size() + mPacket->getBody()->size());
+    int responseStrSize = responseStr->size();
+    int headerStrSize = headerStr->size();
+    int bodySize = 0;
+    if(mPacket->getBody() != nullptr) {
+        bodySize = mPacket->getBody()->size();
+    }
+
+    ByteArray response = createByteArray(responseStr->size() + headerStr->size() + bodySize);
     ByteArrayWriter writer = createByteArrayWriter(response);
 	//String bodyStr = createString((char *)mBody->toValue(),0,mBody->size());
     writer->writeString(responseStr);
 	writer->write((byte *)headerStr->toChars(),headerStr->size());
+    writer->writeString(st(HttpText)::LineEnd);
+
     if(packet->getBody() != nullptr) {
         writer->writeByteArray(packet->getBody());
     }

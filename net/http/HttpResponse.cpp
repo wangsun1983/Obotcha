@@ -114,6 +114,10 @@ HttpMultiPart _HttpResponse::getMultiPart() {
 	return mPacket->getMultiPart();
 }
 
+String _HttpResponse::getHeader(String key) {
+	return mPacket->getHeader()->getValue(key);
+}
+
 
 
 
