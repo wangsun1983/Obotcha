@@ -13,6 +13,10 @@ void _HttpRequest::setHeader(String key,String value) {
     mPacket->getHeader()->setValue(key,value);
 }
 
+HttpHeader _HttpRequest::getHeaders() {
+    return mPacket->getHeader();
+}
+
 void _HttpRequest::setEntity(String entity) {
     mPacket->setBody(entity);
 }

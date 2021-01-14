@@ -8,6 +8,7 @@
 #include "HttpPacket.hpp"
 #include "HttpUrl.hpp"
 #include "HttpMultiPart.hpp"
+#include "HttpHeader.hpp"
 
 namespace obotcha {
 
@@ -19,6 +20,7 @@ public:
 
     void setHeader(String,String);
     void setEntity(String);
+    HttpHeader getHeaders();
 
     void setVersion(int,int);
 

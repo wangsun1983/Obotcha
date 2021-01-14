@@ -17,12 +17,20 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(HttpResponse) {
 public:
     _HttpResponse(HttpPacket packet);
+	
 	_HttpResponse();
+
     int getStatus();
 	
+	void setBody(ByteArray);
 	ByteArray getBody();
-	HttpMultiPart getMultiPart();
+
+	void setHeader(String,String);
 	String getHeader(String);
+	HttpHeader getHeaders();
+
+	void setFile(File);
+	void addCookie(HttpCookie);
 
     //------------- static method -----------------//
     static String castStatus(int);
@@ -71,6 +79,7 @@ public:
 
 private:
 	HttpPacket mPacket;
+	File mFile;
 };
 
 }

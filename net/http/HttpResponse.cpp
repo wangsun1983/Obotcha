@@ -110,15 +110,29 @@ ByteArray _HttpResponse::getBody() {
 	return mPacket->getBody();
 }
 
-HttpMultiPart _HttpResponse::getMultiPart() {
-	return mPacket->getMultiPart();
-}
-
 String _HttpResponse::getHeader(String key) {
 	return mPacket->getHeader()->getValue(key);
 }
 
+void _HttpResponse::setBody(ByteArray) {
+    //TODO
+}
 
+void _HttpResponse::setHeader(String,String) {
+	//TODO
+}
+
+HttpHeader _HttpResponse::getHeaders() {
+	return nullptr;
+}
+
+void _HttpResponse::setFile(File) {
+	//TODO
+}
+
+void _HttpResponse::addCookie(HttpCookie) {
+	//TODO
+}
 
 
 }

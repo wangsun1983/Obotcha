@@ -63,6 +63,20 @@ public:
 
     void import(sp<_HttpHeader> headers);
 
+    String toString();
+
+    static const String NoCache;
+    static const String NoStore;
+    static const String MaxAge;
+    static const String SMaxAge;
+    static const String CachePrivate;
+    static const String CachePublic;
+    static const String MustRevalidate;
+    static const String MaxStale;
+    static const String MinFresh;
+    static const String OnlyIfCached;
+    static const String NotTransform;
+
 private:
     bool mNoCache;
     bool mNoStore;

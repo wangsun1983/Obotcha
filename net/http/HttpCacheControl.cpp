@@ -1,6 +1,20 @@
 #include "HttpCacheControl.hpp"
+#include "HttpHeader.hpp"
+#include "HttpHeaderParser.hpp"
 
 namespace obotcha {
+
+const String _HttpCacheControl::NoCache = createString("no-cache");
+const String _HttpCacheControl::NoStore = createString("no-store");;
+const String _HttpCacheControl::MaxAge = createString("max-age");;
+const String _HttpCacheControl::SMaxAge = createString("s-maxage");;
+const String _HttpCacheControl::CachePrivate = createString("private");;
+const String _HttpCacheControl::CachePublic = createString("public");;
+const String _HttpCacheControl::MustRevalidate = createString("must-revalidate");
+const String _HttpCacheControl::MaxStale = createString("max-stale");
+const String _HttpCacheControl::MinFresh = createString("min-fresh");;
+const String _HttpCacheControl::OnlyIfCached = createString("only-if-cached");
+const String _HttpCacheControl::NotTransform = createString("no-transform");;
 
 _HttpCacheControl::_HttpCacheControl() {
     mNoCache = false;
@@ -62,7 +76,115 @@ bool _HttpCacheControl::noTransform() {
 }
 
 void _HttpCacheControl::import(sp<_HttpHeader> headers) {
+    bool canUseHeaderValue = true;
+    String value = headers->getValue(st(HttpHeader)::CacheControl);
+    if(value != nullptr) {
+        int pos = 0;
+        while (pos < value->size()) {
+            int tokenStart = pos;
+            pos = st(HttpHeaderParser)::skipUntil(value, pos, "=,;");
+            String directive = value->subString(tokenStart, pos-tokenStart)->trim();
+            String parameter;
+
+            if (pos == value->size() || value->charAt(pos) == ',' || value->charAt(pos) == ';') {
+                pos++; // consume ',' or ';' (if necessary)
+                parameter = nullptr;
+            } else {
+                pos++; // consume '='
+                pos = st(HttpHeaderParser)::skipWhitespace(value, pos);
+                // quoted string
+                if (pos < value->size() && value->charAt(pos) == '\"') {
+                    pos++; // consume '"' open quote
+                    int parameterStart = pos;
+                    pos = st(HttpHeaderParser)::skipUntil(value, pos, "\"");
+                    parameter = value->subString(parameterStart, pos);
+                    pos++; // consume '"' close quote (if necessary)
+                    // unquoted string
+                } else {
+                    int parameterStart = pos;
+                    pos = st(HttpHeaderParser)::skipUntil(value, pos, ",;");
+                    parameter = value->subString(parameterStart, (pos-parameterStart))->trim();
+                }
+            }
+
+            if (NoCache->equalsIgnoreCase(directive)) {
+                mNoCache = true;
+            } else if (NoStore->equalsIgnoreCase(directive)) {
+                mNoStore = true;
+            } else if (MaxAge->equalsIgnoreCase(directive)) {
+                mMaxAgeSeconds = st(HttpHeaderParser)::parseSeconds(parameter, -1);
+            } else if (SMaxAge->equalsIgnoreCase(directive)) {
+                mSMaxAgeSeconds = st(HttpHeaderParser)::parseSeconds(parameter, -1);
+            } else if (CachePrivate->equalsIgnoreCase(directive)) {
+                mIsPrivate = true;
+            } else if (CachePublic->equalsIgnoreCase(directive)) {
+                mIsPublic = true;
+            } else if (MustRevalidate->equalsIgnoreCase(directive)) {
+                mMustRevalidate = true;
+            } else if (MaxStale->equalsIgnoreCase(directive)) {
+                mMaxStaleSeconds = st(HttpHeaderParser)::parseSeconds(parameter, st(Integer)::MAX_VALUE);
+            } else if (MinFresh->equalsIgnoreCase(directive)) {
+                mMinFreshSeconds = st(HttpHeaderParser)::parseSeconds(parameter, -1);
+            } else if (OnlyIfCached->equalsIgnoreCase(directive)) {
+                mOnlyIfCached = true;
+            } else if (NotTransform->equalsIgnoreCase(directive)) {
+                mNoTransform = true;
+            }
+        }
+    }
+}
+
+String _HttpCacheControl::toString() {
+    String result = createString("");
+    if (mNoCache) {
+        result = result->append("no-cache, ");
+    }
     
+    if (mNoStore) {
+        result = result->append("no-store, ");
+    }
+
+    if (mMaxAgeSeconds != -1) {
+        result = result->append("max-age=",createString(mMaxAgeSeconds),", ");
+    }
+
+    if (mSMaxAgeSeconds != -1) {
+        result = result->append("s-maxage=",createString(mSMaxAgeSeconds),", ");
+    }
+
+    if (mIsPrivate) {
+        result = result->append("private, ");
+    }
+
+    if (mIsPublic) {
+        result = result->append("public, ");
+    }
+
+    if (mMustRevalidate) {
+        result = result->append("must-revalidate, ");
+    }
+
+    if (mMaxStaleSeconds != -1) {
+        result = result->append("max-stale=",createString(mMaxStaleSeconds),", ");
+    }
+
+    if (mMinFreshSeconds != -1) {
+        result = result->append("min-fresh=",createString(mMinFreshSeconds),", ");
+    }
+
+    if (mOnlyIfCached) {
+        result = result->append("only-if-cached, ");
+    }
+
+    if (mNoTransform) {
+        result = result->append("no-transform, ");
+    }
+
+    if (result->size() == 0) {
+        return createString("");
+    }
+
+    return result->subString(0,result->size() - 2);
 }
 
 }

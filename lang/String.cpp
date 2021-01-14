@@ -275,12 +275,12 @@ char _String::charAt(int index) {
     return m_str.data()[index];
 }
 
-String _String::subString(int start,int end) {
-    if(end < 0 ||start > end || (uint32_t)end >= m_str.size()) {
+String _String::subString(int start,int length) {
+    if(length < 0 || (start + length) > m_str.size()) {
         return nullptr;
     }
 
-    return createString(m_str.substr(start,end));
+    return createString(m_str.substr(start,length));
 }
 
 bool _String::contains(String val) {

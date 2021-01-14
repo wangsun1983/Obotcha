@@ -88,7 +88,7 @@ public:
 
     char charAt(int index);
 
-    String subString(int start,int end);
+    String subString(int start,int length);
 
     String trim();
 
