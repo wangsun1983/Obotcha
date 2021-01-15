@@ -34,11 +34,11 @@ int _TcpServerSocket::getFd() {
     return mFd;
 }
 
-int _TcpServerSocket::send(ByteArray data) {
+int _TcpServerSocket::send(ByteArray data,int size) {
     while(1) {
         isCacheEmpty = false;
 
-        int result = write(mFd,data->toValue(),data->size());
+        int result = write(mFd,data->toValue(),size);
         if(result < 0) {
             if(errno == EAGAIN) {
                 if(!isCacheEmpty->get()) {
@@ -57,6 +57,10 @@ int _TcpServerSocket::send(ByteArray data) {
         }
         return result;
     }
+}
+
+int _TcpServerSocket::send(ByteArray data) {
+    this->send(data,data->size());
 }
 
 void _TcpServerSocket::enableSend() {

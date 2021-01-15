@@ -33,6 +33,8 @@ public:
     _TcpServerSocket(int fd);
     
     int send(ByteArray);
+
+    int send(ByteArray,int);
     
     int getFd();
 

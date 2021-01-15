@@ -45,6 +45,8 @@ public:
 
     int write(ByteArray);
 
+    int write(ByteArray,int);
+
     ~_SSLInfo();
 
 private:

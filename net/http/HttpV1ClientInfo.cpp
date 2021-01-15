@@ -68,6 +68,14 @@ int _HttpV1ClientInfo::send(ByteArray data) {
     return mSocket->send(data);
 }
 
+int _HttpV1ClientInfo::send(ByteArray data,int size) {
+    if(mSSLInfo != nullptr) {
+        return mSSLInfo->write(data);
+    }
+
+    return mSocket->send(data,size);
+}
+
 SSLInfo _HttpV1ClientInfo::getSSLInfo() {
     return mSSLInfo;
 }

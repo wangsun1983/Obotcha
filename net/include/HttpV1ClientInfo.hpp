@@ -43,6 +43,8 @@ public:
 
     int send(ByteArray);
 
+    int send(ByteArray,int);
+
     ArrayList<HttpPacket> pollHttpPacket();
 
     Mutex getResponseWriteMutex();

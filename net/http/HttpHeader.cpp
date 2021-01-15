@@ -158,7 +158,7 @@ MapIterator<String,String> _HttpHeader::getIterator() {
     return mValues->getIterator();
 }
 
-String _HttpHeader::toString() {
+String _HttpHeader::toString(int type) {
     //conver header
     MapIterator<String,String> headerIte = mValues->getIterator();;
     String html = createString("");
@@ -174,7 +174,7 @@ String _HttpHeader::toString() {
     ListIterator<HttpCookie> iterator = mCookies->getIterator();
     while(iterator->hasValue()) {
         HttpCookie cookie = iterator->getValue();
-        html = html->append(cookie->genServerCookieString(),st(HttpText)::LineEnd);
+        html = html->append(cookie->toString(type),st(HttpText)::LineEnd);
         iterator->next();
     }
 

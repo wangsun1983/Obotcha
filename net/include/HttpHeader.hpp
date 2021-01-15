@@ -31,7 +31,7 @@ public:
 
     ArrayList<HttpCookie> getCookies();
 
-    String toString();
+    String toString(int);
 
     int getMethod();
     

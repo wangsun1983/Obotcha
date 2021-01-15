@@ -5,13 +5,40 @@
 #include "HttpResponse.hpp"
 #include "ByteArrayWriter.hpp"
 #include "HttpText.hpp"
+#include "HttpProtocol.hpp"
 
 namespace obotcha {
 
+#define AUTO_FLUSH(X) \
+while(X == -1) {\
+    if(flush) {\
+        this->send(writer->getIndex() + 1);\
+        mSendBuff->clear();\
+        writer = createByteArrayWriter(mSendBuff);\
+    } else {\
+        mSendBuff->growBy(mSendBuff->size() *2);\
+        writer->updateSize();\
+    }\
+}
+
+#define FORCE_FLUSH() \
+{\
+    if(flush) {\
+        this->send(writer->getIndex() + 1);\
+        mSendBuff->clear();\
+        writer = createByteArrayWriter(mSendBuff);\
+    }\
+}
+
 _HttpV1ResponseWriter::_HttpV1ResponseWriter(HttpV1ClientInfo client) {
     mClient = client;
-    mPacket = createHttpPacket();
     mResponsible = true;
+    mSendBuff = createByteArray(1024*32);
+}
+
+_HttpV1ResponseWriter::_HttpV1ResponseWriter() {
+    mResponsible = true;
+    mSendBuff = createByteArray(1024*32);
 }
 
 void _HttpV1ResponseWriter::disableResponse() {
@@ -21,35 +48,151 @@ void _HttpV1ResponseWriter::disableResponse() {
 bool _HttpV1ResponseWriter::isResponsible() {
     return mResponsible;
 }
-    
-void _HttpV1ResponseWriter::writeHeader(String key,String value) {
-    mPacket->getHeader()->setValue(key,value);
+
+int _HttpV1ResponseWriter::write(HttpResponse response,bool flush) {
+    if(!mResponsible) {
+        return -1;
+    }
+    printf("write trace1 \n");
+    AutoLock l(mClient->getResponseWriteMutex());
+    mSendBuff->clear();
+    ByteArrayWriter writer = createByteArrayWriter(mSendBuff);
+
+    File file = response->getFile();
+    HashMap<String,String> encodedUrlMap = response->mPacket->getEncodedKeyValues();
+    ByteArray body = response->mPacket->getBody();
+
+    //start compose 
+    int status = response->getStatus();
+    String statusStr = st(HttpResponse)::toString(status);
+    AUTO_FLUSH(writer->writeString(response->mPacket->getVersion()->toString()));
+    AUTO_FLUSH(writer->writeString(" "));
+    AUTO_FLUSH(writer->writeString(createString(status)));
+    AUTO_FLUSH(writer->writeString(" "));
+    AUTO_FLUSH(writer->writeString(st(HttpResponse)::toString(status)));
+    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+    //update content-length
+    int contentlength = 0;
+    if(file != nullptr) {
+        response->mPacket->getHeader()->setValue(st(HttpHeader)::TransferEncoding,st(HttpHeader)::TransferChunked);
+    } else {
+        contentlength = computeContentLength(response);
+        response->mPacket->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(contentlength));
+    }
+    printf("write trace2 \n");
+    AUTO_FLUSH(writer->writeString(response->mPacket->getHeader()->toString(st(HttpProtocol)::HttpResponse)));
+    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+    if(file != nullptr && file->exists()) {
+        FORCE_FLUSH();
+
+        printf("flush trace1_1 \n");
+        Enviroment env = st(Enviroment)::getInstance();
+        int buffsize = env->getInt(st(Enviroment)::gHttpServerSendFileBufferSize,64*1024);
+        if(file->exists()) {
+            printf("flush trace2 \n");
+            FileInputStream stream = createFileInputStream(file);
+            stream->open();
+            //update HttpHeader
+            ByteArray buff = createByteArray(buffsize);
+            bool isFirstChunk = true;
+            printf("flush trace2 \n");
+            int totalsend = 0;
+            while(1) {
+                int length = stream->read(buff);
+                if(length == 0) {
+                    break;
+                }
+                printf("flush trace3 \n");
+                String lengthHexStr = createString(length)->toHexString()->append("\r\n");
+                int hexStrLen = lengthHexStr->size();
+                String line = "\r\n";
+                int linesize = 0;
+
+                if(length == buffsize) {
+                    linesize = line->size();
+                } else {
+                    linesize = line->size()*2 + 5;//line->size()*2;
+                }
+
+                ByteArray body = createByteArray(linesize + length + hexStrLen);
+                ByteArrayWriter writer = createByteArrayWriter(body);
+                writer->writeString(line);
+                writer->writeByteArray(createByteArray((const byte *)lengthHexStr->toChars(),
+                                                lengthHexStr->size()));
+                if(length == buffsize) {
+                    writer->writeByteArray(buff,length);               
+                } else {
+                    printf("final data,length is %d  \n",length);
+                    writer->writeByteArray(buff,length);
+                    writer->writeString(line);
+                    static const byte data[] = {0x30,0x0d,0x0a,0x0d,0x0a};
+                    int ret = writer->writeByteArray(createByteArray(data,5),5);
+                    printf("ret is %d \n",ret);
+                }
+                
+                
+                int size = mClient->send(body);
+                totalsend += size;
+                printf("flush trace2 totalsend is %d,body size is %d,length is %d,reason is %s \n",totalsend,body->size(),length,strerror(errno));
+            }
+        }
+    } else if(encodedUrlMap != nullptr && encodedUrlMap->size() != 0){
+        MapIterator<String,String> iterator = encodedUrlMap->getIterator();
+        bool isFirstKey = true;
+        while(iterator->hasValue()) {
+            String key = iterator->getKey();
+            String value = iterator->getValue();
+            if(!isFirstKey) {
+                AUTO_FLUSH(writer->writeByte('&'));
+            }
+            AUTO_FLUSH(writer->writeString(key));
+            AUTO_FLUSH(writer->writeByte('='));
+            AUTO_FLUSH(writer->writeString(value));
+            iterator->next();
+        }
+        AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+    } else if(body != nullptr && body->size() != 0) {
+        printf("write trace4 \n");
+        AUTO_FLUSH(writer->writeByteArray(body));
+        AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+        printf("write trace5 \n");
+    }
+    FORCE_FLUSH();
 }
 
-void _HttpV1ResponseWriter::writeCookie(HttpCookie c) {
-    mPacket->addCookie(c);
+ByteArray _HttpV1ResponseWriter::compose(HttpResponse response) {
+    int length = write(response,false);
+    ByteArray data = createByteArray(mSendBuff->toValue(),length);
+    return data;
 }
 
-void _HttpV1ResponseWriter::setStatus(int status) {
-    mPacket->getHeader()->setValue(st(HttpHeader)::Status,createString(status));
-}
+long _HttpV1ResponseWriter::computeContentLength(HttpResponse response) {
+    HashMap<String,String> encodedUrlMap = response->mPacket->getEncodedKeyValues();
+    int length = 0;
+    if(encodedUrlMap != nullptr) {
+        MapIterator<String,String> iterator = encodedUrlMap->getIterator();
+        while(iterator->hasValue()) {
+            String key = iterator->getKey();
+            String value = iterator->getValue();
+            length += key->size() + value->size();
+            iterator->next();
+        }
+        length += encodedUrlMap->size()*2 - 1; /*=&*/
+        return length;
+    } else {
+        return response->mPacket->getBody()->size();
+    }
 
-void _HttpV1ResponseWriter::writeBody(ByteArray content) {
-    //update content length
-    mPacket->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(content->size()));
-    mPacket->setBody(content);
-}
-
-int _HttpV1ResponseWriter::write(HttpPacket packet) {
-    mPacket = packet;
     return 0;
 }
 
-int _HttpV1ResponseWriter::write(File file) {
-    mFile = file;
-    return 0;
+int _HttpV1ResponseWriter::send(int size) {
+    printf("sendbuff is %s \n",createString((const char *)mSendBuff->toValue(),0,size)->toChars());
+
+    mClient->send(mSendBuff,size);
 }
 
+/*
 int _HttpV1ResponseWriter::flush() {
     if(!mResponsible) {
         return -1;
@@ -185,5 +328,5 @@ ByteArray _HttpV1ResponseWriter::compose(HttpPacket packet) {
  
     return response;
 }
-
+*/
 }

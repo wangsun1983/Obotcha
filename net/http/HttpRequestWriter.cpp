@@ -11,6 +11,7 @@
 #include "UUID.hpp"
 #include "HttpText.hpp"
 #include "FileInputStream.hpp"
+#include "HttpProtocol.hpp"
 
 namespace obotcha {
 
@@ -85,7 +86,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
     AUTO_FLUSH(writer->writeString(st(HttpText)::ContentSpace));
     AUTO_FLUSH(writer->writeString(p->mPacket->getVersion()->toString()));
     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
-    AUTO_FLUSH(writer->writeString(p->mPacket->getHeader()->toString()));
+    AUTO_FLUSH(writer->writeString(p->mPacket->getHeader()->toString(st(HttpProtocol)::HttpRequest)));
     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
     //2. multipart
     

@@ -3,43 +3,36 @@
 
 #include "HttpPacket.hpp"
 #include "HttpV1ClientInfo.hpp"
+#include "HttpResponse.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(HttpV1ResponseWriter) {
 public:
     _HttpV1ResponseWriter(HttpV1ClientInfo client);
+    
+    _HttpV1ResponseWriter();
 
     void disableResponse();
 
     bool isResponsible();
     
-    void writeHeader(String,String);
+    int write(HttpResponse,bool flush = true);
 
-    void writeCookie(HttpCookie);
-
-    void writeBody(ByteArray);
-
-    void setStatus(int);
-
-	int write(HttpPacket);
-
-    int write(File);
-    
-    int flush();
+    ByteArray compose(HttpResponse);
 
 private:
     int mFd;
 
-    HttpPacket mPacket;
-
     HttpV1ClientInfo mClient;
-
-    File mFile;
 
     bool mResponsible;
 
-    ByteArray compose(HttpPacket);
+    ByteArray mSendBuff;
+
+    long computeContentLength(HttpResponse);
+
+    int send(int);
 };
 
 }

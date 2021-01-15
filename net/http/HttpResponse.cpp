@@ -48,90 +48,98 @@ const int _HttpResponse::ServiceUnavailable = 503;
 const int _HttpResponse::GatewayTimeOut = 504;
 const int _HttpResponse::VersionNotSupported = 505;
 
-String _HttpResponse::castStatus(int status){
+String _HttpResponse::toString(int status){
     switch(status) {
-	    case Continue: return createString("Continue");
- 	    case SwitchProtocls: return createString("Switching Protocols");
- 	    case Ok: return createString("OK");
- 	    case Created: return createString("Created");
- 	    case Accepted: return createString("Accepted");
- 	    case NonAuthoritativeInformation: return createString("Non-Authoritative Information");
- 	    case NoContent: return createString("No Content");
- 	    case ResetContent: return createString("Reset Content");
- 	    case PartialContent: return createString("Partial Content");
- 	    case MultipleChoices: return createString("Multiple Choices");
- 	    case MovedPermanently: return createString("Moved Permanently");
- 	    case Found: return createString("Found");
- 	    case SeeOther: return createString("See Other");
- 	    case NotModified: return createString("Not Modified");
- 	    case UseProxy: return createString("Use Proxy");
- 	    case TemporaryRedirect: return createString("Temporary Redirect");
- 	    case BadRequest: return createString("Bad Request");
- 	    case Unauthorized: return createString("Unauthorized");
- 	    case PaymentRequired: return createString("Payment Required");
- 	    case Forbidden: return createString("Forbidden");
- 	    case NotFound: return createString("Not Found");
- 	    case MethodNotAllowed: return createString("Method Not Allowed");
- 	    case NotAcceptable: return createString("Not Acceptable");
- 	    case ProxyAuthenticationRequired: return createString("Proxy Authentication Required");
- 	    case RequestTimeTou: return createString("Request Time-out");
- 	    case Conflict: return createString("Conflict");
- 	    case Gone: return createString("Gone");
- 	    case LengthRequired: return createString("Length Required");
- 	    case PreconditionFailed: return createString("Precondition Failed");
- 	    case RequestEntityToLarge: return createString("Request Entity Too Large");
- 	    case RequestUriTooLarge: return createString("Request-URI Too Large");
- 	    case UnsupportedMediaType: return createString("Unsupported Media Type");
- 	    case RequestedRangeNotSatisfiable: return createString("Requested range not satisfiable");
- 	    case ExpectationFailed: return createString("Expectation Failed");
- 	    case InternalServerError: return createString("Internal Server Error");
- 	    case NotImplemented: return createString("Not Implemented");
- 	    case BadGateway: return createString("Bad Gateway");
- 	    case ServiceUnavailable: return createString("Service Unavailable");
- 	    case GatewayTimeOut: return createString("Gateway Time-out");
- 	    case VersionNotSupported: return createString("HTTP Version not supported");
-	    default:  return createString("Unknown");
-	}
+        case Continue: return createString("Continue");
+         case SwitchProtocls: return createString("Switching Protocols");
+         case Ok: return createString("OK");
+         case Created: return createString("Created");
+         case Accepted: return createString("Accepted");
+         case NonAuthoritativeInformation: return createString("Non-Authoritative Information");
+         case NoContent: return createString("No Content");
+         case ResetContent: return createString("Reset Content");
+         case PartialContent: return createString("Partial Content");
+         case MultipleChoices: return createString("Multiple Choices");
+         case MovedPermanently: return createString("Moved Permanently");
+         case Found: return createString("Found");
+         case SeeOther: return createString("See Other");
+         case NotModified: return createString("Not Modified");
+         case UseProxy: return createString("Use Proxy");
+         case TemporaryRedirect: return createString("Temporary Redirect");
+         case BadRequest: return createString("Bad Request");
+         case Unauthorized: return createString("Unauthorized");
+         case PaymentRequired: return createString("Payment Required");
+         case Forbidden: return createString("Forbidden");
+         case NotFound: return createString("Not Found");
+         case MethodNotAllowed: return createString("Method Not Allowed");
+         case NotAcceptable: return createString("Not Acceptable");
+         case ProxyAuthenticationRequired: return createString("Proxy Authentication Required");
+         case RequestTimeTou: return createString("Request Time-out");
+         case Conflict: return createString("Conflict");
+         case Gone: return createString("Gone");
+         case LengthRequired: return createString("Length Required");
+         case PreconditionFailed: return createString("Precondition Failed");
+         case RequestEntityToLarge: return createString("Request Entity Too Large");
+         case RequestUriTooLarge: return createString("Request-URI Too Large");
+         case UnsupportedMediaType: return createString("Unsupported Media Type");
+         case RequestedRangeNotSatisfiable: return createString("Requested range not satisfiable");
+         case ExpectationFailed: return createString("Expectation Failed");
+         case InternalServerError: return createString("Internal Server Error");
+         case NotImplemented: return createString("Not Implemented");
+         case BadGateway: return createString("Bad Gateway");
+         case ServiceUnavailable: return createString("Service Unavailable");
+         case GatewayTimeOut: return createString("Gateway Time-out");
+         case VersionNotSupported: return createString("HTTP Version not supported");
+        default:  return createString("Unknown");
+    }
 }
 
 _HttpResponse::_HttpResponse(HttpPacket packet) {
-	mPacket = packet;
+    mPacket = packet;
 }
 
 _HttpResponse::_HttpResponse() {
-	mPacket = createHttpPacket();
+    mPacket = createHttpPacket();
 }
 
 int _HttpResponse::getStatus() {
-	return mPacket->getStatusCode();
+    return mPacket->getStatusCode();
+}
+
+void _HttpResponse::setStatus(int s) {
+    mPacket->setStatusCode(s);
 }
 
 ByteArray _HttpResponse::getBody() {
-	return mPacket->getBody();
+    return mPacket->getBody();
 }
 
 String _HttpResponse::getHeader(String key) {
-	return mPacket->getHeader()->getValue(key);
+    return mPacket->getHeader()->getValue(key);
 }
 
-void _HttpResponse::setBody(ByteArray) {
-    //TODO
+void _HttpResponse::setBody(ByteArray data) {
+    mPacket->setBody(data);
 }
 
-void _HttpResponse::setHeader(String,String) {
-	//TODO
+void _HttpResponse::setHeader(String key,String val) {
+    mPacket->getHeader()->setValue(key,val);
 }
 
 HttpHeader _HttpResponse::getHeaders() {
-	return nullptr;
+    return nullptr;
 }
 
-void _HttpResponse::setFile(File) {
-	//TODO
+void _HttpResponse::setFile(File f) {
+    mFile = f;
 }
 
-void _HttpResponse::addCookie(HttpCookie) {
-	//TODO
+File _HttpResponse::getFile() {
+    return mFile;
+}
+
+void _HttpResponse::addCookie(HttpCookie cookie) {
+    mPacket->addCookie(cookie);
 }
 
 

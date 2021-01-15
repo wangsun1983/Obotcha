@@ -1,5 +1,6 @@
 #include "HttpCookie.hpp"
 #include "Calendar.hpp"
+#include "HttpProtocol.hpp"
 
 namespace obotcha {
 
@@ -79,7 +80,21 @@ int _HttpCookie::getPropertyMaxAge() {
     return mPropertyMaxAge;
 }
 
-String _HttpCookie::genServerCookieString() {
+String _HttpCookie::toString(int type) {
+    switch(type) {
+        case st(HttpProtocol)::HttpRequest:
+        return genHttpRequestCookie();
+        break;
+
+        case st(HttpProtocol)::HttpResponse:
+        return genHttpResponseCookie();
+        break;
+    }
+
+    return nullptr;
+}
+
+String _HttpCookie::genHttpResponseCookie() {
     //name
     String content = createString("Set-Cookie: ");
     MapIterator<String,String> iterator = mValues->getIterator();
@@ -121,7 +136,7 @@ String _HttpCookie::genServerCookieString() {
     return content;
 }
 
-String _HttpCookie::genClientCookieString() {
+String _HttpCookie::genHttpRequestCookie() {
     String content = createString("Cookie: ");
     MapIterator<String,String> iterator = mValues->getIterator();
     while(iterator->hasValue()) {

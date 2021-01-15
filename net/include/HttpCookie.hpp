@@ -33,8 +33,7 @@ public:
     String getPropertyExpires();
     int getPropertyMaxAge();
 
-    String genServerCookieString();
-    String genClientCookieString();
+    String toString(int);
 
     void dump();
 
@@ -65,6 +64,9 @@ private:
     String mRaw;
 
     HashMap<String,String> mValues;
+
+    String genHttpRequestCookie();
+    String genHttpResponseCookie();
 };
 
 }

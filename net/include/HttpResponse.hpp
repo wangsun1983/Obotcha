@@ -14,13 +14,18 @@
 
 namespace obotcha {
 
+class _HttpV1ResponseWriter;
+
 DECLARE_SIMPLE_CLASS(HttpResponse) {
 public:
+    friend class _HttpV1ResponseWriter;
+
     _HttpResponse(HttpPacket packet);
 	
 	_HttpResponse();
 
     int getStatus();
+	void setStatus(int);
 	
 	void setBody(ByteArray);
 	ByteArray getBody();
@@ -30,10 +35,11 @@ public:
 	HttpHeader getHeaders();
 
 	void setFile(File);
+	File getFile();
 	void addCookie(HttpCookie);
 
     //------------- static method -----------------//
-    static String castStatus(int);
+    static String toString(int);
 	
     const static int Continue; //100;
  	const static int SwitchProtocls; //101;

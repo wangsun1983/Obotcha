@@ -85,6 +85,14 @@ int _SSLInfo::write(ByteArray b) {
     return  -1;
 }
 
+int _SSLInfo::write(ByteArray b,int size) {
+    if(mSSL != nullptr) {
+        return SSL_write(mSSL,b->toValue(),size);
+    }
+
+    return  -1;
+}
+
 SSL *_SSLInfo::getSSL() {
     return mSSL;
 }
