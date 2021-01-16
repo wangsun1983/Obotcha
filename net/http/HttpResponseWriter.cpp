@@ -1,4 +1,4 @@
-#include "HttpV1ResponseWriter.hpp"
+#include "HttpResponseWriter.hpp"
 #include "AutoLock.hpp"
 #include "FileInputStream.hpp"
 #include "Enviroment.hpp"
@@ -6,13 +6,14 @@
 #include "ByteArrayWriter.hpp"
 #include "HttpText.hpp"
 #include "HttpProtocol.hpp"
+#include "HttpStatus.hpp"
 
 namespace obotcha {
 
 #define AUTO_FLUSH(X) \
 while(X == -1) {\
     if(flush) {\
-        this->send(writer->getIndex() + 1);\
+        send(writer->getIndex());\
         mSendBuff->clear();\
         writer = createByteArrayWriter(mSendBuff);\
     } else {\
@@ -24,36 +25,37 @@ while(X == -1) {\
 #define FORCE_FLUSH() \
 {\
     if(flush) {\
-        this->send(writer->getIndex() + 1);\
-        mSendBuff->clear();\
-        writer = createByteArrayWriter(mSendBuff);\
+        if(writer->getIndex() > 0) {\
+            send(writer->getIndex());\
+            mSendBuff->clear();\
+            writer = createByteArrayWriter(mSendBuff);\
+        }\
     }\
 }
 
-_HttpV1ResponseWriter::_HttpV1ResponseWriter(HttpV1ClientInfo client) {
+_HttpResponseWriter::_HttpResponseWriter(HttpClientInfo client) {
     mClient = client;
     mResponsible = true;
     mSendBuff = createByteArray(1024*32);
 }
 
-_HttpV1ResponseWriter::_HttpV1ResponseWriter() {
+_HttpResponseWriter::_HttpResponseWriter() {
     mResponsible = true;
     mSendBuff = createByteArray(1024*32);
 }
 
-void _HttpV1ResponseWriter::disableResponse() {
+void _HttpResponseWriter::disableResponse() {
     mResponsible = false;
 }
 
-bool _HttpV1ResponseWriter::isResponsible() {
+bool _HttpResponseWriter::isResponsible() {
     return mResponsible;
 }
 
-int _HttpV1ResponseWriter::write(HttpResponse response,bool flush) {
+int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     if(!mResponsible) {
         return -1;
     }
-    printf("write trace1 \n");
     AutoLock l(mClient->getResponseWriteMutex());
     mSendBuff->clear();
     ByteArrayWriter writer = createByteArrayWriter(mSendBuff);
@@ -64,13 +66,15 @@ int _HttpV1ResponseWriter::write(HttpResponse response,bool flush) {
 
     //start compose 
     int status = response->getStatus();
-    String statusStr = st(HttpResponse)::toString(status);
+    printf("status is %d \n",status);
+    String statusStr = st(HttpStatus)::toString(status);
     AUTO_FLUSH(writer->writeString(response->mPacket->getVersion()->toString()));
     AUTO_FLUSH(writer->writeString(" "));
     AUTO_FLUSH(writer->writeString(createString(status)));
     AUTO_FLUSH(writer->writeString(" "));
-    AUTO_FLUSH(writer->writeString(st(HttpResponse)::toString(status)));
+    AUTO_FLUSH(writer->writeString(st(HttpStatus)::toString(status)));
     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+
     //update content-length
     int contentlength = 0;
     if(file != nullptr) {
@@ -79,9 +83,11 @@ int _HttpV1ResponseWriter::write(HttpResponse response,bool flush) {
         contentlength = computeContentLength(response);
         response->mPacket->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(contentlength));
     }
-    printf("write trace2 \n");
+
     AUTO_FLUSH(writer->writeString(response->mPacket->getHeader()->toString(st(HttpProtocol)::HttpResponse)));
-    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd)); //change line
+    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd)); //blank line
+
     if(file != nullptr && file->exists()) {
         FORCE_FLUSH();
 
@@ -152,21 +158,20 @@ int _HttpV1ResponseWriter::write(HttpResponse response,bool flush) {
         }
         AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
     } else if(body != nullptr && body->size() != 0) {
-        printf("write trace4 \n");
         AUTO_FLUSH(writer->writeByteArray(body));
         AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
-        printf("write trace5 \n");
+        FORCE_FLUSH();
     }
-    FORCE_FLUSH();
+    
 }
 
-ByteArray _HttpV1ResponseWriter::compose(HttpResponse response) {
+ByteArray _HttpResponseWriter::compose(HttpResponse response) {
     int length = write(response,false);
     ByteArray data = createByteArray(mSendBuff->toValue(),length);
     return data;
 }
 
-long _HttpV1ResponseWriter::computeContentLength(HttpResponse response) {
+long _HttpResponseWriter::computeContentLength(HttpResponse response) {
     HashMap<String,String> encodedUrlMap = response->mPacket->getEncodedKeyValues();
     int length = 0;
     if(encodedUrlMap != nullptr) {
@@ -186,14 +191,12 @@ long _HttpV1ResponseWriter::computeContentLength(HttpResponse response) {
     return 0;
 }
 
-int _HttpV1ResponseWriter::send(int size) {
-    printf("sendbuff is %s \n",createString((const char *)mSendBuff->toValue(),0,size)->toChars());
-
+int _HttpResponseWriter::send(int size) {
     mClient->send(mSendBuff,size);
 }
 
 /*
-int _HttpV1ResponseWriter::flush() {
+int _HttpResponseWriter::flush() {
     if(!mResponsible) {
         return -1;
     }
@@ -297,7 +300,7 @@ int _HttpV1ResponseWriter::flush() {
     return  0;
 }
 
-ByteArray _HttpV1ResponseWriter::compose(HttpPacket packet) {
+ByteArray _HttpResponseWriter::compose(HttpPacket packet) {
     String statusString = packet->getHeader()->getValue(st(HttpHeader)::Status);
 	if(statusString == nullptr) {
 		return nullptr;

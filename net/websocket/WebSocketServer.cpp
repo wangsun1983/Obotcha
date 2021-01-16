@@ -13,7 +13,7 @@
 #include "WebSocketHybi13Composer.hpp"
 #include "WebSocketHybi13Parser.hpp"
 #include "WebSocketProtocol.hpp"
-#include "HttpV1ClientInfo.hpp"
+#include "HttpClientInfo.hpp"
 #include "Enviroment.hpp"
 #include "Log.hpp"
 
@@ -125,7 +125,7 @@ _WebSocketDispatchRunnable::_WebSocketDispatchRunnable(int index,sp<_WebSocketDi
     mIndex = index;
     mPoolMutex = createMutex();
     mPool = pool;
-    mParser = createHttpV1RequestParser();
+    mParser = createHttpRequestParser();
 }
 
 void _WebSocketDispatchRunnable::handleHttpData(DispatchData data) {
@@ -138,7 +138,7 @@ void _WebSocketDispatchRunnable::handleHttpData(DispatchData data) {
     String version = header->getValue(st(HttpHeader)::SecWebSocketVersion);
     if (upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
         // remove fd from http epoll
-        mPool->getHttpV1Server()->deMonitor(fd);
+        mPool->getHttpServer()->deMonitor(fd);
 
         while(st(WebSocketClientManager)::getInstance()->getClient(fd)!= nullptr) {
             LOG(INFO)<<"websocket client is not removed,fd is "<<fd;
@@ -382,11 +382,11 @@ void _WebSocketDispatcherPool::addData(DispatchData data) {
     mDataCondition->notifyAll();
 }
 
-void _WebSocketDispatcherPool::setHttpV1Server(HttpV1Server server) {
+void _WebSocketDispatcherPool::setHttpServer(HttpServer server) {
     mHttpServer = server;
 }
 
-HttpV1Server _WebSocketDispatcherPool::getHttpV1Server() {
+HttpServer _WebSocketDispatcherPool::getHttpServer() {
     return mHttpServer;
 }
 
@@ -478,16 +478,16 @@ int _WebSocketServer::bind(String ip, int port, String path,
     mWsListener = listener;
     
     if (ip == nullptr) {
-        mHttpServer = createHttpV1Server(port, AutoClone(this));
+        mHttpServer = createHttpServer(port, AutoClone(this));
     } else {
-        mHttpServer = createHttpV1Server(ip, port, AutoClone(this));
+        mHttpServer = createHttpServer(ip, port, AutoClone(this));
     }
 
     mHttpServer->setSendTimeout(mSendTimeout);
     mHttpServer->setRcvTimeout(mRcvTimeout);
     mHttpServer->start();
 
-    mDispatchPool->setHttpV1Server(mHttpServer);
+    mDispatchPool->setHttpServer(mHttpServer);
     mDispatchPool->setWebSocketServer(AutoClone(this));
 
     return 0;
@@ -521,19 +521,19 @@ int _WebSocketServer::onEvent(int fd,uint32_t events,ByteArray pack) {
     return st(EPollFileObserver)::OnEventOK;
 }
 
-void _WebSocketServer::onMessage(sp<_HttpV1ClientInfo> client,sp<_HttpV1ResponseWriter> w,HttpPacket msg) {
+void _WebSocketServer::onMessage(sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg) {
     //int cmd,int fd, uint32_t events,HttpPacket pack
     //_DispatchData::_DispatchData(int cmd,int fd, uint32_t events,HttpPacket pack) {
     DispatchData data = createDispatchData(st(DispatchData)::Http,client->getClientFd(),0,msg);
     mDispatchPool->addData(data);
 }
 
-void _WebSocketServer::onConnect(sp<_HttpV1ClientInfo> client) {
+void _WebSocketServer::onConnect(sp<_HttpClientInfo> client) {
     //TODO
     //printf("_WebSocketServer onConnect1,client fd is %d \n",client->getClientFd());
 }
 
-void _WebSocketServer::onDisconnect(sp<_HttpV1ClientInfo> client) {
+void _WebSocketServer::onDisconnect(sp<_HttpClientInfo> client) {
     //TODO
     //printf("_WebSocketServer onConnect2 fd is %d\n",client->getClientFd());
 }

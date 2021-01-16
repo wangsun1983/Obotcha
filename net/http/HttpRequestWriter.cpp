@@ -18,7 +18,7 @@ namespace obotcha {
 #define AUTO_FLUSH(X) \
 while(X == -1) {\
     if(mTcpClient != nullptr) {\
-        flush(writer->getIndex() + 1);\
+        flush(writer->getIndex());\
         mSendBuff->clear();\
         writer = createByteArrayWriter(mSendBuff);\
     } else {\
@@ -30,7 +30,7 @@ while(X == -1) {\
 #define FORCE_FLUSH() \
 {\
     if(mTcpClient != nullptr) {\
-        flush(writer->getIndex() + 1);\
+        flush(writer->getIndex());\
         mSendBuff->clear();\
         writer = createByteArrayWriter(mSendBuff);\
     }\

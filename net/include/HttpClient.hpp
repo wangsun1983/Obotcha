@@ -11,7 +11,7 @@
 #include "HttpCookie.hpp"
 #include "TcpClient.hpp"
 #include "HttpUrl.hpp"
-#include "HttpV1ResponseParser.hpp"
+#include "HttpResponseParser.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 
@@ -45,7 +45,7 @@ private:
 
     TcpClient mTcpClient;
 
-    HttpV1ResponseParser mParser;
+    HttpResponseParser mParser;
 };
 
 }

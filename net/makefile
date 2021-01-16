@@ -10,6 +10,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/localsocketserver.o \
 		$(outtmp)/httpurlparser.o \
 		$(outtmp)/httpurl.o \
+		$(outtmp)/httpstatus.o \
 		$(outtmp)/httpversion.o \
 		$(outtmp)/httpcontenttype.o \
 		$(outtmp)/httpurlbuilder.o \
@@ -23,17 +24,16 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httprequest.o \
 		$(outtmp)/httprequestwriter.o \
 		$(outtmp)/httpcachecontrol.o \
-		$(outtmp)/httpv1responsewriter.o \
-		$(outtmp)/httpv1responseparser.o \
+		$(outtmp)/httpresponsewriter.o \
+		$(outtmp)/httpresponseparser.o \
 		$(outtmp)/httpclientmanager.o \
 		$(outtmp)/httpcookie.o \
-		$(outtmp)/httpcookieparser.o \
 		$(outtmp)/httpdate.o \
 		$(outtmp)/httpmultipart.o \
 		$(outtmp)/httpmultipartparser.o \
-		$(outtmp)/httpv1server.o \
-		$(outtmp)/httpv1clientinfo.o \
-		$(outtmp)/httpv1requestparser.o \
+		$(outtmp)/httpserver.o \
+		$(outtmp)/httpclientinfo.o \
+		$(outtmp)/httprequestparser.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketprotocol.o \
 		$(outtmp)/websocketframe.o \
@@ -84,8 +84,8 @@ $(outtmp)/localsocketclient.o :$(netDir)/tcp/LocalSocketClient.cpp
 $(outtmp)/localsocketserver.o :$(netDir)/tcp/LocalSocketServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)
 
-$(outtmp)/httpv1requestparser.o :$(netDir)/http/HttpV1RequestParser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpV1RequestParser.cpp -o $(outtmp)/httpv1requestparser.o $(external)
+$(outtmp)/httprequestparser.o :$(netDir)/http/HttpRequestParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRequestParser.cpp -o $(outtmp)/httprequestparser.o $(external)
 
 $(outtmp)/httpclient.o :$(netDir)/http/HttpClient.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClient.cpp -o $(outtmp)/httpclient.o $(external)
@@ -99,6 +99,9 @@ $(outtmp)/httpurlparser.o :$(netDir)/http/HttpUrlParser.cpp
 $(outtmp)/httpurl.o :$(netDir)/http/HttpUrl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrl.cpp -o $(outtmp)/httpurl.o $(external)
 
+$(outtmp)/httpstatus.o :$(netDir)/http/HttpStatus.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpStatus.cpp -o $(outtmp)/httpstatus.o $(external)
+
 $(outtmp)/httpversion.o :$(netDir)/http/HttpVersion.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpVersion.cpp -o $(outtmp)/httpversion.o $(external)
 
@@ -111,9 +114,6 @@ $(outtmp)/httpurlbuilder.o :$(netDir)/http/HttpUrlBuilder.cpp
 $(outtmp)/httpcookie.o :$(netDir)/http/HttpCookie.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpCookie.cpp -o $(outtmp)/httpcookie.o $(external)
 
-$(outtmp)/httpcookieparser.o :$(netDir)/http/HttpCookieParser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpCookieParser.cpp -o $(outtmp)/httpcookieparser.o $(external)
-
 $(outtmp)/httpdate.o :$(netDir)/http/HttpDate.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpDate.cpp -o $(outtmp)/httpdate.o $(external)
 
@@ -123,11 +123,11 @@ $(outtmp)/httpmultipart.o :$(netDir)/http/HttpMultiPart.cpp
 $(outtmp)/httpmultipartparser.o :$(netDir)/http/HttpMultiPartParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMultiPartParser.cpp -o $(outtmp)/httpmultipartparser.o $(external)
 
-$(outtmp)/httpv1server.o :$(netDir)/http/HttpV1Server.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpV1Server.cpp -o $(outtmp)/httpv1server.o $(external)
+$(outtmp)/httpserver.o :$(netDir)/http/HttpServer.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpServer.cpp -o $(outtmp)/httpserver.o $(external)
 
-$(outtmp)/httpv1clientinfo.o :$(netDir)/http/HttpV1ClientInfo.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpV1ClientInfo.cpp -o $(outtmp)/httpv1clientinfo.o $(external)
+$(outtmp)/httpclientinfo.o :$(netDir)/http/HttpClientInfo.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClientInfo.cpp -o $(outtmp)/httpclientinfo.o $(external)
 
 $(outtmp)/httpheader.o :$(netDir)/http/HttpHeader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeader.cpp -o $(outtmp)/httpheader.o $(external)
@@ -153,11 +153,11 @@ $(outtmp)/httpcachecontrol.o :$(netDir)/http/HttpCacheControl.cpp
 $(outtmp)/httpresponse.o :$(netDir)/http/HttpResponse.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponse.cpp -o $(outtmp)/httpresponse.o $(external)
 
-$(outtmp)/httpv1responsewriter.o :$(netDir)/http/HttpV1ResponseWriter.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpV1ResponseWriter.cpp -o $(outtmp)/httpv1responsewriter.o $(external)
+$(outtmp)/httpresponsewriter.o :$(netDir)/http/HttpResponseWriter.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o $(external)
 
-$(outtmp)/httpv1responseparser.o :$(netDir)/http/HttpV1ResponseParser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpV1ResponseParser.cpp -o $(outtmp)/httpv1responseparser.o $(external)
+$(outtmp)/httpresponseparser.o :$(netDir)/http/HttpResponseParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponseParser.cpp -o $(outtmp)/httpresponseparser.o $(external)
 
 $(outtmp)/httpclientmanager.o :$(netDir)/http/HttpClientManager.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClientManager.cpp -o $(outtmp)/httpclientmanager.o $(external)

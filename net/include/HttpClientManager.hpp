@@ -16,34 +16,34 @@
 #include "ByteRingArray.hpp"
 #include "ByteRingArrayReader.hpp"
 #include "HttpPacket.hpp"
-#include "HttpV1ClientInfo.hpp"
+#include "HttpClientInfo.hpp"
 #include "Random.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpV1ClientManager) {
+DECLARE_SIMPLE_CLASS(HttpClientManager) {
 public:
-    static sp<_HttpV1ClientManager> getInstance();
+    static sp<_HttpClientManager> getInstance();
 
-    void addClientInfo(int fd,sp<_HttpV1ClientInfo>);
+    void addClientInfo(int fd,sp<_HttpClientInfo>);
 
-    HttpV1ClientInfo getClientInfo(int fd);
+    HttpClientInfo getClientInfo(int fd);
 
-    HttpV1ClientInfo removeClientInfo(int fd);
+    HttpClientInfo removeClientInfo(int fd);
     
     uint32_t genRandomUint32();
 
     void clear();
     
 private:
-    static sp<_HttpV1ClientManager> mInstance;
+    static sp<_HttpClientManager> mInstance;
     static Mutex mInitMutex;
 
     Mutex mMutex;
 
-    HashMap<int,HttpV1ClientInfo> mClients;
+    HashMap<int,HttpClientInfo> mClients;
 
-    _HttpV1ClientManager();
+    _HttpClientManager();
 
     Random mRand;
 };

@@ -19,8 +19,9 @@ DECLARE_SIMPLE_CLASS(HttpDate) {
 
 public:
     _HttpDate(DateTime);
+    _HttpDate(String);
     
-    String genHtml();
+    String toString();
 
 private:
     DateTime mDate;

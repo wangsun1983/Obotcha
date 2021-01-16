@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_HTTP_V1_RESPONSE_PARSER_HPP__
-#define __OBOTCHA_HTTP_V1_RESPONSE_PARSER_HPP__
+#ifndef __OBOTCHA_HTTP__RESPONSE_PARSER_HPP__
+#define __OBOTCHA_HTTP__RESPONSE_PARSER_HPP__
 
 #include <map>
 
@@ -16,15 +16,14 @@
 #include "HttpPacket.hpp"
 #include "http_parser.h"
 #include "HttpMultiPartParser.hpp"
-#include "HttpCookieParser.hpp"
 #include "HttpResponse.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpV1ResponseParser) {
+DECLARE_SIMPLE_CLASS(HttpResponseParser) {
 
 public:
-    _HttpV1ResponseParser();
+    _HttpResponseParser();
 
     void pushHttpData(ByteArray);
 
@@ -34,8 +33,8 @@ public:
 
 
 private:
-    enum HttpV1ParseStatus {
-        HttpV1ParseStatusIdle = 0,
+    enum HttpParseStatus {
+        HttpParseStatusIdle = 0,
         HttpClientParseStatusHeadStart,
         HttpClientParseStatusBodyStart,
         HttpClientParseStatusChunkJumpLineStart,

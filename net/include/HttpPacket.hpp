@@ -21,8 +21,8 @@ DECLARE_SIMPLE_CLASS(HttpPacket) {
 
 public:
 
-    friend class _HttpV1RequestParser;
-    friend class _HttpV1ResponseParser;
+    friend class _HttpRequestParser;
+    friend class _HttpResponseParser;
 
     _HttpPacket();
     
@@ -91,7 +91,7 @@ private:
 
     int mStatusCode;
 
-    //support for httpv1parse
+    //support for httpparse
     String tempParseValue;
 
     String tempParseField;

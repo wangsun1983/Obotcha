@@ -1,17 +1,17 @@
-#ifndef __OBOTCHA_HTTP_V1_RESPONSE_WRITER_HPP__
-#define __OBOTCHA_HTTP_V1_RESPONSE_WRITER_HPP__
+#ifndef __OBOTCHA_HTTP__RESPONSE_WRITER_HPP__
+#define __OBOTCHA_HTTP__RESPONSE_WRITER_HPP__
 
 #include "HttpPacket.hpp"
-#include "HttpV1ClientInfo.hpp"
+#include "HttpClientInfo.hpp"
 #include "HttpResponse.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpV1ResponseWriter) {
+DECLARE_SIMPLE_CLASS(HttpResponseWriter) {
 public:
-    _HttpV1ResponseWriter(HttpV1ClientInfo client);
+    _HttpResponseWriter(HttpClientInfo client);
     
-    _HttpV1ResponseWriter();
+    _HttpResponseWriter();
 
     void disableResponse();
 
@@ -24,7 +24,7 @@ public:
 private:
     int mFd;
 
-    HttpV1ClientInfo mClient;
+    HttpClientInfo mClient;
 
     bool mResponsible;
 

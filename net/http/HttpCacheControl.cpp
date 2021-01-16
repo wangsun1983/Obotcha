@@ -104,6 +104,7 @@ void _HttpCacheControl::import(sp<_HttpHeader> headers) {
                     int parameterStart = pos;
                     pos = st(HttpHeaderParser)::skipUntil(value, pos, ",;");
                     parameter = value->subString(parameterStart, (pos-parameterStart))->trim();
+                    pos++;
                 }
             }
 

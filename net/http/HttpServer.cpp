@@ -12,11 +12,11 @@
 #include "HttpHeader.hpp"
 #include "ByteArrayReader.hpp"
 #include "Error.hpp"
-#include "HttpV1Server.hpp"
+#include "HttpServer.hpp"
 #include "InitializeException.hpp"
 #include "AutoLock.hpp"
-#include "HttpV1ClientInfo.hpp"
-#include "HttpV1ResponseWriter.hpp"
+#include "HttpClientInfo.hpp"
+#include "HttpResponseWriter.hpp"
 #include "HttpClientManager.hpp"
 #include "SSLManager.hpp"
 
@@ -140,7 +140,7 @@ void _HttpDispatchRunnable::run() {
             mPool = nullptr;
             return;
         }
-        HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(data->fd);
+        HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(data->fd);
         if(info == nullptr) {
             continue;
         }
@@ -149,7 +149,7 @@ void _HttpDispatchRunnable::run() {
         printf("HttpDispatchRunnable run trace1,data->pack is %s \n",data->pack->toString()->toChars());
         ArrayList<HttpPacket> packets = info->pollHttpPacket();
         printf("HttpDispatchRunnable run packets size is %d \n",packets->size());
-        HttpV1ResponseWriter writer = createHttpV1ResponseWriter(info);
+        HttpResponseWriter writer = createHttpResponseWriter(info);
         if(data->clientid != info->getClientId()) {
             writer->disableResponse();
         }
@@ -160,61 +160,61 @@ void _HttpDispatchRunnable::run() {
                 //we should check whether there is a multipart
                 HttpPacket packet = iterator->getValue();
                 packet->dump();
-                info->getHttpV1Listener()->onMessage(info,writer,iterator->getValue());
+                info->getHttpListener()->onMessage(info,writer,iterator->getValue());
                 iterator->next();
             }
         }
     }
 }
 
-void _HttpV1Server::onDataReceived(SocketResponser r,ByteArray pack) {
-    HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(r->getFd());
+void _HttpServer::onDataReceived(SocketResponser r,ByteArray pack) {
+    HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r->getFd());
     DispatchHttpWorkData data = createDispatchHttpWorkData(r->getFd(),pack,info->getClientId());
     mPool->addData(data);
 }
 
-void _HttpV1Server::onDisconnect(SocketResponser r) {
-    HttpV1ClientInfo info = st(HttpV1ClientManager)::getInstance()->getClientInfo(r->getFd());
+void _HttpServer::onDisconnect(SocketResponser r) {
+    HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r->getFd());
     mHttpListener->onDisconnect(info);
 }
 
-void _HttpV1Server::onConnect(SocketResponser r) {
-    HttpV1ClientInfo info = createHttpV1ClientInfo(mTcpServer->getSocket(r->getFd()));
-    info->setHttpV1Listener(mHttpListener);
+void _HttpServer::onConnect(SocketResponser r) {
+    HttpClientInfo info = createHttpClientInfo(mTcpServer->getSocket(r->getFd()));
+    info->setHttpListener(mHttpListener);
     //info->setClientFd(r->getFd());
     SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
     if(info != nullptr) {
         info->setSSLInfo(ssl);
     }
-    st(HttpV1ClientManager)::getInstance()->addClientInfo(r->getFd(),info);
+    st(HttpClientManager)::getInstance()->addClientInfo(r->getFd(),info);
     mHttpListener->onConnect(info);
 }
 
-void _HttpV1Server::onTimeout() {
+void _HttpServer::onTimeout() {
     //Unused
 }
 
-_HttpV1Server::_HttpV1Server(int port,HttpV1Listener l):_HttpV1Server(nullptr,port,l) {
+_HttpServer::_HttpServer(int port,HttpListener l):_HttpServer(nullptr,port,l) {
 
 }
 
-_HttpV1Server::_HttpV1Server(int port,HttpV1Listener l,String certificate,String key):_HttpV1Server(nullptr,port,l,certificate,key){
+_HttpServer::_HttpServer(int port,HttpListener l,String certificate,String key):_HttpServer(nullptr,port,l,certificate,key){
 
 }
 
-_HttpV1Server::_HttpV1Server(HttpV1Listener l):_HttpV1Server(nullptr,-1,l) {
+_HttpServer::_HttpServer(HttpListener l):_HttpServer(nullptr,-1,l) {
     
 }
 
-_HttpV1Server::_HttpV1Server(HttpV1Listener l,String certificate,String key):_HttpV1Server(nullptr,-1,l,certificate,key) {
+_HttpServer::_HttpServer(HttpListener l,String certificate,String key):_HttpServer(nullptr,-1,l,certificate,key) {
     
 }
 
-_HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l):_HttpV1Server(ip,port,l,nullptr,nullptr){
+_HttpServer::_HttpServer(String ip,int port,HttpListener l):_HttpServer(ip,port,l,nullptr,nullptr){
     
 }
 
-_HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certificate,String key) {
+_HttpServer::_HttpServer(String ip,int port,HttpListener l,String certificate,String key) {
     mHttpListener = l;
 
     int threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
@@ -238,7 +238,7 @@ _HttpV1Server::_HttpV1Server(String ip,int port,HttpV1Listener l,String certific
     }
 }
 
-void _HttpV1Server::start() {
+void _HttpServer::start() {
     if(mTcpServer != nullptr) {
         mTcpServer->setRcvTimeout(mRcvTimeout);
         mTcpServer->setSendTimeout(mSendTimeout);
@@ -251,28 +251,28 @@ void _HttpV1Server::start() {
     }
 }
 
-void _HttpV1Server::setSendTimeout(long timeout) {
+void _HttpServer::setSendTimeout(long timeout) {
     mSendTimeout = timeout;
 }
 
-long _HttpV1Server::getSendTimeout() {
+long _HttpServer::getSendTimeout() {
     return mSendTimeout;
 }
 
-void _HttpV1Server::setRcvTimeout(long timeout) {
+void _HttpServer::setRcvTimeout(long timeout) {
     mRcvTimeout = timeout;
 }
 
-long _HttpV1Server::getRcvTimeout() {
+long _HttpServer::getRcvTimeout() {
     return mRcvTimeout;
 }
 
-void _HttpV1Server::deMonitor(int fd) {
+void _HttpServer::deMonitor(int fd) {
     mTcpServer->deMonitor(fd);
-    st(HttpV1ClientManager)::getInstance()->removeClientInfo(fd);
+    st(HttpClientManager)::getInstance()->removeClientInfo(fd);
 }
 
-void _HttpV1Server::exit() {
+void _HttpServer::exit() {
     if(mTcpServer != nullptr) {
         mTcpServer->release();
     }
@@ -285,7 +285,7 @@ void _HttpV1Server::exit() {
         mPool->release();
     }
     
-    st(HttpV1ClientManager)::getInstance()->clear();
+    st(HttpClientManager)::getInstance()->clear();
 }
 
 }

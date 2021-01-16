@@ -178,7 +178,11 @@ String _HttpHeader::toString(int type) {
         iterator->next();
     }
 
-    return html;
+    if(html->size() == 0) {
+        return nullptr;
+    }
+
+    return html->subString(0,html->size() - 2);
 }
 
 }

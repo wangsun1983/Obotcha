@@ -1,6 +1,7 @@
 #include "HttpCookie.hpp"
 #include "Calendar.hpp"
 #include "HttpProtocol.hpp"
+#include "HttpHeaderParser.hpp"
 
 namespace obotcha {
 
@@ -48,8 +49,9 @@ void _HttpCookie::setPropertyDomain(String data) {
     mPropertyDomain = data;
 }
 
-void _HttpCookie::setPropertyExpires(String data) {
-    mPropertyExpires = data;
+void _HttpCookie::setPropertyExpires(HttpDate date) {
+    mPropertyExpires = date;
+
 }
 
 void _HttpCookie::setPropertyMaxAge(String data) {
@@ -72,12 +74,75 @@ String _HttpCookie::getPropertyDomain() {
     return mPropertyDomain;
 }
 
-String _HttpCookie::getPropertyExpires() {
+HttpDate _HttpCookie::getPropertyExpires() {
     return mPropertyExpires;
 }
 
 int _HttpCookie::getPropertyMaxAge() {
     return mPropertyMaxAge;
+}
+
+void _HttpCookie::import(String value) {
+    printf("import value is %s \n",value->toChars());
+    int pos = 0;
+    while (pos < value->size()) {
+        int tokenStart = pos;
+        printf("pos1 is %d \n",pos);
+        pos = st(HttpHeaderParser)::skipUntil(value, pos, "=,;");
+        printf("pos2 is %d \n",pos);
+        String directive = value->subString(tokenStart, pos-tokenStart)->trim();
+        String parameter = nullptr;
+
+        if (pos == value->size() || value->charAt(pos) == ',' || value->charAt(pos) == ';') {
+            pos++; // consume ',' or ';' (if necessary)
+            parameter = nullptr;
+        } else {
+            pos++; // consume '='
+            pos = st(HttpHeaderParser)::skipWhitespace(value, pos);
+            // quoted string
+            if (pos < value->size() && value->charAt(pos) == '\"') {
+                pos++; // consume '"' open quote
+                int parameterStart = pos;
+                pos = st(HttpHeaderParser)::skipUntil(value, pos, "\"");
+                parameter = value->subString(parameterStart, pos);
+                pos++; // consume '"' close quote (if necessary)
+                // unquoted string
+            } else {
+                int parameterStart = pos;
+                if(directive->endsWithIgnoreCase(st(HttpCookie)::COOKIE_PROPERTY_EXPIRES)) {
+                    pos = st(HttpHeaderParser)::skipUntil(value, pos, ";");
+                } else {
+                    pos = st(HttpHeaderParser)::skipUntil(value, pos, ",;");
+                }
+                printf("pos is %d \n",pos);
+                parameter = value->subString(parameterStart, (pos-parameterStart))->trim();
+                pos++;
+            }
+        }
+        printf("directive is %s \n",directive->toChars());
+        if(parameter != nullptr) {
+            printf("parameter is %s \n",parameter->toChars());
+        }
+
+        if (COOKIE_PROPERTY_SECURE->equalsIgnoreCase(directive)) {
+            mPropertySecure = true;
+        } else if (COOKIE_PROPERTY_HTTPONLY->equalsIgnoreCase(directive)) {
+            mPropertyHttpOnly = true;
+        } else if (COOKIE_PROPERTY_PATH->equalsIgnoreCase(directive)) {
+            mPropertyPath = parameter;
+        } else if (COOKIE_PROPERTY_DOMAIN->equalsIgnoreCase(directive)) {
+            mPropertyDomain = parameter;
+        } else if (COOKIE_PROPERTY_EXPIRES->equalsIgnoreCase(directive)) {
+            printf("parameter start parse");
+            printf("parameter is %s \n",parameter->toChars());
+            mPropertyExpires = createHttpDate(parameter);
+        } else if (COOKIE_PROPERTY_MAX_AGE->equalsIgnoreCase(directive)) {
+            mPropertyMaxAge = st(HttpHeaderParser)::parseSeconds(parameter, st(Integer)::MAX_VALUE);
+        } else {
+            printf("setValue \n");
+            mValues->put(directive,parameter);
+        }
+    }
 }
 
 String _HttpCookie::toString(int type) {
@@ -92,6 +157,11 @@ String _HttpCookie::toString(int type) {
     }
 
     return nullptr;
+}
+
+void _HttpCookie::dump() {
+    String dumpvalue = genHttpRequestCookie();
+    printf("%s \n",dumpvalue->toChars());
 }
 
 String _HttpCookie::genHttpResponseCookie() {
@@ -138,6 +208,7 @@ String _HttpCookie::genHttpResponseCookie() {
 
 String _HttpCookie::genHttpRequestCookie() {
     String content = createString("Cookie: ");
+    printf("gen http cookie \n");
     MapIterator<String,String> iterator = mValues->getIterator();
     while(iterator->hasValue()) {
         String key = iterator->getKey();
@@ -145,8 +216,9 @@ String _HttpCookie::genHttpRequestCookie() {
         content = content->append(key,"=",value,";"); //TODO:Cookie: name=value; name2=value2  
         iterator->next();
     }
-
+    printf("gen http cookie edn\n");
     return content;
 }
+
 
 }

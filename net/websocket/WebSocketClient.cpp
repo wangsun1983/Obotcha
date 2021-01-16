@@ -21,7 +21,7 @@
 #include "SocketListener.hpp"
 #include "EPollFileObserver.hpp"
 #include "Mutex.hpp"
-#include "HttpV1ResponseParser.hpp"
+#include "HttpResponseParser.hpp"
 #include "WebSocketParser.hpp"
 #include "HashMap.hpp"
 #include "WebSocketClient.hpp"
@@ -50,7 +50,7 @@ _WebSocketTcpClientListener::_WebSocketTcpClientListener(WebSocketListener l,Web
     mClient = info;
     mHybi13Parser = createWebSocketHybi13Parser();
     mProtoclType = WsClientProtocolHttp;
-    mHttpParser = createHttpV1ResponseParser();
+    mHttpParser = createHttpResponseParser();
 }
 
 void _WebSocketTcpClientListener::onTimeout() {

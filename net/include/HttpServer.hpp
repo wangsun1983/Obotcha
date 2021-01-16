@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_HTTP_V1_SERVER_HPP__
-#define __OBOTCHA_HTTP_V1_SERVER_HPP__
+#ifndef __OBOTCHA_HTTP__SERVER_HPP__
+#define __OBOTCHA_HTTP__SERVER_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -24,8 +24,8 @@
 
 namespace obotcha {
 
-class _HttpV1ClientInfo;
-class _HttpV1ResponseWriter;
+class _HttpClientInfo;
+class _HttpResponseWriter;
 class _HttpDispatcherPool;
 
 DECLARE_SIMPLE_CLASS(DispatchHttpWorkData) {
@@ -37,12 +37,12 @@ public:
     uint64_t clientid;
 };
 
-DECLARE_SIMPLE_CLASS(HttpV1Listener) {
+DECLARE_SIMPLE_CLASS(HttpListener) {
 public:
-    virtual void onMessage(sp<_HttpV1ClientInfo> client,sp<_HttpV1ResponseWriter> w,HttpPacket msg) = 0;
-    virtual void onConnect(sp<_HttpV1ClientInfo>) = 0;
-    virtual void onDisconnect(sp<_HttpV1ClientInfo>) = 0;
-    virtual ~_HttpV1Listener(){}
+    virtual void onMessage(sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg) = 0;
+    virtual void onConnect(sp<_HttpClientInfo>) = 0;
+    virtual void onDisconnect(sp<_HttpClientInfo>) = 0;
+    virtual ~_HttpListener(){}
 };
 
 
@@ -93,22 +93,22 @@ private:
 };
 
 
-DECLARE_SIMPLE_CLASS(HttpV1Server) IMPLEMENTS(SocketListener) {
+DECLARE_SIMPLE_CLASS(HttpServer) IMPLEMENTS(SocketListener) {
 
 public:
-    friend class _HttpV1SocketListener;
+    friend class _HttpSocketListener;
     
-    _HttpV1Server(int port,HttpV1Listener,String certificate,String key);
+    _HttpServer(int port,HttpListener,String certificate,String key);
 
-    _HttpV1Server(int port,HttpV1Listener);
+    _HttpServer(int port,HttpListener);
 
-    _HttpV1Server(HttpV1Listener);
+    _HttpServer(HttpListener);
 
-    _HttpV1Server(HttpV1Listener,String certificate,String key);
+    _HttpServer(HttpListener,String certificate,String key);
 
-    _HttpV1Server(String ip,int port,HttpV1Listener);
+    _HttpServer(String ip,int port,HttpListener);
 
-    _HttpV1Server(String ip,int port,HttpV1Listener,String certificate,String key);
+    _HttpServer(String ip,int port,HttpListener,String certificate,String key);
 
     void start();
     
@@ -136,7 +136,7 @@ private:
 
     SSLServer mSSLServer;
 
-    HttpV1Listener mHttpListener;
+    HttpListener mHttpListener;
 
     String mIp;
 

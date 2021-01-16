@@ -8,6 +8,7 @@
 #include "ArrayList.hpp"
 #include "http_parser.h"
 #include "HashMap.hpp"
+#include "HttpDate.hpp"
 
 namespace obotcha {
 
@@ -23,17 +24,18 @@ public:
     void setPropertyHttpOnly(bool);
     void setPropertyPath(String);
     void setPropertyDomain(String);
-    void setPropertyExpires(String);
+    void setPropertyExpires(HttpDate);
     void setPropertyMaxAge(String);
 
     bool getPropertySecure();
     bool getPropertyHttpOnly();
     String getPropertyPath();
     String getPropertyDomain();
-    String getPropertyExpires();
+    HttpDate getPropertyExpires();
     int getPropertyMaxAge();
 
     String toString(int);
+    void import(String);
 
     void dump();
 
@@ -47,7 +49,8 @@ public:
 private:
     String mPropertyPath;              // optional
     String mPropertyDomain;            // optional
-    String mPropertyExpires;           // optional
+    //String mPropertyExpires;           // optional
+    HttpDate mPropertyExpires;
     String mPropertyRawExpires;        // for reading cookies only
 
     long mPropertyExpiresMillseocnds;

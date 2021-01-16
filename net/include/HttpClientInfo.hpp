@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_HTTP_V1_CLIENT_INFO_HPP__
-#define __OBOTCHA_HTTP_V1_CLIENT_INFO_HPP__
+#ifndef __OBOTCHA_HTTP__CLIENT_INFO_HPP__
+#define __OBOTCHA_HTTP__CLIENT_INFO_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -15,18 +15,18 @@
 #include "HttpHeader.hpp"
 #include "ByteRingArray.hpp"
 #include "ByteRingArrayReader.hpp"
-#include "HttpV1RequestParser.hpp"
+#include "HttpRequestParser.hpp"
 #include "HttpPacket.hpp"
 #include "SSLInfo.hpp"
-#include "HttpV1Server.hpp"
+#include "HttpServer.hpp"
 #include "Random.hpp"
 #include "TcpServer.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpV1ClientInfo){
+DECLARE_SIMPLE_CLASS(HttpClientInfo){
 public:
-    _HttpV1ClientInfo(TcpServerSocket);
+    _HttpClientInfo(TcpServerSocket);
 
     //ClientFd
     int getClientFd();
@@ -53,9 +53,9 @@ public:
 
     void setSSLInfo(SSLInfo);
 
-    sp<_HttpV1Listener> getHttpV1Listener();
+    sp<_HttpListener> getHttpListener();
     
-    void setHttpV1Listener(sp<_HttpV1Listener>);
+    void setHttpListener(sp<_HttpListener>);
 
     uint64_t getClientId();
 
@@ -64,7 +64,7 @@ private:
 
     int mClientFd;
 
-    HttpV1RequestParser mV1Parser;
+    HttpRequestParser mParser;
 
     int mStatus;
 
@@ -72,7 +72,7 @@ private:
 
     SSLInfo mSSLInfo;
     
-    sp<_HttpV1Listener> mHttpV1ServerListener;
+    sp<_HttpListener> mHttpServerListener;
 
     uint64_t mClientId;
 

@@ -2,21 +2,21 @@
 
 namespace obotcha {
 
-//HttpV1ClientManager
-HttpV1ClientManager _HttpV1ClientManager::mInstance = nullptr;
-Mutex _HttpV1ClientManager::mInitMutex = createMutex("HttpV1Server Mutex");;
+//HttpClientManager
+HttpClientManager _HttpClientManager::mInstance = nullptr;
+Mutex _HttpClientManager::mInitMutex = createMutex("HttpServer Mutex");;
 
-_HttpV1ClientManager::_HttpV1ClientManager() {
-    mClients = createHashMap<int,HttpV1ClientInfo>();
+_HttpClientManager::_HttpClientManager() {
+    mClients = createHashMap<int,HttpClientInfo>();
     mMutex = createMutex("http client manager");
     mRand = createRandom();
 }
 
-uint32_t _HttpV1ClientManager::genRandomUint32() {
+uint32_t _HttpClientManager::genRandomUint32() {
     return mRand->nextUint32();
 }
 
-sp<_HttpV1ClientManager> _HttpV1ClientManager::getInstance() {
+sp<_HttpClientManager> _HttpClientManager::getInstance() {
     if(mInstance != nullptr) {
         return mInstance;
     }
@@ -26,31 +26,31 @@ sp<_HttpV1ClientManager> _HttpV1ClientManager::getInstance() {
         return mInstance;
     }
 
-    _HttpV1ClientManager *p = new _HttpV1ClientManager();
+    _HttpClientManager *p = new _HttpClientManager();
     mInstance.set_pointer(p);
     return mInstance;
 }
 
-HttpV1ClientInfo _HttpV1ClientManager::getClientInfo(int fd) {
+HttpClientInfo _HttpClientManager::getClientInfo(int fd) {
     AutoLock l(mMutex);
     return mClients->get(fd);
 }
 
-void _HttpV1ClientManager::addClientInfo(int fd,sp<_HttpV1ClientInfo> info) {
+void _HttpClientManager::addClientInfo(int fd,sp<_HttpClientInfo> info) {
     AutoLock l(mMutex);
     mClients->put(fd,info);
 }
     
 
-HttpV1ClientInfo _HttpV1ClientManager::removeClientInfo(int fd) {
+HttpClientInfo _HttpClientManager::removeClientInfo(int fd) {
     AutoLock l(mMutex);
-    HttpV1ClientInfo ret = mClients->get(fd);
+    HttpClientInfo ret = mClients->get(fd);
     mClients->remove(fd);
 
     return ret;
 }
 
-void _HttpV1ClientManager::clear() {
+void _HttpClientManager::clear() {
     AutoLock l(mMutex);
     mClients->clear();
 }

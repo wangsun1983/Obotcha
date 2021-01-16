@@ -5,18 +5,19 @@
 #include "Message.hpp"
 #include "System.hpp"
 #include "ByteRingArray.hpp"
-#include "HttpV1Server.hpp"
-#include "HttpV1ResponseWriter.hpp"
+#include "HttpServer.hpp"
+#include "HttpResponseWriter.hpp"
 #include "HttpCookie.hpp"
 #include "HttpResponse.hpp"
+#include "HttpStatus.hpp"
 
 using namespace obotcha;
 
 #if 0
-DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
+DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 public:
 
-    void onMessage(HttpV1ClientInfo client,HttpV1ResponseWriter w,HttpPacket msg) {
+    void onMessage(HttpClientInfo client,HttpResponseWriter w,HttpPacket msg) {
         if(msg->getBody()!= nullptr) {
             printf("msg is %s \n",msg->getBody()->toValue());
         }
@@ -74,11 +75,11 @@ public:
         //printf("v is %d \n",v);
     }
 
-    void onConnect(HttpV1ClientInfo) {
+    void onConnect(HttpClientInfo) {
 
     }
     
-    void onDisconnect(HttpV1ClientInfo) {
+    void onDisconnect(HttpClientInfo) {
         printf("disconnect!!! \n");
     }
 
@@ -86,15 +87,12 @@ public:
 };
 #endif
 
-DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
+DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
 
-    void onMessage(sp<_HttpV1ClientInfo> client,sp<_HttpV1ResponseWriter> w,HttpPacket msg){
+    void onMessage(sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg){
         printf("om message \n");
-        if(msg == nullptr) {
-            return;
-        }
-        
+#if 0        
         String url = msg->getUrl();
         printf("url11111 is %s \n",url->toChars());
         if(url->indexOf("zip") > 0) {
@@ -117,32 +115,30 @@ DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
                 iterator->next();
             }
         }
-
-        printf("getUrl is %s \n",url->toChars());
+#endif
+        //printf("getUrl is %s \n",url->toChars());
+        msg->dump();
+        
+        HttpResponse response = createHttpResponse();
+        response->setStatus(st(HttpStatus)::Ok);
         String body = createString("<h1>Response from Gagira</h1>");
-        HttpCookie cookie = createHttpCookie();
-        cookie->setValue(createString("key-abc"),createString("value-abc"));
-        w->writeCookie(cookie);
-        w->writeBody(createByteArray(body));
-        w->writeHeader("hkey1","hval1");
-        w->writeHeader("hkey2","hval2");
-        w->writeHeader("hkey3","hval3");
-        w->setStatus(st(HttpResponse)::Ok);
-        w->flush();
+        response->setBody(createByteArray(body));
+        response->setHeader("Content-Type","text/html");
+        w->write(response);
     }
 
-    void onConnect(sp<_HttpV1ClientInfo>) {
+    void onConnect(sp<_HttpClientInfo>) {
         printf("onConnect \n");
     }
 
-    void onDisconnect(sp<_HttpV1ClientInfo>) {
+    void onDisconnect(sp<_HttpClientInfo>) {
         printf("onDisConnect \n");
     }
 };
 
 int main() {
   MyHttpListener listener = createMyHttpListener();
-  HttpV1Server server = createHttpV1Server(8012,listener);
+  HttpServer server = createHttpServer(8012,listener);
   server->start();
   while(1) {sleep(1000);}
 }

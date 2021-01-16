@@ -135,6 +135,18 @@ void _HttpPacket::dump() {
 		iterator->next();
 	}
 
+    ArrayList<HttpCookie> cookies = mHeader->getCookies();
+    if(cookies != nullptr) {
+        ListIterator<HttpCookie> iterator2 = cookies->getIterator();
+        printf("start iterator2 \n");
+        while(iterator2->hasValue()) {
+            HttpCookie cookie = iterator2->getValue();
+            cookie->dump();
+            iterator2->next();
+        }
+        printf("start iterator3 \n");
+    }
+
 	//dump body
 	if(mBody != nullptr) {
 		printf("body is %s \n",mBody->toString()->toChars());

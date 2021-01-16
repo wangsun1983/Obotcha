@@ -19,14 +19,14 @@
 #include "WebSocketListener.hpp"
 #include "HttpPacket.hpp"
 #include "EPollFileObserver.hpp"
-#include "HttpV1RequestParser.hpp"
+#include "HttpRequestParser.hpp"
 #include "WebSocketParser.hpp"
 #include "TcpServer.hpp"
 #include "WebSocketClientInfo.hpp"
 #include "BlockingLinkedList.hpp"
 #include "LinkedList.hpp"
 #include "ThreadPoolExecutor.hpp"
-#include "HttpV1Server.hpp"
+#include "HttpServer.hpp"
 #include "Random.hpp"
 #include "SpinLock.hpp"
 
@@ -95,7 +95,7 @@ private:
     void handleWsData(DispatchData data);
     void handleHttpData(DispatchData data);
 
-    HttpV1RequestParser mParser;
+    HttpRequestParser mParser;
 };
 
 //------------------WebSocketDefferedTasks---------------------------
@@ -117,8 +117,8 @@ public:
 
     DispatchData getData(int);
 
-    void setHttpV1Server(HttpV1Server);
-    HttpV1Server getHttpV1Server();
+    void setHttpServer(HttpServer);
+    HttpServer getHttpServer();
 
     void setWebSocketServer(sp<_WebSocketServer>);
     sp<_WebSocketServer> getWebSocketServer();
@@ -133,7 +133,7 @@ private:
     ArrayList<WebSocketDispatchRunnable> mRunnables;
     ArrayList<WebSocketDefferedTasks> mDefferedTasks;
 
-    HttpV1Server mHttpServer;
+    HttpServer mHttpServer;
 
     sp<_WebSocketServer> mWebSocketServer;
     
@@ -148,7 +148,7 @@ private:
 };
 
 //------------------------WebSocketServer-------------------------
-DECLARE_SIMPLE_CLASS(WebSocketServer) EXTENDS(EPollFileObserverListener),st(HttpV1Listener){
+DECLARE_SIMPLE_CLASS(WebSocketServer) EXTENDS(EPollFileObserverListener),st(HttpListener){
 public:
     friend class _WebSocketDispatchRunnable;
 
@@ -171,9 +171,9 @@ public:
     //WebSocket Epoll listener
     int onEvent(int fd,uint32_t events,ByteArray);
 
-    void onMessage(sp<_HttpV1ClientInfo> client,sp<_HttpV1ResponseWriter> w,HttpPacket msg);
-    void onConnect(sp<_HttpV1ClientInfo>);
-    void onDisconnect(sp<_HttpV1ClientInfo>);
+    void onMessage(sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg);
+    void onConnect(sp<_HttpClientInfo>);
+    void onDisconnect(sp<_HttpClientInfo>);
 
 private:
     void monitor(int fd);
@@ -192,7 +192,7 @@ private:
     
     String mPath;
 
-    HttpV1Server mHttpServer;
+    HttpServer mHttpServer;
 
     WebSocketListener mWsListener;
     

@@ -12,7 +12,7 @@
 #include "HttpHeader.hpp"
 #include "ByteArrayReader.hpp"
 #include "Error.hpp"
-#include "HttpV1ResponseParser.hpp"
+#include "HttpResponseParser.hpp"
 #include "HttpRequestWriter.hpp"
 
 namespace obotcha {
@@ -20,7 +20,7 @@ namespace obotcha {
 _HttpClient::_HttpClient() {
     mPort = 80;
     mTimeout = 5000;
-    mParser = createHttpV1ResponseParser();
+    mParser = createHttpResponseParser();
     mKeepAlive = false;
 }
 
