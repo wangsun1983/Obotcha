@@ -159,7 +159,9 @@ int _EPollFileObserver::removeObserver(EPollFileObserverListener l) {
     return 0;
 }
 
+/*
 int _EPollFileObserver::removeEvent(int fd,int event) {
+    printf("removeEvent is %x \n",event);
     int e = mFdEventsMap[fd];
     e &= ~event;
 
@@ -171,6 +173,7 @@ int _EPollFileObserver::removeEvent(int fd,int event) {
 }
 
 int _EPollFileObserver::addEvent(int fd,int event) {
+    printf("addEvent is %x \n",event);
     int e = mFdEventsMap[fd];
     e &= ~event;
 
@@ -179,6 +182,7 @@ int _EPollFileObserver::addEvent(int fd,int event) {
     ev.data.fd = fd;
     epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
 }
+*/
 
 int _EPollFileObserver::removeObserver(int fd) {
     //we should clear

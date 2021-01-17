@@ -13,7 +13,7 @@ namespace obotcha {
 #define AUTO_FLUSH(X) \
 while(X == -1) {\
     if(flush) {\
-        send(writer->getIndex());\
+        this->send(writer->getIndex());\
         mSendBuff->clear();\
         writer = createByteArrayWriter(mSendBuff);\
     } else {\
@@ -26,7 +26,7 @@ while(X == -1) {\
 {\
     if(flush) {\
         if(writer->getIndex() > 0) {\
-            send(writer->getIndex());\
+            this->send(writer->getIndex());\
             mSendBuff->clear();\
             writer = createByteArrayWriter(mSendBuff);\
         }\
@@ -67,7 +67,7 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     //start compose 
     int status = response->getStatus();
     printf("status is %d \n",status);
-    String statusStr = st(HttpStatus)::toString(status);
+    //String statusStr = st(HttpStatus)::toString(status);
     AUTO_FLUSH(writer->writeString(response->mPacket->getVersion()->toString()));
     AUTO_FLUSH(writer->writeString(" "));
     AUTO_FLUSH(writer->writeString(createString(status)));
@@ -89,39 +89,35 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd)); //blank line
 
     if(file != nullptr && file->exists()) {
-        
-        printf("flush trace1_1 \n");
-        Enviroment env = st(Enviroment)::getInstance();
         if(file->exists()) {
-            printf("flush trace2 \n");
             FileInputStream stream = createFileInputStream(file);
             stream->open();
             int filesize = file->length();
-            //update HttpHeader
-            //ByteArray buff = createByteArray(buffsize);
-            printf("flush trace3 \n");
-            //int totalsend = 0;
-            while(1) {
-                int readlength = mSendBuff->size() - writer->getIndex() - 32;
+            while(filesize != 0) {
+                int readlength = mSendBuff->size() - writer->getIndex() - 32 /*reserve data */;
+                printf("readlength is %d,mSendBuff is %d,index is %d \n",readlength,mSendBuff->size(),writer->getIndex());
+
                 if(readlength > filesize) {
                     readlength = filesize;
                 }
                 filesize -= readlength;
-
+                printf("filesize is %d \n",filesize);
                 AUTO_FLUSH(writer->writeString(createString(readlength)->toHexString()));
                 AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
-
-                stream->readTo(mSendBuff,writer->getIndex());
+                printf("send trace1 \n");
+                stream->readByLength(mSendBuff,writer->getIndex(),readlength);
                 writer->skipBy(readlength);
-
-                printf("flush trace3_2 \n");
+                printf("send trace2,index is %d \n",writer->getIndex());
                 if(filesize == 0) {
                     AUTO_FLUSH(writer->writeString(st(HttpText)::ChunkEnd));
-                    break;
+                } else {
+                    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
                 }
+                printf("send trace3 \n");
+                FORCE_FLUSH();
+                printf("send trace4 \n");
                 //printf("flush trace2,body size is %d,length is %d,reason is %s \n",body->size(),length,strerror(errno));
             }
-            FORCE_FLUSH();
         }
     } else if(encodedUrlMap != nullptr && encodedUrlMap->size() != 0){
         MapIterator<String,String> iterator = encodedUrlMap->getIterator();
@@ -173,7 +169,9 @@ long _HttpResponseWriter::computeContentLength(HttpResponse response) {
 }
 
 int _HttpResponseWriter::send(int size) {
+    printf("client send start \n");
     mClient->send(mSendBuff,size);
+    printf("client send trace \n");
 }
 
 /*

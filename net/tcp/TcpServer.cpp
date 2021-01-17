@@ -40,21 +40,32 @@ void _TcpServerSocket::release() {
 }
 
 int _TcpServerSocket::send(ByteArray data,int size) {
+    byte *sendData = data->toValue();
     while(1) {
-        isCacheEmpty = false;
-
-        int result = write(mFd,data->toValue(),size);
-        printf("tcpserver send result is %d \n",result);
+        printf("start send socket,mFd is %d \n",mFd);
+        int result = ::write(mFd,sendData,size);
+        printf("tcpserver send result is %d,errno is %d,EAGAIN is %d \n",result,errno,EAGAIN);
         if(result < 0) {
             if(errno == EAGAIN) {
                 //add epoll fd
-                AutoLock l(mMutex);
-                mServer->mObserver->addEvent(mFd,EPOLLOUT);
-                if(!isCacheEmpty) {
-                    mCondition->wait(mMutex,100);
-                }
+                //AutoLock l(mMutex);
+                //isCacheEmpty = false;
+                //printf("tcpserver send EAGAIN1 \n");
+                //mServer->mObserver->addObserver(mFd,EPOLLOUT,mServer);
+                //if(!isCacheEmpty) {
+                //    mCondition->wait(mMutex,10000);
+                //}
+                usleep(1000*10);
+                printf("tcpserver send EAGAIN2 \n");
                 continue;
             }
+        } else if(result < size) {
+            printf("tcpserver send wrong result is %d,size is %d \n",result,size);
+            size -= result;
+            sendData += result;
+            usleep(1000*10);
+            //write pool is full
+            continue;
         }
         return result;
     }
@@ -150,7 +161,7 @@ int _TcpServer::connect() {
 
     if(mListener != nullptr) {
         mObserver = createEPollFileObserver();
-        mObserver->addObserver(sock,EPOLLOUT|EPOLLIN|EPOLLRDHUP,AutoClone(this));
+        mObserver->addObserver(sock,EPOLLIN|EPOLLRDHUP,AutoClone(this));
     } else {
         mObserver = nullptr;
     }
@@ -194,7 +205,7 @@ int _TcpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
             mSocketMap->put(clientfd,tcpsock);
         }
 
-        mObserver->addObserver(clientfd,EPOLLOUT|EPOLLIN|EPOLLRDHUP,AutoClone(this));
+        mObserver->addObserver(clientfd,EPOLLIN|EPOLLRDHUP,AutoClone(this));
         
         mListener->onConnect(createSocketResponser(clientfd,
                             createString(inet_ntoa(client_address.sin_addr)),
@@ -217,7 +228,7 @@ int _TcpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
             if(s != nullptr) {
                 s->enableSend();
             }
-            mObserver->removeEvent(fd,EPOLLOUT);
+            //mObserver->removeEvent(fd,EPOLLOUT);
         }
     }
 

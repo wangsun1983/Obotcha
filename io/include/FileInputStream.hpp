@@ -23,7 +23,7 @@ public:
 
     long read(ByteArray buffer);
 
-    long readTo(ByteArray buffer,int pos);
+    long readByLength(ByteArray buffer,int pos,int length);
 
     long read(long index,ByteArray buffer);
 

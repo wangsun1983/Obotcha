@@ -33,12 +33,12 @@ long _FileInputStream::read(ByteArray buff) {
     return fstream.gcount();
 }
 
-long _FileInputStream::readTo(ByteArray buffer,int pos) {
+long _FileInputStream::readByLength(ByteArray buffer,int pos,int len) {
     if(!fstream.is_open()) {
         return -1;
     }
 
-    fstream.read((char *)buffer->toValue() + pos,buffer->size() - pos);
+    fstream.read((char *)buffer->toValue() + pos,len);
     return fstream.gcount();
 }
 

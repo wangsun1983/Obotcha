@@ -38,10 +38,10 @@ public:
     int removeObserver(int fd);
 
     int removeObserver(EPollFileObserverListener l);
-
+/*
     int removeEvent(int fd,int event);
 
-    int addEvent(int fd,int event);
+    int addEvent(int fd,int event); */
 
     int release();
 
