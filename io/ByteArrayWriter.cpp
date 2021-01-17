@@ -154,4 +154,8 @@ void _ByteArrayWriter::updateSize() {
     mSize = mData->size();
 }
 
+void _ByteArrayWriter::skipBy(int length) {
+    mIndex += length;
+}
+
 }

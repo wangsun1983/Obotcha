@@ -30,7 +30,7 @@ DECLARE_SIMPLE_CLASS(TcpServerSocket) {
 public:
     friend class _TcpServer;
 
-    _TcpServerSocket(int fd);
+    _TcpServerSocket(int fd,sp<_TcpServer> );
     
     int send(ByteArray);
 
@@ -38,12 +38,16 @@ public:
     
     int getFd();
 
+    void release();
+
 private:
     void enableSend();
     Mutex mMutex;
-    Atomic<bool> isCacheEmpty;
+    bool isCacheEmpty;
     Condition mCondition;
     int mFd;
+    EPollFileObserver mObserver;
+    sp<_TcpServer> mServer;
 };
 
 
@@ -51,6 +55,7 @@ DECLARE_SIMPLE_CLASS(TcpServer) EXTENDS(EPollFileObserverListener){
     
 public:
     friend class _WebSocketServer;
+    friend class _TcpServerSocket;
 
     _TcpServer(int port,SocketListener l = nullptr);
 

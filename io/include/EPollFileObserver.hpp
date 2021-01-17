@@ -39,6 +39,10 @@ public:
 
     int removeObserver(EPollFileObserverListener l);
 
+    int removeEvent(int fd,int event);
+
+    int addEvent(int fd,int event);
+
     int release();
 
     void run();

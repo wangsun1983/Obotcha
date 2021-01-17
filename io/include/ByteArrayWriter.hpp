@@ -23,6 +23,7 @@ public:
     int writeByteArray(ByteArray,int);
     int writeString(String);
     int writeString(const char *);
+    void skipBy(int length);
     int getIndex();
 
     void updateSize();

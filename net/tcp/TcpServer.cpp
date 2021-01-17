@@ -23,15 +23,20 @@ namespace obotcha {
 
 
 //-------------------TcpServerSocket----------------------
-_TcpServerSocket::_TcpServerSocket(int fd) {
+_TcpServerSocket::_TcpServerSocket(int fd,TcpServer server) {
     mFd = fd;
     mMutex = createMutex();
     mCondition = createCondition();
     isCacheEmpty = true;
+    mServer = server;
 }
 
 int _TcpServerSocket::getFd() {
     return mFd;
+}
+
+void _TcpServerSocket::release() {
+    mServer = nullptr;
 }
 
 int _TcpServerSocket::send(ByteArray data,int size) {
@@ -39,21 +44,17 @@ int _TcpServerSocket::send(ByteArray data,int size) {
         isCacheEmpty = false;
 
         int result = write(mFd,data->toValue(),size);
+        printf("tcpserver send result is %d \n",result);
         if(result < 0) {
             if(errno == EAGAIN) {
-                if(!isCacheEmpty->get()) {
-                    AutoLock l(mMutex);
+                //add epoll fd
+                AutoLock l(mMutex);
+                mServer->mObserver->addEvent(mFd,EPOLLOUT);
+                if(!isCacheEmpty) {
                     mCondition->wait(mMutex,100);
                 }
                 continue;
             }
-        }
-
-        if(!isCacheEmpty->get()) {
-            long start = st(System)::currentTimeMillis();
-            AutoLock l(mMutex);
-            mCondition->wait(mMutex,100);
-            printf("send socket eagain!!!,wait %d  \n",(int)(st(System)::currentTimeMillis() - start));
         }
         return result;
     }
@@ -187,7 +188,7 @@ int _TcpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
             setsockopt(clientfd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
         }
 
-        TcpServerSocket tcpsock = createTcpServerSocket(clientfd);
+        TcpServerSocket tcpsock = createTcpServerSocket(clientfd,AutoClone(this));
         {
             AutoLock l(mSocketMapMutex);
             mSocketMap->put(clientfd,tcpsock);
@@ -211,10 +212,12 @@ int _TcpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
 
         if((events & EPOLLOUT) != 0) {
             AutoLock l(mSocketMapMutex);
+            printf("_TcpServer on event epollout,fd is %d \n",fd);
             TcpServerSocket s = mSocketMap->get(fd);
             if(s != nullptr) {
                 s->enableSend();
             }
+            mObserver->removeEvent(fd,EPOLLOUT);
         }
     }
 

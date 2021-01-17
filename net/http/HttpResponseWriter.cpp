@@ -89,58 +89,39 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd)); //blank line
 
     if(file != nullptr && file->exists()) {
-        FORCE_FLUSH();
-
+        
         printf("flush trace1_1 \n");
         Enviroment env = st(Enviroment)::getInstance();
-        int buffsize = env->getInt(st(Enviroment)::gHttpServerSendFileBufferSize,64*1024);
         if(file->exists()) {
             printf("flush trace2 \n");
             FileInputStream stream = createFileInputStream(file);
             stream->open();
+            int filesize = file->length();
             //update HttpHeader
-            ByteArray buff = createByteArray(buffsize);
-            bool isFirstChunk = true;
-            printf("flush trace2 \n");
-            int totalsend = 0;
+            //ByteArray buff = createByteArray(buffsize);
+            printf("flush trace3 \n");
+            //int totalsend = 0;
             while(1) {
-                int length = stream->read(buff);
-                if(length == 0) {
+                int readlength = mSendBuff->size() - writer->getIndex() - 32;
+                if(readlength > filesize) {
+                    readlength = filesize;
+                }
+                filesize -= readlength;
+
+                AUTO_FLUSH(writer->writeString(createString(readlength)->toHexString()));
+                AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+
+                stream->readTo(mSendBuff,writer->getIndex());
+                writer->skipBy(readlength);
+
+                printf("flush trace3_2 \n");
+                if(filesize == 0) {
+                    AUTO_FLUSH(writer->writeString(st(HttpText)::ChunkEnd));
                     break;
                 }
-                printf("flush trace3 \n");
-                String lengthHexStr = createString(length)->toHexString()->append("\r\n");
-                int hexStrLen = lengthHexStr->size();
-                String line = "\r\n";
-                int linesize = 0;
-
-                if(length == buffsize) {
-                    linesize = line->size();
-                } else {
-                    linesize = line->size()*2 + 5;//line->size()*2;
-                }
-
-                ByteArray body = createByteArray(linesize + length + hexStrLen);
-                ByteArrayWriter writer = createByteArrayWriter(body);
-                writer->writeString(line);
-                writer->writeByteArray(createByteArray((const byte *)lengthHexStr->toChars(),
-                                                lengthHexStr->size()));
-                if(length == buffsize) {
-                    writer->writeByteArray(buff,length);               
-                } else {
-                    printf("final data,length is %d  \n",length);
-                    writer->writeByteArray(buff,length);
-                    writer->writeString(line);
-                    static const byte data[] = {0x30,0x0d,0x0a,0x0d,0x0a};
-                    int ret = writer->writeByteArray(createByteArray(data,5),5);
-                    printf("ret is %d \n",ret);
-                }
-                
-                
-                int size = mClient->send(body);
-                totalsend += size;
-                printf("flush trace2 totalsend is %d,body size is %d,length is %d,reason is %s \n",totalsend,body->size(),length,strerror(errno));
+                //printf("flush trace2,body size is %d,length is %d,reason is %s \n",body->size(),length,strerror(errno));
             }
+            FORCE_FLUSH();
         }
     } else if(encodedUrlMap != nullptr && encodedUrlMap->size() != 0){
         MapIterator<String,String> iterator = encodedUrlMap->getIterator();

@@ -159,6 +159,27 @@ int _EPollFileObserver::removeObserver(EPollFileObserverListener l) {
     return 0;
 }
 
+int _EPollFileObserver::removeEvent(int fd,int event) {
+    int e = mFdEventsMap[fd];
+    e &= ~event;
+
+    struct epoll_event ev;
+    ev.events = e;
+    ev.data.fd = fd;
+
+    epoll_ctl(mEpollFd, EPOLL_CTL_MOD, fd, &ev);
+}
+
+int _EPollFileObserver::addEvent(int fd,int event) {
+    int e = mFdEventsMap[fd];
+    e &= ~event;
+
+    struct epoll_event ev;
+    ev.events = event;
+    ev.data.fd = fd;
+    epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
+}
+
 int _EPollFileObserver::removeObserver(int fd) {
     //we should clear
     AutoLock l(mListenerMutex);
