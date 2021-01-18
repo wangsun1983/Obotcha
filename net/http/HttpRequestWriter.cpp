@@ -20,7 +20,7 @@ while(X == -1) {\
     if(mTcpClient != nullptr) {\
         flush(writer->getIndex());\
         mSendBuff->clear();\
-        writer = createByteArrayWriter(mSendBuff);\
+        writer->reset();\
     } else {\
         mSendBuff->growBy(mSendBuff->size() *2);\
         writer->updateSize();\
@@ -32,7 +32,7 @@ while(X == -1) {\
     if(mTcpClient != nullptr) {\
         flush(writer->getIndex());\
         mSendBuff->clear();\
-        writer = createByteArrayWriter(mSendBuff);\
+        writer->reset();\
     }\
 }
 
@@ -87,6 +87,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
     AUTO_FLUSH(writer->writeString(p->mPacket->getVersion()->toString()));
     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
     AUTO_FLUSH(writer->writeString(p->mPacket->getHeader()->toString(st(HttpProtocol)::HttpRequest)));
+    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
     //2. multipart
     
@@ -190,7 +191,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
     }
 
     //body
-    return writer->getIndex() + 1;
+    return writer->getIndex();
 }
 
 String _HttpRequestWriter::generateMultiPartBoundary() {

@@ -68,6 +68,10 @@ public:
 
     void addCookie(HttpCookie);
 
+    HttpCacheControl getCacheControl();
+
+    void setCacheControl(HttpCacheControl c);
+
     HashMap<String,String> getEncodedKeyValues();
 
     String getEncodedKeyValue(String);

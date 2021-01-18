@@ -18,6 +18,7 @@
 #include "Thread.hpp"
 #include "Pipe.hpp"
 #include "EPollFileObserver.hpp"
+#include "Socket.hpp"
 
 namespace obotcha {
 
@@ -58,7 +59,7 @@ private:
 
     EPollFileObserver mEpollObserver;
     
-    int mSock;
+    Socket mSock;
 
     struct sockaddr_in serverAddr;
 

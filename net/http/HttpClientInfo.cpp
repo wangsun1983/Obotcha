@@ -5,7 +5,7 @@
 
 namespace obotcha {
 
-_HttpClientInfo::_HttpClientInfo(TcpServerSocket s) {
+_HttpClientInfo::_HttpClientInfo(Socket s) {
     mParser = createHttpRequestParser();
     mResponseWriteMutex = createMutex("HttpResponseMutex");
     mClientFd = s->getFd();

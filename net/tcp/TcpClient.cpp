@@ -37,8 +37,9 @@ _TcpClient::_TcpClient(String ip,int port,SocketListener l,int buff_size) {
     }
   
     mBufferSize = buff_size;
-    mSock = TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0));
-    
+    int fd = TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0));
+    mSock = createSocket(fd);
+
     mListener = l;
     mSendTimeout = -1;
     mRcvTimeout = -1;
@@ -76,7 +77,7 @@ int _TcpClient::onEvent(int fd,uint32_t events,ByteArray data) {
 }
 
 int _TcpClient::getSock() {
-    return mSock;
+    return mSock->getFd();
 }
     
 int _TcpClient::doConnect() {
@@ -85,7 +86,7 @@ int _TcpClient::doConnect() {
             .tv_sec = mRcvTimeout/1000,
             .tv_usec = (mRcvTimeout%1000)*1000,
         };
-        setsockopt(mSock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+        setsockopt(mSock->getFd(), SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
     }
 
     if(mSendTimeout != -1) {
@@ -93,34 +94,33 @@ int _TcpClient::doConnect() {
             .tv_sec = mSendTimeout/1000,
             .tv_usec = (mSendTimeout%1000)*1000,
         };
-        setsockopt(mSock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+        setsockopt(mSock->getFd(), SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
     }
 
-    if(TEMP_FAILURE_RETRY(connect(mSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr))) < 0) {
-        close(mSock);
-        mSock = -1;
+    if(TEMP_FAILURE_RETRY(connect(mSock->getFd(), (struct sockaddr *)&serverAddr, sizeof(serverAddr))) < 0) {
+        close(mSock->getFd());
         return -1;
     }
 
     if(mListener != nullptr) {
-        mListener->onConnect(createSocketResponser(mSock,mServerIp,mServerPort));
+        mListener->onConnect(createSocketResponser(mSock->getFd(),mServerIp,mServerPort));
     }
 
     struct sockaddr_in local_address;
     memset(&local_address,0,sizeof(struct sockaddr_in));
 
     socklen_t length = 0;
-    int ret = getpeername(mSock, ( struct sockaddr* )&local_address, &length);
+    int ret = getpeername(mSock->getFd(), ( struct sockaddr* )&local_address, &length);
     
     while(ntohs(local_address.sin_port ) == 0) {
         st(Thread)::msleep(30);
         memset(&local_address,0,sizeof(struct sockaddr_in));
-        getpeername(mSock, ( struct sockaddr* )&local_address, &length);
+        getpeername(mSock->getFd(), ( struct sockaddr* )&local_address, &length);
     }
     
     if(mListener != nullptr) {
         mEpollObserver = createEPollFileObserver();
-        mEpollObserver->addObserver(mSock,EPOLLIN|EPOLLHUP,AutoClone(this));
+        mEpollObserver->addObserver(mSock->getFd(),EPOLLIN|EPOLLHUP,AutoClone(this));
         mEpollObserver->start();
     } else {
         mEpollObserver = nullptr;
@@ -130,24 +130,16 @@ int _TcpClient::doConnect() {
 }
 
 int _TcpClient::doSend(ByteArray data) {
-    if(data == nullptr || data->size() == 0||mSock == -1) {
-        return  -1;
-    }
-
-    return send(mSock,data->toValue(),data->size(),0);
+    return mSock->send(data);
 }
 
 int _TcpClient::doSend(ByteArray data,int size) {
-    if(data == nullptr ||mSock == -1) {
-        return  -1;
-    }
-
-    return send(mSock,data->toValue(),size,0);
+    return mSock->send(data,size);
 }
 
 ByteArray _TcpClient::doReceive() {
     ByteArray data = createByteArray(mBufferSize);
-    int len = read(mSock,data->toValue(),mBufferSize);
+    int len = read(mSock->getFd(),data->toValue(),mBufferSize);
     data->quickShrink(len);
     return data;
 }
@@ -157,9 +149,9 @@ int _TcpClient::getBuffSize() {
 }
 
 void _TcpClient::release() {
-    if(mSock >= 0) {
-        close(mSock);
-        mSock = -1;
+    if(mSock != nullptr) {
+        close(mSock->getFd());
+        mSock = nullptr;
     }
 
     if(mEpollObserver != nullptr) {

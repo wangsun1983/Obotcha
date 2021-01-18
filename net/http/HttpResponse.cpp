@@ -54,5 +54,9 @@ void _HttpResponse::addCookie(HttpCookie cookie) {
     mPacket->addCookie(cookie);
 }
 
+void _HttpResponse::dump() {
+    mPacket->dump();
+}
+
 
 }

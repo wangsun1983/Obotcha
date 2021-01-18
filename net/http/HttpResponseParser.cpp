@@ -40,6 +40,11 @@ int _HttpResponseParser::on_header_value(http_parser*parser, const char *at, siz
         cookie->import(value);
         p->addCookie(cookie);
         return 0;
+    } else if(p->tempParseField->equals(st(HttpHeader)::CacheControl)) {
+        HttpCacheControl control = createHttpCacheControl();
+        control->import(value); 
+        p->setCacheControl(control);
+        return 0;
     }
     p->getHeader()->setValue(p->tempParseField,value);
     return 0;
@@ -86,11 +91,12 @@ _HttpResponseParser::_HttpResponseParser() {
     mChunkEndCount = 0;
     mStatus = HttpParseStatusIdle;
     mChunkSize = -1;
+    mContentLength = -1;
 }
 
 void _HttpResponseParser::pushHttpData(ByteArray data) {
     //write data
-//#ifdef DUMP_HTTP_DATE
+#ifdef DUMP_HTTP_DATE
     File dumpfile = createFile("data.dt");
     //dumpfile->removeAll();
     dumpfile->createNewFile();
@@ -98,7 +104,7 @@ void _HttpResponseParser::pushHttpData(ByteArray data) {
     stream->open();
     stream->write(data);
     stream->flush();
-//#endif
+#endif
     mBuff->push(data);
 }
 
@@ -153,6 +159,9 @@ HttpResponse _HttpResponseParser::doParse() {
             case HttpClientParseStatusBodyStart: {
                 printf("HttpClientParseStatusBodyStart start\n");
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
+                if(mContentLength == -1) {
+                    mContentLength = contentlength->toBasicInt();
+                }
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
                 
                 String transferEncoding = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
@@ -215,6 +224,23 @@ HttpResponse _HttpResponseParser::doParse() {
                     mChunkSize = -1;
                     mStatus = HttpClientParseStatusChunkJumpLineStart;
                     continue;
+                } else {
+                    ByteArray body = mHttpPacket->getBody();
+                    int readablelength = mReader->getReadableLength();
+                    int popsize = (readablelength > mContentLength)?mContentLength:readablelength;
+                    mReader->move(popsize);
+                    if(body == nullptr) {
+                        body = mReader->pop();
+                    } else {
+                        body->append(mReader->pop());
+                    }
+                    mHttpPacket->setBody(body);
+                    mContentLength -= popsize;
+                    if(mContentLength == 0) {
+                        packets->add(mHttpPacket);
+                    }
+
+                    return packets;
                 }
             }
             break;

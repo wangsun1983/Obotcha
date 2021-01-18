@@ -11,6 +11,7 @@
 #include "http_parser.h"
 #include "HashMap.hpp"
 #include "HttpCookie.hpp"
+#include "HttpCacheControl.hpp"
 
 namespace obotcha {
 
@@ -30,6 +31,9 @@ public:
     void addCookie(HttpCookie);
 
     ArrayList<HttpCookie> getCookies();
+
+    HttpCacheControl getCacheControl();
+    void setCacheControl(HttpCacheControl);
 
     String toString(int);
 
@@ -147,6 +151,8 @@ private:
     HashMap<String,String> mValues;
 
     ArrayList<HttpCookie> mCookies;
+
+    HttpCacheControl mCacheControl;
 
     int mMethod;
 };

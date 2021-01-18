@@ -15,7 +15,7 @@ while(X == -1) {\
     if(flush) {\
         this->send(writer->getIndex());\
         mSendBuff->clear();\
-        writer = createByteArrayWriter(mSendBuff);\
+        writer->reset();\
     } else {\
         mSendBuff->growBy(mSendBuff->size() *2);\
         writer->updateSize();\
@@ -28,7 +28,7 @@ while(X == -1) {\
         if(writer->getIndex() > 0) {\
             this->send(writer->getIndex());\
             mSendBuff->clear();\
-            writer = createByteArrayWriter(mSendBuff);\
+            writer->reset();\
         }\
     }\
 }
@@ -66,7 +66,6 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
 
     //start compose 
     int status = response->getStatus();
-    printf("status is %d \n",status);
     //String statusStr = st(HttpStatus)::toString(status);
     AUTO_FLUSH(writer->writeString(response->mPacket->getVersion()->toString()));
     AUTO_FLUSH(writer->writeString(" "));
@@ -95,27 +94,22 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
             int filesize = file->length();
             while(filesize != 0) {
                 int readlength = mSendBuff->size() - writer->getIndex() - 32 /*reserve data */;
-                printf("readlength is %d,mSendBuff is %d,index is %d \n",readlength,mSendBuff->size(),writer->getIndex());
+                //printf("readlength is %d,mSendBuff is %d,index is %d \n",readlength,mSendBuff->size(),writer->getIndex());
 
                 if(readlength > filesize) {
                     readlength = filesize;
                 }
                 filesize -= readlength;
-                printf("filesize is %d \n",filesize);
                 AUTO_FLUSH(writer->writeString(createString(readlength)->toHexString()));
                 AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
-                printf("send trace1 \n");
                 stream->readByLength(mSendBuff,writer->getIndex(),readlength);
                 writer->skipBy(readlength);
-                printf("send trace2,index is %d \n",writer->getIndex());
                 if(filesize == 0) {
                     AUTO_FLUSH(writer->writeString(st(HttpText)::ChunkEnd));
                 } else {
                     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
                 }
-                printf("send trace3 \n");
                 FORCE_FLUSH();
-                printf("send trace4 \n");
                 //printf("flush trace2,body size is %d,length is %d,reason is %s \n",body->size(),length,strerror(errno));
             }
         }
@@ -139,7 +133,7 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
         AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
         FORCE_FLUSH();
     }
-    
+    return writer->getIndex();
 }
 
 ByteArray _HttpResponseWriter::compose(HttpResponse response) {
@@ -169,146 +163,7 @@ long _HttpResponseWriter::computeContentLength(HttpResponse response) {
 }
 
 int _HttpResponseWriter::send(int size) {
-    printf("client send start \n");
     mClient->send(mSendBuff,size);
-    printf("client send trace \n");
 }
 
-/*
-int _HttpResponseWriter::flush() {
-    if(!mResponsible) {
-        return -1;
-    }
-    int totalsend = 0;
-    printf("flush trace1 \n");
-    AutoLock l(mClient->getResponseWriteMutex());
-    if(mFile != nullptr) {
-        printf("flush trace1_1 \n");
-        Enviroment env = st(Enviroment)::getInstance();
-        int buffsize = env->getInt(st(Enviroment)::gHttpServerSendFileBufferSize,64*1024);
-        if(mFile->exists()) {
-            printf("flush trace2 \n");
-            FileInputStream stream = createFileInputStream(mFile);
-            stream->open();
-            //update HttpHeader
-            ByteArray buff = createByteArray(buffsize);
-            bool isFirstChunk = true;
-            printf("flush trace2 \n");
-            while(1) {
-                int length = stream->read(buff);
-                if(length == 0) {
-                    break;
-                }
-                printf("flush trace3 \n");
-                String lengthHexStr = createString(length)->toHexString()->append("\r\n");
-                int hexStrLen = lengthHexStr->size();
-                if(isFirstChunk) {
-                    printf("flush trace4 \n");
-                    mPacket->getHeader()->setValue(st(HttpHeader)::TransferEncoding,st(HttpHeader)::TransferChunked);
-                    mPacket->getHeader()->setValue(st(HttpHeader)::Status,createString(st(HttpResponse)::Ok));
-
-                    mPacket->getHeader()->setValue(st(HttpHeader)::ContentType,createString("text/plain"));
-                    //createByteArray
-                    int buffsize = length + hexStrLen;
-
-                    if(length == mFile->length()) {
-                        buffsize += 7;
-                    }
-
-                    ByteArray body = createByteArray(buffsize);
-                    ByteArrayWriter writer = createByteArrayWriter(body);
-
-                    writer->writeByteArray(createByteArray((const byte *)lengthHexStr->toChars(),
-                                                 lengthHexStr->size()));
-                    if(length != 0) {
-                        writer->writeByteArray(buff,length);               
-                    }
-                    printf("length is %d,file size is %d \n",length,mFile->length());
-                    if(length == mFile->length()) {
-                        static const byte data[] = {0x0d,0x0a,0x30,0x0d,0x0a,0x0d,0x0a};
-                        writer->writeByteArray(createByteArray(data,7),7);
-                    }
-                    
-                    //send
-                    mPacket->setBody(body);
-                    ByteArray resp = compose(mPacket);
-                    mClient->send(resp);
-                    isFirstChunk = false;
-                    printf("flush trace5 \n");
-                } else {
-                    String line = "\r\n";
-                    int linesize = 0;
-
-                    if(length == buffsize) {
-                        linesize = line->size();
-                    } else {
-                        linesize = line->size()*2 + 5;//line->size()*2;
-                    }
-
-                    ByteArray body = createByteArray(linesize + length + hexStrLen);
-                    ByteArrayWriter writer = createByteArrayWriter(body);
-                    writer->writeString(line);
-                    writer->writeByteArray(createByteArray((const byte *)lengthHexStr->toChars(),
-                                                 lengthHexStr->size()));
-                    if(length == buffsize) {
-                        writer->writeByteArray(buff,length);               
-                    } else {
-                        printf("final data,length is %d  \n",length);
-                        writer->writeByteArray(buff,length);
-                        writer->writeString(line);
-                        static const byte data[] = {0x30,0x0d,0x0a,0x0d,0x0a};
-                        int ret = writer->writeByteArray(createByteArray(data,5),5);
-                        printf("ret is %d \n",ret);
-                    }
-                    
-                    
-                    int size = mClient->send(body);
-                    totalsend += size;
-                    printf("flush trace2 totalsend is %d,body size is %d,length is %d,reason is %s \n",totalsend,body->size(),length,strerror(errno));
-
-                }
-            }
-        }
-    } else {
-        printf("flush trace 333 \n");
-        ByteArray resp = compose(mPacket);
-        printf("flush resp is %s \n",resp->toString()->toChars());
-        mClient->send(resp);
-    }
-
-    return  0;
-}
-
-ByteArray _HttpResponseWriter::compose(HttpPacket packet) {
-    String statusString = packet->getHeader()->getValue(st(HttpHeader)::Status);
-	if(statusString == nullptr) {
-		return nullptr;
-	}
-
-	String status = st(HttpResponse)::castStatus(statusString->toBasicInt());
-	String responseStr = createString("HTTP/1.1 ")->append(statusString," ",status,"\r\n");
-    
-	String headerStr = packet->getHeader()->toString();
-    
-    int responseStrSize = responseStr->size();
-    int headerStrSize = headerStr->size();
-    int bodySize = 0;
-    if(mPacket->getBody() != nullptr) {
-        bodySize = mPacket->getBody()->size();
-    }
-
-    ByteArray response = createByteArray(responseStr->size() + headerStr->size() + bodySize);
-    ByteArrayWriter writer = createByteArrayWriter(response);
-	//String bodyStr = createString((char *)mBody->toValue(),0,mBody->size());
-    writer->writeString(responseStr);
-	writer->write((byte *)headerStr->toChars(),headerStr->size());
-    writer->writeString(st(HttpText)::LineEnd);
-
-    if(packet->getBody() != nullptr) {
-        writer->writeByteArray(packet->getBody());
-    }
- 
-    return response;
-}
-*/
 }

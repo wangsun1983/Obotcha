@@ -119,6 +119,7 @@ const String _HttpHeader::TransferChunked = createString("chunked");
 _HttpHeader::_HttpHeader() {
     mValues  = createHashMap<String,String>();
     mCookies = createArrayList<HttpCookie>();
+    mCacheControl = nullptr;
     mMethod = -1;
 }
 
@@ -152,6 +153,14 @@ void _HttpHeader::addCookie(HttpCookie c) {
 
 ArrayList<HttpCookie> _HttpHeader::getCookies() {
     return mCookies;
+}
+
+HttpCacheControl _HttpHeader::getCacheControl() {
+    return mCacheControl;
+}
+
+void _HttpHeader::setCacheControl(HttpCacheControl c) {
+    mCacheControl = c;
 }
 
 MapIterator<String,String> _HttpHeader::getIterator() {

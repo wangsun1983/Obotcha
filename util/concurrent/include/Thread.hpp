@@ -16,7 +16,7 @@
 #include "String.hpp"
 #include "ThreadLocal.hpp"
 #include "Uint64.hpp"
-#include "Atomic.hpp"
+#include "AtomicInteger.hpp"
 
 namespace obotcha {
 
@@ -124,11 +124,10 @@ private:
 
     String mName;
     
-    Atomic<int> mStatus;
+    AtomicInteger mStatus;
 
-    Mutex mJoinMutex;
-
-    Condition mJoinDondtion;
+    //Mutex mJoinMutex;
+    //Condition mJoinDondtion;
 };
 
 }

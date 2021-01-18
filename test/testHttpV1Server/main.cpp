@@ -92,14 +92,18 @@ DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
     void onMessage(sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg){
         printf("om message \n");
-#if 0        
+       
         String url = msg->getUrl();
         printf("url11111 is %s \n",url->toChars());
         if(url->indexOf("zip") > 0) {
             printf("start send file \n");
-            File f = createFile("data.data");
-            w->write(f);
-            w->flush();
+            File f = createFile("data.zip");
+            HttpResponse response = createHttpResponse();
+            response->setStatus(st(HttpStatus)::Ok);
+            response->setFile(f);
+            w->write(response);
+            //w->write(f);
+            //w->flush();
             return;
         }
         printf("url2 is %s \n",url->toChars());
@@ -115,10 +119,10 @@ DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
                 iterator->next();
             }
         }
-#endif
+
         //printf("getUrl is %s \n",url->toChars());
         msg->dump();
-        
+
         HttpResponse response = createHttpResponse();
         response->setStatus(st(HttpStatus)::Ok);
         String body = createString("<h1>Response from Gagira</h1>");

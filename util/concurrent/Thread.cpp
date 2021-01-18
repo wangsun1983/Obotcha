@@ -15,14 +15,12 @@ namespace obotcha {
 ThreadLocal<Thread> mThreads = createThreadLocal<Thread>();
 
 void doThreadExit(_Thread *thread) {
+    thread->mStatus->set(st(Thread)::Complete);
 
-    thread->mStatus = st(Thread)::Complete;
-
-    {
-        AutoLock ll(thread->mJoinMutex);
-        thread->mJoinDondtion->notifyAll();
-    }
-
+    //{
+    //    AutoLock ll(thread->mJoinMutex);
+    //    thread->mJoinDondtion->notifyAll();
+    //}
     pthread_detach(thread->getThreadId());
     mThreads->remove(thread->getThreadId());
 }
@@ -45,7 +43,7 @@ void* _Thread::localRun(void *th) {
     _Thread *thread = static_cast<_Thread *>(th);
     mThreads->set(thread->getThreadId(),AutoClone(thread));
     
-    thread->mStatus = st(Thread)::Running;
+    thread->mStatus->set(st(Thread)::Running);
     
     pthread_cleanup_push(cleanup, th);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
@@ -55,7 +53,6 @@ void* _Thread::localRun(void *th) {
     
     if(thread->mRunnable != nullptr) {
         thread->mRunnable->run();
-        thread->mRunnable = nullptr;
     } else {
         thread->run();
     }
@@ -79,10 +76,9 @@ _Thread::_Thread(Runnable run):_Thread(nullptr,run) {
 _Thread::_Thread(String name,Runnable run){
     mName = name;    
     mRunnable = run;
-    mStatus = NotStart;
-    
-    mJoinMutex = createMutex("ThreadJoinMutex");
-    mJoinDondtion = createCondition();
+    mStatus = createAtomicInteger(NotStart);
+    //mJoinMutex = createMutex("ThreadJoinMutex");
+    //mJoinDondtion = createCondition();
 }
 
 int _Thread::setName(String name) {
@@ -132,17 +128,20 @@ int _Thread::start() {
     //incStrong(0);
     //sp<_Thread> localThread;
     //localThread.set_pointer(this);
-    if(!mStatus->compare_exchange(NotStart,Idle)) {
+    if(mStatus->get() != NotStart) {
+        printf("not start,status is %d\n",mStatus->get());
         return -AlreadyExecute;
     }
 
+    mStatus->set(Idle);
+
     pthread_attr_init(&mThreadAttr);
     if(pthread_create(&mPthread, &mThreadAttr, localRun, this)!= 0) {
-        mStatus = Error;
+        mStatus->set(Error);
         return -1;
     } 
 
-    while(mStatus == Idle) {
+    while(mStatus->get() == Idle) {
         yield();
     }
 
@@ -150,18 +149,34 @@ int _Thread::start() {
 }
 
 void _Thread::join() {
+    //if(isRunning()) {
+    //    AutoLock ll(mJoinMutex);
+    //    mJoinDondtion->wait(mJoinMutex);
+    //}
+    while(getStatus() == Idle) {
+        yield();
+    }
+
     if(isRunning()) {
-        AutoLock ll(mJoinMutex);
-        mJoinDondtion->wait(mJoinMutex);
+        pthread_join(mPthread,nullptr);
     }
 }
 
 int _Thread::join(long timeInterval) {
-    if(isRunning()) {
-        AutoLock ll(mJoinMutex);
-        return mJoinDondtion->wait(mJoinMutex,timeInterval);
+    //if(isRunning()) {
+    //    AutoLock ll(mJoinMutex);
+    //    return mJoinDondtion->wait(mJoinMutex,timeInterval);
+    //}
+    while(getStatus() == Idle) {
+        yield();
     }
-    
+
+    if(isRunning()) {
+        struct timespec ts = {.tv_sec = 0, .tv_nsec = 0};
+        st(System)::getNextTime(timeInterval,&ts);
+
+        pthread_timedjoin_np(mPthread,nullptr,&ts);
+    }
     return 0;
 }
 
@@ -179,7 +194,7 @@ void _Thread::quit() {
     }
 
     while(1) {
-        if(mStatus == Idle) {
+        if(mStatus->get() == Idle) {
             usleep(1000*10);
             continue;
         }
@@ -346,7 +361,7 @@ int _Thread::getThreadSchedPolicy() {
 }
 
 bool _Thread::isRunning() {
-    return mStatus == Running;
+    return mStatus->get() == Running;
 }
 
 }

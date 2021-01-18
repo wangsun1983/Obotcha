@@ -19,37 +19,13 @@
 #include "Mutex.hpp"
 #include "Thread.hpp"
 #include "EPollFileObserver.hpp"
-#include "Atomic.hpp"
+#include "Socket.hpp"
+#include "AtomicInteger.hpp"
 
 namespace obotcha {
 
 class _WebSocketServer;
 class _TcpServer;
-
-DECLARE_SIMPLE_CLASS(TcpServerSocket) {
-public:
-    friend class _TcpServer;
-
-    _TcpServerSocket(int fd,sp<_TcpServer> );
-    
-    int send(ByteArray);
-
-    int send(ByteArray,int);
-    
-    int getFd();
-
-    void release();
-
-private:
-    void enableSend();
-    Mutex mMutex;
-    bool isCacheEmpty;
-    Condition mCondition;
-    int mFd;
-    EPollFileObserver mObserver;
-    sp<_TcpServer> mServer;
-};
-
 
 DECLARE_SIMPLE_CLASS(TcpServer) EXTENDS(EPollFileObserverListener){
     
@@ -77,7 +53,7 @@ public:
 
     ~_TcpServer();
 
-    TcpServerSocket getSocket(int);
+    Socket getSocket(int);
 
 private:
 
@@ -96,7 +72,7 @@ private:
     int mConnectionNum;
     
     Mutex mSocketMapMutex;
-    HashMap<int,sp<_TcpServerSocket>> mSocketMap;
+    HashMap<int,Socket> mSocketMap;
 
     long mSendTimeout;
     long mRcvTimeout;

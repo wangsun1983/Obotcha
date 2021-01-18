@@ -21,17 +21,16 @@
 #include "HttpServer.hpp"
 #include "Random.hpp"
 #include "TcpServer.hpp"
+#include "Socket.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(HttpClientInfo){
 public:
-    _HttpClientInfo(TcpServerSocket);
+    _HttpClientInfo(Socket);
 
     //ClientFd
     int getClientFd();
-
-    //void setClientFd(int);
 
     String getClientIp();
 
@@ -80,9 +79,8 @@ private:
 
     Condition mWaitCacheEmpty;
 
-    TcpServerSocket mSocket;
+    Socket mSocket;
 };
-
 
 }
 #endif

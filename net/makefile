@@ -6,6 +6,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/tcpserver.o \
 		$(outtmp)/udpclient.o \
 		$(outtmp)/udpserver.o \
+		$(outtmp)/socket.o \
 		$(outtmp)/localsocketclient.o \
 		$(outtmp)/localsocketserver.o \
 		$(outtmp)/httpurlparser.o \
@@ -59,6 +60,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/sslinfo.o \
 		$(outtmp)/sslmanager.o \
 		$(outtmp)/socketresponser.o \
+
+$(outtmp)/socket.o :$(netDir)/Socket.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/Socket.cpp -o $(outtmp)/socket.o $(external)
 
 $(outtmp)/inetaddress.o :$(netDir)/InetAddress.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)

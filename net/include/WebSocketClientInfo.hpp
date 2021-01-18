@@ -14,9 +14,9 @@
 #include "ByteRingArray.hpp"
 #include "Random.hpp"
 #include "WebSocketBuffer.hpp"
-#include "Atomic.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
+#include "AtomicBoolean.hpp"
 
 namespace obotcha {
 
@@ -120,7 +120,7 @@ private:
     int _send(int type,ByteArray data);
     int _syncsend(ByteArray data);
 
-    Atomic<bool> isSend;
+    AtomicBoolean isSend;
     Mutex mSendMutex;
     Condition mSendCond;
 };

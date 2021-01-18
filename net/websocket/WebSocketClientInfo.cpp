@@ -31,7 +31,7 @@ _WebSocketClientInfo::_WebSocketClientInfo() {
     //mRand = createRandom();
     mClientId = 0;
 
-    isSend = true;
+    isSend = createAtomicBoolean(true);
     mSendMutex = createMutex();
     mSendCond = createCondition();
 }
@@ -44,11 +44,11 @@ void _WebSocketClientInfo::reset() {
     mContinueBuffer = nullptr;
     mClientFd = -1;
     mClientId = 0;
-    isSend = true;
+    isSend = createAtomicBoolean(true);
 }
 
 void _WebSocketClientInfo::enableSend() {
-    isSend = true;
+    isSend = createAtomicBoolean(true);
 }
 
 int _WebSocketClientInfo::getClientFd() {
@@ -131,7 +131,7 @@ void _WebSocketClientInfo::setConnectUrl(String l) {
 
 int _WebSocketClientInfo::_syncsend(ByteArray data) {
      while(1) {
-        isSend = false;
+        isSend->set(false);
         int result = write(mClientFd,data->toValue(),data->size());
         if(result < 0) {
             if(errno == EAGAIN) {

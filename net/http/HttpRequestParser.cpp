@@ -2,6 +2,7 @@
 #include "ArrayList.hpp"
 #include "HttpContentType.hpp"
 #include "InitializeException.hpp"
+#include "HttpCacheControl.hpp"
 
 namespace obotcha {
 
@@ -38,11 +39,16 @@ int _HttpRequestParser::on_header_field(http_parser*parser, const char *at, size
 int _HttpRequestParser::on_header_value(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
     String value = createString(at,0,length);
-    if(p->tempParseField->equalsIgnoreCase("Cookie") 
-        || p->tempParseField->equalsIgnoreCase("Set-Cookie")) {
+    if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::Cookie) 
+        || p->tempParseField->equalsIgnoreCase(st(HttpHeader)::SetCookie)) {
         HttpCookie cookie = createHttpCookie();
         cookie->import(value);
         p->addCookie(cookie);
+        return 0;
+    } else if(p->tempParseField->equals(st(HttpHeader)::CacheControl)) {
+        HttpCacheControl control = createHttpCacheControl();
+        control->import(value); 
+        p->setCacheControl(control);
         return 0;
     }
     p->getHeader()->setValue(p->tempParseField,value);

@@ -83,13 +83,10 @@ int _HttpCookie::getPropertyMaxAge() {
 }
 
 void _HttpCookie::import(String value) {
-    printf("import value is %s \n",value->toChars());
     int pos = 0;
     while (pos < value->size()) {
         int tokenStart = pos;
-        printf("pos1 is %d \n",pos);
         pos = st(HttpHeaderParser)::skipUntil(value, pos, "=,;");
-        printf("pos2 is %d \n",pos);
         String directive = value->subString(tokenStart, pos-tokenStart)->trim();
         String parameter = nullptr;
 
@@ -114,16 +111,10 @@ void _HttpCookie::import(String value) {
                 } else {
                     pos = st(HttpHeaderParser)::skipUntil(value, pos, ",;");
                 }
-                printf("pos is %d \n",pos);
                 parameter = value->subString(parameterStart, (pos-parameterStart))->trim();
                 pos++;
             }
         }
-        printf("directive is %s \n",directive->toChars());
-        if(parameter != nullptr) {
-            printf("parameter is %s \n",parameter->toChars());
-        }
-
         if (COOKIE_PROPERTY_SECURE->equalsIgnoreCase(directive)) {
             mPropertySecure = true;
         } else if (COOKIE_PROPERTY_HTTPONLY->equalsIgnoreCase(directive)) {
@@ -133,13 +124,10 @@ void _HttpCookie::import(String value) {
         } else if (COOKIE_PROPERTY_DOMAIN->equalsIgnoreCase(directive)) {
             mPropertyDomain = parameter;
         } else if (COOKIE_PROPERTY_EXPIRES->equalsIgnoreCase(directive)) {
-            printf("parameter start parse");
-            printf("parameter is %s \n",parameter->toChars());
             mPropertyExpires = createHttpDate(parameter);
         } else if (COOKIE_PROPERTY_MAX_AGE->equalsIgnoreCase(directive)) {
             mPropertyMaxAge = st(HttpHeaderParser)::parseSeconds(parameter, st(Integer)::MAX_VALUE);
         } else {
-            printf("setValue \n");
             mValues->put(directive,parameter);
         }
     }
@@ -208,7 +196,6 @@ String _HttpCookie::genHttpResponseCookie() {
 
 String _HttpCookie::genHttpRequestCookie() {
     String content = createString("Cookie: ");
-    printf("gen http cookie \n");
     MapIterator<String,String> iterator = mValues->getIterator();
     while(iterator->hasValue()) {
         String key = iterator->getKey();
@@ -216,7 +203,6 @@ String _HttpCookie::genHttpRequestCookie() {
         content = content->append(key,"=",value,";"); //TODO:Cookie: name=value; name2=value2  
         iterator->next();
     }
-    printf("gen http cookie edn\n");
     return content;
 }
 

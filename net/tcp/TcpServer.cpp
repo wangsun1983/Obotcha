@@ -21,65 +21,6 @@
 
 namespace obotcha {
 
-
-//-------------------TcpServerSocket----------------------
-_TcpServerSocket::_TcpServerSocket(int fd,TcpServer server) {
-    mFd = fd;
-    mMutex = createMutex();
-    mCondition = createCondition();
-    isCacheEmpty = true;
-    mServer = server;
-}
-
-int _TcpServerSocket::getFd() {
-    return mFd;
-}
-
-void _TcpServerSocket::release() {
-    mServer = nullptr;
-}
-
-int _TcpServerSocket::send(ByteArray data,int size) {
-    byte *sendData = data->toValue();
-    while(1) {
-        printf("start send socket,mFd is %d \n",mFd);
-        int result = ::write(mFd,sendData,size);
-        printf("tcpserver send result is %d,errno is %d,EAGAIN is %d \n",result,errno,EAGAIN);
-        if(result < 0) {
-            if(errno == EAGAIN) {
-                //add epoll fd
-                //AutoLock l(mMutex);
-                //isCacheEmpty = false;
-                //printf("tcpserver send EAGAIN1 \n");
-                //mServer->mObserver->addObserver(mFd,EPOLLOUT,mServer);
-                //if(!isCacheEmpty) {
-                //    mCondition->wait(mMutex,10000);
-                //}
-                usleep(1000*10);
-                printf("tcpserver send EAGAIN2 \n");
-                continue;
-            }
-        } else if(result < size) {
-            printf("tcpserver send wrong result is %d,size is %d \n",result,size);
-            size -= result;
-            sendData += result;
-            usleep(1000*10);
-            //write pool is full
-            continue;
-        }
-        return result;
-    }
-}
-
-int _TcpServerSocket::send(ByteArray data) {
-    this->send(data,data->size());
-}
-
-void _TcpServerSocket::enableSend() {
-    isCacheEmpty = true;
-    mCondition->notify();
-}
-
 //-------------------TcpServer----------------------
 _TcpServer::_TcpServer(String ip,int port):_TcpServer(ip,port,nullptr) {
 
@@ -104,7 +45,7 @@ _TcpServer::_TcpServer(String ip,int port,SocketListener l,int connectnum) {
     mListener = l;
 
     mSocketMapMutex = createMutex();
-    mSocketMap = createHashMap<int,sp<_TcpServerSocket>>();
+    mSocketMap = createHashMap<int,Socket>();
 
     mSendTimeout = -1;
     mRcvTimeout = -1;
@@ -199,7 +140,7 @@ int _TcpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
             setsockopt(clientfd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
         }
 
-        TcpServerSocket tcpsock = createTcpServerSocket(clientfd,AutoClone(this));
+        Socket tcpsock = createSocket(clientfd);
         {
             AutoLock l(mSocketMapMutex);
             mSocketMap->put(clientfd,tcpsock);
@@ -219,16 +160,6 @@ int _TcpServer::onEvent(int fd,uint32_t events,ByteArray pack) {
             mListener->onDisconnect(createSocketResponser(fd));
             AutoLock l(mSocketMapMutex);
             mSocketMap->remove(fd);
-        }
-
-        if((events & EPOLLOUT) != 0) {
-            AutoLock l(mSocketMapMutex);
-            printf("_TcpServer on event epollout,fd is %d \n",fd);
-            TcpServerSocket s = mSocketMap->get(fd);
-            if(s != nullptr) {
-                s->enableSend();
-            }
-            //mObserver->removeEvent(fd,EPOLLOUT);
         }
     }
 
@@ -255,7 +186,7 @@ _TcpServer::~_TcpServer() {
     release();
 }
 
-TcpServerSocket _TcpServer::getSocket(int fd) {
+Socket _TcpServer::getSocket(int fd) {
     AutoLock l(mSocketMapMutex);
     return mSocketMap->get(fd);
 }

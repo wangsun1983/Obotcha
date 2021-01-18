@@ -102,6 +102,14 @@ void _HttpPacket::addCookie(HttpCookie c) {
     mHeader->addCookie(c);
 }
 
+HttpCacheControl _HttpPacket::getCacheControl() {
+    return mHeader->getCacheControl();
+}
+
+void _HttpPacket::setCacheControl(HttpCacheControl c) {
+    mHeader->setCacheControl(c);
+}
+
 HashMap<String,String> _HttpPacket::getEncodedKeyValues() {
     return mFormUrlEncodedMap;
 }

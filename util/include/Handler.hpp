@@ -15,7 +15,7 @@
 #include "Condition.hpp"
 #include "LinkedList.hpp"
 #include "Message.hpp"
-#include "Atomic.hpp"
+#include "AtomicInteger.hpp"
 
 namespace obotcha {
 
@@ -69,7 +69,7 @@ private:
     //LinkedList<Message> mMessagePool;
     Message mMessagePool;
     
-    Atomic<int> mStatus;
+    AtomicInteger mStatus;
 };
 
 }

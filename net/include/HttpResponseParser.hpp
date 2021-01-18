@@ -61,6 +61,8 @@ private:
     HttpPacket mHttpPacket;
 
     int mChunkSize;
+    
+    int mContentLength;
 
 
     static int on_message_begin(http_parser *);

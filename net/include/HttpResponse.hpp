@@ -37,6 +37,8 @@ public:
 	File getFile();
 	void addCookie(HttpCookie);
 
+	void dump();
+
 private:
 	HttpPacket mPacket;
 	File mFile;
