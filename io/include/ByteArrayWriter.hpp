@@ -27,6 +27,7 @@ public:
     int getIndex();
 
     void updateSize();
+    void reset();
 
     int write(byte *,int);
 

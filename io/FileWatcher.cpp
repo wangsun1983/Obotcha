@@ -14,7 +14,7 @@
 #include "String.hpp"
 #include "ArrayList.hpp"
 #include "FileWatcher.hpp"
-
+#include "Log.hpp"
 
 namespace obotcha {
 
