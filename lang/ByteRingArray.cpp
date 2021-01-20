@@ -25,6 +25,12 @@ _ByteRingArray::_ByteRingArray(int size) {
     mEnd = 0;
 }
 
+void _ByteRingArray::reset() {
+    mStatus = ByteRingArrayEmpty;
+    mStart = 0;
+    mEnd = 0;
+}
+
 _ByteRingArray::~_ByteRingArray() {
     if(mBuff != nullptr) {
         free(mBuff);

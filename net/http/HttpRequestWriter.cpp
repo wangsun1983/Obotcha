@@ -133,8 +133,8 @@ int _HttpRequestWriter::write(HttpRequest p) {
                 AUTO_FLUSH(writer->writeString(st(HttpText)::PartName));
                 AUTO_FLUSH(writer->writeString(createString("=")));
                 AUTO_FLUSH(writer->writeByte('"'));
-                if(partFile->getName() != nullptr){
-                    AUTO_FLUSH(writer->writeString(partFile->getName()));
+                if(partFile->getHttpFile() != nullptr){
+                    AUTO_FLUSH(writer->writeString(partFile->getHttpFile()->getName()));
                 }
                 
                 AUTO_FLUSH(writer->writeByte('"'));
@@ -142,17 +142,19 @@ int _HttpRequestWriter::write(HttpRequest p) {
                 AUTO_FLUSH(writer->writeString(st(HttpText)::PartFileName));
                 AUTO_FLUSH(writer->writeString(createString("=")));
                 AUTO_FLUSH(writer->writeByte('"'));
-                if(partFile->getFile() != nullptr){
-                    AUTO_FLUSH(writer->writeString(partFile->getFile()->getName()));
+                if(partFile->getHttpFile() != nullptr){
+                    AUTO_FLUSH(writer->writeString(partFile->getHttpFile()->getName()));
                 }
                 AUTO_FLUSH(writer->writeByte('"'));
                 AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
                 AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
                 FORCE_FLUSH();
                 
-                FileInputStream stream = createFileInputStream(partFile->getFile());
+                FileInputStream stream = createFileInputStream(partFile->getHttpFile()->getFile());
+                stream->open();
                 ByteArray readBuff = createByteArray(1024*16);
                 while(stream->read(readBuff) >= 0) {
+                    printf("send buff \n");
                     flush(readBuff);
                 }
 
@@ -246,15 +248,15 @@ long _HttpRequestWriter::computeContentLength(HttpRequest req,String boundary) {
             HttpMultiPartFile content = fileIterator->getValue();
             length += (boundary->size() + st(HttpText)::BoundaryBeginning->size() + st(HttpText)::LineEnd->size());
             int nameSize = 0;
-            if(content->getName() != nullptr) {
-                nameSize = content->getName()->size();
+            if(content->getHttpFile()->getName() != nullptr) {
+                nameSize = content->getHttpFile()->getName()->size();
             }
 
             long filenamesize = 0;
             long filesize = 0;
-            if(content->getFile() != nullptr && content->getFile()->getName()!= nullptr) {
-                filenamesize = content->getFile()->getName()->size();
-                filesize = content->getFile()->length();
+            if(content->getHttpFile() != nullptr && content->getHttpFile()->getName()!= nullptr) {
+                filenamesize = content->getHttpFile()->getName()->size();
+                filesize = content->getHttpFile()->getFile()->length();
             }
 
             length += st(HttpHeader)::ContentDisposition->size()

@@ -20,31 +20,15 @@ _HttpMultiPart::_HttpMultiPart() {
 }
 
 //-----------------HttpMultiPartFile-----------------
-_HttpMultiPartFile::_HttpMultiPartFile(File f):mFile(f){
+_HttpMultiPartFile::_HttpMultiPartFile(HttpFile f):mFile(f){
 }
 
-_HttpMultiPartFile::_HttpMultiPartFile(String path) {
-    mFile = createFile(path);
+_HttpMultiPartFile::_HttpMultiPartFile(File f){
+    mFile = createHttpFile(f);
 }
 
-File _HttpMultiPartFile::getFile() {
+HttpFile _HttpMultiPartFile::getHttpFile() {
     return mFile;
-}
-
-String _HttpMultiPartFile::getRealFileName() {
-    return mRealFileName;
-}
-
-void _HttpMultiPartFile::setRealFileName(String s) {
-    mRealFileName = s;
-}
-
-void _HttpMultiPartFile::setName(String name) {
-    mName = name;
-}
-
-String _HttpMultiPartFile::getName() {
-    return mName;
 }
 
 //-----------------HttpMultiPartContent-----------------

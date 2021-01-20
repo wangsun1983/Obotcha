@@ -13,6 +13,7 @@
 #include "HttpUrl.hpp"
 #include "File.hpp"
 #include "HttpHeader.hpp"
+#include "HttpFile.hpp"
 
 namespace obotcha {
 
@@ -20,23 +21,12 @@ DECLARE_SIMPLE_CLASS(HttpMultiPartFile) {
 
 public:
     _HttpMultiPartFile(File);
+    _HttpMultiPartFile(HttpFile);
 
-    _HttpMultiPartFile(String);
-
-    String getRealFileName();
-    void setRealFileName(String);
-    
-    void setName(String name);
-    String getName();
-
-    File getFile();
+    HttpFile getHttpFile();
 
 private:
-    File mFile;
-
-    String mRealFileName;
-
-    String mName;
+    HttpFile mFile;
 };
 
 DECLARE_SIMPLE_CLASS(HttpMultiPartContent) {

@@ -90,8 +90,8 @@ _HttpResponseParser::_HttpResponseParser() {
     mHeadEndCount = 0;
     mChunkEndCount = 0;
     mStatus = HttpParseStatusIdle;
-    mChunkSize = -1;
-    mContentLength = -1;
+    mChunkSize = 0;
+    mContentLength = 0;
 }
 
 void _HttpResponseParser::pushHttpData(ByteArray data) {
@@ -159,16 +159,14 @@ HttpResponse _HttpResponseParser::doParse() {
             case HttpClientParseStatusBodyStart: {
                 printf("HttpClientParseStatusBodyStart start\n");
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
-                if(mContentLength == -1) {
+                if(mContentLength == 0 && contentlength != nullptr) {
                     mContentLength = contentlength->toBasicInt();
                 }
-                String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
-                
+
                 String transferEncoding = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
-                //TODO
                 if(transferEncoding != nullptr && transferEncoding->endsWithIgnoreCase(st(HttpHeader)::TransferChunked)) {
                     printf("HttpClientParseStatusBodyStart trace0,mChunkSize is %d,reablesize is %d\n",mChunkSize,mReader->getReadableLength());
-                    if(mChunkSize == -1) {
+                    if(mChunkSize == 0) {
                         //read chunksize
                         while(mReader->readNext(v) != ByteRingArrayReadComplete) {
                             printf("v is %x \n",v);
@@ -180,12 +178,7 @@ HttpResponse _HttpResponseParser::doParse() {
 
                             if(mChunkEndCount == 2) {
                                 mChunkEndCount = 0;
-                                ByteArray dd = mReader->pop();
-                                for(int i = 0;i<dd->size();i++) {
-                                    printf("dd[%d] is %x \n",i,dd->at(i));
-                                }
-                                String chunklength = dd->toString();
-
+                                String chunklength = mReader->pop()->toString();
                                 chunklength = chunklength->subString(0,chunklength->size() - 2);
                                 printf("chunklength str is %s \n",chunklength->toChars());
                                 mChunkSize = chunklength->toHexInt();
@@ -202,6 +195,7 @@ HttpResponse _HttpResponseParser::doParse() {
                             return packets;
                         }
                     }
+                    
                     int readablelength = mReader->getReadableLength();
                     int popsize = (readablelength > mChunkSize)?mChunkSize:readablelength;
 

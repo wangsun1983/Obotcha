@@ -53,6 +53,8 @@ public:
    void setStartIndex(int);
    void setEndIndex(int);
    void setStatus(int);
+
+   void reset();
    
 private:
 

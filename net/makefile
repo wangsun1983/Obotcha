@@ -11,6 +11,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/localsocketserver.o \
 		$(outtmp)/httpurlparser.o \
 		$(outtmp)/httpurl.o \
+		$(outtmp)/httpfile.o \
 		$(outtmp)/httpstatus.o \
 		$(outtmp)/httpversion.o \
 		$(outtmp)/httpcontenttype.o \
@@ -102,6 +103,9 @@ $(outtmp)/httpurlparser.o :$(netDir)/http/HttpUrlParser.cpp
 
 $(outtmp)/httpurl.o :$(netDir)/http/HttpUrl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrl.cpp -o $(outtmp)/httpurl.o $(external)
+
+$(outtmp)/httpfile.o :$(netDir)/http/HttpFile.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpFile.cpp -o $(outtmp)/httpfile.o $(external)
 
 $(outtmp)/httpstatus.o :$(netDir)/http/HttpStatus.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpStatus.cpp -o $(outtmp)/httpstatus.o $(external)

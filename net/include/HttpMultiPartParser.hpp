@@ -11,6 +11,7 @@
 #include "ByteRingArrayReader.hpp"
 #include "Enviroment.hpp"
 #include "FileOutputStream.hpp"
+#include "HttpFile.hpp"
 
 namespace obotcha {
 
@@ -69,7 +70,8 @@ private:
 
     HttpMultiPart mMultiPart;
 
-    File mFile;
+    //File mFile;
+    HttpFile mHttpFile;
 
     FileOutputStream mFileStream;
     

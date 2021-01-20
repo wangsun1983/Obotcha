@@ -30,6 +30,8 @@ public:
     int move(int);
 
     int getReadableLength();
+
+    void reset();
     
 private:
     enum ReadMark {

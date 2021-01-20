@@ -66,6 +66,7 @@ _HttpMultiPartParser::_HttpMultiPartParser(String contenttype,int length) {
     mContentTypeBuff = nullptr;
     mContentBuff = nullptr;
     mFileStream = nullptr;
+    mHttpFile = nullptr;
 }
 
 String _HttpMultiPartParser::getHeaderBoundary() {
@@ -239,6 +240,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         } else {
                             //hit complete flush file
                             if(mFileStream == nullptr) {
+#if 0
                                 String filepath = mEnv->get(st(Enviroment)::gHttpMultiPartFilePath);
                                 String filename = mContentDisp->dispositions->get("filename");
                                 mFile = createFile(filepath->append(filename));
@@ -250,7 +252,11 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                                 }
 
                                 mFile->createNewFile();
-                                mFileStream = createFileOutputStream(mFile);
+#endif
+                                String filename = mContentDisp->dispositions->get("filename");
+                                mHttpFile = createHttpFile(filename);
+                                File file = mHttpFile->getFile();
+                                mFileStream = createFileOutputStream(file);
                                 mFileStream->open();
                             } 
                             
@@ -268,8 +274,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                             mFileStream->flush();
                             mFileStream->close();
 
-                            HttpMultiPartFile file = createHttpMultiPartFile(mFile);
-                            file->setRealFileName(mContentDisp->dispositions->get("filename"));
+                            HttpMultiPartFile file = createHttpMultiPartFile(mHttpFile);
                             mMultiPart->files->add(file);
                             mFileStream = nullptr;
                             mContentBuff = nullptr;
@@ -332,6 +337,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             case ParseContent:{
                 if(mContentType != nullptr) {
                     if(mFileStream == nullptr) {
+#if 0
                         String filepath = mEnv->get(st(Enviroment)::gHttpMultiPartFilePath);
                         printf("filepath is %s \n",filepath->toChars());
                         File dir = createFile(filepath);
@@ -348,6 +354,12 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         }
                         mFile->createNewFile();
                         mFileStream = createFileOutputStream(mFile);
+                        mFileStream->open();
+#endif
+                        String filename = mContentDisp->dispositions->get("filename");
+                        mHttpFile = createHttpFile(filename);
+                        File file = mHttpFile->getFile();
+                        mFileStream = createFileOutputStream(file);
                         mFileStream->open();
                     }
                     if(mBoundaryIndex == 0) {

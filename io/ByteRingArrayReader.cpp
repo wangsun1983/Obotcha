@@ -100,6 +100,12 @@ int _ByteRingArrayReader::getReadableLength() {
         return end - mCursor;
     }
 }
+
+void _ByteRingArrayReader::reset() {
+    mBuff->reset();
+    mCursor = mBuff->getStartIndex();
+    mMark = Idle;
+}
     
 
 }
