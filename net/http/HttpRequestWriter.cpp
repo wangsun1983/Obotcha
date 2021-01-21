@@ -153,9 +153,14 @@ int _HttpRequestWriter::write(HttpRequest p) {
                 FileInputStream stream = createFileInputStream(partFile->getHttpFile()->getFile());
                 stream->open();
                 ByteArray readBuff = createByteArray(1024*16);
-                while(stream->read(readBuff) >= 0) {
-                    printf("send buff \n");
-                    flush(readBuff);
+                int index = 0;
+                while(1) {
+                    int count = stream->read(index,readBuff);
+                    if(count == 0) {
+                        break;
+                    }
+                    index += count;
+                    flush(readBuff,count);
                 }
 
                 AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
@@ -208,6 +213,10 @@ int _HttpRequestWriter::flush(int size) {
 
 int _HttpRequestWriter::flush(ByteArray data) {
     mTcpClient->doSend(data);
+}
+
+int _HttpRequestWriter::flush(ByteArray data,int length) {
+    mTcpClient->doSend(data,length);
 }
 
 long _HttpRequestWriter::computeContentLength(HttpRequest req,String boundary) {

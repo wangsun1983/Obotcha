@@ -10,12 +10,8 @@
 #include "Object.hpp"
 #include "Runnable.hpp"
 #include "StrongPointer.hpp"
-#include "Mutex.hpp"
-#include "Condition.hpp"
-#include "BlockingQueue.hpp"
 #include "String.hpp"
 #include "ThreadLocal.hpp"
-#include "Uint64.hpp"
 #include "AtomicInteger.hpp"
 
 namespace obotcha {
@@ -74,7 +70,7 @@ public:
     
     static void yield();
 
-    static void msleep(unsigned long);
+    static void sleep(unsigned long);
 
     static void setThreadPriority(int priority);
 
@@ -125,6 +121,8 @@ private:
     String mName;
     
     AtomicInteger mStatus;
+    
+    static String DefaultThreadName;
 
     //Mutex mJoinMutex;
     //Condition mJoinDondtion;

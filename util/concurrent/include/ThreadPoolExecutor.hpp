@@ -16,6 +16,7 @@
 #include "ExecutorService.hpp"
 #include "FutureTask.hpp"
 #include "Future.hpp"
+#include "AtomicInteger.hpp"
 
 namespace obotcha {
 
@@ -40,7 +41,7 @@ public:
 private:
     BlockingQueue<FutureTask> mPool;
 
-    Mutex mStateMutex;
+    //Mutex mStateMutex;
 
     FutureTask mCurrentTask;
 };
@@ -55,6 +56,8 @@ public:
     friend class _FutureTask;
 
 	_ThreadPoolExecutor(int queuesize,int threadnum);
+
+    _ThreadPoolExecutor(int threadnum);
 
 	_ThreadPoolExecutor();
 
@@ -79,6 +82,13 @@ public:
     ~_ThreadPoolExecutor();
 
 private:
+    enum LocalStatus {
+        Idle = 0,
+        Running,
+        ShutDown,
+        Terminated
+    };
+
     static const int DefaultThreadNum;
 
     void onCancel(FutureTask);
@@ -87,13 +97,14 @@ private:
     
     ArrayList<ThreadPoolExecutorHandler> mHandlers;
 
-    Mutex mStatusMutex;
+    //Mutex mStatusMutex;
 
     Mutex mHandlersMutex;
 
-    bool mIsShutDown;
+    //bool mIsShutDown;
 
-    bool mIsTerminated;
+    //bool mIsTerminated;
+    AtomicInteger mStatus;
 
     int mThreadNum;
 

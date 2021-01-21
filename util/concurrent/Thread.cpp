@@ -12,15 +12,13 @@
 
 namespace obotcha {
 
-ThreadLocal<Thread> mThreads = createThreadLocal<Thread>();
+static ThreadLocal<Thread> mThreads = createThreadLocal<Thread>();
+static AtomicInteger threadCount = createAtomicInteger(0);
+String _Thread::DefaultThreadName = createString("thread_");
 
 void doThreadExit(_Thread *thread) {
     thread->mStatus->set(st(Thread)::Complete);
 
-    //{
-    //    AutoLock ll(thread->mJoinMutex);
-    //    thread->mJoinDondtion->notifyAll();
-    //}
     pthread_detach(thread->getThreadId());
     mThreads->remove(thread->getThreadId());
 }
@@ -50,7 +48,6 @@ void* _Thread::localRun(void *th) {
     if(thread->mName != nullptr) {
         pthread_setname_np(thread->mPthread,thread->mName->toChars());
     }
-    
     if(thread->mRunnable != nullptr) {
         thread->mRunnable->run();
     } else {
@@ -74,11 +71,14 @@ _Thread::_Thread(Runnable run):_Thread(nullptr,run) {
 }
 
 _Thread::_Thread(String name,Runnable run){
-    mName = name;    
+    if(name == nullptr) {
+        mName = name;
+    } else {
+        int index = threadCount->addAndGet(1);
+        mName = DefaultThreadName->append(createString(index));
+    }
     mRunnable = run;
     mStatus = createAtomicInteger(NotStart);
-    //mJoinMutex = createMutex("ThreadJoinMutex");
-    //mJoinDondtion = createCondition();
 }
 
 int _Thread::setName(String name) {
@@ -129,7 +129,6 @@ int _Thread::start() {
     //sp<_Thread> localThread;
     //localThread.set_pointer(this);
     if(mStatus->get() != NotStart) {
-        printf("not start,status is %d\n",mStatus->get());
         return -AlreadyExecute;
     }
 
@@ -149,10 +148,6 @@ int _Thread::start() {
 }
 
 void _Thread::join() {
-    //if(isRunning()) {
-    //    AutoLock ll(mJoinMutex);
-    //    mJoinDondtion->wait(mJoinMutex);
-    //}
     while(getStatus() == Idle) {
         yield();
     }
@@ -163,10 +158,6 @@ void _Thread::join() {
 }
 
 int _Thread::join(long timeInterval) {
-    //if(isRunning()) {
-    //    AutoLock ll(mJoinMutex);
-    //    return mJoinDondtion->wait(mJoinMutex,timeInterval);
-    //}
     while(getStatus() == Idle) {
         yield();
     }
@@ -177,6 +168,7 @@ int _Thread::join(long timeInterval) {
 
         pthread_timedjoin_np(mPthread,nullptr,&ts);
     }
+
     return 0;
 }
 
@@ -322,8 +314,8 @@ void _Thread::yield() {
     pthread_yield();
 }
 
-void _Thread::msleep(unsigned long t) {
-    usleep(t*1000);
+void _Thread::sleep(unsigned long millseconds) {
+    usleep(millseconds*1000);
 }
 
 void _Thread::setThreadPriority(int priority) {

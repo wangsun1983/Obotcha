@@ -32,6 +32,7 @@ private:
 
     int flush(int size);
     int flush(ByteArray);
+    int flush(ByteArray,int);
 
     long computeContentLength(HttpRequest,String boundary = nullptr);
 };

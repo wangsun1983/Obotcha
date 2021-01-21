@@ -1,6 +1,7 @@
 #include "SSLInfo.hpp"
 #include "Enviroment.hpp"
 #include "Error.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 

@@ -65,7 +65,7 @@ int _LocalSocketClient::doConnect() {
     int ret = getpeername(mSock, ( struct sockaddr* )&local_address, &length);
     
     while(ntohs( local_address.sin_port ) == 0) {
-        st(Thread)::msleep(30);
+        st(Thread)::sleep(30);
         memset(&local_address,0,sizeof(struct sockaddr_in));
         getpeername(mSock, ( struct sockaddr* )&local_address, &length);
     }

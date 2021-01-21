@@ -70,6 +70,12 @@ void _AtomicInteger::set(int val) {
     __sync_bool_compare_and_swap(&value,value,val);
 }
 
+int _AtomicInteger::compareAndSet(int val) {
+    int result = value;
+    __sync_bool_compare_and_swap(&value,value,val);
+    return result;
+}
+
 int _AtomicInteger::get() {
     return getAndAdd(0);
 }
