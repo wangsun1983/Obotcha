@@ -38,13 +38,14 @@ Mutex runTest2Mutex;
 DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        //printf("RunTest2 start 1\n");
+        printf("RunTest2 start 1\n");
+		    fflush(stdout);
         runTest2Mutex->lock();
-        //printf("RunTest2 start 2\n");
+        printf("RunTest2 start 2\n");
     }
 
     void onInterrupt() {
-        //printf("RunTest2 onInterrupt 2\n");
+        printf("RunTest2 onInterrupt 2\n");
     }
 
     ~_RunTest2() {
@@ -56,11 +57,14 @@ public:
 int normalTest() {
     printf("---[TestThreadPoolExecutor Normal Test Start]--- \n");
     //_ThreadPoolExecutor(int queuesize,int threadnum);
-
+#if 0
     while(1) {
         {
+			printf("normal test trace1 \n");
             ExecutorService pool = st(Executors)::newFixedThreadPool(1,1);
+			printf("normal test trace2 \n");
             pool->shutdown();
+			printf("normal test trace3 \n");
         }
 
         sleep(1);
@@ -104,10 +108,11 @@ int normalTest() {
         printf("---[TestThreadPoolExecutor Test {shutdown()} case4] [OK]--- \n");
         break;
     }
+#endif
 
     //int awaitTermination(long timeout);
     while(1) {
-        ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
+        ExecutorService pool = st(Executors)::newFixedThreadPool(1,1);
         int result = pool->awaitTermination(1000);
         if(result != -InvalidStatus) {
             printf("---[TestThreadPoolExecutor Test {awaitTermination()} case1] [FAIL]--- \n");
@@ -118,11 +123,13 @@ int normalTest() {
         runTest2Mutex->lock();
 
         pool->submit(createRunTest2());
+		printf("start at % ld \n",st(System)::currentTimeMillis());
         sleep(1);
+		printf("start end % ld \n",st(System)::currentTimeMillis());
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
-        //printf("awaitTermination start test \n");
+        printf("test awaitTermination start test \n");
         result = pool->awaitTermination(5000);
         //printf("awaitTermination result is %d \n",result);
         if(result != -WaitTimeout) {

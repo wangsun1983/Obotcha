@@ -33,7 +33,6 @@ int _Future::cancel() {
 }
 
 _Future::~_Future() {
-    mTask->cancel();
 }
 
 }

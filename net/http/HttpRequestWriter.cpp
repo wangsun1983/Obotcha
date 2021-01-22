@@ -171,6 +171,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
         AUTO_FLUSH(writer->writeString(st(HttpText)::BoundaryBeginning));
         AUTO_FLUSH(writer->writeString(boundary));
         AUTO_FLUSH(writer->writeString(st(HttpText)::BoundaryBeginning));
+        AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
     } else if(encodedUrlMap != nullptr){
         MapIterator<String,String> iterator = encodedUrlMap->getIterator();
         bool isFirstKey = true;

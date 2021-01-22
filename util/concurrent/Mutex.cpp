@@ -41,7 +41,9 @@ int _Mutex::lock() {
     //    return 0;
     //}
 
-    return pthread_mutex_lock(&mutex_t);
+    int result = pthread_mutex_lock(&mutex_t);
+    //pthread_testcancel();
+    return result;
 }
 
 int _Mutex::lock(long timeInterval) {
@@ -52,7 +54,9 @@ int _Mutex::lock(long timeInterval) {
     //}
 
     st(System)::getNextTime(timeInterval,&ts);
-    if(pthread_mutex_timedlock(&mutex_t,&ts) == ETIMEDOUT) {
+    int result = pthread_mutex_timedlock(&mutex_t,&ts);
+    //pthread_testcancel();
+    if( result == ETIMEDOUT) {
         return -WaitTimeout;
     }
 
@@ -61,7 +65,9 @@ int _Mutex::lock(long timeInterval) {
 
 
 int _Mutex::unlock() {
-    return pthread_mutex_unlock(&mutex_t);
+    int result = pthread_mutex_unlock(&mutex_t);
+    //pthread_testcancel();
+    return result;
 }
 
 int _Mutex::trylock() {
@@ -69,7 +75,9 @@ int _Mutex::trylock() {
     //    return 0;
     //}
 
-    return pthread_mutex_trylock(&mutex_t);
+    int result = pthread_mutex_trylock(&mutex_t);
+    //pthread_testcancel();
+    return result;
 }
 
 String _Mutex::toString() {

@@ -33,6 +33,7 @@ bool _ThreadPoolExecutorHandler::shutdownTask(FutureTask task) {
 }
 
 void _ThreadPoolExecutorHandler::onInterrupt() {
+    //printf("_ThreadPoolExecutorHandler onInterrupt \n");
     if(mCurrentTask != nullptr && mCurrentTask->getStatus() == st(Future)::Running) {
         mCurrentTask->onShutDown();
     }
@@ -57,7 +58,6 @@ void _ThreadPoolExecutorHandler::run() {
     
         Runnable runnable = mCurrentTask->getRunnable();
         if(runnable != nullptr) {
-            printf("handler start to run \n");
             runnable->run();    
         }
 
@@ -131,7 +131,7 @@ int _ThreadPoolExecutor::shutdown() {
         while(iterator->hasValue()) {
             ThreadPoolExecutorHandler h = iterator->getValue();
             h->quit();
-            h->join();
+            //h->join();
             iterator->next();
         }
         mHandlers->clear();
@@ -140,6 +140,7 @@ int _ThreadPoolExecutor::shutdown() {
     for(;;) {
         FutureTask task = mPool->deQueueLastNoBlock();
         if(task != nullptr) {
+            //printf("threadpool exector onshut down \n");
             task->onShutDown();
             continue;
         } 
@@ -158,11 +159,8 @@ Future _ThreadPoolExecutor::submit(Runnable r) {
         return nullptr;
     }
 
-    printf("submit task trace1 \n");
     FutureTask task = createFutureTask(r,AutoClone(this));
-    printf("submit task trace2 \n");
     mPool->enQueueLast(task);
-    printf("submit task trace3 \n");
 
     return createFuture(task);
 }
@@ -182,6 +180,7 @@ void _ThreadPoolExecutor::setAsTerminated() {
 }
 
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
+    printf("_ThreadPoolExecutor awaitTermination trace1\n");
     if(mStatus->get() == LocalStatus::Terminated) {
         return 0;
     }
@@ -189,24 +188,27 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     if(mStatus->get() != LocalStatus::ShutDown){
         return -InvalidStatus;
     }
-
+    printf("_ThreadPoolExecutor awaitTermination trace2\n");
     bool isWaitForever = (millseconds == 0);
     
     ListIterator<ThreadPoolExecutorHandler> iterator = mHandlers->getIterator();
     while(iterator->hasValue()) {
         ThreadPoolExecutorHandler handler = iterator->getValue();
         long current = st(System)::currentTimeMillis();
+        printf("_ThreadPoolExecutor awaitTermination trace3\n");
         handler->join(millseconds);
         if(!isWaitForever) {
+            printf("_ThreadPoolExecutor awaitTermination trace4\n");
             long waitInterval = (st(System)::currentTimeMillis() - current);
             millseconds -= waitInterval;
             if(millseconds <= 0) {
                 return -WaitTimeout;
             }
         }
+        printf("_ThreadPoolExecutor awaitTermination trace5\n");
         iterator->next();
     }
-
+    printf("_ThreadPoolExecutor awaitTermination trace6\n");
     return 0;
 }
 

@@ -9,7 +9,6 @@
 #include "AutoLock.hpp"
 #include "System.hpp"
 #include "ThreadPoolExecutor.hpp"
-#include "ExecutorDestructorException.hpp"
 #include "Error.hpp"
 
 using namespace obotcha;
@@ -29,17 +28,17 @@ int testThreadDestroy() {
 
     //TestThread onInterrupt case1
     while(1) {
-        try {
+        //try {
             {
                 ThreadPoolExecutor pool = createThreadPoolExecutor();
                 pool->submit(createMyDestroyTest());
                 pool->shutdown();
             }
             sleep(10);
-        } catch(ExecutorDestructorException e) {
-            printf("---[ThreadPoolExecutor Test {destroy()} special case1] [FAIL]--- \n");
-            break;
-        }
+        //} catch(ExecutorDestructorException e) {
+        //    printf("---[ThreadPoolExecutor Test {destroy()} special case1] [FAIL]--- \n");
+        //    break;
+        //}
 
         printf("---[ThreadPoolExecutor Test {destroy()} special case1] [OK]--- \n");
         break;

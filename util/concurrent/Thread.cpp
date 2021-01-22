@@ -27,6 +27,7 @@ void doThreadExit(_Thread *thread) {
 void cleanup(void *th) {
     _Thread *thread = static_cast<_Thread *>(th);
     if(thread->getRunnable() != nullptr) {
+        printf("onInterrupt trace222 \n");
         thread->getRunnable()->onInterrupt();
     } else {
         thread->onInterrupt();
@@ -165,8 +166,9 @@ int _Thread::join(long timeInterval) {
     if(isRunning()) {
         struct timespec ts = {.tv_sec = 0, .tv_nsec = 0};
         st(System)::getNextTime(timeInterval,&ts);
-
+        printf("start pthread join1 \n");
         pthread_timedjoin_np(mPthread,nullptr,&ts);
+        printf("start pthread join2 \n");
     }
 
     return 0;

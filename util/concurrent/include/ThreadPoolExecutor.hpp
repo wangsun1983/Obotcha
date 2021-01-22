@@ -41,8 +41,6 @@ public:
 private:
     BlockingQueue<FutureTask> mPool;
 
-    //Mutex mStateMutex;
-
     FutureTask mCurrentTask;
 };
 
@@ -97,13 +95,8 @@ private:
     
     ArrayList<ThreadPoolExecutorHandler> mHandlers;
 
-    //Mutex mStatusMutex;
-
     Mutex mHandlersMutex;
 
-    //bool mIsShutDown;
-
-    //bool mIsTerminated;
     AtomicInteger mStatus;
 
     int mThreadNum;

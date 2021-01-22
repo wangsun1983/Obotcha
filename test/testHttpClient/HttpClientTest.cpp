@@ -23,6 +23,9 @@ int main() {
     HttpUrl url = st(HttpUrlParser)::parseUrl(urlstr);
     
     HttpRequest request = createHttpRequest(st(HttpMethod)::Get,url);
+    File file = createFile("./request.txt");
+    HttpMultiPartFile multifile = createHttpMultiPartFile(file);
+    request->addMultiPartFile(multifile);
 
     //while(1) {
     HttpClient client = createHttpClient();
