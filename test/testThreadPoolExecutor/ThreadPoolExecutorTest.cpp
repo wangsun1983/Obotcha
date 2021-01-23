@@ -57,7 +57,7 @@ public:
 int normalTest() {
     printf("---[TestThreadPoolExecutor Normal Test Start]--- \n");
     //_ThreadPoolExecutor(int queuesize,int threadnum);
-#if 0
+
     while(1) {
         {
 			printf("normal test trace1 \n");
@@ -108,7 +108,6 @@ int normalTest() {
         printf("---[TestThreadPoolExecutor Test {shutdown()} case4] [OK]--- \n");
         break;
     }
-#endif
 
     //int awaitTermination(long timeout);
     while(1) {
@@ -123,9 +122,9 @@ int normalTest() {
         runTest2Mutex->lock();
 
         pool->submit(createRunTest2());
-		printf("start at % ld \n",st(System)::currentTimeMillis());
+		    printf("start at % ld \n",st(System)::currentTimeMillis());
         sleep(1);
-		printf("start end % ld \n",st(System)::currentTimeMillis());
+		    printf("start end % ld \n",st(System)::currentTimeMillis());
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();

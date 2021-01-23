@@ -50,7 +50,6 @@ int _FutureTask::wait(long interval) {
 
 void _FutureTask::cancel() {
     AutoLock l(mCompleteMutex);
-    printf("cancel trace1 \n");
     onShutDown();
 
     if(mListener != nullptr) {
@@ -69,7 +68,6 @@ void _FutureTask::onShutDown() {
     
     mStatus = st(Future)::Cancel;
     if(mRunnable != nullptr) {
-        printf("onInterrupt trace1 \n");
         mRunnable->onInterrupt();
         mRunnable->interruptResultWait();
     }

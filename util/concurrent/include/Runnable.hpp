@@ -8,16 +8,10 @@
 #include "Mutex.hpp"
 #include "AutoLock.hpp"
 #include "Condition.hpp"
-#include "InterruptedException.hpp"
 #include "IllegalStateException.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
-
-enum ResultStatus {
-    ResultWaiting = 0,
-    ResultComplete,
-    ResultInterrupt
-};
 
 class _Future;
 class _FutureTask;
@@ -39,9 +33,9 @@ public:
     template<typename T>
     void setResult(T value) {
         AutoLock l(mResultMutex);
-        if(resultComplete == ResultWaiting) {
+        if(mStatus == ResultWaiting) {
             objResult = (sp<Object>)value;
-            resultComplete = ResultComplete;
+            mStatus = ResultComplete;
             mResultCond->notifyAll();
             return;
         }
@@ -59,11 +53,33 @@ public:
     void setResult(uint64_t);
     void setResult(String);
 
+    
+    template<typename T>
+    void getResult(T &value,T defaultvalue,long millseconds = 0) {
+        AutoLock l(mResultMutex);
+        if(mStatus == ResultWaiting) {
+            if(mResultCond->wait(mResultMutex,millseconds) == -WaitTimeout) {
+                value = defaultvalue;
+                return;
+            }
+        }
+
+        if(mStatus == ResultInterrupt) {
+            value = defaultvalue;
+        }
+
+        value = cast<T>(objResult);
+    }
+
 private:
+    enum ResultStatus {
+        ResultWaiting = 0,
+        ResultComplete,
+        ResultInterrupt
+    };
     
     sp<Object> objResult;
-    ResultStatus resultComplete;
-
+    
     int intValue;
     byte byteValue;
     double doubleValue;
@@ -78,32 +94,21 @@ private:
 
     Mutex mResultMutex;
     Condition mResultCond;
+    int mStatus;
 
     void interruptResultWait();
-    template<typename T>
-    void getResult(T &v) {
-        AutoLock l(mResultMutex);
-        if(!resultComplete) {
-            mResultCond->wait(mResultMutex);
-        }
 
-        if(resultComplete == ResultInterrupt) {
-            Trigger(InterruptedException,"Runnable Interrupt");
-        }
+    void getResult(int &value,int defaultvalue,long millseconds = 0);
+    void getResult(byte &value,byte defaultvalue,long millseconds = 0);
+    void getResult(double &value,double defaultvalue,long millseconds = 0);
+    void getResult(bool &value,bool defaultvalue,long millseconds = 0);
+    void getResult(float &value,float defaultvalue,long millseconds = 0);
+    void getResult(long &value,long defaultvalue,long millseconds = 0);
+    void getResult(uint16_t &value,uint16_t defaultvalue,long millseconds = 0);
+    void getResult(uint32_t &value,uint32_t defaultvalue,long millseconds = 0);
+    void getResult(uint64_t &value,uint64_t defaultvalue,long millseconds = 0);
+    void getResult(String &value,String defaultvalue,long millseconds = 0);
 
-        transform_cast(objResult,v);
-    }
-
-    void getResult(int &);
-    void getResult(byte &);
-    void getResult(double &);
-    void getResult(bool &);
-    void getResult(float &);
-    void getResult(long &);
-    void getResult(uint16_t &);
-    void getResult(uint32_t &);
-    void getResult(uint64_t &);
-    void getResult(String &);
 };
 
 }

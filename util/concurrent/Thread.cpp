@@ -162,13 +162,11 @@ int _Thread::join(long timeInterval) {
     while(getStatus() == Idle) {
         yield();
     }
-
+    
     if(isRunning()) {
         struct timespec ts = {.tv_sec = 0, .tv_nsec = 0};
         st(System)::getNextTime(timeInterval,&ts);
-        printf("start pthread join1 \n");
         pthread_timedjoin_np(mPthread,nullptr,&ts);
-        printf("start pthread join2 \n");
     }
 
     return 0;

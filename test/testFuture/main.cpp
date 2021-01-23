@@ -12,12 +12,16 @@
 
 using namespace obotcha;
 
+//extern int testThreadExecutorPoolFutureCancel();
+//extern int testThreadCachedPoolFutureCancel();
+//extern int testThreadScheduleFutureCancel();
+//extern int testFutureNormal();
+//extern int testThreadExecutorPoolFutureDelayCancel();
+//extern int testThreadPriorityPoolFutureCancel();
+extern int testThreadExecutorPoolFutureResult();
+extern int testThreadExecutorPoolFutureResultDelay();
+extern int testThreadExecutorPoolFutureResultTimeout();
 extern int testThreadExecutorPoolFutureCancel();
-extern int testThreadCachedPoolFutureCancel();
-extern int testThreadScheduleFutureCancel();
-extern int testFutureNormal();
-extern int testThreadExecutorPoolFutureDelayCancel();
-extern int testThreadPriorityPoolFutureCancel();
 
 int main() {
     printf("---[TestFuture Test Start]--- \n");
@@ -26,7 +30,11 @@ int main() {
     //testThreadCachedPoolFutureCancel();
     //testThreadScheduleFutureCancel();
     //testThreadExecutorPoolFutureDelayCancel();
-    testThreadPriorityPoolFutureCancel();
+    //testThreadPriorityPoolFutureCancel();
+    //testThreadExecutorPoolFutureResult();
+    //testThreadExecutorPoolFutureResultDelay();
+    //testThreadExecutorPoolFutureResultTimeout();
+    testThreadExecutorPoolFutureCancel();
     sleep(10);
     printf("end !!!!!!!!\n");
     //while(1) {}

@@ -27,8 +27,6 @@ DECLARE_SIMPLE_CLASS(ThreadPoolExecutorHandler) IMPLEMENTS(Thread) {
 public:
 
     _ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool);
-    
-    bool isTerminated();
 
     void run();
 

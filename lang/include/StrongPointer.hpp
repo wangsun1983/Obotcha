@@ -410,6 +410,12 @@ X cast(sp<V> t) {
     return value;
 }
 
+template<typename X>
+X NullData() {
+    X t;
+    t.set_pointer(nullptr);
+    return t;
+}
 //template<typename X,typename V>
 //void cast(sp<V> t,sp<X> &value) {
 //    value.set_pointer(dynamic_cast<X *>(t.m_ptr));

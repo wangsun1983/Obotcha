@@ -55,7 +55,7 @@ int releaseTest() {
 
             pool->shutdown();
             sleep(10);
-            if(pool->getThreadsNum() != 0) {
+            if(pool->getThreadsNum() != 8) {
                 printf("---[TestThreadPoolExecutor Test {release()},thread num is %d case2] [FAIL]--- \n",pool->getThreadsNum());
                 break;
             }

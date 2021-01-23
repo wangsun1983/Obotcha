@@ -18,8 +18,8 @@ public:
     int cancel();
 
     template<typename T>
-    T getResult() {
-        return mTask->getResult<T>();
+    T getResult(T defaultvalue,long millseconds = 0) {
+        return mTask->getResult<T>(defaultvalue,millseconds);
     }
     
     enum Status {

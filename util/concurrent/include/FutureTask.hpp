@@ -40,9 +40,9 @@ public:
     Runnable getRunnable();
 
     template<typename T>
-    T getResult() {
+    T getResult(T defaultvalue,long millseconds = 0) {
         T v;
-        mRunnable->getResult(v);
+        mRunnable->getResult(v,defaultvalue,millseconds);
         return v;
     }
 
