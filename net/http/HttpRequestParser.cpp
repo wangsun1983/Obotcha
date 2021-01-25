@@ -135,7 +135,7 @@ HttpPacket _HttpRequestParser::parseEntireResponse(String response) {
 ArrayList<HttpPacket> _HttpRequestParser::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
     static byte end[4] = {'\r','\n','\r','\n'};
-    static byte chunkEnd[5] = {'\r','\n','0','\r','\n'};
+    //static byte chunkEnd[5] = {'\r','\n','0','\r','\n'};
     while(1) {
         switch(mStatus) {
             case HttpParseStatusIdle:{
@@ -186,6 +186,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
                 if(contentlength == nullptr) {
                     packets->add(mHttpPacket);
+                    mMultiPartParser = nullptr;
                     mStatus = HttpParseStatusIdle;
                     continue;
                 }
@@ -203,6 +204,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                             mHttpPacket->setMultiPart(multipart);
                             printf("add packet trace4 \n");
                             packets->add(mHttpPacket);
+                            mMultiPartParser = nullptr;
                             mStatus = HttpParseStatusIdle;
                         }
                         return packets;
@@ -214,6 +216,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                         mHttpPacket->setBody(mReader->pop());
                         mStatus = HttpParseStatusIdle;
                         printf("add packet trace2 \n");
+                        mMultiPartParser = nullptr;
                         packets->add(mHttpPacket);
                         continue;
                     }
