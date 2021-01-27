@@ -12,6 +12,7 @@
 #include "HashMap.hpp"
 #include "HttpCookie.hpp"
 #include "HttpCacheControl.hpp"
+#include "HttpContentType.hpp"
 
 namespace obotcha {
 
@@ -29,11 +30,14 @@ public:
     MapIterator<String,String> getIterator();
 
     void addCookie(HttpCookie);
-
     ArrayList<HttpCookie> getCookies();
 
     HttpCacheControl getCacheControl();
     void setCacheControl(HttpCacheControl);
+    
+    void setContentType(String);
+    void setContentType(HttpContentType);
+    HttpContentType getContentType();
 
     String toString(int);
 
@@ -153,6 +157,8 @@ private:
     ArrayList<HttpCookie> mCookies;
 
     HttpCacheControl mCacheControl;
+
+    HttpContentType mContentType;
 
     int mMethod;
 };

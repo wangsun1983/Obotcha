@@ -100,6 +100,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
     while(reader->readNext(v) == ByteRingArrayReadContinue) {
         switch(mStatus) {
             case ParseStartBoundry:{
+                //printf("parser ParseStartBoundry trace1\n");
                 if(v == mBoundaryStr[mBoundaryIndex]) {
                     if(mBoundaryIndex == (mBoundary->size()-1)) {
                         mBoundaryIndex = 0;
@@ -115,6 +116,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseStartBoundryEnd:{
+                //printf("parser ParseStartBoundry trace2\n");
                 if(v == mNewLineStr[mBoundaryEndLineIndex]) {
                     if(mBoundaryEndLineIndex == (NewLine->size()-1)) {
                         mBoundaryEndLineIndex = 0;

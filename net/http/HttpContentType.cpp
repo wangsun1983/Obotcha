@@ -4,8 +4,9 @@
 #include "String.hpp"
 #include "HttpContentType.hpp"
 #include "AutoLock.hpp"
+#include "HttpHeaderParser.hpp"
 
-using namespace obotcha;
+namespace obotcha {
 
 //text/html(html htm shtml)
 const String _HttpContentType::TextHtml = createString("text/html");//text/html(html htm shtml)
@@ -366,10 +367,108 @@ const String _HttpContentType::SuffixAvi = createString("avi");
 //multipart/form-data 
 const String _HttpContentType::MultiPartFormData = createString("multipart/form-data");
 const String _HttpContentType::FormData = createString("form-data");
+const String _HttpContentType::Boundary = createString("boundary");
+
 
 //x-www-form-urlencoded
 const String _HttpContentType::XFormUrlEncoded = createString("application/x-www-form-urlencoded");
 
+//CharSet
+const String _HttpContentType::CharSet = createString("charset");
 
+_HttpContentType::_HttpContentType() {
+    mContentType = nullptr;
+    mSubtype = nullptr;
+    mSubValue = nullptr;
+    mCharset = nullptr;
+}
 
+_HttpContentType::_HttpContentType(String value) {
+    mContentType = nullptr;
+    mSubtype = nullptr;
+    mSubValue = nullptr;
+    mCharset = nullptr;
+    import(value);
+}
 
+void _HttpContentType::import(String value) {
+    if(value != nullptr) {
+        int pos = 0;
+        while (pos < value->size()) {
+            int tokenStart = pos;
+            pos = st(HttpHeaderParser)::skipUntil(value, pos, "=,;");
+            String directive = value->subString(tokenStart, pos-tokenStart)->trim();
+            String parameter = nullptr;
+
+            if (pos == value->size() || value->charAt(pos) == ',' || value->charAt(pos) == ';') {
+                pos++; // consume ',' or ';' (if necessary)
+                parameter = nullptr;
+            } else {
+                pos++; // consume '='
+                pos = st(HttpHeaderParser)::skipWhitespace(value, pos);
+                // quoted string
+                if (pos < value->size() && value->charAt(pos) == '\"') {
+                    pos++; // consume '"' open quote
+                    int parameterStart = pos;
+                    pos = st(HttpHeaderParser)::skipUntil(value, pos, "\"");
+                    parameter = value->subString(parameterStart, pos);
+                    pos++; // consume '"' close quote (if necessary)
+                    // unquoted string
+                } else {
+                    int parameterStart = pos;
+                    pos = st(HttpHeaderParser)::skipUntil(value, pos, ",;");
+                    parameter = value->subString(parameterStart, (pos-parameterStart))->trim();
+                    pos++;
+                }
+            }
+
+            if(parameter == nullptr) {
+                mContentType = directive;
+            } else if(CharSet->equalsIgnoreCase(directive)) {
+                this->mCharset = parameter;
+            } else {
+                mSubtype = directive;
+                mSubValue = parameter;
+                break;
+            }
+        }
+    }
+}
+
+void _HttpContentType::setType(String value) {
+    mContentType = value;
+}
+
+void _HttpContentType::setCharSet(String value) {
+    mCharset = value;
+}
+
+void _HttpContentType::setBoundary(String value) {
+    mSubtype = Boundary;
+    mSubValue = value;
+}
+
+String _HttpContentType::getType() {
+    return mContentType;
+}
+
+String _HttpContentType::getCharSet() {
+    return mCharset;
+}
+
+String _HttpContentType::getBoundary() {
+    return mSubValue;
+}
+
+String _HttpContentType::toString() {
+    String result = mContentType;
+    if(mCharset != nullptr) {
+        result = result->append(";charset = ",mCharset);
+    }
+    if(mSubtype != nullptr) {
+        result = result->append("; ",mSubtype," = ",mSubValue);
+    }
+    return result;
+}
+
+}

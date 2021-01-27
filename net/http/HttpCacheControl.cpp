@@ -31,6 +31,22 @@ _HttpCacheControl::_HttpCacheControl() {
     mHeaderValue = nullptr;
 }
 
+_HttpCacheControl::_HttpCacheControl(String value) {
+    mNoCache = false;
+    mNoStore = false;
+    mMaxAgeSeconds = -1;
+    mSMaxAgeSeconds = -1;
+    mIsPrivate = false;
+    mIsPublic = false;
+    mMustRevalidate = false;
+    mMaxStaleSeconds = -1;
+    mMinFreshSeconds = -1;
+    mOnlyIfCached = false;
+    mNoTransform = false;
+    mHeaderValue = nullptr;
+    import(value);
+}
+
 bool _HttpCacheControl::noCache() {
     return this->mNoCache;
 }
@@ -75,9 +91,7 @@ bool _HttpCacheControl::noTransform() {
     return this->mNoTransform;
 }
 
-void _HttpCacheControl::import(sp<_HttpHeader> headers) {
-    bool canUseHeaderValue = true;
-    String value = headers->getValue(st(HttpHeader)::CacheControl);
+void _HttpCacheControl::import(String value) {
     if(value != nullptr) {
         int pos = 0;
         while (pos < value->size()) {
@@ -133,6 +147,12 @@ void _HttpCacheControl::import(sp<_HttpHeader> headers) {
             }
         }
     }
+}
+
+void _HttpCacheControl::import(sp<_HttpHeader> headers) {
+    bool canUseHeaderValue = true;
+    String value = headers->getValue(st(HttpHeader)::CacheControl);
+    import(value);
 }
 
 String _HttpCacheControl::toString() {

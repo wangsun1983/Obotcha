@@ -16,6 +16,7 @@ DECLARE_SIMPLE_CLASS(HttpCookie) {
 
 public:
     _HttpCookie();
+    _HttpCookie(String);
 
     void setValue(String key,String value);
     String get(String key);

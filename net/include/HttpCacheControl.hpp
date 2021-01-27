@@ -14,6 +14,7 @@ DECLARE_SIMPLE_CLASS(HttpCacheControl) {
 
 public:
     _HttpCacheControl();
+    _HttpCacheControl(String);
     /**
      * In a response, this field's name "no-cache" is misleading. It doesn't
      * prevent us from caching the response; it only means we have to validate the
@@ -62,6 +63,7 @@ public:
     bool noTransform();
 
     void import(sp<_HttpHeader> headers);
+    void import(String value);
 
     String toString();
 

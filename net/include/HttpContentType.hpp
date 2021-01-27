@@ -9,7 +9,6 @@
 #include "String.hpp"
 #include "ArrayList.hpp"
 #include "http_parser.h"
-#include "HttpHeader.hpp"
 #include "ByteArray.hpp"
 #include "HttpCookie.hpp"
 #include "Mutex.hpp"
@@ -380,10 +379,35 @@ public:
     //multipart/form-data 
     const static String MultiPartFormData;
     const static String FormData;
+    const static String Boundary;
 
     //application/x-www-form-urlencoded
     const static String XFormUrlEncoded;
 
+    //charset
+    const static String CharSet;
+
+    _HttpContentType();
+    _HttpContentType(String);
+
+    void import(String value);
+
+    String toString();
+
+    void setType(String);
+    void setCharSet(String);
+    void setBoundary(String);
+
+    String getType();
+    String getCharSet();
+    String getBoundary();
+
+
+private:
+    String mContentType;
+    String mSubtype;
+    String mSubValue;
+    String mCharset;
 };
 
 }

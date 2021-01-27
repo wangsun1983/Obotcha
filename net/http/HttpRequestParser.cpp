@@ -41,14 +41,13 @@ int _HttpRequestParser::on_header_value(http_parser*parser, const char *at, size
     String value = createString(at,0,length);
     if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::Cookie) 
         || p->tempParseField->equalsIgnoreCase(st(HttpHeader)::SetCookie)) {
-        HttpCookie cookie = createHttpCookie();
-        cookie->import(value);
-        p->addCookie(cookie);
+        p->getHeader()->addCookie(createHttpCookie(value));
         return 0;
     } else if(p->tempParseField->equals(st(HttpHeader)::CacheControl)) {
-        HttpCacheControl control = createHttpCacheControl();
-        control->import(value); 
-        p->setCacheControl(control);
+        p->getHeader()->setCacheControl(value);
+        return 0;
+    } else if(p->tempParseField->equals(st(HttpHeader)::ContentType)) {
+        p->getHeader()->setContentType(value);
         return 0;
     }
     p->getHeader()->setValue(p->tempParseField,value);
@@ -108,7 +107,13 @@ void _HttpRequestParser::pushHttpData(ByteArray data) {
     stream->write(data);
     stream->flush();
 #endif
-    mBuff->push(data);
+    //TODO
+    //printf("mBuffSize is %ld,data size is %ld \n",mBuff->getSize(),data->size());
+    try {
+        mBuff->push(data);
+    } catch(ArrayIndexOutOfBoundsException) {
+        //TODO
+    }
 }
 
 HttpPacket _HttpRequestParser::parseEntireRequest(String request) {
@@ -139,6 +144,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
     while(1) {
         switch(mStatus) {
             case HttpParseStatusIdle:{
+                printf("parser HttpParseStatusIdle\n");
                 byte v = 0;
                 while(mReader->readNext(v) != ByteRingArrayReadComplete) {
                     if(v == end[mHeadEndCount]) {
@@ -162,6 +168,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
             }
             
             case HttpClientParseStatusHeadStart: {
+                printf("parser HttpClientParseStatusHeadStart\n");
                 ByteArray head = mReader->pop();
                 memset(&mParser,0,sizeof(http_parser));
                 mHttpPacket = createHttpPacket();
@@ -181,6 +188,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
             }
 
             case HttpClientParseStatusBodyStart: {
+                printf("parser HttpClientParseStatusBodyStart\n");
                 //check whether there is a multipart
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
@@ -192,6 +200,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                 }
                 
                 if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPartFormData) != -1) {
+                    printf("parser HttpClientParseStatusBodyStart trace1\n");
                     if(mMultiPartParser == nullptr) {
                         try {
                             mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength->toBasicInt());
@@ -224,6 +233,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                     //no contentlength,maybe it is only a html request
                     mStatus = HttpParseStatusIdle;
                     printf("add packet trace3 \n");
+                    mMultiPartParser = nullptr;
                     packets->add(mHttpPacket);
                     continue;
                 }

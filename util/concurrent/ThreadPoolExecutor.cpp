@@ -201,6 +201,9 @@ int _ThreadPoolExecutor::getQueueSize() {
 }
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
+    if(mStatus->get() == LocalStatus::Running) {
+        LOG(ERROR)<<"ThreadPoolExecutor distroy while running";
+    }
 }
 
 void _ThreadPoolExecutor::onCancel(FutureTask t) {

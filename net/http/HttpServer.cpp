@@ -146,7 +146,7 @@ void _HttpDispatchRunnable::run() {
         }
 
         info->pushHttpData(data->pack);
-        printf("HttpDispatchRunnable run trace1,data->pack is %s \n",data->pack->toString()->toChars());
+        //printf("HttpDispatchRunnable run trace1,data->pack is %s \n",data->pack->toString()->toChars());
         ArrayList<HttpPacket> packets = info->pollHttpPacket();
         printf("HttpDispatchRunnable run packets size is %d \n",packets->size());
         HttpResponseWriter writer = createHttpResponseWriter(info);

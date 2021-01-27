@@ -25,6 +25,14 @@ _HttpCookie::_HttpCookie() {
     mPropertyExpiresMillseocnds = -1;
 }
 
+_HttpCookie::_HttpCookie(String value) {
+    mValues = createHashMap<String,String>();
+    mPropertySecure = false;
+    mPropertyHttpOnly = false;
+    mPropertyExpiresMillseocnds = -1;
+    import(value);
+}
+
 void _HttpCookie::setValue(String key,String value) {
     mValues->put(key,value);
 }

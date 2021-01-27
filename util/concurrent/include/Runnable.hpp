@@ -96,6 +96,8 @@ private:
     Condition mResultCond;
     int mStatus;
 
+    int mValueType;
+
     void interruptResultWait();
 
     void getResult(int &value,int defaultvalue,long millseconds = 0);

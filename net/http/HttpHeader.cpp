@@ -10,6 +10,7 @@
 #include "HashMap.hpp"
 #include "HttpHeader.hpp"
 #include "HttpText.hpp"
+#include "HttpContentType.hpp"
 
 namespace obotcha {
 
@@ -161,6 +162,18 @@ HttpCacheControl _HttpHeader::getCacheControl() {
 
 void _HttpHeader::setCacheControl(HttpCacheControl c) {
     mCacheControl = c;
+}
+
+void _HttpHeader::setContentType(String value) {
+    mContentType =  createHttpContentType(value);
+}
+
+void _HttpHeader::setContentType(HttpContentType contenttype) {
+    mContentType = contenttype;
+}
+
+HttpContentType _HttpHeader::getContentType() {
+    return mContentType;
 }
 
 MapIterator<String,String> _HttpHeader::getIterator() {
