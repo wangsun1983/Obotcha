@@ -57,36 +57,47 @@ int _HttpRequestWriter::write(HttpRequest p) {
     ByteArrayWriter writer = createByteArrayWriter(mSendBuff);
     String boundary = nullptr;
     //check body
-    HttpMultiPart multiPart = p->mPacket->getMultiPart();
-    HashMap<String,String> encodedUrlMap = p->mPacket->getEncodedKeyValues();
+    HttpMultiPart multiPart = p->getEntity()->getMultiPart();
+    HashMap<String,String> encodedUrlMap = p->getEntity()->getEncodedKeyValues();
+
     //1.create head
-    String contentType = p->getHeader(st(HttpHeader)::ContentType);
-    if(contentType == nullptr || contentType->size() == 0) {
+    HttpContentType contentType = p->getHeader()->getContentType();
+    if(contentType == nullptr) {
         if(multiPart != nullptr) {
             boundary = st(HttpText)::BoundarySeperator->append(generateMultiPartBoundary());
-            contentType = st(HttpContentType)::MultiPartFormData->append(";","boundary=",boundary);
-            p->setHeader(st(HttpHeader)::ContentType,contentType);
+            //contentType = st(HttpContentType)::MultiPartFormData->append(";","boundary=",boundary);
+            contentType = createHttpContentType();
+            contentType->setBoundary(boundary);
+            contentType->setType(st(HttpContentType)::MultiPartFormData);
+            p->getHeader()->setContentType(contentType);
+            //p->setHeader(st(HttpHeader)::ContentType,contentType);
             long length = computeContentLength(p,boundary);
-            p->setHeader(st(HttpHeader)::ContentLength,createString(length));
+            p->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(length));
         } else if(encodedUrlMap != nullptr) {
             long length = computeContentLength(p);
-            p->setHeader(st(HttpHeader)::ContentLength,createString(length));
-            p->setHeader(st(HttpHeader)::ContentType,st(HttpContentType)::XFormUrlEncoded);
+            p->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(length));
+            //p->setHeader(st(HttpHeader)::ContentType,st(HttpContentType)::XFormUrlEncoded);
+            contentType = createHttpContentType();
+            contentType->setType(st(HttpContentType)::XFormUrlEncoded);
+            p->getHeader()->setContentType(contentType);
         } else {
-            ByteArray body = p->mPacket->getBody();
+            ByteArray body = p->getEntity()->getContent();
             if(body != nullptr && body->size() != 0) {
-                p->setHeader(st(HttpHeader)::ContentLength,createString(body->size()));
+                p->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(body->size()));
             }
-            p->setHeader(st(HttpHeader)::ContentType,st(HttpContentType)::XFormUrlEncoded);
+            contentType = createHttpContentType();
+            contentType->setType(st(HttpContentType)::XFormUrlEncoded);
+            p->getHeader()->setContentType(contentType);
+            //p->setHeader(st(HttpHeader)::ContentType,st(HttpContentType)::XFormUrlEncoded);
         }
     }
     AUTO_FLUSH(writer->writeString(st(HttpMethod)::toString(p->getMethod())));
     AUTO_FLUSH(writer->writeString(st(HttpText)::ContentSpace));
     AUTO_FLUSH(writer->writeString(p->getUrl()->getPath()));
     AUTO_FLUSH(writer->writeString(st(HttpText)::ContentSpace));
-    AUTO_FLUSH(writer->writeString(p->mPacket->getVersion()->toString()));
+    AUTO_FLUSH(writer->writeString(p->getVersion()->toString()));
     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
-    AUTO_FLUSH(writer->writeString(p->mPacket->getHeader()->toString(st(HttpProtocol)::HttpRequest)));
+    AUTO_FLUSH(writer->writeString(p->getHeader()->toString(st(HttpProtocol)::HttpRequest)));
     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
     //2. multipart
@@ -188,7 +199,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
         }
         AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
     } else {
-        ByteArray body = p->mPacket->getBody();
+        ByteArray body = p->getEntity()->getContent();
         if(body != nullptr && body->size() > 0) {
             AUTO_FLUSH(writer->writeByteArray(body));
         }
@@ -221,8 +232,8 @@ int _HttpRequestWriter::flush(ByteArray data,int length) {
 }
 
 long _HttpRequestWriter::computeContentLength(HttpRequest req,String boundary) {
-    HttpMultiPart multiPart = req->mPacket->getMultiPart();
-    HashMap<String,String> encodedUrlMap = req->mPacket->getEncodedKeyValues();
+    HttpMultiPart multiPart = req->getEntity()->getMultiPart();
+    HashMap<String,String> encodedUrlMap = req->getEntity()->getEncodedKeyValues();
     long length = 0;
     
     //multipart

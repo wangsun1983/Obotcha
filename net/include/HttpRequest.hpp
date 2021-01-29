@@ -9,45 +9,23 @@
 #include "HttpUrl.hpp"
 #include "HttpMultiPart.hpp"
 #include "HttpHeader.hpp"
+#include "HttpPacket.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpRequest) {
+DECLARE_SIMPLE_CLASS(HttpRequest) IMPLEMENTS(HttpPacket){
 
 public:
     friend class _HttpRequestWriter;
     _HttpRequest(int,HttpUrl);
-
-    void setHeader(String,String);
-    void setEntity(String);
-    HttpHeader getHeaders();
-
-    void setVersion(int,int);
-
-    int getMajorVer();
-    int getMinorVer();
-
-    void setMajorVer(int);
-    void setMinorVer(int);
-
-    void setMethod(int);
-    int getMethod();
-
-    void addMultiPartContent(HttpMultiPartContent);
-    void addMultiPartFile(HttpMultiPartFile);
-
-    void addEncodedKeyValue(String,String);
-    String getEncodedKeyValue(String);
-
-    String getHeader(String);
-    String getEntity();
-
+    _HttpRequest();
+    
     HttpUrl getUrl();
+
+    String toString();
     
 private:
     HttpUrl mUrl;
-    HttpPacket mPacket;
-    int mMethod;
     
 };
 

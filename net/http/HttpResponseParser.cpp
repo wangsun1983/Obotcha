@@ -27,7 +27,7 @@ int _HttpResponseParser::on_url(http_parser*parser, const char *at, size_t lengt
 
 int _HttpResponseParser::on_header_field(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    p->tempParseField = createString(at,0,length);
+    p->tempParseField = createString(at,0,length)->toLowerCase();
     return 0;
 }
 
@@ -36,14 +36,13 @@ int _HttpResponseParser::on_header_value(http_parser*parser, const char *at, siz
     String value = createString(at,0,length);
     if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::Cookie) 
         || p->tempParseField->equalsIgnoreCase(st(HttpHeader)::SetCookie)) {
-        HttpCookie cookie = createHttpCookie();
-        cookie->import(value);
-        p->addCookie(cookie);
+        p->getHeader()->addCookie(createHttpCookie(value));
         return 0;
     } else if(p->tempParseField->equals(st(HttpHeader)::CacheControl)) {
-        HttpCacheControl control = createHttpCacheControl();
-        control->import(value); 
-        p->setCacheControl(control);
+        p->getHeader()->setCacheControl(createHttpCacheControl(value));
+        return 0;
+    } else if(p->tempParseField->equals(st(HttpHeader)::ContentType)) {
+        p->getHeader()->setContentType(createHttpContentType(value));
         return 0;
     }
     p->getHeader()->setValue(p->tempParseField,value);
@@ -56,16 +55,15 @@ int _HttpResponseParser::on_headers_complete(http_parser*parser, const char *at,
 
 int _HttpResponseParser::on_body(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    p->setBody(createByteArray((byte *)at,(int)length));
+    p->getEntity()->setContent(createByteArray((byte *)at,(int)length));
     return 0;
 }
 
 int _HttpResponseParser::on_message_complete(http_parser *parser) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
     p->setMethod(parser->method);
-    p->setStatusCode(parser->status_code);
-    p->setMajorVersion(parser->http_major);
-    p->setMinorVersion(parser->http_minor);
+    p->setStatus(parser->status_code);
+    p->setVersion(createHttpVersion(parser->http_major,parser->http_minor));
     return 0;
 }
 
@@ -199,7 +197,7 @@ HttpResponse _HttpResponseParser::doParse() {
                     int readablelength = mReader->getReadableLength();
                     int popsize = (readablelength > mChunkSize)?mChunkSize:readablelength;
 
-                    ByteArray body = mHttpPacket->getBody();
+                    ByteArray body = mHttpPacket->getEntity()->getContent();
                     mReader->move(popsize);
                     if(body == nullptr) {
                         body = mReader->pop();
@@ -207,7 +205,7 @@ HttpResponse _HttpResponseParser::doParse() {
                         body->append(mReader->pop());
                     }
                     printf("HttpClientParseStatusBodyStart trace2\n");
-                    mHttpPacket->setBody(body);
+                    mHttpPacket->getEntity()->setContent(body);
                     printf("mReader readable length is %d,mChunkSize is %d \n",readablelength,mChunkSize);
                     if(readablelength < mChunkSize) {
                         mChunkSize -= readablelength;
@@ -219,7 +217,7 @@ HttpResponse _HttpResponseParser::doParse() {
                     mStatus = HttpClientParseStatusChunkJumpLineStart;
                     continue;
                 } else {
-                    ByteArray body = mHttpPacket->getBody();
+                    ByteArray body = mHttpPacket->getEntity()->getContent();
                     int readablelength = mReader->getReadableLength();
                     int popsize = (readablelength > mContentLength)?mContentLength:readablelength;
                     mReader->move(popsize);
@@ -228,7 +226,7 @@ HttpResponse _HttpResponseParser::doParse() {
                     } else {
                         body->append(mReader->pop());
                     }
-                    mHttpPacket->setBody(body);
+                    mHttpPacket->getEntity()->setContent(body);
                     mContentLength -= popsize;
                     if(mContentLength == 0) {
                         packets->add(mHttpPacket);

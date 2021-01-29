@@ -14,6 +14,7 @@
 #include "Random.hpp"
 #include "Base64.hpp"
 #include "HttpRequestWriter.hpp"
+#include "HttpRequest.hpp"
 
 namespace obotcha {
 
@@ -37,12 +38,11 @@ ByteArray _WebSocketHybi13Composer::genShakeHandMessage(WebSocketClientInfo h) {
 
 ByteArray _WebSocketHybi13Composer::_genClientShakeHandMessage(WebSocketClientInfo client) {
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(client->getConnectUrl());
-    HttpPacket packet = createHttpPacket();
+    HttpRequest packet = createHttpRequest();
     packet->setMethod(st(HttpMethod)::Get);
     packet->setHeader(client->getHttpHeader());
     packet->setUrl(httpUrl->getPath());
-    packet->setMajorVersion(1);
-    packet->setMinorVersion(1);
+    packet->setVersion(createHttpVersion(1,1));
 
     String host = httpUrl->getHost()->append(":",createString(httpUrl->getPort()));
     packet->getHeader()->setValue(st(HttpHeader)::Host,host);

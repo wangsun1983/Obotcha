@@ -15,7 +15,7 @@ namespace obotcha {
 _HttpPacket::_HttpPacket() {
     mHeader = createHttpHeader();
     mVersion = createHttpVersion();
-    mMultiPart = nullptr;
+    mEntity = createHttpEntity();
 }
 
 void _HttpPacket::setHeader(HttpHeader h) {
@@ -25,17 +25,17 @@ void _HttpPacket::setHeader(HttpHeader h) {
 HttpHeader _HttpPacket::getHeader() {
     return mHeader;
 }
+
+HttpEntity _HttpPacket::getEntity() {
+    return mEntity;   
+}
+    
+void _HttpPacket::setEntity(HttpEntity entity) {
+    mEntity = entity;
+}
     
 void _HttpPacket::setUrl(String url) {
     mUrl = url;
-}
-
-void _HttpPacket::setBody(ByteArray body) {
-    mBody = body;
-}
-
-ByteArray _HttpPacket::getBody() {
-	return mBody;
 }
 
 String _HttpPacket::getUrl() {
@@ -58,66 +58,24 @@ int _HttpPacket::getMethod() {
     return mHeader->getMethod();
 }
 
-void _HttpPacket::setMajorVersion(int v) {
-    mVersion->setMajorVer(v);
-}
-
-int _HttpPacket::getMajorVersion() {
-    return mVersion->getMajorVer();
-}
-
-void _HttpPacket::setMinorVersion(int v) {
-    mVersion->setMinorVer(v);
-}
-
-int _HttpPacket::getMinorVersion() {
-    return mVersion->getMinorVer();
-}
-
 HttpVersion _HttpPacket::getVersion() {
     return mVersion;
 }
 
-int _HttpPacket::getStatusCode() {
+void _HttpPacket::setVersion(HttpVersion h) {
+    mVersion = h;
+}
+
+int _HttpPacket::getStatus() {
     return mStatusCode;
 }
 
-void _HttpPacket::setStatusCode(int v) {
+void _HttpPacket::setStatus(int v) {
     mStatusCode = v;
 }
 
-void _HttpPacket::setMultiPart(HttpMultiPart p) {
-    mMultiPart = p;
-}
-
-HttpMultiPart _HttpPacket::getMultiPart() {
-    return mMultiPart;
-}
-
-HashMap<String,String> _HttpPacket::getEncodedKeyValues() {
-    return mFormUrlEncodedMap;
-}
-
-String _HttpPacket::getEncodedKeyValue(String key) {
-    if(mFormUrlEncodedMap != nullptr) {
-        return mFormUrlEncodedMap->get(key);
-    }
-    
-    return nullptr;
-}
-
-void _HttpPacket::setEncodedKeyValues(HashMap<String,String> map) {
-    mFormUrlEncodedMap = map;
-}
-
-void _HttpPacket::addEncodedKeyValue(String key,String value) {
-    if(mFormUrlEncodedMap == nullptr) {
-        mFormUrlEncodedMap = createHashMap<String,String>();
-    }
-    mFormUrlEncodedMap->put(key,value);
-}
-
 void _HttpPacket::dump() {
+#if 0    
     //MapIterator<int,String> getIterator();
 	MapIterator<String,String> iterator = mHeader->getIterator();
 	while(iterator->hasValue()) {
@@ -145,6 +103,7 @@ void _HttpPacket::dump() {
 	} else {
 		printf("body is null \n");
 	}
+#endif
 }
 
 }

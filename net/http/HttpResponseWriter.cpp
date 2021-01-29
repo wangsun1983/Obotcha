@@ -61,13 +61,13 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     ByteArrayWriter writer = createByteArrayWriter(mSendBuff);
 
     File file = response->getFile();
-    HashMap<String,String> encodedUrlMap = response->mPacket->getEncodedKeyValues();
-    ByteArray body = response->mPacket->getBody();
+    HashMap<String,String> encodedUrlMap = response->getEntity()->getEncodedKeyValues();
+    ByteArray body = response->getEntity()->getContent();
 
     //start compose 
     int status = response->getStatus();
     //String statusStr = st(HttpStatus)::toString(status);
-    AUTO_FLUSH(writer->writeString(response->mPacket->getVersion()->toString()));
+    AUTO_FLUSH(writer->writeString(response->getVersion()->toString()));
     AUTO_FLUSH(writer->writeString(" "));
     AUTO_FLUSH(writer->writeString(createString(status)));
     AUTO_FLUSH(writer->writeString(" "));
@@ -77,13 +77,13 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     //update content-length
     int contentlength = 0;
     if(file != nullptr) {
-        response->mPacket->getHeader()->setValue(st(HttpHeader)::TransferEncoding,st(HttpHeader)::TransferChunked);
+        response->getHeader()->setValue(st(HttpHeader)::TransferEncoding,st(HttpHeader)::TransferChunked);
     } else {
         contentlength = computeContentLength(response);
-        response->mPacket->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(contentlength));
+        response->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(contentlength));
     }
 
-    AUTO_FLUSH(writer->writeString(response->mPacket->getHeader()->toString(st(HttpProtocol)::HttpResponse)));
+    AUTO_FLUSH(writer->writeString(response->getHeader()->toString(st(HttpProtocol)::HttpResponse)));
     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd)); //change line
     AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd)); //blank line
 
@@ -143,7 +143,7 @@ ByteArray _HttpResponseWriter::compose(HttpResponse response) {
 }
 
 long _HttpResponseWriter::computeContentLength(HttpResponse response) {
-    HashMap<String,String> encodedUrlMap = response->mPacket->getEncodedKeyValues();
+    HashMap<String,String> encodedUrlMap = response->getEntity()->getEncodedKeyValues();
     int length = 0;
     if(encodedUrlMap != nullptr) {
         MapIterator<String,String> iterator = encodedUrlMap->getIterator();
@@ -156,7 +156,7 @@ long _HttpResponseWriter::computeContentLength(HttpResponse response) {
         length += encodedUrlMap->size()*2 - 1; /*=&*/
         return length;
     } else {
-        return response->mPacket->getBody()->size();
+        return response->getEntity()->getContent()->size();
     }
 
     return 0;

@@ -12,8 +12,8 @@
 #include "HttpCookie.hpp"
 
 #include "HttpMethod.hpp"
-#include "HttpMultiPart.hpp"
 #include "HttpVersion.hpp"
+#include "HttpEntity.hpp"
 
 namespace obotcha {
 
@@ -30,10 +30,10 @@ public:
     
     HttpHeader getHeader();
 
-    void setBody(ByteArray);
+    HttpEntity getEntity();
 
-    ByteArray getBody();
-    
+    void setEntity(HttpEntity);
+
     void setUrl(String);
     
     String getUrl();
@@ -46,31 +46,13 @@ public:
 
     int getMethod();
 
-    void setMajorVersion(int);
-
-    int getMajorVersion();
-
-    void setMinorVersion(int);
-
-    int getMinorVersion();
-
     HttpVersion getVersion();
 
-    int getStatusCode();
+    void setVersion(HttpVersion);
 
-    void setStatusCode(int);
+    int getStatus();
 
-    void setMultiPart(HttpMultiPart);
-
-    HttpMultiPart getMultiPart();
-
-    HashMap<String,String> getEncodedKeyValues();
-
-    String getEncodedKeyValue(String);
-
-    void setEncodedKeyValues(HashMap<String,String>);
-    
-    void addEncodedKeyValue(String,String);
+    void setStatus(int);
 
     void dump();
 
@@ -79,7 +61,7 @@ private:
     
     HttpHeader mHeader;
 
-    ByteArray mBody;
+    HttpEntity mEntity;
 
     String mReason;
 
@@ -91,11 +73,6 @@ private:
     String tempParseValue;
 
     String tempParseField;
-
-    HttpMultiPart mMultiPart;
-
-    HashMap<String,String>mFormUrlEncodedMap;
-
 };
 
 }

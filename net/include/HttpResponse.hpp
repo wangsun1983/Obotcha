@@ -16,31 +16,17 @@ namespace obotcha {
 
 class _HttpResponseWriter;
 
-DECLARE_SIMPLE_CLASS(HttpResponse) {
+DECLARE_SIMPLE_CLASS(HttpResponse) IMPLEMENTS(HttpPacket) {
 public:
     friend class _HttpResponseWriter;
-    _HttpResponse(HttpPacket packet);
+    _HttpResponse();
+	_HttpResponse(HttpPacket);
 	
-	_HttpResponse();
-
-    int getStatus();
-	void setStatus(int);
-	
-	void setBody(ByteArray);
-	ByteArray getBody();
-
-	void setHeader(String,String);
-	String getHeader(String);
-	HttpHeader getHeaders();
-
 	void setFile(File);
 	File getFile();
-	void addCookie(HttpCookie);
-
-	void dump();
+	String toString();
 
 private:
-	HttpPacket mPacket;
 	File mFile;
 };
 

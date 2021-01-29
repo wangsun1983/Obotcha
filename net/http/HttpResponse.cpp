@@ -6,40 +6,18 @@
 
 namespace obotcha {
 
-_HttpResponse::_HttpResponse(HttpPacket packet) {
-    mPacket = packet;
-}
-
 _HttpResponse::_HttpResponse() {
-    mPacket = createHttpPacket();
+
 }
 
-int _HttpResponse::getStatus() {
-    return mPacket->getStatusCode();
-}
-
-void _HttpResponse::setStatus(int s) {
-    return mPacket->setStatusCode(s);
-}
-
-ByteArray _HttpResponse::getBody() {
-    return mPacket->getBody();
-}
-
-String _HttpResponse::getHeader(String key) {
-    return mPacket->getHeader()->getValue(key);
-}
-
-void _HttpResponse::setBody(ByteArray data) {
-    mPacket->setBody(data);
-}
-
-void _HttpResponse::setHeader(String key,String val) {
-    mPacket->getHeader()->setValue(key,val);
-}
-
-HttpHeader _HttpResponse::getHeaders() {
-    return nullptr;
+_HttpResponse::_HttpResponse(HttpPacket p) {
+    this->setEntity(p->getEntity());
+    this->setHeader(p->getHeader());
+    this->setMethod(p->getMethod());
+    this->setReason(p->getReason());
+    this->setUrl(p->getUrl());
+    this->setStatus(p->getStatus());
+    this->setVersion(p->getVersion());
 }
 
 void _HttpResponse::setFile(File f) {
@@ -50,12 +28,8 @@ File _HttpResponse::getFile() {
     return mFile;
 }
 
-void _HttpResponse::addCookie(HttpCookie cookie) {
-    mPacket->addCookie(cookie);
-}
-
-void _HttpResponse::dump() {
-    mPacket->dump();
+String _HttpResponse::toString() {
+    //TODO
 }
 
 

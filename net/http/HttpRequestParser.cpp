@@ -32,7 +32,7 @@ int _HttpRequestParser::on_url(http_parser*parser, const char *at, size_t length
 
 int _HttpRequestParser::on_header_field(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    p->tempParseField = createString(at,0,length);
+    p->tempParseField = createString(at,0,length)->toLowerCase();
     return 0;
 }
 
@@ -60,16 +60,17 @@ int _HttpRequestParser::on_headers_complete(http_parser*parser, const char *at, 
 
 int _HttpRequestParser::on_body(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    p->setBody(createByteArray((byte *)at,(int)length));
+    HttpEntity entity = createHttpEntity();
+    entity->setContent(createByteArray((byte *)at,(int)length));
+    p->setEntity(entity);
     return 0;
 }
 
 int _HttpRequestParser::on_message_complete(http_parser *parser) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
     p->setMethod(parser->method);
-    p->setStatusCode(parser->status_code);
-    p->setMajorVersion(parser->http_major);
-    p->setMinorVersion(parser->http_minor);
+    p->setStatus(parser->status_code);
+    p->setVersion(createHttpVersion(parser->http_major,parser->http_minor));
     return 0;
 }
 
@@ -133,7 +134,7 @@ HttpPacket _HttpRequestParser::parseEntireResponse(String response) {
     http_parser_init(&mParser, HTTP_RESPONSE);
     http_parser_execute(&mParser,&settings, response->toChars(), response->size());
     packet->setMethod(mParser.method);
-    packet->setStatusCode(mParser.status_code);
+    packet->setStatus(mParser.status_code);
     return packet;
 }
 
@@ -210,7 +211,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                     if(mMultiPartParser != nullptr) {
                         HttpMultiPart multipart = mMultiPartParser->parse(mReader);
                         if(multipart != nullptr) {
-                            mHttpPacket->setMultiPart(multipart);
+                            mHttpPacket->getEntity()->setMultiPart(multipart);
                             printf("add packet trace4 \n");
                             packets->add(mHttpPacket);
                             mMultiPartParser = nullptr;
@@ -222,7 +223,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                     int length = contentlength->toBasicInt();
                     if(length <= mReader->getReadableLength()) {
                         mReader->move(length);
-                        mHttpPacket->setBody(mReader->pop());
+                        mHttpPacket->getEntity()->setContent(mReader->pop());
                         mStatus = HttpParseStatusIdle;
                         printf("add packet trace2 \n");
                         mMultiPartParser = nullptr;
