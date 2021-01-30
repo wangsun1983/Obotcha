@@ -62,6 +62,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/sslinfo.o \
 		$(outtmp)/sslmanager.o \
 		$(outtmp)/smtpconnection.o \
+		$(outtmp)/mailsender.o \
 		$(outtmp)/socketresponser.o \
 
 $(outtmp)/socket.o :$(netDir)/Socket.cpp
@@ -256,5 +257,5 @@ $(outtmp)/sslmanager.o :$(netDir)/http/ssl/SSLManager.cpp
 $(outtmp)/smtpconnection.o :$(netDir)/smtp/SmtpConnection.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/smtp/SmtpConnection.cpp -o $(outtmp)/smtpconnection.o $(external)
 
-#$(outtmp)/mailsender.o :$(netDir)/smtp/MailSender.cpp
-#	$(cppcompiler) $(obotchacppflags) -c $(netDir)/smtp/MailSender.cpp -o $(outtmp)/mailsender.o $(external)#
+$(outtmp)/mailsender.o :$(netDir)/smtp/MailSender.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/smtp/MailSender.cpp -o $(outtmp)/mailsender.o $(external)#

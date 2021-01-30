@@ -16,11 +16,13 @@
 #include "SmtpConnection.hpp"
 #include "File.hpp"
 #include "Base64.hpp"
+#include "Md.hpp"
 #include "String.hpp"
 
 extern "C" {
 #include "openssl/ssl.h"
 #include "openssl/err.h"
+#include "openssl/md5.h"
 }
 
 namespace obotcha {
@@ -33,6 +35,17 @@ struct SmtpCommandEntry {
 	int recv_timeout;	 // 0 means no recv is required
 	int valid_reply_code; // 0 means no recv is required, so no reply code
 	int error;
+};
+
+class SmtpSimpleMd5 {
+public:
+    SmtpSimpleMd5();
+    void update(unsigned char *input, int input_length);
+    unsigned char *raw_digest();
+    char *hex_digest();
+    void finalize();
+private:
+    MD5_CTX md5;
 };
 
 DECLARE_SIMPLE_CLASS(MailSenderBuilder) {

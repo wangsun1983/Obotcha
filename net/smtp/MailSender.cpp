@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <iostream>
 #include <unistd.h>
+#include <string>
+#include <stdio.h>
 
 #include "MailSender.hpp"
 #include "Error.hpp"
@@ -33,6 +35,37 @@ SmtpCommandEntry _MailSender::SmtpCommandList[] = {
     {st(MailSender)::SmtpCommand::CommandQUIT,          5*60,  5*60,  221, st(MailSender)::SmtpError::COMMAND_QUIT},
     {st(MailSender)::SmtpCommand::CommandSTARTTLS,      5*60,  5*60,  220, st(MailSender)::SmtpError::COMMAND_EHLO_STARTTLS}
 };
+
+//------------ SmtpSimpleMd5 -------------------//
+SmtpSimpleMd5::SmtpSimpleMd5() {
+    MD5_Init(&md5);
+}
+
+void SmtpSimpleMd5::update(unsigned char *input, int input_length) {
+    MD5_Update(&md5, input, input_length);
+}
+
+unsigned char *SmtpSimpleMd5::raw_digest() {
+    unsigned char *md5_value = new unsigned char(MD5_DIGEST_LENGTH);
+    MD5_Final(md5_value,&md5);
+    return md5_value;
+}
+
+char *SmtpSimpleMd5::hex_digest() {
+    unsigned char md5_value[MD5_DIGEST_LENGTH];
+    MD5_Final(md5_value,&md5);
+    char * output = new char(MD5_DIGEST_LENGTH*2 + 1);
+
+    // convert md5 value to md5 string
+    for(int i = 0; i < MD5_DIGEST_LENGTH; i++) {
+        snprintf(output + i*2, 2+1, "%02x", md5_value[i]);
+    }
+    return output;
+}
+
+void SmtpSimpleMd5::finalize() {
+    //TODO
+}
 
 //------------ MailSenderBuilder ---------------//
 _MailSenderBuilder::_MailSenderBuilder() {
@@ -110,7 +143,7 @@ _MailSender::_MailSender() {
     mCcRecipients = createArrayList<MailRecipient>();
     mBccRecipients = createArrayList<MailRecipient>();
     mAttachments = createArrayList<File>();
-    mMsgBody = createArrayList<String>();
+    //mMsgBody = createArrayList<String>();
 
     mSendBuf = new char[BuffSize];
     mRecvBuf = new char[BuffSize];
@@ -163,25 +196,25 @@ int _MailSender::send() {
 
     // RCPT <SP> TO:<forward-path> <CRLF>
     pEntry = getCommandEntry(CommandRCPTTO);
-    ListIterator<MailRecipient> iterator = mRecipients->getIterator();
-    while(iterator->hasValue()) {
-        MailRecipient recipient = iterator->getValue();
+    ListIterator<MailRecipient> toIterator = mRecipients->getIterator();
+    while(toIterator->hasValue()) {
+        MailRecipient recipient = toIterator->getValue();
         snprintf(mSendBuf, BuffSize, "RCPT TO:<%s>\r\n", recipient->mail->toChars());
 		sendData(pEntry);
 		receiveResponse(pEntry);
     }
 
-    iterator = mCcRecipients->getIterator();
-    while(iterator->hasValue()) {
-        MailRecipient recipient = iterator->getValue();
+    toIterator = mCcRecipients->getIterator();
+    while(toIterator->hasValue()) {
+        MailRecipient recipient = toIterator->getValue();
         snprintf(mSendBuf, BuffSize, "RCPT TO:<%s>\r\n", recipient->mail->toChars());
 		sendData(pEntry);
 		receiveResponse(pEntry);
     }
 
-    iterator = mBccRecipients->getIterator();
-    while(iterator->hasValue()) {
-        MailRecipient recipient = iterator->getValue();
+    toIterator = mBccRecipients->getIterator();
+    while(toIterator->hasValue()) {
+        MailRecipient recipient = toIterator->getValue();
         snprintf(mSendBuf, BuffSize, "RCPT TO:<%s>\r\n", recipient->mail->toChars());
 		sendData(pEntry);
 		receiveResponse(pEntry);
@@ -335,7 +368,7 @@ int _MailSender::connectRemoteServer() {
             for(unsigned int i=0; i<length; i++) {
                 if(ustrLogin[i]==94) ustrLogin[i]=0;
             }
-            std::string encoded_login = mBase64->encode(createString(ustrLogin, 0,length))->getStdString();
+            std::string encoded_login = mBase64->encode(createString((char *)ustrLogin, 0,length))->getStdString();
             delete[] ustrLogin;
             snprintf(mSendBuf, BuffSize, "AUTH PLAIN %s\r\n", encoded_login.c_str());
             sendData(pEntry);
@@ -367,7 +400,8 @@ int _MailSender::connectRemoteServer() {
             // if ustrPassword is longer than 64 bytes reset it to ustrPassword=MD5(ustrPassword)
             int passwordLength = mConnection->mPassword->size();
             if(passwordLength > 64){
-                MD5 md5password;
+                //MD5 md5password;
+                SmtpSimpleMd5 md5password;
                 md5password.update(ustrPassword, passwordLength);
                 md5password.finalize();
                 ustrPassword = md5password.raw_digest();
@@ -388,18 +422,20 @@ int _MailSender::connectRemoteServer() {
             }
 
             //perform inner MD5
-            MD5 md5pass1;
+            //MD5 md5pass1;
+            SmtpSimpleMd5 md5pass1;
             md5pass1.update(ipad, 64);
             md5pass1.update(ustrChallenge, decoded_challenge.size());
             md5pass1.finalize();
             unsigned char *ustrResult = md5pass1.raw_digest();
 
             //perform outer MD5
-            MD5 md5pass2;
+            //MD5 md5pass2;
+            SmtpSimpleMd5 md5pass2;
             md5pass2.update(opad, 64);
             md5pass2.update(ustrResult, 16);
             md5pass2.finalize();
-            decoded_challenge = md5pass2.hex_digest();
+            decoded_challenge = (char *)md5pass2.hex_digest();
 
             delete[] ustrChallenge;
             delete[] ustrPassword;
@@ -510,7 +546,8 @@ int _MailSender::connectRemoteServer() {
                 return -1;
             }
 
-            MD5 md5a1a;
+            //MD5 md5a1a;
+            SmtpSimpleMd5 md5a1a;
             md5a1a.update(ustrUsername, mConnection->mUsername->size());
             md5a1a.update((unsigned char*)":", 1);
             md5a1a.update(ustrRealm, realm.size());
@@ -519,7 +556,8 @@ int _MailSender::connectRemoteServer() {
             md5a1a.finalize();
             unsigned char *ua1 = md5a1a.raw_digest();
 
-            MD5 md5a1b;
+            //MD5 md5a1b;
+            SmtpSimpleMd5 md5a1b;
             md5a1b.update(ua1, 16);
             md5a1b.update((unsigned char*)":", 1);
             md5a1b.update(ustrNonce, nonce.size());
@@ -527,21 +565,23 @@ int _MailSender::connectRemoteServer() {
             md5a1b.update(ustrCNonce, strlen(cnonce));
             //authzid could be added here
             md5a1b.finalize();
-            char *a1 = md5a1b.hex_digest();
+            char *a1 = (char *)md5a1b.hex_digest();
             
-            MD5 md5a2;
+            //MD5 md5a2;
+            SmtpSimpleMd5 md5a2;
             md5a2.update((unsigned char*) "AUTHENTICATE:", 13);
             md5a2.update(ustrUri, uri.size());
             //authint and authconf add an additional line here	
             md5a2.finalize();
-            char *a2 = md5a2.hex_digest();
+            char *a2 = (char *)md5a2.hex_digest();
 
             delete[] ua1;
             ua1 = charToUnsignedChar(a1);
             unsigned char *ua2 = charToUnsignedChar(a2);
             
             //compute KD
-            MD5 md5;
+            //MD5 md5;
+            SmtpSimpleMd5 md5;
             md5.update(ua1, 32);
             md5.update((unsigned char*)":", 1);
             md5.update(ustrNonce, nonce.size());
@@ -554,7 +594,7 @@ int _MailSender::connectRemoteServer() {
             md5.update((unsigned char*)":", 1);
             md5.update(ua2, 32);
             md5.finalize();
-            decoded_challenge = md5.hex_digest();
+            decoded_challenge = (char *)md5.hex_digest();
 
             delete[] ustrRealm;
             delete[] ustrUsername;
@@ -671,7 +711,7 @@ int _MailSender::openSSLConnection() {
         }
 
         res = SSL_connect(mSSL);
-        switch(SSL_get_error(m_ssl, res)) {
+        switch(SSL_get_error(mSSL, res)) {
           case SSL_ERROR_NONE:
             FD_ZERO(&fdwrite);
             FD_ZERO(&fdread);
@@ -927,7 +967,7 @@ int _MailSender::sendData(SmtpCommandEntry* pEntry) {
 int _MailSender::receiveData(SmtpCommandEntry* pEntry) {
     if(mSSL != NULL) {
         receiveDataSSL(mSSL, pEntry);
-        return;
+        return 0;
     }
     int res = 0;
     fd_set fdread;
@@ -1069,7 +1109,7 @@ bool _MailSender::isKeywordSupported(const char* response, const char* keyword) 
     }
     int pos = 0;
     for(; pos < res_len - key_len + 1; ++pos) {
-        if(_strnicmp(keyword, response+pos, key_len) == 0) {
+        if(strncasecmp(keyword, response+pos, key_len) == 0) {
             if(pos > 0 &&
                 (response[pos - 1] == '-' ||
                  response[pos - 1] == ' ' ||
@@ -1234,8 +1274,7 @@ int _MailSender::formatHeader(char* header) {
 	// MIME-Version: <SP> 1.0 <CRLF>
 	strcat(header,"MIME-Version: 1.0\r\n");
 	if(mAttachments->size() != 0) { // no attachments
-		if(m_bHTML) strcat(header, "Content-Type: text/html; charset=\"");
-		else strcat(header, "Content-type: text/plain; charset=\"");
+		strcat(header, "Content-type: text/plain; charset=\"");
 		strcat(header, mCharSet->toChars());
 		strcat(header, "\"\r\n");
 		strcat(header,"Content-Transfer-Encoding: 7bit\r\n");
@@ -1249,8 +1288,7 @@ int _MailSender::formatHeader(char* header) {
 		strcat(mSendBuf,"--");
 		strcat(mSendBuf,Boundary->toChars());
 		strcat(mSendBuf,"\r\n");
-		if(m_bHTML) strcat(mSendBuf,"Content-type: text/html; charset=");
-		else strcat(mSendBuf,"Content-type: text/plain; charset=");
+		strcat(mSendBuf,"Content-type: text/plain; charset=");
 		strcat(header, mCharSet->toChars());
 		strcat(header, "\r\n");
 		strcat(mSendBuf,"Content-Transfer-Encoding: 7bit\r\n");
