@@ -33,6 +33,14 @@ ByteArray _Base64::encode(ByteArray buff) {
     return result;
 }
 
+ByteArray _Base64::encode(ByteArray buff,int length) {
+    int size = 0;
+    char *p = _encode((char *)buff->toValue(),length,false,&size);
+    ByteArray result = createByteArray((byte *)p,size);
+    free(p);
+    return result;
+}
+
 ByteArray _Base64::decode(ByteArray buff) {
     int length = 0;
     char *p = _decode((char *)buff->toValue(),buff->size(),false,&length);

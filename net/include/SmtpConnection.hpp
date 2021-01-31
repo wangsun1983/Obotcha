@@ -12,6 +12,8 @@ class _SmtpConnection;
 
 DECLARE_SIMPLE_CLASS(MailRecipient) {
 public:
+    _MailRecipient();
+    _MailRecipient(String,String);
     String name;
     String mail;
 };

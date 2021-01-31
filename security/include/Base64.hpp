@@ -21,6 +21,8 @@ public:
     
     ByteArray encode(ByteArray buff);
 
+    ByteArray encode(ByteArray buff,int);
+
     ByteArray decode(ByteArray buff);
 
     ByteArray encode(File f);

@@ -76,6 +76,7 @@ DECLARE_SIMPLE_CLASS(MailSender) {
 public:
     friend class _MailSenderBuilder;
     _MailSender();
+    ~_MailSender();
 
     int send();
 
@@ -182,6 +183,7 @@ private:
 	SSL*  mSSL;
 
     int connectRemoteServer();
+    int disconnectRemoteServer();
 
     int initOpenSSL();
     int openSSLConnection();

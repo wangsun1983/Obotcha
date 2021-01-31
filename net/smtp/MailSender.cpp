@@ -11,6 +11,7 @@
 #include <string>
 #include <stdio.h>
 
+#include "FileInputStream.hpp"
 #include "MailSender.hpp"
 #include "Error.hpp"
 #include "SSLInfo.hpp"
@@ -74,58 +75,72 @@ _MailSenderBuilder::_MailSenderBuilder() {
 
 sp<_MailSenderBuilder> _MailSenderBuilder::addRecipient(MailRecipient value) {
     mSender->mRecipients->add(value);
+    return AutoClone(this);
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::addRecipients(ArrayList<MailRecipient> value) {
     mSender->mRecipients->add(value);
+    return AutoClone(this);
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::addCcRecipient(MailRecipient value) {
     mSender->mCcRecipients->add(value);
+    return AutoClone(this);
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::addCcRecipients(ArrayList<MailRecipient> value) {
     mSender->mCcRecipients->add(value);
+    return AutoClone(this);
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::addBccRecipient(MailRecipient value) {
     mSender->mBccRecipients->add(value);
+    return AutoClone(this);
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::addBccRecipients(ArrayList<MailRecipient> value) {
     mSender->mBccRecipients->add(value);
+    return AutoClone(this);
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::addAttachment(File f) {
     mSender->mAttachments->add(f);
+    return AutoClone(this);
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::addAttachments(ArrayList<File> files) {
     mSender->mAttachments->add(files);
+    return AutoClone(this);
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::setMessage(String msg) {
     mSender->mMsgBody = msg;
+    return AutoClone(this);
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::setConnection(SmtpConnection c) {
     mSender->mConnection = c;
+    return AutoClone(this);
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::setReplyTo(String replyto) {
     mSender->mReplyTo = replyto;
+    return AutoClone(this);
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::setPriority(int priority) {
     mSender->mPriority = priority;
+    return AutoClone(this);
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::setSubject(String subject) {
-    mSender->mSubject = subject; 
+    mSender->mSubject = subject;
+    return AutoClone(this);
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::setCharSet(String charset) {
     mSender->mCharSet = charset; 
+    return AutoClone(this);
 }
 
 sp<_MailSender> _MailSenderBuilder::build() {
@@ -162,15 +177,21 @@ _MailSender::_MailSender() {
     mCharSet = createString("utf-8");
 }
 
+_MailSender::~_MailSender() {
+    disconnectRemoteServer();
+}
+
 int _MailSender::send() {
     char *FileBuf = NULL;
 	FILE* hFile = NULL;
     int res = 0;
-
-    if(!connectRemoteServer() != 0) {
+    std::string fileName;
+    std::string encodedFileName;
+    printf("send trace1 \n");
+    if(connectRemoteServer() != 0) {
         return -1;
     }
-
+    printf("send trace1_1 \n");
     FileBuf = new char[55];
 
     unsigned long int totalsize = 0;
@@ -180,10 +201,11 @@ int _MailSender::send() {
         File file = iterator->getValue();
         totalsize += file->length();
     }
+    printf("send trace2 \n");
     if(totalsize > MaxAttachmentSize) {
         return -1;
     }
-
+    printf("send trace3 \n");
     // ***** SENDING E-MAIL *****
     SmtpCommandEntry* pEntry;
     // MAIL <SP> FROM:<reverse-path> <CRLF>
@@ -193,7 +215,7 @@ int _MailSender::send() {
 		sendData(pEntry);
 		receiveResponse(pEntry);
     }
-
+    printf("send trace4 \n");
     // RCPT <SP> TO:<forward-path> <CRLF>
     pEntry = getCommandEntry(CommandRCPTTO);
     ListIterator<MailRecipient> toIterator = mRecipients->getIterator();
@@ -203,7 +225,7 @@ int _MailSender::send() {
 		sendData(pEntry);
 		receiveResponse(pEntry);
     }
-
+    printf("send trace5 \n");
     toIterator = mCcRecipients->getIterator();
     while(toIterator->hasValue()) {
         MailRecipient recipient = toIterator->getValue();
@@ -211,7 +233,7 @@ int _MailSender::send() {
 		sendData(pEntry);
 		receiveResponse(pEntry);
     }
-
+    printf("send trace6 \n");
     toIterator = mBccRecipients->getIterator();
     while(toIterator->hasValue()) {
         MailRecipient recipient = toIterator->getValue();
@@ -219,13 +241,13 @@ int _MailSender::send() {
 		sendData(pEntry);
 		receiveResponse(pEntry);
     }
-
+    printf("send trace7 \n");
     pEntry = getCommandEntry(CommandDATA);
     // DATA <CRLF>
     snprintf(mSendBuf, BuffSize, "DATA\r\n");
     sendData(pEntry);
     receiveResponse(pEntry);
-    
+    printf("send trace8 \n");
     pEntry = getCommandEntry(CommandDATABLOCK);
     // send header(s)
     formatHeader(mSendBuf);
@@ -235,18 +257,66 @@ int _MailSender::send() {
     } else {
         snprintf(mSendBuf, BuffSize, "%s\r\n",mMsgBody->toChars());
     }
-
+    printf("send trace9 \n");
     // next goes attachments (if they are)
     ListIterator<File> attachIterator = mAttachments->getIterator();
     while(attachIterator->hasValue()) {
-        
+        File file = attachIterator->getValue();
+        encodedFileName = "=?UTF-8?B?";
+        encodedFileName += mBase64->encode(file->getName())->getStdString();
+        encodedFileName += "?=";
+
+        snprintf(mSendBuf, BuffSize, "--%s\r\n", Boundary->toChars());
+        strcat(mSendBuf, "Content-Type: application/x-msdownload; name=\"");
+        strcat(mSendBuf, encodedFileName.c_str());
+        strcat(mSendBuf, "\"\r\n");
+        strcat(mSendBuf, "Content-Transfer-Encoding: base64\r\n");
+        strcat(mSendBuf, "Content-Disposition: attachment; filename=\"");
+        strcat(mSendBuf, encodedFileName.c_str());
+        strcat(mSendBuf, "\"\r\n");
+        strcat(mSendBuf, "\r\n");
+
+        sendData(pEntry);
+
+        // opening the file:
+        FileInputStream stream = createFileInputStream(file);
+        stream->open();
+        unsigned long int MsgPart = 0;
+        long filesize = file->length();
+        int index = 0;
+        ByteArray readBuff = createByteArray(55);
+        for(unsigned int i = 0;i<filesize/54+1;i++) {
+            long length = stream->read(readBuff);
+            MsgPart ? strcat(mSendBuf,(const char *)mBase64->encode(readBuff,res)->toValue())
+                        : strcpy(mSendBuf,(const char *)mBase64->encode(readBuff,res)->toValue());
+            strcat(mSendBuf,"\r\n");
+            MsgPart += res + 2;
+            if(MsgPart >= BuffSize/2) { // sending part of the message
+                MsgPart = 0;
+                sendData(pEntry); // FileBuf, FileName, fclose(hFile);
+            }
+        }
+        if(MsgPart) {
+            sendData(pEntry); // FileBuf, FileName, fclose(hFile);
+        }
+        stream->close();
     }
-    
+    printf("send trace10 \n");
+    if(mAttachments->size()) {
+		snprintf(mSendBuf, BuffSize, "\r\n--%s--\r\n",Boundary->toChars());
+		sendData(pEntry);
+	}
+    printf("send trace11 \n");
+    pEntry = getCommandEntry(CommandDATAEND);
+    // <CRLF> . <CRLF>
+    snprintf(mSendBuf, BuffSize, "\r\n.\r\n");
+    sendData(pEntry);
+    receiveResponse(pEntry);
 }
 
 int _MailSender::connectRemoteServer() {
     int res = 0;
-
+    printf("connectRemoteServer trace1 \n");
     if((mConnection->mSocket = socket(PF_INET, SOCK_STREAM,0)) < 0) {
         return -OpenFail;
     }
@@ -267,7 +337,7 @@ int _MailSender::connectRemoteServer() {
             return -OpenFail;
         }
     }
-
+    printf("connectRemoteServer trace2 \n");
     unsigned long ul = 1;
     if(ioctl(mConnection->mSocket,FIONBIO, (unsigned long*)&ul) == -1) {
         close(mConnection->mSocket);
@@ -283,7 +353,7 @@ int _MailSender::connectRemoteServer() {
         //TODO
         return true;
     }
-
+    printf("connectRemoteServer trace3 \n");
     fd_set fdwrite;
     fd_set fdexcept;
     while(true) {
@@ -296,7 +366,7 @@ int _MailSender::connectRemoteServer() {
         timeval timeout;
         timeout.tv_sec = WaitConnectTimeout/1000;
         timeout.tv_usec = (WaitConnectTimeout%1000)*1000;
-
+        printf("connectRemoteServer trace4 \n");
         if((res = select(mConnection->mSocket + 1,NULL,&fdwrite,&fdexcept,&timeout)) == -1) {
             close(mConnection->mSocket);
             return -OpenFail;
@@ -306,7 +376,7 @@ int _MailSender::connectRemoteServer() {
             close(mConnection->mSocket);
             return -OpenFail;
         }
-
+        printf("connectRemoteServer trace5 \n");
         if(res && FD_ISSET(mConnection->mSocket,&fdwrite)) {
             break;
         }
@@ -315,7 +385,7 @@ int _MailSender::connectRemoteServer() {
             close(mConnection->mSocket);
         }
     }//while
-
+    printf("connectRemoteServer trace6 \n");
     FD_CLR(mConnection->mSocket,&fdwrite);
     FD_CLR(mConnection->mSocket,&fdexcept);
 
@@ -325,7 +395,7 @@ int _MailSender::connectRemoteServer() {
             openSSLConnection();
         }
     }
-
+    printf("connectRemoteServer trace7 \n");
     SmtpCommandEntry* pEntry = getCommandEntry(CommandINIT);
     receiveResponse(pEntry);
 
@@ -335,16 +405,19 @@ int _MailSender::connectRemoteServer() {
         startTLS();
         sayHello();
     }
-
+    printf("connectRemoteServer trace8£¬mRecvBuf is %s \n",mRecvBuf);
     if(mConnection->mAuthenticate && isKeywordSupported(mRecvBuf, "AUTH") == true) {
         if(isKeywordSupported(mRecvBuf, "LOGIN") == true) {
+            printf("connectRemoteServer trace8 login 1 \n");
             pEntry = getCommandEntry(CommandAUTHLOGIN);
             snprintf(mSendBuf, BuffSize, "AUTH LOGIN\r\n");
             sendData(pEntry);
             receiveResponse(pEntry);
+            printf("connectRemoteServer trace8 login 2 \n");
 
             // send login:
             std::string encoded_login = mBase64->encode(mConnection->mUsername)->getStdString();
+            printf("connectRemoteServer trace8 login encoded_login is %s 4 \n",encoded_login.c_str());
             pEntry = getCommandEntry(CommandUSER);
             snprintf(mSendBuf, BuffSize, "%s\r\n",encoded_login.c_str());
             sendData(pEntry);
@@ -352,10 +425,12 @@ int _MailSender::connectRemoteServer() {
             
             // send password:
             std::string encoded_password = mBase64->encode(mConnection->mPassword)->getStdString();
+            printf("connectRemoteServer trace8 login encoded_password is %s 5 \n",encoded_password.c_str());
             pEntry = getCommandEntry(CommandPASSWORD);
             snprintf(mSendBuf, BuffSize, "%s\r\n",encoded_password.c_str());
             sendData(pEntry);
             receiveResponse(pEntry);
+            printf("connectRemoteServer trace9 \n");
 		} else if(isKeywordSupported(mRecvBuf, "PLAIN") == true) {
             pEntry = getCommandEntry(CommandAUTHPLAIN);
             snprintf(mSendBuf, BuffSize, "%s^%s^%s", 
@@ -373,6 +448,7 @@ int _MailSender::connectRemoteServer() {
             snprintf(mSendBuf, BuffSize, "AUTH PLAIN %s\r\n", encoded_login.c_str());
             sendData(pEntry);
             receiveResponse(pEntry);
+            printf("connectRemoteServer trace10 \n");
         } else if(isKeywordSupported(mRecvBuf, "CRAM-MD5") == true) {
             pEntry = getCommandEntry(CommandAUTHCRAMMD5);
             snprintf(mSendBuf, BuffSize, "AUTH CRAM-MD5\r\n");
@@ -395,6 +471,7 @@ int _MailSender::connectRemoteServer() {
             unsigned char *ustrChallenge = charToUnsignedChar(decoded_challenge.c_str());
             unsigned char *ustrPassword = charToUnsignedChar(mConnection->mPassword->toChars());
             if(!ustrChallenge || !ustrPassword) {
+                printf("connectRemoteServer trace11 \n");
                 return-1;
             }
             // if ustrPassword is longer than 64 bytes reset it to ustrPassword=MD5(ustrPassword)
@@ -447,7 +524,9 @@ int _MailSender::connectRemoteServer() {
             pEntry = getCommandEntry(CommandPASSWORD);
             sendData(pEntry);
             receiveResponse(pEntry);
+            printf("connectRemoteServer trace12 \n");
         } else if(isKeywordSupported(mRecvBuf, "DIGEST-MD5") == true) {
+            printf("connectRemoteServer trace13 \n");
             pEntry = getCommandEntry(CommandDIGESTMD5);
             snprintf(mSendBuf, BuffSize, "AUTH DIGEST-MD5\r\n");
             sendData(pEntry);
@@ -644,10 +723,23 @@ int _MailSender::connectRemoteServer() {
             pEntry = getCommandEntry(CommandPASSWORD);
             sendData(pEntry);
             receiveResponse(pEntry);
+            printf("connectRemoteServer trace14 \n");
         }
     }
     //TODO
+    printf("connectRemoteServer trace15 \n");
     return 0;
+}
+
+int _MailSender::disconnectRemoteServer() {
+    if(mConnected) {
+        sayQuit();
+    }
+	if(mConnection->mSocket >= 0)
+	{
+		close(mConnection->mSocket);
+        mConnection->mSocket = -1;
+	}
 }
 
 int _MailSender::initOpenSSL() {
@@ -1099,6 +1191,7 @@ unsigned char* _MailSender::charToUnsignedChar(const char *strIn) {
 }
 
 bool _MailSender::isKeywordSupported(const char* response, const char* keyword) {
+    printf("isKeywordSupported start keyword is %s \n",keyword);
     if(response == NULL || keyword == NULL) {
         return false;
     }
@@ -1107,6 +1200,7 @@ bool _MailSender::isKeywordSupported(const char* response, const char* keyword) 
     if(res_len < key_len) {
         return false;
     }
+    printf("isKeywordSupported trace1 keyword is %s \n",keyword);
     int pos = 0;
     for(; pos < res_len - key_len + 1; ++pos) {
         if(strncasecmp(keyword, response+pos, key_len) == 0) {
@@ -1117,10 +1211,12 @@ bool _MailSender::isKeywordSupported(const char* response, const char* keyword) 
                 if(pos+key_len < res_len) {
                     if(response[pos+key_len] == ' ' ||
                        response[pos+key_len] == '=') {
+                        printf("isKeywordSupported trace1_1 keyword is %s \n",keyword);
                         return true;
                     } else if(pos+key_len+1 < res_len) {
                         if(response[pos+key_len] == '\r' &&
                            response[pos+key_len+1] == '\n') {
+                            printf("isKeywordSupported trace1_2 keyword is %s \n",keyword);
                             return true;
                         }
                     }
@@ -1128,6 +1224,7 @@ bool _MailSender::isKeywordSupported(const char* response, const char* keyword) 
             }
         }
     }
+    printf("isKeywordSupported trace2 keyword is %s \n",keyword);
     return false;
 }
 
