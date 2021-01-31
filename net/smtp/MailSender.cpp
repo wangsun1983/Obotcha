@@ -175,6 +175,7 @@ _MailSender::_MailSender() {
 
     mBase64 = createBase64();
     mCharSet = createString("utf-8");
+    mMsgBody = nullptr;
 }
 
 _MailSender::~_MailSender() {
@@ -209,7 +210,7 @@ int _MailSender::send() {
     // ***** SENDING E-MAIL *****
     SmtpCommandEntry* pEntry;
     // MAIL <SP> FROM:<reverse-path> <CRLF>
-	if(mConnection->mMailFrom == nullptr ||mConnection->mMailFrom->size() == 0) {
+	if(mConnection->mMailFrom != nullptr) {
         pEntry = getCommandEntry(CommandMAILFROM);
 		snprintf(mSendBuf, BuffSize, "MAIL FROM:<%s>\r\n", mConnection->mMailFrom->toChars());
 		sendData(pEntry);
@@ -224,6 +225,7 @@ int _MailSender::send() {
         snprintf(mSendBuf, BuffSize, "RCPT TO:<%s>\r\n", recipient->mail->toChars());
 		sendData(pEntry);
 		receiveResponse(pEntry);
+        toIterator->next();
     }
     printf("send trace5 \n");
     toIterator = mCcRecipients->getIterator();
@@ -232,6 +234,7 @@ int _MailSender::send() {
         snprintf(mSendBuf, BuffSize, "RCPT TO:<%s>\r\n", recipient->mail->toChars());
 		sendData(pEntry);
 		receiveResponse(pEntry);
+        toIterator->next();
     }
     printf("send trace6 \n");
     toIterator = mBccRecipients->getIterator();
@@ -240,6 +243,7 @@ int _MailSender::send() {
         snprintf(mSendBuf, BuffSize, "RCPT TO:<%s>\r\n", recipient->mail->toChars());
 		sendData(pEntry);
 		receiveResponse(pEntry);
+        toIterator->next();
     }
     printf("send trace7 \n");
     pEntry = getCommandEntry(CommandDATA);
@@ -252,11 +256,12 @@ int _MailSender::send() {
     // send header(s)
     formatHeader(mSendBuf);
     sendData(pEntry);
-    if(mMsgBody == nullptr || mMsgBody->size() != 0) {
+    if(mMsgBody == nullptr) {
         snprintf(mSendBuf, BuffSize, "%s\r\n"," ");
     } else {
         snprintf(mSendBuf, BuffSize, "%s\r\n",mMsgBody->toChars());
     }
+    sendData(pEntry);
     printf("send trace9 \n");
     // next goes attachments (if they are)
     ListIterator<File> attachIterator = mAttachments->getIterator();
@@ -300,6 +305,7 @@ int _MailSender::send() {
             sendData(pEntry); // FileBuf, FileName, fclose(hFile);
         }
         stream->close();
+        attachIterator->next();
     }
     printf("send trace10 \n");
     if(mAttachments->size()) {
@@ -417,6 +423,7 @@ int _MailSender::connectRemoteServer() {
 
             // send login:
             std::string encoded_login = mBase64->encode(mConnection->mUsername)->getStdString();
+            printf("connectRemoteServer trace8 encoded_login is %s 4_1 \n",mConnection->mUsername->toChars());
             printf("connectRemoteServer trace8 login encoded_login is %s 4 \n",encoded_login.c_str());
             pEntry = getCommandEntry(CommandUSER);
             snprintf(mSendBuf, BuffSize, "%s\r\n",encoded_login.c_str());
@@ -425,6 +432,7 @@ int _MailSender::connectRemoteServer() {
             
             // send password:
             std::string encoded_password = mBase64->encode(mConnection->mPassword)->getStdString();
+            printf("connectRemoteServer trace8 login password is %s 5_1 \n",mConnection->mPassword->toChars());
             printf("connectRemoteServer trace8 login encoded_password is %s 5 \n",encoded_password.c_str());
             pEntry = getCommandEntry(CommandPASSWORD);
             snprintf(mSendBuf, BuffSize, "%s\r\n",encoded_password.c_str());
@@ -1359,11 +1367,11 @@ int _MailSender::formatHeader(char* header) {
 	//}
 
 	// Subject: <SP> <subject-text> <CRLF>
-	if(mSubject == nullptr || mSubject->size() == 0) {
-		strcat(header, "Subject:  ");
+	if(mSubject != nullptr) {
+		strcat(header, "Subject: ");
+        strcat(header, mSubject->toChars());
     } else {
-	  strcat(header, "Subject: ");
-	  strcat(header, mSubject->toChars());
+	    strcat(header, "Subject: ");
 	}
 
 	strcat(header, "\r\n");

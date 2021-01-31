@@ -83,7 +83,7 @@ char * _Base64::_encode(const char * input, int length, bool with_new_line,int *
     
     int encodeLength = bptr->length;  //strlen(bptr->data) + 1;
 
-    char * buff = (char *)malloc(encodeLength);
+    char * buff = (char *)malloc(encodeLength+1);
     memset(buff,0,encodeLength);
     memcpy(buff, bptr->data, encodeLength);
     
