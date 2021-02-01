@@ -16,6 +16,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpentity.o \
 		$(outtmp)/httpversion.o \
 		$(outtmp)/httpcontenttype.o \
+		$(outtmp)/httpcontenttypetool.o \
 		$(outtmp)/httpurlbuilder.o \
 		$(outtmp)/httpresponse.o \
 		$(outtmp)/httpclient.o \
@@ -121,6 +122,9 @@ $(outtmp)/httpentity.o :$(netDir)/http/HttpEntity.cpp
 
 $(outtmp)/httpcontenttype.o :$(netDir)/http/HttpContentType.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpContentType.cpp -o $(outtmp)/httpcontenttype.o $(external)
+
+$(outtmp)/httpcontenttypetool.o :$(netDir)/http/HttpContentTypeTool.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpContentTypeTool.cpp -o $(outtmp)/httpcontenttypetool.o $(external)
 
 $(outtmp)/httpurlbuilder.o :$(netDir)/http/HttpUrlBuilder.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlBuilder.cpp -o $(outtmp)/httpurlbuilder.o $(external)
