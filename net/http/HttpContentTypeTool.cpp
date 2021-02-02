@@ -19,8 +19,6 @@ namespace obotcha {
 Mutex _HttpContentTypeTool::mMutex = createMutex();
 sp<_HttpContentTypeTool> _HttpContentTypeTool::mInstance = nullptr;
 
-
-
 sp<_HttpContentTypeTool> _HttpContentTypeTool::getInstance() {
     if(mInstance != nullptr) {
         return mInstance;
@@ -37,18 +35,115 @@ sp<_HttpContentTypeTool> _HttpContentTypeTool::getInstance() {
     
 }
 
-String _HttpContentTypeTool::toType(File) {
 
-}
-
-String _HttpContentTypeTool::toType(String) {
-
-
+int _HttpContentTypeTool::typeToInt(String v) {
+    String suffix = v->toLowerCase();
+    return searchNode(mContentTypeNode,suffix->toChars(),suffix->size());
 }
 
 int _HttpContentTypeTool::suffixToInt(String v) {
     String suffix = v->toLowerCase();
     return searchNode(mSuffixRootNode,suffix->toChars(),suffix->size());
+}
+
+String _HttpContentTypeTool::suffixToType(String v) {
+    int id = suffixToInt(v);
+    return intToType(id);
+}
+
+String _HttpContentTypeTool::intToType(int id) {
+
+#define CASE_SWITCH(X,Y) case st(HttpContentType)::Y:\
+return st(HttpContentType)::X;
+
+    switch(id) {
+        CASE_SWITCH(TextHtml,TypeTextHtml);
+        CASE_SWITCH(TextCss,TypeTextCss);
+        CASE_SWITCH(TextXml,TypeTextXml);
+        CASE_SWITCH(ImageGif,TypeImageGif);
+        CASE_SWITCH(ImageJpeg,TypeImageJpeg);
+        CASE_SWITCH(ApplicationJs,TypeApplicationJs);
+        CASE_SWITCH(ApplicationAtomXml,TypeApplicationAtomXml);
+        CASE_SWITCH(ApplicationRss,TypeApplicationRss);
+        CASE_SWITCH(TextMathml,TypeMathml);
+        CASE_SWITCH(TextPlain,TypeTextPlain);
+        CASE_SWITCH(TextVndSunJ2meAppDes,TypeTextVndSunJ2meAppDes);
+        CASE_SWITCH(TextVndWapWml,TypeVndWapWml);
+        CASE_SWITCH(TextXComponent,TypeXComponent);
+        CASE_SWITCH(ImagePng,TypeImagePng);
+        CASE_SWITCH(ImageSvgXml,TypeImageSvgXml);
+        CASE_SWITCH(ImageTiff,TypeImageTiff);
+        CASE_SWITCH(ImageVndWapWbmp,TypeImageVndWapWbmp);
+        CASE_SWITCH(ImageWebp,TypeImageWebp);
+        CASE_SWITCH(ImageXIcon,TypeImageXIcon);
+        CASE_SWITCH(ImageXMsBmp,TypeImageXMsBmp);
+        CASE_SWITCH(ApplicationFontWoff,TypeApplicationFontWoff);
+        CASE_SWITCH(ApplicationJavaArchive,TypeApplicationJavaArchive);
+        CASE_SWITCH(ApplicationJson,TypeApplicationJson);
+        CASE_SWITCH(ApplicationMaxBinhex40,TypeApplicationMaxBinhex40);
+        CASE_SWITCH(ApplicationMsword,TypeApplicationMsword);
+        CASE_SWITCH(ApplicationPdf,TypeApplicationPdf);
+        CASE_SWITCH(ApplicationPostScript,TypeApplicationPostScript);
+        CASE_SWITCH(ApplicationRtf,TypeApplicationRtf);
+        CASE_SWITCH(ApplicationVndAppleMpegurl,TypeApplicationVndAppleMpegurl);
+        CASE_SWITCH(ApplicationVndGoogleEarthKmlXml,TypeApplicationVndGoogleEarthKmlXml);
+        CASE_SWITCH(ApplicationVndGoogleEarthKmz,TypeApplicationVndGoogleEarthKmz);
+        CASE_SWITCH(ApplicationVndMsExcel,TypeApplicationVndMsExcel);
+        CASE_SWITCH(ApplicationVndMsFontObject,TypeApplicationVndMsFontObject);
+        CASE_SWITCH(ApplicationVndMsPpt,TypeApplicationVndMsPpt);
+        CASE_SWITCH(ApplicationVndOasisOpendocGraphics,TypeApplicationVndOasisOpendocGraphics);
+        CASE_SWITCH(ApplicationVndOasisOpendocPresentation,TypeApplicationVndOasisOpendocPresentation);
+        CASE_SWITCH(ApplicationVndOasisOpendocSpreadsheet,TypeApplicationVndOasisOpendocSpreadsheet);
+        CASE_SWITCH(ApplicationVndOasisOpendocText,TypeApplicationVndOasisOpendocText);
+        CASE_SWITCH(ApplicationVndOpenxmlPresentation,TypeApplicationVndOpenxmlPresentation);
+        CASE_SWITCH(ApplicationVndOpenXmlSheet,TypeApplicationVndOpenXmlSheet);
+        CASE_SWITCH(ApplicationVndOepnXmlDoc,TypeApplicationVndOepnXmlDoc);
+        CASE_SWITCH(ApplicationVndWapWmls,TypeApplicationVndWapWmls);
+        CASE_SWITCH(Application7z,TypeApplication7z);
+        CASE_SWITCH(ApplicationXCocoa,TypeApplicationXCocoa);
+        CASE_SWITCH(ApplicationXJavaArch,TypeApplicationXJavaArch);
+        CASE_SWITCH(ApplicationXJavaJnlpFile,TypeApplicationXJavaJnlpFile);
+        CASE_SWITCH(ApplicationXMakeself,TypeApplicationXMakeself);
+        CASE_SWITCH(ApplicationXPerl,TypeApplicationXPerl);
+        CASE_SWITCH(ApplicationXPilot,TypeApplicationXPilot);
+        CASE_SWITCH(ApplicationXRarCompressed,TypeApplicationXRarCompressed);
+        CASE_SWITCH(ApplicationXReadhatPkgManager,TypeApplicationXReadhatPkgManager);
+        CASE_SWITCH(ApplicationXSea,TypeApplicationXSea);
+        CASE_SWITCH(ApplicationXShockwaveFlash,TypeApplicationXShockwaveFlash);
+        CASE_SWITCH(ApplicationXStuffit,TypeApplicationXStuffit);
+        CASE_SWITCH(ApplicationXTcl,TypeApplicationXTcl);
+        CASE_SWITCH(ApplicationXX509CaCert,TypeApplicationXX509CaCert);
+        CASE_SWITCH(ApplicationXXpinstall,TypeApplicationXXpinstall);
+        CASE_SWITCH(ApplicationXhtmlXml,TypeApplicationXhtmXml);
+        CASE_SWITCH(ApplicationXspfXml,TypeApplicationXspfXml);
+        CASE_SWITCH(ApplicationZip,TypeApplicationZip);
+        CASE_SWITCH(ApplicationOctetStream,TypeApplicationOctetStream);
+        CASE_SWITCH(AudioMidi,TypeAudioMidi);
+        CASE_SWITCH(AudioMpeg,TypeAudioMpeg);
+        CASE_SWITCH(AudioOgg,TypeAudioOgg);
+        CASE_SWITCH(AudioXM4a,TypeAudioXM4a);
+        CASE_SWITCH(AudioXRealAudio,TypeAudioXRealAudio);
+        CASE_SWITCH(Video3Gpp,TypeVideo3Gpp);
+        CASE_SWITCH(VideoMp2t,TypeVideoMp2t);
+        CASE_SWITCH(VideoMp4,TypeVideoMp4);
+        CASE_SWITCH(VideoMpeg,TypeVideoMpeg);
+        CASE_SWITCH(VidoQuicktime,TypeVidoQuicktime);
+        CASE_SWITCH(VideoWebm,TypeVideoWebm);
+        CASE_SWITCH(VideoXflv,TypeVideoXflv);
+        CASE_SWITCH(VideoXM4v,TypeVideoXM4v);
+        CASE_SWITCH(VideoXMng,TypeVideoXMng);
+        CASE_SWITCH(VideoXMsAsf,TypeVideoXMsAsf);
+        CASE_SWITCH(VideoXMsWmv,TypeVideoXMsWmv);
+        CASE_SWITCH(VideoXMsVideo,TypeVideoXMsVideo);
+        CASE_SWITCH(MultiPartFormData,TypeMultiPartFormData);
+        CASE_SWITCH(XFormUrlEncoded,TypeXFormUrlEncoded);
+        
+        default:
+        return nullptr;
+    }
+
+#undef CASE_SWITCH
+    return nullptr;
 }
 
 void _HttpContentTypeTool::addNode(FileTypeSearchNode *root,const char *content,int size,int type) {
@@ -84,11 +179,8 @@ int _HttpContentTypeTool::searchNode(FileTypeSearchNode *root,const char *conten
     }
 }
 
-
-
 _HttpContentTypeTool::_HttpContentTypeTool() {
 
-//#define CONTENT(X) st(HttpContentType)::X->toChars(), st(HttpContentType)::X->size()
     mSuffixRootNode = new FileTypeSearchNode();
     mContentTypeNode = new FileTypeSearchNode();
 

@@ -34,6 +34,9 @@ public:
     String toType(File);
     String toType(String);
     int suffixToInt(String);
+    int typeToInt(String);
+    String intToType(int);
+    String suffixToType(String);
 
 private:
     _HttpContentTypeTool();
