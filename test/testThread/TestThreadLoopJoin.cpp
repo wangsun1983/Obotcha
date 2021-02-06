@@ -71,9 +71,9 @@ int testThreadLoopJoin() {
       }
   }
   printf("trace6 \n");
-  for(int i = 0;i<1024*8;i++) {
-      list2->get(i)->quit();
-  }
+  //for(int i = 0;i<1024*8;i++) {
+  //    list2->get(i)->quit();
+  //}
   printf("trace7 \n");
   list2->clear();
 

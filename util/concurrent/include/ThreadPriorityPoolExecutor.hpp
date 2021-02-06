@@ -22,7 +22,7 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(PriorityTask) EXTENDS(FutureTask) {
 public:
-    _PriorityTask(int,Runnable,FutureTaskStatusListener);
+    _PriorityTask(int,Runnable);
 
     int priority;
 };
@@ -40,12 +40,6 @@ public:
     
     void run();
     
-    void onInterrupt();
-
-    void stop();
-
-    bool shutdownTask(FutureTask task);
-
     ~_PriorityPoolThread();
 
 
@@ -61,8 +55,7 @@ private:
     PriorityTask getTask();
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) IMPLEMENTS(ExecutorService)
-                                           IMPLEMENTS(FutureTaskStatusListener) {
+DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) IMPLEMENTS(ExecutorService) {
 
 public:
     friend class _PriorityPoolThread;

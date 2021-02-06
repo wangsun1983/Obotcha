@@ -83,7 +83,6 @@ void _FileWatcher::release() {
     AutoLock l(mutex);
     mListeners->clear();
     close(notifyFd);
-    quit();
 }
 
 void _FileWatcher::run() {
@@ -93,9 +92,7 @@ void _FileWatcher::run() {
 
     while (1) {
         int event_pos = 0;
-        printf("abc trace1 \n");
         int num_bytes = read(notifyFd, event_buf, sizeof(event_buf));
-        printf("abc trace2 \n");
         if (num_bytes < (int)sizeof(*event)) {
             if (errno == EINTR)
                 continue;
@@ -103,7 +100,6 @@ void _FileWatcher::run() {
             LOG(ERROR)<<"***** ERROR! got a short event!";
             return;
         }
-        printf("abc trace3 \n");
         while (num_bytes >= (int)sizeof(*event)) {
             int event_size;
             event = (struct inotify_event *)(event_buf + event_pos);

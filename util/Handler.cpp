@@ -174,7 +174,6 @@ int _Handler::postDelayed(Runnable r ,long delay) {
 void _Handler::destroy() {
     mStatus->set(StatusDestroy);
     mCondition->notify();
-    quit();
 }
 
 bool _Handler::isRunning() {

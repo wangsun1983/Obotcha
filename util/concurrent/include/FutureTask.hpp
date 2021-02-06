@@ -10,18 +10,11 @@ namespace obotcha {
 class _FutureTask;
 class _PriorityTaskManager;
 
-DECLARE_SIMPLE_CLASS(FutureTaskStatusListener) {
-public:    
-    virtual void onCancel(sp<_FutureTask>) = 0;
-};
-
 DECLARE_SIMPLE_CLASS(FutureTask) {
 public:
     friend class _PriorityTaskManager;
 
-    _FutureTask(Runnable);//remove soon
-
-    _FutureTask(Runnable,FutureTaskStatusListener);
+    _FutureTask(Runnable);
 
     ~_FutureTask();
 
@@ -46,8 +39,6 @@ public:
         return v;
     }
 
-    void onShutDown();
-
 private:
 
     Runnable mRunnable;
@@ -57,8 +48,6 @@ private:
     Mutex mCompleteMutex;
 
     Condition mCompleteCond;
-
-    FutureTaskStatusListener mListener; 
 };
 
 }

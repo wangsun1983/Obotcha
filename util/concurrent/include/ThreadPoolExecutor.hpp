@@ -30,21 +30,14 @@ public:
 
     void run();
 
-    void onInterrupt();
-
-    bool shutdownTask(FutureTask);
-
     ~_ThreadPoolExecutorHandler();
 
 private:
     BlockingQueue<FutureTask> mPool;
-
-    FutureTask mCurrentTask;
 };
 
 
-DECLARE_SIMPLE_CLASS(ThreadPoolExecutor) IMPLEMENTS(ExecutorService) 
-                                         IMPLEMENTS(FutureTaskStatusListener) {
+DECLARE_SIMPLE_CLASS(ThreadPoolExecutor) IMPLEMENTS(ExecutorService) {
 
 public:
 
@@ -86,8 +79,6 @@ private:
     };
 
     static const int DefaultThreadNum;
-
-    void onCancel(FutureTask);
 
     BlockingQueue<FutureTask> mPool;
     

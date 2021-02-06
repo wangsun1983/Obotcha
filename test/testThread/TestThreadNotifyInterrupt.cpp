@@ -47,7 +47,7 @@ int testThreadNotifyInterruptCase() {
         MyNotifyTest1Thread thread = createMyNotifyTest1Thread();
         thread->start();
         sleep(1);
-        thread->quit();
+        //thread->quit();
         sleep(1);
         if(notifyint != 2) {
             printf("---[Thread Test {Interrupt()} special case1] [FAILED]--- \n");

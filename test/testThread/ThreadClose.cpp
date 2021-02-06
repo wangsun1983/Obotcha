@@ -32,7 +32,7 @@ public:
     void run() {
         sleep(5);
         //printf("i will kill \n");
-        mTh->quit();
+        //mTh->quit();
     }
 
 private:

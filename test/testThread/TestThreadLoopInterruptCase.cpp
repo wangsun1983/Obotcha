@@ -41,7 +41,7 @@ DECLARE_SIMPLE_CLASS(MyLoopTest2Thread) IMPLEMENTS(Thread) {
 public:
     void run() {
         while(1) {
-            st(Thread)::interruptCheck();
+            //st(Thread)::interruptCheck();
         }
     }
 
@@ -73,7 +73,7 @@ int testThreadLoopInterrypt() {
          printf("---[Thread Test {Loop Interrupt()} special case2] [OK]--- \n");
          break;
     }
-#endif
+
 
     //interruptCheck
     while(1) {
@@ -90,5 +90,5 @@ int testThreadLoopInterrypt() {
          printf("---[Thread Test {interruptCheck()} case2] [OK]--- \n");
          break;
     }
-
+#endif
 }

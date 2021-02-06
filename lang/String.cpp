@@ -497,7 +497,6 @@ bool _String::equals(const char *s) {
     if(s == nullptr) {
         return false;
     }
-
     return (m_str.compare(s) == 0);   
 }
 

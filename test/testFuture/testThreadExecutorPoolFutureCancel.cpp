@@ -35,6 +35,7 @@ int testThreadExecutorPoolFutureCancel() {
       sleep(3);
       if(st(TestCancelTask)::count != 1) {
         printf("testThreadExecutorPoolFutureCancel case1 -------[FAIL] \n");
+        pool->shutdown();
         break;
       }
 
@@ -43,6 +44,7 @@ int testThreadExecutorPoolFutureCancel() {
       long interval = st(System)::currentTimeMillis() - trace1;
       if(interval > 5) {
         printf("testThreadExecutorPoolFutureCancel case2 -------[FAIL] \n");
+        pool->shutdown();
         break;
       }
 

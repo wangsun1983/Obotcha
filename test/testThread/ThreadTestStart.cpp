@@ -46,9 +46,9 @@ int testThreadStart() {
     while(1) {
         StartTestThread1 t1 = createStartTestThread1();
         t1->start();
-        t1->quit();
-        t1->quit();
-        t1->quit();
+        //t1->quit();
+        //t1->quit();
+        //t1->quit();
         int ret = t1->start();
         if(ret != -AlreadyExecute) {
             printf("---[Thread TestStart {start()} case4] [FAILED]--- \n");

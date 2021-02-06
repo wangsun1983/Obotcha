@@ -178,7 +178,7 @@ int testThreadJoin() {
         break;
     }
 
-    t5->quit();
+    //t5->quit();
     printf("---[Thread Test {ThreadJoin()} special case12] [OK]--- \n");
     break;
   }

@@ -52,7 +52,7 @@ int testThreadInterruptCase() {
         MyTest1Thread thread = createMyTest1Thread();
         thread->start();
         sleep(1);
-        thread->quit();
+        //thread->quit();
         sleep(1);
          if(myTest1Interrupt != 2) {
              printf("---[Thread Test {Interrupt()} special case1,myTest1Interrupt is %d] [FAILED]--- \n",myTest1Interrupt);

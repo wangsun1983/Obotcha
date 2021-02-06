@@ -27,12 +27,6 @@ public:
     _ThreadCachedPoolExecutorHandler(BlockingQueue<FutureTask>,sp<_ThreadCachedPoolExecutor>,long timeout);
 
     void run();
-    
-    void stop();
-
-    void onInterrupt();
-
-    bool shutdownTask(FutureTask task);
 
     bool isIdle();
 
@@ -60,8 +54,7 @@ private:
     int mStatus;
 };
 
-DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(ExecutorService)
-                                               IMPLEMENTS(FutureTaskStatusListener) {
+DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(ExecutorService) {
 public:
     friend class _ThreadCachedPoolExecutorHandler;
     friend class _CacheThreadManager;
@@ -102,8 +95,6 @@ private:
     static const int DefaultWaitTime;
     static const int DefaultMaxThreadNums;
     static const int DefaultQueueNums;
-    
-    void onCancel(FutureTask);
 
     void onThreadComplete(ThreadCachedPoolExecutorHandler);
 

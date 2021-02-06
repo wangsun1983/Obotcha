@@ -42,15 +42,6 @@ _ThreadCachedPoolExecutorHandler::~_ThreadCachedPoolExecutorHandler() {
     mCurrentTask = nullptr;
 }
 
-void _ThreadCachedPoolExecutorHandler::stop() {
-    {
-        AutoLock l(mStatusMutex);
-        mStatus = HandleDestroy;
-    }
-    
-    quit();
-}
-
 bool _ThreadCachedPoolExecutorHandler::isIdle() {
     AutoLock l(mStatusMutex);
     return mStatus == HandleIdle;
@@ -109,30 +100,6 @@ void _ThreadCachedPoolExecutorHandler::run() {
     mServiceExecutor = nullptr;
 }
 
-void _ThreadCachedPoolExecutorHandler::onInterrupt() {
-    {
-        if(mCurrentTask != nullptr) {
-            if(mCurrentTask->getStatus() == st(Future)::Running) {
-                Runnable r = mCurrentTask->getRunnable();
-                if(r != nullptr) {
-                    r->onInterrupt();
-                }
-            }
-            mCurrentTask = nullptr;
-        }
-    }
-    mServiceExecutor = nullptr;
-}
-
-bool _ThreadCachedPoolExecutorHandler::shutdownTask(FutureTask task) {
-    if(mCurrentTask != nullptr && mCurrentTask == task) {
-        stop();
-        return true;
-    }
-
-    return false;
-}
-
 //---------------ThreadCachedPoolExecutor ---------------------
 
 const int _ThreadCachedPoolExecutor::DefaultWaitTime = 15*1000;
@@ -158,19 +125,11 @@ int _ThreadCachedPoolExecutor::shutdown(){
 
     mStatus = StatusShutDown;
 
-    AutoLock l(mHandlerMutex);
-    ListIterator<ThreadCachedPoolExecutorHandler> iterator = mHandlers->getIterator();
-    while(iterator->hasValue()) {
-        ThreadCachedPoolExecutorHandler handler = iterator->getValue();
-        handler->stop();
-        iterator->next();
-    }
-
     //all task should onInterrupt
     while(1) {
         FutureTask task = mTasks->deQueueLastNoBlock();
         if(task != nullptr) {
-            task->onShutDown();
+            task->cancel();
             continue;
         }
         break;
@@ -267,7 +226,7 @@ Future _ThreadCachedPoolExecutor::submit(Runnable r) {
         return nullptr;
     }
 
-    FutureTask task = createFutureTask(r,AutoClone(this));
+    FutureTask task = createFutureTask(r);
     Future future = createFuture(task);
     submit(task);
     return future;   
@@ -287,30 +246,6 @@ void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthrea
     mTasks = createBlockingQueue<FutureTask>();
     mHandlerMutex = createMutex("ThreadCachedHandlerMutex");
     mStatus = StatusRunning;
-}
-
-void _ThreadCachedPoolExecutor::onCancel(FutureTask task) {
-    if(mStatus != StatusRunning) {
-        return;
-    }
-
-    AutoLock l(mHandlerMutex);
-    ListIterator<ThreadCachedPoolExecutorHandler> iterator = mHandlers->getIterator();
-    bool isFound = false;
-
-    while(iterator->hasValue()) {
-        ThreadCachedPoolExecutorHandler handler = iterator->getValue();
-        if(handler->shutdownTask(task)) {
-            iterator->remove();
-            isFound = true;
-            break;
-        }
-        iterator->next();
-    }
-
-    if(isFound) {
-        setUpOneIdleThread();
-    }
 }
 
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {

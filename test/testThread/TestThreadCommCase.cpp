@@ -145,7 +145,7 @@ int testThreadCommonCase() {
   while(1) {
     {
         Run1 r1 = createRun1();
-        Thread t = createThread("Test",r1);
+        Thread t = createThread(r1);
         t->start();
         t->join();
     }
@@ -215,7 +215,6 @@ int testThreadCommonCase() {
       break;
     }
 
-    t2->quit();
     printf("---[Thread Test {join(long)} case1] [OK]--- \n");
     break;
   }
@@ -232,7 +231,6 @@ int testThreadCommonCase() {
       break;
     }
 
-    t2->quit();
     sleep(1);
     status = t2->getStatus();
     if(status != st(Thread)::Complete) {
@@ -257,7 +255,6 @@ int testThreadCommonCase() {
       printf("---[Thread Test {setSchedPolicy()} case1] [FAILED]--- \n");
       break;
     }
-    t2->quit();
     printf("---[Thread Test {setSchedPolicy()} case2] [Sucess]--- \n");
     break;
   }
@@ -282,7 +279,7 @@ int testThreadCommonCase() {
       printf("---[Thread Test {setPriority()} case2] [FAILED]--- \n");
       break;
     }
-    t2->quit();
+    
     printf("---[Thread Test {setPriority()} case3] [OK]--- \n");
     break;
   }
@@ -309,7 +306,7 @@ int testThreadCommonCase() {
       break;
     }
 
-    t2->quit();
+    
     printf("---[Thread Test {setName()} case2] [OK]--- \n");
     break;
   }
@@ -326,7 +323,7 @@ int testThreadCommonCase() {
       break;
     }
 
-    t2->quit();
+    
     printf("---[Thread Test {getName()} case2] [OK]--- \n");
     break;
   }
@@ -340,7 +337,7 @@ int testThreadCommonCase() {
     t1->start();
     sleep(1);
     //printf("start onInterrupt t3 \n");
-    t1->quit();
+    
     //printf("start onInterrupt t4 \n");
     sleep(1);
     if(onInterruptCount != 1) {
@@ -359,7 +356,7 @@ int testThreadCommonCase() {
       t1->setName("quit");
       t1->start();
       //printf("quit 2 \n");
-      t1->quit();
+      
       //printf("quit 3 \n");
 
       printf("---[Thread Test {quit()} case1] [OK]--- \n");
@@ -377,10 +374,10 @@ int testThreadCommonCase() {
   while(1) {
       long current = st(System)::currentTimeMillis();
 
-      st(Thread)::msleep(1000);
+      st(Thread)::sleep(1000);
 
       long current2 = st(System)::currentTimeMillis();
-      if((current2 - current) > 10005) {
+      if((current2 - current) > 1005) {
           printf("---[Thread Test {msleep()} case1] [FAILED]--- \n");
           break;
       }
@@ -399,7 +396,7 @@ int testThreadCommonCase() {
         break;
     }
 
-    t1->quit();
+    
     printf("---[Thread Test {setThreadSchedPolicy()} case2] [OK]--- \n");
     break;
   }
@@ -415,7 +412,7 @@ int testThreadCommonCase() {
         printf("---[Thread Test {getThreadPriority()} case1] [FAILED]--- \n");
         break;
     }
-    t1->quit();
+    
     printf("---[Thread Test {getsetThreadSchedPolicyThreadPriority()} case2] [OK]--- \n");
     break;
   }
@@ -433,7 +430,7 @@ int testThreadCommonCase() {
         printf("---[Thread Test {setThreadPriority()} case1] [FAILED]--- \n");
         break;
     }
-    t1->quit();
+    
     printf("---[Thread Test {setThreadPriority()} case1] [OK]--- \n");
     break;
   }
@@ -452,7 +449,7 @@ int testThreadCommonCase() {
           printf("---[Thread Test {getThreadPriority()} case1__] [FAILED]--- \n");
           break;
       }
-      t1->quit();
+      
 
       printf("---[Thread Test {getThreadPriority()} case2] [OK]--- \n");
       break;

@@ -41,7 +41,6 @@ public:
     friend class _ThreadScheduledPoolExecutor;
 
     _WaitingTask(Runnable);
-    _WaitingTask(Runnable,FutureTaskStatusListener);
 
     void init(long int interval,int type,int repeat);
     void setExecutor(_ThreadScheduledPoolExecutor *);
@@ -61,7 +60,6 @@ private:
 };
 
 DECLARE_SIMPLE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(ScheduledExecutorService)
-                                                  IMPLEMENTS(FutureTaskStatusListener)
                                                   IMPLEMENTS(Thread) {
 
 public:
@@ -77,8 +75,6 @@ public:
     void awaitTermination();
 
     int awaitTermination(long timeout);
-
-    void onInterrupt();
 
     bool isShutdown();
     
@@ -101,9 +97,7 @@ public:
     int getThreadsNum();
 
     void addWaitingTask(WaitingTask);
-    WaitingTask getWaitingTask();
-
-    void onCancel(FutureTask);                        
+    WaitingTask getWaitingTask();                  
 
 private:
     //ScheduledThreadPoolThread  mTimeThread;

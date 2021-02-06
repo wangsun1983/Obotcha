@@ -109,7 +109,7 @@ int testThreadRelease() {
 
         for(int i = 0;i<50;i++) {
             Thread t = list->get(0);
-            t->quit();
+            //t->quit();
         }
 
         sleep(5);

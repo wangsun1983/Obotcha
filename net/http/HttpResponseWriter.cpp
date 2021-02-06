@@ -145,7 +145,7 @@ ByteArray _HttpResponseWriter::compose(HttpResponse response) {
 long _HttpResponseWriter::computeContentLength(HttpResponse response) {
     HashMap<String,String> encodedUrlMap = response->getEntity()->getEncodedKeyValues();
     int length = 0;
-    if(encodedUrlMap != nullptr) {
+    if(encodedUrlMap != nullptr && encodedUrlMap->size() != 0) {
         MapIterator<String,String> iterator = encodedUrlMap->getIterator();
         while(iterator->hasValue()) {
             String key = iterator->getKey();

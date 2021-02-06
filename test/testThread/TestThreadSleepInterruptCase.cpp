@@ -42,7 +42,7 @@ int testThreadSleepInterrupt() {
         MySleepTest1Thread thread = createMySleepTest1Thread();
         thread->start();
         sleep(1);
-        thread->quit();
+        //thread->quit();
         sleep(1);
          if(mySleepTest1 != 2) {
              printf("---[Thread Test {Sleep Interrupt()} special case1] [FAILED]--- \n");

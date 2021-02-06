@@ -16,10 +16,6 @@ _WaitingTask::_WaitingTask(Runnable r):_FutureTask(r) {
     //nothing
 }
 
-_WaitingTask::_WaitingTask(Runnable r,FutureTaskStatusListener l):_FutureTask(r,l) {
-    //nothing
-}
-
 void _WaitingTask::setExecutor(_ThreadScheduledPoolExecutor *p) {
     mExecutor = p;
 }
@@ -89,7 +85,7 @@ int _ThreadScheduledPoolExecutor::shutdown() {
     {
         AutoLock l(mTaskMutex);
         if(mCurrentTask != nullptr) {
-            mCurrentTask->onShutDown();
+            mCurrentTask->cancel();
         }
 
         while(1) {
@@ -98,7 +94,7 @@ int _ThreadScheduledPoolExecutor::shutdown() {
                 break;
             }
 
-            task->onShutDown();
+            task->cancel();
         }
     }
 
@@ -106,8 +102,6 @@ int _ThreadScheduledPoolExecutor::shutdown() {
 
     mCachedExecutor->shutdown();
     
-    this->quit();
-
     return 0;
 }
 
@@ -127,11 +121,6 @@ void _ThreadScheduledPoolExecutor::awaitTermination() {
     awaitTermination(0);
 }
 
-void _ThreadScheduledPoolExecutor::onInterrupt() {
-    if(mCurrentTask != nullptr) {
-        mCurrentTask->onShutDown();
-    }
-}
 
 int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
     return mCachedExecutor->awaitTermination(timeout);
@@ -150,7 +139,7 @@ Future _ThreadScheduledPoolExecutor::submit(Runnable r) {
 }
 
 Future _ThreadScheduledPoolExecutor::schedule(Runnable r,long delay) {
-    WaitingTask task = createWaitingTask(r,AutoClone(this));
+    WaitingTask task = createWaitingTask(r);
     task->init(delay,ScheduletTaskNormal,-1);
     task->setExecutor(this);
 
@@ -161,7 +150,7 @@ Future _ThreadScheduledPoolExecutor::schedule(Runnable r,long delay) {
 Future _ThreadScheduledPoolExecutor::scheduleAtFixedRate(Runnable r,
                                 long initialDelay,
                                 long period) {
-    WaitingTask task = createWaitingTask(r,AutoClone(this));
+    WaitingTask task = createWaitingTask(r);
     task->init(initialDelay,ScheduletTaskFixRate,period);
     task->setExecutor(this);
 
@@ -172,7 +161,7 @@ Future _ThreadScheduledPoolExecutor::scheduleAtFixedRate(Runnable r,
 Future _ThreadScheduledPoolExecutor::scheduleWithFixedDelay(Runnable r,
                                 long initialDelay,
                                 long delay) {
-    WaitingTask task = createWaitingTask(r,AutoClone(this));
+    WaitingTask task = createWaitingTask(r);
     task->init(initialDelay,ScheduletTaskFixedDelay,delay);
 
     Future future = createFuture(task);
@@ -241,17 +230,6 @@ void _ThreadScheduledPoolExecutor::addWaitingTask(WaitingTask t) {
     }
     
     mTaskWaitCond->notify();
-}
-
-//called from Future->cancel
-void _ThreadScheduledPoolExecutor::onCancel(FutureTask task) {
-    AutoLock ll(mTaskMutex);
-    if(mCurrentTask == task) {
-        //task is waiting,we should notify this thread.
-        mTaskWaitCond->notify();
-    } else {
-        mCachedExecutor->onCancel(task);
-    }
 }
 
 void _ThreadScheduledPoolExecutor::run() {

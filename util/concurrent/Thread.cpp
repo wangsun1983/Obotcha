@@ -9,6 +9,7 @@
 #include "ThreadLocal.hpp"
 #include "System.hpp"
 #include "Error.hpp"
+#include "InterruptedException.hpp"
 
 namespace obotcha {
 
@@ -19,36 +20,35 @@ String _Thread::DefaultThreadName = createString("thread_");
 void doThreadExit(_Thread *thread) {
     thread->mStatus->set(st(Thread)::Complete);
 
-    pthread_detach(thread->getThreadId());
-    mThreads->remove(thread->getThreadId());
+    if(thread->mLambdaThread != nullptr) {
+        pthread_detach(pthread_self());
+        mThreads->remove(pthread_self());
+    } else {
+        pthread_detach(thread->getThreadId());
+        mThreads->remove(thread->getThreadId());
+    }
 }
 
-//------------Thread Stack function---------------//
-void cleanup(void *th) {
-    _Thread *thread = static_cast<_Thread *>(th);
-    if(thread->getRunnable() != nullptr) {
-        printf("onInterrupt trace222 \n");
-        thread->getRunnable()->onInterrupt();
-    } else {
-        thread->onInterrupt();
-    }
-    
-    doThreadExit(thread);
+void _Thread::lambdaEnter(_Thread *t) {
+    mThreads->set(pthread_self(),AutoClone(t));
+    t->mStatus->set(st(Thread)::Running);
+}
+
+void _Thread::lambdaQuit(_Thread *t) {
+    doThreadExit(t);
 }
 
 //------------Thread---------------//
 void* _Thread::localRun(void *th) {
-    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
     _Thread *thread = static_cast<_Thread *>(th);
     mThreads->set(thread->getThreadId(),AutoClone(thread));
     
     thread->mStatus->set(st(Thread)::Running);
     
-    pthread_cleanup_push(cleanup, th);
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
     if(thread->mName != nullptr) {
         pthread_setname_np(thread->mPthread,thread->mName->toChars());
     }
+
     if(thread->mRunnable != nullptr) {
         thread->mRunnable->run();
     } else {
@@ -57,29 +57,12 @@ void* _Thread::localRun(void *th) {
 
     thread->onComplete();
 end:
-    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
-    pthread_cleanup_pop(0);
-
     doThreadExit(thread);
     return nullptr;
 }
 
-
-_Thread::_Thread():_Thread(nullptr) {
-}
-
-_Thread::_Thread(Runnable run):_Thread(nullptr,run) {
-}
-
-_Thread::_Thread(String name,Runnable run){
-    if(name == nullptr) {
-        mName = name;
-    } else {
-        int index = threadCount->addAndGet(1);
-        mName = DefaultThreadName->append(createString(index));
-    }
-    mRunnable = run;
-    mStatus = createAtomicInteger(NotStart);
+_Thread::_Thread() {
+    threadInit(nullptr,nullptr);
 }
 
 int _Thread::setName(String name) {
@@ -89,6 +72,21 @@ int _Thread::setName(String name) {
 
     mName = name;
     return pthread_setname_np(mPthread,name->toChars());
+}
+
+void _Thread::threadInit(String name,Runnable run) {
+    if(name != nullptr) {
+        mName = name;
+    } else {
+        int index = threadCount->addAndGet(1);
+        mName = DefaultThreadName->append(createString(index));
+    }
+    mRunnable = run;
+    mStatus = createAtomicInteger(NotStart);
+
+    mSleepMutex = createMutex();
+    mSleepCondition = createCondition();
+    mLambdaThread = nullptr;
 }
 
 String _Thread::getName() {
@@ -131,6 +129,12 @@ int _Thread::start() {
     //localThread.set_pointer(this);
     if(mStatus->get() != NotStart) {
         return -AlreadyExecute;
+    }
+
+    //check whether it is lambda
+    if(mLambdaThread != nullptr) {
+        pthread_barrier_wait(&mLamdaBarrier);
+        return 0;
     }
 
     mStatus->set(Idle);
@@ -178,22 +182,6 @@ int _Thread::getStatus() {
 
 void _Thread::onComplete(){
     //Do nothing
-}
-
-void _Thread::quit() {
-    if(!isRunning()) {
-        return;
-    }
-
-    while(1) {
-        if(mStatus->get() == Idle) {
-            usleep(1000*10);
-            continue;
-        }
-
-        pthread_cancel(mPthread);
-        break;
-    }
 }
 
 int _Thread::getPriority() {
@@ -302,20 +290,17 @@ pthread_t _Thread::getThreadId() {
     return mPthread;
 }
 
-void _Thread::onInterrupt() {
-    //need overwrite by child class
-}
-
-void _Thread::interruptCheck() {
-    pthread_testcancel();
-}
-
 void _Thread::yield() {
     pthread_yield();
 }
 
 void _Thread::sleep(unsigned long millseconds) {
-    usleep(millseconds*1000);
+    Thread thread = mThreads->get();
+    if(thread == nullptr) {
+        usleep(1000*millseconds);
+    } else {
+        thread->threadSleep(millseconds);
+    }
 }
 
 void _Thread::setThreadPriority(int priority) {
@@ -354,6 +339,18 @@ int _Thread::getThreadSchedPolicy() {
 
 bool _Thread::isRunning() {
     return mStatus->get() == Running;
+}
+
+void _Thread::threadSleep(unsigned long interval) {
+    int result = 0;
+    {
+        AutoLock l(mSleepMutex);
+        result = mSleepCondition->wait(mSleepMutex,interval);    
+    }
+    
+    if(result == 0) {
+        Trigger(InterruptedException,"thread notify!!!");
+    }
 }
 
 }

@@ -16,12 +16,8 @@
 
 namespace obotcha {
 
-_FutureTask::_FutureTask(Runnable r):_FutureTask(r,nullptr) {
-}
-
-_FutureTask::_FutureTask(Runnable r,FutureTaskStatusListener l) {
+_FutureTask::_FutureTask(Runnable r) {
     this->mRunnable = r;
-    this->mListener = l;
 
     mCompleteMutex = createMutex("FutureTaskMutex");
     mCompleteCond = createCondition();
@@ -31,7 +27,6 @@ _FutureTask::_FutureTask(Runnable r,FutureTaskStatusListener l) {
 
 _FutureTask::~_FutureTask() {
     this->mRunnable = nullptr;
-    this->mListener = nullptr;
 }
 
 void _FutureTask::wait() {
@@ -50,18 +45,6 @@ int _FutureTask::wait(long interval) {
 
 void _FutureTask::cancel() {
     AutoLock l(mCompleteMutex);
-    onShutDown();
-
-    if(mListener != nullptr) {
-        mListener->onCancel(AutoClone(this));
-        mListener = nullptr;
-    }
-    mRunnable = nullptr;
-}
-
-void _FutureTask::onShutDown() {
-    AutoLock l(mCompleteMutex);
-    
     if(mStatus == st(Future)::Cancel || mStatus == st(Future)::Complete) {
         return;
     }
@@ -73,6 +56,7 @@ void _FutureTask::onShutDown() {
     }
 
     mCompleteCond->notify();
+    mRunnable = nullptr;
 }
 
 int _FutureTask::getStatus() {

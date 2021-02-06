@@ -6,6 +6,7 @@
 #include <atomic>
 #include <cstdint>
 #include <linux/sched.h>
+#include <thread>
 
 #include "Object.hpp"
 #include "Runnable.hpp"
@@ -25,12 +26,24 @@ public:
     friend void cleanup(void *th);
 
     friend void doThreadExit(_Thread *thread);
-
-    _Thread(String name,Runnable run);
-
-	_Thread(Runnable run);
-
     _Thread();
+    
+    template<typename X>
+	_Thread(sp<X> run) {
+        threadInit(nullptr,run);
+    }
+
+    template< class Function, class... Args >
+    _Thread( Function&& f, Args&&... args ):_Thread() {
+        pthread_barrier_init(&mLamdaBarrier,NULL, 2);
+        mLambdaThread = new std::thread([this,&f,&args...] {
+            lambdaEnter(this);
+            pthread_barrier_wait(&mLamdaBarrier);
+            mStatus->set(st(Thread)::Running);
+            f(std::forward<Args>(args)...);
+        });
+        while(mStatus->get() == Idle){pthread_yield();}
+    }
 
 	int start();
 	
@@ -41,8 +54,6 @@ public:
     int getStatus();
 
     virtual void run();
-
-    virtual void quit();
 
     virtual void onComplete();
 
@@ -64,10 +75,6 @@ public:
 
     int detach();
 
-    virtual void onInterrupt();
-
-    static void interruptCheck();
-    
     static void yield();
 
     static void sleep(unsigned long);
@@ -124,8 +131,19 @@ private:
     
     static String DefaultThreadName;
 
-    //Mutex mJoinMutex;
-    //Condition mJoinDondtion;
+    Mutex mSleepMutex;
+
+    Condition mSleepCondition;
+
+    pthread_barrier_t mLamdaBarrier;
+
+    void threadSleep(unsigned long millseconds);
+    void threadInit(String name,Runnable run);
+
+    void lambdaEnter(_Thread *);
+    void lambdaQuit(_Thread *);
+
+    std::thread *mLambdaThread;
 };
 
 }
