@@ -19,45 +19,8 @@ namespace obotcha {
 class _ThreadCachedPoolExecutor;
 class _ThreadScheduledPoolExecutor;
 
-DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutorHandler) IMPLEMENTS(Thread) {
-
-public:
-    friend class _ThreadCachedPoolExecutor;
-    
-    _ThreadCachedPoolExecutorHandler(BlockingQueue<FutureTask>,sp<_ThreadCachedPoolExecutor>,long timeout);
-
-    void run();
-
-    bool isIdle();
-
-    ~_ThreadCachedPoolExecutorHandler();
-
-private:
-
-    FutureTask mCurrentTask;
-
-    Mutex mTaskMutex;
-
-    sp<_ThreadCachedPoolExecutor> mServiceExecutor;
-
-    long mThreadTimeout;
-
-    BlockingQueue<FutureTask> mPool;
-    
-    enum CachedExecutorHandlerStatus {
-        HandleIdle = 0,
-        HandleBusy,
-        HandleDestroy,
-    };
-
-    Mutex mStatusMutex;
-    int mStatus;
-};
-
 DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(ExecutorService) {
 public:
-    friend class _ThreadCachedPoolExecutorHandler;
-    friend class _CacheThreadManager;
     friend class _FutureTask;
     friend class _ThreadScheduledPoolExecutor;
 
@@ -96,15 +59,13 @@ private:
     static const int DefaultMaxThreadNums;
     static const int DefaultQueueNums;
 
-    void onThreadComplete(ThreadCachedPoolExecutorHandler);
-
     void setUpOneIdleThread();
 
     void submit(FutureTask task);
     
     Mutex mHandlerMutex;
     int threadNum;
-    ArrayList<ThreadCachedPoolExecutorHandler> mHandlers;
+    ArrayList<Thread> mHandlers;
 
     std::atomic<int> mStatus;
 

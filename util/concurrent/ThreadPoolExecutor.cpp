@@ -88,7 +88,6 @@ int _ThreadPoolExecutor::shutdown() {
     if(status == LocalStatus::ShutDown) {
         return -AlreadyDestroy;
     }
-
     for(;;) {
         FutureTask task = mPool->deQueueLastNoBlock();
         if(task != nullptr) {
@@ -97,7 +96,6 @@ int _ThreadPoolExecutor::shutdown() {
         } 
         break;
     }
-    
     mPool->destroy();
     //interrupt all thread
     ListIterator<Thread> iterator = mHandlers->getIterator();
@@ -127,14 +125,7 @@ void _ThreadPoolExecutor::awaitTermination() {
     awaitTermination(0);
 }
 
-void _ThreadPoolExecutor::setAsTerminated() {
-    mStatus->set(LocalStatus::Terminated);
-}
-
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
-    if(mStatus->get() == LocalStatus::Terminated) {
-        return 0;
-    }
     
     if(mStatus->get() != LocalStatus::ShutDown){
         return -InvalidStatus;

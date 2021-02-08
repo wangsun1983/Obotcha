@@ -27,34 +27,6 @@ public:
     int priority;
 };
 
-class _ThreadPriorityPoolExecutor;
-class _PriorityTaskManager;
-
-DECLARE_SIMPLE_CLASS(PriorityPoolThread) EXTENDS(Thread) {
-public:
-    _PriorityPoolThread(LinkedList<PriorityTask> high,
-                        LinkedList<PriorityTask> mid,
-                        LinkedList<PriorityTask> low,
-                        Mutex listLock,
-                        Condition listcond);
-    
-    void run();
-    
-    ~_PriorityPoolThread();
-
-
-private:
-    Mutex mMutex;
-    Condition mCond;
-
-    PriorityTask mCurrentTask;
-    LinkedList<PriorityTask> highTasks;
-    LinkedList<PriorityTask> midTasks;
-    LinkedList<PriorityTask> lowTasks;
-    
-    PriorityTask getTask();
-};
-
 DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) IMPLEMENTS(ExecutorService) {
 
 public:
@@ -71,8 +43,6 @@ public:
     int shutdown();
 
     bool isTerminated();
-
-    void setAsTerminated();
 
     void awaitTermination();
 
@@ -111,11 +81,13 @@ private:
     bool isTermination;
     
     Mutex mThreadMutex;
-    ArrayList<PriorityPoolThread> mThreads;
+    ArrayList<Thread> mThreads;
 
     Mutex mWaitMutex;
     
     Condition mWaitCondition;
+
+    PriorityTask getTask();
 };
 
 }

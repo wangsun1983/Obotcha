@@ -44,8 +44,6 @@ public:
 
     int awaitTermination(long timeout);
 
-    void setAsTerminated();
-
     Future submit(Runnable task);
 
     int getThreadsNum();
@@ -59,7 +57,6 @@ private:
         Idle = 0,
         Running,
         ShutDown,
-        Terminated
     };
 
     static const int DefaultThreadNum;
