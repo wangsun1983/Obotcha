@@ -20,60 +20,6 @@
 
 namespace obotcha {
 
-//ExecutorRecyler
-Mutex _ExecutorRecyler::mMutex = createMutex("exerecylermutex");
-ExecutorRecyler _ExecutorRecyler::mInstance = nullptr;
-
-_ExecutorRecyler::_ExecutorRecyler() {
-    mRecyleList = createLinkedList<ExecutorService>();
-    mCond = createCondition();
-}
-
-sp<_ExecutorRecyler>_ExecutorRecyler::getInstance() {
-    if(mInstance != nullptr) {
-        return mInstance;
-    }
-
-    AutoLock l(mMutex);
-
-    if(mInstance != nullptr) {
-        return mInstance;
-    }
-
-    _ExecutorRecyler *p = new _ExecutorRecyler();
-    p->detach();
-    p->start();
-    mInstance.set_pointer(p);
-    return mInstance;
-}
-
-void _ExecutorRecyler::run() {
-    while(1) {
-        ExecutorService service = nullptr;
-        {
-            AutoLock l(mMutex);
-            if(mRecyleList->isEmpty()) {
-                mCond->wait(mMutex);
-                continue;
-            }
-            service = mRecyleList->deQueueFirst();
-        }
-        
-        if(service->awaitTermination(5*1000) != 0) {
-            AutoLock l(mMutex);
-            mRecyleList->enQueueLast(service);
-        } else {
-            service->setAsTerminated();
-        }
-    }
-}
-
-void _ExecutorRecyler::add(ExecutorService s) {
-    AutoLock l(mMutex);
-    mRecyleList->enQueueLast(s);
-    mCond->notify();
-}
-
 ExecutorService _Executors::newFixedThreadPool(int queue_size,int thread_num) {
     return createThreadPoolExecutor(queue_size,thread_num);
 }

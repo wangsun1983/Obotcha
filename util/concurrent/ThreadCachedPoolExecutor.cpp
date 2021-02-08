@@ -137,8 +137,6 @@ int _ThreadCachedPoolExecutor::shutdown(){
 
     //notify all thread to close
     mTasks->destroy();
-
-    st(ExecutorRecyler)::getInstance()->add(AutoClone(this));
     return 0;
 }
 

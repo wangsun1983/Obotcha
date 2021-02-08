@@ -14,6 +14,7 @@
 #include "String.hpp"
 #include "ThreadLocal.hpp"
 #include "AtomicInteger.hpp"
+#include "InterruptedException.hpp"
 
 namespace obotcha {
 
@@ -41,7 +42,7 @@ public:
             pthread_barrier_wait(&mLamdaBarrier);
             mStatus->set(st(Thread)::Running);
             f(std::forward<Args>(args)...);
-            lambdaEnter(this);
+            lambdaQuit(this);
         });
         while(mStatus->get() == NotStart){pthread_yield();}
     }

@@ -9,7 +9,7 @@
 #include "ThreadLocal.hpp"
 #include "System.hpp"
 #include "Error.hpp"
-#include "InterruptedException.hpp"
+
 
 namespace obotcha {
 

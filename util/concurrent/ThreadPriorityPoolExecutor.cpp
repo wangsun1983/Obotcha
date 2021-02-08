@@ -174,8 +174,6 @@ int _ThreadPriorityPoolExecutor::shutdown() {
         mLowPriorityTasks->enQueueLast(exitTask);
         mTaskCond->notifyAll();
     }
-    
-    st(ExecutorRecyler)::getInstance()->add(AutoClone(this));
 }
 
 void _ThreadPriorityPoolExecutor::setAsTerminated() {

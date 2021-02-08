@@ -20,22 +20,6 @@
 
 namespace obotcha {
 
-class _ThreadPoolExecutor;
-
-DECLARE_SIMPLE_CLASS(ThreadPoolExecutorHandler) IMPLEMENTS(Thread) {
-
-public:
-
-    _ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool);
-
-    void run();
-
-    ~_ThreadPoolExecutorHandler();
-
-private:
-    BlockingQueue<FutureTask> mPool;
-};
-
 
 DECLARE_SIMPLE_CLASS(ThreadPoolExecutor) IMPLEMENTS(ExecutorService) {
 
@@ -82,9 +66,7 @@ private:
 
     BlockingQueue<FutureTask> mPool;
     
-    ArrayList<ThreadPoolExecutorHandler> mHandlers;
-
-    Mutex mHandlersMutex;
+    ArrayList<Thread> mHandlers;
 
     AtomicInteger mStatus;
 

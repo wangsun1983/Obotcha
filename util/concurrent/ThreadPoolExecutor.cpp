@@ -15,36 +15,6 @@ namespace obotcha {
 
 const int _ThreadPoolExecutor::DefaultThreadNum = 4;
 
-_ThreadPoolExecutorHandler::_ThreadPoolExecutorHandler(BlockingQueue<FutureTask> pool):mPool(pool) {
-    this->start();
-}
-
-_ThreadPoolExecutorHandler::~_ThreadPoolExecutorHandler() {
-    
-}
-
-void _ThreadPoolExecutorHandler::run() {
-    while(1) {
-        FutureTask mCurrentTask = mPool->deQueueFirst();
-        if(mCurrentTask == nullptr) {
-            break;
-        }
-
-        if(mCurrentTask->getStatus() == st(Future)::Cancel) {
-            continue;
-        }
-
-        mCurrentTask->onRunning();
-    
-        Runnable runnable = mCurrentTask->getRunnable();
-        if(runnable != nullptr) {
-            runnable->run();    
-        }
-
-        mCurrentTask->onComplete();
-    }
-}
-
 _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
     init(queuesize,threadnum);
 }
@@ -60,21 +30,40 @@ _ThreadPoolExecutor::_ThreadPoolExecutor() {
 void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
     mStatus = createAtomicInteger(LocalStatus::Idle);
 
-    mHandlersMutex = createMutex("handlerMutex");
-
     if(queuesize != -1) {
         mPool = createBlockingQueue<FutureTask>(queuesize);    
     } else {
         mPool = createBlockingQueue<FutureTask>();
     }
     
-    mHandlers = createArrayList<ThreadPoolExecutorHandler>();
+    mHandlers = createArrayList<Thread>();
 
     mThreadNum = threadnum;
 
     for(int i = 0; i < threadnum;i++) {
-        ThreadPoolExecutorHandler h = createThreadPoolExecutorHandler(mPool);
-        mHandlers->add(h);
+        Thread thread = createThread([](BlockingQueue<FutureTask> &pool) {
+            while(1) {
+                FutureTask mCurrentTask = pool->deQueueFirst();
+                if(mCurrentTask == nullptr) {
+                    break;
+                }
+
+                if(mCurrentTask->getStatus() == st(Future)::Cancel) {
+                    continue;
+                }
+
+                mCurrentTask->onRunning();
+            
+                Runnable runnable = mCurrentTask->getRunnable();
+                if(runnable != nullptr) {
+                    runnable->run();    
+                }
+
+                mCurrentTask->onComplete();
+            }
+        },mPool);
+        thread->start();
+        mHandlers->add(thread);
     }
 
     mStatus->set(LocalStatus::Running);
@@ -110,8 +99,13 @@ int _ThreadPoolExecutor::shutdown() {
     }
     
     mPool->destroy();
-
-    st(ExecutorRecyler)::getInstance()->add(AutoClone(this));
+    //interrupt all thread
+    ListIterator<Thread> iterator = mHandlers->getIterator();
+    while(iterator->hasValue()) {
+        Thread t = iterator->getValue();
+        t->interrupt();
+        iterator->next();
+    }
     
     return 0;
 }
@@ -148,9 +142,9 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     
     bool isWaitForever = (millseconds == 0);
     
-    ListIterator<ThreadPoolExecutorHandler> iterator = mHandlers->getIterator();
+    ListIterator<Thread> iterator = mHandlers->getIterator();
     while(iterator->hasValue()) {
-        ThreadPoolExecutorHandler handler = iterator->getValue();
+        Thread handler = iterator->getValue();
         long current = st(System)::currentTimeMillis();
         handler->join(millseconds);
         if(!isWaitForever) {

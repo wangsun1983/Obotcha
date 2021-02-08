@@ -2,6 +2,7 @@
 #define __OBOTCHA_RUNNABLE_HPP__
 
 #include <stdio.h>
+#include <future>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"

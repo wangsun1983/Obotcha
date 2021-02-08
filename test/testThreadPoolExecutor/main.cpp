@@ -22,16 +22,18 @@ extern int testThreadPoolLoopSubmit();
 extern int testThreadPoolLoopShutdown();
 
 int main() {
-    normalTest();
-    sleep(1);
-    testRunnable_onInterrupt();
-    sleep(1);
-    releaseTest();
-    sleep(10);
-    testThreadShutdown();
-    testThreadDestroy();
-    testThreadPoolLoopSubmit();
+    //normalTest();
+    //sleep(1);
+    //testRunnable_onInterrupt();
+    //sleep(1);
+    //releaseTest();
+    //sleep(10);
+    //testThreadShutdown();
+    //testThreadDestroy();
+    //testThreadPoolLoopSubmit();
     testThreadPoolLoopShutdown();
-    sleep(10);
-    return 1;
+    printf("test finished1 \n");
+    st(Thread)::sleep(10*1000);
+    printf("test finished2 \n");
+    return 0;
 }
