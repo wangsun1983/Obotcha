@@ -21,6 +21,19 @@ public:
     }
 };
 
+DECLARE_SIMPLE_CLASS(StartTestThread2) IMPLEMENTS(Thread) {
+public:
+    _StartTestThread2() {
+
+    }
+
+    void run() {
+        //printf("startTest trace1 \n");
+        sleep(1);
+        //printf("startTest trace2 \n");
+    }
+};
+
 int testThreadStart() {
 
     while(1) {
@@ -46,9 +59,6 @@ int testThreadStart() {
     while(1) {
         StartTestThread1 t1 = createStartTestThread1();
         t1->start();
-        //t1->quit();
-        //t1->quit();
-        //t1->quit();
         int ret = t1->start();
         if(ret != -AlreadyExecute) {
             printf("---[Thread TestStart {start()} case4] [FAILED]--- \n");
@@ -58,4 +68,20 @@ int testThreadStart() {
         printf("---[Thread TestStart {start()} case5] [OK]--- \n");
         break;
     }
+
+    while(1) {
+        Thread t1 = createThread([](){
+            sleep(1);
+        });
+        t1->start();
+        int ret = t1->start();
+        if(ret != -AlreadyExecute) {
+            printf("---[Thread TestStart {start()} case6] [FAILED]--- \n");
+            break;
+        }
+
+        printf("---[Thread TestStart {start()} case7] [OK]--- \n");
+        break;
+    }
+
 }

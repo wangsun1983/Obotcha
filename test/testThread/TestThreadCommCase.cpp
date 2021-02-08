@@ -50,9 +50,9 @@ DECLARE_SIMPLE_CLASS(Thread2) IMPLEMENTS(Thread) {
 public:
   //_Thread(String name,Runnable run);
   void run() {
-    while(1) {
-      sleep(10);
-    }
+    //while(1) {
+      sleep(10*1000);
+    //}
   }
 };
 
@@ -87,8 +87,8 @@ public:
 DECLARE_SIMPLE_CLASS(Thread4) IMPLEMENTS(Thread) {
 public:
     void run() {
-        st(Thread)::setThreadSchedPolicy(st(Thread)::SchedFifo);
-        sleep(10);
+        int ret = st(Thread)::setThreadSchedPolicy(st(Thread)::SchedFifo);
+        sleep(10*1000);
     }
 
     ~_Thread4() {
@@ -149,9 +149,10 @@ int testThreadCommonCase() {
         t->start();
         t->join();
     }
+    st(Thread)::sleep(1000);
 
     if(TestData1 != 100 || disposeVal != 0) {
-      printf("---[Thread Test {create()} case1] [FAILED]--- \n");
+      printf("---[Thread Test {create()} case1] [FAILED],TestData1 is %d,disposeVal is %d--- \n",TestData1,disposeVal);
       break;
     }
 
@@ -171,7 +172,8 @@ int testThreadCommonCase() {
         t->start();
         t->join();
     }
-
+    st(Thread)::sleep(1000);
+    
     if(TestData1 != 100 || disposeVal != 0) {
       printf("---[Thread Test {create()} case3] [FAILED]--- \n");
       break;
@@ -233,7 +235,7 @@ int testThreadCommonCase() {
 
     sleep(1);
     status = t2->getStatus();
-    if(status != st(Thread)::Complete) {
+    if(status != st(Thread)::Running) {
       printf("---[Thread Test {getStatus()} case2,status is %d] [FAILED]--- \n",status);
       break;
     }
@@ -255,7 +257,7 @@ int testThreadCommonCase() {
       printf("---[Thread Test {setSchedPolicy()} case1] [FAILED]--- \n");
       break;
     }
-    printf("---[Thread Test {setSchedPolicy()} case2] [Sucess]--- \n");
+    printf("---[Thread Test {setSchedPolicy()} case2] [OK]--- \n");
     break;
   }
 
@@ -328,41 +330,6 @@ int testThreadCommonCase() {
     break;
   }
 
-  //void onInterrupt();
-  while(1) {
-    //printf("start onInterrupt t1 \n");
-    Thread3 t1 = createThread3();
-    t1->setName("onInterrupt");
-    //printf("start onInterrupt t2 \n");
-    t1->start();
-    sleep(1);
-    //printf("start onInterrupt t3 \n");
-    
-    //printf("start onInterrupt t4 \n");
-    sleep(1);
-    if(onInterruptCount != 1) {
-        printf("---[Thread Test {onInterrupt()} case1] [FAILED]--- \n");
-        break;
-    }
-
-    printf("---[Thread Test {onInterrupt()} case2] [OK]--- \n");
-    break;
-  }
-
-  //void quit();
-  while(1) {
-      //printf("quit 1 \n");
-      Thread3_1 t1 = createThread3_1();
-      t1->setName("quit");
-      t1->start();
-      //printf("quit 2 \n");
-      
-      //printf("quit 3 \n");
-
-      printf("---[Thread Test {quit()} case1] [OK]--- \n");
-      break;
-  }
-
   //static void yield();
   while(1) {
       //not test
@@ -391,8 +358,9 @@ int testThreadCommonCase() {
     Thread4 t1 = createThread4();
     t1->start();
     sleep(1);
-    if(t1->getSchedPolicy() != st(Thread)::SchedFifo) {
-        printf("---[Thread Test {setThreadSchedPolicy()} case1] [FAILED]--- \n");
+    int policy = t1->getSchedPolicy();
+    if(policy != st(Thread)::SchedFifo) {
+        printf("---[Thread Test {setThreadSchedPolicy()} case1] [FAILED],policy is %d--- \n",policy);
         break;
     }
 

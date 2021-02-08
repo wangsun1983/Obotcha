@@ -24,6 +24,7 @@ public:
   _JoinTestThread2(JoinTestThread t) {
     mThread = t;
     mIsWake = false;
+    setName("JoinTestThread2");
   }
 
   void run() {
@@ -87,7 +88,7 @@ public:
   }
 
   void run() {
-    sleep(10);
+    sleep(10*1000);
     mIsWake = true;
   }
 

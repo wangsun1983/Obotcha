@@ -18,7 +18,7 @@ public:
   void run() {
       //value->incrementAndGet();
       //printf("sleep1 start\n");
-      sleep(5);
+      st(Thread)::sleep(5);
       //printf("sleep2 start\n");
   }
 };

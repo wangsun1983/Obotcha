@@ -41,15 +41,14 @@ public:
             pthread_barrier_wait(&mLamdaBarrier);
             mStatus->set(st(Thread)::Running);
             f(std::forward<Args>(args)...);
+            lambdaEnter(this);
         });
-        while(mStatus->get() == Idle){pthread_yield();}
+        while(mStatus->get() == NotStart){pthread_yield();}
     }
 
 	int start();
 	
-	void join();
-
-    int join(long millseconds);
+    int join(long millseconds = 0);
 
     int getStatus();
 
@@ -75,9 +74,11 @@ public:
 
     int detach();
 
+    void interrupt();
+
     static void yield();
 
-    static void sleep(unsigned long);
+    static void sleep(unsigned long = 0);
 
     static void setThreadPriority(int priority);
 
@@ -105,6 +106,7 @@ public:
     enum ThreadStatus {
         NotStart = 1,
         Idle,
+        WaitingStart, //for lambda
         Running,
         Complete,
         Error,
@@ -134,6 +136,10 @@ private:
     Mutex mSleepMutex;
 
     Condition mSleepCondition;
+
+    Mutex mJoinMutex;
+
+    Condition mJoinCondition;
 
     pthread_barrier_t mLamdaBarrier;
 

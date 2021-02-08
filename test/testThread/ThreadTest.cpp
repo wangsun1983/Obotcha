@@ -18,32 +18,34 @@ using namespace obotcha;
 
 extern int testThreadInterruptCase();
 extern int testThreadCommonCase();
-extern int testThreadNotifyInterruptCase();
+//extern int testThreadNotifyInterruptCase();
 extern int testThreadSleepInterrupt();
-extern int testThreadLoopInterrypt();
+//extern int testThreadLoopInterrypt();
 extern int testThreadRelease();
 extern int testThreadJoin();
 extern int testThreadStart();
-extern int testThreadClose();
+//extern int testThreadClose();
 extern int testThreadLoopCreate();
 extern int testThreadLoopJoin();
-extern int testthreadloopquit();
+//extern int testthreadloopquit();
+extern int testThreadLambda();
 
 int main() {
+
+    //testthreadloopquit(); //no use
+    //testThreadNotifyInterruptCase(); no use   
+    //testThreadLoopInterrypt(); no use
+    //testThreadClose(); no use
+
 
     testThreadStart();
     testThreadJoin();
     testThreadInterruptCase();
     testThreadCommonCase();
-    testThreadNotifyInterruptCase();
     testThreadSleepInterrupt();
-    testThreadLoopInterrypt();
     testThreadRelease();
-    testThreadClose();
     testThreadLoopCreate();
-    testthreadloopquit();
-    
     testThreadLoopJoin();
-
+    testThreadLambda();
     sleep(10);
 }

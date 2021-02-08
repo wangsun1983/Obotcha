@@ -63,6 +63,6 @@ int testThreadLoopCreate() {
     printf("---[Thread Test {Loop create()} special case2] [FAIL]--- \n");
   }
 
-  printf("---[Thread Test {Loop create()} special case3] [Success]--- \n");
+  printf("---[Thread Test {Loop create()} special case3] [OK]--- \n");
 
 }

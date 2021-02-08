@@ -19,6 +19,7 @@ String _Thread::DefaultThreadName = createString("thread_");
 
 void doThreadExit(_Thread *thread) {
     thread->mStatus->set(st(Thread)::Complete);
+    thread->mJoinCondition->notifyAll();
 
     if(thread->mLambdaThread != nullptr) {
         pthread_detach(pthread_self());
@@ -31,7 +32,7 @@ void doThreadExit(_Thread *thread) {
 
 void _Thread::lambdaEnter(_Thread *t) {
     mThreads->set(pthread_self(),AutoClone(t));
-    t->mStatus->set(st(Thread)::Running);
+    t->mStatus->set(st(Thread)::WaitingStart);
 }
 
 void _Thread::lambdaQuit(_Thread *t) {
@@ -54,7 +55,6 @@ void* _Thread::localRun(void *th) {
     } else {
         thread->run();
     }
-
     thread->onComplete();
 end:
     doThreadExit(thread);
@@ -86,6 +86,10 @@ void _Thread::threadInit(String name,Runnable run) {
 
     mSleepMutex = createMutex();
     mSleepCondition = createCondition();
+
+    mJoinMutex = createMutex();
+    mJoinCondition = createCondition();
+
     mLambdaThread = nullptr;
 }
 
@@ -112,6 +116,12 @@ int _Thread::detach() {
     return pthread_detach(getThreadId());
 }
 
+void _Thread::interrupt() {
+    if(isRunning()) {
+        mSleepCondition->notifyAll();
+    }
+}
+
 int _Thread::start() {
     //pthread_create(&mPthread, &mThreadAttr, localRun, this);
     //if we use sp or declare a thread on stack
@@ -127,16 +137,22 @@ int _Thread::start() {
     //incStrong(0);
     //sp<_Thread> localThread;
     //localThread.set_pointer(this);
-    if(mStatus->get() != NotStart) {
+    //check whether it is lambda
+    if(mLambdaThread != nullptr) {
+        if(mStatus->get() == WaitingStart) {
+            pthread_barrier_wait(&mLamdaBarrier);
+            while(mStatus->get() == WaitingStart) {
+                yield();
+            }
+            return 0;
+        }
         return -AlreadyExecute;
     }
 
-    //check whether it is lambda
-    if(mLambdaThread != nullptr) {
-        pthread_barrier_wait(&mLamdaBarrier);
-        return 0;
+    if(mStatus->get() != NotStart) {
+        return -AlreadyExecute;
     }
-
+    
     mStatus->set(Idle);
 
     pthread_attr_init(&mThreadAttr);
@@ -152,15 +168,6 @@ int _Thread::start() {
     return 0;
 }
 
-void _Thread::join() {
-    while(getStatus() == Idle) {
-        yield();
-    }
-
-    if(isRunning()) {
-        pthread_join(mPthread,nullptr);
-    }
-}
 
 int _Thread::join(long timeInterval) {
     while(getStatus() == Idle) {
@@ -168,9 +175,8 @@ int _Thread::join(long timeInterval) {
     }
     
     if(isRunning()) {
-        struct timespec ts = {.tv_sec = 0, .tv_nsec = 0};
-        st(System)::getNextTime(timeInterval,&ts);
-        pthread_timedjoin_np(mPthread,nullptr,&ts);
+        AutoLock l(mJoinMutex);
+        return mJoinCondition->wait(mJoinMutex,timeInterval);
     }
 
     return 0;
