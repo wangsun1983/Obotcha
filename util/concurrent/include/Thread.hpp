@@ -36,15 +36,7 @@ public:
 
     template< class Function, class... Args >
     _Thread( Function&& f, Args&&... args ):_Thread() {
-        pthread_barrier_init(&mLamdaBarrier,NULL, 2);
-        mLambdaThread = new std::thread([this,&f,&args...] {
-            lambdaEnter(this);
-            pthread_barrier_wait(&mLamdaBarrier);
-            mStatus->set(st(Thread)::Running);
-            f(std::forward<Args>(args)...);
-            lambdaQuit(this);
-        });
-        while(mStatus->get() == NotStart){pthread_yield();}
+        mRunnable = createLambdaRunnable(f,args...);
     }
 
 	int start();
@@ -142,15 +134,11 @@ private:
 
     Condition mJoinCondition;
 
-    pthread_barrier_t mLamdaBarrier;
-
     void threadSleep(unsigned long millseconds);
     void threadInit(String name,Runnable run);
 
     void lambdaEnter(_Thread *);
     void lambdaQuit(_Thread *);
-
-    std::thread *mLambdaThread;
 };
 
 }

@@ -21,23 +21,10 @@ void doThreadExit(_Thread *thread) {
     thread->mStatus->set(st(Thread)::Complete);
     thread->mJoinCondition->notifyAll();
 
-    if(thread->mLambdaThread != nullptr) {
-        pthread_detach(pthread_self());
-        mThreads->remove(pthread_self());
-    } else {
-        pthread_detach(thread->getThreadId());
-        mThreads->remove(thread->getThreadId());
-    }
+    pthread_detach(thread->getThreadId());
+    mThreads->remove(thread->getThreadId());
 }
 
-void _Thread::lambdaEnter(_Thread *t) {
-    mThreads->set(pthread_self(),AutoClone(t));
-    t->mStatus->set(st(Thread)::WaitingStart);
-}
-
-void _Thread::lambdaQuit(_Thread *t) {
-    doThreadExit(t);
-}
 
 //------------Thread---------------//
 void* _Thread::localRun(void *th) {
@@ -90,7 +77,6 @@ void _Thread::threadInit(String name,Runnable run) {
     mJoinMutex = createMutex();
     mJoinCondition = createCondition();
 
-    mLambdaThread = nullptr;
 }
 
 String _Thread::getName() {
@@ -137,18 +123,6 @@ int _Thread::start() {
     //incStrong(0);
     //sp<_Thread> localThread;
     //localThread.set_pointer(this);
-    //check whether it is lambda
-    if(mLambdaThread != nullptr) {
-        if(mStatus->get() == WaitingStart) {
-            pthread_barrier_wait(&mLamdaBarrier);
-            while(mStatus->get() == WaitingStart) {
-                yield();
-            }
-            return 0;
-        }
-        return -AlreadyExecute;
-    }
-
     if(mStatus->get() != NotStart) {
         return -AlreadyExecute;
     }
