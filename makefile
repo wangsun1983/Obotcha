@@ -37,7 +37,7 @@ cflags = -fpic \
 		-Wno-deprecated \
 
 cppflags=$(cflags) \
-		 -std=c++14
+		 -std=c++17
 
 #define strict mode
 #STRICT_MODE = yes

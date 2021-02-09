@@ -70,13 +70,13 @@ $(outtmp)/barrier.o :$(concurrentDir)/Barrier.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Barrier.cpp -o $(outtmp)/barrier.o
 
 $(outtmp)/readwritelock.o :$(concurrentDir)/ReadWriteLock.cpp
-	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/ReadWriteLock.cpp -o $(outtmp)/readwritelock.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ReadWriteLock.cpp -o $(outtmp)/readwritelock.o
 
 $(outtmp)/executors.o :$(concurrentDir)/Executors.cpp
-	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/Executors.cpp -o $(outtmp)/executors.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Executors.cpp -o $(outtmp)/executors.o
 
 $(outtmp)/timer.o :$(concurrentDir)/Timer.cpp
-	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/Timer.cpp -o $(outtmp)/timer.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Timer.cpp -o $(outtmp)/timer.o
 
 $(outtmp)/threadprioritypoolexecutor.o :$(concurrentDir)/ThreadPriorityPoolExecutor.cpp
-	$(cppcompiler) $(cppflags) -std=c++11 -lpthread -c $(concurrentDir)/ThreadPriorityPoolExecutor.cpp -o $(outtmp)/threadprioritypoolexecutor.o
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ThreadPriorityPoolExecutor.cpp -o $(outtmp)/threadprioritypoolexecutor.o
