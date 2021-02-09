@@ -109,15 +109,6 @@ int _ThreadPoolExecutor::shutdown() {
     return 0;
 }
 
-Future _ThreadPoolExecutor::submit(Runnable r) {
-    if(r == nullptr || mStatus->get() != LocalStatus::Running) {
-        return nullptr;
-    }
-    FutureTask task = createFutureTask(r);
-    mPool->enQueueLast(task);
-    return createFuture(task);
-}
-
 bool _ThreadPoolExecutor::isTerminated() {
     return mStatus->get() == LocalStatus::ShutDown;
 }

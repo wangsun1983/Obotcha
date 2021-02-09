@@ -37,7 +37,14 @@ public:
 
     int execute(Runnable command);
 
-    int execute(int level,Runnable command);
+    template<typename X>
+    int execute(int level,sp<X> r) {
+        if(submit(level,r) == nullptr) {
+            return -InvalidStatus;
+        }
+
+        return 0;
+    }
 
     int shutdown();
 
@@ -49,7 +56,44 @@ public:
 
     Future submit(Runnable task);
 
-    Future submit(int level,Runnable task);
+    template<typename X>
+    Future submit(int level,sp<X> task) {
+        {
+            AutoLock l(mStatusMutex);
+            
+            if(isShutDown) {
+                return nullptr;
+            }
+        }
+
+        PriorityTask prioTask = createPriorityTask(level,task);
+        {
+            AutoLock l(mTaskMutex);
+            switch(prioTask->priority) {
+                case st(ThreadPriorityPoolExecutor)::PriorityHigh:
+                    mHighPriorityTasks->enQueueLast(prioTask);
+                    mTaskCond->notify();
+                break;
+
+                case st(ThreadPriorityPoolExecutor)::PriorityMedium:
+                    mMidPriorityTasks->enQueueLast(prioTask);
+                    mTaskCond->notify();
+                break;
+
+                case st(ThreadPriorityPoolExecutor)::PriorityLow:
+                    mLowPriorityTasks->enQueueLast(prioTask);
+                    mTaskCond->notify();
+                break;
+            }
+        }
+
+        return createFuture(prioTask);
+    }
+
+    template< class Function, class... Args >
+    Future submit(int priority, Function&& f, Args&&... args ) {
+        return submit(priority,createLambdaRunnable(f,args...));
+    }
 
     void onCancel(FutureTask);
 

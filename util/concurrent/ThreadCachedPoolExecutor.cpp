@@ -61,21 +61,8 @@ int _ThreadCachedPoolExecutor::shutdown(){
     return 0;
 }
 
-int _ThreadCachedPoolExecutor::execute(Runnable r) {
-    
-    if(submit(r) == nullptr) {
-        return -InvalidStatus;
-    }
-    return 0;
-}
-
 bool _ThreadCachedPoolExecutor::isTerminated() {
     return mStatus == StatusTerminate;
-}
-
-void _ThreadCachedPoolExecutor::setAsTerminated() {
-    mStatus = StatusTerminate;
-    mHandlers->clear();
 }
 
 void _ThreadCachedPoolExecutor::awaitTermination() {
@@ -125,17 +112,6 @@ void _ThreadCachedPoolExecutor::submit(FutureTask task) {
     }
 
     mTasks->enQueueLast(task);
-}
-
-Future _ThreadCachedPoolExecutor::submit(Runnable r) {
-    if(mStatus != StatusRunning) {
-        return nullptr;
-    }
-
-    FutureTask task = createFutureTask(r);
-    Future future = createFuture(task);
-    submit(task);
-    return future;   
 }
 
 void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthreadnum,long timeout) {

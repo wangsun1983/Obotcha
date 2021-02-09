@@ -25,7 +25,7 @@ cflags = -fpic \
 		-I ../../external/libco \
 		-I ../../external/glog/include \
 		-g \
-		-std=c++11 \
+		-std=c++17 \
 
 external = -lpthread \
 				-ldl \

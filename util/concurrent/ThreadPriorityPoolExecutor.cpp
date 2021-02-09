@@ -73,14 +73,6 @@ int _ThreadPriorityPoolExecutor::execute(Runnable r) {
     return execute(PriorityMedium,r);
 }
 
-int _ThreadPriorityPoolExecutor::execute(int level,Runnable r) {
-    if(submit(level,r) == nullptr) {
-        return -InvalidStatus;
-    }
-
-    return 0;
-}
-
 int _ThreadPriorityPoolExecutor::shutdown() {
     {
         AutoLock l(mStatusMutex);
@@ -156,39 +148,6 @@ int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
 
 Future _ThreadPriorityPoolExecutor::submit(Runnable task) {
     return submit(PriorityMedium,task);
-}
-
-Future _ThreadPriorityPoolExecutor::submit(int level,Runnable task) {
-    {
-        AutoLock l(mStatusMutex);
-        
-        if(isShutDown) {
-            return nullptr;
-        }
-    }
-
-    PriorityTask prioTask = createPriorityTask(level,task);
-    {
-        AutoLock l(mTaskMutex);
-        switch(prioTask->priority) {
-            case st(ThreadPriorityPoolExecutor)::PriorityHigh:
-                mHighPriorityTasks->enQueueLast(prioTask);
-                mTaskCond->notify();
-            break;
-
-            case st(ThreadPriorityPoolExecutor)::PriorityMedium:
-                mMidPriorityTasks->enQueueLast(prioTask);
-                mTaskCond->notify();
-            break;
-
-            case st(ThreadPriorityPoolExecutor)::PriorityLow:
-                mLowPriorityTasks->enQueueLast(prioTask);
-                mTaskCond->notify();
-            break;
-        }
-    }
-
-    return createFuture(prioTask);
 }
 
 PriorityTask _ThreadPriorityPoolExecutor::getTask() {

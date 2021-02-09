@@ -31,17 +31,41 @@ public:
 
     int shutdown();
 
-    int execute(Runnable command);
+    template<typename X>
+    int execute(sp<X> r) {
+        if(submit(r) == nullptr) {
+            return -InvalidStatus;
+        }
+        return 0;
+    }
+
+    template< class Function, class... Args >
+    int execute( Function&& f, Args&&... args ) {
+        execute(createLambdaRunnable(f,args...));
+    }
 
     bool isTerminated();
 
     void awaitTermination();
-
-    void setAsTerminated();
-
+    
     int awaitTermination(long timeout);
 
-    Future submit(Runnable task);
+    template <typename X>
+    Future submit(sp<X> r) {
+        if(mStatus != StatusRunning) {
+            return nullptr;
+        }
+
+        FutureTask task = createFutureTask(r);
+        Future future = createFuture(task);
+        submit(task);
+        return future; 
+    }
+
+    template< class Function, class... Args >
+    Future submit( Function&& f, Args&&... args ) {
+        return submit(createLambdaRunnable(f,args...));
+    }
 
     int getThreadsNum();
 

@@ -61,7 +61,20 @@ public:
 
     int awaitTermination(long timeout);
 
-    Future submit(Runnable task);
+    template<typename X>
+    Future submit(sp<X> r) {
+        if(r == nullptr || mStatus->get() != LocalStatus::Running) {
+            return nullptr;
+        }
+        FutureTask task = createFutureTask(r);
+        mPool->enQueueLast(task);
+        return createFuture(task);
+    }
+
+    template< class Function, class... Args >
+    Future submit( Function&& f, Args&&... args ) {
+        return submit(createLambdaRunnable(f,args...));
+    }
 
     int getThreadsNum();
 

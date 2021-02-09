@@ -83,8 +83,6 @@ private:
     
     sp<Object> objResult;
 
-
-    
     int intValue;
     byte byteValue;
     double doubleValue;
@@ -130,8 +128,6 @@ public:
         //func(initializer_list(_arguments));
         std::apply(func,_arguments);
     }
-
-    //virtual void run(Args... args) = 0;
 
 private:
     std::tuple<Args...> _arguments;
