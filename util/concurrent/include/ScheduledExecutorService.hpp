@@ -15,7 +15,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ScheduledExecutorService) IMPLEMENTS(ExecutorService){
+DECLARE_SIMPLE_CLASS(ScheduledExecutorService) {
 
 public:
     virtual Future schedule(Runnable command,long delay) = 0;

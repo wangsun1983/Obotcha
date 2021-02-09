@@ -12,26 +12,23 @@
 
 #include "Executors.hpp"
 #include "Thread.hpp"
-#include "ThreadPoolExecutor.hpp"
-#include "ThreadScheduledPoolExecutor.hpp"
-#include "ScheduledExecutorService.hpp"
-#include "ThreadCachedPoolExecutor.hpp"
-#include "ThreadPriorityPoolExecutor.hpp"
+
 
 namespace obotcha {
 
-ExecutorService _Executors::newFixedThreadPool(int queue_size,int thread_num) {
+ThreadPoolExecutor _Executors::newFixedThreadPool(int queue_size,int thread_num) {
     return createThreadPoolExecutor(queue_size,thread_num);
 }
 
-ExecutorService _Executors::newFixedThreadPool(int thread_num) {
+ThreadPoolExecutor _Executors::newFixedThreadPool(int thread_num) {
     return createThreadPoolExecutor(-1,thread_num);
 }
 
-ExecutorService _Executors::newSingleThreadExecutor(int queue_size) {
+ThreadPoolExecutor _Executors::newSingleThreadExecutor(int queue_size) {
     return createThreadPoolExecutor(queue_size,1);
 }
 
+/* 
 ExecutorService _Executors::newWorkStealingPool(int parallelism) {
     //TODO
     return nullptr;
@@ -41,24 +38,24 @@ ExecutorService _Executors::newWorkStealingPool() {
     //TODO
     return nullptr;
 }
-
-ExecutorService _Executors::newPriorityThreadPool(int thread_num) {
+*/
+ThreadPriorityPoolExecutor _Executors::newPriorityThreadPool(int thread_num) {
     return createThreadPriorityPoolExecutor(thread_num);
 }
 
-ExecutorService _Executors::newPriorityThreadPool(){
+ThreadPriorityPoolExecutor _Executors::newPriorityThreadPool(){
     return createThreadPriorityPoolExecutor();
 }
 
-ExecutorService _Executors::newCachedThreadPool(int queuesize,int minthreadnum,int maxthreadnum,long timeout) {
+ThreadCachedPoolExecutor _Executors::newCachedThreadPool(int queuesize,int minthreadnum,int maxthreadnum,long timeout) {
     return createThreadCachedPoolExecutor(queuesize,minthreadnum,maxthreadnum,timeout);
 }
 
-ExecutorService _Executors::newCachedThreadPool(int maxthreadnum,long timeout) {
+ThreadCachedPoolExecutor _Executors::newCachedThreadPool(int maxthreadnum,long timeout) {
     return createThreadCachedPoolExecutor(maxthreadnum,timeout);
 }
 
-ExecutorService _Executors::newCachedThreadPool() {
+ThreadCachedPoolExecutor _Executors::newCachedThreadPool() {
     return createThreadCachedPoolExecutor();
 }
 

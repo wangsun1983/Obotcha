@@ -411,7 +411,7 @@ int _MailSender::connectRemoteServer() {
         startTLS();
         sayHello();
     }
-    printf("connectRemoteServer trace8£¬mRecvBuf is %s \n",mRecvBuf);
+    printf("connectRemoteServer trace8ï¼ŒmRecvBuf is %s \n",mRecvBuf);
     if(mConnection->mAuthenticate && isKeywordSupported(mRecvBuf, "AUTH") == true) {
         if(isKeywordSupported(mRecvBuf, "LOGIN") == true) {
             printf("connectRemoteServer trace8 login 1 \n");

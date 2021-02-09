@@ -236,37 +236,37 @@ public:
             auto newObject = field->createListItemObject();
             JsonValue value = this->getValueAt(index);
             if(InstanceOf(newObject,Integer)) {
-                Integer data = cast<Integer>(newObject);
+                Integer data = Cast<Integer>(newObject);
                 data->update(value->getInteger()->toValue());
             } else if(InstanceOf(newObject,Long)) {
-                Long data = cast<Long>(newObject);
+                Long data = Cast<Long>(newObject);
                 data->update(value->getLong()->toValue());
             } else if(InstanceOf(newObject,Boolean)) {
-                Boolean data = cast<Boolean>(newObject);
+                Boolean data = Cast<Boolean>(newObject);
                 data->update(value->getBoolean()->toValue());
             } else if(InstanceOf(newObject,Double)) {
-                Double data = cast<Double>(newObject);
+                Double data = Cast<Double>(newObject);
                 data->update(value->getDouble()->toValue());
             } else if(InstanceOf(newObject,Float)) {
-                Float data = cast<Float>(newObject);
+                Float data = Cast<Float>(newObject);
                 data->update(value->getDouble()->toValue());
             } else if(InstanceOf(newObject,Byte)) {
-                Byte data = cast<Byte>(newObject);
+                Byte data = Cast<Byte>(newObject);
                 data->update(value->getUint64()->toValue());
             } else if(InstanceOf(newObject,Uint8)) {
-                Uint8 data = cast<Uint8>(newObject);
+                Uint8 data = Cast<Uint8>(newObject);
                 data->update(value->getUint64()->toValue());
             } else if(InstanceOf(newObject,Uint16)) {
-                Uint16 data = cast<Uint16>(newObject);
+                Uint16 data = Cast<Uint16>(newObject);
                 data->update(value->getUint64()->toValue());
             } else if(InstanceOf(newObject,Uint32)) {
-                Uint32 data = cast<Uint32>(newObject);
+                Uint32 data = Cast<Uint32>(newObject);
                 data->update(value->getUint64()->toValue());
             } else if(InstanceOf(newObject,Uint64)) {
-                Uint32 data = cast<Uint64>(newObject);
+                Uint32 data = Cast<Uint64>(newObject);
                 data->update(value->getUint64()->toValue());
             } else if(InstanceOf(newObject,String)) {
-                String data = cast<String>(newObject);
+                String data = Cast<String>(newObject);
                 data->update(value->getString()->getStdString());
             } else {
                 value->reflectTo(newObject);
@@ -359,43 +359,43 @@ public:
                         auto reflectValue = field->getObjectValue();
                         if(InstanceOf(newObject,Integer)) {
                             String value = jsonnode->getString();
-                            Integer data = cast<Integer>(newObject);
+                            Integer data = Cast<Integer>(newObject);
                             data->update(value->toBasicInt());
                         } else if(InstanceOf(newObject,Long)) {
                             String value = jsonnode->getString();
-                            Long data = cast<Long>(newObject);
+                            Long data = Cast<Long>(newObject);
                             data->update(value->toBasicLong());
                         } else if(InstanceOf(newObject,Boolean)) {
                             String value = jsonnode->getString();
-                            Boolean data = cast<Boolean>(newObject);
+                            Boolean data = Cast<Boolean>(newObject);
                             data->update(value->toBasicBool());
                         } else if(InstanceOf(newObject,Double)) {
                             String value = jsonnode->getString();
-                            Double data = cast<Double>(newObject);
+                            Double data = Cast<Double>(newObject);
                             data->update(value->toBasicDouble());
                         } else if(InstanceOf(newObject,Float)) {
                             String value = jsonnode->getString();
-                            Float data = cast<Float>(newObject);
+                            Float data = Cast<Float>(newObject);
                             data->update(value->toBasicFloat());
                         } else if(InstanceOf(newObject,Byte)) {
                             String value = jsonnode->getString();
-                            Byte data = cast<Byte>(newObject);
+                            Byte data = Cast<Byte>(newObject);
                             data->update(value->toBasicByte());
                         } else if(InstanceOf(newObject,Uint8)) {
                             String value = jsonnode->getString();
-                            Uint8 data = cast<Uint8>(newObject);
+                            Uint8 data = Cast<Uint8>(newObject);
                             data->update(value->toBasicUint8());
                         } else if(InstanceOf(newObject,Uint16)) {
                             String value = jsonnode->getString();
-                            Uint16 data = cast<Uint16>(newObject);
+                            Uint16 data = Cast<Uint16>(newObject);
                             data->update(value->toBasicUint16());
                         } else if(InstanceOf(newObject,Uint32)) {
                             String value = jsonnode->getString();
-                            Uint32 data = cast<Uint32>(newObject);
+                            Uint32 data = Cast<Uint32>(newObject);
                             data->update(value->toBasicUint32());
                         } else if(InstanceOf(newObject,Uint64)) {
                             String value = jsonnode->getString();
-                            Uint32 data = cast<Uint64>(newObject);
+                            Uint32 data = Cast<Uint64>(newObject);
                             data->update(value->toBasicUint64());
                         } else {
                             jsonnode->reflectTo(reflectValue);
@@ -485,38 +485,38 @@ public:
                     auto newObject = field->getObjectValue();
                     JsonValue newValue = createJsonValue();
                     if(InstanceOf(newObject,Integer)) {
-                        Integer data = cast<Integer>(newObject);
+                        Integer data = Cast<Integer>(newObject);
                         this->put(name,data->toValue());
                     } else if(InstanceOf(newObject,Long)) {
-                        Long data = cast<Long>(newObject);
+                        Long data = Cast<Long>(newObject);
                         this->put(name,data->toValue());
                     } else if(InstanceOf(newObject,Boolean)) {
                         printf("FieldTypeObject trace1\n");
-                        Boolean data = cast<Boolean>(newObject);
+                        Boolean data = Cast<Boolean>(newObject);
                         this->put(name,data->toValue());
                     } else if(InstanceOf(newObject,Double)) {
-                        Double data = cast<Double>(newObject);
+                        Double data = Cast<Double>(newObject);
                         this->put(name,data->toValue());
                     } else if(InstanceOf(newObject,Float)) {
-                        Float data = cast<Float>(newObject);
+                        Float data = Cast<Float>(newObject);
                         this->put(name,data->toValue());
                     } else if(InstanceOf(newObject,Byte)) {
-                        Byte data = cast<Byte>(newObject);
+                        Byte data = Cast<Byte>(newObject);
                         this->put(name,(uint64_t)data->toValue());
                     } else if(InstanceOf(newObject,Uint8)) {
-                        Uint8 data = cast<Uint8>(newObject);
+                        Uint8 data = Cast<Uint8>(newObject);
                         this->put(name,(uint64_t)data->toValue());
                     } else if(InstanceOf(newObject,Uint16)) {
-                        Uint16 data = cast<Uint16>(newObject);
+                        Uint16 data = Cast<Uint16>(newObject);
                         this->put(name,(uint64_t)data->toValue());
                     } else if(InstanceOf(newObject,Uint32)) {
-                        Uint32 data = cast<Uint32>(newObject);
+                        Uint32 data = Cast<Uint32>(newObject);
                         this->put(name,(uint64_t)data->toValue());
                     } else if(InstanceOf(newObject,Uint64)) {
-                        Uint64 data = cast<Uint64>(newObject);
+                        Uint64 data = Cast<Uint64>(newObject);
                         this->put(name,(uint64_t)data->toValue());
                     } else if(InstanceOf(newObject,String)) {
-                        String data = cast<String>(newObject);
+                        String data = Cast<String>(newObject);
                         this->put(name,data->getStdString());
                     } else {
                         newValue->importFrom(newObject);
@@ -533,37 +533,37 @@ public:
                         auto newObject = field->getListItemObject(count);
                         if(newObject != nullptr) {
                             if(InstanceOf(newObject,Integer)) {
-                                Integer data = cast<Integer>(newObject);
+                                Integer data = Cast<Integer>(newObject);
                                 arrayNode->append(data->toValue());
                             } else if(InstanceOf(newObject,Long)) {
-                                Long data = cast<Long>(newObject);
+                                Long data = Cast<Long>(newObject);
                                 arrayNode->append(data->toValue());
                             } else if(InstanceOf(newObject,Boolean)) {
-                                Boolean data = cast<Boolean>(newObject);
+                                Boolean data = Cast<Boolean>(newObject);
                                 arrayNode->append(data->toValue());
                             } else if(InstanceOf(newObject,Double)) {
-                                Double data = cast<Double>(newObject);
+                                Double data = Cast<Double>(newObject);
                                 arrayNode->append(data->toValue());
                             } else if(InstanceOf(newObject,Float)) {
-                                Float data = cast<Float>(newObject);
+                                Float data = Cast<Float>(newObject);
                                 arrayNode->append(data->toValue());
                             } else if(InstanceOf(newObject,Byte)) {
-                                Byte data = cast<Byte>(newObject);
+                                Byte data = Cast<Byte>(newObject);
                                 arrayNode->append(data->toValue());
                             } else if(InstanceOf(newObject,Uint8)) {
-                                Uint8 data = cast<Uint8>(newObject);
+                                Uint8 data = Cast<Uint8>(newObject);
                                 arrayNode->append(data->toValue());
                             } else if(InstanceOf(newObject,Uint16)) {
-                                Uint16 data = cast<Uint16>(newObject);
+                                Uint16 data = Cast<Uint16>(newObject);
                                 arrayNode->append(data->toValue());
                             } else if(InstanceOf(newObject,Uint32)) {
-                                Uint32 data = cast<Uint32>(newObject);
+                                Uint32 data = Cast<Uint32>(newObject);
                                 arrayNode->append(data->toValue());
                             } else if(InstanceOf(newObject,Uint64)) {
-                                Uint64 data = cast<Uint64>(newObject);
+                                Uint64 data = Cast<Uint64>(newObject);
                                 arrayNode->append(data->toValue());
                             } else if(InstanceOf(newObject,String)) {
-                                String data = cast<String>(newObject);
+                                String data = Cast<String>(newObject);
                                 arrayNode->append(data->toChars());
                             } else {
                                 JsonValue newValue = createJsonValue();

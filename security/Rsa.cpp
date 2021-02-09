@@ -37,7 +37,7 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
     int encrypt_len = key_len;
     int paddingMode = RSA_PKCS1_PADDING;
     ByteArray out = nullptr;
-    RsaSecretKey rsaKey = cast<RsaSecretKey>(getSecretKey());
+    RsaSecretKey rsaKey = Cast<RsaSecretKey>(getSecretKey());
     Base64 base64 = createBase64();
 
     switch(getPadding()) {

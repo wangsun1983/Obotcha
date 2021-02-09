@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <future>
+#include <functional>
+#include <utility>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -69,7 +71,7 @@ public:
             value = defaultvalue;
         }
 
-        value = cast<T>(objResult);
+        value = Cast<T>(objResult);
     }
 
 private:
@@ -80,6 +82,8 @@ private:
     };
     
     sp<Object> objResult;
+
+
     
     int intValue;
     byte byteValue;
@@ -112,7 +116,34 @@ private:
     void getResult(uint64_t &value,uint64_t defaultvalue,long millseconds = 0);
     void getResult(String &value,String defaultvalue,long millseconds = 0);
 
+
 };
+
+template<class Function,class... Args> 
+class _LambdaRunnable:public _Runnable{
+public:
+    _LambdaRunnable(Function &&f,Args&&... args):_Runnable(),func(f),_arguments(std::make_tuple(args...)) {
+
+    }
+
+    void run() {
+        //func(initializer_list(_arguments));
+        std::apply(func,_arguments);
+    }
+
+    //virtual void run(Args... args) = 0;
+
+private:
+    std::tuple<Args...> _arguments;
+    Function func;
+};
+
+template<typename Callfunc,typename... Args> 
+sp<_Runnable> createLambdaRunnable(Callfunc f,Args ...args) {
+    _Runnable *r = new _LambdaRunnable<Callfunc,Args ...>(std::forward<Callfunc>(f),
+			     std::forward<Args>(args)...);
+    return AutoClone(r);
+}
 
 }
 #endif

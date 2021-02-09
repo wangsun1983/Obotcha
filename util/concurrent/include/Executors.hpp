@@ -7,8 +7,11 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "Runnable.hpp"
-#include "ExecutorService.hpp"
+#include "ThreadPoolExecutor.hpp"
+#include "ThreadScheduledPoolExecutor.hpp"
 #include "ScheduledExecutorService.hpp"
+#include "ThreadCachedPoolExecutor.hpp"
+#include "ThreadPriorityPoolExecutor.hpp"
 #include "LinkedList.hpp"
 #include "Thread.hpp"
 
@@ -17,23 +20,23 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(Executors) {
 
 public:
-    static ExecutorService newFixedThreadPool(int queue_size,int thread_num);
-    static ExecutorService newFixedThreadPool(int thread_num);
+    static ThreadPoolExecutor newFixedThreadPool(int queue_size,int thread_num);
+    static ThreadPoolExecutor newFixedThreadPool(int thread_num);
 
-    static ExecutorService newSingleThreadExecutor(int queue_size);
-    static ExecutorService newWorkStealingPool(int parallelism);
-    static ExecutorService newWorkStealingPool();
+    static ThreadPoolExecutor newSingleThreadExecutor(int queue_size);
+    //static ExecutorService newWorkStealingPool(int parallelism);
+    //static ExecutorService newWorkStealingPool();
     
-    static ExecutorService newCachedThreadPool(int queue_size,int maxthreadnum,int minthreadnum,long timeout);
-    static ExecutorService newCachedThreadPool(int maxthreadnum,long timeout);
-    static ExecutorService newCachedThreadPool();
+    static ThreadCachedPoolExecutor newCachedThreadPool(int queue_size,int maxthreadnum,int minthreadnum,long timeout);
+    static ThreadCachedPoolExecutor newCachedThreadPool(int maxthreadnum,long timeout);
+    static ThreadCachedPoolExecutor newCachedThreadPool();
 
 
     static ScheduledExecutorService newSingleThreadScheduledExecutor();
     static ScheduledExecutorService newScheduledThreadPool();
 
-    static ExecutorService newPriorityThreadPool(int thread_num);
-    static ExecutorService newPriorityThreadPool();
+    static ThreadPriorityPoolExecutor newPriorityThreadPool(int thread_num);
+    static ThreadPriorityPoolExecutor newPriorityThreadPool();
     
 };
 

@@ -12,7 +12,6 @@
 #include "Future.hpp"
 #include "Executor.hpp"
 #include "ArrayList.hpp"
-#include "ExecutorService.hpp"
 #include "Condition.hpp"
 #include "Thread.hpp"
 #include "Error.hpp"
@@ -27,7 +26,7 @@ public:
     int priority;
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) IMPLEMENTS(ExecutorService) {
+DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) {
 
 public:
     friend class _PriorityPoolThread;

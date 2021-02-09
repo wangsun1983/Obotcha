@@ -11,7 +11,6 @@
 #include "AutoLock.hpp"
 #include "Thread.hpp"
 #include "Future.hpp"
-#include "ExecutorService.hpp"
 #include "FutureTask.hpp"
 
 namespace obotcha {
@@ -19,7 +18,7 @@ namespace obotcha {
 class _ThreadCachedPoolExecutor;
 class _ThreadScheduledPoolExecutor;
 
-DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(ExecutorService) {
+DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) {
 public:
     friend class _FutureTask;
     friend class _ThreadScheduledPoolExecutor;

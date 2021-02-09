@@ -59,8 +59,7 @@ private:
     _ThreadScheduledPoolExecutor *mExecutor;
 };
 
-DECLARE_SIMPLE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(ScheduledExecutorService)
-                                                  IMPLEMENTS(Thread) {
+DECLARE_SIMPLE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(Thread) {
 
 public:
 

@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "ExecutorService.hpp"
 #include "Thread.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "FutureTask.hpp"
@@ -69,6 +68,7 @@ void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
     mStatus->set(LocalStatus::Running);
 }
 
+/*
 int _ThreadPoolExecutor::execute(Runnable runnable) {
     if(runnable == nullptr) {
         return -InvalidParam;
@@ -82,6 +82,7 @@ int _ThreadPoolExecutor::execute(Runnable runnable) {
     mPool->enQueueLast(task);
     return 0;
 }
+ */
 
 int _ThreadPoolExecutor::shutdown() {
     int status = mStatus->compareAndSet(LocalStatus::ShutDown);

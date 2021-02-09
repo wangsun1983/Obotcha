@@ -13,7 +13,6 @@
 #include "Condition.hpp"
 #include "Thread.hpp"
 #include "Future.hpp"
-#include "ExecutorService.hpp"
 #include "FutureTask.hpp"
 #include "Future.hpp"
 #include "AtomicInteger.hpp"
@@ -21,7 +20,7 @@
 namespace obotcha {
 
 
-DECLARE_SIMPLE_CLASS(ThreadPoolExecutor) IMPLEMENTS(ExecutorService) {
+DECLARE_SIMPLE_CLASS(ThreadPoolExecutor) {
 
 public:
 
@@ -35,8 +34,26 @@ public:
 	_ThreadPoolExecutor();
 
     int shutdown();
+    
+    template<typename X>
+    int execute(sp<X> runnable) {
+        if(runnable == nullptr) {
+            return -InvalidParam;
+        }
 
-    int execute(Runnable command);
+        if(mStatus->get() != LocalStatus::Running) {
+            return -AlreadyDestroy;
+        }
+        
+        FutureTask task = createFutureTask(Cast<Runnable>(runnable));
+        mPool->enQueueLast(task);
+        return 0;
+    }
+    
+    template< class Function, class... Args >
+    int execute( Function&& f, Args&&... args ) {
+        execute(createLambdaRunnable(f,args...));
+    }
 
     bool isTerminated();
 
