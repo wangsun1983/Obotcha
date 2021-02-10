@@ -4,7 +4,7 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
+#include "ThreadCachedPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
@@ -24,7 +24,7 @@ public:
 
 int releaseTest() {
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool(100,0,20,1000);
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(100,0,20,1000);
         for(int i = 0;i < 100;i++) {
             pool->submit(createReleaseTestRunnable());
         }

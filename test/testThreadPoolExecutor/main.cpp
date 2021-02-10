@@ -4,7 +4,6 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
@@ -20,20 +19,25 @@ extern int testThreadShutdown();
 extern int testThreadDestroy();
 extern int testThreadPoolLoopSubmit();
 extern int testThreadPoolLoopShutdown();
+extern int testThreadLambda();
 
 int main() {
-    //normalTest();
-    //sleep(1);
-    //testRunnable_onInterrupt();
-    //sleep(1);
-    //releaseTest();
-    //sleep(10);
-    //testThreadShutdown();
-    //testThreadDestroy();
-    //testThreadPoolLoopSubmit();
+    normalTest();
+    sleep(1);
+    testRunnable_onInterrupt();
+    sleep(1);
+    releaseTest();
+    sleep(10);
+
+    testThreadShutdown();
+
+#if 0
+    testThreadDestroy();
+    testThreadPoolLoopSubmit();
     testThreadPoolLoopShutdown();
-    printf("test finished1 \n");
+    testThreadLambda();
+#endif
+
     st(Thread)::sleep(10*1000);
-    printf("test finished2 \n");
     return 0;
 }

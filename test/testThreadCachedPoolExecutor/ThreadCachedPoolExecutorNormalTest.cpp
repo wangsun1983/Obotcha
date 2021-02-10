@@ -4,7 +4,7 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
+#include "ThreadCachedPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
@@ -19,7 +19,11 @@ DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
         printf("run test1 start 1\n");
-        sleep(10);
+        try {
+            st(Thread)::sleep(10*1000);
+        } catch(InterruptedException &e){
+            printf("run test1 start 1_1 \n");
+        }
         printf("run test1 start 2\n");
     }
 
@@ -50,7 +54,7 @@ int normalTest() {
     printf("---[TestCachedPoolExecutor Test Start]--- \n");
 
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool(1,1,2,60*1000);
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(1,1,2,60*1000);
 
         pool->shutdown();
         printf("---[TestCachedPoolExecutor Test {constructor()} case1] [Success]--- \n");
@@ -61,7 +65,7 @@ int normalTest() {
 
     //_ThreadCachedPoolExecutor(int maxthreadnum,long timeout);
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool(2,60*1000);
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(2,60*1000);
 
         printf("---[TestCachedPoolExecutor Test {constructor2()} case2] [Success]--- \n");
         pool->shutdown();
@@ -70,7 +74,7 @@ int normalTest() {
 
     //_ThreadCachedPoolExecutor();
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
         pool->shutdown();
         printf("---[TestCachedPoolExecutor Test {constructor2()} case3] [Success]--- \n");
         break;
@@ -79,7 +83,7 @@ int normalTest() {
 
     //void shutdown();
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
         pool->submit(createRunTest1());
         sleep(1);
 
@@ -111,7 +115,7 @@ int normalTest() {
 
     //int awaitTermination(long timeout);
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
 
         int result = pool->awaitTermination(1000);
         if(result != -InvalidStatus) {
@@ -152,7 +156,7 @@ int normalTest() {
 
     //int awaitTermination(long timeout = 0);
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
 
         int result = pool->awaitTermination(0);
         if(result != -InvalidStatus) {
@@ -185,7 +189,7 @@ int normalTest() {
 
     //int awaitTermination(long timeout = max);
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
 
         pool->submit(createRunTest1());
         pool->shutdown();
@@ -204,7 +208,7 @@ int normalTest() {
 
     //int getThreadsNum();
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
 
         if(pool->getThreadsNum() != 0) {
             printf("---[TestCachedPoolExecutor Test {getThreadsNum()} case1] [FAIL]--- \n");
@@ -218,7 +222,7 @@ int normalTest() {
 
     //submit(Runnable task);
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
 
         Future task = pool->submit(createRunTest1());
         if(task == nullptr) {
@@ -242,7 +246,7 @@ int normalTest() {
 
     //submit(Runnable task);
     while(1) {
-        ExecutorService pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
         printf("start submit task \n");
         Future task = pool->submit(createRunTest1());
         sleep(1);
@@ -253,16 +257,19 @@ int normalTest() {
             printf("---[TestCachedPoolExecutor Test {submit()} case4] [FAIL]---, num is %d\n",num);
             break;
         }
-
+        printf("start submit task3_1 \n");
         sleep(100);
+        printf("start submit task4 \n");
         if(pool->getThreadsNum() != 0) {
             printf("---[TestCachedPoolExecutor Test {submit()} case5] [FAIL]--- \n");
             break;
         }
-
+        printf("start submit task5 \n");
         pool->shutdown();
         printf("---[TestCachedPoolExecutor Test {submit()} case6] [Success]--- \n");
         break;
     }
+
+    sleep(1);
 
 }

@@ -4,7 +4,7 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
+#include "ThreadCachedPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
@@ -43,7 +43,7 @@ public:
 
 int numTest() {
     mutex = createMutex();
-    ExecutorService pool = st(Executors)::newCachedThreadPool(4,1000);
+    ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(4,1000);
     while(1) {
         //start test 1
         int testNum = 1024*32;

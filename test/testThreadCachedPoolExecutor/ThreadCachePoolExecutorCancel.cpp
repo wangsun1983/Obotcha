@@ -4,7 +4,7 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
+#include "ThreadCachedPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
@@ -34,7 +34,7 @@ public:
 int cancelTest() {
     while(1) {
         //printf("start test \n");
-        ExecutorService pool = st(Executors)::newCachedThreadPool(1024*32,0,20,1000);
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(1024*32,0,20,1000);
         ArrayList<Future> cancellists = createArrayList<Future>();
         //printf("start trace \n");
         for(int i = 0;i < 1024*32;i++) {
@@ -62,7 +62,7 @@ int cancelTest() {
     while(1) {
         //printf("start test \n");
         cancelNum = 0;
-        ExecutorService pool = st(Executors)::newCachedThreadPool(1024*32,0,20,1000);
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(1024*32,0,20,1000);
         ArrayList<Future> cancellists = createArrayList<Future>();
         //printf("start trace \n");
         for(int i = 0;i < 1024*32;i++) {

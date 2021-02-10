@@ -81,6 +81,7 @@ private:
 
 int testThreadShutdown() {
 
+
     //TestThread onInterrupt case1
     while(1) {
         ThreadPoolExecutor pool = createThreadPoolExecutor();
@@ -103,20 +104,20 @@ int testThreadShutdown() {
     }
 
     while(1) {
-        ThreadPoolExecutor pool = createThreadPoolExecutor();
+        ThreadPoolExecutor pool = createThreadPoolExecutor(128,1);
         MyShutdownRunTest2 run = createMyShutdownRunTest2();
         pool->submit(run);
         pool->submit(run);
         pool->submit(run);
         pool->submit(run);
         pool->submit(run);
+        sleep(1);
         pool->shutdown();
         sleep(1);
-        if(run->getCount() != 5) {
-            printf("---[ThreadPoolExecutor Test {shutdown()} special case4] [FAIL]--- \n");
+        if(run->getCount() != 4) {
+            printf("---[ThreadPoolExecutor Test {shutdown()} special case4,run->getCount is %d ] [FAIL]--- \n",run->getCount());
             break;
         }
-        pool->shutdown();
         printf("---[ThreadPoolExecutor Test {shutdown()} special case5] [OK]--- \n");
         break;
     }

@@ -4,12 +4,12 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
+#include "InterruptedException.hpp"
 
 using namespace obotcha;
 
@@ -19,12 +19,12 @@ DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
         //printf("i am running \n");
-        sleep(10);
-    }
-
-    void onInterrupt() {
-        //printf("i am interrupt \n");
-        interruptVal = 2;
+        try {
+            st(Thread)::sleep(10*1000);
+        } catch(InterruptedException &e) {
+            interruptVal = 2;
+        }
+        
     }
 
     ~_RunTest1() {
@@ -41,7 +41,7 @@ int testRunnable_onInterrupt() {
 
     //void shutdown();
     while(1) {
-        ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
+        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(100,100);
         pool->submit(createRunTest1());
         sleep(1);
         pool->shutdown();

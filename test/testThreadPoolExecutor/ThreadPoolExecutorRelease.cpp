@@ -4,7 +4,7 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
+#include "ThreadPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
@@ -48,7 +48,7 @@ public:
 int releaseTest() {
     while(1) {
         {
-            ExecutorService pool = st(Executors)::newFixedThreadPool(50,8);
+            ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(50,8);
             for(int i = 0;i<50;i++) {
                 pool->submit(createReleaseunTest1());
             }

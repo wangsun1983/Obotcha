@@ -4,7 +4,7 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
+#include "ThreadPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
@@ -61,7 +61,7 @@ int normalTest() {
     while(1) {
         {
 			printf("normal test trace1 \n");
-            ExecutorService pool = st(Executors)::newFixedThreadPool(1,1);
+            ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(1,1);
 			printf("normal test trace2 \n");
             pool->shutdown();
 			printf("normal test trace3 \n");
@@ -75,7 +75,7 @@ int normalTest() {
 
     //_ThreadPoolExecutor();
     while(1) {
-        ExecutorService pool = st(Executors)::newFixedThreadPool(1,1);
+        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(1,1);
         pool->shutdown();
         printf("---[TestThreadPoolExecutor Test {constructor2()} case1] [OK]--- \n");
         break;
@@ -84,7 +84,7 @@ int normalTest() {
 
     //void shutdown();
     while(1) {
-        ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
+        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(100,100);
         pool->submit(createMyRunTest1());
         pool->shutdown();
         sleep(5);
@@ -111,7 +111,7 @@ int normalTest() {
 
     //int awaitTermination(long timeout);
     while(1) {
-        ExecutorService pool = st(Executors)::newFixedThreadPool(1,1);
+        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(1,1);
         int result = pool->awaitTermination(1000);
         if(result != -InvalidStatus) {
             printf("---[TestThreadPoolExecutor Test {awaitTermination()} case1] [FAIL]--- \n");
@@ -151,7 +151,7 @@ int normalTest() {
 
     //int awaitTermination(long timeout = 0);
     while(1) {
-        ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
+        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(100,100);
         //int result = pool->awaitTermination(0);
         //if(result != -InvalidStatus) {
         //    printf("---[TestThreadPoolExecutor Test {awaitTermination()} case5] [FAIL]--- \n");
@@ -184,7 +184,7 @@ int normalTest() {
 
     //int awaitTermination(long timeout = max);
     while(1) {
-        ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
+        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(100,100);
         pool->submit(createMyRunTest1());
         pool->shutdown();
 
@@ -203,7 +203,7 @@ int normalTest() {
 
     //int getThreadsNum();
     while(1) {
-        ExecutorService pool = st(Executors)::newFixedThreadPool(100,100);
+        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(100,100);
         if(pool->getThreadsNum() != 100) {
             printf("---[TestThreadPoolExecutor Test {getThreadsNum()} case1] [FAIL]--- \n");
             break;
@@ -215,7 +215,7 @@ int normalTest() {
 
     //submit(Runnable task);
     while(1) {
-        ExecutorService pool = st(Executors)::newFixedThreadPool(1,1);
+        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(1,1);
         Future task = pool->submit(createMyRunTest1());
         if(task == nullptr) {
             printf("---[TestThreadPoolExecutor Test {submit()} case1] [FAIL]--- \n");

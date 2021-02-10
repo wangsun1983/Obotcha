@@ -56,6 +56,16 @@ int _ThreadCachedPoolExecutor::shutdown(){
         break;
     }
 
+    {
+        AutoLock l(mHandlerMutex);
+        ListIterator<Thread> iterator = mHandlers->getIterator();
+        while(iterator->hasValue()) {
+            Thread t = iterator->getValue();
+            t->interrupt();
+            iterator->next();
+        }
+    }
+
     //notify all thread to close
     mTasks->destroy();
     return 0;
@@ -145,10 +155,10 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
         }
     }
 
-    auto handlerFunction = [this](){
+    Thread handler = createThread([](BlockingQueue<FutureTask> &tasks,long threadtimeout){
         FutureTask mCurrentTask = nullptr;
         while(1) {
-            mCurrentTask = mTasks->deQueueLast(mThreadTimeout);
+            mCurrentTask = tasks->deQueueLast(threadtimeout);
 
             if(mCurrentTask == nullptr) {
                 return;
@@ -167,8 +177,8 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
 
             mCurrentTask = nullptr;
         }
-    };
-    Thread handler = createThread(handlerFunction);
+    },mTasks,mThreadTimeout);
+    
     handler->start();
     
     {

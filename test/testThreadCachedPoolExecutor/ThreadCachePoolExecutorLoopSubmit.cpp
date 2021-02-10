@@ -4,7 +4,7 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
+#include "ThreadCachedPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
@@ -42,7 +42,7 @@ int loopsubmittest() {
           checksubmitList->set(i,0);
         }
 
-        ExecutorService pool = st(Executors)::newCachedThreadPool(100,0,20,1000);
+        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(100,0,20,1000);
         printf("start trace \n");
         for(int i = 0;i < 100000;i++) {
             //printf("trace 1,i is %d \n",i);
