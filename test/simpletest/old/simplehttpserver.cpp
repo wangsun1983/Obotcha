@@ -84,7 +84,7 @@ public:
 
 };
 
-int main() {
+int testhttpserver() {
   MyHttpListener listener = createMyHttpListener();
   HttpV1Server server = createHttpV1Server(8012,listener);
   while(1) {sleep(1000);}

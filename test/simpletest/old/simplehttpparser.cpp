@@ -14,6 +14,7 @@
 #include "ArrayList.hpp"
 
 using namespace obotcha;
+
 #if 0
 GET /login HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
@@ -61,7 +62,7 @@ Content-Disposition: form-data; name="f2"; filename=""
  
 #endif
 
-int main() {
+int testsimplehttpparser() {
 
     char *http = "HTTP/1.1 301 Moved Permanently\r\n"
          "Location: http://www.google.com/\r\n"

@@ -72,7 +72,7 @@ int _ThreadCachedPoolExecutor::shutdown(){
 }
 
 bool _ThreadCachedPoolExecutor::isTerminated() {
-    return mStatus == StatusTerminate;
+    return mStatus == StatusTerminate || mStatus == StatusShutDown;
 }
 
 void _ThreadCachedPoolExecutor::awaitTermination() {
@@ -155,12 +155,30 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
         }
     }
 
-    Thread handler = createThread([](BlockingQueue<FutureTask> &tasks,long threadtimeout){
+    Thread handler = nullptr;
+
+    handler = createThread([](BlockingQueue<FutureTask> &tasks,Mutex &mutex,ArrayList<Thread> &handlers,long threadtimeout){
         FutureTask mCurrentTask = nullptr;
         while(1) {
+            printf("cached pool start gettest threadtimeout is %d\n",threadtimeout);
             mCurrentTask = tasks->deQueueLast(threadtimeout);
-
+            printf("cached pool get a task \n");
             if(mCurrentTask == nullptr) {
+                printf("cached pool get a null task \n");
+
+                AutoLock l(mutex);
+                ListIterator<Thread> iterator = handlers->getIterator();
+                Thread handler = st(Thread)::current();
+
+                while(iterator->hasValue()) {
+                    Thread th = iterator->getValue();
+                    if(th == handler) {
+                        printf("cached pool remove this task \n");
+                        iterator->remove();
+                        return;
+                    }
+                    iterator->next();
+                }
                 return;
             }
   
@@ -177,7 +195,7 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
 
             mCurrentTask = nullptr;
         }
-    },mTasks,mThreadTimeout);
+    },mTasks,mHandlerMutex,mHandlers,mThreadTimeout);
     
     handler->start();
     

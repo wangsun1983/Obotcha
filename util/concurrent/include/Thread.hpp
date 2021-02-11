@@ -81,6 +81,8 @@ public:
 
     static int getThreadSchedPolicy();
 
+    static Thread current();
+
     enum ThreadPriority {
         LowPriority = 1,
         NormalPriority,

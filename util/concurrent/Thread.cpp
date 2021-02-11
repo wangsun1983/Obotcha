@@ -317,6 +317,10 @@ int _Thread::getThreadSchedPolicy() {
     return -1;
 }
 
+Thread _Thread::current() {
+    return mThreads->get();
+}
+
 bool _Thread::isRunning() {
     return mStatus->get() == Running;
 }
