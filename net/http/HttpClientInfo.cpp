@@ -44,7 +44,6 @@ int _HttpClientInfo::getParseStatus() {
 
 int _HttpClientInfo::pushHttpData(ByteArray array) {
     mParser->pushHttpData(array);
-    //TODO
     return 0;
 }
 

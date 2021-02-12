@@ -30,6 +30,7 @@ File _HttpResponse::getFile() {
 
 String _HttpResponse::toString() {
     //TODO
+    return nullptr;
 }
 
 

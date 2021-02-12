@@ -28,6 +28,8 @@ SecretKey _SecretKeyCreator::getInstance(String param) {
         RsaSecretKey c = createRsaSecretKey();
         return (RsaSecretKey)c;
     }
+
+    return nullptr;
 }
 
 SecretKey _SecretKeyCreator::getInstance(const char * param) {

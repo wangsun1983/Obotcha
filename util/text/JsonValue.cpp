@@ -139,7 +139,7 @@ void _JsonValue::removeAt(int index) {
 
 
 String _JsonValue::getString(String tag) {
-    getString(tag->toChars());
+    return getString(tag->toChars());
 }
 
 String _JsonValue::getString(const char * tag) {

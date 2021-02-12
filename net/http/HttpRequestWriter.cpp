@@ -220,15 +220,15 @@ String _HttpRequestWriter::generateMultiPartBoundary() {
 }
 
 int _HttpRequestWriter::flush(int size) {
-    mTcpClient->doSend(mSendBuff,size);
+    return mTcpClient->doSend(mSendBuff,size);
 }
 
 int _HttpRequestWriter::flush(ByteArray data) {
-    mTcpClient->doSend(data);
+    return mTcpClient->doSend(data);
 }
 
 int _HttpRequestWriter::flush(ByteArray data,int length) {
-    mTcpClient->doSend(data,length);
+    return mTcpClient->doSend(data,length);
 }
 
 long _HttpRequestWriter::computeContentLength(HttpRequest req,String boundary) {

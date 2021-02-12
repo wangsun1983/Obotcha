@@ -18,6 +18,7 @@ HttpUrl _HttpRequest::getUrl() {
 
 String _HttpRequest::toString() {
     //TODO
+    return nullptr;
 }
     
 }

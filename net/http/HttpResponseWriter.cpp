@@ -157,13 +157,13 @@ long _HttpResponseWriter::computeContentLength(HttpResponse response) {
         return length;
     } else {
         return response->getEntity()->getContent()->size();
-    }
+    } 
 
     return 0;
 }
 
 int _HttpResponseWriter::send(int size) {
-    mClient->send(mSendBuff,size);
+    return mClient->send(mSendBuff,size);
 }
 
 }

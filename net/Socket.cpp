@@ -30,7 +30,7 @@ int _Socket::send(ByteArray data,int size) {
 }
 
 int _Socket::send(ByteArray data) {
-    this->send(data,data->size());
+    return this->send(data,data->size());
 }
 
 int _Socket::getFd() {

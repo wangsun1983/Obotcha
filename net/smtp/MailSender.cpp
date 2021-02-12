@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <string>
 #include <stdio.h>
+#include <time.h>
 
 #include "FileInputStream.hpp"
 #include "MailSender.hpp"
@@ -180,6 +181,8 @@ _MailSender::_MailSender() {
 
 _MailSender::~_MailSender() {
     disconnectRemoteServer();
+    delete mSendBuf;
+    delete mRecvBuf;
 }
 
 int _MailSender::send() {
@@ -522,9 +525,9 @@ int _MailSender::connectRemoteServer() {
             md5pass2.finalize();
             decoded_challenge = (char *)md5pass2.hex_digest();
 
-            delete[] ustrChallenge;
-            delete[] ustrPassword;
-            delete[] ustrResult;
+            delete ustrChallenge;
+            delete ustrPassword;
+            delete ustrResult;
 
             decoded_challenge = mConnection->mUsername->getStdString() + " " + decoded_challenge;
             encoded_challenge = mBase64->encode(createString(decoded_challenge))->getStdString();
@@ -662,7 +665,7 @@ int _MailSender::connectRemoteServer() {
             md5a2.finalize();
             char *a2 = (char *)md5a2.hex_digest();
 
-            delete[] ua1;
+            delete ua1;
             ua1 = charToUnsignedChar(a1);
             unsigned char *ua2 = charToUnsignedChar(a2);
             
@@ -691,10 +694,10 @@ int _MailSender::connectRemoteServer() {
             delete[] ustrUri;
             delete[] ustrNc;
             delete[] ustrQop;
-            delete[] ua1;
+            delete ua1;
             delete[] ua2;
-            delete[] a1;
-            delete[] a2;
+            delete a1;
+            delete a2;
 
             //send the response
             if(strstr(mRecvBuf, "charset") >=0 ) {
@@ -748,6 +751,8 @@ int _MailSender::disconnectRemoteServer() {
 		close(mConnection->mSocket);
         mConnection->mSocket = -1;
 	}
+
+    return 0;
 }
 
 int _MailSender::initOpenSSL() {
@@ -1180,6 +1185,7 @@ int _MailSender::sayQuit() {
     mConnected=false;
     sendData(pEntry);
     receiveResponse(pEntry);
+    return 0;
 }
 
 unsigned char* _MailSender::charToUnsignedChar(const char *strIn) {
@@ -1260,12 +1266,12 @@ int _MailSender::formatHeader(char* header) {
 	std::string to;
 	std::string cc;
 	std::string bcc;
-	time_t rawtime;
-	struct tm* timeinfo;
+	time_t rawtime = time(0);
+	struct tm timeinfo;
 
 	// date/time check
 	if(time(&rawtime) > 0) {
-		timeinfo = localtime(&rawtime);
+		localtime_r(&rawtime,&timeinfo);
     } else {
         return -1;
     }
@@ -1283,6 +1289,7 @@ int _MailSender::formatHeader(char* header) {
         to += recipient->mail->getStdString();
         to.append(">");
         iterator->next();
+        index++;
     }
 
     index = 0;
@@ -1297,12 +1304,13 @@ int _MailSender::formatHeader(char* header) {
         cc += recipient->mail->getStdString();
         cc.append(">");
         iterator->next();
+        index++;
     }
 	
 	// Date: <SP> <dd> <SP> <mon> <SP> <yy> <SP> <hh> ":" <mm> ":" <ss> <SP> <zone> <CRLF>
-	snprintf(header, BuffSize, "Date: %d %s %d %d:%d:%d\r\n", timeinfo->tm_mday,
-	         month[timeinfo->tm_mon], timeinfo->tm_year+1900, timeinfo->tm_hour,
-             timeinfo->tm_min, timeinfo->tm_sec); 
+	snprintf(header, BuffSize, "Date: %d %s %d %d:%d:%d\r\n", timeinfo.tm_mday,
+	         month[timeinfo.tm_mon], timeinfo.tm_year+1900, timeinfo.tm_hour,
+             timeinfo.tm_min, timeinfo.tm_sec); 
 	
 	// From: <SP> <sender>  <SP> "<" <sender-email> ">" <CRLF>
 	strcat(header,"From: "); 

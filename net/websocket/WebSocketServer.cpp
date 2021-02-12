@@ -508,6 +508,7 @@ int _WebSocketServer::start() {
 int _WebSocketServer::release() {
     mWsEpollObserver->release();
     mDispatchPool->release();
+    return 0;
 }
 
 //WebSocket Epoll listener

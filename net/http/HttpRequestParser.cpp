@@ -112,7 +112,7 @@ void _HttpRequestParser::pushHttpData(ByteArray data) {
     //printf("mBuffSize is %ld,data size is %ld \n",mBuff->getSize(),data->size());
     try {
         mBuff->push(data);
-    } catch(ArrayIndexOutOfBoundsException) {
+    } catch(ArrayIndexOutOfBoundsException &e) {
         //TODO
     }
 }
@@ -205,7 +205,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                     if(mMultiPartParser == nullptr) {
                         try {
                             mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength->toBasicInt());
-                        } catch(InitializeException e){}
+                        } catch(InitializeException &e){}
                     }
 
                     if(mMultiPartParser != nullptr) {
