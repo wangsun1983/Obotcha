@@ -160,12 +160,8 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
     handler = createThread([](BlockingQueue<FutureTask> &tasks,Mutex &mutex,ArrayList<Thread> &handlers,long threadtimeout){
         FutureTask mCurrentTask = nullptr;
         while(1) {
-            printf("cached pool start gettest threadtimeout is %d\n",threadtimeout);
             mCurrentTask = tasks->deQueueLast(threadtimeout);
-            printf("cached pool get a task \n");
-            if(mCurrentTask == nullptr) {
-                printf("cached pool get a null task \n");
-
+            if(mCurrentTask == nullptr) {                
                 AutoLock l(mutex);
                 ListIterator<Thread> iterator = handlers->getIterator();
                 Thread handler = st(Thread)::current();
@@ -173,7 +169,6 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
                 while(iterator->hasValue()) {
                     Thread th = iterator->getValue();
                     if(th == handler) {
-                        printf("cached pool remove this task \n");
                         iterator->remove();
                         return;
                     }

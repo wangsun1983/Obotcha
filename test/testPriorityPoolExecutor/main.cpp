@@ -4,12 +4,13 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
+#include "ThreadPriorityPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
+#include "InterruptedException.hpp"
 
 using namespace obotcha;
 
@@ -19,7 +20,7 @@ extern int releaseTest();
 extern int testThreadShutdown();
 extern int testThreadDestroy();
 extern int testSequence();
-extern int submitloop();
+extern int testThreadLambda();
 
 int main() {
 
@@ -36,7 +37,7 @@ int main() {
     sleep(1);
     testSequence();
     sleep(1);
-    //submitloop();
+    testThreadLambda();
 
     sleep(10);
     return 1;

@@ -10,7 +10,7 @@ _Timer::_Timer() {
 }
 
 void _Timer::schedule(Runnable r,long m) {
-    mScheduledExecutor->schedule(r,m);
+    mScheduledExecutor->schedule(m,r);
 }
 
 void _Timer::schedule(Runnable r,DateTime t) {
@@ -18,7 +18,7 @@ void _Timer::schedule(Runnable r,DateTime t) {
     if(interval < 0) {
         return;
     }
-    mScheduledExecutor->schedule(r,interval);
+    mScheduledExecutor->schedule(interval,r);
 }
 
 _Timer::~_Timer() {

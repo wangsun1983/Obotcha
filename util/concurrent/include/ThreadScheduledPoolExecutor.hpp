@@ -15,7 +15,6 @@
 #include "ThreadPoolExecutor.hpp"
 #include "FutureTask.hpp"
 #include "Future.hpp"
-#include "ScheduledExecutorService.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
 #include "HashMap.hpp"
 #include "Thread.hpp"
@@ -49,11 +48,10 @@ public:
 
     void onComplete();
     
-    sp<_WaitingTask> parent;
-    sp<_WaitingTask> left; //smaller or equal 
-    sp<_WaitingTask> right; //larger                 
+    sp<_WaitingTask> next;
+                 
 private:
-    long int mNextTime;
+    long int nextTime;
     int mScheduleTaskType;
     long int repeatDelay;
     _ThreadScheduledPoolExecutor *mExecutor;
@@ -69,8 +67,6 @@ public:
 
     int shutdown();
 
-    int execute(Runnable command);
-
     void awaitTermination();
 
     int awaitTermination(long timeout);
@@ -80,26 +76,94 @@ public:
     void setAsTerminated();
 
     bool isTerminated();
+    
+    template<typename X>
+    Future schedule(long delay,sp<X> r) {
+        if(isShutdown() || isTerminated()) {
+            return nullptr;
+        }
+        WaitingTask task = createWaitingTask(r);
+        task->init(delay,ScheduletTaskNormal,-1);
+        task->setExecutor(this);
 
-    Future submit(Runnable task);
+        addWaitingTask(task);
 
-    Future schedule(Runnable command,long delay);
+        Future future = createFuture(task);
+        return future;
+    }
 
-    Future scheduleAtFixedRate(Runnable r,
-                                long initialDelay,
-                                long period);
+    template< class Function, class... Args >
+    Future schedule(long delay,Function&& f, Args&&... args) {
+        if(isShutdown() || isTerminated()) {
+            return nullptr;
+        }
+        Runnable r = createLambdaRunnable(f,args...);
+        WaitingTask task = createWaitingTask(r);
+        task->init(delay,ScheduletTaskNormal,-1);
+        task->setExecutor(this);
+        addWaitingTask(task);
+        Future future = createFuture(task);
+        return future;
+    }
+    
+#if 0
+    template<typename X>
+    Future scheduleAtFixedRate( long initialDelay,
+                                long period,
+                                sp<X> r) {
+        if(isShutdown() || isTerminated()) {
+            return nullptr;
+        }
+        WaitingTask task = createWaitingTask(r);
+        task->init(initialDelay,ScheduletTaskFixRate,period);
+        task->setExecutor(this);
+        addWaitingTask(task);
+        Future future = createFuture(task);
+        return future;
+    }
 
-    Future scheduleWithFixedDelay(Runnable r,
-                                long initialDelay,
-                                long delay);
+    template< class Function, class... Args >
+    Future scheduleAtFixedRate( long initialDelay,
+                                long period,
+                                Function&& f, Args&&... args ) {
+        if(isShutdown() || isTerminated()) {
+            return nullptr;
+        }
+        Runnable r = createLambdaRunnable(f,args...);
+        return scheduleAtFixedRate(initialDelay,period,r);                        
+    }
+
+    template<typename X>
+    Future scheduleWithFixedDelay(long initialDelay,
+                                long delay,
+                                sp<X> r) {
+        if(isShutdown() || isTerminated()) {
+            return nullptr;
+        }
+        WaitingTask task = createWaitingTask(r);
+        task->init(initialDelay,ScheduletTaskFixedDelay,delay);
+
+        Future future = createFuture(task);
+        return future;
+    }
+
+    template< class Function, class... Args >
+    Future scheduleWithFixedDelay( long initialDelay,
+                                long period,
+                                Function&& f, Args&&... args ) {
+        if(isShutdown() || isTerminated()) {
+            return nullptr;
+        }
+        Runnable r = createLambdaRunnable(f,args...);
+        return scheduleWithFixedDelay(initialDelay,period,r);                        
+    }
+#endif
 
     int getThreadsNum();
 
-    void addWaitingTask(WaitingTask);
-    WaitingTask getWaitingTask();                  
+    void addWaitingTask(WaitingTask);                
 
 private:
-    //ScheduledThreadPoolThread  mTimeThread;
     void run();
 
     WaitingTask newFixedRateWaitingTask(Runnable command,
@@ -121,10 +185,10 @@ private:
     void init(int size,bool isDyn);
 
     Mutex mTaskMutex;
-    WaitingTask mRoot;
+    //WaitingTask mRoot;
     Condition mTaskWaitCond; 
 
-    WaitingTask mCurrentTask;
+    WaitingTask mTaskPool;
 };
 
 }

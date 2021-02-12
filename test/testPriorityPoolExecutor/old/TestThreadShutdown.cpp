@@ -10,7 +10,6 @@
 #include "ThreadPriorityPoolExecutor.hpp"
 #include "Error.hpp"
 #include "Executors.hpp"
-#include "InterruptedException.hpp"
 
 using namespace obotcha;
 
@@ -34,11 +33,7 @@ public:
 
     void run() {
         printf("i am running123 \n");
-        try {
-            st(Thread)::sleep(10);
-        } catch(InterruptedException &e){
-            count++;
-        }
+        sleep(10);
     }
 
     void onInterrupt() {

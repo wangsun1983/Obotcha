@@ -30,6 +30,12 @@ DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) {
 
 public:
     friend class _PriorityPoolThread;
+    enum Priority {
+        PriorityLow = 0,
+        PriorityMedium,
+        PriorityHigh,
+        PriorityNoUse
+    };
 
     _ThreadPriorityPoolExecutor();
 
@@ -43,6 +49,14 @@ public:
             return -InvalidStatus;
         }
 
+        return 0;
+    }
+
+    template< class Function, class... Args >
+    int execute(int priority, Function&& f, Args&&... args ) {
+        if(submit(priority,createLambdaRunnable(f,args...)) == nullptr){
+            return -InvalidStatus;
+        };
         return 0;
     }
 
@@ -70,17 +84,17 @@ public:
         {
             AutoLock l(mTaskMutex);
             switch(prioTask->priority) {
-                case st(ThreadPriorityPoolExecutor)::PriorityHigh:
+                case PriorityHigh:
                     mHighPriorityTasks->enQueueLast(prioTask);
                     mTaskCond->notify();
                 break;
 
-                case st(ThreadPriorityPoolExecutor)::PriorityMedium:
+                case PriorityMedium:
                     mMidPriorityTasks->enQueueLast(prioTask);
                     mTaskCond->notify();
                 break;
 
-                case st(ThreadPriorityPoolExecutor)::PriorityLow:
+                case PriorityLow:
                     mLowPriorityTasks->enQueueLast(prioTask);
                     mTaskCond->notify();
                 break;
@@ -95,19 +109,10 @@ public:
         return submit(priority,createLambdaRunnable(f,args...));
     }
 
-    void onCancel(FutureTask);
-
     int getThreadsNum();
 
     ~_ThreadPriorityPoolExecutor();
     
-    enum Priority {
-        PriorityLow = 0,
-        PriorityMedium,
-        PriorityHigh,
-        PriorityNoUse
-    };
-
 private:
     Mutex mTaskMutex;
     Condition mTaskCond;
@@ -129,8 +134,6 @@ private:
     Mutex mWaitMutex;
     
     Condition mWaitCondition;
-
-    PriorityTask getTask();
 };
 
 }

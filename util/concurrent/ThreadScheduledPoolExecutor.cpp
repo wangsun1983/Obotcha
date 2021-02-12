@@ -14,6 +14,7 @@ namespace obotcha {
 //---------------WaitingTask---------------//
 _WaitingTask::_WaitingTask(Runnable r):_FutureTask(r) {
     //nothing
+    next = nullptr;
 }
 
 void _WaitingTask::setExecutor(_ThreadScheduledPoolExecutor *p) {
@@ -21,7 +22,7 @@ void _WaitingTask::setExecutor(_ThreadScheduledPoolExecutor *p) {
 }
 
 void _WaitingTask::init(long int interval,int type,int repeat) {
-    mNextTime = st(System)::currentTimeMillis() + interval;
+    nextTime = st(System)::currentTimeMillis() + interval;
     mScheduleTaskType = type;
     repeatDelay = repeat;
 }
@@ -35,7 +36,7 @@ void _WaitingTask::onComplete() {
 
         case ScheduletTaskFixedDelay: {
             WaitingTask task = AutoClone(this);
-            task->mNextTime = (st(System)::currentTimeMillis() + task->repeatDelay);
+            task->nextTime = (st(System)::currentTimeMillis() + task->repeatDelay);
             mExecutor->addWaitingTask(task);
         }
         break;
@@ -54,16 +55,9 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor() {
     
     mTaskMutex = createMutex("scheduleTaskMutex");
     mTaskWaitCond = createCondition();
+    start();
 }
 
-int _ThreadScheduledPoolExecutor::execute(Runnable runnable) {
-    
-    if(submit(runnable) == nullptr) {
-        return -InvalidStatus;
-    }
-
-    return 0;
-}
 
 int _ThreadScheduledPoolExecutor::getThreadsNum() {
     Trigger(MethodNotSupportException,"getThreadsNum not support");
@@ -80,28 +74,18 @@ int _ThreadScheduledPoolExecutor::shutdown() {
 
         mIsShutDown = true;
     }
-    
     //clear all task
     {
         AutoLock l(mTaskMutex);
-        if(mCurrentTask != nullptr) {
-            mCurrentTask->cancel();
-        }
-
-        while(1) {
-            WaitingTask task = getWaitingTask();
-            if(task == nullptr) {
-                break;
-            }
-
+        WaitingTask task = mTaskPool;
+        while(task != nullptr) {
             task->cancel();
+            task = task->next;
         }
     }
 
     mTaskWaitCond->notify();
-
     mCachedExecutor->shutdown();
-    
     return 0;
 }
 
@@ -126,109 +110,37 @@ int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
     return mCachedExecutor->awaitTermination(timeout);
 }
 
-Future _ThreadScheduledPoolExecutor::submit(Runnable r) {
-    {
-        AutoLock l(mStatusMutex);
-
-        if(mIsShutDown) {
-            return nullptr;
-        }
-    }
-
-    return schedule(r,0);
-}
-
-Future _ThreadScheduledPoolExecutor::schedule(Runnable r,long delay) {
-    WaitingTask task = createWaitingTask(r);
-    task->init(delay,ScheduletTaskNormal,-1);
-    task->setExecutor(this);
-
-    Future future = createFuture(task);
-    return future;
-}
-
-Future _ThreadScheduledPoolExecutor::scheduleAtFixedRate(Runnable r,
-                                long initialDelay,
-                                long period) {
-    WaitingTask task = createWaitingTask(r);
-    task->init(initialDelay,ScheduletTaskFixRate,period);
-    task->setExecutor(this);
-
-    Future future = createFuture(task);
-    return future;
-}
-
-Future _ThreadScheduledPoolExecutor::scheduleWithFixedDelay(Runnable r,
-                                long initialDelay,
-                                long delay) {
-    WaitingTask task = createWaitingTask(r);
-    task->init(initialDelay,ScheduletTaskFixedDelay,delay);
-
-    Future future = createFuture(task);
-    return future;
-}
-
-WaitingTask _ThreadScheduledPoolExecutor::getWaitingTask() {
-    AutoLock ll(mTaskMutex);
-    WaitingTask task = mRoot;
-    if(task == nullptr) {
-        return nullptr;
-    }
-
-    while(1) {
-        if(task->left == nullptr) {
-            break;
-        }
-        task = task->left;
-    }
-    
-    if(task->parent == nullptr) {
-        //this is a Root
-        mRoot == task->right;
-        return task;
-    }
-
-    task->parent->left = task->right;
-    if(task->right != nullptr) {
-        task->right->parent = task->parent;
-    }
-
-    return task;
-}
-
-void _ThreadScheduledPoolExecutor::addWaitingTask(WaitingTask t) {
+void _ThreadScheduledPoolExecutor::addWaitingTask(WaitingTask task) {
     AutoLock ll(mTaskMutex);
     if(mIsShutDown) {
         return;
     }
 
-    if(mRoot == nullptr) {
-        mRoot = t;
-        return;
-    }
-
-    WaitingTask task = mRoot;
-    while(1) {
-        if(t->mNextTime <= task->mNextTime) {
-            if(task->left == nullptr) {
-                task->left = t;
-                t->parent = task;
+    if(mTaskPool == nullptr) {
+        mTaskPool = task;
+    } else {
+        WaitingTask p = mTaskPool;
+        WaitingTask prev = mTaskPool;
+        for (;;) {
+            if(p->nextTime > task->nextTime) {
+                if(p == mTaskPool) {
+                    task->next = p;
+                    mTaskPool = task;
+                } else {
+                    prev->next = task;
+                    task->next = p;
+                }
                 break;
-            } 
-            task = task->left;
-            continue;
-        }
-
-        if(t->mNextTime > task->mNextTime) {
-            if(task->right == nullptr) {
-                task->right = t;
-                t->parent = task;
+            } else {
+                prev = p;
+                p = p->next;
+                if(p == nullptr) {
+                    prev->next = task;
+                    break;
+                }
             }
-            task = task->right;
-            continue;
         }
     }
-    
     mTaskWaitCond->notify();
 }
 
@@ -241,22 +153,33 @@ void _ThreadScheduledPoolExecutor::run() {
             }
         }
 
-        AutoLock ll(mTaskMutex);
-        mCurrentTask = getWaitingTask();
-        if(mCurrentTask == nullptr) {
-            mTaskWaitCond->wait(mTaskMutex);
-            continue;
+        WaitingTask mCurrentTask = nullptr;
+        {
+            AutoLock ll(mTaskMutex);
+            if(mTaskPool == nullptr) {
+                mTaskWaitCond->wait(mTaskMutex);
+                continue;
+            }else if(mTaskPool != nullptr) {
+                long interval = (mTaskPool->nextTime - st(System)::currentTimeMillis());
+                if(interval <= 0) {
+                    mCurrentTask = mTaskPool;
+                    mTaskPool = mTaskPool->next;
+                } else {
+                    mTaskWaitCond->wait(mTaskMutex,interval);
+                    continue;
+                }
+            }
         }
 
         if(mCurrentTask->getStatus() == st(Future)::Cancel) {
             continue;
         }
 
-        int interval = mCurrentTask->mNextTime - st(System)::currentTimeMillis();
+        int interval = mCurrentTask->nextTime - st(System)::currentTimeMillis();
         if(interval <= 0) {
             mCachedExecutor->submit((FutureTask)mCurrentTask);
             if(mCurrentTask->mScheduleTaskType == ScheduletTaskFixRate) {
-                mCurrentTask->mNextTime = (st(System)::currentTimeMillis() + mCurrentTask->repeatDelay);
+                mCurrentTask->nextTime = (st(System)::currentTimeMillis() + mCurrentTask->repeatDelay);
                 addWaitingTask(mCurrentTask);
             }
         } else {

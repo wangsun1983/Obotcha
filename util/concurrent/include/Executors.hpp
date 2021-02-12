@@ -8,10 +8,9 @@
 #include "StrongPointer.hpp"
 #include "Runnable.hpp"
 #include "ThreadPoolExecutor.hpp"
-#include "ThreadScheduledPoolExecutor.hpp"
-#include "ScheduledExecutorService.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
 #include "ThreadPriorityPoolExecutor.hpp"
+#include "ThreadScheduledPoolExecutor.hpp"
 #include "LinkedList.hpp"
 #include "Thread.hpp"
 
@@ -24,16 +23,14 @@ public:
     static ThreadPoolExecutor newFixedThreadPool(int thread_num);
 
     static ThreadPoolExecutor newSingleThreadExecutor(int queue_size);
-    //static ExecutorService newWorkStealingPool(int parallelism);
-    //static ExecutorService newWorkStealingPool();
     
     static ThreadCachedPoolExecutor newCachedThreadPool(int queue_size,int maxthreadnum,int minthreadnum,long timeout);
     static ThreadCachedPoolExecutor newCachedThreadPool(int maxthreadnum,long timeout);
     static ThreadCachedPoolExecutor newCachedThreadPool();
 
 
-    static ScheduledExecutorService newSingleThreadScheduledExecutor();
-    static ScheduledExecutorService newScheduledThreadPool();
+    static ThreadScheduledPoolExecutor newSingleThreadScheduledExecutor();
+    static ThreadScheduledPoolExecutor newScheduledThreadPool();
 
     static ThreadPriorityPoolExecutor newPriorityThreadPool(int thread_num);
     static ThreadPriorityPoolExecutor newPriorityThreadPool();

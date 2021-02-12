@@ -33,8 +33,7 @@ public:
 DECLARE_SIMPLE_CLASS(SequenceTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        //printf("test1111111, startValue is %d \n",startValue);
-        sleep(1);
+        //printf("test1 \n");
         Sequence1 = startValue;
         startValue++;
     }

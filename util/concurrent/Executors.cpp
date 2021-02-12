@@ -28,17 +28,6 @@ ThreadPoolExecutor _Executors::newSingleThreadExecutor(int queue_size) {
     return createThreadPoolExecutor(queue_size,1);
 }
 
-/* 
-ExecutorService _Executors::newWorkStealingPool(int parallelism) {
-    //TODO
-    return nullptr;
-}
-
-ExecutorService _Executors::newWorkStealingPool() {
-    //TODO
-    return nullptr;
-}
-*/
 ThreadPriorityPoolExecutor _Executors::newPriorityThreadPool(int thread_num) {
     return createThreadPriorityPoolExecutor(thread_num);
 }
@@ -59,12 +48,12 @@ ThreadCachedPoolExecutor _Executors::newCachedThreadPool() {
     return createThreadCachedPoolExecutor();
 }
 
-ScheduledExecutorService _Executors::newSingleThreadScheduledExecutor() {
+ThreadScheduledPoolExecutor _Executors::newSingleThreadScheduledExecutor() {
     //TODO
     return nullptr;
 }
 
-ScheduledExecutorService _Executors::newScheduledThreadPool() {
+ThreadScheduledPoolExecutor _Executors::newScheduledThreadPool() {
     return createThreadScheduledPoolExecutor();
 }
 
