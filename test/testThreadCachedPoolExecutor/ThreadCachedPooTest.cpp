@@ -17,6 +17,7 @@ extern int numTest();
 extern int releaseTest();
 extern int loopsubmittest();
 extern int cancelTest();
+extern int testThreadLambda();
 
 int main() {
     normalTest();
@@ -24,5 +25,6 @@ int main() {
     releaseTest();
     loopsubmittest();
     cancelTest();
+    testThreadLambda();
     sleep(10);
 }

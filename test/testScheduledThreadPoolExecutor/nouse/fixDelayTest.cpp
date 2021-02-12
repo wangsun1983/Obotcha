@@ -4,17 +4,17 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
 #include "System.hpp"
+#include "ThreadScheduledPoolExecutor.hpp"
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(FixRateRunTest1) IMPLEMENTS(Runnable) {
+DECLARE_SIMPLE_CLASS(FixDelayRunTest1) IMPLEMENTS(Runnable) {
 public:
-    _FixRateRunTest1(int s) {
+    _FixDelayRunTest1(int s) {
       startTime = 0;
       recordFinishTime = 0;
       v = createArrayList<Long>();
@@ -44,7 +44,7 @@ public:
       return startTime;
     }
 
-    ~_FixRateRunTest1() {
+    ~_FixDelayRunTest1() {
         //printf("i am release .......aaaa,p is %x\n",this);
     }
 
@@ -57,13 +57,13 @@ private:
 };
 
 
-int fixRateTest() {
+int fixDelayTest() {
     while(1) {
-        ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
-        FixRateRunTest1 r = createFixRateRunTest1(3);
+        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        FixDelayRunTest1 r = createFixDelayRunTest1(3);
 
         long startRun = st(System)::currentTimeMillis();
-        pool->scheduleAtFixedRate(r,1000,1000);
+        pool->scheduleWithFixedDelay(1000,1000,r);
         sleep(15);
 
         pool->shutdown();
@@ -71,33 +71,33 @@ int fixRateTest() {
         ListIterator<Long> iterator = list->getIterator();
         while(iterator->hasValue()) {
           Long l = iterator->getValue();
-          if(l->toValue() > 5) {
-            printf("---[ScheduledThreadPoolExecutor fixRateTest case1] [FAIL]--- \n");
+          if(l->toValue() > 1005 || l->toValue() < 995) {
+            printf("---[ScheduledThreadPoolExecutor fixDelayTest case1] [FAIL]--- \n");
             break;
           }
           iterator->next();
         }
 
         if(list->size() == 0) {
-          printf("---[ScheduledThreadPoolExecutor fixRateTest case2] [FAIL]--- \n");
+          printf("---[ScheduledThreadPoolExecutor fixDelayTest case2] [FAIL]--- \n");
           break;
         }
 
         long current = st(System)::currentTimeMillis();
         if((r->getStartTime() - startRun) > 1005) {
-            printf("---[ScheduledThreadPoolExecutor fixRateTest case3] [FAIL] v is %ld--- \n",current - r->getStartTime());
+            printf("---[ScheduledThreadPoolExecutor fixDelayTest case3] [FAIL] v is %ld--- \n",current - r->getStartTime());
         }
 
-        printf("---[ScheduledThreadPoolExecutor fixRateTest case4] [Success]--- \n");
+        printf("---[ScheduledThreadPoolExecutor fixDelayTest case4] [Success]--- \n");
         break;
     }
 
     while(1) {
-        ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
-        FixRateRunTest1 r = createFixRateRunTest1(1);
+        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        FixDelayRunTest1 r = createFixDelayRunTest1(1);
 
         long startRun = st(System)::currentTimeMillis();
-        pool->scheduleAtFixedRate(r,1000,2000);
+        pool->scheduleAtFixedRate(1000,2000,r);
         sleep(15);
 
         pool->shutdown();
@@ -105,24 +105,24 @@ int fixRateTest() {
         ListIterator<Long> iterator = list->getIterator();
         while(iterator->hasValue()) {
           Long l = iterator->getValue();
-          if(l->toValue() > 1010 || l->toValue() < 995) {
-            printf("---[ScheduledThreadPoolExecutor fixRateTest case5] [FAIL] v is %d--- \n",l->toValue());
+          if(l->toValue() > 1005 || l->toValue() < 995) {
+            printf("---[ScheduledThreadPoolExecutor fixDelayTest case5] [FAIL] v is %d--- \n",l->toValue());
             break;
           }
           iterator->next();
         }
 
         if(list->size() == 0) {
-          printf("---[ScheduledThreadPoolExecutor fixRateTest case6] [FAIL]--- \n");
+          printf("---[ScheduledThreadPoolExecutor fixDelayTest case6] [FAIL]--- \n");
           break;
         }
 
         long current = st(System)::currentTimeMillis();
-        if((r->getStartTime() - startRun) > 1005) {
-            printf("---[ScheduledThreadPoolExecutor fixRateTest case7] [FAIL] v is %ld--- \n",current - r->getStartTime());
+        if((r->getStartTime() - startRun) > 1010) {
+            printf("---[ScheduledThreadPoolExecutor fixDelayTest case7] [FAIL] v is %ld--- \n",r->getStartTime() - startRun);
         }
 
-        printf("---[ScheduledThreadPoolExecutor fixRateTest case8] [Success]--- \n");
+        printf("---[ScheduledThreadPoolExecutor fixDelayTest case8] [Success]--- \n");
         break;
     }
 

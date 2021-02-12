@@ -4,7 +4,7 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
+#include "ThreadScheduledPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
@@ -44,7 +44,7 @@ int baseTest() {
 
     //_ScheduledThreadPoolExecutor()
     while(1) {
-        ExecutorService pool = st(Executors)::newScheduledThreadPool();
+        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
 
         pool->shutdown();
         printf("---[ScheduledThreadPoolExecutor Test {constructor()} case1] [Success]--- \n");
@@ -54,23 +54,28 @@ int baseTest() {
 
     //void shutdown();
     while(1) {
-        ExecutorService pool = st(Executors)::newScheduledThreadPool();
-        pool->submit(createBaseRunTest1());
+        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        printf("shudown trace1 \n");
+        pool->schedule(0,createBaseRunTest1());
+        printf("shudown trace2 \n");
         pool->shutdown();
+        printf("shudown trace3 \n");
         sleep(5);
+        printf("shudown trace4 \n");
         //if(!pool->isShutdown()) {
         //    printf("---[ScheduledThreadPoolExecutor Test {shutdown()} case1] [FAIL]--- \n");
         //    break;
         //}
 
-        Future task = pool->submit(createBaseRunTest1());
+        Future task = pool->schedule(0,createBaseRunTest1());
+        printf("shudown trace5 \n");
         if(task != nullptr) {
             printf("---[ScheduledThreadPoolExecutor Test {shutdown()} case2] [FAIL]--- \n");
             break;
         }
 
-        int result = pool->execute(createBaseRunTest1());
-        if(result != -InvalidStatus) {
+        auto result = pool->schedule(0,createBaseRunTest1());
+        if(result != nullptr) {
             printf("---[ScheduledThreadPoolExecutor Test {shutdown()} case3] [FAIL]--- \n");
             break;
         }
@@ -82,7 +87,7 @@ int baseTest() {
 
     //int awaitTermination(long timeout);
     while(1) {
-        ExecutorService pool = st(Executors)::newScheduledThreadPool();
+        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
         int result = pool->awaitTermination(1000);
         if(result != -InvalidStatus) {
             printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case1] [FAIL]--- \n");
@@ -92,7 +97,7 @@ int baseTest() {
         //runTest2Mutex = createMutex();
         //runTest2Mutex->lock();
 
-        pool->submit(createBaseRunTest2());
+        pool->schedule(0,createBaseRunTest2());
         sleep(1);
         pool->shutdown();
 
@@ -118,14 +123,14 @@ int baseTest() {
 
     //int awaitTermination(long timeout = 0);
     while(1) {
-        ExecutorService pool = st(Executors)::newScheduledThreadPool();
+        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
         int result = pool->awaitTermination(0);
         if(result != -InvalidStatus) {
             printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case5] [FAIL]--- \n");
             break;
         }
 
-        pool->submit(createBaseRunTest1());
+        pool->schedule(0,createBaseRunTest1());
         int v = pool->shutdown();
         printf("v is %d \n",v);
 
@@ -153,8 +158,8 @@ int baseTest() {
 
     //int awaitTermination(long timeout = max);
     while(1) {
-        ExecutorService pool = st(Executors)::newScheduledThreadPool();
-        pool->submit(createBaseRunTest1());
+        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        pool->schedule(0,createBaseRunTest1());
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
@@ -174,8 +179,8 @@ int baseTest() {
 
     //submit(Runnable task);
     while(1) {
-        ExecutorService pool = st(Executors)::newScheduledThreadPool();
-        Future task = pool->submit(createBaseRunTest1());
+        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        Future task = pool->schedule(0,createBaseRunTest1());
         if(task == nullptr) {
             printf("---[ScheduledThreadPoolExecutor Test {submit()} case1] [FAIL]--- \n");
             break;

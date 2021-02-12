@@ -4,7 +4,7 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
+#include "ThreadScheduledPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
@@ -16,8 +16,8 @@ using namespace obotcha;
 extern int baseTest();
 extern int scheduleTest();
 extern int ReleaseTest();
-extern int fixRateTest();
-extern int fixDelayTest();
+//extern int fixRateTest();
+//extern int fixDelayTest();
 extern int scheduleloopsubmit();
 
 int main() {
@@ -25,8 +25,8 @@ int main() {
     baseTest();
     scheduleTest();
     ReleaseTest();
-    fixRateTest();
-    fixDelayTest();
+    //fixRateTest();
+    //fixDelayTest();
     scheduleloopsubmit();
     sleep(10);
 

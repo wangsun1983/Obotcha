@@ -4,7 +4,7 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
+#include "ThreadScheduledPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
@@ -41,9 +41,9 @@ int ReleaseTest() {
 
     while(1) {
         {
-            ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
+            ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
             for(int i = 0; i < 50;i++) {
-                pool->schedule(createMyReleaseTest(),100);
+                pool->schedule(100,createMyReleaseTest());
             }
             //printf("test1 pool size is %d \n",pool->getStrongCount());
             sleep(2);
@@ -62,9 +62,9 @@ int ReleaseTest() {
         {
 //printf("start another test1 \n");
 
-            ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
+            ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
             for(int i = 0; i < 50;i++) {
-                pool->schedule(createMyReleaseTest(),100);
+                pool->schedule(100,createMyReleaseTest());
             }
 
             sleep(3);

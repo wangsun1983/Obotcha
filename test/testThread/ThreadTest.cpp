@@ -37,7 +37,6 @@ int main() {
     //testThreadLoopInterrypt(); no use
     //testThreadClose(); no use
 
-#if 0
     testThreadStart();
     testThreadJoin();
     testThreadInterruptCase();
@@ -46,7 +45,6 @@ int main() {
     testThreadRelease();
     testThreadLoopCreate();
     testThreadLoopJoin();
-#endif    
     testThreadLambda();
     sleep(10);
 }

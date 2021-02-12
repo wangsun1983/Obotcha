@@ -5,6 +5,7 @@
 #include "Message.hpp"
 #include "System.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
+#include "ThreadPriorityPoolExecutor.hpp"
 
 
 using namespace obotcha;
@@ -32,9 +33,10 @@ public:
 
 int main() {
     
-    ThreadCachedPoolExecutor t = createThreadCachedPoolExecutor();
+    //ThreadCachedPoolExecutor t = createThreadCachedPoolExecutor();
+    ThreadPriorityPoolExecutor t = createThreadPriorityPoolExecutor();
     int vv1 = 21;
-    t->submit(createRunTest1());
+    t->submit(st(ThreadPriorityPoolExecutor)::PriorityMedium,createRunTest1());
     //sleep(1);
     //t->shutdown();
     sleep(20);

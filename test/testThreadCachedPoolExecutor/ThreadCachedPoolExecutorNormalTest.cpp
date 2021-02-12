@@ -261,7 +261,7 @@ int normalTest() {
         sleep(100);
         printf("start submit task4 \n");
         if(pool->getThreadsNum() != 0) {
-            printf("---[TestCachedPoolExecutor Test {submit()} case5] [FAIL]--- \n");
+            printf("---[TestCachedPoolExecutor Test {submit()} case5] [FAIL]---,pool->getThreadsNum() is %d \n",pool->getThreadsNum());
             break;
         }
         printf("start submit task5 \n");

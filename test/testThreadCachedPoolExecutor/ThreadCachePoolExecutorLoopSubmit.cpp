@@ -39,7 +39,7 @@ int loopsubmittest() {
     while(1) {
         printf("checksubmitList size is %d\n",checksubmitList->size());
         for(int i = 0; i < 100000;i++) {
-          checksubmitList->set(i,0);
+          checksubmitList->add(0);
         }
 
         ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(100,0,20,1000);

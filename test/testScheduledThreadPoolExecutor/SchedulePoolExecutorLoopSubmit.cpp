@@ -4,7 +4,7 @@
 #include "Thread.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
+#include "ThreadScheduledPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "Executors.hpp"
 #include "Future.hpp"
@@ -47,10 +47,10 @@ public:
 
 int scheduleloopsubmit() {
     //test1
-    ScheduledExecutorService pool = st(Executors)::newScheduledThreadPool();
+    ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
     long time = st(System)::currentTimeMillis();
     for(int i = 0; i < 32*1024;i++) {
-        pool->schedule(createMyLoopSubmit(),0);
+        pool->schedule(0,createMyLoopSubmit());
     }
     printf("finish submit cost %ld \n",st(System)::currentTimeMillis() - time);
 
@@ -65,7 +65,7 @@ int scheduleloopsubmit() {
     myloopvalue = createAtomicInteger(0);
     pool = st(Executors)::newScheduledThreadPool();
     for(int i = 0; i < 32*1024;i++) {
-        pool->schedule(createMyLoopSubmit(),100);
+        pool->schedule(100,createMyLoopSubmit());
     }
 
     sleep(5);
