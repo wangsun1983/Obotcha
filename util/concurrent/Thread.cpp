@@ -33,9 +33,7 @@ void* _Thread::localRun(void *th) {
     
     thread->mStatus->set(st(Thread)::Running);
     
-    if(thread->mName != nullptr) {
-        pthread_setname_np(thread->mPthread,thread->mName->toChars());
-    }
+    pthread_setname_np(thread->mPthread,thread->mName->toChars());
 
     if(thread->mRunnable != nullptr) {
         thread->mRunnable->run();
@@ -43,7 +41,7 @@ void* _Thread::localRun(void *th) {
         thread->run();
     }
     thread->onComplete();
-end:
+
     doThreadExit(thread);
     return nullptr;
 }
@@ -76,7 +74,6 @@ void _Thread::threadInit(String name,Runnable run) {
 
     mJoinMutex = createMutex();
     mJoinCondition = createCondition();
-
 }
 
 String _Thread::getName() {
@@ -84,7 +81,6 @@ String _Thread::getName() {
 }
 
 _Thread::~_Thread(){
-    //this->quit();
 }
 
 Runnable _Thread::getRunnable() {

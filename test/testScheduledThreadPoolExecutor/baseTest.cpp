@@ -47,7 +47,7 @@ int baseTest() {
         ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
 
         pool->shutdown();
-        printf("---[ScheduledThreadPoolExecutor Test {constructor()} case1] [Success]--- \n");
+        printf("---[ScheduledThreadPoolExecutor Test {constructor()} case1] [OK]--- \n");
         break;
     }
 
@@ -80,7 +80,7 @@ int baseTest() {
             break;
         }
 
-        printf("---[ScheduledThreadPoolExecutor Test {shutdown()} case4] [Success]--- \n");
+        printf("---[ScheduledThreadPoolExecutor Test {shutdown()} case4] [OK]--- \n");
         break;
     }
 
@@ -116,7 +116,7 @@ int baseTest() {
             break;
         }
 
-        printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case4] [Success]--- \n");
+        printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case4] [OK]--- \n");
         break;
     }
 
@@ -150,7 +150,7 @@ int baseTest() {
             break;
         }
 
-        printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case8] [Success]--- \n");
+        printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case8] [OK]--- \n");
         break;
     }
 
@@ -171,7 +171,7 @@ int baseTest() {
             break;
         }
 
-        printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case10] [Success]--- \n");
+        printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case10] [OK]--- \n");
         break;
     }
 
@@ -194,7 +194,7 @@ int baseTest() {
         //    break;
         //}
         pool->shutdown();
-        printf("---[ScheduledThreadPoolExecutor Test {submit()} case3] [Success]--- \n");
+        printf("---[ScheduledThreadPoolExecutor Test {submit()} case3] [OK]--- \n");
         break;
     }
 }

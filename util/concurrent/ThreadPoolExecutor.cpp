@@ -68,27 +68,13 @@ void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
     mStatus->set(LocalStatus::Running);
 }
 
-/*
-int _ThreadPoolExecutor::execute(Runnable runnable) {
-    if(runnable == nullptr) {
-        return -InvalidParam;
-    }
-
-    if(mStatus->get() != LocalStatus::Running) {
-        return -AlreadyDestroy;
-    }
-      
-    FutureTask task = createFutureTask(runnable);
-    mPool->enQueueLast(task);
-    return 0;
-}
- */
-
 int _ThreadPoolExecutor::shutdown() {
-    int status = mStatus->compareAndSet(LocalStatus::ShutDown);
-    if(status == LocalStatus::ShutDown) {
+    if(mStatus->get() == LocalStatus::ShutDown) {
         return -AlreadyDestroy;
     }
+
+    mStatus->set(LocalStatus::ShutDown);
+
     for(;;) {
         FutureTask task = mPool->deQueueLastNoBlock();
         if(task != nullptr) {
@@ -98,6 +84,7 @@ int _ThreadPoolExecutor::shutdown() {
         break;
     }
     mPool->destroy();
+    
     //interrupt all thread
     ListIterator<Thread> iterator = mHandlers->getIterator();
     while(iterator->hasValue()) {
@@ -109,8 +96,21 @@ int _ThreadPoolExecutor::shutdown() {
     return 0;
 }
 
-bool _ThreadPoolExecutor::isTerminated() {
+bool _ThreadPoolExecutor::isShtuDown() {
     return mStatus->get() == LocalStatus::ShutDown;
+}
+
+bool _ThreadPoolExecutor::isTerminated() {
+    ListIterator<Thread> iterator = mHandlers->getIterator();
+    while(iterator->hasValue()) {
+        Thread t = iterator->getValue();
+        if(t->getStatus() != st(Thread)::Complete) {
+            return false;
+        }
+        iterator->next();
+    }
+
+    return false;
 }
 
 void _ThreadPoolExecutor::awaitTermination() {

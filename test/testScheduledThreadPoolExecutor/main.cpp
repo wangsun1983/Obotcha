@@ -19,9 +19,11 @@ extern int ReleaseTest();
 //extern int fixRateTest();
 //extern int fixDelayTest();
 extern int scheduleloopsubmit();
+extern int testThreadLambda();
 
 int main() {
     printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
+    testThreadLambda();
     baseTest();
     scheduleTest();
     ReleaseTest();

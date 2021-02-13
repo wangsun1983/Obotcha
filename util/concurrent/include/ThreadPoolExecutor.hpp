@@ -55,6 +55,7 @@ public:
         execute(createLambdaRunnable(f,args...));
     }
 
+    bool isShtuDown();
     bool isTerminated();
 
     void awaitTermination();

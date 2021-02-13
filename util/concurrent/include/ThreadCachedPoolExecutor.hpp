@@ -33,7 +33,7 @@ public:
 
     template<typename X>
     int execute(sp<X> r) {
-        if(submit(r) == nullptr) {
+        if(poolSubmit(r) == nullptr) {
             return -InvalidStatus;
         }
         return 0;
@@ -41,8 +41,10 @@ public:
 
     template< class Function, class... Args >
     int execute( Function&& f, Args&&... args ) {
-        execute(createLambdaRunnable(f,args...));
+        return execute(createLambdaRunnable(f,args...));
     }
+
+    bool isShutDown();
 
     bool isTerminated();
 
@@ -52,19 +54,12 @@ public:
 
     template <typename X>
     Future submit(sp<X> r) {
-        if(mStatus != StatusRunning) {
-            return nullptr;
-        }
-
-        FutureTask task = createFutureTask(r);
-        Future future = createFuture(task);
-        submit(task);
-        return future; 
+        return poolSubmit(r);
     }
 
     template< class Function, class... Args >
     Future submit( Function&& f, Args&&... args ) {
-        return submit(createLambdaRunnable(f,args...));
+        return poolSubmit(createLambdaRunnable(f,args...));
     }
 
     int getThreadsNum();
@@ -73,9 +68,8 @@ public:
 
 private:
     enum CachedPoolStatus {
-        StatusRunning = 0,
-        StatusShutDown,
-        StatusTerminate,
+        Running = 0,
+        ShutDown,
     };
 
     static const int DefaultWaitTime;
@@ -84,10 +78,12 @@ private:
 
     void setUpOneIdleThread();
 
-    void submit(FutureTask task);
+    Future poolSubmit(Runnable r);
     
     Mutex mHandlerMutex;
+
     int threadNum;
+    
     ArrayList<Thread> mHandlers;
 
     std::atomic<int> mStatus;
@@ -103,7 +99,6 @@ private:
     int mQueueSize;
 
     BlockingQueue<FutureTask> mTasks;
-
 };
 
 }

@@ -110,7 +110,7 @@ public:
     ~_Thread();
 
 protected:
-   pthread_t mPthread;
+    pthread_t mPthread;
    
 private:
 
@@ -138,9 +138,6 @@ private:
 
     void threadSleep(unsigned long millseconds);
     void threadInit(String name,Runnable run);
-
-    void lambdaEnter(_Thread *);
-    void lambdaQuit(_Thread *);
 };
 
 }

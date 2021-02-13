@@ -97,5 +97,5 @@ int scheduleloopsubmit() {
         }
     }
 #endif
-    printf("---[ScheduledThreadPoolExecutor LoopSubmit case100] [Success]--- \n");
+    printf("---[ScheduledThreadPoolExecutor LoopSubmit case100] [OK]--- \n");
 }

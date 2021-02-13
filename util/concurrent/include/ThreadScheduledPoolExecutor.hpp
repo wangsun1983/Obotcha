@@ -30,31 +30,17 @@ enum ScheduledTaskType {
 namespace obotcha { 
 
 class _WaitingTask;
-class _ScheduledThreadPoolThread;
 class _ThreadScheduledPoolExecutor;
 
 DECLARE_SIMPLE_CLASS(WaitingTask) EXTENDS(FutureTask){
 public:
-    friend class _ScheduledTaskWorker;
-    friend class _ScheduledThreadPoolThread;
     friend class _ThreadScheduledPoolExecutor;
 
-    _WaitingTask(Runnable);
+    _WaitingTask(long int interval,Runnable);
 
-    void init(long int interval,int type,int repeat);
-    void setExecutor(_ThreadScheduledPoolExecutor *);
-
-    //~_WaitingTask();
-
-    void onComplete();
-    
-    sp<_WaitingTask> next;
-                 
 private:
     long int nextTime;
-    int mScheduleTaskType;
-    long int repeatDelay;
-    _ThreadScheduledPoolExecutor *mExecutor;
+    sp<_WaitingTask> next;
 };
 
 DECLARE_SIMPLE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(Thread) {
@@ -79,13 +65,10 @@ public:
     
     template<typename X>
     Future schedule(long delay,sp<X> r) {
-        if(isShutdown() || isTerminated()) {
+        if(isShutdown()) {
             return nullptr;
         }
-        WaitingTask task = createWaitingTask(r);
-        task->init(delay,ScheduletTaskNormal,-1);
-        task->setExecutor(this);
-
+        WaitingTask task = createWaitingTask(delay,r);
         addWaitingTask(task);
 
         Future future = createFuture(task);
@@ -94,85 +77,17 @@ public:
 
     template< class Function, class... Args >
     Future schedule(long delay,Function&& f, Args&&... args) {
-        if(isShutdown() || isTerminated()) {
+        if(isShutdown()) {
             return nullptr;
         }
         Runnable r = createLambdaRunnable(f,args...);
-        WaitingTask task = createWaitingTask(r);
-        task->init(delay,ScheduletTaskNormal,-1);
-        task->setExecutor(this);
-        addWaitingTask(task);
-        Future future = createFuture(task);
-        return future;
+        return schedule(delay,r);
     }
-    
-#if 0
-    template<typename X>
-    Future scheduleAtFixedRate( long initialDelay,
-                                long period,
-                                sp<X> r) {
-        if(isShutdown() || isTerminated()) {
-            return nullptr;
-        }
-        WaitingTask task = createWaitingTask(r);
-        task->init(initialDelay,ScheduletTaskFixRate,period);
-        task->setExecutor(this);
-        addWaitingTask(task);
-        Future future = createFuture(task);
-        return future;
-    }
-
-    template< class Function, class... Args >
-    Future scheduleAtFixedRate( long initialDelay,
-                                long period,
-                                Function&& f, Args&&... args ) {
-        if(isShutdown() || isTerminated()) {
-            return nullptr;
-        }
-        Runnable r = createLambdaRunnable(f,args...);
-        return scheduleAtFixedRate(initialDelay,period,r);                        
-    }
-
-    template<typename X>
-    Future scheduleWithFixedDelay(long initialDelay,
-                                long delay,
-                                sp<X> r) {
-        if(isShutdown() || isTerminated()) {
-            return nullptr;
-        }
-        WaitingTask task = createWaitingTask(r);
-        task->init(initialDelay,ScheduletTaskFixedDelay,delay);
-
-        Future future = createFuture(task);
-        return future;
-    }
-
-    template< class Function, class... Args >
-    Future scheduleWithFixedDelay( long initialDelay,
-                                long period,
-                                Function&& f, Args&&... args ) {
-        if(isShutdown() || isTerminated()) {
-            return nullptr;
-        }
-        Runnable r = createLambdaRunnable(f,args...);
-        return scheduleWithFixedDelay(initialDelay,period,r);                        
-    }
-#endif
-
-    int getThreadsNum();
 
     void addWaitingTask(WaitingTask);                
 
 private:
     void run();
-
-    WaitingTask newFixedRateWaitingTask(Runnable command,
-                                long initialDelay,
-                                long period);
-
-    WaitingTask newFixedDelayWaitingTask(Runnable command,
-                                long initialDelay,
-                                long delay);
 
     ThreadCachedPoolExecutor mCachedExecutor;
 

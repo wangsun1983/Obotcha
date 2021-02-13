@@ -77,7 +77,7 @@ int scheduleTest() {
             break;
         }
         pool->shutdown();
-        printf("---[ScheduledThreadPoolExecutor Test {schedule()} case3] [Success]--- \n");
+        printf("---[ScheduledThreadPoolExecutor Test {schedule()} case3] [OK]--- \n");
         break;
     }
 
@@ -94,7 +94,7 @@ int scheduleTest() {
             break;
         }
 
-        printf("---[ScheduledThreadPoolExecutor Test {schedule,cancel()} case2] [Success]--- \n");
+        printf("---[ScheduledThreadPoolExecutor Test {schedule,cancel()} case2] [OK]--- \n");
         break;
     }
 
@@ -114,7 +114,7 @@ int scheduleTest() {
             break;
         }
 
-        printf("---[ScheduledThreadPoolExecutor Test {schedule,shutdown()} case2] [Success]--- \n");
+        printf("---[ScheduledThreadPoolExecutor Test {schedule,shutdown()} case2] [OK]--- \n");
         break;
     }
 #endif

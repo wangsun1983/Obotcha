@@ -40,11 +40,11 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor() {
 }
 
 int _ThreadCachedPoolExecutor::shutdown(){
-    if(mStatus == StatusShutDown || mStatus == StatusTerminate) {
+    if(mStatus == ShutDown) {
         return 0;
     }
 
-    mStatus = StatusShutDown;
+    mStatus = ShutDown;
 
     //all task should onInterrupt
     while(1) {
@@ -71,8 +71,22 @@ int _ThreadCachedPoolExecutor::shutdown(){
     return 0;
 }
 
+bool _ThreadCachedPoolExecutor::isShutDown() {
+    return mStatus == ShutDown;
+}
+
 bool _ThreadCachedPoolExecutor::isTerminated() {
-    return mStatus == StatusTerminate || mStatus == StatusShutDown;
+    AutoLock l(mHandlerMutex);
+    ListIterator<Thread> iterator = mHandlers->getIterator();
+    while(iterator->hasValue()) {
+        Thread t = iterator->getValue();
+        if(t->getStatus() != st(Thread)::Complete) {
+            return false;
+        }
+        iterator->next();
+    }
+
+    return true;
 }
 
 void _ThreadCachedPoolExecutor::awaitTermination() {
@@ -80,12 +94,8 @@ void _ThreadCachedPoolExecutor::awaitTermination() {
 }
 
 int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
-    switch(mStatus) {
-        case StatusRunning:
+    if(mStatus == Running) {
         return -InvalidStatus;
-
-        case StatusTerminate:
-        return 0;
     }
 
     bool isWaitForever = (millseconds == 0);
@@ -113,7 +123,14 @@ int _ThreadCachedPoolExecutor::getThreadsNum() {
     return mHandlers->size();
 }
 
-void _ThreadCachedPoolExecutor::submit(FutureTask task) {
+Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r) {
+    if(mStatus != Running) {
+        return nullptr;
+    }
+
+    FutureTask task = createFutureTask(r);
+    Future future = createFuture(task);
+
     AutoLock l(mHandlerMutex);
     int taskSize = mTasks->size();
     int handlerSize = mHandlers->size();
@@ -122,6 +139,7 @@ void _ThreadCachedPoolExecutor::submit(FutureTask task) {
     }
 
     mTasks->enQueueLast(task);
+    return future;
 }
 
 void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthreadnum,long timeout) {
@@ -137,14 +155,14 @@ void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthrea
     mHandlers = createArrayList<Thread>();
     mTasks = createBlockingQueue<FutureTask>();
     mHandlerMutex = createMutex("ThreadCachedHandlerMutex");
-    mStatus = StatusRunning;
+    mStatus = Running;
 }
 
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
 }
 
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
-    if(mStatus != StatusRunning) {
+    if(mStatus != Running) {
         return;
     }
 

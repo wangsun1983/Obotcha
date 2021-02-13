@@ -51,7 +51,7 @@ int ReleaseTest() {
             pool->shutdown();
             //printf("test3 pool count is %d \n",pool->getStrongCount());
         }
-        printf("---[ScheduledThreadPoolExecutor Test {Release} case6] [Success]--- \n");
+        printf("---[ScheduledThreadPoolExecutor Test {Release} case6] [OK]--- \n");
         break;
     }
 
@@ -87,7 +87,7 @@ int ReleaseTest() {
         sleep(50);
 
 
-        printf("---[ScheduledThreadPoolExecutor Test {Release} case10] [Success]--- \n");
+        printf("---[ScheduledThreadPoolExecutor Test {Release} case10] [OK]--- \n");
         break;
     }
 

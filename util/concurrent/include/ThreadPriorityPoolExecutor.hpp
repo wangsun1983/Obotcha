@@ -19,13 +19,6 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(PriorityTask) EXTENDS(FutureTask) {
-public:
-    _PriorityTask(int,Runnable);
-
-    int priority;
-};
-
 DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) {
 
 public:
@@ -60,8 +53,11 @@ public:
         return 0;
     }
 
+
     int shutdown();
 
+    bool isShutDown();
+    
     bool isTerminated();
 
     void awaitTermination();
@@ -71,37 +67,33 @@ public:
     Future submit(Runnable task);
 
     template<typename X>
-    Future submit(int level,sp<X> task) {
-        {
-            AutoLock l(mStatusMutex);
-            
-            if(isShutDown) {
-                return nullptr;
-            }
+    Future submit(int level,sp<X> r) {
+        if(mStatus->get() == ShutDown) {
+            return nullptr;
         }
 
-        PriorityTask prioTask = createPriorityTask(level,task);
+        FutureTask task = createFutureTask(r);
         {
             AutoLock l(mTaskMutex);
-            switch(prioTask->priority) {
+            switch(level) {
                 case PriorityHigh:
-                    mHighPriorityTasks->enQueueLast(prioTask);
+                    mHighPriorityTasks->enQueueLast(task);
                     mTaskCond->notify();
                 break;
 
                 case PriorityMedium:
-                    mMidPriorityTasks->enQueueLast(prioTask);
+                    mMidPriorityTasks->enQueueLast(task);
                     mTaskCond->notify();
                 break;
 
                 case PriorityLow:
-                    mLowPriorityTasks->enQueueLast(prioTask);
+                    mLowPriorityTasks->enQueueLast(task);
                     mTaskCond->notify();
                 break;
             }
         }
 
-        return createFuture(prioTask);
+        return createFuture(task);
     }
 
     template< class Function, class... Args >
@@ -109,24 +101,26 @@ public:
         return submit(priority,createLambdaRunnable(f,args...));
     }
 
+
     int getThreadsNum();
 
     ~_ThreadPriorityPoolExecutor();
     
 private:
+    enum Status {
+        Running,
+        ShutDown
+    };
+    
     Mutex mTaskMutex;
     Condition mTaskCond;
-    LinkedList<PriorityTask>mHighPriorityTasks;
-    LinkedList<PriorityTask>mMidPriorityTasks;
-    LinkedList<PriorityTask>mLowPriorityTasks;
+    LinkedList<FutureTask>mHighPriorityTasks;
+    LinkedList<FutureTask>mMidPriorityTasks;
+    LinkedList<FutureTask>mLowPriorityTasks;
 
     int mThreadNum;
 
-    Mutex mStatusMutex;
-
-    bool isShutDown;
-
-    bool isTermination;
+    AtomicInteger mStatus;
     
     Mutex mThreadMutex;
     ArrayList<Thread> mThreads;

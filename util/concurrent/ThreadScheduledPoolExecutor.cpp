@@ -12,36 +12,10 @@
 namespace obotcha {
 
 //---------------WaitingTask---------------//
-_WaitingTask::_WaitingTask(Runnable r):_FutureTask(r) {
+_WaitingTask::_WaitingTask(long int interval,Runnable r):_FutureTask(r) {
     //nothing
     next = nullptr;
-}
-
-void _WaitingTask::setExecutor(_ThreadScheduledPoolExecutor *p) {
-    mExecutor = p;
-}
-
-void _WaitingTask::init(long int interval,int type,int repeat) {
     nextTime = st(System)::currentTimeMillis() + interval;
-    mScheduleTaskType = type;
-    repeatDelay = repeat;
-}
-
-void _WaitingTask::onComplete() {
-    switch(mScheduleTaskType) {
-        case ScheduletTaskNormal:
-        case ScheduletTaskFixRate:
-        //Do nothing
-        break;
-
-        case ScheduletTaskFixedDelay: {
-            WaitingTask task = AutoClone(this);
-            task->nextTime = (st(System)::currentTimeMillis() + task->repeatDelay);
-            mExecutor->addWaitingTask(task);
-        }
-        break;
-    }
-    st(FutureTask)::onComplete();
 }
 
 //---------------ScheduleService---------------//
@@ -56,12 +30,6 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor() {
     mTaskMutex = createMutex("scheduleTaskMutex");
     mTaskWaitCond = createCondition();
     start();
-}
-
-
-int _ThreadScheduledPoolExecutor::getThreadsNum() {
-    Trigger(MethodNotSupportException,"getThreadsNum not support");
-    return 0;
 }
 
 int _ThreadScheduledPoolExecutor::shutdown() {
@@ -159,7 +127,7 @@ void _ThreadScheduledPoolExecutor::run() {
             if(mTaskPool == nullptr) {
                 mTaskWaitCond->wait(mTaskMutex);
                 continue;
-            }else if(mTaskPool != nullptr) {
+            }else {
                 long interval = (mTaskPool->nextTime - st(System)::currentTimeMillis());
                 if(interval <= 0) {
                     mCurrentTask = mTaskPool;
@@ -175,20 +143,10 @@ void _ThreadScheduledPoolExecutor::run() {
             continue;
         }
 
-        int interval = mCurrentTask->nextTime - st(System)::currentTimeMillis();
-        if(interval <= 0) {
-            mCachedExecutor->submit((FutureTask)mCurrentTask);
-            if(mCurrentTask->mScheduleTaskType == ScheduletTaskFixRate) {
-                mCurrentTask->nextTime = (st(System)::currentTimeMillis() + mCurrentTask->repeatDelay);
-                addWaitingTask(mCurrentTask);
-            }
-        } else {
-            int ret = mTaskWaitCond->wait(mTaskMutex,interval);
-            if(ret != -WaitTimeout) {
-                addWaitingTask(mCurrentTask);
-            }
+        if(mCurrentTask != nullptr) {
+            mCachedExecutor->submit(Cast<FutureTask>(mCurrentTask));
         }
-
+        
         mCurrentTask = nullptr;
     }
 }
