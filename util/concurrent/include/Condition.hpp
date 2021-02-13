@@ -2,6 +2,7 @@
 #define __OBOTCHA_CONDITION_HPP__
 
 #include <pthread.h>
+#include <atomic>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -13,6 +14,8 @@ class _Mutex;
 DECLARE_SIMPLE_CLASS(Condition) {
 
 public:
+    friend class _Thread;
+
     _Condition();
     
     ~_Condition();
@@ -27,6 +30,11 @@ public:
 
 private:
     pthread_cond_t cond_t;
+    void waitExit();
+    bool waitEnter();
+    
+    void interrupt();
+    std::atomic<bool> mIsInterrupt;
 };
 
 }

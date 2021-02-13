@@ -23,7 +23,8 @@ class _Thread;
 DECLARE_SIMPLE_CLASS(Thread) {
 
 public:
-
+    friend class _Condition;
+    
     friend void cleanup(void *th);
 
     friend void doThreadExit(_Thread *thread);
@@ -138,6 +139,10 @@ private:
 
     void threadSleep(unsigned long millseconds);
     void threadInit(String name,Runnable run);
+
+    void setCurrentWaitCondition(Condition);
+    Condition getCurrentWaitCondition();
+    Condition mCurrentWaitCondition;
 };
 
 }

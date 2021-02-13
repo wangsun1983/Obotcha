@@ -101,6 +101,9 @@ int _Thread::detach() {
 void _Thread::interrupt() {
     if(isRunning()) {
         mSleepCondition->notifyAll();
+        if(mCurrentWaitCondition != nullptr) {
+            mCurrentWaitCondition->interrupt();
+        }
     }
 }
 
@@ -331,6 +334,14 @@ void _Thread::threadSleep(unsigned long interval) {
     if(result == 0) {
         Trigger(InterruptedException,"thread notify!!!");
     }
+}
+
+void _Thread::setCurrentWaitCondition(Condition c) {
+    this->mCurrentWaitCondition = c;
+}
+
+Condition _Thread::getCurrentWaitCondition() {
+    return this->mCurrentWaitCondition;
 }
 
 }
