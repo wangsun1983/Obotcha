@@ -144,7 +144,7 @@ void _ThreadScheduledPoolExecutor::run() {
         }
 
         if(mCurrentTask != nullptr) {
-            mCachedExecutor->submit(Cast<FutureTask>(mCurrentTask));
+            mCachedExecutor->submit(mCurrentTask->getRunnable());
         }
         
         mCurrentTask = nullptr;

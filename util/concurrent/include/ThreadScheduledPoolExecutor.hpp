@@ -70,9 +70,7 @@ public:
         }
         WaitingTask task = createWaitingTask(delay,r);
         addWaitingTask(task);
-
-        Future future = createFuture(task);
-        return future;
+        return createFuture(task);
     }
 
     template< class Function, class... Args >
