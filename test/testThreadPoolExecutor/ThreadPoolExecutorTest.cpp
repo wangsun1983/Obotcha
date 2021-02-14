@@ -19,8 +19,9 @@ int runDestory = 1;
 DECLARE_SIMPLE_CLASS(MyRunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        //printf("i am running123 \n");
+        printf("i am running123 1 \n");
         sleep(10);
+        printf("i am running123 2\n");
     }
 
     void onInterrupt() {
@@ -38,14 +39,12 @@ Mutex runTest2Mutex;
 DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        printf("RunTest2 start 1\n");
-		    fflush(stdout);
+        fflush(stdout);
         runTest2Mutex->lock();
-        printf("RunTest2 start 2\n");
     }
 
     void onInterrupt() {
-        printf("RunTest2 onInterrupt 2\n");
+        //printf("RunTest2 onInterrupt 2\n");
     }
 
     ~_RunTest2() {
@@ -60,12 +59,9 @@ int normalTest() {
 
     while(1) {
         {
-			printf("normal test trace1 \n");
-            ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(1,1);
-			printf("normal test trace2 \n");
-            pool->shutdown();
-			printf("normal test trace3 \n");
-        }
+			ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(1,1);
+			pool->shutdown();
+		}
 
         sleep(1);
 
@@ -122,13 +118,12 @@ int normalTest() {
         runTest2Mutex->lock();
 
         pool->submit(createRunTest2());
-		    printf("start at % ld \n",st(System)::currentTimeMillis());
+		//printf("start at % ld \n",st(System)::currentTimeMillis());
         sleep(1);
-		    printf("start end % ld \n",st(System)::currentTimeMillis());
+		//printf("start end % ld \n",st(System)::currentTimeMillis());
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
-        printf("test awaitTermination start test \n");
         result = pool->awaitTermination(5000);
         //printf("awaitTermination result is %d \n",result);
         if(result != -WaitTimeout) {
@@ -137,7 +132,7 @@ int normalTest() {
         }
 
         long current2 = st(System)::currentTimeMillis();
-        printf("current2 - current1 is %d \n",(current2 - current));
+        //printf("current2 - current1 is %d \n",(current2 - current));
         if(current2 - current > 5015) {
             printf("---[TestThreadPoolExecutor Test {awaitTermination()} case3] [FAIL]--- \n");
             break;
@@ -192,7 +187,7 @@ int normalTest() {
         pool->awaitTermination(100000);
         int v = st(System)::currentTimeMillis() - current;
         if(v > 10005) {
-            printf("---[TestThreadPoolExecutor Test {awaitTermination()} case9] [FAIL]--- \n");
+            printf("---[TestThreadPoolExecutor Test {awaitTermination()},v is %ld case9] [FAIL]--- \n",v);
             break;
         }
 

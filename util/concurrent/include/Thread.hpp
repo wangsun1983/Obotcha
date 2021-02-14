@@ -24,8 +24,6 @@ DECLARE_SIMPLE_CLASS(Thread) {
 
 public:
     friend class _Condition;
-    
-    friend void cleanup(void *th);
 
     friend void doThreadExit(_Thread *thread);
     _Thread();

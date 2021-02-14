@@ -416,7 +416,6 @@ sp<_JsonValue> _JsonValue::getValueAt(int index) {
 
 
 String _JsonValue::getStringAt(int index) {
-    printf("jsonValue start index is %d \n",index);
     Json::Value v = jvalue[index];
     if(!v.isNull()) {
         return createString(jvalue[index].asString());

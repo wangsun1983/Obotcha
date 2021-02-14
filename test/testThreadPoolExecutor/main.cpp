@@ -27,17 +27,12 @@ int main() {
     testRunnable_onInterrupt();
     sleep(1);
     releaseTest();
-    sleep(10);
-
+    sleep(1);
     testThreadShutdown();
-
-#if 0
     testThreadDestroy();
     testThreadPoolLoopSubmit();
-    testThreadPoolLoopShutdown();
+    //testThreadPoolLoopShutdown();
     testThreadLambda();
-#endif
-
     st(Thread)::sleep(10*1000);
     return 0;
 }

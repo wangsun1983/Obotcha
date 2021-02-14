@@ -422,7 +422,6 @@ public:
         while(iterator->hasValue()) {
             Field field = iterator->getValue();
             String name = field->getName();
-            printf("name is %s,type is %d \n",name->toChars(),field->getType());
             switch(field->getType()) {
                 case st(Field)::FieldTypeLong: {
                     this->put(name,field->getLongValue());
@@ -481,7 +480,6 @@ public:
 
                 case st(Field)::FieldTypeObject: {
                     //check whether it is Number
-                    printf("FieldTypeObject \n");
                     auto newObject = field->getObjectValue();
                     JsonValue newValue = createJsonValue();
                     if(InstanceOf(newObject,Integer)) {
@@ -491,7 +489,6 @@ public:
                         Long data = Cast<Long>(newObject);
                         this->put(name,data->toValue());
                     } else if(InstanceOf(newObject,Boolean)) {
-                        printf("FieldTypeObject trace1\n");
                         Boolean data = Cast<Boolean>(newObject);
                         this->put(name,data->toValue());
                     } else if(InstanceOf(newObject,Double)) {

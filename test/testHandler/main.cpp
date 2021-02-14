@@ -13,8 +13,10 @@ extern int testHasMessage();
 extern int testHandlerSize();
 extern int testHandlerMultiSend();
 extern int testHandlerRemove();
+extern int testHandlerLambda();
 
 int main() {
+  testHandlerLambda();
   testHandlerRemove();
   testHandlerMultiSend();
   testHandlerSize();

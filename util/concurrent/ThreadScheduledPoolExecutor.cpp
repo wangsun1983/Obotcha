@@ -51,7 +51,6 @@ int _ThreadScheduledPoolExecutor::shutdown() {
             task = task->next;
         }
     }
-
     mTaskWaitCond->notify();
     mCachedExecutor->shutdown();
     return 0;
@@ -83,7 +82,6 @@ void _ThreadScheduledPoolExecutor::addWaitingTask(WaitingTask task) {
     if(mIsShutDown) {
         return;
     }
-
     if(mTaskPool == nullptr) {
         mTaskPool = task;
     } else {
@@ -120,7 +118,6 @@ void _ThreadScheduledPoolExecutor::run() {
                 return;
             }
         }
-
         WaitingTask mCurrentTask = nullptr;
         {
             AutoLock ll(mTaskMutex);
@@ -138,15 +135,12 @@ void _ThreadScheduledPoolExecutor::run() {
                 }
             }
         }
-
         if(mCurrentTask->getStatus() == st(Future)::Cancel) {
             continue;
         }
-
         if(mCurrentTask != nullptr) {
             mCachedExecutor->submit(mCurrentTask->getRunnable());
         }
-        
         mCurrentTask = nullptr;
     }
 }

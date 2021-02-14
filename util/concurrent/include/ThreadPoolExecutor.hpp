@@ -52,7 +52,7 @@ public:
     
     template< class Function, class... Args >
     int execute( Function&& f, Args&&... args ) {
-        execute(createLambdaRunnable(f,args...));
+        return execute(createLambdaRunnable(f,args...));
     }
 
     bool isShtuDown();

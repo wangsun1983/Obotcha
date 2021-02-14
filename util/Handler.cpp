@@ -161,16 +161,6 @@ void _Handler::run() {
     }
 }
 
-int _Handler::post(Runnable r) {
-    return postDelayed(r,0);
-}
-
-int _Handler::postDelayed(Runnable r ,long delay) {
-    Message msg = obtainMessage();
-    msg->mRunnable = r;
-    return sendMessageDelayed(msg,delay);
-}
-
 void _Handler::destroy() {
     mStatus->set(StatusDestroy);
     mCondition->notify();

@@ -25,7 +25,7 @@ public:
         st(Thread)::sleep(100);
         printf("runnable 2 \n");
       }catch(InterruptedException &e) {
-        printf("exception !!! \n");
+        //interruptCount->add(1);
       }
     }
 

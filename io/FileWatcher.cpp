@@ -29,7 +29,6 @@ _FileWatcher::_FileWatcher() {
 
 int _FileWatcher::startWatch(String filepath,int op,sp<_FileObserver> observer) {
     AutoLock l(mutex);
-    printf("startWatch op code is %x \n",op);
     Integer formerOp = mOps->get(filepath);
     if(formerOp != nullptr) {
         op += formerOp->toValue();
@@ -44,7 +43,6 @@ int _FileWatcher::startWatch(String filepath,int op,sp<_FileObserver> observer) 
     mOps->put(filepath,createInteger(op));
 
     observer->ids.push_back(id);
-    printf("startWatch trace \n");
     ArrayList<FileObserver> list = mListeners->get(id);
     if(list == nullptr) {
         list = createArrayList<FileObserver>();
@@ -115,7 +113,6 @@ void _FileWatcher::run() {
                 int ignoreid = -1;
                 if((access(path->toChars(),F_OK) == 0) 
                     && ((event->mask & Ignored) != 0)) {
-                    printf("ignore!!!! \n");
                     event->mask &= ~Ignored;
                     event->mask |= Modify;
                     Integer regOp = mOps->get(path);
@@ -138,13 +135,11 @@ void _FileWatcher::run() {
                     mFiles->put(ignoreid,path);
                     mListeners->put(ignoreid,monitors);
                 }
-                printf("abc trace4 \n");
             }
 
             event_size = sizeof(*event) + event->len;
             num_bytes -= event_size;
             event_pos += event_size;
-            printf("abc trace5 \n");
         }
     }
 }

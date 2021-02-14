@@ -87,20 +87,16 @@ bool _Condition::waitEnter() {
 }
 
 void _Condition::waitExit() {
-    printf("waitExit trace \n");
     if(mIsInterrupt) {
-        printf("waitExit trace2 \n");
         Thread t = st(Thread)::current();
         Condition c = t->getCurrentWaitCondition();
         if(c != nullptr && c == AutoClone(this)) {
-            printf("waitExit trace3 \n");
             Trigger(InterruptedException,"thread notify!!!");
         }
     }
 
     Thread t = st(Thread)::current();
     if(t != nullptr) {
-        printf("waitExit trace4 \n");
         t->setCurrentWaitCondition(NullData<Condition>());
     }
 }

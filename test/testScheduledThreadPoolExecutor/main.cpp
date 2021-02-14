@@ -24,12 +24,12 @@ extern int testThreadLambda();
 int main() {
     printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
     testThreadLambda();
-    baseTest();
-    scheduleTest();
-    ReleaseTest();
+    //baseTest();
+    //scheduleTest();
+    //ReleaseTest();
     //fixRateTest();
     //fixDelayTest();
-    scheduleloopsubmit();
+    //scheduleloopsubmit();
     sleep(10);
 
 }

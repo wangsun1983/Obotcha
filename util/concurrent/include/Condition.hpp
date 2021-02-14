@@ -10,11 +10,13 @@
 namespace obotcha {
 
 class _Mutex;
+class _Thread;
 
 DECLARE_SIMPLE_CLASS(Condition) {
 
 public:
     friend class _Thread;
+    friend void doThreadExit(_Thread *thread);
 
     _Condition();
     

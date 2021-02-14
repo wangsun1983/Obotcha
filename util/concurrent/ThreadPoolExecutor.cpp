@@ -42,9 +42,17 @@ void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
     for(int i = 0; i < threadnum;i++) {
         Thread thread = createThread([](BlockingQueue<FutureTask> &pool) {
             while(1) {
-                FutureTask mCurrentTask = pool->deQueueFirst();
+                FutureTask mCurrentTask = nullptr;
+                
+                try {
+                    mCurrentTask = pool->deQueueFirst();
+                } catch(InterruptedException &e) {
+                    printf("dequeue exception!!!! \n");
+                    return;
+                }
+                
                 if(mCurrentTask == nullptr) {
-                    break;
+                    return;
                 }
 
                 if(mCurrentTask->getStatus() == st(Future)::Cancel) {

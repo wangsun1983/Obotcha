@@ -47,11 +47,29 @@ public:
     void removeMessages(int what);
 
     void run();
+    
+    template<typename X>
+    int post(sp<X> r) {
+        postDelayed(0,r);
+    }
 
-    int post(Runnable r);
+    template< class Function, class... Args >
+    int post(Function&& f, Args&&... args) {
+        postDelayed(0,createLambdaRunnable(f,args...));
+    }
 
-    int postDelayed(Runnable r,long delay);
+    template<typename X>
+    int postDelayed(long delay,sp<X> r) {
+        Message msg = obtainMessage();
+        msg->mRunnable = r;
+        return sendMessageDelayed(msg,delay);
+    }
 
+    template< class Function, class... Args >
+    int postDelayed(long delay,Function&& f, Args&&... args) {
+        return postDelayed(delay,createLambdaRunnable(f,args...));
+    }
+    
     void destroy();
 
     int size();

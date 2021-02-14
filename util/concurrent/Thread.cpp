@@ -18,8 +18,15 @@ static AtomicInteger threadCount = createAtomicInteger(0);
 String _Thread::DefaultThreadName = createString("thread_");
 
 void doThreadExit(_Thread *thread) {
-    thread->mStatus->set(st(Thread)::Complete);
-    thread->mJoinCondition->notifyAll();
+    {
+        AutoLock l(thread->mJoinMutex);
+        thread->mStatus->set(st(Thread)::Complete);
+        thread->mJoinCondition->notifyAll();
+    }
+
+    if(thread->mCurrentWaitCondition != nullptr) {
+        thread->mCurrentWaitCondition->interrupt();
+    }
 
     pthread_detach(thread->getThreadId());
     mThreads->remove(thread->getThreadId());
@@ -99,11 +106,9 @@ int _Thread::detach() {
 }
 
 void _Thread::interrupt() {
-    if(isRunning()) {
-        mSleepCondition->notifyAll();
-        if(mCurrentWaitCondition != nullptr) {
-            mCurrentWaitCondition->interrupt();
-        }
+    mSleepCondition->notifyAll();
+    if(mCurrentWaitCondition != nullptr) {
+        mCurrentWaitCondition->interrupt();
     }
 }
 
@@ -147,9 +152,11 @@ int _Thread::join(long timeInterval) {
         yield();
     }
     
-    if(isRunning()) {
+    {
         AutoLock l(mJoinMutex);
-        return mJoinCondition->wait(mJoinMutex,timeInterval);
+        if(isRunning()) {
+            return mJoinCondition->wait(mJoinMutex,timeInterval);
+        }
     }
 
     return 0;

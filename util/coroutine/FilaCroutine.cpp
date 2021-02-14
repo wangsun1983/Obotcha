@@ -18,7 +18,6 @@ void _FilaCroutine::run() {
     co_enable_hook_sys();
     ListIterator<Filament> iterator = mFilaments->getIterator();
     while(iterator->hasValue()) {
-        printf("start run 1 \n");
         Filament fila = iterator->getValue();
         fila->start();
         iterator->next();

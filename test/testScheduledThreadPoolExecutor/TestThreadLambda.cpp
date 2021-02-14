@@ -20,7 +20,9 @@ int testThreadLambda() {
         long time2 = st(System)::currentTimeMillis();
 
         t->schedule(5000,[&time1]() {
+            printf("testThreadLambda inner log1 \n");
             time1 = st(System)::currentTimeMillis();
+            printf("testThreadLambda inner log2 \n");
         });
 
         sleep(6);
@@ -31,5 +33,9 @@ int testThreadLambda() {
         printf("---[testThreadLambda value case2] [OK]--- \n");
         break;
     }
-    
+    printf("testThreadLambda inner start shutdown \n");
+    t->shutdown();
+    printf("testThreadLambda inner start shutdown1 \n");
+    sleep(10);
+    printf("testThreadLambda inner start shutdown3 \n");
 }
