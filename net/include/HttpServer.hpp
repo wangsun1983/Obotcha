@@ -27,10 +27,11 @@ namespace obotcha {
 class _HttpClientInfo;
 class _HttpResponseWriter;
 class _HttpDispatcherPool;
+class _HttpServer;
 
-DECLARE_SIMPLE_CLASS(DispatchHttpWorkData) {
+DECLARE_SIMPLE_CLASS(HttpTaskData) {
 public:
-    _DispatchHttpWorkData(int,ByteArray,uint64_t);
+    _HttpTaskData(int,ByteArray,uint64_t);
 
     int fd;
     ByteArray pack;
@@ -45,51 +46,27 @@ public:
     virtual ~_HttpListener(){}
 };
 
-
-DECLARE_SIMPLE_CLASS(HttpDispatchRunnable) IMPLEMENTS(Runnable) {
-public:
-    _HttpDispatchRunnable(int index,sp<_HttpDispatcherPool>);
-    void run();
-    void onInterrupt();
-
-private:
-    sp<_HttpDispatcherPool> mPool;
-    int mIndex;
-};
-
-DECLARE_SIMPLE_CLASS(HttpDefferedTasks) {
-public:
-    _HttpDefferedTasks();
-
-    bool isDoDefferedTask;
-    Mutex mutex;
-    LinkedList<DispatchHttpWorkData> tasks;
-};
-
 DECLARE_SIMPLE_CLASS(HttpDispatcherPool) {
 public:
-    _HttpDispatcherPool(int threadNum = 4);
+    _HttpDispatcherPool(sp<_HttpServer> server,int threadNum = 4);
     void release();
-    DispatchHttpWorkData getData(int);
-    void addData(DispatchHttpWorkData);
+    HttpTaskData getData(int);
+    void addData(HttpTaskData);
     void clearFds(int index);
 
 private:
-    int getTidByFd(int fd);
+    int getGroupIdByFd(int fd);
     Mutex mDataMutex;
     Condition mDataCondition;
     mutable volatile bool isStop;
 
-    ArrayList<HttpDefferedTasks> mDefferedTasks;
-    LinkedList<DispatchHttpWorkData> datas;
+    ArrayList<LinkedList<HttpTaskData>> mTaskGroup;
+    LinkedList<HttpTaskData> datas;
 
     //Mutex fd2TidsMutex;
     //std::map<int,int> fd2Tids;
-    int tid2fds[128];
-    int mThreadnum;
-    
-    ThreadPoolExecutor mExecutors;
-    ArrayList<HttpDispatchRunnable> mRunnables;
+    int GroupIdTofds[128];    
+    ThreadPoolExecutor mExecutors;    
 };
 
 
@@ -97,6 +74,7 @@ DECLARE_SIMPLE_CLASS(HttpServer) IMPLEMENTS(SocketListener) {
 
 public:
     friend class _HttpSocketListener;
+    friend class _HttpDispatcherPool;
     
     _HttpServer(int port,HttpListener,String certificate,String key);
 
@@ -113,6 +91,7 @@ public:
     void start();
     
     void setSendTimeout(long);
+    
     long getSendTimeout();
 
     void setRcvTimeout(long);

@@ -2,7 +2,9 @@
 #include "ArrayList.hpp"
 #include "HttpContentType.hpp"
 #include "InitializeException.hpp"
+#include "HttpInternalException.hpp"
 #include "HttpCacheControl.hpp"
+#include "HttpText.hpp"
 
 namespace obotcha {
 
@@ -94,7 +96,7 @@ _HttpRequestParser::_HttpRequestParser() {
     mReader = createByteRingArrayReader(mBuff);
     mHeadEndCount = 0;
     mChunkEndCount = 0;
-    mStatus = HttpParseStatusIdle;
+    mStatus = Idle;
 }
 
 void _HttpRequestParser::pushHttpData(ByteArray data) {
@@ -108,12 +110,11 @@ void _HttpRequestParser::pushHttpData(ByteArray data) {
     stream->write(data);
     stream->flush();
 #endif
-    //TODO
-    //printf("mBuffSize is %ld,data size is %ld \n",mBuff->getSize(),data->size());
+
     try {
         mBuff->push(data);
     } catch(ArrayIndexOutOfBoundsException &e) {
-        //TODO
+        Trigger(HttpInternalException,"receiver data overflow");
     }
 }
 
@@ -126,26 +127,14 @@ HttpPacket _HttpRequestParser::parseEntireRequest(String request) {
     return packet;
 }
 
-HttpPacket _HttpRequestParser::parseEntireResponse(String response) {
-    memset(&mParser,0,sizeof(http_parser));
-    HttpPacket packet = createHttpPacket();
-    mParser.data = reinterpret_cast<void *>(packet.get_pointer());
-
-    http_parser_init(&mParser, HTTP_RESPONSE);
-    http_parser_execute(&mParser,&settings, response->toChars(), response->size());
-    packet->setMethod(mParser.method);
-    packet->setStatus(mParser.status_code);
-    return packet;
-}
-
 ArrayList<HttpPacket> _HttpRequestParser::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
-    static byte end[4] = {'\r','\n','\r','\n'};
+    static byte *end = (byte *)st(HttpText)::DoubleLineEnd->toChars();
     //static byte chunkEnd[5] = {'\r','\n','0','\r','\n'};
     while(1) {
         switch(mStatus) {
-            case HttpParseStatusIdle:{
-                printf("parser HttpParseStatusIdle\n");
+            case Idle:{
+                printf("parser Idle\n");
                 byte v = 0;
                 while(mReader->readNext(v) != ByteRingArrayReadComplete) {
                     if(v == end[mHeadEndCount]) {
@@ -155,21 +144,21 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                     }
 
                     if(mHeadEndCount == 4) {
-                        mStatus = HttpClientParseStatusHeadStart;
+                        mStatus = HeadStart;
                         mHeadEndCount = 0;
                         break;
                     }
                 }
 
-                if(mStatus != HttpClientParseStatusHeadStart) {
+                if(mStatus != HeadStart) {
                     return packets;
                 }
                 
                 continue;
             }
             
-            case HttpClientParseStatusHeadStart: {
-                printf("parser HttpClientParseStatusHeadStart\n");
+            case HeadStart: {
+                printf("parser HeadStart\n");
                 ByteArray head = mReader->pop();
                 memset(&mParser,0,sizeof(http_parser));
                 mHttpPacket = createHttpPacket();
@@ -181,27 +170,27 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                                     head->size());
                 if(mHttpPacket->mUrl == nullptr || mHttpPacket->mUrl->size() == 0) {
                     //this is a null packet
-                    mStatus = HttpParseStatusIdle;
+                    mStatus = Idle;
                 } else {
-                    mStatus = HttpClientParseStatusBodyStart;
+                    mStatus = BodyStart;
                 }
                 continue;
             }
 
-            case HttpClientParseStatusBodyStart: {
-                printf("parser HttpClientParseStatusBodyStart\n");
+            case BodyStart: {
+                printf("parser BodyStart\n");
                 //check whether there is a multipart
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
                 if(contentlength == nullptr) {
                     packets->add(mHttpPacket);
                     mMultiPartParser = nullptr;
-                    mStatus = HttpParseStatusIdle;
+                    mStatus = Idle;
                     continue;
                 }
                 
                 if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPartFormData) != -1) {
-                    printf("parser HttpClientParseStatusBodyStart trace1\n");
+                    printf("parser BodyStart trace1\n");
                     if(mMultiPartParser == nullptr) {
                         try {
                             mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength->toBasicInt());
@@ -215,7 +204,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                             printf("add packet trace4 \n");
                             packets->add(mHttpPacket);
                             mMultiPartParser = nullptr;
-                            mStatus = HttpParseStatusIdle;
+                            mStatus = Idle;
                         }
                         return packets;
                     }
@@ -224,7 +213,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                     if(length <= mReader->getReadableLength()) {
                         mReader->move(length);
                         mHttpPacket->getEntity()->setContent(mReader->pop());
-                        mStatus = HttpParseStatusIdle;
+                        mStatus = Idle;
                         printf("add packet trace2 \n");
                         mMultiPartParser = nullptr;
                         packets->add(mHttpPacket);
@@ -232,7 +221,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                     }
                 } else {
                     //no contentlength,maybe it is only a html request
-                    mStatus = HttpParseStatusIdle;
+                    mStatus = Idle;
                     printf("add packet trace3 \n");
                     mMultiPartParser = nullptr;
                     packets->add(mHttpPacket);

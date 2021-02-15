@@ -31,6 +31,7 @@ public:
 
     int getStatus();
 
+    HttpPacket parseEntireResponse(String response);
 
 private:
     enum HttpParseStatus {

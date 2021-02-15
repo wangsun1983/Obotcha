@@ -3,6 +3,7 @@
 namespace obotcha {
 
 const String _HttpText::LineEnd = createString("\r\n");
+const String _HttpText::DoubleLineEnd = createString("\r\n\r\n");
 const String _HttpText::ChunkEnd = createString("\r\n0\r\n\r\n");
 const String _HttpText::BoundaryTag = createString("boundary");
 const String _HttpText::BoundarySeperator = createString("--------------------------");

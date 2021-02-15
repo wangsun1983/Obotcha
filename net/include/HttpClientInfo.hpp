@@ -27,16 +27,13 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(HttpClientInfo){
 public:
+    friend class _HttpServer;
+
     _HttpClientInfo(Socket);
 
-    //ClientFd
     int getClientFd();
 
     String getClientIp();
-
-    void setClientIp(String);
-
-    int getParseStatus();
 
     int pushHttpData(ByteArray array);
 
@@ -46,19 +43,17 @@ public:
 
     ArrayList<HttpPacket> pollHttpPacket();
 
-    Mutex getResponseWriteMutex();
-
     SSLInfo getSSLInfo();
-
-    void setSSLInfo(SSLInfo);
-
-    sp<_HttpListener> getHttpListener();
-    
-    void setHttpListener(sp<_HttpListener>);
 
     uint64_t getClientId();
 
+    void close();
+
 private:
+    void setClientIp(String);
+    
+    void setSSLInfo(SSLInfo);
+
     String mClientIp;
 
     int mClientFd;
@@ -67,17 +62,11 @@ private:
 
     int mStatus;
 
-    Mutex mResponseWriteMutex;
-
     SSLInfo mSSLInfo;
     
     sp<_HttpListener> mHttpServerListener;
 
     uint64_t mClientId;
-
-    Random mRnd;
-
-    Condition mWaitCacheEmpty;
 
     Socket mSocket;
 };

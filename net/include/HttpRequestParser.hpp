@@ -30,15 +30,13 @@ public:
 
     int getStatus();
 
-    HttpPacket parseEntireResponse(String response);
-
     HttpPacket parseEntireRequest(String request);
 
 private:
     enum HttpParseStatus {
-        HttpParseStatusIdle = 0,
-        HttpClientParseStatusHeadStart,
-        HttpClientParseStatusBodyStart
+        Idle = 0,
+        HeadStart,
+        BodyStart
     };
     
     int mStatus;

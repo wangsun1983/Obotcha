@@ -3,173 +3,139 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
-#include "http_parser.h"
-#include "HashMap.hpp"
-#include "HttpCookie.hpp"
-#include "HttpClient.hpp"
 #include "HttpPacket.hpp"
 #include "InetAddress.hpp"
 #include "HttpHeader.hpp"
-#include "ByteArrayReader.hpp"
 #include "Error.hpp"
 #include "HttpServer.hpp"
-#include "InitializeException.hpp"
 #include "AutoLock.hpp"
 #include "HttpClientInfo.hpp"
 #include "HttpResponseWriter.hpp"
 #include "HttpClientManager.hpp"
 #include "SSLManager.hpp"
+#include "InterruptedException.hpp"
+#include "HttpInternalException.hpp"
 
 namespace obotcha {
 
-_HttpDefferedTasks::_HttpDefferedTasks() {
-    isDoDefferedTask = false;
-    mutex = createMutex();
-    tasks = createLinkedList<DispatchHttpWorkData>();
-}
-
-//------------------DispatchHttpWorkData------------------
-_DispatchHttpWorkData::_DispatchHttpWorkData(int fd,ByteArray pack,uint64_t id) {
+//------------------HttpTaskData------------------
+_HttpTaskData::_HttpTaskData(int fd,ByteArray pack,uint64_t id) {
     this->fd = fd;
     this->pack = pack;
     this->clientid = id;
 }
 
-_HttpDispatcherPool::_HttpDispatcherPool(int threadSize) {
-    //fd2TidsMutex = createMutex("HttpDispatcherPool");
-    mThreadnum = threadSize;
-    mRunnables = createArrayList<HttpDispatchRunnable>();
+_HttpDispatcherPool::_HttpDispatcherPool(sp<_HttpServer> server,int threadSize) {
     mExecutors = createThreadPoolExecutor(-1,threadSize);
-    datas = createLinkedList<DispatchHttpWorkData>();
-    mDefferedTasks = createArrayList<HttpDefferedTasks>();
+    datas = createLinkedList<HttpTaskData>();
+    mTaskGroup = createArrayList<LinkedList<HttpTaskData>>();
     mDataMutex = createMutex();
     mDataCondition = createCondition();
     isStop = false;
     
     for(int index = 0;index < threadSize;index++) {
-        HttpDispatchRunnable r = createHttpDispatchRunnable(index,AutoClone(this));
-        mRunnables->add(r);
+        mTaskGroup->add(createLinkedList<HttpTaskData>());
+        GroupIdTofds[index] = -1;
+        mExecutors->execute([](HttpServer server,HttpDispatcherPool pool,int num) {
+            while(1) {
+                HttpTaskData data = pool->getData(num);
+                
+                if(data == nullptr) {
+                    return;
+                }
 
-        HttpDefferedTasks t = createHttpDefferedTasks();
-        mDefferedTasks->add(t);
+                HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(data->fd);
+                if(info == nullptr || data->clientid != info->getClientId()) {
+                    continue;
+                }
 
-        tid2fds[index] = -1;
+                try {
+                    info->pushHttpData(data->pack);
+                } catch(HttpInternalException &e) {
+                    st(HttpClientManager)::getInstance()->removeClientInfo(info->getClientFd());
+                    info->close();
+                    continue;
+                }
+                
+                ArrayList<HttpPacket> packets = info->pollHttpPacket();
+                if(packets != nullptr && packets->size() != 0) {
+                    HttpResponseWriter writer = createHttpResponseWriter(info);
+                    ListIterator<HttpPacket> iterator = packets->getIterator();
+                    while(iterator->hasValue()) {
+                        server->mHttpListener->onMessage(info,writer,iterator->getValue());
+                        iterator->next();
+                    }
+                }
+            }
+        },server,AutoClone(this),index);
     }
-
-    ListIterator<HttpDispatchRunnable> iterator = mRunnables->getIterator();
-    while(iterator->hasValue()) {
-        mExecutors->execute(iterator->getValue());
-        iterator->next();
-    } 
 }
 
-void _HttpDispatcherPool::addData(DispatchHttpWorkData data) {
+void _HttpDispatcherPool::addData(HttpTaskData data) {
     AutoLock l(mDataMutex);
-    int tid = getTidByFd(data->fd);
+    int index = getGroupIdByFd(data->fd);
     
-    if(tid != -1) {
-        HttpDefferedTasks defferedTasks = mDefferedTasks->get(tid);
-        defferedTasks->tasks->enQueueLast(data);
+    if(index != -1) {
+        mTaskGroup->get(index)->enQueueLast(data);
         mDataCondition->notifyAll();
         return;
     }
+    
     datas->enQueueLast(data);
     mDataCondition->notifyAll();
 }
 
-int _HttpDispatcherPool::getTidByFd(int fd) {
-     //try to find an index
-    for(int index = 0;index <mThreadnum;index++) {
-        if(tid2fds[index] == fd) {
+int _HttpDispatcherPool::getGroupIdByFd(int fd) {
+    //try to find an index
+    AutoLock l(mDataMutex);
+    for(int index = 0;index < mExecutors->getThreadsNum();index++) {
+        if(GroupIdTofds[index] == fd) {
             return index;
         }
     }
-
     return -1;
 }
 
 void _HttpDispatcherPool::release() {
     mExecutors->shutdown();
     this->isStop = true;
+
+    AutoLock l(mDataMutex);
     mDataCondition->notifyAll();
-    mRunnables->clear();
 }
 
-DispatchHttpWorkData _HttpDispatcherPool::getData(int requireIndex) {
-    DispatchHttpWorkData data = nullptr;
-    HttpDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
+HttpTaskData _HttpDispatcherPool::getData(int requireIndex) {
+    HttpTaskData data = nullptr;
     while(!isStop) {
         AutoLock l(mDataMutex);
-        //search deffered tasks
-        data = defferedTasks->tasks->deQueueFirst();
+        data = mTaskGroup->get(requireIndex)->deQueueFirst();
 
         if(data == nullptr) {
-            tid2fds[requireIndex] = -1;
+            GroupIdTofds[requireIndex] = -1;
         } else {
             return data;
         }
 
         data = datas->deQueueFirst();
         if(data != nullptr) {
-            tid2fds[requireIndex] = data->fd;
+            GroupIdTofds[requireIndex] = data->fd;
             return data;
         }
+        try {
+            mDataCondition->wait(mDataMutex);
+        } catch(InterruptedException &e) {
+            return nullptr;
+        }
 
-        mDataCondition->wait(mDataMutex);
         continue;
     }
 
     return nullptr;
 }
 
-_HttpDispatchRunnable::_HttpDispatchRunnable(int index,HttpDispatcherPool pool) {
-    mIndex = index;
-    mPool = pool;
-}
-
-void _HttpDispatchRunnable::onInterrupt() {
-    mPool = nullptr;
-}
-
-void _HttpDispatchRunnable::run() {
-    bool isDoDefferedTask = false;
-    while(1) {
-        DispatchHttpWorkData data = mPool->getData(mIndex);
-        
-        if(data == nullptr) {
-            mPool = nullptr;
-            return;
-        }
-        HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(data->fd);
-        if(info == nullptr) {
-            continue;
-        }
-
-        info->pushHttpData(data->pack);
-        //printf("HttpDispatchRunnable run trace1,data->pack is %s \n",data->pack->toString()->toChars());
-        ArrayList<HttpPacket> packets = info->pollHttpPacket();
-        printf("HttpDispatchRunnable run packets size is %d \n",packets->size());
-        HttpResponseWriter writer = createHttpResponseWriter(info);
-        if(data->clientid != info->getClientId()) {
-            writer->disableResponse();
-        }
-
-        if(packets != nullptr && packets->size() != 0) {
-            ListIterator<HttpPacket> iterator = packets->getIterator();
-            while(iterator->hasValue()) {
-                //we should check whether there is a multipart
-                HttpPacket packet = iterator->getValue();
-                packet->dump();
-                info->getHttpListener()->onMessage(info,writer,iterator->getValue());
-                iterator->next();
-            }
-        }
-    }
-}
-
 void _HttpServer::onDataReceived(SocketResponser r,ByteArray pack) {
     HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r->getFd());
-    DispatchHttpWorkData data = createDispatchHttpWorkData(r->getFd(),pack,info->getClientId());
+    HttpTaskData data = createHttpTaskData(r->getFd(),pack,info->getClientId());
     mPool->addData(data);
 }
 
@@ -180,7 +146,7 @@ void _HttpServer::onDisconnect(SocketResponser r) {
 
 void _HttpServer::onConnect(SocketResponser r) {
     HttpClientInfo info = createHttpClientInfo(mTcpServer->getSocket(r->getFd()));
-    info->setHttpListener(mHttpListener);
+    //info->setHttpListener(mHttpListener);
     //info->setClientFd(r->getFd());
     SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
     if(info != nullptr) {
@@ -218,7 +184,7 @@ _HttpServer::_HttpServer(String ip,int port,HttpListener l,String certificate,St
     mHttpListener = l;
 
     int threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
-    mPool = createHttpDispatcherPool(threadsNum);
+    mPool = createHttpDispatcherPool(AutoClone(this),threadsNum);
 
     mIp = ip;
     mPort = port;
@@ -267,6 +233,7 @@ long _HttpServer::getRcvTimeout() {
     return mRcvTimeout;
 }
 
+//interface for websocket
 void _HttpServer::deMonitor(int fd) {
     mTcpServer->deMonitor(fd);
     st(HttpClientManager)::getInstance()->removeClientInfo(fd);

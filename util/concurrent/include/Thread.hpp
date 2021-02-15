@@ -123,7 +123,7 @@ private:
 
     String mName;
     
-    AtomicInteger mStatus;
+    mutable volatile int mStatus;
     
     static String DefaultThreadName;
 

@@ -56,7 +56,7 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     if(!mResponsible) {
         return -1;
     }
-    AutoLock l(mClient->getResponseWriteMutex());
+    //AutoLock l(mClient->getResponseWriteMutex());
     mSendBuff->clear();
     ByteArrayWriter writer = createByteArrayWriter(mSendBuff);
 

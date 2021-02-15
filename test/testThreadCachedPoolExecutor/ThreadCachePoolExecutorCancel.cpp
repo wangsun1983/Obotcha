@@ -50,7 +50,7 @@ int cancelTest() {
         }
 
         sleep(5);
-        if(cancelNum != 1024*32 - 20) {
+        if(cancelNum != 1024*32) {
             printf("---[CacheThreadPool Test {cancel()} case1,cancelNum is %d] [FAIL]--- \n",cancelNum);
         }
         pool->shutdown();

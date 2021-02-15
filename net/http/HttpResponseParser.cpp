@@ -264,4 +264,16 @@ int _HttpResponseParser::getStatus() {
     return mStatus;
 }
 
+HttpPacket _HttpResponseParser::parseEntireResponse(String response) {
+    memset(&mParser,0,sizeof(http_parser));
+    HttpPacket packet = createHttpPacket();
+    mParser.data = reinterpret_cast<void *>(packet.get_pointer());
+
+    http_parser_init(&mParser, HTTP_RESPONSE);
+    http_parser_execute(&mParser,&settings, response->toChars(), response->size());
+    packet->setMethod(mParser.method);
+    packet->setStatus(mParser.status_code);
+    return packet;
+}
+
 }

@@ -47,7 +47,6 @@ void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
                 try {
                     mCurrentTask = pool->deQueueFirst();
                 } catch(InterruptedException &e) {
-                    printf("dequeue exception!!!! \n");
                     return;
                 }
                 

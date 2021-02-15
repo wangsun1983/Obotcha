@@ -20,6 +20,7 @@ DECLARE_SIMPLE_CLASS(HttpText) {
 
 public:
    static const String LineEnd;
+   static const String DoubleLineEnd;
    static const String ChunkEnd;
    static const String BoundaryTag;
    static const String BoundarySeperator;

@@ -9,6 +9,7 @@
 #include "ThreadLocal.hpp"
 #include "System.hpp"
 #include "Error.hpp"
+#include "AutoLock.hpp"
 
 
 namespace obotcha {
@@ -20,12 +21,8 @@ String _Thread::DefaultThreadName = createString("thread_");
 void doThreadExit(_Thread *thread) {
     {
         AutoLock l(thread->mJoinMutex);
-        thread->mStatus->set(st(Thread)::Complete);
+        thread->mStatus = st(Thread)::Complete;
         thread->mJoinCondition->notifyAll();
-    }
-
-    if(thread->mCurrentWaitCondition != nullptr) {
-        thread->mCurrentWaitCondition->interrupt();
     }
 
     pthread_detach(thread->getThreadId());
@@ -38,7 +35,7 @@ void* _Thread::localRun(void *th) {
     _Thread *thread = static_cast<_Thread *>(th);
     mThreads->set(thread->getThreadId(),AutoClone(thread));
     
-    thread->mStatus->set(st(Thread)::Running);
+    thread->mStatus = st(Thread)::Running;
     
     pthread_setname_np(thread->mPthread,thread->mName->toChars());
 
@@ -74,7 +71,7 @@ void _Thread::threadInit(String name,Runnable run) {
         mName = DefaultThreadName->append(createString(index));
     }
     mRunnable = run;
-    mStatus = createAtomicInteger(NotStart);
+    mStatus = NotStart;
 
     mSleepMutex = createMutex();
     mSleepCondition = createCondition();
@@ -127,19 +124,22 @@ int _Thread::start() {
     //incStrong(0);
     //sp<_Thread> localThread;
     //localThread.set_pointer(this);
-    if(mStatus->get() != NotStart) {
-        return -AlreadyExecute;
+    {
+        AutoLock l(mJoinMutex);
+        if(mStatus != NotStart) {
+            return -AlreadyExecute;
+        }
+        
+        mStatus = Idle;
     }
-    
-    mStatus->set(Idle);
 
     pthread_attr_init(&mThreadAttr);
     if(pthread_create(&mPthread, &mThreadAttr, localRun, this)!= 0) {
-        mStatus->set(Error);
+        mStatus = Error;
         return -1;
     } 
 
-    while(mStatus->get() == Idle) {
+    while(getStatus() == Idle) {
         yield();
     }
 
@@ -163,7 +163,8 @@ int _Thread::join(long timeInterval) {
 }
 
 int _Thread::getStatus() {
-    return mStatus->get();
+    AutoLock l(mJoinMutex);
+    return mStatus;
 }
 
 void _Thread::onComplete(){
@@ -328,7 +329,8 @@ Thread _Thread::current() {
 }
 
 bool _Thread::isRunning() {
-    return mStatus->get() == Running;
+    AutoLock l(mJoinMutex);
+    return mStatus == Running;
 }
 
 void _Thread::threadSleep(unsigned long interval) {

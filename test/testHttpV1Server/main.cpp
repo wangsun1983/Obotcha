@@ -108,7 +108,8 @@ DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
         }
         printf("url2 is %s \n",url->toChars());
         //HttpMultiPart getMultiPart();
-        HttpMultiPart part = msg->getMultiPart();
+        HttpEntity entity = msg->getEntity();
+        HttpMultiPart part = entity->getMultiPart();
         if(part != nullptr) {
             printf("part is not null \n");
             ArrayList<HttpMultiPartContent> contents = part->contents;
@@ -121,13 +122,18 @@ DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
         }
 
         //printf("getUrl is %s \n",url->toChars());
-        msg->dump();
+        //msg->dump();
 
         HttpResponse response = createHttpResponse();
         response->setStatus(st(HttpStatus)::Ok);
         String body = createString("<h1>Response from Gagira</h1>");
-        response->setBody(createByteArray(body));
-        response->setHeader("Content-Type","text/html");
+        //response->setBody(createByteArray(body));
+        HttpEntity ackentity = createHttpEntity();
+        ackentity->setContent(body);
+        response->setEntity(ackentity);
+
+        response->getHeader()->setValue("Content-Type","text/html");
+        printf("start write \n");
         w->write(response);
     }
 

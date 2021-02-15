@@ -45,7 +45,6 @@ int _ThreadCachedPoolExecutor::shutdown(){
     }
 
     mStatus = ShutDown;
-
     //all task should onInterrupt
     while(1) {
         FutureTask task = mTasks->deQueueLastNoBlock();
@@ -55,7 +54,6 @@ int _ThreadCachedPoolExecutor::shutdown(){
         }
         break;
     }
-
     {
         AutoLock l(mHandlerMutex);
         ListIterator<Thread> iterator = mHandlers->getIterator();
@@ -65,7 +63,6 @@ int _ThreadCachedPoolExecutor::shutdown(){
             iterator->next();
         }
     }
-
     //notify all thread to close
     mTasks->destroy();
     return 0;
@@ -178,8 +175,12 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
     handler = createThread([](BlockingQueue<FutureTask> &tasks,Mutex &mutex,ArrayList<Thread> &handlers,long threadtimeout){
         FutureTask mCurrentTask = nullptr;
         while(1) {
-            mCurrentTask = tasks->deQueueLast(threadtimeout);
-            if(mCurrentTask == nullptr) {                
+            try {
+                mCurrentTask = tasks->deQueueLast(threadtimeout);
+            } catch(InterruptedException &e) {
+            }
+
+            if(mCurrentTask == nullptr) {          
                 AutoLock l(mutex);
                 ListIterator<Thread> iterator = handlers->getIterator();
                 Thread handler = st(Thread)::current();
