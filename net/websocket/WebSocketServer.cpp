@@ -4,99 +4,15 @@
 #include <sys/epoll.h>
 
 #include "Error.hpp"
-#include "WebSocketHybi00Composer.hpp"
-#include "WebSocketHybi00Parser.hpp"
-#include "WebSocketHybi07Composer.hpp"
-#include "WebSocketHybi07Parser.hpp"
-#include "WebSocketHybi08Composer.hpp"
-#include "WebSocketHybi08Parser.hpp"
-#include "WebSocketHybi13Composer.hpp"
-#include "WebSocketHybi13Parser.hpp"
 #include "WebSocketProtocol.hpp"
 #include "HttpClientInfo.hpp"
+#include "WebSocketClientManager.hpp"
+#include "WebSocketComposer.hpp"
 #include "Enviroment.hpp"
 #include "Log.hpp"
 
 namespace obotcha {
 
-//--------------------WebSocketClientManager-----------------
-WebSocketClientManager _WebSocketClientManager::mInstance = nullptr;
-Mutex _WebSocketClientManager::mMutex = createMutex("WebSocketClientManagerMutex");
-
-_WebSocketClientManager::_WebSocketClientManager() {
-    mClients = createHashMap<int, WebSocketClientInfo>();
-
-    mRand = createRandom();
-}
-
-uint32_t _WebSocketClientManager::genRandomUint32() {
-    return mRand->nextUint32();
-}
-
-WebSocketClientManager _WebSocketClientManager::getInstance() {
-    if (mInstance != nullptr) {
-        return mInstance;
-    }
-
-    AutoLock l(mMutex);
-
-    if (mInstance != nullptr) {
-        return mInstance;
-    }
-
-    mInstance = AutoClone(new _WebSocketClientManager());
-    return mInstance;
-}
-
-WebSocketClientInfo _WebSocketClientManager::addClient(int fd, int version) {
-    WebSocketClientInfo client = createWebSocketClientInfo();
-    client->setClientFd(fd);
-    client->setVersion(version);
-
-    switch (version) {
-        case 0: {
-            client->setParser(createWebSocketHybi00Parser());
-            client->setComposer(createWebSocketHybi00Composer(WsServerComposer));
-            break;
-        }
-
-        case 7: {
-            client->setParser(createWebSocketHybi07Parser());
-            client->setComposer(createWebSocketHybi07Composer(WsServerComposer));
-            break;
-        }
-
-        case 8: {
-            client->setParser(createWebSocketHybi08Parser());
-            client->setComposer(createWebSocketHybi08Composer(WsServerComposer));
-            break;
-        }
-
-        case 13: {
-            client->setParser(createWebSocketHybi13Parser());
-            client->setComposer(createWebSocketHybi13Composer(WsServerComposer));
-            break;
-        }
-
-        default:
-            LOG(ERROR)<<"WebSocket Protocol Not Support,Version is "<<version;
-            return nullptr;
-    }
-
-    AutoLock ll(mMutex);
-    mClients->put(fd, client);
-    return client;
-}
-
-WebSocketClientInfo _WebSocketClientManager::getClient(int fd) {
-    AutoLock ll(mMutex);
-    return mClients->get(fd);
-}
-
-void _WebSocketClientManager::removeClient(WebSocketClientInfo client) {
-    AutoLock ll(mMutex);
-    mClients->remove(client->getClientFd());
-}
 
 //--------------------WebSocketDispatchData-----------------
 _DispatchData::_DispatchData(uint64_t clientid,int cmd,int fd, uint32_t events,ByteArray pack) {
@@ -112,23 +28,16 @@ _DispatchData::_DispatchData(uint64_t clientid,int cmd,int fd, uint32_t events,B
     this->clientId = clientid;
 }
 
-_DispatchData::_DispatchData(int cmd,int fd, uint32_t events,HttpPacket pack) {
+_DispatchData::_DispatchData(uint64_t clientid,int cmd,int fd, uint32_t events,HttpPacket pack) {
     this->fd = fd;
     this->events = events;
     this->cmd = cmd;
     this->clientId = 0;
     this->packet = pack;
+    this->clientId = clientid;
 }
 
-//----WebSocketDispatchRunnable----
-_WebSocketDispatchRunnable::_WebSocketDispatchRunnable(int index,sp<_WebSocketDispatcherPool> pool) {
-    mIndex = index;
-    mPoolMutex = createMutex();
-    mPool = pool;
-    mParser = createHttpRequestParser();
-}
-
-void _WebSocketDispatchRunnable::handleHttpData(DispatchData data) {
+void _WebSocketDispatcherPool::handleHttpData(DispatchData data) {
 
     int fd = data->fd;
     HttpPacket request = data->packet;
@@ -138,7 +47,7 @@ void _WebSocketDispatchRunnable::handleHttpData(DispatchData data) {
     String version = header->getValue(st(HttpHeader)::SecWebSocketVersion);
     if (upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
         // remove fd from http epoll
-        mPool->getHttpServer()->deMonitor(fd);
+        mHttpServer->deMonitor(fd);
 
         while(st(WebSocketClientManager)::getInstance()->getClient(fd)!= nullptr) {
             LOG(INFO)<<"websocket client is not removed,fd is "<<fd;
@@ -166,8 +75,8 @@ void _WebSocketDispatchRunnable::handleHttpData(DispatchData data) {
             //TODO
         }
 
-        mPool->getWebSocketServer()->monitor(fd);
-        mPool->getWebSocketServer()->notifyConnect(client);
+        mWebSocketServer->monitor(fd);
+        mWebSocketServer->notifyConnect(client);
         WebSocketComposer composer = client->getComposer();
         ByteArray shakeresponse = composer->genShakeHandMessage(client);
         int ret = send(fd,shakeresponse->toValue(),shakeresponse->size(),0);
@@ -177,7 +86,7 @@ void _WebSocketDispatchRunnable::handleHttpData(DispatchData data) {
     }
 }
 
-void _WebSocketDispatchRunnable::handleWsData(DispatchData data) {
+void _WebSocketDispatcherPool::handleWsData(DispatchData data) {
 
     uint32_t events = data->events;
     int fd = data->fd;
@@ -187,7 +96,7 @@ void _WebSocketDispatchRunnable::handleWsData(DispatchData data) {
     WebSocketClientInfo client =
         st(WebSocketClientManager)::getInstance()->getClient(fd);
 
-    WebSocketServer server = mPool->getWebSocketServer();
+    WebSocketServer server = mWebSocketServer;
     
     if(client == nullptr) {
         //receive hungup before.
@@ -308,73 +217,48 @@ FINISH:
     }
 }
 
-void _WebSocketDispatchRunnable::onInterrupt() {
-    mPool = nullptr;
-}
-
-void _WebSocketDispatchRunnable::run() {
-    DispatchData data = nullptr;
-    while(1) {
-        {
-            data  = mPool->getData(mIndex);
-            if(data == nullptr) {
-                mPool = nullptr;
-                return;
-            }
-        }
-        
-        switch(data->cmd) {
-            case st(DispatchData)::Http:
-            handleHttpData(data);
-            break;
-
-            case st(DispatchData)::Ws:
-            handleWsData(data);
-            break;
-        }
-    }
-}
-
-//----WebSocketDefferedTasks----
-_WebSocketDefferedTasks::_WebSocketDefferedTasks() {
-    mutex = createMutex();
-    tasks = createLinkedList<DispatchData>();
-}
-
 //----WebSocketDispatcherPool----
 _WebSocketDispatcherPool::_WebSocketDispatcherPool(int threadnum) {
-    //fd2TidsMutex = createMutex("WebSocketDispatcherPool");
-    mThreadnum = threadnum;
-    mDataMutex = createSpinLock();
-    mTidFdsMutex = createMutex();
+    mDataMutex = createMutex();
     mDataCondition = createCondition();
     datas = createLinkedList<DispatchData>();
     mExecutor = createThreadPoolExecutor(-1,threadnum);
-    mRunnables = createArrayList<WebSocketDispatchRunnable>();
-    mDefferedTasks = createArrayList<WebSocketDefferedTasks>();
+    mTaskGroup = createArrayList<LinkedList<DispatchData>>();
     isStop = false;
 
     for(int index = 0;index < threadnum;index++) {
-        WebSocketDispatchRunnable r = createWebSocketDispatchRunnable(index,AutoClone(this));
-        mRunnables->add(r);
-        WebSocketDefferedTasks t = createWebSocketDefferedTasks();
-        mDefferedTasks->add(t);
-        tid2fds[index] = -1;
-    }
+        mTaskGroup->add(createLinkedList<DispatchData>());
+        GroupIdTofds[index] = -1;
+        mExecutor->execute([](sp<_WebSocketDispatcherPool> pool,int num) {
+            DispatchData data = nullptr;
+            while(1) {
+                {
+                    data  = pool->getData(num);
+                    if(data == nullptr) {
+                        pool = nullptr;
+                        return;
+                    }
+                }
+                
+                switch(data->cmd) {
+                    case st(DispatchData)::Http:
+                    pool->handleHttpData(data);
+                    break;
 
-    ListIterator<WebSocketDispatchRunnable> iterator = mRunnables->getIterator();
-    while(iterator->hasValue()) {
-        mExecutor->execute(iterator->getValue());
-        iterator->next();
+                    case st(DispatchData)::Ws:
+                    pool->handleWsData(data);
+                    break;
+                }
+            }
+        },AutoClone(this),index);
     }
 }
 
 void _WebSocketDispatcherPool::addData(DispatchData data) {
-    AutoLock l(mTidFdsMutex);
-    int tid = getTidByFd(data->fd);
-    if(tid != -1) {
-        WebSocketDefferedTasks defferedTasks = mDefferedTasks->get(tid);
-        defferedTasks->tasks->enQueueLast(data);
+    AutoLock l(mDataMutex);
+    int index = getGroupIdByFd(data->fd);
+    if(index != -1) {
+        mTaskGroup->get(index)->enQueueLast(data);
         mDataCondition->notifyAll();
         return;
     }
@@ -386,29 +270,22 @@ void _WebSocketDispatcherPool::setHttpServer(HttpServer server) {
     mHttpServer = server;
 }
 
-HttpServer _WebSocketDispatcherPool::getHttpServer() {
-    return mHttpServer;
-}
-
 void _WebSocketDispatcherPool::setWebSocketServer(WebSocketServer w) {
     mWebSocketServer = w;
 }
 
-WebSocketServer _WebSocketDispatcherPool::getWebSocketServer() {
-    return mWebSocketServer;
-}
 
 void _WebSocketDispatcherPool::release() {
     mExecutor->shutdown();
     isStop = true;
     mDataCondition->notifyAll();
-    mRunnables->clear();
+    //mRunnables->clear();
 }
 
-int _WebSocketDispatcherPool::getTidByFd(int fd) {
+int _WebSocketDispatcherPool::getGroupIdByFd(int fd) {
      //try to find an index
-    for(int index = 0;index <mThreadnum;index++) {
-        if(tid2fds[index] == fd) {
+    for(int index = 0;index <mExecutor->getThreadsNum();index++) {
+        if(GroupIdTofds[index] == fd) {
             return index;
         }
     }
@@ -418,27 +295,26 @@ int _WebSocketDispatcherPool::getTidByFd(int fd) {
 
 DispatchData _WebSocketDispatcherPool::getData(int requireIndex) {
     DispatchData data = nullptr;
-    WebSocketDefferedTasks defferedTasks = mDefferedTasks->get(requireIndex);
     while(!isStop) {
-        AutoLock l(mTidFdsMutex);
+        AutoLock l(mDataMutex);
         {
             //search deffered tasks
-            data = defferedTasks->tasks->deQueueFirst();
+            data = mTaskGroup->get(requireIndex)->deQueueFirst();
 
             if(data == nullptr) {
-                tid2fds[requireIndex] = -1;
+                GroupIdTofds[requireIndex] = -1;
             } else {
                 return data;
             }
 
             data = datas->deQueueFirst();
             if(data != nullptr) {
-                tid2fds[requireIndex] = data->fd;
+                GroupIdTofds[requireIndex] = data->fd;
                 return data;
             }
             
         }
-        mDataCondition->wait(mTidFdsMutex);
+        mDataCondition->wait(mDataMutex);
         continue;
     }
     return nullptr;
@@ -523,9 +399,7 @@ int _WebSocketServer::onEvent(int fd,uint32_t events,ByteArray pack) {
 }
 
 void _WebSocketServer::onMessage(sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg) {
-    //int cmd,int fd, uint32_t events,HttpPacket pack
-    //_DispatchData::_DispatchData(int cmd,int fd, uint32_t events,HttpPacket pack) {
-    DispatchData data = createDispatchData(st(DispatchData)::Http,client->getClientFd(),0,msg);
+    DispatchData data = createDispatchData(client->getClientId(),st(DispatchData)::Http,client->getClientFd(),0,msg);
     mDispatchPool->addData(data);
 }
 

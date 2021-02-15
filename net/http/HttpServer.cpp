@@ -146,8 +146,6 @@ void _HttpServer::onDisconnect(SocketResponser r) {
 
 void _HttpServer::onConnect(SocketResponser r) {
     HttpClientInfo info = createHttpClientInfo(mTcpServer->getSocket(r->getFd()));
-    //info->setHttpListener(mHttpListener);
-    //info->setClientFd(r->getFd());
     SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
     if(info != nullptr) {
         info->setSSLInfo(ssl);

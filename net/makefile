@@ -51,6 +51,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/websockethybi08composer.o \
 		$(outtmp)/websockethybi00composer.o \
 		$(outtmp)/websocketpermessagedeflate.o \
+		$(outtmp)/websocketclientmanager.o \
 		$(outtmp)/websocketclientinfo.o \
 		$(outtmp)/websocketclient.o \
 		$(outtmp)/httpv2hpackutil.o \
@@ -218,6 +219,9 @@ $(outtmp)/websockethybi00composer.o :$(netDir)/websocket/WebSocketHybi00Composer
 
 $(outtmp)/websocketpermessagedeflate.o :$(netDir)/websocket/WebSocketPermessageDeflate.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketPermessageDeflate.cpp -o $(outtmp)/websocketpermessagedeflate.o $(external)
+
+$(outtmp)/websocketclientmanager.o :$(netDir)/websocket/WebSocketClientManager.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketClientManager.cpp -o $(outtmp)/websocketclientmanager.o $(external)
 
 $(outtmp)/websocketclient.o :$(netDir)/websocket/WebSocketClient.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketClient.cpp -o $(outtmp)/websocketclient.o $(external)

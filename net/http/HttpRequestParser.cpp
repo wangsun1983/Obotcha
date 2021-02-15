@@ -130,7 +130,6 @@ HttpPacket _HttpRequestParser::parseEntireRequest(String request) {
 ArrayList<HttpPacket> _HttpRequestParser::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
     static byte *end = (byte *)st(HttpText)::DoubleLineEnd->toChars();
-    //static byte chunkEnd[5] = {'\r','\n','0','\r','\n'};
     while(1) {
         switch(mStatus) {
             case Idle:{

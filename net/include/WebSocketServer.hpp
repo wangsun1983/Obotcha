@@ -35,36 +35,12 @@ namespace obotcha {
 class _WebSocketDispatcherPool;
 class _WebSocketServer;
 
-DECLARE_SIMPLE_CLASS(WebSocketClientManager) {
-public:
-    static WebSocketClientManager getInstance();
-    
-    WebSocketClientInfo addClient(int fd,int version);
-
-    WebSocketClientInfo getClient(int fd);
-  
-    void removeClient(WebSocketClientInfo);
-
-    uint32_t genRandomUint32();
-
-private:
-   static WebSocketClientManager mInstance;
-   
-   static Mutex mMutex;
-   
-   HashMap<int,WebSocketClientInfo> mClients;
-
-   _WebSocketClientManager();
-
-   Random mRand;
-
-};
-
 //-----------WebSocketDispatchData----------------
 DECLARE_SIMPLE_CLASS(DispatchData) {
 public:
     _DispatchData(uint64_t,int,int,uint32_t,ByteArray);
-    _DispatchData(int,int,uint32_t,HttpPacket);
+    _DispatchData(uint64_t,int,int,uint32_t,HttpPacket);
+
     enum DataType {
         Http = 0,
         Ws,
@@ -79,78 +55,43 @@ public:
     HttpPacket packet;
 };
 
-//---------------WebSocketDispatchRunnable------------------------
-DECLARE_SIMPLE_CLASS(WebSocketDispatchRunnable) IMPLEMENTS(Runnable) {
-public:
-    _WebSocketDispatchRunnable(int index,sp<_WebSocketDispatcherPool>);
-    void run();
-    void onInterrupt();
-
-private:
-    Mutex mPoolMutex;
-    int mIndex;
-
-    sp<_WebSocketDispatcherPool> mPool;
-
-    void handleWsData(DispatchData data);
-    void handleHttpData(DispatchData data);
-
-    HttpRequestParser mParser;
-};
-
-//------------------WebSocketDefferedTasks---------------------------
-DECLARE_SIMPLE_CLASS(WebSocketDefferedTasks) {
-public:
-    _WebSocketDefferedTasks();
-
-    Mutex mutex;
-    LinkedList<DispatchData> tasks;
-};
-
 //------------------------WebSocketServer-------------------------
 DECLARE_SIMPLE_CLASS(WebSocketDispatcherPool) {
 public:
-    friend class _WebSocketDispatchRunnable;
-
     _WebSocketDispatcherPool(int threadnum = 4);
     void addData(DispatchData);
 
     DispatchData getData(int);
 
     void setHttpServer(HttpServer);
-    HttpServer getHttpServer();
-
     void setWebSocketServer(sp<_WebSocketServer>);
-    sp<_WebSocketServer> getWebSocketServer();
-
+    
+    void handleWsData(DispatchData data);
+    void handleHttpData(DispatchData data);
+    
     void release();
 
 private:
-    SpinLock mDataMutex;
+
+    Mutex mDataMutex;
     Condition mDataCondition;
     LinkedList<DispatchData> datas;
     ThreadPoolExecutor mExecutor;
-    ArrayList<WebSocketDispatchRunnable> mRunnables;
-    ArrayList<WebSocketDefferedTasks> mDefferedTasks;
+    ArrayList<LinkedList<DispatchData>> mTaskGroup;
 
     HttpServer mHttpServer;
-
     sp<_WebSocketServer> mWebSocketServer;
     
     mutable volatile bool isStop;
-    
-    Mutex mTidFdsMutex;
-    int tid2fds[128];
+    int GroupIdTofds[128];
 
-    int getTidByFd(int);
-
-    int mThreadnum;
+    int getGroupIdByFd(int);
 };
 
 //------------------------WebSocketServer-------------------------
 DECLARE_SIMPLE_CLASS(WebSocketServer) EXTENDS(EPollFileObserverListener),st(HttpListener){
 public:
-    friend class _WebSocketDispatchRunnable;
+    friend class _WebSocketDispatcherPool;
 
     _WebSocketServer();
 

@@ -33,16 +33,10 @@ HttpUrl _HttpUrlParser::parseUrl(String urlstring) {
         }
 
         if(u.field_set & (1 << UF_SCHEMA)) {
-            //httpc->path = (char*)malloc(u.field_data[UF_PATH].len + 1);
-            //strncpy(httpc->path, url+u.field_data[UF_PATH].off, u.field_data[UF_PATH].len);
-            //httpc->path[u.field_data[UF_PATH].len] = 0;
             urlData->setSchema(createString(url,u.field_data[UF_SCHEMA].off,u.field_data[UF_SCHEMA].len));
         }
 
         if(u.field_set & (1 << UF_FRAGMENT)) {
-            //httpc->path = (char*)malloc(u.field_data[UF_PATH].len + 1);
-            //strncpy(httpc->path, url+u.field_data[UF_PATH].off, u.field_data[UF_PATH].len);
-            //httpc->path[u.field_data[UF_PATH].len] = 0;
             urlData->setFragment(createString(url,u.field_data[UF_FRAGMENT].off,u.field_data[UF_FRAGMENT].len));
         }
 
@@ -101,7 +95,6 @@ void _HttpUrlParser::parseQuery(HttpUrl url,String query) {
     }
 
     value = createString(&p[start],0,index - start);
-    //HttpQuery q = createHttpQuery(name,value);
     url->addQuery(name,value);
 }
 
