@@ -5,6 +5,7 @@ objs += $(outtmp)/sqlite3Client.o \
 		$(outtmp)/sqlquery.o \
 		$(outtmp)/sqlrecords.o \
 		$(outtmp)/sqlconnection.o \
+		$(outtmp)/redisclient.o \
 
 $(outtmp)/sqlconnection.o :$(sqlDir)/SqlConnection.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/SqlConnection.cpp -o $(outtmp)/sqlconnection.o
@@ -20,3 +21,6 @@ $(outtmp)/sqlquery.o :$(sqlDir)/SqlQuery.cpp
 
 $(outtmp)/sqlrecords.o :$(sqlDir)/SqlRecords.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/SqlRecords.cpp -o $(outtmp)/sqlrecords.o
+
+$(outtmp)/redisclient.o :$(sqlDir)/redis/RedisClient.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(sqlDir)/redis/RedisClient.cpp -o $(outtmp)/redisclient.o

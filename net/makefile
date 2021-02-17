@@ -31,6 +31,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpresponsewriter.o \
 		$(outtmp)/httpresponseparser.o \
 		$(outtmp)/httpclientmanager.o \
+		$(outtmp)/httpsession.o \
 		$(outtmp)/httpcookie.o \
 		$(outtmp)/httpdate.o \
 		$(outtmp)/httpmultipart.o \
@@ -180,6 +181,9 @@ $(outtmp)/httpresponseparser.o :$(netDir)/http/HttpResponseParser.cpp
 
 $(outtmp)/httpclientmanager.o :$(netDir)/http/HttpClientManager.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClientManager.cpp -o $(outtmp)/httpclientmanager.o $(external)
+
+$(outtmp)/httpsession.o :$(netDir)/http/HttpSession.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpSession.cpp -o $(outtmp)/httpsession.o $(external)
 
 $(outtmp)/websocketserver.o :$(netDir)/websocket/WebSocketServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketServer.cpp -o $(outtmp)/websocketserver.o $(external)

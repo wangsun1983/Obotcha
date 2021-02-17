@@ -11,6 +11,7 @@ _HttpClientInfo::_HttpClientInfo(Socket s) {
     mSocket = s;
     uint32_t rnd = st(HttpClientManager)::getInstance()->genRandomUint32();
     mClientId = ((uint64_t)mClientId<<32|rnd);
+    mSession = createHttpSession();
 }
 
 int _HttpClientInfo::getClientFd() {
