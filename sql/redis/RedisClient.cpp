@@ -23,6 +23,8 @@ int _RedisClient::connect(String server,int port,long millseconds) {
         }
         Trigger(InitializeException,"redis connect fail");
     }
+
+    return 0;
 }
 
 int _RedisClient::set(String key,String value) {
@@ -46,7 +48,7 @@ int _RedisClient::set(String key,int value) {
 }
 
 String _RedisClient::getValue(String key) {
-    redisReply * reply = (redisReply *)redisCommand(mContext,"GET %s");
+    redisReply * reply = (redisReply *)redisCommand(mContext,"GET %s",key->toChars());
     if(reply == nullptr || reply->str == nullptr) {
         return nullptr;
     }

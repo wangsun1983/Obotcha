@@ -72,4 +72,4 @@ Obotcha是基于C++14开发的一个工具库，该工具库目前提供了如�
 - Obotcha的测试代码是最好的例子，这些代码存放在test目录下 。test目录下存放了Obotcha所有类的接口测试函数。
 
 ### Obotcha的未来
--   预计明年开始使用Obotcha开始进行后台服务器Gagira的开发。
+-   预计2022年开始使用Obotcha开始进行后台服务器Gagira的开发。
