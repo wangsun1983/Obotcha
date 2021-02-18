@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <future>
-#include <functional>
 #include <utility>
 
 #include "Object.hpp"
@@ -13,6 +12,7 @@
 #include "Condition.hpp"
 #include "IllegalStateException.hpp"
 #include "Error.hpp"
+#include "OStdApply.hpp"
 
 namespace obotcha {
 
@@ -56,7 +56,6 @@ public:
     void setResult(uint64_t);
     void setResult(String);
 
-    
     template<typename T>
     void getResult(T &value,T defaultvalue,long millseconds = 0) {
         AutoLock l(mResultMutex);
@@ -126,7 +125,7 @@ public:
 
     void run() {
         //func(initializer_list(_arguments));
-        std::apply(func,_arguments);
+        ostd::apply(func,_arguments);
     }
 
 private:

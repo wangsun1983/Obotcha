@@ -62,9 +62,10 @@ public:
 
     //reflect function
     inline virtual void __ReflectInit(){}
-    inline virtual sp<_Field> getField(sp<_String>){/*TODO*/}
-    inline virtual sp<_ArrayList<sp<_Field>>> getAllFields(){/*TODO*/}
-    inline virtual sp<_String> __ReflectClassName(){}
+    //do not add soure,build will fail!!!
+    inline virtual sp<_Field> getField(sp<_String>){/*don't add code*/}
+    inline virtual sp<_ArrayList<sp<_Field>>> getAllFields(){/*don't add code*/}
+    inline virtual sp<_String> __ReflectClassName(){/*don't add code*/}
 
     //reflect get function
 protected:
@@ -78,7 +79,7 @@ protected:
     inline virtual uint16_t getFieldUint16Value(std::string){return 0;}
     inline virtual uint32_t getFieldUint32Value(std::string){return 0;}
     inline virtual uint64_t getFieldUint64Value(std::string){return 0;}
-    inline virtual sp<_String> getFieldStringValue(std::string name){/*TODO*/};
+    inline virtual sp<_String> getFieldStringValue(std::string name){/*don't add code*/};
     inline virtual sp<Object> getFieldObjectValue(std::string){return nullptr;}
     //reflect set function
     inline virtual void setFieldIntValue(std::string,int){}
@@ -113,8 +114,6 @@ sp<U> AutoClone(U *v) {
 
 }
 
-//    sp<_##Y> ret = new _##Y(std::forward<Args>(args)...);\
-    ret->__ReflectInit();\
 
 #define MAKE_FUNCTION_0(Y) \
 template<typename... Args>\
@@ -140,9 +139,6 @@ sp<_##Y<T>> create##Y(Args&&... args)\
     ret.set_pointer(dynamic_cast<_##Y<T> *>(obj));\
     return ret;\
 }\
-
-// sp<_##Y<T,U>> ret = new _##Y<T,U>(std::forward<Args>(args)...);\
-    ret->__ReflectInit();\
 
 #define MAKE_FUNCTION_2(Y) \
 template<typename T,typename U,typename... Args>\

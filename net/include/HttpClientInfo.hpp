@@ -22,6 +22,7 @@
 #include "Random.hpp"
 #include "TcpServer.hpp"
 #include "Socket.hpp"
+#include "HttpSession.hpp"
 
 namespace obotcha {
 
@@ -49,6 +50,8 @@ public:
 
     void close();
 
+    HttpSession getSession();
+
 private:
     void setClientIp(String);
     
@@ -69,6 +72,8 @@ private:
     uint64_t mClientId;
 
     Socket mSocket;
+
+    HttpSession mSession;
 };
 
 }

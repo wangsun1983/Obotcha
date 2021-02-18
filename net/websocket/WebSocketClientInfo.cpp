@@ -14,6 +14,7 @@
 #include "WebSocketProtocol.hpp"
 #include "ProtocolNotSupportException.hpp"
 #include "WebSocketServer.hpp"
+#include "WebSocketClientManager.hpp"
 
 namespace obotcha {
 
