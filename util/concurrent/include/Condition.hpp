@@ -36,7 +36,9 @@ private:
     bool waitEnter();
     
     void interrupt();
-    std::atomic<bool> mIsInterrupt;
+    //std::atomic<bool> mIsInterrupt;
+
+    //sp<_Mutex> mWaitMutex;
 };
 
 }

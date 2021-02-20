@@ -22,6 +22,7 @@ extern int testThreadPoolLoopShutdown();
 extern int testThreadLambda();
 
 int main() {
+    /*
     normalTest();
     sleep(1);
     testRunnable_onInterrupt();
@@ -30,8 +31,7 @@ int main() {
     sleep(1);
     testThreadShutdown();
     testThreadDestroy();
-    testThreadPoolLoopSubmit();
-    //testThreadPoolLoopShutdown();
+    testThreadPoolLoopSubmit();*/
     testThreadLambda();
     st(Thread)::sleep(10*1000);
     return 0;

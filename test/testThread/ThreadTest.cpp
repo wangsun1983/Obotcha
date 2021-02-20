@@ -29,6 +29,11 @@ extern int testThreadLoopCreate();
 extern int testThreadLoopJoin();
 //extern int testthreadloopquit();
 extern int testThreadLambda();
+extern int testThreadjoinCase2();
+extern int testThreadSleep();
+extern int testThreadQuickJoin();
+extern int testThreadSleepRelease();
+extern int testThreadPriority();
 
 int main() {
 
@@ -37,6 +42,7 @@ int main() {
     //testThreadLoopInterrypt(); no use
     //testThreadClose(); no use
 
+#if 0
     testThreadStart();
     testThreadJoin();
     testThreadInterruptCase();
@@ -46,5 +52,11 @@ int main() {
     testThreadLoopCreate();
     testThreadLoopJoin();
     testThreadLambda();
+    testThreadjoinCase2();
+    testThreadSleep();
+    testThreadQuickJoin();
+    testThreadSleepRelease();
+#endif
+    testThreadPriority();    
     sleep(10);
 }

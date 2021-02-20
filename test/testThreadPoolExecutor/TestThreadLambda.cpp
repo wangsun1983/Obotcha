@@ -61,7 +61,21 @@ int testThreadLambda() {
         }
         break;
     }
+
+    while(1) {
+        Future f = t->submit([]() {
+            return 1;
+        });
+
+        f->wait();
+        int value = f->getResult(-1,100);
+        if(value != 100) {
+            printf("---[testThreadLambda value case4] [FAIL],value is %d--- \n",value);
+        }
+        break;
+    }
+
     t->shutdown();
     sleep(1);
-    printf("---[testThreadLambda value case4] [OK]--- \n");
+    printf("---[testThreadLambda value case5] [OK]--- \n");
 }

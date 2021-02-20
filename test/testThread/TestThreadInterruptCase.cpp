@@ -26,7 +26,7 @@ public:
     void run() {
         try {
             printf("start sleep \n");
-            sleep();
+            st(Thread)::sleep();
         }catch(InterruptedException &e){
             printf("start sleep exception \n");
             myTest1Interrupt = 1;

@@ -83,18 +83,18 @@ public:
     static Thread current();
 
     enum ThreadPriority {
-        LowPriority = 1,
-        NormalPriority,
-        HighPriority,
-        HighestPriority,
-        RealtimePriority,
+        Low = 1,
+        Normal,
+        High,
+        Highest,
+        Realtime,
         MaxPriority
     };
 
     enum SchedType {
-        SchedOther = SCHED_NORMAL, //SCHED_NORMAL 0
-        SchedFifo = SCHED_FIFO,  //SCHED_FIFO 1
-        SchedRr = SCHED_RR, //SCHED_RR 2
+        Other = SCHED_NORMAL, //SCHED_NORMAL 0
+        Fifo = SCHED_FIFO,  //SCHED_FIFO 1
+        RR = SCHED_RR, //SCHED_RR 2
     };
 
     enum ThreadStatus {
@@ -102,6 +102,7 @@ public:
         Idle,
         WaitingStart, //for lambda
         Running,
+        Interrupting,
         Complete,
         Error,
     };
@@ -127,20 +128,16 @@ private:
     
     static String DefaultThreadName;
 
-    Mutex mSleepMutex;
+    //Mutex mSleepMutex;
 
     Condition mSleepCondition;
 
-    Mutex mJoinMutex;
+    Mutex mMutex;
 
     Condition mJoinCondition;
 
     void threadSleep(unsigned long millseconds);
     void threadInit(String name,Runnable run);
-
-    void setCurrentWaitCondition(Condition);
-    Condition getCurrentWaitCondition();
-    Condition mCurrentWaitCondition;
 };
 
 }

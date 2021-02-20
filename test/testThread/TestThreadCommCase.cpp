@@ -84,6 +84,7 @@ public:
     }
 };
 
+#if 0
 DECLARE_SIMPLE_CLASS(Thread4) IMPLEMENTS(Thread) {
 public:
     void run() {
@@ -109,7 +110,7 @@ public:
     }
 };
 
-/*
+
 DECLARE_SIMPLE_CLASS(Thread6) IMPLEMENTS(Thread) {
 public:
     void run() {
@@ -134,8 +135,7 @@ public:
         //printf("thread7 start 4 \n");
     }
 };
-*/
-
+#endif
 
 int testThreadCommonCase() {
   printf("---[TestThread Test Start]--- \n");
@@ -244,6 +244,7 @@ int testThreadCommonCase() {
     break;
   }
 
+#if 0
   //int setSchedPolicy(ThreadSchedPolicy);
   while(1) {
     Thread2 t2 = createThread2();
@@ -261,8 +262,9 @@ int testThreadCommonCase() {
     break;
   }
 
-/*
+
   //void setPriority(ThreadPriority priority);/getPriority()
+
   while(1) {
     Thread2 t2 = createThread2();
     t2->setName("setPriority_1");
@@ -275,17 +277,19 @@ int testThreadCommonCase() {
       break;
     }
 
-    t2->setSchedPolicy(st(Thread)::SchedFifo);
-    t2->setPriority(st(Thread)::HighestPriority);
+    printf("start priority test \n");
+    int result1 = t2->setSchedPolicy(st(Thread)::SchedFifo);
+    int result2 = t2->setPriority(st(Thread)::HighestPriority);
+    printf("result1 is %d,result2 is %d \n",result1,result2);
     if(t2->getPriority() != st(Thread)::HighestPriority) {
-      printf("---[Thread Test {setPriority()} case2] [FAILED]--- \n");
+      printf("---[Thread Test {setPriority()} case2] [FAILED],t2->getPriority() is %d--- \n",t2->getPriority());
       break;
     }
     
     printf("---[Thread Test {setPriority()} case3] [OK]--- \n");
     break;
   }
-*/
+#endif
   
   //setName()
   while(1) {
@@ -353,6 +357,7 @@ int testThreadCommonCase() {
       break;
   }
 
+#if 0 
   //setThreadSchedPolicy(ThreadPriority priority);
   while(1) {
     Thread4 t1 = createThread4();
@@ -370,6 +375,7 @@ int testThreadCommonCase() {
   }
 
   //getThreadPriority()
+ 
   while(1) {
     Thread5 t1 = createThread5();
     t1->setName("getThreadPriority");
@@ -385,7 +391,7 @@ int testThreadCommonCase() {
     break;
   }
 
-/*
+
   //setThreadPriority()
   while(1) {
     Thread6 t1 = createThread6();
@@ -422,5 +428,6 @@ int testThreadCommonCase() {
       printf("---[Thread Test {getThreadPriority()} case2] [OK]--- \n");
       break;
   }
-  */
+#endif
+
 }

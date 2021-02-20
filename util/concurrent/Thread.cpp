@@ -20,7 +20,7 @@ String _Thread::DefaultThreadName = createString("thread_");
 
 void doThreadExit(_Thread *thread) {
     {
-        AutoLock l(thread->mJoinMutex);
+        AutoLock l(thread->mMutex);
         thread->mStatus = st(Thread)::Complete;
         thread->mJoinCondition->notifyAll();
     }
@@ -34,11 +34,11 @@ void doThreadExit(_Thread *thread) {
 void* _Thread::localRun(void *th) {
     _Thread *thread = static_cast<_Thread *>(th);
     mThreads->set(thread->getThreadId(),AutoClone(thread));
-    
-    thread->mStatus = st(Thread)::Running;
-    
     pthread_setname_np(thread->mPthread,thread->mName->toChars());
-
+    {   
+        AutoLock l(thread->mMutex);
+        thread->mStatus = st(Thread)::Running;
+    }
     if(thread->mRunnable != nullptr) {
         thread->mRunnable->run();
     } else {
@@ -73,10 +73,8 @@ void _Thread::threadInit(String name,Runnable run) {
     mRunnable = run;
     mStatus = NotStart;
 
-    mSleepMutex = createMutex();
+    mMutex = createMutex();
     mSleepCondition = createCondition();
-
-    mJoinMutex = createMutex();
     mJoinCondition = createCondition();
 }
 
@@ -102,13 +100,6 @@ int _Thread::detach() {
     return pthread_detach(getThreadId());
 }
 
-void _Thread::interrupt() {
-    mSleepCondition->notifyAll();
-    if(mCurrentWaitCondition != nullptr) {
-        mCurrentWaitCondition->interrupt();
-    }
-}
-
 int _Thread::start() {
     //pthread_create(&mPthread, &mThreadAttr, localRun, this);
     //if we use sp or declare a thread on stack
@@ -125,7 +116,7 @@ int _Thread::start() {
     //sp<_Thread> localThread;
     //localThread.set_pointer(this);
     {
-        AutoLock l(mJoinMutex);
+        AutoLock l(mMutex);
         if(mStatus != NotStart) {
             return -AlreadyExecute;
         }
@@ -153,9 +144,9 @@ int _Thread::join(long timeInterval) {
     }
     
     {
-        AutoLock l(mJoinMutex);
-        if(isRunning()) {
-            return mJoinCondition->wait(mJoinMutex,timeInterval);
+        AutoLock l(mMutex);
+        if(mStatus == Running) {
+            return mJoinCondition->wait(mMutex,timeInterval);
         }
     }
 
@@ -163,7 +154,7 @@ int _Thread::join(long timeInterval) {
 }
 
 int _Thread::getStatus() {
-    AutoLock l(mJoinMutex);
+    AutoLock l(mMutex);
     return mStatus;
 }
 
@@ -172,9 +163,19 @@ void _Thread::onComplete(){
 }
 
 int _Thread::getPriority() {
+    if(!isRunning()) {
+        return -InvalidStatus;
+    }
+
     int policy = getSchedPolicy();
+
+    if(policy == SCHED_NORMAL) {
+        return -NotSupport;
+    }
+
     const int min_prio = sched_get_priority_min(policy);
     const int max_prio = sched_get_priority_max(policy);
+    
     if (min_prio == -1 || max_prio == -1) {
         return -InvalidStatus;
     }
@@ -184,19 +185,23 @@ int _Thread::getPriority() {
     }
 
     sched_param param;
-    pthread_attr_getschedparam(&mThreadAttr, &param);
+    int rc = pthread_attr_getschedparam(&mThreadAttr, &param);
+    if(rc != 0) {
+        return -rc;
+    }
+
     const int top_prio = max_prio - 1;
     const int low_prio = min_prio + 1;
     if(param.sched_priority == low_prio) {
-        return LowPriority;
+        return Low;
     } else if(param.sched_priority == (low_prio + top_prio - 1) / 2) {
-        return NormalPriority;
+        return Normal;
     } else if(param.sched_priority == std::max(top_prio - 2, low_prio)) {
-        return HighPriority;
+        return High;
     } else if(param.sched_priority == std::max(top_prio - 1, low_prio)) {
-        return HighestPriority;
+        return Highest;
     } else if(param.sched_priority == top_prio) {
-        return RealtimePriority;
+        return Realtime;
     }
 
     return -1;
@@ -208,43 +213,44 @@ int _Thread::setPriority(int priority) {
     }
 
     int policy = getSchedPolicy();
+    if(policy == SCHED_NORMAL) {
+        return -NotSupport;
+    }
+
     const int min_prio = sched_get_priority_min(policy);
     const int max_prio = sched_get_priority_max(policy);
     if (min_prio == -1 || max_prio == -1) {
         return -InvalidStatus;
     }
-
     if (max_prio - min_prio <= 2) {
         return -InvalidStatus;
     }
-
     sched_param param;
     const int top_prio = max_prio - 1;
     const int low_prio = min_prio + 1;
     switch (priority) {
-        case LowPriority:
+        case Low:
             param.sched_priority = low_prio;
         break;
-        case NormalPriority:
+        case Normal:
             // The -1 ensures that the kHighPriority is always greater or equal to
             // kNormalPriority.
             param.sched_priority = (low_prio + top_prio - 1) / 2;
         break;
-        case HighPriority:
+        case High:
             param.sched_priority = std::max(top_prio - 2, low_prio);
         break;
-        case HighestPriority:
+        case Highest:
             param.sched_priority = std::max(top_prio - 1, low_prio);
         break;
-        case RealtimePriority:
+        case Realtime:
             param.sched_priority = top_prio;
         break;
     }
-
-    if(pthread_setschedparam(mPthread, policy, &param) != 0) {
-        return -InvalidStatus;
+    int rc = pthread_setschedparam(mPthread, policy, &param);
+    if(rc != 0) {
+        return -rc;
     }
-
     return 0;
 }
 
@@ -265,7 +271,7 @@ int _Thread::getSchedPolicy() {
         return -InvalidStatus;
     }
 
-    int policy = SchedOther;
+    int policy = Other;
     if(pthread_attr_getschedpolicy(&mThreadAttr, &policy) != 0) {
         return -1;
     }
@@ -329,28 +335,30 @@ Thread _Thread::current() {
 }
 
 bool _Thread::isRunning() {
-    AutoLock l(mJoinMutex);
+    AutoLock l(mMutex);
     return mStatus == Running;
 }
 
 void _Thread::threadSleep(unsigned long interval) {
     int result = 0;
     {
-        AutoLock l(mSleepMutex);
-        result = mSleepCondition->wait(mSleepMutex,interval);    
+        AutoLock l(mMutex);
+        if(mStatus == Running) {
+            result = mSleepCondition->wait(mMutex,interval);
+        } 
     }
     
     if(result == 0) {
-        Trigger(InterruptedException,"thread notify!!!");
+        Trigger(InterruptedException,"thread interrupt while sleeping!!!");
     }
 }
 
-void _Thread::setCurrentWaitCondition(Condition c) {
-    this->mCurrentWaitCondition = c;
-}
-
-Condition _Thread::getCurrentWaitCondition() {
-    return this->mCurrentWaitCondition;
+void _Thread::interrupt() {
+    AutoLock l(mMutex);
+    if(mStatus == Running) {
+        mStatus = Interrupting;
+        mSleepCondition->notifyAll();
+    }
 }
 
 }
