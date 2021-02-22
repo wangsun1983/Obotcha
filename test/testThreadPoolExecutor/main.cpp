@@ -5,7 +5,6 @@
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
 #include "Integer.hpp"
-#include "Executors.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
@@ -20,9 +19,9 @@ extern int testThreadDestroy();
 extern int testThreadPoolLoopSubmit();
 extern int testThreadPoolLoopShutdown();
 extern int testThreadLambda();
+extern int testThreadQuickShutDown();
 
 int main() {
-    /*
     normalTest();
     sleep(1);
     testRunnable_onInterrupt();
@@ -31,8 +30,9 @@ int main() {
     sleep(1);
     testThreadShutdown();
     testThreadDestroy();
-    testThreadPoolLoopSubmit();*/
+    testThreadPoolLoopSubmit();
     testThreadLambda();
+    testThreadQuickShutDown();
     st(Thread)::sleep(10*1000);
     return 0;
 }

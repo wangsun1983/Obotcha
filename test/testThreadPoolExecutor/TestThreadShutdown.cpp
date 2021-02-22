@@ -9,6 +9,7 @@
 #include "AutoLock.hpp"
 #include "System.hpp"
 #include "ThreadPoolExecutor.hpp"
+#include "ExecutorBuilder.hpp"
 #include "Error.hpp"
 
 using namespace obotcha;
@@ -84,7 +85,7 @@ int testThreadShutdown() {
 
     //TestThread onInterrupt case1
     while(1) {
-        ThreadPoolExecutor pool = createThreadPoolExecutor();
+        ThreadPoolExecutor pool = createExecutorBuilder()->newThreadPool();
         pool->shutdown();
         int ret = pool->shutdown();
 
@@ -123,7 +124,7 @@ int testThreadShutdown() {
     }
 
     while(1) {
-        ThreadPoolExecutor pool = createThreadPoolExecutor();
+        ThreadPoolExecutor pool = createExecutorBuilder()->newThreadPool();
         long t = st(System)::currentTimeMillis();
         pool->awaitTermination(1000);
         long current = st(System)::currentTimeMillis();
@@ -138,7 +139,7 @@ int testThreadShutdown() {
     }
 
     while(1) {
-        ThreadPoolExecutor pool = createThreadPoolExecutor();
+        ThreadPoolExecutor pool = createExecutorBuilder()->newThreadPool();
         pool->submit(createMyShutdownRunTest3());
         long t = st(System)::currentTimeMillis();
         pool->shutdown();

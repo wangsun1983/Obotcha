@@ -5,24 +5,17 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "Runnable.hpp"
-#include "Executor.hpp"
 #include "ArrayList.hpp"
 #include "Future.hpp"
-#include "Executor.hpp"
 #include "ThreadPriorityPoolExecutor.hpp"
 #include "AutoLock.hpp"
 #include "Error.hpp"
 #include "System.hpp"
 #include "Log.hpp"
-#include "Executors.hpp"
 
 namespace obotcha {
 
 //============= ThreadPriorityPoolExecutor ================
-_ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor():_ThreadPriorityPoolExecutor(1) {
-    //do nothing
-}
-
 _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int threadnum) {
     mTaskMutex = createMutex("PriorityData");
     mTaskCond = createCondition();

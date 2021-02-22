@@ -5,7 +5,7 @@
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
 #include "Integer.hpp"
-#include "Executors.hpp"
+#include "ExecutorBuilder.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
@@ -41,7 +41,7 @@ int testRunnable_onInterrupt() {
 
     //void shutdown();
     while(1) {
-        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(100,100);
+        ThreadPoolExecutor pool = createExecutorBuilder()->setQueueSize(100)->setThreadNum(100)->newThreadPool();
         pool->submit(createRunTest1());
         sleep(1);
         pool->shutdown();

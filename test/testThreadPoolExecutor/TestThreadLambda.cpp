@@ -6,7 +6,7 @@
 #include "BlockingQueue.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "Integer.hpp"
-#include "Executors.hpp"
+#include "ExecutorBuilder.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
@@ -14,7 +14,7 @@
 using namespace obotcha;
 
 int testThreadLambda() {
-    ThreadPoolExecutor t = createThreadPoolExecutor();
+    ThreadPoolExecutor t = createExecutorBuilder()->newThreadPool();
         
     while(1) {
         int value = 100;

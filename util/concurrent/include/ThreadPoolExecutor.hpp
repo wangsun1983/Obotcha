@@ -7,7 +7,6 @@
 #include "StrongPointer.hpp"
 #include "Runnable.hpp"
 #include "BlockingQueue.hpp"
-#include "ConcurrentQueue.hpp"
 #include "Thread.hpp"
 #include "AutoLock.hpp"
 #include "Condition.hpp"
@@ -15,24 +14,16 @@
 #include "Future.hpp"
 #include "FutureTask.hpp"
 #include "Future.hpp"
-#include "AtomicInteger.hpp"
 
 namespace obotcha {
-
 
 DECLARE_SIMPLE_CLASS(ThreadPoolExecutor) {
 
 public:
-
-    friend class _ThreadPoolExecutorHandler;
     friend class _FutureTask;
 
-	_ThreadPoolExecutor(int queuesize,int threadnum);
-
-    _ThreadPoolExecutor(int threadnum);
-
-	_ThreadPoolExecutor();
-
+    _ThreadPoolExecutor(int queuesize,int threadnum);
+    
     int shutdown();
     
     template<typename X>
@@ -41,13 +32,17 @@ public:
             return -InvalidParam;
         }
 
-        if(mStatus->get() != LocalStatus::Running) {
-            return -AlreadyDestroy;
+        AutoLock l(mPool->mMutex);
+        if(mStatus != LocalStatus::Running) {
+            return -InvalidStatus;
         }
         
         FutureTask task = createFutureTask(Cast<Runnable>(runnable));
-        mPool->enQueueLast(task);
-        return 0;
+        if(mPool->enQueueLast(task)) {
+            return 0;
+        }
+
+        return -1;
     }
     
     template< class Function, class... Args >
@@ -64,12 +59,17 @@ public:
 
     template<typename X>
     Future submit(sp<X> r) {
-        if(r == nullptr || mStatus->get() != LocalStatus::Running) {
+        AutoLock l(mPool->mMutex);
+        if(r == nullptr || mStatus != LocalStatus::Running) {
             return nullptr;
         }
+
         FutureTask task = createFutureTask(r);
-        mPool->enQueueLast(task);
-        return createFuture(task);
+        if(mPool->enQueueLast(task)){
+            return createFuture(task);
+        }
+
+        return nullptr;
     }
 
     template< class Function, class... Args >
@@ -96,11 +96,7 @@ private:
     
     ArrayList<Thread> mHandlers;
 
-    AtomicInteger mStatus;
-
-    int mThreadNum;
-
-    void init(int queuesize,int threadnum);
+    int mStatus;
 };
 
 }

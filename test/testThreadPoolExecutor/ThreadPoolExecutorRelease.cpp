@@ -6,11 +6,11 @@
 #include "BlockingQueue.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "Integer.hpp"
-#include "Executors.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
 #include "ThreadPoolExecutor.hpp"
+#include "ExecutorBuilder.hpp"
 
 using namespace obotcha;
 
@@ -48,7 +48,7 @@ public:
 int releaseTest() {
     while(1) {
         {
-            ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(50,8);
+            ThreadPoolExecutor pool = createExecutorBuilder()->setQueueSize(50)->setThreadNum(8)->newThreadPool();//st(Executors)::newFixedThreadPool(50,8);
             for(int i = 0;i<50;i++) {
                 pool->submit(createReleaseunTest1());
             }

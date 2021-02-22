@@ -7,10 +7,8 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "Runnable.hpp"
-#include "Executor.hpp"
 #include "ArrayList.hpp"
 #include "Future.hpp"
-#include "Executor.hpp"
 #include "ArrayList.hpp"
 #include "Condition.hpp"
 #include "Thread.hpp"
@@ -22,7 +20,6 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) {
 
 public:
-    friend class _PriorityPoolThread;
     enum Priority {
         PriorityLow = 0,
         PriorityMedium,
@@ -30,10 +27,7 @@ public:
         PriorityNoUse
     };
 
-    _ThreadPriorityPoolExecutor();
-
     _ThreadPriorityPoolExecutor(int threadnum);
-
     int execute(Runnable command);
 
     template<typename X>
@@ -111,7 +105,7 @@ private:
         Running,
         ShutDown
     };
-    
+
     Mutex mTaskMutex;
     Condition mTaskCond;
     LinkedList<FutureTask>mHighPriorityTasks;

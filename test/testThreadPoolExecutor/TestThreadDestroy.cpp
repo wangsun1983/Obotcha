@@ -8,7 +8,7 @@
 #include "Mutex.hpp"
 #include "AutoLock.hpp"
 #include "System.hpp"
-#include "ThreadPoolExecutor.hpp"
+#include "ExecutorBuilder.hpp"
 #include "Error.hpp"
 
 using namespace obotcha;
@@ -30,7 +30,7 @@ int testThreadDestroy() {
     while(1) {
         //try {
             {
-                ThreadPoolExecutor pool = createThreadPoolExecutor();
+                ThreadPoolExecutor pool = createExecutorBuilder()->newThreadPool();
                 pool->submit(createMyDestroyTest());
                 pool->shutdown();
             }

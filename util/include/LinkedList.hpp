@@ -150,13 +150,11 @@ public:
             }
             head->next = nullptr;
             head = nullptr;
-
             head = current->next;
         }
     }
 
 private:
-
     LinkedListData<T> head;
     LinkedListData<T> tail;
     int count;

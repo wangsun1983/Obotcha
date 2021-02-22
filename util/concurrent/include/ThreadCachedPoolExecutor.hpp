@@ -22,12 +22,8 @@ DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) {
 public:
     friend class _FutureTask;
     friend class _ThreadScheduledPoolExecutor;
-
-	_ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout);
-
-    _ThreadCachedPoolExecutor(int maxthreadnum,long timeout);
-
-	_ThreadCachedPoolExecutor();
+    
+    _ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout);
 
     int shutdown();
 
@@ -72,10 +68,6 @@ private:
         ShutDown,
     };
 
-    static const int DefaultWaitTime;
-    static const int DefaultMaxThreadNums;
-    static const int DefaultQueueNums;
-
     void setUpOneIdleThread();
 
     Future poolSubmit(Runnable r);
@@ -87,8 +79,6 @@ private:
     ArrayList<Thread> mHandlers;
 
     std::atomic<int> mStatus;
-
-    void init(int queuesize,int maxthreadnum,int minthreadnum,long timeout);
 
     long mThreadTimeout;
 

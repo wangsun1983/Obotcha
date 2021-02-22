@@ -8,26 +8,13 @@
 #include "System.hpp"
 #include "Error.hpp"
 #include "Log.hpp"
-#include "Executors.hpp"
 
 namespace obotcha {
 
 const int _ThreadPoolExecutor::DefaultThreadNum = 4;
 
 _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
-    init(queuesize,threadnum);
-}
-
-_ThreadPoolExecutor::_ThreadPoolExecutor(int threadnum) {
-    init(-1,threadnum);
-}
-
-_ThreadPoolExecutor::_ThreadPoolExecutor() {
-    init(-1,DefaultThreadNum);
-}
-
-void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
-    mStatus = createAtomicInteger(LocalStatus::Idle);
+    mStatus = LocalStatus::Idle;
 
     if(queuesize != -1) {
         mPool = createBlockingQueue<FutureTask>(queuesize);    
@@ -37,18 +24,11 @@ void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
     
     mHandlers = createArrayList<Thread>();
 
-    mThreadNum = threadnum;
-
     for(int i = 0; i < threadnum;i++) {
         Thread thread = createThread([](BlockingQueue<FutureTask> &pool) {
             while(1) {
                 FutureTask mCurrentTask = nullptr;
-                
-                try {
-                    mCurrentTask = pool->deQueueFirst();
-                } catch(InterruptedException &e) {
-                    return;
-                }
+                mCurrentTask = pool->deQueueFirst();
                 
                 if(mCurrentTask == nullptr) {
                     return;
@@ -68,29 +48,33 @@ void _ThreadPoolExecutor::init(int queuesize,int threadnum) {
                 mCurrentTask->onComplete();
             }
         },mPool);
+
         thread->start();
         mHandlers->add(thread);
     }
 
-    mStatus->set(LocalStatus::Running);
+    mStatus = LocalStatus::Running;
 }
 
 int _ThreadPoolExecutor::shutdown() {
-    if(mStatus->get() == LocalStatus::ShutDown) {
-        return -AlreadyDestroy;
-    }
+    {
+        AutoLock l(mPool->mMutex);
+        if(mStatus != Running) {
+            return -InvalidStatus;
+        }
 
-    mStatus->set(LocalStatus::ShutDown);
+        mStatus = ShutDown;
 
-    for(;;) {
-        FutureTask task = mPool->deQueueLastNoBlock();
-        if(task != nullptr) {
-            task->cancel();
-            continue;
-        } 
-        break;
+        for(;;) {
+            FutureTask task = mPool->deQueueLastNoBlock();
+            if(task != nullptr) {
+                task->cancel();
+                continue;
+            } 
+            break;
+        }
+        mPool->destroy();
     }
-    mPool->destroy();
     
     //interrupt all thread
     ListIterator<Thread> iterator = mHandlers->getIterator();
@@ -99,12 +83,12 @@ int _ThreadPoolExecutor::shutdown() {
         t->interrupt();
         iterator->next();
     }
-    
     return 0;
 }
 
 bool _ThreadPoolExecutor::isShtuDown() {
-    return mStatus->get() == LocalStatus::ShutDown;
+    AutoLock l(mPool->mMutex);
+    return mStatus == LocalStatus::ShutDown;
 }
 
 bool _ThreadPoolExecutor::isTerminated() {
@@ -117,7 +101,7 @@ bool _ThreadPoolExecutor::isTerminated() {
         iterator->next();
     }
 
-    return false;
+    return true;
 }
 
 void _ThreadPoolExecutor::awaitTermination() {
@@ -125,18 +109,23 @@ void _ThreadPoolExecutor::awaitTermination() {
 }
 
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
-    
-    if(mStatus->get() != LocalStatus::ShutDown){
-        return -InvalidStatus;
+    {
+        AutoLock l(mPool->mMutex);
+        if(mStatus != LocalStatus::ShutDown){
+            return -InvalidStatus;
+        }
     }
     
     bool isWaitForever = (millseconds == 0);
-    
+    //printf("await termination start,size is %d,millseconds is %ld \n",mHandlers->size(),millseconds);
     ListIterator<Thread> iterator = mHandlers->getIterator();
     while(iterator->hasValue()) {
+        //printf("await termination trace1 \n");
         Thread handler = iterator->getValue();
         long current = st(System)::currentTimeMillis();
+        //printf("await termination trace2 \n");
         handler->join(millseconds);
+        //printf("await termination trace3 \n");
         if(!isWaitForever) {
             long waitInterval = (st(System)::currentTimeMillis() - current);
             millseconds -= waitInterval;
@@ -146,11 +135,12 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
         }
         iterator->next();
     }
+    //printf("await termination trace4 \n");
     return 0;
 }
 
 int _ThreadPoolExecutor::getThreadsNum() {
-    return mThreadNum;
+    return mHandlers->size();
 }
 
 int _ThreadPoolExecutor::getQueueSize() {

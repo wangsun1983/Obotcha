@@ -6,11 +6,10 @@
 #include "BlockingQueue.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "Integer.hpp"
-#include "Executors.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
-#include "ThreadPoolExecutor.hpp"
+#include "ExecutorBuilder.hpp"
 
 using namespace obotcha;
 
@@ -40,7 +39,9 @@ DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
         fflush(stdout);
+        printf("test2 trace \n");
         runTest2Mutex->lock();
+        printf("test3 trace \n");
     }
 
     void onInterrupt() {
@@ -59,7 +60,7 @@ int normalTest() {
 
     while(1) {
         {
-			ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(1,1);
+			ThreadPoolExecutor pool = createExecutorBuilder()->setQueueSize(1)->setThreadNum(1)->newThreadPool();//st(Executors)::newFixedThreadPool(1,1);
 			pool->shutdown();
 		}
 
@@ -71,7 +72,7 @@ int normalTest() {
 
     //_ThreadPoolExecutor();
     while(1) {
-        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(1,1);
+        ThreadPoolExecutor pool = createExecutorBuilder()->setQueueSize(1)->setThreadNum(1)->newThreadPool();
         pool->shutdown();
         printf("---[TestThreadPoolExecutor Test {constructor2()} case1] [OK]--- \n");
         break;
@@ -80,7 +81,7 @@ int normalTest() {
 
     //void shutdown();
     while(1) {
-        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(100,100);
+        ThreadPoolExecutor pool = createExecutorBuilder()->setQueueSize(100)->setThreadNum(100)->newThreadPool();
         pool->submit(createMyRunTest1());
         pool->shutdown();
         sleep(5);
@@ -96,8 +97,8 @@ int normalTest() {
         }
 
         int result = pool->execute(createMyRunTest1());
-        if(result != -AlreadyDestroy) {
-            printf("---[TestThreadPoolExecutor Test {shutdown()} case3] [FAIL]--- \n");
+        if(result != -InvalidStatus) {
+            printf("---[TestThreadPoolExecutor Test {shutdown()} case3] [FAIL]--- result is %d\n",result);
             break;
         }
 
@@ -107,13 +108,13 @@ int normalTest() {
 
     //int awaitTermination(long timeout);
     while(1) {
-        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(1,1);
+        ThreadPoolExecutor pool = createExecutorBuilder()->setQueueSize(1)->setThreadNum(1)->newThreadPool();
         int result = pool->awaitTermination(1000);
         if(result != -InvalidStatus) {
             printf("---[TestThreadPoolExecutor Test {awaitTermination()} case1] [FAIL]--- \n");
             break;
         }
-
+        printf("start awaitTermination test \n");
         runTest2Mutex = createMutex();
         runTest2Mutex->lock();
 
@@ -146,7 +147,7 @@ int normalTest() {
 
     //int awaitTermination(long timeout = 0);
     while(1) {
-        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(100,100);
+        ThreadPoolExecutor pool = createExecutorBuilder()->setQueueSize(100)->setThreadNum(100)->newThreadPool();
         //int result = pool->awaitTermination(0);
         //if(result != -InvalidStatus) {
         //    printf("---[TestThreadPoolExecutor Test {awaitTermination()} case5] [FAIL]--- \n");
@@ -179,7 +180,7 @@ int normalTest() {
 
     //int awaitTermination(long timeout = max);
     while(1) {
-        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(100,100);
+        ThreadPoolExecutor pool = createExecutorBuilder()->setQueueSize(100)->setThreadNum(100)->newThreadPool();
         pool->submit(createMyRunTest1());
         pool->shutdown();
 
@@ -198,7 +199,7 @@ int normalTest() {
 
     //int getThreadsNum();
     while(1) {
-        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(100,100);
+        ThreadPoolExecutor pool = createExecutorBuilder()->setQueueSize(100)->setThreadNum(100)->newThreadPool();
         if(pool->getThreadsNum() != 100) {
             printf("---[TestThreadPoolExecutor Test {getThreadsNum()} case1] [FAIL]--- \n");
             break;
@@ -210,7 +211,7 @@ int normalTest() {
 
     //submit(Runnable task);
     while(1) {
-        ThreadPoolExecutor pool = st(Executors)::newFixedThreadPool(1,1);
+        ThreadPoolExecutor pool = createExecutorBuilder()->setQueueSize(1)->setThreadNum(1)->newThreadPool();
         Future task = pool->submit(createMyRunTest1());
         if(task == nullptr) {
             printf("---[TestThreadPoolExecutor Test {submit()} case1] [FAIL]--- \n");

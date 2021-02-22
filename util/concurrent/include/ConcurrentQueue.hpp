@@ -48,7 +48,6 @@ T _ConcurrentQueue<T>:: get(int index){
     return mQueue.at(index);
 }
 
-
 template <typename T>
 void _ConcurrentQueue<T>::enQueueFirst(T val) {
     AutoLock l(mutex_t);
@@ -72,7 +71,6 @@ int _ConcurrentQueue<T>::remove(T val) {
         }
         iterator++;
     }
-
     return 0;
 }
 

@@ -7,6 +7,7 @@
 #include "Error.hpp"
 #include "AutoLock.hpp"
 #include "MethodNotSupportException.hpp"
+#include "ExecutorBuilder.hpp"
 #include "Log.hpp"
 
 namespace obotcha {
@@ -23,9 +24,10 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor() {
     mIsShutDown = false;
     mIsTerminated = false;
     mStatusMutex = createMutex("statusMutex");
-
-    int cpuNum = st(System)::availableProcessors();
-    mCachedExecutor = createThreadCachedPoolExecutor(cpuNum*4,60*1000);
+;
+    mCachedExecutor = createExecutorBuilder()
+                        ->setTimeout(60*1000)
+                        ->newCachedThreadPool();
     
     mTaskMutex = createMutex("scheduleTaskMutex");
     mTaskWaitCond = createCondition();

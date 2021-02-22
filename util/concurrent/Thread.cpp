@@ -145,7 +145,7 @@ int _Thread::join(long timeInterval) {
     
     {
         AutoLock l(mMutex);
-        if(mStatus == Running) {
+        if(mStatus == Running || mStatus == Interrupting) {
             return mJoinCondition->wait(mMutex,timeInterval);
         }
     }

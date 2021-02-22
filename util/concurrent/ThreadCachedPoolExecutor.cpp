@@ -17,26 +17,24 @@
 #include "InitializeException.hpp"
 #include "Log.hpp"
 #include "Error.hpp"
-#include "Executors.hpp"
 
 namespace obotcha {
 
 //---------------ThreadCachedPoolExecutor ---------------------
-
-const int _ThreadCachedPoolExecutor::DefaultWaitTime = 15*1000;
-const int _ThreadCachedPoolExecutor::DefaultMaxThreadNums = 4;
-const int _ThreadCachedPoolExecutor::DefaultQueueNums = 32;
-
 _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout) {
-    init(queuesize,minthreadnum,maxthreadnum,timeout);
-}
+    if(queuesize == 0 || minthreadnum > maxthreadnum) {
+        Trigger(InitializeException,"ThreadCachedPool");
+    }
 
-_ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxthreadnum,long timeout) {
-    init(-1,0,maxthreadnum,timeout);
-}
+    mQueueSize = queuesize;
+    maxThreadNum = maxthreadnum;
+    minThreadNum = minthreadnum;
+    mThreadTimeout = timeout;
 
-_ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor() {
-    init(-1,0,DefaultMaxThreadNums,DefaultWaitTime);
+    mHandlers = createArrayList<Thread>();
+    mTasks = createBlockingQueue<FutureTask>();
+    mHandlerMutex = createMutex("ThreadCachedHandlerMutex");
+    mStatus = Running;
 }
 
 int _ThreadCachedPoolExecutor::shutdown(){
@@ -137,22 +135,6 @@ Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r) {
 
     mTasks->enQueueLast(task);
     return future;
-}
-
-void _ThreadCachedPoolExecutor::init(int queuesize,int minthreadnum,int maxthreadnum,long timeout) {
-    if(queuesize == 0 || minthreadnum > maxthreadnum) {
-        Trigger(InitializeException,"ThreadCachedPool");
-    }
-
-    mQueueSize = queuesize;
-    maxThreadNum = maxthreadnum;
-    minThreadNum = minthreadnum;
-    mThreadTimeout = timeout;
-
-    mHandlers = createArrayList<Thread>();
-    mTasks = createBlockingQueue<FutureTask>();
-    mHandlerMutex = createMutex("ThreadCachedHandlerMutex");
-    mStatus = Running;
 }
 
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {

@@ -46,8 +46,7 @@ private:
 DECLARE_SIMPLE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(Thread) {
 
 public:
-
-	_ThreadScheduledPoolExecutor();
+    _ThreadScheduledPoolExecutor();
 
     ~_ThreadScheduledPoolExecutor();
 

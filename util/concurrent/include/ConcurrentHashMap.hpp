@@ -33,6 +33,7 @@ public:
     }
 
     void clear() {
+        AutoLock l(mutex);
         mMap->clear();
     }
     

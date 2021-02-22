@@ -11,6 +11,51 @@
 
 namespace obotcha {
 
+#define LINKED_LIST_ADD(Action) \
+AutoLock l(mMutex);\
+while(!isDestroy) {\
+    if(mCapacity != -1 && mList->size() == mCapacity) {\
+        if(mEnqueueCond->wait(mMutex,timeout) == -WaitTimeout) {\
+            return false;\
+        }\
+        continue;\
+    }\
+    Action;\
+    mDequeueCond->notify();\
+    break;\
+}\
+return true;\
+
+#define LINKED_LIST_REMOVE(Action) \
+T data;\
+AutoLock l(mMutex);\
+while(!isDestroy) {\
+    if(mList->size() == 0) {\
+        if(mDequeueCond->wait(mMutex,timeout) == -WaitTimeout) {\
+            return nullptr;\
+        }\
+        continue;\
+    }\
+    Action;\
+    mEnqueueCond->notify();\
+    return data;\
+}\
+return nullptr;\
+
+#define LINKED_LIST_REMOVE_NOBLOCK(Action) \
+T data;\
+AutoLock l(mMutex);\
+while(!isDestroy) {\
+    if(mList->size() == 0) {\
+        return nullptr;\
+    }\
+    Action;\
+    mEnqueueCond->notify();\
+    return data;\
+}\
+return nullptr;\
+
+
 DECLARE_CLASS(BlockingLinkedList,1) {
 public:
     _BlockingLinkedList(int capacity = -1) {
@@ -41,48 +86,11 @@ public:
     }
 
     inline bool enQueueFirst(T val,long timeout) {
-        while(1) {
-            AutoLock l(mMutex);
-            if(isDestroy) {
-                return false;
-            }
-            
-            if(mCapacity != -1 && mList->size() == mCapacity) {
-               if(mEnqueueCond->wait(mMutex,timeout) == -WaitTimeout) {
-                   return false;
-               }
-               continue;
-            }
-
-            mList->enQueueFirst(val);
-            mDequeueCond->notify();
-            break;
-        }
-
-         return true;
+        LINKED_LIST_ADD(mList->enQueueFirst(val));
     }
 
-
     inline bool enQueueLast(T val,long timeout) {
-        while(1) {
-            AutoLock l(mMutex);
-            if(isDestroy) {
-                return false;
-            }
-            
-            if(mCapacity != -1 && mList->size() == mCapacity) {
-               if(mEnqueueCond->wait(mMutex,timeout) == -WaitTimeout) {
-                   return false;
-               }
-               continue;
-            }
-
-            mList->enQueueLast(val);
-            mDequeueCond->notify();
-            break;
-        }
-
-        return true;
+        LINKED_LIST_ADD(mList->enQueueLast(val));
     }
 
     inline T deQueueFirst() {
@@ -94,86 +102,19 @@ public:
     }
 
     inline T deQueueFirst(long timeout) {
-        while(1) {
-            AutoLock l(mMutex);
-            if(isDestroy) {
-                return nullptr;
-            }
-
-            if(mList->size() == 0) {
-                if(mDequeueCond->wait(mMutex,timeout) == -WaitTimeout) {
-                    return nullptr;
-                }
-
-                continue;
-            }
-
-            T data = mList->deQueueFirst();
-            mEnqueueCond->notify();        
-            return data;
-        }
-
-        return nullptr;
+        LINKED_LIST_REMOVE(data = mList->deQueueFirst());
     }
 
     inline T deQueueLast(long timeout) {
-        while(1) {
-            AutoLock l(mMutex);
-            if(isDestroy) {
-                return nullptr;
-            }
-            
-            if(mList->size() == 0) {
-                if(mDequeueCond->wait(mMutex,timeout) == -WaitTimeout) {
-                    return nullptr;
-                }
-
-                continue;
-            }
-
-            T data = mList->deQueueLast();
-            mEnqueueCond->notify();        
-            return data;
-        }
-
-        return nullptr;
+        LINKED_LIST_REMOVE(data = mList->deQueueLast());
     }
 
     inline T deQueueFirstNoBlock() {
-        while(1) {
-            AutoLock l(mMutex);
-            if(isDestroy) {
-                return nullptr;
-            }
-
-            if(mList->size() == 0) {
-                return nullptr;
-            }
-
-            T data = mList->deQueueFisrt();
-            mEnqueueCond->notify();   
-            return data;
-        }
-        return nullptr;
+        LINKED_LIST_REMOVE_NOBLOCK(data = mList->deQueueFisrt());
     }
 
     inline T deQueueLastNoBlock() {
-        while(1) {
-            AutoLock l(mMutex);
-            if(isDestroy) {
-                return nullptr;
-            }
-            int size = mList->size();
-            if(size == 0) {
-                return nullptr;
-            }
-
-            T data = mList->deQueueLast();
-            mEnqueueCond->notify();   
-            return data;
-        }
-
-        return nullptr;
+        LINKED_LIST_REMOVE_NOBLOCK(data = mList->deQueueLast());
     }
 
     //destroy

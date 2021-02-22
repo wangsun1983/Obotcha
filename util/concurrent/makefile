@@ -13,7 +13,7 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/atomiclong.o \
 	$(outtmp)/atomicuint64.o \
 	$(outtmp)/readwritelock.o \
-	$(outtmp)/executors.o \
+	$(outtmp)/executorbuilder.o \
 	$(outtmp)/future.o \
 	$(outtmp)/futuretask.o \
     $(outtmp)/barrier.o \
@@ -72,8 +72,8 @@ $(outtmp)/barrier.o :$(concurrentDir)/Barrier.cpp
 $(outtmp)/readwritelock.o :$(concurrentDir)/ReadWriteLock.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ReadWriteLock.cpp -o $(outtmp)/readwritelock.o
 
-$(outtmp)/executors.o :$(concurrentDir)/Executors.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Executors.cpp -o $(outtmp)/executors.o
+$(outtmp)/executorbuilder.o :$(concurrentDir)/ExecutorBuilder.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ExecutorBuilder.cpp -o $(outtmp)/executorbuilder.o
 
 $(outtmp)/timer.o :$(concurrentDir)/Timer.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Timer.cpp -o $(outtmp)/timer.o
