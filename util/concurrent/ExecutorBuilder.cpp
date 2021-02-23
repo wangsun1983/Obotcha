@@ -54,7 +54,6 @@ ThreadPoolExecutor _ExecutorBuilder::newThreadPool() {
 
 ThreadCachedPoolExecutor _ExecutorBuilder::newCachedThreadPool() {
     return createThreadCachedPoolExecutor(queuesize,minthreadnum,maxthreadnum,timeout);
-    
 }
 
 ThreadScheduledPoolExecutor _ExecutorBuilder::newScheduledThreadPool() {

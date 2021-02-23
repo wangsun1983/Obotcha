@@ -67,6 +67,8 @@ class _ThreadPoolExecutor;
 DECLARE_CLASS(BlockingQueue,1) {
 public:
     friend class _ThreadPoolExecutor;
+    friend class _ThreadCachedPoolExecutor;
+    
 	_BlockingQueue(int size);
     _BlockingQueue();
 

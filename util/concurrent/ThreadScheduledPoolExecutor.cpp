@@ -21,38 +21,33 @@ _WaitingTask::_WaitingTask(long int interval,Runnable r):_FutureTask(r) {
 
 //---------------ScheduleService---------------//
 _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor() {
-    mIsShutDown = false;
-    mIsTerminated = false;
-    mStatusMutex = createMutex("statusMutex");
-;
     mCachedExecutor = createExecutorBuilder()
                         ->setTimeout(60*1000)
                         ->newCachedThreadPool();
     
     mTaskMutex = createMutex("scheduleTaskMutex");
     mTaskWaitCond = createCondition();
+    mStatus = Running;
     start();
 }
 
 int _ThreadScheduledPoolExecutor::shutdown() {
     {
-        AutoLock l(mStatusMutex);
-        
-        if(mIsShutDown) {
+        AutoLock l(mTaskMutex);
+        if(mStatus == ShutDown) {
             return -AlreadyDestroy;
         }
 
-        mIsShutDown = true;
-    }
-    //clear all task
-    {
-        AutoLock l(mTaskMutex);
+        mStatus = ShutDown;
+
+        
         WaitingTask task = mTaskPool;
         while(task != nullptr) {
             task->cancel();
             task = task->next;
         }
     }
+
     mTaskWaitCond->notify();
     mCachedExecutor->shutdown();
     return 0;
@@ -63,7 +58,7 @@ void _ThreadScheduledPoolExecutor::setAsTerminated() {
 }
 
 bool _ThreadScheduledPoolExecutor::isShutdown() {
-    return mIsShutDown;
+    return mStatus == ShutDown;
 }
 
 bool _ThreadScheduledPoolExecutor::isTerminated() {
@@ -81,9 +76,10 @@ int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
 
 void _ThreadScheduledPoolExecutor::addWaitingTask(WaitingTask task) {
     AutoLock ll(mTaskMutex);
-    if(mIsShutDown) {
+    if(mStatus == ShutDown) {
         return;
     }
+
     if(mTaskPool == nullptr) {
         mTaskPool = task;
     } else {
@@ -114,35 +110,34 @@ void _ThreadScheduledPoolExecutor::addWaitingTask(WaitingTask task) {
 
 void _ThreadScheduledPoolExecutor::run() {
     while(1) {
-        {
-            AutoLock l(mStatusMutex);
-            if(mIsShutDown) {
-                return;
-            }
+        AutoLock ll(mTaskMutex);
+        if(mStatus == ShutDown) {
+            return;
         }
+        
         WaitingTask mCurrentTask = nullptr;
-        {
-            AutoLock ll(mTaskMutex);
-            if(mTaskPool == nullptr) {
-                mTaskWaitCond->wait(mTaskMutex);
+
+        if(mTaskPool == nullptr) {
+            mTaskWaitCond->wait(mTaskMutex);
+            continue;
+        }else {
+            long interval = (mTaskPool->nextTime - st(System)::currentTimeMillis());
+            if(interval <= 0) {
+                mCurrentTask = mTaskPool;
+                mTaskPool = mTaskPool->next;
+            } else {
+                mTaskWaitCond->wait(mTaskMutex,interval);
                 continue;
-            }else {
-                long interval = (mTaskPool->nextTime - st(System)::currentTimeMillis());
-                if(interval <= 0) {
-                    mCurrentTask = mTaskPool;
-                    mTaskPool = mTaskPool->next;
-                } else {
-                    mTaskWaitCond->wait(mTaskMutex,interval);
-                    continue;
-                }
             }
         }
+        
         if(mCurrentTask->getStatus() == st(Future)::Cancel) {
             continue;
         }
         if(mCurrentTask != nullptr) {
             mCachedExecutor->submit(mCurrentTask->getRunnable());
         }
+        
         mCurrentTask = nullptr;
     }
 }

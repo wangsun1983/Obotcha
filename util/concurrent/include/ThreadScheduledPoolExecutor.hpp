@@ -84,15 +84,20 @@ public:
     void addWaitingTask(WaitingTask);                
 
 private:
+    enum Status {
+        Running,
+        ShutDown
+    };
+
     void run();
 
     ThreadCachedPoolExecutor mCachedExecutor;
 
-    bool mIsShutDown;
+    int mStatus;
 
-    bool mIsTerminated;
+    //bool mIsTerminated;
 
-    Mutex mStatusMutex;
+    //Mutex mStatusMutex;
 
     void init(int size,bool isDyn);
 

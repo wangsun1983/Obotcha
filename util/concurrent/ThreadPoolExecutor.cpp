@@ -117,15 +117,11 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     }
     
     bool isWaitForever = (millseconds == 0);
-    //printf("await termination start,size is %d,millseconds is %ld \n",mHandlers->size(),millseconds);
     ListIterator<Thread> iterator = mHandlers->getIterator();
     while(iterator->hasValue()) {
-        //printf("await termination trace1 \n");
         Thread handler = iterator->getValue();
         long current = st(System)::currentTimeMillis();
-        //printf("await termination trace2 \n");
         handler->join(millseconds);
-        //printf("await termination trace3 \n");
         if(!isWaitForever) {
             long waitInterval = (st(System)::currentTimeMillis() - current);
             millseconds -= waitInterval;
@@ -135,7 +131,6 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
         }
         iterator->next();
     }
-    //printf("await termination trace4 \n");
     return 0;
 }
 

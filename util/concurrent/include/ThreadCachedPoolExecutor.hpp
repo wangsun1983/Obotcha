@@ -15,7 +15,6 @@
 
 namespace obotcha {
 
-class _ThreadCachedPoolExecutor;
 class _ThreadScheduledPoolExecutor;
 
 DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) {
@@ -78,7 +77,7 @@ private:
     
     ArrayList<Thread> mHandlers;
 
-    std::atomic<int> mStatus;
+    int mStatus;
 
     long mThreadTimeout;
 
@@ -89,6 +88,8 @@ private:
     int mQueueSize;
 
     BlockingQueue<FutureTask> mTasks;
+
+    AtomicInteger mIdleNum;
 };
 
 }

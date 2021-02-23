@@ -41,12 +41,8 @@ public:
 
     template< class Function, class... Args >
     int execute(int priority, Function&& f, Args&&... args ) {
-        if(submit(priority,createLambdaRunnable(f,args...)) == nullptr){
-            return -InvalidStatus;
-        };
-        return 0;
+        return execute(priority,createLambdaRunnable(f,args...));
     }
-
 
     int shutdown();
 
@@ -62,13 +58,15 @@ public:
 
     template<typename X>
     Future submit(int level,sp<X> r) {
-        if(mStatus->get() == ShutDown) {
+    
+        AutoLock l(mTaskMutex);
+        if(mStatus== ShutDown) {
             return nullptr;
         }
-
+    
         FutureTask task = createFutureTask(r);
         {
-            AutoLock l(mTaskMutex);
+            
             switch(level) {
                 case PriorityHigh:
                     mHighPriorityTasks->enQueueLast(task);
@@ -114,14 +112,9 @@ private:
 
     int mThreadNum;
 
-    AtomicInteger mStatus;
+    int mStatus;
     
-    Mutex mThreadMutex;
     ArrayList<Thread> mThreads;
-
-    Mutex mWaitMutex;
-    
-    Condition mWaitCondition;
 };
 
 }
