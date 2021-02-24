@@ -89,7 +89,7 @@ int testThreadShutdown() {
         pool->shutdown();
         int ret = pool->shutdown();
 
-        if(ret != -AlreadyDestroy) {
+        if(ret != -InvalidStatus) {
             printf("---[ThreadPoolExecutor Test {shutdown()} special case1] [FAIL]--- \n");
             break;
         }

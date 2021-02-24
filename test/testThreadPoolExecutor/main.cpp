@@ -20,8 +20,10 @@ extern int testThreadPoolLoopSubmit();
 extern int testThreadPoolLoopShutdown();
 extern int testThreadLambda();
 extern int testThreadQuickShutDown();
+extern int testPoolReferenceCount();
 
 int main() {
+#if 0
     normalTest();
     sleep(1);
     testRunnable_onInterrupt();
@@ -30,9 +32,12 @@ int main() {
     sleep(1);
     testThreadShutdown();
     testThreadDestroy();
+#endif
     testThreadPoolLoopSubmit();
     testThreadLambda();
     testThreadQuickShutDown();
+    testPoolReferenceCount();
+
     st(Thread)::sleep(10*1000);
     return 0;
 }
