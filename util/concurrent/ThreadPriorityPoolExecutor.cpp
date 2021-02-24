@@ -46,6 +46,7 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int threadnum) {
                     }
 
                     if(executor->mStatus == st(ThreadPriorityPoolExecutor)::ShutDown) {
+                        executor = nullptr;
                         return;
                     }
 

@@ -35,7 +35,6 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int queuesize,int minthread
     mHandlerMutex = createMutex("ThreadCachedHandlerMutex");
     mTasks = createBlockingQueue<FutureTask>();
     mStatus = Running;
-
     mIdleNum = createAtomicInteger(0);
 }
 
@@ -166,36 +165,31 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
 
     Thread handler = nullptr;
 
-    handler = createThread([](BlockingQueue<FutureTask> &tasks,
-                              Mutex &mutex,
-                              ArrayList<Thread> &handlers,
-                              long threadtimeout,
-                              AtomicInteger idlenum){
+    handler = createThread([](ThreadCachedPoolExecutor &executor){
         FutureTask mCurrentTask = nullptr;
         while(1) {
-            mCurrentTask = tasks->deQueueLast(threadtimeout);
-            idlenum->subAndGet(-1); 
+            mCurrentTask = executor->mTasks->deQueueLast(executor->mThreadTimeout);
+            executor->mIdleNum->subAndGet(-1); 
             if(mCurrentTask == nullptr) {         
-                AutoLock l(mutex);
+                AutoLock l(executor->mHandlerMutex);
                 Thread handler = st(Thread)::current();
-                handlers->remove(handler);
+                executor->mHandlers->remove(handler);
+                executor = nullptr;
                 return;
             }
   
             if(mCurrentTask->getStatus() != st(Future)::Cancel) {
                 mCurrentTask->onRunning();
-                
                 Runnable r = mCurrentTask->getRunnable();
                 if(r != nullptr) {
                     r->run();
                 }
-                
                 mCurrentTask->onComplete();
             }
-            idlenum->addAndGet(1); 
+            executor->mIdleNum->addAndGet(1); 
             mCurrentTask = nullptr;
         }
-    },mTasks,mHandlerMutex,mHandlers,mThreadTimeout,mIdleNum);
+    },AutoClone(this));
 
     mIdleNum->addAndGet(1);
     

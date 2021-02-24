@@ -15,11 +15,26 @@
 
 namespace obotcha {
 
+#define BLOCK_QUEUE_ADD_NOLOCK(Action) \
+while(!isDestroy) {\
+        int size = mQueue.size();\
+        if(mCapacity > 0 && size == mCapacity) {\
+            if(-WaitTimeout == mEnqueueCond->wait(mMutex,timeout)) {\
+                return false;\
+            }\
+            continue;\
+        }\
+        Action;\
+        mDequeueCond->notify();\
+        return true;\
+}\
+return false;
+
 #define BLOCK_QUEUE_ADD(Action) \
 AutoLock l(mMutex);\
 while(!isDestroy) {\
         int size = mQueue.size();\
-        if(mCapacity != -1 && size == mCapacity) {\
+        if(mCapacity > 0 && size == mCapacity) {\
             if(-WaitTimeout == mEnqueueCond->wait(mMutex,timeout)) {\
                 return false;\
             }\
@@ -74,6 +89,11 @@ public:
 
     inline int size();
 
+    inline bool enQueueFirstNoLock(T val);
+    inline bool enQueueLastNoLock(T val);
+    inline bool enQueueFirstNoLock(T val,long timeout);
+    inline bool enQueueLastNoLock(T val,long timeout);
+
     inline bool enQueueFirst(T val);
     inline bool enQueueLast(T val);
 
@@ -114,10 +134,6 @@ _BlockingQueue<T>::~_BlockingQueue() {
 
 template <typename T>
 _BlockingQueue<T>::_BlockingQueue(int size):mCapacity(size){
-    if(size == 0) {
-        Trigger(InitializeException,"BlockingQueue size is 0");
-    }
-
     mMutex = createMutex("BlockingQueueMutex");
     mEnqueueCond = createCondition();
     mDequeueCond = createCondition();
@@ -190,6 +206,26 @@ T _BlockingQueue<T>::deQueueLastNoBlock() {
         ret = mQueue.back();
         mQueue.pop_back();
     });
+}
+
+template <typename T>
+bool _BlockingQueue<T>::enQueueFirstNoLock(T val) {
+    return enQueueFirstNoLock(val,0);
+}
+
+template <typename T>
+bool _BlockingQueue<T>::enQueueLastNoLock(T val) {
+    return enQueueLastNoLock(val,0);
+}
+
+template <typename T>
+bool _BlockingQueue<T>::enQueueFirstNoLock(T val,long timeout) {
+    BLOCK_QUEUE_ADD_NOLOCK(mQueue.insert(mQueue.begin(),val));
+}
+
+template <typename T>
+bool _BlockingQueue<T>::enQueueLastNoLock(T val,long timeout) {
+    BLOCK_QUEUE_ADD_NOLOCK(mQueue.push_back(val));
 }
 
 template <typename T>

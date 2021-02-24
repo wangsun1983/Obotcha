@@ -28,17 +28,7 @@ public:
     
     template<typename X>
     int execute(sp<X> runnable) {
-        if(runnable == nullptr) {
-            return -InvalidParam;
-        }
-
-        AutoLock l(mPool->mMutex);
-        if(mStatus != LocalStatus::Running) {
-            return -InvalidStatus;
-        }
-        
-        FutureTask task = createFutureTask(Cast<Runnable>(runnable));
-        if(mPool->enQueueLast(task)) {
+        if(submit(runnable) != nullptr) {
             return 0;
         }
 
@@ -65,7 +55,7 @@ public:
         }
 
         FutureTask task = createFutureTask(r);
-        if(mPool->enQueueLast(task)){
+        if(mPool->enQueueLastNoLock(task)){
             return createFuture(task);
         }
 

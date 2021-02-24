@@ -15,22 +15,18 @@ const int _ThreadPoolExecutor::DefaultThreadNum = 4;
 
 _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
     mStatus = LocalStatus::Idle;
-
-    if(queuesize != -1) {
-        mPool = createBlockingQueue<FutureTask>(queuesize);    
-    } else {
-        mPool = createBlockingQueue<FutureTask>();
-    }
-    
+    mPool = createBlockingQueue<FutureTask>(queuesize);    
     mHandlers = createArrayList<Thread>();
 
     for(int i = 0; i < threadnum;i++) {
-        Thread thread = createThread([](BlockingQueue<FutureTask> &pool) {
+        Thread thread = createThread([](ThreadPoolExecutor &executor) {
             while(1) {
                 FutureTask mCurrentTask = nullptr;
-                mCurrentTask = pool->deQueueFirst();
+                mCurrentTask = executor->mPool->deQueueFirst();
                 
                 if(mCurrentTask == nullptr) {
+                    //clear executor to enable executor release.
+                    executor = nullptr;
                     return;
                 }
 
@@ -47,7 +43,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
 
                 mCurrentTask->onComplete();
             }
-        },mPool);
+        },AutoClone(this));
 
         thread->start();
         mHandlers->add(thread);

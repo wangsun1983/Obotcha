@@ -46,15 +46,11 @@ int _ThreadScheduledPoolExecutor::shutdown() {
             task->cancel();
             task = task->next;
         }
+        mTaskWaitCond->notify();
     }
 
-    mTaskWaitCond->notify();
     mCachedExecutor->shutdown();
     return 0;
-}
-
-void _ThreadScheduledPoolExecutor::setAsTerminated() {
-    //Do nothing
 }
 
 bool _ThreadScheduledPoolExecutor::isShutdown() {
