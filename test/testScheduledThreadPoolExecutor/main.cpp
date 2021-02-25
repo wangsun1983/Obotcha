@@ -6,7 +6,7 @@
 #include "BlockingQueue.hpp"
 #include "ThreadScheduledPoolExecutor.hpp"
 #include "Integer.hpp"
-#include "Executors.hpp"
+#include "ExecutorBuilder.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 
@@ -24,12 +24,12 @@ extern int testThreadLambda();
 int main() {
     printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
     testThreadLambda();
-    //baseTest();
-    //scheduleTest();
-    //ReleaseTest();
+    baseTest();
+    scheduleTest();
+    ReleaseTest();
     //fixRateTest();
     //fixDelayTest();
-    //scheduleloopsubmit();
+    scheduleloopsubmit();
     sleep(10);
 
 }

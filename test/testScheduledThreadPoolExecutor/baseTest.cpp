@@ -6,7 +6,7 @@
 #include "BlockingQueue.hpp"
 #include "ThreadScheduledPoolExecutor.hpp"
 #include "Integer.hpp"
-#include "Executors.hpp"
+#include "ExecutorBuilder.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
@@ -44,7 +44,7 @@ int baseTest() {
 
     //_ScheduledThreadPoolExecutor()
     while(1) {
-        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
 
         pool->shutdown();
         printf("---[ScheduledThreadPoolExecutor Test {constructor()} case1] [OK]--- \n");
@@ -54,7 +54,7 @@ int baseTest() {
 
     //void shutdown();
     while(1) {
-        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
         printf("shudown trace1 \n");
         pool->schedule(0,createBaseRunTest1());
         printf("shudown trace2 \n");
@@ -87,7 +87,7 @@ int baseTest() {
 
     //int awaitTermination(long timeout);
     while(1) {
-        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
         int result = pool->awaitTermination(1000);
         if(result != -InvalidStatus) {
             printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case1] [FAIL]--- \n");
@@ -123,7 +123,7 @@ int baseTest() {
 
     //int awaitTermination(long timeout = 0);
     while(1) {
-        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
         int result = pool->awaitTermination(0);
         if(result != -InvalidStatus) {
             printf("---[ScheduledThreadPoolExecutor Test {awaitTermination()} case5] [FAIL]--- \n");
@@ -158,7 +158,7 @@ int baseTest() {
 
     //int awaitTermination(long timeout = max);
     while(1) {
-        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
         pool->schedule(0,createBaseRunTest1());
         pool->shutdown();
 
@@ -179,7 +179,7 @@ int baseTest() {
 
     //submit(Runnable task);
     while(1) {
-        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
         Future task = pool->schedule(0,createBaseRunTest1());
         if(task == nullptr) {
             printf("---[ScheduledThreadPoolExecutor Test {submit()} case1] [FAIL]--- \n");

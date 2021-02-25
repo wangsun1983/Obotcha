@@ -6,7 +6,6 @@
 #include "ThreadScheduledPoolExecutor.hpp"
 #include "Error.hpp"
 #include "AutoLock.hpp"
-#include "MethodNotSupportException.hpp"
 #include "ExecutorBuilder.hpp"
 #include "Log.hpp"
 
@@ -54,6 +53,7 @@ int _ThreadScheduledPoolExecutor::shutdown() {
 }
 
 bool _ThreadScheduledPoolExecutor::isShutdown() {
+    AutoLock l(mTaskMutex);
     return mStatus == ShutDown;
 }
 
@@ -70,12 +70,7 @@ int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
     return mCachedExecutor->awaitTermination(timeout);
 }
 
-void _ThreadScheduledPoolExecutor::addWaitingTask(WaitingTask task) {
-    AutoLock ll(mTaskMutex);
-    if(mStatus == ShutDown) {
-        return;
-    }
-
+void _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task) {
     if(mTaskPool == nullptr) {
         mTaskPool = task;
     } else {
@@ -105,35 +100,35 @@ void _ThreadScheduledPoolExecutor::addWaitingTask(WaitingTask task) {
 }
 
 void _ThreadScheduledPoolExecutor::run() {
-    while(1) {
-        AutoLock ll(mTaskMutex);
-        if(mStatus == ShutDown) {
-            return;
-        }
-        
-        WaitingTask mCurrentTask = nullptr;
+    WaitingTask mCurrentTask = nullptr;
 
-        if(mTaskPool == nullptr) {
-            mTaskWaitCond->wait(mTaskMutex);
-            continue;
-        }else {
-            long interval = (mTaskPool->nextTime - st(System)::currentTimeMillis());
-            if(interval <= 0) {
-                mCurrentTask = mTaskPool;
-                mTaskPool = mTaskPool->next;
-            } else {
-                mTaskWaitCond->wait(mTaskMutex,interval);
+    while(1) {
+        {
+            AutoLock ll(mTaskMutex);
+            if(mStatus == ShutDown) {
+                return;
+            }
+            
+            if(mTaskPool == nullptr) {
+                mTaskWaitCond->wait(mTaskMutex);
+                continue;
+            }else {
+                long interval = (mTaskPool->nextTime - st(System)::currentTimeMillis());
+                if(interval <= 0) {
+                    mCurrentTask = mTaskPool;
+                    mTaskPool = mTaskPool->next;
+                } else {
+                    mTaskWaitCond->wait(mTaskMutex,interval);
+                    continue;
+                }
+            }
+            
+            if(mCurrentTask->getStatus() == st(Future)::Cancel) {
                 continue;
             }
         }
-        
-        if(mCurrentTask->getStatus() == st(Future)::Cancel) {
-            continue;
-        }
-        if(mCurrentTask != nullptr) {
-            mCachedExecutor->submit(mCurrentTask->getRunnable());
-        }
-        
+
+        mCachedExecutor->submit(mCurrentTask->getRunnable());        
         mCurrentTask = nullptr;
     }
 }

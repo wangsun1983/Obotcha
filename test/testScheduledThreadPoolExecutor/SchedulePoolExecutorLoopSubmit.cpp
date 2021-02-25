@@ -6,7 +6,7 @@
 #include "BlockingQueue.hpp"
 #include "ThreadScheduledPoolExecutor.hpp"
 #include "Integer.hpp"
-#include "Executors.hpp"
+#include "ExecutorBuilder.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
@@ -47,7 +47,7 @@ public:
 
 int scheduleloopsubmit() {
     //test1
-    ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+    ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
     long time = st(System)::currentTimeMillis();
     for(int i = 0; i < 32*1024;i++) {
         pool->schedule(0,createMyLoopSubmit());
@@ -63,7 +63,7 @@ int scheduleloopsubmit() {
 
     //test2
     myloopvalue = createAtomicInteger(0);
-    pool = st(Executors)::newScheduledThreadPool();
+    pool = createExecutorBuilder()->newScheduledThreadPool();
     for(int i = 0; i < 32*1024;i++) {
         pool->schedule(100,createMyLoopSubmit());
     }
@@ -77,7 +77,7 @@ int scheduleloopsubmit() {
     
 #if 0 //need test
     //test3
-    pool = st(Executors)::newScheduledThreadPool();
+    pool = createExecutorBuilder()->newScheduledThreadPool();
     time = st(System)::currentTimeMillis();
 
     for(int i = 0; i < 32*1024;i++) {

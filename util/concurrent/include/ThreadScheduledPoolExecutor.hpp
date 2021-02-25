@@ -4,28 +4,16 @@
 #include <vector>
 
 #include "Object.hpp"
-#include "Runnable.hpp"
-#include "BlockingQueue.hpp"
-#include "ConcurrentQueue.hpp"
-#include "ArrayList.hpp"
 #include "Thread.hpp"
 #include "AutoLock.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
-#include "ThreadPoolExecutor.hpp"
 #include "FutureTask.hpp"
 #include "Future.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
-#include "HashMap.hpp"
 #include "Thread.hpp"
-#include "ArrayList.hpp"
 #include "FutureTask.hpp"
-
-enum ScheduledTaskType {
-    ScheduletTaskNormal = 0, //normal schedule task
-    ScheduletTaskFixRate, //loop time record from task start
-    ScheduletTaskFixedDelay //loop time record from task complete
-};
+#include "LinkedList.hpp"
 
 namespace obotcha { 
 
@@ -62,24 +50,19 @@ public:
     
     template<typename X>
     Future schedule(long delay,sp<X> r) {
-        if(isShutdown()) {
+        AutoLock l(mTaskMutex);
+        if(mStatus == ShutDown) {
             return nullptr;
         }
         WaitingTask task = createWaitingTask(delay,r);
-        addWaitingTask(task);
+        addWaitingTaskLocked(task);
         return createFuture(task);
     }
 
     template< class Function, class... Args >
     Future schedule(long delay,Function&& f, Args&&... args) {
-        if(isShutdown()) {
-            return nullptr;
-        }
-        Runnable r = createLambdaRunnable(f,args...);
-        return schedule(delay,r);
+        return schedule(delay,createLambdaRunnable(f,args...));
     }
-
-    void addWaitingTask(WaitingTask);                
 
 private:
     enum Status {
@@ -89,18 +72,14 @@ private:
 
     void run();
 
+    void addWaitingTaskLocked(WaitingTask);
+
     ThreadCachedPoolExecutor mCachedExecutor;
 
     int mStatus;
 
-    //bool mIsTerminated;
-
-    //Mutex mStatusMutex;
-
-    void init(int size,bool isDyn);
-
     Mutex mTaskMutex;
-    //WaitingTask mRoot;
+
     Condition mTaskWaitCond; 
 
     WaitingTask mTaskPool;

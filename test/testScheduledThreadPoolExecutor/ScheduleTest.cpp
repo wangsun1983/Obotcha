@@ -6,7 +6,7 @@
 #include "BlockingQueue.hpp"
 #include "ThreadScheduledPoolExecutor.hpp"
 #include "Integer.hpp"
-#include "Executors.hpp"
+#include "ExecutorBuilder.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 
@@ -51,7 +51,7 @@ int scheduleTest() {
     //printf("---[TestScheduledThreadPoolExecutor Test Start]--- \n");
     //schedule test
     while(1) {
-        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
         long current = st(System)::currentTimeMillis();
         printf("================= start post %ld \n",st(System)::currentTimeMillis());
         pool->schedule(5000,createScheduleRunTest1());
@@ -84,7 +84,7 @@ int scheduleTest() {
 #if 0
     //schedule
     while(1) {
-        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
         Future f = pool->schedule(createRunTest1(),5000);
         sleep(1);
         f->cancel();
@@ -102,7 +102,7 @@ int scheduleTest() {
     while(1) {
         runTest3Val = 0;
 
-        ThreadScheduledPoolExecutor pool = st(Executors)::newScheduledThreadPool();
+        ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
         Future f = pool->schedule(createRunTest1(),5000);
         sleep(1);
         printf("f trace1 \n");
