@@ -6,7 +6,7 @@
 #include "BlockingQueue.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
 #include "Integer.hpp"
-#include "Executors.hpp"
+#include "ExecutorBuilder.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "AutoLock.hpp"
@@ -34,7 +34,14 @@ public:
 int cancelTest() {
     while(1) {
         //printf("start test \n");
-        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(1024*32,0,20,1000);
+        //ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(1024*32,0,20,1000);
+        ThreadCachedPoolExecutor pool = createExecutorBuilder()
+                                        ->setQueueSize(1024*32)
+                                        ->setMinThreadNum(0)
+                                        ->setMaxThreadNum(20)
+                                        ->setTimeout(1000)
+                                        ->newCachedThreadPool();
+
         ArrayList<Future> cancellists = createArrayList<Future>();
         //printf("start trace \n");
         for(int i = 0;i < 1024*32;i++) {
@@ -62,7 +69,14 @@ int cancelTest() {
     while(1) {
         //printf("start test \n");
         cancelNum = 0;
-        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(1024*32,0,20,1000);
+        //ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(1024*32,0,20,1000);
+        ThreadCachedPoolExecutor pool = createExecutorBuilder()
+                                        ->setQueueSize(1024*32)
+                                        ->setMinThreadNum(0)
+                                        ->setMaxThreadNum(20)
+                                        ->setTimeout(1000)
+                                        ->newCachedThreadPool();
+                                        
         ArrayList<Future> cancellists = createArrayList<Future>();
         //printf("start trace \n");
         for(int i = 0;i < 1024*32;i++) {

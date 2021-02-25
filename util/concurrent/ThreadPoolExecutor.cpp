@@ -11,10 +11,7 @@
 
 namespace obotcha {
 
-const int _ThreadPoolExecutor::DefaultThreadNum = 4;
-
 _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
-    mStatus = LocalStatus::Idle;
     mPool = createBlockingQueue<FutureTask>(queuesize);    
     mHandlers = createArrayList<Thread>();
 

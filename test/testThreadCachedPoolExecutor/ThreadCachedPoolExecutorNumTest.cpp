@@ -6,7 +6,7 @@
 #include "BlockingQueue.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
 #include "Integer.hpp"
-#include "Executors.hpp"
+#include "ExecutorBuilder.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "AutoLock.hpp"
@@ -43,7 +43,10 @@ public:
 
 int numTest() {
     mutex = createMutex();
-    ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(4,1000);
+    ThreadCachedPoolExecutor pool = createExecutorBuilder()
+                                    ->setMaxThreadNum(4)
+                                    ->setTimeout(1000)
+                                    ->newCachedThreadPool();
     while(1) {
         //start test 1
         int testNum = 1024*32;
@@ -64,7 +67,7 @@ int numTest() {
         sleep(5);
 
         //test6
-        pool = st(Executors)::newCachedThreadPool();
+        pool = createExecutorBuilder()->newCachedThreadPool();
         for(int i = 0;i < testNum;i++) {
             MyRunTest6 run2 = createMyRunTest6();
             pool->execute(run2);

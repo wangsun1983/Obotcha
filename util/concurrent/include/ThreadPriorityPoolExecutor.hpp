@@ -21,10 +21,10 @@ DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) {
 
 public:
     enum Priority {
-        PriorityLow = 0,
-        PriorityMedium,
-        PriorityHigh,
-        PriorityNoUse
+        Low = 0,
+        Medium,
+        High,
+        NoUse
     };
 
     _ThreadPriorityPoolExecutor(int threadnum);
@@ -68,20 +68,23 @@ public:
         {
             
             switch(level) {
-                case PriorityHigh:
+                case High:
                     mHighPriorityTasks->enQueueLast(task);
                     mTaskCond->notify();
                 break;
 
-                case PriorityMedium:
+                case Medium:
                     mMidPriorityTasks->enQueueLast(task);
                     mTaskCond->notify();
                 break;
 
-                case PriorityLow:
+                case Low:
                     mLowPriorityTasks->enQueueLast(task);
                     mTaskCond->notify();
                 break;
+
+                default:
+                return nullptr;
             }
         }
 
@@ -92,7 +95,6 @@ public:
     Future submit(int priority, Function&& f, Args&&... args ) {
         return submit(priority,createLambdaRunnable(f,args...));
     }
-
 
     int getThreadsNum();
 
@@ -109,11 +111,7 @@ private:
     LinkedList<FutureTask>mHighPriorityTasks;
     LinkedList<FutureTask>mMidPriorityTasks;
     LinkedList<FutureTask>mLowPriorityTasks;
-
-    int mThreadNum;
-
-    int mStatus;
-    
+    int mStatus;    
     ArrayList<Thread> mThreads;
 };
 

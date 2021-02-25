@@ -26,17 +26,14 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int threadnum) {
     mMidPriorityTasks = createLinkedList<FutureTask>();
     mLowPriorityTasks = createLinkedList<FutureTask>();
 
-    mThreadNum = threadnum;
-
     mStatus = Running;
 
     for(int i = 0;i < threadnum;i++) {
-        Thread thread = createThread([](ThreadPriorityPoolExecutor executor){
+        Thread thread = createThread([](ThreadPriorityPoolExecutor &executor){
             FutureTask mCurrentTask = nullptr;
             while(1) {
                 {
                     AutoLock l(executor->mTaskMutex);
-
                     if(executor->mHighPriorityTasks->size() > 0) {
                         mCurrentTask = executor->mHighPriorityTasks->deQueueFirst();
                     }else if(executor->mMidPriorityTasks->size() > 0) {
@@ -75,44 +72,44 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int threadnum) {
         thread->start();
         mThreads->add(thread);
     }
-
 }
 
 int _ThreadPriorityPoolExecutor::execute(Runnable r) {
-    return execute(PriorityMedium,r);
+    return execute(Medium,r);
 }
 
 int _ThreadPriorityPoolExecutor::shutdown() {
-    AutoLock l(mTaskMutex);
-    if(mStatus == ShutDown) {
-        return -InvalidStatus;
+    {
+        AutoLock l(mTaskMutex);
+        if(mStatus == ShutDown) {
+            return -InvalidStatus;
+        }
+
+        mStatus = ShutDown;
+
+        while(!mHighPriorityTasks->isEmpty()) {
+            FutureTask task = mHighPriorityTasks->deQueueLast();
+            task->cancel();
+        }
+
+        while(!mMidPriorityTasks->isEmpty()) {
+            FutureTask task = mMidPriorityTasks->deQueueLast();
+            task->cancel();
+        }
+
+        while(!mLowPriorityTasks->isEmpty()) {
+            FutureTask task = mLowPriorityTasks->deQueueLast();
+            task->cancel();
+        }
+        mTaskCond->notifyAll();
     }
 
-    mStatus = ShutDown;
-
-    while(!mHighPriorityTasks->isEmpty()) {
-        FutureTask task = mHighPriorityTasks->deQueueLast();
-        task->cancel();
-    }
-
-    while(!mMidPriorityTasks->isEmpty()) {
-        FutureTask task = mMidPriorityTasks->deQueueLast();
-        task->cancel();
-    }
-
-    while(!mLowPriorityTasks->isEmpty()) {
-        FutureTask task = mLowPriorityTasks->deQueueLast();
-        task->cancel();
-    }
-    
     ListIterator<Thread> iterator = mThreads->getIterator();
     while(iterator->hasValue()){
         Thread thread = iterator->getValue();
         thread->interrupt();
         iterator->next();
     }
-
-    mTaskCond->notifyAll();
 }
 
 bool _ThreadPriorityPoolExecutor::isShutDown() {
@@ -164,7 +161,7 @@ int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
 }
 
 Future _ThreadPriorityPoolExecutor::submit(Runnable task) {
-    return submit(PriorityMedium,task);
+    return submit(Medium,task);
 }
 
 int _ThreadPriorityPoolExecutor::getThreadsNum() {

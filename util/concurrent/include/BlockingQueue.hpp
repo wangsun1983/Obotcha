@@ -187,7 +187,7 @@ T _BlockingQueue<T>::deQueueLast() {
 template <typename T>
 T _BlockingQueue<T>::deQueueLast(long timeout) {
     BLOCK_QUEUE_REMOVE({
-        T ret = mQueue.back();
+        ret = mQueue.back();
         mQueue.pop_back();
     });
 }

@@ -6,7 +6,7 @@
 #include "BlockingQueue.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
 #include "Integer.hpp"
-#include "Executors.hpp"
+#include "ExecutorBuilder.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
@@ -14,8 +14,8 @@
 using namespace obotcha;
 
 int testThreadLambda() {
-    ThreadCachedPoolExecutor t = createThreadCachedPoolExecutor();
-        
+    //ThreadCachedPoolExecutor t = createThreadCachedPoolExecutor();
+    ThreadCachedPoolExecutor t = createExecutorBuilder()->newCachedThreadPool();
     while(1) {
         int value = 100;
         t->execute([&value]() {
@@ -26,7 +26,7 @@ int testThreadLambda() {
 
         sleep(1);
         if(value != 123) {
-            printf("---[testThreadLambda value case1] [FAIL]--- \n");
+            printf("---[testThreadLambda value case1] [FAIL]---,value is %d \n",value);
             break;
         }
         break;
@@ -42,7 +42,7 @@ int testThreadLambda() {
 
         sleep(1);
         if(value != 123) {
-            printf("---[testThreadLambda value case2] [FAIL]--- \n");
+            printf("---[testThreadLambda value case2] [FAIL]---,value is %d \n",value);
         }
         break;
     }

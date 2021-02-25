@@ -6,11 +6,11 @@
 #include "BlockingQueue.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
 #include "Integer.hpp"
-#include "Executors.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
 #include "AutoClose.hpp"
+#include "ExecutorBuilder.hpp"
 
 using namespace obotcha;
 
@@ -54,7 +54,12 @@ int normalTest() {
     printf("---[TestCachedPoolExecutor Test Start]--- \n");
 
     while(1) {
-        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(1,1,2,60*1000);
+        ThreadCachedPoolExecutor pool = createExecutorBuilder()
+                                        ->setQueueSize(1)
+                                        ->setMinThreadNum(1)
+                                        ->setMaxThreadNum(2)
+                                        ->setTimeout(60*1000)
+                                        ->newCachedThreadPool();
 
         pool->shutdown();
         printf("---[TestCachedPoolExecutor Test {constructor()} case1] [Success]--- \n");
@@ -65,7 +70,10 @@ int normalTest() {
 
     //_ThreadCachedPoolExecutor(int maxthreadnum,long timeout);
     while(1) {
-        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool(2,60*1000);
+        ThreadCachedPoolExecutor pool = createExecutorBuilder()
+                                        ->setMaxThreadNum(2)
+                                        ->setTimeout(60*1000)
+                                        ->newCachedThreadPool();
 
         printf("---[TestCachedPoolExecutor Test {constructor2()} case2] [Success]--- \n");
         pool->shutdown();
@@ -74,7 +82,7 @@ int normalTest() {
 
     //_ThreadCachedPoolExecutor();
     while(1) {
-        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = createExecutorBuilder()->newCachedThreadPool();
         pool->shutdown();
         printf("---[TestCachedPoolExecutor Test {constructor2()} case3] [Success]--- \n");
         break;
@@ -83,7 +91,7 @@ int normalTest() {
 
     //void shutdown();
     while(1) {
-        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = createExecutorBuilder()->newCachedThreadPool();
         pool->submit(createRunTest1());
         sleep(1);
 
@@ -115,7 +123,7 @@ int normalTest() {
 
     //int awaitTermination(long timeout);
     while(1) {
-        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = createExecutorBuilder()->newCachedThreadPool();
 
         int result = pool->awaitTermination(1000);
         if(result != -InvalidStatus) {
@@ -156,7 +164,7 @@ int normalTest() {
 
     //int awaitTermination(long timeout = 0);
     while(1) {
-        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = createExecutorBuilder()->newCachedThreadPool();
 
         int result = pool->awaitTermination(0);
         if(result != -InvalidStatus) {
@@ -189,7 +197,7 @@ int normalTest() {
 
     //int awaitTermination(long timeout = max);
     while(1) {
-        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = createExecutorBuilder()->newCachedThreadPool();
 
         pool->submit(createRunTest1());
         pool->shutdown();
@@ -208,7 +216,7 @@ int normalTest() {
 
     //int getThreadsNum();
     while(1) {
-        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = createExecutorBuilder()->newCachedThreadPool();
 
         if(pool->getThreadsNum() != 0) {
             printf("---[TestCachedPoolExecutor Test {getThreadsNum()} case1] [FAIL]--- \n");
@@ -222,7 +230,7 @@ int normalTest() {
 
     //submit(Runnable task);
     while(1) {
-        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = createExecutorBuilder()->newCachedThreadPool();
 
         Future task = pool->submit(createRunTest1());
         if(task == nullptr) {
@@ -246,7 +254,7 @@ int normalTest() {
 
     //submit(Runnable task);
     while(1) {
-        ThreadCachedPoolExecutor pool = st(Executors)::newCachedThreadPool();
+        ThreadCachedPoolExecutor pool = createExecutorBuilder()->newCachedThreadPool();
         printf("start submit task \n");
         Future task = pool->submit(createRunTest1());
         sleep(1);

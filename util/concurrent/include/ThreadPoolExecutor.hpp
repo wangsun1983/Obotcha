@@ -32,7 +32,7 @@ public:
             return 0;
         }
 
-        return -1;
+        return -InvalidStatus;
     }
     
     template< class Function, class... Args >
@@ -75,12 +75,9 @@ public:
 
 private:
     enum LocalStatus {
-        Idle = 0,
-        Running,
+        Running = 0,
         ShutDown,
     };
-
-    static const int DefaultThreadNum;
 
     BlockingQueue<FutureTask> mPool;
     

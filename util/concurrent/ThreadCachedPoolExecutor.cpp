@@ -127,17 +127,16 @@ int _ThreadCachedPoolExecutor::getThreadsNum() {
 }
 
 Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r) {
+    Future future = nullptr;
     {
         AutoLock l(mTasks->mMutex);
         if(mStatus != Running) {
             return nullptr;
         }
+        FutureTask task = createFutureTask(r);
+        future = createFuture(task);
+        mTasks->enQueueLastNoLock(task);
     }
-
-    FutureTask task = createFutureTask(r);
-    Future future = createFuture(task);
-    mTasks->enQueueLast(task);
-
     if(mIdleNum->get() == 0) {
         setUpOneIdleThread();
     }
@@ -163,21 +162,18 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
         }
     }
 
-    Thread handler = nullptr;
-
-    handler = createThread([](ThreadCachedPoolExecutor &executor){
+    Thread handler = createThread([](ThreadCachedPoolExecutor &executor){
         FutureTask mCurrentTask = nullptr;
         while(1) {
-            mCurrentTask = executor->mTasks->deQueueLast(executor->mThreadTimeout);
-            executor->mIdleNum->subAndGet(-1); 
-            if(mCurrentTask == nullptr) {         
+            mCurrentTask = executor->mTasks->deQueueFirst(executor->mThreadTimeout);
+            executor->mIdleNum->subAndGet(1); 
+            if(mCurrentTask == nullptr) {
                 AutoLock l(executor->mHandlerMutex);
                 Thread handler = st(Thread)::current();
                 executor->mHandlers->remove(handler);
                 executor = nullptr;
                 return;
             }
-  
             if(mCurrentTask->getStatus() != st(Future)::Cancel) {
                 mCurrentTask->onRunning();
                 Runnable r = mCurrentTask->getRunnable();
@@ -190,9 +186,7 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
             mCurrentTask = nullptr;
         }
     },AutoClone(this));
-
     mIdleNum->addAndGet(1);
-    
     handler->start();
     {
         AutoLock l(mHandlerMutex);
