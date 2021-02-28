@@ -26,7 +26,11 @@ public:
 DECLARE_SIMPLE_CLASS(InetAddress) {
 
 public:
-    
+    enum Type {
+        IPV4 = 0,
+        IPV6,
+    };
+
     static String getHostName();
 
     static ArrayList<String> getHostByName(String url);
@@ -35,11 +39,21 @@ public:
 
     static ArrayList<InetHostMac> getMacAddress();
 
+    void setAddress(String);
+
+    String getAddress();
+    
+    int type();
+
 private:
 
     String mHostName;
 
     String mMac;
+
+    String mAddress;
+
+    int mAddressType;
 
 };
 

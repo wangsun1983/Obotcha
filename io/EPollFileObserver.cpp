@@ -49,7 +49,9 @@ void _EPollFileObserver::run() {
     byte readbuff[st(EPollFileObserver)::DefaultBufferSize];
 
     while(1) {
+        printf("start wait \n");
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
+        printf("start trace1 \n");
         if(epoll_events_count < 0) {
             LOG(ERROR)<<"epoll_wait count is -1";
             return;
@@ -77,7 +79,9 @@ void _EPollFileObserver::run() {
             }
 
             ListIterator<EPollFileObserverListener> iterator = listeners->getIterator();
+            printf("epoll observer trace1,listeners size is %d \n",listeners->size());
             while(iterator->hasValue()) {
+                //printf("epoll observer trace2 \n");
                 EPollFileObserverListener l = iterator->getValue();
                 int result = l->notifyEvent(fd,recvEvents,recvData);
                 if(result == st(EPollFileObserver)::OnEventRemoveObserver) {
@@ -85,7 +89,7 @@ void _EPollFileObserver::run() {
                     iterator->remove();
                     continue;
                 }
-
+                //printf("epoll observer trace3 \n");
                 iterator->next();
             }
 
@@ -113,31 +117,6 @@ _EPollFileObserver::_EPollFileObserver(int size) {
 }
 
 _EPollFileObserver::_EPollFileObserver():_EPollFileObserver(DefaultEpollSize){
-}
-
-int _EPollFileObserver::addObserver(int fd,uint32_t events,EPollFileObserverListener l) {
-    AutoLock mylock(mListenerMutex);
-    auto iterator = mFdEventsMap.find(fd);
-    if(iterator != mFdEventsMap.end() && (iterator->second & events) == events) {
-        return -AlreadyRegist;
-    }
-
-    int regEvents = 0;
-    regEvents |= events;
-    
-    ArrayList<EPollFileObserverListener> ll = mListeners->get(fd);
-    if(ll == nullptr) {
-        ll = createArrayList<EPollFileObserverListener>();
-        mListeners->put(fd,ll);
-    }
-
-    ll->add(l);
-    updateFdEventsMap(fd,events,l->mFdEventsMap);
-    updateFdEventsMap(fd,events,mFdEventsMap);
-
-    addEpollFd(fd,regEvents|EpollRdHup|EPOLLHUP);
-
-    return 0;
 }
 
 int _EPollFileObserver::removeObserver(EPollFileObserverListener l) {

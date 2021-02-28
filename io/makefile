@@ -18,6 +18,9 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/stringreader.o \
 	$(outtmp)/byteringarrayreader.o \
 	$(outtmp)/autoclosefile.o \
+	$(outtmp)/socketinputstream.o \
+	$(outtmp)/socketoutputstream.o \
+	
 
 $(outtmp)/file.o :$(ioDir)/File.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/File.cpp -o $(outtmp)/file.o $(external)
@@ -72,3 +75,9 @@ $(outtmp)/stringreader.o :$(ioDir)/StringReader.cpp
 
 $(outtmp)/byteringarrayreader.o :$(ioDir)/ByteRingArrayReader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/ByteRingArrayReader.cpp -o $(outtmp)/byteringarrayreader.o $(external)
+
+$(outtmp)/socketinputstream.o :$(ioDir)/SocketInputStream.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/SocketInputStream.cpp -o $(outtmp)/socketinputstream.o $(external)
+
+$(outtmp)/socketoutputstream.o :$(ioDir)/SocketOutputStream.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/SocketOutputStream.cpp -o $(outtmp)/socketoutputstream.o $(external)

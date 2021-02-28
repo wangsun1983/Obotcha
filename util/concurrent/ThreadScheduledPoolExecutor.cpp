@@ -39,7 +39,6 @@ int _ThreadScheduledPoolExecutor::shutdown() {
 
         mStatus = ShutDown;
 
-        
         WaitingTask task = mTaskPool;
         while(task != nullptr) {
             task->cancel();
@@ -64,7 +63,6 @@ bool _ThreadScheduledPoolExecutor::isTerminated() {
 void _ThreadScheduledPoolExecutor::awaitTermination() {
     awaitTermination(0);
 }
-
 
 int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
     return mCachedExecutor->awaitTermination(timeout);

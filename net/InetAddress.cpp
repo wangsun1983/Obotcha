@@ -134,4 +134,16 @@ ArrayList<InetHostMac> _InetAddress::getMacAddress() {
     return list;
 }
 
+void _InetAddress::setAddress(String addr) {
+    mAddress = addr;
+}
+
+String _InetAddress::getAddress() {
+    return mAddress;
+}
+
+int _InetAddress::type() {
+    return mAddressType;
+}
+
 }

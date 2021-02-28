@@ -181,8 +181,8 @@ _MailSender::_MailSender() {
 
 _MailSender::~_MailSender() {
     disconnectRemoteServer();
-    delete mSendBuf;
-    delete mRecvBuf;
+    delete []mSendBuf;
+    delete []mRecvBuf;
 }
 
 int _MailSender::send() {
@@ -525,8 +525,8 @@ int _MailSender::connectRemoteServer() {
             md5pass2.finalize();
             decoded_challenge = (char *)md5pass2.hex_digest();
 
-            delete ustrChallenge;
-            delete ustrPassword;
+            delete []ustrChallenge;
+            delete []ustrPassword;
             delete ustrResult;
 
             decoded_challenge = mConnection->mUsername->getStdString() + " " + decoded_challenge;
@@ -694,7 +694,7 @@ int _MailSender::connectRemoteServer() {
             delete[] ustrUri;
             delete[] ustrNc;
             delete[] ustrQop;
-            delete ua1;
+            delete[] ua1;
             delete[] ua2;
             delete a1;
             delete a2;

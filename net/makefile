@@ -7,6 +7,11 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/udpclient.o \
 		$(outtmp)/udpserver.o \
 		$(outtmp)/socket.o \
+		$(outtmp)/socketimpl.o \
+		$(outtmp)/socketoption.o \
+		$(outtmp)/sockssocketimpl.o \
+		$(outtmp)/serversocketimpl.o \
+		$(outtmp)/datagramsocketimpl.o \
 		$(outtmp)/localsocketclient.o \
 		$(outtmp)/localsocketserver.o \
 		$(outtmp)/httpurlparser.o \
@@ -68,32 +73,48 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/mailsender.o \
 		$(outtmp)/socketresponser.o \
 
-$(outtmp)/socket.o :$(netDir)/Socket.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/Socket.cpp -o $(outtmp)/socket.o $(external)
+
+$(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketImpl.cpp -o $(outtmp)/socketimpl.o $(external)
+
+$(outtmp)/socketoption.o :$(netDir)/socket/SocketOption.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketOption.cpp -o $(outtmp)/socketoption.o $(external)
+
+$(outtmp)/sockssocketimpl.o :$(netDir)/socket/SocksSocketImpl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocksSocketImpl.cpp -o $(outtmp)/sockssocketimpl.o $(external)
+
+$(outtmp)/serversocketimpl.o :$(netDir)/socket/ServerSocketImpl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/ServerSocketImpl.cpp -o $(outtmp)/serversocketimpl.o $(external)
+
+$(outtmp)/datagramsocketimpl.o :$(netDir)/socket/DatagramSocketImpl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/DatagramSocketImpl.cpp -o $(outtmp)/datagramsocketimpl.o $(external)
+
+$(outtmp)/socket.o :$(netDir)/socket/Socket.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/Socket.cpp -o $(outtmp)/socket.o $(external)
 
 $(outtmp)/inetaddress.o :$(netDir)/InetAddress.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
 
-$(outtmp)/socketresponser.o :$(netDir)/SocketResponser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/SocketResponser.cpp -o $(outtmp)/socketresponser.o $(external)
+$(outtmp)/socketresponser.o :$(netDir)/socket/SocketResponser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketResponser.cpp -o $(outtmp)/socketresponser.o $(external)
 
-$(outtmp)/tcpserver.o :$(netDir)/tcp/TcpServer.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/TcpServer.cpp -o $(outtmp)/tcpserver.o $(external)
+$(outtmp)/tcpserver.o :$(netDir)/socket/TcpServer.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/TcpServer.cpp -o $(outtmp)/tcpserver.o $(external)
 
-$(outtmp)/tcpclient.o :$(netDir)/tcp/TcpClient.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/TcpClient.cpp -o $(outtmp)/tcpclient.o $(external)
+$(outtmp)/tcpclient.o :$(netDir)/socket/TcpClient.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/TcpClient.cpp -o $(outtmp)/tcpclient.o $(external)
 
-$(outtmp)/udpclient.o :$(netDir)/udp/UdpClient.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/udp/UdpClient.cpp -o $(outtmp)/udpclient.o $(external)
+$(outtmp)/udpclient.o :$(netDir)/socket/UdpClient.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/UdpClient.cpp -o $(outtmp)/udpclient.o $(external)
 
-$(outtmp)/udpserver.o :$(netDir)/udp/UdpServer.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/udp/UdpServer.cpp -o $(outtmp)/udpserver.o $(external)
+$(outtmp)/udpserver.o :$(netDir)/socket/UdpServer.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/UdpServer.cpp -o $(outtmp)/udpserver.o $(external)
 
-$(outtmp)/localsocketclient.o :$(netDir)/tcp/LocalSocketClient.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/LocalSocketClient.cpp -o $(outtmp)/localsocketclient.o $(external)
+$(outtmp)/localsocketclient.o :$(netDir)/socket/LocalSocketClient.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/LocalSocketClient.cpp -o $(outtmp)/localsocketclient.o $(external)
 
-$(outtmp)/localsocketserver.o :$(netDir)/tcp/LocalSocketServer.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/tcp/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)
+$(outtmp)/localsocketserver.o :$(netDir)/socket/LocalSocketServer.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)
 
 $(outtmp)/httprequestparser.o :$(netDir)/http/HttpRequestParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRequestParser.cpp -o $(outtmp)/httprequestparser.o $(external)

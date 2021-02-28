@@ -128,8 +128,6 @@ private:
     
     static String DefaultThreadName;
 
-    //Mutex mSleepMutex;
-
     Condition mSleepCondition;
 
     Mutex mMutex;

@@ -61,7 +61,7 @@ public:
     }
 
     int onEvent(int fd,uint32_t events,ByteArray data) {
-        //printf("listener1 fd is %d,mSocket is %d,events is %p \n",fd,mSocket,events);
+        printf("listener1 fd is %d,mSocket is %d,events is %p \n",fd,mSocket,events);
         if(fd == mSocket) {
             struct sockaddr_in client_address;
             socklen_t client_addrLength = sizeof(struct sockaddr_in);
@@ -115,11 +115,23 @@ public:
         {
             printf("start create epoll \n");
             observer = createEPollFileObserver();
-            printf("trace create epoll,add epoll hup is %d \n",sock);
-            AutoLock l(listenersMutex1);
-            BaseTestListener1 l1 = createBaseTestListener1(sock,observer);
-            listener1s->add(l1);
-            observer->addObserver(sock,EPOLLIN|EPOLLRDHUP,l1);
+            printf("trace create epoll,add epoll sock is %d \n",sock);
+            //AutoLock l(listenersMutex1);
+            //BaseTestListener1 l1 = createBaseTestListener1(sock,observer);
+            //listener1s->add(l1);
+            //observer->addObserver(sock,EPOLLIN|EPOLLRDHUP,l1);
+            observer->addObserver(sock,EPOLLIN|EPOLLRDHUP,[](int fd,uint32_t events,ByteArray,int msock) {
+                if(fd == msock) {
+                    struct sockaddr_in client_address;
+                    socklen_t client_addrLength = sizeof(struct sockaddr_in);
+                    int clientfd = accept( msock, ( struct sockaddr* )&client_address, &client_addrLength );
+                    if(clientfd == -1) {
+                        printf("accept fail,error is %s \n",strerror(errno));
+                    }
+                }
+                printf("i get a message fd is %d,msock is %d \n",fd,msock);
+                return 0;
+            },sock);
             printf("trace create end \n");
         }
 
@@ -136,7 +148,7 @@ public:
 
 
     void dump() {
-        observer->dump();
+        //observer->dump();
     }
 
 private:
@@ -148,7 +160,7 @@ int basetest() {
     //test1
     BaseTestServer1 server1 = createBaseTestServer1();
     server1->start();
-    sleep(100);
+    while(1){sleep(100);}
     printf("baseTestValue1 is %d,baseTestValue2 is %ld,baseTestValue3 is %d \n",baseTestValue1->get(),baseTestValue2->get(),baseTestValue3->get());
-    server1->dump();
+    //server1->dump();
 }
