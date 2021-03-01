@@ -4,12 +4,12 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "SocketImpl.hpp"
+#include "SocksSocketImpl.hpp"
 #include "Error.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ServerSocketImpl) IMPLEMENTS(SocketImpl) {
+DECLARE_SIMPLE_CLASS(ServerSocketImpl) IMPLEMENTS(SocksSocketImpl) {
 public:
     _ServerSocketImpl(InetAddress address, int port,SocketOption option);
     int bind();

@@ -7,13 +7,18 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/udpclient.o \
 		$(outtmp)/udpserver.o \
 		$(outtmp)/socket.o \
+		$(outtmp)/serversocket.o \
+		$(outtmp)/socketbuilder.o \
 		$(outtmp)/socketimpl.o \
 		$(outtmp)/socketoption.o \
 		$(outtmp)/sockssocketimpl.o \
 		$(outtmp)/serversocketimpl.o \
+		$(outtmp)/localsocketimpl.o \
+		$(outtmp)/serverlocalsocketimpl.o \
 		$(outtmp)/datagramsocketimpl.o \
 		$(outtmp)/localsocketclient.o \
 		$(outtmp)/localsocketserver.o \
+		$(outtmp)/socketmonitor.o \
 		$(outtmp)/httpurlparser.o \
 		$(outtmp)/httpurl.o \
 		$(outtmp)/httpfile.o \
@@ -86,11 +91,23 @@ $(outtmp)/sockssocketimpl.o :$(netDir)/socket/SocksSocketImpl.cpp
 $(outtmp)/serversocketimpl.o :$(netDir)/socket/ServerSocketImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/ServerSocketImpl.cpp -o $(outtmp)/serversocketimpl.o $(external)
 
+$(outtmp)/localsocketimpl.o :$(netDir)/socket/LocalSocketImpl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/LocalSocketImpl.cpp -o $(outtmp)/localsocketimpl.o $(external)
+
+$(outtmp)/serverlocalsocketimpl.o :$(netDir)/socket/ServerLocalSocketImpl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/ServerLocalSocketImpl.cpp -o $(outtmp)/serverlocalsocketimpl.o $(external)
+
 $(outtmp)/datagramsocketimpl.o :$(netDir)/socket/DatagramSocketImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/DatagramSocketImpl.cpp -o $(outtmp)/datagramsocketimpl.o $(external)
 
 $(outtmp)/socket.o :$(netDir)/socket/Socket.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/Socket.cpp -o $(outtmp)/socket.o $(external)
+
+$(outtmp)/serversocket.o :$(netDir)/socket/ServerSocket.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/ServerSocket.cpp -o $(outtmp)/serversocket.o $(external)
+
+$(outtmp)/socketbuilder.o :$(netDir)/socket/SocketBuilder.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketBuilder.cpp -o $(outtmp)/socketbuilder.o $(external)
 
 $(outtmp)/inetaddress.o :$(netDir)/InetAddress.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
@@ -115,6 +132,9 @@ $(outtmp)/localsocketclient.o :$(netDir)/socket/LocalSocketClient.cpp
 
 $(outtmp)/localsocketserver.o :$(netDir)/socket/LocalSocketServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)
+
+$(outtmp)/socketmonitor.o :$(netDir)/socket/SocketMonitor.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketMonitor.cpp -o $(outtmp)/socketmonitor.o $(external)
 
 $(outtmp)/httprequestparser.o :$(netDir)/http/HttpRequestParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRequestParser.cpp -o $(outtmp)/httprequestparser.o $(external)

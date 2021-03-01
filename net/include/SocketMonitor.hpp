@@ -7,6 +7,7 @@
 #include "Socket.hpp"
 #include "EPollFileObserver.hpp"
 #include "SocketListener.hpp"
+#include "ServerSocket.hpp"
 
 namespace obotcha {
 
@@ -16,8 +17,29 @@ public:
     _SocketMonitor();
 
     int bind(Socket,SocketListener);
+    int bind(ServerSocket,SocketListener);
+
+    int remove(int);
+
+    void release();
+    //add lambda
+    template< class Function, class... Args >
+    int bindConnect(Socket,Function&& f, Args&&... args) {
+
+    }
+
+    template< class Function, class... Args >
+    int bindData(Socket,Function&& f, Args&&... args) {
+        
+    }
+
+    template< class Function, class... Args >
+    int bindDisconnect(Socket,Function&& f, Args&&... args) {
+        
+    }
     
 private:
+    int bind(int,SocketListener);
     EPollFileObserver mPoll;
 };
 

@@ -134,6 +134,10 @@ ArrayList<InetHostMac> _InetAddress::getMacAddress() {
     return list;
 }
 
+_InetAddress::_InetAddress() {
+    mAddress = createString("192.168.1.8");
+}
+
 void _InetAddress::setAddress(String addr) {
     mAddress = addr;
 }
@@ -144,6 +148,14 @@ String _InetAddress::getAddress() {
 
 int _InetAddress::type() {
     return mAddressType;
+}
+
+void _InetAddress::setDomain(String v) {
+    mDomain = v;
+}
+
+String _InetAddress::getDomain() {
+    return mDomain;
 }
 
 }

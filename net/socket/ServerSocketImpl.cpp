@@ -2,11 +2,12 @@
 
 namespace obotcha {
 
-_ServerSocketImpl::_ServerSocketImpl(InetAddress address, int port,SocketOption option):_SocketImpl(address,port,option) {
+_ServerSocketImpl::_ServerSocketImpl(InetAddress address, int port,SocketOption option):_SocksSocketImpl(address,port,option) {
     //TODO
 }
 
 int _ServerSocketImpl::bind() {
+    printf("server socket impl is %d \n",sock);
     if(::bind(sock, (struct sockaddr *)&mSockAddr, sizeof(mSockAddr)) < 0) {
         return -NetBindFail;
     }

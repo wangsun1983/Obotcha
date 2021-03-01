@@ -30,6 +30,8 @@ public:
         IPV4 = 0,
         IPV6,
     };
+    
+    _InetAddress();
 
     static String getHostName();
 
@@ -45,6 +47,9 @@ public:
     
     int type();
 
+    void setDomain(String);
+
+    String getDomain();
 private:
 
     String mHostName;
@@ -52,6 +57,8 @@ private:
     String mMac;
 
     String mAddress;
+
+    String mDomain;
 
     int mAddressType;
 

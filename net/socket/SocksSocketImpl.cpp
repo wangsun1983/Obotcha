@@ -28,6 +28,7 @@ _SocksSocketImpl::_SocksSocketImpl(InetAddress address, int port,SocketOption op
     }
 
     this->sock = TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0));
+    printf("socks socket impl sock is %d \n",sock);
     if(option != nullptr) {
         this->option = option;
 

@@ -14,7 +14,8 @@ DECLARE_SIMPLE_CLASS(Socket) {
 public:
     enum Type {
         Tcp,
-        Udp
+        Udp,
+        Local
     };
 
     _Socket(int,InetAddress host, int port,SocketOption option);
@@ -38,9 +39,11 @@ private:
         Connected,
         Closed,
     };
-
+    int type;
+    
+protected:
     SocketImpl mSock; 
-    int type;  
+    
 };
 
 }

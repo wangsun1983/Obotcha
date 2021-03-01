@@ -14,9 +14,11 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(SocketImpl) {
 public:
+    _SocketImpl(){}
     _SocketImpl(InetAddress,int,SocketOption);
     virtual int connect() {return -NotSupport;};
     virtual int bind() {return -NotSupport;};
+    virtual int accept() {return -NotSupport;}; //TOOD
     
     int close();
     int getFd();
