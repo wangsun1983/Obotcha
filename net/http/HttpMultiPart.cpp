@@ -6,7 +6,6 @@
 #include "http_parser.h"
 #include "HashMap.hpp"
 #include "HttpCookie.hpp"
-#include "TcpClient.hpp"
 #include "HttpUrl.hpp"
 #include "File.hpp"
 #include "HttpMultiPart.hpp"

@@ -6,6 +6,7 @@
 #include "System.hpp"
 #include "TimeZone.hpp"
 #include "Error.hpp"
+#include "SocketBuilder.hpp"
 
 namespace obotcha {
 
@@ -136,10 +137,18 @@ int _NtpClient::bind(String url,int port = 123) {
     }
 
     mServerIp = servers->get(0);
+    InetAddress address = createInetAddress();
+    address->setAddress(mServerIp);
 
-    mClient = createUdpClient(mServerIp,port,mListener);
+    mSock = createSocketBuilder()
+            ->setAddress(address)
+            ->setPort(port)
+            ->newDatagramSocket();
     
-    mClient->start();
+    mSockMonitor = createSocketMonitor();
+    mSockMonitor->bind(mSock,AutoClone(this));
+    //mClient = createUdpClient(mServerIp,port,mListener);
+    //mClient->start();
 }
 
 long _NtpClient::getCurrentTimeSync() {
@@ -149,7 +158,8 @@ long _NtpClient::getCurrentTimeSync() {
     //unsigned int *v = (unsigned int *)mNtpPacket;
 
     ByteArray packet = createByteArray((byte *)mNtpPacket,NTP_DATA_SIZE);
-    mClient->send(packet);
+    //mClient->send(packet);
+    mSock->getOutputStream()->write(packet);
     {
         AutoLock l(mMutex);
         mCondition->wait(mMutex);
@@ -165,7 +175,8 @@ void _NtpClient::getCurrentTimeAsync(NtpListener l) {
     generateNtpPacket(mNtpPacket);
 
     ByteArray packet = createByteArray((byte *)mNtpPacket,NTP_DATA_SIZE);
-    mClient->send(packet);
+    //mClient->send(packet);
+    mSock->getOutputStream()->write(packet);
 }
 
 void _NtpClient::generateNtpPacket(char *v) {
@@ -192,11 +203,11 @@ void _NtpClient::generateNtpPacket(char *v) {
 }
 
 void _NtpClient::release() {
-    mClient->release();
+    mSock->close();
 }
 
 _NtpClient::~_NtpClient() {
-    mClient->release();
+    mSock->close();
 }
 
 

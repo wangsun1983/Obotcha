@@ -48,7 +48,7 @@ HttpResponse _HttpClient::execute(HttpRequest request) {
     //packet->getHeader()->setValue(Http_Header_Referer,"http://www.tusvisionai.com/about");
     //packet->getHeader()->setValue(Http_Header_Connection,"keep-alive");
     //this is not bind client
-    
+#if 0  
     HttpUrl url = request->getUrl();
     ArrayList<String> ips = st(InetAddress)::getHostByName(url->getHost());
     if(ips == nullptr || ips->size() == 0) {
@@ -57,8 +57,8 @@ HttpResponse _HttpClient::execute(HttpRequest request) {
 
     String ip = ips->get(0);
     printf("ip is %s \n",ip->toChars());
-    mTcpClient = createTcpClient(ip,url->getPort());
-    mTcpClient->doConnect();
+    //mTcpClient = createTcpClient(ip,url->getPort());
+    //mTcpClient->doConnect();
 
     HttpRequestWriter writer = createHttpRequestWriter(mTcpClient);
     writer->write(request);
@@ -77,7 +77,7 @@ HttpResponse _HttpClient::execute(HttpRequest request) {
     if(!mKeepAlive) {
         mTcpClient->release();
     }
-    
+#endif    
     return nullptr;
 }
 

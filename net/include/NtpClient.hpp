@@ -14,11 +14,10 @@
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
-#include "UdpClient.hpp"
 #include "SocketListener.hpp"
 #include "Condition.hpp"
 #include "Mutex.hpp"
-
+#include "SocketMonitor.hpp"
 
 namespace obotcha {
 
@@ -106,7 +105,9 @@ private:
 
     String mServerIp;
 
-    UdpClient mClient;
+    //UdpClient mClient;
+    Socket mSock;
+    SocketMonitor mSockMonitor;
 
     int mPort;
 

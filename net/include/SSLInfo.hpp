@@ -25,7 +25,6 @@ extern "C" {
 #include "Pipe.hpp"
 #include "Thread.hpp"
 #include "SocketListener.hpp"
-#include "TcpServer.hpp"
 
 namespace obotcha {
 

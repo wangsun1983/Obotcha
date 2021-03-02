@@ -2,10 +2,6 @@ netDir = net
 
 objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/ntpclient.o \
-		$(outtmp)/tcpclient.o \
-		$(outtmp)/tcpserver.o \
-		$(outtmp)/udpclient.o \
-		$(outtmp)/udpserver.o \
 		$(outtmp)/socket.o \
 		$(outtmp)/serversocket.o \
 		$(outtmp)/socketbuilder.o \
@@ -16,8 +12,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/localsocketimpl.o \
 		$(outtmp)/serverlocalsocketimpl.o \
 		$(outtmp)/datagramsocketimpl.o \
-		$(outtmp)/localsocketclient.o \
-		$(outtmp)/localsocketserver.o \
 		$(outtmp)/socketmonitor.o \
 		$(outtmp)/httpurlparser.o \
 		$(outtmp)/httpurl.o \
@@ -114,24 +108,6 @@ $(outtmp)/inetaddress.o :$(netDir)/InetAddress.cpp
 
 $(outtmp)/socketresponser.o :$(netDir)/socket/SocketResponser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketResponser.cpp -o $(outtmp)/socketresponser.o $(external)
-
-$(outtmp)/tcpserver.o :$(netDir)/socket/TcpServer.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/TcpServer.cpp -o $(outtmp)/tcpserver.o $(external)
-
-$(outtmp)/tcpclient.o :$(netDir)/socket/TcpClient.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/TcpClient.cpp -o $(outtmp)/tcpclient.o $(external)
-
-$(outtmp)/udpclient.o :$(netDir)/socket/UdpClient.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/UdpClient.cpp -o $(outtmp)/udpclient.o $(external)
-
-$(outtmp)/udpserver.o :$(netDir)/socket/UdpServer.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/UdpServer.cpp -o $(outtmp)/udpserver.o $(external)
-
-$(outtmp)/localsocketclient.o :$(netDir)/socket/LocalSocketClient.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/LocalSocketClient.cpp -o $(outtmp)/localsocketclient.o $(external)
-
-$(outtmp)/localsocketserver.o :$(netDir)/socket/LocalSocketServer.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/LocalSocketServer.cpp -o $(outtmp)/localsocketserver.o $(external)
 
 $(outtmp)/socketmonitor.o :$(netDir)/socket/SocketMonitor.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketMonitor.cpp -o $(outtmp)/socketmonitor.o $(external)

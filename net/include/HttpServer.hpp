@@ -9,9 +9,7 @@
 #include "http_parser.h"
 #include "HashMap.hpp"
 #include "HttpCookie.hpp"
-#include "TcpClient.hpp"
 #include "HttpUrl.hpp"
-#include "TcpServer.hpp"
 #include "Mutex.hpp"
 #include "SocketListener.hpp"
 #include "HttpMultiPart.hpp"
@@ -21,6 +19,8 @@
 #include "ThreadPoolExecutor.hpp"
 #include "HttpPacket.hpp"
 #include "Mutex.hpp"
+#include "ServerSocket.hpp"
+#include "SocketMonitor.hpp"
 
 namespace obotcha {
 
@@ -111,7 +111,8 @@ private:
 
     void onTimeout();
 
-    TcpServer mTcpServer;
+    ServerSocket mServerSock;
+    SocketMonitor mSockMonitor;
 
     SSLServer mSSLServer;
 
@@ -125,6 +126,9 @@ private:
 
     long mSendTimeout;
     long mRcvTimeout;
+
+    String mCertificate;
+    String mKey;
 };
 
 }

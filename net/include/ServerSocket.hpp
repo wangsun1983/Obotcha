@@ -15,6 +15,7 @@ public:
     _ServerSocket(int,InetAddress address, int port,SocketOption option);
     int bind();
     int getFd();
+    int close();
 private:
     SocketImpl mSock;
 };

@@ -15,6 +15,7 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(SocketImpl) {
 public:
     _SocketImpl(){}
+    _SocketImpl(int);
     _SocketImpl(InetAddress,int,SocketOption);
     virtual int connect() {return -NotSupport;};
     virtual int bind() {return -NotSupport;};

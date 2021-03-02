@@ -19,7 +19,6 @@
 #include "Mutex.hpp"
 #include "Pipe.hpp"
 #include "Thread.hpp"
-#include "TcpServer.hpp"
 #include "WebSocketListener.hpp"
 #include "SocketListener.hpp"
 #include "EPollFileObserver.hpp"
@@ -100,7 +99,7 @@ private:
 
     int mVersion;
 
-    TcpClient mTcpClient;
+    //TcpClient mTcpClient;
 
     WebSocketTcpClientListener mListener;
 

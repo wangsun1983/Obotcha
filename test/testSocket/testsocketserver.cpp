@@ -22,10 +22,8 @@ public:
   }
 
   void onConnect(SocketResponser r) {
-    struct sockaddr_in client_address;
-    socklen_t client_addrLength = sizeof(struct sockaddr_in);
-    int clientfd = accept(r->getFd(),( struct sockaddr* )&client_address, &client_addrLength );
-    printf("wahah on connect fd is %d\n",clientfd);
+    
+    printf("wahah on connect fd is %d\n",r->getFd());
   }
 };
 

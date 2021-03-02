@@ -23,4 +23,9 @@ int _ServerSocket::getFd() {
     return mSock->getFd();
 }
 
+int _ServerSocket::close() {
+    printf("server socket close \n");
+    return mSock->close();
+}
+
 }

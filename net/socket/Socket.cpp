@@ -20,9 +20,14 @@ _Socket::_Socket(int v,InetAddress addr, int port,SocketOption option) {
         case Udp:
         mSock = createDatagramSocketImpl(addr,port,option);
         return;
+
     }
 
     Trigger(InitializeException,"ivalid type");
+}
+
+_Socket::_Socket(int fd) {
+    mSock = createSocketImpl(fd);
 }
 
 int _Socket::connect() {
@@ -30,7 +35,7 @@ int _Socket::connect() {
 }
 
 void _Socket::close() {
-    //TODO
+    mSock->close();
 }
 
 InputStream _Socket::getInputStream() {

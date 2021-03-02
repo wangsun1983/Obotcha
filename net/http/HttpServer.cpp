@@ -15,6 +15,8 @@
 #include "SSLManager.hpp"
 #include "InterruptedException.hpp"
 #include "HttpInternalException.hpp"
+#include "SocketBuilder.hpp"
+#include "SocketOption.hpp"
 
 namespace obotcha {
 
@@ -38,17 +40,18 @@ _HttpDispatcherPool::_HttpDispatcherPool(sp<_HttpServer> server,int threadSize) 
         GroupIdTofds[index] = -1;
         mExecutors->execute([](HttpServer server,HttpDispatcherPool pool,int num) {
             while(1) {
+                printf("_HttpDispatcherPool trace1 \n");
                 HttpTaskData data = pool->getData(num);
                 
                 if(data == nullptr) {
                     return;
                 }
-
+                printf("_HttpDispatcherPool trace2 \n");
                 HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(data->fd);
                 if(info == nullptr || data->clientid != info->getClientId()) {
                     continue;
                 }
-
+                printf("_HttpDispatcherPool trace3 \n");
                 try {
                     info->pushHttpData(data->pack);
                 } catch(HttpInternalException &e) {
@@ -56,7 +59,7 @@ _HttpDispatcherPool::_HttpDispatcherPool(sp<_HttpServer> server,int threadSize) 
                     info->close();
                     continue;
                 }
-                
+                printf("_HttpDispatcherPool trace4 \n");
                 ArrayList<HttpPacket> packets = info->pollHttpPacket();
                 if(packets != nullptr && packets->size() != 0) {
                     HttpResponseWriter writer = createHttpResponseWriter(info);
@@ -134,23 +137,31 @@ HttpTaskData _HttpDispatcherPool::getData(int requireIndex) {
 }
 
 void _HttpServer::onDataReceived(SocketResponser r,ByteArray pack) {
+    printf("_HttpServer::onDataReceived \n");
     HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r->getFd());
     HttpTaskData data = createHttpTaskData(r->getFd(),pack,info->getClientId());
     mPool->addData(data);
 }
 
 void _HttpServer::onDisconnect(SocketResponser r) {
+    printf("_HttpServer::onDisconnect \n");
     HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r->getFd());
     mHttpListener->onDisconnect(info);
 }
 
 void _HttpServer::onConnect(SocketResponser r) {
-    HttpClientInfo info = createHttpClientInfo(mTcpServer->getSocket(r->getFd()));
+    printf("_HttpServer::onConnect \n");
+    HttpClientInfo info = createHttpClientInfo(createSocketBuilder()
+                                                ->setFd(r->getFd())
+                                                ->newSocket());
+
     SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
     if(info != nullptr) {
         info->setSSLInfo(ssl);
     }
     st(HttpClientManager)::getInstance()->addClientInfo(r->getFd(),info);
+    mSockMonitor->bind(r->getFd(),AutoClone(this));
+    
     mHttpListener->onConnect(info);
 }
 
@@ -186,32 +197,46 @@ _HttpServer::_HttpServer(String ip,int port,HttpListener l,String certificate,St
 
     mIp = ip;
     mPort = port;
-    mTcpServer = nullptr;
+    mServerSock = nullptr;
+    mSockMonitor = nullptr;
+    
     mSSLServer = nullptr;
 
-    if(certificate == nullptr) {
-        //http server
-        if(mIp == nullptr) {
-            mTcpServer = createTcpServer(mPort,AutoClone(this));
-        } else {
-            mTcpServer = createTcpServer(mIp,mPort,AutoClone(this));
-        }
-    } else {
-        //https server
-        mSSLServer = createSSLServer(ip,port,AutoClone(this),certificate,key);
-    }
+    mCertificate = certificate;
+    mKey = key;
+    mSendTimeout = -1;
+    mRcvTimeout = -1;
 }
 
 void _HttpServer::start() {
-    if(mTcpServer != nullptr) {
-        mTcpServer->setRcvTimeout(mRcvTimeout);
-        mTcpServer->setSendTimeout(mSendTimeout);
-
-        if(mTcpServer->start() != 0) {
-            Trigger(InitializeException,"tcp server start fail!!");
+    if(mCertificate == nullptr) {
+        InetAddress address = createInetAddress();
+        if(mIp != nullptr) {
+            address->setAddress(mIp);
         }
-    } else if(mSSLServer != nullptr) {
-        mSSLServer->start();
+
+        SocketOption option = createSocketOption();
+        if(mSendTimeout != -1) {
+            option->setSendTimeout(mSendTimeout);
+        }
+
+        if(mRcvTimeout != -1) {
+            option->setRecvTimeout(mRcvTimeout);
+        }
+        printf("http server start \n");
+        mServerSock = createSocketBuilder()
+                        ->setAddress(address)
+                        ->setPort(mPort)
+                        ->newServerSocket();
+        mServerSock->bind();
+        printf("http server trace1 \n");
+        mSockMonitor = createSocketMonitor();
+        printf("http server trace2 \n");
+        mSockMonitor->bind(mServerSock,AutoClone(this));
+        printf("http server trace3 \n");
+    } else {
+        //https server
+        mSSLServer = createSSLServer(mIp,mPort,AutoClone(this),mCertificate,mKey);
     }
 }
 
@@ -233,13 +258,16 @@ long _HttpServer::getRcvTimeout() {
 
 //interface for websocket
 void _HttpServer::deMonitor(int fd) {
-    mTcpServer->deMonitor(fd);
+    //mTcpServer->deMonitor(fd);
+    printf("demonitor \n");
+    mSockMonitor->remove(fd);
     st(HttpClientManager)::getInstance()->removeClientInfo(fd);
 }
 
 void _HttpServer::exit() {
-    if(mTcpServer != nullptr) {
-        mTcpServer->release();
+    printf("http server exit \n");
+    if(mServerSock != nullptr) {
+        mServerSock->close();
     }
 
     if(mSSLServer != nullptr) {

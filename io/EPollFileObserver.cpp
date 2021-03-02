@@ -157,13 +157,15 @@ int _EPollFileObserver::removeObserver(int fd) {
 }
 
 void _EPollFileObserver::addEpollFd(int fd,uint32_t events) {
+    printf("add epollfd fd is %d fd");
     struct epoll_event ev;
     memset(&ev,0,sizeof(struct epoll_event));
 
     ev.data.fd = fd;
     ev.events = events;
-    epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
+    epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
+    printf("add epollfd finished \n");
 }
 
 int _EPollFileObserver::release() {

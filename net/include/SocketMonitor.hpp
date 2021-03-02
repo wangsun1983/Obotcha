@@ -18,7 +18,8 @@ public:
 
     int bind(Socket,SocketListener);
     int bind(ServerSocket,SocketListener);
-
+    int bind(int,SocketListener);
+    
     int remove(int);
 
     void release();
@@ -39,7 +40,7 @@ public:
     }
     
 private:
-    int bind(int,SocketListener);
+    
     EPollFileObserver mPoll;
 };
 

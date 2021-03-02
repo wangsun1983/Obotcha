@@ -17,7 +17,7 @@ namespace obotcha {
 
 #define AUTO_FLUSH(X) \
 while(X == -1) {\
-    if(mTcpClient != nullptr) {\
+    if(mSock != nullptr) {\
         flush(writer->getIndex());\
         mSendBuff->clear();\
         writer->reset();\
@@ -29,20 +29,22 @@ while(X == -1) {\
 
 #define FORCE_FLUSH() \
 {\
-    if(mTcpClient != nullptr) {\
+    if(mSock != nullptr) {\
         flush(writer->getIndex());\
         mSendBuff->clear();\
         writer->reset();\
     }\
 }
 
-_HttpRequestWriter::_HttpRequestWriter(TcpClient c) {
-    mTcpClient = c;
+_HttpRequestWriter::_HttpRequestWriter(Socket c) {
+    mSock = c;
+    mOutputStream = mSock->getOutputStream();
     mSendBuff = createByteArray(1024*4);
 }
 
 _HttpRequestWriter::_HttpRequestWriter() {
-    mTcpClient = nullptr;
+    mSock = nullptr;
+    mOutputStream = nullptr;
     mSendBuff = createByteArray(1024*4);
 }
 
@@ -220,15 +222,15 @@ String _HttpRequestWriter::generateMultiPartBoundary() {
 }
 
 int _HttpRequestWriter::flush(int size) {
-    return mTcpClient->doSend(mSendBuff,size);
+    return mOutputStream->write(mSendBuff,size);
 }
 
 int _HttpRequestWriter::flush(ByteArray data) {
-    return mTcpClient->doSend(data);
+    return mOutputStream->write(data);
 }
 
 int _HttpRequestWriter::flush(ByteArray data,int length) {
-    return mTcpClient->doSend(data,length);
+    return mOutputStream->write(data,length);
 }
 
 long _HttpRequestWriter::computeContentLength(HttpRequest req,String boundary) {

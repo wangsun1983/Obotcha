@@ -48,16 +48,16 @@ int _HttpClientInfo::send(ByteArray data) {
     if(mSSLInfo != nullptr) {
         return mSSLInfo->write(data);
     }
-
-    return mSocket->send(data);
+    //TODO
+    return mSocket->getOutputStream()->write(data);
 }
 
 int _HttpClientInfo::send(ByteArray data,int size) {
     if(mSSLInfo != nullptr) {
         return mSSLInfo->write(data);
     }
-
-    return mSocket->send(data,size);
+    //TODO
+    return mSocket->getOutputStream()->write(data,size);
 }
 
 SSLInfo _HttpClientInfo::getSSLInfo() {

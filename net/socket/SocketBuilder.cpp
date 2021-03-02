@@ -4,22 +4,34 @@ namespace obotcha {
 
 _SocketBuilder* _SocketBuilder::setAddress(InetAddress addr) {
     address = addr;
+    return this;
 }
 
 _SocketBuilder* _SocketBuilder::setPort(int p) {
     port = p;
+    return this;
 }
 
 _SocketBuilder* _SocketBuilder::setOption(SocketOption o) {
     option = o;
+    return this;
+}
+
+_SocketBuilder* _SocketBuilder::setFd(int f) {
+    fd = f;
+    return this;
 }
 
 _SocketBuilder::_SocketBuilder() {
     address = createInetAddress();
+    fd = -1;
 }
 
 Socket _SocketBuilder::newSocket() {
-    return createSocket(st(Socket)::Tcp,address,port,option);
+    if(fd == -1) {
+        return createSocket(st(Socket)::Tcp,address,port,option);
+    } 
+    return createSocket(fd);
 }
 
 Socket _SocketBuilder::newDatagramSocket() {

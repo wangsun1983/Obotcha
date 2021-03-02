@@ -9,11 +9,11 @@
 #include "http_parser.h"
 #include "HashMap.hpp"
 #include "HttpCookie.hpp"
-#include "TcpClient.hpp"
 #include "HttpUrl.hpp"
 #include "HttpResponseParser.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
+#include "Socket.hpp"
 
 namespace obotcha {
 
@@ -43,7 +43,7 @@ private:
     
     bool mKeepAlive; 
 
-    TcpClient mTcpClient;
+    Socket mSocket;
 
     HttpResponseParser mParser;
 };

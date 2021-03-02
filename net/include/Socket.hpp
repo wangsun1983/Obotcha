@@ -19,6 +19,7 @@ public:
     };
 
     _Socket(int,InetAddress host, int port,SocketOption option);
+    _Socket(int);
     int connect();
 
     void close();
@@ -28,7 +29,6 @@ public:
     //remove function
     int send(ByteArray) {return 0;}
     int send(ByteArray,int) {return 0;}
-    _Socket(int){}
 
     InputStream getInputStream();
     OutputStream getOutputStream();

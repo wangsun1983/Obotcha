@@ -16,7 +16,6 @@
 #include "Mutex.hpp"
 #include "Pipe.hpp"
 #include "Thread.hpp"
-#include "TcpServer.hpp"
 #include "WebSocketListener.hpp"
 #include "SocketListener.hpp"
 #include "EPollFileObserver.hpp"
@@ -234,13 +233,13 @@ int _WebSocketClient::connect(String url,WebSocketListener l) {
     mListener = createWebSocketTcpClientListener(l,mClient);
     
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(url);
-    mTcpClient = createTcpClient(httpUrl->getHost(),httpUrl->getPort(),mListener);
-    mTcpClient->setRcvTimeout(mRcvTimeout);
-    mTcpClient->setSendTimeout(mSendTimeout);
+    //mTcpClient = createTcpClient(httpUrl->getHost(),httpUrl->getPort(),mListener);
+    //mTcpClient->setRcvTimeout(mRcvTimeout);
+    //mTcpClient->setSendTimeout(mSendTimeout);
     
-    mTcpClient->doConnect();
+    //mTcpClient->doConnect();
 
-    mTcpClient->doSend(shakeHandMsg);
+    //mTcpClient->doSend(shakeHandMsg);
     return 0;
 }
 

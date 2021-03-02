@@ -7,16 +7,16 @@
 #include "String.hpp"
 #include "HttpPacket.hpp"
 #include "HttpUrl.hpp"
-#include "TcpClient.hpp"
 #include "HttpRequest.hpp"
 #include "ByteArrayWriter.hpp"
+#include "Socket.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(HttpRequestWriter) {
 
 public:
-    _HttpRequestWriter(TcpClient);
+    _HttpRequestWriter(Socket);
 
     _HttpRequestWriter();
     
@@ -25,7 +25,9 @@ public:
     ByteArray compose(HttpRequest);
 
 private:
-    TcpClient mTcpClient;
+    Socket mSock;
+    OutputStream mOutputStream;
+    
     String generateMultiPartBoundary();
     ByteArray mSendBuff;
     ByteArrayWriter mBuffWriter;

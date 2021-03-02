@@ -21,7 +21,6 @@
 #include "EPollFileObserver.hpp"
 #include "HttpRequestParser.hpp"
 #include "WebSocketParser.hpp"
-#include "TcpServer.hpp"
 #include "WebSocketClientInfo.hpp"
 #include "BlockingLinkedList.hpp"
 #include "LinkedList.hpp"
