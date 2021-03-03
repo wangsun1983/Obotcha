@@ -62,11 +62,11 @@ DECLARE_SIMPLE_CLASS(NtpSocketClientListener) IMPLEMENTS(SocketListener) {
 public:
     _NtpSocketClientListener(Condition,Mutex);
 
-    void onDataReceived(SocketResponser,ByteArray);
+    void onDataReceived(Socket,ByteArray);
     
-    void onDisconnect(SocketResponser);
+    void onDisconnect(Socket);
     
-    void onConnect(SocketResponser);
+    void onConnect(Socket);
 
     void onTimeout();
     

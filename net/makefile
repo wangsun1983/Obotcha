@@ -1,6 +1,9 @@
 netDir = net
 
 objs += $(outtmp)/inetaddress.o \
+		$(outtmp)/inet4address.o \
+		$(outtmp)/inet6address.o \
+		$(outtmp)/inetlocaladdress.o \
 		$(outtmp)/ntpclient.o \
 		$(outtmp)/socket.o \
 		$(outtmp)/serversocket.o \
@@ -70,7 +73,8 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/sslmanager.o \
 		$(outtmp)/smtpconnection.o \
 		$(outtmp)/mailsender.o \
-		$(outtmp)/socketresponser.o \
+		$(outtmp)/url.o \
+		$(outtmp)/host.o 	
 
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
@@ -106,8 +110,14 @@ $(outtmp)/socketbuilder.o :$(netDir)/socket/SocketBuilder.cpp
 $(outtmp)/inetaddress.o :$(netDir)/InetAddress.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/InetAddress.cpp -o $(outtmp)/inetaddress.o $(external)
 
-$(outtmp)/socketresponser.o :$(netDir)/socket/SocketResponser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketResponser.cpp -o $(outtmp)/socketresponser.o $(external)
+$(outtmp)/inet4address.o :$(netDir)/Inet4Address.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/Inet4Address.cpp -o $(outtmp)/inet4address.o $(external)
+
+$(outtmp)/inet6address.o :$(netDir)/Inet6Address.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/Inet6Address.cpp -o $(outtmp)/inet6address.o $(external)
+
+$(outtmp)/inetlocaladdress.o :$(netDir)/InetLocalAddress.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/InetLocalAddress.cpp -o $(outtmp)/inetlocaladdress.o $(external)
 
 $(outtmp)/socketmonitor.o :$(netDir)/socket/SocketMonitor.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketMonitor.cpp -o $(outtmp)/socketmonitor.o $(external)
@@ -287,4 +297,10 @@ $(outtmp)/smtpconnection.o :$(netDir)/smtp/SmtpConnection.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/smtp/SmtpConnection.cpp -o $(outtmp)/smtpconnection.o $(external)
 
 $(outtmp)/mailsender.o :$(netDir)/smtp/MailSender.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/smtp/MailSender.cpp -o $(outtmp)/mailsender.o $(external)#
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/smtp/MailSender.cpp -o $(outtmp)/mailsender.o $(external)
+
+$(outtmp)/url.o :$(netDir)/URL.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/URL.cpp -o $(outtmp)/url.o $(external)
+
+$(outtmp)/host.o :$(netDir)/Host.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/Host.cpp -o $(outtmp)/host.o $(external)

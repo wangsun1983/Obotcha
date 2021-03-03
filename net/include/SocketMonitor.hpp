@@ -8,6 +8,8 @@
 #include "EPollFileObserver.hpp"
 #include "SocketListener.hpp"
 #include "ServerSocket.hpp"
+#include "HashMap.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 
@@ -20,28 +22,18 @@ public:
     int bind(ServerSocket,SocketListener);
     int bind(int,SocketListener);
     
-    int remove(int);
+    int remove(Socket);
 
     void release();
-    //add lambda
-    template< class Function, class... Args >
-    int bindConnect(Socket,Function&& f, Args&&... args) {
-
-    }
-
-    template< class Function, class... Args >
-    int bindData(Socket,Function&& f, Args&&... args) {
-        
-    }
-
-    template< class Function, class... Args >
-    int bindDisconnect(Socket,Function&& f, Args&&... args) {
-        
-    }
     
 private:
     
     EPollFileObserver mPoll;
+
+    Mutex mMutex;
+    HashMap<int,Socket> mSocks;
+
+    int mServerSockFd;
 };
 
 }

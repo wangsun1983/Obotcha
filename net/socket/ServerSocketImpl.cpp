@@ -2,7 +2,7 @@
 
 namespace obotcha {
 
-_ServerSocketImpl::_ServerSocketImpl(InetAddress address, int port,SocketOption option):_SocksSocketImpl(address,port,option) {
+_ServerSocketImpl::_ServerSocketImpl(InetAddress address,SocketOption option):_SocksSocketImpl(address,option) {
     //TODO
 }
 

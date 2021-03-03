@@ -12,9 +12,9 @@
 
 namespace obotcha {
 
-_LocalSocketImpl::_LocalSocketImpl(InetAddress address, int port,SocketOption option):_SocketImpl(address,port,option) {
+_LocalSocketImpl::_LocalSocketImpl(InetAddress address,SocketOption option):_SocketImpl(address,option) {
     serverAddr.sun_family = AF_UNIX;
-    strcpy(serverAddr.sun_path, address->getDomain()->toChars()); 
+    strcpy(serverAddr.sun_path, address->getAddress()->toChars()); 
 
     sock = TEMP_FAILURE_RETRY(socket(AF_UNIX, SOCK_STREAM, 0));
 }

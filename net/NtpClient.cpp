@@ -7,6 +7,7 @@
 #include "TimeZone.hpp"
 #include "Error.hpp"
 #include "SocketBuilder.hpp"
+#include "URL.hpp"
 
 namespace obotcha {
 
@@ -38,7 +39,7 @@ void _NtpSocketClientListener::onTimeout() {
 }
 
 
-void _NtpSocketClientListener::onDataReceived(SocketResponser r,ByteArray pack) {
+void _NtpSocketClientListener::onDataReceived(Socket r,ByteArray pack) {
     //int  ret;
     unsigned int *data = (unsigned int *)pack->toValue(); 
 
@@ -113,11 +114,11 @@ void _NtpSocketClientListener::setTimeCallback(NtpListener l) {
     mListener = l;
 }
     
-void _NtpSocketClientListener::onDisconnect(SocketResponser r) {
+void _NtpSocketClientListener::onDisconnect(Socket r) {
 
 }
     
-void _NtpSocketClientListener::onConnect(SocketResponser r) {
+void _NtpSocketClientListener::onConnect(Socket r) {
 }
 
 long int _NtpSocketClientListener::getTimeMillis() {
@@ -131,20 +132,18 @@ _NtpClient::_NtpClient() {
 }
 
 int _NtpClient::bind(String url,int port = 123) {
-    ArrayList<String> servers = st(InetAddress)::getHostByName(url);
+    ArrayList<InetAddress> servers = createURL(url)->getInetAddress();
     if(servers->size() == 0) {
         return -NetConnectFail;
     }
 
-    mServerIp = servers->get(0);
-    InetAddress address = createInetAddress();
-    address->setAddress(mServerIp);
+    InetAddress address = servers->get(0);
+    address->setPort(port);
 
     mSock = createSocketBuilder()
             ->setAddress(address)
-            ->setPort(port)
             ->newDatagramSocket();
-    
+            
     mSockMonitor = createSocketMonitor();
     mSockMonitor->bind(mSock,AutoClone(this));
     //mClient = createUdpClient(mServerIp,port,mListener);

@@ -11,7 +11,7 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(LocalSocketImpl) IMPLEMENTS(SocketImpl){
 public:
-    _LocalSocketImpl(InetAddress address, int port,SocketOption option);
+    _LocalSocketImpl(InetAddress address, SocketOption option);
     int connect();
 
 protected:

@@ -16,7 +16,6 @@ public:
     _SocketBuilder();
     
     _SocketBuilder* setAddress(InetAddress);
-    _SocketBuilder* setPort(int);
     _SocketBuilder* setOption(SocketOption);
     _SocketBuilder* setFd(int);
 
@@ -28,7 +27,6 @@ public:
     
 private:
     InetAddress address;
-    int port;
     SocketOption option;
     int fd;
 };

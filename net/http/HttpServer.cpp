@@ -136,20 +136,21 @@ HttpTaskData _HttpDispatcherPool::getData(int requireIndex) {
     return nullptr;
 }
 
-void _HttpServer::onDataReceived(SocketResponser r,ByteArray pack) {
+void _HttpServer::onDataReceived(Socket r,ByteArray pack) {
     printf("_HttpServer::onDataReceived \n");
     HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r->getFd());
     HttpTaskData data = createHttpTaskData(r->getFd(),pack,info->getClientId());
     mPool->addData(data);
 }
 
-void _HttpServer::onDisconnect(SocketResponser r) {
+void _HttpServer::onDisconnect(Socket r) {
     printf("_HttpServer::onDisconnect \n");
     HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r->getFd());
     mHttpListener->onDisconnect(info);
+    mSockMonitor->remove(r);
 }
 
-void _HttpServer::onConnect(SocketResponser r) {
+void _HttpServer::onConnect(Socket r) {
     printf("_HttpServer::onConnect \n");
     HttpClientInfo info = createHttpClientInfo(createSocketBuilder()
                                                 ->setFd(r->getFd())
@@ -161,7 +162,6 @@ void _HttpServer::onConnect(SocketResponser r) {
     }
     st(HttpClientManager)::getInstance()->addClientInfo(r->getFd(),info);
     mSockMonitor->bind(r->getFd(),AutoClone(this));
-    
     mHttpListener->onConnect(info);
 }
 
@@ -215,6 +215,8 @@ void _HttpServer::start() {
             address->setAddress(mIp);
         }
 
+        address->setPort(mPort);
+
         SocketOption option = createSocketOption();
         if(mSendTimeout != -1) {
             option->setSendTimeout(mSendTimeout);
@@ -226,7 +228,6 @@ void _HttpServer::start() {
         printf("http server start \n");
         mServerSock = createSocketBuilder()
                         ->setAddress(address)
-                        ->setPort(mPort)
                         ->newServerSocket();
         mServerSock->bind();
         printf("http server trace1 \n");
@@ -260,8 +261,9 @@ long _HttpServer::getRcvTimeout() {
 void _HttpServer::deMonitor(int fd) {
     //mTcpServer->deMonitor(fd);
     printf("demonitor \n");
-    mSockMonitor->remove(fd);
-    st(HttpClientManager)::getInstance()->removeClientInfo(fd);
+    //TODO
+    //mSockMonitor->remove(fd);
+    //st(HttpClientManager)::getInstance()->removeClientInfo(fd);
 }
 
 void _HttpServer::exit() {

@@ -56,7 +56,7 @@ void _WebSocketTcpClientListener::onTimeout() {
     //TODO
 }
     
-void _WebSocketTcpClientListener::onDataReceived(SocketResponser r,ByteArray pack) {
+void _WebSocketTcpClientListener::onDataReceived(Socket r,ByteArray pack) {
     /*
     if(mProtoclType == WsClientProtocolHttp) {
         HttpPacket req = mHttpParser->parseEntireResponse(pack->toString());
@@ -116,11 +116,11 @@ void _WebSocketTcpClientListener::onDataReceived(SocketResponser r,ByteArray pac
  */
 }
 
-void _WebSocketTcpClientListener::onDisconnect(SocketResponser r) {
+void _WebSocketTcpClientListener::onDisconnect(Socket r) {
 
 }
 
-void _WebSocketTcpClientListener::onConnect(SocketResponser r) {
+void _WebSocketTcpClientListener::onConnect(Socket r) {
     
 }
 

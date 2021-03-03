@@ -14,9 +14,9 @@
 
 namespace obotcha {
 
-_DatagramSocketImpl::_DatagramSocketImpl(InetAddress address, int port,SocketOption option):_SocketImpl(address,port,option) {
+_DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,SocketOption option):_SocketImpl(address,option) {
     mSockAddr.sin_family = AF_INET;
-    mSockAddr.sin_port = htons(port);
+    mSockAddr.sin_port = htons(address->getPort());
 
     if(address != nullptr) {
         mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());

@@ -18,7 +18,7 @@ public:
         Local
     };
 
-    _Socket(int,InetAddress host, int port,SocketOption option);
+    _Socket(int,InetAddress host,SocketOption option);
     _Socket(int);
     int connect();
 
@@ -26,9 +26,8 @@ public:
     int getFd();
     int getType();
 
-    //remove function
-    int send(ByteArray) {return 0;}
-    int send(ByteArray,int) {return 0;}
+    void setInetAddress(InetAddress);
+    InetAddress getInetAddress();
 
     InputStream getInputStream();
     OutputStream getOutputStream();

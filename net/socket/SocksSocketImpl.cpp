@@ -13,13 +13,14 @@
 #include "Error.hpp"
 #include "InitializeException.hpp"
 #include "Thread.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
 //socket
-_SocksSocketImpl::_SocksSocketImpl(InetAddress address, int port,SocketOption option):_SocketImpl(address,port,option){
+_SocksSocketImpl::_SocksSocketImpl(InetAddress address,SocketOption option):_SocketImpl(address,option){
     mSockAddr.sin_family = PF_INET;
-    mSockAddr.sin_port = htons(port);
+    mSockAddr.sin_port = htons(address->getPort());
     
     if(address == nullptr) {
         mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
@@ -28,25 +29,20 @@ _SocksSocketImpl::_SocksSocketImpl(InetAddress address, int port,SocketOption op
     }
 
     this->sock = TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0));
-    printf("socks socket impl sock is %d \n",sock);
     if(option != nullptr) {
         this->option = option;
 
         int rcvtimeout = option->getRcvTimeout();
         if(rcvtimeout != -1) {
-            struct timeval tv = {
-                .tv_sec = rcvtimeout/1000,
-                .tv_usec = (rcvtimeout%1000)*1000,
-            };
+            struct timeval tv;
+            st(System)::getTimeVal(rcvtimeout,&tv);
             setsockopt(this->sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
         }
 
         int sendtimeout = option->getSendTimeout();
         if(sendtimeout != -1) {
-            struct timeval tv = {
-                .tv_sec = sendtimeout/1000,
-                .tv_usec = (sendtimeout%1000)*1000,
-            };
+            struct timeval tv;
+            st(System)::getTimeVal(sendtimeout,&tv);
             setsockopt(this->sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
         }
     }

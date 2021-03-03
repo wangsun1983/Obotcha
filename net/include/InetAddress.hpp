@@ -11,57 +11,30 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(InetHostAddress) {
-public:
-    String interface;
-    String ip;
-};
-
-DECLARE_SIMPLE_CLASS(InetHostMac) {
-public:
-    String interface;
-    String mac;
-};
-
 DECLARE_SIMPLE_CLASS(InetAddress) {
 
 public:
     enum Type {
         IPV4 = 0,
         IPV6,
+        LOCAL
     };
     
+    _InetAddress(String,int);
     _InetAddress();
 
-    static String getHostName();
-
-    static ArrayList<String> getHostByName(String url);
+    int getPort();
+    void setPort(int);
     
-    static ArrayList<InetHostAddress> getHostAddress();
-
-    static ArrayList<InetHostMac> getMacAddress();
-
+    String getAddress();
     void setAddress(String);
 
-    String getAddress();
-    
-    int type();
-
-    void setDomain(String);
-
-    String getDomain();
-private:
-
-    String mHostName;
-
-    String mMac;
-
+protected:
     String mAddress;
 
-    String mDomain;
+    int mPort;
 
-    int mAddressType;
-
+    int mType;
 };
 
 }

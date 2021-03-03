@@ -11,16 +11,15 @@
 
 namespace obotcha {
 
-_Socket::_Socket(int v,InetAddress addr, int port,SocketOption option) {
+_Socket::_Socket(int v,InetAddress addr,SocketOption option) {
     switch(v) {
         case Tcp:
-        mSock = createSocksSocketImpl(addr,port,option);
+        mSock = createSocksSocketImpl(addr,option);
         return;
 
         case Udp:
-        mSock = createDatagramSocketImpl(addr,port,option);
+        mSock = createDatagramSocketImpl(addr,option);
         return;
-
     }
 
     Trigger(InitializeException,"ivalid type");
@@ -28,6 +27,14 @@ _Socket::_Socket(int v,InetAddress addr, int port,SocketOption option) {
 
 _Socket::_Socket(int fd) {
     mSock = createSocketImpl(fd);
+}
+
+void _Socket::setInetAddress(InetAddress addr) {
+    mSock->setInetAddress(addr);
+}
+
+InetAddress _Socket::getInetAddress() {
+    return mSock->getInetAddress();
 }
 
 int _Socket::connect() {

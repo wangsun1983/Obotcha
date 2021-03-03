@@ -12,7 +12,7 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(ServerSocket) {
 public:
-    _ServerSocket(int,InetAddress address, int port,SocketOption option);
+    _ServerSocket(int,InetAddress address,SocketOption option);
     int bind();
     int getFd();
     int close();

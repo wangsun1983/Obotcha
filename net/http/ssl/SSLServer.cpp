@@ -35,6 +35,9 @@ _SSLThread::_SSLThread(String ip,int port,SocketListener l,String c,String k) {
 
     int mPort = port;
 
+    mMutex = createMutex();
+    mSocks = createHashMap<int,Socket>();
+
 
     const int EPOLL_SIZE = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gTcpServerEpollSize,1024);
     if(l == nullptr) {
@@ -127,8 +130,14 @@ void _SSLThread::run() {
             && ((event & EPOLLRDHUP) != 0)) {
                 epoll_ctl(mEpollfd, EPOLL_CTL_DEL, sockfd, NULL);
                 delEpollFd(mEpollfd,sockfd);
-                SocketResponser r = createSocketResponser(sockfd);
-                mListener->onDisconnect(r);
+                //SocketResponser r = createSocketResponser(sockfd);
+                Socket s = mSocks->get(sockfd);
+                {
+                    AutoLock l(mMutex);
+                    mSocks->remove(sockfd);
+                }
+
+                mListener->onDisconnect(s);
                 
                 st(SSLManager)::getInstance()->remove(sockfd);
                 close(sockfd);
@@ -146,10 +155,20 @@ void _SSLThread::run() {
                 if(ssl->bindSocket(clientfd) == 0) {
                     //mClients->put(clientfd,ssl);
                     st(SSLManager)::getInstance()->add(clientfd,ssl);
-                    SocketResponser r = createSocketResponser(clientfd,
-                                                              createString(inet_ntoa(client_address.sin_addr)),
-                                                              ntohs(client_address.sin_port));
-                    mListener->onConnect(r);
+                    //SocketResponser r = createSocketResponser(clientfd,
+                    //                                          createString(inet_ntoa(client_address.sin_addr)),
+                    //                                          ntohs(client_address.sin_port));
+                    Socket s = createSocket(clientfd);
+                    s->setInetAddress(createInetAddress(
+                                    createString(inet_ntoa(client_address.sin_addr)),
+                                    ntohs(client_address.sin_port)));
+                    {
+                        AutoLock l(mMutex);
+                        mSocks->put(clientfd,s);
+                    }
+                    mListener->onConnect(s);
+
+                    
                 } else {
                     //TODO
                 }
@@ -167,8 +186,14 @@ void _SSLThread::run() {
                 }
                 
                 if(mListener != nullptr) {
-                    SocketResponser r = createSocketResponser(sockfd);
-                    mListener->onDataReceived(r,buff);
+                    //SocketResponser r = createSocketResponser(sockfd);
+                    Socket s = nullptr;
+                    {
+                        AutoLock l(mMutex);
+                        s = mSocks->get(sockfd);
+                    }
+
+                    mListener->onDataReceived(s,buff);
                 }
             }
         }

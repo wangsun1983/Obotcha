@@ -25,6 +25,8 @@ public:
     static void execute(String cmd);
 
     static void getNextTime(long timeInterval,struct timespec *ts);
+    
+    static void getTimeVal(long timeInterval,struct timeval *tv);
 
     static int myPid();
 };

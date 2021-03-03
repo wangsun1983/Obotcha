@@ -12,7 +12,7 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(SocksSocketImpl) IMPLEMENTS(SocketImpl){
 public:
-    _SocksSocketImpl(InetAddress host, int port,SocketOption option = nullptr);
+    _SocksSocketImpl(InetAddress host,SocketOption option = nullptr);
     int connect();
 
 };

@@ -1,8 +1,24 @@
+#include <iostream>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/epoll.h>
+#include <fcntl.h>
+#include <memory.h>
+#include <sys/un.h>
+#include <sys/epoll.h>
+#include <stddef.h>
+
 #include "SocketMonitor.hpp"
 
 namespace obotcha {
 
 _SocketMonitor::_SocketMonitor() {
+    mServerSockFd = -1;
+    mMutex = createMutex();
+    mSocks = createHashMap<int,Socket>();
+
     mPoll = createEPollFileObserver();
     mPoll->start();
 }
@@ -12,46 +28,61 @@ int _SocketMonitor::bind(Socket s,SocketListener l) {
 }
 
 int _SocketMonitor::bind(ServerSocket s,SocketListener l) {
+    mServerSockFd = s->getFd();
     bind(s->getFd(),l);
 }
 
 int _SocketMonitor::bind(int fd,SocketListener l) {
-    printf("socket fd is %d \n",fd);
     mPoll->addObserver(fd,
                         EPOLLIN|EPOLLRDHUP|EPOLLHUP,
-                        [](int fd,uint32_t events,ByteArray data,SocketListener &listener,int sockfd) {
-        printf("monitor on event,fd is %d,s fd is %d,event is %x \n",fd,sockfd,events);
+                        [](int fd,uint32_t events,ByteArray data,SocketListener &listener,int sockfd,Mutex mutex,HashMap<int,Socket> socks) {
         if(fd == sockfd) {
             struct sockaddr_in client_address;
             socklen_t client_addrLength = sizeof(struct sockaddr_in);
             int clientfd = accept(fd,( struct sockaddr* )&client_address, &client_addrLength );
-            printf("clientfd is %d \n",clientfd);
             if(clientfd != -1) {
-                listener->onConnect(createSocketResponser(clientfd));
+                Socket s = createSocket(clientfd);
+                s->setInetAddress(createInetAddress(
+                                    createString(inet_ntoa(client_address.sin_addr)),
+                                    ntohs(client_address.sin_port)));
+                {
+                    AutoLock l(mutex);
+                    socks->put(clientfd,s);
+                }
+
+                listener->onConnect(s);
                 return st(EPollFileObserver)::OnEventOK;
             }
         }
+
+        Socket s = nullptr;
+        {
+            AutoLock l(mutex);
+            s = socks->get(fd);
+        }
         
         if((events & (EPOLLHUP|EPOLLRDHUP))!= 0) {
-            listener->onDisconnect(createSocketResponser(fd));
+            listener->onDisconnect(s);
+            {
+                AutoLock l(mutex);
+                socks->remove(fd);
+            }
         } else if((events & EPOLLIN) != 0) {
-            listener->onDataReceived(createSocketResponser(fd),data);
+            listener->onDataReceived(s,data);
         } 
         
-    },l,fd);
+    },l,mServerSockFd,mMutex,mSocks);
     
     return -1;
 }
 
 
 void _SocketMonitor::release() {
-    printf("socketmonitor release \n");
     mPoll->release();
 }
 
-int _SocketMonitor::remove(int fd) {
-    printf("_SocketMonitor remove fd \n");
-    return mPoll->removeObserver(fd);
+int _SocketMonitor::remove(Socket s) {
+    return mPoll->removeObserver(s->getFd());
 }
 
 }

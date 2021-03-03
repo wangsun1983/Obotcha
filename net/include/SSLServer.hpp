@@ -59,6 +59,9 @@ private:
     
     int delEpollFd(int epollfd, int fd);
 
+    Mutex mMutex;
+    HashMap<int,Socket> mSocks;
+
 }; 
 
 DECLARE_SIMPLE_CLASS(SSLServer) {

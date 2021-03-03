@@ -11,7 +11,7 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(ServerSocketImpl) IMPLEMENTS(SocksSocketImpl) {
 public:
-    _ServerSocketImpl(InetAddress address, int port,SocketOption option);
+    _ServerSocketImpl(InetAddress address,SocketOption option);
     int bind();
     
 };

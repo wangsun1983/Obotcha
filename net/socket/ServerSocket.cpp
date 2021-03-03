@@ -3,14 +3,14 @@
 #include "ServerLocalSocketImpl.hpp"
 
 namespace obotcha {
-_ServerSocket::_ServerSocket(int type,InetAddress address, int port,SocketOption option) {
+_ServerSocket::_ServerSocket(int type,InetAddress address,SocketOption option) {
     switch(type) {
         case st(Socket)::Tcp:
-            this->mSock = createServerSocketImpl(address,port,option);
+            this->mSock = createServerSocketImpl(address,option);
         break;
 
         case st(Socket)::Local:
-            this->mSock = createServerLocalSocketImpl(address,port,option);
+            this->mSock = createServerLocalSocketImpl(address,option);
         break;
     }
 }
@@ -24,7 +24,6 @@ int _ServerSocket::getFd() {
 }
 
 int _ServerSocket::close() {
-    printf("server socket close \n");
     return mSock->close();
 }
 

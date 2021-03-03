@@ -103,11 +103,11 @@ public:
 
 private:
 
-    void onDataReceived(SocketResponser r,ByteArray pack);
+    void onDataReceived(Socket r,ByteArray pack);
 
-    void onDisconnect(SocketResponser r);
+    void onDisconnect(Socket r);
 
-    void onConnect(SocketResponser r);
+    void onConnect(Socket r);
 
     void onTimeout();
 

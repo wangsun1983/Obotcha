@@ -2,8 +2,8 @@
 
 namespace obotcha {
 
-_ServerLocalSocketImpl::_ServerLocalSocketImpl(InetAddress address, int port,SocketOption option):
-                                                _LocalSocketImpl(address,port,option) {
+_ServerLocalSocketImpl::_ServerLocalSocketImpl(InetAddress address,SocketOption option):
+                                                _LocalSocketImpl(address,option) {
 
 }
 

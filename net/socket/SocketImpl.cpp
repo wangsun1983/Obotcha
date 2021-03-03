@@ -6,9 +6,8 @@ _SocketImpl::_SocketImpl(int fd) {
     sock = fd;
 }
 
-_SocketImpl::_SocketImpl(InetAddress address,int port,SocketOption option) {
+_SocketImpl::_SocketImpl(InetAddress address,SocketOption option) {
     this->address = address;
-    this->port = port;
     this->option = option;
 }
 
@@ -23,6 +22,14 @@ int _SocketImpl::close() {
 
 int _SocketImpl::getFd() {
     return this->sock;
+}
+
+InetAddress _SocketImpl::getInetAddress() {
+    return address;
+}
+
+void _SocketImpl::setInetAddress(InetAddress addr) {
+    address = addr;
 }
 
 }

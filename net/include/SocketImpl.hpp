@@ -16,18 +16,20 @@ DECLARE_SIMPLE_CLASS(SocketImpl) {
 public:
     _SocketImpl(){}
     _SocketImpl(int);
-    _SocketImpl(InetAddress,int,SocketOption);
+    _SocketImpl(InetAddress,SocketOption);
     virtual int connect() {return -NotSupport;};
     virtual int bind() {return -NotSupport;};
     virtual int accept() {return -NotSupport;}; //TOOD
     
     int close();
     int getFd();
+
+    InetAddress getInetAddress();
+    void setInetAddress(InetAddress);
     
 protected:
     int sock;
     InetAddress address;
-    int port;
     SocketOption option;
     struct sockaddr_in mSockAddr;
 };
