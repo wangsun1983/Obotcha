@@ -18,7 +18,11 @@
 namespace obotcha {
 
 _InetAddress::_InetAddress(String addr,int port) {
-    mAddress = addr;
+    if(addr == nullptr) {
+        mAddress = "127.0.0.1";
+    } else {
+        mAddress = addr;
+    }
     mPort = port;
 }
 
@@ -36,7 +40,9 @@ int _InetAddress::getPort() {
 }
 
 void _InetAddress::setAddress(String addr) {
-    mAddress = addr;
+    if(addr != nullptr) {
+        mAddress = addr;
+    }
 }
 
 String _InetAddress::getAddress() {

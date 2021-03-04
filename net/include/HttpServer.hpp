@@ -31,11 +31,10 @@ class _HttpServer;
 
 DECLARE_SIMPLE_CLASS(HttpTaskData) {
 public:
-    _HttpTaskData(int,ByteArray,uint64_t);
+    _HttpTaskData(Socket,ByteArray);
 
-    int fd;
+    Socket s;
     ByteArray pack;
-    uint64_t clientid;
 };
 
 DECLARE_SIMPLE_CLASS(HttpListener) {
@@ -55,7 +54,7 @@ public:
     void clearFds(int index);
 
 private:
-    int getGroupIdByFd(int fd);
+    int getGroupIdByFd(Socket);
     Mutex mDataMutex;
     Condition mDataCondition;
     mutable volatile bool isStop;
@@ -76,17 +75,7 @@ public:
     friend class _HttpSocketListener;
     friend class _HttpDispatcherPool;
     
-    _HttpServer(int port,HttpListener,String certificate,String key);
-
-    _HttpServer(int port,HttpListener);
-
-    _HttpServer(HttpListener);
-
-    _HttpServer(HttpListener,String certificate,String key);
-
-    _HttpServer(String ip,int port,HttpListener);
-
-    _HttpServer(String ip,int port,HttpListener,String certificate,String key);
+    _HttpServer(InetAddress addr,HttpListener,String certificate,String key);
 
     void start();
     
@@ -129,6 +118,8 @@ private:
 
     String mCertificate;
     String mKey;
+
+    InetAddress mAddress;
 };
 
 }

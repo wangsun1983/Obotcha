@@ -44,6 +44,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpmultipart.o \
 		$(outtmp)/httpmultipartparser.o \
 		$(outtmp)/httpserver.o \
+		$(outtmp)/httpserverbuilder.o \
 		$(outtmp)/httpclientinfo.o \
 		$(outtmp)/httprequestparser.o \
 		$(outtmp)/websocketserver.o \
@@ -172,6 +173,9 @@ $(outtmp)/httpmultipartparser.o :$(netDir)/http/HttpMultiPartParser.cpp
 
 $(outtmp)/httpserver.o :$(netDir)/http/HttpServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpServer.cpp -o $(outtmp)/httpserver.o $(external)
+
+$(outtmp)/httpserverbuilder.o :$(netDir)/http/HttpServerBuilder.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpServerBuilder.cpp -o $(outtmp)/httpserverbuilder.o $(external)
 
 $(outtmp)/httpclientinfo.o :$(netDir)/http/HttpClientInfo.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClientInfo.cpp -o $(outtmp)/httpclientinfo.o $(external)

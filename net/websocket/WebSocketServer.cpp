@@ -10,6 +10,8 @@
 #include "WebSocketComposer.hpp"
 #include "Enviroment.hpp"
 #include "Log.hpp"
+#include "HttpServerBuilder.hpp"
+#include "Inet4Address.hpp"
 
 namespace obotcha {
 
@@ -352,12 +354,13 @@ int _WebSocketServer::bind(String ip, int port, String path,
     }
 
     mWsListener = listener;
-    
-    if (ip == nullptr) {
-        mHttpServer = createHttpServer(port, AutoClone(this));
-    } else {
-        mHttpServer = createHttpServer(ip, port, AutoClone(this));
-    }
+    //TODO
+    InetAddress addr = createInet4Address(ip,port);
+
+    mHttpServer = createHttpServerBuilder()
+                ->setAddress(addr)
+                ->setListener(AutoClone(this))
+                ->build();
 
     mHttpServer->setSendTimeout(mSendTimeout);
     mHttpServer->setRcvTimeout(mRcvTimeout);
@@ -399,7 +402,9 @@ int _WebSocketServer::onEvent(int fd,uint32_t events,ByteArray pack) {
 }
 
 void _WebSocketServer::onMessage(sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg) {
-    DispatchData data = createDispatchData(client->getClientId(),st(DispatchData)::Http,client->getClientFd(),0,msg);
+    //DispatchData data = createDispatchData(client->getClientId(),st(DispatchData)::Http,client->getClientFd(),0,msg);
+    DispatchData data = createDispatchData(client->getSocket()->getFd(),st(DispatchData)::Http,client->getSocket()->getFd(),0,msg);
+    
     mDispatchPool->addData(data);
 }
 

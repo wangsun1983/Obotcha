@@ -29,10 +29,6 @@ public:
 
     _HttpClientInfo(Socket);
 
-    int getClientFd();
-
-    String getClientIp();
-
     int pushHttpData(ByteArray array);
 
     int send(ByteArray);
@@ -43,32 +39,25 @@ public:
 
     SSLInfo getSSLInfo();
 
-    uint64_t getClientId();
+    String getClientIp();
 
     void close();
 
     HttpSession getSession();
 
+    Socket getSocket();
+
 private:
-    void setClientIp(String);
-    
     void setSSLInfo(SSLInfo);
-
-    String mClientIp;
-
-    int mClientFd;
 
     HttpRequestParser mParser;
 
     int mStatus;
 
     SSLInfo mSSLInfo;
-    
-    sp<_HttpListener> mHttpServerListener;
-
-    uint64_t mClientId;
 
     Socket mSocket;
+    OutputStream mSocketOutput;
 
     HttpSession mSession;
 };

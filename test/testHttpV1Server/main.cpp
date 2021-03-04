@@ -10,6 +10,8 @@
 #include "HttpCookie.hpp"
 #include "HttpResponse.hpp"
 #include "HttpStatus.hpp"
+#include "HttpServerBuilder.hpp"
+#include "Inet4Address.hpp"
 
 using namespace obotcha;
 
@@ -148,7 +150,10 @@ DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
 int main() {
   MyHttpListener listener = createMyHttpListener();
-  HttpServer server = createHttpServer(8012,listener);
+  HttpServer server = createHttpServerBuilder()
+                    ->setAddress(createInet4Address("192.168.1.8",1212))
+                    ->setListener(listener)
+                    ->build();
   server->start();
   while(1) {sleep(1000);}
 }

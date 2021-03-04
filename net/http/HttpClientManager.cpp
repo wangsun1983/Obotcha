@@ -7,13 +7,8 @@ HttpClientManager _HttpClientManager::mInstance = nullptr;
 Mutex _HttpClientManager::mInitMutex = createMutex("HttpServer Mutex");;
 
 _HttpClientManager::_HttpClientManager() {
-    mClients = createHashMap<int,HttpClientInfo>();
+    mClients = createHashMap<Socket,HttpClientInfo>();
     mMutex = createMutex("http client manager");
-    mRand = createRandom();
-}
-
-uint32_t _HttpClientManager::genRandomUint32() {
-    return mRand->nextUint32();
 }
 
 sp<_HttpClientManager> _HttpClientManager::getInstance() {
@@ -31,21 +26,21 @@ sp<_HttpClientManager> _HttpClientManager::getInstance() {
     return mInstance;
 }
 
-HttpClientInfo _HttpClientManager::getClientInfo(int fd) {
+HttpClientInfo _HttpClientManager::getClientInfo(Socket s) {
     AutoLock l(mMutex);
-    return mClients->get(fd);
+    return mClients->get(s);
 }
 
-void _HttpClientManager::addClientInfo(int fd,sp<_HttpClientInfo> info) {
+void _HttpClientManager::addClientInfo(sp<_HttpClientInfo> info) {
     AutoLock l(mMutex);
-    mClients->put(fd,info);
+    mClients->put(info->getSocket(),info);
 }
     
 
-HttpClientInfo _HttpClientManager::removeClientInfo(int fd) {
+HttpClientInfo _HttpClientManager::removeClientInfo(Socket s) {
     AutoLock l(mMutex);
-    HttpClientInfo ret = mClients->get(fd);
-    mClients->remove(fd);
+    HttpClientInfo ret = mClients->get(s);
+    mClients->remove(s);
 
     return ret;
 }

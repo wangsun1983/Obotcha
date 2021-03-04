@@ -21,10 +21,9 @@
 namespace obotcha {
 
 //------------------HttpTaskData------------------
-_HttpTaskData::_HttpTaskData(int fd,ByteArray pack,uint64_t id) {
-    this->fd = fd;
-    this->pack = pack;
-    this->clientid = id;
+_HttpTaskData::_HttpTaskData(Socket s,ByteArray data) {
+    this->s = s;
+    this->pack = data;
 }
 
 _HttpDispatcherPool::_HttpDispatcherPool(sp<_HttpServer> server,int threadSize) {
@@ -47,15 +46,15 @@ _HttpDispatcherPool::_HttpDispatcherPool(sp<_HttpServer> server,int threadSize) 
                     return;
                 }
                 printf("_HttpDispatcherPool trace2 \n");
-                HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(data->fd);
-                if(info == nullptr || data->clientid != info->getClientId()) {
+                HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(data->s);
+                if(info == nullptr) {
                     continue;
                 }
                 printf("_HttpDispatcherPool trace3 \n");
                 try {
                     info->pushHttpData(data->pack);
                 } catch(HttpInternalException &e) {
-                    st(HttpClientManager)::getInstance()->removeClientInfo(info->getClientFd());
+                    st(HttpClientManager)::getInstance()->removeClientInfo(data->s);
                     info->close();
                     continue;
                 }
@@ -76,7 +75,7 @@ _HttpDispatcherPool::_HttpDispatcherPool(sp<_HttpServer> server,int threadSize) 
 
 void _HttpDispatcherPool::addData(HttpTaskData data) {
     AutoLock l(mDataMutex);
-    int index = getGroupIdByFd(data->fd);
+    int index = getGroupIdByFd(data->s);
     
     if(index != -1) {
         mTaskGroup->get(index)->enQueueLast(data);
@@ -88,11 +87,11 @@ void _HttpDispatcherPool::addData(HttpTaskData data) {
     mDataCondition->notifyAll();
 }
 
-int _HttpDispatcherPool::getGroupIdByFd(int fd) {
+int _HttpDispatcherPool::getGroupIdByFd(Socket s) {
     //try to find an index
     AutoLock l(mDataMutex);
     for(int index = 0;index < mExecutors->getThreadsNum();index++) {
-        if(GroupIdTofds[index] == fd) {
+        if(GroupIdTofds[index] == s->getFd()) {
             return index;
         }
     }
@@ -121,7 +120,7 @@ HttpTaskData _HttpDispatcherPool::getData(int requireIndex) {
 
         data = datas->deQueueFirst();
         if(data != nullptr) {
-            GroupIdTofds[requireIndex] = data->fd;
+            GroupIdTofds[requireIndex] = data->s->getFd();
             return data;
         }
         try {
@@ -138,29 +137,28 @@ HttpTaskData _HttpDispatcherPool::getData(int requireIndex) {
 
 void _HttpServer::onDataReceived(Socket r,ByteArray pack) {
     printf("_HttpServer::onDataReceived \n");
-    HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r->getFd());
-    HttpTaskData data = createHttpTaskData(r->getFd(),pack,info->getClientId());
+    HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r);
+    HttpTaskData data = createHttpTaskData(r,pack);
     mPool->addData(data);
 }
 
 void _HttpServer::onDisconnect(Socket r) {
     printf("_HttpServer::onDisconnect \n");
-    HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r->getFd());
+    HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r);
     mHttpListener->onDisconnect(info);
     mSockMonitor->remove(r);
 }
 
 void _HttpServer::onConnect(Socket r) {
     printf("_HttpServer::onConnect \n");
-    HttpClientInfo info = createHttpClientInfo(createSocketBuilder()
-                                                ->setFd(r->getFd())
-                                                ->newSocket());
+    HttpClientInfo info = createHttpClientInfo(r);
 
+    //TODO
     SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
     if(info != nullptr) {
         info->setSSLInfo(ssl);
     }
-    st(HttpClientManager)::getInstance()->addClientInfo(r->getFd(),info);
+    st(HttpClientManager)::getInstance()->addClientInfo(info);
     mSockMonitor->bind(r->getFd(),AutoClone(this));
     mHttpListener->onConnect(info);
 }
@@ -169,38 +167,18 @@ void _HttpServer::onTimeout() {
     //Unused
 }
 
-_HttpServer::_HttpServer(int port,HttpListener l):_HttpServer(nullptr,port,l) {
-
-}
-
-_HttpServer::_HttpServer(int port,HttpListener l,String certificate,String key):_HttpServer(nullptr,port,l,certificate,key){
-
-}
-
-_HttpServer::_HttpServer(HttpListener l):_HttpServer(nullptr,-1,l) {
-    
-}
-
-_HttpServer::_HttpServer(HttpListener l,String certificate,String key):_HttpServer(nullptr,-1,l,certificate,key) {
-    
-}
-
-_HttpServer::_HttpServer(String ip,int port,HttpListener l):_HttpServer(ip,port,l,nullptr,nullptr){
-    
-}
-
-_HttpServer::_HttpServer(String ip,int port,HttpListener l,String certificate,String key) {
+_HttpServer::_HttpServer(InetAddress addr,HttpListener l,String certificate,String key) {
     mHttpListener = l;
 
     int threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
     mPool = createHttpDispatcherPool(AutoClone(this),threadsNum);
 
-    mIp = ip;
-    mPort = port;
     mServerSock = nullptr;
     mSockMonitor = nullptr;
     
     mSSLServer = nullptr;
+
+    mAddress = addr;
 
     mCertificate = certificate;
     mKey = key;
@@ -210,13 +188,6 @@ _HttpServer::_HttpServer(String ip,int port,HttpListener l,String certificate,St
 
 void _HttpServer::start() {
     if(mCertificate == nullptr) {
-        InetAddress address = createInetAddress();
-        if(mIp != nullptr) {
-            address->setAddress(mIp);
-        }
-
-        address->setPort(mPort);
-
         SocketOption option = createSocketOption();
         if(mSendTimeout != -1) {
             option->setSendTimeout(mSendTimeout);
@@ -225,9 +196,8 @@ void _HttpServer::start() {
         if(mRcvTimeout != -1) {
             option->setRecvTimeout(mRcvTimeout);
         }
-        printf("http server start \n");
         mServerSock = createSocketBuilder()
-                        ->setAddress(address)
+                        ->setAddress(mAddress)
                         ->newServerSocket();
         mServerSock->bind();
         printf("http server trace1 \n");

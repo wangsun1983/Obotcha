@@ -7,32 +7,20 @@ namespace obotcha {
 
 _HttpClientInfo::_HttpClientInfo(Socket s) {
     mParser = createHttpRequestParser();
-    mClientFd = s->getFd();
+    
     mSocket = s;
-    uint32_t rnd = st(HttpClientManager)::getInstance()->genRandomUint32();
-    mClientId = ((uint64_t)mClientId<<32|rnd);
+    mSocketOutput = s->getOutputStream();
+
     mSession = createHttpSession();
 }
 
-int _HttpClientInfo::getClientFd() {
-    return mClientFd;
-}
-
 void _HttpClientInfo::close() {
-    ::close(mClientFd);
+    mSocket->close();
     mParser = nullptr;
 }
 
-uint64_t _HttpClientInfo::getClientId() {
-    return mClientId;
-}
-
 String _HttpClientInfo::getClientIp() {
-    return mClientIp;
-}
-
-void _HttpClientInfo::setClientIp(String ip) {
-    mClientIp = ip;
+    return mSocket->getInetAddress()->getAddress();
 }
 
 int _HttpClientInfo::pushHttpData(ByteArray array) {
@@ -48,16 +36,14 @@ int _HttpClientInfo::send(ByteArray data) {
     if(mSSLInfo != nullptr) {
         return mSSLInfo->write(data);
     }
-    //TODO
-    return mSocket->getOutputStream()->write(data);
+    return mSocketOutput->write(data);
 }
 
 int _HttpClientInfo::send(ByteArray data,int size) {
     if(mSSLInfo != nullptr) {
         return mSSLInfo->write(data);
     }
-    //TODO
-    return mSocket->getOutputStream()->write(data,size);
+    return mSocketOutput->write(data,size);
 }
 
 SSLInfo _HttpClientInfo::getSSLInfo() {
@@ -68,5 +54,12 @@ void _HttpClientInfo::setSSLInfo(SSLInfo info) {
     mSSLInfo = info;
 }
 
+Socket _HttpClientInfo::getSocket() {
+    return mSocket;
+}
+
+HttpSession _HttpClientInfo::getSession() {
+    return mSession;
+}
 
 }

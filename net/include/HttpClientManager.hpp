@@ -16,6 +16,7 @@
 #include "HttpPacket.hpp"
 #include "HttpClientInfo.hpp"
 #include "Random.hpp"
+#include "Socket.hpp"
 
 namespace obotcha {
 
@@ -23,14 +24,12 @@ DECLARE_SIMPLE_CLASS(HttpClientManager) {
 public:
     static sp<_HttpClientManager> getInstance();
 
-    void addClientInfo(int fd,sp<_HttpClientInfo>);
+    void addClientInfo(sp<_HttpClientInfo>);
 
-    HttpClientInfo getClientInfo(int fd);
+    HttpClientInfo getClientInfo(Socket);
 
-    HttpClientInfo removeClientInfo(int fd);
+    HttpClientInfo removeClientInfo(Socket);
     
-    uint32_t genRandomUint32();
-
     void clear();
     
 private:
@@ -39,7 +38,7 @@ private:
 
     Mutex mMutex;
 
-    HashMap<int,HttpClientInfo> mClients;
+    HashMap<Socket,HttpClientInfo> mClients;
 
     _HttpClientManager();
 
