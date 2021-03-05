@@ -10,13 +10,31 @@
 #include "ServerSocket.hpp"
 #include "HashMap.hpp"
 #include "Mutex.hpp"
+#include "LinkedList.hpp"
+#include "ArrayList.hpp"
 
 namespace obotcha {
 
+DECLARE_SIMPLE_CLASS(SocketMonitorTask) {
+public:
+    enum {
+        Connect = 0,
+        Message,
+        Disconnect
+    };
+    
+    _SocketMonitorTask(int event,Socket s);
+    _SocketMonitorTask(int event,Socket s,ByteArray);
+
+    int event;
+    ByteArray data;
+    Socket sock;
+};
 
 DECLARE_SIMPLE_CLASS(SocketMonitor) {
 public:
     _SocketMonitor();
+    _SocketMonitor(int);
 
     int bind(Socket,SocketListener);
     int bind(ServerSocket,SocketListener);
@@ -33,7 +51,18 @@ private:
     Mutex mMutex;
     HashMap<int,Socket> mSocks;
 
+    //Multi Threads
+    int mThreadNum;
+    ArrayList<LinkedList<SocketMonitorTask>>  mThreadLocalTasks;
+    LinkedList<SocketMonitorTask> mThreadPublicTasks;
+    ArrayList<Thread> mThreads;
+    Socket *mCurrentSockets;
+    Condition mCondition;
+
     int mServerSockFd;
+    
+    
+
 };
 
 }
