@@ -32,9 +32,8 @@
 namespace obotcha {
 
 //------------------------WebSocketServer-------------------------
-DECLARE_SIMPLE_CLASS(WebSocketServer) EXTENDS(EPollFileObserverListener),st(HttpListener),st(SocketListener){
+DECLARE_SIMPLE_CLASS(WebSocketServer) IMPLEMENTS(HttpListener),st(SocketListener){
 public:
-    friend class _WebSocketDispatcherPool;
 
     _WebSocketServer();
 

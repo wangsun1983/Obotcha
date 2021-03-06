@@ -8,7 +8,6 @@ cflags = -fpic \
 		-I ../../util/concurrent/include/ \
 		-I ../../util/coroutine/include/ \
 		-I ../../util/text/include/ \
-		-I ../../util/sql/include/ \
 		-I ../../lang/include \
 		-I ../../io/include \
 		-I ../../util/include/ \
@@ -23,12 +22,11 @@ cflags = -fpic \
 		-I ../../external/yaml/include \
 		-I ../../external/crc32/include \
 		-I ../../external/openssl/include \
-		-I ../../external/libco \
-		-I ../../external/sqlite3/include \
 		-I ../../external/http_parser/include \
+		-I ../../external/libco \
 		-I ../../external/glog/include \
 		-g \
-		-std=c++11 \
+		-std=c++17 \
 
 external = -lpthread \
 				-ldl \
@@ -37,7 +35,7 @@ external = -lpthread \
 
 files =
 link =
-libname	= testLong
+libname	= testHttpV1Server
 
 everything : $(libname)
 

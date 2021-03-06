@@ -55,12 +55,12 @@ public:
     }
 
     int onConnect(WebSocketClientInfo client) {
-        printf("on connect fd is %d \n",client->getClientFd());
+        printf("on connect fd  \n");
         return 0;
     }
 
     int onDisconnect(WebSocketClientInfo client) {
-        printf("on disconnect fd is %d \n",client->getClientFd());
+        printf("on disconnect fd\n");
         return 0;
     }
 
@@ -90,7 +90,9 @@ int main() {
     MyWsListener l = createMyWsListener();
 
     WebSocketServer server = createWebSocketServer();
-    server->bind(1111,"/mytest",l);
+    InetAddress address = createInetAddress("192.168.1.8",1111);
+    
+    server->bind(address,"/mytest",l);
     server->start();
     printf("websocket start trace1 \n");
     l->waitMessage();

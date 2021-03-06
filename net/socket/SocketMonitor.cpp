@@ -52,11 +52,19 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
 }
 
 int _SocketMonitor::bind(Socket s,SocketListener l) {
+    {
+        AutoLock l(mMutex);
+        mSocks->put(s->getFd(),s);
+    }
     return bind(s->getFd(),l);
 }
 
 int _SocketMonitor::bind(ServerSocket s,SocketListener l) {
     mServerSockFd = s->getFd();
+    {
+        AutoLock l(mMutex);
+        mSocks->put(s->getFd(),s);
+    }
     return bind(s->getFd(),l);
 }
 
@@ -97,7 +105,12 @@ int _SocketMonitor::bind(int fd,SocketListener l) {
         {
             AutoLock l(mutex);
             s = socks->get(fd);
+            //if(s == nullptr) {
+            //    s = createSocket(fd);
+            //    socks->put(fd,s);
+            //}
         }
+
         
         if((events & (EPOLLHUP|EPOLLRDHUP))!= 0) {
             //listener->onDisconnect(s);
@@ -105,12 +118,14 @@ int _SocketMonitor::bind(int fd,SocketListener l) {
                 AutoLock l(mutex);
                 socks->remove(fd);
                 tasks->enQueueLast(createSocketMonitorTask(st(Socket)::Disconnect,s));
+                cond->notifyAll();
             }
         } else if((events & EPOLLIN) != 0) {
             //listener->onDataReceived(s,data);
             {
                 AutoLock l(mutex);
                 tasks->enQueueLast(createSocketMonitorTask(st(Socket)::Message,s,data));
+                cond->notifyAll();
             }
         } 
         
@@ -141,7 +156,7 @@ int _SocketMonitor::bind(int fd,SocketListener l) {
                             cond->wait(mutex);
                             continue;
                         }
-                        
+
                         bool isOtherThreadTask = false;
                         for(int i = 0;i<totalnum;i++) {
                             if(currentSocks[i] == task->sock) {
@@ -157,6 +172,12 @@ int _SocketMonitor::bind(int fd,SocketListener l) {
                             continue;
                         }
                     }
+                }
+                printf("ready send socket message,");
+                if(task->sock == nullptr) {
+                    printf("sock is nullptr \n");
+                } else {
+                    printf("sock is not nullptr \n");
                 }
 
                 listener->onSocketMessage(task->event,task->sock,task->data);
