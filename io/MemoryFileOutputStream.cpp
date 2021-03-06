@@ -36,13 +36,13 @@ _MemoryFileOutputStream::_MemoryFileOutputStream(String path) {
     mPtr = nullptr;
 }
 
-bool _MemoryFileOutputStream::write(char c) {
+long _MemoryFileOutputStream::write(char c) {
     if(mPtr == nullptr) {
         return false;
     }
 
     *mPtr = c;
-    return true;
+    return 1;
 }
     
 long _MemoryFileOutputStream::write(ByteArray buff) {

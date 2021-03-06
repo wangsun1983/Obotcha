@@ -12,6 +12,10 @@
 namespace obotcha {
 
 _Socket::_Socket(int v,InetAddress addr,SocketOption option) {
+    mInput = nullptr;
+    mOutput = nullptr;
+    mStatus = Idle;
+
     switch(v) {
         case Tcp:
         mSock = createSocksSocketImpl(addr,option);
@@ -26,7 +30,10 @@ _Socket::_Socket(int v,InetAddress addr,SocketOption option) {
 }
 
 _Socket::_Socket(int fd) {
+    mInput = nullptr;
+    mOutput = nullptr;
     mSock = createSocketImpl(fd);
+    mStatus = Idle;
 }
 
 void _Socket::setInetAddress(InetAddress addr) {
@@ -43,14 +50,41 @@ int _Socket::connect() {
 
 void _Socket::close() {
     mSock->close();
+    if(mOutput != nullptr) {
+        mOutput->close();
+    }
+
+    if(mInput != nullptr) {
+        mInput->close();
+    }
+
+    mStatus = Closed;
+}
+
+bool _Socket::isClosed() {
+    return mStatus == Closed;
 }
 
 InputStream _Socket::getInputStream() {
-    return createSocketInputStream(AutoClone(this));
+    if(isClosed()) {
+        return nullptr;
+    }
+
+    if(mInput == nullptr) {
+        mInput = createSocketInputStream(AutoClone(this));
+    }
+    return mInput;
 }
 
 OutputStream _Socket::getOutputStream() {
-    return createSocketOutputStream(AutoClone(this));
+    if(isClosed()) {
+        return nullptr;
+    }
+    
+    if(mOutput == nullptr) {
+        mOutput = createSocketOutputStream(AutoClone(this));
+    }
+    return mOutput;
 }
 
 int _Socket::getFd() {

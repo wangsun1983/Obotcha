@@ -137,7 +137,8 @@ void _SSLThread::run() {
                     mSocks->remove(sockfd);
                 }
 
-                mListener->onDisconnect(s);
+                //mListener->onDisconnect(s);
+                mListener->onSocketMessage(st(Socket)::Disconnect,s,nullptr);
                 
                 st(SSLManager)::getInstance()->remove(sockfd);
                 close(sockfd);
@@ -166,8 +167,8 @@ void _SSLThread::run() {
                         AutoLock l(mMutex);
                         mSocks->put(clientfd,s);
                     }
-                    mListener->onConnect(s);
-
+                    //mListener->onConnect(s);
+                    mListener->onSocketMessage(st(Socket)::Connect,s,nullptr);
                     
                 } else {
                     //TODO
@@ -193,7 +194,8 @@ void _SSLThread::run() {
                         s = mSocks->get(sockfd);
                     }
 
-                    mListener->onDataReceived(s,buff);
+                    //mListener->onDataReceived(s,buff);
+                    mListener->onSocketMessage(st(Socket)::Message,s,buff);
                 }
             }
         }

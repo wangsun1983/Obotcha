@@ -16,25 +16,20 @@ DECLARE_SIMPLE_CLASS(WebSocketClientManager) {
 public:
     static WebSocketClientManager getInstance();
     
-    WebSocketClientInfo addClient(int fd,int version);
+    WebSocketClientInfo addClient(Socket,int version);
 
-    WebSocketClientInfo getClient(int fd);
+    WebSocketClientInfo getClient(Socket);
   
     void removeClient(WebSocketClientInfo);
-
-    uint32_t genRandomUint32();
 
 private:
    static WebSocketClientManager mInstance;
    
    static Mutex mMutex;
    
-   HashMap<int,WebSocketClientInfo> mClients;
+   HashMap<Socket,WebSocketClientInfo> mClients;
 
    _WebSocketClientManager();
-
-   Random mRand;
-
 };
 
 

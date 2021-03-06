@@ -24,23 +24,31 @@ void _PrintStream::setOutPath(String path){
     isDefaultOut = false;
 }
 
-bool _PrintStream::write(char c) {
+long _PrintStream::write(char c) {
     if(isDefaultOut) {
         fstream << c;
     } else {
         std::cout << c;
     }
     
-    return true;
+    return 1;
+}
+
+long _PrintStream::write(ByteArray buff,long size) {
+    if(size > buff->size()) {
+        size = buff->size();
+    }
+
+    if(isDefaultOut) {
+        fstream.write((char *)buff->toValue(),size);
+    } else {
+        std::cout.write((char *)buff->toValue(),size);
+    }
+    return size;
 }
     
-bool _PrintStream::write(char *buffer,int size) {
-    if(isDefaultOut) {
-        fstream.write(buffer,size);
-    } else {
-        std::cout.write(buffer,size);
-    }
-    return true;
+long _PrintStream::write(ByteArray buffer) {
+    return write(buffer,buffer->size());
 }
 
 void _PrintStream::println(String s) {

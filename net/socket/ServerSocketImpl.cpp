@@ -20,6 +20,8 @@ int _ServerSocketImpl::bind() {
     if(listen(sock, mConnectionNum) < 0) {
         return -NetListenFail;
     }
+
+    return 0;
 }
     
 

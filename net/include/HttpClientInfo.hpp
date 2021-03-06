@@ -16,12 +16,13 @@
 #include "HttpRequestParser.hpp"
 #include "HttpPacket.hpp"
 #include "SSLInfo.hpp"
-#include "HttpServer.hpp"
 #include "Random.hpp"
 #include "Socket.hpp"
 #include "HttpSession.hpp"
 
 namespace obotcha {
+
+class _HttpServer;
 
 DECLARE_SIMPLE_CLASS(HttpClientInfo){
 public:

@@ -20,51 +20,33 @@
 namespace obotcha {
 
 
-_WebSocketClientInfo::_WebSocketClientInfo() {
+_WebSocketClientInfo::_WebSocketClientInfo(Socket sock) {
     mParser = nullptr;
     mComposer = nullptr;
     mHttpHeader = createHttpHeader();
-    //mWsHeader = createWebSocketHeader();
     mDeflate = nullptr;
     mProtocols = nullptr;
     mContinueBuffer = nullptr;
-    mClientFd = -1;
     mWsVersion = -1;
-    //mRand = createRandom();
-    mClientId = 0;
-
-    isSend = createAtomicBoolean(true);
-    mSendMutex = createMutex();
-    mSendCond = createCondition();
+    
+    //isSend = createAtomicBoolean(true);
+    //mSendMutex = createMutex();
+    //mSendCond = createCondition();
+    mSock = sock;
+    mOutputStream = sock->getOutputStream();
 }
 
 void _WebSocketClientInfo::reset() {
     mHttpHeader->clear();
-    //mWsHeader->clear();
     mDeflate = nullptr;
     mProtocols = nullptr;
     mContinueBuffer = nullptr;
-    mClientFd = -1;
-    mClientId = 0;
-    isSend = createAtomicBoolean(true);
+    //isSend = createAtomicBoolean(true);
 }
 
-void _WebSocketClientInfo::enableSend() {
-    isSend = createAtomicBoolean(true);
-}
-
-int _WebSocketClientInfo::getClientFd() {
-    return this->mClientFd;
-}
-
-void _WebSocketClientInfo::setClientFd(int fd) {
-    this->mClientFd = fd;
-    mClientId = ((uint64_t)fd<<32 | st(WebSocketClientManager)::getInstance()->genRandomUint32());
-}
-
-uint64_t _WebSocketClientInfo::getClientId() {
-    return mClientId;
-}
+//void _WebSocketClientInfo::enableSend() {
+//    isSend = createAtomicBoolean(true);
+//}
 
 sp<_WebSocketParser> _WebSocketClientInfo::getParser() {
     return this->mParser;
@@ -131,33 +113,9 @@ void _WebSocketClientInfo::setConnectUrl(String l) {
     mConnectUrl = l;
 }
 
-int _WebSocketClientInfo::_syncsend(ByteArray data) {
-     while(1) {
-        isSend->set(false);
-        int result = write(mClientFd,data->toValue(),data->size());
-        if(result < 0) {
-            if(errno == EAGAIN) {
-                if(!isSend->get()) {
-                    AutoLock l(mSendMutex);
-                    mSendCond->wait(mSendMutex,100);
-                }
-                continue;
-            }
-        }
-
-        if(!isSend->get()) {
-            long start = st(System)::currentTimeMillis();
-            AutoLock l(mSendMutex);
-            mSendCond->wait(mSendMutex,100);
-            printf("send socket eagain!!!,wait %d  \n",(int)(st(System)::currentTimeMillis() - start));
-        }
-        return result;
-    }
-}
-
-int _WebSocketClientInfo::_send(int type,ByteArray msg) {
-    if(mClientFd != -1) {
-        int size = 0;
+long _WebSocketClientInfo::_send(int type,ByteArray msg) {
+    if(mSock != nullptr) {
+        long size = 0;
         
         ArrayList<ByteArray> data = nullptr;
 
@@ -193,8 +151,8 @@ int _WebSocketClientInfo::_send(int type,ByteArray msg) {
         while(iterator->hasValue()) {
             ByteArray sendData = iterator->getValue();
             //size += send(mClientFd,sendData->toValue(),sendData->size(),0);
-            size += _syncsend(sendData);
-            
+            //size += _syncsend(sendData);
+            size += mOutputStream->write(sendData);
             iterator->next();
         }
 
@@ -204,23 +162,23 @@ int _WebSocketClientInfo::_send(int type,ByteArray msg) {
     return -1;
 }
 
-int _WebSocketClientInfo::sendBinaryMessage(ByteArray data) {
+long _WebSocketClientInfo::sendBinaryMessage(ByteArray data) {
     return _send(st(WebSocketProtocol)::OPCODE_BINARY,data);
 }
 
-int _WebSocketClientInfo::sendTextMessage(String data) {
+long _WebSocketClientInfo::sendTextMessage(String data) {
     return _send(st(WebSocketProtocol)::OPCODE_TEXT,createByteArray(data));
 }
 
-int _WebSocketClientInfo::sendPingMessage(ByteArray data) {
+long _WebSocketClientInfo::sendPingMessage(ByteArray data) {
     return _send(st(WebSocketProtocol)::OPCODE_CONTROL_PING,data);
 }
 
-int _WebSocketClientInfo::sendPongMessage(ByteArray data) {
+long _WebSocketClientInfo::sendPongMessage(ByteArray data) {
     return _send(st(WebSocketProtocol)::OPCODE_CONTROL_PONG,data);
 }
 
-int _WebSocketClientInfo::sendCloseMessage(ByteArray data) {
+long _WebSocketClientInfo::sendCloseMessage(ByteArray data) {
     return _send(st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE,data);
 }
 
@@ -230,6 +188,10 @@ int _WebSocketClientInfo::getVersion() {
 
 void _WebSocketClientInfo::setVersion(int ver) {
     mWsVersion = ver;
+}
+
+Socket _WebSocketClientInfo::getSocket() {
+    return mSock;
 }
 
 }

@@ -145,6 +145,10 @@ int _EPollFileObserver::removeObserver(int fd) {
     epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
 
     ArrayList<EPollFileObserverListener> listeners = mListeners->get(fd);
+    if(listeners == nullptr) {
+        return 0;
+    }
+
     ListIterator<EPollFileObserverListener> iterator = listeners->getIterator();
     while(iterator->hasValue()) {
         EPollFileObserverListener l = iterator->getValue();
@@ -154,6 +158,7 @@ int _EPollFileObserver::removeObserver(int fd) {
     
     mFdEventsMap.erase(fd);
     mListeners->remove(fd);
+    return 0;
 }
 
 void _EPollFileObserver::addEpollFd(int fd,uint32_t events) {

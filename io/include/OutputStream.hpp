@@ -9,15 +9,15 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(OutputStream) {
 public:
-    virtual bool write(char c){return false;}
+    virtual long write(char c){return -1;}
     
     virtual long write(ByteArray){return -1;}
 
     virtual long write(ByteArray buff,long size){return -1;}
 
-    virtual bool open(){return -false;}
+    virtual bool open(){return false;}
 
-    virtual bool open(int){return -false;}
+    virtual bool open(int){return false;}
     
     virtual void close(){}
 

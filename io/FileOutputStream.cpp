@@ -26,13 +26,13 @@ _FileOutputStream::_FileOutputStream(const char *path) {
     mPath = createString(path);
 }
 
-bool _FileOutputStream::write(char c) {
+long _FileOutputStream::write(char c) {
     if(!fstream.is_open()) {
         return false;
     }
     
     fstream << c;
-    return true;
+    return 1;
 }
     
 long _FileOutputStream::write(ByteArray buff) {

@@ -11,18 +11,22 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
     mSocket = s;
 }
 
-bool _SocketOutputStream::write(char c) {
+long _SocketOutputStream::write(char c) {
     ByteArray data = createByteArray(1);
     data[0] = c;
-    write(data,1);
+    return write(data,1);
 }
 
 long _SocketOutputStream::write(ByteArray data) {
-    write(data,data->size());
+    return write(data,data->size());
 }
 
 long _SocketOutputStream::write(ByteArray data,long size) {
     byte *sendData = data->toValue();
+    if(mSocket == nullptr || mSocket->isClosed()) {
+        return -1;
+    }
+
     while(1) {
         int result = ::write(mSocket->getFd(),sendData,size);
         if(result < 0) {
@@ -41,7 +45,7 @@ long _SocketOutputStream::write(ByteArray data,long size) {
 }
 
 void _SocketOutputStream::close() {
-
+    mSocket = nullptr;
 }
 
 void _SocketOutputStream::flush() {

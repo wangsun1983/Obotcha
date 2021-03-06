@@ -20,7 +20,7 @@ public:
 
     _MemoryFileOutputStream(String path);
 
-    bool write(char c);
+    long write(char c);
     
     //bool write(char *buffer,int size);
     long write(ByteArray buff);

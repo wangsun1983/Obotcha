@@ -21,7 +21,7 @@ public:
 
     _FileOutputStream(const char *);
 
-    bool write(char c);
+    long write(char c);
     
     long write(ByteArray buff);
 

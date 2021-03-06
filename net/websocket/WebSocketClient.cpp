@@ -230,7 +230,7 @@ int _WebSocketClient::connect(String url,WebSocketListener l) {
 
     WebSocketComposer composer = mClient->getComposer();
     ByteArray shakeHandMsg = composer->genShakeHandMessage(mClient);
-    mListener = createWebSocketTcpClientListener(l,mClient);
+    //mListener = createWebSocketTcpClientListener(l,mClient);
     
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(url);
     //mTcpClient = createTcpClient(httpUrl->getHost(),httpUrl->getPort(),mListener);

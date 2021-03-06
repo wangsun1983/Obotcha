@@ -29,6 +29,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,SocketOption option
 
 int _DatagramSocketImpl::connect() {
     //nothing
+    return 0;
 }
 
 }

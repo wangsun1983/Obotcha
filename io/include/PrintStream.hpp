@@ -21,10 +21,12 @@ public:
 
     _PrintStream();
 
-    bool write(char c);
+    long write(char c);
     
-    bool write(char *buffer,int size);
-    
+    long write(ByteArray);
+
+    long write(ByteArray buff,long size);
+
     void setOutPath(String path);
 
     bool open();

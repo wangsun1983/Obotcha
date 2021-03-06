@@ -12,11 +12,12 @@
 #include "HttpHeader.hpp"
 #include "ByteArray.hpp"
 #include "ByteRingArray.hpp"
-#include "Random.hpp"
 #include "WebSocketBuffer.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "AtomicBoolean.hpp"
+#include "Socket.hpp"
+#include "SocketOutputStream.hpp"
 
 namespace obotcha {
 
@@ -26,14 +27,7 @@ class _WebSocketPermessageDeflate;
 
 DECLARE_SIMPLE_CLASS(WebSocketClientInfo) {
 public:
-    _WebSocketClientInfo();
-
-    //ClientFd
-    int getClientFd();
-
-    void setClientFd(int);
-
-    uint64_t getClientId();
+    _WebSocketClientInfo(Socket sock);
 
     //Parser
     sp<_WebSocketParser> getParser();
@@ -73,15 +67,15 @@ public:
 
     void setConnectUrl(String);
 
-    int sendTextMessage(String);
+    long sendTextMessage(String);
 
-    int sendBinaryMessage(ByteArray);
+    long sendBinaryMessage(ByteArray);
 
-    int sendPingMessage(ByteArray);
+    long sendPingMessage(ByteArray);
 
-    int sendPongMessage(ByteArray);
+    long sendPongMessage(ByteArray);
 
-    int sendCloseMessage(ByteArray);
+    long sendCloseMessage(ByteArray);
 
     int getVersion();
 
@@ -89,10 +83,14 @@ public:
 
     void reset();
 
-    void enableSend();
+    //void enableSend();
+
+    Socket getSocket();
 
 private:
-    int mClientFd;
+    //int mClientFd;
+    Socket mSock;
+    OutputStream mOutputStream;
 
     sp<_WebSocketParser> mParser;
 
@@ -113,16 +111,12 @@ private:
 
     int mWsVersion;
 
-    Random mRand;
+    long _send(int type,ByteArray data);
+    //int _syncsend(ByteArray data);
 
-    uint64_t mClientId;
-
-    int _send(int type,ByteArray data);
-    int _syncsend(ByteArray data);
-
-    AtomicBoolean isSend;
-    Mutex mSendMutex;
-    Condition mSendCond;
+    //AtomicBoolean isSend;
+    //Mutex mSendMutex;
+    //Condition mSendCond;
 };
 
 }

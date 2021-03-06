@@ -15,7 +15,7 @@ DECLARE_SIMPLE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
 public:
     _SocketOutputStream(sp<_Socket>);
 
-    bool write(char c);
+    long write(char c);
     
     long write(ByteArray);
 

@@ -62,13 +62,7 @@ DECLARE_SIMPLE_CLASS(NtpSocketClientListener) IMPLEMENTS(SocketListener) {
 public:
     _NtpSocketClientListener(Condition,Mutex);
 
-    void onDataReceived(Socket,ByteArray);
-    
-    void onDisconnect(Socket);
-    
-    void onConnect(Socket);
-
-    void onTimeout();
+    void onSocketMessage(int,Socket,ByteArray);
     
     void setTimeCallback(NtpListener);
 
@@ -77,6 +71,8 @@ public:
     ~_NtpSocketClientListener();
 
 private:
+    void onDataReceived(Socket,ByteArray);
+
     Condition mCondition;
     Mutex mMutex;
     long int milliseconds;

@@ -12,17 +12,12 @@
 #include "Mutex.hpp"
 #include "LinkedList.hpp"
 #include "ArrayList.hpp"
+#include "ThreadPoolExecutor.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(SocketMonitorTask) {
 public:
-    enum {
-        Connect = 0,
-        Message,
-        Disconnect
-    };
-    
     _SocketMonitorTask(int event,Socket s);
     _SocketMonitorTask(int event,Socket s,ByteArray);
 
@@ -55,9 +50,12 @@ private:
     int mThreadNum;
     ArrayList<LinkedList<SocketMonitorTask>>  mThreadLocalTasks;
     LinkedList<SocketMonitorTask> mThreadPublicTasks;
-    ArrayList<Thread> mThreads;
+    ThreadPoolExecutor mExecutor;
     Socket *mCurrentSockets;
     Condition mCondition;
+
+    //bool isStop
+    mutable volatile int32_t isStop;
 
     int mServerSockFd;
     

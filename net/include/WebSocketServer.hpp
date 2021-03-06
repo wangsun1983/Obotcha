@@ -31,64 +31,8 @@
 
 namespace obotcha {
 
-class _WebSocketDispatcherPool;
-class _WebSocketServer;
-
-//-----------WebSocketDispatchData----------------
-DECLARE_SIMPLE_CLASS(DispatchData) {
-public:
-    _DispatchData(uint64_t,int,int,uint32_t,ByteArray);
-    _DispatchData(uint64_t,int,int,uint32_t,HttpPacket);
-
-    enum DataType {
-        Http = 0,
-        Ws,
-    };
-    
-    int cmd;
-    int fd;
-    uint64_t clientId;
-
-    uint32_t events;
-    ByteArray data;
-    HttpPacket packet;
-};
-
 //------------------------WebSocketServer-------------------------
-DECLARE_SIMPLE_CLASS(WebSocketDispatcherPool) {
-public:
-    _WebSocketDispatcherPool(int threadnum = 4);
-    void addData(DispatchData);
-
-    DispatchData getData(int);
-
-    void setHttpServer(HttpServer);
-    void setWebSocketServer(sp<_WebSocketServer>);
-    
-    void handleWsData(DispatchData data);
-    void handleHttpData(DispatchData data);
-    
-    void release();
-
-private:
-
-    Mutex mDataMutex;
-    Condition mDataCondition;
-    LinkedList<DispatchData> datas;
-    ThreadPoolExecutor mExecutor;
-    ArrayList<LinkedList<DispatchData>> mTaskGroup;
-
-    HttpServer mHttpServer;
-    sp<_WebSocketServer> mWebSocketServer;
-    
-    mutable volatile bool isStop;
-    int GroupIdTofds[128];
-
-    int getGroupIdByFd(int);
-};
-
-//------------------------WebSocketServer-------------------------
-DECLARE_SIMPLE_CLASS(WebSocketServer) EXTENDS(EPollFileObserverListener),st(HttpListener){
+DECLARE_SIMPLE_CLASS(WebSocketServer) EXTENDS(EPollFileObserverListener),st(HttpListener),st(SocketListener){
 public:
     friend class _WebSocketDispatcherPool;
 
@@ -100,45 +44,26 @@ public:
     void setRcvTimeout(long);
     long getRcvTimeout();
 
-    int bind(String ip,int port,String path,WebSocketListener listener);
-    
-    int bind(int port,String path,WebSocketListener listener);
+    int bind(InetAddress mAddress,String path,WebSocketListener listener);
     
     int start();
 
     int release();
-    
-    //WebSocket Epoll listener
-    int onEvent(int fd,uint32_t events,ByteArray);
-
-    void onMessage(sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg);
-    void onConnect(sp<_HttpClientInfo>);
-    void onDisconnect(sp<_HttpClientInfo>);
 
 private:
-    void monitor(int fd);
+    void onHttpMessage(int,sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg);
 
-    int notifyMessage(sp<_WebSocketClientInfo> client,WebSocketFrame);
+    void onSocketMessage(int,Socket,ByteArray);
 
-    int notifyData(sp<_WebSocketClientInfo> client,WebSocketFrame);
-
-    int notifyConnect(sp<_WebSocketClientInfo> client);
-
-    int notifyDisconnect(sp<_WebSocketClientInfo> client);
-
-    int notifyPong(sp<_WebSocketClientInfo> client,String);
-
-    int notifyPing(sp<_WebSocketClientInfo> client,String);
-    
     String mPath;
+
+    InetAddress mAddress;
 
     HttpServer mHttpServer;
 
-    WebSocketListener mWsListener;
-    
-    EPollFileObserver mWsEpollObserver;
+    SocketMonitor mSocketMonitor;
 
-    WebSocketDispatcherPool mDispatchPool;
+    WebSocketListener mWsListener;
     
     long mSendTimeout;
     long mRcvTimeout;

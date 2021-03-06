@@ -20,158 +20,51 @@
 
 namespace obotcha {
 
-//------------------HttpTaskData------------------
-_HttpTaskData::_HttpTaskData(Socket s,ByteArray data) {
-    this->s = s;
-    this->pack = data;
-}
-
-_HttpDispatcherPool::_HttpDispatcherPool(sp<_HttpServer> server,int threadSize) {
-    mExecutors = createThreadPoolExecutor(-1,threadSize);
-    datas = createLinkedList<HttpTaskData>();
-    mTaskGroup = createArrayList<LinkedList<HttpTaskData>>();
-    mDataMutex = createMutex();
-    mDataCondition = createCondition();
-    isStop = false;
-    
-    for(int index = 0;index < threadSize;index++) {
-        mTaskGroup->add(createLinkedList<HttpTaskData>());
-        GroupIdTofds[index] = -1;
-        mExecutors->execute([](HttpServer server,HttpDispatcherPool pool,int num) {
-            while(1) {
-                printf("_HttpDispatcherPool trace1 \n");
-                HttpTaskData data = pool->getData(num);
-                
-                if(data == nullptr) {
-                    return;
-                }
-                printf("_HttpDispatcherPool trace2 \n");
-                HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(data->s);
-                if(info == nullptr) {
-                    continue;
-                }
-                printf("_HttpDispatcherPool trace3 \n");
-                try {
-                    info->pushHttpData(data->pack);
-                } catch(HttpInternalException &e) {
-                    st(HttpClientManager)::getInstance()->removeClientInfo(data->s);
-                    info->close();
-                    continue;
-                }
-                printf("_HttpDispatcherPool trace4 \n");
-                ArrayList<HttpPacket> packets = info->pollHttpPacket();
-                if(packets != nullptr && packets->size() != 0) {
-                    HttpResponseWriter writer = createHttpResponseWriter(info);
-                    ListIterator<HttpPacket> iterator = packets->getIterator();
-                    while(iterator->hasValue()) {
-                        server->mHttpListener->onMessage(info,writer,iterator->getValue());
-                        iterator->next();
-                    }
+void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
+    switch(event) {
+        case st(HttpListener)::Message: {
+            printf("_HttpServer::onDataReceived \n");
+            HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r);
+            if(info == nullptr) {
+                return;
+            }
+            info->pushHttpData(pack);
+            ArrayList<HttpPacket> packets = info->pollHttpPacket();
+            if(packets != nullptr && packets->size() != 0) {
+                HttpResponseWriter writer = createHttpResponseWriter(info);
+                ListIterator<HttpPacket> iterator = packets->getIterator();
+                while(iterator->hasValue()) {
+                    mHttpListener->onHttpMessage(event,info,writer,iterator->getValue());
+                    iterator->next();
                 }
             }
-        },server,AutoClone(this),index);
-    }
-}
+        }
+        break;
 
-void _HttpDispatcherPool::addData(HttpTaskData data) {
-    AutoLock l(mDataMutex);
-    int index = getGroupIdByFd(data->s);
-    
-    if(index != -1) {
-        mTaskGroup->get(index)->enQueueLast(data);
-        mDataCondition->notifyAll();
-        return;
-    }
-    
-    datas->enQueueLast(data);
-    mDataCondition->notifyAll();
-}
+        case st(HttpListener)::Connect:{
+            HttpClientInfo info = createHttpClientInfo(r);
 
-int _HttpDispatcherPool::getGroupIdByFd(Socket s) {
-    //try to find an index
-    AutoLock l(mDataMutex);
-    for(int index = 0;index < mExecutors->getThreadsNum();index++) {
-        if(GroupIdTofds[index] == s->getFd()) {
-            return index;
+            //TODO
+            SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
+            if(info != nullptr) {
+                info->setSSLInfo(ssl);
+            }
+            st(HttpClientManager)::getInstance()->addClientInfo(info);
+            mSockMonitor->bind(r->getFd(),AutoClone(this));
+            mHttpListener->onHttpMessage(event,info,nullptr,nullptr);
+        }
+        break;
+
+        case st(HttpListener)::Disconnect: {
+            HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r);
+            mHttpListener->onHttpMessage(event,info,nullptr,nullptr);
+            mSockMonitor->remove(r);
         }
     }
-    return -1;
-}
-
-void _HttpDispatcherPool::release() {
-    mExecutors->shutdown();
-    this->isStop = true;
-
-    AutoLock l(mDataMutex);
-    mDataCondition->notifyAll();
-}
-
-HttpTaskData _HttpDispatcherPool::getData(int requireIndex) {
-    HttpTaskData data = nullptr;
-    while(!isStop) {
-        AutoLock l(mDataMutex);
-        data = mTaskGroup->get(requireIndex)->deQueueFirst();
-
-        if(data == nullptr) {
-            GroupIdTofds[requireIndex] = -1;
-        } else {
-            return data;
-        }
-
-        data = datas->deQueueFirst();
-        if(data != nullptr) {
-            GroupIdTofds[requireIndex] = data->s->getFd();
-            return data;
-        }
-        try {
-            mDataCondition->wait(mDataMutex);
-        } catch(InterruptedException &e) {
-            return nullptr;
-        }
-
-        continue;
-    }
-
-    return nullptr;
-}
-
-void _HttpServer::onDataReceived(Socket r,ByteArray pack) {
-    printf("_HttpServer::onDataReceived \n");
-    HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r);
-    HttpTaskData data = createHttpTaskData(r,pack);
-    mPool->addData(data);
-}
-
-void _HttpServer::onDisconnect(Socket r) {
-    printf("_HttpServer::onDisconnect \n");
-    HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r);
-    mHttpListener->onDisconnect(info);
-    mSockMonitor->remove(r);
-}
-
-void _HttpServer::onConnect(Socket r) {
-    printf("_HttpServer::onConnect \n");
-    HttpClientInfo info = createHttpClientInfo(r);
-
-    //TODO
-    SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
-    if(info != nullptr) {
-        info->setSSLInfo(ssl);
-    }
-    st(HttpClientManager)::getInstance()->addClientInfo(info);
-    mSockMonitor->bind(r->getFd(),AutoClone(this));
-    mHttpListener->onConnect(info);
-}
-
-void _HttpServer::onTimeout() {
-    //Unused
 }
 
 _HttpServer::_HttpServer(InetAddress addr,HttpListener l,String certificate,String key) {
     mHttpListener = l;
-
-    int threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
-    mPool = createHttpDispatcherPool(AutoClone(this),threadsNum);
 
     mServerSock = nullptr;
     mSockMonitor = nullptr;
@@ -201,7 +94,8 @@ void _HttpServer::start() {
                         ->newServerSocket();
         mServerSock->bind();
         printf("http server trace1 \n");
-        mSockMonitor = createSocketMonitor();
+        int threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
+        mSockMonitor = createSocketMonitor(threadsNum);
         printf("http server trace2 \n");
         mSockMonitor->bind(mServerSock,AutoClone(this));
         printf("http server trace3 \n");
@@ -228,16 +122,15 @@ long _HttpServer::getRcvTimeout() {
 }
 
 //interface for websocket
-void _HttpServer::deMonitor(int fd) {
-    //mTcpServer->deMonitor(fd);
-    printf("demonitor \n");
-    //TODO
-    //mSockMonitor->remove(fd);
-    //st(HttpClientManager)::getInstance()->removeClientInfo(fd);
+void _HttpServer::deMonitor(Socket s) {
+    mSockMonitor->remove(s);
 }
 
 void _HttpServer::exit() {
-    printf("http server exit \n");
+    if(mSockMonitor != nullptr) {
+        mSockMonitor->release();
+    }
+
     if(mServerSock != nullptr) {
         mServerSock->close();
     }
@@ -246,10 +139,6 @@ void _HttpServer::exit() {
         mSSLServer->release();
     }
 
-    if(mPool != nullptr) {
-        mPool->release();
-    }
-    
     st(HttpClientManager)::getInstance()->clear();
 }
 

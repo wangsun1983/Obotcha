@@ -84,6 +84,7 @@ public:
         updateFdEventsMap(fd,events,mFdEventsMap);
 
         addEpollFd(fd,regEvents|EpollRdHup|EPOLLHUP);
+        return 0;
     }
 
     //wangsl add lambda function

@@ -7,6 +7,7 @@
 #include "ByteArray.hpp"
 #include "SocketImpl.hpp"
 #include "SocketOption.hpp"
+#include <atomic>
 
 namespace obotcha {
 
@@ -18,11 +19,19 @@ public:
         Local
     };
 
+    enum Event{
+        Connect = 0,
+        Message,
+        Disconnect
+    };
+
     _Socket(int,InetAddress host,SocketOption option);
     _Socket(int);
     int connect();
 
     void close();
+    bool isClosed();
+
     int getFd();
     int getType();
 
@@ -39,10 +48,14 @@ private:
         Closed,
     };
     int type;
+
+    std::atomic_int mStatus;
     
 protected:
     SocketImpl mSock; 
-    
+    InputStream mInput;
+    OutputStream mOutput;
+
 };
 
 }

@@ -17,14 +17,9 @@ WebSocketClientManager _WebSocketClientManager::mInstance = nullptr;
 Mutex _WebSocketClientManager::mMutex = createMutex("WebSocketClientManagerMutex");
 
 _WebSocketClientManager::_WebSocketClientManager() {
-    mClients = createHashMap<int, WebSocketClientInfo>();
-
-    mRand = createRandom();
+    mClients = createHashMap<Socket, WebSocketClientInfo>();
 }
 
-uint32_t _WebSocketClientManager::genRandomUint32() {
-    return mRand->nextUint32();
-}
 
 WebSocketClientManager _WebSocketClientManager::getInstance() {
     if (mInstance != nullptr) {
@@ -41,9 +36,8 @@ WebSocketClientManager _WebSocketClientManager::getInstance() {
     return mInstance;
 }
 
-WebSocketClientInfo _WebSocketClientManager::addClient(int fd, int version) {
-    WebSocketClientInfo client = createWebSocketClientInfo();
-    client->setClientFd(fd);
+WebSocketClientInfo _WebSocketClientManager::addClient(Socket sock, int version) {
+    WebSocketClientInfo client = createWebSocketClientInfo(sock);
     client->setVersion(version);
 
     switch (version) {
@@ -77,18 +71,18 @@ WebSocketClientInfo _WebSocketClientManager::addClient(int fd, int version) {
     }
 
     AutoLock ll(mMutex);
-    mClients->put(fd, client);
+    mClients->put(sock, client);
     return client;
 }
 
-WebSocketClientInfo _WebSocketClientManager::getClient(int fd) {
+WebSocketClientInfo _WebSocketClientManager::getClient(Socket s) {
     AutoLock ll(mMutex);
-    return mClients->get(fd);
+    return mClients->get(s);
 }
 
 void _WebSocketClientManager::removeClient(WebSocketClientInfo client) {
     AutoLock ll(mMutex);
-    mClients->remove(client->getClientFd());
+    mClients->remove(client->getSocket());
 }
 
 

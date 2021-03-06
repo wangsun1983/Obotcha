@@ -11,13 +11,12 @@
 #include <stddef.h>
 
 #include "SocketMonitor.hpp"
+#include "ExecutorBuilder.hpp"
 
 namespace obotcha {
 
 
-_SocketMonitorTask::_SocketMonitorTask(int event,Socket s) {
-    this->event = event;
-    this->sock = s;
+_SocketMonitorTask::_SocketMonitorTask(int event,Socket s):_SocketMonitorTask(event,s,nullptr) {
 }
 
 _SocketMonitorTask::_SocketMonitorTask(int event,Socket s,ByteArray data) {
@@ -26,7 +25,10 @@ _SocketMonitorTask::_SocketMonitorTask(int event,Socket s,ByteArray data) {
     this->data = data;
 }
 
-_SocketMonitor::_SocketMonitor() {
+_SocketMonitor::_SocketMonitor():_SocketMonitor(1) {
+}
+
+_SocketMonitor::_SocketMonitor(int threadnum) {
     mServerSockFd = -1;
     mMutex = createMutex();
     mSocks = createHashMap<int,Socket>();
@@ -34,9 +36,7 @@ _SocketMonitor::_SocketMonitor() {
     mPoll = createEPollFileObserver();
     mPoll->start();
     mThreadNum = 1;
-}
 
-_SocketMonitor::_SocketMonitor(int threadnum):_SocketMonitor() {
     mThreadPublicTasks = createLinkedList<SocketMonitorTask>();
     mThreadLocalTasks = createArrayList<LinkedList<SocketMonitorTask>>(threadnum);
     mCurrentSockets = new Socket[threadnum];
@@ -47,15 +47,17 @@ _SocketMonitor::_SocketMonitor(int threadnum):_SocketMonitor() {
     }
 
     mThreadNum = threadnum;
+
+    isStop = 1;
 }
 
 int _SocketMonitor::bind(Socket s,SocketListener l) {
-    bind(s->getFd(),l);
+    return bind(s->getFd(),l);
 }
 
 int _SocketMonitor::bind(ServerSocket s,SocketListener l) {
     mServerSockFd = s->getFd();
-    bind(s->getFd(),l);
+    return bind(s->getFd(),l);
 }
 
 int _SocketMonitor::bind(int fd,SocketListener l) {
@@ -82,7 +84,7 @@ int _SocketMonitor::bind(int fd,SocketListener l) {
                 {
                     AutoLock l(mutex);
                     socks->put(clientfd,s);
-                    tasks->enQueueLast(createSocketMonitorTask(st(SocketMonitorTask)::Connect,s));
+                    tasks->enQueueLast(createSocketMonitorTask(st(Socket)::Connect,s));
                     cond->notifyAll();
                 }
                 
@@ -102,30 +104,32 @@ int _SocketMonitor::bind(int fd,SocketListener l) {
             {
                 AutoLock l(mutex);
                 socks->remove(fd);
-                tasks->enQueueLast(createSocketMonitorTask(st(SocketMonitorTask)::Disconnect,s));
+                tasks->enQueueLast(createSocketMonitorTask(st(Socket)::Disconnect,s));
             }
         } else if((events & EPOLLIN) != 0) {
             //listener->onDataReceived(s,data);
             {
                 AutoLock l(mutex);
-                tasks->enQueueLast(createSocketMonitorTask(st(SocketMonitorTask)::Disconnect,s,data));
+                tasks->enQueueLast(createSocketMonitorTask(st(Socket)::Message,s,data));
             }
         } 
         
     },l,mServerSockFd,mMutex,mCondition,mSocks,mThreadPublicTasks);
 
 
-    mThreads = createArrayList<Thread>(mThreadNum);
+    //mThreads = createArrayList<Thread>(mThreadNum);
+    this->mExecutor = createExecutorBuilder()->setThreadNum(mThreadNum)->newThreadPool();
     for(int i = 0;i < mThreadNum;i++) {
-        Thread th = createThread([](Mutex mutex,
+        mExecutor->execute([](Mutex mutex,
                                     Condition cond,
                                     int index,
                                     int totalnum,
                                     ArrayList<LinkedList<SocketMonitorTask>> &localtasks,
                                     LinkedList<SocketMonitorTask> &publictasks,
                                     Socket *currentSocks,
-                                    SocketListener &listener) {
-            while(1){
+                                    SocketListener &listener,
+                                    int32_t *stop) {
+            while(*stop == 1){
                 SocketMonitorTask task = nullptr;
                 {
                     AutoLock l(mutex);
@@ -133,6 +137,11 @@ int _SocketMonitor::bind(int fd,SocketListener l) {
                     if(task == nullptr) {
                         currentSocks[index] = nullptr;
                         task = publictasks->deQueueFirst();
+                        if(task == nullptr) {
+                            cond->wait(mutex);
+                            continue;
+                        }
+                        
                         bool isOtherThreadTask = false;
                         for(int i = 0;i<totalnum;i++) {
                             if(currentSocks[i] == task->sock) {
@@ -147,49 +156,45 @@ int _SocketMonitor::bind(int fd,SocketListener l) {
                         if(isOtherThreadTask) {
                             continue;
                         }
-
-                        if(task == nullptr) {
-                            cond->wait(mutex);
-                            continue;
-                        }
                     }
                 }
 
-                switch(task->event) {
-                    case st(SocketMonitorTask)::Connect:
-                        listener->onConnect(task->sock);
-                    break;
-
-                    case st(SocketMonitorTask)::Message:
-                        listener->onDataReceived(task->sock,task->data);
-                    break;
-
-                    case st(SocketMonitorTask)::Disconnect:
-                        listener->onDisconnect(task->sock);
-                    break;
-                }
-
+                listener->onSocketMessage(task->event,task->sock,task->data);
             }
             
-        },mMutex,
+        },
+        mMutex,
         mCondition,
         i,
         mThreadNum,
         mThreadLocalTasks,
         mThreadPublicTasks,
         mCurrentSockets,
-        l);
-
-        th->start();
-        mThreads->add(th);
+        l,
+        (int32_t *)&isStop);
     }
     
-    return -1;
+    return 0;
 }
 
 
 void _SocketMonitor::release() {
     mPoll->release();
+    isStop = 0;
+    {
+        AutoLock l(mMutex);
+        ListIterator<LinkedList<SocketMonitorTask>> iterator = mThreadLocalTasks->getIterator();
+        while(iterator->hasValue()) {
+            LinkedList<SocketMonitorTask> ll = iterator->getValue();
+            ll->clear();
+            iterator->next();
+        }
+
+        mThreadPublicTasks->clear();
+        mCondition->notifyAll();
+    }
+
+    mExecutor->shutdown();
 }
 
 int _SocketMonitor::remove(Socket s) {

@@ -21,53 +21,12 @@
 #include "Mutex.hpp"
 #include "ServerSocket.hpp"
 #include "SocketMonitor.hpp"
+#include "HttpListener.hpp"
 
 namespace obotcha {
 
 class _HttpClientInfo;
 class _HttpResponseWriter;
-class _HttpDispatcherPool;
-class _HttpServer;
-
-DECLARE_SIMPLE_CLASS(HttpTaskData) {
-public:
-    _HttpTaskData(Socket,ByteArray);
-
-    Socket s;
-    ByteArray pack;
-};
-
-DECLARE_SIMPLE_CLASS(HttpListener) {
-public:
-    virtual void onMessage(sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg) = 0;
-    virtual void onConnect(sp<_HttpClientInfo>) = 0;
-    virtual void onDisconnect(sp<_HttpClientInfo>) = 0;
-    virtual ~_HttpListener(){}
-};
-
-DECLARE_SIMPLE_CLASS(HttpDispatcherPool) {
-public:
-    _HttpDispatcherPool(sp<_HttpServer> server,int threadNum = 4);
-    void release();
-    HttpTaskData getData(int);
-    void addData(HttpTaskData);
-    void clearFds(int index);
-
-private:
-    int getGroupIdByFd(Socket);
-    Mutex mDataMutex;
-    Condition mDataCondition;
-    mutable volatile bool isStop;
-
-    ArrayList<LinkedList<HttpTaskData>> mTaskGroup;
-    LinkedList<HttpTaskData> datas;
-
-    //Mutex fd2TidsMutex;
-    //std::map<int,int> fd2Tids;
-    int GroupIdTofds[128];    
-    ThreadPoolExecutor mExecutors;    
-};
-
 
 DECLARE_SIMPLE_CLASS(HttpServer) IMPLEMENTS(SocketListener) {
 
@@ -86,19 +45,13 @@ public:
     void setRcvTimeout(long);
     long getRcvTimeout();
 
-    void deMonitor(int fd);
+    void deMonitor(Socket);
     
     void exit();
 
 private:
 
-    void onDataReceived(Socket r,ByteArray pack);
-
-    void onDisconnect(Socket r);
-
-    void onConnect(Socket r);
-
-    void onTimeout();
+    void onSocketMessage(int,Socket,ByteArray);
 
     ServerSocket mServerSock;
     SocketMonitor mSockMonitor;
@@ -110,8 +63,6 @@ private:
     String mIp;
 
     int mPort;
-
-    HttpDispatcherPool mPool;
 
     long mSendTimeout;
     long mRcvTimeout;

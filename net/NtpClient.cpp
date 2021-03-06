@@ -34,10 +34,17 @@ _NtpSocketClientListener::~_NtpSocketClientListener() {
     mCondition->notify();
 }
 
-void _NtpSocketClientListener::onTimeout() {
-    //TODO
-}
+void _NtpSocketClientListener::onSocketMessage(int event,Socket s,ByteArray data) {
+    switch(event) {
+        case st(Socket)::Message:
+        return onDataReceived(s,data);
 
+        case st(Socket)::Connect:
+        case st(Socket)::Disconnect:
+        default:
+        return;
+    }
+}
 
 void _NtpSocketClientListener::onDataReceived(Socket r,ByteArray pack) {
     //int  ret;
@@ -112,13 +119,6 @@ void _NtpSocketClientListener::onDataReceived(Socket r,ByteArray pack) {
 
 void _NtpSocketClientListener::setTimeCallback(NtpListener l) {
     mListener = l;
-}
-    
-void _NtpSocketClientListener::onDisconnect(Socket r) {
-
-}
-    
-void _NtpSocketClientListener::onConnect(Socket r) {
 }
 
 long int _NtpSocketClientListener::getTimeMillis() {
