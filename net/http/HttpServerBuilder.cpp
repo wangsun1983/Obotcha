@@ -4,8 +4,7 @@ namespace obotcha {
 
 _HttpServerBuilder::_HttpServerBuilder() {
     mAddress = createInetAddress();
-    mCert = nullptr;
-    mKey = nullptr;
+    mOption = nullptr;
     mListener = nullptr;
 }
     
@@ -14,22 +13,18 @@ _HttpServerBuilder* _HttpServerBuilder::setAddress(InetAddress addr) {
     return this;
 }
 
-_HttpServerBuilder* _HttpServerBuilder::setCertificate(String c) {
-    mCert = c;
-    return this;
-}
-
-_HttpServerBuilder* _HttpServerBuilder::setKey(String k) {
-    mKey = k;
-    return this;
-}
 _HttpServerBuilder* _HttpServerBuilder::setListener(HttpListener l) {
     mListener = l;
     return this;
 }
 
+_HttpServerBuilder* _HttpServerBuilder::setOption(HttpOption option) {
+    mOption = option;
+    return this;
+}
+
 HttpServer _HttpServerBuilder::build() {
-    return createHttpServer(mAddress,mListener,mCert,mKey);
+    return createHttpServer(mAddress,mListener,mOption);
 }
 
 }

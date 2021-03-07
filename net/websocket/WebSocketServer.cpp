@@ -12,6 +12,7 @@
 #include "Log.hpp"
 #include "HttpServerBuilder.hpp"
 #include "Inet4Address.hpp"
+#include "HttpOption.hpp"
 
 namespace obotcha {
 
@@ -19,28 +20,10 @@ namespace obotcha {
 _WebSocketServer::_WebSocketServer() {
     int threadnum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
     mSocketMonitor = createSocketMonitor(threadnum);
-    mSendTimeout = -1;
-    mRcvTimeout = -1;
-}
-
-void _WebSocketServer::setSendTimeout(long timeout) {
-    mSendTimeout = timeout;
-}
-
-long _WebSocketServer::getSendTimeout() {
-    return mSendTimeout;
-}
-
-void _WebSocketServer::setRcvTimeout(long timeout) {
-    mRcvTimeout = timeout;
-}
-
-long _WebSocketServer::getRcvTimeout() {
-    return mRcvTimeout;
 }
 
 int _WebSocketServer::bind(InetAddress addr, String path,
-                           WebSocketListener listener) {
+                           WebSocketListener listener,WebSocketOption option) {
     if (mHttpServer != nullptr) {
       return -AlreadyExists;
     }
@@ -48,13 +31,19 @@ int _WebSocketServer::bind(InetAddress addr, String path,
     mAddress = addr;
     mWsListener = listener;
     
+    HttpOption httpoption = nullptr;
+
+    if(option != nullptr) {
+        httpoption = createHttpOption();
+        httpoption->setSendTimeout(option->getSendTimeout());
+        httpoption->setRecvTimeout(option->getRcvTimeout());
+    }
     mHttpServer = createHttpServerBuilder()
                 ->setAddress(addr)
                 ->setListener(AutoClone(this))
+                ->setOption(httpoption)
                 ->build();
-
-    mHttpServer->setSendTimeout(mSendTimeout);
-    mHttpServer->setRcvTimeout(mRcvTimeout);
+    
     mHttpServer->start();
 
     return 0;
@@ -75,9 +64,10 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
     int fd = s->getFd();
     WebSocketClientInfo client =
         st(WebSocketClientManager)::getInstance()->getClient(s);
-
+    printf("_WebSocketServer onSocketMessage is %x,socket addr is %lx \n",event,s.get_pointer());
     switch(event) {
         case st(Socket)::Message: {
+            printf("_WebSocketServer onSocketMessage trace1 \n");
             bool isRmClient = false;
             WebSocketParser parser = client->getParser();
             WebSocketBuffer defferedBuff = client->getDefferedBuffer();
@@ -89,7 +79,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                 }
                 pack = defferedBuff->mBuffer;
             }
-
+            printf("_WebSocketServer onSocketMessage trace2 \n");
             while (1) {
                 int readIndex = 0;
                 if (!parser->validateEntirePacket(pack)) {
@@ -101,15 +91,17 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                     }
                     break;
                 }
-
+                printf("_WebSocketServer onSocketMessage trace3 \n");
                 parser->setParseData(pack);
                 WebSocketHeader header = parser->parseHeader();
 
                 int opcode = header->getOpCode();
                 int framesize = header->getFrameLength();
                 int headersize = header->getHeadSize();
+                printf("_WebSocketServer onSocketMessage onMessage trace1,opcode is %d\n",opcode);
 
                 if (opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
+                    printf("_WebSocketServer onSocketMessage onMessage trace2\n");
                     ByteArray msgData = parser->parseContent(true);
                     String msg = msgData->toString();
                     WebSocketFrame frame = createWebSocketFrame(header,msg);
@@ -195,6 +187,7 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_Ht
             String version = header->getValue(st(HttpHeader)::SecWebSocketVersion);
             if (upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
                 // remove fd from http epoll
+                printf("deMonitor \n");
                 mHttpServer->deMonitor(client->getSocket());
 
                 while(st(WebSocketClientManager)::getInstance()->getClient(client->getSocket())!= nullptr) {
@@ -202,6 +195,7 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_Ht
                     usleep(1000*5);
                 }
                 
+                printf("_WebSocketServer onHttpMessage socket addr is %lx \n",client->getSocket().get_pointer());
                 WebSocketClientInfo wsClient = st(WebSocketClientManager)::getInstance()->addClient(client->getSocket(),
                                                                     version->toBasicInt());
                 wsClient->setHttpHeader(header);
@@ -222,7 +216,7 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_Ht
                 } else {
                     //TODO
                 }
-
+                printf("move to socket monitor \n");
                 mSocketMonitor->bind(client->getSocket(),AutoClone(this));
                 mWsListener->onConnect(wsClient);
 

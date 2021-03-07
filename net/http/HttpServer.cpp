@@ -63,7 +63,7 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
     }
 }
 
-_HttpServer::_HttpServer(InetAddress addr,HttpListener l,String certificate,String key) {
+_HttpServer::_HttpServer(InetAddress addr,HttpListener l,HttpOption option) {
     mHttpListener = l;
 
     mServerSock = nullptr;
@@ -73,25 +73,37 @@ _HttpServer::_HttpServer(InetAddress addr,HttpListener l,String certificate,Stri
 
     mAddress = addr;
 
-    mCertificate = certificate;
-    mKey = key;
-    mSendTimeout = -1;
-    mRcvTimeout = -1;
+    mOption = option;
 }
 
 void _HttpServer::start() {
-    if(mCertificate == nullptr) {
+    String certificate = nullptr; 
+    String key = nullptr;
+
+    if(mOption != nullptr) {
+        certificate = mOption->getCertificate();
+        key = mOption->getKey();
+    }
+
+    if(certificate != nullptr && key != nullptr) {
+        //https server
+        mSSLServer = createSSLServer(mAddress->getAddress(),mAddress->getPort(),AutoClone(this),certificate,key);
+    } else {
         SocketOption option = createSocketOption();
-        if(mSendTimeout != -1) {
-            option->setSendTimeout(mSendTimeout);
+        int sendtimeout = mOption->getSendTimeout();
+        int rcvtimeout = mOption->getRcvTimeout();
+
+        if(sendtimeout != -1) {
+            option->setSendTimeout(sendtimeout);
         }
 
-        if(mRcvTimeout != -1) {
-            option->setRecvTimeout(mRcvTimeout);
+        if(rcvtimeout != -1) {
+            option->setRecvTimeout(rcvtimeout);
         }
         mServerSock = createSocketBuilder()
                         ->setAddress(mAddress)
                         ->newServerSocket();
+
         mServerSock->bind();
         printf("http server trace1 \n");
         int threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
@@ -99,26 +111,8 @@ void _HttpServer::start() {
         printf("http server trace2 \n");
         mSockMonitor->bind(mServerSock,AutoClone(this));
         printf("http server trace3 \n");
-    } else {
-        //https server
-        mSSLServer = createSSLServer(mIp,mPort,AutoClone(this),mCertificate,mKey);
+        
     }
-}
-
-void _HttpServer::setSendTimeout(long timeout) {
-    mSendTimeout = timeout;
-}
-
-long _HttpServer::getSendTimeout() {
-    return mSendTimeout;
-}
-
-void _HttpServer::setRcvTimeout(long timeout) {
-    mRcvTimeout = timeout;
-}
-
-long _HttpServer::getRcvTimeout() {
-    return mRcvTimeout;
 }
 
 //interface for websocket

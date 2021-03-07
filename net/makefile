@@ -10,6 +10,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/socketbuilder.o \
 		$(outtmp)/socketimpl.o \
 		$(outtmp)/socketoption.o \
+		$(outtmp)/websocketoption.o \
 		$(outtmp)/sockssocketimpl.o \
 		$(outtmp)/serversocketimpl.o \
 		$(outtmp)/localsocketimpl.o \
@@ -17,6 +18,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/datagramsocketimpl.o \
 		$(outtmp)/socketmonitor.o \
 		$(outtmp)/httpurlparser.o \
+		$(outtmp)/httpoption.o \
 		$(outtmp)/httpurl.o \
 		$(outtmp)/httpfile.o \
 		$(outtmp)/httpstatus.o \
@@ -83,6 +85,9 @@ $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
 $(outtmp)/socketoption.o :$(netDir)/socket/SocketOption.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketOption.cpp -o $(outtmp)/socketoption.o $(external)
 
+$(outtmp)/websocketoption.o :$(netDir)/websocket/WebSocketOption.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketOption.cpp -o $(outtmp)/websocketoption.o $(external)
+
 $(outtmp)/sockssocketimpl.o :$(netDir)/socket/SocksSocketImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocksSocketImpl.cpp -o $(outtmp)/sockssocketimpl.o $(external)
 
@@ -133,6 +138,9 @@ $(outtmp)/httpmethod.o :$(netDir)/http/HttpMethod.cpp
 
 $(outtmp)/httpurlparser.o :$(netDir)/http/HttpUrlParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlParser.cpp -o $(outtmp)/httpurlparser.o $(external)
+
+$(outtmp)/httpoption.o :$(netDir)/http/HttpOption.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpOption.cpp -o $(outtmp)/httpoption.o $(external)
 
 $(outtmp)/httpurl.o :$(netDir)/http/HttpUrl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrl.cpp -o $(outtmp)/httpurl.o $(external)

@@ -22,6 +22,7 @@
 #include "ServerSocket.hpp"
 #include "SocketMonitor.hpp"
 #include "HttpListener.hpp"
+#include "HttpOption.hpp"
 
 namespace obotcha {
 
@@ -32,19 +33,11 @@ DECLARE_SIMPLE_CLASS(HttpServer) IMPLEMENTS(SocketListener) {
 
 public:
     friend class _HttpSocketListener;
-    friend class _HttpDispatcherPool;
     
-    _HttpServer(InetAddress addr,HttpListener,String certificate,String key);
+    _HttpServer(InetAddress addr,HttpListener,HttpOption option = nullptr);
 
     void start();
     
-    void setSendTimeout(long);
-    
-    long getSendTimeout();
-
-    void setRcvTimeout(long);
-    long getRcvTimeout();
-
     void deMonitor(Socket);
     
     void exit();
@@ -54,23 +47,16 @@ private:
     void onSocketMessage(int,Socket,ByteArray);
 
     ServerSocket mServerSock;
+
     SocketMonitor mSockMonitor;
 
     SSLServer mSSLServer;
 
     HttpListener mHttpListener;
 
-    String mIp;
-
-    int mPort;
-
-    long mSendTimeout;
-    long mRcvTimeout;
-
-    String mCertificate;
-    String mKey;
-
     InetAddress mAddress;
+
+    HttpOption mOption;
 };
 
 }

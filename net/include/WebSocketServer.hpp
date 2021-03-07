@@ -28,6 +28,7 @@
 #include "HttpServer.hpp"
 #include "Random.hpp"
 #include "SpinLock.hpp"
+#include "WebSocketOption.hpp"
 
 namespace obotcha {
 
@@ -37,13 +38,7 @@ public:
 
     _WebSocketServer();
 
-    void setSendTimeout(long);
-    long getSendTimeout();
-
-    void setRcvTimeout(long);
-    long getRcvTimeout();
-
-    int bind(InetAddress mAddress,String path,WebSocketListener listener);
+    int bind(InetAddress mAddress,String path,WebSocketListener listener,WebSocketOption option = nullptr);
     
     int start();
 
@@ -64,8 +59,7 @@ private:
 
     WebSocketListener mWsListener;
     
-    long mSendTimeout;
-    long mRcvTimeout;
+    WebSocketOption mOption;
 };
 
 

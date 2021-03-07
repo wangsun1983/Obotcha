@@ -9,6 +9,7 @@
 #include "SocketOption.hpp"
 #include "ServerSocket.hpp"
 #include "HttpServer.hpp"
+#include "HttpOption.hpp"
 
 namespace obotcha {
 
@@ -17,17 +18,16 @@ public:
     _HttpServerBuilder();
     
     _HttpServerBuilder* setAddress(InetAddress);
-    _HttpServerBuilder* setCertificate(String);
-    _HttpServerBuilder* setKey(String);
     _HttpServerBuilder* setListener(HttpListener);
+    _HttpServerBuilder* setOption(HttpOption);
+    
     
     HttpServer build();
     
     
 private:
     InetAddress mAddress;
-    String mCert;
-    String mKey;
+    HttpOption mOption;
     HttpListener mListener;
 };
 
