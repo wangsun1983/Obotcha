@@ -20,8 +20,7 @@ public:
     _HttpServerBuilder* setAddress(InetAddress);
     _HttpServerBuilder* setListener(HttpListener);
     _HttpServerBuilder* setOption(HttpOption);
-    
-    
+
     HttpServer build();
     
     

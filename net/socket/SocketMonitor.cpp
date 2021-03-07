@@ -95,8 +95,6 @@ int _SocketMonitor::bind(int fd,SocketListener l) {
                     tasks->enQueueLast(createSocketMonitorTask(st(Socket)::Connect,s));
                     cond->notifyAll();
                 }
-                
-                //listener->onConnect(s);
                 return st(EPollFileObserver)::OnEventOK;
             }
         }
@@ -105,15 +103,9 @@ int _SocketMonitor::bind(int fd,SocketListener l) {
         {
             AutoLock l(mutex);
             s = socks->get(fd);
-            //if(s == nullptr) {
-            //    s = createSocket(fd);
-            //    socks->put(fd,s);
-            //}
         }
-
         
         if((events & (EPOLLHUP|EPOLLRDHUP))!= 0) {
-            //listener->onDisconnect(s);
             {
                 AutoLock l(mutex);
                 socks->remove(fd);
@@ -121,18 +113,18 @@ int _SocketMonitor::bind(int fd,SocketListener l) {
                 cond->notifyAll();
             }
         } else if((events & EPOLLIN) != 0) {
-            //listener->onDataReceived(s,data);
             {
                 AutoLock l(mutex);
                 tasks->enQueueLast(createSocketMonitorTask(st(Socket)::Message,s,data));
                 cond->notifyAll();
             }
-        } 
+        }
+        
+        return st(EPollFileObserver)::OnEventOK;
         
     },l,mServerSockFd,mMutex,mCondition,mSocks,mThreadPublicTasks);
 
 
-    //mThreads = createArrayList<Thread>(mThreadNum);
     this->mExecutor = createExecutorBuilder()->setThreadNum(mThreadNum)->newThreadPool();
     for(int i = 0;i < mThreadNum;i++) {
         mExecutor->execute([](Mutex mutex,
@@ -173,13 +165,7 @@ int _SocketMonitor::bind(int fd,SocketListener l) {
                         }
                     }
                 }
-                printf("ready send socket message,");
-                if(task->sock == nullptr) {
-                    printf("sock is nullptr \n");
-                } else {
-                    printf("sock is not nullptr \n");
-                }
-
+                
                 listener->onSocketMessage(task->event,task->sock,task->data);
             }
             
@@ -210,6 +196,8 @@ void _SocketMonitor::release() {
             ll->clear();
             iterator->next();
         }
+
+        mSocks->clear();
 
         mThreadPublicTasks->clear();
         mCondition->notifyAll();

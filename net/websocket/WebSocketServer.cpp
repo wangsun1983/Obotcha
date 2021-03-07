@@ -171,8 +171,13 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
         break;
 
         case st(Socket)::Disconnect: {
-            st(WebSocketClientManager)::getInstance()->removeClient(client);
-            mWsListener->onDisconnect(client);
+            if(client != nullptr) {
+                printf("websocket onsocket disconnect,fd is %d \n",client->getSocket()->getFd());
+                st(WebSocketClientManager)::getInstance()->removeClient(client);
+                mWsListener->onDisconnect(client);
+            } else {
+                printf("client is already remove!!! \n");
+            }
         }
         break;
     }

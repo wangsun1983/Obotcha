@@ -79,10 +79,14 @@ _HttpServer::_HttpServer(InetAddress addr,HttpListener l,HttpOption option) {
 void _HttpServer::start() {
     String certificate = nullptr; 
     String key = nullptr;
+    int sendtimeout = -1;
+    int rcvtimeout= -1;
 
     if(mOption != nullptr) {
         certificate = mOption->getCertificate();
         key = mOption->getKey();
+        sendtimeout = mOption->getSendTimeout();
+        rcvtimeout = mOption->getRcvTimeout();
     }
 
     if(certificate != nullptr && key != nullptr) {
@@ -90,9 +94,7 @@ void _HttpServer::start() {
         mSSLServer = createSSLServer(mAddress->getAddress(),mAddress->getPort(),AutoClone(this),certificate,key);
     } else {
         SocketOption option = createSocketOption();
-        int sendtimeout = mOption->getSendTimeout();
-        int rcvtimeout = mOption->getRcvTimeout();
-
+        
         if(sendtimeout != -1) {
             option->setSendTimeout(sendtimeout);
         }
