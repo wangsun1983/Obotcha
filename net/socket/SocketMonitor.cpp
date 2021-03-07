@@ -222,4 +222,8 @@ int _SocketMonitor::remove(Socket s) {
     return mPoll->removeObserver(s->getFd());
 }
 
+_SocketMonitor::~_SocketMonitor() {
+    delete []mCurrentSockets;
+}
+
 }

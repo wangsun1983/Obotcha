@@ -30,6 +30,7 @@ DECLARE_SIMPLE_CLASS(SocketMonitor) {
 public:
     _SocketMonitor();
     _SocketMonitor(int);
+    ~_SocketMonitor();
 
     int bind(Socket,SocketListener);
     int bind(ServerSocket,SocketListener);
