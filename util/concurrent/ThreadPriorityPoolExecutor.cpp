@@ -108,6 +108,8 @@ int _ThreadPriorityPoolExecutor::shutdown() {
         t->interrupt();
         return 1;
     });
+
+    return 0;
 }
 
 bool _ThreadPriorityPoolExecutor::isShutDown() {

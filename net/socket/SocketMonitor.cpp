@@ -47,18 +47,18 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
 
 int _SocketMonitor::bind(Socket s,SocketListener l) {
     {
-        AutoLock l(mMutex);
+        AutoLock lock(mMutex);
         mSocks->put(s->getFd(),s);
     }
-    return bind(s->getFd(),l);
+    return bind(s->getFd(),l,false);
 }
 
 int _SocketMonitor::bind(ServerSocket s,SocketListener l) {
     {
-        AutoLock l(mMutex);
+        AutoLock lock(mMutex);
         mSocks->put(s->getFd(),s);
     }
-    return bind(s->getFd(),l);
+    return bind(s->getFd(),l,true);
 }
 
 int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {

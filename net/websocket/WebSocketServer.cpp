@@ -64,7 +64,6 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
     int fd = s->getFd();
     WebSocketClientInfo client =
         st(WebSocketClientManager)::getInstance()->getClient(s);
-    printf("_WebSocketServer onSocketMessage is %x,socket addr is %lx \n",event,s.get_pointer());
     switch(event) {
         case st(Socket)::Message: {
             bool isRmClient = false;
@@ -199,7 +198,6 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_Ht
                     usleep(1000*5);
                 }
                 
-                printf("_WebSocketServer onHttpMessage socket addr is %lx \n",client->getSocket().get_pointer());
                 WebSocketClientInfo wsClient = st(WebSocketClientManager)::getInstance()->addClient(client->getSocket(),
                                                                     version->toBasicInt());
                 wsClient->setHttpHeader(header);
