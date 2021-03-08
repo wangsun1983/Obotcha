@@ -58,24 +58,20 @@ int _ThreadPoolExecutor::shutdown() {
 
         mStatus = ShutDown;
 
-        for(;;) {
-            FutureTask task = mPool->deQueueLastNoBlock();
-            if(task != nullptr) {
-                task->cancel();
-                continue;
-            } 
-            break;
-        }
+        mPool->foreach([](FutureTask &task) {
+            task->cancel();
+            return 1;
+        });
+
         mPool->destroy();
     }
     
     //interrupt all thread
-    ListIterator<Thread> iterator = mHandlers->getIterator();
-    while(iterator->hasValue()) {
-        Thread t = iterator->getValue();
+    mHandlers->foreach([](Thread t){
         t->interrupt();
-        iterator->next();
-    }
+        return 1;
+    });
+
     return 0;
 }
 
@@ -85,16 +81,16 @@ bool _ThreadPoolExecutor::isShtuDown() {
 }
 
 bool _ThreadPoolExecutor::isTerminated() {
-    ListIterator<Thread> iterator = mHandlers->getIterator();
-    while(iterator->hasValue()) {
-        Thread t = iterator->getValue();
+    bool isTerminated = true;
+    mHandlers->foreach([&isTerminated](Thread &t) {
         if(t->getStatus() != st(Thread)::Complete) {
-            return false;
+            isTerminated = false;
+            return -1;
         }
-        iterator->next();
-    }
+        return 1;
+    });
 
-    return true;
+    return isTerminated;
 }
 
 void _ThreadPoolExecutor::awaitTermination() {

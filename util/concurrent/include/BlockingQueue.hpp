@@ -111,6 +111,17 @@ public:
     inline T deQueueFirstNoBlock();
     inline T deQueueLastNoBlock();
 
+    //add foreach lambda
+    using foreachCallback = std::function<int(T &)>;
+    inline void foreach(foreachCallback callback) {
+        AutoLock l(mMutex);
+        for (T value:mQueue) {
+            if(callback(value) < 0) {
+                break;
+            }
+        }
+    }
+
     //destroy
     inline void destroy();
 

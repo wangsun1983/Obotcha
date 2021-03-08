@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -85,6 +86,16 @@ public:
         }
 
         return -1;
+    }
+
+    //add foreach lambda
+    using foreachCallback = std::function<int(T &)>;
+    inline void foreach(foreachCallback callback) {
+        for (T value:elements) {
+            if(callback(value) < 0) {
+                break;
+            }
+        }
     }
 
     inline int indexOf(T val) {

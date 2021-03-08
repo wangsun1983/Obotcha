@@ -10,16 +10,19 @@
 
 namespace obotcha {
 
-_StringReader::_StringReader(String v):mStringStream(v->getStdString()){
-    if(v == nullptr) {
+_StringReader::_StringReader(FileInputStream stream){
+    if(stream == nullptr) {
         Trigger(InitializeException,"StringReader error");
     }
+
+    ByteArray content = stream->readAll();
+    mStringStream << content->toString()->getStdString();
 }
     
 String _StringReader::readLine() {
     std::string s;
     if(std::getline(mStringStream,s)) {
-        return createString(s.data());
+        return createString(s);
     }
 
     return nullptr;
@@ -31,7 +34,6 @@ void _StringReader::reset() {
 }
 
 _StringReader::~_StringReader() {
-    
 }
 
 

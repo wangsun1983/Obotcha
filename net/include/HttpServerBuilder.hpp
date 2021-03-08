@@ -23,7 +23,6 @@ public:
 
     HttpServer build();
     
-    
 private:
     InetAddress mAddress;
     HttpOption mOption;

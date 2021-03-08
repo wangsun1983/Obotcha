@@ -10,94 +10,85 @@
  * @license none
  */
 
+#include <unistd.h>
+#include <fcntl.h>
+
 #include "FileOutputStream.hpp"
 
 namespace obotcha {
 
-_FileOutputStream::_FileOutputStream(File file) {
-    mPath = file->getAbsolutePath();    
+_FileOutputStream::_FileOutputStream(File file):_FileOutputStream(file->getAbsolutePath()) {
+}
+
+_FileOutputStream::_FileOutputStream(const char *path):_FileOutputStream(createString(path)) {
 }
 
 _FileOutputStream::_FileOutputStream(String path) {
     mPath = path;
+    fd = -1;
 }
 
-_FileOutputStream::_FileOutputStream(const char *path) {
-    mPath = createString(path);
+_FileOutputStream::_FileOutputStream(int fd) {
+    mPath = nullptr;
+    this->fd = fd;
 }
 
 long _FileOutputStream::write(char c) {
-    if(!fstream.is_open()) {
-        return false;
-    }
-    
-    fstream << c;
-    return 1;
+    return ::write(fd,&c,1);
 }
     
 long _FileOutputStream::write(ByteArray buff) {
-    if(!fstream.is_open() || buff == nullptr || buff->size() == 0) {
-        return false;
-    }
-    
-    fstream.write((char *)buff->toValue(),buff->size());
-    return buff->size();
+    return ::write(fd,buff->toValue(),buff->size());
 }
 
 long _FileOutputStream::write(ByteArray buff,long size) {
-    if(!fstream.is_open() || buff == nullptr || buff->size() < size) {
-        return -1;
-    }
- 
-    fstream.write((char *)buff->toValue(),size);
-    return size;
+    return ::write(fd,buff->toValue(),size);
 }
 
-bool _FileOutputStream::writeString(String s) {
-    fstream<<s->toChars();
-    return true;
+long _FileOutputStream::writeString(String s) {
+    return ::write(fd,s->toChars(),s->size());
 }
 
 bool _FileOutputStream::open() {
-    if(fstream.is_open()) {
+    if(fd >= 0) {
         return false;
     }
 
-    return this->open(FileOpenType::Append);
+    fd = ::open(mPath->toChars(),O_CREAT|O_WRONLY|O_TRUNC);
+    return (fd >= 0);
 }
 
 bool _FileOutputStream::open(int opentype) {
-    if(fstream.is_open()) {
+    if(fd >= 0) {
         return false;
     }
 
     switch(opentype) {
         case FileOpenType::Append:
-            fstream.open(mPath->toChars(),std::ios::app);
+            fd = ::open(mPath->toChars(),O_CREAT|O_WRONLY|O_APPEND);
         break;
 
         case FileOpenType::Trunc:
-            fstream.open(mPath->toChars(),std::ios::trunc);
+            fd = ::open(mPath->toChars(),O_CREAT|O_WRONLY|O_TRUNC);
         break;
     }
 
-    return fstream.is_open();
+    return (fd >= 0);
 }
     
 void _FileOutputStream::close() {
-    if(fstream.is_open()) {
-        fstream.close();
+    if(fd >= 0) {
+        ::close(fd);
+        fd = -1;
     }
 }
 
 void _FileOutputStream::flush() {
-    if(fstream.is_open()) {
-        fstream.flush();
-    }
+    fdatasync(fd);
 }
 
 _FileOutputStream::~_FileOutputStream() {
-    this->close();
+    close();
 }
 
 }

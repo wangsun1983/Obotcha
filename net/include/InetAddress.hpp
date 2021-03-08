@@ -20,6 +20,8 @@ public:
         LOCAL
     };
     
+    static String LocalHost;
+    
     _InetAddress(String,int);
     _InetAddress();
 

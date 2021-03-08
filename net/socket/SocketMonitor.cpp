@@ -15,10 +15,6 @@
 
 namespace obotcha {
 
-
-_SocketMonitorTask::_SocketMonitorTask(int event,Socket s):_SocketMonitorTask(event,s,nullptr) {
-}
-
 _SocketMonitorTask::_SocketMonitorTask(int event,Socket s,ByteArray data) {
     this->event = event;
     this->sock = s;
@@ -29,7 +25,6 @@ _SocketMonitor::_SocketMonitor():_SocketMonitor(1) {
 }
 
 _SocketMonitor::_SocketMonitor(int threadnum) {
-    mServerSockFd = -1;
     mMutex = createMutex();
     mSocks = createHashMap<int,Socket>();
 
@@ -47,7 +42,6 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
     }
 
     mThreadNum = threadnum;
-
     isStop = 1;
 }
 
@@ -60,7 +54,6 @@ int _SocketMonitor::bind(Socket s,SocketListener l) {
 }
 
 int _SocketMonitor::bind(ServerSocket s,SocketListener l) {
-    mServerSockFd = s->getFd();
     {
         AutoLock l(mMutex);
         mSocks->put(s->getFd(),s);
@@ -68,19 +61,24 @@ int _SocketMonitor::bind(ServerSocket s,SocketListener l) {
     return bind(s->getFd(),l);
 }
 
-int _SocketMonitor::bind(int fd,SocketListener l) {
+int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
+    int serversocket = -1;
+    if(isServer) {
+        serversocket = fd;
+    }
+
     mPoll->addObserver(fd,
                         EPOLLIN|EPOLLRDHUP|EPOLLHUP,
                         [](int fd,
                            uint32_t events,
                            ByteArray data,
                            SocketListener &listener,
-                           int sockfd,
+                           int serverfd,
                            Mutex mutex,
                            Condition cond,
                            HashMap<int,Socket> socks,
                            LinkedList<SocketMonitorTask> &tasks) {
-        if(fd == sockfd) {
+        if(fd == serverfd) {
             struct sockaddr_in client_address;
             socklen_t client_addrLength = sizeof(struct sockaddr_in);
             int clientfd = accept(fd,( struct sockaddr* )&client_address, &client_addrLength );
@@ -122,7 +120,7 @@ int _SocketMonitor::bind(int fd,SocketListener l) {
         
         return st(EPollFileObserver)::OnEventOK;
         
-    },l,mServerSockFd,mMutex,mCondition,mSocks,mThreadPublicTasks);
+    },l,serversocket,mMutex,mCondition,mSocks,mThreadPublicTasks);
 
 
     this->mExecutor = createExecutorBuilder()->setThreadNum(mThreadNum)->newThreadPool();
@@ -190,12 +188,10 @@ void _SocketMonitor::release() {
     isStop = 0;
     {
         AutoLock l(mMutex);
-        ListIterator<LinkedList<SocketMonitorTask>> iterator = mThreadLocalTasks->getIterator();
-        while(iterator->hasValue()) {
-            LinkedList<SocketMonitorTask> ll = iterator->getValue();
-            ll->clear();
-            iterator->next();
-        }
+        mThreadLocalTasks->foreach([](LinkedList<SocketMonitorTask> &list){
+            list->clear();
+            return 1;
+        });
 
         mSocks->clear();
 

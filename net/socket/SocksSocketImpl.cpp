@@ -22,7 +22,9 @@ _SocksSocketImpl::_SocksSocketImpl(InetAddress address,SocketOption option):_Soc
     mSockAddr.sin_family = PF_INET;
     mSockAddr.sin_port = htons(address->getPort());
     
-    if(address == nullptr) {
+    if(address != nullptr 
+        && address->getAddress() != nullptr 
+        && !address->getAddress()->equalsIgnoreCase(st(InetAddress)::LocalHost)) {
         mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
     } else {
         mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);

@@ -14,12 +14,13 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(FileOutputStream) EXTENDS(OutputStream){
 
 public:
-
     _FileOutputStream(File file);
 
     _FileOutputStream(String path);
 
     _FileOutputStream(const char *);
+
+    _FileOutputStream(int fd);
 
     long write(char c);
     
@@ -27,7 +28,7 @@ public:
 
     long write(ByteArray buff,long size);
 
-    bool writeString(String s);
+    long writeString(String s);
     
     bool open(int opentype);
 
@@ -42,7 +43,7 @@ public:
 private:
     String mPath;
 
-    std::ofstream fstream;
+    int fd;
 };
 
 }

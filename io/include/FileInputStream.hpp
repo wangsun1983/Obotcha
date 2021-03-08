@@ -21,6 +21,10 @@ public:
     
     _FileInputStream(String path);
 
+    _FileInputStream(const char *);
+
+    _FileInputStream(int fd);
+
     long read(ByteArray buffer);
 
     long readByLength(ByteArray buffer,int pos,int length);
@@ -35,16 +39,12 @@ public:
 
     void reset();
 
-    String readLine();
-
     ~_FileInputStream();
 
 private:
     String mPath;
 
-    std::ifstream fstream;
-
-    long filesize;
+    int fd;
 };
 
 }

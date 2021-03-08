@@ -94,7 +94,7 @@ public:
             return std::hash<int>{}(0);
         }
         return std::hash<std::string>{}(A->getStdString()); 
-    } 
+    }
 };
 
 //----------------------- HashMap<T,U> -----------------------
@@ -153,6 +153,16 @@ public:
         }
 
         return keyset;
+    }
+
+    //add foreach lambda
+    using foreachCallback = std::function<int(T,U)>;
+    inline void foreach(foreachCallback callback) {
+        for (auto it= hashmap.begin();it != hashmap.end();it++) {
+            if(callback(it->first,it->second) < 0) {
+                break;
+            }
+        }
     }
     
     sp<_MapIterator<T,U>> getIterator() {

@@ -46,26 +46,21 @@ int _ThreadCachedPoolExecutor::shutdown(){
         }
         mStatus = ShutDown;
 
-        while(1) {
-            FutureTask task = mTasks->deQueueLastNoBlock();
-            if(task != nullptr) {
-                task->cancel();
-                continue;
-            }
-            break;
-        }
+        mTasks->foreach([](FutureTask &t) {
+            t->cancel();
+            return 1;
+        });
+
         //notify all thread to close
         mTasks->destroy();
     }
 
     {
         AutoLock l(mHandlerMutex);
-        ListIterator<Thread> iterator = mHandlers->getIterator();
-        while(iterator->hasValue()) {
-            Thread t = iterator->getValue();
+        mHandlers->foreach([](Thread &t) {
             t->interrupt();
-            iterator->next();
-        }
+            return 1;
+        });
     }
     
     return 0;

@@ -18,8 +18,7 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(SocketMonitorTask) {
 public:
-    _SocketMonitorTask(int event,Socket s);
-    _SocketMonitorTask(int event,Socket s,ByteArray);
+    _SocketMonitorTask(int event,Socket s,ByteArray data = nullptr);
 
     int event;
     ByteArray data;
@@ -34,7 +33,7 @@ public:
 
     int bind(Socket,SocketListener);
     int bind(ServerSocket,SocketListener);
-    int bind(int,SocketListener);
+    int bind(int,SocketListener,bool isServer = false);
     
     int remove(Socket);
 
@@ -57,11 +56,6 @@ private:
 
     //bool isStop
     mutable volatile int32_t isStop;
-
-    int mServerSockFd;
-    
-    
-
 };
 
 }

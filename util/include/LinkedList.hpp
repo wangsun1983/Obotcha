@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -136,6 +137,18 @@ public:
         }
 
         return data;
+    }
+
+    //add foreach lambda
+    using foreachCallback = std::function<int(T)>;
+    inline void foreach(foreachCallback callback) {
+        LinkedListData<T> current = head;
+        while(current != nullptr) {
+            if(callback(current->data) < 0) {
+                break;
+            }
+            current = current->next;
+        }
     }
     
     sp<_LinkedListIterator<T>> getIterator() {

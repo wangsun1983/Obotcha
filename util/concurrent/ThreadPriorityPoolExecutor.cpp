@@ -104,12 +104,10 @@ int _ThreadPriorityPoolExecutor::shutdown() {
         mTaskCond->notifyAll();
     }
 
-    ListIterator<Thread> iterator = mThreads->getIterator();
-    while(iterator->hasValue()){
-        Thread thread = iterator->getValue();
-        thread->interrupt();
-        iterator->next();
-    }
+    mThreads->foreach([](Thread &t){
+        t->interrupt();
+        return 1;
+    });
 }
 
 bool _ThreadPriorityPoolExecutor::isShutDown() {
@@ -118,16 +116,16 @@ bool _ThreadPriorityPoolExecutor::isShutDown() {
 }
 
 bool _ThreadPriorityPoolExecutor::isTerminated() {
-    ListIterator<Thread> iterator = mThreads->getIterator();
-    while(iterator->hasValue()){
-        Thread thread = iterator->getValue();
-        if(thread->getStatus() != st(Thread)::Complete) {
-            return false;
+    bool isTerminated = true;
+    mThreads->foreach([&isTerminated](Thread &t) {
+        if(t->getStatus() != st(Thread)::Complete) {
+            isTerminated = false;
+            return -1;
         }
-        iterator->next();
-    }
+        return 1;
+    });
 
-    return true;
+    return isTerminated;
 }
 
 void _ThreadPriorityPoolExecutor::awaitTermination() {

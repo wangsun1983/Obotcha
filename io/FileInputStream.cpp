@@ -16,89 +16,68 @@
 
 namespace obotcha {
 
-_FileInputStream::_FileInputStream(File f) {
-    mPath = f->getAbsolutePath();
+_FileInputStream::_FileInputStream(File f):_FileInputStream(f->getAbsolutePath()) {
 }
-    
+
+_FileInputStream::_FileInputStream(const char *path):_FileInputStream(createString(path)) {
+}
+
 _FileInputStream::_FileInputStream(String path) {
     mPath = createString(path);
+    this->fd = -1;
+}
+
+_FileInputStream::_FileInputStream(int fd) {
+    mPath = nullptr;
+    this->fd = fd;
 }
 
 long _FileInputStream::read(ByteArray buff) {
-    if(!fstream.is_open()) {
-        return -1;
-    }
-
-    fstream.read((char *)buff->toValue(),buff->size());
-    return fstream.gcount();
+    return ::read(fd,buff->toValue(),buff->size());
 }
 
 long _FileInputStream::readByLength(ByteArray buffer,int pos,int len) {
-    if(!fstream.is_open()) {
-        return -1;
-    }
-
-    fstream.read((char *)buffer->toValue() + pos,len);
-    return fstream.gcount();
+    return ::read(fd,buffer->toValue() + pos,len);
 }
 
 long _FileInputStream::read(long index,ByteArray buffer) {
-    if(!fstream.is_open()) {
-        return -1;
-    }
-
-    fstream.seekg(index);
-    fstream.read((char *)buffer->toValue(),buffer->size());
-    return fstream.gcount();
+    lseek(fd,index,SEEK_SET);
+    return read(buffer);
 }
 
 ByteArray _FileInputStream::readAll() {
-    if(!fstream.is_open()) {
-        return nullptr;
-    }
+    struct stat stbuf;
+    if ((fstat(fd, &stbuf) != 0) || (!S_ISREG(stbuf.st_mode))) {
+	    return nullptr;
+	}
 
-    fstream.seekg (0, fstream.end);
-    long srcSize = fstream.tellg();
-    fstream.seekg (0, fstream.beg);
+    long filesize = stbuf.st_size;
+    ByteArray content = createByteArray(filesize);
 
-    ByteArray content = createByteArray(srcSize);
-    fstream.read((char *)content->toValue(),srcSize);
+    ::read(fd,content->toValue(),filesize);
     return content;
 }
 
 bool _FileInputStream::open() {
-    if(fstream.is_open()) {
+    if(fd >= 0) {
         return false;
     }
-
-    fstream.open(mPath->toChars(),std::ios::in|std::ios::binary);
-    return fstream.is_open();
+    
+    fd = ::open(mPath->toChars(),O_RDONLY);
+    return (fd >= 0);
 }
 
 void _FileInputStream::close() {
-    if(fstream.is_open()) {
-        fstream.close();
+    if(fd >= 0) {
+        ::close(fd);
+        fd = -1;
     }
 }
 
 void _FileInputStream::reset() {
-    if(fstream.is_open()) {
-        fstream.clear();
-        fstream.seekg(0,fstream.beg);
+    if(fd >= 0) {
+        lseek(fd,0,SEEK_SET);
     }
-}
-
-String _FileInputStream::readLine() {
-    if(!fstream.is_open()) {
-        return nullptr;
-    }
-
-    std::string s;
-    if(std::getline(fstream,s)) {
-        return createString(s.data());
-    }
-
-    return nullptr;
 }
 
 _FileInputStream::~_FileInputStream() {

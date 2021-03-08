@@ -2,6 +2,7 @@
 #include "FileInputStream.hpp"
 #include "FileOutputStream.hpp"
 #include "Error.hpp"
+#include "StringReader.hpp"
 
 namespace obotcha {
 
@@ -41,16 +42,33 @@ int _Properties::load(String path) {
 int _Properties::load(File file) {
     FileInputStream stream = createFileInputStream(file);
     stream->open();
-    String line = stream->readLine();
+    StringReader reader = createStringReader(stream);
+
+    String line = reader->readLine();
+    if(line != nullptr) {
+        printf("line is %s \n",line->toChars());
+    } else {
+        printf("line is nullptr \n");
+    }
+
     while(line != nullptr) {
         int index = line->indexOf(gPropEqualString);
+        printf("index is %d \n",index);
         if(index > 0) {
+            printf("substring at 0 \n");
             String tag = line->subString(0,index);
-            String value = line->subString(index + 1,line->size() - 1);
+            if(tag == nullptr) {
+                printf("tag is nullptr \n");
+            }
+
+            String value = line->subString(index + 1,line->size() - index - 1);
+            if(value == nullptr) {
+                printf("value is nullptr \n");
+            }
             mProps->put(tag,value);
         }
 
-        line = stream->readLine();
+        line = reader->readLine();
     }
 
     stream->close();

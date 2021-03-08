@@ -13,12 +13,13 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
+#include "FileInputStream.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(StringReader) {
 public:
-    _StringReader(String);
+    _StringReader(FileInputStream);
     
     String readLine();
 

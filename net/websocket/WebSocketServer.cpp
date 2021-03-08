@@ -67,7 +67,6 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
     printf("_WebSocketServer onSocketMessage is %x,socket addr is %lx \n",event,s.get_pointer());
     switch(event) {
         case st(Socket)::Message: {
-            printf("_WebSocketServer onSocketMessage trace1 \n");
             bool isRmClient = false;
             WebSocketParser parser = client->getParser();
             WebSocketBuffer defferedBuff = client->getDefferedBuffer();
