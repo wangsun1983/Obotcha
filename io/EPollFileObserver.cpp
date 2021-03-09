@@ -49,9 +49,9 @@ void _EPollFileObserver::run() {
     byte readbuff[st(EPollFileObserver)::DefaultBufferSize];
 
     while(1) {
-        printf("start wait \n");
+        //printf("start wait \n");
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
-        printf("start trace1 \n");
+        //printf("start trace1 \n");
         if(epoll_events_count < 0) {
             LOG(ERROR)<<"epoll_wait count is -1";
             return;
@@ -74,12 +74,12 @@ void _EPollFileObserver::run() {
             AutoLock l(mListenerMutex);
             ArrayList<EPollFileObserverListener> listeners = mListeners->get(fd);
             if(listeners == nullptr || listeners->size() == 0) {
-                LOG(ERROR)<<"EpollObserver get event,but no callback,fd is "<<fd;
+                LOG(ERROR)<<"EpollObserver get event,but no callback,fd is "<<fd<<"event is "<<recvEvents;
                 continue;
             }
 
             ListIterator<EPollFileObserverListener> iterator = listeners->getIterator();
-            printf("epoll observer trace1,listeners size is %d \n",listeners->size());
+            //printf("epoll observer trace1,listeners size is %d \n",listeners->size());
             while(iterator->hasValue()) {
                 //printf("epoll observer trace2 \n");
                 EPollFileObserverListener l = iterator->getValue();
@@ -93,13 +93,13 @@ void _EPollFileObserver::run() {
                 iterator->next();
             }
 
-            if(listeners->size() == 0 ||
-                (recvEvents & (EpollRdHup|EPOLLHUP)) != 0) {
-                epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
-                close(fd);
-                mFdEventsMap.erase(fd);
-                mListeners->remove(fd);
-            }
+            //if(listeners->size() == 0 ||
+            //    (recvEvents & (EpollRdHup|EPOLLHUP)) != 0) {
+            //    epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
+                //close(fd);
+                //mFdEventsMap.erase(fd);
+                //mListeners->remove(fd);
+            //}
         }
     }
 }

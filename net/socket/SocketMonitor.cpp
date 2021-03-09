@@ -77,7 +77,9 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                            Mutex mutex,
                            Condition cond,
                            HashMap<int,Socket> socks,
-                           LinkedList<SocketMonitorTask> &tasks) {
+                           LinkedList<SocketMonitorTask> &tasks,
+                           SocketMonitor &monitor) {
+        //printf("socket monitor fd is %lx,events is %lx \n",fd,events);
         if(fd == serverfd) {
             struct sockaddr_in client_address;
             socklen_t client_addrLength = sizeof(struct sockaddr_in);
@@ -89,7 +91,7 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                                     ntohs(client_address.sin_port)));
                 {
                     AutoLock l(mutex);
-                    socks->put(clientfd,s);
+                    monitor->bind(s,listener);
                     tasks->enQueueLast(createSocketMonitorTask(st(Socket)::Connect,s));
                     cond->notifyAll();
                 }
@@ -102,11 +104,14 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
             AutoLock l(mutex);
             s = socks->get(fd);
         }
+
+        if(s == nullptr) {
+            printf("i can not find socket ,fd is %d \n",fd);
+        }
         
         if((events & (EPOLLHUP|EPOLLRDHUP))!= 0) {
             {
                 AutoLock l(mutex);
-                socks->remove(fd);
                 tasks->enQueueLast(createSocketMonitorTask(st(Socket)::Disconnect,s));
                 cond->notifyAll();
             }
@@ -120,7 +125,7 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
         
         return st(EPollFileObserver)::OnEventOK;
         
-    },l,serversocket,mMutex,mCondition,mSocks,mThreadPublicTasks);
+    },l,serversocket,mMutex,mCondition,mSocks,mThreadPublicTasks,AutoClone(this));
 
 
     this->mExecutor = createExecutorBuilder()->setThreadNum(mThreadNum)->newThreadPool();
@@ -133,7 +138,8 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                                     LinkedList<SocketMonitorTask> &publictasks,
                                     Socket *currentSocks,
                                     SocketListener &listener,
-                                    int32_t *stop) {
+                                    int32_t *stop,
+                                    SocketMonitor &monitor) {
             while(*stop == 1){
                 SocketMonitorTask task = nullptr;
                 {
@@ -165,6 +171,10 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                 }
                 
                 listener->onSocketMessage(task->event,task->sock,task->data);
+                if(task->event == st(Socket)::Disconnect) {
+                    monitor->remove(task->sock);
+                    task->sock->close();
+                }
             }
             
         },
@@ -176,7 +186,8 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
         mThreadPublicTasks,
         mCurrentSockets,
         l,
-        (int32_t *)&isStop);
+        (int32_t *)&isStop,
+        AutoClone(this));
     }
     
     return 0;
@@ -203,6 +214,10 @@ void _SocketMonitor::release() {
 }
 
 int _SocketMonitor::remove(Socket s) {
+    {
+        AutoLock lock(mMutex);
+        mSocks->remove(s->getFd());
+    }
     return mPoll->removeObserver(s->getFd());
 }
 

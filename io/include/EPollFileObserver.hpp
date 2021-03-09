@@ -90,7 +90,7 @@ public:
     //wangsl add lambda function
     template< class Function, class... Args >
     int addObserver(int fd,uint32_t events,Function&& f, Args&&... args ) {
-        printf("addObserver start \n");
+        //printf("addObserver start \n");
         EPollFileObserverListener l = createLambdaEPollFileObserverListener(f,args...);
         return addObserver(fd,events,l);
     }
