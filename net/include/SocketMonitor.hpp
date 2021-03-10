@@ -54,6 +54,9 @@ private:
     Socket *mCurrentSockets;
     Condition mCondition;
 
+    Mutex mListenerMutex;
+    HashMap<int,SocketListener> mListeners;
+
     //bool isStop
     mutable volatile int32_t isStop;
 };

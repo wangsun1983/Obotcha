@@ -95,17 +95,13 @@ _ReadWriteLock::_ReadWriteLock(String s) {
 }
 
 sp<_ReadLock> _ReadWriteLock::getReadLock() {
-    ReadLock lock;
     _ReadLock *l = new _ReadLock(AutoClone(this),mName);
-    lock.set_pointer(l);
-    return lock;
+    return AutoClone(l);
 }
 
 sp<_WriteLock> _ReadWriteLock::getWriteLock() {
-    WriteLock lock;
     _WriteLock *l = new _WriteLock(AutoClone(this),mName);
-    lock.set_pointer(l);
-    return lock;
+    return AutoClone(l);
 }
 
 String _ReadWriteLock::getName() {

@@ -23,13 +23,7 @@ class _EPollFileObserver;
 
 DECLARE_SIMPLE_CLASS(EPollFileObserverListener) {
 public:
-    friend class _EPollFileObserver;
-
     virtual int onEvent(int fd,uint32_t events,ByteArray) = 0;
-
-private:
-    int notifyEvent(int fd,uint32_t events,ByteArray);
-    std::map<int,int> mFdEventsMap;
 };
 
 template<class Function,class... Args>
@@ -64,33 +58,18 @@ public:
 
     template<typename X>
     int addObserver(int fd,uint32_t events,sp<X> l) {
-        AutoLock mylock(mListenerMutex);
-        auto iterator = mFdEventsMap.find(fd);
-        if(iterator != mFdEventsMap.end() && (iterator->second & events) == events) {
-            return -AlreadyRegist;
-        }
-
         int regEvents = 0;
         regEvents |= events;
-        
-        ArrayList<EPollFileObserverListener> ll = mListeners->get(fd);
-        if(ll == nullptr) {
-            ll = createArrayList<EPollFileObserverListener>();
-            mListeners->put(fd,ll);
-        }
 
-        ll->add(Cast<EPollFileObserverListener>(l));
-        updateFdEventsMap(fd,events,l->mFdEventsMap);
-        updateFdEventsMap(fd,events,mFdEventsMap);
-
-        addEpollFd(fd,regEvents|EpollRdHup|EPOLLHUP);
+        AutoLock mylock(mListenerMutex);
+        mListeners->put(fd,l);
+        addEpollFd(fd,regEvents);
         return 0;
     }
 
     //wangsl add lambda function
     template< class Function, class... Args >
     int addObserver(int fd,uint32_t events,Function&& f, Args&&... args ) {
-        //printf("addObserver start \n");
         EPollFileObserverListener l = createLambdaEPollFileObserverListener(f,args...);
         return addObserver(fd,events,l);
     }
@@ -134,20 +113,14 @@ public:
 private:
     static const int DefaultBufferSize = 16*1024;
     static const int DefaultMaxBuffSize = 1024*1024;
-    static const uint32_t EpollEvent[];
     
     void addEpollFd(int fd,uint32_t events);
-
-    void updateFdEventsMap(int fd,uint32_t events,std::map<int,int> &maps);
-
     int mEpollFd;
 
     Mutex mListenerMutex;
-    HashMap<int,ArrayList<EPollFileObserverListener>> mListeners;
-    std::map<int,int> mFdEventsMap;
+    HashMap<int,EPollFileObserverListener> mListeners;
     
     Pipe mPipe;
-
     int mSize;
 };
 

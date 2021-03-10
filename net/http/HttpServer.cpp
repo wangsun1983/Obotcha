@@ -65,14 +65,10 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
 
 _HttpServer::_HttpServer(InetAddress addr,HttpListener l,HttpOption option) {
     mHttpListener = l;
-
     mServerSock = nullptr;
     mSockMonitor = nullptr;
-    
     mSSLServer = nullptr;
-
     mAddress = addr;
-
     mOption = option;
 }
 

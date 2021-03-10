@@ -9,39 +9,6 @@
 
 namespace obotcha {
 
-const uint32_t _EPollFileObserver::EpollEvent[] = {
-                                     EpollIn,
-                                     EpollPri,
-                                     EpollOut,
-                                     EpollRdNorm,
-                                     EpollRdBand,
-                                     EpollWrNorm,
-                                     EpollWrBand,
-                                     EpollMsg,
-                                     EpollErr,
-                                     EpollHup,
-                                     EpollRdHup,
-#ifdef EPOLLEXCLUSIVE                                     
-                                     EpollExClusive,
-#endif
-                                     EpollWakeUp,
-                                     EpollOneShot,
-                                     EpollEt};
-
-//----------------EPollFileObserverListener----------------
-int _EPollFileObserverListener::notifyEvent(int fd,uint32_t events,ByteArray data) {
-    auto iterator = mFdEventsMap.find(fd);
-    if(iterator == mFdEventsMap.end()) {
-        return -1;
-    }
-
-    if((iterator->second & events)!= 0) {
-        return onEvent(fd,events,data);
-    }
-
-    return 0;
-}
-
 //----------------_EPollFileObserver----------------
 void _EPollFileObserver::run() {
     struct epoll_event events[mSize];
@@ -49,9 +16,7 @@ void _EPollFileObserver::run() {
     byte readbuff[st(EPollFileObserver)::DefaultBufferSize];
 
     while(1) {
-        //printf("start wait \n");
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
-        //printf("start trace1 \n");
         if(epoll_events_count < 0) {
             LOG(ERROR)<<"epoll_wait count is -1";
             return;
@@ -64,7 +29,6 @@ void _EPollFileObserver::run() {
             }
 
             uint32_t recvEvents = events[i].events;
-            //printf("receive events is %lx \n",recvEvents);
             ByteArray recvData = nullptr;
             int len = read(fd,readbuff,st(EPollFileObserver)::DefaultBufferSize);
             if(len > 0) {
@@ -72,40 +36,22 @@ void _EPollFileObserver::run() {
             }
             
             AutoLock l(mListenerMutex);
-            ArrayList<EPollFileObserverListener> listeners = mListeners->get(fd);
-            if(listeners == nullptr || listeners->size() == 0) {
+            EPollFileObserverListener listener = mListeners->get(fd);
+            if(listener == nullptr) {
                 LOG(ERROR)<<"EpollObserver get event,but no callback,fd is "<<fd<<"event is "<<recvEvents;
                 continue;
             }
 
-            ListIterator<EPollFileObserverListener> iterator = listeners->getIterator();
-            //printf("epoll observer trace1,listeners size is %d \n",listeners->size());
-            while(iterator->hasValue()) {
-                //printf("epoll observer trace2 \n");
-                EPollFileObserverListener l = iterator->getValue();
-                int result = l->notifyEvent(fd,recvEvents,recvData);
-                if(result == st(EPollFileObserver)::OnEventRemoveObserver) {
-                    l->mFdEventsMap.erase(fd);
-                    iterator->remove();
-                    continue;
-                }
-                //printf("epoll observer trace3 \n");
-                iterator->next();
+            int result = listener->onEvent(fd,recvEvents,recvData);
+            if(result == st(EPollFileObserver)::OnEventRemoveObserver) {
+                removeObserver(fd);
             }
-
-            //if(listeners->size() == 0 ||
-            //    (recvEvents & (EpollRdHup|EPOLLHUP)) != 0) {
-            //    epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
-                //close(fd);
-                //mFdEventsMap.erase(fd);
-                //mListeners->remove(fd);
-            //}
         }
     }
 }
 
 _EPollFileObserver::_EPollFileObserver(int size) {
-    mListeners = createHashMap<int,ArrayList<EPollFileObserverListener>>();
+    mListeners = createHashMap<int,EPollFileObserverListener>();
     mSize = size;
     mListenerMutex = createMutex("Epoll Listener Mutex");
     mEpollFd = epoll_create(size);
@@ -119,44 +65,10 @@ _EPollFileObserver::_EPollFileObserver(int size) {
 _EPollFileObserver::_EPollFileObserver():_EPollFileObserver(DefaultEpollSize){
 }
 
-int _EPollFileObserver::removeObserver(EPollFileObserverListener l) {
-    AutoLock mylock(mListenerMutex);
-    for (auto &kv : l->mFdEventsMap) {
-        int fd = kv.first;
-        ArrayList<EPollFileObserverListener> list = mListeners->get(fd);
-        if(list->size() != 0) {
-            list->remove(l);
-        }
-
-        if(list->size() == 0) {
-            mListeners->remove(fd);
-            epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
-        }
-    }
-
-    l->mFdEventsMap.clear();
-
-    return 0;
-}
-
 int _EPollFileObserver::removeObserver(int fd) {
     //we should clear
     AutoLock l(mListenerMutex);
     epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
-
-    ArrayList<EPollFileObserverListener> listeners = mListeners->get(fd);
-    if(listeners == nullptr) {
-        return 0;
-    }
-
-    ListIterator<EPollFileObserverListener> iterator = listeners->getIterator();
-    while(iterator->hasValue()) {
-        EPollFileObserverListener l = iterator->getValue();
-        l->mFdEventsMap.erase(fd);
-        iterator->next();
-    }
-    
-    mFdEventsMap.erase(fd);
     mListeners->remove(fd);
     return 0;
 }
@@ -170,13 +82,14 @@ void _EPollFileObserver::addEpollFd(int fd,uint32_t events) {
     ev.events = events;
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
     epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
-
 }
 
 int _EPollFileObserver::release() {
     if(mEpollFd != -1) {
         close(mEpollFd);
         mEpollFd = -1;
+    } else {
+        return 0;
     }
 
     ByteArray data = createByteArray(1);
@@ -185,28 +98,12 @@ int _EPollFileObserver::release() {
     
     join();
 
-    //if one listener is registered in to EpollFileObserver.
-    //we should clear the events which were registered in the released observer.
+    mPipe->closeReadPipe();
+    mPipe->closeWritePipe();
+
     AutoLock l(mListenerMutex);
-    MapIterator<int,ArrayList<EPollFileObserverListener>> iterator = mListeners->getIterator();
-    while(iterator->hasValue()) {
-        int fd = iterator->getKey();
-        removeObserver(fd);
-        iterator->next();
-    }
-
     mListeners->clear();
-    
     return 0;
-}
-
-void _EPollFileObserver::updateFdEventsMap(int fd,uint32_t events,std::map<int,int> &maps) {
-    auto iterator = maps.find(fd);
-    if(iterator == maps.end()) {
-        maps[fd] = events;
-    } else {
-        maps[fd] = (iterator->second|events);
-    }
 }
 
 _EPollFileObserver::~_EPollFileObserver() {
