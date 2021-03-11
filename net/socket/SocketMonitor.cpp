@@ -49,9 +49,9 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
         mExecutor->execute([](int index,
                             SocketMonitor &monitor) {
             SocketMonitorTask task = nullptr;
-            printf("thread1 trace1 \n");
+            //printf("thread1 trace1 \n");
             while(monitor->isStop == 1) {
-                printf("thread1 trace2 \n");
+                //printf("thread1 trace2 \n");
                 {
                     AutoLock l(monitor->mMutex);
                     task = monitor->mThreadLocalTasks->get(index)->deQueueFirst();
@@ -64,10 +64,9 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                         }
 
                         for(int i = 0;i<monitor->mThreadNum;i++) {
-                            if(monitor->mCurrentSockets[i] == task->sock && i != index) {
+                            if(monitor->mCurrentSockets[i] == task->sock) {
                                 monitor->mThreadLocalTasks->get(i)->enQueueLast(task);
-                                monitor->mCondition->notifyAll();
-                                task == nullptr;
+                                task = nullptr;
                                 break;
                             }
                         }
@@ -77,7 +76,8 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                         }
                     }
                 }
-                printf("thread1 trace3 \n");
+                
+                //printf("thread1 trace3 \n");
                 if(task != nullptr) {
                     SocketListener listener = nullptr;
                     {
@@ -86,12 +86,16 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                     }
                     if(listener != nullptr) {
                         listener->onSocketMessage(task->event,task->sock,task->data);
-                        printf("onSocketmessgae fd is %d \n",task->sock->getFd());
+                        //printf("onSocketmessgae fd is %d \n",task->sock->getFd());
+                        if(task->event == st(Socket)::Disconnect) {
+                            monitor->remove(task->sock);
+                            task->sock->close();
+                        }
                     }
                 }
-                printf("thread1 trace4 \n");
+                //printf("thread1 trace4 \n");
             }
-            printf("thread1 trace5 \n");
+            //printf("thread1 trace5 \n");
             monitor = nullptr;
         },
         i,
@@ -99,32 +103,36 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
     }
 }
 
-int _SocketMonitor::bind(Socket s,SocketListener l) {
+void _SocketMonitor::addNewSocket(Socket s,SocketListener l) {
     {
         AutoLock lock(mMutex);
         mSocks->put(s->getFd(),s);
-    }
-    return bind(s->getFd(),l,false);
-}
-
-int _SocketMonitor::bind(ServerSocket s,SocketListener l) {
-    {
-        AutoLock lock(mMutex);
-        mSocks->put(s->getFd(),s);
-    }
-    return bind(s->getFd(),l,true);
-}
-
-int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
-    printf("bind fd is %d \n",fd);
-    int serversocket = -1;
-    if(isServer) {
-        serversocket = fd;
     }
 
     {
         AutoLock lock(mListenerMutex);
-        mListeners->put(fd,l);
+        mListeners->put(s->getFd(),l);
+    }
+}
+
+int _SocketMonitor::bind(Socket s,SocketListener l) {
+    if(isSocketExist(s)) {
+        return -AlreadyExists;
+    }
+
+    return bind(s->getFd(),l,false);
+}
+
+
+int _SocketMonitor::bind(ServerSocket s,SocketListener l) {
+    return bind(s->getFd(),l,true);
+}
+
+int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
+    //printf("bind fd is %d \n",fd);
+    int serversocket = -1;
+    if(isServer) {
+        serversocket = fd;
     }
 
     mPoll->addObserver(fd,
@@ -135,7 +143,9 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                            SocketListener &listener,
                            int serverfd,
                            SocketMonitor &monitor) {
-        printf("observer trace1 events is %x,fd is %d\n",events,fd);
+        //if(data != nullptr) {
+        //    printf("observer trace1 data is %s\n",data->toString()->toChars());
+        //}
         if(fd == serverfd) {
             struct sockaddr_in client_address;
             socklen_t client_addrLength = sizeof(struct sockaddr_in);
@@ -146,10 +156,13 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                                     createString(inet_ntoa(client_address.sin_addr)),
                                     ntohs(client_address.sin_port)));
                 {
-                    AutoLock l(monitor->mMutex);
-                    monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(Socket)::Connect,s));
-                    monitor->mCondition->notifyAll();
-                    monitor->bind(s,listener);
+                    monitor->addNewSocket(s,listener);
+                    {
+                        AutoLock l(monitor->mMutex);
+                        monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(Socket)::Connect,s));
+                        monitor->mCondition->notify();
+                    }
+                    monitor->bind(s->getFd(),listener,false);
                 }
                 return st(EPollFileObserver)::OnEventOK;
             }
@@ -161,36 +174,34 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
             s = monitor->mSocks->get(fd);
         }
 
-        if(s == nullptr) {
-            printf("i can not find socket ,fd is %d ,events is %x\n",fd,events);
+        //if(s == nullptr) {
+            //printf("i can not find socket ,fd is %d ,events is %x\n",fd,events);
             //return st(EPollFileObserver)::OnEventOK;
-        }
+        //}
         
         if((events & EPOLLHUP) != 0) {
-            printf("observer trace2 %x\n");
+            //printf("observer trace2 \n");
             return st(EPollFileObserver)::OnEventRemoveObserver;
         } 
-        
-        if((events & EPOLLIN) != 0) {
-            {   
-                printf("ondata fd is %d \n",fd);
+
+        if((events & EPOLLRDHUP)!= 0) {
+            {
+                //printf("disconnect fd is %d \n",fd);
                 AutoLock l(monitor->mMutex);
-                if(data != nullptr && data->size() != 0) {
-                    monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(Socket)::Message,s,data));
-                    monitor->mCondition->notifyAll();
-                }
+                monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(Socket)::Disconnect,s));
+                monitor->mCondition->notify();
+                return st(EPollFileObserver)::OnEventRemoveObserver;
             }
         }
         
-        if((events & EPOLLRDHUP)!= 0) {
-            {
-                printf("disconnect fd is %d \n",fd);
-                AutoLock l(monitor->mMutex);
-                monitor->remove(s);
-                s->close();
-
-                monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(Socket)::Disconnect,s));
-                monitor->mCondition->notifyAll();
+        if((events & EPOLLIN) != 0) {
+            {   
+                //printf("ondata fd is %d \n",fd);
+                if(data != nullptr && data->size() != 0) {
+                    AutoLock l(monitor->mMutex);
+                    monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(Socket)::Message,s,data));
+                    monitor->mCondition->notify();
+                }
             }
         }
         
@@ -227,7 +238,7 @@ void _SocketMonitor::release() {
 }
 
 int _SocketMonitor::remove(Socket s) {
-    printf("remove fd is %d \n",s->getFd());
+    //printf("remove fd is %d \n",s->getFd());
     {
         AutoLock lock(mMutex);
         mSocks->remove(s->getFd());
@@ -237,8 +248,11 @@ int _SocketMonitor::remove(Socket s) {
         AutoLock lock(mListenerMutex);
         mListeners->remove(s->getFd());
     }
-    
-    return mPoll->removeObserver(s->getFd());
+}
+
+bool _SocketMonitor::isSocketExist(Socket s) {
+    AutoLock l(mMutex);
+    return mSocks->get(s->getFd()) != nullptr;
 }
 
 _SocketMonitor::~_SocketMonitor() {

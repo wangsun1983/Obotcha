@@ -33,14 +33,16 @@ public:
 
     int bind(Socket,SocketListener);
     int bind(ServerSocket,SocketListener);
-    int bind(int,SocketListener,bool isServer = false);
     
     int remove(Socket);
 
     void release();
     
 private:
-    
+    void addNewSocket(Socket s,SocketListener l);
+    bool isSocketExist(Socket s);
+    int bind(int,SocketListener,bool isServer = false);
+
     EPollFileObserver mPoll;
 
     Mutex mMutex;
