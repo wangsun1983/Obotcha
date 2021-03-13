@@ -15,6 +15,11 @@ extern void testHashMapFloat();
 extern void testHashMapBoolean();
 extern void testHashMapObject();
 extern void testHashMapInt();
+extern void testHashMapSimpleBoolean();
+extern void testHashMapSimpleDouble();
+extern void testHashMapSimpleFloat();
+extern void testHashMapSimpleLong();
+extern void testHashMapSimpleString();
 
 int main() {
     testHashMapString();
@@ -25,4 +30,10 @@ int main() {
     testHashMapBoolean();
     testHashMapObject();
     testHashMapInt();
+    testHashMapSimpleBoolean();
+    testHashMapSimpleDouble();
+    testHashMapSimpleFloat();
+    testHashMapSimpleLong();
+    testHashMapSimpleString();
+    return 0;
 }

@@ -92,7 +92,17 @@ public:
 DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
 
-    void onMessage(sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg){
+    void onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg){
+        if(event == Connect) {
+            printf("connect \n");
+            return;
+        }
+
+        if(event == Disconnect) {
+            printf("disconnect \n");
+            return;
+        }
+        
         printf("om message \n");
        
         String url = msg->getUrl();
@@ -139,13 +149,13 @@ DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
         w->write(response);
     }
 
-    void onConnect(sp<_HttpClientInfo>) {
-        printf("onConnect \n");
-    }
+    //void onConnect(sp<_HttpClientInfo>) {
+    //    printf("onConnect \n");
+    //}
 
-    void onDisconnect(sp<_HttpClientInfo>) {
-        printf("onDisConnect \n");
-    }
+    //void onDisconnect(sp<_HttpClientInfo>) {
+    //    printf("onDisConnect \n");
+    //}
 };
 
 int main() {

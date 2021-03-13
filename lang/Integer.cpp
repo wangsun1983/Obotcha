@@ -9,7 +9,7 @@
  * @date 2019-07-12
  * @license none
  */
-
+#include <algorithm>
 #include <stdio.h>
 #include <memory.h>
 #include <sstream>
@@ -50,6 +50,10 @@ bool _Integer::equals(Integer &p) {
     }
 
     return val == p->val;
+}
+
+uint64_t _Integer::hashcode() {
+    return std::hash<int>{}(val);
 }
 
 bool _Integer::equals(int p) {

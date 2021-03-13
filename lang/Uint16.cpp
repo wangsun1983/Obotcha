@@ -9,6 +9,7 @@
  * @date 2019-07-12
  * @license none
  */
+#include <algorithm>
 
 #include "Uint16.hpp"
 #include "InitializeException.hpp"
@@ -121,6 +122,10 @@ uint16_t _Uint16::parseBinaryUint16(sp<_String> v) {
 
 sp<_String> _Uint16::className() {
     return createString("Uint16");
+}
+
+uint64_t _Uint16::hashcode() {
+    return std::hash<uint16_t>{}(val);
 }
 
 _Uint16::~_Uint16() {

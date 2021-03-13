@@ -700,7 +700,7 @@ int _MailSender::connectRemoteServer() {
             delete a2;
 
             //send the response
-            if(strstr(mRecvBuf, "charset") >=0 ) {
+            if(strstr(mRecvBuf, "charset") != nullptr ) {
                 snprintf(mSendBuf, BuffSize, "charset=utf-8,username=\"%s\"", mConnection->mUsername->toChars());
             } else {
                 snprintf(mSendBuf, BuffSize, "username=\"%s\"", mConnection->mUsername->toChars());

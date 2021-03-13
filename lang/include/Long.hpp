@@ -50,6 +50,8 @@ public:
     static long parseBinaryLong(sp<_String>);
 
     static sp<_String> className();
+    
+    uint64_t hashcode();
 
     ~_Long();
 

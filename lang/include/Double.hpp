@@ -31,6 +31,8 @@ public:
 
     static sp<_String> className();
 
+    uint64_t hashcode();
+
     ~_Double();
 
     static const double EPS;

@@ -9,6 +9,7 @@
  * @date 2019-07-12
  * @license none
  */
+#include <algorithm>
 
 #include "Uint8.hpp"
 #include "InitializeException.hpp"
@@ -77,6 +78,10 @@ sp<_String> _Uint8::toOctalString() {
 
 sp<_String> _Uint8::toBinaryString() {
     return createString(_Number::toBinaryString(val));
+}
+
+uint64_t _Uint8::hashcode() {
+    return std::hash<uint8_t>{}(val);
 }
 
 sp<_String> _Uint8::toString() {

@@ -120,6 +120,8 @@ public:
 
     byte toBasicByte();
 
+    uint64_t hashcode();
+
     //TODO Remove
     int toHexInt();
     //TODO Remove

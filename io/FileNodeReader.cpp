@@ -32,25 +32,33 @@ _FileNodeReader::_FileNodeReader(String path,int buffsize) {
 }
 
 int _FileNodeReader::readInt() {
-    byte buff[mSize] = {0};
+    byte buff[mSize];
+    memset(buff,0,mSize);
+    
     read(mFd,buff,mSize);
     return std::atoi((const char*)buff);
 }
 
 long _FileNodeReader::readLong() {
-    byte buff[mSize] = {0};
+    byte buff[mSize];
+    memset(buff,0,mSize);
+
     read(mFd,buff,mSize);
     return std::atol((const char*)buff);
 }
 
 bool _FileNodeReader::readBoolean() {
-    byte buff[mSize] = {0};
+    byte buff[mSize];
+    memset(buff,0,mSize);
+    
     read(mFd,buff,mSize);
     return createString((const char *)buff)->toBasicBool();
 }
 
 String _FileNodeReader::readString() {
-    byte buff[mSize] = {0};
+    byte buff[mSize];
+    memset(buff,0,mSize);
+    
     read(mFd,buff,mSize);;
     return createString((const char *)buff);
 }

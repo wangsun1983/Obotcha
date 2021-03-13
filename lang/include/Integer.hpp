@@ -52,6 +52,8 @@ public:
 
     static sp<_String> className();
     
+    uint64_t hashcode();
+    
     ~_Integer();
 
     static const int MAX_VALUE = 0x7fffffff;

@@ -9,6 +9,7 @@
  * @date 2019-07-12
  * @license none
  */
+#include <algorithm>
 
 #include "Uint64.hpp"
 #include "InitializeException.hpp"
@@ -118,6 +119,10 @@ uint64_t _Uint64::parseBinaryUint64(sp<_String> v) {
 
 sp<_String> _Uint64::className() {
     return createString("Uint64");
+}
+
+uint64_t _Uint64::hashcode() {
+    return std::hash<uint64_t>{}(val);
 }
 
 _Uint64::~_Uint64() {

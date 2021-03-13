@@ -1,18 +1,12 @@
 #ifndef __OBOTCHA_HASHMAP_HPP__
 #define __OBOTCHA_HASHMAP_HPP__
 
-#include <map>
 #include <algorithm>
-#include <hash_map>
+#include <unordered_map>
+#include <string>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "Boolean.hpp"
-#include "Double.hpp"
-#include "Float.hpp"
-#include "Integer.hpp"
-#include "Long.hpp"
-#include "String.hpp"
 
 #include "ArrayList.hpp"
 #include "NullPointerException.hpp"
@@ -27,7 +21,7 @@ template<typename T>
 class KeyComapre
 {
 public:
-    bool operator()(const T k1, const T k2)const {
+    bool operator()(const T k1, const T k2) const {
         return k1 == k2;
     }
 };
@@ -40,7 +34,7 @@ public:
         if(A == nullptr) { 
             return std::hash<int>{}(0);
         }
-        //return std::hash<std::uint64_t>{}((std::uint64_t)A->hashcode());
+
         return A->hashcode();
     }
 };
@@ -54,48 +48,15 @@ public: \
 }\
 
 KeyHashSimpleDataTypeFunc(bool);
-//KeyHashSimpleDataTypeFunc(byte);=>eaquls uint8
 KeyHashSimpleDataTypeFunc(double);
 KeyHashSimpleDataTypeFunc(float);
 KeyHashSimpleDataTypeFunc(int);
 KeyHashSimpleDataTypeFunc(long);
-KeyHashSimpleDataTypeFunc(std::uint8_t);
-KeyHashSimpleDataTypeFunc(std::uint16_t);
-KeyHashSimpleDataTypeFunc(std::uint32_t);
-KeyHashSimpleDataTypeFunc(std::uint64_t);
-
-#define KeyHashDataTypeFunc(X,Y) template<> \
-class KeyHash<X> { \
-public: \
-    size_t operator()(const X A)const{ \
-        if(A == nullptr) { \
-            return std::hash<int>{}(0); \
-        } \
-        return std::hash<Y>{}(A->toValue()); \
-    } \
-}\
-
-KeyHashDataTypeFunc(Boolean,bool);
-KeyHashDataTypeFunc(Byte,byte);
-KeyHashDataTypeFunc(Double,double);
-KeyHashDataTypeFunc(Float,float);
-KeyHashDataTypeFunc(Integer,int);
-KeyHashDataTypeFunc(Long,long);
-KeyHashDataTypeFunc(Uint8,std::uint8_t);
-KeyHashDataTypeFunc(Uint16,std::uint16_t);
-KeyHashDataTypeFunc(Uint32,std::uint32_t);
-KeyHashDataTypeFunc(Uint64,std::uint64_t);
-
-template<>
-class KeyHash<String> { 
-public:
-    size_t operator()(String A)const{
-        if(A == nullptr) {
-            return std::hash<int>{}(0);
-        }
-        return std::hash<std::string>{}(A->getStdString()); 
-    }
-};
+KeyHashSimpleDataTypeFunc(uint8_t);
+KeyHashSimpleDataTypeFunc(uint16_t);
+KeyHashSimpleDataTypeFunc(uint32_t);
+KeyHashSimpleDataTypeFunc(uint64_t);
+KeyHashSimpleDataTypeFunc(std::string);
 
 //----------------------- HashMap<T,U> -----------------------
 DECLARE_CLASS(HashMap,2) {
@@ -170,13 +131,13 @@ public:
     }
 
 private:
-    __gnu_cxx::hash_map<T,U,KeyHash<T>,KeyComapre<T>> hashmap;
+    std::unordered_map<T,U,KeyHash<T>,KeyComapre<T>> hashmap;
 
-    typename __gnu_cxx::hash_map<T,U,KeyHash<T>,KeyComapre<T>>::iterator begin() {
+    typename std::unordered_map<T,U,KeyHash<T>,KeyComapre<T>>::iterator begin() {
         return hashmap.begin();
     }
 
-    typename __gnu_cxx::hash_map<T,U,KeyHash<T>,KeyComapre<T>>::iterator end() {
+    typename std::unordered_map<T,U,KeyHash<T>,KeyComapre<T>>::iterator end() {
         return hashmap.end();
     }
 };
@@ -228,7 +189,7 @@ public:
     
 private:
     HashMap<T,U> mHashMap;    
-    typename __gnu_cxx::hash_map<T,U,KeyHash<T>,KeyComapre<T>>::iterator iterator;
+    typename std::unordered_map<T,U,KeyHash<T>,KeyComapre<T>>::iterator iterator;
 };
 
 }

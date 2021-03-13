@@ -9,6 +9,7 @@
  * @date 2019-07-12
  * @license none
  */
+#include <algorithm>
 
 #include "Uint32.hpp"
 #include "InitializeException.hpp"
@@ -120,6 +121,10 @@ uint32_t _Uint32::parseBinaryUint32(sp<_String> v) {
 
 sp<_String> _Uint32::className() {
     return createString("Uint32");
+}
+
+uint64_t _Uint32::hashcode() {
+    return std::hash<uint32_t>{}(val);
 }
 
 _Uint32::~_Uint32() {

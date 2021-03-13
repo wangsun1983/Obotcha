@@ -10,6 +10,8 @@
  * @license none
  */
 
+#include <algorithm>
+
 #include "Boolean.hpp"
 #include "InitializeException.hpp"
 #include "IllegalArgumentException.hpp"
@@ -157,6 +159,10 @@ bool _Boolean::logicXor(sp<_Boolean> v) {
     val ^= v->toValue();
 
     return val;
+}
+
+uint64_t _Boolean::hashcode() {
+    return std::hash<bool>{}(val);
 }
 
 sp<_Boolean> _Boolean::valueOf(sp<_String> v) {

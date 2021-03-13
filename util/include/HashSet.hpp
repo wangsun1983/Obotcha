@@ -1,7 +1,7 @@
 #ifndef __OBOTCHA_HASHSET_HPP__
 #define __OBOTCHA_HASHSET_HPP__
 
-#include <hash_set>
+#include <unordered_set>
 #include <algorithm>
 
 #include "Object.hpp"
@@ -81,13 +81,13 @@ public:
     }
 
 private:
-    __gnu_cxx::hash_set<T,KeyHash<T>,KeyComapre<T>> hashset;
+    std::unordered_set<T,KeyHash<T>,KeyComapre<T>> hashset;
 
-    typename __gnu_cxx::hash_set<T,KeyHash<T>,KeyComapre<T>>::iterator begin() {
+    typename std::unordered_set<T,KeyHash<T>,KeyComapre<T>>::iterator begin() {
         return hashset.begin();
     }
 
-    typename __gnu_cxx::hash_set<T,KeyHash<T>,KeyComapre<T>>::iterator end() {
+    typename std::unordered_set<T,KeyHash<T>,KeyComapre<T>>::iterator end() {
         return hashset.end();
     }
 };
@@ -139,7 +139,7 @@ public:
     
 private:
     HashSet<T> mList;    
-    typename __gnu_cxx::hash_set<T,KeyHash<T>,KeyComapre<T>>::iterator iterator;
+    typename std::unordered_set<T,KeyHash<T>,KeyComapre<T>>::iterator iterator;
 };
 
 }

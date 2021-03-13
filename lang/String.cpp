@@ -485,6 +485,10 @@ String _String::valueOf(const char *p) {
     return createString(p);
 }
 
+uint64_t _String::hashcode() {
+    return std::hash<std::string>{}(m_str);
+}
+
 bool _String::equals(String s) {
     if(s == nullptr) {
         return false;

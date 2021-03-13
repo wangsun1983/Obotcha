@@ -3,30 +3,53 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "ArrayList.hpp"
-#include "Mutex.hpp"
-#include "Condition.hpp"
+#include "OutputStream.hpp"
+#include "InputStream.hpp"
 
 namespace obotcha {
-DECLARE_SIMPLE_CLASS(CloseInterface) {
-public:
-    virtual void doClose() = 0;    
-};
 
 class AutoClose {
-public:  
-    AutoClose(CloseInterface c){
-        mInterface = c;
+public:
+    AutoClose(int fd):AutoClone(fd,nullptr,nullptr){
+
+    }
+
+    AutoClose(InputStream input):AutoClone(-1,input,nullptr){
+
+    }
+
+    AutoClose(OutputStream output):AutoClone(-1,nullptr,output){
+
+    }
+
+    AutoClose(int fd,InputStream input,OutputStream output){
+        this->fd = fd;
+        mOut = input;
+        mInput = output;
+    }
+
+    AutoClose() {
+
     }
 
     ~AutoClose() {
-        if(mInterface != nullptr) {
-            mInterface->doClose();
+        if(fd > 0) {
+            close(fd);
+        }
+
+        if(mOut != nullptr) {
+            mOut->close();
+        }
+
+        if(mInput != nullptr) {
+            mInput->close();
         }
     }
 
 private:
-    CloseInterface mInterface;
+    int fd;
+    OutputStream mOut;
+    InputStream mInput;
 };
 
 

@@ -21,7 +21,9 @@ int cancelNum = 0;
 DECLARE_SIMPLE_CLASS(CancelRunnable) IMPLEMENTS(Runnable) {
 public:
    void run() {
-      sleep(5);
+      try{
+        st(Thread)::sleep(5000);
+      }catch(InterruptedException e){}
    }
 
    void onInterrupt() {

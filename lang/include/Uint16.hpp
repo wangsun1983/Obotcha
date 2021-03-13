@@ -51,6 +51,8 @@ public:
     static uint16_t parseBinaryUint16(sp<_String>);
 
     static sp<_String> className();
+
+    uint64_t hashcode();
     
     ~_Uint16();
 

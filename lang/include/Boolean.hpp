@@ -44,6 +44,8 @@ public:
 
     bool logicXor(sp<_Boolean>);
 
+    uint64_t hashcode();
+
     static sp<_Boolean> valueOf(sp<_String>);
 
     static sp<_Boolean> valueOf(char *);

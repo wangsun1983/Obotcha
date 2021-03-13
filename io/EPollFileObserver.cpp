@@ -16,6 +16,7 @@ void _EPollFileObserver::run() {
     byte readbuff[st(EPollFileObserver)::DefaultBufferSize];
 
     while(1) {
+        //printf("observer run start \n");
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
         if(epoll_events_count < 0) {
             LOG(ERROR)<<"epoll_wait count is -1";
@@ -29,14 +30,21 @@ void _EPollFileObserver::run() {
             }
 
             uint32_t recvEvents = events[i].events;
+            //printf("observer run fd is %d,events is %x \n",fd,recvEvents);
+            
             ByteArray recvData = nullptr;
             int len = read(fd,readbuff,st(EPollFileObserver)::DefaultBufferSize);
             if(len > 0) {
                 recvData = createByteArray(readbuff,len);
             }
             
-            AutoLock l(mListenerMutex);
-            EPollFileObserverListener listener = mListeners->get(fd);
+            EPollFileObserverListener listener = nullptr;
+            
+            {
+                AutoLock l(mListenerMutex);
+                listener = mListeners->get(fd);
+            }
+
             if(listener == nullptr) {
                 LOG(ERROR)<<"EpollObserver get event,but no callback,fd is "<<fd<<"event is "<<recvEvents;
                 continue;
@@ -67,9 +75,11 @@ _EPollFileObserver::_EPollFileObserver():_EPollFileObserver(DefaultEpollSize){
 
 int _EPollFileObserver::removeObserver(int fd) {
     //we should clear
+    //printf("remove observer start fd is %d \n",fd);
     AutoLock l(mListenerMutex);
     epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
     mListeners->remove(fd);
+    //printf("remove observer finish fd is %d \n",fd);
     return 0;
 }
 

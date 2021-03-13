@@ -52,6 +52,8 @@ public:
 
     static sp<_String> className();
 
+    uint64_t hashcode();
+
     ~_Byte();
 
 private:

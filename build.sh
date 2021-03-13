@@ -23,4 +23,6 @@ ln -s libcrypto.so.3 libcrypto.so
 ln -s libssl.so.3 libssl.so
 
 cd ../../
+#mkdir scanresult
+#scan-build -o ./scanresult make -j32
 make -j32

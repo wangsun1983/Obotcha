@@ -52,6 +52,8 @@ public:
 
     static sp<_String> className();
 
+    uint64_t hashcode();
+    
     static const uint8_t MAX_VALUE = 0xFF;
 
     static const uint8_t MIN_VALUE = 0x0;

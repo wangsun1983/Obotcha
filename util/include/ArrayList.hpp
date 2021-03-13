@@ -7,30 +7,12 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "Boolean.hpp"
-#include "Double.hpp"
-#include "Float.hpp"
-#include "Integer.hpp"
-#include "Long.hpp"
-#include "String.hpp"
-#include "MethodNotSupportException.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 
 namespace obotcha {
     
 template<typename T>
 class _ListIterator;
-
-template<typename T>
-class _ArrayList;
-
-#define ARRAYLIST_NOT_SUPPORT(V) template<> \
-class _ArrayList<V>:virtual public Object{ \
-public:    \
-    _ArrayList() { \
-        TriggerMethodNotSupportException("ArrayList not support int"); \
-    } \
-};\
 
 //----------------- ArrayList ---------------------
 DECLARE_CLASS(ArrayList,1) {
@@ -284,19 +266,6 @@ private:
     ArrayList<T> mList;    
     typename std::vector<T>::iterator iterator;
 };
-
-/*
-ARRAYLIST_NOT_SUPPORT(bool);
-ARRAYLIST_NOT_SUPPORT(byte);
-ARRAYLIST_NOT_SUPPORT(double);
-ARRAYLIST_NOT_SUPPORT(float);
-ARRAYLIST_NOT_SUPPORT(int);
-ARRAYLIST_NOT_SUPPORT(long);
-ARRAYLIST_NOT_SUPPORT(std::uint8_t);
-ARRAYLIST_NOT_SUPPORT(std::uint16_t);
-ARRAYLIST_NOT_SUPPORT(std::uint32_t);
-ARRAYLIST_NOT_SUPPORT(std::uint64_t);
-*/
 
 }
 #endif

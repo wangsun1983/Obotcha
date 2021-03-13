@@ -11,30 +11,34 @@
 
 using namespace obotcha;
 
+static AtomicInteger connectCount = createAtomicInteger(0);
+static AtomicInteger disconnectCount = createAtomicInteger(0);
+static AtomicInteger messageCount = createAtomicInteger(0);
+
 DECLARE_SIMPLE_CLASS(Listener1) IMPLEMENTS(SocketListener) {
 public:
-  void onDataReceived(SocketResponser r,ByteArray pack) {
-    printf("on data \n");
-  }
+  void onSocketMessage(int event ,Socket socket ,ByteArray data) {
+    switch(event) {
+      case st(Socket)::Connect:
+      connectCount->incrementAndGet();
+      break;
 
-  void onDisconnect(SocketResponser r) {
-    printf("on disconnect \n");
-  }
+      case st(Socket)::Message:
+      messageCount->incrementAndGet();
+      socket->getOutputStream()->write(data);
+      break;
 
-  void onConnect(SocketResponser r) {
-    
-    printf("wahah on connect fd is %d\n",r->getFd());
+      case st(Socket)::Disconnect:
+      disconnectCount->incrementAndGet();
+      break;
+    }
   }
 };
 
 int testSocketServer() {
-  printf("trace1 \n");
   ServerSocket server = createSocketBuilder()->setPort(1234)->newServerSocket();
   server->bind();
-  printf("trace2 \n");
-  SocketMonitor monitor = createSocketMonitor();
-  printf("trace3 \n");
+  SocketMonitor monitor = createSocketMonitor(4);
   monitor->bind(server,createListener1());
-  printf("trace4 \n");
   while(1) {sleep(100);}
 }

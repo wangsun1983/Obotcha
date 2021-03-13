@@ -2,13 +2,12 @@ outlib = ./out/lib
 outtmp = ./out/tmp
 
 #gcc = g++
-ccompiler = gcc
-cppcompiler = g++
+ccompiler = clang
+cppcompiler = clang++
 clangcompiler = clang++
 
 
 cflags = -fpic \
-		-lrt \
 		-I ./util/concurrent/include/ \
 		-I ./util/coroutine/include/ \
 		-I ./util/text/include/ \
@@ -34,7 +33,6 @@ cflags = -fpic \
 		-I ./external/uuid/include \
 		-I ./external/hiredis/include \
 		-g \
-		-rdynamic \
 		-Wno-deprecated \
 
 cppflags=$(cflags) \
@@ -58,6 +56,8 @@ obotchacppflags = $(cppflags) \
 
 external = -lpthread \
 		-ldl \
+		-lrt \
+		-rdynamic
 
 #sharelib = 	-L./out/lib/libssl.so \
 #			-L./out/lib/libcrypto.so \

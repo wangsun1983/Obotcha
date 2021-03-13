@@ -9,8 +9,9 @@
  * @date 2019-07-12
  * @license none
  */
-
+#include <algorithm>
 #include <cmath>
+
 #include "Double.hpp"
 #include "InitializeException.hpp"
 #include "IllegalArgumentException.hpp"
@@ -69,6 +70,10 @@ void _Double::update(sp<_Double> v) {
 
 sp<_String> _Double::className() {
     return createString("Double");
+}
+
+uint64_t _Double::hashcode() {
+    return std::hash<double>{}(val);
 }
 
 _Double::~_Double() {

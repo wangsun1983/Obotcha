@@ -9,7 +9,7 @@
  * @date 2019-07-12
  * @license none
  */
-
+#include <algorithm>
 
 #include "Byte.hpp"
 #include "InitializeException.hpp"
@@ -63,6 +63,10 @@ void _Byte::update(sp<_Byte>v) {
     }
 
     val = v->val;
+}
+
+uint64_t _Byte::hashcode() {
+    return std::hash<byte>{}(val);
 }
 
 sp<_String> _Byte::toHexString() {

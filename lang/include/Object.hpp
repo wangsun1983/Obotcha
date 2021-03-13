@@ -63,9 +63,9 @@ public:
     //reflect function
     inline virtual void __ReflectInit(){}
     //do not add soure,build will fail!!!
-    inline virtual sp<_Field> getField(sp<_String>){/*don't add code*/}
-    inline virtual sp<_ArrayList<sp<_Field>>> getAllFields(){/*don't add code*/}
-    inline virtual sp<_String> __ReflectClassName(){/*don't add code*/}
+    inline virtual sp<_Field> getField(sp<_String>){throw "not support";}
+    inline virtual sp<_ArrayList<sp<_Field>>> getAllFields(){throw "not support";}
+    inline virtual sp<_String> __ReflectClassName(){throw "not support";}
 
     //reflect get function
 protected:
@@ -79,7 +79,7 @@ protected:
     inline virtual uint16_t getFieldUint16Value(std::string){return 0;}
     inline virtual uint32_t getFieldUint32Value(std::string){return 0;}
     inline virtual uint64_t getFieldUint64Value(std::string){return 0;}
-    inline virtual sp<_String> getFieldStringValue(std::string name){/*don't add code*/};
+    inline virtual sp<_String> getFieldStringValue(std::string name){throw "not support";};
     inline virtual sp<Object> getFieldObjectValue(std::string){return nullptr;}
     //reflect set function
     inline virtual void setFieldIntValue(std::string,int){}
@@ -114,15 +114,14 @@ sp<U> AutoClone(U *v) {
 
 }
 
-
 #define MAKE_FUNCTION_0(Y) \
-template<typename... Args>\
-sp<_##Y> create##Y(Args&&... args)\
+template<typename A=_##Y,typename... Args>\
+sp<A> create##Y(Args&&... args)\
 {\
-    Object* obj = new _##Y(std::forward<Args>(args)...);\
+    Object* obj = new A(std::forward<Args>(args)...);\
     obj->__ReflectInit();\
-    sp<_##Y> ret;\
-    ret.set_pointer(dynamic_cast<_##Y *>(obj));\
+    sp<A> ret;\
+    ret.set_pointer(dynamic_cast<A *>(obj));\
     return ret;\
 }\
 
@@ -130,24 +129,24 @@ sp<_##Y> create##Y(Args&&... args)\
     ret->__ReflectInit();\
 
 #define MAKE_FUNCTION_1(Y) \
-template<typename T,typename... Args>\
-sp<_##Y<T>> create##Y(Args&&... args)\
+template<typename T,typename A=_##Y<T>,typename... Args>\
+sp<A> create##Y(Args&&... args)\
 {\
-    Object* obj = new _##Y<T>(std::forward<Args>(args)...);\
+    Object* obj = new A(std::forward<Args>(args)...);\
     obj->__ReflectInit();\
-    sp<_##Y<T>> ret;\
-    ret.set_pointer(dynamic_cast<_##Y<T> *>(obj));\
+    sp<A> ret;\
+    ret.set_pointer(dynamic_cast<A *>(obj));\
     return ret;\
 }\
 
 #define MAKE_FUNCTION_2(Y) \
-template<typename T,typename U,typename... Args>\
-sp<_##Y<T,U>> create##Y(Args&&... args)\
+template<typename T,typename U,typename A=_##Y<T,U>,typename... Args>\
+sp<A> create##Y(Args&&... args)\
 {\
-    Object* obj = new _##Y<T,U>(std::forward<Args>(args)...);\
+    Object* obj = new A(std::forward<Args>(args)...);\
     obj->__ReflectInit();\
-    sp<_##Y<T,U>> ret;\
-    ret.set_pointer(dynamic_cast<_##Y<T,U> *>(obj));\
+    sp<A> ret;\
+    ret.set_pointer(dynamic_cast<A *>(obj));\
     return ret;\
 }\
 

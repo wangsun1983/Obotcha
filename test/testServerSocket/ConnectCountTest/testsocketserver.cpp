@@ -25,7 +25,7 @@ public:
     switch(event) {
       case st(Socket)::Connect:
       connectCount->incrementAndGet();
-      mSocketMonitor->bind(socket,AutoClone(this));
+      //mSocketMonitor->bind(socket,AutoClone(this));
       break;
 
       case st(Socket)::Message:
@@ -37,7 +37,7 @@ public:
 
       case st(Socket)::Disconnect:
       disconnectCount->incrementAndGet();
-      mSocketMonitor->remove(socket);
+      //mSocketMonitor->remove(socket);
       break;
     }
   }
@@ -47,12 +47,12 @@ private:
 };
 
 int main() {
-  InetAddress inet = createInetAddress("192.168.1.8",1234);
+  InetAddress inet = createInetAddress("192.168.1.3",1234);
   ServerSocket server = createSocketBuilder()->setAddress(inet)->newServerSocket();
   server->bind();
   SocketMonitor monitor = createSocketMonitor(4);
   monitor->bind(server,createListener1(monitor));
-  sleep(100);
+  sleep(30);
 
   if(connectCount->get() != 1024*32 || disconnectCount->get() != 1024*32 || messageCount->get() != 1024*32) {
     printf("---[testServerSocket ConnectCountTest case1,connectCount is %d,disconnectCount is %d,messageCount is %d] [FAILED]--- \n"

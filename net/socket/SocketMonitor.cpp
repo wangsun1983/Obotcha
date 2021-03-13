@@ -248,6 +248,8 @@ int _SocketMonitor::remove(Socket s) {
         AutoLock lock(mListenerMutex);
         mListeners->remove(s->getFd());
     }
+
+    return 0;
 }
 
 bool _SocketMonitor::isSocketExist(Socket s) {

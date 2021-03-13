@@ -9,6 +9,7 @@
  * @date 2019-07-12
  * @license none
  */
+#include <algorithm>
 
 #include "Long.hpp"
 #include "InitializeException.hpp"
@@ -63,6 +64,10 @@ void _Long::update(sp<_Long> v) {
     }
 
     val = v->val;
+}
+
+uint64_t _Long::hashcode() {
+    return std::hash<long>{}(val);
 }
 
 sp<_String> _Long::toHexString() {

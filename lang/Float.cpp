@@ -1,4 +1,6 @@
 #include <cmath>
+#include <algorithm>
+
 #include "Float.hpp"
 #include "InitializeException.hpp"
 #include "IllegalArgumentException.hpp"
@@ -44,6 +46,10 @@ bool _Float::equals(const _Float *p) {
 
 bool _Float::equals(float p) {
     return std::fabs(val-p) <= EPS;
+}
+
+uint64_t _Float::hashcode() {
+    return std::hash<float>{}(val);
 }
 
 void _Float::update(float v) {

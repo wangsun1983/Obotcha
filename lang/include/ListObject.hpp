@@ -14,34 +14,34 @@
 namespace obotcha {
 
 #define MAKE_LIST_FUNCTION_0(Y) \
-template<typename... Args>\
-__lst<_##Y> create##Y(Args&&... args)\
+template<typename A = _##Y,typename... Args>\
+__lst<A> create##Y(Args&&... args)\
 {\
-    __lst<_##Y> ret = new _##Y(std::forward<Args>(args)...);\
+    __lst<A> ret = new A(std::forward<Args>(args)...);\
     return ret;\
 }\
 
 #define MAKE_LIST_FUNCTION_BYTEARRAY(Y) \
-template<typename... Args>\
-__btarr<_##Y> create##Y(Args&&... args)\
+template<typename A=_##Y,typename... Args>\
+__btarr<A> create##Y(Args&&... args)\
 {\
-    __btarr<_##Y> ret = new _##Y(std::forward<Args>(args)...);\
+    __btarr<A> ret = new A(std::forward<Args>(args)...);\
     return ret;\
 }\
 
 #define MAKE_LIST_FUNCTION_1(Y) \
-template<typename T,typename... Args>\
-__lst<_##Y<T>> create##Y(Args&&... args)\
+template<typename T,typename A=_##Y<T>,typename... Args>\
+__lst<A> create##Y(Args&&... args)\
 {\
-    __lst<_##Y<T>> ret = new _##Y<T>(std::forward<Args>(args)...);\
+    __lst<A> ret = new A(std::forward<Args>(args)...);\
     return ret;\
 }\
 
 #define MAKE_LIST_FUNCTION_2(Y) \
-template<typename T,typename U,typename... Args>\
-__lst<_##Y<T,U>> create##Y(Args&&... args)\
+template<typename T,typename U,typename A=_##Y<T,U>,typename... Args>\
+__lst<A> create##Y(Args&&... args)\
 {\
-    __lst<_##Y<T,U>> ret = new _##Y<T,U>(std::forward<Args>(args)...);\
+    __lst<A> ret = new A(std::forward<Args>(args)...);\
     return ret;\
 }\
 
