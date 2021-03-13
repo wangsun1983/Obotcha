@@ -62,7 +62,7 @@ Obotcha是基于C++14开发的一个工具库，该工具库目前提供了如�
     ```
 - Obotcha的整体代码架构均参考了Java的代码结构和实现。目的是能使用Obotcha很快地将java代码转换C++代码。
 - Obotcha使用了部分第三方库（openssl，zlib等），这些使用的开源库代码均存放在external目录下。
-- Obotcha使用g++和gcc作为主要编译器，目前暂时不支持clang。
+- Obotcha可以使用g++/gcc/clang作为主要编译器。
 
 ### Obotcha的编译
 - 第一次编译需要在代码根目录下运行`./build.sh`，这样可以生成对应的out目录。
