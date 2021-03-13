@@ -36,11 +36,11 @@ _NtpSocketClientListener::~_NtpSocketClientListener() {
 
 void _NtpSocketClientListener::onSocketMessage(int event,Socket s,ByteArray data) {
     switch(event) {
-        case st(Socket)::Message:
+        case Event::Message:
         return onDataReceived(s,data);
 
-        case st(Socket)::Connect:
-        case st(Socket)::Disconnect:
+        case Event::Connect:
+        case Event::Disconnect:
         default:
         return;
     }
@@ -145,7 +145,7 @@ int _NtpClient::bind(String url,int port = 123) {
             ->newDatagramSocket();
             
     mSockMonitor = createSocketMonitor();
-    mSockMonitor->bind(mSock,AutoClone(this));
+    return mSockMonitor->bind(mSock,AutoClone(this));
     //mClient = createUdpClient(mServerIp,port,mListener);
     //mClient->start();
 }

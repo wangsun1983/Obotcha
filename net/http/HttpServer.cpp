@@ -22,8 +22,7 @@ namespace obotcha {
 
 void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
     switch(event) {
-        case st(HttpListener)::Message: {
-            //printf("_HttpServer::onDataReceived \n");
+        case Event::Message: {
             HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r);
             if(info == nullptr) {
                 return;
@@ -41,7 +40,7 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
         }
         break;
 
-        case st(HttpListener)::Connect:{
+        case Event::Connect:{
             HttpClientInfo info = createHttpClientInfo(r);
 
             //TODO
@@ -50,15 +49,13 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
                 info->setSSLInfo(ssl);
             }
             st(HttpClientManager)::getInstance()->addClientInfo(info);
-            //mSockMonitor->bind(r,AutoClone(this));
             mHttpListener->onHttpMessage(event,info,nullptr,nullptr);
         }
         break;
 
-        case st(HttpListener)::Disconnect: {
+        case Event::Disconnect: {
             HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r);
             mHttpListener->onHttpMessage(event,info,nullptr,nullptr);
-            //mSockMonitor->remove(r);
         }
     }
 }

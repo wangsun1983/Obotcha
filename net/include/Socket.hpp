@@ -19,12 +19,6 @@ public:
         Local
     };
 
-    enum Event{
-        Connect = 0,
-        Message,
-        Disconnect
-    };
-
     _Socket(int,InetAddress host,SocketOption option);
     _Socket(int);
     int connect();
