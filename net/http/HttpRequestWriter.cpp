@@ -107,9 +107,9 @@ int _HttpRequestWriter::write(HttpRequest p) {
     //ContentType multipart/form-data
     if(multiPart != nullptr) {
         if(multiPart->contents->size() > 0) {
-            ListIterator<HttpMultiPartContent> iterator = multiPart->contents->getIterator();
+            ListIterator<KeyValuePair<String,String>> iterator = multiPart->contents->getIterator();
             while(iterator->hasValue()) {
-                HttpMultiPartContent content = iterator->getValue();
+                KeyValuePair<String,String> content = iterator->getValue();
                 AUTO_FLUSH(writer->writeString(st(HttpText)::BoundaryBeginning));
                 AUTO_FLUSH(writer->writeString(boundary));
                 AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
@@ -120,7 +120,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
                 AUTO_FLUSH(writer->writeString(st(HttpText)::PartName));
                 AUTO_FLUSH(writer->writeString(createString("=")));
                 AUTO_FLUSH(writer->writeByte('"'));
-                AUTO_FLUSH(writer->writeString(content->getName()));
+                AUTO_FLUSH(writer->writeString(content->getKey()));
                 AUTO_FLUSH(writer->writeByte('"'));
                 AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
                 AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
@@ -242,13 +242,13 @@ long _HttpRequestWriter::computeContentLength(HttpRequest req,String boundary) {
     if(multiPart != nullptr) {
         length += st(HttpText)::LineEnd->size();
 
-        ListIterator<HttpMultiPartContent> contentIterator = multiPart->contents->getIterator();
+        ListIterator<KeyValuePair<String,String>> contentIterator = multiPart->contents->getIterator();
         while(contentIterator->hasValue()) {
-            HttpMultiPartContent content = contentIterator->getValue();
+            KeyValuePair<String,String> content = contentIterator->getValue();
             length += (boundary->size() + st(HttpText)::BoundaryBeginning->size() + st(HttpText)::LineEnd->size());
             int nameSize = 0;
-            if(content->getName() != nullptr) {
-                nameSize = content->getName()->size();
+            if(content->getKey() != nullptr) {
+                nameSize = content->getKey()->size();
             }
 
             length += (st(HttpHeader)::ContentDisposition->size()

@@ -15,7 +15,7 @@ using namespace obotcha;
 //_HttpMultiPart();
 _HttpMultiPart::_HttpMultiPart() {
     files = createArrayList<HttpMultiPartFile>();
-    contents = createArrayList<HttpMultiPartContent>();
+    contents = createArrayList<KeyValuePair<String,String>>();
 }
 
 //-----------------HttpMultiPartFile-----------------
@@ -28,18 +28,4 @@ _HttpMultiPartFile::_HttpMultiPartFile(File f){
 
 HttpFile _HttpMultiPartFile::getHttpFile() {
     return mFile;
-}
-
-//-----------------HttpMultiPartContent-----------------
-
-_HttpMultiPartContent::_HttpMultiPartContent(String name,String data):mName(name),mValue(data){
-
-}
-
-String _HttpMultiPartContent::getName() {
-    return mName;
-}
-
-String _HttpMultiPartContent::getValue() {
-    return mValue;
 }

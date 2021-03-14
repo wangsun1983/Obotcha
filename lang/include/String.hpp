@@ -314,8 +314,6 @@ private:
 
     bool isLongNumber(const char *p,int size);
 
-    void checkParam(String &);
-
     //local function
     template<typename... Args>
     void _append(sp<_String> v,Args...args);

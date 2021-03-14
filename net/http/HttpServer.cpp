@@ -17,22 +17,33 @@
 #include "HttpInternalException.hpp"
 #include "SocketBuilder.hpp"
 #include "SocketOption.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
 void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
     switch(event) {
-        case Event::Message: {
+        case SocketEvent::Message: {
             HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r);
             if(info == nullptr) {
                 return;
             }
-            info->pushHttpData(pack);
+            if(info->pushHttpData(pack) == -1) {
+                //some thing may be wrong
+                mHttpListener->onHttpMessage(SocketEvent::InternalError,info,nullptr,nullptr);
+                st(HttpClientManager)::getInstance()->removeClientInfo(r);
+                r->close();
+                return;
+            }
+            
             ArrayList<HttpPacket> packets = info->pollHttpPacket();
+            printf("http server on socket message \n");
             if(packets != nullptr && packets->size() != 0) {
+                printf("http server on socket message2 \n");
                 HttpResponseWriter writer = createHttpResponseWriter(info);
                 ListIterator<HttpPacket> iterator = packets->getIterator();
                 while(iterator->hasValue()) {
+                    printf("http server on socket message3 \n");
                     mHttpListener->onHttpMessage(event,info,writer,iterator->getValue());
                     iterator->next();
                 }
@@ -40,10 +51,9 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
         }
         break;
 
-        case Event::Connect:{
+        case SocketEvent::Connect:{
             HttpClientInfo info = createHttpClientInfo(r);
 
-            //TODO
             SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
             if(info != nullptr) {
                 info->setSSLInfo(ssl);
@@ -53,9 +63,10 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
         }
         break;
 
-        case Event::Disconnect: {
+        case SocketEvent::Disconnect: {
             HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r);
             mHttpListener->onHttpMessage(event,info,nullptr,nullptr);
+            st(HttpClientManager)::getInstance()->removeClientInfo(r);
         }
     }
 }
@@ -100,13 +111,9 @@ void _HttpServer::start() {
                         ->newServerSocket();
 
         mServerSock->bind();
-        printf("http server trace1 \n");
         int threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
         mSockMonitor = createSocketMonitor(threadsNum);
-        printf("http server trace2 \n");
         mSockMonitor->bind(mServerSock,AutoClone(this));
-        printf("http server trace3 \n");
-        
     }
 }
 
@@ -118,17 +125,26 @@ void _HttpServer::deMonitor(Socket s) {
 void _HttpServer::exit() {
     if(mSockMonitor != nullptr) {
         mSockMonitor->release();
+        mSockMonitor = nullptr;
     }
 
     if(mServerSock != nullptr) {
         mServerSock->close();
+        mServerSock = nullptr;
     }
 
     if(mSSLServer != nullptr) {
         mSSLServer->release();
+        mSSLServer = nullptr;
     }
 
     st(HttpClientManager)::getInstance()->clear();
+}
+
+_HttpServer::~_HttpServer() {
+    if(mSockMonitor != nullptr) {
+
+    }
 }
 
 }

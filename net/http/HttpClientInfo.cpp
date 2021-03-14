@@ -24,8 +24,7 @@ String _HttpClientInfo::getClientIp() {
 }
 
 int _HttpClientInfo::pushHttpData(ByteArray array) {
-    mParser->pushHttpData(array);
-    return 0;
+    return mParser->pushHttpData(array);
 }
 
 ArrayList<HttpPacket> _HttpClientInfo::pollHttpPacket() {

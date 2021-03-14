@@ -36,11 +36,11 @@ _NtpSocketClientListener::~_NtpSocketClientListener() {
 
 void _NtpSocketClientListener::onSocketMessage(int event,Socket s,ByteArray data) {
     switch(event) {
-        case Event::Message:
+        case SocketEvent::Message:
         return onDataReceived(s,data);
 
-        case Event::Connect:
-        case Event::Disconnect:
+        case SocketEvent::Connect:
+        case SocketEvent::Disconnect:
         default:
         return;
     }

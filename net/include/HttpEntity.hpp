@@ -8,6 +8,7 @@
 #include "ByteArray.hpp"
 #include "HttpMultiPart.hpp"
 #include "HashMap.hpp"
+#include "KeyValuePair.hpp"
 
 namespace obotcha {
 
@@ -19,9 +20,9 @@ public:
 
     HttpMultiPart getMultiPart();
 
-    HashMap<String,String> getEncodedKeyValues();
+    ArrayList<KeyValuePair<String,String>> getEncodedKeyValues();
 
-    void setEncodedKeyValues(HashMap<String,String>);
+    void setEncodedKeyValues(ArrayList<KeyValuePair<String,String>>);
 
     ByteArray getContent();
     
@@ -30,7 +31,7 @@ public:
 private:
     HttpMultiPart mMultiPart;
 
-    HashMap<String,String>mFormUrlEncodedMap;
+    ArrayList<KeyValuePair<String,String>>mFormUrlEncodedMap;
     
     ByteArray mContent;
 

@@ -3,7 +3,7 @@
 namespace obotcha {
 
 _HttpEntity::_HttpEntity() {
-    mFormUrlEncodedMap = createHashMap<String,String>();
+    mFormUrlEncodedMap = createArrayList<KeyValuePair<String,String>>();
 }
     
 void _HttpEntity::setMultiPart(HttpMultiPart part) {
@@ -14,11 +14,11 @@ HttpMultiPart _HttpEntity::getMultiPart() {
     return mMultiPart;
 }
 
-HashMap<String,String> _HttpEntity::getEncodedKeyValues() {
+ArrayList<KeyValuePair<String,String>> _HttpEntity::getEncodedKeyValues() {
     return mFormUrlEncodedMap;
 }
 
-void _HttpEntity::setEncodedKeyValues(HashMap<String,String> map) {
+void _HttpEntity::setEncodedKeyValues(ArrayList<KeyValuePair<String,String>> map) {
     mFormUrlEncodedMap = map;
 }
 

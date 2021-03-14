@@ -49,6 +49,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpserverbuilder.o \
 		$(outtmp)/httpclientinfo.o \
 		$(outtmp)/httprequestparser.o \
+		$(outtmp)/httpxformparser.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketprotocol.o \
 		$(outtmp)/websocketframe.o \
@@ -128,6 +129,9 @@ $(outtmp)/socketmonitor.o :$(netDir)/socket/SocketMonitor.cpp
 
 $(outtmp)/httprequestparser.o :$(netDir)/http/HttpRequestParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRequestParser.cpp -o $(outtmp)/httprequestparser.o 
+
+$(outtmp)/httpxformparser.o :$(netDir)/http/HttpXFormUrlEncodedParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpXFormUrlEncodedParser.cpp -o $(outtmp)/httpxformparser.o 
 
 $(outtmp)/httpclient.o :$(netDir)/http/HttpClient.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClient.cpp -o $(outtmp)/httpclient.o 

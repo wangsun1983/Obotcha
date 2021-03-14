@@ -24,7 +24,7 @@ DECLARE_SIMPLE_CLASS(HttpRequestParser) {
 public:
     _HttpRequestParser();
 
-    void pushHttpData(ByteArray);
+    int pushHttpData(ByteArray);
 
     ArrayList<HttpPacket> doParse();
 

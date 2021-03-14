@@ -38,10 +38,10 @@ int _HttpResponseParser::on_header_value(http_parser*parser, const char *at, siz
         || p->tempParseField->equalsIgnoreCase(st(HttpHeader)::SetCookie)) {
         p->getHeader()->addCookie(createHttpCookie(value));
         return 0;
-    } else if(p->tempParseField->equals(st(HttpHeader)::CacheControl)) {
+    } else if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::CacheControl)) {
         p->getHeader()->setCacheControl(createHttpCacheControl(value));
         return 0;
-    } else if(p->tempParseField->equals(st(HttpHeader)::ContentType)) {
+    } else if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::ContentType)) {
         p->getHeader()->setContentType(createHttpContentType(value));
         return 0;
     }

@@ -5,6 +5,8 @@
 #include "HttpInternalException.hpp"
 #include "HttpCacheControl.hpp"
 #include "HttpText.hpp"
+#include "Log.hpp"
+#include "HttpXFormUrlEncodedParser.hpp"
 
 namespace obotcha {
 
@@ -45,10 +47,10 @@ int _HttpRequestParser::on_header_value(http_parser*parser, const char *at, size
         || p->tempParseField->equalsIgnoreCase(st(HttpHeader)::SetCookie)) {
         p->getHeader()->addCookie(createHttpCookie(value));
         return 0;
-    } else if(p->tempParseField->equals(st(HttpHeader)::CacheControl)) {
+    } else if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::CacheControl)) {
         p->getHeader()->setCacheControl(value);
         return 0;
-    } else if(p->tempParseField->equals(st(HttpHeader)::ContentType)) {
+    } else if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::ContentType)) {
         p->getHeader()->setContentType(value);
         return 0;
     }
@@ -99,7 +101,7 @@ _HttpRequestParser::_HttpRequestParser() {
     mStatus = Idle;
 }
 
-void _HttpRequestParser::pushHttpData(ByteArray data) {
+int _HttpRequestParser::pushHttpData(ByteArray data) {
     //write data
 #ifdef DUMP_HTTP_DATE
     File dumpfile = createFile("data.dt");
@@ -114,8 +116,11 @@ void _HttpRequestParser::pushHttpData(ByteArray data) {
     try {
         mBuff->push(data);
     } catch(ArrayIndexOutOfBoundsException &e) {
-        Trigger(HttpInternalException,"receiver data overflow");
+        LOG(ERROR)<<"HttpRequestParser error ,data overflow";
+        return -1;
     }
+
+    return 0;
 }
 
 HttpPacket _HttpRequestParser::parseEntireRequest(String request) {
@@ -133,7 +138,6 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
     while(1) {
         switch(mStatus) {
             case Idle:{
-                printf("parser Idle\n");
                 byte v = 0;
                 while(mReader->readNext(v) != ByteRingArrayReadComplete) {
                     if(v == end[mHeadEndCount]) {
@@ -157,7 +161,6 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
             }
             
             case HeadStart: {
-                printf("parser HeadStart\n");
                 ByteArray head = mReader->pop();
                 memset(&mParser,0,sizeof(http_parser));
                 mHttpPacket = createHttpPacket();
@@ -177,19 +180,18 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
             }
 
             case BodyStart: {
-                printf("parser BodyStart\n");
                 //check whether there is a multipart
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
                 if(contentlength == nullptr) {
+                    //no contentlength,maybe it is only a html request
                     packets->add(mHttpPacket);
                     mMultiPartParser = nullptr;
                     mStatus = Idle;
                     continue;
                 }
                 
-                if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPartFormData) != -1) {
-                    printf("parser BodyStart trace1\n");
+                if(st(HttpContentType)::MultiPartFormData->indexOfIgnoreCase(contenttype) > 0) {
                     if(mMultiPartParser == nullptr) {
                         try {
                             mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength->toBasicInt());
@@ -200,31 +202,31 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                         HttpMultiPart multipart = mMultiPartParser->parse(mReader);
                         if(multipart != nullptr) {
                             mHttpPacket->getEntity()->setMultiPart(multipart);
-                            printf("add packet trace4 \n");
                             packets->add(mHttpPacket);
                             mMultiPartParser = nullptr;
                             mStatus = Idle;
                         }
                         return packets;
                     }
-                } else if(contentlength != nullptr) {
+                } else {
                     int length = contentlength->toBasicInt();
                     if(length <= mReader->getReadableLength()) {
+                        //one packet get
                         mReader->move(length);
-                        mHttpPacket->getEntity()->setContent(mReader->pop());
+                        ByteArray content = mReader->pop();
+                        //check whether it is a X-URLEncoded
+                        if(st(HttpContentType)::XFormUrlEncoded->indexOfIgnoreCase(contenttype) >= 0) {
+                            ArrayList<KeyValuePair<String,String>> xFormEncodedPair = st(HttpXFormUrlEncodedParser)::parse(content->toString());
+                            mHttpPacket->getEntity()->setEncodedKeyValues(xFormEncodedPair);
+                        } else {
+                            mHttpPacket->getEntity()->setContent(content);
+                        }
                         mStatus = Idle;
-                        printf("add packet trace2 \n");
                         mMultiPartParser = nullptr;
                         packets->add(mHttpPacket);
+                        printf("BodyStart add packet \n");
                         continue;
                     }
-                } else {
-                    //no contentlength,maybe it is only a html request
-                    mStatus = Idle;
-                    printf("add packet trace3 \n");
-                    mMultiPartParser = nullptr;
-                    packets->add(mHttpPacket);
-                    continue;
                 }
                 return packets;
             }

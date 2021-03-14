@@ -13,6 +13,7 @@
 #include "File.hpp"
 #include "HttpHeader.hpp"
 #include "HttpFile.hpp"
+#include "KeyValuePair.hpp"
 
 namespace obotcha {
 
@@ -28,26 +29,11 @@ private:
     HttpFile mFile;
 };
 
-DECLARE_SIMPLE_CLASS(HttpMultiPartContent) {
-
-public:
-    _HttpMultiPartContent(String,String);
-
-    String getName();
-
-    String getValue();
-
-private:
-    String mValue;
-
-    String mName;
-};
-
 DECLARE_SIMPLE_CLASS(HttpMultiPart) {
 public:
     _HttpMultiPart();
     ArrayList<HttpMultiPartFile> files;
-    ArrayList<HttpMultiPartContent>contents;
+    ArrayList<KeyValuePair<String,String>>contents;
 };
 
 }

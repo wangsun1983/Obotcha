@@ -233,8 +233,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                                 String value = mContentBuff->toString();
                                 value = value->subString(0,value->size()- NewLine->size());
                                 String name = mContentDisp->dispositions->get(MultiPartNameTag);
-                                HttpMultiPartContent block = createHttpMultiPartContent(name,value);
-                                mMultiPart->contents->add(block);
+                                mMultiPart->contents->add(createKeyValuePair<String,String>(name,value));
                             }
                             
                             mContentDisp = nullptr;

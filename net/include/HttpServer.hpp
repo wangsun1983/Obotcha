@@ -41,6 +41,8 @@ public:
     void deMonitor(Socket);
     
     void exit();
+    
+    ~_HttpServer();
 
 private:
 

@@ -65,7 +65,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
     WebSocketClientInfo client =
         st(WebSocketClientManager)::getInstance()->getClient(s);
     switch(event) {
-        case Event::Message: {
+        case SocketEvent::Message: {
             bool isRmClient = false;
             WebSocketParser parser = client->getParser();
             WebSocketBuffer defferedBuff = client->getDefferedBuffer();
@@ -164,11 +164,11 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
         }
         break;
 
-        case Event::Connect:
+        case SocketEvent::Connect:
         //TODO
         break;
 
-        case Event::Disconnect: {
+        case SocketEvent::Disconnect: {
             if(client != nullptr) {
                 printf("websocket onsocket disconnect,fd is %d \n",client->getSocket()->getFd());
                 st(WebSocketClientManager)::getInstance()->removeClient(client);
@@ -183,7 +183,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
 
 void _WebSocketServer::onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket request) {
     switch(event) {
-        case Event::Message: {
+        case HttpEvent::Message: {
             HttpHeader header = request->getHeader();
             String upgrade = header->getValue(st(HttpHeader)::Upgrade);
             String key = header->getValue(st(HttpHeader)::SecWebSocketKey);
@@ -233,8 +233,8 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_Ht
         
         break;
 
-        case Event::Connect:
-        case Event::Disconnect:
+        case HttpEvent::Connect:
+        case HttpEvent::Disconnect:
         break;
     }
 }

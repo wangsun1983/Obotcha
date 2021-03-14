@@ -166,6 +166,7 @@ void _HttpHeader::setCacheControl(HttpCacheControl c) {
 
 void _HttpHeader::setContentType(String value) {
     mContentType =  createHttpContentType(value);
+    mValues->put(st(HttpHeader)::ContentType,value);
 }
 
 void _HttpHeader::setContentType(HttpContentType contenttype) {

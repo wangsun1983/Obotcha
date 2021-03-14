@@ -13,10 +13,11 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(SocketListener) {
 public:
-    enum Event{
+    enum SocketEvent{
         Connect = 0,
         Message,
-        Disconnect
+        Disconnect,
+        InternalError,
     };
 
     virtual void onSocketMessage(int,Socket,ByteArray) = 0;
