@@ -61,7 +61,7 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     ByteArrayWriter writer = createByteArrayWriter(mSendBuff);
 
     File file = response->getFile();
-    HashMap<String,String> encodedUrlMap = response->getEntity()->getEncodedKeyValues();
+    ArrayList<KeyValuePair<String,String>> encodedValues = response->getEntity()->getEncodedKeyValues();
     ByteArray body = response->getEntity()->getContent();
 
     //start compose 
@@ -113,12 +113,15 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
                 //printf("flush trace2,body size is %d,length is %d,reason is %s \n",body->size(),length,strerror(errno));
             }
         }
-    } else if(encodedUrlMap != nullptr && encodedUrlMap->size() != 0){
-        MapIterator<String,String> iterator = encodedUrlMap->getIterator();
+    } else if(encodedValues != nullptr && encodedValues->size() != 0){
+        printf("response writer trace4 \n");
+
+        auto iterator = encodedValues->getIterator();
         bool isFirstKey = true;
         while(iterator->hasValue()) {
-            String key = iterator->getKey();
-            String value = iterator->getValue();
+            auto pair = iterator->getValue();
+            String key = pair->getKey();
+            String value = pair->getValue();
             if(!isFirstKey) {
                 AUTO_FLUSH(writer->writeByte('&'));
             }
@@ -143,13 +146,14 @@ ByteArray _HttpResponseWriter::compose(HttpResponse response) {
 }
 
 long _HttpResponseWriter::computeContentLength(HttpResponse response) {
-    HashMap<String,String> encodedUrlMap = response->getEntity()->getEncodedKeyValues();
+    ArrayList<KeyValuePair<String,String>> encodedUrlMap = response->getEntity()->getEncodedKeyValues();
     int length = 0;
     if(encodedUrlMap != nullptr && encodedUrlMap->size() != 0) {
-        MapIterator<String,String> iterator = encodedUrlMap->getIterator();
+        ListIterator<KeyValuePair<String,String>> iterator = encodedUrlMap->getIterator();
         while(iterator->hasValue()) {
-            String key = iterator->getKey();
-            String value = iterator->getValue();
+            auto pair = iterator->getValue();
+            String key = pair->getKey();
+            String value = pair->getValue();
             length += key->size() + value->size();
             iterator->next();
         }
