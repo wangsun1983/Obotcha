@@ -5,10 +5,8 @@
 #include "Thread.hpp"
 #include "Object.hpp"
 #include "System.hpp"
-#include "Executors.hpp"
 #include "Barrier.hpp"
 #include "ByteArrayReader.hpp"
-
 
 using namespace obotcha;
 
@@ -24,7 +22,7 @@ int operatortest() {
       array[3] = 3;
       array[4] = 4;
 
-      if(array->at(0) != 0 
+      if(array->at(0) != 0
         ||array->at(1) != 1
         ||array->at(2) != 2
         ||array->at(3) != 3
@@ -40,8 +38,22 @@ int operatortest() {
         printf("ByteArray operatortest test 2-------[FAIL] \n");
       } catch(ArrayIndexOutOfBoundsException e) {}
 
+      //case 3
+      ByteArray array3 = createByteArray(128);
+      for(int i = 0;i<128;i++) {
+        array3[i] = i+1;
+      }
+
+      for(int j = 0;j<128;j++) {
+        //printf("array3[%d] is %d \n",j,array3[j]);
+        if(array3[j] != j+1) {
+          printf("ByteArray operatortest test 3-------[FAIL] \n");
+          return 0;
+        }
+      }
+
       printf("ByteArray operatortest test 3-------[Success] \n");
       break;
   }
-    
+
 }

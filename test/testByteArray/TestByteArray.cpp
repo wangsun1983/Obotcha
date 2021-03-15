@@ -17,6 +17,7 @@ extern int dumptest();
 extern int testgrow();
 extern int testappend();
 extern int testsafemode();
+extern int testForeach();
 
 int main() {
 
@@ -26,4 +27,5 @@ int main() {
   testgrow();
   testappend();
   testsafemode();
+  testForeach();
 }

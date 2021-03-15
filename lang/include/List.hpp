@@ -4,8 +4,8 @@
 #include <vector>
 #include <algorithm>
 
-#include "ListObject.hpp"
-#include "ListPointer.hpp"
+#include "Object.hpp"
+#include "StrongPointer.hpp"
 #include "Boolean.hpp"
 #include "Double.hpp"
 #include "Float.hpp"
@@ -18,7 +18,7 @@
 namespace obotcha {
 
 //----------------- ArrayList ---------------------
-DECLARE_LIST(List,1) {
+DECLARE_CLASS(List,1) {
 public:
     _List(int length) {
         mSize = length;

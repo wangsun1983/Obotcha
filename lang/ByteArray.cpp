@@ -18,51 +18,47 @@
 
 namespace obotcha {
 
-const int _ByteArray::SafeMode = 1;
-
-const int _ByteArray::NormalMode = 2;
-
 /**
  * @brief ByteArray construct function
  * @param b copy value
  */
-_ByteArray::_ByteArray(sp<_ByteArray> b) {
+_ByteArray::_ByteArray(sp<_ByteArray> b,bool isSafe) {
     if(b == nullptr || b->size() <= 0) {
         Trigger(InitializeException,"create ByteArray is nullptr");
     }
     mSize = b->size();
     buff = (unsigned char *)malloc(mSize);
     memcpy(buff,b->toValue(),mSize);
-    mMode = NormalMode;
+    this->isSafe = isSafe;
 }
 
 /**
  * @brief ByteArray construct function
  * @param length alloc memory size
  */
-_ByteArray::_ByteArray(int length) {
+_ByteArray::_ByteArray(int length,bool isSafe) {
     if(length <= 0) {
         Trigger(InitializeException,"create ByteArray is nullptr");
     }
     buff = (unsigned char *)malloc(length);
     memset(buff,0,length);
     mSize = length;
-    mMode = NormalMode;
+    this->isSafe = isSafe;
 }
 
 /**
  * @brief ByteArray construct function
  * @param str save str as ByteArray
  */
-_ByteArray::_ByteArray(String str) {
+_ByteArray::_ByteArray(String str,bool isSafe) {
     if(str == nullptr || str->size() <= 0) {
         Trigger(InitializeException,"create ByteArray is nullptr");
     }
     mSize = str->size();
     buff = (unsigned char *)malloc(mSize + 1);
-    memset(buff,0,mSize + 1);
     memcpy(buff,str->toChars(),mSize);
-    mMode = NormalMode;
+    buff[mSize] = 0;
+    this->isSafe = isSafe;
 }
 
 /**
@@ -70,18 +66,14 @@ _ByteArray::_ByteArray(String str) {
  * @param data source data
  * @param len save data len
  */
-_ByteArray::_ByteArray(const byte *data,uint32_t len) {
+_ByteArray::_ByteArray(const byte *data,uint32_t len,bool isSafe) {
     if(data == nullptr) {
         Trigger(InitializeException,"create ByteArray is nullptr");
     }
     buff = (unsigned char *)malloc(len);
     mSize = len;
     memcpy(buff,data,len);
-    mMode = NormalMode;
-}
-
-void _ByteArray::setMode(int mode) {
-    mMode = mode;
+    this->isSafe = isSafe;
 }
 
 /**
@@ -91,7 +83,7 @@ void _ByteArray::clear() {
     memset(buff,0,mSize);
 }
 
-unsigned char & _ByteArray::operator[] (int index) {
+byte & _ByteArray::operator[] (int index) {
     if(index >= mSize) {
         String exception = createString("ByteArray [] fail")
                             ->append("size is",
@@ -119,7 +111,7 @@ _ByteArray::~_ByteArray() {
 
 
 byte *_ByteArray::toValue() {
-    if(mMode == SafeMode) {
+    if(isSafe) {
         byte *v = (byte*)malloc(mSize);
         memcpy(v,buff,mSize);
         return v;
@@ -132,22 +124,19 @@ int _ByteArray::size() {
     return mSize;
 }
 
-void _ByteArray::quickShrink(int size) {
+int _ByteArray::quickShrink(int size) {
     if(size >= mSize) {
-        return;
+        return -InvalidParam;
     }
 
     buff[size] = 0;
     mSize = size;
+    return 0;
 }
 
 int _ByteArray::growTo(int size) {
     if(size <= mSize) {
         return -InvalidParam;
-    }
-
-    if(buff == nullptr) {
-        return -NotCreate;
     }
 
     buff = (byte *)realloc(buff,size);
@@ -158,12 +147,8 @@ int _ByteArray::growTo(int size) {
 }
 
 int _ByteArray::growBy(int size) {
-    if(size == 0) {
-        return 0;
-    }
-
-    if(buff == nullptr) {
-        return -NotCreate;
+    if(size <= 0) {
+        return -InvalidParam;
     }
 
     mSize += size;
@@ -174,7 +159,7 @@ int _ByteArray::growBy(int size) {
 }
 
 bool _ByteArray::isEmpty() {
-    return (buff == nullptr || mSize == 0);
+    return mSize == 0;
 }
 
 byte _ByteArray::at(int index) {
@@ -191,19 +176,11 @@ byte _ByteArray::at(int index) {
 }
 
 int _ByteArray::fill(byte v) {
-    if(buff == nullptr) {
-        return -NotCreate;
-    }
-
     memset(buff,v,mSize);
-    
     return 0;
 }
 
 int _ByteArray::fill(int index,byte v) {
-    if(buff == nullptr) {
-        return -NotCreate;
-    }
 
     if(index >= mSize || index < 0) {
         Trigger(ArrayIndexOutOfBoundsException,"fill Stack Overflow");
@@ -215,10 +192,6 @@ int _ByteArray::fill(int index,byte v) {
 }
 
 int _ByteArray::fill(int index,int length,byte v) {
-    if(buff == nullptr) {
-        return -NotCreate;
-    }
-
     if((index < 0)
         || (index + length > mSize)) {
         Trigger(ArrayIndexOutOfBoundsException,"fill Stack Overflow");

@@ -19,42 +19,57 @@ public:
         ByteRingArrayPartial
     };
 
-   _ByteRingArray(int size);
+    _ByteRingArray(int size);
 
-   ~_ByteRingArray();
+    ~_ByteRingArray();
 
-   bool push(byte b);
+    bool push(byte b);
 
-   byte pop();
-   
-   bool push(ByteArray);
+    byte pop();
 
-   bool push(ByteArray,int start,int length);
+    bool push(ByteArray);
 
-   ByteArray pop(int size);
+    bool push(ByteArray,int start,int length);
 
-   ByteArray popByEnd(int);
+    ByteArray pop(int size);
 
-   int getAvailDataSize();
+    ByteArray popByEnd(int);
 
-   int getSize();
+    int getAvailDataSize();
 
-   int getStartIndex();
+    int getSize();
 
-   int getEndIndex();
+    int getStartIndex();
 
-   ByteArray popAll();
+    int getEndIndex();
 
-   byte at(int m);
+    ByteArray popAll();
 
-   int getStatus();
-   
-   //just for test
-   void setStartIndex(int);
-   void setEndIndex(int);
-   void setStatus(int);
+    byte at(int m);
 
-   void reset();
+    int getStatus();
+
+    using foreachCallback = std::function<int(byte &)>;
+    inline void foreach(foreachCallback callback) {
+        int cursor = mStart;
+        while(cursor != mEnd) {
+            if(callback(mBuff[cursor]) < 0) {
+                break;
+            }
+
+            cursor++;
+            if(cursor == mSize) {
+                cursor = 0;
+            }
+        }
+    }
+
+    //just for test
+    void setStartIndex(int);
+    void setEndIndex(int);
+    void setStatus(int);
+
+    void reset();
    
 private:
 

@@ -125,6 +125,10 @@ public:
             }
         }
     }
+
+    U &operator[](T k) {
+        return hashmap[k];
+    }
     
     sp<_MapIterator<T,U>> getIterator() {
         return new _MapIterator<T,U>(this);

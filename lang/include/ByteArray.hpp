@@ -3,22 +3,23 @@
 
 #include <stdlib.h>
 #include <memory.h>
+#include <functional>
 
+#include "Object.hpp"
+#include "StrongPointer.hpp"
 #include "String.hpp"
-#include "ListObject.hpp"
-#include "ListPointer.hpp"
 
 namespace obotcha {
 
-DECLARE_BYTE_ARRAY(ByteArray) {
+DECLARE_SIMPLE_CLASS(ByteArray) {
 public:
-    _ByteArray(int length);
+    explicit _ByteArray(int length,bool isSafe = false);
 
-    _ByteArray(const byte *data,uint32_t len);
+    explicit _ByteArray(const byte *data,uint32_t len,bool isSafe = false);
 
-    _ByteArray(sp<_ByteArray>);
+    explicit _ByteArray(sp<_ByteArray>,bool isSafe = false);
 
-    _ByteArray(String);
+    explicit _ByteArray(String,bool isSafe = false);
 
     ~_ByteArray();
 
@@ -28,13 +29,13 @@ public:
 
     void clear();
 
-    unsigned char & operator[](int i);
+    byte & operator[](int i);
 
     int growTo(int size);
 
     int growBy(int size);
 
-    void quickShrink(int size);
+    int quickShrink(int size);
 
     bool isEmpty();
 
@@ -52,6 +53,16 @@ public:
 
     int append(byte *data,int len);
 
+    //add foreach lambda
+    using foreachCallback = std::function<int(byte &)>;
+    inline void foreach(foreachCallback callback) {
+        for(int i = 0;i < mSize;i++) {
+            if(callback(buff[i]) < 0) {
+                break;
+            }
+        }
+    }
+
     String toString();
 
     void dump(const char *);
@@ -62,18 +73,12 @@ public:
 
     void dumpToFile(String);
 
-    void setMode(int);
-
-    static const int SafeMode;
-
-    static const int NormalMode;
-
 private:
     byte *buff;
 
     int mSize;
 
-    int mMode;
+    bool isSafe;
 };
 
 }

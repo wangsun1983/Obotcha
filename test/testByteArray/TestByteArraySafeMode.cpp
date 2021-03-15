@@ -16,8 +16,7 @@ int testsafemode() {
 
   //case1
   while(1) {
-    ByteArray arr1 = createByteArray(8);
-    arr1->setMode(st(ByteArray)::SafeMode);
+    ByteArray arr1 = createByteArray(8,true);
     for(int i = 0;i < 8;i++) {
       arr1[i] = 99;
     }

@@ -88,7 +88,7 @@ ByteArray _ZipMemoryStream::decompress(ByteArray in,int flush_mode) {
         int size = ZIP_COMPRESS_BUFF_SIZE - mDecompressStream.avail_out;
         //out->append(zipBuff,size);
         if(out == nullptr) {
-            out = createByteArray(zipBuff,size);
+            out = createByteArray((const byte *)zipBuff,size);
         } else {
             out->append(zipBuff,size);
         }

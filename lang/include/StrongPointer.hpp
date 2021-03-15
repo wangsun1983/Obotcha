@@ -240,6 +240,15 @@ public:
         return !m_ptr->euqals(o);
     }
 
+    auto &operator[] (int index) { 
+        return (*this->m_ptr)[index];
+    }
+
+    template<typename Q>
+    auto &operator[] (Q key) {
+        return (*this->m_ptr)[key];
+    }
+
     //COMPARE(==)
     //COMPARE(!=)
     COMPARE(>)
