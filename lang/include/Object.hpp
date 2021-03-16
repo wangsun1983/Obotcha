@@ -112,6 +112,13 @@ sp<U> AutoClone(U *v) {
     return data;
 }
 
+template<typename T,typename U>
+T AutoClone(U *v) {
+    T data;
+    data.set_pointer(dynamic_cast<decltype(data.get_pointer())>(v));
+    return data;
+}
+
 }
 
 #define MAKE_FUNCTION_0(Y) \

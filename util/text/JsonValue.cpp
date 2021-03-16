@@ -427,7 +427,7 @@ String _JsonValue::getStringAt(int index) {
 Integer _JsonValue::getIntegerAt(int index) {
     Json::Value v = jvalue[index];
     if(!v.isNull()) {
-        return createString(jvalue[index].asString());
+        return createString(jvalue[index].asString())->toInteger();
     }
 
     return nullptr;

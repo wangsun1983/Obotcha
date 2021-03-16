@@ -145,7 +145,7 @@ int _NtpClient::bind(String url,int port = 123) {
             ->newDatagramSocket();
             
     mSockMonitor = createSocketMonitor();
-    return mSockMonitor->bind(mSock,AutoClone(this));
+    return mSockMonitor->bind(mSock,AutoClone<SocketListener>(this));
     //mClient = createUdpClient(mServerIp,port,mListener);
     //mClient->start();
 }

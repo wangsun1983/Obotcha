@@ -108,7 +108,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                     if (header->isFinalFrame()) {
                         ByteArray msgData = parser->parseContent(true);
                         WebSocketFrame frame = createWebSocketFrame(header,msgData);
-                        mWsListener->onData(client, msgData);
+                        mWsListener->onData(client, frame);
                     } else {
                         ByteArray msgData = parser->parseContent(false);
                         WebSocketBuffer buff = createWebSocketBuffer();
@@ -219,7 +219,7 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_Ht
                     //TODO
                 }
                 printf("move to socket monitor \n");
-                mSocketMonitor->bind(client->getSocket(),AutoClone(this));
+                mSocketMonitor->bind(client->getSocket(),AutoClone<SocketListener>(this));
                 mWsListener->onConnect(wsClient);
 
                 WebSocketComposer composer = wsClient->getComposer();

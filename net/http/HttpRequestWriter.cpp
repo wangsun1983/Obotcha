@@ -12,6 +12,7 @@
 #include "HttpText.hpp"
 #include "FileInputStream.hpp"
 #include "HttpProtocol.hpp"
+#include "KeyValuePair.hpp"
 
 namespace obotcha {
 
@@ -60,7 +61,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
     String boundary = nullptr;
     //check body
     HttpMultiPart multiPart = p->getEntity()->getMultiPart();
-    HashMap<String,String> encodedUrlMap = p->getEntity()->getEncodedKeyValues();
+    ArrayList<KeyValuePair<String,String>> encodedUrlMap = p->getEntity()->getEncodedKeyValues();
 
     //1.create head
     HttpContentType contentType = p->getHeader()->getContentType();
@@ -186,11 +187,12 @@ int _HttpRequestWriter::write(HttpRequest p) {
         AUTO_FLUSH(writer->writeString(st(HttpText)::BoundaryBeginning));
         AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
     } else if(encodedUrlMap != nullptr){
-        MapIterator<String,String> iterator = encodedUrlMap->getIterator();
+        ListIterator<KeyValuePair<String,String>> iterator = encodedUrlMap->getIterator();
         bool isFirstKey = true;
         while(iterator->hasValue()) {
-            String key = iterator->getKey();
-            String value = iterator->getValue();
+            auto pair = iterator->getValue();
+            String key = pair->getKey();
+            String value = pair->getValue();
             if(!isFirstKey) {
                 AUTO_FLUSH(writer->writeByte('&'));
             }
@@ -235,7 +237,7 @@ int _HttpRequestWriter::flush(ByteArray data,int length) {
 
 long _HttpRequestWriter::computeContentLength(HttpRequest req,String boundary) {
     HttpMultiPart multiPart = req->getEntity()->getMultiPart();
-    HashMap<String,String> encodedUrlMap = req->getEntity()->getEncodedKeyValues();
+    ArrayList<KeyValuePair<String,String>> encodedUrlMap = req->getEntity()->getEncodedKeyValues();
     long length = 0;
     
     //multipart
@@ -302,10 +304,11 @@ long _HttpRequestWriter::computeContentLength(HttpRequest req,String boundary) {
         length += (boundary->size() + st(HttpText)::BoundaryBeginning->size()*2);
         return length;
     } else if(encodedUrlMap != nullptr) {
-        MapIterator<String,String> iterator = encodedUrlMap->getIterator();
+        ListIterator<KeyValuePair<String,String>> iterator = encodedUrlMap->getIterator();
         while(iterator->hasValue()) {
-            String key = iterator->getKey();
-            String value = iterator->getValue();
+            auto pair = iterator->getValue();
+            String key = pair->getKey();
+            String value = pair->getValue();
             length += key->size() + value->size();
             iterator->next();
         }

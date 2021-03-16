@@ -48,7 +48,7 @@ int _HttpRequestParser::on_header_value(http_parser*parser, const char *at, size
         p->getHeader()->addCookie(createHttpCookie(value));
         return 0;
     } else if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::CacheControl)) {
-        p->getHeader()->setCacheControl(value);
+        p->getHeader()->setCacheControl(createHttpCacheControl(value));
         return 0;
     } else if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::ContentType)) {
         p->getHeader()->setContentType(value);
