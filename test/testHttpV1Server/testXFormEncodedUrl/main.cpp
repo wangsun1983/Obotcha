@@ -45,14 +45,6 @@ void onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_HttpResponseWriter> 
               printf("Encoded key is %s ,value is %s \n",pair->getKey()->toChars(),pair->getValue()->toChars());
               return 1;
             });
-            
-            HttpResponse response = createHttpResponse();
-
-            HttpEntity e = createHttpEntity();
-            e->setContent(createByteArray(createString("value!!!!")));
-            response->setEntity(e);
-            int len = w->write(response);
-            //printf("len is %d \n",len);
         }
         break;
 

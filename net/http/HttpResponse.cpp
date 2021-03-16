@@ -3,11 +3,12 @@
 
 #include "String.hpp"
 #include "HttpResponse.hpp"
+#include "HttpStatus.hpp"
 
 namespace obotcha {
 
 _HttpResponse::_HttpResponse() {
-
+    st(HttpPacket)::setStatus(st(HttpStatus)::Ok);
 }
 
 _HttpResponse::_HttpResponse(HttpPacket p) {

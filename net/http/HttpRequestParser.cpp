@@ -191,7 +191,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                     continue;
                 }
                 
-                if(st(HttpContentType)::MultiPartFormData->indexOfIgnoreCase(contenttype) > 0) {
+                if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPartFormData) >= 0) {
                     if(mMultiPartParser == nullptr) {
                         try {
                             mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength->toBasicInt());

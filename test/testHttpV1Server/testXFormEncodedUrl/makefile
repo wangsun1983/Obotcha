@@ -25,7 +25,6 @@ cflags = -fpic \
 		-I ../../../external/http_parser/include \
 		-I ../../../external/libco \
 		-I ../../../external/glog/include \
-		-I ../../../external/uuid/include \
 		-g \
 		-std=c++17 \
 
