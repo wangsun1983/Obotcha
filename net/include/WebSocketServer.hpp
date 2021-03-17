@@ -33,7 +33,7 @@
 namespace obotcha {
 
 //------------------------WebSocketServer-------------------------
-DECLARE_SIMPLE_CLASS(WebSocketServer) IMPLEMENTS(HttpListener),public st(SocketListener){
+DECLARE_SIMPLE_CLASS(WebSocketServer) IMPLEMENTS(HttpListener,SocketListener){
 public:
 
     _WebSocketServer();

@@ -12,7 +12,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(MemoryFileOutputStream) EXTENDS(OutputStream){
+DECLARE_SIMPLE_CLASS(MemoryFileOutputStream) IMPLEMENTS(OutputStream){
 
 public:
 

@@ -50,7 +50,7 @@ sp<_EPollFileObserverListener> createLambdaEPollFileObserverListener(Callfunc f,
     return AutoClone(r);
 }
 
-DECLARE_SIMPLE_CLASS(EPollFileObserver) EXTENDS(Thread) {
+DECLARE_SIMPLE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
 public:
     _EPollFileObserver(int size);
 

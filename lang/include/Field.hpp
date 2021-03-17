@@ -156,7 +156,7 @@ private:
     void setFieldBoolValue(std::string name,bool){}
 };
 
-DECLARE_CLASS(FieldContent,1) EXTENDS(Field)  {
+DECLARE_CLASS(FieldContent,1) IMPLEMENTS(Field)  {
 public:    
     std::function<void(T)> setfunc;
 

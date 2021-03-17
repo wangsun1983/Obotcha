@@ -15,7 +15,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ZipFile) EXTENDS(File){
+DECLARE_SIMPLE_CLASS(ZipFile) IMPLEMENTS(File){
 public:
     using _File::_File; //use File's all construct method
 };

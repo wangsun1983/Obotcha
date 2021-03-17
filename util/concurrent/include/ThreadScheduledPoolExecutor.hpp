@@ -20,7 +20,7 @@ namespace obotcha {
 class _WaitingTask;
 class _ThreadScheduledPoolExecutor;
 
-DECLARE_SIMPLE_CLASS(WaitingTask) EXTENDS(FutureTask){
+DECLARE_SIMPLE_CLASS(WaitingTask) IMPLEMENTS(FutureTask){
 public:
     friend class _ThreadScheduledPoolExecutor;
 

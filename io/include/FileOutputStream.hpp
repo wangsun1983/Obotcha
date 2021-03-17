@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(FileOutputStream) EXTENDS(OutputStream){
+DECLARE_SIMPLE_CLASS(FileOutputStream) IMPLEMENTS(OutputStream){
 
 public:
     _FileOutputStream(File file);

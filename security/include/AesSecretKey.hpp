@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(AesSecretKey) EXTENDS(SecretKey) {
+DECLARE_SIMPLE_CLASS(AesSecretKey) IMPLEMENTS(SecretKey) {
 public:
     void *get();
     int loadEncryptKey(String path);

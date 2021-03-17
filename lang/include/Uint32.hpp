@@ -12,7 +12,7 @@ namespace obotcha {
 
 class _String;
 
-DECLARE_SIMPLE_CLASS(Uint32) IMPLEMENTS(Number)<uint32_t> {
+DECLARE_SIMPLE_CLASS(Uint32) IMPLEMENTS(Number<uint32_t>) {
 public:
     _Uint32();
     

@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(FilaCroutine) EXTENDS(Thread){
+DECLARE_SIMPLE_CLASS(FilaCroutine) IMPLEMENTS(Thread){
 
 public:
     _FilaCroutine(ArrayList<Filament>);

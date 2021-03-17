@@ -100,7 +100,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
     while(reader->readNext(v) == ByteRingArrayReadContinue) {
         switch(mStatus) {
             case ParseStartBoundry:{
-                //printf("parser ParseStartBoundry trace1\n");
+                printf("parser ParseStartBoundry trace1\n");
                 if(v == mBoundaryStr[mBoundaryIndex]) {
                     if(mBoundaryIndex == (mBoundary->size()-1)) {
                         mBoundaryIndex = 0;
@@ -116,7 +116,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseStartBoundryEnd:{
-                //printf("parser ParseStartBoundry trace2\n");
+                printf("parser ParseStartBoundry trace2\n");
                 if(v == mNewLineStr[mBoundaryEndLineIndex]) {
                     if(mBoundaryEndLineIndex == (NewLine->size()-1)) {
                         mBoundaryEndLineIndex = 0;
@@ -142,6 +142,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseContentDisposition: {
+                printf("parser ParseContentDisposition trace1\n");
                 if(v == mNewLineStr[mNewLineTextIndex]) {
                     if(mNewLineTextIndex == (NewLine->size()-1)) {
                         mNewLineTextIndex = 0;
@@ -151,6 +152,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         } else {
                             mContentDispositionBuff->append(reader->pop());
                         }
+                        printf("parser ParseContentDisposition trace2, value is %s\n",mContentDispositionBuff->toString()->toChars());
                         mContentDisp = parseContentDisposition(mContentDispositionBuff->toString());
                         mContentDispositionBuff = nullptr;
                         mContentType = nullptr;
@@ -171,6 +173,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
             case ParseContentDispositionEnd:
             case ParseContentSkipNewLine: {
+                printf("parser ParseContentDispositionEnd trace1\n");
                 if(v == mNewLineStr[mNewLineTextIndex]) {
                     if(mNewLineTextIndex == 1) {
                         mNewLineTextIndex = 0;
@@ -186,6 +189,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseContentType:{
+                printf("parser ParseContentType trace1\n");
                 if(v == mNewLineStr[mNewLineTextIndex]) {
                     if(mNewLineTextIndex == 1) {
                         mNewLineTextIndex = 0;
@@ -210,6 +214,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseContent: {
+                printf("parser ParseContent trace1\n");
                 if(v == mBoundaryStr[mBoundaryIndex]) {
                     if(mBoundaryIndex == (mBoundary->size()-1)) {
                         //flush data

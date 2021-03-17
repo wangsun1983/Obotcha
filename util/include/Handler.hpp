@@ -21,7 +21,7 @@ namespace obotcha {
 
 class _Message;
 
-DECLARE_SIMPLE_CLASS(Handler) EXTENDS(Thread){
+DECLARE_SIMPLE_CLASS(Handler) IMPLEMENTS(Thread){
 
 public:
     _Handler();
