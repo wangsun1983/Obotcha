@@ -15,6 +15,7 @@
 #include "Field.hpp"
 #include "Long.hpp"
 #include "Log.hpp"
+#include "OStdInstanceOf.hpp"
 
 namespace obotcha {
 
@@ -235,37 +236,37 @@ public:
         for(int index = 0;index<size;index++) {
             auto newObject = field->createListItemObject();
             JsonValue value = this->getValueAt(index);
-            if(InstanceOf(newObject,Integer)) {
+            if(ostd::instanceOf<Integer>(newObject)) {
                 Integer data = Cast<Integer>(newObject);
                 data->update(value->getInteger()->toValue());
-            } else if(InstanceOf(newObject,Long)) {
+            } else if(ostd::instanceOf<Long>(newObject)) {
                 Long data = Cast<Long>(newObject);
                 data->update(value->getLong()->toValue());
-            } else if(InstanceOf(newObject,Boolean)) {
+            } else if(ostd::instanceOf<Boolean>(newObject)) {
                 Boolean data = Cast<Boolean>(newObject);
                 data->update(value->getBoolean()->toValue());
-            } else if(InstanceOf(newObject,Double)) {
+            } else if(ostd::instanceOf<Double>(newObject)) {
                 Double data = Cast<Double>(newObject);
                 data->update(value->getDouble()->toValue());
-            } else if(InstanceOf(newObject,Float)) {
+            } else if(ostd::instanceOf<Float>(newObject)) {
                 Float data = Cast<Float>(newObject);
                 data->update(value->getDouble()->toValue());
-            } else if(InstanceOf(newObject,Byte)) {
+            } else if(ostd::instanceOf<Byte>(newObject)) {
                 Byte data = Cast<Byte>(newObject);
                 data->update(value->getUint64()->toValue());
-            } else if(InstanceOf(newObject,Uint8)) {
+            } else if(ostd::instanceOf<Uint8>(newObject)) {
                 Uint8 data = Cast<Uint8>(newObject);
                 data->update(value->getUint64()->toValue());
-            } else if(InstanceOf(newObject,Uint16)) {
+            } else if(ostd::instanceOf<Uint16>(newObject)) {
                 Uint16 data = Cast<Uint16>(newObject);
                 data->update(value->getUint64()->toValue());
-            } else if(InstanceOf(newObject,Uint32)) {
+            } else if(ostd::instanceOf<Uint32>(newObject)) {
                 Uint32 data = Cast<Uint32>(newObject);
                 data->update(value->getUint64()->toValue());
-            } else if(InstanceOf(newObject,Uint64)) {
+            } else if(ostd::instanceOf<Uint64>(newObject)) {
                 Uint32 data = Cast<Uint64>(newObject);
                 data->update(value->getUint64()->toValue());
-            } else if(InstanceOf(newObject,String)) {
+            } else if(ostd::instanceOf<String>(newObject)) {
                 String data = Cast<String>(newObject);
                 data->update(value->getString()->getStdString());
             } else {
@@ -357,43 +358,43 @@ public:
                         //create Objectt
                         sp<Object> newObject = field->createObject();
                         auto reflectValue = field->getObjectValue();
-                        if(InstanceOf(newObject,Integer)) {
+                        if(ostd::instanceOf<Integer>(newObject)) {
                             String value = jsonnode->getString();
                             Integer data = Cast<Integer>(newObject);
                             data->update(value->toBasicInt());
-                        } else if(InstanceOf(newObject,Long)) {
+                        } else if(ostd::instanceOf<Long>(newObject)) {
                             String value = jsonnode->getString();
                             Long data = Cast<Long>(newObject);
                             data->update(value->toBasicLong());
-                        } else if(InstanceOf(newObject,Boolean)) {
+                        } else if(ostd::instanceOf<Boolean>(newObject)) {
                             String value = jsonnode->getString();
                             Boolean data = Cast<Boolean>(newObject);
                             data->update(value->toBasicBool());
-                        } else if(InstanceOf(newObject,Double)) {
+                        } else if(ostd::instanceOf<Double>(newObject)) {
                             String value = jsonnode->getString();
                             Double data = Cast<Double>(newObject);
                             data->update(value->toBasicDouble());
-                        } else if(InstanceOf(newObject,Float)) {
+                        } else if(ostd::instanceOf<Float>(newObject)) {
                             String value = jsonnode->getString();
                             Float data = Cast<Float>(newObject);
                             data->update(value->toBasicFloat());
-                        } else if(InstanceOf(newObject,Byte)) {
+                        } else if(ostd::instanceOf<Byte>(newObject)) {
                             String value = jsonnode->getString();
                             Byte data = Cast<Byte>(newObject);
                             data->update(value->toBasicByte());
-                        } else if(InstanceOf(newObject,Uint8)) {
+                        } else if(ostd::instanceOf<Uint8>(newObject)) {
                             String value = jsonnode->getString();
                             Uint8 data = Cast<Uint8>(newObject);
                             data->update(value->toBasicUint8());
-                        } else if(InstanceOf(newObject,Uint16)) {
+                        } else if(ostd::instanceOf<Uint16>(newObject)) {
                             String value = jsonnode->getString();
                             Uint16 data = Cast<Uint16>(newObject);
                             data->update(value->toBasicUint16());
-                        } else if(InstanceOf(newObject,Uint32)) {
+                        } else if(ostd::instanceOf<Uint32>(newObject)) {
                             String value = jsonnode->getString();
                             Uint32 data = Cast<Uint32>(newObject);
                             data->update(value->toBasicUint32());
-                        } else if(InstanceOf(newObject,Uint64)) {
+                        } else if(ostd::instanceOf<Uint64>(newObject)) {
                             String value = jsonnode->getString();
                             Uint32 data = Cast<Uint64>(newObject);
                             data->update(value->toBasicUint64());
@@ -482,37 +483,37 @@ public:
                     //check whether it is Number
                     auto newObject = field->getObjectValue();
                     JsonValue newValue = createJsonValue();
-                    if(InstanceOf(newObject,Integer)) {
+                    if(ostd::instanceOf<Integer>(newObject)) {
                         Integer data = Cast<Integer>(newObject);
                         this->put(name,data->toValue());
-                    } else if(InstanceOf(newObject,Long)) {
+                    } else if(ostd::instanceOf<Long>(newObject)) {
                         Long data = Cast<Long>(newObject);
                         this->put(name,data->toValue());
-                    } else if(InstanceOf(newObject,Boolean)) {
+                    } else if(ostd::instanceOf<Boolean>(newObject)) {
                         Boolean data = Cast<Boolean>(newObject);
                         this->put(name,data->toValue());
-                    } else if(InstanceOf(newObject,Double)) {
+                    } else if(ostd::instanceOf<Double>(newObject)) {
                         Double data = Cast<Double>(newObject);
                         this->put(name,data->toValue());
-                    } else if(InstanceOf(newObject,Float)) {
+                    } else if(ostd::instanceOf<Float>(newObject)) {
                         Float data = Cast<Float>(newObject);
                         this->put(name,data->toValue());
-                    } else if(InstanceOf(newObject,Byte)) {
+                    } else if(ostd::instanceOf<Byte>(newObject)) {
                         Byte data = Cast<Byte>(newObject);
                         this->put(name,(uint64_t)data->toValue());
-                    } else if(InstanceOf(newObject,Uint8)) {
+                    } else if(ostd::instanceOf<Uint8>(newObject)) {
                         Uint8 data = Cast<Uint8>(newObject);
                         this->put(name,(uint64_t)data->toValue());
-                    } else if(InstanceOf(newObject,Uint16)) {
+                    } else if(ostd::instanceOf<Uint16>(newObject)) {
                         Uint16 data = Cast<Uint16>(newObject);
                         this->put(name,(uint64_t)data->toValue());
-                    } else if(InstanceOf(newObject,Uint32)) {
+                    } else if(ostd::instanceOf<Uint32>(newObject)) {
                         Uint32 data = Cast<Uint32>(newObject);
                         this->put(name,(uint64_t)data->toValue());
-                    } else if(InstanceOf(newObject,Uint64)) {
+                    } else if(ostd::instanceOf<Uint64>(newObject)) {
                         Uint64 data = Cast<Uint64>(newObject);
                         this->put(name,(uint64_t)data->toValue());
-                    } else if(InstanceOf(newObject,String)) {
+                    } else if(ostd::instanceOf<String>(newObject)) {
                         String data = Cast<String>(newObject);
                         this->put(name,data->getStdString());
                     } else {
@@ -529,37 +530,37 @@ public:
                     while(count < size) {
                         auto newObject = field->getListItemObject(count);
                         if(newObject != nullptr) {
-                            if(InstanceOf(newObject,Integer)) {
+                            if(ostd::instanceOf<Integer>(newObject)) {
                                 Integer data = Cast<Integer>(newObject);
                                 arrayNode->append(data->toValue());
-                            } else if(InstanceOf(newObject,Long)) {
+                            } else if(ostd::instanceOf<Long>(newObject)) {
                                 Long data = Cast<Long>(newObject);
                                 arrayNode->append(data->toValue());
-                            } else if(InstanceOf(newObject,Boolean)) {
+                            } else if(ostd::instanceOf<Boolean>(newObject)) {
                                 Boolean data = Cast<Boolean>(newObject);
                                 arrayNode->append(data->toValue());
-                            } else if(InstanceOf(newObject,Double)) {
+                            } else if(ostd::instanceOf<Double>(newObject)) {
                                 Double data = Cast<Double>(newObject);
                                 arrayNode->append(data->toValue());
-                            } else if(InstanceOf(newObject,Float)) {
+                            } else if(ostd::instanceOf<Float>(newObject)) {
                                 Float data = Cast<Float>(newObject);
                                 arrayNode->append(data->toValue());
-                            } else if(InstanceOf(newObject,Byte)) {
+                            } else if(ostd::instanceOf<Byte>(newObject)) {
                                 Byte data = Cast<Byte>(newObject);
                                 arrayNode->append(data->toValue());
-                            } else if(InstanceOf(newObject,Uint8)) {
+                            } else if(ostd::instanceOf<Uint8>(newObject)) {
                                 Uint8 data = Cast<Uint8>(newObject);
                                 arrayNode->append(data->toValue());
-                            } else if(InstanceOf(newObject,Uint16)) {
+                            } else if(ostd::instanceOf<Uint16>(newObject)) {
                                 Uint16 data = Cast<Uint16>(newObject);
                                 arrayNode->append(data->toValue());
-                            } else if(InstanceOf(newObject,Uint32)) {
+                            } else if(ostd::instanceOf<Uint32>(newObject)) {
                                 Uint32 data = Cast<Uint32>(newObject);
                                 arrayNode->append(data->toValue());
-                            } else if(InstanceOf(newObject,Uint64)) {
+                            } else if(ostd::instanceOf<Uint64>(newObject)) {
                                 Uint64 data = Cast<Uint64>(newObject);
                                 arrayNode->append(data->toValue());
-                            } else if(InstanceOf(newObject,String)) {
+                            } else if(ostd::instanceOf<String>(newObject)) {
                                 String data = Cast<String>(newObject);
                                 arrayNode->append(data->toChars());
                             } else {

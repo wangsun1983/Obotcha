@@ -188,7 +188,7 @@ class _##Y: virtual public Object\
 
 #define st(Y) _##Y
 
-#define InstanceOf(X,Y) typeid(*X.get_pointer()) == typeid(_##Y)
+//#define InstanceOf(X,Y) typeid(*X.get_pointer()) == typeid(_##Y)
 
 #define FL_ARG_COUNT(...) FL_INTERNAL_ARG_COUNT_PRIVATE(0, ##__VA_ARGS__,\
 	64, 63, 62, 61, 60, \
