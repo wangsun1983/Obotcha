@@ -246,19 +246,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         } else {
                             //hit complete flush file
                             if(mFileStream == nullptr) {
-#if 0
-                                String filepath = mEnv->get(st(Enviroment)::gHttpMultiPartFilePath);
-                                String filename = mContentDisp->dispositions->get("filename");
-                                mFile = createFile(filepath->append(filename));
-                                String name = mFile->getNameWithNoSuffix();
-                                String suffix = mFile->getSuffix();
-                                while(mFile->exists()) {
-                                    String newName = name->append("_",createString(st(System)::currentTimeMillis()),suffix);
-                                    mFile = createFile(filepath->append(newName));
-                                }
-
-                                mFile->createNewFile();
-#endif
                                 String filename = mContentDisp->dispositions->get("filename");
                                 mHttpFile = createHttpFile(filename);
                                 File file = mHttpFile->getFile();
@@ -343,25 +330,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             case ParseContent:{
                 if(mContentType != nullptr) {
                     if(mFileStream == nullptr) {
-#if 0
-                        String filepath = mEnv->get(st(Enviroment)::gHttpMultiPartFilePath);
-                        printf("filepath is %s \n",filepath->toChars());
-                        File dir = createFile(filepath);
-                        dir->createDirs();
-                        
-                        String filename = mContentDisp->dispositions->get("filename");
-                        printf("filename is %s \n",filename->toChars());
-                        mFile = createFile(filepath->append(filename));
-                        String name = mFile->getNameWithNoSuffix();
-                        String suffix = mFile->getSuffix();
-                        while(mFile->exists()) {
-                            String newName = name->append("_",createString(st(System)::currentTimeMillis()),suffix);
-                            mFile = createFile(filepath->append(newName));
-                        }
-                        mFile->createNewFile();
-                        mFileStream = createFileOutputStream(mFile);
-                        mFileStream->open();
-#endif
                         String filename = mContentDisp->dispositions->get("filename");
                         mHttpFile = createHttpFile(filename);
                         File file = mHttpFile->getFile();

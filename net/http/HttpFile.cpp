@@ -9,13 +9,20 @@ namespace obotcha {
 _HttpFile::_HttpFile(String realname) {
     mRealName = realname;
     String filepath = st(Enviroment)::getInstance()->get(st(Enviroment)::gHttpMultiPartFilePath);
+
+    File dir = createFile(filepath);
+    if(!dir->exists()) {
+        dir->createDir();
+    }
+
     UUID uuid = createUUID();
     while(1) {
         String newName = uuid->generate();
         mFile = createFile(filepath->append(newName));
-        mFile->createDirs();
+
         if(!mFile->exists()) {
-            mFile->createNewFile();
+            int result = mFile->createNewFile();
+            printf("_HttpFile result is %d \n",result);
             break;
         }
     }
@@ -24,6 +31,10 @@ _HttpFile::_HttpFile(String realname) {
 _HttpFile::_HttpFile(File file) {
     mFile = file;
     mRealName = mFile->getName();
+}
+
+String _HttpFile::getAbsolutePath() {
+    return mFile->getAbsolutePath();
 }
 
 _HttpFile::_HttpFile(File file,String realname) {
