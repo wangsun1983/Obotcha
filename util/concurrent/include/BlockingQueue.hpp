@@ -32,19 +32,7 @@ return false;
 
 #define BLOCK_QUEUE_ADD(Action) \
 AutoLock l(mMutex);\
-while(!isDestroy) {\
-        int size = mQueue.size();\
-        if(mCapacity > 0 && size == mCapacity) {\
-            if(-WaitTimeout == mEnqueueCond->wait(mMutex,timeout)) {\
-                return false;\
-            }\
-            continue;\
-        }\
-        Action;\
-        mDequeueCond->notify();\
-        return true;\
-}\
-return false;
+BLOCK_QUEUE_ADD_NOLOCK(Action) 
 
 #define BLOCK_QUEUE_REMOVE(Action) \
 T ret;\

@@ -59,6 +59,10 @@ int _HttpRequestParser::on_header_value(http_parser*parser, const char *at, size
 }
 
 int _HttpRequestParser::on_headers_complete(http_parser*parser, const char *at, size_t length) {
+    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
+    p->setMethod(parser->method);
+    p->setStatus(parser->status_code);
+    p->setVersion(createHttpVersion(parser->http_major,parser->http_minor));
     return 0;
 }
 
@@ -71,10 +75,6 @@ int _HttpRequestParser::on_body(http_parser*parser, const char *at, size_t lengt
 }
 
 int _HttpRequestParser::on_message_complete(http_parser *parser) {
-    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    p->setMethod(parser->method);
-    p->setStatus(parser->status_code);
-    p->setVersion(createHttpVersion(parser->http_major,parser->http_minor));
     return 0;
 }
 
@@ -97,7 +97,6 @@ _HttpRequestParser::_HttpRequestParser() {
     mBuff = createByteRingArray(mEnv->getInt(st(Enviroment)::gHttpBufferSize,64*1024));
     mReader = createByteRingArrayReader(mBuff);
     mHeadEndCount = 0;
-    mChunkEndCount = 0;
     mStatus = Idle;
 }
 
@@ -134,7 +133,7 @@ HttpPacket _HttpRequestParser::parseEntireRequest(String request) {
 
 ArrayList<HttpPacket> _HttpRequestParser::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
-    static byte *end = (byte *)st(HttpText)::DoubleLineEnd->toChars();
+    static byte *end = (byte *)st(HttpText)::HttpEnd->toChars();
     while(1) {
         switch(mStatus) {
             case Idle:{
@@ -183,6 +182,23 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                 //check whether there is a multipart
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
+                String encodingtype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
+                
+                if(encodingtype != nullptr && encodingtype->equalsIgnoreCase(st(HttpHeader)::TransferChunked)) {
+                    //this is a chunck parsesr
+                    if(mChunkParser == nullptr) {
+                        mChunkParser = createHttpChunkParser(mReader);
+                    }
+                    ByteArray data = mChunkParser->doParse();
+                    if(data != nullptr) {
+                        mHttpPacket->getEntity()->setContent(data);
+                        packets->add(mHttpPacket);
+                        mChunkParser = nullptr;
+                        mStatus = Idle;
+                    }
+                    continue;
+                }
+
                 if(contentlength == nullptr) {
                     //no contentlength,maybe it is only a html request
                     packets->add(mHttpPacket);
@@ -206,7 +222,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                             mMultiPartParser = nullptr;
                             mStatus = Idle;
                         }
-                        return packets;
+                        continue;
                     }
                 } else {
                     int length = contentlength->toBasicInt();
@@ -228,9 +244,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                         continue;
                     }
                 }
-                return packets;
             }
-
             break;
         }
     }

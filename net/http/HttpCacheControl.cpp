@@ -1,6 +1,6 @@
 #include "HttpCacheControl.hpp"
 #include "HttpHeader.hpp"
-#include "HttpHeaderParser.hpp"
+#include "HttpHeaderContentParser.hpp"
 
 namespace obotcha {
 
@@ -96,7 +96,7 @@ void _HttpCacheControl::import(String value) {
         int pos = 0;
         while (pos < value->size()) {
             int tokenStart = pos;
-            pos = st(HttpHeaderParser)::skipUntil(value, pos, "=,;");
+            pos = st(HttpHeaderContentParser)::skipUntil(value, pos, "=,;");
             String directive = value->subString(tokenStart, pos-tokenStart)->trim();
             String parameter;
 
@@ -105,18 +105,18 @@ void _HttpCacheControl::import(String value) {
                 parameter = nullptr;
             } else {
                 pos++; // consume '='
-                pos = st(HttpHeaderParser)::skipWhitespace(value, pos);
+                pos = st(HttpHeaderContentParser)::skipWhitespace(value, pos);
                 // quoted string
                 if (pos < value->size() && value->charAt(pos) == '\"') {
                     pos++; // consume '"' open quote
                     int parameterStart = pos;
-                    pos = st(HttpHeaderParser)::skipUntil(value, pos, "\"");
+                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, "\"");
                     parameter = value->subString(parameterStart, pos);
                     pos++; // consume '"' close quote (if necessary)
                     // unquoted string
                 } else {
                     int parameterStart = pos;
-                    pos = st(HttpHeaderParser)::skipUntil(value, pos, ",;");
+                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, ",;");
                     parameter = value->subString(parameterStart, (pos-parameterStart))->trim();
                     pos++;
                 }
@@ -127,9 +127,9 @@ void _HttpCacheControl::import(String value) {
             } else if (NoStore->equalsIgnoreCase(directive)) {
                 mNoStore = true;
             } else if (MaxAge->equalsIgnoreCase(directive)) {
-                mMaxAgeSeconds = st(HttpHeaderParser)::parseSeconds(parameter, -1);
+                mMaxAgeSeconds = st(HttpHeaderContentParser)::parseSeconds(parameter, -1);
             } else if (SMaxAge->equalsIgnoreCase(directive)) {
-                mSMaxAgeSeconds = st(HttpHeaderParser)::parseSeconds(parameter, -1);
+                mSMaxAgeSeconds = st(HttpHeaderContentParser)::parseSeconds(parameter, -1);
             } else if (CachePrivate->equalsIgnoreCase(directive)) {
                 mIsPrivate = true;
             } else if (CachePublic->equalsIgnoreCase(directive)) {
@@ -137,9 +137,9 @@ void _HttpCacheControl::import(String value) {
             } else if (MustRevalidate->equalsIgnoreCase(directive)) {
                 mMustRevalidate = true;
             } else if (MaxStale->equalsIgnoreCase(directive)) {
-                mMaxStaleSeconds = st(HttpHeaderParser)::parseSeconds(parameter, st(Integer)::MAX_VALUE);
+                mMaxStaleSeconds = st(HttpHeaderContentParser)::parseSeconds(parameter, st(Integer)::MAX_VALUE);
             } else if (MinFresh->equalsIgnoreCase(directive)) {
-                mMinFreshSeconds = st(HttpHeaderParser)::parseSeconds(parameter, -1);
+                mMinFreshSeconds = st(HttpHeaderContentParser)::parseSeconds(parameter, -1);
             } else if (OnlyIfCached->equalsIgnoreCase(directive)) {
                 mOnlyIfCached = true;
             } else if (NotTransform->equalsIgnoreCase(directive)) {

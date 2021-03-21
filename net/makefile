@@ -31,7 +31,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpclient.o \
 		$(outtmp)/httpmethod.o \
 		$(outtmp)/httpheader.o \
-		$(outtmp)/httpheaderparser.o \
+		$(outtmp)/httpheadercontentparser.o \
 		$(outtmp)/httppacket.o \
 		$(outtmp)/httptext.o \
 		$(outtmp)/httprequest.o \
@@ -43,6 +43,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpsession.o \
 		$(outtmp)/httpcookie.o \
 		$(outtmp)/httpdate.o \
+		$(outtmp)/httpchunkparser.o \
 		$(outtmp)/httpmultipart.o \
 		$(outtmp)/httpmultipartparser.o \
 		$(outtmp)/httpserver.o \
@@ -181,6 +182,9 @@ $(outtmp)/httpmultipart.o :$(netDir)/http/HttpMultiPart.cpp
 $(outtmp)/httpmultipartparser.o :$(netDir)/http/HttpMultiPartParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMultiPartParser.cpp -o $(outtmp)/httpmultipartparser.o 
 
+$(outtmp)/httpchunkparser.o :$(netDir)/http/HttpChunkParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpChunkParser.cpp -o $(outtmp)/httpchunkparser.o 
+
 $(outtmp)/httpserver.o :$(netDir)/http/HttpServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpServer.cpp -o $(outtmp)/httpserver.o 
 
@@ -193,8 +197,8 @@ $(outtmp)/httpclientinfo.o :$(netDir)/http/HttpClientInfo.cpp
 $(outtmp)/httpheader.o :$(netDir)/http/HttpHeader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeader.cpp -o $(outtmp)/httpheader.o 
 
-$(outtmp)/httpheaderparser.o :$(netDir)/http/HttpHeaderParser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeaderParser.cpp -o $(outtmp)/httpheaderparser.o 
+$(outtmp)/httpheadercontentparser.o :$(netDir)/http/HttpHeaderContentParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeaderContentParser.cpp -o $(outtmp)/httpheadercontentparser.o 
 
 $(outtmp)/httppacket.o :$(netDir)/http/HttpPacket.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacket.cpp -o $(outtmp)/httppacket.o 

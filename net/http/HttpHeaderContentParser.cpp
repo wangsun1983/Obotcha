@@ -1,13 +1,13 @@
-#include "HttpHeaderParser.hpp"
+#include "HttpHeaderContentParser.hpp"
 #include "Integer.hpp"
 
 namespace obotcha {
 
-_HttpHeaderParser::_HttpHeaderParser() {
+_HttpHeaderContentParser::_HttpHeaderContentParser() {
     //Nothing
 }
 
-int _HttpHeaderParser::skipUntil(String input, int pos, String characters) {
+int _HttpHeaderContentParser::skipUntil(String input, int pos, String characters) {
     for (; pos < input->size(); pos++) {
       if (characters->indexOf(input->charAt(pos)) != -1) {
         break;
@@ -16,7 +16,7 @@ int _HttpHeaderParser::skipUntil(String input, int pos, String characters) {
     return pos;
 }
 
-int _HttpHeaderParser::skipWhitespace(String input, int pos) {
+int _HttpHeaderContentParser::skipWhitespace(String input, int pos) {
     for (; pos < input->size(); pos++) {
       char c = input->charAt(pos);
       if (c != ' ' && c != '\t') {
@@ -26,7 +26,7 @@ int _HttpHeaderParser::skipWhitespace(String input, int pos) {
     return pos;
 }
 
-int _HttpHeaderParser::parseSeconds(String value, int defaultValue) {
+int _HttpHeaderContentParser::parseSeconds(String value, int defaultValue) {
     long seconds = value->toBasicLong();
     if (seconds > st(Integer)::MAX_VALUE) {
         return st(Integer)::MAX_VALUE;

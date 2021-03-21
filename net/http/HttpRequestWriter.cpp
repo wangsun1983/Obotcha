@@ -99,10 +99,10 @@ int _HttpRequestWriter::write(HttpRequest p) {
     AUTO_FLUSH(writer->writeString(p->getUrl()->getPath()));
     AUTO_FLUSH(writer->writeString(st(HttpText)::ContentSpace));
     AUTO_FLUSH(writer->writeString(p->getVersion()->toString()));
-    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+    AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
     AUTO_FLUSH(writer->writeString(p->getHeader()->toString(st(HttpProtocol)::HttpRequest)));
-    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
-    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+    AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
+    AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
     //2. multipart
     
     //ContentType multipart/form-data
@@ -113,20 +113,20 @@ int _HttpRequestWriter::write(HttpRequest p) {
                 KeyValuePair<String,String> content = iterator->getValue();
                 AUTO_FLUSH(writer->writeString(st(HttpText)::BoundaryBeginning));
                 AUTO_FLUSH(writer->writeString(boundary));
-                AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+                AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
                 AUTO_FLUSH(writer->writeString(st(HttpHeader)::ContentDisposition));
                 AUTO_FLUSH(writer->writeString(createString(": ")));
                 AUTO_FLUSH(writer->writeString(st(HttpContentType)::FormData));
                 AUTO_FLUSH(writer->writeString(createString("; ")));
-                AUTO_FLUSH(writer->writeString(st(HttpText)::PartName));
+                AUTO_FLUSH(writer->writeString(st(HttpText)::MultiPartName));
                 AUTO_FLUSH(writer->writeString(createString("=")));
                 AUTO_FLUSH(writer->writeByte('"'));
                 AUTO_FLUSH(writer->writeString(content->getKey()));
                 AUTO_FLUSH(writer->writeByte('"'));
-                AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
-                AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+                AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
+                AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
                 AUTO_FLUSH(writer->writeString(content->getValue()));
-                AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+                AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
                 iterator->next();
             }
         }
@@ -139,12 +139,12 @@ int _HttpRequestWriter::write(HttpRequest p) {
                 HttpMultiPartFile partFile = iterator->getValue();
                 AUTO_FLUSH(writer->writeString(st(HttpText)::BoundaryBeginning));
                 AUTO_FLUSH(writer->writeString(boundary));
-                AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+                AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
                 AUTO_FLUSH(writer->writeString(st(HttpHeader)::ContentDisposition));
                 AUTO_FLUSH(writer->writeString(createString(": ")));
                 AUTO_FLUSH(writer->writeString(st(HttpContentType)::FormData));
                 AUTO_FLUSH(writer->writeString(createString("; ")));
-                AUTO_FLUSH(writer->writeString(st(HttpText)::PartName));
+                AUTO_FLUSH(writer->writeString(st(HttpText)::MultiPartName));
                 AUTO_FLUSH(writer->writeString(createString("=")));
                 AUTO_FLUSH(writer->writeByte('"'));
                 if(partFile->getHttpFile() != nullptr){
@@ -153,15 +153,15 @@ int _HttpRequestWriter::write(HttpRequest p) {
                 
                 AUTO_FLUSH(writer->writeByte('"'));
                 AUTO_FLUSH(writer->writeString("; "));
-                AUTO_FLUSH(writer->writeString(st(HttpText)::PartFileName));
+                AUTO_FLUSH(writer->writeString(st(HttpText)::MultiPartFileName));
                 AUTO_FLUSH(writer->writeString(createString("=")));
                 AUTO_FLUSH(writer->writeByte('"'));
                 if(partFile->getHttpFile() != nullptr){
                     AUTO_FLUSH(writer->writeString(partFile->getHttpFile()->getName()));
                 }
                 AUTO_FLUSH(writer->writeByte('"'));
-                AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
-                AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+                AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
+                AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
                 FORCE_FLUSH();
                 
                 FileInputStream stream = createFileInputStream(partFile->getHttpFile()->getFile());
@@ -177,7 +177,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
                     flush(readBuff,count);
                 }
 
-                AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+                AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
                 iterator->next();
             }
         }
@@ -185,7 +185,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
         AUTO_FLUSH(writer->writeString(st(HttpText)::BoundaryBeginning));
         AUTO_FLUSH(writer->writeString(boundary));
         AUTO_FLUSH(writer->writeString(st(HttpText)::BoundaryBeginning));
-        AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+        AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
     } else if(encodedUrlMap != nullptr){
         ListIterator<KeyValuePair<String,String>> iterator = encodedUrlMap->getIterator();
         bool isFirstKey = true;
@@ -201,7 +201,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
             AUTO_FLUSH(writer->writeString(value));
             iterator->next();
         }
-        AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+        AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
     } else {
         ByteArray body = p->getEntity()->getContent();
         if(body != nullptr && body->size() > 0) {
@@ -242,12 +242,12 @@ long _HttpRequestWriter::computeContentLength(HttpRequest req,String boundary) {
     
     //multipart
     if(multiPart != nullptr) {
-        length += st(HttpText)::LineEnd->size();
+        length += st(HttpText)::CRLF->size();
 
         ListIterator<KeyValuePair<String,String>> contentIterator = multiPart->contents->getIterator();
         while(contentIterator->hasValue()) {
             KeyValuePair<String,String> content = contentIterator->getValue();
-            length += (boundary->size() + st(HttpText)::BoundaryBeginning->size() + st(HttpText)::LineEnd->size());
+            length += (boundary->size() + st(HttpText)::BoundaryBeginning->size() + st(HttpText)::CRLF->size());
             int nameSize = 0;
             if(content->getKey() != nullptr) {
                 nameSize = content->getKey()->size();
@@ -257,21 +257,21 @@ long _HttpRequestWriter::computeContentLength(HttpRequest req,String boundary) {
                     + 2 /*": "*/
                     + st(HttpContentType)::FormData->size()
                     + 2 /*"; "*/ 
-                    + st(HttpText)::PartName->size() 
+                    + st(HttpText)::MultiPartName->size() 
                     + 3 /*=""*/
                     + nameSize
-                    + st(HttpText)::LineEnd->size());
-            length += st(HttpText)::LineEnd->size();
+                    + st(HttpText)::CRLF->size());
+            length += st(HttpText)::CRLF->size();
             if(content->getValue() != nullptr) {
                 length += content->getValue()->size();
             }
-            length += st(HttpText)::LineEnd->size();
+            length += st(HttpText)::CRLF->size();
             contentIterator->next();
         }
         ListIterator<HttpMultiPartFile> fileIterator = multiPart->files->getIterator();
         while(fileIterator->hasValue()) {
             HttpMultiPartFile content = fileIterator->getValue();
-            length += (boundary->size() + st(HttpText)::BoundaryBeginning->size() + st(HttpText)::LineEnd->size());
+            length += (boundary->size() + st(HttpText)::BoundaryBeginning->size() + st(HttpText)::CRLF->size());
             int nameSize = 0;
             if(content->getHttpFile()->getName() != nullptr) {
                 nameSize = content->getHttpFile()->getName()->size();
@@ -288,16 +288,16 @@ long _HttpRequestWriter::computeContentLength(HttpRequest req,String boundary) {
                     + 2 /*": "*/
                     + st(HttpContentType)::FormData->size()
                     + 2 /*"; "*/ 
-                    + st(HttpText)::PartName->size() 
+                    + st(HttpText)::MultiPartName->size() 
                     + 5 /*=""; */
                     + nameSize
-                    + st(HttpText)::PartFileName->size()
+                    + st(HttpText)::MultiPartFileName->size()
                     + 3 /*=""*/
                     + filenamesize
-                    + st(HttpText)::LineEnd->size();
-            length += st(HttpText)::LineEnd->size();
+                    + st(HttpText)::CRLF->size();
+            length += st(HttpText)::CRLF->size();
             length += filesize;
-            length += st(HttpText)::LineEnd->size();
+            length += st(HttpText)::CRLF->size();
             fileIterator->next();
         }
 

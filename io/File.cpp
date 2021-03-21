@@ -306,11 +306,10 @@ bool _File::createDirs() {
         String p = splits->get(i);
 
         if(i != 0) {
-            path->append(gPathSeparator);
+            path = path->append(gPathSeparator);
         }
 
-        path->append(p);
-
+        path = path->append(p);
         if(p->equals(".") 
             || p->equals("..")) {
             continue;

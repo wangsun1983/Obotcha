@@ -1,7 +1,7 @@
 #include "HttpCookie.hpp"
 #include "Calendar.hpp"
 #include "HttpProtocol.hpp"
-#include "HttpHeaderParser.hpp"
+#include "HttpHeaderContentParser.hpp"
 
 namespace obotcha {
 
@@ -94,7 +94,7 @@ void _HttpCookie::import(String value) {
     int pos = 0;
     while (pos < value->size()) {
         int tokenStart = pos;
-        pos = st(HttpHeaderParser)::skipUntil(value, pos, "=,;");
+        pos = st(HttpHeaderContentParser)::skipUntil(value, pos, "=,;");
         String directive = value->subString(tokenStart, pos-tokenStart)->trim();
         String parameter = nullptr;
 
@@ -103,21 +103,21 @@ void _HttpCookie::import(String value) {
             parameter = nullptr;
         } else {
             pos++; // consume '='
-            pos = st(HttpHeaderParser)::skipWhitespace(value, pos);
+            pos = st(HttpHeaderContentParser)::skipWhitespace(value, pos);
             // quoted string
             if (pos < value->size() && value->charAt(pos) == '\"') {
                 pos++; // consume '"' open quote
                 int parameterStart = pos;
-                pos = st(HttpHeaderParser)::skipUntil(value, pos, "\"");
+                pos = st(HttpHeaderContentParser)::skipUntil(value, pos, "\"");
                 parameter = value->subString(parameterStart, pos);
                 pos++; // consume '"' close quote (if necessary)
                 // unquoted string
             } else {
                 int parameterStart = pos;
                 if(directive->endsWithIgnoreCase(st(HttpCookie)::COOKIE_PROPERTY_EXPIRES)) {
-                    pos = st(HttpHeaderParser)::skipUntil(value, pos, ";");
+                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, ";");
                 } else {
-                    pos = st(HttpHeaderParser)::skipUntil(value, pos, ",;");
+                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, ",;");
                 }
                 parameter = value->subString(parameterStart, (pos-parameterStart))->trim();
                 pos++;
@@ -134,7 +134,7 @@ void _HttpCookie::import(String value) {
         } else if (COOKIE_PROPERTY_EXPIRES->equalsIgnoreCase(directive)) {
             mPropertyExpires = createHttpDate(parameter);
         } else if (COOKIE_PROPERTY_MAX_AGE->equalsIgnoreCase(directive)) {
-            mPropertyMaxAge = st(HttpHeaderParser)::parseSeconds(parameter, st(Integer)::MAX_VALUE);
+            mPropertyMaxAge = st(HttpHeaderContentParser)::parseSeconds(parameter, st(Integer)::MAX_VALUE);
         } else {
             mValues->put(directive,parameter);
         }

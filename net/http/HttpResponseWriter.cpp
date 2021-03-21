@@ -72,7 +72,7 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     AUTO_FLUSH(writer->writeString(createString(status)));
     AUTO_FLUSH(writer->writeString(" "));
     AUTO_FLUSH(writer->writeString(st(HttpStatus)::toString(status)));
-    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+    AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
 
     //update content-length
     int contentlength = 0;
@@ -84,8 +84,8 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     }
 
     AUTO_FLUSH(writer->writeString(response->getHeader()->toString(st(HttpProtocol)::HttpResponse)));
-    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd)); //change line
-    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd)); //blank line
+    AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF)); //change line
+    AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF)); //blank line
 
     if(file != nullptr && file->exists()) {
         if(file->exists()) {
@@ -101,13 +101,13 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
                 }
                 filesize -= readlength;
                 AUTO_FLUSH(writer->writeString(createString(readlength)->toHexString()));
-                AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+                AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
                 stream->readByLength(mSendBuff,writer->getIndex(),readlength);
                 writer->skipBy(readlength);
                 if(filesize == 0) {
-                    AUTO_FLUSH(writer->writeString(st(HttpText)::ChunkEnd));
+                    AUTO_FLUSH(writer->writeString(st(HttpText)::HttpEnd));
                 } else {
-                    AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+                    AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
                 }
                 FORCE_FLUSH();
                 //printf("flush trace2,body size is %d,length is %d,reason is %s \n",body->size(),length,strerror(errno));
@@ -130,10 +130,10 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
             AUTO_FLUSH(writer->writeString(value));
             iterator->next();
         }
-        AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+        AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
     } else if(body != nullptr && body->size() != 0) {
         AUTO_FLUSH(writer->writeByteArray(body));
-        AUTO_FLUSH(writer->writeString(st(HttpText)::LineEnd));
+        AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
         FORCE_FLUSH();
     }
     return writer->getIndex();

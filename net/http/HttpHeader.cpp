@@ -188,7 +188,7 @@ String _HttpHeader::toString(int type) {
     while(headerIte->hasValue()) {
         String headString = headerIte->getKey();
         if(headString != nullptr && !headString->equalsIgnoreCase(Status)) {
-            html = html->append(headString,": ",headerIte->getValue(),st(HttpText)::LineEnd);
+            html = html->append(headString,": ",headerIte->getValue(),st(HttpText)::CRLF);
         }
         
         headerIte->next();
@@ -197,7 +197,7 @@ String _HttpHeader::toString(int type) {
     ListIterator<HttpCookie> iterator = mCookies->getIterator();
     while(iterator->hasValue()) {
         HttpCookie cookie = iterator->getValue();
-        html = html->append(cookie->toString(type),st(HttpText)::LineEnd);
+        html = html->append(cookie->toString(type),st(HttpText)::CRLF);
         iterator->next();
     }
 

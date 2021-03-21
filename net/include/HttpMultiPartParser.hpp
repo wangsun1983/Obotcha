@@ -15,13 +15,6 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(PartContentDisposition) {
-public:
-    _PartContentDisposition();
-    
-    HashMap<String,String> dispositions;
-}; 
-
 DECLARE_SIMPLE_CLASS(HttpMultiPartParser) {
 public:
     _HttpMultiPartParser(String,int);
@@ -48,23 +41,16 @@ public:
 
 private:
 
-    static const String NewLine;
-    static const String TwoNewLine;
-    static const String EndLine;
-    static const String Boundary;
-    static const String MultiPartNameTag;
-
-    const char *mNewLineStr;
-    const char *mTwoNewLine;
-    const char *mEndLineStr;
-    const char *mBoundaryStr;
+    const char *CRLF;
+    const char *MultiPartEnd;
+    const char *Boundary;
 
     int mBoundaryIndex;
     int mBoundaryEndLineIndex;
     int mBoundaryNextLineIndex;
     int mNewLineTextIndex;
 
-    PartContentDisposition parseContentDisposition(String);
+    HashMap<String,String> parseContentDisposition(String);
 
     String parseContentType(String);
 
@@ -85,7 +71,7 @@ private:
 
     //ByteRingArrayReader mReader;
 
-    PartContentDisposition mContentDisp;
+    HashMap<String,String> mContentDisp;
     
     String mBoundaryHeader;
 

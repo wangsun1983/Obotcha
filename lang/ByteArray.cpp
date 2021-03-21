@@ -55,9 +55,8 @@ _ByteArray::_ByteArray(String str,bool isSafe) {
         Trigger(InitializeException,"create ByteArray is nullptr");
     }
     mSize = str->size();
-    buff = (unsigned char *)malloc(mSize + 1);
+    buff = (unsigned char *)malloc(mSize);
     memcpy(buff,str->toChars(),mSize);
-    buff[mSize] = 0;
     this->isSafe = isSafe;
 }
 
@@ -225,10 +224,15 @@ int _ByteArray::append(byte *data,int len) {
 }
 
 String _ByteArray::toString() {
-    char _buff[mSize + 1];
+    int len = mSize;
+    if(buff[mSize - 1] != 0) {
+        len += 1;
+    }
+
+    char _buff[len];
     memcpy(_buff,buff,mSize);
-    _buff[mSize] = 0;
-    return createString(&_buff[0],0,mSize);
+    _buff[len - 1] = 0;
+    return createString(&_buff[0],0,len);
 }
 
 void _ByteArray::dump(const char *v) {
