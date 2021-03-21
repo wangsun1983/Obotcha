@@ -33,13 +33,11 @@ _HttpChunkParser::_HttpChunkParser(ByteRingArrayReader r) {
 
 ByteArray _HttpChunkParser::doParse() {
     static byte* CRLF = (byte*)st(HttpText)::CRLF->toChars();
-    //static byte* END = (byte*)st(HttpText)::HttpEnd->toChars();
     byte v = 0;
 
     while(mReader->readNext(v) != ByteRingArrayReadComplete) {
         switch(mStatus) {
             case End: {
-                printf("end mChunkEndCount is %d,v is %d \n",mChunkEndCount,v);
                 if(v == CRLF[mChunkEndCount]) {
                     mChunkEndCount++;
                 } else {
@@ -68,9 +66,7 @@ ByteArray _HttpChunkParser::doParse() {
                     mChunkEndCount = 0;
                     String chunklength = mReader->pop()->toString();
                     chunklength = chunklength->subString(0,chunklength->size() - 2);
-                    printf("chunklength str is %s \n",chunklength->toChars());
                     mChunkSize = chunklength->toHexInt();
-                    printf("mChunkSize is %d \n",mChunkSize);
                     if(mChunkSize == 0) {
                         mStatus = End;
                         continue;
@@ -85,7 +81,6 @@ ByteArray _HttpChunkParser::doParse() {
 
                 mReader->move(popsize);
                 ByteArray data = mReader->pop();
-                printf("data size is %d,mChunkSize is %d,popsize is %d \n",data->size(),mChunkSize,popsize);
                 if(mBuff == nullptr) {
                     mBuff = data;
                 } else {

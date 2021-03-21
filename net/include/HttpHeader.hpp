@@ -13,6 +13,7 @@
 #include "HttpCookie.hpp"
 #include "HttpCacheControl.hpp"
 #include "HttpContentType.hpp"
+#include "HttpVersion.hpp"
 
 namespace obotcha {
 
@@ -42,11 +43,16 @@ public:
     String toString(int);
 
     int getMethod();
-    
     void setMethod(int);
 
-    void clear();
+    String getUrl();
+    void setUrl(String);
 
+    HttpVersion getVersion();
+    void setVersion(HttpVersion);
+
+    void clear();
+    
     const static String Method;
     const static String Path;
     const static String Scheme;
@@ -150,6 +156,59 @@ public:
     //Transfer-Encoding type
     const static String TransferChunked;
 
+    //HttpMethod String
+    const static String MethodDelete;
+    const static String MethodGet;
+    const static String MethodHead;
+    const static String MethodPost;
+    const static String MethodPut;
+    const static String MethodConnect;
+    const static String MethodOptions;
+    const static String MethodTrace;
+    const static String MethodCopy;
+    const static String MethodLock;
+    const static String MethodMkCol;
+    const static String MethodMove;
+    const static String MethodPropFind;
+    const static String MethodPropPatch;
+    const static String MethodUnlock;
+    const static String MethodReport;
+    const static String MethodMkActivity;
+    const static String MethodCheckOut;
+    const static String MethodMerge;
+    const static String MethodMSearch;
+    const static String MethodNotify;
+    const static String MethodSubscribe;
+    const static String MethodUnSubscribe;
+    const static String MethodPatch;
+
+    enum MethodId{
+        DELETE = 0,
+        GET,
+        HEAD,
+        POST,
+        PUT,
+        CONNECT,
+        OPTIONS,
+        TRACE,
+        COPY,
+        LOCK,
+        MKCOL,
+        MOVE,
+        PROPFIND,
+        PROPPATCH,
+        UNLOCK,
+        REPORT,
+        MKACTIVITY,
+        CHECKOUT,
+        MERGE,
+        MSEARCH,
+        NOTIFY,
+        SUBSCRIBE,
+        UNSUBSCRIBE,
+        PATCH
+    };
+
 private:
 
     HashMap<String,String> mValues;
@@ -161,6 +220,10 @@ private:
     HttpContentType mContentType;
 
     int mMethod;
+
+    String mUrl;
+
+    HttpVersion mVersion;
 };
 
 }

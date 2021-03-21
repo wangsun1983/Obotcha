@@ -24,6 +24,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpstatus.o \
 		$(outtmp)/httpentity.o \
 		$(outtmp)/httpversion.o \
+		$(outtmp)/httpversionparser.o \
 		$(outtmp)/httpcontenttype.o \
 		$(outtmp)/httpcontenttypetool.o \
 		$(outtmp)/httpurlbuilder.o \
@@ -31,6 +32,8 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpclient.o \
 		$(outtmp)/httpmethod.o \
 		$(outtmp)/httpheader.o \
+		$(outtmp)/httpheaderparser.o \
+		$(outtmp)/httpmethodparser.o \
 		$(outtmp)/httpheadercontentparser.o \
 		$(outtmp)/httppacket.o \
 		$(outtmp)/httptext.o \
@@ -158,6 +161,9 @@ $(outtmp)/httpstatus.o :$(netDir)/http/HttpStatus.cpp
 $(outtmp)/httpversion.o :$(netDir)/http/HttpVersion.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpVersion.cpp -o $(outtmp)/httpversion.o 
 
+$(outtmp)/httpversionparser.o :$(netDir)/http/HttpVersionParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpVersionParser.cpp -o $(outtmp)/httpversionparser.o 
+
 $(outtmp)/httpentity.o :$(netDir)/http/HttpEntity.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpEntity.cpp -o $(outtmp)/httpentity.o 
 
@@ -196,6 +202,12 @@ $(outtmp)/httpclientinfo.o :$(netDir)/http/HttpClientInfo.cpp
 
 $(outtmp)/httpheader.o :$(netDir)/http/HttpHeader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeader.cpp -o $(outtmp)/httpheader.o 
+
+$(outtmp)/httpheaderparser.o :$(netDir)/http/HttpHeaderParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeaderParser.cpp -o $(outtmp)/httpheaderparser.o 
+
+$(outtmp)/httpmethodparser.o :$(netDir)/http/HttpMethodParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMethodParser.cpp -o $(outtmp)/httpmethodparser.o 
 
 $(outtmp)/httpheadercontentparser.o :$(netDir)/http/HttpHeaderContentParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeaderContentParser.cpp -o $(outtmp)/httpheadercontentparser.o 
