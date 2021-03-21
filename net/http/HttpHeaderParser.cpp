@@ -89,7 +89,10 @@ HttpHeader _HttpHeaderParser::doParse() {
                     mCrlfCount = 0;
                     ByteArray value = mReader->pop();
                     mValue = createString((const char *)value->toValue(),0,value->size() - 2);
-                    mHeader->setValue(mKey,mValue);
+                    if(parseParticularHeader(mKey,mValue) == -1) {
+                        mHeader->setValue(mKey->toLowerCase(),mValue);
+                    }
+                    //may be we should parse value
                     mStatus = ContentKey;
                     mNextStatus = -1;
                 }
@@ -99,6 +102,30 @@ HttpHeader _HttpHeaderParser::doParse() {
     }
 
     return nullptr;
+}
+
+int _HttpHeaderParser::parseParticularHeader(String key,String value) {
+    const char *p = key->toChars();
+    switch(p[0]) {
+        case 'c': {
+            if(key->equals(st(HttpHeader)::Cookie)) {
+                mHeader->addCookie(createHttpCookie(value));
+            } else if(key->equals(st(HttpHeader)::CacheControl)) {
+                mHeader->setCacheControl(createHttpCacheControl(value));
+            } else if(key->equals(st(HttpHeader)::ContentType)) {
+                mHeader->setContentType(value);
+            }
+            return 0;
+        }
+
+        case 's': {
+            if(key->equals(st(HttpHeader)::SetCookie)) {
+                mHeader->addCookie(createHttpCookie(value));
+                return 0;
+            }
+        }
+    }
+    return -1;
 }
 
 }

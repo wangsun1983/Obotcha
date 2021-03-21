@@ -17,6 +17,7 @@
 #include "http_parser.h"
 #include "HttpMultiPartParser.hpp"
 #include "HttpChunkParser.hpp"
+#include "HttpHeaderParser.hpp"
 
 namespace obotcha {
 
@@ -59,6 +60,8 @@ private:
     HttpPacket mHttpPacket;
 
     HttpMultiPartParser mMultiPartParser;
+
+    HttpHeaderParser mHttpHeaderParser;
     
     HttpChunkParser mChunkParser;
 

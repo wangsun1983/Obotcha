@@ -137,47 +137,21 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
     while(1) {
         switch(mStatus) {
             case Idle:{
-                byte v = 0;
-                while(mReader->readNext(v) != ByteRingArrayReadComplete) {
-                    if(v == end[mHeadEndCount]) {
-                        mHeadEndCount++;
-                    } else {
-                        mHeadEndCount = 0;
-                    }
-
-                    if(mHeadEndCount == 4) {
-                        mStatus = HeadStart;
-                        mHeadEndCount = 0;
-                        break;
-                    }
+                if(mHttpHeaderParser == nullptr) {
+                    mHttpHeaderParser = createHttpHeaderParser(mReader);
+                    mHttpPacket = createHttpPacket();
                 }
 
-                if(mStatus != HeadStart) {
+                HttpHeader header = mHttpHeaderParser->doParse();
+                if(header == nullptr) {
                     return packets;
                 }
-                
-                continue;
-            }
-            
-            case HeadStart: {
-                ByteArray head = mReader->pop();
-                memset(&mParser,0,sizeof(http_parser));
-                mHttpPacket = createHttpPacket();
-                mParser.data = reinterpret_cast<void *>(mHttpPacket.get_pointer());
-                http_parser_init(&mParser, HTTP_REQUEST);
-                http_parser_execute(&mParser,
-                                    &settings, 
-                                    (const char *)head->toValue(), 
-                                    head->size());
-                if(mHttpPacket->mUrl == nullptr || mHttpPacket->mUrl->size() == 0) {
-                    //this is a null packet
-                    mStatus = Idle;
-                } else {
-                    mStatus = BodyStart;
-                }
-                continue;
-            }
 
+                mHttpPacket->setHeader(header);
+                mStatus = BodyStart;
+                mHttpHeaderParser = nullptr;
+                continue;
+            }
             case BodyStart: {
                 //check whether there is a multipart
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
