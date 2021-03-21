@@ -77,7 +77,6 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                 }
                 pack = defferedBuff->mBuffer;
             }
-            printf("_WebSocketServer onSocketMessage trace2 \n");
             while (1) {
                 int readIndex = 0;
                 if (!parser->validateEntirePacket(pack)) {
@@ -89,17 +88,14 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                     }
                     break;
                 }
-                printf("_WebSocketServer onSocketMessage trace3 \n");
                 parser->setParseData(pack);
                 WebSocketHeader header = parser->parseHeader();
 
                 int opcode = header->getOpCode();
                 int framesize = header->getFrameLength();
                 int headersize = header->getHeadSize();
-                printf("_WebSocketServer onSocketMessage onMessage trace1,opcode is %d\n",opcode);
-
+                
                 if (opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
-                    printf("_WebSocketServer onSocketMessage onMessage trace2\n");
                     ByteArray msgData = parser->parseContent(true);
                     String msg = msgData->toString();
                     WebSocketFrame frame = createWebSocketFrame(header,msg);
@@ -170,7 +166,6 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
 
         case SocketEvent::Disconnect: {
             if(client != nullptr) {
-                printf("websocket onsocket disconnect,fd is %d \n",client->getSocket()->getFd());
                 st(WebSocketClientManager)::getInstance()->removeClient(client);
                 mWsListener->onDisconnect(client);
             } else {
@@ -190,7 +185,6 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_Ht
             String version = header->getValue(st(HttpHeader)::SecWebSocketVersion);
             if (upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
                 // remove fd from http epoll
-                printf("deMonitor \n");
                 mHttpServer->deMonitor(client->getSocket());
 
                 while(st(WebSocketClientManager)::getInstance()->getClient(client->getSocket())!= nullptr) {
@@ -218,7 +212,7 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_Ht
                 } else {
                     //TODO
                 }
-                printf("move to socket monitor \n");
+                
                 mSocketMonitor->bind(client->getSocket(),AutoClone<SocketListener>(this));
                 mWsListener->onConnect(wsClient);
 

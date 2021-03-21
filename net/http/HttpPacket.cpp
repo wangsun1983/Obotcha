@@ -33,14 +33,6 @@ HttpEntity _HttpPacket::getEntity() {
 void _HttpPacket::setEntity(HttpEntity entity) {
     mEntity = entity;
 }
-    
-void _HttpPacket::setUrl(String url) {
-    mUrl = url;
-}
-
-String _HttpPacket::getUrl() {
-    return mUrl;
-}
 
 void _HttpPacket::setReason(String reason) {
     mReason = reason;

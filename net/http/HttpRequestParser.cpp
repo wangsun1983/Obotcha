@@ -30,7 +30,7 @@ int _HttpRequestParser::on_message_begin(http_parser *parser) {
 int _HttpRequestParser::on_url(http_parser*parser, const char *at, size_t length) {
     _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
     String myurl = createString(at,0,length);
-    p->setUrl(myurl);
+    p->getHeader()->setUrl(myurl);
     return 0;
 }
 

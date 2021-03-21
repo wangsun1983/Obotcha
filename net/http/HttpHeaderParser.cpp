@@ -29,6 +29,7 @@ HttpHeader _HttpHeaderParser::doParse() {
             case Url:{
                 if(v == ' ') {
                     ByteArray urlcontent = mReader->pop();
+                    printf("url is %s \n",urlcontent->toValue());
                     mHeader->setUrl(urlcontent->toString()->trimAll());
                     mStatus = Version;
                 }
@@ -36,16 +37,6 @@ HttpHeader _HttpHeaderParser::doParse() {
             }
 
             case Version:{
-                if(v == ' ') {
-                   ByteArray vercontent = mReader->pop();
-                   mHeader->setVersion(st(HttpVersionParser)::doParse(vercontent->toString()->trimAll()));
-                   mStatus = NextLine;
-                   mNextStatus = ContentKey;
-                }
-                continue;
-            }
-
-            case NextLine:{
                 if(v == CRLF[mCrlfCount]) {
                     mCrlfCount++;
                 } else {
@@ -53,10 +44,11 @@ HttpHeader _HttpHeaderParser::doParse() {
                 }
 
                 if(mCrlfCount == 2) {
-                    mStatus = mNextStatus;
-                    mNextStatus = -1;
-                    mCrlfCount = 0;
-                    mReader->pop();
+                   ByteArray vercontent = mReader->pop();
+                   String verstring = createString((const char *)vercontent->toValue(),0,vercontent->size() -2);
+                   mHeader->setVersion(st(HttpVersionParser)::doParse(verstring));
+                   mStatus = ContentKey;
+                   mCrlfCount = 0;
                 }
                 continue;
             }

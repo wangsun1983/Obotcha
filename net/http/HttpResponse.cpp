@@ -16,7 +16,6 @@ _HttpResponse::_HttpResponse(HttpPacket p) {
     this->setHeader(p->getHeader());
     this->setMethod(p->getMethod());
     this->setReason(p->getReason());
-    this->setUrl(p->getUrl());
     this->setStatus(p->getStatus());
     this->setVersion(p->getVersion());
 }

@@ -795,8 +795,8 @@ int main() {
       }
 
       //check url
-      if(!packet->getUrl()->equals(msg.request_url)) {
-        printf("HttpRequestParser Test3 Fail,packet url is %s,msg url is %s \n",packet->getUrl()->toChars(),msg.request_url);
+      if(!packet->getHeader()->getUrl()->equals(msg.request_url)) {
+        printf("HttpRequestParser Test3 Fail,packet url is %s,msg url is %s \n",packet->getHeader()->getUrl()->toChars(),msg.request_url);
         continue;
       }
       printf("trace2 \n");

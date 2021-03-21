@@ -34,10 +34,6 @@ public:
 
     void setEntity(HttpEntity);
 
-    void setUrl(String);
-    
-    String getUrl();
-
     void setReason(String);
     
     String getReason();
@@ -57,7 +53,6 @@ public:
     void dump();
 
 private:
-    String mUrl;
     
     HttpHeader mHeader;
 
