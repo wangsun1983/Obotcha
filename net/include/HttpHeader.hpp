@@ -22,6 +22,8 @@ DECLARE_SIMPLE_CLASS(HttpHeader) {
 public:
     _HttpHeader();
 
+    void addHttpHeader(sp<_HttpHeader>);
+    
     void reset();
     
     void setValue(String header,String value);
@@ -50,6 +52,14 @@ public:
 
     HttpVersion getVersion();
     void setVersion(HttpVersion);
+
+    int getResponseStatus();
+    void setResponseStatus(int);
+
+    String getResponseReason();
+    void setResponseReason(String);
+
+    void dump();
 
     void clear();
     
@@ -224,6 +234,10 @@ private:
     String mUrl;
 
     HttpVersion mVersion;
+
+    int mResponseStatus;
+
+    String mResponseReason;
 };
 
 }

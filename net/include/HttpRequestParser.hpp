@@ -40,8 +40,15 @@ private:
         HeadStart,
         BodyStart
     };
+
+    enum HttpSubStatus {
+        None = 0,
+        HeadKeyValueParse,
+    };
     
     int mStatus;
+
+    int mSubStatus;
 
     ByteRingArray mBuff;
 
@@ -49,9 +56,7 @@ private:
 
     Enviroment mEnv;
 
-    int mHeadEndCount;
-
-    http_parser mParser;
+    int mBodyStartCount;
 
     String mHeaderName;
     
@@ -64,19 +69,6 @@ private:
     HttpHeaderParser mHttpHeaderParser;
     
     HttpChunkParser mChunkParser;
-
-    static int on_message_begin(http_parser *);
-    static int on_url(http_parser*, const char *at, size_t length);
-    static int on_header_field(http_parser*, const char *at, size_t length);
-    static int on_header_value(http_parser*, const char *at, size_t length);
-    static int on_headers_complete(http_parser*, const char *at, size_t length);
-    static int on_body(http_parser*, const char *at, size_t length);
-    static int on_message_complete(http_parser *);
-    static int on_reason(http_parser*, const char *at, size_t length);
-    static int on_chunk_header(http_parser*);
-    static int on_chunk_complete(http_parser*);
-    static http_parser_settings settings;
-    
 };
 
 }

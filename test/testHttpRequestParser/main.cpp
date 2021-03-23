@@ -776,7 +776,7 @@ int main() {
     int size = sizeof(requests)/sizeof(struct message);
     printf("size is %d \n",size);
 
-    for(int i = 0;i<size;i++) {
+    for(int i = 10;i<11;i++) {
       printf("////HttpRequestParser start %d ////\n",i);
       HttpRequestParser parser = createHttpRequestParser();
       struct message msg = requests[i];
@@ -789,8 +789,8 @@ int main() {
       printf("trace1 \n");
       //check method
       HttpPacket packet = packets->get(0);
-      if(packet->getMethod() != msg.method) {
-        printf("HttpRequestParser Test2 Fail,index is %d,pcket methods is %d,msg type is %d,\n content is %s \n",i,packet->getMethod(),msg.method,msg.raw);
+      if(packet->getHeader()->getMethod() != msg.method) {
+        printf("HttpRequestParser Test2 Fail,index is %d,pcket methods is %d,msg type is %d,\n content is %s \n",i,packet->getHeader()->getMethod(),msg.method,msg.raw);
         continue;
       }
 
@@ -812,13 +812,16 @@ int main() {
         }
 
         if(!fValue->equals(value)) {
-          printf("HttpRequestParser Test5 Fail,packet value is %s,msg value is %s \n",fValue->toChars(),value);
+          printf("HttpRequestParser Test5 Fail,packet value is %s,length is %d,msg value is %s,length is %d \n",fValue->toChars(),fValue->size(),value,strlen(value));
+          for(int i = 0;i < fValue->size();i++) {
+            printf("v is %c \n",fValue->toChars()[i]);
+          }
           continue;
         }
       }
       printf("trace3 \n");
       //check Version
-      HttpVersion version = packet->getVersion();
+      HttpVersion version = packet->getHeader()->getVersion();
       if(version->getMajorVer() != msg.http_major || version->getMinorVer() != msg.http_minor) {
         printf("HttpRequestParser Test6 Fail,packet version is %d.%d,msg version is %d.%d \n",
                 version->getMajorVer(),version->getMinorVer(),msg.http_major,msg.http_minor);

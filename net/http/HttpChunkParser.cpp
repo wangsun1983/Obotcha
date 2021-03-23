@@ -22,7 +22,6 @@ sequence
 
 0 => ("0\r\n\r\n")
 */
-
 _HttpChunkParser::_HttpChunkParser(ByteRingArrayReader r) {
     mChunkSize = -1;
     mStatus = Idle;
@@ -36,21 +35,20 @@ ByteArray _HttpChunkParser::doParse() {
     byte v = 0;
 
     while(mReader->readNext(v) != ByteRingArrayReadComplete) {
+        printf("v is %c,status is %d \n",v,mStatus);
         switch(mStatus) {
             case End: {
                 if(v == CRLF[mChunkEndCount]) {
                     mChunkEndCount++;
+                    continue;
                 } else {
                     mChunkEndCount = 0;
                 }
 
                 if(mChunkEndCount == 2) {
-                    return mBuff;
-                } else {
-                    continue;
-                }
-
-                break;
+                    mReader->pop();
+                } 
+                return mBuff;
             }
 
             case Idle: {

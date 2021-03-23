@@ -7,17 +7,13 @@
 
 namespace obotcha {
 
-_HttpResponse::_HttpResponse() {
-    st(HttpPacket)::setStatus(st(HttpStatus)::Ok);
+_HttpResponse::_HttpResponse():_HttpPacket() {
+    st(HttpPacket)::getHeader()->setResponseStatus(st(HttpStatus)::Ok);
 }
 
-_HttpResponse::_HttpResponse(HttpPacket p) {
+_HttpResponse::_HttpResponse(HttpPacket p):_HttpPacket() {
     this->setEntity(p->getEntity());
     this->setHeader(p->getHeader());
-    this->setMethod(p->getMethod());
-    this->setReason(p->getReason());
-    this->setStatus(p->getStatus());
-    this->setVersion(p->getVersion());
 }
 
 void _HttpResponse::setFile(File f) {

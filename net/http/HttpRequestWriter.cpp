@@ -94,11 +94,11 @@ int _HttpRequestWriter::write(HttpRequest p) {
             //p->setHeader(st(HttpHeader)::ContentType,st(HttpContentType)::XFormUrlEncoded);
         }
     }
-    AUTO_FLUSH(writer->writeString(st(HttpMethod)::toString(p->getMethod())));
+    AUTO_FLUSH(writer->writeString(st(HttpMethod)::toString(p->getHeader()->getMethod())));
     AUTO_FLUSH(writer->writeString(st(HttpText)::ContentSpace));
     AUTO_FLUSH(writer->writeString(p->getUrl()->getPath()));
     AUTO_FLUSH(writer->writeString(st(HttpText)::ContentSpace));
-    AUTO_FLUSH(writer->writeString(p->getVersion()->toString()));
+    AUTO_FLUSH(writer->writeString(p->getHeader()->getVersion()->toString()));
     AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
     AUTO_FLUSH(writer->writeString(p->getHeader()->toString(st(HttpProtocol)::HttpRequest)));
     AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));

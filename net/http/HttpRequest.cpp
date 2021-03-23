@@ -5,7 +5,7 @@ namespace obotcha {
 
 _HttpRequest::_HttpRequest(int m,HttpUrl url):_HttpPacket() {
     mUrl = url;
-    this->setMethod(m);
+    this->getHeader()->setMethod(m);
 }
 
 _HttpRequest::_HttpRequest() {

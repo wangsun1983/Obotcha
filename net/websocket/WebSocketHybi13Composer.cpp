@@ -39,10 +39,10 @@ ByteArray _WebSocketHybi13Composer::genShakeHandMessage(WebSocketClientInfo h) {
 ByteArray _WebSocketHybi13Composer::_genClientShakeHandMessage(WebSocketClientInfo client) {
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(client->getConnectUrl());
     HttpRequest packet = createHttpRequest();
-    packet->setMethod(st(HttpMethod)::Get);
+    packet->getHeader()->setMethod(st(HttpMethod)::Get);
     packet->setHeader(client->getHttpHeader());
     packet->getHeader()->setUrl(httpUrl->getPath());
-    packet->setVersion(createHttpVersion(1,1));
+    packet->getHeader()->setVersion(createHttpVersion(1,1));
 
     String host = httpUrl->getHost()->append(":",createString(httpUrl->getPort()));
     packet->getHeader()->setValue(st(HttpHeader)::Host,host);

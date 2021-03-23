@@ -10,94 +10,13 @@
 
 namespace obotcha {
 
-http_parser_settings _HttpRequestParser::settings = {
-    .on_message_begin = _HttpRequestParser::on_message_begin,
-    .on_url = _HttpRequestParser::on_url,
-    .on_header_field = _HttpRequestParser::on_header_field,
-    .on_header_value = _HttpRequestParser::on_header_value,
-    .on_headers_complete = _HttpRequestParser::on_headers_complete,
-    .on_body = _HttpRequestParser::on_body,
-    .on_message_complete = _HttpRequestParser::on_message_complete,
-    .on_reason = _HttpRequestParser::on_reason,
-    .on_chunk_header = _HttpRequestParser::on_chunk_header,
-    .on_chunk_complete = _HttpRequestParser::on_chunk_complete
-};
-
-int _HttpRequestParser::on_message_begin(http_parser *parser) {
-    return 0;
-}
-
-int _HttpRequestParser::on_url(http_parser*parser, const char *at, size_t length) {
-    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    String myurl = createString(at,0,length);
-    p->getHeader()->setUrl(myurl);
-    return 0;
-}
-
-int _HttpRequestParser::on_header_field(http_parser*parser, const char *at, size_t length) {
-    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    p->tempParseField = createString(at,0,length)->toLowerCase();
-    return 0;
-}
-
-int _HttpRequestParser::on_header_value(http_parser*parser, const char *at, size_t length) {
-    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    String value = createString(at,0,length);
-    if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::Cookie) 
-        || p->tempParseField->equalsIgnoreCase(st(HttpHeader)::SetCookie)) {
-        p->getHeader()->addCookie(createHttpCookie(value));
-        return 0;
-    } else if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::CacheControl)) {
-        p->getHeader()->setCacheControl(createHttpCacheControl(value));
-        return 0;
-    } else if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::ContentType)) {
-        p->getHeader()->setContentType(value);
-        return 0;
-    }
-    p->getHeader()->setValue(p->tempParseField,value);
-    return 0;
-}
-
-int _HttpRequestParser::on_headers_complete(http_parser*parser, const char *at, size_t length) {
-    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    p->setMethod(parser->method);
-    p->setStatus(parser->status_code);
-    p->setVersion(createHttpVersion(parser->http_major,parser->http_minor));
-    return 0;
-}
-
-int _HttpRequestParser::on_body(http_parser*parser, const char *at, size_t length) {
-    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    HttpEntity entity = createHttpEntity();
-    entity->setContent(createByteArray((byte *)at,(int)length));
-    p->setEntity(entity);
-    return 0;
-}
-
-int _HttpRequestParser::on_message_complete(http_parser *parser) {
-    return 0;
-}
-
-int _HttpRequestParser::on_reason(http_parser*parser, const char *at, size_t length) {
-    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    p->setReason(createString(at,0,length));
-    return 0;
-}
-
-int _HttpRequestParser::on_chunk_header(http_parser*parser) {
-    return 0;
-}
-
-int _HttpRequestParser::on_chunk_complete(http_parser*parser) {
-    return 0;
-}
-
 _HttpRequestParser::_HttpRequestParser() {
     mEnv = st(Enviroment)::getInstance();
     mBuff = createByteRingArray(mEnv->getInt(st(Enviroment)::gHttpBufferSize,64*1024));
     mReader = createByteRingArrayReader(mBuff);
-    mHeadEndCount = 0;
+    mBodyStartCount = 0;
     mStatus = Idle;
+    mSubStatus = None;
 }
 
 int _HttpRequestParser::pushHttpData(ByteArray data) {
@@ -123,35 +42,56 @@ int _HttpRequestParser::pushHttpData(ByteArray data) {
 }
 
 HttpPacket _HttpRequestParser::parseEntireRequest(String request) {
-    memset(&mParser,0,sizeof(http_parser));
-    HttpPacket packet = createHttpPacket();
-    mParser.data = reinterpret_cast<void *>(packet.get_pointer());
-    http_parser_init(&mParser, HTTP_REQUEST);
-    http_parser_execute(&mParser,&settings, request->toChars(), request->size());
-    return packet;
+    mBuff->reset();
+    mBuff->push((byte *)request->toChars(),0,request->size());
+    ArrayList<HttpPacket> result = doParse();
+    if(result == nullptr || result->size() != 1) {
+        return nullptr;
+    }
+
+    return result->get(0);
 }
 
 ArrayList<HttpPacket> _HttpRequestParser::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
     static byte *end = (byte *)st(HttpText)::HttpEnd->toChars();
+    static byte *CRLF = (byte *)st(HttpText)::CRLF->toChars();
+    byte v = 0;
     while(1) {
         switch(mStatus) {
             case Idle:{
                 if(mHttpHeaderParser == nullptr) {
-                    mHttpHeaderParser = createHttpHeaderParser(mReader);
-                    mHttpPacket = createHttpPacket();
-                }
+                    switch(mSubStatus) {
+                        case None:
+                        mHttpHeaderParser = createHttpHeaderParser(mReader);
+                        mHttpPacket = createHttpPacket();
+                        break;
 
+                        case HeadKeyValueParse:
+                        printf("HeadKeyValueParse trace1 \n");
+                        mHttpHeaderParser = createHttpHeaderParser(mReader,st(HttpHeaderParser)::KeyValueOnly);
+                        break;
+                    }
+                }
+                printf("HeadKeyValueParse trace1 _1\n");
                 HttpHeader header = mHttpHeaderParser->doParse();
                 if(header == nullptr) {
                     return packets;
                 }
-
-                mHttpPacket->setHeader(header);
+                printf("HeadKeyValueParse trace1 _2\n");
+                if(mSubStatus == HeadKeyValueParse) {
+                    printf("HeadKeyValueParse trace1 _3\n");
+                    mHttpPacket->getHeader()->addHttpHeader(header);
+                } else {
+                    printf("HeadKeyValueParse trace2 \n");
+                    mHttpPacket->setHeader(header);
+                }
+                
                 mStatus = BodyStart;
                 mHttpHeaderParser = nullptr;
                 continue;
             }
+
             case BodyStart: {
                 //check whether there is a multipart
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
@@ -160,15 +100,22 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                 
                 if(encodingtype != nullptr && encodingtype->equalsIgnoreCase(st(HttpHeader)::TransferChunked)) {
                     //this is a chunck parsesr
+                    if(mSubStatus == HeadKeyValueParse) {
+                        packets->add(mHttpPacket);
+                        mChunkParser = nullptr;
+                        return packets;
+                    }
+
                     if(mChunkParser == nullptr) {
                         mChunkParser = createHttpChunkParser(mReader);
                     }
                     ByteArray data = mChunkParser->doParse();
                     if(data != nullptr) {
                         mHttpPacket->getEntity()->setContent(data);
-                        packets->add(mHttpPacket);
+                        //packets->add(mHttpPacket);
                         mChunkParser = nullptr;
                         mStatus = Idle;
+                        mSubStatus = HeadKeyValueParse;
                     }
                     continue;
                 }
@@ -214,7 +161,6 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                         mStatus = Idle;
                         mMultiPartParser = nullptr;
                         packets->add(mHttpPacket);
-                        printf("BodyStart add packet \n");
                         continue;
                     }
                 }

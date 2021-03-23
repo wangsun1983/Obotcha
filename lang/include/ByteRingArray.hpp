@@ -31,6 +31,8 @@ public:
 
     bool push(ByteArray,int start,int length);
 
+    bool push(byte *,int,int);
+
     ByteArray pop(int size);
 
     ByteArray popByEnd(int);

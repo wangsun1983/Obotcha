@@ -150,6 +150,19 @@ _HttpHeader::_HttpHeader() {
     mMethod = -1;
 }
 
+void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
+    h->mValues->foreach([this](String key,String value) {
+        this->setValue(key,value);
+        return 1;
+    });
+
+    h->mCookies->foreach([this](HttpCookie cookie) {
+        this->mCookies->add(cookie);
+        return 1;
+    });
+}
+    
+
 void _HttpHeader::reset() {
     mValues->clear();
 }
@@ -159,7 +172,7 @@ void _HttpHeader::setValue(String header,String value) {
 }
 
 String _HttpHeader::getValue(String header) {
-    return mValues->get(header);
+    return mValues->get(header->toLowerCase());
 }
 
 void _HttpHeader::clear() {
@@ -188,6 +201,22 @@ HttpVersion _HttpHeader::getVersion() {
 
 void _HttpHeader::setVersion(HttpVersion v) {
     mVersion = v;
+}
+
+int _HttpHeader::getResponseStatus() {
+    return mResponseStatus;
+}
+
+void _HttpHeader::setResponseStatus(int s) {
+    mResponseStatus = s;
+}
+
+String _HttpHeader::getResponseReason() {
+    return mResponseReason;
+}
+
+void _HttpHeader::setResponseReason(String s) {
+    mResponseReason = s;
 }
 
 void _HttpHeader::addCookie(HttpCookie c) {
@@ -248,6 +277,10 @@ String _HttpHeader::toString(int type) {
     }
 
     return html->subString(0,html->size() - 2);
+}
+
+void _HttpHeader::dump() {
+    printf("method is %d,url is %s \n",mMethod,mUrl->toChars());
 }
 
 }

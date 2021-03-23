@@ -65,9 +65,9 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     ByteArray body = response->getEntity()->getContent();
 
     //start compose 
-    int status = response->getStatus();
+    int status = response->getHeader()->getResponseStatus();
     //String statusStr = st(HttpStatus)::toString(status);
-    AUTO_FLUSH(writer->writeString(response->getVersion()->toString()));
+    AUTO_FLUSH(writer->writeString(response->getHeader()->getVersion()->toString()));
     AUTO_FLUSH(writer->writeString(" "));
     AUTO_FLUSH(writer->writeString(createString(status)));
     AUTO_FLUSH(writer->writeString(" "));

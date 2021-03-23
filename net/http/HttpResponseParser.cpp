@@ -1,100 +1,21 @@
 #include "HttpResponseParser.hpp"
 #include "ArrayList.hpp"
 #include "HttpContentType.hpp"
+#include "HttpXFormUrlEncodedParser.hpp"
 
 namespace obotcha {
 
-http_parser_settings _HttpResponseParser::settings = {
-    .on_message_begin = _HttpResponseParser::on_message_begin,
-    .on_url = _HttpResponseParser::on_url,
-    .on_header_field = _HttpResponseParser::on_header_field,
-    .on_header_value = _HttpResponseParser::on_header_value,
-    .on_headers_complete = _HttpResponseParser::on_headers_complete,
-    .on_body = _HttpResponseParser::on_body,
-    .on_message_complete = _HttpResponseParser::on_message_complete,
-    .on_reason = _HttpResponseParser::on_reason,
-    .on_chunk_header = _HttpResponseParser::on_chunk_header,
-    .on_chunk_complete = _HttpResponseParser::on_chunk_complete
-};
-
-int _HttpResponseParser::on_message_begin(http_parser *parser) {
-    return 0;
-}
-
-int _HttpResponseParser::on_url(http_parser*parser, const char *at, size_t length) {
-    return 0;
-}
-
-int _HttpResponseParser::on_header_field(http_parser*parser, const char *at, size_t length) {
-    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    p->tempParseField = createString(at,0,length)->toLowerCase();
-    return 0;
-}
-
-int _HttpResponseParser::on_header_value(http_parser*parser, const char *at, size_t length) {
-    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    String value = createString(at,0,length);
-    if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::Cookie) 
-        || p->tempParseField->equalsIgnoreCase(st(HttpHeader)::SetCookie)) {
-        p->getHeader()->addCookie(createHttpCookie(value));
-        return 0;
-    } else if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::CacheControl)) {
-        p->getHeader()->setCacheControl(createHttpCacheControl(value));
-        return 0;
-    } else if(p->tempParseField->equalsIgnoreCase(st(HttpHeader)::ContentType)) {
-        p->getHeader()->setContentType(createHttpContentType(value));
-        return 0;
-    }
-    p->getHeader()->setValue(p->tempParseField,value);
-    return 0;
-}
-
-int _HttpResponseParser::on_headers_complete(http_parser*parser, const char *at, size_t length) {
-    return 0;
-}
-
-int _HttpResponseParser::on_body(http_parser*parser, const char *at, size_t length) {
-    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    p->getEntity()->setContent(createByteArray((byte *)at,(int)length));
-    return 0;
-}
-
-int _HttpResponseParser::on_message_complete(http_parser *parser) {
-    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    p->setMethod(parser->method);
-    p->setStatus(parser->status_code);
-    p->setVersion(createHttpVersion(parser->http_major,parser->http_minor));
-    return 0;
-}
-
-int _HttpResponseParser::on_reason(http_parser*parser, const char *at, size_t length) {
-    _HttpPacket *p = reinterpret_cast<_HttpPacket *>(parser->data);
-    p->setReason(createString(at,0,length));
-    return 0;
-}
-
-int _HttpResponseParser::on_chunk_header(http_parser*parser) {
-    return 0;
-}
-
-int _HttpResponseParser::on_chunk_complete(http_parser*parser) {
-    return 0;
-}
-
 _HttpResponseParser::_HttpResponseParser() {
-    mEnv = st(Enviroment)::getInstance();
-    mBuff = createByteRingArray(mEnv->getInt(st(Enviroment)::gHttpBufferSize,64*1024));
+    mBuff = createByteRingArray(st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpBufferSize,64*1024));
     mReader = createByteRingArrayReader(mBuff);
-    mHeadEndCount = 0;
-    mChunkEndCount = 0;
-    mStatus = HttpParseStatusIdle;
-    mChunkSize = 0;
-    mContentLength = 0;
+    mStatus = Idle;
+    mChunkParser = nullptr;
+    mHttpHeaderParser = nullptr;
 }
 
 void _HttpResponseParser::pushHttpData(ByteArray data) {
     //write data
-#ifdef DUMP_HTTP_DATE
+#ifdef DUMP_HTTP_DATE\
     File dumpfile = createFile("data.dt");
     //dumpfile->removeAll();
     dumpfile->createNewFile();
@@ -108,150 +29,68 @@ void _HttpResponseParser::pushHttpData(ByteArray data) {
 
 ArrayList<HttpPacket> _HttpResponseParser::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
-    static byte end[4] = {'\r','\n','\r','\n'};
-    static byte chunksizeEnd[2] = {'\r','\n'};
-    static byte chunkEnd[5] = {'\r','\n','0','\r','\n'};
-    byte v = 0;
     while(1) {
         switch(mStatus) {
-            case HttpParseStatusIdle:{
-                printf("HttpParseStatusIdle trace2\n");
-                byte v = 0;
-                while(mReader->readNext(v) != ByteRingArrayReadComplete) {
-                    if(v == end[mHeadEndCount]) {
-                        mHeadEndCount++;
-                    } else {
-                        mHeadEndCount = 0;
-                    }
-
-                    if(mHeadEndCount == 4) {
-                        mStatus = HttpClientParseStatusHeadStart;
-                        mHeadEndCount = 0;
-                        break;
-                    }
+            case Idle:{
+                if(mHttpHeaderParser == nullptr) {
+                    mHttpHeaderParser = createHttpHeaderParser(mReader);
+                    mHttpPacket = createHttpPacket();
                 }
-
-                if(mStatus != HttpClientParseStatusHeadStart) {
+                HttpHeader header = mHttpHeaderParser->doParse();
+                if(header == nullptr) {
                     return packets;
                 }
                 
+                mHttpPacket->setHeader(header);
+                mStatus = Body;
+                mHttpHeaderParser = nullptr;
                 continue;
             }
             
-            case HttpClientParseStatusHeadStart: {
-                printf("HttpClientParseStatusHeadStart trace2\n");
-                ByteArray head = mReader->pop();
-                memset(&mParser,0,sizeof(http_parser));
-                mHttpPacket = createHttpPacket();
-                mParser.data = reinterpret_cast<void *>(mHttpPacket.get_pointer());
-                http_parser_init(&mParser, HTTP_RESPONSE);
-                http_parser_execute(&mParser,
-                                    &settings, 
-                                    (const char *)head->toValue(), 
-                                    head->size());
-                mStatus = HttpClientParseStatusBodyStart;
-
-                continue;
-            }
-
-            case HttpClientParseStatusBodyStart: {
-                printf("HttpClientParseStatusBodyStart start\n");
+            case Body: {
+                //check whether there is a multipart
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
-                if(mContentLength == 0 && contentlength != nullptr) {
-                    mContentLength = contentlength->toBasicInt();
-                }
-
-                String transferEncoding = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
-                if(transferEncoding != nullptr && transferEncoding->endsWithIgnoreCase(st(HttpHeader)::TransferChunked)) {
-                    printf("HttpClientParseStatusBodyStart trace0,mChunkSize is %d,reablesize is %d\n",mChunkSize,mReader->getReadableLength());
-                    if(mChunkSize == 0) {
-                        //read chunksize
-                        while(mReader->readNext(v) != ByteRingArrayReadComplete) {
-                            printf("v is %x \n",v);
-                            if(v == chunksizeEnd[mChunkEndCount]) {
-                                mChunkEndCount++;
-                            } else {
-                                mChunkEndCount = 0;
-                            }
-
-                            if(mChunkEndCount == 2) {
-                                mChunkEndCount = 0;
-                                String chunklength = mReader->pop()->toString();
-                                chunklength = chunklength->subString(0,chunklength->size() - 2);
-                                printf("chunklength str is %s \n",chunklength->toChars());
-                                mChunkSize = chunklength->toHexInt();
-                                printf("mChunkSize is %d \n",mChunkSize);
-                                break;
-                            }
-                        }
-                        printf("HttpClientParseStatusBodyStart trace1,mChunkSize is %d\n",mChunkSize);
-
-                        if(mChunkSize == 0) {
-                            //last trunk
-                            printf("HttpClientParseStatusBodyStart last trunk\n");
-                            packets->add(mHttpPacket);
-                            return packets;
-                        }
+                String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
+                String encodingtype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
+                
+                if(encodingtype != nullptr && encodingtype->equalsIgnoreCase(st(HttpHeader)::TransferChunked)) {
+                    //this is a chunck parsesr
+                    if(mChunkParser == nullptr) {
+                        mChunkParser = createHttpChunkParser(mReader);
                     }
-                    
-                    int readablelength = mReader->getReadableLength();
-                    int popsize = (readablelength > mChunkSize)?mChunkSize:readablelength;
-
-                    ByteArray body = mHttpPacket->getEntity()->getContent();
-                    mReader->move(popsize);
-                    if(body == nullptr) {
-                        body = mReader->pop();
-                    } else {
-                        body->append(mReader->pop());
-                    }
-                    printf("HttpClientParseStatusBodyStart trace2\n");
-                    mHttpPacket->getEntity()->setContent(body);
-                    printf("mReader readable length is %d,mChunkSize is %d \n",readablelength,mChunkSize);
-                    if(readablelength < mChunkSize) {
-                        mChunkSize -= readablelength;
-                        printf("HttpClientParseStatusBodyStart trace2_1,mChunkSize is %d\n",mChunkSize);
-                        return packets;
-                    }
-                    printf("remain read length is %d \n",mReader->getReadableLength());
-                    mChunkSize = -1;
-                    mStatus = HttpClientParseStatusChunkJumpLineStart;
-                    continue;
-                } else {
-                    ByteArray body = mHttpPacket->getEntity()->getContent();
-                    int readablelength = mReader->getReadableLength();
-                    int popsize = (readablelength > mContentLength)?mContentLength:readablelength;
-                    mReader->move(popsize);
-                    if(body == nullptr) {
-                        body = mReader->pop();
-                    } else {
-                        body->append(mReader->pop());
-                    }
-                    mHttpPacket->getEntity()->setContent(body);
-                    mContentLength -= popsize;
-                    if(mContentLength == 0) {
+                    ByteArray data = mChunkParser->doParse();
+                    if(data != nullptr) {
+                        mHttpPacket->getEntity()->setContent(data);
                         packets->add(mHttpPacket);
+                        mChunkParser = nullptr;
+                        mStatus = Idle;
                     }
-
-                    return packets;
+                    continue;
                 }
-            }
-            break;
 
-            case HttpClientParseStatusChunkJumpLineStart: {
-                printf("HttpClientParseStatusChunkJumpLineStart,mChunkEndCount is %d \n",mChunkEndCount);
-                while(mReader->readNext(v) != ByteRingArrayReadComplete) {
-                    printf("HttpClientParseStatusChunkJumpLineStart v is %d,chunk value is %d\n",v,chunksizeEnd[mChunkEndCount]);
-                    if(v == chunksizeEnd[mChunkEndCount]) {
-                        mChunkEndCount++;
+                if(contentlength == nullptr) {
+                    //no contentlength,maybe it is only a html request
+                    packets->add(mHttpPacket);
+                    mStatus = Idle;
+                    continue;
+                }
+                
+                int length = contentlength->toBasicInt();
+                if(length <= mReader->getReadableLength()) {
+                    //one packet get
+                    mReader->move(length);
+                    ByteArray content = mReader->pop();
+                    //check whether it is a X-URLEncoded
+                    if(st(HttpContentType)::XFormUrlEncoded->indexOfIgnoreCase(contenttype) >= 0) {
+                        ArrayList<KeyValuePair<String,String>> xFormEncodedPair = st(HttpXFormUrlEncodedParser)::parse(content->toString());
+                        mHttpPacket->getEntity()->setEncodedKeyValues(xFormEncodedPair);
                     } else {
-                        mChunkEndCount = 0;
+                        mHttpPacket->getEntity()->setContent(content);
                     }
-
-                    if(mChunkEndCount == 2) {
-                        mChunkEndCount = 0;
-                        mStatus = HttpClientParseStatusBodyStart;
-                        break;
-                    }
+                    mStatus = Idle;
+                    packets->add(mHttpPacket);
+                    printf("BodyStart add packet \n");
+                    continue;
                 }
             }
             break;
@@ -265,15 +104,14 @@ int _HttpResponseParser::getStatus() {
 }
 
 HttpPacket _HttpResponseParser::parseEntireResponse(String response) {
-    memset(&mParser,0,sizeof(http_parser));
-    HttpPacket packet = createHttpPacket();
-    mParser.data = reinterpret_cast<void *>(packet.get_pointer());
+    mBuff->reset();
+    mBuff->push((byte *)response->toChars(),0,response->size());
+    ArrayList<HttpPacket> result = doParse();
+    if(result == nullptr || result->size() != 1) {
+        return nullptr;
+    }
 
-    http_parser_init(&mParser, HTTP_RESPONSE);
-    http_parser_execute(&mParser,&settings, response->toChars(), response->size());
-    packet->setMethod(mParser.method);
-    packet->setStatus(mParser.status_code);
-    return packet;
+    return result->get(0);
 }
 
 }

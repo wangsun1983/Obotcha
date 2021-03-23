@@ -89,21 +89,25 @@ bool _ByteRingArray::push(ByteArray data) {
 }
 
 bool _ByteRingArray::push(ByteArray array,int start,int length) {
+    return push(array->toValue(),start,length);
+}
+
+bool _ByteRingArray::push(byte *array,int start,int length) {
     if(mStatus == ByteRingArrayFull ||(mSize - getAvailDataSize()) < length ) {
         Trigger(ArrayIndexOutOfBoundsException,"Ring Array Push Overflow!!!");
     }
     
     if(mEnd < mStart) {
-        memcpy(mBuff + mEnd,&array->toValue()[start],length);
+        memcpy(mBuff + mEnd,&array[start],length);
         mEnd += length;
     } else {
         if(mEnd + length < mSize) {
-            memcpy(mBuff + mEnd,&array->toValue()[start],length);
+            memcpy(mBuff + mEnd,&array[start],length);
             mEnd += length;
         } else {
             int len = mSize - mEnd;
-            memcpy(mBuff + mEnd,&array->toValue()[start],len);
-            memcpy(mBuff,&array->toValue()[start + len],length - len);
+            memcpy(mBuff + mEnd,&array[start],len);
+            memcpy(mBuff,&array[start + len],length - len);
             mEnd = (length - len);
         }
     }

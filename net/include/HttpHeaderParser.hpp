@@ -11,7 +11,11 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(HttpHeaderParser) {
 
 public:
-    _HttpHeaderParser(ByteRingArrayReader);
+    enum ParseMode {
+        Full,
+        KeyValueOnly
+    };
+    _HttpHeaderParser(ByteRingArrayReader,int Mode=Full);
     HttpHeader doParse();
 
 private:
@@ -20,6 +24,8 @@ private:
         NextLine,
         Method,
         Url,
+        State,
+        Reason,
         Version,
         ContentKey,
         ContentValue,
@@ -35,6 +41,7 @@ private:
     HttpHeader mHeader;
     int mCrlfCount;
     String mKey;
+    String mPrevKey;
     String mValue;
 };
 

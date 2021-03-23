@@ -14,7 +14,6 @@ namespace obotcha {
 
 _HttpPacket::_HttpPacket() {
     mHeader = createHttpHeader();
-    mVersion = createHttpVersion();
     mEntity = createHttpEntity();
 }
 
@@ -32,38 +31,6 @@ HttpEntity _HttpPacket::getEntity() {
     
 void _HttpPacket::setEntity(HttpEntity entity) {
     mEntity = entity;
-}
-
-void _HttpPacket::setReason(String reason) {
-    mReason = reason;
-}
-
-String _HttpPacket::getReason() {
-    return mReason;
-}
-
-void _HttpPacket::setMethod(int v) {
-    mHeader->setMethod(v);
-}
-
-int _HttpPacket::getMethod() {
-    return mHeader->getMethod();
-}
-
-HttpVersion _HttpPacket::getVersion() {
-    return mVersion;
-}
-
-void _HttpPacket::setVersion(HttpVersion h) {
-    mVersion = h;
-}
-
-int _HttpPacket::getStatus() {
-    return mStatusCode;
-}
-
-void _HttpPacket::setStatus(int v) {
-    mStatusCode = v;
 }
 
 void _HttpPacket::dump() {

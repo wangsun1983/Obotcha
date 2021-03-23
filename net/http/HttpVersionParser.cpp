@@ -5,7 +5,7 @@ namespace obotcha {
 
 HttpVersion _HttpVersionParser::doParse(String content) {
     ArrayList<String> strings = content->split("/");
-    if(strings->size() != 2) {
+    if(strings == nullptr || strings->size() != 2) {
         return nullptr;
     }
 

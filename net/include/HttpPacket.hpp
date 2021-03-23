@@ -34,21 +34,6 @@ public:
 
     void setEntity(HttpEntity);
 
-    void setReason(String);
-    
-    String getReason();
-
-    void setMethod(int);
-
-    int getMethod();
-
-    HttpVersion getVersion();
-
-    void setVersion(HttpVersion);
-
-    int getStatus();
-
-    void setStatus(int);
 
     void dump();
 
@@ -58,16 +43,6 @@ private:
 
     HttpEntity mEntity;
 
-    String mReason;
-
-    HttpVersion mVersion;
-
-    int mStatusCode;
-
-    //support for httpparse
-    String tempParseValue;
-
-    String tempParseField;
 };
 
 }

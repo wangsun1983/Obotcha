@@ -14,10 +14,10 @@
 #include "ByteRingArrayReader.hpp"
 #include "Enviroment.hpp"
 #include "HttpPacket.hpp"
-#include "http_parser.h"
-#include "HttpMultiPartParser.hpp"
 #include "HttpResponse.hpp"
 #include "HttpPacket.hpp"
+#include "HttpHeaderParser.hpp"
+#include "HttpChunkParser.hpp"
 
 namespace obotcha {
 
@@ -36,10 +36,8 @@ public:
 
 private:
     enum HttpParseStatus {
-        HttpParseStatusIdle = 0,
-        HttpClientParseStatusHeadStart,
-        HttpClientParseStatusBodyStart,
-        HttpClientParseStatusChunkJumpLineStart,
+        Idle = 0,
+        Body,
     };
     
     int mStatus;
@@ -48,36 +46,10 @@ private:
 
     ByteRingArrayReader mReader;
 
-    Enviroment mEnv;
-
-    int mHeadEndCount;
-
-    int mChunkEndCount;
-
-    http_parser mParser;
-
-    String mHeaderName;
-    
-    String mHeaderValue;
-
     HttpPacket mHttpPacket;
 
-    int mChunkSize;
-    
-    int mContentLength;
-
-
-    static int on_message_begin(http_parser *);
-    static int on_url(http_parser*, const char *at, size_t length);
-    static int on_header_field(http_parser*, const char *at, size_t length);
-    static int on_header_value(http_parser*, const char *at, size_t length);
-    static int on_headers_complete(http_parser*, const char *at, size_t length);
-    static int on_body(http_parser*, const char *at, size_t length);
-    static int on_message_complete(http_parser *);
-    static int on_reason(http_parser*, const char *at, size_t length);
-    static int on_chunk_header(http_parser*);
-    static int on_chunk_complete(http_parser*);
-    static http_parser_settings settings;
+    HttpHeaderParser mHttpHeaderParser;
+    HttpChunkParser mChunkParser;
     
 };
 
