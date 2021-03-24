@@ -35,21 +35,23 @@ ByteArray _HttpChunkParser::doParse() {
     byte v = 0;
 
     while(mReader->readNext(v) != ByteRingArrayReadComplete) {
-        printf("v is %c,status is %d \n",v,mStatus);
+        //printf("v is %x,status is %d \n",v,mStatus);
         switch(mStatus) {
+            /*
             case End: {
                 if(v == CRLF[mChunkEndCount]) {
                     mChunkEndCount++;
-                    continue;
                 } else {
                     mChunkEndCount = 0;
                 }
 
                 if(mChunkEndCount == 2) {
+                    mChunkEndCount = 0;
                     mReader->pop();
+                    return mBuff;
                 } 
-                return mBuff;
-            }
+                continue;
+            }*/
 
             case Idle: {
                 if(v == CRLF[mChunkEndCount]) {
@@ -63,11 +65,16 @@ ByteArray _HttpChunkParser::doParse() {
                 } else {
                     mChunkEndCount = 0;
                     String chunklength = mReader->pop()->toString();
+                    if(chunklength->size() == 2) {
+                        //first two is /r/n,return direct
+                        return nullptr;
+                    }
+
                     chunklength = chunklength->subString(0,chunklength->size() - 2);
                     mChunkSize = chunklength->toHexInt();
                     if(mChunkSize == 0) {
-                        mStatus = End;
-                        continue;
+                        mChunkEndCount = 0;
+                        return mBuff;
                     }
                     mStatus = Recv;
                 }
@@ -79,6 +86,7 @@ ByteArray _HttpChunkParser::doParse() {
 
                 mReader->move(popsize);
                 ByteArray data = mReader->pop();
+                //printf("recv ...... data is %s \n",data->toString()->toChars());
                 if(mBuff == nullptr) {
                     mBuff = data;
                 } else {

@@ -148,6 +148,7 @@ _HttpHeader::_HttpHeader() {
     mCookies = createArrayList<HttpCookie>();
     mCacheControl = nullptr;
     mMethod = -1;
+    mContentLength = -1;
 }
 
 void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
@@ -217,6 +218,14 @@ String _HttpHeader::getResponseReason() {
 
 void _HttpHeader::setResponseReason(String s) {
     mResponseReason = s;
+}
+
+int _HttpHeader::getContentLength() {
+    return mContentLength;
+}
+
+void _HttpHeader::setContentLength(int c) {
+    mContentLength = c;
 }
 
 void _HttpHeader::addCookie(HttpCookie c) {

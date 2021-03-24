@@ -1307,6 +1307,7 @@ bool _String::isIntNumber(const char *p,int size) {
             if((i == size - 1) && p[i] == '\0') {
                 return true;
             }
+            printf("p[%d] is %x \n",i,p[i]);
             return false;
         }
     }

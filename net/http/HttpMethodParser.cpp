@@ -6,8 +6,16 @@
 
 namespace obotcha {
 
-int _HttpMethodParser::doParse(String method) {
-    const char *p = method->toChars();
+int _HttpMethodParser::doParse(String m) {
+    const char *p = m->toChars();
+    for(int i = 0;i < m->size();i++) {
+        if((*p <= 'Z' && *p >= 'A') || (*p <= 'z' && *p >= 'a')) {
+            break;
+        }
+        p++;
+    }
+
+    String method = createString(p);
     switch(p[0]) {
         case 'D':{
             if(method->equals(st(HttpHeader)::MethodDelete)){

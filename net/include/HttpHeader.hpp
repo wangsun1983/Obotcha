@@ -59,6 +59,9 @@ public:
     String getResponseReason();
     void setResponseReason(String);
 
+    int getContentLength();
+    void setContentLength(int);
+
     void dump();
 
     void clear();
@@ -238,6 +241,8 @@ private:
     int mResponseStatus;
 
     String mResponseReason;
+
+    int mContentLength;
 };
 
 }

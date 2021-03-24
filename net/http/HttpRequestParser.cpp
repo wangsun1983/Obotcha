@@ -63,6 +63,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                 if(mHttpHeaderParser == nullptr) {
                     switch(mSubStatus) {
                         case None:
+                        printf("HeadKeyValueParse trace0 \n");
                         mHttpHeaderParser = createHttpHeaderParser(mReader);
                         mHttpPacket = createHttpPacket();
                         break;
@@ -76,11 +77,12 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
                 printf("HeadKeyValueParse trace1 _1\n");
                 HttpHeader header = mHttpHeaderParser->doParse();
                 if(header == nullptr) {
+                    printf("HeadKeyValueParse trace1 _2\n");
                     return packets;
                 }
-                printf("HeadKeyValueParse trace1 _2\n");
+                printf("HeadKeyValueParse trace1 _3\n");
                 if(mSubStatus == HeadKeyValueParse) {
-                    printf("HeadKeyValueParse trace1 _3\n");
+                    printf("HeadKeyValueParse trace1 _4\n");
                     mHttpPacket->getHeader()->addHttpHeader(header);
                 } else {
                     printf("HeadKeyValueParse trace2 \n");
@@ -94,6 +96,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
 
             case BodyStart: {
                 //check whether there is a multipart
+                printf("BodyStart \n");
                 String contentlength = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentLength);
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
                 String encodingtype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
@@ -122,6 +125,7 @@ ArrayList<HttpPacket> _HttpRequestParser::doParse() {
 
                 if(contentlength == nullptr) {
                     //no contentlength,maybe it is only a html request
+                    printf("contentlength is null \n");
                     packets->add(mHttpPacket);
                     mMultiPartParser = nullptr;
                     mStatus = Idle;
