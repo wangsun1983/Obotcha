@@ -63,29 +63,22 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                 if(mHttpHeaderParser == nullptr) {
                     switch(mSubStatus) {
                         case None:
-                        printf("HeadKeyValueParse trace0 \n");
                         mHttpHeaderParser = createHttpHeaderParser(mReader);
                         mHttpPacket = createHttpPacket();
                         break;
 
                         case HeadKeyValueParse:
-                        printf("HeadKeyValueParse trace1 \n");
                         mHttpHeaderParser = createHttpHeaderParser(mReader,st(HttpHeaderParser)::KeyValueOnly);
                         break;
                     }
                 }
-                printf("HeadKeyValueParse trace1 _1\n");
                 HttpHeader header = mHttpHeaderParser->doParse();
                 if(header == nullptr) {
-                    printf("HeadKeyValueParse trace1 _2\n");
                     return packets;
                 }
-                printf("HeadKeyValueParse trace1 _3\n");
                 if(mSubStatus == HeadKeyValueParse) {
-                    printf("HeadKeyValueParse trace1 _4\n");
                     mHttpPacket->getHeader()->addHttpHeader(header);
                 } else {
-                    printf("HeadKeyValueParse trace2 \n");
                     mHttpPacket->setHeader(header);
                 }
                 
@@ -96,11 +89,10 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
 
             case BodyStart: {
                 //check whether there is a multipart
-                printf("BodyStart \n");
+                
                 int contentlength = mHttpPacket->getHeader()->getContentLength();
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
                 String encodingtype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
-                
                 if(encodingtype != nullptr && encodingtype->equalsIgnoreCase(st(HttpHeader)::TransferChunked)) {
                     //this is a chunck parsesr
                     if(mSubStatus == HeadKeyValueParse) {
@@ -113,21 +105,39 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                         mChunkParser = createHttpChunkParser(mReader);
                     }
                     ByteArray data = mChunkParser->doParse();
-                    if(data != nullptr) {
+                    if(data != nullptr || !mHttpPacket->getHeader()->isConnected()) {
                         mHttpPacket->getEntity()->setContent(data);
                         //packets->add(mHttpPacket);
                         mChunkParser = nullptr;
                         mStatus = Idle;
-                        mSubStatus = HeadKeyValueParse;
+                        if(mHttpPacket->getHeader()->isConnected()) {
+                            mSubStatus = HeadKeyValueParse;
+                        } else {
+                            mSubStatus = None;
+                        }
                     }
                     continue;
                 }
 
-                if(contentlength == -1) {
+                if(contentlength <= 0) {
+                    if(!mHttpPacket->getHeader()->isConnected()) {
+                        //connection:close,pop all data && close connection
+                        int restLength = mReader->getReadableLength();
+                        if(restLength != 0) {
+                            mReader->move(restLength);
+                            ByteArray content = mReader->pop();
+                            mHttpPacket->getEntity()->setContent(content);
+                        }
+                        packets->add(mHttpPacket);
+                        mMultiPartParser = nullptr;
+                        mChunkParser = nullptr;
+                        return packets;
+                    } 
+                    
                     //no contentlength,maybe it is only a html request
-                    printf("contentlength is null \n");
                     packets->add(mHttpPacket);
                     mMultiPartParser = nullptr;
+                    mChunkParser = nullptr;
                     mStatus = Idle;
                     continue;
                 }

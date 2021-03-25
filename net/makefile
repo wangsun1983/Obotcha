@@ -41,7 +41,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httprequestwriter.o \
 		$(outtmp)/httpcachecontrol.o \
 		$(outtmp)/httpresponsewriter.o \
-		$(outtmp)/httpresponseparser.o \
 		$(outtmp)/httppacketparser.o \
 		$(outtmp)/httpclientmanager.o \
 		$(outtmp)/httpsession.o \
@@ -53,7 +52,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpserver.o \
 		$(outtmp)/httpserverbuilder.o \
 		$(outtmp)/httpclientinfo.o \
-		$(outtmp)/httprequestparser.o \
 		$(outtmp)/httpxformparser.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketprotocol.o \
@@ -131,9 +129,6 @@ $(outtmp)/inetlocaladdress.o :$(netDir)/InetLocalAddress.cpp
 
 $(outtmp)/socketmonitor.o :$(netDir)/socket/SocketMonitor.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketMonitor.cpp -o $(outtmp)/socketmonitor.o 
-
-$(outtmp)/httprequestparser.o :$(netDir)/http/HttpRequestParser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRequestParser.cpp -o $(outtmp)/httprequestparser.o 
 
 $(outtmp)/httpxformparser.o :$(netDir)/http/HttpXFormUrlEncodedParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpXFormUrlEncodedParser.cpp -o $(outtmp)/httpxformparser.o 
@@ -233,9 +228,6 @@ $(outtmp)/httpresponse.o :$(netDir)/http/HttpResponse.cpp
 
 $(outtmp)/httpresponsewriter.o :$(netDir)/http/HttpResponseWriter.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o 
-
-$(outtmp)/httpresponseparser.o :$(netDir)/http/HttpResponseParser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponseParser.cpp -o $(outtmp)/httpresponseparser.o 
 
 $(outtmp)/httppacketparser.o :$(netDir)/http/HttpPacketParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketParser.cpp -o $(outtmp)/httppacketparser.o 

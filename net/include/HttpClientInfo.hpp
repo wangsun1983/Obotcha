@@ -13,12 +13,12 @@
 #include "HttpHeader.hpp"
 #include "ByteRingArray.hpp"
 #include "ByteRingArrayReader.hpp"
-#include "HttpRequestParser.hpp"
 #include "HttpPacket.hpp"
 #include "SSLInfo.hpp"
 #include "Random.hpp"
 #include "Socket.hpp"
 #include "HttpSession.hpp"
+#include "HttpPacketParser.hpp"
 
 namespace obotcha {
 
@@ -51,7 +51,8 @@ public:
 private:
     void setSSLInfo(SSLInfo);
 
-    HttpRequestParser mParser;
+    //HttpRequestParser mParser;
+    HttpPacketParser mParser;
 
     int mStatus;
 

@@ -62,6 +62,9 @@ public:
     int getContentLength();
     void setContentLength(int);
 
+    bool isConnected();
+    void setConnected(bool);
+
     void dump();
 
     void clear();
@@ -195,6 +198,9 @@ public:
     const static String MethodUnSubscribe;
     const static String MethodPatch;
 
+    //http connection
+    const static String ConnectionClose;
+
     enum MethodId{
         DELETE = 0,
         GET,
@@ -243,6 +249,8 @@ private:
     String mResponseReason;
 
     int mContentLength;
+
+    bool mIsConnected;
 };
 
 }

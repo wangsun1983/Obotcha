@@ -19,7 +19,6 @@
 #include "WebSocketListener.hpp"
 #include "HttpPacket.hpp"
 #include "EPollFileObserver.hpp"
-#include "HttpRequestParser.hpp"
 #include "WebSocketParser.hpp"
 #include "WebSocketClientInfo.hpp"
 #include "BlockingLinkedList.hpp"

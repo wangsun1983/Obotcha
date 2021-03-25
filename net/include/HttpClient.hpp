@@ -10,7 +10,7 @@
 #include "HashMap.hpp"
 #include "HttpCookie.hpp"
 #include "HttpUrl.hpp"
-#include "HttpResponseParser.hpp"
+#include "HttpPacketParser.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "Socket.hpp"
@@ -45,7 +45,7 @@ private:
 
     Socket mSocket;
 
-    HttpResponseParser mParser;
+    HttpPacketParser mParser;
 };
 
 }

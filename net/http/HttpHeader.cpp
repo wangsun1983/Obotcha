@@ -143,12 +143,17 @@ const String _HttpHeader::MethodSubscribe = createString("SUBSCRIBE");
 const String _HttpHeader::MethodUnSubscribe = createString("UNSUBSCRIBE");
 const String _HttpHeader::MethodPatch = createString("PATCH");
 
+//Http connection
+const String _HttpHeader::ConnectionClose = createString("close");
+
 _HttpHeader::_HttpHeader() {
     mValues  = createHashMap<String,String>();
     mCookies = createArrayList<HttpCookie>();
+    mVersion = createHttpVersion();
     mCacheControl = nullptr;
     mMethod = -1;
     mContentLength = -1;
+    mIsConnected = true;
 }
 
 void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
@@ -226,6 +231,14 @@ int _HttpHeader::getContentLength() {
 
 void _HttpHeader::setContentLength(int c) {
     mContentLength = c;
+}
+
+bool _HttpHeader::isConnected() {
+    return mIsConnected;
+}
+
+void _HttpHeader::setConnected(bool v) {
+    mIsConnected = v;
 }
 
 void _HttpHeader::addCookie(HttpCookie c) {

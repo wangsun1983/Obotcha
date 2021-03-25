@@ -6,7 +6,7 @@
 namespace obotcha {
 
 _HttpClientInfo::_HttpClientInfo(Socket s) {
-    mParser = createHttpRequestParser();
+    mParser = createHttpPacketParser();
     
     mSocket = s;
     mSocketOutput = s->getOutputStream();
