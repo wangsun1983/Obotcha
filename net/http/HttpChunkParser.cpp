@@ -37,22 +37,6 @@ ByteArray _HttpChunkParser::doParse() {
     while(mReader->readNext(v) != ByteRingArrayReadComplete) {
         //printf("v is %x,status is %d \n",v,mStatus);
         switch(mStatus) {
-            /*
-            case End: {
-                if(v == CRLF[mChunkEndCount]) {
-                    mChunkEndCount++;
-                } else {
-                    mChunkEndCount = 0;
-                }
-
-                if(mChunkEndCount == 2) {
-                    mChunkEndCount = 0;
-                    mReader->pop();
-                    return mBuff;
-                } 
-                continue;
-            }*/
-
             case Idle: {
                 if(v == CRLF[mChunkEndCount]) {
                     mChunkEndCount++;

@@ -25,7 +25,7 @@ cflags = -fpic \
 		-I ../../external/http_parser/include \
 		-I ../../external/libco \
 		-g \
-		-std=c++11 \
+		-std=c++14 \
 
 external = -lpthread \
 				-ldl \

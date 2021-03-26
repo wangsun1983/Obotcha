@@ -5,15 +5,15 @@
 
 namespace obotcha {
 
-_HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r,int mode) {
+_HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r) {
     mReader = r;
     mHeader = createHttpHeader();
     mCrlfCount = 0;
-    if(mode == Full) {
-        mStatus = Idle;
-    } else {
-        mStatus = ContentKey;
-    }
+    mStatus = Idle;
+}
+
+void _HttpHeaderParser::changeToParseKeyValue() {
+    mStatus = ContentKey;
 }
 
 HttpHeader _HttpHeaderParser::doParse() {
@@ -31,6 +31,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                         mStatus = Url;
                     } else {
                         //this may be a response
+                        mHeader->setType(st(HttpHeader)::Response);
                         HttpVersion ver = st(HttpVersionParser)::doParse(tag);
                         if(ver != nullptr) {
                             mHeader->setVersion(ver);
@@ -39,13 +40,25 @@ HttpHeader _HttpHeaderParser::doParse() {
                             //TODO
                         }
                     }
-                    
                 }
                 continue;
             }
 
             case State:{
-                if(v == ' ') {
+                if(v == CRLF[mCrlfCount]) {
+                    mCrlfCount++;
+                } else {
+                    mCrlfCount = 0;
+                }
+
+                if(mCrlfCount == 2) {
+                    //no reason~~~    
+                    ByteArray state = mReader->pop();
+                    String state_str = createString((const char *)state->toValue(),0,state->size() -2);
+                    mHeader->setResponseStatus(state_str->toBasicInt());
+                    mCrlfCount = 0;
+                    mStatus = ContentKey;
+                }else if(v == ' ') {
                     ByteArray state = mReader->pop();
                     String state_str = createString((const char *)state->toValue(),0,state->size() - 1);
                     int status = state_str->toBasicInt();
@@ -65,7 +78,6 @@ HttpHeader _HttpHeaderParser::doParse() {
             }
 
             case Reason:{
-                //printf("HttpHeaderParser reason,v is %x \n",v);
                 if(v == CRLF[mCrlfCount]) {
                     mCrlfCount++;
                 } else {
@@ -89,7 +101,6 @@ HttpHeader _HttpHeaderParser::doParse() {
                 }
 
                 if(mCrlfCount == 2) {
-                    //printf("version 2\n");
                     ByteArray vercontent = mReader->pop();
                     String verstring = createString((const char *)vercontent->toValue(),0,vercontent->size() -2);
                     mHeader->setVersion(st(HttpVersionParser)::doParse(verstring));
@@ -105,12 +116,14 @@ HttpHeader _HttpHeaderParser::doParse() {
                 }else if(v == ':') {
                     mCrlfCount = 0;
                     ByteArray key = mReader->pop();
+                    
                     mKey = createString((const char *)key->toValue(),0,key->size() - 1)->toLowerCase();
                     mStatus = ContentValue;
                 }
 
                 if(mCrlfCount == 2) {
                     mReader->pop();
+                    mStatus = Idle;
                     return mHeader;
                 }
                 continue;
@@ -140,9 +153,9 @@ HttpHeader _HttpHeaderParser::doParse() {
                     } else {
                         mValue = createString(&valuestr[start],0,value->size() - 2 - start);
                     }
-                    if(parseParticularHeader(mKey,mValue) == -1) {
-                        mHeader->setValue(mKey->toLowerCase(),mValue);
-                    }
+
+                    parseParticularHeader(mKey,mValue);
+                    mHeader->setValue(mKey,mValue);
                     //may be we should parse value
                     mStatus = ContentKey;
                     mNextStatus = -1;
@@ -174,7 +187,6 @@ int _HttpHeaderParser::parseParticularHeader(String key,String value) {
             } else if(key->equals(st(HttpHeader)::Connection)) {
                 if(st(HttpHeader)::ConnectionClose->equals(value->trimAll())) {
                     mHeader->setConnected(false);
-                    printf("i set close!!! \n");
                     return 0;
                 }
             }

@@ -65,6 +65,9 @@ public:
     bool isConnected();
     void setConnected(bool);
 
+    int getType();
+    void setType(int);
+
     void dump();
 
     void clear();
@@ -228,6 +231,11 @@ public:
         PATCH
     };
 
+    enum Type {
+        Request = 100,
+        Response
+    };
+
 private:
 
     HashMap<String,String> mValues;
@@ -237,6 +245,8 @@ private:
     HttpCacheControl mCacheControl;
 
     HttpContentType mContentType;
+
+    int mType;
 
     int mMethod;
 

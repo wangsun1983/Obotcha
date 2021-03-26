@@ -16,6 +16,10 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(HttpUrl) {
 public:
     _HttpUrl();
+    enum SchemaType {
+        Http = 0,
+        Https,
+    };
 
     void setSchema(String);
     void setHost(String);

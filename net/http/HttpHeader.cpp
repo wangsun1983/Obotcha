@@ -154,6 +154,7 @@ _HttpHeader::_HttpHeader() {
     mMethod = -1;
     mContentLength = -1;
     mIsConnected = true;
+    mType = Type::Request;
 }
 
 void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
@@ -239,6 +240,14 @@ bool _HttpHeader::isConnected() {
 
 void _HttpHeader::setConnected(bool v) {
     mIsConnected = v;
+}
+
+int _HttpHeader::getType() {
+    return mType;
+}
+
+void _HttpHeader::setType(int v) {
+    mType = v;
 }
 
 void _HttpHeader::addCookie(HttpCookie c) {

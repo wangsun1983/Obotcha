@@ -19,6 +19,18 @@ public:
     static HttpUrl parseUrl(String);
 
 private:
+    enum Status {
+        Scheme = 0,
+        Slash,
+        AuthorityOrHost,
+        Port,
+        PathOrQuery,
+
+    };
+
+    static String HttpScheme;
+    static String HttpsScheme;
+
     static void parseQuery(HttpUrl,String);
 };
 

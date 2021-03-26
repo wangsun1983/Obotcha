@@ -144,17 +144,18 @@ public:
         return m_ptr->equals(o.m_ptr);
     }
 
+
     template<typename U>
     inline bool operator == (const U* o) const {
         if(o->m_ptr == nullptr) {
-            if(o->m_ptr == nullptr) {
+            if(m_ptr == nullptr) {
                 return true;
             }
             return false;
         }
 
         if(m_ptr == nullptr) {
-            if(o == nullptr) {
+            if(o->m_ptr == nullptr) {
                 return true;
             }
 
@@ -231,7 +232,7 @@ public:
         }
 
         if(m_ptr == nullptr) {
-            if(o == nullptr) {
+            if(o->m_ptr == nullptr) {
                 return false;
             }
 

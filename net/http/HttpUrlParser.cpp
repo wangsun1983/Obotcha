@@ -10,56 +10,114 @@
 #include "HttpUrlParser.hpp"
 #include "http_parser.h"
 #include "HttpUrl.hpp"
+#include "HttpHeader.hpp"
 
 namespace obotcha {
 
-HttpUrl _HttpUrlParser::parseUrl(String urlstring) {
-    struct http_parser_url u;
-    const char *url = urlstring->toChars();
-    if(0 == http_parser_parse_url(url, urlstring->size(), 0, &u)) {
-        HttpUrl urlData = createHttpUrl();
-        if(u.field_set & (1 << UF_PORT)) {
-            urlData->setPort(u.port);
-        } else {
-            urlData->setPort(80);
-        }
+String _HttpUrlParser::HttpScheme = createString("http");
+String _HttpUrlParser::HttpsScheme = createString("https");
 
-        if(u.field_set & (1 << UF_HOST)) {
-            urlData->setHost(createString(url,u.field_data[UF_HOST].off,u.field_data[UF_HOST].len));
-        }
+HttpUrl _HttpUrlParser::parseUrl(String url) {
+    const char *input = url->toChars();
+    int size = url->size();
+    int index = 0;
+    int start = 0;
+    int status = Scheme;
+    HttpUrl urlData = createHttpUrl();
 
-        if(u.field_set & (1 << UF_PATH)) {
-            urlData->setPath(createString(url,u.field_data[UF_PATH].off,u.field_data[UF_PATH].len));
-        }
+    bool userParsed = false;
 
-        if(u.field_set & (1 << UF_SCHEMA)) {
-            urlData->setSchema(createString(url,u.field_data[UF_SCHEMA].off,u.field_data[UF_SCHEMA].len));
-        }
+    while(index < size) {
+        //printf("input is %c \n",input[index]);
 
-        if(u.field_set & (1 << UF_FRAGMENT)) {
-            urlData->setFragment(createString(url,u.field_data[UF_FRAGMENT].off,u.field_data[UF_FRAGMENT].len));
-        }
+        switch(status) {
+            case Scheme:{
+                if(input[index] == ':') {
+                    String scheme_str = createString(input,start,index - start);
+                    urlData->setSchema(scheme_str);
+                    index++;
+                    start = index;
+                    status = Slash;
+                    continue;
+                }
+                index++;
+                continue;
+            }
 
-        if(u.field_set & (1 << UF_USERINFO)) {
-            String userInfo = createString(url,u.field_data[UF_USERINFO].off,u.field_data[UF_USERINFO].len);
-            ArrayList<String> user = userInfo->split(":");
+            case Slash: {
+                if(input[index] == '/' || input[index] == '\\') {
+                    index++;
+                } else {
+                    status = AuthorityOrHost;
+                }
+                start = index;
+                continue;
+            }
 
-            if(user->size() == 2) {
-                urlData->setUser(user->get(0));
-                urlData->setPassword(user->get(1));
-            } else {
-                urlData->setUser(userInfo);
+            case AuthorityOrHost: {
+                if(input[index] == '@') {
+                    //check username/password
+                    String authority = createString(input,start,index - start);
+                    ArrayList<String> list = authority->split(":");
+                    if(list == nullptr) {
+                        urlData->setUser(authority);
+                    } else if(list->size() == 2) {
+                        urlData->setUser(list->get(0));
+                        urlData->setPassword(list->get(1));
+                    } 
+
+                    status = AuthorityOrHost;
+                    userParsed = true;
+                    index++;
+                    start = index;
+                    continue;
+                } else if(input[index] == '/') {
+                    String host = createString(input,start,index - start);
+                    ArrayList<String> list = host->split(":");
+                    if(list == nullptr) {
+                        urlData->setHost(host);
+                    } else if(list->size() == 2) {
+                        urlData->setHost(list->get(0));
+                        urlData->setPort(list->get(1)->toBasicInt());
+                    }
+                    
+                    status = PathOrQuery;
+                    index++;
+                    start = index;
+                    continue;
+                }
+                index++;
+                continue;
+            }
+
+            case PathOrQuery: {
+                if(input[index] == '?') {
+                    String path = createString(input,start,index - start);
+                    urlData->setPath(path);
+                    index++;
+                    start = index;
+                    String query = createString(input,start,size - start);
+                    ArrayList<String> list = query->split("#");
+                    if(list == nullptr) {
+                        parseQuery(urlData,query);
+                    } else {
+                        parseQuery(urlData,list->get(0));
+                        urlData->setFragment(list->get(1));
+                    }
+                    return urlData;
+                }
+                index++; 
+                continue;
             }
         }
-
-        if(u.field_set & (1 << UF_QUERY)) {
-            String query = createString(url,u.field_data[UF_QUERY].off,u.field_data[UF_QUERY].len);
-            parseQuery(urlData,query);
-        }
-        return urlData;
     }
-    return nullptr;
+
+    String data = createString(input,start,size - start - 1);
+    urlData->setPath(data);
+    return urlData;
 }
+
+//wangsl
 
 void _HttpUrlParser::parseQuery(HttpUrl url,String query) {
     //HashMap<String,String> mResult = createHashMap<String,String>();

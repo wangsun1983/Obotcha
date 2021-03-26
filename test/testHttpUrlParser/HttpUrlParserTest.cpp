@@ -1,7 +1,6 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "TcpClient.hpp"
 #include "Thread.hpp"
 #include "System.hpp"
 #include "HttpUrlParser.hpp"
@@ -10,7 +9,7 @@ using namespace obotcha;
 
 
 int main() {
-    String request =  "http://su:abc@localhost/test.cgi?a=b&c=d";
+    String request =  "http://su:abc@localhost:1234/test.cgi?a=b&c=d#fffsss";
     HttpUrlParser parser = createHttpUrlParser();
     HttpUrl url = parser->parseUrl(request);
     printf("======= dump start ======= \n");

@@ -61,21 +61,18 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
         switch(mStatus) {
             case Idle:{
                 if(mHttpHeaderParser == nullptr) {
-                    switch(mSubStatus) {
-                        case None:
-                        mHttpHeaderParser = createHttpHeaderParser(mReader);
-                        mHttpPacket = createHttpPacket();
-                        break;
-
-                        case HeadKeyValueParse:
-                        mHttpHeaderParser = createHttpHeaderParser(mReader,st(HttpHeaderParser)::KeyValueOnly);
-                        break;
-                    }
+                    mHttpHeaderParser = createHttpHeaderParser(mReader);
+                    mHttpPacket = createHttpPacket();
                 }
+                
                 HttpHeader header = mHttpHeaderParser->doParse();
                 if(header == nullptr) {
+                    if(mSubStatus == HeadKeyValueParse) {
+                        packets->add(mHttpPacket);
+                    }
                     return packets;
                 }
+
                 if(mSubStatus == HeadKeyValueParse) {
                     mHttpPacket->getHeader()->addHttpHeader(header);
                 } else {
@@ -83,13 +80,12 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                 }
                 
                 mStatus = BodyStart;
-                mHttpHeaderParser = nullptr;
+                //mHttpHeaderParser = nullptr;
                 continue;
             }
 
             case BodyStart: {
                 //check whether there is a multipart
-                
                 int contentlength = mHttpPacket->getHeader()->getContentLength();
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
                 String encodingtype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
@@ -105,20 +101,16 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                         mChunkParser = createHttpChunkParser(mReader);
                     }
                     ByteArray data = mChunkParser->doParse();
-                    if(data != nullptr || !mHttpPacket->getHeader()->isConnected()) {
+                    if(data != nullptr) {
                         mHttpPacket->getEntity()->setContent(data);
-                        //packets->add(mHttpPacket);
                         mChunkParser = nullptr;
-                        mStatus = Idle;
-                        if(mHttpPacket->getHeader()->isConnected()) {
-                            mSubStatus = HeadKeyValueParse;
-                        } else {
-                            mSubStatus = None;
-                        }
+                        mHttpHeaderParser->changeToParseKeyValue();
                     }
+                    mSubStatus = HeadKeyValueParse;
+
+                    mStatus = Idle;
                     continue;
                 }
-
                 if(contentlength <= 0) {
                     if(!mHttpPacket->getHeader()->isConnected()) {
                         //connection:close,pop all data && close connection

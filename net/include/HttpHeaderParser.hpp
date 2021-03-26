@@ -15,7 +15,10 @@ public:
         Full,
         KeyValueOnly
     };
-    _HttpHeaderParser(ByteRingArrayReader,int Mode=Full);
+    _HttpHeaderParser(ByteRingArrayReader);
+
+    void changeToParseKeyValue();
+
     HttpHeader doParse();
 
 private:
