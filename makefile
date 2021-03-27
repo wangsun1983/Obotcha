@@ -27,7 +27,6 @@ cflags = -fpic \
 		-I ./external/yaml/include \
 		-I ./external/openssl/include \
 		-I ./external/sqlite3/include \
-		-I ./external/http_parser/include \
 		-I ./external/libco \
 		-I ./external/mysql_connector/include \
 		-I ./external/uuid/include \

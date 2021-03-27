@@ -7,7 +7,7 @@
 #include "WebSocketParser.hpp"
 #include "WebSocketHybi13Parser.hpp"
 #include "WebSocketProtocol.hpp"
-
+#include "HttpMethod.hpp"
 
 namespace obotcha {
 
@@ -243,7 +243,7 @@ bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
 }
 
 bool _WebSocketHybi13Parser::validateHandShake(HttpHeader h) {
-    if(h->getMethod() != HTTP_GET) {        
+    if(h->getMethod() != st(HttpMethod)::Get) {        
         return false;
     }
 

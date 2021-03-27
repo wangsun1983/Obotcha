@@ -417,20 +417,27 @@ int main() {
         printf("HttpPacketParser Test1 Fail,index is %d,content is %s,size is %d \n",i,msg.raw,packets->size());
         continue;
       }
-      printf("trace1 \n");
       //check method
       HttpPacket packet = packets->get(0);
-      if(packet->getHeader()->getMethod() != msg.method) {
-        printf("HttpPacketParser Test2 Fail,index is %d,pcket methods is %d,msg type is %d,\n content is %s \n",i,packet->getHeader()->getMethod(),msg.method,msg.raw);
+      if(packet->getHeader()->getType() != st(HttpHeader)::Response) {
+        printf("HttpPacketParser Test2 Fail,type is %d \n",packet->getHeader()->getType());
         continue;
       }
 
       //check url
-      if(!packet->getHeader()->getUrl()->equals(msg.request_url)) {
-        printf("HttpPacketParser Test3 Fail,packet url is %s,msg url is %s \n",packet->getHeader()->getUrl()->toChars(),msg.request_url);
+      if(packet->getHeader()->getResponseStatus() != msg.status_code) {
+        printf("HttpPacketParser Test3 Fail,response status is %d,msg.status_code is %d \n",packet->getHeader()->getResponseStatus(),msg.status_code);
         continue;
       }
-      printf("trace2 \n");
+	  
+	   //check reason
+	   if(packet->getHeader()->getResponseReason() == nullptr) {
+		   printf("HttpPacketParser Test4 Warning,response reason null\n");
+	   } else if(!packet->getHeader()->getResponseReason()->equals(createString(msg.response_reason))) {
+        printf("HttpPacketParser Test4 Fail,response status is %s,msg.reason is %s \n",packet->getHeader()->getResponseReason()->toChars(),msg.response_reason);
+        continue;
+      }
+	  
       //check header
       int headersize = msg.num_headers;
       for(int i = 0;i<headersize;i++) {
@@ -438,33 +445,31 @@ int main() {
         char *value = msg.headers[i][1];
         String fValue = packet->getHeader()->getValue(createString(key)->toLowerCase());
         if(fValue == nullptr) {
-          printf("HttpPacketParser Test4 Fail,packet value is null,key is %s \n",key);
+          printf("HttpPacketParser Test5 Fail,packet value is null,key is %s \n",key);
           continue;
         }
 
         if(!fValue->equals(value)) {
-          printf("HttpPacketParser Test5 Fail,packet value is %s,length is %d,msg value is %s,length is %d \n",fValue->toChars(),fValue->size(),value,strlen(value));
+          printf("HttpPacketParser Test6 Fail,packet value is %s,length is %d,msg value is %s,length is %d \n",fValue->toChars(),fValue->size(),value,strlen(value));
           for(int i = 0;i < fValue->size();i++) {
             printf("v is %c \n",fValue->toChars()[i]);
           }
           continue;
         }
       }
-      printf("trace3 \n");
       //check Version
       HttpVersion version = packet->getHeader()->getVersion();
       if(version->getMajorVer() != msg.http_major || version->getMinorVer() != msg.http_minor) {
-        printf("HttpPacketParser Test6 Fail,packet version is %d.%d,msg version is %d.%d \n",
+        printf("HttpPacketParser Test7 Fail,packet version is %d.%d,msg version is %d.%d \n",
                 version->getMajorVer(),version->getMinorVer(),msg.http_major,msg.http_minor);
         continue;
       }
-      printf("trace4 \n");
       //check content
       HttpEntity entity = packet->getEntity();
       if(strlen(msg.body) > 0) {
         printf("trace4_1 \n");
         if(entity == nullptr) {
-          printf("HttpPacketParser Test6 Fail,packet entity is null\n");
+          printf("HttpPacketParser Test8 Fail,packet entity is null\n");
           continue;
         }
         String content = entity->getContent()->toString();
@@ -472,27 +477,14 @@ int main() {
         if(content == nullptr) {
           printf("HttpPacketParser Test7 Fail,packet content is null\n");
         } else if(!content->equals(msg.body)) {
-          printf("HttpPacketParser Test8 Fail,packet content is %s,size is %d 111\n",content->toChars(),content->size());
-          printf("HttpPacketParser Test8 Fail,packet content is %s,size is %d 222\n",msg.body,strlen(msg.body));
-          int index = 0;
-          for(;index < content->size();index++) {
-            printf("[%d] is %x \n",index,content->toChars()[index]);
-          }
-          //for(;index < strlen(msg.body);index++) {
-            //if(content->toChars()[index] != msg.body[index]) {
-          //    printf("not equal at %d,v1 is %c,v2 is %c \n",index,content->toChars()[index],msg.body[index]);
-            //}
-          //}
-
-          //printf("content->toChars()[%d] is %x \n",index,content->toChars()[index]);
+          printf("HttpPacketParser Test8 Fail,packet content is %s,size is %d \n",content->toChars(),content->size());
+          printf("HttpPacketParser Test8 Fail,msg content is %s,size is %d \n",msg.body,strlen(msg.body));
         }
-        printf("trace4_3 \n");
       } else {
         if(entity != nullptr && entity->getContent() != nullptr) {
           printf("HttpPacketParser Test9 Fail,packet content is %s\n",entity->getContent()->toString()->toChars());
         }
       }
     }
-    printf("trace5 \n");
 
 }

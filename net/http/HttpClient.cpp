@@ -3,7 +3,6 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
-#include "http_parser.h"
 #include "HashMap.hpp"
 #include "HttpCookie.hpp"
 #include "HttpClient.hpp"

@@ -22,7 +22,6 @@ cflags = -fpic \
 		-I ../../external/yaml/include \
 		-I ../../external/crc32/include \
 		-I ../../external/openssl/include \
-		-I ../../external/http_parser/include \
 		-I ../../external/uuid/include \
 		-I ../../external/libco \
 		-g \

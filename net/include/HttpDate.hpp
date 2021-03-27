@@ -8,7 +8,6 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
-#include "http_parser.h"
 #include "HashMap.hpp"
 #include "HttpDate.hpp"
 #include "DateTime.hpp"

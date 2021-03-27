@@ -14,7 +14,6 @@
 #include "ByteRingArrayReader.hpp"
 #include "Enviroment.hpp"
 #include "HttpPacket.hpp"
-#include "http_parser.h"
 #include "HttpMultiPartParser.hpp"
 #include "HttpChunkParser.hpp"
 #include "HttpHeaderParser.hpp"

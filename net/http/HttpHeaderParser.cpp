@@ -10,6 +10,7 @@ _HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r) {
     mHeader = createHttpHeader();
     mCrlfCount = 0;
     mStatus = Idle;
+    //mPrevKey = nullptr;
 }
 
 void _HttpHeaderParser::changeToParseKeyValue() {
@@ -26,6 +27,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                     ByteArray method = mReader->pop();
                     String tag = method->toString()->trimAll();
                     int methodid = st(HttpMethodParser)::doParse(tag);
+                    printf("method id is %d \n",methodid);
                     if(methodid != -1) {
                         mHeader->setMethod(methodid);
                         mStatus = Url;
@@ -122,9 +124,21 @@ HttpHeader _HttpHeaderParser::doParse() {
                 }
 
                 if(mCrlfCount == 2) {
-                    mReader->pop();
-                    mStatus = Idle;
-                    return mHeader;
+                    //we should check whether it is end
+                    ByteArray content = mReader->pop();
+                    printf("content size is %d \n",content->size());
+                    if(content->size() == 2) {
+                        mStatus = Idle;
+                        return mHeader;
+                    } else {
+                        //if prev content value contains '\r\n'
+                        String value = mHeader->getValue(mKey);
+                        String appendValue = createString((const char *)content->toValue(),0,content->size() - 2);
+                        value = value->append(appendValue);
+                        mHeader->setValue(mKey,value);
+                        mCrlfCount = 0;
+                    }
+                    
                 }
                 continue;
             }
@@ -156,6 +170,7 @@ HttpHeader _HttpHeaderParser::doParse() {
 
                     parseParticularHeader(mKey,mValue);
                     mHeader->setValue(mKey,mValue);
+                    printf("key is %s,value is %s \n",mKey->toChars(),mValue->toChars());
                     //may be we should parse value
                     mStatus = ContentKey;
                     mNextStatus = -1;

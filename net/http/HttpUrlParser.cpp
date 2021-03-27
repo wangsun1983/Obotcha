@@ -8,7 +8,6 @@
 #include "String.hpp"
 #include "HashMap.hpp"
 #include "HttpUrlParser.hpp"
-#include "http_parser.h"
 #include "HttpUrl.hpp"
 #include "HttpHeader.hpp"
 
@@ -38,6 +37,11 @@ HttpUrl _HttpUrlParser::parseUrl(String url) {
                     index++;
                     start = index;
                     status = Slash;
+                    continue;
+                } else if(input[index] == '/') {
+                    index++;
+                    start = index;
+                    status = PathOrQuery;
                     continue;
                 }
                 index++;

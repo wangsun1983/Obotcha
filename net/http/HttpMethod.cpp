@@ -2,156 +2,135 @@
 
 namespace obotcha {
 
-const int _HttpMethod::Delete = HTTP_DELETE;
+const String _HttpMethod::DeleteString = createString("DELETE");
+const String _HttpMethod::GetString = createString("GET");
+const String _HttpMethod::PutString = createString("PUT");
+const String _HttpMethod::HeadString = createString("HEAD");
+const String _HttpMethod::LockString = createString("LOCK");
+const String _HttpMethod::PostString = createString("POST");
+const String _HttpMethod::ConnectString = createString("CONNECT");
+const String _HttpMethod::OptionsString = createString("OPTIONS");
+const String _HttpMethod::TraceString = createString("TRACE");
+const String _HttpMethod::CopyString = createString("COPY");
+const String _HttpMethod::MkcolString = createString("MKCOL");
+const String _HttpMethod::MoveString = createString("MOVE");
+const String _HttpMethod::PropFindString = createString("PROPFIND");
+const String _HttpMethod::PropPatchString = createString("PROPPATCH");
+const String _HttpMethod::UnlockString = createString("UNLOCK");
+const String _HttpMethod::ReportString = createString("REPORT");
+const String _HttpMethod::MkActivityString = createString("MKACTIVITY");
+const String _HttpMethod::CheckoutString = createString("CHECKOUT");
+const String _HttpMethod::MergeString = createString("MERGE");
+const String _HttpMethod::MsearchString = createString("M-SEARCH");
+const String _HttpMethod::NotifyString = createString("NOTIFY");
+const String _HttpMethod::SubscribeString = createString("SUBSCRIBE");
+const String _HttpMethod::UnSubscribeString = createString("UNSUBSCRIBE");
+const String _HttpMethod::PatchString = createString("PATCH");
+const String _HttpMethod::PurgeString = createString("PURGE");
+const String _HttpMethod::LinkString = createString("LINK");
+const String _HttpMethod::SearchString = createString("SEARCH");
 
-const int _HttpMethod::Get = HTTP_GET;
-const int _HttpMethod::Head = HTTP_HEAD;
-const int _HttpMethod::Post = HTTP_POST;
-const int _HttpMethod::Put = HTTP_PUT;
-/* pathological */
-const int _HttpMethod::Connect = HTTP_CONNECT;
-const int _HttpMethod::Options = HTTP_OPTIONS;
-const int _HttpMethod::Trace = HTTP_TRACE;
-/* webdav */
-const int _HttpMethod::Copy = HTTP_COPY;
-const int _HttpMethod::Lock = HTTP_LOCK;
-const int _HttpMethod::Mkcol = HTTP_MKCOL;
-const int _HttpMethod::Move = HTTP_MOVE;
-const int _HttpMethod::PropFind = HTTP_PROPFIND;
-const int _HttpMethod::PropPatch = HTTP_PROPPATCH;
-const int _HttpMethod::Unlock = HTTP_UNLOCK;
-/* subversion */
-const int _HttpMethod::Report = HTTP_REPORT;
-const int _HttpMethod::MkActivity = HTTP_MKACTIVITY;
-const int _HttpMethod::CheckOut = HTTP_CHECKOUT;
-const int _HttpMethod::Merge = HTTP_MERGE;
-/* upnp */
-const int _HttpMethod::Msearch = HTTP_MSEARCH;
-const int _HttpMethod::Notify = HTTP_NOTIFY;
-const int _HttpMethod::Subscribe = HTTP_SUBSCRIBE;
-const int _HttpMethod::UnSubscribe = HTTP_UNSUBSCRIBE;
-/* RFC-5789 */
-const int _HttpMethod::Patch = HTTP_PATCH;
-
-const String _HttpMethod::DELETE = createString("DELETE");
-const String _HttpMethod::GET = createString("GET");
-const String _HttpMethod::PUT = createString("PUT");
-const String _HttpMethod::HEAD = createString("HEAD");
-const String _HttpMethod::LOCK = createString("LOCK");
-const String _HttpMethod::POST = createString("POST");
-const String _HttpMethod::CONNECT = createString("CONNECT");
-const String _HttpMethod::OPTIONS = createString("OPTIONS");
-const String _HttpMethod::TRACE = createString("TRACE");
-const String _HttpMethod::COPY = createString("COPY");
-const String _HttpMethod::MKCOL = createString("MKCOL");
-const String _HttpMethod::MOVE = createString("MOVE");
-const String _HttpMethod::PROPFIND = createString("PROPFIND");
-const String _HttpMethod::PROPPATCH = createString("PROPPATCH");
-const String _HttpMethod::UNLOCK = createString("UNLOCK");
-const String _HttpMethod::REPORT = createString("REPORT");
-const String _HttpMethod::MKACTIVITY = createString("MKACTIVITY");
-const String _HttpMethod::CHECKOUT = createString("CHECKOUT");
-const String _HttpMethod::MERGE = createString("MERGE");
-const String _HttpMethod::MSEARCH = createString("MSEARCH");
-const String _HttpMethod::NOTIFY = createString("NOTIFY");
-const String _HttpMethod::SUBSCRIBE = createString("SUBSCRIBE");
-const String _HttpMethod::UNSUBSCRIBE = createString("UNSUBSCRIBE");
-const String _HttpMethod::PATCH = createString("PATCH");
 
 String _HttpMethod::toString(int method) {
     switch(method) {
         case Delete:
-        return DELETE;
+        return DeleteString;
 
         case Get:
-        return GET;
+        return GetString;
 
         case Head:
-        return HEAD;
+        return HeadString;
 
         case Post:
-        return POST;
+        return PostString;
 
         case Put:
-        return PUT;
+        return PutString;
 
         case Connect:
-        return CONNECT;
+        return ConnectString;
 
         case Options:
-        return OPTIONS;
+        return OptionsString;
 
         case Trace:
-        return TRACE;
+        return TraceString;
 
         case Copy:
-        return COPY;
+        return CopyString;
 
         case Lock:
-        return LOCK;
+        return LockString;
 
         case Mkcol:
-        return MKCOL;
+        return MkcolString;
 
         case Move:
-        return MOVE;
+        return MoveString;
 
         case PropFind:
-        return PROPFIND;
+        return PropFindString;
 
         case PropPatch:
-        return PROPPATCH;
+        return PropPatchString;
 
         case Unlock:
-        return UNLOCK;
+        return UnlockString;
 
         case Report:
-        return REPORT;
+        return ReportString;
 
         case MkActivity:
-        return MKACTIVITY;
+        return MkActivityString;
 
-        case CheckOut:
-        return CHECKOUT;
+        case Checkout:
+        return CheckoutString;
 
         case Merge:
-        return MERGE;
+        return MergeString;
 
         case Msearch:
-        return MSEARCH;
+        return MsearchString;
 
         case Notify:
-        return NOTIFY;
+        return NotifyString;
 
         case Subscribe:
-        return SUBSCRIBE;
+        return SubscribeString;
 
         case UnSubscribe:
-        return UNSUBSCRIBE;
+        return UnSubscribeString;
 
         case Patch:
-        return PATCH;
+        return PatchString;
+
+        case Link:
+        return LinkString;
+
+        case Purge:
+        return PurgeString;
     }
 
     return nullptr;
 }
 
 int _HttpMethod::toInt(String method) {
-    if(method->equals(GET)) {
+    if(method->equals(GetString)) {
         return Get;
-    } else if(method->equals(PUT)) {
+    } else if(method->equals(PutString)) {
         return Put;
-    } else if(method->equals(POST)) {
+    } else if(method->equals(PostString)) {
         return Post;
-    } else if(method->equals(HEAD)) {
+    } else if(method->equals(HeadString)) {
         return Head;
-    } else if(method->equals(OPTIONS)) {
+    } else if(method->equals(OptionsString)) {
         return Options;
-    } else if(method->equals(PATCH)) {
+    } else if(method->equals(PatchString)) {
         return Patch;
-    } else if(method->equals(TRACE)) {
+    } else if(method->equals(TraceString)) {
         return Trace;
-    } else if(method->equals(CONNECT)) {
+    } else if(method->equals(ConnectString)) {
         return Connect;
     }
 

@@ -6,7 +6,6 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
-#include "http_parser.h"
 #include "HashMap.hpp"
 #include "HttpHeader.hpp"
 #include "HttpText.hpp"
@@ -117,31 +116,7 @@ const String _HttpHeader::SecWebSocketProtocol = createString("sec-websocket-pro
 //Transfer-Encoding type
 const String _HttpHeader::TransferChunked = createString("chunked");
 
-//HttpMethod String
-const String _HttpHeader::MethodDelete = createString("DELETE");
-const String _HttpHeader::MethodGet = createString("GET");
-const String _HttpHeader::MethodHead = createString("HEAD");
-const String _HttpHeader::MethodPost = createString("POST");
-const String _HttpHeader::MethodPut = createString("PUT");
-const String _HttpHeader::MethodConnect = createString("CONNECT");
-const String _HttpHeader::MethodOptions = createString("OPTIONS");
-const String _HttpHeader::MethodTrace = createString("TRACE");
-const String _HttpHeader::MethodCopy = createString("COPY");
-const String _HttpHeader::MethodLock = createString("LOCK");
-const String _HttpHeader::MethodMkCol = createString("MKCOL");
-const String _HttpHeader::MethodMove = createString("MOVE");
-const String _HttpHeader::MethodPropFind = createString("PROPFIND");
-const String _HttpHeader::MethodPropPatch = createString("PROPPATCH");
-const String _HttpHeader::MethodUnlock = createString("UNLOCK");
-const String _HttpHeader::MethodReport = createString("REPORT");
-const String _HttpHeader::MethodMkActivity = createString("MKACTIVITY");
-const String _HttpHeader::MethodCheckOut = createString("CHECKOUT");
-const String _HttpHeader::MethodMerge = createString("MERGE");
-const String _HttpHeader::MethodMSearch = createString("M-SEARCH");
-const String _HttpHeader::MethodNotify = createString("NOTIFY");
-const String _HttpHeader::MethodSubscribe = createString("SUBSCRIBE");
-const String _HttpHeader::MethodUnSubscribe = createString("UNSUBSCRIBE");
-const String _HttpHeader::MethodPatch = createString("PATCH");
+
 
 //Http connection
 const String _HttpHeader::ConnectionClose = createString("close");

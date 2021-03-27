@@ -5,7 +5,6 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
-#include "http_parser.h"
 #include "ByteArray.hpp"
 #include "HttpCookie.hpp"
 #include "Mutex.hpp"

@@ -6,7 +6,6 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
-#include "http_parser.h"
 #include "HttpHeader.hpp"
 #include "ByteArray.hpp"
 #include "HttpCookie.hpp"
