@@ -25,8 +25,10 @@ public:
     void setEncodedKeyValues(ArrayList<KeyValuePair<String,String>>);
 
     ByteArray getContent();
-    
     void setContent(ByteArray);
+
+    String getUpgrade();
+    void setUpgrade(String);
 
 private:
     HttpMultiPart mMultiPart;
@@ -34,6 +36,8 @@ private:
     ArrayList<KeyValuePair<String,String>>mFormUrlEncodedMap;
     
     ByteArray mContent;
+
+    String mUpgrade;
 
 };
 

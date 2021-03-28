@@ -120,12 +120,15 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                             ByteArray content = mReader->pop();
                             mHttpPacket->getEntity()->setContent(content);
                         }
-                        packets->add(mHttpPacket);
-                        mMultiPartParser = nullptr;
-                        mChunkParser = nullptr;
-                        return packets;
-                    } 
-                    
+                    } else if(mHttpPacket->getHeader()->getValue(st(HttpHeader)::Upgrade) != nullptr) {
+                        int restLength = mReader->getReadableLength();
+                        if(restLength != 0) {
+                            mReader->move(restLength);
+                            ByteArray content = mReader->pop();
+                            mHttpPacket->getEntity()->setUpgrade(content->toString());
+                            printf("upgrade is %s \n",content->toValue());
+                        }
+                    }
                     //no contentlength,maybe it is only a html request
                     packets->add(mHttpPacket);
                     mMultiPartParser = nullptr;

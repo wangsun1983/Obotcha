@@ -30,6 +30,14 @@ void _HttpEntity::setContent(ByteArray data) {
     mContent = data;
 }
 
+String _HttpEntity::getUpgrade() {
+    return mUpgrade;
+}
+
+void _HttpEntity::setUpgrade(String u) {
+    mUpgrade = u;
+}
+
 
 }
 

@@ -166,6 +166,7 @@ public:
         return m_ptr->euqals(o);
     }
 
+
     // Operators(!=)
     inline bool operator != (const sp<T>& o) const { 
         if(o.m_ptr == nullptr) {
