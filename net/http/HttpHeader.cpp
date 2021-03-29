@@ -161,6 +161,10 @@ void _HttpHeader::clear() {
     mValues->clear();
 }
 
+int _HttpHeader::size() {
+    return mValues->size();
+}
+
 int _HttpHeader::getMethod() {
     return mMethod;
 }
@@ -169,11 +173,11 @@ void _HttpHeader::setMethod(int v) {
     mMethod = v;
 }
 
-String _HttpHeader::getUrl() {
+HttpUrl _HttpHeader::getUrl() {
     return mUrl;
 }
 
-void _HttpHeader::setUrl(String u) {
+void _HttpHeader::setUrl(HttpUrl u) {
     mUrl = u;
 }
 
@@ -283,10 +287,6 @@ String _HttpHeader::toString(int type) {
     }
 
     return html->subString(0,html->size() - 2);
-}
-
-void _HttpHeader::dump() {
-    printf("method is %d,url is %s \n",mMethod,mUrl->toChars());
 }
 
 }

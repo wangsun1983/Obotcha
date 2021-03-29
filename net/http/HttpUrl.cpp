@@ -54,6 +54,22 @@ String _HttpUrl::getPassword() {
     return mPassword;
 }
 
+String _HttpUrl::getRawUrl() {
+    return mRawUrl;
+}
+
+void _HttpUrl::setRawUrl(String u) {
+    mRawUrl = u;
+}
+
+String _HttpUrl::getRawQuery() {
+    return mRawQuery;
+}
+
+void _HttpUrl::setRawQuery(String q) {
+    mRawQuery = q;
+}
+
 String _HttpUrl::getSchema() {
     return mSchema;
 }

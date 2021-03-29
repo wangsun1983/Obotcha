@@ -7,7 +7,6 @@
 namespace obotcha {
 
 int _HttpMethodParser::doParse(String m) {
-    printf("methos parse m is %s \n",m->toChars());
     const char *p = m->toChars();
     for(int i = 0;i < m->size();i++) {
         if((*p <= 'Z' && *p >= 'A') || (*p <= 'z' && *p >= 'a')) {
@@ -108,6 +107,8 @@ int _HttpMethodParser::doParse(String m) {
         case 'U': {
             if(method->equals(st(HttpMethod)::UnlockString)){
                 return st(HttpMethod)::Unlock;
+            } else if(method->equals(st(HttpMethod)::UnlinkString)) {
+                return st(HttpMethod)::Unlink;
             }
             return -1;
         }
@@ -129,8 +130,10 @@ int _HttpMethodParser::doParse(String m) {
         case 'S': {
             if(method->equals(st(HttpMethod)::SubscribeString)){
                 return st(HttpMethod)::Subscribe;
-            }else if(method->equals(st(HttpMethod)::SearchString)){
+            } else if(method->equals(st(HttpMethod)::SearchString)){
                 return st(HttpMethod)::Search;
+            } else if(method->equals(st(HttpMethod)::SourceString)) {
+                return st(HttpMethod)::Source;
             }
             return -1;
         }
@@ -167,6 +170,8 @@ String _HttpMethodParser::doParse(int method) {
         case st(HttpMethod)::Purge: return st(HttpMethod)::PurgeString;
         case st(HttpMethod)::Link: return st(HttpMethod)::LinkString;
         case st(HttpMethod)::Search: return st(HttpMethod)::SearchString;
+        case st(HttpMethod)::Unlink: return st(HttpMethod)::UnlinkString;
+        case st(HttpMethod)::Source: return st(HttpMethod)::SourceString;
     }
 
     return nullptr;

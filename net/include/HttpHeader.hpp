@@ -13,6 +13,7 @@
 #include "HttpCacheControl.hpp"
 #include "HttpContentType.hpp"
 #include "HttpVersion.hpp"
+#include "HttpUrl.hpp"
 
 namespace obotcha {
 
@@ -46,8 +47,8 @@ public:
     int getMethod();
     void setMethod(int);
 
-    String getUrl();
-    void setUrl(String);
+    HttpUrl getUrl();
+    void setUrl(HttpUrl);
 
     HttpVersion getVersion();
     void setVersion(HttpVersion);
@@ -67,9 +68,9 @@ public:
     int getType();
     void setType(int);
 
-    void dump();
-
     void clear();
+
+    int size();
     
     const static String Method;
     const static String Path;
@@ -196,9 +197,9 @@ private:
 
     int mMethod;
 
-    String mUrl;
-
     HttpVersion mVersion;
+
+    HttpUrl mUrl;
 
     int mResponseStatus;
 

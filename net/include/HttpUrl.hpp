@@ -28,6 +28,10 @@ public:
     void setFragment(String);
     void setUser(String);
     void setPassword(String);
+    String getRawUrl();
+    void setRawUrl(String);
+    String getRawQuery();
+    void setRawQuery(String);
 
     String getSchema();
     String getHost();
@@ -52,6 +56,8 @@ private:
     String mFragment;
     String mUser;
     String mPassword;
+    String mRawUrl;
+    String mRawQuery;
 };
 }
 

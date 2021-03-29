@@ -18,12 +18,13 @@ String _HttpUrlParser::HttpsScheme = createString("https");
 
 HttpUrl _HttpUrlParser::parseUrl(String url) {
     const char *input = url->toChars();
+    //printf("parseUrl url is %s \n",url->toChars());
     int size = url->size();
     int index = 0;
     int start = 0;
     int status = Scheme;
     HttpUrl urlData = createHttpUrl();
-
+    urlData->setRawUrl(url);
     bool userParsed = false;
 
     while(index < size) {
@@ -34,6 +35,7 @@ HttpUrl _HttpUrlParser::parseUrl(String url) {
                 if(input[index] == ':') {
                     String scheme_str = createString(input,start,index - start);
                     urlData->setSchema(scheme_str);
+                    //printf("scheme is %s \n",scheme_str->toChars());
                     index++;
                     start = index;
                     status = Slash;
@@ -89,6 +91,27 @@ HttpUrl _HttpUrlParser::parseUrl(String url) {
                     index++;
                     start = index;
                     continue;
+                } else if(input[index] == '?') {
+                    String host = createString(input,start,index - start);
+                    ArrayList<String> list = host->split(":");
+                    if(list == nullptr) {
+                        urlData->setHost(host);
+                    } else if(list->size() == 2) {
+                        urlData->setHost(list->get(0));
+                        urlData->setPort(list->get(1)->toBasicInt());
+                    }
+
+                    String query = createString(input,index + 1,size - index - 1);
+                    list = query->split("#");
+                    if(list == nullptr) {
+                        parseQuery(urlData,query);
+                        urlData->setRawQuery(query);
+                    } else {
+                        parseQuery(urlData,list->get(0));
+                        urlData->setRawQuery(list->get(0));
+                        urlData->setFragment(list->get(1));
+                    }
+                    return urlData;
                 }
                 index++;
                 continue;
@@ -104,8 +127,10 @@ HttpUrl _HttpUrlParser::parseUrl(String url) {
                     ArrayList<String> list = query->split("#");
                     if(list == nullptr) {
                         parseQuery(urlData,query);
+                        urlData->setRawQuery(query);
                     } else {
                         parseQuery(urlData,list->get(0));
+                        urlData->setRawQuery(list->get(0));
                         urlData->setFragment(list->get(1));
                     }
                     return urlData;
@@ -116,8 +141,30 @@ HttpUrl _HttpUrlParser::parseUrl(String url) {
         }
     }
 
-    String data = createString(input,start,size - start - 1);
-    urlData->setPath(data);
+    if(size == 1) {
+        //only /
+        urlData->setPath(url);
+    } else {
+        switch(status) {
+            case PathOrQuery: {
+                    String data = createString(input,start,size - start);
+                    urlData->setPath(data);
+            }
+            break;
+
+            case AuthorityOrHost: {
+                String host = createString(input,start,index - start);
+                    ArrayList<String> list = host->split(":");
+                    if(list == nullptr) {
+                        urlData->setHost(host);
+                    } else if(list->size() == 2) {
+                        urlData->setHost(list->get(0));
+                        urlData->setPort(list->get(1)->toBasicInt());
+                    }
+            }
+            break;
+        }
+    }
     return urlData;
 }
 

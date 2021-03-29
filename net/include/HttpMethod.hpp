@@ -47,7 +47,9 @@ public:
         Patch,
         Purge,
         Link,
-        Search
+        Search,
+        Unlink,
+        Source
     };
 
     const static String DeleteString;
@@ -81,6 +83,8 @@ public:
     const static String PurgeString;
     const static String LinkString;
     const static String SearchString;
+    const static String UnlinkString;
+    const static String SourceString;
     
     static String toString(int);
     int toInt(String method);

@@ -74,7 +74,7 @@ extern "C" {
 const struct message requests[] =
 #define CURL_GET 0
 { {.name= "curl get"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /test HTTP/1.1\r\n"
                  "User-Agent: curl/7.18.0 (i486-pc-linux-gnu) libcurl/7.18.0 OpenSSL/0.9.8g zlib/1.2.3.3 libidn/1.1\r\n"
                  "Host: 0.0.0.0=5000\r\n"
@@ -87,7 +87,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/test"
+    ,.request_path= "test"
     ,.request_url= "/test"
     ,.content_length= -1
     ,.num_headers= 3
@@ -101,7 +101,7 @@ const struct message requests[] =
 
 #define FIREFOX_GET 1
 , {.name= "firefox get"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /favicon.ico HTTP/1.1\r\n"
                  "Host: 0.0.0.0=5000\r\n"
                  "User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9) Gecko/2008061015 Firefox/3.0\r\n"
@@ -119,7 +119,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/favicon.ico"
+    ,.request_path= "favicon.ico"
     ,.request_url= "/favicon.ico"
     ,.content_length= -1
     ,.num_headers= 8
@@ -138,7 +138,7 @@ const struct message requests[] =
 
 #define DUMBLUCK 2
 , {.name= "dumbluck"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /dumbluck HTTP/1.1\r\n"
                  "aaaaaaaaaaaaa:++++++++++\r\n"
                  "\r\n"
@@ -149,7 +149,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/dumbluck"
+    ,.request_path= "dumbluck"
     ,.request_url= "/dumbluck"
     ,.content_length= -1
     ,.num_headers= 1
@@ -161,7 +161,7 @@ const struct message requests[] =
 
 #define FRAGMENT_IN_URI 3
 , {.name= "fragment in url"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /forums/1/topics/2375?page=1#posts-17408 HTTP/1.1\r\n"
                  "\r\n"
     ,.should_keep_alive= TRUE
@@ -171,7 +171,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= "page=1"
     ,.fragment= "posts-17408"
-    ,.request_path= "/forums/1/topics/2375"
+    ,.request_path= "forums/1/topics/2375"
     /* XXX request url does include fragment? */
     ,.request_url= "/forums/1/topics/2375?page=1#posts-17408"
     ,.content_length= -1
@@ -181,7 +181,7 @@ const struct message requests[] =
 
 #define GET_NO_HEADERS_NO_BODY 4
 , {.name= "get no headers no body"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /get_no_headers_no_body/world HTTP/1.1\r\n"
                  "\r\n"
     ,.should_keep_alive= TRUE
@@ -191,7 +191,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/get_no_headers_no_body/world"
+    ,.request_path= "get_no_headers_no_body/world"
     ,.request_url= "/get_no_headers_no_body/world"
     ,.content_length= -1
     ,.num_headers= 0
@@ -200,7 +200,7 @@ const struct message requests[] =
 
 #define GET_ONE_HEADER_NO_BODY 5
 , {.name= "get one header no body"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /get_one_header_no_body HTTP/1.1\r\n"
                  "Accept: */*\r\n"
                  "\r\n"
@@ -211,7 +211,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/get_one_header_no_body"
+    ,.request_path= "get_one_header_no_body"
     ,.request_url= "/get_one_header_no_body"
     ,.content_length= -1
     ,.num_headers= 1
@@ -223,7 +223,7 @@ const struct message requests[] =
 
 #define GET_FUNKY_CONTENT_LENGTH 6
 , {.name= "get funky content length body hello"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /get_funky_content_length_body_hello HTTP/1.0\r\n"
                  "conTENT-Length: 5\r\n"
                  "\r\n"
@@ -235,7 +235,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/get_funky_content_length_body_hello"
+    ,.request_path= "get_funky_content_length_body_hello"
     ,.request_url= "/get_funky_content_length_body_hello"
     ,.content_length= 5
     ,.num_headers= 1
@@ -247,7 +247,7 @@ const struct message requests[] =
 
 #define POST_IDENTITY_BODY_WORLD 7
 , {.name= "post identity body world"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "POST /post_identity_body_world?q=search#hey HTTP/1.1\r\n"
                  "Accept: */*\r\n"
                  "Content-Length: 5\r\n"
@@ -260,7 +260,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Post
     ,.query_string= "q=search"
     ,.fragment= "hey"
-    ,.request_path= "/post_identity_body_world"
+    ,.request_path= "post_identity_body_world"
     ,.request_url= "/post_identity_body_world?q=search#hey"
     ,.content_length= 5
     ,.num_headers= 2
@@ -273,7 +273,7 @@ const struct message requests[] =
 
 #define POST_CHUNKED_ALL_YOUR_BASE 8
 , {.name= "post - chunked body: all your base are belong to us"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "POST /post_chunked_all_your_base HTTP/1.1\r\n"
                  "Transfer-Encoding: chunked\r\n"
                  "\r\n"
@@ -287,7 +287,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Post
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/post_chunked_all_your_base"
+    ,.request_path= "post_chunked_all_your_base"
     ,.request_url= "/post_chunked_all_your_base"
     ,.content_length= -1
     ,.num_headers= 1
@@ -301,7 +301,7 @@ const struct message requests[] =
 
 #define TWO_CHUNKS_MULT_ZERO_END 9
 , {.name= "two chunks ; triple zero ending"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "POST /two_chunks_mult_zero_end HTTP/1.1\r\n"
                  "Transfer-Encoding: chunked\r\n"
                  "\r\n"
@@ -316,7 +316,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Post
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/two_chunks_mult_zero_end"
+    ,.request_path= "two_chunks_mult_zero_end"
     ,.request_url= "/two_chunks_mult_zero_end"
     ,.content_length= -1
     ,.num_headers= 1
@@ -330,7 +330,7 @@ const struct message requests[] =
 
 #define CHUNKED_W_TRAILING_HEADERS 10
 , {.name= "chunked with trailing headers. blech."
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "POST /chunked_w_trailing_headers HTTP/1.1\r\n"
                  "Transfer-Encoding: chunked\r\n"
                  "\r\n"
@@ -347,7 +347,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Post
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/chunked_w_trailing_headers"
+    ,.request_path= "chunked_w_trailing_headers"
     ,.request_url= "/chunked_w_trailing_headers"
     ,.content_length= -1
     ,.num_headers= 3
@@ -363,7 +363,7 @@ const struct message requests[] =
 
 #define CHUNKED_W_NONSENSE_AFTER_LENGTH 11
 , {.name= "with nonsense after the length"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "POST /chunked_w_nonsense_after_length HTTP/1.1\r\n"
                  "Transfer-Encoding: chunked\r\n"
                  "\r\n"
@@ -378,7 +378,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Post
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/chunked_w_nonsense_after_length"
+    ,.request_path= "chunked_w_nonsense_after_length"
     ,.request_url= "/chunked_w_nonsense_after_length"
     ,.content_length= -1
     ,.num_headers= 1
@@ -392,7 +392,7 @@ const struct message requests[] =
 
 #define WITH_QUOTES 12
 , {.name= "with quotes"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /with_\"stupid\"_quotes?foo=\"bar\" HTTP/1.1\r\n\r\n"
     ,.should_keep_alive= TRUE
     ,.message_complete_on_eof= FALSE
@@ -401,7 +401,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= "foo=\"bar\""
     ,.fragment= ""
-    ,.request_path= "/with_\"stupid\"_quotes"
+    ,.request_path= "with_\"stupid\"_quotes"
     ,.request_url= "/with_\"stupid\"_quotes?foo=\"bar\""
     ,.content_length= -1
     ,.num_headers= 0
@@ -416,7 +416,7 @@ const struct message requests[] =
  * Compare with NO_CONTENT_LENGTH_RESPONSE.
  */
 , {.name = "apachebench get"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /test HTTP/1.0\r\n"
                  "Host: 0.0.0.0:5000\r\n"
                  "User-Agent: ApacheBench/2.3\r\n"
@@ -428,7 +428,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/test"
+    ,.request_path= "test"
     ,.request_url= "/test"
     ,.content_length= -1
     ,.num_headers= 3
@@ -443,7 +443,7 @@ const struct message requests[] =
 /* Some clients include '?' characters in query strings.
  */
 , {.name = "query url with question mark"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /test.cgi?foo=bar?baz HTTP/1.1\r\n\r\n"
     ,.should_keep_alive= TRUE
     ,.message_complete_on_eof= FALSE
@@ -452,7 +452,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= "foo=bar?baz"
     ,.fragment= ""
-    ,.request_path= "/test.cgi"
+    ,.request_path= "test.cgi"
     ,.request_url= "/test.cgi?foo=bar?baz"
     ,.content_length= -1
     ,.num_headers= 0
@@ -465,7 +465,7 @@ const struct message requests[] =
  * will send an extra CRLF before the next request
  */
 , {.name = "newline prefix get"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "\r\nGET /test HTTP/1.1\r\n\r\n"
     ,.should_keep_alive= TRUE
     ,.message_complete_on_eof= FALSE
@@ -474,7 +474,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/test"
+    ,.request_path= "test"
     ,.request_url= "/test"
     ,.content_length= -1
     ,.num_headers= 0
@@ -484,7 +484,7 @@ const struct message requests[] =
 
 #define UPGRADE_REQUEST 16
 , {.name = "upgrade request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /demo HTTP/1.1\r\n"
                  "Host: example.com\r\n"
                  "Connection: Upgrade\r\n"
@@ -502,7 +502,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/demo"
+    ,.request_path= "demo"
     ,.request_url= "/demo"
     ,.content_length= -1
     ,.num_headers= 7
@@ -520,7 +520,7 @@ const struct message requests[] =
 
 #define CONNECT_REQUEST 17
 , {.name = "connect request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "CONNECT 0-home0.netscape.com:443 HTTP/1.0\r\n"
                  "User-agent: Mozilla/1.1N\r\n"
                  "Proxy-authorization: basic aGVsbG86d29ybGQ=\r\n"
@@ -547,17 +547,17 @@ const struct message requests[] =
 
 #define REPORT_REQ 18
 , {.name= "report request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "REPORT /test HTTP/1.1\r\n"
                  "\r\n"
     ,.should_keep_alive= TRUE
     ,.message_complete_on_eof= FALSE
     ,.http_major= 1
     ,.http_minor= 1
-    ,.method= HTTP_REPORT
+    ,.method= st(HttpMethod)::Report
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/test"
+    ,.request_path= "test"
     ,.request_url= "/test"
     ,.content_length= -1
     ,.num_headers= 0
@@ -565,9 +565,11 @@ const struct message requests[] =
     ,.body= ""
     }
 
+
+/*
 #define NO_HTTP_VERSION 19
 , {.name= "request with no http version"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /\r\n"
                  "\r\n"
     ,.should_keep_alive= FALSE
@@ -577,17 +579,17 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/"
+    ,.request_path= ""
     ,.request_url= "/"
     ,.content_length= -1
     ,.num_headers= 0
     ,.headers= {}
     ,.body= ""
     }
-
+*/
 #define MSEARCH_REQ 20
 , {.name= "m-search request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "M-SEARCH * HTTP/1.1\r\n"
                  "HOST: 239.255.255.250:1900\r\n"
                  "MAN: \"ssdp:discover\"\r\n"
@@ -597,7 +599,7 @@ const struct message requests[] =
     ,.message_complete_on_eof= FALSE
     ,.http_major= 1
     ,.http_minor= 1
-    ,.method= HTTP_MSEARCH
+    ,.method= st(HttpMethod)::Msearch
     ,.query_string= ""
     ,.fragment= ""
     ,.request_path= "*"
@@ -613,7 +615,7 @@ const struct message requests[] =
 
 #define LINE_FOLDING_IN_HEADER 21
 , {.name= "line folding in header value"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET / HTTP/1.1\r\n"
                  "Line1:     abc\r\n"
                  "\tdef\r\n"
@@ -636,7 +638,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/"
+    ,.request_path= ""
     ,.request_url= "/"
     ,.content_length= -1
     ,.num_headers= 5
@@ -652,7 +654,7 @@ const struct message requests[] =
 
 #define QUERY_TERMINATED_HOST 22
 , {.name= "host terminated by a query string"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET http://hypnotoad.org?hail=all HTTP/1.1\r\n"
                  "\r\n"
     ,.should_keep_alive= TRUE
@@ -673,7 +675,7 @@ const struct message requests[] =
 
 #define QUERY_TERMINATED_HOSTPORT 23
 , {.name= "host:port terminated by a query string"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET http://hypnotoad.org:1234?hail=all HTTP/1.1\r\n"
                  "\r\n"
     ,.should_keep_alive= TRUE
@@ -695,7 +697,7 @@ const struct message requests[] =
 
 #define SPACE_TERMINATED_HOSTPORT 24
 , {.name= "host:port terminated by a space"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET http://hypnotoad.org:1234 HTTP/1.1\r\n"
                  "\r\n"
     ,.should_keep_alive= TRUE
@@ -717,7 +719,7 @@ const struct message requests[] =
 
 #define PATCH_REQ 25
 , {.name = "PATCH request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "PATCH /file.txt HTTP/1.1\r\n"
                  "Host: www.example.com\r\n"
                  "Content-Type: application/example\r\n"
@@ -729,10 +731,10 @@ const struct message requests[] =
     ,.message_complete_on_eof= FALSE
     ,.http_major= 1
     ,.http_minor= 1
-    ,.method= HTTP_PATCH
+    ,.method= st(HttpMethod)::Patch
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/file.txt"
+    ,.request_path= "file.txt"
     ,.request_url= "/file.txt"
     ,.content_length= 10
     ,.num_headers= 4
@@ -746,7 +748,7 @@ const struct message requests[] =
 
 #define CONNECT_CAPS_REQUEST 26
 , {.name = "connect caps request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "CONNECT HOME0.NETSCAPE.COM:443 HTTP/1.0\r\n"
                  "User-agent: Mozilla/1.1N\r\n"
                  "Proxy-authorization: basic aGVsbG86d29ybGQ=\r\n"
@@ -772,7 +774,7 @@ const struct message requests[] =
 #if !HTTP_PARSER_STRICT
 #define UTF8_PATH_REQ 27
 , {.name= "utf-8 path request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /δ¶/δt/pope?q=1#narf HTTP/1.1\r\n"
                  "Host: github.com\r\n"
                  "\r\n"
@@ -783,7 +785,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= "q=1"
     ,.fragment= "narf"
-    ,.request_path= "/δ¶/δt/pope"
+    ,.request_path= "δ¶/δt/pope"
     ,.request_url= "/δ¶/δt/pope?q=1#narf"
     ,.content_length= -1
     ,.num_headers= 1
@@ -794,7 +796,7 @@ const struct message requests[] =
 
 #define HOSTNAME_UNDERSCORE 28
 , {.name = "hostname underscore"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "CONNECT home_0.netscape.com:443 HTTP/1.0\r\n"
                  "User-agent: Mozilla/1.1N\r\n"
                  "Proxy-authorization: basic aGVsbG86d29ybGQ=\r\n"
@@ -819,14 +821,16 @@ const struct message requests[] =
 #endif    /* !HTTP_PARSER_STRICT */
 
 /* see https://github.com/ry/http-parser/issues/47 */
+#if 0
 #define EAT_TRAILING_CRLF_NO_CONNECTION_CLOSE 29
 , {.name = "eat CRLF between requests, no \"Connection: close\" header"
     ,.raw= "POST / HTTP/1.1\r\n"
                  "Host: www.example.com\r\n"
-                 "Content-Type: application/x-www-form-urlencoded\r\n"
+                 "\r\n"
                  "Content-Length: 4\r\n"
                  "\r\n"
                  "q=42\r\n" /* note the trailing CRLF */
+    ,.type= st(HttpHeader)::Type::Request
     ,.should_keep_alive= TRUE
     ,.message_complete_on_eof= FALSE
     ,.http_major= 1
@@ -834,7 +838,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Post
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/"
+    ,.request_path= ""
     ,.request_url= "/"
     ,.content_length= 4
     ,.num_headers= 3
@@ -847,7 +851,7 @@ const struct message requests[] =
     ,.key_value={"q","42"}
     ,.key_value_size = 2
     }
-
+#endif
 /* see https://github.com/ry/http-parser/issues/47 */
 #define EAT_TRAILING_CRLF_WITH_CONNECTION_CLOSE 30
 , {.name = "eat CRLF between requests even if \"Connection: close\" is set"
@@ -858,6 +862,7 @@ const struct message requests[] =
                  "Connection: close\r\n"
                  "\r\n"
                  "q=42\r\n" /* note the trailing CRLF */
+    ,.type= st(HttpHeader)::Type::Request
     ,.should_keep_alive= FALSE
     ,.message_complete_on_eof= FALSE /* input buffer isn't empty when on_message_complete is called */
     ,.http_major= 1
@@ -865,7 +870,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Post
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/"
+    ,.request_path= ""
     ,.request_url= "/"
     ,.content_length= 4
     ,.num_headers= 4
@@ -875,14 +880,14 @@ const struct message requests[] =
                          , { "Content-Length", "4" }
                          , { "Connection", "close" }
                          }
-    ,.body= "q=42"
+    ,.body= ""
     ,.key_value={"q","42"}
     ,.key_value_size = 2
     }
 
 #define PURGE_REQ 31
 , {.name = "PURGE request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "PURGE /file.txt HTTP/1.1\r\n"
                  "Host: www.example.com\r\n"
                  "\r\n"
@@ -893,7 +898,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Purge
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/file.txt"
+    ,.request_path= "file.txt"
     ,.request_url= "/file.txt"
     ,.content_length= -1
     ,.num_headers= 1
@@ -903,7 +908,7 @@ const struct message requests[] =
 
 #define SEARCH_REQ 32
 , {.name = "SEARCH request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "SEARCH / HTTP/1.1\r\n"
                  "Host: www.example.com\r\n"
                  "\r\n"
@@ -914,7 +919,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Search
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/"
+    ,.request_path= ""
     ,.request_url= "/"
     ,.content_length= -1
     ,.num_headers= 1
@@ -924,7 +929,7 @@ const struct message requests[] =
 
 #define PROXY_WITH_BASIC_AUTH 33
 , {.name= "host:port and basic_auth"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET http://a%12:b!&*$@hypnotoad.org:1234/toto HTTP/1.1\r\n"
                  "\r\n"
     ,.should_keep_alive= TRUE
@@ -933,7 +938,7 @@ const struct message requests[] =
     ,.http_minor= 1
     ,.method= st(HttpMethod)::Get
     ,.fragment= ""
-    ,.request_path= "/toto"
+    ,.request_path= "toto"
     ,.request_url= "http://a%12:b!&*$@hypnotoad.org:1234/toto"
     ,.host= "hypnotoad.org"
     ,.userinfo= "a%12:b!&*$"
@@ -946,7 +951,7 @@ const struct message requests[] =
 
 #define LINE_FOLDING_IN_HEADER_WITH_LF 34
 , {.name= "line folding in header value"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET / HTTP/1.1\n"
                  "Line1:     abc\n"
                  "\tdef\n"
@@ -969,7 +974,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/"
+    ,.request_path= ""
     ,.request_url= "/"
     ,.content_length= -1
     ,.num_headers= 5
@@ -984,7 +989,7 @@ const struct message requests[] =
 
 #define CONNECTION_MULTI 35
 , {.name = "multiple connection header values with folding"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /demo HTTP/1.1\r\n"
                  "Host: example.com\r\n"
                  "Connection: Something,\r\n"
@@ -1003,7 +1008,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/demo"
+    ,.request_path= "demo"
     ,.request_url= "/demo"
     ,.content_length= -1
     ,.num_headers= 7
@@ -1021,7 +1026,7 @@ const struct message requests[] =
 
 #define CONNECTION_MULTI_LWS 36
 , {.name = "multiple connection header values with folding and lws"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /demo HTTP/1.1\r\n"
                  "Connection: keep-alive, upgrade\r\n"
                  "Upgrade: WebSocket\r\n"
@@ -1034,7 +1039,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/demo"
+    ,.request_path= "demo"
     ,.request_url= "/demo"
     ,.content_length= -1
     ,.num_headers= 2
@@ -1047,7 +1052,7 @@ const struct message requests[] =
 
 #define CONNECTION_MULTI_LWS_CRLF 37
 , {.name = "multiple connection header values with folding and lws"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "GET /demo HTTP/1.1\r\n"
                  "Connection: keep-alive, \r\n upgrade\r\n"
                  "Upgrade: WebSocket\r\n"
@@ -1060,12 +1065,12 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Get
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/demo"
+    ,.request_path= "demo"
     ,.request_url= "/demo"
     ,.content_length= -1
     ,.num_headers= 2
     ,.upgrade="Hot diggity dogg"
-    ,.headers= { { "Connection", "keep-alive,    upgrade" }
+    ,.headers= { { "Connection", "keep-alive,  upgrade" }
                          , { "Upgrade", "WebSocket" }
                          }
     ,.body= ""
@@ -1073,7 +1078,7 @@ const struct message requests[] =
 
 #define UPGRADE_POST_REQUEST 38
 , {.name = "upgrade post request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "POST /demo HTTP/1.1\r\n"
                  "Host: example.com\r\n"
                  "Connection: Upgrade\r\n"
@@ -1087,7 +1092,7 @@ const struct message requests[] =
     ,.http_major= 1
     ,.http_minor= 1
     ,.method= st(HttpMethod)::Post
-    ,.request_path= "/demo"
+    ,.request_path= "demo"
     ,.request_url= "/demo"
     ,.content_length= 15
     ,.num_headers= 4
@@ -1102,7 +1107,7 @@ const struct message requests[] =
 
 #define CONNECT_WITH_BODY_REQUEST 39
 , {.name = "connect with body request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "CONNECT foo.bar.com:443 HTTP/1.0\r\n"
                  "User-agent: Mozilla/1.1N\r\n"
                  "Proxy-authorization: basic aGVsbG86d29ybGQ=\r\n"
@@ -1131,7 +1136,7 @@ const struct message requests[] =
 
 #define LINK_REQUEST 40
 , {.name = "link request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "LINK /images/my_dog.jpg HTTP/1.1\r\n"
                  "Host: example.com\r\n"
                  "Link: <http://example.com/profiles/joe>; rel=\"tag\"\r\n"
@@ -1142,7 +1147,7 @@ const struct message requests[] =
     ,.http_major= 1
     ,.http_minor= 1
     ,.method= st(HttpMethod)::Link
-    ,.request_path= "/images/my_dog.jpg"
+    ,.request_path= "images/my_dog.jpg"
     ,.request_url= "/images/my_dog.jpg"
     ,.query_string= ""
     ,.fragment= ""
@@ -1157,7 +1162,7 @@ const struct message requests[] =
 
 #define UNLINK_REQUEST 41
 , {.name = "unlink request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "UNLINK /images/my_dog.jpg HTTP/1.1\r\n"
                  "Host: example.com\r\n"
                  "Link: <http://example.com/profiles/sally>; rel=\"tag\"\r\n"
@@ -1166,8 +1171,8 @@ const struct message requests[] =
     ,.message_complete_on_eof= FALSE
     ,.http_major= 1
     ,.http_minor= 1
-    ,.method= HTTP_UNLINK
-    ,.request_path= "/images/my_dog.jpg"
+    ,.method= st(HttpMethod)::Unlink
+    ,.request_path= "images/my_dog.jpg"
     ,.request_url= "/images/my_dog.jpg"
     ,.query_string= ""
     ,.fragment= ""
@@ -1181,7 +1186,7 @@ const struct message requests[] =
 
 #define SOURCE_REQUEST 42
 , {.name = "source request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "SOURCE /music/sweet/music HTTP/1.1\r\n"
                  "Host: example.com\r\n"
                  "\r\n"
@@ -1190,7 +1195,7 @@ const struct message requests[] =
     ,.http_major= 1
     ,.http_minor= 1
     ,.method= HTTP_SOURCE
-    ,.request_path= "/music/sweet/music"
+    ,.request_path= "music/sweet/music"
     ,.request_url= "/music/sweet/music"
     ,.query_string= ""
     ,.fragment= ""
@@ -1202,7 +1207,7 @@ const struct message requests[] =
 
 #define SOURCE_ICE_REQUEST 43
 , {.name = "source request"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "SOURCE /music/sweet/music ICE/1.0\r\n"
                  "Host: example.com\r\n"
                  "\r\n"
@@ -1211,7 +1216,7 @@ const struct message requests[] =
     ,.http_major= 1
     ,.http_minor= 0
     ,.method= HTTP_SOURCE
-    ,.request_path= "/music/sweet/music"
+    ,.request_path= "music/sweet/music"
     ,.request_url= "/music/sweet/music"
     ,.query_string= ""
     ,.fragment= ""
@@ -1223,7 +1228,7 @@ const struct message requests[] =
 
 #define POST_MULTI_TE_LAST_CHUNKED 44
 , {.name= "post - multi coding transfer-encoding chunked body"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "POST / HTTP/1.1\r\n"
                  "Transfer-Encoding: deflate, chunked\r\n"
                  "\r\n"
@@ -1237,7 +1242,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Post
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/"
+    ,.request_path= ""
     ,.request_url= "/"
     ,.content_length= -1
     ,.num_headers= 1
@@ -1251,7 +1256,7 @@ const struct message requests[] =
 
 #define POST_MULTI_LINE_TE_LAST_CHUNKED 45
 , {.name= "post - multi line coding transfer-encoding chunked body"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "POST / HTTP/1.1\r\n"
                  "Transfer-Encoding: deflate,\r\n"
                  " chunked\r\n"
@@ -1266,7 +1271,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Post
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/"
+    ,.request_path= ""
     ,.request_url= "/"
     ,.content_length= -1
     ,.num_headers= 1
@@ -1280,7 +1285,7 @@ const struct message requests[] =
 
 #define CHUNKED_CONTENT_LENGTH 46
 , {.name= "chunked with content-length set, allow_chunked_length flag is set"
-    ,.type= HTTP_REQUEST
+    ,.type= st(HttpHeader)::Type::Request
     ,.raw= "POST /chunked_w_content_length HTTP/1.1\r\n"
                  "Content-Length: 10\r\n"
                  "Transfer-Encoding: chunked\r\n"
@@ -1297,7 +1302,7 @@ const struct message requests[] =
     ,.method= st(HttpMethod)::Post
     ,.query_string= ""
     ,.fragment= ""
-    ,.request_path= "/chunked_w_content_length"
+    ,.request_path= "chunked_w_content_length"
     ,.request_url= "/chunked_w_content_length"
     ,.content_length= 10
     ,.num_headers= 2
@@ -1312,113 +1317,185 @@ const struct message requests[] =
 }
 
 int main() {
-        //struct message requests
-        int size = sizeof(requests)/sizeof(struct message);
-        printf("size is %d \n",size);
+    //struct message requests
+    int size = sizeof(requests)/sizeof(struct message);
 
-        for(int i = 33;i<34;i++) {
-            printf("////HttpPacketParser start %d ////\n",i);
+    for(int i = 0 ;i<size;i++) {
+        printf("////HttpPacketParser start %d ////\n",i);
 
-            HttpPacketParser parser = createHttpPacketParser();
-            struct message msg = requests[i];
+        HttpPacketParser parser = createHttpPacketParser();
+        struct message msg = requests[i];
+        printf("%s\n",msg.raw);
 
-            printf("content is %s \n",msg.raw);
-            parser->pushHttpData(createByteArray((const byte *)msg.raw,strlen(msg.raw)));
-            ArrayList<HttpPacket> packets = parser->doParse();
-            if(packets->size() != 1) {
-                printf("HttpPacketParser Test1 Fail,index is %d,content is %s,size is %d \n",i,msg.raw,packets->size());
+        parser->pushHttpData(createByteArray((const byte *)msg.raw,strlen(msg.raw)));
+        ArrayList<HttpPacket> packets = parser->doParse();
+        //check size
+        if(packets->size() != 1) {
+            printf("HttpPacketParse CheckSize failed,packet size is %d \n",packets->size());
+            continue;
+        }
+
+        HttpPacket packet = packets->get(0);
+        HttpEntity entity = packet->getEntity();
+        HttpHeader header = packet->getHeader();
+
+        //check Type
+        if(header->getType() != msg.type) {
+            printf("HttpPacketParse CheckType failed,msg.type is %d,parse result is %d \n",msg.type,header->getType());
+            continue;
+        }
+
+        //check method
+        if(header->getMethod() != msg.method) {
+            printf("HttpPacketParse CheckMethod failed,msg.method is %d,parse result is %d \n",msg.method,header->getMethod());
+            continue;
+        }
+
+        //check request url
+        if(strlen(msg.request_url) > 0) {
+            HttpUrl url = header->getUrl();
+            String rawDataUrl = url->getRawUrl();
+            if(rawDataUrl == nullptr || !rawDataUrl->equals(msg.request_url)) {
+                printf("HttpPacketParse CheckRequestUrl failed,msg.request_url is %s,parse result is %s \n",msg.request_url,rawDataUrl->toChars());
+                printf("HttpPacketParse CheckRequestUrl failed,msg.request_url size is %d,parse result is %d \n",strlen(msg.request_url),rawDataUrl->size());
                 continue;
-            }
-            printf("trace1 \n");
-            //check method
-            HttpPacket packet = packets->get(0);
-            if(packet->getHeader()->getMethod() != msg.method) {
-                printf("HttpPacketParser Test2 Fail,index is %d,pcket methods is %d,msg type is %d,\n content is %s \n",i,packet->getHeader()->getMethod(),msg.method,msg.raw);
-                continue;
-            }
-
-            //check url
-            if(!packet->getHeader()->getUrl()->equals(msg.request_url)) {
-                printf("HttpPacketParser Test3 Fail,packet url is %s,msg url is %s \n",packet->getHeader()->getUrl()->toChars(),msg.request_url);
-                continue;
-            }
-            printf("trace2 \n");
-            //check header
-            int headersize = msg.num_headers;
-            for(int i = 0;i<headersize;i++) {
-                char *key = msg.headers[i][0];
-                char *value = msg.headers[i][1];
-                String fValue = packet->getHeader()->getValue(createString(key)->toLowerCase());
-                if(fValue == nullptr) {
-                    printf("HttpPacketParser Test4 Fail,packet value is null,key is %s \n",key);
-                    continue;
-                }
-
-                if(!fValue->equals(value)) {
-                    printf("HttpPacketParser Test5 Fail,packet value is %s,length is %d,msg value is %s,length is %d \n",fValue->toChars(),fValue->size(),value,strlen(value));
-                    for(int i = 0;i < fValue->size();i++) {
-                        printf("v is %c \n",fValue->toChars()[i]);
-                    }
-                    continue;
-                }
-            }
-            printf("trace3 \n");
-            //check Version
-            HttpVersion version = packet->getHeader()->getVersion();
-            if(version->getMajorVer() != msg.http_major || version->getMinorVer() != msg.http_minor) {
-                printf("HttpPacketParser Test6 Fail,packet version is %d.%d,msg version is %d.%d \n",
-                                version->getMajorVer(),version->getMinorVer(),msg.http_major,msg.http_minor);
-                continue;
-            }
-            printf("trace4 \n");
-            //check content
-            HttpEntity entity = packet->getEntity();
-            if(strlen(msg.body) > 0) {
-                printf("trace4_1 \n");
-                if(entity == nullptr) {
-                    printf("HttpPacketParser Test6 Fail,packet entity is null\n");
-                    continue;
-                }
-
-
-                ByteArray content = entity->getContent();
-                printf("trace4_2 \n");
-                if(content == nullptr) {
-                    ArrayList<KeyValuePair<String,String>> list = entity->getEncodedKeyValues();
-                    int count = 0;
-                    for(int i = 0;i < msg.key_value_size;i++) {
-                        const char *key = msg.key_value[i];
-                        i++;
-                        const char *value = msg.key_value[i];
-
-                        KeyValuePair<String,String> pair = list->get(count);
-                        printf("pair key is %s,value is %s \n",pair->getKey()->toChars(),pair->getValue()->toChars());
-                        if(!pair->getKey()->equals(key) || !pair->getValue()->equals(value)) {
-                            printf("HttpPacketParser Test7 Fail,parsed key is %s,key is %s,parser value is %s,value is %s\n",
-                                        pair->getKey()->toChars(),key,pair->getValue()->toChars(),value);
-                        }
-
-                        count++;
-                    }
-                    
-                } else {
-                    String body = content->toString();
-                    if(!body->equals(msg.body)) {
-                        printf("HttpPacketParser Test8 Fail,packet content is %s,size is %d 111\n",body->toChars(),body->size());
-                        printf("HttpPacketParser Test8 Fail,packet content is %s,size is %d 222\n",msg.body,strlen(msg.body));
-                        int index = 0;
-                        for(;index < content->size();index++) {
-                            printf("[%d] is %x \n",index,body->toChars()[index]);
-                        }
-                    }
-                }
-                printf("trace4_3 \n");
-            } else {
-                if(entity != nullptr && entity->getContent() != nullptr) {
-                    printf("HttpPacketParser Test9 Fail,packet content is %s\n",entity->getContent()->toString()->toChars());
-                }
             }
         }
-        printf("trace5 \n");
 
+        //check path
+        if(strlen(msg.request_path) > 0) {
+            HttpUrl url = header->getUrl();
+            String path = url->getPath();
+            if(path == nullptr || !path->equals(msg.request_path)) {
+                printf("HttpPacketParse CheckPath failed,msg.request_path is %s,parse result is %s \n",msg.request_path,path->toChars());
+                continue;
+            }
+        }
+
+        //fragment
+        if(strlen(msg.fragment) > 0) {
+            HttpUrl url = header->getUrl();
+            String fragment = url->getFragment();
+            if(fragment == nullptr || !fragment->equals(msg.fragment)) {
+                printf("HttpPacketParse CheckFragment failed,msg.request_path is %s,parse result is %s \n",msg.fragment,fragment->toChars());
+                continue;
+            }
+        }
+
+        //check query_string
+        if(strlen(msg.query_string) > 0) {
+            HttpUrl url = header->getUrl();
+            String rawQuery = url->getRawQuery();
+            if(rawQuery == nullptr || !rawQuery->equals(msg.query_string)) {
+                printf("HttpPacketParse CheckQuery failed,msg.query_string is %s,parse result is %s \n",msg.query_string,rawQuery->toChars());
+                continue;
+            }
+        }
+
+        //check body
+        if(strlen(msg.body) > 0) {
+            String content = entity->getContent()->toString();
+            if(content == nullptr || !content->equals(msg.body)) {
+                printf("HttpPacketParse CheckBody failed,msg.body is %s,parse result is %s \n",msg.body,content->toChars());
+                continue;
+            }
+        }
+
+        //check host
+        if(msg.host != nullptr) {
+            HttpUrl url = header->getUrl();
+            String host = url->getHost();
+            if(host == nullptr || !host->equals(msg.host)) {
+                printf("HttpPacketParse CheckHost failed,msg.host is %s,parse result is %s \n",msg.host,host->toChars());
+                continue;
+            }
+        }
+
+        //check userinfo
+        if(msg.userinfo != nullptr) {
+            HttpUrl url = header->getUrl();
+            String username = url->getUser();
+            String password = url->getPassword();
+            String userInfo = username->append(":")->append(password);
+            if(!userInfo->equals(msg.userinfo)) {
+                printf("HttpPacketParse CheckUserInfo failed,msg.userinfo is %s,parse result is %s \n",msg.userinfo,userInfo->toChars());
+                continue;
+            }
+        }
+
+        //check headers
+        int num_headers = msg.num_headers;
+        if(header->size() != num_headers) {
+            printf("HttpPacketParse CheckHeaderSize failed,msg.num_headers is %d,header size is %d \n",msg.num_headers,header->size());
+            continue;
+        }
+
+        for(int i = 0;i<num_headers;i++) {
+            char *key = msg.headers[i][0];
+            char *value = msg.headers[i][1];
+            String fValue = packet->getHeader()->getValue(createString(key)->toLowerCase());
+            if(fValue == nullptr) {
+                printf("HttpPacketParser CheckHeader Fail,packet value is null,key is %s \n",key);
+                continue;
+            }
+
+            if(!fValue->equals(value)) {
+                printf("HttpPacketParser CheckHeader Fail,msg.key is %s,msg.value is %s,parse value is %s \n",
+                                                          key,value,fValue->toChars());
+                continue;
+            }
+        }
+
+        //TODO:check chunk
+
+        //check key_value
+        if(msg.key_value_size > 0) {
+            ArrayList<KeyValuePair<String,String>> list = entity->getEncodedKeyValues();
+            if(list == nullptr) {
+                printf("HttpPacketParser CheckKeyValue,parse EncodedKeyValues size is 0\n");
+                continue;
+            }
+
+            int count = 0;
+            for(int i = 0;i < msg.key_value_size;i++) {
+                const char *key = msg.key_value[i];
+                i++;
+                const char *value = msg.key_value[i];
+
+                KeyValuePair<String,String> pair = list->get(count);
+                if(!pair->getKey()->equals(key) || !pair->getValue()->equals(value)) {
+                    printf("HttpPacketParser CheckKeyValue Fail,parsed key is %s,key is %s,parser value is %s,value is %s\n",
+                                pair->getKey()->toChars(),key,pair->getValue()->toChars(),value);
+                }
+                count++;
+            }
+        }
+
+
+        //check upgrade
+        if(msg.upgrade != nullptr && strlen(msg.upgrade) > 0) {
+            String upgrade = entity->getUpgrade();
+            if(upgrade == nullptr || !upgrade->equals(msg.upgrade)) {
+              printf("HttpPacketParse CheckUpgrade failed,msg.upgrade is %s,parse result is %s \n",msg.upgrade,upgrade->toChars());
+              continue;
+            }
+        }
+
+        //check http major version
+        HttpVersion ver = header->getVersion();
+        if(ver == nullptr) {
+            printf("HttpPacketParse CheckVersion failed,version is null \n");
+            continue;
+        }
+
+        if(ver->getMajorVer() != msg.http_major) {
+           printf("HttpPacketParse CheckMajorVersion failed,Msg.http_major is %d,parse major version is %d \n",msg.http_major,ver->getMajorVer());
+           continue;
+        }
+
+        if(ver->getMinorVer() != msg.http_minor) {
+           printf("HttpPacketParse CheckMinorVersion failed,Msg.http_minor is %d,parse minor version is %d \n",msg.http_major,ver->getMajorVer());
+           continue;
+        }
+    }
 }

@@ -29,7 +29,8 @@ const String _HttpMethod::PatchString = createString("PATCH");
 const String _HttpMethod::PurgeString = createString("PURGE");
 const String _HttpMethod::LinkString = createString("LINK");
 const String _HttpMethod::SearchString = createString("SEARCH");
-
+const String _HttpMethod::UnlinkString = createString("UNLINK");
+const String _HttpMethod::SourceString = createString("SOURCE");
 
 String _HttpMethod::toString(int method) {
     switch(method) {
@@ -110,6 +111,12 @@ String _HttpMethod::toString(int method) {
 
         case Purge:
         return PurgeString;
+
+        case Unlink:
+        return UnlinkString;
+
+        case Source:
+        return SourceString;
     }
 
     return nullptr;
@@ -133,6 +140,7 @@ int _HttpMethod::toInt(String method) {
     } else if(method->equals(ConnectString)) {
         return Connect;
     }
+    //TODO
 
     return -1;
 }

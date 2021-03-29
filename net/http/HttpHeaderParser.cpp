@@ -2,6 +2,7 @@
 #include "HttpText.hpp"
 #include "HttpMethodParser.hpp"
 #include "HttpVersionParser.hpp"
+#include "HttpUrlParser.hpp"
 
 namespace obotcha {
 
@@ -27,7 +28,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                     ByteArray method = mReader->pop();
                     String tag = method->toString()->trimAll();
                     int methodid = st(HttpMethodParser)::doParse(tag);
-                    printf("method id is %d \n",methodid);
+                    printf("method id is %d,tag is %s \n",methodid,tag->toChars());
                     if(methodid != -1) {
                         mHeader->setMethod(methodid);
                         mStatus = Url;
@@ -53,8 +54,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                     mCrlfCount = 0;
                 }
 
-                if(mCrlfCount == 2) {
-                    //no reason~~~    
+                if(mCrlfCount == 2) { 
                     ByteArray state = mReader->pop();
                     String state_str = createString((const char *)state->toValue(),0,state->size() -2);
                     mHeader->setResponseStatus(state_str->toBasicInt());
@@ -71,9 +71,12 @@ HttpHeader _HttpHeaderParser::doParse() {
             }
 
             case Url:{
+                //printf("url \n");
                 if(v == ' ') {
                     ByteArray urlcontent = mReader->pop();
-                    mHeader->setUrl(urlcontent->toString()->trimAll());
+                    String url_str = createString((const char *)urlcontent->toValue(),0,urlcontent->size() - 1);
+                    HttpUrl url = st(HttpUrlParser)::parseUrl(url_str);
+                    mHeader->setUrl(url);
                     mStatus = Version;
                 }
                 continue;
@@ -103,6 +106,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                 }
 
                 if(mCrlfCount == 2) {
+                    //printf("version \n");
                     ByteArray vercontent = mReader->pop();
                     String verstring = createString((const char *)vercontent->toValue(),0,vercontent->size() -2);
                     mHeader->setVersion(st(HttpVersionParser)::doParse(verstring));
@@ -113,6 +117,7 @@ HttpHeader _HttpHeaderParser::doParse() {
             }
 
             case ContentKey: {
+                //printf("Content key is %x,mCrlfCount is %d \n",v,mCrlfCount);
                 if(v == CRLF[mCrlfCount]) {
                     mCrlfCount++;
                 }else if(v == ':') {
@@ -121,21 +126,45 @@ HttpHeader _HttpHeaderParser::doParse() {
                     
                     mKey = createString((const char *)key->toValue(),0,key->size() - 1)->toLowerCase();
                     mStatus = ContentValue;
+                } else {
+                    mCrlfCount = 0;
                 }
 
                 if(mCrlfCount == 2) {
                     //we should check whether it is end
                     ByteArray content = mReader->pop();
-                    printf("content size is %d \n",content->size());
+                    //printf("content size is %d \n",content->size());
                     if(content->size() == 2) {
                         mStatus = Idle;
                         return mHeader;
                     } else {
                         //if prev content value contains '\r\n'
                         String value = mHeader->getValue(mKey);
-                        String appendValue = createString((const char *)content->toValue(),0,content->size() - 2);
+                        const char* valuestr = (const char*)content->toValue();
+                        int size = content->size();
+                        int start = 0;
+                        if(value->size() == 0) {
+                            for(;start < size;start++) {
+                                if(valuestr[start] == ' '||
+                                valuestr[start] == '\t'||
+                                valuestr[start] == '\r' ||
+                                valuestr[start] == '\n') {
+                                    continue;
+                                }
+                                break;
+                            }
+                        }
+
+                        String appendValue = nullptr;
+                        if((content->size() - start) == 2 || start == content->size()) {
+                            appendValue = createString("");
+                        } else {
+                            appendValue = createString(&valuestr[start],0,content->size() - 2 - start);
+                        }
+
                         value = value->append(appendValue);
                         mHeader->setValue(mKey,value);
+                        //printf("key is %s,value is%s \n",mKey->toChars(),value->toChars());
                         mCrlfCount = 0;
                     }
                     
@@ -157,20 +186,24 @@ HttpHeader _HttpHeaderParser::doParse() {
                     int size = value->size();
                     const char* valuestr = (const char*)value->toValue();
                     for(;start < size;start++) {
-                        if(valuestr[start] == ' ') {
+                        if(valuestr[start] == ' '||
+                           valuestr[start] == '\t'||
+                           valuestr[start] == '\r' ||
+                           valuestr[start] == '\n') {
                             continue;
                         }
                         break;
                     }
-                    if((value->size() - start) == 2) {
+                    
+                    if((value->size() - start) == 2 || start == value->size()) {
                         mValue = createString("");
                     } else {
                         mValue = createString(&valuestr[start],0,value->size() - 2 - start);
                     }
-
                     parseParticularHeader(mKey,mValue);
                     mHeader->setValue(mKey,mValue);
-                    printf("key is %s,value is %s \n",mKey->toChars(),mValue->toChars());
+                    //printf("start is %d,size is %d \n",start,size);
+                    //printf("key is %s,value is%s \n",mKey->toChars(),mValue->toChars());
                     //may be we should parse value
                     mStatus = ContentKey;
                     mNextStatus = -1;

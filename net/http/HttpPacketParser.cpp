@@ -89,7 +89,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                 int contentlength = mHttpPacket->getHeader()->getContentLength();
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
                 String encodingtype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
-                if(encodingtype != nullptr && encodingtype->equalsIgnoreCase(st(HttpHeader)::TransferChunked)) {
+                if(encodingtype != nullptr && encodingtype->indexOfIgnoreCase(st(HttpHeader)::TransferChunked) >= 0) {
                     //this is a chunck parsesr
                     if(mSubStatus == HeadKeyValueParse) {
                         packets->add(mHttpPacket);
@@ -120,13 +120,14 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                             ByteArray content = mReader->pop();
                             mHttpPacket->getEntity()->setContent(content);
                         }
-                    } else if(mHttpPacket->getHeader()->getValue(st(HttpHeader)::Upgrade) != nullptr) {
+                    } else if(mHttpPacket->getHeader()->getValue(st(HttpHeader)::Upgrade) != nullptr
+                            ||mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Connect) {
                         int restLength = mReader->getReadableLength();
                         if(restLength != 0) {
                             mReader->move(restLength);
                             ByteArray content = mReader->pop();
                             mHttpPacket->getEntity()->setUpgrade(content->toString());
-                            printf("upgrade is %s \n",content->toValue());
+                            //printf("upgrade is %s \n",content->toValue());
                         }
                     }
                     //no contentlength,maybe it is only a html request
@@ -164,8 +165,23 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                             ArrayList<KeyValuePair<String,String>> xFormEncodedPair = st(HttpXFormUrlEncodedParser)::parse(content->toString());
                             mHttpPacket->getEntity()->setEncodedKeyValues(xFormEncodedPair);
                         } else {
-                            mHttpPacket->getEntity()->setContent(content);
+                            if(mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Connect) {
+                                mHttpPacket->getEntity()->setUpgrade(content->toString());
+                            } else {
+                                mHttpPacket->getEntity()->setContent(content);
+                            }
                         }
+
+                        //we should check whether it is a upgrade message
+                        if(mHttpPacket->getHeader()->getValue(st(HttpHeader)::Upgrade) != nullptr) {
+                            int resetLength = mReader->getReadableLength();
+                            if(resetLength > 0) {
+                                mReader->move(resetLength);
+                                ByteArray content = mReader->pop();
+                                mHttpPacket->getEntity()->setUpgrade(content->toString());
+                            }
+                        }
+
                         mStatus = Idle;
                         mMultiPartParser = nullptr;
                         packets->add(mHttpPacket);
