@@ -21,8 +21,8 @@ class OInstanceConversation {
 
 template<typename T, typename U>
 bool instanceOf(sp<U> a) {
-  T b;
-  return typeid(b.get_pointer()) == typeid(a.get_pointer());
+    T b;
+    return (dynamic_cast<decltype(b.get_pointer())>(a.get_pointer()) != nullptr);
 }
 
 }

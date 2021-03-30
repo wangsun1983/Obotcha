@@ -54,7 +54,7 @@ bool _FileOutputStream::open() {
         return false;
     }
 
-    fd = ::open(mPath->toChars(),O_CREAT|O_WRONLY|O_TRUNC);
+    fd = ::open(mPath->toChars(),O_CREAT|O_RDWR|O_TRUNC,S_IRUSR|S_IWUSR);
     return (fd >= 0);
 }
 
@@ -65,11 +65,11 @@ bool _FileOutputStream::open(int opentype) {
 
     switch(opentype) {
         case FileOpenType::Append:
-            fd = ::open(mPath->toChars(),O_CREAT|O_WRONLY|O_APPEND);
+            fd = ::open(mPath->toChars(),O_CREAT|O_RDWR|O_APPEND,S_IRUSR|S_IWUSR);
         break;
 
         case FileOpenType::Trunc:
-            fd = ::open(mPath->toChars(),O_CREAT|O_WRONLY|O_TRUNC);
+            fd = ::open(mPath->toChars(),O_CREAT|O_RDWR|O_TRUNC,S_IRUSR|S_IWUSR);
         break;
     }
 

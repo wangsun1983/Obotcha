@@ -264,7 +264,7 @@ public:
                 Uint32 data = Cast<Uint32>(newObject);
                 data->update(value->getUint64()->toValue());
             } else if(ostd::instanceOf<Uint64>(newObject)) {
-                Uint32 data = Cast<Uint64>(newObject);
+                Uint64 data = Cast<Uint64>(newObject);
                 data->update(value->getUint64()->toValue());
             } else if(ostd::instanceOf<String>(newObject)) {
                 String data = Cast<String>(newObject);
@@ -396,9 +396,10 @@ public:
                             data->update(value->toBasicUint32());
                         } else if(ostd::instanceOf<Uint64>(newObject)) {
                             String value = jsonnode->getString();
-                            Uint32 data = Cast<Uint64>(newObject);
+                            Uint64 data = Cast<Uint64>(newObject);
                             data->update(value->toBasicUint64());
                         } else {
+                            printf("reflect to name is %s \n",field->getName()->toChars());
                             jsonnode->reflectTo(reflectValue);
                         }
                     }
@@ -517,6 +518,7 @@ public:
                         String data = Cast<String>(newObject);
                         this->put(name,data->getStdString());
                     } else {
+                        printf("field name is %s \n",field->getName()->toChars());
                         newValue->importFrom(newObject);
                         this->put(name,newValue);
                     }

@@ -65,6 +65,9 @@ public:
     bool isConnected();
     void setConnected(bool);
 
+    void addLink(String);
+    ArrayList<String> getLink();
+
     int getType();
     void setType(int);
 
@@ -188,6 +191,8 @@ private:
     HashMap<String,String> mValues;
 
     ArrayList<HttpCookie> mCookies;
+
+    ArrayList<String> mLinks;
 
     HttpCacheControl mCacheControl;
 

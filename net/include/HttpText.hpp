@@ -27,6 +27,8 @@ public:
    static const String MultiPartName;
    static const String MultiPartEnd;
    static const String CRLF;
+   static const String CR;
+   static const String LF;
    
    //static const String PartName;
    //static const String PartFileName;

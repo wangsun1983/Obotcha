@@ -69,37 +69,37 @@ public:
 
     //reflect get function
 protected:
-    inline virtual int getFieldIntValue(std::string){return 0;}
-    inline virtual uint8_t getFieldByteValue(std::string){return 0;}
-    inline virtual bool getFieldBoolValue(std::string){return true;}
-    inline virtual double getFieldDoubleValue(std::string){return 0;}
-    inline virtual long getFieldLongValue(std::string name){return 0;}
-    inline virtual float getFieldFloatValue(std::string){return 0;}
-    inline virtual uint8_t getFieldUint8Value(std::string){return 0;}
-    inline virtual uint16_t getFieldUint16Value(std::string){return 0;}
-    inline virtual uint32_t getFieldUint32Value(std::string){return 0;}
-    inline virtual uint64_t getFieldUint64Value(std::string){return 0;}
-    inline virtual sp<_String> getFieldStringValue(std::string name){throw "not support";};
-    inline virtual sp<Object> getFieldObjectValue(std::string){return nullptr;}
+    inline virtual int __getFieldIntValue(std::string){return 0;}
+    inline virtual uint8_t __getFieldByteValue(std::string){return 0;}
+    inline virtual bool __getFieldBoolValue(std::string){return true;}
+    inline virtual double __getFieldDoubleValue(std::string){return 0;}
+    inline virtual long __getFieldLongValue(std::string name){return 0;}
+    inline virtual float __getFieldFloatValue(std::string){return 0;}
+    inline virtual uint8_t __getFieldUint8Value(std::string){return 0;}
+    inline virtual uint16_t __getFieldUint16Value(std::string){return 0;}
+    inline virtual uint32_t __getFieldUint32Value(std::string){return 0;}
+    inline virtual uint64_t __getFieldUint64Value(std::string){return 0;}
+    inline virtual sp<_String> __getFieldStringValue(std::string name){throw "not support";};
+    inline virtual sp<Object> __getFieldObjectValue(std::string){return nullptr;}
     //reflect set function
-    inline virtual void setFieldIntValue(std::string,int){}
-    inline virtual void setFieldByteValue(std::string,uint8_t){}
-    inline virtual void setFieldDoubleValue(std::string,double){}
-    inline virtual void setFieldFloatValue(std::string,float){}
-    inline virtual void setFieldLongValue(std::string,long){}
-    inline virtual void setFieldUint8Value(std::string,uint8_t){}
-    inline virtual void setFieldUint16Value(std::string,uint16_t){}
-    inline virtual void setFieldUint32Value(std::string,uint32_t){}
-    inline virtual void setFieldUint64Value(std::string,uint64_t){}
-    inline virtual void setFieldObjectValue(std::string,sp<Object>){}
-    inline virtual void setFieldStringValue(std::string name,std::string value){}
-    inline virtual void setFieldBoolValue(std::string name,bool){}
+    inline virtual void __setFieldIntValue(std::string,int){}
+    inline virtual void __setFieldByteValue(std::string,uint8_t){}
+    inline virtual void __setFieldDoubleValue(std::string,double){}
+    inline virtual void __setFieldFloatValue(std::string,float){}
+    inline virtual void __setFieldLongValue(std::string,long){}
+    inline virtual void __setFieldUint8Value(std::string,uint8_t){}
+    inline virtual void __setFieldUint16Value(std::string,uint16_t){}
+    inline virtual void __setFieldUint32Value(std::string,uint32_t){}
+    inline virtual void __setFieldUint64Value(std::string,uint64_t){}
+    inline virtual void __setFieldObjectValue(std::string,sp<Object>){}
+    inline virtual void __setFieldStringValue(std::string name,std::string value){}
+    inline virtual void __setFieldBoolValue(std::string name,bool){}
     
     //create function
-    inline virtual void createFieldObject(std::string name){}
-    inline virtual sp<Object> createListItemObject(std::string name){return nullptr;}
-    inline virtual sp<Object> getListItemObject(std::string name,int index){return nullptr;}
-    inline virtual int getListObjectSize(std::string name) {return 0;}
+    inline virtual void __createFieldObject(std::string name){}
+    inline virtual sp<Object> __createListItemObject(std::string name){return nullptr;}
+    inline virtual sp<Object> __getListItemObject(std::string name,int index){return nullptr;}
+    inline virtual int __getListObjectSize(std::string name) {return 0;}
 
 private:
     mutable volatile int32_t mCount;

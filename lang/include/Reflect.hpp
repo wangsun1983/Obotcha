@@ -2332,73 +2332,73 @@ private:\
     int __getListSize(Q t) {\
         return -1;\
     }\
-    int getFieldIntValue(std::string name){ \
-       FieldContentValue v = getFieldContentValue(name);\
+    int __getFieldIntValue(std::string name){ \
+       FieldContentValue v = __getFieldContentValue(name);\
        return v->intValue;\
     }\
-    long getFieldLongValue(std::string name){ \
-       FieldContentValue v = getFieldContentValue(name);\
+    long __getFieldLongValue(std::string name){ \
+       FieldContentValue v = __getFieldContentValue(name);\
        return v->longValue;\
     }\
-    uint8_t getFieldByteValue(std::string name){ \
-        FieldContentValue v = getFieldContentValue(name);\
+    uint8_t __getFieldByteValue(std::string name){ \
+        FieldContentValue v = __getFieldContentValue(name);\
         return v->uint8Value;\
     }\
-    bool getFieldBoolValue(std::string name){ \
-        FieldContentValue v = getFieldContentValue(name);\
+    bool __getFieldBoolValue(std::string name){ \
+        FieldContentValue v = __getFieldContentValue(name);\
         return v->boolValue;\
     }\
-    double getFieldDoubleValue(std::string name){ \
-        FieldContentValue v = getFieldContentValue(name);\
+    double __getFieldDoubleValue(std::string name){ \
+        FieldContentValue v = __getFieldContentValue(name);\
         return v->doubleValue;\
     }\
-    float getFieldFloatValue(std::string name){ \
-        FieldContentValue v = getFieldContentValue(name);\
+    float __getFieldFloatValue(std::string name){ \
+        FieldContentValue v = __getFieldContentValue(name);\
         return v->floatValue;\
     }\
-    uint8_t getFieldUint8Value(std::string name){ \
-        FieldContentValue v = getFieldContentValue(name);\
+    uint8_t __getFieldUint8Value(std::string name){ \
+        FieldContentValue v = __getFieldContentValue(name);\
         return v->uint8Value;\
     }\
-    uint16_t getFieldUint16Value(std::string name){ \
-        FieldContentValue v = getFieldContentValue(name);\
+    uint16_t __getFieldUint16Value(std::string name){ \
+        FieldContentValue v = __getFieldContentValue(name);\
         return v->uint16Value;\
     }\
-    uint32_t getFieldUint32Value(std::string name){ \
-        FieldContentValue v = getFieldContentValue(name);\
+    uint32_t __getFieldUint32Value(std::string name){ \
+        FieldContentValue v = __getFieldContentValue(name);\
         return v->uint32Value;\
     }\
-    uint64_t getFieldUint64Value(std::string name){ \
-        FieldContentValue v = getFieldContentValue(name);\
+    uint64_t __getFieldUint64Value(std::string name){ \
+        FieldContentValue v = __getFieldContentValue(name);\
         return v->uint64Value;\
     }\
-    sp<Object> getFieldObjectValue(std::string name){ \
-        FieldContentValue v = getFieldContentValue(name);\
+    sp<Object> __getFieldObjectValue(std::string name){ \
+        FieldContentValue v = __getFieldContentValue(name);\
         return v->objectValue;\
     }\
-    String getFieldStringValue(std::string name) {\
-        FieldContentValue v = getFieldContentValue(name);\
+    String __getFieldStringValue(std::string name) {\
+        FieldContentValue v = __getFieldContentValue(name);\
         return v->stringValue;\
     }\
-    void setFieldIntValue(std::string name,int value){setFieldValue(name,value);}\
-    void setFieldByteValue(std::string name,uint8_t value){setFieldValue(name,value);}\
-    void setFieldDoubleValue(std::string name,double value){setFieldValue(name,value);}\
-    void setFieldFloatValue(std::string name,float value){setFieldValue(name,value);}\
-    void setFieldLongValue(std::string name,long value){setFieldValue(name,value);}\
-    void setFieldUint8Value(std::string name,uint8_t value){setFieldValue(name,value);}\
-    void setFieldBoolValue(std::string name,bool value){setFieldValue(name,value);}\
-    void setFieldUint16Value(std::string name ,uint16_t value){setFieldValue(name,value);}\
-    void setFieldUint32Value(std::string name ,uint32_t value){setFieldValue(name,value);}\
-    void setFieldUint64Value(std::string name,uint64_t value){setFieldValue(name,value);}\
-    void setFieldStringValue(std::string name,std::string value){setFieldValue(name,createString(value));}\
-    void setFieldObjectValue(std::string name,sp<Object> value){setFieldValue(name,value);}\
+    void __setFieldIntValue(std::string name,int value){__setFieldValue(name,value);}\
+    void __setFieldByteValue(std::string name,uint8_t value){__setFieldValue(name,value);}\
+    void __setFieldDoubleValue(std::string name,double value){__setFieldValue(name,value);}\
+    void __setFieldFloatValue(std::string name,float value){__setFieldValue(name,value);}\
+    void __setFieldLongValue(std::string name,long value){__setFieldValue(name,value);}\
+    void __setFieldUint8Value(std::string name,uint8_t value){__setFieldValue(name,value);}\
+    void __setFieldBoolValue(std::string name,bool value){__setFieldValue(name,value);}\
+    void __setFieldUint16Value(std::string name ,uint16_t value){__setFieldValue(name,value);}\
+    void __setFieldUint32Value(std::string name ,uint32_t value){__setFieldValue(name,value);}\
+    void __setFieldUint64Value(std::string name,uint64_t value){__setFieldValue(name,value);}\
+    void __setFieldStringValue(std::string name,std::string value){__setFieldValue(name,createString(value));}\
+    void __setFieldObjectValue(std::string name,sp<Object> value){__setFieldValue(name,value);}\
     template<typename Q>\
-    void setFieldValue(std::string name,Q value){\
+    void __setFieldValue(std::string name,Q value){\
         Field f = maps->get(createString(name));\
         _FieldContent<Q>  *content = dynamic_cast<_FieldContent<Q>  *>(f.get_pointer());\
         content->setfunc(value);\
     }\
-    FieldContentValue getFieldContentValue(std::string name){\
+    FieldContentValue __getFieldContentValue(std::string name){\
         Field f = maps->get(createString(name));\
         FieldContentValue val = createFieldContentValue();\
         switch(f->getId()) {\
@@ -2453,7 +2453,7 @@ private:\
         }\
         return val;\
     }\
-    void createFieldObject(std::string name) {\
+    void __createFieldObject(std::string name) {\
         Field f = maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\

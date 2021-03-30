@@ -150,46 +150,46 @@ int testReflectFieldWrite() {
       MyData4 data1 = createMyData4();
       //check field
       Field f = data1->getField("intData");
-      Integer v1 = cast<Integer>(f->createObject());
+      Integer v1 = Cast<Integer>(f->createObject());
       v1->update(1);
 
       f = data1->getField("byteData");
-      Byte v2 = cast<Byte>(f->createObject());
+      Byte v2 = Cast<Byte>(f->createObject());
       v2->update(2);
 
       f = data1->getField("doubleData");
-      Double v3 = cast<Double>(f->createObject());
+      Double v3 = Cast<Double>(f->createObject());
       v3->update(1.1);
 
       f = data1->getField("floatData");
-      Float v4 = cast<Float>(f->createObject());
+      Float v4 = Cast<Float>(f->createObject());
       v4->update(2.2);
 
       f = data1->getField("longData");
-      Long v5 = cast<Long>(f->createObject());
+      Long v5 = Cast<Long>(f->createObject());
       v5->update(3);
 
       f = data1->getField("stringData");
       f->setValue(createString("a"));
 
       f = data1->getField("uint8Data");
-      Uint8 v7 = cast<Uint8>(f->createObject());
+      Uint8 v7 = Cast<Uint8>(f->createObject());
       v7->update(4);
 
       f = data1->getField("uint16Data");
-      Uint16 v7_1 = cast<Uint16>(f->createObject());
+      Uint16 v7_1 = Cast<Uint16>(f->createObject());
       v7_1->update(5);
 
       f = data1->getField("uint32Data");
-      Uint32 v8 = cast<Uint32>(f->createObject());
+      Uint32 v8 = Cast<Uint32>(f->createObject());
       v8->update(6);
 
       f = data1->getField("uint64Data");
-      Uint64 v9 = cast<Uint64>(f->createObject());
+      Uint64 v9 = Cast<Uint64>(f->createObject());
       v9->update(7);
 
       f = data1->getField("boolData");
-      Boolean v10 = cast<Boolean>(f->createObject());
+      Boolean v10 = Cast<Boolean>(f->createObject());
       v10->update(false);
 
       if(data1->intData == nullptr||data1->intData->toValue() != 1) {

@@ -46,19 +46,6 @@ public:
     int TypeOf(uint32_t v);
     int TypeOf(uint64_t v);
     int TypeOf(String v);
-/*
-    int TypeOf(Integer v);
-    int TypeOf(Byte v);
-    int TypeOf(Double v);
-    int TypeOf(Float v);
-    int TypeOf(Boolean v);
-    int TypeOf(Long v);
-    int TypeOf(String v);
-    int TypeOf(Uint8 v);
-    int TypeOf(Uint16 v);
-    int TypeOf(Uint32 v);
-    int TypeOf(Uint64 v);
-*/
 
     template<typename T>
     int TypeOf(std::vector<T> v) {
@@ -143,17 +130,17 @@ private:
     Object *object;
 
     //do not use
-    void setFieldIntValue(std::string,int){}
-    void setFieldByteValue(std::string,uint8_t){}
-    void setFieldDoubleValue(std::string,double){}
-    void setFieldFloatValue(std::string,float){}
-    void setFieldUint8Value(std::string,uint8_t){}
-    void setFieldUint16Value(std::string,uint16_t){}
-    void setFieldUint32Value(std::string,uint32_t){}
-    void setFieldUint64Value(std::string,uint64_t){}
-    void setFieldObjectValue(std::string,sp<Object>){}
-    void setFieldStringValue(std::string name,std::string value){}
-    void setFieldBoolValue(std::string name,bool){}
+    void __setFieldIntValue(std::string,int){}
+    void __setFieldByteValue(std::string,uint8_t){}
+    void __setFieldDoubleValue(std::string,double){}
+    void __setFieldFloatValue(std::string,float){}
+    void __setFieldUint8Value(std::string,uint8_t){}
+    void __setFieldUint16Value(std::string,uint16_t){}
+    void __setFieldUint32Value(std::string,uint32_t){}
+    void __setFieldUint64Value(std::string,uint64_t){}
+    void __setFieldObjectValue(std::string,sp<Object>){}
+    void __setFieldStringValue(std::string name,std::string value){}
+    void __setFieldBoolValue(std::string name,bool){}
 };
 
 DECLARE_CLASS(FieldContent,1) IMPLEMENTS(Field)  {

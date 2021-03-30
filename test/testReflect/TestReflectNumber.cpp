@@ -49,13 +49,23 @@ int testReflectNumber() {
       data->boolData = createBoolean(false);
 
       JsonValue jvalue = createJsonValue();
+
+      //wangsl
+      //auto list = data->getAllFields();
+      //printf("size is %d \n",list->size());
+      //wangsl
+
       jvalue->importFrom(data);
+      //printf("JsonValue is %s \n",jvalue->toString()->toChars());
+
       JsonWriter jwriter = createJsonWriter("output4.json");
       jwriter->write(jvalue);
+      jwriter->close();
 
 
       JsonReader reader = createJsonReader(createFile("output4.json"));
       JsonValue readValue = reader->get();
+      printf("JsonValue is %s \n",readValue->toString()->toChars());
 
       NumberReflectData rdata3 = createNumberReflectData();
       readValue->reflectTo(rdata3);

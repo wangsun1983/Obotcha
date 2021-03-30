@@ -158,28 +158,28 @@ int testReflectFieldRead() {
 
       //check field
       Field f = data2->getField("intData");
-      Integer intV = cast<Integer>(f->getObjectValue());
+      Integer intV = Cast<Integer>(f->getObjectValue());
       if(intV == nullptr ||intV->toValue() != 1|| f->getType() != st(Field)::FieldTypeObject) {
         printf("Reflect Reflect Field Read test12-------[FAIL] \n");
         break;
       }
 
       f = data2->getField("byteData");
-      Byte byteV = cast<Byte>(f->getObjectValue());
+      Byte byteV = Cast<Byte>(f->getObjectValue());
       if(byteV == nullptr ||byteV->toValue() != 2|| f->getType() != st(Field)::FieldTypeObject) {
         printf("Reflect Reflect Field Read test13-------[FAIL] \n");
         break;
       }
 
       f = data2->getField("doubleData");
-      Double doubleV = cast<Double>(f->getObjectValue());
+      Double doubleV = Cast<Double>(f->getObjectValue());
       if(doubleV == nullptr ||doubleV->toValue() != 1.1|| f->getType() != st(Field)::FieldTypeObject) {
         printf("Reflect Reflect Field Read test14-------[FAIL] \n");
         break;
       }
 
       f = data2->getField("floatData");
-      Float floatV = cast<Float>(f->getObjectValue());
+      Float floatV = Cast<Float>(f->getObjectValue());
       if(floatV == nullptr
         ||st(Math)::compareFloat(floatV->toValue(),2.2) != st(Math)::CompareParamEqual
         || f->getType() != st(Field)::FieldTypeObject) {
@@ -188,42 +188,42 @@ int testReflectFieldRead() {
       }
 
       f = data2->getField("longData");
-      Long longV = cast<Long>(f->getObjectValue());
+      Long longV = Cast<Long>(f->getObjectValue());
       if(longV == nullptr ||longV->toValue() != 3|| f->getType() != st(Field)::FieldTypeObject) {
         printf("Reflect Reflect Field Read test16-------[FAIL] \n");
         break;
       }
 
       f = data2->getField("uint8Data");
-      Uint8 uint8V = cast<Uint8>(f->getObjectValue());
+      Uint8 uint8V = Cast<Uint8>(f->getObjectValue());
       if(uint8V == nullptr ||uint8V->toValue() != 4|| f->getType() != st(Field)::FieldTypeObject) {
         printf("Reflect Reflect Field Read test17-------[FAIL] \n");
         break;
       }
 
       f = data2->getField("uint16Data");
-      Uint16 uint16V = cast<Uint16>(f->getObjectValue());
+      Uint16 uint16V = Cast<Uint16>(f->getObjectValue());
       if(uint16V == nullptr ||uint16V->toValue() != 5|| f->getType() != st(Field)::FieldTypeObject) {
         printf("Reflect Reflect Field Read test18-------[FAIL] \n");
         break;
       }
 
       f = data2->getField("uint32Data");
-      Uint32 uint32V = cast<Uint32>(f->getObjectValue());
+      Uint32 uint32V = Cast<Uint32>(f->getObjectValue());
       if(uint32V == nullptr ||uint32V->toValue() != 6|| f->getType() != st(Field)::FieldTypeObject) {
         printf("Reflect Reflect Field Read test19-------[FAIL] \n");
         break;
       }
 
       f = data2->getField("uint64Data");
-      Uint64 uint64V = cast<Uint64>(f->getObjectValue());
+      Uint64 uint64V = Cast<Uint64>(f->getObjectValue());
       if(uint64V == nullptr ||uint64V->toValue() != 7|| f->getType() != st(Field)::FieldTypeObject) {
         printf("Reflect Reflect Field Read test20-------[FAIL] \n");
         break;
       }
 
       f = data2->getField("boolData");
-      Boolean boolV = cast<Boolean>(f->getObjectValue());
+      Boolean boolV = Cast<Boolean>(f->getObjectValue());
       if(boolV == nullptr ||boolV->toValue()|| f->getType() != st(Field)::FieldTypeObject) {
         printf("Reflect Reflect Field Read test21-------[FAIL] \n");
         break;

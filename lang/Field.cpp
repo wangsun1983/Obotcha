@@ -43,41 +43,6 @@ int _Field::TypeOf(String v) {
     return FieldTypeString;
 }
 
-/*
-int _Field::TypeOf(Integer v) {
-    return FieldTypeInt;
-}
-
-int _Field::TypeOf(Float v) {
-    return FieldTypeFloat;
-}
-
-
-
-int _Field::TypeOf(Uint8 v) {
-    return FieldTypeUint8;
-}
-
-int _Field::TypeOf(Uint16 v) {
-    return FieldTypeUint16;
-}
-
-int _Field::TypeOf(Uint32 v) {
-    return FieldTypeUint32;
-}
-
-int _Field::TypeOf(Uint64 v) {
-    return FieldTypeUint64;
-}
-
-int _Field::TypeOf(bool v) {
-    return FieldTypeBool;
-}
-
-int _Field::TypeOf(long v) {
-    return FieldTypeLong;
-}
-*/
 String _Field::getName() {
     return name;
 }
@@ -109,7 +74,7 @@ void _Field::setReflectObject(Object *obj) {
 void _Field::setValue(int v) {
     switch(type) {
         case FieldTypeInt:
-            object->setFieldIntValue(name->getStdString(),v);
+            object->__setFieldIntValue(name->getStdString(),v);
         break;
 
         case FieldTypeByte:
@@ -137,117 +102,117 @@ void _Field::setValue(int v) {
 }
 
 void _Field::setValue(long v) {
-    object->setFieldLongValue(name->getStdString(),v);
+    object->__setFieldLongValue(name->getStdString(),v);
 }
 
 void _Field::setValue(uint8_t v) {
-    object->setFieldByteValue(name->getStdString(),v);
+    object->__setFieldByteValue(name->getStdString(),v);
 }
 
 void _Field::setValue(double v) {
     switch(type) {
         case FieldTypeDouble:
-            object->setFieldDoubleValue(name->getStdString(),v);
+            object->__setFieldDoubleValue(name->getStdString(),v);
         break;
 
         case FieldTypeFloat:
-            object->setFieldFloatValue(name->getStdString(),v);
+            object->__setFieldFloatValue(name->getStdString(),v);
         break;
     }
 }
 
 void _Field::setValue(float v) {
-    object->setFieldFloatValue(name->getStdString(),v);
+    object->__setFieldFloatValue(name->getStdString(),v);
 }
 
 void _Field::setValue(uint16_t v) {
-    object->setFieldUint16Value(name->getStdString(),v);
+    object->__setFieldUint16Value(name->getStdString(),v);
 }
 
 void _Field::setValue(uint32_t v) {
-    object->setFieldUint32Value(name->getStdString(),v);
+    object->__setFieldUint32Value(name->getStdString(),v);
 }
 
 void _Field::setValue(uint64_t v) {
-    object->setFieldUint64Value(name->getStdString(),v);
+    object->__setFieldUint64Value(name->getStdString(),v);
 }
 
 //void _Field::setValue(sp<Object> v) {
-    //object->setFieldObjectValue(name->getStdString(),v);
+    //object->__setFieldObjectValue(name->getStdString(),v);
 //    Trigger(ReflectException,"not support set Object value");
 //}
 
 void _Field::setValue(String v) {
-    object->setFieldStringValue(name->getStdString(),v->getStdString());
+    object->__setFieldStringValue(name->getStdString(),v->getStdString());
 }
 
 void _Field::setValue(bool v) {
-    object->setFieldBoolValue(name->getStdString(),v);
+    object->__setFieldBoolValue(name->getStdString(),v);
 }
 
 int _Field::getIntValue() {
-    return object->getFieldIntValue(name->getStdString());
+    return object->__getFieldIntValue(name->getStdString());
 }
 
 byte _Field::getByteValue() {
-    return object->getFieldByteValue(name->getStdString());
+    return object->__getFieldByteValue(name->getStdString());
 }
 
 double _Field::getDoubleValue() {
-    return object->getFieldDoubleValue(name->getStdString());
+    return object->__getFieldDoubleValue(name->getStdString());
 }
 
 long _Field::getLongValue() {
-    return object->getFieldLongValue(name->getStdString());
+    return object->__getFieldLongValue(name->getStdString());
 }
 
 float _Field::getFloatValue() {
-    return object->getFieldFloatValue(name->getStdString());
+    return object->__getFieldFloatValue(name->getStdString());
 }
 
 byte _Field::getUint8Value() {
-    return object->getFieldByteValue(name->getStdString());
+    return object->__getFieldByteValue(name->getStdString());
 }
 
 uint16_t _Field::getUint16Value() {
-    return object->getFieldUint16Value(name->getStdString());
+    return object->__getFieldUint16Value(name->getStdString());
 }
 
 uint32_t _Field::getUint32Value() {
-    return object->getFieldUint32Value(name->getStdString());
+    return object->__getFieldUint32Value(name->getStdString());
 }
 
 uint64_t _Field::getUint64Value() {
-    return object->getFieldUint64Value(name->getStdString());
+    return object->__getFieldUint64Value(name->getStdString());
 }
 
 sp<Object> _Field::getObjectValue() {
-    return object->getFieldObjectValue(name->getStdString());
+    return object->__getFieldObjectValue(name->getStdString());
 }
 
 String _Field::getStringValue() {
-    return object->getFieldStringValue(name->getStdString());
+    return object->__getFieldStringValue(name->getStdString());
 }
 
 bool _Field::getBoolValue() {
-    return object->getFieldBoolValue(name->getStdString());
+    return object->__getFieldBoolValue(name->getStdString());
 }
 
 sp<Object> _Field::createObject() {
-    object->createFieldObject(name->getStdString());
-    return object->getFieldObjectValue(name->getStdString());
+    object->__createFieldObject(name->getStdString());
+    return object->__getFieldObjectValue(name->getStdString());
 }
 
 sp<Object>  _Field::createListItemObject() {
-    return object->createListItemObject(name->getStdString());
+    return object->__createListItemObject(name->getStdString());
 }
 
 sp<Object> _Field::getListItemObject(int index) {
-    return object->getListItemObject(name->getStdString(),index);
+    return object->__getListItemObject(name->getStdString(),index);
 }
 
 int _Field::getListObjectSize() {
-    return object->getListObjectSize(name->getStdString());
+    return object->__getListObjectSize(name->getStdString());
 }
 
 }

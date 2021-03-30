@@ -116,8 +116,6 @@ const String _HttpHeader::SecWebSocketProtocol = createString("sec-websocket-pro
 //Transfer-Encoding type
 const String _HttpHeader::TransferChunked = createString("chunked");
 
-
-
 //Http connection
 const String _HttpHeader::ConnectionClose = createString("close");
 
@@ -130,6 +128,7 @@ _HttpHeader::_HttpHeader() {
     mContentLength = -1;
     mIsConnected = true;
     mType = Type::Request;
+    mLinks = nullptr;
 }
 
 void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
@@ -219,6 +218,18 @@ bool _HttpHeader::isConnected() {
 
 void _HttpHeader::setConnected(bool v) {
     mIsConnected = v;
+}
+
+void _HttpHeader::addLink(String l) {
+    if(mLinks == nullptr) {
+        mLinks = createArrayList<String>();
+    }
+
+    mLinks->add(l);
+}
+
+ArrayList<String> _HttpHeader::getLink() {
+    return mLinks;
 }
 
 int _HttpHeader::getType() {

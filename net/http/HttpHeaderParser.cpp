@@ -21,7 +21,10 @@ void _HttpHeaderParser::changeToParseKeyValue() {
 HttpHeader _HttpHeaderParser::doParse() {
     byte v = 0;
     const byte *CRLF = (const byte *)st(HttpText)::CRLF->toChars();
+    const byte *LF = (const byte *)st(HttpText)::LF->toChars();
+
     while(mReader->readNext(v) != ByteRingArrayReadComplete) {
+        //printf("header parse v is %c \n",v);
         switch(mStatus) {
             case Idle:{
                 if(v == ' ') {
@@ -36,6 +39,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                         //this may be a response
                         mHeader->setType(st(HttpHeader)::Response);
                         HttpVersion ver = st(HttpVersionParser)::doParse(tag);
+                        //printf("tag is %s \n",tag->toChars());
                         if(ver != nullptr) {
                             mHeader->setVersion(ver);
                             mStatus = State;
@@ -50,13 +54,15 @@ HttpHeader _HttpHeaderParser::doParse() {
             case State:{
                 if(v == CRLF[mCrlfCount]) {
                     mCrlfCount++;
+                } else if(v == LF[0]) {
+                    mCrlfCount = 1;
                 } else {
                     mCrlfCount = 0;
                 }
 
-                if(mCrlfCount == 2) { 
+                if(v == LF[0] || mCrlfCount == 2) { 
                     ByteArray state = mReader->pop();
-                    String state_str = createString((const char *)state->toValue(),0,state->size() -2);
+                    String state_str = createString((const char *)state->toValue(),0,state->size() - mCrlfCount);
                     mHeader->setResponseStatus(state_str->toBasicInt());
                     mCrlfCount = 0;
                     mStatus = ContentKey;
@@ -71,7 +77,6 @@ HttpHeader _HttpHeaderParser::doParse() {
             }
 
             case Url:{
-                //printf("url \n");
                 if(v == ' ') {
                     ByteArray urlcontent = mReader->pop();
                     String url_str = createString((const char *)urlcontent->toValue(),0,urlcontent->size() - 1);
@@ -85,13 +90,19 @@ HttpHeader _HttpHeaderParser::doParse() {
             case Reason:{
                 if(v == CRLF[mCrlfCount]) {
                     mCrlfCount++;
+                } else if(v == LF[0]) {
+                    mCrlfCount = 1;
                 } else {
                     mCrlfCount = 0;
                 }
 
-                if(mCrlfCount == 2) {
+                if(v == LF[0] || mCrlfCount == 2) {
                    ByteArray reason = mReader->pop();
-                   mHeader->setResponseReason(createString((const char *)reason->toValue(),0,reason->size() -2));
+                   if(reason->size() == mCrlfCount) {
+                       mHeader->setResponseReason(createString(""));
+                   } else {
+                       mHeader->setResponseReason(createString((const char *)reason->toValue(),0,reason->size() - mCrlfCount));
+                   }
                    mCrlfCount = 0;
                    mStatus = ContentKey;
                 }
@@ -101,14 +112,15 @@ HttpHeader _HttpHeaderParser::doParse() {
             case Version:{
                 if(v == CRLF[mCrlfCount]) {
                     mCrlfCount++;
+                } else if(v == LF[0]) {
+                    mCrlfCount = 1;
                 } else {
                     mCrlfCount = 0;
                 }
 
-                if(mCrlfCount == 2) {
-                    //printf("version \n");
+                if(v == LF[0] || mCrlfCount == 2) {
                     ByteArray vercontent = mReader->pop();
-                    String verstring = createString((const char *)vercontent->toValue(),0,vercontent->size() -2);
+                    String verstring = createString((const char *)vercontent->toValue(),0,vercontent->size() - mCrlfCount);
                     mHeader->setVersion(st(HttpVersionParser)::doParse(verstring));
                     mStatus = ContentKey;
                     mCrlfCount = 0;
@@ -117,7 +129,6 @@ HttpHeader _HttpHeaderParser::doParse() {
             }
 
             case ContentKey: {
-                //printf("Content key is %x,mCrlfCount is %d \n",v,mCrlfCount);
                 if(v == CRLF[mCrlfCount]) {
                     mCrlfCount++;
                 }else if(v == ':') {
@@ -126,15 +137,17 @@ HttpHeader _HttpHeaderParser::doParse() {
                     
                     mKey = createString((const char *)key->toValue(),0,key->size() - 1)->toLowerCase();
                     mStatus = ContentValue;
+                } else if(v == LF[0]) {
+                    mCrlfCount = 1;
                 } else {
                     mCrlfCount = 0;
                 }
 
-                if(mCrlfCount == 2) {
+                if(v == LF[0] || mCrlfCount == 2) {
                     //we should check whether it is end
                     ByteArray content = mReader->pop();
-                    //printf("content size is %d \n",content->size());
-                    if(content->size() == 2) {
+                    //printf("content size is %d,content is %s \n",content->size(),content->toString()->toChars());
+                    if(content->size() == 2 || content->size() == 1) {
                         mStatus = Idle;
                         return mHeader;
                     } else {
@@ -156,10 +169,10 @@ HttpHeader _HttpHeaderParser::doParse() {
                         }
 
                         String appendValue = nullptr;
-                        if((content->size() - start) == 2 || start == content->size()) {
+                        if((content->size() - start) == mCrlfCount || start == content->size()) {
                             appendValue = createString("");
                         } else {
-                            appendValue = createString(&valuestr[start],0,content->size() - 2 - start);
+                            appendValue = createString(&valuestr[start],0,content->size() - mCrlfCount - start);
                         }
 
                         value = value->append(appendValue);
@@ -175,12 +188,13 @@ HttpHeader _HttpHeaderParser::doParse() {
             case ContentValue:{
                 if(v == CRLF[mCrlfCount]) {
                     mCrlfCount++;
+                } else if(v == LF[0]) {
+                    mCrlfCount = 1;
                 } else {
                     mCrlfCount = 0;
                 }
 
-                if(mCrlfCount == 2) {
-                    mCrlfCount = 0;
+                if(v == LF[0] || mCrlfCount == 2) {
                     ByteArray value = mReader->pop();
                     int start = 0;
                     int size = value->size();
@@ -195,11 +209,12 @@ HttpHeader _HttpHeaderParser::doParse() {
                         break;
                     }
                     
-                    if((value->size() - start) == 2 || start == value->size()) {
+                    if((value->size() - start) == mCrlfCount || start == value->size()) {
                         mValue = createString("");
                     } else {
-                        mValue = createString(&valuestr[start],0,value->size() - 2 - start);
+                        mValue = createString(&valuestr[start],0,value->size() - mCrlfCount - start);
                     }
+                    mCrlfCount = 0;
                     parseParticularHeader(mKey,mValue);
                     mHeader->setValue(mKey,mValue);
                     //printf("start is %d,size is %d \n",start,size);
@@ -244,6 +259,13 @@ int _HttpHeaderParser::parseParticularHeader(String key,String value) {
         case 's': {
             if(key->equals(st(HttpHeader)::SetCookie)) {
                 mHeader->addCookie(createHttpCookie(value));
+                return 0;
+            }
+        }
+
+        case 'l': {
+            if(key->equals(st(HttpHeader)::Link)) {
+                mHeader->addLink(value);
                 return 0;
             }
         }
