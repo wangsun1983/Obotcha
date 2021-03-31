@@ -48,6 +48,8 @@ private:
     Mutex mMutex;
     HashMap<int,Socket> mSocks;
 
+    HashMap<int,ServerSocket> mServerSocks;
+
     //Multi Threads
     int mThreadNum;
     ArrayList<LinkedList<SocketMonitorTask>>  mThreadLocalTasks;

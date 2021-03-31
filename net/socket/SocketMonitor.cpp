@@ -27,6 +27,7 @@ _SocketMonitor::_SocketMonitor():_SocketMonitor(1) {
 _SocketMonitor::_SocketMonitor(int threadnum) {
     mMutex = createMutex();
     mSocks = createHashMap<int,Socket>();
+    mServerSocks = createHashMap<int,ServerSocket>();
 
     mPoll = createEPollFileObserver();
     mPoll->start();
@@ -114,11 +115,17 @@ int _SocketMonitor::bind(Socket s,SocketListener l) {
         return -AlreadyExists;
     }
 
+    addNewSocket(s,l);
+    
     return bind(s->getFd(),l,false);
 }
 
 
 int _SocketMonitor::bind(ServerSocket s,SocketListener l) {
+    {
+        AutoLock lock(mMutex);
+        mServerSocks->put(s->getFd(),s);
+    }
     return bind(s->getFd(),l,true);
 }
 
@@ -206,6 +213,7 @@ void _SocketMonitor::release() {
         });
 
         mSocks->clear();
+        mServerSocks->clear();
 
         mThreadPublicTasks->clear();
         mCondition->notifyAll();
@@ -223,12 +231,15 @@ int _SocketMonitor::remove(Socket s) {
     {
         AutoLock lock(mMutex);
         mSocks->remove(s->getFd());
+        mServerSocks->remove(s->getFd());
     }
 
     {
         AutoLock lock(mListenerMutex);
         mListeners->remove(s->getFd());
     }
+
+    mPoll->removeObserver(s->getFd());
 
     return 0;
 }

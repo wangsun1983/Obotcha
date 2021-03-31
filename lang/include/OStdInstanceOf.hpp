@@ -19,11 +19,13 @@ class OInstanceConversation {
 };
 */
 
-template<typename T, typename U>
+template<typename T,typename U>
 bool instanceOf(sp<U> a) {
-    T b;
-    return (dynamic_cast<decltype(b.get_pointer())>(a.get_pointer()) != nullptr);
+    //return std::is_base_of<T,U>::value;
+    return typeid(T) == typeid(*a.get_pointer());
 }
+
+#define IsInstance(PARENT,Y) ostd::instanceOf<_##PARENT>(Y)
 
 }
 };

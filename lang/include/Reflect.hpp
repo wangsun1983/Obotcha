@@ -2506,7 +2506,7 @@ private:\
             break;\
         }\
     }\
-    sp<Object> createListItemObject(std::string name) {\
+    sp<Object> __createListItemObject(std::string name) {\
         Field f = maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\
@@ -2559,7 +2559,7 @@ private:\
             break;\
         }\
     }\
-    sp<Object> getListItemObject(std::string name,int index){\
+    sp<Object> __getListItemObject(std::string name,int index){\
         Field f = maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\
@@ -2612,7 +2612,7 @@ private:\
             break;\
         }\
     };\
-    int getListObjectSize(std::string name) {\
+    int __getListObjectSize(std::string name) {\
         Field f = maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\
