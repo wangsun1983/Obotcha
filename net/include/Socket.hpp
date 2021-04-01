@@ -22,6 +22,7 @@ public:
     _Socket(int,InetAddress host,SocketOption option);
     _Socket(int);
     int connect();
+    int bind();
 
     void close();
     bool isClosed();

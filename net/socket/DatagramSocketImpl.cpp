@@ -17,10 +17,12 @@ namespace obotcha {
 _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,SocketOption option):_SocketImpl(address,option) {
     mSockAddr.sin_family = AF_INET;
     mSockAddr.sin_port = htons(address->getPort());
-
+    
     if(address != nullptr) {
+        printf("address is %s \n",address->getAddress()->toChars());
         mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
     } else {
+        printf("address2 is null \n");
         mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     }
 
@@ -31,5 +33,10 @@ int _DatagramSocketImpl::connect() {
     //nothing
     return 0;
 }
+
+int _DatagramSocketImpl::bind() {
+    return ::bind(sock,(struct sockaddr*)&mSockAddr,sizeof(mSockAddr));
+}
+
 
 }

@@ -27,7 +27,9 @@ public:
 
 private:
     sp<_Socket> mSocket;
+    struct sockaddr_in server_addr;
 };
 
 }
+
 #endif

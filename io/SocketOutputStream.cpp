@@ -1,14 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <netinet/in.h>  
+#include <arpa/inet.h>
 
 #include "SocketOutputStream.hpp"
 #include "Socket.hpp"
+#include "InetAddress.hpp"
 
 namespace obotcha {
 
 _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
     mSocket = s;
+    if(mSocket->getType() == st(Socket)::Udp) {
+        server_addr.sin_family = AF_INET;
+        InetAddress addr = s->getInetAddress();
+        server_addr.sin_port = htons(addr->getPort());          
+        server_addr.sin_addr.s_addr = inet_addr(addr->getAddress()->toChars());
+    }
 }
 
 long _SocketOutputStream::write(char c) {
@@ -24,11 +33,26 @@ long _SocketOutputStream::write(ByteArray data) {
 long _SocketOutputStream::write(ByteArray data,long size) {
     byte *sendData = data->toValue();
     if(mSocket == nullptr || mSocket->isClosed()) {
+        printf("socketoutput write fail \n");
         return -1;
     }
 
     while(1) {
-        int result = ::write(mSocket->getFd(),sendData,size);
+        int result = -1;
+        printf("mSocket type is %d \n",mSocket->getType());
+        switch(mSocket->getType()) {
+            case st(Socket)::Tcp:
+                printf("send tcp \n");
+                result = ::write(mSocket->getFd(),sendData,size);
+            break;
+
+            case st(Socket)::Udp:
+                printf("send udp \n");
+                result = ::sendto(mSocket->getFd(), data->toValue(), data->size(), 0, (struct sockaddr *)&server_addr, sizeof(sockaddr_in));
+            break;
+        }
+        
+        printf("socketoutput write result is %d,errno is %s \n",result,strerror(errno));
         if(result < 0) {
             if(errno == EAGAIN) {
                 usleep(1000*10);

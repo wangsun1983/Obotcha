@@ -15,6 +15,7 @@ DECLARE_SIMPLE_CLASS(DatagramSocketImpl) IMPLEMENTS(SocketImpl){
 public:
     _DatagramSocketImpl(InetAddress address,SocketOption option);
     int connect();
+    int bind();
 
 };
 

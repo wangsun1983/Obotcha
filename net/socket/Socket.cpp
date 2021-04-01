@@ -15,7 +15,8 @@ _Socket::_Socket(int v,InetAddress addr,SocketOption option) {
     mInput = nullptr;
     mOutput = nullptr;
     mStatus = Idle;
-
+    type = v;
+    
     switch(v) {
         case Tcp:
         mSock = createSocksSocketImpl(addr,option);
@@ -46,6 +47,10 @@ InetAddress _Socket::getInetAddress() {
 
 int _Socket::connect() {
     return mSock->connect();
+}
+
+int _Socket::bind() {
+    return mSock->bind();
 }
 
 void _Socket::close() {
