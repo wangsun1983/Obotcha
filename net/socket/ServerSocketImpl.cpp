@@ -1,4 +1,9 @@
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include "ServerSocketImpl.hpp"
+#include "SocketBuilder.hpp"
 
 namespace obotcha {
 
@@ -23,6 +28,21 @@ int _ServerSocketImpl::bind() {
 
     return 0;
 }
-    
+
+Socket _ServerSocketImpl::accept() {
+    struct sockaddr_in client_address;
+    socklen_t client_addrLength = sizeof(struct sockaddr_in);
+    int clientfd = ::accept(sock,( struct sockaddr* )&client_address, &client_addrLength );
+    if(clientfd > 0) {
+        InetAddress address = createInetAddress(createString(inet_ntoa(client_address.sin_addr)),
+                                                ntohs(client_address.sin_port));
+        
+        return createSocketBuilder()->setAddress(address)->setFd(clientfd)->newSocket();
+    }
+
+    return nullptr;
+}
+
+
 
 }

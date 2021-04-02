@@ -27,4 +27,9 @@ int _ServerSocket::close() {
     return mSock->close();
 }
 
+Socket _ServerSocket::accept() {
+    return mSock->accept();
+}
+    
+
 }

@@ -16,7 +16,8 @@ public:
     enum Type {
         Tcp,
         Udp,
-        Local
+        Local,
+        Fd,
     };
 
     _Socket(int,InetAddress host,SocketOption option);

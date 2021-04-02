@@ -5,12 +5,15 @@
 #include "StrongPointer.hpp"
 
 #include "LocalSocketImpl.hpp"
+#include "Socket.hpp"
+
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(ServerLocalSocketImpl) IMPLEMENTS(LocalSocketImpl) {
 public:
     _ServerLocalSocketImpl(InetAddress address,SocketOption option);
     int bind();
+    Socket accept();
     
 };
 

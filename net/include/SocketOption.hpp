@@ -23,14 +23,18 @@ public:
     _SocketOption* setRecvTimeout(int);
     _SocketOption* setSendTimeout(int);
     _SocketOption* setConnectionNum(int);
+    _SocketOption* setBuffSize(int);
 
     int getRcvTimeout();
     int getSendTimeout();
     int getConnectionNum();
+    int getBuffSize();
+
 private:
     int mRcvTimeout;
     int mSendTimeout;
     int mConnectNum;
+    int mBuffSize;
 };
 
 }

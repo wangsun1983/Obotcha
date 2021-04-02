@@ -16,6 +16,10 @@ public:
     int bind();
     int getFd();
     int close();
+
+    //add 
+    Socket accept();
+
 private:
     SocketImpl mSock;
 };

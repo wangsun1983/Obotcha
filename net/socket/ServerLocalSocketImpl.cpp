@@ -1,4 +1,10 @@
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include "ServerLocalSocketImpl.hpp"
+#include "InetAddress.hpp"
+#include "SocketBuilder.hpp"
 
 namespace obotcha {
 
@@ -8,6 +14,7 @@ _ServerLocalSocketImpl::_ServerLocalSocketImpl(InetAddress address,SocketOption 
 }
 
 int _ServerLocalSocketImpl::bind() {
+    printf("serverAddr.sun_path is %s,fd is %d \n",serverAddr.sun_path,sock);
     int len = offsetof(struct sockaddr_un, sun_path) + strlen(serverAddr.sun_path);
 
     if( ::bind(sock, (struct sockaddr *)&serverAddr, len) < 0) {
@@ -27,6 +34,20 @@ int _ServerLocalSocketImpl::bind() {
     }
     
     return 0;
+}
+
+Socket _ServerLocalSocketImpl::accept() {
+    struct sockaddr_in client_address;
+    socklen_t client_addrLength = sizeof(struct sockaddr_in);
+    int clientfd = ::accept(sock,( struct sockaddr* )&client_address, &client_addrLength );
+    if(clientfd > 0) {
+        InetAddress address = createInetAddress(createString(inet_ntoa(client_address.sin_addr)),
+                                                ntohs(client_address.sin_port));
+        
+        return createSocketBuilder()->setAddress(address)->setFd(clientfd)->newLocalSocket();
+    }
+
+    return nullptr;
 }
     
 }

@@ -23,6 +23,10 @@ _SocketOption* _SocketOption::setConnectionNum(int v) {
     return this;
 }
 
+_SocketOption* _SocketOption::setBuffSize(int s) {
+    mBuffSize = s;
+}
+
 int _SocketOption::getRcvTimeout() {
     return mRcvTimeout;
 }
@@ -35,6 +39,9 @@ int _SocketOption::getConnectionNum() {
     return mConnectNum;
 }
 
+int _SocketOption::getBuffSize() {
+    return mBuffSize;
+}
 
 }
 

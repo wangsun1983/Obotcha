@@ -41,14 +41,14 @@ long _SocketOutputStream::write(ByteArray data,long size) {
         int result = -1;
         printf("mSocket type is %d \n",mSocket->getType());
         switch(mSocket->getType()) {
-            case st(Socket)::Tcp:
-                printf("send tcp \n");
-                result = ::write(mSocket->getFd(),sendData,size);
-            break;
-
             case st(Socket)::Udp:
                 printf("send udp \n");
                 result = ::sendto(mSocket->getFd(), data->toValue(), data->size(), 0, (struct sockaddr *)&server_addr, sizeof(sockaddr_in));
+            break;
+
+            default:
+                printf("send tcp \n");
+                result = ::write(mSocket->getFd(),sendData,size);
             break;
         }
         

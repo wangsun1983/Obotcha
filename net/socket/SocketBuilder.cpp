@@ -25,8 +25,11 @@ _SocketBuilder::_SocketBuilder() {
 Socket _SocketBuilder::newSocket() {
     if(fd == -1) {
         return createSocket(st(Socket)::Tcp,address,option);
-    } 
-    return createSocket(fd);
+    }
+
+    Socket s = createSocket(fd);
+    s->setInetAddress(address);
+    return s;
 }
 
 Socket _SocketBuilder::newDatagramSocket() {
@@ -34,7 +37,13 @@ Socket _SocketBuilder::newDatagramSocket() {
 }
 
 Socket _SocketBuilder::newLocalSocket() {
-    return createSocket(st(Socket)::Local,address,option);
+    if(fd == -1) {
+        return createSocket(st(Socket)::Local,address,option);
+    }
+
+    Socket s = createSocket(fd);
+    s->setInetAddress(address);
+    return s;
 }
 
 ServerSocket _SocketBuilder::newServerSocket() {

@@ -5,6 +5,7 @@
 #include "Socket.hpp"
 #include "SocksSocketImpl.hpp"
 #include "DatagramSocketImpl.hpp"
+#include "LocalSocketImpl.hpp"
 #include "InitializeException.hpp"
 #include "SocketInputStream.hpp"
 #include "SocketOutputStream.hpp"
@@ -25,6 +26,10 @@ _Socket::_Socket(int v,InetAddress addr,SocketOption option) {
         case Udp:
         mSock = createDatagramSocketImpl(addr,option);
         return;
+
+        case Local:
+        mSock = createLocalSocketImpl(addr,option);
+        return;
     }
 
     Trigger(InitializeException,"ivalid type");
@@ -35,6 +40,7 @@ _Socket::_Socket(int fd) {
     mOutput = nullptr;
     mSock = createSocketImpl(fd);
     mStatus = Idle;
+    type = Fd;
 }
 
 void _Socket::setInetAddress(InetAddress addr) {
