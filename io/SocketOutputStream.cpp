@@ -47,7 +47,7 @@ long _SocketOutputStream::write(ByteArray data,long size) {
             break;
 
             default:
-                printf("send tcp \n");
+                printf("send tcp,fd is %d,sendData is %s,size is %d \n",mSocket->getFd(),data->toString()->toChars(),size);
                 result = ::write(mSocket->getFd(),sendData,size);
             break;
         }

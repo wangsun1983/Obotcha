@@ -104,6 +104,11 @@ _WebSocketFrame::_WebSocketFrame(WebSocketHeader h,String m) {
     mMessage = m;
 }
 
+_WebSocketFrame::_WebSocketFrame() {
+    mHeader = nullptr;
+    mMessage = nullptr;
+}
+
 _WebSocketFrame::_WebSocketFrame(WebSocketHeader h,ByteArray d) {
     mHeader = h;
     mData = d;

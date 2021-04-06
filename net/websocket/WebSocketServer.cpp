@@ -68,95 +68,37 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
         case SocketEvent::Message: {
             bool isRmClient = false;
             WebSocketParser parser = client->getParser();
-            WebSocketBuffer defferedBuff = client->getDefferedBuffer();
-            if (defferedBuff != nullptr) {
-                if(defferedBuff->mBuffer != nullptr) {
-                    defferedBuff->mBuffer->append(pack);
-                } else {
-                    defferedBuff->mBuffer = pack;
-                }
-                pack = defferedBuff->mBuffer;
-            }
-            while (1) {
-                int readIndex = 0;
-                if (!parser->validateEntirePacket(pack)) {
-                    // it is not a full packet
-                    if (defferedBuff == nullptr) {
-                        defferedBuff = createWebSocketBuffer();
-                        defferedBuff->mBuffer = pack;
-                        st(WebSocketClientManager)::getInstance()->getClient(s)->setDefferedBuffer(defferedBuff);
+
+            parser->pushParseData(pack);
+            ArrayList<WebSocketFrame> lists = parser->doParse();
+
+            lists->foreach([this,&client](WebSocketFrame &frame) {
+                int opcode = frame->getHeader()->getOpCode();
+                switch(opcode) {
+                    case st(WebSocketProtocol)::OPCODE_CONTROL_PING: {
+                        String pingmessage = frame->getData()->toString();
+                        if (mWsListener->onPing(client, pingmessage) == PingResultResponse) {
+                            client->sendPongMessage(frame->getData());
+                        }
                     }
                     break;
-                }
-                parser->setParseData(pack);
-                WebSocketHeader header = parser->parseHeader();
 
-                int opcode = header->getOpCode();
-                int framesize = header->getFrameLength();
-                int headersize = header->getHeadSize();
-                
-                if (opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
-                    ByteArray msgData = parser->parseContent(true);
-                    String msg = msgData->toString();
-                    WebSocketFrame frame = createWebSocketFrame(header,msg);
-                    mWsListener->onMessage(client, frame);
-                } else if (opcode == st(WebSocketProtocol)::OPCODE_BINARY) {
-                    if (header->isFinalFrame()) {
-                        ByteArray msgData = parser->parseContent(true);
-                        WebSocketFrame frame = createWebSocketFrame(header,msgData);
-                        mWsListener->onData(client, frame);
-                    } else {
-                        ByteArray msgData = parser->parseContent(false);
-                        WebSocketBuffer buff = createWebSocketBuffer();
-                        buff->mBuffer = msgData;
-                        client->setContinueBuffer(buff);
+                    case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:{
+                        mWsListener->onPong(client, frame->getData()->toString());
                     }
-                } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PING) {
-                    ByteArray buff = parser->parsePingBuff();
-                    if (mWsListener->onPing(client, buff->toString()) == PingResultResponse) {
-                        ByteArray resp = client->getComposer()->genPongMessage(client,buff->toString());
-                        send(fd,resp->toValue(),resp->size(),0);
-                    }
-                } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PONG) {
-                    ByteArray pong = parser->parsePongBuff();
-                    String msg = pong->toString();
-                    mWsListener->onPong(client, msg);
-                } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE) {
-                    isRmClient = true;
                     break;
-                } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
-                    ByteArray msgData = parser->parseContent(false);
-                    WebSocketBuffer continuebuff = client->getContinueBuffer();
-                    continuebuff->mBuffer->append(msgData);
 
-                    if (header->isFinalFrame()) {
-                        ByteArray out = parser->validateContinuationContent(
-                            client->getContinueBuffer()->mBuffer);
-                        WebSocketFrame frame = createWebSocketFrame(header,out);
-                        mWsListener->onData(client, frame);
-                        continuebuff->mBuffer = nullptr;
+                    case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE: {
+                        st(WebSocketClientManager)::getInstance()->removeClient(client);
+                        mWsListener->onDisconnect(client);
                     }
+                    break;
+
+                    default:
+                        mWsListener->onMessage(client,frame);
                 }
-
-                // check whether there are two ws messages received in one buffer!
-                // len -= (framesize + headersize);
-                int resetLength = (pack->size() - (framesize + headersize));
-                readIndex += (framesize + headersize);
-                
-                if (resetLength > 0) {
-                    byte *pdata = pack->toValue();
-                    pack = createByteArray(&pdata[readIndex], resetLength);
-                    continue;
-                }
-
-                client->setDefferedBuffer(nullptr);
-                break;
-            }
-
-            if(isRmClient) {
-                st(WebSocketClientManager)::getInstance()->removeClient(client);
-                mWsListener->onDisconnect(client);
-            }
+                return 1;
+            });
         }
         break;
 

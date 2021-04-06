@@ -22,10 +22,10 @@ cflags = -fpic \
 		-I ../../external/yaml/include \
 		-I ../../external/crc32/include \
 		-I ../../external/openssl/include \
-		-I ../../external/uuid/include \
 		-I ../../external/http_parser/include \
 		-I ../../external/libco \
 		-I ../../external/glog/include \
+		-I ../../external/uuid/include \
 		-g \
 		-std=c++14 \
 
