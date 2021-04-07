@@ -89,6 +89,8 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                     break;
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE: {
+                        mSocketMonitor->remove(client->getSocket());
+                        client->getSocket()->close();
                         st(WebSocketClientManager)::getInstance()->removeClient(client);
                         mWsListener->onDisconnect(client);
                     }

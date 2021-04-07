@@ -195,11 +195,12 @@ bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
         return false;
     }
 
-    ByteArrayReader preReader = createByteArrayReader(pack);
+    ByteArrayReader preReader = createByteArrayReader(pack,st(ByteArrayReader)::BigEndian);
     //check whether it has an entire header
     int b0 = (preReader->readByte() & 0xff);
     int b1 = (preReader->readByte() & 0xff);
-    
+    int opcode = b0 & st(WebSocketProtocol)::B0_MASK_OPCODE;
+
     bool isMask = ((b1 & st(WebSocketProtocol)::B1_FLAG_MASK) != 0);
     // Get frame length, optionally reading from follow-up bytes if indicated by special values.
     long frameLength = b1 & st(WebSocketProtocol)::B1_MASK_LENGTH;
@@ -229,7 +230,11 @@ bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
             contentSize = preReader->readLong();
         }
     }
-
+    
+    if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE && contentSize == 0) {
+        return true;
+    }
+    
     if(headSize >= pack->size()) {
         return false;
     }

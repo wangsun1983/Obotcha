@@ -13,15 +13,15 @@ extern int testReflectToSimpleArrayJson();
 extern int testReflectNumber();
 
 int main() {
-  //testReflectFieldRead();
-  //testReflectFieldWrite();
-  //testReflectComplexFieldRead();
-  //testReflectComplexFieldWrite();
-  //testReflectToJson();
-  //testReflectArrayListFieldRead();
-  //testReflectArrayListFieldWrite();
-  //testReflectToSimpleJson();
-  //testReflectToArrayJson();
-  //testReflectToSimpleArrayJson();
+  testReflectFieldRead();
+  testReflectFieldWrite();
+  testReflectComplexFieldRead();
+  testReflectComplexFieldWrite();
+  testReflectToJson();
+  testReflectArrayListFieldRead();
+  testReflectArrayListFieldWrite();
+  testReflectToSimpleJson();
+  testReflectToArrayJson();
+  testReflectToSimpleArrayJson();
   testReflectNumber();
 }
