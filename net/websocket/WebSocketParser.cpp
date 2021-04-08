@@ -11,9 +11,9 @@
 namespace obotcha {
 
 void _WebSocketParser::pushParseData(ByteArray data) {
-    printf("push parse data size is %d \n",data->size());
+    //printf("push parse data size is %d \n",data->size());
     
-    data->dump("push parse data");
+    //data->dump("push parse data");
 
     if(mData == nullptr) {
         mData = data;

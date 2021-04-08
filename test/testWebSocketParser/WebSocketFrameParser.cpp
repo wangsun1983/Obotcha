@@ -73,7 +73,6 @@ int testFrameParser() {
     printf("frame is %s \n",frame->getMessage()->toChars());
   }
   //case 2
-#if 0
   {
       size_t offset = 0;
       const char *header = "\x81\xFE";
@@ -81,15 +80,66 @@ int testFrameParser() {
       const char *payload = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin hendrerit ornare tortor ut euismod. Nunc finibus convallis sem, at imperdiet ligula commodo id. Nam bibendum nec augue in posuere mauris.";
       uint16_t length = strlen(payload);
       char *payload_copy = (char *)WSS_copy((void *)payload, length);
-      char *payload_frame = (char *)malloc((2+2+4+length+1)*sizeof(char));
+      char *payload_frame = (char *)malloc((2+2+4+length)*sizeof(char));
       uint16_t len = htons(length);
+      printf("length is %x,len is %x \n",length,len);
       memcpy(payload_frame, header, 2);
       memcpy(payload_frame+2, &len, 2);
       memcpy(payload_frame+2+2, key, 4);
-      memcpy(payload_frame+2+2+4, (const char *)mask(key, payload_copy, length), length);
+      memcpy(payload_frame+2+2+4, (const char *)mask((char *)key, payload_copy, length), length);
 
+      WebSocketHybi13Parser parser = createWebSocketHybi13Parser();
+      ByteArray loadData = createByteArray((const byte *)payload_frame,(2+2+4+length));
+      parser->pushParseData(loadData);
+      ArrayList<WebSocketFrame> msgDatas = parser->doParse();
+      printf("trace3 !!!,msgData size is %d \n",msgDatas->size());
+      WebSocketFrame frame = msgDatas->get(0);
+      printf("trace3 frame is %s \n",frame->getMessage()->toChars());
   }
-#endif
+
+  //case3
+  {
+    size_t offset = 0;
+    const char *header = "\x81\xFF";
+    const char *key = "\x37\xfa\x21\x3d";
+    const char *p = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin hendrerit ornare tortor ut euismod. Nunc finibus convallis sem, at imperdiet ligula commodo id. Nam bibendum nec augue in posuere mauris.";
+    char *payload = (char*)malloc(66001);
+    size_t plen = strlen(p);
+    printf("plen is %d \n",plen);
+    size_t poff = 0;
+    while(poff != 66000) {
+        memcpy(payload+poff, p, plen);
+        poff+=plen;
+    }
+
+    uint64_t length = strlen(payload);
+    printf("length is %d \n",length);
+
+    char *payload_copy = (char *)WSS_copy((void *)payload, length);
+    char *payload_frame = (char *)malloc((2+sizeof(uint64_t)+4+length)*sizeof(char));
+    uint64_t len = htons64(length);
+    memcpy(payload_frame, header, 2);
+    memcpy(payload_frame+2, &len, sizeof(uint64_t));
+    memcpy(payload_frame+2+sizeof(uint64_t), key, 4);
+    memcpy(payload_frame+2+sizeof(uint64_t)+4, (const char *)mask((char *)key, payload_copy, length), length);
+    WebSocketHybi13Parser parser = createWebSocketHybi13Parser();
+    ByteArray loadData = createByteArray((const byte *)payload_frame,length+6+sizeof(uint64_t));
+    parser->pushParseData(loadData);
+    ArrayList<WebSocketFrame> msgDatas = parser->doParse();
+    printf("trace4 !!!,msgData size is %d \n",msgDatas->size());
+    WebSocketFrame frame = msgDatas->get(0);
+    //printf("trace4 frame is %s \n",frame->getMessage()->toChars());
+
+    /*wss_frame_t *frame = WSS_parse_frame(payload_frame, length+6+sizeof(uint64_t), &offset);
+    cr_assert(NULL != frame);
+    cr_assert(offset == 66014);
+    cr_assert(strncmp(frame->payload, payload, frame->payloadLength) == 0);
+    WSS_free_frame(frame);
+    WSS_free((void **)&payload);
+    WSS_free((void **)&payload_copy);
+    WSS_free((void **)&payload_frame);*/
+  }
+
 
 
 }

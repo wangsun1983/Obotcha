@@ -240,6 +240,7 @@ void _ByteArray::dump(const char *v) {
     for(int i = 0;i < mSize;i++) {
         printf("0x%x ",this->buff[i]);
     }
+    printf("\n");
 }
 
 void _ByteArray::dump(String v) {
