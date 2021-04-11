@@ -14,7 +14,6 @@ _ServerLocalSocketImpl::_ServerLocalSocketImpl(InetAddress address,SocketOption 
 }
 
 int _ServerLocalSocketImpl::bind() {
-    printf("serverAddr.sun_path is %s,fd is %d \n",serverAddr.sun_path,sock);
     int len = offsetof(struct sockaddr_un, sun_path) + strlen(serverAddr.sun_path);
 
     if( ::bind(sock, (struct sockaddr *)&serverAddr, len) < 0) {

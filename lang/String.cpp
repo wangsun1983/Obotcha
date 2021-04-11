@@ -333,8 +333,15 @@ String _String::trim() {
 
 String _String::trimAll() {
     if(m_str.size() != 0) {
-        String ss = createString(m_str);
-        return ss->replaceAll(" ","");
+        std::string trim_str = std::string(m_str);
+        int index = 0;
+        if(!trim_str.empty()) {
+            while( (index = trim_str.find(' ',index)) != std::string::npos) {
+                trim_str.erase(index,1);
+            }
+        }
+
+        return createString(trim_str);
     }
 
     return nullptr;

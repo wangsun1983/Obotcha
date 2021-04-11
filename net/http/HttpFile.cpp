@@ -21,8 +21,7 @@ _HttpFile::_HttpFile(String realname) {
         mFile = createFile(filepath->append(newName));
 
         if(!mFile->exists()) {
-            int result = mFile->createNewFile();
-            printf("_HttpFile result is %d \n",result);
+            mFile->createNewFile();
             break;
         }
     }

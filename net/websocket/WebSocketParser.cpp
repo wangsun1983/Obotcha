@@ -11,10 +11,6 @@
 namespace obotcha {
 
 void _WebSocketParser::pushParseData(ByteArray data) {
-    //printf("push parse data size is %d \n",data->size());
-    
-    //data->dump("push parse data");
-
     if(mData == nullptr) {
         mData = data;
     } else {
@@ -25,13 +21,11 @@ void _WebSocketParser::pushParseData(ByteArray data) {
 }
 
 ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
-    printf("doParse start\n");
     ArrayList<WebSocketFrame> mFrames = createArrayList<WebSocketFrame>();
 
     while (1) {
         int readIndex = 0;
         if (!validateEntirePacket(mData)) {
-            printf("doParse invalid data\n");
             break;
         }
 
@@ -40,7 +34,6 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
         int opcode = header->getOpCode();
         int framesize = header->getFrameLength();
         int headersize = header->getHeadSize();
-        printf("opcode is %d \n",opcode);
 
         if (opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
             ByteArray msgData = parseContent(true);

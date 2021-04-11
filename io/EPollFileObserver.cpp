@@ -75,11 +75,9 @@ _EPollFileObserver::_EPollFileObserver():_EPollFileObserver(DefaultEpollSize){
 
 int _EPollFileObserver::removeObserver(int fd) {
     //we should clear
-    //printf("remove observer start fd is %d \n",fd);
     AutoLock l(mListenerMutex);
     epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
     mListeners->remove(fd);
-    //printf("remove observer finish fd is %d \n",fd);
     return 0;
 }
 

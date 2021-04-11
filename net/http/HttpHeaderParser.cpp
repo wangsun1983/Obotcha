@@ -24,14 +24,12 @@ HttpHeader _HttpHeaderParser::doParse() {
     const byte *LF = (const byte *)st(HttpText)::LF->toChars();
 
     while(mReader->readNext(v) != ByteRingArrayReadComplete) {
-        //printf("header parse v is %c \n",v);
         switch(mStatus) {
             case Idle:{
                 if(v == ' ') {
                     ByteArray method = mReader->pop();
                     String tag = method->toString()->trimAll();
                     int methodid = st(HttpMethodParser)::doParse(tag);
-                    printf("method id is %d,tag is %s \n",methodid,tag->toChars());
                     if(methodid != -1) {
                         mHeader->setMethod(methodid);
                         mStatus = Url;
@@ -39,7 +37,6 @@ HttpHeader _HttpHeaderParser::doParse() {
                         //this may be a response
                         mHeader->setType(st(HttpHeader)::Response);
                         HttpVersion ver = st(HttpVersionParser)::doParse(tag);
-                        //printf("tag is %s \n",tag->toChars());
                         if(ver != nullptr) {
                             mHeader->setVersion(ver);
                             mStatus = State;
@@ -146,7 +143,6 @@ HttpHeader _HttpHeaderParser::doParse() {
                 if(v == LF[0] || mCrlfCount == 2) {
                     //we should check whether it is end
                     ByteArray content = mReader->pop();
-                    //printf("content size is %d,content is %s \n",content->size(),content->toString()->toChars());
                     if(content->size() == 2 || content->size() == 1) {
                         mStatus = Idle;
                         return mHeader;
@@ -177,7 +173,6 @@ HttpHeader _HttpHeaderParser::doParse() {
 
                         value = value->append(appendValue);
                         mHeader->setValue(mKey,value);
-                        //printf("key is %s,value is%s \n",mKey->toChars(),value->toChars());
                         mCrlfCount = 0;
                     }
                     
@@ -217,8 +212,6 @@ HttpHeader _HttpHeaderParser::doParse() {
                     mCrlfCount = 0;
                     parseParticularHeader(mKey,mValue);
                     mHeader->setValue(mKey,mValue);
-                    //printf("start is %d,size is %d \n",start,size);
-                    //printf("key is %s,value is%s \n",mKey->toChars(),mValue->toChars());
                     //may be we should parse value
                     mStatus = ContentKey;
                     mNextStatus = -1;

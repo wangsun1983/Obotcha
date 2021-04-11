@@ -37,13 +37,10 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
             }
             
             ArrayList<HttpPacket> packets = info->pollHttpPacket();
-            printf("http server on socket message \n");
             if(packets != nullptr && packets->size() != 0) {
-                printf("http server on socket message2 \n");
                 HttpResponseWriter writer = createHttpResponseWriter(info);
                 ListIterator<HttpPacket> iterator = packets->getIterator();
                 while(iterator->hasValue()) {
-                    printf("http server on socket message3 \n");
                     mHttpListener->onHttpMessage(event,info,writer,iterator->getValue());
                     iterator->next();
                 }

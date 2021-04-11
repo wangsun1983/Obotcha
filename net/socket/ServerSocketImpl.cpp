@@ -12,7 +12,6 @@ _ServerSocketImpl::_ServerSocketImpl(InetAddress address,SocketOption option):_S
 }
 
 int _ServerSocketImpl::bind() {
-    printf("server socket impl is %d \n",sock);
     if(::bind(sock, (struct sockaddr *)&mSockAddr, sizeof(mSockAddr)) < 0) {
         return -NetBindFail;
     }

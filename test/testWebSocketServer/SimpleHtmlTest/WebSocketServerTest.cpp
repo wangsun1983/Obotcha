@@ -90,7 +90,7 @@ int main() {
     MyWsListener l = createMyWsListener();
 
     WebSocketServer server = createWebSocketServer();
-    InetAddress address = createInetAddress("192.168.1.9",1111);
+    InetAddress address = createInetAddress("192.168.1.5",1111);
     
     server->bind(address,"/mytest",l);
     server->start();

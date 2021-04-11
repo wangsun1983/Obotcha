@@ -143,10 +143,6 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                            SocketListener &listener,
                            int serverfd,
                            SocketMonitor &monitor) {
-        printf("fd is %d,server is %d,event is %x\n",fd,serverfd,events);
-        if(data != nullptr) {
-            printf("data is %s \n",data->toString()->toChars());
-        }
         if(fd == serverfd) {
             struct sockaddr_in client_address;
             socklen_t client_addrLength = sizeof(struct sockaddr_in);
@@ -173,10 +169,6 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
         {
             AutoLock l(monitor->mMutex);
             s = monitor->mSocks->get(fd);
-        }
-
-        if(s == nullptr) {
-            printf("fd is %d,s is null \n",fd);
         }
 
         if((events & EPOLLIN) != 0) {

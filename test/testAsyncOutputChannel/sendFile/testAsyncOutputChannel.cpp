@@ -24,13 +24,6 @@ int main() {
     
     OutputStream stream = s->getOutputStream();
     long index = 0;
-#if 0
-    while(index < 1024*32) {
-        String data = createString("abcdefghijklmn opqrst uvwxyz abcdefghijklmn opqrst uvwxyz abcdefghijklmn opqrst uvwxyz abcdefghijklmn opqrst uvwxyz abcdefghijklmn opqrst uvwxyz abcdefghijklmn opqrst uvwxyz abcdefghijklmn opqrst uvwxyz abcdefghijklmn opqrst uvwxyz what this is index:")->append(createString(index),createString("\n"));
-        index++;
-        stream->write(createByteArray(data));
-    }
-#endif
  
     File file = createFile("testdata.img");
     FileInputStream inputstream = createFileInputStream(file);

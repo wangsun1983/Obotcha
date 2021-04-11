@@ -164,7 +164,6 @@ void _HttpContentTypeTool::addNode(FileTypeSearchNode *root,const char *content,
 
 int _HttpContentTypeTool::searchNode(FileTypeSearchNode *root,const char *content,int size) {
     int index = content[0] - 0x21;
-    printf("content is %c \n",content[0]);
     if(root->next[index] == nullptr) {
         return -1;
     }
