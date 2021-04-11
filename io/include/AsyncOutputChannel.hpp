@@ -13,13 +13,19 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(AsyncOutputChannel) {
 public:
-    _AsyncOutputChannel(int fd);
+    typedef std::function<long (int,ByteArray)> WriteCallback;
+
+    _AsyncOutputChannel(int fd,WriteCallback callback = nullptr);
     void write(ByteArray);
+    void notifyWrite();
+    int getFd();
+    void close();
 
 private:
     int mFd;
     Mutex mMutex;
     LinkedList<ByteArray> mDatas;
+    WriteCallback writeCb;
 };
 
 }

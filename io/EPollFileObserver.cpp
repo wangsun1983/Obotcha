@@ -22,7 +22,7 @@ void _EPollFileObserver::run() {
             LOG(ERROR)<<"epoll_wait count is -1";
             return;
         }
-
+        
         for(int i = 0; i < epoll_events_count; i++) {
             int fd = events[i].data.fd;
             if(fd == mPipe->getReadPipe()) {
@@ -90,7 +90,7 @@ void _EPollFileObserver::addEpollFd(int fd,uint32_t events) {
 
     ev.data.fd = fd;
     ev.events = events;
-    fcntl(fd, F_SETFL, fcntl(fd, F_GETFD, 0)| O_NONBLOCK);
+    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0)| O_NONBLOCK);
     epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
 }
 

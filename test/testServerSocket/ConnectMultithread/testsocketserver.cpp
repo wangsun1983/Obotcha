@@ -23,21 +23,17 @@ public:
 
   void onSocketMessage(int event ,Socket socket ,ByteArray data) {
     switch(event) {
-      case Connect:
+      case st(Socket)::Connect:
       connectCount->incrementAndGet();
-      //mSocketMonitor->bind(socket,AutoClone(this));
       break;
 
-      case Message:
-      //printf("get message is %s \n",data->toString()->toChars());
+      case st(Socket)::Message:
       messageCount->incrementAndGet();
       socket->getOutputStream()->write(data);
-      //printf("send message \n");
       break;
 
-      case Disconnect:
+      case st(Socket)::Disconnect:
       disconnectCount->incrementAndGet();
-      //mSocketMonitor->remove(socket);
       break;
     }
   }
@@ -47,12 +43,12 @@ private:
 };
 
 int main() {
-  InetAddress inet = createInetAddress("192.168.1.5",1234);
+  InetAddress inet = createInetAddress("192.168.1.3",1234);
   ServerSocket server = createSocketBuilder()->setAddress(inet)->newServerSocket();
   server->bind();
   SocketMonitor monitor = createSocketMonitor(4);
   monitor->bind(server,createListener1(monitor));
-  sleep(30);
+  sleep(200);
 
   if(connectCount->get() != 1024*32 || disconnectCount->get() != 1024*32 || messageCount->get() != 1024*32) {
     printf("---[testServerSocket ConnectCountTest case1,connectCount is %d,disconnectCount is %d,messageCount is %d] [FAILED]--- \n"

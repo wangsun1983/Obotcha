@@ -6,6 +6,7 @@
 #include "StrongPointer.hpp"
 
 #include "OutputStream.hpp"
+#include "AsyncOutputChannel.hpp"
 
 namespace obotcha {
 
@@ -26,7 +27,10 @@ public:
     void flush();
 
 private:
+    long _write(int,ByteArray);
+
     sp<_Socket> mSocket;
+    AsyncOutputChannel mChannel;
     struct sockaddr_in server_addr;
 };
 

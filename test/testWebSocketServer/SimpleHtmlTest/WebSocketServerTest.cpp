@@ -24,24 +24,21 @@ public:
     }
 
     int onMessage(WebSocketClientInfo client,WebSocketFrame message) {
-        
+        printf("message is %s \n",message->getMessage()->toChars());
         mMessage = message->getMessage();
-        if(mMessage != nullptr) {
-            String response = createString("hello from server ");
-            printf("message len is %d \n",response->size());
-            ByteArray array = createByteArray(response);
-            printf("array size is %d \n",array->size());
-            //WebSocketFrameComposer mComposer = createWebSocketFrameComposer(false);
-            
-            //int ret = st(NetUtils)::sendTcpPacket(fd,mComposer->generateMessageFrame(st(WebSocketProtocol)::OPCODE_TEXT,createByteArray(response)));
-            WebSocketComposer composer = client->getComposer();
-
-            //ArrayList<ByteArray> text = composer->genTextMessage(client,createString("hello world from server"));
-            //int ret = st(NetUtils)::sendTcpPacket(fd,text->get(0));
-            int ret = client->sendTextMessage(createString("hello world from server"));
-            printf("onMessage send result is %d \n",ret); 
-        }
+        String response = createString("hello from server ");
+        printf("message len is %d \n",response->size());
+        ByteArray array = createByteArray(response);
+        printf("array size is %d \n",array->size());
+        //WebSocketFrameComposer mComposer = createWebSocketFrameComposer(false);
         
+        //int ret = st(NetUtils)::sendTcpPacket(fd,mComposer->generateMessageFrame(st(WebSocketProtocol)::OPCODE_TEXT,createByteArray(response)));
+        WebSocketComposer composer = client->getComposer();
+
+        //ArrayList<ByteArray> text = composer->genTextMessage(client,createString("hello world from server"));
+        //int ret = st(NetUtils)::sendTcpPacket(fd,text->get(0));
+        int ret = client->sendTextMessage(createString("hello world from server"));
+        printf("onMessage send result is %d \n",ret);
         mConditaion->notify();
         return 0;
     }
@@ -93,7 +90,7 @@ int main() {
     MyWsListener l = createMyWsListener();
 
     WebSocketServer server = createWebSocketServer();
-    InetAddress address = createInetAddress("192.168.1.5",1111);
+    InetAddress address = createInetAddress("192.168.1.9",1111);
     
     server->bind(address,"/mytest",l);
     server->start();

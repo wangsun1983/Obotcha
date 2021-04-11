@@ -19,6 +19,8 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/byteringarrayreader.o \
 	$(outtmp)/socketinputstream.o \
 	$(outtmp)/socketoutputstream.o \
+	$(outtmp)/asyncoutputchannel.o \
+	$(outtmp)/asyncoutputchannelpool.o \
 	
 
 $(outtmp)/file.o :$(ioDir)/File.cpp
@@ -77,3 +79,9 @@ $(outtmp)/socketinputstream.o :$(ioDir)/SocketInputStream.cpp
 
 $(outtmp)/socketoutputstream.o :$(ioDir)/SocketOutputStream.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/SocketOutputStream.cpp -o $(outtmp)/socketoutputstream.o 
+
+$(outtmp)/asyncoutputchannel.o :$(ioDir)/AsyncOutputChannel.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/AsyncOutputChannel.cpp -o $(outtmp)/asyncoutputchannel.o 
+
+$(outtmp)/asyncoutputchannelpool.o :$(ioDir)/AsyncOutputChannelPool.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/AsyncOutputChannelPool.cpp -o $(outtmp)/asyncoutputchannelpool.o 

@@ -43,6 +43,20 @@ _Socket::_Socket(int fd) {
     type = Fd;
 }
 
+void _Socket::setAsync() {
+    if(mStatus != Closed) {
+        fcntl(mSock->getFd(), F_SETFL, fcntl(mSock->getFd(), F_GETFL, 0)| O_NONBLOCK);
+    }
+}
+
+bool _Socket::isAsync() {
+    if(mStatus != Closed) {
+        return (fcntl(mSock->getFd(),F_GETFL) & O_NONBLOCK) != 0;
+    }
+
+    return false;
+}
+
 void _Socket::setInetAddress(InetAddress addr) {
     mSock->setInetAddress(addr);
 }

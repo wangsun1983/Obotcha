@@ -22,6 +22,9 @@ public:
 
     _Socket(int,InetAddress host,SocketOption option);
     _Socket(int);
+    void setAsync();
+    bool isAsync();
+    
     int connect();
     int bind();
 
