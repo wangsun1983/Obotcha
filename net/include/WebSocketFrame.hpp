@@ -61,16 +61,13 @@ private:
 
 DECLARE_SIMPLE_CLASS(WebSocketFrame) {
 public:
-    _WebSocketFrame(WebSocketHeader,String);
     _WebSocketFrame(WebSocketHeader,ByteArray);
     _WebSocketFrame();
     
     void setHeader(WebSocketHeader);
-    void setMessage(String message);
     void setData(ByteArray data);
 
     WebSocketHeader getHeader();
-    String getMessage();
     ByteArray getData();
 
 private:

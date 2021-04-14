@@ -13,6 +13,7 @@
 #include "LinkedList.hpp"
 #include "ArrayList.hpp"
 #include "ThreadPoolExecutor.hpp"
+#include "SpinLock.hpp"
 
 namespace obotcha {
 
@@ -58,7 +59,7 @@ private:
     Socket *mCurrentSockets;
     Condition mCondition;
 
-    Mutex mListenerMutex;
+    SpinLock mListenerMutex;
     HashMap<int,SocketListener> mListeners;
 
     //bool isStop

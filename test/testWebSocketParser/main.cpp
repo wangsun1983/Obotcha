@@ -17,8 +17,12 @@
 using namespace obotcha;
 
 extern int testFrameParser();
+extern int testSimpleFrameParser();
+extern int testFrameParserException();
 
 int main() {
-    testFrameParser();
+    testSimpleFrameParser();
+	//testFrameParser();
+    //testFrameParserException();
     return 0;
 }

@@ -36,7 +36,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
     mCurrentSockets = new Socket[threadnum];
     mCondition = createCondition();
 
-    mListenerMutex = createMutex();
+    mListenerMutex = createSpinLock();
     mListeners = createHashMap<int,SocketListener>();
     mThreadNum = threadnum;
     isStop = 1;
