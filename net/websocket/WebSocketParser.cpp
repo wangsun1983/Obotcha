@@ -54,8 +54,7 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
             }
         } else if (opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PING) {
             ByteArray buff = parsePingBuff();
-            WebSocketFrame frame = createWebSocketFrame();
-            frame->setHeader(header);
+            WebSocketFrame frame = createWebSocketFrame(header,buff);
             mFrames->add(frame);
             //if (mWsListener->onPing(client, buff->toString()) == PingResultResponse) {
             //    ByteArray resp = client->getComposer()->genPongMessage(client,buff->toString());
