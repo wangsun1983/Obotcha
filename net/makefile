@@ -29,7 +29,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpcontenttypetool.o \
 		$(outtmp)/httpurlbuilder.o \
 		$(outtmp)/httpresponse.o \
-		$(outtmp)/httpclient.o \
+		$(outtmp)/httpurlconnection.o \
 		$(outtmp)/httpmethod.o \
 		$(outtmp)/httpheader.o \
 		$(outtmp)/httpheaderparser.o \
@@ -133,8 +133,8 @@ $(outtmp)/socketmonitor.o :$(netDir)/socket/SocketMonitor.cpp
 $(outtmp)/httpxformparser.o :$(netDir)/http/HttpXFormUrlEncodedParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpXFormUrlEncodedParser.cpp -o $(outtmp)/httpxformparser.o 
 
-$(outtmp)/httpclient.o :$(netDir)/http/HttpClient.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClient.cpp -o $(outtmp)/httpclient.o 
+$(outtmp)/httpurlconnection.o :$(netDir)/http/HttpUrlConnection.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlConnection.cpp -o $(outtmp)/httpurlconnection.o 
 
 $(outtmp)/httpmethod.o :$(netDir)/http/HttpMethod.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMethod.cpp -o $(outtmp)/httpmethod.o 

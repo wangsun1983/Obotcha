@@ -5,6 +5,7 @@
 #include "ArrayList.hpp"
 #include "HashMap.hpp"
 #include "HttpUrl.hpp"
+#include "HttpUrlConnection.hpp"
 
 namespace obotcha {
 
@@ -162,6 +163,10 @@ String _HttpUrl::toQueryString() {
     }
 
     return url;
+}
+
+sp<_HttpUrlConnection> _HttpUrl::openConnection() {
+    return createHttpUrlConnection(AutoClone(this));
 }
 
 void _HttpUrl::dump() {

@@ -4,38 +4,69 @@
 #include "String.hpp"
 #include "ArrayList.hpp"
 #include "HashMap.hpp"
-#include "HttpCookie.hpp"
-#include "HttpClient.hpp"
-#include "HttpPacket.hpp"
 #include "InetAddress.hpp"
 #include "HttpHeader.hpp"
 #include "ByteArrayReader.hpp"
 #include "Error.hpp"
+#include "SocketBuilder.hpp"
+#include "HttpUrl.hpp"
+#include "HttpUrlConnection.hpp"
 #include "HttpRequestWriter.hpp"
+#include "URL.hpp"
 
 namespace obotcha {
 
-_HttpClient::_HttpClient() {
-    mPort = 80;
-    mTimeout = 5000;
+_HttpUrlConnection::_HttpUrlConnection(HttpUrl url) {
+    mUrl = url;
     mParser = createHttpPacketParser();
-    mKeepAlive = false;
 }
 
-
-void _HttpClient::setTimeout(int timeout) {
-
+_HttpUrlConnection* _HttpUrlConnection::setTimeout(int timeout) {
+    mTimeout = timeout;
 }
 
-void _HttpClient::setKeepAlive(bool keepalive) {
-
+_HttpUrlConnection* _HttpUrlConnection::setKeepAlive(bool keepalive) {
+    mKeepAlive = keepalive;
 }
 
-bool _HttpClient::isKeepAlive() {
+bool _HttpUrlConnection::isKeepAlive() {
    return mKeepAlive;
 }
 
-HttpResponse _HttpClient::execute(HttpRequest request) {
+int _HttpUrlConnection::connect() {
+    printf("mUrl host is %s \n",mUrl->getHost()->toChars());
+    ArrayList<InetAddress> address = createURL(mUrl->getHost())->getInetAddress();
+    if(address == nullptr || address->size() == 0) {
+        return -NetConnectFail;
+    }
+
+    InetAddress inetAddr = address->get(0);
+    printf("addr is %s \n",inetAddr->getAddress()->toChars());
+    inetAddr->setPort(mUrl->getPort());
+    mSocket = createSocketBuilder()->setAddress(inetAddr)->newSocket();
+    writer = createHttpRequestWriter(mSocket);
+}
+
+int _HttpUrlConnection::close() {
+    mSocket->close();
+}
+
+HttpResponse _HttpUrlConnection::execute(HttpRequest req) {
+    writer->write(req);
+    ByteArray result = createByteArray(1024*64);
+    int len = mInputStream->read(result);
+    result->quickShrink(len);
+    mParser->pushHttpData(result);
+    ArrayList<HttpPacket> packets = mParser->doParse();
+    if(result > 0) {
+        return Cast<HttpResponse>(packets->get(0));
+    }
+
+    return nullptr;
+}
+
+#if 0
+HttpResponse _HttpUrlConnection::execute(HttpRequest request) {
     //HttpPacket packet = createHttpPacket();
     //packet->setMethod(method);
     //packet->setUrl(url->getPath());
@@ -46,7 +77,7 @@ HttpResponse _HttpClient::execute(HttpRequest request) {
     //packet->getHeader()->setValue(Http_Header_Referer,"http://www.tusvisionai.com/about");
     //packet->getHeader()->setValue(Http_Header_Connection,"keep-alive");
     //this is not bind client
-#if 0  
+
     HttpUrl url = request->getUrl();
     ArrayList<String> ips = st(InetAddress)::getHostByName(url->getHost());
     if(ips == nullptr || ips->size() == 0) {
@@ -75,13 +106,14 @@ HttpResponse _HttpClient::execute(HttpRequest request) {
     if(!mKeepAlive) {
         mTcpClient->release();
     }
-#endif    
+   
     return nullptr;
 }
 
+#endif
 
 /*
-ByteArray _HttpClient::doReceiveChunk(ByteArray firstBlock) {
+ByteArray _HttpUrlConnection::doReceiveChunk(ByteArray firstBlock) {
     //find first data length
     ByteArrayReader reader = createByteArrayReader(firstBlock);
     ByteArray mBody = nullptr;

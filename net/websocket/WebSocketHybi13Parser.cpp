@@ -67,6 +67,11 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
 }
 
 ByteArray _WebSocketHybi13Parser::parseContent(bool isDeflate) {
+    long framelength = mHeader->getFrameLength();
+    if(framelength == 0) {
+        return nullptr;
+    }
+
     ByteArray load = createByteArray(mHeader->getFrameLength());
     byte *payload = load->toValue();
     byte *msg = mData->toValue();
@@ -235,7 +240,7 @@ bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
         return true;
     }
     
-    if(headSize >= pack->size()) {
+    if(headSize >= pack->size() && (frameLength != 0)) {
         return false;
     }
 

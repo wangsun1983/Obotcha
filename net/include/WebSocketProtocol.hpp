@@ -102,6 +102,11 @@ public:
      */
     static const int PAYLOAD_LONG = 127;
 
+    /*
+    *
+    */
+   //static long long MAX_PAYLOAD_BYTES = 32 << 20; // 32MB
+
 };
 
 }
