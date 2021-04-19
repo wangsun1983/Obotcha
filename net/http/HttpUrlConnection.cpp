@@ -62,7 +62,8 @@ int _HttpUrlConnection::connect() {
 HttpResponse _HttpUrlConnection::execute(HttpRequest req) {
     if(mHandler != nullptr) {
         mHandler->post([](_HttpUrlConnection *url,HttpRequest req) {
-            url->_execute(req);
+            //url->_execute(req);
+            url->writer->write(req);
         },this,req);
     } else {
         return _execute(req);
@@ -127,7 +128,7 @@ void _HttpUrlConnection::onResponse(int event,ByteArray r) {
             if(responses->size() > 0) {
                 ListIterator<HttpPacket> iterator = responses->getIterator();
                 while(iterator->hasValue()) {
-                    mListener->onResponse(Cast<HttpResponse>(iterator->getValue()));
+                    mListener->onResponse(createHttpResponse(iterator->getValue()));
                     iterator->next();
                 }
             }
