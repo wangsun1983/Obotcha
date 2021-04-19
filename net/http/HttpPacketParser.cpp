@@ -57,6 +57,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
     //static byte *end = (byte *)st(HttpText)::HttpEnd->toChars();
     //static byte *CRLF = (byte *)st(HttpText)::CRLF->toChars();
     //static byte *LF = (byte *)st(HttpText)::LF->toChars();
+    //printf("start doParse \n");
     
     byte v = 0;
     while(1) {
@@ -172,10 +173,8 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                         continue;
                     }
                 } else {
-                    //printf("BodyStart trace4\n");
                     if(contentlength <= mReader->getReadableLength()) {
                         //one packet get
-                        //printf("content trace1 \n");
                         mReader->move(contentlength);
                         ByteArray content = mReader->pop();
                         //check whether it is a X-URLEncoded
@@ -189,7 +188,6 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                                 mHttpPacket->getEntity()->setContent(content);
                             }
                         }
-                        //printf("content trace2 \n");
                         //we should check whether it is a upgrade message
                         if(mHttpPacket->getHeader()->getValue(st(HttpHeader)::Upgrade) != nullptr) {
                             //printf("content trace3 \n");
@@ -206,6 +204,8 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                         mMultiPartParser = nullptr;
                         packets->add(mHttpPacket);
                         continue;
+                    } else {
+                        return packets;
                     }
                 }
             }

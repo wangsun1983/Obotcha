@@ -60,7 +60,7 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     mSendBuff->clear();
     ByteArrayWriter writer = createByteArrayWriter(mSendBuff);
 
-    File file = response->getFile();
+    File file = response->getChunkedFile();
     ArrayList<KeyValuePair<String,String>> encodedValues = response->getEntity()->getEncodedKeyValues();
     ByteArray body = response->getEntity()->getContent();
 

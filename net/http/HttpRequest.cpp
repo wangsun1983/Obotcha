@@ -16,6 +16,10 @@ HttpUrl _HttpRequest::getUrl() {
     return mUrl;
 }
 
+void _HttpRequest::setUrl(HttpUrl url) {
+    mUrl = url;
+}
+
 String _HttpRequest::toString() {
     //TODO
     return nullptr;

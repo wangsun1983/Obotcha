@@ -67,6 +67,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
     HttpContentType contentType = p->getHeader()->getContentType();
     if(contentType == nullptr) {
         if(multiPart != nullptr) {
+            printf("setContentLength trace2\n");
             boundary = st(HttpText)::BoundarySeperator->append(generateMultiPartBoundary());
             //contentType = st(HttpContentType)::MultiPartFormData->append(";","boundary=",boundary);
             contentType = createHttpContentType();
@@ -76,7 +77,8 @@ int _HttpRequestWriter::write(HttpRequest p) {
             //p->setHeader(st(HttpHeader)::ContentType,contentType);
             long length = computeContentLength(p,boundary);
             p->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(length));
-        } else if(encodedUrlMap != nullptr) {
+        } else if(encodedUrlMap != nullptr && encodedUrlMap->size() != 0) {
+            printf("setContentLength trace1\n");
             long length = computeContentLength(p);
             p->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(length));
             //p->setHeader(st(HttpHeader)::ContentType,st(HttpContentType)::XFormUrlEncoded);
@@ -84,25 +86,36 @@ int _HttpRequestWriter::write(HttpRequest p) {
             contentType->setType(st(HttpContentType)::XFormUrlEncoded);
             p->getHeader()->setContentType(contentType);
         } else {
+            printf("setContentLength \n");
             ByteArray body = p->getEntity()->getContent();
-            if(body != nullptr && body->size() != 0) {
+            if(body != nullptr && body->size() > 0) {
+                printf("body size is %d \n",body->size());
                 p->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(body->size()));
             }
-            contentType = createHttpContentType();
-            contentType->setType(st(HttpContentType)::XFormUrlEncoded);
-            p->getHeader()->setContentType(contentType);
+            //contentType = createHttpContentType();
+            //contentType->setType(st(HttpContentType)::XFormUrlEncoded);
+            //p->getHeader()->setContentType(contentType);
             //p->setHeader(st(HttpHeader)::ContentType,st(HttpContentType)::XFormUrlEncoded);
         }
     }
     AUTO_FLUSH(writer->writeString(st(HttpMethod)::toString(p->getHeader()->getMethod())));
     AUTO_FLUSH(writer->writeString(st(HttpText)::ContentSpace));
-    AUTO_FLUSH(writer->writeString(p->getUrl()->getPath()));
+    if(p->getUrl()->getPath() != nullptr) {
+        AUTO_FLUSH(writer->writeString(p->getUrl()->getPath()));
+    } else {
+        AUTO_FLUSH(writer->writeString(createString("/")));
+    }
     AUTO_FLUSH(writer->writeString(st(HttpText)::ContentSpace));
     AUTO_FLUSH(writer->writeString(p->getHeader()->getVersion()->toString()));
     AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
-    AUTO_FLUSH(writer->writeString(p->getHeader()->toString(st(HttpProtocol)::HttpRequest)));
-    AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
-    AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
+
+    String headerString = p->getHeader()->toString(st(HttpProtocol)::HttpRequest);
+    if(headerString != nullptr && headerString->size() > 0) {
+        AUTO_FLUSH(writer->writeString(p->getHeader()->toString(st(HttpProtocol)::HttpRequest)));
+        AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
+        AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
+    }
+
     //2. multipart
     
     //ContentType multipart/form-data
@@ -208,7 +221,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
             AUTO_FLUSH(writer->writeByteArray(body));
         }
     }
-
+    printf("index is %d \n",writer->getIndex());
     if(writer->getIndex() != 0) {
         FORCE_FLUSH();
     }

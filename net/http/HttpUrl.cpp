@@ -11,7 +11,7 @@ namespace obotcha {
 
 _HttpUrl::_HttpUrl() {
     mQuery = createHashMap<String,String>();
-    mPort = -1;
+    mPort = 80;
 }
 
 void _HttpUrl::setSchema(String data) {

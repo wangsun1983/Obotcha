@@ -51,6 +51,7 @@ long _SocketOutputStream::write(ByteArray data,long size) {
 
 long _SocketOutputStream::_write(int fd,ByteArray data) {
     byte *sendData = data->toValue();
+    
     if(mSocket == nullptr || mSocket->isClosed()) {
         return -1;
     }

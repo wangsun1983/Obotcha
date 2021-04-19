@@ -21,8 +21,8 @@ public:
     _HttpResponse();
 	_HttpResponse(HttpPacket);
 	
-	void setFile(File);
-	File getFile();
+	void setChunkedFile(File);
+	File getChunkedFile();
 	String toString();
 
 private:

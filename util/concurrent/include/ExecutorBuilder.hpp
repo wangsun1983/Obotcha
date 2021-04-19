@@ -21,15 +21,15 @@ DECLARE_SIMPLE_CLASS(ExecutorBuilder) {
 public:
     _ExecutorBuilder();
 
-    sp<_ExecutorBuilder> setQueueSize(int v);
+    _ExecutorBuilder* setQueueSize(int v);
 
-    sp<_ExecutorBuilder> setThreadNum(int v);
+    _ExecutorBuilder* setThreadNum(int v);
 
-    sp<_ExecutorBuilder> setMaxThreadNum(int v);
+    _ExecutorBuilder* setMaxThreadNum(int v);
 
-    sp<_ExecutorBuilder> setMinThreadNum(int v);
+    _ExecutorBuilder* setMinThreadNum(int v);
 
-    sp<_ExecutorBuilder> setTimeout(int v);
+    _ExecutorBuilder* setTimeout(int v);
 
     ThreadPoolExecutor newThreadPool();
 

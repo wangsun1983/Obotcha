@@ -23,29 +23,29 @@ _ExecutorBuilder::_ExecutorBuilder() {
     timeout = 1000*16;
 }
 
-sp<_ExecutorBuilder> _ExecutorBuilder::setQueueSize(int v) {
+_ExecutorBuilder* _ExecutorBuilder::setQueueSize(int v) {
     queuesize = v;
-    return AutoClone(this);
+    return this;
 }
 
-sp<_ExecutorBuilder> _ExecutorBuilder::setThreadNum(int v) {
+_ExecutorBuilder* _ExecutorBuilder::setThreadNum(int v) {
     threadnum = v;
-    return AutoClone(this);
+    return this;
 }
 
-sp<_ExecutorBuilder> _ExecutorBuilder::setMaxThreadNum(int v) {
+_ExecutorBuilder* _ExecutorBuilder::setMaxThreadNum(int v) {
     maxthreadnum = v;
-    return AutoClone(this);
+    return this;
 }
 
-sp<_ExecutorBuilder> _ExecutorBuilder::setMinThreadNum(int v) {
+_ExecutorBuilder* _ExecutorBuilder::setMinThreadNum(int v) {
     minthreadnum = v;
-    return AutoClone(this);
+    return this;
 }
 
-sp<_ExecutorBuilder> _ExecutorBuilder::setTimeout(int v) {
+_ExecutorBuilder* _ExecutorBuilder::setTimeout(int v) {
     timeout = v;
-    return AutoClone(this);
+    return this;
 }
 
 ThreadPoolExecutor _ExecutorBuilder::newThreadPool() {

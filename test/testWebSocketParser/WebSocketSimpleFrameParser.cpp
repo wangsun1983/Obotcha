@@ -18,6 +18,23 @@
 
 using namespace obotcha;
 
+struct scripted_data_feed {
+  uint8_t data[8192];
+  uint8_t* datamark;
+  uint8_t* datalimit;
+  size_t feedseq[8192];
+  size_t seqidx;
+};
+
+static void scripted_data_feed_init(struct scripted_data_feed *df,
+                                    uint8_t *data, size_t data_length)
+{
+  memset(df, 0, sizeof(struct scripted_data_feed));
+  memcpy(df->data, data, data_length);
+  df->datamark = df->data;
+  df->datalimit = df->data+data_length;
+  df->feedseq[0] = data_length;
+}
 
 int testSimpleFrameParser() {
 
@@ -69,7 +86,7 @@ int testSimpleFrameParser() {
 
     frame = msgDatas->get(1);
     printf("opcode is %d,length is %d \n",frame->getHeader()->getOpCode(),frame->getHeader()->getFrameLength());
-    
+
     if(frame->getHeader()->getOpCode() != 0x0) {
       printf("testSimpleFrameParser case2 trace1 opcode  error,opcode is %d\n",frame->getHeader()->getOpCode());
       return -1;
@@ -80,7 +97,6 @@ int testSimpleFrameParser() {
       return -1;
     }
   }
- #endif   
 
   //case 3
   {
@@ -152,6 +168,50 @@ int testSimpleFrameParser() {
     }
   }
 
+  //case4
+  {
+    uint8_t msg[] = { 0x81, 0x00 };
+
+    WebSocketHybi13Parser parser = createWebSocketHybi13Parser();
+    ByteArray loadData = createByteArray((const byte *)msg,sizeof(msg)/sizeof(uint8_t));
+    parser->pushParseData(loadData);
+    ArrayList<WebSocketFrame> msgDatas = parser->doParse();
+
+    if(msgDatas->size() != 1) {
+      printf("testSimpleFrameParser case4 trace1 frame size,current is %d \n",msgDatas->size());
+      return -1;
+    }
+
+    WebSocketFrame frame = msgDatas->get(0);
+    ByteArray data = frame->getData();
+    if(data != nullptr && data->size() != 0) {
+      printf("testSimpleFrameParser case4 trace2 data size is incorrect \n");
+      return -1;
+    }
+  }
+ #endif
+
+  //case5
+  {
+    uint8_t msg[] = { 0x81, 0x7f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
+
+    WebSocketHybi13Parser parser = createWebSocketHybi13Parser();
+    ByteArray loadData = createByteArray((const byte *)msg,sizeof(msg)/sizeof(uint8_t));
+    parser->pushParseData(loadData);
+    ArrayList<WebSocketFrame> msgDatas = parser->doParse();
+
+    if(msgDatas->size() != 1) {
+      printf("testSimpleFrameParser case5 trace1 frame size,current is %d \n",msgDatas->size());
+      return -1;
+    }
+
+    WebSocketFrame frame = msgDatas->get(0);
+    ByteArray data = frame->getData();
+    if(data != nullptr && data->size() != 0) {
+      printf("testSimpleFrameParser case5 trace2 data size is incorrect \n");
+      return -1;
+    }
+  }
 
   return 0;
 

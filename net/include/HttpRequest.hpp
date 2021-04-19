@@ -21,6 +21,7 @@ public:
     _HttpRequest();
     
     HttpUrl getUrl();
+    void setUrl(HttpUrl url);
 
     String toString();
     

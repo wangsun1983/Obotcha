@@ -16,16 +16,33 @@
 #include "SocketOutputStream.hpp"
 #include "HttpRequestWriter.hpp"
 #include "InputStream.hpp"
+#include "ThreadPoolExecutor.hpp"
+#include "Mutex.hpp"
+#include "Condition.hpp"
+#include "Handler.hpp"
 
 namespace obotcha {
 
 class _HttpUrl;
 
+DECLARE_SIMPLE_CLASS(HttpConnectionListener) {
+public:
+    virtual void onResponse(HttpResponse response) = 0;
+    virtual void onDisconnect() = 0;
+    virtual void onConnect(int) = 0;
+};
+
 DECLARE_SIMPLE_CLASS(HttpUrlConnection) {
 
 public:
+    friend class _HttpUrlAsyncConnectionPool;
+
     _HttpUrlConnection(sp<_HttpUrl> url);
     
+    _HttpUrlConnection(sp<_HttpUrl> url,Handler handler);
+
+    void setListener(HttpConnectionListener l);
+
     _HttpUrlConnection* setTimeout(int timeout);
 
     _HttpUrlConnection* setKeepAlive(bool keepalive);
@@ -39,7 +56,11 @@ public:
     HttpResponse execute(HttpRequest req);
 
 private:
-    
+    int _connect();
+    HttpResponse _execute(HttpRequest req);
+
+    void onResponse(int,ByteArray r);
+
     int mTimeout;
     
     bool mKeepAlive; 
@@ -53,6 +74,10 @@ private:
     HttpPacketParser mParser;
 
     sp<_HttpUrl> mUrl;
+
+    Handler mHandler;
+
+    HttpConnectionListener mListener;
 };
 
 }

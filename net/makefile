@@ -30,6 +30,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpurlbuilder.o \
 		$(outtmp)/httpresponse.o \
 		$(outtmp)/httpurlconnection.o \
+		$(outtmp)/httpurlasyncconnectionpool.o \
 		$(outtmp)/httpmethod.o \
 		$(outtmp)/httpheader.o \
 		$(outtmp)/httpheaderparser.o \
@@ -42,6 +43,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpcachecontrol.o \
 		$(outtmp)/httpresponsewriter.o \
 		$(outtmp)/httppacketparser.o \
+		$(outtmp)/httppacketbuilder.o \
 		$(outtmp)/httpclientmanager.o \
 		$(outtmp)/httpsession.o \
 		$(outtmp)/httpcookie.o \
@@ -132,6 +134,9 @@ $(outtmp)/socketmonitor.o :$(netDir)/socket/SocketMonitor.cpp
 
 $(outtmp)/httpxformparser.o :$(netDir)/http/HttpXFormUrlEncodedParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpXFormUrlEncodedParser.cpp -o $(outtmp)/httpxformparser.o 
+
+$(outtmp)/httpurlasyncconnectionpool.o :$(netDir)/http/HttpUrlAsyncConnectionPool.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlAsyncConnectionPool.cpp -o $(outtmp)/httpurlasyncconnectionpool.o 
 
 $(outtmp)/httpurlconnection.o :$(netDir)/http/HttpUrlConnection.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlConnection.cpp -o $(outtmp)/httpurlconnection.o 
@@ -231,6 +236,9 @@ $(outtmp)/httpresponsewriter.o :$(netDir)/http/HttpResponseWriter.cpp
 
 $(outtmp)/httppacketparser.o :$(netDir)/http/HttpPacketParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketParser.cpp -o $(outtmp)/httppacketparser.o 
+
+$(outtmp)/httppacketbuilder.o :$(netDir)/http/HttpPacketBuilder.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketBuilder.cpp -o $(outtmp)/httppacketbuilder.o 
 
 $(outtmp)/httpclientmanager.o :$(netDir)/http/HttpClientManager.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClientManager.cpp -o $(outtmp)/httpclientmanager.o 

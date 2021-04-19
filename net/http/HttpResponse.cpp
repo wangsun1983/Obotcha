@@ -16,11 +16,11 @@ _HttpResponse::_HttpResponse(HttpPacket p):_HttpPacket() {
     this->setHeader(p->getHeader());
 }
 
-void _HttpResponse::setFile(File f) {
+void _HttpResponse::setChunkedFile(File f) {
     mFile = f;
 }
 
-File _HttpResponse::getFile() {
+File _HttpResponse::getChunkedFile() {
     return mFile;
 }
 

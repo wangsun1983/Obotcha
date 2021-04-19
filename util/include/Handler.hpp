@@ -50,12 +50,12 @@ public:
     
     template<typename X>
     int post(sp<X> r) {
-        postDelayed(0,r);
+        return postDelayed(0,r);
     }
 
     template< class Function, class... Args >
     int post(Function&& f, Args&&... args) {
-        postDelayed(0,createLambdaRunnable(f,args...));
+        return postDelayed(0,createLambdaRunnable(f,args...));
     }
 
     template<typename X>
