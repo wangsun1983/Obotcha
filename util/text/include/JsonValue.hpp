@@ -356,7 +356,7 @@ public:
                         
                 case st(Field)::FieldTypeObject: {
                         //create Objectt
-                        sp<Object> newObject = field->createObject();
+                        sp<_Object> newObject = field->createObject();
                         auto reflectValue = field->getObjectValue();
                         if(IsInstance(Integer,newObject)) {
                             String value = jsonnode->getString();

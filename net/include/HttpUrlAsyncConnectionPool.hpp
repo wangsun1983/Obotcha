@@ -5,11 +5,14 @@
 #include "StrongPointer.hpp"
 
 #include "SocketMonitor.hpp"
-#include "HttpUrlConnection.hpp"
+#include "HttpUrlAsyncConnection.hpp"
 #include "HttpUrl.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "Mutex.hpp"
 #include "Socket.hpp"
+#include "HttpUrl.hpp"
+#include "HttpUrlAsyncConnection.hpp"
+#include "HttpOption.hpp"
 
 namespace obotcha {
 
@@ -19,12 +22,14 @@ DECLARE_SIMPLE_CLASS(HttpUrlAsyncConnectionPool) IMPLEMENTS(SocketListener){
 
 public:
     _HttpUrlAsyncConnectionPool();
-    HttpUrlConnection createConnection(HttpUrl url);
-    void recyleConnection(HttpUrlConnection);
+    HttpUrlAsyncConnection createConnection(HttpUrl url,HttpAsyncConnectionListener l,HttpOption o);
+    void recyleConnection(HttpUrlAsyncConnection);
     void onSocketMessage(int,Socket,ByteArray);
+
+    void release();
 private:
     Mutex mMutex;
-    HashMap<Socket,HttpUrlConnection> mConnections;
+    HashMap<Socket,HttpUrlAsyncConnection> mConnections;
     ThreadPoolExecutor mExecutor;
     SocketMonitor mSocketMonitor;
 };

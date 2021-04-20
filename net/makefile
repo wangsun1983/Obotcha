@@ -31,6 +31,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpresponse.o \
 		$(outtmp)/httpurlconnection.o \
 		$(outtmp)/httpurlasyncconnectionpool.o \
+		$(outtmp)/httpurlasyncconnection.o \
 		$(outtmp)/httpmethod.o \
 		$(outtmp)/httpheader.o \
 		$(outtmp)/httpheaderparser.o \
@@ -137,6 +138,9 @@ $(outtmp)/httpxformparser.o :$(netDir)/http/HttpXFormUrlEncodedParser.cpp
 
 $(outtmp)/httpurlasyncconnectionpool.o :$(netDir)/http/HttpUrlAsyncConnectionPool.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlAsyncConnectionPool.cpp -o $(outtmp)/httpurlasyncconnectionpool.o 
+
+$(outtmp)/httpurlasyncconnection.o :$(netDir)/http/HttpUrlAsyncConnection.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlAsyncConnection.cpp -o $(outtmp)/httpurlasyncconnection.o 
 
 $(outtmp)/httpurlconnection.o :$(netDir)/http/HttpUrlConnection.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlConnection.cpp -o $(outtmp)/httpurlconnection.o 

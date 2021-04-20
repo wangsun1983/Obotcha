@@ -37,7 +37,7 @@ public:
     void setResult(T value) {
         AutoLock l(mResultMutex);
         if(mStatus == ResultWaiting) {
-            objResult = (sp<Object>)value;
+            objResult = (sp<_Object>)value;
             mStatus = ResultComplete;
             mResultCond->notifyAll();
             return;
@@ -80,7 +80,7 @@ private:
         ResultInterrupt
     };
     
-    sp<Object> objResult;
+    sp<_Object> objResult;
 
     int intValue;
     byte byteValue;

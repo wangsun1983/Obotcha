@@ -50,7 +50,9 @@ int _HttpUrlConnection::connect() {
     if(mHandler != nullptr) {
         mHandler->post([](_HttpUrlConnection *url) {
             int ret = url->_connect();
-            url->mListener->onConnect(ret);
+            if(url->mListener != nullptr) {
+                url->mListener->onConnect(ret);
+            }
         },this);
     } else {
         return _connect();
@@ -62,14 +64,29 @@ int _HttpUrlConnection::connect() {
 HttpResponse _HttpUrlConnection::execute(HttpRequest req) {
     if(mHandler != nullptr) {
         mHandler->post([](_HttpUrlConnection *url,HttpRequest req) {
-            //url->_execute(req);
-            url->writer->write(req);
+            url->_execute(req);
         },this,req);
     } else {
         return _execute(req);
     }
 
     return nullptr;
+}
+
+void _HttpUrlConnection::execute(HttpRequest req,int requestid) {
+    if(mHandler != nullptr) {
+        mHandler->post([](_HttpUrlConnection *url,HttpRequest req,int id) {
+            printf("execute trace1 \n");
+            HttpResponse response = url->_execute(req);
+            printf("execute trace2 \n");
+            Message msg = url->mHandler->obtainMessage();
+            msg->arg1 = id;
+            msg->data = Cast<Object>(response);
+            url->mHandler->sendMessage(msg);
+        },this,req,requestid);
+    } else {
+        _execute(req);
+    }
 }
 
 int _HttpUrlConnection::_connect() {
@@ -92,10 +109,13 @@ int _HttpUrlConnection::_connect() {
 
 HttpResponse _HttpUrlConnection::_execute(HttpRequest req) {
     //check whether httpurl is still connect
+    printf("_execute start \n");
     writer->write(req);
     while(1) {
         ByteArray result = createByteArray(1024*64);
+        printf("_execute start　read\n");
         int len = mInputStream->read(result);
+        printf("_execute start len is %d\n",len);
         result->quickShrink(len);
         mParser->pushHttpData(result);
         ArrayList<HttpPacket> packets = mParser->doParse();
@@ -112,29 +132,6 @@ int _HttpUrlConnection::close() {
     return 0;
 }
 
-void _HttpUrlConnection::onResponse(int event,ByteArray r) {
-    if(mListener == nullptr) {
-        return;
-    }
-
-    switch(event) {
-        case st(SocketListener)::Disconnect:
-            mListener->onDisconnect();
-            break;
-
-        case st(SocketListener)::Message:
-            mParser->pushHttpData(r);
-            ArrayList<HttpPacket> responses = mParser->doParse();
-            if(responses->size() > 0) {
-                ListIterator<HttpPacket> iterator = responses->getIterator();
-                while(iterator->hasValue()) {
-                    mListener->onResponse(createHttpResponse(iterator->getValue()));
-                    iterator->next();
-                }
-            }
-            break;
-    }
-}
 
 }
 

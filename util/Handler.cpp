@@ -54,7 +54,7 @@ int _Handler::sendMessage(sp<_Message> msg) {
 
 int _Handler::sendEmptyMessageDelayed(int what,long delay) {
     Message msg = createMessage(what);
-    sendMessageDelayed(msg,delay);
+    return sendMessageDelayed(msg,delay);
 }
 
 int _Handler::sendMessageDelayed(sp<_Message> msg,long delay) {

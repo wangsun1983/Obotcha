@@ -117,10 +117,10 @@
     void __ReflectCreate##MEMBER() {\
         st(ReflectUtil)::createObject(MEMBER);\
     }\
-    sp<Object> __ReflectCreateListMember##MEMBER() {\
+    sp<_Object> __ReflectCreateListMember##MEMBER() {\
         return genArrayListData(MEMBER);\
     }\
-    sp<Object> __ReflectGetListItem##MEMBER(int index) {\
+    sp<_Object> __ReflectGetListItem##MEMBER(int index) {\
         return getArrayListItem(MEMBER,index);\
     }\
     int __ReflectGetListSize##MEMBER() {\
@@ -274,10 +274,10 @@
 #define __S(MEMBER) std::function<void(decltype(MEMBER))>
 #define __G(MEMBER) std::function<decltype(MEMBER)()>
 #define __C(MEMBER) std::function<void()>
-#define __L(MEMBER) std::function<sp<Object>()>
+#define __L(MEMBER) std::function<sp<_Object>()>
 #define __D() std::function<int()>//dummy function
-#define __LD() std::function<sp<Object>()> //list dummy function 
-#define __LIG(MEMBER) std::function<sp<Object>(int)> //list item get function
+#define __LD() std::function<sp<_Object>()> //list dummy function 
+#define __LIG(MEMBER) std::function<sp<_Object>(int)> //list item get function
 #define __OBJSIZE(MEMBER) std::function<int()> //list item get function
 
 #define DECLARE_INIT_TUPLE_1(M1) \
@@ -997,8 +997,8 @@
 #define IMPLE_INIT_TUPLE_1(CLASS,M1) \
     std::function<decltype(M1)()> getobj = std::bind(&CLASS::__ReflectGet##M1,this);\
     std::function<void()> createobj = std::bind(&CLASS::__ReflectCreate##M1,this);\
-    std::function<sp<Object>()>genItemObj = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>(int)>getItemObj = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>(int)>getItemObj = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
     std::function<int()>getListSize = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     getFuncTuple = std::make_tuple(getobj,dummyobj,dummyobj,dummyobj,dummyobj,\
                                    dummyobj,dummyobj,dummyobj,dummyobj,dummyobj,\
@@ -1041,10 +1041,10 @@
     std::function<decltype(M2)()> getobj2 = std::bind(&CLASS::__ReflectGet##M2,this);\
     std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
     std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     getFuncTuple = std::make_tuple(getobj1,getobj2,dummyobj,dummyobj,dummyobj,\
@@ -1090,12 +1090,12 @@
     std::function<void()> createobj1 = std::bind(&CLASS::__ReflectCreate##M1,this);\
     std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
     std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
@@ -1144,14 +1144,14 @@
     std::function<void()> createobj2 = std::bind(&CLASS::__ReflectCreate##M2,this);\
     std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
     std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
@@ -1203,16 +1203,16 @@
     std::function<void()> createobj3 = std::bind(&CLASS::__ReflectCreate##M3,this);\
     std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
     std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
-    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<_Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
@@ -1267,18 +1267,18 @@
     std::function<void()> createobj4 = std::bind(&CLASS::__ReflectCreate##M4,this);\
     std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
     std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
-    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
-    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<_Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<_Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
@@ -1336,20 +1336,20 @@
     std::function<void()> createobj5 = std::bind(&CLASS::__ReflectCreate##M5,this);\
     std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
     std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
-    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
-    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
-    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<_Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<_Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<_Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
@@ -1410,22 +1410,22 @@
     std::function<void()> createobj6 = std::bind(&CLASS::__ReflectCreate##M6,this);\
     std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
     std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
-    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
-    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
-    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
-    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<_Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<_Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<_Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<_Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
@@ -1489,24 +1489,24 @@
     std::function<void()> createobj7 = std::bind(&CLASS::__ReflectCreate##M7,this);\
     std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
     std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
-    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
-    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
-    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
-    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
-    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<_Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<_Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<_Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<_Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<_Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
@@ -1573,26 +1573,26 @@
     std::function<void()> createobj8 = std::bind(&CLASS::__ReflectCreate##M8,this);\
     std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
     std::function<void()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
-    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
-    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
-    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
-    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
-    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
-    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<_Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<_Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<_Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<_Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<_Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<_Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
@@ -1662,28 +1662,28 @@
     std::function<void()> createobj9 = std::bind(&CLASS::__ReflectCreate##M9,this);\
     std::function<void()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
     std::function<void()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
-    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
-    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
-    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
-    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
-    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
-    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
-    std::function<sp<Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<_Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<_Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<_Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<_Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<_Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<_Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
+    std::function<sp<_Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
@@ -1756,30 +1756,30 @@
     std::function<void()> createobj10 = std::bind(&CLASS::__ReflectCreate##M10,this);\
     std::function<void()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
     std::function<void()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
-    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
-    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
-    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
-    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
-    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
-    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
-    std::function<sp<Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
-    std::function<sp<Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj12 = std::bind(&CLASS::__ReflectGetListItem##M12,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<_Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<_Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<_Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<_Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<_Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<_Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
+    std::function<sp<_Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
+    std::function<sp<_Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj12 = std::bind(&CLASS::__ReflectGetListItem##M12,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
@@ -1854,32 +1854,32 @@
     std::function<void()> createobj11 = std::bind(&CLASS::__ReflectCreate##M11,this);\
     std::function<void()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
     std::function<void()> createobj13 = std::bind(&CLASS::__ReflectCreate##M13,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
-    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
-    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
-    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
-    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
-    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
-    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
-    std::function<sp<Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
-    std::function<sp<Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
-    std::function<sp<Object>()>genItemObj13 = std::bind(&CLASS::__ReflectCreateListMember##M13,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj12 = std::bind(&CLASS::__ReflectGetListItem##M12,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj13 = std::bind(&CLASS::__ReflectGetListItem##M13,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<_Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<_Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<_Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<_Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<_Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<_Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
+    std::function<sp<_Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
+    std::function<sp<_Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
+    std::function<sp<_Object>()>genItemObj13 = std::bind(&CLASS::__ReflectCreateListMember##M13,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj12 = std::bind(&CLASS::__ReflectGetListItem##M12,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj13 = std::bind(&CLASS::__ReflectGetListItem##M13,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
@@ -1958,34 +1958,34 @@
     std::function<void()> createobj12 = std::bind(&CLASS::__ReflectCreate##M12,this);\
     std::function<void()> createobj13 = std::bind(&CLASS::__ReflectCreate##M13,this);\
     std::function<void()> createobj14 = std::bind(&CLASS::__ReflectCreate##M14,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
-    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
-    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
-    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
-    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
-    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
-    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
-    std::function<sp<Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
-    std::function<sp<Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
-    std::function<sp<Object>()>genItemObj13 = std::bind(&CLASS::__ReflectCreateListMember##M13,this);\
-    std::function<sp<Object>()>genItemObj14 = std::bind(&CLASS::__ReflectCreateListMember##M14,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj12 = std::bind(&CLASS::__ReflectGetListItem##M12,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj13 = std::bind(&CLASS::__ReflectGetListItem##M13,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj14 = std::bind(&CLASS::__ReflectGetListItem##M14,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<_Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<_Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<_Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<_Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<_Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<_Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
+    std::function<sp<_Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
+    std::function<sp<_Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
+    std::function<sp<_Object>()>genItemObj13 = std::bind(&CLASS::__ReflectCreateListMember##M13,this);\
+    std::function<sp<_Object>()>genItemObj14 = std::bind(&CLASS::__ReflectCreateListMember##M14,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj12 = std::bind(&CLASS::__ReflectGetListItem##M12,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj13 = std::bind(&CLASS::__ReflectGetListItem##M13,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj14 = std::bind(&CLASS::__ReflectGetListItem##M14,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
@@ -2067,36 +2067,36 @@
     std::function<void()> createobj13 = std::bind(&CLASS::__ReflectCreate##M13,this);\
     std::function<void()> createobj14 = std::bind(&CLASS::__ReflectCreate##M14,this);\
     std::function<void()> createobj15 = std::bind(&CLASS::__ReflectCreate##M15,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
-    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
-    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
-    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
-    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
-    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
-    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
-    std::function<sp<Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
-    std::function<sp<Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
-    std::function<sp<Object>()>genItemObj13 = std::bind(&CLASS::__ReflectCreateListMember##M13,this);\
-    std::function<sp<Object>()>genItemObj14 = std::bind(&CLASS::__ReflectCreateListMember##M14,this);\
-    std::function<sp<Object>()>genItemObj15 = std::bind(&CLASS::__ReflectCreateListMember##M15,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj12 = std::bind(&CLASS::__ReflectGetListItem##M12,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj13 = std::bind(&CLASS::__ReflectGetListItem##M13,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj14 = std::bind(&CLASS::__ReflectGetListItem##M14,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj15 = std::bind(&CLASS::__ReflectGetListItem##M15,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<_Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<_Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<_Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<_Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<_Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<_Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
+    std::function<sp<_Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
+    std::function<sp<_Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
+    std::function<sp<_Object>()>genItemObj13 = std::bind(&CLASS::__ReflectCreateListMember##M13,this);\
+    std::function<sp<_Object>()>genItemObj14 = std::bind(&CLASS::__ReflectCreateListMember##M14,this);\
+    std::function<sp<_Object>()>genItemObj15 = std::bind(&CLASS::__ReflectCreateListMember##M15,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj12 = std::bind(&CLASS::__ReflectGetListItem##M12,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj13 = std::bind(&CLASS::__ReflectGetListItem##M13,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj14 = std::bind(&CLASS::__ReflectGetListItem##M14,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj15 = std::bind(&CLASS::__ReflectGetListItem##M15,this,std::placeholders::_1);\
     std::function<int()>getListSize1 = std::bind(&CLASS::__ReflectGetListSize##M1,this);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
@@ -2181,38 +2181,38 @@
     std::function<void()> createobj14 = std::bind(&CLASS::__ReflectCreate##M14,this);\
     std::function<void()> createobj15 = std::bind(&CLASS::__ReflectCreate##M15,this);\
     std::function<void()> createobj16 = std::bind(&CLASS::__ReflectCreate##M16,this);\
-    std::function<sp<Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
-    std::function<sp<Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
-    std::function<sp<Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
-    std::function<sp<Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
-    std::function<sp<Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
-    std::function<sp<Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
-    std::function<sp<Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
-    std::function<sp<Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
-    std::function<sp<Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
-    std::function<sp<Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
-    std::function<sp<Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
-    std::function<sp<Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
-    std::function<sp<Object>()>genItemObj13 = std::bind(&CLASS::__ReflectCreateListMember##M13,this);\
-    std::function<sp<Object>()>genItemObj14 = std::bind(&CLASS::__ReflectCreateListMember##M14,this);\
-    std::function<sp<Object>()>genItemObj15 = std::bind(&CLASS::__ReflectCreateListMember##M15,this);\
-    std::function<sp<Object>()>genItemObj16 = std::bind(&CLASS::__ReflectCreateListMember##M16,this);\
-    std::function<sp<Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj12 = std::bind(&CLASS::__ReflectGetListItem##M12,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj13 = std::bind(&CLASS::__ReflectGetListItem##M13,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj14 = std::bind(&CLASS::__ReflectGetListItem##M14,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj15 = std::bind(&CLASS::__ReflectGetListItem##M15,this,std::placeholders::_1);\
-    std::function<sp<Object>(int)>getItemObj16 = std::bind(&CLASS::__ReflectGetListItem##M16,this,std::placeholders::_1);\
+    std::function<sp<_Object>()>genItemObj1 = std::bind(&CLASS::__ReflectCreateListMember##M1,this);\
+    std::function<sp<_Object>()>genItemObj2 = std::bind(&CLASS::__ReflectCreateListMember##M2,this);\
+    std::function<sp<_Object>()>genItemObj3 = std::bind(&CLASS::__ReflectCreateListMember##M3,this);\
+    std::function<sp<_Object>()>genItemObj4 = std::bind(&CLASS::__ReflectCreateListMember##M4,this);\
+    std::function<sp<_Object>()>genItemObj5 = std::bind(&CLASS::__ReflectCreateListMember##M5,this);\
+    std::function<sp<_Object>()>genItemObj6 = std::bind(&CLASS::__ReflectCreateListMember##M6,this);\
+    std::function<sp<_Object>()>genItemObj7 = std::bind(&CLASS::__ReflectCreateListMember##M7,this);\
+    std::function<sp<_Object>()>genItemObj8 = std::bind(&CLASS::__ReflectCreateListMember##M8,this);\
+    std::function<sp<_Object>()>genItemObj9 = std::bind(&CLASS::__ReflectCreateListMember##M9,this);\
+    std::function<sp<_Object>()>genItemObj10 = std::bind(&CLASS::__ReflectCreateListMember##M10,this);\
+    std::function<sp<_Object>()>genItemObj11 = std::bind(&CLASS::__ReflectCreateListMember##M11,this);\
+    std::function<sp<_Object>()>genItemObj12 = std::bind(&CLASS::__ReflectCreateListMember##M12,this);\
+    std::function<sp<_Object>()>genItemObj13 = std::bind(&CLASS::__ReflectCreateListMember##M13,this);\
+    std::function<sp<_Object>()>genItemObj14 = std::bind(&CLASS::__ReflectCreateListMember##M14,this);\
+    std::function<sp<_Object>()>genItemObj15 = std::bind(&CLASS::__ReflectCreateListMember##M15,this);\
+    std::function<sp<_Object>()>genItemObj16 = std::bind(&CLASS::__ReflectCreateListMember##M16,this);\
+    std::function<sp<_Object>(int)>getItemObj1 = std::bind(&CLASS::__ReflectGetListItem##M1,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj2 = std::bind(&CLASS::__ReflectGetListItem##M2,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj3 = std::bind(&CLASS::__ReflectGetListItem##M3,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj4 = std::bind(&CLASS::__ReflectGetListItem##M4,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj5 = std::bind(&CLASS::__ReflectGetListItem##M5,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj6 = std::bind(&CLASS::__ReflectGetListItem##M6,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj7 = std::bind(&CLASS::__ReflectGetListItem##M7,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj8 = std::bind(&CLASS::__ReflectGetListItem##M8,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj9 = std::bind(&CLASS::__ReflectGetListItem##M9,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj10 = std::bind(&CLASS::__ReflectGetListItem##M10,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj11 = std::bind(&CLASS::__ReflectGetListItem##M11,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj12 = std::bind(&CLASS::__ReflectGetListItem##M12,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj13 = std::bind(&CLASS::__ReflectGetListItem##M13,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj14 = std::bind(&CLASS::__ReflectGetListItem##M14,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj15 = std::bind(&CLASS::__ReflectGetListItem##M15,this,std::placeholders::_1);\
+    std::function<sp<_Object>(int)>getItemObj16 = std::bind(&CLASS::__ReflectGetListItem##M16,this,std::placeholders::_1);\
     std::function<int()>getListSize2 = std::bind(&CLASS::__ReflectGetListSize##M2,this);\
     std::function<int()>getListSize3 = std::bind(&CLASS::__ReflectGetListSize##M3,this);\
     std::function<int()>getListSize4 = std::bind(&CLASS::__ReflectGetListSize##M4,this);\
@@ -2270,8 +2270,8 @@ private:\
     IMPLE_SET_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
     DECLARE_INIT_TUPLE_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
     int __ReflectDummy() {return 0;}\
-    sp<Object>__ReflectCreateDummy() {return nullptr;}\
-    sp<Object>__ReflectListItemGetDummy(int){return nullptr;}\
+    sp<_Object>__ReflectCreateDummy() {return nullptr;}\
+    sp<_Object>__ReflectListItemGetDummy(int){return nullptr;}\
 public:\
     sp<_String> __ReflectClassName(){\
         return createString(#CLASS);\
@@ -2279,8 +2279,8 @@ public:\
     void __ReflectInit() {\
         int index = 0;\
         std::function<int(void)> dummyobj = std::bind(&_##CLASS::__ReflectDummy,this);\
-        std::function<sp<Object>(void)> dummycreateobj = std::bind(&_##CLASS::__ReflectCreateDummy,this);\
-        std::function<sp<Object>(int)> dummyligobj = std::bind(&_##CLASS::__ReflectListItemGetDummy,this,std::placeholders::_1);\
+        std::function<sp<_Object>(void)> dummycreateobj = std::bind(&_##CLASS::__ReflectCreateDummy,this);\
+        std::function<sp<_Object>(int)> dummyligobj = std::bind(&_##CLASS::__ReflectListItemGetDummy,this,std::placeholders::_1);\
         maps = createHashMap<String,Field>();\
         IMPLE_INIT_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)\
         IMPLE_INIT_TUPLE_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)\
@@ -2299,7 +2299,7 @@ private:\
         return data;\
     }\
     template<typename Q>\
-    sp<Object> genArrayListData(ArrayList<Q> list) {\
+    sp<_Object> genArrayListData(ArrayList<Q> list) {\
         Q param;\
         auto pointer = genArrayListDataPoint(param);\
         param.set_pointer(pointer);\
@@ -2307,18 +2307,18 @@ private:\
         return param;\
     }\
     template<typename Q>\
-    sp<Object>genArrayListData(Q t) {\
+    sp<_Object>genArrayListData(Q t) {\
         return nullptr;\
     }\
     template<typename Q>\
-    sp<Object> getArrayListItem(ArrayList<Q> list,int index){\
+    sp<_Object> getArrayListItem(ArrayList<Q> list,int index){\
         if(list == nullptr ||index == list->size()) {\
             return nullptr;\
         }\
         return list->get(index);\
     }\
     template<typename Q>\
-    sp<Object> getArrayListItem(Q t,int index) {\
+    sp<_Object> getArrayListItem(Q t,int index) {\
         return nullptr;\
     }\
     template<typename Q>\
@@ -2372,7 +2372,7 @@ private:\
         FieldContentValue v = __getFieldContentValue(name);\
         return v->uint64Value;\
     }\
-    sp<Object> __getFieldObjectValue(std::string name){ \
+    sp<_Object> __getFieldObjectValue(std::string name){ \
         FieldContentValue v = __getFieldContentValue(name);\
         return v->objectValue;\
     }\
@@ -2391,7 +2391,7 @@ private:\
     void __setFieldUint32Value(std::string name ,uint32_t value){__setFieldValue(name,value);}\
     void __setFieldUint64Value(std::string name,uint64_t value){__setFieldValue(name,value);}\
     void __setFieldStringValue(std::string name,std::string value){__setFieldValue(name,createString(value));}\
-    void __setFieldObjectValue(std::string name,sp<Object> value){__setFieldValue(name,value);}\
+    void __setFieldObjectValue(std::string name,sp<_Object> value){__setFieldValue(name,value);}\
     template<typename Q>\
     void __setFieldValue(std::string name,Q value){\
         Field f = maps->get(createString(name));\
@@ -2506,7 +2506,7 @@ private:\
             break;\
         }\
     }\
-    sp<Object> __createListItemObject(std::string name) {\
+    sp<_Object> __createListItemObject(std::string name) {\
         Field f = maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\
@@ -2559,7 +2559,7 @@ private:\
             break;\
         }\
     }\
-    sp<Object> __getListItemObject(std::string name,int index){\
+    sp<_Object> __getListItemObject(std::string name,int index){\
         Field f = maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\

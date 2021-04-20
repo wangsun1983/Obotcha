@@ -67,7 +67,7 @@ void _Field::setId(int d) {
     id = d;
 }
 
-void _Field::setReflectObject(Object *obj) {
+void _Field::setReflectObject(_Object *obj) {
     object = obj;
 }
 
@@ -137,7 +137,7 @@ void _Field::setValue(uint64_t v) {
     object->__setFieldUint64Value(name->getStdString(),v);
 }
 
-//void _Field::setValue(sp<Object> v) {
+//void _Field::setValue(sp<_Object> v) {
     //object->__setFieldObjectValue(name->getStdString(),v);
 //    Trigger(ReflectException,"not support set Object value");
 //}
@@ -186,7 +186,7 @@ uint64_t _Field::getUint64Value() {
     return object->__getFieldUint64Value(name->getStdString());
 }
 
-sp<Object> _Field::getObjectValue() {
+sp<_Object> _Field::getObjectValue() {
     return object->__getFieldObjectValue(name->getStdString());
 }
 
@@ -198,16 +198,16 @@ bool _Field::getBoolValue() {
     return object->__getFieldBoolValue(name->getStdString());
 }
 
-sp<Object> _Field::createObject() {
+sp<_Object> _Field::createObject() {
     object->__createFieldObject(name->getStdString());
     return object->__getFieldObjectValue(name->getStdString());
 }
 
-sp<Object>  _Field::createListItemObject() {
+sp<_Object>  _Field::createListItemObject() {
     return object->__createListItemObject(name->getStdString());
 }
 
-sp<Object> _Field::getListItemObject(int index) {
+sp<_Object> _Field::getListItemObject(int index) {
     return object->__getListItemObject(name->getStdString(),index);
 }
 

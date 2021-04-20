@@ -86,7 +86,7 @@ public:
 
     void setId(int);
     
-    void setReflectObject(Object *obj);
+    void setReflectObject(_Object *obj);
 
     //reflect filed set function
     void setValue(int);
@@ -97,7 +97,7 @@ public:
     void setValue(uint16_t);
     void setValue(uint32_t);
     void setValue(uint64_t);
-    void setValue(sp<Object>);
+    void setValue(sp<_Object>);
     void setValue(String value);
     void setValue(bool);
 
@@ -111,23 +111,23 @@ public:
     uint16_t getUint16Value();
     uint32_t getUint32Value();
     uint64_t getUint64Value();
-    sp<Object> getObjectValue();
+    sp<_Object> getObjectValue();
     String getStringValue();
     bool getBoolValue();
 
     int getListObjectSize();
-    sp<Object> getListItemObject(int);
+    sp<_Object> getListItemObject(int);
 
     //reflect filed create function
-    sp<Object> createObject();
-    sp<Object> createListItemObject();
+    sp<_Object> createObject();
+    sp<_Object> createListItemObject();
 
     //std::function<void()> createfunc;
 private:
     int type;
     String name;
     int id;
-    Object *object;
+    _Object *object;
 
     //do not use
     void __setFieldIntValue(std::string,int){}
@@ -138,7 +138,7 @@ private:
     void __setFieldUint16Value(std::string,uint16_t){}
     void __setFieldUint32Value(std::string,uint32_t){}
     void __setFieldUint64Value(std::string,uint64_t){}
-    void __setFieldObjectValue(std::string,sp<Object>){}
+    void __setFieldObjectValue(std::string,sp<_Object>){}
     void __setFieldStringValue(std::string name,std::string value){}
     void __setFieldBoolValue(std::string name,bool){}
 };

@@ -21,11 +21,11 @@ class _String;
 template<typename T>
 class _ArrayList;
 
-class Object
+class _Object
 {
 public:
     friend class _Field;
-    Object() : mCount(0) { }
+    _Object() : mCount(0) { }
 
     inline void incStrong(__attribute__((unused)) const void* id) {
         __sync_fetch_and_add(&mCount, 1);
@@ -45,15 +45,15 @@ public:
         return mCount;
     }
 
-    inline virtual bool equals(const Object *m) {
+    inline virtual bool equals(const _Object *m) {
         return this == m;
     }
 
-    inline virtual bool equals(Object &m) {
+    inline virtual bool equals(_Object &m) {
         return this == &m;
     }
 
-    inline virtual ~Object() {
+    inline virtual ~_Object() {
     }
 
     inline virtual uint64_t hashcode() {
@@ -80,7 +80,7 @@ protected:
     inline virtual uint32_t __getFieldUint32Value(std::string){return 0;}
     inline virtual uint64_t __getFieldUint64Value(std::string){return 0;}
     inline virtual sp<_String> __getFieldStringValue(std::string name){throw "not support";};
-    inline virtual sp<Object> __getFieldObjectValue(std::string){return nullptr;}
+    inline virtual sp<_Object> __getFieldObjectValue(std::string){return nullptr;}
     //reflect set function
     inline virtual void __setFieldIntValue(std::string,int){}
     inline virtual void __setFieldByteValue(std::string,uint8_t){}
@@ -91,19 +91,21 @@ protected:
     inline virtual void __setFieldUint16Value(std::string,uint16_t){}
     inline virtual void __setFieldUint32Value(std::string,uint32_t){}
     inline virtual void __setFieldUint64Value(std::string,uint64_t){}
-    inline virtual void __setFieldObjectValue(std::string,sp<Object>){}
+    inline virtual void __setFieldObjectValue(std::string,sp<_Object>){}
     inline virtual void __setFieldStringValue(std::string name,std::string value){}
     inline virtual void __setFieldBoolValue(std::string name,bool){}
     
     //create function
     inline virtual void __createFieldObject(std::string name){}
-    inline virtual sp<Object> __createListItemObject(std::string name){return nullptr;}
-    inline virtual sp<Object> __getListItemObject(std::string name,int index){return nullptr;}
+    inline virtual sp<_Object> __createListItemObject(std::string name){return nullptr;}
+    inline virtual sp<_Object> __getListItemObject(std::string name,int index){return nullptr;}
     inline virtual int __getListObjectSize(std::string name) {return 0;}
 
 private:
     mutable volatile int32_t mCount;
 };
+
+using Object = sp<_Object>;
 
 template<typename U>
 sp<U> AutoClone(U *v) {
@@ -125,7 +127,7 @@ T AutoClone(U *v) {
 template<typename A=_##Y,typename... Args>\
 sp<A> create##Y(Args&&... args)\
 {\
-    Object* obj = new A(std::forward<Args>(args)...);\
+    _Object* obj = new A(std::forward<Args>(args)...);\
     obj->__ReflectInit();\
     sp<A> ret;\
     ret.set_pointer(dynamic_cast<A *>(obj));\
@@ -139,7 +141,7 @@ sp<A> create##Y(Args&&... args)\
 template<typename T,typename A=_##Y<T>,typename... Args>\
 sp<A> create##Y(Args&&... args)\
 {\
-    Object* obj = new A(std::forward<Args>(args)...);\
+    _Object* obj = new A(std::forward<Args>(args)...);\
     obj->__ReflectInit();\
     sp<A> ret;\
     ret.set_pointer(dynamic_cast<A *>(obj));\
@@ -150,7 +152,7 @@ sp<A> create##Y(Args&&... args)\
 template<typename T,typename U,typename A=_##Y<T,U>,typename... Args>\
 sp<A> create##Y(Args&&... args)\
 {\
-    Object* obj = new A(std::forward<Args>(args)...);\
+    _Object* obj = new A(std::forward<Args>(args)...);\
     obj->__ReflectInit();\
     sp<A> ret;\
     ret.set_pointer(dynamic_cast<A *>(obj));\
@@ -182,7 +184,7 @@ CLASS_PRE_DEF_##U(Y); \
 TYPE_DEF_##U(Y); \
 MAKE_FUNCTION_##U(Y) \
 TEPMLATE_DECLARE_##U \
-class _##Y: virtual public Object\
+class _##Y: virtual public _Object\
 
 #define DECLARE_SIMPLE_CLASS(Y) DECLARE_CLASS(Y,0)
 

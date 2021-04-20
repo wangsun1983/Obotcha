@@ -9,10 +9,6 @@ namespace obotcha {
 
 class _Handler;
 
-DECLARE_SIMPLE_CLASS(MessageData) {
-//TODO
-};
-
 DECLARE_SIMPLE_CLASS(Message) {
 
 public:
@@ -30,7 +26,7 @@ public:
 
     int arg2;
 
-    MessageData data;
+    Object data;
 
     ~_Message();
 

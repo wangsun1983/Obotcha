@@ -46,6 +46,8 @@ _Socket::_Socket(int fd) {
 void _Socket::setAsync() {
     if(mStatus != Closed) {
         fcntl(mSock->getFd(), F_SETFL, fcntl(mSock->getFd(), F_GETFL, 0)| O_NONBLOCK);
+        mInput = createSocketInputStream(AutoClone(this));
+        mOutput = createSocketOutputStream(AutoClone(this));
     }
 }
 
