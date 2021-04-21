@@ -20,9 +20,11 @@ namespace obotcha {
  */
 DECLARE_SIMPLE_CLASS(WebSocketHybi13Composer) IMPLEMENTS(WebSocketComposer){
 public:
-    _WebSocketHybi13Composer(int,int max = MAX_WEBSOCKET_FRAME_SIZE);
+    _WebSocketHybi13Composer(int type,int ver = 13,int max = MAX_WEBSOCKET_FRAME_SIZE);
 
-    ByteArray genShakeHandMessage(WebSocketClientInfo h);
+    ByteArray genClientShakeHandMessage(HttpUrl);
+
+    ByteArray genServerShakeHandMessage(String SecWebSocketKey,String protocols);
     
     ArrayList<ByteArray> genTextMessage(WebSocketClientInfo,String);
 
@@ -37,9 +39,6 @@ public:
     ByteArray generateControlFrame(int opcode, ByteArray payload);
 
 private:
-    ByteArray _genClientShakeHandMessage(WebSocketClientInfo h);
-
-    ByteArray _genServerShakeHandMessage(WebSocketClientInfo h);
 
     ArrayList<ByteArray> _genClientMessage(WebSocketClientInfo h,ByteArray,int type);
     

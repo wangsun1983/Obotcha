@@ -34,6 +34,7 @@ public:
  
 protected:
     ByteArray mData;
+    
     ByteArray mContinueBuff;
 
     ByteArrayReader mReader;

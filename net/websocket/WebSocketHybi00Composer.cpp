@@ -10,13 +10,16 @@
 
 namespace obotcha {
 
-_WebSocketHybi00Composer::_WebSocketHybi00Composer(int type,int maxFrameSize)
-:_WebSocketComposer(type,maxFrameSize) {
+_WebSocketHybi00Composer::_WebSocketHybi00Composer(int type,int ver,int maxFrameSize)
+:_WebSocketComposer(type,ver,maxFrameSize) {
 
 }
 
-ByteArray _WebSocketHybi00Composer::genShakeHandMessage(WebSocketClientInfo) {
-    //TODO
+ByteArray _WebSocketHybi00Composer::genClientShakeHandMessage(HttpUrl) {
+    return nullptr;
+}
+
+ByteArray _WebSocketHybi00Composer::genServerShakeHandMessage(String SecWebSocketKey,String protocols) {
     return nullptr;
 }
 

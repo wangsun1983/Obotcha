@@ -55,23 +55,28 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                     AutoLock l(monitor->mMutex);
                     task = monitor->mThreadLocalTasks->get(index)->deQueueFirst();
                     if(task == nullptr) {
-                        monitor->mCurrentSockets[index] = nullptr;
-                        task = monitor->mThreadPublicTasks->deQueueFirst();
-                        if(task == nullptr) {
+                        if(monitor->mThreadNum > 1) {
+                            monitor->mCurrentSockets[index] = nullptr;
+                            task = monitor->mThreadPublicTasks->deQueueFirst();
+                            if(task == nullptr) {
+                                monitor->mCondition->wait(monitor->mMutex);
+                                continue;
+                            }
+
+                            for(int i = 0;i<monitor->mThreadNum;i++) {
+                                if(monitor->mCurrentSockets[i] == task->sock) {
+                                    monitor->mThreadLocalTasks->get(i)->enQueueLast(task);
+                                    task = nullptr;
+                                    break;
+                                }
+                            }
+
+                            if(task != nullptr) {
+                                monitor->mCurrentSockets[index] = task->sock;
+                            }
+                        } else {
                             monitor->mCondition->wait(monitor->mMutex);
                             continue;
-                        }
-
-                        for(int i = 0;i<monitor->mThreadNum;i++) {
-                            if(monitor->mCurrentSockets[i] == task->sock) {
-                                monitor->mThreadLocalTasks->get(i)->enQueueLast(task);
-                                task = nullptr;
-                                break;
-                            }
-                        }
-
-                        if(task != nullptr) {
-                            monitor->mCurrentSockets[index] = task->sock;
                         }
                     }
                 }

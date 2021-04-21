@@ -64,7 +64,10 @@ int _HttpUrlConnection::connect() {
 HttpResponse _HttpUrlConnection::execute(HttpRequest req) {
     if(mHandler != nullptr) {
         mHandler->post([](_HttpUrlConnection *url,HttpRequest req) {
-            url->_execute(req);
+            HttpResponse response = url->_execute(req);
+            Message msg = url->mHandler->obtainMessage();
+            msg->data = Cast<Object>(response);
+            url->mHandler->sendMessage(msg);
         },this,req);
     } else {
         return _execute(req);
@@ -73,19 +76,21 @@ HttpResponse _HttpUrlConnection::execute(HttpRequest req) {
     return nullptr;
 }
 
-void _HttpUrlConnection::execute(HttpRequest req,int requestid) {
+void _HttpUrlConnection::execute(HttpRequest req,int what) {
     if(mHandler != nullptr) {
-        mHandler->post([](_HttpUrlConnection *url,HttpRequest req,int id) {
+        mHandler->post([](_HttpUrlConnection *url,HttpRequest req,int what) {
             printf("execute trace1 \n");
             HttpResponse response = url->_execute(req);
             printf("execute trace2 \n");
             Message msg = url->mHandler->obtainMessage();
-            msg->arg1 = id;
+            msg->what = what;
             msg->data = Cast<Object>(response);
             url->mHandler->sendMessage(msg);
-        },this,req,requestid);
+        },this,req,what);
     } else {
+        printf("execute 2 ff \n");
         _execute(req);
+        printf("execute 2 ff \n");
     }
 }
 

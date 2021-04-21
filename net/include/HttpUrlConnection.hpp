@@ -55,7 +55,7 @@ public:
 
     HttpResponse execute(HttpRequest req);
 
-    void execute(HttpRequest req,int requestid);
+    void execute(HttpRequest req,int what);
 
 private:
     int _connect();

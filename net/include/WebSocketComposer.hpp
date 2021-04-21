@@ -11,6 +11,7 @@
 #include "ByteArrayReader.hpp"
 #include "HttpHeader.hpp"
 #include "WebSocketClientInfo.hpp"
+#include "WebSocketPermessageDeflate.hpp"
 
 namespace obotcha {
 
@@ -23,13 +24,17 @@ enum WebSocketFrameComposerType {
 
 DECLARE_SIMPLE_CLASS(WebSocketComposer) {
 public:
-    _WebSocketComposer(int version,int maxframesize):mType(version),mMaxFrameSize(maxframesize) {}
+    _WebSocketComposer(int type,int version,int maxframesize):mType(type),mVersion(version),mMaxFrameSize(maxframesize),mDeflate(nullptr) {}
     
     int getMaxFrameSize() {return mMaxFrameSize;}
 
     void setMaxFrameSzie(int frame) {mMaxFrameSize = frame;}
 
-    virtual ByteArray genShakeHandMessage(WebSocketClientInfo) = 0;
+    void setDeflate(WebSocketPermessageDeflate deflate) {mDeflate = deflate;}
+
+    virtual ByteArray genClientShakeHandMessage(HttpUrl) = 0;
+
+    virtual ByteArray genServerShakeHandMessage(String SecWebSocketKey,String protocols) = 0;
     
     virtual ArrayList<ByteArray> genTextMessage(WebSocketClientInfo,String) = 0;
 
@@ -43,7 +48,9 @@ public:
 
 protected:
     int mType;
+    int mVersion;
     int mMaxFrameSize;
+    WebSocketPermessageDeflate mDeflate;
 
     void toggleMask(ByteArray buffer, ByteArray key) {
         int keyLength = key->size();

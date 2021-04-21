@@ -11,31 +11,25 @@
 #include "HttpResponse.hpp"
 #include "HttpUrlBuilder.hpp"
 #include "HttpUrlConnection.hpp"
-#include "HttpUrlAsyncConnectionPool.hpp"
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyHandler) IMPLEMENTS(Handler) {
-public:
-    void handleMessage(Message msg) {
-        printf("msg id is %d \n",msg->arg1);
-        HttpResponse response = Cast<HttpResponse>(msg->data);
-        HttpEntity entity = response->getEntity();
-        printf("entity is %s \n",entity->getContent()->toValue());
-    }
-};
 
-int testAsyncHttpConnection() {
+int main() {
 
     HttpUrl url = createHttpUrlBuilder()->appendHost(createString("www.tusvisionai.com"))->appendPort(80)->genHttpUrl();
-    
-
-    HttpUrlConnection connection = createHttpUrlConnection(url,createMyHandler());
+    HttpUrlConnection connection = url->openConnection();
     connection->connect();
     HttpRequest request = createHttpRequest(st(HttpMethod)::Get,url);
     request->getHeader()->setValue(createString("Host"),createString(" www.tusvisionai.com"));
-    printf("start send response \n");
-    connection->execute(request,123);
-    while(1) {sleep(1000);}
+    //for(int i = 0;i < 1024;i++) {
+        HttpResponse response = connection->execute(request);
+        if(response != nullptr) {
+            printf("it is not nullptr,i is %d \n",1);
+        }
+
+        HttpEntity entity = response->getEntity();
+        printf("entity is %s \n",entity->getContent()->toValue());
+    //}
 
 }

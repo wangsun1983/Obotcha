@@ -18,29 +18,16 @@
 
 namespace obotcha {
 
-_WebSocketHybi13Composer::_WebSocketHybi13Composer(int type,int maxFrameSize):_WebSocketComposer(type,maxFrameSize){
+_WebSocketHybi13Composer::_WebSocketHybi13Composer(int type,int ver,int maxFrameSize):_WebSocketComposer(type,ver,maxFrameSize){
     mSha = createSha(SHA_1);
     mBase64 = createBase64();
     mRand = createRandom();
 }
 
-ByteArray _WebSocketHybi13Composer::genShakeHandMessage(WebSocketClientInfo h) {
-    switch(mType) {
-        case WsClientComposer:
-        return _genClientShakeHandMessage(h);
-
-        case WsServerComposer:
-        return _genServerShakeHandMessage(h);
-    }
-
-    return nullptr;
-}
-
-ByteArray _WebSocketHybi13Composer::_genClientShakeHandMessage(WebSocketClientInfo client) {
-    HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(client->getConnectUrl());
+ByteArray _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl) {
     HttpRequest packet = createHttpRequest();
     packet->getHeader()->setMethod(st(HttpMethod)::Get);
-    packet->setHeader(client->getHttpHeader());
+    //packet->setHeader(client->getHttpHeader());
     packet->getHeader()->setUrl(httpUrl);
     packet->getHeader()->setVersion(createHttpVersion(1,1));
 
@@ -92,9 +79,8 @@ ByteArray _WebSocketHybi13Composer::_genClientShakeHandMessage(WebSocketClientIn
     return writer->compose(packet);
 }
 
-ByteArray _WebSocketHybi13Composer::_genServerShakeHandMessage(WebSocketClientInfo info) {
-    HttpHeader h = info->getHttpHeader();
-    String key = h->getValue(st(HttpHeader)::SecWebSocketKey);
+ByteArray _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSocketKey,String protocols) {
+    String key = SecWebSocketKey;
 
     String key_mgic = key->append(st(WebSocketProtocol)::ACCEPT_MAGIC);
     ByteArray sha1_content = mSha->encryptRawData(createByteArray(key_mgic));
@@ -102,7 +88,6 @@ ByteArray _WebSocketHybi13Composer::_genServerShakeHandMessage(WebSocketClientIn
     
     String connection = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n";
 
-    String protocols = h->getValue(st(HttpHeader)::SecWebSocketProtocol);
     if(protocols != nullptr) {
         //TODO
         connection = connection->append("Sec-WebSocket-Protocol:",protocols,"\r\n");
@@ -111,12 +96,11 @@ ByteArray _WebSocketHybi13Composer::_genServerShakeHandMessage(WebSocketClientIn
     String resp = connection->append("Sec-WebSocket-Accept:",base64,"\r\n");
 
     //check whetehr we have Deflate
-    WebSocketPermessageDeflate deflater = info->getDeflater();
-    if(deflater != nullptr) {
+    if(mDeflate != nullptr) {
         resp = resp->append("Sec-WebSocket-Extensions:",
                             "permessage-deflate",
                             ";client_max_window_bits=",
-                            createString(deflater->getServerMaxWindowBits()),
+                            createString(mDeflate->getServerMaxWindowBits()),
                             "\r\n","\r\n");
     } else {
         resp = resp->append("\r\n");
