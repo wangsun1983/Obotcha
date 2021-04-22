@@ -5,7 +5,7 @@
 namespace obotcha {
 
 _HttpPacketBuilder::_HttpPacketBuilder() {
-    
+    begin();
 }
 
 _HttpPacketBuilder * _HttpPacketBuilder::begin() {
@@ -61,6 +61,12 @@ _HttpPacketBuilder * _HttpPacketBuilder::setUrl(String url) {
     return this;
 }
 
+_HttpPacketBuilder * _HttpPacketBuilder::addHeaderValue(String key,String value) {
+    header->setValue(key,value);
+    return this;
+}
+
+
 _HttpPacketBuilder * _HttpPacketBuilder::setPort(int port) {
     if(this->url != nullptr) {
         this->url->setPort(port);
@@ -106,7 +112,7 @@ HttpResponse _HttpPacketBuilder::newHttpResponse() {
     resp->setHeader(header);
     resp->setEntity(entity);
 
-    return nullptr;
+    return resp;
 }
 
 }

@@ -164,9 +164,11 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_Ht
                 String p = wsClient->getHttpHeader()->getValue(st(HttpHeader)::SecWebSocketProtocol);
                 String k = wsClient->getHttpHeader()->getValue(st(HttpHeader)::SecWebSocketKey);
 
-                ByteArray shakeresponse = composer->genServerShakeHandMessage(k,p);
-                long ret = client->getSocket()->getOutputStream()->write(shakeresponse);
-                if(ret < 0) {
+                HttpResponse shakeresponse = composer->genServerShakeHandMessage(k,p);
+
+                HttpResponseWriter writer = createHttpResponseWriter(client->getSocket()->getOutputStream());
+                //long ret = client->getSocket()->getOutputStream()->write(shakeresponse);
+                if(writer->write(shakeresponse) < 0) {
                     LOG(ERROR)<<"Websocket Server send response fail,reason:"<<strerror(errno);
                 }
             }

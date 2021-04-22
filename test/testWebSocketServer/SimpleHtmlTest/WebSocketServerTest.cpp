@@ -24,8 +24,8 @@ public:
     }
 
     int onMessage(WebSocketClientInfo client,WebSocketFrame message) {
-        printf("message is %s \n",message->getMessage()->toChars());
-        mMessage = message->getMessage();
+        printf("message is %s \n",message->getData()->toValue());
+        //mMessage = message->getData();
         String response = createString("hello from server ");
         printf("message len is %d \n",response->size());
         ByteArray array = createByteArray(response);
@@ -72,16 +72,16 @@ public:
         return 0;
     }
 
-    String waitMessage() {
-        AutoLock ll(mMutex);
-        mConditaion->wait(mMutex);
-        return mMessage;
-    }
+    //String waitMessage() {
+     //   AutoLock ll(mMutex);
+    //    mConditaion->wait(mMutex);
+    //    return mMessage;
+    //}
 
 private:
     Mutex mMutex;
     Condition mConditaion;
-    String mMessage;   
+    //String mMessage;   
 };
 
 
@@ -90,12 +90,12 @@ int main() {
     MyWsListener l = createMyWsListener();
 
     WebSocketServer server = createWebSocketServer();
-    InetAddress address = createInetAddress("192.168.1.5",1111);
+    InetAddress address = createInetAddress("192.168.1.6",1111);
     
     server->bind(address,"/mytest",l);
     server->start();
     printf("websocket start trace1 \n");
-    l->waitMessage();
+    //l->waitMessage();
     printf("websocket start trace2 \n");
 
     while(1) {sleep(1);}

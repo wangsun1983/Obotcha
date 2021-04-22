@@ -16,16 +16,17 @@
 #include "WebSocketListener.hpp"
 #include "Mutex.hpp"
 #include "WebSocketParser.hpp"
-#include "WebSocketHybi13Parser.hpp"
 #include "WebSocketComposer.hpp"
 #include "WebSocketListener.hpp"
 #include "HttpOption.hpp"
+#include "SocketMonitor.hpp"
+#include "OutputStream.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(WebSocketClient) {
+DECLARE_SIMPLE_CLASS(WebSocketClient) IMPLEMENTS(SocketListener){
 public:
-    _WebSocketClient(int version);
+    _WebSocketClient(int version = 13);
     
     void updateMask(bool);
 
@@ -35,23 +36,36 @@ public:
 
     int sendTextMessage(const char*msg);
 
-    int sendPingMessage(ByteArray msg);
+    int sendPingMessage(String msg);
 
-    int sendCloseMessage(ByteArray msg);
+    int sendPongMessage(String msg);
+
+    int sendCloseMessage(String msg);
 
     int sendBinaryData(ByteArray data);
 
     int sendFile(File);
 
-    WebSocketClientInfo getClientInfo();
-
 private:
+    int _send(ArrayList<ByteArray>);
+    int _send(ByteArray);
+    
+    void onSocketMessage(int,Socket,ByteArray);
 
     int mVersion;
 
     WebSocketListener mWsListener;
 
     HttpOption mHttpOption;
+
+    SocketMonitor mSocketMonitor;
+
+    WebSocketParser parser;
+    WebSocketComposer composer;
+
+    OutputStream mOutputStream;
+    Socket mSocket;
+    
 };
 
 

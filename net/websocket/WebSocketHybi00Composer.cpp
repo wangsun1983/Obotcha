@@ -15,35 +15,35 @@ _WebSocketHybi00Composer::_WebSocketHybi00Composer(int type,int ver,int maxFrame
 
 }
 
-ByteArray _WebSocketHybi00Composer::genClientShakeHandMessage(HttpUrl) {
+HttpRequest _WebSocketHybi00Composer::genClientShakeHandMessage(HttpUrl) {
     return nullptr;
 }
 
-ByteArray _WebSocketHybi00Composer::genServerShakeHandMessage(String SecWebSocketKey,String protocols) {
+HttpResponse _WebSocketHybi00Composer::genServerShakeHandMessage(String SecWebSocketKey,String protocols) {
     return nullptr;
 }
 
-ArrayList<ByteArray> _WebSocketHybi00Composer::genTextMessage(WebSocketClientInfo,String) {
+ArrayList<ByteArray> _WebSocketHybi00Composer::genTextMessage(String) {
     //TODO
     return nullptr;
 }
 
-ArrayList<ByteArray> _WebSocketHybi00Composer::genBinaryMessage(WebSocketClientInfo,ByteArray) {
+ArrayList<ByteArray> _WebSocketHybi00Composer::genBinaryMessage(ByteArray) {
     //TODO
     return nullptr;
 }
 
-ByteArray _WebSocketHybi00Composer::genPingMessage(WebSocketClientInfo,String) {
+ByteArray _WebSocketHybi00Composer::genPingMessage(String) {
     //TODO
     return nullptr;
 }
 
-ByteArray _WebSocketHybi00Composer::genPongMessage(WebSocketClientInfo,String) {
+ByteArray _WebSocketHybi00Composer::genPongMessage(String) {
     //TODO
     return nullptr;
 }
 
-ByteArray _WebSocketHybi00Composer::genCloseMessage(WebSocketClientInfo,String) {
+ByteArray _WebSocketHybi00Composer::genCloseMessage(String) {
     //TODO
     return nullptr;
 }

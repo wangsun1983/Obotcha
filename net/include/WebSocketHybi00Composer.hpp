@@ -11,6 +11,7 @@
 #include "ByteArrayReader.hpp"
 #include "HttpHeader.hpp"
 #include "WebSocketComposer.hpp"
+#include "HttpRequest.hpp"
 
 namespace obotcha {
 
@@ -19,19 +20,19 @@ DECLARE_SIMPLE_CLASS(WebSocketHybi00Composer) IMPLEMENTS(WebSocketComposer) {
 public:
     _WebSocketHybi00Composer(int type,int ver = 0,int max = MAX_WEBSOCKET_FRAME_SIZE);
     
-    ByteArray genClientShakeHandMessage(HttpUrl);
+    HttpRequest genClientShakeHandMessage(HttpUrl);
 
-    ByteArray genServerShakeHandMessage(String SecWebSocketKey,String protocols);
+    HttpResponse genServerShakeHandMessage(String SecWebSocketKey,String protocols);
     
-    ArrayList<ByteArray> genTextMessage(WebSocketClientInfo,String);
+    ArrayList<ByteArray> genTextMessage(String);
     
-    ArrayList<ByteArray> genBinaryMessage(WebSocketClientInfo,ByteArray);
+    ArrayList<ByteArray> genBinaryMessage(ByteArray);
 
-    ByteArray genPingMessage(WebSocketClientInfo,String);
+    ByteArray genPingMessage(String);
 
-    ByteArray genPongMessage(WebSocketClientInfo,String);
+    ByteArray genPongMessage(String);
 
-    ByteArray genCloseMessage(WebSocketClientInfo,String);
+    ByteArray genCloseMessage(String);
 
     ByteArray generateControlFrame(int opcode, ByteArray payload);
 

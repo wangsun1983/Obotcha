@@ -11,6 +11,8 @@
 #include "Sha.hpp"
 #include "Base64.hpp"
 #include "Random.hpp"
+#include "HttpRequest.hpp"
+#include "HttpResponse.hpp"
 
 namespace obotcha {
 
@@ -22,31 +24,31 @@ DECLARE_SIMPLE_CLASS(WebSocketHybi13Composer) IMPLEMENTS(WebSocketComposer){
 public:
     _WebSocketHybi13Composer(int type,int ver = 13,int max = MAX_WEBSOCKET_FRAME_SIZE);
 
-    ByteArray genClientShakeHandMessage(HttpUrl);
+    HttpRequest genClientShakeHandMessage(HttpUrl);
 
-    ByteArray genServerShakeHandMessage(String SecWebSocketKey,String protocols);
+    HttpResponse genServerShakeHandMessage(String SecWebSocketKey,String protocols);
     
-    ArrayList<ByteArray> genTextMessage(WebSocketClientInfo,String);
+    ArrayList<ByteArray> genTextMessage(String);
 
-    ArrayList<ByteArray> genBinaryMessage(WebSocketClientInfo,ByteArray);
+    ArrayList<ByteArray> genBinaryMessage(ByteArray);
 
-    ByteArray genPingMessage(WebSocketClientInfo,String);
+    ByteArray genPingMessage(String);
 
-    ByteArray genPongMessage(WebSocketClientInfo,String);
+    ByteArray genPongMessage(String);
 
-    ByteArray genCloseMessage(WebSocketClientInfo,String);
+    ByteArray genCloseMessage(String);
 
     ByteArray generateControlFrame(int opcode, ByteArray payload);
 
 private:
 
-    ArrayList<ByteArray> _genClientMessage(WebSocketClientInfo h,ByteArray,int type);
+    ArrayList<ByteArray> _genClientMessage(ByteArray,int type);
     
-    ArrayList<ByteArray> _genServerMessage(WebSocketClientInfo h,ByteArray,int type);
+    ArrayList<ByteArray> _genServerMessage(ByteArray,int type);
 
-    ByteArray _genClientControlMessage(WebSocketClientInfo h,ByteArray,int type);
+    ByteArray _genClientControlMessage(ByteArray,int type);
 
-    ByteArray _genServerControlMessage(WebSocketClientInfo h,ByteArray,int type);
+    ByteArray _genServerControlMessage(ByteArray,int type);
 
     Sha mSha;
 

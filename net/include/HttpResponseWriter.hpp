@@ -9,7 +9,7 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(HttpResponseWriter) {
 public:
-    _HttpResponseWriter(HttpClientInfo client);
+    _HttpResponseWriter(OutputStream);
     
     _HttpResponseWriter();
 
@@ -24,7 +24,7 @@ public:
 private:
     int mFd;
 
-    HttpClientInfo mClient;
+    OutputStream mOutputStream;
 
     bool mResponsible;
 

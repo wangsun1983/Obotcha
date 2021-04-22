@@ -12,6 +12,9 @@
 #include "HttpHeader.hpp"
 #include "WebSocketClientInfo.hpp"
 #include "WebSocketPermessageDeflate.hpp"
+#include "HttpPacket.hpp"
+#include "HttpRequest.hpp"
+#include "HttpResponse.hpp"
 
 namespace obotcha {
 
@@ -32,19 +35,19 @@ public:
 
     void setDeflate(WebSocketPermessageDeflate deflate) {mDeflate = deflate;}
 
-    virtual ByteArray genClientShakeHandMessage(HttpUrl) = 0;
+    virtual HttpRequest genClientShakeHandMessage(HttpUrl) = 0;
 
-    virtual ByteArray genServerShakeHandMessage(String SecWebSocketKey,String protocols) = 0;
+    virtual HttpResponse genServerShakeHandMessage(String SecWebSocketKey,String protocols) = 0;
     
-    virtual ArrayList<ByteArray> genTextMessage(WebSocketClientInfo,String) = 0;
+    virtual ArrayList<ByteArray> genTextMessage(String) = 0;
 
-    virtual ArrayList<ByteArray> genBinaryMessage(WebSocketClientInfo,ByteArray) = 0;
+    virtual ArrayList<ByteArray> genBinaryMessage(ByteArray) = 0;
 
-    virtual ByteArray genPingMessage(WebSocketClientInfo,String) = 0;
+    virtual ByteArray genPingMessage(String) = 0;
 
-    virtual ByteArray genPongMessage(WebSocketClientInfo,String) = 0;
+    virtual ByteArray genPongMessage(String) = 0;
 
-    virtual ByteArray genCloseMessage(WebSocketClientInfo,String) = 0;
+    virtual ByteArray genCloseMessage(String) = 0;
 
 protected:
     int mType;

@@ -29,7 +29,7 @@ int _HttpUrlAsyncConnection::connect() {
     mSocket->setAsync();
     
     mInputStream = mSocket->getInputStream();
-    writer = createHttpRequestWriter(mSocket);
+    writer = createHttpRequestWriter(mSocket->getOutputStream());
 
     return result;
 }

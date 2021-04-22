@@ -121,26 +121,26 @@ long _WebSocketClientInfo::_send(int type,ByteArray msg) {
 
         switch(type) {
             case st(WebSocketProtocol)::OPCODE_TEXT:
-                data = mComposer->genTextMessage(AutoClone(this),msg->toString());
+                data = mComposer->genTextMessage(msg->toString());
                 break;
 
             case st(WebSocketProtocol)::OPCODE_BINARY:
-                data = mComposer->genBinaryMessage(AutoClone(this),msg);
+                data = mComposer->genBinaryMessage(msg);
                 break;
 
             case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
                 data = createArrayList<ByteArray>();
-                data->add(mComposer->genCloseMessage(AutoClone(this),msg->toString()));
+                data->add(mComposer->genCloseMessage(msg->toString()));
                 break;
             
             case st(WebSocketProtocol)::OPCODE_CONTROL_PING:
                 data = createArrayList<ByteArray>();
-                data->add(mComposer->genPingMessage(AutoClone(this),msg->toString()));
+                data->add(mComposer->genPingMessage(msg->toString()));
                 break;
 
             case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:
                 data = createArrayList<ByteArray>();
-                data->add(mComposer->genPongMessage(AutoClone(this),msg->toString()));
+                data->add(mComposer->genPongMessage(msg->toString()));
                 break;
 
             default:

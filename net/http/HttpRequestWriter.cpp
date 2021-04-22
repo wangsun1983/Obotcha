@@ -18,7 +18,7 @@ namespace obotcha {
 
 #define AUTO_FLUSH(X) \
 while(X == -1) {\
-    if(mSock != nullptr) {\
+    if(mOutputStream != nullptr) {\
         flush(writer->getIndex());\
         mSendBuff->clear();\
         writer->reset();\
@@ -30,21 +30,19 @@ while(X == -1) {\
 
 #define FORCE_FLUSH() \
 {\
-    if(mSock != nullptr) {\
+    if(mOutputStream != nullptr) {\
         flush(writer->getIndex());\
         mSendBuff->clear();\
         writer->reset();\
     }\
 }
 
-_HttpRequestWriter::_HttpRequestWriter(Socket c) {
-    mSock = c;
-    mOutputStream = mSock->getOutputStream();
+_HttpRequestWriter::_HttpRequestWriter(OutputStream stream) {
+    mOutputStream = stream;
     mSendBuff = createByteArray(1024*4);
 }
 
 _HttpRequestWriter::_HttpRequestWriter() {
-    mSock = nullptr;
     mOutputStream = nullptr;
     mSendBuff = createByteArray(1024*4);
 }

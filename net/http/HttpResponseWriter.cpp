@@ -33,8 +33,8 @@ while(X == -1) {\
     }\
 }
 
-_HttpResponseWriter::_HttpResponseWriter(HttpClientInfo client) {
-    mClient = client;
+_HttpResponseWriter::_HttpResponseWriter(OutputStream stream) {
+    mOutputStream = stream;
     mResponsible = true;
     mSendBuff = createByteArray(1024*32);
 }
@@ -134,8 +134,9 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     } else if(body != nullptr && body->size() != 0) {
         AUTO_FLUSH(writer->writeByteArray(body));
         AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
-        FORCE_FLUSH();
     }
+    
+    FORCE_FLUSH();
     return writer->getIndex();
 }
 
@@ -160,14 +161,16 @@ long _HttpResponseWriter::computeContentLength(HttpResponse response) {
         length += encodedUrlMap->size()*2 - 1; /*=&*/
         return length;
     } else {
-        return response->getEntity()->getContent()->size();
+        if(response->getEntity()->getContent() != nullptr) {
+            return response->getEntity()->getContent()->size();
+        }
     } 
 
     return 0;
 }
 
 int _HttpResponseWriter::send(int size) {
-    return mClient->send(mSendBuff,size);
+    return mOutputStream->write(mSendBuff,size);
 }
 
 }

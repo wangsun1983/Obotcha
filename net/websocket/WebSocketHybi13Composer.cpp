@@ -15,6 +15,8 @@
 #include "Base64.hpp"
 #include "HttpRequestWriter.hpp"
 #include "HttpRequest.hpp"
+#include "HttpPacketBuilder.hpp"
+#include "HttpStatus.hpp"
 
 namespace obotcha {
 
@@ -24,7 +26,7 @@ _WebSocketHybi13Composer::_WebSocketHybi13Composer(int type,int ver,int maxFrame
     mRand = createRandom();
 }
 
-ByteArray _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl) {
+HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl) {
     HttpRequest packet = createHttpRequest();
     packet->getHeader()->setMethod(st(HttpMethod)::Get);
     //packet->setHeader(client->getHttpHeader());
@@ -74,62 +76,55 @@ ByteArray _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl) {
     if(packet->getHeader()->getValue(st(HttpHeader)::CacheControl) == nullptr) {
         packet->getHeader()->setValue(st(HttpHeader)::CacheControl,"no-cache");
     }
-    //TODO
-    HttpRequestWriter writer = createHttpRequestWriter();
-    return writer->compose(packet);
+
+    return packet;
 }
 
-ByteArray _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSocketKey,String protocols) {
+HttpResponse _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSocketKey,String protocols) {
     String key = SecWebSocketKey;
-
     String key_mgic = key->append(st(WebSocketProtocol)::ACCEPT_MAGIC);
     ByteArray sha1_content = mSha->encryptRawData(createByteArray(key_mgic));
     String base64 = mBase64->encode(sha1_content)->toString();
-    
-    String connection = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n";
+
+    HttpPacketBuilder builder = createHttpPacketBuilder();
+    builder->setVersion(1,1)
+        ->setResponseStatus(st(HttpStatus)::SwitchProtocls)
+        ->setResponseReason(st(HttpStatus)::toString(st(HttpStatus)::SwitchProtocls))
+        ->addHeaderValue(st(HttpHeader)::SecWebSocketAccept,base64);
 
     if(protocols != nullptr) {
-        //TODO
-        connection = connection->append("Sec-WebSocket-Protocol:",protocols,"\r\n");
+        builder->addHeaderValue(st(HttpHeader)::SecWebSocketProtocol,protocols);
     }
 
-    String resp = connection->append("Sec-WebSocket-Accept:",base64,"\r\n");
-
-    //check whetehr we have Deflate
     if(mDeflate != nullptr) {
-        resp = resp->append("Sec-WebSocket-Extensions:",
-                            "permessage-deflate",
-                            ";client_max_window_bits=",
-                            createString(mDeflate->getServerMaxWindowBits()),
-                            "\r\n","\r\n");
-    } else {
-        resp = resp->append("\r\n");
+        String extension = createString("permessage-deflate")->append(";client_max_window_bits=",
+                            createString(mDeflate->getServerMaxWindowBits()));
+
+        builder->addHeaderValue(st(HttpHeader)::SecWebSocketExtensions,extension);
     }
 
-    return createByteArray(resp);
+    return builder->newHttpResponse();
 }
 
-ArrayList<ByteArray> _WebSocketHybi13Composer::genTextMessage(WebSocketClientInfo info,String content) {
+ArrayList<ByteArray> _WebSocketHybi13Composer::genTextMessage(String content) {
     switch(mType) {
         case WsClientComposer:
-        //return genClientTextMessage(info,content);
-        return _genClientMessage(info,createByteArray(content),st(WebSocketProtocol)::OPCODE_TEXT);
+        return _genClientMessage(createByteArray(content),st(WebSocketProtocol)::OPCODE_TEXT);
 
         case WsServerComposer:
-        return _genServerMessage(info,createByteArray(content),st(WebSocketProtocol)::OPCODE_TEXT);
+        return _genServerMessage(createByteArray(content),st(WebSocketProtocol)::OPCODE_TEXT);
     }
 
     return nullptr;
 }
 
-ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClientInfo info,ByteArray content,int type) {
+ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(ByteArray content,int type) {
     ArrayList<ByteArray> genResult = createArrayList<ByteArray>();
 
     ByteArray entireMessage = nullptr;
-    WebSocketPermessageDeflate deflater = info->getDeflater();
-
-    if(deflater != nullptr) {
-        entireMessage = deflater->compress(content);
+    
+    if(mDeflate != nullptr) {
+        entireMessage = mDeflate->compress(content);
     } else {
         entireMessage = content;
     }
@@ -202,7 +197,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(WebSocketClient
     return genResult;
 }
 
-ArrayList<ByteArray> _WebSocketHybi13Composer::_genServerMessage(WebSocketClientInfo info,ByteArray content,int type) {
+ArrayList<ByteArray> _WebSocketHybi13Composer::_genServerMessage(ByteArray content,int type) {
     ArrayList<ByteArray> genResult = createArrayList<ByteArray>();
 
     ByteArray entireMessage = content;
@@ -260,67 +255,61 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genServerMessage(WebSocketClient
     return genResult;
 }
 
-ArrayList<ByteArray> _WebSocketHybi13Composer::genBinaryMessage(WebSocketClientInfo info,ByteArray content) {
+ArrayList<ByteArray> _WebSocketHybi13Composer::genBinaryMessage(ByteArray content) {
     switch(mType) {
         case WsClientComposer:
-        return _genClientMessage(info,content,st(WebSocketProtocol)::OPCODE_BINARY);
+        return _genClientMessage(content,st(WebSocketProtocol)::OPCODE_BINARY);
 
         case WsServerComposer:
-        return _genServerMessage(info,content,st(WebSocketProtocol)::OPCODE_BINARY);
+        return _genServerMessage(content,st(WebSocketProtocol)::OPCODE_BINARY);
     }
 
     return nullptr;
 }
 
-ByteArray _WebSocketHybi13Composer::genPingMessage(WebSocketClientInfo info ,String msg) {
+ByteArray _WebSocketHybi13Composer::genPingMessage(String msg) {
     switch(mType) {
         case WsClientComposer:
-        return _genClientControlMessage(info,
-                                        createByteArray(msg),
+        return _genClientControlMessage(createByteArray(msg),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PING);
 
         case WsServerComposer:
-        return _genServerControlMessage(info,
-                                        createByteArray(msg),
+        return _genServerControlMessage(createByteArray(msg),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PING);
     }
 
     return nullptr;
 }
 
-ByteArray _WebSocketHybi13Composer::genPongMessage(WebSocketClientInfo info ,String msg) {
+ByteArray _WebSocketHybi13Composer::genPongMessage(String msg) {
     switch(mType) {
         case WsClientComposer:
-        return _genClientControlMessage(info,
-                                        createByteArray(msg),
+        return _genClientControlMessage(createByteArray(msg),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PONG);
 
         case WsServerComposer:
-        return _genServerControlMessage(info,
-                                        createByteArray(msg),
+        return _genServerControlMessage(createByteArray(msg),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PONG);
     }
 
     return nullptr;
 }
 
-ByteArray _WebSocketHybi13Composer::genCloseMessage(WebSocketClientInfo info,String msg) {
+ByteArray _WebSocketHybi13Composer::genCloseMessage(String msg) {
     switch(mType) {
         case WsClientComposer:
-        return _genClientControlMessage(info,
-                                        createByteArray(msg),
+        return _genClientControlMessage(createByteArray(msg),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE);
 
         case WsServerComposer:
-        return _genServerControlMessage(info,
-                                        createByteArray(msg),
+        return _genServerControlMessage(createByteArray(msg),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE);
     }
 
     return nullptr;
 }
 
-ByteArray _WebSocketHybi13Composer::_genClientControlMessage(WebSocketClientInfo info,ByteArray payload,int type) {
+ByteArray _WebSocketHybi13Composer::_genClientControlMessage(ByteArray payload,int type) {
     ByteArray sink = createByteArray(payload->size() + 64);
     ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
 
@@ -345,7 +334,7 @@ ByteArray _WebSocketHybi13Composer::_genClientControlMessage(WebSocketClientInfo
     return sink;
 }
 
-ByteArray _WebSocketHybi13Composer::_genServerControlMessage(WebSocketClientInfo info,ByteArray payload,int type) {
+ByteArray _WebSocketHybi13Composer::_genServerControlMessage(ByteArray payload,int type) {
     ByteArray sink = createByteArray(payload->size() + 64);
     ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
 

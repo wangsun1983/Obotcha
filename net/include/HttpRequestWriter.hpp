@@ -16,7 +16,7 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(HttpRequestWriter) {
 
 public:
-    _HttpRequestWriter(Socket);
+    _HttpRequestWriter(OutputStream);
 
     _HttpRequestWriter();
     
@@ -25,7 +25,6 @@ public:
     ByteArray compose(HttpRequest);
 
 private:
-    Socket mSock;
     OutputStream mOutputStream;
     
     String generateMultiPartBoundary();

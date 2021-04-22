@@ -42,6 +42,10 @@ _HttpUrlConnection* _HttpUrlConnection::setKeepAlive(bool keepalive) {
     return this;
 }
 
+Socket _HttpUrlConnection::getSocket() {
+    return mSocket;
+}
+
 bool _HttpUrlConnection::isKeepAlive() {
     return mKeepAlive;
 }
@@ -107,7 +111,7 @@ int _HttpUrlConnection::_connect() {
     mSocket = createSocketBuilder()->setAddress(inetAddr)->newSocket();
     int result = mSocket->connect();
     mInputStream = mSocket->getInputStream();
-    writer = createHttpRequestWriter(mSocket);
+    writer = createHttpRequestWriter(mSocket->getOutputStream());
 
     return result;
 }

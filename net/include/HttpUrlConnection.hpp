@@ -46,6 +46,8 @@ public:
     _HttpUrlConnection* setTimeout(int timeout);
 
     _HttpUrlConnection* setKeepAlive(bool keepalive);
+
+    Socket getSocket();
     
     bool isKeepAlive();
 

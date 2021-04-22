@@ -38,7 +38,7 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
             
             ArrayList<HttpPacket> packets = info->pollHttpPacket();
             if(packets != nullptr && packets->size() != 0) {
-                HttpResponseWriter writer = createHttpResponseWriter(info);
+                HttpResponseWriter writer = createHttpResponseWriter(info->getSocket()->getOutputStream());
                 ListIterator<HttpPacket> iterator = packets->getIterator();
                 while(iterator->hasValue()) {
                     mHttpListener->onHttpMessage(event,info,writer,iterator->getValue());

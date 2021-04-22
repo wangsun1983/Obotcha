@@ -26,6 +26,7 @@ public:
     _HttpPacketBuilder * setVersion(int,int);
     _HttpPacketBuilder * setHttpCacheControl(HttpCacheControl);
     _HttpPacketBuilder * setContentType(String);
+    _HttpPacketBuilder * addHeaderValue(String key,String value);
 
     //request
     _HttpPacketBuilder * addCookie(String,String);
