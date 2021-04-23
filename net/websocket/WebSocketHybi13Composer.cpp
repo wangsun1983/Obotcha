@@ -90,7 +90,9 @@ HttpResponse _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSo
     builder->setVersion(1,1)
         ->setResponseStatus(st(HttpStatus)::SwitchProtocls)
         ->setResponseReason(st(HttpStatus)::toString(st(HttpStatus)::SwitchProtocls))
-        ->addHeaderValue(st(HttpHeader)::SecWebSocketAccept,base64);
+        ->addHeaderValue(st(HttpHeader)::SecWebSocketAccept,base64)
+        ->addHeaderValue(st(HttpHeader)::Upgrade,createString("websocket"))
+        ->addHeaderValue(st(HttpHeader)::Connection,createString("Upgrade"));
 
     if(protocols != nullptr) {
         builder->addHeaderValue(st(HttpHeader)::SecWebSocketProtocol,protocols);

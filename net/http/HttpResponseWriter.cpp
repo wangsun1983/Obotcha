@@ -64,14 +64,23 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     ArrayList<KeyValuePair<String,String>> encodedValues = response->getEntity()->getEncodedKeyValues();
     ByteArray body = response->getEntity()->getContent();
 
-    //start compose 
-    int status = response->getHeader()->getResponseStatus();
+    //start compose
+    auto header = response->getHeader();
+
+    int status = header->getResponseStatus();
     //String statusStr = st(HttpStatus)::toString(status);
-    AUTO_FLUSH(writer->writeString(response->getHeader()->getVersion()->toString()));
+    AUTO_FLUSH(writer->writeString(header->getVersion()->toString()));
     AUTO_FLUSH(writer->writeString(" "));
     AUTO_FLUSH(writer->writeString(createString(status)));
     AUTO_FLUSH(writer->writeString(" "));
-    AUTO_FLUSH(writer->writeString(st(HttpStatus)::toString(status)));
+
+    String reason = header->getResponseReason();
+    if(reason != nullptr) {
+        AUTO_FLUSH(writer->writeString(reason));
+    } else {
+        AUTO_FLUSH(writer->writeString(st(HttpStatus)::toString(status)));
+    }
+
     AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
 
     //update content-length
@@ -80,7 +89,9 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
         response->getHeader()->setValue(st(HttpHeader)::TransferEncoding,st(HttpHeader)::TransferChunked);
     } else {
         contentlength = computeContentLength(response);
-        response->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(contentlength));
+        if(contentlength != 0) {
+            response->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(contentlength));
+        }
     }
 
     AUTO_FLUSH(writer->writeString(response->getHeader()->toString(st(HttpProtocol)::HttpResponse)));

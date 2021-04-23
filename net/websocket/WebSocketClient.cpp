@@ -169,40 +169,33 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
             ListIterator<WebSocketFrame> iterator = result->getIterator();
             while(iterator->hasValue()) {
                 WebSocketFrame frame = iterator->getValue();
-                
-            }
-/*
-            if(opcode == st(WebSocketProtocol)::OPCODE_TEXT) {
-                ByteArray msgData = parser->parseContent(true);
-                String msg = msgData->toString();
-                mWsListener->onMessage(nullptr,msg);
-            } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PING) {
-                return;
-                //TODO
-            } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_PONG) {
-                //TODO
-                ByteArray pong = parser->parsePongBuff();
-                String msg = pong->toString();
-                
-                mWsListener->onPong(nullptr,msg);
-                return;
+                switch(frame->getHeader()->getOpCode()) {
+                    case st(WebSocketProtocol)::OPCODE_TEXT:
+                    mWsListener->onData(frame);
+                    break;
 
-            } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE) {
-                return;
-                //TODO
-            } else if(opcode == st(WebSocketProtocol)::OPCODE_CONTINUATION) {
-                //TODO
-                
-            }
+                    case st(WebSocketProtocol)::OPCODE_CONTROL_PING:
+                    mWsListener->onPing(frame->getData()->toString());
+                    break;
 
-            len -= (framesize + headersize);
-            readIndex += (framesize + headersize);
-            if(len > 0) {
-                mPack = createByteArray(&pack->toValue()[readIndex],len);
-                continue;
+                    case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:
+                    mWsListener->onPong(frame->getData()->toString());
+                    break;
+                }
             }
-*/
         }
+
+        case Disconnect: {
+            mWsListener->onDisconnect();
+            break;
+        }
+
+        case Connect: {
+            mWsListener->onConnect();
+            break;
+        }
+
+        default:
         break;
     }
 }

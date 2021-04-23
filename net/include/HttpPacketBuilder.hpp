@@ -57,8 +57,6 @@ private:
     HttpMultiPart part;
 
     //response
-    int status;
-    String reason;
     File chunkedFile;
     
 };

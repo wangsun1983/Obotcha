@@ -125,6 +125,7 @@ _HttpHeader::_HttpHeader() {
     mVersion = createHttpVersion();
     mCacheControl = nullptr;
     mMethod = -1;
+    mResponseReason = nullptr;
     mContentLength = -1;
     mIsConnected = true;
     mType = Type::Request;

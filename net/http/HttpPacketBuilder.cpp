@@ -13,7 +13,6 @@ _HttpPacketBuilder * _HttpPacketBuilder::begin() {
     entity = createHttpEntity();
     part = createHttpMultiPart();
     method = -1;
-    status = -1;
     url = nullptr;
     return this;
 }
@@ -86,12 +85,14 @@ _HttpPacketBuilder * _HttpPacketBuilder::addMultiPartValue(String key,String val
 
 //response
 _HttpPacketBuilder * _HttpPacketBuilder::setResponseStatus(int resp) {
-    status = resp;
+    //status = resp;
+    header->setResponseStatus(resp);
     return this;
 }
 
 _HttpPacketBuilder * _HttpPacketBuilder::setResponseReason(String r) {
-    reason = r;
+    //reason = r;
+    header->setResponseReason(r);
     return this;
 }
 

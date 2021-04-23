@@ -23,7 +23,7 @@ public:
         mConditaion = createCondition();
     }
 
-    int onMessage(WebSocketClientInfo client,WebSocketFrame message) {
+    int onMessage(WebSocketFrame message,WebSocketClientInfo client) {
         printf("message is %s \n",message->getData()->toValue());
         //mMessage = message->getData();
         String response = createString("hello from server ");
@@ -43,7 +43,7 @@ public:
         return 0;
     }
 
-    int onData(WebSocketClientInfo client,WebSocketFrame message) {
+    int onData(WebSocketFrame message,WebSocketClientInfo client) {
         //printf("data message size is %d,message is %s \n",message->size(),message->toValue());
         //File file = createFile("recvfile");
         //FileOutputStream stream = createFileOutputStream(file);

@@ -77,14 +77,14 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                 switch(opcode) {
                     case st(WebSocketProtocol)::OPCODE_CONTROL_PING: {
                         String pingmessage = frame->getData()->toString();
-                        if (mWsListener->onPing(client, pingmessage) == PingResultResponse) {
+                        if (mWsListener->onPing(pingmessage,client) == PingResultResponse) {
                             client->sendPongMessage(frame->getData());
                         }
                     }
                     break;
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:{
-                        mWsListener->onPong(client, frame->getData()->toString());
+                        mWsListener->onPong(frame->getData()->toString(),client);
                     }
                     break;
 
@@ -97,7 +97,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                     break;
 
                     default:
-                        mWsListener->onMessage(client,frame);
+                        mWsListener->onData(frame,client);
                 }
                 return 1;
             });

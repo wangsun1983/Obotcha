@@ -20,17 +20,15 @@ enum PingResult {
 
 DECLARE_SIMPLE_CLASS(WebSocketListener) {
 public:
-    virtual int onMessage(sp<_WebSocketClientInfo> client,WebSocketFrame frame) = 0;
+    virtual int onData(WebSocketFrame frame,sp<_WebSocketClientInfo> client = nullptr) = 0;
 
-    virtual int onData(sp<_WebSocketClientInfo> client,WebSocketFrame frame) = 0;
+    virtual int onConnect(sp<_WebSocketClientInfo> client = nullptr) = 0;
 
-    virtual int onConnect(sp<_WebSocketClientInfo> client) = 0;
+    virtual int onDisconnect(sp<_WebSocketClientInfo> client = nullptr) = 0;
 
-    virtual int onDisconnect(sp<_WebSocketClientInfo> client) = 0;
+    virtual int onPong(String,sp<_WebSocketClientInfo> client = nullptr) {return PingResultResponse;}
 
-    virtual int onPong(sp<_WebSocketClientInfo> client,String) {return PingResultResponse;}
-
-    virtual int onPing(sp<_WebSocketClientInfo> client,String)  {return PingResultResponse;}
+    virtual int onPing(String,sp<_WebSocketClientInfo> client = nullptr)  {return PingResultResponse;}
 };
 
 }
