@@ -4,6 +4,7 @@
 #include "SocketMonitor.hpp"
 #include "ExecutorBuilder.hpp"
 #include "HttpUrlAsyncConnectionPool.hpp"
+#include "HttpUrlAsyncConnection.hpp"
 #include "Handler.hpp"
 
 namespace obotcha {
@@ -32,14 +33,6 @@ HttpUrlAsyncConnection _HttpUrlAsyncConnectionPool::createConnection(HttpUrl url
     return connection;
 }
 
-void _HttpUrlAsyncConnectionPool::recyleConnection(HttpUrlAsyncConnection c) {
-    {
-        AutoLock l(mMutex);
-        mConnections->remove(c->mSocket);
-        mSocketMonitor->remove(c->mSocket);
-    }
-}
-
 void _HttpUrlAsyncConnectionPool::onSocketMessage(int event,Socket s,ByteArray data) {
     AutoLock l(mMutex);
     HttpUrlAsyncConnection url = mConnections->get(s);
@@ -49,7 +42,26 @@ void _HttpUrlAsyncConnectionPool::onSocketMessage(int event,Socket s,ByteArray d
 }
 
 void _HttpUrlAsyncConnectionPool::release() {
-    //TODO
+    mSocketMonitor->release();
+    {
+        AutoLock l(mMutex);
+        auto iterator = mConnections->getIterator();
+        while(iterator->hasValue()) {
+            auto c = iterator->getValue();
+            c->close();
+            iterator->next();
+        }
+        mConnections->clear();
+    }
+
+    mExecutor->shutdown();
 }
 
+void _HttpUrlAsyncConnectionPool::recyleConnection(HttpUrlAsyncConnection c) {
+    {
+        AutoLock l(mMutex);
+        mConnections->remove(c->mSocket);
+        mSocketMonitor->remove(c->mSocket);
+    }
+}
 }

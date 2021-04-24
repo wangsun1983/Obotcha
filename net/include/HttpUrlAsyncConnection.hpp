@@ -24,6 +24,7 @@
 namespace obotcha {
 
 class _HttpUrl;
+class _HttpUrlAsyncConnectionPool;
 
 DECLARE_SIMPLE_CLASS(HttpAsyncConnectionListener) {
 public:
@@ -46,9 +47,6 @@ public:
     int execute(HttpRequest req);
 
 private:
-    //int _connect();
-    //HttpResponse _execute(HttpRequest req);
-
     void onResponse(int,ByteArray r);
 
     Socket mSocket;
@@ -64,6 +62,8 @@ private:
     HttpOption mOption;
 
     HttpAsyncConnectionListener mListener;
+
+    sp<_HttpUrlAsyncConnectionPool> mPool;
 };
 
 }

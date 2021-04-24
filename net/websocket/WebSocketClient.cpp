@@ -200,6 +200,11 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
     }
 }
 
+void _WebSocketClient::close() {
+    mSocketMonitor->release();
+    mSocket->close();
+}
+
 }
 
 

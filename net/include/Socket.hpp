@@ -7,6 +7,8 @@
 #include "ByteArray.hpp"
 #include "SocketImpl.hpp"
 #include "SocketOption.hpp"
+#include "SocketInputStream.hpp"
+#include "SocketOutputStream.hpp"
 #include <atomic>
 
 namespace obotcha {
@@ -22,7 +24,7 @@ public:
 
     _Socket(int,InetAddress host,SocketOption option);
     _Socket(int);
-    void setAsync();
+    void setAsync(bool);
     bool isAsync();
     
     int connect();
@@ -52,8 +54,8 @@ private:
     
 protected:
     SocketImpl mSock; 
-    InputStream mInput;
-    OutputStream mOutput;
+    SocketInputStream mInput;
+    SocketOutputStream mOutput;
 
 };
 

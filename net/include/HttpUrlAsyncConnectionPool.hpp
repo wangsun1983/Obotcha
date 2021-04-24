@@ -5,31 +5,33 @@
 #include "StrongPointer.hpp"
 
 #include "SocketMonitor.hpp"
-#include "HttpUrlAsyncConnection.hpp"
 #include "HttpUrl.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "Mutex.hpp"
 #include "Socket.hpp"
 #include "HttpUrl.hpp"
-#include "HttpUrlAsyncConnection.hpp"
 #include "HttpOption.hpp"
 
 namespace obotcha {
 
-class _HttpUrl;
+class _HttpUrlAsyncConnection;
+class _HttpAsyncConnectionListener;
 
 DECLARE_SIMPLE_CLASS(HttpUrlAsyncConnectionPool) IMPLEMENTS(SocketListener){
 
 public:
-    _HttpUrlAsyncConnectionPool();
-    HttpUrlAsyncConnection createConnection(HttpUrl url,HttpAsyncConnectionListener l,HttpOption o);
-    void recyleConnection(HttpUrlAsyncConnection);
-    void onSocketMessage(int,Socket,ByteArray);
+    friend class _HttpUrlAsyncConnection;
 
+    _HttpUrlAsyncConnectionPool();
+    sp<_HttpUrlAsyncConnection> createConnection(HttpUrl url,sp<_HttpAsyncConnectionListener> l,HttpOption o);
+    void onSocketMessage(int,Socket,ByteArray);
     void release();
+
 private:
+    void recyleConnection(sp<_HttpUrlAsyncConnection>);
+    
     Mutex mMutex;
-    HashMap<Socket,HttpUrlAsyncConnection> mConnections;
+    HashMap<Socket,sp<_HttpUrlAsyncConnection>> mConnections;
     ThreadPoolExecutor mExecutor;
     SocketMonitor mSocketMonitor;
 };

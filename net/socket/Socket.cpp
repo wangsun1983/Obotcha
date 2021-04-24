@@ -43,17 +43,15 @@ _Socket::_Socket(int fd) {
     type = Fd;
 }
 
-void _Socket::setAsync() {
+void _Socket::setAsync(bool async) {
     if(mStatus != Closed) {
-        fcntl(mSock->getFd(), F_SETFL, fcntl(mSock->getFd(), F_GETFL, 0)| O_NONBLOCK);
-        mInput = createSocketInputStream(AutoClone(this));
-        mOutput = createSocketOutputStream(AutoClone(this));
+        mOutput->setAsync(async);
     }
 }
 
 bool _Socket::isAsync() {
     if(mStatus != Closed) {
-        return (fcntl(mSock->getFd(),F_GETFL) & O_NONBLOCK) != 0;
+        return mOutput->isAsync();
     }
 
     return false;

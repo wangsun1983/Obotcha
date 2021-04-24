@@ -20,6 +20,7 @@
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "Handler.hpp"
+#include "HttpOption.hpp"
 
 namespace obotcha {
 
@@ -35,22 +36,14 @@ public:
 DECLARE_SIMPLE_CLASS(HttpUrlConnection) {
 
 public:
-    friend class _HttpUrlAsyncConnectionPool;
-
-    _HttpUrlConnection(sp<_HttpUrl> url);
+    _HttpUrlConnection(sp<_HttpUrl> url,HttpOption option = nullptr);
     
-    _HttpUrlConnection(sp<_HttpUrl> url,Handler handler);
+    _HttpUrlConnection(sp<_HttpUrl> url,Handler handler,HttpOption option = nullptr);
 
     void setListener(HttpConnectionListener l);
 
-    _HttpUrlConnection* setTimeout(int timeout);
-
-    _HttpUrlConnection* setKeepAlive(bool keepalive);
-
     Socket getSocket();
     
-    bool isKeepAlive();
-
     int connect();
 
     int close();
@@ -66,10 +59,6 @@ private:
 
     void onResponse(int,ByteArray r);
 
-    int mTimeout;
-    
-    bool mKeepAlive; 
-
     Socket mSocket;
 
     HttpRequestWriter writer;
@@ -83,6 +72,8 @@ private:
     Handler mHandler;
 
     HttpConnectionListener mListener;
+
+    HttpOption mOption;
 };
 
 }

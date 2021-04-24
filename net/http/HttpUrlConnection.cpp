@@ -17,37 +17,24 @@
 
 namespace obotcha {
 
-_HttpUrlConnection::_HttpUrlConnection(HttpUrl url):_HttpUrlConnection(url,nullptr) {
+_HttpUrlConnection::_HttpUrlConnection(HttpUrl url,HttpOption option):_HttpUrlConnection(url,nullptr,option) {
     
 }
 
-_HttpUrlConnection::_HttpUrlConnection(sp<_HttpUrl> url,Handler h) {
+_HttpUrlConnection::_HttpUrlConnection(sp<_HttpUrl> url,Handler h,HttpOption option) {
     mUrl = url;
     mParser = createHttpPacketParser();
     mHandler = h;
     mListener = nullptr;
+    mOption = option;
 }
 
 void _HttpUrlConnection::setListener(HttpConnectionListener l) {
     mListener = l;
 }
 
-_HttpUrlConnection* _HttpUrlConnection::setTimeout(int timeout) {
-    mTimeout = timeout;
-    return this;
-}
-
-_HttpUrlConnection* _HttpUrlConnection::setKeepAlive(bool keepalive) {
-    mKeepAlive = keepalive;
-    return this;
-}
-
 Socket _HttpUrlConnection::getSocket() {
     return mSocket;
-}
-
-bool _HttpUrlConnection::isKeepAlive() {
-    return mKeepAlive;
 }
 
 int _HttpUrlConnection::connect() {
@@ -83,31 +70,27 @@ HttpResponse _HttpUrlConnection::execute(HttpRequest req) {
 void _HttpUrlConnection::execute(HttpRequest req,int what) {
     if(mHandler != nullptr) {
         mHandler->post([](_HttpUrlConnection *url,HttpRequest req,int what) {
-            printf("execute trace1 \n");
             HttpResponse response = url->_execute(req);
-            printf("execute trace2 \n");
             Message msg = url->mHandler->obtainMessage();
             msg->what = what;
             msg->data = Cast<Object>(response);
             url->mHandler->sendMessage(msg);
         },this,req,what);
     } else {
-        printf("execute 2 ff \n");
         _execute(req);
-        printf("execute 2 ff \n");
     }
 }
 
 int _HttpUrlConnection::_connect() {
-    printf("mUrl host is %s \n",mUrl->getHost()->toChars());
     ArrayList<InetAddress> address = createURL(mUrl->getHost())->getInetAddress();
     if(address == nullptr || address->size() == 0) {
         return -NetConnectFail;
     }
 
     InetAddress inetAddr = address->get(0);
-    printf("addr is %s \n",inetAddr->getAddress()->toChars());
     inetAddr->setPort(mUrl->getPort());
+
+    //TODO: add some option
     mSocket = createSocketBuilder()->setAddress(inetAddr)->newSocket();
     int result = mSocket->connect();
     mInputStream = mSocket->getInputStream();
@@ -118,13 +101,10 @@ int _HttpUrlConnection::_connect() {
 
 HttpResponse _HttpUrlConnection::_execute(HttpRequest req) {
     //check whether httpurl is still connect
-    printf("_execute start \n");
     writer->write(req);
     while(1) {
         ByteArray result = createByteArray(1024*64);
-        printf("_execute start　read\n");
         int len = mInputStream->read(result);
-        printf("_execute start len is %d\n",len);
         result->quickShrink(len);
         mParser->pushHttpData(result);
         ArrayList<HttpPacket> packets = mParser->doParse();
@@ -138,6 +118,7 @@ HttpResponse _HttpUrlConnection::_execute(HttpRequest req) {
 
 int _HttpUrlConnection::close() {
     mSocket->close();
+    mHandler->destroy();
     return 0;
 }
 

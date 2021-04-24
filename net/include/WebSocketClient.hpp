@@ -46,6 +46,8 @@ public:
 
     int sendFile(File);
 
+    void close();
+
 private:
     int _send(ArrayList<ByteArray>);
     int _send(ByteArray);

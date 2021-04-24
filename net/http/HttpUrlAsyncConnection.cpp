@@ -2,6 +2,7 @@
 #include "StrongPointer.hpp"
 
 #include "HttpUrlAsyncConnection.hpp"
+#include "HttpUrlAsyncConnectionPool.hpp"
 #include "SocketListener.hpp"
 #include "URL.hpp"
 #include "SocketBuilder.hpp"
@@ -26,7 +27,7 @@ int _HttpUrlAsyncConnection::connect() {
     inetAddr->setPort(mUrl->getPort());
     mSocket = createSocketBuilder()->setAddress(inetAddr)->newSocket();
     int result = mSocket->connect();
-    mSocket->setAsync();
+    mSocket->setAsync(true);
     
     mInputStream = mSocket->getInputStream();
     writer = createHttpRequestWriter(mSocket->getOutputStream());
@@ -39,7 +40,14 @@ int _HttpUrlAsyncConnection::execute(HttpRequest req) {
 }
 
 int _HttpUrlAsyncConnection::close() {
-    //TODO
+    if(mPool != nullptr) {
+        mPool->recyleConnection(AutoClone(this));
+        mPool = nullptr;
+    }
+
+    if(mSocket != nullptr) {
+        mSocket->close();
+    }
 }
 
 void _HttpUrlAsyncConnection::onResponse(int event,ByteArray r) {

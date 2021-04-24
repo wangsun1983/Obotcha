@@ -27,6 +27,25 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
     }
 }
 
+void _SocketOutputStream::setAsync(bool async) {
+    if(async) {
+        if(mChannel == nullptr) {
+            fcntl(mSocket->getFd(), F_SETFL, fcntl(mSocket->getFd(), F_GETFL, 0)| O_NONBLOCK);
+            mChannel = createAsyncOutputChannel(mSocket->getFd(),
+                                                std::bind(&_SocketOutputStream::_write,this,std::placeholders::_1,std::placeholders::_2));
+        }
+    } else {
+        if(mChannel != nullptr) {
+            fcntl(mSocket->getFd(), F_SETFL, fcntl(mSocket->getFd(), F_GETFL, 0)& ~O_NONBLOCK);
+            mChannel = nullptr;
+        }
+    }
+}
+
+bool _SocketOutputStream::isAsync() {
+    return (mChannel == nullptr);
+}
+
 long _SocketOutputStream::write(char c) {
     ByteArray data = createByteArray(1);
     data[0] = c;

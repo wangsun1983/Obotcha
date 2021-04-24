@@ -121,6 +121,7 @@ int _SocketMonitor::bind(Socket s,SocketListener l) {
     }
 
     addNewSocket(s,l);
+    s->setAsync(true);
     
     return bind(s->getFd(),l,false);
 }
