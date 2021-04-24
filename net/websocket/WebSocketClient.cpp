@@ -52,8 +52,8 @@ _WebSocketClient::_WebSocketClient(int version) {
     //client message need use mask.
     //updateMask(true);
 
-    WebSocketParser parser = nullptr;
-    WebSocketComposer composer = nullptr;
+    parser = nullptr;
+    composer = nullptr;
 
     switch(version) {
         case 0:{

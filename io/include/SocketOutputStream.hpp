@@ -26,6 +26,10 @@ public:
 
     void flush();
 
+    void setAsync(bool);
+
+    bool isAsync();
+
 private:
     long _write(int,ByteArray);
 

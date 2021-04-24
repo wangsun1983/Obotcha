@@ -30,7 +30,7 @@ public:
     
     void updateMask(bool);
 
-    int connect(String url,WebSocketListener l,HttpOption option);
+    int connect(String url,WebSocketListener l,HttpOption option = nullptr);
 
     int sendTextMessage(String msg);
 

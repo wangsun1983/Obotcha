@@ -19,14 +19,8 @@ public:
     friend class _HttpRequestWriter;
     _HttpRequest(int,HttpUrl);
     _HttpRequest();
-    
-    HttpUrl getUrl();
-    void setUrl(HttpUrl url);
 
     String toString();
-    
-private:
-    HttpUrl mUrl;
     
 };
 

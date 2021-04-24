@@ -12,6 +12,14 @@ namespace obotcha {
 _HttpUrl::_HttpUrl() {
     mQuery = createHashMap<String,String>();
     mPort = 80;
+    mSchema = nullptr;
+    mHostName = nullptr;
+    mPath = nullptr;
+    mFragment = nullptr;
+    mUser = nullptr;
+    mPassword = nullptr;
+    mRawUrl = nullptr;
+    mRawQuery = nullptr;
 }
 
 void _HttpUrl::setSchema(String data) {
