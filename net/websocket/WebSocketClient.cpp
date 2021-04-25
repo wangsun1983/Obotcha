@@ -91,6 +91,7 @@ _WebSocketClient::_WebSocketClient(int version) {
 int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) {
     //send http request
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(url);
+    mWsListener = l;
 
     HttpRequest shakeHandMsg = composer->genClientShakeHandMessage(httpUrl);
     HttpUrlConnection connection = createHttpUrlConnection(httpUrl);
@@ -182,6 +183,8 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
                     mWsListener->onPong(frame->getData()->toString());
                     break;
                 }
+
+                iterator->next();
             }
         }
 

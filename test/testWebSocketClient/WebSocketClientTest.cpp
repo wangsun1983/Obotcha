@@ -10,18 +10,16 @@
 #include "WebSocketListener.hpp"
 #include "File.hpp"
 #include "FileInputStream.hpp"
-#include "NetUtils.hpp"
 
 using namespace obotcha;
 
 DECLARE_SIMPLE_CLASS(MyWsListener) IMPLEMENTS(WebSocketListener) {
 public:    
-    int onMessage(WebSocketClientInfo client,String message) {
-        printf("message is %s \n",message->toChars());
-        return 0;
-    }
 
-    int onData(WebSocketClientInfo client,ByteArray data) {
+    int onData(WebSocketFrame data,WebSocketClientInfo client) {
+        if(data->getData() != nullptr) {
+            printf("ondata is %s \n",data->getData()->toValue());
+        }
         return 0;
     }
 
@@ -35,11 +33,11 @@ public:
         return 0;
     }
 
-    int onPong(WebSocketClientInfo client,String) {
+    int onPong(String,WebSocketClientInfo client) {
         return 0;
     }
 
-    int onPing(WebSocketClientInfo client,String) {
+    int onPing(String,WebSocketClientInfo client) {
         return 0;
     }
 };
@@ -50,39 +48,10 @@ int main() {
     MyWsListener l = createMyWsListener();
 
     WebSocketClient client = createWebSocketClient(13);
-    client->connect("ws://192.168.43.90:1111/mytest",l);
-    //server->start();
+    client->connect(createString("ws://192.168.1.6:1111/mytest"),l);
+    
+    client->sendTextMessage(createString("hello server"));
 
-    sleep(5);
-
-    WebSocketClientInfo info = client->getClientInfo();
-    ArrayList<ByteArray> contents = info->getComposer()->genTextMessage(info,createString("hello world1"));
-    ByteArray content = contents->get(0);
-    int clientFd = info->getClientFd();
-    printf("clientFd is %d,content size is %d  \n",clientFd,content->size());
-
-    for(int i = 0;i<content->size();i++) {
-        ByteArray data = createByteArray(1);
-        data->fill(0,content->at(i));
-        st(NetUtils)::sendTcpPacket(info->getClientFd(),data);
-        //sleep(5);
-    }
-
-
-    //client->sendMessage(createString("hello world1"));
-    //sleep(5);
-    //client->sendMessage(createString("hello world2"));
-
-#if 0
-    printf("start send file ..... \n");
-    sleep(5);
-    File file = createFile("log");
-    FileInputStream stream = createFileInputStream(file);
-    stream->open();
-    ByteArray content = stream->readAll();
-    client->sendBinaryData(content);
-#endif
-
-    while(1){}
+    while(1){sleep(1);}
 
 }

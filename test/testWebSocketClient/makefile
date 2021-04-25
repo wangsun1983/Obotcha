@@ -26,8 +26,9 @@ cflags = -fpic \
 		-I ../../external/libco \
 		-I ../../external/sqlite3/include \
 		-I ../../external/http_parser/include \
+		-I ../../external/uuid/include \
 		-g \
-		-std=c++11 \
+		-std=c++14 \
 
 external = -lpthread \
 				-ldl \
