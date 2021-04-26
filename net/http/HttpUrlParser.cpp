@@ -147,8 +147,12 @@ HttpUrl _HttpUrlParser::parseUrl(String url) {
     } else {
         switch(status) {
             case PathOrQuery: {
-                    String data = createString(input,start,size - start);
-                    urlData->setPath(data);
+                    if(size - start == 0) {
+                        urlData->setPath("/");
+                    } else {
+                        String data = createString(input,start,size - start);
+                        urlData->setPath(data);
+                    }
             }
             break;
 

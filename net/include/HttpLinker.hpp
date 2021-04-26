@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_HTTP__CLIENT_INFO_HPP__
-#define __OBOTCHA_HTTP__CLIENT_INFO_HPP__
+#ifndef __OBOTCHA_HTTP_LINKER_INFO_HPP__
+#define __OBOTCHA_HTTP_LINKER_INFO_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -23,11 +23,11 @@ namespace obotcha {
 
 class _HttpServer;
 
-DECLARE_SIMPLE_CLASS(HttpClientInfo){
+DECLARE_SIMPLE_CLASS(HttpLinker){
 public:
     friend class _HttpServer;
 
-    _HttpClientInfo(Socket);
+    _HttpLinker(Socket);
 
     int pushHttpData(ByteArray array);
 

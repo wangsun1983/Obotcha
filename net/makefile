@@ -45,7 +45,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpresponsewriter.o \
 		$(outtmp)/httppacketparser.o \
 		$(outtmp)/httppacketbuilder.o \
-		$(outtmp)/httpclientmanager.o \
+		$(outtmp)/httplinkermanager.o \
 		$(outtmp)/httpsession.o \
 		$(outtmp)/httpcookie.o \
 		$(outtmp)/httpdate.o \
@@ -54,7 +54,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpmultipartparser.o \
 		$(outtmp)/httpserver.o \
 		$(outtmp)/httpserverbuilder.o \
-		$(outtmp)/httpclientinfo.o \
+		$(outtmp)/httplinker.o \
 		$(outtmp)/httpxformparser.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketclient.o \
@@ -70,8 +70,8 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/websockethybi08composer.o \
 		$(outtmp)/websockethybi00composer.o \
 		$(outtmp)/websocketpermessagedeflate.o \
-		$(outtmp)/websocketclientmanager.o \
-		$(outtmp)/websocketclientinfo.o \
+		$(outtmp)/websocketlinkermanager.o \
+		$(outtmp)/websocketlinker.o \
 		$(outtmp)/httpv2hpackutil.o \
 		$(outtmp)/httpv2huffmandecoder.o \
 		$(outtmp)/httpv2huffmanencoder.o \
@@ -203,8 +203,8 @@ $(outtmp)/httpserver.o :$(netDir)/http/HttpServer.cpp
 $(outtmp)/httpserverbuilder.o :$(netDir)/http/HttpServerBuilder.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpServerBuilder.cpp -o $(outtmp)/httpserverbuilder.o 
 
-$(outtmp)/httpclientinfo.o :$(netDir)/http/HttpClientInfo.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClientInfo.cpp -o $(outtmp)/httpclientinfo.o 
+$(outtmp)/httplinker.o :$(netDir)/http/HttpLinker.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpLinker.cpp -o $(outtmp)/httplinker.o 
 
 $(outtmp)/httpheader.o :$(netDir)/http/HttpHeader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeader.cpp -o $(outtmp)/httpheader.o 
@@ -245,8 +245,8 @@ $(outtmp)/httppacketparser.o :$(netDir)/http/HttpPacketParser.cpp
 $(outtmp)/httppacketbuilder.o :$(netDir)/http/HttpPacketBuilder.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketBuilder.cpp -o $(outtmp)/httppacketbuilder.o 
 
-$(outtmp)/httpclientmanager.o :$(netDir)/http/HttpClientManager.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpClientManager.cpp -o $(outtmp)/httpclientmanager.o 
+$(outtmp)/httplinkermanager.o :$(netDir)/http/HttpLinkerManager.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpLinkerManager.cpp -o $(outtmp)/httplinkermanager.o 
 
 $(outtmp)/httpsession.o :$(netDir)/http/HttpSession.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpSession.cpp -o $(outtmp)/httpsession.o 
@@ -293,11 +293,11 @@ $(outtmp)/websockethybi00composer.o :$(netDir)/websocket/WebSocketHybi00Composer
 $(outtmp)/websocketpermessagedeflate.o :$(netDir)/websocket/WebSocketPermessageDeflate.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketPermessageDeflate.cpp -o $(outtmp)/websocketpermessagedeflate.o 
 
-$(outtmp)/websocketclientmanager.o :$(netDir)/websocket/WebSocketClientManager.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketClientManager.cpp -o $(outtmp)/websocketclientmanager.o 
+$(outtmp)/websocketlinkermanager.o :$(netDir)/websocket/WebSocketLinkerManager.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketLinkerManager.cpp -o $(outtmp)/websocketlinkermanager.o 
 
-$(outtmp)/websocketclientinfo.o :$(netDir)/websocket/WebSocketClientInfo.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketClientInfo.cpp -o $(outtmp)/websocketclientinfo.o 
+$(outtmp)/websocketlinker.o :$(netDir)/websocket/WebSocketLinker.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketLinker.cpp -o $(outtmp)/websocketlinker.o 
 
 $(outtmp)/ntpclient.o :$(netDir)/NtpClient.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/NtpClient.cpp -o $(outtmp)/ntpclient.o 

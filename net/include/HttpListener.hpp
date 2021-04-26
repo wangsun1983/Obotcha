@@ -7,7 +7,7 @@
 #include "String.hpp"
 #include "ArrayList.hpp"
 #include "Socket.hpp"
-#include "HttpClientInfo.hpp"
+#include "HttpLinker.hpp"
 #include "HttpResponseWriter.hpp"
 #include "HttpPacket.hpp"
 #include "SocketListener.hpp"
@@ -23,7 +23,7 @@ public:
         InternalError = st(SocketListener)::InternalError
     };
 
-    virtual void onHttpMessage(int event,HttpClientInfo client,HttpResponseWriter w,HttpPacket msg) = 0;
+    virtual void onHttpMessage(int event,HttpLinker client,HttpResponseWriter w,HttpPacket msg) = 0;
     virtual ~_HttpListener(){}
 };
 

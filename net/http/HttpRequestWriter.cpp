@@ -31,6 +31,7 @@ while(X == -1) {\
 #define FORCE_FLUSH() \
 {\
     if(mOutputStream != nullptr) {\
+        printf("request writer flush \n");\
         flush(writer->getIndex());\
         mSendBuff->clear();\
         writer->reset();\

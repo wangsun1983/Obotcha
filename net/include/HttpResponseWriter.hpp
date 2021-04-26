@@ -2,7 +2,7 @@
 #define __OBOTCHA_HTTP__RESPONSE_WRITER_HPP__
 
 #include "HttpPacket.hpp"
-#include "HttpClientInfo.hpp"
+#include "HttpLinker.hpp"
 #include "HttpResponse.hpp"
 
 namespace obotcha {

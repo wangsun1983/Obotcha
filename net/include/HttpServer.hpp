@@ -25,7 +25,7 @@
 
 namespace obotcha {
 
-class _HttpClientInfo;
+class _HttpLinker;
 class _HttpResponseWriter;
 
 DECLARE_SIMPLE_CLASS(HttpServer) IMPLEMENTS(SocketListener) {

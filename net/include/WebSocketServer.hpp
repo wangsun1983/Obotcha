@@ -20,7 +20,7 @@
 #include "HttpPacket.hpp"
 #include "EPollFileObserver.hpp"
 #include "WebSocketParser.hpp"
-#include "WebSocketClientInfo.hpp"
+#include "WebSocketLinker.hpp"
 #include "BlockingLinkedList.hpp"
 #include "LinkedList.hpp"
 #include "ThreadPoolExecutor.hpp"
@@ -44,7 +44,7 @@ public:
     int release();
 
 private:
-    void onHttpMessage(int,sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg);
+    void onHttpMessage(int,sp<_HttpLinker> client,sp<_HttpResponseWriter> w,HttpPacket msg);
 
     void onSocketMessage(int,Socket,ByteArray);
 

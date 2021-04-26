@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_HTTP_CLIENT_MANAGER_HPP__
-#define __OBOTCHA_HTTP_CLIENT_MANAGER_HPP__
+#ifndef __OBOTCHA_HTTP_LINKER_MANAGER_HPP__
+#define __OBOTCHA_HTTP_LINKER_MANAGER_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -13,33 +13,33 @@
 #include "ByteRingArray.hpp"
 #include "ByteRingArrayReader.hpp"
 #include "HttpPacket.hpp"
-#include "HttpClientInfo.hpp"
+#include "HttpLinker.hpp"
 #include "Random.hpp"
 #include "Socket.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpClientManager) {
+DECLARE_SIMPLE_CLASS(HttpLinkerManager) {
 public:
-    static sp<_HttpClientManager> getInstance();
+    static sp<_HttpLinkerManager> getInstance();
 
-    void addClientInfo(sp<_HttpClientInfo>);
+    void addLinker(sp<_HttpLinker>);
 
-    HttpClientInfo getClientInfo(Socket);
+    HttpLinker getLinker(Socket);
 
-    HttpClientInfo removeClientInfo(Socket);
+    HttpLinker removeLinker(Socket);
     
     void clear();
     
 private:
-    static sp<_HttpClientManager> mInstance;
+    static sp<_HttpLinkerManager> mInstance;
     static Mutex mInitMutex;
 
     Mutex mMutex;
 
-    HashMap<Socket,HttpClientInfo> mClients;
+    HashMap<Socket,HttpLinker> mClients;
 
-    _HttpClientManager();
+    _HttpLinkerManager();
 
     Random mRand;
 };

@@ -101,6 +101,7 @@ int _HttpUrlConnection::_connect() {
 
 HttpResponse _HttpUrlConnection::_execute(HttpRequest req) {
     //check whether httpurl is still connect
+    printf("_HttpUrlConnection execute \n");
     writer->write(req);
     while(1) {
         ByteArray result = createByteArray(1024*64);
@@ -118,7 +119,6 @@ HttpResponse _HttpUrlConnection::_execute(HttpRequest req) {
 
 int _HttpUrlConnection::close() {
     mSocket->close();
-    mHandler->destroy();
     return 0;
 }
 

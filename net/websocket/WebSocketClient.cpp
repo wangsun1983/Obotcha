@@ -23,7 +23,6 @@
 #include "WebSocketParser.hpp"
 #include "HashMap.hpp"
 #include "WebSocketClient.hpp"
-#include "WebSocketClientInfo.hpp"
 #include "HttpUrl.hpp"
 #include "HttpUrlParser.hpp"
 #include "WebSocketProtocol.hpp"
@@ -92,16 +91,18 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
     //send http request
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(url);
     mWsListener = l;
-
+    printf("start connect \n");
     HttpRequest shakeHandMsg = composer->genClientShakeHandMessage(httpUrl);
     HttpUrlConnection connection = createHttpUrlConnection(httpUrl);
     if(connection->connect() < 0) {
+        printf("connect fail \n");
         return -NetConnectFail;
     }
 
     HttpResponse response = connection->execute(shakeHandMsg);
-
+    printf("connect trace1 \n");
     if(response->getHeader()->getResponseStatus() == st(HttpStatus)::SwitchProtocls) {
+        printf("connect trace2 \n");
         mSocket = connection->getSocket();
         mSocketMonitor->bind(connection->getSocket(),AutoClone(this));
         mOutputStream = mSocket->getOutputStream();
@@ -143,6 +144,10 @@ int _WebSocketClient::sendFile(File file) {
 }
 
 int _WebSocketClient::_send(ArrayList<ByteArray> data) {
+    if(mOutputStream == nullptr) {
+        return -NetConnectFail;
+    }
+
     ListIterator<ByteArray> iterator = data->getIterator();
     while(iterator->hasValue()) {
         ByteArray msg = iterator->getValue();

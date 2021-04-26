@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_WEB_SOCKET_CLIENT_INFO_HPP__
-#define __OBOTCHA_WEB_SOCKET_CLIENT_INFO_HPP__
+#ifndef __OBOTCHA_WEB_SOCKET_LINKER_HPP__
+#define __OBOTCHA_WEB_SOCKET_LINKER_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -12,7 +12,6 @@
 #include "HttpHeader.hpp"
 #include "ByteArray.hpp"
 #include "ByteRingArray.hpp"
-#include "WebSocketBuffer.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "AtomicBoolean.hpp"
@@ -25,9 +24,9 @@ class _WebSocketComposer;
 class _WebSocketParser;
 class _WebSocketPermessageDeflate;
 
-DECLARE_SIMPLE_CLASS(WebSocketClientInfo) {
+DECLARE_SIMPLE_CLASS(WebSocketLinker) {
 public:
-    _WebSocketClientInfo(Socket sock);
+    _WebSocketLinker(Socket sock);
 
     //Parser
     sp<_WebSocketParser> getParser();
@@ -53,14 +52,6 @@ public:
     ArrayList<String> getProtocols();
 
     void setProtocols(ArrayList<String>);
-
-    //Continue Buffer
-    WebSocketBuffer getContinueBuffer();
-    void setContinueBuffer(WebSocketBuffer);
-
-    //DefferedBuffer
-    WebSocketBuffer getDefferedBuffer();
-    void setDefferedBuffer(WebSocketBuffer);
 
     //ConnectUrl
     String getConnectUrl();
@@ -104,19 +95,11 @@ private:
 
     ArrayList<String> mProtocols;
 
-    WebSocketBuffer mDefferedBuff;
-    WebSocketBuffer mContinueBuffer;
-
     String mConnectUrl;
 
     int mWsVersion;
 
     long _send(int type,ByteArray data);
-    //int _syncsend(ByteArray data);
-
-    //AtomicBoolean isSend;
-    //Mutex mSendMutex;
-    //Condition mSendCond;
 };
 
 }

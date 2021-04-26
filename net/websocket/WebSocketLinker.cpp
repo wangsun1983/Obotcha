@@ -9,111 +9,83 @@
 #include "HttpHeader.hpp"
 #include "WebSocketParser.hpp"
 #include "WebSocketComposer.hpp"
-#include "WebSocketClientInfo.hpp"
+#include "WebSocketLinker.hpp"
 #include "WebSocketPermessageDeflate.hpp"
 #include "WebSocketProtocol.hpp"
 #include "ProtocolNotSupportException.hpp"
 #include "WebSocketServer.hpp"
-#include "WebSocketClientManager.hpp"
 #include "System.hpp"
 
 namespace obotcha {
 
 
-_WebSocketClientInfo::_WebSocketClientInfo(Socket sock) {
+_WebSocketLinker::_WebSocketLinker(Socket sock) {
     mParser = nullptr;
     mComposer = nullptr;
     mHttpHeader = createHttpHeader();
     mDeflate = nullptr;
     mProtocols = nullptr;
-    mContinueBuffer = nullptr;
     mWsVersion = -1;
-    
-    //isSend = createAtomicBoolean(true);
-    //mSendMutex = createMutex();
-    //mSendCond = createCondition();
+
     mSock = sock;
     mOutputStream = sock->getOutputStream();
 }
 
-void _WebSocketClientInfo::reset() {
+void _WebSocketLinker::reset() {
     mHttpHeader->clear();
     mDeflate = nullptr;
     mProtocols = nullptr;
-    mContinueBuffer = nullptr;
-    //isSend = createAtomicBoolean(true);
 }
 
-//void _WebSocketClientInfo::enableSend() {
-//    isSend = createAtomicBoolean(true);
-//}
-
-sp<_WebSocketParser> _WebSocketClientInfo::getParser() {
+sp<_WebSocketParser> _WebSocketLinker::getParser() {
     return this->mParser;
 }
 
-void _WebSocketClientInfo::setParser(sp<_WebSocketParser> p) {
+void _WebSocketLinker::setParser(sp<_WebSocketParser> p) {
     this->mParser = p;
 }
 
-sp<_WebSocketComposer> _WebSocketClientInfo::getComposer() {
+sp<_WebSocketComposer> _WebSocketLinker::getComposer() {
     return this->mComposer;
 }
 
-void _WebSocketClientInfo::setComposer(sp<_WebSocketComposer> p) {
+void _WebSocketLinker::setComposer(sp<_WebSocketComposer> p) {
     this->mComposer = p;
 }
 
-HttpHeader _WebSocketClientInfo::getHttpHeader() {
+HttpHeader _WebSocketLinker::getHttpHeader() {
     return mHttpHeader;
 }
 
-void _WebSocketClientInfo::setHttpHeader(HttpHeader header) {
+void _WebSocketLinker::setHttpHeader(HttpHeader header) {
     mHttpHeader = header;
 }
 
-sp<_WebSocketPermessageDeflate> _WebSocketClientInfo::getDeflater() {
+sp<_WebSocketPermessageDeflate> _WebSocketLinker::getDeflater() {
     return mDeflate;
 }
 
-void _WebSocketClientInfo::setDeflater(sp<_WebSocketPermessageDeflate> d) {
+void _WebSocketLinker::setDeflater(sp<_WebSocketPermessageDeflate> d) {
     mDeflate = d;
 }
 
-ArrayList<String> _WebSocketClientInfo::getProtocols() {
+ArrayList<String> _WebSocketLinker::getProtocols() {
     return mProtocols;
 }
 
-void _WebSocketClientInfo::setProtocols(ArrayList<String> p) {
+void _WebSocketLinker::setProtocols(ArrayList<String> p) {
     mProtocols = p;
 }
 
-
-WebSocketBuffer _WebSocketClientInfo::getContinueBuffer() {
-    return this->mContinueBuffer;
-}
-
-void _WebSocketClientInfo::setContinueBuffer(WebSocketBuffer c) {
-    this->mContinueBuffer = c;
-}
-
-WebSocketBuffer _WebSocketClientInfo::getDefferedBuffer() {
-    return mDefferedBuff;
-}
-
-void _WebSocketClientInfo::setDefferedBuffer(WebSocketBuffer buff) {
-    mDefferedBuff = buff;
-}
-
-String _WebSocketClientInfo::getConnectUrl() {
+String _WebSocketLinker::getConnectUrl() {
     return mConnectUrl;
 }
 
-void _WebSocketClientInfo::setConnectUrl(String l) {
+void _WebSocketLinker::setConnectUrl(String l) {
     mConnectUrl = l;
 }
 
-long _WebSocketClientInfo::_send(int type,ByteArray msg) {
+long _WebSocketLinker::_send(int type,ByteArray msg) {
     if(mSock != nullptr) {
         long size = 0;
         
@@ -144,7 +116,7 @@ long _WebSocketClientInfo::_send(int type,ByteArray msg) {
                 break;
 
             default:
-                throw ProtocolNotSupportException("WebSocketClientInfo not support OPCODE");
+                throw ProtocolNotSupportException("WebSocketLinker not support OPCODE");
         }
         
         ListIterator<ByteArray> iterator = data->getIterator();
@@ -162,35 +134,35 @@ long _WebSocketClientInfo::_send(int type,ByteArray msg) {
     return -1;
 }
 
-long _WebSocketClientInfo::sendBinaryMessage(ByteArray data) {
+long _WebSocketLinker::sendBinaryMessage(ByteArray data) {
     return _send(st(WebSocketProtocol)::OPCODE_BINARY,data);
 }
 
-long _WebSocketClientInfo::sendTextMessage(String data) {
+long _WebSocketLinker::sendTextMessage(String data) {
     return _send(st(WebSocketProtocol)::OPCODE_TEXT,createByteArray(data));
 }
 
-long _WebSocketClientInfo::sendPingMessage(ByteArray data) {
+long _WebSocketLinker::sendPingMessage(ByteArray data) {
     return _send(st(WebSocketProtocol)::OPCODE_CONTROL_PING,data);
 }
 
-long _WebSocketClientInfo::sendPongMessage(ByteArray data) {
+long _WebSocketLinker::sendPongMessage(ByteArray data) {
     return _send(st(WebSocketProtocol)::OPCODE_CONTROL_PONG,data);
 }
 
-long _WebSocketClientInfo::sendCloseMessage(ByteArray data) {
+long _WebSocketLinker::sendCloseMessage(ByteArray data) {
     return _send(st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE,data);
 }
 
-int _WebSocketClientInfo::getVersion() {
+int _WebSocketLinker::getVersion() {
     return mWsVersion;
 }
 
-void _WebSocketClientInfo::setVersion(int ver) {
+void _WebSocketLinker::setVersion(int ver) {
     mWsVersion = ver;
 }
 
-Socket _WebSocketClientInfo::getSocket() {
+Socket _WebSocketLinker::getSocket() {
     return mSock;
 }
 

@@ -10,7 +10,7 @@
 #include "WebSocketFrame.hpp"
 #include "ByteArrayReader.hpp"
 #include "HttpHeader.hpp"
-#include "WebSocketClientInfo.hpp"
+#include "WebSocketLinker.hpp"
 #include "WebSocketPermessageDeflate.hpp"
 #include "HttpPacket.hpp"
 #include "HttpRequest.hpp"

@@ -5,8 +5,8 @@
 
 #include "Error.hpp"
 #include "WebSocketProtocol.hpp"
-#include "HttpClientInfo.hpp"
-#include "WebSocketClientManager.hpp"
+#include "HttpLinker.hpp"
+#include "WebSocketLinkerManager.hpp"
 #include "WebSocketComposer.hpp"
 #include "Enviroment.hpp"
 #include "Log.hpp"
@@ -62,8 +62,8 @@ int _WebSocketServer::release() {
 
 void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
     int fd = s->getFd();
-    WebSocketClientInfo client =
-        st(WebSocketClientManager)::getInstance()->getClient(s);
+    WebSocketLinker client =
+        st(WebSocketLinkerManager)::getInstance()->getLinker(s);
     switch(event) {
         case SocketEvent::Message: {
             bool isRmClient = false;
@@ -91,7 +91,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                     case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE: {
                         mSocketMonitor->remove(client->getSocket());
                         client->getSocket()->close();
-                        st(WebSocketClientManager)::getInstance()->removeClient(client);
+                        st(WebSocketLinkerManager)::getInstance()->removeLinker(client);
                         mWsListener->onDisconnect(client);
                     }
                     break;
@@ -110,7 +110,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
 
         case SocketEvent::Disconnect: {
             if(client != nullptr) {
-                st(WebSocketClientManager)::getInstance()->removeClient(client);
+                st(WebSocketLinkerManager)::getInstance()->removeLinker(client);
                 mWsListener->onDisconnect(client);
             } else {
                 printf("client is already remove!!! \n");
@@ -120,7 +120,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
     }
 }
 
-void _WebSocketServer::onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket request) {
+void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,sp<_HttpResponseWriter> w,HttpPacket request) {
     switch(event) {
         case HttpEvent::Message: {
             HttpHeader header = request->getHeader();
@@ -131,12 +131,12 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_Ht
                 // remove fd from http epoll
                 mHttpServer->deMonitor(client->getSocket());
 
-                while(st(WebSocketClientManager)::getInstance()->getClient(client->getSocket())!= nullptr) {
+                while(st(WebSocketLinkerManager)::getInstance()->getLinker(client->getSocket())!= nullptr) {
                     LOG(INFO)<<"websocket client is not removed";
                     usleep(1000*5);
                 }
                 
-                WebSocketClientInfo wsClient = st(WebSocketClientManager)::getInstance()->addClient(client->getSocket(),
+                WebSocketLinker wsClient = st(WebSocketLinkerManager)::getInstance()->addLinker(client->getSocket(),
                                                                     version->toBasicInt());
                 wsClient->setHttpHeader(header);
                 WebSocketParser parser = wsClient->getParser();

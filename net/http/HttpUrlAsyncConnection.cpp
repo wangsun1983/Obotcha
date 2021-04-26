@@ -48,6 +48,8 @@ int _HttpUrlAsyncConnection::close() {
     if(mSocket != nullptr) {
         mSocket->close();
     }
+
+    return 0;
 }
 
 void _HttpUrlAsyncConnection::onResponse(int event,ByteArray r) {

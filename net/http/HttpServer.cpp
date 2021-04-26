@@ -9,9 +9,9 @@
 #include "Error.hpp"
 #include "HttpServer.hpp"
 #include "AutoLock.hpp"
-#include "HttpClientInfo.hpp"
+#include "HttpLinker.hpp"
 #include "HttpResponseWriter.hpp"
-#include "HttpClientManager.hpp"
+#include "HttpLinkerManager.hpp"
 #include "SSLManager.hpp"
 #include "InterruptedException.hpp"
 #include "HttpInternalException.hpp"
@@ -24,14 +24,14 @@ namespace obotcha {
 void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
     switch(event) {
         case SocketEvent::Message: {
-            HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r);
+            HttpLinker info = st(HttpLinkerManager)::getInstance()->getLinker(r);
             if(info == nullptr) {
                 return;
             }
             if(info->pushHttpData(pack) == -1) {
                 //some thing may be wrong
                 mHttpListener->onHttpMessage(SocketEvent::InternalError,info,nullptr,nullptr);
-                st(HttpClientManager)::getInstance()->removeClientInfo(r);
+                st(HttpLinkerManager)::getInstance()->removeLinker(r);
                 r->close();
                 return;
             }
@@ -49,21 +49,21 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
         break;
 
         case SocketEvent::Connect:{
-            HttpClientInfo info = createHttpClientInfo(r);
+            HttpLinker info = createHttpLinker(r);
 
             SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
             if(info != nullptr) {
                 info->setSSLInfo(ssl);
             }
-            st(HttpClientManager)::getInstance()->addClientInfo(info);
+            st(HttpLinkerManager)::getInstance()->addLinker(info);
             mHttpListener->onHttpMessage(event,info,nullptr,nullptr);
         }
         break;
 
         case SocketEvent::Disconnect: {
-            HttpClientInfo info = st(HttpClientManager)::getInstance()->getClientInfo(r);
+            HttpLinker info = st(HttpLinkerManager)::getInstance()->getLinker(r);
             mHttpListener->onHttpMessage(event,info,nullptr,nullptr);
-            st(HttpClientManager)::getInstance()->removeClientInfo(r);
+            st(HttpLinkerManager)::getInstance()->removeLinker(r);
         }
     }
 }
@@ -135,7 +135,7 @@ void _HttpServer::exit() {
         mSSLServer = nullptr;
     }
 
-    st(HttpClientManager)::getInstance()->clear();
+    st(HttpLinkerManager)::getInstance()->clear();
 }
 
 _HttpServer::~_HttpServer() {

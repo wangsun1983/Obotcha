@@ -1,11 +1,11 @@
-#include "HttpClientInfo.hpp"
+#include "HttpLinker.hpp"
 #include "HttpPacket.hpp"
 #include "HttpServer.hpp"
-#include "HttpClientManager.hpp"
+#include "HttpLinkerManager.hpp"
 
 namespace obotcha {
 
-_HttpClientInfo::_HttpClientInfo(Socket s) {
+_HttpLinker::_HttpLinker(Socket s) {
     mParser = createHttpPacketParser();
     
     mSocket = s;
@@ -14,50 +14,50 @@ _HttpClientInfo::_HttpClientInfo(Socket s) {
     mSession = createHttpSession();
 }
 
-void _HttpClientInfo::close() {
+void _HttpLinker::close() {
     mSocket->close();
     mParser = nullptr;
 }
 
-String _HttpClientInfo::getClientIp() {
+String _HttpLinker::getClientIp() {
     return mSocket->getInetAddress()->getAddress();
 }
 
-int _HttpClientInfo::pushHttpData(ByteArray array) {
+int _HttpLinker::pushHttpData(ByteArray array) {
     return mParser->pushHttpData(array);
 }
 
-ArrayList<HttpPacket> _HttpClientInfo::pollHttpPacket() {
+ArrayList<HttpPacket> _HttpLinker::pollHttpPacket() {
     return mParser->doParse();
 }
 
-int _HttpClientInfo::send(ByteArray data) {
+int _HttpLinker::send(ByteArray data) {
     if(mSSLInfo != nullptr) {
         return mSSLInfo->write(data);
     }
     return mSocketOutput->write(data);
 }
 
-int _HttpClientInfo::send(ByteArray data,int size) {
+int _HttpLinker::send(ByteArray data,int size) {
     if(mSSLInfo != nullptr) {
         return mSSLInfo->write(data);
     }
     return mSocketOutput->write(data,size);
 }
 
-SSLInfo _HttpClientInfo::getSSLInfo() {
+SSLInfo _HttpLinker::getSSLInfo() {
     return mSSLInfo;
 }
 
-void _HttpClientInfo::setSSLInfo(SSLInfo info) {
+void _HttpLinker::setSSLInfo(SSLInfo info) {
     mSSLInfo = info;
 }
 
-Socket _HttpClientInfo::getSocket() {
+Socket _HttpLinker::getSocket() {
     return mSocket;
 }
 
-HttpSession _HttpClientInfo::getSession() {
+HttpSession _HttpLinker::getSession() {
     return mSession;
 }
 

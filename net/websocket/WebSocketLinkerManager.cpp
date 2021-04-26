@@ -1,4 +1,4 @@
-#include "WebSocketClientManager.hpp"
+#include "WebSocketLinkerManager.hpp"
 #include "WebSocketHybi00Composer.hpp"
 #include "WebSocketHybi00Parser.hpp"
 #include "WebSocketHybi07Composer.hpp"
@@ -12,16 +12,16 @@
 
 namespace obotcha {
 
-//--------------------WebSocketClientManager-----------------
-WebSocketClientManager _WebSocketClientManager::mInstance = nullptr;
-Mutex _WebSocketClientManager::mMutex = createMutex("WebSocketClientManagerMutex");
+//--------------------WebSocketLinkerManager-----------------
+WebSocketLinkerManager _WebSocketLinkerManager::mInstance = nullptr;
+Mutex _WebSocketLinkerManager::mMutex = createMutex("WebSocketLinkerManagerMutex");
 
-_WebSocketClientManager::_WebSocketClientManager() {
-    mClients = createHashMap<Socket, WebSocketClientInfo>();
+_WebSocketLinkerManager::_WebSocketLinkerManager() {
+    mClients = createHashMap<Socket, WebSocketLinker>();
 }
 
 
-WebSocketClientManager _WebSocketClientManager::getInstance() {
+WebSocketLinkerManager _WebSocketLinkerManager::getInstance() {
     if (mInstance != nullptr) {
         return mInstance;
     }
@@ -32,12 +32,12 @@ WebSocketClientManager _WebSocketClientManager::getInstance() {
         return mInstance;
     }
 
-    mInstance = AutoClone(new _WebSocketClientManager());
+    mInstance = AutoClone(new _WebSocketLinkerManager());
     return mInstance;
 }
 
-WebSocketClientInfo _WebSocketClientManager::addClient(Socket sock, int version) {
-    WebSocketClientInfo client = createWebSocketClientInfo(sock);
+WebSocketLinker _WebSocketLinkerManager::addLinker(Socket sock, int version) {
+    WebSocketLinker client = createWebSocketLinker(sock);
     client->setVersion(version);
 
     switch (version) {
@@ -75,12 +75,12 @@ WebSocketClientInfo _WebSocketClientManager::addClient(Socket sock, int version)
     return client;
 }
 
-WebSocketClientInfo _WebSocketClientManager::getClient(Socket s) {
+WebSocketLinker _WebSocketLinkerManager::getLinker(Socket s) {
     AutoLock ll(mMutex);
     return mClients->get(s);
 }
 
-void _WebSocketClientManager::removeClient(WebSocketClientInfo client) {
+void _WebSocketLinkerManager::removeLinker(WebSocketLinker client) {
     AutoLock ll(mMutex);
     mClients->remove(client->getSocket());
 }
