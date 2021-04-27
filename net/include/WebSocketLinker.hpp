@@ -38,20 +38,11 @@ public:
 
     void setComposer(sp<_WebSocketComposer>);
 
-    //HttpHeader
-    HttpHeader getHttpHeader();
-
-    void setHttpHeader(HttpHeader);
 
     //PermessageDeflater
     sp<_WebSocketPermessageDeflate> getDeflater();
 
     void setDeflater(sp<_WebSocketPermessageDeflate>);
-
-    //Protocols
-    ArrayList<String> getProtocols();
-
-    void setProtocols(ArrayList<String>);
 
     //ConnectUrl
     String getConnectUrl();
@@ -74,28 +65,31 @@ public:
 
     void reset();
 
-    //void enableSend();
+    void setWebSocketKey(String);
+    String getWebSocketKey();
+
+    void setProtocols(String);
+    String getProtocols();
 
     Socket getSocket();
 
 private:
     //int mClientFd;
     Socket mSock;
+    
     OutputStream mOutputStream;
 
     sp<_WebSocketParser> mParser;
 
     sp<_WebSocketComposer> mComposer;
 
-    HttpHeader mHttpHeader;
-        
-    //WebSocketHeader mWsHeader;
-
     sp<_WebSocketPermessageDeflate> mDeflate;
 
-    ArrayList<String> mProtocols;
-
     String mConnectUrl;
+
+    String mKey;
+
+    String mProtocols;
 
     int mWsVersion;
 

@@ -39,7 +39,7 @@ public:
     
     void deMonitor(Socket);
     
-    void exit();
+    void close();
     
     ~_HttpServer();
 

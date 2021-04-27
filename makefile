@@ -54,6 +54,7 @@ obotchacppflags = $(cppflags) \
                 $(obotchastrict)
 
 external = -lpthread \
+		-pthread \
 		-ldl \
 		-lrt \
 		-rdynamic

@@ -215,8 +215,8 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
 }
 
 
-void _SocketMonitor::release() {
-    mPoll->release();
+void _SocketMonitor::close() {
+    mPoll->close();
     isStop = 0;
     {
         AutoLock l(mMutex);

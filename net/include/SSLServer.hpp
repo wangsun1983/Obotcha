@@ -79,7 +79,7 @@ public:
 
     void start();
 
-    void release();
+    void close();
    
     int removeClientFd(int fd);
 

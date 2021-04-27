@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_HTTP_URL_CONNECTION_HPP__
-#define __OBOTCHA_HTTP_URL_CONNECTION_HPP__
+#ifndef __OBOTCHA_HTTP_CONNECTION_HPP__
+#define __OBOTCHA_HTTP_CONNECTION_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -21,24 +21,18 @@
 #include "Condition.hpp"
 #include "Handler.hpp"
 #include "HttpOption.hpp"
+#include "HttpConnectionListener.hpp"
 
 namespace obotcha {
 
 class _HttpUrl;
 
-DECLARE_SIMPLE_CLASS(HttpConnectionListener) {
-public:
-    virtual void onResponse(HttpResponse response) = 0;
-    virtual void onDisconnect() = 0;
-    virtual void onConnect(int) = 0;
-};
-
-DECLARE_SIMPLE_CLASS(HttpUrlConnection) {
+DECLARE_SIMPLE_CLASS(HttpConnection) {
 
 public:
-    _HttpUrlConnection(sp<_HttpUrl> url,HttpOption option = nullptr);
+    _HttpConnection(sp<_HttpUrl> url,HttpOption option = nullptr);
     
-    _HttpUrlConnection(sp<_HttpUrl> url,Handler handler,HttpOption option = nullptr);
+    _HttpConnection(sp<_HttpUrl> url,Handler handler,HttpOption option = nullptr);
 
     void setListener(HttpConnectionListener l);
 

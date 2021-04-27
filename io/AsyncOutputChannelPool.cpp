@@ -2,21 +2,14 @@
 
 namespace obotcha {
 
-Mutex _AsyncOutputChannelPool::mMutex = createMutex();
-
-sp<_AsyncOutputChannelPool> _AsyncOutputChannelPool::mInstance = nullptr;
+std::once_flag _AsyncOutputChannelPool::s_flag;
+sp<_AsyncOutputChannelPool> _AsyncOutputChannelPool::mInstance;
 
 sp<_AsyncOutputChannelPool> _AsyncOutputChannelPool::getInstance() {
-    if(mInstance != nullptr) {
-        return mInstance;
-    }
-
-    AutoLock l(mMutex);
-
-    if(mInstance == nullptr) {
+    std::call_once(s_flag, [&]() {
         _AsyncOutputChannelPool *p = new _AsyncOutputChannelPool();
-        mInstance.set_pointer(p);
-    }
+        p->mInstance.set_pointer(p);
+    });
 
     return mInstance;
 }
@@ -36,6 +29,7 @@ void _AsyncOutputChannelPool::remove(AsyncOutputChannel c) {
 _AsyncOutputChannelPool::_AsyncOutputChannelPool() {
     mObserver = createEPollFileObserver();
     mChannels = createHashMap<int,AsyncOutputChannel>();
+    mMutex = createMutex();
 }
 
 int _AsyncOutputChannelPool::onEvent(int fd,uint32_t events,ByteArray) {

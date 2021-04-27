@@ -20,21 +20,19 @@ namespace obotcha {
 
 
 _WebSocketLinker::_WebSocketLinker(Socket sock) {
-    mParser = nullptr;
-    mComposer = nullptr;
-    mHttpHeader = createHttpHeader();
-    mDeflate = nullptr;
-    mProtocols = nullptr;
-    mWsVersion = -1;
+    reset();
 
     mSock = sock;
     mOutputStream = sock->getOutputStream();
 }
 
 void _WebSocketLinker::reset() {
-    mHttpHeader->clear();
+    mParser = nullptr;
+    mComposer = nullptr;
     mDeflate = nullptr;
     mProtocols = nullptr;
+    mKey = nullptr;
+    mWsVersion = -1;
 }
 
 sp<_WebSocketParser> _WebSocketLinker::getParser() {
@@ -53,12 +51,20 @@ void _WebSocketLinker::setComposer(sp<_WebSocketComposer> p) {
     this->mComposer = p;
 }
 
-HttpHeader _WebSocketLinker::getHttpHeader() {
-    return mHttpHeader;
+void _WebSocketLinker::setWebSocketKey(String key) {
+    this->mKey = key;
 }
 
-void _WebSocketLinker::setHttpHeader(HttpHeader header) {
-    mHttpHeader = header;
+String _WebSocketLinker::getWebSocketKey() {
+    return mKey;
+}
+
+void _WebSocketLinker::setProtocols(String p) {
+    this->mProtocols = p;
+}
+
+String _WebSocketLinker::getProtocols() {
+    return this->mProtocols;
 }
 
 sp<_WebSocketPermessageDeflate> _WebSocketLinker::getDeflater() {
@@ -67,14 +73,6 @@ sp<_WebSocketPermessageDeflate> _WebSocketLinker::getDeflater() {
 
 void _WebSocketLinker::setDeflater(sp<_WebSocketPermessageDeflate> d) {
     mDeflate = d;
-}
-
-ArrayList<String> _WebSocketLinker::getProtocols() {
-    return mProtocols;
-}
-
-void _WebSocketLinker::setProtocols(ArrayList<String> p) {
-    mProtocols = p;
 }
 
 String _WebSocketLinker::getConnectUrl() {

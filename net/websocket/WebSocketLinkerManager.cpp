@@ -13,26 +13,20 @@
 namespace obotcha {
 
 //--------------------WebSocketLinkerManager-----------------
-WebSocketLinkerManager _WebSocketLinkerManager::mInstance = nullptr;
-Mutex _WebSocketLinkerManager::mMutex = createMutex("WebSocketLinkerManagerMutex");
+std::once_flag _WebSocketLinkerManager::s_flag;
+WebSocketLinkerManager _WebSocketLinkerManager::mInstance;
 
 _WebSocketLinkerManager::_WebSocketLinkerManager() {
     mClients = createHashMap<Socket, WebSocketLinker>();
+    mMutex = createMutex();
 }
 
-
 WebSocketLinkerManager _WebSocketLinkerManager::getInstance() {
-    if (mInstance != nullptr) {
-        return mInstance;
-    }
+    std::call_once(s_flag, [&]() {
+        _WebSocketLinkerManager *p = new _WebSocketLinkerManager();
+        p->mInstance.set_pointer(p);
+    });
 
-    AutoLock l(mMutex);
-
-    if (mInstance != nullptr) {
-        return mInstance;
-    }
-
-    mInstance = AutoClone(new _WebSocketLinkerManager());
     return mInstance;
 }
 

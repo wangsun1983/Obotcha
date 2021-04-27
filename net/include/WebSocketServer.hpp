@@ -41,7 +41,7 @@ public:
     
     int start();
 
-    int release();
+    int close();
 
 private:
     void onHttpMessage(int,sp<_HttpLinker> client,sp<_HttpResponseWriter> w,HttpPacket msg);

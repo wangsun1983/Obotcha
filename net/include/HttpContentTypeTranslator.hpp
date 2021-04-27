@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_HTTP_CONTENT_TYPE_TOOL_HPP__
-#define __OBOTCHA_HTTP_CONTENT_TYPE_TOOL_HPP__
+#ifndef __OBOTCHA_HTTP_CONTENT_TYPE_TRANSLATOR_HPP__
+#define __OBOTCHA_HTTP_CONTENT_TYPE_TRANSLATOR_HPP__
 
 //according nginx/conf/mime.types
 
@@ -25,10 +25,10 @@ public:
     int type;
 };
 
-DECLARE_SIMPLE_CLASS(HttpContentTypeTool) {
+DECLARE_SIMPLE_CLASS(HttpContentTypeTranslator) {
 
 public:
-    static sp<_HttpContentTypeTool> getInstance();
+    static sp<_HttpContentTypeTranslator> getInstance();
 
     String toType(File);
     String toType(String);
@@ -38,9 +38,9 @@ public:
     String suffixToType(String);
 
 private:
-    _HttpContentTypeTool();
+    _HttpContentTypeTranslator();
     static Mutex mMutex;
-    static sp<_HttpContentTypeTool> mInstance;
+    static sp<_HttpContentTypeTranslator> mInstance;
     FileTypeSearchNode *mSuffixRootNode;
     FileTypeSearchNode *mContentTypeNode;
 

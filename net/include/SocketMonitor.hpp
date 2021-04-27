@@ -37,7 +37,7 @@ public:
     
     int remove(Socket);
 
-    void release();
+    void close();
     
 private:
     void addNewSocket(Socket s,SocketListener l);

@@ -10,18 +10,19 @@
 #include "Error.hpp"
 #include "SocketBuilder.hpp"
 #include "HttpUrl.hpp"
-#include "HttpUrlConnection.hpp"
+#include "HttpConnection.hpp"
+#include "HttpConnectionListener.hpp"
 #include "HttpRequestWriter.hpp"
 #include "SocketListener.hpp"
 #include "URL.hpp"
 
 namespace obotcha {
 
-_HttpUrlConnection::_HttpUrlConnection(HttpUrl url,HttpOption option):_HttpUrlConnection(url,nullptr,option) {
+_HttpConnection::_HttpConnection(HttpUrl url,HttpOption option):_HttpConnection(url,nullptr,option) {
     
 }
 
-_HttpUrlConnection::_HttpUrlConnection(sp<_HttpUrl> url,Handler h,HttpOption option) {
+_HttpConnection::_HttpConnection(sp<_HttpUrl> url,Handler h,HttpOption option) {
     mUrl = url;
     mParser = createHttpPacketParser();
     mHandler = h;
@@ -29,17 +30,17 @@ _HttpUrlConnection::_HttpUrlConnection(sp<_HttpUrl> url,Handler h,HttpOption opt
     mOption = option;
 }
 
-void _HttpUrlConnection::setListener(HttpConnectionListener l) {
+void _HttpConnection::setListener(HttpConnectionListener l) {
     mListener = l;
 }
 
-Socket _HttpUrlConnection::getSocket() {
+Socket _HttpConnection::getSocket() {
     return mSocket;
 }
 
-int _HttpUrlConnection::connect() {
+int _HttpConnection::connect() {
     if(mHandler != nullptr) {
-        mHandler->post([](_HttpUrlConnection *url) {
+        mHandler->post([](_HttpConnection *url) {
             int ret = url->_connect();
             if(url->mListener != nullptr) {
                 url->mListener->onConnect(ret);
@@ -52,9 +53,9 @@ int _HttpUrlConnection::connect() {
     return 0;
 }
 
-HttpResponse _HttpUrlConnection::execute(HttpRequest req) {
+HttpResponse _HttpConnection::execute(HttpRequest req) {
     if(mHandler != nullptr) {
-        mHandler->post([](_HttpUrlConnection *url,HttpRequest req) {
+        mHandler->post([](_HttpConnection *url,HttpRequest req) {
             HttpResponse response = url->_execute(req);
             Message msg = url->mHandler->obtainMessage();
             msg->data = Cast<Object>(response);
@@ -67,9 +68,9 @@ HttpResponse _HttpUrlConnection::execute(HttpRequest req) {
     return nullptr;
 }
 
-void _HttpUrlConnection::execute(HttpRequest req,int what) {
+void _HttpConnection::execute(HttpRequest req,int what) {
     if(mHandler != nullptr) {
-        mHandler->post([](_HttpUrlConnection *url,HttpRequest req,int what) {
+        mHandler->post([](_HttpConnection *url,HttpRequest req,int what) {
             HttpResponse response = url->_execute(req);
             Message msg = url->mHandler->obtainMessage();
             msg->what = what;
@@ -81,7 +82,7 @@ void _HttpUrlConnection::execute(HttpRequest req,int what) {
     }
 }
 
-int _HttpUrlConnection::_connect() {
+int _HttpConnection::_connect() {
     ArrayList<InetAddress> address = createURL(mUrl->getHost())->getInetAddress();
     if(address == nullptr || address->size() == 0) {
         return -NetConnectFail;
@@ -99,9 +100,8 @@ int _HttpUrlConnection::_connect() {
     return result;
 }
 
-HttpResponse _HttpUrlConnection::_execute(HttpRequest req) {
+HttpResponse _HttpConnection::_execute(HttpRequest req) {
     //check whether httpurl is still connect
-    printf("_HttpUrlConnection execute \n");
     writer->write(req);
     while(1) {
         ByteArray result = createByteArray(1024*64);
@@ -117,7 +117,7 @@ HttpResponse _HttpUrlConnection::_execute(HttpRequest req) {
     return nullptr;
 }
 
-int _HttpUrlConnection::close() {
+int _HttpConnection::close() {
     mSocket->close();
     return 0;
 }

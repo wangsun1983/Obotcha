@@ -119,9 +119,9 @@ void _HttpServer::deMonitor(Socket s) {
     mSockMonitor->remove(s);
 }
 
-void _HttpServer::exit() {
+void _HttpServer::close() {
     if(mSockMonitor != nullptr) {
-        mSockMonitor->release();
+        mSockMonitor->close();
         mSockMonitor = nullptr;
     }
 
@@ -131,7 +131,7 @@ void _HttpServer::exit() {
     }
 
     if(mSSLServer != nullptr) {
-        mSSLServer->release();
+        mSSLServer->close();
         mSSLServer = nullptr;
     }
 
@@ -139,9 +139,7 @@ void _HttpServer::exit() {
 }
 
 _HttpServer::~_HttpServer() {
-    if(mSockMonitor != nullptr) {
-
-    }
+    close();
 }
 
 }

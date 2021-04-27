@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_HTTP_URL_ASYNC_CONNECTION_HPP__
-#define __OBOTCHA_HTTP_URL_ASYNC_CONNECTION_HPP__
+#ifndef __OBOTCHA_HTTP_ASYNC_CONNECTION_HPP__
+#define __OBOTCHA_HTTP_ASYNC_CONNECTION_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -20,25 +20,19 @@
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "HttpOption.hpp"
+#include "HttpConnectionListener.hpp"
 
 namespace obotcha {
 
 class _HttpUrl;
-class _HttpUrlAsyncConnectionPool;
+class _HttpAsyncConnectionPool;
 
-DECLARE_SIMPLE_CLASS(HttpAsyncConnectionListener) {
-public:
-    virtual void onResponse(HttpResponse response) = 0;
-    virtual void onDisconnect() = 0;
-    virtual void onConnect(int) = 0;
-};
-
-DECLARE_SIMPLE_CLASS(HttpUrlAsyncConnection) {
+DECLARE_SIMPLE_CLASS(HttpAsyncConnection) {
 
 public:
-    friend class _HttpUrlAsyncConnectionPool;
+    friend class _HttpAsyncConnectionPool;
 
-    _HttpUrlAsyncConnection(sp<_HttpUrl> url,HttpAsyncConnectionListener l,HttpOption option = nullptr);
+    _HttpAsyncConnection(sp<_HttpUrl> url,HttpConnectionListener l,HttpOption option = nullptr);
     
     int connect();
 
@@ -61,9 +55,9 @@ private:
 
     HttpOption mOption;
 
-    HttpAsyncConnectionListener mListener;
+    HttpConnectionListener mListener;
 
-    sp<_HttpUrlAsyncConnectionPool> mPool;
+    sp<_HttpAsyncConnectionPool> mPool;
 };
 
 }

@@ -14,21 +14,33 @@ namespace obotcha {
 class _WebSocketLinker;
 
 enum PingResult {
-    PingResultResponse,
+    PingResultResponse = 0,
     PingResultNoResponse
 };
 
 DECLARE_SIMPLE_CLASS(WebSocketListener) {
 public:
-    virtual int onData(WebSocketFrame frame,sp<_WebSocketLinker> client = nullptr) = 0;
+    //for server
+    virtual int onData(WebSocketFrame frame,sp<_WebSocketLinker> client){return 0;}
 
-    virtual int onConnect(sp<_WebSocketLinker> client = nullptr) = 0;
+    virtual int onConnect(sp<_WebSocketLinker> client) {return 0;}
 
-    virtual int onDisconnect(sp<_WebSocketLinker> client = nullptr) = 0;
+    virtual int onDisconnect(sp<_WebSocketLinker> client) {return 0;}
 
-    virtual int onPong(String,sp<_WebSocketLinker> client = nullptr) {return PingResultResponse;}
+    virtual int onPong(String,sp<_WebSocketLinker> client) {return PingResultResponse;}
 
-    virtual int onPing(String,sp<_WebSocketLinker> client = nullptr)  {return PingResultResponse;}
+    virtual int onPing(String,sp<_WebSocketLinker> client)  {return PingResultResponse;}
+
+    //for client
+    virtual int onData(WebSocketFrame frame){return 0;}
+
+    virtual int onConnect() {return 0;}
+
+    virtual int onDisconnect() {return 0;}
+
+    virtual int onPong(String) {return PingResultResponse;}
+
+    virtual int onPing(String)  {return PingResultResponse;}
 };
 
 }

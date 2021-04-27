@@ -14,24 +14,24 @@
 
 namespace obotcha {
 
-class _HttpUrlAsyncConnection;
-class _HttpAsyncConnectionListener;
+class _HttpAsyncConnection;
+class _HttpConnectionListener;
 
-DECLARE_SIMPLE_CLASS(HttpUrlAsyncConnectionPool) IMPLEMENTS(SocketListener){
+DECLARE_SIMPLE_CLASS(HttpAsyncConnectionPool) IMPLEMENTS(SocketListener){
 
 public:
-    friend class _HttpUrlAsyncConnection;
+    friend class _HttpAsyncConnection;
 
-    _HttpUrlAsyncConnectionPool();
-    sp<_HttpUrlAsyncConnection> createConnection(HttpUrl url,sp<_HttpAsyncConnectionListener> l,HttpOption o);
+    _HttpAsyncConnectionPool();
+    sp<_HttpAsyncConnection> createConnection(HttpUrl url,sp<_HttpConnectionListener> l,HttpOption o);
     void onSocketMessage(int,Socket,ByteArray);
-    void release();
+    void close();
 
 private:
-    void recyleConnection(sp<_HttpUrlAsyncConnection>);
+    void recyleConnection(sp<_HttpAsyncConnection>);
     
     Mutex mMutex;
-    HashMap<Socket,sp<_HttpUrlAsyncConnection>> mConnections;
+    HashMap<Socket,sp<_HttpAsyncConnection>> mConnections;
     ThreadPoolExecutor mExecutor;
     SocketMonitor mSocketMonitor;
 };

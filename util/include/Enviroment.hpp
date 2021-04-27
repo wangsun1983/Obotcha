@@ -1,6 +1,9 @@
 #ifndef __OBOTCHA_ENVIROMENT_HPP__
 #define __OBOTCHA_ENVIROMENT_HPP__
 
+#include <mutex>
+#include <thread>
+
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "Properties.hpp"
@@ -106,10 +109,9 @@ public:
 
 private:
     _Enviroment();
-
+    
+    static std::once_flag s_flag;
     static Enviroment mInstance;
-   
-    static Mutex mMutex;
    
     Properties mProp;
 };

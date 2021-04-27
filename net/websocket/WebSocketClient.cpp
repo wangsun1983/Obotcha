@@ -37,7 +37,7 @@
 #include "Log.hpp"
 #include "InitializeException.hpp"
 #include "FileInputStream.hpp"
-#include "HttpUrlConnection.hpp"
+#include "HttpConnection.hpp"
 #include "HttpStatus.hpp"
 
 
@@ -91,21 +91,26 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
     //send http request
     HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(url);
     mWsListener = l;
-    printf("start connect \n");
     HttpRequest shakeHandMsg = composer->genClientShakeHandMessage(httpUrl);
-    HttpUrlConnection connection = createHttpUrlConnection(httpUrl);
+    HttpConnection connection = createHttpConnection(httpUrl);
     if(connection->connect() < 0) {
-        printf("connect fail \n");
         return -NetConnectFail;
     }
 
     HttpResponse response = connection->execute(shakeHandMsg);
-    printf("connect trace1 \n");
     if(response->getHeader()->getResponseStatus() == st(HttpStatus)::SwitchProtocls) {
-        printf("connect trace2 \n");
         mSocket = connection->getSocket();
         mSocketMonitor->bind(connection->getSocket(),AutoClone(this));
         mOutputStream = mSocket->getOutputStream();
+        //wangsl
+        String extentions = response->getHeader()->getValue(st(HttpHeader)::SecWebSocketExtensions);
+        if(extentions != nullptr) {
+            if(extentions->indexOf("sec-websocket-extensions") > 0) {
+                printf("this is deflat \n");
+                composer->setDeflate(createWebSocketPermessageDeflate());
+            }
+        }
+        //wangsl
         return 0;
     }
     
@@ -209,7 +214,7 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
 }
 
 void _WebSocketClient::close() {
-    mSocketMonitor->release();
+    mSocketMonitor->close();
     mSocket->close();
 }
 

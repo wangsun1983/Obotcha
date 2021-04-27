@@ -26,12 +26,13 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpversion.o \
 		$(outtmp)/httpversionparser.o \
 		$(outtmp)/httpcontenttype.o \
-		$(outtmp)/httpcontenttypetool.o \
+		$(outtmp)/httpcontenttypetranslator.o \
 		$(outtmp)/httpurlbuilder.o \
 		$(outtmp)/httpresponse.o \
-		$(outtmp)/httpurlconnection.o \
-		$(outtmp)/httpurlasyncconnectionpool.o \
-		$(outtmp)/httpurlasyncconnection.o \
+		$(outtmp)/httpconnection.o \
+		$(outtmp)/httpconnectionbuilder.o \
+		$(outtmp)/httpasyncconnectionpool.o \
+		$(outtmp)/httpasyncconnection.o \
 		$(outtmp)/httpmethod.o \
 		$(outtmp)/httpheader.o \
 		$(outtmp)/httpheaderparser.o \
@@ -137,14 +138,17 @@ $(outtmp)/socketmonitor.o :$(netDir)/socket/SocketMonitor.cpp
 $(outtmp)/httpxformparser.o :$(netDir)/http/HttpXFormUrlEncodedParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpXFormUrlEncodedParser.cpp -o $(outtmp)/httpxformparser.o 
 
-$(outtmp)/httpurlasyncconnectionpool.o :$(netDir)/http/HttpUrlAsyncConnectionPool.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlAsyncConnectionPool.cpp -o $(outtmp)/httpurlasyncconnectionpool.o 
+$(outtmp)/httpasyncconnectionpool.o :$(netDir)/http/HttpAsyncConnectionPool.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAsyncConnectionPool.cpp -o $(outtmp)/httpasyncconnectionpool.o 
 
-$(outtmp)/httpurlasyncconnection.o :$(netDir)/http/HttpUrlAsyncConnection.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlAsyncConnection.cpp -o $(outtmp)/httpurlasyncconnection.o 
+$(outtmp)/httpasyncconnection.o :$(netDir)/http/HttpAsyncConnection.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAsyncConnection.cpp -o $(outtmp)/httpasyncconnection.o 
 
-$(outtmp)/httpurlconnection.o :$(netDir)/http/HttpUrlConnection.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlConnection.cpp -o $(outtmp)/httpurlconnection.o 
+$(outtmp)/httpconnection.o :$(netDir)/http/HttpConnection.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpConnection.cpp -o $(outtmp)/httpconnection.o 
+
+$(outtmp)/httpconnectionbuilder.o :$(netDir)/http/HttpConnectionBuilder.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpConnectionBuilder.cpp -o $(outtmp)/httpconnectionbuilder.o 
 
 $(outtmp)/httpmethod.o :$(netDir)/http/HttpMethod.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMethod.cpp -o $(outtmp)/httpmethod.o 
@@ -176,8 +180,8 @@ $(outtmp)/httpentity.o :$(netDir)/http/HttpEntity.cpp
 $(outtmp)/httpcontenttype.o :$(netDir)/http/HttpContentType.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpContentType.cpp -o $(outtmp)/httpcontenttype.o 
 
-$(outtmp)/httpcontenttypetool.o :$(netDir)/http/HttpContentTypeTool.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpContentTypeTool.cpp -o $(outtmp)/httpcontenttypetool.o 
+$(outtmp)/httpcontenttypetranslator.o :$(netDir)/http/HttpContentTypeTranslator.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpContentTypeTranslator.cpp -o $(outtmp)/httpcontenttypetranslator.o 
 
 $(outtmp)/httpurlbuilder.o :$(netDir)/http/HttpUrlBuilder.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlBuilder.cpp -o $(outtmp)/httpurlbuilder.o 

@@ -53,9 +53,9 @@ int _WebSocketServer::start() {
     return 0;
 }
 
-int _WebSocketServer::release() {
-    mSocketMonitor->release();
-    mHttpServer->exit();
+int _WebSocketServer::close() {
+    mSocketMonitor->close();
+    mHttpServer->close();
     
     return 0;
 }
@@ -138,7 +138,9 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,sp<_HttpRe
                 
                 WebSocketLinker wsClient = st(WebSocketLinkerManager)::getInstance()->addLinker(client->getSocket(),
                                                                     version->toBasicInt());
-                wsClient->setHttpHeader(header);
+
+                wsClient->setProtocols(header->getValue(st(HttpHeader)::SecWebSocketProtocol));
+                wsClient->setWebSocketKey(header->getValue(st(HttpHeader)::SecWebSocketKey));
                 WebSocketParser parser = wsClient->getParser();
 
                 if (!parser->validateHandShake(header)) {
@@ -161,9 +163,10 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,sp<_HttpRe
                 mWsListener->onConnect(wsClient);
 
                 WebSocketComposer composer = wsClient->getComposer();
-                String p = wsClient->getHttpHeader()->getValue(st(HttpHeader)::SecWebSocketProtocol);
-                String k = wsClient->getHttpHeader()->getValue(st(HttpHeader)::SecWebSocketKey);
-
+                //String p = wsClient->getHttpHeader()->getValue(st(HttpHeader)::SecWebSocketProtocol);
+                //String k = wsClient->getHttpHeader()->getValue(st(HttpHeader)::SecWebSocketKey);
+                String p = wsClient->getProtocols();
+                String k = wsClient->getWebSocketKey();
                 HttpResponse shakeresponse = composer->genServerShakeHandMessage(k,p);
 
                 HttpResponseWriter writer = createHttpResponseWriter(client->getSocket()->getOutputStream());

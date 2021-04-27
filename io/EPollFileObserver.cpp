@@ -92,9 +92,9 @@ void _EPollFileObserver::addEpollFd(int fd,uint32_t events) {
     epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
 }
 
-int _EPollFileObserver::release() {
+int _EPollFileObserver::close() {
     if(mEpollFd != -1) {
-        close(mEpollFd);
+        ::close(mEpollFd);
         mEpollFd = -1;
     } else {
         return 0;
@@ -115,7 +115,7 @@ int _EPollFileObserver::release() {
 }
 
 _EPollFileObserver::~_EPollFileObserver() {
-    release();
+    close();
 }
 
 }

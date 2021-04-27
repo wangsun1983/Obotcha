@@ -55,11 +55,12 @@ HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl)
     if(packet->getHeader()->getValue(st(HttpHeader)::SecWebSocketKey) == nullptr) {
         //we should gen a sec key
         Random rand = createRandom();
-        int v = rand->nextInt();
+        ByteArray array = createByteArray(16);
+        rand->nextBytes(array);
         Base64 base64key = createBase64();
-        String key = base64key->encode(createString(v));
-        printf("key is %s,v is %d \n",key->toChars(),v);
-        packet->getHeader()->setValue(st(HttpHeader)::SecWebSocketKey,key);
+        ByteArray key = base64key->encode(array);
+        printf("key is %s\n",key->toValue());
+        packet->getHeader()->setValue(st(HttpHeader)::SecWebSocketKey,key->toString());
     }
 
     if(packet->getHeader()->getValue(st(HttpHeader)::Connection) == nullptr) {
@@ -160,6 +161,12 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(ByteArray conte
         }
 
         sinkWriter->writeByte(b0);
+
+        //wangsl
+        if(mDeflate != nullptr) {
+           b0 |= st(WebSocketProtocol)::B0_FLAG_RSV1;
+        }
+        //wangsl
         
         ByteArray maskKey = createByteArray(4);
         int b1 = 0;

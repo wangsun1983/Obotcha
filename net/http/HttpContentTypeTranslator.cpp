@@ -9,16 +9,16 @@
 #include "HttpCookie.hpp"
 #include "Mutex.hpp"
 #include "File.hpp"
-#include "HttpContentTypeTool.hpp"
+#include "HttpContentTypeTranslator.hpp"
 #include "AutoLock.hpp"
 #include "HttpContentType.hpp"
 
 namespace obotcha {
 
-Mutex _HttpContentTypeTool::mMutex = createMutex();
-sp<_HttpContentTypeTool> _HttpContentTypeTool::mInstance = nullptr;
+Mutex _HttpContentTypeTranslator::mMutex = createMutex();
+sp<_HttpContentTypeTranslator> _HttpContentTypeTranslator::mInstance = nullptr;
 
-sp<_HttpContentTypeTool> _HttpContentTypeTool::getInstance() {
+sp<_HttpContentTypeTranslator> _HttpContentTypeTranslator::getInstance() {
     if(mInstance != nullptr) {
         return mInstance;
     }
@@ -28,29 +28,29 @@ sp<_HttpContentTypeTool> _HttpContentTypeTool::getInstance() {
         return mInstance;
     }
 
-    _HttpContentTypeTool *p = new _HttpContentTypeTool();
+    _HttpContentTypeTranslator *p = new _HttpContentTypeTranslator();
     mInstance.set_pointer(p);
     return mInstance;
     
 }
 
 
-int _HttpContentTypeTool::typeToInt(String v) {
+int _HttpContentTypeTranslator::typeToInt(String v) {
     String suffix = v->toLowerCase();
     return searchNode(mContentTypeNode,suffix->toChars(),suffix->size());
 }
 
-int _HttpContentTypeTool::suffixToInt(String v) {
+int _HttpContentTypeTranslator::suffixToInt(String v) {
     String suffix = v->toLowerCase();
     return searchNode(mSuffixRootNode,suffix->toChars(),suffix->size());
 }
 
-String _HttpContentTypeTool::suffixToType(String v) {
+String _HttpContentTypeTranslator::suffixToType(String v) {
     int id = suffixToInt(v);
     return intToType(id);
 }
 
-String _HttpContentTypeTool::intToType(int id) {
+String _HttpContentTypeTranslator::intToType(int id) {
 
 #define CASE_SWITCH(X,Y) case st(HttpContentType)::Y:\
 return st(HttpContentType)::X;
@@ -145,7 +145,7 @@ return st(HttpContentType)::X;
     return nullptr;
 }
 
-void _HttpContentTypeTool::addNode(FileTypeSearchNode *root,const char *content,int size,int type) {
+void _HttpContentTypeTranslator::addNode(FileTypeSearchNode *root,const char *content,int size,int type) {
     int index = content[0] - 0x21;
     if(root->next[index] == nullptr) {
         root->next[index] = new FileTypeSearchNode();
@@ -162,7 +162,7 @@ void _HttpContentTypeTool::addNode(FileTypeSearchNode *root,const char *content,
     }
 }
 
-int _HttpContentTypeTool::searchNode(FileTypeSearchNode *root,const char *content,int size) {
+int _HttpContentTypeTranslator::searchNode(FileTypeSearchNode *root,const char *content,int size) {
     int index = content[0] - 0x21;
     if(root->next[index] == nullptr) {
         return -1;
@@ -177,7 +177,7 @@ int _HttpContentTypeTool::searchNode(FileTypeSearchNode *root,const char *conten
     }
 }
 
-_HttpContentTypeTool::_HttpContentTypeTool() {
+_HttpContentTypeTranslator::_HttpContentTypeTranslator() {
 
     mSuffixRootNode = new FileTypeSearchNode();
     mContentTypeNode = new FileTypeSearchNode();

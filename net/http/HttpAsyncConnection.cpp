@@ -1,8 +1,8 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "HttpUrlAsyncConnection.hpp"
-#include "HttpUrlAsyncConnectionPool.hpp"
+#include "HttpAsyncConnection.hpp"
+#include "HttpAsyncConnectionPool.hpp"
 #include "SocketListener.hpp"
 #include "URL.hpp"
 #include "SocketBuilder.hpp"
@@ -10,14 +10,14 @@
 namespace obotcha {
 
 
-_HttpUrlAsyncConnection::_HttpUrlAsyncConnection(sp<_HttpUrl> url,HttpAsyncConnectionListener l,HttpOption option) {
+_HttpAsyncConnection::_HttpAsyncConnection(sp<_HttpUrl> url,HttpConnectionListener l,HttpOption option) {
     mUrl = url;
     mListener = l;
     mOption = option;
     mParser = createHttpPacketParser();
 }
 
-int _HttpUrlAsyncConnection::connect() {
+int _HttpAsyncConnection::connect() {
     ArrayList<InetAddress> address = createURL(mUrl->getHost())->getInetAddress();
     if(address == nullptr || address->size() == 0) {
         return -NetConnectFail;
@@ -35,11 +35,11 @@ int _HttpUrlAsyncConnection::connect() {
     return result;
 }
 
-int _HttpUrlAsyncConnection::execute(HttpRequest req) {
+int _HttpAsyncConnection::execute(HttpRequest req) {
     return writer->write(req);
 }
 
-int _HttpUrlAsyncConnection::close() {
+int _HttpAsyncConnection::close() {
     if(mPool != nullptr) {
         mPool->recyleConnection(AutoClone(this));
         mPool = nullptr;
@@ -52,7 +52,7 @@ int _HttpUrlAsyncConnection::close() {
     return 0;
 }
 
-void _HttpUrlAsyncConnection::onResponse(int event,ByteArray r) {
+void _HttpAsyncConnection::onResponse(int event,ByteArray r) {
     if(mListener == nullptr) {
         return;
     }

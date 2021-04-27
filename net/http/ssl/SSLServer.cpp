@@ -235,7 +235,7 @@ void _SSLServer::start() {
     mSSLThread->start();
 }
 
-void _SSLServer::release() {
+void _SSLServer::close() {
 
 }
 

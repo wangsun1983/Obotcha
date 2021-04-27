@@ -1,6 +1,8 @@
 #ifndef __OBOTCHA_ASYNC_OUTPUT_CHANNEL_POOL_HPP__
 #define __OBOTCHA_ASYNC_OUTPUT_CHANNEL_POOL_HPP__
 
+#include <thread>
+#include <mutex>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -18,9 +20,11 @@ public:
 
 private:
     _AsyncOutputChannelPool();
-    static Mutex mMutex;
+    
+    static std::once_flag s_flag;
     static sp<_AsyncOutputChannelPool> mInstance;
 
+    Mutex mMutex;
     HashMap<int,AsyncOutputChannel> mChannels;
 
     EPollFileObserver mObserver;

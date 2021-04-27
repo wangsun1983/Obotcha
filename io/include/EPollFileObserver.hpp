@@ -79,7 +79,7 @@ public:
 
     int removeObserver(EPollFileObserverListener l);
 
-    int release();
+    int close();
 
     void run();
     

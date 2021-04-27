@@ -1,6 +1,8 @@
 #ifndef __OBOTCHA_HTTP_LINKER_MANAGER_HPP__
 #define __OBOTCHA_HTTP_LINKER_MANAGER_HPP__
 
+#include <thread>
+
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
@@ -32,9 +34,9 @@ public:
     void clear();
     
 private:
+    static std::once_flag s_flag;
     static sp<_HttpLinkerManager> mInstance;
-    static Mutex mInitMutex;
-
+    
     Mutex mMutex;
 
     HashMap<Socket,HttpLinker> mClients;

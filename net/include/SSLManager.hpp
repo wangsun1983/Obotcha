@@ -1,6 +1,9 @@
 #ifndef __OBOTCHA_SSL_MANAGER_HPP__
 #define __OBOTCHA_SSL_MANAGER_HPP__
 
+#include <thread>
+#include <mutex>
+
 #include "SSLInfo.hpp"
 #include "HashMap.hpp"
 
@@ -18,10 +21,8 @@ public:
 
 private:
     _SSLManager();
-
+    static std::once_flag s_flag;
     static SSLManager mInstance;
-    
-    static Mutex mInitMutex;
 
     Mutex mMutex;
 

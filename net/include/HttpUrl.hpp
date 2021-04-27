@@ -11,7 +11,7 @@
 namespace obotcha {
 
 //<scheme>://<user>:<password>@<host>:<port>/<path>;<params>?<query>#<frag>
-class _HttpUrlConnection;
+class _HttpConnection;
 
 DECLARE_SIMPLE_CLASS(HttpUrl) {
 public:
@@ -46,7 +46,7 @@ public:
     String toString();
     String toQueryString();
 
-    sp<_HttpUrlConnection> openConnection();
+    sp<_HttpConnection> openConnection();
 
     void dump();
     
