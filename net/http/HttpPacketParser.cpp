@@ -54,16 +54,11 @@ HttpPacket _HttpPacketParser::parseEntireRequest(String request) {
 
 ArrayList<HttpPacket> _HttpPacketParser::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
-    //static byte *end = (byte *)st(HttpText)::HttpEnd->toChars();
-    //static byte *CRLF = (byte *)st(HttpText)::CRLF->toChars();
-    //static byte *LF = (byte *)st(HttpText)::LF->toChars();
-    //printf("start doParse \n");
     
     byte v = 0;
     while(1) {
         switch(mStatus) {
             case Idle:{
-                //printf("idle \n");
                 if(mHttpHeaderParser == nullptr) {
                     mHttpHeaderParser = createHttpHeaderParser(mReader);
                     mHttpPacket = createHttpPacket();
@@ -71,33 +66,27 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                 
                 HttpHeader header = mHttpHeaderParser->doParse();
                 if(header == nullptr) {
-                    //printf("idle1 \n");
                     if(mSubStatus == HeadKeyValueParse) {
                         packets->add(mHttpPacket);
                     }
                     return packets;
                 }
-                //printf("idle2 \n");
                 if(mSubStatus == HeadKeyValueParse) {
                     mHttpPacket->getHeader()->addHttpHeader(header);
                 } else {
                     mHttpPacket->setHeader(header);
                 }
-                //printf("idle3 \n");
                 mStatus = BodyStart;
-                //mHttpHeaderParser = nullptr;
                 continue;
             }
 
             case BodyStart: {
                 //check whether there is a multipart
-                //printf("BodyStart \n");
                 int contentlength = mHttpPacket->getHeader()->getContentLength();
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
                 String encodingtype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
                 if(encodingtype != nullptr && encodingtype->indexOfIgnoreCase(st(HttpHeader)::TransferChunked) >= 0) {
                     //this is a chunck parsesr
-                    //printf("BodyStart chunk parse\n");
                     if(mSubStatus == HeadKeyValueParse) {
                         packets->add(mHttpPacket);
                         mChunkParser = nullptr;
@@ -110,7 +99,6 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                     ByteArray data = mChunkParser->doParse();
                     if(data != nullptr) {
                         mHttpPacket->getEntity()->setContent(data);
-                        //printf("chunk data is %s \n",data->toString()->toChars());
                         mChunkParser = nullptr;
                         mHttpHeaderParser->changeToParseKeyValue();
                     }
@@ -120,9 +108,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                     mStatus = Idle;
                     continue;
                 }
-                //printf("BodyStart trace1\n");
                 if(contentlength <= 0) {
-                    //printf("BodyStart trace2\n");
                     /*1. The client should wait for the server's EOF. That is, when neither
                     * content-length nor transfer-encoding is specified, the end of body
                     * is specified by the EOF.
@@ -134,7 +120,6 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                             mReader->move(restLength);
                             ByteArray content = mReader->pop();
                             mHttpPacket->getEntity()->setUpgrade(content->toString());
-                            //printf("upgrade is %s \n",content->toValue());
                         }
                     } else if(!mHttpPacket->getHeader()->isConnected()
                         ||mHttpPacket->getHeader()->getType() == st(HttpHeader)::Response) {
@@ -155,7 +140,6 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                 }
                 
                 if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPartFormData) >= 0) {
-                    //printf("BodyStart trace3\n");
                     if(mMultiPartParser == nullptr) {
                         try {
                             mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength);
@@ -190,9 +174,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                         }
                         //we should check whether it is a upgrade message
                         if(mHttpPacket->getHeader()->getValue(st(HttpHeader)::Upgrade) != nullptr) {
-                            //printf("content trace3 \n");
                             int resetLength = mReader->getReadableLength();
-                            //printf("content trace4,reset length is %d \n",resetLength);
                             if(resetLength > 0) {
                                 mReader->move(resetLength);
                                 ByteArray content = mReader->pop();

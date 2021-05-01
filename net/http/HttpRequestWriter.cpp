@@ -31,7 +31,6 @@ while(X == -1) {\
 #define FORCE_FLUSH() \
 {\
     if(mOutputStream != nullptr) {\
-        printf("request writer flush \n");\
         flush(writer->getIndex());\
         mSendBuff->clear();\
         writer->reset();\
@@ -66,7 +65,6 @@ int _HttpRequestWriter::write(HttpRequest p) {
     HttpContentType contentType = p->getHeader()->getContentType();
     if(contentType == nullptr) {
         if(multiPart != nullptr) {
-            printf("setContentLength trace2\n");
             boundary = st(HttpText)::BoundarySeperator->append(generateMultiPartBoundary());
             //contentType = st(HttpContentType)::MultiPartFormData->append(";","boundary=",boundary);
             contentType = createHttpContentType();
@@ -77,7 +75,6 @@ int _HttpRequestWriter::write(HttpRequest p) {
             long length = computeContentLength(p,boundary);
             p->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(length));
         } else if(encodedUrlMap != nullptr && encodedUrlMap->size() != 0) {
-            printf("setContentLength trace1\n");
             long length = computeContentLength(p);
             p->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(length));
             //p->setHeader(st(HttpHeader)::ContentType,st(HttpContentType)::XFormUrlEncoded);
@@ -85,10 +82,8 @@ int _HttpRequestWriter::write(HttpRequest p) {
             contentType->setType(st(HttpContentType)::XFormUrlEncoded);
             p->getHeader()->setContentType(contentType);
         } else {
-            printf("setContentLength \n");
             ByteArray body = p->getEntity()->getContent();
             if(body != nullptr && body->size() > 0) {
-                printf("body size is %d \n",body->size());
                 p->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(body->size()));
             }
             //contentType = createHttpContentType();
@@ -220,7 +215,6 @@ int _HttpRequestWriter::write(HttpRequest p) {
             AUTO_FLUSH(writer->writeByteArray(body));
         }
     }
-    printf("index is %d \n",writer->getIndex());
     if(writer->getIndex() != 0) {
         FORCE_FLUSH();
     }

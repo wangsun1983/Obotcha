@@ -82,11 +82,10 @@ ByteArray _WebSocketHybi13Parser::parseContent(bool isDeflate) {
 	} else {
         int framesize = mHeader->getFrameLength();
         byte *masking_key_ = mHeader->getMaskKey()->toValue();
-        
-		for(uint i = 0; i < framesize; i++){
+        for(uint i = 0; i < framesize; i++){
 			int j = i % 4;
 			payload[i] = msg[pos + i] ^ masking_key_[j];
-		}
+        }
 	}
 
     //whether we need do decompose

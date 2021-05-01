@@ -59,7 +59,6 @@ HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl)
         rand->nextBytes(array);
         Base64 base64key = createBase64();
         ByteArray key = base64key->encode(array);
-        printf("key is %s\n",key->toValue());
         packet->getHeader()->setValue(st(HttpHeader)::SecWebSocketKey,key->toString());
     }
 

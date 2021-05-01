@@ -116,6 +116,7 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
                 stream->readByLength(mSendBuff,writer->getIndex(),readlength);
                 writer->skipBy(readlength);
                 if(filesize == 0) {
+                    AUTO_FLUSH(writer->writeString(createString("0")));
                     AUTO_FLUSH(writer->writeString(st(HttpText)::HttpEnd));
                 } else {
                     AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));

@@ -18,7 +18,6 @@ String _HttpUrlParser::HttpsScheme = createString("https");
 
 HttpUrl _HttpUrlParser::parseUrl(String url) {
     const char *input = url->toChars();
-    //printf("parseUrl url is %s \n",url->toChars());
     int size = url->size();
     int index = 0;
     int start = 0;
@@ -28,14 +27,11 @@ HttpUrl _HttpUrlParser::parseUrl(String url) {
     bool userParsed = false;
 
     while(index < size) {
-        //printf("input is %c \n",input[index]);
-
         switch(status) {
             case Scheme:{
                 if(input[index] == ':') {
                     String scheme_str = createString(input,start,index - start);
                     urlData->setSchema(scheme_str);
-                    //printf("scheme is %s \n",scheme_str->toChars());
                     index++;
                     start = index;
                     status = Slash;

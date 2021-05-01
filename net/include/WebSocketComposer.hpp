@@ -56,31 +56,11 @@ protected:
     WebSocketPermessageDeflate mDeflate;
 
     void toggleMask(ByteArray buffer, ByteArray key) {
-        //int keyLength = key->size();
-        //int byteCount = buffer->size();
-        //int frameBytesRead = 0;
-        //for (int i = 0; i < byteCount; i++, frameBytesRead++) {
-        //    int keyIndex = (int) (frameBytesRead % keyLength);
-        //    buffer->fill(i,(byte) (buffer->at(i) ^ key->at(keyIndex)));
-        //}
-        /* 
-        byte *_out = buffer->toValue();
-        byte *_key = key->toValue();
-        for (size_t i = 0; i < buffer->size(); ++i) {
-            _out[i] = _out[i] ^ key[i % 4];
-            printf("key is %x \n",_out[i]);
-        }
-        */
-        
         byte *_out = buffer->toValue();
         byte *_key = key->toValue();
         for (size_t i = 0; i < buffer->size(); ++i) {
             _out[i] = (char)(((~ key[i % 4])&_out[i]) | ( key[i % 4]&(~_out[i])));
-            //printf("key is %x \n",_out[i]);
         }
-       
-
-        //printf("bbb \n");
     }
 };
 
