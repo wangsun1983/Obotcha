@@ -198,7 +198,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
         AUTO_FLUSH(writer->writeString(boundary));
         AUTO_FLUSH(writer->writeString(st(HttpText)::BoundaryBeginning));
         AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
-    } else if(encodedUrlMap != nullptr){
+    } else if(encodedUrlMap != nullptr && encodedUrlMap->size() != 0){
         ListIterator<KeyValuePair<String,String>> iterator = encodedUrlMap->getIterator();
         bool isFirstKey = true;
         while(iterator->hasValue()) {

@@ -54,7 +54,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
             while(monitor->isStop == 1) {
                 {
                     AutoLock l(monitor->mMutex);
-                    printf("socket monitor thread trace2 \n");
+                    //printf("socket monitor thread trace2 \n");
                     if(monitor->mThreadNum > 1) {
                         task = monitor->mThreadLocalTasks->get(index)->deQueueFirst();
                     }
@@ -82,7 +82,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                         }
                     }
                 }
-                printf("socket monitor thread trace4 \n");
+                //printf("socket monitor thread trace4 \n");
                 if(task != nullptr) {
                     printf("socket monitor thread trace5 \n");
                     SocketListener listener = nullptr;
