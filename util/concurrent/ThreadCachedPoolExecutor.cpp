@@ -181,12 +181,14 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
             mCurrentTask = nullptr;
         }
     },AutoClone(this));
-    mIdleNum->addAndGet(1);
+    
     handler->start();
     {
         AutoLock l(mHandlerMutex);
         mHandlers->add(handler);
     }
+
+    mIdleNum->addAndGet(1);
 }
 
 }

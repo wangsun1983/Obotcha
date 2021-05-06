@@ -28,11 +28,11 @@ public:
         elements.reserve(size);
     }
 
-    inline void add(T val) {
-        elements.push_back(val);
+    inline void add(const T &val) {
+        elements.emplace_back(val);
     }
 
-    inline void add(ArrayList<T> list) {
+    inline void add(const ArrayList<T> &list) {
         if(list == nullptr || list->size() == 0) {
             return;
         }
@@ -60,7 +60,7 @@ public:
         return val;
     }
 
-    inline int remove(T val) {
+    inline int remove(const T &val) {
         typename std::vector<T>::iterator result = find(elements.begin( ), elements.end( ),val);
         if(result != elements.end()) {
             elements.erase(result);
@@ -73,14 +73,14 @@ public:
     //add foreach lambda
     using foreachCallback = std::function<int(T &)>;
     inline void foreach(foreachCallback callback) {
-        for (T value:elements) {
+        for (T &value:elements) {
             if(callback(value) < 0) {
                 break;
             }
         }
     }
 
-    inline int indexOf(T val) {
+    inline int indexOf(const T &val) {
         typename std::vector<T>::iterator result = find( elements.begin( ), elements.end( ),val);
         if(result == elements.end()) {
             return -1;
@@ -89,7 +89,7 @@ public:
         return(result - elements.begin());
     }
 
-    inline int set(int index,T val) {
+    inline int set(int index,const T &val) {
         if(paramInvalid(index)) {
             String exception = createString("Arraylist set fail")
                             ->append("capacity is",
@@ -118,7 +118,7 @@ public:
         return elements[index];
     }
 
-    inline int insert(int index,T val) {
+    inline int insert(int index,const T &val) {
         if(paramInvalid(index)) {
             String exception = createString("Arraylist insert fail")
                             ->append("capacity is",
@@ -134,7 +134,7 @@ public:
         return 0;
     }
 
-    inline int insert(int index,ArrayList<T> list) {
+    inline int insert(int index,const ArrayList<T> &list) {
         if(paramInvalid(index)) {
             String exception = createString("Arraylist insert fail")
                             ->append("capacity is",
@@ -151,7 +151,7 @@ public:
         return 0;
     }
 
-    inline int insert(int index,ArrayList<T> list,int length) {
+    inline int insert(int index,const ArrayList<T> &list,int length) {
         if(paramInvalid(index) || list->size() < length || list->capacity() < length) {
             String exception = createString("Arraylist insert fail")
                             ->append("capacity is",
@@ -167,12 +167,12 @@ public:
         return 0;
     }
 
-    inline void insertFirst(T val) {
-        elements.insert(elements.begin(),val); 
+    inline void insertFirst(const T &val) {
+        elements.emplace(elements.begin(),val); 
     }
 
 
-    inline void insertFirst(ArrayList<T> list) {
+    inline void insertFirst(const ArrayList<T> &list) {
         if(list == nullptr || list->size() == 0) {
             return;
         }
@@ -180,11 +180,11 @@ public:
         elements.insert(elements.begin(),list->elements.begin(),list->elements.end());
     }
     
-    inline void insertLast(T v) {
-        elements.insert(elements.end(),v);
+    inline void insertLast(const T &v) {
+        elements.emplace(elements.end(),v);
     }
 
-    inline void insertLast(ArrayList<T> list) {
+    inline void insertLast(const ArrayList<T> &list) {
         if(list == nullptr || list->size() == 0) {
             return;
         }

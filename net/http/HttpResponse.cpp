@@ -16,12 +16,17 @@ _HttpResponse::_HttpResponse(HttpPacket p):_HttpPacket() {
     this->setHeader(p->getHeader());
 }
 
-void _HttpResponse::setChunkedFile(File f) {
+void _HttpResponse::setFile(File f,int type) {
     mFile = f;
+    mType = type;
 }
 
-File _HttpResponse::getChunkedFile() {
+File _HttpResponse::getFile() {
     return mFile;
+}
+
+int _HttpResponse::getType() {
+    return mType;
 }
 
 String _HttpResponse::toString() {

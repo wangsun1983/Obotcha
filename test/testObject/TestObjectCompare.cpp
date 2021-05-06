@@ -32,7 +32,7 @@ public:
 };
 
 int testObjectCompare() {
-
+/*
     TestClass1 t = createTestClass1();
     TestClass1 t2 = createTestClass1();
 
@@ -44,5 +44,5 @@ int testObjectCompare() {
     } else {
       printf("no it is not\n");
     }
-
+*/
 }

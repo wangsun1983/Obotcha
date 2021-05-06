@@ -17,16 +17,25 @@ class _HttpResponseWriter;
 
 DECLARE_SIMPLE_CLASS(HttpResponse) IMPLEMENTS(HttpPacket) {
 public:
+	enum HttpFileTransferType {
+		CHUNCKED = 0,
+		NORMAL
+	};
     friend class _HttpResponseWriter;
     _HttpResponse();
 	_HttpResponse(HttpPacket);
 	
-	void setChunkedFile(File);
-	File getChunkedFile();
+	//void setChunkedFile(File);
+	//File getChunkedFile();
+	void setFile(File file,int type = CHUNCKED);
+	File getFile();
+	int getType();
+	
 	String toString();
 
 private:
 	File mFile;
+	int mType;
 };
 
 }

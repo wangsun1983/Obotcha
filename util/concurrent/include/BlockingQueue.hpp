@@ -77,16 +77,16 @@ public:
 
     inline int size();
 
-    inline bool enQueueFirstNoLock(T val);
-    inline bool enQueueLastNoLock(T val);
-    inline bool enQueueFirstNoLock(T val,long timeout);
-    inline bool enQueueLastNoLock(T val,long timeout);
+    inline bool enQueueFirstNoLock(const T &val);
+    inline bool enQueueLastNoLock(const T &val);
+    inline bool enQueueFirstNoLock(const T &val,long timeout);
+    inline bool enQueueLastNoLock(const T &val,long timeout);
 
-    inline bool enQueueFirst(T val);
-    inline bool enQueueLast(T val);
+    inline bool enQueueFirst(const T &val);
+    inline bool enQueueLast(const T &val);
 
-    inline bool enQueueFirst(T val,long timeout);
-    inline bool enQueueLast(T val,long timeout);
+    inline bool enQueueFirst(const T & val,long timeout);
+    inline bool enQueueLast(const T &val,long timeout);
 
     //dequeue
     inline T deQueueFirst();
@@ -146,22 +146,22 @@ _BlockingQueue<T>::_BlockingQueue():_BlockingQueue(-1) {
 }
 
 template <typename T>
-bool _BlockingQueue<T>::enQueueFirst(T val) {
+bool _BlockingQueue<T>::enQueueFirst(const T & val) {
     return enQueueFirst(val,0);
 }
 
 template <typename T>
-bool _BlockingQueue<T>::enQueueFirst(T val,long timeout) {
+bool _BlockingQueue<T>::enQueueFirst(const T & val,long timeout) {
     BLOCK_QUEUE_ADD(mQueue.insert(mQueue.begin(),val));
 }
 
 template <typename T>
-bool _BlockingQueue<T>::enQueueLast(T val) {
+bool _BlockingQueue<T>::enQueueLast(const T & val) {
     return enQueueLast(val,0);
 }
 
 template <typename T>
-bool _BlockingQueue<T>::enQueueLast(T val,long timeout) {
+bool _BlockingQueue<T>::enQueueLast(const T & val,long timeout) {
     BLOCK_QUEUE_ADD(mQueue.push_back(val));
 }
 
@@ -208,22 +208,22 @@ T _BlockingQueue<T>::deQueueLastNoBlock() {
 }
 
 template <typename T>
-bool _BlockingQueue<T>::enQueueFirstNoLock(T val) {
+bool _BlockingQueue<T>::enQueueFirstNoLock(const T & val) {
     return enQueueFirstNoLock(val,0);
 }
 
 template <typename T>
-bool _BlockingQueue<T>::enQueueLastNoLock(T val) {
+bool _BlockingQueue<T>::enQueueLastNoLock(const T & val) {
     return enQueueLastNoLock(val,0);
 }
 
 template <typename T>
-bool _BlockingQueue<T>::enQueueFirstNoLock(T val,long timeout) {
+bool _BlockingQueue<T>::enQueueFirstNoLock(const T & val,long timeout) {
     BLOCK_QUEUE_ADD_NOLOCK(mQueue.insert(mQueue.begin(),val));
 }
 
 template <typename T>
-bool _BlockingQueue<T>::enQueueLastNoLock(T val,long timeout) {
+bool _BlockingQueue<T>::enQueueLastNoLock(const T & val,long timeout) {
     BLOCK_QUEUE_ADD_NOLOCK(mQueue.push_back(val));
 }
 

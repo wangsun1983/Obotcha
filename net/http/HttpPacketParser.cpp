@@ -153,8 +153,9 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                             packets->add(mHttpPacket);
                             mMultiPartParser = nullptr;
                             mStatus = Idle;
+                            continue;
                         }
-                        continue;
+                        return packets;
                     }
                 } else {
                     if(contentlength <= mReader->getReadableLength()) {

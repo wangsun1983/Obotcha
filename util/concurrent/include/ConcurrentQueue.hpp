@@ -17,9 +17,9 @@ public:
     inline int size();
     inline T get(int index);
     
-    inline void enQueueFirst(T val);
-    inline void enQueueLast(T val);
-    inline int remove(T val);
+    inline void enQueueFirst(const T &val);
+    inline void enQueueLast(const T &val);
+    inline int remove(const T &val);
 
     inline T deQueueFirst();
     inline T deQueueLast();
@@ -49,19 +49,19 @@ T _ConcurrentQueue<T>:: get(int index){
 }
 
 template <typename T>
-void _ConcurrentQueue<T>::enQueueFirst(T val) {
+void _ConcurrentQueue<T>::enQueueFirst(const T &val) {
     AutoLock l(mutex_t);
     mQueue.insert(mQueue.begin(),val);
 }
 
 template <typename T>
-void _ConcurrentQueue<T>::enQueueLast(T val) {
+void _ConcurrentQueue<T>::enQueueLast(const T &val) {
     AutoLock l(mutex_t);
     mQueue.push_back(val);
 }
 
 template <typename T>
-int _ConcurrentQueue<T>::remove(T val) {
+int _ConcurrentQueue<T>::remove(const T &val) {
     AutoLock l(mutex_t);
     auto iterator = mQueue.begin();
     while(iterator != mQueue.end()) {

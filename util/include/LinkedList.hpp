@@ -63,7 +63,7 @@ public:
         return (head == nullptr);
     }
 
-    void enQueueLast(T t) {
+    void enQueueLast(const T &t) {
         LinkedListData<T> data = createLinkedListData<T>(t);
         count++;
         if(head == nullptr) {
@@ -90,7 +90,7 @@ public:
         return cursor->data;
     }
 
-    void enQueueFirst(T t) {
+    void enQueueFirst(const T &t) {
         LinkedListData<T> data = createLinkedListData<T>(t);
         count++;
         if(head == nullptr) {

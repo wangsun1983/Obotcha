@@ -22,12 +22,12 @@ public:
         return mMap->size();
     }
 
-    U get(T key) {
+    U get(const T &key) {
         AutoLock l(mutex);
         return mMap->get(key);
     }
 
-    void put(T key,U value) {
+    void put(const T &key,const U &value) {
         AutoLock l(mutex);
         return mMap->put(key,value);
     }

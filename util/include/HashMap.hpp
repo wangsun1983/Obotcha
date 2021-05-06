@@ -21,7 +21,7 @@ template<typename T>
 class KeyComapre
 {
 public:
-    bool operator()(const T k1, const T k2) const {
+    bool operator()(const T &k1, const T &k2) const {
         return k1 == k2;
     }
 };
@@ -30,7 +30,7 @@ public:
 template<typename T>
 class KeyHash{
 public:    
-    size_t operator()(T A)const{
+    size_t operator()(const T &A)const{
         if(A == nullptr) { 
             return std::hash<int>{}(0);
         }
@@ -42,7 +42,7 @@ public:
 #define KeyHashSimpleDataTypeFunc(X) template<> \
 class KeyHash<X> { \
 public: \
-    size_t operator()(const X A)const{ \
+    size_t operator()(const X &A)const{ \
         return std::hash<X>{}(A); \
     } \
 }\
@@ -63,11 +63,11 @@ DECLARE_CLASS(HashMap,2) {
 public:
     friend class _MapIterator<T,U>;
 
-    void put(T t,U u) {
+    void put(const T &t,const U &u) {
         hashmap[t] = u;
     }
 
-    U get(T t) {
+    U get(const T &t) {
         auto ite = hashmap.find(t);
         if(ite != hashmap.end()) {  
             return ite->second;
@@ -76,7 +76,7 @@ public:
         return nullptr;
     }
 
-    void remove(T t) {
+    void remove(const T &t) {
         auto ite = hashmap.find(t);
         if(ite == hashmap.end()) {   
             return;
@@ -126,7 +126,7 @@ public:
         }
     }
 
-    U &operator[](T k) {
+    U &operator[](const T &k) {
         return hashmap[k];
     }
     

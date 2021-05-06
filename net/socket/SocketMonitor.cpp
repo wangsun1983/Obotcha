@@ -50,15 +50,13 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
         mExecutor->execute([](int index,
                             SocketMonitor &monitor) {
             SocketMonitorTask task = nullptr;
-            printf("socket monitor thread trace1 \n");
             while(monitor->isStop == 1) {
                 {
                     AutoLock l(monitor->mMutex);
-                    //printf("socket monitor thread trace2 \n");
+                    
                     if(monitor->mThreadNum > 1) {
                         task = monitor->mThreadLocalTasks->get(index)->deQueueFirst();
                     }
-
                     if(task == nullptr) {
                         monitor->mCurrentSockets[index] = nullptr;
                         task = monitor->mThreadPublicTasks->deQueueFirst();
@@ -82,9 +80,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                         }
                     }
                 }
-                //printf("socket monitor thread trace4 \n");
                 if(task != nullptr) {
-                    printf("socket monitor thread trace5 \n");
                     SocketListener listener = nullptr;
                     {
                         AutoLock l(monitor->mListenerMutex);
@@ -120,14 +116,11 @@ void _SocketMonitor::addNewSocket(Socket s,SocketListener l) {
 }
 
 int _SocketMonitor::bind(Socket s,SocketListener l) {
-    printf("socket monitor bind start \n");
     if(isSocketExist(s)) {
         return -AlreadyExists;
     }
-    printf("socket monitor bind trace1 \n");
     addNewSocket(s,l);
     s->setAsync(true);
-    printf("socket monitor bind trace2 \n");
     return bind(s->getFd(),l,false);
 }
 
@@ -154,7 +147,6 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                            SocketListener &listener,
                            int serverfd,
                            SocketMonitor &monitor) {
-        printf("socket monitor add observer start \n");
         if(fd == serverfd) {
             struct sockaddr_in client_address;
             socklen_t client_addrLength = sizeof(struct sockaddr_in);
@@ -176,7 +168,6 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                 return st(EPollFileObserver)::OnEventOK;
             }
         }
-        printf("socket monitor add observer trace1,event is %x \n",events);
         Socket s = nullptr;
         {
             AutoLock l(monitor->mMutex);
@@ -187,7 +178,6 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
             {   
                 if(data != nullptr && data->size() != 0) {
                     AutoLock l(monitor->mMutex);
-                    printf("socket monitor add observer trace1,add event data \n");
                     monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Message,s,data));
                     monitor->mCondition->notify();
                 }

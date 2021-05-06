@@ -60,7 +60,7 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     mSendBuff->clear();
     ByteArrayWriter writer = createByteArrayWriter(mSendBuff);
 
-    File file = response->getChunkedFile();
+    File file = response->getFile();
     ArrayList<KeyValuePair<String,String>> encodedValues = response->getEntity()->getEncodedKeyValues();
     ByteArray body = response->getEntity()->getContent();
 
@@ -102,32 +102,31 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
         if(file->exists()) {
             FileInputStream stream = createFileInputStream(file);
             stream->open();
-            int filesize = file->length();
-            while(filesize != 0) {
-                int readlength = mSendBuff->size() - writer->getIndex() - 32 /*reserve data */;
-                //printf("readlength is %d,mSendBuff is %d,index is %d \n",readlength,mSendBuff->size(),writer->getIndex());
-
-                if(readlength > filesize) {
-                    readlength = filesize;
-                }
-                filesize -= readlength;
-                AUTO_FLUSH(writer->writeString(createString(readlength)->toHexString()));
-                AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
-                stream->readByLength(mSendBuff,writer->getIndex(),readlength);
-                writer->skipBy(readlength);
-                if(filesize == 0) {
-                    AUTO_FLUSH(writer->writeString(createString("0")));
-                    AUTO_FLUSH(writer->writeString(st(HttpText)::HttpEnd));
-                } else {
+            long filesize = file->length();
+                
+            if(response->getType() == st(HttpResponse)::CHUNCKED) {
+                while(filesize != 0) {
+                    int readlength = mSendBuff->size() - writer->getIndex() - 32 /*reserve data */;
+                    if(readlength > filesize) {
+                        readlength = filesize;
+                    }
+                    filesize -= readlength;
+                    AUTO_FLUSH(writer->writeString(createString(readlength)->toHexString()));
                     AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
+                    stream->readByLength(mSendBuff,writer->getIndex(),readlength);
+                    writer->skipBy(readlength);
+                    if(filesize == 0) {
+                        AUTO_FLUSH(writer->writeString(st(HttpText)::HttpEnd));
+                    } else {
+                        AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
+                    }
+                    FORCE_FLUSH();
                 }
-                FORCE_FLUSH();
-                //printf("flush trace2,body size is %d,length is %d,reason is %s \n",body->size(),length,strerror(errno));
+            } else {
+                //TODO
             }
         }
     } else if(encodedValues != nullptr && encodedValues->size() != 0){
-        printf("response writer trace4 \n");
-
         auto iterator = encodedValues->getIterator();
         bool isFirstKey = true;
         while(iterator->hasValue()) {
@@ -159,6 +158,11 @@ ByteArray _HttpResponseWriter::compose(HttpResponse response) {
 }
 
 long _HttpResponseWriter::computeContentLength(HttpResponse response) {
+
+    if(response->getType() == st(HttpResponse)::NORMAL) {
+        return response->getFile()->length();
+    }
+
     ArrayList<KeyValuePair<String,String>> encodedUrlMap = response->getEntity()->getEncodedKeyValues();
     int length = 0;
     if(encodedUrlMap != nullptr && encodedUrlMap->size() != 0) {
