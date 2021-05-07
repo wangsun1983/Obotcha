@@ -32,31 +32,31 @@ public:
 
     _String(const std::string v);
 
-    _String(String v);
+    _String(const String & v);
 
     _String(const char *v);
 
     _String(const char *v,int start,int length);
 
-    _String(Integer &v);
+    _String(const Integer &v);
 
-    _String(Boolean &v);
+    _String(const Boolean &v);
 
-    _String(Float &v);
+    _String(const Float &v);
 
-    _String(Double &v);
+    _String(const Double &v);
 
-    _String(Long &v);
+    _String(const Long &v);
 
-    _String(Uint8 &v);
+    _String(const Uint8 &v);
 
-    _String(Uint16 &v);
+    _String(const Uint16 &v);
 
-    _String(Uint32 &v);
+    _String(const Uint32 &v);
 
-    _String(Uint64 &v);
+    _String(const Uint64 &v);
 
-    _String(Byte &v);
+    _String(const Byte &v);
 
     _String(int v);
 
@@ -80,7 +80,7 @@ public:
 
     void update(const char *);
 
-    void update(sp<_String>);
+    void update(const sp<_String> &str);
 
     void update(std::string);
 
@@ -143,23 +143,23 @@ public:
 
     long toBasicLong();
 
-    static String valueOf(Integer &v);
+    static String valueOf(const Integer &v);
 
-    static String valueOf(Boolean &v);
+    static String valueOf(const Boolean &v);
 
-    static String valueOf(Double &v);
+    static String valueOf(const Double &v);
 
-    static String valueOf(Float &v);
+    static String valueOf(const Float &v);
 
-    static String valueOf(Long &v);
+    static String valueOf(const Long &v);
 
-    static String valueOf(Uint8 &v);
+    static String valueOf(const Uint8 &v);
 
-    static String valueOf(Uint16 &v);
+    static String valueOf(const Uint16 &v);
 
-    static String valueOf(Uint32 &v);
+    static String valueOf(const Uint32 &v);
 
-    static String valueOf(Uint64 &v);
+    static String valueOf(const Uint64 &v);
 
     static String valueOf(int v);
 
@@ -189,13 +189,13 @@ public:
 
     //need support String/std::string/char *
     //----------------------------
-    bool contains(String val);
+    bool contains(const String &val);
 
     bool contains(std::string val);
     
     bool contains(const char *val);
     //----------------------------
-    int indexOf(String v);
+    int indexOf(const String &v);
 
     int indexOf(std::string v);
 
@@ -206,13 +206,13 @@ public:
     template<class ...T>
     String append(T...args);
     //----------------------------
-    bool equals(String s);
+    bool equals(const String &s);
 
     bool equals(std::string s);
 
     bool equals(const char *s);
     //----------------------------
-    bool equalsIgnoreCase(String str);
+    bool equalsIgnoreCase(const String &str);
 
     bool equalsIgnoreCase(std::string str);
 
@@ -221,7 +221,7 @@ public:
     bool equalsIgnoreCase(const char * str,int csize);
 
     //----------------------------
-    int indexOfIgnoreCase(String str);
+    int indexOfIgnoreCase(const String &str);
 
     int indexOfIgnoreCase(std::string str);
 
@@ -230,19 +230,19 @@ public:
     int indexOfIgnoreCase(const char * str,int size);
 
     //----------------------------
-    bool containsIgnoreCase(String val);
+    bool containsIgnoreCase(const String &val);
 
     bool containsIgnoreCase(std::string str);
 
     bool containsIgnoreCase(const char * str);
     //----------------------------
-    bool startsWithIgnoreCase(String str);
+    bool startsWithIgnoreCase(const String &str);
     
     bool startsWithIgnoreCase(std::string str);
 
     bool startsWithIgnoreCase(const char * str);
     //----------------------------
-    bool endsWithIgnoreCase(String s);
+    bool endsWithIgnoreCase(const String &s);
 
     bool endsWithIgnoreCase(std::string str);
 
@@ -250,7 +250,7 @@ public:
 
     bool endsWithIgnoreCase(const char * str,int size);
     //----------------------------
-    int lastIndexOfIgnoreCase(String v);
+    int lastIndexOfIgnoreCase(const String &v);
 
     int lastIndexOfIgnoreCase(std::string v);
 
@@ -258,37 +258,37 @@ public:
 
     int lastIndexOfIgnoreCase(const char * v,int size);
     //----------------------------
-    sp<_String> replaceFirst(String regex,String v);
+    sp<_String> replaceFirst(const String &regex,String v);
 
     sp<_String> replaceFirst(const char *regex,const char*v);
 
     sp<_String> replaceFirst(std::string regex,std::string v);
     //----------------------------
-    sp<_String> replaceAll(String regex,String v);
+    sp<_String> replaceAll(const String &regex,const String &v);
 
     sp<_String> replaceAll(const char* regex,const char* v);
 
     sp<_String> replaceAll(std::string regex,std::string v);
     //----------------------------
-    bool endsWith(String s);
+    bool endsWith(const String &s);
 
     bool endsWith(const char *s);
 
     bool endsWith(std::string s);
     //----------------------------
-    int lastIndexOf(String v);
+    int lastIndexOf(const String &v);
 
     int lastIndexOf(const char * v);
 
     int lastIndexOf(std::string v);
     //----------------------------
-    bool startsWith(String v);
+    bool startsWith(const String &v);
 
     bool startsWith(const char * v);
 
     bool startsWith(std::string v);
     //----------------------------
-    sp<_ArrayList<String>> split(String v);
+    sp<_ArrayList<String>> split(const String &v);
 
     sp<_ArrayList<String>> split(const char* v);
 
@@ -299,7 +299,7 @@ public:
 
     bool isEmpty();
 
-    bool matches(String regex);//Not Test
+    bool matches(const String &regex);//Not Test
 
     ~_String();
 
@@ -316,7 +316,7 @@ private:
 
     //local function
     template<typename... Args>
-    void _append(sp<_String> v,Args...args);
+    void _append(const sp<_String> &v,Args...args);
 
     template<typename... Args>
     void _append(const char *v,Args...args);
@@ -339,15 +339,15 @@ private:
 template<class ...Args>
 sp<_String> _String::append(Args... args) {
     String str = createString(m_str);
-    str->_append(args...);
+    str->_append(std::forward<Args>(args)...);
     return str;
 }
 
 template<class ...Args>
-void _String::_append(sp<_String> v,Args... args) {
+void _String::_append(const sp<_String> &v,Args... args) {
     if(v != nullptr) {
         m_str.append(v->m_str);
-        _append(args...);
+        _append(std::forward<Args>(args)...);
     }
 }
 
@@ -355,14 +355,14 @@ template<class ...Args>
 void _String::_append(const char *v,Args... args) {
     if(v != nullptr) {
         m_str.append(v);
-        _append(args...);
+        _append(std::forward<Args>(args)...);
     }
 }
 
 template<class ...Args>
 void _String::_append(std::string v,Args... args) {
     m_str.append(v);
-    _append(args...);
+    _append(std::forward<Args>(args)...);
 }
 
 }

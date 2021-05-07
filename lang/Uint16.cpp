@@ -24,7 +24,7 @@ _Uint16::_Uint16():val(0) {
 
 _Uint16::_Uint16(uint16_t v) : val(v) {}
 
-_Uint16::_Uint16(Uint16 &v) {
+_Uint16::_Uint16(const Uint16 &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Object is null");
     }
@@ -36,7 +36,7 @@ uint16_t _Uint16::toValue() {
     return val;
 }
 
-bool _Uint16::equals(Uint16 &p) {
+bool _Uint16::equals(const Uint16 &p) {
     if(p == nullptr) {
         Trigger(NullPointerException,"Object is null");
     }
@@ -60,7 +60,7 @@ void _Uint16::update(uint16_t v) {
     val = v;
 }
 
-void _Uint16::update(sp<_Uint16> v) {
+void _Uint16::update(const sp<_Uint16> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"Uint16 update nullptr");
     }
@@ -88,7 +88,7 @@ sp<_String> _Uint16::toString(uint16_t i) {
     return createString(_Number::toDecString(i));
 }
 
-uint16_t _Uint16::parseDecUint16(sp<_String> v) {
+uint16_t _Uint16::parseDecUint16(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseDecUint16 nullptr");
     }
@@ -96,7 +96,7 @@ uint16_t _Uint16::parseDecUint16(sp<_String> v) {
     return _Number::parseDecNumber(v->getStdString());
 }
 
-uint16_t _Uint16::parseHexUint16(sp<_String> v) {
+uint16_t _Uint16::parseHexUint16(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseHexUint16 nullptr");
     }
@@ -104,7 +104,7 @@ uint16_t _Uint16::parseHexUint16(sp<_String> v) {
     return _Number::parseHexNumber(v->getStdString());
 }
 
-uint16_t _Uint16::parseOctUint16(sp<_String> v) {
+uint16_t _Uint16::parseOctUint16(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseOctUint16 nullptr");
     }
@@ -112,7 +112,7 @@ uint16_t _Uint16::parseOctUint16(sp<_String> v) {
     return _Number::parseOctNumber(v->getStdString());
 }
 
-uint16_t _Uint16::parseBinaryUint16(sp<_String> v) {
+uint16_t _Uint16::parseBinaryUint16(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseBinaryUint16 nullptr");
     }

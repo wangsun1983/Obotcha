@@ -24,12 +24,14 @@ namespace obotcha {
 void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
     switch(event) {
         case SocketEvent::Message: {
+            printf("httpserver message \n");
             HttpLinker info = st(HttpLinkerManager)::getInstance()->getLinker(r);
             if(info == nullptr) {
                 return;
             }
             if(info->pushHttpData(pack) == -1) {
                 //some thing may be wrong
+                printf("httpserver message error\n");
                 mHttpListener->onHttpMessage(SocketEvent::InternalError,info,nullptr,nullptr);
                 st(HttpLinkerManager)::getInstance()->removeLinker(r);
                 r->close();
@@ -37,6 +39,7 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
             }
             
             ArrayList<HttpPacket> packets = info->pollHttpPacket();
+            printf("httpserver message packets size is %d\n",packets->size());
             if(packets != nullptr && packets->size() != 0) {
                 HttpResponseWriter writer = createHttpResponseWriter(info->getSocket()->getOutputStream());
                 ListIterator<HttpPacket> iterator = packets->getIterator();

@@ -21,7 +21,7 @@ _Uint64::_Uint64() : val(0) {}
 
 _Uint64::_Uint64(uint64_t v) : val(v) {}
 
-_Uint64::_Uint64(Uint64 &v) {
+_Uint64::_Uint64(const Uint64 &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Object is null");
     }
@@ -33,7 +33,7 @@ uint64_t _Uint64::toValue() {
     return val;
 }
 
-bool _Uint64::equals(Uint64 &p) {
+bool _Uint64::equals(const Uint64 &p) {
     if(p == nullptr) {
         Trigger(NullPointerException,"Object is null");
     }
@@ -57,7 +57,7 @@ void _Uint64::update(uint64_t v) {
     val = v;
 }
 
-void _Uint64::update(sp<_Uint64> v) {
+void _Uint64::update(const sp<_Uint64> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"Uint64 update nullptr");
     }
@@ -85,7 +85,7 @@ sp<_String> _Uint64::toString(uint64_t i) {
     return createString(_Number::toDecString(i));
 }
 
-uint64_t _Uint64::parseDecUint64(sp<_String> v) {
+uint64_t _Uint64::parseDecUint64(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseDecUint64 nullptr");
     }
@@ -93,7 +93,7 @@ uint64_t _Uint64::parseDecUint64(sp<_String> v) {
     return _Number::parseDecNumber(v->getStdString());
 }
 
-uint64_t _Uint64::parseHexUint64(sp<_String> v) {
+uint64_t _Uint64::parseHexUint64(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseHexUint64 nullptr");
     }
@@ -101,7 +101,7 @@ uint64_t _Uint64::parseHexUint64(sp<_String> v) {
     return _Number::parseHexNumber(v->getStdString());
 }
 
-uint64_t _Uint64::parseOctUint64(sp<_String> v) {
+uint64_t _Uint64::parseOctUint64(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseOctUint64 nullptr");
     }
@@ -109,7 +109,7 @@ uint64_t _Uint64::parseOctUint64(sp<_String> v) {
     return _Number::parseOctNumber(v->getStdString());
 }
 
-uint64_t _Uint64::parseBinaryUint64(sp<_String> v) {
+uint64_t _Uint64::parseBinaryUint64(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseBinaryUint64 nullptr");
     }

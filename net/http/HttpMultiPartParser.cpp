@@ -6,9 +6,9 @@
 
 namespace obotcha {
 
-_HttpMultiPartParser::_HttpMultiPartParser(String contenttype,int length) {
+_HttpMultiPartParser::_HttpMultiPartParser(const String &contenttype,int length) {
     mContentLength = length;
-    mBoundaryHeader = contenttype;
+    //mBoundaryHeader = contenttype;
     //start parse boundary
     ArrayList<String> strings = contenttype->split(";");
     if(strings == nullptr || strings->size() == 0) {
@@ -57,9 +57,9 @@ _HttpMultiPartParser::_HttpMultiPartParser(String contenttype,int length) {
     mHttpFile = nullptr;
 }
 
-String _HttpMultiPartParser::getHeaderBoundary() {
-    return mBoundaryHeader;
-}
+//String _HttpMultiPartParser::getHeaderBoundary() {
+//    return mBoundaryHeader;
+//}
 
 //--------WebKitFormBoundaryrGKCBY7qhFd3TrwA =>--boundary
 //Content-Disposition: form-data;name="text"
@@ -88,6 +88,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
     while(reader->readNext(v) == ByteRingArrayReadContinue) {
         switch(mStatus) {
             case ParseStartBoundry:{
+                printf("ParseStartBoundry start \n");
                 if(v == Boundary[mBoundaryIndex]) {
                     if(mBoundaryIndex == (mBoundary->size()-1)) {
                         mBoundaryIndex = 0;
@@ -103,6 +104,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseStartBoundryEnd:{
+                printf("ParseStartBoundryEnd start \n");
                 if(v == CRLF[mBoundaryEndLineIndex]) {
                     if(mBoundaryEndLineIndex == (st(HttpText)::CRLF->size()-1)) {
                         mBoundaryEndLineIndex = 0;
@@ -128,6 +130,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseContentDisposition: {
+                printf("ParseContentDisposition start \n");
                 if(v == CRLF[mNewLineTextIndex]) {
                     if(mNewLineTextIndex == (st(HttpText)::CRLF->size()-1)) {
                         mNewLineTextIndex = 0;
@@ -157,6 +160,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
             case ParseContentDispositionEnd:
             case ParseContentSkipNewLine: {
+                printf("ParseContentDispositionEnd start \n");
                 if(v == CRLF[mNewLineTextIndex]) {
                     if(mNewLineTextIndex == 1) {
                         mNewLineTextIndex = 0;
@@ -172,6 +176,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseContentType:{
+                printf("ParseContentType start \n");
                 if(v == CRLF[mNewLineTextIndex]) {
                     if(mNewLineTextIndex == 1) {
                         mNewLineTextIndex = 0;
@@ -196,6 +201,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             break;
 
             case ParseContent: {
+                //printf("ParseContent start,v is %x \n",v);
                 if(v == Boundary[mBoundaryIndex]) {
                     if(mBoundaryIndex == (mBoundary->size()-1)) {
                         //flush data
@@ -209,6 +215,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         }
 
                         if(mContentType == nullptr) {
+                            printf("ParseContent trace1 \n");
                             if(mContentBuff != nullptr) {
                                 mContentBuff->append(content);
                             } else {
@@ -226,6 +233,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                             mContentBuff = nullptr;
                         } else {
                             //hit complete flush file
+                            printf("ParseContent trace2 \n");
                             if(mFileStream == nullptr) {
                                 String filename = mContentDisp->get(st(HttpText)::MultiPartFileName);
                                 mHttpFile = createHttpFile(filename);
@@ -242,6 +250,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                            
                             if(mContentBuff != nullptr) {
                                 mContentBuff->quickShrink(mContentBuff->size() - st(HttpText)::CRLF->size());
+                                printf("ParseContent contentbuff size is %d \n",mContentBuff->size());
                                 mFileStream->write(mContentBuff);
                             }
 

@@ -24,7 +24,7 @@ _Uint8::_Uint8():val(0) {
 
 _Uint8::_Uint8(uint8_t v) : val(v) {}
 
-_Uint8::_Uint8(Uint8 &v) {
+_Uint8::_Uint8(const Uint8 &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Object is null");
     }
@@ -36,7 +36,7 @@ uint8_t _Uint8::toValue() {
     return val;
 }
 
-bool _Uint8::equals(Uint8 &p) {
+bool _Uint8::equals(const Uint8 &p) {
     if(p == nullptr) {
         Trigger(NullPointerException,"Object is null");
     }
@@ -60,7 +60,7 @@ void _Uint8::update(uint8_t v) {
     val = v;
 }
 
-void _Uint8::update(sp<_Uint8> v) {
+void _Uint8::update(const sp<_Uint8> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"Uint8 update nullptr");
     }
@@ -92,7 +92,7 @@ sp<_String> _Uint8::toString(uint8_t i) {
     return createString(_Number::toDecString(i));
 }
 
-uint8_t _Uint8::parseDecUint8(sp<_String> v) {
+uint8_t _Uint8::parseDecUint8(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseDecUint8 nullptr");
     }
@@ -100,7 +100,7 @@ uint8_t _Uint8::parseDecUint8(sp<_String> v) {
     return _Number::parseDecNumber(v->getStdString());
 }
 
-uint8_t _Uint8::parseHexUint8(sp<_String> v) {
+uint8_t _Uint8::parseHexUint8(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseHexUint8 nullptr");
     }
@@ -108,7 +108,7 @@ uint8_t _Uint8::parseHexUint8(sp<_String> v) {
     return _Number::parseHexNumber(v->getStdString());
 }
 
-uint8_t _Uint8::parseOctUint8(sp<_String> v) {
+uint8_t _Uint8::parseOctUint8(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseOctUint8 nullptr");
     }
@@ -116,7 +116,7 @@ uint8_t _Uint8::parseOctUint8(sp<_String> v) {
     return _Number::parseOctNumber(v->getStdString());
 }
 
-uint8_t _Uint8::parseBinaryUint8(sp<_String> v) {
+uint8_t _Uint8::parseBinaryUint8(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseBinaryUint8 nullptr");
     }

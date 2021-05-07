@@ -22,7 +22,7 @@ namespace obotcha {
  * @brief ByteArray construct function
  * @param b copy value
  */
-_ByteArray::_ByteArray(sp<_ByteArray> b,bool isSafe) {
+_ByteArray::_ByteArray(const sp<_ByteArray> &b,bool isSafe) {
     if(b == nullptr || b->size() <= 0) {
         Trigger(InitializeException,"create ByteArray is nullptr");
     }
@@ -50,7 +50,7 @@ _ByteArray::_ByteArray(int length,bool isSafe) {
  * @brief ByteArray construct function
  * @param str save str as ByteArray
  */
-_ByteArray::_ByteArray(String str,bool isSafe) {
+_ByteArray::_ByteArray(const String &str,bool isSafe) {
     if(str == nullptr || str->size() <= 0) {
         Trigger(InitializeException,"create ByteArray is nullptr");
     }
@@ -201,14 +201,14 @@ int _ByteArray::fill(int index,int length,byte v) {
     return 0;
 }
 
-int _ByteArray::append(sp<_ByteArray> b) {
+int _ByteArray::append(const sp<_ByteArray> &b) {
     if(b == nullptr) {
         return -InvalidParam;
     }
     return append(b->toValue(),b->size());
 }
 
-int _ByteArray::append(sp<_ByteArray>b,int len) {
+int _ByteArray::append(const sp<_ByteArray> &b,int len) {
     return append(b->toValue(),len);
 }
 
@@ -243,7 +243,7 @@ void _ByteArray::dump(const char *v) {
     printf("\n");
 }
 
-void _ByteArray::dump(String v) {
+void _ByteArray::dump(const String &v) {
     dump(v->toChars());
 }
 
@@ -255,7 +255,7 @@ void _ByteArray::dumpToFile(const char *path) {
     fstream.close();
 }
 
-void _ByteArray::dumpToFile(String path) {
+void _ByteArray::dumpToFile(const String &path) {
     dumpToFile(path->toChars());
 }
 

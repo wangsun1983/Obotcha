@@ -17,9 +17,9 @@ public:
 
     explicit _ByteArray(const byte *data,uint32_t len,bool isSafe = false);
 
-    explicit _ByteArray(sp<_ByteArray>,bool isSafe = false);
+    explicit _ByteArray(const sp<_ByteArray>&,bool isSafe = false);
 
-    explicit _ByteArray(String,bool isSafe = false);
+    explicit _ByteArray(const String &,bool isSafe = false);
 
     ~_ByteArray();
 
@@ -47,9 +47,9 @@ public:
 
     int fill(int index,int length,byte v);
 
-    int append(sp<_ByteArray>);
+    int append(const sp<_ByteArray>&);
 
-    int append(sp<_ByteArray>,int len);
+    int append(const sp<_ByteArray>&,int len);
 
     int append(byte *data,int len);
 
@@ -67,11 +67,11 @@ public:
 
     void dump(const char *);
 
-    void dump(String);
+    void dump(const String &);
 
     void dumpToFile(const char *);
 
-    void dumpToFile(String);
+    void dumpToFile(const String&);
 
 private:
     byte *buff;

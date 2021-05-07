@@ -15,17 +15,17 @@ public:
     
     _Double(double v);
 
-    _Double(Double &v);
+    _Double(const Double &v);
     
     double toValue();
 
     void update(double);
 
-    void update(sp<_Double>);
+    void update(const sp<_Double>&);
 
     bool equals(double p);
     
-    bool equals(Double &p);
+    bool equals(const Double &p);
 
     bool equals(const _Double *p);
 

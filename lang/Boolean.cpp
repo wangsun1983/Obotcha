@@ -34,7 +34,7 @@ _Boolean::_Boolean(bool v) : val(v) {
 
 }
 
-_Boolean::_Boolean(sp<_String> str) {
+_Boolean::_Boolean(const sp<_String> str) {
     if(str->size() == 0) {
         Trigger(InitializeException,"Null String");
     }
@@ -61,7 +61,7 @@ _Boolean::_Boolean(sp<_String> str) {
     Trigger(InitializeException,"Boolean init failed");
 }
 
-_Boolean::_Boolean(Boolean &v) {
+_Boolean::_Boolean(const Boolean &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"Object is null");
     }
@@ -73,7 +73,7 @@ bool _Boolean::toValue() {
     return val;
 }
 
-bool _Boolean::equals(Boolean &p) {
+bool _Boolean::equals(const Boolean &p) {
     if(p == nullptr) {
         Trigger(NullPointerException,"Boolean equals nullptr");
     }
@@ -93,7 +93,7 @@ void _Boolean::update(bool v) {
     val = v;
 }
 
-void _Boolean::update(sp<_Boolean> v) {
+void _Boolean::update(const sp<_Boolean> v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"Boolean equals nullptr"); 
     }
@@ -119,7 +119,7 @@ bool _Boolean::logicOr(bool v) {
     return val;
 }
 
-bool _Boolean::logicOr(sp<_Boolean> v) {
+bool _Boolean::logicOr(const sp<_Boolean> v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"logicOr is nullptr");
     }
@@ -135,7 +135,7 @@ bool _Boolean::logicAnd(bool v) {
     return val;
 }
 
-bool _Boolean::logicAnd(sp<_Boolean> v) {
+bool _Boolean::logicAnd(const sp<_Boolean> v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"logicOr is nullptr");
     }
@@ -151,7 +151,7 @@ bool _Boolean::logicXor(bool v) {
     return val;
 }
 
-bool _Boolean::logicXor(sp<_Boolean> v) {
+bool _Boolean::logicXor(const sp<_Boolean> v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"logicXor is nullptr");
     }
@@ -165,7 +165,7 @@ uint64_t _Boolean::hashcode() {
     return std::hash<bool>{}(val);
 }
 
-sp<_Boolean> _Boolean::valueOf(sp<_String> v) {
+sp<_Boolean> _Boolean::valueOf(const sp<_String> v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"valueOf is nullptr");
     }

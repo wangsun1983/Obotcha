@@ -17,11 +17,11 @@ public:
     
     _Long(long v);
 
-    _Long(Long &v);
+    _Long(const Long &v);
 
     long toValue();
 
-    bool equals(Long &p);
+    bool equals(const Long &p);
 
     bool equals(long p);
 
@@ -29,7 +29,7 @@ public:
 
     void update(long v);
 
-    void update(sp<_Long> v);
+    void update(const sp<_Long> &v);
 
     sp<_String> toHexString();
 
@@ -41,13 +41,13 @@ public:
 
     static sp<_String> toString(int i);
     
-    static long parseDecLong(sp<_String>);
+    static long parseDecLong(const sp<_String>&);
 
-    static long parseHexLong(sp<_String>);
+    static long parseHexLong(const sp<_String>&);
 
-    static long parseOctLong(sp<_String>);
+    static long parseOctLong(const sp<_String>&);
 
-    static long parseBinaryLong(sp<_String>);
+    static long parseBinaryLong(const sp<_String>&);
 
     static sp<_String> className();
     

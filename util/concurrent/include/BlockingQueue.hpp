@@ -65,17 +65,16 @@ while(!isDestroy) {\
 }\
 return ret;
 
-class _ThreadPoolExecutor;
-
 DECLARE_CLASS(BlockingQueue,1) {
 public:
-    friend class _ThreadPoolExecutor;
     friend class _ThreadCachedPoolExecutor;
     
 	_BlockingQueue(int size);
     _BlockingQueue();
 
     inline int size();
+    inline void freeze();
+    inline void unfreeze();
 
     inline bool enQueueFirstNoLock(const T &val);
     inline bool enQueueLastNoLock(const T &val);
@@ -231,6 +230,16 @@ template <typename T>
 int _BlockingQueue<T>::size() {
     AutoLock l(mMutex);
     return mQueue.size();
+}
+
+template <typename T>
+void _BlockingQueue<T>::freeze() {
+    mMutex->lock();
+}
+
+template <typename T>
+void _BlockingQueue<T>::unfreeze() {
+    mMutex->unlock();
 }
 
 template <typename T>

@@ -25,7 +25,7 @@ _Double::_Double():val(0.0) {}
 
 _Double::_Double(double v) : val(v) {}
 
-_Double::_Double(Double &v) {
+_Double::_Double(const Double &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Object is null");
     }
@@ -36,7 +36,7 @@ double _Double::toValue() {
     return val;
 }
 
-bool _Double::equals(Double &p) {
+bool _Double::equals(const Double &p) {
     if(p == nullptr) {
         Trigger(NullPointerException,"double update null");
     }
@@ -60,7 +60,7 @@ void _Double::update(double v) {
     this->val = v;
 }
 
-void _Double::update(sp<_Double> v) {
+void _Double::update(const sp<_Double> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"double update null");
     }

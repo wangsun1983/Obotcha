@@ -18,11 +18,11 @@ public:
     
     _Uint64(uint64_t v);
 
-    _Uint64(Uint64 &v);
+    _Uint64(const Uint64 &v);
 
     uint64_t toValue();
 
-    bool equals(Uint64 &p);
+    bool equals(const Uint64 &p);
 
     bool equals(uint64_t p);
 
@@ -30,7 +30,7 @@ public:
 
     void update(uint64_t v);
 
-    void update(sp<_Uint64> v);
+    void update(const sp<_Uint64> &v);
 
     sp<_String> toHexString();
 
@@ -42,13 +42,13 @@ public:
 
     static sp<_String> toString(uint64_t i);
     
-    static uint64_t parseDecUint64(sp<_String>);
+    static uint64_t parseDecUint64(const sp<_String>&);
 
-    static uint64_t parseHexUint64(sp<_String>);
+    static uint64_t parseHexUint64(const sp<_String>&);
 
-    static uint64_t parseOctUint64(sp<_String>);
+    static uint64_t parseOctUint64(const sp<_String>&);
 
-    static uint64_t parseBinaryUint64(sp<_String>);
+    static uint64_t parseBinaryUint64(const sp<_String>&);
 
     static sp<_String> className();
 

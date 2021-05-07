@@ -17,11 +17,11 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(HttpMultiPartParser) {
 public:
-    _HttpMultiPartParser(String,int);
+    _HttpMultiPartParser(const String&,int);
 
     HttpMultiPart parse(ByteRingArrayReader);
     
-    String getHeaderBoundary();
+    //String getHeaderBoundary();
 
     enum Status {
         Complete = 0,

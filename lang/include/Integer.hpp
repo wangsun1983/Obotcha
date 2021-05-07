@@ -18,11 +18,11 @@ public:
     
     _Integer(int v);
 
-    _Integer(Integer &v);
+    _Integer(const Integer &v);
 
     int toValue();
 
-    bool equals(Integer &p);
+    bool equals(const Integer &p);
 
     bool equals(int p);
 
@@ -30,7 +30,7 @@ public:
 
     void update(int v);
 
-    void update(sp<_Integer> v);
+    void update(const sp<_Integer> &v);
 
     sp<_String> toHexString();
 
@@ -42,13 +42,13 @@ public:
 
     static sp<_String> toString(int i);
     
-    static int parseDecInt(sp<_String>);
+    static int parseDecInt(const sp<_String>&);
 
-    static int parseHexInt(sp<_String>);
+    static int parseHexInt(const sp<_String>&);
 
-    static int parseOctInt(sp<_String>);
+    static int parseOctInt(const sp<_String>&);
 
-    static int parseBinaryInt(sp<_String>);
+    static int parseBinaryInt(const sp<_String>&);
 
     static sp<_String> className();
     

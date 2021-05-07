@@ -81,14 +81,14 @@ byte _ByteRingArray::pop() {
     return c;
 }
 
-bool _ByteRingArray::push(ByteArray data) {
+bool _ByteRingArray::push(const ByteArray &data) {
     if(data == nullptr) {
         Trigger(IllegalArgumentException,"pop data is nullptr");
     }
     return push(data,0,data->size());  
 }
 
-bool _ByteRingArray::push(ByteArray array,int start,int length) {
+bool _ByteRingArray::push(const ByteArray &array,int start,int length) {
     return push(array->toValue(),start,length);
 }
 

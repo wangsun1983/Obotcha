@@ -22,7 +22,7 @@ _Long::_Long():val(0) {}
 
 _Long::_Long(long v) : val(v) {}
 
-_Long::_Long(Long &v) {
+_Long::_Long(const Long &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Object is null");
     }
@@ -34,7 +34,7 @@ long _Long::toValue() {
     return val;
 }
 
-bool _Long::equals(Long &p) {
+bool _Long::equals(const Long &p) {
     if(p == nullptr) {
         return false;
     }
@@ -58,7 +58,7 @@ void _Long::update(long v) {
     val = v;
 }
 
-void _Long::update(sp<_Long> v) {
+void _Long::update(const sp<_Long> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"Long update nullptr");
     }
@@ -90,7 +90,7 @@ sp<_String> _Long::toString(int i) {
     return createString(_Number::toDecString(i));
 }
 
-long _Long::parseDecLong(sp<_String> v) {
+long _Long::parseDecLong(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"Long parserInt nullptr");
     }
@@ -98,7 +98,7 @@ long _Long::parseDecLong(sp<_String> v) {
     return _Number::parseDecNumber(v->getStdString());
 }
 
-long _Long::parseHexLong(sp<_String> v) {
+long _Long::parseHexLong(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseHexLong nullptr");
     }
@@ -106,7 +106,7 @@ long _Long::parseHexLong(sp<_String> v) {
     return _Number::parseHexNumber(v->getStdString());
 }
 
-long _Long::parseOctLong(sp<_String> v) {
+long _Long::parseOctLong(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseOctLong nullptr");
     }
@@ -114,7 +114,7 @@ long _Long::parseOctLong(sp<_String> v) {
     return _Number::parseOctNumber(v->getStdString());
 }
 
-long _Long::parseBinaryLong(sp<_String> v) {
+long _Long::parseBinaryLong(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseBinaryLong nullptr");
     }

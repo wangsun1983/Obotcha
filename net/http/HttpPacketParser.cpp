@@ -32,6 +32,7 @@ int _HttpPacketParser::pushHttpData(ByteArray data) {
 #endif
 
     try {
+        printf("pushHttpData,data size is %d \n",data->size());
         mBuff->push(data);
     } catch(ArrayIndexOutOfBoundsException &e) {
         LOG(ERROR)<<"HttpPacketParser error ,data overflow";
@@ -53,12 +54,14 @@ HttpPacket _HttpPacketParser::parseEntireRequest(String request) {
 }
 
 ArrayList<HttpPacket> _HttpPacketParser::doParse() {
+    printf("doParse mStatus is %d\n",mStatus);
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
     
     byte v = 0;
     while(1) {
         switch(mStatus) {
             case Idle:{
+                printf("HttpPacketParser idle \n");
                 if(mHttpHeaderParser == nullptr) {
                     mHttpHeaderParser = createHttpHeaderParser(mReader);
                     mHttpPacket = createHttpPacket();
@@ -81,12 +84,14 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
             }
 
             case BodyStart: {
+                printf("HttpPacketParser BodyStart \n");
                 //check whether there is a multipart
                 int contentlength = mHttpPacket->getHeader()->getContentLength();
                 String contenttype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
                 String encodingtype = mHttpPacket->getHeader()->getValue(st(HttpHeader)::TransferEncoding);
                 if(encodingtype != nullptr && encodingtype->indexOfIgnoreCase(st(HttpHeader)::TransferChunked) >= 0) {
                     //this is a chunck parsesr
+                    printf("HttpPacketParser BodyStart trace1\n");
                     if(mSubStatus == HeadKeyValueParse) {
                         packets->add(mHttpPacket);
                         mChunkParser = nullptr;
@@ -113,6 +118,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                     * content-length nor transfer-encoding is specified, the end of body
                     * is specified by the EOF.
                     */
+                   printf("HttpPacketParser BodyStart trace2\n");
                     if(mHttpPacket->getHeader()->getValue(st(HttpHeader)::Upgrade) != nullptr
                             ||mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Connect) {
                         int restLength = mReader->getReadableLength();
@@ -140,15 +146,20 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                 }
                 
                 if(contenttype != nullptr && contenttype->indexOfIgnoreCase(st(HttpContentType)::MultiPartFormData) >= 0) {
+                    printf("HttpPacketParser BodyStart trace3\n");
                     if(mMultiPartParser == nullptr) {
                         try {
                             mMultiPartParser = createHttpMultiPartParser(contenttype,contentlength);
-                        } catch(InitializeException &e){}
+                        } catch(InitializeException &e){
+                            printf("HttpPacketParser BodyStart trace1_1\n");
+                        }
                     }
 
                     if(mMultiPartParser != nullptr) {
+                        printf("HttpPacketParser BodyStart trace4\n");
                         HttpMultiPart multipart = mMultiPartParser->parse(mReader);
                         if(multipart != nullptr) {
+                            printf("HttpPacketParser BodyStart trace4_1\n");
                             mHttpPacket->getEntity()->setMultiPart(multipart);
                             packets->add(mHttpPacket);
                             mMultiPartParser = nullptr;
@@ -158,8 +169,10 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                         return packets;
                     }
                 } else {
+                    printf("HttpPacketParser BodyStart trace5\n");
                     if(contentlength <= mReader->getReadableLength()) {
                         //one packet get
+                        printf("HttpPacketParser BodyStart trace6\n");
                         mReader->move(contentlength);
                         ByteArray content = mReader->pop();
                         //check whether it is a X-URLEncoded

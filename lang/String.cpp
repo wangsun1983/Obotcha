@@ -77,7 +77,7 @@ _String::_String() {
 
 }
 
-_String::_String(String v) {
+_String::_String(const String &v) {
     if(v == nullptr) {
         return;
     }
@@ -87,7 +87,7 @@ _String::_String(String v) {
     }
 }
 
-_String::_String(Long &v) {
+_String::_String(const Long &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Long is null");
     }
@@ -95,7 +95,7 @@ _String::_String(Long &v) {
     m_str = std::to_string(v->toValue());
 }
 
-_String::_String(Byte &v) {
+_String::_String(const Byte &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Byte is null");
     }
@@ -103,7 +103,7 @@ _String::_String(Byte &v) {
     m_str = std::to_string(v->toValue());
 }
 
-_String::_String(Uint8 &v) {
+_String::_String(const Uint8 &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Uint8 is null");
     }
@@ -111,7 +111,7 @@ _String::_String(Uint8 &v) {
     m_str = std::to_string(v->toValue());
 }
 
-_String::_String(Uint16 &v) {
+_String::_String(const Uint16 &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Uint16 is null");
     }
@@ -119,7 +119,7 @@ _String::_String(Uint16 &v) {
     m_str = std::to_string(v->toValue());
 }
 
-_String::_String(Uint32 &v) {
+_String::_String(const Uint32 &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Uint32 is null");
     }
@@ -127,7 +127,7 @@ _String::_String(Uint32 &v) {
     m_str = std::to_string(v->toValue());
 }
 
-_String::_String(Uint64 &v) {
+_String::_String(const Uint64 &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Uint64 is null");
     }
@@ -146,7 +146,7 @@ _String::_String(std::string *v) {
     m_str = *v;
 }
 
-_String::_String(Integer &v) {
+_String::_String(const Integer &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Integer is null");
     }
@@ -154,7 +154,7 @@ _String::_String(Integer &v) {
     m_str = std::to_string(v->toValue());
 }
 
-_String::_String(Boolean &v) {
+_String::_String(const Boolean &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Boolean is null");
     }
@@ -166,7 +166,7 @@ _String::_String(Boolean &v) {
     }
 }
 
-_String::_String(Float &v) {
+_String::_String(const Float &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Float is null");
     }
@@ -176,7 +176,7 @@ _String::_String(Float &v) {
     ss>>m_str;
 }
 
-_String::_String(Double &v) {
+_String::_String(const Double &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Double is null");
     }
@@ -258,7 +258,7 @@ void _String::update(const char *v) {
     m_str = std::string(v);
 }
 
-void _String::update(String v) {
+void _String::update(const String &v) {
     m_str = v->m_str;
 }
 
@@ -286,7 +286,7 @@ String _String::subString(int start,int length) {
     return createString(m_str.substr(start,length));
 }
 
-bool _String::contains(String val) {
+bool _String::contains(const String &val) {
 
     if(val == nullptr) {
         Trigger(NullPointerException,"String contains param error");
@@ -351,7 +351,7 @@ int _String::size() {
     return m_str.size();
 }
 
-int _String::indexOf(String v) {
+int _String::indexOf(const String &v) {
     if(v == nullptr) {
         return -1;
     }
@@ -375,7 +375,7 @@ int _String::indexOf(char v) {
     return m_str.find(v);
 }
     
-String _String::valueOf(Integer &v) {
+String _String::valueOf(const Integer &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -383,7 +383,7 @@ String _String::valueOf(Integer &v) {
     return valueOf(v->toValue());
 }
 
-String _String::valueOf(Boolean &v) {
+String _String::valueOf(const Boolean &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -391,7 +391,7 @@ String _String::valueOf(Boolean &v) {
     return valueOf(v->toValue());
 }
 
-String _String::valueOf(Double &v) {
+String _String::valueOf(const Double &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -399,7 +399,7 @@ String _String::valueOf(Double &v) {
     return valueOf(v->toValue());
 }
 
-String _String::valueOf(Float &v) {
+String _String::valueOf(const Float &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -407,7 +407,7 @@ String _String::valueOf(Float &v) {
     return valueOf(v->toValue());
 }
 
-String _String::valueOf(Long &v) {
+String _String::valueOf(const Long &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -415,7 +415,7 @@ String _String::valueOf(Long &v) {
     return valueOf((uint64_t)v->toValue());
 }
 
-String _String::valueOf(Uint8 &v) {
+String _String::valueOf(const Uint8 &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -423,7 +423,7 @@ String _String::valueOf(Uint8 &v) {
     return valueOf(v->toValue());
 }
 
-String _String::valueOf(Uint16 &v) {
+String _String::valueOf(const Uint16 &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -431,7 +431,7 @@ String _String::valueOf(Uint16 &v) {
     return valueOf(v->toValue());
 }
 
-String _String::valueOf(Uint32 &v) {
+String _String::valueOf(const Uint32 &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -439,7 +439,7 @@ String _String::valueOf(Uint32 &v) {
     return valueOf(v->toValue());
 }
 
-String _String::valueOf(Uint64 &v) {
+String _String::valueOf(const Uint64 &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -499,7 +499,7 @@ uint64_t _String::hashcode() {
     return std::hash<std::string>{}(m_str);
 }
 
-bool _String::equals(String s) {
+bool _String::equals(const String &s) {
     if(s == nullptr) {
         return false;
     }
@@ -518,7 +518,7 @@ bool _String::equals(std::string p) {
     return (m_str.compare(p) == 0);
 }
 
-ArrayList<String> _String::split(String v) {
+ArrayList<String> _String::split(const String &v) {
     if(v == nullptr) {
         return nullptr;
     }
@@ -934,7 +934,7 @@ String _String::toUpperCase() {
     return result;
 }
     
-bool _String::equalsIgnoreCase(String str) {
+bool _String::equalsIgnoreCase(const String &str) {
     if(str == nullptr || str->size() == 0) {
         return false;
     }
@@ -974,7 +974,7 @@ bool _String::equalsIgnoreCase(const char * str,int csize) {
     return true;
 }
 
-int _String::indexOfIgnoreCase(String str) {
+int _String::indexOfIgnoreCase(const String &str) {
     if(str == nullptr || str->size() == 0) {
         return -InvalidParam;
     }
@@ -1035,7 +1035,7 @@ int _String::indexOfIgnoreCase(const char * str,int csize) {
     return -1;
 }
 
-bool _String::containsIgnoreCase(String val) {
+bool _String::containsIgnoreCase(const String &val) {
     if(val == nullptr || val->size() == 0) {
         return false;
     }
@@ -1054,7 +1054,7 @@ bool _String::containsIgnoreCase(const char * val) {
     return (indexOfIgnoreCase(val) != -1);
 }
 
-bool _String::startsWithIgnoreCase(String str) {
+bool _String::startsWithIgnoreCase(const String &str) {
     if(str == nullptr || str->size() == 0) {
         return false;
     }
@@ -1072,7 +1072,7 @@ bool _String::startsWithIgnoreCase(const char * str) {
     return (indexOfIgnoreCase(str) == 0);
 }
 
-bool _String::endsWithIgnoreCase(String s) {
+bool _String::endsWithIgnoreCase(const String &s) {
     if(s == nullptr || s->size() == 0) {
         return false;
     }
@@ -1115,7 +1115,7 @@ bool _String::endsWithIgnoreCase(const char * str,int csize) {
     return true;
 }
 
-int _String::lastIndexOfIgnoreCase(String v) {
+int _String::lastIndexOfIgnoreCase(const String &v) {
     if(v == nullptr || v->size() == 0) {
         return -InvalidParam;
     }
@@ -1170,7 +1170,7 @@ bool _String::isEmpty() {
     return m_str.size() == 0;
 }
 
-bool _String::matches(String regex) {
+bool _String::matches(const String &regex) {
     if(m_str.size() == 0) {
         if(regex != nullptr) {
             return false;    
@@ -1181,7 +1181,7 @@ bool _String::matches(String regex) {
     return std::regex_match(m_str, std::regex(regex->m_str));
 }
 
-sp<_String> _String::replaceFirst(String regex,String value) {
+sp<_String> _String::replaceFirst(const String &regex,String value) {
     if(m_str.size() == 0 || value == nullptr || regex == nullptr) {
         return nullptr;
     }
@@ -1209,7 +1209,7 @@ sp<_String> _String::replaceFirst(std::string regex,std::string v) {
     return createString(result);
 }
 
-sp<_String> _String::replaceAll(String regex,String value) {
+sp<_String> _String::replaceAll(const String &regex,const String &value) {
     if(m_str.size() == 0 || value == nullptr || regex == nullptr) {
         return nullptr;
     }
@@ -1232,7 +1232,7 @@ sp<_String> _String::replaceAll(std::string regex,std::string v) {
 }
 
 
-bool _String::endsWith(String s) {
+bool _String::endsWith(const String &s) {
     if(s == nullptr) {
         return false;
     }
@@ -1256,7 +1256,7 @@ bool _String::endsWith(std::string s) {
 }
 
 
-int _String::lastIndexOf(String v) {
+int _String::lastIndexOf(const String &v) {
     if(m_str.size() == 0 || m_str.size() == 0 || v == nullptr) {
         return -InvalidParam;
     }
@@ -1279,7 +1279,7 @@ int _String::lastIndexOf(std::string v) {
 }
 
 
-bool _String::startsWith(String v) {
+bool _String::startsWith(const String &v) {
     if(v == nullptr) {
         return false;
     }

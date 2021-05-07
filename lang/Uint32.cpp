@@ -23,7 +23,7 @@ _Uint32::_Uint32():val(0) {
 
 _Uint32::_Uint32(uint32_t v) : val(v) {}
 
-_Uint32::_Uint32(Uint32 &v) {
+_Uint32::_Uint32(const Uint32 &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Object is null");
     }
@@ -35,7 +35,7 @@ uint32_t _Uint32::toValue() {
     return val;
 }
 
-bool _Uint32::equals(Uint32 &p) {
+bool _Uint32::equals(const Uint32 &p) {
     if(p == nullptr) {
         Trigger(NullPointerException,"Object is null");
     }
@@ -59,7 +59,7 @@ void _Uint32::update(uint32_t v) {
     val = v;
 }
 
-void _Uint32::update(sp<_Uint32> v) {
+void _Uint32::update(const sp<_Uint32> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"Uint32 update nullptr");
     }
@@ -87,7 +87,7 @@ sp<_String> _Uint32::toString(uint32_t i) {
     return createString(_Number::toDecString(i));
 }
 
-uint32_t _Uint32::parseDecUint32(sp<_String> v) {
+uint32_t _Uint32::parseDecUint32(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseDecUint32 nullptr");
     }
@@ -95,7 +95,7 @@ uint32_t _Uint32::parseDecUint32(sp<_String> v) {
     return _Number::parseDecNumber(v->getStdString());
 }
 
-uint32_t _Uint32::parseHexUint32(sp<_String> v) {
+uint32_t _Uint32::parseHexUint32(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseHexUint32 nullptr");
     }
@@ -103,7 +103,7 @@ uint32_t _Uint32::parseHexUint32(sp<_String> v) {
     return _Number::parseHexNumber(v->getStdString());
 }
 
-uint32_t _Uint32::parseOctUint32(sp<_String> v) {
+uint32_t _Uint32::parseOctUint32(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseOctUint32 nullptr");
     }
@@ -111,7 +111,7 @@ uint32_t _Uint32::parseOctUint32(sp<_String> v) {
     return _Number::parseOctNumber(v->getStdString());
 }
 
-uint32_t _Uint32::parseBinaryUint32(sp<_String> v) {
+uint32_t _Uint32::parseBinaryUint32(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseBinaryUint32 nullptr");
     }

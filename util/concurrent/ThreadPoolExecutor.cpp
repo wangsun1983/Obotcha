@@ -16,7 +16,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
     mHandlers = createArrayList<Thread>();
 
     for(int i = 0; i < threadnum;i++) {
-        Thread thread = createThread([](ThreadPoolExecutor &executor) {
+        Thread thread = createThread([](ThreadPoolExecutor executor) {
             while(1) {
                 FutureTask mCurrentTask = nullptr;
                 mCurrentTask = executor->mPool->deQueueFirst();
@@ -51,19 +51,20 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
 
 int _ThreadPoolExecutor::shutdown() {
     {
-        AutoLock l(mPool->mMutex);
         if(mStatus != Running) {
             return -InvalidStatus;
         }
 
         mStatus = ShutDown;
 
+        mPool->freeze();
         mPool->foreach([](FutureTask &task) {
             task->cancel();
             return 1;
         });
 
         mPool->destroy();
+        mPool->unfreeze();
     }
     
     //interrupt all thread
@@ -76,7 +77,6 @@ int _ThreadPoolExecutor::shutdown() {
 }
 
 bool _ThreadPoolExecutor::isShtuDown() {
-    AutoLock l(mPool->mMutex);
     return mStatus == LocalStatus::ShutDown;
 }
 
@@ -98,13 +98,11 @@ void _ThreadPoolExecutor::awaitTermination() {
 }
 
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
-    {
-        AutoLock l(mPool->mMutex);
-        if(mStatus != LocalStatus::ShutDown){
-            return -InvalidStatus;
-        }
-    }
     
+    if(mStatus != LocalStatus::ShutDown){
+        return -InvalidStatus;
+    }
+
     bool isWaitForever = (millseconds == 0);
     ListIterator<Thread> iterator = mHandlers->getIterator();
     while(iterator->hasValue()) {

@@ -49,16 +49,10 @@ public:
 
     template<typename X>
     Future submit(sp<X> r) {
-        AutoLock l(mPool->mMutex);
-        if(r == nullptr || mStatus != LocalStatus::Running) {
-            return nullptr;
-        }
-
         FutureTask task = createFutureTask(r);
-        if(mPool->enQueueLastNoLock(task)){
+        if(mPool->enQueueLast(task)){
             return createFuture(task);
         }
-
         return nullptr;
     }
 

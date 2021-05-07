@@ -98,6 +98,7 @@ _HttpPacketBuilder * _HttpPacketBuilder::setResponseReason(String r) {
 
 _HttpPacketBuilder * _HttpPacketBuilder::setChunckedFile(File f) {
     chunkedFile = f;
+    return this;
 }
 
 HttpRequest _HttpPacketBuilder::newHttpReqeust() {

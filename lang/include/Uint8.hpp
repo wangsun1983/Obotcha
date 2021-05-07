@@ -18,11 +18,11 @@ public:
 
     _Uint8(uint8_t v);
 
-    _Uint8(Uint8 &v);
+    _Uint8(const Uint8 &v);
 
     uint8_t toValue();
 
-    bool equals(Uint8 &p);
+    bool equals(const Uint8 &p);
 
     bool equals(uint8_t p);
 
@@ -30,7 +30,7 @@ public:
 
     void update(uint8_t v);
 
-    void update(sp<_Uint8> v);
+    void update(const sp<_Uint8> &v);
 
     sp<_String> toHexString();
 
@@ -42,13 +42,13 @@ public:
 
     static sp<_String> toString(uint8_t i);
     
-    static uint8_t parseDecUint8(sp<_String>);
+    static uint8_t parseDecUint8(const sp<_String>&);
 
-    static uint8_t parseHexUint8(sp<_String>);
+    static uint8_t parseHexUint8(const sp<_String>&);
 
-    static uint8_t parseOctUint8(sp<_String>);
+    static uint8_t parseOctUint8(const sp<_String>&);
 
-    static uint8_t parseBinaryUint8(sp<_String>);
+    static uint8_t parseBinaryUint8(const sp<_String>&);
 
     static sp<_String> className();
 

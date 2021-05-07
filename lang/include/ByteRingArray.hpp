@@ -27,9 +27,9 @@ public:
 
     byte pop();
 
-    bool push(ByteArray);
+    bool push(const ByteArray &);
 
-    bool push(ByteArray,int start,int length);
+    bool push(const ByteArray &,int start,int length);
 
     bool push(byte *,int,int);
 

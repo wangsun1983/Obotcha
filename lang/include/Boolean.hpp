@@ -14,13 +14,13 @@ public:
     
     _Boolean(bool v);
 
-    _Boolean(Boolean &v);
+    _Boolean(const Boolean &v);
 
     _Boolean(sp<_String>);
 
     bool toValue();
 
-    bool equals(Boolean &p);
+    bool equals(const Boolean &p);
 
     bool equals(bool p);
 
@@ -28,25 +28,25 @@ public:
 
     void update(bool v);
 
-    void update(sp<_Boolean> v);
+    void update(const sp<_Boolean> v);
 
     sp<_String> toString();
 
     bool logicOr(bool);
 
-    bool logicOr(sp<_Boolean>);
+    bool logicOr(const sp<_Boolean>);
 
     bool logicAnd(bool);
 
-    bool logicAnd(sp<_Boolean>);
+    bool logicAnd(const sp<_Boolean>);
 
     bool logicXor(bool);
 
-    bool logicXor(sp<_Boolean>);
+    bool logicXor(const sp<_Boolean>);
 
     uint64_t hashcode();
 
-    static sp<_Boolean> valueOf(sp<_String>);
+    static sp<_Boolean> valueOf(const sp<_String>);
 
     static sp<_Boolean> valueOf(char *);
 

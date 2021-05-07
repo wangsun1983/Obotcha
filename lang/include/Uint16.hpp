@@ -18,11 +18,11 @@ public:
     
     _Uint16(uint16_t v);
 
-    _Uint16(Uint16 &v);
+    _Uint16(const Uint16 &v);
 
     uint16_t toValue();
 
-    bool equals(Uint16 &p);
+    bool equals(const Uint16 &p);
 
     bool equals(uint16_t p);
 
@@ -30,7 +30,7 @@ public:
 
     void update(uint16_t v);
 
-    void update(sp<_Uint16> v);
+    void update(const sp<_Uint16> &v);
 
     sp<_String> toHexString();
 
@@ -42,13 +42,13 @@ public:
 
     static sp<_String> toString(uint16_t i);
     
-    static uint16_t parseDecUint16(sp<_String>);
+    static uint16_t parseDecUint16(const sp<_String> &);
 
-    static uint16_t parseHexUint16(sp<_String>);
+    static uint16_t parseHexUint16(const sp<_String>&);
 
-    static uint16_t parseOctUint16(sp<_String>);
+    static uint16_t parseOctUint16(const sp<_String>&);
 
-    static uint16_t parseBinaryUint16(sp<_String>);
+    static uint16_t parseBinaryUint16(const sp<_String>&);
 
     static sp<_String> className();
 

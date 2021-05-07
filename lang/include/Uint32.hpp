@@ -18,11 +18,11 @@ public:
     
     _Uint32(uint32_t v);
 
-    _Uint32(Uint32 &v);
+    _Uint32(const Uint32 &v);
 
     uint32_t toValue();
 
-    bool equals(Uint32 &p);
+    bool equals(const Uint32 &p);
 
     bool equals(uint32_t p);
 
@@ -30,7 +30,7 @@ public:
 
     void update(uint32_t v);
 
-    void update(sp<_Uint32> v);
+    void update(const sp<_Uint32> &v);
 
     sp<_String> toHexString();
 
@@ -42,13 +42,13 @@ public:
 
     static sp<_String> toString(uint32_t i);
     
-    static uint32_t parseDecUint32(sp<_String>);
+    static uint32_t parseDecUint32(const sp<_String>&);
 
-    static uint32_t parseHexUint32(sp<_String>);
+    static uint32_t parseHexUint32(const sp<_String>&);
 
-    static uint32_t parseOctUint32(sp<_String>);
+    static uint32_t parseOctUint32(const sp<_String>&);
 
-    static uint32_t parseBinaryUint32(sp<_String>);
+    static uint32_t parseBinaryUint32(const sp<_String>&);
 
     static sp<_String> className();
 

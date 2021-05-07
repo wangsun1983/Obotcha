@@ -22,7 +22,7 @@ _Byte::_Byte():val(0) {}
 
 _Byte::_Byte(byte v) : val(v) {}
 
-_Byte::_Byte(Byte &v) {
+_Byte::_Byte(const Byte &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Object is null");
     }
@@ -33,7 +33,7 @@ byte _Byte::toValue() {
     return val;
 }
 
-bool _Byte::equals(Byte &p) {
+bool _Byte::equals(const Byte &p) {
     if(p == nullptr) {
         Trigger(NullPointerException,"byte equal null");
     }
@@ -57,7 +57,7 @@ void _Byte::update(byte v) {
     val = v;
 }
 
-void _Byte::update(sp<_Byte>v) {
+void _Byte::update(const sp<_Byte>v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"byte equal null");
     }
@@ -89,7 +89,7 @@ sp<_String> _Byte::toString(byte i) {
     return createString(_Number::toDecString(i));
 }
 
-byte _Byte::parseDecByte(sp<_String> v) {
+byte _Byte::parseDecByte(const sp<_String> v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseDecByte nullptr");
     }
@@ -97,7 +97,7 @@ byte _Byte::parseDecByte(sp<_String> v) {
     return _Number::parseDecNumber(v->getStdString());
 }
 
-byte _Byte::parseHexByte(sp<_String> v) {
+byte _Byte::parseHexByte(const sp<_String> v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseHexByte nullptr");
     }
@@ -105,7 +105,7 @@ byte _Byte::parseHexByte(sp<_String> v) {
     return _Number::parseHexNumber(v->getStdString());
 }
 
-byte _Byte::parseOctByte(sp<_String> v) {
+byte _Byte::parseOctByte(const sp<_String> v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseOctByte nullptr");
     }
@@ -113,7 +113,7 @@ byte _Byte::parseOctByte(sp<_String> v) {
     return _Number::parseOctNumber(v->getStdString());
 }
 
-byte _Byte::parseBinaryByte(sp<_String> v) {
+byte _Byte::parseBinaryByte(const sp<_String> v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseBinaryByte nullptr");
     }

@@ -32,7 +32,7 @@ _Integer::_Integer(int v) : val(v) {
 
 }
 
-_Integer::_Integer(Integer &v) {
+_Integer::_Integer(const Integer &v) {
     if(v == nullptr) {
         Trigger(InitializeException,"Object is null");
     }
@@ -44,7 +44,7 @@ int _Integer::toValue() {
     return val;
 }
 
-bool _Integer::equals(Integer &p) {
+bool _Integer::equals(const Integer &p) {
     if(p == nullptr) {
         return false;
     }
@@ -72,7 +72,7 @@ void _Integer::update(int v) {
     val = v;
 }
 
-void _Integer::update(sp<_Integer> v) {
+void _Integer::update(const sp<_Integer> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"integer update null");
     }
@@ -100,7 +100,7 @@ sp<_String> _Integer::toString(int i) {
     return createString(_Number::toDecString(i));
 }
 
-int _Integer::parseDecInt(sp<_String> v) {
+int _Integer::parseDecInt(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"Integer parserInt nullptr");
     }
@@ -108,7 +108,7 @@ int _Integer::parseDecInt(sp<_String> v) {
     return _Number::parseDecNumber(v->getStdString());
 }
 
-int _Integer::parseHexInt(sp<_String> v) {
+int _Integer::parseHexInt(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseHexInt nullptr");
     }
@@ -116,7 +116,7 @@ int _Integer::parseHexInt(sp<_String> v) {
     return _Number::parseHexNumber(v->getStdString());
 }
 
-int _Integer::parseOctInt(sp<_String> v) {
+int _Integer::parseOctInt(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseHexInt nullptr");
     }
@@ -124,7 +124,7 @@ int _Integer::parseOctInt(sp<_String> v) {
     return _Number::parseOctNumber(v->getStdString());
 }
 
-int _Integer::parseBinaryInt(sp<_String> v) {
+int _Integer::parseBinaryInt(const sp<_String> &v) {
     if(v == nullptr) {
         Trigger(NullPointerException,"parseHexInt nullptr");
     }
