@@ -110,9 +110,11 @@ HttpResponse _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSo
 }
 
 ArrayList<ByteArray> _WebSocketHybi13Composer::genTextMessage(String content) {
+    
     switch(mType) {
         case WsClientComposer:
         return _genClientMessage(createByteArray(content),st(WebSocketProtocol)::OPCODE_TEXT);
+        
 
         case WsServerComposer:
         return _genServerMessage(createByteArray(content),st(WebSocketProtocol)::OPCODE_TEXT);

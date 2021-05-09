@@ -98,11 +98,16 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
     }
 
     HttpResponse response = connection->execute(shakeHandMsg);
+    
     if(response->getHeader()->getResponseStatus() == st(HttpStatus)::SwitchProtocls) {
+
         mSocket = connection->getSocket();
+
         mSocketMonitor->bind(connection->getSocket(),AutoClone(this));
+       
         mOutputStream = mSocket->getOutputStream();
         //wangsl
+       
         String extentions = response->getHeader()->getValue(st(HttpHeader)::SecWebSocketExtensions);
         if(extentions != nullptr) {
             if(extentions->indexOf("sec-websocket-extensions") > 0) {
@@ -110,6 +115,7 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
                 composer->setDeflate(createWebSocketPermessageDeflate());
             }
         }
+        
         //wangsl
         return 0;
     }

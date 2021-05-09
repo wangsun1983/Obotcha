@@ -67,8 +67,6 @@ return ret;
 
 DECLARE_CLASS(BlockingQueue,1) {
 public:
-    friend class _ThreadCachedPoolExecutor;
-    
 	_BlockingQueue(int size);
     _BlockingQueue();
 

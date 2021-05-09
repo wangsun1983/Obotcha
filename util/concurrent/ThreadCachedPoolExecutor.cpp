@@ -39,22 +39,22 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int queuesize,int minthread
 }
 
 int _ThreadCachedPoolExecutor::shutdown(){
-    {
-        AutoLock l(mTasks->mMutex);
-        if(mStatus == ShutDown) {
-            return 0;
-        }
-        mStatus = ShutDown;
-
-        mTasks->foreach([](FutureTask &t) {
-            t->cancel();
-            return 1;
-        });
-
-        //notify all thread to close
-        mTasks->destroy();
+        
+    if(mStatus == ShutDown) {
+        return 0;
     }
+    mStatus = ShutDown;
 
+    mTasks->freeze();
+    mTasks->foreach([](FutureTask &t) {
+        t->cancel();
+        return 1;
+    });
+    
+    //notify all thread to close
+    mTasks->destroy();
+    mTasks->unfreeze();
+    
     {
         AutoLock l(mHandlerMutex);
         mHandlers->foreach([](Thread &t) {
@@ -89,11 +89,8 @@ void _ThreadCachedPoolExecutor::awaitTermination() {
 }
 
 int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
-    {
-        AutoLock l(mTasks->mMutex);
-        if(mStatus == Running) {
-            return -InvalidStatus;
-        }
+    if(mStatus == Running) {
+        return -InvalidStatus;
     }
 
     bool isWaitForever = (millseconds == 0);
@@ -122,16 +119,13 @@ int _ThreadCachedPoolExecutor::getThreadsNum() {
 }
 
 Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r) {
-    Future future = nullptr;
-    {
-        AutoLock l(mTasks->mMutex);
-        if(mStatus != Running) {
-            return nullptr;
-        }
-        FutureTask task = createFutureTask(r);
-        future = createFuture(task);
-        mTasks->enQueueLastNoLock(task);
+
+    if(mStatus != Running) {
+        return nullptr;
     }
+    FutureTask task = createFutureTask(r);
+    Future future = createFuture(task);
+    mTasks->enQueueLastNoLock(task);
     if(mIdleNum->get() == 0) {
         setUpOneIdleThread();
     }
@@ -143,11 +137,8 @@ _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
 }
 
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
-    {
-        AutoLock l(mTasks->mMutex);
-        if(mStatus != Running) {
-            return;
-        }
+    if(mStatus != Running) {
+        return;
     }
 
     {

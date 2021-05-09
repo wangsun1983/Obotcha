@@ -79,12 +79,11 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
         return nullptr;
     }
     
-    byte v = 0;
-    //HttpMultiPart part = createHttpMultiPart();
     if(mMultiPart == nullptr) {
         mMultiPart = createHttpMultiPart();
     }
-
+    
+    byte v = 0;
     while(reader->readNext(v) == ByteRingArrayReadContinue) {
         switch(mStatus) {
             case ParseStartBoundry:{

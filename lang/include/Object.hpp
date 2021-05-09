@@ -16,13 +16,14 @@
 
 namespace obotcha {
 
+//just add class declaration for reflect
 class _Field;
 class _String;
 template<typename T>
 class _ArrayList;
 
-class _Object
-{
+//-------------------------- Declaration ----------------------------------//
+class _Object {
 public:
     friend class _Field;
     _Object() : mCount(0) { }
@@ -34,7 +35,6 @@ public:
 
     inline int decStrong(__attribute__((unused)) const void* id) {
         if (__sync_fetch_and_sub(&mCount, 1) == 1) {
-            //delete static_cast<const T*>(this);
             return OBJ_DEC_FREE;
         }
         return OBJ_DEC_NO_FREE;
@@ -62,25 +62,25 @@ public:
 
     //reflect function
     inline virtual void __ReflectInit(){}
-    //do not add soure,build will fail!!!
+    //must not return null!!! or build failed
     inline virtual sp<_Field> getField(sp<_String>){throw "not support";}
     inline virtual sp<_ArrayList<sp<_Field>>> getAllFields(){throw "not support";}
     inline virtual sp<_String> __ReflectClassName(){throw "not support";}
 
-    //reflect get function
 protected:
     inline virtual int __getFieldIntValue(std::string){return 0;}
     inline virtual uint8_t __getFieldByteValue(std::string){return 0;}
     inline virtual bool __getFieldBoolValue(std::string){return true;}
-    inline virtual double __getFieldDoubleValue(std::string){return 0;}
+    inline virtual double __getFieldDoubleValue(std::string){return 0.0;}
     inline virtual long __getFieldLongValue(std::string name){return 0;}
-    inline virtual float __getFieldFloatValue(std::string){return 0;}
+    inline virtual float __getFieldFloatValue(std::string){return 0.0;}
     inline virtual uint8_t __getFieldUint8Value(std::string){return 0;}
     inline virtual uint16_t __getFieldUint16Value(std::string){return 0;}
     inline virtual uint32_t __getFieldUint32Value(std::string){return 0;}
     inline virtual uint64_t __getFieldUint64Value(std::string){return 0;}
     inline virtual sp<_String> __getFieldStringValue(std::string name){throw "not support";};
     inline virtual sp<_Object> __getFieldObjectValue(std::string){return nullptr;}
+
     //reflect set function
     inline virtual void __setFieldIntValue(std::string,int){}
     inline virtual void __setFieldByteValue(std::string,uint8_t){}
@@ -105,6 +105,7 @@ private:
     mutable volatile int32_t mCount;
 };
 
+//-------------------------- Implementation ----------------------------------//
 using Object = sp<_Object>;
 
 template<typename U>
@@ -123,40 +124,31 @@ T AutoClone(U *v) {
 
 }
 
+
+//-------------------------- Macro for Class Declaration ----------------------------------//
 #define MAKE_FUNCTION_0(Y) \
 template<typename A=_##Y,typename... Args>\
-sp<A> create##Y(Args&&... args)\
-{\
+sp<A> create##Y(Args&&... args) {\
     _Object* obj = new A(std::forward<Args>(args)...);\
     obj->__ReflectInit();\
-    sp<A> ret;\
-    ret.set_pointer(dynamic_cast<A *>(obj));\
-    return ret;\
+    return AutoClone<A>(obj);\
 }\
 
-//    sp<_##Y<T>> ret = new _##Y<T>(std::forward<Args>(args)...);\
-    ret->__ReflectInit();\
 
 #define MAKE_FUNCTION_1(Y) \
 template<typename T,typename A=_##Y<T>,typename... Args>\
-sp<A> create##Y(Args&&... args)\
-{\
+sp<A> create##Y(Args&&... args) {\
     _Object* obj = new A(std::forward<Args>(args)...);\
     obj->__ReflectInit();\
-    sp<A> ret;\
-    ret.set_pointer(dynamic_cast<A *>(obj));\
-    return ret;\
+    return AutoClone<A>(obj);\
 }\
 
 #define MAKE_FUNCTION_2(Y) \
 template<typename T,typename U,typename A=_##Y<T,U>,typename... Args>\
-sp<A> create##Y(Args&&... args)\
-{\
+sp<A> create##Y(Args&&... args) {\
     _Object* obj = new A(std::forward<Args>(args)...);\
     obj->__ReflectInit();\
-    sp<A> ret;\
-    ret.set_pointer(dynamic_cast<A *>(obj));\
-    return ret;\
+    return AutoClone<A>(obj);\
 }\
 
 
@@ -188,10 +180,11 @@ class _##Y: virtual public _Object\
 
 #define DECLARE_SIMPLE_CLASS(Y) DECLARE_CLASS(Y,0)
 
+
+//-------------------------- Macro for Static Class Declaration ----------------------------------//
 #define st(Y) _##Y
 
-//#define InstanceOf(X,Y) typeid(*X.get_pointer()) == typeid(_##Y)
-
+//-------------------------- Macro for Class Implementation ----------------------------------//
 #define FL_ARG_COUNT(...) FL_INTERNAL_ARG_COUNT_PRIVATE(0, ##__VA_ARGS__,\
 	64, 63, 62, 61, 60, \
 	59, 58, 57, 56, 55, 54, 53, 52, 51, 50, \
@@ -216,8 +209,5 @@ class _##Y: virtual public _Object\
 #define IMPLEMENTS(...) IMPLEMENTS_FUNC_INNER(FL_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)
 #define IMPLEMENTS_FUNC_INNER(COUNT,...) IMPLEMENTS_FUNC_INNER_2(COUNT,__VA_ARGS__)
 #define IMPLEMENTS_FUNC_INNER_2(COUNT,...) _IMPLEMENTS_##COUNT(__VA_ARGS__)
-
-
-
 
 #endif

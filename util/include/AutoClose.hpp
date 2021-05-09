@@ -10,22 +10,22 @@ namespace obotcha {
 
 class AutoClose {
 public:
-    AutoClose(int fd):AutoClone(fd,nullptr,nullptr){
+    AutoClose(int fd):AutoClose(fd,nullptr,nullptr){
 
     }
 
-    AutoClose(InputStream input):AutoClone(-1,input,nullptr){
+    AutoClose(InputStream input):AutoClose(-1,input,nullptr){
 
     }
 
-    AutoClose(OutputStream output):AutoClone(-1,nullptr,output){
+    AutoClose(OutputStream output):AutoClose(-1,nullptr,output){
 
     }
 
     AutoClose(int fd,InputStream input,OutputStream output){
         this->fd = fd;
-        mOut = input;
-        mInput = output;
+        mOut = output;
+        mInput = input;
     }
 
     AutoClose() {

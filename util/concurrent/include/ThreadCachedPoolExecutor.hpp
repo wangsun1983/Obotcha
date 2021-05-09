@@ -77,7 +77,7 @@ private:
     
     ArrayList<Thread> mHandlers;
 
-    int mStatus;
+    std::atomic<int> mStatus;
 
     long mThreadTimeout;
 
