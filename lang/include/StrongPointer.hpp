@@ -259,13 +259,6 @@ public:
     COMPARE(>=)
 
     void set_pointer(T* ptr);
-
-    void set_value(sp<T> data);
-    void set_value(int){}
-    void set_value(unsigned char){}
-    void set_value(double){}
-    void set_value(float){}
-
     void remove_pointer(){};
     
     T* get_pointer();
@@ -404,33 +397,9 @@ void sp<T>::set_pointer(T* ptr) {
 }
 
 template<typename T>
-void sp<T>::set_value(sp<T> data) {
-    set_pointer(data.get_pointer());
-}
-
-template<typename T>
 T* sp<T>::get_pointer(){
     return m_ptr;
 }
-
-#define tp(X) _##X
-template<typename X,typename V>
-X Cast(sp<V> t) {
-    X value;
-    value.set_pointer(dynamic_cast<decltype(value.get_pointer())>(t.m_ptr));
-    return value;
-}
-
-template<typename X>
-X NullData() {
-    X t;
-    t.set_pointer(nullptr);
-    return t;
-}
-//template<typename X,typename V>
-//void cast(sp<V> t,sp<X> &value) {
-//    value.set_pointer(dynamic_cast<X *>(t.m_ptr));
-//}
 
 }
 #endif

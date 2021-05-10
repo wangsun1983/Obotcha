@@ -25,6 +25,10 @@ int _SocketImpl::close() {
         ::close(sock);
         sock = -1;
     }
+
+    if(mBuff != nullptr) {
+        delete []mBuff;
+    }
     
     return 0;
 }
@@ -37,7 +41,7 @@ ByteArray _SocketImpl::receive() {
 
     byte buff[1024];
     int length = ::read(sock,buff,1024);
-    return createByteArray(mBuff,length);
+    return createByteArray(buff,length);
 }
 
 int _SocketImpl::getFd() {

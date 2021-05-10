@@ -122,6 +122,11 @@ T AutoClone(U *v) {
     return data;
 }
 
+template<typename X,typename V>
+X Cast(sp<V> t) {
+    return AutoClone<X>(t.m_ptr);
+}
+
 }
 
 
@@ -131,7 +136,7 @@ template<typename A=_##Y,typename... Args>\
 sp<A> create##Y(Args&&... args) {\
     _Object* obj = new A(std::forward<Args>(args)...);\
     obj->__ReflectInit();\
-    return AutoClone<A>(obj);\
+    return AutoClone<sp<A>>(obj);\
 }\
 
 
@@ -140,7 +145,7 @@ template<typename T,typename A=_##Y<T>,typename... Args>\
 sp<A> create##Y(Args&&... args) {\
     _Object* obj = new A(std::forward<Args>(args)...);\
     obj->__ReflectInit();\
-    return AutoClone<A>(obj);\
+    return AutoClone<sp<A>>(obj);\
 }\
 
 #define MAKE_FUNCTION_2(Y) \
@@ -148,7 +153,7 @@ template<typename T,typename U,typename A=_##Y<T,U>,typename... Args>\
 sp<A> create##Y(Args&&... args) {\
     _Object* obj = new A(std::forward<Args>(args)...);\
     obj->__ReflectInit();\
-    return AutoClone<A>(obj);\
+    return AutoClone<sp<A>>(obj);\
 }\
 
 
