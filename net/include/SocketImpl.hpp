@@ -31,6 +31,7 @@ public:
     void setInetAddress(InetAddress);
     
 protected:
+    void setOptions();
     int sock;
     InetAddress address;
     SocketOption option;

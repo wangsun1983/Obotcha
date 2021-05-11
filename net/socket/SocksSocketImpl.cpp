@@ -31,23 +31,7 @@ _SocksSocketImpl::_SocksSocketImpl(InetAddress address,SocketOption option):_Soc
     }
 
     this->sock = TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0));
-    if(option != nullptr) {
-        this->option = option;
-
-        int rcvtimeout = option->getRcvTimeout();
-        if(rcvtimeout != -1) {
-            struct timeval tv;
-            st(System)::getTimeVal(rcvtimeout,&tv);
-            setsockopt(this->sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
-        }
-
-        int sendtimeout = option->getSendTimeout();
-        if(sendtimeout != -1) {
-            struct timeval tv;
-            st(System)::getTimeVal(sendtimeout,&tv);
-            setsockopt(this->sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
-        }
-    }
+    setOptions();
     
     int opt = 1;
     if(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int)) < 0) {
