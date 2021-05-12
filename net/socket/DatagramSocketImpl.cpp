@@ -25,6 +25,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,SocketOption option
     }
 
     sock = socket(AF_INET, SOCK_DGRAM, 0);
+    setOptions();
 }
 
 int _DatagramSocketImpl::connect() {

@@ -36,6 +36,23 @@ _SocketOption::_SocketOption() {
     mZeroCopy = -1;
 }
 
+_SocketOption::~_SocketOption() {
+    if(mBindToDevice != nullptr) {
+        free(mBindToDevice);
+        mBindToDevice = nullptr;
+    }
+
+    if(mAttachFilter != nullptr) {
+        free(mAttachFilter);
+        mAttachFilter = nullptr;
+    }
+
+    if(mReusePortCbpf != nullptr) {
+        free(mReusePortCbpf);
+        mReusePortCbpf = nullptr;
+    }
+}
+
 _SocketOption* _SocketOption::setReUseAddr(int on) {
     mReUseAddr = on;
     return this;
@@ -128,12 +145,14 @@ _SocketOption* _SocketOption::setSndTimeout(int interval) {
 }
 
 _SocketOption* _SocketOption::setBindToDevice(struct ifreq * value) {
-    mBindToDevice = value;
+    mBindToDevice = (struct ifreq *)malloc(sizeof(struct ifreq));
+    memcpy(mBindToDevice,value,sizeof(struct ifreq));
     return this;
 }
 
 _SocketOption* _SocketOption::setAttachFilter(struct sock_fprog * value) {
-    mAttachFilter = value;
+    mAttachFilter = (struct sock_fprog *)malloc(sizeof(struct sock_fprog));
+    memcpy(mAttachFilter,value,sizeof(struct sock_fprog));
     return this;
 }
 
@@ -168,7 +187,8 @@ _SocketOption* _SocketOption::setMaxPacingRate(unsigned int rate) {
 }
 
 _SocketOption* _SocketOption::setReusePortCbpf(struct sock_fprog* v) {
-    mReusePortCbpf = v;
+    mReusePortCbpf = (struct sock_fprog*)malloc(sizeof(struct sock_fprog));
+    memcpy(mReusePortCbpf,v,sizeof(struct sock_fprog));
     return this;
 }
 

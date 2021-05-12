@@ -32,11 +32,6 @@ _SocksSocketImpl::_SocksSocketImpl(InetAddress address,SocketOption option):_Soc
 
     this->sock = TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0));
     setOptions();
-    
-    int opt = 1;
-    if(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int)) < 0) {
-        Trigger(InitializeException,"set option failed");
-    }
 }
 
 int _SocksSocketImpl::connect() {

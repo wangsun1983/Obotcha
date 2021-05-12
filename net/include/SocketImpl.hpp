@@ -25,6 +25,7 @@ public:
     int close();
     int getFd();
 
+    void setRecvBuff(int);
     ByteArray receive();
 
     InetAddress getInetAddress();
@@ -36,7 +37,6 @@ protected:
     InetAddress address;
     SocketOption option;
     struct sockaddr_in mSockAddr;
-    byte *mBuff;
     int mBuffSize;
 };
 

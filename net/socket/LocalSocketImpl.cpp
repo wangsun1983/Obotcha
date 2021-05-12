@@ -17,6 +17,7 @@ _LocalSocketImpl::_LocalSocketImpl(InetAddress address,SocketOption option):_Soc
     strcpy(serverAddr.sun_path, address->getAddress()->toChars()); 
 
     sock = TEMP_FAILURE_RETRY(socket(AF_UNIX, SOCK_STREAM, 0));
+    setOptions();
 }
 
 int _LocalSocketImpl::connect() {

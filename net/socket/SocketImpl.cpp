@@ -4,22 +4,19 @@ namespace obotcha {
 
 _SocketImpl::_SocketImpl(int fd) {
     sock = fd;
-    mBuffSize = -1;
-    mBuff = nullptr;
+    mBuffSize = 1024*4;
+    address = nullptr;
+    option = nullptr;
 }
 
 _SocketImpl::_SocketImpl(InetAddress address,SocketOption option) {
     this->address = address;
     this->option = option;
-    this->mBuff = nullptr;
-    this->mBuffSize = -1;
+    this->mBuffSize = 4*1024;
+}
 
-/*
-    if(option != nullptr && option->getBuffSize() >= 0 ) {
-        mBuffSize = option->getBuffSize();
-        mBuff = new byte[mBuffSize];
-    }
-*/
+void _SocketImpl::setRecvBuff(int v) {
+    mBuffSize = v;
 }
 
 void _SocketImpl::setOptions() {
@@ -69,8 +66,11 @@ void _SocketImpl::setOptions() {
         }
 
         if(option->mLingerOnOff != -1 && option->mLingerValue != -1) {
-            //TODO
-            //setsockopt(this->sock, SOL_SOCKET, SO_KEEPALIVE, &option->mKeepAlive, sizeof(option->mKeepAlive));
+            struct linger ll;
+            ll.l_onoff = option->mLingerOnOff;
+            ll.l_linger = option->mLingerValue;
+            
+            setsockopt(this->sock, SOL_SOCKET, SO_LINGER, &ll, sizeof(struct linger));
         }
 
         if(option->mReUsePort != -1) {
@@ -89,8 +89,64 @@ void _SocketImpl::setOptions() {
             setsockopt(this->sock, SOL_SOCKET, SO_RCVLOWAT, &option->mRcvLoWat, sizeof(option->mRcvLoWat));
         }
 
-        if(option->mPassCred != -1) {
-            setsockopt(this->sock, SOL_SOCKET, SO_PASSCRED, &option->mPassCred, sizeof(option->mPassCred));
+        if(option->mSndLoWat != -1) {
+            setsockopt(this->sock, SOL_SOCKET, SO_SNDLOWAT, &option->mSndLoWat, sizeof(option->mSndLoWat));
+        }
+
+        if(option->mRcvTimeout != -1) {
+            setsockopt(this->sock, SOL_SOCKET, SO_SNDLOWAT, &option->mRcvTimeout, sizeof(option->mRcvTimeout));
+        }
+
+        if(option->mSndLoWat != -1) {
+            setsockopt(this->sock, SOL_SOCKET, SO_RCVTIMEO, &option->mSndLoWat, sizeof(option->mSndLoWat));
+        }
+
+        if(option->mSendTimeout != -1) {
+            setsockopt(this->sock, SOL_SOCKET, SO_SNDTIMEO, &option->mSendTimeout, sizeof(option->mSendTimeout));
+        }
+
+        if(option->mBindToDevice != nullptr) {
+            setsockopt(this->sock, SOL_SOCKET, SO_BINDTODEVICE, option->mBindToDevice, sizeof(struct ifreq));
+        }
+
+        if(option->mAttachFilter != nullptr) {
+            setsockopt(this->sock, SOL_SOCKET, SO_ATTACH_FILTER, &option->mAttachFilter, sizeof(struct sock_fprog));
+        }
+
+        if(option->mDetachFilter != -1) {
+            setsockopt(this->sock, SOL_SOCKET, SO_DETACH_FILTER, &option->mDetachFilter, sizeof(option->mDetachFilter));
+        }
+
+        if(option->mTimeStamp != -1) {
+            setsockopt(this->sock, SOL_SOCKET, SO_TIMESTAMP, &option->mTimeStamp, sizeof(option->mTimeStamp));
+        }
+
+        if(option->mTimeStampNs != -1) {
+            setsockopt(this->sock, SOL_SOCKET, SO_TIMESTAMPNS, &option->mTimeStampNs, sizeof(option->mTimeStampNs));
+        }
+
+        if(option->mTimeStampIng != -1) {
+            setsockopt(this->sock, SOL_SOCKET, SO_TIMESTAMPING, &option->mTimeStampIng, sizeof(option->mTimeStampIng));
+        }
+
+        if(option->mBusyPoll != -1) {
+            setsockopt(this->sock, SOL_SOCKET, SO_BUSY_POLL, &option->mBusyPoll, sizeof(option->mBusyPoll));
+        }
+
+        if(option->mMaxPacingRate != -1) {
+            setsockopt(this->sock, SOL_SOCKET, SO_MAX_PACING_RATE, &option->mMaxPacingRate, sizeof(option->mMaxPacingRate));
+        }
+
+        if(option->mReusePortCbpf != nullptr) {
+            setsockopt(this->sock, SOL_SOCKET, SO_ATTACH_REUSEPORT_CBPF, option->mReusePortCbpf, sizeof(struct sock_fprog));
+        }
+
+        if(option->mReusePortEbpf != -1) {
+            setsockopt(this->sock, SOL_SOCKET, SO_ATTACH_REUSEPORT_EBPF, &option->mReusePortEbpf, sizeof(option->mReusePortEbpf));
+        }
+
+        if(option->mZeroCopy != -1) {
+            setsockopt(this->sock, SOL_SOCKET, SO_ZEROCOPY, &option->mZeroCopy, sizeof(option->mZeroCopy));
         }
     }
 }
@@ -100,23 +156,15 @@ int _SocketImpl::close() {
         ::close(sock);
         sock = -1;
     }
-
-    if(mBuff != nullptr) {
-        delete []mBuff;
-    }
-    
+ 
     return 0;
 }
 
 ByteArray _SocketImpl::receive() {
-    if(mBuffSize > 0) {
-        int length = ::read(sock,mBuff,mBuffSize);
-        return createByteArray(mBuff,length);
-    }
-
-    byte buff[1024];
-    int length = ::read(sock,buff,1024);
-    return createByteArray(buff,length);
+    ByteArray data = createByteArray(mBuffSize);
+    int length = ::read(sock,data->toValue(),1024);
+    data->quickShrink(length);
+    return data;
 }
 
 int _SocketImpl::getFd() {

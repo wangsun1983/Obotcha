@@ -5,6 +5,8 @@
 #include <unistd.h>    
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <net/if.h>
+#include <linux/filter.h>
 #include <mqueue.h>
 #include <fstream>
 #include <sys/un.h>
@@ -22,6 +24,7 @@ DECLARE_SIMPLE_CLASS(SocketOption) {
 public:
     friend class _SocketImpl;
     _SocketOption();
+    ~_SocketOption();
     
     _SocketOption* setReUseAddr(int);
     _SocketOption* setDnotRoute(int);
