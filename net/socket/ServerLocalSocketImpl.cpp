@@ -24,7 +24,7 @@ int _ServerLocalSocketImpl::bind() {
         return -NetBindFail;
     }
     
-    int connectNum = 20;
+    int connectNum = 32;
     if(option != nullptr) {
         connectNum = option->getConnectionNum();
     }

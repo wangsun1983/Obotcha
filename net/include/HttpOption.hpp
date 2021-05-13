@@ -14,28 +14,20 @@
 
 #include "String.hpp"
 #include "InetAddress.hpp"
+#include "SocketOption.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpOption) {
+DECLARE_SIMPLE_CLASS(HttpOption) IMPLEMENTS(SocketOption){
 public:
     _HttpOption();
-    _HttpOption* setRecvTimeout(int);
-    _HttpOption* setSendTimeout(int);
-    _HttpOption* setConnectionNum(int);
     _HttpOption* setCertificate(String);
     _HttpOption* setKey(String);
     
-    int getRcvTimeout();
-    int getSendTimeout();
-    int getConnectionNum();
     String getCertificate();
     String getKey();
-    
+
 private:
-    int mRcvTimeout;
-    int mSendTimeout;
-    int mConnectNum;
     String mCretificate;
     String mKey;
 };

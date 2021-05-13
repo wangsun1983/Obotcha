@@ -3,14 +3,13 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <sys/epoll.h>
 #include <fcntl.h>
 #include <memory.h>
 #include <sys/un.h>
-#include <sys/epoll.h>
 #include <stddef.h>
 
 #include "DatagramSocketImpl.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
@@ -24,7 +23,11 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,SocketOption option
         mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     }
 
-    sock = socket(AF_INET, SOCK_DGRAM, 0);
+    sock = TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_DGRAM, 0));
+    if(sock < 0) {
+        Trigger(InitializeException,"Datagram Socket create failed");
+    }
+    
     setOptions();
 }
 

@@ -88,7 +88,7 @@ _SocketOption* _SocketOption::setRcvBuffForce(int size) {
     return this;
 }
 
-_SocketOption* _SocketOption::setKeeyAlive(int on) {
+_SocketOption* _SocketOption::setKeepAlive(int on) {
     mKeepAlive = on;
     return this;
 }
@@ -224,6 +224,144 @@ _SocketOption* _SocketOption::setBuffSize(int s) {
 
 int _SocketOption::getConnectionNum() {
     return mConnectNum;
+}
+
+int _SocketOption::getReUseAddr() {
+    return mReUseAddr;
+}
+
+int _SocketOption::getDnotRoute() {
+    return mDontRoute;
+}
+
+int _SocketOption::getBroadcast() {
+    return mBroadCast;
+}
+
+int _SocketOption::getSndBuffSize() {
+    return mSendBuf;
+}
+
+int _SocketOption::getRcvBuffSize() {
+    return mRcvBuff;
+}
+
+int _SocketOption::getSndBuffForce() {
+    return mSendBuffForce;
+}
+
+int _SocketOption::getRcvBuffForce() {
+    return mRcvBuffForce;
+}
+
+int _SocketOption::getKeepAlive() {
+    return mKeepAlive;
+}
+
+int _SocketOption::getOobInline() {
+    return mOobInline;
+}
+
+int _SocketOption::getNoCheck() {
+    return mNoCheck;
+}
+
+int _SocketOption::getLingerOnOFF() {
+    return mLingerOnOff;
+}
+
+int _SocketOption::getLingerValue() {
+    return mLingerValue;
+}
+
+int _SocketOption::getReUsePort() {
+    return mReUsePort;
+}
+
+int _SocketOption::getPassCred() {
+    return mPassCred;
+}
+
+int _SocketOption::getPeerCred() {
+    return mPeerCred;
+}
+
+int _SocketOption::getRcvLoWat() {
+    return mRcvLoWat;
+}
+
+int _SocketOption::getSndLoWat() {
+    return mSndLoWat;
+}
+
+int _SocketOption::getRcvTimeout() {
+    return mRcvTimeout;
+}
+
+int _SocketOption::getSndTimeout() {
+    return mSendTimeout;
+}
+
+void _SocketOption::getBindToDevice(struct ifreq * v) {
+    if(mBindToDevice != nullptr) {
+        memcpy(mBindToDevice,v,sizeof(struct ifreq));
+    }
+}
+
+void _SocketOption::getAttachFilter(struct sock_fprog *v) {
+    if(mAttachFilter != nullptr) {
+        memcpy(mAttachFilter,v,sizeof(struct sock_fprog));
+    }
+}
+
+int _SocketOption::getDetachFilter() {
+    return mDetachFilter;
+}
+
+int _SocketOption::getTimeStamp() {
+    return mTimeStamp;
+}
+
+int _SocketOption::getTimeStampNs() {
+    return mTimeStampNs;
+}
+
+int _SocketOption::getTimeStampIng() {
+    return mTimeStampIng;
+}
+
+int _SocketOption::getBusyPoll() {
+    return mBusyPoll;
+}
+
+unsigned int _SocketOption::getMaxPacingRate() {
+    return mMaxPacingRate;
+}
+
+void _SocketOption::getReusePortCbpf(struct sock_fprog* v) {
+    if(mReusePortCbpf != nullptr) {
+        memcpy(v,mReusePortCbpf,sizeof(struct sock_fprog));
+    }
+}
+
+int _SocketOption::getReusePortEbpf() {
+    return mReusePortEbpf;
+}
+
+int _SocketOption::getZeroCopy() {
+    return mZeroCopy;
+}
+
+int _SocketOption::getRecvTimeout() {
+    return mRcvTimeout;
+}
+
+int _SocketOption::getSendTimeout() {
+    return mSendTimeout;
+}
+
+int _SocketOption::getBuffSize() {
+    return mBuffSize;
 }
 
 }

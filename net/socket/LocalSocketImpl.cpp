@@ -9,6 +9,8 @@
 #include <stddef.h>
 
 #include "LocalSocketImpl.hpp"
+#include "Exception.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
@@ -17,6 +19,9 @@ _LocalSocketImpl::_LocalSocketImpl(InetAddress address,SocketOption option):_Soc
     strcpy(serverAddr.sun_path, address->getAddress()->toChars()); 
 
     sock = TEMP_FAILURE_RETRY(socket(AF_UNIX, SOCK_STREAM, 0));
+    if(sock < 0) {
+        Trigger(InitializeException,"Socket create failed");
+    }
     setOptions();
 }
 

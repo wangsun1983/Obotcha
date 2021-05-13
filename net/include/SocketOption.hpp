@@ -23,6 +23,8 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(SocketOption) {
 public:
     friend class _SocketImpl;
+    friend class _HttpOption;
+
     _SocketOption();
     ~_SocketOption();
     
@@ -33,7 +35,7 @@ public:
     _SocketOption* setRcvBuffSize(int);
     _SocketOption* setSndBuffForce(int);
     _SocketOption* setRcvBuffForce(int);
-    _SocketOption* setKeeyAlive(int);
+    _SocketOption* setKeepAlive(int);
     _SocketOption* setOobInline(int);
     _SocketOption* setNoCheck(int);
     _SocketOption* setLinger(int,int);
@@ -60,9 +62,41 @@ public:
     _SocketOption* setConnectionNum(int);
     _SocketOption* setBuffSize(int);
 
+    int getReUseAddr();
+    int getDnotRoute();
+    int getBroadcast();
+    int getSndBuffSize();
+    int getRcvBuffSize();
+    int getSndBuffForce();
+    int getRcvBuffForce();
+    int getKeepAlive();
+    int getOobInline();
+    int getNoCheck();
+    int getLingerOnOFF();
+    int getLingerValue();
+    int getReUsePort();
+    int getPassCred();
+    int getPeerCred();
+    int getRcvLoWat();
+    int getSndLoWat();
+    int getRcvTimeout();
+    int getSndTimeout();
+    void getBindToDevice(struct ifreq *);
+    void getAttachFilter(struct sock_fprog *);
+    int getDetachFilter();
+    int getTimeStamp();
+    int getTimeStampNs();
+    int getTimeStampIng();
+    int getBusyPoll();
+    unsigned int getMaxPacingRate();
+    void getReusePortCbpf(struct sock_fprog*);
+    int getReusePortEbpf();
+    int getZeroCopy();
+    int getRecvTimeout();
+    int getSendTimeout();
+    int getBuffSize();
     int getConnectionNum();
-    //int getBuffSize();
-    
+
     enum DontRouteType {
         Off = 0,
         On = 1,
@@ -95,8 +129,8 @@ private:
                             //SO_SECURITY_ENCRYPTION_NETWORK(no use)
 
     struct ifreq *mBindToDevice;            //SO_BINDTODEVICE(struct ifreq ifr)
-    struct sock_fprog *mAttachFilter;        //SO_ATTACH_FILTER
-    int mDetachFilter;                    //SO_DETACH_FILTER
+    struct sock_fprog *mAttachFilter;       //SO_ATTACH_FILTER
+    int mDetachFilter;                      //SO_DETACH_FILTER
                                             //SO_GET_FILTER(no use)
                                             //SO_PEERNAME(no use)
     int mTimeStamp;                         //SO_TIMESTAMP
@@ -114,7 +148,7 @@ private:
                                             //SO_LOCK_FILTER(no use)
                                             //SO_SELECT_ERR_QUEUE(no use)
     int mBusyPoll;                          //SO_BUSY_POLL                                                                                       
-    long int mMaxPacingRate;            //SO_MAX_PACING_RATE
+    long int mMaxPacingRate;                //SO_MAX_PACING_RATE
                                             //SO_INCOMING_CPU(no use)
                                             //SO_ATTACH_BPF(no use)
                                             //SO_DETACH_BPF(no use)

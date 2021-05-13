@@ -12,7 +12,6 @@
 #include "SocksSocketImpl.hpp"
 #include "Error.hpp"
 #include "InitializeException.hpp"
-#include "Thread.hpp"
 #include "System.hpp"
 
 namespace obotcha {
@@ -47,7 +46,7 @@ int _SocksSocketImpl::connect() {
     int ret = getpeername(sock, ( struct sockaddr* )&local_address, &length);
     
     while(ntohs(local_address.sin_port ) == 0) {
-        st(Thread)::sleep(30);
+        usleep(30*1000);
         memset(&local_address,0,sizeof(struct sockaddr_in));
         getpeername(sock, ( struct sockaddr* )&local_address, &length);
     }
