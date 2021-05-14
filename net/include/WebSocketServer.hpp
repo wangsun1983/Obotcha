@@ -37,7 +37,7 @@ public:
 
     _WebSocketServer();
 
-    int bind(InetAddress mAddress,String path,WebSocketListener listener,WebSocketOption option = nullptr);
+    int bind(InetAddress mAddress,String path,WebSocketListener listener,WebSocketOption wsoption = nullptr,HttpOption httpoption = nullptr);
     
     int start();
 
@@ -58,7 +58,10 @@ private:
 
     WebSocketListener mWsListener;
     
-    WebSocketOption mOption;
+    WebSocketOption mWsOption;
+
+    HttpOption mHttpOption;
+    
 };
 
 

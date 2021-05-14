@@ -8,7 +8,9 @@ _SocketBuilder* _SocketBuilder::setAddress(InetAddress addr) {
 }
 
 _SocketBuilder* _SocketBuilder::setOption(SocketOption o) {
-    option = o;
+    if(o != nullptr) {
+        option = o;
+    }
     return this;
 }
 
@@ -20,6 +22,7 @@ _SocketBuilder* _SocketBuilder::setFd(int f) {
 _SocketBuilder::_SocketBuilder() {
     address = createInetAddress();
     fd = -1;
+    option = nullptr;
 }
 
 Socket _SocketBuilder::newSocket() {

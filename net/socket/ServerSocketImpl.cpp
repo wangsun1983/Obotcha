@@ -35,12 +35,13 @@ Socket _ServerSocketImpl::accept() {
         InetAddress address = createInetAddress(createString(inet_ntoa(client_address.sin_addr)),
                                                 ntohs(client_address.sin_port));
         
-        return createSocketBuilder()->setAddress(address)->setFd(clientfd)->newSocket();
+        return createSocketBuilder()
+                ->setAddress(address)
+                ->setFd(clientfd)
+                ->newSocket();
     }
 
     return nullptr;
 }
-
-
 
 }

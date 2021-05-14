@@ -97,16 +97,8 @@ void _HttpServer::start() {
         //https server
         mSSLServer = createSSLServer(mAddress->getAddress(),mAddress->getPort(),AutoClone(this),certificate,key);
     } else {
-        SocketOption option = createSocketOption();
-        
-        if(sendtimeout != -1) {
-            option->setSendTimeout(sendtimeout);
-        }
-
-        if(rcvtimeout != -1) {
-            option->setRecvTimeout(rcvtimeout);
-        }
         mServerSock = createSocketBuilder()
+                        ->setOption(mOption)
                         ->setAddress(mAddress)
                         ->newServerSocket();
 

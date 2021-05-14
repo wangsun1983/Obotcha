@@ -11,7 +11,6 @@
 #include "Enviroment.hpp"
 #include "Log.hpp"
 #include "HttpServerBuilder.hpp"
-#include "Inet4Address.hpp"
 #include "HttpOption.hpp"
 
 namespace obotcha {
@@ -23,25 +22,20 @@ _WebSocketServer::_WebSocketServer() {
 }
 
 int _WebSocketServer::bind(InetAddress addr, String path,
-                           WebSocketListener listener,WebSocketOption option) {
+                           WebSocketListener listener,WebSocketOption wsoption,HttpOption httpoption) {
     if (mHttpServer != nullptr) {
       return -AlreadyExists;
     }
 
     mAddress = addr;
     mWsListener = listener;
+    mWsOption = wsoption;
+    mHttpOption = httpoption;
     
-    HttpOption httpoption = nullptr;
-
-    if(option != nullptr) {
-        httpoption = createHttpOption();
-        httpoption->setSendTimeout(option->getSendTimeout());
-        httpoption->setRecvTimeout(option->getRcvTimeout());
-    }
     mHttpServer = createHttpServerBuilder()
                 ->setAddress(addr)
                 ->setListener(AutoClone(this))
-                ->setOption(httpoption)
+                ->setOption(mHttpOption)
                 ->build();
     
     mHttpServer->start();

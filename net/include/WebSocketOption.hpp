@@ -14,23 +14,12 @@
 
 #include "String.hpp"
 #include "InetAddress.hpp"
+#include "SocketOption.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(WebSocketOption) {
-public:
-    _WebSocketOption();
-    _WebSocketOption* setRecvTimeout(int);
-    _WebSocketOption* setSendTimeout(int);
-    _WebSocketOption* setConnectionNum(int);
+DECLARE_SIMPLE_CLASS(WebSocketOption) IMPLEMENTS(SocketOption){
 
-    int getRcvTimeout();
-    int getSendTimeout();
-    int getConnectionNum();
-private:
-    int mRcvTimeout;
-    int mSendTimeout;
-    int mConnectNum;
 };
 
 }

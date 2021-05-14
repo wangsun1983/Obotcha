@@ -7,6 +7,7 @@
 #include "String.hpp"
 #include "ArrayList.hpp"
 #include "HashMap.hpp"
+#include "HttpOption.hpp"
 
 namespace obotcha {
 
@@ -46,7 +47,7 @@ public:
     String toString();
     String toQueryString();
 
-    sp<_HttpConnection> openConnection();
+    sp<_HttpConnection> openConnection(HttpOption o = nullptr);
 
     void dump();
     

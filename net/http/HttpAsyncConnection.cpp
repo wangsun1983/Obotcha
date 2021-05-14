@@ -25,7 +25,12 @@ int _HttpAsyncConnection::connect() {
 
     InetAddress inetAddr = address->get(0);
     inetAddr->setPort(mUrl->getPort());
-    mSocket = createSocketBuilder()->setAddress(inetAddr)->newSocket();
+
+    mSocket = createSocketBuilder()
+                ->setOption(mOption)
+                ->setAddress(inetAddr)
+                ->newSocket();
+
     int result = mSocket->connect();
     mSocket->setAsync(true);
     
