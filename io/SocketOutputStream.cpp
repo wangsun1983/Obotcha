@@ -37,6 +37,7 @@ void _SocketOutputStream::setAsync(bool async) {
     } else {
         if(mChannel != nullptr) {
             fcntl(mSocket->getFd(), F_SETFL, fcntl(mSocket->getFd(), F_GETFL, 0)& ~O_NONBLOCK);
+            mChannel->close();
             mChannel = nullptr;
         }
     }

@@ -22,7 +22,7 @@ public:
     friend class _FutureTask;
     friend class _ThreadScheduledPoolExecutor;
     
-    _ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout);
+    _ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout = 10*1000);
 
     int shutdown();
 

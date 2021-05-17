@@ -4,14 +4,25 @@
 
 namespace obotcha {
 
-_AsyncOutputChannel::_AsyncOutputChannel(int fd,WriteCallback callback) {
+_AsyncOutputChannel::_AsyncOutputChannel(int fd,WriteCallback callback,Handler h) {
     mFd = fd;
     mMutex = createMutex();
     mDatas = createLinkedList<ByteArray>();
     writeCb = callback;
+    mHandler = h;
 }
 
 void _AsyncOutputChannel::write(ByteArray data) {
+    if(mHandler != nullptr) {
+        mHandler->post([](AsyncOutputChannel channel,ByteArray data) {
+            channel->_write(data);
+        },AutoClone(this),data);
+    } else {
+        _write(data);
+    }
+}
+
+void _AsyncOutputChannel::_write(ByteArray data) {
     AutoLock l(mMutex);
     if(mDatas->size() > 0) {
         mDatas->enQueueLast(data);

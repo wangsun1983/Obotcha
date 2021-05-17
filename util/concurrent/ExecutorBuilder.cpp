@@ -20,7 +20,7 @@ _ExecutorBuilder::_ExecutorBuilder() {
     threadnum = st(System)::availableProcessors();
     maxthreadnum = st(System)::availableProcessors()*2;
     minthreadnum = 2;
-    timeout = 1000*16;
+    timeout = 1000*10;
 }
 
 _ExecutorBuilder* _ExecutorBuilder::setQueueSize(int v) {

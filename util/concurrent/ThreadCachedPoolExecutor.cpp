@@ -125,7 +125,7 @@ Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r) {
     }
     FutureTask task = createFutureTask(r);
     Future future = createFuture(task);
-    mTasks->enQueueLastNoLock(task);
+    mTasks->enQueueLast(task);
     if(mIdleNum->get() == 0) {
         setUpOneIdleThread();
     }

@@ -72,7 +72,7 @@ ArrayList<InetHostMac> getMacAddress() {
     int interface = 0;
     struct ifreq buf[128];
     struct ifconf ifc;
-    char mac[32] = {0};
+    
  
     ArrayList<InetHostMac> list = createArrayList<InetHostMac>();
 
@@ -82,6 +82,7 @@ ArrayList<InetHostMac> getMacAddress() {
         ifc.ifc_buf = (caddr_t)buf;
         if (!ioctl(fd, SIOCGIFCONF, (char *)&ifc)) {
             interface = ifc.ifc_len / sizeof(struct ifreq);
+            char mac[32] = {0};
             while (i < interface) {
                 if (!(ioctl(fd, SIOCGIFHWADDR, (char *)&buf[i]))) {
                     sprintf(mac, "%02X:%02X:%02X:%02X:%02X:%02X",

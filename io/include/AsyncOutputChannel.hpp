@@ -8,6 +8,7 @@
 #include "ConcurrentQueue.hpp"
 #include "ByteArray.hpp"
 #include "LinkedList.hpp"
+#include "Handler.hpp"
 
 namespace obotcha {
 
@@ -15,7 +16,7 @@ DECLARE_SIMPLE_CLASS(AsyncOutputChannel) {
 public:
     typedef std::function<long (int,ByteArray)> WriteCallback;
 
-    _AsyncOutputChannel(int fd,WriteCallback callback = nullptr);
+    _AsyncOutputChannel(int fd,WriteCallback callback = nullptr,Handler h = nullptr);
     void write(ByteArray);
     void notifyWrite();
     int getFd();
@@ -26,6 +27,9 @@ private:
     Mutex mMutex;
     LinkedList<ByteArray> mDatas;
     WriteCallback writeCb;
+    Handler mHandler;
+
+    void _write(ByteArray);
 };
 
 }
