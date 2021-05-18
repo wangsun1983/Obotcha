@@ -136,23 +136,17 @@ void _SocketImpl::setOptions() {
         if(option->mMaxPacingRate != -1) {
             setsockopt(this->sock, SOL_SOCKET, SO_MAX_PACING_RATE, &option->mMaxPacingRate, sizeof(option->mMaxPacingRate));
         }
-#ifdef SO_ATTACH_REUSEPORT_CBPF
+
         if(option->mReusePortCbpf != nullptr) {
             setsockopt(this->sock, SOL_SOCKET, SO_ATTACH_REUSEPORT_CBPF, option->mReusePortCbpf, sizeof(struct sock_fprog));
         }
-#endif
 
-#ifdef SO_ATTACH_REUSEPORT_EBPF
         if(option->mReusePortEbpf != -1) {
             setsockopt(this->sock, SOL_SOCKET, SO_ATTACH_REUSEPORT_EBPF, &option->mReusePortEbpf, sizeof(option->mReusePortEbpf));
         }
-#endif
-
-#ifdef SO_ZEROCOPY 
         if(option->mZeroCopy != -1) {
             setsockopt(this->sock, SOL_SOCKET, SO_ZEROCOPY, &option->mZeroCopy, sizeof(option->mZeroCopy));
         }
-#endif
     }
 }
 

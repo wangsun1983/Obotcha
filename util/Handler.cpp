@@ -140,7 +140,7 @@ void _Handler::run() {
             if(mMessagePool == nullptr) {
                 mCondition->wait(mMutex);
                 continue;
-            }else if(mMessagePool != nullptr) {
+            }else {
                 long interval = (mMessagePool->nextTime - st(System)::currentTimeMillis());
                 if(interval <= 0) {
                     msg = mMessagePool;

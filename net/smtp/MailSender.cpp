@@ -186,7 +186,7 @@ _MailSender::~_MailSender() {
 }
 
 int _MailSender::send() {
-    char *FileBuf = NULL;
+    //char *FileBuf = NULL;
 	FILE* hFile = NULL;
     int res = 0;
     std::string fileName;
@@ -196,7 +196,7 @@ int _MailSender::send() {
         return -1;
     }
     printf("send trace1_1 \n");
-    FileBuf = new char[55];
+    //FileBuf = new char[55];
 
     unsigned long int totalsize = 0;
 

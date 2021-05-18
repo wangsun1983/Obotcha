@@ -10,6 +10,7 @@ _AsyncOutputChannel::_AsyncOutputChannel(int fd,WriteCallback callback,Handler h
     mDatas = createLinkedList<ByteArray>();
     writeCb = callback;
     mHandler = h;
+    isClosed = false;
 }
 
 void _AsyncOutputChannel::write(ByteArray data) {
@@ -24,6 +25,10 @@ void _AsyncOutputChannel::write(ByteArray data) {
 
 void _AsyncOutputChannel::_write(ByteArray data) {
     AutoLock l(mMutex);
+    if(isClosed) {
+        return;
+    }
+    
     if(mDatas->size() > 0) {
         mDatas->enQueueLast(data);
         return;
@@ -53,6 +58,10 @@ void _AsyncOutputChannel::_write(ByteArray data) {
 
 void _AsyncOutputChannel::notifyWrite() {
     AutoLock l(mMutex);
+    if(isClosed) {
+        return;
+    }
+
     while(mDatas->size() > 0) {
         ByteArray data = mDatas->deQueueFirst();
         int result = 0;
@@ -85,6 +94,7 @@ int _AsyncOutputChannel::getFd() {
 
 void _AsyncOutputChannel::close() {
     AutoLock l(mMutex);
+    isClosed = true;
     mDatas->clear();
     st(AsyncOutputChannelPool)::getInstance()->remove(AutoClone(this));
 }

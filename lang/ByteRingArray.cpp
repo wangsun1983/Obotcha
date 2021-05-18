@@ -143,7 +143,7 @@ ByteArray _ByteRingArray::pop(int size) {
             memcpy(buff->toValue() + length,mBuff,size - length);
             mStart = (size - length);
         }
-    } else if(mEnd > mStart) {
+    } else {
         if((mEnd -mStart) < size) {
             Trigger(ArrayIndexOutOfBoundsException,"Ring Array Pop OverStack!!!");
         }

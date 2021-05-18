@@ -81,7 +81,6 @@ _WebSocketClient::_WebSocketClient(int version) {
         
         default:{
             throw InitializeException("Websocket Client not support version!!!");
-            break;
         }
     }
 }

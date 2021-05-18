@@ -28,6 +28,7 @@ private:
     LinkedList<ByteArray> mDatas;
     WriteCallback writeCb;
     Handler mHandler;
+    bool isClosed;
 
     void _write(ByteArray);
 };

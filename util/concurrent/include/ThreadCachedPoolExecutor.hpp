@@ -85,8 +85,6 @@ private:
 
     int minThreadNum;
 
-    int mQueueSize;
-
     BlockingQueue<FutureTask> mTasks;
 
     AtomicInteger mIdleNum;

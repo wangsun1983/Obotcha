@@ -26,14 +26,13 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int queuesize,int minthread
         Trigger(InitializeException,"ThreadCachedPool");
     }
 
-    mQueueSize = queuesize;
     maxThreadNum = maxthreadnum;
     minThreadNum = minthreadnum;
     mThreadTimeout = timeout;
 
     mHandlers = createArrayList<Thread>();
     mHandlerMutex = createMutex("ThreadCachedHandlerMutex");
-    mTasks = createBlockingQueue<FutureTask>();
+    mTasks = createBlockingQueue<FutureTask>(queuesize);
     mStatus = Running;
     mIdleNum = createAtomicInteger(0);
 }
