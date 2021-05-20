@@ -10,20 +10,22 @@
 #include "SocketOption.hpp"
 #include "Error.hpp"
 #include "MethodNotSupportException.hpp"
+#include "FileDescriptor.hpp"
+
 namespace obotcha {
 
 class _Socket;
 DECLARE_SIMPLE_CLASS(SocketImpl) {
 public:
     _SocketImpl(){}
-    _SocketImpl(int);
+    _SocketImpl(FileDescriptor);
     _SocketImpl(InetAddress,SocketOption);
     virtual int connect() {Trigger(MethodNotSupportException,"not support");};
     virtual int bind() {Trigger(MethodNotSupportException,"not support");};
     virtual sp<_Socket> accept() {Trigger(MethodNotSupportException,"not support");}; //TOOD
     
     int close();
-    int getFd();
+    FileDescriptor getFileDescriptor();
 
     void setRecvBuff(int);
     ByteArray receive();
@@ -33,7 +35,7 @@ public:
     
 protected:
     void setOptions();
-    int sock;
+    FileDescriptor sock;
     InetAddress address;
     SocketOption option;
     struct sockaddr_in mSockAddr;

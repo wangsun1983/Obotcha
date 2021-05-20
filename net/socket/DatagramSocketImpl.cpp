@@ -10,6 +10,7 @@
 
 #include "DatagramSocketImpl.hpp"
 #include "InitializeException.hpp"
+#include "FileDescriptor.hpp"
 
 namespace obotcha {
 
@@ -23,8 +24,8 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,SocketOption option
         mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     }
 
-    sock = TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_DGRAM, 0));
-    if(sock < 0) {
+    sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_DGRAM, 0)));
+    if(sock->getFd() < 0) {
         Trigger(InitializeException,"Datagram Socket create failed");
     }
     
@@ -37,7 +38,7 @@ int _DatagramSocketImpl::connect() {
 }
 
 int _DatagramSocketImpl::bind() {
-    return ::bind(sock,(struct sockaddr*)&mSockAddr,sizeof(mSockAddr));
+    return ::bind(sock->getFd(),(struct sockaddr*)&mSockAddr,sizeof(mSockAddr));
 }
 
 

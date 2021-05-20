@@ -23,7 +23,8 @@ public:
         mConditaion = createCondition();
     }
 
-    int onMessage(WebSocketFrame message,WebSocketClientInfo client) {
+    
+    int onData(WebSocketFrame message,WebSocketLinker client) {
         printf("message is %s \n",message->getData()->toValue());
         //mMessage = message->getData();
         String response = createString("hello from server ");
@@ -37,38 +38,28 @@ public:
 
         //ArrayList<ByteArray> text = composer->genTextMessage(client,createString("hello world from server"));
         //int ret = st(NetUtils)::sendTcpPacket(fd,text->get(0));
+        sleep(1);
         int ret = client->sendTextMessage(createString("hello world from server"));
         printf("onMessage send result is %d \n",ret);
         mConditaion->notify();
         return 0;
     }
 
-    int onData(WebSocketFrame message,WebSocketClientInfo client) {
-        //printf("data message size is %d,message is %s \n",message->size(),message->toValue());
-        //File file = createFile("recvfile");
-        //FileOutputStream stream = createFileOutputStream(file);
-        //stream->open(FileOpenType::Trunc);
-        //stream->write(message);
-        //stream->flush();
-        //stream->close();
-        return 0;
-    }
-
-    int onConnect(WebSocketClientInfo client) {
+    int onConnect(WebSocketLinker client) {
         printf("on connect fd  \n");
         return 0;
     }
 
-    int onDisconnect(WebSocketClientInfo client) {
+    int onDisconnect(WebSocketLinker client) {
         printf("on disconnect fd\n");
         return 0;
     }
 
-    int onPong(WebSocketClientInfo client) {
+    int onPong(WebSocketLinker client) {
         return 0;
     }
 
-    int onPing(WebSocketClientInfo client) {
+    int onPing(WebSocketLinker client) {
         return 0;
     }
 
@@ -90,7 +81,7 @@ int main() {
     MyWsListener l = createMyWsListener();
 
     WebSocketServer server = createWebSocketServer();
-    InetAddress address = createInetAddress("192.168.1.6",1111);
+    InetAddress address = createInetAddress("192.168.43.252",1234);
     
     server->bind(address,"/mytest",l);
     server->start();
@@ -99,7 +90,7 @@ int main() {
     printf("websocket start trace2 \n");
 
     while(1) {sleep(1);}
-    server->release();
+    server->close();
     printf("websocket start trace3 \n");
 
     

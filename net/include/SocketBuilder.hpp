@@ -8,6 +8,7 @@
 #include "Socket.hpp"
 #include "SocketOption.hpp"
 #include "ServerSocket.hpp"
+#include "FileDescriptor.hpp"
 
 namespace obotcha {
 
@@ -17,7 +18,7 @@ public:
     
     _SocketBuilder* setAddress(InetAddress);
     _SocketBuilder* setOption(SocketOption);
-    _SocketBuilder* setFd(int);
+    _SocketBuilder* setFileDescriptor(FileDescriptor);
 
     Socket newSocket();
     Socket newDatagramSocket();
@@ -28,7 +29,7 @@ public:
 private:
     InetAddress address;
     SocketOption option;
-    int fd;
+    FileDescriptor fd;
 };
 
 }

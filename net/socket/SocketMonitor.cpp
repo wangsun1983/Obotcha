@@ -84,7 +84,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                     SocketListener listener = nullptr;
                     {
                         AutoLock l(monitor->mListenerMutex);
-                        listener = monitor->mListeners->get(task->sock->getFd());
+                        listener = monitor->mListeners->get(task->sock->getFileDescriptor()->getFd());
                     }
                     if(listener != nullptr) {
                         listener->onSocketMessage(task->event,task->sock,task->data);
@@ -106,12 +106,12 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
 void _SocketMonitor::addNewSocket(Socket s,SocketListener l) {
     {
         AutoLock lock(mMutex);
-        mSocks->put(s->getFd(),s);
+        mSocks->put(s->getFileDescriptor()->getFd(),s);
     }
 
     {
         AutoLock lock(mListenerMutex);
-        mListeners->put(s->getFd(),l);
+        mListeners->put(s->getFileDescriptor()->getFd(),l);
     }
 }
 
@@ -121,16 +121,16 @@ int _SocketMonitor::bind(Socket s,SocketListener l) {
     }
     addNewSocket(s,l);
     s->setAsync(true);
-    return bind(s->getFd(),l,false);
+    return bind(s->getFileDescriptor()->getFd(),l,false);
 }
 
 
 int _SocketMonitor::bind(ServerSocket s,SocketListener l) {
     {
         AutoLock lock(mMutex);
-        mServerSocks->put(s->getFd(),s);
+        mServerSocks->put(s->getFileDescriptor()->getFd(),s);
     }
-    return bind(s->getFd(),l,true);
+    return bind(s->getFileDescriptor()->getFd(),l,true);
 }
 
 int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
@@ -152,7 +152,7 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
             socklen_t client_addrLength = sizeof(struct sockaddr_in);
             int clientfd = accept(fd,( struct sockaddr* )&client_address, &client_addrLength );
             if(clientfd != -1) {
-                Socket s = createSocket(clientfd);
+                Socket s = createSocket(createFileDescriptor(clientfd));
                 s->setInetAddress(createInetAddress(
                                     createString(inet_ntoa(client_address.sin_addr)),
                                     ntohs(client_address.sin_port)));
@@ -163,7 +163,7 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                         monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Connect,s));
                         monitor->mCondition->notify();
                     }
-                    monitor->bind(s->getFd(),listener,false);
+                    monitor->bind(s->getFileDescriptor()->getFd(),listener,false);
                 }
                 return st(EPollFileObserver)::OnEventOK;
             }
@@ -233,23 +233,23 @@ void _SocketMonitor::close() {
 int _SocketMonitor::remove(Socket s) {
     {
         AutoLock lock(mMutex);
-        mSocks->remove(s->getFd());
-        mServerSocks->remove(s->getFd());
+        mSocks->remove(s->getFileDescriptor()->getFd());
+        mServerSocks->remove(s->getFileDescriptor()->getFd());
     }
 
     {
         AutoLock lock(mListenerMutex);
-        mListeners->remove(s->getFd());
+        mListeners->remove(s->getFileDescriptor()->getFd());
     }
 
-    mPoll->removeObserver(s->getFd());
+    mPoll->removeObserver(s->getFileDescriptor()->getFd());
 
     return 0;
 }
 
 bool _SocketMonitor::isSocketExist(Socket s) {
     AutoLock l(mMutex);
-    return mSocks->get(s->getFd()) != nullptr;
+    return mSocks->get(s->getFileDescriptor()->getFd()) != nullptr;
 }
 
 _SocketMonitor::~_SocketMonitor() {

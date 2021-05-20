@@ -20,32 +20,36 @@ _Socket::_Socket(int v,InetAddress addr,SocketOption option) {
     
     switch(v) {
         case Tcp:
-        mSock = createSocksSocketImpl(addr,option);
+            mSock = createSocksSocketImpl(addr,option);
         return;
 
         case Udp:
-        mSock = createDatagramSocketImpl(addr,option);
+            mSock = createDatagramSocketImpl(addr,option);
         return;
 
         case Local:
-        mSock = createLocalSocketImpl(addr,option);
+            mSock = createLocalSocketImpl(addr,option);
         return;
     }
 
     Trigger(InitializeException,"ivalid type");
 }
 
-_Socket::_Socket(int fd) {
+_Socket::_Socket(FileDescriptor descriptor) {
     mInput = nullptr;
     mOutput = nullptr;
-    mSock = createSocketImpl(fd);
+    mSock = createSocketImpl(descriptor);
     mStatus = Idle;
     type = Fd;
 }
 
 void _Socket::setAsync(bool async) {
-    if(mStatus != Closed) {
+    if(mOutput != nullptr) {
         mOutput->setAsync(async);
+    }
+
+    if(mInput != nullptr) {
+        mInput->setAsync(async);
     }
 }
 
@@ -75,12 +79,15 @@ int _Socket::bind() {
 
 void _Socket::close() {
     mSock->close();
+
     if(mOutput != nullptr) {
         mOutput->close();
+        mOutput = nullptr;
     }
 
     if(mInput != nullptr) {
         mInput->close();
+        mOutput = nullptr;
     }
 
     mStatus = Closed;
@@ -112,8 +119,8 @@ OutputStream _Socket::getOutputStream() {
     return mOutput;
 }
 
-int _Socket::getFd() {
-    return mSock->getFd();
+FileDescriptor _Socket::getFileDescriptor() {
+    return mSock->getFileDescriptor();
 }
 
 int _Socket::getType() {

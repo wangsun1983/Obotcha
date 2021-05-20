@@ -55,7 +55,7 @@ int _WebSocketServer::close() {
 }
 
 void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
-    int fd = s->getFd();
+    //int fd = s->getFd();
     WebSocketLinker client =
         st(WebSocketLinkerManager)::getInstance()->getLinker(s);
     switch(event) {

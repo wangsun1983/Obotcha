@@ -21,6 +21,7 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/socketoutputstream.o \
 	$(outtmp)/asyncoutputchannel.o \
 	$(outtmp)/asyncoutputchannelpool.o \
+	$(outtmp)/filedescriptor.o \
 	
 
 $(outtmp)/file.o :$(ioDir)/File.cpp
@@ -85,3 +86,6 @@ $(outtmp)/asyncoutputchannel.o :$(ioDir)/AsyncOutputChannel.cpp
 
 $(outtmp)/asyncoutputchannelpool.o :$(ioDir)/AsyncOutputChannelPool.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/AsyncOutputChannelPool.cpp -o $(outtmp)/asyncoutputchannelpool.o 
+
+$(outtmp)/filedescriptor.o :$(ioDir)/FileDescriptor.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileDescriptor.cpp -o $(outtmp)/filedescriptor.o 

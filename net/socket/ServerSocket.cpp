@@ -19,8 +19,8 @@ int _ServerSocket::bind() {
     return mSock->bind();
 }
 
-int _ServerSocket::getFd() {
-    return mSock->getFd();
+FileDescriptor _ServerSocket::getFileDescriptor() {
+    return mSock->getFileDescriptor();
 }
 
 int _ServerSocket::close() {

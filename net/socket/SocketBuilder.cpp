@@ -14,19 +14,19 @@ _SocketBuilder* _SocketBuilder::setOption(SocketOption o) {
     return this;
 }
 
-_SocketBuilder* _SocketBuilder::setFd(int f) {
+_SocketBuilder* _SocketBuilder::setFileDescriptor(FileDescriptor f) {
     fd = f;
     return this;
 }
 
 _SocketBuilder::_SocketBuilder() {
     address = createInetAddress();
-    fd = -1;
+    fd = nullptr;
     option = nullptr;
 }
 
 Socket _SocketBuilder::newSocket() {
-    if(fd == -1) {
+    if(fd == nullptr) {
         return createSocket(st(Socket)::Tcp,address,option);
     }
 
@@ -40,7 +40,7 @@ Socket _SocketBuilder::newDatagramSocket() {
 }
 
 Socket _SocketBuilder::newLocalSocket() {
-    if(fd == -1) {
+    if(fd == nullptr) {
         return createSocket(st(Socket)::Local,address,option);
     }
 

@@ -2,7 +2,7 @@
 <meta charset="utf-8" />
 <title>WebSocket Test</title>
 <script language="javascript"type="text/javascript">
-    var wsUri ="ws://192.168.1.6:1111/mytest";
+    var wsUri ="ws://192.168.1.5:1111/";
     var output;
 
     function init() {
@@ -28,9 +28,9 @@
 
     function onOpen(evt) {
         writeToScreen("CONNECTED");
-        doSend("hello world1");
+        doSend("hello server");
         //writeToScreen("CONNECTED1");
-        doSend("hello world2");
+        //doSend("hello world2");
         //writeToScreen("CONNECTED2");
     }
 

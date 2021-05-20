@@ -7,6 +7,7 @@
 
 #include "OutputStream.hpp"
 #include "AsyncOutputChannel.hpp"
+#include "FileDescriptor.hpp"
 
 namespace obotcha {
 
@@ -31,7 +32,7 @@ public:
     bool isAsync();
 
 private:
-    long _write(int,ByteArray);
+    long _write(FileDescriptor,ByteArray);
 
     sp<_Socket> mSocket;
     AsyncOutputChannel mChannel;

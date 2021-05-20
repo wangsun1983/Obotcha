@@ -13,6 +13,7 @@
 #include "Error.hpp"
 #include "InitializeException.hpp"
 #include "System.hpp"
+#include "FileDescriptor.hpp"
 
 namespace obotcha {
 
@@ -29,13 +30,14 @@ _SocksSocketImpl::_SocksSocketImpl(InetAddress address,SocketOption option):_Soc
         mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     }
 
-    this->sock = TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0));
+    this->sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0)));
     setOptions();
 }
 
 int _SocksSocketImpl::connect() {
-    if(TEMP_FAILURE_RETRY(::connect(sock, (struct sockaddr *)&mSockAddr, sizeof(mSockAddr))) < 0) {
-        ::close(sock);
+    if(TEMP_FAILURE_RETRY(::connect(sock->getFd(), (struct sockaddr *)&mSockAddr, sizeof(mSockAddr))) < 0) {
+        sock->close();
+
         return -1;
     }
 
@@ -43,12 +45,12 @@ int _SocksSocketImpl::connect() {
     memset(&local_address,0,sizeof(struct sockaddr_in));
 
     socklen_t length = 0;
-    int ret = getpeername(sock, ( struct sockaddr* )&local_address, &length);
+    int ret = getpeername(sock->getFd(), ( struct sockaddr* )&local_address, &length);
     
     while(ntohs(local_address.sin_port ) == 0) {
         usleep(30*1000);
         memset(&local_address,0,sizeof(struct sockaddr_in));
-        getpeername(sock, ( struct sockaddr* )&local_address, &length);
+        getpeername(sock->getFd(), ( struct sockaddr* )&local_address, &length);
     }
 
     return ret;

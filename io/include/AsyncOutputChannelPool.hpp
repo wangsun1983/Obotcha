@@ -9,6 +9,7 @@
 
 #include "EPollFileObserver.hpp"
 #include "AsyncOutputChannel.hpp"
+#include "FileDescriptor.hpp"
 
 namespace obotcha {
 

@@ -22,7 +22,7 @@ AtomicInteger messageCount = createAtomicInteger(0);
 DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
 
-void onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg){
+void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPacket msg){
     switch(event) {
         case HttpEvent::Connect: {
             connectCount->incrementAndGet();

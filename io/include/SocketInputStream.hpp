@@ -22,6 +22,10 @@ public:
 
     ~_SocketInputStream();
 
+    bool isAsync();
+    
+    void setAsync(bool async); 
+
 private:
     sp<_Socket> mSocket;
 };

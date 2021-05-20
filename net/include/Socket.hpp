@@ -9,6 +9,7 @@
 #include "SocketOption.hpp"
 #include "SocketInputStream.hpp"
 #include "SocketOutputStream.hpp"
+#include "FileDescriptor.hpp"
 #include <atomic>
 
 namespace obotcha {
@@ -23,7 +24,7 @@ public:
     };
 
     _Socket(int,InetAddress host,SocketOption option);
-    _Socket(int);
+    _Socket(FileDescriptor);
     void setAsync(bool);
     bool isAsync();
     
@@ -33,7 +34,7 @@ public:
     void close();
     bool isClosed();
 
-    int getFd();
+    FileDescriptor getFileDescriptor();
     int getType();
 
     void setInetAddress(InetAddress);

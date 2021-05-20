@@ -330,6 +330,7 @@ private:
 
     const static  unsigned char IgnoreCaseTable[128];
     const static  unsigned char toLowCaseTable[128];
+    const static  unsigned char toUpCaseTable[128];
     const static  int FormatBuffLength;
 
     const static std::string False;

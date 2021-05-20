@@ -133,11 +133,6 @@ private:
     mode_t mMode;
     
     String mPath;
-    
-
-    //struct stat mFileInfo;
-
-    //int mExist;
 };
 
 }

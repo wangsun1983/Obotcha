@@ -73,65 +73,54 @@ const unsigned char _String::toLowCaseTable[128] = {
     0x78/*X*/,0x79 /*Y*/,0x7A /*Z*/, 0x7B /*{*/,0x7C/*|*/,0x7D/*}*/,0x7E/*~*/,0x00
 };
 
+const unsigned char _String::toUpCaseTable[128] = {
+    0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x20/* */,0x21 /*!*/,0x22 /*"*/, 0x23 /*#*/,0x24/*$*/,0x25/*%*/,0x26/*&*/,0x27/*'*/, 
+    0x28/*(*/,0x29 /*)*/,0x2A /***/, 0x2B /*+*/,0x2C/*,*/,0x2D/*-*/,0x2E/*.*/,0x2F/*/*/,
+    0x30/*0*/,0x31 /*1*/,0x32 /*2*/, 0x33 /*3*/,0x34/*4*/,0x35/*5*/,0x36/*6*/,0x37/*7*/, 
+    0x38/*8*/,0x39 /*9*/,0x3A /*:*/, 0x3B /*;*/,0x3C/*<*/,0x3D/*=*/,0x3E/*>*/,0x3F/*?*/,
+    0x40/*@*/,0x41 /*A*/,0x42 /*B*/, 0x43 /*C*/,0x44/*D*/,0x45/*E*/,0x46/*F*/,0x47/*G*/, 
+    0x48/*H*/,0x49 /*I*/,0x4A /*J*/, 0x4B /*K*/,0x4C/*L*/,0x4D/*M*/,0x4E/*N*/,0x4F/*O*/,
+    0x50/*P*/,0x51 /*Q*/,0x52 /*R*/, 0x53 /*S*/,0x54/*T*/,0x55/*U*/,0x56/*V*/,0x57/*W*/, 
+    0x58/*X*/,0x59 /*Y*/,0x5A /*Z*/, 0x5B /*[*/,0x5C/*\*/,0x5D/*]*/,0x5E/*^*/,0x5F/*_*/,
+    0x60/*`*/,0x41 /*A*/,0x42 /*B*/, 0x43 /*C*/,0x44/*D*/,0x45/*E*/,0x46/*F*/,0x47/*G*/, 
+    0x48/*H*/,0x49 /*I*/,0x4A /*J*/, 0x4B /*K*/,0x4C/*L*/,0x4D/*M*/,0x4E/*N*/,0x4F/*O*/,
+    0x50/*P*/,0x51 /*Q*/,0x52 /*R*/, 0x53 /*S*/,0x54/*T*/,0x55/*U*/,0x56/*V*/,0x57/*W*/, 
+    0x58/*X*/,0x59 /*Y*/,0x5A /*Z*/, 0x7B /*{*/,0x7C/*|*/,0x7D/*}*/,0x7E/*~*/,0x00
+};
+
 _String::_String() {
 
 }
 
 _String::_String(const String &v) {
-    if(v == nullptr) {
-        return;
-    }
-
-    if(v.m_ptr != nullptr) {
-        m_str = v->m_str;
-    }
+    m_str = v->m_str;
 }
 
 _String::_String(const Long &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Long is null");
-    }
-
     m_str = std::to_string(v->toValue());
 }
 
 _String::_String(const Byte &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Byte is null");
-    }
-
     m_str = std::to_string(v->toValue());
 }
 
 _String::_String(const Uint8 &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Uint8 is null");
-    }
-
     m_str = std::to_string(v->toValue());
 }
 
 _String::_String(const Uint16 &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Uint16 is null");
-    }
-
     m_str = std::to_string(v->toValue());
 }
 
 _String::_String(const Uint32 &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Uint32 is null");
-    }
-
     m_str = std::to_string(v->toValue());
 }
 
 _String::_String(const Uint64 &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Uint64 is null");
-    }
-
     m_str = std::to_string(v->toValue());
 }
 
@@ -140,25 +129,14 @@ _String::_String(const std::string v) {
 }
 
 _String::_String(std::string *v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"std::string is null");
-    }
     m_str = *v;
 }
 
 _String::_String(const Integer &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Integer is null");
-    }
-
     m_str = std::to_string(v->toValue());
 }
 
 _String::_String(const Boolean &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Boolean is null");
-    }
-
     if(v->toValue()) {
         m_str = True;
     } else {
@@ -167,20 +145,12 @@ _String::_String(const Boolean &v) {
 }
 
 _String::_String(const Float &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Float is null");
-    }
-
     std::stringstream ss;
     ss<< v->toValue();
     ss>>m_str;
 }
 
 _String::_String(const Double &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Double is null");
-    }
-    
     std::stringstream ss;
     ss<< v->toValue();
     ss>>m_str;
@@ -235,15 +205,11 @@ _String::_String(uint64_t v) {
 }
 
 _String::_String(const char *v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"char * is null");
-    }
-    
     m_str = std::string(v);
 }
 
 _String::_String(const char *v,int start,int length) {
-    if(v == nullptr || start < 0 || length <=0) {
+    if(start < 0 || length <=0) {
         Trigger(InitializeException,"char * is null");
     }
 
@@ -271,27 +237,14 @@ const char * _String::toChars() {
 }
 
 char _String::charAt(int index) {
-    if(index < 0 || (unsigned int)index >= m_str.size()) {
-        Trigger(ArrayIndexOutOfBoundsException,"char At error");
-    }
-
     return m_str.data()[index];
 }
 
 String _String::subString(int start,int length) {
-    if(length < 0 || (start + length) > m_str.size()) {
-        return nullptr;
-    }
-
     return createString(m_str.substr(start,length));
 }
 
 bool _String::contains(const String &val) {
-
-    if(val == nullptr) {
-        Trigger(NullPointerException,"String contains param error");
-    }
-
     if(m_str.find(val->m_str) != m_str.npos) {
         return true;
     }
@@ -308,10 +261,6 @@ bool _String::contains(std::string val) {
 }
     
 bool _String::contains(const char *val) {
-    if(val == nullptr) {
-        return false;
-    }
-
     if(m_str.find(val) != m_str.npos) {
         return true;
     }
@@ -352,10 +301,6 @@ int _String::size() {
 }
 
 int _String::indexOf(const String &v) {
-    if(v == nullptr) {
-        return -1;
-    }
-
     return m_str.find(v->m_str);
 }
 
@@ -364,10 +309,6 @@ int _String::indexOf(std::string v) {
 }
 
 int _String::indexOf(const char *v) {
-    if(v == nullptr) {
-        return -1;
-    }
-
     return m_str.find(v);
 }
 
@@ -376,74 +317,38 @@ int _String::indexOf(char v) {
 }
     
 String _String::valueOf(const Integer &v) {
-    if(v == nullptr) {
-        return nullptr;
-    }
-
     return valueOf(v->toValue());
 }
 
 String _String::valueOf(const Boolean &v) {
-    if(v == nullptr) {
-        return nullptr;
-    }
-
     return valueOf(v->toValue());
 }
 
 String _String::valueOf(const Double &v) {
-    if(v == nullptr) {
-        return nullptr;
-    }
-
     return valueOf(v->toValue());
 }
 
 String _String::valueOf(const Float &v) {
-    if(v == nullptr) {
-        return nullptr;
-    }
-
     return valueOf(v->toValue());
 }
 
 String _String::valueOf(const Long &v) {
-    if(v == nullptr) {
-        return nullptr;
-    }
-
     return valueOf((uint64_t)v->toValue());
 }
 
 String _String::valueOf(const Uint8 &v) {
-    if(v == nullptr) {
-        return nullptr;
-    }
-
     return valueOf(v->toValue());
 }
 
 String _String::valueOf(const Uint16 &v) {
-    if(v == nullptr) {
-        return nullptr;
-    }
-
     return valueOf(v->toValue());
 }
 
 String _String::valueOf(const Uint32 &v) {
-    if(v == nullptr) {
-        return nullptr;
-    }
-
     return valueOf(v->toValue());
 }
 
 String _String::valueOf(const Uint64 &v) {
-    if(v == nullptr) {
-        return nullptr;
-    }
-
     return valueOf(v->toValue());
 }
 
@@ -500,17 +405,10 @@ uint64_t _String::hashcode() {
 }
 
 bool _String::equals(const String &s) {
-    if(s == nullptr) {
-        return false;
-    }
-
     return (m_str.compare(s->m_str) == 0);
 }
 
 bool _String::equals(const char *s) {
-    if(s == nullptr) {
-        return false;
-    }
     return (m_str.compare(s) == 0);   
 }
 
@@ -519,17 +417,10 @@ bool _String::equals(std::string p) {
 }
 
 ArrayList<String> _String::split(const String &v) {
-    if(v == nullptr) {
-        return nullptr;
-    }
-
     return split(v->toChars(),v->size());
 }
 
 sp<_ArrayList<String>> _String::split(const char* v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"split illegal param");
-    }
     return split(v,strlen(v));
 }
 
@@ -562,10 +453,6 @@ sp<_ArrayList<String>> _String::split(std::string separator) {
 }
 
 sp<_ArrayList<String>> _String::split(const char* v,int size) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"split illegal param");
-    }
-
     std::string str = std::string(v,size);
 
     return split(str);
@@ -848,10 +735,7 @@ String _String::toHexString() {
 }
 
 bool _String::toBasicBool() {
-    if(m_str.size() == 0) {
-        Trigger(TransformException,"String to Boolean Fail");
-    }
-
+    
     const char *data = m_str.data();
     
     if( (m_str.size() == 4) &&
@@ -921,24 +805,26 @@ String _String::toLowerCase() {
     const char *p = m_str.data();
     for(int i = 0;i < size;i++) {
         data[i] = toLowCaseTable[p[i]];
-        //printf("p is %c,%x,data is %c \n",p[i],p[i],data[i]);
     }
     data[size] = 0;
     
-    return createString((const char *)&data); 
+    return createString((const char *)data); 
 }
 
 String _String::toUpperCase() {
-    String result = createString(m_str);
-    std::transform(result->m_str.begin(),result->m_str.end(),result->m_str.begin(),::toupper);
-    return result;
+    int size = m_str.size();
+    char data[m_str.size() + 1];
+
+    const char *p = m_str.data();
+    for(int i = 0;i < size;i++) {
+        data[i] = toUpCaseTable[p[i]];
+    }
+    data[size] = 0;
+    
+    return createString((const char *)data); 
 }
     
 bool _String::equalsIgnoreCase(const String &str) {
-    if(str == nullptr || str->size() == 0) {
-        return false;
-    }
-
     return equalsIgnoreCase(str->toChars());
 }
 
@@ -947,10 +833,6 @@ bool _String::equalsIgnoreCase(std::string str) {
 }
 
 bool _String::equalsIgnoreCase(const char * str) {
-    if(str == nullptr) {
-        return false;
-    }
-    
     return equalsIgnoreCase(str,strlen(str));
 }
 
@@ -975,9 +857,6 @@ bool _String::equalsIgnoreCase(const char * str,int csize) {
 }
 
 int _String::indexOfIgnoreCase(const String &str) {
-    if(str == nullptr || str->size() == 0) {
-        return -InvalidParam;
-    }
     return indexOfIgnoreCase(str->toChars(),str->size());
 }
 
@@ -986,18 +865,10 @@ int _String::indexOfIgnoreCase(std::string str) {
 }
 
 int _String::indexOfIgnoreCase(const char * str) {
-    if(str == nullptr) {
-        return -InvalidParam;
-    }
-
     return indexOfIgnoreCase(str,strlen(str));
 }
 
 int _String::indexOfIgnoreCase(const char * str,int csize) {
-    if(csize > m_str.size()) {
-        return  -InvalidParam;
-    }
-
     const char *m = m_str.data();
     
     int size = m_str.size();
@@ -1036,10 +907,6 @@ int _String::indexOfIgnoreCase(const char * str,int csize) {
 }
 
 bool _String::containsIgnoreCase(const String &val) {
-    if(val == nullptr || val->size() == 0) {
-        return false;
-    }
-
     return (indexOfIgnoreCase(val) != -1);
 }
 
@@ -1048,16 +915,10 @@ bool _String::containsIgnoreCase(std::string val) {
 }
 
 bool _String::containsIgnoreCase(const char * val) {
-    if(val == nullptr) {
-        return false;
-    }
     return (indexOfIgnoreCase(val) != -1);
 }
 
 bool _String::startsWithIgnoreCase(const String &str) {
-    if(str == nullptr || str->size() == 0) {
-        return false;
-    }
     return (indexOfIgnoreCase(str) == 0);
 }
 
@@ -1066,17 +927,10 @@ bool _String::startsWithIgnoreCase(std::string str) {
 }
 
 bool _String::startsWithIgnoreCase(const char * str) {
-    if(str == nullptr) {
-        return false;
-    }
     return (indexOfIgnoreCase(str) == 0);
 }
 
 bool _String::endsWithIgnoreCase(const String &s) {
-    if(s == nullptr || s->size() == 0) {
-        return false;
-    }
-    
     return endsWithIgnoreCase(s->toChars(),s->size());
 }
 
@@ -1085,10 +939,6 @@ bool _String::endsWithIgnoreCase(std::string str) {
 }
 
 bool _String::endsWithIgnoreCase(const char * str) {
-    if(str == nullptr) {
-        Trigger(NullPointerException,"equals ignore illegalArgument!");
-    }
-
     return endsWithIgnoreCase(str,strlen(str));
 }
 
@@ -1116,9 +966,6 @@ bool _String::endsWithIgnoreCase(const char * str,int csize) {
 }
 
 int _String::lastIndexOfIgnoreCase(const String &v) {
-    if(v == nullptr || v->size() == 0) {
-        return -InvalidParam;
-    }
     return lastIndexOfIgnoreCase(v->toChars(),v->size());
 }
 
@@ -1127,10 +974,6 @@ int _String::lastIndexOfIgnoreCase(std::string v) {
 }
 
 int _String::lastIndexOfIgnoreCase(const char * str) {
-    if(str == nullptr) {
-        return -InvalidParam;
-    }
-
     return lastIndexOfIgnoreCase(str,strlen(str));
 }
 
@@ -1182,20 +1025,12 @@ bool _String::matches(const String &regex) {
 }
 
 sp<_String> _String::replaceFirst(const String &regex,String value) {
-    if(m_str.size() == 0 || value == nullptr || regex == nullptr) {
-        return nullptr;
-    }
-
     std::string result = std::regex_replace(m_str,std::regex(regex->m_str),value->m_str,
         std::regex_constants::format_first_only);
     return createString(result);
 }
 
 sp<_String> _String::replaceFirst(const char *regex,const char *v) {
-    if(regex == nullptr || v == nullptr) {
-        return nullptr;
-    }
-
     std::string result = std::regex_replace(m_str,std::regex(regex),v,
         std::regex_constants::format_first_only);
 
@@ -1210,18 +1045,11 @@ sp<_String> _String::replaceFirst(std::string regex,std::string v) {
 }
 
 sp<_String> _String::replaceAll(const String &regex,const String &value) {
-    if(m_str.size() == 0 || value == nullptr || regex == nullptr) {
-        return nullptr;
-    }
     std::string result = std::regex_replace(m_str,std::regex(regex->m_str),value->m_str);
     return createString(result);
 }
 
 sp<_String> _String::replaceAll(const char* regex,const char* v) {
-    if(regex == nullptr || v == nullptr) {
-        return nullptr;
-    }
-
     std::string result = std::regex_replace(m_str,std::regex(regex),v);
     return createString(result);
 }
@@ -1233,19 +1061,11 @@ sp<_String> _String::replaceAll(std::string regex,std::string v) {
 
 
 bool _String::endsWith(const String &s) {
-    if(s == nullptr) {
-        return false;
-    }
-
     std::string::size_type result = m_str.find_last_of(s->m_str);
     return (result == (m_str.size() - 1));
 }
 
 bool _String::endsWith(const char *s) {
-    if(s == nullptr) {
-        return false;
-    }
-
     std::string::size_type result = m_str.find_last_of(s);
     return (result == (m_str.size() - 1));
 }
@@ -1257,49 +1077,27 @@ bool _String::endsWith(std::string s) {
 
 
 int _String::lastIndexOf(const String &v) {
-    if(m_str.size() == 0 || m_str.size() == 0 || v == nullptr) {
-        return -InvalidParam;
-    }
-
-    int result = m_str.find_last_of(v->m_str);
-    return result;
+    return m_str.find_last_of(v->m_str);
 }
 
 int _String::lastIndexOf(const char * v) {
-    if(v == nullptr) {
-        return -InvalidParam;
-    }
-
-    int result = m_str.find_last_of(v);
-    return result;
+    return m_str.find_last_of(v);
 }
 
 int _String::lastIndexOf(std::string v) {
     return m_str.find_last_of(v);
 }
 
-
 bool _String::startsWith(const String &v) {
-    if(v == nullptr) {
-        return false;
-    }
-
-    int result = m_str.find(v->m_str);
-    return (result == v->size());
+    return (m_str.find(v->m_str) == v->size());
 }
 
 bool _String::startsWith(const char * v) {
-    if(v == nullptr) {
-        return false;
-    }
-
-    std::string::size_type result = m_str.find(v);
-    return (result == strlen(v));
+    return (m_str.find(v) == strlen(v));
 }
 
 bool _String::startsWith(std::string v) {
-    std::string::size_type result = m_str.find(v);
-    return (result == v.size());
+    return (m_str.find(v) == v.size());
 }
 
 bool _String::isIntNumber(const char *p,int size) {
@@ -1310,7 +1108,6 @@ bool _String::isIntNumber(const char *p,int size) {
             if((i == size - 1) && p[i] == '\0') {
                 return true;
             }
-            printf("p[%d] is %x \n",i,p[i]);
             return false;
         }
     }

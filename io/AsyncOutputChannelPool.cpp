@@ -16,14 +16,14 @@ sp<_AsyncOutputChannelPool> _AsyncOutputChannelPool::getInstance() {
 
 void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel c) {
     AutoLock l(mMutex);
-    mChannels->put(c->getFd(),c);
-    mObserver->addObserver(c->getFd(),st(EPollFileObserver)::EpollOut,AutoClone(this));
+    mChannels->put(c->getFileDescriptor()->getFd(),c);
+    mObserver->addObserver(c->getFileDescriptor()->getFd(),st(EPollFileObserver)::EpollOut,AutoClone(this));
 }
 
 void _AsyncOutputChannelPool::remove(AsyncOutputChannel c) {
     AutoLock l(mMutex);
-    mChannels->remove(c->getFd());
-    mObserver->removeObserver(c->getFd());
+    mChannels->remove(c->getFileDescriptor()->getFd());
+    mObserver->removeObserver(c->getFileDescriptor()->getFd());
 }
 
 _AsyncOutputChannelPool::_AsyncOutputChannelPool() {

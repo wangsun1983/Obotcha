@@ -159,7 +159,7 @@ void _SSLThread::run() {
                     //SocketResponser r = createSocketResponser(clientfd,
                     //                                          createString(inet_ntoa(client_address.sin_addr)),
                     //                                          ntohs(client_address.sin_port));
-                    Socket s = createSocket(clientfd);
+                    Socket s = createSocket(createFileDescriptor(clientfd));
                     s->setInetAddress(createInetAddress(
                                     createString(inet_ntoa(client_address.sin_addr)),
                                     ntohs(client_address.sin_port)));

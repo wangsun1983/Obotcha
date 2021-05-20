@@ -54,7 +54,7 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
         case SocketEvent::Connect:{
             HttpLinker info = createHttpLinker(r);
 
-            SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFd());
+            SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFileDescriptor()->getFd());
             if(info != nullptr) {
                 info->setSSLInfo(ssl);
             }

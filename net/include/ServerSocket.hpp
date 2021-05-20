@@ -7,6 +7,7 @@
 #include "Socket.hpp"
 #include "InetAddress.hpp"
 #include "SocketOption.hpp"
+#include "FileDescriptor.hpp"
 
 namespace obotcha {
 
@@ -14,7 +15,7 @@ DECLARE_SIMPLE_CLASS(ServerSocket) {
 public:
     _ServerSocket(int,InetAddress address,SocketOption option);
     int bind();
-    int getFd();
+    FileDescriptor getFileDescriptor();
     int close();
 
     //add 

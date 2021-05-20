@@ -9,26 +9,27 @@
 #include "ByteArray.hpp"
 #include "LinkedList.hpp"
 #include "Handler.hpp"
+#include "FileDescriptor.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(AsyncOutputChannel) {
 public:
-    typedef std::function<long (int,ByteArray)> WriteCallback;
+    typedef std::function<long (FileDescriptor,ByteArray)> WriteCallback;
 
-    _AsyncOutputChannel(int fd,WriteCallback callback = nullptr,Handler h = nullptr);
+    _AsyncOutputChannel(FileDescriptor fileDescriptor,WriteCallback callback = nullptr,Handler h = nullptr);
     void write(ByteArray);
     void notifyWrite();
-    int getFd();
+    FileDescriptor getFileDescriptor();
     void close();
 
 private:
-    int mFd;
     Mutex mMutex;
     LinkedList<ByteArray> mDatas;
     WriteCallback writeCb;
     Handler mHandler;
     bool isClosed;
+    FileDescriptor mFd;
 
     void _write(ByteArray);
 };

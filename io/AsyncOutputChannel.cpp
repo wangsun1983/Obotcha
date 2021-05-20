@@ -4,7 +4,7 @@
 
 namespace obotcha {
 
-_AsyncOutputChannel::_AsyncOutputChannel(int fd,WriteCallback callback,Handler h) {
+_AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,WriteCallback callback,Handler h) {
     mFd = fd;
     mMutex = createMutex();
     mDatas = createLinkedList<ByteArray>();
@@ -39,7 +39,7 @@ void _AsyncOutputChannel::_write(ByteArray data) {
         if(writeCb != nullptr) {
             result = writeCb(mFd,data);
         } else {
-            result = ::write(mFd,data->toValue(),data->size());
+            result = ::write(mFd->getFd(),data->toValue(),data->size());
         }
 
         if(result < 0) {
@@ -68,7 +68,7 @@ void _AsyncOutputChannel::notifyWrite() {
         if(writeCb != nullptr) {
             result = writeCb(mFd,data);
         } else {
-            result = ::write(mFd,data->toValue(),data->size());
+            result = ::write(mFd->getFd(),data->toValue(),data->size());
         }
 
         if(result < 0) {
@@ -88,7 +88,7 @@ void _AsyncOutputChannel::notifyWrite() {
 }
 
 
-int _AsyncOutputChannel::getFd() {
+FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
     return mFd;
 }
 
