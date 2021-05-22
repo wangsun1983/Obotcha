@@ -27,38 +27,14 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
     }
 }
 
-void _SocketOutputStream::setAsync(bool async) {
-    mSocket->setAsync(async);
-
-    if(async) {
-        if(mChannel == nullptr) {
-            mChannel = createAsyncOutputChannel(mSocket->getFileDescriptor(),
-                                                std::bind(&_SocketOutputStream::_write,this,std::placeholders::_1,std::placeholders::_2));
-        }
-    } else {
-        if(mChannel != nullptr) {
-            mChannel->close();
-            mChannel = nullptr;
-        }
-    }
-}
-
-bool _SocketOutputStream::isAsync() {
-    return (mChannel == nullptr);
-}
-
 long _SocketOutputStream::write(char c) {
     ByteArray data = createByteArray(1);
     data[0] = c;
     return write(data,1);
 }
 
-long _SocketOutputStream::write(ByteArray data) {
-    return write(data,data->size());
-}
-
 long _SocketOutputStream::write(ByteArray data,long size) {
-    if(data->size() > size) {
+    if(size != 0) {
         data->quickShrink(size);
     }
     

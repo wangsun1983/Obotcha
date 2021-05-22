@@ -5,12 +5,17 @@
 #include "StrongPointer.hpp"
 #include "OutputStream.hpp"
 #include "InputStream.hpp"
+#include "FileDescriptor.hpp"
 
 namespace obotcha {
 
 class AutoClose {
 public:
     AutoClose(int fd):AutoClose(fd,nullptr,nullptr){
+
+    }
+
+    AutoClose(FileDescriptor fd):AutoClose(fd->getFd(),nullptr,nullptr){
 
     }
 
@@ -35,6 +40,7 @@ public:
     ~AutoClose() {
         if(fd > 0) {
             close(fd);
+            fd = -1;
         }
 
         if(mOut != nullptr) {

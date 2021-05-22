@@ -19,23 +19,19 @@ public:
 
     long write(char c);
     
-    long write(ByteArray);
-
-    long write(ByteArray buff,long size);
+    long write(ByteArray buff,long size = 0);
 
     void close();
 
     void flush();
 
-    void setAsync(bool);
-
-    bool isAsync();
-
 private:
     long _write(FileDescriptor,ByteArray);
 
     sp<_Socket> mSocket;
+
     AsyncOutputChannel mChannel;
+
     struct sockaddr_in server_addr;
 };
 

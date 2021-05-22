@@ -18,18 +18,20 @@ public:
 
     int close();
 
-    uint64_t hashcode();
-
     int getFd();
 
     int setSockOption(int level,int optname,void *optval,socklen_t oplen);
     int getSockOption(int level,int optname,void *optval,socklen_t*oplen);
 
-    int setFileOption(int cmd, ...);
+    int setFileOption(int cmd,int option);
     int getFileOption();
 
     void setAsync(bool);
     bool isAsync();
+
+    bool isClosed();
+
+    uint64_t hashcode();
 
 private:
     int _fd;

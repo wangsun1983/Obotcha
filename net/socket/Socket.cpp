@@ -15,7 +15,6 @@ namespace obotcha {
 _Socket::_Socket(int v,InetAddress addr,SocketOption option) {
     mInput = nullptr;
     mOutput = nullptr;
-    mStatus = Idle;
     type = v;
     
     switch(v) {
@@ -39,26 +38,17 @@ _Socket::_Socket(FileDescriptor descriptor) {
     mInput = nullptr;
     mOutput = nullptr;
     mSock = createSocketImpl(descriptor);
-    mStatus = Idle;
     type = Fd;
 }
 
 void _Socket::setAsync(bool async) {
-    if(mOutput != nullptr) {
-        mOutput->setAsync(async);
-    }
-
-    if(mInput != nullptr) {
-        mInput->setAsync(async);
-    }
+    mSock->getFileDescriptor()->setAsync(async);
+    mOutput = nullptr;
+    mInput = nullptr;
 }
 
 bool _Socket::isAsync() {
-    if(mStatus != Closed) {
-        return mOutput->isAsync();
-    }
-
-    return false;
+    return mSock->getFileDescriptor()->isAsync();
 }
 
 void _Socket::setInetAddress(InetAddress addr) {
@@ -89,19 +79,18 @@ void _Socket::close() {
         mInput->close();
         mOutput = nullptr;
     }
-
-    mStatus = Closed;
 }
 
 bool _Socket::isClosed() {
-    return mStatus == Closed;
+    FileDescriptor fd = mSock->getFileDescriptor();
+    if(fd != nullptr) {
+        return fd->isClosed();
+    }
+
+    return false;
 }
 
 InputStream _Socket::getInputStream() {
-    if(isClosed()) {
-        return nullptr;
-    }
-
     if(mInput == nullptr) {
         mInput = createSocketInputStream(AutoClone(this));
     }
@@ -109,10 +98,6 @@ InputStream _Socket::getInputStream() {
 }
 
 OutputStream _Socket::getOutputStream() {
-    if(isClosed()) {
-        return nullptr;
-    }
-    
     if(mOutput == nullptr) {
         mOutput = createSocketOutputStream(AutoClone(this));
     }

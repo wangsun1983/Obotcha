@@ -167,7 +167,7 @@ int _SocketImpl::close() {
 
 ByteArray _SocketImpl::receive() {
     ByteArray data = createByteArray(mBuffSize);
-    int length = ::read(sock->getFd(),data->toValue(),1024);
+    int length = ::read(sock->getFd(),data->toValue(),mBuffSize);
     data->quickShrink(length);
     return data;
 }

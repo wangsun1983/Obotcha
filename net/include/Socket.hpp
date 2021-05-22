@@ -44,15 +44,8 @@ public:
     OutputStream getOutputStream();
     
 private:
-    enum Status {
-        Idle = 0,
-        Connected,
-        Closed,
-    };
     int type;
 
-    std::atomic_int mStatus;
-    
 protected:
     SocketImpl mSock; 
     SocketInputStream mInput;
