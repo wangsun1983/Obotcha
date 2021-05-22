@@ -19,6 +19,10 @@ _LocalSocketImpl::_LocalSocketImpl(InetAddress address,SocketOption option):_Soc
     serverAddr.sun_family = AF_UNIX;
     strcpy(serverAddr.sun_path, address->getAddress()->toChars()); 
 
+    if(option != nullptr && option->getReUseAddr() == st(SocketOption)::On) {
+        unlink(address->getAddress()->toChars());
+    }
+
     sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_UNIX, SOCK_STREAM, 0)));
     if(sock->getFd() < 0) {
         Trigger(InitializeException,"Socket create failed");

@@ -97,7 +97,7 @@ public:
     int getBuffSize();
     int getConnectionNum();
 
-    enum DontRouteType {
+    enum Switcher {
         Off = 0,
         On = 1,
     };
