@@ -184,11 +184,7 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
             }
         }
 
-        if((events & EPOLLHUP) != 0) {
-            return st(EPollFileObserver)::OnEventRemoveObserver;
-        } 
-
-        if((events & EPOLLRDHUP)!= 0) {
+        if((events & (EPOLLRDHUP|EPOLLHUP))!= 0) {
             {
                 AutoLock l(monitor->mMutex);
                 monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Disconnect,s));
