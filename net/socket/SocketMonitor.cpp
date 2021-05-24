@@ -121,7 +121,12 @@ int _SocketMonitor::bind(Socket s,SocketListener l) {
     }
     addNewSocket(s,l);
     s->setAsync(true);
-    return bind(s->getFileDescriptor()->getFd(),l,false);
+
+    if(s->getType() == st(Socket)::Udp) {
+        return bind(s->getFileDescriptor()->getFd(),l,true);
+    } else {
+        return bind(s->getFileDescriptor()->getFd(),l,false);
+    }
 }
 
 
@@ -139,43 +144,67 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
         serversocket = fd;
     }
 
+    
     mPoll->addObserver(fd,
                         EPOLLIN|EPOLLRDHUP|EPOLLHUP,
                         [](int fd,
                            uint32_t events,
-                           ByteArray data,
                            SocketListener &listener,
                            int serverfd,
                            SocketMonitor &monitor) {
-        if(fd == serverfd) {
-            struct sockaddr_in client_address;
-            socklen_t client_addrLength = sizeof(struct sockaddr_in);
-            int clientfd = accept(fd,( struct sockaddr* )&client_address, &client_addrLength );
-            if(clientfd != -1) {
-                Socket s = createSocket(createFileDescriptor(clientfd));
-                s->setInetAddress(createInetAddress(
-                                    createString(inet_ntoa(client_address.sin_addr)),
-                                    ntohs(client_address.sin_port)));
-                {
-                    monitor->addNewSocket(s,listener);
-                    {
-                        AutoLock l(monitor->mMutex);
-                        monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Connect,s));
-                        monitor->mCondition->notify();
-                    }
-                    monitor->bind(s->getFileDescriptor()->getFd(),listener,false);
-                }
-                return st(EPollFileObserver)::OnEventOK;
-            }
-        }
         Socket s = nullptr;
         {
             AutoLock l(monitor->mMutex);
             s = monitor->mSocks->get(fd);
         }
+        printf("fd is %d,serverfd is %d \n",fd,serverfd);
+
+        if(fd == serverfd) {
+            struct sockaddr_in client_address;
+            socklen_t client_addrLength = sizeof(struct sockaddr_in);
+            //may be this is udp wangsl
+            if(s->getType() == st(Socket)::Udp) {
+                printf("receive udp message \n");
+                ByteArray buff = createByteArray(1024*4);
+                int ret = recvfrom(fd, buff->toValue(),buff->size(), 0, (sockaddr*)&client_address, &client_addrLength);
+                Socket newClient = createSocket(createFileDescriptor(fd));
+                newClient->setType(st(Socket)::Udp);
+                printf("client addr is %s,port is %d \n",inet_ntoa(client_address.sin_addr),client_address.sin_port);
+                newClient->setInetAddress(createInetAddress(
+                                        createString(inet_ntoa(client_address.sin_addr)),
+                                        ntohs(client_address.sin_port)));
+                monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Message,newClient,buff));
+                monitor->mCondition->notify();
+                return st(EPollFileObserver)::OnEventOK;
+            } else {
+                int clientfd = accept(fd,( struct sockaddr* )&client_address, &client_addrLength );
+                if(clientfd != -1) {
+                    Socket s = createSocket(createFileDescriptor(clientfd));
+                    s->setInetAddress(createInetAddress(
+                                        createString(inet_ntoa(client_address.sin_addr)),
+                                        ntohs(client_address.sin_port)));
+                    {
+                        monitor->addNewSocket(s,listener);
+                        {
+                            AutoLock l(monitor->mMutex);
+                            monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Connect,s));
+                            monitor->mCondition->notify();
+                        }
+                        monitor->bind(s->getFileDescriptor()->getFd(),listener,false);
+                    }
+                    return st(EPollFileObserver)::OnEventOK;
+                }
+            }
+        }
+
+       
 
         if((events & EPOLLIN) != 0) {
             {   
+                ByteArray data = createByteArray(1024*4);
+                int length = read(fd, data->toValue(),data->size());
+                data->quickShrink(length);
+
                 if(data != nullptr && data->size() != 0) {
                     AutoLock l(monitor->mMutex);
                     monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Message,s,data));

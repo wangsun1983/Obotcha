@@ -23,7 +23,7 @@ class _EPollFileObserver;
 
 DECLARE_SIMPLE_CLASS(EPollFileObserverListener) {
 public:
-    virtual int onEvent(int fd,uint32_t events,ByteArray) = 0;
+    virtual int onEvent(int fd,uint32_t events) = 0;
 };
 
 template<class Function,class... Args>
@@ -33,8 +33,8 @@ public:
 
     }
 
-    int onEvent(int fd,uint32_t events,ByteArray data) {
-        auto param = std::tuple_cat(std::make_tuple(fd,events,data),_arguments);
+    int onEvent(int fd,uint32_t events) {
+        auto param = std::tuple_cat(std::make_tuple(fd,events),_arguments);
         return ostd::apply(func,param);
     }
 

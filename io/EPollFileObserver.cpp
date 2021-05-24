@@ -28,16 +28,10 @@ void _EPollFileObserver::run() {
             if(fd == mPipe->getReadPipe()) {
                 return;
             }
+            printf("on epoll fd is %d \n",fd);
 
             uint32_t recvEvents = events[i].events;
             //printf("observer run fd is %d,events is %x \n",fd,recvEvents);
-            
-            ByteArray recvData = nullptr;
-            int len = read(fd,readbuff,st(EPollFileObserver)::DefaultBufferSize);
-            if(len > 0) {
-                recvData = createByteArray(readbuff,len);
-            }
-            
             EPollFileObserverListener listener = nullptr;
             
             {
@@ -50,7 +44,7 @@ void _EPollFileObserver::run() {
                 continue;
             }
 
-            int result = listener->onEvent(fd,recvEvents,recvData);
+            int result = listener->onEvent(fd,recvEvents);
             if(result == st(EPollFileObserver)::OnEventRemoveObserver) {
                 removeObserver(fd);
             }

@@ -42,6 +42,8 @@ public:
 
     InputStream getInputStream();
     OutputStream getOutputStream();
+
+    void setType(int);
     
 private:
     int type;

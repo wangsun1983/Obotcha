@@ -24,7 +24,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,SocketOption option
         mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     }
 
-    sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_DGRAM, 0)));
+    sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)));
     if(sock->getFd() < 0) {
         Trigger(InitializeException,"Datagram Socket create failed");
     }
