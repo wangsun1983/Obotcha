@@ -19,7 +19,6 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
         InetAddress addr = s->getInetAddress();
         server_addr.sin_port = htons(addr->getPort());          
         server_addr.sin_addr.s_addr = inet_addr(addr->getAddress()->toChars());
-        printf("port is %d,addr is %s \n",addr->getPort(),addr->getAddress()->toChars());
     }
 
     if(s->getFileDescriptor()->isAsync()) {
@@ -29,24 +28,19 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
 }
 
 long _SocketOutputStream::write(char c) {
-    printf("socketoutput stream char \n");
     ByteArray data = createByteArray(1);
     data[0] = c;
     return write(data,1);
 }
 
 long _SocketOutputStream::write(ByteArray data,long size) {
-    printf("socketoutput stream trace1,size is %d \n",size);
     if(size > 0 && data->size() != size) {
         data->quickShrink(size);
     }
-    printf("socketoutput stream trace2 \n");
-    //TODO
-    //if(mChannel != nullptr) {
-    //    mChannel->write(data);
-    //    return data->size();
-    //}
-    printf("socketoutput stream trace3 \n");
+    if(mChannel != nullptr) {
+        mChannel->write(data);
+        return data->size();
+    }
     return _write(mSocket->getFileDescriptor(),data);
 }
 
@@ -57,7 +51,7 @@ long _SocketOutputStream::_write(FileDescriptor fd,ByteArray data) {
     if(mSocket == nullptr || mSocket->isClosed()) {
         return -1;
     }
-    printf("_write trace1 \n");
+    
     switch(mSocket->getType()) {
         case st(Socket)::Udp: {
             printf("_write trace2,data size is %d \n",data->size());
@@ -73,7 +67,6 @@ long _SocketOutputStream::_write(FileDescriptor fd,ByteArray data) {
             return ::write(fd->getFd(),sendData,data->size());
         break;
     }
-    printf("_write trace3 \n");
     return -1;
 }
 

@@ -163,7 +163,7 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
             struct sockaddr_in client_address;
             socklen_t client_addrLength = sizeof(struct sockaddr_in);
             //may be this is udp wangsl
-            if(s->getType() == st(Socket)::Udp) {
+            if(s!= nullptr && s->getType() == st(Socket)::Udp) {
                 printf("receive udp message \n");
                 ByteArray buff = createByteArray(1024*4);
                 int ret = recvfrom(fd, buff->toValue(),buff->size(), 0, (sockaddr*)&client_address, &client_addrLength);
@@ -203,12 +203,14 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
             {   
                 ByteArray data = createByteArray(1024*4);
                 int length = read(fd, data->toValue(),data->size());
-                data->quickShrink(length);
+                if(length > 0) {
+                    data->quickShrink(length);
 
-                if(data != nullptr && data->size() != 0) {
-                    AutoLock l(monitor->mMutex);
-                    monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Message,s,data));
-                    monitor->mCondition->notify();
+                    if(data != nullptr && data->size() != 0) {
+                        AutoLock l(monitor->mMutex);
+                        monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Message,s,data));
+                        monitor->mCondition->notify();
+                    }
                 }
             }
         }
