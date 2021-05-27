@@ -5,14 +5,29 @@
 
 namespace obotcha {
 
-Mutex _SystemSignalHandler::mMutex = createMutex();
+//SIGPIPE!!!
+
+void _handle(int sig) {
+    SystemSignalHandler _handle = st(SystemSignalHandler)::getInstance();
+    AutoLock l(_handle->mMutex);
+    ArrayList<SystemSignalListener> list = _handle->mListenersMap->get(sig);
+    list->foreach([&sig](SystemSignalListener l) {
+        l->onSignal(sig);
+        return 1;
+    });
+}
+
+void _ignore(int) {
+
+}
+
 sp<_SystemSignalHandler> _SystemSignalHandler::mInstance = nullptr;
 
 sp<_SystemSignalHandler> _SystemSignalHandler::getInstance() {
-    AutoLock l(mMutex);
-    if(mInstance != nullptr) {
-        mInstance.set_pointer(new _SystemSignalHandler());
-    }
+    std::call_once(s_flag, [&]() {
+        _SystemSignalHandler *p = new _SystemSignalHandler();
+        p->mInstance.set_pointer(p);
+    });
 
     return mInstance;
 }
@@ -23,23 +38,22 @@ void _SystemSignalHandler::listen(int event,SystemSignalListener l) {
     if(list == nullptr) {
         list = createArrayList<SystemSignalListener>();
         mListenersMap->put(event,list);
-        signal(event , mInstance->handle); 
+        signal(event , _handle); 
     }
 
     list->add(l);
 }
 
-_SystemSignalHandler::_SystemSignalHandler() {
-    mListenersMap = createHashMap<int,ArrayList<SystemSignalListener>>();
+
+void _SystemSignalHandler::ignore(int sig) {
+    signal(sig , _ignore);
+    AutoLock ll(mMutex);
+    mListenersMap->remove(sig);
 }
 
-void _SystemSignalHandler::handle(int sig) {
-    AutoLock l(mMutex);
-    ArrayList<SystemSignalListener> list = mInstance->mListenersMap->get(sig);
-    list->foreach([&sig](SystemSignalListener l) {
-        l->onSignal(sig);
-        return 1;
-    });
+_SystemSignalHandler::_SystemSignalHandler() {
+    mListenersMap = createHashMap<int,ArrayList<SystemSignalListener>>();
+    mMutex = createMutex();
 }
 
 }

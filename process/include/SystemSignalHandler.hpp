@@ -1,12 +1,8 @@
 #ifndef __OBOTCHA_SYSTEM_SIGNAL_HANDLER_HPP__
 #define __OBOTCHA_SYSTEM_SIGNAL_HANDLER_HPP__
 
-#include <sys/stat.h>
-#include <unistd.h>    
-#include <sys/types.h>
-#include <mqueue.h>
-#include <fstream>
-
+#include <thread>
+#include <mutex>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -24,16 +20,17 @@ public:
 
 DECLARE_SIMPLE_CLASS(SystemSignalHandler) {
 public:
+    friend void _handle(int);
     static sp<_SystemSignalHandler> getInstance();
-    static void handle(int sig);
-
     void listen(int,sp<_SystemSignalListener>);
+    void ignore(int);
+
 private:
-    static Mutex mMutex;
+    static std::once_flag s_flag;
     static sp<_SystemSignalHandler> mInstance;
+    Mutex mMutex;
     HashMap<int,ArrayList<SystemSignalListener>> mListenersMap;
     _SystemSignalHandler();
-   
 };
 
 }

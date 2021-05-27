@@ -29,7 +29,7 @@ private:
     HashMap<int,AsyncOutputChannel> mChannels;
 
     EPollFileObserver mObserver;
-    int onEvent(int fd,uint32_t events,ByteArray);
+    int onEvent(int fd,uint32_t events);
 };
 
 }

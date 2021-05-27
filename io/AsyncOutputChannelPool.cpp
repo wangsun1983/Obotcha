@@ -32,7 +32,7 @@ _AsyncOutputChannelPool::_AsyncOutputChannelPool() {
     mMutex = createMutex();
 }
 
-int _AsyncOutputChannelPool::onEvent(int fd,uint32_t events,ByteArray) {
+int _AsyncOutputChannelPool::onEvent(int fd,uint32_t events) {
     if((events & st(EPollFileObserver)::EpollOut) != 0) {
         AsyncOutputChannel ch = nullptr;
         {
