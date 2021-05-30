@@ -164,17 +164,28 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
             socklen_t client_addrLength = sizeof(struct sockaddr_in);
             //may be this is udp wangsl
             if(s!= nullptr && s->getType() == st(Socket)::Udp) {
-                printf("receive udp message \n");
-                ByteArray buff = createByteArray(1024*4);
-                int ret = recvfrom(fd, buff->toValue(),buff->size(), 0, (sockaddr*)&client_address, &client_addrLength);
-                Socket newClient = createSocket(createFileDescriptor(fd));
-                newClient->setType(st(Socket)::Udp);
-                printf("client addr is %s,port is %d \n",inet_ntoa(client_address.sin_addr),client_address.sin_port);
-                newClient->setInetAddress(createInetAddress(
-                                        createString(inet_ntoa(client_address.sin_addr)),
-                                        ntohs(client_address.sin_port)));
-                monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Message,newClient,buff));
-                monitor->mCondition->notify();
+                //ByteArray buff = createByteArray(st(Socket)::DefaultBufferSize);
+                Socket newClient = nullptr;
+                byte buff[st(Socket)::DefaultBufferSize];
+                while(1) {
+                    int length = recvfrom(fd, buff,st(Socket)::DefaultBufferSize, 0, (sockaddr*)&client_address, &client_addrLength);
+                    if(newClient == nullptr) {
+                        newClient = createSocket(createFileDescriptor(fd));
+                        newClient->setType(st(Socket)::Udp);
+                        newClient->setInetAddress(createInetAddress(
+                                            createString(inet_ntoa(client_address.sin_addr)),
+                                            ntohs(client_address.sin_port)));
+                    }
+
+                    monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(
+                                                        st(SocketListener)::Message,
+                                                        newClient,
+                                                        createByteArray((const byte *)buff,length)));
+                    monitor->mCondition->notify();
+                    if(length != st(Socket)::DefaultBufferSize) {
+                        break;
+                    }
+                }
                 return st(EPollFileObserver)::OnEventOK;
             } else {
                 int clientfd = accept(fd,( struct sockaddr* )&client_address, &client_addrLength );
@@ -197,19 +208,20 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
             }
         }
 
-       
-
         if((events & EPOLLIN) != 0) {
             {   
-                ByteArray data = createByteArray(1024*4);
-                int length = read(fd, data->toValue(),data->size());
-                if(length > 0) {
-                    data->quickShrink(length);
-
-                    if(data != nullptr && data->size() != 0) {
+                while(1) {
+                    byte buff[st(Socket)::DefaultBufferSize];
+                    int length = read(fd, buff,st(Socket)::DefaultBufferSize);
+                    if(length > 0) {
+                        ByteArray data = createByteArray((const byte *)buff,length);
                         AutoLock l(monitor->mMutex);
                         monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Message,s,data));
                         monitor->mCondition->notify();
+                    }
+
+                    if(length != st(Socket)::DefaultBufferSize) {
+                        break;
                     }
                 }
             }

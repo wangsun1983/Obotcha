@@ -35,16 +35,15 @@ int _LocalSocketImpl::connect() {
         return -1;
     }
 
-    struct sockaddr_in local_address;
-    memset(&local_address,0,sizeof(struct sockaddr_in));
-
-    socklen_t length = 0;
-    int ret = getpeername(sock->getFd(), ( struct sockaddr* )&local_address, &length);
-    
-    while(ntohs( local_address.sin_port ) == 0) {
-        usleep(30*1000);
+    while(1) {
+        struct sockaddr_in local_address;
         memset(&local_address,0,sizeof(struct sockaddr_in));
-        getpeername(sock->getFd(), ( struct sockaddr* )&local_address, &length);
+        socklen_t length = 0;
+        int ret = getpeername(sock->getFd(), ( struct sockaddr* )&local_address, &length);
+        if(ntohs(local_address.sin_port ) == 0) {
+            break;
+        }
+        usleep(30*1000);
     }
 
     return 0;

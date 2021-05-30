@@ -1,10 +1,11 @@
 #include "SocketImpl.hpp"
+#include "Socket.hpp"
 
 namespace obotcha {
 
 _SocketImpl::_SocketImpl(FileDescriptor fd) {
     sock = fd;
-    mBuffSize = 1024*4;
+    mBuffSize = st(Socket)::DefaultBufferSize;
     address = nullptr;
     option = nullptr;
 }
@@ -12,7 +13,7 @@ _SocketImpl::_SocketImpl(FileDescriptor fd) {
 _SocketImpl::_SocketImpl(InetAddress address,SocketOption option) {
     this->address = address;
     this->option = option;
-    this->mBuffSize = 4*1024;
+    this->mBuffSize = st(Socket)::DefaultBufferSize;
 }
 
 void _SocketImpl::setRecvBuff(int v) {

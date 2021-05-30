@@ -15,6 +15,9 @@ public:
     _ServerSocketImpl(InetAddress address,SocketOption option);
     int bind();
     Socket accept();
+
+private:
+    static int DefaultConnectNum;
     
 };
 

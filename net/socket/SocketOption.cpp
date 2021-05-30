@@ -145,12 +145,19 @@ _SocketOption* _SocketOption::setSndTimeout(int interval) {
 }
 
 _SocketOption* _SocketOption::setBindToDevice(struct ifreq * value) {
+    if(mBindToDevice != nullptr) {
+        free(mBindToDevice);
+    }
+
     mBindToDevice = (struct ifreq *)malloc(sizeof(struct ifreq));
     memcpy(mBindToDevice,value,sizeof(struct ifreq));
     return this;
 }
 
 _SocketOption* _SocketOption::setAttachFilter(struct sock_fprog * value) {
+    if(mAttachFilter != nullptr) {
+        free(mAttachFilter);
+    }
     mAttachFilter = (struct sock_fprog *)malloc(sizeof(struct sock_fprog));
     memcpy(mAttachFilter,value,sizeof(struct sock_fprog));
     return this;
@@ -187,6 +194,10 @@ _SocketOption* _SocketOption::setMaxPacingRate(unsigned int rate) {
 }
 
 _SocketOption* _SocketOption::setReusePortCbpf(struct sock_fprog* v) {
+    if(mReusePortCbpf != nullptr) {
+        free(mReusePortCbpf);
+    }
+
     mReusePortCbpf = (struct sock_fprog*)malloc(sizeof(struct sock_fprog));
     memcpy(mReusePortCbpf,v,sizeof(struct sock_fprog));
     return this;

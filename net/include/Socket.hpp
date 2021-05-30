@@ -44,6 +44,8 @@ public:
     OutputStream getOutputStream();
 
     void setType(int);
+
+    static int DefaultBufferSize;
     
 private:
     int type;

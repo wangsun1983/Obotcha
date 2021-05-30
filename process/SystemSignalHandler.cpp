@@ -22,6 +22,7 @@ void _ignore(int) {
 }
 
 sp<_SystemSignalHandler> _SystemSignalHandler::mInstance = nullptr;
+std::once_flag _SystemSignalHandler::s_flag;
 
 sp<_SystemSignalHandler> _SystemSignalHandler::getInstance() {
     std::call_once(s_flag, [&]() {

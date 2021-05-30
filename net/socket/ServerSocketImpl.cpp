@@ -7,6 +7,8 @@
 
 namespace obotcha {
 
+int _ServerSocketImpl::DefaultConnectNum = 16;
+
 _ServerSocketImpl::_ServerSocketImpl(InetAddress address,SocketOption option):_SocksSocketImpl(address,option) {
 }
 
@@ -15,12 +17,12 @@ int _ServerSocketImpl::bind() {
         return -NetBindFail;
     }
 
-    int mConnectionNum = 20;
+    int connectNum = DefaultConnectNum;
     if(option != nullptr) {
-        mConnectionNum = option->getConnectionNum();
+        connectNum = option->getConnectionNum();
     }
     
-    if(listen(sock->getFd(), mConnectionNum) < 0) {
+    if(listen(sock->getFd(), connectNum) < 0) {
         return -NetListenFail;
     }
 

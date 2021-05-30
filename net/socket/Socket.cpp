@@ -12,6 +12,8 @@
 
 namespace obotcha {
 
+int _Socket::DefaultBufferSize = 1024*4;
+
 _Socket::_Socket(int v,InetAddress addr,SocketOption option) {
     mInput = nullptr;
     mOutput = nullptr;
@@ -102,12 +104,9 @@ InputStream _Socket::getInputStream() {
 }
 
 OutputStream _Socket::getOutputStream() {
-    printf("getoutput stream \n");
     if(mOutput == nullptr) {
-        printf("getoutput stream trace1\n");
         mOutput = createSocketOutputStream(AutoClone(this));
     }
-    printf("getoutput stream trace2\n");
     return mOutput;
 }
 
