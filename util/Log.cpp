@@ -25,7 +25,7 @@ void SetLogFile(String infoPrefix,String warningPrefix,String errorPrefix,String
     }
 }
 
-void SetPrintLogLevel(LogLevel level) {
+void SetPrintLogLevel(int level) {
     google::SetStderrLogging(level);
 }
 

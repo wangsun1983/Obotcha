@@ -19,6 +19,12 @@ namespace obotcha {
 _WebSocketServer::_WebSocketServer() {
     int threadnum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
     mSocketMonitor = createSocketMonitor(threadnum);
+    mPath = nullptr;
+    mAddress = nullptr;
+    mHttpServer = nullptr;
+    mWsListener = nullptr;
+    mWsOption = nullptr;;
+    mHttpOption = nullptr;;
 }
 
 int _WebSocketServer::bind(InetAddress addr, String path,

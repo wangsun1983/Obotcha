@@ -40,6 +40,9 @@ protected:
     SocketOption option;
     struct sockaddr_in mSockAddr;
     int mBuffSize;
+
+private:
+    void _init();
 };
 
 }

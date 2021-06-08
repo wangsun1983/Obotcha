@@ -58,6 +58,8 @@ private:
     InetAddress mAddress;
 
     HttpOption mOption;
+
+    bool isSSl;
 };
 
 }

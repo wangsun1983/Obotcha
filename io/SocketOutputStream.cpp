@@ -54,12 +54,7 @@ long _SocketOutputStream::_write(FileDescriptor fd,ByteArray data) {
     
     switch(mSocket->getType()) {
         case st(Socket)::Udp: {
-            printf("_write trace2,data size is %d \n",data->size());
-            
-            int rr =  ::sendto(fd->getFd(), data->toValue(), data->size(), 0, (struct sockaddr *)&server_addr, sizeof(sockaddr_in));
-            if(rr < 0) {
-                printf("rr is %d,result is %s \n",rr,strerror(errno));
-            }
+            return ::sendto(fd->getFd(), data->toValue(), data->size(), 0, (struct sockaddr *)&server_addr, sizeof(sockaddr_in));
         }
         break;
 

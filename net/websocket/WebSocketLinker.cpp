@@ -32,6 +32,7 @@ void _WebSocketLinker::reset() {
     mDeflate = nullptr;
     mProtocols = nullptr;
     mKey = nullptr;
+    mConnectUrl = nullptr;
     mWsVersion = -1;
 }
 

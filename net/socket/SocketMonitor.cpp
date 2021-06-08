@@ -12,6 +12,7 @@
 
 #include "SocketMonitor.hpp"
 #include "ExecutorBuilder.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -80,6 +81,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                         }
                     }
                 }
+
                 if(task != nullptr) {
                     SocketListener listener = nullptr;
                     {
@@ -144,7 +146,6 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
         serversocket = fd;
     }
 
-    
     mPoll->addObserver(fd,
                         EPOLLIN|EPOLLRDHUP|EPOLLHUP,
                         [](int fd,
@@ -152,12 +153,16 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                            SocketListener &listener,
                            int serverfd,
                            SocketMonitor &monitor) {
+        //printf("fd is %d,serverfd is %d,events is %x \n",fd,serverfd,events);
         Socket s = nullptr;
         {
             AutoLock l(monitor->mMutex);
             s = monitor->mSocks->get(fd);
+            if(s == nullptr && fd != serverfd) {
+                LOG(ERROR)<<"socket is null,fd is "<< fd<<"events is "<<events;
+                return st(EPollFileObserver)::OnEventRemoveObserver;
+            }
         }
-        printf("fd is %d,serverfd is %d \n",fd,serverfd);
 
         if(fd == serverfd) {
             struct sockaddr_in client_address;

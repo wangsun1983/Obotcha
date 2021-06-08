@@ -11,6 +11,10 @@
 
 namespace obotcha {
 
+_WebSocketHybi13Parser::_WebSocketHybi13Parser() :_WebSocketParser(),mDeflate(nullptr){
+
+}
+
 WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
     WebSocketHeader header = createWebSocketHeader();
 

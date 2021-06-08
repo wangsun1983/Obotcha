@@ -10,12 +10,20 @@ namespace obotcha {
 
 //------------WebSocketHeader------------
 _WebSocketHeader::_WebSocketHeader() {
-    mHeadSize = 0;
+    clear();
 }
 
 void _WebSocketHeader::clear() {
-    mHeadSize = 0;
     mOpcode = -1;
+    mIsFinalFrame = false;
+    mIsControlFrame  = false;
+    mReservedFlag1  = false;
+    mReservedFlag2  = false;
+    mReservedFlag3  = false;
+    mIsMasked  = false;
+    mFrameLength = -1;
+    mMaskKey = nullptr;
+    mHeadSize = 0;
 }
 
 void _WebSocketHeader::setOpCode(int v) {

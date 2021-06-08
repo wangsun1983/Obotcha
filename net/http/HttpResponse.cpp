@@ -9,6 +9,8 @@ namespace obotcha {
 
 _HttpResponse::_HttpResponse():_HttpPacket() {
     st(HttpPacket)::getHeader()->setResponseStatus(st(HttpStatus)::Ok);
+    mType = NORMAL;
+    mFile = nullptr;
 }
 
 _HttpResponse::_HttpResponse(HttpPacket p):_HttpPacket() {

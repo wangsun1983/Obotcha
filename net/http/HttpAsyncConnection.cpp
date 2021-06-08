@@ -15,6 +15,11 @@ _HttpAsyncConnection::_HttpAsyncConnection(sp<_HttpUrl> url,HttpConnectionListen
     mListener = l;
     mOption = option;
     mParser = createHttpPacketParser();
+    mSocket = nullptr;
+    writer = nullptr;
+    mInputStream = nullptr;
+    //TODO?
+    mPool = nullptr;
 }
 
 int _HttpAsyncConnection::connect() {

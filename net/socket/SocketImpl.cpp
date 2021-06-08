@@ -4,16 +4,22 @@
 namespace obotcha {
 
 _SocketImpl::_SocketImpl(FileDescriptor fd) {
+    _init();
     sock = fd;
-    mBuffSize = st(Socket)::DefaultBufferSize;
-    address = nullptr;
-    option = nullptr;
 }
 
 _SocketImpl::_SocketImpl(InetAddress address,SocketOption option) {
+    _init();
     this->address = address;
     this->option = option;
-    this->mBuffSize = st(Socket)::DefaultBufferSize;
+}
+
+void _SocketImpl::_init() {
+    sock = nullptr;
+    address = nullptr;
+    option = nullptr;
+    memset((void *)&mSockAddr,0,sizeof(struct sockaddr_in));
+    mBuffSize = st(Socket)::DefaultBufferSize;
 }
 
 void _SocketImpl::setRecvBuff(int v) {

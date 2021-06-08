@@ -159,7 +159,7 @@ ByteArray _HttpResponseWriter::compose(HttpResponse response) {
 
 long _HttpResponseWriter::computeContentLength(HttpResponse response) {
 
-    if(response->getType() == st(HttpResponse)::NORMAL) {
+    if(response->getType() == st(HttpResponse)::CHUNCKED) {
         return response->getFile()->length();
     }
 

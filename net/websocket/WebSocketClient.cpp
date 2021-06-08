@@ -48,8 +48,10 @@ namespace obotcha {
 _WebSocketClient::_WebSocketClient(int version) {
     mVersion = version;
     mSocketMonitor = createSocketMonitor();
-    //client message need use mask.
-    //updateMask(true);
+    mWsListener = nullptr;
+    mHttpOption = nullptr;
+    mOutputStream = nullptr;
+    mSocket = nullptr;
 
     parser = nullptr;
     composer = nullptr;

@@ -14,16 +14,16 @@ namespace obotcha {
 
 //GLOG_INFO = 0, GLOG_WARNING = 1, GLOG_ERROR = 2, GLOG_FATAL = 3,
 
-enum LogLevel {
-    InfoLevel = google::GLOG_INFO,
-    WarnLevel = google::GLOG_WARNING,
-    ErrorLevel = google::GLOG_ERROR,
-    FatalLevel = google::GLOG_FATAL
-};
+//enum LogLevel {
+//    Info = google::GLOG_INFO,
+//    Warn = google::GLOG_WARNING,
+//    Error = google::GLOG_ERROR,
+//    Fatal = google::GLOG_FATAL
+//};
 
 void InitLog();
 void SetLogFile(String,String,String,String);
-void SetPrintLogLevel(LogLevel);
+void SetPrintLogLevel(int);
 void DeInitLog();
 
 }

@@ -24,14 +24,14 @@ namespace obotcha {
 void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
     switch(event) {
         case SocketEvent::Message: {
-            printf("httpserver message \n");
             HttpLinker info = st(HttpLinkerManager)::getInstance()->getLinker(r);
             if(info == nullptr) {
+                LOG(ERROR)<<"http linker already removed";
                 return;
             }
+
             if(info->pushHttpData(pack) == -1) {
-                //some thing may be wrong
-                printf("httpserver message error\n");
+                //some thing may be wrong(overflow)
                 mHttpListener->onHttpMessage(SocketEvent::InternalError,info,nullptr,nullptr);
                 st(HttpLinkerManager)::getInstance()->removeLinker(r);
                 r->close();
@@ -39,7 +39,6 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
             }
             
             ArrayList<HttpPacket> packets = info->pollHttpPacket();
-            printf("httpserver message packets size is %d\n",packets->size());
             if(packets != nullptr && packets->size() != 0) {
                 HttpResponseWriter writer = createHttpResponseWriter(info->getSocket()->getOutputStream());
                 ListIterator<HttpPacket> iterator = packets->getIterator();
@@ -54,9 +53,11 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
         case SocketEvent::Connect:{
             HttpLinker info = createHttpLinker(r);
 
-            SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFileDescriptor()->getFd());
-            if(info != nullptr) {
-                info->setSSLInfo(ssl);
+            if(isSSl) {
+                SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFileDescriptor()->getFd());
+                if(info != nullptr) {
+                    info->setSSLInfo(ssl);
+                }
             }
             st(HttpLinkerManager)::getInstance()->addLinker(info);
             mHttpListener->onHttpMessage(event,info,nullptr,nullptr);
@@ -83,20 +84,18 @@ _HttpServer::_HttpServer(InetAddress addr,HttpListener l,HttpOption option) {
 void _HttpServer::start() {
     String certificate = nullptr; 
     String key = nullptr;
-    int sendtimeout = -1;
-    int rcvtimeout= -1;
 
     if(mOption != nullptr) {
         certificate = mOption->getCertificate();
         key = mOption->getKey();
-        sendtimeout = mOption->getSendTimeout();
-        rcvtimeout = mOption->getRcvTimeout();
     }
 
     if(certificate != nullptr && key != nullptr) {
         //https server
+        isSSl = true;
         mSSLServer = createSSLServer(mAddress->getAddress(),mAddress->getPort(),AutoClone(this),certificate,key);
     } else {
+        isSSl = false;
         mServerSock = createSocketBuilder()
                         ->setOption(mOption)
                         ->setAddress(mAddress)

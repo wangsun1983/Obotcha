@@ -10,6 +10,13 @@
 
 namespace obotcha {
 
+_WebSocketParser::_WebSocketParser() {
+    mData = nullptr;
+    mContinueBuff = nullptr;
+    mReader = nullptr;
+    mHeader = nullptr;
+}
+
 void _WebSocketParser::pushParseData(ByteArray data) {
     if(mData == nullptr) {
         mData = data;
