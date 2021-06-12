@@ -33,6 +33,8 @@ public:
 
     HttpPacket parseEntireRequest(String request);
 
+    void reset();
+
 private:
     enum HttpParseStatus {
         Idle = 0,

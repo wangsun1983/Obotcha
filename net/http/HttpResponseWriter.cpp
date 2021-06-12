@@ -7,6 +7,7 @@
 #include "HttpText.hpp"
 #include "HttpProtocol.hpp"
 #include "HttpStatus.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -36,12 +37,12 @@ while(X == -1) {\
 _HttpResponseWriter::_HttpResponseWriter(OutputStream stream) {
     mOutputStream = stream;
     mResponsible = true;
-    mSendBuff = createByteArray(1024*32);
+    mSendBuff = createByteArray(128);
 }
 
 _HttpResponseWriter::_HttpResponseWriter() {
     mResponsible = true;
-    mSendBuff = createByteArray(1024*32);
+    mSendBuff = createByteArray(128);
 }
 
 void _HttpResponseWriter::disableResponse() {
@@ -70,6 +71,7 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     int status = header->getResponseStatus();
     //String statusStr = st(HttpStatus)::toString(status);
     AUTO_FLUSH(writer->writeString(header->getVersion()->toString()));
+
     AUTO_FLUSH(writer->writeString(" "));
     AUTO_FLUSH(writer->writeString(createString(status)));
     AUTO_FLUSH(writer->writeString(" "));
@@ -103,7 +105,6 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
             FileInputStream stream = createFileInputStream(file);
             stream->open();
             long filesize = file->length();
-                
             if(response->getType() == st(HttpResponse)::CHUNCKED) {
                 while(filesize != 0) {
                     int readlength = mSendBuff->size() - writer->getIndex() - 32 /*reserve data */;
@@ -125,7 +126,7 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
                     FORCE_FLUSH();
                 }
             } else {
-                //TODO
+                LOG(ERROR)<<"send file only support chunck";
             }
         }
     } else if(encodedValues != nullptr && encodedValues->size() != 0){
@@ -142,14 +143,16 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
             AUTO_FLUSH(writer->writeByte('='));
             AUTO_FLUSH(writer->writeString(value));
             iterator->next();
+            isFirstKey = false;
         }
         AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
     } else if(body != nullptr && body->size() != 0) {
         AUTO_FLUSH(writer->writeByteArray(body));
         AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
     }
-    
+   
     FORCE_FLUSH();
+
     return writer->getIndex();
 }
 

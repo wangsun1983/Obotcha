@@ -19,6 +19,15 @@ _HttpPacketParser::_HttpPacketParser() {
     mSubStatus = None;
 }
 
+
+void _HttpPacketParser::reset() {
+    mBuff->reset();
+    mReader->reset();
+    mBodyStartCount = 0;
+    mStatus = Idle;
+    mSubStatus = None;
+}
+
 int _HttpPacketParser::pushHttpData(ByteArray data) {
     //write data
 #ifdef DUMP_HTTP_DATE

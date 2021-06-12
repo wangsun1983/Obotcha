@@ -30,6 +30,7 @@ _ByteArray::_ByteArray(const sp<_ByteArray> &b,bool isSafe) {
     buff = (unsigned char *)malloc(mSize);
     memcpy(buff,b->toValue(),mSize);
     this->isSafe = isSafe;
+    mOriginalSize = -1;
 }
 
 /**
@@ -44,6 +45,7 @@ _ByteArray::_ByteArray(int length,bool isSafe) {
     memset(buff,0,length);
     mSize = length;
     this->isSafe = isSafe;
+    mOriginalSize = -1;
 }
 
 /**
@@ -58,6 +60,7 @@ _ByteArray::_ByteArray(const String &str,bool isSafe) {
     buff = (unsigned char *)malloc(mSize);
     memcpy(buff,str->toChars(),mSize);
     this->isSafe = isSafe;
+    mOriginalSize = -1;
 }
 
 /**
@@ -73,13 +76,18 @@ _ByteArray::_ByteArray(const byte *data,uint32_t len,bool isSafe) {
     mSize = len;
     memcpy(buff,data,len);
     this->isSafe = isSafe;
+    mOriginalSize = -1;
 }
 
 /**
  * @brief clear memory data
  */
 void _ByteArray::clear() {
+    if(mOriginalSize != -1) {
+        mSize = mOriginalSize;    
+    }
     memset(buff,0,mSize);
+    mOriginalSize = -1;
 }
 
 byte & _ByteArray::operator[] (int index) {
@@ -129,8 +137,18 @@ int _ByteArray::quickShrink(int size) {
     }
 
     buff[size] = 0;
+    mOriginalSize = mSize;
     mSize = size;
     return 0;
+}
+
+int _ByteArray::quickRestore() {
+    if(mOriginalSize == -1) {
+        return -1;
+    }
+    mSize = mOriginalSize;
+    mOriginalSize = -1;
+    return mSize;
 }
 
 int _ByteArray::growTo(int size) {

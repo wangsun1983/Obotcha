@@ -32,10 +32,6 @@ DECLARE_SIMPLE_CLASS(HttpConnection) {
 public:
     _HttpConnection(sp<_HttpUrl> url,HttpOption option = nullptr);
     
-    _HttpConnection(sp<_HttpUrl> url,Handler handler,HttpOption option = nullptr);
-
-    void setListener(HttpConnectionListener l);
-
     Socket getSocket();
     
     int connect();
@@ -44,15 +40,7 @@ public:
 
     HttpResponse execute(HttpRequest req);
 
-    void execute(HttpRequest req,int what);
-
 private:
-    int _connect();
-
-    HttpResponse _execute(HttpRequest req);
-
-    void onResponse(int,ByteArray r);
-
     Socket mSocket;
 
     HttpRequestWriter writer;
@@ -62,10 +50,6 @@ private:
     HttpPacketParser mParser;
 
     sp<_HttpUrl> mUrl;
-
-    Handler mHandler;
-
-    HttpConnectionListener mListener;
 
     HttpOption mOption;
 };

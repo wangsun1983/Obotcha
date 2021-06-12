@@ -25,6 +25,8 @@ public:
     friend class _SocketImpl;
     friend class _HttpOption;
 
+    static const int DefaultBuffSize;
+
     _SocketOption();
     ~_SocketOption();
     

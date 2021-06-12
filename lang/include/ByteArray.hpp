@@ -36,6 +36,7 @@ public:
     int growBy(int size);
 
     int quickShrink(int size);
+    int quickRestore();
 
     bool isEmpty();
 
@@ -79,6 +80,8 @@ private:
     int mSize;
 
     bool isSafe;
+
+    int mOriginalSize;
 };
 
 }

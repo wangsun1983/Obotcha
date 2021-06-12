@@ -15,23 +15,14 @@
 #include "HttpRequestWriter.hpp"
 #include "SocketListener.hpp"
 #include "URL.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
-_HttpConnection::_HttpConnection(HttpUrl url,HttpOption option):_HttpConnection(url,nullptr,option) {
-    
-}
-
-_HttpConnection::_HttpConnection(sp<_HttpUrl> url,Handler h,HttpOption option) {
+_HttpConnection::_HttpConnection(HttpUrl url,HttpOption option) {
     mUrl = url;
     mParser = createHttpPacketParser();
-    mHandler = h;
-    mListener = nullptr;
     mOption = option;
-}
-
-void _HttpConnection::setListener(HttpConnectionListener l) {
-    mListener = l;
 }
 
 Socket _HttpConnection::getSocket() {
@@ -39,50 +30,6 @@ Socket _HttpConnection::getSocket() {
 }
 
 int _HttpConnection::connect() {
-    if(mHandler != nullptr) {
-        mHandler->post([](_HttpConnection *url) {
-            int ret = url->_connect();
-            if(url->mListener != nullptr) {
-                url->mListener->onConnect(ret);
-            }
-        },this);
-    } else {
-        return _connect();
-    }
-
-    return 0;
-}
-
-HttpResponse _HttpConnection::execute(HttpRequest req) {
-    if(mHandler != nullptr) {
-        mHandler->post([](_HttpConnection *url,HttpRequest req) {
-            HttpResponse response = url->_execute(req);
-            Message msg = url->mHandler->obtainMessage();
-            msg->data = Cast<Object>(response);
-            url->mHandler->sendMessage(msg);
-        },this,req);
-    } else {
-        return _execute(req);
-    }
-
-    return nullptr;
-}
-
-void _HttpConnection::execute(HttpRequest req,int what) {
-    if(mHandler != nullptr) {
-        mHandler->post([](_HttpConnection *url,HttpRequest req,int what) {
-            HttpResponse response = url->_execute(req);
-            Message msg = url->mHandler->obtainMessage();
-            msg->what = what;
-            msg->data = Cast<Object>(response);
-            url->mHandler->sendMessage(msg);
-        },this,req,what);
-    } else {
-        _execute(req);
-    }
-}
-
-int _HttpConnection::_connect() {
     ArrayList<InetAddress> address = createURL(mUrl->getHost())->getInetAddress();
     if(address == nullptr || address->size() == 0) {
         return -NetConnectFail;
@@ -91,29 +38,41 @@ int _HttpConnection::_connect() {
     InetAddress inetAddr = address->get(0);
     inetAddr->setPort(mUrl->getPort());
 
-    //TODO: add some option
-    mSocket = createSocketBuilder()->setAddress(inetAddr)->newSocket();
+    mSocket = createSocketBuilder()->setAddress(inetAddr)->setOption(mOption)->newSocket();
     int result = mSocket->connect();
     mInputStream = mSocket->getInputStream();
     writer = createHttpRequestWriter(mSocket->getOutputStream());
-
     return result;
 }
 
-HttpResponse _HttpConnection::_execute(HttpRequest req) {
-    //check whether httpurl is still connect
-    writer->write(req);
+HttpResponse _HttpConnection::execute(HttpRequest req) {
+    if(writer->write(req) <= 0) {
+        return nullptr;
+    }
+    int buffsize = (mOption == nullptr?st(HttpOption)::DefaultBuffSize:mOption->getBuffSize());
+    ByteArray result = createByteArray(buffsize);
+
     while(1) {
-        ByteArray result = createByteArray(1024*64);
         int len = mInputStream->read(result);
+        if(len <= 0) {
+            mParser->reset();
+            LOG(ERROR)<<"Cannot get response!!!,len is "<<len;
+            return nullptr;
+        }
+
         result->quickShrink(len);
         mParser->pushHttpData(result);
         ArrayList<HttpPacket> packets = mParser->doParse();
-        if(packets->size() > 0) {
+        result->quickRestore();
+        if(packets == nullptr) {
+            continue;
+        } else if(packets->size() > 1) {
+            mParser->reset();
+            LOG(ERROR)<<"get too many responses,size is "<<packets->size();
+        } else if(packets->size() == 1) {
             return createHttpResponse(packets->get(0));
-        }
+        } 
     }
-
     return nullptr;
 }
 

@@ -15,37 +15,32 @@
 
 using namespace obotcha;
 
-AtomicInteger connectCount = createAtomicInteger(0);
-AtomicInteger disConnectCount = createAtomicInteger(0);
-AtomicInteger messageCount = createAtomicInteger(0);
+
 
 DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
 
-void onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg){
+void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPacket msg){
     switch(event) {
         case HttpEvent::Connect: {
-            connectCount->incrementAndGet();
+            //connectCount->incrementAndGet();
         }
         break;
 
         case HttpEvent::Message: {
-            messageCount->incrementAndGet();
+            //messageCount->incrementAndGet();
+            printf("i accept message \n");
 
             HttpResponse response = createHttpResponse();
             response->getHeader()->setResponseStatus(st(HttpStatus)::Ok);
-
-            String body = createString("<h1>Response from Gagira</h1>");
-            HttpEntity entity = createHttpEntity();
-            entity->setContent(createByteArray(body));
-            response->setEntity(entity);
-
+            File file = createFile("pic.png");
+            response->setFile(file);
             w->write(response);
         }
         break;
 
         case HttpEvent::Disconnect:{
-            disConnectCount->incrementAndGet();
+            //disConnectCount->incrementAndGet();
         }
         break;
     }
@@ -56,12 +51,12 @@ void onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_HttpResponseWriter> 
 int main() {
   MyHttpListener listener = createMyHttpListener();
   HttpServer server = createHttpServerBuilder()
-                    ->setAddress(createInet4Address("192.168.1.9",1256))
+                    ->setAddress(createInet4Address("192.168.1.9",1123))
                     ->setListener(listener)
                     ->build();
   server->start();
-  sleep(30);
-  server->exit();
-  printf("connectCount is %d,disConnectCount is %d,messageCount is %d \n",connectCount->get(),disConnectCount->get(),messageCount->get());
+  while(1) {
+    sleep(1);
+  }
   
 }

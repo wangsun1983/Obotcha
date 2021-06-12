@@ -15,22 +15,18 @@
 
 using namespace obotcha;
 
-AtomicInteger connectCount = createAtomicInteger(0);
-AtomicInteger disConnectCount = createAtomicInteger(0);
-AtomicInteger messageCount = createAtomicInteger(0);
-
 DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
 
-void onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg){
+void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPacket msg){
     switch(event) {
         case HttpEvent::Connect: {
-            connectCount->incrementAndGet();
+            //TODO
         }
         break;
 
         case HttpEvent::Message: {
-            messageCount->incrementAndGet();
+            printf("i get a message \n");
             HttpEntity entity = msg->getEntity();
             HttpMultiPart multiPart = entity->getMultiPart();
             if(multiPart != nullptr && multiPart->contents != nullptr) {
@@ -59,7 +55,7 @@ void onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_HttpResponseWriter> 
         break;
 
         case HttpEvent::Disconnect:{
-            disConnectCount->incrementAndGet();
+            //disConnectCount->incrementAndGet();
         }
         break;
     }
@@ -75,7 +71,7 @@ int main() {
                     ->build();
   server->start();
   while(1){sleep(30);}
-  server->exit();
-  printf("connectCount is %d,disConnectCount is %d,messageCount is %d \n",connectCount->get(),disConnectCount->get(),messageCount->get());
+  server->close();
+  //printf("connectCount is %d,disConnectCount is %d,messageCount is %d \n",connectCount->get(),disConnectCount->get(),messageCount->get());
   
 }

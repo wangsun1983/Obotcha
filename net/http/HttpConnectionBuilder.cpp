@@ -28,7 +28,6 @@ _HttpConnectionBuilder *_HttpConnectionBuilder::setHandler(Handler h) {
 
 HttpConnection _HttpConnectionBuilder::createConnection() {
     HttpConnection c = createHttpConnection(mUrl,mOption);
-    c->setListener(mListener);
     return c;
 }
 

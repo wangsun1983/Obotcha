@@ -34,14 +34,13 @@ long _SocketOutputStream::write(char c) {
 }
 
 long _SocketOutputStream::write(ByteArray data,long size) {
-    if(size > 0 && data->size() != size) {
-        data->quickShrink(size);
-    }
+    ByteArray sendData = createByteArray(data->toValue(),size);
+
     if(mChannel != nullptr) {
-        mChannel->write(data);
-        return data->size();
+        mChannel->write(sendData);
+        return sendData->size();
     }
-    return _write(mSocket->getFileDescriptor(),data);
+    return _write(mSocket->getFileDescriptor(),sendData);
 }
 
 long _SocketOutputStream::_write(FileDescriptor fd,ByteArray data) {

@@ -101,7 +101,12 @@ void _HttpServer::start() {
                         ->setAddress(mAddress)
                         ->newServerSocket();
 
-        mServerSock->bind();
+        if(mServerSock->bind() < 0) {
+            LOG(ERROR)<<"bind socket failed,reason "<<strerror(errno);
+            this->close();
+            return;
+        }
+
         int threadsNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
         mSockMonitor = createSocketMonitor(threadsNum);
         mSockMonitor->bind(mServerSock,AutoClone(this));
