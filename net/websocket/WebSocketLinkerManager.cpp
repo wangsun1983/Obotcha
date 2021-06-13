@@ -7,6 +7,7 @@
 #include "WebSocketHybi08Parser.hpp"
 #include "WebSocketHybi13Composer.hpp"
 #include "WebSocketHybi13Parser.hpp"
+#include "WebSocketLinker.hpp"
 #include "AutoLock.hpp"
 #include "Log.hpp"
 

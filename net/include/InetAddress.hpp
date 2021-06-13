@@ -23,6 +23,7 @@ public:
     static String LocalHost;
     
     _InetAddress(String,int);
+    _InetAddress(int);
     _InetAddress();
 
     int getPort();

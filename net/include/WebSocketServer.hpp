@@ -35,11 +35,9 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(WebSocketServer) IMPLEMENTS(HttpListener,SocketListener){
 public:
 
-    _WebSocketServer();
+    _WebSocketServer(InetAddress,WebSocketOption wsoption = nullptr,HttpOption httpoption = nullptr);
 
-    int bind(InetAddress mAddress,String path,WebSocketListener listener,WebSocketOption wsoption = nullptr,HttpOption httpoption = nullptr);
-    
-    int bind(String path,WebSocketListener listener);
+    int bind(String,WebSocketListener);
 
     int start();
 
@@ -49,8 +47,6 @@ private:
     void onHttpMessage(int,sp<_HttpLinker> client,sp<_HttpResponseWriter> w,HttpPacket msg);
 
     void onSocketMessage(int,Socket,ByteArray);
-
-    String mPath;
 
     InetAddress mAddress;
 

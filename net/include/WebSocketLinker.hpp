@@ -7,7 +7,6 @@
 #include "String.hpp"
 #include "InetAddress.hpp"
 #include "ByteArray.hpp"
-#include "WebSocketFrame.hpp"
 #include "ByteArrayReader.hpp"
 #include "HttpHeader.hpp"
 #include "ByteArray.hpp"
@@ -17,13 +16,13 @@
 #include "AtomicBoolean.hpp"
 #include "Socket.hpp"
 #include "SocketOutputStream.hpp"
+#include "WebSocketListener.hpp"
 
 namespace obotcha {
 
 class _WebSocketComposer;
 class _WebSocketParser;
 class _WebSocketPermessageDeflate;
-class _WebSocketListener;
 
 DECLARE_SIMPLE_CLASS(WebSocketLinker) {
 public:
@@ -44,10 +43,14 @@ public:
 
     void setDeflater(sp<_WebSocketPermessageDeflate>);
 
-    //
+    //Listener
     void setWebSocketListener(sp<_WebSocketListener> l);
     sp<_WebSocketListener> getWebSocketListener();
 
+    //Path
+    void setPath(String);
+    String getPath();
+    
     //ConnectUrl
     String getConnectUrl();
 
@@ -96,6 +99,8 @@ private:
     String mKey;
 
     String mProtocols;
+
+    String mPath;
 
     int mWsVersion;
 

@@ -14,10 +14,10 @@
 #include "WebSocketProtocol.hpp"
 #include "ProtocolNotSupportException.hpp"
 #include "WebSocketServer.hpp"
+#include "WebSocketListener.hpp"
 #include "System.hpp"
 
 namespace obotcha {
-
 
 _WebSocketLinker::_WebSocketLinker(Socket sock) {
     reset();
@@ -83,6 +83,14 @@ void _WebSocketLinker::setWebSocketListener(sp<_WebSocketListener> l) {
 
 sp<_WebSocketListener> _WebSocketLinker::getWebSocketListener() {
     return mCallback;
+}
+
+void _WebSocketLinker::setPath(String path) {
+    mPath = path;
+}
+
+String _WebSocketLinker::getPath() {
+    return mPath;
 }
 
 String _WebSocketLinker::getConnectUrl() {
