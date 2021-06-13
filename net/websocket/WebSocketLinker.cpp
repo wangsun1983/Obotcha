@@ -33,6 +33,7 @@ void _WebSocketLinker::reset() {
     mProtocols = nullptr;
     mKey = nullptr;
     mConnectUrl = nullptr;
+    mCallback = nullptr;
     mWsVersion = -1;
 }
 
@@ -74,6 +75,14 @@ sp<_WebSocketPermessageDeflate> _WebSocketLinker::getDeflater() {
 
 void _WebSocketLinker::setDeflater(sp<_WebSocketPermessageDeflate> d) {
     mDeflate = d;
+}
+
+void _WebSocketLinker::setWebSocketListener(sp<_WebSocketListener> l) {
+    mCallback = l;
+}
+
+sp<_WebSocketListener> _WebSocketLinker::getWebSocketListener() {
+    return mCallback;
 }
 
 String _WebSocketLinker::getConnectUrl() {

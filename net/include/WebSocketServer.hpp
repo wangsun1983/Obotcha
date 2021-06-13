@@ -39,6 +39,8 @@ public:
 
     int bind(InetAddress mAddress,String path,WebSocketListener listener,WebSocketOption wsoption = nullptr,HttpOption httpoption = nullptr);
     
+    int bind(String path,WebSocketListener listener);
+
     int start();
 
     int close();
@@ -55,9 +57,11 @@ private:
     HttpServer mHttpServer;
 
     SocketMonitor mSocketMonitor;
-
-    WebSocketListener mWsListener;
     
+    //wangsl
+    Mutex mListenersLock;
+    HashMap<String,WebSocketListener> mWsListeners;
+    //wangsl
     WebSocketOption mWsOption;
 
     HttpOption mHttpOption;

@@ -33,7 +33,6 @@ public:
 
     void setEntity(HttpEntity);
 
-
     void dump();
 
 private:

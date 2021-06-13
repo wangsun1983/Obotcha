@@ -31,9 +31,9 @@ public:
 
     int pushHttpData(ByteArray array);
 
-    int send(ByteArray);
+    //int send(ByteArray);
 
-    int send(ByteArray,int);
+    //int send(ByteArray,int);
 
     ArrayList<HttpPacket> pollHttpPacket();
 

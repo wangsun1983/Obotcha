@@ -23,6 +23,7 @@ namespace obotcha {
 class _WebSocketComposer;
 class _WebSocketParser;
 class _WebSocketPermessageDeflate;
+class _WebSocketListener;
 
 DECLARE_SIMPLE_CLASS(WebSocketLinker) {
 public:
@@ -38,11 +39,14 @@ public:
 
     void setComposer(sp<_WebSocketComposer>);
 
-
     //PermessageDeflater
     sp<_WebSocketPermessageDeflate> getDeflater();
 
     void setDeflater(sp<_WebSocketPermessageDeflate>);
+
+    //
+    void setWebSocketListener(sp<_WebSocketListener> l);
+    sp<_WebSocketListener> getWebSocketListener();
 
     //ConnectUrl
     String getConnectUrl();
@@ -84,6 +88,8 @@ private:
     sp<_WebSocketComposer> mComposer;
 
     sp<_WebSocketPermessageDeflate> mDeflate;
+
+    sp<_WebSocketListener> mCallback;
 
     String mConnectUrl;
 
