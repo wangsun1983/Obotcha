@@ -16,6 +16,8 @@ public:
 
     _Calendar(long long timeMillis);
 
+    int add(int type,int value);
+
     void increaseYear(int year);
 
     void decreaseYear(int year);
@@ -40,7 +42,7 @@ public:
 
     void decreaseSecond(int second);
 
-    bool sameDate(Calendar c);
+    bool equals(Calendar);
 
     bool set(int type,int value);
 

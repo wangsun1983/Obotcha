@@ -33,10 +33,6 @@ public:
     }
 
     inline void add(const ArrayList<T> &list) {
-        if(list == nullptr || list->size() == 0) {
-            return;
-        }
-
         elements.insert(elements.end(),list->elements.begin(),list->elements.end());
     }
 
@@ -45,16 +41,6 @@ public:
     }
 
     inline T removeAt(int index) {
-        if(paramInvalid(index)) {
-            String exception = createString("Arraylist remove fail")
-                            ->append("capacity is",
-                                    createString(elements.capacity()),
-                                    "index is ",
-                                    createString(index));
-
-            Trigger(ArrayIndexOutOfBoundsException,exception);
-        }
-
         T val = elements.at(index);
         elements.erase(elements.begin() + index);
         return val;
@@ -90,80 +76,26 @@ public:
     }
 
     inline int set(int index,const T &val) {
-        if(paramInvalid(index)) {
-            String exception = createString("Arraylist set fail")
-                            ->append("capacity is",
-                                    createString(elements.capacity()),
-                                    "index is ",
-                                    createString(index));
-
-            Trigger(ArrayIndexOutOfBoundsException,exception);
-        }
-
         elements[index] = val;
         return 0;
     }
 
     inline T get(int index) {
-        if(paramInvalid(index)) {
-            String exception = createString("Arraylist get fail")
-                            ->append("capacity is",
-                                    createString(elements.capacity()),
-                                    "index is ",
-                                    createString(index));
-
-            Trigger(ArrayIndexOutOfBoundsException,exception);
-        }
-
         return elements[index];
     }
 
     inline int insert(int index,const T &val) {
-        if(paramInvalid(index)) {
-            String exception = createString("Arraylist insert fail")
-                            ->append("capacity is",
-                                    createString(elements.capacity()),
-                                    "index is ",
-                                    createString(index));
-
-            Trigger(ArrayIndexOutOfBoundsException,exception);
-        }
-
-
         elements.insert(elements.begin() + index,val);
         return 0;
     }
 
     inline int insert(int index,const ArrayList<T> &list) {
-        if(paramInvalid(index)) {
-            String exception = createString("Arraylist insert fail")
-                            ->append("capacity is",
-                                    createString(elements.capacity()),
-                                    "index is ",
-                                    createString(index));
-
-            Trigger(ArrayIndexOutOfBoundsException,exception);
-        }
-
-        if(list != nullptr) {
-            elements.insert(elements.begin() + index,list->begin(),list->end());
-        }
+        elements.insert(elements.begin() + index,list->begin(),list->end());
         return 0;
     }
 
     inline int insert(int index,const ArrayList<T> &list,int length) {
-        if(paramInvalid(index) || list->size() < length || list->capacity() < length) {
-            String exception = createString("Arraylist insert fail")
-                            ->append("capacity is",
-                                    createString(elements.capacity()),
-                                    "index is ",
-                                    createString(index));
-            Trigger(ArrayIndexOutOfBoundsException,exception);
-        }
-
-        if(list != nullptr) {
-            elements.insert(elements.begin() + index,list->begin(),list->begin() + length);
-        }
+        elements.insert(elements.begin() + index,list->begin(),list->begin() + length);
         return 0;
     }
 
@@ -173,10 +105,6 @@ public:
 
 
     inline void insertFirst(const ArrayList<T> &list) {
-        if(list == nullptr || list->size() == 0) {
-            return;
-        }
-
         elements.insert(elements.begin(),list->elements.begin(),list->elements.end());
     }
     
@@ -185,10 +113,6 @@ public:
     }
 
     inline void insertLast(const ArrayList<T> &list) {
-        if(list == nullptr || list->size() == 0) {
-            return;
-        }
-
         elements.insert(elements.end(),list->begin(),list->end());
     }
 
@@ -201,7 +125,7 @@ public:
     }
 
     sp<_ListIterator<T>> getIterator() {
-        return new _ListIterator<T>(this);
+        return AutoClone(new _ListIterator<T>(this));
     }
 
 private:
@@ -213,10 +137,6 @@ private:
 
     typename std::vector<T>::iterator end() {
         return elements.end();
-    }
-
-    bool paramInvalid(int index) {
-        return (index >= elements.capacity() || index < 0 || index >= elements.size());
     }
 };
 
@@ -234,10 +154,6 @@ public:
     }
 
     T getValue() {
-        if(iterator == mList->end()) {
-            Trigger(ArrayIndexOutOfBoundsException,"iterator error");
-        }
-
         return *iterator;
     }
 
@@ -246,9 +162,6 @@ public:
     }
 
     bool next() {
-        if(iterator ==  mList->end()) {
-            return false;
-        }
         iterator++;
         return (iterator != mList->end());
     }

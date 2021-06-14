@@ -155,7 +155,7 @@ public:
     }
     
     sp<_MapIterator<T,U>> getIterator() {
-        return new _MapIterator<T,U>(this);
+        return AutoClone(new _MapIterator<T,U>(this));
     }
 
 private:

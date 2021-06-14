@@ -17,16 +17,16 @@
 
 namespace obotcha {
 
-String _InetAddress::LocalHost = createString("localhost");
+String _InetAddress::LocalHost = createString("__localhost");
 
 _InetAddress::_InetAddress(int port) {
-    mAddress = "localhost";
+    mAddress = LocalHost;
     mPort = port;
 }
 
 _InetAddress::_InetAddress(String addr,int port) {
     if(addr == nullptr) {
-        mAddress = "localhost";
+        mAddress = LocalHost;
     } else {
         mAddress = addr;
     }
@@ -34,7 +34,7 @@ _InetAddress::_InetAddress(String addr,int port) {
 }
 
 _InetAddress::_InetAddress() {
-    mAddress = "localhost";
+    mAddress = LocalHost;
     mPort = 8080;
 }
 
