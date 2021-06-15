@@ -16,8 +16,6 @@ public:
 
     _Calendar(long long timeMillis);
 
-    int add(int type,int value);
-
     void increaseYear(int year);
 
     void decreaseYear(int year);

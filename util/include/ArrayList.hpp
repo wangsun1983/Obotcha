@@ -28,8 +28,8 @@ public:
         elements.reserve(size);
     }
 
-    inline void add(const T &val) {
-        elements.emplace_back(val);
+    inline void add(const T val) {
+        elements.push_back(val);
     }
 
     inline void add(const ArrayList<T> &list) {
@@ -75,7 +75,7 @@ public:
         return(result - elements.begin());
     }
 
-    inline int set(int index,const T &val) {
+    inline int set(int index,const T val) {
         elements[index] = val;
         return 0;
     }
@@ -84,7 +84,7 @@ public:
         return elements[index];
     }
 
-    inline int insert(int index,const T &val) {
+    inline int insert(int index,const T val) {
         elements.insert(elements.begin() + index,val);
         return 0;
     }
@@ -99,7 +99,7 @@ public:
         return 0;
     }
 
-    inline void insertFirst(const T &val) {
+    inline void insertFirst(const T val) {
         elements.emplace(elements.begin(),val); 
     }
 
@@ -108,7 +108,7 @@ public:
         elements.insert(elements.begin(),list->elements.begin(),list->elements.end());
     }
     
-    inline void insertLast(const T &v) {
+    inline void insertLast(const T v) {
         elements.emplace(elements.end(),v);
     }
 

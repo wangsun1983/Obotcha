@@ -41,36 +41,7 @@ _Calendar::_Calendar(int _year,int _month,int _dayOfMonth,int _hour = 0,int _min
     second = _second;
     msec = msecond;
 }
-/*
-int _Calendar::add(int type,int value) {
-    switch(type) {
-        case Year:
-        {
-            if(value > 0) {
 
-            }
-        }
-        break;
-
-        case Month:
-        break;
-        case DayOfWeek:
-        break;
-        case DayOfMonth:
-        break;
-        case DayOfYear:
-        break;
-        case Hour:
-        break;
-        case Minute:
-        break;
-        case Second:
-        break;
-        case MSecond:
-        break;
-    }
-}
- */
 void _Calendar::setTime(long int msec) {
     timeMillis = msec;
     init();

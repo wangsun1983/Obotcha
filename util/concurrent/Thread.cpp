@@ -10,7 +10,7 @@
 #include "System.hpp"
 #include "Error.hpp"
 #include "AutoLock.hpp"
-
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -24,7 +24,6 @@ void doThreadExit(_Thread *thread) {
         thread->mStatus = st(Thread)::Complete;
         thread->mJoinCondition->notifyAll();
     }
-
     pthread_detach(thread->getThreadId());
     mThreads->remove(thread->getThreadId());
 }
@@ -45,7 +44,6 @@ void* _Thread::localRun(void *th) {
         thread->run();
     }
     thread->onComplete();
-
     doThreadExit(thread);
     return nullptr;
 }
@@ -82,8 +80,10 @@ String _Thread::getName() {
     return mName;
 }
 
-_Thread::~_Thread(){
+_Thread::~_Thread() {
+    //printf("release thread!!!,this is %p \n",this);
 }
+
 
 Runnable _Thread::getRunnable() {
     return mRunnable;
@@ -137,12 +137,10 @@ int _Thread::start() {
     return 0;
 }
 
-
 int _Thread::join(long timeInterval) {
     while(getStatus() == Idle) {
         yield();
     }
-    
     {
         AutoLock l(mMutex);
         if(mStatus == Running || mStatus == Interrupting) {

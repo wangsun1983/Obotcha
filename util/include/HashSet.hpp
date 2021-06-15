@@ -6,13 +6,9 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "Boolean.hpp"
-#include "Double.hpp"
-#include "Float.hpp"
-#include "Integer.hpp"
 #include "Long.hpp"
 #include "String.hpp"
-#include "HashMap.hpp"
+#include "HashKey.hpp"
 
 #include<set>
 
@@ -43,10 +39,6 @@ public:
     }
 
     void add(HashSet<T> list) {
-        if(list == nullptr || list->size() == 0) {
-            return;
-        }
-
         hashset.insert(hashset.end(),list->hashset.begin(),list->hashset.end());
     }
 
@@ -59,16 +51,6 @@ public:
     }
 
     inline T get(int index) {
-         if(index >= hashset.size() || index < 0) {
-             String exception = createString("HashSet get fail")
-                            ->append("size is",
-                                    createString(hashset.size()),
-                                    "index is ",
-                                    createString(index));
-
-            Trigger(ArrayIndexOutOfBoundsException,exception);
-        }
-
         return hashset[index];
     }
 
@@ -77,7 +59,7 @@ public:
     }
 
     sp<_HashSetIterator<T>> getIterator() {
-        return new _HashSetIterator<T>(this);
+        return AutoClone(new _HashSetIterator<T>(this));
     }
 
 private:
@@ -96,7 +78,6 @@ DECLARE_CLASS(HashSetIterator,1) {
 public:
     _HashSetIterator(_HashSet<T> *list) {
         mList.set_pointer(list);
-        //list->incStrong(0);
         iterator = list->begin();
     }
 
@@ -106,12 +87,6 @@ public:
     }
 
     T getValue() {
-        //return iterator->second;
-        if(iterator == mList->end()) {
-            //return nullptr;
-            Trigger(ArrayIndexOutOfBoundsException,"iterator error");
-        }
-
         return *iterator;
     }
 
