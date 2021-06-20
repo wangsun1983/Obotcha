@@ -24,6 +24,10 @@ public:
         //TODO Nothing
     }
 
+    _ArrayList(sp<_ArrayList> l) {
+        elements.push_back(l->elements);
+    }
+
     _ArrayList(int size) {
         elements.reserve(size);
     }

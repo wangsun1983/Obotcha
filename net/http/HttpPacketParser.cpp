@@ -41,7 +41,6 @@ int _HttpPacketParser::pushHttpData(ByteArray data) {
 #endif
 
     try {
-        printf("pushHttpData,data size is %d \n",data->size());
         mBuff->push(data);
     } catch(ArrayIndexOutOfBoundsException &e) {
         LOG(ERROR)<<"HttpPacketParser error ,data overflow";

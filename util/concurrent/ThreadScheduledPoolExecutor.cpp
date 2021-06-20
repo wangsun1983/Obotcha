@@ -69,6 +69,7 @@ int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
 }
 
 void _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task) {
+    AutoLock l(mTaskMutex);
     if(mTaskPool == nullptr) {
         mTaskPool = task;
     } else {

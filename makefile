@@ -31,8 +31,8 @@ cflags = -fpic \
 		-I ./external/mysql_connector/include \
 		-I ./external/uuid/include \
 		-I ./external/hiredis/include \
-		-g \
 		-Wno-deprecated \
+		-g \
 
 cppflags=$(cflags) \
 		 -std=c++14
@@ -82,3 +82,6 @@ include sql/makefile
 
 $(libname): $(objs)
 	g++ -g -o0 -shared $(objs) $(cflags) $(sharelib) -o $(outlib)/lib${libname}.so $(staticlib) $(external)
+
+#$(libname): $(objs)
+#	g++ -os -shared $(objs) $(cflags) $(sharelib) -o $(outlib)/lib${libname}.so $(staticlib) $(external)
