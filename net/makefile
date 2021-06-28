@@ -84,7 +84,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/smtpconnection.o \
 		$(outtmp)/mailsender.o \
 		$(outtmp)/url.o \
-		$(outtmp)/host.o 	
+		$(outtmp)/host.o \
+		$(outtmp)/httprouter.o \
+		$(outtmp)/httproutermap.o \
 
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
@@ -145,6 +147,12 @@ $(outtmp)/httpconnection.o :$(netDir)/http/HttpConnection.cpp
 
 $(outtmp)/httpconnectionbuilder.o :$(netDir)/http/HttpConnectionBuilder.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpConnectionBuilder.cpp -o $(outtmp)/httpconnectionbuilder.o 
+
+$(outtmp)/httprouter.o :$(netDir)/http/HttpRouter.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRouter.cpp -o $(outtmp)/httprouter.o 
+
+$(outtmp)/httproutermap.o :$(netDir)/http/HttpRouterMap.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRouterMap.cpp -o $(outtmp)/httproutermap.o 
 
 $(outtmp)/httpmethod.o :$(netDir)/http/HttpMethod.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMethod.cpp -o $(outtmp)/httpmethod.o 
