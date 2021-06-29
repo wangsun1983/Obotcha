@@ -49,7 +49,8 @@ public:
         Link,
         Search,
         Unlink,
-        Source
+        Source,
+        Max
     };
 
     const static String DeleteString;

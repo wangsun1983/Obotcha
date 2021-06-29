@@ -87,6 +87,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/host.o \
 		$(outtmp)/httprouter.o \
 		$(outtmp)/httproutermap.o \
+		$(outtmp)/httproutermanager.o \
 
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
@@ -153,6 +154,9 @@ $(outtmp)/httprouter.o :$(netDir)/http/HttpRouter.cpp
 
 $(outtmp)/httproutermap.o :$(netDir)/http/HttpRouterMap.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRouterMap.cpp -o $(outtmp)/httproutermap.o 
+
+$(outtmp)/httproutermanager.o :$(netDir)/http/HttpRouterManager.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRouterManager.cpp -o $(outtmp)/httproutermanager.o 
 
 $(outtmp)/httpmethod.o :$(netDir)/http/HttpMethod.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMethod.cpp -o $(outtmp)/httpmethod.o 

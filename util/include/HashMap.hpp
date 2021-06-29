@@ -92,6 +92,17 @@ public:
         return AutoClone(new _MapIterator<T,U>(this));
     }
 
+    void merge(sp<_HashMap<T,U>> m) {
+        auto iterator = m->getIterator();
+        while(iterator->hasValue()) {
+            T key = iterator->getKey();
+            U value = iterator->getValue();
+            hashmap[key] = value;
+
+            iterator->next();
+        }
+    }
+
 private:
     std::unordered_map<T,U,KeyHash<T>,KeyComapre<T>> hashmap;
 
