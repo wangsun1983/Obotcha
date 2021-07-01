@@ -22,8 +22,8 @@ cflags = -fpic \
 		-I ../../external/yaml/include \
 		-I ../../external/crc32/include \
 		-I ../../external/openssl/include \
-		-I ../../external/http_parser/include \
 		-I ../../external/libco \
+		-I ../../external/glog/include \
 		-g \
 		-std=c++14 \
 
@@ -31,12 +31,17 @@ external = -lpthread \
 				-ldl \
 				../../out/lib/libobotcha.so \
 
+sharelib = -Wl,-rpath=../../out/lib/ \
+           -L ../../out/lib/ \
+           -lcrypto \
+           -L ../../out/lib/ \
+           -lssl \
 
 files =
 link =
-libname	= testHttpHeaderParser
+libname	= testThread
 
 everything : $(libname)
 
 $(libname): $(link)
-	g++ *.cpp $(cflags) -o mytest $(external)
+	g++ *.cpp $(cflags) -o mytest $(external) $(sharelib)

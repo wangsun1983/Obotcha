@@ -9,7 +9,7 @@ using namespace obotcha;
 
 DECLARE_SIMPLE_CLASS(MyTrigger) IMPLEMENTS(RouterListener) {
 public:
-    Object onInvoke(HashMap<String,String> m) {
+    TextContent onInvoke(HashMap<String,String> m) {
         auto iterator = m->getIterator();
         while(iterator->hasValue()) {
           String key = iterator->getKey();
@@ -24,24 +24,38 @@ public:
 
 int main() {
 
-    HttpRouter router1 = createHttpRouter(createString("abc/:id/tag/:name"),createMyTrigger());
-    HttpRouter router1_1 = createHttpRouter(createString("abc/:id/sure/:age"),createMyTrigger());
-    HttpRouter router1_2 = createHttpRouter(createString("abc2/sure/:age/:no"),createMyTrigger());
-    HttpRouter router1_3 = createHttpRouter(createString("fff/sure/:age/link"),createMyTrigger());
+    //HttpRouter router1 = createHttpRouter(createString("abc/:id/tag/:name"),createMyTrigger());
+    //HttpRouter router1_1 = createHttpRouter(createString("abc/:id/sure/:age"),createMyTrigger());
+    //HttpRouter router1_2 = createHttpRouter(createString("abc2/sure/:age/:no"),createMyTrigger());
+    //HttpRouter router1_3 = createHttpRouter(createString("fff/sure/:age/link"),createMyTrigger());
     HttpRouter router1_4 = createHttpRouter(createString(":ff/case/:age/link"),createMyTrigger());
+
+    //HttpRouter router1_5 = createHttpRouter(createString("abc/:id/tag/:name"),[](HashMap<String,String> m) {
+    //    auto iterator = m->getIterator();
+    //    while(iterator->hasValue()) {
+    //      String key = iterator->getKey();
+    //      String value = iterator->getValue();
+    //      printf("key is %s,value is %s \n",key->toChars(),value->toChars());
+    //      iterator->next();
+    //    }
+//
+    //    return nullptr;
+    //});
 
     HttpRouterManager manager = st(HttpRouterManager)::getInstance();
 
-    manager->addRouter(st(HttpMethod)::Get,router1);
-    manager->addRouter(st(HttpMethod)::Get,router1_1);
-    manager->addRouter(st(HttpMethod)::Get,router1_2);
-    manager->addRouter(st(HttpMethod)::Get,router1_3);
+    //manager->addRouter(st(HttpMethod)::Get,router1);
+    //manager->addRouter(st(HttpMethod)::Get,router1_1);
+    //manager->addRouter(st(HttpMethod)::Get,router1_2);
+    //manager->addRouter(st(HttpMethod)::Get,router1_3);
     manager->addRouter(st(HttpMethod)::Get,router1_4);
+    //manager->addRouter(st(HttpMethod)::Get,router1_5);
+    
     
     
 
     HashMap<String,String> m = createHashMap<String,String>();
-    //HttpRouter router2 = map->findRouter("abc/123/tag/wangsl",m);
+    //HttpRouter router2 = manager->getRouter(st(HttpMethod)::Get,"abc/123/tag/wangsl",m);
     //HttpRouter router2 = map->findRouter("abc/123/sure/22",m);
     //HttpRouter router2 = map->findRouter("abc2/sure/1/3",m);
     //HttpRouter router2 = map->findRouter("fff/sure/21/link?no1=1&no2=2",m);

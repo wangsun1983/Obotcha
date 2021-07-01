@@ -6,6 +6,7 @@ _HttpRouterNode::_HttpRouterNode(String segment,HttpRouter router) {
     mSegment = segment;
     mRouter = router;
     mNextNodes = createHashMap<String,HttpRouterNode>();
+    mParamTag = nullptr;
 }
 
 _HttpRouterMap::_HttpRouterMap() {
@@ -24,6 +25,7 @@ void _HttpRouterMap::addRouter(HttpRouter r) {
         if(node == nullptr) {
             node = createHttpRouterNode(segment,nullptr);
             current->put(segment,node);
+            node->mParamTag = segment->subString(1,segment->size() - 1);
         }
         current = node->mNextNodes;
         iterator->next();
@@ -78,11 +80,11 @@ HttpRouter _HttpRouterMap::_findRouter(ArrayList<String> &segments,
             String key = mapIterator->getKey();
             if(key->charAt(0) == ':') {
                 //maybe this is the right node
-                String paramTag = key->subString(1,key->size() - 1);
+                node = mapIterator->getValue();
+                String paramTag = node->mParamTag;
                 String paramValue = segment;
                 HashMap<String,String> tempResult = createHashMap<String,String>();
                 tempResult->put(paramTag,paramValue);
-                node = mapIterator->getValue();
                 if(segmentStartIndex == segments->size()-1) {
                     result->merge(tempResult);
                     return node->mRouter;

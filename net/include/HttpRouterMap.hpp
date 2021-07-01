@@ -15,6 +15,7 @@ public:
     String mSegment;
     HttpRouter mRouter;
     HashMap<String,HttpRouterNode> mNextNodes;
+    String mParamTag;//:id
 };
 
 DECLARE_SIMPLE_CLASS(HttpRouterMap) {

@@ -8,7 +8,7 @@ using namespace obotcha;
 
 DECLARE_SIMPLE_CLASS(MyTrigger) IMPLEMENTS(RouterListener) {
 public:
-    Object onInvoke(HashMap<String,String> m) {
+    TextContent onInvoke(HashMap<String,String> m) {
         auto iterator = m->getIterator();
         while(iterator->hasValue()) {
           String key = iterator->getKey();
@@ -28,6 +28,7 @@ int main() {
     HttpRouter router1_1 = createHttpRouter(createString("abc/:id/sure/:age"),createMyTrigger());
     HttpRouter router1_2 = createHttpRouter(createString("abc2/sure/:age/:no"),createMyTrigger());
     HttpRouter router1_3 = createHttpRouter(createString("fff/sure/:age/link"),createMyTrigger());
+    HttpRouter router1_4 = createHttpRouter(createString(":ff/case/:age/link"),createMyTrigger());
 
     map->addRouter(router1);
     map->addRouter(router1_1);
@@ -39,8 +40,8 @@ int main() {
     //HttpRouter router2 = map->findRouter("abc/123/sure/22",m);
     //HttpRouter router2 = map->findRouter("abc2/sure/1/3",m);
     //HttpRouter router2 = map->findRouter("fff/sure/21/link?no1=1&no2=2",m);
-    HttpRouter router2 = map->findRouter("fff/sure/44/link?no1=1&no2=2&no3=100",m);
-
+    //HttpRouter router2 = map->findRouter("fff/sure/44/link?no1=1&no2=2&no3=100",m);
+    HttpRouter router2 = manager->getRouter(st(HttpMethod)::Get,"23/case/44/link?no1=1&no2=2&no3=100",m);
     if(router2 != nullptr) {
         printf("find one!!!,result size is %d \n",m->size());
         auto listener = router2->getListener();
