@@ -357,7 +357,7 @@ sp<T>& sp<T>::operator = (U* other)
         if(m_ptr->decStrong(this) == POINTER_DEC_FREE) {
             delete static_cast<const T*>(m_ptr);
         }
-    }    
+    }
     m_ptr = PointerChanger<std::is_base_of<T,U>::value == 1,T,U>::convert(other);
     return *this;
 }

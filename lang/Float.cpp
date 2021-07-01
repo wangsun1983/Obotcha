@@ -52,6 +52,10 @@ uint64_t _Float::hashcode() {
     return std::hash<float>{}(val);
 }
 
+String _Float::toString() {
+    return createString(this->val);
+}
+
 void _Float::update(float v) {
     val = v;
 }

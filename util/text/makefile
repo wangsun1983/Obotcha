@@ -13,6 +13,8 @@ objs += $(outtmp)/jsonvalue.o \
 		$(outtmp)/confvalue.o \
 		$(outtmp)/yamlreader.o \
 		$(outtmp)/yamlvalue.o \
+		$(outtmp)/textcontent.o \
+		
 
 $(outtmp)/jsonvalue.o :$(textDir)/JsonValue.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/JsonValue.cpp -o $(outtmp)/jsonvalue.o
@@ -52,3 +54,6 @@ $(outtmp)/yamlreader.o :$(textDir)/YamlReader.cpp
 
 $(outtmp)/yamlvalue.o :$(textDir)/YamlValue.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/YamlValue.cpp -o $(outtmp)/yamlvalue.o
+
+$(outtmp)/textcontent.o :$(textDir)/TextContent.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(textDir)/TextContent.cpp -o $(outtmp)/textcontent.o

@@ -8,8 +8,7 @@ namespace obotcha {
 
 class _String;
 
-DECLARE_SIMPLE_CLASS(Float)
-{
+DECLARE_SIMPLE_CLASS(Float) {
 public:
     _Float();
     
@@ -32,6 +31,8 @@ public:
     static sp<_String> className();
 
     uint64_t hashcode();
+
+    sp<_String> toString();
 
     ~_Float();
 

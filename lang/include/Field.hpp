@@ -164,7 +164,7 @@ public:
     uint32_t uint32Value;
     uint64_t uint64Value;
     String stringValue;
-    Object *objectValue;
+    _Object *objectValue;
 
     void set(long v) {
         longValue = v;
@@ -208,7 +208,7 @@ public:
 
     template<typename T>
     void set(sp<T> v) {
-        objectValue = (Object *)v.get_pointer();
+        objectValue = (_Object *)v.get_pointer();
     }
 };
 
