@@ -56,6 +56,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpserverbuilder.o \
 		$(outtmp)/httplinker.o \
 		$(outtmp)/httpxformparser.o \
+		$(outtmp)/httpresponseentity.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketclient.o \
 		$(outtmp)/websocketprotocol.o \
@@ -136,6 +137,9 @@ $(outtmp)/socketmonitor.o :$(netDir)/socket/SocketMonitor.cpp
 
 $(outtmp)/httpxformparser.o :$(netDir)/http/HttpXFormUrlEncodedParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpXFormUrlEncodedParser.cpp -o $(outtmp)/httpxformparser.o 
+
+$(outtmp)/httpresponseentity.o :$(netDir)/http/HttpResponseEntity.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponseEntity.cpp -o $(outtmp)/httpresponseentity.o 
 
 $(outtmp)/httpasyncconnectionpool.o :$(netDir)/http/HttpAsyncConnectionPool.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAsyncConnectionPool.cpp -o $(outtmp)/httpasyncconnectionpool.o 

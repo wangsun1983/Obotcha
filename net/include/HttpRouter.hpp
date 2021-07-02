@@ -7,12 +7,13 @@
 #include "String.hpp"
 #include "HashMap.hpp"
 #include "TextContent.hpp"
+#include "HttpResponseEntity.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(RouterListener) {
 public:
-    virtual TextContent onInvoke(HashMap<String,String>) = 0;
+    virtual HttpResponseEntity onInvoke(HashMap<String,String>) = 0;
 };
 
 DECLARE_SIMPLE_CLASS(HttpRouter) {
