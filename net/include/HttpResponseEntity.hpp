@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_HTTP__SERVER_HPP__
-#define __OBOTCHA_HTTP__SERVER_HPP__
+#ifndef __OBOTCHA_HTTP_RESPONSE_ENTITY_HPP__
+#define __OBOTCHA_HTTP_RESPONSE_ENTITY_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
