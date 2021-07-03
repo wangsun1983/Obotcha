@@ -13,6 +13,7 @@
 #include <cmath>
 
 #include "Double.hpp"
+#include "String.hpp"
 #include "InitializeException.hpp"
 #include "IllegalArgumentException.hpp"
 #include "NullPointerException.hpp"
@@ -71,6 +72,11 @@ void _Double::update(const sp<_Double> &v) {
 sp<_String> _Double::className() {
     return createString("Double");
 }
+
+sp<_String> _Double::toString() {
+    return createString(val);
+}
+    
 
 uint64_t _Double::hashcode() {
     return std::hash<double>{}(val);

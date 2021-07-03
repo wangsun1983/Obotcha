@@ -7,10 +7,8 @@ namespace obotcha {
 
 _HttpLinker::_HttpLinker(Socket s) {
     mParser = createHttpPacketParser();
-    
     mSocket = s;
     mSocketOutput = s->getOutputStream();
-
     mSession = createHttpSession();
 }
 

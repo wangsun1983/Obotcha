@@ -6,6 +6,7 @@
 
 #include "TextContent.hpp"
 #include "HttpStatus.hpp"
+#include "HttpCookie.hpp"
 
 namespace obotcha {
 
@@ -13,23 +14,20 @@ DECLARE_SIMPLE_CLASS(HttpResponseEntity) {
 
 public:
     template<typename U>
-    _HttpResponseEntity(U v,int status) {
+    _HttpResponseEntity(U v,int status = st(HttpStatus)::Ok,ArrayList<HttpCookie> cookies = nullptr) {
         mContent = createTextContent(v);
-        mStatus = st(HttpStatus)::Ok;
-    }
-
-    template<typename U>
-    _HttpResponseEntity(U v) {
-        mContent = createTextContent(v);
-        mStatus = st(HttpStatus)::Ok;
+        mStatus = status;
+        mCookies = cookies;
     }
 
     int getStatus();
     TextContent getContent();
+    ArrayList<HttpCookie> getCookies();
 
 private:
     int mStatus;
     TextContent mContent;
+    ArrayList<HttpCookie> mCookies;
 };
 
 }

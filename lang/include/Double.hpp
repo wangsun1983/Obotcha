@@ -29,6 +29,8 @@ public:
 
     bool equals(const _Double *p);
 
+    sp<_String> toString();
+    
     static sp<_String> className();
 
     uint64_t hashcode();
