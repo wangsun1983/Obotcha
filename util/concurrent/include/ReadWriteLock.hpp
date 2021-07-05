@@ -7,18 +7,19 @@
 #include "StrongPointer.hpp"
 #include "Object.hpp"
 #include "String.hpp"
+#include "Lock.hpp"
 
 namespace obotcha {
 
 class _ReadWriteLock;
 
-DECLARE_SIMPLE_CLASS(ReadLock) {
+DECLARE_SIMPLE_CLASS(ReadLock) IMPLEMENTS(Lock){
 public:
     friend class _ReadWriteLock;
 
-    void lock();
+    int lock();
 
-    void unlock();
+    int unlock();
 
     int tryLock();
 
@@ -34,13 +35,13 @@ private:
     String mName;
 };
 
-DECLARE_SIMPLE_CLASS(WriteLock) {
+DECLARE_SIMPLE_CLASS(WriteLock) IMPLEMENTS(Lock){
 public:
     friend class _ReadWriteLock;
 
-    void lock();
+    int lock();
 
-    void unlock();
+    int unlock();
 
     int tryLock();
 

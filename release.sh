@@ -66,7 +66,7 @@ cp -rf ./external/glog/include/*.* ./$RELEASE_DIR/include/external/glog/
 
 #-I ./external/jsoncpp/include \
 mkdir ./$RELEASE_DIR/include/external/jsoncpp
-cp -rf ./external/jsoncpp/include/json/*.* ./$RELEASE_DIR/include/external/jsoncpp/
+cp -rf ./external/jsoncpp/include/json/ ./$RELEASE_DIR/include/external/jsoncpp/
 
 
 #-I ./external/rapidxml/include \

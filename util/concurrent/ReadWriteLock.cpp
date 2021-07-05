@@ -25,12 +25,12 @@ _ReadLock::_ReadLock(sp<_ReadWriteLock> l,String s) {
     mName = s;
 }
 
-void _ReadLock::lock() {
-    pthread_rwlock_rdlock(&rwlock->rwlock);
+int _ReadLock::lock() {
+    return pthread_rwlock_rdlock(&rwlock->rwlock);
 }
 
-void _ReadLock::unlock() {
-    pthread_rwlock_unlock(&rwlock->rwlock);  
+int _ReadLock::unlock() {
+    return pthread_rwlock_unlock(&rwlock->rwlock);  
 }
 
 int _ReadLock::tryLock() {
@@ -58,12 +58,12 @@ _WriteLock::_WriteLock(sp<_ReadWriteLock> l,String s) {
     mName = s;
 }
 
-void _WriteLock::lock() {
-    pthread_rwlock_wrlock(&rwlock->rwlock);
+int _WriteLock::lock() {
+    return pthread_rwlock_wrlock(&rwlock->rwlock);
 }
 
-void _WriteLock::unlock() {
-    pthread_rwlock_unlock(&rwlock->rwlock);
+int _WriteLock::unlock() {
+    return pthread_rwlock_unlock(&rwlock->rwlock);
 }
 
 int _WriteLock::tryLock() {
