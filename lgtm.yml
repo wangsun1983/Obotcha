@@ -1,0 +1,6 @@
+extraction:
+    cpp:
+        index:
+            build_command:
+                - chmod 777 build.sh
+                - ./build.sh
