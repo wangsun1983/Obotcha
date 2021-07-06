@@ -2558,6 +2558,7 @@ private:\
                 return std::get<15>(createListItemFuncTuple)();\
             break;\
         }\
+        return nullptr;\
     }\
     sp<_Object> __getListItemObject(std::string name,int index){\
         Field f = maps->get(createString(name));\
@@ -2611,7 +2612,8 @@ private:\
                 return std::get<15>(getListItemFuncTuple)(index);\
             break;\
         }\
-    };\
+        return nullptr;\
+    }\
     int __getListObjectSize(std::string name) {\
         Field f = maps->get(createString(name));\
         switch(f->getId()) {\
@@ -2664,6 +2666,7 @@ private:\
                 return std::get<15>(getListSizeFuncTuple)();\
             break;\
         }\
+        return -1;\
     }\
     
 #endif
