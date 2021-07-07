@@ -18,6 +18,8 @@ public:
 
     _Boolean(sp<_String>);
 
+    _Boolean(const char *);
+
     bool toValue();
 
     bool equals(const Boolean &p);
@@ -40,15 +42,11 @@ public:
 
     bool logicAnd(const sp<_Boolean>);
 
-    bool logicXor(bool);
-
-    bool logicXor(const sp<_Boolean>);
-
     uint64_t hashcode();
 
     static sp<_Boolean> valueOf(const sp<_String>);
 
-    static sp<_Boolean> valueOf(char *);
+    static sp<_Boolean> valueOf(const char *);
 
     static sp<_Boolean> valueOf(bool);
 

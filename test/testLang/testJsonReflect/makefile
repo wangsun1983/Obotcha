@@ -18,13 +18,15 @@ cflags = -fpic \
 		-I ../../external/jsoncpp/include \
 		-I ../../external/rapidxml/include \
 		-I ../../external/zlib/include \
+		-I ../../external/http_parser/include \
 		-I ../../external/ccl/include \
 		-I ../../external/yaml/include \
 		-I ../../external/crc32/include \
 		-I ../../external/openssl/include \
 		-I ../../external/libco \
+		-O0 \
 		-g \
-		-std=c++11 \
+		-std=c++17 \
 
 external = -lpthread \
 				-ldl \
@@ -38,7 +40,7 @@ sharelib = -Wl,-rpath=../../out/lib/ \
 
 files =
 link =
-libname	= testBoolean
+libname	= test
 
 everything : $(libname)
 

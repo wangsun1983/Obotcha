@@ -1,11 +1,14 @@
 #ifndef __OBOTCHA_NUMBER_HPP__
 #define __OBOTCHA_NUMBER_HPP__
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include <sstream>
 #include <string>
 #include <math.h>
+#include <iostream>
+
+#include "Object.hpp"
+#include "StrongPointer.hpp"
+
 
 namespace obotcha {
 

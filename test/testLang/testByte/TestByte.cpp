@@ -38,12 +38,6 @@ int basetest() {
       break;
     }
 
-    Byte v3;
-    try {
-      Byte v4 = createByte(v3);
-      printf("Byte construct test4-------[FAIL] \n");
-    } catch(InitializeException e){}
-
     printf("Byte construct test5-------[OK] \n");
     break;
   }
@@ -69,11 +63,6 @@ int basetest() {
       printf("Byte equals test1-------[FAIL] \n");
       break;
     }
-
-    try {
-      v1->equals(nullptr);
-      printf("Byte equals test2-------[FAIL] \n");
-    } catch(NullPointerException e) {}
 
     printf("Byte equals test3-------[OK] \n");
     break;

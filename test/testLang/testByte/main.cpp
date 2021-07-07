@@ -13,8 +13,12 @@ using namespace obotcha;
 
 extern int basetest();
 extern int updatetest();
+extern int equaltest();
+extern int testtostring();
 
 int main() {
   basetest();
   updatetest();
+  equaltest();
+  testtostring();
 }

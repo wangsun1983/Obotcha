@@ -39,4 +39,35 @@ int testequals() {
         break;
     }
 
+    while(1) {
+        //case1
+        Boolean t0 = createBoolean(true);
+        Boolean t0_1 = createBoolean(true);
+        //Boolean t2 = createBoolean(nullptr);
+
+        if(!t0->equals(t0_1)){
+            printf("Boolean equal test1-------[FAIL] \n");
+        }
+
+        t0 = createBoolean(true);
+        t0_1 = createBoolean(false);
+        
+        if(t0->equals(t0_1)){
+            printf("Boolean equal test2-------[FAIL] \n");
+        }
+
+        t0 = createBoolean(true);
+        if(!t0->equals(true)) {
+            printf("Boolean equal test3-------[FAIL] \n");
+        }
+
+        t0 = createBoolean(false);
+        if(!t0->equals(false)) {
+            printf("Boolean equal test4-------[FAIL] \n");
+        }
+
+        printf("Boolean equal test5-------[OK] \n");
+        break;
+    }
+
 }

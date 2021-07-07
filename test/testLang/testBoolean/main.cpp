@@ -11,8 +11,14 @@ using namespace obotcha;
 
 extern int basetest();
 extern int testequals();
+extern int testLogic();
+extern int testUpdate();
+extern int testValueOf();
 
 int main() {
     basetest();
     testequals();
+    testLogic();
+    testUpdate();
+    testValueOf();
 }

@@ -35,13 +35,6 @@ int updatetest() {
           break;
       }
 
-      //case 3
-      Byte v3;
-      try {
-        v1->update(v3);
-        printf("Byte update special test3-------[FAIL] \n");
-      }catch(NullPointerException e) {}
-
       printf("yte update special test4-------[OK] \n");
       break;
   }
