@@ -81,35 +81,19 @@ sp<_String> _Byte::toString(byte i) {
 }
 
 byte _Byte::parseDecByte(const sp<_String> v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseDecByte nullptr");
-    }
-
     return _Number::parseDecNumber(v->getStdString());
 }
 
-byte _Byte::parseHexByte(const sp<_String> v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseHexByte nullptr");
-    }
-    
-    return _Number::parseHexNumber(v->getStdString());
+byte _Byte::parseHexByte(const sp<_String> v) {    
+    return st(Integer)::parseHexInt(v);
 }
 
 byte _Byte::parseOctByte(const sp<_String> v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseOctByte nullptr");
-    }
-    
-    return _Number::parseOctNumber(v->getStdString());
+    return st(Integer)::parseOctInt(v);
 }
 
 byte _Byte::parseBinaryByte(const sp<_String> v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseBinaryByte nullptr");
-    }
-    
-    return _Number::parseBinaryNumber(v->getStdString());
+    return st(Integer)::parseBinaryInt(v);
 }
 
 sp<_String> _Byte::className() {

@@ -15,10 +15,12 @@ extern int basetest();
 extern int updatetest();
 extern int equaltest();
 extern int testtostring();
+extern int testHash();
 
 int main() {
   basetest();
   updatetest();
   equaltest();
   testtostring();
+  testHash();
 }

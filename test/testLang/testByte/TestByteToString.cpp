@@ -106,7 +106,7 @@ int testtostring() {
        int t2 = st(Byte)::parseHexByte(createString(HexTable[i]));
        Byte t3 = createByte(t2);
        if(t1 != t3) {
-         printf("t1 is %d,t3 is %d \n",t1->toValue(),t3->toValue());
+         printf("t1 is %d,t2 is %d,t3 is %d,i is %d \n",t1->toValue(),t2,t3->toValue(),i);
          printf("Byte toInt test1-------[FAIL] \n");
          break;
        }

@@ -18,6 +18,7 @@
 #include "Uint32.hpp"
 #include "Uint64.hpp"
 #include "Byte.hpp"
+#include "ByteArray.hpp"
 
 namespace obotcha {
 
@@ -142,6 +143,8 @@ public:
     uint64_t toBasicUint64();
 
     long toBasicLong();
+
+    ByteArray toByteArray();
 
     static String valueOf(const Integer &v);
 

@@ -771,6 +771,10 @@ long _String::toBasicLong() {
     return value;
 }
 
+ByteArray _String::toByteArray() {
+    return createByteArray(m_str.c_str(),m_str.size());
+}
+
 std::string _String::getStdString() {
     return m_str;
 }

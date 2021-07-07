@@ -15,6 +15,7 @@
 #include "ByteArray.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "InitializeException.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
@@ -44,21 +45,6 @@ _ByteArray::_ByteArray(int length,bool isSafe) {
     buff = (unsigned char *)malloc(length);
     memset(buff,0,length);
     mSize = length;
-    this->isSafe = isSafe;
-    mOriginalSize = -1;
-}
-
-/**
- * @brief ByteArray construct function
- * @param str save str as ByteArray
- */
-_ByteArray::_ByteArray(const String &str,bool isSafe) {
-    if(str == nullptr || str->size() <= 0) {
-        Trigger(InitializeException,"create ByteArray is nullptr");
-    }
-    mSize = str->size();
-    buff = (unsigned char *)malloc(mSize);
-    memcpy(buff,str->toChars(),mSize);
     this->isSafe = isSafe;
     mOriginalSize = -1;
 }

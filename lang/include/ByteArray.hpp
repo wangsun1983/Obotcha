@@ -7,9 +7,9 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "String.hpp"
 
 namespace obotcha {
+class _String;
 
 DECLARE_SIMPLE_CLASS(ByteArray) {
 public:
@@ -18,8 +18,6 @@ public:
     explicit _ByteArray(const byte *data,uint32_t len,bool isSafe = false);
 
     explicit _ByteArray(const sp<_ByteArray>&,bool isSafe = false);
-
-    explicit _ByteArray(const String &,bool isSafe = false);
 
     ~_ByteArray();
 
@@ -36,6 +34,7 @@ public:
     int growBy(int size);
 
     int quickShrink(int size);
+
     int quickRestore();
 
     bool isEmpty();
@@ -64,15 +63,15 @@ public:
         }
     }
 
-    String toString();
+    sp<_String> toString();
 
-    void dump(const char *);
+    void dump(const char *tag);
 
-    void dump(const String &);
+    void dump(const sp<_String> &tag);
 
-    void dumpToFile(const char *);
+    void dumpToFile(const char *path);
 
-    void dumpToFile(const String&);
+    void dumpToFile(const sp<_String>& path);
 
 private:
     byte *buff;
