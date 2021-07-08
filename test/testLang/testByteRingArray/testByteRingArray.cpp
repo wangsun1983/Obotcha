@@ -55,7 +55,7 @@ void testPush_bytearray() {
 
   ByteRingArray ringarray = createByteRingArray(5);
   ByteArray array1 = createByteArray(1);
-  array1->fill(0,1);
+  array1[0] = 1;
   ringarray->push(array1);
 
   if(ringarray->at(0) != 1) {
@@ -71,8 +71,8 @@ void testPush_bytearray() {
   //push array with two datas
   ringarray = createByteRingArray(5);
   ByteArray array2 = createByteArray(2);
-  array2->fill(0,1);
-  array2->fill(1,2);
+  array2[0] = 1;
+  array2[1] = 2;
   ringarray->push(array2);
 
   if(ringarray->at(0) != 1 ||
@@ -89,9 +89,9 @@ void testPush_bytearray() {
   //push array with three datas
   ringarray = createByteRingArray(5);
   ByteArray array3 = createByteArray(3);
-  array3->fill(0,1);
-  array3->fill(1,2);
-  array3->fill(2,3);
+  array3[0] = 1;
+  array3[1] = 2;
+  array3[2] = 3;
   ringarray->push(array3);
 
   if(ringarray->at(0) != 1 ||
@@ -110,10 +110,10 @@ void testPush_bytearray() {
   //push array with four datas
   ringarray = createByteRingArray(5);
   ByteArray array4 = createByteArray(4);
-  array4->fill(0,1);
-  array4->fill(1,2);
-  array4->fill(2,3);
-  array4->fill(3,4);
+  array4[0] = 1;
+  array4[1] = 2;
+  array4[2] = 3;
+  array4[3] = 4;
   ringarray->push(array4);
 
   if(ringarray->at(0) != 1 ||
@@ -132,11 +132,11 @@ void testPush_bytearray() {
   //push array with five datas
   ringarray = createByteRingArray(5);
   ByteArray array5 = createByteArray(5);
-  array5->fill(0,1);
-  array5->fill(1,2);
-  array5->fill(2,3);
-  array5->fill(3,4);
-  array5->fill(4,5);
+  array5[0] = 1;
+  array5[1] = 2;
+  array5[2] = 3;
+  array5[3] = 4;
+  array5[4] = 5;
   ringarray->push(array5);
 
   if(ringarray->at(0) != 1 ||
@@ -156,12 +156,12 @@ void testPush_bytearray() {
   //push array with six datas
   ringarray = createByteRingArray(5);
   ByteArray array6 = createByteArray(6);
-  array6->fill(0,1);
-  array6->fill(1,2);
-  array6->fill(2,3);
-  array6->fill(3,4);
-  array6->fill(4,5);
-  array6->fill(5,6);
+  array6[0] = 1;
+  array6[1] = 2;
+  array6[2] = 3;
+  array6[3] = 4;
+  array6[4] = 5;
+  array6[5] = 6;
   bool isException = false;
 
   try {
@@ -191,8 +191,8 @@ void testPush_bytearray_loop_1() {
   ringarray->pop(1);
 
   ByteArray bytearray1 = createByteArray(2);
-  bytearray1->fill(0,9);
-  bytearray1->fill(1,10);
+  bytearray1[0] = 9;
+  bytearray1[1] = 10;
 
   ringarray->push(bytearray1);
 
@@ -214,9 +214,9 @@ void testPush_bytearray_loop_1() {
   ringarray->pop(1);
 
   ByteArray bytearray2 = createByteArray(3);
-  bytearray2->fill(0,9);
-  bytearray2->fill(1,10);
-  bytearray2->fill(2,11);
+  bytearray2[0] = 9;
+  bytearray2[1] = 10;
+  bytearray2[2] = 11;
   ringarray->push(bytearray2);
 
   if(ringarray->at(0) != 11 ||
@@ -237,10 +237,10 @@ void testPush_bytearray_loop_1() {
   ringarray->pop(1);
 
   ByteArray bytearray3 = createByteArray(4);
-  bytearray3->fill(0,9);
-  bytearray3->fill(1,10);
-  bytearray3->fill(2,11);
-  bytearray3->fill(3,12);
+  bytearray3[0] = 9;
+  bytearray3[1] = 10;
+  bytearray3[2] = 11;
+  bytearray3[3] = 12;
   ringarray->push(bytearray3);
 
   if(ringarray->at(0) != 12 ||
@@ -268,9 +268,9 @@ void testPush_bytearray_loop_2() {
   ringarray->pop(1);
 
   ByteArray array1 = createByteArray(3);
-  array1->fill(0,10);
-  array1->fill(1,11);
-  array1->fill(2,12);
+  array1[0] = 10;
+  array1[1] = 11;
+  array1[2] = 12;
 
   ringarray->push(array1);
 
@@ -292,10 +292,10 @@ void testPush_bytearray_loop_2() {
   ringarray->pop(1);
 
   array1 = createByteArray(4);
-  array1->fill(0,10);
-  array1->fill(1,11);
-  array1->fill(2,12);
-  array1->fill(3,13);
+  array1[0] = 10;
+  array1[1] = 11;
+  array1[2] = 12;
+  array1[3] = 13;
 
   ringarray->push(array1);
 
@@ -317,16 +317,16 @@ void testPush_bytearray_continue() {
 
   ByteRingArray ringarray = createByteRingArray(6);
   ByteArray bytearray1 = createByteArray(2);
-  bytearray1->fill(0,1);
-  bytearray1->fill(1,2);
+  bytearray1[0] = 1;
+  bytearray1[1] = 2;
 
   ByteArray bytearray2 = createByteArray(2);
-  bytearray2->fill(0,1);
-  bytearray2->fill(1,2);
+  bytearray2[0] = 1;
+  bytearray2[1] = 2;
 
   ByteArray bytearray3 = createByteArray(2);
-  bytearray3->fill(0,1);
-  bytearray3->fill(1,2);
+  bytearray3[0] = 1;
+  bytearray3[1] = 2;
 
   ringarray->push(bytearray1);
   ringarray->push(bytearray2);
@@ -352,13 +352,13 @@ void testPush_bytearray_continue() {
   ringarray->pop(2);
 
   ByteArray bytearray4 = createByteArray(2);
-  bytearray4->fill(0,10);
-  bytearray4->fill(1,11);
+  bytearray4[0] = 10;
+  bytearray4[1] = 11;
   ringarray->push(bytearray4);
 
   ByteArray bytearray5 = createByteArray(2);
-  bytearray5->fill(0,12);
-  bytearray5->fill(1,13);
+  bytearray5[0] = 12;
+  bytearray5[1] = 13;
   ringarray->push(bytearray5);
 
   if(ringarray->at(0) != 12 ||

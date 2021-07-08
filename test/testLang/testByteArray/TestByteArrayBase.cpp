@@ -178,26 +178,6 @@ int basetest() {
 
     //bool fill(byte v,int index);
     while(1) {
-      ByteArray buff1 = createByteArray(6);
-      buff1->fill(2,3);
-
-#if 0
-      printf("buff1[0] is %d \n",buff1->at(0));
-      printf("buff1[1] is %d \n",buff1->at(1));
-      printf("buff1[2] is %d \n",buff1->at(2));
-      printf("buff1[3] is %d \n",buff1->at(3));
-      printf("buff1[4] is %d \n",buff1->at(4));
-      printf("buff1[5] is %d \n",buff1->at(5));
-#endif
-      if(buff1->at(0) != 0
-        ||buff1->at(1) != 0
-        ||buff1->at(2) != 3
-        ||buff1->at(3) != 0
-        ||buff1->at(4) != 0
-        ||buff1->at(5) != 0) {
-          printf("ByteArray fill test 3-------[FAIL] \n");
-          break;
-      }
 
       ByteArray buff2 = createByteArray(6);
       buff2->fill(2,2,3);

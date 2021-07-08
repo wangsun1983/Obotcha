@@ -33,7 +33,7 @@ int testsafemode() {
       }
     }
 
-    printf("ByteArray testsafemode test 2-------[Success] \n");
+    printf("ByteArray testsafemode test 2-------[OK] \n");
     break;
   }
 
@@ -56,7 +56,7 @@ int testsafemode() {
       }
     }
 
-    printf("ByteArray testsafemode test 4-------[Success] \n");
+    printf("ByteArray testsafemode test 4-------[OK] \n");
     break;
   }
 }

@@ -57,11 +57,11 @@ void push_test() {
   }
 
   b1 = createByteArray(5);
-  b1->fill(0,19);
-  b1->fill(1,19);
-  b1->fill(2,19);
-  b1->fill(3,19);
-  b1->fill(4,19);
+  b1[0] = 19;
+  b1[1] = 19;
+  b1[2] = 19;
+  b1[3] = 19;
+  b1[4] = 19;
   array->push(b1);
 
   if(array->at(0) != 19 ||

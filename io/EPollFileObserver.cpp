@@ -95,7 +95,7 @@ int _EPollFileObserver::close() {
     }
 
     ByteArray data = createByteArray(1);
-    data->fill(0,1);
+    data[0] = 1;
     mPipe->writeTo(data);
     
     join();

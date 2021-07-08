@@ -18,6 +18,8 @@ extern int testgrow();
 extern int testappend();
 extern int testsafemode();
 extern int testForeach();
+extern int testConstruct();
+extern int testByteArrayClear();
 
 int main() {
 
@@ -28,4 +30,6 @@ int main() {
   testappend();
   testsafemode();
   testForeach();
+  testConstruct();
+  testByteArrayClear();
 }

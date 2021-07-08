@@ -78,7 +78,7 @@ int testByteRingArrayPush2() {
       ringarray->push(5);
       ringarray->setStartIndex(1);
       ringarray->setEndIndex(4);
-      ringarray->setStatus(st(ByteRingArray)::ByteRingArrayPartial);
+      ringarray->setStatus(st(ByteRingArray)::Partial);
 
       ByteArray data = createByteArray(2);
       data[0] = 10;
@@ -113,7 +113,7 @@ int testByteRingArrayPush2() {
       ringarray->push(5);
       ringarray->setStartIndex(2);
       ringarray->setEndIndex(4);
-      ringarray->setStatus(st(ByteRingArray)::ByteRingArrayPartial);
+      ringarray->setStatus(st(ByteRingArray)::Partial);
 
       ByteArray data = createByteArray(3);
       data[0] = 10;
@@ -149,7 +149,7 @@ int testByteRingArrayPush2() {
       ringarray->push(5);
       ringarray->setStartIndex(3);
       ringarray->setEndIndex(4);
-      ringarray->setStatus(st(ByteRingArray)::ByteRingArrayPartial);
+      ringarray->setStatus(st(ByteRingArray)::Partial);
 
       ByteArray data = createByteArray(4);
       data[0] = 10;
@@ -186,7 +186,7 @@ int testByteRingArrayPush2() {
       ringarray->push(5);
       ringarray->setStartIndex(4);
       ringarray->setEndIndex(4);
-      ringarray->setStatus(st(ByteRingArray)::ByteRingArrayEmpty);
+      ringarray->setStatus(st(ByteRingArray)::Empty);
 
       ByteArray data = createByteArray(5);
       data[0] = 10;
@@ -224,7 +224,7 @@ int testByteRingArrayPush2() {
       ringarray->push(5);
       ringarray->setStartIndex(4);
       ringarray->setEndIndex(0);
-      ringarray->setStatus(st(ByteRingArray)::ByteRingArrayEmpty);
+      ringarray->setStatus(st(ByteRingArray)::Empty);
 
       ByteArray data = createByteArray(4);
       data[0] = 10;
@@ -261,7 +261,7 @@ int testByteRingArrayPush2() {
       ringarray->push(5);
       ringarray->setStartIndex(4);
       ringarray->setEndIndex(1);
-      ringarray->setStatus(st(ByteRingArray)::ByteRingArrayEmpty);
+      ringarray->setStatus(st(ByteRingArray)::Empty);
 
       ByteArray data = createByteArray(3);
       data[0] = 10;
@@ -297,7 +297,7 @@ int testByteRingArrayPush2() {
       ringarray->push(5);
       ringarray->setStartIndex(4);
       ringarray->setEndIndex(2);
-      ringarray->setStatus(st(ByteRingArray)::ByteRingArrayEmpty);
+      ringarray->setStatus(st(ByteRingArray)::Empty);
 
       ByteArray data = createByteArray(2);
       data[0] = 10;
@@ -332,7 +332,7 @@ int testByteRingArrayPush2() {
       ringarray->push(5);
       ringarray->setStartIndex(4);
       ringarray->setEndIndex(3);
-      ringarray->setStatus(st(ByteRingArray)::ByteRingArrayEmpty);
+      ringarray->setStatus(st(ByteRingArray)::Empty);
 
       ByteArray data = createByteArray(1);
       data[0] = 10;
@@ -366,7 +366,7 @@ int testByteRingArrayPush2() {
       ringarray->push(5);
       ringarray->setStartIndex(3);
       ringarray->setEndIndex(1);
-      ringarray->setStatus(st(ByteRingArray)::ByteRingArrayEmpty);
+      ringarray->setStatus(st(ByteRingArray)::Empty);
 
       ByteArray data = createByteArray(2);
       data[0] = 10;

@@ -14,9 +14,9 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(ByteRingArray) {
 public:
     enum ByteRingArrayStatus {
-        ByteRingArrayFull = 0,
-        ByteRingArrayEmpty,
-        ByteRingArrayPartial
+        Full = 0,
+        Empty,
+        Partial
     };
 
     _ByteRingArray(int size);

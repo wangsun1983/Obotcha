@@ -20,13 +20,18 @@ _ByteRingArray::_ByteRingArray(int size) {
     
     mSize = size;
     mBuff = (byte *)malloc(size);
-    mStatus = ByteRingArrayEmpty;
+
+    if(mBuff == nullptr) {
+        Trigger(InitializeException,"alloc fail");
+    }
+
+    mStatus = Empty;
     mStart = 0;
     mEnd = 0;
 }
 
 void _ByteRingArray::reset() {
-    mStatus = ByteRingArrayEmpty;
+    mStatus = Empty;
     mStart = 0;
     mEnd = 0;
 }
@@ -39,7 +44,7 @@ _ByteRingArray::~_ByteRingArray() {
 }
 
 bool _ByteRingArray::push(byte b) {
-    if(mStatus == ByteRingArrayFull) {
+    if(mStatus == Full) {
         Trigger(ArrayIndexOutOfBoundsException,"Ring Array push full Array!!!");
     }
 
@@ -51,16 +56,16 @@ bool _ByteRingArray::push(byte b) {
     }
 
     if(mEnd == mStart) {
-        mStatus = ByteRingArrayFull;
+        mStatus = Full;
     } else {
-        mStatus = ByteRingArrayPartial;
+        mStatus = Partial;
     }
 
     return true;
 }
 
 byte _ByteRingArray::pop() {
-    if(mStatus == ByteRingArrayEmpty) {
+    if(mStatus == Empty) {
         Trigger(ArrayIndexOutOfBoundsException,"Ring Array Pop Empty Array!!!");
     }
 
@@ -73,9 +78,9 @@ byte _ByteRingArray::pop() {
     } 
 
     if(mStart == mEnd) {
-        mStatus = ByteRingArrayEmpty;
+        mStatus = Empty;
     } else {
-        mStatus = ByteRingArrayPartial;
+        mStatus = Partial;
     }
 
     return c;
@@ -93,7 +98,7 @@ bool _ByteRingArray::push(const ByteArray &array,int start,int length) {
 }
 
 bool _ByteRingArray::push(byte *array,int start,int length) {
-    if(mStatus == ByteRingArrayFull ||(mSize - getAvailDataSize()) < length ) {
+    if(mStatus == Full ||(mSize - getAvailDataSize()) < length ) {
         Trigger(ArrayIndexOutOfBoundsException,"Ring Array Push Overflow!!!");
     }
     
@@ -112,9 +117,9 @@ bool _ByteRingArray::push(byte *array,int start,int length) {
         }
     }
     if(mEnd == mStart) {
-        mStatus = ByteRingArrayFull;
+        mStatus = Full;
     } else {
-        mStatus = ByteRingArrayPartial;
+        mStatus = Partial;
     }
     return true;
 }
@@ -124,7 +129,7 @@ ByteArray _ByteRingArray::pop(int size) {
         Trigger(IllegalArgumentException,"pop size is illegal");
     }
 
-    if(mStatus == ByteRingArrayEmpty) {
+    if(mStatus == Empty) {
         Trigger(ArrayIndexOutOfBoundsException,"Ring Array Pop Empty Array!!!");
     }
 
@@ -153,16 +158,16 @@ ByteArray _ByteRingArray::pop(int size) {
     }
 
     if(mStart == mEnd) {
-        mStatus = ByteRingArrayEmpty;
+        mStatus = Empty;
     } else {
-        mStatus = ByteRingArrayPartial;
+        mStatus = Partial;
     }
 
     return buff;
 }
 
 int _ByteRingArray::getAvailDataSize() {
-    if(mStatus == ByteRingArrayEmpty) {
+    if(mStatus == Empty) {
         return 0;
     }
 
@@ -197,7 +202,7 @@ ByteArray _ByteRingArray::popAll() {
 
 //for ByteRingArray
 ByteArray _ByteRingArray::popByEnd(int end) {
-    if(mStatus == ByteRingArrayEmpty) {
+    if(mStatus == Empty) {
         Trigger(ArrayIndexOutOfBoundsException,"Ring Array popAtCursor OverStack!!!");
     }
     int length = 0;

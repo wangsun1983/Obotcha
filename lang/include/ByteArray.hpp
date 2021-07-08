@@ -7,6 +7,7 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "Byte.hpp"
 
 namespace obotcha {
 class _String;
@@ -43,9 +44,7 @@ public:
 
     int fill(byte v);
 
-    int fill(int index,byte v);
-
-    int fill(int index,int length,byte v);
+    int fill(int start,int length,byte v);
 
     int append(const sp<_ByteArray>&);
 

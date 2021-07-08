@@ -39,7 +39,7 @@ int dumptest() {
         }
       }
 
-      printf("ByteArray dump test 3-------[Success] \n");
+      printf("ByteArray dump test 3-------[OK] \n");
       break;
     }
 

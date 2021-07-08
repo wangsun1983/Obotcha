@@ -52,8 +52,29 @@ int operatortest() {
         }
       }
 
-      printf("ByteArray operatortest test 3-------[Success] \n");
+      printf("ByteArray operatortest test 3-------[OK] \n");
       break;
+  }
+
+  //-1 index
+  while(1) {
+    ByteArray arr1 = createByteArray(16);
+    for(int i = 0;i<16;i++) {
+      arr1[i] = i;
+    }
+
+    bool isException = false;
+    try {
+      arr1[-1] = 3;
+    }catch(ArrayIndexOutOfBoundsException e) {
+      isException = true;
+    }
+
+    if(!isException) {
+      printf("ByteArray operatortest test 5-------[OK] \n");
+    }
+    printf("ByteArray operatortest test 6-------[OK] \n");
+    break;
   }
 
 }

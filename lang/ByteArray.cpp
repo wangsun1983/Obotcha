@@ -15,6 +15,7 @@
 #include "ByteArray.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "InitializeException.hpp"
+#include "OutOfMemoryException.hpp"
 #include "String.hpp"
 
 namespace obotcha {
@@ -43,6 +44,11 @@ _ByteArray::_ByteArray(int length,bool isSafe) {
         Trigger(InitializeException,"create ByteArray is nullptr");
     }
     buff = (unsigned char *)malloc(length);
+
+    if(buff == nullptr) {
+        Trigger(InitializeException,"alloc failed");
+    }
+
     memset(buff,0,length);
     mSize = length;
     this->isSafe = isSafe;
@@ -59,6 +65,11 @@ _ByteArray::_ByteArray(const byte *data,uint32_t len,bool isSafe) {
         Trigger(InitializeException,"create ByteArray is nullptr");
     }
     buff = (unsigned char *)malloc(len);
+
+    if(buff == nullptr) {
+        Trigger(InitializeException,"alloc failed");
+    }
+
     mSize = len;
     memcpy(buff,data,len);
     this->isSafe = isSafe;
@@ -77,7 +88,7 @@ void _ByteArray::clear() {
 }
 
 byte & _ByteArray::operator[] (int index) {
-    if(index >= mSize) {
+    if(index >= mSize || index < 0) {
         String exception = createString("ByteArray [] fail")
                             ->append("size is",
                                     createString(mSize),
@@ -102,10 +113,13 @@ _ByteArray::~_ByteArray() {
     mSize = 0;
 }
 
-
 byte *_ByteArray::toValue() {
     if(isSafe) {
         byte *v = (byte*)malloc(mSize);
+        if(v == nullptr) {
+            Trigger(OutOfMemoryException,"alloc failed");
+        }
+
         memcpy(v,buff,mSize);
         return v;
     }
@@ -142,11 +156,22 @@ int _ByteArray::growTo(int size) {
         return -InvalidParam;
     }
 
-    buff = (byte *)realloc(buff,size);
+    int len = size - mSize;
+    if(size <= this->mOriginalSize) {
+        memset(buff+mSize,0,len);
+        mSize = size;
+        return mSize;
+    }
 
-    mSize = size;    
+    byte *ptr = (byte *)realloc(buff,size);
+    if(ptr == nullptr) {
+        Trigger(OutOfMemoryException,"alloc failed");
+    }
+    memset(ptr+mSize,0,len);
     
-    return 0;
+    buff = ptr;
+    mSize = size;    
+    return mSize;
 }
 
 int _ByteArray::growBy(int size) {
@@ -154,11 +179,22 @@ int _ByteArray::growBy(int size) {
         return -InvalidParam;
     }
 
-    mSize += size;
+    int nextSize = mSize + size;
+    if(nextSize <= mOriginalSize) {
+        memset(buff+mSize,0,size);
+        mSize = nextSize;
+        return mSize;
+    }
 
-    buff = (byte *)realloc(buff,mSize);
+    byte *ptr = (byte *)realloc(buff,nextSize);
+    if(ptr == nullptr) {
+        Trigger(OutOfMemoryException,"alloc failed");
+    }
+    memset(ptr+mSize,0,size);
 
-    return 0;
+    buff = ptr;
+    mSize = nextSize;
+    return mSize;
 }
 
 bool _ByteArray::isEmpty() {
@@ -166,7 +202,7 @@ bool _ByteArray::isEmpty() {
 }
 
 byte _ByteArray::at(int index) {
-    if(index >= mSize) {
+    if(index >= mSize||index < 0) {
         String exception = createString("ByteArray at fail")
                             ->append("size is",
                                     createString(mSize),
@@ -183,24 +219,13 @@ int _ByteArray::fill(byte v) {
     return 0;
 }
 
-int _ByteArray::fill(int index,byte v) {
-
-    if(index >= mSize || index < 0) {
+int _ByteArray::fill(int start,int length,byte v) {
+    if((start < 0)
+        || (start + length > mSize)) {
         Trigger(ArrayIndexOutOfBoundsException,"fill Stack Overflow");
     }
 
-    buff[index] = v;
-
-    return 0;
-}
-
-int _ByteArray::fill(int index,int length,byte v) {
-    if((index < 0)
-        || (index + length > mSize)) {
-        Trigger(ArrayIndexOutOfBoundsException,"fill Stack Overflow");
-    }
-
-    memset(&buff[index],v,length);
+    memset(&buff[start],v,length);
 
     return 0;
 }
@@ -221,9 +246,18 @@ int _ByteArray::append(byte *data,int len) {
         return -InvalidParam;
     }
 
+    int nextSize = mSize + len;
+    if(nextSize <= mOriginalSize) {
+        memset(buff+mSize,0,len);
+        memcpy(&buff[mSize],data,len);
+        mSize = nextSize;
+        return mSize;
+    }
+
     buff = (byte *)realloc(buff,mSize + len);
     memcpy(&buff[mSize],data,len);
     mSize += len;
+    mOriginalSize = -1;
     return mSize;
 }
 

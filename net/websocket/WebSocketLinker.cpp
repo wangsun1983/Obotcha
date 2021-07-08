@@ -155,7 +155,7 @@ long _WebSocketLinker::sendBinaryMessage(ByteArray data) {
 }
 
 long _WebSocketLinker::sendTextMessage(String data) {
-    return _send(st(WebSocketProtocol)::OPCODE_TEXT,createByteArray(data));
+    return _send(st(WebSocketProtocol)::OPCODE_TEXT,data->toByteArray());
 }
 
 long _WebSocketLinker::sendPingMessage(ByteArray data) {

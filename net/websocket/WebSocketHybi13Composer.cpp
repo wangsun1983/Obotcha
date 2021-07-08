@@ -84,7 +84,7 @@ HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl)
 HttpResponse _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSocketKey,String protocols) {
     String key = SecWebSocketKey;
     String key_mgic = key->append(st(WebSocketProtocol)::ACCEPT_MAGIC);
-    ByteArray sha1_content = mSha->encryptRawData(createByteArray(key_mgic));
+    ByteArray sha1_content = mSha->encryptRawData(key_mgic->toByteArray());
     String base64 = mBase64->encode(sha1_content)->toString();
 
     HttpPacketBuilder builder = createHttpPacketBuilder();
@@ -113,11 +113,11 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genTextMessage(String content) {
     
     switch(mType) {
         case WsClientComposer:
-        return _genClientMessage(createByteArray(content),st(WebSocketProtocol)::OPCODE_TEXT);
+        return _genClientMessage(content->toByteArray(),st(WebSocketProtocol)::OPCODE_TEXT);
         
 
         case WsServerComposer:
-        return _genServerMessage(createByteArray(content),st(WebSocketProtocol)::OPCODE_TEXT);
+        return _genServerMessage(content->toByteArray(),st(WebSocketProtocol)::OPCODE_TEXT);
     }
 
     return nullptr;
@@ -281,11 +281,11 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::genBinaryMessage(ByteArray conten
 ByteArray _WebSocketHybi13Composer::genPingMessage(String msg) {
     switch(mType) {
         case WsClientComposer:
-        return _genClientControlMessage(createByteArray(msg),
+        return _genClientControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PING);
 
         case WsServerComposer:
-        return _genServerControlMessage(createByteArray(msg),
+        return _genServerControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PING);
     }
 
@@ -295,11 +295,11 @@ ByteArray _WebSocketHybi13Composer::genPingMessage(String msg) {
 ByteArray _WebSocketHybi13Composer::genPongMessage(String msg) {
     switch(mType) {
         case WsClientComposer:
-        return _genClientControlMessage(createByteArray(msg),
+        return _genClientControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PONG);
 
         case WsServerComposer:
-        return _genServerControlMessage(createByteArray(msg),
+        return _genServerControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_PONG);
     }
 
@@ -309,11 +309,11 @@ ByteArray _WebSocketHybi13Composer::genPongMessage(String msg) {
 ByteArray _WebSocketHybi13Composer::genCloseMessage(String msg) {
     switch(mType) {
         case WsClientComposer:
-        return _genClientControlMessage(createByteArray(msg),
+        return _genClientControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE);
 
         case WsServerComposer:
-        return _genServerControlMessage(createByteArray(msg),
+        return _genServerControlMessage(msg->toByteArray(),
                                         st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE);
     }
 

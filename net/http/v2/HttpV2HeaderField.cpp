@@ -10,8 +10,8 @@ namespace obotcha {
 
 
 _HttpV2HeaderField::_HttpV2HeaderField(String name,String value) {
-    this->mName = createByteArray(name);
-    this->mValue = createByteArray(name);
+    this->mName = name->toByteArray();
+    this->mValue = value->toByteArray();
 }
     
 int _HttpV2HeaderField::sizeOf(ByteArray name, ByteArray value) {
