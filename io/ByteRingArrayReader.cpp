@@ -44,11 +44,10 @@ ByteArray _ByteRingArrayReader::pop() {
 }
 
 int _ByteRingArrayReader::readNext(byte &value) {
-    if(mBuff->getStatus() == st(ByteRingArray)::ByteRingArrayEmpty) {
+    if(mBuff->getAvailDataSize() == 0) {
         return ByteRingArrayReadComplete;
     }
 
-    int start = mBuff->getStartIndex();
     int end = mBuff->getEndIndex();
 
     if(mCursor == end) {
@@ -57,12 +56,12 @@ int _ByteRingArrayReader::readNext(byte &value) {
             return ByteRingArrayReadComplete;
         }
     }
-    mMark = Partial;
 
+    mMark = Partial;
     value = mBuff->at(mCursor);
     mCursor++;
 
-    if(mCursor == mBuff->getSize()) {
+    if(mCursor == mBuff->getCapacity()) {
         mCursor = 0;
     }
 
@@ -79,23 +78,23 @@ int _ByteRingArrayReader::getCursor() {
 
 int _ByteRingArrayReader::move(int length) {
     mCursor += length;
-    if(mCursor > mBuff->getSize()) {
-        mCursor = (mCursor - mBuff->getSize());
+    if(mCursor > mBuff->getCapacity()) {
+        mCursor = (mCursor - mBuff->getCapacity());
     }
 
     return mCursor;
 }
 
 int _ByteRingArrayReader::getReadableLength() {
-    if(mBuff->getStatus() == st(ByteRingArray)::ByteRingArrayEmpty) {
+    if(mBuff->getAvailDataSize() == 0) {
         return 0;
     }
 
     int end = mBuff->getEndIndex();
-    int length = mBuff->getSize();
+    int length = mBuff->getCapacity();
 
     if( mCursor >= end) {
-        return mBuff->getSize() - (mCursor - end);
+        return mBuff->getAvailDataSize() - (mCursor - end);
     } else {
         return end - mCursor;
     }

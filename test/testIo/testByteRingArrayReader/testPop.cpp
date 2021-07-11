@@ -36,12 +36,12 @@ void test_pop() {
     //{1,2,3,4,5,6}
     ByteRingArray ringarray = createByteRingArray(6);
     ByteArray array = createByteArray(6);
-    array->fill(0,1);
-    array->fill(1,2);
-    array->fill(2,3); 
-    array->fill(3,4);
-    array->fill(4,5);
-    array->fill(5,6);
+    array[0] = 1;
+    array[1] = 2;
+    array[2] = 3; 
+    array[3] = 4;
+    array[4] = 5;
+    array[5] = 6;
 
     ringarray->push(array);
     ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
@@ -87,17 +87,17 @@ void test_pop() {
     //{7,2,3,4,5,6}
     ringarray = createByteRingArray(6);
     array = createByteArray(5);
-    array->fill(0,1);
-    array->fill(1,2);
-    array->fill(2,3); 
-    array->fill(3,4);
-    array->fill(4,5);
+    array[0] = 1;
+    array[1] = 2;
+    array[2] = 3; 
+    array[3] = 4;
+    array[4] = 5;
     ringarray->push(array);
     ringarray->pop(1);
 
     ByteArray array2 = createByteArray(2);
-    array2->fill(0,6);
-    array2->fill(1,7);
+    array2[0] = 6;
+    array2[1] = 7;
     ringarray->push(array2);
     int status = ByteRingArrayReadContinue;
     reader = createByteRingArrayReader(ringarray);

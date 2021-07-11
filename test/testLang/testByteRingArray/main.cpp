@@ -12,10 +12,14 @@ extern void normal_test();
 extern void push_test();
 extern int testByteRingArrayPush2();
 extern int testByteRingArrayPop();
+extern int testStartIndex();
+extern int testPopAll();
 
 int main() {
-  normal_test();
-  push_test();
-  testByteRingArrayPush2();
-  testByteRingArrayPop();
+  //testStartIndex();
+  //normal_test();
+  //push_test();
+  //testByteRingArrayPush2();
+  //testByteRingArrayPop();
+    testPopAll();
 }

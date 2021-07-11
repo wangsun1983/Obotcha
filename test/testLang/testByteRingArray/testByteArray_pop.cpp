@@ -175,11 +175,13 @@ int testByteRingArrayPop() {
     array->push(4);
     array->push(5);
 
-    array->setStartIndex(4);
     array->setEndIndex(0);
+    array->setSize(1);
+
+    printf("startIndex is %d \n",array->getStartIndex());
     ByteArray arr = array->popAll();
     if(arr->size() != 1) {
-      printf("---[ByteRingArray Test pop {push_test7} case1] [FAILED]--- \n");
+      printf("---[ByteRingArray Test pop {push_test7} case1] [FAILED]---,arr->size() is %d \n",arr->size());
       return 1;
     }
 
@@ -203,7 +205,7 @@ int testByteRingArrayPop() {
     array->push(4);
     array->push(5);
 
-    array->setStartIndex(4);
+    array->setSize(2);
     array->setEndIndex(1);
     ByteArray arr = array->popAll();
     if(arr->size() != 2) {
@@ -232,7 +234,7 @@ int testByteRingArrayPop() {
     array->push(4);
     array->push(5);
 
-    array->setStartIndex(4);
+    array->setSize(3);
     array->setEndIndex(2);
     ByteArray arr = array->popAll();
     if(arr->size() != 3) {
@@ -261,7 +263,7 @@ int testByteRingArrayPop() {
     array->push(4);
     array->push(5);
 
-    array->setStartIndex(4);
+    array->setSize(4);
     array->setEndIndex(3);
     ByteArray arr = array->popAll();
     if(arr->size() != 4) {

@@ -35,7 +35,7 @@ ByteRingArray createStartBiggerThanEnd() {
 
 void push_test() {
   ByteRingArray array = createStartBiggerThanEnd();
-
+  printf("array start 1 index is %d \n",array->getStartIndex());
   //pop 2 data
   ByteArray b1 = array->pop(2);
   if(b1->at(0) != 5 ||
@@ -43,9 +43,11 @@ void push_test() {
     printf("---[ByteRingArray Test push_test {push_test} case1] [FAILED]--- \n");
     return;
   }
+  printf("array start 2 index is %d \n",array->getStartIndex());
 
   if(array->getStartIndex() != 0 
     ||array->getEndIndex() != 2) {
+    printf("startIndex is %d,endIndex is %d \n",array->getStartIndex(),array->getEndIndex());
     printf("---[ByteRingArray Test push_test {push_test} case2] [FAILED]--- \n");
     return;
   }

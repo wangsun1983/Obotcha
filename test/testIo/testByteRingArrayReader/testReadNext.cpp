@@ -101,8 +101,7 @@ void testReadNext() {
     byte v3;
     byte v4;
     byte v5;
-    ringarray->setStartIndex(1);
-    ringarray->setEndIndex(0);
+    ringarray->setEndIndex(1);
 
     ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
     if(reader->readNext(v1) != ByteRingArrayReadContinue) {
@@ -110,7 +109,7 @@ void testReadNext() {
         return;
     }
     if(v1 != 2) {
-        printf("---[ByteRingArrayReader Test {testReadNext condition2} case1_1] [FAIL]--- \n");
+        printf("---[ByteRingArrayReader Test {testReadNext condition2} case1_1] [FAIL]---,v is %d \n",v1);
         return;
     }
 
@@ -141,6 +140,15 @@ void testReadNext() {
         return;
     }
 
+    if(reader->readNext(v5) != ByteRingArrayReadContinue) {
+        printf("---[ByteRingArrayReader Test {testReadNext condition2} case4_2] [FAIL]--- \n");
+        return;
+    }
+    if(v5 != 1) {
+        printf("---[ByteRingArrayReader Test {testReadNext condition2} case4_3] [FAIL]---,v5 is %d \n",v5);
+        return;
+    }
+
     byte end;
     int result = reader->readNext(end);
     if(result != ByteRingArrayReadComplete) {
@@ -149,12 +157,12 @@ void testReadNext() {
     }
 
     ByteArray popdata = reader->pop();
-    if(popdata->size() != 4) {
+    if(popdata->size() != 5) {
         printf("---[ByteRingArrayReader Test {testReadNext condition2} case7] [FAIL]--- \n");
         return;
     }
 
-    if(popdata[0]!= 2 ||popdata[1] != 3||popdata[2] != 4||popdata[3] != 5) {
+    if(popdata[0]!= 2 ||popdata[1] != 3||popdata[2] != 4||popdata[3] != 5 ||popdata[4] != 1) {
         printf("---[ByteRingArrayReader Test {testReadNext condition2} case8] [FAIL]--- \n");
         return;
     }
@@ -177,8 +185,8 @@ void testReadNext() {
     byte v3;
     byte v4;
     byte v5;
-    ringarray->setStartIndex(2);
     ringarray->setEndIndex(0);
+    ringarray->setSize(3);
 
     ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
     if(reader->readNext(v1) != ByteRingArrayReadContinue) {
@@ -243,8 +251,8 @@ void testReadNext() {
     byte v3;
     byte v4;
     byte v5;
-    ringarray->setStartIndex(3);
     ringarray->setEndIndex(0);
+    ringarray->setSize(2);
 
     ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
     if(reader->readNext(v1) != ByteRingArrayReadContinue) {
@@ -300,8 +308,9 @@ void testReadNext() {
     byte v3;
     byte v4;
     byte v5;
-    ringarray->setStartIndex(4);
+
     ringarray->setEndIndex(0);
+    ringarray->setSize(1);
 
     ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
     if(reader->readNext(v1) != ByteRingArrayReadContinue) {
@@ -348,7 +357,7 @@ void testReadNext() {
     byte v3;
     byte v4;
     byte v5;
-    ringarray->setStartIndex(1);
+    ringarray->setSize(5);
     ringarray->setEndIndex(1);
 
     ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
@@ -432,7 +441,7 @@ void testReadNext() {
     byte v3;
     byte v4;
     byte v5;
-    ringarray->setStartIndex(2);
+    ringarray->setSize(4);
     ringarray->setEndIndex(1);
 
     ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
@@ -507,7 +516,7 @@ void testReadNext() {
     byte v3;
     byte v4;
     byte v5;
-    ringarray->setStartIndex(3);
+    ringarray->setSize(3);
     ringarray->setEndIndex(1);
 
     ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
@@ -573,7 +582,7 @@ void testReadNext() {
     byte v3;
     byte v4;
     byte v5;
-    ringarray->setStartIndex(4);
+    ringarray->setSize(2);
     ringarray->setEndIndex(1);
 
     ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
@@ -630,7 +639,7 @@ void testReadNext() {
     byte v3;
     byte v4;
     byte v5;
-    ringarray->setStartIndex(0);
+    ringarray->setSize(1);
     ringarray->setEndIndex(1);
 
     ByteRingArrayReader reader = createByteRingArrayReader(ringarray);

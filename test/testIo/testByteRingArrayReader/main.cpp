@@ -10,13 +10,13 @@ using namespace obotcha;
 
 extern void testReadNext();
 extern void test_pop();
-extern void testpopall();
+//extern void testpopall();
 extern void testReadableLength();
 
 int main() {
   //test_readnext();
-  testpopall();
+  //testpopall();
   testReadNext();
   testReadableLength();
-  //test_pop();
+  test_pop();
 }

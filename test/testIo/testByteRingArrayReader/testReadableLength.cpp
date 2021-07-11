@@ -25,7 +25,7 @@ void testReadableLength() {
       reader->setCursor(0);
       int length = reader->getReadableLength();
       if(length != 0) {
-        printf("---[ByteRingArrayReader Test {testReadableLength} case1] [FAILED]--- \n");
+        printf("---[ByteRingArrayReader Test {testReadableLength} case1] [FAILED]---,length is %d \n",length);
         return;
       }
       printf("---[ByteRingArrayReader Test {testReadableLength} case1] [OK]--- \n");

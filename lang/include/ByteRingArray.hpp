@@ -21,6 +21,8 @@ public:
 
     _ByteRingArray(int size);
 
+    _ByteRingArray(sp<_ByteRingArray>);
+
     ~_ByteRingArray();
 
     bool push(byte b);
@@ -39,7 +41,7 @@ public:
 
     int getAvailDataSize();
 
-    int getSize();
+    int getCapacity();
 
     int getStartIndex();
 
@@ -49,27 +51,13 @@ public:
 
     byte at(int m);
 
-    int getStatus();
-
-    using foreachCallback = std::function<int(byte &)>;
-    inline void foreach(foreachCallback callback) {
-        int cursor = mStart;
-        while(cursor != mEnd) {
-            if(callback(mBuff[cursor]) < 0) {
-                break;
-            }
-
-            cursor++;
-            if(cursor == mSize) {
-                cursor = 0;
-            }
-        }
-    }
-
     //just for test
     void setStartIndex(int);
     void setEndIndex(int);
-    void setStatus(int);
+    int getNextIndex();
+    void setNextIndex(int);
+    void setSize(int);
+    //void setStatus(int);
 
     void reset();
    
@@ -77,14 +65,9 @@ private:
 
     byte *mBuff;
 
-    int mStart;
-
-    int mEnd;
-
+    int mNext;
+    int mCapacity;
     int mSize;
-
-    int mStatus;
-
     
 };
 

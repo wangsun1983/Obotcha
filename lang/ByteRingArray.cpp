@@ -18,22 +18,32 @@ _ByteRingArray::_ByteRingArray(int size) {
         Trigger(InitializeException,"size is illeagle");
     }
     
-    mSize = size;
+    mCapacity = size;
+    mSize = 0;
     mBuff = (byte *)malloc(size);
+    mNext = 0;
 
     if(mBuff == nullptr) {
         Trigger(InitializeException,"alloc fail");
     }
+}
 
-    mStatus = Empty;
-    mStart = 0;
-    mEnd = 0;
+_ByteRingArray::_ByteRingArray(sp<_ByteRingArray> data) {
+    mCapacity = data->mCapacity;
+    mSize = data->mSize;
+    mNext = data->mNext;
+
+    mBuff = (byte *)malloc(data->mCapacity);
+    if(mBuff == nullptr) {
+        Trigger(InitializeException,"alloc fail");
+    }
+    memcpy(mBuff,data->mBuff,mCapacity);
 }
 
 void _ByteRingArray::reset() {
-    mStatus = Empty;
-    mStart = 0;
-    mEnd = 0;
+    mSize = 0;
+    mNext = 0;
+    memset(mBuff,0,mCapacity);
 }
 
 _ByteRingArray::~_ByteRingArray() {
@@ -44,45 +54,28 @@ _ByteRingArray::~_ByteRingArray() {
 }
 
 bool _ByteRingArray::push(byte b) {
-    if(mStatus == Full) {
+    if(mSize == mCapacity) {
         Trigger(ArrayIndexOutOfBoundsException,"Ring Array push full Array!!!");
     }
 
-    mBuff[mEnd] = b;
-    if(mEnd == (mSize - 1)) {
-        mEnd = 0;
+    mBuff[mNext] = b;
+    mSize++;
+    if(mNext == (mCapacity - 1)) {
+        mNext = 0;
     } else {
-        mEnd++;
+        mNext++;
     }
-
-    if(mEnd == mStart) {
-        mStatus = Full;
-    } else {
-        mStatus = Partial;
-    }
-
     return true;
 }
 
 byte _ByteRingArray::pop() {
-    if(mStatus == Empty) {
+    if(mSize == 0) {
         Trigger(ArrayIndexOutOfBoundsException,"Ring Array Pop Empty Array!!!");
     }
 
-    byte c = mBuff[mStart];
-
-    mStart++;
-    
-    if(mStart == mSize) {
-        mStart = 0;
-    } 
-
-    if(mStart == mEnd) {
-        mStatus = Empty;
-    } else {
-        mStatus = Partial;
-    }
-
+    int start = getStartIndex();
+    byte c = mBuff[start];
+    mSize--;
     return c;
 }
 
@@ -98,141 +91,118 @@ bool _ByteRingArray::push(const ByteArray &array,int start,int length) {
 }
 
 bool _ByteRingArray::push(byte *array,int start,int length) {
-    if(mStatus == Full ||(mSize - getAvailDataSize()) < length ) {
+    if(length > (mCapacity - mSize)) {
         Trigger(ArrayIndexOutOfBoundsException,"Ring Array Push Overflow!!!");
     }
-    
-    if(mEnd < mStart) {
-        memcpy(mBuff + mEnd,&array[start],length);
-        mEnd += length;
+
+    if((mNext + length) < mCapacity) {
+        memcpy(mBuff + mNext,&array[start],length);
+        mNext += length;
     } else {
-        if(mEnd + length < mSize) {
-            memcpy(mBuff + mEnd,&array[start],length);
-            mEnd += length;
-        } else {
-            int len = mSize - mEnd;
-            memcpy(mBuff + mEnd,&array[start],len);
-            memcpy(mBuff,&array[start + len],length - len);
-            mEnd = (length - len);
+        int firstCopyLen = (mCapacity - mNext);
+        memcpy(mBuff + mNext,&array[start],firstCopyLen);
+        mNext += firstCopyLen;
+
+        int secCopyLen = (length - firstCopyLen);
+        if(secCopyLen != 0) {
+            memcpy(mBuff,&array[start + firstCopyLen],secCopyLen);
+            mNext += secCopyLen;
         }
     }
-    if(mEnd == mStart) {
-        mStatus = Full;
-    } else {
-        mStatus = Partial;
-    }
+
+    mSize += length;
+
     return true;
 }
 
 ByteArray _ByteRingArray::pop(int size) {
-    if(size <= 0) {
+    if(mSize <= 0 ) {
+        Trigger(ArrayIndexOutOfBoundsException,"pop size is 0");
+    }
+
+    if(mSize < size) {
         Trigger(IllegalArgumentException,"pop size is illegal");
     }
 
-    if(mStatus == Empty) {
-        Trigger(ArrayIndexOutOfBoundsException,"Ring Array Pop Empty Array!!!");
-    }
-
-    ByteArray buff = createByteArray(size);
-    if(mStart >= mEnd) {
-        if( mSize - (mStart - mEnd) < size) {
-            Trigger(ArrayIndexOutOfBoundsException,"Ring Array Pop OverStack!!!");
-        }
-        
-        if((mStart + size) < mSize) {
-            memcpy(buff->toValue(),mBuff + mStart,size);
-            mStart += size;
-        } else {
-            int length = mSize - mStart;
-            memcpy(buff->toValue(),mBuff + mStart,length);
-            memcpy(buff->toValue() + length,mBuff,size - length);
-            mStart = (size - length);
-        }
+    int start = getStartIndex();
+    ByteArray result = nullptr;
+    if(start + size < mCapacity) {
+        result = createByteArray(&mBuff[start],size);
     } else {
-        if((mEnd -mStart) < size) {
-            Trigger(ArrayIndexOutOfBoundsException,"Ring Array Pop OverStack!!!");
-        }
-        
-        memcpy(buff->toValue(),mBuff+mStart,size);
-        mStart += size;
-    }
+        result = createByteArray(size);
+        int firstCopyLen = (mCapacity - start);
+        memcpy(result->toValue(),mBuff + start,firstCopyLen);
 
-    if(mStart == mEnd) {
-        mStatus = Empty;
-    } else {
-        mStatus = Partial;
+        int secondCopyLen = size - firstCopyLen;
+        memcpy(result->toValue() + firstCopyLen,mBuff,secondCopyLen);
     }
-
-    return buff;
+    mSize -= size;
+    return result;
 }
 
-int _ByteRingArray::getAvailDataSize() {
-    if(mStatus == Empty) {
-        return 0;
-    }
-
-    if(mStart >= mEnd) {
-        return mSize-(mStart - mEnd);
-    } else {
-        return mEnd - mStart;
-    }
+int _ByteRingArray::getNextIndex() {
+    return mNext;
 }
 
-int _ByteRingArray::getSize() {
-    return mSize;
+void _ByteRingArray::setNextIndex(int n) {
+    mNext = n;
+}
+
+void _ByteRingArray::setSize(int s) {
+    mSize = s;
+}
+
+int _ByteRingArray::getCapacity() {
+    return mCapacity;
 }
 
 int _ByteRingArray::getStartIndex() {
-    return mStart;
+    int start = mNext - mSize;
+    if(start < 0) {
+        start += mCapacity;
+    }
+
+    return start;
 }
 
 int _ByteRingArray::getEndIndex() {
-    return mEnd;
+    return mNext;
 }
 
 byte _ByteRingArray::at(int m) {
-    
     return mBuff[m];
 }
 
 ByteArray _ByteRingArray::popAll() {
-    int size = getAvailDataSize();
-    return pop(size);
+    return pop(mSize);
 }
 
 //for ByteRingArray
 ByteArray _ByteRingArray::popByEnd(int end) {
-    if(mStatus == Empty) {
-        Trigger(ArrayIndexOutOfBoundsException,"Ring Array popAtCursor OverStack!!!");
-    }
-    int length = 0;
-    if(mStart > end) {
-        length = mSize - (mStart - end);
-    } else {
-        length = end - mStart;
-    }
-    if(length == 0) {
-        return nullptr;
+    int interval = (mNext - end);
+    if(interval < 0) {
+        interval += mCapacity;
     }
 
-    return pop(length);
+    return pop(interval);
 }
 
-int _ByteRingArray::getStatus() {
-    return mStatus;
+int _ByteRingArray::getAvailDataSize() {
+    return mSize;
 }
 
 //just for test
 void _ByteRingArray::setStartIndex(int index) {
-    mStart = index;
+    int interval = (mNext - index);
+    if(interval < 0) {
+        interval += mCapacity;
+    }
+
+    mSize -= interval;
 }
 
 void _ByteRingArray::setEndIndex(int index) {
-    mEnd = index;
-}
-
-void _ByteRingArray::setStatus(int status) {
-    this->mStatus = status;
+    mNext = index;
 }
 
 }
