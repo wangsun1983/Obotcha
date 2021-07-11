@@ -55,7 +55,8 @@ void test_pop() {
     if(poparray->size() != 2 ||
        poparray->at(0) != 1 ||
        poparray->at(1) != 2 ) {
-        printf("---[ByteRingArrayReader Test {pop(byte val)} case0] [FAILED]--- \n");
+        printf("---[ByteRingArrayReader Test {pop(byte val)} case0] [FAILED]---,size is %d,array[0] is %d,array[1] is %d \n",
+          poparray->size(),poparray->at(0),poparray->at(1));
         return;
     }
 
@@ -80,7 +81,7 @@ void test_pop() {
 
     poparray = reader->pop();
     if(poparray != nullptr) {
-        printf("---[ByteRingArrayReader Test {pop(byte val)} case2] [FAILED]--- \n");
+        printf("---[ByteRingArrayReader Test {pop(byte val)} case3] [FAILED]--- \n");
         return;
     }
 

@@ -177,14 +177,14 @@ ByteArray _ByteRingArray::popAll() {
     return pop(mSize);
 }
 
-//for ByteRingArray
-ByteArray _ByteRingArray::popByEnd(int end) {
-    int interval = (mNext - end);
+//for ByteRingArrayReader,include end
+ByteArray _ByteRingArray::popTo(int index) {
+    int interval = (mNext - index) - 1;
     if(interval < 0) {
         interval += mCapacity;
     }
 
-    return pop(interval);
+    return pop(mSize - interval);
 }
 
 int _ByteRingArray::getAvailDataSize() {

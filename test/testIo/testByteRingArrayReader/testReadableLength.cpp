@@ -24,40 +24,14 @@ void testReadableLength() {
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
       reader->setCursor(0);
       int length = reader->getReadableLength();
-      if(length != 0) {
+      if(length != 5) {
         printf("---[ByteRingArrayReader Test {testReadableLength} case1] [FAILED]---,length is %d \n",length);
-        return;
-      }
-      printf("---[ByteRingArrayReader Test {testReadableLength} case1] [OK]--- \n");
-      break;
-    }
-
-    //case2
-    //data:[1(start/cursor),2,3,4,5(end)]
-    while(1) {
-      ByteRingArray ringarray = createByteRingArray(5);
-      ringarray->push(1);
-      ringarray->push(2);
-      ringarray->push(3);
-      ringarray->push(4);
-      ringarray->push(5);
-      ringarray->setStartIndex(0);
-      ringarray->setEndIndex(4);
-
-      ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
-      reader->setCursor(0);
-      int length = reader->getReadableLength();
-      if(length != 0) {
-        printf("---[ByteRingArrayReader Test {testReadableLength} case2] [FAILED]--- \n");
         return;
       }
       printf("---[ByteRingArrayReader Test {testReadableLength} case2] [OK]--- \n");
       break;
-
     }
 
-    //case3
-    //data:[1(start),2(cursor),3,4,5(end)]
     while(1) {
       ByteRingArray ringarray = createByteRingArray(5);
       ringarray->push(1);
@@ -68,40 +42,15 @@ void testReadableLength() {
 
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
       reader->setCursor(1);
-
       int length = reader->getReadableLength();
-      if(length != 1) {
-        printf("---[ByteRingArrayReader Test {testReadableLength} case3] [FAILED]--- \n");
-        return;
-      }
-      printf("---[ByteRingArrayReader Test {testReadableLength} case3] [OK]--- \n");
-      break;
-    }
-
-    //case4
-    //data:[1(start),2,3(cursor),4,5(end)]
-    while(1) {
-      ByteRingArray ringarray = createByteRingArray(5);
-      ringarray->push(1);
-      ringarray->push(2);
-      ringarray->push(3);
-      ringarray->push(4);
-      ringarray->push(5);
-
-      ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
-      reader->setCursor(2);
-
-      int length = reader->getReadableLength();
-      if(length != 2) {
-        printf("---[ByteRingArrayReader Test {testReadableLength} case4] [FAILED]--- \n");
+      if(length != 4) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case3] [FAILED]---,length is %d \n",length);
         return;
       }
       printf("---[ByteRingArrayReader Test {testReadableLength} case4] [OK]--- \n");
       break;
     }
 
-    //case5
-    //data:[1(start),2,3,4(cursor),5(end)]
     while(1) {
       ByteRingArray ringarray = createByteRingArray(5);
       ringarray->push(1);
@@ -111,43 +60,16 @@ void testReadableLength() {
       ringarray->push(5);
 
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
-      reader->setCursor(3);
-
+      reader->setCursor(2);
       int length = reader->getReadableLength();
       if(length != 3) {
-        printf("---[ByteRingArrayReader Test {testReadableLength} case5] [FAILED]--- \n");
-        return;
-      }
-      printf("---[ByteRingArrayReader Test {testReadableLength} case5] [OK]--- \n");
-      break;
-    }
-
-    //case6
-    //data:[1(cursor),2,3,4(end),5(start)]
-    while(1) {
-      ByteRingArray ringarray = createByteRingArray(5);
-      ringarray->push(1);
-      ringarray->push(2);
-      ringarray->push(3);
-      ringarray->push(4);
-      ringarray->push(5);
-      ringarray->setStartIndex(4);
-      ringarray->setEndIndex(3);
-
-      ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
-      reader->setCursor(0);
-
-      int length = reader->getReadableLength();
-      if(length != 1) {
-        printf("---[ByteRingArrayReader Test {testReadableLength} case6] [FAILED]--- \n");
+        printf("---[ByteRingArrayReader Test {testReadableLength} case5] [FAILED]---,length is %d \n",length);
         return;
       }
       printf("---[ByteRingArrayReader Test {testReadableLength} case6] [OK]--- \n");
       break;
     }
 
-    //case7
-    //data:[1,2(cursor),3,4(end),5(start)]
     while(1) {
       ByteRingArray ringarray = createByteRingArray(5);
       ringarray->push(1);
@@ -155,47 +77,18 @@ void testReadableLength() {
       ringarray->push(3);
       ringarray->push(4);
       ringarray->push(5);
-      ringarray->setStartIndex(4);
-      ringarray->setEndIndex(3);
 
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
-      reader->setCursor(1);
-
+      reader->setCursor(3);
       int length = reader->getReadableLength();
       if(length != 2) {
-        printf("---[ByteRingArrayReader Test {testReadableLength} case7] [FAILED]--- \n");
-        return;
-      }
-      printf("---[ByteRingArrayReader Test {testReadableLength} case7] [OK]--- \n");
-      break;
-    }
-
-    //case8
-    //data:[1,2,3(cursor),4(end),5(start)]
-    while(1) {
-      ByteRingArray ringarray = createByteRingArray(5);
-      ringarray->push(1);
-      ringarray->push(2);
-      ringarray->push(3);
-      ringarray->push(4);
-      ringarray->push(5);
-      ringarray->setStartIndex(4);
-      ringarray->setEndIndex(3);
-
-      ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
-      reader->setCursor(2);
-
-      int length = reader->getReadableLength();
-      if(length != 3) {
-        printf("---[ByteRingArrayReader Test {testReadableLength} case8] [FAILED]--- \n");
+        printf("---[ByteRingArrayReader Test {testReadableLength} case7] [FAILED]---,length is %d \n",length);
         return;
       }
       printf("---[ByteRingArrayReader Test {testReadableLength} case8] [OK]--- \n");
       break;
     }
 
-    //case9
-    //data:[1,2,3,4(end/cursor),5(start)]
     while(1) {
       ByteRingArray ringarray = createByteRingArray(5);
       ringarray->push(1);
@@ -203,19 +96,189 @@ void testReadableLength() {
       ringarray->push(3);
       ringarray->push(4);
       ringarray->push(5);
-      ringarray->setStartIndex(4);
-      ringarray->setEndIndex(3);
 
       ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
-      reader->setCursor(3);
-
+      reader->setCursor(4);
       int length = reader->getReadableLength();
-      if(length != 4) {
-        printf("---[ByteRingArrayReader Test {testReadableLength} case9] [FAILED]--- \n");
+      if(length != 1) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case9] [FAILED]---,length is %d \n",length);
         return;
       }
-      printf("---[ByteRingArrayReader Test {testReadableLength} case9] [OK]--- \n");
+      printf("---[ByteRingArrayReader Test {testReadableLength} case10] [OK]--- \n");
       break;
     }
+    
+    //
+    while(1) {
+      ByteRingArray ringarray = createByteRingArray(5);
+      ringarray->push(1);
+      ringarray->push(2);
+      ringarray->push(3);
+      ringarray->push(4);
+      ringarray->push(5);
 
+      ringarray->setEndIndex(1);
+      ringarray->setSize(5);
+
+
+      ByteRingArrayReader reader = createByteRingArrayReader(ringarray);
+      reader->setCursor(0);
+      int length = reader->getReadableLength();
+      if(length != 1) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case9] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(1);
+      length = reader->getReadableLength();
+      if(length != 5) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case10] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(2);
+      length = reader->getReadableLength();
+      if(length != 4) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case11] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(3);
+      length = reader->getReadableLength();
+      if(length != 3) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case12] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(4);
+      length = reader->getReadableLength();
+      if(length != 2) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case13] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      //
+      ringarray->setEndIndex(2);
+      ringarray->setSize(5);
+
+      reader = createByteRingArrayReader(ringarray);
+      reader->setCursor(0);
+      length = reader->getReadableLength();
+      if(length != 2) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case14] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(1);
+      length = reader->getReadableLength();
+      if(length != 1) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case15] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(2);
+      length = reader->getReadableLength();
+      if(length != 5) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case16] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(3);
+      length = reader->getReadableLength();
+      if(length != 4) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case17] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(4);
+      length = reader->getReadableLength();
+      if(length != 3) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case18] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+
+      //
+      ringarray->setEndIndex(3);
+      ringarray->setSize(5);
+
+      reader = createByteRingArrayReader(ringarray);
+      reader->setCursor(0);
+      length = reader->getReadableLength();
+      if(length != 3) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case19] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(1);
+      length = reader->getReadableLength();
+      if(length != 2) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case20] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(2);
+      length = reader->getReadableLength();
+      if(length != 1) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case21] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(3);
+      length = reader->getReadableLength();
+      if(length != 5) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case22] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(4);
+      length = reader->getReadableLength();
+      if(length != 4) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case23] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      //
+      ringarray->setEndIndex(4);
+      ringarray->setSize(5);
+
+      reader = createByteRingArrayReader(ringarray);
+      reader->setCursor(0);
+      length = reader->getReadableLength();
+      if(length != 4) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case24] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(1);
+      length = reader->getReadableLength();
+      if(length != 3) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case25] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(2);
+      length = reader->getReadableLength();
+      if(length != 2) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case26] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(3);
+      length = reader->getReadableLength();
+      if(length != 1) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case27] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      reader->setCursor(4);
+      length = reader->getReadableLength();
+      if(length != 5) {
+        printf("---[ByteRingArrayReader Test {testReadableLength} case28] [FAILED]---,length is %d \n",length);
+        return;
+      }
+
+      printf("---[ByteRingArrayReader Test {testReadableLength} case100] [OK]--- \n");
+      break;
+    }
 }

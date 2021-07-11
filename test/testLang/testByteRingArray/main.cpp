@@ -14,6 +14,7 @@ extern int testByteRingArrayPush2();
 extern int testByteRingArrayPop();
 extern int testStartIndex();
 extern int testPopAll();
+extern int testPopTo();
 
 int main() {
   //testStartIndex();
@@ -21,5 +22,6 @@ int main() {
   //push_test();
   //testByteRingArrayPush2();
   //testByteRingArrayPop();
-    testPopAll();
+  //testPopAll();
+  testPopTo();
 }

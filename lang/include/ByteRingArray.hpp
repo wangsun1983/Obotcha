@@ -37,7 +37,7 @@ public:
 
     ByteArray pop(int size);
 
-    ByteArray popByEnd(int);
+    ByteArray popTo(int index);
 
     int getAvailDataSize();
 
