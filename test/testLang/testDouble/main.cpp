@@ -10,9 +10,10 @@ using namespace obotcha;
 
 extern int basetest();
 extern int equaltest();
+extern int testToString();
 
 int main() {
   basetest();
-
   equaltest();
+  testToString();
 }

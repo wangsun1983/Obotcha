@@ -23,7 +23,7 @@ HttpHeader _HttpHeaderParser::doParse() {
     const byte *CRLF = (const byte *)st(HttpText)::CRLF->toChars();
     const byte *LF = (const byte *)st(HttpText)::LF->toChars();
 
-    while(mReader->readNext(v) != ByteRingArrayReadComplete) {
+    while(mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
         switch(mStatus) {
             case Idle:{
                 if(v == ' ') {

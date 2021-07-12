@@ -9,14 +9,14 @@
 
 namespace obotcha {
 
-enum ByteRingArrayReadStatus {
-    ByteRingArrayReadContinue = 0,
-    ByteRingArrayReadComplete
-};
-
 DECLARE_SIMPLE_CLASS(ByteRingArrayReader) {
 
 public:
+    enum ByteRingArrayReadStatus {
+        Continue = 0,
+        NoContent
+    };
+
     _ByteRingArrayReader(ByteRingArray);
 
     ByteArray pop();

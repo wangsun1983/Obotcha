@@ -37,9 +37,8 @@ ByteArray _ByteRingArrayReader::pop() {
         } else{
             int index = mCursor - 1;
             if(index == -1) {
-                index = mBuff->getCapacity() -1;
+                index = mBuff->getCapacity() - 1;
             }
-            printf("pop to is %d \n",index);
             result = mBuff->popTo(index);
         }
     } catch(ArrayIndexOutOfBoundsException &e){
@@ -50,15 +49,15 @@ ByteArray _ByteRingArrayReader::pop() {
 
 int _ByteRingArrayReader::readNext(byte &value) {
     if(mBuff->getAvailDataSize() == 0) {
-        return ByteRingArrayReadComplete;
+        return NoContent;
     }
 
     int end = mBuff->getEndIndex();
-
+    
     if(mCursor == end) {
         if(mMark != Idle) {
             mMark = Complete;
-            return ByteRingArrayReadComplete;
+            return NoContent;
         }
     }
 
@@ -70,7 +69,7 @@ int _ByteRingArrayReader::readNext(byte &value) {
         mCursor = 0;
     }
 
-    return ByteRingArrayReadContinue;
+    return Continue;
 }
 
 void _ByteRingArrayReader::setCursor(int c) {
@@ -87,7 +86,7 @@ int _ByteRingArrayReader::move(int length) {
     }
     
     mCursor += length;
-    if(mCursor > mBuff->getCapacity()) {
+    if(mCursor >= mBuff->getCapacity()) {
         mCursor = (mCursor - mBuff->getCapacity());
     }
 

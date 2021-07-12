@@ -110,6 +110,10 @@ bool _ByteRingArray::push(byte *array,int start,int length) {
         }
     }
 
+    if(mNext > mCapacity) {
+        mNext = mNext - mCapacity;
+    }
+
     mSize += length;
 
     return true;
@@ -122,6 +126,10 @@ ByteArray _ByteRingArray::pop(int size) {
 
     if(mSize < size) {
         Trigger(IllegalArgumentException,"pop size is illegal");
+    }
+
+    if(size == 0) {
+        return nullptr;
     }
 
     int start = getStartIndex();
@@ -183,7 +191,6 @@ ByteArray _ByteRingArray::popTo(int index) {
     if(interval < 0) {
         interval += mCapacity;
     }
-
     return pop(mSize - interval);
 }
 

@@ -34,7 +34,7 @@ ByteArray _HttpChunkParser::doParse() {
     static byte* CRLF = (byte*)st(HttpText)::CRLF->toChars();
     byte v = 0;
 
-    while(mReader->readNext(v) != ByteRingArrayReadComplete) {
+    while(mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
         //printf("v is %x,status is %d \n",v,mStatus);
         switch(mStatus) {
             case Idle: {

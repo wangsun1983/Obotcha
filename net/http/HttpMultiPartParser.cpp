@@ -84,7 +84,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
     }
     
     byte v = 0;
-    while(reader->readNext(v) == ByteRingArrayReadContinue) {
+    while(reader->readNext(v) == st(ByteRingArrayReader)::Continue) {
         switch(mStatus) {
             case ParseStartBoundry:{
                 printf("ParseStartBoundry start \n");

@@ -15,13 +15,15 @@ extern int testByteRingArrayPop();
 extern int testStartIndex();
 extern int testPopAll();
 extern int testPopTo();
+extern int testByteRingArrayPopWithParam();
 
 int main() {
-  //testStartIndex();
-  //normal_test();
-  //push_test();
-  //testByteRingArrayPush2();
-  //testByteRingArrayPop();
-  //testPopAll();
+  testStartIndex();
+  normal_test();
+  push_test();
+  testByteRingArrayPush2();
+  testByteRingArrayPop();
+  testPopAll();
   testPopTo();
+  testByteRingArrayPopWithParam();
 }
