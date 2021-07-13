@@ -8,8 +8,6 @@
 
 namespace obotcha {
 
-const float _Float::EPS = 1e-6;
-
 _Float::_Float():val(0) {}
 
 _Float::_Float(float v) : val(v) {
@@ -28,24 +26,26 @@ float _Float::toValue() {
     return val;
 }
 
-bool _Float::equals(Float &p) {
-    if(p == nullptr) {
-        Trigger(NullPointerException,"p is null");
-    }
+bool _Float::isEqual(float x,float y) {
+    static int ulp = 2;
+    //return std::fabs(val-p) <= std::numeric_limits<double>::epsilon();
+    // the machine epsilon has to be scaled to the magnitude of the values used
+    // and multiplied by the desired precision in ULPs (units in the last place)
+    return std::fabs(x-y) <= std::numeric_limits<float>::epsilon() * std::fabs(x+y) * ulp
+        // unless the result is subnormal
+        || std::fabs(x-y) < std::numeric_limits<float>::min();
+}
 
-    return std::fabs(val-p->val) <= EPS;
+bool _Float::equals(Float &p) {
+    return isEqual(p->val,val);
 }
 
 bool _Float::equals(const _Float *p) {
-    if(p == nullptr) {
-        return false;
-    }
-
-    return std::fabs(val-p->val) <= EPS;
+    return isEqual(p->val,val);
 }
 
 bool _Float::equals(float p) {
-    return std::fabs(val-p) <= EPS;
+    return isEqual(val,p);
 }
 
 uint64_t _Float::hashcode() {
@@ -61,10 +61,6 @@ void _Float::update(float v) {
 }
 
 void _Float::update(sp<_Float> v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"Float equals nullptr"); 
-    }
-
     val = v->val;
 }
 

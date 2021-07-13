@@ -11,8 +11,10 @@
  */
 
 #include <cmath>
+#include <limits>
 
 #include "Math.hpp"
+#include "Double.hpp"
 
 namespace obotcha {
 
@@ -105,26 +107,27 @@ int _Math::floor(double v1) {
 }
 
 int _Math::compareDouble(double v1,double v2) {
-    double v = std::fabs(v1 - v2);
-
-    if(v <= st(Double)::EPS) {
-        return CompareParamEqual;
-    } else if(v1 -v2 > st(Double)::EPS){
-        return CompareParam1Larger;
-    } else {
-        return CompareParam2Larger;
+    if(st(Double)::isEqual(v1,v2)) {
+        return CompareResult::AlmostEqual;
     }
+
+    if(std::isgreater(v1,v2)) {
+        return CompareResult::Param1Greater;
+    }
+
+    return CompareResult::Param2Greater;
 }
 
 int _Math::compareFloat(float v1,float v2) {
-    float v = std::fabs(v1 - v2);
-    if(v  <= st(Float)::EPS) {
-        return CompareParamEqual;
-    } else if(v1 -v2 > st(Float)::EPS){
-        return CompareParam1Larger;
-    } else {
-        return CompareParam2Larger;
+    if(st(Float)::isEqual(v1,v2)) {
+        return CompareResult::AlmostEqual;
     }
+
+    if(std::isgreater(v1,v2)) {
+        return CompareResult::Param1Greater;
+    }
+
+    return CompareResult::Param2Greater;
 }
 
 }

@@ -29,6 +29,8 @@ public:
 
     bool equals(const _Double *p);
 
+    static bool isEqual(double,double);
+
     sp<_String> toString();
     
     static sp<_String> className();
@@ -36,8 +38,6 @@ public:
     uint64_t hashcode();
 
     ~_Double();
-
-    static const double EPS;
 
 private:
     double val;

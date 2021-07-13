@@ -32,12 +32,6 @@ int updatetest() {
       break;
     }
 
-    Float d3 = createFloat(1.1);
-    Float d3_1;
-    try{
-      d3->update(d3_1);
-    } catch(NullPointerException e){}
-
     printf("Float update special test3-------[OK] \n");
     break;
   }

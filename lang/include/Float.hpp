@@ -28,6 +28,8 @@ public:
 
     void update(sp<_Float> v);
 
+    static bool isEqual(float,float);
+
     static sp<_String> className();
 
     uint64_t hashcode();
@@ -35,8 +37,6 @@ public:
     sp<_String> toString();
 
     ~_Float();
-
-    static const float EPS;
 
 private:
     float val;

@@ -65,11 +65,6 @@ int basetest() {
       break;
     }
 
-    if(v1->equals(nullptr)) {
-      printf("Integer equals test2-------[FAIL] \n");
-      break;
-    }
-
     printf("Integer equals test3-------[OK] \n");
     break;
   }

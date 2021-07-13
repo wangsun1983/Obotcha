@@ -33,14 +33,6 @@ int equaltest() {
         break;
     }
 
-    //case 3
-    Double d3 = createDouble(1.1);
-    Double d3_1;
-    try {
-      d3->equals(d3_1);
-      printf("Double equal special test3-------[Fail] \n");
-    }catch(NullPointerException e){}
-
     printf("Double equal special test4-------[Success] \n");
     break;
   }

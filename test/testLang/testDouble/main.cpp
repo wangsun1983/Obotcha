@@ -11,9 +11,12 @@ using namespace obotcha;
 extern int basetest();
 extern int equaltest();
 extern int testToString();
+extern int hashtest();
 
 int main() {
   basetest();
   equaltest();
   testToString();
+  printf("start hash test \n");
+  hashtest();
 }

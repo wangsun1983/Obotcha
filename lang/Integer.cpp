@@ -45,10 +45,6 @@ int _Integer::toValue() {
 }
 
 bool _Integer::equals(const Integer &p) {
-    if(p == nullptr) {
-        return false;
-    }
-
     return val == p->val;
 }
 
@@ -61,10 +57,6 @@ bool _Integer::equals(int p) {
 }
 
 bool _Integer::equals(const _Integer *p) {
-    if(p == nullptr) {
-        return false;
-    }
-
     return val == p->val;
 }
 
@@ -73,27 +65,27 @@ void _Integer::update(int v) {
 }
 
 void _Integer::update(const sp<_Integer> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"integer update null");
-    }
-
     val = v->val;
 }
 
+//16
 sp<_String> _Integer::toHexString() {
     return createString(_Number::toHexString(val));
 }
 
+//10
+sp<_String> _Integer::toString() {
+    return createString(_Number::toDecString(val));
+}
+
+//8
 sp<_String> _Integer::toOctalString() {
     return createString(_Number::toOctalString(val));
 }
 
+//2
 sp<_String> _Integer::toBinaryString() {
     return createString(_Number::toBinaryString(val));
-}
-
-sp<_String> _Integer::toString() {
-    return createString(_Number::toDecString(val));
 }
 
 sp<_String> _Integer::toString(int i) {
@@ -101,34 +93,18 @@ sp<_String> _Integer::toString(int i) {
 }
 
 int _Integer::parseDecInt(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"Integer parserInt nullptr");
-    }
-
     return _Number::parseDecNumber(v->getStdString());
 }
 
 int _Integer::parseHexInt(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseHexInt nullptr");
-    }
-    
     return _Number::parseHexNumber(v->getStdString());
 }
 
 int _Integer::parseOctInt(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseHexInt nullptr");
-    }
-    
     return _Number::parseOctNumber(v->getStdString());
 }
 
 int _Integer::parseBinaryInt(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseHexInt nullptr");
-    }
-    
     return _Number::parseBinaryNumber(v->getStdString());
 }
 

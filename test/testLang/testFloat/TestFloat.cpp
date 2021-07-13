@@ -33,12 +33,6 @@ int basetest() {
       break;
     }
 
-    Float v3;
-    try {
-        Float v4 = createFloat(v3);
-        printf("Float construct test4-------[FAIL] \n");
-    } catch(InitializeException e) {}
-
     printf("Float construct test5-------[OK] \n");
     break;
   }
@@ -62,11 +56,6 @@ int basetest() {
     Float v2 = createFloat(1.123f);
     if(!v1->equals(v2)) {
       printf("Float equals test1-------[FAIL] \n");
-      break;
-    }
-
-    if(v1->equals(nullptr)) {
-      printf("Float equals test2-------[FAIL] \n");
       break;
     }
 

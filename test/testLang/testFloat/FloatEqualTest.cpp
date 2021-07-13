@@ -33,14 +33,6 @@ int equaltest() {
         break;
     }
 
-    //case 3
-    Float d3 = createFloat(1.1);
-    Float d3_1;
-    try {
-      d3->equals(d3_1);
-      printf("Float equal special test3-------[Fail] \n");
-    }catch(NullPointerException e){}
-
     printf("Float equal special test4-------[Success] \n");
     break;
   }

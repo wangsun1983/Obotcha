@@ -8,15 +8,14 @@
 
 namespace obotcha {
 
-
 DECLARE_SIMPLE_CLASS(Math) {
 
 public:
     enum CompareResult {
-        CompareParamEqual = 0,
-        CompareParam1Larger,
-        CompareParam2Larger,
-    }; 
+        AlmostEqual = 0,
+        Param1Greater,
+        Param2Greater,
+    };  
 
     static const double E;
     static const double PI;

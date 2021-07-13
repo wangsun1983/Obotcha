@@ -11,6 +11,7 @@
  */
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 #include "Double.hpp"
 #include "String.hpp"
@@ -19,8 +20,6 @@
 #include "NullPointerException.hpp"
 
 namespace obotcha {
-
-const double _Double::EPS = 1e-8;
 
 _Double::_Double():val(0.0) {}
 
@@ -38,23 +37,25 @@ double _Double::toValue() {
 }
 
 bool _Double::equals(const Double &p) {
-    if(p == nullptr) {
-        Trigger(NullPointerException,"double update null");
-    }
-    
-    return std::fabs(val-p->val) <= EPS;
+    return equals(p->val);
 }
 
 bool _Double::equals(double p) {
-    return std::fabs(val-p) <= EPS;
+    return isEqual(val,p);
+}
+
+bool _Double::isEqual(double x,double y) {
+    static int ulp = 2;
+    //return std::fabs(val-p) <= std::numeric_limits<double>::epsilon();
+    // the machine epsilon has to be scaled to the magnitude of the values used
+    // and multiplied by the desired precision in ULPs (units in the last place)
+    return std::fabs(x-y) <= std::numeric_limits<double>::epsilon() * std::fabs(x+y) * ulp
+        // unless the result is subnormal
+        || std::fabs(x-y) < std::numeric_limits<double>::min();
 }
 
 bool _Double::equals(const _Double *p) {
-    if(p == nullptr) {
-        Trigger(NullPointerException,"double update null");
-    }
-
-    return std::fabs(val-p->val) <= EPS;
+    return equals(p->val);
 }
 
 void _Double::update(double v) {
@@ -62,10 +63,6 @@ void _Double::update(double v) {
 }
 
 void _Double::update(const sp<_Double> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"double update null");
-    }
-
     this->val = v->val;
 }
 

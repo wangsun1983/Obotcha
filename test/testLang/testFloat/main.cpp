@@ -12,10 +12,11 @@ using namespace obotcha;
 extern int basetest();
 extern int equaltest();
 extern int updatetest();
+extern int hashcodetest();
 
 int main() {
-
     basetest();
     equaltest();
     updatetest();
+    hashcodetest();
 }
