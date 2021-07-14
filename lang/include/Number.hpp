@@ -5,10 +5,10 @@
 #include <string>
 #include <math.h>
 #include <iostream>
+#include <exception>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-
 
 namespace obotcha {
 
@@ -72,11 +72,22 @@ protected:
     }
 
     static T parseHexNumber(std::string v) {
+        if(v.size() >= 3 && (v.c_str()[1] == 'x' || v.c_str()[1] == 'X')) {
+            v = v.substr(2,v.size() - 2);
+        }
+
         std::stringstream ss;
         ss<< std::hex <<v;
         T value;
         ss>>value;
-        return value;
+
+        std::string checkValue = toHexString(value);
+
+        if(checkValue.compare(v) == 0) {
+            return value;
+        }
+
+        throw("");
     }
 
     static T parseOctNumber(std::string v) {
@@ -84,7 +95,14 @@ protected:
         ss<< std::oct <<v;
         T value;
         ss>>value;
-        return (T)value;
+
+        std::string checkValue = toOctalString(value);
+
+        if(checkValue.compare(v) == 0) {
+            return value;
+        }
+
+        throw("");
     }
 
     static T parseBinaryNumber(std::string v) {
@@ -97,7 +115,14 @@ protected:
                 parseBinary += pow(2.0, lastIndex - i);
             }
         }
-        return parseBinary;
+
+        std::string checkValue = toBinaryString(parseBinary);
+
+        if(checkValue.compare(v) == 0) {
+            return parseBinary;
+        }
+
+        throw("");
     }
 };
 

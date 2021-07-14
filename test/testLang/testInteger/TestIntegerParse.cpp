@@ -11,7 +11,7 @@
 
 using namespace obotcha;
 
-int testtostring() {
+int testIntegerParse() {
    //test hex
    std::string HexTable[100] = {
      "0","1","2","3","4","5","6","7","8",
@@ -27,6 +27,22 @@ int testtostring() {
      "51","52","53","54","55","56","57","58",
      "59","5a","5b","5c","5d","5e","5f","60",
      "61","62","63"
+   };
+
+   std::string HexTable_X[100] = {
+     "0x0","0x1","0x2","0x3","0x4","0x5","0x6","0x7","0x8",
+     "0x9","0xa","0xb","0xc","0xd","0xe","0xf","0x10",
+     "0x11","0x12","0x13","0x14","0x15","0x16","0x17","0x18",
+     "0x19","0x1a","0x1b","0x1c","0x1d","0x1e","0x1f","0x20",
+     "0x21","0x22","0x23","0x24","0x25","0x26","0x27","0x28",
+     "0x29","0x2a","0x2b","0x2c","0x2d","0x2e","0x2f","0x30",
+     "0x31","0x32","0x33","0x34","0x35","0x36","0x37","0x38",
+     "0x39","0x3a","0x3b","0x3c","0x3d","0x3e","0x3f","0x40",
+     "0x41","0x42","0x43","0x44","0x45","0x46","0x47","0x48",
+     "0x49","0x4a","0x4b","0x4c","0x4d","0x4e","0x4f","0x50",
+     "0x51","0x52","0x53","0x54","0x55","0x56","0x57","0x58",
+     "0x59","0x5a","0x5b","0x5c","0x5d","0x5e","0x5f","0x60",
+     "0x61","0x62","0x63"
    };
 
    std::string OctTable[100] = {
@@ -64,81 +80,46 @@ int testtostring() {
    //toString
    while(1) {
      for(int i = 0;i < 100;i++) {
-       Integer t1 = createInteger(i);
-       String v1 = t1->toHexString();
-
-       String v2 = createString(HexTable[i]);
-       if(v1 != v2) {
-         printf("Integer toString test1-------[FAIL] \n");
-         break;
-       }
+      int v = st(Integer)::parseDecInt(createString(i))->toValue();
+      if(v != i) {
+          printf("Integer testIntegerParse test1-------[FAIL],index is %d,v is %d \n",i,v);
+          break;
+      }
      }
 
      for(int i = 0;i < 100;i++) {
-       Integer t1 = createInteger(i);
-       String v1 = t1->toOctalString();
-
-       String v2 = createString(OctTable[i]);
-       if(v1 != v2) {
-         printf("v1 is %s,v2 is %s,i is %d \n",v1->toChars(),v2->toChars(),i);
-         printf("Integer toString test2-------[FAIL] \n");
-         break;
-       }
+      int v = st(Integer)::parseHexInt(createString(HexTable[i]))->toValue();
+      if(v != i) {
+          printf("Integer testIntegerParse test2-------[FAIL],index is %d,v is %d \n",i,v);
+          break;
+      }
      }
 
      for(int i = 0;i < 100;i++) {
-       Integer t1 = createInteger(i);
-       String v1 = t1->toBinaryString();
-
-       String v2 = createString(BinaryTable[i]);
-       if(v1 != v2) {
-         printf("Integer toString test3-------[FAIL] \n");
-         break;
-       }
-     }
-
-     printf("Integer toString test4-------[OK] \n");
-     break;
-   }
-
-   //toInt
-   while(1) {
-     for(int i = 0;i < 100;i++) {
-       Integer t1 = createInteger(i);
-       int t2 = st(Integer)::parseHexInt(createString(HexTable[i]))->toValue();
-       Integer t3 = createInteger(t2);
-
-       if(t1 != t3) {
-         printf("Integer toInt test1-------[FAIL] \n");
-         break;
-       }
+      int v = st(Integer)::parseHexInt(createString(HexTable_X[i]))->toValue();
+      if(v != i) {
+          printf("Integer testIntegerParse test3-------[FAIL],index is %d,v is %d \n",i,v);
+          break;
+      }
      }
 
      for(int i = 0;i < 100;i++) {
-       Integer t1 = createInteger(i);
-       int t2 = st(Integer)::parseOctInt(createString(OctTable[i]))->toValue();
-       Integer t3 = createInteger(t2);
-
-       if(t1 != t3) {
-         printf("t1 is %d,t3 is %d,i is %d \n",t1->toValue(),t3->toValue(),i);
-         printf("Integer toInt test2-------[FAIL] \n");
-         break;
-       }
+      int v = st(Integer)::parseOctInt(createString(OctTable[i]))->toValue();
+      if(v != i) {
+          printf("Integer testIntegerParse test4-------[FAIL],index is %d,v is %d,str is %s\n",i,v,OctTable[i].c_str());
+          break;
+      }
      }
 
      for(int i = 0;i < 100;i++) {
-       Integer t1 = createInteger(i);
-       String str = createString(BinaryTable[i]);
-       //printf("11111 str is %s \n",str->toChars());
-       int t2 = st(Integer)::parseBinaryInt(str)->toValue();
-       Integer t3 = createInteger(t2);
-        if(t1 != t3) {
-         printf("Integer toInt test3-------[FAIL] \n");
-         break;
-       }
+      int v = st(Integer)::parseBinaryInt(createString(BinaryTable[i]))->toValue();
+      if(v != i) {
+          printf("Integer testIntegerParse test5-------[FAIL],index is %d,v is %d,str is %s \n",i,v,BinaryTable[i].c_str());
+          break;
+      }
      }
 
-     printf("Integer toInt test10-------[OK] \n");
+     printf("Integer testIntegerParse test100-------[OK] \n");
      break;
    }
 

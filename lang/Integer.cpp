@@ -92,20 +92,48 @@ sp<_String> _Integer::toString(int i) {
     return createString(_Number::toDecString(i));
 }
 
-int _Integer::parseDecInt(const sp<_String> &v) {
-    return _Number::parseDecNumber(v->getStdString());
+Integer _Integer::parseDecInt(const sp<_String> &v) {
+    String pa = v->trimAll();
+    int value = _Number::parseDecNumber(pa->getStdString());
+    if(createString(value)->equals(pa)) {
+        return createInteger(value);
+    }
+
+    return nullptr;
 }
 
-int _Integer::parseHexInt(const sp<_String> &v) {
-    return _Number::parseHexNumber(v->getStdString());
+Integer _Integer::parseHexInt(const sp<_String> &v) {
+    //check whether 0xaaa
+    try {
+        int value = _Number::parseHexNumber(v->getStdString());
+        return createInteger(value);
+    } catch(const char* e) {
+        //nothing
+    }
+
+    return nullptr;
 }
 
-int _Integer::parseOctInt(const sp<_String> &v) {
-    return _Number::parseOctNumber(v->getStdString());
+Integer _Integer::parseOctInt(const sp<_String> &v) {
+    try {
+        int value = _Number::parseOctNumber(v->getStdString());
+        return createInteger(value);
+    } catch(const char* e) {
+        //nothing
+    }
+
+    return nullptr;
 }
 
-int _Integer::parseBinaryInt(const sp<_String> &v) {
-    return _Number::parseBinaryNumber(v->getStdString());
+Integer _Integer::parseBinaryInt(const sp<_String> &v) {
+    try {
+        int value = _Number::parseBinaryNumber(v->getStdString());
+        return createInteger(value);
+    } catch(const char* e) {
+        //nothing
+    }
+
+    return nullptr;
 }
 
 String _Integer::className() {
