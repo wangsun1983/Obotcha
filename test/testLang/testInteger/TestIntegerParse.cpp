@@ -77,6 +77,22 @@ int testIntegerParse() {
      "1100001","1100010","1100011",
    };
 
+   std::string BinaryTable_2[100] = {
+     "0b0","0b1","0b10","0b11","0b100","0b101","0b110","0b111","0b1000",
+     "0b1001","0b1010","0b1011","0b1100","0b1101","0b1110","0b1111","0b10000",
+     "0b10001","0b10010","0b10011","0b10100","0b10101","0b10110","0b10111","0b11000",
+     "0b11001","0b11010","0b11011","0b11100","0b11101","0b11110","0b11111","0b100000",
+     "0b100001","0b100010","0b100011","0b100100","0b100101","0b100110","0b100111","0b101000",
+     "0b101001","0b101010","0b101011","0b101100","0b101101","0b101110","0b101111","0b110000",
+     "0b110001","0b110010","0b110011","0b110100","0b110101","0b110110","0b110111","0b111000",
+     "0b111001","0b111010","0b111011","0b111100","0b111101","0b111110","0b111111","0b1000000",
+     "0b1000001","0b1000010","0b1000011","0b1000100","0b1000101","0b1000110","0b1000111","0b1001000",
+     "0b1001001","0b1001010","0b1001011","0b1001100","0b1001101","0b1001110","0b1001111","0b1010000",
+     "0b1010001","0b1010010","0b1010011","0b1010100","0b1010101","0b1010110","0b1010111","0b1011000",
+     "0b1011001","0b1011010","0b1011011","0b1011100","0b1011101","0b1011110","0b1011111","0b1100000",
+     "0b1100001","0b1100010","0b1100011",
+   };
+
    //toString
    while(1) {
      for(int i = 0;i < 100;i++) {
@@ -89,6 +105,15 @@ int testIntegerParse() {
 
      for(int i = 0;i < 100;i++) {
       int v = st(Integer)::parseHexInt(createString(HexTable[i]))->toValue();
+      if(v != i) {
+          printf("Integer testIntegerParse test2-------[FAIL],index is %d,v is %d \n",i,v);
+          break;
+      }
+     }
+
+     for(int i = 0;i < 100;i++) {
+      String hexStr = createString(createString(HexTable[i]))->toUpperCase();
+      int v = st(Integer)::parseHexInt(hexStr)->toValue();
       if(v != i) {
           printf("Integer testIntegerParse test2-------[FAIL],index is %d,v is %d \n",i,v);
           break;
@@ -117,6 +142,15 @@ int testIntegerParse() {
           printf("Integer testIntegerParse test5-------[FAIL],index is %d,v is %d,str is %s \n",i,v,BinaryTable[i].c_str());
           break;
       }
+
+      for(int i = 0;i < 100;i++) {
+       int v = st(Integer)::parseBinaryInt(createString(BinaryTable_2[i]))->toValue();
+       if(v != i) {
+           printf("Integer testIntegerParse test5-------[FAIL],index is %d,v is %d,str is %s \n",i,v,BinaryTable[i].c_str());
+           break;
+       }
+      }
+
      }
 
      printf("Integer testIntegerParse test100-------[OK] \n");

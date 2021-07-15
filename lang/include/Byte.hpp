@@ -42,13 +42,13 @@ public:
 
     static sp<_String> toString(byte i);
     
-    static byte parseDecByte(const sp<_String>);
+    static sp<_Byte> parseDecByte(const sp<_String>);
 
-    static byte parseHexByte(const sp<_String>);
+    static sp<_Byte> parseHexByte(const sp<_String>);
 
-    static byte parseOctByte(const sp<_String>);
+    static sp<_Byte> parseOctByte(const sp<_String>);
 
-    static byte parseBinaryByte(const sp<_String>);
+    static sp<_Byte> parseBinaryByte(const sp<_String>);
 
     static sp<_String> className();
 

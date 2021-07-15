@@ -54,6 +54,16 @@ bool _Double::isEqual(double x,double y) {
         || std::fabs(x-y) < std::numeric_limits<double>::min();
 }
 
+sp<_Double> _Double::parse(sp<_String> s) {
+    try {
+        String pa = s->trimAll();
+        double v = _Number<double>::parseNumber(pa->getStdString());
+        return createDouble(v);
+    } catch(const char * err) {}
+
+    return nullptr;
+}
+
 bool _Double::equals(const _Double *p) {
     return equals(p->val);
 }

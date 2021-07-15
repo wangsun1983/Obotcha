@@ -132,15 +132,15 @@ uint64_t _Boolean::hashcode() {
     return std::hash<bool>{}(val);
 }
 
-sp<_Boolean> _Boolean::valueOf(const sp<_String> v) {
+sp<_Boolean> _Boolean::parse(const sp<_String> v) {
     return createBoolean(v);
 }
 
-sp<_Boolean> _Boolean::valueOf(const char *v) {
-    return valueOf(createString(v));
+sp<_Boolean> _Boolean::parse(const char *v) {
+    return parse(createString(v));
 }
 
-sp<_Boolean> _Boolean::valueOf(bool v) {
+sp<_Boolean> _Boolean::parse(bool v) {
     return createBoolean(v);
 }
 

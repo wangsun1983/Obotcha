@@ -80,20 +80,51 @@ sp<_String> _Byte::toString(byte i) {
     return v->toString();
 }
 
-byte _Byte::parseDecByte(const sp<_String> v) {
-    return _Number::parseDecNumber(v->getStdString());
+sp<_Byte> _Byte::parseDecByte(const sp<_String> v) {
+    try {
+        String pa = v->trimAll();
+        int value = _Number::parseDecNumber(pa->getStdString());
+        return createByte(value);
+    } catch(const char * err){}
+
+    return nullptr;
 }
 
-byte _Byte::parseHexByte(const sp<_String> v) {    
-    return st(Integer)::parseHexInt(v);
+sp<_Byte> _Byte::parseHexByte(const sp<_String> v) {    
+    //check whether 0xaaa
+    try {
+        String pa = v->trimAll();
+        int value = _Number::parseHexNumber(pa->getStdString());
+        return createByte(value);
+    } catch(const char* e) {
+        //nothing
+    }
+
+    return nullptr;
 }
 
-byte _Byte::parseOctByte(const sp<_String> v) {
-    return st(Integer)::parseOctInt(v);
+sp<_Byte> _Byte::parseOctByte(const sp<_String> v) {
+    try {
+        String pa = v->trimAll();
+        int value = _Number::parseOctNumber(pa->getStdString());
+        return createByte(value);
+    } catch(const char* e) {
+        //nothing
+    }
+
+    return nullptr;
 }
 
-byte _Byte::parseBinaryByte(const sp<_String> v) {
-    return st(Integer)::parseBinaryInt(v);
+sp<_Byte> _Byte::parseBinaryByte(const sp<_String> v) {
+    try {
+        String pa = v->trimAll();
+        int value = _Number::parseBinaryNumber(pa->getStdString());
+        return createByte(value);
+    } catch(const char* e) {
+        //nothing
+    }
+
+    return nullptr;
 }
 
 sp<_String> _Byte::className() {

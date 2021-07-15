@@ -34,10 +34,6 @@ uint64_t _Uint64::toValue() {
 }
 
 bool _Uint64::equals(const Uint64 &p) {
-    if(p == nullptr) {
-        Trigger(NullPointerException,"Object is null");
-    }
-
     return val == p->val;
 }
 
@@ -46,10 +42,6 @@ bool _Uint64::equals(uint64_t p) {
 }
 
 bool _Uint64::equals(const _Uint64 *p) {
-    if(p == nullptr) {
-        Trigger(NullPointerException,"Object is null");
-    }
-
     return val == p->val;
 }
 
@@ -58,10 +50,6 @@ void _Uint64::update(uint64_t v) {
 }
 
 void _Uint64::update(const sp<_Uint64> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"Uint64 update nullptr");
-    }
-
     val = v->val;
 }
 
@@ -85,36 +73,50 @@ sp<_String> _Uint64::toString(uint64_t i) {
     return createString(_Number::toDecString(i));
 }
 
-uint64_t _Uint64::parseDecUint64(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseDecUint64 nullptr");
-    }
+sp<_Uint64> _Uint64::parseDecUint64(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint64_t value = _Number::parseDecNumber(pa->getStdString());
+        return createUint64(value);
+    } catch(const char *err){}
 
-    return _Number::parseDecNumber(v->getStdString());
+    return nullptr;
 }
 
-uint64_t _Uint64::parseHexUint64(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseHexUint64 nullptr");
+sp<_Uint64> _Uint64::parseHexUint64(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint64_t value = _Number::parseHexNumber(pa->getStdString());
+        return createUint64(value);
+    } catch(const char* e) {
+        //nothing
     }
-    
-    return _Number::parseHexNumber(v->getStdString());
+
+    return nullptr;
 }
 
-uint64_t _Uint64::parseOctUint64(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseOctUint64 nullptr");
+sp<_Uint64> _Uint64::parseOctUint64(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint64_t value = _Number::parseOctNumber(pa->getStdString());
+        return createUint64(value);
+    } catch(const char* e) {
+        //nothing
     }
-    
-    return _Number::parseOctNumber(v->getStdString());
+
+    return nullptr;
 }
 
-uint64_t _Uint64::parseBinaryUint64(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseBinaryUint64 nullptr");
+sp<_Uint64> _Uint64::parseBinaryUint64(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint32_t value = _Number::parseBinaryNumber(pa->getStdString());
+        return createUint64(value);
+    } catch(const char* e) {
+        //nothing
     }
-    
-    return _Number::parseBinaryNumber(v->getStdString());
+
+    return nullptr;
 }
 
 sp<_String> _Uint64::className() {

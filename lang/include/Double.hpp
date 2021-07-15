@@ -31,6 +31,8 @@ public:
 
     static bool isEqual(double,double);
 
+    static sp<_Double> parse(sp<_String>);
+
     sp<_String> toString();
     
     static sp<_String> className();

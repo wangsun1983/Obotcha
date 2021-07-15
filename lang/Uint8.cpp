@@ -37,10 +37,6 @@ uint8_t _Uint8::toValue() {
 }
 
 bool _Uint8::equals(const Uint8 &p) {
-    if(p == nullptr) {
-        Trigger(NullPointerException,"Object is null");
-    }
-
     return val == p->val;
 }
 
@@ -49,10 +45,6 @@ bool _Uint8::equals(uint8_t p) {
 }
 
 bool _Uint8::equals(const _Uint8 *p) {
-    if(p == nullptr) {
-        Trigger(NullPointerException,"Object is null");
-    }
-
     return val == p->val;
 }
 
@@ -61,10 +53,6 @@ void _Uint8::update(uint8_t v) {
 }
 
 void _Uint8::update(const sp<_Uint8> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"Uint8 update nullptr");
-    }
-
     val = v->val;
 }
 
@@ -92,36 +80,50 @@ sp<_String> _Uint8::toString(uint8_t i) {
     return createString(_Number::toDecString(i));
 }
 
-uint8_t _Uint8::parseDecUint8(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseDecUint8 nullptr");
-    }
+sp<_Uint8> _Uint8::parseDecUint8(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint8_t value = _Number::parseDecNumber(pa->getStdString());
+        return createUint8(value);
+    } catch(const char *err){}
 
-    return _Number::parseDecNumber(v->getStdString());
+    return nullptr;
 }
 
-uint8_t _Uint8::parseHexUint8(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseHexUint8 nullptr");
+sp<_Uint8> _Uint8::parseHexUint8(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint8_t value = _Number::parseHexNumber(pa->getStdString());
+        return createUint8(value);
+    } catch(const char* e) {
+        //nothing
     }
-    
-    return _Number::parseHexNumber(v->getStdString());
+
+    return nullptr;
 }
 
-uint8_t _Uint8::parseOctUint8(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseOctUint8 nullptr");
+sp<_Uint8> _Uint8::parseOctUint8(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint8_t value = _Number::parseOctNumber(pa->getStdString());
+        return createUint8(value);
+    } catch(const char* e) {
+        //nothing
     }
-    
-    return _Number::parseOctNumber(v->getStdString());
+
+    return nullptr;
 }
 
-uint8_t _Uint8::parseBinaryUint8(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseBinaryUint8 nullptr");
+sp<_Uint8> _Uint8::parseBinaryUint8(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint8_t value = _Number::parseBinaryNumber(pa->getStdString());
+        return createUint8(value);
+    } catch(const char* e) {
+        //nothing
     }
-    
-    return _Number::parseBinaryNumber(v->getStdString());
+
+    return nullptr;
 }
 
 sp<_String> _Uint8::className() {

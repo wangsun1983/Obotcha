@@ -99,6 +99,12 @@ public:
 
     Integer toInteger();
 
+    Integer toHexInt();
+
+    Integer toOctInt();
+
+    Integer toBinaryInt();
+
     Byte toByte();
 
     Boolean toBoolean();
@@ -122,11 +128,6 @@ public:
     byte toBasicByte();
 
     uint64_t hashcode();
-
-    //TODO Remove
-    int toHexInt();
-    //TODO Remove
-    String toHexString();
 
     bool toBasicBool();
 
@@ -183,6 +184,8 @@ public:
     static String format(const char *fmt, ...);
 
     static String className();
+
+    static bool equalsIgnoreCase(const char *,const char *,int len = -1);
 
     std::string getStdString();
 
@@ -309,13 +312,13 @@ public:
 private:
     std::string m_str;
 
-    bool isIntNumber(const char *p,int size);
+    //bool isIntNumber(const char *p,int size);
 
-    bool isDoubleNumber(const char *p,int size);
+    //bool isDoubleNumber(const char *p,int size);
 
-    bool isFloatNumber(const char *p,int size);
+    //bool isFloatNumber(const char *p,int size);
 
-    bool isLongNumber(const char *p,int size);
+    //bool isLongNumber(const char *p,int size);
 
     //local function
     template<typename... Args>

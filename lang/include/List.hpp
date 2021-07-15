@@ -17,7 +17,7 @@
 
 namespace obotcha {
 
-//----------------- ArrayList ---------------------
+//----------------- List ---------------------
 DECLARE_CLASS(List,1) {
 public:
     _List(int length) {
@@ -32,13 +32,25 @@ public:
             elements[i] = data[i];
         }
     }
+
+    _List(sp<_List<T>> ll) {
+        mSize = ll->size();
+        elements = new T[mSize];
+        for(int i = 0;i<mSize;i++) {
+            elements[i] = ll[i];
+        }
+    }
     
     int size() {
         return mSize;
     }
 
-    T& operator[] (int i) {
-        T &v = elements[i];   
+    T& operator[] (int index) {
+        if(index >= mSize) {
+            Trigger(ArrayIndexOutOfBoundsException,"out of array");
+        }
+
+        T &v = elements[index];   
         return v;
     }
 

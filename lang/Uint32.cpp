@@ -36,10 +36,6 @@ uint32_t _Uint32::toValue() {
 }
 
 bool _Uint32::equals(const Uint32 &p) {
-    if(p == nullptr) {
-        Trigger(NullPointerException,"Object is null");
-    }
-
     return val == p->val;
 }
 
@@ -48,10 +44,6 @@ bool _Uint32::equals(uint32_t p) {
 }
 
 bool _Uint32::equals(const _Uint32 *p) {
-    if(p == nullptr) {
-        Trigger(NullPointerException,"Object is null");
-    }
-
     return val == p->val;
 }
 
@@ -60,10 +52,6 @@ void _Uint32::update(uint32_t v) {
 }
 
 void _Uint32::update(const sp<_Uint32> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"Uint32 update nullptr");
-    }
-
     val = v->val;
 }
 
@@ -87,36 +75,50 @@ sp<_String> _Uint32::toString(uint32_t i) {
     return createString(_Number::toDecString(i));
 }
 
-uint32_t _Uint32::parseDecUint32(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseDecUint32 nullptr");
-    }
+sp<_Uint32> _Uint32::parseDecUint32(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint32_t value = _Number::parseDecNumber(pa->getStdString());
+        return createUint32(value);
+    } catch(const char *err){}
 
-    return _Number::parseDecNumber(v->getStdString());
+    return nullptr;
 }
 
-uint32_t _Uint32::parseHexUint32(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseHexUint32 nullptr");
+sp<_Uint32> _Uint32::parseHexUint32(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint32_t value = _Number::parseHexNumber(pa->getStdString());
+        return createUint32(value);
+    } catch(const char* e) {
+        //nothing
     }
-    
-    return _Number::parseHexNumber(v->getStdString());
+
+    return nullptr;
 }
 
-uint32_t _Uint32::parseOctUint32(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseOctUint32 nullptr");
+sp<_Uint32> _Uint32::parseOctUint32(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint32_t value = _Number::parseOctNumber(pa->getStdString());
+        return createUint32(value);
+    } catch(const char* e) {
+        //nothing
     }
-    
-    return _Number::parseOctNumber(v->getStdString());
+
+    return nullptr;
 }
 
-uint32_t _Uint32::parseBinaryUint32(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseBinaryUint32 nullptr");
+sp<_Uint32> _Uint32::parseBinaryUint32(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint32_t value = _Number::parseBinaryNumber(pa->getStdString());
+        return createUint32(value);
+    } catch(const char* e) {
+        //nothing
     }
-    
-    return _Number::parseBinaryNumber(v->getStdString());
+
+    return nullptr;
 }
 
 sp<_String> _Uint32::className() {

@@ -15,6 +15,22 @@ namespace obotcha {
 class _String;
 
 DECLARE_CLASS(Number,1) {
+public:
+    static T parseNumber(std::string v) {
+        std::stringstream ss;
+        ss<< v;
+        T value;
+        ss>>value;
+
+        std::string checkValue = toDecString(value);
+
+        if(checkValue.compare(v) == 0) {
+            return value;
+        }
+
+        throw("");
+    }
+
 protected:
     static void binaryRecursion(T n,std::stringstream &ss) {
         T a;
@@ -68,7 +84,13 @@ protected:
         T value;
         ss>>value;
 
-        return value;
+        std::string checkValue = toDecString(value);
+
+        if(checkValue.compare(v) == 0) {
+            return value;
+        }
+
+        throw("");
     }
 
     static T parseHexNumber(std::string v) {
@@ -80,13 +102,20 @@ protected:
         ss<< std::hex <<v;
         T value;
         ss>>value;
-
         std::string checkValue = toHexString(value);
+        if(checkValue.size() == v.size()) {
+            //ingore Lower/Upper case
+            int len = v.size();
+            const char * str1 = v.c_str();
+            const char * str2 = checkValue.c_str();
+            for(int i = 0;i<len;i++) {
+                if(str1[i] != str2[i] && std::abs((str1[i] - str2[i])) != 0x20) {
+                    throw("");
+                }
+            }
 
-        if(checkValue.compare(v) == 0) {
             return value;
         }
-
         throw("");
     }
 
@@ -106,6 +135,10 @@ protected:
     }
 
     static T parseBinaryNumber(std::string v) {
+        if(v.size() >= 3 && (v.c_str()[1] == 'b' || v.c_str()[1] == 'B')) {
+            v = v.substr(2,v.size() - 2);
+        }
+
         int lastIndex = v.size() - 1;
         const char *str = v.c_str();
 
@@ -124,6 +157,70 @@ protected:
 
         throw("");
     }
+
+    bool isIntNumber(const char *p,int size) {
+        for(int i = 0;i < size;i++) {
+            if(p[i] >= '0' && p[i] <= '9') {
+                continue;
+            } else {
+                if((i == size - 1) && p[i] == '\0') {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool isLongNumber(const char *p,int size) {
+        for(int i = 0;i < size;i++) {
+            if(p[i] >= '0' && p[i] <= '9') {
+                continue;
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    bool isDoubleNumber(const char *p,int size) {
+        int dotCount = 0;
+
+        for(int i = 0;i < size;i++) {
+            if(p[i] >= '0' && p[i] <= '9') {
+                continue;
+            } else if(p[i] == '.') {
+                dotCount++;
+                if(dotCount > 1) {
+                    return false;
+                }
+                continue;
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    bool isFloatNumber(const char *p,int size) {
+        int dotCount = 0;
+
+        for(int i = 0;i < size;i++) {
+            if(p[i] >= '0' && p[i] <= '9') {
+                continue;
+            } else if(p[i] == '.') {
+                dotCount++;
+                if(dotCount > 1) {
+                    return false;
+                }
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+
 };
 
 }

@@ -112,7 +112,7 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
                         readlength = filesize;
                     }
                     filesize -= readlength;
-                    AUTO_FLUSH(writer->writeString(createString(readlength)->toHexString()));
+                    AUTO_FLUSH(writer->writeString(createInteger(readlength)->toHexString()));
                     AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
                     stream->readByLength(mSendBuff,writer->getIndex(),readlength);
                     writer->skipBy(readlength);

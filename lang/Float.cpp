@@ -5,6 +5,7 @@
 #include "InitializeException.hpp"
 #include "IllegalArgumentException.hpp"
 #include "NullPointerException.hpp"
+#include "Number.hpp"
 
 namespace obotcha {
 
@@ -24,6 +25,16 @@ _Float::_Float(Float &v){
 
 float _Float::toValue() {
     return val;
+}
+
+sp<_Float> _Float::parse(sp<_String> s) {
+    try {
+        String pa = s->trimAll();
+        float v = _Number<float>::parseNumber(pa->getStdString());
+        return createFloat(v);
+    } catch(const char * err) {}
+
+    return nullptr;
 }
 
 bool _Float::isEqual(float x,float y) {

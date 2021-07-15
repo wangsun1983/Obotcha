@@ -42,13 +42,13 @@ public:
 
     static sp<_String> toString(uint32_t i);
     
-    static uint32_t parseDecUint32(const sp<_String>&);
+    static sp<_Uint32> parseDecUint32(const sp<_String>&);
 
-    static uint32_t parseHexUint32(const sp<_String>&);
+    static sp<_Uint32> parseHexUint32(const sp<_String>&);
 
-    static uint32_t parseOctUint32(const sp<_String>&);
+    static sp<_Uint32> parseOctUint32(const sp<_String>&);
 
-    static uint32_t parseBinaryUint32(const sp<_String>&);
+    static sp<_Uint32> parseBinaryUint32(const sp<_String>&);
 
     static sp<_String> className();
 

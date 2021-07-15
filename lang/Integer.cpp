@@ -93,19 +93,19 @@ sp<_String> _Integer::toString(int i) {
 }
 
 Integer _Integer::parseDecInt(const sp<_String> &v) {
-    String pa = v->trimAll();
-    int value = _Number::parseDecNumber(pa->getStdString());
-    if(createString(value)->equals(pa)) {
+    try {
+        String pa = v->trimAll();
+        int value = _Number::parseDecNumber(pa->getStdString());
         return createInteger(value);
-    }
+    } catch(const char *err){}
 
     return nullptr;
 }
 
 Integer _Integer::parseHexInt(const sp<_String> &v) {
-    //check whether 0xaaa
     try {
-        int value = _Number::parseHexNumber(v->getStdString());
+        String pa = v->trimAll();
+        int value = _Number::parseHexNumber(pa->getStdString());
         return createInteger(value);
     } catch(const char* e) {
         //nothing
@@ -116,7 +116,8 @@ Integer _Integer::parseHexInt(const sp<_String> &v) {
 
 Integer _Integer::parseOctInt(const sp<_String> &v) {
     try {
-        int value = _Number::parseOctNumber(v->getStdString());
+        String pa = v->trimAll();
+        int value = _Number::parseOctNumber(pa->getStdString());
         return createInteger(value);
     } catch(const char* e) {
         //nothing
@@ -127,7 +128,8 @@ Integer _Integer::parseOctInt(const sp<_String> &v) {
 
 Integer _Integer::parseBinaryInt(const sp<_String> &v) {
     try {
-        int value = _Number::parseBinaryNumber(v->getStdString());
+        String pa = v->trimAll();
+        int value = _Number::parseBinaryNumber(pa->getStdString());
         return createInteger(value);
     } catch(const char* e) {
         //nothing

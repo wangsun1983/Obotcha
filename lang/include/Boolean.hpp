@@ -44,11 +44,11 @@ public:
 
     uint64_t hashcode();
 
-    static sp<_Boolean> valueOf(const sp<_String>);
+    static sp<_Boolean> parse(const sp<_String>);
 
-    static sp<_Boolean> valueOf(const char *);
+    static sp<_Boolean> parse(const char *);
 
-    static sp<_Boolean> valueOf(bool);
+    static sp<_Boolean> parse(bool);
 
     static const sp<_Boolean> False;
 

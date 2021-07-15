@@ -37,10 +37,6 @@ uint16_t _Uint16::toValue() {
 }
 
 bool _Uint16::equals(const Uint16 &p) {
-    if(p == nullptr) {
-        Trigger(NullPointerException,"Object is null");
-    }
-
     return val == p->val;
 }
 
@@ -49,10 +45,6 @@ bool _Uint16::equals(uint16_t p) {
 }
 
 bool _Uint16::equals(const _Uint16 *p) {
-    if(p == nullptr) {
-        Trigger(NullPointerException,"Object is null");
-    }
-
     return val == p->val;
 }
 
@@ -61,10 +53,6 @@ void _Uint16::update(uint16_t v) {
 }
 
 void _Uint16::update(const sp<_Uint16> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"Uint16 update nullptr");
-    }
-
     val = v->val;
 }
 
@@ -88,36 +76,50 @@ sp<_String> _Uint16::toString(uint16_t i) {
     return createString(_Number::toDecString(i));
 }
 
-uint16_t _Uint16::parseDecUint16(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseDecUint16 nullptr");
-    }
+sp<_Uint16> _Uint16::parseDecUint16(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint16_t value = _Number::parseDecNumber(pa->getStdString());
+        return createUint16(value);
+    } catch(const char *err){}
 
-    return _Number::parseDecNumber(v->getStdString());
+    return nullptr;
 }
 
-uint16_t _Uint16::parseHexUint16(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseHexUint16 nullptr");
+sp<_Uint16> _Uint16::parseHexUint16(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint16_t value = _Number::parseHexNumber(pa->getStdString());
+        return createUint16(value);
+    } catch(const char* e) {
+        //nothing
     }
-    
-    return _Number::parseHexNumber(v->getStdString());
+
+    return nullptr;
 }
 
-uint16_t _Uint16::parseOctUint16(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseOctUint16 nullptr");
+sp<_Uint16> _Uint16::parseOctUint16(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint16_t value = _Number::parseOctNumber(pa->getStdString());
+        return createUint16(value);
+    } catch(const char* e) {
+        //nothing
     }
-    
-    return _Number::parseOctNumber(v->getStdString());
+
+    return nullptr;
 }
 
-uint16_t _Uint16::parseBinaryUint16(const sp<_String> &v) {
-    if(v == nullptr) {
-        Trigger(NullPointerException,"parseBinaryUint16 nullptr");
+sp<_Uint16> _Uint16::parseBinaryUint16(const sp<_String> &v) {
+    try {
+        String pa = v->trimAll();
+        uint16_t value = _Number::parseBinaryNumber(pa->getStdString());
+        return createUint16(value);
+    } catch(const char* e) {
+        //nothing
     }
-    
-    return _Number::parseBinaryNumber(v->getStdString());
+
+    return nullptr;
 }
 
 sp<_String> _Uint16::className() {

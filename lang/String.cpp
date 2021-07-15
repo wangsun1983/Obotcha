@@ -459,37 +459,23 @@ sp<_ArrayList<String>> _String::split(const char* v,int size) {
 }
 
 Integer _String::toInteger() {
-    if(m_str.size() == 0) {
-        return nullptr;
-    }
+    return st(Integer)::parseDecInt(AutoClone(this));
+}
 
-    if(!isIntNumber(m_str.data(),m_str.size())) {
-        return nullptr;
-    }
+Integer _String::toHexInt() {
+    return st(Integer)::parseHexInt(AutoClone(this));
+}
 
-    std::stringstream ss;
-    ss<<m_str;
-    int value;
-    ss>>value;
-    
-    return createInteger(value);
+Integer _String::toOctInt() {
+    return st(Integer)::parseOctInt(AutoClone(this));
+}
+
+Integer _String::toBinaryInt() {
+    return st(Integer)::parseBinaryInt(AutoClone(this));
 }
 
 Byte _String::toByte() {
-    if(m_str.size() == 0) {
-        return nullptr;
-    }
-
-    if(!isIntNumber(m_str.data(),m_str.size())) {
-        return nullptr;
-    }
-
-    std::stringstream ss;
-    ss<<m_str;
-    byte value;
-    ss>>value;
-    
-    return createByte(value);
+    return st(Byte)::parseDecByte(AutoClone(this));
 }
 
 Boolean _String::toBoolean() {
@@ -497,278 +483,125 @@ Boolean _String::toBoolean() {
 }
 
 Float _String::toFloat() {
-    if(m_str.size() == 0) {
-        return nullptr;
-    }
-
-    if(!isFloatNumber(m_str.data(),m_str.size())) {
-        return nullptr;
-    }
-
-    std::stringstream ss;
-    ss<<m_str;
-    float value;
-    ss>>value;
-    
-    return createFloat(value);
+    return st(Float)::parse(AutoClone(this));
 }
 
 Double _String::toDouble() {
-    if(m_str.size() == 0) {
-        return nullptr;
-    }
-
-    if(!isDoubleNumber(m_str.data(),m_str.size())) {
-        return nullptr;
-    }
-
-    std::stringstream ss;
-    ss<<m_str;
-    float value;
-    ss>>value;
-    
-    return createDouble(value);
+    return st(Double)::parse(AutoClone(this));
 }
 
 Long _String::toLong() {
-    if(m_str.size() == 0) {
-        return nullptr;
-    }
-
-    if(!isLongNumber(m_str.data(),m_str.size())) {
-        return nullptr;
-    }
-
-    std::stringstream ss;
-    ss<<m_str;
-    long value;
-    ss>>value;
-    
-    return createLong(value);
+    return st(Long)::parseDecLong(AutoClone(this));
 }
 
 Uint8 _String::toUint8() {
-    if(m_str.size() == 0) {
-        return nullptr;
-    }
-
-    if(!isIntNumber(m_str.data(),m_str.size())) {
-        return nullptr;
-    }
-
-    std::stringstream ss;
-    ss<<m_str;
-    uint8_t value;
-    ss>>value;
-    
-    return createUint8(value);
+    return st(Uint8)::parseDecUint8(AutoClone(this));
 }
 
 Uint16 _String::toUint16() {
-    if(m_str.size() == 0) {
-        return nullptr;
-    }
-
-    if(!isIntNumber(m_str.data(),m_str.size())) {
-        return nullptr;
-    }
-
-    std::stringstream ss;
-    ss<<m_str;
-    uint16_t value;
-    ss>>value;
-    
-    return createUint16(value);
+    return st(Uint16)::parseDecUint16(AutoClone(this));
 }
 
 Uint32 _String::toUint32() {
-    if(m_str.size() == 0) {
-        return nullptr;
-    }
-
-    if(!isIntNumber(m_str.data(),m_str.size())) {
-        return nullptr;
-    }
-
-    std::stringstream ss;
-    ss<<m_str;
-    uint32_t value;
-    ss>>value;
-    
-    return createUint32(value);
+    return st(Uint32)::parseDecUint32(AutoClone(this));
 }
 
 Uint64 _String::toUint64() {
-    if(m_str.size() == 0) {
-        return nullptr;
-    }
-
-    if(!isIntNumber(m_str.data(),m_str.size())) {
-        return nullptr;
-    }
-
-    std::stringstream ss;
-    ss<<m_str;
-    uint64_t value;
-    ss>>value;
-    
-    return createUint64(value);
+    return st(Uint64)::parseDecUint64(AutoClone(this));
 }
 
 uint8_t _String::toBasicUint8() {
-    if(m_str.size() == 0 ||!isIntNumber(m_str.data(),m_str.size())) {
+    Uint8 value = toUint8();
+    if(value == nullptr) {
         Trigger(TransformException,"String to Uint8 Fail");
     }
 
-    std::stringstream ss;
-    ss<<m_str;
-    int value;
-    ss>>value;
-    return value;
+    return value->toValue();
 }
 
 uint16_t _String::toBasicUint16() {
-    if((m_str.size() == 0) || !isIntNumber(m_str.data(),m_str.size())) {
+    auto value = toUint16();
+    if(value == nullptr) {
         Trigger(TransformException,"String to Uint16 Fail");
     }
 
-    std::stringstream ss;
-    ss<<m_str;
-    uint16_t value;
-    ss>>value;
-    return value;
+    return value->toValue();
 }
 
 uint32_t _String::toBasicUint32() {
-    if((m_str.size() == 0) ||!isIntNumber(m_str.data(),m_str.size())) {
+    auto value = toUint32();
+    if(value == nullptr) {
         Trigger(TransformException,"String to Uint32 Fail");
     }
 
-    std::stringstream ss;
-    ss<<m_str;
-    uint32_t value;
-    ss>>value;
-    return value;
+    return value->toValue();
 }
 
 uint64_t _String::toBasicUint64() {
-    if((m_str.size() == 0) ||!isIntNumber(m_str.data(),m_str.size())) {
+    auto value = toUint64();
+    if(value == nullptr) {
         Trigger(TransformException,"String to Uint64 Fail");
     }
 
-    std::stringstream ss;
-    ss<<m_str;
-    uint64_t value;
-    ss>>value;
-    return value;
+    return value->toValue();
 }
 
 int _String::toBasicInt() {
-    if((m_str.size() == 0) || !isIntNumber(m_str.data(),m_str.size())) {
-        Trigger(TransformException,"String to Int Fail");
+    auto value = toInteger();
+    if(value == nullptr) {
+        Trigger(TransformException,"String to Integer Fail");
     }
 
-    std::stringstream ss;
-    ss<<m_str;
-    int value;
-    ss>>value;
-    return value;
+    return value->toValue();
 }
 
 byte _String::toBasicByte() {
-    if((m_str.size() == 0) || !isIntNumber(m_str.data(),m_str.size())) {
-        Trigger(TransformException,"String to Int Fail");
-    }
-    std::stringstream ss;
-    ss<<m_str;
-    int value;
-    ss>>value;
-    return value;
-}
-
-int _String::toHexInt() {
-    if(m_str.size() == 0) {
-        Trigger(TransformException,"String to Hex Int Fail");
+    auto value = toByte();
+    if(value == nullptr) {
+        Trigger(TransformException,"String to Byte Fail");
     }
 
-    std::stringstream ss;
-    ss<< std::hex <<m_str;
-    int value;
-    ss>>value;
-    return value;
-}
-
-String _String::toHexString() {
-    if(m_str.size() == 0 || !isIntNumber(m_str.data(),m_str.size())) {
-        Trigger(TransformException,"String to Hex Int Fail");
-    }
-
-    int v = toBasicInt();
-    std::string value;
-    std::stringstream ss;
-    ss<<std::hex<<v;
-    ss>>value;
-    return createString(value);
+    return value->toValue();
 }
 
 bool _String::toBasicBool() {
-    
-    const char *data = m_str.data();
-    
-    if( (m_str.size() == 4) &&
-        (data[0] == 't' || data[0] == 'T')
-        &&(data[1] == 'r' || data[1] == 'R')
-        &&(data[2] == 'u' || data[2] == 'U')
-        &&(data[3] == 'e' || data[3] == 'E')) {
-        return true;
+    Boolean value = toBoolean();
+
+    if(value == nullptr) {
+        Trigger(TransformException,"String to Boolean Fail");
     }
 
-    if((m_str.size() == 5) &&
-        (data[0] == 'f' || data[0] == 'F')
-        &&(data[1] == 'a' || data[1] == 'A')
-        &&(data[2] == 'l' || data[2] == 'L')
-        &&(data[3] == 's' || data[3] == 'S')
-        &&(data[4] == 'e' || data[4] == 'E')) {
-        return false;
-    }
-
-    Trigger(TransformException,"String to Boolean Fail");
+    return value->toValue();
 }
 
 float _String::toBasicFloat() {
-    if(m_str.size() == 0 || !isFloatNumber(m_str.data(),m_str.size())) {
+    Float value = toFloat();
+
+    if(value == nullptr) {
         Trigger(TransformException,"String to Float Fail");
     }
 
-    std::stringstream ss;
-    ss<<m_str;
-    float value;
-    ss>>value;
-    return value;
+    return value->toValue();
 }
 
 double _String::toBasicDouble() {
-    if(m_str.size() == 0 || !isDoubleNumber(m_str.data(),m_str.size())) {
+    Double value = toDouble();
+
+    if(value == nullptr) {
         Trigger(TransformException,"String to Double Fail");
     }
 
-    std::stringstream ss;
-    ss<<m_str;
-    double value;
-    ss>>value;
-    return value;
+    return value->toValue();
 }
 
 long _String::toBasicLong() {
-    if(m_str.size() == 0 || !isLongNumber(m_str.data(),m_str.size())) {
+    Long value = toLong();
+
+    if(value == nullptr) {
         Trigger(TransformException,"String to Long Fail");
     }
 
-    std::stringstream ss;
-    ss<<m_str;
-    long value;
-    ss>>value;
-    return value;
+    return value->toValue();
 }
 
 ByteArray _String::toByteArray() {
@@ -823,11 +656,16 @@ bool _String::equalsIgnoreCase(const char * str,int csize) {
         return false;
     }
 
-    const char *m = m_str.data();
+    return equalsIgnoreCase(str,m_str.c_str(),size);
+}
+
+bool _String::equalsIgnoreCase(const char *str1,const char *str2,int len) {
+    int size = (len == -1)?strlen(str1):len;
+
     int index = 0;
     while(index < size) {
-        int v1 = m[index];
-        int v2 = str[index];
+        int v1 = str1[index];
+        int v2 = str2[index];
         if(IgnoreCaseTable[v1] != IgnoreCaseTable[v2]) {
             return false;
         }
@@ -1079,69 +917,6 @@ bool _String::startsWith(const char * v) {
 
 bool _String::startsWith(std::string v) {
     return (m_str.find(v) == v.size());
-}
-
-bool _String::isIntNumber(const char *p,int size) {
-    for(int i = 0;i < size;i++) {
-        if(p[i] >= '0' && p[i] <= '9') {
-            continue;
-        } else {
-            if((i == size - 1) && p[i] == '\0') {
-                return true;
-            }
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool _String::isLongNumber(const char *p,int size) {
-    for(int i = 0;i < size;i++) {
-        if(p[i] >= '0' && p[i] <= '9') {
-            continue;
-        }
-        return false;
-    }
-
-    return true;
-}
-
-bool _String::isDoubleNumber(const char *p,int size) {
-    int dotCount = 0;
-
-    for(int i = 0;i < size;i++) {
-        if(p[i] >= '0' && p[i] <= '9') {
-            continue;
-        } else if(p[i] == '.') {
-            dotCount++;
-            if(dotCount > 1) {
-                return false;
-            }
-            continue;
-        }
-        return false;
-    }
-
-    return true;
-}
-
-bool _String::isFloatNumber(const char *p,int size) {
-    int dotCount = 0;
-
-    for(int i = 0;i < size;i++) {
-        if(p[i] >= '0' && p[i] <= '9') {
-            continue;
-        } else if(p[i] == '.') {
-            dotCount++;
-            if(dotCount > 1) {
-                return false;
-            }
-            continue;
-        }
-        return false;
-    }
-    return true;
 }
 
 void _String::_append() {

@@ -30,6 +30,8 @@ public:
 
     static bool isEqual(float,float);
 
+    static sp<_Float> parse(sp<_String>);
+
     static sp<_String> className();
 
     uint64_t hashcode();

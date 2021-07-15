@@ -55,7 +55,7 @@ ByteArray _HttpChunkParser::doParse() {
                     }
 
                     chunklength = chunklength->subString(0,chunklength->size() - 2);
-                    mChunkSize = chunklength->toHexInt();
+                    mChunkSize = chunklength->toHexInt()->toValue();
                     if(mChunkSize == 0) {
                         mChunkEndCount = 0;
                         return mBuff;
