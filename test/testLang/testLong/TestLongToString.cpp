@@ -103,7 +103,7 @@ int testtostring() {
    while(1) {
      for(int i = 0;i < 100;i++) {
        Long t1 = createLong(i);
-       int t2 = st(Long)::parseHexLong(createString(HexTable[i]));
+       Long t2 = st(Long)::parseHexLong(createString(HexTable[i]));
        Long t3 = createLong(t2);
        if(t1 != t3) {
          printf("t1 is %d,t3 is %d \n",t1->toValue(),t3->toValue());
@@ -114,7 +114,7 @@ int testtostring() {
 
      for(int i = 0;i < 100;i++) {
        Long t1 = createLong(i);
-       int t2 = st(Long)::parseOctLong(createString(OctTable[i]));
+       Long t2 = st(Long)::parseOctLong(createString(OctTable[i]));
        Long t3 = createLong(t2);
 
        if(t1 != t3) {
@@ -128,7 +128,7 @@ int testtostring() {
        Long t1 = createLong(i);
        String str = createString(BinaryTable[i]);
        //printf("11111 str is %s \n",str->toChars());
-       int t2 = st(Long)::parseBinaryLong(str);
+       Long t2 = st(Long)::parseBinaryLong(str);
        Long t3 = createLong(t2);
         if(t1 != t3) {
          printf("Long toInt test3-------[FAIL] \n");

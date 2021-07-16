@@ -7,16 +7,16 @@
 #include "StrongPointer.hpp"
 
 using namespace obotcha;
-extern int testObjectCompare();
-extern int testObjectRef();
-extern int testObjectArrayListRef();
-extern int testObjectHashmapRef();
-extern int testObjectLinkedListRef();
+
+extern int testEqual();
+extern int testReferenceCount();
+extern int testReferenceArraylist();
+extern int testReferenceHashMap();
+
 
 int main() {
-    //testObjectCompare();
-    //testObjectRef();
-    //testObjectArrayListRef();
-    //testObjectHashmapRef();
-    testObjectLinkedListRef();
+    testEqual();
+    testReferenceCount();
+    testReferenceArraylist();
+    testReferenceHashMap();
 }

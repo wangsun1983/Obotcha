@@ -14,9 +14,13 @@ using namespace obotcha;
 extern int listobjecttest();
 extern int basetest();
 extern int testConstruct();
+extern int testExceptoin();
+extern int testListValueUpdate();
 
 int main() {
   listobjecttest();
   basetest();
   testConstruct();
+  testExceptoin();
+  testListValueUpdate();
 }

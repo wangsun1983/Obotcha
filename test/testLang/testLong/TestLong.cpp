@@ -64,18 +64,11 @@ int basetest() {
     Long v1 = createLong(11);
     Long v2 = createLong(11);
     if(!v1->equals(v2)) {
-      printf("Long equals test1-------[FAIL] \n");
+      printf("Long equals test2-------[FAIL] \n");
       break;
     }
 
-    try {
-        if(v1->equals(nullptr)) {
-
-        }
-        printf("Long equals test2-------[FAIL] \n");
-    } catch(NullPointerException e) {}
-
-    printf("Long equals test3-------[OK] \n");
+    printf("Long equals test2-------[OK] \n");
     break;
   }
 
