@@ -76,8 +76,8 @@ int testReflectComplexFieldRead() {
       data->data1->complexMember2->boolData = false;
 
       Field memberField = data->getField("data1");
-      sp<Object> dd = memberField->getObjectValue();
-      sp<Object> data1 = dd->getField("complexMember1")->getObjectValue();
+      Object dd = memberField->getObjectValue();
+      Object data1 = dd->getField("complexMember1")->getObjectValue();
       //check field
       Field f = data1->getField("intData");
       if(f->getIntValue() != 1 || f->getType() != st(Field)::FieldTypeInt) {
@@ -98,7 +98,7 @@ int testReflectComplexFieldRead() {
       }
 
       f = data1->getField("floatData");
-      if(st(Math)::compareFloat(2.2,f->getFloatValue()) != st(Math)::CompareParamEqual || f->getType() != st(Field)::FieldTypeFloat) {
+      if(st(Math)::compareFloat(2.2,f->getFloatValue()) != st(Math)::AlmostEqual || f->getType() != st(Field)::FieldTypeFloat) {
         printf("v is %lf,type is %d \n",f->getFloatValue(),f->getType());
         printf("Reflect Complex Field Read test4-------[FAIL] \n");
         break;
@@ -150,7 +150,7 @@ int testReflectComplexFieldRead() {
       }
 
       //data2
-      sp<Object> data2 = dd->getField("complexMember2")->getObjectValue();
+      Object data2 = dd->getField("complexMember2")->getObjectValue();
       //check field
       f = data2->getField("intData");
       if(f->getIntValue() != 11 || f->getType() != st(Field)::FieldTypeInt) {
@@ -172,7 +172,7 @@ int testReflectComplexFieldRead() {
       }
 
       f = data2->getField("floatData");
-      if(st(Math)::compareFloat(12.2,f->getFloatValue()) != st(Math)::CompareParamEqual || f->getType() != st(Field)::FieldTypeFloat) {
+      if(st(Math)::compareFloat(12.2,f->getFloatValue()) != st(Math)::AlmostEqual || f->getType() != st(Field)::FieldTypeFloat) {
         printf("v is %lf,type is %d \n",f->getFloatValue(),f->getType());
         printf("Reflect Complex Field Read test14-------[FAIL] \n");
         break;

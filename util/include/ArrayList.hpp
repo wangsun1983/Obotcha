@@ -24,7 +24,7 @@ public:
         //TODO Nothing
     }
 
-    _ArrayList(sp<_ArrayList> l) {
+    _ArrayList(sp<_ArrayList<T>> l) {
         elements.push_back(l->elements);
     }
 

@@ -373,7 +373,7 @@ private:
                 
                 case st(Field)::FieldTypeArrayList: {
                     int count = 0;
-                    int length = field->getListObjectSize();
+                    int length = field->getContainerSize();
 
                     refNode = newNode(name);
                     while(count < length) {
@@ -431,6 +431,17 @@ private:
                             refNode->appendNode(item);
                         }
                         count++;
+                    }
+                }
+                break;
+
+                case st(Field)::FieldTypeHashMap: {
+                    int count = 0;
+                    int length = field->getContainerSize();
+
+                    refNode = newNode(name);
+                    while(count < length) {
+                        //TODO
                     }
                 }
                 break;

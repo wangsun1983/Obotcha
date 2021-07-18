@@ -88,7 +88,7 @@ sp<_Uint64> _Uint64::parseHexUint64(const sp<_String> &v) {
         String pa = v->trimAll();
         uint64_t value = _Number::parseHexNumber(pa->getStdString());
         return createUint64(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -100,7 +100,7 @@ sp<_Uint64> _Uint64::parseOctUint64(const sp<_String> &v) {
         String pa = v->trimAll();
         uint64_t value = _Number::parseOctNumber(pa->getStdString());
         return createUint64(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -112,7 +112,7 @@ sp<_Uint64> _Uint64::parseBinaryUint64(const sp<_String> &v) {
         String pa = v->trimAll();
         uint32_t value = _Number::parseBinaryNumber(pa->getStdString());
         return createUint64(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 

@@ -86,7 +86,7 @@ int testReflectNumber() {
       }
 
       if(rdata3->floatData == nullptr
-        ||st(Math)::compareFloat(data->floatData->toValue(),rdata3->floatData->toValue()) != st(Math)::CompareParamEqual) {
+        ||st(Math)::compareFloat(data->floatData->toValue(),rdata3->floatData->toValue()) != st(Math)::AlmostEqual) {
         printf("data->floatData is %lf,rdata3->floatData is %lf \n",data->floatData->toValue(),rdata3->floatData->toValue());
         printf("Reflect Number To File test4-------[FAIL] \n");
         break;

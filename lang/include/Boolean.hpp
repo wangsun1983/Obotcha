@@ -2,7 +2,6 @@
 #define __OBOTCHA_BOOLEAN_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

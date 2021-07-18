@@ -91,7 +91,7 @@ sp<_Uint16> _Uint16::parseHexUint16(const sp<_String> &v) {
         String pa = v->trimAll();
         uint16_t value = _Number::parseHexNumber(pa->getStdString());
         return createUint16(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -103,7 +103,7 @@ sp<_Uint16> _Uint16::parseOctUint16(const sp<_String> &v) {
         String pa = v->trimAll();
         uint16_t value = _Number::parseOctNumber(pa->getStdString());
         return createUint16(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -115,7 +115,7 @@ sp<_Uint16> _Uint16::parseBinaryUint16(const sp<_String> &v) {
         String pa = v->trimAll();
         uint16_t value = _Number::parseBinaryNumber(pa->getStdString());
         return createUint16(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 

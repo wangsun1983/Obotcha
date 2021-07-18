@@ -6,7 +6,6 @@
 #include <functional>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "Byte.hpp"
 
 namespace obotcha {

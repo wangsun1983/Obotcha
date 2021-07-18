@@ -7,7 +7,6 @@
 #include <fstream>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 #include "String.hpp"
 #include "Exception.hpp"

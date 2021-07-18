@@ -66,7 +66,7 @@ void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPac
 int main() {
   MyHttpListener listener = createMyHttpListener();
   HttpServer server = createHttpServerBuilder()
-                    ->setAddress(createInet4Address("192.168.1.9",1256))
+                    ->setAddress(createInet4Address(1256))
                     ->setListener(listener)
                     ->build();
   server->start();

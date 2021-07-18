@@ -90,7 +90,7 @@ sp<_Uint32> _Uint32::parseHexUint32(const sp<_String> &v) {
         String pa = v->trimAll();
         uint32_t value = _Number::parseHexNumber(pa->getStdString());
         return createUint32(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -102,7 +102,7 @@ sp<_Uint32> _Uint32::parseOctUint32(const sp<_String> &v) {
         String pa = v->trimAll();
         uint32_t value = _Number::parseOctNumber(pa->getStdString());
         return createUint32(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -114,7 +114,7 @@ sp<_Uint32> _Uint32::parseBinaryUint32(const sp<_String> &v) {
         String pa = v->trimAll();
         uint32_t value = _Number::parseBinaryNumber(pa->getStdString());
         return createUint32(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 

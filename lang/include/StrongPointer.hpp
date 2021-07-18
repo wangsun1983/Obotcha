@@ -7,8 +7,8 @@
 
 namespace obotcha {
 
-#define POINTER_DEC_FREE 0  //same as Object::OBJ_DEC_FREE
-#define POINTER_DEC_NO_FREE 1//same as Object::OBJ_DEC_NO_FREE
+#define POINTER_DEC_FREE 0  
+#define POINTER_DEC_NO_FREE 1
 
 //template
 template<bool C, typename T, typename U>

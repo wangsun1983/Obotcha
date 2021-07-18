@@ -19,8 +19,12 @@ namespace obotcha {
 //just add class declaration for reflect
 class _Field;
 class _String;
+
 template<typename T>
 class _ArrayList;
+
+template<typename T,typename U>
+class _KeyValuePair;
 
 //-------------------------- Declaration ----------------------------------//
 class _Object {
@@ -97,9 +101,18 @@ protected:
     
     //create function
     inline virtual void __createFieldObject(std::string name){}
+
+    //list function
     inline virtual sp<_Object> __createListItemObject(std::string name){return nullptr;}
     inline virtual sp<_Object> __getListItemObject(std::string name,int index){return nullptr;}
-    inline virtual int __getListObjectSize(std::string name) {return 0;}
+    inline virtual void __addListItemObject(std::string name,sp<_Object>){throw "not support";}
+    
+    //hashmap function
+    inline virtual sp<_KeyValuePair<sp<_Object>,sp<_Object>>> __createMapItemObject(std::string name){throw "not support";}
+    inline virtual sp<_ArrayList<sp<_KeyValuePair<sp<_Object>,sp<_Object>>>>> __getMapItemObjects(std::string name){throw "not support";}
+    inline virtual void __addMapItemObject(std::string name,sp<_Object>,sp<_Object>){throw "not support";}
+
+    inline virtual int __getContainerSize(std::string name) {return 0;}
 
 private:
     mutable volatile int32_t mCount;

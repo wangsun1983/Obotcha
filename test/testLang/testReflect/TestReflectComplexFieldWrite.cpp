@@ -48,8 +48,8 @@ int testReflectComplexFieldWrite() {
     //test1
     while(1) {
       MyData6 data = createMyData6();
-      sp<Object> _data = data->getField("data1")->createObject();
-      sp<Object> data1 = _data->getField("complexMember1")->createObject();
+      Object _data = data->getField("data1")->createObject();
+      Object data1 = _data->getField("complexMember1")->createObject();
       Field f = data1->getField("intData");
       f->setValue(1);
 
@@ -98,7 +98,7 @@ int testReflectComplexFieldWrite() {
         break;
       }
 
-      if(st(Math)::compareFloat(data->data1->complexMember1->floatData,2.2) != st(Math)::CompareParamEqual) {
+      if(st(Math)::compareFloat(data->data1->complexMember1->floatData,2.2) != st(Math)::AlmostEqual) {
         printf("Reflect Reflect Complex Write test4-------[FAIL] \n");
         break;
       }

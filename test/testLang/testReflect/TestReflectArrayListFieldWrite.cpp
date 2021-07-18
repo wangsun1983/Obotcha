@@ -42,7 +42,7 @@ int testReflectArrayListFieldWrite() {
       ListCollection2 collection = createListCollection2();
       Field arrayField = collection->getField("mylist");
       arrayField->createObject();
-      sp<Object> data1 = collection->getField("mylist")->createListItemObject();
+      Object data1 = collection->getField("mylist")->createListItemObject();
       Field f = data1->getField("intData");
       f->setValue(1);
       f = data1->getField("byteData");
@@ -75,7 +75,7 @@ int testReflectArrayListFieldWrite() {
       f = data1->getField("boolData");
       f->setValue(false);
       //data2
-      sp<Object> data2 = collection->getField("mylist")->createListItemObject();
+      Object data2 = collection->getField("mylist")->createListItemObject();
       f = data2->getField("intData");
       f->setValue(11);
 
@@ -108,7 +108,7 @@ int testReflectArrayListFieldWrite() {
 
       f = data2->getField("boolData");
       f->setValue(false);
-      
+
       if(collection->mylist->size() != 2) {
         printf("Reflect ArrayList Field Write test1-------[FAIL] \n");
         break;
@@ -130,7 +130,7 @@ int testReflectArrayListFieldWrite() {
         break;
       }
 
-      if(st(Math)::compareFloat(d1->floatData,2.2) != st(Math)::CompareParamEqual) {
+      if(st(Math)::compareFloat(d1->floatData,2.2) != st(Math)::AlmostEqual) {
         printf("Reflect ArrayList Field Write test4-------[FAIL] \n");
         break;
       }
@@ -186,7 +186,7 @@ int testReflectArrayListFieldWrite() {
         break;
       }
 
-      if(st(Math)::compareFloat(d2->floatData,12.2) != st(Math)::CompareParamEqual) {
+      if(st(Math)::compareFloat(d2->floatData,12.2) != st(Math)::AlmostEqual) {
         printf("Reflect ArrayList Field Write test15-------[FAIL] \n");
         break;
       }

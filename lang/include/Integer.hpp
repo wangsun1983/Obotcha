@@ -5,7 +5,6 @@
 #include <sstream>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "Number.hpp"
 
 namespace obotcha {

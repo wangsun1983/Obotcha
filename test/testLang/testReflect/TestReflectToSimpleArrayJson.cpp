@@ -144,13 +144,13 @@ int testReflectToSimpleArrayJson() {
 
     //ArrayList<Float> floatlists;
     Float floatValue = rdata3->floatlists->get(0);
-    if(floatValue == nullptr || st(Math)::compareFloat(floatValue->toValue(),1.1) != st(Math)::CompareParamEqual) {
+    if(floatValue == nullptr || st(Math)::compareFloat(floatValue->toValue(),1.1) != st(Math)::AlmostEqual) {
       printf("Reflect ArrayList To File test7_3-------[FAIL] \n");
       break;
     }
 
     Float floatValue2 = rdata3->floatlists->get(1);
-    if(floatValue2 == nullptr || st(Math)::compareFloat(floatValue2->toValue(),2.2) != st(Math)::CompareParamEqual) {
+    if(floatValue2 == nullptr || st(Math)::compareFloat(floatValue2->toValue(),2.2) != st(Math)::AlmostEqual) {
       printf("Reflect ArrayList To File test7_4-------[FAIL] \n");
       break;
     }

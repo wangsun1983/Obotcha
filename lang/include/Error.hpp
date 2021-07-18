@@ -2,7 +2,6 @@
 #define __OBOTCHA_ERROR_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "String.hpp"
 
 namespace obotcha {

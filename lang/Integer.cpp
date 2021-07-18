@@ -97,7 +97,7 @@ Integer _Integer::parseDecInt(const sp<_String> &v) {
         String pa = v->trimAll();
         int value = _Number::parseDecNumber(pa->getStdString());
         return createInteger(value);
-    } catch(const char *err){}
+    } catch(...){}
 
     return nullptr;
 }
@@ -107,7 +107,7 @@ Integer _Integer::parseHexInt(const sp<_String> &v) {
         String pa = v->trimAll();
         int value = _Number::parseHexNumber(pa->getStdString());
         return createInteger(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -119,7 +119,7 @@ Integer _Integer::parseOctInt(const sp<_String> &v) {
         String pa = v->trimAll();
         int value = _Number::parseOctNumber(pa->getStdString());
         return createInteger(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -131,7 +131,7 @@ Integer _Integer::parseBinaryInt(const sp<_String> &v) {
         String pa = v->trimAll();
         int value = _Number::parseBinaryNumber(pa->getStdString());
         return createInteger(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 

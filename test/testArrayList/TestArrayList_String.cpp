@@ -713,12 +713,12 @@ void testArrayList_String() {
       break;
     }
 
-    char *p = nullptr;
-    int size = list->size();
-    try {
-      list->insertLast(createString(p));
-      printf("---[ArrayList<String> Test {insertLast(const char *s )} case2] [FAILED]--- \n");
-    } catch(InitializeException e) {}
+    //char *p = nullptr;
+    //int size = list->size();
+    //try {
+    //  list->insertLast(createString(p));
+    //  printf("---[ArrayList<String> Test {insertLast(const char *s )} case2] [FAILED]--- \n");
+    //} catch(InitializeException e) {}
 
     printf("---[ArrayList<String> Test {insertLast(const char *s)}] [OK]--- \n");
     break;

@@ -4,10 +4,11 @@
 #include <vector>
 #include <functional>
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "String.hpp"
 #include "ByteArray.hpp"
 #include "ArrayList.hpp"
+#include "HashMap.hpp"
+#include "KeyValuePair.hpp"
 
 namespace obotcha {
 
@@ -29,6 +30,7 @@ public:
         FieldTypeBool,
         FieldTypeVector,//??
         FieldTypeArrayList,
+        FieldTypeHashMap,
         FieldTypeObject,
         FieldTypeUnKnow,
     };
@@ -55,6 +57,11 @@ public:
     template<typename T>
     int TypeOf(ArrayList<T> v) {
         return FieldTypeArrayList;
+    }
+
+    template<typename T,typename U>
+    int TypeOf(HashMap<T,U> v) {
+        return FieldTypeHashMap;
     }
 
     template<typename T>
@@ -115,12 +122,18 @@ public:
     String getStringValue();
     bool getBoolValue();
 
-    int getListObjectSize();
+    int getContainerSize();
     sp<_Object> getListItemObject(int);
 
     //reflect filed create function
     sp<_Object> createObject();
     sp<_Object> createListItemObject();
+    void addListItemObject(sp<_Object>);
+
+    //hashmap
+    sp<_KeyValuePair<sp<_Object>,sp<_Object>>> createMapItemObject();
+    sp<_ArrayList<sp<_KeyValuePair<sp<_Object>,sp<_Object>>>>> getMapItemObjects();
+    void addMapItemObject(sp<_Object>,sp<_Object>);
 
     //std::function<void()> createfunc;
 private:

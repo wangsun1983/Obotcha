@@ -272,6 +272,7 @@ public:
             } else {
                 value->reflectTo(newObject);
             }
+            field->addListItemObject(newObject);
         }
     }
 
@@ -527,7 +528,7 @@ public:
                 
                 case st(Field)::FieldTypeArrayList: {
                     int count = 0;
-                    int size = field->getListObjectSize();
+                    int size = field->getContainerSize();
                     JsonValue arrayNode = createJsonValue();
                     while(count < size) {
                         auto newObject = field->getListItemObject(count);
@@ -574,6 +575,12 @@ public:
                         count++;
                     }
                     this->put(name,arrayNode);
+                }
+                break;
+
+                case st(Field)::FieldTypeHashMap: {
+                    //TODO
+
                 }
                 break;
             }

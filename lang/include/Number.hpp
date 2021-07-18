@@ -27,8 +27,8 @@ public:
         if(checkValue.compare(v) == 0) {
             return value;
         }
-
-        throw("");
+        printf("v is %s,check value is %s \n",v.c_str(),checkValue.c_str());
+        throw(-1);
     }
 
 protected:
@@ -79,10 +79,12 @@ protected:
     }
 
     static T parseDecNumber(std::string v) {
+        printf("parseDecNumber start v is %s \n",v.c_str());
         std::stringstream ss;
         ss<<v;
         T value;
         ss>>value;
+        printf("parseDecNumber value is %d \n",value);
 
         std::string checkValue = toDecString(value);
 
@@ -90,7 +92,9 @@ protected:
             return value;
         }
 
-        throw("");
+        printf("parseDecNumber，v is %s,check value is %s \n",v.c_str(),checkValue.c_str());
+
+        throw(-1);
     }
 
     static T parseHexNumber(std::string v) {
@@ -110,13 +114,13 @@ protected:
             const char * str2 = checkValue.c_str();
             for(int i = 0;i<len;i++) {
                 if(str1[i] != str2[i] && std::abs((str1[i] - str2[i])) != 0x20) {
-                    throw("");
+                    throw(-1);
                 }
             }
 
             return value;
         }
-        throw("");
+        throw(-1);
     }
 
     static T parseOctNumber(std::string v) {
@@ -131,7 +135,7 @@ protected:
             return value;
         }
 
-        throw("");
+        throw(-1);
     }
 
     static T parseBinaryNumber(std::string v) {
@@ -155,7 +159,7 @@ protected:
             return parseBinary;
         }
 
-        throw("");
+        throw(-1);
     }
 
     bool isIntNumber(const char *p,int size) {

@@ -93,7 +93,7 @@ sp<_Long> _Long::parseHexLong(const sp<_String> &v) {
         String pa = v->trimAll();
         long value = _Number::parseHexNumber(pa->getStdString());
         return createLong(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -105,7 +105,7 @@ sp<_Long> _Long::parseOctLong(const sp<_String> &v) {
         String pa = v->trimAll();
         long value = _Number::parseOctNumber(pa->getStdString());
         return createLong(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -117,7 +117,7 @@ sp<_Long> _Long::parseBinaryLong(const sp<_String> &v) {
         String pa = v->trimAll();
         long value = _Number::parseBinaryNumber(pa->getStdString());
         return createLong(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 

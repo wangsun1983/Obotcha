@@ -70,7 +70,7 @@ int testReflectArrayListFieldRead() {
       collection->mylist->add(arrayData2);
 
       Field field = collection->getField("mylist");
-      sp<Object> data1 = field->getListItemObject(0);
+      Object data1 = field->getListItemObject(0);
       //check field
       Field f = data1->getField("intData");
       if(f->getIntValue() != 1 || f->getType() != st(Field)::FieldTypeInt) {
@@ -92,7 +92,7 @@ int testReflectArrayListFieldRead() {
       }
 
       f = data1->getField("floatData");
-      if(st(Math)::compareFloat(2.2,f->getFloatValue()) != st(Math)::CompareParamEqual || f->getType() != st(Field)::FieldTypeFloat) {
+      if(st(Math)::compareFloat(2.2,f->getFloatValue()) != st(Math)::AlmostEqual || f->getType() != st(Field)::FieldTypeFloat) {
         printf("v is %lf,type is %d \n",f->getFloatValue(),f->getType());
         printf("Reflect ArrayList Field Read test4-------[FAIL] \n");
         break;

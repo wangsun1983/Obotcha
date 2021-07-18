@@ -96,7 +96,7 @@ sp<_Byte> _Byte::parseHexByte(const sp<_String> v) {
         String pa = v->trimAll();
         int value = _Number::parseHexNumber(pa->getStdString());
         return createByte(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -108,7 +108,7 @@ sp<_Byte> _Byte::parseOctByte(const sp<_String> v) {
         String pa = v->trimAll();
         int value = _Number::parseOctNumber(pa->getStdString());
         return createByte(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -120,7 +120,7 @@ sp<_Byte> _Byte::parseBinaryByte(const sp<_String> v) {
         String pa = v->trimAll();
         int value = _Number::parseBinaryNumber(pa->getStdString());
         return createByte(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 

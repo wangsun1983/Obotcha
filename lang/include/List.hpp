@@ -5,7 +5,6 @@
 #include <algorithm>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "Boolean.hpp"
 #include "Double.hpp"
 #include "Float.hpp"

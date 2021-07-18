@@ -2,7 +2,6 @@
 #define __OBOTCHA_BYTE_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "Number.hpp"
 #include <cstddef>
 
@@ -12,7 +11,7 @@ class _String;
 
 #define byte uint8_t
 
-DECLARE_SIMPLE_CLASS(Byte) IMPLEMENTS(Number)<byte>{
+DECLARE_SIMPLE_CLASS(Byte) IMPLEMENTS(Number)<uint16_t>{
 public:
     _Byte();
     

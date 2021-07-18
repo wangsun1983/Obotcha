@@ -101,7 +101,7 @@ int testReflectFieldWrite() {
         break;
       }
 
-      if(st(Math)::compareFloat(data1->floatData,2.2) != st(Math)::CompareParamEqual) {
+      if(st(Math)::compareFloat(data1->floatData,2.2) != st(Math)::AlmostEqual) {
         printf("Reflect Reflect Field Write test4-------[FAIL] \n");
         break;
       }
@@ -208,7 +208,7 @@ int testReflectFieldWrite() {
       }
 
       if(data1->floatData == nullptr
-        ||st(Math)::compareFloat(data1->floatData->toValue(),2.2) != st(Math)::CompareParamEqual) {
+        ||st(Math)::compareFloat(data1->floatData->toValue(),2.2) != st(Math)::AlmostEqual) {
         printf("Reflect Reflect Field Write test16-------[FAIL] \n");
         break;
       }

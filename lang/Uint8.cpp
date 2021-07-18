@@ -95,7 +95,7 @@ sp<_Uint8> _Uint8::parseHexUint8(const sp<_String> &v) {
         String pa = v->trimAll();
         uint8_t value = _Number::parseHexNumber(pa->getStdString());
         return createUint8(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -107,7 +107,7 @@ sp<_Uint8> _Uint8::parseOctUint8(const sp<_String> &v) {
         String pa = v->trimAll();
         uint8_t value = _Number::parseOctNumber(pa->getStdString());
         return createUint8(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 
@@ -119,7 +119,7 @@ sp<_Uint8> _Uint8::parseBinaryUint8(const sp<_String> &v) {
         String pa = v->trimAll();
         uint8_t value = _Number::parseBinaryNumber(pa->getStdString());
         return createUint8(value);
-    } catch(const char* e) {
+    } catch(...) {
         //nothing
     }
 

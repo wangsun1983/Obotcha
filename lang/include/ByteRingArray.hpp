@@ -5,7 +5,6 @@
 #include <memory.h>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "String.hpp"
 #include "ByteArray.hpp"
 

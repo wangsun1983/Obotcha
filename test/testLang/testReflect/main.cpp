@@ -11,8 +11,10 @@ extern int testReflectToSimpleJson();
 extern int testReflectToArrayJson();
 extern int testReflectToSimpleArrayJson();
 extern int testReflectNumber();
+extern int testReflectHashMapFieldWrite();
 
 int main() {
+#if 0
   testReflectFieldRead();
   testReflectFieldWrite();
   testReflectComplexFieldRead();
@@ -24,4 +26,6 @@ int main() {
   testReflectToArrayJson();
   testReflectToSimpleArrayJson();
   testReflectNumber();
+#endif
+  testReflectHashMapFieldWrite();
 }

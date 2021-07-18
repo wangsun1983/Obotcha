@@ -211,8 +211,24 @@ sp<_Object> _Field::getListItemObject(int index) {
     return object->__getListItemObject(name->getStdString(),index);
 }
 
-int _Field::getListObjectSize() {
-    return object->__getListObjectSize(name->getStdString());
+int _Field::getContainerSize() {
+    return object->__getContainerSize(name->getStdString());
+}
+
+sp<_KeyValuePair<sp<_Object>,sp<_Object>>> _Field::createMapItemObject() {
+    return object->__createMapItemObject(name->getStdString());
+}
+
+ArrayList<KeyValuePair<sp<_Object>,sp<_Object>>> _Field::getMapItemObjects() {
+    return object->__getMapItemObjects(name->getStdString());
+}
+
+void _Field::addListItemObject(sp<_Object> v) {
+    object->__addListItemObject(name->getStdString(),v);
+}
+
+void _Field::addMapItemObject(sp<_Object> k,sp<_Object> v) {
+    object->__addMapItemObject(name->getStdString(),k,v);
 }
 
 }

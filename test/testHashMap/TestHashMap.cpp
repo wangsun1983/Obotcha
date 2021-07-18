@@ -21,6 +21,7 @@ extern void testHashMapSimpleFloat();
 extern void testHashMapSimpleLong();
 extern void testHashMapSimpleString();
 extern void testHashMapOperator();
+extern void testHashMapKeyCompare();
 
 int main() {
     testHashMapString();
@@ -37,5 +38,6 @@ int main() {
     testHashMapSimpleLong();
     testHashMapSimpleString();
     testHashMapOperator();
+    testHashMapKeyCompare();
     return 0;
 }
