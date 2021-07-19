@@ -12,6 +12,7 @@ extern int testReflectToArrayJson();
 extern int testReflectToSimpleArrayJson();
 extern int testReflectNumber();
 extern int testReflectHashMapFieldWrite();
+extern int testReflectToXml();
 
 int main() {
 #if 0
@@ -26,6 +27,8 @@ int main() {
   testReflectToArrayJson();
   testReflectToSimpleArrayJson();
   testReflectNumber();
-#endif
+
   testReflectHashMapFieldWrite();
+#endif
+  testReflectToXml();
 }

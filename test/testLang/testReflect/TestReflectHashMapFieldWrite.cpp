@@ -11,6 +11,9 @@
 #include "Field.hpp"
 #include "HashMap.hpp"
 #include "OStdInstanceOf.hpp"
+#include "JsonValue.hpp"
+#include "JsonWriter.hpp"
+#include "JsonReader.hpp"
 
 using namespace obotcha;
 
@@ -28,6 +31,7 @@ public:
 };
 
 int testReflectHashMapFieldWrite() {
+#if 0
     //case1
     Container data1 = createContainer();
     Field f = data1->getField("map");
@@ -64,7 +68,7 @@ int testReflectHashMapFieldWrite() {
 
     f->addMapItemObject(key,value);
     //TODO
-    
+
 
     HashMapValue v = data1->map->get(createString("hello"));
     if(v == nullptr) {
@@ -72,5 +76,35 @@ int testReflectHashMapFieldWrite() {
     }
 
     printf("v.data1 is %d,v.data2 is %d \n",v->data1,v->data2);
+#endif
+
+    Container c = createContainer();
+    c->map = createHashMap<String,HashMapValue>();
+
+    HashMapValue v1 = createHashMapValue();
+    v1->data1 = 123;
+    v1->data2 = 456;
+
+    HashMapValue v2 = createHashMapValue();
+    v2->data1 = 789;
+    v2->data2 = 999;
+
+    c->map->put(createString("tag1"),v1);
+    c->map->put(createString("tag2"),v2);
+
+    JsonValue jvalue = createJsonValue();
+    jvalue->importFrom(c);
+
+    JsonWriter jwriter = createJsonWriter("output_hashmap_1.json");
+    jwriter->write(jvalue);
+
+    //
+    JsonReader reader = createJsonReader(createFile("output_hashmap_1.json"));
+    JsonValue readValue = reader->get();
+
+    Container rdata3 = createContainer();
+    readValue->reflectTo(rdata3);
+
+    printf("read value size is %d \n",rdata3->map->size());
 
 }
