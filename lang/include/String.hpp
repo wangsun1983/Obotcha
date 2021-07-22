@@ -27,6 +27,8 @@ class _ArrayList;
 
 DECLARE_SIMPLE_CLASS(String) {
 public:
+    static const int __isReflected = 1;
+
     _String();
 
     _String(std::string *v);

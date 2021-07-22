@@ -9,6 +9,8 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Boolean) {
 public:
+    static const int __isReflected = 1;
+
     _Boolean();
     
     _Boolean(bool v);

@@ -13,6 +13,8 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Integer) IMPLEMENTS(Number)<int>{
 public:
+    static const int __isReflected = 1;
+
     _Integer();
     
     _Integer(int v);

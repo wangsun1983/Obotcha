@@ -10,16 +10,38 @@
 
 #include "NullPointerException.hpp"
 #include "HashKey.hpp"
+#include "KeyValuePair.hpp"
 
 namespace obotcha {
 
 template<typename T,typename U>
 class _MapIterator;
 
+#define DUMMY_REFLECT_HASHMAP_FUNCTION(X) \
+template<typename E>\
+    class reflectItemFunc<X,E>\
+    {\
+        public:\
+        reflectItemFunc(_HashMap<X,E> *p) {\
+        }\
+        sp<_ArrayList<sp<_KeyValuePair<sp<_Object>,sp<_Object>>>>> get(std::string name)\
+        {\
+            return nullptr;\
+        }\
+        void add(std::string name,sp<_Object> key,sp<_Object> value) {\
+        }\
+        sp<_KeyValuePair<sp<_Object>,sp<_Object>>> create(std::string name) {\
+            return nullptr;\
+        }\
+    };\
+
+
 //----------------------- HashMap<T,U> -----------------------
 DECLARE_CLASS(HashMap,2) {
 public:
     friend class _MapIterator<T,U>;
+    
+    static const int __isReflected = 1;
 
     void put(const T &t,const U &u) {
         hashmap[t] = u;
@@ -102,6 +124,66 @@ public:
             iterator->next();
         }
     }
+
+    inline int __getContainerSize(std::string name) {
+        return hashmap.size();
+    }
+
+    
+    template<typename D,typename E>
+    class reflectItemFunc {
+        public:
+        reflectItemFunc(_HashMap<D,E> *p) {
+            ptr = p;
+        }
+
+        sp<_ArrayList<sp<_KeyValuePair<sp<_Object>,sp<_Object>>>>> get(std::string name)
+        {
+            auto iterator = ptr->hashmap.begin();
+            ArrayList<KeyValuePair<Object,Object>> values = createArrayList<KeyValuePair<Object,Object>>();
+            while(iterator != ptr->hashmap.end()) {
+                values->add(createKeyValuePair<sp<_Object>,sp<_Object>>(iterator->first,iterator->second));
+                iterator++;
+            }
+
+            return values;
+        }
+
+        void add(std::string name,sp<_Object> key,sp<_Object> value) {
+            ptr->hashmap[Cast<T>(key)] = Cast<U>(value);
+        }
+
+        sp<_KeyValuePair<sp<_Object>,sp<_Object>>> create(std::string name) {
+            printf("hashmap create \n");
+            AutoCreator<D,D::isReflect()> keyCreator;
+            AutoCreator<E,E::isReflect()> valueCreator;
+            printf("hashmap create2 \n");
+            return createKeyValuePair<Object,Object>(keyCreator.get(),valueCreator.get());
+        }
+
+        private:
+        _HashMap<D,E> *ptr;
+    };
+
+    DUMMY_REFLECT_HASHMAP_FUNCTION(int)
+    DUMMY_REFLECT_HASHMAP_FUNCTION(uint8_t)
+    DUMMY_REFLECT_HASHMAP_FUNCTION(uint16_t)
+    DUMMY_REFLECT_HASHMAP_FUNCTION(uint32_t)
+    DUMMY_REFLECT_HASHMAP_FUNCTION(uint64_t)
+
+    inline sp<_ArrayList<sp<_KeyValuePair<sp<_Object>,sp<_Object>>>>> __getMapItemObjects(std::string name){
+       return reflectItemFunc<T,U>(this).get(name);
+    }
+
+    inline void __addMapItemObject(std::string name,sp<_Object> key,sp<_Object> value){
+        return reflectItemFunc<T,U>(this).add(name,key,value);
+    }
+
+    inline sp<_KeyValuePair<sp<_Object>,sp<_Object>>> __createMapItemObject(std::string name){
+        return reflectItemFunc<T,U>(this).create(name);
+    }
+
+    inline sp<_String> __ReflectClassName(){return createString("_HashMap");}
 
 private:
     std::unordered_map<T,U,KeyHash<T>,KeyComapre<T>> hashmap;

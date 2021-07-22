@@ -10,6 +10,8 @@ class _String;
 DECLARE_SIMPLE_CLASS(Double)
 {
 public:
+    static const int __isReflected = 1;
+
     _Double();
     
     _Double(double v);

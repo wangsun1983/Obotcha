@@ -74,6 +74,7 @@ int testReflectArrayListFieldWrite() {
 
       f = data1->getField("boolData");
       f->setValue(false);
+      collection->getField("mylist")->addListItemObject(data1);
       //data2
       Object data2 = collection->getField("mylist")->createListItemObject();
       f = data2->getField("intData");
@@ -108,9 +109,10 @@ int testReflectArrayListFieldWrite() {
 
       f = data2->getField("boolData");
       f->setValue(false);
+      collection->getField("mylist")->addListItemObject(data2);
 
       if(collection->mylist->size() != 2) {
-        printf("Reflect ArrayList Field Write test1-------[FAIL] \n");
+        printf("Reflect ArrayList Field Write test1-------[FAIL],size is %d \n",collection->mylist->size());
         break;
       }
 

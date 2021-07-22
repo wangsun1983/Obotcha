@@ -16,6 +16,7 @@
 #include "Long.hpp"
 #include "Log.hpp"
 #include "OStdInstanceOf.hpp"
+#include "TransformException.hpp"
 
 namespace obotcha {
 
@@ -269,6 +270,17 @@ public:
             } else if(IsInstance(String,newObject)) {
                 String data = Cast<String>(newObject);
                 data->update(value->getString()->getStdString());
+            } else if(newObject->__ReflectClassName()->equals("_ArrayList")) {
+                sp<_JsonValueIterator> iterator = this->getIterator();
+                while(iterator->hasValue()) {
+                    JsonValue oo = this->getValueAt(index);
+                    Object vv = newObject->__createListItemObject("");
+                    oo->reflectTo(vv);
+                    newObject->__addListItemObject("",oo);
+                    iterator->next();
+                }
+            } else if(newObject->__ReflectClassName()->equals("_HashMap")) {
+                value->reflectToHashMap(newObject);
             } else {
                 value->reflectTo(newObject);
             }
@@ -277,14 +289,13 @@ public:
     }
 
     template<typename T>
-    void reflectToHashMap(T obj,String name) {
-        Field field = obj->getField(name);
-        field->createObject();
+    void reflectToHashMap(T obj) {
         sp<_JsonValueIterator> iterator = this->getIterator();
         while(iterator->hasValue()) {
             JsonValue jvalue = iterator->getValue();
             String tag = iterator->getTag();
-            KeyValuePair<Object,Object> pair = field->createMapItemObject();
+            printf("jsonvalue create \n");
+            KeyValuePair<Object,Object> pair = obj->__createMapItemObject("");
             
             Object key = pair->getKey();
             if(IsInstance(Integer,key)) {
@@ -321,7 +332,7 @@ public:
                 String data = Cast<String>(key);
                 data->update(tag->toChars());
             } else {
-                //TODO error
+                Trigger(TransformException,"not support key type");
             }
 
             Object pairValue = pair->getValue();
@@ -359,9 +370,10 @@ public:
                 String data = Cast<String>(key);
                 data->update(jvalue->getString()->getStdString());
             } else {
+                printf("class name is %s \n",pairValue->__ReflectClassName()->toChars());
                 jvalue->reflectTo(pairValue);
             }
-            field->addMapItemObject(key,pairValue);
+            obj->__addMapItemObject("",key,pairValue);
             iterator->next();
         }
     }
@@ -371,6 +383,7 @@ public:
         sp<_JsonValueIterator> iterator = this->getIterator();
         while(iterator->hasValue()) {
             String key = iterator->getTag();
+            printf("reflect key is %s \n",key->toChars());
             Field field = obj->getField(key);
             if(field == nullptr) {
                 iterator->next();
@@ -420,12 +433,6 @@ public:
                         field->setValue(value);
                     }
                     break;
-
-                //case st(Field)::FieldTypeUint8:{
-                //        String value = jsonnode->getString();
-                //        field->setValue(value->toBasicUint8());
-                //    }
-                //    break;
 
                 case st(Field)::FieldTypeUint16:{
                         String value = jsonnode->getString();
@@ -490,7 +497,6 @@ public:
                             Uint64 data = Cast<Uint64>(newObject);
                             data->update(value->toBasicUint64());
                         } else {
-                            printf("reflect to name is %s \n",field->getName()->toChars());
                             jsonnode->reflectTo(reflectValue);
                         }
                     }
@@ -500,12 +506,123 @@ public:
                     jsonnode->reflectToArrayList(obj,field->getName());
                     break;
 
-                case st(Field)::FieldTypeHashMap:
-                    jsonnode->reflectToHashMap(obj,field->getName());
-                    break;
+                case st(Field)::FieldTypeHashMap: {
+                    Object newObject = field->createObject();
+                    jsonnode->reflectToHashMap(newObject);
+                }
+                break;
             }
 
             iterator->next();
+        }
+    }
+
+    //wangsl
+    void importFrom(sp<_JsonValue> jsonNode,ArrayList<KeyValuePair<Object,Object>> members) {
+        //ArrayList<KeyValuePair<Object,Object>> members = field->getMapItemObjects();
+        int count = 0;
+        int size = members->size();
+
+        while(count < size) {
+            KeyValuePair<Object,Object> pair = members->get(count);
+            Object key = pair->getKey();
+            String keyStr = nullptr;
+
+            if(key != nullptr) {
+                if(IsInstance(Integer,key)) {
+                    Integer data = Cast<Integer>(key);
+                    keyStr = createString(data);
+                } else if(IsInstance(Long,key)) {
+                    Long data = Cast<Long>(key);
+                    keyStr = createString(data);
+                } else if(IsInstance(Boolean,key)) {
+                    Boolean data = Cast<Boolean>(key);
+                    keyStr = createString(data);
+                } else if(IsInstance(Double,key)) {
+                    Double data = Cast<Double>(key);
+                    keyStr = createString(data);
+                } else if(IsInstance(Float,key)) {
+                    Float data = Cast<Float>(key);
+                    keyStr = createString(data);
+                } else if(IsInstance(Byte,key)) {
+                    Byte data = Cast<Byte>(key);
+                    keyStr = createString(data);
+                } else if(IsInstance(Uint8,key)) {
+                    Uint8 data = Cast<Uint8>(key);
+                    keyStr = createString(data);
+                } else if(IsInstance(Uint16,key)) {
+                    Uint16 data = Cast<Uint16>(key);
+                    keyStr = createString(data);
+                } else if(IsInstance(Uint32,key)) {
+                    Uint32 data = Cast<Uint32>(key);
+                    keyStr = createString(data);
+                } else if(IsInstance(Uint64,key)) {
+                    Uint64 data = Cast<Uint64>(key);
+                    keyStr = createString(data);
+                } else if(IsInstance(String,key)) {
+                    String data = Cast<String>(key);
+                    keyStr = createString(data);
+                } else {
+                    Trigger(TransformException,"not support key type");
+                }
+            }
+
+            Object value = pair->getValue();
+            JsonValue mapItemNode = createJsonValue();
+            if(value != nullptr) {
+                if(IsInstance(Integer,value)) {
+                    Integer data = Cast<Integer>(value);
+                    //mapItemNode->append(data->toValue());
+                    jsonNode->put(keyStr->toChars(),data->toValue());
+                } else if(IsInstance(Long,value)) {
+                    Long data = Cast<Long>(value);
+                    //mapItemNode->append(data->toValue());
+                    jsonNode->put(keyStr->toChars(),data->toValue());
+                } else if(IsInstance(Boolean,value)) {
+                    Boolean data = Cast<Boolean>(value);
+                    //mapItemNode->append(data->toValue());
+                    jsonNode->put(keyStr->toChars(),data->toValue());
+                } else if(IsInstance(Double,value)) {
+                    Double data = Cast<Double>(value);
+                    //mapItemNode->append(data->toValue());
+                    jsonNode->put(keyStr->toChars(),data->toValue());
+                } else if(IsInstance(Float,value)) {
+                    Float data = Cast<Float>(value);
+                    //mapItemNode->append(data->toValue());
+                    jsonNode->put(keyStr->toChars(),data->toValue());
+                } else if(IsInstance(Byte,value)) {
+                    Byte data = Cast<Byte>(value);
+                    //mapItemNode->append(data->toValue());
+                    jsonNode->put(keyStr->toChars(),data->toValue());
+                } else if(IsInstance(Uint8,value)) {
+                    Uint8 data = Cast<Uint8>(value);
+                    //mapItemNode->append(data->toValue());
+                    jsonNode->put(keyStr->toChars(),data->toValue());
+                } else if(IsInstance(Uint16,value)) {
+                    Uint16 data = Cast<Uint16>(value);
+                    //mapItemNode->append(data->toValue());
+                    jsonNode->put(keyStr->toChars(),data->toValue());
+                } else if(IsInstance(Uint32,value)) {
+                    Uint32 data = Cast<Uint32>(value);
+                    //mapItemNode->append(data->toValue());
+                    jsonNode->put(keyStr->toChars(),(uint64_t)data->toValue());
+                } else if(IsInstance(Uint64,value)) {
+                    Uint64 data = Cast<Uint64>(value);
+                    //mapItemNode->append(data->toValue());
+                    jsonNode->put(keyStr->toChars(),data->toValue());
+                } else if(IsInstance(String,value)) {
+                    String data = Cast<String>(value);
+                    //mapItemNode->append(data->toChars());
+                    jsonNode->put(keyStr->toChars(),data->toChars());
+                } else {
+                    //TODO
+                    JsonValue newValue = createJsonValue();
+                    newValue->importFrom(value);
+                    jsonNode->put(keyStr->toChars(),newValue);
+                }
+            }
+            //arrayNode->put(keyStr->toChars(),mapItemNode);
+            count++;
         }
     }
 
@@ -613,7 +730,6 @@ public:
                         String data = Cast<String>(newObject);
                         this->put(name,data->getStdString());
                     } else {
-                        printf("field name is %s \n",field->getName()->toChars());
                         newValue->importFrom(newObject);
                         this->put(name,newValue);
                     }
@@ -660,6 +776,24 @@ public:
                             } else if(IsInstance(String,newObject)) {
                                 String data = Cast<String>(newObject);
                                 arrayNode->append(data->toChars());
+                            } else if(newObject->__ReflectClassName()->equals("_ArrayList")) {
+                                int size = newObject->__getContainerSize("");
+                                JsonValue arrayItemValue = createJsonValue();
+
+                                for(int i = 0;i<size;i++) {
+                                    JsonValue newValue = createJsonValue();
+                                    auto nValue = newObject->__getListItemObject("",i);
+                                    newValue->importFrom(newObject);
+                                    arrayItemValue->append(newValue);
+                                }
+
+                                arrayNode->append(arrayItemValue);
+                            } else if(newObject->__ReflectClassName()->equals("_HashMap")) {
+                                int size = newObject->__getContainerSize("");
+                                JsonValue mapItemValue = createJsonValue();
+                                ArrayList<KeyValuePair<Object,Object>> members = newObject->__getMapItemObjects("");
+                                importFrom(mapItemValue,members);
+                                arrayNode->append(mapItemValue);
                             } else {
                                 JsonValue newValue = createJsonValue();
                                 newValue->importFrom(newObject);
@@ -675,111 +809,10 @@ public:
                 case st(Field)::FieldTypeHashMap: {
                     int count = 0;
                     int size = field->getContainerSize();
-                    JsonValue arrayNode = createJsonValue();
+                    JsonValue mapNode = createJsonValue();
                     ArrayList<KeyValuePair<Object,Object>> members = field->getMapItemObjects();
-
-                    while(count < size) {
-                        KeyValuePair<Object,Object> pair = members->get(count);
-                        Object key = pair->getKey();
-                        String keyStr = nullptr;
-
-                        if(key != nullptr) {
-                            if(IsInstance(Integer,key)) {
-                                Integer data = Cast<Integer>(key);
-                                keyStr = createString(data);
-                            } else if(IsInstance(Long,key)) {
-                                Long data = Cast<Long>(key);
-                                keyStr = createString(data);
-                            } else if(IsInstance(Boolean,key)) {
-                                Boolean data = Cast<Boolean>(key);
-                                keyStr = createString(data);
-                            } else if(IsInstance(Double,key)) {
-                                Double data = Cast<Double>(key);
-                                keyStr = createString(data);
-                            } else if(IsInstance(Float,key)) {
-                                Float data = Cast<Float>(key);
-                                keyStr = createString(data);
-                            } else if(IsInstance(Byte,key)) {
-                                Byte data = Cast<Byte>(key);
-                                keyStr = createString(data);
-                            } else if(IsInstance(Uint8,key)) {
-                                Uint8 data = Cast<Uint8>(key);
-                                keyStr = createString(data);
-                            } else if(IsInstance(Uint16,key)) {
-                                Uint16 data = Cast<Uint16>(key);
-                                keyStr = createString(data);
-                            } else if(IsInstance(Uint32,key)) {
-                                Uint32 data = Cast<Uint32>(key);
-                                keyStr = createString(data);
-                            } else if(IsInstance(Uint64,key)) {
-                                Uint64 data = Cast<Uint64>(key);
-                                keyStr = createString(data);
-                            } else if(IsInstance(String,key)) {
-                                String data = Cast<String>(key);
-                                keyStr = createString(data);
-                            } else {
-                                //TODO error
-                            }
-                        }
-
-                        Object value = pair->getValue();
-                        JsonValue mapItemNode = createJsonValue();
-                        if(value != nullptr) {
-                            if(IsInstance(Integer,value)) {
-                                Integer data = Cast<Integer>(value);
-                                //mapItemNode->append(data->toValue());
-                                arrayNode->put(keyStr->toChars(),data->toValue());
-                            } else if(IsInstance(Long,value)) {
-                                Long data = Cast<Long>(value);
-                                //mapItemNode->append(data->toValue());
-                                arrayNode->put(keyStr->toChars(),data->toValue());
-                            } else if(IsInstance(Boolean,value)) {
-                                Boolean data = Cast<Boolean>(value);
-                                //mapItemNode->append(data->toValue());
-                                arrayNode->put(keyStr->toChars(),data->toValue());
-                            } else if(IsInstance(Double,value)) {
-                                Double data = Cast<Double>(value);
-                                //mapItemNode->append(data->toValue());
-                                arrayNode->put(keyStr->toChars(),data->toValue());
-                            } else if(IsInstance(Float,value)) {
-                                Float data = Cast<Float>(value);
-                                //mapItemNode->append(data->toValue());
-                                arrayNode->put(keyStr->toChars(),data->toValue());
-                            } else if(IsInstance(Byte,value)) {
-                                Byte data = Cast<Byte>(value);
-                                //mapItemNode->append(data->toValue());
-                                arrayNode->put(keyStr->toChars(),data->toValue());
-                            } else if(IsInstance(Uint8,value)) {
-                                Uint8 data = Cast<Uint8>(value);
-                                //mapItemNode->append(data->toValue());
-                                arrayNode->put(keyStr->toChars(),data->toValue());
-                            } else if(IsInstance(Uint16,value)) {
-                                Uint16 data = Cast<Uint16>(value);
-                                //mapItemNode->append(data->toValue());
-                                arrayNode->put(keyStr->toChars(),data->toValue());
-                            } else if(IsInstance(Uint32,value)) {
-                                Uint32 data = Cast<Uint32>(value);
-                                //mapItemNode->append(data->toValue());
-                                arrayNode->put(keyStr->toChars(),(uint64_t)data->toValue());
-                            } else if(IsInstance(Uint64,value)) {
-                                Uint64 data = Cast<Uint64>(value);
-                                //mapItemNode->append(data->toValue());
-                                arrayNode->put(keyStr->toChars(),data->toValue());
-                            } else if(IsInstance(String,value)) {
-                                String data = Cast<String>(value);
-                                //mapItemNode->append(data->toChars());
-                                arrayNode->put(keyStr->toChars(),data->toChars());
-                            } else {
-                                JsonValue newValue = createJsonValue();
-                                newValue->importFrom(value);
-                                //mapItemNode->append(newValue);
-                                arrayNode->put(keyStr->toChars(),newValue);
-                            }
-                        }
-                        //arrayNode->put(keyStr->toChars(),mapItemNode);
-                        count++;
-                    }
-                    this->put(name,arrayNode);
+                    importFrom(mapNode,members);
+                    this->put(name,mapNode);
                 }
                 break;
             }

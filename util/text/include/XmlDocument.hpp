@@ -16,6 +16,7 @@
 #include "rapidxml_print.hpp"
 #include "rapidxml_utils.hpp"
 #include "OStdInstanceOf.hpp"
+#include "TransformException.hpp"
 
 using namespace rapidxml;
 
@@ -149,43 +150,43 @@ private:
                         
                 case st(Field)::FieldTypeObject: {
                         auto newObject = field->createObject();
-                        if(ostd::instanceOf<Integer>(newObject)) {
+                        if(IsInstance(Integer,newObject)) {
                             String value = node->getStringValue();
                             Integer data = Cast<Integer>(newObject);
                             data->update(value->toBasicInt());
-                        } else if(ostd::instanceOf<Long>(newObject)) {
+                        } else if(IsInstance(Long,newObject)) {
                             String value = node->getStringValue();
                             Long data = Cast<Long>(newObject);
                             data->update(value->toBasicLong());
-                        } else if(ostd::instanceOf<Boolean>(newObject)) {
+                        } else if(IsInstance(Boolean,newObject)) {
                             String value = node->getStringValue();
                             Boolean data = Cast<Boolean>(newObject);
                             data->update(value->toBasicBool());
-                        } else if(ostd::instanceOf<Double>(newObject)) {
+                        } else if(IsInstance(Double,newObject)) {
                             String value = node->getStringValue();
                             Double data = Cast<Double>(newObject);
                             data->update(value->toBasicDouble());
-                        } else if(ostd::instanceOf<Float>(newObject)) {
+                        } else if(IsInstance(Float,newObject)) {
                             String value = node->getStringValue();
                             Float data = Cast<Float>(newObject);
                             data->update(value->toBasicFloat());
-                        } else if(ostd::instanceOf<Byte>(newObject)) {
+                        } else if(IsInstance(Byte,newObject)) {
                             String value = node->getStringValue();
                             Byte data = Cast<Byte>(newObject);
                             data->update(value->toBasicByte());
-                        } else if(ostd::instanceOf<Uint8>(newObject)) {
+                        } else if(IsInstance(Uint8,newObject)) {
                             String value = node->getStringValue();
                             Uint8 data = Cast<Uint8>(newObject);
                             data->update(value->toBasicByte());
-                        } else if(ostd::instanceOf<Uint16>(newObject)) {
+                        } else if(IsInstance(Uint16,newObject)) {
                             String value = node->getStringValue();
                             Uint16 data = Cast<Uint16>(newObject);
                             data->update(value->toBasicUint16());
-                        } else if(ostd::instanceOf<Uint32>(newObject)) {
+                        } else if(IsInstance(Uint32,newObject)) {
                             String value = node->getStringValue();
                             Uint32 data = Cast<Uint32>(newObject);
                             data->update(value->toBasicUint32());
-                        } else if(ostd::instanceOf<Uint64>(newObject)) {
+                        } else if(IsInstance(Uint64,newObject)) {
                             String value = node->getStringValue();
                             Uint64 data = Cast<Uint64>(newObject);
                             data->update(value->toBasicUint64());
@@ -201,47 +202,47 @@ private:
                         while(sub_iterator->hasValue()) {
                             sp<_XmlValue> xmlnode = sub_iterator->getValue();
                             auto newObject = field->createListItemObject();
-                            if(ostd::instanceOf<Integer>(newObject)) {
+                            if(IsInstance(Integer,newObject)) {
                                 String value = xmlnode->getStringValue();
                                 Integer data = Cast<Integer>(newObject);
                                 data->update(value->toBasicInt());
-                            } else if(ostd::instanceOf<Long>(newObject)) {
+                            } else if(IsInstance(Long,newObject)) {
                                 String value = xmlnode->getStringValue();
                                 Long data = Cast<Long>(newObject);
                                 data->update(value->toBasicLong());
-                            } else if(ostd::instanceOf<Boolean>(newObject)) {
+                            } else if(IsInstance(Boolean,newObject)) {
                                 String value = xmlnode->getStringValue();
                                 Boolean data = Cast<Boolean>(newObject);
                                 data->update(value->toBasicBool());
-                            } else if(ostd::instanceOf<Double>(newObject)) {
+                            } else if(IsInstance(Double,newObject)) {
                                 String value = xmlnode->getStringValue();
                                 Double data = Cast<Double>(newObject);
                                 data->update(value->toBasicDouble());
-                            } else if(ostd::instanceOf<Float>(newObject)) {
+                            } else if(IsInstance(Float,newObject)) {
                                 String value = xmlnode->getStringValue();
                                 Float data = Cast<Float>(newObject);
                                 data->update(value->toBasicFloat());
-                            } else if(ostd::instanceOf<Byte>(newObject)) {
+                            } else if(IsInstance(Byte,newObject)) {
                                 String value = xmlnode->getStringValue();
                                 Byte data = Cast<Byte>(newObject);
                                 data->update(value->toBasicByte());
-                            } else if(ostd::instanceOf<Uint8>(newObject)) {
+                            } else if(IsInstance(Uint8,newObject)) {
                                 String value = xmlnode->getStringValue();
                                 Uint8 data = Cast<Uint8>(newObject);
                                 data->update(value->toBasicUint8());
-                            } else if(ostd::instanceOf<Uint16>(newObject)) {
+                            } else if(IsInstance(Uint16,newObject)) {
                                 String value = xmlnode->getStringValue();
                                 Uint16 data = Cast<Uint16>(newObject);
                                 data->update(value->toBasicUint16());
-                            } else if(ostd::instanceOf<Uint32>(newObject)) {
+                            } else if(IsInstance(Uint32,newObject)) {
                                 String value = xmlnode->getStringValue();
                                 Uint32 data = Cast<Uint32>(newObject);
                                 data->update(value->toBasicUint32());
-                            } else if(ostd::instanceOf<Uint64>(newObject)) {
+                            } else if(IsInstance(Uint64,newObject)) {
                                 String value = xmlnode->getStringValue();
                                 Uint64 data = Cast<Uint64>(newObject);
                                 data->update(value->toBasicUint64());
-                            } else if(ostd::instanceOf<String>(newObject)) {
+                            } else if(IsInstance(String,newObject)) {
                                 String value = xmlnode->getStringValue();
                                 String data = Cast<String>(newObject);
                                 data->update(value);
@@ -253,6 +254,94 @@ private:
                         }
                     }
                     break;
+
+                case st(Field)::FieldTypeHashMap:{
+                    sp<_XmlValueIterator> sub_iterator = node->getValueIterator();
+                    field->createObject();
+                    while(sub_iterator->hasValue()) {
+                        sp<_XmlValue> xmlnode = sub_iterator->getValue();
+                        KeyValuePair<Object,Object> pair = field->createMapItemObject();
+                        Object key = pair->getKey();
+                        String name = xmlnode->getName();
+                        if(IsInstance(Integer,key)) {
+                            Integer data = Cast<Integer>(key);
+                            data->update(name->toBasicInt());
+                        } else if(IsInstance(Long,key)) {
+                            Long data = Cast<Long>(key);
+                            data->update(name->toBasicLong());
+                        } else if(IsInstance(Boolean,key)) {
+                            Boolean data = Cast<Boolean>(key);
+                            data->update(name->toBasicBool());
+                        } else if(IsInstance(Double,key)) {
+                            Double data = Cast<Double>(key);
+                            data->update(name->toBasicDouble());
+                        } else if(IsInstance(Float,key)) {
+                            Float data = Cast<Float>(key);
+                            data->update(name->toBasicFloat());
+                        } else if(IsInstance(Byte,key)) {
+                            Byte data = Cast<Byte>(key);
+                            data->update(name->toBasicByte());
+                        } else if(IsInstance(Uint8,key)) {
+                            Uint8 data = Cast<Uint8>(key);
+                            data->update(name->toBasicUint8());
+                        } else if(IsInstance(Uint16,key)) {
+                            Uint16 data = Cast<Uint16>(key);
+                            data->update(name->toBasicUint16());
+                        } else if(IsInstance(Uint32,key)) {
+                            Uint32 data = Cast<Uint32>(key);
+                            data->update(name->toBasicUint32());
+                        } else if(IsInstance(Uint64,key)) {
+                            Uint64 data = Cast<Uint64>(key);
+                            data->update(name->toBasicUint64());
+                        } else if(IsInstance(String,key)) {
+                            String data = Cast<String>(key);
+                            data->update(name->toChars());
+                        } else {
+                            Trigger(TransformException,"not support key type");
+                        }
+
+                        Object pairValue = pair->getValue();
+                        String xmlValue = xmlnode->getStringValue();
+                        if(IsInstance(Integer,pairValue)) {
+                            Integer data = Cast<Integer>(pairValue);
+                            data->update(xmlValue->toBasicInt());
+                        } else if(IsInstance(Long,pairValue)) {
+                            Long data = Cast<Long>(key);
+                            data->update(xmlValue->toBasicLong());
+                        } else if(IsInstance(Boolean,pairValue)) {
+                            Boolean data = Cast<Boolean>(key);
+                            data->update(xmlValue->toBasicBool());
+                        } else if(IsInstance(Double,pairValue)) {
+                            Double data = Cast<Double>(key);
+                            data->update(xmlValue->toBasicDouble());
+                        } else if(IsInstance(Float,pairValue)) {
+                            Float data = Cast<Float>(key);
+                            data->update(xmlValue->toBasicFloat());
+                        } else if(IsInstance(Byte,pairValue)) {
+                            Byte data = Cast<Byte>(key);
+                            data->update(xmlValue->toBasicByte());
+                        } else if(IsInstance(Uint8,pairValue)) {
+                            Uint8 data = Cast<Uint8>(key);
+                            data->update(xmlValue->toBasicUint8());
+                        } else if(IsInstance(Uint16,pairValue)) {
+                            Uint16 data = Cast<Uint16>(key);
+                            data->update(xmlValue->toBasicUint16());
+                        } else if(IsInstance(Uint32,pairValue)) {
+                            Uint32 data = Cast<Uint32>(key);
+                            data->update(xmlValue->toBasicUint32());
+                        } else if(IsInstance(Uint64,pairValue)) {
+                            Uint64 data = Cast<Uint64>(key);
+                            data->update(xmlValue->toBasicUint64());
+                        } else if(IsInstance(String,pairValue)) {
+                            String data = Cast<String>(key);
+                            data->update(xmlValue->toChars());
+                        } else {
+                            reflectTo(xmlnode,pairValue);
+                        }
+                        field->addMapItemObject(key,pairValue);
+                        sub_iterator->next();
+                    }
+                }
             }
 
             iterator->next();
@@ -332,37 +421,37 @@ private:
                 case st(Field)::FieldTypeObject: {
                     auto newObject = field->getObjectValue();
                     refNode = newNode(name);
-                    if(ostd::instanceOf<Integer>(newObject)) {
+                    if(IsInstance(Integer,newObject)) {
                         Integer data = Cast<Integer>(newObject);
                         refNode->updateValue(createString(data->toValue()));
-                    } else if(ostd::instanceOf<Long>(newObject)) {
+                    } else if(IsInstance(Long,newObject)) {
                         Long data = Cast<Long>(newObject);
                         refNode->updateValue(createString(data->toValue()));
-                    } else if(ostd::instanceOf<Boolean>(newObject)) {
+                    } else if(IsInstance(Boolean,newObject)) {
                         Boolean data = Cast<Boolean>(newObject);
                         refNode->updateValue(createString(data->toValue()));
-                    } else if(ostd::instanceOf<Double>(newObject)) {
+                    } else if(IsInstance(Double,newObject)) {
                         Double data = Cast<Double>(newObject);
                         refNode->updateValue(createString(data->toValue()));
-                    } else if(ostd::instanceOf<Float>(newObject)) {
+                    } else if(IsInstance(Float,newObject)) {
                         Float data = Cast<Float>(newObject);
                         refNode->updateValue(createString(data->toValue()));
-                    } else if(ostd::instanceOf<Byte>(newObject)) {
+                    } else if(IsInstance(Byte,newObject)) {
                         Byte data = Cast<Byte>(newObject);
                         refNode->updateValue(createString(data->toValue()));
-                    } else if(ostd::instanceOf<Uint8>(newObject)) {
+                    } else if(IsInstance(Uint8,newObject)) {
                         Uint8 data = Cast<Uint8>(newObject);
                         refNode->updateValue(createString(data->toValue()));
-                    } else if(ostd::instanceOf<Uint16>(newObject)) {
+                    } else if(IsInstance(Uint16,newObject)) {
                         Uint16 data = Cast<Uint16>(newObject);
                         refNode->updateValue(createString(data->toValue()));
-                    } else if(ostd::instanceOf<Uint32>(newObject)) {
+                    } else if(IsInstance(Uint32,newObject)) {
                         Uint32 data = Cast<Uint32>(newObject);
                         refNode->updateValue(createString(data->toValue()));
-                    } else if(ostd::instanceOf<Uint64>(newObject)) {
+                    } else if(IsInstance(Uint64,newObject)) {
                         Uint64 data = Cast<Uint64>(newObject);
                         refNode->updateValue(createString(data->toValue()));
-                    } else if(ostd::instanceOf<String>(newObject)) {
+                    } else if(IsInstance(String,newObject)) {
                         String data = Cast<String>(newObject);
                         refNode->updateValue(data);
                     } else {    
@@ -381,47 +470,47 @@ private:
                         auto newObject = field->getListItemObject(count);
                         if(newObject != nullptr) {
                             sp<_XmlValue> item;
-                            if(ostd::instanceOf<Integer>(newObject)) {
+                            if(IsInstance(Integer,newObject)) {
                                 item = newNode(st(Integer)::className());
                                 Integer data = Cast<Integer>(newObject);
                                 item->updateValue(createString(data->toValue()));
-                            } else if(ostd::instanceOf<Long>(newObject)) {
+                            } else if(IsInstance(Long,newObject)) {
                                 item = newNode(st(Long)::className());
                                 Long data = Cast<Long>(newObject);
                                 item->updateValue(createString(data->toValue()));
-                            } else if(ostd::instanceOf<Boolean>(newObject)) {
+                            } else if(IsInstance(Boolean,newObject)) {
                                 item = newNode(st(Boolean)::className());
                                 Boolean data = Cast<Boolean>(newObject);
                                 item->updateValue(createString(data->toValue()));
-                            } else if(ostd::instanceOf<Double>(newObject)) {
+                            } else if(IsInstance(Double,newObject)) {
                                 item = newNode(st(Double)::className());
                                 Double data = Cast<Double>(newObject);
                                 item->updateValue(createString(data->toValue()));
-                            } else if(ostd::instanceOf<Float>(newObject)) {
+                            } else if(IsInstance(Float,newObject)) {
                                 item = newNode(st(Float)::className());
                                 Float data = Cast<Float>(newObject);
                                 item->updateValue(createString(data->toValue()));
-                            } else if(ostd::instanceOf<Byte>(newObject)) {
+                            } else if(IsInstance(Byte,newObject)) {
                                 item = newNode(st(Byte)::className());
                                 Byte data = Cast<Byte>(newObject);
                                 item->updateValue(createString(data->toValue()));
-                            } else if(ostd::instanceOf<Uint8>(newObject)) {
+                            } else if(IsInstance(Uint8,newObject)) {
                                 item = newNode(st(Uint8)::className());
                                 Uint8 data = Cast<Uint8>(newObject);
                                 item->updateValue(createString(data->toValue()));
-                            } else if(ostd::instanceOf<Uint16>(newObject)) {
+                            } else if(IsInstance(Uint16,newObject)) {
                                 item = newNode(st(Uint16)::className());
                                 Uint16 data = Cast<Uint16>(newObject);
                                 item->updateValue(createString(data->toValue()));
-                            } else if(ostd::instanceOf<Uint32>(newObject)) {
+                            } else if(IsInstance(Uint32,newObject)) {
                                 item = newNode(st(Uint32)::className());
                                 Uint32 data = Cast<Uint32>(newObject);
                                 item->updateValue(createString(data->toValue()));
-                            } else if(ostd::instanceOf<Uint64>(newObject)) {
+                            } else if(IsInstance(Uint64,newObject)) {
                                 item = newNode(st(Uint64)::className());
                                 Uint64 data = Cast<Uint64>(newObject);
                                 item->updateValue(createString(data->toValue()));
-                            } else if(ostd::instanceOf<String>(newObject)) {
+                            } else if(IsInstance(String,newObject)) {
                                 item = newNode(st(String)::className());
                                 String data = Cast<String>(newObject);
                                 item->updateValue(data);
@@ -447,73 +536,73 @@ private:
                         Object key = node->getKey();
                         Object value = node->getValue();
                         sp<_XmlValue> item;
-                        if(ostd::instanceOf<Integer>(key)) {
+                        if(IsInstance(Integer,key)) {
                             Integer data = Cast<Integer>(key);
-                            item= newNode(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Long>(key)) {
+                            item = newNode(createString(data->toValue()));
+                        } else if(IsInstance(Long,key)) {
                             Long data = Cast<Long>(key);
-                            item= newNode(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Boolean>(key)) {
+                            item = newNode(createString(data->toValue()));
+                        } else if(IsInstance(Boolean,key)) {
                             Boolean data = Cast<Boolean>(key);
-                            item= newNode(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Double>(key)) {
+                            item = newNode(createString(data->toValue()));
+                        } else if(IsInstance(Double,key)) {
                             Double data = Cast<Double>(key);
-                            item= newNode(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Float>(key)) {
+                            item = newNode(createString(data->toValue()));
+                        } else if(IsInstance(Float,key)) {
                             Float data = Cast<Float>(key);
-                            item= newNode(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Byte>(key)) {
+                            item = newNode(createString(data->toValue()));
+                        } else if(IsInstance(Byte,key)) {
                             Byte data = Cast<Byte>(key);
-                            item= newNode(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Uint8>(key)) {
+                            item = newNode(createString(data->toValue()));
+                        } else if(IsInstance(Uint8,key)) {
                             Uint8 data = Cast<Uint8>(key);
-                            item= newNode(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Uint16>(key)) {
+                            item = newNode(createString(data->toValue()));
+                        } else if(IsInstance(Uint16,key)) {
                             Uint16 data = Cast<Uint16>(key);
-                            item= newNode(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Uint32>(key)) {
+                            item = newNode(createString(data->toValue()));
+                        } else if(IsInstance(Uint32,key)) {
                             Uint32 data = Cast<Uint32>(key);
-                            item= newNode(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Uint64>(key)) {
+                            item = newNode(createString(data->toValue()));
+                        } else if(IsInstance(Uint64,key)) {
                             Uint64 data = Cast<Uint64>(key);
-                            item= newNode(createString(data->toValue()));
-                        } else if(ostd::instanceOf<String>(key)) {
-                            item= newNode(Cast<String>(key));
+                            item = newNode(createString(data->toValue()));
+                        } else if(IsInstance(String,key)) {
+                            item = newNode(Cast<String>(key));
                         } else {
-                            //TODO error
+                            Trigger(TransformException,"not support key type");
                         }
                         
-                        if(ostd::instanceOf<Integer>(value)) {
+                        if(IsInstance(Integer,value)) {
                             Integer data = Cast<Integer>(value);
                             item->updateValue(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Long>(value)) {
+                        } else if(IsInstance(Long,value)) {
                             Long data = Cast<Long>(value);
                             item->updateValue(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Boolean>(value)) {
+                        } else if(IsInstance(Boolean,value)) {
                             Boolean data = Cast<Boolean>(value);
                             item->updateValue(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Double>(value)) {
+                        } else if(IsInstance(Double,value)) {
                             Double data = Cast<Double>(value);
                             item->updateValue(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Float>(value)) {
+                        } else if(IsInstance(Float,value)) {
                             Float data = Cast<Float>(value);
                             item->updateValue(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Byte>(value)) {
+                        } else if(IsInstance(Byte,value)) {
                             Byte data = Cast<Byte>(value);
                             item->updateValue(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Uint8>(value)) {
+                        } else if(IsInstance(Uint8,value)) {
                             Uint8 data = Cast<Uint8>(value);
                             item->updateValue(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Uint16>(value)) {
+                        } else if(IsInstance(Uint16,value)) {
                             Uint16 data = Cast<Uint16>(value);
                             item->updateValue(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Uint32>(value)) {
+                        } else if(IsInstance(Uint32,value)) {
                             Uint32 data = Cast<Uint32>(value);
                             item->updateValue(createString(data->toValue()));
-                        } else if(ostd::instanceOf<Uint64>(value)) {
+                        } else if(IsInstance(Uint64,value)) {
                             Uint64 data = Cast<Uint64>(value);
                             item->updateValue(createString(data->toValue()));
-                        } else if(ostd::instanceOf<String>(value)) {
+                        } else if(IsInstance(String,value)) {
                             String data = Cast<String>(value);
                             item->updateValue(data);
                         } else {

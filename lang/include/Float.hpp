@@ -9,6 +9,8 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Float) {
 public:
+    static const int __isReflected = 1;
+
     _Float();
     
     _Float(float v);

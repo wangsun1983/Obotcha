@@ -14,6 +14,8 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Uint64) IMPLEMENTS(Number<uint64_t>) {
 public:
+    static const int __isReflected = 1;
+
     _Uint64();
     
     _Uint64(uint64_t v);

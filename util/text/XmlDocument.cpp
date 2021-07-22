@@ -7,6 +7,8 @@
 #include "rapidxml_print.hpp"
 #include "rapidxml_utils.hpp"
 
+#include "File.hpp"
+
 using namespace rapidxml;
 
 namespace obotcha {
@@ -24,7 +26,10 @@ _XmlDocument::_XmlDocument(String path,long size) {
 
 _XmlDocument::_XmlDocument(String content) {
     
-    mFileSize = 0;
+    File file = createFile(content);
+    mFileSize = file->length();
+    fdoc = content->toChars();
+
     this->xmlDoc.parse<0>(fdoc.data());
 }
 

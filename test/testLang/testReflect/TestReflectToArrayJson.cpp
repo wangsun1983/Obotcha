@@ -68,7 +68,7 @@ int testReflectToArrayJson() {
     readValue->reflectTo(rdata3);
     printf("trace2 \n");
     if(rdata3 == nullptr || rdata3->lists == nullptr || rdata3->lists->size() != 3) {
-      printf("Reflect ArrayList To File test1-------[FAIL] \n");
+      printf("Reflect ArrayList To File test1-------[FAIL],rddata3 size is %d \n",rdata3->lists->size());
       break;
     }
 

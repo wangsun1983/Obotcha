@@ -58,6 +58,10 @@ public:
         //do nothing
     }
 
+    static constexpr int isReflect() {
+        return T::__isReflected;
+    }
+
     ~sp() {
         if (m_ptr) {
             if(m_ptr->decStrong(this) == POINTER_DEC_FREE) {

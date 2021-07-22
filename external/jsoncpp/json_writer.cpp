@@ -127,6 +127,15 @@ String valueToString(double value, bool useSpecialFloats,
   // Print into the buffer. We need not request the alternative representation
   // that always has a decimal point because JSON doesn't distinguish the
   // concepts of reals and integers.
+  //wangsl
+  std::string m_str;
+  std::stringstream ss;
+  ss<< value;
+  ss>>m_str;
+  String buffer(m_str.c_str());
+  return buffer;
+
+  /*
   if (!isfinite(value)) {
     static const char* const reps[2][3] = {{"NaN", "-Infinity", "Infinity"},
                                            {"null", "-1e+9999", "1e+9999"}};
@@ -162,7 +171,7 @@ String valueToString(double value, bool useSpecialFloats,
   if (buffer.find('.') == buffer.npos && buffer.find('e') == buffer.npos) {
     buffer += ".0";
   }
-  return buffer;
+  return buffer;*/
 }
 } // namespace
 

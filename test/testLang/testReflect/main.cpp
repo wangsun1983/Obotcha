@@ -15,7 +15,7 @@ extern int testReflectHashMapFieldWrite();
 extern int testReflectToXml();
 
 int main() {
-#if 0
+/*  
   testReflectFieldRead();
   testReflectFieldWrite();
   testReflectComplexFieldRead();
@@ -27,8 +27,8 @@ int main() {
   testReflectToArrayJson();
   testReflectToSimpleArrayJson();
   testReflectNumber();
-
   testReflectHashMapFieldWrite();
-#endif
   testReflectToXml();
+*/ 
+  testReflectHashMapFieldWrite();
 }

@@ -13,6 +13,8 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Byte) IMPLEMENTS(Number)<uint16_t>{
 public:
+    static const int __isReflected = 1;
+
     _Byte();
     
     _Byte(unsigned char v);

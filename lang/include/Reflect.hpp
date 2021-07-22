@@ -3740,6 +3740,7 @@ private:\
     void __addListItemDummy(Object){}\
     void __addMapItemDummy(Object,Object){}\
 public:\
+    static const int __isReflected = 1;\
     sp<_String> __ReflectClassName(){\
         return createString(#CLASS);\
     }\
@@ -3784,7 +3785,6 @@ private:\
         Q param;\
         auto pointer = genDataPoint(param);\
         param.set_pointer(pointer);\
-        list->add(param);\
         return param;\
     }\
     template<typename Q>\

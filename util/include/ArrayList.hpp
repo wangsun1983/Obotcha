@@ -14,10 +14,53 @@ namespace obotcha {
 template<typename T>
 class _ListIterator;
 
+#define DUMMY_REFLECT_ARRAY_FUNCTION(X) \
+template<>\
+class __reflectArrayListItemFunc<X>\
+{\
+    public:\
+    __reflectArrayListItemFunc(_ArrayList<X> *p) {\
+    }\
+    sp<_Object> create(std::string name){\
+        return nullptr;\
+    }\
+    sp<_Object> get(std::string name,int index){\
+        return nullptr; \
+    }\
+    void add(std::string name,sp<_Object>data){\
+    }\
+};\
+
+template<typename D>
+class __reflectArrayListItemFunc {
+    public:
+    __reflectArrayListItemFunc(_ArrayList<D> *p) {
+        ptr = p;
+    }
+
+    sp<_Object> create(std::string name){
+        D value;
+        AutoCreator<D,D::isReflect()> keyCreator;
+        return keyCreator.get();
+    }
+
+    sp<_Object> get(std::string name,int index){
+        return ptr->elements[index]; 
+    }
+
+    void add(std::string name,sp<_Object>data){
+        ptr->elements.push_back(Cast<D>(data));
+    }
+
+    private:
+    _ArrayList<D> *ptr;
+};
+
+
 //----------------- ArrayList ---------------------
 DECLARE_CLASS(ArrayList,1) {
 public:
-
+    friend class __reflectArrayListItemFunc<T>;
     friend class _ListIterator<T>;
 
     _ArrayList(){
@@ -131,6 +174,26 @@ public:
     sp<_ListIterator<T>> getIterator() {
         return AutoClone(new _ListIterator<T>(this));
     }
+
+    inline int __getContainerSize(std::string name) {
+        return elements.size();
+    }
+
+    inline sp<_Object> __createListItemObject(std::string name){
+        return __reflectArrayListItemFunc<T>(this).create(name);
+    }
+
+    inline sp<_Object> __getListItemObject(std::string name,int index){
+        return __reflectArrayListItemFunc<T>(this).get(name,index);
+    }
+
+    inline void __addListItemObject(std::string name,sp<_Object>data){
+        __reflectArrayListItemFunc<T>(this).add(name,data);
+    }
+
+    inline sp<_String> __ReflectClassName(){return createString("_HashMap");}
+
+    static const int __isReflected = 1;
 
 private:
     std::vector<T> elements;

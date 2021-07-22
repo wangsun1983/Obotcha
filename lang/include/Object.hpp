@@ -71,7 +71,6 @@ public:
     inline virtual sp<_ArrayList<sp<_Field>>> getAllFields(){throw "not support";}
     inline virtual sp<_String> __ReflectClassName(){throw "not support";}
 
-protected:
     inline virtual int __getFieldIntValue(std::string){return 0;}
     inline virtual uint8_t __getFieldByteValue(std::string){return 0;}
     inline virtual bool __getFieldBoolValue(std::string){return true;}
@@ -114,6 +113,8 @@ protected:
 
     inline virtual int __getContainerSize(std::string name) {return 0;}
 
+    static const int __isReflected = 0;
+
 private:
     mutable volatile int32_t mCount;
 };
@@ -126,6 +127,32 @@ sp<U> AutoClone(U *v) {
     sp<U> data;
     data.set_pointer(v);
     return data;
+}
+
+template<typename U,int N>
+class AutoCreator{
+public:
+    U get() {
+        printf("AutoCreator 2222 \n");
+        return nullptr;
+    }
+};
+
+template<typename U>
+class AutoCreator<U,1>{
+public:
+    U get() {
+        U v;
+        __AutoCreate(v);
+        return v;
+    }
+};
+
+template<typename U>
+void __AutoCreate(sp<U> &v) {
+    U *val = new U();
+    val->__ReflectInit();
+    v.set_pointer(val);
 }
 
 template<typename T,typename U>

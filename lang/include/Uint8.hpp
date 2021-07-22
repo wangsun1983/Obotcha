@@ -14,6 +14,8 @@ class _String;
 
 DECLARE_SIMPLE_CLASS(Uint8) IMPLEMENTS(Number<uint16_t>){
 public:
+    static const int __isReflected = 1;
+
     _Uint8();
 
     _Uint8(uint8_t v);
