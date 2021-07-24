@@ -79,7 +79,7 @@ public:
         elements.push_back(val);
     }
 
-    inline void add(const ArrayList<T> &list) {
+    inline void merge(const ArrayList<T> list) {
         elements.insert(elements.end(),list->elements.begin(),list->elements.end());
     }
 
@@ -191,7 +191,7 @@ public:
         __reflectArrayListItemFunc<T>(this).add(name,data);
     }
 
-    inline sp<_String> __ReflectClassName(){return createString("_HashMap");}
+    inline sp<_String> __ReflectClassName(){return createString("_ArrayList");}
 
     static const int __isReflected = 1;
 

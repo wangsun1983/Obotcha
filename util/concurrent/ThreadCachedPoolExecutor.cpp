@@ -96,7 +96,7 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
     ArrayList<Thread> list = createArrayList<Thread>();
     {
         AutoLock l(mHandlerMutex);
-        list->add(mHandlers);
+        list->merge(mHandlers);
     }
     auto iterator = list->getIterator();
     while(iterator->hasValue()) {

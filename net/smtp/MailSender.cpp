@@ -80,7 +80,7 @@ sp<_MailSenderBuilder> _MailSenderBuilder::addRecipient(MailRecipient value) {
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::addRecipients(ArrayList<MailRecipient> value) {
-    mSender->mRecipients->add(value);
+    mSender->mRecipients->merge(value);
     return AutoClone(this);
 }
 
@@ -90,7 +90,7 @@ sp<_MailSenderBuilder> _MailSenderBuilder::addCcRecipient(MailRecipient value) {
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::addCcRecipients(ArrayList<MailRecipient> value) {
-    mSender->mCcRecipients->add(value);
+    mSender->mCcRecipients->merge(value);
     return AutoClone(this);
 }
 
@@ -100,7 +100,7 @@ sp<_MailSenderBuilder> _MailSenderBuilder::addBccRecipient(MailRecipient value) 
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::addBccRecipients(ArrayList<MailRecipient> value) {
-    mSender->mBccRecipients->add(value);
+    mSender->mBccRecipients->merge(value);
     return AutoClone(this);
 }
 
@@ -110,7 +110,7 @@ sp<_MailSenderBuilder> _MailSenderBuilder::addAttachment(File f) {
 }
 
 sp<_MailSenderBuilder> _MailSenderBuilder::addAttachments(ArrayList<File> files) {
-    mSender->mAttachments->add(files);
+    mSender->mAttachments->merge(files);
     return AutoClone(this);
 }
 

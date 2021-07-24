@@ -408,12 +408,20 @@ void _JsonValue::append(sp<_JsonValue> value) {
 sp<_JsonValue> _JsonValue::getValueAt(int index) {
     Json::Value v = jvalue[index];
     if(!v.isNull()) {
-        return createJsonValue(jvalue[index]);
+        return createJsonValue(v);
     }
 
     return nullptr;
 }
 
+sp<_JsonValue> _JsonValue::getListItemAt(unsigned int index) {
+    Json::Value v = jvalue[index];
+    if(!v.isNull()) {
+        return createJsonValue(v);
+    }
+
+    return nullptr;
+}
 
 String _JsonValue::getStringAt(int index) {
     Json::Value v = jvalue[index];

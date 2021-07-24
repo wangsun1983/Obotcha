@@ -19,6 +19,7 @@ namespace obotcha {
 //just add class declaration for reflect
 class _Field;
 class _String;
+class _JsonValue;
 
 template<typename T>
 class _ArrayList;
@@ -30,6 +31,7 @@ class _KeyValuePair;
 class _Object {
 public:
     friend class _Field;
+    friend class _JsonValue;
     _Object() : mCount(0) { }
 
     inline void incStrong(__attribute__((unused)) const void* id) {

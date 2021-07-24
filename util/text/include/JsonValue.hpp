@@ -219,6 +219,8 @@ public:
 
     sp<_JsonValue> getValueAt(int index);
 
+    sp<_JsonValue> getListItemAt(unsigned int index);
+
     String getStringAt(int index);
     
     Integer getIntegerAt(int index);
@@ -230,13 +232,11 @@ public:
     String toString();
 
     template<typename T>
-    void reflectToArrayList(T obj,String name) {
-        Field field = obj->getField(name);
-        field->createObject();
+    void reflectToArrayList(T obj) {
         int size = this->size();
         for(int index = 0;index<size;index++) {
-            auto newObject = field->createListItemObject();
-            JsonValue value = this->getValueAt(index);
+            auto newObject = obj->__createListItemObject("");
+            JsonValue value = this->getListItemAt(index);
             if(IsInstance(Integer,newObject)) {
                 Integer data = Cast<Integer>(newObject);
                 data->update(value->getInteger()->toValue());
@@ -271,20 +271,13 @@ public:
                 String data = Cast<String>(newObject);
                 data->update(value->getString()->getStdString());
             } else if(newObject->__ReflectClassName()->equals("_ArrayList")) {
-                sp<_JsonValueIterator> iterator = this->getIterator();
-                while(iterator->hasValue()) {
-                    JsonValue oo = this->getValueAt(index);
-                    Object vv = newObject->__createListItemObject("");
-                    oo->reflectTo(vv);
-                    newObject->__addListItemObject("",oo);
-                    iterator->next();
-                }
+                value->reflectToArrayList(newObject);
             } else if(newObject->__ReflectClassName()->equals("_HashMap")) {
                 value->reflectToHashMap(newObject);
             } else {
                 value->reflectTo(newObject);
             }
-            field->addListItemObject(newObject);
+            obj->__addListItemObject("",newObject);
         }
     }
 
@@ -294,7 +287,6 @@ public:
         while(iterator->hasValue()) {
             JsonValue jvalue = iterator->getValue();
             String tag = iterator->getTag();
-            printf("jsonvalue create \n");
             KeyValuePair<Object,Object> pair = obj->__createMapItemObject("");
             
             Object key = pair->getKey();
@@ -369,8 +361,17 @@ public:
             } else if(IsInstance(String,pairValue)) {
                 String data = Cast<String>(key);
                 data->update(jvalue->getString()->getStdString());
+            } else if(pairValue->__ReflectClassName()->equals("_ArrayList")) {
+                int datasize = this->size();
+                for(int index = 0;index < datasize;index++) {
+                    JsonValue oo = this->getListItemAt(index);
+                    Object vv = pairValue->__createListItemObject("");
+                    oo->reflectTo(vv);
+                    pairValue->__addListItemObject("",vv);
+                }
+            } else if(pairValue->__ReflectClassName()->equals("_HashMap")) {
+                jvalue->reflectToHashMap(pairValue);
             } else {
-                printf("class name is %s \n",pairValue->__ReflectClassName()->toChars());
                 jvalue->reflectTo(pairValue);
             }
             obj->__addMapItemObject("",key,pairValue);
@@ -380,10 +381,17 @@ public:
 
     template<typename T>
     void reflectTo(T obj) {
+        if(obj->__ReflectClassName()->equals("_ArrayList")) {
+            reflectToArrayList(obj);
+            return;
+        } else if(obj->__ReflectClassName()->equals("_HashMap")) {
+            reflectToHashMap(obj);
+            return;
+        }
+
         sp<_JsonValueIterator> iterator = this->getIterator();
         while(iterator->hasValue()) {
             String key = iterator->getTag();
-            printf("reflect key is %s \n",key->toChars());
             Field field = obj->getField(key);
             if(field == nullptr) {
                 iterator->next();
@@ -455,7 +463,7 @@ public:
                 case st(Field)::FieldTypeObject: {
                         //create Objectt
                         sp<_Object> newObject = field->createObject();
-                        auto reflectValue = field->getObjectValue();
+                        //auto reflectValue = field->getObjectValue();
                         if(IsInstance(Integer,newObject)) {
                             String value = jsonnode->getString();
                             Integer data = Cast<Integer>(newObject);
@@ -497,20 +505,22 @@ public:
                             Uint64 data = Cast<Uint64>(newObject);
                             data->update(value->toBasicUint64());
                         } else {
-                            jsonnode->reflectTo(reflectValue);
+                            jsonnode->reflectTo(newObject);
                         }
                     }
                     break;
 
-                case st(Field)::FieldTypeArrayList:
-                    jsonnode->reflectToArrayList(obj,field->getName());
+                case st(Field)::FieldTypeArrayList: {
+                        Object newObject = field->createObject();
+                        jsonnode->reflectToArrayList(newObject);
+                    }
                     break;
 
                 case st(Field)::FieldTypeHashMap: {
-                    Object newObject = field->createObject();
-                    jsonnode->reflectToHashMap(newObject);
-                }
-                break;
+                        Object newObject = field->createObject();
+                        jsonnode->reflectToHashMap(newObject);
+                    }
+                    break;
             }
 
             iterator->next();
@@ -615,7 +625,6 @@ public:
                     //mapItemNode->append(data->toChars());
                     jsonNode->put(keyStr->toChars(),data->toChars());
                 } else {
-                    //TODO
                     JsonValue newValue = createJsonValue();
                     newValue->importFrom(value);
                     jsonNode->put(keyStr->toChars(),newValue);
@@ -628,9 +637,28 @@ public:
 
     template<typename T>
     void importFrom(T value) {
+        if(value->__ReflectClassName()->equals("_ArrayList")) {
+            int size = value->__getContainerSize("");
+            for(int i = 0;i<size;i++) {
+                JsonValue newValue = createJsonValue();
+                auto nValue = value->__getListItemObject("",i);
+                newValue->importFrom(nValue);
+                this->append(newValue);
+            }
+            return;
+        } else if(value->__ReflectClassName()->equals("_HashMap")) {
+            int size = value->__getContainerSize("");
+            JsonValue mapItemValue = createJsonValue();
+            ArrayList<KeyValuePair<Object,Object>> members = value->__getMapItemObjects("");
+            importFrom(mapItemValue,members);
+            this->append(mapItemValue);
+            return;
+        }
+
         ArrayList<Field> fields = value->getAllFields();
         if(fields == nullptr) {
-            LOG(ERROR)<<"fields is nullptr !!!!!";
+            LOG(ERROR)<<"import class has no reflect filed";
+            return;
         }
         ListIterator<Field> iterator = fields->getIterator();
         while(iterator->hasValue()) {
@@ -779,19 +807,12 @@ public:
                             } else if(newObject->__ReflectClassName()->equals("_ArrayList")) {
                                 int size = newObject->__getContainerSize("");
                                 JsonValue arrayItemValue = createJsonValue();
-
-                                for(int i = 0;i<size;i++) {
-                                    JsonValue newValue = createJsonValue();
-                                    auto nValue = newObject->__getListItemObject("",i);
-                                    newValue->importFrom(newObject);
-                                    arrayItemValue->append(newValue);
-                                }
-
+                                arrayItemValue->importFrom(newObject);
                                 arrayNode->append(arrayItemValue);
                             } else if(newObject->__ReflectClassName()->equals("_HashMap")) {
                                 int size = newObject->__getContainerSize("");
                                 JsonValue mapItemValue = createJsonValue();
-                                ArrayList<KeyValuePair<Object,Object>> members = newObject->__getMapItemObjects("");
+                                auto members = newObject->__getMapItemObjects("");
                                 importFrom(mapItemValue,members);
                                 arrayNode->append(mapItemValue);
                             } else {

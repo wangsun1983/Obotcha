@@ -206,7 +206,7 @@
         content->setName(createString(#MEMBER));\
         content->setType(content->TypeOf(this->MEMBER));\
         content->setId(index);\
-        maps->put(content->getName(),content);\
+        __maps->put(content->getName(),content);\
         index++;\
     }
     
@@ -3729,7 +3729,7 @@
 
 #define DECLARE_REFLECT_FIELD(CLASS, ...) \
 private:\
-    HashMap<String,Field> maps; \
+    HashMap<String,Field> __maps; \
     IMPLE_SET_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
     DECLARE_INIT_TUPLE_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__) \
     int __ReflectDummy() {return 0;}\
@@ -3753,17 +3753,16 @@ public:\
         std::function<ArrayList<KeyValuePair<Object,Object>>()> dummygetMapItems = std::bind(&_##CLASS::__getMapItemsDummy,this);\
         std::function<void(Object)> dummyAddListItem = std::bind(&_##CLASS::__addListItemDummy,this,std::placeholders::_1);\
         std::function<void(Object,Object)> dummyAddMapItem = std::bind(&_##CLASS::__addMapItemDummy,this,std::placeholders::_1,std::placeholders::_2);\
-        maps = createHashMap<String,Field>();\
+        __maps = createHashMap<String,Field>();\
         IMPLE_INIT_FUNCTION_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)\
         IMPLE_INIT_TUPLE_DETECT(_##CLASS,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)\
     }\
     Field getField(String name) {\
-        return maps->get(name);\
+        return __maps->get(name);\
     }\
     ArrayList<Field> getAllFields(){ \
-        return maps->entrySet();\
+        return __maps->entrySet();\
     }\
-private:\
     template<typename Q>\
     Q* genDataPoint(sp<Q> t) {\
         Q *data = new Q();\
@@ -3915,12 +3914,12 @@ private:\
     void __setFieldObjectValue(std::string name,Object value){__setFieldValue(name,value);}\
     template<typename Q>\
     void __setFieldValue(std::string name,Q value){\
-        Field f = maps->get(createString(name));\
+        Field f = __maps->get(createString(name));\
         _FieldContent<Q>  *content = dynamic_cast<_FieldContent<Q>  *>(f.get_pointer());\
         content->setfunc(value);\
     }\
     FieldContentValue __getFieldContentValue(std::string name){\
-        Field f = maps->get(createString(name));\
+        Field f = __maps->get(createString(name));\
         FieldContentValue val = createFieldContentValue();\
         switch(f->getId()) {\
             case 0:\
@@ -3975,7 +3974,7 @@ private:\
         return val;\
     }\
     void __createFieldObject(std::string name) {\
-        Field f = maps->get(createString(name));\
+        Field f = __maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\
                 std::get<0>(createFuncTuple)();\
@@ -4028,7 +4027,7 @@ private:\
         }\
     }\
     KeyValuePair<Object,Object>__createMapItemObject(std::string name) {\
-        Field f = maps->get(createString(name));\
+        Field f = __maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\
                 return std::get<0>(createMapItemFuncTuple)();\
@@ -4082,7 +4081,7 @@ private:\
         return nullptr;\
     }\
     Object __createListItemObject(std::string name) {\
-        Field f = maps->get(createString(name));\
+        Field f = __maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\
                 return std::get<0>(createListItemFuncTuple)();\
@@ -4136,7 +4135,7 @@ private:\
         return nullptr;\
     }\
     Object __getListItemObject(std::string name,int index){\
-        Field f = maps->get(createString(name));\
+        Field f = __maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\
                 return std::get<0>(getListItemFuncTuple)(index);\
@@ -4190,7 +4189,7 @@ private:\
         return nullptr;\
     }\
     void __addMapItemObject(std::string name,sp<_Object> key,sp<_Object> value) {\
-        Field f = maps->get(createString(name));\
+        Field f = __maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\
                 return std::get<0>(addMapItemFuncTuple)(key,value);\
@@ -4243,7 +4242,7 @@ private:\
         }\
     }\
     void __addListItemObject(std::string name,sp<_Object> obj) {\
-        Field f = maps->get(createString(name));\
+        Field f = __maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\
                 return std::get<0>(addListItemFuncTuple)(obj);\
@@ -4296,7 +4295,7 @@ private:\
         }\
     }\
     ArrayList<KeyValuePair<Object,Object>> __getMapItemObjects(std::string name){\
-        Field f = maps->get(createString(name));\
+        Field f = __maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\
                 return std::get<0>(getMapItemsFuncTuple)();\
@@ -4350,7 +4349,7 @@ private:\
         return nullptr;\
     }\
     int __getContainerSize(std::string name) {\
-        Field f = maps->get(createString(name));\
+        Field f = __maps->get(createString(name));\
         switch(f->getId()) {\
             case 0:\
                 return std::get<0>(getContainerSizeFuncTuple)();\

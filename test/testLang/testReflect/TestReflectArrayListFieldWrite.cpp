@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(ArrayData2) {
+DECLARE_SIMPLE_CLASS(ArrayDataLLL2) {
 public:
   int intData;
   byte byteData;
@@ -25,14 +25,14 @@ public:
   uint32_t uint32Data;
   uint64_t uint64Data;
   bool boolData;
-  DECLARE_REFLECT_FIELD(ArrayData2,intData,byteData,doubleData,
+  DECLARE_REFLECT_FIELD(ArrayDataLLL2,intData,byteData,doubleData,
                         floatData,longData,stringData,uint8Data,uint16Data,uint32Data,
                         uint64Data,boolData)
 };
 
 DECLARE_SIMPLE_CLASS(ListCollection2) {
 public:
-  ArrayList<ArrayData2> mylist;
+  ArrayList<ArrayDataLLL2> mylist;
   DECLARE_REFLECT_FIELD(ListCollection2,mylist);
 };
 
@@ -43,6 +43,13 @@ int testReflectArrayListFieldWrite() {
       Field arrayField = collection->getField("mylist");
       arrayField->createObject();
       Object data1 = collection->getField("mylist")->createListItemObject();
+      //printf("testReflectArrayListFieldWrite field size is %d,class name is %s \n",
+      //        data1->getAllFields()->size(),data1->__ReflectClassName()->toChars());
+      //ArrayList<Field> fields = data1->getAllFields();
+      //for(int i = 0;i<fields->size();i++) {
+      //  printf("field is %s \n",fields->get(i)->getName()->toChars());
+      //}
+
       Field f = data1->getField("intData");
       f->setValue(1);
       f = data1->getField("byteData");
@@ -116,7 +123,7 @@ int testReflectArrayListFieldWrite() {
         break;
       }
 
-      ArrayData2 d1 = collection->mylist->get(0);
+      ArrayDataLLL2 d1 = collection->mylist->get(0);
       if(d1->intData != 1) {
         printf("Reflect ArrayList Field Write test1_1-------[FAIL] \n");
         break;
@@ -172,7 +179,7 @@ int testReflectArrayListFieldWrite() {
         break;
       }
 
-      ArrayData2 d2 = collection->mylist->get(1);
+      ArrayDataLLL2 d2 = collection->mylist->get(1);
       if(d2->intData != 11) {
         printf("Reflect ArrayList Field Write test12-------[FAIL] \n");
         break;

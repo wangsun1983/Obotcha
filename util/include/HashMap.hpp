@@ -154,10 +154,8 @@ public:
         }
 
         sp<_KeyValuePair<sp<_Object>,sp<_Object>>> create(std::string name) {
-            printf("hashmap create \n");
             AutoCreator<D,D::isReflect()> keyCreator;
             AutoCreator<E,E::isReflect()> valueCreator;
-            printf("hashmap create2 \n");
             return createKeyValuePair<Object,Object>(keyCreator.get(),valueCreator.get());
         }
 
