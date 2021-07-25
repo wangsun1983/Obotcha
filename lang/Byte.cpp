@@ -85,7 +85,7 @@ sp<_Byte> _Byte::parseDecByte(const sp<_String> v) {
         String pa = v->trimAll();
         int value = _Number::parseDecNumber(pa->getStdString());
         return createByte(value);
-    } catch(const char * err){}
+    } catch(int e){}
 
     return nullptr;
 }

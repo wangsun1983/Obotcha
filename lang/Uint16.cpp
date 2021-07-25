@@ -81,7 +81,7 @@ sp<_Uint16> _Uint16::parseDecUint16(const sp<_String> &v) {
         String pa = v->trimAll();
         uint16_t value = _Number::parseDecNumber(pa->getStdString());
         return createUint16(value);
-    } catch(const char *err){}
+    } catch(int e){}
 
     return nullptr;
 }

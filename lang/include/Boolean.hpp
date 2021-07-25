@@ -66,6 +66,8 @@ public:
 private:
     bool val;
 
+    static int _parse( sp<_String>);
+
 };
 
 }

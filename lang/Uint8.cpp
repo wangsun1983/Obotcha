@@ -85,7 +85,7 @@ sp<_Uint8> _Uint8::parseDecUint8(const sp<_String> &v) {
         String pa = v->trimAll();
         uint8_t value = _Number::parseDecNumber(pa->getStdString());
         return createUint8(value);
-    } catch(const char *err){}
+    } catch(int e){}
 
     return nullptr;
 }

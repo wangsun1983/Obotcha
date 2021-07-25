@@ -39,29 +39,17 @@ _Boolean::_Boolean(const char * s):_Boolean(createString(s)) {
 }
 
 _Boolean::_Boolean(const sp<_String> str) {
-    String trimStr = str->trimAll();
-    const char *data = trimStr->toChars();
-    
-    if((trimStr->size() == 4) &&
-        (data[0] == 't' || data[0] == 'T')
-        &&(data[1] == 'r' || data[1] == 'R')
-        &&(data[2] == 'u' || data[2] == 'U')
-        &&(data[3] == 'e' || data[3] == 'E')) {
-        val = true;
+    int value = _Boolean::_parse(str);
+    switch(value) {
+        case 1:
+        this->val = true;
+        return;
+
+        case 0:
+        this->val = false;
         return;
     }
-
-    if((trimStr->size() == 5) &&
-        (data[0] == 'f' || data[0] == 'F')
-        &&(data[1] == 'a' || data[1] == 'A')
-        &&(data[2] == 'l' || data[2] == 'L')
-        &&(data[3] == 's' || data[3] == 'S')
-        &&(data[4] == 'e' || data[4] == 'E')) {
-        val = false;
-        return;
-    }
-
-    Trigger(InitializeException,"Boolean init failed");
+    Trigger(InitializeException,"init failed");
 }
 
 _Boolean::_Boolean(const Boolean &v) {
@@ -132,8 +120,17 @@ uint64_t _Boolean::hashcode() {
     return std::hash<bool>{}(val);
 }
 
-sp<_Boolean> _Boolean::parse(const sp<_String> v) {
-    return createBoolean(v);
+sp<_Boolean> _Boolean::parse(const sp<_String> str) {
+    int value = _Boolean::_parse(str);
+    switch(value) {
+        case 1:
+        return createBoolean(true);
+
+        case 0:
+        return createBoolean(false);
+    }
+
+    return nullptr;
 }
 
 sp<_Boolean> _Boolean::parse(const char *v) {
@@ -146,6 +143,30 @@ sp<_Boolean> _Boolean::parse(bool v) {
 
 sp<_String> _Boolean::className() {
     return createString("Boolean");
+}
+
+int _Boolean::_parse(sp<_String> str) {
+    String trimStr = str->trimAll();
+    const char *data = trimStr->toChars();
+    
+    if((trimStr->size() == 4) &&
+        (data[0] == 't' || data[0] == 'T')
+        &&(data[1] == 'r' || data[1] == 'R')
+        &&(data[2] == 'u' || data[2] == 'U')
+        &&(data[3] == 'e' || data[3] == 'E')) {
+        return 1;
+    }
+
+    if((trimStr->size() == 5) &&
+        (data[0] == 'f' || data[0] == 'F')
+        &&(data[1] == 'a' || data[1] == 'A')
+        &&(data[2] == 'l' || data[2] == 'L')
+        &&(data[3] == 's' || data[3] == 'S')
+        &&(data[4] == 'e' || data[4] == 'E')) {
+        return 0;
+    }
+
+    return -1;
 }
 
 _Boolean::~_Boolean() {

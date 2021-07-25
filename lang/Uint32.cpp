@@ -80,7 +80,7 @@ sp<_Uint32> _Uint32::parseDecUint32(const sp<_String> &v) {
         String pa = v->trimAll();
         uint32_t value = _Number::parseDecNumber(pa->getStdString());
         return createUint32(value);
-    } catch(const char *err){}
+    } catch(int e){}
 
     return nullptr;
 }

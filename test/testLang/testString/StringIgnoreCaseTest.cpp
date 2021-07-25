@@ -54,13 +54,14 @@ int ignorecasetest() {
         }
 
         //case4
+/*       
         try {
             String tmp;
             testString->equalsIgnoreCase(tmp);
             printf("String equalsIgnoreCase Special test5-------[FAIL] \n");
             break;
         } catch(NullPointerException e) {}
-
+*/
         //case5
         String testString1 = createString("AB");
         if(testString->equalsIgnoreCase(testString1)) {
@@ -154,13 +155,14 @@ int ignorecasetest() {
         }
 
         //case7
+/*        
         String testString7;
         try {
             testString->indexOfIgnoreCase(testString7);
             printf("String indexOfIgnoreCase Special test7-------[FAIL] \n");
             break;
         } catch(NullPointerException e) {}
-
+*/
         //case8
         String testString8 = createString("bcde");
         if(testString->indexOfIgnoreCase(testString8) != 1) {
@@ -226,12 +228,14 @@ int ignorecasetest() {
         }
 
         //case7
+/*        
         String testString7;
         try {
             testString->containsIgnoreCase(testString7);
             printf("String containsIgnoreCase Special test7-------[FAIL] \n");
             break;
         } catch(NullPointerException e) {}
+*/
 
         //case8
         String testString8 = createString("bcde");
@@ -299,13 +303,14 @@ int ignorecasetest() {
         }
 
         //case7
+/*
         String testString7;
         try {
             testString->endsWithIgnoreCase(testString7);
             printf("String endsWithIgnoreCase Special test7-------[FAIL] \n");
             break;
         } catch(NullPointerException e) {}
-
+*/
         //case8
         String testString8 = createString("bcde");
         if(!testString->endsWithIgnoreCase(testString8)) {
@@ -381,13 +386,14 @@ int ignorecasetest() {
         }
 
         //case7
+/*
         String testString7;
         try {
             testString->lastIndexOfIgnoreCase(testString7);
             printf("String lastIndexOfIgnoreCase Special test7-------[FAIL] \n");
             break;
         } catch(NullPointerException e) {}
-
+*/
         //case8
         String testString8 = createString("dabe");
         if(testString->lastIndexOfIgnoreCase(testString8) != 3) {

@@ -32,7 +32,7 @@ sp<_Float> _Float::parse(sp<_String> s) {
         String pa = s->trimAll();
         float v = _Number<float>::parseNumber(pa->getStdString());
         return createFloat(v);
-    } catch(const char * err) {}
+    } catch(int e) {}
 
     return nullptr;
 }

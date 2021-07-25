@@ -237,10 +237,16 @@ const char * _String::toChars() {
 }
 
 char _String::charAt(int index) {
+    if(index >= m_str.size()) {
+        Trigger(ArrayIndexOutOfBoundsException,"too large index")
+    }
     return m_str.data()[index];
 }
 
 String _String::subString(int start,int length) {
+    if(start + length >= m_str.length()) {
+        return nullptr;
+    }
     return createString(m_str.substr(start,length));
 }
 
@@ -479,7 +485,7 @@ Byte _String::toByte() {
 }
 
 Boolean _String::toBoolean() {
-    return createBoolean(m_str.c_str());
+    return st(Boolean)::parse(AutoClone(this));
 }
 
 Float _String::toFloat() {

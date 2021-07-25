@@ -59,7 +59,7 @@ sp<_Double> _Double::parse(sp<_String> s) {
         String pa = s->trimAll();
         double v = _Number<double>::parseNumber(pa->getStdString());
         return createDouble(v);
-    } catch(const char * err) {}
+    } catch(int e) {}
 
     return nullptr;
 }

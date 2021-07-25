@@ -78,7 +78,7 @@ sp<_Uint64> _Uint64::parseDecUint64(const sp<_String> &v) {
         String pa = v->trimAll();
         uint64_t value = _Number::parseDecNumber(pa->getStdString());
         return createUint64(value);
-    } catch(const char *err){}
+    } catch(int e){}
 
     return nullptr;
 }

@@ -314,14 +314,6 @@ public:
 private:
     std::string m_str;
 
-    //bool isIntNumber(const char *p,int size);
-
-    //bool isDoubleNumber(const char *p,int size);
-
-    //bool isFloatNumber(const char *p,int size);
-
-    //bool isLongNumber(const char *p,int size);
-
     //local function
     template<typename... Args>
     void _append(const sp<_String> &v,Args...args);
