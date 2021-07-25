@@ -12,11 +12,12 @@ extern int testReflectToArrayJson();
 extern int testReflectToSimpleArrayJson();
 extern int testReflectNumber();
 extern int testReflectHashMapFieldWrite();
-extern int testReflectToXml();
 extern int testReflectArrayList2();
 extern int testReflectMap2();
 extern int testReflectArrayHashmap();
-
+extern int testReflectToXml();
+extern int testReflectArrayListToXml();
+extern int testReflectHashMapXml2();
 
 int main() {
 
@@ -32,12 +33,13 @@ int main() {
   testReflectToSimpleArrayJson();
   testReflectNumber();
   testReflectHashMapFieldWrite();
-  testReflectToXml();
   testReflectHashMapFieldWrite();
   testReflectArrayList2();
   testReflectMap2();
   testReflectArrayHashmap();
-
   testReflectArrayListFieldWrite();
+  testReflectToXml();
+  testReflectArrayListToXml();
+  testReflectHashMapXml2();
   return 0;
 }

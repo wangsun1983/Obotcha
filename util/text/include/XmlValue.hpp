@@ -3,14 +3,23 @@
 
 #include "iniparser.h"
 #include "dictionary.h"
+#include "rapidxml.hpp"
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "String.hpp"
+#include "Field.hpp"
+#include "Boolean.hpp"
+#include "Integer.hpp"
+#include "Float.hpp"
+#include "Long.hpp"
+#include "Uint32.hpp"
 #include "ArrayList.hpp"
-
-#include "rapidxml.hpp"
-
+#include "Field.hpp"
+#include "Long.hpp"
+#include "Log.hpp"
+#include "OStdInstanceOf.hpp"
+#include "TransformException.hpp"
 
 using namespace rapidxml;
 
@@ -129,6 +138,10 @@ public:
 
     void removeNode(String);
 
+    void importFrom(Object);
+
+    void reflectTo(Object);
+
 private:
     String value;
 
@@ -139,6 +152,10 @@ private:
     xml_node<>*  node;
 
     String searchNode(String name);
+
+    void reflectToArrayList(Object obj);
+    void reflectToHashMap(Object obj);
+    void importHashMapFrom(Object value);
 };
 
 }
