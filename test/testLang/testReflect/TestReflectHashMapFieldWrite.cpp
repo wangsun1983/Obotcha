@@ -147,8 +147,8 @@ int testReflectHashMapFieldWrite() {
       vv1->data2 = 2;
 
       HashMapValue vv2 = createHashMapValue();
-      vv1->data1 = 3;
-      vv1->data2 = 4;
+      vv2->data1 = 3;
+      vv2->data2 = 4;
 
       map1->put(createString("T1"),vv1);
       map1->put(createString("T2"),vv2);
@@ -196,7 +196,7 @@ int testReflectHashMapFieldWrite() {
       HashMap<String,HashMapValue> chkmap1 = ll2->lists->get(0);
       HashMapValue qq1 = chkmap1->get(createString("T1"));
       if(qq1 == nullptr || qq1->data1 != 1 ||qq1->data2 != 2) {
-        printf("Reflect HashMap Write test9-------[FAIL] \n");
+        printf("Reflect HashMap Write test9-------[FAIL] qq1->data1 is %d,qq1->data2 is %d\n",qq1->data1,qq1->data2);
         break;
       }
 
@@ -219,7 +219,7 @@ int testReflectHashMapFieldWrite() {
         break;
       }
 
-      printf("Reflect HashMap Write test13-------[FAIL] \n");
+      printf("Reflect HashMap Write test13-------[OK] \n");
       break;
     }
 
