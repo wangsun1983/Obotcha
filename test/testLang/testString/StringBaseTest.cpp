@@ -132,10 +132,16 @@ int basetest() {
         break;
     }
 
-    String str3 = createString("abc",2,2);
-    if(!str3->equals("c")) {
-        printf("String construct test15-------[FAIL].str3 is %s  \n",str3->toChars());
-        break;
+    bool isException = false;
+    try {
+      String str3 = createString("abc",2,2);
+    } catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
+      printf("String construct test15-------[FAIL] \n");
+      break;
     }
 
     printf("String construct test16-------[OK] \n");

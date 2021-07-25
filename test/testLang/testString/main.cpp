@@ -19,6 +19,7 @@ extern int appendtest();
 extern int splittest();
 extern int equaltest();
 extern int formattest();
+extern int StringConstructTest();
 
 int main() {
 
@@ -35,4 +36,6 @@ int main() {
   equaltest();
 
   formattest();
+
+  StringConstructTest();
 }

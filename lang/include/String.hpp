@@ -45,9 +45,9 @@ public:
 
     _String(const Boolean &v);
 
-    _String(const Float &v);
+    _String(const Float &v,int precision = 16);
 
-    _String(const Double &v);
+    _String(const Double &v,int precision = 16);
 
     _String(const Long &v);
 

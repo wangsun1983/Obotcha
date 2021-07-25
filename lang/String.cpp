@@ -144,14 +144,16 @@ _String::_String(const Boolean &v) {
     }
 }
 
-_String::_String(const Float &v) {
+_String::_String(const Float &v,int precision) {
     std::stringstream ss;
-    ss<< v->toValue();
+    ss.precision(precision);
+    ss<< (double)v->toValue();
     ss>>m_str;
 }
 
-_String::_String(const Double &v) {
+_String::_String(const Double &v,int precision) {
     std::stringstream ss;
+    ss.precision(precision);
     ss<< v->toValue();
     ss>>m_str;
 }
@@ -209,7 +211,7 @@ _String::_String(const char *v) {
 }
 
 _String::_String(const char *v,int start,int length) {
-    if(start < 0 || length <=0) {
+    if(start < 0 || length <=0 || ((start+length) > strlen(v))) {
         Trigger(InitializeException,"char * is null");
     }
 
