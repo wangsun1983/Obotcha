@@ -10,62 +10,56 @@
 
 using namespace obotcha;
 
-int testValueOf() {
+int testparse() {
 
     while(1) {
         
-        Boolean t1 = st(Boolean)::valueOf("true");
+        Boolean t1 = st(Boolean)::parse("true");
         if(!t1->toValue()) {
-            printf("Boolean valueOf test1-------[FAIL] \n");
+            printf("Boolean parse test1-------[FAIL] \n");
         }
 
-        Boolean t2 = st(Boolean)::valueOf("false");
+        Boolean t2 = st(Boolean)::parse("false");
         if(t2->toValue()) {
-            printf("Boolean valueOf test2-------[FAIL] \n");
+            printf("Boolean parse test2-------[FAIL] \n");
         }
 
-        Boolean t3 = st(Boolean)::valueOf("TrUe");
+        Boolean t3 = st(Boolean)::parse("TrUe");
         if(!t3->toValue()) {
-            printf("Boolean valueOf test3-------[FAIL] \n");
+            printf("Boolean parse test3-------[FAIL] \n");
         }
 
-        Boolean t4 = st(Boolean)::valueOf("tRUe");
+        Boolean t4 = st(Boolean)::parse("tRUe");
         if(!t4->toValue()) {
-            printf("Boolean valueOf test4-------[FAIL] \n");
+            printf("Boolean parse test4-------[FAIL] \n");
         }
 
-        Boolean t5 = st(Boolean)::valueOf("False");
+        Boolean t5 = st(Boolean)::parse("False");
         if(t5->toValue()) {
-            printf("Boolean valueOf test5-------[FAIL] \n");
+            printf("Boolean parse test5-------[FAIL] \n");
         }
 
-        Boolean t6 = st(Boolean)::valueOf("FAlse ");
+        Boolean t6 = st(Boolean)::parse("FAlse ");
         if(t6->toValue()) {
-            printf("Boolean valueOf test6-------[FAIL] \n");
+            printf("Boolean parse test6-------[FAIL] \n");
         }
 
-        Boolean t7 = st(Boolean)::valueOf("t r u e ");
+        Boolean t7 = st(Boolean)::parse("t r u e ");
         if(!t7->toValue()) {
-            printf("Boolean valueOf test7-------[FAIL] \n");
+            printf("Boolean parse test7-------[FAIL] \n");
         }
 
-        Boolean t8 = st(Boolean)::valueOf("f a L S e");
+        Boolean t8 = st(Boolean)::parse("f a L S e");
         if(t8->toValue()) {
-            printf("Boolean valueOf test8-------[FAIL] \n");
+            printf("Boolean parse test8-------[FAIL] \n");
         }
 
-        bool isException = false;
-        try {
-          Boolean t9 = st(Boolean)::valueOf("abc");
-        } catch(InitializeException exception) {
-          isException = true;
+        Boolean t9 = st(Boolean)::parse("abc");
+        if(t9 != nullptr) {
+            printf("Boolean parse test9-------[FAIL] \n");
         }
 
-        if(!isException) {
-            printf("Boolean valueOf test9-------[FAIL] \n");
-        }
-
-        printf("Boolean valueOf test19-------[OK] \n");
+        printf("Boolean parse test19-------[OK] \n");
         break;
     }
 

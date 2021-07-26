@@ -21,10 +21,10 @@ extern int testThreadLambda();
 
 int main() {
     normalTest();
-    numTest();
-    releaseTest();
-    loopsubmittest();
-    cancelTest();
-    testThreadLambda();
+    //numTest();
+    //releaseTest();
+    //loopsubmittest();
+    //cancelTest();
+    //testThreadLambda();
     sleep(10);
 }

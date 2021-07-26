@@ -19,6 +19,7 @@ cflags = -fpic \
 		-I ../../../external/yaml/include \
 		-I ../../../external/crc32/include \
 		-I ../../../external/openssl/include \
+		-I ../../../external/glog/include \
 		-I ../../../external/libco \
 		-g \
 		-std=c++14 \
@@ -35,7 +36,7 @@ sharelib = -Wl,-rpath=../../../out/lib/ \
 
 files =
 link =
-libname	= testUint32
+libname	= testArrayList
 
 everything : $(libname)
 

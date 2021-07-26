@@ -13,12 +13,12 @@ extern int basetest();
 extern int testequals();
 extern int testLogic();
 extern int testUpdate();
-extern int testValueOf();
+extern int testparse();
 
 int main() {
     basetest();
     testequals();
     testLogic();
     testUpdate();
-    testValueOf();
+    testparse();
 }

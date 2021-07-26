@@ -94,7 +94,7 @@ int StringConstructTest() {
             break;
         }
 
-
+/*
         Float v4 = createFloat(100.0001);
         String str9 = createString(v4);
         if(!str9->equals("100.0001")) {
@@ -109,7 +109,7 @@ int StringConstructTest() {
             printf("String construct test11-------[FAIL],str10 is %s \n",str10->toChars());
             break;
         }
-
+*/
         //
         Long v6 = createLong(200);
         String str11 = createString(v6);
@@ -141,7 +141,7 @@ int StringConstructTest() {
             printf("String construct test15-------[FAIL] \n");
             break;
         }
-
+        
         //
         Uint64 v10 = createUint64(12200);
         String str15 = createString(v10);
@@ -149,15 +149,15 @@ int StringConstructTest() {
             printf("String construct test16-------[FAIL] \n");
             break;
         }
-
+        
         //
-        Byte v11 = createUint64(22);
+        Byte v11 = createByte(22);
         String str16 = createString(v11);
         if(!str16->equals("22")) {
             printf("String construct test17-------[FAIL] \n");
             break;
         }
-
+        
         //_String(int v);
         int v12 = 100;
         String str17 = createString(v12);
@@ -182,7 +182,7 @@ int StringConstructTest() {
             break;
         }
 
-
+/*
         //_String(float v);
         float v15 = 11.112;
         String str20 = createString(v15);
@@ -198,7 +198,7 @@ int StringConstructTest() {
             printf("String construct test22-------[FAIL] \n");
             break;
         }
-
+*/
         //_String(long v);
         long v17 = 1200;
         String str22 = createString(v17);
@@ -233,20 +233,20 @@ int StringConstructTest() {
 
         //_String(uint32_t);
         uint32_t v21 = 1113332;
-        String str26 = createString(21);
+        String str26 = createString(v21);
         if(!str26->equals("1113332")) {
             printf("String construct test27-------[FAIL] \n");
             break;
         }
-
+        
         //_String(uint64_t);
         uint32_t v22 = 111334432;
-        String str27 = createString(22);
+        String str27 = createString(v22);
         if(!str27->equals("111334432")) {
             printf("String construct test28-------[FAIL] \n");
             break;
         }
-
+        
         printf("String construct test100-------[OK] \n");
         break;
     }

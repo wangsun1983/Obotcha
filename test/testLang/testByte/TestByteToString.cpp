@@ -103,7 +103,7 @@ int testtostring() {
    while(1) {
      for(int i = 0;i < 100;i++) {
        Byte t1 = createByte(i);
-       int t2 = st(Byte)::parseHexByte(createString(HexTable[i]));
+       Byte t2 = st(Byte)::parseHexByte(createString(HexTable[i]));
        Byte t3 = createByte(t2);
        if(t1 != t3) {
          printf("t1 is %d,t2 is %d,t3 is %d,i is %d \n",t1->toValue(),t2,t3->toValue(),i);
@@ -114,7 +114,7 @@ int testtostring() {
 
      for(int i = 0;i < 100;i++) {
        Byte t1 = createByte(i);
-       int t2 = st(Byte)::parseOctByte(createString(OctTable[i]));
+       Byte t2 = st(Byte)::parseOctByte(createString(OctTable[i]));
        Byte t3 = createByte(t2);
 
        if(t1 != t3) {
@@ -128,7 +128,7 @@ int testtostring() {
        Byte t1 = createByte(i);
        String str = createString(BinaryTable[i]);
        //printf("11111 str is %s \n",str->toChars());
-       int t2 = st(Byte)::parseBinaryByte(str);
+       Byte t2 = st(Byte)::parseBinaryByte(str);
        Byte t3 = createByte(t2);
         if(t1 != t3) {
          printf("Byte toInt test3-------[FAIL] \n");

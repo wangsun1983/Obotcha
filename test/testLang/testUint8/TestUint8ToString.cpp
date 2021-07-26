@@ -103,7 +103,7 @@ int testtostring() {
    while(1) {
      for(int i = 0;i < 100;i++) {
        Uint8 t1 = createUint8(i);
-       int t2 = st(Uint8)::parseHexUint8(createString(HexTable[i]));
+       Uint8 t2 = st(Uint8)::parseHexUint8(createString(HexTable[i]));
        Uint8 t3 = createUint8(t2);
        if(t1 != t3) {
          printf("t1 is %d,t3 is %d \n",t1->toValue(),t3->toValue());
@@ -114,7 +114,7 @@ int testtostring() {
 
      for(int i = 0;i < 100;i++) {
        Uint8 t1 = createUint8(i);
-       int t2 = st(Uint8)::parseOctUint8(createString(OctTable[i]));
+       Uint8 t2 = st(Uint8)::parseOctUint8(createString(OctTable[i]));
        Uint8 t3 = createUint8(t2);
 
        if(t1 != t3) {
@@ -128,7 +128,7 @@ int testtostring() {
        Uint8 t1 = createUint8(i);
        String str = createString(BinaryTable[i]);
        //printf("11111 str is %s \n",str->toChars());
-       int t2 = st(Uint8)::parseBinaryUint8(str);
+       Uint8 t2 = st(Uint8)::parseBinaryUint8(str);
        Uint8 t3 = createUint8(t2);
         if(t1 != t3) {
          printf("Uint8 toInt test3-------[FAIL] \n");

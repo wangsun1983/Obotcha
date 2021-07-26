@@ -31,6 +31,7 @@ public:
     }
 
     ~_RunTest1() {
+        printf("RunnTest1 release \n");
         runDestory = 0;
     }
 };
@@ -52,7 +53,7 @@ public:
 
 int normalTest() {
     printf("---[TestCachedPoolExecutor Test Start]--- \n");
-
+#if 0
     while(1) {
         ThreadCachedPoolExecutor pool = createExecutorBuilder()
                                         ->setQueueSize(1)
@@ -160,24 +161,24 @@ int normalTest() {
         runTest2Mutex->unlock();
         break;
     }
-
+#endif
 
     //int awaitTermination(long timeout = 0);
     while(1) {
         ThreadCachedPoolExecutor pool = createExecutorBuilder()->newCachedThreadPool();
 
-        int result = pool->awaitTermination(0);
-        if(result != -InvalidStatus) {
-            printf("---[TestCachedPoolExecutor Test {awaitTermination()} case5] [FAIL]--- \n");
-            pool->shutdown();
-            break;
-        }
+        //int result = pool->awaitTermination(0);
+        //if(result != -InvalidStatus) {
+        //    printf("---[TestCachedPoolExecutor Test {awaitTermination()} case5] [FAIL]--- \n");
+        //    pool->shutdown();
+        //    break;
+        //}
 
         pool->submit(createRunTest1());
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
-        result = pool->awaitTermination(0);
+        int result = pool->awaitTermination(0);
         if(result != 0) {
             printf("---[TestCachedPoolExecutor Test {awaitTermination()} case6] [FAIL]--- \n");
             pool->shutdown();
@@ -195,6 +196,7 @@ int normalTest() {
         break;
     }
 
+#if 0
     //int awaitTermination(long timeout = max);
     while(1) {
         ThreadCachedPoolExecutor pool = createExecutorBuilder()->newCachedThreadPool();
@@ -277,7 +279,7 @@ int normalTest() {
         printf("---[TestCachedPoolExecutor Test {submit()} case6] [Success]--- \n");
         break;
     }
-
+#endif
     sleep(1);
 
 }

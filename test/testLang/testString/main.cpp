@@ -20,6 +20,16 @@ extern int splittest();
 extern int equaltest();
 extern int formattest();
 extern int StringConstructTest();
+extern int TestStringUpdate();
+extern int TestStringToChars();
+extern int TestStringCharAt();
+extern int TestStringSubString();
+extern int TestStringTrim();
+extern int TestStringTrimAll();
+extern int TestStringSize();
+extern int TestStringContains();
+extern int TestStringIndexOf();
+extern int TestStringEquals();
 
 int main() {
 
@@ -30,12 +40,32 @@ int main() {
   trimtest();
 
   appendtest();
-
+  
   splittest();
 
   equaltest();
 
   formattest();
-
+  
   StringConstructTest();
+
+  TestStringUpdate();
+
+  TestStringToChars();
+
+  TestStringCharAt();
+  
+  TestStringSubString();
+
+  TestStringTrim();
+
+  TestStringTrimAll();
+
+  TestStringSize();
+
+  TestStringContains();
+
+  TestStringIndexOf();
+
+  TestStringEquals();
 }
