@@ -170,14 +170,16 @@ _String::_String(bool v) {
     }
 }
 
-_String::_String(float v) {
+_String::_String(float v,int precision) {
     std::stringstream ss;
+    ss.precision(precision);
     ss<< v;
     ss>>m_str;
 }
 
-_String::_String(double v) {
+_String::_String(double v,int precision) {
     std::stringstream ss;
+    ss.precision(precision);
     ss<< v;
     ss>>m_str;
 }
@@ -239,14 +241,14 @@ const char * _String::toChars() {
 }
 
 char _String::charAt(int index) {
-    if(index >= m_str.size()) {
-        Trigger(ArrayIndexOutOfBoundsException,"too large index")
+    if(index >= m_str.size() || index < 0) {
+        Trigger(ArrayIndexOutOfBoundsException,"incorrect index")
     }
     return m_str.data()[index];
 }
 
 String _String::subString(int start,int length) {
-    if(start + length >= m_str.length()) {
+    if(start < 0 || length <= 0 ||((start + length) > m_str.length())) {
         return nullptr;
     }
     return createString(m_str.substr(start,length));

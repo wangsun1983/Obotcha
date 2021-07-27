@@ -270,7 +270,7 @@ String _ByteArray::toString() {
     char _buff[len];
     memcpy(_buff,buff,mSize);
     _buff[len - 1] = 0;
-    return createString(&_buff[0],0,len);
+    return createString(&_buff[0],0,strlen(_buff));
 }
 
 void _ByteArray::dump(const char *v) {

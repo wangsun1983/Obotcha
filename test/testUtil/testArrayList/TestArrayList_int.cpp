@@ -68,7 +68,7 @@ void testArrayList_dataType_int() {
     ArrayList<int>list2 = createArrayList<int>();
     list2->add(3);
     list2->add(4);
-    list->merge(list2);
+    list->add(list2);
 
     if(list->size() != 4) {
       printf("---[ArrayList<int> Test {add(ArrayList<int> list)} case0] [FAILED]--- \n");
@@ -82,10 +82,11 @@ void testArrayList_dataType_int() {
       printf("---[ArrayList<int> Test {add(ArrayList<int> list)} case1] [FAILED]--- \n");
       break;
     }
+
 /*
     ArrayList<int>list3;
     int size = list->size();
-    list->merge(list3);
+    list->add(list3);
     if(size != list->size()) {
       printf("---[ArrayList<int> Test {add(ArrayList<int> list)} case2] [FAILED]--- \n");
       break;
@@ -476,7 +477,7 @@ void testArrayList_dataType_int() {
     list2->add(5);
     list2->add(6);
 
-    list->merge(1,list2);
+    list->insert(1,list2);
     if(list->get(0) != 1
     ||list->get(1) != 4
     ||list->get(2) != 5
@@ -490,7 +491,7 @@ void testArrayList_dataType_int() {
     int size = list->size();
     bool isException = false;
     try {
-        int result = list->merge(100,list2);
+        int result = list->insert(100,list2);
     } catch(ArrayIndexOutOfBoundsException e) {
          isException = true;
     }
@@ -503,7 +504,7 @@ void testArrayList_dataType_int() {
     isException = false;
     size = list->size();
     try {
-        list->merge(-1,list2);
+        list->insert(-1,list2);
     } catch(ArrayIndexOutOfBoundsException e) {
         isException = true;
     }
@@ -523,7 +524,7 @@ void testArrayList_dataType_int() {
     list4->add(14);
     list4->add(15);
 
-    list3->merge(0,list4);
+    list3->insert(0,list4);
     if(list3->get(0) != 13
     ||list3->get(1) != 14
     ||list3->get(2) != 15
@@ -550,7 +551,7 @@ void testArrayList_dataType_int() {
     list2->add(5);
     list2->add(6);
 
-    list->merge(1,list2,2);
+    list->insert(1,list2,2);
     if(list->get(0) != 1
     ||list->get(1) != 4
     ||list->get(2) != 5
@@ -568,7 +569,7 @@ void testArrayList_dataType_int() {
     int size = list->size();
     bool isException = false;
     try {
-        list->merge(100,list2,5);
+        list->insert(100,list2,5);
     } catch(ArrayIndexOutOfBoundsException e) {
        isException = true;
     }
@@ -581,7 +582,7 @@ void testArrayList_dataType_int() {
     size != list->size();
     isException = false;
     try {
-        list->merge(-1,list2,100);
+        list->insert(-1,list2,100);
     } catch(ArrayIndexOutOfBoundsException e) {
        isException = true;
     }
@@ -601,7 +602,7 @@ void testArrayList_dataType_int() {
     list4->add(14);
     list4->add(15);
 
-    list3->merge(0,list4,2);
+    list3->insert(0,list4,2);
     if(list3->get(0) != 13
     ||list3->get(1) != 14
     ||list3->get(2) != 10
@@ -628,7 +629,7 @@ void testArrayList_dataType_int() {
 
     bool isException1 = false;
     try {
-        int result = list5->merge(0,list6,100);
+        int result = list5->insert(0,list6,100);
     }catch(ArrayIndexOutOfBoundsException e) {
         isException1 = true;
     }
@@ -916,13 +917,14 @@ void testArrayList_dataType_int() {
 /*
     ArrayList<int> list4;
     list3->insertLast(list4);
+*/
     if(list3->get(0) != 1
       ||list3->get(1) != 2
       ||list3->get(2) != 3) {
         printf("---[ArrayList<int> Test {insertLast(ArrayList<int> v)} case3] [FAILED]--- \n");
         break;
     }
-*/
+
     if(list3->size() != 3) {
         printf("---[ArrayList<int> Test {insertLast(ArrayList<int> v)} case4] [FAILED]--- \n");
         break;
@@ -975,7 +977,6 @@ void testArrayList_dataType_int() {
       index++;
     }
 
-/*
     ArrayList<int> list1 = createArrayList<int>();
     ListIterator<int>iterator1 = list1->getIterator();
     bool isException = false;
@@ -989,7 +990,7 @@ void testArrayList_dataType_int() {
       printf("---[ListIterator<int> Test {getValue()} case2] [FAILED]--- \n");
       break;
     }
-*/
+
     printf("---[ListIterator<int> Test {getValue()} case3] [OK]--- \n");
     break;
   }
@@ -1043,7 +1044,16 @@ void testArrayList_dataType_int() {
 
     ArrayList<int> list2 = createArrayList<int>();
     ListIterator<int> iterator2 = list2->getIterator();
-    if(iterator2->next()) {
+    bool isException = false;
+    try {
+      if(iterator2->next()) {
+
+      }
+    } catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ListIterator<int> Test {next()} case2] [FAILED]--- \n");
       break;
     }

@@ -38,7 +38,7 @@ void test_pop() {
     ByteArray array = createByteArray(6);
     array[0] = 1;
     array[1] = 2;
-    array[2] = 3; 
+    array[2] = 3;
     array[3] = 4;
     array[4] = 5;
     array[5] = 6;
@@ -81,7 +81,8 @@ void test_pop() {
 
     poparray = reader->pop();
     if(poparray != nullptr) {
-        printf("---[ByteRingArrayReader Test {pop(byte val)} case3] [FAILED]--- \n");
+        printf("---[ByteRingArrayReader Test {pop(byte val)} case3] [FAILED]---,poparray size is %d \n",poparray->size());
+        poparray->dump("--pop(byte)--");
         return;
     }
 
@@ -90,7 +91,7 @@ void test_pop() {
     array = createByteArray(5);
     array[0] = 1;
     array[1] = 2;
-    array[2] = 3; 
+    array[2] = 3;
     array[3] = 4;
     array[4] = 5;
     ringarray->push(array);
@@ -100,16 +101,18 @@ void test_pop() {
     array2[0] = 6;
     array2[1] = 7;
     ringarray->push(array2);
-    int status = ByteRingArrayReadContinue;
+    int status = st(ByteRingArrayReader)::Continue;
     reader = createByteRingArrayReader(ringarray);
-
     byte ind = 2;
-    while(status != ByteRingArrayReadComplete) {
+    while(1) {
         byte value = 0;
         status = reader->readNext(value);
-        
+        if(status == st(ByteRingArrayReader)::NoContent) {
+          break;
+        }
+
         if(value != ind) {
-            printf("---[ByteRingArrayReader Test {pop(byte val)} case3] [FAILED]--- \n");
+            printf("---[ByteRingArrayReader Test {pop(byte val)} case3_1] [FAILED]---,value is %d,ind is %d \n",value,ind);
             break;
         }
         ind++;
@@ -120,7 +123,7 @@ void test_pop() {
        poparray->at(1) != 3 ||
        poparray->at(2) != 4 ||
        poparray->at(3) != 5 ||
-       poparray->at(4) != 6 || 
+       poparray->at(4) != 6 ||
        poparray->at(5) != 7 ) {
         printf("---[ByteRingArrayReader Test {pop(byte val)} case4] [FAILED]--- \n");
         return;
@@ -130,12 +133,11 @@ void test_pop() {
     //         |end    |start
     ringarray = createStartBiggerThanEnd();
     reader = createByteRingArrayReader(ringarray);
-    status = ByteRingArrayReadContinue;
-    
-    while(status != ByteRingArrayReadComplete) {
+    status = st(ByteRingArrayReader)::Continue;
+
+    while(status != st(ByteRingArrayReader)::NoContent) {
         byte value = 0;
         status = reader->readNext(value);
-        printf("reader value is %d \n",value);
         ind++;
     }
 

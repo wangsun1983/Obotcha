@@ -56,6 +56,17 @@ class __reflectArrayListItemFunc {
     _ArrayList<D> *ptr;
 };
 
+DUMMY_REFLECT_ARRAY_FUNCTION(int)
+DUMMY_REFLECT_ARRAY_FUNCTION(bool)
+DUMMY_REFLECT_ARRAY_FUNCTION(double)
+DUMMY_REFLECT_ARRAY_FUNCTION(float)
+DUMMY_REFLECT_ARRAY_FUNCTION(long int)
+DUMMY_REFLECT_ARRAY_FUNCTION(uint8_t)
+DUMMY_REFLECT_ARRAY_FUNCTION(uint16_t)
+DUMMY_REFLECT_ARRAY_FUNCTION(uint32_t)
+DUMMY_REFLECT_ARRAY_FUNCTION(uint64_t)
+
+
 
 //----------------- ArrayList ---------------------
 DECLARE_CLASS(ArrayList,1) {
@@ -79,15 +90,22 @@ public:
         elements.push_back(val);
     }
 
-    inline void merge(const ArrayList<T> list) {
+    inline void add(sp<_ArrayList<T>> list) {
         elements.insert(elements.end(),list->elements.begin(),list->elements.end());
     }
+
+    //inline void merge(const ArrayList<T> list) {
+    //    elements.insert(elements.end(),list->elements.begin(),list->elements.end());
+    //}
 
     inline void clear() {
         elements.clear();
     }
 
     inline T removeAt(int index) {
+        if(index < 0 || index > elements.size() || elements.size() == 0) {
+            Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
+        }
         T val = elements.at(index);
         elements.erase(elements.begin() + index);
         return val;
@@ -123,25 +141,40 @@ public:
     }
 
     inline int set(int index,const T val) {
+        if(index >= elements.size()) {
+            Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
+        }
         elements[index] = val;
         return 0;
     }
 
     inline T get(int index) {
+        if(index < 0 || index >= elements.size()) {
+            Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
+        }
         return elements[index];
     }
 
     inline int insert(int index,const T val) {
+        if(index < 0 || index >= elements.size()) {
+            Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
+        }
         elements.insert(elements.begin() + index,val);
         return 0;
     }
 
     inline int insert(int index,const ArrayList<T> &list) {
+        if(index < 0 || index >= elements.size()) {
+            Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
+        }
         elements.insert(elements.begin() + index,list->begin(),list->end());
         return 0;
     }
 
     inline int insert(int index,const ArrayList<T> &list,int length) {
+        if(index < 0 || index >= elements.size() || length > list->size()) {
+            Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
+        }
         elements.insert(elements.begin() + index,list->begin(),list->begin() + length);
         return 0;
     }
@@ -221,6 +254,9 @@ public:
     }
 
     T getValue() {
+        if(iterator == mList->end()) {
+            Trigger(ArrayIndexOutOfBoundsException,"no data");
+        }
         return *iterator;
     }
 
@@ -229,7 +265,9 @@ public:
     }
 
     bool next() {
-        iterator++;
+        if(iterator != mList->end()) {
+            iterator++;
+        }
         return (iterator != mList->end());
     }
 

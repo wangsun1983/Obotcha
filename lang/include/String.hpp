@@ -65,9 +65,9 @@ public:
 
     _String(bool v);
 
-    _String(float v);
+    _String(float v,int precision = 16);
 
-    _String(double v);
+    _String(double v,int precision = 16);
 
     _String(long v);
 

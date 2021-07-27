@@ -89,7 +89,7 @@ void testArrayList_String() {
         list2->add(createString("c"));
         list2->add(createString("d"));
 
-        list->merge(list2);
+        list->add(list2);
 
         if(!list->get(0)->equals("a")
         || !list->get(1)->equals("b")
@@ -468,7 +468,7 @@ void testArrayList_String() {
         list2->add(createString("d"));
         list2->add(createString("e"));
 
-        list->merge(2,list2);
+        list->insert(2,list2);
         if(!list->get(0)->equals("a")
         ||!list->get(1)->equals("b")
         ||!list->get(2)->equals("d")
@@ -504,7 +504,7 @@ void testArrayList_String() {
 
         int size = list->size();
         ArrayList<String> list3 = createArrayList<String>();
-        list->merge(0,list3);
+        list->insert(0,list3);
 
         if(size != list->size()) {
           printf("---[ArrayList<String> Test {insert(int index,ArrayList<String> list)} case4] [FAILED]--- \n");
@@ -527,7 +527,7 @@ void testArrayList_String() {
         list2->add(createString("e"));
         list2->add(createString("f"));
 
-        list->merge(2,list2,2);
+        list->insert(2,list2,2);
         //printf("list->get(0) is %s \n",list->get(0)->toChars());
         //printf("list->get(1) is %s \n",list->get(1)->toChars());
         //printf("list->get(2) is %s \n",list->get(2)->toChars());
@@ -549,7 +549,7 @@ void testArrayList_String() {
         list->add(createString("c"));
         bool isException1 = false;
         try {
-            list->merge(2,list2,100);
+            list->insert(2,list2,100);
         }catch(ArrayIndexOutOfBoundsException e) {
             isException1 = true;
         }
@@ -659,7 +659,6 @@ void testArrayList_String() {
       printf("---[ArrayList<String> Test {insertFirst(ArrayList<String> list)} case1] [FAILED]--- \n");
       break;
     }
-
 /*
     ArrayList<String> list3;
     int size = list->size();
@@ -713,14 +712,14 @@ void testArrayList_String() {
       printf("---[ArrayList<String> Test {insertLast(const char * s)} case1] [FAILED]--- \n");
       break;
     }
-
-    //char *p = nullptr;
-    //int size = list->size();
-    //try {
-    //  list->insertLast(createString(p));
-    //  printf("---[ArrayList<String> Test {insertLast(const char *s )} case2] [FAILED]--- \n");
-    //} catch(InitializeException e) {}
-
+/*
+    char *p = nullptr;
+    int size = list->size();
+    try {
+      list->insertLast(createString(p));
+      printf("---[ArrayList<String> Test {insertLast(const char *s )} case2] [FAILED]--- \n");
+    } catch(InitializeException e) {}
+*/
     printf("---[ArrayList<String> Test {insertLast(const char *s)}] [OK]--- \n");
     break;
   }
@@ -747,8 +746,8 @@ void testArrayList_String() {
       break;
     }
 
-    int size = list->size();
 /*
+    int size = list->size();
     ArrayList<String> list3;
     list->insertLast(list3);
     if(size != list->size()) {

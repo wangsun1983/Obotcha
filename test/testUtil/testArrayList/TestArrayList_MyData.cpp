@@ -79,7 +79,7 @@ void testArrayList_MyData() {
           list2->add(tt1_1);
           list2->add(tt2_1);
 
-          list1->merge(list2);
+          list1->add(list2);
 
           if(list1->size() != 4) {
             printf("---[ArrayList<T> Test {void add(ArrayList<T> list)} Size error] [FAILED]--- \n");
@@ -141,7 +141,7 @@ void testArrayList_MyData() {
             printf("---[ArrayList<T> Test {remove(int index)} case1] [FAILED]--- \n");
             break;
           }
-/*
+
           bool isException = false;
           try {
               TestData1 tt3 = clist->removeAt(100);
@@ -153,7 +153,7 @@ void testArrayList_MyData() {
             printf("---[ArrayList<T> Test {remove(int index)} case2] [FAILED]--- \n");
             break;
           }
-*/
+
           printf("---[ArrayList<T> Test {remove(int index)}] [OK]--- \n");
           break;
       }
@@ -411,7 +411,7 @@ void testArrayList_MyData() {
         clist2->add(t4);
         clist2->add(t5);
 
-        int result = clist->merge(1,clist2);
+        int result = clist->insert(1,clist2);
         if(result != 0) {
           printf("---[ArrayList<T> Test {insert(int index,ArrayList<T> list) case1] [FAILED]--- \n");
           break;
@@ -435,7 +435,7 @@ void testArrayList_MyData() {
 
         bool isException = false;
         try {
-          result = clist->merge(100,clist2);
+          result = clist->insert(100,clist2);
         } catch(ArrayIndexOutOfBoundsException e) {
           isException = true;
         }
@@ -479,7 +479,7 @@ void testArrayList_MyData() {
         clist2->add(t5);
         clist2->add(t6);
 
-        int result = clist->merge(1,clist2,2);
+        int result = clist->insert(1,clist2,2);
         if(result != 0) {
           printf("---[ArrayList<T> Test {insert(int index,ArrayList<T> list,int length)} case1] [FAILED]--- \n");
           break;
@@ -501,7 +501,7 @@ void testArrayList_MyData() {
         clist->add(t3);
         bool isException = false;
         try {
-            clist->merge(100,clist2,2);
+            clist->insert(100,clist2,2);
         }catch(ArrayIndexOutOfBoundsException e) {
              isException = true;
         }
@@ -513,7 +513,7 @@ void testArrayList_MyData() {
         
         int isException2 = false;
         try {
-          result = clist->merge(1,clist2,100);
+          result = clist->insert(1,clist2,100);
         } catch(ArrayIndexOutOfBoundsException e) {
           isException2 = true;
         }
@@ -530,7 +530,7 @@ void testArrayList_MyData() {
 
         bool isException3 = false;
         try {
-            result = clist->merge(-1,clist2,100);
+            result = clist->insert(-1,clist2,100);
         } catch(ArrayIndexOutOfBoundsException e) {
             isException3 = true;
         }
@@ -682,7 +682,7 @@ void testArrayList_MyData() {
 
         clist2->add(t4);
         clist2->add(t5);
-        clist->merge(clist2);
+        clist->add(clist2);
 
         TestData1 tt0 = clist->get(0);
         TestData1 tt1 = clist->get(1);
@@ -809,7 +809,6 @@ void testArrayList_MyData() {
         break;
       }
 
-/*
       ArrayList<TestData1> clist2 = createArrayList<TestData1>();
       ListIterator<TestData1> iterator2 = clist2->getIterator();
       bool isException = false;
@@ -823,7 +822,7 @@ void testArrayList_MyData() {
         printf("---[ArrayList<T> Test {getValue()} case2] [FAILED]--- \n");
         break;
       }
-*/
+
       printf("---[ArrayList<T> Test {getValue()}] [OK]--- \n");
       break;
     }

@@ -62,7 +62,6 @@ void testArrayList_Integer() {
 
   //--[_ArrayList<Integer> Test {add(ArrayList<Integer> list)} Start]---
   while(1) {
-    printf("trace1 \n");
     ArrayList<Integer>list = createArrayList<Integer>();
     list->add(createInteger(1));
     list->add(createInteger(2));
@@ -70,13 +69,13 @@ void testArrayList_Integer() {
     ArrayList<Integer>list2 = createArrayList<Integer>();
     list2->add(createInteger(3));
     list2->add(createInteger(4));
-    list->merge(list2);
-    printf("trace2 \n");
+    list->add(list2);
+
     if(list->size() != 4) {
       printf("---[ArrayList<Integer> Test {add(ArrayList<Integer> list)} case0] [FAILED]--- \n");
       break;
     }
-    printf("trace3 \n");
+
     if(list->get(0)->toValue() != 1
     ||list->get(1)->toValue() != 2
     ||list->get(2)->toValue() != 3
@@ -87,8 +86,7 @@ void testArrayList_Integer() {
 /*
     ArrayList<Integer>list3;
     int size = list->size();
-    list->merge(list3);
-    printf("trace5 \n");
+    list->add(list3);
     if(size != list->size()) {
       printf("---[ArrayList<Integer> Test {add(ArrayList<Integer> list)} case2] [FAILED]--- \n");
       break;
@@ -129,7 +127,6 @@ void testArrayList_Integer() {
       printf("---[ArrayList<Integer> Test {remove(int index)} case1] [FAILED]--- \n");
       break;
     }
-
 
     bool isException = false;
     try {
@@ -506,7 +503,7 @@ void testArrayList_Integer() {
     list2->add(createInteger(5));
     list2->add(createInteger(6));
 
-    list->merge(1,list2);
+    list->insert(1,list2);
     if(list->get(0)->toValue() != 1
     ||list->get(1)->toValue() != 4
     ||list->get(2)->toValue() != 5
@@ -520,7 +517,7 @@ void testArrayList_Integer() {
     int size = list->size();
     bool isException = false;
     try {
-        int result = list->merge(100,list2);
+        int result = list->insert(100,list2);
     } catch(ArrayIndexOutOfBoundsException e) {
          isException = true;
     }
@@ -533,7 +530,7 @@ void testArrayList_Integer() {
     isException = false;
     size = list->size();
     try {
-        list->merge(-1,list2);
+        list->insert(-1,list2);
     } catch(ArrayIndexOutOfBoundsException e) {
         isException = true;
     }
@@ -553,7 +550,7 @@ void testArrayList_Integer() {
     list4->add(createInteger(14));
     list4->add(createInteger(15));
 
-    list3->merge(0,list4);
+    list3->insert(0,list4);
     if(list3->get(0)->toValue() != 13
     ||list3->get(1)->toValue() != 14
     ||list3->get(2)->toValue() != 15
@@ -580,7 +577,7 @@ void testArrayList_Integer() {
     list2->add(createInteger(5));
     list2->add(createInteger(6));
 
-    list->merge(1,list2,2);
+    list->insert(1,list2,2);
     if(list->get(0)->toValue() != 1
     ||list->get(1)->toValue() != 4
     ||list->get(2)->toValue() != 5
@@ -598,7 +595,7 @@ void testArrayList_Integer() {
     int size = list->size();
     bool isException = false;
     try {
-        list->merge(100,list2,5);
+        list->insert(100,list2,5);
     } catch(ArrayIndexOutOfBoundsException e) {
        isException = true;
     }
@@ -611,7 +608,7 @@ void testArrayList_Integer() {
     size != list->size();
     isException = false;
     try {
-        list->merge(-1,list2,100);
+        list->insert(-1,list2,100);
     } catch(ArrayIndexOutOfBoundsException e) {
        isException = true;
     }
@@ -631,7 +628,7 @@ void testArrayList_Integer() {
     list4->add(createInteger(14));
     list4->add(createInteger(15));
 
-    list3->merge(0,list4,2);
+    list3->insert(0,list4,2);
     if(list3->get(0)->toValue() != 13
     ||list3->get(1)->toValue() != 14
     ||list3->get(2)->toValue() != 10
@@ -658,7 +655,7 @@ void testArrayList_Integer() {
 
     bool isException2 = false;
     try {
-      list5->merge(0,list6,100);
+      list5->insert(0,list6,100);
     } catch(ArrayIndexOutOfBoundsException e) {
       isException2 = true;
     }
@@ -806,6 +803,7 @@ void testArrayList_Integer() {
       printf("---[ArrayList<Integer> Test {insertFirst(ArrayList<Integer> list)} case3] [FAILED]--- \n");
       break;
     }
+
 /*
     ArrayList<Integer> list5;
     list3->insertFirst(list5);
@@ -932,17 +930,17 @@ void testArrayList_Integer() {
     list3->add(createInteger(1));
     list3->add(createInteger(2));
     list3->add(createInteger(3));
-
 /*
     ArrayList<Integer> list4;
     list3->insertLast(list4);
+*/
     if(list3->get(0)->toValue() != 1
       ||list3->get(1)->toValue() != 2
       ||list3->get(2)->toValue() != 3) {
         printf("---[ArrayList<Integer> Test {insertLast(ArrayList<Integer> v)} case3] [FAILED]--- \n");
         break;
     }
-*/
+
     if(list3->size() != 3) {
         printf("---[ArrayList<Integer> Test {insertLast(ArrayList<Integer> v)} case4] [FAILED]--- \n");
         break;
@@ -994,16 +992,21 @@ void testArrayList_Integer() {
       iterator->next();
       index++;
     }
-/*
+
     ArrayList<Integer> list1 = createArrayList<Integer>();
     ListIterator<Integer>iterator1 = list1->getIterator();
-    Integer v = iterator1->getValue();
-    
-    if(v != nullptr) {
+    bool isException = false;
+    try {
+        Integer v = iterator1->getValue();
+    } catch(ArrayIndexOutOfBoundsException e) {
+       isException = true;
+    }
+
+    if(!isException) {
       printf("---[ListIterator<Integer> Test {getValue()} case2] [FAILED]--- \n");
       break;
     }
-*/
+
     printf("---[ListIterator<Integer> Test {getValue()} case3] [OK]--- \n");
     break;
   }
@@ -1057,9 +1060,17 @@ void testArrayList_Integer() {
 
     ArrayList<Integer> list2 = createArrayList<Integer>();
     ListIterator<Integer> iterator2 = list2->getIterator();
-    if(iterator2->next()) {
+    bool isException = false;
+    try {
+      if(iterator2->next()) {
+        //nothing
+      }
+    } catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ListIterator<Integer> Test {next()} case2] [FAILED]--- \n");
-      break;
     }
 
     printf("---[ListIterator<Integer> Test {next()} case3] [OK]--- \n");

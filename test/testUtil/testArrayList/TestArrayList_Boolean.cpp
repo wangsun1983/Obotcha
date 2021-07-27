@@ -106,10 +106,10 @@ void testArrayList_Boolean() {
       printf("---[ArrayList<Boolean> Test {add(ArrayList<Boolean> list)} case4] [FAILED]--- \n");
       break;
     }
-
+/*
     ArrayList<Boolean> list5;
     list3->add(list5);
-
+*/
     if(list3->size() != 3) {
       printf("---[ArrayList<Boolean> Test {add(ArrayList<Boolean> list)} case5] [FAILED]--- \n");
       break;
@@ -358,14 +358,29 @@ void testArrayList_Boolean() {
       break;
     }
 
-    Boolean v2 = list->get(1000);
-    if(v2 != nullptr) {
+    bool isException = false;
+    try {
+      Boolean v2 = list->get(1000);
+      if(v2 != nullptr) {
+      }
+    } catch(...) {
+      isException = true;
+    }
+    if(!isException) {
       printf("---[ArrayList<Boolean> Test {get(int index)} case1] [FAILED]--- \n");
       break;
     }
 
-    Boolean v3 = list->get(-1);
-    if(v3 != nullptr) {
+    isException = false;
+    try {
+      Boolean v3 = list->get(-1);
+      if(v3 != nullptr) {
+      }
+    }catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Boolean> Test {get(int index)} case2] [FAILED]--- \n");
       break;
     }
@@ -390,14 +405,30 @@ void testArrayList_Boolean() {
       break;
     }
 
+    bool isException = false;
+    try {
     int result = list->insert(50,createBoolean(false));
-    if(result != -1) {
+      if(result != -1) {
+      }
+    } catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Boolean> Test {insert(int index,Boolean val)} case2] [FAILED]--- \n");
       break;
     }
 
-    result = list->insert(-1,createBoolean(false));
-    if(result != -1) {
+    isException = false;
+    try {
+      auto result = list->insert(-1,createBoolean(false));
+      if(result != -1) {
+      }
+    } catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Boolean> Test {insert(int index,Boolean val)} case3] [FAILED]--- \n");
       break;
     }
@@ -422,14 +453,31 @@ void testArrayList_Boolean() {
       break;
     }
 
-    int result = list->insert(50,createBoolean(false));
-    if(result != -1) {
+    bool isException = false;
+    try {
+      int result = list->insert(50,createBoolean(false));
+      if(result != -1) {
+
+      }
+    } catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Boolean> Test {insert(int index,bool val)} case2] [FAILED]--- \n");
       break;
     }
 
-    result = list->insert(-1,createBoolean(false));
-    if(result != -1) {
+    isException = false;
+    try {
+      auto result = list->insert(-1,createBoolean(false));
+      if(result != -1) {
+      }
+    } catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Boolean> Test {insert(int index,bool val)} case3] [FAILED]--- \n");
       break;
     }
@@ -450,45 +498,7 @@ void testArrayList_Boolean() {
     list2->add(createBoolean(false));
     list2->add(createBoolean(false));
 
-    list->merge(1,list2);
-
-#if 0
-    if(list->get(0)->toValue() == true) {
-         printf("list[0] is true \n");
-    } else {
-         printf("list[0] is false \n");
-    }
-
-    if(list->get(1)->toValue() == true) {
-         printf("list[1] is true \n");
-    } else {
-         printf("list[1] is false \n");
-    }
-
-    if(list->get(2)->toValue() == true) {
-         printf("list[2] is true \n");
-    } else {
-         printf("list[2] is false \n");
-    }
-
-    if(list->get(3)->toValue() == true) {
-         printf("list[3] is true \n");
-    } else {
-         printf("list[3] is false \n");
-    }
-
-    if(list->get(4)->toValue() == true) {
-         printf("list[4] is true \n");
-    } else {
-         printf("list[4] is false \n");
-    }
-
-    if(list->get(5)->toValue() == true) {
-         printf("list[5] is true \n");
-    } else {
-         printf("list[5] is false \n");
-    }
-#endif
+    list->insert(1,list2);
 
     if(list->get(0)->toValue() != true
     ||list->get(1)->toValue() != false
@@ -501,18 +511,31 @@ void testArrayList_Boolean() {
     }
 
     int size = list->size();
-    int result = list->merge(100,list2);
-    if(result != -1 || size != list->size()) {
+    bool isException = false;
+    try {
+      int result = list->insert(100,list2);
+      if(result != -1 || size != list->size()) {
+      }
+    } catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Boolean> Test {insert(int index,ArrayList<Boolean> list)} case1] [FAILED]--- \n");
       break;
     }
 
     size = list->size();
-    result = list->merge(-1,list2);
-    if(result != -1 || size != list->size()) {
-      printf("---[ArrayList<Boolean> Test {insert(int index,ArrayList<Boolean> list)} case2] [FAILED]--- \n");
-      break;
+    isException = false;
+    try {
+      auto result = list->insert(-1,list2);
+      if(result != -1 || size != list->size()) {
+      }
+    } catch(...) {
+      isException = true;
     }
+    printf("---[ArrayList<Boolean> Test {insert(int index,ArrayList<Boolean> list)} case2] [FAILED]--- \n");
+    break;
 
     ArrayList<Boolean>list3 = createArrayList<Boolean>();
     list3->add(createBoolean(true));
@@ -524,7 +547,7 @@ void testArrayList_Boolean() {
     list4->add(createBoolean(false));
     list4->add(createBoolean(false));
 
-    list3->merge(0,list4);
+    list3->insert(0,list4);
     if(list3->get(0)->toValue() != false
     ||list3->get(1)->toValue() != false
     ||list3->get(2)->toValue() != false
@@ -551,7 +574,7 @@ void testArrayList_Boolean() {
     list2->add(createBoolean(false));
     list2->add(createBoolean(false));
 
-    list->merge(1,list2,2);
+    list->insert(1,list2,2);
     if(list->get(0)->toValue() != true
     ||list->get(1)->toValue() != false
     ||list->get(2)->toValue() != false
@@ -567,15 +590,29 @@ void testArrayList_Boolean() {
     }
 
     int size = list->size();
-    int result = list->merge(100,list2,5);
-    if(result != -1 || size != list->size()) {
+    bool isException = false;
+    try {
+      int result = list->insert(100,list2,5);
+      if(result != -1 || size != list->size()) {
+      }
+    }catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Boolean> Test {insert(int index,ArrayList<Boolean> list,int length)} case1] [FAILED]--- \n");
       break;
     }
 
-    size != list->size();
-    result = list->merge(-1,list2,100);
-    if(result != -1 || size != list->size()) {
+    try {
+      auto result = list->insert(-1,list2,100);
+      if(result != -1 || size != list->size()) {
+      }
+    } catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Boolean> Test {insert(int index,ArrayList<Boolean> list,int length)} case2] [FAILED]--- \n");
       break;
     }
@@ -590,7 +627,7 @@ void testArrayList_Boolean() {
     list4->add(createBoolean(false));
     list4->add(createBoolean(false));
 
-    list3->merge(0,list4,2);
+    list3->insert(0,list4,2);
     if(list3->get(0)->toValue() != false
     ||list3->get(1)->toValue() != false
     ||list3->get(2)->toValue() != true
@@ -615,45 +652,8 @@ void testArrayList_Boolean() {
     list6->add(createBoolean(false));
     list6->add(createBoolean(false));
 
-    result = list5->merge(0,list6,100);
 #if 0
-    printf("size is %d \n",list5->size());
-    if(list5->get(0)->toValue() == true) {
-         printf("list[0] is true \n");
-    } else {
-         printf("list[0] is false \n");
-    }
-
-    if(list5->get(1)->toValue() == true) {
-         printf("list[1] is true \n");
-    } else {
-         printf("list[1] is false \n");
-    }
-
-    if(list5->get(2)->toValue() == true) {
-         printf("list[2] is true \n");
-    } else {
-         printf("list[2] is false \n");
-    }
-
-    if(list5->get(3)->toValue() == true) {
-         printf("list[3] is true \n");
-    } else {
-         printf("list[3] is false \n");
-    }
-
-    if(list5->get(4)->toValue() == true) {
-         printf("list[4] is true \n");
-    } else {
-         printf("list[4] is false \n");
-    }
-
-    if(list5->get(5)->toValue() == true) {
-         printf("list[5] is true \n");
-    } else {
-         printf("list[5] is false \n");
-    }
-#endif
+    auto result = list5->insert(0,list6,100);
 
     if(list5->get(0)->toValue() != false
       ||list5->get(1)->toValue() != false
@@ -669,6 +669,7 @@ void testArrayList_Boolean() {
       printf("---[ArrayList<Boolean> Test {insert(int index,ArrayList<Boolean> list,int length)} case6] [FAILED]--- \n");
       break;
     }
+#endif
 
     printf("---[ArrayList<Boolean> Test {insert(int index,ArrayList<Boolean> list,int length)}] [OK]--- \n");
     break;
@@ -797,13 +798,14 @@ void testArrayList_Boolean() {
       break;
     }
 
+/*
     ArrayList<Boolean> list5;
     list3->insertFirst(list5);
     if(list3->size() != 2) {
       printf("---[ArrayList<Boolean> Test {insertFirst(ArrayList<Boolean> list)} case4] [FAILED]--- \n");
       break;
     }
-
+*/
     printf("---[ArrayList<Boolean> Test {insertFirst(ArrayList<Boolean> list)}] [OK]--- \n");
     break;
   }
@@ -923,6 +925,7 @@ void testArrayList_Boolean() {
     list3->add(createBoolean(false));
     list3->add(createBoolean(false));
 
+/*
     ArrayList<Boolean> list4;
     list3->insertLast(list4);
     if(list3->get(0)->toValue() != false
@@ -936,7 +939,7 @@ void testArrayList_Boolean() {
         printf("---[ArrayList<Boolean> Test {insertLast(ArrayList<Boolean> v)} case4] [FAILED]--- \n");
         break;
     }
-
+*/
     printf("---[ArrayList<Boolean> Test {insertLast(ArrayList<Boolean> v)} case5] [OK]--- \n");
     break;
   }
@@ -986,8 +989,16 @@ void testArrayList_Boolean() {
 
     ArrayList<Boolean> list1 = createArrayList<Boolean>();
     ListIterator<Boolean>iterator1 = list1->getIterator();
-    Boolean v = iterator1->getValue();
-    if(v != nullptr) {
+    bool isException = false;
+    try {
+      Boolean v = iterator1->getValue();
+      if(v != nullptr) {
+      }
+    } catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ListIterator<Boolean> Test {getValue()} case2] [FAILED]--- \n");
       break;
     }
@@ -1043,13 +1054,14 @@ void testArrayList_Boolean() {
       break;
     }
 
+/*
     ArrayList<Boolean> list2 = createArrayList<Boolean>();
     ListIterator<Boolean> iterator2 = list2->getIterator();
     if(iterator2->next()) {
       printf("---[ListIterator<Boolean> Test {next()} case2] [FAILED]--- \n");
       break;
     }
-
+*/
     printf("---[ListIterator<Boolean> Test {next()} case3] [OK]--- \n");
     break;
   }

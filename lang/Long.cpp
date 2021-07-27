@@ -83,7 +83,7 @@ sp<_Long> _Long::parseDecLong(const sp<_String> &v) {
         String pa = v->trimAll();
         long value = _Number::parseDecNumber(pa->getStdString());
         return createLong(value);
-    } catch(const char *err){}
+    } catch(...){}
 
     return nullptr;
 }
