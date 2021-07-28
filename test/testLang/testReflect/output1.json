@@ -1,0 +1,30 @@
+{
+	"member1" : 
+	{
+		"boolData" : false,
+		"byteData" : 2,
+		"doubleData" : 1.1,
+		"floatData" : 2.2,
+		"intData" : 1,
+		"longData" : 3,
+		"stringData" : "a",
+		"uint16Data" : 5,
+		"uint32Data" : 6,
+		"uint64Data" : 7,
+		"uint8Data" : 4
+	},
+	"member2" : 
+	{
+		"boolData" : false,
+		"byteData" : 12,
+		"doubleData" : 11.1,
+		"floatData" : 12.2,
+		"intData" : 11,
+		"longData" : 13,
+		"stringData" : "b",
+		"uint16Data" : 15,
+		"uint32Data" : 16,
+		"uint64Data" : 17,
+		"uint8Data" : 14
+	}
+}

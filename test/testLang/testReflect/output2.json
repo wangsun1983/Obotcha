@@ -1,0 +1,23 @@
+{
+	"lists" : 
+	[
+		{
+			"boolMember" : true,
+			"intMember" : 1,
+			"stringMember" : "1",
+			"uint64Member" : 1
+		},
+		{
+			"boolMember" : true,
+			"intMember" : 21,
+			"stringMember" : "2",
+			"uint64Member" : 21
+		},
+		{
+			"boolMember" : true,
+			"intMember" : 31,
+			"stringMember" : "3",
+			"uint64Member" : 31
+		}
+	]
+}

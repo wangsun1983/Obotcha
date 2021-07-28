@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<XmlReflectData2>
+	<map>
+		<content2>
+			<tag3>
+				<data2>6</data2>
+				<data1>5</data1>
+			</tag3>
+			<tag2>
+				<data2>4</data2>
+				<data1>3</data1>
+			</tag2>
+		</content2>
+		<content1>
+			<tag3>
+				<data2>6</data2>
+				<data1>5</data1>
+			</tag3>
+			<tag1>
+				<data2>2</data2>
+				<data1>1</data1>
+			</tag1>
+			<tag2>
+				<data2>4</data2>
+				<data1>3</data1>
+			</tag2>
+		</content1>
+	</map>
+</XmlReflectData2>
+

@@ -1,0 +1,15 @@
+{
+	"mmaps" : 
+	{
+		"value1" : 
+		{
+			"data1" : 1,
+			"data2" : 2
+		},
+		"value2" : 
+		{
+			"data1" : 3,
+			"data2" : 4
+		}
+	}
+}
