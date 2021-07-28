@@ -1,25 +1,17 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "Thread.hpp"
-#include "Runnable.hpp"
-#include "BlockingQueue.hpp"
-#include "ExecutorService.hpp"
-#include "Integer.hpp"
-#include "Executors.hpp"
-#include "Future.hpp"
-#include "System.hpp"
-#include "Error.hpp"
-#include "IllegalStateException.hpp"
+#include "Object.hpp"
+#include "Exception.hpp"
 
 using namespace obotcha;
 
 DECLARE_EXCEPTION(MyException) {
 public:
-	MyException(const char * str):Exception(str){
+    MyException(const char * str):Exception(str){
 
     }
-	MyException(String str):Exception(str) {}
+    MyException(String str):Exception(str) {}
 };
 
 
@@ -32,22 +24,20 @@ void doException() {
     Trigger(MyException,exception);
 }
 
-DECLARE_SIMPLE_CLASS(MyTT) {
-public:
-    int i;
-    MyTT sayhello() {
-        printf("hello");
-        i = 100;
-        return AutoClone(this);
-    }
-};
 
 int main() {
+    bool isException = false;
+
     try {
-		doException();
-	}catch(MyException e) {
-		printf("error !!! \n");
-		printf("msg is %s \n",e.getErrInfo()->toChars());
-	}
+        doException();
+    }catch(MyException e) {
+        isException = true;
+    }
+
+    if(!isException) {
+        printf("---[Exception test1] [FAILED]--- \n");
+    }
+
+    printf("---[Exception test1] [OK]--- \n");
     return 1;
 }
