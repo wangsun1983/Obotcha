@@ -167,10 +167,12 @@ public:
     DUMMY_REFLECT_HASHMAP_FUNCTION(bool)
     DUMMY_REFLECT_HASHMAP_FUNCTION(double)
     DUMMY_REFLECT_HASHMAP_FUNCTION(float)
+    DUMMY_REFLECT_HASHMAP_FUNCTION(long)
     DUMMY_REFLECT_HASHMAP_FUNCTION(uint8_t)
     DUMMY_REFLECT_HASHMAP_FUNCTION(uint16_t)
     DUMMY_REFLECT_HASHMAP_FUNCTION(uint32_t)
     DUMMY_REFLECT_HASHMAP_FUNCTION(uint64_t)
+    DUMMY_REFLECT_HASHMAP_FUNCTION(std::string)
 
     inline sp<_ArrayList<sp<_KeyValuePair<sp<_Object>,sp<_Object>>>>> __getMapItemObjects(std::string name){
        return reflectItemFunc<T,U>(this).get(name);
