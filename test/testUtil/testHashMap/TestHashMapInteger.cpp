@@ -34,7 +34,6 @@ void testHashMapInteger() {
       break;
     }
 
-#if 0
     //void put(T t,U u)/get(T t)
     while(1) {
         HashMap<Integer,TT2> map = createHashMap<Integer,TT2>();
@@ -267,6 +266,23 @@ void testHashMapInteger() {
       break;
 
     }
-#endif
 
+    while(1) {
+      HashMap<Integer,String> map = createHashMap<Integer,String>();
+      map->put(createInteger(1),createString("hello"));
+      map->put(createInteger(1),createString("hello3"));
+      String str = map->get(createInteger(1));
+      if(str == nullptr) {
+        printf("---[MapIterator Integer Test special equal case1] [FAIL]--- \n");
+        break;
+      }
+
+      if(!str->equals("hello3")) {
+        printf("---[MapIterator Integer Test special equal case2] [FAIL]--- \n");
+        break;
+      }
+
+      printf("---[MapIterator Integer Test special equal case3] [OK]--- \n");
+      break;
+    }
 }

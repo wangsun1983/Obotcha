@@ -5,9 +5,9 @@
 #include <unistd.h>    
 #include <sys/types.h>
 #include <fstream>
+#include <string>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 #include "String.hpp"
 #include "Exception.hpp"
@@ -19,6 +19,35 @@ public:
 	ValueNotFoundException(const char * str):Exception(str){}
 	ValueNotFoundException(String str):Exception(str) {}
 };
+
+template<typename T>
+class __NotFoundValue {
+public:
+    T getValue() {
+        return nullptr;
+    }
+};
+
+
+#define MACRO_VALUE_NOT_FOUND(X) \
+template<>\
+class __NotFoundValue<X> { \
+public:\
+    X getValue() {\
+        Trigger(ValueNotFoundException,"not found");\
+    }\
+};\
+
+MACRO_VALUE_NOT_FOUND(int)
+MACRO_VALUE_NOT_FOUND(bool)
+MACRO_VALUE_NOT_FOUND(double)
+MACRO_VALUE_NOT_FOUND(float)
+MACRO_VALUE_NOT_FOUND(long)
+MACRO_VALUE_NOT_FOUND(uint8_t)
+MACRO_VALUE_NOT_FOUND(uint16_t)
+MACRO_VALUE_NOT_FOUND(uint32_t)
+MACRO_VALUE_NOT_FOUND(uint64_t)
+MACRO_VALUE_NOT_FOUND(std::string)
 
 }
 

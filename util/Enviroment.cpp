@@ -1,6 +1,5 @@
 #include "Enviroment.hpp"
 #include "AutoLock.hpp"
-#include "ValueNotFoundException.hpp"
 #include "System.hpp"
 
 namespace obotcha {

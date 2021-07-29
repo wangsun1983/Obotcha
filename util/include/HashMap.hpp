@@ -9,6 +9,7 @@
 #include "StrongPointer.hpp"
 
 #include "NullPointerException.hpp"
+#include "ValueNotFoundException.hpp"
 #include "HashKey.hpp"
 #include "KeyValuePair.hpp"
 
@@ -19,22 +20,21 @@ class _MapIterator;
 
 #define DUMMY_REFLECT_HASHMAP_FUNCTION(X) \
 template<typename E>\
-    class reflectItemFunc<X,E>\
+class reflectItemFunc<X,E>\
+{\
+    public:\
+    reflectItemFunc(_HashMap<X,E> *p) {\
+    }\
+    sp<_ArrayList<sp<_KeyValuePair<sp<_Object>,sp<_Object>>>>> get(std::string name)\
     {\
-        public:\
-        reflectItemFunc(_HashMap<X,E> *p) {\
-        }\
-        sp<_ArrayList<sp<_KeyValuePair<sp<_Object>,sp<_Object>>>>> get(std::string name)\
-        {\
-            return nullptr;\
-        }\
-        void add(std::string name,sp<_Object> key,sp<_Object> value) {\
-        }\
-        sp<_KeyValuePair<sp<_Object>,sp<_Object>>> create(std::string name) {\
-            return nullptr;\
-        }\
-    };\
-
+        return nullptr;\
+    }\
+    void add(std::string name,sp<_Object> key,sp<_Object> value) {\
+    }\
+    sp<_KeyValuePair<sp<_Object>,sp<_Object>>> create(std::string name) {\
+        return nullptr;\
+    }\
+};\
 
 //----------------------- HashMap<T,U> -----------------------
 DECLARE_CLASS(HashMap,2) {
@@ -53,7 +53,8 @@ public:
             return ite->second;
         }
 
-        return nullptr;
+        __NotFoundValue<U> v;
+        return v.getValue();
     }
 
     void remove(const T &t) {
@@ -206,8 +207,6 @@ DECLARE_CLASS(MapIterator,2) {
 public:
     _MapIterator(_HashMap<T,U> *map) {
         mHashMap.set_pointer(map);
-        //map->incStrong(0);
-
         iterator = map->begin();
     }
 
@@ -217,10 +216,18 @@ public:
     }
 
     T getKey() {
+        if(iterator == mHashMap->end()) {
+            Trigger(ArrayIndexOutOfBoundsException,"no data");
+        }
+
         return iterator->first;
     }
 
     U getValue() {
+        if(iterator == mHashMap->end()) {
+            Trigger(ArrayIndexOutOfBoundsException,"no data");
+        }
+
         return iterator->second;
     }
 
