@@ -7,6 +7,7 @@
 #include "FileInputStream.hpp"
 #include "ArrayList.hpp"
 #include "testCalendar.hpp"
+#include "StringReader.hpp"
 
 using namespace obotcha;
 
@@ -48,9 +49,11 @@ ArrayList<TimeData> analyse(File f) {
     bool isStart = true;
     TimeData data = nullptr;
     ArrayList<TimeData> list = createArrayList<TimeData>();
+    StringReader reader = createStringReader(stream);
 
     while(1) {
-      String content = stream->readLine();
+
+      String content = reader->readLine();
       if(content == nullptr) {
         break;
       }
@@ -81,67 +84,67 @@ ArrayList<TimeData> analyse(File f) {
           //}
       } else if(content->indexOf("time") != -1) {
           int index = content->lastIndexOf(" ");
-          String timeStr = content->subString(index + 1,content->size() - 1);
+          String timeStr = content->subString(index + 1,content->size() - index - 1);
           long value = timeStr->toBasicLong();
           data->time = value;
           //printf("time is %ld \n",data->time);
       } else if(content->indexOf("hour") != -1) {
           int index = content->lastIndexOf(" ");
-          String hourStr = content->subString(index + 1,content->size() - 1);
+          String hourStr = content->subString(index + 1,content->size() - index - 1);
           int value = hourStr->toBasicInt();
           data->hour = value;
           //printf("hour is %d \n",data->hour);
       } else if(content->indexOf("minute") != -1) {
           int index = content->lastIndexOf(" ");
-          String minuteStr = content->subString(index + 1,content->size() - 1);
+          String minuteStr = content->subString(index + 1,content->size() - index - 1);
           int value = minuteStr->toBasicInt();
           data->minute = value;
           //printf("minute is %d \n",data->minute);
       } else if(content->indexOf("millisecond") != -1) {
           int index = content->lastIndexOf(" ");
-          String millStr = content->subString(index + 1,content->size() - 1);
+          String millStr = content->subString(index + 1,content->size() - index - 1);
           int value = millStr->toBasicInt();
           data->millisecond = value;
           //printf("millisecond is %d \n",data->millisecond);
       } else if(content->indexOf("dayOfYear") != -1) {
           int index = content->lastIndexOf(" ");
-          String dayOfYearStr = content->subString(index + 1,content->size() - 1);
+          String dayOfYearStr = content->subString(index + 1,content->size() - index - 1);
           int value = dayOfYearStr->toBasicInt();
           data->dayOfYear = value;
           //printf("dayOfYear is %d \n",data->dayOfYear);
       } else if(content->indexOf("dayOfWeek") != -1) {
           int index = content->lastIndexOf(" ");
-          String dayOfWeekStr = content->subString(index + 1,content->size() - 1);
+          String dayOfWeekStr = content->subString(index + 1,content->size() - index - 1);
           int value = dayOfWeekStr->toBasicInt();
           data->dayOfWeek = value;
           //printf("dayOfWeek is %d \n",data->dayOfWeek);
       } else if(content->indexOf("dayOfMonth") != -1) {
           int index = content->lastIndexOf(" ");
-          String dayOfMonthStr = content->subString(index + 1,content->size() - 1);
+          String dayOfMonthStr = content->subString(index + 1,content->size() - index - 1);
           int value = dayOfMonthStr->toBasicInt();
           data->dayOfMonth = value;
           //printf("dayOfMonth is %d \n",data->dayOfMonth);
       } else if(content->indexOf("year") != -1) {
           int index = content->lastIndexOf(" ");
-          String yearStr = content->subString(index + 1,content->size() - 1);
+          String yearStr = content->subString(index + 1,content->size() - index - 1);
           int value = yearStr->toBasicInt();
           data->year = value;
           //printf("year is %d \n",data->year);
       } else if(content->indexOf("month") != -1) {
           int index = content->lastIndexOf(" ");
-          String monthStr = content->subString(index + 1,content->size() - 1);
+          String monthStr = content->subString(index + 1,content->size() - index - 1);
           int value = monthStr->toBasicInt();
           data->month = value;
           //printf("month is %d \n",data->month);
       } else if(content->indexOf("day") != -1) {
           int index = content->lastIndexOf(" ");
-          String dayStr = content->subString(index + 1,content->size() - 1);
+          String dayStr = content->subString(index + 1,content->size() - index - 1);
           int value = dayStr->toBasicInt();
           data->day = value;
           //printf("day is %d \n",data->day);
       } else if(content->indexOf("second") != -1) {
           int index = content->lastIndexOf(" ");
-          String secondStr = content->subString(index + 1,content->size() - 1);
+          String secondStr = content->subString(index + 1,content->size() - index - 1);
           int value = secondStr->toBasicInt();
           data->second = value;
           //printf("second is %d \n",data->second);

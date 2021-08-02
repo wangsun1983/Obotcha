@@ -19,14 +19,14 @@ extern ArrayList<TimeData> monthList;
 
 extern int convertDayOfWeekFromJava(int);
 
-int testCalendarDecreaseYear() {
+int testCalendarDecreaseYear(int interval) {
     int size = yearList->size();
     TimeData d1 = yearList->get(size - 1);
 
     Calendar c1 = createCalendar(d1->time);
 
-    for(int i = size-2;i > 0;i--) {
-        c1->decreaseYear(1);
+    for(int i = size-2;i > 0;i-= interval) {
+        c1->decreaseYear(interval);
         d1 = yearList->get(i);
         if(c1->get(st(Calendar)::Year) != d1->year ||
              c1->get(st(Calendar)::Month) != d1->month ||
@@ -56,14 +56,14 @@ int testCalendarDecreaseYear() {
     return 0;
 }
 
-int testCalendarDecreaseDay() {
+int testCalendarDecreaseDay(interval) {
     int size = dateList->size();
     TimeData d1 = dateList->get(size - 1);
 
     Calendar c1 = createCalendar(d1->time);
 
-    for(int i = size-2;i > 0;i--) {
-        c1->decreaseDay(1);
+    for(int i = size-2;i > 0;i-=interval) {
+        c1->decreaseDay(interval);
         d1 = dateList->get(i);
         if(c1->get(st(Calendar)::Year) != d1->year ||
              c1->get(st(Calendar)::Month) != d1->month ||
@@ -93,12 +93,12 @@ int testCalendarDecreaseDay() {
     return 0;
 }
 
-int testCalendarDecreaseMonth() {
+int testCalendarDecreaseMonth(int interval) {
     int size = monthList->size();
     TimeData d1 = monthList->get(size - 1);
     Calendar c1 = createCalendar(d1->time);
-    for(int i = size-2;i > 0;i--) {
-        c1->decreaseMonth(1);
+    for(int i = size-2;i > 0;i-=interval) {
+        c1->decreaseMonth(interval);
         d1 = monthList->get(i);
         if(c1->get(st(Calendar)::Year) != d1->year ||
              c1->get(st(Calendar)::Month) != d1->month ||
@@ -130,12 +130,12 @@ int testCalendarDecreaseMonth() {
 
 
 //increaseHour
-int testCalendarDecreaseHour() {
+int testCalendarDecreaseHour(int interval) {
     int size = hourList->size();
     TimeData d1 = hourList->get(size - 1);
     Calendar c1 = createCalendar(d1->time);
-    for(int i = size - 2;i > 0;i--) {
-        c1->decreaseHour(1);
+    for(int i = size - 2;i > 0;i-=interval) {
+        c1->decreaseHour(interval);
         d1 = hourList->get(i);
         if(c1->get(st(Calendar)::Year) != d1->year ||
              c1->get(st(Calendar)::Month) != d1->month ||
@@ -166,12 +166,12 @@ int testCalendarDecreaseHour() {
 }
 
 //increaseMinute
-int testCalendarDecreaseMinute() {
+int testCalendarDecreaseMinute(int interval) {
     int size = minuteList->size();
     TimeData d1 = minuteList->get(size - 1);
     Calendar c1 = createCalendar(d1->time);
-    for(int i = size - 2;i > 0;i--) {
-        c1->decreaseMinute(1);
+    for(int i = size - 2;i > 0;i-=interval) {
+        c1->decreaseMinute(interval);
         d1 = minuteList->get(i);
         if(c1->get(st(Calendar)::Year) != d1->year ||
              c1->get(st(Calendar)::Month) != d1->month ||
@@ -202,12 +202,12 @@ int testCalendarDecreaseMinute() {
 }
 
 //secondList
-int testCalendarDecreaseSecond() {
+int testCalendarDecreaseSecond(int interval) {
     int size = secondList->size();
     TimeData d1 = secondList->get(size - 1);
     Calendar c1 = createCalendar(d1->time);
-    for(int i = size - 2;i > 0;i--) {
-        c1->decreaseSecond(1);
+    for(int i = size - 2;i > 0;i-=interval) {
+        c1->decreaseSecond(interval);
         d1 = secondList->get(i);
         if(c1->get(st(Calendar)::Year) != d1->year ||
              c1->get(st(Calendar)::Month) != d1->month ||

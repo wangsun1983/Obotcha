@@ -30,7 +30,8 @@ _Calendar::_Calendar(int _year,int _month,int _dayOfMonth,int _hour = 0,int _min
     }
 
     month = _month;
-
+    year = _year;
+    
     int *_days = getDays(year);
     dayOfMonth = _days[month];
     dayOfMonth = _dayOfMonth;
@@ -71,7 +72,7 @@ bool _Calendar::isValid(int year, int month, int day, int hour, int minute, int 
 
     return
 		(year >= 0 && year <= 9999) &&
-		(month >= 1 && month <= 12) &&
+		(month >= 0 && month <= 11) &&
 		(day >= 1 && day <= _days[month]) &&
 		(hour >= 0 && hour <= 23) &&
 		(minute >= 0 && minute <= 59) &&
@@ -81,10 +82,6 @@ bool _Calendar::isValid(int year, int month, int day, int hour, int minute, int 
 
 void _Calendar::init() {
 
-    //auto mTime = std::chrono::milliseconds(timeMillis);
-    //auto tp = std::chrono::time_point<std::chrono::system_clock,std::chrono::milliseconds>(mTime);
-    //auto tt = std::chrono::system_clock::to_time_t(tp);
-    //std::tm* now = std::gmtime(&tt);
     time_t timeT = timeMillis/1000l;
     
     struct tm now;
