@@ -106,7 +106,7 @@ int _ThreadPriorityPoolExecutor::shutdown() {
 
     mThreads->foreach([](Thread &t){
         t->interrupt();
-        return 1;
+        return Global::Continue;
     });
 
     return 0;
@@ -122,9 +122,9 @@ bool _ThreadPriorityPoolExecutor::isTerminated() {
     mThreads->foreach([&isTerminated](Thread &t) {
         if(t->getStatus() != st(Thread)::Complete) {
             isTerminated = false;
-            return -1;
+            return Global::Break;
         }
-        return 1;
+        return Global::Continue;
     });
 
     return isTerminated;

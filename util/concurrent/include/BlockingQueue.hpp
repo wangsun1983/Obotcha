@@ -96,7 +96,7 @@ public:
     inline void foreach(foreachCallback callback) {
         AutoLock l(mMutex);
         for (T value:mQueue) {
-            if(callback(value) < 0) {
+            if(callback(value) == Global::Break) {
                 break;
             }
         }

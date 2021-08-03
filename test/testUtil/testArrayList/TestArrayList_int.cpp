@@ -1044,16 +1044,8 @@ void testArrayList_dataType_int() {
 
     ArrayList<int> list2 = createArrayList<int>();
     ListIterator<int> iterator2 = list2->getIterator();
-    bool isException = false;
-    try {
-      if(iterator2->next()) {
 
-      }
-    } catch(...) {
-      isException = true;
-    }
-
-    if(!isException) {
+    if(iterator2->next()) {
       printf("---[ListIterator<int> Test {next()} case2] [FAILED]--- \n");
       break;
     }

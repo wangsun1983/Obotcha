@@ -1052,7 +1052,13 @@ void testArrayList_Integer() {
     ListIterator<Integer> iterator = list->getIterator();
 
     iterator->next();
+    Integer v1 = iterator->getValue();
+    printf("v1 is %d \n",v1->toValue());
+
     iterator->next();
+    Integer v2 = iterator->getValue();
+    printf("v2 is %d \n",v2->toValue());
+
     if(iterator->next()) {
       printf("---[ListIterator<Integer> Test {next()} case1] [FAILED]--- \n");
       break;
@@ -1060,16 +1066,7 @@ void testArrayList_Integer() {
 
     ArrayList<Integer> list2 = createArrayList<Integer>();
     ListIterator<Integer> iterator2 = list2->getIterator();
-    bool isException = false;
-    try {
-      if(iterator2->next()) {
-        //nothing
-      }
-    } catch(...) {
-      isException = true;
-    }
-
-    if(!isException) {
+    if(iterator2->next()) {
       printf("---[ListIterator<Integer> Test {next()} case2] [FAILED]--- \n");
     }
 

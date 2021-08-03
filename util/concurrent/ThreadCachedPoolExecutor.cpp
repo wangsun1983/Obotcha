@@ -47,7 +47,7 @@ int _ThreadCachedPoolExecutor::shutdown(){
     mTasks->freeze();
     mTasks->foreach([](FutureTask &t) {
         t->cancel();
-        return 1;
+        return Global::Continue;
     });
     //notify all thread to close
     mTasks->destroy();
@@ -57,7 +57,7 @@ int _ThreadCachedPoolExecutor::shutdown(){
         AutoLock l(mHandlerMutex);
         mHandlers->foreach([](Thread &t) {
             t->interrupt();
-            return 1;
+            return Global::Continue;
         });
     }
     return 0;

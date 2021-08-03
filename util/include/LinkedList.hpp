@@ -66,15 +66,10 @@ public:
     void enQueueLast(const T &t) {
         LinkedListData<T> data = createLinkedListData<T>(t);
         count++;
-        if(head == nullptr) {
-            head = data;
-            tail = head;
-            return;
-        }
-
-        tail->next = data;
+        
         data->prev = tail;
         tail = data;
+        ((head==nullptr)?head:data->prev->next) = data;
     }
 
     T at(int index) {
@@ -93,47 +88,30 @@ public:
     void enQueueFirst(const T &t) {
         LinkedListData<T> data = createLinkedListData<T>(t);
         count++;
-        if(head == nullptr) {
-            head = data;
-            tail = head;
-            return;
-        }
-
+        
         data->next = head;
-        head->prev = data;
         head = data;
+        ((tail==nullptr)?tail:data->next->prev) = data;
     }
 
     T deQueueLast() {
-        if(head == nullptr) {
-            return nullptr;
-        }
-
-        T data = tail->data;
-        count--;
-        if(head == tail) {
-            head = nullptr;
-            tail = nullptr;
-        } else {
+        T data;
+        if(count != 0) {
+            data = tail->data;
             tail = tail->prev;
-            tail->next = nullptr;
+            ((tail == nullptr)?head:tail->next) = nullptr;
+            count--;
         }
         return data;
     }
 
     T deQueueFirst() {
-        if(head == nullptr) {
-            return nullptr;
-        }
-        
-        T data = head->data;
-        count--;
-        if(head == tail) {
-            head = nullptr;
-            tail = nullptr;
-        } else {
+        T data;
+        if(count != 0) {
+            data = head->data;
             head = head->next;
-            head->prev = nullptr;
+            ((head == nullptr)?tail:head->prev) = nullptr;
+            count--;
         }
 
         return data;
@@ -144,7 +122,7 @@ public:
     inline void foreach(foreachCallback callback) {
         LinkedListData<T> current = head;
         while(current != nullptr) {
-            if(callback(current->data) < 0) {
+            if(callback(current->data) == Global::Break) {
                 break;
             }
             current = current->next;

@@ -16,6 +16,8 @@ extern void testArrayList_String();
 extern void testArrayList_Add();
 extern void testArrayList_Remove();
 extern int testArrayList_dataType_int();
+extern void testArrayList_Construct();
+extern void testArrayList_InsertLast();
 
 int main() {
   testArrayList_Integer();
@@ -26,4 +28,6 @@ int main() {
   testArrayList_Remove();
   testArrayList_Boolean();
   testArrayList_dataType_int();
+  testArrayList_Construct();
+  testArrayList_InsertLast();
 }

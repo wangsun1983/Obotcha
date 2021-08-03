@@ -274,19 +274,25 @@ void testArrayList_Boolean() {
 
     Boolean t1;
     int result = list->set(1,t1);
-    if(result != -1) {
+    if(result != 0) {
       printf("---[ArrayList<Boolean> Test {set(int index,Boolean val)} case2] [FAILED]--- \n");
       break;
     }
 
-    result = list->set(100,createBoolean(true));
-    if(result != -1) {
+    bool isException = false;
+    try {
+      result = list->set(100,createBoolean(true));
+    } catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Boolean> Test {set(int index,Boolean val)} case3] [FAILED]--- \n");
       break;
     }
 
     if(list->get(0)->toValue() != true
-    ||list->get(1)->toValue() != false
+    ||list->get(1) != nullptr
     ||list->get(2)->toValue() != false) {
       printf("---[ArrayList<Boolean> Test {set(int index,Boolean val)} case4] [FAILED]--- \n");
       break;
@@ -318,19 +324,25 @@ void testArrayList_Boolean() {
 
     Boolean t1;
     int result = list->set(1,t1);
-    if(result != -1) {
+    if(result != 0) {
       printf("---[ArrayList<Boolean> Test {set(int index,bool val)} case2] [FAILED]--- \n");
       break;
     }
 
-    result = list->set(100,createBoolean(true));
-    if(result != -1) {
+    bool isException = false;
+    try {
+      result = list->set(100,createBoolean(true));
+    } catch(...) {
+      isException = true;
+    }
+
+    if(!isException) {
       printf("---[ArrayList<Boolean> Test {set(int index,bool val)} case3] [FAILED]--- \n");
       break;
     }
 
     if(list->get(0)->toValue() != true
-    ||list->get(1)->toValue() != false
+    ||list->get(1) != nullptr
     ||list->get(2)->toValue() != false) {
       printf("---[ArrayList<Boolean> Test {set(int index,bool val)} case4] [FAILED]--- \n");
       break;
@@ -534,8 +546,11 @@ void testArrayList_Boolean() {
     } catch(...) {
       isException = true;
     }
-    printf("---[ArrayList<Boolean> Test {insert(int index,ArrayList<Boolean> list)} case2] [FAILED]--- \n");
-    break;
+
+    if(!isException) {
+      printf("---[ArrayList<Boolean> Test {insert(int index,ArrayList<Boolean> list)} case2] [FAILED]--- \n");
+      break;
+    }
 
     ArrayList<Boolean>list3 = createArrayList<Boolean>();
     list3->add(createBoolean(true));

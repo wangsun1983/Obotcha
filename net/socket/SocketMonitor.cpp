@@ -256,7 +256,7 @@ void _SocketMonitor::close() {
         AutoLock l(mMutex);
         mThreadLocalTasks->foreach([](LinkedList<SocketMonitorTask> &list){
             list->clear();
-            return 1;
+            return Global::Continue;
         });
 
         mSocks->clear();

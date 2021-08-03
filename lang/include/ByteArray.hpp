@@ -55,7 +55,7 @@ public:
     using foreachCallback = std::function<int(byte &)>;
     inline void foreach(foreachCallback callback) {
         for(int i = 0;i < mSize;i++) {
-            if(callback(buff[i]) < 0) {
+            if(callback(buff[i]) == Global::Break) {
                 break;
             }
         }

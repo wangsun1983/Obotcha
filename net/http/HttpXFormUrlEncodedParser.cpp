@@ -13,7 +13,7 @@ ArrayList<KeyValuePair<String,String>> _HttpXFormUrlEncodedParser::parse(String 
                     result->add(createKeyValuePair<String,String>(kv->get(0),kv->get(1)));
                 }
             }
-            return 1;
+            return Global::Continue;
         });
     } else {
         ArrayList<String> kv = content->split("=");

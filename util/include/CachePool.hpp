@@ -2,7 +2,6 @@
 #define __OBOTCHA_CACHE_POOL_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "ArrayList.hpp"
 #include "Mutex.hpp"
 #include "AutoLock.hpp"
@@ -11,54 +10,53 @@
 
 namespace obotcha {
 
-enum CachePoolType {
-    CachePoolTypeSync = 0,
-    CachePoolTypeASync
-};
-
 DECLARE_CLASS(CachePool,1) {
 public:
 
-    _CachePool(int size,int type = CachePoolTypeASync,int timeout = -1) {
-        //mCaches = createArrayList<T>();
+    _CachePool(int capacity = 32,int type = Global::ASync,int timeout = -1) {
         mCaches = createLinkedList<T>();
-        mSize = size;
+        mCapacity = capacity;
         mMutex = createMutex("CachePool");
-        if(type == CachePoolTypeSync) {
-            mCondtion = createCondition();
+        if(type == Global::Sync) {
+            mCondition = createCondition();
         }
         mType = type;
-
         mTimeout = timeout;
     }
 
-    int add(T t) {
+    int enqueue(T t) {
         AutoLock l(mMutex);
-        if(mCaches->size() < mSize) {
-            mCaches->enQueueLast(t);
-            if(mType == CachePoolTypeSync) {
-                mCondtion->notify();
+        while(1) {
+            if(mCaches->size() < mCapacity) {
+                mCaches->enQueueLast(t);
+                if(mType == Global::Sync) {
+                    mCondition->notify();
+                }
+                return 0;
+            } else {
+                if(mType == Global::Sync) {
+                    mCondition->wait(mMutex);
+                    continue;
+                }
+                return -1;
             }
-            return 0;
         }
-
-        return  -1;
     }
 
-    T get() {
+    T dequeue() {
         while(1) {
             AutoLock l(mMutex);
             if(mCaches->size()!= 0) {
                 return mCaches->deQueueFirst();
             }
 
-            if(mType == CachePoolTypeSync) {
+            if(mType == Global::Sync) {
                 if(mTimeout == -1) {
-                    mCondtion->wait(mMutex);
+                    mCondition->wait(mMutex);
+                    continue;
                 } else {
-                    mCondtion->wait(mMutex,mTimeout);
+                    mCondition->wait(mMutex,mTimeout);
                 }
-                continue;
             }
 
             break;
@@ -72,12 +70,15 @@ public:
         return mCaches->size();
     }
 
+    int capacity() {
+        return mCapacity;
+    }
+
 private:
     Mutex mMutex;
-    Condition mCondtion;
-    //ArrayList<T> mCaches;
+    Condition mCondition;
     LinkedList<T> mCaches;
-    int mSize;
+    int mCapacity;
     int mType;
     int mTimeout;
 };

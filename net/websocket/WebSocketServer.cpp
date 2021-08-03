@@ -102,7 +102,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                     default:
                         listener->onData(frame,client);
                 }
-                return 1;
+                return Global::Continue;
             });
         }
         break;

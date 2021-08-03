@@ -101,7 +101,7 @@ public:
     using foreachCallback = std::function<int(T,U)>;
     inline void foreach(foreachCallback callback) {
         for (auto it= hashmap.begin();it != hashmap.end();it++) {
-            if(callback(it->first,it->second) < 0) {
+            if(callback(it->first,it->second) == Global::Break) {
                 break;
             }
         }
@@ -236,12 +236,11 @@ public:
     }
 
     bool next() {
-        if(iterator ==  mHashMap->end()) {
-            return false;
+        if(iterator != mHashMap->end()) {
+            iterator++;
         }
 
-        iterator++;
-        return true;
+        return iterator != mHashMap->end();
     }
 
     void remove() {
@@ -249,7 +248,7 @@ public:
             return;
         }
 
-        mHashMap->hashmap.erase(iterator++);
+        iterator = mHashMap->hashmap.erase(iterator);
     }
     
 private:

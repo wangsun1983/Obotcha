@@ -79,8 +79,7 @@ public:
         //TODO Nothing
     }
 
-    _ArrayList(sp<_ArrayList<T>> l) {
-        elements.push_back(l->elements);
+    _ArrayList(sp<_ArrayList<T>> l):elements(l->elements) {
     }
 
     _ArrayList(int size) {
@@ -94,10 +93,6 @@ public:
     inline void add(sp<_ArrayList<T>> list) {
         elements.insert(elements.end(),list->elements.begin(),list->elements.end());
     }
-
-    //inline void merge(const ArrayList<T> list) {
-    //    elements.insert(elements.end(),list->elements.begin(),list->elements.end());
-    //}
 
     inline void clear() {
         elements.clear();
@@ -126,14 +121,14 @@ public:
     using foreachCallback = std::function<int(T &)>;
     inline void foreach(foreachCallback callback) {
         for (T &value:elements) {
-            if(callback(value) < 0) {
+            if(callback(value) == Global::Break) {
                 break;
             }
         }
     }
 
     inline int indexOf(const T &val) {
-        typename std::vector<T>::iterator result = find( elements.begin( ), elements.end( ),val);
+        typename std::vector<T>::iterator result = find(elements.begin( ), elements.end( ),val);
         if(result == elements.end()) {
             return -1;
         }
@@ -173,7 +168,7 @@ public:
     }
 
     inline int insert(int index,const ArrayList<T> &list,int length) {
-        if(index < 0 || index >= elements.size() || length > list->size()) {
+        if(index < 0 || index > elements.size() || length > list->size()) {
             Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
         }
         elements.insert(elements.begin() + index,list->begin(),list->begin() + length);
@@ -184,9 +179,12 @@ public:
         elements.emplace(elements.begin(),val); 
     }
 
-
     inline void insertFirst(const ArrayList<T> &list) {
         elements.insert(elements.begin(),list->elements.begin(),list->elements.end());
+    }
+
+    inline void insertFirst(const ArrayList<T> &list,int length) {
+        insert(0,list,length);
     }
     
     inline void insertLast(const T v) {
@@ -195,6 +193,10 @@ public:
 
     inline void insertLast(const ArrayList<T> &list) {
         elements.insert(elements.end(),list->begin(),list->end());
+    }
+
+    inline void insertLast(const ArrayList<T> &list,int length) {
+        insert(elements.size(),list,length);
     }
 
     inline int size() {
@@ -269,7 +271,8 @@ public:
         if(iterator != mList->end()) {
             iterator++;
         }
-        return (iterator != mList->end());
+
+        return iterator != mList->end();
     }
 
     bool remove() {

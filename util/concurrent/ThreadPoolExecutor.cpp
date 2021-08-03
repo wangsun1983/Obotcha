@@ -60,7 +60,7 @@ int _ThreadPoolExecutor::shutdown() {
         mPool->freeze();
         mPool->foreach([](FutureTask &task) {
             task->cancel();
-            return 1;
+            return Global::Continue;
         });
 
         mPool->destroy();
@@ -70,7 +70,7 @@ int _ThreadPoolExecutor::shutdown() {
     //interrupt all thread
     mHandlers->foreach([](Thread t){
         t->interrupt();
-        return 1;
+        return Global::Continue;
     });
 
     return 0;
@@ -85,9 +85,9 @@ bool _ThreadPoolExecutor::isTerminated() {
     mHandlers->foreach([&isTerminated](Thread &t) {
         if(t->getStatus() != st(Thread)::Complete) {
             isTerminated = false;
-            return -1;
+            return Global::Break;
         }
-        return 1;
+        return Global::Continue;
     });
 
     return isTerminated;

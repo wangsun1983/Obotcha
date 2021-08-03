@@ -135,12 +135,12 @@ _HttpHeader::_HttpHeader() {
 void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
     h->mValues->foreach([this](String key,String value) {
         this->setValue(key,value);
-        return 1;
+        return Global::Continue;
     });
 
     h->mCookies->foreach([this](HttpCookie cookie) {
         this->mCookies->add(cookie);
-        return 1;
+        return Global::Continue;
     });
 }
     

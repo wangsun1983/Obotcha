@@ -40,8 +40,8 @@ void testArrayList_Remove() {
       break;
     }
 
-    list->remove(d2);
-    if(list->size() != 2) {
+    int index = list->remove(d2);
+    if(list->size() != 2 || index != 1) {
       printf("---[ArrayList remvoe test2] [FAIL]--- \n");
       break;
     }
@@ -52,12 +52,23 @@ void testArrayList_Remove() {
       break;
     }
 
-    auto ll_d2 = list->get(0);
+    auto ll_d2 = list->get(1);
     if(ll_d2->data1 != 5 || ll_d2->data2 != 6) {
-      printf("---[ArrayList remvoe test3] [FAIL]--- \n");
+      printf("---[ArrayList remvoe test3] [FAILED]--- \n");
       break;
     }
 
+    index = list->remove(d3);
+    if(index != 1) {
+      printf("---[ArrayList remvoe test4] [FAILED]--- \n");
+      break;
+    }
+
+    index = list->remove(d1);
+    if(index != 0) {
+      printf("---[ArrayList remvoe test5] [FAILED]--- \n");
+      break;
+    }
     break;
   }
 

@@ -11,15 +11,12 @@
 #include "CachePool.hpp"
 
 using namespace obotcha;
+extern int TestConstruct();
+extern int TestEnqueue();
+extern int TestDequeue();
 
 int main() {
-
-  printf("---[CachePool Test Start]--- \n");
-  
-  CachePool<Integer> t = createCachePool<Integer>(32);
-
-  t->addCache(createInteger(1));
-
-  Integer t2 = t->getCache();
-  printf("value is %d \n",t2->toValue());
+  TestConstruct();
+  TestEnqueue();
+  TestDequeue();
 }
