@@ -18,6 +18,16 @@ extern void testArrayList_Remove();
 extern int testArrayList_dataType_int();
 extern void testArrayList_Construct();
 extern void testArrayList_InsertLast();
+extern void testArrayList_Insert();
+extern void testArrayList_InsertFirst();
+extern void testArrayList_IndexOf();
+extern void testArrayList_Iterator_Next();
+extern void testArrayList_Iterator_Remove();
+extern void testArrayList_Iterator_HasValue();
+extern void testArrayList_Iterator_GetValue();
+extern void testArrayListForEach();
+extern void testArrayList_RemoveAt();
+extern void testArrayList_Iterator_Insert();
 
 int main() {
   testArrayList_Integer();
@@ -30,4 +40,14 @@ int main() {
   testArrayList_dataType_int();
   testArrayList_Construct();
   testArrayList_InsertLast();
+  testArrayList_Insert();
+  testArrayList_InsertFirst();
+  testArrayList_IndexOf();
+  testArrayList_Iterator_Next();
+  testArrayList_Iterator_Remove();
+  testArrayList_Iterator_HasValue();
+  testArrayList_Iterator_GetValue();
+  testArrayListForEach();
+  testArrayList_RemoveAt();
+  testArrayList_Iterator_Insert();
 }

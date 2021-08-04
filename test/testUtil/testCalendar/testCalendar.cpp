@@ -25,12 +25,20 @@ extern int testCalendarIncreaseMonth();
 extern int testCalendarIncreaseHour();
 extern int testCalendarIncreaseMinute();
 extern int testCalendarIncreaseSecond();
+
 extern int testCalendarDecreaseYear();
 extern int testCalendarDecreaseDay();
 extern int testCalendarDecreaseMonth();
 extern int testCalendarDecreaseHour();
 extern int testCalendarDecreaseMinute();
 extern int testCalendarDecreaseSecond();
+
+extern int testCalendarDecreaseYear_Interval();
+extern int testCalendarDecreaseDay_Interval();
+extern int testCalendarDecreaseMonth_Interval();
+extern int testCalendarDecreaseHour_Interval();
+extern int testCalendarDecreaseMinute_Interval();
+extern int testCalendarDecreaseSecond_Interval();
 
 
 extern int convertDayOfWeekFromJava(int);
@@ -186,6 +194,13 @@ int main() {
     testCalendarDecreaseHour();
     testCalendarDecreaseMinute();
     testCalendarDecreaseSecond();
+    
+    testCalendarDecreaseYear_Interval();
+    testCalendarDecreaseDay_Interval();
+    testCalendarDecreaseMonth_Interval();
+    testCalendarDecreaseHour_Interval();
+    testCalendarDecreaseMinute_Interval();
+    testCalendarDecreaseSecond_Interval();
 
     return 0;
 

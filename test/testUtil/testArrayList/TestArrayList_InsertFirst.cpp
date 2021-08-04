@@ -11,7 +11,7 @@
 using namespace obotcha;
 
 
-void testArrayList_InsertLast() {
+void testArrayList_InsertFirst() {
   while(1) {
     ArrayList<String> list = createArrayList<String>();
     list->add(createString("a"));
@@ -20,14 +20,14 @@ void testArrayList_InsertLast() {
     ArrayList<String> list2 = createArrayList<String>();
     list2->add(createString("c"));
     list2->add(createString("d"));
-    list->insertLast(list2);
+    list->insertFirst(list2);
 
     if(list->size() != 4
-      || !list->get(0)->equals("a")
-      || !list->get(1)->equals("b")
-      || !list->get(2)->equals("c")
-      || !list->get(3)->equals("d")) {
-        printf("---[ArrayList InsertLast test1] [FAILED]--- \n");
+      || !list->get(0)->equals("c")
+      || !list->get(1)->equals("d")
+      || !list->get(2)->equals("a")
+      || !list->get(3)->equals("b")) {
+        printf("---[ArrayList insertFirst test1] [FAILED]--- \n");
         break;
       }
 
@@ -45,15 +45,13 @@ void testArrayList_InsertLast() {
     list2->add(createString("e"));
     list2->add(createString("f"));
 
-    list->insertLast(list2,2);
-    //printf("size is %d \n",list->size());
-    //printf("a1 %s,a2 %s,a3 %s,a4 %s \n",list->get(0)->toChars(),list->get(1)->toChars(),list->get(2)->toChars(),list->get(3)->toChars());
+    list->insertFirst(list2,2);
     if(list->size() != 4
-      || !list->get(0)->equals("a")
-      || !list->get(1)->equals("b")
-      || !list->get(2)->equals("c")
-      || !list->get(3)->equals("d")) {
-      printf("---[ArrayList InsertLast test2] [FAILED]--- \n");
+      || !list->get(0)->equals("c")
+      || !list->get(1)->equals("d")
+      || !list->get(2)->equals("a")
+      || !list->get(3)->equals("b")) {
+      printf("---[ArrayList insertFirst test2] [FAILED]--- \n");
       break;
     }
     break;
@@ -68,16 +66,16 @@ void testArrayList_InsertLast() {
     list2->add(createString("c"));
     bool isException = false;
     try {
-      list->insertLast(list2,2);
+      list->insertFirst(list2,2);
     } catch(...) {
       isException = true;
     }
     if(!isException) {
-      printf("---[ArrayList InsertLast test3] [FAILED]--- \n");
+      printf("---[ArrayList insertFirst test3] [FAILED]--- \n");
       break;
     }
     break;
   }
 
-  printf("---[ArrayList InsertLast test100] [OK]--- \n");
+  printf("---[ArrayList insertFirst test100] [OK]--- \n");
 }

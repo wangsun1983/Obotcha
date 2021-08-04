@@ -68,7 +68,6 @@ DUMMY_REFLECT_ARRAY_FUNCTION(uint64_t)
 DUMMY_REFLECT_ARRAY_FUNCTION(std::string)
 
 
-
 //----------------- ArrayList ---------------------
 DECLARE_CLASS(ArrayList,1) {
 public:
@@ -99,7 +98,7 @@ public:
     }
 
     inline T removeAt(int index) {
-        if(index < 0 || index > elements.size() || elements.size() == 0) {
+        if(index < 0 || index >= elements.size() || elements.size() == 0) {
             Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
         }
         T val = elements.at(index);
@@ -152,21 +151,23 @@ public:
     }
 
     inline int insert(int index,const T val) {
-        if(index < 0 || index >= elements.size()) {
+        if(index < 0 || index > elements.size()) {
             Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
         }
         elements.insert(elements.begin() + index,val);
         return 0;
     }
 
+    //insert before index....
     inline int insert(int index,const ArrayList<T> &list) {
-        if(index < 0 || index >= elements.size()) {
+        if(index < 0 || index > elements.size()) {
             Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
         }
         elements.insert(elements.begin() + index,list->begin(),list->end());
         return 0;
     }
 
+    //insert before index....
     inline int insert(int index,const ArrayList<T> &list,int length) {
         if(index < 0 || index > elements.size() || length > list->size()) {
             Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
@@ -282,6 +283,10 @@ public:
 
         iterator = mList->elements.erase(iterator);
         return true;
+    }
+
+    void insert(T value) {
+        iterator = mList->elements.insert(iterator,value);
     }
     
 private:

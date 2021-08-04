@@ -9,20 +9,45 @@
 
 using namespace obotcha;
 
-int testArrayListForEach() {
-  ArrayList<int> list = createArrayList<int>();
-  list->add(1);
-  list->add(2);
-  list->add(3);
+void testArrayListForEach() {
+  while(1) {
+    ArrayList<String> list = createArrayList<String>();
+    list->add(createString(1));
+    list->add(createString(2));
+    list->add(createString(3));
 
-  list->foreach([](int value) {
-    printf("value is %d \n",value);
-    value = 100;
-    return 1;
-  });
+    int index = 1;
+    list->foreach([&index](String value) {
+      if(value->toBasicInt() != index) {
+        printf("---[ArrayList Foreach test1] [FAILED]--- \n");
+        return Global::Break;
+      }
+      index++;
+      return Global::Continue;
+    });
+    break;
+  }
 
-  list->foreach([](int value) {
-    printf("again value is %d \n",value);
-    return 1;
-  });
+  while(1) {
+    ArrayList<String> list = createArrayList<String>();
+    list->add(createString(1));
+    list->add(createString(2));
+    list->add(createString(3));
+    int index = 1;
+    list->foreach([&index](String value) {
+      if(index == 2) {
+        return Global::Break;
+      }
+      index++;
+      return Global::Continue;
+    });
+
+    if(index != 2) {
+      printf("---[ArrayList Foreach test2] [FAILED]--- \n");
+      break;
+    }
+    break;
+  }
+
+  printf("---[ArrayList Foreach test100] [OK]--- \n");
 }

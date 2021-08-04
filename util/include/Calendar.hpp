@@ -11,6 +11,8 @@ DECLARE_SIMPLE_CLASS(Calendar) {
 public:
 
     _Calendar();
+    
+    _Calendar(sp<_Calendar>);
 
     _Calendar(int _year,int _month,int _dayOfMonth,int _hour,int _minute,int _seconds,int mseconds);
 

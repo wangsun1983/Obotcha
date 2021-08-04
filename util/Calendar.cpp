@@ -14,6 +14,10 @@ int _Calendar::leapDays[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 int _Calendar::GregorianBase = 1900;
 
+_Calendar::_Calendar(sp<_Calendar> c):_Calendar(c->timeMillis) {
+
+}
+
 _Calendar::_Calendar() {
     timeMillis = st(System)::currentTimeMillis();
     init();
@@ -138,12 +142,12 @@ void _Calendar::decreaseHour(int _hour) {
     if(_hour < 0) {
         return increaseHour(-_hour);
     }
-
+    
     hour -= _hour;
     if(hour < 0) {
-        int _day = (-hour)/24 + 1;
-        decreaseDay(_day);
-        hour = 24*_day + hour;
+        int _day = (-hour)/24;
+        decreaseDay(_day + 1);
+        hour = (24 + hour%24)%24;
     }
 }
 
@@ -520,16 +524,12 @@ void _Calendar::increaseMonth(int mon) {
 }
 
 void _Calendar::decreaseMonth(int mon) {
-    month -= mon;
+    year -= mon/12;
+    mon = mon%12;
+    month = (month - mon);
     if(month < 0) {
-        year -= (-month)/12;
-
-        if(-month%12 != 0) {
-            year--;
-            month = 12 + month;
-        } else {
-            month = 0;
-        }
+        year--;
+        month += 12;
     }
 
     //update dayOfMonth

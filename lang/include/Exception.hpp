@@ -11,29 +11,26 @@ namespace obotcha {
 
 class Exception;
 
-#if 0
-#define DECLARE_EXCEPTION(V) \
-class V;\
-template<typename... Args>\
-void throw##V(Args&&... args) { \
-    printf("\n-------%s START-------- \n[File]:%s\n[Line]:%d \n",#V,__FILE__,__LINE__);\
-    throw V(std::forward<Args>(args)...);\
-}\
-class V:public Exception
-#endif
-
 #define DECLARE_EXCEPTION(V) \
 class V:public Exception
 
 void _translateException(char *buff,const char *err);
 void _translateException(char *buff,String err);
 
+#if EXPORT_EXCEPTION_INFO
 #define Trigger(V,info) \
     char buff[256] = {0};\
     sprintf(buff,"\n-------%s START-------- \n[File]:%s \n[Line]:%d\n",#V,__FILE__,__LINE__);\
     printf("%s \n",buff);\
     _translateException(buff,info);\
-    throw V(buff);\
+    throw V(buff);
+#else 
+#define Trigger(V,info) \
+    char buff[256] = {0};\
+    sprintf(buff,"\n-------%s START-------- \n[File]:%s \n[Line]:%d\n",#V,__FILE__,__LINE__);\
+    _translateException(buff,info);\
+    throw V(buff);
+#endif
 
 class Exception :public std::exception{
 public:
