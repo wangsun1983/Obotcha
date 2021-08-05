@@ -1,13 +1,13 @@
 #ifndef __OBOTCHA_FUTURE_HPP__
 #define __OBOTCHA_FUTURE_HPP__
 
-#include "FutureTask.hpp"
+#include "ExecutorTask.hpp"
 
 namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(Future) {
 public:
-    _Future(FutureTask);
+    _Future(ExecutorTask);
     
     ~_Future();
 
@@ -30,7 +30,7 @@ public:
     };
 
 private:
-    FutureTask mTask;
+    ExecutorTask mTask;
 };
 
 }

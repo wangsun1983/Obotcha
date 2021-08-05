@@ -18,29 +18,7 @@ public:
 
     _Calendar(long long timeMillis);
 
-    void increaseYear(int year);
-
-    void decreaseYear(int year);
-
-    void increaseDay(int day);
-
-    void decreaseDay(int day);
-
-    void increaseMonth(int mon);
-
-    void decreaseMonth(int mon);
-
-    void increaseHour(int hour);
-
-    void decreaseHour(int hour);
-
-    void increaseMinute(int minute);
-
-    void decreaseMinute(int minute);
-
-    void increaseSecond(int second);
-
-    void decreaseSecond(int second);
+    void add(int type,uint64_t v);
 
     bool equals(Calendar);
 
@@ -134,6 +112,8 @@ private:
 
     bool onUpdateByDayOfYear(int v);
 
+    void onUpdateMillseconds(uint64_t interval);
+
     int caculateDayOfYear(int _year,int _month,int _dayOfMonth);
 
     int *getDays(int year);
@@ -143,6 +123,12 @@ private:
     static int leapDays[];
 
     static int GregorianBase;
+
+    static uint64_t SecondMillsecond;
+    static uint64_t MinuteMillsecond;
+    static uint64_t HourMillsecond;
+    static uint64_t DayMillsecond;
+    
 };
 
 }

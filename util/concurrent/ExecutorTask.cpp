@@ -1,5 +1,5 @@
 /**
- * @file FutureTask.cpp
+ * @file ExecutorTask.cpp
  * @brief A cancellable asynchronous computation.  This class provides a base implementation of Future
  * @details none
  * @mainpage none
@@ -10,41 +10,37 @@
  * @license none
  */
 
-#include "FutureTask.hpp"
+#include "ExecutorTask.hpp"
 #include "AutoLock.hpp"
 #include "Future.hpp"
 
 namespace obotcha {
 
-_FutureTask::_FutureTask(Runnable r) {
+_ExecutorTask::_ExecutorTask(Runnable r) {
     this->mRunnable = r;
 
-    mCompleteMutex = createMutex("FutureTaskMutex");
+    mMutex = createMutex("ExecutorTaskMutex");
     mCompleteCond = createCondition();
 
     mStatus = st(Future)::Waiting;
 }
 
-_FutureTask::~_FutureTask() {
+_ExecutorTask::~_ExecutorTask() {
     this->mRunnable = nullptr;
 }
-
-void _FutureTask::wait() {
-    wait(0);
-}
     
-int _FutureTask::wait(long interval) {
-    AutoLock l(mCompleteMutex);
+int _ExecutorTask::wait(long interval) {
+    AutoLock l(mMutex);
     
     if(mStatus == st(Future)::Complete || mStatus == st(Future)::Cancel) {
         return 0;
     }
 
-    return mCompleteCond->wait(mCompleteMutex,interval);
+    return mCompleteCond->wait(mMutex,interval);
 }
 
-void _FutureTask::cancel() {
-    AutoLock l(mCompleteMutex);
+void _ExecutorTask::cancel() {
+    AutoLock l(mMutex);
     if(mStatus == st(Future)::Cancel || mStatus == st(Future)::Complete) {
         return;
     }
@@ -59,24 +55,33 @@ void _FutureTask::cancel() {
     mRunnable = nullptr;
 }
 
-int _FutureTask::getStatus() {
-    AutoLock l(mCompleteMutex);
+int _ExecutorTask::getStatus() {
+    AutoLock l(mMutex);
     return mStatus;
 }
 
-void _FutureTask::onRunning() {
-    AutoLock l(mCompleteMutex);
-    mStatus = st(Future)::Running;
+void _ExecutorTask::execute() {
+    {
+        AutoLock l(mMutex);
+        if(mStatus == st(Future)::Complete || mStatus == st(Future)::Cancel) {
+            return;
+        }
+
+        mStatus = st(Future)::Running;
+    }
+
+    if(mRunnable != nullptr) {
+        mRunnable->run();
+    }
+
+    {
+        AutoLock l(mMutex);
+        mStatus = st(Future)::Complete;
+        mCompleteCond->notify();
+    }
 }
 
-void _FutureTask::onComplete() {
-    AutoLock l(mCompleteMutex);
-    mCompleteCond->notify();
-    mStatus = st(Future)::Complete;
-}
-
-Runnable _FutureTask::getRunnable() {
-    AutoLock l(mCompleteMutex);
+Runnable _ExecutorTask::getRunnable() {
     return mRunnable;
 }
 

@@ -15,7 +15,7 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/readwritelock.o \
 	$(outtmp)/executorbuilder.o \
 	$(outtmp)/future.o \
-	$(outtmp)/futuretask.o \
+	$(outtmp)/executortask.o \
     $(outtmp)/barrier.o \
 	$(outtmp)/timer.o \
 	$(outtmp)/spinlock.o \
@@ -63,8 +63,8 @@ $(outtmp)/atomicbool.o :$(concurrentDir)/atomic/AtomicBoolean.cpp
 $(outtmp)/future.o :$(concurrentDir)/Future.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Future.cpp -o $(outtmp)/future.o
 
-$(outtmp)/futuretask.o :$(concurrentDir)/FutureTask.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/FutureTask.cpp -o $(outtmp)/futuretask.o
+$(outtmp)/executortask.o :$(concurrentDir)/ExecutorTask.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ExecutorTask.cpp -o $(outtmp)/executortask.o
 
 $(outtmp)/barrier.o :$(concurrentDir)/Barrier.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Barrier.cpp -o $(outtmp)/barrier.o

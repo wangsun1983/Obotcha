@@ -8,11 +8,10 @@
 #include "AutoLock.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
-#include "FutureTask.hpp"
+#include "ExecutorTask.hpp"
 #include "Future.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
 #include "Thread.hpp"
-#include "FutureTask.hpp"
 #include "LinkedList.hpp"
 
 namespace obotcha { 
@@ -20,7 +19,7 @@ namespace obotcha {
 class _WaitingTask;
 class _ThreadScheduledPoolExecutor;
 
-DECLARE_SIMPLE_CLASS(WaitingTask) IMPLEMENTS(FutureTask){
+DECLARE_SIMPLE_CLASS(WaitingTask) IMPLEMENTS(ExecutorTask){
 public:
     friend class _ThreadScheduledPoolExecutor;
 

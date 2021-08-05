@@ -26,6 +26,13 @@ extern int testCalendarIncreaseHour();
 extern int testCalendarIncreaseMinute();
 extern int testCalendarIncreaseSecond();
 
+extern int testCalendarIncreaseYear_Interval();
+extern int testCalendarIncreaseDay_Interval();
+extern int testCalendarIncreaseMonth_Interval();
+extern int testCalendarIncreaseHour_Interval();
+extern int testCalendarIncreaseMinute_Interval();
+extern int testCalendarIncreaseSecond_Interval();
+
 extern int testCalendarDecreaseYear();
 extern int testCalendarDecreaseDay();
 extern int testCalendarDecreaseMonth();
@@ -87,7 +94,7 @@ ArrayList<TimeData> analyse(File f) {
               list->add(data);
             }
             data = createTimeData();
-            
+
           //  isStart = true;
           //}
       } else if(content->indexOf("time") != -1) {
@@ -188,13 +195,20 @@ int main() {
     testCalendarIncreaseMinute();
     testCalendarIncreaseSecond();
 
+    testCalendarIncreaseYear_Interval();
+    testCalendarIncreaseDay_Interval();
+    testCalendarIncreaseMonth_Interval();
+    testCalendarIncreaseHour_Interval();
+    testCalendarIncreaseMinute_Interval();
+    testCalendarIncreaseSecond_Interval();
+
     testCalendarDecreaseYear();
     testCalendarDecreaseDay();
     testCalendarDecreaseMonth();
     testCalendarDecreaseHour();
     testCalendarDecreaseMinute();
     testCalendarDecreaseSecond();
-    
+
     testCalendarDecreaseYear_Interval();
     testCalendarDecreaseDay_Interval();
     testCalendarDecreaseMonth_Interval();

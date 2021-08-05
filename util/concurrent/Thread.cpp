@@ -356,6 +356,7 @@ void _Thread::interrupt() {
     if(mStatus == Running) {
         mStatus = Interrupting;
         mSleepCondition->notifyAll();
+        mJoinCondition->notifyAll();
     }
 }
 

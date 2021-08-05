@@ -61,7 +61,6 @@ namespace obotcha {
     }\
     
 
-
 _Runnable::_Runnable() {
     mResultMutex = createMutex("RunnableResultMutex");
     mResultCond = createCondition();

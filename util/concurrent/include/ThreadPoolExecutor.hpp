@@ -12,7 +12,7 @@
 #include "Condition.hpp"
 #include "Thread.hpp"
 #include "Future.hpp"
-#include "FutureTask.hpp"
+#include "ExecutorTask.hpp"
 #include "Future.hpp"
 
 namespace obotcha {
@@ -20,7 +20,7 @@ namespace obotcha {
 DECLARE_SIMPLE_CLASS(ThreadPoolExecutor) {
 
 public:
-    friend class _FutureTask;
+    friend class _ExecutorTask;
 
     _ThreadPoolExecutor(int queuesize,int threadnum);
     
@@ -49,7 +49,7 @@ public:
 
     template<typename X>
     Future submit(sp<X> r) {
-        FutureTask task = createFutureTask(r);
+        ExecutorTask task = createExecutorTask(r);
         if(mPool->enQueueLast(task)){
             return createFuture(task);
         }
@@ -73,7 +73,7 @@ private:
         ShutDown,
     };
 
-    BlockingQueue<FutureTask> mPool;
+    BlockingQueue<ExecutorTask> mPool;
     
     ArrayList<Thread> mHandlers;
 

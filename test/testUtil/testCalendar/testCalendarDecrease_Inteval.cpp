@@ -28,7 +28,7 @@ int testCalendarDecreaseYear_Interval() {
     for(int i = 0;i < size;i++) {
         Calendar testCalendar = createCalendar(c1);
 
-        testCalendar->decreaseYear(i);
+        testCalendar->add(st(Calendar)::Year,-i);
         d1 = yearList->get(size - i -1);
         if(testCalendar->get(st(Calendar)::Year) != d1->year ||
              testCalendar->get(st(Calendar)::Month) != d1->month ||
@@ -66,8 +66,8 @@ int testCalendarDecreaseDay_Interval() {
 
     for(int i = 0;i < size;i++) {
         Calendar testCalendar = createCalendar(c1);
-        testCalendar->decreaseDay(size - i -1);
-        d1 = dateList->get(i);
+        testCalendar->add(st(Calendar)::DayOfYear,-i);
+        d1 = dateList->get(size - i -1);
         if(testCalendar->get(st(Calendar)::Year) != d1->year ||
              testCalendar->get(st(Calendar)::Month) != d1->month ||
              testCalendar->get(st(Calendar)::DayOfYear) != (d1->dayOfYear - 1) ||
@@ -102,7 +102,7 @@ int testCalendarDecreaseMonth_Interval() {
     Calendar c1 = createCalendar(d1->time);
     for(int i = 0;i < size;i++) {
         Calendar testCalendar = createCalendar(c1);
-        testCalendar->decreaseMonth(i);
+        testCalendar->add(st(Calendar)::Month,-i);
         d1 = monthList->get(size - i -1);
         if(testCalendar->get(st(Calendar)::Year) != d1->year ||
              testCalendar->get(st(Calendar)::Month) != d1->month ||
@@ -140,7 +140,7 @@ int testCalendarDecreaseHour_Interval() {
     Calendar c1 = createCalendar(d1->time);
     for(int i = 0;i < size;i++) {
         Calendar testCalendar = createCalendar(c1);
-        testCalendar->decreaseHour(i);
+        testCalendar->add(st(Calendar)::Hour,-i);
         d1 = hourList->get(size - i -1);
         if(testCalendar->get(st(Calendar)::Year) != d1->year ||
              testCalendar->get(st(Calendar)::Month) != d1->month ||
@@ -178,7 +178,7 @@ int testCalendarDecreaseMinute_Interval() {
     Calendar c1 = createCalendar(d1->time);
     for(int i = 0;i < size;i++) {
         Calendar testCalendar = createCalendar(c1);
-        testCalendar->decreaseMinute(i);
+        testCalendar->add(st(Calendar)::Minute,-i);
         d1 = minuteList->get(size - i -1);
         if(testCalendar->get(st(Calendar)::Year) != d1->year ||
              testCalendar->get(st(Calendar)::Month) != d1->month ||
@@ -215,7 +215,7 @@ int testCalendarDecreaseSecond_Interval() {
     Calendar c1 = createCalendar(d1->time);
     for(int i = 0;i < size;i++) {
         Calendar testCalendar = createCalendar(c1);
-        testCalendar->decreaseSecond(i);
+        testCalendar->add(st(Calendar)::Second,-i);
         d1 = secondList->get(size - i -1);
         if(testCalendar->get(st(Calendar)::Year) != d1->year ||
              testCalendar->get(st(Calendar)::Month) != d1->month ||

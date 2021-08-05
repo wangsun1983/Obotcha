@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_FUTURE_TASK_HPP__
-#define __OBOTCHA_FUTURE_TASK_HPP__
+#ifndef __OBOTCHA_EXECUTOR_TASK_HPP__
+#define __OBOTCHA_EXECUTOR_TASK_HPP__
 
 #include "Mutex.hpp"
 #include "Condition.hpp"
@@ -7,31 +7,26 @@
 
 namespace obotcha {
 
-class _FutureTask;
 class _PriorityTaskManager;
 
-DECLARE_SIMPLE_CLASS(FutureTask) {
+DECLARE_SIMPLE_CLASS(ExecutorTask) {
 public:
     friend class _PriorityTaskManager;
 
-    _FutureTask(Runnable);
+    _ExecutorTask(Runnable);
 
-    ~_FutureTask();
+    ~_ExecutorTask();
 
-    void wait();
-
-    int wait(long);
+    int wait(long interval = 0);
 
     void cancel();
 
     int getStatus();
 
-    virtual void onComplete();
-
-    void onRunning();
+    void execute();
 
     Runnable getRunnable();
-
+    
     template<typename T>
     T getResult(T defaultvalue,long millseconds = 0) {
         T v;
@@ -45,7 +40,7 @@ private:
 
     int mStatus;
 
-    Mutex mCompleteMutex;
+    Mutex mMutex;
 
     Condition mCompleteCond;
 };

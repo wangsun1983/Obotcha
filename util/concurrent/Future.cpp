@@ -15,7 +15,7 @@
 
 namespace obotcha {
 
-_Future::_Future(FutureTask t) {
+_Future::_Future(ExecutorTask t) {
     mTask = t;
 }
 

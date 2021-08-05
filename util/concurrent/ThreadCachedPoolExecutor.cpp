@@ -9,7 +9,7 @@
 #include "Thread.hpp"
 #include "AutoLock.hpp"
 #include "Future.hpp"
-#include "FutureTask.hpp"
+#include "ExecutorTask.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
 #include "Integer.hpp"
 #include "System.hpp"
@@ -32,7 +32,7 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int queuesize,int minthread
 
     mHandlers = createArrayList<Thread>();
     mHandlerMutex = createMutex();
-    mTasks = createBlockingQueue<FutureTask>(queuesize);
+    mTasks = createBlockingQueue<ExecutorTask>(queuesize);
     mStatus = Running;
     mIdleNum = createAtomicInteger(0);
 }
@@ -45,7 +45,7 @@ int _ThreadCachedPoolExecutor::shutdown(){
     mStatus = ShutDown;
 
     mTasks->freeze();
-    mTasks->foreach([](FutureTask &t) {
+    mTasks->foreach([](ExecutorTask &t) {
         t->cancel();
         return Global::Continue;
     });
@@ -128,7 +128,7 @@ Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r) {
         return nullptr;
     }
 
-    FutureTask task = createFutureTask(r);
+    ExecutorTask task = createExecutorTask(r);
     Future future = createFuture(task);
     mTasks->enQueueLast(task);
     if(mIdleNum->get() == 0) {
@@ -154,7 +154,7 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
     }
 
     Thread handler = createThread([](ThreadCachedPoolExecutor &executor){
-        FutureTask mCurrentTask = nullptr;
+        ExecutorTask mCurrentTask = nullptr;
         while(1) {
             mCurrentTask = executor->mTasks->deQueueFirst(executor->mThreadTimeout);
             executor->mIdleNum->subAndGet(1); 
@@ -168,14 +168,7 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
                 return;
             }
             
-            if(mCurrentTask->getStatus() != st(Future)::Cancel) {
-                mCurrentTask->onRunning();
-                Runnable r = mCurrentTask->getRunnable();
-                if(r != nullptr) {
-                    r->run();
-                }
-                mCurrentTask->onComplete();
-            }
+            mCurrentTask->execute();
             executor->mIdleNum->addAndGet(1); 
             mCurrentTask = nullptr;
         }

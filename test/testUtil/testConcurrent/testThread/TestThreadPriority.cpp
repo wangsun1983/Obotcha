@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyPriorityThread) EXTENDS(Thread) {
+DECLARE_SIMPLE_CLASS(MyPriorityThread) IMPLEMENTS(Thread) {
 public:
     void run() {
         setPriority(st(Thread)::ThreadPriority::High);
@@ -55,7 +55,7 @@ public:
         if(policy != st(Thread)::SchedType::Fifo) {
             printf("---[Thread Test {Set Priority()} case6][FAILED]---,policy is %d \n",policy);
         }
-        
+
         int ret = setPriority(st(Thread)::ThreadPriority::Low);
         priority = getPriority();
         if(priority != st(Thread)::ThreadPriority::Low) {

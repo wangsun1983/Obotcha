@@ -11,7 +11,7 @@
 #include "AutoLock.hpp"
 #include "Thread.hpp"
 #include "Future.hpp"
-#include "FutureTask.hpp"
+#include "ExecutorTask.hpp"
 
 namespace obotcha {
 
@@ -19,7 +19,7 @@ class _ThreadScheduledPoolExecutor;
 
 DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) {
 public:
-    friend class _FutureTask;
+    friend class _ExecutorTask;
     friend class _ThreadScheduledPoolExecutor;
     
     _ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout = 10*1000);
@@ -85,7 +85,7 @@ private:
 
     int minThreadNum;
 
-    BlockingQueue<FutureTask> mTasks;
+    BlockingQueue<ExecutorTask> mTasks;
 
     AtomicInteger mIdleNum;
 };

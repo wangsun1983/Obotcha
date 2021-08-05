@@ -64,7 +64,7 @@ public:
             return nullptr;
         }
     
-        FutureTask task = createFutureTask(r);
+        ExecutorTask task = createExecutorTask(r);
         {
             
             switch(level) {
@@ -108,9 +108,9 @@ private:
 
     Mutex mTaskMutex;
     Condition mTaskCond;
-    LinkedList<FutureTask>mHighPriorityTasks;
-    LinkedList<FutureTask>mMidPriorityTasks;
-    LinkedList<FutureTask>mLowPriorityTasks;
+    LinkedList<ExecutorTask>mHighPriorityTasks;
+    LinkedList<ExecutorTask>mMidPriorityTasks;
+    LinkedList<ExecutorTask>mLowPriorityTasks;
     int mStatus;    
     ArrayList<Thread> mThreads;
 };

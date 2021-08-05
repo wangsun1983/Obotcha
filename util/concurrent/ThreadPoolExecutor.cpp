@@ -3,7 +3,7 @@
 
 #include "Thread.hpp"
 #include "ThreadPoolExecutor.hpp"
-#include "FutureTask.hpp"
+#include "ExecutorTask.hpp"
 #include "Future.hpp"
 #include "System.hpp"
 #include "Error.hpp"
@@ -12,13 +12,13 @@
 namespace obotcha {
 
 _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
-    mPool = createBlockingQueue<FutureTask>(queuesize);    
+    mPool = createBlockingQueue<ExecutorTask>(queuesize);    
     mHandlers = createArrayList<Thread>();
 
     for(int i = 0; i < threadnum;i++) {
         Thread thread = createThread([](ThreadPoolExecutor executor) {
             while(1) {
-                FutureTask mCurrentTask = nullptr;
+                ExecutorTask mCurrentTask = nullptr;
                 mCurrentTask = executor->mPool->deQueueFirst();
                 
                 if(mCurrentTask == nullptr) {
@@ -27,6 +27,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
                     return;
                 }
 
+/* 
                 if(mCurrentTask->getStatus() == st(Future)::Cancel) {
                     continue;
                 }
@@ -39,6 +40,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
                 }
 
                 mCurrentTask->onComplete();
+*/
             }
         },AutoClone(this));
 
@@ -58,7 +60,7 @@ int _ThreadPoolExecutor::shutdown() {
         mStatus = ShutDown;
 
         mPool->freeze();
-        mPool->foreach([](FutureTask &task) {
+        mPool->foreach([](ExecutorTask &task) {
             task->cancel();
             return Global::Continue;
         });

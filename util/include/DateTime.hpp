@@ -173,9 +173,6 @@ private:
     
 
 	int isValid(String content);
-
-    int caculateDayOfWeek(int y, int m, int d);
-
 };
 
 }

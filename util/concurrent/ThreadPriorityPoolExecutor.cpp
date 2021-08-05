@@ -22,15 +22,15 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int threadnum) {
 
     mThreads = createArrayList<Thread>();
 
-    mHighPriorityTasks = createLinkedList<FutureTask>();
-    mMidPriorityTasks = createLinkedList<FutureTask>();
-    mLowPriorityTasks = createLinkedList<FutureTask>();
+    mHighPriorityTasks = createLinkedList<ExecutorTask>();
+    mMidPriorityTasks = createLinkedList<ExecutorTask>();
+    mLowPriorityTasks = createLinkedList<ExecutorTask>();
 
     mStatus = Running;
 
     for(int i = 0;i < threadnum;i++) {
         Thread thread = createThread([](ThreadPriorityPoolExecutor &executor){
-            FutureTask mCurrentTask = nullptr;
+            ExecutorTask mCurrentTask = nullptr;
             while(1) {
                 {
                     AutoLock l(executor->mTaskMutex);
@@ -53,18 +53,7 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int threadnum) {
                     }
                 }
 
-                if(mCurrentTask->getStatus() == st(Future)::Cancel) {
-                    continue;
-                }
-                
-                mCurrentTask->onRunning();
-                
-                Runnable runnable = mCurrentTask->getRunnable();
-                if(runnable != nullptr) {
-                    runnable->run();    
-                }
-                
-                mCurrentTask->onComplete();
+                mCurrentTask->execute();
                 mCurrentTask = nullptr;
             }
         },AutoClone(this));
@@ -88,17 +77,17 @@ int _ThreadPriorityPoolExecutor::shutdown() {
         mStatus = ShutDown;
 
         while(!mHighPriorityTasks->isEmpty()) {
-            FutureTask task = mHighPriorityTasks->deQueueLast();
+            ExecutorTask task = mHighPriorityTasks->deQueueLast();
             task->cancel();
         }
 
         while(!mMidPriorityTasks->isEmpty()) {
-            FutureTask task = mMidPriorityTasks->deQueueLast();
+            ExecutorTask task = mMidPriorityTasks->deQueueLast();
             task->cancel();
         }
 
         while(!mLowPriorityTasks->isEmpty()) {
-            FutureTask task = mLowPriorityTasks->deQueueLast();
+            ExecutorTask task = mLowPriorityTasks->deQueueLast();
             task->cancel();
         }
         mTaskCond->notifyAll();

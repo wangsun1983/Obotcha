@@ -17,13 +17,13 @@
 namespace obotcha {
 
 class _Future;
-class _FutureTask;
+class _ExecutorTask;
 
 DECLARE_SIMPLE_CLASS(Runnable) {
 
 public:
     friend class _Future;
-    friend class _FutureTask;
+    friend class _ExecutorTask;
 
 	virtual void run() = 0;
     

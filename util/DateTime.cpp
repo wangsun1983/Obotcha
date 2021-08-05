@@ -13,6 +13,7 @@
 #include "String.hpp"
 #include "DateTime.hpp"
 #include "InitializeException.hpp"
+#include "Calendar.hpp"
 
 namespace obotcha {
 #define SKIP_JUNK() \
@@ -606,7 +607,7 @@ String _DateTime::format(int type,String format,int timeZoneDifferential) {
 				{
 				case 'w': {
 					if(_dayOfWeek == -1) {
-						_dayOfWeek = caculateDayOfWeek(_year,_month,_day);
+						_dayOfWeek = st(Calendar)::caculateDayOfWeek(_year,_month,_day);
 					}
 				    str.append(st(DateTime)::WEEKDAY_NAMES[_dayOfWeek], 0, 3); 
 					break;
@@ -614,7 +615,7 @@ String _DateTime::format(int type,String format,int timeZoneDifferential) {
 
 				case 'W': {
 					if(_dayOfWeek == -1) {
-						_dayOfWeek = caculateDayOfWeek(_year,_month,_day);
+						_dayOfWeek = st(Calendar)::caculateDayOfWeek(_year,_month,_day);
 					}
 					str.append(st(DateTime)::WEEKDAY_NAMES[_dayOfWeek]); 
 					break;
@@ -904,19 +905,5 @@ void _DateTime::formatNumWidth4(int value,char *buff,int length,bool fillzero){
         snprintf(buff,length,"%4d",value);
 	}
 }
-
-int _DateTime::caculateDayOfWeek(int y, int m, int d) {
-    m += 1;
-    d += 1;
-
-    if(m == 1 || m == 2) {  
-        m += 12;  
-        y--;  
-    }
-
-    int week = (d+2*m+3*(m+1)/5+y+y/4-y/100+y/400)%7;
-	return week;
-}
-
 
 }

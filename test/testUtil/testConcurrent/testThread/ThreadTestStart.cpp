@@ -34,6 +34,13 @@ public:
     }
 };
 
+DECLARE_SIMPLE_CLASS(StartTestThread3) IMPLEMENTS(Thread) {
+public:
+    void run() {
+        
+    }
+};
+
 int testThreadStart() {
 
     while(1) {
@@ -81,6 +88,22 @@ int testThreadStart() {
         }
 
         printf("---[Thread TestStart {start()} case7] [OK]--- \n");
+        break;
+    }
+
+    while(1) {
+        for(int i = 0;i<1024*32;i++) {
+            StartTestThread3 r = createStartTestThread3();
+            if(r->start() != 0) {
+                printf("---[Thread TestStart {start()} case8] [FAILED]--- \n");
+                break;
+            }
+
+            if(r->start() != -AlreadyExecute) {
+                printf("---[Thread TestStart {start()} case9] [FAILED]--- \n");
+                break;
+            }
+        }
         break;
     }
 

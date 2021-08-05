@@ -19,17 +19,15 @@ extern ArrayList<TimeData> monthList;
 
 extern int convertDayOfWeekFromJava(int);
 
-int testCalendarIncreaseYear() {
+int testCalendarIncreaseYear_Interval() {
     int size = yearList->size();
     TimeData d1 = yearList->get(0);
 
-    Calendar c1 = createCalendar(d1->time);
-
-    //printf("testCalendarIncreaseYear d1->year is %d \n",d1->year);
-    //printf("testCalendarIncreaseYear c1 is %d \n",c1->get(st(Calendar)::Year));
+    Calendar testData = createCalendar(d1->time);
 
     for(int i = 1;i < size;i++) {
-        c1->add(st(Calendar)::Year,1);
+        Calendar c1 = createCalendar(testData);
+        c1->add(st(Calendar)::Year,i);
         d1 = yearList->get(i);
         if(c1->get(st(Calendar)::Year) != d1->year ||
              c1->get(st(Calendar)::Month) != d1->month ||
@@ -50,21 +48,22 @@ int testCalendarIncreaseYear() {
                printf("Calndear second is %d,data second is %d \n",c1->get(st(Calendar)::Second),d1->second);
                printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(st(Calendar)::MSecond),d1->millisecond);
                printf("current time is %ld \n",d1->time);
-               printf("---[Calendar Test {testCalendarIncreaseYear()} case1] [FAILED]--- \n");
+               printf("---[Calendar Test {testCalendarIncreaseYear_Interval()} case1] [FAILED]--- \n");
                return -1;
         }
     }
 
-    printf("---[Calendar Test {testCalendarIncreaseYear()} case2] [Success]--- \n");
+    printf("---[Calendar Test {testCalendarIncreaseYear_Interval()} case2] [Success]--- \n");
     return 0;
 }
 
-int testCalendarIncreaseDay() {
+int testCalendarIncreaseDay_Interval() {
     int size = dateList->size();
     TimeData d1 = dateList->get(0);
-    Calendar c1 = createCalendar(d1->time);
+    Calendar testData = createCalendar(d1->time);
     for(int i = 1;i < size;i++) {
-        c1->add(st(Calendar)::DayOfYear,1);
+        Calendar c1 = createCalendar(testData);
+        c1->add(st(Calendar)::DayOfYear,i);
         d1 = dateList->get(i);
         if(c1->get(st(Calendar)::Year) != d1->year ||
              c1->get(st(Calendar)::Month) != d1->month ||
@@ -85,21 +84,22 @@ int testCalendarIncreaseDay() {
                printf("Calndear second is %d,data second is %d \n",c1->get(st(Calendar)::Second),d1->second);
                printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(st(Calendar)::MSecond),d1->millisecond);
                printf("current time is %ld \n",d1->time);
-               printf("---[Calendar Test {testCalendarIncreaseDay()} case1] [FAILED]--- \n");
+               printf("---[Calendar Test {testCalendarIncreaseDay_Interval()} case1] [FAILED]--- \n");
                return -1;
         }
     }
 
-    printf("---[Calendar Test {testCalendarIncreaseDay()} case2] [Success]--- \n");
+    printf("---[Calendar Test {testCalendarIncreaseDay_Interval()} case2] [Success]--- \n");
     return 0;
 }
 
-int testCalendarIncreaseMonth() {
+int testCalendarIncreaseMonth_Interval() {
     int size = monthList->size();
     TimeData d1 = monthList->get(0);
-    Calendar c1 = createCalendar(d1->time);
+    Calendar testData = createCalendar(d1->time);
     for(int i = 1;i < size;i++) {
-        c1->add(st(Calendar)::Month,1);
+        Calendar c1 = createCalendar(testData);
+        c1->add(st(Calendar)::Month,i);
         d1 = monthList->get(i);
         if(c1->get(st(Calendar)::Year) != d1->year ||
              c1->get(st(Calendar)::Month) != d1->month ||
@@ -120,23 +120,24 @@ int testCalendarIncreaseMonth() {
                printf("Calndear second is %d,data second is %d \n",c1->get(st(Calendar)::Second),d1->second);
                printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(st(Calendar)::MSecond),d1->millisecond);
                printf("current time is %ld \n",d1->time);
-               printf("---[Calendar Test {testCalendarIncreaseMonth()} case1] [FAILED]--- \n");
+               printf("---[Calendar Test {testCalendarIncreaseMonth_Interval()} case1] [FAILED]--- \n");
                return -1;
         }
     }
 
-    printf("---[Calendar Test {testCalendarIncreaseMonth()} case2] [Success]--- \n");
+    printf("---[Calendar Test {testCalendarIncreaseMonth_Interval()} case2] [Success]--- \n");
     return 0;
 }
 
 
 //increaseHour
-int testCalendarIncreaseHour() {
+int testCalendarIncreaseHour_Interval() {
     int size = hourList->size();
     TimeData d1 = hourList->get(0);
-    Calendar c1 = createCalendar(d1->time);
+    Calendar testData = createCalendar(d1->time);
     for(int i = 1;i < size;i++) {
-        c1->add(st(Calendar)::Hour,1);
+        Calendar c1 = createCalendar(testData);
+        c1->add(st(Calendar)::Hour,i);
         d1 = hourList->get(i);
         if(c1->get(st(Calendar)::Year) != d1->year ||
              c1->get(st(Calendar)::Month) != d1->month ||
@@ -167,12 +168,13 @@ int testCalendarIncreaseHour() {
 }
 
 //increaseMinute
-int testCalendarIncreaseMinute() {
+int testCalendarIncreaseMinute_Interval() {
     int size = minuteList->size();
     TimeData d1 = minuteList->get(0);
-    Calendar c1 = createCalendar(d1->time);
+    Calendar testData = createCalendar(d1->time);
     for(int i = 1;i < size;i++) {
-        c1->add(st(Calendar)::Minute,1);
+        Calendar c1 = createCalendar(testData);
+        c1->add(st(Calendar)::Minute,i);
         d1 = minuteList->get(i);
         if(c1->get(st(Calendar)::Year) != d1->year ||
              c1->get(st(Calendar)::Month) != d1->month ||
@@ -193,22 +195,23 @@ int testCalendarIncreaseMinute() {
                printf("Calndear second is %d,data second is %d \n",c1->get(st(Calendar)::Second),d1->second);
                printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(st(Calendar)::MSecond),d1->millisecond);
                printf("current time is %ld \n",d1->time);
-               printf("---[Calendar Test {increaseMinute()} case1] [FAILED]--- \n");
+               printf("---[Calendar Test {increaseMinute_interval()} case1] [FAILED]--- \n");
                return -1;
         }
     }
 
-    printf("---[Calendar Test {increaseMinute()} case2] [Success]--- \n");
+    printf("---[Calendar Test {increaseMinute_interval()} case2] [Success]--- \n");
     return 0;
 }
 
 //secondList
-int testCalendarIncreaseSecond() {
+int testCalendarIncreaseSecond_Interval() {
     int size = secondList->size();
     TimeData d1 = secondList->get(0);
-    Calendar c1 = createCalendar(d1->time);
+    Calendar testData = createCalendar(d1->time);
     for(int i = 1;i < size;i++) {
-        c1->add(st(Calendar)::Second,1);
+        Calendar c1 = createCalendar(testData);
+        c1->add(st(Calendar)::Second,i);
         d1 = secondList->get(i);
         if(c1->get(st(Calendar)::Year) != d1->year ||
              c1->get(st(Calendar)::Month) != d1->month ||
@@ -229,11 +232,11 @@ int testCalendarIncreaseSecond() {
                printf("Calndear second is %d,data second is %d \n",c1->get(st(Calendar)::Second),d1->second);
                printf("Calndear millisecond is %d,data millisecond is %d \n",c1->get(st(Calendar)::MSecond),d1->millisecond);
                printf("current time is %ld \n",d1->time);
-               printf("---[Calendar Test {increaseSecond()} case1] [FAILED]--- \n");
+               printf("---[Calendar Test {increaseSecond_interval()} case1] [FAILED]--- \n");
                return -1;
         }
     }
 
-    printf("---[Calendar Test {increaseSecond()} case2] [Success]--- \n");
+    printf("---[Calendar Test {increaseSecond_interval()} case2] [Success]--- \n");
     return 0;
 }

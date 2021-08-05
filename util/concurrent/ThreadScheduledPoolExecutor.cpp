@@ -12,7 +12,7 @@
 namespace obotcha {
 
 //---------------WaitingTask---------------//
-_WaitingTask::_WaitingTask(long int interval,Runnable r):_FutureTask(r) {
+_WaitingTask::_WaitingTask(long int interval,Runnable r):_ExecutorTask(r) {
     //nothing
     next = nullptr;
     nextTime = st(System)::currentTimeMillis() + interval;
