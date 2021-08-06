@@ -4,6 +4,7 @@
 #include "Mutex.hpp"
 #include "Condition.hpp"
 #include "Runnable.hpp"
+#include "InterruptedException.hpp"
 
 namespace obotcha {
 
@@ -28,11 +29,23 @@ public:
     Runnable getRunnable();
     
     template<typename T>
-    T getResult(T defaultvalue,long millseconds = 0) {
-        T v;
-        mRunnable->getResult(v,defaultvalue,millseconds);
-        return v;
+    T getResult(int interval = 0) {
+        this->wait(interval);
+        {
+            AutoLock l(mMutex);
+            if(mStatus != Complete) {
+                Trigger(InterruptedException,"wait exception");
+            }
+        }
+        return mRunnable->getResult<T>();
     }
+
+    enum Status {
+        Waiting = 0,
+        Running,
+        Cancel,
+        Complete,
+    };
 
 private:
 

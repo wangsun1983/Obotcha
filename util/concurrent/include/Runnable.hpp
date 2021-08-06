@@ -13,11 +13,42 @@
 #include "IllegalStateException.hpp"
 #include "Error.hpp"
 #include "OStdApply.hpp"
+#include "NullPointerException.hpp"
 
 namespace obotcha {
 
 class _Future;
 class _ExecutorTask;
+
+template<typename T>
+class __RunnableResult {
+public:
+    T get(Object value) {
+        return Cast<T>(value);
+    }
+};
+
+#define __RunnableResultMacro(X,Y) \
+template<> \
+class __RunnableResult<X> { \
+public: \
+    X get(Object value) { \
+        if(value == nullptr) { \
+            Trigger(NullPointerException,"no result"); \
+        }\
+        return Cast<Y>(value)->toValue(); \
+    } \
+};
+
+__RunnableResultMacro(int,Integer)
+__RunnableResultMacro(byte,Byte)
+__RunnableResultMacro(double,Double)
+__RunnableResultMacro(bool,Boolean)
+__RunnableResultMacro(float,Double)
+__RunnableResultMacro(long,Long)
+__RunnableResultMacro(uint16_t,Uint16)
+__RunnableResultMacro(uint32_t,Uint32)
+__RunnableResultMacro(uint64_t,Uint64)
 
 DECLARE_SIMPLE_CLASS(Runnable) {
 
@@ -31,89 +62,27 @@ public:
 
     virtual ~_Runnable() {}
 
-    _Runnable();
-
     template<typename T>
     void setResult(T value) {
-        AutoLock l(mResultMutex);
-        if(mStatus == ResultWaiting) {
-            objResult = (sp<_Object>)value;
-            mStatus = ResultComplete;
-            mResultCond->notifyAll();
-            return;
-        }
-        Trigger(IllegalStateException,"set int result");
+        mResult = value;
     }
 
     void setResult(int);
     void setResult(byte);
     void setResult(double);
     void setResult(bool);
-    void setResult(float);
     void setResult(long);
     void setResult(uint16_t);
     void setResult(uint32_t);
     void setResult(uint64_t);
-    void setResult(String);
-
-    template<typename T>
-    void getResult(T &value,T defaultvalue,long millseconds = 0) {
-        AutoLock l(mResultMutex);
-        if(mStatus == ResultWaiting) {
-            if(mResultCond->wait(mResultMutex,millseconds) == -WaitTimeout) {
-                value = defaultvalue;
-                return;
-            }
-        }
-
-        if(mStatus == ResultInterrupt) {
-            value = defaultvalue;
-        }
-
-        value = Cast<T>(objResult);
-    }
 
 private:
-    enum ResultStatus {
-        ResultWaiting = 0,
-        ResultComplete,
-        ResultInterrupt
-    };
-    
-    sp<_Object> objResult;
+    sp<_Object> mResult;
 
-    int intValue;
-    byte byteValue;
-    double doubleValue;
-    bool boolValue;
-    float floatValue;
-    long longValue;
-    uint8_t uint8Value;
-    uint16_t uint16Value;
-    uint32_t uint32Value;
-    uint64_t uint64Value;
-    String stringValue;
-
-    Mutex mResultMutex;
-    Condition mResultCond;
-    int mStatus;
-
-    int mValueType;
-
-    void interruptResultWait();
-
-    void getResult(int &value,int defaultvalue,long millseconds = 0);
-    void getResult(byte &value,byte defaultvalue,long millseconds = 0);
-    void getResult(double &value,double defaultvalue,long millseconds = 0);
-    void getResult(bool &value,bool defaultvalue,long millseconds = 0);
-    void getResult(float &value,float defaultvalue,long millseconds = 0);
-    void getResult(long &value,long defaultvalue,long millseconds = 0);
-    void getResult(uint16_t &value,uint16_t defaultvalue,long millseconds = 0);
-    void getResult(uint32_t &value,uint32_t defaultvalue,long millseconds = 0);
-    void getResult(uint64_t &value,uint64_t defaultvalue,long millseconds = 0);
-    void getResult(String &value,String defaultvalue,long millseconds = 0);
-
-
+    template<typename T>
+    T getResult() {
+        return __RunnableResult<T>().get(mResult);
+    }
 };
 
 template<class Function,class... Args> 
@@ -141,4 +110,5 @@ sp<_Runnable> createLambdaRunnable(Callfunc f,Args ...args) {
 }
 
 }
+
 #endif

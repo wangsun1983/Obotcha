@@ -2,7 +2,6 @@
 
 namespace obotcha {
 
-
 _AtomicBoolean::_AtomicBoolean(bool val) {
     mValue = val;
 }

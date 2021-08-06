@@ -18,12 +18,12 @@ public:
     int cancel();
 
     template<typename T>
-    T getResult(T defaultvalue,long millseconds = 0) {
-        return mTask->getResult<T>(defaultvalue,millseconds);
+    T getResult(long millseconds = 0) {
+        return mTask->getResult<T>(millseconds);
     }
     
     enum Status {
-        Waiting = 0,
+        Waiting = st(ExecutorTask)::Waiting,
         Running,
         Cancel,
         Complete,

@@ -12,7 +12,6 @@
 
 #include "ExecutorTask.hpp"
 #include "AutoLock.hpp"
-#include "Future.hpp"
 
 namespace obotcha {
 
@@ -22,7 +21,7 @@ _ExecutorTask::_ExecutorTask(Runnable r) {
     mMutex = createMutex("ExecutorTaskMutex");
     mCompleteCond = createCondition();
 
-    mStatus = st(Future)::Waiting;
+    mStatus = Waiting;
 }
 
 _ExecutorTask::~_ExecutorTask() {
@@ -32,7 +31,7 @@ _ExecutorTask::~_ExecutorTask() {
 int _ExecutorTask::wait(long interval) {
     AutoLock l(mMutex);
     
-    if(mStatus == st(Future)::Complete || mStatus == st(Future)::Cancel) {
+    if(mStatus == Complete || mStatus == Cancel) {
         return 0;
     }
 
@@ -41,14 +40,13 @@ int _ExecutorTask::wait(long interval) {
 
 void _ExecutorTask::cancel() {
     AutoLock l(mMutex);
-    if(mStatus == st(Future)::Cancel || mStatus == st(Future)::Complete) {
+    if(mStatus == Cancel || mStatus == Complete) {
         return;
     }
     
-    mStatus = st(Future)::Cancel;
+    mStatus = Cancel;
     if(mRunnable != nullptr) {
         mRunnable->onInterrupt();
-        mRunnable->interruptResultWait();
     }
 
     mCompleteCond->notify();
@@ -63,11 +61,11 @@ int _ExecutorTask::getStatus() {
 void _ExecutorTask::execute() {
     {
         AutoLock l(mMutex);
-        if(mStatus == st(Future)::Complete || mStatus == st(Future)::Cancel) {
+        if(mStatus == Complete || mStatus == Cancel) {
             return;
         }
 
-        mStatus = st(Future)::Running;
+        mStatus = Running;
     }
 
     if(mRunnable != nullptr) {
@@ -76,7 +74,7 @@ void _ExecutorTask::execute() {
 
     {
         AutoLock l(mMutex);
-        mStatus = st(Future)::Complete;
+        mStatus = Complete;
         mCompleteCond->notify();
     }
 }

@@ -26,21 +26,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
                     executor = nullptr;
                     return;
                 }
-
-/* 
-                if(mCurrentTask->getStatus() == st(Future)::Cancel) {
-                    continue;
-                }
-
-                mCurrentTask->onRunning();
-            
-                Runnable runnable = mCurrentTask->getRunnable();
-                if(runnable != nullptr) {
-                    runnable->run();    
-                }
-
-                mCurrentTask->onComplete();
-*/
+                mCurrentTask->execute();
             }
         },AutoClone(this));
 
