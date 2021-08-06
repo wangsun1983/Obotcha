@@ -5,9 +5,10 @@
 
 using namespace obotcha;
 
-extern void testGetResult();
+extern void testIncrementAndGet();
 
 int main() {
-    printf("---[TestFuture Test Start]--- \n");
-    testGetResult();
+  testIncrementAndGet();
+
+  return 0;  
 }
