@@ -50,7 +50,7 @@ public:
     template<typename X>
     Future submit(sp<X> r) {
         ExecutorTask task = createExecutorTask(r);
-        if(mPool->enQueueLast(task)){
+        if(mPool->putLast(task)){
             return createFuture(task);
         }
         return nullptr;

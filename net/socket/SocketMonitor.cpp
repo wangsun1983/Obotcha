@@ -56,11 +56,11 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                     AutoLock l(monitor->mMutex);
                     
                     if(monitor->mThreadNum > 1) {
-                        task = monitor->mThreadLocalTasks->get(index)->deQueueFirst();
+                        task = monitor->mThreadLocalTasks->get(index)->takeFirst();
                     }
                     if(task == nullptr) {
                         monitor->mCurrentSockets[index] = nullptr;
-                        task = monitor->mThreadPublicTasks->deQueueFirst();
+                        task = monitor->mThreadPublicTasks->takeFirst();
                         if(task == nullptr) {
                             monitor->mCondition->wait(monitor->mMutex);
                             continue;
@@ -69,7 +69,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                         if(monitor->mThreadNum > 1) {
                             for(int i = 0;i<monitor->mThreadNum;i++) {
                                 if(monitor->mCurrentSockets[i] == task->sock) {
-                                    monitor->mThreadLocalTasks->get(i)->enQueueLast(task);
+                                    monitor->mThreadLocalTasks->get(i)->putLast(task);
                                     task = nullptr;
                                     break;
                                 }
@@ -182,7 +182,7 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                                             ntohs(client_address.sin_port)));
                     }
 
-                    monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(
+                    monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(
                                                         st(SocketListener)::Message,
                                                         newClient,
                                                         createByteArray((const byte *)buff,length)));
@@ -203,7 +203,7 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                         monitor->addNewSocket(s,listener);
                         {
                             AutoLock l(monitor->mMutex);
-                            monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Connect,s));
+                            monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(SocketListener)::Connect,s));
                             monitor->mCondition->notify();
                         }
                         monitor->bind(s->getFileDescriptor()->getFd(),listener,false);
@@ -221,7 +221,7 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                     if(length > 0) {
                         ByteArray data = createByteArray((const byte *)buff,length);
                         AutoLock l(monitor->mMutex);
-                        monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Message,s,data));
+                        monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(SocketListener)::Message,s,data));
                         monitor->mCondition->notify();
                     }
 
@@ -235,7 +235,7 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
         if((events & (EPOLLRDHUP|EPOLLHUP))!= 0) {
             {
                 AutoLock l(monitor->mMutex);
-                monitor->mThreadPublicTasks->enQueueLast(createSocketMonitorTask(st(SocketListener)::Disconnect,s));
+                monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(SocketListener)::Disconnect,s));
                 monitor->mCondition->notify();
                 return st(EPollFileObserver)::OnEventRemoveObserver;
             }

@@ -35,11 +35,11 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int threadnum) {
                 {
                     AutoLock l(executor->mTaskMutex);
                     if(executor->mHighPriorityTasks->size() > 0) {
-                        mCurrentTask = executor->mHighPriorityTasks->deQueueFirst();
+                        mCurrentTask = executor->mHighPriorityTasks->takeFirst();
                     }else if(executor->mMidPriorityTasks->size() > 0) {
-                        mCurrentTask = executor->mMidPriorityTasks->deQueueFirst();
+                        mCurrentTask = executor->mMidPriorityTasks->takeFirst();
                     }else if(executor->mLowPriorityTasks->size() > 0) {
-                        mCurrentTask = executor->mLowPriorityTasks->deQueueFirst();
+                        mCurrentTask = executor->mLowPriorityTasks->takeFirst();
                     }
 
                     if(executor->mStatus == st(ThreadPriorityPoolExecutor)::ShutDown) {
@@ -77,17 +77,17 @@ int _ThreadPriorityPoolExecutor::shutdown() {
         mStatus = ShutDown;
 
         while(!mHighPriorityTasks->isEmpty()) {
-            ExecutorTask task = mHighPriorityTasks->deQueueLast();
+            ExecutorTask task = mHighPriorityTasks->takeLast();
             task->cancel();
         }
 
         while(!mMidPriorityTasks->isEmpty()) {
-            ExecutorTask task = mMidPriorityTasks->deQueueLast();
+            ExecutorTask task = mMidPriorityTasks->takeLast();
             task->cancel();
         }
 
         while(!mLowPriorityTasks->isEmpty()) {
-            ExecutorTask task = mLowPriorityTasks->deQueueLast();
+            ExecutorTask task = mLowPriorityTasks->takeLast();
             task->cancel();
         }
         mTaskCond->notifyAll();

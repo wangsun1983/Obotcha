@@ -5,9 +5,7 @@
 #include "Thread.hpp"
 #include "Object.hpp"
 #include "System.hpp"
-#include "Executors.hpp"
 #include "Barrier.hpp"
-
 
 using namespace obotcha;
 
@@ -92,8 +90,8 @@ int normaltest() {
   while(1) {
       Barrier barrier = createBarrier(2);
       int num = barrier->getWaitNums();
-      if(num != 0) {
-        printf("---[Barrier Test {construct()} case1] [FAIL]--- \n");
+      if(num != 2) {
+        printf("---[Barrier Test {construct()} case1] [FAIL]---,num is %d \n",num);
         break;
       }
 

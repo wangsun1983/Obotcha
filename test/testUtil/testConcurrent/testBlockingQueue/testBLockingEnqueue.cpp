@@ -19,7 +19,7 @@ public:
         return i;
     }
 
-private:    
+private:
     int i;
 };
 
@@ -30,12 +30,12 @@ public:
     }
 
     void run() {
-        sleep(5);
-        mQueue->deQueueFirst();
+        sleep(1000*5);
+        mQueue->takeFirst();
     }
 
 private:
-    BlockingQueue<EnqueueData> mQueue;    
+    BlockingQueue<EnqueueData> mQueue;
 };
 
 DECLARE_SIMPLE_CLASS(EnqueueThread2) IMPLEMENTS(Thread) {
@@ -50,12 +50,12 @@ public:
         while(1) {
             //printf("setvalue is %d \n",i);
             EnqueueData d = createEnqueueData(i);
-            mQueue->enQueueFirst(d);
-            mQueue->enQueueFirst(d);
+            mQueue->putFirst(d);
+            mQueue->putFirst(d);
 
             if(i == 50) {
                 EnqueueData nt;
-                mQueue->enQueueLast(nt);
+                mQueue->putLast(nt);
                 //printf("fvalue is %d \n",fvalue);
                 return;
             }
@@ -78,7 +78,7 @@ public:
     void run() {
         int i = 0;
         while(1) {
-            EnqueueData d = mQueue->deQueueFirst();
+            EnqueueData d = mQueue->takeFirst();
             if(d == nullptr) {
                 return;
             }
@@ -99,79 +99,79 @@ private:
 
 
 int testEnqueueDequeue() {
-   
+
     while(1) {
         BlockingQueue<EnqueueData> list = createBlockingQueue<EnqueueData>(5);
-        list->enQueueFirst(createEnqueueData(1));
-        list->enQueueFirst(createEnqueueData(2));
-        list->enQueueFirst(createEnqueueData(3));
-        list->enQueueFirst(createEnqueueData(4));
-        list->enQueueFirst(createEnqueueData(5));
+        list->putFirst(createEnqueueData(1));
+        list->putFirst(createEnqueueData(2));
+        list->putFirst(createEnqueueData(3));
+        list->putFirst(createEnqueueData(4));
+        list->putFirst(createEnqueueData(5));
         EnqueueThread1 t1 = createEnqueueThread1(list);
         t1->start();
         long time1 = st(System)::currentTimeMillis();
-        list->enQueueFirst(createEnqueueData(5));
+        list->putFirst(createEnqueueData(5));
         long time2 = st(System)::currentTimeMillis();
         if((time2 - time1) != 5000) {
-            printf("BlockingQueue enqueueFirst test1-------[FAIL],value is %ld \n",time2 - time1);
+            printf("BlockingQueue putFirst test1-------[FAIL],value is %ld \n",time2 - time1);
             break;
         }
 
-        printf("BlockingQueue enqueueFirst test2-------[Success] \n");
+        printf("BlockingQueue putFirst test2-------[Success] \n");
         break;
     }
 
     while(1) {
         BlockingQueue<EnqueueData> list = createBlockingQueue<EnqueueData>(5);
-        list->enQueueFirst(createEnqueueData(1));
-        list->enQueueFirst(createEnqueueData(2));
-        list->enQueueFirst(createEnqueueData(3));
-        list->enQueueFirst(createEnqueueData(4));
-        list->enQueueFirst(createEnqueueData(5));
-        
-        EnqueueData data1 = list->deQueueFirst();
+        list->putFirst(createEnqueueData(1));
+        list->putFirst(createEnqueueData(2));
+        list->putFirst(createEnqueueData(3));
+        list->putFirst(createEnqueueData(4));
+        list->putFirst(createEnqueueData(5));
+
+        EnqueueData data1 = list->takeFirst();
         if(data1->getValue() != 5) {
-            printf("BlockingQueue enqueueFirst test3-------[FAIL] \n");
+            printf("BlockingQueue putFirst test3-------[FAIL] \n");
             break;
         }
 
-        data1 = list->deQueueFirst();
+        data1 = list->takeFirst();
         if(data1->getValue() != 4) {
-            printf("BlockingQueue enqueueFirst test4-------[FAIL] \n");
+            printf("BlockingQueue putFirst test4-------[FAIL] \n");
             break;
         }
 
-        data1 = list->deQueueFirst();
+        data1 = list->takeFirst();
         if(data1->getValue() != 3) {
-            printf("BlockingQueue enqueueFirst test5-------[FAIL] \n");
+            printf("BlockingQueue putFirst test5-------[FAIL] \n");
             break;
         }
 
-        data1 = list->deQueueFirst();
+        data1 = list->takeFirst();
         if(data1->getValue() != 2) {
-            printf("BlockingQueue enqueueFirst test6-------[FAIL] \n");
+            printf("BlockingQueue putFirst test6-------[FAIL] \n");
             break;
         }
 
-        data1 = list->deQueueFirst();
+        data1 = list->takeFirst();
         if(data1->getValue() != 1) {
-            printf("BlockingQueue enqueueFirst test7-------[FAIL] \n");
+            printf("BlockingQueue putFirst test7-------[FAIL] \n");
             break;
         }
 
-        printf("BlockingQueue enqueueFirst test8-------[Success] \n");
+        printf("BlockingQueue putFirst test8-------[Success] \n");
         break;
     }
 
     while(1) {
         BlockingQueue<EnqueueData> list = createBlockingQueue<EnqueueData>(5);
-        list->enQueueFirst(nullptr);
+        list->putFirst(nullptr);
         if(list->size() == 0) {
-            printf("BlockingQueue enqueueFirst test9-------[FAIL] \n");
+            printf("BlockingQueue putFirst test9-------[FAIL] \n");
             break;
         }
 
-        printf("BlockingQueue enqueueFirst test10-------[Success] \n");
+        printf("BlockingQueue putFirst test10-------[Success] \n");
         break;
     }
 
@@ -189,11 +189,11 @@ int testEnqueueDequeue() {
 
         int result = t2->getResult();
         if(result != 2550) {
-            printf("BlockingQueue enqueueFirst test11-------[FAIL],result is %d \n",result);
+            printf("BlockingQueue putFirst test11-------[FAIL],result is %d \n",result);
             break;
         }
 
-        printf("BlockingQueue enqueueFirst test12-------[Success] \n");
+        printf("BlockingQueue putFirst test12-------[Success] \n");
         break;
     }
 }

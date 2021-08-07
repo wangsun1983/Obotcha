@@ -69,17 +69,17 @@ public:
             
             switch(level) {
                 case High:
-                    mHighPriorityTasks->enQueueLast(task);
+                    mHighPriorityTasks->putLast(task);
                     mTaskCond->notify();
                 break;
 
                 case Medium:
-                    mMidPriorityTasks->enQueueLast(task);
+                    mMidPriorityTasks->putLast(task);
                     mTaskCond->notify();
                 break;
 
                 case Low:
-                    mLowPriorityTasks->enQueueLast(task);
+                    mLowPriorityTasks->putLast(task);
                     mTaskCond->notify();
                 break;
 

@@ -12,6 +12,9 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/atomicbool.o \
 	$(outtmp)/atomiclong.o \
 	$(outtmp)/atomicuint64.o \
+	$(outtmp)/atomicuint32.o \
+	$(outtmp)/atomicuint16.o \
+	$(outtmp)/atomicbyte.o \
 	$(outtmp)/readwritelock.o \
 	$(outtmp)/executorbuilder.o \
 	$(outtmp)/future.o \
@@ -56,6 +59,15 @@ $(outtmp)/atomiclong.o :$(concurrentDir)/atomic/AtomicLong.cpp
 
 $(outtmp)/atomicuint64.o :$(concurrentDir)/atomic/AtomicUint64.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicUint64.cpp -o $(outtmp)/atomicuint64.o
+
+$(outtmp)/atomicuint32.o :$(concurrentDir)/atomic/AtomicUint32.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicUint32.cpp -o $(outtmp)/atomicuint32.o
+
+$(outtmp)/atomicuint16.o :$(concurrentDir)/atomic/AtomicUint16.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicUint16.cpp -o $(outtmp)/atomicuint16.o
+
+$(outtmp)/atomicbyte.o :$(concurrentDir)/atomic/AtomicByte.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicByte.cpp -o $(outtmp)/atomicbyte.o
 
 $(outtmp)/atomicbool.o :$(concurrentDir)/atomic/AtomicBoolean.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicBoolean.cpp -o $(outtmp)/atomicbool.o

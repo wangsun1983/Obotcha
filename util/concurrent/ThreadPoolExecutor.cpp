@@ -19,7 +19,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
         Thread thread = createThread([](ThreadPoolExecutor executor) {
             while(1) {
                 ExecutorTask mCurrentTask = nullptr;
-                mCurrentTask = executor->mPool->deQueueFirst();
+                mCurrentTask = executor->mPool->takeFirst();
                 
                 if(mCurrentTask == nullptr) {
                     //clear executor to enable executor release.

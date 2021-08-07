@@ -130,7 +130,7 @@ Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r) {
 
     ExecutorTask task = createExecutorTask(r);
     Future future = createFuture(task);
-    mTasks->enQueueLast(task);
+    mTasks->putLast(task);
     if(mIdleNum->get() == 0) {
         setUpOneIdleThread();
     }
@@ -156,7 +156,7 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
     Thread handler = createThread([](ThreadCachedPoolExecutor &executor){
         ExecutorTask mCurrentTask = nullptr;
         while(1) {
-            mCurrentTask = executor->mTasks->deQueueFirst(executor->mThreadTimeout);
+            mCurrentTask = executor->mTasks->takeFirst(executor->mThreadTimeout);
             executor->mIdleNum->subAndGet(1); 
             if(mCurrentTask == nullptr) {
                 Thread handler = st(Thread)::current();

@@ -15,14 +15,25 @@ namespace obotcha {
 AutoLock l(mMutex);\
 while(!isDestroy) {\
     if(mCapacity != -1 && mList->size() == mCapacity) {\
-        if(mEnqueueCond->wait(mMutex,timeout) == -WaitTimeout) {\
+        if(notFull->wait(mMutex,timeout) == -WaitTimeout) {\
             return false;\
         }\
         continue;\
     }\
     Action;\
-    mDequeueCond->notify();\
+    notEmpty->notify();\
     break;\
+}\
+return true;\
+
+#define LINKED_LIST_ADD_NOBLOCK(Action) \
+AutoLock l(mMutex);\
+if(!isDestroy) { \
+    if(mCapacity != -1 && mList->size() == mCapacity) {\
+        return false;\
+    }\
+    Action;\
+    notEmpty->notify();\
 }\
 return true;\
 
@@ -31,13 +42,13 @@ T data;\
 AutoLock l(mMutex);\
 while(!isDestroy) {\
     if(mList->size() == 0) {\
-        if(mDequeueCond->wait(mMutex,timeout) == -WaitTimeout) {\
+        if(notEmpty->wait(mMutex,timeout) == -WaitTimeout) {\
             return nullptr;\
         }\
         continue;\
     }\
     Action;\
-    mEnqueueCond->notify();\
+    notFull->notify();\
     return data;\
 }\
 return nullptr;\
@@ -50,7 +61,7 @@ while(!isDestroy) {\
         return nullptr;\
     }\
     Action;\
-    mEnqueueCond->notify();\
+    notFull->notify();\
     return data;\
 }\
 return nullptr;\
@@ -62,59 +73,68 @@ public:
         mMutex = createMutex("BlockingLinkedList");
         mList = createLinkedList<T>();
         mCapacity = capacity;
-        mEnqueueCond = createCondition();
-        mDequeueCond = createCondition();
+        notEmpty = createCondition();
+        notFull = createCondition();
         isDestroy = false;
     }
 
-    bool isEmpty() {
-        AutoLock l(mMutex);
-        return mList->isEmpty();
-    }
-
-    int size() {
+    inline int size() {
         AutoLock l(mMutex);
         return mList->size();
     }
 
-    inline void enQueueFirst(T val) {
-        enQueueFirst(val,0);
+    inline int capacity() {
+        return mCapacity;
     }
 
-    inline void enQueueLast(T val) {
-        enQueueLast(val,0);
+    inline void freeze() {
+        mMutex->unlock();
     }
 
-    inline bool enQueueFirst(T val,long timeout) {
-        LINKED_LIST_ADD(mList->enQueueFirst(val));
+    inline void unfreeze() {
+        mMutex->unlock();
     }
 
-    inline bool enQueueLast(T val,long timeout) {
-        LINKED_LIST_ADD(mList->enQueueLast(val));
+    inline bool putFirst(const T & val,long timeout = 0) {
+        LINKED_LIST_ADD(mList->putFirst(val));
     }
 
-    inline T deQueueFirst() {
-        return deQueueFirst(0);
+    inline bool putLast(const T &val,long timeout = 0) {
+        LINKED_LIST_ADD(mList->putLast(val));
     }
 
-    inline T deQueueLast() {
-        return deQueueLast(0);
+    inline bool tryPutFirst(const T & val) {
+        LINKED_LIST_ADD_NOBLOCK(mList->putFirst(val));
     }
 
-    inline T deQueueFirst(long timeout) {
-        LINKED_LIST_REMOVE(data = mList->deQueueFirst());
+    inline bool tryPutLast(const T &val) {
+        LINKED_LIST_ADD_NOBLOCK(mList->putLast(val));
     }
 
-    inline T deQueueLast(long timeout) {
-        LINKED_LIST_REMOVE(data = mList->deQueueLast());
+    inline T takeFirst(long timeout = 0) {
+        LINKED_LIST_REMOVE(data = mList->takeFirst());
     }
 
-    inline T deQueueFirstNoBlock() {
+    inline T takeLast(long timeout = 0) {
+        LINKED_LIST_REMOVE(data = mList->takeLast());
+    }
+
+    inline T tryTakeFirst() {
         LINKED_LIST_REMOVE_NOBLOCK(data = mList->deQueueFisrt());
     }
 
-    inline T deQueueLastNoBlock() {
-        LINKED_LIST_REMOVE_NOBLOCK(data = mList->deQueueLast());
+    inline T tryTakeLast() {
+        LINKED_LIST_REMOVE_NOBLOCK(data = mList->takeLast());
+    }
+
+    inline T peekFirst() {
+        AutoLock l(mMutex);
+        return mList->first();
+    }
+
+    inline T peekLast() {
+        AutoLock l(mMutex);
+        return mList->last();
     }
 
     //destroy
@@ -127,14 +147,15 @@ public:
     inline void clear() {
         AutoLock l(mMutex);
         mList->clear();
+        notFull->notifyAll();
     }
 
 private:
     LinkedList<T> mList;
     int mCapacity;
     Mutex mMutex;
-    Condition mEnqueueCond;
-    Condition mDequeueCond;
+    Condition notEmpty;
+    Condition notFull;
     bool isDestroy;
 };
 

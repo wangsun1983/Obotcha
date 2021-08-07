@@ -6,16 +6,16 @@
 
 using namespace obotcha;
 
-void testIncrementAndGet() {
+void testAddAndGet() {
     while(1) {
         for(int testLoop = 0;testLoop < 1024;testLoop++) {
             AtomicInteger value = createAtomicInteger(0);
             ArrayList<Thread> list = createArrayList<Thread>();
 
-            for(int i = 0;i < 128;i++) {
+            for(int i = 0;i < 64;i++) {
                 Thread t = createThread([&value] {
                     for(int j = 0;j<64*1024;j++) {
-                        value->incrementAndGet();
+                        value->addAndGet(2);
                     }
                 });
                 list->add(t);
@@ -29,8 +29,8 @@ void testIncrementAndGet() {
                iterator->next();
             }
 
-            if(value->get() != 128*64*1024) {
-                printf("AtomicInteger IncrementAndGet test1-------[FAILED],value is %d \n",value->get());
+            if(value->get() != 64*64*1024*2) {
+                printf("AtomicInteger AddAndGet test1-------[FAILED],value is %d \n",value->get());
                 break;
             }
         }
@@ -40,13 +40,13 @@ void testIncrementAndGet() {
 
     while(1) {
       AtomicInteger integer = createAtomicInteger(3);
-      int v = integer->incrementAndGet();
-      if(v != 4) {
-        printf("AtomicInteger IncrementAndGet test2-------[FAILED],v is %d \n",v);
+      int v = integer->addAndGet(2);
+      if(v != 5) {
+        printf("AtomicInteger AddAndGet test2-------[FAILED],v is %d \n",v);
         break;
       }
+
       break;
     }
-
-    printf("AtomicInteger IncrementAndGet test100-------[OK] \n");
+    printf("AtomicInteger AddAndGet test100-------[OK] \n");
 }

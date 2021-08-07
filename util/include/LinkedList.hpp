@@ -63,7 +63,15 @@ public:
         return (head == nullptr);
     }
 
-    void enQueueLast(const T &t) {
+    T first() {
+        return (head == nullptr)?nullptr:head->data;
+    }
+
+    T last() {
+        return (tail == nullptr)?nullptr:tail->data;
+    }
+
+    void putLast(const T &t) {
         LinkedListData<T> data = createLinkedListData<T>(t);
         count++;
         
@@ -85,7 +93,7 @@ public:
         return cursor->data;
     }
 
-    void enQueueFirst(const T &t) {
+    void putFirst(const T &t) {
         LinkedListData<T> data = createLinkedListData<T>(t);
         count++;
         
@@ -94,7 +102,7 @@ public:
         ((tail==nullptr)?tail:data->next->prev) = data;
     }
 
-    T deQueueLast() {
+    T takeLast() {
         T data;
         if(count != 0) {
             data = tail->data;
@@ -105,7 +113,7 @@ public:
         return data;
     }
 
-    T deQueueFirst() {
+    T takeFirst() {
         T data;
         if(count != 0) {
             data = head->data;

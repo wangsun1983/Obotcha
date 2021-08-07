@@ -30,7 +30,7 @@ void _AsyncOutputChannel::_write(ByteArray data) {
     }
     
     if(mDatas->size() > 0) {
-        mDatas->enQueueLast(data);
+        mDatas->putLast(data);
         return;
     }
 
@@ -44,7 +44,7 @@ void _AsyncOutputChannel::_write(ByteArray data) {
 
         if(result < 0) {
             if(errno == EAGAIN) {
-                mDatas->enQueueLast(data);
+                mDatas->putLast(data);
                 st(AsyncOutputChannelPool)::getInstance()->addChannel(AutoClone(this));
             }
         } else if(result != data->size()) {
@@ -63,7 +63,7 @@ void _AsyncOutputChannel::notifyWrite() {
     }
 
     while(mDatas->size() > 0) {
-        ByteArray data = mDatas->deQueueFirst();
+        ByteArray data = mDatas->takeFirst();
         int result = 0;
         if(writeCb != nullptr) {
             result = writeCb(mFd,data);
@@ -73,12 +73,12 @@ void _AsyncOutputChannel::notifyWrite() {
 
         if(result < 0) {
             if(errno == EAGAIN) {
-                mDatas->enQueueFirst(data);
+                mDatas->putFirst(data);
                 break;
             }
         } else if(result != data->size()) {
             ByteArray rest_data = createByteArray(data->toValue() + result,data->size() - result);
-            mDatas->enQueueFirst(rest_data);
+            mDatas->putFirst(rest_data);
         }
     }
 

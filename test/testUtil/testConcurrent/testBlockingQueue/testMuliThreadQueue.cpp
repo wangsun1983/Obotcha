@@ -25,7 +25,7 @@ int testMultiThreadQueue() {
     for(int i = 0;i < 32;i++) {
       Thread t1 = createThread([queue,count](){
         while(1){
-          auto value = queue->deQueueFirst();
+          auto value = queue->takeFirst();
           if(value != nullptr) {
             if(value->i == -1) {
               return;
@@ -42,7 +42,7 @@ int testMultiThreadQueue() {
     for(int i = 0;i < 32;i++) {
       Thread t1 = createThread([queue](){
         for(int j = 0;j < 1024*16;j++) {
-          queue->enQueueFirst(createMultiThreadData(j));
+          queue->putFirst(createMultiThreadData(j));
         }
       });
       t1->start();
@@ -54,7 +54,7 @@ int testMultiThreadQueue() {
     }
 
     for(int i = 0;i < 32;i++) {
-      queue->enQueueFirst(createMultiThreadData(-1));
+      queue->putFirst(createMultiThreadData(-1));
     }
 
     for(int i = 0;i<threads->size();i++) {

@@ -16,80 +16,162 @@
 namespace obotcha {
 
 #define BLOCK_QUEUE_ADD_NOLOCK(Action) \
-while(!isDestroy) {\
+if(!isDestroy) {\
         int size = mQueue.size();\
         if(mCapacity > 0 && size == mCapacity) {\
-            if(-WaitTimeout == mEnqueueCond->wait(mMutex,timeout)) {\
                 return false;\
-            }\
-            continue;\
         }\
         Action;\
-        mDequeueCond->notify();\
+        notEmpty->notify();\
         return true;\
 }\
 return false;
 
 #define BLOCK_QUEUE_ADD(Action) \
 AutoLock l(mMutex);\
-BLOCK_QUEUE_ADD_NOLOCK(Action) 
+while(!isDestroy) {\
+        int size = mQueue.size();\
+        if(mCapacity > 0 && size == mCapacity) {\
+            if(-WaitTimeout == notFull->wait(mMutex,timeout)) {\
+                return false;\
+            }\
+            continue;\
+        }\
+        Action;\
+        notEmpty->notify();\
+        return true;\
+}\
+return false;
 
 #define BLOCK_QUEUE_REMOVE(Action) \
 T ret;\
 AutoLock l(mMutex);\
 while(!isDestroy) {\
-        int size = mQueue.size();\
-        if(size == 0) {\
-            if(-WaitTimeout == mDequeueCond->wait(mMutex,timeout)) {\
-                return nullptr;\
-            }\
-            continue;\
+    int size = mQueue.size();\
+    if(size == 0) {\
+        if(-WaitTimeout == notEmpty->wait(mMutex,timeout)) {\
+            return nullptr;\
         }\
-        Action\
-        mEnqueueCond->notify();\
-        return ret;\
+        continue;\
+    }\
+    Action\
+    notFull->notify();\
+    return ret;\
 }\
 return nullptr;
 
 #define BLOCK_QUEUE_REMOVE_NOBLOCK(Action) \
 T ret;\
 AutoLock l(mMutex);\
-while(!isDestroy) {\
+if(!isDestroy) {\
     int size = mQueue.size();\
     if(size == 0) {\
         return nullptr;\
     }\
     Action\
-    mEnqueueCond->notify();\
-    break;\
+    notFull->notify();\
 }\
 return ret;
 
 DECLARE_CLASS(BlockingQueue,1) {
 public:
-	_BlockingQueue(int size);
-    _BlockingQueue();
+	_BlockingQueue(int size) :mCapacity(size) {
+        mMutex = createMutex("BlockingQueueMutex");
+        notEmpty = createCondition();
+        notFull = createCondition();
+        isDestroy = false;
+        mCapacity = size;
+    }
 
-    inline int size();
-    inline void freeze();
-    inline void unfreeze();
+    _BlockingQueue():_BlockingQueue(1024) {
+    }
 
-    inline bool enQueueFirst(const T &val);
-    inline bool enQueueLast(const T &val);
+    ~_BlockingQueue() {}
 
-    inline bool enQueueFirst(const T & val,long timeout);
-    inline bool enQueueLast(const T &val,long timeout);
+    inline int size() {
+        AutoLock l(mMutex);
+        return mQueue.size();
+    }
 
-    //dequeue
-    inline T deQueueFirst();
-    inline T deQueueLast();
+    inline int capacity() {
+        return mCapacity;
+    }
 
-    inline T deQueueFirst(long timeout);
-    inline T deQueueLast(long timeout);
+    inline void freeze() {
+        mMutex->unlock();
+    }
 
-    //add interface for async
-    inline T deQueueFirstNoBlock();
-    inline T deQueueLastNoBlock();
+    inline void unfreeze() {
+        mMutex->unlock();
+    }
+
+    /**
+    * Retrieves and removes the head of the queue represented by this deque
+    * (in other words, the first element of this deque), waiting if
+    * necessary until an element becomes available.
+    */
+    inline bool putFirst(const T & val,long timeout = 0) {
+        BLOCK_QUEUE_ADD(mQueue.insert(mQueue.begin(),val));
+    }
+
+    inline bool putLast(const T &val,long timeout = 0) {
+        BLOCK_QUEUE_ADD(mQueue.emplace_back(val));
+    }
+
+    inline bool tryPutFirst(const T & val) {
+        BLOCK_QUEUE_ADD_NOLOCK(mQueue.insert(mQueue.begin(),val));
+    }
+
+    inline bool tryPutLast(const T &val) {
+        BLOCK_QUEUE_ADD_NOLOCK(mQueue.emplace_back(val));
+    }
+
+    /**
+    * Retrieves and removes the first element of this deque, waiting
+    * if necessary until an element becomes available.
+    */
+    inline T takeFirst(long timeout = 0) {
+        BLOCK_QUEUE_REMOVE({
+            ret = mQueue.at(0);
+            mQueue.erase(mQueue.begin());
+        });
+    }
+
+    inline T takeLast(long timeout = 0) {
+        BLOCK_QUEUE_REMOVE({
+            ret = mQueue.back();
+            mQueue.pop_back();
+        });
+    }
+
+    inline T tryTakeFirst() {
+        BLOCK_QUEUE_REMOVE_NOBLOCK({
+            ret = mQueue.at(0);
+            mQueue.erase(mQueue.begin());
+        });
+    }
+
+    inline T tryTakeLast() {
+        BLOCK_QUEUE_REMOVE_NOBLOCK({
+            ret = mQueue.back();
+            mQueue.pop_back();
+        });
+    }
+
+    /**
+    * Retrieves, but does not remove, the head of the queue represented by
+    * this deque (in other words, the first element of this deque), or
+    * returns nullptr if this deque is empty.
+    */
+    inline T peekFirst() {
+        AutoLock l(mMutex);
+        return (mQueue.size() == 0)?nullptr:mQueue[0];
+    }
+
+    inline T peekLast() {
+        AutoLock l(mMutex);
+        return (mQueue.size() == 0)?nullptr:mQueue[mQueue.size() - 1];
+    }
 
     //add foreach lambda
     using foreachCallback = std::function<int(T &)>;
@@ -103,133 +185,31 @@ public:
     }
 
     //destroy
-    inline void destroy();
+    inline void destroy() {
+        AutoLock l(mMutex);
+        isDestroy = true;
+        mQueue.clear();
+        notEmpty->notifyAll();
+        notFull->notifyAll();
+    }
 
-    ~_BlockingQueue();
-
-    inline void clear();
+    inline void clear() {
+        AutoLock l(mMutex);
+        mQueue.clear();
+        notEmpty->notifyAll();
+    }
 
 private:
     std::vector<T> mQueue;
     int mCapacity;
 
     Mutex mMutex;
-    Condition mEnqueueCond;
-    Condition mDequeueCond;
+    Condition notEmpty;
+    Condition notFull;
     bool isDestroy;
+
+    static const int DefaultCapacity = 1024;
 };
-
-template <typename T>
-_BlockingQueue<T>::~_BlockingQueue() {
-}
-
-template <typename T>
-_BlockingQueue<T>::_BlockingQueue(int size):mCapacity(size){
-    mMutex = createMutex("BlockingQueueMutex");
-    mEnqueueCond = createCondition();
-    mDequeueCond = createCondition();
-    isDestroy = false;
-    mCapacity = size;
-}
-
-template <typename T>
-_BlockingQueue<T>::_BlockingQueue():_BlockingQueue(-1) {
-    //Nothing
-}
-
-template <typename T>
-bool _BlockingQueue<T>::enQueueFirst(const T & val) {
-    return enQueueFirst(val,0);
-}
-
-template <typename T>
-bool _BlockingQueue<T>::enQueueFirst(const T & val,long timeout) {
-    BLOCK_QUEUE_ADD(mQueue.insert(mQueue.begin(),val));
-}
-
-template <typename T>
-bool _BlockingQueue<T>::enQueueLast(const T & val) {
-    return enQueueLast(val,0);
-}
-
-template <typename T>
-bool _BlockingQueue<T>::enQueueLast(const T & val,long timeout) {
-    BLOCK_QUEUE_ADD(mQueue.emplace_back(val));
-}
-
-template <typename T>
-T _BlockingQueue<T>::deQueueFirst() {
-    return deQueueFirst(0);
-}
-
-template <typename T>
-T _BlockingQueue<T>::deQueueFirst(long timeout) {
-    BLOCK_QUEUE_REMOVE({
-        ret = mQueue.at(0);
-        mQueue.erase(mQueue.begin());
-    });
-}
-
-template <typename T>
-T _BlockingQueue<T>::deQueueLast() {
-    return deQueueLast(0);
-}
-
-template <typename T>
-T _BlockingQueue<T>::deQueueLast(long timeout) {
-    BLOCK_QUEUE_REMOVE({
-        ret = mQueue.back();
-        mQueue.pop_back();
-    });
-}
-
-template <typename T>
-T _BlockingQueue<T>::deQueueFirstNoBlock() {
-    BLOCK_QUEUE_REMOVE_NOBLOCK({
-        ret = mQueue.at(0);
-        mQueue.erase(mQueue.begin());
-    });
-}
-
-template <typename T>
-T _BlockingQueue<T>::deQueueLastNoBlock() {
-    BLOCK_QUEUE_REMOVE_NOBLOCK({
-        ret = mQueue.back();
-        mQueue.pop_back();
-    });
-}
-
-
-template <typename T>
-int _BlockingQueue<T>::size() {
-    AutoLock l(mMutex);
-    return mQueue.size();
-}
-
-template <typename T>
-void _BlockingQueue<T>::freeze() {
-    mMutex->lock();
-}
-
-template <typename T>
-void _BlockingQueue<T>::unfreeze() {
-    mMutex->unlock();
-}
-
-template <typename T>
-void _BlockingQueue<T>::clear() {
-    AutoLock l(mMutex);
-    mQueue.clear();
-}
-
-template <typename T>
-void _BlockingQueue<T>::destroy() {
-    AutoLock l(mMutex);
-    isDestroy = true;
-    mQueue.clear();
-    mEnqueueCond->notifyAll();
-    mDequeueCond->notifyAll();
-}
 
 }
 #endif
