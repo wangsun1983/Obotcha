@@ -19,7 +19,7 @@ public:
 
     long write(char c);
     
-    long write(ByteArray buff,long size = 0);
+    long write(ByteArray buff,long size = -1);
 
     void close();
 

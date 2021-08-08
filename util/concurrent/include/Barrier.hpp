@@ -18,6 +18,7 @@ public:
 
     int getWaitNums();
 
+    bool destroy();
 private:
     Mutex mutex;
 
@@ -26,6 +27,8 @@ private:
     int mBarrierNums;
 
     int mBarrierBack;
+
+    bool isDestroy;
 };
 
 }

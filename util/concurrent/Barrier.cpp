@@ -13,6 +13,7 @@
 #include "Barrier.hpp"
 #include "AutoLock.hpp"
 #include "Error.hpp"
+#include "InterruptedException.hpp"
 
 namespace obotcha {
 
@@ -20,6 +21,7 @@ _Barrier::_Barrier(int n) {
     mBarrierNums = n;
     mutex = createMutex("BarrierMutex");
     cond = createCondition();
+    isDestroy = false;
 }
 
 int _Barrier::await(long v) {
@@ -32,7 +34,10 @@ int _Barrier::await(long v) {
     if(mBarrierNums == 0) {
         cond->notifyAll();
     } else {
-        return cond->wait(mutex,v);
+        int ret = cond->wait(mutex,v);
+        if(isDestroy) {
+            Trigger(InterruptedException,"barrier destroyed");
+        }
     }
 
     return 0;
@@ -46,5 +51,10 @@ int _Barrier::getWaitNums() {
     AutoLock l(mutex);
     return mBarrierNums;
 } 
+
+bool _Barrier::destroy() {
+    AutoLock l(mutex);
+    isDestroy = true;
+}
 
 }

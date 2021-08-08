@@ -26,7 +26,7 @@ HttpHeader _HttpHeaderParser::doParse() {
     while(mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
         switch(mStatus) {
             case Idle:{
-                if(v == ' ') {
+                if(v == 0x20) { //' '
                     ByteArray method = mReader->pop();
                     String tag = method->toString()->trimAll();
                     int methodid = st(HttpMethodParser)::doParse(tag);
@@ -63,7 +63,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                     mHeader->setResponseStatus(state_str->toBasicInt());
                     mCrlfCount = 0;
                     mStatus = ContentKey;
-                }else if(v == ' ') {
+                }else if(v == 0x20) { // ' '
                     ByteArray state = mReader->pop();
                     String state_str = createString((const char *)state->toValue(),0,state->size() - 1);
                     int status = state_str->toBasicInt();
@@ -74,7 +74,7 @@ HttpHeader _HttpHeaderParser::doParse() {
             }
 
             case Url:{
-                if(v == ' ') {
+                if(v == 0x20) { // ' '
                     ByteArray urlcontent = mReader->pop();
                     String url_str = createString((const char *)urlcontent->toValue(),0,urlcontent->size() - 1);
                     HttpUrl url = st(HttpUrlParser)::parseUrl(url_str);
@@ -128,7 +128,7 @@ HttpHeader _HttpHeaderParser::doParse() {
             case ContentKey: {
                 if(v == CRLF[mCrlfCount]) {
                     mCrlfCount++;
-                }else if(v == ':') {
+                }else if(v == 0x3a) { //':'
                     mCrlfCount = 0;
                     ByteArray key = mReader->pop();
                     

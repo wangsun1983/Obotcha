@@ -23,10 +23,8 @@ public:
     _FileOutputStream(int fd);
 
     long write(char c);
-    
-    long write(ByteArray buff);
 
-    long write(ByteArray buff,long size);
+    long write(ByteArray buff,long size = -1);
 
     long writeString(String s);
     

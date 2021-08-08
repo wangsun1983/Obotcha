@@ -34,7 +34,8 @@ long _SocketOutputStream::write(char c) {
 }
 
 long _SocketOutputStream::write(ByteArray data,long size) {
-    ByteArray sendData = createByteArray(data->toValue(),size);
+    
+    ByteArray sendData = (size != -1)?createByteArray(data->toValue(),size):createByteArray(data);
 
     if(mChannel != nullptr) {
         mChannel->write(sendData);
