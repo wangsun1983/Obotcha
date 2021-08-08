@@ -16,6 +16,7 @@
 #include "MethodNotSupportException.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "MethodNotSupportException.hpp"
+#include "ContainerValue.hpp"
 
 namespace obotcha {
     
@@ -64,11 +65,11 @@ public:
     }
 
     T first() {
-        return (head == nullptr)?nullptr:head->data;
+        return (head == nullptr)?ContainerValue<T>(nullptr):head->data;
     }
 
     T last() {
-        return (tail == nullptr)?nullptr:tail->data;
+        return (tail == nullptr)?ContainerValue<T>(nullptr):tail->data;
     }
 
     void putLast(const T &t) {
@@ -83,7 +84,7 @@ public:
     T at(int index) {
         sp<_LinkedListData<T>> cursor = head;
         if(cursor == nullptr || index >= count) {
-            return nullptr;
+            return ContainerValue<T>(nullptr);
         }
 
         for(int i = 0;i != index;i++) {

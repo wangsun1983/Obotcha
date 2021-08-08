@@ -12,6 +12,7 @@
 #include "Condition.hpp"
 #include "InitializeException.hpp"
 #include "Error.hpp"
+#include "ContainerValue.hpp"
 
 namespace obotcha {
 
@@ -50,7 +51,7 @@ while(!isDestroy) {\
     int size = mQueue.size();\
     if(size == 0) {\
         if(-WaitTimeout == notEmpty->wait(mMutex,timeout)) {\
-            return nullptr;\
+            return ContainerValue<T>(nullptr).get();\
         }\
         continue;\
     }\
@@ -58,7 +59,7 @@ while(!isDestroy) {\
     notFull->notify();\
     return ret;\
 }\
-return nullptr;
+return ContainerValue<T>(nullptr).get();
 
 #define BLOCK_QUEUE_REMOVE_NOBLOCK(Action) \
 T ret;\
@@ -66,7 +67,7 @@ AutoLock l(mMutex);\
 if(!isDestroy) {\
     int size = mQueue.size();\
     if(size == 0) {\
-        return nullptr;\
+        return ContainerValue<T>(nullptr).get();\
     }\
     Action\
     notFull->notify();\

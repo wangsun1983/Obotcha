@@ -98,7 +98,7 @@ private:
 };
 
 
-int testEnqueueDequeue() {
+void testEnqueueDequeue() {
 
     while(1) {
         BlockingQueue<EnqueueData> list = createBlockingQueue<EnqueueData>(5);

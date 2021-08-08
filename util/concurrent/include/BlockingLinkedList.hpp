@@ -8,6 +8,7 @@
 #include "Condition.hpp"
 #include "LinkedList.hpp"
 #include "Error.hpp"
+#include "ContainerValue.hpp"
 
 namespace obotcha {
 
@@ -43,7 +44,7 @@ AutoLock l(mMutex);\
 while(!isDestroy) {\
     if(mList->size() == 0) {\
         if(notEmpty->wait(mMutex,timeout) == -WaitTimeout) {\
-            return nullptr;\
+            return ContainerValue<T>(nullptr).get();\
         }\
         continue;\
     }\
@@ -58,7 +59,7 @@ T data;\
 AutoLock l(mMutex);\
 while(!isDestroy) {\
     if(mList->size() == 0) {\
-        return nullptr;\
+        return ContainerValue<T>(nullptr).get();\
     }\
     Action;\
     notFull->notify();\

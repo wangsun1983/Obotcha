@@ -18,7 +18,7 @@ public:
   int i;
 };
 
-int testMultiThreadQueue() {
+void testMultiThreadQueue() {
     BlockingQueue<MultiThreadData> queue = createBlockingQueue<MultiThreadData>();
     ArrayList<Thread> threads = createArrayList<Thread>();
     AtomicInteger count = createAtomicInteger(0);
