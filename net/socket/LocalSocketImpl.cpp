@@ -19,6 +19,7 @@ _LocalSocketImpl::_LocalSocketImpl(InetAddress address,SocketOption option):_Soc
     serverAddr.sun_family = AF_UNIX;
     strcpy(serverAddr.sun_path, address->getAddress()->toChars()); 
 
+    //if client setReUseAddr,connect will failed!!
     if(option != nullptr && option->getReUseAddr() == st(SocketOption)::On) {
         unlink(address->getAddress()->toChars());
     }
@@ -32,7 +33,7 @@ _LocalSocketImpl::_LocalSocketImpl(InetAddress address,SocketOption option):_Soc
 
 int _LocalSocketImpl::connect() {
     if(::connect(sock->getFd(), (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
-        return -1;
+        return -NetConnectFail;
     }
 
     while(1) {

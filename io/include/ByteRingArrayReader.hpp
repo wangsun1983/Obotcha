@@ -21,7 +21,7 @@ public:
 
     ByteArray pop();
 
-    int readNext(byte *);
+    int readNext(byte &);
 
     void setCursor(int);
 

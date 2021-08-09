@@ -468,6 +468,17 @@ sp<_ArrayList<String>> _String::split(const char* v,int size) {
     return split(str);
 }
 
+int _String::counts(String str) {
+    int count = 0;
+    int index = 0;
+    while((index = m_str.find(str->m_str,index)) < m_str.length()) {
+        count++;
+        index++;
+    }
+
+    return count;
+}
+
 Integer _String::toInteger() {
     return st(Integer)::parseDecInt(AutoClone(this));
 }

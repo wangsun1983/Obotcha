@@ -13,16 +13,10 @@ sock.connect(server_address)
 
 
 # Send data
-message = 'This is the message.  It will be repeated.'
-sock.sendall(message.encode())
+message = 'hello server'
+count = 0
+while (count < 50):
+    sock.sendall(message.encode())
+    count = count + 1
 
-
-amount_received = 0
-amount_expected = len(message)
-
-#while amount_received < amount_expected:
-#    data = sock.recv(16)
-#    amount_received += len(data)
- 
-time.sleep(5)
 sock.close()

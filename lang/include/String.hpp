@@ -305,6 +305,8 @@ public:
     sp<_ArrayList<String>> split(std::string v);
     //----------------------------
 
+    int counts(String);
+
     bool isEmpty();
 
     bool matches(const String &regex);//Not Test

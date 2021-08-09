@@ -173,10 +173,9 @@ int _SocketImpl::close() {
 }
 
 ByteArray _SocketImpl::receive() {
-    ByteArray data = createByteArray(mBuffSize);
-    int length = ::read(sock->getFd(),data->toValue(),mBuffSize);
-    data->quickShrink(length);
-    return data;
+    byte buff[mBuffSize];
+    int length = ::read(sock->getFd(),buff,mBuffSize);
+    return createByteArray((const byte *)buff,length);
 }
 
 FileDescriptor _SocketImpl::getFileDescriptor() {

@@ -22,7 +22,11 @@ print("start listen!!!")
 
 # Wait for a connection
 connection, client_address = sock.accept()
+count = 0
+while (count < 50):
+    print("start get an acception!!!")
+    msg = "hello client"
+    connection.sendall(msg.encode())
+    count = count + 1
 
-print("start get an acception!!!")
-msg = "hello client"
-connection.sendall(msg.encode())
+connection.close()

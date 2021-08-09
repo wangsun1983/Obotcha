@@ -30,6 +30,7 @@ extern int TestStringSize();
 extern int TestStringContains();
 extern int TestStringIndexOf();
 extern int TestStringEquals();
+extern int TestCounts();
 
 int main() {
 
@@ -68,4 +69,6 @@ int main() {
   TestStringIndexOf();
 
   TestStringEquals();
+
+  TestCounts();
 }
