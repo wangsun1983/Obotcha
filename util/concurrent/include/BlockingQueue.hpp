@@ -13,6 +13,7 @@
 #include "InitializeException.hpp"
 #include "Error.hpp"
 #include "ContainerValue.hpp"
+#include "ArrayList.hpp"
 
 namespace obotcha {
 
@@ -56,7 +57,9 @@ while(!isDestroy) {\
         continue;\
     }\
     Action\
-    notFull->notify();\
+    if(mCapacity > 0) {\
+        notFull->notify();\
+    }\
     return ret;\
 }\
 return ContainerValue<T>(nullptr).get();
@@ -70,7 +73,9 @@ if(!isDestroy) {\
         return ContainerValue<T>(nullptr).get();\
     }\
     Action\
-    notFull->notify();\
+    if(mCapacity > 0) {\
+        notFull->notify();\
+    }\
 }\
 return ret;
 
@@ -84,7 +89,7 @@ public:
         mCapacity = size;
     }
 
-    _BlockingQueue():_BlockingQueue(1024) {
+    _BlockingQueue():_BlockingQueue(-1) {
     }
 
     ~_BlockingQueue() {}
@@ -99,7 +104,7 @@ public:
     }
 
     inline void freeze() {
-        mMutex->unlock();
+        mMutex->lock();
     }
 
     inline void unfreeze() {
@@ -174,6 +179,28 @@ public:
         return (mQueue.size() == 0)?nullptr:mQueue[mQueue.size() - 1];
     }
 
+    //add some simple function
+    inline bool put(T v) {
+        return putLast(v);
+    }
+
+    inline T take() {
+        return takeFirst();
+    }
+
+    inline T peek() {
+        return peek();
+    }
+    
+    inline ArrayList<T> toArray() {
+        AutoLock l(mMutex);
+        ArrayList<T> array = createArrayList<T>();
+        for (T value:mQueue) {
+            array->add(value);
+        }
+        return array;
+    }
+
     //add foreach lambda
     using foreachCallback = std::function<int(T &)>;
     inline void foreach(foreachCallback callback) {
@@ -191,13 +218,18 @@ public:
         isDestroy = true;
         mQueue.clear();
         notEmpty->notifyAll();
-        notFull->notifyAll();
+        if(mCapacity > 0) {
+            notFull->notify();
+        }
     }
 
     inline void clear() {
         AutoLock l(mMutex);
         mQueue.clear();
-        notEmpty->notifyAll();
+
+        if(mCapacity > 0) {
+            notFull->notifyAll();
+        }
     }
 
 private:
@@ -208,8 +240,6 @@ private:
     Condition notEmpty;
     Condition notFull;
     bool isDestroy;
-
-    static const int DefaultCapacity = 1024;
 };
 
 }

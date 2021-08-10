@@ -112,12 +112,12 @@ void testEnqueueDequeue() {
         long time1 = st(System)::currentTimeMillis();
         list->putFirst(createEnqueueData(5));
         long time2 = st(System)::currentTimeMillis();
-        if((time2 - time1) != 5000) {
+        if((time2 - time1) < 5000 || (time2 - time1) > 5005) {
             printf("BlockingQueue putFirst test1-------[FAIL],value is %ld \n",time2 - time1);
             break;
         }
 
-        printf("BlockingQueue putFirst test2-------[Success] \n");
+        printf("BlockingQueue putFirst test2-------[OK] \n");
         break;
     }
 
@@ -159,7 +159,7 @@ void testEnqueueDequeue() {
             break;
         }
 
-        printf("BlockingQueue putFirst test8-------[Success] \n");
+        printf("BlockingQueue putFirst test8-------[OK] \n");
         break;
     }
 
@@ -171,7 +171,7 @@ void testEnqueueDequeue() {
             break;
         }
 
-        printf("BlockingQueue putFirst test10-------[Success] \n");
+        printf("BlockingQueue putFirst test10-------[OK] \n");
         break;
     }
 
@@ -193,7 +193,7 @@ void testEnqueueDequeue() {
             break;
         }
 
-        printf("BlockingQueue putFirst test12-------[Success] \n");
+        printf("BlockingQueue putFirst test12-------[OK] \n");
         break;
     }
 }

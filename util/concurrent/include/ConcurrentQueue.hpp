@@ -8,6 +8,7 @@
 #include "AutoLock.hpp"
 #include "Mutex.hpp"
 #include "ContainerValue.hpp"
+#include "ArrayList.hpp"
 
 namespace obotcha {
 
@@ -22,6 +23,11 @@ public:
         return mQueue.size();
     }
 
+    //interface like ArrayList
+    inline void add(T value) {
+        putLast(value);
+    }
+
     inline T get(int index) {
         AutoLock l(mutex_t);
         if(index >= mQueue.size()) {
@@ -30,7 +36,18 @@ public:
         
         return mQueue.at(index);
     }
-    
+
+    ArrayList<T> toArray() {
+        AutoLock l(mutex_t);
+        ArrayList<T> list = createArrayList<T>();
+        for(T v:mQueue) {
+            list->add(v);
+        }
+
+        return list;
+    }
+
+    //interface like queue
     inline void putFirst(const T &val) {
         AutoLock l(mutex_t);
         mQueue.insert(mQueue.begin(),val);

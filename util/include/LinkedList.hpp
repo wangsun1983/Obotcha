@@ -198,9 +198,9 @@ public:
         LinkedListData<T> t = current->next;
 
         if(current == mList->head) {
-            mList->deQueueFirst();
+            mList->takeFirst();
         } else if(current == mList->tail) {
-            mList->deQueueLast();
+            mList->takeLast();
         } else {
             current->next->prev = current->prev;
             current->prev->next = current->next;
