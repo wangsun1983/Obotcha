@@ -11,13 +11,13 @@ _CountDownLatch::_CountDownLatch(int v) {
     }
 
     count = v;
-    waitMutex = createMutex("CountDownLatchWaitMutex");
+    waitMutex = createMutex();
     waitCond = createCondition();
 }
 
 int _CountDownLatch::countDown() {
     AutoLock l(waitMutex);
-
+    
     if(count == 0) {
         return -AlreadyDestroy;
     }
@@ -38,10 +38,6 @@ int _CountDownLatch::await(long v) {
     }
     
     return waitCond->wait(waitMutex,v);
-}
-
-int _CountDownLatch::await() {
-    return await(0);
 }
 
 }

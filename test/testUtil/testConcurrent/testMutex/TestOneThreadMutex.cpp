@@ -24,7 +24,7 @@ int testMutexInOneThread() {
 
     while(1) {
         Mutex m = createMutex();
-        m->trylock();
+        m->tryLock();
         m->lock();
         printf("---[TestMutex TestMutexInOneThread case2] [Success]--- \n");
         break;

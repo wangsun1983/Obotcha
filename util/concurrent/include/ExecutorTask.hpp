@@ -8,12 +8,8 @@
 
 namespace obotcha {
 
-class _PriorityTaskManager;
-
 DECLARE_SIMPLE_CLASS(ExecutorTask) {
 public:
-    friend class _PriorityTaskManager;
-
     _ExecutorTask(Runnable);
 
     ~_ExecutorTask();

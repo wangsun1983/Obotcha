@@ -179,6 +179,28 @@ public:
         return (mQueue.size() == 0)?nullptr:mQueue[mQueue.size() - 1];
     }
 
+    //add some interface like ArrayList
+    inline T removeAt(int index) {
+        AutoLock l(mMutex);
+        if(index < 0 || index >= mQueue.size() || mQueue.size() == 0) {
+            Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
+        }
+        
+        T val = mQueue.at(index);
+        mQueue.erase(mQueue.begin() + index);
+        return val;
+    }
+
+    inline int remove(const T &val) {
+        typename std::vector<T>::iterator result = find(mQueue.begin( ), mQueue.end( ),val);
+        if(result != mQueue.end()) {
+            mQueue.erase(result);
+            return result - mQueue.begin();
+        }
+
+        return -1;
+    }
+
     //add some simple function
     inline bool put(T v) {
         return putLast(v);

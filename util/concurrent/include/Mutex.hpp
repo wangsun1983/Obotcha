@@ -14,19 +14,19 @@ DECLARE_SIMPLE_CLASS(Mutex) IMPLEMENTS(Lock) {
 public:
     friend class _Condition;
     
-    _Mutex(String);
+    _Mutex(String,int type = Recursive);
 
-    _Mutex(const char *);
+    _Mutex(const char *,int type = Recursive);
 
-    _Mutex();
+    _Mutex(int type = Recursive);
 
     int lock();
 
-    int lock(long);
+    int lock(long interval);
 
     int unlock();
 
-    int trylock();
+    int tryLock();
 
     ~_Mutex();
 

@@ -8,6 +8,11 @@ namespace obotcha {
 
 DECLARE_SIMPLE_CLASS(Lock) {
 public:
+    enum Type{
+        Recursive = 0,
+        Normal,
+    };
+
     virtual int lock() = 0;
 
     virtual int unlock() = 0;

@@ -25,8 +25,11 @@ extern void testBlockingQueueTryTakeFirst();
 extern void testBlockingQueueTryTakeLast();
 extern void testBlockingQueueUnlimited();
 extern void testBlockingQueueClear();
+extern void testBlockingQueueRemoveAt();
+extern void testBlockingQueueRemove();
 
 int main() {
+#if 0
     testEnqueueDequeue();
     testMultiThreadQueue();
     testBlockingQueueInt();
@@ -44,5 +47,8 @@ int main() {
     testBlockingQueueTryTakeLast();
     testBlockingQueueUnlimited();
     testBlockingQueueClear();
+    testBlockingQueueRemoveAt();
+#endif
+    testBlockingQueueRemove();
     return 0;
 }

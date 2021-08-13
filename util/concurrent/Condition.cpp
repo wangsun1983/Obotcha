@@ -18,33 +18,35 @@
 #include "AutoLock.hpp"
 #include "Condition.hpp"
 #include "Mutex.hpp"
-#include "Thread.hpp"
-#include "InterruptedException.hpp"
-
+#include "InitializeException.hpp"
+#include "IllegalStateException.hpp"
 namespace obotcha {
 
-_Condition::_Condition():cond_t(PTHREAD_COND_INITIALIZER) {
-    //mIsInterrupt = false;
-}
-
-void _Condition::wait(Mutex m) {
-    pthread_mutex_t* mutex_t = m->getMutex_t();
-    pthread_cond_wait(&cond_t,m->getMutex_t());
-    
+_Condition::_Condition() {
+    if(pthread_cond_init(&cond_t, nullptr) != 0) {
+        Trigger(InitializeException,"Condition error");
+    }
 }
 
 int _Condition::wait(Mutex m,long int timeInterval) {
     pthread_mutex_t* mutex_t = m->getMutex_t();
     if(timeInterval == 0) {
-        return pthread_cond_wait(&cond_t,m->getMutex_t());
+        if(pthread_cond_wait(&cond_t,m->getMutex_t()) != 0) {
+            Trigger(IllegalStateException,"wait failed!!");
+        }
+        return 0;
     }
 
     struct timespec ts;
     st(System)::getNextTime(timeInterval,&ts);
-    if(pthread_cond_timedwait(&cond_t,mutex_t,&ts) == ETIMEDOUT) {
+    int ret = pthread_cond_timedwait(&cond_t,mutex_t,&ts);
+    if(ret == ETIMEDOUT) {
         return -WaitTimeout;
+    } else if(ret == 0) {
+        return 0;
     }
-    return 0;
+    Trigger(IllegalStateException,"wait failed!!");
+    return -1;
 }
 
 void _Condition::notify() {
@@ -53,10 +55,6 @@ void _Condition::notify() {
 
 void _Condition::notifyAll() {
     pthread_cond_broadcast(&cond_t);
-}
-
-void _Condition::interrupt() {
-    notifyAll();
 }
 
 _Condition::~_Condition() {

@@ -74,14 +74,12 @@ public:
 
     String getName();
 
-    void destroy();
+    ~_ReadWriteLock();
 
 private:
     pthread_rwlock_t rwlock;
-    String mName;
 
-    sp<_WriteLock> mWriteLock;
-    sp<_ReadLock> mReadLock;
+    String mName;
 };
 
 }

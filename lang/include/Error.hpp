@@ -25,6 +25,8 @@ enum ErrorType {
     NetAddrAlreadyUseFail,
     AttributeSetFail,
     OpenFail,
+    LockFail,
+    LockBusy,
     CreateFail,
     WriteFail,
     ReadFail,

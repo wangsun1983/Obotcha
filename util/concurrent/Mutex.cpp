@@ -21,29 +21,33 @@
 namespace obotcha {
 
 //----------- Mutex -----------
-_Mutex::_Mutex(){
+_Mutex::_Mutex(int type){
     pthread_mutexattr_init(&mutex_attr);
-    pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_RECURSIVE); 
+    switch(type) {
+        case Recursive:
+        pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_RECURSIVE); 
+        break;
+
+        case Normal:
+        pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_NORMAL); 
+        break;
+    }
+    
     pthread_mutex_init(&mutex_t, &mutex_attr);
 }
 
-_Mutex::_Mutex(String v):_Mutex(){
+_Mutex::_Mutex(String v,int type):_Mutex(type){
     mMutexName = v;
 }
 
-_Mutex::_Mutex(const char *v):_Mutex(){
+_Mutex::_Mutex(const char *v,int type):_Mutex(type){
     mMutexName = createString(v);
 }
 
 int _Mutex::lock() {
-
-    //if(mutex_t.__data.__owner == syscall(SYS_gettid)) {
-    //    return 0;
-    //}
-
-    int result = pthread_mutex_lock(&mutex_t);
-    //pthread_testcancel();
-    return result;
+    int ret = pthread_mutex_lock(&mutex_t);
+    
+    return 0;
 }
 
 int _Mutex::lock(long timeInterval) {
@@ -52,10 +56,12 @@ int _Mutex::lock(long timeInterval) {
     //if(mutex_t.__data.__owner == syscall(SYS_gettid)) {
     //    return 0;
     //}
+    if(timeInterval == 0) {
+        return pthread_mutex_lock(&mutex_t);
+    }
 
     st(System)::getNextTime(timeInterval,&ts);
     int result = pthread_mutex_timedlock(&mutex_t,&ts);
-    //pthread_testcancel();
     if( result == ETIMEDOUT) {
         return -WaitTimeout;
     }
@@ -63,21 +69,23 @@ int _Mutex::lock(long timeInterval) {
     return 0;
 }
 
-
 int _Mutex::unlock() {
-    int result = pthread_mutex_unlock(&mutex_t);
-    //pthread_testcancel();
-    return result;
+    int ret = pthread_mutex_unlock(&mutex_t);
+    return 0;
 }
 
-int _Mutex::trylock() {
-    //if(mutex_t.__data.__owner == syscall(SYS_gettid)) {
-    //    return 0;
-    //}
+int _Mutex::tryLock() {
+    int ret = pthread_mutex_trylock(&mutex_t);
+    switch(ret) {
+        case EBUSY:
+        return -LockBusy;
 
-    int result = pthread_mutex_trylock(&mutex_t);
-    //pthread_testcancel();
-    return result;
+        case Success:
+        return Success;
+
+        default:
+        return -LockFail;
+    }
 }
 
 String _Mutex::toString() {
@@ -90,6 +98,7 @@ pthread_mutex_t *_Mutex::getMutex_t() {
 
 _Mutex::~_Mutex() {
     pthread_mutex_destroy(&mutex_t);
+    pthread_mutexattr_destroy(&mutex_attr);
 }
 
 

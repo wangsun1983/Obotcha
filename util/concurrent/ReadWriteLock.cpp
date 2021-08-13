@@ -26,15 +26,27 @@ _ReadLock::_ReadLock(sp<_ReadWriteLock> l,String s) {
 }
 
 int _ReadLock::lock() {
-    return pthread_rwlock_rdlock(&rwlock->rwlock);
+    int ret = pthread_rwlock_rdlock(&rwlock->rwlock);
+    return 0;
 }
 
 int _ReadLock::unlock() {
-    return pthread_rwlock_unlock(&rwlock->rwlock);  
+    int ret = pthread_rwlock_unlock(&rwlock->rwlock);  
+    return ret;
 }
 
 int _ReadLock::tryLock() {
-    return pthread_rwlock_tryrdlock(&rwlock->rwlock);
+    int ret = pthread_rwlock_tryrdlock(&rwlock->rwlock);
+    switch(ret) {
+        case EBUSY:
+        return -LockBusy;
+
+        case Success:
+        return Success;
+
+        default:
+        return -LockFail;
+    }
 }
 
 String _ReadLock::getName() {
@@ -59,15 +71,27 @@ _WriteLock::_WriteLock(sp<_ReadWriteLock> l,String s) {
 }
 
 int _WriteLock::lock() {
-    return pthread_rwlock_wrlock(&rwlock->rwlock);
+    int ret = pthread_rwlock_wrlock(&rwlock->rwlock);
+    return 0;
 }
 
 int _WriteLock::unlock() {
-    return pthread_rwlock_unlock(&rwlock->rwlock);
+    int ret = pthread_rwlock_unlock(&rwlock->rwlock);
+    return 0;
 }
 
 int _WriteLock::tryLock() {
-    return pthread_rwlock_trywrlock(&rwlock->rwlock);
+    int ret = pthread_rwlock_trywrlock(&rwlock->rwlock);
+    switch(ret) {
+        case EBUSY:
+        return -LockBusy;
+
+        case Success:
+        return Success;
+
+        default:
+        return -LockFail;
+    }
 }
 
 String _WriteLock::getName() {
@@ -90,7 +114,7 @@ _ReadWriteLock::_ReadWriteLock():_ReadWriteLock(nullptr) {
 }
 
 _ReadWriteLock::_ReadWriteLock(String s) {
-    pthread_rwlock_init(&rwlock, NULL);
+    pthread_rwlock_init(&rwlock, nullptr);
     mName = s;
 }
 
@@ -108,7 +132,7 @@ String _ReadWriteLock::getName() {
     return mName;
 }
 
-void _ReadWriteLock::destroy() {
+_ReadWriteLock::~_ReadWriteLock() {
     pthread_rwlock_destroy(&rwlock);
 }
 

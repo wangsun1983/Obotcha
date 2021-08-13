@@ -10,10 +10,8 @@ public:
     _Future(ExecutorTask);
     
     ~_Future();
-
-    void wait();
     
-    void wait(long);
+    void wait(long interval = 0);
     
     int cancel();
 

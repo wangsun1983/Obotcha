@@ -4,7 +4,8 @@
 namespace obotcha {
 
 enum Global {
-    Sync = 0,
+    Success = 0,
+    Sync,
     ASync,
     Break,
     Continue,

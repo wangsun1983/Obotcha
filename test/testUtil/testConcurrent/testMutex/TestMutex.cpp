@@ -93,7 +93,7 @@ public:
         //printf("Thread2 start \n");
         //cond->notify();
         //AutoLock l(mutex_t,2000);
-        mutex_t->trylock();
+        mutex_t->tryLock();
         //mutex_t->lock();
         //printf("Thread2 trace \n");
         //mutex_t->unlock();
@@ -179,7 +179,7 @@ int testMutexNormal() {
         break;
     }
 
-    //trylock()
+    //tryLock()
     while(1) {
         Mutex mutex = createMutex("test");
         Thread mThread1 = createThread(createMyRun1(mutex));//new Thread(new Thread1(mutex));
@@ -193,11 +193,11 @@ int testMutexNormal() {
         int v = st(System)::currentTimeMillis() - current;
         //printf("v is %d \n",v);
         if(v > 5) {
-            printf("---[TestMutex Test {trylock()} case1] [FAIL]--- \n");
+            printf("---[TestMutex Test {tryLock()} case1] [FAIL]--- \n");
             break;
         }
 
-        printf("---[TestMutex Test {trylock()} case2] [OK]--- \n");
+        printf("---[TestMutex Test {tryLock()} case2] [OK]--- \n");
         break;
     }
 

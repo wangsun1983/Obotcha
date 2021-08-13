@@ -15,9 +15,7 @@ public:
     
     int countDown();
 
-    int await(long);
-
-    int await();
+    int await(long interval = 0);
     
 private:
     int count;

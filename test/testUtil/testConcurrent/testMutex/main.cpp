@@ -14,9 +14,17 @@ using namespace obotcha;
 
 extern int testMutexNormal();
 extern int testMutexInOneThread();
+extern void testMutex_Lock();
+extern void testMutex_TryLock();
+extern void testMutex_UnLock();
 
 int main() {
     printf("---[TestMutex Test Start]--- \n");
     testMutexInOneThread();
     testMutexNormal();
+    testMutex_Lock();
+    testMutex_TryLock();
+    testMutex_UnLock();
+
+    return 1;
 }

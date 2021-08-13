@@ -60,15 +60,24 @@ public:
 
     inline int remove(const T &val) {
         AutoLock l(mutex_t);
-        auto iterator = mQueue.begin();
-        while(iterator != mQueue.end()) {
-            if(*iterator == val) {
-                iterator = mQueue.erase(iterator);
-                continue;
-            }
-            iterator++;
+        typename std::vector<T>::iterator result = find(mQueue.begin( ), mQueue.end( ),val);
+        if(result != mQueue.end()) {
+            mQueue.erase(result);
+            return result - mQueue.begin();
         }
-        return 0;
+
+        return -1;
+    }
+
+    inline T removeAt(int index) {
+        AutoLock l(mutex_t);
+        if(index < 0 || index >= mQueue.size() || mQueue.size() == 0) {
+            Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
+        }
+
+        T value = mQueue.at(index);
+        mQueue.erase(mQueue.begin() + index);
+        return value;
     }
 
     inline T takeFirst() {

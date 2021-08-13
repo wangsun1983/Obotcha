@@ -18,13 +18,9 @@ namespace obotcha {
 _Future::_Future(ExecutorTask t) {
     mTask = t;
 }
-
-void _Future::wait() {
-    mTask->wait();
-}
     
-void _Future::wait(long t) {
-    mTask->wait(t);
+void _Future::wait(long interval) {
+    mTask->wait(interval);
 }
     
 int _Future::cancel() {
