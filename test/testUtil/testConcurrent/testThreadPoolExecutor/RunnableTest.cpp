@@ -20,11 +20,11 @@ public:
     void run() {
         //printf("i am running \n");
         try {
-            st(Thread)::sleep(10*1000);
+            st(Thread)::msleep(10*1000);
         } catch(InterruptedException &e) {
             interruptVal = 2;
         }
-        
+
     }
 
     ~_RunTest1() {

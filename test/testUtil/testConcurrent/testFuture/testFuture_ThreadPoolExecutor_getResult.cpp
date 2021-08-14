@@ -9,6 +9,7 @@
 #include "Future.hpp"
 #include "System.hpp"
 #include "Math.hpp"
+#include "TaskResult.hpp"
 
 using namespace obotcha;
 
@@ -24,42 +25,42 @@ public:
         MyResult r = createMyResult();
         r->value1 = 100;
         r->value2 = 123;
-        setResult(r);
+        st(TaskResult)::set(r);
     }
 };
 
 DECLARE_SIMPLE_CLASS(RunTestInt) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult(1);
+        st(TaskResult)::set(1);
     }
 };
 
 DECLARE_SIMPLE_CLASS(RunTestByte) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult((byte)2);
+        st(TaskResult)::set((byte)2);
     }
 };
 
 DECLARE_SIMPLE_CLASS(RunTestDouble) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult(3.3);
+        st(TaskResult)::set(3.3);
     }
 };
 
 DECLARE_SIMPLE_CLASS(RunTestBoolFalse) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult(false);
+        st(TaskResult)::set(false);
     }
 };
 
 DECLARE_SIMPLE_CLASS(RunTestBoolTrue) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult(true);
+        st(TaskResult)::set(true);
     }
 };
 
@@ -67,35 +68,35 @@ public:
 DECLARE_SIMPLE_CLASS(RunTestLong) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult((long)400);
+        st(TaskResult)::set((long)400);
     }
 };
 
 DECLARE_SIMPLE_CLASS(RunTestUint16) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult((uint16_t)5);
+        st(TaskResult)::set((uint16_t)5);
     }
 };
 
 DECLARE_SIMPLE_CLASS(RunTestUint32) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult((uint32_t)6);
+        st(TaskResult)::set((uint32_t)6);
     }
 };
 
 DECLARE_SIMPLE_CLASS(RunTestUint64) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult((uint64_t)7);
+        st(TaskResult)::set((uint64_t)7);
     }
 };
 
 DECLARE_SIMPLE_CLASS(RunTestString) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult(createString("hello world"));
+        st(TaskResult)::set(createString("hello world"));
     }
 };
 
@@ -106,7 +107,7 @@ public:
         MyResult r = createMyResult();
         r->value1 = 100;
         r->value2 = 123;
-        setResult(r);
+        st(TaskResult)::set(r);
         sleep(1);
     }
 };
@@ -114,7 +115,7 @@ public:
 DECLARE_SIMPLE_CLASS(RunTestIntDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult(1);
+        st(TaskResult)::set(1);
         sleep(1);
     }
 };
@@ -122,7 +123,7 @@ public:
 DECLARE_SIMPLE_CLASS(RunTestByteDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult((byte)2);
+        st(TaskResult)::set((byte)2);
         sleep(1);
     }
 };
@@ -130,7 +131,7 @@ public:
 DECLARE_SIMPLE_CLASS(RunTestDoubleDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult(3.3);
+        st(TaskResult)::set(3.3);
         sleep(1);
     }
 };
@@ -138,7 +139,7 @@ public:
 DECLARE_SIMPLE_CLASS(RunTestBoolFalseDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult(false);
+        st(TaskResult)::set(false);
         sleep(1);
     }
 };
@@ -146,7 +147,7 @@ public:
 DECLARE_SIMPLE_CLASS(RunTestBoolTrueDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult(true);
+        st(TaskResult)::set(true);
         sleep(1);
     }
 };
@@ -155,7 +156,7 @@ public:
 DECLARE_SIMPLE_CLASS(RunTestLongDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult((long)400);
+        st(TaskResult)::set((long)400);
         sleep(1);
     }
 };
@@ -163,7 +164,7 @@ public:
 DECLARE_SIMPLE_CLASS(RunTestUint16Delayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult((uint16_t)5);
+        st(TaskResult)::set((uint16_t)5);
         sleep(1);
     }
 };
@@ -171,7 +172,7 @@ public:
 DECLARE_SIMPLE_CLASS(RunTestUint32Delayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult((uint32_t)6);
+        st(TaskResult)::set((uint32_t)6);
         sleep(1);
     }
 };
@@ -179,7 +180,7 @@ public:
 DECLARE_SIMPLE_CLASS(RunTestUint64Delayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult((uint64_t)7);
+        st(TaskResult)::set((uint64_t)7);
         sleep(1);
     }
 };
@@ -187,7 +188,7 @@ public:
 DECLARE_SIMPLE_CLASS(RunTestStringDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
-        setResult(createString("hello world"));
+        st(TaskResult)::set(createString("hello world"));
         sleep(1);
     }
 };
@@ -196,13 +197,13 @@ DECLARE_SIMPLE_CLASS(RunTestSleep10) IMPLEMENTS(Runnable) {
 public:
     void run() {
         try {
-          st(Thread)::sleep(10*1000);
+          st(Thread)::msleep(10*1000);
         } catch(...) {}
-        
+
     }
 };
 
-void testGetResult() {
+void testThreadPoolExecutor_GetResult() {
   //simple test case1
   while(1) {
     auto pool = createExecutorBuilder()->newThreadPool();
@@ -210,7 +211,7 @@ void testGetResult() {
     Future f1 = pool->submit(objRun);
     MyResult r1 = f1->getResult<MyResult>();
     if(r1 == nullptr || r1->value1 != 100 || r1->value2 != 123) {
-      printf("---[Future GetResult case1 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case1 -------[FAIL] \n");
       break;
     }
 
@@ -220,7 +221,7 @@ void testGetResult() {
     int r2 = f2->getResult<int>();
 
     if(r2 != 1) {
-      printf("---[Future GetResult case2 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case2 -------[FAIL] \n");
       break;
     }
 
@@ -230,7 +231,7 @@ void testGetResult() {
     byte r3 = f3->getResult<byte>();
 
     if(r3 != 2) {
-      printf("---[Future GetResult case3 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case3 -------[FAIL] \n");
       break;
     }
 
@@ -240,7 +241,7 @@ void testGetResult() {
     double r4 = f4->getResult<double>();
 
     if(r4 != 3.3) {
-      printf("---[Future GetResult case4 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case4 -------[FAIL] \n");
       break;
     }
 
@@ -250,7 +251,7 @@ void testGetResult() {
     bool r5 = f5->getResult<bool>();
 
     if(r5) {
-      printf("---[Future GetResult case5 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case5 -------[FAIL] \n");
       break;
     }
 
@@ -260,7 +261,7 @@ void testGetResult() {
     bool r6 = f6->getResult<bool>();
 
     if(!r6) {
-      printf("---[Future GetResult case6 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case6 -------[FAIL] \n");
       break;
     }
 
@@ -270,7 +271,7 @@ void testGetResult() {
     long r7 = f7->getResult<long>();
 
     if(r7 != 400) {
-      printf("---[Future GetResult case7 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case7 -------[FAIL] \n");
       break;
     }
 
@@ -280,7 +281,7 @@ void testGetResult() {
     uint16_t r8 = f8->getResult<uint16_t>();
 
     if(r8 != 5) {
-      printf("---[Future GetResult case8 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case8 -------[FAIL] \n");
       break;
     }
 
@@ -290,7 +291,7 @@ void testGetResult() {
     uint32_t r9 = f9->getResult<uint32_t>();
 
     if(r9 != 6) {
-      printf("---[Future GetResult case9 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case9 -------[FAIL] \n");
       break;
     }
 
@@ -300,7 +301,7 @@ void testGetResult() {
     uint64_t r10 = f10->getResult<uint64_t>();
 
     if(r10 != 7) {
-      printf("---[Future GetResult case10 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case10 -------[FAIL] \n");
       break;
     }
 
@@ -310,13 +311,13 @@ void testGetResult() {
     String r11 = f11->getResult<String>();
 
     if(r11 == nullptr || !r11->equals("hello world")) {
-      printf("---[Future GetResult case11 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case11 -------[FAIL] \n");
       break;
     }
 
     pool->shutdown();
 
-    printf("---[Future GetResult case12 -------[OK] \n");
+    printf("---[Future ThreadPoolExecutor GetResult case12 -------[OK] \n");
     break;
   }
 
@@ -329,12 +330,12 @@ void testGetResult() {
     MyResult r1 = f1->getResult<MyResult>();
     long int internal = st(System)::currentTimeMillis() - start;
     if(internal > 1005 || internal < 905) {
-      printf("---[Future GetResult case13 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case13 -------[FAIL] \n");
       break;
     }
 
     if(r1 == nullptr || r1->value1 != 100 || r1->value2 != 123) {
-      printf("---[Future GetResult case14 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case14 -------[FAIL] \n");
       break;
     }
 
@@ -346,12 +347,12 @@ void testGetResult() {
     int r2 = f2->getResult<int>();
     internal = st(System)::currentTimeMillis() - start;
     if(internal > 1005 || internal < 905) {
-      printf("---[Future GetResult case15 -------[FAIL],internal is %ld \n",internal);
+      printf("---[Future ThreadPoolExecutor GetResult case15 -------[FAIL],internal is %ld \n",internal);
       break;
     }
 
     if(r2 != 1) {
-      printf("---[Future GetResult case16 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case16 -------[FAIL] \n");
       break;
     }
 
@@ -363,12 +364,12 @@ void testGetResult() {
     byte r3 = f3->getResult<byte>();
     internal = st(System)::currentTimeMillis() - start;
     if(internal > 1005 || internal < 905) {
-      printf("---[Future GetResult case17 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case17 -------[FAIL] \n");
       break;
     }
 
     if(r3 != 2) {
-      printf("---[Future GetResult case18 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case18 -------[FAIL] \n");
       break;
     }
 
@@ -380,12 +381,12 @@ void testGetResult() {
     double r4 = f4->getResult<double>();
     internal = st(System)::currentTimeMillis() - start;
     if(internal > 1005 || internal < 905) {
-      printf("---[Future GetResult case19 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case19 -------[FAIL] \n");
       break;
     }
 
     if(r4 != 3.3) {
-      printf("---[Future GetResult case20 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case20 -------[FAIL] \n");
       break;
     }
 
@@ -397,12 +398,12 @@ void testGetResult() {
     bool r5 = f5->getResult<bool>();
     internal = st(System)::currentTimeMillis() - start;
     if(internal > 1005 || internal < 905) {
-      printf("---[Future GetResult case21 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case21 -------[FAIL] \n");
       break;
     }
 
     if(r5) {
-      printf("---[Future GetResult case22 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case22 -------[FAIL] \n");
       break;
     }
 
@@ -414,12 +415,12 @@ void testGetResult() {
     bool r6 = f6->getResult<bool>();
     internal = st(System)::currentTimeMillis() - start;
     if(internal > 1005 || internal < 905) {
-      printf("---[Future GetResult case23 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case23 -------[FAIL] \n");
       break;
     }
 
     if(!r6) {
-      printf("---[Future GetResult case24 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case24 -------[FAIL] \n");
       break;
     }
 
@@ -431,12 +432,12 @@ void testGetResult() {
     long r7 = f7->getResult<long>();
     internal = st(System)::currentTimeMillis() - start;
     if(internal > 1005 || internal < 905) {
-      printf("---[Future GetResult case25 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case25 -------[FAIL] \n");
       break;
     }
 
     if(r7 != 400) {
-      printf("---[Future GetResult case26 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case26 -------[FAIL] \n");
       break;
     }
 
@@ -448,12 +449,12 @@ void testGetResult() {
     uint16_t r8 = f8->getResult<uint16_t>();
     internal = st(System)::currentTimeMillis() - start;
     if(internal > 1005 || internal < 905) {
-      printf("---[Future GetResult case27 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case27 -------[FAIL] \n");
       break;
     }
 
     if(r8 != 5) {
-      printf("---[Future GetResult case28 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case28 -------[FAIL] \n");
       break;
     }
 
@@ -465,12 +466,12 @@ void testGetResult() {
     uint32_t r9 = f9->getResult<uint32_t>();
     internal = st(System)::currentTimeMillis() - start;
     if(internal > 1005 || internal < 905) {
-      printf("---[Future GetResult case29 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case29 -------[FAIL] \n");
       break;
     }
 
     if(r9 != 6) {
-      printf("---[Future GetResult case30 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case30 -------[FAIL] \n");
       break;
     }
 
@@ -482,12 +483,12 @@ void testGetResult() {
     uint64_t r10 = f10->getResult<uint64_t>();
     internal = st(System)::currentTimeMillis() - start;
     if(internal > 1005 || internal < 905) {
-      printf("---[Future GetResult case31 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case31 -------[FAIL] \n");
       break;
     }
 
     if(r10 != 7) {
-      printf("---[Future GetResult case32 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case32 -------[FAIL] \n");
       break;
     }
 
@@ -499,18 +500,18 @@ void testGetResult() {
     String r11 = f11->getResult<String>();
     internal = st(System)::currentTimeMillis() - start;
     if(internal > 1005 || internal < 905) {
-      printf("---[Future GetResult case33 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case33 -------[FAIL] \n");
       break;
     }
 
     if(r11 == nullptr || !r11->equals("hello world")) {
-      printf("---[Future GetResult case34 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case34 -------[FAIL] \n");
       break;
     }
 
     pool->shutdown();
 
-    printf("---[Future GetResult case35 -------[OK] \n");
+    printf("---[Future ThreadPoolExecutor GetResult case35 -------[OK] \n");
     break;
   }
 
@@ -533,9 +534,9 @@ void testGetResult() {
     } catch(...) {
       isException = true;
     }
-    
+
     if(!isException) {
-      printf("---[Future GetResult case36 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case36 -------[FAIL] \n");
       break;
     }
 
@@ -556,7 +557,7 @@ void testGetResult() {
     }
 
     if(!isException) {
-      printf("---[Future GetResult case37 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case37 -------[FAIL] \n");
       break;
     }
 
@@ -574,10 +575,10 @@ void testGetResult() {
     } catch(...) {
       isException = true;
     }
-    
+
 
     if(!isException) {
-      printf("---[Future GetResult case38 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case38 -------[FAIL] \n");
       break;
     }
 
@@ -598,7 +599,7 @@ void testGetResult() {
     }
 
     if(!isException) {
-      printf("---[Future GetResult case39 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case39 -------[FAIL] \n");
       break;
     }
 
@@ -619,7 +620,7 @@ void testGetResult() {
     }
 
     if(!isException) {
-      printf("---[Future GetResult case40 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case40 -------[FAIL] \n");
       break;
     }
 
@@ -640,7 +641,7 @@ void testGetResult() {
     }
 
     if(!isException) {
-      printf("---[Future GetResult case41 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case41 -------[FAIL] \n");
       break;
     }
 
@@ -661,7 +662,7 @@ void testGetResult() {
     }
 
     if(!isException) {
-      printf("---[Future GetResult case42 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case42 -------[FAIL] \n");
       break;
     }
 
@@ -683,7 +684,7 @@ void testGetResult() {
     }
 
     if(!isException) {
-      printf("---[Future GetResult case43 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case43 -------[FAIL] \n");
       break;
     }
 
@@ -705,7 +706,7 @@ void testGetResult() {
     }
 
     if(!isException) {
-      printf("---[Future GetResult case44 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case44 -------[FAIL] \n");
       break;
     }
 
@@ -727,7 +728,7 @@ void testGetResult() {
     }
 
     if(!isException) {
-      printf("---[Future GetResult case45 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case45 -------[FAIL] \n");
       break;
     }
 
@@ -749,15 +750,15 @@ void testGetResult() {
     }
 
     if(!isException) {
-      printf("---[Future GetResult case46 -------[FAIL] \n");
+      printf("---[Future ThreadPoolExecutor GetResult case46 -------[FAIL] \n");
       break;
     }
     pool->shutdown();
     pool->awaitTermination();
 
-    printf("---[Future GetResult case47 -------[OK] \n");
+    printf("---[Future ThreadPoolExecutor GetResult case47 -------[OK] \n");
     break;
   }
 
-  printf("---[Future GetResult case100 -------[OK] \n");
+  printf("---[Future ThreadPoolExecutor GetResult case100 -------[OK] \n");
 }

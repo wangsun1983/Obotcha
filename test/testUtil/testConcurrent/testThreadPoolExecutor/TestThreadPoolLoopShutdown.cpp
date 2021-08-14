@@ -22,7 +22,7 @@ public:
     void run() {
       try {
         printf("runnable 1 \n");
-        st(Thread)::sleep(100);
+        st(Thread)::msleep(100);
         printf("runnable 2 \n");
       }catch(InterruptedException &e) {
         //interruptCount->add(1);

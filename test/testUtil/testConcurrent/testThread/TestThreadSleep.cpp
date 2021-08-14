@@ -21,7 +21,7 @@ public:
 
   void run() {
       try {
-        st(Thread)::sleep(100000000);
+        st(Thread)::msleep(100000000);
       } catch(InterruptedException e){}
       count++;
   }
@@ -42,7 +42,7 @@ int testThreadSleep() {
     printf("---[Thread Test {sleep()} Interrupt case1] [Success],count is %d--- \n",count);
     break;
   }
-  
+
   return 0;
-  
+
 }

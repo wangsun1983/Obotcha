@@ -21,24 +21,24 @@ int testPoolReferenceCount() {
             pool = createExecutorBuilder()->setThreadNum(4)->newThreadPool();
             pool->submit([]() {
               try {
-                st(Thread)::sleep(10);
+                st(Thread)::msleep(10);
               } catch(InterruptedException &e){}
             });
 
             pool->submit([]() {
               try {
-                st(Thread)::sleep(10);
+                st(Thread)::msleep(10);
               } catch(InterruptedException &e){}
             });
 
             pool->submit([]() {
               try {
-                st(Thread)::sleep(10);
+                st(Thread)::msleep(10);
               } catch(InterruptedException &e){}
             });
         }
 
-        if(pool->getStrongCount() != 5) {
+        if(pool->getStrongCount() != 9) {
           printf("---[ThreadPoolExecutor Test Reference count is %d case1] [FAIL]--- \n",pool->getStrongCount());
           //break;
         }

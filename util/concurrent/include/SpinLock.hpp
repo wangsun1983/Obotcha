@@ -23,6 +23,8 @@ public:
 
     int unlock();
 
+    int tryLock();
+
     ~_SpinLock();
 
     String toString();

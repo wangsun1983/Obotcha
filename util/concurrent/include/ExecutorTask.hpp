@@ -8,6 +8,37 @@
 
 namespace obotcha {
 
+template<typename T>
+class __ExecutorTaskResult {
+public:
+    T get(Object value) {
+        return Cast<T>(value);
+    }
+};
+
+#define __ExecutorTaskResultMacro(X,Y) \
+template<> \
+class __ExecutorTaskResult<X> { \
+public: \
+    X get(Object value) { \
+        if(value == nullptr) { \
+            Trigger(NullPointerException,"no result"); \
+        }\
+        return Cast<Y>(value)->toValue(); \
+    } \
+};
+
+__ExecutorTaskResultMacro(int,Integer)
+__ExecutorTaskResultMacro(byte,Byte)
+__ExecutorTaskResultMacro(double,Double)
+__ExecutorTaskResultMacro(bool,Boolean)
+__ExecutorTaskResultMacro(float,Double)
+__ExecutorTaskResultMacro(long,Long)
+__ExecutorTaskResultMacro(uint16_t,Uint16)
+__ExecutorTaskResultMacro(uint32_t,Uint32)
+__ExecutorTaskResultMacro(uint64_t,Uint64)
+
+
 DECLARE_SIMPLE_CLASS(ExecutorTask) {
 public:
     _ExecutorTask(Runnable);
@@ -33,7 +64,7 @@ public:
                 Trigger(InterruptedException,"wait exception");
             }
         }
-        return mRunnable->getResult<T>();
+        return __ExecutorTaskResult<T>().get(mResult);;
     }
 
     enum Status {
@@ -42,6 +73,20 @@ public:
         Cancel,
         Complete,
     };
+
+    template<typename T>
+    void setResult(T value) {
+        mResult = value;
+    }
+
+    void setResult(int);
+    void setResult(byte);
+    void setResult(double);
+    void setResult(bool);
+    void setResult(long);
+    void setResult(uint16_t);
+    void setResult(uint32_t);
+    void setResult(uint64_t);
 
 private:
 
@@ -52,6 +97,8 @@ private:
     Mutex mMutex;
 
     Condition mCompleteCond;
+
+    Object mResult;
 };
 
 }

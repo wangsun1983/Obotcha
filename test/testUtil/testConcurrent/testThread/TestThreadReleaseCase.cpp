@@ -22,7 +22,7 @@ int mReleaseCount = 0;
 DECLARE_SIMPLE_CLASS(MyReleaseTestThread) IMPLEMENTS(Thread) {
 public:
     void run() {
-            sleep(1);
+        sleep(1);
     }
 
     ~_MyReleaseTestThread() {

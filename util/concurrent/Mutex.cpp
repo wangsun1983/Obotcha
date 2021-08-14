@@ -46,7 +46,6 @@ _Mutex::_Mutex(const char *v,int type):_Mutex(type){
 
 int _Mutex::lock() {
     int ret = pthread_mutex_lock(&mutex_t);
-    
     return 0;
 }
 

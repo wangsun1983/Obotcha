@@ -25,7 +25,7 @@ DECLARE_SIMPLE_CLASS(Thread) {
 public:
     friend class _Condition;
 
-    friend void doThreadExit(_Thread *thread);
+    //friend void doThreadExit(sp<Thread> thread);
     _Thread();
     
     template<typename X>
@@ -33,6 +33,9 @@ public:
         threadInit(nullptr,run);
     }
 
+    //We should not use C++ reference in Lambda function.
+    //The count of pointer will not be increased if we pass
+    //param by reference .
     template< class Function, class... Args >
     _Thread( Function&& f, Args&&... args ):_Thread() {
         mRunnable = createLambdaRunnable(f,args...);
@@ -70,7 +73,7 @@ public:
 
     static void yield();
 
-    static void sleep(unsigned long = 0);
+    static void msleep(unsigned long = 0);
 
     static void setThreadPriority(int priority);
 
@@ -115,6 +118,7 @@ protected:
 private:
 
     static void* localRun(void *th);
+    static void doThreadExit(_Thread *);
     
     bool isRunning();
     

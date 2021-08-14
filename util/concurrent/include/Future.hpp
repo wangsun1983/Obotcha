@@ -13,7 +13,7 @@ public:
     
     void wait(long interval = 0);
     
-    int cancel();
+    void cancel();
 
     template<typename T>
     T getResult(long millseconds = 0) {

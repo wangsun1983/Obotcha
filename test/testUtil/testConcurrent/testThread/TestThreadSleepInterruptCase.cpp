@@ -26,7 +26,7 @@ public:
     void run() {
         //while(1) {
             try {
-                st(Thread)::sleep(50*1000);
+                st(Thread)::msleep(50*1000);
             } catch(InterruptedException &e) {
                 mySleepExceptionTest1 = 1;
             }
@@ -47,7 +47,7 @@ int testThreadSleepInterrupt() {
             thread->start();
             sleep(1);
             thread->interrupt();
-            
+
         }
         sleep(1);
 

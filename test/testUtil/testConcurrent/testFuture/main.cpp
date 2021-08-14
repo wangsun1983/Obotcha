@@ -5,9 +5,11 @@
 
 using namespace obotcha;
 
-extern void testGetResult();
+extern void testThreadPoolExecutor_GetResult();
+extern void testThreadPoolExecutor_Cancel();
 
 int main() {
-    printf("---[TestFuture Test Start]--- \n");
-    testGetResult();
+    testThreadPoolExecutor_GetResult();
+    //testThreadPoolExecutor_Cancel();
+    return 1;
 }

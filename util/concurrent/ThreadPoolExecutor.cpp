@@ -8,6 +8,7 @@
 #include "System.hpp"
 #include "Error.hpp"
 #include "Log.hpp"
+#include "TimeWatcher.hpp"
 
 namespace obotcha {
 
@@ -18,8 +19,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
     for(int i = 0; i < threadnum;i++) {
         Thread thread = createThread([](ThreadPoolExecutor executor) {
             while(1) {
-                ExecutorTask mCurrentTask = nullptr;
-                mCurrentTask = executor->mPool->takeFirst();
+                ExecutorTask mCurrentTask = executor->mPool->takeFirst();
                 
                 if(mCurrentTask == nullptr) {
                     //clear executor to enable executor release.
@@ -34,27 +34,29 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
         mHandlers->add(thread);
     }
 
+    mMutex = createMutex();
     mStatus = LocalStatus::Running;
 }
 
 int _ThreadPoolExecutor::shutdown() {
     {
+        AutoLock l(mMutex);
         if(mStatus != Running) {
             return -InvalidStatus;
         }
 
         mStatus = ShutDown;
-
-        mPool->freeze();
-        mPool->foreach([](ExecutorTask &task) {
-            task->cancel();
-            return Global::Continue;
-        });
-
-        mPool->destroy();
-        mPool->unfreeze();
     }
-    
+
+    mPool->freeze();
+    mPool->foreach([](ExecutorTask &task) {
+        task->cancel();
+        return Global::Continue;
+    });
+
+    mPool->destroy();
+    mPool->unfreeze();
+
     //interrupt all thread
     mHandlers->foreach([](Thread t){
         t->interrupt();
@@ -65,6 +67,7 @@ int _ThreadPoolExecutor::shutdown() {
 }
 
 bool _ThreadPoolExecutor::isShtuDown() {
+    AutoLock l(mMutex);
     return mStatus == LocalStatus::ShutDown;
 }
 
@@ -81,25 +84,24 @@ bool _ThreadPoolExecutor::isTerminated() {
     return isTerminated;
 }
 
-void _ThreadPoolExecutor::awaitTermination() {
-    awaitTermination(0);
-}
-
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
-    
-    if(mStatus != LocalStatus::ShutDown){
-        return -InvalidStatus;
+    {
+        AutoLock l(mMutex);
+        if(mStatus != LocalStatus::ShutDown){
+            return -InvalidStatus;
+        }
     }
 
     bool isWaitForever = (millseconds == 0);
     ListIterator<Thread> iterator = mHandlers->getIterator();
+    TimeWatcher watcher = createTimeWatcher();
+
     while(iterator->hasValue()) {
         Thread handler = iterator->getValue();
-        long current = st(System)::currentTimeMillis();
+        watcher->start();
         handler->join(millseconds);
         if(!isWaitForever) {
-            long waitInterval = (st(System)::currentTimeMillis() - current);
-            millseconds -= waitInterval;
+            millseconds -= watcher->stop();
             if(millseconds <= 0) {
                 return -WaitTimeout;
             }

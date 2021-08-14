@@ -18,7 +18,7 @@ DECLARE_SIMPLE_CLASS(MySleepWaitRun) IMPLEMENTS(Runnable) {
 public:
     void run() {
         try {
-            st(Thread)::sleep();
+            st(Thread)::msleep();
         } catch(InterruptedException &e) {}
         count++;
     }

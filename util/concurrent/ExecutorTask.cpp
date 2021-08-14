@@ -12,6 +12,7 @@
 
 #include "ExecutorTask.hpp"
 #include "AutoLock.hpp"
+#include "TaskResult.hpp"
 
 namespace obotcha {
 
@@ -30,11 +31,9 @@ _ExecutorTask::~_ExecutorTask() {
     
 int _ExecutorTask::wait(long interval) {
     AutoLock l(mMutex);
-    
     if(mStatus == Complete || mStatus == Cancel) {
         return 0;
     }
-
     return mCompleteCond->wait(mMutex,interval);
 }
 
@@ -68,9 +67,13 @@ void _ExecutorTask::execute() {
         mStatus = Running;
     }
 
+    st(TaskResult)::addTask(AutoClone(this));
+
     if(mRunnable != nullptr) {
         mRunnable->run();
     }
+
+    st(TaskResult)::removeTask();
 
     {
         AutoLock l(mMutex);
@@ -82,5 +85,38 @@ void _ExecutorTask::execute() {
 Runnable _ExecutorTask::getRunnable() {
     return mRunnable;
 }
+
+void _ExecutorTask::setResult(int v) {
+    mResult = createInteger(v);
+}
+
+void _ExecutorTask::setResult(byte v) {
+    mResult = createByte(v);
+}
+
+void _ExecutorTask::setResult(double v) {
+    mResult = createDouble(v);
+}
+
+void _ExecutorTask::setResult(bool v) {
+    mResult = createBoolean(v);
+}
+
+void _ExecutorTask::setResult(long v) {
+    mResult = createLong(v);
+}
+
+void _ExecutorTask::setResult(uint16_t v) {
+    mResult = createUint16(v);
+}
+
+void _ExecutorTask::setResult(uint32_t v) {
+    mResult = createUint32(v);
+}
+
+void _ExecutorTask::setResult(uint64_t v) {
+    mResult = createUint64(v);
+}
+
 
 }

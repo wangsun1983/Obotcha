@@ -14,30 +14,43 @@
 
 #include "String.hpp"
 #include "SpinLock.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
 
-_SpinLock::_SpinLock(String n) {
+_SpinLock::_SpinLock(String n):_SpinLock() {
     mSpinLockName = n;
-    pthread_spin_init(&mLock, 0);
 }
 
-_SpinLock::_SpinLock(const char *n) {
+_SpinLock::_SpinLock(const char *n):_SpinLock() {
     mSpinLockName = createString(n);
-    pthread_spin_init(&mLock, 0);
 }
 
 _SpinLock::_SpinLock() {
-    pthread_spin_init(&mLock, 0);
+    pthread_spin_init(&mLock, PTHREAD_PROCESS_PRIVATE);
 }
 
 int _SpinLock::lock() {
-    pthread_spin_lock(&mLock);
+    int ret = pthread_spin_lock(&mLock);
     return 0;
 }
 
+int _SpinLock::tryLock() {
+    int ret = pthread_spin_trylock(&mLock);
+    switch(ret) {
+        case EBUSY:
+        return -LockBusy;
+
+        case Success:
+        return Success;
+
+        default:
+        return -LockFail;
+    }
+}
+
 int _SpinLock::unlock() {
-    pthread_spin_unlock(&mLock);
+    int ret = pthread_spin_unlock(&mLock);
     return 0;
 }
 
@@ -48,7 +61,5 @@ _SpinLock::~_SpinLock() {
 String _SpinLock::toString() {
     return mSpinLockName;
 }
-
-
 
 }

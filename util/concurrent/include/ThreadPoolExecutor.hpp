@@ -43,9 +43,7 @@ public:
     bool isShtuDown();
     bool isTerminated();
 
-    void awaitTermination();
-
-    int awaitTermination(long timeout);
+    int awaitTermination(long timeout = 0);
 
     template<typename X>
     Future submit(sp<X> r) {
@@ -77,6 +75,7 @@ private:
     
     ArrayList<Thread> mHandlers;
 
+    Mutex mMutex;
     int mStatus;
 };
 

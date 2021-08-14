@@ -169,7 +169,7 @@ int testThreadJoin() {
     long t1 = st(System)::currentTimeMillis();
     t5->join(2000);
     long v = st(System)::currentTimeMillis() - t1;
-    if(v > 2010) {
+    if(v < 2000 || v > 2010) {
         printf("---[Thread Test {ThreadJoin()} special case10] [FAILED],v is %ld--- \n",v);
         break;
     }

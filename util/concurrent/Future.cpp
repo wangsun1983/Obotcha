@@ -23,9 +23,8 @@ void _Future::wait(long interval) {
     mTask->wait(interval);
 }
     
-int _Future::cancel() {
+void _Future::cancel() {
     mTask->cancel();
-    return 0;
 }
 
 _Future::~_Future() {

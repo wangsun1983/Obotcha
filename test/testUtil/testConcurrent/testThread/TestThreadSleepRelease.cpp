@@ -22,7 +22,7 @@ public:
 
   void run() {
       try {
-        sleep(50*1000);
+        msleep(50*1000);
       } catch(InterruptedException &e) {
           myLongSleepExceptionTest1 = 1;
       }
@@ -46,7 +46,7 @@ int testThreadSleepRelease() {
       t->interrupt();
     }
     sleep(1);
-    
+
     if(myLongSleepExceptionTest1 != 1 || myLongSleepReleaseTest1 != 1) {
       printf("---[Thread Test {sleep release()} case1] [FAIL] \n");
       break;
@@ -55,7 +55,7 @@ int testThreadSleepRelease() {
     printf("---[Thread Test {sleep release()} case2] [OK] \n");
     break;
   }
-  
+
   return 0;
-  
+
 }

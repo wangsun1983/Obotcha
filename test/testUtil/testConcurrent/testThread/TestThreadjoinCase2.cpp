@@ -19,7 +19,7 @@ public:
   }
 
   void run() {
-    st(Thread)::sleep(waitInterval);
+    st(Thread)::msleep(waitInterval);
   }
 
 private:
@@ -55,7 +55,7 @@ int testThreadjoinCase2() {
   for(int i = 0;i<1024;i++) {
     Thread t = createThread(createJoinRunCase2(1));
     t->start();
-    st(Thread)::sleep(1);
+    st(Thread)::msleep(1);
     t->join();
   }
   printf("---[Thread Test {JoinCase()} case4] [OK]--- \n");
@@ -63,11 +63,11 @@ int testThreadjoinCase2() {
   for(int i = 0;i<1024;i++) {
     Thread t = createThread(createJoinRunCase2(10));
     t->start();
-    st(Thread)::sleep(10);
+    st(Thread)::msleep(10);
     t->join();
   }
-  
+
   printf("---[Thread Test {JoinCase()} case6] [OK]--- \n");
 
-  
+
 }

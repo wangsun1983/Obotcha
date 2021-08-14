@@ -20,36 +20,6 @@ namespace obotcha {
 class _Future;
 class _ExecutorTask;
 
-template<typename T>
-class __RunnableResult {
-public:
-    T get(Object value) {
-        return Cast<T>(value);
-    }
-};
-
-#define __RunnableResultMacro(X,Y) \
-template<> \
-class __RunnableResult<X> { \
-public: \
-    X get(Object value) { \
-        if(value == nullptr) { \
-            Trigger(NullPointerException,"no result"); \
-        }\
-        return Cast<Y>(value)->toValue(); \
-    } \
-};
-
-__RunnableResultMacro(int,Integer)
-__RunnableResultMacro(byte,Byte)
-__RunnableResultMacro(double,Double)
-__RunnableResultMacro(bool,Boolean)
-__RunnableResultMacro(float,Double)
-__RunnableResultMacro(long,Long)
-__RunnableResultMacro(uint16_t,Uint16)
-__RunnableResultMacro(uint32_t,Uint32)
-__RunnableResultMacro(uint64_t,Uint64)
-
 DECLARE_SIMPLE_CLASS(Runnable) {
 
 public:
@@ -62,27 +32,6 @@ public:
 
     virtual ~_Runnable() {}
 
-    template<typename T>
-    void setResult(T value) {
-        mResult = value;
-    }
-
-    void setResult(int);
-    void setResult(byte);
-    void setResult(double);
-    void setResult(bool);
-    void setResult(long);
-    void setResult(uint16_t);
-    void setResult(uint32_t);
-    void setResult(uint64_t);
-
-private:
-    sp<_Object> mResult;
-
-    template<typename T>
-    T getResult() {
-        return __RunnableResult<T>().get(mResult);
-    }
 };
 
 template<class Function,class... Args> 
@@ -95,6 +44,10 @@ public:
     void run() {
         //func(initializer_list(_arguments));
         ostd::apply(func,_arguments);
+    }
+
+    ~_LambdaRunnable() {
+        //do nothing
     }
 
 private:

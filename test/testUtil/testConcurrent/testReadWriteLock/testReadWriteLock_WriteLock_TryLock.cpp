@@ -10,7 +10,7 @@
 
 using namespace obotcha;
 
-void testReadLock_TryLock() {
+void testWriteLock_TryLock() {
   TimeWatcher watcher = createTimeWatcher();
 
   while(1) {
@@ -18,9 +18,9 @@ void testReadLock_TryLock() {
     rwLock->getWriteLock()->lock();
     AtomicInteger value = createAtomicInteger();
     Thread t = createThread([&rwLock,&value]{
-      int ret = rwLock->getReadLock()->tryLock();
+      int ret = rwLock->getWriteLock()->tryLock();
       if(ret != -LockBusy) {
-        printf("---[TestReadLock ReadLock TryLock case1] [FAIL]--- \n");
+        printf("---[TestReadLock WriteLock TryLock case1] [FAIL]--- \n");
       }
       value->incrementAndGet();
     });
@@ -28,7 +28,7 @@ void testReadLock_TryLock() {
     usleep(1000);
 
     if(value->get() != 1) {
-      printf("---[TestReadLock ReadLock TryLock case2] [FAIL]--- \n");
+      printf("---[TestReadLock WriteLock TryLock case2] [FAIL]--- \n");
     }
     break;
   }
@@ -38,9 +38,9 @@ void testReadLock_TryLock() {
     rwLock->getReadLock()->lock();
     AtomicInteger value = createAtomicInteger();
     Thread t = createThread([&rwLock,&value]{
-      int ret = rwLock->getReadLock()->tryLock();
-      if(ret != 0) {
-        printf("---[TestReadLock ReadLock TryLock case3] [FAIL]--- ret is %d\n",ret);
+      int ret = rwLock->getWriteLock()->tryLock();
+      if(ret != -LockBusy) {
+        printf("---[TestReadLock WriteLock TryLock case3] [FAIL]--- \n");
       }
       value->incrementAndGet();
     });
@@ -48,10 +48,10 @@ void testReadLock_TryLock() {
     usleep(1000);
 
     if(value->get() != 1) {
-      printf("---[TestReadLock ReadLock TryLock case4] [FAIL]--- \n");
+      printf("---[TestReadLock WriteLock TryLock case4] [FAIL]--- \n");
     }
     break;
   }
 
-  printf("---[TestReadLock ReadLock TryLock case100] [OK]--- \n");
+  printf("---[TestReadLock WriteLock TryLock case100] [OK]--- \n");
 }

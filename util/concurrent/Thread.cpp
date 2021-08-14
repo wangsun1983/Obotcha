@@ -18,9 +18,10 @@ static ThreadLocal<Thread> mThreads = createThreadLocal<Thread>();
 static AtomicInteger threadCount = createAtomicInteger(0);
 String _Thread::DefaultThreadName = createString("thread_");
 
-void doThreadExit(_Thread *thread) {
+void _Thread::doThreadExit(_Thread *thread) {
     {
         AutoLock l(thread->mMutex);
+        thread->mRunnable = nullptr;
         thread->mStatus = st(Thread)::Complete;
         thread->mJoinCondition->notifyAll();
     }
@@ -38,11 +39,8 @@ void* _Thread::localRun(void *th) {
         AutoLock l(thread->mMutex);
         thread->mStatus = st(Thread)::Running;
     }
-    if(thread->mRunnable != nullptr) {
-        thread->mRunnable->run();
-    } else {
-        thread->run();
-    }
+
+    (thread->mRunnable == nullptr)?thread->run():thread->mRunnable->run();
     thread->onComplete();
     doThreadExit(thread);
     return nullptr;
@@ -62,12 +60,8 @@ int _Thread::setName(String name) {
 }
 
 void _Thread::threadInit(String name,Runnable run) {
-    if(name != nullptr) {
-        mName = name;
-    } else {
-        int index = threadCount->addAndGet(1);
-        mName = DefaultThreadName->append(createString(index));
-    }
+    mName = (name == nullptr)? DefaultThreadName->append(createString(threadCount->addAndGet(1)))
+                              :name;
     mRunnable = run;
     mStatus = NotStart;
 
@@ -81,7 +75,7 @@ String _Thread::getName() {
 }
 
 _Thread::~_Thread() {
-    //printf("release thread!!!,this is %p \n",this);
+    //do nothing
 }
 
 
@@ -95,8 +89,9 @@ void _Thread::run() {
 
 int _Thread::detach() {
     if(!isRunning()) {
-        return 0;
+        return -AlreadyExists;
     }
+
     return pthread_detach(getThreadId());
 }
 
@@ -125,7 +120,7 @@ int _Thread::start() {
     }
 
     pthread_attr_init(&mThreadAttr);
-    if(pthread_create(&mPthread, &mThreadAttr, localRun, this)!= 0) {
+    if(pthread_create(&mPthread, &mThreadAttr, localRun, this) != 0) {
         mStatus = Error;
         return -1;
     } 
@@ -141,6 +136,7 @@ int _Thread::join(long timeInterval) {
     while(getStatus() == Idle) {
         yield();
     }
+
     {
         AutoLock l(mMutex);
         if(mStatus == Running || mStatus == Interrupting) {
@@ -148,7 +144,7 @@ int _Thread::join(long timeInterval) {
         }
     }
 
-    return 0;
+    return -AlreadyExists;
 }
 
 int _Thread::getStatus() {
@@ -285,7 +281,7 @@ void _Thread::yield() {
     pthread_yield();
 }
 
-void _Thread::sleep(unsigned long millseconds) {
+void _Thread::msleep(unsigned long millseconds) {
     Thread thread = mThreads->get();
     if(thread == nullptr) {
         usleep(1000*millseconds);

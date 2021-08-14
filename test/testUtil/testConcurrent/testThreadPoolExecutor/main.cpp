@@ -37,6 +37,6 @@ int main() {
     testThreadQuickShutDown();
     testPoolReferenceCount();
 
-    st(Thread)::sleep(10*1000);
+    st(Thread)::msleep(10*1000);
     return 0;
 }
