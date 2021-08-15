@@ -17,7 +17,7 @@
 
 namespace obotcha {
 
-String _InetAddress::LocalHost = createString("__localhost");
+String _InetAddress::LocalHost = "127.0.0.1";
 
 _InetAddress::_InetAddress(int port) {
     mAddress = LocalHost;

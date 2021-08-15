@@ -626,7 +626,7 @@ long _String::toBasicLong() {
 }
 
 ByteArray _String::toByteArray() {
-    return createByteArray(m_str.c_str(),m_str.size());
+    return createByteArray((const byte *)m_str.c_str(),m_str.size());
 }
 
 std::string _String::getStdString() {

@@ -34,9 +34,7 @@ long _SocketOutputStream::write(char c) {
 }
 
 long _SocketOutputStream::write(ByteArray data,long size) {
-    
     ByteArray sendData = (size != -1)?createByteArray(data->toValue(),size):createByteArray(data);
-
     if(mChannel != nullptr) {
         mChannel->write(sendData);
         return sendData->size();
@@ -45,7 +43,6 @@ long _SocketOutputStream::write(ByteArray data,long size) {
 }
 
 long _SocketOutputStream::_write(FileDescriptor fd,ByteArray data) {
-    printf("_write start \n");
     byte *sendData = data->toValue();
     
     if(mSocket == nullptr || mSocket->isClosed()) {

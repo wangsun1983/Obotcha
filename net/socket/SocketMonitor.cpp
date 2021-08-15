@@ -174,6 +174,12 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                 byte buff[st(Socket)::DefaultBufferSize];
                 while(1) {
                     int length = recvfrom(fd, buff,st(Socket)::DefaultBufferSize, 0, (sockaddr*)&client_address, &client_addrLength);
+                    int message = st(SocketListener)::Message;
+
+                    if(length == -1) {
+                        message = st(SocketListener)::Disconnect;
+                    }
+
                     if(newClient == nullptr) {
                         newClient = createSocket(createFileDescriptor(fd));
                         newClient->setType(st(Socket)::Udp);
@@ -183,9 +189,9 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                     }
 
                     monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(
-                                                        st(SocketListener)::Message,
+                                                        message,
                                                         newClient,
-                                                        createByteArray((const byte *)buff,length)));
+                                                        (length == -1)?nullptr:createByteArray((const byte *)buff,length)));
                     monitor->mCondition->notify();
                     if(length != st(Socket)::DefaultBufferSize) {
                         break;

@@ -18,11 +18,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,SocketOption option
     mSockAddr.sin_family = AF_INET;
     mSockAddr.sin_port = htons(address->getPort());
     
-    if(address != nullptr) {
-        mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
-    } else {
-        mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    }
+    mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
 
     sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)));
     if(sock->getFd() < 0) {
@@ -33,7 +29,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,SocketOption option
 }
 
 int _DatagramSocketImpl::connect() {
-    //nothing
+    //return ::connect(sock->getFd(),(struct sockaddr*)&mSockAddr,sizeof(mSockAddr));
     return 0;
 }
 
