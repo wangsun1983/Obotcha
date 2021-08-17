@@ -13,7 +13,7 @@
 namespace obotcha {
 
 _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
-    mPool = createBlockingQueue<ExecutorTask>(queuesize);    
+    mPool = createBlockingLinkedList<ExecutorTask>(queuesize);    
     mHandlers = createArrayList<Thread>();
 
     for(int i = 0; i < threadnum;i++) {
@@ -42,14 +42,14 @@ int _ThreadPoolExecutor::shutdown() {
     {
         AutoLock l(mMutex);
         if(mStatus != Running) {
-            return -InvalidStatus;
+            return -AlreadyDestroy;
         }
 
         mStatus = ShutDown;
     }
 
     mPool->freeze();
-    mPool->foreach([](ExecutorTask &task) {
+    mPool->foreach([](ExecutorTask task) {
         task->cancel();
         return Global::Continue;
     });
@@ -108,6 +108,7 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
         }
         iterator->next();
     }
+    
     return 0;
 }
 

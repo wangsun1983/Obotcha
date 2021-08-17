@@ -5,7 +5,7 @@
 
 using namespace obotcha;
 
-int testEnqueueFirst() {
+int testPutFirst() {
 
     //case1
     while(1) {
@@ -15,9 +15,9 @@ int testEnqueueFirst() {
         list.push_back("b");
         list.push_back("c");
 
-        mList->enQueueFirst(createString("a"));
-        mList->enQueueFirst(createString("b"));
-        mList->enQueueFirst(createString("c"));
+        mList->putFirst(createString("a"));
+        mList->putFirst(createString("b"));
+        mList->putFirst(createString("c"));
 
         if(mList->size() != 3) {
             printf("LinkedList Enqueue First test1-------[FAIL] \n");
@@ -41,7 +41,7 @@ int testEnqueueFirst() {
     while(1) {
         LinkedList<String> mList = createLinkedList<String>();
 
-        mList->enQueueFirst(createString("a"));
+        mList->putFirst(createString("a"));
         if(mList->size() != 1) {
             printf("LinkedList Enqueue First test4-------[FAIL] \n");
             break;

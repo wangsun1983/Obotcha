@@ -16,7 +16,7 @@ public:
     }
 
     void run() {
-        sleep(1000*5);
+        msleep(1000*5);
         mQueue->takeFirst();
     }
 
@@ -84,7 +84,7 @@ void testBlockingQueueInt() {
             printf("BlockingQueue<int> takeFirst test3-------[FAIL],interval is %ld \n",time2-time1);
             break;
         }
-        
+
         printf("BlockingQueue<int> takeFirst test4-------[OK] \n");
         break;
     }

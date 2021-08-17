@@ -89,8 +89,8 @@ int testThreadShutdown() {
         pool->shutdown();
         int ret = pool->shutdown();
 
-        if(ret != -InvalidStatus) {
-            printf("---[ThreadPoolExecutor Test {shutdown()} special case1] [FAIL]--- \n");
+        if(ret != -AlreadyDestroy) {
+            printf("---[ThreadPoolExecutor Test {shutdown()} special case1] [FAIL]---,ret is %d \n",ret);
             break;
         }
 
@@ -141,13 +141,12 @@ int testThreadShutdown() {
     while(1) {
         ThreadPoolExecutor pool = createExecutorBuilder()->newThreadPool();
         pool->submit(createMyShutdownRunTest3());
-        long t = st(System)::currentTimeMillis();
         pool->shutdown();
-
+        long t = st(System)::currentTimeMillis();
         int result = pool->awaitTermination(1000);
         long current = st(System)::currentTimeMillis();
-        if((current - t) > 1 || result < 0) {
-            printf("---[ThreadPoolExecutor Test {shutdown()} special case8] [FAIL]--- \n");
+        if((current - t) > 10 || result < 0) {
+            printf("---[ThreadPoolExecutor Test {shutdown()} special case8] [FAIL]---,interval is %ld,result is %d \n",current - t,result);
             break;
         }
 

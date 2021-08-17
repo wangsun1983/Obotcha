@@ -21,8 +21,12 @@ _Inet4Address::_Inet4Address(String addr,int port):_InetAddress(addr,port) {
     mType = IPV4;
 }
 
-_Inet4Address::_Inet4Address(int port):_InetAddress(port) {
+_Inet4Address::_Inet4Address(int port):_InetAddress(getLocalAddress(),port) {
     mType = IPV4;
+}
+
+String _Inet4Address::getLocalAddress() {
+    return createString("127.0.0.1");
 }
 
 }

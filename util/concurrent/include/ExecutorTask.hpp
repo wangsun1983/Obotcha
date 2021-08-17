@@ -5,6 +5,8 @@
 #include "Condition.hpp"
 #include "Runnable.hpp"
 #include "InterruptedException.hpp"
+#include "TimeOutException.hpp"
+#include "OStdInstanceOf.hpp"
 
 namespace obotcha {
 
@@ -24,7 +26,11 @@ public: \
         if(value == nullptr) { \
             Trigger(NullPointerException,"no result"); \
         }\
-        return Cast<Y>(value)->toValue(); \
+        auto v = Cast<Y>(value);\
+        if(v == nullptr) {\
+            Trigger(NullPointerException,"no result"); \
+        }\
+        return v->toValue(); \
     } \
 };
 
@@ -57,14 +63,17 @@ public:
     
     template<typename T>
     T getResult(int interval = 0) {
-        this->wait(interval);
-        {
-            AutoLock l(mMutex);
-            if(mStatus != Complete) {
-                Trigger(InterruptedException,"wait exception");
+        if(this->wait(interval) != -WaitTimeout) {
+            {
+                AutoLock l(mMutex);
+                if(mStatus != Complete) {
+                    Trigger(InterruptedException,"wait exception");
+                }
             }
+            return __ExecutorTaskResult<T>().get(mResult);
         }
-        return __ExecutorTaskResult<T>().get(mResult);;
+
+        Trigger(TimeOutException,"time out");
     }
 
     enum Status {

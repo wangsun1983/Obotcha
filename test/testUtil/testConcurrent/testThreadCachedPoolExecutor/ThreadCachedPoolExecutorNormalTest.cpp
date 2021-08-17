@@ -20,7 +20,7 @@ public:
     void run() {
         printf("run test1 start 1\n");
         try {
-            st(Thread)::sleep(10*1000);
+            st(Thread)::msleep(10*1000);
         } catch(InterruptedException &e){
             printf("run test1 start 1_1 \n");
         }

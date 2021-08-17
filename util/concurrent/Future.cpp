@@ -19,8 +19,8 @@ _Future::_Future(ExecutorTask t) {
     mTask = t;
 }
     
-void _Future::wait(long interval) {
-    mTask->wait(interval);
+int _Future::wait(long interval) {
+    return mTask->wait(interval);
 }
     
 void _Future::cancel() {

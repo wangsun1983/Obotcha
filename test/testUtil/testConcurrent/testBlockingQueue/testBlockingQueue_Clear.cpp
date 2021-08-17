@@ -30,7 +30,7 @@ void testBlockingQueueClear() {
           break;
         }
 
-        if(list->size() != 0) {
+        if(list->size() != 1) {
           printf("BlockingQueue clear test2-------[FAIL] \n");
           break;
         }

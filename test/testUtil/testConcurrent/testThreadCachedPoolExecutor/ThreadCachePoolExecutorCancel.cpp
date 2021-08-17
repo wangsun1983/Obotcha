@@ -22,7 +22,7 @@ DECLARE_SIMPLE_CLASS(CancelRunnable) IMPLEMENTS(Runnable) {
 public:
    void run() {
       try{
-        st(Thread)::sleep(5000);
+        st(Thread)::msleep(5000);
       }catch(InterruptedException e){}
    }
 
@@ -78,7 +78,7 @@ int cancelTest() {
                                         ->setMaxThreadNum(20)
                                         ->setTimeout(1000)
                                         ->newCachedThreadPool();
-                                        
+
         ArrayList<Future> cancellists = createArrayList<Future>();
         //printf("start trace \n");
         for(int i = 0;i < 1024*32;i++) {

@@ -19,8 +19,8 @@ public:
         IPV6,
         LOCAL
     };
-    
-    static String LocalHost;
+
+    static int DefaultPort;
     
     _InetAddress(String,int);
     _InetAddress(int);
@@ -34,9 +34,7 @@ public:
 
 protected:
     String mAddress;
-
     int mPort;
-
     int mType;
 };
 

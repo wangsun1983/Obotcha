@@ -17,25 +17,19 @@
 
 namespace obotcha {
 
-String _InetAddress::LocalHost = "127.0.0.1";
+int _InetAddress::DefaultPort = 8080;
 
 _InetAddress::_InetAddress(int port) {
-    mAddress = LocalHost;
     mPort = port;
 }
 
 _InetAddress::_InetAddress(String addr,int port) {
-    if(addr == nullptr) {
-        mAddress = LocalHost;
-    } else {
-        mAddress = addr;
-    }
+    mAddress = addr;
     mPort = port;
 }
 
 _InetAddress::_InetAddress() {
-    mAddress = LocalHost;
-    mPort = 8080;
+    mPort = DefaultPort;
 }
 
 void _InetAddress::setPort(int p) {

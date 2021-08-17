@@ -11,7 +11,7 @@ public:
     
     ~_Future();
     
-    void wait(long interval = 0);
+    int wait(long interval = 0);
     
     void cancel();
 

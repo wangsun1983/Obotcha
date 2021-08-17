@@ -7,7 +7,7 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "Runnable.hpp"
-#include "BlockingQueue.hpp"
+#include "BlockingLinkedList.hpp"
 #include "AutoLock.hpp"
 #include "Thread.hpp"
 #include "Future.hpp"
@@ -19,7 +19,6 @@ class _ThreadScheduledPoolExecutor;
 
 DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) {
 public:
-    friend class _ExecutorTask;
     friend class _ThreadScheduledPoolExecutor;
     
     _ThreadCachedPoolExecutor(int queuesize,int minthreadnum,int maxthreadnum,long timeout = 10*1000);
@@ -71,13 +70,13 @@ private:
 
     Future poolSubmit(Runnable r);
     
-    Mutex mHandlerMutex;
+    Mutex mMutex;
 
     int threadNum;
     
     ArrayList<Thread> mHandlers;
 
-    std::atomic<int> mStatus;
+    int mStatus;
 
     long mThreadTimeout;
 
@@ -85,7 +84,7 @@ private:
 
     int minThreadNum;
 
-    BlockingQueue<ExecutorTask> mTasks;
+    BlockingLinkedList<ExecutorTask> mTasks;
 
     AtomicInteger mIdleNum;
 };

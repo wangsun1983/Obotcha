@@ -65,11 +65,11 @@ public:
     }
 
     T first() {
-        return (head == nullptr)?ContainerValue<T>(nullptr):head->data;
+        return (head == nullptr)?ContainerValue<T>(nullptr).get():head->data;
     }
 
     T last() {
-        return (tail == nullptr)?ContainerValue<T>(nullptr):tail->data;
+        return (tail == nullptr)?ContainerValue<T>(nullptr).get():tail->data;
     }
 
     void putLast(const T &t) {
@@ -84,7 +84,7 @@ public:
     T at(int index) {
         sp<_LinkedListData<T>> cursor = head;
         if(cursor == nullptr || index >= count) {
-            return ContainerValue<T>(nullptr);
+            return ContainerValue<T>(nullptr).get();
         }
 
         for(int i = 0;i != index;i++) {
@@ -152,6 +152,38 @@ public:
             head = nullptr;
             head = current->next;
         }
+        count = 0;
+    }
+
+    //add remove/removeAt
+    T removeAt(int index) {
+        if(index >= count || index < 0) {
+            return ContainerValue<T>(nullptr).get();
+        }
+        
+        auto iterator = this->getIterator();
+        for(int i = 0;i<index;i++) {
+            iterator->next();
+        }
+        
+        T result = iterator->getValue();
+        iterator->remove();
+        return result;
+    }
+
+    int remove(T v) {
+        auto iterator = this->getIterator();
+        int index = 0;
+        while(iterator->hasValue()) {
+            if(iterator->getValue() == v) {
+                iterator->remove();
+                return index;
+            }
+            index++;
+            iterator->next();
+        }
+
+        return -1;
     }
 
 private:
@@ -215,7 +247,7 @@ public:
 
         return true;
     }
-    
+ 
 private:
     LinkedList<T> mList;
     LinkedListData<T> current;

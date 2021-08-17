@@ -30,7 +30,7 @@ public:
     }
 
     void run() {
-        sleep(1000*5);
+        msleep(1000*5);
         mQueue->takeFirst();
     }
 

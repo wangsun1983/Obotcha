@@ -1,4 +1,5 @@
 #include "SocketBuilder.hpp"
+#include "Inet4Address.hpp"
 
 namespace obotcha {
 
@@ -20,7 +21,7 @@ _SocketBuilder* _SocketBuilder::setFileDescriptor(FileDescriptor f) {
 }
 
 _SocketBuilder::_SocketBuilder() {
-    address = createInetAddress();
+    address = createInet4Address(st(InetAddress)::DefaultPort);
     fd = nullptr;
     option = nullptr;
 }

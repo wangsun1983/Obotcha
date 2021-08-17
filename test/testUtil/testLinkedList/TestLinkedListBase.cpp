@@ -7,7 +7,7 @@ using namespace obotcha;
 
 int testLinkeListBase() {
 
-    //case1 string enQueueLast
+    //case1 string putLast
     while(1) {
         LinkedList<String> mList = createLinkedList<String>();
         std::vector<std::string> list;
@@ -15,9 +15,9 @@ int testLinkeListBase() {
         list.push_back("b");
         list.push_back("c");
 
-        mList->enQueueLast(createString("a"));
-        mList->enQueueLast(createString("b"));
-        mList->enQueueLast(createString("c"));
+        mList->putLast(createString("a"));
+        mList->putLast(createString("b"));
+        mList->putLast(createString("c"));
 
         if(mList->size() != 3) {
           printf("LinkedList base test1-------[FAIL] \n");
@@ -40,7 +40,7 @@ int testLinkeListBase() {
         break;
     }
 
-    //case2 int enQueueLast
+    //case2 int putLast
     while(1) {
         LinkedList<int> mList = createLinkedList<int>();
 
@@ -49,9 +49,9 @@ int testLinkeListBase() {
         list.push_back(5);
         list.push_back(6);
 
-        mList->enQueueLast(4);
-        mList->enQueueLast(5);
-        mList->enQueueLast(6);
+        mList->putLast(4);
+        mList->putLast(5);
+        mList->putLast(6);
 
         if(mList->size() != 3) {
           printf("LinkedList base test3-------[FAIL],size is %d \n",mList->size());
@@ -74,7 +74,7 @@ int testLinkeListBase() {
         break;
     }
 
-    //case3 string enQueueFirst
+    //case3 string putFirst
     while(1) {
         LinkedList<String> mList = createLinkedList<String>();
         std::vector<std::string> list;
@@ -82,9 +82,9 @@ int testLinkeListBase() {
         list.push_back("b");
         list.push_back("a");
 
-        mList->enQueueFirst(createString("a"));
-        mList->enQueueFirst(createString("b"));
-        mList->enQueueFirst(createString("c"));
+        mList->putFirst(createString("a"));
+        mList->putFirst(createString("b"));
+        mList->putFirst(createString("c"));
 
         if(mList->size() != 3) {
           printf("LinkedList base test5-------[FAIL] \n");
@@ -107,7 +107,7 @@ int testLinkeListBase() {
         break;
     }
 
-    //case4 int enQueueFirst
+    //case4 int putFirst
     while(1) {
         LinkedList<int> mList = createLinkedList<int>();
 
@@ -116,9 +116,9 @@ int testLinkeListBase() {
         list.push_back(5);
         list.push_back(4);
 
-        mList->enQueueFirst(4);
-        mList->enQueueFirst(5);
-        mList->enQueueFirst(6);
+        mList->putFirst(4);
+        mList->putFirst(5);
+        mList->putFirst(6);
 
         if(mList->size() != 3) {
           printf("LinkedList base test6-------[FAIL],size is %d \n",mList->size());
@@ -149,9 +149,9 @@ int testLinkeListBase() {
       //list.push_back("b");
       list.push_back("c");
 
-      mList->enQueueLast("a");
-      mList->enQueueLast("b");
-      mList->enQueueLast("c");
+      mList->putLast("a");
+      mList->putLast("b");
+      mList->putLast("c");
 
       LinkedListIterator<String> iterator = mList->getIterator();
       while(iterator->hasValue()) {
@@ -190,9 +190,9 @@ int testLinkeListBase() {
       //list.push_back(5);
       list.push_back(6);
 
-      mList->enQueueLast(createInteger(4));
-      mList->enQueueLast(createInteger(5));
-      mList->enQueueLast(createInteger(6));
+      mList->putLast(createInteger(4));
+      mList->putLast(createInteger(5));
+      mList->putLast(createInteger(6));
 
       LinkedListIterator<Integer> iterator = mList->getIterator();
       while(iterator->hasValue()) {

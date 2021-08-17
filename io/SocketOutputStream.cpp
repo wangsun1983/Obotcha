@@ -16,9 +16,9 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
     mSocket = s;
     if(mSocket->getType() == st(Socket)::Udp) {
         server_addr.sin_family = AF_INET;
-        InetAddress addr = s->getInetAddress();
-        server_addr.sin_port = htons(addr->getPort());          
-        server_addr.sin_addr.s_addr = inet_addr(addr->getAddress()->toChars());
+        InetAddress address = s->getInetAddress();
+        server_addr.sin_port = htons(address->getPort());      
+        server_addr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
     }
 
     if(s->getFileDescriptor()->isAsync()) {

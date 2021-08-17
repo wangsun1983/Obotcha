@@ -77,7 +77,7 @@ if(!isDestroy) {\
         notFull->notify();\
     }\
 }\
-return ret;
+return ContainerValue<T>(nullptr).get();
 
 DECLARE_CLASS(BlockingQueue,1) {
 public:
@@ -211,7 +211,7 @@ public:
     }
 
     inline T peek() {
-        return peek();
+        return peekLast();
     }
     
     inline ArrayList<T> toArray() {

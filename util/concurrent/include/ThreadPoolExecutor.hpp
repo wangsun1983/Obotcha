@@ -6,7 +6,7 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "Runnable.hpp"
-#include "BlockingQueue.hpp"
+#include "BlockingLinkedList.hpp"
 #include "Thread.hpp"
 #include "AutoLock.hpp"
 #include "Condition.hpp"
@@ -47,6 +47,12 @@ public:
 
     template<typename X>
     Future submit(sp<X> r) {
+        {
+            AutoLock l(mMutex);
+            if(mStatus == ShutDown) {
+                return nullptr;
+            }
+        }
         ExecutorTask task = createExecutorTask(r);
         if(mPool->putLast(task)){
             return createFuture(task);
@@ -71,7 +77,7 @@ private:
         ShutDown,
     };
 
-    BlockingQueue<ExecutorTask> mPool;
+    BlockingLinkedList<ExecutorTask> mPool;
     
     ArrayList<Thread> mHandlers;
 

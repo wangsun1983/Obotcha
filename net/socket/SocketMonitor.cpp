@@ -187,12 +187,15 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                                             createString(inet_ntoa(client_address.sin_addr)),
                                             ntohs(client_address.sin_port)));
                     }
-
-                    monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(
-                                                        message,
-                                                        newClient,
-                                                        (length == -1)?nullptr:createByteArray((const byte *)buff,length)));
-                    monitor->mCondition->notify();
+                    {
+                        AutoLock l(monitor->mMutex);
+                        monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(
+                                                            message,
+                                                            newClient,
+                                                            (length == -1)?nullptr:createByteArray((const byte *)buff,length)));
+                        monitor->mCondition->notify();
+                    }
+                    
                     if(length != st(Socket)::DefaultBufferSize) {
                         break;
                     }

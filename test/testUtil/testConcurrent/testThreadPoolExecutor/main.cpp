@@ -21,8 +21,12 @@ extern int testThreadPoolLoopShutdown();
 extern int testThreadLambda();
 extern int testThreadQuickShutDown();
 extern int testPoolReferenceCount();
+extern void testThreadPoolSubmit_Wait();
+extern void testThreadPoolSubmit_ShutDown();
 
 int main() {
+    testThreadPoolSubmit_ShutDown();
+    testThreadPoolSubmit_Wait();
 
     normalTest();
     sleep(1);

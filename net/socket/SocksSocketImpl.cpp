@@ -21,15 +21,8 @@ namespace obotcha {
 _SocksSocketImpl::_SocksSocketImpl(InetAddress address,SocketOption option):_SocketImpl(address,option){
     mSockAddr.sin_family = PF_INET;
     mSockAddr.sin_port = htons(address->getPort());
+    mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
     
-    if(address != nullptr 
-        && address->getAddress() != nullptr 
-        && !address->getAddress()->equalsIgnoreCase(st(InetAddress)::LocalHost)) {
-        mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
-    } else {
-        mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    }
-
     this->sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0)));
     setOptions();
 }

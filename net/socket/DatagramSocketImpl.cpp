@@ -17,7 +17,6 @@ namespace obotcha {
 _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,SocketOption option):_SocketImpl(address,option) {
     mSockAddr.sin_family = AF_INET;
     mSockAddr.sin_port = htons(address->getPort());
-    
     mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
 
     sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)));

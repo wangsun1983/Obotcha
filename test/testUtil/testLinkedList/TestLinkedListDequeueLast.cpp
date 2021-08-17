@@ -5,23 +5,23 @@
 
 using namespace obotcha;
 
-int testDequeueLast() {
+int testTakeLast() {
 
     //case1
     while(1) {
         LinkedList<String> mList = createLinkedList<String>();
-        mList->enQueueLast(createString("a"));
-        mList->enQueueLast(createString("b"));
-        mList->enQueueLast(createString("c"));
+        mList->putLast(createString("a"));
+        mList->putLast(createString("b"));
+        mList->putLast(createString("c"));
 
         if(mList->size() != 3) {
             printf("LinkedList Dequeue Last test1-------[FAIL] \n");
             break;
         }
 
-        String v1 = mList->deQueueLast();
-        String v2 = mList->deQueueLast();
-        String v3 = mList->deQueueLast();
+        String v1 = mList->takeLast();
+        String v2 = mList->takeLast();
+        String v3 = mList->takeLast();
 
         if(!v1->equals("c") ||!v2->equals("b") ||!v3->equals("a")) {
             printf("v1 is %s ,v2 is %s,v3 is %s \n",v1->toChars(),v2->toChars(),v3->toChars());
@@ -29,7 +29,7 @@ int testDequeueLast() {
             break;
         }
 
-        if(mList->deQueueLast() != nullptr) {
+        if(mList->takeLast() != nullptr) {
             printf("LinkedList Dequeue Last test3-------[FAIL] \n");
             break;
         }
@@ -42,20 +42,20 @@ int testDequeueLast() {
     while(1) {
         LinkedList<String> mList = createLinkedList<String>();
 
-        mList->enQueueLast(createString("a"));
+        mList->putLast(createString("a"));
         if(mList->size() != 1) {
             printf("LinkedList Dequeue Last test5-------[FAIL] \n");
             break;
         }
 
-        String v1 = mList->deQueueLast();
+        String v1 = mList->takeLast();
         if(!v1->equals("a")) {
             printf("v1 is %s \n",v1->toChars());
             printf("LinkedList Dequeue Last test6-------[FAIL] \n");
             break;
         }
 
-        if(mList->deQueueLast() != nullptr) {
+        if(mList->takeLast() != nullptr) {
             printf("LinkedList Dequeue Last test7-------[FAIL] \n");
             break;
         }

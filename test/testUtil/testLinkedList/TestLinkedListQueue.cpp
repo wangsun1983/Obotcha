@@ -7,14 +7,14 @@ using namespace obotcha;
 
 int testLinkeListQueue() {
 
-    //case1 string dequeueFirst
+    //case1 string takeFirst
     while(1) {
       LinkedList<String> list = createLinkedList<String>();
-      list->enQueueLast("a");
-      list->enQueueLast("b");
-      list->enQueueLast("c");
-      list->enQueueLast("d");
-      list->enQueueLast("e");
+      list->putLast("a");
+      list->putLast("b");
+      list->putLast("c");
+      list->putLast("d");
+      list->putLast("e");
 
       std::vector<std::string> vect;
       vect.push_back("a");
@@ -26,7 +26,7 @@ int testLinkeListQueue() {
       int size = list->size();
       int count = 0;
       while(size > 0) {
-        String ss = list->deQueueFirst();
+        String ss = list->takeFirst();
         if(!ss->equals(vect[count])) {
           printf("LinkedList queue test1-------[FAIL]\n");
         }
@@ -36,14 +36,14 @@ int testLinkeListQueue() {
       break;
     }
 
-    //case2 int dequeueFirst
+    //case2 int takeFirst
     while(1) {
       LinkedList<Integer> list = createLinkedList<Integer>();
-      list->enQueueLast(createInteger(1));
-      list->enQueueLast(createInteger(2));
-      list->enQueueLast(createInteger(3));
-      list->enQueueLast(createInteger(4));
-      list->enQueueLast(createInteger(5));
+      list->putLast(createInteger(1));
+      list->putLast(createInteger(2));
+      list->putLast(createInteger(3));
+      list->putLast(createInteger(4));
+      list->putLast(createInteger(5));
 
       std::vector<int> vect;
       vect.push_back(1);
@@ -55,7 +55,7 @@ int testLinkeListQueue() {
       int size = list->size();
       int count = 0;
       while(size > 0) {
-        int ss = list->deQueueFirst()->toValue();
+        int ss = list->takeFirst()->toValue();
         if(ss != vect[count]) {
           printf("LinkedList queue test2-------[FAIL]\n");
         }
@@ -65,14 +65,14 @@ int testLinkeListQueue() {
       break;
     }
 
-    //case3 string dequeueFirst
+    //case3 string takeFirst
     while(1) {
       LinkedList<String> list = createLinkedList<String>();
-      list->enQueueLast("a");
-      list->enQueueLast("b");
-      list->enQueueLast("c");
-      list->enQueueLast("d");
-      list->enQueueLast("e");
+      list->putLast("a");
+      list->putLast("b");
+      list->putLast("c");
+      list->putLast("d");
+      list->putLast("e");
 
       std::vector<std::string> vect;
       vect.push_back("e");
@@ -84,7 +84,7 @@ int testLinkeListQueue() {
       int size = list->size();
       int count = 0;
       while(size > 0) {
-        String ss = list->deQueueLast();
+        String ss = list->takeLast();
         if(!ss->equals(vect[count])) {
           printf("LinkedList queue test3-------[FAIL]\n");
         }
@@ -94,14 +94,14 @@ int testLinkeListQueue() {
       break;
     }
 
-    //case4 int dequeueFirst
+    //case4 int takeFirst
     while(1) {
       LinkedList<Integer> list = createLinkedList<Integer>();
-      list->enQueueLast(createInteger(1));
-      list->enQueueLast(createInteger(2));
-      list->enQueueLast(createInteger(3));
-      list->enQueueLast(createInteger(4));
-      list->enQueueLast(createInteger(5));
+      list->putLast(createInteger(1));
+      list->putLast(createInteger(2));
+      list->putLast(createInteger(3));
+      list->putLast(createInteger(4));
+      list->putLast(createInteger(5));
 
       std::vector<int> vect;
       vect.push_back(5);
@@ -113,7 +113,7 @@ int testLinkeListQueue() {
       int size = list->size();
       int count = 0;
       while(size > 0) {
-        int ss = list->deQueueLast()->toValue();
+        int ss = list->takeLast()->toValue();
         if(ss != vect[count]) {
           printf("LinkedList queue test4-------[FAIL]\n");
         }
