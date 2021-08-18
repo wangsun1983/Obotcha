@@ -17,20 +17,20 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(HashMapValue) {
+DECLARE_CLASS(HashMapValue) {
 public:
   int data1;
   int data2;
   DECLARE_REFLECT_FIELD(HashMapValue,data1,data2)
 };
 
-DECLARE_SIMPLE_CLASS(Container) {
+DECLARE_CLASS(Container) {
 public:
   HashMap<String,HashMapValue> map;
   DECLARE_REFLECT_FIELD(Container,map)
 };
 
-DECLARE_SIMPLE_CLASS(ContainerLists) {
+DECLARE_CLASS(ContainerLists) {
 public:
   ArrayList<HashMap<String,HashMapValue>> lists;
   DECLARE_REFLECT_FIELD(ContainerLists,lists)

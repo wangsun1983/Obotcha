@@ -16,7 +16,7 @@ namespace obotcha {
 /**
  * The primary difference between 07 and 08 is a version number.
  */
-DECLARE_SIMPLE_CLASS(WebSocketHybi07Parser) IMPLEMENTS(WebSocketHybi08Parser){
+DECLARE_CLASS(WebSocketHybi07Parser) IMPLEMENTS(WebSocketHybi08Parser){
 
 public:
     int getVersion();

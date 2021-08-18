@@ -20,7 +20,7 @@ public:
 Mutex delayDataMutex = createMutex();
 std::vector<DelayTestData *> datas;
 
-DECLARE_SIMPLE_CLASS(MyDelayedHandler) EXTENDS(Handler) {
+DECLARE_CLASS(MyDelayedHandler) EXTENDS(Handler) {
 public:
 
   void handleMessage(Message msg) {

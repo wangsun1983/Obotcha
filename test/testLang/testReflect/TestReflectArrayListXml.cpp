@@ -14,14 +14,14 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(XmlItemData1) {
+DECLARE_CLASS(XmlItemData1) {
 public:
   int data1;
   int data2;
   DECLARE_REFLECT_FIELD(XmlItemData1,data1,data2)
 };
 
-DECLARE_SIMPLE_CLASS(XmlReflectList) {
+DECLARE_CLASS(XmlReflectList) {
 public:
   ArrayList<ArrayList<XmlItemData1>> lists;
   DECLARE_REFLECT_FIELD(XmlReflectList,lists)

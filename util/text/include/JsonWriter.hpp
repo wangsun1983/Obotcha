@@ -16,7 +16,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(JsonWriter) {
+DECLARE_CLASS(JsonWriter) {
 public:
     _JsonWriter(File f);
     _JsonWriter(String path);

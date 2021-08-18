@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpVersion) {
+DECLARE_CLASS(HttpVersion) {
 public:
     _HttpVersion();
     _HttpVersion(int major,int minor);

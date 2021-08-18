@@ -30,7 +30,7 @@ enum PosixMqPriority {
 #define DEFAULT_MQ_MSG_SIZE 1024*4
 #define DEFAULT_MQ_MSG_NUMS 8
 
-DECLARE_SIMPLE_CLASS(PosixMq) {
+DECLARE_CLASS(PosixMq) {
 public:
     _PosixMq(String name,int type);
 

@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(AtomicInteger) {
+DECLARE_CLASS(AtomicInteger) {
 
 public:
     _AtomicInteger();

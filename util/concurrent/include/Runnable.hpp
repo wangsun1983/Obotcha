@@ -20,7 +20,7 @@ namespace obotcha {
 class _Future;
 class _ExecutorTask;
 
-DECLARE_SIMPLE_CLASS(Runnable) {
+DECLARE_CLASS(Runnable) {
 
 public:
     friend class _Future;

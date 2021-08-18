@@ -48,7 +48,7 @@ private:
     MD5_CTX md5;
 };
 
-DECLARE_SIMPLE_CLASS(MailSenderBuilder) {
+DECLARE_CLASS(MailSenderBuilder) {
 public:
     _MailSenderBuilder();
     sp<_MailSenderBuilder> addRecipient(MailRecipient);
@@ -72,7 +72,7 @@ private:
     sp<_MailSender> mSender;
 };
 
-DECLARE_SIMPLE_CLASS(MailSender) {
+DECLARE_CLASS(MailSender) {
 public:
     friend class _MailSenderBuilder;
     _MailSender();

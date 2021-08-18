@@ -25,7 +25,7 @@ namespace obotcha {
 class _XmlValue;
 class _XmlAttribute;
 
-DECLARE_SIMPLE_CLASS(XmlDocument) {
+DECLARE_CLASS(XmlDocument) {
 
 public:
     friend class _XmlValue;

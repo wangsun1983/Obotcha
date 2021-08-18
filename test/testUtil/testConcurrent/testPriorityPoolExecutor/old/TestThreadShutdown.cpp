@@ -13,7 +13,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyShutdownRunTest1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyShutdownRunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
         //printf("i am running123 \n");
@@ -24,7 +24,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(MyShutdownRunTest2) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyShutdownRunTest2) IMPLEMENTS(Runnable) {
 public:
     _MyShutdownRunTest2() {
         mMutex = createMutex();
@@ -51,14 +51,14 @@ private:
     int count;
 };
 
-DECLARE_SIMPLE_CLASS(MyShutdownRunTest3) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyShutdownRunTest3) IMPLEMENTS(Runnable) {
 public:
     void run() {
 
     }
 };
 
-DECLARE_SIMPLE_CLASS(MyShutdownRunTest4) IMPLEMENTS(Thread) {
+DECLARE_CLASS(MyShutdownRunTest4) IMPLEMENTS(Thread) {
 public:
     _MyShutdownRunTest4(ThreadPriorityPoolExecutor p) {
         mPool = p;

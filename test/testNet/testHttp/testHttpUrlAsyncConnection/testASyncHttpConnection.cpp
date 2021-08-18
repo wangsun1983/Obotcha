@@ -15,7 +15,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(Listener) IMPLEMENTS(HttpAsyncConnectionListener) {
+DECLARE_CLASS(Listener) IMPLEMENTS(HttpAsyncConnectionListener) {
     void onResponse(HttpResponse response) {
         HttpEntity entity = response->getEntity();
         printf("entity is %s \n",entity->getContent()->toValue());

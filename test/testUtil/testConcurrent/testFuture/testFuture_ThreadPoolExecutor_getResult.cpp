@@ -13,13 +13,13 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyResult) {
+DECLARE_CLASS(MyResult) {
 public:
   int value1;
   long value2;
 };
 
-DECLARE_SIMPLE_CLASS(RunTestObject) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestObject) IMPLEMENTS(Runnable) {
 public:
     void run() {
         MyResult r = createMyResult();
@@ -29,35 +29,35 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestInt) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestInt) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set(1);
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestByte) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestByte) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set((byte)2);
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestDouble) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestDouble) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set(3.3);
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestBoolFalse) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestBoolFalse) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set(false);
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestBoolTrue) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestBoolTrue) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set(true);
@@ -65,35 +65,35 @@ public:
 };
 
 
-DECLARE_SIMPLE_CLASS(RunTestLong) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestLong) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set((long)400);
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestUint16) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestUint16) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set((uint16_t)5);
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestUint32) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestUint32) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set((uint32_t)6);
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestUint64) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestUint64) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set((uint64_t)7);
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestString) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestString) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set(createString("hello world"));
@@ -101,7 +101,7 @@ public:
 };
 
 //delay Thread
-DECLARE_SIMPLE_CLASS(RunTestObjectDelayed) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestObjectDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
         MyResult r = createMyResult();
@@ -112,7 +112,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestIntDelayed) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestIntDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set(1);
@@ -120,7 +120,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestByteDelayed) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestByteDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set((byte)2);
@@ -128,7 +128,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestDoubleDelayed) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestDoubleDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set(3.3);
@@ -136,7 +136,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestBoolFalseDelayed) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestBoolFalseDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set(false);
@@ -144,7 +144,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestBoolTrueDelayed) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestBoolTrueDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set(true);
@@ -153,7 +153,7 @@ public:
 };
 
 
-DECLARE_SIMPLE_CLASS(RunTestLongDelayed) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestLongDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set((long)400);
@@ -161,7 +161,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestUint16Delayed) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestUint16Delayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set((uint16_t)5);
@@ -169,7 +169,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestUint32Delayed) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestUint32Delayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set((uint32_t)6);
@@ -177,7 +177,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestUint64Delayed) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestUint64Delayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set((uint64_t)7);
@@ -185,7 +185,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestStringDelayed) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestStringDelayed) IMPLEMENTS(Runnable) {
 public:
     void run() {
         st(TaskResult)::set(createString("hello world"));
@@ -193,7 +193,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(RunTestSleep10) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTestSleep10) IMPLEMENTS(Runnable) {
 public:
     void run() {
         try {

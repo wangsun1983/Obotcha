@@ -7,7 +7,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(HasMessageHandler) EXTENDS(Handler) {
+DECLARE_CLASS(HasMessageHandler) EXTENDS(Handler) {
 public:
   
   void handleMessage(Message msg) { 

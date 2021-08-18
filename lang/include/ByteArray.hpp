@@ -11,7 +11,7 @@
 namespace obotcha {
 class _String;
 
-DECLARE_SIMPLE_CLASS(ByteArray) {
+DECLARE_CLASS(ByteArray) {
 public:
     explicit _ByteArray(int length,bool isSafe = false);
 

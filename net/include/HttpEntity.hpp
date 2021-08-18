@@ -12,7 +12,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpEntity) {
+DECLARE_CLASS(HttpEntity) {
 public:
     _HttpEntity();
     

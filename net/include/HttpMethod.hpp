@@ -12,7 +12,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpMethod) {
+DECLARE_CLASS(HttpMethod) {
 
 public:
     enum ID {

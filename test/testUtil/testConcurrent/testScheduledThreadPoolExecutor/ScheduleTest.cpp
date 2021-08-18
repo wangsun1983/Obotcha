@@ -15,7 +15,7 @@ using namespace obotcha;
 long RunTestTime1 = 1;
 long RunTestTime2 = 1;
 
-DECLARE_SIMPLE_CLASS(ScheduleRunTest1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(ScheduleRunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
         RunTestTime1 = st(System)::currentTimeMillis();
@@ -29,7 +29,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(ScheduleRunTest2) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(ScheduleRunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
         RunTestTime2 = st(System)::currentTimeMillis();
@@ -39,7 +39,7 @@ public:
 };
 
 int runTest3Val = 0;
-DECLARE_SIMPLE_CLASS(RunTest3) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTest3) IMPLEMENTS(Runnable) {
 public:
     void run() {
         runTest3Val = 1;

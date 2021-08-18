@@ -16,7 +16,7 @@ namespace obotcha {
 /**
  * The primary difference between 08 and 13 is a different origin header name
  */
-DECLARE_SIMPLE_CLASS(WebSocketHybi08Composer) IMPLEMENTS(WebSocketHybi13Composer){
+DECLARE_CLASS(WebSocketHybi08Composer) IMPLEMENTS(WebSocketHybi13Composer){
 public:
     _WebSocketHybi08Composer(int type,int ver = 8,int max = MAX_WEBSOCKET_FRAME_SIZE);
 

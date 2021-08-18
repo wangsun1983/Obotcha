@@ -15,7 +15,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(FileNodeWriter) {
+DECLARE_CLASS(FileNodeWriter) {
 public:
     _FileNodeWriter(String path);
 

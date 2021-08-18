@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ServerSocket) {
+DECLARE_CLASS(ServerSocket) {
 public:
     _ServerSocket(int,InetAddress address,SocketOption option);
     int bind();

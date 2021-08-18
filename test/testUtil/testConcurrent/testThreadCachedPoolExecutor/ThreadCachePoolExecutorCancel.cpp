@@ -18,7 +18,7 @@ using namespace obotcha;
 Mutex cancelmutex = createMutex();
 int cancelNum = 0;
 
-DECLARE_SIMPLE_CLASS(CancelRunnable) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(CancelRunnable) IMPLEMENTS(Runnable) {
 public:
    void run() {
       try{

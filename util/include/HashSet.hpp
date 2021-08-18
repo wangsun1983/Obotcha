@@ -17,7 +17,7 @@ namespace obotcha {
 template<typename T>
 class _HashSetIterator;
 
-DECLARE_CLASS(HashSet,1) {
+DECLARE_TEMPLATE_CLASS(HashSet,1) {
 
 public:
     friend class _HashSetIterator<T>;
@@ -74,7 +74,7 @@ private:
     }
 };
 
-DECLARE_CLASS(HashSetIterator,1) {
+DECLARE_TEMPLATE_CLASS(HashSetIterator,1) {
 public:
     _HashSetIterator(_HashSet<T> *list) {
         mList.set_pointer(list);

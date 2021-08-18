@@ -8,7 +8,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(TestData1) {
+DECLARE_CLASS(TestData1) {
 public:
   _TestData1(int i) {
     value = i;
@@ -26,7 +26,7 @@ private:
   int value;
 };
 
-DECLARE_SIMPLE_CLASS(TestData2) {
+DECLARE_CLASS(TestData2) {
 public:
   int j;
 
@@ -35,7 +35,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(TestData3) {
+DECLARE_CLASS(TestData3) {
 public:
   int j;
 
@@ -44,12 +44,12 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(DataTT) {
+DECLARE_CLASS(DataTT) {
 public:
   int j;
 };
 
-DECLARE_SIMPLE_CLASS(Student) {
+DECLARE_CLASS(Student) {
 public:
   int j;
 

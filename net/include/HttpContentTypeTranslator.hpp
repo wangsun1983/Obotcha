@@ -25,7 +25,7 @@ public:
     int type;
 };
 
-DECLARE_SIMPLE_CLASS(HttpContentTypeTranslator) {
+DECLARE_CLASS(HttpContentTypeTranslator) {
 
 public:
     static sp<_HttpContentTypeTranslator> getInstance();

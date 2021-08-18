@@ -14,7 +14,7 @@ Condition disconnectCond = createCondition();
 
 String message = createString("");
 
-DECLARE_SIMPLE_CLASS(MyListener) IMPLEMENTS(SocketListener){
+DECLARE_CLASS(MyListener) IMPLEMENTS(SocketListener){
 public:
   void onSocketMessage(int event,Socket s,ByteArray data) {
     switch(event) {

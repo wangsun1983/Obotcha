@@ -15,7 +15,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(ReflectWriteMember) {
+DECLARE_CLASS(ReflectWriteMember) {
 public:
   int intData;
   byte byteData;
@@ -33,7 +33,7 @@ public:
                         uint64Data,boolData)
 };
 
-DECLARE_SIMPLE_CLASS(ReflectData) {
+DECLARE_CLASS(ReflectData) {
 public:
   ReflectWriteMember member1;
   ReflectWriteMember member2;

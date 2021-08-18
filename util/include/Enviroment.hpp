@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Enviroment) {
+DECLARE_CLASS(Enviroment) {
 
 public:
     static Enviroment getInstance();

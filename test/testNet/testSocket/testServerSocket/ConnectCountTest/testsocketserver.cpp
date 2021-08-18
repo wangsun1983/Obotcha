@@ -15,7 +15,7 @@ static AtomicInteger connectCount = createAtomicInteger(0);
 static AtomicInteger disconnectCount = createAtomicInteger(0);
 static AtomicInteger messageCount = createAtomicInteger(0);
 
-DECLARE_SIMPLE_CLASS(Listener1) IMPLEMENTS(SocketListener) {
+DECLARE_CLASS(Listener1) IMPLEMENTS(SocketListener) {
 public:
   _Listener1(SocketMonitor m) {
     mSocketMonitor = m;

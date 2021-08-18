@@ -17,7 +17,7 @@ namespace obotcha {
 class _XmlValue;
 class _XmlDocument;
 
-DECLARE_SIMPLE_CLASS(XmlWriter) {
+DECLARE_CLASS(XmlWriter) {
 
 public:
     friend class _XmlValue;

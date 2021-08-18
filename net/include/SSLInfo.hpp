@@ -28,7 +28,7 @@ extern "C" {
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(SSLInfo) {
+DECLARE_CLASS(SSLInfo) {
 public:
     _SSLInfo(String certificate,String key);
 

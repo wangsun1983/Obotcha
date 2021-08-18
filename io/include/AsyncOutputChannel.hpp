@@ -13,7 +13,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(AsyncOutputChannel) {
+DECLARE_CLASS(AsyncOutputChannel) {
 public:
     typedef std::function<long (FileDescriptor,ByteArray)> WriteCallback;
 

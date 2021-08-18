@@ -17,7 +17,7 @@ using namespace obotcha;
 
 AtomicInteger interruptCount = createAtomicInteger(0);
 
-DECLARE_SIMPLE_CLASS(MyLoopShutdownRunnable1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyLoopShutdownRunnable1) IMPLEMENTS(Runnable) {
 public:
     void run() {
       try {

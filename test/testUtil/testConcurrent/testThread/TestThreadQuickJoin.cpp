@@ -16,7 +16,7 @@ using namespace obotcha;
 
 
 
-DECLARE_SIMPLE_CLASS(JoinRun1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(JoinRun1) IMPLEMENTS(Runnable) {
 public:
 
   void run() {

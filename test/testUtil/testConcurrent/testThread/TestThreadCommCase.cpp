@@ -22,7 +22,7 @@ int TestData1 = 1;
 int TestData2 = 2;
 int disposeData2 = -1;
 
-DECLARE_SIMPLE_CLASS(Run1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(Run1) IMPLEMENTS(Runnable) {
 public:
 
   void run() {
@@ -34,7 +34,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(Thread1) IMPLEMENTS(Thread) {
+DECLARE_CLASS(Thread1) IMPLEMENTS(Thread) {
 public:
 
   void run() {
@@ -46,7 +46,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(Thread2) IMPLEMENTS(Thread) {
+DECLARE_CLASS(Thread2) IMPLEMENTS(Thread) {
 public:
   //_Thread(String name,Runnable run);
   void run() {
@@ -58,7 +58,7 @@ public:
 
 int onInterruptCount = 0;
 
-DECLARE_SIMPLE_CLASS(Thread3) IMPLEMENTS(Thread) {
+DECLARE_CLASS(Thread3) IMPLEMENTS(Thread) {
 public:
     void run() {
         while(1) {
@@ -71,7 +71,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(Thread3_1) IMPLEMENTS(Thread) {
+DECLARE_CLASS(Thread3_1) IMPLEMENTS(Thread) {
 public:
     void run() {
         while(1) {
@@ -85,7 +85,7 @@ public:
 };
 
 #if 0
-DECLARE_SIMPLE_CLASS(Thread4) IMPLEMENTS(Thread) {
+DECLARE_CLASS(Thread4) IMPLEMENTS(Thread) {
 public:
     void run() {
         int ret = st(Thread)::setThreadSchedPolicy(st(Thread)::SchedFifo);
@@ -99,7 +99,7 @@ public:
 
 int policytestret = 0;
 
-DECLARE_SIMPLE_CLASS(Thread5) IMPLEMENTS(Thread) {
+DECLARE_CLASS(Thread5) IMPLEMENTS(Thread) {
 public:
     void run() {
         int ret = st(Thread)::setThreadSchedPolicy(st(Thread)::SchedFifo);
@@ -111,7 +111,7 @@ public:
 };
 
 
-DECLARE_SIMPLE_CLASS(Thread6) IMPLEMENTS(Thread) {
+DECLARE_CLASS(Thread6) IMPLEMENTS(Thread) {
 public:
     void run() {
         st(Thread)::setThreadSchedPolicy(st(Thread)::SchedFifo);
@@ -122,7 +122,7 @@ public:
 
 int testPriorityret = 0;
 
-DECLARE_SIMPLE_CLASS(Thread7) IMPLEMENTS(Thread) {
+DECLARE_CLASS(Thread7) IMPLEMENTS(Thread) {
 public:
     void run() {
         //printf("thread7 start 1 \n");

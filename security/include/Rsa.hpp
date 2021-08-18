@@ -16,7 +16,7 @@ extern "C" {
 namespace obotcha {
 
 
-DECLARE_SIMPLE_CLASS(Rsa) IMPLEMENTS(Cipher) {
+DECLARE_CLASS(Rsa) IMPLEMENTS(Cipher) {
 
 public:
     ByteArray encrypt(ByteArray in);

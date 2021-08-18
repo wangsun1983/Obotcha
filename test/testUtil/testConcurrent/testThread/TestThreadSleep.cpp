@@ -16,7 +16,7 @@ using namespace obotcha;
 
 int count = 0;
 
-DECLARE_SIMPLE_CLASS(SleepRun1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(SleepRun1) IMPLEMENTS(Runnable) {
 public:
 
   void run() {

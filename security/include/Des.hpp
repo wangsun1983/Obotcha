@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Des) IMPLEMENTS(Cipher){
+DECLARE_CLASS(Des) IMPLEMENTS(Cipher){
 
 public:
     ByteArray encrypt(ByteArray in);

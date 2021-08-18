@@ -27,7 +27,7 @@ namespace obotcha {
 class _HttpUrl;
 class _HttpAsyncConnectionPool;
 
-DECLARE_SIMPLE_CLASS(HttpAsyncConnection) {
+DECLARE_CLASS(HttpAsyncConnection) {
 
 public:
     friend class _HttpAsyncConnectionPool;

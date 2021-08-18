@@ -6,7 +6,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ReflectUtil) {
+DECLARE_CLASS(ReflectUtil) {
 public:
     template <typename T>
     static void createObject(sp<T> & value)

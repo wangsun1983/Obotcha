@@ -9,7 +9,7 @@ using namespace obotcha;
 
 int testCount = 0;
 
-DECLARE_SIMPLE_CLASS(MyFileObserver) IMPLEMENTS(FileObserver){
+DECLARE_CLASS(MyFileObserver) IMPLEMENTS(FileObserver){
 public:
     void onFileUpdate(String filepath,int op) {
         printf("------------------------------------file %s,is %x \n",filepath->toChars(),op);

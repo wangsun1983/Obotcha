@@ -24,7 +24,7 @@ class _WebSocketComposer;
 class _WebSocketParser;
 class _WebSocketPermessageDeflate;
 
-DECLARE_SIMPLE_CLASS(WebSocketLinker) {
+DECLARE_CLASS(WebSocketLinker) {
 public:
     _WebSocketLinker(Socket sock);
 

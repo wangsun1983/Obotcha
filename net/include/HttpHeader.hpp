@@ -17,7 +17,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpHeader) {
+DECLARE_CLASS(HttpHeader) {
 
 public:
     _HttpHeader();

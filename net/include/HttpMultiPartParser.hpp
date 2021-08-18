@@ -15,7 +15,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpMultiPartParser) {
+DECLARE_CLASS(HttpMultiPartParser) {
 public:
     _HttpMultiPartParser(const String&,int);
 

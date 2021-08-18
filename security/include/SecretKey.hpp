@@ -8,7 +8,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(SecretKey) {
+DECLARE_CLASS(SecretKey) {
 public:
     virtual void *get() = 0;
     virtual int loadEncryptKey(String path) = 0;

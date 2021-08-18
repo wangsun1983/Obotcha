@@ -6,7 +6,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(TTInt) {
+DECLARE_CLASS(TTInt) {
 public:
   int i;
 };

@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(EnqueueIntThread1) IMPLEMENTS(Thread) {
+DECLARE_CLASS(EnqueueIntThread1) IMPLEMENTS(Thread) {
 public:
     _EnqueueIntThread1(BlockingLinkedList<int> queue) {
         mQueue = queue;

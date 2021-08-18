@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpResponseEntity) {
+DECLARE_CLASS(HttpResponseEntity) {
 
 public:
     template<typename U>

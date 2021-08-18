@@ -16,7 +16,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ExecutorBuilder) {
+DECLARE_CLASS(ExecutorBuilder) {
 
 public:
     _ExecutorBuilder();

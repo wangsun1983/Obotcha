@@ -22,7 +22,7 @@ AtomicInteger connectCount = createAtomicInteger(0);
 AtomicInteger disconnectCount = createAtomicInteger(0);
 AtomicInteger messageCount = createAtomicInteger(0);
 
-DECLARE_SIMPLE_CLASS(MyWsListener) IMPLEMENTS(WebSocketListener) {
+DECLARE_CLASS(MyWsListener) IMPLEMENTS(WebSocketListener) {
 public:
     _MyWsListener() {
         

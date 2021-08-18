@@ -25,7 +25,7 @@ enum WebSocketFrameComposerType {
     WsServerComposer
 };
 
-DECLARE_SIMPLE_CLASS(WebSocketComposer) {
+DECLARE_CLASS(WebSocketComposer) {
 public:
     _WebSocketComposer(int type,int version,int maxframesize):mType(type),mVersion(version),mMaxFrameSize(maxframesize),mDeflate(nullptr) {}
     

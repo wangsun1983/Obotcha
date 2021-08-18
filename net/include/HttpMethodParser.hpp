@@ -12,7 +12,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpMethodParser) {
+DECLARE_CLASS(HttpMethodParser) {
 
 public:
     static int doParse(String);

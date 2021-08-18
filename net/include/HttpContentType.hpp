@@ -15,7 +15,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpContentType) {
+DECLARE_CLASS(HttpContentType) {
 
 public:
     enum Type {

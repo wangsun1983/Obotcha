@@ -17,7 +17,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(SocketMonitorTask) {
+DECLARE_CLASS(SocketMonitorTask) {
 public:
     _SocketMonitorTask(int event,Socket s,ByteArray data = nullptr);
 
@@ -26,7 +26,7 @@ public:
     Socket sock;
 };
 
-DECLARE_SIMPLE_CLASS(SocketMonitor) {
+DECLARE_CLASS(SocketMonitor) {
 public:
     _SocketMonitor();
     _SocketMonitor(int);

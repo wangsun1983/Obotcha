@@ -14,7 +14,7 @@ namespace obotcha {
 
 class _XmlDocument;
 
-DECLARE_SIMPLE_CLASS(XmlReader) {
+DECLARE_CLASS(XmlReader) {
 
 public:
     _XmlReader(String content);

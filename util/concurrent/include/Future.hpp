@@ -5,7 +5,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Future) {
+DECLARE_CLASS(Future) {
 public:
     _Future(ExecutorTask);
     

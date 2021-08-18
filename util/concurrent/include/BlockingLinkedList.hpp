@@ -69,7 +69,7 @@ while(!isDestroy) {\
 return ContainerValue<T>(nullptr).get();\
 
 
-DECLARE_CLASS(BlockingLinkedList,1) {
+DECLARE_TEMPLATE_CLASS(BlockingLinkedList,1) {
 public:
     _BlockingLinkedList(int capacity = -1) {
         mMutex = createMutex("BlockingLinkedList");

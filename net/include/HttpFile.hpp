@@ -8,7 +8,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpFile){
+DECLARE_CLASS(HttpFile){
 public:
     _HttpFile(String realname);
     _HttpFile(File file);

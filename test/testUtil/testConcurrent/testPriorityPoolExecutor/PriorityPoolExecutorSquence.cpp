@@ -21,7 +21,7 @@ int Sequence3 = 0;
 int Sequence4 = 0;
 int Sequence5 = 0;
 
-DECLARE_SIMPLE_CLASS(SequenceTestIdle) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(SequenceTestIdle) IMPLEMENTS(Runnable) {
 public:
     void run() {
         //printf("test0 \n");
@@ -30,7 +30,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(SequenceTest1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(SequenceTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
         //printf("test1111111, startValue is %d \n",startValue);
@@ -40,7 +40,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(SequenceTest2) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(SequenceTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
         //printf("test2 \n");
@@ -50,7 +50,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(SequenceTest3) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(SequenceTest3) IMPLEMENTS(Runnable) {
 public:
     void run() {
         //printf("test3 \n");
@@ -61,7 +61,7 @@ public:
 };
 
 #if 0
-DECLARE_SIMPLE_CLASS(SequenceTest4) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(SequenceTest4) IMPLEMENTS(Runnable) {
 public:
     void run() {
         printf("test4 \n");
@@ -70,7 +70,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(SequenceTest5) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(SequenceTest5) IMPLEMENTS(Runnable) {
 public:
     void run() {
         printf("test5 \n");

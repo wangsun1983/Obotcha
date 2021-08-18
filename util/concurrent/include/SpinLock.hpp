@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(SpinLock) IMPLEMENTS(Lock) {
+DECLARE_CLASS(SpinLock) IMPLEMENTS(Lock) {
 public:
     _SpinLock(String);
 

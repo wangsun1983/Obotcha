@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpVersionParser) {
+DECLARE_CLASS(HttpVersionParser) {
 
 public:
     static HttpVersion doParse(String);

@@ -13,13 +13,13 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(WrongObjectData) {
+DECLARE_CLASS(WrongObjectData) {
 public:
   int value1;
   int value2;
 };
 
-DECLARE_SIMPLE_CLASS(TestWrongIntTask) IMPLEMENTS(Runnable){
+DECLARE_CLASS(TestWrongIntTask) IMPLEMENTS(Runnable){
 public:
   void run() {
     byte value = 10;
@@ -27,7 +27,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(TestWrongObjectTask) IMPLEMENTS(Runnable){
+DECLARE_CLASS(TestWrongObjectTask) IMPLEMENTS(Runnable){
 public:
   void run() {
     WrongObjectData obj = createWrongObjectData();

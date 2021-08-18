@@ -12,7 +12,7 @@ namespace obotcha {
     AutoTimeWatcher autoTime = createAutoTimeWatcher(#X); \
 
 
-DECLARE_SIMPLE_CLASS(AutoTimeWatcher) {
+DECLARE_CLASS(AutoTimeWatcher) {
 
 public:
     _AutoTimeWatcher(String);
@@ -25,7 +25,7 @@ private:
     long current;
 };
 
-DECLARE_SIMPLE_CLASS(TimeWatcher) {
+DECLARE_CLASS(TimeWatcher) {
 
 public:
     void start();

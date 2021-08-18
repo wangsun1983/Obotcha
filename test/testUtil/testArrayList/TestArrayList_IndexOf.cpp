@@ -10,7 +10,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(IndexTestData) {
+DECLARE_CLASS(IndexTestData) {
 public:
   _IndexTestData(int v) {
     value = v;
@@ -19,7 +19,7 @@ public:
   int value;
 };
 
-DECLARE_SIMPLE_CLASS(IndexTestData2) {
+DECLARE_CLASS(IndexTestData2) {
 public:
   _IndexTestData2(int v) {
     value = v;

@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(InetAddress) {
+DECLARE_CLASS(InetAddress) {
 
 public:
     enum Type {

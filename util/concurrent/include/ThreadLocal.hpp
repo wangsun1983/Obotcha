@@ -12,7 +12,7 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(ThreadLocal,1) {
+DECLARE_TEMPLATE_CLASS(ThreadLocal,1) {
 public:
     _ThreadLocal();
 

@@ -37,7 +37,7 @@ class reflectItemFunc<X,E>\
 };\
 
 //----------------------- HashMap<T,U> -----------------------
-DECLARE_CLASS(HashMap,2) {
+DECLARE_TEMPLATE_CLASS(HashMap,2) {
 public:
     friend class _MapIterator<T,U>;
     
@@ -202,7 +202,7 @@ private:
 };
 
 //----------------- MapIterator ---------------------
-DECLARE_CLASS(MapIterator,2) {
+DECLARE_TEMPLATE_CLASS(MapIterator,2) {
 
 public:
     _MapIterator(_HashMap<T,U> *map) {

@@ -13,7 +13,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Sqlite3Client) {
+DECLARE_CLASS(Sqlite3Client) {
 
 public:
     int connect(HashMap<String, String> args);

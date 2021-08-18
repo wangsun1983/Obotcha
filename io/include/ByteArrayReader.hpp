@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ByteArrayReader) {
+DECLARE_CLASS(ByteArrayReader) {
 
 public:
     _ByteArrayReader(ByteArray,int mod = LittleEndian);

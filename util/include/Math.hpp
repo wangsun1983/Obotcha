@@ -8,7 +8,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Math) {
+DECLARE_CLASS(Math) {
 
 public:
     enum CompareResult {

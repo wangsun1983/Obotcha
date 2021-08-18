@@ -14,10 +14,11 @@
 #include "Thread.hpp"
 #include "Error.hpp"
 #include "LinkedList.hpp"
+#include "Executor.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ThreadPriorityPoolExecutor) {
+DECLARE_CLASS(ThreadPriorityPoolExecutor) IMPLEMENTS(Executor){
 
 public:
     enum Priority {

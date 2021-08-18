@@ -17,7 +17,7 @@
 #include <vector>
 
 using namespace obotcha;
-DECLARE_SIMPLE_CLASS(BaseImportData) {
+DECLARE_CLASS(BaseImportData) {
 public:
   int baseData1;
 
@@ -27,7 +27,7 @@ public:
   DECLARE_REFLECT_FIELD(BaseImportData,baseData1)
 };
 
-DECLARE_SIMPLE_CLASS(SubImportData) {
+DECLARE_CLASS(SubImportData) {
 public:
   int subData1;
   long subData2;
@@ -52,7 +52,7 @@ public:
   DECLARE_REFLECT_FIELD(SubImportData,subData1,subData2,subData3,subData4)
 };
 
-DECLARE_SIMPLE_CLASS(ImportData){
+DECLARE_CLASS(ImportData){
 public:
   int data1;
   long data2;

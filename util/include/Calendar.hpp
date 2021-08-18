@@ -7,7 +7,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Calendar) {
+DECLARE_CLASS(Calendar) {
 public:
 
     _Calendar();

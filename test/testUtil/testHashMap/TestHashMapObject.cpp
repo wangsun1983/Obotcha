@@ -7,7 +7,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyKey) {
+DECLARE_CLASS(MyKey) {
 public:
   int i;
   _MyKey(int v) {
@@ -31,7 +31,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(MyValue) {
+DECLARE_CLASS(MyValue) {
 public:
   int i;
 

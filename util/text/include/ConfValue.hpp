@@ -17,7 +17,7 @@ namespace obotcha {
 class _ConfReader;
 class _ConfIterator;
 
-DECLARE_SIMPLE_CLASS(ConfValue) {
+DECLARE_CLASS(ConfValue) {
 
 public:
     friend class _ConfReader;
@@ -35,7 +35,7 @@ private:
     struct ccl_t config;
 };
 
-DECLARE_SIMPLE_CLASS(ConfIterator) {
+DECLARE_CLASS(ConfIterator) {
 public:
     _ConfIterator(_ConfValue *);
     

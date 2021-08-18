@@ -10,7 +10,7 @@ namespace obotcha {
 
 class _SmtpConnection;
 
-DECLARE_SIMPLE_CLASS(MailRecipient) {
+DECLARE_CLASS(MailRecipient) {
 public:
     _MailRecipient();
     _MailRecipient(String,String);
@@ -18,7 +18,7 @@ public:
     String mail;
 };
 
-DECLARE_SIMPLE_CLASS(SmtpConnectionBuilder) {
+DECLARE_CLASS(SmtpConnectionBuilder) {
 public:
     _SmtpConnectionBuilder();
     sp<_SmtpConnectionBuilder> setHostName(String);
@@ -38,7 +38,7 @@ private:
     sp<_SmtpConnection> mConnection;
 };
 
-DECLARE_SIMPLE_CLASS(SmtpConnection) {
+DECLARE_CLASS(SmtpConnection) {
 
 public:
     enum SmtpSecurityType {

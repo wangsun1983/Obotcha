@@ -10,7 +10,7 @@ namespace obotcha {
 
 class _HttpHeader;
 
-DECLARE_SIMPLE_CLASS(HttpCacheControl) {
+DECLARE_CLASS(HttpCacheControl) {
 
 public:
     _HttpCacheControl();

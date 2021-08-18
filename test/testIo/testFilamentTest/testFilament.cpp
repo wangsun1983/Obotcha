@@ -6,7 +6,7 @@
 using namespace std;
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyRun1) IMPLEMENTS(FilaRunnable) {
+DECLARE_CLASS(MyRun1) IMPLEMENTS(FilaRunnable) {
 public:
     void run() {
         while(1) {
@@ -16,7 +16,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(MyRun2) IMPLEMENTS(FilaRunnable) {
+DECLARE_CLASS(MyRun2) IMPLEMENTS(FilaRunnable) {
 public:
     void run() {
         while(1) {
@@ -26,7 +26,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(MyRun3) IMPLEMENTS(FilaRunnable) {
+DECLARE_CLASS(MyRun3) IMPLEMENTS(FilaRunnable) {
 public:
     void run() {
         while(1) {

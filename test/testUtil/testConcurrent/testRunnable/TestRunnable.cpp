@@ -18,12 +18,12 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyData) {
+DECLARE_CLASS(MyData) {
 public:
     int value;    
 };
 
-DECLARE_SIMPLE_CLASS(MyRun) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyRun) IMPLEMENTS(Runnable) {
 public:
     _MyRun() {
         printf("myRun \n");
@@ -45,7 +45,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(CancelTask) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(CancelTask) IMPLEMENTS(Runnable) {
 public:
     _CancelTask(Future f) {
         task = f;

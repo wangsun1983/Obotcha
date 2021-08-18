@@ -16,7 +16,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(DateTime) {
+DECLARE_CLASS(DateTime) {
 public:
     _DateTime();
 

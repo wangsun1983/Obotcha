@@ -13,7 +13,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpRequest) IMPLEMENTS(HttpPacket){
+DECLARE_CLASS(HttpRequest) IMPLEMENTS(HttpPacket){
 
 public:
     friend class _HttpRequestWriter;

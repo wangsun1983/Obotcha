@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyFileException) EXTENDS(FileNotFoundException) {
+DECLARE_CLASS(MyFileException) EXTENDS(FileNotFoundException) {
 public:
   void doTest(int v) {
     switch(v) {

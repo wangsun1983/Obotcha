@@ -15,14 +15,14 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(ItemData) {
+DECLARE_CLASS(ItemData) {
 public:
   int data1;
   int data2;
   DECLARE_REFLECT_FIELD(ItemData,data1,data2)
 };
 
-DECLARE_SIMPLE_CLASS(ArrayHashMap) {
+DECLARE_CLASS(ArrayHashMap) {
 public:
   ArrayList<HashMap<String,ItemData>> datas;
   DECLARE_REFLECT_FIELD(ArrayHashMap,datas)

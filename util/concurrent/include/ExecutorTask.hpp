@@ -45,7 +45,7 @@ __ExecutorTaskResultMacro(uint32_t,Uint32)
 __ExecutorTaskResultMacro(uint64_t,Uint64)
 
 
-DECLARE_SIMPLE_CLASS(ExecutorTask) {
+DECLARE_CLASS(ExecutorTask) {
 public:
     _ExecutorTask(Runnable);
 

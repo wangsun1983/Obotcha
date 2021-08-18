@@ -15,7 +15,7 @@
 namespace obotcha {
 
 class _Socket;
-DECLARE_SIMPLE_CLASS(SocketImpl) {
+DECLARE_CLASS(SocketImpl) {
 public:
     _SocketImpl(){}
     _SocketImpl(FileDescriptor);

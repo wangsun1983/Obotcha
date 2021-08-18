@@ -15,7 +15,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(MemoryFile) IMPLEMENTS(File){
+DECLARE_CLASS(MemoryFile) IMPLEMENTS(File){
 public:
     using _File::_File; //use File's all construct method
 };

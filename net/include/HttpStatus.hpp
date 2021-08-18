@@ -6,7 +6,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpStatus) {
+DECLARE_CLASS(HttpStatus) {
 public:
     
     static String toString(int);

@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(Run1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(Run1) IMPLEMENTS(Runnable) {
 public:
   _Run1(Barrier v) {
     barrier = v;
@@ -28,7 +28,7 @@ private:
 };
 
 
-DECLARE_SIMPLE_CLASS(Run2) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(Run2) IMPLEMENTS(Runnable) {
 public:
   _Run2(Barrier v) {
     barrier = v;
@@ -47,7 +47,7 @@ private:
   Barrier barrier;
 };
 
-DECLARE_SIMPLE_CLASS(Run3) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(Run3) IMPLEMENTS(Runnable) {
 public:
   _Run3(Barrier v) {
     barrier = v;
@@ -65,7 +65,7 @@ private:
 };
 
 int mtestCount = 0;
-DECLARE_SIMPLE_CLASS(Run4) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(Run4) IMPLEMENTS(Runnable) {
 public:
   _Run4(Barrier v) {
     barrier = v;

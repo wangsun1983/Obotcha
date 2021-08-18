@@ -8,7 +8,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpHeaderContentParser) {
+DECLARE_CLASS(HttpHeaderContentParser) {
 
 public:
     _HttpHeaderContentParser();

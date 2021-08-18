@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(URL) {
+DECLARE_CLASS(URL) {
 public:
     _URL(String);
 

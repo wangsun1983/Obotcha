@@ -21,7 +21,7 @@ namespace obotcha {
 
 class _EPollFileObserver;
 
-DECLARE_SIMPLE_CLASS(EPollFileObserverListener) {
+DECLARE_CLASS(EPollFileObserverListener) {
 public:
     virtual int onEvent(int fd,uint32_t events) = 0;
 };
@@ -50,7 +50,7 @@ sp<_EPollFileObserverListener> createLambdaEPollFileObserverListener(Callfunc f,
     return AutoClone(r);
 }
 
-DECLARE_SIMPLE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
+DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
 public:
     _EPollFileObserver(int size);
 

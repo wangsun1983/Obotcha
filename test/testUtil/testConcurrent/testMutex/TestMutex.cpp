@@ -14,7 +14,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyRun1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyRun1) IMPLEMENTS(Runnable) {
 public:
 
     _MyRun1(Mutex mutex) {
@@ -38,7 +38,7 @@ private:
     Mutex mutex_t;
 };
 
-DECLARE_SIMPLE_CLASS(MyRun2) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyRun2) IMPLEMENTS(Runnable) {
 public:
 
     _MyRun2(Mutex mutex) {
@@ -60,7 +60,7 @@ private:
 };
 
 #if 0
-DECLARE_SIMPLE_CLASS(MyRun3) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyRun3) IMPLEMENTS(Runnable) {
 public:
 
     _MyRun3(Mutex mutex) {
@@ -82,7 +82,7 @@ private:
 };
 #endif
 
-DECLARE_SIMPLE_CLASS(MyRun4) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyRun4) IMPLEMENTS(Runnable) {
 public:
 
     _MyRun4(Mutex mutex) {

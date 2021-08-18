@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(ArrayDataLLL2) {
+DECLARE_CLASS(ArrayDataLLL2) {
 public:
   int intData;
   byte byteData;
@@ -30,7 +30,7 @@ public:
                         uint64Data,boolData)
 };
 
-DECLARE_SIMPLE_CLASS(ListCollection2) {
+DECLARE_CLASS(ListCollection2) {
 public:
   ArrayList<ArrayDataLLL2> mylist;
   DECLARE_REFLECT_FIELD(ListCollection2,mylist);

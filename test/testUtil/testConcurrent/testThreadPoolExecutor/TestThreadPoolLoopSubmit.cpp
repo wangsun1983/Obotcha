@@ -16,7 +16,7 @@ using namespace obotcha;
 
 AtomicInteger value = createAtomicInteger(0);
 
-DECLARE_SIMPLE_CLASS(MyLoopSubmitRunnable1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyLoopSubmitRunnable1) IMPLEMENTS(Runnable) {
 public:
     void run() {
         value->incrementAndGet();
@@ -26,7 +26,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(MyLoopSubmitRunnable2) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyLoopSubmitRunnable2) IMPLEMENTS(Runnable) {
 public:
     void run() {
         value->decrementAndGet();
@@ -36,7 +36,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(MyLoopSubmitRunnable3) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyLoopSubmitRunnable3) IMPLEMENTS(Runnable) {
 public:
     void run() {
         sleep(5);

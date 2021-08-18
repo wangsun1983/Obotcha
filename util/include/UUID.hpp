@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(UUID) {
+DECLARE_CLASS(UUID) {
 
 public:
     enum Type {

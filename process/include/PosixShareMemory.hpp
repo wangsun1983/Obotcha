@@ -20,7 +20,7 @@ enum PosixShareMemoryType {
     PosixShareMemoryWriteRead = O_RDWR,
 };
 
-DECLARE_SIMPLE_CLASS(PosixShareMemory) {
+DECLARE_CLASS(PosixShareMemory) {
 public:
 
     _PosixShareMemory(String,int,int type);

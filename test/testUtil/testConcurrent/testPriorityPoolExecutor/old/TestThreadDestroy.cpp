@@ -14,7 +14,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyDestroyTest) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyDestroyTest) IMPLEMENTS(Runnable) {
 public:
     void run() {
         //printf("i am running123 \n");

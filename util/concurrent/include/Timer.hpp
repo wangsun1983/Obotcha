@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Timer) IMPLEMENTS(Thread) {
+DECLARE_CLASS(Timer) IMPLEMENTS(Thread) {
 
 public:
     _Timer();

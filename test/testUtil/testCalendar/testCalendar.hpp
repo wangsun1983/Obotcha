@@ -3,7 +3,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(TimeData) {
+DECLARE_CLASS(TimeData) {
 public:
   long time;
   int year;

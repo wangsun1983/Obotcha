@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
+DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
 public:
     void onMessage(HttpV1ClientInfo client,HttpV1ResponseWriter w,HttpPacket msg) {
         if(msg->getBody()!= nullptr) {

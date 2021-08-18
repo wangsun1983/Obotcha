@@ -26,7 +26,7 @@ extern "C" {
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ZipFileStream) IMPLEMENTS(InputStream) {
+DECLARE_CLASS(ZipFileStream) IMPLEMENTS(InputStream) {
 public:
 
     _ZipFileStream();

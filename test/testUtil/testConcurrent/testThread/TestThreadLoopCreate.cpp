@@ -17,7 +17,7 @@ Mutex t = createMutex("test");
 AtomicInteger value = createAtomicInteger(0);
 AtomicInteger MyCompleteLoopValue = createAtomicInteger(0);
 
-DECLARE_SIMPLE_CLASS(LoopCreateRun1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(LoopCreateRun1) IMPLEMENTS(Runnable) {
 public:
 
   void run() {
@@ -25,7 +25,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(LoopTestThread) IMPLEMENTS(Thread) {
+DECLARE_CLASS(LoopTestThread) IMPLEMENTS(Thread) {
 public:
   void run() {
     //do nothing

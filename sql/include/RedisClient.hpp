@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(RedisClient) {
+DECLARE_CLASS(RedisClient) {
 
 public:
     int connect(String server,int port,long millseconds);

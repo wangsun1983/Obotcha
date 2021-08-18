@@ -10,7 +10,7 @@
 using namespace obotcha;
 
 
-DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
+DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpV1Listener) {
 public:
 
     void onMessage(HttpV1ClientInfo client,HttpV1ResponseWriter w,HttpPacket msg) {
@@ -85,7 +85,7 @@ public:
 
 
 #if 0
-DECLARE_SIMPLE_CLASS(MySocketListener) IMPLEMENTS(SocketListener) {
+DECLARE_CLASS(MySocketListener) IMPLEMENTS(SocketListener) {
 public:
     //virtual void onAcceptTcp(int fd,ByteArray pack) {};
     

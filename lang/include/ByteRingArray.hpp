@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ByteRingArray) {
+DECLARE_CLASS(ByteRingArray) {
 public:
     enum ByteRingArrayStatus {
         Full = 0,

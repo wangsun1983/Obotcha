@@ -17,7 +17,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(Address) {
+DECLARE_CLASS(Address) {
 public:
     String street;
     String city;
@@ -25,14 +25,14 @@ public:
     DECLARE_REFLECT_FIELD(Address,street,city,country)
 };
 
-DECLARE_SIMPLE_CLASS(Link) {
+DECLARE_CLASS(Link) {
 public:
     String name;
     String url;
     DECLARE_REFLECT_FIELD(Link,name,url);
 };
 
-DECLARE_SIMPLE_CLASS(PersonInfo) {
+DECLARE_CLASS(PersonInfo) {
 public:
     String name;
     String url;

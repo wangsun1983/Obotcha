@@ -26,7 +26,7 @@ extern "C" {
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ZipMemoryStream) {
+DECLARE_CLASS(ZipMemoryStream) {
 public:
     _ZipMemoryStream(int compress_bit = 15,int decompress_bit = 15);
 

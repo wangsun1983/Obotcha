@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(TestHashKey) {
+DECLARE_CLASS(TestHashKey) {
 public:
   int value;
 
@@ -22,7 +22,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(TestHashKey2) {
+DECLARE_CLASS(TestHashKey2) {
 public:
   int value;
 
@@ -31,7 +31,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(TestHashKey3) {
+DECLARE_CLASS(TestHashKey3) {
 public:
   int value;
 

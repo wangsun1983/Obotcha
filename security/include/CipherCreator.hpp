@@ -7,7 +7,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(CipherCreator) {
+DECLARE_CLASS(CipherCreator) {
 public:
     static Cipher getInstance(String);
     static Cipher getInstance(const char *);

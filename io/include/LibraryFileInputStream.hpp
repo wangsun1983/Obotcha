@@ -17,7 +17,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(LibraryFileInputStream) IMPLEMENTS(InputStream){
+DECLARE_CLASS(LibraryFileInputStream) IMPLEMENTS(InputStream){
 public:
 
     _LibraryFileInputStream(LibraryFile f);

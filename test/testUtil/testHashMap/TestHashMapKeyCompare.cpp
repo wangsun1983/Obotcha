@@ -8,7 +8,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(KeyData) {
+DECLARE_CLASS(KeyData) {
 public:
   uint64_t value;
 

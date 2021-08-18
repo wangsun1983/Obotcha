@@ -15,7 +15,7 @@
 namespace obotcha {
 
 
-DECLARE_SIMPLE_CLASS(WebSocketParser) {
+DECLARE_CLASS(WebSocketParser) {
 public:
     _WebSocketParser();
     void pushParseData(ByteArray);

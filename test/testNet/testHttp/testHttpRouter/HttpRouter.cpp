@@ -6,7 +6,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyTrigger) IMPLEMENTS(RouterListener) {
+DECLARE_CLASS(MyTrigger) IMPLEMENTS(RouterListener) {
 public:
     TextContent onInvoke(HashMap<String,String> m) {
         auto iterator = m->getIterator();

@@ -8,7 +8,7 @@ namespace obotcha {
 class _YamlValue;
 class _YamlArray;
 
-DECLARE_SIMPLE_CLASS(YamlReader) {
+DECLARE_CLASS(YamlReader) {
 
 public:
 

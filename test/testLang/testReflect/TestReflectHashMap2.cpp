@@ -15,34 +15,34 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MapValue1) {
+DECLARE_CLASS(MapValue1) {
 public:
   int data1;
   int data2;
   DECLARE_REFLECT_FIELD(MapValue1,data1,data2)
 };
 
-DECLARE_SIMPLE_CLASS(TestMapData1) {
+DECLARE_CLASS(TestMapData1) {
 public:
   HashMap<String,MapValue1> mmaps;
   DECLARE_REFLECT_FIELD(TestMapData1,mmaps)
 };
 
 //------
-DECLARE_SIMPLE_CLASS(MapMember) {
+DECLARE_CLASS(MapMember) {
 public:
   int data1;
   int data2;
   DECLARE_REFLECT_FIELD(MapMember,data1,data2)
 };
 
-DECLARE_SIMPLE_CLASS(MapValue2) {
+DECLARE_CLASS(MapValue2) {
 public:
   HashMap<String,MapMember> maps;
   DECLARE_REFLECT_FIELD(MapValue2,maps)
 };
 
-DECLARE_SIMPLE_CLASS(TestMapData2) {
+DECLARE_CLASS(TestMapData2) {
 public:
   HashMap<String,MapValue2> maps;
   DECLARE_REFLECT_FIELD(TestMapData2,maps)

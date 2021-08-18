@@ -9,12 +9,12 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(HashMapData) {
+DECLARE_CLASS(HashMapData) {
 public:
   int i;
 };
 
-DECLARE_SIMPLE_CLASS(HashMapData2) IMPLEMENTS(HashMapData) {
+DECLARE_CLASS(HashMapData2) IMPLEMENTS(HashMapData) {
 public:
   int j;
 };

@@ -23,7 +23,7 @@ namespace obotcha {
 
 class _HttpServer;
 
-DECLARE_SIMPLE_CLASS(HttpLinker){
+DECLARE_CLASS(HttpLinker){
 public:
     friend class _HttpServer;
 

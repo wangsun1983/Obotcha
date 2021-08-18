@@ -13,7 +13,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollFileObserverListener) {
+DECLARE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollFileObserverListener) {
 public:
     static sp<_AsyncOutputChannelPool> getInstance();
     void addChannel(AsyncOutputChannel);

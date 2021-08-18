@@ -8,13 +8,13 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(TextMember) {
+DECLARE_CLASS(TextMember) {
 public:
     int value;
     DECLARE_REFLECT_FIELD(TextMember,value)    
 };
 
-DECLARE_SIMPLE_CLASS(TextData) {
+DECLARE_CLASS(TextData) {
 public:
     String name;
     String member;

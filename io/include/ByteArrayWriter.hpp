@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ByteArrayWriter) {
+DECLARE_CLASS(ByteArrayWriter) {
 
 public:
     _ByteArrayWriter(int mode = LittleEndian);

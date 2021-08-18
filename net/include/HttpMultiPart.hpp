@@ -16,7 +16,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpMultiPartFile) {
+DECLARE_CLASS(HttpMultiPartFile) {
 
 public:
     _HttpMultiPartFile(File);
@@ -28,7 +28,7 @@ private:
     HttpFile mFile;
 };
 
-DECLARE_SIMPLE_CLASS(HttpMultiPart) {
+DECLARE_CLASS(HttpMultiPart) {
 public:
     _HttpMultiPart();
     ArrayList<HttpMultiPartFile> files;

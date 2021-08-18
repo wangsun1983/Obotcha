@@ -12,14 +12,14 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(JoinTestThread) IMPLEMENTS(Thread) {
+DECLARE_CLASS(JoinTestThread) IMPLEMENTS(Thread) {
 public:
   void run() {
     sleep(10);
   }
 };
 
-DECLARE_SIMPLE_CLASS(JoinTestThread2) IMPLEMENTS(Thread) {
+DECLARE_CLASS(JoinTestThread2) IMPLEMENTS(Thread) {
 public:
   _JoinTestThread2(JoinTestThread t) {
     mThread = t;
@@ -42,7 +42,7 @@ private:
   bool mIsWake;
 };
 
-DECLARE_SIMPLE_CLASS(JoinTestThread3) IMPLEMENTS(Thread) {
+DECLARE_CLASS(JoinTestThread3) IMPLEMENTS(Thread) {
 public:
   _JoinTestThread3(JoinTestThread t) {
     mThread = t;
@@ -63,7 +63,7 @@ private:
   bool mIsWake;
 };
 
-DECLARE_SIMPLE_CLASS(JoinTestThread4) IMPLEMENTS(Thread) {
+DECLARE_CLASS(JoinTestThread4) IMPLEMENTS(Thread) {
 public:
   _JoinTestThread4() {
     mIsWake = false;
@@ -81,7 +81,7 @@ private:
   bool mIsWake;
 };
 
-DECLARE_SIMPLE_CLASS(JoinTestThread5) IMPLEMENTS(Thread) {
+DECLARE_CLASS(JoinTestThread5) IMPLEMENTS(Thread) {
 public:
   _JoinTestThread5() {
     mIsWake = false;

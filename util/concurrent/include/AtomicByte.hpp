@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(AtomicByte) {
+DECLARE_CLASS(AtomicByte) {
 
 public:
     _AtomicByte(uint8_t val);

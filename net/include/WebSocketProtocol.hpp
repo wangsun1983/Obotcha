@@ -19,7 +19,7 @@
 namespace obotcha {
 
 
-DECLARE_SIMPLE_CLASS(WebSocketProtocol) {
+DECLARE_CLASS(WebSocketProtocol) {
 public:
     /** Magic value which must be appended to the key in a response header. */
     static const String ACCEPT_MAGIC;

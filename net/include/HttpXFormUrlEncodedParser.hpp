@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpXFormUrlEncodedParser) {
+DECLARE_CLASS(HttpXFormUrlEncodedParser) {
 public:
     static ArrayList<KeyValuePair<String,String>> parse(String);
 };

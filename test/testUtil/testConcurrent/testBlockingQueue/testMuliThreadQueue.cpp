@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MultiThreadData) {
+DECLARE_CLASS(MultiThreadData) {
 public:
   _MultiThreadData(int value) {
     i = value;

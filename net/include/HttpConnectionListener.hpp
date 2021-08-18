@@ -8,7 +8,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpConnectionListener) {
+DECLARE_CLASS(HttpConnectionListener) {
 public:
     virtual void onResponse(HttpResponse response) = 0;
     virtual void onDisconnect() = 0;

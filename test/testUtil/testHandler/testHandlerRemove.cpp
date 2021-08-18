@@ -7,7 +7,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyTestHandler2) EXTENDS(Handler) {
+DECLARE_CLASS(MyTestHandler2) EXTENDS(Handler) {
 public:
   _MyTestHandler2() {
   }

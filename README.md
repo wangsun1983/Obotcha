@@ -55,7 +55,7 @@ Obotcha是基于C++14开发的一个工具库，该工具库目前提供了如�
 ### Obotcha的设计
 - Obotcha使用了自己的sp智能指针来做内存管理。为了达到这个目的，所有的类申明都需要使用DELCARE_SIMPLE_CLASS和DECLARE_CLASS。前者用于非模板类申明，后者用于模板类申明。示例如下：
     ```
-    DECLARE_SIMPLE_CLASS(Data) {
+    DECLARE_CLASS(Data) {
     public:
         int i;
     };

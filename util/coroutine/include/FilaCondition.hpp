@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(FilaCondition) {
+DECLARE_CLASS(FilaCondition) {
 
 public:
     _FilaCondition();

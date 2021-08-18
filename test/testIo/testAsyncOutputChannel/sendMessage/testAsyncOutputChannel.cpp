@@ -3,7 +3,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyListener) IMPLEMENTS(SocketListener) {
+DECLARE_CLASS(MyListener) IMPLEMENTS(SocketListener) {
 public:
     void onSocketMessage(int,Socket,ByteArray) {
 

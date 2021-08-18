@@ -12,7 +12,7 @@
 using namespace obotcha;
 
 //server
-DECLARE_SIMPLE_CLASS(ServerListener) IMPLEMENTS(SocketListener) {
+DECLARE_CLASS(ServerListener) IMPLEMENTS(SocketListener) {
 public:
     _ServerListener() {
         clientfd = 0;
@@ -93,7 +93,7 @@ private:
     String acceptStr;
 };
 
-DECLARE_SIMPLE_CLASS(DelayReleaser) IMPLEMENTS(Thread) {
+DECLARE_CLASS(DelayReleaser) IMPLEMENTS(Thread) {
 
 public:
     _DelayReleaser(AsyncLocalSocketClient c) {
@@ -110,7 +110,7 @@ private:
 };
 
 
-DECLARE_SIMPLE_CLASS(DelaySender) IMPLEMENTS(Thread) {
+DECLARE_CLASS(DelaySender) IMPLEMENTS(Thread) {
 public:
     _DelaySender() {
         mFd = 0;
@@ -152,7 +152,7 @@ private:
 };
 
 //client listener
-DECLARE_SIMPLE_CLASS(ClientListener) IMPLEMENTS(SocketListener) {
+DECLARE_CLASS(ClientListener) IMPLEMENTS(SocketListener) {
 
 public:
   _ClientListener() {

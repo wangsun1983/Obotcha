@@ -14,7 +14,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(ArrayListMember) {
+DECLARE_CLASS(ArrayListMember) {
 public:
     int intMember;
     bool boolMember;
@@ -23,7 +23,7 @@ public:
     DECLARE_REFLECT_FIELD(ArrayListMember,intMember,boolMember,uint64Member,stringMember)
 };
 
-DECLARE_SIMPLE_CLASS(ReflectArrayListData) {
+DECLARE_CLASS(ReflectArrayListData) {
 public:
   ArrayList<ArrayListMember> lists;
   DECLARE_REFLECT_FIELD(ReflectArrayListData,lists)

@@ -13,83 +13,83 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(ResultData1) {
+DECLARE_CLASS(ResultData1) {
 public:
   int value1;
   int value2;
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunInt) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunInt) IMPLEMENTS(Runnable){
 public:
   void run() {
     this->setResult(1);
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunByte) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunByte) IMPLEMENTS(Runnable){
 public:
   void run() {
     this->setResult(1);
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunDouble) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunDouble) IMPLEMENTS(Runnable){
 public:
   void run() {
     this->setResult(1.1);
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunBool) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunBool) IMPLEMENTS(Runnable){
 public:
   void run() {
     this->setResult(false);
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunFloat) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunFloat) IMPLEMENTS(Runnable){
 public:
   void run() {
     this->setResult(2.2);
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunLong) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunLong) IMPLEMENTS(Runnable){
 public:
   void run() {
     this->setResult(4);
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunUint16) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunUint16) IMPLEMENTS(Runnable){
 public:
   void run() {
     this->setResult(5);
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunUint32) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunUint32) IMPLEMENTS(Runnable){
 public:
   void run() {
     this->setResult(6);
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunUint64) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunUint64) IMPLEMENTS(Runnable){
 public:
   void run() {
     this->setResult(7);
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunString) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunString) IMPLEMENTS(Runnable){
 public:
   void run() {
     this->setResult(createString("hello"));
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunObject) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunObject) IMPLEMENTS(Runnable){
 public:
   void run() {
     ResultData1 r1 = createResultData1();

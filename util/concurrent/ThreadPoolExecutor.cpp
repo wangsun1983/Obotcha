@@ -35,7 +35,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
     }
 
     mMutex = createMutex();
-    mStatus = LocalStatus::Running;
+    mStatus = Running;
 }
 
 int _ThreadPoolExecutor::shutdown() {
@@ -68,7 +68,7 @@ int _ThreadPoolExecutor::shutdown() {
 
 bool _ThreadPoolExecutor::isShtuDown() {
     AutoLock l(mMutex);
-    return mStatus == LocalStatus::ShutDown;
+    return mStatus == ShutDown;
 }
 
 bool _ThreadPoolExecutor::isTerminated() {
@@ -87,7 +87,7 @@ bool _ThreadPoolExecutor::isTerminated() {
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     {
         AutoLock l(mMutex);
-        if(mStatus != LocalStatus::ShutDown){
+        if(mStatus != ShutDown){
             return -InvalidStatus;
         }
     }

@@ -8,12 +8,12 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(TestDataRef) {
+DECLARE_CLASS(TestDataRef) {
 public:
   int i;
 };
 
-DECLARE_SIMPLE_CLASS(TestDataRef2) IMPLEMENTS(TestDataRef) {
+DECLARE_CLASS(TestDataRef2) IMPLEMENTS(TestDataRef) {
 public:
   int j;
 };

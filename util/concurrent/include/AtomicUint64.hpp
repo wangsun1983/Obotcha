@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(AtomicUint64) {
+DECLARE_CLASS(AtomicUint64) {
 
 public:
     _AtomicUint64(uint64_t val);

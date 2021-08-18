@@ -14,7 +14,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(FileNodeReader) {
+DECLARE_CLASS(FileNodeReader) {
 public:
     _FileNodeReader(String path,int buffsize = 128);
 

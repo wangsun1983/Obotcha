@@ -12,7 +12,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(PrintStream) IMPLEMENTS(OutputStream) {
+DECLARE_CLASS(PrintStream) IMPLEMENTS(OutputStream) {
 
 public:
     _PrintStream(File file);

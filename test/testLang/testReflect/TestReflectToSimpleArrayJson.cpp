@@ -14,7 +14,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(IntArray) {
+DECLARE_CLASS(IntArray) {
 public:
   ArrayList<Integer> intlists;
   ArrayList<Long> longlists;

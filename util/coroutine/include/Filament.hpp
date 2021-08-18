@@ -12,7 +12,7 @@ namespace obotcha {
 
 class _FilaCroutine;
 
-DECLARE_SIMPLE_CLASS(Filament) {
+DECLARE_CLASS(Filament) {
 
 public:
     friend class _FilaCroutine;

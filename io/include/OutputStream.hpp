@@ -7,7 +7,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(OutputStream) {
+DECLARE_CLASS(OutputStream) {
 public:
     virtual long write(char c){return -1;}
     

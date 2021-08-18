@@ -13,7 +13,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(WebSocketHybi13Parser) IMPLEMENTS(WebSocketParser) {
+DECLARE_CLASS(WebSocketHybi13Parser) IMPLEMENTS(WebSocketParser) {
 public:
     _WebSocketHybi13Parser();
     

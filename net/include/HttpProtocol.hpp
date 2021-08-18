@@ -8,7 +8,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpProtocol) {
+DECLARE_CLASS(HttpProtocol) {
 public:
     enum ProtocolType {
         HttpRequest = 0,

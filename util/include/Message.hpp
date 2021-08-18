@@ -9,7 +9,7 @@ namespace obotcha {
 
 class _Handler;
 
-DECLARE_SIMPLE_CLASS(Message) {
+DECLARE_CLASS(Message) {
 
 public:
     friend class _Handler;

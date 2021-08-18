@@ -15,7 +15,7 @@ namespace obotcha {
 /**
  * There are many differences between Hybi 00 and Hybi 13
  */
-DECLARE_SIMPLE_CLASS(WebSocketHybi00Parser) IMPLEMENTS(WebSocketParser){
+DECLARE_CLASS(WebSocketHybi00Parser) IMPLEMENTS(WebSocketParser){
 public:    
     WebSocketHeader parseHeader();
 

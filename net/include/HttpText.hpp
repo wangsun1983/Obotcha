@@ -14,7 +14,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpText) {
+DECLARE_CLASS(HttpText) {
 
 public:
    //static const String LineEnd;

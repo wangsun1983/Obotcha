@@ -9,19 +9,19 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(InetHostAddress) {
+DECLARE_CLASS(InetHostAddress) {
 public:
     String interface;
     String ip;
 };
 
-DECLARE_SIMPLE_CLASS(InetHostMac) {
+DECLARE_CLASS(InetHostMac) {
 public:
     String interface;
     String mac;
 };
 
-DECLARE_SIMPLE_CLASS(Host) {
+DECLARE_CLASS(Host) {
 public:
     _Host();
     

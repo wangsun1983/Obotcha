@@ -13,7 +13,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpServerBuilder) {
+DECLARE_CLASS(HttpServerBuilder) {
 public:
     _HttpServerBuilder();
     

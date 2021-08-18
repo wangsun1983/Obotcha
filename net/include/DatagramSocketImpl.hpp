@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(DatagramSocketImpl) IMPLEMENTS(SocketImpl){
+DECLARE_CLASS(DatagramSocketImpl) IMPLEMENTS(SocketImpl){
 public:
     _DatagramSocketImpl(InetAddress address,SocketOption option);
     int connect();

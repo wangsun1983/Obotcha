@@ -9,7 +9,7 @@ using namespace obotcha;
 
 #define EMPTY_MESSAGE 1
 #define EMPTY_DELAYED_MESSAGE 2
-DECLARE_SIMPLE_CLASS(MyHandler) EXTENDS(Handler) {
+DECLARE_CLASS(MyHandler) EXTENDS(Handler) {
 public:
   _MyHandler() {
     count = 0;

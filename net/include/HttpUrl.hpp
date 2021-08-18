@@ -14,7 +14,7 @@ namespace obotcha {
 //<scheme>://<user>:<password>@<host>:<port>/<path>;<params>?<query>#<frag>
 class _HttpConnection;
 
-DECLARE_SIMPLE_CLASS(HttpUrl) {
+DECLARE_CLASS(HttpUrl) {
 public:
     _HttpUrl();
     enum SchemaType {

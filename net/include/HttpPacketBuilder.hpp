@@ -17,7 +17,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpPacketBuilder) {
+DECLARE_CLASS(HttpPacketBuilder) {
 
 public:
     _HttpPacketBuilder();

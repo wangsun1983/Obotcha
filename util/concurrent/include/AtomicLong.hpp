@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(AtomicLong) {
+DECLARE_CLASS(AtomicLong) {
 
 public:
     _AtomicLong(long val);

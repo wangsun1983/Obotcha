@@ -10,13 +10,13 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyInnerData) {
+DECLARE_CLASS(MyInnerData) {
 public:
     int innerData;
     //DECLARE_REFLECT_FIELD(MyInnerData,innerData)
 };
 
-DECLARE_SIMPLE_CLASS(MyReflectData) {
+DECLARE_CLASS(MyReflectData) {
 public:
     int data1;
     double data2;

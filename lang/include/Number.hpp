@@ -14,7 +14,7 @@ namespace obotcha {
 
 class _String;
 
-DECLARE_CLASS(Number,1) {
+DECLARE_TEMPLATE_CLASS(Number,1) {
 public:
     static T parseNumber(std::string v) {
         std::stringstream ss;

@@ -45,7 +45,7 @@ enum ErrorType {
     ErrorMax,
 }; 
 
-DECLARE_SIMPLE_CLASS(Error) {
+DECLARE_CLASS(Error) {
 public:
     String toString(int error);
 

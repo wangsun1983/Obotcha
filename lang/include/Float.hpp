@@ -7,7 +7,7 @@ namespace obotcha {
 
 class _String;
 
-DECLARE_SIMPLE_CLASS(Float) {
+DECLARE_CLASS(Float) {
 public:
     static const int __isReflected = 1;
 

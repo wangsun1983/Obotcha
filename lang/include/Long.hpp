@@ -10,7 +10,7 @@ namespace obotcha {
 
 class _String;
 
-DECLARE_SIMPLE_CLASS(Long) IMPLEMENTS(Number)<long>{
+DECLARE_CLASS(Long) IMPLEMENTS(Number)<long>{
 public:
     static const int __isReflected = 1;
 

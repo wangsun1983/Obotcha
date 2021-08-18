@@ -6,7 +6,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Md) {
+DECLARE_CLASS(Md) {
 
 public:
    enum MdType {

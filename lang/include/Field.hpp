@@ -15,7 +15,7 @@ namespace obotcha {
 template<typename T>
 class _FieldContent;
 
-DECLARE_SIMPLE_CLASS(Field) {
+DECLARE_CLASS(Field) {
 public:
     enum {
         FieldTypeInt = 0,
@@ -156,7 +156,7 @@ private:
     void __setFieldBoolValue(std::string name,bool){}
 };
 
-DECLARE_CLASS(FieldContent,1) IMPLEMENTS(Field)  {
+DECLARE_TEMPLATE_CLASS(FieldContent,1) IMPLEMENTS(Field)  {
 public:    
     std::function<void(T)> setfunc;
 
@@ -165,7 +165,7 @@ public:
     }
 };    
 
-DECLARE_SIMPLE_CLASS(FieldContentValue) {
+DECLARE_CLASS(FieldContentValue) {
 public:
     int intValue;
     double doubleValue;

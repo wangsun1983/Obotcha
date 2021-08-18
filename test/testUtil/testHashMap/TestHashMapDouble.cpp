@@ -8,7 +8,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(TT3) {
+DECLARE_CLASS(TT3) {
 public:
   double i;
 };

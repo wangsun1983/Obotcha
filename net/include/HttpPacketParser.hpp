@@ -20,7 +20,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpPacketParser) {
+DECLARE_CLASS(HttpPacketParser) {
 
 public:
     _HttpPacketParser();

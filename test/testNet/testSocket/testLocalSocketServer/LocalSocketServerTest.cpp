@@ -16,7 +16,7 @@ using namespace obotcha;
 String testLocalSocketServerSendResult();
 String testLocalSocketServerAcceptResult();
 
-DECLARE_SIMPLE_CLASS(ServerListener) IMPLEMENTS(SocketListener) {
+DECLARE_CLASS(ServerListener) IMPLEMENTS(SocketListener) {
 public:
     _ServerListener() {
         clientfd = 0;
@@ -87,7 +87,7 @@ private:
     String acceptStr;
 };
 
-DECLARE_SIMPLE_CLASS(TestSendClient) IMPLEMENTS(Thread) {
+DECLARE_CLASS(TestSendClient) IMPLEMENTS(Thread) {
 public:
     _TestSendClient() {
       mutex = createMutex();
@@ -116,7 +116,7 @@ private:
 };
 
 
-DECLARE_SIMPLE_CLASS(CloseThread) EXTENDS(Thread) {
+DECLARE_CLASS(CloseThread) EXTENDS(Thread) {
 public:
     _CloseThread(LocalSocketServer c) {
         server = c;

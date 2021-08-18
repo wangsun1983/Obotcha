@@ -16,7 +16,7 @@ enum {
     Sqlite3Connection
 };
 
-DECLARE_SIMPLE_CLASS(SqlConnection) {
+DECLARE_CLASS(SqlConnection) {
 
 public:
     static const String MySqlParamHost;

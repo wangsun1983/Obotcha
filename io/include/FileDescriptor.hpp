@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(FileDescriptor) {
+DECLARE_CLASS(FileDescriptor) {
 public:
     _FileDescriptor(int fd);
 

@@ -9,7 +9,7 @@
 namespace obotcha {
 
 
-DECLARE_SIMPLE_CLASS(System) {
+DECLARE_CLASS(System) {
 
 public:
     static long int currentTimeMillis();

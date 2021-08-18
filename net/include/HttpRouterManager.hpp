@@ -14,7 +14,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpRouterManager) {
+DECLARE_CLASS(HttpRouterManager) {
 public:
     static sp<_HttpRouterManager> getInstance();
     void addRouter(int method,HttpRouter);

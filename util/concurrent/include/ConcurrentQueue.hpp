@@ -12,7 +12,7 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(ConcurrentQueue,1) {
+DECLARE_TEMPLATE_CLASS(ConcurrentQueue,1) {
 public:
     inline _ConcurrentQueue() {
         mutex_t = createMutex("ConcurrentQueueMutex");

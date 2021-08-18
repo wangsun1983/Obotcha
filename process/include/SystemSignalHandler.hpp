@@ -13,12 +13,12 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(SystemSignalListener) {
+DECLARE_CLASS(SystemSignalListener) {
 public:
     virtual void onSignal(int) = 0;
 };
 
-DECLARE_SIMPLE_CLASS(SystemSignalHandler) {
+DECLARE_CLASS(SystemSignalHandler) {
 public:
     friend void _handle(int);
     static sp<_SystemSignalHandler> getInstance();

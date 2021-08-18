@@ -17,7 +17,7 @@ using namespace obotcha;
 
 AtomicInteger myloopvalue = createAtomicInteger(0);
 
-DECLARE_SIMPLE_CLASS(MyLoopSubmit) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyLoopSubmit) IMPLEMENTS(Runnable) {
 public:
 
     void run() {
@@ -32,7 +32,7 @@ public:
 Mutex myloopsubmitMutex = createMutex("MyMutex");
 ArrayList<long> currentTimeList = createArrayList<long>();
 
-DECLARE_SIMPLE_CLASS(MyLoopTimeSubmit) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyLoopTimeSubmit) IMPLEMENTS(Runnable) {
 public:
 
     void run() {

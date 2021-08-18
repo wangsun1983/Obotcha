@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(AtomicBoolean) {
+DECLARE_CLASS(AtomicBoolean) {
 
 public:
     _AtomicBoolean(bool val);

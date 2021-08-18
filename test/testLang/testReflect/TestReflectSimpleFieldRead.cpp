@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyData1) {
+DECLARE_CLASS(MyData1) {
 public:
     int intData;
     byte byteData;
@@ -30,7 +30,7 @@ public:
                           uint64Data,boolData)
 };
 
-DECLARE_SIMPLE_CLASS(MyData2) {
+DECLARE_CLASS(MyData2) {
 public:
     Integer intData;
     Byte byteData;

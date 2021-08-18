@@ -11,7 +11,7 @@ namespace obotcha {
 
 class _String;
 
-DECLARE_SIMPLE_CLASS(Integer) IMPLEMENTS(Number)<int>{
+DECLARE_CLASS(Integer) IMPLEMENTS(Number)<int>{
 public:
     static const int __isReflected = 1;
 

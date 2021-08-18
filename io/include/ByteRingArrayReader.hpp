@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ByteRingArrayReader) {
+DECLARE_CLASS(ByteRingArrayReader) {
 
 public:
     enum ByteRingArrayReadStatus {

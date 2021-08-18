@@ -13,13 +13,13 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(ResultData2) {
+DECLARE_CLASS(ResultData2) {
 public:
   int value1;
   int value2;
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunInt2) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunInt2) IMPLEMENTS(Runnable){
 public:
   void run() {
     sleep(1);
@@ -27,7 +27,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunByte2) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunByte2) IMPLEMENTS(Runnable){
 public:
   void run() {
     sleep(1);
@@ -35,7 +35,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunDouble2) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunDouble2) IMPLEMENTS(Runnable){
 public:
   void run() {
     sleep(1);
@@ -43,7 +43,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunBool2) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunBool2) IMPLEMENTS(Runnable){
 public:
   void run() {
     sleep(1);
@@ -51,7 +51,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunFloat2) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunFloat2) IMPLEMENTS(Runnable){
 public:
   void run() {
     sleep(1);
@@ -59,7 +59,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunLong2) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunLong2) IMPLEMENTS(Runnable){
 public:
   void run() {
     sleep(1);
@@ -67,7 +67,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunUint16_2) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunUint16_2) IMPLEMENTS(Runnable){
 public:
   void run() {
     sleep(1);
@@ -75,7 +75,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunUint32_2) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunUint32_2) IMPLEMENTS(Runnable){
 public:
   void run() {
     sleep(1);
@@ -83,7 +83,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunUint64_2) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunUint64_2) IMPLEMENTS(Runnable){
 public:
   void run() {
     sleep(1);
@@ -91,7 +91,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunString2) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunString2) IMPLEMENTS(Runnable){
 public:
   void run() {
     sleep(1);
@@ -99,7 +99,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(ThreadPoolResultRunObject2) IMPLEMENTS(Runnable){
+DECLARE_CLASS(ThreadPoolResultRunObject2) IMPLEMENTS(Runnable){
 public:
   void run() {
     ResultData2 r1 = createResultData2();

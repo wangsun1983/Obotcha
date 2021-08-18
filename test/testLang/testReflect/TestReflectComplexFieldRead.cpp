@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyMember) {
+DECLARE_CLASS(MyMember) {
 public:
   int intData;
   byte byteData;
@@ -30,7 +30,7 @@ public:
                         uint64Data,boolData)
 };
 
-DECLARE_SIMPLE_CLASS(MyComplexMember) {
+DECLARE_CLASS(MyComplexMember) {
 public:
   MyMember complexMember1;
   MyMember complexMember2;
@@ -38,7 +38,7 @@ public:
   DECLARE_REFLECT_FIELD(MyComplexMember,complexMember1,complexMember2)
 };
 
-DECLARE_SIMPLE_CLASS(MyData5) {
+DECLARE_CLASS(MyData5) {
 public:
     MyComplexMember data1;
     DECLARE_REFLECT_FIELD(MyData5,data1)

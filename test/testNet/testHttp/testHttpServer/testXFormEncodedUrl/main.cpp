@@ -19,7 +19,7 @@ AtomicInteger connectCount = createAtomicInteger(0);
 AtomicInteger disConnectCount = createAtomicInteger(0);
 AtomicInteger messageCount = createAtomicInteger(0);
 
-DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
+DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
 
 void onHttpMessage(int event,sp<_HttpClientInfo> client,sp<_HttpResponseWriter> w,HttpPacket msg){

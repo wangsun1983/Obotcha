@@ -15,7 +15,7 @@ using namespace obotcha;
 
 int interruptVal = 1;
 
-DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
         //printf("i am running \n");

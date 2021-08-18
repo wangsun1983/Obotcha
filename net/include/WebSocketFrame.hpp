@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(WebSocketHeader) {
+DECLARE_CLASS(WebSocketHeader) {
 public:
     _WebSocketHeader();
 
@@ -59,7 +59,7 @@ private:
     int mHeadSize;
 };
 
-DECLARE_SIMPLE_CLASS(WebSocketFrame) {
+DECLARE_CLASS(WebSocketFrame) {
 public:
     _WebSocketFrame(WebSocketHeader,ByteArray);
     _WebSocketFrame();

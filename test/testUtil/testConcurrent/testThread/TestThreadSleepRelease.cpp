@@ -17,7 +17,7 @@ using namespace obotcha;
 int myLongSleepExceptionTest1 = 0;
 int myLongSleepReleaseTest1 = 0;
 
-DECLARE_SIMPLE_CLASS(MyLongSleepTest1Thread) IMPLEMENTS(Thread) {
+DECLARE_CLASS(MyLongSleepTest1Thread) IMPLEMENTS(Thread) {
 public:
 
   void run() {

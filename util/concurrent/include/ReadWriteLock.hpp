@@ -13,7 +13,7 @@ namespace obotcha {
 
 class _ReadWriteLock;
 
-DECLARE_SIMPLE_CLASS(ReadLock) IMPLEMENTS(Lock){
+DECLARE_CLASS(ReadLock) IMPLEMENTS(Lock){
 public:
     friend class _ReadWriteLock;
 
@@ -35,7 +35,7 @@ private:
     String mName;
 };
 
-DECLARE_SIMPLE_CLASS(WriteLock) IMPLEMENTS(Lock){
+DECLARE_CLASS(WriteLock) IMPLEMENTS(Lock){
 public:
     friend class _ReadWriteLock;
 
@@ -57,7 +57,7 @@ private:
     String mName;
 };
 
-DECLARE_SIMPLE_CLASS(ReadWriteLock) {
+DECLARE_CLASS(ReadWriteLock) {
 
 public:
     friend class _WriteLock;

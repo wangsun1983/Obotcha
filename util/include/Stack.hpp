@@ -12,7 +12,7 @@ namespace obotcha {
 template<typename T>
 class _StackIterator;
 
-DECLARE_CLASS(Stack,1) {
+DECLARE_TEMPLATE_CLASS(Stack,1) {
 
 public:
     friend class _StackIterator<T>;
@@ -51,7 +51,7 @@ private:
     }
 };
 
-DECLARE_CLASS(StackIterator,1) {
+DECLARE_TEMPLATE_CLASS(StackIterator,1) {
 public:
     _StackIterator(_Stack<T> *list) {
         mStack.set_pointer(list);

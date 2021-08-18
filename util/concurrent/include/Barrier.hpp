@@ -8,7 +8,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Barrier) {
+DECLARE_CLASS(Barrier) {
 public:
     _Barrier(int);
 

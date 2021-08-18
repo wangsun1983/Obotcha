@@ -14,7 +14,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyReleaseTest) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyReleaseTest) IMPLEMENTS(Runnable) {
 public:
     _MyReleaseTest() {
         //printf("MyReleaseTest is %lx \n",this);

@@ -14,7 +14,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpResourceManager) {
+DECLARE_CLASS(HttpResourceManager) {
 public:
     static sp<_HttpResourceManager> getInstance();
     void setResourceDir(String dir);

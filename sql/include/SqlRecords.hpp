@@ -11,7 +11,7 @@ namespace obotcha {
 class _SqlRecords;
 class _SqlRecordsIterator;
 
-DECLARE_SIMPLE_CLASS(SqlRecordsIterator) {
+DECLARE_CLASS(SqlRecordsIterator) {
 public:
     friend class _SqlRecords;
 
@@ -26,7 +26,7 @@ private:
     int index;
 };
 
-DECLARE_SIMPLE_CLASS(SqlRecords) {
+DECLARE_CLASS(SqlRecords) {
 public:
     friend class _SqlRecordsIterator;
 

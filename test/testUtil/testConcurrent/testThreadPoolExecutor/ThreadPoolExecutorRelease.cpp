@@ -17,7 +17,7 @@ using namespace obotcha;
 Mutex numMutex = createMutex();
 int releaseCount;
 
-DECLARE_SIMPLE_CLASS(ReleaseunTest1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(ReleaseunTest1) IMPLEMENTS(Runnable) {
 public:
     _ReleaseunTest1() {
         //printf("create this is %lx \n",this);

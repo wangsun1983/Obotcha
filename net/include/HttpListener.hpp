@@ -14,7 +14,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpListener) {
+DECLARE_CLASS(HttpListener) {
 public:
     enum HttpEvent{    
         Connect = st(SocketListener)::Connect,

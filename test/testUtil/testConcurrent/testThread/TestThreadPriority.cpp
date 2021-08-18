@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyPriorityThread) IMPLEMENTS(Thread) {
+DECLARE_CLASS(MyPriorityThread) IMPLEMENTS(Thread) {
 public:
     void run() {
         setPriority(st(Thread)::ThreadPriority::High);

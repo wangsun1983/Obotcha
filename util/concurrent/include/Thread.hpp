@@ -20,7 +20,7 @@ namespace obotcha {
 
 class _Thread;
 
-DECLARE_SIMPLE_CLASS(Thread) {
+DECLARE_CLASS(Thread) {
 
 public:
     friend class _Condition;

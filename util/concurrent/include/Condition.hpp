@@ -10,7 +10,7 @@ namespace obotcha {
 
 class _Mutex;
 
-DECLARE_SIMPLE_CLASS(Condition) {
+DECLARE_CLASS(Condition) {
 
 public:
     _Condition();

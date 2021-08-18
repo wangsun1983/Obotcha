@@ -10,7 +10,7 @@
 namespace obotcha {
 
 
-DECLARE_SIMPLE_CLASS(HttpV2HeaderField) {
+DECLARE_CLASS(HttpV2HeaderField) {
 
 public:
     _HttpV2HeaderField(String,String);

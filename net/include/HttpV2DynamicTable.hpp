@@ -12,7 +12,7 @@
 namespace obotcha {
 
 
-DECLARE_SIMPLE_CLASS(HttpV2DynamicTable) {
+DECLARE_CLASS(HttpV2DynamicTable) {
 
 public:
     _HttpV2DynamicTable(int initialCapacity);

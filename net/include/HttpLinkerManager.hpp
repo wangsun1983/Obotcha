@@ -21,7 +21,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpLinkerManager) {
+DECLARE_CLASS(HttpLinkerManager) {
 public:
     static sp<_HttpLinkerManager> getInstance();
 

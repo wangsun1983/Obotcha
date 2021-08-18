@@ -18,7 +18,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpOption) IMPLEMENTS(SocketOption){
+DECLARE_CLASS(HttpOption) IMPLEMENTS(SocketOption){
 public:
     _HttpOption();
     _HttpOption* setCertificate(String);

@@ -12,7 +12,7 @@ namespace obotcha {
 class _HuffmanDecoder;
 class _Node;
 
-DECLARE_SIMPLE_CLASS(Node) {
+DECLARE_CLASS(Node) {
 
 friend class _HuffmanDecoder;
 public:
@@ -26,7 +26,7 @@ private:
    List<sp<_Node>> children; // internal nodes have children
 };
 
-DECLARE_SIMPLE_CLASS(HuffmanDecoder) {
+DECLARE_CLASS(HuffmanDecoder) {
 
 public:
     _HuffmanDecoder(List<int> codes, List<byte> lengths);

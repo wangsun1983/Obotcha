@@ -13,7 +13,7 @@
 using namespace obotcha;
 
 
-DECLARE_SIMPLE_CLASS(TestScheduleCancelDelayRun1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(TestScheduleCancelDelayRun1) IMPLEMENTS(Runnable) {
 public:
     _TestScheduleCancelDelayRun1() {
         interrupt = 0;
@@ -46,7 +46,7 @@ private:
     int interrupt; 
 };
 
-DECLARE_SIMPLE_CLASS(TestScheduleCancelDelayRun2) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(TestScheduleCancelDelayRun2) IMPLEMENTS(Runnable) {
 public:
     _TestScheduleCancelDelayRun2() {
         interrupt = 0;

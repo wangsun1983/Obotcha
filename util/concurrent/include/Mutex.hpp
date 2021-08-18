@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Mutex) IMPLEMENTS(Lock) {
+DECLARE_CLASS(Mutex) IMPLEMENTS(Lock) {
 public:
     friend class _Condition;
     

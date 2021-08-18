@@ -19,7 +19,7 @@ namespace obotcha {
 class _WaitingTask;
 class _ThreadScheduledPoolExecutor;
 
-DECLARE_SIMPLE_CLASS(WaitingTask) IMPLEMENTS(ExecutorTask){
+DECLARE_CLASS(WaitingTask) IMPLEMENTS(ExecutorTask){
 public:
     friend class _ThreadScheduledPoolExecutor;
 
@@ -30,7 +30,7 @@ private:
     sp<_WaitingTask> next;
 };
 
-DECLARE_SIMPLE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(Thread) {
+DECLARE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(Thread) {
 
 public:
     _ThreadScheduledPoolExecutor();

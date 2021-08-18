@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(ConcurrentHashMap,2) {
+DECLARE_TEMPLATE_CLASS(ConcurrentHashMap,2) {
 public:
     _ConcurrentHashMap() {
         mutex = createMutex("ConcurrentHashMap");

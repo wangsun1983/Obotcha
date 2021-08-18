@@ -23,7 +23,7 @@ namespace obotcha {
 class _JsonArray;
 class _JsonValue;
 
-DECLARE_SIMPLE_CLASS(JsonValueIterator) {
+DECLARE_CLASS(JsonValueIterator) {
 public:
     _JsonValueIterator(sp<_JsonValue> value);
 
@@ -68,7 +68,7 @@ private:
 };
 
 
-DECLARE_SIMPLE_CLASS(JsonValue) {
+DECLARE_CLASS(JsonValue) {
 
 public:
     friend class _JsonArray;

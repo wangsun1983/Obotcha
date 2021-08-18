@@ -6,7 +6,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(TimeZone) {
+DECLARE_CLASS(TimeZone) {
 
 public:
     static int getZone();

@@ -7,7 +7,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpResponseWriter) {
+DECLARE_CLASS(HttpResponseWriter) {
 public:
     _HttpResponseWriter(OutputStream);
     

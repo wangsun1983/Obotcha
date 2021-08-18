@@ -17,7 +17,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(StringReader) {
+DECLARE_CLASS(StringReader) {
 public:
     _StringReader(FileInputStream);
     

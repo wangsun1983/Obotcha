@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Base64) {
+DECLARE_CLASS(Base64) {
 
 public:
 

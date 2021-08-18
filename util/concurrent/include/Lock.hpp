@@ -6,7 +6,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Lock) {
+DECLARE_CLASS(Lock) {
 public:
     enum Type{
         Recursive = 0,

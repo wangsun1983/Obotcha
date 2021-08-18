@@ -13,7 +13,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyReflectData) {
+DECLARE_CLASS(MyReflectData) {
 public:
     int a;
     double d;

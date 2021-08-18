@@ -8,7 +8,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpV2HpackUtil) {
+DECLARE_CLASS(HttpV2HpackUtil) {
 
 public:
     static bool equals(ByteArray s1, ByteArray s2);

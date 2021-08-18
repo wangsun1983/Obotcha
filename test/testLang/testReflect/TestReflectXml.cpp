@@ -14,14 +14,14 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(HashMapXmlValue) {
+DECLARE_CLASS(HashMapXmlValue) {
 public:
   int data1;
   int data2;
   DECLARE_REFLECT_FIELD(HashMapXmlValue,data1,data2)
 };
 
-DECLARE_SIMPLE_CLASS(XmlReflectData) {
+DECLARE_CLASS(XmlReflectData) {
 public:
   HashMap<String,HashMapXmlValue> map;
   DECLARE_REFLECT_FIELD(XmlReflectData,map)

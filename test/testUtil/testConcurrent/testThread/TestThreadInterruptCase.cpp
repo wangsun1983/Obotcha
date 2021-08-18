@@ -21,7 +21,7 @@ Mutex myTest1Mutex;
 int myTest1 = 0;
 int myTest1Interrupt = 0;
 
-DECLARE_SIMPLE_CLASS(MyTest1Thread) IMPLEMENTS(Thread) {
+DECLARE_CLASS(MyTest1Thread) IMPLEMENTS(Thread) {
 public:
     void run() {
         try {

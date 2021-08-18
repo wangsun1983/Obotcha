@@ -8,7 +8,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(TaskResult) {
+DECLARE_CLASS(TaskResult) {
 
 public:
     template<typename T>

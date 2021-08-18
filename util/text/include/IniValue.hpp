@@ -12,7 +12,7 @@ namespace obotcha {
 
 class _IniReader;
 
-DECLARE_SIMPLE_CLASS(IniValue) {
+DECLARE_CLASS(IniValue) {
 
 public:
 

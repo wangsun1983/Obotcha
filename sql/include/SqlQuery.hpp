@@ -7,7 +7,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(SqlQuery) {
+DECLARE_CLASS(SqlQuery) {
 public:
     _SqlQuery(String);
     _SqlQuery(const char *);

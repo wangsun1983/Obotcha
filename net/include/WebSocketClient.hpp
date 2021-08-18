@@ -24,7 +24,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(WebSocketClient) IMPLEMENTS(SocketListener){
+DECLARE_CLASS(WebSocketClient) IMPLEMENTS(SocketListener){
 public:
     _WebSocketClient(int version = 13);
     

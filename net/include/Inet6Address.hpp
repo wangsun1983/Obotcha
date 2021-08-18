@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Inet6Address) IMPLEMENTS(InetAddress) {
+DECLARE_CLASS(Inet6Address) IMPLEMENTS(InetAddress) {
 public:
     _Inet6Address(String,int);
     _Inet6Address(int);

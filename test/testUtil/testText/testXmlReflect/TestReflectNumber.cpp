@@ -15,7 +15,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(NumberReflectData) {
+DECLARE_CLASS(NumberReflectData) {
 public:
   Integer intData;
   Byte byteData;

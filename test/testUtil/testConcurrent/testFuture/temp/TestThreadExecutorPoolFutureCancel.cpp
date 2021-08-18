@@ -13,7 +13,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(TestCancelTask) IMPLEMENTS(Runnable){
+DECLARE_CLASS(TestCancelTask) IMPLEMENTS(Runnable){
 public:
   static int count;
   void run() {

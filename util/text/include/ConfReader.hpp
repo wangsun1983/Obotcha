@@ -17,7 +17,7 @@ namespace obotcha {
 
 class _ConfValue;
 
-DECLARE_SIMPLE_CLASS(ConfReader) {
+DECLARE_CLASS(ConfReader) {
 
 public:
     _ConfReader(const char* path);

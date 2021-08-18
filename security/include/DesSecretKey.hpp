@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(DesSecretKey) IMPLEMENTS(SecretKey){
+DECLARE_CLASS(DesSecretKey) IMPLEMENTS(SecretKey){
 
 public:
     void * get();

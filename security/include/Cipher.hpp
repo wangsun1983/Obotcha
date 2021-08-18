@@ -11,7 +11,7 @@ namespace obotcha {
 
 class _CipherCreator;
 
-DECLARE_SIMPLE_CLASS(Cipher) {
+DECLARE_CLASS(Cipher) {
 public:
     friend class _CipherCreator;
     

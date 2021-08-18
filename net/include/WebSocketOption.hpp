@@ -18,7 +18,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(WebSocketOption) IMPLEMENTS(SocketOption){
+DECLARE_CLASS(WebSocketOption) IMPLEMENTS(SocketOption){
 
 };
 

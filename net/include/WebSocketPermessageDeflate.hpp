@@ -23,7 +23,7 @@ enum WebSocketMode {
     WebSocketModeSmallest
 };
 
-DECLARE_SIMPLE_CLASS(WebSocketPermessageDeflate) {
+DECLARE_CLASS(WebSocketPermessageDeflate) {
 
 public:
     _WebSocketPermessageDeflate();

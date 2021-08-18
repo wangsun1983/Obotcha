@@ -11,7 +11,7 @@ namespace obotcha {
 class _YamlReader;
 class _YamlValue;
 
-DECLARE_SIMPLE_CLASS(YamlArray) {
+DECLARE_CLASS(YamlArray) {
 
 public:
     friend class _YamlReader;

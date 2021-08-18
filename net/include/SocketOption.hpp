@@ -20,7 +20,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(SocketOption) {
+DECLARE_CLASS(SocketOption) {
 public:
     friend class _SocketImpl;
     friend class _HttpOption;

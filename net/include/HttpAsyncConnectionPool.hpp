@@ -17,7 +17,7 @@ namespace obotcha {
 class _HttpAsyncConnection;
 class _HttpConnectionListener;
 
-DECLARE_SIMPLE_CLASS(HttpAsyncConnectionPool) IMPLEMENTS(SocketListener){
+DECLARE_CLASS(HttpAsyncConnectionPool) IMPLEMENTS(SocketListener){
 
 public:
     friend class _HttpAsyncConnection;

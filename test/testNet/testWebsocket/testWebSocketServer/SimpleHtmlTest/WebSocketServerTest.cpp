@@ -16,7 +16,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyWsListener) IMPLEMENTS(WebSocketListener) {
+DECLARE_CLASS(MyWsListener) IMPLEMENTS(WebSocketListener) {
 public:
     _MyWsListener() {
         mMutex = createMutex();

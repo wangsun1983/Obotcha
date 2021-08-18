@@ -219,14 +219,14 @@ using YY = sp<_##YY<UU,VV>>; \
 #define TEPMLATE_DECLARE_2 template<typename T,typename U>
 
 
-#define DECLARE_CLASS(Y,U) \
+#define DECLARE_TEMPLATE_CLASS(Y,U) \
 CLASS_PRE_DEF_##U(Y); \
 TYPE_DEF_##U(Y); \
 MAKE_FUNCTION_##U(Y) \
 TEPMLATE_DECLARE_##U \
 class _##Y: virtual public _Object\
 
-#define DECLARE_SIMPLE_CLASS(Y) DECLARE_CLASS(Y,0)
+#define DECLARE_CLASS(Y) DECLARE_TEMPLATE_CLASS(Y,0)
 
 
 //-------------------------- Macro for Static Class Declaration ----------------------------------//

@@ -27,7 +27,7 @@ namespace obotcha {
 
 class _HttpUrl;
 
-DECLARE_SIMPLE_CLASS(HttpConnection) {
+DECLARE_CLASS(HttpConnection) {
 
 public:
     _HttpConnection(sp<_HttpUrl> url,HttpOption option = nullptr);

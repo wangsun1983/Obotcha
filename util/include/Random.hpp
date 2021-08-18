@@ -14,7 +14,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Random) {
+DECLARE_CLASS(Random) {
 
 public:
     _Random();

@@ -16,7 +16,7 @@ namespace obotcha {
 /**
  * The primary difference between 08 and 13 is a different origin header name
  */
-DECLARE_SIMPLE_CLASS(WebSocketHybi08Parser) IMPLEMENTS(WebSocketHybi13Parser){
+DECLARE_CLASS(WebSocketHybi08Parser) IMPLEMENTS(WebSocketHybi13Parser){
 public:
     String getOrigin(HttpHeader h);
     

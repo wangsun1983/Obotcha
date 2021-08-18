@@ -11,7 +11,7 @@ namespace obotcha {
 
 class _Socket;
 
-DECLARE_SIMPLE_CLASS(SocketInputStream) IMPLEMENTS(InputStream) {
+DECLARE_CLASS(SocketInputStream) IMPLEMENTS(InputStream) {
 public:
 
     _SocketInputStream(sp<_Socket>);

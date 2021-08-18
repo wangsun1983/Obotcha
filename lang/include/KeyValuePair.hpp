@@ -6,7 +6,7 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(KeyValuePair,2) {
+DECLARE_TEMPLATE_CLASS(KeyValuePair,2) {
 
 public:
    _KeyValuePair(T key,U value) {

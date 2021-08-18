@@ -7,7 +7,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(HashMapOperatorData) {
+DECLARE_CLASS(HashMapOperatorData) {
 public:
   int i;
   int j;

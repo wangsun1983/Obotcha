@@ -4,7 +4,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyListener) IMPLEMENTS(SocketListener) {
+DECLARE_CLASS(MyListener) IMPLEMENTS(SocketListener) {
 
 public:
   void onSocketMessage(int event,Socket s,ByteArray data) {

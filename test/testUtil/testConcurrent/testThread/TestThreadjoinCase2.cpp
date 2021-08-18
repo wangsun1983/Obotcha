@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(JoinRunCase2) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(JoinRunCase2) IMPLEMENTS(Runnable) {
 public:
   _JoinRunCase2(int v) {
     waitInterval = v;

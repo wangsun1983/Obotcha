@@ -22,7 +22,7 @@ namespace obotcha {
 
 class _FileWatcher;
 
-DECLARE_SIMPLE_CLASS(FileObserver) {
+DECLARE_CLASS(FileObserver) {
 public:
     friend class _FileWatcher;
     virtual void onFileUpdate(String filepath,int op) = 0;
@@ -31,7 +31,7 @@ private:
     std::vector<int> ids;
 };
 
-DECLARE_SIMPLE_CLASS(FileWatcher) IMPLEMENTS(Thread) {
+DECLARE_CLASS(FileWatcher) IMPLEMENTS(Thread) {
 public:
     enum FileWatchType {
         Access = IN_ACCESS,                /* File was accessed.  */

@@ -13,7 +13,7 @@ using namespace obotcha;
 AtomicInteger loopValue = createAtomicInteger(0);
 Barrier barrier_257 = createBarrier(256 + 1);
 
-DECLARE_SIMPLE_CLASS(LoopSubmitRun) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(LoopSubmitRun) IMPLEMENTS(Runnable) {
 public:
     void run() {
       barrier_257->await();

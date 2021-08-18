@@ -26,7 +26,7 @@ class _LinkedListIterator;
 template<typename T>
 class _LinkedList;
 
-DECLARE_CLASS(LinkedListData,1) {
+DECLARE_TEMPLATE_CLASS(LinkedListData,1) {
 public:
     friend class _LinkedList<T>;
     friend class _LinkedListIterator<T>;
@@ -46,7 +46,7 @@ private:
 };
 
 //----------------- LinkedList ---------------------
-DECLARE_CLASS(LinkedList,1) {
+DECLARE_TEMPLATE_CLASS(LinkedList,1) {
 public:
     friend class _LinkedListIterator<T>;
 
@@ -193,7 +193,7 @@ private:
 };
 
 //----------------- ArrayListIterator ---------------------
-DECLARE_CLASS(LinkedListIterator,1) {
+DECLARE_TEMPLATE_CLASS(LinkedListIterator,1) {
 public:
     _LinkedListIterator(_LinkedList<T> *list) {
         mList.set_pointer(list);

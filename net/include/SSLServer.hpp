@@ -33,7 +33,7 @@ extern "C" {
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(SSLThread) IMPLEMENTS(Thread) {
+DECLARE_CLASS(SSLThread) IMPLEMENTS(Thread) {
 public:
     _SSLThread(String ip,int port,SocketListener l,String certificate,String key);
 
@@ -64,7 +64,7 @@ private:
 
 }; 
 
-DECLARE_SIMPLE_CLASS(SSLServer) {
+DECLARE_CLASS(SSLServer) {
 
 public:
     _SSLServer(int port,SocketListener l,String certificate,String key);

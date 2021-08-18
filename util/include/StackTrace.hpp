@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(StackTrace) {
+DECLARE_CLASS(StackTrace) {
 public:
     static void dumpStack(String);
 };

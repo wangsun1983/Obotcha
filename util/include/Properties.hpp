@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Properties) {
+DECLARE_CLASS(Properties) {
 
 public:
     _Properties();

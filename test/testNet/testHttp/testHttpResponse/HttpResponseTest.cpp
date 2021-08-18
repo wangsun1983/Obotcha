@@ -7,7 +7,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(ServerListener) IMPLEMENTS(SocketListener) {
+DECLARE_CLASS(ServerListener) IMPLEMENTS(SocketListener) {
 public:
     void onAccept(int fd,String ip,int port,ByteArray pack) {
       printf("on accept pack is %s \n",pack->toValue());
@@ -49,7 +49,7 @@ public:
     void onConnect(int fd,String domain) {}
 };
 
-DECLARE_SIMPLE_CLASS(CloseThread) EXTENDS(Thread) {
+DECLARE_CLASS(CloseThread) EXTENDS(Thread) {
 public:
     _CloseThread(TcpServer c) {
         server = c;

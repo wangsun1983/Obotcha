@@ -29,7 +29,7 @@ Mutex listenersMutex1 = createMutex("listeners1");
 ArrayList<sp<_BaseTestListener2>> listener2s = createArrayList<sp<_BaseTestListener2>>();
 Mutex listenersMutex2 = createMutex("listeners2");
 
-DECLARE_SIMPLE_CLASS(BaseTestListener2) EXTENDS(EPollFileObserverListener) {
+DECLARE_CLASS(BaseTestListener2) EXTENDS(EPollFileObserverListener) {
 public:
     _BaseTestListener2() {
 
@@ -52,7 +52,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(BaseTestListener1) EXTENDS(EPollFileObserverListener) {
+DECLARE_CLASS(BaseTestListener1) EXTENDS(EPollFileObserverListener) {
 public:
     _BaseTestListener1(int fd,EPollFileObserver ob) {
         //printf("mSocket is %d \n",mSocket);
@@ -87,7 +87,7 @@ private:
 };
 
 
-DECLARE_SIMPLE_CLASS(BaseTestServer1) IMPLEMENTS(Thread) {
+DECLARE_CLASS(BaseTestServer1) IMPLEMENTS(Thread) {
 public:
     void run() {
         struct sockaddr_in serverAddr;

@@ -18,7 +18,7 @@ enum PingResult {
     PingResultNoResponse
 };
 
-DECLARE_SIMPLE_CLASS(WebSocketListener) {
+DECLARE_CLASS(WebSocketListener) {
 public:
     //for server
     virtual int onData(WebSocketFrame frame,sp<_WebSocketLinker> client){return 0;}

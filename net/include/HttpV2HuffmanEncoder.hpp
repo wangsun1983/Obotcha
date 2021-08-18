@@ -10,7 +10,7 @@
 namespace obotcha {
 
 
-DECLARE_SIMPLE_CLASS(HuffmanEncoder) {
+DECLARE_CLASS(HuffmanEncoder) {
 
 public:
     _HuffmanEncoder(List<int> codes, List<byte> lengths);

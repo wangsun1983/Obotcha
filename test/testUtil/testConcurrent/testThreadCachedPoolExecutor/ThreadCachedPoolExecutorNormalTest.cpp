@@ -15,7 +15,7 @@
 using namespace obotcha;
 
 int runDestory = 1;
-DECLARE_SIMPLE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTest1) IMPLEMENTS(Runnable) {
 public:
     void run() {
         printf("run test1 start 1\n");
@@ -37,7 +37,7 @@ public:
 };
 
 Mutex runTest2Mutex;
-DECLARE_SIMPLE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(RunTest2) IMPLEMENTS(Runnable) {
 public:
     void run() {
         printf("abc,runTest2Mutex lock \n");

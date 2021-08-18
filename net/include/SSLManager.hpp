@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(SSLManager) {
+DECLARE_CLASS(SSLManager) {
 public:
     static SSLManager getInstance();
 

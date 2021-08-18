@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(LoopThreadJoinRun1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(LoopThreadJoinRun1) IMPLEMENTS(Runnable) {
 public:
 
   void run() {
@@ -23,7 +23,7 @@ public:
   }
 };
 
-DECLARE_SIMPLE_CLASS(LoopThreadJoinRun2) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(LoopThreadJoinRun2) IMPLEMENTS(Runnable) {
 public:
 
   void run() {

@@ -11,7 +11,7 @@
 using namespace std;
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(TestUpdateData) {
+DECLARE_CLASS(TestUpdateData) {
 public:
   int i;
   int j;

@@ -15,7 +15,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(ReleaseTestRunnable) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(ReleaseTestRunnable) IMPLEMENTS(Runnable) {
 public:
    void run() {
       sleep(1);

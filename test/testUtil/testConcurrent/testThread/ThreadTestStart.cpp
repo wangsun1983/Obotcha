@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(StartTestThread1) IMPLEMENTS(Thread) {
+DECLARE_CLASS(StartTestThread1) IMPLEMENTS(Thread) {
 public:
     void run() {
         //printf("startTest trace1 \n");
@@ -21,7 +21,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(StartTestThread2) IMPLEMENTS(Thread) {
+DECLARE_CLASS(StartTestThread2) IMPLEMENTS(Thread) {
 public:
     _StartTestThread2() {
 
@@ -34,7 +34,7 @@ public:
     }
 };
 
-DECLARE_SIMPLE_CLASS(StartTestThread3) IMPLEMENTS(Thread) {
+DECLARE_CLASS(StartTestThread3) IMPLEMENTS(Thread) {
 public:
     void run() {
         

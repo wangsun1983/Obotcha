@@ -28,7 +28,7 @@ enum PipeType {
     WritePipe
 };
 
-DECLARE_SIMPLE_CLASS(Pipe) {
+DECLARE_CLASS(Pipe) {
 public:
     _Pipe();
 

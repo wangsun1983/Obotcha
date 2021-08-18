@@ -22,7 +22,7 @@ Mutex ttt = createMutex();
 int vv = 0;
 ArrayList<int> checksubmitList = createArrayList<int>(100001);
 
-DECLARE_SIMPLE_CLASS(SubmitLoopRun1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(SubmitLoopRun1) IMPLEMENTS(Runnable) {
 public:
    void run() {
       ttt->lock();

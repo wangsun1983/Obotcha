@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(FixRateRunTest1) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(FixRateRunTest1) IMPLEMENTS(Runnable) {
 public:
     _FixRateRunTest1(int s) {
       startTime = 0;

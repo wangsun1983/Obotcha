@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Aes) IMPLEMENTS(Cipher) {
+DECLARE_CLASS(Aes) IMPLEMENTS(Cipher) {
 
 public:   
     int genKey(String decKeyFile,String encKeyFile,ArrayList<String>params);

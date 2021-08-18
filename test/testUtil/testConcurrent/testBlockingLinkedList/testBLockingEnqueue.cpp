@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(EnqueueData) {
+DECLARE_CLASS(EnqueueData) {
 public:
     _EnqueueData(int v) {
         i = v;
@@ -23,7 +23,7 @@ private:
     int i;
 };
 
-DECLARE_SIMPLE_CLASS(EnqueueThread1) IMPLEMENTS(Thread) {
+DECLARE_CLASS(EnqueueThread1) IMPLEMENTS(Thread) {
 public:
     _EnqueueThread1(BlockingLinkedList<EnqueueData> queue) {
         mQueue = queue;
@@ -38,7 +38,7 @@ private:
     BlockingLinkedList<EnqueueData> mQueue;
 };
 
-DECLARE_SIMPLE_CLASS(EnqueueThread2) IMPLEMENTS(Thread) {
+DECLARE_CLASS(EnqueueThread2) IMPLEMENTS(Thread) {
 public:
     _EnqueueThread2(BlockingLinkedList<EnqueueData> queue) {
         mQueue = queue;
@@ -69,7 +69,7 @@ private:
     int fvalue;
 };
 
-DECLARE_SIMPLE_CLASS(DequeueThread2) IMPLEMENTS(Thread) {
+DECLARE_CLASS(DequeueThread2) IMPLEMENTS(Thread) {
 public:
     _DequeueThread2(BlockingLinkedList<EnqueueData> queue) {
         mQueue = queue;

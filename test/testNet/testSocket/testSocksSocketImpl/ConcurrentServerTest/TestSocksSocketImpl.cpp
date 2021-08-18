@@ -6,7 +6,7 @@
 using namespace obotcha;
 
 
-DECLARE_SIMPLE_CLASS(MyListener) IMPLEMENTS(SocketListener) {
+DECLARE_CLASS(MyListener) IMPLEMENTS(SocketListener) {
 
 public:
   _MyListener(AtomicInteger connect,AtomicInteger disconnect,AtomicInteger message) {

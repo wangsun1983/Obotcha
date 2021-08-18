@@ -15,7 +15,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpChunkParser) {
+DECLARE_CLASS(HttpChunkParser) {
 public:
     _HttpChunkParser(ByteRingArrayReader);
 

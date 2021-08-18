@@ -17,7 +17,7 @@ using namespace obotcha;
 
 
 
-DECLARE_SIMPLE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
+DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
 
 void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPacket msg){

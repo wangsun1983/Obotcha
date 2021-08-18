@@ -11,7 +11,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(SocketListener) {
+DECLARE_CLASS(SocketListener) {
 public:
     enum SocketEvent{
         Connect = 0,

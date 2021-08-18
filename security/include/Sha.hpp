@@ -15,7 +15,7 @@ enum ShaAbstractType {
     SHA_512,
 };
 
-DECLARE_SIMPLE_CLASS(Sha) {
+DECLARE_CLASS(Sha) {
 
 public:
     _Sha(int);

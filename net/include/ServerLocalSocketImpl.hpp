@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ServerLocalSocketImpl) IMPLEMENTS(LocalSocketImpl) {
+DECLARE_CLASS(ServerLocalSocketImpl) IMPLEMENTS(LocalSocketImpl) {
 public:
     _ServerLocalSocketImpl(InetAddress address,SocketOption option);
     int bind();

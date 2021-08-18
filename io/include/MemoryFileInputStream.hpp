@@ -16,7 +16,7 @@
 namespace obotcha {
 
 
-DECLARE_SIMPLE_CLASS(MemoryFileInputStream) IMPLEMENTS(InputStream) {
+DECLARE_CLASS(MemoryFileInputStream) IMPLEMENTS(InputStream) {
 public:
 
     _MemoryFileInputStream(MemoryFile f);

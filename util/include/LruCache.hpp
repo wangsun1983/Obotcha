@@ -19,7 +19,7 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(LruNode,2) {
+DECLARE_TEMPLATE_CLASS(LruNode,2) {
 public:
     _LruNode(T t,U u) {
         tag = t;
@@ -33,7 +33,7 @@ public:
     T tag;
 };
 
-DECLARE_CLASS(LruCache,2) {
+DECLARE_TEMPLATE_CLASS(LruCache,2) {
 public:
     _LruCache(int s) {
         mMaxSize = s;

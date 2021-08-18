@@ -14,7 +14,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Socket) {
+DECLARE_CLASS(Socket) {
 public:
     enum Type {
         Tcp,

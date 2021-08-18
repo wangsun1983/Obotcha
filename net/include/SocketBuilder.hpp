@@ -12,7 +12,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(SocketBuilder) {
+DECLARE_CLASS(SocketBuilder) {
 public:
     _SocketBuilder();
     

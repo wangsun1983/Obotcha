@@ -15,7 +15,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpUrlBuilder) {
+DECLARE_CLASS(HttpUrlBuilder) {
 
 public:
     _HttpUrlBuilder();

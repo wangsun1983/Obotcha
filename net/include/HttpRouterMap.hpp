@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpRouterNode) {
+DECLARE_CLASS(HttpRouterNode) {
 public:
     _HttpRouterNode(String segment,HttpRouter router);
     String mSegment;
@@ -18,7 +18,7 @@ public:
     String mParamTag;//:id
 };
 
-DECLARE_SIMPLE_CLASS(HttpRouterMap) {
+DECLARE_CLASS(HttpRouterMap) {
 public:
     _HttpRouterMap();
     void addRouter(HttpRouter r);

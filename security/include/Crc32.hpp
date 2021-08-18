@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(Crc32) {
+DECLARE_CLASS(Crc32) {
 
 public:
     uint32_t encode(ByteArray);

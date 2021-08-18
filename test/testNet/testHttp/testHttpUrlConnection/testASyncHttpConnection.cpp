@@ -15,7 +15,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(MyHandler) IMPLEMENTS(Handler) {
+DECLARE_CLASS(MyHandler) IMPLEMENTS(Handler) {
 public:
     void handleMessage(Message msg) {
         printf("msg id is %d \n",msg->arg1);

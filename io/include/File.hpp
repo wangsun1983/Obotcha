@@ -20,7 +20,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(File) {
+DECLARE_CLASS(File) {
 public:
     _File(const char *);
     

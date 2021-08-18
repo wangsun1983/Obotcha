@@ -15,7 +15,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(WebSocketLinkerManager) {
+DECLARE_CLASS(WebSocketLinkerManager) {
 public:
     static WebSocketLinkerManager getInstance();
     

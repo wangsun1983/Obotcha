@@ -20,7 +20,7 @@ namespace obotcha {
 /**
  * There are many differences between Hybi 00 and Hybi 13
  */
-DECLARE_SIMPLE_CLASS(WebSocketHybi13Composer) IMPLEMENTS(WebSocketComposer){
+DECLARE_CLASS(WebSocketHybi13Composer) IMPLEMENTS(WebSocketComposer){
 public:
     _WebSocketHybi13Composer(int type,int ver = 13,int max = MAX_WEBSOCKET_FRAME_SIZE);
 

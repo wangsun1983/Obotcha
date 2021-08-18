@@ -21,7 +21,7 @@ Mutex mySleepMutex;
 int mySleepExceptionTest1 = 0;
 int mySleepReleaseTest1 = 0;
 
-DECLARE_SIMPLE_CLASS(MySleepTest1Thread) IMPLEMENTS(Thread) {
+DECLARE_CLASS(MySleepTest1Thread) IMPLEMENTS(Thread) {
 public:
     void run() {
         //while(1) {

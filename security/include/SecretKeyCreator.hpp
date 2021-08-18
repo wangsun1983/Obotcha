@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(SecretKeyCreator) {
+DECLARE_CLASS(SecretKeyCreator) {
 public:
     static SecretKey getInstance(String);
     static SecretKey getInstance(const char *);

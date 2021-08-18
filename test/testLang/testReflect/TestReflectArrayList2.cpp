@@ -14,26 +14,26 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(ArrayData2) {
+DECLARE_CLASS(ArrayData2) {
 public:
   int data1;
   int data2;
   DECLARE_REFLECT_FIELD(ArrayData2,data1,data2)
 };
 
-DECLARE_SIMPLE_CLASS(ArrayDataList2) {
+DECLARE_CLASS(ArrayDataList2) {
 public:
   ArrayList<ArrayList<ArrayData2>> lists;
   DECLARE_REFLECT_FIELD(ArrayDataList2,lists)
 };
 
-DECLARE_SIMPLE_CLASS(ArrayData3) {
+DECLARE_CLASS(ArrayData3) {
 public:
   ArrayList<Integer> list;
   DECLARE_REFLECT_FIELD(ArrayData3,list)
 };
 
-DECLARE_SIMPLE_CLASS(ArrayDataList3) {
+DECLARE_CLASS(ArrayDataList3) {
 public:
   ArrayList<ArrayList<ArrayData3>> lists;
   DECLARE_REFLECT_FIELD(ArrayDataList3,lists)

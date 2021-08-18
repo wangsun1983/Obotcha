@@ -8,7 +8,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpHeaderParser) {
+DECLARE_CLASS(HttpHeaderParser) {
 
 public:
     enum ParseMode {

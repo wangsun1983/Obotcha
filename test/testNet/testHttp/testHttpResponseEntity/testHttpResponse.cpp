@@ -6,7 +6,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(Student) {
+DECLARE_CLASS(Student) {
 public:
     int age;
     int no;

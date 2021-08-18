@@ -19,7 +19,7 @@ using namespace obotcha;
 Mutex myReleaseMutex = createMutex();
 int mReleaseCount = 0;
 
-DECLARE_SIMPLE_CLASS(MyReleaseTestThread) IMPLEMENTS(Thread) {
+DECLARE_CLASS(MyReleaseTestThread) IMPLEMENTS(Thread) {
 public:
     void run() {
         sleep(1);
@@ -38,7 +38,7 @@ public:
 
 
 
-DECLARE_SIMPLE_CLASS(MyReleaseTest2Thread) IMPLEMENTS(Thread) {
+DECLARE_CLASS(MyReleaseTest2Thread) IMPLEMENTS(Thread) {
 public:
     void run() {
             sleep(3);

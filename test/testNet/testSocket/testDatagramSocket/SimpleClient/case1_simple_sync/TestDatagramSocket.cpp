@@ -14,7 +14,7 @@ Condition disconnectCond = createCondition();
 
 String message = createString("");
 
-DECLARE_SIMPLE_CLASS(MyHandler) IMPLEMENTS(Handler) {
+DECLARE_CLASS(MyHandler) IMPLEMENTS(Handler) {
 public:
   void handleMessage(sp<_Message> msg) {
     AutoLock l(disconnectMutex);
@@ -24,7 +24,7 @@ public:
 
 MyHandler h = createMyHandler();
 
-DECLARE_SIMPLE_CLASS(MyListener) IMPLEMENTS(SocketListener){
+DECLARE_CLASS(MyListener) IMPLEMENTS(SocketListener){
 public:
   void onSocketMessage(int event,Socket s,ByteArray data) {
     switch(event) {

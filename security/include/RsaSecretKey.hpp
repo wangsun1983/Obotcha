@@ -29,7 +29,7 @@ BASE64 ENCODED DATA
 */
 class _Rsa;
 
-DECLARE_SIMPLE_CLASS(RsaSecretKey) IMPLEMENTS(SecretKey){
+DECLARE_CLASS(RsaSecretKey) IMPLEMENTS(SecretKey){
 
 public:
     enum KeyType {

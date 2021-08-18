@@ -14,7 +14,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(PosixSem) {
+DECLARE_CLASS(PosixSem) {
 
 public:
 

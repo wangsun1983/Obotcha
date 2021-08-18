@@ -12,12 +12,13 @@
 #include "Thread.hpp"
 #include "Future.hpp"
 #include "ExecutorTask.hpp"
+#include "Executor.hpp"
 
 namespace obotcha {
 
 class _ThreadScheduledPoolExecutor;
 
-DECLARE_SIMPLE_CLASS(ThreadCachedPoolExecutor) {
+DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor){
 public:
     friend class _ThreadScheduledPoolExecutor;
     
@@ -61,11 +62,6 @@ public:
     ~_ThreadCachedPoolExecutor();
 
 private:
-    enum CachedPoolStatus {
-        Running = 0,
-        ShutDown,
-    };
-
     void setUpOneIdleThread();
 
     Future poolSubmit(Runnable r);

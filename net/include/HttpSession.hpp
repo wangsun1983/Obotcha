@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpSession) {
+DECLARE_CLASS(HttpSession) {
 
 public:
     _HttpSession();

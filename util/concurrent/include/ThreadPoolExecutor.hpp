@@ -14,10 +14,11 @@
 #include "Future.hpp"
 #include "ExecutorTask.hpp"
 #include "Future.hpp"
+#include "Executor.hpp"
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(ThreadPoolExecutor) {
+DECLARE_CLASS(ThreadPoolExecutor) IMPLEMENTS(Executor) {
 
 public:
     friend class _ExecutorTask;
@@ -72,10 +73,6 @@ public:
     ~_ThreadPoolExecutor();
 
 private:
-    enum LocalStatus {
-        Running = 0,
-        ShutDown,
-    };
 
     BlockingLinkedList<ExecutorTask> mPool;
     

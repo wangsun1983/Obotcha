@@ -9,12 +9,12 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(ContainerData) {
+DECLARE_CLASS(ContainerData) {
 public:
   int i;
 };
 
-DECLARE_SIMPLE_CLASS(ContainerData2) IMPLEMENTS(ContainerData) {
+DECLARE_CLASS(ContainerData2) IMPLEMENTS(ContainerData) {
 public:
   int j;
 };

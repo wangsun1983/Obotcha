@@ -10,7 +10,7 @@ namespace obotcha {
 
 class _YamlReader;
 
-DECLARE_SIMPLE_CLASS(TextContent) {
+DECLARE_CLASS(TextContent) {
 
 public:
     _TextContent(const Integer &v);

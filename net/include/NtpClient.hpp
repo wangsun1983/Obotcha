@@ -52,13 +52,13 @@ struct NtpTime{
     unsigned   int  fraction;
 };
 
-DECLARE_SIMPLE_CLASS(NtpListener) {
+DECLARE_CLASS(NtpListener) {
 public:
     virtual void onAccept(long int millseconds);
     virtual void onClose();
 };
 
-DECLARE_SIMPLE_CLASS(NtpSocketClientListener) IMPLEMENTS(SocketListener) {
+DECLARE_CLASS(NtpSocketClientListener) IMPLEMENTS(SocketListener) {
 public:
     _NtpSocketClientListener(Condition,Mutex);
 
@@ -83,7 +83,7 @@ private:
     double get_offset(const struct NtpPacket *ntp, const struct timeval *recvtv);
 };
     
-DECLARE_SIMPLE_CLASS(NtpClient) {
+DECLARE_CLASS(NtpClient) {
 public:
     _NtpClient();
 

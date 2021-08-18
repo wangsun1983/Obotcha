@@ -19,7 +19,7 @@ Mutex mutex;
 
 int test6Num = 0;
 
-DECLARE_SIMPLE_CLASS(MyRunTest5) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyRunTest5) IMPLEMENTS(Runnable) {
 public:
    void run() {
       {
@@ -30,7 +30,7 @@ public:
    }
 };
 
-DECLARE_SIMPLE_CLASS(MyRunTest6) IMPLEMENTS(Runnable) {
+DECLARE_CLASS(MyRunTest6) IMPLEMENTS(Runnable) {
 public:
    void run() {
       {

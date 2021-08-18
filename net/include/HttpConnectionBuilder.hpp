@@ -17,7 +17,7 @@
 namespace obotcha {
 
 
-DECLARE_SIMPLE_CLASS(HttpConnectionBuilder) {
+DECLARE_CLASS(HttpConnectionBuilder) {
 
 public:
     _HttpConnectionBuilder *setUrl(String);

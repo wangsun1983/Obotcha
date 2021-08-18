@@ -31,7 +31,7 @@ class _XmlDocument;
 class _XmlWriter;
 
 
-DECLARE_SIMPLE_CLASS(XmlAttrIterator) {
+DECLARE_CLASS(XmlAttrIterator) {
 public:
     _XmlAttrIterator(sp<_XmlValue> node,sp<_XmlDocument> r);
 
@@ -51,7 +51,7 @@ private:
     xml_attribute<char> * attr;
 };
 
-DECLARE_SIMPLE_CLASS(XmlValueIterator) {
+DECLARE_CLASS(XmlValueIterator) {
 public:
     _XmlValueIterator(sp<_XmlValue> node,sp<_XmlDocument> r);
 
@@ -69,7 +69,7 @@ private:
     xml_node<>*  node; 
 };
 
-DECLARE_SIMPLE_CLASS(XmlValue) {
+DECLARE_CLASS(XmlValue) {
 
 public:
     friend class _XmlReader;

@@ -6,7 +6,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpV2HeaderEncoder) {
+DECLARE_CLASS(HttpV2HeaderEncoder) {
 
 };
 

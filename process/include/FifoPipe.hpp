@@ -18,7 +18,7 @@ enum FifoPipeType {
     FifoWritePipe
 };
 
-DECLARE_SIMPLE_CLASS(FifoPipe) {
+DECLARE_CLASS(FifoPipe) {
 public:
 
     _FifoPipe(String name,int type,int filemode);

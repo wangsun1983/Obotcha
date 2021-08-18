@@ -9,7 +9,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(CountDownLatch) {
+DECLARE_CLASS(CountDownLatch) {
 public:
     _CountDownLatch(int v);
     

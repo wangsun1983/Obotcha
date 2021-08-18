@@ -12,7 +12,7 @@ namespace obotcha {
 
 class _String;
 
-DECLARE_SIMPLE_CLASS(Uint32) IMPLEMENTS(Number<uint32_t>) {
+DECLARE_CLASS(Uint32) IMPLEMENTS(Number<uint32_t>) {
 public:
     static const int __isReflected = 1;
 

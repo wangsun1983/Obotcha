@@ -8,7 +8,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(SimpleTestData) {
+DECLARE_CLASS(SimpleTestData) {
 public:
   bool i;
 };

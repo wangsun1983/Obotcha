@@ -10,7 +10,7 @@
 
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(RemoveTestData) {
+DECLARE_CLASS(RemoveTestData) {
 public:
   int data1;
   int data2;

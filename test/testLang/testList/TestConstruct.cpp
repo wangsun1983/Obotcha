@@ -11,7 +11,7 @@
 using namespace std;
 using namespace obotcha;
 
-DECLARE_SIMPLE_CLASS(ConstructData) {
+DECLARE_CLASS(ConstructData) {
 public:
   int i;
   int j;

@@ -15,7 +15,7 @@ namespace obotcha {
 
 class _HttpResponseWriter;
 
-DECLARE_SIMPLE_CLASS(HttpResponse) IMPLEMENTS(HttpPacket) {
+DECLARE_CLASS(HttpResponse) IMPLEMENTS(HttpPacket) {
 public:
 	enum HttpFileTransferType {
 		CHUNCKED = 0,

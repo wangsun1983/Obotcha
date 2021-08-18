@@ -13,7 +13,7 @@
 
 namespace obotcha {
 
-DECLARE_SIMPLE_CLASS(HttpUrlParser) {
+DECLARE_CLASS(HttpUrlParser) {
 
 public:
     static HttpUrl parseUrl(String);
