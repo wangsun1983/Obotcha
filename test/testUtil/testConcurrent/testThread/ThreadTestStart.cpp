@@ -37,7 +37,7 @@ public:
 DECLARE_CLASS(StartTestThread3) IMPLEMENTS(Thread) {
 public:
     void run() {
-        
+
     }
 };
 

@@ -19,7 +19,7 @@ _ExecutorBuilder::_ExecutorBuilder() {
     queuesize = -1;
     threadnum = st(System)::availableProcessors();
     maxthreadnum = st(System)::availableProcessors()*2;
-    minthreadnum = 2;
+    minthreadnum = 1;
     timeout = 1000*10;
 }
 

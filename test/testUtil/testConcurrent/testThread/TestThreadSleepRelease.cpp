@@ -22,7 +22,7 @@ public:
 
   void run() {
       try {
-        msleep(50*1000);
+        interruptableSleep(50*1000);
       } catch(InterruptedException &e) {
           myLongSleepExceptionTest1 = 1;
       }

@@ -36,8 +36,10 @@ extern int testThreadSleepRelease();
 extern int testThreadPriority();
 extern int testThreadInterruptCase();
 extern int testThreadLoopStart();
+extern void testThreadInterruptSleep();
 
 int main() {
+    testThreadInterruptSleep();
     testThreadStart();
     testThreadInterruptCase();
     testThreadJoin();

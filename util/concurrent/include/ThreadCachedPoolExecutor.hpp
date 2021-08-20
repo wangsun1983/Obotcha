@@ -59,6 +59,8 @@ public:
 
     int getThreadsNum();
 
+    int getTasksNum();
+
     ~_ThreadCachedPoolExecutor();
 
 private:

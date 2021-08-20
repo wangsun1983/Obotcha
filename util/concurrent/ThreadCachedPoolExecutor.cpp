@@ -38,11 +38,11 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int queuesize,int minthread
     mIdleNum = createAtomicInteger(0);
 }
 
-int _ThreadCachedPoolExecutor::shutdown(){
+int _ThreadCachedPoolExecutor::shutdown() {
     {
         AutoLock l(mMutex);
-        if(mStatus == ShutDown) {
-            return 0;
+        if(mStatus != Running) {
+            return -AlreadyDestroy;
         }
         
         mStatus = ShutDown;
@@ -132,6 +132,10 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
 int _ThreadCachedPoolExecutor::getThreadsNum() {
     AutoLock l(mMutex);
     return mHandlers->size();
+}
+
+int _ThreadCachedPoolExecutor::getTasksNum() {
+    return mTasks->size();
 }
 
 Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r) {

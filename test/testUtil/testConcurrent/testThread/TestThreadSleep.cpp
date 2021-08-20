@@ -21,7 +21,7 @@ public:
 
   void run() {
       try {
-        st(Thread)::msleep(100000000);
+        st(Thread)::interruptableSleep(100000000);
       } catch(InterruptedException e){}
       count++;
   }

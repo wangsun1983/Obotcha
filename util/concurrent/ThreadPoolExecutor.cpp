@@ -72,16 +72,16 @@ bool _ThreadPoolExecutor::isShtuDown() {
 }
 
 bool _ThreadPoolExecutor::isTerminated() {
-    bool isTerminated = true;
-    mHandlers->foreach([&isTerminated](Thread &t) {
+    bool isAllTerminated = true;
+    mHandlers->foreach([&isAllTerminated](Thread &t) {
         if(t->getStatus() != st(Thread)::Complete) {
-            isTerminated = false;
+            isAllTerminated = false;
             return Global::Break;
         }
         return Global::Continue;
     });
 
-    return isTerminated;
+    return isAllTerminated;
 }
 
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
@@ -116,7 +116,7 @@ int _ThreadPoolExecutor::getThreadsNum() {
     return mHandlers->size();
 }
 
-int _ThreadPoolExecutor::getQueueSize() {
+int _ThreadPoolExecutor::getTasksNum() {
     return mPool->size();
 }
 

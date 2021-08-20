@@ -149,7 +149,7 @@ int testThreadCommonCase() {
         t->start();
         t->join();
     }
-    st(Thread)::msleep(1000);
+    st(Thread)::interruptableSleep(1000);
 
     if(TestData1 != 100 || disposeVal != 0) {
       printf("---[Thread Test {create()} case1] [FAILED],TestData1 is %d,disposeVal is %d--- \n",TestData1,disposeVal);
@@ -172,7 +172,7 @@ int testThreadCommonCase() {
         t->start();
         t->join();
     }
-    st(Thread)::msleep(1000);
+    st(Thread)::interruptableSleep(1000);
 
     if(TestData1 != 100 || disposeVal != 0) {
       printf("---[Thread Test {create()} case3] [FAILED]--- \n");
@@ -341,19 +341,19 @@ int testThreadCommonCase() {
       break;
   }
 
-  //void msleep(unsigned long);
+  //void interruptableSleep(unsigned long);
   while(1) {
       long current = st(System)::currentTimeMillis();
 
-      st(Thread)::msleep(1000);
+      st(Thread)::interruptableSleep(1000);
 
       long current2 = st(System)::currentTimeMillis();
       if((current2 - current) > 1005) {
-          printf("---[Thread Test {msleep()} case1] [FAILED]--- \n");
+          printf("---[Thread Test {interruptableSleep()} case1] [FAILED]--- \n");
           break;
       }
 
-      printf("---[Thread Test {msleep()} case2] [OK]--- \n");
+      printf("---[Thread Test {interruptableSleep()} case2] [OK]--- \n");
       break;
   }
 

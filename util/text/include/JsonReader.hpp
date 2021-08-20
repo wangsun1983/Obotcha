@@ -30,8 +30,6 @@ private:
 
     String mContent;
 
-    int size;
-
     JsonValue mValue;
 
     JsonValue parse();

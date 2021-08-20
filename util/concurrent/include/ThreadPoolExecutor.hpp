@@ -68,7 +68,7 @@ public:
 
     int getThreadsNum();
 
-    int getQueueSize();
+    int getTasksNum();
 
     ~_ThreadPoolExecutor();
 

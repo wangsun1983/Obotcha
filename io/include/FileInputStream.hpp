@@ -25,11 +25,11 @@ public:
 
     _FileInputStream(int fd);
 
-    long read(ByteArray buffer);
+    ByteArray read(int size = 1024*4);
 
-    long readByLength(ByteArray buffer,int pos,int length);
-
-    long read(long index,ByteArray buffer);
+    int seekTo(int index);
+    
+    long readTo(ByteArray,int pos = 0,int length = 0);
 
     ByteArray readAll();
 

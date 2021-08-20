@@ -12,8 +12,6 @@ _JsonReader::_JsonReader(File f) {
 
     stream = createFileInputStream(f);
     stream->open();
-    size = f->length();
-
     mValue = parse();
 }
 
@@ -26,8 +24,7 @@ JsonValue _JsonReader::get() {
 }
 
 JsonValue _JsonReader::parse() {
-    ByteArray buff = createByteArray(size);
-    stream->read(buff);
+    ByteArray buff = stream->readAll();
 
     Json::Reader reader;
     JsonValue value = createJsonValue();

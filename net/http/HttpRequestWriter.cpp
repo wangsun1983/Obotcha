@@ -176,11 +176,12 @@ int _HttpRequestWriter::write(HttpRequest p) {
                 ByteArray readBuff = createByteArray(1024*16);
                 int index = 0;
                 while(1) {
-                    int count = stream->read(index,readBuff);
-                    if(count == 0) {
-                        break;
-                    }
-                    index += count;
+                    //int count = stream->read(index,readBuff);
+                    //if(count == 0) {
+                    //    break;
+                    //}
+                    //index += count;
+                    int count = stream->readTo(readBuff);
                     flush(readBuff,count);
                 }
 

@@ -282,6 +282,10 @@ void _Thread::yield() {
 }
 
 void _Thread::msleep(unsigned long millseconds) {
+    usleep(1000*millseconds);
+}
+
+void _Thread::interruptableSleep(unsigned long millseconds) {
     Thread thread = mThreads->get();
     if(thread == nullptr) {
         usleep(1000*millseconds);

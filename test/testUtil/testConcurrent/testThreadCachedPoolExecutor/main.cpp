@@ -18,8 +18,12 @@ extern int releaseTest();
 extern int loopsubmittest();
 extern int cancelTest();
 extern int testThreadLambda();
+extern void CachedPoolSubmit_Wait();
+extern void CachedPoolSubmit_ThreadNum();
+extern void CachedPoolSubmit_AwaitTermination();
 
 int main() {
+#if 0
     normalTest();
     numTest();
     releaseTest();
@@ -27,4 +31,9 @@ int main() {
     cancelTest();
     testThreadLambda();
     sleep(10);
+#endif
+    CachedPoolSubmit_Wait();
+    CachedPoolSubmit_ThreadNum();
+    CachedPoolSubmit_AwaitTermination();
+    return 0;
 }

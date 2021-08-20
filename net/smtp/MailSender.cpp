@@ -294,7 +294,7 @@ int _MailSender::send() {
         int index = 0;
         ByteArray readBuff = createByteArray(55);
         for(unsigned int i = 0;i<filesize/54+1;i++) {
-            long length = stream->read(readBuff);
+            long length = stream->readTo(readBuff);
             MsgPart ? strcat(mSendBuf,(const char *)mBase64->encode(readBuff,res)->toValue())
                         : strcpy(mSendBuf,(const char *)mBase64->encode(readBuff,res)->toValue());
             strcat(mSendBuf,"\r\n");

@@ -201,6 +201,9 @@ int _File::createNewFile(int flag,mode_t mode) {
 
 
 bool _File::removeAll() {
+    if(!exists()) {
+        return true;
+    }
     if(isFile()) {
         //delete file;
         remove(mPath->toChars());

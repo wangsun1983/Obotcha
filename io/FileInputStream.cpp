@@ -32,17 +32,25 @@ _FileInputStream::_FileInputStream(int fd) {
     this->fd = fd;
 }
 
-long _FileInputStream::read(ByteArray buff) {
-    return ::read(fd,buff->toValue(),buff->size());
+
+ByteArray _FileInputStream::read(int size) {
+    ByteArray data = createByteArray(size);
+    int length = ::read(fd,data->toValue(),data->size());
+    if(length <= 0) {
+        return nullptr;
+    }else if(length < data->size()) {
+        data->quickShrink(length);
+    }
+    return data;
 }
 
-long _FileInputStream::readByLength(ByteArray buffer,int pos,int len) {
-    return ::read(fd,buffer->toValue() + pos,len);
+int _FileInputStream::seekTo(int index) {
+    return lseek(fd,index,SEEK_SET);
 }
 
-long _FileInputStream::read(long index,ByteArray buffer) {
-    lseek(fd,index,SEEK_SET);
-    return read(buffer);
+long _FileInputStream::readTo(ByteArray buff,int pos,int length) {
+    int len = (length == 0)?buff->size():length;
+    return ::read(fd,buff->toValue() + pos,len);
 }
 
 ByteArray _FileInputStream::readAll() {
@@ -51,11 +59,7 @@ ByteArray _FileInputStream::readAll() {
 	    return nullptr;
 	}
 
-    long filesize = stbuf.st_size;
-    ByteArray content = createByteArray(filesize);
-
-    ::read(fd,content->toValue(),filesize);
-    return content;
+    return this->read(stbuf.st_size);
 }
 
 bool _FileInputStream::open() {

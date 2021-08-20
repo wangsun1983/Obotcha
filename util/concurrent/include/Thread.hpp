@@ -75,6 +75,8 @@ public:
 
     static void msleep(unsigned long = 0);
 
+    static void interruptableSleep(unsigned long = 0);
+
     static void setThreadPriority(int priority);
 
     static int getThreadPriority();
