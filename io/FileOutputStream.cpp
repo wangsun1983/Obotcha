@@ -38,7 +38,8 @@ long _FileOutputStream::write(char c) {
 }
 
 long _FileOutputStream::write(ByteArray buff,long size) {
-    return (size != -1)?(::write(fd,buff->toValue(),size)):(::write(fd,buff->toValue(),buff->size()));
+    int len = (size == -1)?buff->size():size;
+    return ::write(fd,buff->toValue(),len);
 }
 
 long _FileOutputStream::writeString(String s) {
@@ -84,7 +85,7 @@ void _FileOutputStream::flush() {
 }
 
 _FileOutputStream::~_FileOutputStream() {
-    close();
+    //close();
 }
 
 }
