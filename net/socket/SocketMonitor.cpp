@@ -153,7 +153,6 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                            SocketListener &listener,
                            int serverfd,
                            SocketMonitor &monitor) {
-        //printf("fd is %d,serverfd is %d,events is %x \n",fd,serverfd,events);
         Socket s = nullptr;
         {
             AutoLock l(monitor->mMutex);
@@ -163,7 +162,6 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                 return st(EPollFileObserver)::OnEventRemoveObserver;
             }
         }
-
         if(fd == serverfd) {
             struct sockaddr_in client_address;
             socklen_t client_addrLength = sizeof(struct sockaddr_in);
@@ -174,12 +172,7 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                 byte buff[st(Socket)::DefaultBufferSize];
                 while(1) {
                     int length = recvfrom(fd, buff,st(Socket)::DefaultBufferSize, 0, (sockaddr*)&client_address, &client_addrLength);
-                    int message = st(SocketListener)::Message;
-
-                    if(length == -1) {
-                        message = st(SocketListener)::Disconnect;
-                    }
-
+                    
                     if(newClient == nullptr) {
                         newClient = createSocket(createFileDescriptor(fd));
                         newClient->setType(st(Socket)::Udp);
@@ -189,10 +182,12 @@ int _SocketMonitor::bind(int fd,SocketListener l,bool isServer) {
                     }
                     {
                         AutoLock l(monitor->mMutex);
+                        if(length != -1) {
                         monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(
-                                                            message,
+                                                            st(SocketListener)::Message,
                                                             newClient,
-                                                            (length == -1)?nullptr:createByteArray((const byte *)buff,length)));
+                                                            createByteArray((const byte *)buff,length)));
+                        }
                         monitor->mCondition->notify();
                     }
                     

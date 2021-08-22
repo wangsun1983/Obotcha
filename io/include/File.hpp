@@ -54,7 +54,7 @@ public:
 
     long length();
 
-     int createNewFile(int flags=O_CREAT, mode_t mode=0666);
+    int createNewFile(int flags=O_CREAT, mode_t mode=0666);
 
     bool removeAll();
 

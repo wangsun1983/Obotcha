@@ -101,15 +101,17 @@ void _SocketImpl::setOptions() {
         }
 
         if(option->mRcvTimeout != -1) {
-            sock->setSockOption(SOL_SOCKET, SO_SNDLOWAT, &option->mRcvTimeout, sizeof(option->mRcvTimeout));
-        }
-
-        if(option->mSndLoWat != -1) {
-            sock->setSockOption(SOL_SOCKET, SO_RCVTIMEO, &option->mSndLoWat, sizeof(option->mSndLoWat));
+            timeval tv;
+            tv.tv_sec = option->mRcvTimeout/1000;
+            tv.tv_usec = (option->mRcvTimeout%1000)*1000;
+            sock->setSockOption(SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
         }
 
         if(option->mSendTimeout != -1) {
-            sock->setSockOption(SOL_SOCKET, SO_SNDTIMEO, &option->mSendTimeout, sizeof(option->mSendTimeout));
+            timeval tv;
+            tv.tv_sec = option->mSendTimeout/1000;
+            tv.tv_usec = (option->mSendTimeout%1000)*1000;
+            sock->setSockOption(SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
         }
 
         if(option->mBindToDevice != nullptr) {

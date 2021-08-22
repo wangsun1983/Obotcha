@@ -32,7 +32,6 @@ _FileInputStream::_FileInputStream(int fd) {
     this->fd = fd;
 }
 
-
 ByteArray _FileInputStream::read(int size) {
     ByteArray data = createByteArray(size);
     int length = ::read(fd,data->toValue(),data->size());
