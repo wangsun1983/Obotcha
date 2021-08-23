@@ -19,6 +19,8 @@ public:
 
     explicit _ByteArray(const sp<_ByteArray>&,bool isSafe = false);
 
+    explicit _ByteArray(const sp<_String> str,bool isSafe = false);
+
     ~_ByteArray();
 
     byte *toValue();

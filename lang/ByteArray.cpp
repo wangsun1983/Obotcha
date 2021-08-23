@@ -35,6 +35,12 @@ _ByteArray::_ByteArray(const sp<_ByteArray> &b,bool isSafe) {
     mOriginalSize = -1;
 }
 
+_ByteArray::_ByteArray(const sp<_String> str,bool isSafe):_ByteArray((const byte *)str->toChars(),
+                                                                        str->size(),
+                                                                        isSafe) {
+    
+}
+
 /**
  * @brief ByteArray construct function
  * @param length alloc memory size

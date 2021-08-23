@@ -48,6 +48,11 @@ public:
 
     template<typename X>
     Future submit(sp<X> r) {
+        return submitWithInTime(0,r);
+    }
+
+    template<typename X>
+    Future submitWithInTime(long timeout,sp<X> r) {
         {
             AutoLock l(mMutex);
             if(mStatus == ShutDown) {
@@ -55,7 +60,7 @@ public:
             }
         }
         ExecutorTask task = createExecutorTask(r);
-        if(mPool->putLast(task)){
+        if(mPool->putLast(task,timeout)){
             return createFuture(task);
         }
         return nullptr;
@@ -64,6 +69,11 @@ public:
     template< class Function, class... Args >
     Future submit( Function&& f, Args&&... args ) {
         return submit(createLambdaRunnable(f,args...));
+    }
+
+    template< class Function, class... Args >
+    Future submitWithInTime(long time, Function&& f, Args&&... args ) {
+        return submitWithInTime(time,createLambdaRunnable(f,args...));
     }
 
     int getThreadsNum();
