@@ -23,13 +23,18 @@ DECLARE_CLASS(ThreadPoolExecutor) IMPLEMENTS(Executor) {
 public:
     friend class _ExecutorTask;
 
-    _ThreadPoolExecutor(int queuesize,int threadnum);
+    _ThreadPoolExecutor(int capacity,int threadnum);
     
     int shutdown();
     
     template<typename X>
     int execute(sp<X> runnable) {
-        if(submit(runnable) != nullptr) {
+       return executeWithInTime(0,runnable);
+    }
+
+    template<typename X>
+    int executeWithInTime(long timeout,sp<X> runnable) {
+        if(submitWithInTime(timeout,runnable) != nullptr) {
             return 0;
         }
 
@@ -38,7 +43,12 @@ public:
     
     template< class Function, class... Args >
     int execute( Function&& f, Args&&... args ) {
-        return execute(createLambdaRunnable(f,args...));
+        return executeWithInTime(0,createLambdaRunnable(f,args...));
+    }
+
+    template< class Function, class... Args >
+    int executeWithInTime(long timeout, Function&& f, Args&&... args ) {
+        return executeWithInTime(timeout,createLambdaRunnable(f,args...));
     }
 
     bool isShtuDown();
@@ -68,7 +78,7 @@ public:
 
     template< class Function, class... Args >
     Future submit( Function&& f, Args&&... args ) {
-        return submit(createLambdaRunnable(f,args...));
+        return submitWithInTime(0,createLambdaRunnable(f,args...));
     }
 
     template< class Function, class... Args >

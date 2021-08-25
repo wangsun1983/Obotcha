@@ -34,14 +34,14 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int queuesize,int minthread
     mHandlers = createArrayList<Thread>();
     mMutex = createMutex();
     mTasks = createBlockingLinkedList<ExecutorTask>(queuesize);
-    mStatus = Running;
+    mStatus = Executing;
     mIdleNum = createAtomicInteger(0);
 }
 
 int _ThreadCachedPoolExecutor::shutdown() {
     {
         AutoLock l(mMutex);
-        if(mStatus != Running) {
+        if(mStatus != Executing) {
             return -AlreadyDestroy;
         }
         
@@ -93,7 +93,7 @@ void _ThreadCachedPoolExecutor::awaitTermination() {
 int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
     {
         AutoLock l(mMutex);
-        if(mStatus == Running) {
+        if(mStatus == Executing) {
             return -InvalidStatus;
         }
     }
@@ -138,16 +138,16 @@ int _ThreadCachedPoolExecutor::getTasksNum() {
     return mTasks->size();
 }
 
-Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r) {
+Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r,long interval) {
     {
         AutoLock l(mMutex);
-        if(mStatus != Running) {
+        if(mStatus != Executing) {
             return nullptr;
         }
     }
 
     ExecutorTask task = createExecutorTask(r);
-    mTasks->putLast(task);
+    mTasks->putLast(task,interval);
     if(mIdleNum->get() == 0) {
         setUpOneIdleThread();
     }
@@ -161,7 +161,7 @@ _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
     {
         AutoLock l(mMutex);
-        if(mStatus != Running || mHandlers->size() >= maxThreadNum) {
+        if(mStatus != Executing || mHandlers->size() >= maxThreadNum) {
             return;
         }
     }

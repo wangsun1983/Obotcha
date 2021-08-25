@@ -21,6 +21,8 @@ extern int testThreadLambda();
 extern void CachedPoolSubmit_Wait();
 extern void CachedPoolSubmit_ThreadNum();
 extern void CachedPoolSubmit_AwaitTermination();
+extern void CachedPoolSubmit_Timeout();
+
 
 int main() {
 #if 0
@@ -35,5 +37,6 @@ int main() {
     CachedPoolSubmit_Wait();
     CachedPoolSubmit_ThreadNum();
     CachedPoolSubmit_AwaitTermination();
+    CachedPoolSubmit_Timeout();
     return 0;
 }

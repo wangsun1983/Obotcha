@@ -12,8 +12,8 @@
 
 namespace obotcha {
 
-_ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
-    mPool = createBlockingLinkedList<ExecutorTask>(queuesize);    
+_ThreadPoolExecutor::_ThreadPoolExecutor(int capacity,int threadnum) {
+    mPool = createBlockingLinkedList<ExecutorTask>(capacity);    
     mHandlers = createArrayList<Thread>();
 
     for(int i = 0; i < threadnum;i++) {
@@ -35,13 +35,13 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int queuesize,int threadnum) {
     }
 
     mMutex = createMutex();
-    mStatus = Running;
+    mStatus = Executing;
 }
 
 int _ThreadPoolExecutor::shutdown() {
     {
         AutoLock l(mMutex);
-        if(mStatus != Running) {
+        if(mStatus != Executing) {
             return -AlreadyDestroy;
         }
 

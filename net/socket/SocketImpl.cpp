@@ -166,12 +166,7 @@ void _SocketImpl::setOptions() {
 }
 
 int _SocketImpl::close() {
-    if(sock != nullptr) {
-        sock->close();
-        sock = nullptr;
-    }
- 
-    return 0;
+    return sock->close();
 }
 
 ByteArray _SocketImpl::receive() {

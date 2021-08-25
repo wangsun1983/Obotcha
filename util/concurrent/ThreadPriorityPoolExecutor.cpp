@@ -17,7 +17,7 @@ namespace obotcha {
 
 //============= ThreadPriorityPoolExecutor ================
 _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int threadnum) {
-    mTaskMutex = createMutex("PriorityData");
+    mTaskMutex = createMutex();
     mTaskCond = createCondition();
 
     mThreads = createArrayList<Thread>();

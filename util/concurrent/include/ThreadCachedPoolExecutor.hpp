@@ -34,9 +34,23 @@ public:
         return 0;
     }
 
+    template<typename X>
+    int executeWithInTime(long timeout,sp<X> r) {
+        if(poolSubmit(r,timeout) == nullptr) {
+            return -InvalidStatus;
+        }
+        return 0;
+    }
+    
+
     template< class Function, class... Args >
     int execute( Function&& f, Args&&... args ) {
         return execute(createLambdaRunnable(f,args...));
+    }
+
+    template< class Function, class... Args >
+    int executeWithInTime(long timeout,Function&& f, Args&&... args ) {
+        return execute(timeout,createLambdaRunnable(f,args...));
     }
 
     bool isShutDown();
@@ -52,9 +66,19 @@ public:
         return poolSubmit(r);
     }
 
+    template <typename X>
+    Future submitWithInTime(long timeout,sp<X> r) {
+        return poolSubmit(r,timeout);
+    }
+
     template< class Function, class... Args >
     Future submit( Function&& f, Args&&... args ) {
         return poolSubmit(createLambdaRunnable(f,args...));
+    }
+
+    template< class Function, class... Args >
+    Future submitWithInTime(long timeout,Function&& f, Args&&... args ) {
+        return poolSubmit(createLambdaRunnable(f,args...),timeout);
     }
 
     int getThreadsNum();
@@ -66,7 +90,7 @@ public:
 private:
     void setUpOneIdleThread();
 
-    Future poolSubmit(Runnable r);
+    Future poolSubmit(Runnable r,long interval = 0);
     
     Mutex mMutex;
 

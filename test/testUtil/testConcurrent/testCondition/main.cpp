@@ -13,10 +13,12 @@ using namespace obotcha;
 extern void testConditionWait();
 extern void testConditionNotify();
 extern void testConditionNotifyAll();
+extern void testConditionDoubleLock();
 
 int main() {
-  //testConditionWait();
-  //testConditionNotify();
+  testConditionDoubleLock();
+  testConditionWait();
+  testConditionNotify();
   testConditionNotifyAll();
   return 0;
 }

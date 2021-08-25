@@ -30,10 +30,11 @@ private:
     sp<_WaitingTask> next;
 };
 
-DECLARE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(Thread) {
+
+DECLARE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(Thread,Executor) {
 
 public:
-    _ThreadScheduledPoolExecutor();
+    _ThreadScheduledPoolExecutor(int capacity = -1);
 
     ~_ThreadScheduledPoolExecutor();
 
@@ -49,13 +50,11 @@ public:
     
     template<typename X>
     Future schedule(long delay,sp<X> r) {
-        AutoLock l(mTaskMutex);
-        if(mStatus == ShutDown) {
-            return nullptr;
-        }
         WaitingTask task = createWaitingTask(delay,r);
-        addWaitingTaskLocked(task);
-        return createFuture(task);
+        if(addWaitingTaskLocked(task) == 0) {
+            return createFuture(task);
+        }
+        return nullptr;
     }
 
     template< class Function, class... Args >
@@ -64,22 +63,22 @@ public:
     }
 
 private:
-    enum Status {
-        Running,
-        ShutDown
-    };
 
     void run();
 
-    void addWaitingTaskLocked(WaitingTask);
+    int addWaitingTaskLocked(WaitingTask);
 
     ThreadCachedPoolExecutor mCachedExecutor;
 
     int mStatus;
 
     Mutex mTaskMutex;
-
+    Condition notEmpty;
+    Condition notFull;
     Condition mTaskWaitCond; 
+
+    int mCount;
+    int mCapacity;
 
     WaitingTask mTaskPool;
 };

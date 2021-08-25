@@ -33,15 +33,15 @@ class _Object {
 public:
     friend class _Field;
     friend class _JsonValue;
-    _Object() : mCount(0) { }
+    _Object() : __mCount__(0) { }
 
     inline void incStrong(__attribute__((unused)) const void* id) {
-        __sync_fetch_and_add(&mCount, 1);
+        __sync_fetch_and_add(&__mCount__, 1);
         return;
     }
 
     inline int decStrong(__attribute__((unused)) const void* id) {
-        if (__sync_fetch_and_sub(&mCount, 1) == 1) {
+        if (__sync_fetch_and_sub(&__mCount__, 1) == 1) {
             return OBJ_DEC_FREE;
         }
         return OBJ_DEC_NO_FREE;
@@ -49,7 +49,7 @@ public:
 
     //! DEBUGGING ONLY: Get current strong ref count.
     inline int32_t getStrongCount() {
-        return mCount;
+        return __mCount__;
     }
 
     inline virtual bool equals(const _Object *m) {
@@ -119,7 +119,7 @@ public:
     static const int __isReflected = 0;
 
 private:
-    mutable volatile int32_t mCount;
+    mutable volatile int32_t __mCount__;
 };
 
 //-------------------------- Implementation ----------------------------------//

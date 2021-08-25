@@ -13,20 +13,25 @@ namespace obotcha {
 
 //---------------WaitingTask---------------//
 _WaitingTask::_WaitingTask(long int interval,Runnable r):_ExecutorTask(r) {
-    //nothing
     next = nullptr;
     nextTime = st(System)::currentTimeMillis() + interval;
 }
 
 //---------------ScheduleService---------------//
-_ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor() {
+_ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity) {
     mCachedExecutor = createExecutorBuilder()
                         ->setTimeout(60*1000)
                         ->newCachedThreadPool();
     
-    mTaskMutex = createMutex("scheduleTaskMutex");
+    mTaskMutex = createMutex();
+    mStatus = Executing;
+    mCount = 0;
+    mCapacity = capacity;
+    notEmpty = createCondition();
+    notFull = createCondition();
     mTaskWaitCond = createCondition();
-    mStatus = Running;
+    mTaskPool = nullptr;
+
     start();
 }
 
@@ -44,6 +49,8 @@ int _ThreadScheduledPoolExecutor::shutdown() {
             task->cancel();
             task = task->next;
         }
+        notFull->notify();
+        notEmpty->notify();
         mTaskWaitCond->notify();
     }
 
@@ -68,8 +75,17 @@ int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
     return mCachedExecutor->awaitTermination(timeout);
 }
 
-void _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task) {
+int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task) {
     AutoLock l(mTaskMutex);
+    if(mStatus == ShutDown) {
+        return -1;
+    }
+
+    if(mCapacity > 0 && mCount == mCapacity) {
+        
+        notFull->wait(mTaskMutex);
+    }
+
     if(mTaskPool == nullptr) {
         mTaskPool = task;
     } else {
@@ -95,7 +111,11 @@ void _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task) {
             }
         }
     }
-    mTaskWaitCond->notify();
+
+    mCount++;
+    notEmpty->notify();
+
+    return 0;
 }
 
 void _ThreadScheduledPoolExecutor::run() {
@@ -109,7 +129,10 @@ void _ThreadScheduledPoolExecutor::run() {
             }
             
             if(mTaskPool == nullptr) {
-                mTaskWaitCond->wait(mTaskMutex);
+
+                notEmpty->wait(mTaskMutex);
+
+                
                 continue;
             }else {
                 long interval = (mTaskPool->nextTime - st(System)::currentTimeMillis());
@@ -127,7 +150,13 @@ void _ThreadScheduledPoolExecutor::run() {
             }
         }
 
-        mCachedExecutor->submit(mCurrentTask->getRunnable());        
+        mCachedExecutor->submit(mCurrentTask->getRunnable());
+        {
+
+            AutoLock l(mTaskMutex);
+            notFull->notify();   
+            mCount--; 
+        }
         mCurrentTask = nullptr;
     }
 }

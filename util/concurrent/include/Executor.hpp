@@ -13,7 +13,7 @@ namespace obotcha {
 DECLARE_CLASS(Executor) {
 public:
     enum Status {
-        Running = 0,
+        Executing = 0,
         ShutDown,
     };
 };
