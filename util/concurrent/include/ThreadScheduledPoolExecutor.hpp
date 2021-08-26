@@ -49,24 +49,34 @@ public:
     bool isTerminated();
     
     template<typename X>
-    Future schedule(long delay,sp<X> r) {
+    Future submitWithInTime(long timeout,long delay,sp<X> r) {
         WaitingTask task = createWaitingTask(delay,r);
-        if(addWaitingTaskLocked(task) == 0) {
+        if(addWaitingTaskLocked(task,timeout) == 0) {
             return createFuture(task);
         }
         return nullptr;
     }
+    
+    template<typename X>
+    Future submit(long delay,sp<X> r) {
+        return submitWithInTime(0,delay,r);
+    }
+    
+    template< class Function, class... Args >
+    Future submit(long delay,Function&& f, Args&&... args) {
+        return submitWithInTime(0,delay,createLambdaRunnable(f,args...));
+    }
 
     template< class Function, class... Args >
-    Future schedule(long delay,Function&& f, Args&&... args) {
-        return schedule(delay,createLambdaRunnable(f,args...));
+    Future submitWithInTime(long timeout,long delay,Function&& f, Args&&... args) {
+        return submitWithInTime(timeout,delay,createLambdaRunnable(f,args...));
     }
 
 private:
 
     void run();
 
-    int addWaitingTaskLocked(WaitingTask);
+    int addWaitingTaskLocked(WaitingTask,long);
 
     ThreadCachedPoolExecutor mCachedExecutor;
 

@@ -61,7 +61,7 @@ ThreadScheduledPoolExecutor _ExecutorBuilder::newScheduledThreadPool() {
 }
 
 ThreadPriorityPoolExecutor _ExecutorBuilder::newPriorityThreadPool() {
-    return createThreadPriorityPoolExecutor(threadnum);
+    return createThreadPriorityPoolExecutor(queuesize,threadnum);
 }
 
 }

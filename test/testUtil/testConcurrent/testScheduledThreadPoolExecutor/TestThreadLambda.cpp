@@ -19,7 +19,7 @@ int testThreadLambda() {
         long time1 = 0;
         long time2 = st(System)::currentTimeMillis();
 
-        t->schedule(5000,[&time1]() {
+        t->submit(5000,[&time1]() {
             printf("testThreadLambda inner log1 \n");
             time1 = st(System)::currentTimeMillis();
             printf("testThreadLambda inner log2 \n");

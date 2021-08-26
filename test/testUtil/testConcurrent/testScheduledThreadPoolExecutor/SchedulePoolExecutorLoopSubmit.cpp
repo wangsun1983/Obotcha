@@ -50,7 +50,7 @@ int scheduleloopsubmit() {
     ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
     long time = st(System)::currentTimeMillis();
     for(int i = 0; i < 32*1024;i++) {
-        pool->schedule(0,createMyLoopSubmit());
+        pool->submit(0,createMyLoopSubmit());
     }
     printf("finish submit cost %ld \n",st(System)::currentTimeMillis() - time);
 
@@ -65,7 +65,7 @@ int scheduleloopsubmit() {
     myloopvalue = createAtomicInteger(0);
     pool = createExecutorBuilder()->newScheduledThreadPool();
     for(int i = 0; i < 32*1024;i++) {
-        pool->schedule(100,createMyLoopSubmit());
+        pool->submit(100,createMyLoopSubmit());
     }
 
     sleep(5);
@@ -74,14 +74,14 @@ int scheduleloopsubmit() {
         printf("---[ScheduledThreadPoolExecutor LoopSubmit case2],value is %d [FAIL]--- \n",myloopvalue->get());
     }
     pool->shutdown();
-    
+
 #if 0 //need test
     //test3
     pool = createExecutorBuilder()->newScheduledThreadPool();
     time = st(System)::currentTimeMillis();
 
     for(int i = 0; i < 32*1024;i++) {
-        pool->schedule(createMyLoopTimeSubmit(),1);
+        pool->submit(createMyLoopTimeSubmit(),1);
     }
 
     sleep(5);

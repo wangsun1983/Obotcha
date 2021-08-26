@@ -43,7 +43,7 @@ int ReleaseTest() {
         {
             ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
             for(int i = 0; i < 50;i++) {
-                pool->schedule(100,createMyReleaseTest());
+                pool->submit(100,createMyReleaseTest());
             }
             //printf("test1 pool size is %d \n",pool->getStrongCount());
             sleep(2);
@@ -64,7 +64,7 @@ int ReleaseTest() {
 
             ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
             for(int i = 0; i < 50;i++) {
-                pool->schedule(100,createMyReleaseTest());
+                pool->submit(100,createMyReleaseTest());
             }
 
             sleep(3);

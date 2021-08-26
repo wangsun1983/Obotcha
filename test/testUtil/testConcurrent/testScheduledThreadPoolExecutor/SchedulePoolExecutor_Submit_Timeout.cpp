@@ -16,7 +16,7 @@
 
 using namespace obotcha;
 
-void testSubmitWait() {
+void testSubmitTimeout() {
   TimeWatcher watch = createTimeWatcher();
 
   while(1) {
@@ -24,19 +24,19 @@ void testSubmitWait() {
               ->setQueueSize(1)
               ->setMaxThreadNum(3)
               ->newScheduledThreadPool();
-    auto f1 = pool->submit(100,[]{
+    auto f1 = pool->submit(200,[]{
 
     });
 
     watch->start();
-    auto f2 = pool->submit(100,[]{
+    auto f2 = pool->submitWithInTime(50,100,[]{
 
     });
 
     long result = watch->stop();
 
-    if(result < 0 || result > 105) {
-      printf("---[ScheduledThreadPoolExecutor SubmitWait case1] [FAILED]--- \n");
+    if(result < 0 || result > 55) {
+      printf("---[ScheduledThreadPoolExecutor SubmitTimeout case1] [FAILED]--- \n");
       break;
     }
     pool->shutdown();
@@ -49,21 +49,19 @@ void testSubmitWait() {
               ->setQueueSize(2)
               ->setMaxThreadNum(3)
               ->newScheduledThreadPool();
+
     auto f1 = pool->submit(200,[]{
 
     });
 
-    auto f2 = pool->submit(300,[]{
-
-    });
-
     watch->start();
-    auto f3 = pool->submit(100,[]{
+    auto f2 = pool->submitWithInTime(50,100,[]{
 
     });
+
     long result = watch->stop();
-    if(result < 195 || result > 205) {
-      printf("---[ScheduledThreadPoolExecutor SubmitWait case2] [FAILED]---,result is %ld \n",result);
+    if(result < 0 || result > 5) {
+      printf("---[ScheduledThreadPoolExecutor SubmitTimeout case2] [FAILED]--- \n");
       break;
     }
     pool->shutdown();
@@ -71,5 +69,5 @@ void testSubmitWait() {
     break;
   }
 
-  printf("---[ScheduledThreadPoolExecutor SubmitWait case100] [OK]--- \n");
+  printf("---[ScheduledThreadPoolExecutor SubmitTimeout case100] [OK]--- \n");
 }

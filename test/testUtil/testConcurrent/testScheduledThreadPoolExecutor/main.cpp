@@ -22,16 +22,20 @@ extern int scheduleloopsubmit();
 extern int testThreadLambda();
 
 extern void testSubmitWait();
+extern void testSubmitTask();
+extern void testSubmitTimeout();
+extern void testAwaitTermination();
 
 int main() {
     testSubmitWait();
+    testSubmitTask();
+    testSubmitTimeout();
+    testAwaitTermination();
 #if 0
     testThreadLambda();
     baseTest();
     scheduleTest();
     ReleaseTest();
-    //fixRateTest();
-    //fixDelayTest();
     scheduleloopsubmit();
 #endif
     sleep(10);

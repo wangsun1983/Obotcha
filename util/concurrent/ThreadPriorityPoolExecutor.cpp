@@ -16,9 +16,12 @@
 namespace obotcha {
 
 //============= ThreadPriorityPoolExecutor ================
-_ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int threadnum) {
+_ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int capacity,int threadnum) {
     mTaskMutex = createMutex();
-    mTaskCond = createCondition();
+    notEmpty = createCondition();
+    notFull = createCondition();
+
+    mCapacity = capacity;
 
     mThreads = createArrayList<Thread>();
 
@@ -48,23 +51,21 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int threadnum) {
                     }
 
                     if(mCurrentTask == nullptr) {
-                        executor->mTaskCond->wait(executor->mTaskMutex);
+                        //executor->mTaskCond->wait(executor->mTaskMutex);
+                        executor->notEmpty->wait(executor->mTaskMutex);
                         continue;
                     }
                 }
 
                 mCurrentTask->execute();
                 mCurrentTask = nullptr;
+                executor->notFull->notify();
             }
         },AutoClone(this));
 
         thread->start();
         mThreads->add(thread);
     }
-}
-
-int _ThreadPriorityPoolExecutor::execute(Runnable r) {
-    return execute(Medium,r);
 }
 
 int _ThreadPriorityPoolExecutor::shutdown() {
@@ -90,7 +91,9 @@ int _ThreadPriorityPoolExecutor::shutdown() {
             ExecutorTask task = mLowPriorityTasks->takeLast();
             task->cancel();
         }
-        mTaskCond->notifyAll();
+
+        notEmpty->notifyAll();
+        notFull->notifyAll();
     }
 
     mThreads->foreach([](Thread &t){
@@ -147,10 +150,6 @@ int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
         iterator->next();
     }
     return 0;
-}
-
-Future _ThreadPriorityPoolExecutor::submit(Runnable task) {
-    return submit(Medium,task);
 }
 
 int _ThreadPriorityPoolExecutor::getThreadsNum() {

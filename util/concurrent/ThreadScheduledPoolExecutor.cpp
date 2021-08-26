@@ -75,15 +75,16 @@ int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
     return mCachedExecutor->awaitTermination(timeout);
 }
 
-int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task) {
+int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,long timeout) {
     AutoLock l(mTaskMutex);
     if(mStatus == ShutDown) {
         return -1;
     }
 
     if(mCapacity > 0 && mCount == mCapacity) {
-        
-        notFull->wait(mTaskMutex);
+        if(notFull->wait(mTaskMutex,timeout) == -WaitTimeout) {
+            return -1;
+        }
     }
 
     if(mTaskPool == nullptr) {
@@ -114,7 +115,6 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task) {
 
     mCount++;
     notEmpty->notify();
-
     return 0;
 }
 
@@ -129,10 +129,7 @@ void _ThreadScheduledPoolExecutor::run() {
             }
             
             if(mTaskPool == nullptr) {
-
                 notEmpty->wait(mTaskMutex);
-
-                
                 continue;
             }else {
                 long interval = (mTaskPool->nextTime - st(System)::currentTimeMillis());

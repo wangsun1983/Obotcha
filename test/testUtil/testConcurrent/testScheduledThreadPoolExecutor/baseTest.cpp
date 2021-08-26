@@ -56,7 +56,7 @@ int baseTest() {
     while(1) {
         ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
         printf("shudown trace1 \n");
-        pool->schedule(0,createBaseRunTest1());
+        pool->submit(0,createBaseRunTest1());
         printf("shudown trace2 \n");
         pool->shutdown();
         printf("shudown trace3 \n");
@@ -67,14 +67,14 @@ int baseTest() {
         //    break;
         //}
 
-        Future task = pool->schedule(0,createBaseRunTest1());
+        Future task = pool->submit(0,createBaseRunTest1());
         printf("shudown trace5 \n");
         if(task != nullptr) {
             printf("---[ScheduledThreadPoolExecutor Test {shutdown()} case2] [FAIL]--- \n");
             break;
         }
 
-        auto result = pool->schedule(0,createBaseRunTest1());
+        auto result = pool->submit(0,createBaseRunTest1());
         if(result != nullptr) {
             printf("---[ScheduledThreadPoolExecutor Test {shutdown()} case3] [FAIL]--- \n");
             break;
@@ -97,7 +97,7 @@ int baseTest() {
         //runTest2Mutex = createMutex();
         //runTest2Mutex->lock();
 
-        pool->schedule(0,createBaseRunTest2());
+        pool->submit(0,createBaseRunTest2());
         sleep(1);
         pool->shutdown();
 
@@ -130,7 +130,7 @@ int baseTest() {
             break;
         }
 
-        pool->schedule(0,createBaseRunTest1());
+        pool->submit(0,createBaseRunTest1());
         int v = pool->shutdown();
         printf("v is %d \n",v);
 
@@ -159,7 +159,7 @@ int baseTest() {
     //int awaitTermination(long timeout = max);
     while(1) {
         ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
-        pool->schedule(0,createBaseRunTest1());
+        pool->submit(0,createBaseRunTest1());
         pool->shutdown();
 
         long current = st(System)::currentTimeMillis();
@@ -180,7 +180,7 @@ int baseTest() {
     //submit(Runnable task);
     while(1) {
         ThreadScheduledPoolExecutor pool = createExecutorBuilder()->newScheduledThreadPool();
-        Future task = pool->schedule(0,createBaseRunTest1());
+        Future task = pool->submit(0,createBaseRunTest1());
         if(task == nullptr) {
             printf("---[ScheduledThreadPoolExecutor Test {submit()} case1] [FAIL]--- \n");
             break;

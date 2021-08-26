@@ -16,6 +16,14 @@ public:
         Executing = 0,
         ShutDown,
     };
+
+    enum Priority {
+        Low = 0,
+        Medium,
+        High,
+        NoUse
+    };
+
 };
 
 }
