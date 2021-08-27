@@ -61,12 +61,12 @@ public:
 
     
     template<typename X>
-    Future submit(int timeout,int level,sp<X> r) {
+    Future submit(int level,sp<X> r) {
         return submitWithInTime(0,level,r);
     }
 
     template<typename X>
-    Future submitWithInTime(int timeout,int level,sp<X> r) {
+    Future submitWithInTime(long timeout,int level,sp<X> r) {
         AutoLock l(mTaskMutex);
         if(mStatus == ShutDown) {
             return nullptr;

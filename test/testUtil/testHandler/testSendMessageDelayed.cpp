@@ -20,7 +20,7 @@ public:
 Mutex delayDataMutex = createMutex();
 std::vector<DelayTestData *> datas;
 
-DECLARE_CLASS(MyDelayedHandler) EXTENDS(Handler) {
+DECLARE_CLASS(MyDelayedHandler) IMPLEMENTS(Handler) {
 public:
 
   void handleMessage(Message msg) {
@@ -46,7 +46,7 @@ int testSendMessageDelayed() {
     }
     m->sendEmptyMessageDelayed(i,interval);
   }
-  
+
   sleep(5);
 
   for(int i = 0;i<1024;i++) {

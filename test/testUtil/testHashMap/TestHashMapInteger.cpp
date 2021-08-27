@@ -30,7 +30,7 @@ void testHashMapInteger() {
         break;
       }
 
-      printf("---[HashMap Integer Test {null test} case2] [Success]--- \n");
+      printf("---[HashMap Integer Test {null test} case2] [OK]--- \n");
       break;
     }
 
@@ -64,7 +64,7 @@ void testHashMapInteger() {
           break;
         }
 
-        printf("---[HashMap Integer Test {put(T t,U u)/get(T t)} case5] [Success]--- \n");
+        printf("---[HashMap Integer Test {put(T t,U u)/get(T t)} case5] [OK]--- \n");
         break;
     }
 
@@ -97,7 +97,7 @@ void testHashMapInteger() {
         break;
       }
 
-      printf("---[HashMap Integer Test {remove(T t)} case4] [Success]--- \n");
+      printf("---[HashMap Integer Test {remove(T t)} case4] [OK]--- \n");
       break;
     }
 
@@ -120,7 +120,7 @@ void testHashMapInteger() {
         break;
       }
 
-      printf("---[HashMap Integer Test {isEmpty()} case3] [Success]--- \n");
+      printf("---[HashMap Integer Test {isEmpty()} case3] [OK]--- \n");
       break;
     }
 
@@ -147,7 +147,7 @@ void testHashMapInteger() {
         break;
       }
 
-      printf("---[HashMap Integer Test {clear()} case3] [Success]--- \n");
+      printf("---[HashMap Integer Test {clear()} case3] [OK]--- \n");
       break;
     }
 
@@ -164,7 +164,7 @@ void testHashMapInteger() {
         break;
       }
 
-      printf("---[HashMap Integer Test {size()} case1] [Success]--- \n");
+      printf("---[HashMap Integer Test {size()} case1] [OK]--- \n");
       break;
     }
 
@@ -200,7 +200,7 @@ void testHashMapInteger() {
           break;
       }
 
-      printf("---[HashMap Integer Test {keySet()} case4] [Success]--- \n");
+      printf("---[HashMap Integer Test {keySet()} case4] [OK]--- \n");
       break;
     }
 
@@ -230,7 +230,7 @@ void testHashMapInteger() {
           break;
       }
 
-      printf("---[HashMap Integer Test {entrySet()} case3] [Success]--- \n");
+      printf("---[HashMap Integer Test {entrySet()} case3] [OK]--- \n");
       break;
     }
 
@@ -262,7 +262,7 @@ void testHashMapInteger() {
           index++;
       }
 
-      printf("---[MapIterator Integer Test {getKey/getValue()} case3] [Success]--- \n");
+      printf("---[MapIterator Integer Test {getKey/getValue()} case3] [OK]--- \n");
       break;
 
     }

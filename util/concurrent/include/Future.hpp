@@ -19,6 +19,8 @@ public:
     T getResult(long millseconds = 0) {
         return mTask->getResult<T>(millseconds);
     }
+
+    int getStatus();
     
     enum Status {
         Waiting = st(ExecutorTask)::Waiting,

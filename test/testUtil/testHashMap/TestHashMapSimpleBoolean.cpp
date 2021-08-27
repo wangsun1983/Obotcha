@@ -38,7 +38,7 @@ void testHashMapSimpleBoolean() {
           break;
         }
 
-        printf("---[HashMap Simple bool Test {put(T t,U u)/get(T t)} case5] [Success]--- \n");
+        printf("---[HashMap Simple bool Test {put(T t,U u)/get(T t)} case5] [OK]--- \n");
         break;
     }
 
@@ -70,7 +70,7 @@ void testHashMapSimpleBoolean() {
         break;
       }
 
-      printf("---[HashMap Simple bool Test {remove(T t)} case4] [Success]--- \n");
+      printf("---[HashMap Simple bool Test {remove(T t)} case4] [OK]--- \n");
       break;
     }
 
@@ -93,7 +93,7 @@ void testHashMapSimpleBoolean() {
         break;
       }
 
-      printf("---[HashMap Simple bool Test {isEmpty()} case3] [Success]--- \n");
+      printf("---[HashMap Simple bool Test {isEmpty()} case3] [OK]--- \n");
       break;
     }
 
@@ -120,7 +120,7 @@ void testHashMapSimpleBoolean() {
         break;
       }
 
-      printf("---[HashMap Simple bool Test {clear()} case3] [Success]--- \n");
+      printf("---[HashMap Simple bool Test {clear()} case3] [OK]--- \n");
       break;
     }
 
@@ -137,7 +137,7 @@ void testHashMapSimpleBoolean() {
         break;
       }
 
-      printf("---[HashMap Simple bool Test {size()} case1] [Success]--- \n");
+      printf("---[HashMap Simple bool Test {size()} case1] [OK]--- \n");
       break;
     }
 
@@ -166,7 +166,7 @@ void testHashMapSimpleBoolean() {
           break;
       }
 
-      printf("---[HashMap Simple bool Test {keySet()} case4] [Success]--- \n");
+      printf("---[HashMap Simple bool Test {keySet()} case4] [OK]--- \n");
       break;
     }
 
@@ -198,7 +198,7 @@ void testHashMapSimpleBoolean() {
           break;
       }
 
-      printf("---[HashMap Simple bool Test {entrySet()} case3] [Success]--- \n");
+      printf("---[HashMap Simple bool Test {entrySet()} case3] [OK]--- \n");
       break;
     }
 
@@ -232,7 +232,7 @@ void testHashMapSimpleBoolean() {
           index++;
       }
 
-      printf("---[MapIterator Boolean Test {getKey/getValue()} case3] [Success]--- \n");
+      printf("---[MapIterator Boolean Test {getKey/getValue()} case3] [OK]--- \n");
       break;
     }
 

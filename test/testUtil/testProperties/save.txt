@@ -1,2 +1,0 @@
-m1=m1value
-m2=m2value

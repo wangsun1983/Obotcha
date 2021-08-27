@@ -32,6 +32,7 @@ private:
     FileDescriptor mFd;
 
     void _write(ByteArray);
+
 };
 
 }

@@ -27,6 +27,10 @@ void _Future::cancel() {
     mTask->cancel();
 }
 
+int _Future::getStatus() {
+    return mTask->getStatus();
+}
+
 _Future::~_Future() {
 }
 

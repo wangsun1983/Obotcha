@@ -6,7 +6,6 @@ include ./util/coroutine/makefile
 
 objs += $(outtmp)/calendar.o \
         $(outtmp)/timezone.o \
-		$(outtmp)/properties.o \
 		$(outtmp)/log.o \
 		$(outtmp)/uuid.o \
 		$(outtmp)/random.o \
@@ -26,9 +25,6 @@ $(outtmp)/stacktrace.o :$(utilDir)/StackTrace.cpp
 
 $(outtmp)/timezone.o :$(utilDir)/TimeZone.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/TimeZone.cpp -o $(outtmp)/timezone.o
-
-$(outtmp)/properties.o :$(utilDir)/Properties.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Properties.cpp -o $(outtmp)/properties.o
 
 $(outtmp)/log.o :$(utilDir)/Log.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(utilDir)/Log.cpp -o $(outtmp)/log.o

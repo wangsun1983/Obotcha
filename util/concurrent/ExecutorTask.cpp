@@ -14,6 +14,7 @@
 #include "AutoLock.hpp"
 #include "TaskResult.hpp"
 
+
 namespace obotcha {
 
 _ExecutorTask::_ExecutorTask(Runnable r) {

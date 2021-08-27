@@ -29,9 +29,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpurlbuilder.o \
 		$(outtmp)/httpresponse.o \
 		$(outtmp)/httpconnection.o \
-		$(outtmp)/httpconnectionbuilder.o \
-		$(outtmp)/httpasyncconnectionpool.o \
-		$(outtmp)/httpasyncconnection.o \
 		$(outtmp)/httpmethod.o \
 		$(outtmp)/httpheader.o \
 		$(outtmp)/httpheaderparser.o \
@@ -145,17 +142,8 @@ $(outtmp)/httpresourcemanager.o :$(netDir)/http/HttpResourceManager.cpp
 $(outtmp)/httpresponseentity.o :$(netDir)/http/HttpResponseEntity.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponseEntity.cpp -o $(outtmp)/httpresponseentity.o 
 
-$(outtmp)/httpasyncconnectionpool.o :$(netDir)/http/HttpAsyncConnectionPool.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAsyncConnectionPool.cpp -o $(outtmp)/httpasyncconnectionpool.o 
-
-$(outtmp)/httpasyncconnection.o :$(netDir)/http/HttpAsyncConnection.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAsyncConnection.cpp -o $(outtmp)/httpasyncconnection.o 
-
 $(outtmp)/httpconnection.o :$(netDir)/http/HttpConnection.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpConnection.cpp -o $(outtmp)/httpconnection.o 
-
-$(outtmp)/httpconnectionbuilder.o :$(netDir)/http/HttpConnectionBuilder.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpConnectionBuilder.cpp -o $(outtmp)/httpconnectionbuilder.o 
 
 $(outtmp)/httprouter.o :$(netDir)/http/HttpRouter.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRouter.cpp -o $(outtmp)/httprouter.o 

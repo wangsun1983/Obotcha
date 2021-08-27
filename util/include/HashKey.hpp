@@ -51,7 +51,7 @@ class KeyComapre
 public:
     bool operator()(const T &k1, const T &k2) const {
         if(k1 != nullptr && k2 != nullptr) {
-            return k1->hashcode() == k2->hashcode() && k1 == k2;
+            return k1 == k2;
         } else if(k1 == nullptr && k2 == nullptr) {
             return true;
         }

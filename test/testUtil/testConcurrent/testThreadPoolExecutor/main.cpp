@@ -25,8 +25,11 @@ extern void testThreadPoolSubmit_Wait();
 extern void testThreadPoolSubmit_ShutDown();
 extern void testThreadLambdaSubmitTimeout();
 extern void testThreadLambdaExecuteTimeout();
+extern void testThreadPool_MultiThread();
 
 int main() {
+    testThreadPool_MultiThread();
+
     testThreadLambdaExecuteTimeout();
     testThreadLambdaSubmitTimeout();
 

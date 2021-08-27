@@ -19,10 +19,14 @@
 
 namespace obotcha {
 
-_HttpConnection::_HttpConnection(HttpUrl url,HttpOption option) {
+SocketMonitor _HttpConnection::mSocketMonitor = nullptr;
+
+_HttpConnection::_HttpConnection(sp<_HttpUrl> url,bool async, HttpConnectionListener l, HttpOption option) {
+    isAsync = async;
     mUrl = url;
     mParser = createHttpPacketParser();
     mOption = option;
+    mListener = l;
 }
 
 Socket _HttpConnection::getSocket() {
@@ -40,8 +44,21 @@ int _HttpConnection::connect() {
 
     mSocket = createSocketBuilder()->setAddress(inetAddr)->setOption(mOption)->newSocket();
     int result = mSocket->connect();
+    if(result < 0) {
+        return result;
+    }
+
     mInputStream = mSocket->getInputStream();
     writer = createHttpRequestWriter(mSocket->getOutputStream());
+
+    if(isAsync) {
+        static std::once_flag flag;
+        std::call_once(flag, [&]() {
+            mSocketMonitor = createSocketMonitor();
+        });
+
+        mSocketMonitor->bind(mSocket,AutoClone(this));
+    }
     return result;
 }
 
@@ -49,6 +66,11 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
     if(writer->write(req) <= 0) {
         return nullptr;
     }
+
+    if(isAsync) {
+        return createHttpResponse(); //return dummy response
+    }
+
     int buffsize = (mOption == nullptr?st(HttpOption)::DefaultBuffSize:mOption->getBuffSize());
     ByteArray result = createByteArray(buffsize);
 
@@ -77,10 +99,33 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
 }
 
 int _HttpConnection::close() {
+    if(isAsync) {
+        mSocketMonitor->remove(mSocket);
+    }
+
     mSocket->close();
     return 0;
 }
 
+void _HttpConnection::onSocketMessage(int event,Socket sock,ByteArray data) {
+    switch(event) {
+        case st(SocketListener)::Disconnect:
+            mListener->onDisconnect();
+            break;
+
+        case st(SocketListener)::Message:
+            mParser->pushHttpData(data);
+            ArrayList<HttpPacket> responses = mParser->doParse();
+            if(responses->size() > 0) {
+                ListIterator<HttpPacket> iterator = responses->getIterator();
+                while(iterator->hasValue()) {
+                    mListener->onResponse(createHttpResponse(iterator->getValue()));
+                    iterator->next();
+                }
+            }
+            break;
+    }
+}
 
 }
 

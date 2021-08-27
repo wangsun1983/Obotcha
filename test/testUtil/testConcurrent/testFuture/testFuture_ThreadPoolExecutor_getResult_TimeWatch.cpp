@@ -97,8 +97,8 @@ void testThreadPoolExecutor_GetResult_TimeWatch() {
       }
 
       long interval = watcher->stop();
-      if(isException || interval<100 || interval > 105 || ret != 123) {
-        printf("---[Future ThreadPoolExecutor GetResult TimeWatch case5 -------[FAILED] interval is %ld \n",interval);
+      if(!isException || interval<100 || interval > 105 || ret != 0) {
+        printf("---[Future ThreadPoolExecutor GetResult TimeWatch case5 -------[FAILED] interval is %ld,ret is %d \n",interval,ret);
         break;
       }
 

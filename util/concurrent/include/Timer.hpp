@@ -15,14 +15,24 @@ DECLARE_CLASS(Timer) IMPLEMENTS(Thread) {
 public:
     _Timer();
 
-	void schedule(Runnable r,long);
+	Future schedule(long,Runnable r);
 
-    void schedule(Runnable r,DateTime);
+    Future schedule(DateTime,Runnable r);
+
+    template< class Function, class... Args >
+    Future schedule(long delay,Function&& f, Args&&... args) {
+        return schedule(delay,createLambdaRunnable(f,args...));
+    }
+
+    template< class Function, class... Args >
+    Future schedule(DateTime date,Function&& f, Args&&... args) {
+        return schedule(date,createLambdaRunnable(f,args...));
+    }
 
     ~_Timer();
 
 private:
-    ThreadScheduledPoolExecutor mScheduledExecutor;
+    static ThreadScheduledPoolExecutor mScheduledExecutor;
 };
 
 }

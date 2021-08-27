@@ -13,15 +13,9 @@
 
 using namespace obotcha;
 
-extern void testSubmitWait();
-extern void testSubmitPriority();
-extern void testSubmitMultiThread();
-extern void testAwaitTermination();
+extern void testTimerSchedule();
 
 int main() {
-    testSubmitWait();
-    testSubmitPriority();
-    testSubmitMultiThread();
-    testAwaitTermination();
+    testTimerSchedule();
     return 1;
 }

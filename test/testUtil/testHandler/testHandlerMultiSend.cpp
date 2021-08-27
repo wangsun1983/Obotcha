@@ -7,7 +7,7 @@
 
 using namespace obotcha;
 
-DECLARE_CLASS(MyMultiHandler1) EXTENDS(Handler) {
+DECLARE_CLASS(MyMultiHandler1) IMPLEMENTS(Handler) {
 public:
   _MyMultiHandler1() {
   }
@@ -22,7 +22,7 @@ public:
 
 MyMultiHandler1 mulitHandler = createMyMultiHandler1();
 
-DECLARE_CLASS(SendThread) EXTENDS(Thread) {
+DECLARE_CLASS(SendThread) IMPLEMENTS(Thread) {
 public:
   void run() {
     for(int index = 0;index<1024*5;index++) {

@@ -14,7 +14,7 @@ public:
 
   uint64_t hashcode() {
       return value;
-  } 
+  }
 };
 
 void testHashMapKeyCompare() {
@@ -28,13 +28,8 @@ void testHashMapKeyCompare() {
     k2->value = 100;
 
     String v1 = map->get(k2);
-    if(v1 == nullptr) {
+    if(v1 != nullptr) {
         printf("---[HashMap KeyCompare Test case1] [FAILED]--- \n");
-        return;
-    }
-
-    if(!v1->equals("hello world")) {
-        printf("---[HashMap KeyCompare Test case2] [FAILED]--- \n");
         return;
     }
 
@@ -46,7 +41,7 @@ void testHashMapKeyCompare() {
         return;
     }
 
-    printf("---[HashMap KeyCompare Test case4] [Success]--- \n");
+    printf("---[HashMap KeyCompare Test case4] [OK]--- \n");
     return;
 
 }

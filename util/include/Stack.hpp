@@ -6,6 +6,7 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
+#include "ContainerValue.hpp"
 
 namespace obotcha {
 
@@ -26,6 +27,10 @@ public:
     }
 
     T pop() {
+        if(element.size() == 0) {
+            return ContainerValue<T>(nullptr).get();
+        }
+
         T result = element.back();
         element.pop_back();
         return result;

@@ -20,6 +20,7 @@
 #include "Mutex.hpp"
 #include "InitializeException.hpp"
 #include "IllegalStateException.hpp"
+
 namespace obotcha {
 
 _Condition::_Condition() {

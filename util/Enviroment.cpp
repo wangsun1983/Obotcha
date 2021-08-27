@@ -98,39 +98,39 @@ sp<_Enviroment> _Enviroment::getInstance() {
 }
 
 _Enviroment::_Enviroment() {
-    mProp = createProperties();
+    mProp = createHashMap<String,String>();
     
-    mProp->set(gHttpBufferSize,st(String)::valueOf(DefaultHttpBufferSize));
-    mProp->set(gHttpServerThreadsNum,st(String)::valueOf(DefaultgHttpServerThreadsNum));
-    mProp->set(gWebSocketBufferSize,st(String)::valueOf(DefaultWebSocketBufferSize));
-    mProp->set(gWebSocketBufferSize,st(String)::valueOf(DefaultWebSocketRcvThreadsNum));
-    mProp->set(gWebSocketFrameSize,st(String)::valueOf(DefaultWebSocketFrameSize));
-    mProp->set(gLocalSocketServerRcvBufferSize,st(String)::valueOf(DefaultLocalSocketServerRcvBufferSize));
-    mProp->set(gLocalSocketServerClientNums,st(String)::valueOf(DefaultLocalSocketServerClientNums));
-    mProp->set(gTcpServerEpollSize,st(String)::valueOf(DefaultTcpServerEpollSize));
-    mProp->set(gTcpServerRcvBuffSize,st(String)::valueOf(DefaultTcpServerRcvBuffSize));
-    mProp->set(gTcpServerClientNums,st(String)::valueOf(DefaultTcpServerClientNums));
-    mProp->set(gLocalSocketServerEpollSize,st(String)::valueOf(DefaultLocalSocketServerEpollSize));
-    mProp->set(gLocalSocketBufferSize,st(String)::valueOf(DefaultLocalSocketBufferSize));
-    mProp->set(gLocalSocketClientEpollSize,st(String)::valueOf(DefaultLocalSocketClientEpollSize));
-    mProp->set(gAsyncTcpClientEpollSize,st(String)::valueOf(DefaultAsyncTcpClientEpollSize));
-    mProp->set(gAsyncTcpClientBufferSize,st(String)::valueOf(DefaultAsyncTcpClientBufferSize));
-    mProp->set(gUdpClientEpollSize,st(String)::valueOf(DefaultUdpClientEpollSize));
-    mProp->set(gUdpClientBufferSize,st(String)::valueOf(DefaultUdpClientBufferSize));
-    mProp->set(gUdpServerEpollSize,st(String)::valueOf(DefaultUdpServerEpollSize));
-    mProp->set(gUdpServerBufferSize,st(String)::valueOf(DefaultUdpServerBufferSize));
-    mProp->set(gHttpServerPort,st(String)::valueOf(DefaultHttpServerPort));
-    mProp->set(gHttpServerSendFileBufferSize,st(String)::valueOf(DefaultHttpServerSendFileBufferSize));
-    mProp->set(gHttpMultiPartDispositionSize,st(String)::valueOf(DefaultHttpMultiPartDispositionSize));
-    mProp->set(gHttpMultiPartContentTypeSize,st(String)::valueOf(DefaultHttpMultiContentTypeSize));
-    mProp->set(gHttpMultiPartContentSize,st(String)::valueOf(DefaultHttpMultiContentSize));
-    mProp->set(gHttpMultiPartFilePath,DefaultMultiPartFilePath);
-    mProp->set(gHttpSslKeyPath,DefaultHttpSslKeyPath);
-    mProp->set(gHttpSslCertificatePath,DefaultHttpSslCertificatePath);
+    mProp->put(gHttpBufferSize,st(String)::valueOf(DefaultHttpBufferSize));
+    mProp->put(gHttpServerThreadsNum,st(String)::valueOf(DefaultgHttpServerThreadsNum));
+    mProp->put(gWebSocketBufferSize,st(String)::valueOf(DefaultWebSocketBufferSize));
+    mProp->put(gWebSocketBufferSize,st(String)::valueOf(DefaultWebSocketRcvThreadsNum));
+    mProp->put(gWebSocketFrameSize,st(String)::valueOf(DefaultWebSocketFrameSize));
+    mProp->put(gLocalSocketServerRcvBufferSize,st(String)::valueOf(DefaultLocalSocketServerRcvBufferSize));
+    mProp->put(gLocalSocketServerClientNums,st(String)::valueOf(DefaultLocalSocketServerClientNums));
+    mProp->put(gTcpServerEpollSize,st(String)::valueOf(DefaultTcpServerEpollSize));
+    mProp->put(gTcpServerRcvBuffSize,st(String)::valueOf(DefaultTcpServerRcvBuffSize));
+    mProp->put(gTcpServerClientNums,st(String)::valueOf(DefaultTcpServerClientNums));
+    mProp->put(gLocalSocketServerEpollSize,st(String)::valueOf(DefaultLocalSocketServerEpollSize));
+    mProp->put(gLocalSocketBufferSize,st(String)::valueOf(DefaultLocalSocketBufferSize));
+    mProp->put(gLocalSocketClientEpollSize,st(String)::valueOf(DefaultLocalSocketClientEpollSize));
+    mProp->put(gAsyncTcpClientEpollSize,st(String)::valueOf(DefaultAsyncTcpClientEpollSize));
+    mProp->put(gAsyncTcpClientBufferSize,st(String)::valueOf(DefaultAsyncTcpClientBufferSize));
+    mProp->put(gUdpClientEpollSize,st(String)::valueOf(DefaultUdpClientEpollSize));
+    mProp->put(gUdpClientBufferSize,st(String)::valueOf(DefaultUdpClientBufferSize));
+    mProp->put(gUdpServerEpollSize,st(String)::valueOf(DefaultUdpServerEpollSize));
+    mProp->put(gUdpServerBufferSize,st(String)::valueOf(DefaultUdpServerBufferSize));
+    mProp->put(gHttpServerPort,st(String)::valueOf(DefaultHttpServerPort));
+    mProp->put(gHttpServerSendFileBufferSize,st(String)::valueOf(DefaultHttpServerSendFileBufferSize));
+    mProp->put(gHttpMultiPartDispositionSize,st(String)::valueOf(DefaultHttpMultiPartDispositionSize));
+    mProp->put(gHttpMultiPartContentTypeSize,st(String)::valueOf(DefaultHttpMultiContentTypeSize));
+    mProp->put(gHttpMultiPartContentSize,st(String)::valueOf(DefaultHttpMultiContentSize));
+    mProp->put(gHttpMultiPartFilePath,DefaultMultiPartFilePath);
+    mProp->put(gHttpSslKeyPath,DefaultHttpSslKeyPath);
+    mProp->put(gHttpSslCertificatePath,DefaultHttpSslCertificatePath);
 }
 
 void _Enviroment::set(String tag,String v) {
-    mProp->set(tag,v);
+    mProp->put(tag,v);
 }
 
 int _Enviroment::getInt(String v,int defaultvalue) {

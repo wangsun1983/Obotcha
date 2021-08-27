@@ -6,7 +6,7 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "Properties.hpp"
+#include "HashMap.hpp"
 #include "Mutex.hpp"
 
 namespace obotcha {
@@ -113,7 +113,7 @@ private:
     static std::once_flag s_flag;
     static Enviroment mInstance;
    
-    Properties mProp;
+    HashMap<String,String> mProp;
 };
 
 }

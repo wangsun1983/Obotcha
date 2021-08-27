@@ -15,6 +15,7 @@
 #include "ThreadLocal.hpp"
 #include "AtomicInteger.hpp"
 #include "InterruptedException.hpp"
+#include "Condition.hpp"
 
 namespace obotcha {
 
@@ -23,8 +24,6 @@ class _Thread;
 DECLARE_CLASS(Thread) {
 
 public:
-    friend class _Condition;
-
     //friend void doThreadExit(sp<Thread> thread);
     _Thread();
     

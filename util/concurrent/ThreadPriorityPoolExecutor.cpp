@@ -55,11 +55,10 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int capacity,int thread
                         executor->notEmpty->wait(executor->mTaskMutex);
                         continue;
                     }
+                    executor->notFull->notify();
                 }
-
                 mCurrentTask->execute();
                 mCurrentTask = nullptr;
-                executor->notFull->notify();
             }
         },AutoClone(this));
 

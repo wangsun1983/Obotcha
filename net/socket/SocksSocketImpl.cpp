@@ -14,6 +14,7 @@
 #include "InitializeException.hpp"
 #include "System.hpp"
 #include "FileDescriptor.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -28,6 +29,11 @@ _SocksSocketImpl::_SocksSocketImpl(InetAddress address,SocketOption option):_Soc
 }
 
 int _SocksSocketImpl::connect() {
+    //check whether fd is async
+    if((fcntl(sock->getFd(), F_GETFL, 0)|O_NONBLOCK) != 0) {
+        LOG(ERROR)<<"socket fd is async,connect will fail!!!";
+    }
+
     if(TEMP_FAILURE_RETRY(::connect(sock->getFd(), (struct sockaddr *)&mSockAddr, sizeof(mSockAddr))) < 0) {
         sock->close();
 

@@ -87,7 +87,6 @@ void _AsyncOutputChannel::notifyWrite() {
     }
 }
 
-
 FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
     return mFd;
 }

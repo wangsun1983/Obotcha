@@ -44,7 +44,7 @@ void testHashMapString() {
           break;
         }
 
-        printf("---[HashMap String Test {put(T t,U u)/get(T t)} case5] [Success]--- \n");
+        printf("---[HashMap String Test {put(T t,U u)/get(T t)} case5] [OK]--- \n");
         break;
     }
 
@@ -77,7 +77,7 @@ void testHashMapString() {
         break;
       }
 
-      printf("---[HashMap String Test {remove(T t)} case4] [Success]--- \n");
+      printf("---[HashMap String Test {remove(T t)} case4] [OK]--- \n");
       break;
     }
 
@@ -100,7 +100,7 @@ void testHashMapString() {
         break;
       }
 
-      printf("---[HashMap String Test {isEmpty()} case3] [Success]--- \n");
+      printf("---[HashMap String Test {isEmpty()} case3] [OK]--- \n");
       break;
     }
 
@@ -127,7 +127,7 @@ void testHashMapString() {
         break;
       }
 
-      printf("---[HashMap String Test {clear()} case3] [Success]--- \n");
+      printf("---[HashMap String Test {clear()} case3] [OK]--- \n");
       break;
     }
 
@@ -144,7 +144,7 @@ void testHashMapString() {
         break;
       }
 
-      printf("---[HashMap String Test {size()} case1] [Success]--- \n");
+      printf("---[HashMap String Test {size()} case1] [OK]--- \n");
       break;
     }
 
@@ -181,7 +181,7 @@ void testHashMapString() {
           break;
       }
 
-      printf("---[HashMap String Test {keySet()} case4] [Success]--- \n");
+      printf("---[HashMap String Test {keySet()} case4] [OK]--- \n");
       break;
     }
 
@@ -211,7 +211,7 @@ void testHashMapString() {
           break;
       }
 
-      printf("---[HashMap String Test {entrySet()} case3] [Success]--- \n");
+      printf("---[HashMap String Test {entrySet()} case3] [OK]--- \n");
       break;
     }
 
@@ -243,7 +243,7 @@ void testHashMapString() {
           index++;
       }
 
-      printf("---[MapIterator String Test {getKey/getValue()} case3] [Success]--- \n");
+      printf("---[MapIterator String Test {getKey/getValue()} case3] [OK]--- \n");
       break;
 
     }

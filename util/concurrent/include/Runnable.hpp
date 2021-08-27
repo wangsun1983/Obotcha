@@ -7,25 +7,13 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "Mutex.hpp"
-#include "AutoLock.hpp"
-#include "Condition.hpp"
-#include "IllegalStateException.hpp"
-#include "Error.hpp"
 #include "OStdApply.hpp"
-#include "NullPointerException.hpp"
 
 namespace obotcha {
-
-class _Future;
-class _ExecutorTask;
 
 DECLARE_CLASS(Runnable) {
 
 public:
-    friend class _Future;
-    friend class _ExecutorTask;
-
 	virtual void run() = 0;
     
     virtual void onInterrupt(){};

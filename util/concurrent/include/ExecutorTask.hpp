@@ -7,6 +7,9 @@
 #include "InterruptedException.hpp"
 #include "TimeOutException.hpp"
 #include "OStdInstanceOf.hpp"
+#include "Error.hpp"
+#include "NullPointerException.hpp"
+#include "AutoLock.hpp"
 
 namespace obotcha {
 

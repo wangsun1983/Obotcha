@@ -22,15 +22,17 @@
 #include "Handler.hpp"
 #include "HttpOption.hpp"
 #include "HttpConnectionListener.hpp"
+#include "SocketMonitor.hpp"
+#include "SocketListener.hpp"
 
 namespace obotcha {
 
 class _HttpUrl;
 
-DECLARE_CLASS(HttpConnection) {
+DECLARE_CLASS(HttpConnection) IMPLEMENTS(SocketListener){
 
 public:
-    _HttpConnection(sp<_HttpUrl> url,HttpOption option = nullptr);
+    _HttpConnection(sp<_HttpUrl> url,bool async = false, HttpConnectionListener l = nullptr, HttpOption option = nullptr);
     
     Socket getSocket();
     
@@ -52,6 +54,14 @@ private:
     sp<_HttpUrl> mUrl;
 
     HttpOption mOption;
+
+    HttpConnectionListener mListener;
+
+    bool isAsync;
+
+    static SocketMonitor mSocketMonitor;
+
+    void onSocketMessage(int,Socket,ByteArray);
 };
 
 }

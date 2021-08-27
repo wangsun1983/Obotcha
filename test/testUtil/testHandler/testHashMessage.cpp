@@ -7,10 +7,10 @@
 
 using namespace obotcha;
 
-DECLARE_CLASS(HasMessageHandler) EXTENDS(Handler) {
+DECLARE_CLASS(HasMessageHandler) IMPLEMENTS(Handler) {
 public:
-  
-  void handleMessage(Message msg) { 
+
+  void handleMessage(Message msg) {
   }
 
 };
@@ -33,5 +33,5 @@ int testHasMessage() {
    }
 
   printf("---[Handler Test {hasMessage} case3] [OK]--- \n");
-    
+
 }

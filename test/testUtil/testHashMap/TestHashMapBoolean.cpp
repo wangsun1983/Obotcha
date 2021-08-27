@@ -45,7 +45,7 @@ void testHashMapBoolean() {
           break;
         }
 
-        printf("---[HashMap Boolean Test {put(T t,U u)/get(T t)} case5] [Success]--- \n");
+        printf("---[HashMap Boolean Test {put(T t,U u)/get(T t)} case5] [OK]--- \n");
         break;
     }
 
@@ -78,7 +78,7 @@ void testHashMapBoolean() {
         break;
       }
 
-      printf("---[HashMap Boolean Test {remove(T t)} case4] [Success]--- \n");
+      printf("---[HashMap Boolean Test {remove(T t)} case4] [OK]--- \n");
       break;
     }
 
@@ -101,7 +101,7 @@ void testHashMapBoolean() {
         break;
       }
 
-      printf("---[HashMap Boolean Test {isEmpty()} case3] [Success]--- \n");
+      printf("---[HashMap Boolean Test {isEmpty()} case3] [OK]--- \n");
       break;
     }
 
@@ -128,7 +128,7 @@ void testHashMapBoolean() {
         break;
       }
 
-      printf("---[HashMap Boolean Test {clear()} case3] [Success]--- \n");
+      printf("---[HashMap Boolean Test {clear()} case3] [OK]--- \n");
       break;
     }
 
@@ -145,7 +145,7 @@ void testHashMapBoolean() {
         break;
       }
 
-      printf("---[HashMap Boolean Test {size()} case1] [Success]--- \n");
+      printf("---[HashMap Boolean Test {size()} case1] [OK]--- \n");
       break;
     }
 
@@ -183,7 +183,7 @@ void testHashMapBoolean() {
           break;
       }
 
-      printf("---[HashMap Boolean Test {keySet()} case4] [Success]--- \n");
+      printf("---[HashMap Boolean Test {keySet()} case4] [OK]--- \n");
       break;
     }
 
@@ -215,7 +215,7 @@ void testHashMapBoolean() {
           break;
       }
 
-      printf("---[HashMap Boolean Test {entrySet()} case3] [Success]--- \n");
+      printf("---[HashMap Boolean Test {entrySet()} case3] [OK]--- \n");
       break;
     }
 
@@ -249,7 +249,7 @@ void testHashMapBoolean() {
           index++;
       }
 
-      printf("---[MapIterator Boolean Test {getKey/getValue()} case3] [Success]--- \n");
+      printf("---[MapIterator Boolean Test {getKey/getValue()} case3] [OK]--- \n");
       break;
 
     }
