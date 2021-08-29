@@ -16,6 +16,8 @@ public:
     int countDown();
 
     int await(long interval = 0);
+
+    int getCount();
     
 private:
     int count;

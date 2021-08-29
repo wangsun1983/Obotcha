@@ -28,8 +28,6 @@ void _EPollFileObserver::run() {
             if(fd == mPipe->getReadPipe()) {
                 return;
             }
-            //printf("on epoll fd is %d \n",fd);
-
             uint32_t recvEvents = events[i].events;
             //printf("observer run fd is %d,events is %x \n",fd,recvEvents);
             EPollFileObserverListener listener = nullptr;

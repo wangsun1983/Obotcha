@@ -17,21 +17,25 @@ DECLARE_CLASS(MyListener) IMPLEMENTS(SocketListener) {
 
 public:
   void onSocketMessage(int event,Socket s,ByteArray data) {
-    if(isFirst) {
-      int len = s->getOutputStream()->write(createString("hello client")->toByteArray());
-      isFirst = false;
-      mCond->notify();
-      return;
-    }
+    switch(event) {
+      case Message: {
+        if(isFirst) {
+          int len = s->getOutputStream()->write(createString("hello client")->toByteArray());
+          isFirst = false;
+          mCond->notify();
+          return;
+        }
 
-    message = message->append(data->toString());
+        message = message->append(data->toString());
+      }
+    }
   }
 
 };
 
 int main() {
   InetAddress addr = createInet4Address(1222);
-  Socket sock = createSocketBuilder()->setAddress(addr)->newDatagramSocket();
+  ServerSocket sock = createSocketBuilder()->setAddress(addr)->newServerSocket();
   int result = sock->bind();
   SocketMonitor monitor = createSocketMonitor();
   MyListener l = createMyListener();

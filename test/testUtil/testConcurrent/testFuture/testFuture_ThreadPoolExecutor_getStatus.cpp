@@ -42,5 +42,26 @@ void testThreadPoolExecutor_getStatus() {
     break;
   }
 
+  while(1) {
+    auto pool = createExecutorBuilder()
+                ->setThreadNum(1)
+                ->newThreadPool();
+    Future f1 = pool->submit([]{
+      usleep(100*1000);
+    });
+
+    Future f2 = pool->submit([]{
+      usleep(100*1000);
+    });
+
+    if(f2->getStatus() != st(Future)::Waiting) {
+      printf("---[Future ThreadPoolExecutor getStatus case3 -------[FAILED] status is %d\n",f1->getStatus());
+      break;
+    }
+    pool->shutdown();
+    pool->awaitTermination();
+    break;
+  }
+
   printf("---[Future ThreadPoolExecutor getStatus case100 -------[OK] \n");
 }

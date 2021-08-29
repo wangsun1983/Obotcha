@@ -31,6 +31,11 @@ int _CountDownLatch::countDown() {
     return 0;
 }
 
+int _CountDownLatch::getCount() {
+    AutoLock l(waitMutex);
+    return count;
+}
+
 int _CountDownLatch::await(long v) {
     AutoLock l(waitMutex);
     if(count == 0) {

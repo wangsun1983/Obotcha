@@ -14,7 +14,6 @@ Mutex mMutex = createMutex();
 Condition mCond = createCondition();
 
 FileOutputStream stream = createFileOutputStream("file");
-
 long filesize = 0;
 
 DECLARE_CLASS(MyListener) IMPLEMENTS(SocketListener){
@@ -22,12 +21,13 @@ public:
   void onSocketMessage(int event,Socket s,ByteArray data) {
     switch(event) {
       case Message:
-        printf("i get a data,data size is %d \n",data->size());
+        //printf("i get a data,data size is %d \n",data->size());
         stream->write(data);
-        filesize -= data->size();
+        filesize-= data->size();
         if(filesize == 0) {
           mCond->notify();
         }
+        s->getOutputStream()->write(createString(" ")->toByteArray());
       break;
 
       case Disconnect:
@@ -64,13 +64,13 @@ int main() {
 
     InetAddress addr = createInet4Address(1233);
 
-    Socket client = createSocketBuilder()->setAddress(addr)->newDatagramSocket();
-    client->bind();
+    ServerSocket server = createSocketBuilder()->setAddress(addr)->newServerSocket();
+    server->bind();
 
     stream->open(st(OutputStream)::Append);
 
     SocketMonitor monitor = createSocketMonitor();
-    int bindret = monitor->bind(client,createMyListener());
+    int bindret = monitor->bind(server,createMyListener());
 
     AutoLock l(mMutex);
     mCond->wait(mMutex);
@@ -80,10 +80,10 @@ int main() {
     String v2 = md5->encrypt(createFile("file"));
 
     if(v1 != v2) {
-      printf("---TestDataGramSocket Server case2_simple_send_file test1 [FAILED]---,v1 is %s,v2 is %s \n",v1->toChars(),v2->toChars());
+      printf("---TestDataGramSocket Server case3_simple_send_file test1 [FAILED]---,v1 is %s,v2 is %s \n",v1->toChars(),v2->toChars());
       return 0;
     }
 
-    printf("---TestDataGramSocket Server case2_simple_send_file test100 [OK]--- \n");
+    printf("---TestDataGramSocket Server case3_simple_send_file test100 [OK]--- \n");
     return 0;
 }

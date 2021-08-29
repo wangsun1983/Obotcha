@@ -1,7 +1,7 @@
 import socket
 import time
 
-s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+s=socket.socket()
 s.connect(("127.0.0.1",1222))
 print "123"
 s.send(str("hello server").encode("utf-8"))

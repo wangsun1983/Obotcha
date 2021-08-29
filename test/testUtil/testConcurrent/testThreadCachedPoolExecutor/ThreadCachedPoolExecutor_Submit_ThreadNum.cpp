@@ -127,6 +127,34 @@ void CachedPoolSubmit_ThreadNum() {
     break;
   }
 
+  while(1) {
+    auto pool2 = createExecutorBuilder()
+              ->setQueueSize(1024*4)
+              ->setMaxThreadNum(12)
+              ->setTimeout(100)
+              ->newCachedThreadPool();
+    for(int i = 0;i < 1024*4;i++) {
+      Future f1 = pool2->submit([]{
+        usleep(1);
+      });
+    }
+
+    if(pool2->getThreadsNum() != 12) {
+      printf("---[TestCachedPoolExecutor ThreadNum test9] [FAILED]--- threads is %d,tasks is %d \n",pool2->getThreadsNum(),pool2->getTasksNum());
+      break;
+    }
+
+    usleep(150*1000);
+    if(pool2->getThreadsNum() != 0 || pool2->getTasksNum() != 0) {
+      printf("---[TestCachedPoolExecutor ThreadNum test10] [FAILED]--- threads is %d,tasks is %d \n",pool2->getThreadsNum(),pool2->getTasksNum());
+      break;
+    }
+
+    pool2->shutdown();
+    pool2->awaitTermination();
+    break;
+  }
+
   pool->shutdown();
   pool->awaitTermination();
   printf("---[TestCachedPoolExecutor ThreadNum test100] [OK]--- \n");
