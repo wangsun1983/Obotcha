@@ -2,7 +2,7 @@ import socket
 import sys
 import os
  
-server_address = 'mysock'
+server_address = 'case1_socket'
  
 # Make sure the socket does not already exist
 try:
@@ -22,11 +22,14 @@ print("start listen!!!")
 
 # Wait for a connection
 connection, client_address = sock.accept()
+
+receive_data = connection.recv(1024)
+
 count = 0
 while (count < 50):
-    print("start get an acception!!!")
-    msg = "hello client"
-    connection.sendall(msg.encode())
+    #print("start get an acception!!!")
+    #msg = "hello client"
+    connection.sendall(receive_data.decode("utf-8"))
     count = count + 1
 
 connection.close()
