@@ -1,8 +1,10 @@
-#include "System.hpp"
 #include <sys/time.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
+
+#include "AutoLock.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
@@ -42,6 +44,15 @@ void _System::execute(String cmd) {
 }
 
 void _System::exit(int reason) {
+    //we should close all before exit
+    {
+        AutoLock l(mMutex);
+        auto iterator = mListeners->getIterator();
+        while(iterator->hasValue()) {
+            iterator->getValue()->onSystemExit();
+            iterator->next();
+        }
+    }
     exit(reason);
 }
 

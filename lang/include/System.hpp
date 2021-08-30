@@ -5,9 +5,15 @@
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
+#include "ArrayList.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 
+DECLARE_CLASS(SystemListener) {
+public:
+    virtual void onSystemExit() = 0;
+};
 
 DECLARE_CLASS(System) {
 
@@ -29,6 +35,10 @@ public:
     static void getTimeVal(long timeInterval,struct timeval *tv);
 
     static int myPid();
+
+private:
+    static Mutex mMutex;
+    static ArrayList<SystemListener> mListeners;
 };
 
 }
