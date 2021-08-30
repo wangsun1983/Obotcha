@@ -21,33 +21,38 @@ namespace obotcha {
    */
 #define NTP_TIMESTAMP_DELTA 2208988800ull
 
-_NtpSocketClientListener::_NtpSocketClientListener(Condition c,Mutex m) {
-    mCondition = c;
-    mMutex = m;
+_NtpClient::_NtpClient() {
 }
 
-_NtpSocketClientListener::~_NtpSocketClientListener() {
-    if(mListener != nullptr) {
-        mListener->onClose();
+int _NtpClient::bind(String url,int port,long duration) {
+    ArrayList<InetAddress> servers = createURL(url)->getInetAddress();
+    if(servers->size() == 0) {
+        return -NetConnectFail;
     }
-    milliseconds = -1;
-    mCondition->notify();
+    InetAddress address = servers->get(0);
+    address->setPort(port);
+    
+    SocketOption option = createSocketOption();
+    option->setRcvTimeout(duration);
+    mSock = createSocketBuilder()
+            ->setAddress(address)
+            ->setOption(option)
+            ->newDatagramSocket();
+    return 0;      
 }
 
-void _NtpSocketClientListener::onSocketMessage(int event,Socket s,ByteArray data) {
-    switch(event) {
-        case SocketEvent::Message:
-        return onDataReceived(s,data);
+long _NtpClient::get() {
+    char mNtpPacket[NTP_DATA_SIZE];
+    memset(mNtpPacket,0,sizeof(mNtpPacket));
+    generateNtpPacket(mNtpPacket);
+    
+    ByteArray packet = createByteArray((byte *)mNtpPacket,NTP_DATA_SIZE);
+    int ret = mSock->getOutputStream()->write(packet);
+    
+    ByteArray pack = createByteArray(1024*4);
+    int len = mSock->getInputStream()->read(pack);
+    pack->quickShrink(len);
 
-        case SocketEvent::Connect:
-        case SocketEvent::Disconnect:
-        default:
-        return;
-    }
-}
-
-void _NtpSocketClientListener::onDataReceived(Socket r,ByteArray pack) {
-    //int  ret;
     unsigned int *data = (unsigned int *)pack->toValue(); 
 
     NtpTime oritime, rectime, tratime, destime;
@@ -108,74 +113,7 @@ void _NtpSocketClientListener::onDataReceived(Socket r,ByteArray pack) {
     newTime.tv_sec = destime.integer - JAN_1970 + offtime.tv_sec;
     newTime.tv_usec = USEC(destime.fraction) + offtime.tv_usec;
 
-    milliseconds = newTime.tv_sec*1000 + newTime.tv_usec/1000;
-    mCondition->notify();
-    
-    if(mListener != nullptr) {
-        mListener->onAccept(milliseconds);
-    }
-}
-
-
-void _NtpSocketClientListener::setTimeCallback(NtpListener l) {
-    mListener = l;
-}
-
-long int _NtpSocketClientListener::getTimeMillis() {
-    return milliseconds; 
-}
-
-_NtpClient::_NtpClient() {
-    mMutex = createMutex();
-    mCondition = createCondition();
-    mListener = createNtpSocketClientListener(mCondition,mMutex);
-}
-
-int _NtpClient::bind(String url,int port = 123) {
-    ArrayList<InetAddress> servers = createURL(url)->getInetAddress();
-    if(servers->size() == 0) {
-        return -NetConnectFail;
-    }
-
-    InetAddress address = servers->get(0);
-    address->setPort(port);
-
-    mSock = createSocketBuilder()
-            ->setAddress(address)
-            ->newDatagramSocket();
-            
-    mSockMonitor = createSocketMonitor();
-    return mSockMonitor->bind(mSock,AutoClone<SocketListener>(this));
-    //mClient = createUdpClient(mServerIp,port,mListener);
-    //mClient->start();
-}
-
-long _NtpClient::getCurrentTimeSync() {
-    char mNtpPacket[NTP_DATA_SIZE];
-    memset(mNtpPacket,0,sizeof(mNtpPacket));
-    generateNtpPacket(mNtpPacket);
-    //unsigned int *v = (unsigned int *)mNtpPacket;
-
-    ByteArray packet = createByteArray((byte *)mNtpPacket,NTP_DATA_SIZE);
-    //mClient->send(packet);
-    mSock->getOutputStream()->write(packet);
-    {
-        AutoLock l(mMutex);
-        mCondition->wait(mMutex);
-    }
-
-    return mListener->getTimeMillis();
-}
-
-void _NtpClient::getCurrentTimeAsync(NtpListener l) {
-    mListener->setTimeCallback(l);
-    char mNtpPacket[NTP_DATA_SIZE];
-    memset(mNtpPacket,0,sizeof(mNtpPacket));
-    generateNtpPacket(mNtpPacket);
-
-    ByteArray packet = createByteArray((byte *)mNtpPacket,NTP_DATA_SIZE);
-    //mClient->send(packet);
-    mSock->getOutputStream()->write(packet);
+    return newTime.tv_sec*1000 + newTime.tv_usec/1000;
 }
 
 void _NtpClient::generateNtpPacket(char *v) {
@@ -201,7 +139,7 @@ void _NtpClient::generateNtpPacket(char *v) {
     data[11] = htonl(NTPFRAC(now.tv_usec));
 }
 
-void _NtpClient::release() {
+void _NtpClient::close() {
     mSock->close();
 }
 

@@ -48,74 +48,36 @@ namespace obotcha {
 //#define DEF_NTP_SERVER "pool.ntp.org"   //ntp server
 
 struct NtpTime{
-    unsigned   int  integer;
-    unsigned   int  fraction;
+    unsigned int  integer;
+    unsigned int  fraction;
 };
 
-DECLARE_CLASS(NtpListener) {
-public:
-    virtual void onAccept(long int millseconds);
-    virtual void onClose();
-};
-
-DECLARE_CLASS(NtpSocketClientListener) IMPLEMENTS(SocketListener) {
-public:
-    _NtpSocketClientListener(Condition,Mutex);
-
-    void onSocketMessage(int,Socket,ByteArray);
-    
-    void setTimeCallback(NtpListener);
-
-    long int getTimeMillis();
-
-    ~_NtpSocketClientListener();
-
-private:
-    void onDataReceived(Socket,ByteArray);
-
-    Condition mCondition;
-    Mutex mMutex;
-    long int milliseconds;
-    NtpListener mListener;
-
-    double get_rrt(const struct NtpPacket *ntp, const struct timeval *recvtv);
-
-    double get_offset(const struct NtpPacket *ntp, const struct timeval *recvtv);
-};
-    
 DECLARE_CLASS(NtpClient) {
 public:
     _NtpClient();
 
-    int bind(String url,int port);
+    int bind(String url,int port = 123,long duration = 1000*5);
 
-    long getCurrentTimeSync();
+    long get();
 
-    void getCurrentTimeAsync(NtpListener);
-
-    void release();
+    void close();
 
     ~_NtpClient();
 
 private:
-
+    
     String mServerIp;
 
-    //UdpClient mClient;
     Socket mSock;
-    SocketMonitor mSockMonitor;
 
     int mPort;
 
-    NtpSocketClientListener mListener;
-
-    Mutex mMutex;
-
-    Condition mCondition;
-
-    NtpListener mNtpListener;
-
     void generateNtpPacket(char *);
+    
+    double get_rrt(const struct NtpPacket *ntp, const struct timeval *recvtv);
+
+    double get_offset(const struct NtpPacket *ntp, const struct timeval *recvtv);
+
 };
 
 }

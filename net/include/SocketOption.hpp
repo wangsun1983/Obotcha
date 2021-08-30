@@ -59,8 +59,6 @@ public:
     _SocketOption* setReusePortCbpf(struct sock_fprog*);
     _SocketOption* setReusePortEbpf(int);
     _SocketOption* setZeroCopy(int);
-    _SocketOption* setRecvTimeout(int);
-    _SocketOption* setSendTimeout(int);
     _SocketOption* setConnectionNum(int);
     _SocketOption* setBuffSize(int);
 

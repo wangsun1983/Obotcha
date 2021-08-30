@@ -216,16 +216,6 @@ _SocketOption* _SocketOption::setZeroCopy(int on) {
     return this;
 }
 
-_SocketOption* _SocketOption::setRecvTimeout(int interval) {
-    mRcvTimeout = interval;
-    return this;
-}
-
-_SocketOption* _SocketOption::setSendTimeout(int interval) {
-    mSendTimeout = interval;
-    return this;
-}
-
 _SocketOption* _SocketOption::setConnectionNum(int v) {
     mConnectNum = v;
     return this;

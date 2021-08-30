@@ -12,9 +12,10 @@
 using namespace obotcha;
 
 int main() {
+    printf("wangsl trace1 \n");
     NtpClient c = createNtpClient();
-    c->bind("us.pool.ntp.org",123);
-    long int t = c->getCurrentTimeSync();
+    c->bind("ntp.aliyun.com",123);
+    long int t = c->get();
     printf("t is %ld \n",t);
     printf("current is %ld \n",st(System)::currentTimeMillis());
     while(1){}
