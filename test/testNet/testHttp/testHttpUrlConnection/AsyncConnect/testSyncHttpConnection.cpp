@@ -10,7 +10,7 @@
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "HttpUrlBuilder.hpp"
-#include "HttpUrlConnection.hpp"
+#include "HttpConnection.hpp"
 
 using namespace obotcha;
 
@@ -18,7 +18,7 @@ using namespace obotcha;
 int testSyncHttpConnection() {
 
     HttpUrl url = createHttpUrlBuilder()->appendHost(createString("www.tusvisionai.com"))->appendPort(80)->genHttpUrl();
-    HttpUrlConnection connection = url->openConnection();
+    HttpConnection connection = createHttpConnection(url);
     connection->connect();
     HttpRequest request = createHttpRequest(st(HttpMethod)::Get,url);
     request->getHeader()->setValue(createString("Host"),createString(" www.tusvisionai.com"));

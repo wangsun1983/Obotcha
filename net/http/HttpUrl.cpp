@@ -174,7 +174,7 @@ String _HttpUrl::toQueryString() {
 }
 
 sp<_HttpConnection> _HttpUrl::openConnection(HttpOption o) {
-    return createHttpConnection(AutoClone(this),false,nullptr,o);
+    return createHttpConnection(AutoClone(this),o,false,nullptr);
 }
 
 void _HttpUrl::dump() {

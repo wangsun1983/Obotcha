@@ -10,14 +10,13 @@
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "HttpUrlBuilder.hpp"
-#include "HttpUrlConnection.hpp"
 
 using namespace obotcha;
 
-extern int testAsyncHttpConnection();
-//extern int testSyncHttpConnection();
+//extern int testAsyncHttpConnection();
+extern int testSyncHttpConnection();
 
 int main() {
-    testAsyncHttpConnection();
-    //testSyncHttpConnection();
+    //testAsyncHttpConnection();
+    testSyncHttpConnection();
 }

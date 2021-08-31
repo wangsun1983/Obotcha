@@ -32,7 +32,7 @@ class _HttpUrl;
 DECLARE_CLASS(HttpConnection) IMPLEMENTS(SocketListener){
 
 public:
-    _HttpConnection(sp<_HttpUrl> url,bool async = false, HttpConnectionListener l = nullptr, HttpOption option = nullptr);
+    _HttpConnection(sp<_HttpUrl> url,HttpOption option = nullptr,bool async = false, HttpConnectionListener l = nullptr);
     
     Socket getSocket();
     

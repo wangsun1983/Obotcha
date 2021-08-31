@@ -21,7 +21,7 @@ namespace obotcha {
 
 SocketMonitor _HttpConnection::mSocketMonitor = nullptr;
 
-_HttpConnection::_HttpConnection(sp<_HttpUrl> url,bool async, HttpConnectionListener l, HttpOption option) {
+_HttpConnection::_HttpConnection(sp<_HttpUrl> url,HttpOption option,bool async, HttpConnectionListener l) {
     isAsync = async;
     mUrl = url;
     mParser = createHttpPacketParser();
@@ -63,17 +63,17 @@ int _HttpConnection::connect() {
 }
 
 HttpResponse _HttpConnection::execute(HttpRequest req) {
-    if(writer->write(req) <= 0) {
+    if(writer->write(req) < 0) {
+        LOG(ERROR)<<"Cannot send request!!!";
         return nullptr;
     }
-
+    
     if(isAsync) {
         return createHttpResponse(); //return dummy response
     }
 
     int buffsize = (mOption == nullptr?st(HttpOption)::DefaultBuffSize:mOption->getBuffSize());
     ByteArray result = createByteArray(buffsize);
-
     while(1) {
         int len = mInputStream->read(result);
         if(len <= 0) {
@@ -81,7 +81,6 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
             LOG(ERROR)<<"Cannot get response!!!,len is "<<len;
             return nullptr;
         }
-
         result->quickShrink(len);
         mParser->pushHttpData(result);
         ArrayList<HttpPacket> packets = mParser->doParse();

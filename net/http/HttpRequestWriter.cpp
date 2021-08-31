@@ -94,8 +94,9 @@ int _HttpRequestWriter::write(HttpRequest p) {
     }
     AUTO_FLUSH(writer->writeString(st(HttpMethod)::toString(p->getHeader()->getMethod())));
     AUTO_FLUSH(writer->writeString(st(HttpText)::ContentSpace));
-    if(p->getHeader()->getUrl()->getPath() != nullptr) {
-        AUTO_FLUSH(writer->writeString(p->getHeader()->getUrl()->getPath()));
+    HttpUrl url = p->getHeader()->getUrl();
+    if(url!= nullptr && url->getPath() != nullptr) {
+        AUTO_FLUSH(writer->writeString(url->getPath()));
     } else {
         AUTO_FLUSH(writer->writeString(createString("/")));
     }

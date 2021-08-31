@@ -8,6 +8,9 @@
 
 namespace obotcha {
 
+Mutex _System::mMutex = createMutex();
+ArrayList<SystemListener> _System::mListeners = createArrayList<SystemListener>();
+
 long int _System::currentTimeMillis() {
     timeval tv;
     gettimeofday(&tv, NULL);
