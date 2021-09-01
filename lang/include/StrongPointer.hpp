@@ -27,6 +27,7 @@ template<typename T, typename U>
 class PointerChanger<false, T, U>{
 public:
    static T *convert(U *u) {
+     //TODO
      T* t = new T(u);
      t->incStrong(0);
      return t;

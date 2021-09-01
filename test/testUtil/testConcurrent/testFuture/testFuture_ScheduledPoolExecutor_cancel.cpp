@@ -13,20 +13,19 @@
 
 using namespace obotcha;
 
-void testCachedPoolExecutor_Cancel() {
+void testScheduledPoolExecutor_Cancel() {
   auto pool = createExecutorBuilder()
-              ->setMaxThreadNum(1)
-              ->setThreadNum(1)
-              ->newCachedThreadPool();
+            ->setQueueSize(32)
+            ->newScheduledThreadPool();
+
   while(1) {
       int value = 100;
-      Future f1 = pool->submit([&value](){
-        usleep(200*1000);
+      Future f1 = pool->submit(200,[&value](){
         value = 222;
         st(TaskResult)::set(333);
       });
 
-      Future f2 = pool->submit([](){
+      Future f2 = pool->submit(0,[](){
         st(TaskResult)::set(100);
       });
 
@@ -34,20 +33,16 @@ void testCachedPoolExecutor_Cancel() {
       f1->cancel();
       f2->cancel();
       usleep(150*1000);
-      if(value != 222) {
-        printf("---[Future CachedPoolExecutor Cancel case2 -------[FAIL],value is %d \n",value);
+      if(value == 222) {
+        printf("---[Future ScheduledPoolExecutor Cancel case2 -------[FAIL],value is %d \n",value);
         break;
       }
 
       bool isException = false;
-      try {
-        int v = f2->getResult<int>();
-      } catch(...) {
-        isException = true;
-      }
+      int v = f2->getResult<int>();
 
-      if(!isException) {
-        printf("---[Future CachedPoolExecutor Cancel case3 -------[FAIL] \n");
+      if(v != 100) {
+        printf("---[Future ScheduledPoolExecutor Cancel case3 -------[FAIL] \n");
         break;
       }
       break;
@@ -55,20 +50,21 @@ void testCachedPoolExecutor_Cancel() {
 
   while(1) {
     int value = 123;
-    Future f1 = pool->submit([&value](){
+    Future f1 = pool->submit(0,[&value](){
+      usleep(200*100);
       value = 222;
       st(TaskResult)::set(333);
     });
-    usleep(100*1000);
+    usleep(10*1000);
     f1->cancel();
-
+    usleep(200*1000);
     if(value != 222) {
-      printf("---[Future CachedPoolExecutor Cancel case4 -------[FAIL] \n");
+      printf("---[Future ScheduledPoolExecutor Cancel case4 -------[FAIL] \n");
       break;
     }
 
     if(f1->getResult<int>() != 333) {
-      printf("---[Future CachedPoolExecutor Cancel case5 -------[FAIL] \n");
+      printf("---[Future ScheduledPoolExecutor Cancel case5 -------[FAIL] \n");
       break;
     }
     break;
@@ -77,5 +73,5 @@ void testCachedPoolExecutor_Cancel() {
   pool->shutdown();
   pool->awaitTermination();
 
-  printf("---[Future CachedPoolExecutor Cancel case100 -------[OK] \n");
+  printf("---[Future ScheduledPoolExecutor Cancel case100 -------[OK] \n");
 }

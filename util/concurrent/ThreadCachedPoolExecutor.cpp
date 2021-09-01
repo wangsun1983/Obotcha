@@ -155,6 +155,13 @@ Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r,long interval) {
     return createFuture(task);
 }
 
+void _ThreadCachedPoolExecutor::submitTask(ExecutorTask task,long interval) {
+    mTasks->putLast(task,interval);
+    if(mIdleNum->get() == 0) {
+        setUpOneIdleThread();
+    }
+}
+
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
 }
 

@@ -81,6 +81,8 @@ public:
         return poolSubmit(createLambdaRunnable(f,args...),timeout);
     }
 
+    void submitTask(ExecutorTask task,long interval = 0);
+
     int getThreadsNum();
 
     int getTasksNum();

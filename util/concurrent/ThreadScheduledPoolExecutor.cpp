@@ -147,7 +147,7 @@ void _ThreadScheduledPoolExecutor::run() {
             }
         }
 
-        mCachedExecutor->submit(mCurrentTask->getRunnable());
+        mCachedExecutor->submitTask(mCurrentTask);
         {
 
             AutoLock l(mTaskMutex);

@@ -14,9 +14,29 @@ extern void testThreadPoolExecutor_Wait();
 extern void testThreadPoolExecutor_getStatus();
 extern void testThreadPoolExecutor_Multithread();
 
-extern void testCachePoolExecutor_Cancel();
+extern void testCachedPoolExecutor_Cancel();
+extern void testCachedPoolExecutor_Multithread();
+extern void testCachedPoolExecutor_Wait();
+extern void testScheduledPoolExecutor_Wait();
+extern void testScheduledPoolExecutor_Cancel();
+extern void testScheduledPoolExecutor_Multithread();
+
+extern void testPriorityPoolExecutor_Wait();
+extern void testPriorityPoolExecutor_Multithread();
+extern void testPriorityPoolExecutor_Cancel();
 
 int main() {
+    testPriorityPoolExecutor_Cancel();
+    testPriorityPoolExecutor_Wait();
+    testPriorityPoolExecutor_Multithread();
+
+    testScheduledPoolExecutor_Multithread();
+    testScheduledPoolExecutor_Cancel();
+    testScheduledPoolExecutor_Wait();
+    testCachedPoolExecutor_Multithread();
+    testCachedPoolExecutor_Cancel();
+    testCachedPoolExecutor_Wait();
+
     testThreadPoolExecutor_GetResult_Interrupt();
     testThreadPoolExecutor_getStatus();
     testThreadPoolExecutor_GetResult();
@@ -25,7 +45,6 @@ int main() {
     testThreadPoolExecutor_GetResult_TimeWatch();
     testThreadPoolExecutor_Wait();
     testThreadPoolExecutor_Multithread();
-    
-    testCachePoolExecutor_Cancel();
+
     return 1;
 }

@@ -21,14 +21,17 @@ int main() {
     connection->connect();
     HttpRequest request = createHttpRequest(st(HttpMethod)::Get,url);
     request->getHeader()->setValue(createString("Host"),createString(" www.tusvisionai.com"));
-    printf("start send response \n");
+    
     HttpResponse response = connection->execute(request);
-    if(response != nullptr) {
-        printf("it is not nullptr,i is %d \n",1);
-    }
 
     HttpEntity entity = response->getEntity();
     printf("entity is %s \n",entity->getContent()->toValue());
-    while(1) {sleep(1000);}
+    String value = entity->getContent()->toString();
+    if(value == nullptr || !value->equals("Hello this is server!")) {
+        printf("---TestHttpConnection Sync test1 [FAILED]--- \n");
+        return 0;
+    }
 
+    printf("---TestHttpConnection Sync test100 [OK]--- \n");
+    return 0;
 }
