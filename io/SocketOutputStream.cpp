@@ -18,7 +18,12 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
         server_addr.sin_family = AF_INET;
         InetAddress address = s->getInetAddress();
         server_addr.sin_port = htons(address->getPort());      
-        server_addr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
+        
+        if(address->getAddress() != nullptr) {
+            server_addr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
+        } else {
+            server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+        }
     }
 
     if(s->getFileDescriptor()->isAsync()) {

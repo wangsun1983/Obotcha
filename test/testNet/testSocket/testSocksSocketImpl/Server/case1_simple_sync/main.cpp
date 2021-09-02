@@ -37,6 +37,7 @@ int main() {
   InetAddress addr = createInet4Address(1222);
   ServerSocket sock = createSocketBuilder()->setAddress(addr)->newServerSocket();
   int result = sock->bind();
+  printf("result is %d \n",result);
   SocketMonitor monitor = createSocketMonitor();
   MyListener l = createMyListener();
   monitor->bind(sock,l);
@@ -44,9 +45,9 @@ int main() {
   mCond->wait(mMutex);
 
   sleep(1);
-  int count = message->counts("hello client");
+  int count = message->counts(createString("hello client"));
     
-  if(message->counts("hello client") != 50) {
+  if(message->counts(createString("hello client")) != 50) {
     printf("---TestDataGramSocket Server case1_simple_sync test2 [FAILED]--- count is %d,message is %s \n",count,message->toChars());
   }
 

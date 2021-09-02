@@ -21,6 +21,7 @@ int _InetAddress::DefaultPort = 8080;
 
 _InetAddress::_InetAddress(int port) {
     mPort = port;
+    mAddress = nullptr;
 }
 
 _InetAddress::_InetAddress(String addr,int port) {

@@ -59,8 +59,8 @@ int main() {
     AutoLock l(disconnectMutex);
     disconnectCond->wait(disconnectMutex);
     
-    int count = message->counts("hello server");
-    if(message->counts("hello server") != 50) {
+    int count = message->counts(createString("hello server"));
+    if(message->counts(createString("hello server")) != 50) {
       printf("---TestDataGramSocket case1_simple_sync test2 [FAILED]--- count is %d,message is %s \n",count,message->toChars());
     }
 

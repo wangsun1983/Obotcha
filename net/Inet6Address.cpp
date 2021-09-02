@@ -21,7 +21,7 @@ _Inet6Address::_Inet6Address(String addr,int port):_InetAddress(addr,port) {
     mType = IPV6;
 }
 
-_Inet6Address::_Inet6Address(int port):_InetAddress(getLocalAddress(),port) {
+_Inet6Address::_Inet6Address(int port):_InetAddress(port) {
     mType = IPV6;
 }
 

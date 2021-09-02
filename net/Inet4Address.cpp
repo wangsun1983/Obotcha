@@ -21,7 +21,7 @@ _Inet4Address::_Inet4Address(String addr,int port):_InetAddress(addr,port) {
     mType = IPV4;
 }
 
-_Inet4Address::_Inet4Address(int port):_InetAddress(getLocalAddress(),port) {
+_Inet4Address::_Inet4Address(int port):_InetAddress(port) {
     mType = IPV4;
 }
 
