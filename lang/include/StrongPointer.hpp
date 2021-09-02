@@ -23,6 +23,7 @@ public:
      }
  };
 
+#if 0
 template<typename T, typename U>
 class PointerChanger<false, T, U>{
 public:
@@ -33,6 +34,7 @@ public:
      return t;
    }
 };
+#endif
 
 template <typename T>
 class sp {

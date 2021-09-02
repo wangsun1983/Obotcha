@@ -5,9 +5,6 @@
 #include "StrongPointer.hpp"
 #include "IniValue.hpp"
 #include "File.hpp"
-#include "rapidxml.hpp"
-#include "XmlValue.hpp"
-#include "HashMap.hpp"
 
 extern "C" {
 #include "ccl.h"
@@ -15,28 +12,22 @@ extern "C" {
 
 namespace obotcha {
 
-class _ConfValue;
+class _ConfIterator;
 
 DECLARE_CLASS(ConfReader) {
 
 public:
+    friend class _ConfIterator;
+
     _ConfReader(const char* path);
 
     _ConfReader(String path);
 
     _ConfReader(File file);
 
-    int setFile(const char* path);
-    
-    int setFile(String path);
-    
-    int setFile(File file);
-
-    sp<_ConfValue> get();
-
     String get(String);
 
-    int refresh();
+    sp<_ConfIterator> getIterator();
 
     ~_ConfReader();
 
@@ -44,9 +35,27 @@ private:
     int parse();
 
     File mConfFile;
-    
-    sp<_ConfValue> mConfValue;
+
+    struct ccl_t config;
 };
+
+DECLARE_CLASS(ConfIterator) {
+public:
+    _ConfIterator(ConfReader r);
+
+    String getTag();
+    
+    String getValue();
+
+    bool hasValue();
+    
+    bool next();
+
+private:
+    sp<_ConfReader> reader;
+    struct ccl_pair_t* iterator;
+};
+
 
 }
 

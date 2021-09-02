@@ -583,54 +583,54 @@ public:
                 if(IsInstance(Integer,value)) {
                     Integer data = Cast<Integer>(value);
                     //mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr->toChars(),data->toValue());
+                    jsonNode->put(keyStr,data->toValue());
                 } else if(IsInstance(Long,value)) {
                     Long data = Cast<Long>(value);
                     //mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr->toChars(),data->toValue());
+                    jsonNode->put(keyStr,data->toValue());
                 } else if(IsInstance(Boolean,value)) {
                     Boolean data = Cast<Boolean>(value);
                     //mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr->toChars(),data->toValue());
+                    jsonNode->put(keyStr,data->toValue());
                 } else if(IsInstance(Double,value)) {
                     Double data = Cast<Double>(value);
                     //mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr->toChars(),data->toValue());
+                    jsonNode->put(keyStr,data->toValue());
                 } else if(IsInstance(Float,value)) {
                     Float data = Cast<Float>(value);
                     //mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr->toChars(),data->toValue());
+                    jsonNode->put(keyStr,data->toValue());
                 } else if(IsInstance(Byte,value)) {
                     Byte data = Cast<Byte>(value);
                     //mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr->toChars(),data->toValue());
+                    jsonNode->put(keyStr,data->toValue());
                 } else if(IsInstance(Uint8,value)) {
                     Uint8 data = Cast<Uint8>(value);
                     //mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr->toChars(),data->toValue());
+                    jsonNode->put(keyStr,data->toValue());
                 } else if(IsInstance(Uint16,value)) {
                     Uint16 data = Cast<Uint16>(value);
                     //mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr->toChars(),data->toValue());
+                    jsonNode->put(keyStr,data->toValue());
                 } else if(IsInstance(Uint32,value)) {
                     Uint32 data = Cast<Uint32>(value);
                     //mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr->toChars(),(uint64_t)data->toValue());
+                    jsonNode->put(keyStr,(uint64_t)data->toValue());
                 } else if(IsInstance(Uint64,value)) {
                     Uint64 data = Cast<Uint64>(value);
                     //mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr->toChars(),data->toValue());
+                    jsonNode->put(keyStr,data->toValue());
                 } else if(IsInstance(String,value)) {
                     String data = Cast<String>(value);
                     //mapItemNode->append(data->toChars());
-                    jsonNode->put(keyStr->toChars(),data->toChars());
+                    jsonNode->put(keyStr,data->toChars());
                 } else {
                     JsonValue newValue = createJsonValue();
                     newValue->importFrom(value);
-                    jsonNode->put(keyStr->toChars(),newValue);
+                    jsonNode->put(keyStr,newValue);
                 }
             }
-            //arrayNode->put(keyStr->toChars(),mapItemNode);
+            //arrayNode->put(keyStr,mapItemNode);
             count++;
         }
     }

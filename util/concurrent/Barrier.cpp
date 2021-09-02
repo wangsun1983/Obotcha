@@ -55,6 +55,7 @@ int _Barrier::getWaitNums() {
 bool _Barrier::destroy() {
     AutoLock l(mutex);
     isDestroy = true;
+    return true;
 }
 
 }

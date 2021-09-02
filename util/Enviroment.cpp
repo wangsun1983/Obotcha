@@ -7,86 +7,86 @@ namespace obotcha {
 std::once_flag _Enviroment::s_flag;
 Enviroment _Enviroment::mInstance;
 
-String const _Enviroment::gHttpBufferSize = "env.http.buffer.size";
+String const _Enviroment::gHttpBufferSize = createString("env.http.buffer.size");
 int const _Enviroment::DefaultHttpBufferSize = 512*1024;
 
-String const _Enviroment::gHttpServerThreadsNum = "env.http.server.thread.num";
+String const _Enviroment::gHttpServerThreadsNum = createString("env.http.server.thread.num");
 int const _Enviroment::DefaultgHttpServerThreadsNum = st(System)::availableProcessors();
     
-String const _Enviroment::gWebSocketBufferSize = "env.ws.buffer.size";
+String const _Enviroment::gWebSocketBufferSize = createString("env.ws.buffer.size");
 int const _Enviroment::DefaultWebSocketBufferSize = 512*1024;
 
-String const _Enviroment::gWebSocketRcvThreadsNum = "env.ws.threads.num";
+String const _Enviroment::gWebSocketRcvThreadsNum = createString("env.ws.threads.num");
 int const _Enviroment::DefaultWebSocketRcvThreadsNum = st(System)::availableProcessors();
 
-String const _Enviroment::gWebSocketFrameSize = "env.ws.frame.size";
+String const _Enviroment::gWebSocketFrameSize = createString("env.ws.frame.size");
 int const _Enviroment::DefaultWebSocketFrameSize = 64*1024;
 
-String const _Enviroment::gLocalSocketServerRcvBufferSize = "env.ls.server.rcv.size";
+String const _Enviroment::gLocalSocketServerRcvBufferSize = createString("env.ls.server.rcv.size");
 int const _Enviroment::DefaultLocalSocketServerRcvBufferSize = 64*1024;
 
-String const _Enviroment::gLocalSocketServerClientNums = "env.ls.server.client.nums";
+String const _Enviroment::gLocalSocketServerClientNums = createString("env.ls.server.client.nums");
 int const _Enviroment::DefaultLocalSocketServerClientNums = 64*1024;
 
-String const _Enviroment::gTcpServerEpollSize = "env.tcp.server.epoll.size";
+String const _Enviroment::gTcpServerEpollSize = createString("env.tcp.server.epoll.size");
 int const _Enviroment::DefaultTcpServerEpollSize = 8*1024;
 
-String const _Enviroment::gTcpServerRcvBuffSize = "env.tcp.server.rcv.buffer.size";
+String const _Enviroment::gTcpServerRcvBuffSize = createString("env.tcp.server.rcv.buffer.size");
 int const _Enviroment::DefaultTcpServerRcvBuffSize = 64*1024;
 
-String const _Enviroment::gTcpServerClientNums = "env.tcp.server.client.nums";
+String const _Enviroment::gTcpServerClientNums = createString("env.tcp.server.client.nums");
 int const _Enviroment::DefaultTcpServerClientNums = 64*1024;
 
-String const _Enviroment::gLocalSocketServerEpollSize = "env.ls.server.epoll.size";
+String const _Enviroment::gLocalSocketServerEpollSize = createString("env.ls.server.epoll.size");
 int const _Enviroment::DefaultLocalSocketServerEpollSize = 8*1024;
 
-String const _Enviroment::gLocalSocketBufferSize = "env.ls.buffer.size";
+String const _Enviroment::gLocalSocketBufferSize = createString("env.ls.buffer.size");
 int const _Enviroment::DefaultLocalSocketBufferSize = 64*1024;
 
-String const _Enviroment::gLocalSocketClientEpollSize = "env.ls.client.epoll.size";
+String const _Enviroment::gLocalSocketClientEpollSize = createString("env.ls.client.epoll.size");
 int const _Enviroment::DefaultLocalSocketClientEpollSize = 8*1024;
 
-String const _Enviroment::gAsyncTcpClientEpollSize = "env.aynsc.tcp.client.epoll.size";
+String const _Enviroment::gAsyncTcpClientEpollSize = createString("env.aynsc.tcp.client.epoll.size");
 int const _Enviroment::DefaultAsyncTcpClientEpollSize = 8*1024;
 
-String const _Enviroment::gAsyncTcpClientBufferSize = "env.async.tcp.client.buffer.size";
+String const _Enviroment::gAsyncTcpClientBufferSize = createString("env.async.tcp.client.buffer.size");
 int const _Enviroment::DefaultAsyncTcpClientBufferSize = 64*1024;
 
-String const _Enviroment::gUdpClientEpollSize = "env.udp.client.epoll.size";
+String const _Enviroment::gUdpClientEpollSize = createString("env.udp.client.epoll.size");
 int const _Enviroment::DefaultUdpClientEpollSize = 8*1024;
 
-String const _Enviroment::gUdpClientBufferSize = "env.udp.client.buffer.size";
+String const _Enviroment::gUdpClientBufferSize = createString("env.udp.client.buffer.size");
 int const _Enviroment::DefaultUdpClientBufferSize = 64*1024;
 
-String const _Enviroment::gUdpServerEpollSize = "env.udp.server.epoll.size";
+String const _Enviroment::gUdpServerEpollSize = createString("env.udp.server.epoll.size");
 int const _Enviroment::DefaultUdpServerEpollSize = 8*1024;
 
-String const _Enviroment::gUdpServerBufferSize = "env.udp.server.buffer.size";
+String const _Enviroment::gUdpServerBufferSize = createString("env.udp.server.buffer.size");
 int const _Enviroment::DefaultUdpServerBufferSize = 64*1024;
 
-String const _Enviroment::gHttpServerPort = "http.server.port";
+String const _Enviroment::gHttpServerPort = createString("http.server.port");
 int const _Enviroment::DefaultHttpServerPort = 80;
 
-String const _Enviroment::gHttpServerSendFileBufferSize ="http.server.sendfile.buffer.size";
+String const _Enviroment::gHttpServerSendFileBufferSize = createString("http.server.sendfile.buffer.size");
 int const _Enviroment::DefaultHttpServerSendFileBufferSize = 1024*128;
 
-String const _Enviroment::gHttpMultiPartDispositionSize = "http.part.disposition.size";
+String const _Enviroment::gHttpMultiPartDispositionSize = createString("http.part.disposition.size");
 int const _Enviroment::DefaultHttpMultiPartDispositionSize = 1024;
 
-String const _Enviroment::gHttpMultiPartContentTypeSize = "http.part.contenttype.size";;
+String const _Enviroment::gHttpMultiPartContentTypeSize = createString("http.part.contenttype.size");;
 int const _Enviroment::DefaultHttpMultiContentTypeSize = 1024;
 
-String const _Enviroment::gHttpMultiPartContentSize = "http.part.content.size";
+String const _Enviroment::gHttpMultiPartContentSize = createString("http.part.content.size");
 int const  _Enviroment::DefaultHttpMultiContentSize = 32*1024;
 
-String const  _Enviroment::gHttpMultiPartFilePath = "http.part.file.path";
-String const _Enviroment::DefaultMultiPartFilePath = "./tmp/";
+String const  _Enviroment::gHttpMultiPartFilePath = createString("http.part.file.path");
+String const _Enviroment::DefaultMultiPartFilePath = createString("./tmp/");
 
-String const _Enviroment::gHttpSslKeyPath = "https.ssl.key.path";
-String const _Enviroment::DefaultHttpSslKeyPath = "";
+String const _Enviroment::gHttpSslKeyPath = createString("https.ssl.key.path");
+String const _Enviroment::DefaultHttpSslKeyPath = createString("");
 
-String const _Enviroment::gHttpSslCertificatePath = "https.ssl.cert.path";
-String const _Enviroment::DefaultHttpSslCertificatePath = "";
+String const _Enviroment::gHttpSslCertificatePath = createString("https.ssl.cert.path");
+String const _Enviroment::DefaultHttpSslCertificatePath = createString("");
 
 sp<_Enviroment> _Enviroment::getInstance() {
     std::call_once(s_flag, [&]() {

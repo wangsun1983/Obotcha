@@ -92,7 +92,7 @@ String _IniValue::getString(const char* section,const char* tag,const char * def
 String _IniValue::getString(const char* tag,const char* defaultValue) {
     String v = searchStringValue(tag);
     if(v == nullptr) {
-        return defaultValue;
+        return createString(defaultValue);
     }
 
     return v;

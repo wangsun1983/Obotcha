@@ -273,8 +273,8 @@ void _XmlValue::appendNode(String name,String value) {
     String trimres = name->trimAll();
 
     XmlValue newnode = doc->newNode(
-        doc->xmlDoc.allocate_string(trimres->toChars()),
-        doc->xmlDoc.allocate_string(value->toChars()));
+        createString(doc->xmlDoc.allocate_string(trimres->toChars())),
+        createString(doc->xmlDoc.allocate_string(value->toChars())));
 
     node->append_node(newnode->node);
 }
@@ -722,7 +722,7 @@ void _XmlValue::importFrom(Object value) {
     if(value->__ReflectClassName()->equals("_ArrayList")) {
         int size = value->__getContainerSize("");
         for(int i = 0;i<size;i++) {
-            sp<_XmlValue> refNode = doc->newNode("_array_item");
+            sp<_XmlValue> refNode = doc->newNode(createString("_array_item"));
             auto nValue = value->__getListItemObject("",i);
             refNode->importFrom(nValue);
             this->appendNode(refNode);

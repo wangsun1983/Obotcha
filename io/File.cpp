@@ -21,7 +21,7 @@ _File::_File(String path) {
 }
 
 _File::_File() {
-    mPath = "";
+    mPath = createString("");
 }
 
 String _File::getName() {

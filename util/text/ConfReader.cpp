@@ -1,5 +1,4 @@
 #include "ConfReader.hpp"
-#include "ConfValue.hpp"
 #include "Error.hpp"
 #include "InitializeException.hpp"
 
@@ -9,22 +8,12 @@ extern "C"{
 
 namespace obotcha {
 
-_ConfReader::_ConfReader(const char* path) {
-    mConfFile = createFile(path);
-    if(!mConfFile->exists()) {
-        Trigger(InitializeException,"File Not Exist");
-    }
+_ConfReader::_ConfReader(const char* path):_ConfReader(createFile(path)) {
 
-    parse();
 }
 
-_ConfReader::_ConfReader(String path) {
-    mConfFile = createFile(path);
-    if(!mConfFile->exists()) {
-        Trigger(InitializeException,"File Not Exist");
-    }
+_ConfReader::_ConfReader(String path):_ConfReader(createFile(path)) {
 
-    parse();
 }
 
 _ConfReader::_ConfReader(File file) {
@@ -36,66 +25,71 @@ _ConfReader::_ConfReader(File file) {
     parse();
 }
 
-int _ConfReader::setFile(const char* path) {
-    mConfFile = createFile(path);
-    if(!mConfFile->exists()) {
-        return -FileNotExists;
-    }
-
-    return parse();
-}
-    
-int _ConfReader::setFile(String path) {
-    mConfFile = createFile(path);
-    if(!mConfFile->exists()) {
-        return -FileNotExists;
-    }
-
-    return parse();
-}
-    
-int _ConfReader::setFile(File file) {
-    mConfFile = file;
-    if(!mConfFile->exists()) {
-        return -FileNotExists;
-    }
-
-    return parse();
-}
-
 int _ConfReader::parse() {
     if(!mConfFile->exists()) {
         return -FileNotExists;
     }
 
-    mConfValue = createConfValue();
-    mConfValue->config.comment_char='#';
-    mConfValue->config.sep_char='=';
-    mConfValue->config.str_char='"';
+    config.comment_char='#';
+    config.sep_char='=';
+    config.str_char='"';
 
-    ccl_t * pair = &(mConfValue->config);
-    if(0 == ccl_parse(pair,(const char *)mConfFile->getAbsolutePath()->toChars())) {
+    if(0 == ccl_parse(&config,(const char *)mConfFile->getAbsolutePath()->toChars())) {
         return 0;
     }
 
     return -1;
 }
 
-ConfValue _ConfReader::get() {
-    return mConfValue;
-}
-
 _ConfReader::~_ConfReader() {
 
 }
 
+sp<_ConfIterator> _ConfReader::getIterator() {
+    return createConfIterator(AutoClone(this));
+}
+
 String _ConfReader::get(String tag) {
-    const char *value = ccl_get(&(mConfValue->config),(const char*)tag->toChars());
+    const char *value = ccl_get(&config,(const char*)tag->toChars());
     if(value == nullptr || value[0] == 0) {
         return nullptr;
     }
 
     return createString(value);
+}
+
+//-------------iterator-------------
+_ConfIterator::_ConfIterator(ConfReader v) {
+    reader = v;
+    ccl_t * pair = &(v->config);
+    ccl_reset(pair);
+    iterator = (ccl_pair_t *)ccl_iterate(pair);
+}
+
+String _ConfIterator::getTag() {
+    if(iterator != nullptr) {
+        return createString(iterator->key);
+    }
+
+    return nullptr;
+}
+    
+String _ConfIterator::getValue() {
+    if(iterator != nullptr) {
+        return createString(iterator->value);
+    }
+
+    return nullptr;    
+}
+
+bool _ConfIterator::hasValue() {
+    return iterator != nullptr;
+}
+    
+bool _ConfIterator::next() {
+    ccl_t * pair = &(reader->config);
+    iterator = (ccl_pair_t *)ccl_iterate(pair);
+    return (iterator != nullptr);
 }
 
 }

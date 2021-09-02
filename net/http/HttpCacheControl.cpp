@@ -96,7 +96,7 @@ void _HttpCacheControl::import(String value) {
         int pos = 0;
         while (pos < value->size()) {
             int tokenStart = pos;
-            pos = st(HttpHeaderContentParser)::skipUntil(value, pos, "=,;");
+            pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString("=,;"));
             String directive = value->subString(tokenStart, pos-tokenStart)->trim();
             String parameter;
 
@@ -110,13 +110,13 @@ void _HttpCacheControl::import(String value) {
                 if (pos < value->size() && value->charAt(pos) == '\"') {
                     pos++; // consume '"' open quote
                     int parameterStart = pos;
-                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, "\"");
+                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString("\""));
                     parameter = value->subString(parameterStart, pos);
                     pos++; // consume '"' close quote (if necessary)
                     // unquoted string
                 } else {
                     int parameterStart = pos;
-                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, ",;");
+                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString(",;"));
                     parameter = value->subString(parameterStart, (pos-parameterStart))->trim();
                     pos++;
                 }

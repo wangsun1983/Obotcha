@@ -26,7 +26,7 @@ _PosixMq::_PosixMq(String name,int type,int msgsize,int maxmsgs) {
 }
 
 void _PosixMq::initParam(String name,int type,int msgsize,int maxmsgs) {
-    String sp = "/";
+    String sp = createString("/");
     mQName = sp->append(name);
     mType = type;
     mMsgSize = msgsize;
@@ -35,12 +35,12 @@ void _PosixMq::initParam(String name,int type,int msgsize,int maxmsgs) {
 
 int _PosixMq::init() {
     if(MAX_MSG_NUMS == -1) {
-        FileNodeReader reader = createFileNodeReader("/proc/sys/fs/mqueue/msg_max");
+        FileNodeReader reader = createFileNodeReader(createString("/proc/sys/fs/mqueue/msg_max"));
         MAX_MSG_NUMS = reader->readInt();
     }
 
     if(MAX_MSG_SIZE == -1) {
-        FileNodeReader reader = createFileNodeReader("/proc/sys/fs/mqueue/msgsize_max");
+        FileNodeReader reader = createFileNodeReader(createString("/proc/sys/fs/mqueue/msgsize_max"));
         MAX_MSG_SIZE = reader->readInt();
     }
 

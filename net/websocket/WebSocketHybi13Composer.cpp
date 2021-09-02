@@ -35,21 +35,21 @@ HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl)
 
     String host = httpUrl->getHost()->append(":",createString(httpUrl->getPort()));
     packet->getHeader()->setValue(st(HttpHeader)::Host,host);
-    packet->getHeader()->setValue(st(HttpHeader)::SecWebSocketVersion,"13");
+    packet->getHeader()->setValue(st(HttpHeader)::SecWebSocketVersion,createString("13"));
     if(packet->getHeader()->getValue(st(HttpHeader)::Accept) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::Accept,"*/*");
+        packet->getHeader()->setValue(st(HttpHeader)::Accept,createString("*/*"));
     }
 
     if(packet->getHeader()->getValue(st(HttpHeader)::AcceptLanguage) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::AcceptLanguage,"en-US,en;q=0.5");
+        packet->getHeader()->setValue(st(HttpHeader)::AcceptLanguage,createString("en-US,en;q=0.5"));
     }
 
     if(packet->getHeader()->getValue(st(HttpHeader)::AcceptEncoding) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::AcceptEncoding,"gzip, deflate");
+        packet->getHeader()->setValue(st(HttpHeader)::AcceptEncoding,createString("gzip, deflate"));
     }
 
     if(packet->getHeader()->getValue(st(HttpHeader)::Origin) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::Origin,"null");
+        packet->getHeader()->setValue(st(HttpHeader)::Origin,createString("null"));
     }
 
     if(packet->getHeader()->getValue(st(HttpHeader)::SecWebSocketKey) == nullptr) {
@@ -63,19 +63,19 @@ HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl)
     }
 
     if(packet->getHeader()->getValue(st(HttpHeader)::Connection) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::Connection,"keep-alive, Upgrade");
+        packet->getHeader()->setValue(st(HttpHeader)::Connection,createString("keep-alive, Upgrade"));
     }
 
     if(packet->getHeader()->getValue(st(HttpHeader)::Upgrade) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::Upgrade,"websocket");
+        packet->getHeader()->setValue(st(HttpHeader)::Upgrade,createString("websocket"));
     }
 
     if(packet->getHeader()->getValue(st(HttpHeader)::Pragma) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::Pragma,"no-cache");
+        packet->getHeader()->setValue(st(HttpHeader)::Pragma,createString("no-cache"));
     }
 
     if(packet->getHeader()->getValue(st(HttpHeader)::CacheControl) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::CacheControl,"no-cache");
+        packet->getHeader()->setValue(st(HttpHeader)::CacheControl,createString("no-cache"));
     }
 
     return packet;

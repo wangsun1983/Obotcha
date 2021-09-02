@@ -5,18 +5,18 @@
 
 namespace obotcha {
 
-const String _HttpCookie::COOKIE_PROPERTY_SECURE = "Secure";
+const String _HttpCookie::COOKIE_PROPERTY_SECURE = createString("Secure");
 
-const String _HttpCookie::COOKIE_PROPERTY_HTTPONLY = "HttpOnly";
+const String _HttpCookie::COOKIE_PROPERTY_HTTPONLY = createString("HttpOnly");
 
-const String _HttpCookie::COOKIE_PROPERTY_PATH = "Path";
+const String _HttpCookie::COOKIE_PROPERTY_PATH = createString("Path");
 
-const String _HttpCookie::COOKIE_PROPERTY_DOMAIN = "Domain";
+const String _HttpCookie::COOKIE_PROPERTY_DOMAIN = createString("Domain");
 
 //May no use
-const String _HttpCookie::COOKIE_PROPERTY_EXPIRES = "Expires";
+const String _HttpCookie::COOKIE_PROPERTY_EXPIRES = createString("Expires");
 
-const String _HttpCookie::COOKIE_PROPERTY_MAX_AGE = "Max-Age";
+const String _HttpCookie::COOKIE_PROPERTY_MAX_AGE = createString("Max-Age");
 
 _HttpCookie::_HttpCookie() {
     mValues = createHashMap<String,String>();
@@ -94,7 +94,7 @@ void _HttpCookie::import(String value) {
     int pos = 0;
     while (pos < value->size()) {
         int tokenStart = pos;
-        pos = st(HttpHeaderContentParser)::skipUntil(value, pos, "=,;");
+        pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString("=,;"));
         String directive = value->subString(tokenStart, pos-tokenStart)->trim();
         String parameter = nullptr;
 
@@ -108,16 +108,16 @@ void _HttpCookie::import(String value) {
             if (pos < value->size() && value->charAt(pos) == '\"') {
                 pos++; // consume '"' open quote
                 int parameterStart = pos;
-                pos = st(HttpHeaderContentParser)::skipUntil(value, pos, "\"");
+                pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString("\""));
                 parameter = value->subString(parameterStart, pos);
                 pos++; // consume '"' close quote (if necessary)
                 // unquoted string
             } else {
                 int parameterStart = pos;
                 if(directive->endsWithIgnoreCase(st(HttpCookie)::COOKIE_PROPERTY_EXPIRES)) {
-                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, ";");
+                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString(";"));
                 } else {
-                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, ",;");
+                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString(",;"));
                 }
                 parameter = value->subString(parameterStart, (pos-parameterStart))->trim();
                 pos++;
