@@ -14,6 +14,7 @@
 #include "ArrayList.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "SpinLock.hpp"
+#include "Closeable.hpp"
 
 namespace obotcha {
 
@@ -26,7 +27,7 @@ public:
     Socket sock;
 };
 
-DECLARE_CLASS(SocketMonitor) {
+DECLARE_CLASS(SocketMonitor) IMPLEMENTS(Closeable){
 public:
     _SocketMonitor();
     _SocketMonitor(int);

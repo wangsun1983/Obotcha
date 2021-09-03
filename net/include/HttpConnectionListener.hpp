@@ -12,7 +12,6 @@ DECLARE_CLASS(HttpConnectionListener) {
 public:
     virtual void onResponse(HttpResponse response) = 0;
     virtual void onDisconnect() = 0;
-    virtual void onConnect(int) = 0;
 };
 
 }

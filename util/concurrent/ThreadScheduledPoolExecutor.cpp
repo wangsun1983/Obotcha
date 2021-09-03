@@ -162,4 +162,9 @@ _ThreadScheduledPoolExecutor::~_ThreadScheduledPoolExecutor() {
     
 }
 
+void _ThreadScheduledPoolExecutor::close() {
+    this->shutdown();
+    this->awaitTermination();
+}
+
 }

@@ -13,13 +13,14 @@
 #include "ThreadCachedPoolExecutor.hpp"
 #include "Thread.hpp"
 #include "LinkedList.hpp"
+#include "Closeable.hpp"
 
 namespace obotcha { 
 
 class _WaitingTask;
 class _ThreadScheduledPoolExecutor;
 
-DECLARE_CLASS(WaitingTask) IMPLEMENTS(ExecutorTask){
+DECLARE_CLASS(WaitingTask) IMPLEMENTS(ExecutorTask) {
 public:
     friend class _ThreadScheduledPoolExecutor;
 
@@ -30,8 +31,7 @@ private:
     sp<_WaitingTask> next;
 };
 
-
-DECLARE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(Thread,Executor) {
+DECLARE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(Thread,Executor,Closeable) {
 
 public:
     _ThreadScheduledPoolExecutor(int capacity = -1);
@@ -75,6 +75,8 @@ public:
 private:
 
     void run();
+
+    void close();
 
     int addWaitingTaskLocked(WaitingTask,long);
 

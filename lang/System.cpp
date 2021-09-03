@@ -9,7 +9,7 @@
 namespace obotcha {
 
 Mutex _System::mMutex = createMutex();
-ArrayList<SystemListener> _System::mListeners = createArrayList<SystemListener>();
+ArrayList<Closeable> _System::mListeners = createArrayList<Closeable>();
 
 long int _System::currentTimeMillis() {
     timeval tv;
@@ -52,7 +52,7 @@ void _System::exit(int reason) {
         AutoLock l(mMutex);
         auto iterator = mListeners->getIterator();
         while(iterator->hasValue()) {
-            iterator->getValue()->onSystemExit();
+            iterator->getValue()->close();
             iterator->next();
         }
     }
@@ -76,6 +76,11 @@ void _System::getTimeVal(long timeInterval,struct timeval *tv) {
 
 int _System::myPid() {
     return getpid();
+}
+
+void _System::closeOnExit(Closeable c) {
+    AutoLock l(mMutex);
+    mListeners->add(c);
 }
 
 }

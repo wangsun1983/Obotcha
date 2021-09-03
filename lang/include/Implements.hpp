@@ -23,10 +23,13 @@ namespace obotcha {
 
 #define _IMPLEMENTS_1(A) ,virtual public _##A
 #define _IMPLEMENTS_2(A,B) ,virtual public _##A,virtual public _##B
+#define _IMPLEMENTS_3(A,B,C) ,virtual public _##A,virtual public _##B,virtual public _##C
+#define _IMPLEMENTS_4(A,B,C,D) ,virtual public _##A,virtual public _##B,virtual public _##C,virtual public _##D
 
 #define IMPLEMENTS(...) IMPLEMENTS_FUNC_INNER(FL_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)
 #define IMPLEMENTS_FUNC_INNER(COUNT,...) IMPLEMENTS_FUNC_INNER_2(COUNT,__VA_ARGS__)
 #define IMPLEMENTS_FUNC_INNER_2(COUNT,...) _IMPLEMENTS_##COUNT(__VA_ARGS__)
+
 
 }
 #endif

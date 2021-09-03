@@ -6,14 +6,10 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
+#include "Closeable.hpp"
 #include "Mutex.hpp"
 
 namespace obotcha {
-
-DECLARE_CLASS(SystemListener) {
-public:
-    virtual void onSystemExit() = 0;
-};
 
 DECLARE_CLASS(System) {
 
@@ -36,9 +32,11 @@ public:
 
     static int myPid();
 
+    static void closeOnExit(Closeable);
+
 private:
     static Mutex mMutex;
-    static ArrayList<SystemListener> mListeners;
+    static ArrayList<Closeable> mListeners;
 };
 
 }

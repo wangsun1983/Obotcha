@@ -16,7 +16,7 @@ using namespace obotcha;
 
 int main() {
 
-    HttpUrl url = createHttpUrlBuilder()->appendHost(createString("192.168.1.10"))->appendPort(9090)->genHttpUrl();
+    HttpUrl url = createHttpUrlBuilder()->appendPort(9090)->genHttpUrl();
     HttpConnection connection = createHttpConnection(url);
     connection->connect();
     HttpRequest request = createHttpRequest(st(HttpMethod)::Get,url);

@@ -14,8 +14,10 @@
 #include "HttpConnectionListener.hpp"
 #include "HttpRequestWriter.hpp"
 #include "SocketListener.hpp"
+#include "Inet4Address.hpp"
 #include "URL.hpp"
 #include "Log.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
@@ -34,18 +36,21 @@ Socket _HttpConnection::getSocket() {
 }
 
 int _HttpConnection::connect() {
-    ArrayList<InetAddress> address = createURL(mUrl->getHost())->getInetAddress();
-    if(address == nullptr || address->size() == 0) {
-        return -NetConnectFail;
+    InetAddress inetAddr = createInet4Address(mUrl->getPort());
+
+    if(mUrl->getHost() != nullptr) {
+        ArrayList<InetAddress> address = createURL(mUrl->getHost())->getInetAddress();
+        if(address == nullptr || address->size() == 0) {
+            return -NetConnectFail;
+        }
+
+        inetAddr->setAddress(address->get(0)->getAddress());
     }
 
-    InetAddress inetAddr = address->get(0);
-    inetAddr->setPort(mUrl->getPort());
-
     mSocket = createSocketBuilder()->setAddress(inetAddr)->setOption(mOption)->newSocket();
-    int result = mSocket->connect();
-    if(result < 0) {
-        return result;
+    if(mSocket->connect() < 0) {
+        LOG(ERROR)<<"Connect failed,reason is "<<strerror(errno);
+        return -NetConnectFail;
     }
 
     mInputStream = mSocket->getInputStream();
@@ -55,11 +60,13 @@ int _HttpConnection::connect() {
         static std::once_flag flag;
         std::call_once(flag, [&]() {
             mSocketMonitor = createSocketMonitor();
+            st(System)::closeOnExit(mSocketMonitor);
         });
 
         mSocketMonitor->bind(mSocket,AutoClone(this));
     }
-    return result;
+    
+    return 0;
 }
 
 HttpResponse _HttpConnection::execute(HttpRequest req) {
