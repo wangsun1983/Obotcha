@@ -12,6 +12,7 @@
 #include "HttpStatus.hpp"
 #include "HttpServerBuilder.hpp"
 #include "Inet4Address.hpp"
+#include "CountDownLatch.hpp"
 
 using namespace obotcha;
 
@@ -19,19 +20,19 @@ AtomicInteger connectCount = createAtomicInteger(0);
 AtomicInteger disConnectCount = createAtomicInteger(0);
 AtomicInteger messageCount = createAtomicInteger(0);
 
+CountDownLatch latch = createCountDownLatch(1024);
+
 DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
 
 void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPacket msg){
     switch(event) {
         case HttpEvent::Connect: {
-            printf("on connect \n");
             connectCount->incrementAndGet();
         }
         break;
 
         case HttpEvent::Message: {
-            printf("on message \n");
             messageCount->incrementAndGet();
 
             HttpResponse response = createHttpResponse();
@@ -47,8 +48,8 @@ void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPac
         break;
 
         case HttpEvent::Disconnect:{
-            printf("on disconnect \n");
             disConnectCount->incrementAndGet();
+            latch->countDown();
         }
         break;
     }
@@ -59,14 +60,23 @@ void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPac
 int main() {
   MyHttpListener listener = createMyHttpListener();
   HttpServer server = createHttpServerBuilder()
-                    ->setAddress(createInet4Address("192.168.1.9",1256))
+                    ->setAddress(createInet4Address(1256))
                     ->setListener(listener)
                     ->build();
   server->start();
-  while(1) {
-  sleep(30);
-  }
+  latch->await();
   server->close();
-  printf("connectCount is %d,disConnectCount is %d,messageCount is %d \n",connectCount->get(),disConnectCount->get(),messageCount->get());
+  if(connectCount->get() != 1024) {
+    printf("---TestHttpServer Simple Sync test1 [FAILED]---,connectCount is %d \n",connectCount->get());
+  }
+
+  if(disConnectCount->get() != 1024) {
+    printf("---TestHttpServer Simple Sync test2 [FAILED]---,disConnectCount is %d \n",disConnectCount->get());
+  }
+
+  if(messageCount->get() != 1024) {
+    printf("---TestHttpServer Simple Sync test1 [FAILED]---,messageCount is %d \n",messageCount->get());
+  }
   
+  printf("---TestHttpServer Simple Sync test100 [OK]---\n");
 }

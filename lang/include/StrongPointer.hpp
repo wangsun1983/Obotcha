@@ -127,14 +127,23 @@ public:
             return true;
         }
 
-        return o.m_ptr == nullptr?false:m_ptr->equals(o.m_ptr);
+        if(m_ptr != nullptr && o.m_ptr!= nullptr) {
+            return m_ptr->equals(o.m_ptr);
+        }
+
+        return false;
     }
     
     inline bool operator == (const T* o) const {
         if((void *)m_ptr == (void *)o) {
             return true;
         }
-        return o == nullptr?false:m_ptr->equals(o);
+
+        if(m_ptr != nullptr && o != nullptr) {
+            return m_ptr->equals(o);
+        }
+
+        return false;
     }
 
     template<typename U>                                            
@@ -143,7 +152,11 @@ public:
             return true;
         }
         
-        return o.m_ptr == nullptr?false:m_ptr->equals(o.m_ptr);
+        if(m_ptr != nullptr && o.m_ptr != nullptr) {
+            return m_ptr->equals(o.m_ptr);
+        }
+
+        return false;
     }
 
 
@@ -153,7 +166,11 @@ public:
             return true;
         }
 
-        return o == nullptr?false:m_ptr->equals(o);
+        if(m_ptr != nullptr && o != nullptr) {
+            return m_ptr->equals(o);
+        }
+
+        return false;
     }
 
     // Operators(!=)
