@@ -295,7 +295,7 @@ String _HttpHeader::toString(int type) {
     }
 
     if(html->size() == 0) {
-        return nullptr;
+        return html;
     }
 
     return html->subString(0,html->size() - 2);

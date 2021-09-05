@@ -184,7 +184,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                         mReader->move(contentlength);
                         ByteArray content = mReader->pop();
                         //check whether it is a X-URLEncoded
-                        if(st(HttpContentType)::XFormUrlEncoded->indexOfIgnoreCase(contenttype) >= 0) {
+                        if(contenttype != nullptr && st(HttpContentType)::XFormUrlEncoded->indexOfIgnoreCase(contenttype) >= 0) {
                             ArrayList<KeyValuePair<String,String>> xFormEncodedPair = st(HttpXFormUrlEncodedParser)::parse(content->toString());
                             mHttpPacket->getEntity()->setEncodedKeyValues(xFormEncodedPair);
                         } else {
