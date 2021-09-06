@@ -42,10 +42,10 @@ DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
           case HttpEvent::Message: {
               auto data = msg->getEntity()->getContent()->toString();
-              printf("get data is %s \n",data->toChars());
-              //if(data->equals("hello world")) {
+              //printf("get data is %s \n",data->toChars());
+              if(data->equals("hello world")) {
                 messageLatch->countDown();
-              //}
+              }
               
               HttpResponse response = createHttpResponse();
               response->getHeader()->setResponseStatus(st(HttpStatus)::Ok);

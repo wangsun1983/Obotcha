@@ -91,9 +91,7 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
         response->getHeader()->setValue(st(HttpHeader)::TransferEncoding,st(HttpHeader)::TransferChunked);
     } else {
         contentlength = computeContentLength(response);
-        if(contentlength != 0) {
-            response->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(contentlength));
-        }
+        response->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(contentlength));
     }
 
     AUTO_FLUSH(writer->writeString(response->getHeader()->toString(st(HttpProtocol)::HttpResponse)));
@@ -165,9 +163,9 @@ ByteArray _HttpResponseWriter::compose(HttpResponse response) {
 
 long _HttpResponseWriter::computeContentLength(HttpResponse response) {
 
-    if(response->getType() == st(HttpResponse)::CHUNCKED) {
-        return response->getFile()->length();
-    }
+    //if(response->getType() == st(HttpResponse)::CHUNCKED) {
+    //    return response->getFile()->length();
+    //}
 
     ArrayList<KeyValuePair<String,String>> encodedUrlMap = response->getEntity()->getEncodedKeyValues();
     int length = 0;
