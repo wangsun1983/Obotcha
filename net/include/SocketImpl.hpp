@@ -17,7 +17,6 @@ namespace obotcha {
 class _Socket;
 DECLARE_CLASS(SocketImpl) {
 public:
-    _SocketImpl(){}
     _SocketImpl(FileDescriptor);
     _SocketImpl(InetAddress,SocketOption);
     virtual int connect() {Trigger(MethodNotSupportException,"not support");};

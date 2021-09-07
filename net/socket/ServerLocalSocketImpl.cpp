@@ -9,7 +9,7 @@
 namespace obotcha {
 
 _ServerLocalSocketImpl::_ServerLocalSocketImpl(InetAddress address,SocketOption option):
-                                                _LocalSocketImpl(address,option) {
+                                                _SocketImpl(address,option),_LocalSocketImpl(address,option) {
 
 }
 

@@ -9,7 +9,7 @@ namespace obotcha {
 
 int _ServerSocketImpl::DefaultConnectNum = 16;
 
-_ServerSocketImpl::_ServerSocketImpl(InetAddress address,SocketOption option):_SocksSocketImpl(address,option) {
+_ServerSocketImpl::_ServerSocketImpl(InetAddress address,SocketOption option):_SocketImpl(address,option),_SocksSocketImpl(address,option) {
 }
 
 int _ServerSocketImpl::bind() {
