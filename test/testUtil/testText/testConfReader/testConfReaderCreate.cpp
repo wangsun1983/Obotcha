@@ -4,7 +4,6 @@
 //#include "Thread.hpp"
 //#include "ArrayList.hpp"
 #include "ConfReader.hpp"
-#include "ConfValue.hpp"
 #include "Log.hpp"
 #include "InitializeException.hpp"
 

@@ -7,29 +7,37 @@
 #include "StrongPointer.hpp"
 #include "File.hpp"
 #include "IniValue.hpp"
+#include "HashMap.hpp"
 
 namespace obotcha {
 
-class _IniValue;
+class _IniIterator;
 
 DECLARE_CLASS(IniReader) {
 
 public:
+    friend class _IniIterator;
+
     _IniReader(String content);
 
     _IniReader(File file);
+    
+    ~_IniReader();
 
-    sp<_IniValue> get();
+    HashMap<String,String> get(String section = createString(""));
+    HashMap<String,HashMap<String,String>> getAll();
 
 private:
+    static String RootSectionName;
+
     String filepath;
 
-    sp<_IniValue> mIniValue; 
+    dictionary * dict;
 
-    sp<_IniValue> parse();
-
-    sp<_IniValue> parse(String);
+    void parse();
     
+    //<Section,HashMap<Key,Value>
+    HashMap<String,HashMap<String,String>> mIniValues;
 };
 
 }

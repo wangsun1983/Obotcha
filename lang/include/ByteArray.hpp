@@ -53,6 +53,21 @@ public:
 
     int append(byte *data,int len);
 
+    template<typename U>
+    U *get() {
+        return (U*)buff;
+    }
+
+    template<typename U>
+    int apply(U *p) {
+        if(mSize < sizeof(U)) {
+            return -1;
+        }
+
+        memcpy(buff,p,sizeof(U));
+        return 0;
+    }
+
     //add foreach lambda
     using foreachCallback = std::function<int(byte &)>;
     inline void foreach(foreachCallback callback) {

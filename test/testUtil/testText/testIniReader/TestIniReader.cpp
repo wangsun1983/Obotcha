@@ -13,29 +13,39 @@ using namespace obotcha;
 int basetest() {
 
     while(1) {
-        //test Construct
-        try {
-            IniReader reader = createIniReader(createFile("abc"));
-            printf("IniReader create test1-------[FAIL] \n");
-        } catch(InitializeException e) {
-
+        IniReader reader = createIniReader(createFile("./testData.ini"));
+        auto maps = reader->getAll();
+        if(maps->size() != 5) {
+          printf("IniReader test1-------[FAILED] \n");
+          break;
         }
 
-        try {
-            File f;
-            IniReader reader = createIniReader(f);
-            printf("IniReader create test2-------[FAIL] \n");
-        } catch(InitializeException e) {
-
+        //L0
+        auto map1 = maps->get(createString(""));
+        if(map1->size() != 1) {
+          printf("IniReader test2-------[FAILED] \n");
+          break;
         }
 
-        //
-        IniReader reader = createIniReader(createFile("testData.ini"));
-        if(reader == nullptr || reader->get() == nullptr) {
-            printf("IniReader create test3-------[FAIL] \n");
+        auto str1 = map1->get(S("abc1"));
+        if(str1 == nullptr || !str1->equals("1")) {
+          printf("IniReader test3-------[FAILED] \n");
+          break;
         }
 
-        printf("IniReader create test4-------[OK] \n");
+        //L1
+        auto map2 = maps->get(createString("l1"));
+        if(map2->size() != 6) {
+          printf("IniReader test4-------[FAILED] \n");
+          break;
+        }
+
+        if(map2->get(S("a")) == nullptr || !map2->get(S("a"))->equals("1")) {
+          printf("IniReader test4-------[FAILED] \n");
+          break;
+        }
+
+        printf("IniReader test100-------[OK] \n");
         break;
     }
 }

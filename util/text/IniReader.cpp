@@ -1,15 +1,17 @@
-#include "IniValue.hpp"
-#include "IniReader.hpp"
-#include "InitializeException.hpp"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
-
+#include "IniValue.hpp"
+#include "IniReader.hpp"
+#include "InitializeException.hpp"
+#include "Log.hpp"
+#include "HashMap.hpp"
 
 namespace obotcha {
+
+String _IniReader::RootSectionName = createString("__root__");
 
 _IniReader::_IniReader(String content) {
     //TODO
@@ -21,30 +23,65 @@ _IniReader::_IniReader(File file) {
     }
 
     filepath = file->getAbsolutePath();
-    mIniValue = parse();
+
+    mIniValues = createHashMap<String,HashMap<String,String>>();
+    parse();
 }
 
-sp<_IniValue> _IniReader::get() {
-    return mIniValue;
-}
-
-IniValue _IniReader::parse() {
+void _IniReader::parse() {
     if(!st(File)::exists(filepath)) {
-        return nullptr;
+        LOG(ERROR)<<"InitReader file not exsits";
+        return;
     }
 
-    dictionary *dict = iniparser_load(filepath->toChars());
+    dict = iniparser_load(filepath->toChars());
+
+    //reflect to HashMap
+    int sections = iniparser_getnsec(dict);
     
-    if(dict == nullptr) {
-        return nullptr;
-    }
+    for(int i = 0;i < sections;i++) {
+        bool isRoot = false;
+        char *sectionName = (char *)iniparser_getsecname(dict,i);
+        HashMap<String,String> mKeyValue = createHashMap<String,String>();
+        if(RootSectionName->equals(sectionName)) {
+            mIniValues->put(createString(""),mKeyValue);
+            isRoot = true;
+        } else {
+            mIniValues->put(createString(sectionName),mKeyValue);
+        }
 
-    return createIniValue(dict);
+        const char *keys[1024] = {0};
+        auto k = iniparser_getseckeys(dict,sectionName,keys);
+
+        if(k == nullptr) {
+            continue;
+        }
+
+        for(int j = 0;j < 1024;j++) {
+            if(k[j] == nullptr) {
+                break;
+            }
+
+            char *v = (char *)iniparser_getstring(dict,k[j],"");
+            ArrayList<String> p = createString(k[j])->split(":");
+            mKeyValue->put(p->get(p->size() - 1),createString(v));
+        }
+    }
 }
 
-sp<_IniValue> _IniReader::parse(String content) {
-    //TODO
-    return nullptr;
+HashMap<String,String> _IniReader::get(String section) {
+    return mIniValues->get(section);
+}
+
+HashMap<String,HashMap<String,String>> _IniReader::getAll() {
+    return mIniValues;
+}
+
+_IniReader::~_IniReader() {
+    if(dict != nullptr) {
+        iniparser_freedict(dict);
+        dict = nullptr;
+    }
 }
 
 

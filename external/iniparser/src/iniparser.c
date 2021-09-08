@@ -745,7 +745,10 @@ dictionary * iniparser_load(const char * ininame)
     memset(key,     0, ASCIILINESZ);
     memset(val,     0, ASCIILINESZ);
     last=0 ;
-
+    //wangsl
+    dictionary_set(dict, "__root__", NULL);
+    //wangsl
+    
     while (fgets(line+last, ASCIILINESZ-last, in)!=NULL) {
         lineno++ ;
         len = (int)strlen(line)-1;
@@ -788,7 +791,13 @@ dictionary * iniparser_load(const char * ininame)
             break ;
 
             case LINE_VALUE:
-            sprintf(tmp, "%s:%s", section, key);
+            
+            if(strlen(section) == 0) {
+                sprintf(tmp, "%s:%s", "__root__", key);
+            } else {
+                sprintf(tmp, "%s:%s", section, key);
+            }
+            
             mem_err = dictionary_set(dict, tmp, val);
             break ;
 

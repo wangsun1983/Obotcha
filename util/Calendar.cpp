@@ -413,6 +413,7 @@ int _Calendar::get(int type) {
 long int _Calendar::toTimeMillis() {
 
     std::tm time;
+    time.tm_isdst = 0;
 
     time.tm_year = year - _Calendar::GregorianBase;
     time.tm_mon = month;

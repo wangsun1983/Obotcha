@@ -20,9 +20,10 @@ extern int testsafemode();
 extern int testForeach();
 extern int testConstruct();
 extern int testByteArrayClear();
+extern void testByteArrayStruct();
 
 int main() {
-
+  testByteArrayStruct();
   basetest();
   operatortest();
   dumptest();

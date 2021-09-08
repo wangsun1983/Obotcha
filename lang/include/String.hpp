@@ -25,6 +25,8 @@ namespace obotcha {
 template<typename T>
 class _ArrayList;
 
+#define S(x)  createString(x)
+
 DECLARE_CLASS(String) {
 public:
     static const int __isReflected = 1;
