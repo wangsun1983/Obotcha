@@ -279,9 +279,7 @@ ArrayList<File> _File::listFiles() {
             continue;
         }///current dir OR parrent dir
         
-        String path = createString(mPath);
-        path->append(gPathSeparator);
-        path->append(ptr->d_name);
+        String path = createString(mPath)->append(gPathSeparator)->append(ptr->d_name);
 
         File file = createFile(path);
         files->add(file);

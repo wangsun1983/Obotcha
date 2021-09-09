@@ -37,9 +37,12 @@ long _FileOutputStream::write(char c) {
     return ::write(fd,&c,1);
 }
 
-long _FileOutputStream::write(ByteArray buff,long size) {
-    int len = (size == -1)?buff->size():size;
-    return ::write(fd,buff->toValue(),len);
+long _FileOutputStream::write(ByteArray buff) {
+    return ::write(fd,buff->toValue(),buff->size());
+}
+
+long _FileOutputStream::write(ByteArray buff,int start) {
+    return ::write(fd,&buff->toValue()[start],buff->size() - start);
 }
 
 long _FileOutputStream::writeString(String s) {

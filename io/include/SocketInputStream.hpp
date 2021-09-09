@@ -18,6 +18,8 @@ public:
 
     long read(ByteArray buffer);
 
+    long read(ByteArray buffer,int start);
+
     void close();
 
     ~_SocketInputStream();

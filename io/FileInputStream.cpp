@@ -52,6 +52,14 @@ long _FileInputStream::readTo(ByteArray buff,int pos,int length) {
     return ::read(fd,buff->toValue() + pos,len);
 }
 
+long _FileInputStream::read(ByteArray data) {
+    return ::read(fd,data->toValue(),data->size());
+}
+
+long _FileInputStream::read(ByteArray data,int start) {
+    return ::read(fd,&data->toValue()[start],data->size() - start);
+}
+
 ByteArray _FileInputStream::readAll() {
     struct stat stbuf;
     if ((fstat(fd, &stbuf) != 0) || (!S_ISREG(stbuf.st_mode))) {

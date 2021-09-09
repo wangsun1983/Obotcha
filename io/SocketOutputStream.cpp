@@ -38,13 +38,21 @@ long _SocketOutputStream::write(char c) {
     return write(data,1);
 }
 
-long _SocketOutputStream::write(ByteArray data,long size) {
-    ByteArray sendData = (size != -1)?createByteArray(data->toValue(),size):createByteArray(data);
+long _SocketOutputStream::write(ByteArray data) {
     if(mChannel != nullptr) {
-        mChannel->write(sendData);
-        return sendData->size();
+        mChannel->write(data);
+        return data->size();
     }
-    return _write(mSocket->getFileDescriptor(),sendData);
+    return _write(mSocket->getFileDescriptor(),data);
+}
+
+long _SocketOutputStream::write(ByteArray data,int start) {
+    ByteArray senddata = createByteArray(&data->toValue()[start],data->size() - start);
+    if(mChannel != nullptr) {
+        mChannel->write(senddata);
+        return senddata->size();
+    }
+    return _write(mSocket->getFileDescriptor(),senddata);
 }
 
 long _SocketOutputStream::_write(FileDescriptor fd,ByteArray data) {

@@ -24,7 +24,9 @@ public:
 
     long write(char c);
 
-    long write(ByteArray buff,long size = -1);
+    long write(ByteArray buff);
+
+    long write(ByteArray buff,int index);
 
     long writeString(String s);
     

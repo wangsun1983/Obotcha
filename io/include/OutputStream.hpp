@@ -11,7 +11,9 @@ DECLARE_CLASS(OutputStream) {
 public:
     virtual long write(char c){return -1;}
     
-    virtual long write(ByteArray buff,long size = -1){return -1;}
+    virtual long write(ByteArray buff) = 0;
+
+    virtual long write(ByteArray buff,int start) = 0;
 
     virtual bool open(){return false;}
 

@@ -27,6 +27,9 @@ public:
 
     ByteArray read(int size = 1024*4);
 
+    long read(ByteArray);
+    long read(ByteArray,int start);
+
     int seekTo(int index);
     
     long readTo(ByteArray,int pos = 0,int length = 0);
