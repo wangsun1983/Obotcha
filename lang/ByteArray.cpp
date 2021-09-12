@@ -25,7 +25,7 @@ namespace obotcha {
  * @param b copy value
  */
 _ByteArray::_ByteArray(sp<_ByteArray>&data,int start,int len) {
-    int malloc_size = (len == 0)?data->size():len;
+    int malloc_size = (len == 0)?data->size() - start:len;
     if(malloc_size > data->size()) {
         Trigger(InitializeException,"create ByteArray overflow");
     }

@@ -132,6 +132,10 @@ _String::_String(std::string *v) {
     m_str = *v;
 }
 
+_String::_String(unsigned char *v) {
+    m_str = std::string((char *)v);
+}
+
 _String::_String(const Integer &v) {
     m_str = std::to_string(v->toValue());
 }
@@ -162,13 +166,13 @@ _String::_String(int v) {
     m_str = std::to_string(v);
 }
 
-_String::_String(bool v) {
-    if(v) {
-        m_str = True;
-    } else {
-        m_str = False;
-    }
-}
+//_String::_String(bool v) {
+//    if(v) {
+//        m_str = True;
+//    } else {
+//        m_str = False;
+//    }
+//}
 
 _String::_String(float v,int precision) {
     std::stringstream ss;

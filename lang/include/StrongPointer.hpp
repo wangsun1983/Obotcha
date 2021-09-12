@@ -23,19 +23,16 @@ public:
      }
  };
 
-#if 0
+
 template<typename T, typename U>
 class PointerChanger<false, T, U>{
 public:
    static T *convert(U *u) {
-     //TODO
-     //T* t = new T(u);
-     //t->incStrong(0);
-     //return t;
-     printf("strange convert\n");
+     T* t = new T(u);
+     t->incStrong(0);
+     return t;
    }
 };
-#endif
 
 template <typename T>
 class sp {

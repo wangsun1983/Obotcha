@@ -127,5 +127,69 @@ int testConstruct() {
       break;
     }
 
+    //_ByteArray::_ByteArray(sp<_ByteArray>&data,int start,int len)
+    while(1) {
+      ByteArray data = createByteArray(32);
+      for(int i = 0; i < data->size();i++) {
+        data[i] = i;
+      }
+
+      ByteArray data1 = createByteArray(data);
+      if(data1->size() != 32) {
+        printf("ByteArray test Construct test 11-------[FAIL] \n");
+        break;
+      }
+
+      for(int j = 0;j< data1->size();j++) {
+        if(data[j] != data1[j]) {
+          printf("ByteArray test Construct test 12-------[FAIL] \n");
+          break;
+        }
+      }
+      break;
+    }
+
+    while(1) {
+      ByteArray data = createByteArray(32);
+      for(int i = 0; i < data->size();i++) {
+        data[i] = i;
+      }
+
+      ByteArray data1 = createByteArray(data,10);
+      if(data1->size() != 22) {
+        printf("ByteArray test Construct test 13-------[FAIL],data1 is %d \n",data1->size());
+        break;
+      }
+
+      for(int j = 0;j< data1->size();j++) {
+        if(data[j + 10] != data1[j]) {
+          printf("ByteArray test Construct test 14 -------[FAIL] \n");
+          break;
+        }
+      }
+      break;
+    }
+
+    while(1) {
+      ByteArray data = createByteArray(32);
+      for(int i = 0; i < data->size();i++) {
+        data[i] = i;
+      }
+
+      ByteArray data1 = createByteArray(data,10,2);
+      if(data1->size() != 2) {
+        printf("ByteArray test Construct test 15-------[FAIL] \n");
+        break;
+      }
+
+      for(int j = 0;j< 2;j++) {
+        if(data[j + 10] != data1[j]) {
+          printf("ByteArray test Construct test 16 -------[FAIL] \n");
+          break;
+        }
+      }
+      break;
+    }
+    printf("ByteArray test Construct test 100 -------[OK] \n");
     return 0;
 }

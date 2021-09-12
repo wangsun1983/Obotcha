@@ -21,8 +21,10 @@ extern int testForeach();
 extern int testConstruct();
 extern int testByteArrayClear();
 extern void testByteArrayStruct();
+extern void testByteArrayStringConvert();
 
 int main() {
+  testByteArrayStringConvert();
   testByteArrayStruct();
   basetest();
   operatortest();

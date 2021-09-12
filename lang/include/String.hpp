@@ -65,7 +65,9 @@ public:
 
     _String(int v);
 
-    _String(bool v);
+    _String(unsigned char *v);
+
+    //_String(bool v);
 
     _String(float v,int precision = 16);
 
