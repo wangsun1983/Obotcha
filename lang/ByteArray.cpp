@@ -24,40 +24,32 @@ namespace obotcha {
  * @brief ByteArray construct function
  * @param b copy value
  */
-_ByteArray::_ByteArray(const sp<_ByteArray> &b,bool isSafe) {
-    if(b == nullptr || b->size() <= 0) {
-        Trigger(InitializeException,"create ByteArray is nullptr");
+_ByteArray::_ByteArray(sp<_ByteArray>&data,int start,int len) {
+    int malloc_size = (len == 0)?data->size():len;
+    if(malloc_size > data->size()) {
+        Trigger(InitializeException,"create ByteArray overflow");
     }
-    mSize = b->size();
-    buff = (unsigned char *)malloc(mSize);
-    memcpy(buff,b->toValue(),mSize);
-    this->isSafe = isSafe;
-    mOriginalSize = -1;
-}
 
-_ByteArray::_ByteArray(const sp<_String> str,bool isSafe):_ByteArray((const byte *)str->toChars(),
-                                                                        str->size(),
-                                                                        isSafe) {
-    
+    buff = (unsigned char *)malloc(malloc_size);
+    mSize = malloc_size;
+    memcpy(buff,data->toValue()+start,malloc_size);
+    this->isSafe = unsafe;
+    mOriginalSize = -1;
 }
 
 /**
  * @brief ByteArray construct function
  * @param length alloc memory size
  */
-_ByteArray::_ByteArray(int length,bool isSafe) {
+_ByteArray::_ByteArray(int length) {
     if(length <= 0) {
         Trigger(InitializeException,"create ByteArray is nullptr");
     }
     buff = (unsigned char *)malloc(length);
 
-    if(buff == nullptr) {
-        Trigger(InitializeException,"alloc failed");
-    }
-
     memset(buff,0,length);
     mSize = length;
-    this->isSafe = isSafe;
+    this->isSafe = unsafe;
     mOriginalSize = -1;
 }
 
@@ -66,19 +58,15 @@ _ByteArray::_ByteArray(int length,bool isSafe) {
  * @param data source data
  * @param len save data len
  */
-_ByteArray::_ByteArray(const byte *data,uint32_t len,bool isSafe) {
+_ByteArray::_ByteArray(const byte *data,uint32_t len) {
     if(data == nullptr) {
         Trigger(InitializeException,"create ByteArray is nullptr");
     }
     buff = (unsigned char *)malloc(len);
 
-    if(buff == nullptr) {
-        Trigger(InitializeException,"alloc failed");
-    }
-
     mSize = len;
     memcpy(buff,data,len);
-    this->isSafe = isSafe;
+    this->isSafe = unsafe;
     mOriginalSize = -1;
 }
 
@@ -120,7 +108,7 @@ _ByteArray::~_ByteArray() {
 }
 
 byte *_ByteArray::toValue() {
-    if(isSafe) {
+    if(isSafe == safe) {
         byte *v = (byte*)malloc(mSize);
         if(v == nullptr) {
             Trigger(OutOfMemoryException,"alloc failed");
@@ -265,6 +253,19 @@ int _ByteArray::append(byte *data,int len) {
     mSize += len;
     mOriginalSize = -1;
     return mSize;
+}
+
+
+void _ByteArray::setSafe() {
+    this->isSafe = st(ByteArray)::safe;
+}
+
+void _ByteArray::setUnSafe() {
+    this->isSafe = st(ByteArray)::unsafe;
+}
+
+bool _ByteArray::isSafeMode() {
+    return (this->isSafe == st(ByteArray)::safe);
 }
 
 String _ByteArray::toString() {

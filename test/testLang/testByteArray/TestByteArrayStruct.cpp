@@ -49,5 +49,20 @@ void testByteArrayStruct() {
     break;
   }
 
+  while(1) {
+    ByteArray array = st(ByteArray)::alloc<MyData>();
+    MyData *p = array->get<MyData>();
+    p->data1 = 1;
+    p->data2 = 2;
+    p->data3 = 100;
+
+    MyData *p2 = array->get<MyData>();
+    if(p2->data1 != 1 || p2->data2 != 2 || p2->data3 != 100) {
+      printf("ByteArray test Struct test 3-------[FAILED],data1 is %d,data2 is %ld,data3 is %d \n",
+            p2->data1,p2->data2,p2->data3);
+    }
+    break;
+  }
+
   printf("ByteArray test Struct test 100-------[OK] \n");
 }

@@ -16,7 +16,8 @@ int testsafemode() {
 
   //case1
   while(1) {
-    ByteArray arr1 = createByteArray(8,true);
+    ByteArray arr1 = createByteArray(8);
+    arr1->setSafe();
     for(int i = 0;i < 8;i++) {
       arr1[i] = 99;
     }
@@ -59,4 +60,18 @@ int testsafemode() {
     printf("ByteArray testsafemode test 4-------[OK] \n");
     break;
   }
+
+  //case3
+  while(1) {
+    ByteArray arr1 = createByteArray(8);
+    arr1->setSafe();
+    if(!arr1->isSafeMode()) {
+      printf("ByteArray testsafemode test 5-------[FAILED] \n");
+      break;
+    }
+    break;
+  }
+
+  printf("ByteArray testsafemode test 100-------[OK] \n");
+  return 0;
 }

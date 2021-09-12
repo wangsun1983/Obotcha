@@ -13,13 +13,21 @@ class _String;
 
 DECLARE_CLASS(ByteArray) {
 public:
-    explicit _ByteArray(int length,bool isSafe = false);
+    enum Type {
+        safe = 0,
+        unsafe,
+    };
 
-    explicit _ByteArray(const byte *data,uint32_t len,bool isSafe = false);
+    explicit _ByteArray(int length);
 
-    explicit _ByteArray(const sp<_ByteArray>&,bool isSafe = false);
+    explicit _ByteArray(const byte *data,uint32_t len);
 
-    explicit _ByteArray(const sp<_String> str,bool isSafe = false);
+    explicit _ByteArray(sp<_ByteArray>&,int start = 0,int len = 0);
+
+    template<typename T>
+    static ByteArray alloc() {
+        return createByteArray(sizeof(T));
+    }
 
     ~_ByteArray();
 
@@ -30,6 +38,12 @@ public:
     void clear();
 
     byte & operator[](int i);
+
+    void setSafe();
+
+    void setUnSafe();
+
+    bool isSafeMode();
 
     int growTo(int size);
 

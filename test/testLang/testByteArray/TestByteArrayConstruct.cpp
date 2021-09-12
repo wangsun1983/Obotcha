@@ -29,7 +29,8 @@ int testConstruct() {
         break;
       }
 
-      data = createByteArray(128,true);
+      data = createByteArray(128);
+      data->setSafe();
       data[16] = 12;
 
       val = data->toValue();
@@ -65,7 +66,8 @@ int testConstruct() {
         break;
       }
 
-      arr1 = createByteArray(data+32,16,true);
+      arr1 = createByteArray(data+32,16);
+      arr1->setSafe();
       for(int i = 0;i < 16;i++) {
         if(arr1[i] != i+32) {
           printf("ByteArray test Construct test 4-------[FAIL] \n");
@@ -105,7 +107,8 @@ int testConstruct() {
         break;
       }
 
-      ByteArray arr2 = createByteArray(data,true);
+      ByteArray arr2 = createByteArray(data->toValue(),32);
+      arr2->setSafe();
       for(int i = 0;i<32;i++) {
         if(arr2[i] != i) {
           printf("ByteArray test Construct test 8-------[FAIL] \n");

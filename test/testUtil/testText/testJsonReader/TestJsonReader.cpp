@@ -141,7 +141,7 @@ int basetest() {
         break;
       }
 
-      JsonValue v2 = value->getValue("a");
+      JsonValue v2 = value->getValue(S("a"));
       if(v2->isArray()) {
         printf("---[JsonReader SimpleRead {isArray()} case2] [FAILED]--- \n");
         break;
@@ -152,7 +152,7 @@ int basetest() {
 
     //void put(String tag,String value);
     while(1) {
-      value->put("test1",createString("test1"));
+      value->put(S("test1"),createString("test1"));
 
       String test1 = value->getString("test1");
       if(test1 == nullptr || !test1->equals("test1")) {
@@ -160,7 +160,7 @@ int basetest() {
         break;
       }
 
-      value->put("test2",nullptr);
+      value->put(S("test2"),nullptr);
       String test2 = value->getString("test2");
       if(test2 != nullptr) {
         printf("---[JsonReader SimpleRead {put()} case2] [FAILED]--- \n");
@@ -173,7 +173,7 @@ int basetest() {
 
     //void put(String tag,char *value);
     while(1) {
-      value->put("test3",(char *)"test3");
+      value->put(S("test3"),(char *)"test3");
 
       String test1 = value->getString("test3");
       if(test1 == nullptr || !test1->equals("test3")) {
@@ -181,7 +181,7 @@ int basetest() {
         break;
       }
 
-      value->put("test4",(char *)nullptr);
+      value->put(S("test4"),(char *)nullptr);
       String test2 = value->getString("test4");
       if(test2 != nullptr) {
         printf("---[JsonReader SimpleRead {put()} case5] [FAILED]--- \n");
@@ -195,7 +195,7 @@ int basetest() {
     //void put(String tag,std::string value);
     while(1) {
       std::string t = "test5";
-      value->put("test5",t);
+      value->put(S("test5"),t);
 
       String test1 = value->getString("test5");
       if(test1 == nullptr || !test1->equals("test5")) {
@@ -209,7 +209,7 @@ int basetest() {
 
     //void put(String tag,Integer value);
     while(1) {
-      value->put("int1",createInteger(1));
+      value->put(S("int1"),createInteger(1));
       Integer test1 = value->getInteger("int1");
 
       if(test1 == nullptr || test1->toValue() != 1) {
@@ -218,7 +218,7 @@ int basetest() {
       }
 
       Integer int2;
-      value->put("int2",int2);
+      value->put(S("int2"),int2);
       Integer test2 = value->getInteger("int2");
       if(test2 != nullptr) {
         printf("---[JsonReader SimpleRead {put()} case10] [FAILED]--- \n");
@@ -231,7 +231,7 @@ int basetest() {
 
     //void put(String tag,int value);
     while(1) {
-      value->put("int2",2);
+      value->put(S("int2"),2);
       Integer test1 = value->getInteger("int2");
 
       if(test1 == nullptr || test1->toValue() != 2) {
@@ -245,7 +245,7 @@ int basetest() {
 
     //void put(String tag,Boolean value);
     while(1) {
-      value->put("bool1",createBoolean(true));
+      value->put(S("bool1"),createBoolean(true));
       Boolean test1 = value->getBoolean("bool1");
 
       if(test1 == nullptr || test1->toValue() != true) {
@@ -254,7 +254,7 @@ int basetest() {
       }
 
       Boolean int2;
-      value->put("bool2",int2);
+      value->put(S("bool2"),int2);
       Boolean test2 = value->getBoolean("bool2");
       if(test2 != nullptr) {
         printf("---[JsonReader SimpleRead {put()} case15] [FAILED]--- \n");
@@ -267,7 +267,7 @@ int basetest() {
 
     //void put(String tag,bool value);
     while(1) {
-      value->put("bool3",true);
+      value->put(S("bool3"),true);
       Boolean test1 = value->getBoolean("bool3");
 
       if(test1 == nullptr || test1->toValue() != true) {
@@ -280,7 +280,7 @@ int basetest() {
 
     //void put(String tag,Double value);
     while(1) {
-      value->put("double1",createDouble(1.1));
+      value->put(S("double1"),createDouble(1.1));
       Double test1 = value->getDouble("double1");
 
       if(test1 == nullptr || test1->toValue() != 1.1) {
@@ -289,7 +289,7 @@ int basetest() {
       }
 
       Double int2;
-      value->put("double2",int2);
+      value->put(S("double2"),int2);
       Double test2 = value->getDouble("double2");
       if(test2 != nullptr) {
         printf("---[JsonReader SimpleRead {put()} case20] [FAILED]--- \n");
@@ -302,7 +302,7 @@ int basetest() {
 
     //void put(String tag,double value);
     while(1) {
-      value->put("double3",1.1);
+      value->put(S("double3"),1.1);
       Double test1 = value->getDouble("double3");
 
       if(test1 == nullptr || test1->toValue() != 1.1) {
@@ -321,11 +321,11 @@ int basetest() {
       array->append((char *)"abc1");
       array->append(100);
       JsonValue jvalue = createJsonValue();
-      jvalue->put("jv1",(char *)"jv1");
-      jvalue->put("jv2",2);
+      jvalue->put(S("jv1"),(char *)"jv1");
+      jvalue->put(S("jv2"),2);
       //printf("jvalue size is %d \n",jvalue->size());
       array->append(jvalue);
-      value->put("testarr1",array);
+      value->put(S("testarr1"),array);
 
       //start check
       JsonValue testArray = value->getValue("testarr1");
@@ -365,16 +365,16 @@ int basetest() {
       JsonValue array = createJsonValue();
       array->append((char *)"abc1");
       array->append(100);
-      value->put("testarr2",array);
+      value->put(S("testarr2"),array);
 
       bool formexist = false;
-      if(value->contains("testarr2")) {
+      if(value->contains(S("testarr2"))) {
         //printf("remove testArr2 exists \n");
         formexist = true;
       }
 
-      value->remove("testarr2");
-      if(value->contains("testarr2") && formexist) {
+      value->remove(S("testarr2"));
+      if(value->contains(S("testarr2")) && formexist) {
         printf("---[JsonReader SimpleRead {remove()} case１] [FAILED]--- \n");
         break;
       }

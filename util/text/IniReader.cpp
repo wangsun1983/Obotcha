@@ -3,7 +3,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "IniValue.hpp"
 #include "IniReader.hpp"
 #include "InitializeException.hpp"
 #include "Log.hpp"

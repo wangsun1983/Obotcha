@@ -10,7 +10,7 @@
 
 using namespace obotcha;
 
-int basetest() {
+void testIniReader() {
 
     while(1) {
         IniReader reader = createIniReader(createFile("./testData.ini"));

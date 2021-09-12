@@ -9,8 +9,11 @@
 
 using namespace obotcha;
 
-extern int basetest();
+extern void testIniReader();
+extern void testIniValue();
 
 int main() {
-    basetest();
+    testIniReader();
+    testIniValue();
+    return 0;
 }

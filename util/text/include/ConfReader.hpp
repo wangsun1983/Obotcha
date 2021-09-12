@@ -3,7 +3,6 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "IniValue.hpp"
 #include "File.hpp"
 
 extern "C" {
