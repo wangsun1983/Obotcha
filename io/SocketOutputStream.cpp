@@ -47,7 +47,11 @@ long _SocketOutputStream::write(ByteArray data) {
 }
 
 long _SocketOutputStream::write(ByteArray data,int start) {
-    ByteArray senddata = createByteArray(&data->toValue()[start],data->size() - start);
+    this->write(data,start,data->size() - 1);
+}
+
+long _SocketOutputStream::write(ByteArray data,int start,int end) {
+    ByteArray senddata = createByteArray(&data->toValue()[start],end - start + 1);
     if(mChannel != nullptr) {
         mChannel->write(senddata);
         return senddata->size();

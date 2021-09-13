@@ -20,7 +20,7 @@ AtomicInteger connectCount = createAtomicInteger(0);
 AtomicInteger disConnectCount = createAtomicInteger(0);
 AtomicInteger messageCount = createAtomicInteger(0);
 
-CountDownLatch latch = createCountDownLatch(1024);
+CountDownLatch latch = createCountDownLatch(1);
 
 DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
@@ -28,27 +28,21 @@ DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPacket msg){
     switch(event) {
         case HttpEvent::Connect: {
-            connectCount->incrementAndGet();
+            //connectCount->incrementAndGet();
         }
         break;
 
         case HttpEvent::Message: {
             messageCount->incrementAndGet();
-
+            printf("i send a response \n");
             HttpResponse response = createHttpResponse();
             response->getHeader()->setResponseStatus(st(HttpStatus)::Ok);
-
-            String body = createString("<h1>Response from Gagira</h1>");
-            HttpEntity entity = createHttpEntity();
-            entity->setContent(createByteArray(body));
-            response->setEntity(entity);
-
             w->write(response);
         }
         break;
 
         case HttpEvent::Disconnect:{
-            disConnectCount->incrementAndGet();
+            //disConnectCount->incrementAndGet();
             latch->countDown();
         }
         break;
@@ -60,23 +54,12 @@ void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPac
 int main() {
   MyHttpListener listener = createMyHttpListener();
   HttpServer server = createHttpServerBuilder()
-                    ->setAddress(createInet4Address(1256))
+                    ->setAddress(createInet4Address(1260))
                     ->setListener(listener)
                     ->build();
   server->start();
   latch->await();
   server->close();
-  if(connectCount->get() != 1024) {
-    printf("---TestHttpServer Simple Sync test1 [FAILED]---,connectCount is %d \n",connectCount->get());
-  }
-
-  if(disConnectCount->get() != 1024) {
-    printf("---TestHttpServer Simple Sync test2 [FAILED]---,disConnectCount is %d \n",disConnectCount->get());
-  }
-
-  if(messageCount->get() != 1024) {
-    printf("---TestHttpServer Simple Sync test1 [FAILED]---,messageCount is %d \n",messageCount->get());
-  }
   
-  printf("---TestHttpServer Simple Sync test100 [OK]---\n");
+  printf("---TestHttpServer No Content test100 [OK]---\n");
 }

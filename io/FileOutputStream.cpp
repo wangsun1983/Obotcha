@@ -14,6 +14,8 @@
 #include <fcntl.h>
 
 #include "FileOutputStream.hpp"
+#include "Exception.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
 
 namespace obotcha {
 
@@ -44,6 +46,15 @@ long _FileOutputStream::write(ByteArray buff) {
 long _FileOutputStream::write(ByteArray buff,int start) {
     return ::write(fd,&buff->toValue()[start],buff->size() - start);
 }
+
+long _FileOutputStream::write(ByteArray buff,int start,int len) {
+    if(len > (buff->size() - start)) {
+        Trigger(ArrayIndexOutOfBoundsException,"out ouf bound");
+    }
+
+    return ::write(fd,&buff->toValue()[start],len);
+}
+
 
 long _FileOutputStream::writeString(String s) {
     return ::write(fd,s->toChars(),s->size());

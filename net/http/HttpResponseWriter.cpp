@@ -190,7 +190,7 @@ long _HttpResponseWriter::computeContentLength(HttpResponse response) {
 }
 
 int _HttpResponseWriter::send(int size) {
-    return mOutputStream->write(mSendBuff,size);
+    return mOutputStream->write(mSendBuff,0,size);
 }
 
 }
