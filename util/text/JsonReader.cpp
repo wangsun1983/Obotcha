@@ -1,6 +1,8 @@
 #include "json/reader.h"
+
 #include "JsonReader.hpp"
 #include "ByteArray.hpp"
+#include "FileInputStream.hpp"
 #include "InitializeException.hpp"
 
 namespace obotcha {
@@ -10,9 +12,7 @@ _JsonReader::_JsonReader(File f) {
         Trigger(InitializeException,"file not exist");
     }
 
-    stream = createFileInputStream(f);
-    stream->open();
-    mValue = parse();
+    mValue = parse(f);
 }
 
 _JsonReader::_JsonReader(String content){
@@ -23,22 +23,25 @@ JsonValue _JsonReader::get() {
     return mValue;
 }
 
-JsonValue _JsonReader::parse() {
+JsonValue _JsonReader::parse(File f) {
+    auto stream = createFileInputStream(f);
+    stream->open();
     ByteArray buff = stream->readAll();
-
-    Json::Reader reader;
-    JsonValue value = createJsonValue();
-    if(!reader.parse(buff->toString()->toChars(),value->jvalue)){
-        return nullptr;
-    }
-    
-    return value;
+    stream->close();
+    return parse(buff->toString());
 }
 
 JsonValue _JsonReader::parse(String content) {
     Json::Reader reader;
     JsonValue value = createJsonValue();
-    reader.parse(content->toChars(),value->jvalue);
+    if(!reader.parse(content->toChars(),value->jvalue)) {
+        return nullptr;
+    }
+
+    if(value->jvalue.empty() && value->jvalue.isNull()) {
+        return nullptr;
+    }
+    
     return value;
 }
 

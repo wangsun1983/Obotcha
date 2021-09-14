@@ -12,8 +12,6 @@
 #include "JsonValue.hpp"
 
 #include "File.hpp"
-#include "FileInputStream.hpp"
-
 
 namespace obotcha {
 
@@ -26,17 +24,13 @@ public:
     JsonValue get();
 
 private:
-    FileInputStream stream;
-
     String mContent;
 
     JsonValue mValue;
 
-    JsonValue parse();
+    JsonValue parse(File);
 
     JsonValue parse(String);
-
-    
 };
 
 }

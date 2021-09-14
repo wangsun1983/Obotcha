@@ -15,23 +15,8 @@ int arrayDataTest() {
     while(1) {
       JsonReader reader = createJsonReader(createFile("./test/data/test_array_01.json"));
       JsonValue value = reader->get();
-      if(value == nullptr) {
-        printf("---[JsonReader SimpleRead {data test} case1] [FAILED]--- \n");
-        break;
-      }
-
-      if(!value->isArray()) {
-        printf("---[JsonReader SimpleRead {data test} case2] [FAILED]--- \n");
-        break;
-      }
-
-      if(!value->isArray()) {
-        printf("---[JsonReader SimpleRead {data test} case3] [FAILED]--- \n");
-        break;
-      }
-
-      if(value->size() != 0) {
-        printf("---[JsonReader SimpleRead {data test} case4] [FAILED]--- \n");
+      if(value != nullptr && value->size() != 0) {
+        printf("---[JsonReader SimpleRead {data test} case1] [FAILED]---,value size is %d \n",value->size());
         break;
       }
 

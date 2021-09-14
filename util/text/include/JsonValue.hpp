@@ -96,6 +96,8 @@ public:
 
     bool isNull();
 
+    bool isEmpty();
+
     bool isObject();
     
     //for value
@@ -121,14 +123,16 @@ public:
 
     void put(String tag,uint64_t value);
 
+    void put(String tag,Long value);
+
     void put(String tag,long value);
 
     void put(String tag,sp<_JsonValue> value);
 
-    void remove(String tag);
+    sp<_JsonValue> remove(String tag);
 
     //remove
-    void removeAt(int);
+    sp<_JsonValue> removeAt(int);
 
     String getString(String tag);
 

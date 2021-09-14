@@ -73,7 +73,7 @@ int testpass1() {
 
     //null,
     JsonValue value7 = root->getValueAt(7);
-    if(value7->size() != 0) {
+    if(value7 != nullptr) {
       printf("---[JsonReader testPass case8] [FAILED]--- \n");
       return 0;
     }

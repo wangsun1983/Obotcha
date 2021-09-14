@@ -94,9 +94,9 @@ int realDataTest() {
       }
 
       Double v_int = value->getDouble();
-      if(v_int == nullptr || v_int->toValue() != 1.2345678) {
+      if(v_int == nullptr || v_int->toValue() != 1234567.8) {
         printf("v_int is %lf \n",v_int->toValue());
-        printf("---[JsonReader Real Data Test case11] [FAILED]--- \n");
+        printf("---[JsonReader Real Data Test case11] [FAILED]---,v is %lf \n",v_int->toValue());
         break;
       }
 
@@ -189,7 +189,7 @@ int realDataTest() {
       }
 
       Double v_int = value->getDouble();
-      if(v_int == nullptr || v_int->toValue() != 19000000000000000001) {
+      if(v_int == nullptr || v_int->toValue() != 1.9e+19) {
         printf("v_int is %lf \n",v_int->toValue());
         printf("---[JsonReader Real Data Test case20] [FAILED]--- \n");
         break;

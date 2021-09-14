@@ -18,7 +18,7 @@
 
 using namespace obotcha;
 
-CountDownLatch latch = createCountDownLatch(1024);
+CountDownLatch latch = createCountDownLatch(16*128);
 long prepareFilesize = 0;
 
 DECLARE_CLASS(MyHandler) IMPLEMENTS(Handler) {
@@ -96,11 +96,11 @@ int main() {
 
   if(!file->exists()) {
     file->createNewFile();
-      for(int i = 0;i<1024;i++) {
+      for(int i = 0;i<128;i++) {
       FileOutputStream stream = createFileOutputStream(file);
       stream->open(st(OutputStream)::Append);
       String data = createString("");
-      for(int j = 0;j < 1024;j++) {
+      for(int j = 0;j < 512;j++) {
         data = data->append(createString(st(System)::currentTimeMillis()));
       }
       stream->write(data->toByteArray());

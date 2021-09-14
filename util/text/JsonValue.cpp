@@ -22,60 +22,31 @@ _JsonValue::_JsonValue(sp<_JsonValue> v) {
     jvalue = v->jvalue;//new Json::Value(*v->jvalue);
 }
 
-
 void _JsonValue::put(String tag,String value) {
-    if(value == nullptr || tag == nullptr) {
-        return;
-    }
-
     jvalue[tag->getStdString()] = value->toChars();
 }
 
 void _JsonValue::put(String tag,const char *value) {
-    if(value == nullptr || tag == nullptr) {
-        return;
-    }
-    
     jvalue[tag->toChars()] = value;
 }
 
 void _JsonValue::put(String tag,std::string value) {
-    if(tag == nullptr) {
-        return;
-    }
-    
     jvalue[tag->toChars()] = value;
 }
 
 void _JsonValue::put(String tag,Integer value) {
-    if(value == nullptr || tag == nullptr) {
-        return;
-    }
-
     jvalue[tag->toChars()] = value->toValue();
 }
 
 void _JsonValue::put(String tag,int value) {
-    if(tag == nullptr) {
-        return;
-    }
-
     jvalue[tag->toChars()] = value;
 }
 
 void _JsonValue::put(String tag,Boolean value) {
-    if(value == nullptr || tag == nullptr) {
-        return;
-    }
-
     jvalue[tag->toChars()] = value->toValue();
 }
 
 void _JsonValue::put(String tag,bool value) {
-    if(tag == nullptr) {
-        return;
-    }
-
     jvalue[tag->toChars()] = value;
 }
 
@@ -88,10 +59,6 @@ void _JsonValue::put(String tag,Double value) {
 }
 
 void _JsonValue::put(String tag,double value) {
-    if(tag == nullptr) {
-        return;
-    }
-
     jvalue[tag->toChars()] = value;
 }
 
@@ -100,53 +67,38 @@ void _JsonValue::put(String tag,Uint64 value) {
 }
 
 void _JsonValue::put(String tag,uint64_t value) {
-    if(tag == nullptr) {
-        return;
-    }
-
     jvalue[tag->toChars()] = (Json::UInt)value;
 }
 
-void _JsonValue::put(String tag,long value) {
-    if(tag == nullptr) {
-        return;
-    }
+void _JsonValue::put(String tag,Long value) {
+    jvalue[tag->toChars()] = (Json::LargestInt)value->toValue();
+}
 
+void _JsonValue::put(String tag,long value) {
     jvalue[tag->toChars()] = (Json::LargestInt)value;
 }
 
 void _JsonValue::put(String tag,sp<_JsonValue> v) {
-    if(tag == nullptr) {
-        return;
-    }
-
-    //Json::Value *value = new Json::Value(*v->jvalue);
     jvalue[tag->toChars()] = v->jvalue;
 }
 
-void _JsonValue::remove(String tag) {
-    if(tag == nullptr) {
-        return;
-    }
-
-    jvalue.removeMember(tag->toChars());
+JsonValue _JsonValue::remove(String tag) {
+    JsonValue v = createJsonValue();
+    jvalue.removeMember(tag->toChars(),&v->jvalue);
+    return v;
 }
 
-void _JsonValue::removeAt(int index) {
-    Json::Value v;
-    jvalue.removeIndex(index,&v);
+JsonValue _JsonValue::removeAt(int index) {
+    JsonValue v = createJsonValue();
+    jvalue.removeIndex(index,&v->jvalue);
+    return v;
 }
-
 
 String _JsonValue::getString(String tag) {
     return getString(tag->toChars());
 }
 
 String _JsonValue::getString(const char * tag) {
-    if(tag == nullptr) {
-        return nullptr;
-    }
-
     if(jvalue.isMember(tag)) {
         std::string v = jvalue[tag].asString();
         return createString(v);
@@ -176,6 +128,10 @@ Integer _JsonValue::getInteger(const char* tag) {
 Integer _JsonValue::getInteger() {
     int v = jvalue.asInt();
     return createInteger(v);
+}
+
+bool _JsonValue::isEmpty() {
+    return jvalue.empty();
 }
 
 Uint64  _JsonValue::getUint64(String tag) {

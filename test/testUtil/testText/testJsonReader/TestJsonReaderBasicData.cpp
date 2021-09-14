@@ -15,6 +15,7 @@ int basicDataTest() {
     while(1) {
       JsonReader reader = createJsonReader(createFile("./test/data/test_basic_01.json"));
       JsonValue value = reader->get();
+      printf("size is %d \n",value->size());
       Integer v = value->getInteger();
       if(v == nullptr || v->toValue() != 123456789) {
         printf("---[JsonReader basicDataTest case1] [FAILED]--- \n");
@@ -67,13 +68,8 @@ int basicDataTest() {
     while(1) {
       JsonReader reader = createJsonReader(createFile("./test/data/test_basic_05.json"));
       JsonValue value = reader->get();
-      if(value == nullptr) {
+      if(value != nullptr) {
         printf("---[JsonReader basicDataTest case9] [FAILED]--- \n");
-        break;
-      }
-
-      if(!value->isNull()) {
-        printf("---[JsonReader basicDataTest case10] [FAILED]--- \n");
         break;
       }
 
@@ -120,13 +116,8 @@ int basicDataTest() {
     while(1) {
       JsonReader reader = createJsonReader(createFile("./test/data/test_basic_08.json"));
       JsonValue value = reader->get();
-      if(value == nullptr) {
+      if(value != nullptr) {
         printf("---[JsonReader basicDataTest case18] [FAILED]--- \n");
-        break;
-      }
-
-      if(!value->isNull()) {
-        printf("---[JsonReader basicDataTest case19] [FAILED]--- \n");
         break;
       }
 
@@ -137,13 +128,8 @@ int basicDataTest() {
     while(1) {
       JsonReader reader = createJsonReader(createFile("./test/data/test_basic_09.json"));
       JsonValue value = reader->get();
-      if(value == nullptr) {
+      if(value != nullptr) {
         printf("---[JsonReader basicDataTest case21] [FAILED]--- \n");
-        break;
-      }
-
-      if(!value->isNull()) {
-        printf("---[JsonReader basicDataTest case22] [FAILED]--- \n");
         break;
       }
 
