@@ -23,7 +23,7 @@ public:
 
     long write(ByteArray,int start);
 
-    long write(ByteArray,int start,int end);
+    long write(ByteArray,int start,int len);
 
     void close();
 

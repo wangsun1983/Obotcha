@@ -47,17 +47,18 @@ long _SocketOutputStream::write(ByteArray data) {
 }
 
 long _SocketOutputStream::write(ByteArray data,int start) {
-    this->write(data,start,data->size() - 1);
+    return this->write(data,start,data->size() - 1);
 }
 
-long _SocketOutputStream::write(ByteArray data,int start,int end) {
-    ByteArray senddata = createByteArray(&data->toValue()[start],end - start + 1);
+long _SocketOutputStream::write(ByteArray data,int start,int len) {
+    ByteArray senddata = createByteArray(&data->toValue()[start],len);
     if(mChannel != nullptr) {
         mChannel->write(senddata);
         return senddata->size();
     }
     return _write(mSocket->getFileDescriptor(),senddata);
 }
+
 
 long _SocketOutputStream::_write(FileDescriptor fd,ByteArray data) {
     byte *sendData = data->toValue();
