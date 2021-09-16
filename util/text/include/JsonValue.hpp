@@ -27,8 +27,6 @@ DECLARE_CLASS(JsonValueIterator) {
 public:
     _JsonValueIterator(sp<_JsonValue> value);
 
-    _JsonValueIterator(_JsonValue *value);
-
     String getTag();
 
     bool hasValue();
@@ -64,7 +62,11 @@ private:
 
     Json::Value::Members mMembers;
 
-    uint32_t count;
+    uint32_t index;
+    
+    uint32_t size;
+
+    bool isArrayMember;
 };
 
 
@@ -78,9 +80,9 @@ public:
 
     _JsonValue();
 
-    _JsonValue(Json::Value v);
+    _JsonValue(Json::Value v,String name = nullptr);
 
-    _JsonValue(sp<_JsonValue> v);
+    _JsonValue(sp<_JsonValue> v,String name = nullptr);
 
     bool isBool();
 
@@ -95,8 +97,6 @@ public:
     bool isArray();
 
     bool isNull();
-
-    bool isEmpty();
 
     bool isObject();
     
@@ -133,6 +133,8 @@ public:
 
     //remove
     sp<_JsonValue> removeAt(int);
+
+    String getName();
 
     String getString(String tag);
 
@@ -235,6 +237,8 @@ public:
 
     String toString();
 
+    bool isEmpty();
+
     template<typename T>
     void reflectToArrayList(T obj) {
         int size = this->size();
@@ -336,34 +340,34 @@ public:
                 Integer data = Cast<Integer>(pairValue);
                 data->update(jvalue->getInteger()->toValue());
             } else if(IsInstance(Long,pairValue)) {
-                Long data = Cast<Long>(key);
+                Long data = Cast<Long>(pairValue);
                 data->update(jvalue->getLong()->toValue());
             } else if(IsInstance(Boolean,pairValue)) {
-                Boolean data = Cast<Boolean>(key);
+                Boolean data = Cast<Boolean>(pairValue);
                 data->update(jvalue->getBoolean()->toValue());
             } else if(IsInstance(Double,pairValue)) {
-                Double data = Cast<Double>(key);
+                Double data = Cast<Double>(pairValue);
                 data->update(jvalue->getDouble()->toValue());
             } else if(IsInstance(Float,pairValue)) {
-                Float data = Cast<Float>(key);
+                Float data = Cast<Float>(pairValue);
                 data->update(jvalue->getDouble()->toValue());
             } else if(IsInstance(Byte,pairValue)) {
-                Byte data = Cast<Byte>(key);
+                Byte data = Cast<Byte>(pairValue);
                 data->update(jvalue->getUint64()->toValue());
             } else if(IsInstance(Uint8,pairValue)) {
-                Uint8 data = Cast<Uint8>(key);
+                Uint8 data = Cast<Uint8>(pairValue);
                 data->update(jvalue->getUint64()->toValue());
             } else if(IsInstance(Uint16,pairValue)) {
-                Uint16 data = Cast<Uint16>(key);
+                Uint16 data = Cast<Uint16>(pairValue);
                 data->update(jvalue->getUint64()->toValue());
             } else if(IsInstance(Uint32,pairValue)) {
-                Uint32 data = Cast<Uint32>(key);
+                Uint32 data = Cast<Uint32>(pairValue);
                 data->update(jvalue->getUint64()->toValue());
             } else if(IsInstance(Uint64,pairValue)) {
-                Uint64 data = Cast<Uint64>(key);
+                Uint64 data = Cast<Uint64>(pairValue);
                 data->update(jvalue->getUint64()->toValue());
             } else if(IsInstance(String,pairValue)) {
-                String data = Cast<String>(key);
+                String data = Cast<String>(pairValue);
                 data->update(jvalue->getString()->getStdString());
             } else if(pairValue->__ReflectClassName()->equals("_ArrayList")) {
                 int datasize = this->size();
@@ -643,19 +647,59 @@ public:
     void importFrom(T value) {
         if(value->__ReflectClassName()->equals("_ArrayList")) {
             int size = value->__getContainerSize("");
+            this->jvalue.resize(size);
             for(int i = 0;i<size;i++) {
-                JsonValue newValue = createJsonValue();
-                auto nValue = value->__getListItemObject("",i);
-                newValue->importFrom(nValue);
-                this->append(newValue);
+                auto newObject = value->__getListItemObject("",i);
+                //newValue->importFrom(nValue);
+                if(IsInstance(Integer,newObject)) {
+                    Integer data = Cast<Integer>(newObject);
+                    this->jvalue[i] = data->toValue();
+                } else if(IsInstance(Long,newObject)) {
+                    Long data = Cast<Long>(newObject);
+                    this->jvalue[i] = data->toValue();
+                } else if(IsInstance(Boolean,newObject)) {
+                    Boolean data = Cast<Boolean>(newObject);
+                    this->jvalue[i] = data->toValue();
+                } else if(IsInstance(Double,newObject)) {
+                    Double data = Cast<Double>(newObject);
+                    this->jvalue[i] = data->toValue();
+                } else if(IsInstance(Float,newObject)) {
+                    Float data = Cast<Float>(newObject);
+                    this->jvalue[i] = data->toValue();
+                } else if(IsInstance(Byte,newObject)) {
+                    Byte data = Cast<Byte>(newObject);
+                    this->jvalue[i] = data->toValue();
+                } else if(IsInstance(Uint8,newObject)) {
+                    Uint8 data = Cast<Uint8>(newObject);
+                    this->jvalue[i] = data->toValue();
+                } else if(IsInstance(Uint16,newObject)) {
+                    Uint16 data = Cast<Uint16>(newObject);
+                    this->jvalue[i] = data->toValue();
+                } else if(IsInstance(Uint32,newObject)) {
+                    Uint32 data = Cast<Uint32>(newObject);
+                    this->jvalue[i] = data->toValue();
+                } else if(IsInstance(Uint64,newObject)) {
+                    Uint64 data = Cast<Uint64>(newObject);
+                    this->jvalue[i] = data->toValue();
+                } else if(IsInstance(String,newObject)) {
+                    String data = Cast<String>(newObject);
+                    //this->put(name,data->getStdString());
+                    this->jvalue[i] = data->getStdString();
+                } else {
+                    JsonValue newValue = createJsonValue();
+                    newValue->importFrom(newObject);
+                    //this->put(name,newValue);
+                    this->jvalue[i] = newValue->jvalue;
+                }
+                //this->append(newValue);
             }
             return;
         } else if(value->__ReflectClassName()->equals("_HashMap")) {
             int size = value->__getContainerSize("");
-            JsonValue mapItemValue = createJsonValue();
+            //JsonValue mapItemValue = createJsonValue();
             ArrayList<KeyValuePair<Object,Object>> members = value->__getMapItemObjects("");
-            importFrom(mapItemValue,members);
-            this->append(mapItemValue);
+            importFrom(AutoClone(this),members);
+            //this->append(mapItemValue);
             return;
         }
 
@@ -848,7 +892,7 @@ public:
     ~_JsonValue();
 
 private:
-    String mTag;
+    String mName;
 
     Json::Value jvalue;    
 };

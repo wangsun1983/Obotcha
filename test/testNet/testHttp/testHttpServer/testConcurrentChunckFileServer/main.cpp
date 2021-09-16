@@ -17,11 +17,10 @@
 #include "Md.hpp"
 
 
-
 using namespace obotcha;
 
 
-CountDownLatch latch = createCountDownLatch(1024);
+CountDownLatch latch = createCountDownLatch(128*16);
 
 DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
@@ -60,7 +59,7 @@ int main() {
 
   if(!file->exists()) {
     file->createNewFile();
-      for(int i = 0;i<32*1024;i++) {
+      for(int i = 0;i<32;i++) {
       FileOutputStream stream = createFileOutputStream(file);
       stream->open(st(OutputStream)::Append);
       String data = createString("");
@@ -80,10 +79,12 @@ int main() {
   server->start();
   latch->await();
 
+
+
   Md md5 = createMd();
   String base = md5->encrypt(createFile("data"));
 
-  File tmpDir = createFile("tmp");
+  File tmpDir = createFile("./tmp");
   ArrayList<File> files = tmpDir->listFiles();
   auto iter = files->getIterator();
   while(iter->hasValue()) {
@@ -91,14 +92,12 @@ int main() {
 
     String v1 = md5->encrypt(f);
     if(!base->equals(v1)) {
-      printf("---TestHttpServer testChunckFileServer test1 [FAILED]---,path is %s \n",f->getAbsolutePath()->toChars());
+      printf("---TestHttpServer testConcurrentChunckFileServer test1 [FAILED]---,path is %s \n",f->getAbsolutePath()->toChars());
     }
 
     iter->next();
   }
 
-  server->close();
-
-  printf("---TestHttpServer testChunckFileServer test100 [OK]--- \n");
+  printf("---TestHttpServer testConcurrentChunckFileServer test100 [OK]--- \n");
   
 }
