@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-int main() {
+int testJsonValueIterator() {
     printf("---[JsonValueIterator Test Start]--- \n");
     JsonReader reader = createJsonReader(createFile("abc.json"));
     //String getTag();

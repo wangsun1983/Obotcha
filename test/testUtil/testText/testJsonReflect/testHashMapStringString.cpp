@@ -38,12 +38,12 @@ void testHashMapStringString() {
       map->put("tag4","val4");
       map->put("tag5","val5");
 
-      JsonWriter writer = createJsonWriter("map_string_string_test1.json");
+      JsonWriter writer = createJsonWriter("./tmp/map_string_string_test1.json");
       JsonValue value = createJsonValue();
       value->importFrom(map);
       writer->write(value);
 
-      JsonReader reader = createJsonReader(createFile("map_string_string_test1.json"));
+      JsonReader reader = createJsonReader(createFile("./tmp/map_string_string_test1.json"));
       JsonValue value2 = reader->get();
 /*
       auto iterator = value2->getIterator();
@@ -82,12 +82,12 @@ void testHashMapStringString() {
       map->maps->put("tag3","val3");
       map->maps->put("tag4","val4");
       map->maps->put("tag5","val5");
-      JsonWriter writer = createJsonWriter("map_string_string_test2.json");
+      JsonWriter writer = createJsonWriter("./tmp/map_string_string_test2.json");
       JsonValue value = createJsonValue();
       value->importFrom(map);
       writer->write(value);
 
-      JsonReader reader = createJsonReader(createFile("map_string_string_test2.json"));
+      JsonReader reader = createJsonReader(createFile("./tmp/map_string_string_test2.json"));
       JsonValue value2 = reader->get();
       StringStringMap checkValue = createStringStringMap();
       value2->reflectTo(checkValue);
@@ -145,12 +145,12 @@ void testHashMapStringString() {
       map->maps2->put("2_tag4","2_val4");
       map->maps2->put("2_tag5","2_val5");
 
-      JsonWriter writer = createJsonWriter("map_string_string_test4.json");
+      JsonWriter writer = createJsonWriter("./tmp/map_string_string_test4.json");
       JsonValue value = createJsonValue();
       value->importFrom(map);
       writer->write(value);
 
-      JsonReader reader = createJsonReader(createFile("map_string_string_test4.json"));
+      JsonReader reader = createJsonReader(createFile("./tmp/map_string_string_test4.json"));
       JsonValue value2 = reader->get();
       StringStringMap2 checkValue = createStringStringMap2();
       value2->reflectTo(checkValue);

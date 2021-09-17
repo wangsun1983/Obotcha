@@ -68,12 +68,12 @@ void testUserDataReflect() {
       data->uint64Data = 107;
       data->boolData = true;
 
-      JsonWriter writer = createJsonWriter("userdata_test1.json");
+      JsonWriter writer = createJsonWriter("./tmp/userdata_test1.json");
       JsonValue value = createJsonValue();
       value->importFrom(data);
       writer->write(value);
 
-      JsonReader reader = createJsonReader(createFile("userdata_test1.json"));
+      JsonReader reader = createJsonReader(createFile("./tmp/userdata_test1.json"));
       JsonValue value2 = reader->get();
       ReflectUserData data2 = createReflectUserData();
       value2->reflectTo(data2);
@@ -112,12 +112,12 @@ void testUserDataReflect() {
       data->doubleObjData = createDouble(103.20);
       data->byteObjData = createByte(23);
 
-      JsonWriter writer = createJsonWriter("userdata_test2.json");
+      JsonWriter writer = createJsonWriter("./tmp/userdata_test2.json");
       JsonValue value = createJsonValue();
       value->importFrom(data);
       writer->write(value);
 
-      JsonReader reader = createJsonReader(createFile("userdata_test2.json"));
+      JsonReader reader = createJsonReader(createFile("./tmp/userdata_test2.json"));
       JsonValue value2 = reader->get();
       ReflectUserData data2 = createReflectUserData();
       value2->reflectTo(data2);

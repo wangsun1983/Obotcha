@@ -301,34 +301,34 @@ public:
             if(IsInstance(Integer,key)) {
                 Integer data = Cast<Integer>(key);
                 data->update(tag->toBasicInt());
-            } else if(IsInstance(Long,tag)) {
+            } else if(IsInstance(Long,key)) {
                 Long data = Cast<Long>(key);
                 data->update(tag->toBasicLong());
-            } else if(IsInstance(Boolean,tag)) {
+            } else if(IsInstance(Boolean,key)) {
                 Boolean data = Cast<Boolean>(key);
                 data->update(tag->toBasicBool());
-            } else if(IsInstance(Double,tag)) {
+            } else if(IsInstance(Double,key)) {
                 Double data = Cast<Double>(key);
                 data->update(tag->toBasicDouble());
-            } else if(IsInstance(Float,tag)) {
+            } else if(IsInstance(Float,key)) {
                 Float data = Cast<Float>(key);
                 data->update(tag->toBasicFloat());
-            } else if(IsInstance(Byte,tag)) {
+            } else if(IsInstance(Byte,key)) {
                 Byte data = Cast<Byte>(key);
                 data->update(tag->toBasicByte());
-            } else if(IsInstance(Uint8,tag)) {
+            } else if(IsInstance(Uint8,key)) {
                 Uint8 data = Cast<Uint8>(key);
                 data->update(tag->toBasicUint8());
-            } else if(IsInstance(Uint16,tag)) {
+            } else if(IsInstance(Uint16,key)) {
                 Uint16 data = Cast<Uint16>(key);
                 data->update(tag->toBasicUint16());
-            } else if(IsInstance(Uint32,tag)) {
+            } else if(IsInstance(Uint32,key)) {
                 Uint32 data = Cast<Uint32>(key);
                 data->update(tag->toBasicUint32());
-            } else if(IsInstance(Uint64,tag)) {
+            } else if(IsInstance(Uint64,key)) {
                 Uint64 data = Cast<Uint64>(key);
                 data->update(tag->toBasicUint64());
-            } else if(IsInstance(String,tag)) {
+            } else if(IsInstance(String,key)) {
                 String data = Cast<String>(key);
                 data->update(tag->toChars());
             } else {
@@ -370,9 +370,9 @@ public:
                 String data = Cast<String>(pairValue);
                 data->update(jvalue->getString()->getStdString());
             } else if(pairValue->__ReflectClassName()->equals("_ArrayList")) {
-                int datasize = this->size();
+                int datasize = jvalue->size();
                 for(int index = 0;index < datasize;index++) {
-                    JsonValue oo = this->getListItemAt(index);
+                    JsonValue oo = jvalue->getListItemAt(index);
                     Object vv = pairValue->__createListItemObject("");
                     oo->reflectTo(vv);
                     pairValue->__addListItemObject("",vv);

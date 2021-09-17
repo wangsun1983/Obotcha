@@ -455,7 +455,6 @@ String _JsonValueIterator::getTag() {
 }
 
 bool _JsonValueIterator::hasValue() {
-    printf("index is %d,size is %d \n",index,size);
     return index < size;
 }
 
@@ -469,38 +468,56 @@ bool _JsonValueIterator::next() {
 }
 
 bool _JsonValueIterator::isBool() {
-    std::string ss = mMembers[index];
+    if(isArrayMember) {
+        return (value->jvalue)[index].isBool();
+    }
 
+    std::string ss = mMembers[index];
     return (value->jvalue)[ss].isBool();
 }
 
 bool _JsonValueIterator::isInt() {
-    std::string ss = mMembers[index];
+    if(isArrayMember) {
+        return (value->jvalue)[index].isInt();
+    }
 
+    std::string ss = mMembers[index];
     return (value->jvalue)[ss].isInt();
 }
 
 bool _JsonValueIterator::isString() {
-    std::string ss = mMembers[index];
+    if(isArrayMember) {
+        return (value->jvalue)[index].isString();
+    }
 
+    std::string ss = mMembers[index];
     return (value->jvalue)[ss].isString();
 }
 
 bool _JsonValueIterator::isDouble() {
-    std::string ss = mMembers[index];
+    if(isArrayMember) {
+        return (value->jvalue)[index].isDouble();
+    }
 
+    std::string ss = mMembers[index];
     return (value->jvalue)[ss].isDouble();
 }
 
 bool _JsonValueIterator::isArray() {
-    std::string ss = mMembers[index];
+    if(isArrayMember) {
+        return (value->jvalue)[index].isArray();
+    }
 
+    std::string ss = mMembers[index];
     return (value->jvalue)[ss].isArray();
 }
 
 bool _JsonValueIterator::isObject() {
-    std::string ss = mMembers[index];
+    if(isArrayMember) {
+        return (value->jvalue)[index].isObject();
+    }
 
+    std::string ss = mMembers[index];
     return (value->jvalue)[ss].isObject();
 }
 
@@ -519,6 +536,10 @@ sp<_JsonValue> _JsonValueIterator::getValue() {
 }
 
 String _JsonValueIterator::getString() {
+    if(isArrayMember) {
+        return createString((value->jvalue)[index].asString());
+    }
+
     std::string ss = mMembers[index];
     Json::Value v = (value->jvalue)[ss];
     if(v.isNull()) {
@@ -529,6 +550,10 @@ String _JsonValueIterator::getString() {
 }
 
 Integer _JsonValueIterator::getInteger() {
+    if(isArrayMember) {
+        return createInteger((value->jvalue)[index].asInt());
+    }
+
     std::string ss = mMembers[index];
     Json::Value v = (value->jvalue)[ss];
     if(v.isNull()) {
@@ -539,6 +564,10 @@ Integer _JsonValueIterator::getInteger() {
 }
 
 Boolean _JsonValueIterator::getBoolean() {
+    if(isArrayMember) {
+        return createBoolean((value->jvalue)[index].asBool());
+    }
+
     std::string ss = mMembers[index];
     Json::Value v = (value->jvalue)[ss];
     if(v.isNull()) {
@@ -549,6 +578,10 @@ Boolean _JsonValueIterator::getBoolean() {
 }
 
 Double _JsonValueIterator::getDouble() {
+    if(isArrayMember) {
+        return createDouble((value->jvalue)[index].asDouble());
+    }
+
     std::string ss = mMembers[index];
     Json::Value v = (value->jvalue)[ss];
     if(v.isNull()) {
@@ -559,6 +592,10 @@ Double _JsonValueIterator::getDouble() {
 }
 
 sp<_JsonValue> _JsonValueIterator::getObject() {
+    if(isArrayMember) {
+        return createJsonValue((value->jvalue)[index]);
+    }
+
     std::string ss = mMembers[index];
     Json::Value v = (value->jvalue)[ss];
     if(v.isNull()) {

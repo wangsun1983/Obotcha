@@ -37,12 +37,12 @@ void testArrayListString() {
       list->add(S("val4"));
       list->add(S("val5"));
 
-      JsonWriter writer = createJsonWriter("list_string_test1.json");
+      JsonWriter writer = createJsonWriter("./tmp/list_string_test1.json");
       JsonValue value = createJsonValue();
       value->importFrom(list);
       writer->write(value);
 
-      JsonReader reader = createJsonReader(createFile("list_string_test1.json"));
+      JsonReader reader = createJsonReader(createFile("./tmp/list_string_test1.json"));
       JsonValue value2 = reader->get();
 
       ArrayList<String> list2 = createArrayList<String>();
@@ -74,12 +74,12 @@ void testArrayListString() {
       list->add(S("val5"));
       ll->lists = list;
 
-      JsonWriter writer = createJsonWriter("list_string_test2.json");
+      JsonWriter writer = createJsonWriter("./tmp/list_string_test2.json");
       JsonValue value = createJsonValue();
       value->importFrom(ll);
       writer->write(value);
 
-      JsonReader reader = createJsonReader(createFile("list_string_test2.json"));
+      JsonReader reader = createJsonReader(createFile("./tmp/list_string_test2.json"));
       JsonValue value2 = reader->get();
 
       //ArrayList<String> list2 = createArrayList<String>();

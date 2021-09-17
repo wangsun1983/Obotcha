@@ -44,12 +44,12 @@ void testInnerClassReflect() {
         data->data2 = createInnerData2();
         data->data2->stringData = createString("hello world");
 
-        JsonWriter writer = createJsonWriter("inner_class_test1.json");
+        JsonWriter writer = createJsonWriter("./tmp/inner_class_test1.json");
         JsonValue value = createJsonValue();
         value->importFrom(data);
         writer->write(value);
 
-        JsonReader reader = createJsonReader(createFile("inner_class_test1.json"));
+        JsonReader reader = createJsonReader(createFile("./tmp/inner_class_test1.json"));
         JsonValue value2 = reader->get();
         OuterData data2 = createOuterData();
         value2->reflectTo(data2);

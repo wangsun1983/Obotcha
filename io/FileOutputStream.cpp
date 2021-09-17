@@ -36,18 +36,34 @@ _FileOutputStream::_FileOutputStream(int fd) {
 }
 
 long _FileOutputStream::write(char c) {
+    if(fd < 0) {
+        return -1;
+    }
+
     return ::write(fd,&c,1);
 }
 
 long _FileOutputStream::write(ByteArray buff) {
+    if(fd < 0) {
+        return -1;
+    }
+
     return ::write(fd,buff->toValue(),buff->size());
 }
 
 long _FileOutputStream::write(ByteArray buff,int start) {
+    if(fd < 0) {
+        return -1;
+    }
+
     return ::write(fd,&buff->toValue()[start],buff->size() - start);
 }
 
 long _FileOutputStream::write(ByteArray buff,int start,int len) {
+    if(fd < 0) {
+        return -1;
+    }
+
     if(len > (buff->size() - start)) {
         Trigger(ArrayIndexOutOfBoundsException,"out ouf bound");
     }
@@ -57,6 +73,10 @@ long _FileOutputStream::write(ByteArray buff,int start,int len) {
 
 
 long _FileOutputStream::writeString(String s) {
+    if(fd < 0) {
+        return -1;
+    }
+    
     return ::write(fd,s->toChars(),s->size());
 }
 
