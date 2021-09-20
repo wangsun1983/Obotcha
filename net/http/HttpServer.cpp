@@ -31,7 +31,7 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
             }
 
             if(info->pushHttpData(pack) == -1) {
-                //some thing may be wrong(overflow)
+                //some thing may be wrong(overflow)    
                 mHttpListener->onHttpMessage(SocketEvent::InternalError,info,nullptr,nullptr);
                 st(HttpLinkerManager)::getInstance()->removeLinker(r);
                 r->close();
@@ -52,7 +52,6 @@ void _HttpServer::onSocketMessage(int event,Socket r,ByteArray pack) {
 
         case SocketEvent::Connect:{
             HttpLinker info = createHttpLinker(r);
-
             if(isSSl) {
                 SSLInfo ssl = st(SSLManager)::getInstance()->get(r->getFileDescriptor()->getFd());
                 if(info != nullptr) {

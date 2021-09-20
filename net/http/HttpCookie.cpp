@@ -19,26 +19,30 @@ const String _HttpCookie::COOKIE_PROPERTY_EXPIRES = createString("Expires");
 const String _HttpCookie::COOKIE_PROPERTY_MAX_AGE = createString("Max-Age");
 
 _HttpCookie::_HttpCookie() {
-    mValues = createHashMap<String,String>();
     mPropertySecure = false;
     mPropertyHttpOnly = false;
     mPropertyExpiresMillseocnds = -1;
 }
 
-_HttpCookie::_HttpCookie(String value) {
-    mValues = createHashMap<String,String>();
+_HttpCookie::_HttpCookie(String name,String value) {
     mPropertySecure = false;
     mPropertyHttpOnly = false;
     mPropertyExpiresMillseocnds = -1;
-    import(value);
+    mName = name;
+    mValue = value;
 }
 
-void _HttpCookie::setValue(String key,String value) {
-    mValues->put(key,value);
+void _HttpCookie::setValue(String name,String value) {
+    mName = name;
+    mValue = value;
 }
 
-String _HttpCookie::get(String key) {
-    return mValues->get(key);
+String _HttpCookie::getName() {
+    return mName;
+}
+
+String _HttpCookie::getValue() {
+    return mValue;
 }
 
 void _HttpCookie::setPropertySecure(bool flag) {
@@ -62,8 +66,8 @@ void _HttpCookie::setPropertyExpires(HttpDate date) {
 
 }
 
-void _HttpCookie::setPropertyMaxAge(String data) {
-    mPropertyMaxAge = data->toBasicInt();
+void _HttpCookie::setPropertyMaxAge(int data) {
+    mPropertyMaxAge = data;
 }
 
 bool _HttpCookie::getPropertySecure() {
@@ -90,57 +94,6 @@ int _HttpCookie::getPropertyMaxAge() {
     return mPropertyMaxAge;
 }
 
-void _HttpCookie::import(String value) {
-    int pos = 0;
-    while (pos < value->size()) {
-        int tokenStart = pos;
-        pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString("=,;"));
-        String directive = value->subString(tokenStart, pos-tokenStart)->trim();
-        String parameter = nullptr;
-
-        if (pos == value->size() || value->charAt(pos) == ',' || value->charAt(pos) == ';') {
-            pos++; // consume ',' or ';' (if necessary)
-            parameter = nullptr;
-        } else {
-            pos++; // consume '='
-            pos = st(HttpHeaderContentParser)::skipWhitespace(value, pos);
-            // quoted string
-            if (pos < value->size() && value->charAt(pos) == '\"') {
-                pos++; // consume '"' open quote
-                int parameterStart = pos;
-                pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString("\""));
-                parameter = value->subString(parameterStart, pos);
-                pos++; // consume '"' close quote (if necessary)
-                // unquoted string
-            } else {
-                int parameterStart = pos;
-                if(directive->endsWithIgnoreCase(st(HttpCookie)::COOKIE_PROPERTY_EXPIRES)) {
-                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString(";"));
-                } else {
-                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString(",;"));
-                }
-                parameter = value->subString(parameterStart, (pos-parameterStart))->trim();
-                pos++;
-            }
-        }
-        if (COOKIE_PROPERTY_SECURE->equalsIgnoreCase(directive)) {
-            mPropertySecure = true;
-        } else if (COOKIE_PROPERTY_HTTPONLY->equalsIgnoreCase(directive)) {
-            mPropertyHttpOnly = true;
-        } else if (COOKIE_PROPERTY_PATH->equalsIgnoreCase(directive)) {
-            mPropertyPath = parameter;
-        } else if (COOKIE_PROPERTY_DOMAIN->equalsIgnoreCase(directive)) {
-            mPropertyDomain = parameter;
-        } else if (COOKIE_PROPERTY_EXPIRES->equalsIgnoreCase(directive)) {
-            mPropertyExpires = createHttpDate(parameter);
-        } else if (COOKIE_PROPERTY_MAX_AGE->equalsIgnoreCase(directive)) {
-            mPropertyMaxAge = st(HttpHeaderContentParser)::parseSeconds(parameter, st(Integer)::MAX_VALUE);
-        } else {
-            mValues->put(directive,parameter);
-        }
-    }
-}
-
 String _HttpCookie::toString(int type) {
     switch(type) {
         case st(HttpProtocol)::HttpRequest:
@@ -163,13 +116,13 @@ void _HttpCookie::dump() {
 String _HttpCookie::genHttpResponseCookie() {
     //name
     String content = createString("Set-Cookie: ");
-    MapIterator<String,String> iterator = mValues->getIterator();
-    while(iterator->hasValue()) {
-        String key = iterator->getKey();
-        String value = iterator->getValue();
-        content = content->append(key,"=",value,";");
-        iterator->next();
-    }
+    //MapIterator<String,String> iterator = mValues->getIterator();
+    //while(iterator->hasValue()) {
+    //    String key = iterator->getKey();
+    //    String value = iterator->getValue();
+    content = content->append(mName,"=",mValue,";");
+    //    iterator->next();
+    //}
 
     if(mPropertyHttpOnly) {
         content = content->append(COOKIE_PROPERTY_HTTPONLY,";");
@@ -204,13 +157,13 @@ String _HttpCookie::genHttpResponseCookie() {
 
 String _HttpCookie::genHttpRequestCookie() {
     String content = createString("Cookie: ");
-    MapIterator<String,String> iterator = mValues->getIterator();
-    while(iterator->hasValue()) {
-        String key = iterator->getKey();
-        String value = iterator->getValue();
-        content = content->append(key,"=",value,";"); //TODO:Cookie: name=value; name2=value2  
-        iterator->next();
-    }
+    //MapIterator<String,String> iterator = mValues->getIterator();
+    //while(iterator->hasValue()) {
+    //    String key = iterator->getKey();
+    //    String value = iterator->getValue();
+    content = content->append(mName,"=",mValue,";"); //TODO:Cookie: name=value; name2=value2  
+    //    iterator->next();
+    //}
     return content;
 }
 

@@ -3,6 +3,7 @@
 #include "HttpMethodParser.hpp"
 #include "HttpVersionParser.hpp"
 #include "HttpUrlParser.hpp"
+#include "HttpCookieParser.hpp"
 
 namespace obotcha {
 
@@ -229,7 +230,12 @@ int _HttpHeaderParser::parseParticularHeader(String key,String value) {
     switch(p[0]) {
         case 'c': {
             if(key->equals(st(HttpHeader)::Cookie)) {
-                mHeader->addCookie(createHttpCookie(value));
+                ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
+                auto iterator = cookies->getIterator();
+                while(iterator->hasValue()) {
+                    mHeader->addCookie(iterator->getValue());
+                    iterator->next();
+                }
                 return 0;
             } else if(key->equals(st(HttpHeader)::CacheControl)) {
                 mHeader->setCacheControl(createHttpCacheControl(value));
@@ -251,7 +257,12 @@ int _HttpHeaderParser::parseParticularHeader(String key,String value) {
 
         case 's': {
             if(key->equals(st(HttpHeader)::SetCookie)) {
-                mHeader->addCookie(createHttpCookie(value));
+                ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
+                auto iterator = cookies->getIterator();
+                while(iterator->hasValue()) {
+                    mHeader->addCookie(iterator->getValue());
+                    iterator->next();
+                }
                 return 0;
             }
         }

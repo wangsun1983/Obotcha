@@ -87,7 +87,8 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httprouter.o \
 		$(outtmp)/httproutermap.o \
 		$(outtmp)/httproutermanager.o \
-
+		$(outtmp)/httpcookieparser.o \
+		
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketImpl.cpp -o $(outtmp)/socketimpl.o 
@@ -249,6 +250,9 @@ $(outtmp)/httpresponsewriter.o :$(netDir)/http/HttpResponseWriter.cpp
 
 $(outtmp)/httppacketparser.o :$(netDir)/http/HttpPacketParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketParser.cpp -o $(outtmp)/httppacketparser.o 
+
+$(outtmp)/httpcookieparser.o :$(netDir)/http/HttpCookieParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpCookieParser.cpp -o $(outtmp)/httpcookieparser.o 
 
 $(outtmp)/httppacketbuilder.o :$(netDir)/http/HttpPacketBuilder.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketBuilder.cpp -o $(outtmp)/httppacketbuilder.o 

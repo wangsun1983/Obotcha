@@ -15,17 +15,18 @@ DECLARE_CLASS(HttpCookie) {
 
 public:
     _HttpCookie();
-    _HttpCookie(String);
+    _HttpCookie(String name,String value);
 
     void setValue(String key,String value);
-    String get(String key);
+    String getName();
+    String getValue();
 
     void setPropertySecure(bool);
     void setPropertyHttpOnly(bool);
     void setPropertyPath(String);
     void setPropertyDomain(String);
     void setPropertyExpires(HttpDate);
-    void setPropertyMaxAge(String);
+    void setPropertyMaxAge(int);
 
     bool getPropertySecure();
     bool getPropertyHttpOnly();
@@ -35,7 +36,6 @@ public:
     int getPropertyMaxAge();
 
     String toString(int);
-    void import(String);
 
     void dump();
 
@@ -66,8 +66,10 @@ private:
     
     String mRaw;
 
-    HashMap<String,String> mValues;
-
+    //HashMap<String,String> mValues;
+    String mName;
+    String mValue;
+    
     String genHttpRequestCookie();
     String genHttpResponseCookie();
 };

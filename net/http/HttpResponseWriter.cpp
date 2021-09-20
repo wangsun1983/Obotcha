@@ -71,18 +71,15 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
     int status = header->getResponseStatus();
     //String statusStr = st(HttpStatus)::toString(status);
     AUTO_FLUSH(writer->writeString(header->getVersion()->toString()));
-
     AUTO_FLUSH(writer->writeString(" "));
     AUTO_FLUSH(writer->writeString(createString(status)));
     AUTO_FLUSH(writer->writeString(" "));
-
     String reason = header->getResponseReason();
     if(reason != nullptr) {
         AUTO_FLUSH(writer->writeString(reason));
     } else {
         AUTO_FLUSH(writer->writeString(st(HttpStatus)::toString(status)));
     }
-
     AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
 
     //update content-length
@@ -93,11 +90,10 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
         contentlength = computeContentLength(response);
         response->getHeader()->setValue(st(HttpHeader)::ContentLength,createString(contentlength));
     }
-
     AUTO_FLUSH(writer->writeString(response->getHeader()->toString(st(HttpProtocol)::HttpResponse)));
     AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF)); //change line
     AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF)); //blank line
-
+    
     if(file != nullptr && file->exists()) {
         if(file->exists()) {
             FileInputStream stream = createFileInputStream(file);
@@ -149,9 +145,7 @@ int _HttpResponseWriter::write(HttpResponse response,bool flush) {
         AUTO_FLUSH(writer->writeByteArray(body));
         AUTO_FLUSH(writer->writeString(st(HttpText)::CRLF));
     }
-   
     FORCE_FLUSH();
-
     return writer->getIndex();
 }
 
