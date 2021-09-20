@@ -11,50 +11,36 @@
  */
 #include <algorithm>
 
-#include "Uint8.hpp"
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"
 #include "Number.hpp"
+#include "Uint8.hpp"
 
 namespace obotcha {
 
-_Uint8::_Uint8():val(0) {
-
-}
+_Uint8::_Uint8() : val(0) {}
 
 _Uint8::_Uint8(uint8_t v) : val(v) {}
 
 _Uint8::_Uint8(const Uint8 &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Object is null");
+    if (v == nullptr) {
+        Trigger(InitializeException, "Object is null");
     }
-    
+
     val = v->val;
 }
-    
-uint8_t _Uint8::toValue() {
-    return val;
-}
 
-bool _Uint8::equals(const Uint8 &p) {
-    return val == p->val;
-}
+uint8_t _Uint8::toValue() { return val; }
 
-bool _Uint8::equals(uint8_t p) {
-    return val == p;
-}
+bool _Uint8::equals(const Uint8 &p) { return val == p->val; }
 
-bool _Uint8::equals(const _Uint8 *p) {
-    return val == p->val;
-}
+bool _Uint8::equals(uint8_t p) { return val == p; }
 
-void _Uint8::update(uint8_t v) {
-    val = v;
-}
+bool _Uint8::equals(const _Uint8 *p) { return val == p->val; }
 
-void _Uint8::update(const sp<_Uint8> &v) {
-    val = v->val;
-}
+void _Uint8::update(uint8_t v) { val = v; }
+
+void _Uint8::update(const sp<_Uint8> &v) { val = v->val; }
 
 sp<_String> _Uint8::toHexString() {
     return createString(_Number::toHexString(val));
@@ -68,9 +54,7 @@ sp<_String> _Uint8::toBinaryString() {
     return createString(_Number::toBinaryString(val));
 }
 
-uint64_t _Uint8::hashcode() {
-    return std::hash<uint8_t>{}(val);
-}
+uint64_t _Uint8::hashcode() { return std::hash<uint8_t>{}(val); }
 
 sp<_String> _Uint8::toString() {
     return createString(_Number::toDecString(val));
@@ -85,7 +69,8 @@ sp<_Uint8> _Uint8::parseDecUint8(const sp<_String> &v) {
         String pa = v->trimAll();
         uint8_t value = _Number::parseDecNumber(pa->getStdString());
         return createUint8(value);
-    } catch(int e){}
+    } catch (int e) {
+    }
 
     return nullptr;
 }
@@ -95,8 +80,8 @@ sp<_Uint8> _Uint8::parseHexUint8(const sp<_String> &v) {
         String pa = v->trimAll();
         uint8_t value = _Number::parseHexNumber(pa->getStdString());
         return createUint8(value);
-    } catch(...) {
-        //nothing
+    } catch (...) {
+        // nothing
     }
 
     return nullptr;
@@ -107,8 +92,8 @@ sp<_Uint8> _Uint8::parseOctUint8(const sp<_String> &v) {
         String pa = v->trimAll();
         uint8_t value = _Number::parseOctNumber(pa->getStdString());
         return createUint8(value);
-    } catch(...) {
-        //nothing
+    } catch (...) {
+        // nothing
     }
 
     return nullptr;
@@ -119,18 +104,15 @@ sp<_Uint8> _Uint8::parseBinaryUint8(const sp<_String> &v) {
         String pa = v->trimAll();
         uint8_t value = _Number::parseBinaryNumber(pa->getStdString());
         return createUint8(value);
-    } catch(...) {
-        //nothing
+    } catch (...) {
+        // nothing
     }
 
     return nullptr;
 }
 
-sp<_String> _Uint8::className() {
-    return createString("Uint8");
-}
+sp<_String> _Uint8::className() { return createString("Uint8"); }
 
-_Uint8::~_Uint8() {
-}
+_Uint8::~_Uint8() {}
 
-}
+} // namespace obotcha

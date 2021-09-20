@@ -1,6 +1,6 @@
+#include "Error.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "Error.hpp"
 
 namespace obotcha {
 
@@ -15,10 +15,11 @@ const String _Error::NotStartString = createString("Not Start");
 const String _Error::OverSizeString = createString("Over Size");
 const String _Error::MiniZipFailString = createString("Mini Zip Fail");
 const String _Error::NetBindFailString = createString("Net Bind Fail");
-const String _Error::NetListenFailString = createString("Net Listen Fail"); 
+const String _Error::NetListenFailString = createString("Net Listen Fail");
 const String _Error::NetConnectFailString = createString("Net Connect Fail");
 const String _Error::CreateFailString = createString("Create Fail");
-const String _Error::AttributeSetFailString = createString("Attribute Set Fail");
+const String _Error::AttributeSetFailString =
+    createString("Attribute Set Fail");
 const String _Error::OpenFailString = createString("Open Fail");
 const String _Error::WriteFailString = createString("Write Fail");
 const String _Error::ReadFailString = createString("Read Fail");
@@ -33,102 +34,103 @@ const String _Error::SqlFailWrongParamString = createString("Sql Wrong Param");
 const String _Error::SqlFailOpenString = createString("Sql Open Fail");
 const String _Error::SqlFailNoDbString = createString("Sql No Db");
 const String _Error::SqlExecFailString = createString("Sql Exec Error");
-const String _Error::SqlTransactionFailString = createString("Sql Transaction Error");
+const String _Error::SqlTransactionFailString =
+    createString("Sql Transaction Error");
 
 String _Error::toString(int error) {
-    switch(error) {
-        case -1:
+    switch (error) {
+    case -1:
         return ErrorString;
 
-        case -InvalidParam:
+    case -InvalidParam:
         return InvalidParamString;
 
-        case -InvalidStatus:
+    case -InvalidStatus:
         return InvalidStatusString;
 
-        case -FileNotExists:
+    case -FileNotExists:
         return FileNotExistsString;
-    
-        case -AlreadyExists:
+
+    case -AlreadyExists:
         return AlreadyExistsString;
 
-        case -AlreadyDestroy:
+    case -AlreadyDestroy:
         return AlreadyDestroyString;
 
-        case -NotCreate:
+    case -NotCreate:
         return NotCreateString;
-    
-        case -NotStart:
+
+    case -NotStart:
         return NotStartString;
 
-        case -OverSize:
+    case -OverSize:
         return OverSizeString;
-    
-        case -MiniZipFail:
+
+    case -MiniZipFail:
         return MiniZipFailString;
 
-        case -NetBindFail:
+    case -NetBindFail:
         return NetBindFailString;
-    
-        case -NetListenFail:
+
+    case -NetListenFail:
         return NetListenFailString;
 
-        case -NetConnectFail:
+    case -NetConnectFail:
         return NetConnectFailString;
 
-        case -AttributeSetFail:
+    case -AttributeSetFail:
         return AttributeSetFailString;
 
-        case -OpenFail:
+    case -OpenFail:
         return OpenFailString;
 
-        case -CreateFail:
+    case -CreateFail:
         return CreateFailString;
 
-        case -WriteFail:
+    case -WriteFail:
         return WriteFailString;
 
-        case -ReadFail:
+    case -ReadFail:
         return ReadFailString;
-    
-        case -MmapFail:
+
+    case -MmapFail:
         return MmapFailString;
 
-        case -GenKeyFail:
+    case -GenKeyFail:
         return GenKeyFailString;
 
-        case -SetKeyFail:
+    case -SetKeyFail:
         return SetKeyFailString;
 
-        case -NotFound:
+    case -NotFound:
         return NotFoundString;
 
-        case -WaitTimeout:
+    case -WaitTimeout:
         return WaitTimeoutString;
 
-        case -WaitFail:
+    case -WaitFail:
         return WaitFailString;
 
-        case -NotSupport:
+    case -NotSupport:
         return NotSupportString;
-		
-		case SqlFailWrongParam:
-		return SqlFailWrongParamString;
-		
-        case SqlFailOpen:
-		return SqlFailOpenString;
-		
-        case SqlFailNoDb:
-		return SqlFailNoDbString;
-		
-        case SqlExecFail:
-		return SqlExecFailString;
-    
-        case SqlTransactionFail:
-		return SqlTransactionFailString;
+
+    case SqlFailWrongParam:
+        return SqlFailWrongParamString;
+
+    case SqlFailOpen:
+        return SqlFailOpenString;
+
+    case SqlFailNoDb:
+        return SqlFailNoDbString;
+
+    case SqlExecFail:
+        return SqlExecFailString;
+
+    case SqlTransactionFail:
+        return SqlTransactionFailString;
     }
-    
+
     return nullptr;
 }
 
-}
+} // namespace obotcha

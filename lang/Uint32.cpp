@@ -11,49 +11,35 @@
  */
 #include <algorithm>
 
-#include "Uint32.hpp"
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"
+#include "Uint32.hpp"
 
 namespace obotcha {
 
-_Uint32::_Uint32():val(0) {
-
-}
+_Uint32::_Uint32() : val(0) {}
 
 _Uint32::_Uint32(uint32_t v) : val(v) {}
 
 _Uint32::_Uint32(const Uint32 &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Object is null");
+    if (v == nullptr) {
+        Trigger(InitializeException, "Object is null");
     }
-    
+
     val = v->val;
 }
-    
-uint32_t _Uint32::toValue() {
-    return val;
-}
 
-bool _Uint32::equals(const Uint32 &p) {
-    return val == p->val;
-}
+uint32_t _Uint32::toValue() { return val; }
 
-bool _Uint32::equals(uint32_t p) {
-    return val == p;
-}
+bool _Uint32::equals(const Uint32 &p) { return val == p->val; }
 
-bool _Uint32::equals(const _Uint32 *p) {
-    return val == p->val;
-}
+bool _Uint32::equals(uint32_t p) { return val == p; }
 
-void _Uint32::update(uint32_t v) {
-    val = v;
-}
+bool _Uint32::equals(const _Uint32 *p) { return val == p->val; }
 
-void _Uint32::update(const sp<_Uint32> &v) {
-    val = v->val;
-}
+void _Uint32::update(uint32_t v) { val = v; }
+
+void _Uint32::update(const sp<_Uint32> &v) { val = v->val; }
 
 sp<_String> _Uint32::toHexString() {
     return createString(_Number::toHexString(val));
@@ -80,7 +66,8 @@ sp<_Uint32> _Uint32::parseDecUint32(const sp<_String> &v) {
         String pa = v->trimAll();
         uint32_t value = _Number::parseDecNumber(pa->getStdString());
         return createUint32(value);
-    } catch(int e){}
+    } catch (int e) {
+    }
 
     return nullptr;
 }
@@ -90,8 +77,8 @@ sp<_Uint32> _Uint32::parseHexUint32(const sp<_String> &v) {
         String pa = v->trimAll();
         uint32_t value = _Number::parseHexNumber(pa->getStdString());
         return createUint32(value);
-    } catch(...) {
-        //nothing
+    } catch (...) {
+        // nothing
     }
 
     return nullptr;
@@ -102,8 +89,8 @@ sp<_Uint32> _Uint32::parseOctUint32(const sp<_String> &v) {
         String pa = v->trimAll();
         uint32_t value = _Number::parseOctNumber(pa->getStdString());
         return createUint32(value);
-    } catch(...) {
-        //nothing
+    } catch (...) {
+        // nothing
     }
 
     return nullptr;
@@ -114,22 +101,17 @@ sp<_Uint32> _Uint32::parseBinaryUint32(const sp<_String> &v) {
         String pa = v->trimAll();
         uint32_t value = _Number::parseBinaryNumber(pa->getStdString());
         return createUint32(value);
-    } catch(...) {
-        //nothing
+    } catch (...) {
+        // nothing
     }
 
     return nullptr;
 }
 
-sp<_String> _Uint32::className() {
-    return createString("Uint32");
-}
+sp<_String> _Uint32::className() { return createString("Uint32"); }
 
-uint64_t _Uint32::hashcode() {
-    return std::hash<uint32_t>{}(val);
-}
+uint64_t _Uint32::hashcode() { return std::hash<uint32_t>{}(val); }
 
-_Uint32::~_Uint32() {
-}
+_Uint32::~_Uint32() {}
 
-}
+} // namespace obotcha

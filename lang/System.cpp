@@ -1,7 +1,7 @@
-#include <sys/time.h>
-#include <unistd.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/time.h>
+#include <unistd.h>
 
 #include "AutoLock.hpp"
 #include "System.hpp"
@@ -14,7 +14,7 @@ ArrayList<Closeable> _System::mListeners = createArrayList<Closeable>();
 long int _System::currentTimeMillis() {
     timeval tv;
     gettimeofday(&tv, NULL);
-    return tv.tv_sec*1000 + tv.tv_usec/1000;
+    return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 
 int _System::availableProcessors() {
@@ -22,36 +22,34 @@ int _System::availableProcessors() {
     return cpu_num;
 }
 
-int _System::onlineProcessors(){
+int _System::onlineProcessors() {
     int cpu_num = sysconf(_SC_NPROCESSORS_ONLN);
     return cpu_num;
 }
 
 String _System::executeForResult(String cmd) {
-    FILE * fp;
-    char buffer[1024*64];
-    fp = popen(cmd->toChars(),"r");
-    
-    if(fp == nullptr) {
+    FILE *fp;
+    char buffer[1024 * 64];
+    fp = popen(cmd->toChars(), "r");
+
+    if (fp == nullptr) {
         return nullptr;
     }
 
-    fread(buffer,1,1024*64,fp);
+    fread(buffer, 1, 1024 * 64, fp);
     pclose(fp);
 
     return createString(buffer);
 }
 
-void _System::execute(String cmd) {
-    system(cmd->toChars());
-}
+void _System::execute(String cmd) { system(cmd->toChars()); }
 
 void _System::exit(int reason) {
-    //we should close all before exit
+    // we should close all before exit
     {
         AutoLock l(mMutex);
         auto iterator = mListeners->getIterator();
-        while(iterator->hasValue()) {
+        while (iterator->hasValue()) {
             iterator->getValue()->close();
             iterator->next();
         }
@@ -59,28 +57,26 @@ void _System::exit(int reason) {
     exit(reason);
 }
 
-void _System::getNextTime(long timeInterval,struct timespec *ts) {
+void _System::getNextTime(long timeInterval, struct timespec *ts) {
     ts->tv_sec = 0;
     ts->tv_nsec = 0;
 
     clock_gettime(CLOCK_REALTIME, ts);
-    ts->tv_nsec += timeInterval*1000*1000;
-    ts->tv_sec += (ts->tv_nsec)/(1000*1000*1000);
-    ts->tv_nsec = ts->tv_nsec%(1000*1000*1000);
+    ts->tv_nsec += timeInterval * 1000 * 1000;
+    ts->tv_sec += (ts->tv_nsec) / (1000 * 1000 * 1000);
+    ts->tv_nsec = ts->tv_nsec % (1000 * 1000 * 1000);
 }
 
-void _System::getTimeVal(long timeInterval,struct timeval *tv) {
-    tv->tv_sec = timeInterval/1000;
-    tv->tv_usec = (timeInterval%1000)*1000;
+void _System::getTimeVal(long timeInterval, struct timeval *tv) {
+    tv->tv_sec = timeInterval / 1000;
+    tv->tv_usec = (timeInterval % 1000) * 1000;
 }
 
-int _System::myPid() {
-    return getpid();
-}
+int _System::myPid() { return getpid(); }
 
 void _System::closeOnExit(Closeable c) {
     AutoLock l(mMutex);
     mListeners->add(c);
 }
 
-}
+} // namespace obotcha

@@ -14,81 +14,64 @@
 #include <limits>
 
 #include "Double.hpp"
-#include "String.hpp"
-#include "InitializeException.hpp"
 #include "IllegalArgumentException.hpp"
+#include "InitializeException.hpp"
 #include "NullPointerException.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
-_Double::_Double():val(0.0) {}
+_Double::_Double() : val(0.0) {}
 
 _Double::_Double(double v) : val(v) {}
 
 _Double::_Double(const Double &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Object is null");
+    if (v == nullptr) {
+        Trigger(InitializeException, "Object is null");
     }
     val = v->val;
 }
-    
-double _Double::toValue() {
-    return val;
-}
 
-bool _Double::equals(const Double &p) {
-    return equals(p->val);
-}
+double _Double::toValue() { return val; }
 
-bool _Double::equals(double p) {
-    return isEqual(val,p);
-}
+bool _Double::equals(const Double &p) { return equals(p->val); }
 
-bool _Double::isEqual(double x,double y) {
+bool _Double::equals(double p) { return isEqual(val, p); }
+
+bool _Double::isEqual(double x, double y) {
     static int ulp = 2;
-    //return std::fabs(val-p) <= std::numeric_limits<double>::epsilon();
+    // return std::fabs(val-p) <= std::numeric_limits<double>::epsilon();
     // the machine epsilon has to be scaled to the magnitude of the values used
     // and multiplied by the desired precision in ULPs (units in the last place)
-    return std::fabs(x-y) <= std::numeric_limits<double>::epsilon() * std::fabs(x+y) * ulp
-        // unless the result is subnormal
-        || std::fabs(x-y) < std::numeric_limits<double>::min();
+    return std::fabs(x - y) <=
+               std::numeric_limits<double>::epsilon() * std::fabs(x + y) * ulp
+           // unless the result is subnormal
+           || std::fabs(x - y) < std::numeric_limits<double>::min();
 }
 
 sp<_Double> _Double::parse(sp<_String> s) {
     try {
         String pa = s->trimAll();
-        double v = _Number<double>::parseNumber(pa->getStdString(),false);
+        double v = _Number<double>::parseNumber(pa->getStdString(), false);
         return createDouble(v);
-    } catch(int e) {}
+    } catch (int e) {
+    }
 
     return nullptr;
 }
 
-bool _Double::equals(const _Double *p) {
-    return equals(p->val);
-}
+bool _Double::equals(const _Double *p) { return equals(p->val); }
 
-void _Double::update(double v) {
-    this->val = v;
-}
+void _Double::update(double v) { this->val = v; }
 
-void _Double::update(const sp<_Double> &v) {
-    this->val = v->val;
-}
+void _Double::update(const sp<_Double> &v) { this->val = v->val; }
 
-sp<_String> _Double::className() {
-    return createString("Double");
-}
+sp<_String> _Double::className() { return createString("Double"); }
 
-sp<_String> _Double::toString() {
-    return createString(val);
-}
+sp<_String> _Double::toString() { return createString(val); }
 
-uint64_t _Double::hashcode() {
-    return std::hash<double>{}(val);
-}
+uint64_t _Double::hashcode() { return std::hash<double>{}(val); }
 
-_Double::~_Double() {
-}
+_Double::~_Double() {}
 
-}
+} // namespace obotcha

@@ -1,30 +1,30 @@
-#include <stdlib.h>
-#include <memory.h>
 #include <math.h>
+#include <memory.h>
+#include <stdlib.h>
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "String.hpp"
-#include "ByteRingArray.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
+#include "ByteRingArray.hpp"
+#include "IllegalArgumentException.hpp"
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"
-#include "IllegalArgumentException.hpp"
+#include "Object.hpp"
+#include "String.hpp"
+#include "StrongPointer.hpp"
 
 namespace obotcha {
 
 _ByteRingArray::_ByteRingArray(int size) {
-    if(size <= 0) {
-        Trigger(InitializeException,"size is illeagle");
+    if (size <= 0) {
+        Trigger(InitializeException, "size is illeagle");
     }
-    
+
     mCapacity = size;
     mSize = 0;
     mBuff = (byte *)malloc(size);
     mNext = 0;
 
-    if(mBuff == nullptr) {
-        Trigger(InitializeException,"alloc fail");
+    if (mBuff == nullptr) {
+        Trigger(InitializeException, "alloc fail");
     }
 }
 
@@ -34,33 +34,34 @@ _ByteRingArray::_ByteRingArray(sp<_ByteRingArray> data) {
     mNext = data->mNext;
 
     mBuff = (byte *)malloc(data->mCapacity);
-    if(mBuff == nullptr) {
-        Trigger(InitializeException,"alloc fail");
+    if (mBuff == nullptr) {
+        Trigger(InitializeException, "alloc fail");
     }
-    memcpy(mBuff,data->mBuff,mCapacity);
+    memcpy(mBuff, data->mBuff, mCapacity);
 }
 
 void _ByteRingArray::reset() {
     mSize = 0;
     mNext = 0;
-    memset(mBuff,0,mCapacity);
+    memset(mBuff, 0, mCapacity);
 }
 
 _ByteRingArray::~_ByteRingArray() {
-    if(mBuff != nullptr) {
+    if (mBuff != nullptr) {
         free(mBuff);
         mBuff = nullptr;
     }
 }
 
 bool _ByteRingArray::push(byte b) {
-    if(mSize == mCapacity) {
-        Trigger(ArrayIndexOutOfBoundsException,"Ring Array push full Array!!!");
+    if (mSize == mCapacity) {
+        Trigger(ArrayIndexOutOfBoundsException,
+                "Ring Array push full Array!!!");
     }
 
     mBuff[mNext] = b;
     mSize++;
-    if(mNext == (mCapacity - 1)) {
+    if (mNext == (mCapacity - 1)) {
         mNext = 0;
     } else {
         mNext++;
@@ -69,8 +70,9 @@ bool _ByteRingArray::push(byte b) {
 }
 
 byte _ByteRingArray::pop() {
-    if(mSize == 0) {
-        Trigger(ArrayIndexOutOfBoundsException,"Ring Array Pop Empty Array!!!");
+    if (mSize == 0) {
+        Trigger(ArrayIndexOutOfBoundsException,
+                "Ring Array Pop Empty Array!!!");
     }
 
     int start = getStartIndex();
@@ -80,37 +82,37 @@ byte _ByteRingArray::pop() {
 }
 
 bool _ByteRingArray::push(const ByteArray &data) {
-    if(data == nullptr) {
-        Trigger(IllegalArgumentException,"pop data is nullptr");
+    if (data == nullptr) {
+        Trigger(IllegalArgumentException, "pop data is nullptr");
     }
-    return push(data,0,data->size());  
+    return push(data, 0, data->size());
 }
 
-bool _ByteRingArray::push(const ByteArray &array,int start,int length) {
-    return push(array->toValue(),start,length);
+bool _ByteRingArray::push(const ByteArray &array, int start, int length) {
+    return push(array->toValue(), start, length);
 }
 
-bool _ByteRingArray::push(byte *array,int start,int length) {
-    if(length > (mCapacity - mSize)) {
-        Trigger(ArrayIndexOutOfBoundsException,"Ring Array Push Overflow!!!");
+bool _ByteRingArray::push(byte *array, int start, int length) {
+    if (length > (mCapacity - mSize)) {
+        Trigger(ArrayIndexOutOfBoundsException, "Ring Array Push Overflow!!!");
     }
 
-    if((mNext + length) < mCapacity) {
-        memcpy(mBuff + mNext,&array[start],length);
+    if ((mNext + length) < mCapacity) {
+        memcpy(mBuff + mNext, &array[start], length);
         mNext += length;
     } else {
         int firstCopyLen = (mCapacity - mNext);
-        memcpy(mBuff + mNext,&array[start],firstCopyLen);
+        memcpy(mBuff + mNext, &array[start], firstCopyLen);
         mNext += firstCopyLen;
 
         int secCopyLen = (length - firstCopyLen);
-        if(secCopyLen != 0) {
-            memcpy(mBuff,&array[start + firstCopyLen],secCopyLen);
+        if (secCopyLen != 0) {
+            memcpy(mBuff, &array[start + firstCopyLen], secCopyLen);
             mNext += secCopyLen;
         }
     }
 
-    if(mNext > mCapacity) {
+    if (mNext > mCapacity) {
         mNext = mNext - mCapacity;
     }
 
@@ -120,98 +122,78 @@ bool _ByteRingArray::push(byte *array,int start,int length) {
 }
 
 ByteArray _ByteRingArray::pop(int size) {
-    if(mSize <= 0 ) {
-        Trigger(ArrayIndexOutOfBoundsException,"pop size is 0");
+    if (mSize <= 0) {
+        Trigger(ArrayIndexOutOfBoundsException, "pop size is 0");
     }
 
-    if(mSize < size) {
-        Trigger(IllegalArgumentException,"pop size is illegal");
+    if (mSize < size) {
+        Trigger(IllegalArgumentException, "pop size is illegal");
     }
 
-    if(size == 0) {
+    if (size == 0) {
         return nullptr;
     }
 
     int start = getStartIndex();
     ByteArray result = nullptr;
-    if(start + size < mCapacity) {
-        result = createByteArray(&mBuff[start],size);
+    if (start + size < mCapacity) {
+        result = createByteArray(&mBuff[start], size);
     } else {
         result = createByteArray(size);
         int firstCopyLen = (mCapacity - start);
-        memcpy(result->toValue(),mBuff + start,firstCopyLen);
+        memcpy(result->toValue(), mBuff + start, firstCopyLen);
 
         int secondCopyLen = size - firstCopyLen;
-        memcpy(result->toValue() + firstCopyLen,mBuff,secondCopyLen);
+        memcpy(result->toValue() + firstCopyLen, mBuff, secondCopyLen);
     }
     mSize -= size;
     return result;
 }
 
-int _ByteRingArray::getNextIndex() {
-    return mNext;
-}
+int _ByteRingArray::getNextIndex() { return mNext; }
 
-void _ByteRingArray::setNextIndex(int n) {
-    mNext = n;
-}
+void _ByteRingArray::setNextIndex(int n) { mNext = n; }
 
-void _ByteRingArray::setSize(int s) {
-    mSize = s;
-}
+void _ByteRingArray::setSize(int s) { mSize = s; }
 
-int _ByteRingArray::getCapacity() {
-    return mCapacity;
-}
+int _ByteRingArray::getCapacity() { return mCapacity; }
 
 int _ByteRingArray::getStartIndex() {
     int start = mNext - mSize;
-    if(start < 0) {
+    if (start < 0) {
         start += mCapacity;
     }
 
     return start;
 }
 
-int _ByteRingArray::getEndIndex() {
-    return mNext;
-}
+int _ByteRingArray::getEndIndex() { return mNext; }
 
-byte _ByteRingArray::at(int m) {
-    return mBuff[m];
-}
+byte _ByteRingArray::at(int m) { return mBuff[m]; }
 
-ByteArray _ByteRingArray::popAll() {
-    return pop(mSize);
-}
+ByteArray _ByteRingArray::popAll() { return pop(mSize); }
 
-//for ByteRingArrayReader,include end
+// for ByteRingArrayReader,include end
 ByteArray _ByteRingArray::popTo(int index) {
     int interval = (mNext - index) - 1;
-    if(interval < 0) {
+    if (interval < 0) {
         interval += mCapacity;
     }
     return pop(mSize - interval);
 }
 
-int _ByteRingArray::getAvailDataSize() {
-    return mSize;
-}
+int _ByteRingArray::getAvailDataSize() { return mSize; }
 
-//just for test
+// just for test
 void _ByteRingArray::setStartIndex(int index) {
     int interval = (mNext - index);
-    if(interval < 0) {
+    if (interval < 0) {
         interval += mCapacity;
     }
 
     mSize -= interval;
 }
 
-void _ByteRingArray::setEndIndex(int index) {
-    mNext = index;
-}
+void _ByteRingArray::setEndIndex(int index) { mNext = index; }
 
-}
-
-
+} // namespace obotcha

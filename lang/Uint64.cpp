@@ -11,9 +11,9 @@
  */
 #include <algorithm>
 
-#include "Uint64.hpp"
 #include "InitializeException.hpp"
 #include "NullPointerException.hpp"
+#include "Uint64.hpp"
 
 namespace obotcha {
 
@@ -22,36 +22,24 @@ _Uint64::_Uint64() : val(0) {}
 _Uint64::_Uint64(uint64_t v) : val(v) {}
 
 _Uint64::_Uint64(const Uint64 &v) {
-    if(v == nullptr) {
-        Trigger(InitializeException,"Object is null");
+    if (v == nullptr) {
+        Trigger(InitializeException, "Object is null");
     }
-    
+
     val = v->val;
 }
-    
-uint64_t _Uint64::toValue() {
-    return val;
-}
 
-bool _Uint64::equals(const Uint64 &p) {
-    return val == p->val;
-}
+uint64_t _Uint64::toValue() { return val; }
 
-bool _Uint64::equals(uint64_t p) {
-    return val == p;
-}
+bool _Uint64::equals(const Uint64 &p) { return val == p->val; }
 
-bool _Uint64::equals(const _Uint64 *p) {
-    return val == p->val;
-}
+bool _Uint64::equals(uint64_t p) { return val == p; }
 
-void _Uint64::update(uint64_t v) {
-    val = v;
-}
+bool _Uint64::equals(const _Uint64 *p) { return val == p->val; }
 
-void _Uint64::update(const sp<_Uint64> &v) {
-    val = v->val;
-}
+void _Uint64::update(uint64_t v) { val = v; }
+
+void _Uint64::update(const sp<_Uint64> &v) { val = v->val; }
 
 sp<_String> _Uint64::toHexString() {
     return createString(_Number::toHexString(val));
@@ -78,7 +66,8 @@ sp<_Uint64> _Uint64::parseDecUint64(const sp<_String> &v) {
         String pa = v->trimAll();
         uint64_t value = _Number::parseDecNumber(pa->getStdString());
         return createUint64(value);
-    } catch(int e){}
+    } catch (int e) {
+    }
 
     return nullptr;
 }
@@ -88,8 +77,8 @@ sp<_Uint64> _Uint64::parseHexUint64(const sp<_String> &v) {
         String pa = v->trimAll();
         uint64_t value = _Number::parseHexNumber(pa->getStdString());
         return createUint64(value);
-    } catch(...) {
-        //nothing
+    } catch (...) {
+        // nothing
     }
 
     return nullptr;
@@ -100,8 +89,8 @@ sp<_Uint64> _Uint64::parseOctUint64(const sp<_String> &v) {
         String pa = v->trimAll();
         uint64_t value = _Number::parseOctNumber(pa->getStdString());
         return createUint64(value);
-    } catch(...) {
-        //nothing
+    } catch (...) {
+        // nothing
     }
 
     return nullptr;
@@ -112,22 +101,17 @@ sp<_Uint64> _Uint64::parseBinaryUint64(const sp<_String> &v) {
         String pa = v->trimAll();
         uint32_t value = _Number::parseBinaryNumber(pa->getStdString());
         return createUint64(value);
-    } catch(...) {
-        //nothing
+    } catch (...) {
+        // nothing
     }
 
     return nullptr;
 }
 
-sp<_String> _Uint64::className() {
-    return createString("Uint64");
-}
+sp<_String> _Uint64::className() { return createString("Uint64"); }
 
-uint64_t _Uint64::hashcode() {
-    return std::hash<uint64_t>{}(val);
-}
+uint64_t _Uint64::hashcode() { return std::hash<uint64_t>{}(val); }
 
-_Uint64::~_Uint64() {
-}
+_Uint64::~_Uint64() {}
 
-}
+} // namespace obotcha
