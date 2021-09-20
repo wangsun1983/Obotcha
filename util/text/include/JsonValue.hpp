@@ -471,50 +471,7 @@ public:
                 case st(Field)::FieldTypeObject: {
                         //create Objectt
                         sp<_Object> newObject = field->createObject();
-                        //auto reflectValue = field->getObjectValue();
-                        if(IsInstance(Integer,newObject)) {
-                            String value = jsonnode->getString();
-                            Integer data = Cast<Integer>(newObject);
-                            data->update(value->toBasicInt());
-                        } else if(IsInstance(Long,newObject)) {
-                            String value = jsonnode->getString();
-                            Long data = Cast<Long>(newObject);
-                            data->update(value->toBasicLong());
-                        } else if(IsInstance(Boolean,newObject)) {
-                            String value = jsonnode->getString();
-                            Boolean data = Cast<Boolean>(newObject);
-                            data->update(value->toBasicBool());
-                        } else if(IsInstance(Double,newObject)) {
-                            String value = jsonnode->getString();
-                            Double data = Cast<Double>(newObject);
-                            data->update(value->toBasicDouble());
-                        } else if(IsInstance(Float,newObject)) {
-                            String value = jsonnode->getString();
-                            Float data = Cast<Float>(newObject);
-                            data->update(value->toBasicFloat());
-                        } else if(IsInstance(Byte,newObject)) {
-                            String value = jsonnode->getString();
-                            Byte data = Cast<Byte>(newObject);
-                            data->update(value->toBasicByte());
-                        } else if(IsInstance(Uint8,newObject)) {
-                            String value = jsonnode->getString();
-                            Uint8 data = Cast<Uint8>(newObject);
-                            data->update(value->toBasicUint8());
-                        } else if(IsInstance(Uint16,newObject)) {
-                            String value = jsonnode->getString();
-                            Uint16 data = Cast<Uint16>(newObject);
-                            data->update(value->toBasicUint16());
-                        } else if(IsInstance(Uint32,newObject)) {
-                            String value = jsonnode->getString();
-                            Uint32 data = Cast<Uint32>(newObject);
-                            data->update(value->toBasicUint32());
-                        } else if(IsInstance(Uint64,newObject)) {
-                            String value = jsonnode->getString();
-                            Uint64 data = Cast<Uint64>(newObject);
-                            data->update(value->toBasicUint64());
-                        } else {
-                            jsonnode->reflectTo(newObject);
-                        }
+                        jsonnode->reflectTo(newObject);
                     }
                     break;
 

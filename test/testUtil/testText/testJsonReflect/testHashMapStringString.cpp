@@ -111,18 +111,18 @@ void testHashMapStringString() {
 
     while(1) {
       HashMap<String,String> map = createHashMap<String,String>();
-      JsonWriter writer = createJsonWriter("map_string_string_test3.json");
+      JsonWriter writer = createJsonWriter("./tmp/map_string_string_test3.json");
       JsonValue value = createJsonValue();
       value->importFrom(map);
       writer->write(value);
 
-      JsonReader reader = createJsonReader(createFile("map_string_string_test3.json"));
+      JsonReader reader = createJsonReader(createFile("./tmp/map_string_string_test3.json"));
       JsonValue value2 = reader->get();
 
-      HashMap<String,String>map2 = createHashMap<String,String>();
-      value2->reflectTo(map2);
+      //HashMap<String,String>map2 = createHashMap<String,String>();
+      //value2->reflectTo(map2);
 
-      if(map2->size() != 0) {
+      if(value2 != nullptr) {
         printf("---[JsonReflect HashMap String String Test case5] [FAILED]--- \n");
         break;
       }

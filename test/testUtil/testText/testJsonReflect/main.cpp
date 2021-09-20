@@ -39,30 +39,30 @@ int main() {
     //testImport();
 
     testMapList();
-    //testArrayListMap();
-    //testHashMapList();
-    //testHashMapUserdata();
-    //testHashMapUint8Uint8();
-    //testHashMapUint16Uint16();
-    //testHashMapUint32Uint32();
-    //testHashMapUint64Uint64();
-    //testHashMapByteByte();
-    //testHashMapLongLong();
-    //testHashMapIntegerInteger();
-    //testHashMapIntegerInteger();
-    //testArrayUserData();
-    //testArrayListFloat();
-    //testArrayListDouble();
-    //testArrayListLong();
+    testArrayListMap();
+    testHashMapList();
+    testHashMapUserdata();
+    testHashMapUint8Uint8();
+    testHashMapUint16Uint16();
+    testHashMapUint32Uint32();
+    testHashMapUint64Uint64();
+    testHashMapByteByte();
+    testHashMapLongLong();
+    testHashMapIntegerInteger();
+    testHashMapIntegerInteger();
+    testArrayUserData();
+    testArrayListFloat();
+    testArrayListDouble();
+    testArrayListLong();
 
-    //testArrayListUint8();
-    //testArrayListUint16();
-    //testArrayListUint32();
-    //testArrayListUint64();
+    testArrayListUint8();
+    testArrayListUint16();
+    testArrayListUint32();
+    testArrayListUint64();
 
-    //testArrayListInteger();
-    //testInnerClassReflect();
-    //testUserDataReflect();
-    //testHashMapStringString();
-    //testArrayListString();
+    testArrayListInteger();
+    testInnerClassReflect();
+    testUserDataReflect();
+    testHashMapStringString();
+    testArrayListString();
 }
