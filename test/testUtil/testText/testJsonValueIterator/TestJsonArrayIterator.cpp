@@ -62,5 +62,61 @@ int testJsonArrayIterator() {
       break;
     }
 
+    while(1) {
+      JsonReader reader = createJsonReader(createFile("booljson.json"));
+      JsonValue value = reader->get();
+      auto iterator = value->getIterator();
+      bool array[] = {true, false, true};
+
+      int index = 0;
+      while(iterator->hasValue()) {
+        auto str = iterator->getBoolean();
+        if(str->toValue() != array[index]) {
+          printf("---[JsonArrayIterator Test case5] [FAILED]--- \n");
+          break;
+        }
+        iterator->next();
+        index++;
+      }
+
+      if(index != 3){
+        printf("---[JsonArrayIterator Test case6] [FAILED]--- \n");
+        break;
+      }
+      break;
+    }
+
+    while(1) {
+      JsonReader reader = createJsonReader(createFile("object.json"));
+      JsonValue value = reader->get();
+      auto iterator = value->getIterator();
+      int val_array[] = {1, 2, 3};
+      std::string tag_value[] = {"a","b","c"};
+
+      int index = 0;
+      while(iterator->hasValue()) {
+        String tag  = iterator->getTag();
+        if(!tag->equals(tag_value[index])) {
+          printf("---[JsonArrayIterator Test case7] [FAILED]--- \n");
+          break;
+        }
+
+        Integer val = iterator->getInteger();
+        if(val->toValue() != val_array[index]) {
+          printf("---[JsonArrayIterator Test case8] [FAILED]--- \n");
+          break;
+        }
+
+        iterator->next();
+        index++;
+      }
+
+      if(index != 3){
+        printf("---[JsonArrayIterator Test case9] [FAILED]--- \n");
+        break;
+      }
+      break;
+    }
+
     printf("---[JsonArrayIterator Test case100] [OK]--- \n");
 }

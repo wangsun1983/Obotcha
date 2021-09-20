@@ -359,7 +359,11 @@ void _XmlValue::reflectToArrayList(Object obj) {
             data->update(value->getStringValue()->toBasicLong());
         } else if(IsInstance(Boolean,newObject)) {
             Boolean data = Cast<Boolean>(newObject);
-            data->update(value->getStringValue()->toBasicBool());
+            if(value->getStringValue()->toBasicInt() == 0) {
+                data->update(false);
+            } else {
+                data->update(true);
+            }
         } else if(IsInstance(Double,newObject)) {
             Double data = Cast<Double>(newObject);
             data->update(value->getStringValue()->toBasicDouble());
@@ -446,34 +450,34 @@ void _XmlValue::reflectToHashMap(Object obj) {
             Integer data = Cast<Integer>(pairValue);
             data->update(xmlValue->toBasicInt());
         } else if(IsInstance(Long,pairValue)) {
-            Long data = Cast<Long>(key);
+            Long data = Cast<Long>(pairValue);
             data->update(xmlValue->toBasicLong());
         } else if(IsInstance(Boolean,pairValue)) {
-            Boolean data = Cast<Boolean>(key);
+            Boolean data = Cast<Boolean>(pairValue);
             data->update(xmlValue->toBasicBool());
         } else if(IsInstance(Double,pairValue)) {
-            Double data = Cast<Double>(key);
+            Double data = Cast<Double>(pairValue);
             data->update(xmlValue->toBasicDouble());
         } else if(IsInstance(Float,pairValue)) {
-            Float data = Cast<Float>(key);
+            Float data = Cast<Float>(pairValue);
             data->update(xmlValue->toBasicFloat());
         } else if(IsInstance(Byte,pairValue)) {
-            Byte data = Cast<Byte>(key);
+            Byte data = Cast<Byte>(pairValue);
             data->update(xmlValue->toBasicByte());
         } else if(IsInstance(Uint8,pairValue)) {
-            Uint8 data = Cast<Uint8>(key);
+            Uint8 data = Cast<Uint8>(pairValue);
             data->update(xmlValue->toBasicUint8());
         } else if(IsInstance(Uint16,pairValue)) {
-            Uint16 data = Cast<Uint16>(key);
+            Uint16 data = Cast<Uint16>(pairValue);
             data->update(xmlValue->toBasicUint16());
         } else if(IsInstance(Uint32,pairValue)) {
-            Uint32 data = Cast<Uint32>(key);
+            Uint32 data = Cast<Uint32>(pairValue);
             data->update(xmlValue->toBasicUint32());
         } else if(IsInstance(Uint64,pairValue)) {
-            Uint64 data = Cast<Uint64>(key);
+            Uint64 data = Cast<Uint64>(pairValue);
             data->update(xmlValue->toBasicUint64());
         } else if(IsInstance(String,pairValue)) {
-            String data = Cast<String>(key);
+            String data = Cast<String>(pairValue);
             data->update(xmlValue->toChars());
         } else if(pairValue->__ReflectClassName()->equals("_ArrayList")) {
             xmlnode->reflectToArrayList(pairValue);
@@ -521,7 +525,11 @@ void _XmlValue::reflectTo(Object obj) {
 
             case st(Field)::FieldTypeBool:{
                     String value = node->getStringValue();
-                    field->setValue(value->toBasicBool());
+                    if(value->toBasicInt() > 0) {
+                        field->setValue(true);
+                    } else {
+                        field->setValue(false);
+                    }
                 }
                 break;
 
@@ -580,7 +588,11 @@ void _XmlValue::reflectTo(Object obj) {
                     } else if(IsInstance(Boolean,newObject)) {
                         String value = node->getStringValue();
                         Boolean data = Cast<Boolean>(newObject);
-                        data->update(value->toBasicBool());
+                        if(value->toBasicInt() == 0) {
+                            data->update(false);
+                        } else {
+                            data->update(true);
+                        }
                     } else if(IsInstance(Double,newObject)) {
                         String value = node->getStringValue();
                         Double data = Cast<Double>(newObject);
@@ -807,7 +819,7 @@ void _XmlValue::importFrom(Object value) {
                     refNode->updateValue(createString(data->toValue()));
                 } else if(IsInstance(Boolean,newObject)) {
                     Boolean data = Cast<Boolean>(newObject);
-                    refNode->updateValue(createString(data->toValue()));
+                    refNode->updateValue(createString((int)data->toValue()));
                 } else if(IsInstance(Double,newObject)) {
                     Double data = Cast<Double>(newObject);
                     refNode->updateValue(createString(data->toValue()));
@@ -859,7 +871,7 @@ void _XmlValue::importFrom(Object value) {
                         } else if(IsInstance(Boolean,newObject)) {
                             item = doc->newNode(st(Boolean)::className());
                             Boolean data = Cast<Boolean>(newObject);
-                            item->updateValue(createString(data->toValue()));
+                            item->updateValue(createString((int)data->toValue()));
                         } else if(IsInstance(Double,newObject)) {
                             item = doc->newNode(st(Double)::className());
                             Double data = Cast<Double>(newObject);

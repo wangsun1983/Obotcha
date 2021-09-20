@@ -59,7 +59,7 @@ int main() {
 
   if(!file->exists()) {
     file->createNewFile();
-      for(int i = 0;i<32;i++) {
+      for(int i = 0;i<128;i++) {
       FileOutputStream stream = createFileOutputStream(file);
       stream->open(st(OutputStream)::Append);
       String data = createString("");
@@ -70,7 +70,7 @@ int main() {
       stream->close();
     }
   }
-
+  
   MyHttpListener listener = createMyHttpListener();
   HttpServer server = createHttpServerBuilder()
                     ->setAddress(createInet4Address(1123))
@@ -78,14 +78,18 @@ int main() {
                     ->build();
   server->start();
   latch->await();
-
-
+  sleep(1);
 
   Md md5 = createMd();
   String base = md5->encrypt(createFile("data"));
 
   File tmpDir = createFile("./tmp");
   ArrayList<File> files = tmpDir->listFiles();
+  if(files->size() != 128 *16) {
+    printf("---TestHttpServer testConcurrentChunckFileServer test1 [FAILED]---,download file num is %d\n",files->size());
+    return 0;
+  }
+
   auto iter = files->getIterator();
   while(iter->hasValue()) {
     auto f = iter->getValue();
@@ -99,5 +103,5 @@ int main() {
   }
 
   printf("---TestHttpServer testConcurrentChunckFileServer test100 [OK]--- \n");
-  
+  return 0;
 }

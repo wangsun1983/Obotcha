@@ -30,7 +30,7 @@ float _Float::toValue() {
 sp<_Float> _Float::parse(sp<_String> s) {
     try {
         String pa = s->trimAll();
-        float v = _Number<float>::parseNumber(pa->getStdString());
+        float v = _Number<float>::parseNumber(pa->getStdString(),false);
         return createFloat(v);
     } catch(int e) {}
 

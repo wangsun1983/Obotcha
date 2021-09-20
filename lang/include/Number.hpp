@@ -16,7 +16,7 @@ class _String;
 
 DECLARE_TEMPLATE_CLASS(Number,1) {
 public:
-    static T parseNumber(std::string v) {
+    static T parseNumber(std::string v,bool check = true) {
         std::stringstream ss;
         ss<< v;
         T value;
@@ -24,7 +24,7 @@ public:
 
         std::string checkValue = toDecString(value);
 
-        if(checkValue.compare(v) == 0) {
+        if(!check || checkValue.compare(v) == 0) {
             return value;
         }
         throw(-1);

@@ -57,7 +57,7 @@ bool _Double::isEqual(double x,double y) {
 sp<_Double> _Double::parse(sp<_String> s) {
     try {
         String pa = s->trimAll();
-        double v = _Number<double>::parseNumber(pa->getStdString());
+        double v = _Number<double>::parseNumber(pa->getStdString(),false);
         return createDouble(v);
     } catch(int e) {}
 

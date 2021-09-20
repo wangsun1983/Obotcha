@@ -21,7 +21,7 @@
 using namespace obotcha;
 
 
-CountDownLatch latch = createCountDownLatch(1024);
+CountDownLatch latch = createCountDownLatch(32);
 
 DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
