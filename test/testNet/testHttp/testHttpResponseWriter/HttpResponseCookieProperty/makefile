@@ -1,5 +1,5 @@
-outlib = ../../../../../out/lib
-outtmp = ../../../../../out/tmp
+outlib = ../../out/lib
+outtmp = ../../out/tmp
 
 gcc = g++
 
@@ -28,17 +28,24 @@ cflags = -fpic \
 		-I ../../../../../external/uuid/include \
 		-g \
 		-std=c++14 \
+		-fsanitize=address\
+		-fno-omit-frame-pointer
 
 external = -lpthread \
 				-ldl \
 				../../../../../out/lib/libobotcha.so \
 
+sharelib = -Wl,-rpath=../../../../../out/lib/ \
+           -L ../../../../../out/lib/ \
+           -lcrypto \
+           -L ../../../../../out/lib/ \
+           -lssl \
 
 files =
 link =
-libname	= testHttpUrlConnection
+libname	= testHttpServer
 
 everything : $(libname)
 
 $(libname): $(link)
-	g++ *.cpp $(cflags) -o mytest $(external)
+	clang++ *.cpp $(cflags) -o mytest $(external)

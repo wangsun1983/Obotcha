@@ -78,8 +78,9 @@ HttpHeader _HttpHeaderParser::doParse() {
             if (v == 0x20) { // ' '
                 ByteArray urlcontent = mReader->pop();
                 String url_str =
-                    createString((const char *)urlcontent->toValue(), 0,
-                                 urlcontent->size() - 1);
+                    createString((const char *)urlcontent->toValue(),0,
+                                 urlcontent->size());
+                
                 HttpUrl url = st(HttpUrlParser)::parseUrl(url_str);
                 mHeader->setUrl(url);
                 mStatus = Version;
@@ -140,7 +141,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                 ByteArray key = mReader->pop();
 
                 mKey = createString((const char *)key->toValue(), 0,
-                                    key->size() - 1)
+                                    key->size())
                            ->toLowerCase();
                 mStatus = ContentValue;
             } else if (v == LF[0]) {

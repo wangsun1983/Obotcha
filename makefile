@@ -35,7 +35,9 @@ cflags = -fpic \
 		-g \
 
 cppflags=$(cflags) \
-		 -std=c++14
+		 -std=c++14 \
+		 -fsanitize=address \
+		 -fno-omit-frame-pointer
 
 #define strict mode
 #STRICT_MODE = yes

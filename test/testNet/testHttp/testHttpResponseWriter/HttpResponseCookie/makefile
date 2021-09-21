@@ -1,5 +1,5 @@
-outlib = ../../../../../out/lib
-outtmp = ../../../../../out/tmp
+outlib = ../../out/lib
+outtmp = ../../out/tmp
 
 gcc = g++
 
@@ -36,9 +36,9 @@ external = -lpthread \
 
 files =
 link =
-libname	= testHttpUrlConnection
+libname	= testHttpServer
 
 everything : $(libname)
 
 $(libname): $(link)
-	g++ *.cpp $(cflags) -o mytest $(external)
+	clang++ *.cpp $(cflags) -o mytest $(external)
