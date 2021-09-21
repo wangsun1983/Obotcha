@@ -4,18 +4,15 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "ByteRingArray.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(ByteRingArrayReader) {
 
-public:
-    enum ByteRingArrayReadStatus {
-        Continue = 0,
-        NoContent
-    };
+  public:
+    enum ByteRingArrayReadStatus { Continue = 0, NoContent };
 
     _ByteRingArrayReader(ByteRingArray);
 
@@ -32,13 +29,9 @@ public:
     int getReadableLength();
 
     void reset();
-    
-private:
-    enum ReadMark {
-        Idle,
-        Partial,
-        Complete
-    };
+
+  private:
+    enum ReadMark { Idle, Partial, Complete };
 
     ByteRingArray mBuff;
 
@@ -47,5 +40,5 @@ private:
     int mCursor;
 };
 
-}
+} // namespace obotcha
 #endif

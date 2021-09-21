@@ -1,22 +1,22 @@
 #ifndef __OBOTCHA_XML_DOCUMENT_H__
 #define __OBOTCHA_XML_DOCUMENT_H__
 
-#include "iniparser.h"
 #include "dictionary.h"
+#include "iniparser.h"
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "String.hpp"
 #include "ArrayList.hpp"
-#include "Log.hpp"
 #include "Field.hpp"
+#include "Log.hpp"
+#include "Object.hpp"
+#include "String.hpp"
+#include "StrongPointer.hpp"
 #include "XmlValue.hpp"
 
+#include "OStdInstanceOf.hpp"
+#include "TransformException.hpp"
 #include "rapidxml.hpp"
 #include "rapidxml_print.hpp"
 #include "rapidxml_utils.hpp"
-#include "OStdInstanceOf.hpp"
-#include "TransformException.hpp"
 
 using namespace rapidxml;
 
@@ -26,21 +26,20 @@ class _XmlValue;
 class _XmlAttribute;
 
 DECLARE_CLASS(XmlDocument) {
-
 public:
     friend class _XmlValue;
     friend class _XmlReader;
     friend class _XmlAttribute;
 
-    _XmlDocument(String path,long size);
+    _XmlDocument(String path, long size);
 
     _XmlDocument(String content);
 
     _XmlDocument();
 
     sp<_XmlValue> newRootNode(String rootNode);
-    
-    sp<_XmlValue> newNode(String name,String value);
+
+    sp<_XmlValue> newNode(String name, String value);
 
     sp<_XmlValue> newNode(String name);
 
@@ -48,14 +47,12 @@ public:
 
     String toString();
 
-    template<typename T>
-    void reflectTo(T value) {
+    template <typename T> void reflectTo(T value) {
         sp<_XmlValue> root = getRootNode();
         root->reflectTo(value);
     }
-    
-    template<typename T>
-    void importFrom(T value) {
+
+    template <typename T> void importFrom(T value) {
         String name = value->__ReflectClassName();
         sp<_XmlValue> root = newRootNode(name);
         root->importFrom(value);
@@ -69,7 +66,6 @@ private:
     long mFileSize;
 };
 
-}
-
+} // namespace obotcha
 
 #endif

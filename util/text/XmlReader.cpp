@@ -1,7 +1,7 @@
 #include "XmlReader.hpp"
-#include "XmlValue.hpp"
-#include "XmlDocument.hpp"
 #include "FileInputStream.hpp"
+#include "XmlDocument.hpp"
+#include "XmlValue.hpp"
 
 #include "rapidxml_utils.hpp"
 
@@ -13,11 +13,9 @@ _XmlReader::_XmlReader(String content) {
 
 _XmlReader::_XmlReader(File file) {
     xmlfile = file;
-    mDocument = createXmlDocument(file->getAbsolutePath(),file->length());
+    mDocument = createXmlDocument(file->getAbsolutePath(), file->length());
 }
 
-sp<_XmlDocument> _XmlReader::get() {
-    return mDocument;
-}
+sp<_XmlDocument> _XmlReader::get() { return mDocument; }
 
-}
+} // namespace obotcha

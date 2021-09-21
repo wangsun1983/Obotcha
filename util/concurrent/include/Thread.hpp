@@ -1,21 +1,21 @@
 #ifndef __OBOTCHA_THREAD_H__
 #define __OBOTCHA_THREAD_H__
 
-#include <pthread.h>
-#include <map>
 #include <atomic>
 #include <cstdint>
 #include <linux/sched.h>
+#include <map>
+#include <pthread.h>
 #include <thread>
 
+#include "AtomicInteger.hpp"
+#include "Condition.hpp"
+#include "InterruptedException.hpp"
 #include "Object.hpp"
 #include "Runnable.hpp"
-#include "StrongPointer.hpp"
 #include "String.hpp"
+#include "StrongPointer.hpp"
 #include "ThreadLocal.hpp"
-#include "AtomicInteger.hpp"
-#include "InterruptedException.hpp"
-#include "Condition.hpp"
 
 namespace obotcha {
 
@@ -23,25 +23,22 @@ class _Thread;
 
 DECLARE_CLASS(Thread) {
 
-public:
-    //friend void doThreadExit(sp<Thread> thread);
+  public:
+    // friend void doThreadExit(sp<Thread> thread);
     _Thread();
-    
-    template<typename X>
-	_Thread(sp<X> run) {
-        threadInit(nullptr,run);
+
+    template <typename X> _Thread(sp<X> run) { threadInit(nullptr, run); }
+
+    // We should not use C++ reference in Lambda function.
+    // The count of pointer will not be increased if we pass
+    // param by reference .
+    template <class Function, class... Args>
+    _Thread(Function && f, Args && ... args) : _Thread() {
+        mRunnable = createLambdaRunnable(f, args...);
     }
 
-    //We should not use C++ reference in Lambda function.
-    //The count of pointer will not be increased if we pass
-    //param by reference .
-    template< class Function, class... Args >
-    _Thread( Function&& f, Args&&... args ):_Thread() {
-        mRunnable = createLambdaRunnable(f,args...);
-    }
+    int start();
 
-	int start();
-	
     int join(long millseconds = 0);
 
     int getStatus();
@@ -96,15 +93,15 @@ public:
     };
 
     enum SchedType {
-        Other = SCHED_NORMAL, //SCHED_NORMAL 0
-        Fifo = SCHED_FIFO,  //SCHED_FIFO 1
-        RR = SCHED_RR, //SCHED_RR 2
+        Other = SCHED_NORMAL, // SCHED_NORMAL 0
+        Fifo = SCHED_FIFO,    // SCHED_FIFO 1
+        RR = SCHED_RR,        // SCHED_RR 2
     };
 
     enum ThreadStatus {
         NotStart = 1,
         Idle,
-        WaitingStart, //for lambda
+        WaitingStart, // for lambda
         Running,
         Interrupting,
         Complete,
@@ -113,24 +110,23 @@ public:
 
     ~_Thread();
 
-protected:
+  protected:
     pthread_t mPthread;
-   
-private:
 
-    static void* localRun(void *th);
+  private:
+    static void *localRun(void *th);
     static void doThreadExit(_Thread *);
-    
+
     bool isRunning();
-    
+
     Runnable mRunnable;
 
     pthread_attr_t mThreadAttr;
 
     String mName;
-    
+
     mutable volatile int mStatus;
-    
+
     static String DefaultThreadName;
 
     Condition mSleepCondition;
@@ -140,8 +136,8 @@ private:
     Condition mJoinCondition;
 
     void threadSleep(unsigned long millseconds);
-    void threadInit(String name,Runnable run);
+    void threadInit(String name, Runnable run);
 };
 
-}
+} // namespace obotcha
 #endif

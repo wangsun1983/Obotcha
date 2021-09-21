@@ -1,19 +1,18 @@
 #ifndef __OBOTCHA_FIELD_HPP__
 #define __OBOTCHA_FIELD_HPP__
 
-#include <vector>
-#include <functional>
-#include "Object.hpp"
-#include "String.hpp"
-#include "ByteArray.hpp"
 #include "ArrayList.hpp"
+#include "ByteArray.hpp"
 #include "HashMap.hpp"
 #include "KeyValuePair.hpp"
+#include "Object.hpp"
+#include "String.hpp"
+#include <functional>
+#include <vector>
 
 namespace obotcha {
 
-template<typename T>
-class _FieldContent;
+template <typename T> class _FieldContent;
 
 DECLARE_CLASS(Field) {
 public:
@@ -23,21 +22,21 @@ public:
         FieldTypeDouble,
         FieldTypeFloat,
         FieldTypeLong,
-        FieldTypeString, 
+        FieldTypeString,
         FieldTypeUint16,
         FieldTypeUint32,
         FieldTypeUint64,
         FieldTypeBool,
-        FieldTypeVector,//??
+        FieldTypeVector, //??
         FieldTypeArrayList,
         FieldTypeHashMap,
         FieldTypeObject,
         FieldTypeUnKnow,
     };
 
-    //wangsl
+    // wangsl
     static const int FieldTypeUint8 = FieldTypeByte;
-    
+
     int TypeOf(int v);
     int TypeOf(byte v);
     int TypeOf(double v);
@@ -49,38 +48,30 @@ public:
     int TypeOf(uint64_t v);
     int TypeOf(String v);
 
-    template<typename T>
-    int TypeOf(std::vector<T> v) {
+    template <typename T> int TypeOf(std::vector<T> v) {
         return FieldTypeVector;
     }
 
-    template<typename T>
-    int TypeOf(ArrayList<T> v) {
+    template <typename T> int TypeOf(ArrayList<T> v) {
         return FieldTypeArrayList;
     }
 
-    template<typename T,typename U>
-    int TypeOf(HashMap<T,U> v) {
+    template <typename T, typename U> int TypeOf(HashMap<T, U> v) {
         return FieldTypeHashMap;
     }
 
-    template<typename T>
-    int TypeOf(T v) {
-        return FieldTypeObject;
-    }
+    template <typename T> int TypeOf(T v) { return FieldTypeObject; }
 
-    template<typename T>
-    int TypenameOf(std::vector<T> v) {
+    template <typename T> int TypenameOf(std::vector<T> v) {
         T t;
         return TypeOf(t);
     }
 
-    template<typename T>
-    int TypenameOf(ArrayList<T> v) {
+    template <typename T> int TypenameOf(ArrayList<T> v) {
         T t;
         return TypeOf(t);
     }
-    
+
     String getName();
 
     int getType();
@@ -92,10 +83,10 @@ public:
     void setType(int);
 
     void setId(int);
-    
-    void setReflectObject(_Object *obj);
 
-    //reflect filed set function
+    void setReflectObject(_Object * obj);
+
+    // reflect filed set function
     void setValue(int);
     void setValue(long);
     void setValue(uint8_t);
@@ -108,7 +99,7 @@ public:
     void setValue(String value);
     void setValue(bool);
 
-    //reflect filed get function
+    // reflect filed get function
     int getIntValue();
     byte getByteValue();
     double getDoubleValue();
@@ -125,45 +116,44 @@ public:
     int getContainerSize();
     sp<_Object> getListItemObject(int);
 
-    //reflect filed create function
+    // reflect filed create function
     sp<_Object> createObject();
     sp<_Object> createListItemObject();
     void addListItemObject(sp<_Object>);
 
-    //hashmap
-    sp<_KeyValuePair<sp<_Object>,sp<_Object>>> createMapItemObject();
-    sp<_ArrayList<sp<_KeyValuePair<sp<_Object>,sp<_Object>>>>> getMapItemObjects();
-    void addMapItemObject(sp<_Object>,sp<_Object>);
+    // hashmap
+    sp<_KeyValuePair<sp<_Object>, sp<_Object>>> createMapItemObject();
+    sp<_ArrayList<sp<_KeyValuePair<sp<_Object>, sp<_Object>>>>>
+    getMapItemObjects();
+    void addMapItemObject(sp<_Object>, sp<_Object>);
 
-    //std::function<void()> createfunc;
+    // std::function<void()> createfunc;
 private:
     int type;
     String name;
     int id;
     _Object *object;
 
-    //do not use
-    void __setFieldIntValue(std::string,int){}
-    void __setFieldByteValue(std::string,uint8_t){}
-    void __setFieldDoubleValue(std::string,double){}
-    void __setFieldFloatValue(std::string,float){}
-    void __setFieldUint8Value(std::string,uint8_t){}
-    void __setFieldUint16Value(std::string,uint16_t){}
-    void __setFieldUint32Value(std::string,uint32_t){}
-    void __setFieldUint64Value(std::string,uint64_t){}
-    void __setFieldObjectValue(std::string,sp<_Object>){}
-    void __setFieldStringValue(std::string name,std::string value){}
-    void __setFieldBoolValue(std::string name,bool){}
+    // do not use
+    void __setFieldIntValue(std::string, int) {}
+    void __setFieldByteValue(std::string, uint8_t) {}
+    void __setFieldDoubleValue(std::string, double) {}
+    void __setFieldFloatValue(std::string, float) {}
+    void __setFieldUint8Value(std::string, uint8_t) {}
+    void __setFieldUint16Value(std::string, uint16_t) {}
+    void __setFieldUint32Value(std::string, uint32_t) {}
+    void __setFieldUint64Value(std::string, uint64_t) {}
+    void __setFieldObjectValue(std::string, sp<_Object>) {}
+    void __setFieldStringValue(std::string name, std::string value) {}
+    void __setFieldBoolValue(std::string name, bool) {}
 };
 
-DECLARE_TEMPLATE_CLASS(FieldContent,1) IMPLEMENTS(Field)  {
-public:    
+DECLARE_TEMPLATE_CLASS(FieldContent, 1) IMPLEMENTS(Field) {
+public:
     std::function<void(T)> setfunc;
 
-    _FieldContent(std::function<void(T)> set) {
-        setfunc = set;
-    }
-};    
+    _FieldContent(std::function<void(T)> set) { setfunc = set; }
+};
 
 DECLARE_CLASS(FieldContentValue) {
 public:
@@ -179,51 +169,30 @@ public:
     String stringValue;
     _Object *objectValue;
 
-    void set(long v) {
-        longValue = v;
-    }
+    void set(long v) { longValue = v; }
 
-    void set(int v) {
-        intValue = v;
-    }
+    void set(int v) { intValue = v; }
 
-    void set(double v) {
-        doubleValue = v;
-    }
+    void set(double v) { doubleValue = v; }
 
-    void set(bool v) {
-        boolValue = v;
-    }
+    void set(bool v) { boolValue = v; }
 
-    void set(float v) {
-        floatValue = v;
-    }
+    void set(float v) { floatValue = v; }
 
-    void set(uint8_t v) {
-        uint8Value = v;
-    }
+    void set(uint8_t v) { uint8Value = v; }
 
-    void set(uint16_t v) {
-        uint16Value = v;
-    }
+    void set(uint16_t v) { uint16Value = v; }
 
-    void set(uint32_t v) {
-        uint32Value = v;
-    }
+    void set(uint32_t v) { uint32Value = v; }
 
-    void set(uint64_t v) {
-        uint64Value = v;
-    }
+    void set(uint64_t v) { uint64Value = v; }
 
-    void set(String v) {
-        stringValue = v;
-    }
+    void set(String v) { stringValue = v; }
 
-    template<typename T>
-    void set(sp<T> v) {
+    template <typename T> void set(sp<T> v) {
         objectValue = (_Object *)v.get_pointer();
     }
 };
 
-}
+} // namespace obotcha
 #endif

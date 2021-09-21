@@ -2,38 +2,38 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "Socket.hpp"
-#include "SocksSocketImpl.hpp"
 #include "DatagramSocketImpl.hpp"
-#include "LocalSocketImpl.hpp"
 #include "InitializeException.hpp"
+#include "LocalSocketImpl.hpp"
+#include "Socket.hpp"
 #include "SocketInputStream.hpp"
 #include "SocketOutputStream.hpp"
+#include "SocksSocketImpl.hpp"
 
 namespace obotcha {
 
-int _Socket::DefaultBufferSize = 1024*4;
+int _Socket::DefaultBufferSize = 1024 * 4;
 
-_Socket::_Socket(int v,InetAddress addr,SocketOption option) {
+_Socket::_Socket(int v, InetAddress addr, SocketOption option) {
     mInput = nullptr;
     mOutput = nullptr;
     type = v;
-    
-    switch(v) {
-        case Tcp:
-            mSock = createSocksSocketImpl(addr,option);
+
+    switch (v) {
+    case Tcp:
+        mSock = createSocksSocketImpl(addr, option);
         return;
 
-        case Udp:
-            mSock = createDatagramSocketImpl(addr,option);
+    case Udp:
+        mSock = createDatagramSocketImpl(addr, option);
         return;
 
-        case Local:
-            mSock = createLocalSocketImpl(addr,option);
+    case Local:
+        mSock = createLocalSocketImpl(addr, option);
         return;
     }
 
-    Trigger(InitializeException,"ivalid type");
+    Trigger(InitializeException, "ivalid type");
 }
 
 _Socket::_Socket(FileDescriptor descriptor) {
@@ -49,39 +49,27 @@ void _Socket::setAsync(bool async) {
     mInput = nullptr;
 }
 
-bool _Socket::isAsync() {
-    return mSock->getFileDescriptor()->isAsync();
-}
+bool _Socket::isAsync() { return mSock->getFileDescriptor()->isAsync(); }
 
-void _Socket::setInetAddress(InetAddress addr) {
-    mSock->setInetAddress(addr);
-}
+void _Socket::setInetAddress(InetAddress addr) { mSock->setInetAddress(addr); }
 
-InetAddress _Socket::getInetAddress() {
-    return mSock->getInetAddress();
-}
+InetAddress _Socket::getInetAddress() { return mSock->getInetAddress(); }
 
-void _Socket::setType(int type) {
-    this->type = type;
-}
+void _Socket::setType(int type) { this->type = type; }
 
-int _Socket::connect() {
-    return mSock->connect();
-}
+int _Socket::connect() { return mSock->connect(); }
 
-int _Socket::bind() {
-    return mSock->bind();
-}
+int _Socket::bind() { return mSock->bind(); }
 
 void _Socket::close() {
     mSock->close();
 
-    if(mOutput != nullptr) {
+    if (mOutput != nullptr) {
         mOutput->close();
         mOutput = nullptr;
     }
 
-    if(mInput != nullptr) {
+    if (mInput != nullptr) {
         mInput->close();
         mOutput = nullptr;
     }
@@ -89,7 +77,7 @@ void _Socket::close() {
 
 bool _Socket::isClosed() {
     FileDescriptor fd = mSock->getFileDescriptor();
-    if(fd != nullptr) {
+    if (fd != nullptr) {
         return fd->isClosed();
     }
 
@@ -97,14 +85,14 @@ bool _Socket::isClosed() {
 }
 
 InputStream _Socket::getInputStream() {
-    if(mInput == nullptr) {
+    if (mInput == nullptr) {
         mInput = createSocketInputStream(AutoClone(this));
     }
     return mInput;
 }
 
 OutputStream _Socket::getOutputStream() {
-    if(mOutput == nullptr) {
+    if (mOutput == nullptr) {
         mOutput = createSocketOutputStream(AutoClone(this));
     }
     return mOutput;
@@ -114,8 +102,6 @@ FileDescriptor _Socket::getFileDescriptor() {
     return mSock->getFileDescriptor();
 }
 
-int _Socket::getType() {
-    return type;
-}
+int _Socket::getType() { return type; }
 
-}
+} // namespace obotcha

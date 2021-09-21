@@ -4,17 +4,17 @@
 #include <pthread.h>
 #include <sys/time.h>
 
-#include "StrongPointer.hpp"
+#include "Lock.hpp"
 #include "Object.hpp"
 #include "String.hpp"
-#include "Lock.hpp"
+#include "StrongPointer.hpp"
 
 namespace obotcha {
 
 class _ReadWriteLock;
 
-DECLARE_CLASS(ReadLock) IMPLEMENTS(Lock){
-public:
+DECLARE_CLASS(ReadLock) IMPLEMENTS(Lock) {
+  public:
     friend class _ReadWriteLock;
 
     int lock();
@@ -27,16 +27,16 @@ public:
 
     String getName();
 
-private:
-    _ReadLock(sp<_ReadWriteLock>,String);
+  private:
+    _ReadLock(sp<_ReadWriteLock>, String);
 
     sp<_ReadWriteLock> rwlock;
 
     String mName;
 };
 
-DECLARE_CLASS(WriteLock) IMPLEMENTS(Lock){
-public:
+DECLARE_CLASS(WriteLock) IMPLEMENTS(Lock) {
+  public:
     friend class _ReadWriteLock;
 
     int lock();
@@ -49,8 +49,8 @@ public:
 
     String getName();
 
-private:
-    _WriteLock(sp<_ReadWriteLock>,String);
+  private:
+    _WriteLock(sp<_ReadWriteLock>, String);
 
     sp<_ReadWriteLock> rwlock;
 
@@ -59,7 +59,7 @@ private:
 
 DECLARE_CLASS(ReadWriteLock) {
 
-public:
+  public:
     friend class _WriteLock;
 
     friend class _ReadLock;
@@ -76,11 +76,11 @@ public:
 
     ~_ReadWriteLock();
 
-private:
+  private:
     pthread_rwlock_t rwlock;
 
     String mName;
 };
 
-}
+} // namespace obotcha
 #endif

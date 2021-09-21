@@ -1,17 +1,16 @@
 #ifndef __OBOTCHA_TEXT_CONTENT_H__
 #define __OBOTCHA_TEXT_CONTENT_H__
 
-#include "StrongPointer.hpp"
+#include "JsonValue.hpp"
 #include "Object.hpp"
 #include "String.hpp"
-#include "JsonValue.hpp"
+#include "StrongPointer.hpp"
 
 namespace obotcha {
 
 class _YamlReader;
 
 DECLARE_CLASS(TextContent) {
-
 public:
     _TextContent(const Integer &v);
     _TextContent(const Boolean &v);
@@ -34,8 +33,7 @@ public:
     _TextContent(uint32_t);
     _TextContent(uint64_t);
 
-    template<typename T> 
-    _TextContent(sp<T> value) {
+    template <typename T> _TextContent(sp<T> value) {
         JsonValue jvalue = createJsonValue();
         jvalue->importFrom(value);
         mContent = jvalue->toString();
@@ -47,6 +45,6 @@ private:
     String mContent;
 };
 
-}
+} // namespace obotcha
 
 #endif

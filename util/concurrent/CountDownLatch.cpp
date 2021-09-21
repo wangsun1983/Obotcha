@@ -1,13 +1,13 @@
 #include "CountDownLatch.hpp"
 #include "Error.hpp"
-#include "Thread.hpp"
 #include "InitializeException.hpp"
+#include "Thread.hpp"
 
 namespace obotcha {
 
 _CountDownLatch::_CountDownLatch(int v) {
-    if(v <= 0) {
-        Trigger(InitializeException,"count down latch is illegal");
+    if (v <= 0) {
+        Trigger(InitializeException, "count down latch is illegal");
     }
 
     count = v;
@@ -17,14 +17,14 @@ _CountDownLatch::_CountDownLatch(int v) {
 
 int _CountDownLatch::countDown() {
     AutoLock l(waitMutex);
-    
-    if(count == 0) {
+
+    if (count == 0) {
         return -AlreadyDestroy;
     }
 
     count--;
 
-    if(count == 0) {
+    if (count == 0) {
         waitCond->notifyAll();
     }
 
@@ -38,11 +38,11 @@ int _CountDownLatch::getCount() {
 
 int _CountDownLatch::await(long v) {
     AutoLock l(waitMutex);
-    if(count == 0) {
+    if (count == 0) {
         return -AlreadyDestroy;
     }
-    
-    return waitCond->wait(waitMutex,v);
+
+    return waitCond->wait(waitMutex, v);
 }
 
-}
+} // namespace obotcha

@@ -26,31 +26,29 @@ _Barrier::_Barrier(int n) {
 
 int _Barrier::await(long v) {
     AutoLock l(mutex);
-    if(mBarrierNums == 0) {
+    if (mBarrierNums == 0) {
         return -InvalidStatus;
     }
 
     mBarrierNums--;
-    if(mBarrierNums == 0) {
+    if (mBarrierNums == 0) {
         cond->notifyAll();
     } else {
-        int ret = cond->wait(mutex,v);
-        if(isDestroy) {
-            Trigger(InterruptedException,"barrier destroyed");
+        int ret = cond->wait(mutex, v);
+        if (isDestroy) {
+            Trigger(InterruptedException, "barrier destroyed");
         }
     }
 
     return 0;
 }
 
-int _Barrier::await() {
-    return await(0);
-}
+int _Barrier::await() { return await(0); }
 
 int _Barrier::getWaitNums() {
     AutoLock l(mutex);
     return mBarrierNums;
-} 
+}
 
 bool _Barrier::destroy() {
     AutoLock l(mutex);
@@ -58,4 +56,4 @@ bool _Barrier::destroy() {
     return true;
 }
 
-}
+} // namespace obotcha

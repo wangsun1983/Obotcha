@@ -1,6 +1,7 @@
 /**
  * @file ExecutorTask.cpp
- * @brief A cancellable asynchronous computation.  This class provides a base implementation of Future
+ * @brief A cancellable asynchronous computation.  This class provides a base
+ * implementation of Future
  * @details none
  * @mainpage none
  * @author sunli.wang
@@ -14,7 +15,6 @@
 #include "AutoLock.hpp"
 #include "TaskResult.hpp"
 
-
 namespace obotcha {
 
 _ExecutorTask::_ExecutorTask(Runnable r) {
@@ -26,26 +26,24 @@ _ExecutorTask::_ExecutorTask(Runnable r) {
     mStatus = Waiting;
 }
 
-_ExecutorTask::~_ExecutorTask() {
-    this->mRunnable = nullptr;
-}
-    
+_ExecutorTask::~_ExecutorTask() { this->mRunnable = nullptr; }
+
 int _ExecutorTask::wait(long interval) {
     AutoLock l(mMutex);
-    if(mStatus == Complete || mStatus == Cancel) {
+    if (mStatus == Complete || mStatus == Cancel) {
         return -AlreadyComplete;
     }
-    return mCompleteCond->wait(mMutex,interval);
+    return mCompleteCond->wait(mMutex, interval);
 }
 
 void _ExecutorTask::cancel() {
     AutoLock l(mMutex);
-    if(mStatus == Cancel || mStatus == Complete || mStatus == Running) {
+    if (mStatus == Cancel || mStatus == Complete || mStatus == Running) {
         return;
     }
-    
+
     mStatus = Cancel;
-    if(mRunnable != nullptr) {
+    if (mRunnable != nullptr) {
         mRunnable->onInterrupt();
     }
 
@@ -61,7 +59,7 @@ int _ExecutorTask::getStatus() {
 void _ExecutorTask::execute() {
     {
         AutoLock l(mMutex);
-        if(mStatus == Complete || mStatus == Cancel) {
+        if (mStatus == Complete || mStatus == Cancel) {
             return;
         }
 
@@ -70,7 +68,7 @@ void _ExecutorTask::execute() {
 
     st(TaskResult)::addTask(AutoClone(this));
 
-    if(mRunnable != nullptr) {
+    if (mRunnable != nullptr) {
         mRunnable->run();
     }
 
@@ -83,41 +81,22 @@ void _ExecutorTask::execute() {
     }
 }
 
-Runnable _ExecutorTask::getRunnable() {
-    return mRunnable;
-}
+Runnable _ExecutorTask::getRunnable() { return mRunnable; }
 
-void _ExecutorTask::setResult(int v) {
-    mResult = createInteger(v);
-}
+void _ExecutorTask::setResult(int v) { mResult = createInteger(v); }
 
-void _ExecutorTask::setResult(byte v) {
-    mResult = createByte(v);
-}
+void _ExecutorTask::setResult(byte v) { mResult = createByte(v); }
 
-void _ExecutorTask::setResult(double v) {
-    mResult = createDouble(v);
-}
+void _ExecutorTask::setResult(double v) { mResult = createDouble(v); }
 
-void _ExecutorTask::setResult(bool v) {
-    mResult = createBoolean(v);
-}
+void _ExecutorTask::setResult(bool v) { mResult = createBoolean(v); }
 
-void _ExecutorTask::setResult(long v) {
-    mResult = createLong(v);
-}
+void _ExecutorTask::setResult(long v) { mResult = createLong(v); }
 
-void _ExecutorTask::setResult(uint16_t v) {
-    mResult = createUint16(v);
-}
+void _ExecutorTask::setResult(uint16_t v) { mResult = createUint16(v); }
 
-void _ExecutorTask::setResult(uint32_t v) {
-    mResult = createUint32(v);
-}
+void _ExecutorTask::setResult(uint32_t v) { mResult = createUint32(v); }
 
-void _ExecutorTask::setResult(uint64_t v) {
-    mResult = createUint64(v);
-}
+void _ExecutorTask::setResult(uint64_t v) { mResult = createUint64(v); }
 
-
-}
+} // namespace obotcha

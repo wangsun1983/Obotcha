@@ -1,13 +1,13 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "ArrayList.hpp"
-#include "HttpHeader.hpp"
-#include "HttpPacket.hpp"
-#include "HttpMethod.hpp"
 #include "ByteArrayWriter.hpp"
+#include "HttpHeader.hpp"
+#include "HttpMethod.hpp"
+#include "HttpPacket.hpp"
 #include "HttpResponse.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
@@ -16,21 +16,13 @@ _HttpPacket::_HttpPacket() {
     mEntity = createHttpEntity();
 }
 
-void _HttpPacket::setHeader(HttpHeader h) {
-    mHeader = h;
-}
+void _HttpPacket::setHeader(HttpHeader h) { mHeader = h; }
 
-HttpHeader _HttpPacket::getHeader() {
-    return mHeader;
-}
+HttpHeader _HttpPacket::getHeader() { return mHeader; }
 
-HttpEntity _HttpPacket::getEntity() {
-    return mEntity;   
-}
-    
-void _HttpPacket::setEntity(HttpEntity entity) {
-    mEntity = entity;
-}
+HttpEntity _HttpPacket::getEntity() { return mEntity; }
+
+void _HttpPacket::setEntity(HttpEntity entity) { mEntity = entity; }
 
 void _HttpPacket::dump() {
 #if 0    
@@ -64,5 +56,4 @@ void _HttpPacket::dump() {
 #endif
 }
 
-}
-
+} // namespace obotcha

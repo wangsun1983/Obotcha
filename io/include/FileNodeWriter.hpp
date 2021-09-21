@@ -1,22 +1,22 @@
 #ifndef __OBOTCHA_FILE_NODE_WRITER_HPP__
 #define __OBOTCHA_FILE_NODE_WRITER_HPP__
 
-#include <sys/stat.h>
-#include <unistd.h>    
-#include <sys/types.h>
 #include <fstream>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "ArrayList.hpp"
 #include "ByteArray.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(FileNodeWriter) {
-public:
+  public:
     _FileNodeWriter(String path);
 
     int write(int);
@@ -31,11 +31,11 @@ public:
 
     ~_FileNodeWriter();
 
-private:
+  private:
     String mPath;
 
     int mFd;
 };
 
-}
+} // namespace obotcha
 #endif

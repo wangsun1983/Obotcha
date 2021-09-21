@@ -15,23 +15,14 @@
 
 namespace obotcha {
 
-_Future::_Future(ExecutorTask t) {
-    mTask = t;
-}
-    
-int _Future::wait(long interval) {
-    return mTask->wait(interval);
-}
-    
-void _Future::cancel() {
-    mTask->cancel();
-}
+_Future::_Future(ExecutorTask t) { mTask = t; }
 
-int _Future::getStatus() {
-    return mTask->getStatus();
-}
+int _Future::wait(long interval) { return mTask->wait(interval); }
 
-_Future::~_Future() {
-}
+void _Future::cancel() { mTask->cancel(); }
 
-}
+int _Future::getStatus() { return mTask->getStatus(); }
+
+_Future::~_Future() {}
+
+} // namespace obotcha

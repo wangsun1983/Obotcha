@@ -4,15 +4,15 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "InetAddress.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(InetLocalAddress) IMPLEMENTS(InetAddress) {
-public:
+  public:
     _InetLocalAddress(String);
 };
 
-}
+} // namespace obotcha
 #endif

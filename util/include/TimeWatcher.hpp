@@ -8,12 +8,10 @@
 
 namespace obotcha {
 
-#define StartAutoTimeWatcher(X) \
-    AutoTimeWatcher autoTime = createAutoTimeWatcher(#X); \
-
+#define StartAutoTimeWatcher(X)                                                \
+    AutoTimeWatcher autoTime = createAutoTimeWatcher(#X);
 
 DECLARE_CLASS(AutoTimeWatcher) {
-
 public:
     _AutoTimeWatcher(String);
 
@@ -26,16 +24,14 @@ private:
 };
 
 DECLARE_CLASS(TimeWatcher) {
-
 public:
     void start();
 
     long stop();
 
 private:
-
     long current;
 };
 
-}
+} // namespace obotcha
 #endif

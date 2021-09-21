@@ -37,13 +37,13 @@ enum ErrorType {
     WaitTimeout,
     WaitFail,
     NotSupport,
-	SqlFailWrongParam,
+    SqlFailWrongParam,
     SqlFailOpen,
     SqlFailNoDb,
     SqlExecFail,
     SqlTransactionFail,
     ErrorMax,
-}; 
+};
 
 DECLARE_CLASS(Error) {
 public:
@@ -75,13 +75,13 @@ private:
     static const String WaitTimeoutString;
     static const String WaitFailString;
     static const String NotSupportString;
-	static const String SqlFailWrongParamString;
+    static const String SqlFailWrongParamString;
     static const String SqlFailOpenString;
     static const String SqlFailNoDbString;
     static const String SqlExecFailString;
     static const String SqlTransactionFailString;
 };
 
-}
+} // namespace obotcha
 
 #endif

@@ -3,41 +3,28 @@
 namespace obotcha {
 
 _HttpEntity::_HttpEntity() {
-    mFormUrlEncodedMap = createArrayList<KeyValuePair<String,String>>();
-}
-    
-void _HttpEntity::setMultiPart(HttpMultiPart part) {
-    mMultiPart = part;
+    mFormUrlEncodedMap = createArrayList<KeyValuePair<String, String>>();
 }
 
-HttpMultiPart _HttpEntity::getMultiPart() {
-    return mMultiPart;
-}
+void _HttpEntity::setMultiPart(HttpMultiPart part) { mMultiPart = part; }
 
-ArrayList<KeyValuePair<String,String>> _HttpEntity::getEncodedKeyValues() {
+HttpMultiPart _HttpEntity::getMultiPart() { return mMultiPart; }
+
+ArrayList<KeyValuePair<String, String>> _HttpEntity::getEncodedKeyValues() {
     return mFormUrlEncodedMap;
 }
 
-void _HttpEntity::setEncodedKeyValues(ArrayList<KeyValuePair<String,String>> map) {
+void _HttpEntity::setEncodedKeyValues(
+    ArrayList<KeyValuePair<String, String>> map) {
     mFormUrlEncodedMap = map;
 }
 
-ByteArray _HttpEntity::getContent() {
-    return mContent;
-}
-    
-void _HttpEntity::setContent(ByteArray data) {
-    mContent = data;
-}
+ByteArray _HttpEntity::getContent() { return mContent; }
 
-String _HttpEntity::getUpgrade() {
-    return mUpgrade;
-}
+void _HttpEntity::setContent(ByteArray data) { mContent = data; }
 
-void _HttpEntity::setUpgrade(String u) {
-    mUpgrade = u;
-}
+String _HttpEntity::getUpgrade() { return mUpgrade; }
 
+void _HttpEntity::setUpgrade(String u) { mUpgrade = u; }
 
-}
-
+} // namespace obotcha

@@ -1,23 +1,23 @@
 #ifndef __OBOTCHA_UINT16_HPP__
 #define __OBOTCHA_UINT16_HPP__
 
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 
+#include "Number.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "Number.hpp"
 
 namespace obotcha {
 
 class _String;
 
-DECLARE_CLASS(Uint16) IMPLEMENTS(Number<uint16_t>){
+DECLARE_CLASS(Uint16) IMPLEMENTS(Number<uint16_t>) {
 public:
     static const int __isReflected = 1;
 
     _Uint16();
-    
+
     _Uint16(uint16_t v);
 
     _Uint16(const Uint16 &v);
@@ -43,19 +43,19 @@ public:
     sp<_String> toString();
 
     static sp<_String> toString(uint16_t i);
-    
+
     static sp<_Uint16> parseDecUint16(const sp<_String> &);
 
-    static sp<_Uint16> parseHexUint16(const sp<_String>&);
+    static sp<_Uint16> parseHexUint16(const sp<_String> &);
 
-    static sp<_Uint16> parseOctUint16(const sp<_String>&);
+    static sp<_Uint16> parseOctUint16(const sp<_String> &);
 
-    static sp<_Uint16> parseBinaryUint16(const sp<_String>&);
+    static sp<_Uint16> parseBinaryUint16(const sp<_String> &);
 
     static sp<_String> className();
 
     uint64_t hashcode();
-    
+
     ~_Uint16();
 
     static const uint16_t MAX_VALUE = 0xFFFF;
@@ -66,5 +66,5 @@ private:
     uint16_t val;
 };
 
-}
+} // namespace obotcha
 #endif

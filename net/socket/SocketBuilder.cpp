@@ -3,19 +3,19 @@
 
 namespace obotcha {
 
-_SocketBuilder* _SocketBuilder::setAddress(InetAddress addr) {
+_SocketBuilder *_SocketBuilder::setAddress(InetAddress addr) {
     address = addr;
     return this;
 }
 
-_SocketBuilder* _SocketBuilder::setOption(SocketOption o) {
-    if(o != nullptr) {
+_SocketBuilder *_SocketBuilder::setOption(SocketOption o) {
+    if (o != nullptr) {
         option = o;
     }
     return this;
 }
 
-_SocketBuilder* _SocketBuilder::setFileDescriptor(FileDescriptor f) {
+_SocketBuilder *_SocketBuilder::setFileDescriptor(FileDescriptor f) {
     fd = f;
     return this;
 }
@@ -27,8 +27,8 @@ _SocketBuilder::_SocketBuilder() {
 }
 
 Socket _SocketBuilder::newSocket() {
-    if(fd == nullptr) {
-        return createSocket(st(Socket)::Tcp,address,option);
+    if (fd == nullptr) {
+        return createSocket(st(Socket)::Tcp, address, option);
     }
 
     Socket s = createSocket(fd);
@@ -37,12 +37,12 @@ Socket _SocketBuilder::newSocket() {
 }
 
 Socket _SocketBuilder::newDatagramSocket() {
-    return createSocket(st(Socket)::Udp,address,option);
+    return createSocket(st(Socket)::Udp, address, option);
 }
 
 Socket _SocketBuilder::newLocalSocket() {
-    if(fd == nullptr) {
-        return createSocket(st(Socket)::Local,address,option);
+    if (fd == nullptr) {
+        return createSocket(st(Socket)::Local, address, option);
     }
 
     Socket s = createSocket(fd);
@@ -51,13 +51,11 @@ Socket _SocketBuilder::newLocalSocket() {
 }
 
 ServerSocket _SocketBuilder::newServerSocket() {
-    return createServerSocket(st(Socket)::Tcp,address,option);
+    return createServerSocket(st(Socket)::Tcp, address, option);
 }
 
 ServerSocket _SocketBuilder::newServerLocalSocket() {
-    return createServerSocket(st(Socket)::Local,address,option);
+    return createServerSocket(st(Socket)::Local, address, option);
 }
-    
 
-
-}
+} // namespace obotcha

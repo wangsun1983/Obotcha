@@ -12,7 +12,7 @@ public:
     static const int __isReflected = 1;
 
     _Boolean();
-    
+
     _Boolean(bool v);
 
     _Boolean(const Boolean &v);
@@ -66,10 +66,9 @@ public:
 private:
     bool val;
 
-    static int _parse( sp<_String>);
-
+    static int _parse(sp<_String>);
 };
 
-}
+} // namespace obotcha
 
 #endif

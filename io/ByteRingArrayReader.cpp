@@ -13,11 +13,11 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
 #include "ByteArray.hpp"
 #include "ByteRingArrayReader.hpp"
-#include "ArrayIndexOutOfBoundsException.hpp"
 #include "Error.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
@@ -31,31 +31,31 @@ ByteArray _ByteRingArrayReader::pop() {
     ByteArray result = nullptr;
 
     try {
-        if(mMark == Complete) {
+        if (mMark == Complete) {
             result = mBuff->popAll();
             mMark = Idle;
-        } else{
+        } else {
             int index = mCursor - 1;
-            if(index == -1) {
+            if (index == -1) {
                 index = mBuff->getCapacity() - 1;
             }
             result = mBuff->popTo(index);
         }
-    } catch(ArrayIndexOutOfBoundsException &e){
+    } catch (ArrayIndexOutOfBoundsException &e) {
     }
 
     return result;
 }
 
 int _ByteRingArrayReader::readNext(byte &value) {
-    if(mBuff->getAvailDataSize() == 0) {
+    if (mBuff->getAvailDataSize() == 0) {
         return NoContent;
     }
 
     int end = mBuff->getEndIndex();
-    
-    if(mCursor == end) {
-        if(mMark != Idle) {
+
+    if (mCursor == end) {
+        if (mMark != Idle) {
             mMark = Complete;
             return NoContent;
         }
@@ -65,28 +65,24 @@ int _ByteRingArrayReader::readNext(byte &value) {
     value = mBuff->at(mCursor);
     mCursor++;
 
-    if(mCursor == mBuff->getCapacity()) {
+    if (mCursor == mBuff->getCapacity()) {
         mCursor = 0;
     }
 
     return Continue;
 }
 
-void _ByteRingArrayReader::setCursor(int c) {
-    mCursor = c;
-}
+void _ByteRingArrayReader::setCursor(int c) { mCursor = c; }
 
-int _ByteRingArrayReader::getCursor() {
-    return mCursor;
-}
+int _ByteRingArrayReader::getCursor() { return mCursor; }
 
 int _ByteRingArrayReader::move(int length) {
-    if(length > mBuff->getAvailDataSize()) {
-        Trigger(ArrayIndexOutOfBoundsException,"length is too large");
+    if (length > mBuff->getAvailDataSize()) {
+        Trigger(ArrayIndexOutOfBoundsException, "length is too large");
     }
-    
+
     mCursor += length;
-    if(mCursor >= mBuff->getCapacity()) {
+    if (mCursor >= mBuff->getCapacity()) {
         mCursor = (mCursor - mBuff->getCapacity());
     }
 
@@ -94,13 +90,13 @@ int _ByteRingArrayReader::move(int length) {
 }
 
 int _ByteRingArrayReader::getReadableLength() {
-    if(mBuff->getAvailDataSize() == 0) {
+    if (mBuff->getAvailDataSize() == 0) {
         return 0;
     }
 
     int end = mBuff->getEndIndex();
 
-    if( mCursor >= end) {
+    if (mCursor >= end) {
         return mBuff->getAvailDataSize() - (mCursor - end);
     } else {
         return end - mCursor;
@@ -112,6 +108,5 @@ void _ByteRingArrayReader::reset() {
     mCursor = mBuff->getStartIndex();
     mMark = Idle;
 }
-    
 
-}
+} // namespace obotcha

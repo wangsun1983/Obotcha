@@ -4,36 +4,36 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "ArrayList.hpp"
+#include "File.hpp"
 #include "HashMap.hpp"
 #include "HttpCookie.hpp"
-#include "HttpUrl.hpp"
-#include "File.hpp"
-#include "HttpHeader.hpp"
 #include "HttpFile.hpp"
+#include "HttpHeader.hpp"
+#include "HttpUrl.hpp"
 #include "KeyValuePair.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(HttpMultiPartFile) {
 
-public:
+  public:
     _HttpMultiPartFile(File);
     _HttpMultiPartFile(HttpFile);
 
     HttpFile getHttpFile();
 
-private:
+  private:
     HttpFile mFile;
 };
 
 DECLARE_CLASS(HttpMultiPart) {
-public:
+  public:
     _HttpMultiPart();
     ArrayList<HttpMultiPartFile> files;
-    ArrayList<KeyValuePair<String,String>>contents;
+    ArrayList<KeyValuePair<String, String>> contents;
 };
 
-}
+} // namespace obotcha
 #endif

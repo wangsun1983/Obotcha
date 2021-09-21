@@ -1,28 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Thread.hpp"
-#include "System.hpp"
-#include "ThreadScheduledPoolExecutor.hpp"
-#include "Error.hpp"
 #include "AutoLock.hpp"
+#include "Error.hpp"
 #include "ExecutorBuilder.hpp"
 #include "Log.hpp"
+#include "System.hpp"
+#include "Thread.hpp"
+#include "ThreadScheduledPoolExecutor.hpp"
 
 namespace obotcha {
 
 //---------------WaitingTask---------------//
-_WaitingTask::_WaitingTask(long int interval,Runnable r):_ExecutorTask(r) {
+_WaitingTask::_WaitingTask(long int interval, Runnable r) : _ExecutorTask(r) {
     next = nullptr;
     nextTime = st(System)::currentTimeMillis() + interval;
 }
 
 //---------------ScheduleService---------------//
 _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity) {
-    mCachedExecutor = createExecutorBuilder()
-                        ->setTimeout(60*1000)
-                        ->newCachedThreadPool();
-    
+    mCachedExecutor =
+        createExecutorBuilder()->setTimeout(60 * 1000)->newCachedThreadPool();
+
     mTaskMutex = createMutex();
     mStatus = Executing;
     mCount = 0;
@@ -38,14 +37,14 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity) {
 int _ThreadScheduledPoolExecutor::shutdown() {
     {
         AutoLock l(mTaskMutex);
-        if(mStatus == ShutDown) {
+        if (mStatus == ShutDown) {
             return -AlreadyDestroy;
         }
 
         mStatus = ShutDown;
 
         WaitingTask task = mTaskPool;
-        while(task != nullptr) {
+        while (task != nullptr) {
             task->cancel();
             task = task->next;
         }
@@ -67,34 +66,33 @@ bool _ThreadScheduledPoolExecutor::isTerminated() {
     return mCachedExecutor->isTerminated();
 }
 
-void _ThreadScheduledPoolExecutor::awaitTermination() {
-    awaitTermination(0);
-}
+void _ThreadScheduledPoolExecutor::awaitTermination() { awaitTermination(0); }
 
 int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
     return mCachedExecutor->awaitTermination(timeout);
 }
 
-int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,long timeout) {
+int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
+                                                       long timeout) {
     AutoLock l(mTaskMutex);
-    if(mStatus == ShutDown) {
+    if (mStatus == ShutDown) {
         return -1;
     }
 
-    if(mCapacity > 0 && mCount == mCapacity) {
-        if(notFull->wait(mTaskMutex,timeout) == -WaitTimeout) {
+    if (mCapacity > 0 && mCount == mCapacity) {
+        if (notFull->wait(mTaskMutex, timeout) == -WaitTimeout) {
             return -1;
         }
     }
 
-    if(mTaskPool == nullptr) {
+    if (mTaskPool == nullptr) {
         mTaskPool = task;
     } else {
         WaitingTask p = mTaskPool;
         WaitingTask prev = mTaskPool;
         for (;;) {
-            if(p->nextTime > task->nextTime) {
-                if(p == mTaskPool) {
+            if (p->nextTime > task->nextTime) {
+                if (p == mTaskPool) {
                     task->next = p;
                     mTaskPool = task;
                 } else {
@@ -105,7 +103,7 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,long tim
             } else {
                 prev = p;
                 p = p->next;
-                if(p == nullptr) {
+                if (p == nullptr) {
                     prev->next = task;
                     break;
                 }
@@ -121,28 +119,29 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,long tim
 void _ThreadScheduledPoolExecutor::run() {
     WaitingTask mCurrentTask = nullptr;
 
-    while(1) {
+    while (1) {
         {
             AutoLock ll(mTaskMutex);
-            if(mStatus == ShutDown) {
+            if (mStatus == ShutDown) {
                 return;
             }
-            
-            if(mTaskPool == nullptr) {
+
+            if (mTaskPool == nullptr) {
                 notEmpty->wait(mTaskMutex);
                 continue;
-            }else {
-                long interval = (mTaskPool->nextTime - st(System)::currentTimeMillis());
-                if(interval <= 0) {
+            } else {
+                long interval =
+                    (mTaskPool->nextTime - st(System)::currentTimeMillis());
+                if (interval <= 0) {
                     mCurrentTask = mTaskPool;
                     mTaskPool = mTaskPool->next;
                 } else {
-                    mTaskWaitCond->wait(mTaskMutex,interval);
+                    mTaskWaitCond->wait(mTaskMutex, interval);
                     continue;
                 }
             }
-            
-            if(mCurrentTask->getStatus() == st(Future)::Cancel) {
+
+            if (mCurrentTask->getStatus() == st(Future)::Cancel) {
                 continue;
             }
         }
@@ -151,20 +150,18 @@ void _ThreadScheduledPoolExecutor::run() {
         {
 
             AutoLock l(mTaskMutex);
-            notFull->notify();   
-            mCount--; 
+            notFull->notify();
+            mCount--;
         }
         mCurrentTask = nullptr;
     }
 }
 
-_ThreadScheduledPoolExecutor::~_ThreadScheduledPoolExecutor() { 
-    
-}
+_ThreadScheduledPoolExecutor::~_ThreadScheduledPoolExecutor() {}
 
 void _ThreadScheduledPoolExecutor::close() {
     this->shutdown();
     this->awaitTermination();
 }
 
-}
+} // namespace obotcha

@@ -1,10 +1,11 @@
 #include "AsyncOutputChannel.hpp"
-#include "AsyncOutputChannelPool.hpp"
 #include "ArrayList.hpp"
+#include "AsyncOutputChannelPool.hpp"
 
 namespace obotcha {
 
-_AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,WriteCallback callback,Handler h) {
+_AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
+                                         WriteCallback callback, Handler h) {
     mFd = fd;
     mMutex = createMutex();
     mDatas = createLinkedList<ByteArray>();
@@ -14,10 +15,10 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,WriteCallback callbac
 }
 
 void _AsyncOutputChannel::write(ByteArray data) {
-    if(mHandler != nullptr) {
-        mHandler->post([](AsyncOutputChannel channel,ByteArray data) {
-            channel->_write(data);
-        },AutoClone(this),data);
+    if (mHandler != nullptr) {
+        mHandler->post([](AsyncOutputChannel channel,
+                          ByteArray data) { channel->_write(data); },
+                       AutoClone(this), data);
     } else {
         _write(data);
     }
@@ -25,30 +26,32 @@ void _AsyncOutputChannel::write(ByteArray data) {
 
 void _AsyncOutputChannel::_write(ByteArray data) {
     AutoLock l(mMutex);
-    if(isClosed) {
+    if (isClosed) {
         return;
     }
-    
-    if(mDatas->size() > 0) {
+
+    if (mDatas->size() > 0) {
         mDatas->putLast(data);
         return;
     }
 
-    while(1) {
+    while (1) {
         int result = 0;
-        if(writeCb != nullptr) {
-            result = writeCb(mFd,data);
+        if (writeCb != nullptr) {
+            result = writeCb(mFd, data);
         } else {
-            result = ::write(mFd->getFd(),data->toValue(),data->size());
+            result = ::write(mFd->getFd(), data->toValue(), data->size());
         }
 
-        if(result < 0) {
-            if(errno == EAGAIN) {
+        if (result < 0) {
+            if (errno == EAGAIN) {
                 mDatas->putLast(data);
-                st(AsyncOutputChannelPool)::getInstance()->addChannel(AutoClone(this));
+                st(AsyncOutputChannelPool)::getInstance()->addChannel(
+                    AutoClone(this));
             }
-        } else if(result != data->size()) {
-            ByteArray rest_data = createByteArray(data->toValue() + result,data->size() - result);
+        } else if (result != data->size()) {
+            ByteArray rest_data = createByteArray(data->toValue() + result,
+                                                  data->size() - result);
             data = rest_data;
             continue;
         }
@@ -58,38 +61,37 @@ void _AsyncOutputChannel::_write(ByteArray data) {
 
 void _AsyncOutputChannel::notifyWrite() {
     AutoLock l(mMutex);
-    if(isClosed) {
+    if (isClosed) {
         return;
     }
 
-    while(mDatas->size() > 0) {
+    while (mDatas->size() > 0) {
         ByteArray data = mDatas->takeFirst();
         int result = 0;
-        if(writeCb != nullptr) {
-            result = writeCb(mFd,data);
+        if (writeCb != nullptr) {
+            result = writeCb(mFd, data);
         } else {
-            result = ::write(mFd->getFd(),data->toValue(),data->size());
+            result = ::write(mFd->getFd(), data->toValue(), data->size());
         }
 
-        if(result < 0) {
-            if(errno == EAGAIN) {
+        if (result < 0) {
+            if (errno == EAGAIN) {
                 mDatas->putFirst(data);
                 break;
             }
-        } else if(result != data->size()) {
-            ByteArray rest_data = createByteArray(data->toValue() + result,data->size() - result);
+        } else if (result != data->size()) {
+            ByteArray rest_data = createByteArray(data->toValue() + result,
+                                                  data->size() - result);
             mDatas->putFirst(rest_data);
         }
     }
 
-    if(mDatas->size() == 0) {
+    if (mDatas->size() == 0) {
         st(AsyncOutputChannelPool)::getInstance()->remove(AutoClone(this));
     }
 }
 
-FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
-    return mFd;
-}
+FileDescriptor _AsyncOutputChannel::getFileDescriptor() { return mFd; }
 
 void _AsyncOutputChannel::close() {
     AutoLock l(mMutex);
@@ -98,4 +100,4 @@ void _AsyncOutputChannel::close() {
     st(AsyncOutputChannelPool)::getInstance()->remove(AutoClone(this));
 }
 
-}
+} // namespace obotcha

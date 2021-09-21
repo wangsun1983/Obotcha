@@ -3,37 +3,37 @@
 
 #include <stdio.h>
 
+#include "DateTime.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "DateTime.hpp"
 #include "ThreadScheduledPoolExecutor.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(Timer) IMPLEMENTS(Thread) {
 
-public:
+  public:
     _Timer();
 
-	Future schedule(long,Runnable r);
+    Future schedule(long, Runnable r);
 
-    Future schedule(DateTime,Runnable r);
+    Future schedule(DateTime, Runnable r);
 
-    template< class Function, class... Args >
-    Future schedule(long delay,Function&& f, Args&&... args) {
-        return schedule(delay,createLambdaRunnable(f,args...));
+    template <class Function, class... Args>
+    Future schedule(long delay, Function &&f, Args &&... args) {
+        return schedule(delay, createLambdaRunnable(f, args...));
     }
 
-    template< class Function, class... Args >
-    Future schedule(DateTime date,Function&& f, Args&&... args) {
-        return schedule(date,createLambdaRunnable(f,args...));
+    template <class Function, class... Args>
+    Future schedule(DateTime date, Function && f, Args && ... args) {
+        return schedule(date, createLambdaRunnable(f, args...));
     }
 
     ~_Timer();
 
-private:
+  private:
     static ThreadScheduledPoolExecutor mScheduledExecutor;
 };
 
-}
+} // namespace obotcha
 #endif

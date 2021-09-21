@@ -6,15 +6,15 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "OutputStream.hpp"
 #include "File.hpp"
+#include "OutputStream.hpp"
 #include "String.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(PrintStream) IMPLEMENTS(OutputStream) {
 
-public:
+  public:
     _PrintStream(File file);
 
     _PrintStream(String path);
@@ -22,15 +22,15 @@ public:
     _PrintStream();
 
     long write(char c);
-    
+
     long write(ByteArray);
 
-    long write(ByteArray buff,long size);
+    long write(ByteArray buff, long size);
 
     void setOutPath(String path);
 
     bool open();
-    
+
     void close();
 
     void flush();
@@ -41,13 +41,13 @@ public:
 
     void newline();
 
-private:
+  private:
     String mPath;
-    
+
     bool isDefaultOut;
-    
+
     std::ofstream fstream;
 };
 
-}
+} // namespace obotcha
 #endif

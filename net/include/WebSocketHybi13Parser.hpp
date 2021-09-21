@@ -4,9 +4,9 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
-#include "InetAddress.hpp"
 #include "ByteArray.hpp"
+#include "InetAddress.hpp"
+#include "String.hpp"
 #include "WebSocketParser.hpp"
 #include "WebSocketPermessageDeflate.hpp"
 #include "ZipMemoryStream.hpp"
@@ -14,9 +14,9 @@
 namespace obotcha {
 
 DECLARE_CLASS(WebSocketHybi13Parser) IMPLEMENTS(WebSocketParser) {
-public:
+  public:
     _WebSocketHybi13Parser();
-    
+
     WebSocketHeader parseHeader();
 
     ByteArray parseContent(bool forceDecompress);
@@ -39,9 +39,9 @@ public:
 
     ArrayList<String> extractSubprotocols(HttpHeader);
 
-private:
-    WebSocketPermessageDeflate mDeflate;  
+  private:
+    WebSocketPermessageDeflate mDeflate;
 };
 
-}
+} // namespace obotcha
 #endif

@@ -4,34 +4,34 @@
 #include <mutex>
 #include <thread>
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "HashMap.hpp"
 #include "Mutex.hpp"
+#include "Object.hpp"
+#include "StrongPointer.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(Enviroment) {
 
-public:
+  public:
     static Enviroment getInstance();
 
-    void set(String,String);
+    void set(String, String);
 
-    int getInt(String,int defaultvalue);
+    int getInt(String, int defaultvalue);
 
-    bool getBoolean(String,bool defaultvalue);
+    bool getBoolean(String, bool defaultvalue);
 
     String get(String);
 
-    String get(String,String defaultvalue);
+    String get(String, String defaultvalue);
 
     static const String gHttpBufferSize;
     static const int DefaultHttpBufferSize;
 
     static const String gHttpServerThreadsNum;
     static const int DefaultgHttpServerThreadsNum;
-    
+
     static const String gWebSocketBufferSize;
     static const int DefaultWebSocketBufferSize;
 
@@ -105,16 +105,16 @@ public:
     static const String DefaultHttpSslKeyPath;
 
     static const String gHttpSslCertificatePath;
-    static const String DefaultHttpSslCertificatePath;    
+    static const String DefaultHttpSslCertificatePath;
 
-private:
+  private:
     _Enviroment();
-    
+
     static std::once_flag s_flag;
     static Enviroment mInstance;
-   
-    HashMap<String,String> mProp;
+
+    HashMap<String, String> mProp;
 };
 
-}
+} // namespace obotcha
 #endif

@@ -4,27 +4,27 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "Socket.hpp"
-#include "InetAddress.hpp"
-#include "SocketOption.hpp"
 #include "FileDescriptor.hpp"
+#include "InetAddress.hpp"
+#include "Socket.hpp"
+#include "SocketOption.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(ServerSocket) {
-public:
-    _ServerSocket(int,InetAddress address,SocketOption option);
+  public:
+    _ServerSocket(int, InetAddress address, SocketOption option);
     int bind();
     FileDescriptor getFileDescriptor();
     int close();
 
-    //add 
+    // add
     Socket accept();
 
-private:
+  private:
     SocketImpl mSock;
 };
 
-}
+} // namespace obotcha
 
 #endif

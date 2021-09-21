@@ -3,31 +3,25 @@
 
 #include <vector>
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "ContainerValue.hpp"
+#include "Object.hpp"
+#include "StrongPointer.hpp"
 
 namespace obotcha {
 
-template<typename T>
-class _StackIterator;
+template <typename T> class _StackIterator;
 
-DECLARE_TEMPLATE_CLASS(Stack,1) {
-
+DECLARE_TEMPLATE_CLASS(Stack, 1) {
 public:
     friend class _StackIterator<T>;
 
-    _Stack() {
-        
-    }
+    _Stack() {}
 
-    void push(T val) {
-        element.push_back(val);
-    }
+    void push(T val) { element.push_back(val); }
 
     T pop() {
-        if(element.size() == 0) {
+        if (element.size() == 0) {
             return ContainerValue<T>(nullptr).get();
         }
 
@@ -36,29 +30,21 @@ public:
         return result;
     }
 
-    inline int size() {
-        return element.size();
-    }
+    inline int size() { return element.size(); }
 
-    sp<_StackIterator<T>> getIterator() {
-        return new _StackIterator<T>(this);
-    }
+    sp<_StackIterator<T>> getIterator() { return new _StackIterator<T>(this); }
 
 private:
     std::vector<T> element;
 
-    typename std::vector<T>::iterator begin() {
-        return element.begin();
-    }
+    typename std::vector<T>::iterator begin() { return element.begin(); }
 
-    typename std::vector<T>::iterator end() {
-        return element.end();
-    }
+    typename std::vector<T>::iterator end() { return element.end(); }
 };
 
-DECLARE_TEMPLATE_CLASS(StackIterator,1) {
+DECLARE_TEMPLATE_CLASS(StackIterator, 1) {
 public:
-    _StackIterator(_Stack<T> *list) {
+    _StackIterator(_Stack<T> * list) {
         mStack.set_pointer(list);
         iterator = list->begin();
     }
@@ -69,19 +55,17 @@ public:
     }
 
     T getValue() {
-        if(iterator == mStack->end()) {
-            Trigger(ArrayIndexOutOfBoundsException,"iterator error");
+        if (iterator == mStack->end()) {
+            Trigger(ArrayIndexOutOfBoundsException, "iterator error");
         }
 
         return *iterator;
     }
 
-    bool hasValue() {
-        return iterator != mStack->end();
-    }
+    bool hasValue() { return iterator != mStack->end(); }
 
     bool next() {
-        if(iterator ==  mStack->end()) {
+        if (iterator == mStack->end()) {
             return false;
         }
         iterator++;
@@ -89,7 +73,7 @@ public:
     }
 
     bool remove() {
-        if(iterator == mStack->end()) {
+        if (iterator == mStack->end()) {
             return false;
         }
 
@@ -97,11 +81,11 @@ public:
         iterator++;
         return true;
     }
-    
+
 private:
-    Stack<T> mStack;    
+    Stack<T> mStack;
     typename std::vector<T>::iterator iterator;
 };
 
-}
+} // namespace obotcha
 #endif

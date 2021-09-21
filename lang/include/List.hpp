@@ -1,33 +1,33 @@
 #ifndef __OBOTCHA_LIST_HPP__
 #define __OBOTCHA_LIST_HPP__
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
-#include "Object.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
 #include "Boolean.hpp"
 #include "Double.hpp"
 #include "Float.hpp"
 #include "Integer.hpp"
 #include "Long.hpp"
-#include "String.hpp"
 #include "MethodNotSupportException.hpp"
-#include "ArrayIndexOutOfBoundsException.hpp"
+#include "Object.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
 //----------------- List ---------------------
-DECLARE_TEMPLATE_CLASS(List,1) {
+DECLARE_TEMPLATE_CLASS(List, 1) {
 public:
     _List(int length) {
         mSize = length;
         elements = new T[length];
     }
 
-    _List(T *data,int nums) {
+    _List(T * data, int nums) {
         mSize = nums;
         elements = new T[nums];
-        for(int i = 0;i<nums;i++) {
+        for (int i = 0; i < nums; i++) {
             elements[i] = data[i];
         }
     }
@@ -35,27 +35,25 @@ public:
     _List(sp<_List<T>> ll) {
         mSize = ll->size();
         elements = new T[mSize];
-        for(int i = 0;i<mSize;i++) {
+        for (int i = 0; i < mSize; i++) {
             elements[i] = ll[i];
         }
     }
-    
-    int size() {
-        return mSize;
-    }
 
-    T& operator[] (int index) {
-        if(index >= mSize) {
-            Trigger(ArrayIndexOutOfBoundsException,"out of array");
+    int size() { return mSize; }
+
+    T &operator[](int index) {
+        if (index >= mSize) {
+            Trigger(ArrayIndexOutOfBoundsException, "out of array");
         }
 
-        T &v = elements[index];   
+        T &v = elements[index];
         return v;
     }
 
     ~_List() {
-        if(elements != nullptr) {
-            delete []elements;
+        if (elements != nullptr) {
+            delete[] elements;
             elements = nullptr;
         }
     }
@@ -65,5 +63,5 @@ private:
     T *elements;
 };
 
-}
+} // namespace obotcha
 #endif

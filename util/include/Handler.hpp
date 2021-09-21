@@ -3,26 +3,25 @@
 
 #include <vector>
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "ArrayList.hpp"
 #include "ConcurrentQueue.hpp"
+#include "Object.hpp"
+#include "StrongPointer.hpp"
 #include "Thread.hpp"
 
-#include "String.hpp"
-#include "Runnable.hpp"
-#include "Mutex.hpp"
+#include "AtomicInteger.hpp"
 #include "Condition.hpp"
 #include "LinkedList.hpp"
 #include "Message.hpp"
-#include "AtomicInteger.hpp"
+#include "Mutex.hpp"
+#include "Runnable.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
 class _Message;
 
-DECLARE_CLASS(Handler) IMPLEMENTS(Thread){
-
+DECLARE_CLASS(Handler) IMPLEMENTS(Thread) {
 public:
     _Handler();
 
@@ -34,9 +33,9 @@ public:
 
     int sendEmptyMessage(int what);
 
-    int sendEmptyMessageDelayed(int what,long delay);
+    int sendEmptyMessageDelayed(int what, long delay);
 
-    int sendMessageDelayed(sp<_Message>,long delay);
+    int sendMessageDelayed(sp<_Message>, long delay);
 
     int sendMessage(sp<_Message>);
 
@@ -47,48 +46,41 @@ public:
     void removeMessages(int what);
 
     void run();
-    
-    template<typename X>
-    int post(sp<X> r) {
-        return postDelayed(0,r);
+
+    template <typename X> int post(sp<X> r) { return postDelayed(0, r); }
+
+    template <class Function, class... Args>
+    int post(Function && f, Args && ... args) {
+        return postDelayed(0, createLambdaRunnable(f, args...));
     }
 
-    template< class Function, class... Args >
-    int post(Function&& f, Args&&... args) {
-        return postDelayed(0,createLambdaRunnable(f,args...));
-    }
-
-    template<typename X>
-    int postDelayed(long delay,sp<X> r) {
+    template <typename X> int postDelayed(long delay, sp<X> r) {
         Message msg = obtainMessage();
         msg->mRunnable = r;
-        return sendMessageDelayed(msg,delay);
+        return sendMessageDelayed(msg, delay);
     }
 
-    template< class Function, class... Args >
-    int postDelayed(long delay,Function&& f, Args&&... args) {
-        return postDelayed(delay,createLambdaRunnable(f,args...));
+    template <class Function, class... Args>
+    int postDelayed(long delay, Function &&f, Args &&... args) {
+        return postDelayed(delay, createLambdaRunnable(f, args...));
     }
-    
+
     void destroy();
 
     int size();
-    
+
 private:
-    enum Status {
-        StatusRunning = 0,
-        StatusDestroy
-    };
+    enum Status { StatusRunning = 0, StatusDestroy };
 
     bool isRunning();
 
     Mutex mMutex;
     Condition mCondition;
-    //LinkedList<Message> mMessagePool;
+    // LinkedList<Message> mMessagePool;
     Message mMessagePool;
-    
+
     AtomicInteger mStatus;
 };
 
-}
+} // namespace obotcha
 #endif

@@ -3,27 +3,27 @@
 
 #include "co_routine.h"
 
-#include "StrongPointer.hpp"
-#include "Object.hpp"
 #include "ArrayList.hpp"
 #include "Filament.hpp"
+#include "Object.hpp"
+#include "StrongPointer.hpp"
 #include "Thread.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(FilaCroutine) IMPLEMENTS(Thread){
+DECLARE_CLASS(FilaCroutine) IMPLEMENTS(Thread) {
 
-public:
+  public:
     _FilaCroutine(ArrayList<Filament>);
     void start();
 
     void run();
-    
+
     void onInterrupt();
 
-private:
+  private:
     ArrayList<Filament> mFilaments;
 };
 
-}
+} // namespace obotcha
 #endif

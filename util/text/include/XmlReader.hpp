@@ -1,11 +1,11 @@
 #ifndef __OBOTCHA_XML_READER_H__
 #define __OBOTCHA_XML_READER_H__
 
+#include "File.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "File.hpp"
-#include "rapidxml.hpp"
 #include "XmlValue.hpp"
+#include "rapidxml.hpp"
 
 using namespace rapidxml;
 
@@ -14,7 +14,6 @@ namespace obotcha {
 class _XmlDocument;
 
 DECLARE_CLASS(XmlReader) {
-
 public:
     _XmlReader(String content);
 
@@ -28,6 +27,6 @@ private:
     sp<_XmlDocument> mDocument;
 };
 
-}
+} // namespace obotcha
 
 #endif

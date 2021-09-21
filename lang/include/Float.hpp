@@ -12,14 +12,14 @@ public:
     static const int __isReflected = 1;
 
     _Float();
-    
+
     _Float(float v);
 
-    _Float(Float &v);
+    _Float(Float & v);
 
     float toValue();
 
-    bool equals(Float &p);
+    bool equals(Float & p);
 
     bool equals(const _Float *p);
 
@@ -29,7 +29,7 @@ public:
 
     void update(sp<_Float> v);
 
-    static bool isEqual(float,float);
+    static bool isEqual(float, float);
 
     static sp<_Float> parse(sp<_String>);
 
@@ -43,8 +43,7 @@ public:
 
 private:
     float val;
-
 };
 
-}
+} // namespace obotcha
 #endif

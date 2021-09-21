@@ -7,24 +7,24 @@ _HttpServerBuilder::_HttpServerBuilder() {
     mOption = nullptr;
     mListener = nullptr;
 }
-    
-_HttpServerBuilder* _HttpServerBuilder::setAddress(InetAddress addr) {
+
+_HttpServerBuilder *_HttpServerBuilder::setAddress(InetAddress addr) {
     mAddress = addr;
     return this;
 }
 
-_HttpServerBuilder* _HttpServerBuilder::setListener(HttpListener l) {
+_HttpServerBuilder *_HttpServerBuilder::setListener(HttpListener l) {
     mListener = l;
     return this;
 }
 
-_HttpServerBuilder* _HttpServerBuilder::setOption(HttpOption option) {
+_HttpServerBuilder *_HttpServerBuilder::setOption(HttpOption option) {
     mOption = option;
     return this;
 }
 
 HttpServer _HttpServerBuilder::build() {
-    return createHttpServer(mAddress,mListener,mOption);
+    return createHttpServer(mAddress, mListener, mOption);
 }
 
-}
+} // namespace obotcha

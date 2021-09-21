@@ -1,19 +1,17 @@
-#include "YamlReader.hpp"
 #include "YamlValue.hpp"
 #include "YamlArray.hpp"
+#include "YamlReader.hpp"
 
 namespace obotcha {
 
- _YamlValue::_YamlValue() {
-    //TODO
- }
-
-_YamlValue::_YamlValue(YAML::Node v) {
-    yamlNode = v;
+_YamlValue::_YamlValue() {
+    // TODO
 }
 
+_YamlValue::_YamlValue(YAML::Node v) { yamlNode = v; }
+
 sp<_YamlValue> _YamlValue::getYamlValue(String tag) {
-    if(tag == nullptr) {
+    if (tag == nullptr) {
         return nullptr;
     }
 
@@ -30,9 +28,9 @@ sp<_YamlValue> _YamlValue::getYamlValue(String tag) {
 
     return nullptr;
 }
-    
-int _YamlValue::getInt(String tag,int def) {
-    if(tag == nullptr) {
+
+int _YamlValue::getInt(String tag, int def) {
+    if (tag == nullptr) {
         return def;
     }
 
@@ -48,8 +46,8 @@ int _YamlValue::getInt(String tag,int def) {
     return def;
 }
 
-String _YamlValue::getString(String tag,String def) {
-    if(tag == nullptr) {
+String _YamlValue::getString(String tag, String def) {
+    if (tag == nullptr) {
         return def;
     }
 
@@ -65,8 +63,8 @@ String _YamlValue::getString(String tag,String def) {
     return def;
 }
 
-double _YamlValue::getDouble(String tag,double def) {
-    if(tag == nullptr) {
+double _YamlValue::getDouble(String tag, double def) {
+    if (tag == nullptr) {
         return def;
     }
 
@@ -81,8 +79,8 @@ double _YamlValue::getDouble(String tag,double def) {
     return def;
 }
 
-long _YamlValue::getLong(String tag,long def) {
-    if(tag == nullptr) {
+long _YamlValue::getLong(String tag, long def) {
+    if (tag == nullptr) {
         return def;
     }
 
@@ -97,8 +95,8 @@ long _YamlValue::getLong(String tag,long def) {
     return def;
 }
 
-bool _YamlValue::getBool(String tag,bool def) {
-    if(tag == nullptr) {
+bool _YamlValue::getBool(String tag, bool def) {
+    if (tag == nullptr) {
         return def;
     }
 
@@ -113,7 +111,7 @@ bool _YamlValue::getBool(String tag,bool def) {
     return def;
 }
 
-int _YamlValue::getIntAt(int index,int def) {
+int _YamlValue::getIntAt(int index, int def) {
     try {
         int result = yamlNode[index].as<int>();
         return result;
@@ -122,7 +120,7 @@ int _YamlValue::getIntAt(int index,int def) {
     }
 }
 
-String _YamlValue::getStringAt(int index,String def) {
+String _YamlValue::getStringAt(int index, String def) {
     try {
         std::string result = yamlNode[index].as<std::string>();
         return createString(result);
@@ -132,7 +130,7 @@ String _YamlValue::getStringAt(int index,String def) {
     }
 }
 
-double _YamlValue::getDoubleAt(int index,double def) {
+double _YamlValue::getDoubleAt(int index, double def) {
     try {
         double result = yamlNode[index].as<double>();
         return result;
@@ -141,7 +139,7 @@ double _YamlValue::getDoubleAt(int index,double def) {
     }
 }
 
-long _YamlValue::getLongAt(int index,long def) {
+long _YamlValue::getLongAt(int index, long def) {
     try {
         long result = yamlNode[index].as<long>();
         return result;
@@ -150,13 +148,13 @@ long _YamlValue::getLongAt(int index,long def) {
     }
 }
 
-bool _YamlValue::getBoolAt(int index,bool def) {
+bool _YamlValue::getBoolAt(int index, bool def) {
     try {
         bool result = yamlNode[index].as<bool>();
         return result;
     } catch (std::exception &e) {
         return def;
-    } 
+    }
 }
 
 sp<_YamlValue> _YamlValue::getYamlValueAt(int index) {
@@ -171,13 +169,8 @@ sp<_YamlValue> _YamlValue::getYamlValueAt(int index) {
     }
 }
 
-int _YamlValue::size() {
-    return yamlNode.size();
-}
+int _YamlValue::size() { return yamlNode.size(); }
 
-_YamlValue::~_YamlValue() {
+_YamlValue::~_YamlValue() {}
 
-}
-
-
-}
+} // namespace obotcha

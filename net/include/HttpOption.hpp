@@ -1,36 +1,36 @@
 #ifndef __OBOTCHA_HTTP_OPTION_HPP__
 #define __OBOTCHA_HTTP_OPTION_HPP__
 
-#include <sys/stat.h>
-#include <unistd.h>    
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <mqueue.h>
 #include <fstream>
+#include <mqueue.h>
+#include <netinet/in.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <sys/un.h>
+#include <unistd.h>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "InetAddress.hpp"
 #include "SocketOption.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(HttpOption) IMPLEMENTS(SocketOption){
-public:
+DECLARE_CLASS(HttpOption) IMPLEMENTS(SocketOption) {
+  public:
     _HttpOption();
-    _HttpOption* setCertificate(String);
-    _HttpOption* setKey(String);
-    
+    _HttpOption *setCertificate(String);
+    _HttpOption *setKey(String);
+
     String getCertificate();
     String getKey();
 
-private:
+  private:
     String mCretificate;
     String mKey;
 };
 
-}
+} // namespace obotcha
 #endif

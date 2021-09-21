@@ -1,76 +1,75 @@
 #ifndef __OBOTCHA_BLOCKING_LINKED_LIST_HPP__
 #define __OBOTCHA_BLOCKING_LINKED_LIST_HPP__
 
+#include "ArrayList.hpp"
+#include "AutoLock.hpp"
+#include "Condition.hpp"
+#include "ContainerValue.hpp"
+#include "Error.hpp"
+#include "LinkedList.hpp"
+#include "Mutex.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "AutoLock.hpp"
-#include "Mutex.hpp"
-#include "Condition.hpp"
-#include "LinkedList.hpp"
-#include "Error.hpp"
-#include "ContainerValue.hpp"
-#include "ArrayList.hpp"
 
 namespace obotcha {
 
-#define LINKED_LIST_ADD(Action) \
-AutoLock l(mMutex);\
-while(!isDestroy) {\
-    if(mCapacity != -1 && mList->size() == mCapacity) {\
-        if(notFull->wait(mMutex,timeout) == -WaitTimeout) {\
-            return false;\
-        }\
-        continue;\
-    }\
-    Action;\
-    notEmpty->notify();\
-    break;\
-}\
-return true;\
+#define LINKED_LIST_ADD(Action)                                                \
+    AutoLock l(mMutex);                                                        \
+    while (!isDestroy) {                                                       \
+        if (mCapacity != -1 && mList->size() == mCapacity) {                   \
+            if (notFull->wait(mMutex, timeout) == -WaitTimeout) {              \
+                return false;                                                  \
+            }                                                                  \
+            continue;                                                          \
+        }                                                                      \
+        Action;                                                                \
+        notEmpty->notify();                                                    \
+        break;                                                                 \
+    }                                                                          \
+    return true;
 
-#define LINKED_LIST_ADD_NOBLOCK(Action) \
-AutoLock l(mMutex);\
-if(!isDestroy) { \
-    if(mCapacity != -1 && mList->size() == mCapacity) {\
-        return false;\
-    }\
-    Action;\
-    notEmpty->notify();\
-}\
-return true;\
+#define LINKED_LIST_ADD_NOBLOCK(Action)                                        \
+    AutoLock l(mMutex);                                                        \
+    if (!isDestroy) {                                                          \
+        if (mCapacity != -1 && mList->size() == mCapacity) {                   \
+            return false;                                                      \
+        }                                                                      \
+        Action;                                                                \
+        notEmpty->notify();                                                    \
+    }                                                                          \
+    return true;
 
-#define LINKED_LIST_REMOVE(Action) \
-T data;\
-AutoLock l(mMutex);\
-while(!isDestroy) {\
-    if(mList->size() == 0) {\
-        if(notEmpty->wait(mMutex,timeout) == -WaitTimeout) {\
-            return ContainerValue<T>(nullptr).get();\
-        }\
-        continue;\
-    }\
-    Action;\
-    notFull->notify();\
-    return data;\
-}\
-return ContainerValue<T>(nullptr).get();\
+#define LINKED_LIST_REMOVE(Action)                                             \
+    T data;                                                                    \
+    AutoLock l(mMutex);                                                        \
+    while (!isDestroy) {                                                       \
+        if (mList->size() == 0) {                                              \
+            if (notEmpty->wait(mMutex, timeout) == -WaitTimeout) {             \
+                return ContainerValue<T>(nullptr).get();                       \
+            }                                                                  \
+            continue;                                                          \
+        }                                                                      \
+        Action;                                                                \
+        notFull->notify();                                                     \
+        return data;                                                           \
+    }                                                                          \
+    return ContainerValue<T>(nullptr).get();
 
-#define LINKED_LIST_REMOVE_NOBLOCK(Action) \
-T data;\
-AutoLock l(mMutex);\
-while(!isDestroy) {\
-    if(mList->size() == 0) {\
-        return ContainerValue<T>(nullptr).get();\
-    }\
-    Action;\
-    notFull->notify();\
-    return data;\
-}\
-return ContainerValue<T>(nullptr).get();\
+#define LINKED_LIST_REMOVE_NOBLOCK(Action)                                     \
+    T data;                                                                    \
+    AutoLock l(mMutex);                                                        \
+    while (!isDestroy) {                                                       \
+        if (mList->size() == 0) {                                              \
+            return ContainerValue<T>(nullptr).get();                           \
+        }                                                                      \
+        Action;                                                                \
+        notFull->notify();                                                     \
+        return data;                                                           \
+    }                                                                          \
+    return ContainerValue<T>(nullptr).get();
 
-
-DECLARE_TEMPLATE_CLASS(BlockingLinkedList,1) {
-public:
+DECLARE_TEMPLATE_CLASS(BlockingLinkedList, 1) {
+  public:
     _BlockingLinkedList(int capacity = -1) {
         mMutex = createMutex("BlockingLinkedList");
         mList = createLinkedList<T>();
@@ -85,27 +84,21 @@ public:
         return mList->size();
     }
 
-    inline int capacity() {
-        return mCapacity;
-    }
+    inline int capacity() { return mCapacity; }
 
-    inline void freeze() {
-        mMutex->unlock();
-    }
+    inline void freeze() { mMutex->unlock(); }
 
-    inline void unfreeze() {
-        mMutex->unlock();
-    }
+    inline void unfreeze() { mMutex->unlock(); }
 
-    inline bool putFirst(const T & val,long timeout = 0) {
+    inline bool putFirst(const T &val, long timeout = 0) {
         LINKED_LIST_ADD(mList->putFirst(val));
     }
 
-    inline bool putLast(const T &val,long timeout = 0) {
+    inline bool putLast(const T &val, long timeout = 0) {
         LINKED_LIST_ADD(mList->putLast(val));
     }
 
-    inline bool tryPutFirst(const T & val) {
+    inline bool tryPutFirst(const T &val) {
         LINKED_LIST_ADD_NOBLOCK(mList->putFirst(val));
     }
 
@@ -139,27 +132,21 @@ public:
         return mList->last();
     }
 
-    //add some simple function
-    inline bool put(T v) {
-        return putLast(v);
-    }
+    // add some simple function
+    inline bool put(T v) { return putLast(v); }
 
-    inline T take() {
-        return takeFirst();
-    }
+    inline T take() { return takeFirst(); }
 
-    inline T peek() {
-        return peekLast();
-    }
+    inline T peek() { return peekLast(); }
 
     inline T removeAt(int index) {
         AutoLock l(mMutex);
-        if(index < 0 || index >= mList->size() || mList->size() == 0) {
-            Trigger(ArrayIndexOutOfBoundsException,"incorrect index");
+        if (index < 0 || index >= mList->size() || mList->size() == 0) {
+            Trigger(ArrayIndexOutOfBoundsException, "incorrect index");
         }
-        
+
         T value = mList->removeAt(index);
-        if(mCapacity > 0) {
+        if (mCapacity > 0) {
             notFull->notify();
         }
         return value;
@@ -168,36 +155,34 @@ public:
     inline int remove(T value) {
         AutoLock l(mMutex);
         int index = mList->remove(value);
-        if(mCapacity > 0) {
+        if (mCapacity > 0) {
             notFull->notify();
         }
         return index;
     }
 
-    inline void foreach(std::function<int(T)> callback) {
+    inline void foreach (std::function<int(T)> callback) {
         AutoLock l(mMutex);
-        mList->foreach([&callback](T v){
-            return callback(v);
-        });
+        mList->foreach ([&callback](T v) { return callback(v); });
     }
 
     ArrayList<T> toArray() {
         AutoLock l(mMutex);
         ArrayList<T> list = createArrayList<T>();
-        mList->foreach([&list](T value){
+        mList->foreach ([&list](T value) {
             list->add(value);
             return Global::Continue;
         });
         return list;
     }
 
-    //destroy
+    // destroy
     inline void destroy() {
         AutoLock l(mMutex);
         mList->clear();
         isDestroy = true;
         notEmpty->notifyAll();
-        if(mCapacity > 0) {
+        if (mCapacity > 0) {
             notFull->notify();
         }
     }
@@ -208,7 +193,7 @@ public:
         notFull->notifyAll();
     }
 
-private:
+  private:
     LinkedList<T> mList;
     int mCapacity;
     Mutex mMutex;
@@ -217,5 +202,5 @@ private:
     bool isDestroy;
 };
 
-}
+} // namespace obotcha
 #endif

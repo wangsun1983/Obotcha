@@ -4,11 +4,11 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
-#include "InetAddress.hpp"
 #include "ByteArray.hpp"
-#include "WebSocketParser.hpp"
+#include "InetAddress.hpp"
+#include "String.hpp"
 #include "WebSocketHybi08Parser.hpp"
+#include "WebSocketParser.hpp"
 
 namespace obotcha {
 
@@ -16,11 +16,11 @@ namespace obotcha {
 /**
  * The primary difference between 07 and 08 is a version number.
  */
-DECLARE_CLASS(WebSocketHybi07Parser) IMPLEMENTS(WebSocketHybi08Parser){
+DECLARE_CLASS(WebSocketHybi07Parser) IMPLEMENTS(WebSocketHybi08Parser) {
 
-public:
+  public:
     int getVersion();
 };
 
-}
+} // namespace obotcha
 #endif

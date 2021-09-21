@@ -1,28 +1,28 @@
 #ifndef __OBOTCHA_CALENDAR_HPP__
 #define __OBOTCHA_CALENDAR_HPP__
 
+#include "DateTime.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "DateTime.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(Calendar) {
-public:
-
+  public:
     _Calendar();
-    
+
     _Calendar(sp<_Calendar>);
 
-    _Calendar(int _year,int _month,int _dayOfMonth,int _hour,int _minute,int _seconds,int mseconds);
+    _Calendar(int _year, int _month, int _dayOfMonth, int _hour, int _minute,
+              int _seconds, int mseconds);
 
     _Calendar(long long timeMillis);
 
-    void add(int type,uint64_t v);
+    void add(int type, uint64_t v);
 
     bool equals(Calendar);
 
-    bool set(int type,int value);
+    bool set(int type, int value);
 
     int get(int type);
 
@@ -38,8 +38,9 @@ public:
 
     static int caculateDayOfWeek(int y, int m, int d);
 
-    static bool isValid(int year, int month, int day, int hour, int minute, int second, int millisecond);
-    
+    static bool isValid(int year, int month, int day, int hour, int minute,
+                        int second, int millisecond);
+
     enum Month {
         January = 0,
         February,
@@ -54,7 +55,7 @@ public:
         November,
         December,
     };
-    
+
     enum WeekDay {
         Sunday = 0,
         Monday,
@@ -77,7 +78,7 @@ public:
         MSecond,
     };
 
-private:
+  private:
     long long timeMillis;
 
     int year;
@@ -114,7 +115,7 @@ private:
 
     void onUpdateMillseconds(uint64_t interval);
 
-    int caculateDayOfYear(int _year,int _month,int _dayOfMonth);
+    int caculateDayOfYear(int _year, int _month, int _dayOfMonth);
 
     int *getDays(int year);
 
@@ -128,8 +129,7 @@ private:
     static uint64_t MinuteMillsecond;
     static uint64_t HourMillsecond;
     static uint64_t DayMillsecond;
-    
 };
 
-}
+} // namespace obotcha
 #endif

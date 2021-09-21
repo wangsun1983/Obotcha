@@ -1,15 +1,15 @@
 #ifndef __OBOTCHA_BARRIER_HPP__
 #define __OBOTCHA_BARRIER_HPP__
 
+#include "Condition.hpp"
+#include "Mutex.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "Mutex.hpp"
-#include "Condition.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(Barrier) {
-public:
+  public:
     _Barrier(int);
 
     int await(long);
@@ -19,7 +19,8 @@ public:
     int getWaitNums();
 
     bool destroy();
-private:
+
+  private:
     Mutex mutex;
 
     Condition cond;
@@ -31,5 +32,5 @@ private:
     bool isDestroy;
 };
 
-}
+} // namespace obotcha
 #endif

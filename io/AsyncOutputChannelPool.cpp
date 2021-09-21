@@ -16,8 +16,9 @@ sp<_AsyncOutputChannelPool> _AsyncOutputChannelPool::getInstance() {
 
 void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel c) {
     AutoLock l(mMutex);
-    mChannels->put(c->getFileDescriptor()->getFd(),c);
-    mObserver->addObserver(c->getFileDescriptor()->getFd(),st(EPollFileObserver)::EpollOut,AutoClone(this));
+    mChannels->put(c->getFileDescriptor()->getFd(), c);
+    mObserver->addObserver(c->getFileDescriptor()->getFd(),
+                           st(EPollFileObserver)::EpollOut, AutoClone(this));
 }
 
 void _AsyncOutputChannelPool::remove(AsyncOutputChannel c) {
@@ -28,18 +29,18 @@ void _AsyncOutputChannelPool::remove(AsyncOutputChannel c) {
 
 _AsyncOutputChannelPool::_AsyncOutputChannelPool() {
     mObserver = createEPollFileObserver();
-    mChannels = createHashMap<int,AsyncOutputChannel>();
+    mChannels = createHashMap<int, AsyncOutputChannel>();
     mMutex = createMutex();
 }
 
-int _AsyncOutputChannelPool::onEvent(int fd,uint32_t events) {
-    if((events & st(EPollFileObserver)::EpollOut) != 0) {
+int _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) {
+    if ((events & st(EPollFileObserver)::EpollOut) != 0) {
         AsyncOutputChannel ch = nullptr;
         {
             AutoLock l(mMutex);
             ch = mChannels->get(fd);
         }
-        if(ch != nullptr) {
+        if (ch != nullptr) {
             ch->notifyWrite();
         }
     }
@@ -47,4 +48,4 @@ int _AsyncOutputChannelPool::onEvent(int fd,uint32_t events) {
     return st(EPollFileObserver)::OnEventOK;
 }
 
-}
+} // namespace obotcha

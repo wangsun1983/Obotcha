@@ -3,10 +3,10 @@
 
 #include "co_routine.h"
 
-#include "StrongPointer.hpp"
 #include "Object.hpp"
 #include "Runnable.hpp"
 #include "String.hpp"
+#include "StrongPointer.hpp"
 
 namespace obotcha {
 
@@ -14,12 +14,12 @@ class _FilaCroutine;
 
 DECLARE_CLASS(Filament) {
 
-public:
+  public:
     friend class _FilaCroutine;
 
     _Filament(Runnable);
 
-    _Filament(String,Runnable);
+    _Filament(String, Runnable);
 
     void start();
 
@@ -29,7 +29,7 @@ public:
 
     void destroy();
 
-private:
+  private:
     static void *localFilaRun(void *args);
 
     stCoRoutine_t *coa;
@@ -39,5 +39,5 @@ private:
     String mName;
 };
 
-}
+} // namespace obotcha
 #endif

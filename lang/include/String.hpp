@@ -1,31 +1,30 @@
 #ifndef __OBOTCHA_STRING_HPP__
 #define __OBOTCHA_STRING_HPP__
 
-#include <string>
 #include <iostream>
 #include <stdarg.h>
+#include <string>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
 #include "Boolean.hpp"
+#include "Byte.hpp"
+#include "ByteArray.hpp"
 #include "Double.hpp"
 #include "Float.hpp"
 #include "Integer.hpp"
 #include "Long.hpp"
-#include "Uint8.hpp"
 #include "Uint16.hpp"
 #include "Uint32.hpp"
 #include "Uint64.hpp"
-#include "Byte.hpp"
-#include "ByteArray.hpp"
+#include "Uint8.hpp"
 
 namespace obotcha {
 
-template<typename T>
-class _ArrayList;
+template <typename T> class _ArrayList;
 
-#define S(x)  createString(x)
+#define S(x) createString(x)
 
 DECLARE_CLASS(String) {
 public:
@@ -33,23 +32,23 @@ public:
 
     _String();
 
-    _String(std::string *v);
+    _String(std::string * v);
 
     _String(const std::string v);
 
-    _String(const String & v);
+    _String(const String &v);
 
     _String(const char *v);
 
-    _String(const char *v,int start,int length);
+    _String(const char *v, int start, int length);
 
     _String(const Integer &v);
 
     _String(const Boolean &v);
 
-    _String(const Float &v,int precision = 16);
+    _String(const Float &v, int precision = 16);
 
-    _String(const Double &v,int precision = 16);
+    _String(const Double &v, int precision = 16);
 
     _String(const Long &v);
 
@@ -69,9 +68,9 @@ public:
 
     //_String(bool v);
 
-    _String(float v,int precision = 16);
+    _String(float v, int precision = 16);
 
-    _String(double v,int precision = 16);
+    _String(double v, int precision = 16);
 
     _String(long v);
 
@@ -91,11 +90,11 @@ public:
 
     void update(std::string);
 
-    const char * toChars();
+    const char *toChars();
 
     char charAt(int index);
 
-    String subString(int start,int length);
+    String subString(int start, int length);
 
     String trim();
 
@@ -127,7 +126,7 @@ public:
 
     Uint32 toUint32();
 
-    Uint64 toUint64();    
+    Uint64 toUint64();
 
     int toBasicInt();
 
@@ -191,7 +190,7 @@ public:
 
     static String className();
 
-    static bool equalsIgnoreCase(const char *,const char *,int len = -1);
+    static bool equalsIgnoreCase(const char *, const char *, int len = -1);
 
     std::string getStdString();
 
@@ -199,12 +198,12 @@ public:
 
     String toUpperCase();
 
-    //need support String/std::string/char *
+    // need support String/std::string/char *
     //----------------------------
     bool contains(const String &val);
 
     bool contains(std::string val);
-    
+
     bool contains(const char *val);
     //----------------------------
     int indexOf(const String &v);
@@ -215,8 +214,7 @@ public:
 
     int indexOf(char v);
     //----------------------------
-    template<class ...T>
-    String append(T...args);
+    template <class... T> String append(T... args);
     //----------------------------
     bool equals(const String &s);
 
@@ -228,59 +226,59 @@ public:
 
     bool equalsIgnoreCase(std::string str);
 
-    bool equalsIgnoreCase(const char * str);
+    bool equalsIgnoreCase(const char *str);
 
-    bool equalsIgnoreCase(const char * str,int csize);
+    bool equalsIgnoreCase(const char *str, int csize);
 
     //----------------------------
     int indexOfIgnoreCase(const String &str);
 
     int indexOfIgnoreCase(std::string str);
 
-    int indexOfIgnoreCase(const char * str);
+    int indexOfIgnoreCase(const char *str);
 
-    int indexOfIgnoreCase(const char * str,int size);
+    int indexOfIgnoreCase(const char *str, int size);
 
     //----------------------------
     bool containsIgnoreCase(const String &val);
 
     bool containsIgnoreCase(std::string str);
 
-    bool containsIgnoreCase(const char * str);
+    bool containsIgnoreCase(const char *str);
     //----------------------------
     bool startsWithIgnoreCase(const String &str);
-    
+
     bool startsWithIgnoreCase(std::string str);
 
-    bool startsWithIgnoreCase(const char * str);
+    bool startsWithIgnoreCase(const char *str);
     //----------------------------
     bool endsWithIgnoreCase(const String &s);
 
     bool endsWithIgnoreCase(std::string str);
 
-    bool endsWithIgnoreCase(const char * str);
+    bool endsWithIgnoreCase(const char *str);
 
-    bool endsWithIgnoreCase(const char * str,int size);
+    bool endsWithIgnoreCase(const char *str, int size);
     //----------------------------
     int lastIndexOfIgnoreCase(const String &v);
 
     int lastIndexOfIgnoreCase(std::string v);
 
-    int lastIndexOfIgnoreCase(const char * v);
+    int lastIndexOfIgnoreCase(const char *v);
 
-    int lastIndexOfIgnoreCase(const char * v,int size);
+    int lastIndexOfIgnoreCase(const char *v, int size);
     //----------------------------
-    sp<_String> replaceFirst(const String &regex,String v);
+    sp<_String> replaceFirst(const String &regex, String v);
 
-    sp<_String> replaceFirst(const char *regex,const char*v);
+    sp<_String> replaceFirst(const char *regex, const char *v);
 
-    sp<_String> replaceFirst(std::string regex,std::string v);
+    sp<_String> replaceFirst(std::string regex, std::string v);
     //----------------------------
-    sp<_String> replaceAll(const String &regex,const String &v);
+    sp<_String> replaceAll(const String &regex, const String &v);
 
-    sp<_String> replaceAll(const char* regex,const char* v);
+    sp<_String> replaceAll(const char *regex, const char *v);
 
-    sp<_String> replaceAll(std::string regex,std::string v);
+    sp<_String> replaceAll(std::string regex, std::string v);
     //----------------------------
     bool endsWith(const String &s);
 
@@ -290,21 +288,21 @@ public:
     //----------------------------
     int lastIndexOf(const String &v);
 
-    int lastIndexOf(const char * v);
+    int lastIndexOf(const char *v);
 
     int lastIndexOf(std::string v);
     //----------------------------
     bool startsWith(const String &v);
 
-    bool startsWith(const char * v);
+    bool startsWith(const char *v);
 
     bool startsWith(std::string v);
     //----------------------------
     sp<_ArrayList<String>> split(const String &v);
 
-    sp<_ArrayList<String>> split(const char* v);
+    sp<_ArrayList<String>> split(const char *v);
 
-    sp<_ArrayList<String>> split(const char* v,int size);
+    sp<_ArrayList<String>> split(const char *v, int size);
 
     sp<_ArrayList<String>> split(std::string v);
     //----------------------------
@@ -313,64 +311,59 @@ public:
 
     bool isEmpty();
 
-    bool matches(const String &regex);//Not Test
+    bool matches(const String &regex); // Not Test
 
     ~_String();
 
 private:
     std::string m_str;
 
-    //local function
-    template<typename... Args>
-    void _append(const sp<_String> &v,Args...args);
+    // local function
+    template <typename... Args>
+    void _append(const sp<_String> &v, Args... args);
 
-    template<typename... Args>
-    void _append(const char *v,Args...args);
+    template <typename... Args> void _append(const char *v, Args... args);
 
-    template<typename... Args>
-    void _append(std::string,Args...args);
+    template <typename... Args> void _append(std::string, Args... args);
 
     void _append();
 
-    static String _format(const char *fmt,va_list args);
+    static String _format(const char *fmt, va_list args);
 
-    const static  unsigned char IgnoreCaseTable[128];
-    const static  unsigned char toLowCaseTable[128];
-    const static  unsigned char toUpCaseTable[128];
-    const static  int FormatBuffLength;
+    const static unsigned char IgnoreCaseTable[128];
+    const static unsigned char toLowCaseTable[128];
+    const static unsigned char toUpCaseTable[128];
+    const static int FormatBuffLength;
 
     const static std::string False;
     const static std::string True;
 };
 
-template<class ...Args>
-sp<_String> _String::append(Args... args) {
+template <class... Args> sp<_String> _String::append(Args... args) {
     String str = createString(m_str);
     str->_append(std::forward<Args>(args)...);
     return str;
 }
 
-template<class ...Args>
-void _String::_append(const sp<_String> &v,Args... args) {
-    if(v != nullptr) {
+template <class... Args>
+void _String::_append(const sp<_String> &v, Args... args) {
+    if (v != nullptr) {
         m_str.append(v->m_str);
         _append(std::forward<Args>(args)...);
     }
 }
 
-template<class ...Args>
-void _String::_append(const char *v,Args... args) {
-    if(v != nullptr) {
+template <class... Args> void _String::_append(const char *v, Args... args) {
+    if (v != nullptr) {
         m_str.append(v);
         _append(std::forward<Args>(args)...);
     }
 }
 
-template<class ...Args>
-void _String::_append(std::string v,Args... args) {
+template <class... Args> void _String::_append(std::string v, Args... args) {
     m_str.append(v);
     _append(std::forward<Args>(args)...);
 }
 
-}
+} // namespace obotcha
 #endif

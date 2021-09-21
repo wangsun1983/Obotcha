@@ -14,9 +14,9 @@ SSLManager _SSLManager::getInstance() {
     return mInstance;
 }
 
-void _SSLManager::add(int fd ,SSLInfo info) {
+void _SSLManager::add(int fd, SSLInfo info) {
     AutoLock ll(mMutex);
-    mSSLMap->put(fd,info);
+    mSSLMap->put(fd, info);
 }
 
 SSLInfo _SSLManager::get(int fd) {
@@ -30,8 +30,8 @@ void _SSLManager::remove(int fd) {
 }
 
 _SSLManager::_SSLManager() {
-    mSSLMap = createHashMap<int,SSLInfo>();
+    mSSLMap = createHashMap<int, SSLInfo>();
     mMutex = createMutex("SSLManagerMutex");
 }
 
-}
+} // namespace obotcha

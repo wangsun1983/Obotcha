@@ -3,16 +3,15 @@
 
 #include <pthread.h>
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "Lock.hpp"
+#include "Object.hpp"
 #include "String.hpp"
-
+#include "StrongPointer.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(SpinLock) IMPLEMENTS(Lock) {
-public:
+  public:
     _SpinLock(String);
 
     _SpinLock(const char *);
@@ -29,11 +28,11 @@ public:
 
     String toString();
 
-private:
+  private:
     String mSpinLockName;
 
     pthread_spinlock_t mLock;
 };
 
-}
+} // namespace obotcha
 #endif

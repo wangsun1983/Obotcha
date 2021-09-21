@@ -10,12 +10,12 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpHeaderContentParser) {
 
-public:
+  public:
     _HttpHeaderContentParser();
     static int skipUntil(String input, int pos, String characters);
     static int skipWhitespace(String input, int pos);
     static int parseSeconds(String value, int defaultValue);
 };
 
-}
+} // namespace obotcha
 #endif

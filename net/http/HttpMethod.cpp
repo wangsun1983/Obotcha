@@ -33,89 +33,89 @@ const String _HttpMethod::UnlinkString = createString("UNLINK");
 const String _HttpMethod::SourceString = createString("SOURCE");
 
 String _HttpMethod::toString(int method) {
-    switch(method) {
-        case Delete:
+    switch (method) {
+    case Delete:
         return DeleteString;
 
-        case Get:
+    case Get:
         return GetString;
 
-        case Head:
+    case Head:
         return HeadString;
 
-        case Post:
+    case Post:
         return PostString;
 
-        case Put:
+    case Put:
         return PutString;
 
-        case Connect:
+    case Connect:
         return ConnectString;
 
-        case Options:
+    case Options:
         return OptionsString;
 
-        case Trace:
+    case Trace:
         return TraceString;
 
-        case Copy:
+    case Copy:
         return CopyString;
 
-        case Lock:
+    case Lock:
         return LockString;
 
-        case Mkcol:
+    case Mkcol:
         return MkcolString;
 
-        case Move:
+    case Move:
         return MoveString;
 
-        case PropFind:
+    case PropFind:
         return PropFindString;
 
-        case PropPatch:
+    case PropPatch:
         return PropPatchString;
 
-        case Unlock:
+    case Unlock:
         return UnlockString;
 
-        case Report:
+    case Report:
         return ReportString;
 
-        case MkActivity:
+    case MkActivity:
         return MkActivityString;
 
-        case Checkout:
+    case Checkout:
         return CheckoutString;
 
-        case Merge:
+    case Merge:
         return MergeString;
 
-        case Msearch:
+    case Msearch:
         return MsearchString;
 
-        case Notify:
+    case Notify:
         return NotifyString;
 
-        case Subscribe:
+    case Subscribe:
         return SubscribeString;
 
-        case UnSubscribe:
+    case UnSubscribe:
         return UnSubscribeString;
 
-        case Patch:
+    case Patch:
         return PatchString;
 
-        case Link:
+    case Link:
         return LinkString;
 
-        case Purge:
+    case Purge:
         return PurgeString;
 
-        case Unlink:
+    case Unlink:
         return UnlinkString;
 
-        case Source:
+    case Source:
         return SourceString;
     }
 
@@ -123,26 +123,26 @@ String _HttpMethod::toString(int method) {
 }
 
 int _HttpMethod::toInt(String method) {
-    if(method->equals(GetString)) {
+    if (method->equals(GetString)) {
         return Get;
-    } else if(method->equals(PutString)) {
+    } else if (method->equals(PutString)) {
         return Put;
-    } else if(method->equals(PostString)) {
+    } else if (method->equals(PostString)) {
         return Post;
-    } else if(method->equals(HeadString)) {
+    } else if (method->equals(HeadString)) {
         return Head;
-    } else if(method->equals(OptionsString)) {
+    } else if (method->equals(OptionsString)) {
         return Options;
-    } else if(method->equals(PatchString)) {
+    } else if (method->equals(PatchString)) {
         return Patch;
-    } else if(method->equals(TraceString)) {
+    } else if (method->equals(TraceString)) {
         return Trace;
-    } else if(method->equals(ConnectString)) {
+    } else if (method->equals(ConnectString)) {
         return Connect;
     }
-    //TODO
+    // TODO
 
     return -1;
 }
 
-}
+} // namespace obotcha

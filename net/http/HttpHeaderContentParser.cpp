@@ -4,24 +4,25 @@
 namespace obotcha {
 
 _HttpHeaderContentParser::_HttpHeaderContentParser() {
-    //Nothing
+    // Nothing
 }
 
-int _HttpHeaderContentParser::skipUntil(String input, int pos, String characters) {
+int _HttpHeaderContentParser::skipUntil(String input, int pos,
+                                        String characters) {
     for (; pos < input->size(); pos++) {
-      if (characters->indexOf(input->charAt(pos)) != -1) {
-        break;
-      }
+        if (characters->indexOf(input->charAt(pos)) != -1) {
+            break;
+        }
     }
     return pos;
 }
 
 int _HttpHeaderContentParser::skipWhitespace(String input, int pos) {
     for (; pos < input->size(); pos++) {
-      char c = input->charAt(pos);
-      if (c != ' ' && c != '\t') {
-        break;
-      }
+        char c = input->charAt(pos);
+        if (c != ' ' && c != '\t') {
+            break;
+        }
     }
     return pos;
 }
@@ -33,9 +34,8 @@ int _HttpHeaderContentParser::parseSeconds(String value, int defaultValue) {
     } else if (seconds < 0) {
         return 0;
     } else {
-        return (int) seconds;
+        return (int)seconds;
     }
-
 }
 
-}
+} // namespace obotcha

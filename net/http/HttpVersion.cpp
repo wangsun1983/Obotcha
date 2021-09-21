@@ -1,9 +1,9 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
-#include "HttpVersion.hpp"
 #include "HttpText.hpp"
+#include "HttpVersion.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
@@ -12,32 +12,23 @@ _HttpVersion::_HttpVersion() {
     mMinorVer = 1;
 }
 
-_HttpVersion::_HttpVersion(int major,int minor) {
+_HttpVersion::_HttpVersion(int major, int minor) {
     mMajorVer = major;
     mMinorVer = minor;
 }
-    
-int _HttpVersion::getMajorVer() {
-    return mMajorVer;
-}
 
-int _HttpVersion::getMinorVer() {
-    return mMinorVer;
-}
+int _HttpVersion::getMajorVer() { return mMajorVer; }
 
-void _HttpVersion::setMajorVer(int v) {
-    mMajorVer = v;
-}
+int _HttpVersion::getMinorVer() { return mMinorVer; }
 
-void _HttpVersion::setMinorVer(int v) {
-    mMinorVer = v;
-}
+void _HttpVersion::setMajorVer(int v) { mMajorVer = v; }
+
+void _HttpVersion::setMinorVer(int v) { mMinorVer = v; }
 
 String _HttpVersion::toString() {
-    String version = st(HttpText)::ContentHttp->append("/",
-                    createString(mMajorVer),".",createString(mMinorVer));
+    String version = st(HttpText)::ContentHttp->append(
+        "/", createString(mMajorVer), ".", createString(mMinorVer));
     return version;
 }
 
-}
-
+} // namespace obotcha

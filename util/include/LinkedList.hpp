@@ -1,32 +1,29 @@
 #ifndef __OBOTCHA_LINKED_LIST_HPP__
 #define __OBOTCHA_LINKED_LIST_HPP__
 
-#include <vector>
 #include <algorithm>
 #include <functional>
+#include <vector>
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
 #include "Boolean.hpp"
+#include "ContainerValue.hpp"
 #include "Double.hpp"
 #include "Float.hpp"
 #include "Integer.hpp"
 #include "Long.hpp"
+#include "MethodNotSupportException.hpp"
+#include "Object.hpp"
 #include "String.hpp"
-#include "MethodNotSupportException.hpp"
-#include "ArrayIndexOutOfBoundsException.hpp"
-#include "MethodNotSupportException.hpp"
-#include "ContainerValue.hpp"
+#include "StrongPointer.hpp"
 
 namespace obotcha {
-    
-template<typename T>
-class _LinkedListIterator;
 
-template<typename T>
-class _LinkedList;
+template <typename T> class _LinkedListIterator;
 
-DECLARE_TEMPLATE_CLASS(LinkedListData,1) {
+template <typename T> class _LinkedList;
+
+DECLARE_TEMPLATE_CLASS(LinkedListData, 1) {
 public:
     friend class _LinkedList<T>;
     friend class _LinkedListIterator<T>;
@@ -42,52 +39,49 @@ public:
 
 private:
     T data;
-
 };
 
 //----------------- LinkedList ---------------------
-DECLARE_TEMPLATE_CLASS(LinkedList,1) {
+DECLARE_TEMPLATE_CLASS(LinkedList, 1) {
 public:
     friend class _LinkedListIterator<T>;
 
-    _LinkedList(){
+    _LinkedList() {
         head = nullptr;
         tail = nullptr;
         count = 0;
     }
 
-    int size() {
-        return count;
-    }
+    int size() { return count; }
 
-    bool isEmpty() {
-        return (head == nullptr);
-    }
+    bool isEmpty() { return (head == nullptr); }
 
     T first() {
-        return (head == nullptr)?ContainerValue<T>(nullptr).get():head->data;
+        return (head == nullptr) ? ContainerValue<T>(nullptr).get()
+                                 : head->data;
     }
 
     T last() {
-        return (tail == nullptr)?ContainerValue<T>(nullptr).get():tail->data;
+        return (tail == nullptr) ? ContainerValue<T>(nullptr).get()
+                                 : tail->data;
     }
 
     void putLast(const T &t) {
         LinkedListData<T> data = createLinkedListData<T>(t);
         count++;
-        
+
         data->prev = tail;
         tail = data;
-        ((head==nullptr)?head:data->prev->next) = data;
+        ((head == nullptr) ? head : data->prev->next) = data;
     }
 
     T at(int index) {
         sp<_LinkedListData<T>> cursor = head;
-        if(cursor == nullptr || index >= count) {
+        if (cursor == nullptr || index >= count) {
             return ContainerValue<T>(nullptr).get();
         }
 
-        for(int i = 0;i != index;i++) {
+        for (int i = 0; i != index; i++) {
             cursor = cursor->next;
         }
 
@@ -97,18 +91,18 @@ public:
     void putFirst(const T &t) {
         LinkedListData<T> data = createLinkedListData<T>(t);
         count++;
-        
+
         data->next = head;
         head = data;
-        ((tail==nullptr)?tail:data->next->prev) = data;
+        ((tail == nullptr) ? tail : data->next->prev) = data;
     }
 
     T takeLast() {
         T data;
-        if(count != 0) {
+        if (count != 0) {
             data = tail->data;
             tail = tail->prev;
-            ((tail == nullptr)?head:tail->next) = nullptr;
+            ((tail == nullptr) ? head : tail->next) = nullptr;
             count--;
         }
         return data;
@@ -116,36 +110,36 @@ public:
 
     T takeFirst() {
         T data;
-        if(count != 0) {
+        if (count != 0) {
             data = head->data;
             head = head->next;
-            ((head == nullptr)?tail:head->prev) = nullptr;
+            ((head == nullptr) ? tail : head->prev) = nullptr;
             count--;
         }
 
         return data;
     }
 
-    //add foreach lambda
+    // add foreach lambda
     using foreachCallback = std::function<int(T)>;
-    inline void foreach(foreachCallback callback) {
+    inline void foreach (foreachCallback callback) {
         LinkedListData<T> current = head;
-        while(current != nullptr) {
-            if(callback(current->data) == Global::Break) {
+        while (current != nullptr) {
+            if (callback(current->data) == Global::Break) {
                 break;
             }
             current = current->next;
         }
     }
-    
+
     sp<_LinkedListIterator<T>> getIterator() {
         return new _LinkedListIterator<T>(this);
     }
 
     void clear() {
         LinkedListData<T> current = head;
-        while(head != nullptr) {
-            if(head->next != nullptr) {
+        while (head != nullptr) {
+            if (head->next != nullptr) {
                 head->next->prev = nullptr;
             }
             head->next = nullptr;
@@ -155,17 +149,17 @@ public:
         count = 0;
     }
 
-    //add remove/removeAt
+    // add remove/removeAt
     T removeAt(int index) {
-        if(index >= count || index < 0) {
+        if (index >= count || index < 0) {
             return ContainerValue<T>(nullptr).get();
         }
-        
+
         auto iterator = this->getIterator();
-        for(int i = 0;i<index;i++) {
+        for (int i = 0; i < index; i++) {
             iterator->next();
         }
-        
+
         T result = iterator->getValue();
         iterator->remove();
         return result;
@@ -174,8 +168,8 @@ public:
     int remove(T v) {
         auto iterator = this->getIterator();
         int index = 0;
-        while(iterator->hasValue()) {
-            if(iterator->getValue() == v) {
+        while (iterator->hasValue()) {
+            if (iterator->getValue() == v) {
                 iterator->remove();
                 return index;
             }
@@ -193,11 +187,11 @@ private:
 };
 
 //----------------- ArrayListIterator ---------------------
-DECLARE_TEMPLATE_CLASS(LinkedListIterator,1) {
+DECLARE_TEMPLATE_CLASS(LinkedListIterator, 1) {
 public:
-    _LinkedListIterator(_LinkedList<T> *list) {
+    _LinkedListIterator(_LinkedList<T> * list) {
         mList.set_pointer(list);
-        current = mList->head; 
+        current = mList->head;
     }
 
     _LinkedListIterator(LinkedList<T> list) {
@@ -205,16 +199,12 @@ public:
         current = mList->head;
     }
 
-    T getValue() {
-        return current->data;
-    }
+    T getValue() { return current->data; }
 
-    bool hasValue() {
-        return current != nullptr;
-    }
+    bool hasValue() { return current != nullptr; }
 
     bool next() {
-        if(current == nullptr) {
+        if (current == nullptr) {
             return false;
         }
 
@@ -223,15 +213,15 @@ public:
     }
 
     bool remove() {
-        if(current == nullptr) {
+        if (current == nullptr) {
             return false;
         }
 
         LinkedListData<T> t = current->next;
 
-        if(current == mList->head) {
+        if (current == mList->head) {
             mList->takeFirst();
-        } else if(current == mList->tail) {
+        } else if (current == mList->tail) {
             mList->takeLast();
         } else {
             current->next->prev = current->prev;
@@ -241,17 +231,17 @@ public:
 
         current = t;
 
-        if(t == nullptr) {
+        if (t == nullptr) {
             return false;
         }
 
         return true;
     }
- 
+
 private:
     LinkedList<T> mList;
     LinkedListData<T> current;
 };
 
-}
+} // namespace obotcha
 #endif

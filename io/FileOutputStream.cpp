@@ -10,20 +10,20 @@
  * @license none
  */
 
-#include <unistd.h>
 #include <fcntl.h>
+#include <unistd.h>
 
-#include "FileOutputStream.hpp"
-#include "Exception.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
+#include "Exception.hpp"
+#include "FileOutputStream.hpp"
 
 namespace obotcha {
 
-_FileOutputStream::_FileOutputStream(File file):_FileOutputStream(file->getAbsolutePath()) {
-}
+_FileOutputStream::_FileOutputStream(File file)
+    : _FileOutputStream(file->getAbsolutePath()) {}
 
-_FileOutputStream::_FileOutputStream(const char *path):_FileOutputStream(createString(path)) {
-}
+_FileOutputStream::_FileOutputStream(const char *path)
+    : _FileOutputStream(createString(path)) {}
 
 _FileOutputStream::_FileOutputStream(String path) {
     mPath = path;
@@ -36,90 +36,90 @@ _FileOutputStream::_FileOutputStream(int fd) {
 }
 
 long _FileOutputStream::write(char c) {
-    if(fd < 0) {
+    if (fd < 0) {
         return -1;
     }
 
-    return ::write(fd,&c,1);
+    return ::write(fd, &c, 1);
 }
 
 long _FileOutputStream::write(ByteArray buff) {
-    if(fd < 0) {
+    if (fd < 0) {
         return -1;
     }
 
-    return ::write(fd,buff->toValue(),buff->size());
+    return ::write(fd, buff->toValue(), buff->size());
 }
 
-long _FileOutputStream::write(ByteArray buff,int start) {
-    if(fd < 0) {
+long _FileOutputStream::write(ByteArray buff, int start) {
+    if (fd < 0) {
         return -1;
     }
 
-    return ::write(fd,&buff->toValue()[start],buff->size() - start);
+    return ::write(fd, &buff->toValue()[start], buff->size() - start);
 }
 
-long _FileOutputStream::write(ByteArray buff,int start,int len) {
-    if(fd < 0) {
+long _FileOutputStream::write(ByteArray buff, int start, int len) {
+    if (fd < 0) {
         return -1;
     }
 
-    if(len > (buff->size() - start)) {
-        Trigger(ArrayIndexOutOfBoundsException,"out ouf bound");
+    if (len > (buff->size() - start)) {
+        Trigger(ArrayIndexOutOfBoundsException, "out ouf bound");
     }
 
-    return ::write(fd,&buff->toValue()[start],len);
+    return ::write(fd, &buff->toValue()[start], len);
 }
-
 
 long _FileOutputStream::writeString(String s) {
-    if(fd < 0) {
+    if (fd < 0) {
         return -1;
     }
-    
-    return ::write(fd,s->toChars(),s->size());
+
+    return ::write(fd, s->toChars(), s->size());
 }
 
 bool _FileOutputStream::open() {
-    if(fd >= 0) {
+    if (fd >= 0) {
         return false;
     }
 
-    fd = ::open(mPath->toChars(),O_CREAT|O_RDWR|O_TRUNC,S_IRUSR|S_IWUSR);
+    fd =
+        ::open(mPath->toChars(), O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
     return (fd >= 0);
 }
 
 bool _FileOutputStream::open(int opentype) {
-    if(fd >= 0) {
+    if (fd >= 0) {
         return false;
     }
 
-    switch(opentype) {
-        case FileOpenType::Append:
-            fd = ::open(mPath->toChars(),O_CREAT|O_RDWR|O_APPEND,S_IRUSR|S_IWUSR);
+    switch (opentype) {
+    case FileOpenType::Append:
+        fd = ::open(mPath->toChars(), O_CREAT | O_RDWR | O_APPEND,
+                    S_IRUSR | S_IWUSR);
         break;
 
-        case FileOpenType::Trunc:
-            fd = ::open(mPath->toChars(),O_CREAT|O_RDWR|O_TRUNC,S_IRUSR|S_IWUSR);
+    case FileOpenType::Trunc:
+        fd = ::open(mPath->toChars(), O_CREAT | O_RDWR | O_TRUNC,
+                    S_IRUSR | S_IWUSR);
         break;
     }
 
     return (fd >= 0);
 }
-    
+
 void _FileOutputStream::close() {
-    if(fd >= 0) {
+    if (fd >= 0) {
         ::close(fd);
         fd = -1;
     }
 }
 
-void _FileOutputStream::flush() {
-    fdatasync(fd);
-}
+void _FileOutputStream::flush() { fdatasync(fd); }
 
 _FileOutputStream::~_FileOutputStream() {
-    //close();
+    // close();
 }
 
-}
+} // namespace obotcha

@@ -5,30 +5,30 @@
 #include "StrongPointer.hpp"
 
 #include "ByteArray.hpp"
+#include "HttpOption.hpp"
+#include "HttpServer.hpp"
+#include "ServerSocket.hpp"
 #include "Socket.hpp"
 #include "SocketOption.hpp"
-#include "ServerSocket.hpp"
-#include "HttpServer.hpp"
-#include "HttpOption.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(HttpServerBuilder) {
-public:
+  public:
     _HttpServerBuilder();
-    
-    _HttpServerBuilder* setAddress(InetAddress);
-    _HttpServerBuilder* setListener(HttpListener);
-    _HttpServerBuilder* setOption(HttpOption);
+
+    _HttpServerBuilder *setAddress(InetAddress);
+    _HttpServerBuilder *setListener(HttpListener);
+    _HttpServerBuilder *setOption(HttpOption);
 
     HttpServer build();
-    
-private:
+
+  private:
     InetAddress mAddress;
     HttpOption mOption;
     HttpListener mListener;
 };
 
-}
+} // namespace obotcha
 
 #endif

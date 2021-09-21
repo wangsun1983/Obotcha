@@ -4,10 +4,10 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "ArrayList.hpp"
 #include "Closeable.hpp"
 #include "Mutex.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
@@ -19,16 +19,16 @@ public:
     static void exit(int);
 
     static int availableProcessors();
-    
+
     static int onlineProcessors();
 
     static String executeForResult(String cmd);
 
     static void execute(String cmd);
 
-    static void getNextTime(long timeInterval,struct timespec *ts);
-    
-    static void getTimeVal(long timeInterval,struct timeval *tv);
+    static void getNextTime(long timeInterval, struct timespec *ts);
+
+    static void getTimeVal(long timeInterval, struct timeval *tv);
 
     static int myPid();
 
@@ -39,5 +39,5 @@ private:
     static ArrayList<Closeable> mListeners;
 };
 
-}
+} // namespace obotcha
 #endif

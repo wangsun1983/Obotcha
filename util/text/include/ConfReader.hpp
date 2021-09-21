@@ -1,9 +1,9 @@
 #ifndef __OBOTCHA_CONF_READER_H__
 #define __OBOTCHA_CONF_READER_H__
 
+#include "File.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "File.hpp"
 
 extern "C" {
 #include "ccl.h"
@@ -14,11 +14,10 @@ namespace obotcha {
 class _ConfIterator;
 
 DECLARE_CLASS(ConfReader) {
-
 public:
     friend class _ConfIterator;
 
-    _ConfReader(const char* path);
+    _ConfReader(const char *path);
 
     _ConfReader(String path);
 
@@ -43,19 +42,18 @@ public:
     _ConfIterator(ConfReader r);
 
     String getTag();
-    
+
     String getValue();
 
     bool hasValue();
-    
+
     bool next();
 
 private:
     sp<_ConfReader> reader;
-    struct ccl_pair_t* iterator;
+    struct ccl_pair_t *iterator;
 };
 
-
-}
+} // namespace obotcha
 
 #endif

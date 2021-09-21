@@ -9,9 +9,7 @@ class _YamlValue;
 class _YamlArray;
 
 DECLARE_CLASS(YamlReader) {
-
 public:
-
     _YamlReader(String content);
 
     _YamlReader(File file);
@@ -22,9 +20,8 @@ public:
 
 private:
     sp<_YamlValue> mValue;
-
 };
 
-}
+} // namespace obotcha
 
 #endif

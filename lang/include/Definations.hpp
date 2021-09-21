@@ -11,7 +11,6 @@ enum Global {
     Continue,
 };
 
-
 }
 
 #endif

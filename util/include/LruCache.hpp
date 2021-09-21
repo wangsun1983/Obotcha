@@ -1,39 +1,39 @@
 #ifndef __OBOTCHA_LRU_CACHE_HPP__
 #define __OBOTCHA_LRU_CACHE_HPP__
 
-#include <map>
 #include <algorithm>
+#include <map>
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "Boolean.hpp"
 #include "Double.hpp"
 #include "Float.hpp"
 #include "Integer.hpp"
 #include "Long.hpp"
-#include "String.hpp"
 #include "Mutex.hpp"
+#include "Object.hpp"
+#include "String.hpp"
+#include "StrongPointer.hpp"
 
 #include "ArrayList.hpp"
 #include "HashMap.hpp"
 
 namespace obotcha {
 
-DECLARE_TEMPLATE_CLASS(LruNode,2) {
+DECLARE_TEMPLATE_CLASS(LruNode, 2) {
 public:
-    _LruNode(T t,U u) {
+    _LruNode(T t, U u) {
         tag = t;
         mData = u;
     }
 
-    sp<_LruNode<T,U>> next;
-    sp<_LruNode<T,U>> prev;
+    sp<_LruNode<T, U>> next;
+    sp<_LruNode<T, U>> prev;
 
     U mData;
     T tag;
 };
 
-DECLARE_TEMPLATE_CLASS(LruCache,2) {
+DECLARE_TEMPLATE_CLASS(LruCache, 2) {
 public:
     _LruCache(int s) {
         mMaxSize = s;
@@ -41,28 +41,28 @@ public:
         mHead = nullptr;
         mCurrentSize = 0;
 
-        mHashMap = createHashMap<T,sp<_LruNode<T,U>>>();
+        mHashMap = createHashMap<T, sp<_LruNode<T, U>>>();
     }
 
-    void put(T t,U u) {
-        sp<_LruNode<T,U>> node = mHashMap->get(t);
-        if(node != nullptr) {
+    void put(T t, U u) {
+        sp<_LruNode<T, U>> node = mHashMap->get(t);
+        if (node != nullptr) {
             removeNode(node);
         } else {
-            if(mCurrentSize == mMaxSize) {
-                sp<_LruNode<T,U>> tail = removeTail();
+            if (mCurrentSize == mMaxSize) {
+                sp<_LruNode<T, U>> tail = removeTail();
                 mHashMap->remove(tail->tag);
             }
         }
-        node = createLruNode<T,U>(t,u);
-        mHashMap->put(t,node);
+        node = createLruNode<T, U>(t, u);
+        mHashMap->put(t, node);
         addNode(node);
     }
 
     U get(T t) {
-        sp<_LruNode<T,U>> node = mHashMap->get(t);
-        if(node != nullptr) {
-            //update node
+        sp<_LruNode<T, U>> node = mHashMap->get(t);
+        if (node != nullptr) {
+            // update node
             removeNode(node);
             addNode(node);
             return node->mData;
@@ -72,8 +72,8 @@ public:
     }
 
     U at(int index) {
-        sp<_LruNode<T,U>> node = mHead;
-        for(int i = 0;i < index;i++) {
+        sp<_LruNode<T, U>> node = mHead;
+        for (int i = 0; i < index; i++) {
             node = node->next;
         }
 
@@ -81,35 +81,32 @@ public:
     }
 
     void remove(T t) {
-        sp<_LruNode<T,U>> node = mHashMap->get(t);
+        sp<_LruNode<T, U>> node = mHashMap->get(t);
         mHashMap->remove(t);
 
-        if(node == nullptr) {
+        if (node == nullptr) {
             return;
         }
 
         removeNode(node);
     }
-    
-    int size() {
-        return mHashMap->size();
-    }
+
+    int size() { return mHashMap->size(); }
 
 private:
-
     int mMaxSize;
 
     int mCurrentSize;
 
-    HashMap<T,sp<_LruNode<T,U>>> mHashMap;
+    HashMap<T, sp<_LruNode<T, U>>> mHashMap;
 
-    sp<_LruNode<T,U>> mHead;
+    sp<_LruNode<T, U>> mHead;
 
-    sp<_LruNode<T,U>> mCurrent;
+    sp<_LruNode<T, U>> mCurrent;
 
-    void removeNode(sp<_LruNode<T,U>> node) {
-        if(node == mHead) {
-            if(node->next != nullptr) {
+    void removeNode(sp<_LruNode<T, U>> node) {
+        if (node == mHead) {
+            if (node->next != nullptr) {
                 mHead = node->next;
                 mHead->prev = nullptr;
                 node->next = nullptr;
@@ -117,7 +114,7 @@ private:
                 mHead = nullptr;
                 mCurrent = nullptr;
             }
-        } else if(node == mCurrent) {
+        } else if (node == mCurrent) {
             mCurrent = mCurrent->prev;
             mCurrent->next = nullptr;
             node->prev = nullptr;
@@ -130,8 +127,8 @@ private:
         mCurrentSize--;
     }
 
-    void addNode(sp<_LruNode<T,U>> node) {
-        if(mHead == nullptr) {
+    void addNode(sp<_LruNode<T, U>> node) {
+        if (mHead == nullptr) {
             mHead = node;
             mCurrent = mHead;
         } else {
@@ -142,13 +139,12 @@ private:
         mCurrentSize++;
     }
 
-    sp<_LruNode<T,U>> removeTail() {
-        sp<_LruNode<T,U>> tail = mCurrent;
+    sp<_LruNode<T, U>> removeTail() {
+        sp<_LruNode<T, U>> tail = mCurrent;
         removeNode(mCurrent);
         return tail;
     }
-
 };
 
-}
+} // namespace obotcha
 #endif

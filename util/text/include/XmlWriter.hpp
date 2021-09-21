@@ -1,12 +1,12 @@
 #ifndef __OBOTCHA_XML_WRITER_H__
 #define __OBOTCHA_XML_WRITER_H__
 
-#include "iniparser.h"
 #include "dictionary.h"
+#include "iniparser.h"
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "String.hpp"
+#include "StrongPointer.hpp"
 
 #include "rapidxml.hpp"
 
@@ -18,7 +18,6 @@ class _XmlValue;
 class _XmlDocument;
 
 DECLARE_CLASS(XmlWriter) {
-
 public:
     friend class _XmlValue;
     friend class _XmlReader;
@@ -31,7 +30,6 @@ private:
     sp<_XmlDocument> xmlDoc;
 };
 
-}
-
+} // namespace obotcha
 
 #endif

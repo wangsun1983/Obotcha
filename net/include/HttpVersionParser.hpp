@@ -4,16 +4,16 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "HttpVersion.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(HttpVersionParser) {
 
-public:
+  public:
     static HttpVersion doParse(String);
 };
 
-}
+} // namespace obotcha
 #endif

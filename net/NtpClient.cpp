@@ -1,135 +1,134 @@
-#include <sys/time.h>
 #include <chrono>
+#include <sys/time.h>
 
-#include "NtpClient.hpp"
+#include "Error.hpp"
 #include "InetAddress.hpp"
+#include "NtpClient.hpp"
+#include "SocketBuilder.hpp"
 #include "System.hpp"
 #include "TimeZone.hpp"
-#include "Error.hpp"
-#include "SocketBuilder.hpp"
 #include "URL.hpp"
 
 namespace obotcha {
 
 /*
-   * Convert time to unix standard time NTP is number of seconds since 0000
-   * UT on 1 January 1900 unix time is seconds since 0000 UT on 1 January
-   * 1970 There has been a trend to add a 2 leap seconds every 3 years.
-   * Leap seconds are only an issue the last second of the month in June and
-   * December if you don't try to set the clock then it can be ignored but
-   * this is importaint to people who coordinate times with GPS clock sources.
-   */
+ * Convert time to unix standard time NTP is number of seconds since 0000
+ * UT on 1 January 1900 unix time is seconds since 0000 UT on 1 January
+ * 1970 There has been a trend to add a 2 leap seconds every 3 years.
+ * Leap seconds are only an issue the last second of the month in June and
+ * December if you don't try to set the clock then it can be ignored but
+ * this is importaint to people who coordinate times with GPS clock sources.
+ */
 #define NTP_TIMESTAMP_DELTA 2208988800ull
 
-_NtpClient::_NtpClient() {
-}
+_NtpClient::_NtpClient() {}
 
-int _NtpClient::bind(String url,int port,long duration) {
+int _NtpClient::bind(String url, int port, long duration) {
     ArrayList<InetAddress> servers = createURL(url)->getInetAddress();
-    if(servers->size() == 0) {
+    if (servers->size() == 0) {
         return -NetConnectFail;
     }
     InetAddress address = servers->get(0);
     address->setPort(port);
-    
+
     SocketOption option = createSocketOption();
     option->setRcvTimeout(duration);
     mSock = createSocketBuilder()
-            ->setAddress(address)
-            ->setOption(option)
-            ->newDatagramSocket();
-    return 0;      
+                ->setAddress(address)
+                ->setOption(option)
+                ->newDatagramSocket();
+    return 0;
 }
 
 long _NtpClient::get() {
     char mNtpPacket[NTP_DATA_SIZE];
-    memset(mNtpPacket,0,sizeof(mNtpPacket));
+    memset(mNtpPacket, 0, sizeof(mNtpPacket));
     generateNtpPacket(mNtpPacket);
-    
-    ByteArray packet = createByteArray((byte *)mNtpPacket,NTP_DATA_SIZE);
+
+    ByteArray packet = createByteArray((byte *)mNtpPacket, NTP_DATA_SIZE);
     int ret = mSock->getOutputStream()->write(packet);
-    
-    ByteArray pack = createByteArray(1024*4);
+
+    ByteArray pack = createByteArray(1024 * 4);
     int len = mSock->getInputStream()->read(pack);
     pack->quickShrink(len);
 
-    unsigned int *data = (unsigned int *)pack->toValue(); 
+    unsigned int *data = (unsigned int *)pack->toValue();
 
     NtpTime oritime, rectime, tratime, destime;
-    struct  timeval offtime, dlytime;
-    struct  timeval now;
+    struct timeval offtime, dlytime;
+    struct timeval now;
 
     gettimeofday(&now, NULL);
-    destime.integer  = now.tv_sec + JAN_1970;
-    destime.fraction = NTPFRAC (now.tv_usec);
+    destime.integer = now.tv_sec + JAN_1970;
+    destime.fraction = NTPFRAC(now.tv_usec);
 
-#define  DATA(i) ntohl((( unsigned   int  *)data)[i])
+#define DATA(i) ntohl(((unsigned int *)data)[i])
 
-    oritime.integer  = DATA(6);
+    oritime.integer = DATA(6);
     oritime.fraction = DATA(7);
-    rectime.integer  = DATA(8);
+    rectime.integer = DATA(8);
     rectime.fraction = DATA(9);
-    tratime.integer  = DATA(10);
+    tratime.integer = DATA(10);
     tratime.fraction = DATA(11);
-    
-#undef  DATA
 
-    //Originate Timestamp       T1        client send time 
-    //Receive Timestamp         T2        server receive time
-    //Transmit Timestamp        T3        server response time
-    //Destination Timestamp     T4        client receive time
-    //net delay(d)
-    //d = (T2 - T1) + (T4 - T3); t = [(T2 - T1) + (T3 - T4)] / 2;
+#undef DATA
 
-#define  MKSEC(ntpt)   ((ntpt).integer - JAN_1970)
+    // Originate Timestamp       T1        client send time
+    // Receive Timestamp         T2        server receive time
+    // Transmit Timestamp        T3        server response time
+    // Destination Timestamp     T4        client receive time
+    // net delay(d)
+    // d = (T2 - T1) + (T4 - T3); t = [(T2 - T1) + (T3 - T4)] / 2;
 
-#define  MKUSEC(ntpt)  (USEC((ntpt).fraction))
+#define MKSEC(ntpt) ((ntpt).integer - JAN_1970)
 
-#define  TTLUSEC(sec,usec)   (( long   long )(sec)*1000000 + (usec))
+#define MKUSEC(ntpt) (USEC((ntpt).fraction))
 
-#define  GETSEC(us)    ((us)/1000000) 
+#define TTLUSEC(sec, usec) ((long long)(sec)*1000000 + (usec))
 
-#define  GETUSEC(us)   ((us)%1000000) 
-    long   long  orius, recus, traus, desus, offus, dlyus;
+#define GETSEC(us) ((us) / 1000000)
+
+#define GETUSEC(us) ((us) % 1000000)
+    long long orius, recus, traus, desus, offus, dlyus;
     orius = TTLUSEC(MKSEC(oritime), MKUSEC(oritime));
     recus = TTLUSEC(MKSEC(rectime), MKUSEC(rectime));
     traus = TTLUSEC(MKSEC(tratime), MKUSEC(tratime));
     desus = TTLUSEC(now.tv_sec, now.tv_usec);
 
-    offus = ((recus - orius) + (traus - desus))/2;
+    offus = ((recus - orius) + (traus - desus)) / 2;
     dlyus = (recus - orius) + (desus - traus);
 
-    offtime.tv_sec  = GETSEC(offus);
+    offtime.tv_sec = GETSEC(offus);
     offtime.tv_usec = GETUSEC(offus);
-    dlytime.tv_sec  = GETSEC(dlyus);
+    dlytime.tv_sec = GETSEC(dlyus);
     dlytime.tv_usec = GETUSEC(dlyus);
 
-    struct  timeval  newTime ;
-    //corse time
-    //new.tv_sec = tratime.integer - JAN_1970;
-    //new.tv_usec = USEC(tratime.fraction);
-    
-    //fine time
+    struct timeval newTime;
+    // corse time
+    // new.tv_sec = tratime.integer - JAN_1970;
+    // new.tv_usec = USEC(tratime.fraction);
+
+    // fine time
     newTime.tv_sec = destime.integer - JAN_1970 + offtime.tv_sec;
     newTime.tv_usec = USEC(destime.fraction) + offtime.tv_usec;
 
-    return newTime.tv_sec*1000 + newTime.tv_usec/1000;
+    return newTime.tv_sec * 1000 + newTime.tv_usec / 1000;
 }
 
 void _NtpClient::generateNtpPacket(char *v) {
-    int  ret;
-    struct  timeval now;
+    int ret;
+    struct timeval now;
 
-#define  LI 0             //head
-#define  VN 3             //version
-#define  MODE 3           //mode: client request
-#define  STRATUM 0
-#define  POLL 4           //max interval
-#define  PREC -6          
+#define LI 0   // head
+#define VN 3   // version
+#define MODE 3 // mode: client request
+#define STRATUM 0
+#define POLL 4 // max interval
+#define PREC -6
     unsigned int *data = (unsigned int *)v;
 
-    data[0] = htonl((LI << 30) | (VN << 27) | (MODE << 24) 
-        | (STRATUM << 16) | (POLL << 8) | (PREC & 0xff));
+    data[0] = htonl((LI << 30) | (VN << 27) | (MODE << 24) | (STRATUM << 16) |
+                    (POLL << 8) | (PREC & 0xff));
     data[1] = htonl(1 << 16);
     data[2] = htonl(1 << 16);
 
@@ -139,13 +138,8 @@ void _NtpClient::generateNtpPacket(char *v) {
     data[11] = htonl(NTPFRAC(now.tv_usec));
 }
 
-void _NtpClient::close() {
-    mSock->close();
-}
+void _NtpClient::close() { mSock->close(); }
 
-_NtpClient::~_NtpClient() {
-    mSock->close();
-}
+_NtpClient::~_NtpClient() { mSock->close(); }
 
-
-}
+} // namespace obotcha

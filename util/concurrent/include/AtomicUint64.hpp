@@ -1,9 +1,9 @@
 #ifndef __OBOTCHA_ATOMIC_UINT64_HPP__
 #define __OBOTCHA_ATOMIC_UINT64_HPP__
 
+#include <atomic>
 #include <pthread.h>
 #include <sys/time.h>
-#include <atomic>
 
 #include "Mutex.hpp"
 #include "StrongPointer.hpp"
@@ -12,7 +12,7 @@ namespace obotcha {
 
 DECLARE_CLASS(AtomicUint64) {
 
-public:
+  public:
     _AtomicUint64(uint64_t val);
     uint64_t incrementAndGet();
     uint64_t decrementAndGet();
@@ -21,7 +21,7 @@ public:
     uint64_t andAndGet(uint64_t val);
     uint64_t orAndGet(uint64_t val);
     uint64_t xorAndGet(uint64_t val);
-    
+
     uint64_t getAndIncrement();
     uint64_t getAndDecrement();
     uint64_t getAndAdd(uint64_t val);
@@ -33,10 +33,10 @@ public:
 
     void set(uint64_t val);
     uint64_t get();
-   
-private:
+
+  private:
     std::atomic_ullong mValue;
 };
 
-}
+} // namespace obotcha
 #endif

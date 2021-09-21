@@ -2,15 +2,14 @@
 #define __OBOTCHA_MESSAGE_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "Runnable.hpp"
+#include "StrongPointer.hpp"
 
 namespace obotcha {
 
 class _Handler;
 
 DECLARE_CLASS(Message) {
-
 public:
     friend class _Handler;
 
@@ -32,7 +31,7 @@ public:
 
 private:
     int mType;
-    
+
     Runnable mRunnable;
 
     long nextTime;
@@ -40,5 +39,5 @@ private:
     sp<_Message> next;
 };
 
-}
+} // namespace obotcha
 #endif

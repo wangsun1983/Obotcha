@@ -1,34 +1,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Thread.hpp"
-#include "ThreadPoolExecutor.hpp"
+#include "Error.hpp"
 #include "ExecutorTask.hpp"
 #include "Future.hpp"
-#include "System.hpp"
-#include "Error.hpp"
 #include "Log.hpp"
+#include "System.hpp"
+#include "Thread.hpp"
+#include "ThreadPoolExecutor.hpp"
 #include "TimeWatcher.hpp"
 
 namespace obotcha {
 
-_ThreadPoolExecutor::_ThreadPoolExecutor(int capacity,int threadnum) {
-    mPool = createBlockingLinkedList<ExecutorTask>(capacity);    
+_ThreadPoolExecutor::_ThreadPoolExecutor(int capacity, int threadnum) {
+    mPool = createBlockingLinkedList<ExecutorTask>(capacity);
     mHandlers = createArrayList<Thread>();
 
-    for(int i = 0; i < threadnum;i++) {
-        Thread thread = createThread([](ThreadPoolExecutor executor) {
-            while(1) {
-                ExecutorTask mCurrentTask = executor->mPool->takeFirst();
-                
-                if(mCurrentTask == nullptr) {
-                    //clear executor to enable executor release.
-                    executor = nullptr;
-                    return;
+    for (int i = 0; i < threadnum; i++) {
+        Thread thread = createThread(
+            [](ThreadPoolExecutor executor) {
+                while (1) {
+                    ExecutorTask mCurrentTask = executor->mPool->takeFirst();
+
+                    if (mCurrentTask == nullptr) {
+                        // clear executor to enable executor release.
+                        executor = nullptr;
+                        return;
+                    }
+                    mCurrentTask->execute();
                 }
-                mCurrentTask->execute();
-            }
-        },AutoClone(this));
+            },
+            AutoClone(this));
 
         thread->start();
         mHandlers->add(thread);
@@ -41,7 +43,7 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int capacity,int threadnum) {
 int _ThreadPoolExecutor::shutdown() {
     {
         AutoLock l(mMutex);
-        if(mStatus != Executing) {
+        if (mStatus != Executing) {
             return -AlreadyDestroy;
         }
 
@@ -49,7 +51,7 @@ int _ThreadPoolExecutor::shutdown() {
     }
 
     mPool->freeze();
-    mPool->foreach([](ExecutorTask task) {
+    mPool->foreach ([](ExecutorTask task) {
         task->cancel();
         return Global::Continue;
     });
@@ -57,8 +59,8 @@ int _ThreadPoolExecutor::shutdown() {
     mPool->destroy();
     mPool->unfreeze();
 
-    //interrupt all thread
-    mHandlers->foreach([](Thread t){
+    // interrupt all thread
+    mHandlers->foreach ([](Thread t) {
         t->interrupt();
         return Global::Continue;
     });
@@ -73,8 +75,8 @@ bool _ThreadPoolExecutor::isShtuDown() {
 
 bool _ThreadPoolExecutor::isTerminated() {
     bool isAllTerminated = true;
-    mHandlers->foreach([&isAllTerminated](Thread &t) {
-        if(t->getStatus() != st(Thread)::Complete) {
+    mHandlers->foreach ([&isAllTerminated](Thread &t) {
+        if (t->getStatus() != st(Thread)::Complete) {
             isAllTerminated = false;
             return Global::Break;
         }
@@ -87,7 +89,7 @@ bool _ThreadPoolExecutor::isTerminated() {
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     {
         AutoLock l(mMutex);
-        if(mStatus != ShutDown){
+        if (mStatus != ShutDown) {
             return -InvalidStatus;
         }
     }
@@ -96,31 +98,26 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     ListIterator<Thread> iterator = mHandlers->getIterator();
     TimeWatcher watcher = createTimeWatcher();
 
-    while(iterator->hasValue()) {
+    while (iterator->hasValue()) {
         Thread handler = iterator->getValue();
         watcher->start();
         handler->join(millseconds);
-        if(!isWaitForever) {
+        if (!isWaitForever) {
             millseconds -= watcher->stop();
-            if(millseconds <= 0) {
+            if (millseconds <= 0) {
                 return -WaitTimeout;
             }
         }
         iterator->next();
     }
-    
+
     return 0;
 }
 
-int _ThreadPoolExecutor::getThreadsNum() {
-    return mHandlers->size();
-}
+int _ThreadPoolExecutor::getThreadsNum() { return mHandlers->size(); }
 
-int _ThreadPoolExecutor::getTasksNum() {
-    return mPool->size();
-}
+int _ThreadPoolExecutor::getTasksNum() { return mPool->size(); }
 
-_ThreadPoolExecutor::~_ThreadPoolExecutor() {
-}
+_ThreadPoolExecutor::~_ThreadPoolExecutor() {}
 
-}
+} // namespace obotcha

@@ -1,13 +1,13 @@
 #ifndef __OBOTCHA_JSON_WRITE_H__
 #define __OBOTCHA_JSON_WRITE_H__
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "String.hpp"
 #include "Boolean.hpp"
-#include "Integer.hpp"
 #include "Float.hpp"
+#include "Integer.hpp"
 #include "Long.hpp"
+#include "Object.hpp"
+#include "String.hpp"
+#include "StrongPointer.hpp"
 
 #include "JsonValue.hpp"
 
@@ -25,10 +25,10 @@ public:
     void write(JsonValue value);
 
     void close();
-    
+
 private:
-    FileOutputStream stream;    
+    FileOutputStream stream;
 };
 
-}
+} // namespace obotcha
 #endif

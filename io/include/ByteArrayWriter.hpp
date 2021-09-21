@@ -4,23 +4,23 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "ByteArray.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(ByteArrayWriter) {
 
-public:
+  public:
     _ByteArrayWriter(int mode = LittleEndian);
-    _ByteArrayWriter(ByteArray,int mode = LittleEndian);
+    _ByteArrayWriter(ByteArray, int mode = LittleEndian);
 
     int writeShort(int v);
     int writeByte(byte b);
     int writeInt(int v);
     long writeLong(long v);
     int writeByteArray(ByteArray);
-    int writeByteArray(ByteArray,int);
+    int writeByteArray(ByteArray, int);
     int writeString(String);
     int writeString(const char *);
     void skipBy(int length);
@@ -29,7 +29,7 @@ public:
     void updateSize();
     void reset();
 
-    int write(byte *,int);
+    int write(byte *, int);
 
     ByteArray getByteArray();
 
@@ -38,7 +38,7 @@ public:
         LittleEndian,
     };
 
-private:
+  private:
     ByteArray mData;
     byte *mDataP;
     int mIndex;
@@ -47,46 +47,40 @@ private:
     int mode;
 
     static const int DefaultDataSize;
-    enum ByteArrayWriteType {
-        Dynamic = 0,
-        Static
-    };
-    
+    enum ByteArrayWriteType { Dynamic = 0, Static };
+
     bool writeSizeCheck(int size);
 
-    template<typename T>
-    void _write(T &value) {
-        switch(mode) {
-            case BigEndian:
+    template <typename T> void _write(T & value) {
+        switch (mode) {
+        case BigEndian:
             _writeBigEndian(value);
             break;
 
-            case LittleEndian:
+        case LittleEndian:
             _writeLittleEndian(value);
             break;
         }
     }
 
-    template<typename T>
-    void _writeLittleEndian(T &value) {
+    template <typename T> void _writeLittleEndian(T & value) {
         int count = 0;
-        while(count <sizeof(T)) {
-            mDataP[mIndex] = (value>>(count*8)&0xff);
+        while (count < sizeof(T)) {
+            mDataP[mIndex] = (value >> (count * 8) & 0xff);
             count++;
             mIndex++;
         }
     }
 
-    template<typename T>
-    void _writeBigEndian(T &value) {
+    template <typename T> void _writeBigEndian(T & value) {
         int count = sizeof(T) - 1;
-        while(count >= 0) {
-            mDataP[mIndex] = (value>>(count*8)&0xff);
+        while (count >= 0) {
+            mDataP[mIndex] = (value >> (count * 8) & 0xff);
             count--;
             mIndex++;
         }
     }
 };
 
-}
+} // namespace obotcha
 #endif

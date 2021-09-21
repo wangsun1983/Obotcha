@@ -3,15 +3,15 @@
 
 #include "co_routine.h"
 
-#include "StrongPointer.hpp"
 #include "Object.hpp"
 #include "Runnable.hpp"
+#include "StrongPointer.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(FilaCondition) {
 
-public:
+  public:
     _FilaCondition();
     void wait();
     void wait(long mseconds);
@@ -19,9 +19,9 @@ public:
     void notifyAll();
     ~_FilaCondition();
 
-private:
-   stCoCond_t* mCond;
+  private:
+    stCoCond_t *mCond;
 };
 
-}
+} // namespace obotcha
 #endif

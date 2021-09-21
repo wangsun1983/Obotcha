@@ -3,17 +3,15 @@
 
 #include "HttpRouter.hpp"
 
-using namespace obotcha;
+namespace obotcha {
 
-_HttpRouter::_HttpRouter(String p,RouterListener l) {
+_HttpRouter::_HttpRouter(String p, RouterListener l) {
     mPath = p;
     mListener = l;
 }
 
-String _HttpRouter::getPath() {
-    return mPath;
-}
+String _HttpRouter::getPath() { return mPath; }
 
-RouterListener _HttpRouter::getListener() {
-    return mListener;
+RouterListener _HttpRouter::getListener() { return mListener; }
+
 }

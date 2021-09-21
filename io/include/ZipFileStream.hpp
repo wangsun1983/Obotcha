@@ -4,31 +4,30 @@
 #include <fstream>
 #include <iostream>
 
+#include <dirent.h>
 #include <iostream>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <dirent.h>
 
 extern "C" {
-#include "zlib.h"
-#include "zip.h"
 #include "unzip.h"
+#include "zip.h"
+#include "zlib.h"
 }
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
+#include "ByteArray.hpp"
 #include "File.hpp"
 #include "InputStream.hpp"
-#include "ByteArray.hpp"
+#include "String.hpp"
 #include "ZipFile.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(ZipFileStream) IMPLEMENTS(InputStream) {
-public:
-
+  public:
     _ZipFileStream();
 
     long read(ByteArray buffer);
@@ -37,45 +36,48 @@ public:
 
     void close();
 
-    int compress(String src,String dest);
+    int compress(String src, String dest);
 
-    int compressWithPassword(String src,String dest,String password);
+    int compressWithPassword(String src, String dest, String password);
 
     int uncompress(String src);
 
-    int uncompress(String src,String dest);
+    int uncompress(String src, String dest);
 
-    int uncompressWithPassword(String src,String dest,String password);
+    int uncompressWithPassword(String src, String dest, String password);
 
-
-private:
+  private:
     String mPath;
 
-    std::ifstream fstream;     
+    std::ifstream fstream;
 
-    int writeInZipFile(zipFile zFile,File file);
+    int writeInZipFile(zipFile zFile, File file);
 
-    int minizip(File src, File dest,String zipfolder,char *password);
+    int minizip(File src, File dest, String zipfolder, char *password);
 
-    String combine(String parent,String current);
+    String combine(String parent, String current);
 
     uLong filetime(const char *file, tm_zip *tmzip, uLong *dt);
 
-    int getFileCrc(const char* filenameinzip,char*buf,unsigned long size_buf,unsigned long* result_crc);
+    int getFileCrc(const char *filenameinzip, char *buf, unsigned long size_buf,
+                   unsigned long *result_crc);
 
-    int isLargeFile(const char* filename);
+    int isLargeFile(const char *filename);
 
-    //uncompress interface
-    int do_extract_currentfile(unzFile uf,char *dest,const int* popt_extract_without_path,int* popt_overwrite,const char* password);
+    // uncompress interface
+    int do_extract_currentfile(unzFile uf, char *dest,
+                               const int *popt_extract_without_path,
+                               int *popt_overwrite, const char *password);
 
-    int do_extract(unzFile uf,char *dest,int opt_extract_without_path,int opt_overwrite,const char* password);
+    int do_extract(unzFile uf, char *dest, int opt_extract_without_path,
+                   int opt_overwrite, const char *password);
 
-    int mymkdir(const char* dirname);
+    int mymkdir(const char *dirname);
 
-    int makedir (char *newdir);
+    int makedir(char *newdir);
 
-    void change_file_date(const char *filename,uLong dosdate,tm_unz tmu_date);
+    void change_file_date(const char *filename, uLong dosdate, tm_unz tmu_date);
 };
 
-}
+} // namespace obotcha
 #endif

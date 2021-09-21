@@ -1,6 +1,6 @@
 /**
  * @file Executors.cpp
- * @brief Executor Factory 
+ * @brief Executor Factory
  * @details none
  * @mainpage none
  * @author sunli.wang
@@ -18,42 +18,43 @@ namespace obotcha {
 _ExecutorBuilder::_ExecutorBuilder() {
     queuesize = -1;
     threadnum = st(System)::availableProcessors();
-    maxthreadnum = st(System)::availableProcessors()*2;
+    maxthreadnum = st(System)::availableProcessors() * 2;
     minthreadnum = 1;
-    timeout = 1000*10;
+    timeout = 1000 * 10;
 }
 
-_ExecutorBuilder* _ExecutorBuilder::setQueueSize(int v) {
+_ExecutorBuilder *_ExecutorBuilder::setQueueSize(int v) {
     queuesize = v;
     return this;
 }
 
-_ExecutorBuilder* _ExecutorBuilder::setThreadNum(int v) {
+_ExecutorBuilder *_ExecutorBuilder::setThreadNum(int v) {
     threadnum = v;
     return this;
 }
 
-_ExecutorBuilder* _ExecutorBuilder::setMaxThreadNum(int v) {
+_ExecutorBuilder *_ExecutorBuilder::setMaxThreadNum(int v) {
     maxthreadnum = v;
     return this;
 }
 
-_ExecutorBuilder* _ExecutorBuilder::setMinThreadNum(int v) {
+_ExecutorBuilder *_ExecutorBuilder::setMinThreadNum(int v) {
     minthreadnum = v;
     return this;
 }
 
-_ExecutorBuilder* _ExecutorBuilder::setTimeout(int v) {
+_ExecutorBuilder *_ExecutorBuilder::setTimeout(int v) {
     timeout = v;
     return this;
 }
 
 ThreadPoolExecutor _ExecutorBuilder::newThreadPool() {
-    return createThreadPoolExecutor(queuesize,threadnum);
+    return createThreadPoolExecutor(queuesize, threadnum);
 }
 
 ThreadCachedPoolExecutor _ExecutorBuilder::newCachedThreadPool() {
-    return createThreadCachedPoolExecutor(queuesize,minthreadnum,maxthreadnum,timeout);
+    return createThreadCachedPoolExecutor(queuesize, minthreadnum, maxthreadnum,
+                                          timeout);
 }
 
 ThreadScheduledPoolExecutor _ExecutorBuilder::newScheduledThreadPool() {
@@ -61,7 +62,7 @@ ThreadScheduledPoolExecutor _ExecutorBuilder::newScheduledThreadPool() {
 }
 
 ThreadPriorityPoolExecutor _ExecutorBuilder::newPriorityThreadPool() {
-    return createThreadPriorityPoolExecutor(queuesize,threadnum);
+    return createThreadPriorityPoolExecutor(queuesize, threadnum);
 }
 
-}
+} // namespace obotcha

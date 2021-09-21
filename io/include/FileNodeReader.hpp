@@ -1,22 +1,22 @@
 #ifndef __OBOTCHA_FILE_NODE_READER_HPP__
 #define __OBOTCHA_FILE_NODE_READER_HPP__
 
-#include <sys/stat.h>
-#include <unistd.h>    
-#include <sys/types.h>
 #include <fstream>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "ArrayList.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(FileNodeReader) {
-public:
-    _FileNodeReader(String path,int buffsize = 128);
+  public:
+    _FileNodeReader(String path, int buffsize = 128);
 
     int readInt();
 
@@ -30,13 +30,13 @@ public:
 
     ~_FileNodeReader();
 
-private:
-	int mSize;
+  private:
+    int mSize;
 
-	String mPath;
+    String mPath;
 
-	int mFd;
+    int mFd;
 };
 
-}
+} // namespace obotcha
 #endif

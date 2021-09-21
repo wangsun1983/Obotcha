@@ -3,20 +3,20 @@
 
 #include <pthread.h>
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "String.hpp"
 #include "Lock.hpp"
+#include "Object.hpp"
+#include "String.hpp"
+#include "StrongPointer.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(Mutex) IMPLEMENTS(Lock) {
 public:
     friend class _Condition;
-    
-    _Mutex(String,int type = Recursive);
 
-    _Mutex(const char *,int type = Recursive);
+    _Mutex(String, int type = Recursive);
+
+    _Mutex(const char *, int type = Recursive);
 
     _Mutex(int type = Recursive);
 
@@ -42,5 +42,5 @@ private:
     String mMutexName;
 };
 
-}
+} // namespace obotcha
 #endif

@@ -1,79 +1,80 @@
 #ifndef __OBOTCHA_EPOLL_FILE_OBSERVER_HPP__
 #define __OBOTCHA_EPOLL_FILE_OBSERVER_HPP__
 
-#include <sys/epoll.h>
+#include <future>
 #include <map>
 #include <stdio.h>
-#include <future>
+#include <sys/epoll.h>
 #include <utility>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "ByteArray.hpp"
-#include "Thread.hpp"
-#include "Pipe.hpp"
 #include "OStdApply.hpp"
-
+#include "Pipe.hpp"
+#include "String.hpp"
+#include "Thread.hpp"
 
 namespace obotcha {
 
 class _EPollFileObserver;
 
 DECLARE_CLASS(EPollFileObserverListener) {
-public:
-    virtual int onEvent(int fd,uint32_t events) = 0;
+  public:
+    virtual int onEvent(int fd, uint32_t events) = 0;
 };
 
-template<class Function,class... Args>
-class _LambdaEPollFileObserverListener:public _EPollFileObserverListener{
-public:
-    _LambdaEPollFileObserverListener(Function &&f,Args&&... args):_EPollFileObserverListener(),func(f),_arguments(std::make_tuple(args...)) {
+template <class Function, class... Args>
+class _LambdaEPollFileObserverListener : public _EPollFileObserverListener {
+  public:
+    _LambdaEPollFileObserverListener(Function &&f, Args &&... args)
+        : _EPollFileObserverListener(), func(f),
+          _arguments(std::make_tuple(args...)) {}
 
+    int onEvent(int fd, uint32_t events) {
+        auto param = std::tuple_cat(std::make_tuple(fd, events), _arguments);
+        return ostd::apply(func, param);
     }
 
-    int onEvent(int fd,uint32_t events) {
-        auto param = std::tuple_cat(std::make_tuple(fd,events),_arguments);
-        return ostd::apply(func,param);
-    }
-
-private:
+  private:
     std::tuple<Args...> _arguments;
     Function func;
 };
 
-template<typename Callfunc,typename... Args> 
-sp<_EPollFileObserverListener> createLambdaEPollFileObserverListener(Callfunc f,Args ...args) {
-    _EPollFileObserverListener *r = new _LambdaEPollFileObserverListener<Callfunc,Args ...>(std::forward<Callfunc>(f),
-			     std::forward<Args>(args)...);
+template <typename Callfunc, typename... Args>
+sp<_EPollFileObserverListener>
+createLambdaEPollFileObserverListener(Callfunc f, Args... args) {
+    _EPollFileObserverListener *r =
+        new _LambdaEPollFileObserverListener<Callfunc, Args...>(
+            std::forward<Callfunc>(f), std::forward<Args>(args)...);
     return AutoClone(r);
 }
 
 DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
-public:
+  public:
     _EPollFileObserver(int size);
 
     _EPollFileObserver();
 
-    template<typename X>
-    int addObserver(int fd,uint32_t events,sp<X> l) {
+    template <typename X> int addObserver(int fd, uint32_t events, sp<X> l) {
         int regEvents = 0;
         regEvents |= events;
 
         AutoLock mylock(mListenerMutex);
-        mListeners->put(fd,l);
-        addEpollFd(fd,regEvents);
+        mListeners->put(fd, l);
+        addEpollFd(fd, regEvents);
         return 0;
     }
 
-    //wangsl add lambda function
-    template< class Function, class... Args >
-    int addObserver(int fd,uint32_t events,Function&& f, Args&&... args ) {
-        EPollFileObserverListener l = createLambdaEPollFileObserverListener(f,args...);
-        return addObserver(fd,events,l);
+    // wangsl add lambda function
+    template <class Function, class... Args>
+    int addObserver(int fd, uint32_t events, Function &&f, Args &&... args) {
+        EPollFileObserverListener l =
+            createLambdaEPollFileObserverListener(f, args...);
+        return addObserver(fd, events, l);
     }
-    //wangsl add lambda function
+    // wangsl add lambda function
 
     int removeObserver(int fd);
 
@@ -82,9 +83,9 @@ public:
     int close();
 
     void run();
-    
+
     ~_EPollFileObserver();
-    
+
     enum EpollEvent {
         EpollIn = EPOLLIN,
         EpollPri = EPOLLPRI,
@@ -97,7 +98,7 @@ public:
         EpollErr = EPOLLERR,
         EpollHup = EPOLLHUP,
         EpollRdHup = EPOLLRDHUP,
-#ifdef EPOLLEXCLUSIVE    
+#ifdef EPOLLEXCLUSIVE
         EpollExClusive = EPOLLEXCLUSIVE,
 #endif
         EpollWakeUp = EPOLLWAKEUP,
@@ -108,21 +109,21 @@ public:
     static const int OnEventOK = 0;
     static const int OnEventRemoveObserver = 1;
 
-    static const int DefaultEpollSize = 1024*8;
-    
-private:
-    static const int DefaultBufferSize = 16*1024;
-    static const int DefaultMaxBuffSize = 1024*1024;
-    
-    void addEpollFd(int fd,uint32_t events);
+    static const int DefaultEpollSize = 1024 * 8;
+
+  private:
+    static const int DefaultBufferSize = 16 * 1024;
+    static const int DefaultMaxBuffSize = 1024 * 1024;
+
+    void addEpollFd(int fd, uint32_t events);
     int mEpollFd;
 
     Mutex mListenerMutex;
-    HashMap<int,EPollFileObserverListener> mListeners;
-    
+    HashMap<int, EPollFileObserverListener> mListeners;
+
     Pipe mPipe;
     int mSize;
 };
 
-}
+} // namespace obotcha
 #endif

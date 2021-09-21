@@ -23,8 +23,6 @@ void _JsonWriter::write(JsonValue value) {
     stream->flush();
 }
 
-void _JsonWriter::close() {
-    stream->close();
-}
+void _JsonWriter::close() { stream->close(); }
 
-}
+} // namespace obotcha

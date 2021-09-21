@@ -1,25 +1,23 @@
 #ifndef __OBOTCHA_XML_VALUE_H__
 #define __OBOTCHA_XML_VALUE_H__
 
-#include "iniparser.h"
 #include "dictionary.h"
+#include "iniparser.h"
 #include "rapidxml.hpp"
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "String.hpp"
-#include "Field.hpp"
-#include "Boolean.hpp"
-#include "Integer.hpp"
-#include "Float.hpp"
-#include "Long.hpp"
-#include "Uint32.hpp"
 #include "ArrayList.hpp"
+#include "Boolean.hpp"
 #include "Field.hpp"
-#include "Long.hpp"
+#include "Float.hpp"
+#include "Integer.hpp"
 #include "Log.hpp"
+#include "Long.hpp"
 #include "OStdInstanceOf.hpp"
+#include "Object.hpp"
+#include "String.hpp"
+#include "StrongPointer.hpp"
 #include "TransformException.hpp"
+#include "Uint32.hpp"
 
 using namespace rapidxml;
 
@@ -30,10 +28,9 @@ class _XmlValue;
 class _XmlDocument;
 class _XmlWriter;
 
-
 DECLARE_CLASS(XmlAttrIterator) {
 public:
-    _XmlAttrIterator(sp<_XmlValue> node,sp<_XmlDocument> r);
+    _XmlAttrIterator(sp<_XmlValue> node, sp<_XmlDocument> r);
 
     bool hasValue();
 
@@ -48,12 +45,12 @@ private:
 
     sp<_XmlDocument> reader;
 
-    xml_attribute<char> * attr;
+    xml_attribute<char> *attr;
 };
 
 DECLARE_CLASS(XmlValueIterator) {
 public:
-    _XmlValueIterator(sp<_XmlValue> node,sp<_XmlDocument> r);
+    _XmlValueIterator(sp<_XmlValue> node, sp<_XmlDocument> r);
 
     bool hasValue();
 
@@ -66,11 +63,10 @@ private:
 
     sp<_XmlDocument> reader;
 
-    xml_node<>*  node; 
+    xml_node<> *node;
 };
 
 DECLARE_CLASS(XmlValue) {
-
 public:
     friend class _XmlReader;
     friend class _XmlAttrIterator;
@@ -78,9 +74,9 @@ public:
     friend class _XmlDocument;
     friend class _XmlWriter;
 
-    _XmlValue(xml_node<> *n,sp<_XmlDocument> d);
+    _XmlValue(xml_node<> * n, sp<_XmlDocument> d);
 
-    _XmlValue(xml_node<> *n,_XmlDocument* r);    
+    _XmlValue(xml_node<> * n, _XmlDocument * r);
 
     sp<_XmlAttrIterator> getAttrIterator();
 
@@ -105,7 +101,7 @@ public:
     Double getDoubleValue();
 
     Float getFloatValue();
-    
+
     String getStringValue(String);
 
     Integer getIntegerValue(String);
@@ -126,13 +122,13 @@ public:
 
     void appendNode(XmlValue v);
 
-    void appendNode(String name,String value);
+    void appendNode(String name, String value);
 
-    void appendAttr(String name,String value);
+    void appendAttr(String name, String value);
 
-    int updateAttr(String name,String value);
+    int updateAttr(String name, String value);
 
-    int renameAttr(String name,String newnanme);
+    int renameAttr(String name, String newnanme);
 
     void removeNode(XmlValue v);
 
@@ -149,7 +145,7 @@ private:
 
     sp<_XmlDocument> doc; //
 
-    xml_node<>*  node;
+    xml_node<> *node;
 
     String searchNode(String name);
 
@@ -158,7 +154,6 @@ private:
     void importHashMapFrom(Object value);
 };
 
-}
-
+} // namespace obotcha
 
 #endif

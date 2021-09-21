@@ -3,18 +3,15 @@
 
 namespace obotcha {
 
-_HttpRequest::_HttpRequest(int m,HttpUrl url):_HttpPacket() {
+_HttpRequest::_HttpRequest(int m, HttpUrl url) : _HttpPacket() {
     this->getHeader()->setMethod(m);
 }
 
-_HttpRequest::_HttpRequest() {
-    
-}
+_HttpRequest::_HttpRequest() {}
 
 String _HttpRequest::toString() {
-    //TODO
+    // TODO
     return nullptr;
 }
-    
-}
 
+} // namespace obotcha

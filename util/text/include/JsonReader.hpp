@@ -1,13 +1,13 @@
 #ifndef __OBOTCHA_JSON_READER_H__
 #define __OBOTCHA_JSON_READER_H__
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "String.hpp"
 #include "Boolean.hpp"
-#include "Integer.hpp"
 #include "Float.hpp"
+#include "Integer.hpp"
 #include "Long.hpp"
+#include "Object.hpp"
+#include "String.hpp"
+#include "StrongPointer.hpp"
 
 #include "JsonValue.hpp"
 
@@ -33,5 +33,5 @@ private:
     JsonValue parse(String);
 };
 
-}
+} // namespace obotcha
 #endif

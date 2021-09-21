@@ -1,53 +1,43 @@
 #ifndef __OBOTCHA_AUTO_CLOSE_HPP__
 #define __OBOTCHA_AUTO_CLOSE_HPP__
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "OutputStream.hpp"
-#include "InputStream.hpp"
 #include "FileDescriptor.hpp"
+#include "InputStream.hpp"
+#include "Object.hpp"
+#include "OutputStream.hpp"
+#include "StrongPointer.hpp"
 
 namespace obotcha {
 
 class AutoClose {
 public:
-    AutoClose(int fd):AutoClose(fd,nullptr,nullptr){
+    AutoClose(int fd) : AutoClose(fd, nullptr, nullptr) {}
 
-    }
+    AutoClose(FileDescriptor fd) : AutoClose(fd->getFd(), nullptr, nullptr) {}
 
-    AutoClose(FileDescriptor fd):AutoClose(fd->getFd(),nullptr,nullptr){
+    AutoClose(InputStream input) : AutoClose(-1, input, nullptr) {}
 
-    }
+    AutoClose(OutputStream output) : AutoClose(-1, nullptr, output) {}
 
-    AutoClose(InputStream input):AutoClose(-1,input,nullptr){
-
-    }
-
-    AutoClose(OutputStream output):AutoClose(-1,nullptr,output){
-
-    }
-
-    AutoClose(int fd,InputStream input,OutputStream output){
+    AutoClose(int fd, InputStream input, OutputStream output) {
         this->fd = fd;
         mOut = output;
         mInput = input;
     }
 
-    AutoClose() {
-
-    }
+    AutoClose() {}
 
     ~AutoClose() {
-        if(fd > 0) {
+        if (fd > 0) {
             close(fd);
             fd = -1;
         }
 
-        if(mOut != nullptr) {
+        if (mOut != nullptr) {
             mOut->close();
         }
 
-        if(mInput != nullptr) {
+        if (mInput != nullptr) {
             mInput->close();
         }
     }
@@ -58,7 +48,6 @@ private:
     InputStream mInput;
 };
 
-
-}
+} // namespace obotcha
 
 #endif

@@ -1,8 +1,8 @@
 #ifndef __OBOTCHA_BYTE_HPP__
 #define __OBOTCHA_BYTE_HPP__
 
-#include "Object.hpp"
 #include "Number.hpp"
+#include "Object.hpp"
 #include <cstddef>
 
 namespace obotcha {
@@ -11,20 +11,20 @@ class _String;
 
 #define byte uint8_t
 
-DECLARE_CLASS(Byte) IMPLEMENTS(Number)<uint16_t>{
+DECLARE_CLASS(Byte) IMPLEMENTS(Number)<uint16_t> {
 public:
     static const int __isReflected = 1;
 
     _Byte();
-    
+
     _Byte(unsigned char v);
 
     _Byte(const Byte &v);
-   
+
     byte toValue();
 
     bool equals(byte p);
-    
+
     bool equals(const Byte &p);
 
     bool equals(const _Byte *p);
@@ -42,7 +42,7 @@ public:
     sp<_String> toString();
 
     static sp<_String> toString(byte i);
-    
+
     static sp<_Byte> parseDecByte(const sp<_String>);
 
     static sp<_Byte> parseHexByte(const sp<_String>);
@@ -59,8 +59,7 @@ public:
 
 private:
     byte val;
-
 };
 
-}
+} // namespace obotcha
 #endif

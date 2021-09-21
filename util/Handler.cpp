@@ -1,6 +1,7 @@
 /**
  * @file Message.cpp
- * @brief  A Handler allows you to send and process Message and Runnable objects associated with a thread
+ * @brief  A Handler allows you to send and process Message and Runnable objects
+ * associated with a thread
  * @details none
  * @mainpage none
  * @author sunli.wang
@@ -13,14 +14,14 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "Handler.hpp"
 #include "Message.hpp"
+#include "String.hpp"
 #include "System.hpp"
 
 namespace obotcha {
 
-_Handler::_Handler(){
+_Handler::_Handler() {
     mMutex = createMutex("HandlerMutex");
     mCondition = createCondition();
     mMessagePool = nullptr;
@@ -39,9 +40,7 @@ sp<_Message> _Handler::obtainMessage(int w) {
     return msg;
 }
 
-sp<_Message> _Handler::obtainMessage() {
-    return createMessage(-1);
-}
+sp<_Message> _Handler::obtainMessage() { return createMessage(-1); }
 
 int _Handler::sendEmptyMessage(int what) {
     Message msg = createMessage(what);
@@ -49,28 +48,28 @@ int _Handler::sendEmptyMessage(int what) {
 }
 
 int _Handler::sendMessage(sp<_Message> msg) {
-    return sendMessageDelayed(msg,0);
+    return sendMessageDelayed(msg, 0);
 }
 
-int _Handler::sendEmptyMessageDelayed(int what,long delay) {
+int _Handler::sendEmptyMessageDelayed(int what, long delay) {
     Message msg = createMessage(what);
-    return sendMessageDelayed(msg,delay);
+    return sendMessageDelayed(msg, delay);
 }
 
-int _Handler::sendMessageDelayed(sp<_Message> msg,long delay) {
-    if(mStatus->get() != StatusRunning) {
+int _Handler::sendMessageDelayed(sp<_Message> msg, long delay) {
+    if (mStatus->get() != StatusRunning) {
         return -1;
     }
     msg->nextTime = st(System)::currentTimeMillis() + delay;
     AutoLock l(mMutex);
-    if(mMessagePool == nullptr) {
+    if (mMessagePool == nullptr) {
         mMessagePool = msg;
     } else {
         Message p = mMessagePool;
         Message prev = mMessagePool;
         for (;;) {
-            if(p->nextTime > msg->nextTime) {
-                if(p == mMessagePool) {
+            if (p->nextTime > msg->nextTime) {
+                if (p == mMessagePool) {
                     msg->next = p;
                     mMessagePool = msg;
                 } else {
@@ -81,7 +80,7 @@ int _Handler::sendMessageDelayed(sp<_Message> msg,long delay) {
             } else {
                 prev = p;
                 p = p->next;
-                if(p == nullptr) {
+                if (p == nullptr) {
                     prev->next = msg;
                     break;
                 }
@@ -89,19 +88,19 @@ int _Handler::sendMessageDelayed(sp<_Message> msg,long delay) {
         }
     }
     mCondition->notify();
-    
+
     return 0;
 }
 
 void _Handler::handleMessage(sp<_Message> msg) {
-    //do nothing
+    // do nothing
 }
 
 bool _Handler::hasMessage(int what) {
     AutoLock l(mMutex);
     Message p = mMessagePool;
-    while(p != nullptr) {
-        if(p->what == what) {
+    while (p != nullptr) {
+        if (p->what == what) {
             return true;
         }
         p = p->next;
@@ -114,9 +113,9 @@ void _Handler::removeMessages(int what) {
     AutoLock l(mMutex);
     Message p = mMessagePool;
     Message prev = nullptr;
-    while(p != nullptr) {
-        if(p->what == what) {
-            if(mMessagePool == p) {
+    while (p != nullptr) {
+        if (p->what == what) {
+            if (mMessagePool == p) {
                 mMessagePool = mMessagePool->next;
                 p = mMessagePool;
             } else {
@@ -133,26 +132,27 @@ void _Handler::removeMessages(int what) {
 
 void _Handler::run() {
     long waitTime = 0;
-    while(mStatus->get() != StatusDestroy) {
+    while (mStatus->get() != StatusDestroy) {
         Message msg = nullptr;
         {
             AutoLock l(mMutex);
-            if(mMessagePool == nullptr) {
+            if (mMessagePool == nullptr) {
                 mCondition->wait(mMutex);
                 continue;
-            }else {
-                long interval = (mMessagePool->nextTime - st(System)::currentTimeMillis());
-                if(interval <= 0) {
+            } else {
+                long interval =
+                    (mMessagePool->nextTime - st(System)::currentTimeMillis());
+                if (interval <= 0) {
                     msg = mMessagePool;
                     mMessagePool = mMessagePool->next;
                 } else {
-                    mCondition->wait(mMutex,interval);
+                    mCondition->wait(mMutex, interval);
                     continue;
                 }
             }
         }
-        if(msg != nullptr) {
-            if(msg->mRunnable == nullptr) {
+        if (msg != nullptr) {
+            if (msg->mRunnable == nullptr) {
                 handleMessage(msg);
             } else {
                 msg->mRunnable->run();
@@ -166,15 +166,13 @@ void _Handler::destroy() {
     mCondition->notify();
 }
 
-bool _Handler::isRunning() {
-    return mStatus->get() == StatusRunning;
-}
+bool _Handler::isRunning() { return mStatus->get() == StatusRunning; }
 
 int _Handler::size() {
     AutoLock l(mMutex);
     Message p = mMessagePool;
     int size = 0;
-    while(p != nullptr) {
+    while (p != nullptr) {
         size++;
         p = p->next;
     }
@@ -182,4 +180,4 @@ int _Handler::size() {
     return size;
 }
 
-}
+} // namespace obotcha

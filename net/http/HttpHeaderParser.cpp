@@ -1,9 +1,9 @@
 #include "HttpHeaderParser.hpp"
-#include "HttpText.hpp"
-#include "HttpMethodParser.hpp"
-#include "HttpVersionParser.hpp"
-#include "HttpUrlParser.hpp"
 #include "HttpCookieParser.hpp"
+#include "HttpMethodParser.hpp"
+#include "HttpText.hpp"
+#include "HttpUrlParser.hpp"
+#include "HttpVersionParser.hpp"
 
 namespace obotcha {
 
@@ -12,269 +12,279 @@ _HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r) {
     mHeader = createHttpHeader();
     mCrlfCount = 0;
     mStatus = Idle;
-    //mPrevKey = nullptr;
+    // mPrevKey = nullptr;
 }
 
-void _HttpHeaderParser::changeToParseKeyValue() {
-    mStatus = ContentKey;
-}
+void _HttpHeaderParser::changeToParseKeyValue() { mStatus = ContentKey; }
 
 HttpHeader _HttpHeaderParser::doParse() {
     byte v = 0;
     const byte *CRLF = (const byte *)st(HttpText)::CRLF->toChars();
     const byte *LF = (const byte *)st(HttpText)::LF->toChars();
 
-    while(mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
-        switch(mStatus) {
-            case Idle:{
-                if(v == 0x20) { //' '
-                    ByteArray method = mReader->pop();
-                    String tag = method->toString()->trimAll();
-                    int methodid = st(HttpMethodParser)::doParse(tag);
-                    if(methodid != -1) {
-                        mHeader->setMethod(methodid);
-                        mStatus = Url;
+    while (mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
+        switch (mStatus) {
+        case Idle: {
+            if (v == 0x20) { //' '
+                ByteArray method = mReader->pop();
+                String tag = method->toString()->trimAll();
+                int methodid = st(HttpMethodParser)::doParse(tag);
+                if (methodid != -1) {
+                    mHeader->setMethod(methodid);
+                    mStatus = Url;
+                } else {
+                    // this may be a response
+                    mHeader->setType(st(HttpHeader)::Response);
+                    HttpVersion ver = st(HttpVersionParser)::doParse(tag);
+                    if (ver != nullptr) {
+                        mHeader->setVersion(ver);
+                        mStatus = State;
                     } else {
-                        //this may be a response
-                        mHeader->setType(st(HttpHeader)::Response);
-                        HttpVersion ver = st(HttpVersionParser)::doParse(tag);
-                        if(ver != nullptr) {
-                            mHeader->setVersion(ver);
-                            mStatus = State;
-                        } else {
-                            //TODO
-                        }
+                        // TODO
                     }
                 }
-                continue;
+            }
+            continue;
+        }
+
+        case State: {
+            if (v == CRLF[mCrlfCount]) {
+                mCrlfCount++;
+            } else if (v == LF[0]) {
+                mCrlfCount = 1;
+            } else {
+                mCrlfCount = 0;
             }
 
-            case State:{
-                if(v == CRLF[mCrlfCount]) {
-                    mCrlfCount++;
-                } else if(v == LF[0]) {
-                    mCrlfCount = 1;
+            if (v == LF[0] || mCrlfCount == 2) {
+                ByteArray state = mReader->pop();
+                String state_str = createString((const char *)state->toValue(),
+                                                0, state->size() - mCrlfCount);
+                mHeader->setResponseStatus(state_str->toBasicInt());
+                mCrlfCount = 0;
+                mStatus = ContentKey;
+            } else if (v == 0x20) { // ' '
+                ByteArray state = mReader->pop();
+                String state_str = createString((const char *)state->toValue(),
+                                                0, state->size() - 1);
+                int status = state_str->toBasicInt();
+                mHeader->setResponseStatus(status);
+                mStatus = Reason;
+            }
+            continue;
+        }
+
+        case Url: {
+            if (v == 0x20) { // ' '
+                ByteArray urlcontent = mReader->pop();
+                String url_str =
+                    createString((const char *)urlcontent->toValue(), 0,
+                                 urlcontent->size() - 1);
+                HttpUrl url = st(HttpUrlParser)::parseUrl(url_str);
+                mHeader->setUrl(url);
+                mStatus = Version;
+            }
+            continue;
+        }
+
+        case Reason: {
+            if (v == CRLF[mCrlfCount]) {
+                mCrlfCount++;
+            } else if (v == LF[0]) {
+                mCrlfCount = 1;
+            } else {
+                mCrlfCount = 0;
+            }
+
+            if (v == LF[0] || mCrlfCount == 2) {
+                ByteArray reason = mReader->pop();
+                if (reason->size() == mCrlfCount) {
+                    mHeader->setResponseReason(createString(""));
                 } else {
-                    mCrlfCount = 0;
+                    mHeader->setResponseReason(
+                        createString((const char *)reason->toValue(), 0,
+                                     reason->size() - mCrlfCount));
                 }
+                mCrlfCount = 0;
+                mStatus = ContentKey;
+            }
+            continue;
+        }
 
-                if(v == LF[0] || mCrlfCount == 2) { 
-                    ByteArray state = mReader->pop();
-                    String state_str = createString((const char *)state->toValue(),0,state->size() - mCrlfCount);
-                    mHeader->setResponseStatus(state_str->toBasicInt());
-                    mCrlfCount = 0;
-                    mStatus = ContentKey;
-                }else if(v == 0x20) { // ' '
-                    ByteArray state = mReader->pop();
-                    String state_str = createString((const char *)state->toValue(),0,state->size() - 1);
-                    int status = state_str->toBasicInt();
-                    mHeader->setResponseStatus(status);
-                    mStatus = Reason;
-                }
-                continue;
+        case Version: {
+            if (v == CRLF[mCrlfCount]) {
+                mCrlfCount++;
+            } else if (v == LF[0]) {
+                mCrlfCount = 1;
+            } else {
+                mCrlfCount = 0;
             }
 
-            case Url:{
-                if(v == 0x20) { // ' '
-                    ByteArray urlcontent = mReader->pop();
-                    String url_str = createString((const char *)urlcontent->toValue(),0,urlcontent->size() - 1);
-                    HttpUrl url = st(HttpUrlParser)::parseUrl(url_str);
-                    mHeader->setUrl(url);
-                    mStatus = Version;
-                }
-                continue;
+            if (v == LF[0] || mCrlfCount == 2) {
+                ByteArray vercontent = mReader->pop();
+                String verstring =
+                    createString((const char *)vercontent->toValue(), 0,
+                                 vercontent->size() - mCrlfCount);
+                mHeader->setVersion(st(HttpVersionParser)::doParse(verstring));
+                mStatus = ContentKey;
+                mCrlfCount = 0;
+            }
+            continue;
+        }
+
+        case ContentKey: {
+            if (v == CRLF[mCrlfCount]) {
+                mCrlfCount++;
+            } else if (v == 0x3a) { //':'
+                mCrlfCount = 0;
+                ByteArray key = mReader->pop();
+
+                mKey = createString((const char *)key->toValue(), 0,
+                                    key->size() - 1)
+                           ->toLowerCase();
+                mStatus = ContentValue;
+            } else if (v == LF[0]) {
+                mCrlfCount = 1;
+            } else {
+                mCrlfCount = 0;
             }
 
-            case Reason:{
-                if(v == CRLF[mCrlfCount]) {
-                    mCrlfCount++;
-                } else if(v == LF[0]) {
-                    mCrlfCount = 1;
+            if (v == LF[0] || mCrlfCount == 2) {
+                // we should check whether it is end
+                ByteArray content = mReader->pop();
+                if (content->size() == 2 || content->size() == 1) {
+                    mStatus = Idle;
+                    return mHeader;
                 } else {
-                    mCrlfCount = 0;
-                }
-
-                if(v == LF[0] || mCrlfCount == 2) {
-                   ByteArray reason = mReader->pop();
-                   if(reason->size() == mCrlfCount) {
-                       mHeader->setResponseReason(createString(""));
-                   } else {
-                       mHeader->setResponseReason(createString((const char *)reason->toValue(),0,reason->size() - mCrlfCount));
-                   }
-                   mCrlfCount = 0;
-                   mStatus = ContentKey;
-                }
-                continue;
-            }
-
-            case Version:{
-                if(v == CRLF[mCrlfCount]) {
-                    mCrlfCount++;
-                } else if(v == LF[0]) {
-                    mCrlfCount = 1;
-                } else {
-                    mCrlfCount = 0;
-                }
-
-                if(v == LF[0] || mCrlfCount == 2) {
-                    ByteArray vercontent = mReader->pop();
-                    String verstring = createString((const char *)vercontent->toValue(),0,vercontent->size() - mCrlfCount);
-                    mHeader->setVersion(st(HttpVersionParser)::doParse(verstring));
-                    mStatus = ContentKey;
-                    mCrlfCount = 0;
-                }
-                continue;
-            }
-
-            case ContentKey: {
-                if(v == CRLF[mCrlfCount]) {
-                    mCrlfCount++;
-                }else if(v == 0x3a) { //':'
-                    mCrlfCount = 0;
-                    ByteArray key = mReader->pop();
-                    
-                    mKey = createString((const char *)key->toValue(),0,key->size() - 1)->toLowerCase();
-                    mStatus = ContentValue;
-                } else if(v == LF[0]) {
-                    mCrlfCount = 1;
-                } else {
-                    mCrlfCount = 0;
-                }
-
-                if(v == LF[0] || mCrlfCount == 2) {
-                    //we should check whether it is end
-                    ByteArray content = mReader->pop();
-                    if(content->size() == 2 || content->size() == 1) {
-                        mStatus = Idle;
-                        return mHeader;
-                    } else {
-                        //if prev content value contains '\r\n'
-                        String value = mHeader->getValue(mKey);
-                        const char* valuestr = (const char*)content->toValue();
-                        int size = content->size();
-                        int start = 0;
-                        if(value->size() == 0) {
-                            for(;start < size;start++) {
-                                if(valuestr[start] == ' '||
-                                valuestr[start] == '\t'||
+                    // if prev content value contains '\r\n'
+                    String value = mHeader->getValue(mKey);
+                    const char *valuestr = (const char *)content->toValue();
+                    int size = content->size();
+                    int start = 0;
+                    if (value->size() == 0) {
+                        for (; start < size; start++) {
+                            if (valuestr[start] == ' ' ||
+                                valuestr[start] == '\t' ||
                                 valuestr[start] == '\r' ||
                                 valuestr[start] == '\n') {
-                                    continue;
-                                }
-                                break;
+                                continue;
                             }
+                            break;
                         }
-
-                        String appendValue = nullptr;
-                        if((content->size() - start) == mCrlfCount || start == content->size()) {
-                            appendValue = createString("");
-                        } else {
-                            appendValue = createString(&valuestr[start],0,content->size() - mCrlfCount - start);
-                        }
-
-                        value = value->append(appendValue);
-                        mHeader->setValue(mKey,value);
-                        mCrlfCount = 0;
                     }
-                    
-                }
-                continue;
-            }
-            
-            case ContentValue:{
-                if(v == CRLF[mCrlfCount]) {
-                    mCrlfCount++;
-                } else if(v == LF[0]) {
-                    mCrlfCount = 1;
-                } else {
-                    mCrlfCount = 0;
-                }
 
-                if(v == LF[0] || mCrlfCount == 2) {
-                    ByteArray value = mReader->pop();
-                    int start = 0;
-                    int size = value->size();
-                    const char* valuestr = (const char*)value->toValue();
-                    for(;start < size;start++) {
-                        if(valuestr[start] == ' '||
-                           valuestr[start] == '\t'||
-                           valuestr[start] == '\r' ||
-                           valuestr[start] == '\n') {
-                            continue;
-                        }
-                        break;
-                    }
-                    
-                    if((value->size() - start) == mCrlfCount || start == value->size()) {
-                        mValue = createString("");
+                    String appendValue = nullptr;
+                    if ((content->size() - start) == mCrlfCount ||
+                        start == content->size()) {
+                        appendValue = createString("");
                     } else {
-                        mValue = createString(&valuestr[start],0,value->size() - mCrlfCount - start);
+                        appendValue =
+                            createString(&valuestr[start], 0,
+                                         content->size() - mCrlfCount - start);
                     }
+
+                    value = value->append(appendValue);
+                    mHeader->setValue(mKey, value);
                     mCrlfCount = 0;
-                    parseParticularHeader(mKey,mValue);
-                    mHeader->setValue(mKey,mValue);
-                    //may be we should parse value
-                    mStatus = ContentKey;
-                    mNextStatus = -1;
                 }
-                continue;
             }
+            continue;
+        }
+
+        case ContentValue: {
+            if (v == CRLF[mCrlfCount]) {
+                mCrlfCount++;
+            } else if (v == LF[0]) {
+                mCrlfCount = 1;
+            } else {
+                mCrlfCount = 0;
+            }
+
+            if (v == LF[0] || mCrlfCount == 2) {
+                ByteArray value = mReader->pop();
+                int start = 0;
+                int size = value->size();
+                const char *valuestr = (const char *)value->toValue();
+                for (; start < size; start++) {
+                    if (valuestr[start] == ' ' || valuestr[start] == '\t' ||
+                        valuestr[start] == '\r' || valuestr[start] == '\n') {
+                        continue;
+                    }
+                    break;
+                }
+
+                if ((value->size() - start) == mCrlfCount ||
+                    start == value->size()) {
+                    mValue = createString("");
+                } else {
+                    mValue = createString(&valuestr[start], 0,
+                                          value->size() - mCrlfCount - start);
+                }
+                mCrlfCount = 0;
+                parseParticularHeader(mKey, mValue);
+                mHeader->setValue(mKey, mValue);
+                // may be we should parse value
+                mStatus = ContentKey;
+                mNextStatus = -1;
+            }
+            continue;
+        }
         }
     }
 
     return nullptr;
 }
 
-int _HttpHeaderParser::parseParticularHeader(String key,String value) {
+int _HttpHeaderParser::parseParticularHeader(String key, String value) {
     const char *p = key->toChars();
-    switch(p[0]) {
-        case 'c': {
-            if(key->equals(st(HttpHeader)::Cookie)) {
-                ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
-                auto iterator = cookies->getIterator();
-                while(iterator->hasValue()) {
-                    mHeader->addCookie(iterator->getValue());
-                    iterator->next();
-                }
-                return 0;
-            } else if(key->equals(st(HttpHeader)::CacheControl)) {
-                mHeader->setCacheControl(createHttpCacheControl(value));
-                return 0;
-            } else if(key->equals(st(HttpHeader)::ContentType)) {
-                mHeader->setContentType(value);
-                return 0;
-            } else if(key->equals(st(HttpHeader)::ContentLength)) {
-                mHeader->setContentLength(value->trimAll()->toBasicInt());
-                return 0;
-            } else if(key->equals(st(HttpHeader)::Connection)) {
-                if(st(HttpHeader)::ConnectionClose->equals(value->trimAll())) {
-                    mHeader->setConnected(false);
-                    return 0;
-                }
+    switch (p[0]) {
+    case 'c': {
+        if (key->equals(st(HttpHeader)::Cookie)) {
+            ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
+            auto iterator = cookies->getIterator();
+            while (iterator->hasValue()) {
+                mHeader->addCookie(iterator->getValue());
+                iterator->next();
             }
-            break;
+            return 0;
+        } else if (key->equals(st(HttpHeader)::CacheControl)) {
+            mHeader->setCacheControl(createHttpCacheControl(value));
+            return 0;
+        } else if (key->equals(st(HttpHeader)::ContentType)) {
+            mHeader->setContentType(value);
+            return 0;
+        } else if (key->equals(st(HttpHeader)::ContentLength)) {
+            mHeader->setContentLength(value->trimAll()->toBasicInt());
+            return 0;
+        } else if (key->equals(st(HttpHeader)::Connection)) {
+            if (st(HttpHeader)::ConnectionClose->equals(value->trimAll())) {
+                mHeader->setConnected(false);
+                return 0;
+            }
         }
+        break;
+    }
 
-        case 's': {
-            if(key->equals(st(HttpHeader)::SetCookie)) {
-                ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
-                auto iterator = cookies->getIterator();
-                while(iterator->hasValue()) {
-                    mHeader->addCookie(iterator->getValue());
-                    iterator->next();
-                }
-                return 0;
+    case 's': {
+        if (key->equals(st(HttpHeader)::SetCookie)) {
+            ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
+            auto iterator = cookies->getIterator();
+            while (iterator->hasValue()) {
+                mHeader->addCookie(iterator->getValue());
+                iterator->next();
             }
+            return 0;
         }
+    }
 
-        case 'l': {
-            if(key->equals(st(HttpHeader)::Link)) {
-                mHeader->addLink(value);
-                return 0;
-            }
+    case 'l': {
+        if (key->equals(st(HttpHeader)::Link)) {
+            mHeader->addLink(value);
+            return 0;
         }
+    }
     }
     return -1;
 }
 
-}
+} // namespace obotcha

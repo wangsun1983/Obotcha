@@ -4,31 +4,30 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "HashMap.hpp"
-#include "TextContent.hpp"
 #include "HttpResponseEntity.hpp"
+#include "String.hpp"
+#include "TextContent.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(RouterListener) {
-public:
-    virtual HttpResponseEntity onInvoke(HashMap<String,String>) = 0;
+  public:
+    virtual HttpResponseEntity onInvoke(HashMap<String, String>) = 0;
 };
 
 DECLARE_CLASS(HttpRouter) {
-public:
-    _HttpRouter(String p,RouterListener l);
-    
+  public:
+    _HttpRouter(String p, RouterListener l);
+
     String getPath();
     RouterListener getListener();
 
-private:
+  private:
     String mPath;
     RouterListener mListener;
-    
 };
 
-}
+} // namespace obotcha
 
 #endif

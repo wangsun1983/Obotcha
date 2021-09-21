@@ -16,11 +16,14 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
 
     while (pos < value->size()) {
         int tokenStart = pos;
-        pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString("=,;"));
-        String directive = value->subString(tokenStart, pos-tokenStart)->trim();
+        pos = st(HttpHeaderContentParser)::skipUntil(value, pos,
+                                                     createString("=,;"));
+        String directive =
+            value->subString(tokenStart, pos - tokenStart)->trim();
         String parameter = nullptr;
 
-        if (pos == value->size() || value->charAt(pos) == ',' || value->charAt(pos) == ';') {
+        if (pos == value->size() || value->charAt(pos) == ',' ||
+            value->charAt(pos) == ';') {
             pos++; // consume ',' or ';' (if necessary)
             parameter = nullptr;
         } else {
@@ -30,59 +33,72 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
             if (pos < value->size() && value->charAt(pos) == '\"') {
                 pos++; // consume '"' open quote
                 int parameterStart = pos;
-                pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString("\""));
+                pos = st(HttpHeaderContentParser)::skipUntil(
+                    value, pos, createString("\""));
                 parameter = value->subString(parameterStart, pos);
                 pos++; // consume '"' close quote (if necessary)
                 // unquoted string
             } else {
                 int parameterStart = pos;
-                if(directive->endsWithIgnoreCase(st(HttpCookie)::COOKIE_PROPERTY_EXPIRES)) {
-                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString(";"));
+                if (directive->endsWithIgnoreCase(
+                        st(HttpCookie)::COOKIE_PROPERTY_EXPIRES)) {
+                    pos = st(HttpHeaderContentParser)::skipUntil(
+                        value, pos, createString(";"));
                 } else {
-                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString(",;"));
+                    pos = st(HttpHeaderContentParser)::skipUntil(
+                        value, pos, createString(",;"));
                 }
-                parameter = value->subString(parameterStart, (pos-parameterStart))->trim();
+                parameter =
+                    value->subString(parameterStart, (pos - parameterStart))
+                        ->trim();
                 pos++;
             }
         }
-        if (st(HttpCookie)::COOKIE_PROPERTY_SECURE->equalsIgnoreCase(directive)) {
+        if (st(HttpCookie)::COOKIE_PROPERTY_SECURE->equalsIgnoreCase(
+                directive)) {
             mPropertySecure = true;
-        } else if (st(HttpCookie)::COOKIE_PROPERTY_HTTPONLY->equalsIgnoreCase(directive)) {
+        } else if (st(HttpCookie)::COOKIE_PROPERTY_HTTPONLY->equalsIgnoreCase(
+                       directive)) {
             mPropertyHttpOnly = true;
-        } else if (st(HttpCookie)::COOKIE_PROPERTY_PATH->equalsIgnoreCase(directive)) {
+        } else if (st(HttpCookie)::COOKIE_PROPERTY_PATH->equalsIgnoreCase(
+                       directive)) {
             mPropertyPath = parameter;
-        } else if (st(HttpCookie)::COOKIE_PROPERTY_DOMAIN->equalsIgnoreCase(directive)) {
+        } else if (st(HttpCookie)::COOKIE_PROPERTY_DOMAIN->equalsIgnoreCase(
+                       directive)) {
             mPropertyDomain = parameter;
-        } else if (st(HttpCookie)::COOKIE_PROPERTY_EXPIRES->equalsIgnoreCase(directive)) {
+        } else if (st(HttpCookie)::COOKIE_PROPERTY_EXPIRES->equalsIgnoreCase(
+                       directive)) {
             mPropertyExpires = createHttpDate(parameter);
-        } else if (st(HttpCookie)::COOKIE_PROPERTY_MAX_AGE->equalsIgnoreCase(directive)) {
-            mPropertyMaxAge = st(HttpHeaderContentParser)::parseSeconds(parameter, st(Integer)::MAX_VALUE);
+        } else if (st(HttpCookie)::COOKIE_PROPERTY_MAX_AGE->equalsIgnoreCase(
+                       directive)) {
+            mPropertyMaxAge = st(HttpHeaderContentParser)::parseSeconds(
+                parameter, st(Integer)::MAX_VALUE);
         } else {
-            //mValues->put(directive,parameter);
-            //mName = directive;
-            //mValue = parameter;
-            cookies->add(createHttpCookie(directive,parameter));
+            // mValues->put(directive,parameter);
+            // mName = directive;
+            // mValue = parameter;
+            cookies->add(createHttpCookie(directive, parameter));
         }
     }
 
     auto iterator = cookies->getIterator();
-    while(iterator->hasValue()) {
+    while (iterator->hasValue()) {
         auto cookie = iterator->getValue();
         cookie->setPropertySecure(mPropertySecure);
         cookie->setPropertyHttpOnly(mPropertyHttpOnly);
-        if(mPropertyPath != nullptr) {
+        if (mPropertyPath != nullptr) {
             cookie->setPropertyPath(mPropertyPath);
         }
 
-        if(mPropertyDomain != nullptr) {
+        if (mPropertyDomain != nullptr) {
             cookie->setPropertyDomain(mPropertyDomain);
         }
 
-        if(mPropertyExpires != nullptr) {
+        if (mPropertyExpires != nullptr) {
             cookie->setPropertyExpires(mPropertyExpires);
         }
 
-        if(mPropertyMaxAge != -1) {
+        if (mPropertyMaxAge != -1) {
             cookie->setPropertyMaxAge(mPropertyMaxAge);
         }
         iterator->next();
@@ -91,4 +107,4 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
     return cookies;
 }
 
-}
+} // namespace obotcha

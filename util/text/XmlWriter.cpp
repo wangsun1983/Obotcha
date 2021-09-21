@@ -1,13 +1,13 @@
-#include "iniparser.h"
 #include "dictionary.h"
+#include "iniparser.h"
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "String.hpp"
 #include "FileOutputStream.hpp"
-#include "XmlWriter.hpp"
+#include "Object.hpp"
+#include "String.hpp"
+#include "StrongPointer.hpp"
 #include "XmlDocument.hpp"
 #include "XmlValue.hpp"
+#include "XmlWriter.hpp"
 #include "rapidxml.hpp"
 #include "rapidxml_print.hpp"
 
@@ -15,13 +15,11 @@ using namespace rapidxml;
 
 namespace obotcha {
 
-_XmlWriter::_XmlWriter(sp<_XmlDocument> doc) {
-    xmlDoc = doc;
-}
+_XmlWriter::_XmlWriter(sp<_XmlDocument> doc) { xmlDoc = doc; }
 
 void _XmlWriter::write(String filepath) {
     File file = createFile(filepath);
-    if(!file->exists()) {
+    if (!file->exists()) {
         file->createNewFile();
     }
 
@@ -33,4 +31,4 @@ void _XmlWriter::write(String filepath) {
     stream->close();
 }
 
-}
+} // namespace obotcha

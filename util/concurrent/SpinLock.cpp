@@ -1,7 +1,7 @@
 /**
  * @file SpinLock.cpp
- * @brief  a spinlock is a lock which causes a thread trying to 
- *         acquire it to simply wait in a loop ("spin") while 
+ * @brief  a spinlock is a lock which causes a thread trying to
+ *         acquire it to simply wait in a loop ("spin") while
  *         repeatedly checking if the lock is available
  * @details none
  * @mainpage none
@@ -12,23 +12,19 @@
  * @license none
  */
 
-#include "String.hpp"
 #include "SpinLock.hpp"
 #include "Error.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
-_SpinLock::_SpinLock(String n):_SpinLock() {
-    mSpinLockName = n;
-}
+_SpinLock::_SpinLock(String n) : _SpinLock() { mSpinLockName = n; }
 
-_SpinLock::_SpinLock(const char *n):_SpinLock() {
+_SpinLock::_SpinLock(const char *n) : _SpinLock() {
     mSpinLockName = createString(n);
 }
 
-_SpinLock::_SpinLock() {
-    pthread_spin_init(&mLock, PTHREAD_PROCESS_PRIVATE);
-}
+_SpinLock::_SpinLock() { pthread_spin_init(&mLock, PTHREAD_PROCESS_PRIVATE); }
 
 int _SpinLock::lock() {
     int ret = pthread_spin_lock(&mLock);
@@ -37,14 +33,14 @@ int _SpinLock::lock() {
 
 int _SpinLock::tryLock() {
     int ret = pthread_spin_trylock(&mLock);
-    switch(ret) {
-        case EBUSY:
+    switch (ret) {
+    case EBUSY:
         return -LockBusy;
 
-        case Success:
+    case Success:
         return Success;
 
-        default:
+    default:
         return -LockFail;
     }
 }
@@ -54,12 +50,8 @@ int _SpinLock::unlock() {
     return 0;
 }
 
-_SpinLock::~_SpinLock() {
-    pthread_spin_destroy(&mLock);
-}
+_SpinLock::~_SpinLock() { pthread_spin_destroy(&mLock); }
 
-String _SpinLock::toString() {
-    return mSpinLockName;
-}
+String _SpinLock::toString() { return mSpinLockName; }
 
-}
+} // namespace obotcha

@@ -1,12 +1,12 @@
 #ifndef __OBOTCHA_UINT32_HPP__
 #define __OBOTCHA_UINT32_HPP__
 
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 
+#include "Number.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "Number.hpp"
 
 namespace obotcha {
 
@@ -17,7 +17,7 @@ public:
     static const int __isReflected = 1;
 
     _Uint32();
-    
+
     _Uint32(uint32_t v);
 
     _Uint32(const Uint32 &v);
@@ -43,14 +43,14 @@ public:
     sp<_String> toString();
 
     static sp<_String> toString(uint32_t i);
-    
-    static sp<_Uint32> parseDecUint32(const sp<_String>&);
 
-    static sp<_Uint32> parseHexUint32(const sp<_String>&);
+    static sp<_Uint32> parseDecUint32(const sp<_String> &);
 
-    static sp<_Uint32> parseOctUint32(const sp<_String>&);
+    static sp<_Uint32> parseHexUint32(const sp<_String> &);
 
-    static sp<_Uint32> parseBinaryUint32(const sp<_String>&);
+    static sp<_Uint32> parseOctUint32(const sp<_String> &);
+
+    static sp<_Uint32> parseBinaryUint32(const sp<_String> &);
 
     static sp<_String> className();
 
@@ -66,5 +66,5 @@ private:
     uint32_t val;
 };
 
-}
+} // namespace obotcha
 #endif

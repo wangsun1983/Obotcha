@@ -1,7 +1,7 @@
 #include "HttpLinker.hpp"
+#include "HttpLinkerManager.hpp"
 #include "HttpPacket.hpp"
 #include "HttpServer.hpp"
-#include "HttpLinkerManager.hpp"
 
 namespace obotcha {
 
@@ -29,34 +29,26 @@ ArrayList<HttpPacket> _HttpLinker::pollHttpPacket() {
     return mParser->doParse();
 }
 
-//int _HttpLinker::send(ByteArray data) {
+// int _HttpLinker::send(ByteArray data) {
 //    if(mSSLInfo != nullptr) {
 //        return mSSLInfo->write(data);
 //    }
 //    return mSocketOutput->write(data);
 //}
 
-//int _HttpLinker::send(ByteArray data,int size) {
+// int _HttpLinker::send(ByteArray data,int size) {
 //    if(mSSLInfo != nullptr) {
 //        return mSSLInfo->write(data);
 //    }
 //    return mSocketOutput->write(data,size);
 //}
 
-SSLInfo _HttpLinker::getSSLInfo() {
-    return mSSLInfo;
-}
+SSLInfo _HttpLinker::getSSLInfo() { return mSSLInfo; }
 
-void _HttpLinker::setSSLInfo(SSLInfo info) {
-    mSSLInfo = info;
-}
+void _HttpLinker::setSSLInfo(SSLInfo info) { mSSLInfo = info; }
 
-Socket _HttpLinker::getSocket() {
-    return mSocket;
-}
+Socket _HttpLinker::getSocket() { return mSocket; }
 
-HttpSession _HttpLinker::getSession() {
-    return mSession;
-}
+HttpSession _HttpLinker::getSession() { return mSession; }
 
-}
+} // namespace obotcha

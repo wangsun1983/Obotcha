@@ -1,22 +1,18 @@
 #ifndef __OBOTCHA_BYTE_RING_ARRAY_HPP__
 #define __OBOTCHA_BYTE_RING_ARRAY_HPP__
 
-#include <stdlib.h>
 #include <memory.h>
+#include <stdlib.h>
 
+#include "ByteArray.hpp"
 #include "Object.hpp"
 #include "String.hpp"
-#include "ByteArray.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(ByteRingArray) {
 public:
-    enum ByteRingArrayStatus {
-        Full = 0,
-        Empty,
-        Partial
-    };
+    enum ByteRingArrayStatus { Full = 0, Empty, Partial };
 
     _ByteRingArray(int size);
 
@@ -30,9 +26,9 @@ public:
 
     bool push(const ByteArray &);
 
-    bool push(const ByteArray &,int start,int length);
+    bool push(const ByteArray &, int start, int length);
 
-    bool push(byte *,int,int);
+    bool push(byte *, int, int);
 
     ByteArray pop(int size);
 
@@ -50,26 +46,23 @@ public:
 
     byte at(int m);
 
-    //just for test
+    // just for test
     void setStartIndex(int);
     void setEndIndex(int);
     int getNextIndex();
     void setNextIndex(int);
     void setSize(int);
-    //void setStatus(int);
+    // void setStatus(int);
 
     void reset();
-   
-private:
 
+private:
     byte *mBuff;
 
     int mNext;
     int mCapacity;
     int mSize;
-    
 };
 
-}
+} // namespace obotcha
 #endif
-

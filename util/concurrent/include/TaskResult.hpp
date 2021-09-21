@@ -1,20 +1,18 @@
 #ifndef __OBOTCHA_TASK_RESULT_HPP__
 #define __OBOTCHA_TASK_RESULT_HPP__
 
-#include "Object.hpp"
 #include "Byte.hpp"
-#include "ThreadLocal.hpp"
 #include "ExecutorTask.hpp"
+#include "Object.hpp"
+#include "ThreadLocal.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(TaskResult) {
-
 public:
-    template<typename T>
-    static void set(T value) {
+    template <typename T> static void set(T value) {
         ExecutorTask t = mTasks->get();
-        if(t != nullptr) {
+        if (t != nullptr) {
             t->setResult(value);
         }
     }
@@ -35,6 +33,6 @@ private:
     static ThreadLocal<ExecutorTask> mTasks;
 };
 
-}
+} // namespace obotcha
 
 #endif

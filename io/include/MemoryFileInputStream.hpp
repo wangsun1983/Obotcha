@@ -7,27 +7,25 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
+#include "ByteArray.hpp"
 #include "File.hpp"
 #include "InputStream.hpp"
-#include "ByteArray.hpp"
 #include "MemoryFile.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 
-
 DECLARE_CLASS(MemoryFileInputStream) IMPLEMENTS(InputStream) {
-public:
-
+  public:
     _MemoryFileInputStream(MemoryFile f);
-    
+
     _MemoryFileInputStream(String path);
 
     int read();
 
     long read(ByteArray buffer);
 
-    long read(int index,ByteArray buffer);
+    long read(int index, ByteArray buffer);
 
     ByteArray readAll();
 
@@ -36,7 +34,8 @@ public:
     void close();
 
     ~_MemoryFileInputStream();
-private:
+
+  private:
     String mPath;
 
     long filesize;
@@ -44,5 +43,5 @@ private:
     unsigned char *mPtr;
 };
 
-}
+} // namespace obotcha
 #endif

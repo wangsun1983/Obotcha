@@ -15,16 +15,16 @@ HttpRouterManager _HttpRouterManager::getInstance() {
 }
 
 _HttpRouterManager::_HttpRouterManager() {
-    for(int i = 0;i<st(HttpMethod)::Max;i++) {
+    for (int i = 0; i < st(HttpMethod)::Max; i++) {
         mMaps[i] = createHttpRouterMap();
     }
 }
 
-void _HttpRouterManager::addRouter(int method,HttpRouter r) {
+void _HttpRouterManager::addRouter(int method, HttpRouter r) {
     mMaps[method]->addRouter(r);
 }
 
-HttpRouter _HttpRouterManager::getRouter(int method,String url,HashMap<String,String> &result) {
-    return mMaps[method]->findRouter(url,result);
+HttpRouter _HttpRouterManager::getRouter(int method, String url,
+                                         HashMap<String, String> &result) {
+    return mMaps[method]->findRouter(url, result);
 }
-    

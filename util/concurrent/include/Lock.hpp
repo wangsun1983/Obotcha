@@ -7,8 +7,8 @@
 namespace obotcha {
 
 DECLARE_CLASS(Lock) {
-public:
-    enum Type{
+  public:
+    enum Type {
         Recursive = 0,
         Normal,
     };
@@ -18,5 +18,5 @@ public:
     virtual int unlock() = 0;
 };
 
-}
+} // namespace obotcha
 #endif

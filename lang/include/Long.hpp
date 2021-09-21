@@ -3,19 +3,19 @@
 
 #include <stdio.h>
 
-#include "Object.hpp"
 #include "Number.hpp"
+#include "Object.hpp"
 
 namespace obotcha {
 
 class _String;
 
-DECLARE_CLASS(Long) IMPLEMENTS(Number)<long>{
+DECLARE_CLASS(Long) IMPLEMENTS(Number)<long> {
 public:
     static const int __isReflected = 1;
 
     _Long();
-    
+
     _Long(long v);
 
     _Long(const Long &v);
@@ -41,17 +41,17 @@ public:
     sp<_String> toString();
 
     static sp<_String> toString(int i);
-    
-    static sp<_Long> parseDecLong(const sp<_String>&);
 
-    static sp<_Long> parseHexLong(const sp<_String>&);
+    static sp<_Long> parseDecLong(const sp<_String> &);
 
-    static sp<_Long> parseOctLong(const sp<_String>&);
+    static sp<_Long> parseHexLong(const sp<_String> &);
 
-    static sp<_Long> parseBinaryLong(const sp<_String>&);
+    static sp<_Long> parseOctLong(const sp<_String> &);
+
+    static sp<_Long> parseBinaryLong(const sp<_String> &);
 
     static sp<_String> className();
-    
+
     uint64_t hashcode();
 
     ~_Long();
@@ -60,5 +60,5 @@ private:
     long val;
 };
 
-}
+} // namespace obotcha
 #endif

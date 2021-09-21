@@ -2,8 +2,8 @@
 #define __OBOTCHA_HASH_KEY_HPP__
 
 #include <algorithm>
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -13,25 +13,22 @@
 
 namespace obotcha {
 
-//hash function of map
-template<typename T>
-class KeyHash{
-public:    
-    size_t operator()(const T &A)const{
-        if(A == nullptr) {
+// hash function of map
+template <typename T> class KeyHash {
+  public:
+    size_t operator()(const T &A) const {
+        if (A == nullptr) {
             return std::hash<int>{}(0);
         }
         return A->hashcode();
     }
 };
 
-#define KeyHashSimpleDataTypeFunc(X) template<> \
-class KeyHash<X> { \
-public: \
-    size_t operator()(const X &A)const{ \
-        return std::hash<X>{}(A); \
-    } \
-}\
+#define KeyHashSimpleDataTypeFunc(X)                                           \
+    template <> class KeyHash<X> {                                             \
+      public:                                                                  \
+        size_t operator()(const X &A) const { return std::hash<X>{}(A); }      \
+    }
 
 KeyHashSimpleDataTypeFunc(bool);
 KeyHashSimpleDataTypeFunc(double);
@@ -44,15 +41,13 @@ KeyHashSimpleDataTypeFunc(uint32_t);
 KeyHashSimpleDataTypeFunc(uint64_t);
 KeyHashSimpleDataTypeFunc(std::string);
 
-//compare function of map
-template<typename T>
-class KeyComapre
-{
-public:
+// compare function of map
+template <typename T> class KeyComapre {
+  public:
     bool operator()(const T &k1, const T &k2) const {
-        if(k1 != nullptr && k2 != nullptr) {
+        if (k1 != nullptr && k2 != nullptr) {
             return k1 == k2;
-        } else if(k1 == nullptr && k2 == nullptr) {
+        } else if (k1 == nullptr && k2 == nullptr) {
             return true;
         }
 
@@ -60,13 +55,11 @@ public:
     }
 };
 
-#define KeyCompareSimpleDataTypeFunc(X) template<> \
-class KeyComapre<X> {\
-public:\
-    bool operator()(const X &k1, const X &k2) const {\
-        return k1 == k2;\
-    }\
-};\
+#define KeyCompareSimpleDataTypeFunc(X)                                        \
+    template <> class KeyComapre<X> {                                          \
+      public:                                                                  \
+        bool operator()(const X &k1, const X &k2) const { return k1 == k2; }   \
+    };
 
 KeyCompareSimpleDataTypeFunc(bool);
 KeyCompareSimpleDataTypeFunc(double);
@@ -79,5 +72,5 @@ KeyCompareSimpleDataTypeFunc(uint32_t);
 KeyCompareSimpleDataTypeFunc(uint64_t);
 KeyCompareSimpleDataTypeFunc(std::string);
 
-}
+} // namespace obotcha
 #endif

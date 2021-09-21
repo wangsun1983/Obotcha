@@ -1,7 +1,7 @@
 /**
  * @file Message.cpp
- * @brief Defines a message containing a description and arbitrary data object that 
- *        can be sent to a handler.
+ * @brief Defines a message containing a description and arbitrary data object
+ * that can be sent to a handler.
  * @details none
  * @mainpage none
  * @author sunli.wang
@@ -34,7 +34,7 @@ _Message::_Message(Runnable r) {
 }
 
 _Message::~_Message() {
-    //TODO
+    // TODO
 }
 
-}
+} // namespace obotcha

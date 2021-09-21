@@ -7,11 +7,9 @@
 #include "String.hpp"
 #include "uuid.h"
 
-
 namespace obotcha {
 
 DECLARE_CLASS(UUID) {
-
 public:
     enum Type {
         Random = 0,
@@ -22,12 +20,12 @@ public:
 
     _UUID();
     _UUID(int);
-    
+
     String generate();
 
 private:
     int mType;
 };
 
-}
+} // namespace obotcha
 #endif

@@ -4,26 +4,26 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "Mutex.hpp"
 #include "Condition.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(CountDownLatch) {
-public:
+  public:
     _CountDownLatch(int v);
-    
+
     int countDown();
 
     int await(long interval = 0);
 
     int getCount();
-    
-private:
+
+  private:
     int count;
     Condition waitCond;
     Mutex waitMutex;
 };
 
-}
+} // namespace obotcha
 #endif

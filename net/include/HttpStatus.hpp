@@ -3,6 +3,7 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "String.hpp"
 
 namespace obotcha {
 

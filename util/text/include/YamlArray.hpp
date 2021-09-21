@@ -1,10 +1,10 @@
 #ifndef __OBOTCHA_YAML_ARRAY_H__
 #define __OBOTCHA_YAML_ARRAY_H__
 
-#include "yaml-cpp/yaml.h"
-#include "StrongPointer.hpp"
 #include "Object.hpp"
 #include "String.hpp"
+#include "StrongPointer.hpp"
+#include "yaml-cpp/yaml.h"
 
 namespace obotcha {
 
@@ -12,7 +12,6 @@ class _YamlReader;
 class _YamlValue;
 
 DECLARE_CLASS(YamlArray) {
-
 public:
     friend class _YamlReader;
 
@@ -22,17 +21,17 @@ public:
 
     _YamlArray(YamlArray);
 
-    sp<_YamlValue>getYamlValue(int index);
+    sp<_YamlValue> getYamlValue(int index);
 
-    int getInt(int index,int def);
+    int getInt(int index, int def);
 
-    String getString(int index,String def);
+    String getString(int index, String def);
 
-    double getDouble(int index,double def);
+    double getDouble(int index, double def);
 
-    long getLong(int index,long def);
+    long getLong(int index, long def);
 
-    bool getBool(int index,bool def);
+    bool getBool(int index, bool def);
 
     int size();
 
@@ -40,6 +39,6 @@ private:
     YAML::Node yamlNode;
 };
 
-}
+} // namespace obotcha
 
 #endif

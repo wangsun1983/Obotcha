@@ -9,13 +9,12 @@
 namespace obotcha {
 
 DECLARE_CLASS(Math) {
-
 public:
     enum CompareResult {
         AlmostEqual = 0,
         Param1Greater,
         Param2Greater,
-    };  
+    };
 
     static const double E;
     static const double PI;
@@ -33,25 +32,24 @@ public:
     static double asin(double);
     static double atan(double);
 
-    static long max(long,long);
-    static double max(double,double);
-    static float max(float,float);
+    static long max(long, long);
+    static double max(double, double);
+    static float max(float, float);
 
-    static long min(long,long);
-    static double min(double,double);
-    static float min(float,float);
+    static long min(long, long);
+    static double min(double, double);
+    static float min(float, float);
 
-    static double pow(double,double);
-    static long pow(long,long);
+    static double pow(double, double);
+    static long pow(long, long);
 
     static double sqrt(double);
 
     static int ceil(double);
     static int floor(double);
 
-    static int compareDouble(double,double);
-    static int compareFloat(float,float);
-
+    static int compareDouble(double, double);
+    static int compareFloat(float, float);
 };
-}
+} // namespace obotcha
 #endif

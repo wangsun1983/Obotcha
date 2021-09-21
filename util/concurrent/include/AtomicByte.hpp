@@ -1,9 +1,9 @@
 #ifndef __OBOTCHA_ATOMIC_BYTE_HPP__
 #define __OBOTCHA_ATOMIC_BYTE_HPP__
 
+#include <atomic>
 #include <pthread.h>
 #include <sys/time.h>
-#include <atomic>
 
 #include "Mutex.hpp"
 #include "StrongPointer.hpp"
@@ -12,7 +12,7 @@ namespace obotcha {
 
 DECLARE_CLASS(AtomicByte) {
 
-public:
+  public:
     _AtomicByte(uint8_t val);
     uint8_t incrementAndGet();
     uint8_t decrementAndGet();
@@ -21,7 +21,7 @@ public:
     uint8_t andAndGet(uint8_t val);
     uint8_t orAndGet(uint8_t val);
     uint8_t xorAndGet(uint8_t val);
-    
+
     uint8_t getAndIncrement();
     uint8_t getAndDecrement();
     uint8_t getAndAdd(uint8_t val);
@@ -33,10 +33,10 @@ public:
 
     void set(uint8_t val);
     uint8_t get();
-   
-private:
+
+  private:
     std::atomic<uint8_t> mValue;
 };
 
-}
+} // namespace obotcha
 #endif
