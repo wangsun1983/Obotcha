@@ -10,10 +10,10 @@
 
 using namespace obotcha;
 
-int testparse() {
+void testparse() {
 
     while(1) {
-        
+
         Boolean t1 = st(Boolean)::parse("true");
         if(!t1->toValue()) {
             printf("Boolean parse test1-------[FAIL] \n");

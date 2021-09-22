@@ -22,6 +22,8 @@ cflags = -fpic \
 		-I ../../../external/libco \
 		-g \
 		-std=c++14 \
+		-fsanitize=address \
+		-fno-omit-frame-pointer
 
 external = -lpthread \
 				-ldl \
@@ -40,4 +42,4 @@ libname	= testFloat
 everything : $(libname)
 
 $(libname): $(link)
-	g++ *.cpp $(cflags) -o mytest $(external) $(sharelib)
+	clang++ *.cpp $(cflags) -o mytest $(external) $(sharelib)

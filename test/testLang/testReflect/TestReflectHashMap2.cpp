@@ -48,7 +48,7 @@ public:
   DECLARE_REFLECT_FIELD(TestMapData2,maps)
 };
 
-int testReflectMap2() {
+void testReflectMap2() {
   while(1) {
     TestMapData2 data2 = createTestMapData2();
     data2->maps = createHashMap<String,MapValue2>();
@@ -151,7 +151,7 @@ int testReflectMap2() {
     v2->data1 = 3;
     v2->data2 = 4;
     data1->mmaps->put(createString("value2"),v2);
-    
+
     JsonValue jvalue = createJsonValue();
     jvalue->importFrom(data1);
 

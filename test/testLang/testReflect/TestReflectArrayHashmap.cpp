@@ -29,7 +29,7 @@ public:
 };
 
 
-int testReflectArrayHashmap() {
+void testReflectArrayHashmap() {
   while(1) {
     ArrayHashMap map = createArrayHashMap();
     map->datas = createArrayList<HashMap<String,ItemData>>();
@@ -38,11 +38,11 @@ int testReflectArrayHashmap() {
     ItemData d1 = createItemData();
     d1->data1 = 1;
     d1->data2 = 2;
-    
+
     ItemData d2 = createItemData();
     d2->data1 = 3;
     d2->data2 = 4;
-    
+
     map1->put(createString("value1"),d1);
     map1->put(createString("value2"),d2);
     map->datas->add(map1);
@@ -52,11 +52,11 @@ int testReflectArrayHashmap() {
     ItemData d3 = createItemData();
     d3->data1 = 5;
     d3->data2 = 6;
-    
+
     ItemData d4 = createItemData();
     d4->data1 = 7;
     d4->data2 = 8;
-    
+
     map2->put(createString("data1"),d3);
     map2->put(createString("data2"),d4);
     map->datas->add(map2);
@@ -107,6 +107,4 @@ int testReflectArrayHashmap() {
     printf("Reflect Array HashMap test6-------[OK] \n");
     break;
   }
-
-  return 0;
 }

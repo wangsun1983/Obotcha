@@ -10,11 +10,11 @@
 
 using namespace obotcha;
 
-extern int testtostring();
-extern int basetest();
-extern int equaltest();
-extern int testIntegerParse();
-extern int testIntegerParseWrong();
+extern void testtostring();
+extern void basetest();
+extern void equaltest();
+extern void testIntegerParse();
+extern void testIntegerParseWrong();
 
 int main() {
     basetest();
@@ -22,4 +22,5 @@ int main() {
     testtostring();
     testIntegerParse();
     testIntegerParseWrong();
+    return 0;
 }

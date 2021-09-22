@@ -16,7 +16,7 @@ struct MyData {
   int j;
 };
 
-int basetest() {
+void basetest() {
 
     printf("---[ByteArray Test Start]--- \n");
     while(1) {
@@ -24,7 +24,7 @@ int basetest() {
         ByteArray array1 = createByteArray(16);
 
         byte *p = array1->toValue();
-        for(int index = 0;index++;index<16) {
+        for(int index = 0;index<16;index++) {
             if(p[index] != 0) {
               printf("ByteArray construct test1-------[FAIL] \n");
               break;
@@ -36,7 +36,7 @@ int basetest() {
         ByteArray array2 = createByteArray(v,16);
         byte *p2 = array2->toValue();
         bool isOk = true;
-        for(int index = 0;index++;index<16) {
+        for(int index = 0;index<16;index++) {
             if(p2[index] != 8) {
               printf("ByteArray construct test2-------[FAIL] \n");
               isOk = false;
@@ -60,7 +60,7 @@ int basetest() {
         array1->clear();
         byte *p2 = array1->toValue();
         bool isOk = true;
-        for(int index = 0;index++;index<16) {
+        for(int index = 0;index<16;index++) {
             if(p2[index] != 0) {
               printf("ByteArray clear test1 -------[FAIL] \n");
               isOk = false;
@@ -84,7 +84,7 @@ int basetest() {
         array1->clear();
         byte *p2 = array1->toValue();
         bool isOk = true;
-        for(int index = 0;index++;index<16) {
+        for(int index = 0;index<16;index++) {
             if(p2[index] != 0) {
               printf("ByteArray toValue test1 -------[FAIL] \n");
               isOk = false;
@@ -136,7 +136,7 @@ int basetest() {
         ByteArray array1 = createByteArray(v,16);
         byte *p = array1->toValue();
         bool isOk = true;
-        for(int index = 0;index++;index<16) {
+        for(int index = 0;index<16;index++) {
             if(p[index] != array1->at(index)) {
                 isOk = false;
                 printf("ByteArray at -------[FAIL] \n");
@@ -160,7 +160,7 @@ int basetest() {
 
         byte *p = array1->toValue();
         bool isOk = true;
-        for(int index = 0;index++;index<16) {
+        for(int index = 0;index<16;index++) {
             if(p[index] != 9) {
                 isOk = false;
                 printf("ByteArray fill -------[FAIL] \n");
@@ -205,7 +205,7 @@ int basetest() {
 
       printf("ByteArray fill test 7-------[OK] \n");
       break;
-    } 
+    }
 
     //_ByteArray(T t);
     while(1) {

@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-int hashcodetest() {
+void hashcodetest() {
   Float t1 = createFloat(1.1);
   Float t2 = createFloat(1.1);
   if(t1->hashcode() != t2->hashcode()) {

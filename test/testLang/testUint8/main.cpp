@@ -9,12 +9,12 @@
 
 using namespace obotcha;
 
-extern int testtostring();
-extern int basetest();
-extern int equaltest();
-extern int testHash();
-extern int updatetest();
-extern int TestParseException();
+extern void testtostring();
+extern void basetest();
+extern void equaltest();
+extern void testHash();
+extern void updatetest();
+extern void TestParseException();
 
 int main() {
     basetest();
@@ -23,4 +23,5 @@ int main() {
     testHash();
     updatetest();
     TestParseException();
+    return 0;
 }

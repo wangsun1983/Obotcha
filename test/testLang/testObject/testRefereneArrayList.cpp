@@ -19,7 +19,7 @@ public:
   int j;
 };
 
-int testReferenceArraylist() {
+void testReferenceArraylist() {
   //case 1
   while(1) {
     ContainerData ref = createContainerData();

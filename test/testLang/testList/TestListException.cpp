@@ -11,7 +11,7 @@
 using namespace std;
 using namespace obotcha;
 
-int testExceptoin() {
+void testExceptoin() {
   //construct1
   while(1) {
     bool isException = false;

@@ -36,7 +36,7 @@ public:
   DECLARE_REFLECT_FIELD(ListCollection2,mylist);
 };
 
-int testReflectArrayListFieldWrite() {
+void testReflectArrayListFieldWrite() {
     //test1
     while(1) {
       ListCollection2 collection = createListCollection2();

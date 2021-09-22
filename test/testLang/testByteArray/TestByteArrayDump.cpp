@@ -13,7 +13,7 @@
 using namespace obotcha;
 
 
-int dumptest() {
+void dumptest() {
 
     while(1) {
       //case1

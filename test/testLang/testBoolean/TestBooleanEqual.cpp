@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-int testequals() {
+void testequals() {
 
     while(1) {
         //case1
@@ -51,7 +51,7 @@ int testequals() {
 
         t0 = createBoolean(true);
         t0_1 = createBoolean(false);
-        
+
         if(t0->equals(t0_1)){
             printf("Boolean equal test2-------[FAIL] \n");
         }

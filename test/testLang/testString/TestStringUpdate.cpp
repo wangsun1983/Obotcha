@@ -13,8 +13,8 @@
 
 using namespace obotcha;
 
-int TestStringUpdate() {
-    
+void TestStringUpdate() {
+
     /*
     void update(const char *);
 
@@ -95,8 +95,5 @@ int TestStringUpdate() {
 
         break;
     }
-
-
     printf("String update test100-------[OK] \n");
-    return 0;
 }

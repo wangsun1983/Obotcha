@@ -8,15 +8,15 @@
 
 using namespace obotcha;
 
-extern int testEqual();
-extern int testReferenceCount();
-extern int testReferenceArraylist();
-extern int testReferenceHashMap();
-
+extern void testEqual();
+extern void testReferenceCount();
+extern void testReferenceArraylist();
+extern void testReferenceHashMap();
 
 int main() {
     testEqual();
     testReferenceCount();
     testReferenceArraylist();
     testReferenceHashMap();
+    return 0;
 }

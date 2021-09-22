@@ -10,7 +10,7 @@
 
 using namespace obotcha;
 
-int equaltest() {
+void equaltest() {
 
   while(1) {
       Long v1 = createLong(10);

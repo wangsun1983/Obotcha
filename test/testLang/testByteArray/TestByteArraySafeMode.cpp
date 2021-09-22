@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-int testsafemode() {
+void testsafemode() {
 
   //case1
   while(1) {
@@ -33,7 +33,8 @@ int testsafemode() {
         break;
       }
     }
-
+    free(data1);
+    
     printf("ByteArray testsafemode test 2-------[OK] \n");
     break;
   }
@@ -73,5 +74,5 @@ int testsafemode() {
   }
 
   printf("ByteArray testsafemode test 100-------[OK] \n");
-  return 0;
+  return;
 }

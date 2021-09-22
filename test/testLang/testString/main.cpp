@@ -12,25 +12,25 @@
 
 using namespace obotcha;
 
-extern int basetest();
-extern int ignorecasetest();
-extern int trimtest();
-extern int appendtest();
-extern int splittest();
-extern int equaltest();
-extern int formattest();
-extern int StringConstructTest();
-extern int TestStringUpdate();
-extern int TestStringToChars();
-extern int TestStringCharAt();
-extern int TestStringSubString();
-extern int TestStringTrim();
-extern int TestStringTrimAll();
-extern int TestStringSize();
-extern int TestStringContains();
-extern int TestStringIndexOf();
-extern int TestStringEquals();
-extern int TestCounts();
+extern void basetest();
+extern void ignorecasetest();
+extern void trimtest();
+extern void appendtest();
+extern void splittest();
+extern void equaltest();
+extern void formattest();
+extern void StringConstructTest();
+extern void TestStringUpdate();
+extern void TestStringToChars();
+extern void TestStringCharAt();
+extern void TestStringSubString();
+extern void TestStringTrim();
+extern void TestStringTrimAll();
+extern void TestStringSize();
+extern void TestStringContains();
+extern void TestStringIndexOf();
+extern void TestStringEquals();
+extern void TestCounts();
 
 int main() {
 
@@ -41,13 +41,13 @@ int main() {
   trimtest();
 
   appendtest();
-  
+
   splittest();
 
   equaltest();
 
   formattest();
-  
+
   StringConstructTest();
 
   TestStringUpdate();
@@ -55,7 +55,7 @@ int main() {
   TestStringToChars();
 
   TestStringCharAt();
-  
+
   TestStringSubString();
 
   TestStringTrim();
@@ -71,4 +71,6 @@ int main() {
   TestStringEquals();
 
   TestCounts();
+
+  return 0;
 }

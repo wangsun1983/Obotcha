@@ -13,7 +13,7 @@
 
 using namespace obotcha;
 
-int ignorecasetest() {
+void ignorecasetest() {
 
     //bool equalsIgnoreCase(String str);
     while(1) {
@@ -54,7 +54,7 @@ int ignorecasetest() {
         }
 
         //case4
-/*       
+/*
         try {
             String tmp;
             testString->equalsIgnoreCase(tmp);
@@ -155,7 +155,7 @@ int ignorecasetest() {
         }
 
         //case7
-/*        
+/*
         String testString7;
         try {
             testString->indexOfIgnoreCase(testString7);
@@ -228,7 +228,7 @@ int ignorecasetest() {
         }
 
         //case7
-/*        
+/*
         String testString7;
         try {
             testString->containsIgnoreCase(testString7);

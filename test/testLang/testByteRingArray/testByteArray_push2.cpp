@@ -8,7 +8,7 @@
 
 using namespace obotcha;
 
-int testByteRingArrayPush2() {
+void testByteRingArrayPush2() {
 
   //case1 overflow test
   //data:[1(start),2,3,4,5(end)]
@@ -30,7 +30,7 @@ int testByteRingArrayPush2() {
 
       if(!isException) {
         printf("---[ByteRingArray Test push_test {push_test1} case1] [FAILED]--- \n");
-        return 0;
+        return;
       }
 
       printf("---[ByteRingArray Test push_test {push_test1} case1] [OK]--- \n");
@@ -60,7 +60,7 @@ int testByteRingArrayPush2() {
 
       if(!isException) {
         printf("---[ByteRingArray Test push_test {push_test2} case1] [FAILED]--- \n");
-        return 0;
+        return;
       }
 
       printf("---[ByteRingArray Test push_test {push_test2} case1] [OK]--- \n");
@@ -95,7 +95,7 @@ int testByteRingArrayPush2() {
         printf("ring[3] is %d \n",ringarray->at(3));
         printf("ring[4] is %d \n",ringarray->at(4));
         printf("---[ByteRingArray Test push_test {push_test3} case1] [FAILED]--- \n");
-        return 0;
+        return;
       }
 
       printf("---[ByteRingArray Test push_test {push_test3} case1] [OK]--- \n");
@@ -131,7 +131,7 @@ int testByteRingArrayPush2() {
         printf("ring[3] is %d \n",ringarray->at(3));
         printf("ring[4] is %d \n",ringarray->at(4));
         printf("---[ByteRingArray Test push_test {push_test4} case1] [FAILED]--- \n");
-        return 0;
+        return;
       }
 
       printf("---[ByteRingArray Test push_test {push_test4} case1] [OK]--- \n");
@@ -169,7 +169,7 @@ int testByteRingArrayPush2() {
         printf("ring[3] is %d \n",ringarray->at(3));
         printf("ring[4] is %d \n",ringarray->at(4));
         printf("---[ByteRingArray Test push_test {push_test5} case1] [FAILED]--- \n");
-        return 0;
+        return;
       }
 
       printf("---[ByteRingArray Test push_test {push_test5} case1] [OK]--- \n");
@@ -209,7 +209,7 @@ int testByteRingArrayPush2() {
         printf("ring[3] is %d \n",ringarray->at(3));
         printf("ring[4] is %d \n",ringarray->at(4));
         printf("---[ByteRingArray Test push_test {push_test6} case1] [FAILED]--- \n");
-        return 0;
+        return;
       }
 
       printf("---[ByteRingArray Test push_test {push_test6} case1] [OK]--- \n");
@@ -247,7 +247,7 @@ int testByteRingArrayPush2() {
         printf("ring[3] is %d \n",ringarray->at(3));
         printf("ring[4] is %d \n",ringarray->at(4));
         printf("---[ByteRingArray Test push_test {push_test7} case1] [FAILED]--- \n");
-        return 0;
+        return;
       }
 
       printf("---[ByteRingArray Test push_test {push_test7} case1] [OK]--- \n");
@@ -284,7 +284,7 @@ int testByteRingArrayPush2() {
         printf("ring[3] is %d \n",ringarray->at(3));
         printf("ring[4] is %d \n",ringarray->at(4));
         printf("---[ByteRingArray Test push_test {push_test8} case1] [FAILED]--- \n");
-        return 0;
+        return;
       }
 
       printf("---[ByteRingArray Test push_test {push_test8} case1] [OK]--- \n");
@@ -320,7 +320,7 @@ int testByteRingArrayPush2() {
         printf("ring[3] is %d \n",ringarray->at(3));
         printf("ring[4] is %d \n",ringarray->at(4));
         printf("---[ByteRingArray Test push_test {push_test9} case1] [FAILED]--- \n");
-        return 0;
+        return;
       }
 
       printf("---[ByteRingArray Test push_test {push_test9} case1] [OK]--- \n");
@@ -355,7 +355,7 @@ int testByteRingArrayPush2() {
         printf("ring[3] is %d \n",ringarray->at(3));
         printf("ring[4] is %d \n",ringarray->at(4));
         printf("---[ByteRingArray Test push_test {push_test10} case1] [FAILED]--- \n");
-        return 0;
+        return;
       }
 
       printf("---[ByteRingArray Test push_test {push_test10} case1] [OK]--- \n");
@@ -391,12 +391,12 @@ int testByteRingArrayPush2() {
         printf("ring[3] is %d \n",ringarray->at(3));
         printf("ring[4] is %d \n",ringarray->at(4));
         printf("---[ByteRingArray Test push_test {push_test11} case1] [FAILED]--- \n");
-        return 0;
+        return;
       }
 
       printf("---[ByteRingArray Test push_test {push_test11} case1] [OK]--- \n");
       break;
   }
 
-  return 0;
+  return;
 }

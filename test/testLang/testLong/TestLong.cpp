@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-int basetest() {
+void basetest() {
 
   printf("---[Long Test Start]--- \n");
   //_Long(long v);

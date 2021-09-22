@@ -13,8 +13,8 @@
 
 using namespace obotcha;
 
-int TestStringSubString() {
-    
+void TestStringSubString() {
+
     while(1) {
         String str = createString("abcef");
         String str2 = str->subString(0,2);
@@ -69,5 +69,4 @@ int TestStringSubString() {
     }
 
     printf("String SubString test100-------[OK] \n");
-    return 0;
 }

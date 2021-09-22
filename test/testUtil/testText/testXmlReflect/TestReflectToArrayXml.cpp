@@ -30,7 +30,7 @@ public:
   DECLARE_REFLECT_FIELD(ReflectArrayListData,lists)
 };
 
-int testReflectToArrayXml() {
+void testReflectToArrayXml() {
   //test1
   while(1) {
     ReflectArrayListData data = createReflectArrayListData();

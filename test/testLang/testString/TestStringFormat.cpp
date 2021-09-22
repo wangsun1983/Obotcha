@@ -6,7 +6,7 @@
 
 using namespace obotcha;
 
-int formattest() {
+void formattest() {
 
   printf("---[String Format Test Start]--- \n");
 

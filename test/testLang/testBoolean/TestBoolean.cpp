@@ -11,7 +11,7 @@
 
 using namespace obotcha;
 
-int basetest() {
+void basetest() {
 
     printf("---[Boolean Test Start]--- \n");
     while(1) {
@@ -175,6 +175,4 @@ int basetest() {
         printf("Boolean equal test-------[OK] \n");
         break;
     }
-
-
 }

@@ -13,8 +13,8 @@
 
 using namespace obotcha;
 
-int TestStringEquals() {
-    
+void TestStringEquals() {
+
     while(1) {
         String str = createString(" abc  f ");
         if(!str->equals(" abc  f ")) {
@@ -67,5 +67,4 @@ int TestStringEquals() {
     }
 
     printf("String equals test100-------[OK] \n");
-    return 0;
 }

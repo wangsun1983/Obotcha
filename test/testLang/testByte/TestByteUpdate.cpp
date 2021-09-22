@@ -14,7 +14,7 @@
 using namespace obotcha;
 
 
-int updatetest() {
+void updatetest() {
   while(1) {
       //case 1
       Byte v1 = createByte(10);

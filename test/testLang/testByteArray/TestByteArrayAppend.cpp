@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-int testappend() {
+void testappend() {
 
     //testAppend
     while(1) {
@@ -86,17 +86,17 @@ int testappend() {
         break;
       }
 
-      if(array[0] != 0 
-        ||array[1] != 1 
-        ||array[2] != 2 
-        ||array[3] != 3 
-        ||array[4] != 4 
-        ||array[5] != 5 
-        ||array[6] != 6 
-        ||array[7] != 7 
-        ||array[8] != 0 
-        ||array[9] != 1 
-        ||array[10] != 2 
+      if(array[0] != 0
+        ||array[1] != 1
+        ||array[2] != 2
+        ||array[3] != 3
+        ||array[4] != 4
+        ||array[5] != 5
+        ||array[6] != 6
+        ||array[7] != 7
+        ||array[8] != 0
+        ||array[9] != 1
+        ||array[10] != 2
         ||array[11] != 3 ) {
         printf("ByteArray testappend test 7-------[FAIL] \n");
         break;

@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-int basetest() {
+void basetest() {
 
   printf("---[Integer Test Start]--- \n");
   //_Integer(int v);
@@ -38,7 +38,7 @@ int basetest() {
       Integer v4 = createInteger(v3);
       printf("Integer construct test4-------[FAIL] \n");
     } catch(InitializeException e) {}
-    
+
     printf("Integer construct test5-------[OK] \n");
     break;
   }

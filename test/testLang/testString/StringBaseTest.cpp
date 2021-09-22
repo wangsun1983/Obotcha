@@ -13,7 +13,7 @@
 
 using namespace obotcha;
 
-int basetest() {
+void basetest() {
 
   printf("---[String Test Start]--- \n");
   //test String()

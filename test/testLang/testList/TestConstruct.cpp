@@ -17,7 +17,7 @@ public:
   int j;
 };
 
-int testConstruct() {
+void testConstruct() {
   //construct1
   while(1) {
     List<ConstructData> mylist1 = createList<ConstructData>(4);

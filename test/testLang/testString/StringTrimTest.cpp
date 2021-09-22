@@ -13,8 +13,8 @@
 
 using namespace obotcha;
 
-int trimtest() {
-    
+void trimtest() {
+
     //String trim();
     while(1) {
         //case1
@@ -97,6 +97,6 @@ int trimtest() {
         break;
     }
 
-   
+
 
 }

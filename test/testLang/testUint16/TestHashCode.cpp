@@ -11,21 +11,21 @@
 
 using namespace obotcha;
 
-int testHash() {
+void testHash() {
    Uint16 t1 = createUint16(1);
    Uint16 t2 = createUint16(2);
    if(t1->hashcode() == t2->hashcode()) {
     printf("Uint16 hashcode test1-------[FAIL] \n");
-    return 0;
+    return;
    }
 
    t1 = createUint16(1);
    t2 = createUint16(1);
    if(t1->hashcode() != t2->hashcode()) {
     printf("Uint16 hashcode test2-------[FAIL] \n");
-    return 0;
+    return;
    }
 
    printf("Uint16 hashcode test3-------[OK] \n");
-  return 0;
+   return;
 }

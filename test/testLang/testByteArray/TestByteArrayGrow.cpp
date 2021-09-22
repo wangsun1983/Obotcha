@@ -12,9 +12,9 @@
 
 using namespace obotcha;
 
-int testgrow() {
+void testgrow() {
 
-    //test growTo case 
+    //test growTo case
     while(1) {
       //case1
       ByteArray arr = createByteArray(8);
@@ -53,7 +53,7 @@ int testgrow() {
       break;
     }
 
-    //test clear 
+    //test clear
     while(1) {
       //case1
       ByteArray arr = createByteArray(8);

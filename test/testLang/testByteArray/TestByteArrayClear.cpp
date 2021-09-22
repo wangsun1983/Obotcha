@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-int testByteArrayClear() {
+void testByteArrayClear() {
 
     while(1) {
       ByteArray data = createByteArray(32);
@@ -49,6 +49,4 @@ int testByteArrayClear() {
       printf("ByteArray test Clear test 5-------[OK] \n");
       break;
     }
-
-    return 0;
 }

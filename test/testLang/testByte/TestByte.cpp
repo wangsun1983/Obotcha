@@ -14,8 +14,7 @@
 
 using namespace obotcha;
 
-
-int basetest() {
+void basetest() {
   printf("---[Byte Test Start]--- \n");
   //_Byte(Byte v);
   while(1) {

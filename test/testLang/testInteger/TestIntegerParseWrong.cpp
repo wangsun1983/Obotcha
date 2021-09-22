@@ -11,7 +11,7 @@
 
 using namespace obotcha;
 
-int testIntegerParseWrong() {
+void testIntegerParseWrong() {
   while(1) {
    Integer v1 = st(Integer)::parseDecInt("xd");
    if(v1 != nullptr) {

@@ -49,7 +49,7 @@ public:
 };
 
 
-int testReflectFieldWrite() {
+void testReflectFieldWrite() {
     //test1
     while(1) {
       MyData3 data1 = createMyData3();

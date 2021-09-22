@@ -38,7 +38,7 @@ public:
   DECLARE_REFLECT_FIELD(ReflectData,member1,member2)
 };
 
-int testReflectToXml() {
+void testReflectToXml() {
   //test1
   while(1) {
     ReflectData data = createReflectData();

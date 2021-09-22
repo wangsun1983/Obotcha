@@ -17,7 +17,7 @@ public:
   int j;
 };
 
-int testListValueUpdate() {
+void testListValueUpdate() {
   //construct1
   while(1) {
     List<TestUpdateData> values =  createList<TestUpdateData>(5);

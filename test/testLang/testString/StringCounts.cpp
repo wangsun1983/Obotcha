@@ -13,8 +13,8 @@
 
 using namespace obotcha;
 
-int TestCounts() {
-    
+void TestCounts() {
+
     //----------------------------
     while(1) {
         //case 1
@@ -26,7 +26,7 @@ int TestCounts() {
             printf("String TestCounts test1-------[FAIL]\n");
             break;
         }
-        
+
         if(str1->counts(str3) != 3) {
             printf("String TestCounts test2-------[FAIL]\n");
             break;
@@ -40,6 +40,4 @@ int TestCounts() {
     }
 
     printf("String TestCounts test100-------[OK]\n");
-    return 1;
-
 }

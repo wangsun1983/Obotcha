@@ -13,10 +13,10 @@
 
 using namespace obotcha;
 
-int splittest() {
-    
+void splittest() {
+
     //----------------------------
-    
+
 
     //sp<_ArrayList<String>> split(const char* v);
 

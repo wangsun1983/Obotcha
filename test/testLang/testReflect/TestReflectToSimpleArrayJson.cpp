@@ -31,7 +31,7 @@ public:
                       uint32lists,uint64lists,stringlists)
 };
 
-int testReflectToSimpleArrayJson() {
+void testReflectToSimpleArrayJson() {
   //test1
   while(1) {
     IntArray data = createIntArray();

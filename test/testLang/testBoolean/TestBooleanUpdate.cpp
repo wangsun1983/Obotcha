@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-int testUpdate() {
+void testUpdate() {
 
     while(1) {
         //case1

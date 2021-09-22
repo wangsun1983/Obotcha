@@ -58,7 +58,7 @@ public:
   }
 };
 
-int testEqual() {
+void testEqual() {
   while(1) {
     TestData1 d1 = createTestData1(1);
     TestData1 d2 = createTestData1(2);

@@ -13,14 +13,13 @@ namespace obotcha {
 
 #define AUTO_FLUSH(X)                                                          \
     while (X == -1) {                                                          \
-        if (flush) {                                                           \
-            this->send(writer->getIndex());                                    \
-            mSendBuff->clear();                                                \
-            writer->reset();                                                   \
-        } else {                                                               \
-            mSendBuff->growBy(mSendBuff->size() * 2);                          \
-            writer->updateSize();                                              \
-        }                                                                      \
+        mSendBuff->growBy(mSendBuff->size() * 2);                              \
+        writer->updateSize();                                                  \
+    }                                                                          \
+    if (flush) {                                                               \
+        this->send(writer->getIndex());                                        \
+        mSendBuff->clear();                                                    \
+        writer->reset();                                                       \
     }
 
 #define FORCE_FLUSH()                                                          \

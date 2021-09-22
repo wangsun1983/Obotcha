@@ -11,7 +11,7 @@
 
 using namespace obotcha;
 
-int basetest() {
+void basetest() {
 
   printf("---[Uint8 Test Start]--- \n");
   //_Uint8(int v);

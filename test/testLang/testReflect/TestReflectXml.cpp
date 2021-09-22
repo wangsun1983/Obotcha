@@ -27,7 +27,7 @@ public:
   DECLARE_REFLECT_FIELD(XmlReflectData,map)
 };
 
-int testReflectToXml() {
+void testReflectToXml() {
   //test1
   while(1) {
     XmlReflectData data = createXmlReflectData();

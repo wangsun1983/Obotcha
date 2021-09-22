@@ -27,7 +27,7 @@ public:
   DECLARE_REFLECT_FIELD(XmlReflectList,lists)
 };
 
-int testReflectArrayListToXml() {
+void testReflectArrayListToXml() {
   //test1
   while(1) {
     XmlReflectList refLists = createXmlReflectList();
@@ -41,7 +41,7 @@ int testReflectArrayListToXml() {
     XmlItemData1 d2 = createXmlItemData1();
     d2->data1 = 3;
     d2->data2 = 4;
-    
+
     XmlItemData1 d3 = createXmlItemData1();
     d3->data1 = 5;
     d3->data2 = 6;
@@ -117,5 +117,4 @@ int testReflectArrayListToXml() {
     printf("Reflect ArrayList Xml Reflect test5-------[OK] \n");
     break;
   }
-  return 0;
 }

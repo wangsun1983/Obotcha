@@ -77,9 +77,9 @@ HttpHeader _HttpHeaderParser::doParse() {
         case Url: {
             if (v == 0x20) { // ' '
                 ByteArray urlcontent = mReader->pop();
-                String url_str =
-                    createString((const char *)urlcontent->toValue(),0,
-                                 urlcontent->size());
+                String url_str = urlcontent->toString()->subString(0,urlcontent->size() - 1);
+                    //createString((const char *)urlcontent->toValue(),0,
+                    //             urlcontent->size() - 1);
                 
                 HttpUrl url = st(HttpUrlParser)::parseUrl(url_str);
                 mHeader->setUrl(url);
@@ -123,9 +123,9 @@ HttpHeader _HttpHeaderParser::doParse() {
 
             if (v == LF[0] || mCrlfCount == 2) {
                 ByteArray vercontent = mReader->pop();
-                String verstring =
-                    createString((const char *)vercontent->toValue(), 0,
-                                 vercontent->size() - mCrlfCount);
+                String verstring = vercontent->toString()->subString(0,vercontent->size() - mCrlfCount);
+                //    createString((const char *)vercontent->toValue(), 0,
+                //                 vercontent->size() - mCrlfCount);
                 mHeader->setVersion(st(HttpVersionParser)::doParse(verstring));
                 mStatus = ContentKey;
                 mCrlfCount = 0;
@@ -140,9 +140,10 @@ HttpHeader _HttpHeaderParser::doParse() {
                 mCrlfCount = 0;
                 ByteArray key = mReader->pop();
 
-                mKey = createString((const char *)key->toValue(), 0,
-                                    key->size())
-                           ->toLowerCase();
+                //mKey = createString((const char *)key->toValue(), 0,
+                //                    key->size() - 1)
+                //           ->toLowerCase();
+                mKey = key->toString()->subString(0,key->size() - 1)->toLowerCase();
                 mStatus = ContentValue;
             } else if (v == LF[0]) {
                 mCrlfCount = 1;
@@ -179,9 +180,9 @@ HttpHeader _HttpHeaderParser::doParse() {
                         start == content->size()) {
                         appendValue = createString("");
                     } else {
-                        appendValue =
-                            createString(&valuestr[start], 0,
-                                         content->size() - mCrlfCount - start);
+                        appendValue = content->toString()->subString(start,content->size() - mCrlfCount - start);
+                            //createString(&valuestr[start], 0,
+                            //             content->size() - mCrlfCount - start);
                     }
 
                     value = value->append(appendValue);
@@ -218,8 +219,9 @@ HttpHeader _HttpHeaderParser::doParse() {
                     start == value->size()) {
                     mValue = createString("");
                 } else {
-                    mValue = createString(&valuestr[start], 0,
-                                          value->size() - mCrlfCount - start);
+                    mValue = value->toString()->subString(start,value->size() - mCrlfCount - start);
+                    //mValue = createString(&valuestr[start], 0,
+                    //                      value->size() - mCrlfCount - start);
                 }
                 mCrlfCount = 0;
                 parseParticularHeader(mKey, mValue);

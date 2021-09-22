@@ -11,7 +11,7 @@
 
 using namespace obotcha;
 
-int testLogic() {
+void testLogic() {
 
     //logicOr
     while(1) {

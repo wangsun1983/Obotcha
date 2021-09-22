@@ -36,7 +36,7 @@ public:
   DECLARE_REFLECT_FIELD(ContainerLists,lists)
 };
 
-int testReflectHashMapFieldWrite() {
+void testReflectHashMapFieldWrite() {
 #if 0
     //case1
     Container data1 = createContainer();
@@ -153,7 +153,7 @@ int testReflectHashMapFieldWrite() {
       map1->put(createString("T1"),vv1);
       map1->put(createString("T2"),vv2);
       ll->lists->add(map1);
-      
+
       HashMap<String,HashMapValue> map2 = createHashMap<String,HashMapValue>();
       HashMapValue uu1 = createHashMapValue();
       uu1->data1 = 11;

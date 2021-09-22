@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <memory.h>
+#include <stdlib.h>
 
 //#include "Thread.hpp"
 //#include "ArrayList.hpp"
@@ -12,7 +13,7 @@
 
 using namespace obotcha;
 
-int testConstruct() {
+void testConstruct() {
 
     while(1) {
       //case1 _ByteArray(int length,bool isSafe = false);
@@ -40,6 +41,7 @@ int testConstruct() {
         break;
       }
 
+      free(val);
       printf("ByteArray test Construct test 4-------[OK] \n");
       break;
     }
@@ -81,7 +83,7 @@ int testConstruct() {
         printf("ByteArray test Construct test 5-------[FAIL] \n");
         break;
       }
-
+      free(val);
       printf("ByteArray test Construct test 5-------[OK] \n");
       break;
     }
@@ -122,7 +124,7 @@ int testConstruct() {
         printf("ByteArray test Construct test 9-------[FAIL] \n");
         break;
       }
-
+      free(val);
       printf("ByteArray test Construct test 10-------[OK] \n");
       break;
     }
@@ -191,5 +193,4 @@ int testConstruct() {
       break;
     }
     printf("ByteArray test Construct test 100 -------[OK] \n");
-    return 0;
 }

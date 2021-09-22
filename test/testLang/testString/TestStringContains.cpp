@@ -13,8 +13,8 @@
 
 using namespace obotcha;
 
-int TestStringContains() {
-    
+void TestStringContains() {
+
     while(1) {
         String str = createString(" abc  f ");
         if(!str->contains("  ")) {
@@ -61,5 +61,4 @@ int TestStringContains() {
     }
 
     printf("String contains test100-------[OK] \n");
-    return 0;
 }

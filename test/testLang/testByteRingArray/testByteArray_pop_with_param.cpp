@@ -9,7 +9,7 @@
 using namespace obotcha;
 
 
-int testByteRingArrayPopWithParam() {
+void testByteRingArrayPopWithParam() {
 
   //
   while(1) {
@@ -368,16 +368,8 @@ int testByteRingArrayPopWithParam() {
       break;
     }
 
-
-
-
-
-
-
-
-
     printf("---[ByteRingArray Test pop with param case100] [OK]--- \n");
     break;
   }
-
+  return;
 }

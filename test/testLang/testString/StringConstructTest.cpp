@@ -13,7 +13,7 @@
 
 using namespace obotcha;
 
-int StringConstructTest() {
+void StringConstructTest() {
     //String append(String s);
     while(1) {
         std::string str = "abc";
@@ -141,7 +141,7 @@ int StringConstructTest() {
             printf("String construct test15-------[FAIL] \n");
             break;
         }
-        
+
         //
         Uint64 v10 = createUint64(12200);
         String str15 = createString(v10);
@@ -149,7 +149,7 @@ int StringConstructTest() {
             printf("String construct test16-------[FAIL] \n");
             break;
         }
-        
+
         //
         Byte v11 = createByte(22);
         String str16 = createString(v11);
@@ -157,7 +157,7 @@ int StringConstructTest() {
             printf("String construct test17-------[FAIL] \n");
             break;
         }
-        
+
         //_String(int v);
         int v12 = 100;
         String str17 = createString(v12);
@@ -238,7 +238,7 @@ int StringConstructTest() {
             printf("String construct test27-------[FAIL] \n");
             break;
         }
-        
+
         //_String(uint64_t);
         uint32_t v22 = 111334432;
         String str27 = createString(v22);
@@ -246,10 +246,8 @@ int StringConstructTest() {
             printf("String construct test28-------[FAIL] \n");
             break;
         }
-        
+
         printf("String construct test100-------[OK] \n");
         break;
     }
-
-    return 0;
 }

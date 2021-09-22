@@ -10,7 +10,7 @@
 
 using namespace obotcha;
 
-int operatortest() {
+void operatortest() {
   //
   while(1) {
 
@@ -48,7 +48,7 @@ int operatortest() {
         //printf("array3[%d] is %d \n",j,array3[j]);
         if(array3[j] != j+1) {
           printf("ByteArray operatortest test 3-------[FAIL] \n");
-          return 0;
+          return;
         }
       }
 

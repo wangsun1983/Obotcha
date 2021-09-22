@@ -19,7 +19,7 @@ public:
   int j;
 };
 
-int testReferenceHashMap() {
+void testReferenceHashMap() {
   //case 1
   while(1) {
     HashMapData ref = createHashMapData();
@@ -68,7 +68,5 @@ int testReferenceHashMap() {
     break;
   }
 
-
   printf("Object ReferenceHashMap<String,HashMapData>Count test100-------[OK] \n");
-  return 0;
 }

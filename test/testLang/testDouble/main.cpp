@@ -8,15 +8,15 @@
 
 using namespace obotcha;
 
-extern int basetest();
-extern int equaltest();
-extern int testToString();
-extern int hashtest();
+extern void basetest();
+extern void equaltest();
+extern void testToString();
+extern void hashtest();
 
 int main() {
   basetest();
   equaltest();
   testToString();
-  printf("start hash test \n");
   hashtest();
+  return 0;
 }

@@ -13,8 +13,8 @@
 
 using namespace obotcha;
 
-int TestStringTrimAll() {
-    
+void TestStringTrimAll() {
+
     while(1) {
         String str = createString(" abc f ");
         String str1 = str->trimAll();
@@ -55,5 +55,4 @@ int TestStringTrimAll() {
     }
 
     printf("String trimAll test100-------[OK] \n");
-    return 0;
 }

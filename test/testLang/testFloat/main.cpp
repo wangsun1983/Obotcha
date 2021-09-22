@@ -9,14 +9,15 @@
 
 using namespace obotcha;
 
-extern int basetest();
-extern int equaltest();
-extern int updatetest();
-extern int hashcodetest();
+extern void basetest();
+extern void equaltest();
+extern void updatetest();
+extern void hashcodetest();
 
 int main() {
     basetest();
     equaltest();
     updatetest();
     hashcodetest();
+    return 0;
 }

@@ -9,11 +9,11 @@
 
 using namespace obotcha;
 
-extern int basetest();
-extern int testequals();
-extern int testLogic();
-extern int testUpdate();
-extern int testparse();
+extern void basetest();
+extern void testequals();
+extern void testLogic();
+extern void testUpdate();
+extern void testparse();
 
 int main() {
     basetest();
@@ -21,4 +21,5 @@ int main() {
     testLogic();
     testUpdate();
     testparse();
+    return 0;
 }

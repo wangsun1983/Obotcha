@@ -44,7 +44,7 @@ public:
     DECLARE_REFLECT_FIELD(MyData5,data1)
 };
 
-int testReflectComplexFieldRead() {
+void testReflectComplexFieldRead() {
     //test1
     while(1) {
       MyData5 data = createMyData5();

@@ -13,8 +13,8 @@
 
 using namespace obotcha;
 
-int TestStringSize() {
-    
+void TestStringSize() {
+
     while(1) {
         String str = createString(" abc f ");
         if(str->size() != 7) {
@@ -36,5 +36,4 @@ int TestStringSize() {
     }
 
     printf("String size test100-------[OK] \n");
-    return 0;
 }

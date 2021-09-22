@@ -49,7 +49,7 @@ public:
 };
 
 
-int testReflectFieldRead() {
+void testReflectFieldRead() {
     //test1
     while(1) {
       MyData1 data1 = createMyData1();

@@ -11,7 +11,7 @@
 
 using namespace obotcha;
 
-int testtostring() {
+void testtostring() {
    //test hex
    std::string HexTable[100] = {
      "0","1","2","3","4","5","6","7","8",
@@ -106,7 +106,7 @@ int testtostring() {
        Long t2 = st(Long)::parseHexLong(createString(HexTable[i]));
        Long t3 = createLong(t2);
        if(t1 != t3) {
-         printf("t1 is %d,t3 is %d \n",t1->toValue(),t3->toValue());
+         printf("t1 is %ld,t3 is %ld \n",t1->toValue(),t3->toValue());
          printf("Long toInt test1-------[FAIL] \n");
          break;
        }
@@ -118,7 +118,7 @@ int testtostring() {
        Long t3 = createLong(t2);
 
        if(t1 != t3) {
-         printf("t1 is %d,t3 is %d,i is %d \n",t1->toValue(),t3->toValue(),i);
+         printf("t1 is %ld,t3 is %ld,i is %d \n",t1->toValue(),t3->toValue(),i);
          printf("Long toInt test2-------[FAIL] \n");
          break;
        }

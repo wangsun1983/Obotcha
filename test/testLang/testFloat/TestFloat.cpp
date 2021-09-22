@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-int basetest() {
+void basetest() {
 
   printf("---[Float Test Start]--- \n");
   //_Float(float v);

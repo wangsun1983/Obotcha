@@ -42,7 +42,7 @@ _ByteArrayWriter::_ByteArrayWriter(ByteArray data, int mod) {
 void _ByteArrayWriter::reset() { mIndex = 0; }
 
 bool _ByteArrayWriter::writeSizeCheck(int size) {
-    if (mIndex > (mSize - sizeof(short))) {
+    if ((mIndex + size) > (mSize - sizeof(short))) {
         if (mType == Dynamic) {
             mSize = mData->size() * 7 / 4;
             mData->growTo(mSize);
@@ -149,7 +149,10 @@ ByteArray _ByteArrayWriter::getByteArray() {
     return mData;
 }
 
-void _ByteArrayWriter::updateSize() { mSize = mData->size(); }
+void _ByteArrayWriter::updateSize() { 
+    mSize = mData->size(); 
+    mDataP = mData->toValue();
+}
 
 void _ByteArrayWriter::skipBy(int length) { mIndex += length; }
 

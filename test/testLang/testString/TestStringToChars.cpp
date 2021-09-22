@@ -13,8 +13,8 @@
 
 using namespace obotcha;
 
-int TestStringToChars() {
-    
+void TestStringToChars() {
+
     while(1) {
         String str = createString("abcdef");
         const char *p = str->toChars();
@@ -27,11 +27,8 @@ int TestStringToChars() {
             printf("String toChars test2-------[FAIL] \n");
             break;
         }
-        
+
         break;
     }
-
-
     printf("String update test100-------[OK] \n");
-    return 0;
 }

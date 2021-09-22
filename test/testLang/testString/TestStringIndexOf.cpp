@@ -13,8 +13,8 @@
 
 using namespace obotcha;
 
-int TestStringIndexOf() {
-    
+void TestStringIndexOf() {
+
     while(1) {
         String str = createString(" abc  f ");
         if(str->indexOf("  ") != 4) {
@@ -76,5 +76,4 @@ int TestStringIndexOf() {
     }
 
     printf("String indexOf test100-------[OK] \n");
-    return 0;
 }

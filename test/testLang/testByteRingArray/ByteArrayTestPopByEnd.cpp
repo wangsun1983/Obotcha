@@ -10,7 +10,7 @@
 
 using namespace obotcha;
 
-int testPopTo() {
+void testPopTo() {
     //
     while(1) {
 
@@ -347,5 +347,6 @@ int testPopTo() {
 
         printf("---[ByteRingArray Test popTo case100] [OK]--- \n");
         break;
-    }  
+    }
+    return;
 }

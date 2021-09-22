@@ -9,12 +9,12 @@
 
 using namespace obotcha;
 
-extern int testtostring();
-extern int basetest();
-extern int equaltest();
-extern int hashcodeTest();
-extern int testLongParse();
-extern int testLongParseWrong();
+extern void testtostring();
+extern void basetest();
+extern void equaltest();
+extern void hashcodeTest();
+extern void testLongParse();
+extern void testLongParseWrong();
 
 int main() {
     basetest();

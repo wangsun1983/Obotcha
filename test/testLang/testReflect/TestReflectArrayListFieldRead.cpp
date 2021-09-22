@@ -36,7 +36,7 @@ public:
   DECLARE_REFLECT_FIELD(ListCollection,mylist);
 };
 
-int testReflectArrayListFieldRead() {
+void testReflectArrayListFieldRead() {
     //test1
     while(1) {
       ListCollection collection = createListCollection();

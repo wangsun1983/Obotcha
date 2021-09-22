@@ -18,7 +18,7 @@ public:
   int j;
 };
 
-int testReferenceCount() {
+void testReferenceCount() {
   //case 1
   while(1) {
     TestDataRef ref = createTestDataRef();
@@ -137,7 +137,7 @@ int testReferenceCount() {
       printf("Object ReferenceCount test15-------[FAIL] \n");
       break;
     }
-    
+
     break;
   }
 

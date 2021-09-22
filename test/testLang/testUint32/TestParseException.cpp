@@ -11,12 +11,12 @@
 
 using namespace obotcha;
 
-int TestParseException() {
+void TestParseException() {
   Uint32 data = st(Uint32)::parseDecUint32("0x12");
   if(data != nullptr) {
     printf("Uint32 Parse Exception test1-------[FAIL] \n");
   }
 
   printf("Uint32 Parse Exception test100-------[OK] \n");
-  return 0;
+  return;
 }

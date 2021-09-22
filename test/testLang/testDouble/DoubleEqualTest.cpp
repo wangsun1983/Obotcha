@@ -12,7 +12,7 @@ using namespace obotcha;
 
 const double EPSINON = 0.00001;
 
-int equaltest() {
+void equaltest() {
 
   while(1) {
     //case 1

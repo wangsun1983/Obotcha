@@ -20,8 +20,11 @@ cflags = -fpic \
 		-I ../../../external/crc32/include \
 		-I ../../../external/openssl/include \
 		-I ../../../external/libco \
+		-I ../../../external/glog/include \
 		-g \
 		-std=c++14 \
+		-fsanitize=address \
+		-fno-omit-frame-pointer
 
 external = -lpthread \
 				-ldl \
@@ -35,9 +38,9 @@ sharelib = -Wl,-rpath=../../../out/lib/ \
 
 files =
 link =
-libname	= testList
+libname	= testObject
 
 everything : $(libname)
 
 $(libname): $(link)
-	g++ *.cpp $(cflags) -o mytest $(external) $(sharelib)
+	clang++ *.cpp $(cflags) -o mytest $(external) $(sharelib)

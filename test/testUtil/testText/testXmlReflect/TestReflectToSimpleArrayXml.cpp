@@ -32,7 +32,7 @@ public:
                       uint32lists,uint64lists,stringlists)
 };
 
-int testReflectToSimpleArrayXml() {
+void testReflectToSimpleArrayXml() {
   //test1
   while(1) {
     IntArray data = createIntArray();

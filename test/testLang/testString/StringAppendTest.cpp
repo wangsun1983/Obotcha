@@ -13,7 +13,7 @@
 
 using namespace obotcha;
 
-int appendtest() {
+void appendtest() {
     //String append(String s);
     while(1) {
         //case1
@@ -141,8 +141,8 @@ int appendtest() {
         break;
     }
 
-    
 
-   
+
+
 
 }

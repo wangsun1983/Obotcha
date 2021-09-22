@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-int equaltest() {
+void equaltest() {
 
   while(1) {
       Integer v1 = createInteger(10);

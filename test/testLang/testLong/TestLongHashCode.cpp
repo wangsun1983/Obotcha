@@ -9,7 +9,7 @@
 
 using namespace obotcha;
 
-int hashcodeTest() {
+void hashcodeTest() {
 
   while(1) {
     Long t1 = createLong(1);

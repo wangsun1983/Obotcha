@@ -40,7 +40,7 @@ public:
   DECLARE_REFLECT_FIELD(ReflectData,member1,member2)
 };
 
-int testReflectToSimpleXml() {
+void testReflectToSimpleXml() {
   //test1
   while(1) {
     ReflectData data = createReflectData();

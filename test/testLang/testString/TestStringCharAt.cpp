@@ -13,8 +13,8 @@
 
 using namespace obotcha;
 
-int TestStringCharAt() {
-    
+void TestStringCharAt() {
+
     while(1) {
         String str = createString("abcef");
         if(str->charAt(0) != 'a'
@@ -45,5 +45,4 @@ int TestStringCharAt() {
     }
 
     printf("String charAt test100-------[OK] \n");
-    return 0;
 }

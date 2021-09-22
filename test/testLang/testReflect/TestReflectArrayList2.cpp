@@ -40,7 +40,7 @@ public:
 };
 
 
-int testReflectArrayList2() {
+void testReflectArrayList2() {
   while(1) {
     ArrayDataList3 ll = createArrayDataList3();
     ll->lists = createArrayList<ArrayList<ArrayData3>>();
@@ -67,7 +67,7 @@ int testReflectArrayList2() {
     ll_2->add(d3_1);
     ll_2->add(d3_2);
     ll_2->add(d3_3);
-    
+
     ll->lists->add(ll_1);
     ll->lists->add(ll_2);
     JsonValue jvalue = createJsonValue();
@@ -262,5 +262,4 @@ int testReflectArrayList2() {
     break;
   }
 
-  return 0;
 }

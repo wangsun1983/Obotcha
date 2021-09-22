@@ -10,7 +10,7 @@
 
 using namespace obotcha;
 
-int basetest() {
+void basetest() {
 
   printf("---[Uint32 Test Start]--- \n");
   //_Uint32(int v);

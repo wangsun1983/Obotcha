@@ -17,7 +17,7 @@ public:
   int j;
 };
 
-int listobjecttest() {
+void listobjecttest() {
   //construct1
   while(1) {
     List<MyData> mylist1 = createList<MyData>(4);

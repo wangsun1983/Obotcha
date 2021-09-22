@@ -11,11 +11,11 @@
 using namespace std;
 using namespace obotcha;
 
-extern int listobjecttest();
-extern int basetest();
-extern int testConstruct();
-extern int testExceptoin();
-extern int testListValueUpdate();
+extern void listobjecttest();
+extern void basetest();
+extern void testConstruct();
+extern void testExceptoin();
+extern void testListValueUpdate();
 
 int main() {
   listobjecttest();
@@ -23,4 +23,5 @@ int main() {
   testConstruct();
   testExceptoin();
   testListValueUpdate();
+  return 0;
 }

@@ -32,7 +32,7 @@ public:
                         uint64Data,boolData)
 };
 
-int testReflectNumber() {
+void testReflectNumber() {
   //test1
   while(1) {
       NumberReflectData data = createNumberReflectData();

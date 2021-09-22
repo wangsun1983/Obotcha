@@ -10,8 +10,7 @@
 
 using namespace obotcha;
 
-int basetest() {
-
+void basetest() {
   printf("---[Uint16 Test Start]--- \n");
   //_Uint16(int v);
   while(1) {

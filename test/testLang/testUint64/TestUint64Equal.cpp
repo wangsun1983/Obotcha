@@ -10,7 +10,7 @@
 
 using namespace obotcha;
 
-int equaltest() {
+void equaltest() {
 
   while(1) {
       Uint64 v1 = createUint64(10);
@@ -30,7 +30,4 @@ int equaltest() {
       printf("Uint64 equal test3-------[OK] \n");
       break;
   }
-
-
-
 }

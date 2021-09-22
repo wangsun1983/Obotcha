@@ -19,10 +19,12 @@ cflags = -fpic \
 		-I ../../../external/yaml/include \
 		-I ../../../external/crc32/include \
 		-I ../../../external/openssl/include \
-		-I ../../../external/glog/include \
 		-I ../../../external/libco \
+		-I ../../../external/glog/include \
 		-g \
 		-std=c++14 \
+		-fsanitize=address \
+		-fno-omit-frame-pointer
 
 external = -lpthread \
 				-ldl \
@@ -41,4 +43,4 @@ libname	= testSystem
 everything : $(libname)
 
 $(libname): $(link)
-	g++ *.cpp $(cflags) -o mytest $(external) $(sharelib)
+	clang++ *.cpp $(cflags) -o mytest $(external) $(sharelib)

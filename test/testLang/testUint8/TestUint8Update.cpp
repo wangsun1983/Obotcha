@@ -13,8 +13,7 @@
 
 using namespace obotcha;
 
-
-int updatetest() {
+void updatetest() {
   while(1) {
       //case 1
       Uint8 v1 = createUint8(10);
@@ -38,7 +37,4 @@ int updatetest() {
       printf("yte update special test4-------[OK] \n");
       break;
   }
-
-
-
 }

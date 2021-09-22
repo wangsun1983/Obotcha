@@ -93,7 +93,7 @@ protected:
         throw(-1);
     }
 
-    static T parseHexNumber(std::string v) {
+    static T parseHexNumber(std::string v,bool isChcked = false) {
         if(v.size() >= 3 && (v.c_str()[1] == 'x' || v.c_str()[1] == 'X')) {
             v = v.substr(2,v.size() - 2);
         }
@@ -102,18 +102,22 @@ protected:
         ss<< std::hex <<v;
         T value;
         ss>>value;
-        std::string checkValue = toHexString(value);
-        if(checkValue.size() == v.size()) {
-            //ingore Lower/Upper case
-            int len = v.size();
-            const char * str1 = v.c_str();
-            const char * str2 = checkValue.c_str();
-            for(int i = 0;i<len;i++) {
-                if(str1[i] != str2[i] && std::abs((str1[i] - str2[i])) != 0x20) {
-                    throw(-1);
+        if(isChcked) {
+            std::string checkValue = toHexString(value);
+            if(checkValue.size() == v.size()) {
+                //ingore Lower/Upper case
+                int len = v.size();
+                const char * str1 = v.c_str();
+                const char * str2 = checkValue.c_str();
+                for(int i = 0;i<len;i++) {
+                    if(str1[i] != str2[i] && std::abs((str1[i] - str2[i])) != 0x20) {
+                        throw(-1);
+                    }
                 }
-            }
 
+                return value;
+            }
+        } else {
             return value;
         }
         throw(-1);

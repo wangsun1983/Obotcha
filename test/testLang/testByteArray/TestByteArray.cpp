@@ -11,15 +11,15 @@
 
 using namespace obotcha;
 
-extern int basetest();
-extern int operatortest();
-extern int dumptest();
-extern int testgrow();
-extern int testappend();
-extern int testsafemode();
-extern int testForeach();
-extern int testConstruct();
-extern int testByteArrayClear();
+extern void basetest();
+extern void operatortest();
+extern void dumptest();
+extern void testgrow();
+extern void testappend();
+extern void testsafemode();
+extern void testForeach();
+extern void testConstruct();
+extern void testByteArrayClear();
 extern void testByteArrayStruct();
 extern void testByteArrayStringConvert();
 
@@ -35,4 +35,5 @@ int main() {
   testForeach();
   testConstruct();
   testByteArrayClear();
+  return 0;
 }

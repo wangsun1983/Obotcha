@@ -10,8 +10,7 @@
 
 using namespace obotcha;
 
-int equaltest() {
-
+void equaltest() {
   while(1) {
       Uint16 v1 = createUint16(10);
       Uint16 v2 = createUint16(10);
@@ -30,7 +29,4 @@ int equaltest() {
       printf("Uint16 equal test3-------[OK] \n");
       break;
   }
-
-
-
 }

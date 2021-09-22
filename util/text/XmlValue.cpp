@@ -719,10 +719,61 @@ void _XmlValue::importFrom(Object value) {
     if (value->__ReflectClassName()->equals("_ArrayList")) {
         int size = value->__getContainerSize("");
         for (int i = 0; i < size; i++) {
-            sp<_XmlValue> refNode = doc->newNode(createString("_array_item"));
-            auto nValue = value->__getListItemObject("", i);
-            refNode->importFrom(nValue);
-            this->appendNode(refNode);
+            //sp<_XmlValue> refNode = doc->newNode(createString("_array_item"));
+            auto newObject = value->__getListItemObject("", i);
+            //refNode->importFrom(nValue);
+            if (newObject != nullptr) {
+                sp<_XmlValue> item;
+                if (IsInstance(Integer, newObject)) {
+                    item = doc->newNode(st(Integer)::className());
+                    Integer data = Cast<Integer>(newObject);
+                    item->updateValue(createString(data->toValue()));
+                } else if (IsInstance(Long, newObject)) {
+                    item = doc->newNode(st(Long)::className());
+                    Long data = Cast<Long>(newObject);
+                    item->updateValue(createString(data->toValue()));
+                } else if (IsInstance(Boolean, newObject)) {
+                    item = doc->newNode(st(Boolean)::className());
+                    Boolean data = Cast<Boolean>(newObject);
+                    item->updateValue(createString((int)data->toValue()));
+                } else if (IsInstance(Double, newObject)) {
+                    item = doc->newNode(st(Double)::className());
+                    Double data = Cast<Double>(newObject);
+                    item->updateValue(createString(data->toValue()));
+                } else if (IsInstance(Float, newObject)) {
+                    item = doc->newNode(st(Float)::className());
+                    Float data = Cast<Float>(newObject);
+                    item->updateValue(createString(data->toValue()));
+                } else if (IsInstance(Byte, newObject)) {
+                    item = doc->newNode(st(Byte)::className());
+                    Byte data = Cast<Byte>(newObject);
+                    item->updateValue(createString(data->toValue()));
+                } else if (IsInstance(Uint8, newObject)) {
+                    item = doc->newNode(st(Uint8)::className());
+                    Uint8 data = Cast<Uint8>(newObject);
+                    item->updateValue(createString(data->toValue()));
+                } else if (IsInstance(Uint16, newObject)) {
+                    item = doc->newNode(st(Uint16)::className());
+                    Uint16 data = Cast<Uint16>(newObject);
+                    item->updateValue(createString(data->toValue()));
+                } else if (IsInstance(Uint32, newObject)) {
+                    item = doc->newNode(st(Uint32)::className());
+                    Uint32 data = Cast<Uint32>(newObject);
+                    item->updateValue(createString(data->toValue()));
+                } else if (IsInstance(Uint64, newObject)) {
+                    item = doc->newNode(st(Uint64)::className());
+                    Uint64 data = Cast<Uint64>(newObject);
+                    item->updateValue(createString(data->toValue()));
+                } else if (IsInstance(String, newObject)) {
+                    item = doc->newNode(st(String)::className());
+                    String data = Cast<String>(newObject);
+                    item->updateValue(data);
+                } else {
+                    item = doc->newNode(newObject->__ReflectClassName());
+                    item->importFrom(newObject);
+                }
+                this->appendNode(item);
+            }
         }
         return;
     } else if (value->__ReflectClassName()->equals("_HashMap")) {

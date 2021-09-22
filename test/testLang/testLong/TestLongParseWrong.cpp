@@ -11,7 +11,7 @@
 
 using namespace obotcha;
 
-int testLongParseWrong() {
+void testLongParseWrong() {
   while(1) {
    Long v1 = st(Long)::parseDecLong("xd");
    if(v1 != nullptr) {

@@ -21,9 +21,10 @@ cflags = -fpic \
 		-I ../../../external/openssl/include \
 		-I ../../../external/libco \
 		-I ../../../external/glog/include \
-		-I ../../../external/uuid/include \
 		-g \
 		-std=c++14 \
+		-fsanitize=address \
+		-fno-omit-frame-pointer
 
 external = -lpthread \
 				-ldl \
@@ -42,4 +43,4 @@ libname	= testReflect
 everything : $(libname)
 
 $(libname): $(link)
-	g++ *.cpp $(cflags) -o mytest $(external) $(sharelib)
+	clang++ *.cpp $(cflags) -o mytest $(external) $(sharelib)

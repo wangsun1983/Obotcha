@@ -12,7 +12,7 @@ using namespace obotcha;
 
 const double EPSINON = 0.00001;
 
-int hashtest() {
+void hashtest() {
   Double d1 = createDouble(1.1);
   Double d2 = createDouble(1.1);
   if(d1->hashcode() != d2->hashcode()) {

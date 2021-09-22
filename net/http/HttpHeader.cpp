@@ -246,7 +246,7 @@ MapIterator<String, String> _HttpHeader::getIterator() {
 String _HttpHeader::toString(int type) {
     // conver header
     MapIterator<String, String> headerIte = mValues->getIterator();
-    ;
+
     String html = createString("");
     while (headerIte->hasValue()) {
         String headString = headerIte->getKey();

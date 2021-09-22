@@ -192,11 +192,12 @@ _String::_String(uint64_t v) { m_str = std::to_string(v); }
 _String::_String(const char *v) { m_str = std::string(v); }
 
 _String::_String(const char *v, int start,int length) {
-    if (length <= 0) {
+    if (start < 0 || length <= 0 || ((start + length) > strlen(v))) {
         Trigger(InitializeException, "char * is null");
     }
 
     m_str = std::string(v + start, length);
+    
 }
 
 _String::~_String() {

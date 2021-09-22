@@ -13,8 +13,8 @@
 
 using namespace obotcha;
 
-int equaltest() {
-    
+void equaltest() {
+
     //----------------------------
     while(1) {
         //case 1
@@ -24,9 +24,9 @@ int equaltest() {
             printf("String equaltest Special test1-------[FAIL]\n");
             break;
         }
-        
+
         printf("String equaltest Special test2-------[Success]\n");
         break;
-    }    
+    }
 
 }

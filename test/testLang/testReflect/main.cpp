@@ -1,23 +1,23 @@
 #include <stdio.h>
 
-extern int testReflectArrayListFieldWrite();
-extern int testReflectFieldRead();
-extern int testReflectFieldWrite();
-extern int testReflectComplexFieldRead();
-extern int testReflectComplexFieldWrite();
-extern int testReflectToJson();
-extern int testReflectArrayListFieldRead();
-extern int testReflectToSimpleJson();
-extern int testReflectToArrayJson();
-extern int testReflectToSimpleArrayJson();
-extern int testReflectNumber();
-extern int testReflectHashMapFieldWrite();
-extern int testReflectArrayList2();
-extern int testReflectMap2();
-extern int testReflectArrayHashmap();
-extern int testReflectToXml();
-extern int testReflectArrayListToXml();
-extern int testReflectHashMapXml2();
+extern void testReflectArrayListFieldWrite();
+extern void testReflectFieldRead();
+extern void testReflectFieldWrite();
+extern void testReflectComplexFieldRead();
+extern void testReflectComplexFieldWrite();
+extern void testReflectToJson();
+extern void testReflectArrayListFieldRead();
+extern void testReflectToSimpleJson();
+extern void testReflectToArrayJson();
+extern void testReflectToSimpleArrayJson();
+extern void testReflectNumber();
+extern void testReflectHashMapFieldWrite();
+extern void testReflectArrayList2();
+extern void testReflectMap2();
+extern void testReflectArrayHashmap();
+extern void testReflectToXml();
+extern void testReflectArrayListToXml();
+extern void testReflectHashMapXml2();
 
 int main() {
 

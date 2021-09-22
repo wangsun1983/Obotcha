@@ -2,7 +2,7 @@
 
 using namespace obotcha;
 
-int testForeach() {
+void testForeach() {
   ByteArray array = createByteArray(10);
   for(int i = 0;i <10;i++) {
     array[i] = i;
