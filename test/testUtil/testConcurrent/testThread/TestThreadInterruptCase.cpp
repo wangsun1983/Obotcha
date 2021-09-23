@@ -40,7 +40,7 @@ public:
 
 };
 
-int testThreadInterruptCase() {
+void testThreadInterruptCase() {
     //TestThread onInterrupt case1
     while(1) {
         MyTest1Thread thread = createMyTest1Thread();

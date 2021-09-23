@@ -10,8 +10,8 @@
 
 using namespace obotcha;
 
-extern int simpleattrtest();
-extern int testsopenvreader();
+extern void simpleattrtest();
+extern void testsopenvreader();
 
 int main() {
 

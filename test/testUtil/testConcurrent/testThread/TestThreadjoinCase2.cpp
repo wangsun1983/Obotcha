@@ -27,7 +27,7 @@ private:
 };
 
 
-int testThreadjoinCase2() {
+void testThreadjoinCase2() {
   //sleep(1ms)
   for(int i = 0;i<1024*32;i++) {
     Thread t = createThread(createJoinRunCase2(1));

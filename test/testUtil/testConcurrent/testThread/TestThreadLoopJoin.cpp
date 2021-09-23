@@ -34,7 +34,7 @@ public:
   }
 };
 
-int testThreadLoopJoin() {
+void testThreadLoopJoin() {
   //test1
   printf("trace1 \n");
   ArrayList<Thread> list = createArrayList<Thread>();

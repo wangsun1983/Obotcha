@@ -29,7 +29,7 @@ public:
 };
 
 
-int testThreadSleep() {
+void testThreadSleep() {
   printf("---[TestThread Sleep Start]--- \n");
 
   while(1) {
@@ -42,7 +42,4 @@ int testThreadSleep() {
     printf("---[Thread Test {sleep()} Interrupt case1] [Success],count is %d--- \n",count);
     break;
   }
-
-  return 0;
-
 }

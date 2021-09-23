@@ -120,6 +120,9 @@ SecretKey _Cipher::getSecretKey() {
 
 void _Cipher::doPKCS7Padding(ByteArray data,int blocksize) {
     byte paddingSize = (blocksize - (data->size()%blocksize));
+    if(paddingSize == 0) {
+        paddingSize = blocksize;
+    }
     ByteArray padding = createByteArray((int)paddingSize);
     padding->fill(paddingSize);
     data->append(padding);

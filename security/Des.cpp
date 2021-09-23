@@ -13,14 +13,14 @@ namespace obotcha {
 ByteArray _Des::encrypt(ByteArray input) {
     
     DES_key_schedule schedule;
-    DES_set_key_checked((const_DES_cblock *)getSecretKey()->get(), &schedule);
-
     switch(getPattern()) {
         case ECB:
+            DES_set_key_unchecked((const_DES_cblock *)getSecretKey()->get(), &schedule);
             return _desECB(input,&schedule);
         break;
 
         case CBC:
+            DES_set_key_checked((const_DES_cblock *)getSecretKey()->get(), &schedule);
             DES_cblock ivec;
             memset((char*)&ivec, 0, sizeof(ivec));
             return _desCBC(input,&schedule,&ivec);
@@ -33,16 +33,19 @@ ByteArray _Des::encrypt(ByteArray input) {
 ByteArray _Des::decrypt(ByteArray input) {
 
     DES_key_schedule schedule;
-    DES_set_key_checked((const_DES_cblock *)getSecretKey()->get(), &schedule);
 
     switch(getPattern()) {
         case ECB:
+            DES_set_key_unchecked((const_DES_cblock *)getSecretKey()->get(), &schedule);
             return _desECB(input,&schedule);
         break;
 
         case CBC:
+            DES_set_key_checked((const_DES_cblock *)getSecretKey()->get(), &schedule);
             DES_cblock ivec;
-            memset((char*)&ivec, 0, sizeof(ivec));
+            //memset((char*)&ivec, 0, sizeof(ivec));
+            memcpy(&ivec,getSecretKey()->get(),sizeof(DES_cblock));
+
             return _desCBC(input,&schedule,&ivec);
         break;
     }

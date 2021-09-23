@@ -39,7 +39,7 @@ public:
 
 };
 
-int testThreadSleepInterrupt() {
+void testThreadSleepInterrupt() {
     //TestThread onInterrupt case1
     while(1) {
         {

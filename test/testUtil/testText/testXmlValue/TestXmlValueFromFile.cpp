@@ -7,10 +7,11 @@
 #include "XmlReader.hpp"
 #include "XmlValue.hpp"
 #include "XmlDocument.hpp"
+#include "Math.hpp"
 
 using namespace obotcha;
 
-int testXmlValueFromFile() {
+void testXmlValueFromFile() {
     printf("---[XmlValue TestFromFile Start]--- \n");
     XmlReader reader = createXmlReader(createFile("regressions.xml"));
     XmlDocument doc = reader->get();
@@ -68,8 +69,8 @@ int testXmlValueFromFile() {
     //Double getDoubleAttr(String attr);
     while(1) {
       Double attr1 = root->getDoubleAttr("doublev");
-      if(attr1 == nullptr || attr1->toValue() != 1.1f) {
-        printf("---[XmlValue TestFromFile {getDoubleAttr()} case1] [FAILED]--- \n");
+      if(attr1 == nullptr || st(Math)::compareDouble(attr1->toValue(),1.1) != st(Math)::AlmostEqual) {
+        printf("---[XmlValue TestFromFile {getDoubleAttr()} case1] [FAILED]---,value is %lf \n",attr1->toValue());
         break;
       }
 
@@ -80,7 +81,7 @@ int testXmlValueFromFile() {
     //Float getFloatAttr(String attr);
     while(1) {
       Float attr1 = root->getFloatAttr("floatv");
-      if(attr1 == nullptr || attr1->toValue() != 2.2f) {
+      if(attr1 == nullptr || st(Math)::compareFloat(attr1->toValue(),2.2)!= st(Math)::AlmostEqual) {
         printf("---[XmlValue TestFromFile {getFloatAttr()} case1] [FAILED]--- \n");
         break;
       }
@@ -128,7 +129,7 @@ int testXmlValueFromFile() {
     //Double getDoubleValue(String);
     while(1) {
       Double value = root->getDoubleValue("testdouble");
-      if(value == nullptr || value->toValue() != 1.11f) {
+      if(value == nullptr || st(Math)::compareDouble(value->toValue(),1.11)!= st(Math)::AlmostEqual) {
         printf("---[XmlValue TestFromFile {getDoubleValue()} case1] [FAILED]--- \n");
         break;
       }
@@ -140,7 +141,7 @@ int testXmlValueFromFile() {
     //Double getFloatValue(String);
     while(1) {
       Float value = root->getFloatValue("testfloat");
-      if(value == nullptr || value->toValue() != 2.22f) {
+      if(value == nullptr || st(Math)::compareFloat(value->toValue(),2.22)!= st(Math)::AlmostEqual) {
         printf("---[XmlValue TestFromFile {getFloatValue()} case1] [FAILED]--- \n");
         break;
       }
@@ -362,6 +363,4 @@ int testXmlValueFromFile() {
       printf("---[XmlValue TestFromFile {removeNode()} case5] [OK]--- \n");
       break;
     }
-
-    return 0;
 }

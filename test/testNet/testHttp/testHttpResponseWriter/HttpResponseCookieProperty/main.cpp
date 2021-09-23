@@ -14,6 +14,7 @@
 #include "Inet4Address.hpp"
 #include "CountDownLatch.hpp"
 #include "Handler.hpp"
+#include "Calendar.hpp"
 
 using namespace obotcha;
 
@@ -34,12 +35,12 @@ DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
                 //first message to send response with cookie
                 HttpResponse response = createHttpResponse();
                 HttpCookie cookie1 = createHttpCookie("test2_tag1","test2_value1");
-                //cookie1->setPropertySecure(true);
-                //cookie1->setPropertyHttpOnly(true);
-                //cookie1->setPropertyPath("path123");
+                cookie1->setPropertySecure(true);
+                cookie1->setPropertyHttpOnly(true);
+                cookie1->setPropertyPath("/path123");
                 //cookie1->setPropertyDomain("domain123");
-                //cookie1->setPropertyExpires(createHttpDate(createDateTime()));
-                //cookie1->setPropertyMaxAge(100);
+                cookie1->setPropertyExpires(createHttpDate(createCalendar()->getDateTime()));
+                //cookie1->setPropertyMaxAge(100000);
 
 
                 HttpCookie cookie2 = createHttpCookie("test2_tag2","test2_value2");

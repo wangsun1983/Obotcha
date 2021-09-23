@@ -5,7 +5,7 @@
 
 using namespace obotcha;
 
-int testLinkeListBase() {
+void testLinkeListBase() {
 
     //case1 string putLast
     while(1) {

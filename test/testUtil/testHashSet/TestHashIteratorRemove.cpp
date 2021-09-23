@@ -6,7 +6,7 @@
 
 using namespace obotcha;
 
-int testHashIteratorRemove() {
+void testHashIteratorRemove() {
 
     //remove string
     while(1) {

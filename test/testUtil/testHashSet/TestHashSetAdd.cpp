@@ -6,7 +6,7 @@
 
 using namespace obotcha;
 
-int testHashAdd() {
+void testHashAdd() {
 
     //case string
     while(1) {

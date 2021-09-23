@@ -91,8 +91,7 @@ public:
             return false;
         }
 
-        mList->hashset.erase(iterator);
-        iterator++;
+        iterator = mList->hashset.erase(iterator);
         return true;
     }
 

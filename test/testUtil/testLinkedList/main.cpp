@@ -6,24 +6,23 @@
 
 using namespace obotcha;
 
-extern int testLinkeListBase();
-extern int testLinkeListQueue();
-extern int testPutFirst();
-extern int testPutLast();
-extern int testTakeLast();
-extern int testTakeFirst();
+extern void testLinkeListBase();
+extern void testLinkeListQueue();
+extern void testPutFirst();
+extern void testPutLast();
+extern void testTakeLast();
+extern void testTakeFirst();
 extern void testLinkedListRemoveAt();
 extern void testLinkedListRemove();
 
 int main() {
-#if 0
+
     testLinkeListBase();
     testLinkeListQueue();
     testPutFirst();
     testPutLast();
     testTakeLast();
     testTakeFirst();
-#endif
     testLinkedListRemoveAt();
     testLinkedListRemove();
     return 0;

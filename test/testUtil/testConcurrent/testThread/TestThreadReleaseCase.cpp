@@ -54,7 +54,7 @@ public:
     }
 };
 
-int testThreadRelease() {
+void testThreadRelease() {
     //TestThread onInterrupt case1
     while(1) {
         for(int i = 0;i < 50;i++) {

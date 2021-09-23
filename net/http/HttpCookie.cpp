@@ -18,18 +18,16 @@ const String _HttpCookie::COOKIE_PROPERTY_EXPIRES = createString("Expires");
 
 const String _HttpCookie::COOKIE_PROPERTY_MAX_AGE = createString("Max-Age");
 
-_HttpCookie::_HttpCookie() {
-    mPropertySecure = false;
-    mPropertyHttpOnly = false;
-    mPropertyExpiresMillseocnds = -1;
+_HttpCookie::_HttpCookie():_HttpCookie(nullptr,nullptr) {
 }
 
 _HttpCookie::_HttpCookie(String name, String value) {
-    mPropertySecure = false;
-    mPropertyHttpOnly = false;
-    mPropertyExpiresMillseocnds = -1;
     mName = name;
     mValue = value;
+    mPropertySecure = false;
+    mPropertyHttpOnly = false;
+    mPropertyExpires = nullptr;
+    mPropertyMaxAge = -1;
 }
 
 void _HttpCookie::setValue(String name, String value) {
@@ -113,19 +111,13 @@ String _HttpCookie::genHttpResponseCookie() {
             content->append(COOKIE_PROPERTY_PATH, "=", mPropertyPath, ";");
     }
 
-    if (mPropertyMaxAge != 0) {
+    if (mPropertyMaxAge != -1) {
         content = content->append(COOKIE_PROPERTY_MAX_AGE, "=",
                                   createString(mPropertyMaxAge), ";");
     }
 
-    if (mPropertyExpiresMillseocnds != -1) {
-        Calendar c = createCalendar(mPropertyExpiresMillseocnds);
-        DateTime date = c->getGmtDateTime();
-        String time = date->toString(
-            st(DateTime)::
-                FormatHTTP); // st(DateTimeFormatter)::format(date,DateTimeFormatHTTP);
-
-        content = content->append(COOKIE_PROPERTY_EXPIRES, "=", time, ";");
+    if (mPropertyExpires != nullptr) {
+        content = content->append(COOKIE_PROPERTY_EXPIRES, "=", mPropertyExpires->toString(), ";");
     }
 
     return content;

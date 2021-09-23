@@ -6,12 +6,13 @@
 
 using namespace obotcha;
 
-extern int testHashAdd();
-extern int testHashIteratorRemove();
-extern int testHashContains();
+extern void testHashAdd();
+extern void testHashIteratorRemove();
+extern void testHashContains();
 
 int main() {
     testHashAdd();
     testHashIteratorRemove();
     testHashContains();
+    return 0;
 }

@@ -5,7 +5,7 @@
 
 using namespace obotcha;
 
-int testLinkedListEnqueue() {
+void testLinkedListEnqueue() {
 
     //case1 string putLast
     while(1) {

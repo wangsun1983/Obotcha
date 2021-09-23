@@ -5,7 +5,7 @@
 
 using namespace obotcha;
 
-int testTakeLast() {
+void testTakeLast() {
 
     //case1
     while(1) {

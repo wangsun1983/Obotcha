@@ -91,7 +91,7 @@ public:
 };
 
 
-int testThreadPriority() {
+void testThreadPriority() {
     //TestThread onInterrupt case1
     MyPriorityThread t = createMyPriorityThread();
     t->start();

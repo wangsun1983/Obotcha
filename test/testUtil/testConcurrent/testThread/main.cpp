@@ -16,26 +16,26 @@ static int disposeVal = -1;
 
 using namespace obotcha;
 
-extern int testThreadInterruptCase();
-extern int testThreadCommonCase();
-//extern int testThreadNotifyInterruptCase();
-extern int testThreadSleepInterrupt();
-//extern int testThreadLoopInterrypt();
-extern int testThreadRelease();
-extern int testThreadJoin();
-extern int testThreadStart();
-//extern int testThreadClose();
-extern int testThreadLoopCreate();
-extern int testThreadLoopJoin();
-//extern int testthreadloopquit();
-extern int testThreadLambda();
-extern int testThreadjoinCase2();
-extern int testThreadSleep();
-extern int testThreadQuickJoin();
-extern int testThreadSleepRelease();
-extern int testThreadPriority();
-extern int testThreadInterruptCase();
-extern int testThreadLoopStart();
+extern void testThreadInterruptCase();
+extern void testThreadCommonCase();
+//extern void testThreadNotifyInterruptCase();
+extern void testThreadSleepInterrupt();
+//extern void testThreadLoopInterrypt();
+extern void testThreadRelease();
+extern void testThreadJoin();
+extern void testThreadStart();
+//extern void testThreadClose();
+extern void testThreadLoopCreate();
+extern void testThreadLoopJoin();
+//extern void testthreadloopquit();
+extern void testThreadLambda();
+extern void testThreadjoinCase2();
+extern void testThreadSleep();
+extern void testThreadQuickJoin();
+extern void testThreadSleepRelease();
+extern void testThreadPriority();
+extern void testThreadInterruptCase();
+extern void testThreadLoopStart();
 extern void testThreadInterruptSleep();
 
 int main() {

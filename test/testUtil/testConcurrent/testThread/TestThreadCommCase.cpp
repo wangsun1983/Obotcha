@@ -137,7 +137,7 @@ public:
 };
 #endif
 
-int testThreadCommonCase() {
+void testThreadCommonCase() {
   printf("---[TestThread Test Start]--- \n");
 
 

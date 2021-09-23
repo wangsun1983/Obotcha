@@ -137,15 +137,13 @@ public:
     }
 
     void clear() {
-        LinkedListData<T> current = head;
         while (head != nullptr) {
-            if (head->next != nullptr) {
-                head->next->prev = nullptr;
-            }
+            auto next = head->next;
             head->next = nullptr;
-            head = nullptr;
-            head = current->next;
+            head->prev = nullptr;
+            head = next;
         }
+        tail = nullptr;
         count = 0;
     }
 
@@ -178,6 +176,10 @@ public:
         }
 
         return -1;
+    }
+
+    ~_LinkedList() {
+        clear();
     }
 
 private:

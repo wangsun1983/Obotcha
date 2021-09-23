@@ -5,7 +5,7 @@
 
 using namespace obotcha;
 
-int testLinkeListQueue() {
+void testLinkeListQueue() {
 
     //case1 string takeFirst
     while(1) {

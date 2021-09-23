@@ -10,10 +10,11 @@
 
 using namespace obotcha;
 
-extern int testXmlValueFromFile();
-extern int testXmlValueFromMemory();
+extern void testXmlValueFromFile();
+extern void testXmlValueFromMemory();
 
 int main() {
     testXmlValueFromFile();
     testXmlValueFromMemory();
+    return 0;
 }

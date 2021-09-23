@@ -34,7 +34,7 @@ public:
 };
 
 
-int testThreadSleepRelease() {
+void testThreadSleepRelease() {
   printf("---[TestThread Sleep Release Start]--- \n");
 
   while(1) {
@@ -55,7 +55,5 @@ int testThreadSleepRelease() {
     printf("---[Thread Test {sleep release()} case2] [OK] \n");
     break;
   }
-
-  return 0;
 
 }

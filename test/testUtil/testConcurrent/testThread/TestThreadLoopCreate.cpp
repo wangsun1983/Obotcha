@@ -36,9 +36,7 @@ public:
   }
 };
 
-
-
-int testThreadLoopCreate() {
+void testThreadLoopCreate() {
   //test1
   for(int i = 0;i<1024*32;i++) {
       Thread t = createThread(createLoopCreateRun1());

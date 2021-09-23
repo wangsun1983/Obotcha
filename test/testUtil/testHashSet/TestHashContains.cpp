@@ -6,7 +6,7 @@
 
 using namespace obotcha;
 
-int testHashContains() {
+void testHashContains() {
 
     HashSet<String> set = createHashSet<String>();
     set->add(createString("abc"));

@@ -12,7 +12,7 @@
 
 using namespace obotcha;
 
-int testThreadLoopStart() {
+void testThreadLoopStart() {
   while(1) {
     Thread t = createThread([] {
 
@@ -29,5 +29,4 @@ int testThreadLoopStart() {
     break;
   }
   printf("---[Thread Loop start case100] [OK]--- \n");
-  return 0;
 }

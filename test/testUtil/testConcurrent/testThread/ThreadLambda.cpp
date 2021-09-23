@@ -19,7 +19,7 @@ public:
     int j;
 };
 
-int testThreadLambda() {
+void testThreadLambda() {
     while(1) {
         int value = 100;
         Thread t1 = createThread([&value]() {
@@ -86,7 +86,7 @@ int testThreadLambda() {
             }
         });
 
-        
+
         sleep(1);
 
         if(result == 123) {
@@ -96,7 +96,7 @@ int testThreadLambda() {
 
         break;
     }
-    
+
     while(1) {
         Testdata data = createTestdata();
         data->i = 100;
@@ -109,7 +109,7 @@ int testThreadLambda() {
         });
         t1->start();
 
-        
+
         sleep(1);
 
         if(data->i != 1 ||data->j != 2) {

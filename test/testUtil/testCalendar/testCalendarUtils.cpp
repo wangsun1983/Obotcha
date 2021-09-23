@@ -26,4 +26,5 @@ int convertDayOfWeekFromJava(int day) {
     case 7:
         return st(Calendar)::Saturday;
   }
+  return 0;
 }

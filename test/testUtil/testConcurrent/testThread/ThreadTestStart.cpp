@@ -41,7 +41,7 @@ public:
     }
 };
 
-int testThreadStart() {
+void testThreadStart() {
 
     while(1) {
         StartTestThread1 t1 = createStartTestThread1();

@@ -59,7 +59,7 @@ const char *testdata[46][3] = {
 };
 
 
-int simpleattrtest() {
+void simpleattrtest() {
     printf("---[XmlReader Test Start]--- \n");
     XmlReader reader = createXmlReader(createFile("test.xml"));
     XmlDocument doc = reader->get();
@@ -72,7 +72,7 @@ int simpleattrtest() {
     String name = root->getName();
     if(name == nullptr ||!name->equals("EllipsoidParams")) {
         printf("---[XmlReader Test parse()} case1] [FAILED]--- \n");
-        return 0;
+        return;;
     }
 
     XmlValueIterator iterator = root->getValueIterator();
@@ -96,5 +96,5 @@ int simpleattrtest() {
     }
 
     printf("---[XmlReader Test parse()} case1] [OK]--- \n");
-    return 0;
+    return;;
 }

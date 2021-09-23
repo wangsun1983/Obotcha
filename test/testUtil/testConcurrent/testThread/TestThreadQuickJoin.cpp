@@ -20,13 +20,13 @@ DECLARE_CLASS(JoinRun1) IMPLEMENTS(Runnable) {
 public:
 
   void run() {
-      
+
   }
 
 };
 
 
-int testThreadQuickJoin() {
+void testThreadQuickJoin() {
   printf("---[TestThread Sleep Start]--- \n");
 
   while(1) {
@@ -38,7 +38,5 @@ int testThreadQuickJoin() {
     printf("---[Thread Test {Quick Join()} case1] [Success] \n");
     break;
   }
-  
-  return 0;
-  
+
 }

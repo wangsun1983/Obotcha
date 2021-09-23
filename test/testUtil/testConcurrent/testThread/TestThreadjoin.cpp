@@ -101,7 +101,7 @@ private:
 };
 
 
-int testThreadJoin() {
+void testThreadJoin() {
   while(1) {
     JoinTestThread t1 = createJoinTestThread();
     t1->start();
@@ -184,5 +184,4 @@ int testThreadJoin() {
     break;
   }
 
-  return 0;
 }
