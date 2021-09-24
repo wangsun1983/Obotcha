@@ -120,6 +120,7 @@ String _HttpCookie::genHttpResponseCookie() {
         content = content->append(COOKIE_PROPERTY_EXPIRES, "=", mPropertyExpires->toString(), ";");
     }
 
+    content = content->subString(0,content->size() - 1);
     return content;
 }
 
