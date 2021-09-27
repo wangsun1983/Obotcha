@@ -56,7 +56,7 @@ int _DesSecretKey::loadKey(String path) {
         fclose(key_file);
         return -OpenFail;
     }
-    
+
     fclose(key_file);
     return 0;
 }

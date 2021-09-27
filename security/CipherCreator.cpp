@@ -24,8 +24,12 @@ Cipher _CipherCreator::getInstance(String param) {
         patternType = st(Cipher)::CTR;
     } else if(pattern->equalsIgnoreCase(st(Cipher)::OcfStr)) {
         patternType = st(Cipher)::OCF;
-    }else if(pattern->equalsIgnoreCase(st(Cipher)::CfbStr)) {
-        patternType = st(Cipher)::CFB;
+    } else if(pattern->equalsIgnoreCase(st(Cipher)::Cfb1Str)) {
+        patternType = st(Cipher)::CFB1;
+    } else if(pattern->equalsIgnoreCase(st(Cipher)::Cfb8Str)) {
+        patternType = st(Cipher)::CFB8;
+    } else if(pattern->equalsIgnoreCase(st(Cipher)::Cfb128Str)) {
+        patternType = st(Cipher)::CFB128;
     }
 
     if(patternType == -1) {
@@ -56,6 +60,24 @@ Cipher _CipherCreator::getInstance(String param) {
     int algorithmType = -1;
     if(algorithm->equalsIgnoreCase(st(Cipher)::AesStr)) {
         algorithmType = st(Cipher)::CipherAES;
+        Aes c = createAes();
+        c->setPadding(paddingType);
+        c->setPattern(patternType);
+        return (Cipher)c;
+    } if(algorithm->equalsIgnoreCase(st(Cipher)::Aes128Str)) {
+        algorithmType = st(Cipher)::CipherAES128;
+        Aes c = createAes();
+        c->setPadding(paddingType);
+        c->setPattern(patternType);
+        return (Cipher)c;
+    } else if(algorithm->equalsIgnoreCase(st(Cipher)::Aes192Str)) {
+        algorithmType = st(Cipher)::CipherAES192;
+        Aes c = createAes();
+        c->setPadding(paddingType);
+        c->setPattern(patternType);
+        return (Cipher)c;
+    } else if(algorithm->equalsIgnoreCase(st(Cipher)::Aes256Str)) {
+        algorithmType = st(Cipher)::CipherAES256;
         Aes c = createAes();
         c->setPadding(paddingType);
         c->setPattern(patternType);

@@ -1,3 +1,5 @@
+#include "openssl/crypto.h"
+
 #include "StrongPointer.hpp"
 #include "Object.hpp"
 #include "ByteArray.hpp"
@@ -15,6 +17,10 @@ const String _Cipher::PKCS1PaddingStr = createString("PKCS1Padding");
 const String _Cipher::PKCS8PaddingStr = createString("PKCS8Padding");
 
 const String _Cipher::AesStr = createString("AES");
+const String _Cipher::Aes128Str = createString("AES128");
+const String _Cipher::Aes192Str = createString("AES192");
+const String _Cipher::Aes256Str = createString("AES256");
+
 const String _Cipher::DesStr = createString("DES");
 const String _Cipher::RsaStr = createString("RSA");
 
@@ -22,7 +28,9 @@ const String _Cipher::CbcStr = createString("CBC");
 const String _Cipher::EcbStr = createString("ECB");
 const String _Cipher::CtrStr = createString("CTR");
 const String _Cipher::OcfStr = createString("OCF");
-const String _Cipher::CfbStr = createString("CFB");
+const String _Cipher::Cfb1Str = createString("CFB1");
+const String _Cipher::Cfb8Str = createString("CFB8");
+const String _Cipher::Cfb128Str = createString("CFB128");
 
 int _Cipher::getAlgorithm() {
     return algorithmType;
@@ -66,6 +74,7 @@ void _Cipher::decrypt(File in,File out) {
 }
 
 void _Cipher::doPadding(ByteArray data,int blocksize) {
+    printf("paddingtype is %d \n",paddingType);
     switch(paddingType) {
         case ZeroPadding:
             doPKCSZeroPadding(data,blocksize);
@@ -80,11 +89,11 @@ void _Cipher::doPadding(ByteArray data,int blocksize) {
         break;
 
         case PKCS1Padding:
-            //TODO
+            //not support
         break;
 
         case PKCS8Padding:
-            //TODO
+            //not support
         break;    
     }
 }
@@ -104,11 +113,11 @@ void _Cipher::doUnPadding(ByteArray data) {
         break;
 
         case PKCS1Padding:
-            //TODO
+            //not support
         break;
 
         case PKCS8Padding:
-            //TODO
+            //not support
         break;    
     }
 }
@@ -123,6 +132,7 @@ void _Cipher::doPKCS7Padding(ByteArray data,int blocksize) {
     if(paddingSize == 0) {
         paddingSize = blocksize;
     }
+    
     ByteArray padding = createByteArray((int)paddingSize);
     padding->fill(paddingSize);
     data->append(padding);
@@ -148,6 +158,7 @@ void _Cipher::doPKCS7UnPadding(ByteArray data) {
 
 void _Cipher::doPKCS5UnPadding(ByteArray data) {
     int paddingsize = data->at(data->size() - 1);
+    printf("paddingsize is %d,data size is %d \n",paddingsize,data->size());
     data->quickShrink(data->size() - paddingsize);
 }
 
@@ -159,7 +170,7 @@ void _Cipher::doPKCSZeroUnPadding(ByteArray data) {
         }
     }
 
-    data->quickShrink(index);
+    data->quickShrink(index + 1);
 }
 
 
@@ -178,6 +189,7 @@ void _Cipher::doEncryptOrDescrypt(File in,File out) {
         
         switch(getMode()) {
             case Decrypt: {
+                printf("doEncryptOrDescrypt,input data size is %d \n",inputData->size());
                 outputData = decrypt(inputData);
             }
             break;

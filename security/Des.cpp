@@ -11,8 +11,8 @@
 namespace obotcha {
 
 ByteArray _Des::encrypt(ByteArray input) {
-    
     DES_key_schedule schedule;
+    
     switch(getPattern()) {
         case ECB:
             DES_set_key_unchecked((const_DES_cblock *)getSecretKey()->get(), &schedule);
@@ -31,9 +31,8 @@ ByteArray _Des::encrypt(ByteArray input) {
 }
 
 ByteArray _Des::decrypt(ByteArray input) {
-
     DES_key_schedule schedule;
-
+    
     switch(getPattern()) {
         case ECB:
             DES_set_key_unchecked((const_DES_cblock *)getSecretKey()->get(), &schedule);
@@ -43,9 +42,7 @@ ByteArray _Des::decrypt(ByteArray input) {
         case CBC:
             DES_set_key_checked((const_DES_cblock *)getSecretKey()->get(), &schedule);
             DES_cblock ivec;
-            //memset((char*)&ivec, 0, sizeof(ivec));
-            memcpy(&ivec,getSecretKey()->get(),sizeof(DES_cblock));
-
+            memset((char*)&ivec, 0, sizeof(ivec));
             return _desCBC(input,&schedule,&ivec);
         break;
     }
@@ -63,25 +60,23 @@ ByteArray _Des::_desECB(ByteArray data,DES_key_schedule *schedule) {
     ByteArray out = createByteArray(inputSize);
     unsigned char *output = (unsigned char*)out->toValue();
     unsigned char *input = (unsigned char*)data->toValue();
-    const_DES_cblock inputBuff;
-    DES_cblock outputBuff;
     
     for(int i = 0; i < inputSize / 8; i++){
-        memcpy(inputBuff,input,8);
         switch(getMode()) {
             case Decrypt:
-                DES_ecb_encrypt(&inputBuff, &outputBuff, schedule, DES_DECRYPT);
-            break;
+                DES_ecb_encrypt((const_DES_cblock *)(input + i*sizeof(const_DES_cblock)),
+                                 (DES_cblock *)(output + i*sizeof(DES_cblock)), 
+                                 schedule, 
+                                 DES_DECRYPT);
+                break;
 
             case Encrypt:
-                DES_ecb_encrypt(&inputBuff, &outputBuff, schedule, DES_ENCRYPT);
-            break;
+                DES_ecb_encrypt((const_DES_cblock *)(input + i*sizeof(const_DES_cblock)),
+                                 (DES_cblock *)(output + i*sizeof(DES_cblock)), 
+                                 schedule, 
+                                 DES_ENCRYPT);
+                break;
         }
-        
-        memcpy(output,outputBuff,8);
-
-        input += 8;
-        output += 8;
     }
 
     if(getMode() == Decrypt) {

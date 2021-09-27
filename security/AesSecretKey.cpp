@@ -2,6 +2,7 @@
 #include "AesSecretKey.hpp"
 #include "UUID.hpp"
 #include "Error.hpp"
+#include "Cipher.hpp"
 
 namespace obotcha {
 
@@ -15,6 +16,30 @@ int _AesSecretKey::loadEncryptKey(String path) {
 
 int _AesSecretKey::loadDecryptKey(String path) {
     return loadKey(path);
+}
+
+void _AesSecretKey::setType(int type) {
+    mType = type;
+}
+
+int _AesSecretKey::getKeyLength() {
+    switch(mType) {
+        case KeyAES128:
+        return 128;
+
+        case KeyAES192:
+        return 192;
+
+        case KeyAES256:
+        return 256;
+
+        case KeyAESCFB1:
+        case KeyAESCFB8:
+        case KeyAESCFB128:
+        return 32;
+    }
+
+    return -1;
 }
 
 int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String>params) {
@@ -32,7 +57,7 @@ int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     if(result != 0) {
         return result;
     }
-
+    
     FILE *dec_key_file = fopen(decKeyFile->toChars(), "wb");
     int dec_size = fwrite(&decryptKey, 1, sizeof(AES_KEY), dec_key_file);
 
@@ -45,6 +70,8 @@ int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     return (dec_size > 0) && (enc_size > 0);
 }
 
+
+
 int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
     if(content == nullptr) {
         UUID uuid = createUUID();
@@ -53,15 +80,19 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
 
     const char *c = content->toChars();
 
-    char keyBuff[AES_BLOCK_SIZE + 1] = {0};
-    int length = content->size() > AES_BLOCK_SIZE?AES_BLOCK_SIZE:content->size();
-    memcpy(keyBuff,c,length);
+    int keylength = getKeyLength();
+    char keyBuff[keylength];
+    memset(keyBuff,0,keylength);
 
-    if(AES_set_encrypt_key((const unsigned char*)keyBuff,128,encrypt) != 0) {
+    int length = (content->size() > keylength)?keylength:content->size();
+    memcpy(keyBuff,c,length);
+    printf("gen key size is %d ,keylength is %d\n",length,keylength);
+
+    if(AES_set_encrypt_key((const unsigned char*)keyBuff,length*8,encrypt) != 0) {
         return -GenKeyFail;
     }
 
-    if(AES_set_decrypt_key((const unsigned char*)keyBuff,128,decrypt) != 0) {
+    if(AES_set_decrypt_key((const unsigned char*)keyBuff,length*8,decrypt) != 0) {
         return -GenKeyFail;
     }
 

@@ -16,11 +16,14 @@ public:
     int loadEncryptKey(String path);
     int loadDecryptKey(String path);
     int generate(String decKeyFile,String encKeyFile,ArrayList<String>params);
+    void setType(int);
 
 private:
     AES_KEY mKey;
     int loadKey(String path);
     int genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt);
+    int mType;
+    int getKeyLength();
 };
 
 }

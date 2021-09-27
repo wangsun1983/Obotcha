@@ -25,7 +25,13 @@ private:
 
     ByteArray _aesECB(ByteArray data);
 
-    ByteArray _aesCBC(ByteArray data,unsigned char *ivec);
+    ByteArray _aesCBC(ByteArray data);
+
+    ByteArray _aesCFB1(ByteArray in);
+
+    ByteArray _aesCFB8(ByteArray in);
+
+    ByteArray _aesCFB128(ByteArray in);
 };
 
 }

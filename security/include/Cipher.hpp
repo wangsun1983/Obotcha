@@ -22,6 +22,10 @@ public:
     static const String PKCS8PaddingStr;
 
     static const String AesStr;
+    static const String Aes128Str;
+    static const String Aes192Str;
+    static const String Aes256Str;
+
     static const String DesStr;
     static const String RsaStr;
 
@@ -29,7 +33,9 @@ public:
     static const String EcbStr;
     static const String CtrStr;
     static const String OcfStr;
-    static const String CfbStr;
+    static const String Cfb1Str;
+    static const String Cfb8Str;
+    static const String Cfb128Str;
 
     enum Padding {
         ZeroPadding = 0,
@@ -47,7 +53,10 @@ public:
     };
 
     enum CipherType {
-        CipherAES = 0,
+        CipherAES,
+        CipherAES128 = 0,
+        CipherAES192,
+        CipherAES256,
         CipherDES,
         CipherRSA
     };
@@ -57,7 +66,9 @@ public:
         ECB,
         CTR,
         OCF,
-        CFB
+        CFB1,
+        CFB8,
+        CFB128
     };
 
     virtual ByteArray encrypt(ByteArray in) = 0;
