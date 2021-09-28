@@ -36,6 +36,8 @@ public:
     static const String Cfb1Str;
     static const String Cfb8Str;
     static const String Cfb128Str;
+    static const String Ofb128Str;
+    
 
     enum Padding {
         ZeroPadding = 0,
@@ -58,7 +60,7 @@ public:
         CipherAES192,
         CipherAES256,
         CipherDES,
-        CipherRSA
+        CipherRSA,
     };
 
     enum CipherPattern {
@@ -68,7 +70,8 @@ public:
         OCF,
         CFB1,
         CFB8,
-        CFB128
+        CFB128,
+        OFB128
     };
 
     virtual ByteArray encrypt(ByteArray in) = 0;

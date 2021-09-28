@@ -24,6 +24,7 @@ private:
     int genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt);
     int mType;
     int getKeyLength();
+    int keyCheck(String);
 };
 
 }

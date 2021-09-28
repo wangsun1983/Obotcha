@@ -32,6 +32,8 @@ private:
     ByteArray _aesCFB8(ByteArray in);
 
     ByteArray _aesCFB128(ByteArray in);
+
+    ByteArray _aesOFB128(ByteArray in);
 };
 
 }

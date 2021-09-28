@@ -31,6 +31,7 @@ const String _Cipher::OcfStr = createString("OCF");
 const String _Cipher::Cfb1Str = createString("CFB1");
 const String _Cipher::Cfb8Str = createString("CFB8");
 const String _Cipher::Cfb128Str = createString("CFB128");
+const String _Cipher::Ofb128Str = createString("OFB128");
 
 int _Cipher::getAlgorithm() {
     return algorithmType;

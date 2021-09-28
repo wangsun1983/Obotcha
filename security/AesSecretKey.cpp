@@ -3,6 +3,7 @@
 #include "UUID.hpp"
 #include "Error.hpp"
 #include "Cipher.hpp"
+#include "InvalidKeyException.hpp"
 
 namespace obotcha {
 
@@ -36,10 +37,29 @@ int _AesSecretKey::getKeyLength() {
         case KeyAESCFB1:
         case KeyAESCFB8:
         case KeyAESCFB128:
-        return 32;
+        return 16;
+
+        case KeyAESOFB128:
+        //TODO
+        break;
     }
 
     return -1;
+}
+
+int _AesSecretKey::keyCheck(String key) {
+    switch(mType) {
+        case KeyAESCFB1:
+        case KeyAESCFB8:
+        case KeyAESCFB128:
+        printf("key size is %d \n",key->size());
+        if(key->size() != 16 && key->size() != 24 && key->size() != 32) {
+            Trigger(InvalidKeyException,"CFB key size must be 16/24/32");
+        }
+        return 0;
+    }
+
+    return 0;
 }
 
 int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String>params) {
@@ -47,10 +67,13 @@ int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
 
     AES_KEY encryptKey;
     AES_KEY decryptKey;
-
+    
     if(params != nullptr && params->size() != 0) {
+        printf("genkey by param,key is %s \n",params->get(0)->toChars());
+        keyCheck(params->get(0));
         result = genKey(params->get(0),&encryptKey,&decryptKey);
     } else {
+        printf("genkey by nullptr \n");
         result = genKey(nullptr,&encryptKey,&decryptKey);
     }
 
@@ -70,12 +93,13 @@ int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     return (dec_size > 0) && (enc_size > 0);
 }
 
-
-
 int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
     if(content == nullptr) {
         UUID uuid = createUUID();
         content = uuid->generate();
+        //if it is a cfb,size must be 8/16/32
+        content = content->subString(0,32);
+        printf("content size is %d \n",content->size());
     }
 
     const char *c = content->toChars();
@@ -92,10 +116,16 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
         return -GenKeyFail;
     }
 
-    if(AES_set_decrypt_key((const unsigned char*)keyBuff,length*8,decrypt) != 0) {
-        return -GenKeyFail;
+    //Aes cfb/ofb's dec key is same as enc key!!!
+    if(mType == KeyAESCFB1 || mType == KeyAESCFB8 || mType == KeyAESCFB128 || mType == KeyAESOFB128) {
+        if(AES_set_encrypt_key((const unsigned char*)keyBuff,length*8,decrypt) != 0) {
+            return -GenKeyFail;
+        }
+    } else {
+        if(AES_set_decrypt_key((const unsigned char*)keyBuff,length*8,decrypt) != 0) {
+            return -GenKeyFail;
+        }
     }
-
     return 0;
 }
 

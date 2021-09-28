@@ -30,6 +30,8 @@ SecretKey _SecretKeyCreator::getInstance(String param) {
             keytype = st(SecretKey)::KeyAESCFB8;
         } else if(param2->equalsIgnoreCase(st(Cipher)::Cfb128Str)) {
             keytype = st(SecretKey)::KeyAESCFB128;
+        } else if(param2->equalsIgnoreCase(st(Cipher)::Ofb128Str)) {
+            keytype = st(SecretKey)::KeyAESOFB128;
         }
         
         AesSecretKey c = createAesSecretKey();

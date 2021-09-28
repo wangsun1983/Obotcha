@@ -17,5 +17,9 @@ int _SecretKey::generate(String decKeyFile,String encKeyFile,String params) {
     return generate(decKeyFile,encKeyFile,paramlist);
 }
 
+int _SecretKey::generate(String decKeyFile,String encKeyFile) {
+    return generate(decKeyFile,encKeyFile,createArrayList<String>());
+}
+
 }
 
