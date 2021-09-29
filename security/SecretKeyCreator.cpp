@@ -8,6 +8,8 @@
 #include "DesSecretKey.hpp"
 #include "RsaSecretKey.hpp"
 #include "Cipher.hpp"
+#include "Rsa.hpp"
+#include "PaddingNotSupportException.hpp"
 
 namespace obotcha {
 
@@ -57,8 +59,23 @@ SecretKey _SecretKeyCreator::getInstance(String param) {
         DesSecretKey c = createDesSecretKey();
         return (SecretKey)c;
     } else if(param->equalsIgnoreCase(st(Cipher)::RsaStr)) {
-        int keytype = st(SecretKey)::KeyRSA;
+        //RSA/RSA3/PKCS1Padding
         RsaSecretKey c = createRsaSecretKey();
+        String rsakeymode = params->get(1);
+        String paddingtype = params->get(2);
+
+        if(rsakeymode->equalsIgnoreCase("RSAF4")) {
+            c->setMode(st(Cipher)::RSAF4);
+        } else if(rsakeymode->equalsIgnoreCase("RSA3")) {
+            c->setMode(st(Cipher)::RSA3);
+        }
+
+        if(paddingtype->equalsIgnoreCase("PKCS1Padding")) {
+            c->setKeyPaddingType(st(Cipher)::PKCS1Padding);
+        } else {
+            Trigger(PaddingNotSupportException,"only support PKCS1Padding!")
+        }
+
         return (RsaSecretKey)c;
     }
 

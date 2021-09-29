@@ -23,6 +23,8 @@ const String _Cipher::Aes256Str = createString("AES256");
 
 const String _Cipher::DesStr = createString("DES");
 const String _Cipher::RsaStr = createString("RSA");
+const String _Cipher::Rsa3Str = createString("RSA3");
+const String _Cipher::Rsaf4Str = createString("RSAF4");
 
 const String _Cipher::CbcStr = createString("CBC");
 const String _Cipher::EcbStr = createString("ECB");

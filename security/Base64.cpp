@@ -20,7 +20,7 @@ String _Base64::decode(String str) {
 String _Base64::encode(String str) {
     int size = 0;
     char *p = _encode(str->toChars(),str->size(),false,&size);
-    String result = createString(p);
+    String result = createByteArray((const byte *)p,size)->toString();
     free(p);
     return result;
 }

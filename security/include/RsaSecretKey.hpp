@@ -37,23 +37,6 @@ public:
         RsaPrivateKey,
     };
 
-    friend class _Rsa;
-    _RsaSecretKey();
-    void * get();
-    int loadEncryptKey(String path);
-    int loadDecryptKey(String path);
-    int generate(String decKeyFile,String encKeyFile,ArrayList<String>params);
-    ~_RsaSecretKey();
-
-private:
-    RSA *mRsaKey;
-    int mKeyType;
-
-    const static String PKCS1PublicKeyTag;
-    const static String PKCS1PrivateKeyTag;
-    const static String PKCS8PublicKeyTag;
-    const static String PKCS8PrivateKeyTag;
-
     enum PKCSKeyType {
         PKCS1PublicKey = 0,
         PKCS1PrivateKey,
@@ -61,7 +44,32 @@ private:
         PKCS8PrivateKey,
     };
 
+    friend class _Rsa;
+    _RsaSecretKey();
+    void * get();
+    int loadEncryptKey(String path);
+    int loadDecryptKey(String path);
+    int generate(String decKeyFile,String encKeyFile,ArrayList<String>params);
+    void setKeyPaddingType(int);
+    void setMode(int);
     int getKeyType();
+
+    ~_RsaSecretKey();
+
+private:
+    RSA *mRsaKey;
+    int mKeyPaddingType;
+    int mKeyMode;
+
+    const static String PKCS1PublicKeyTag;
+    const static String PKCS1PrivateKeyTag;
+    const static String PKCS8PublicKeyTag;
+    const static String PKCS8PrivateKeyTag;
+
+    
+
+    int getKeyPaddingType();
+    
 
     int getPaddingType(String);
 };

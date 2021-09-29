@@ -17,7 +17,8 @@ const String _RsaSecretKey::PKCS8PrivateKeyTag = createString("BEGIN PRIVATE KEY
 
 _RsaSecretKey::_RsaSecretKey() {
     mRsaKey = nullptr;
-    mKeyType = -1;
+    mKeyPaddingType = st(Cipher)::PKCS1Padding;
+    mKeyMode = st(Cipher)::RSA3;
 }
 
 void * _RsaSecretKey::get() {
@@ -31,15 +32,15 @@ int _RsaSecretKey::loadEncryptKey(String path) {
     String content = inputData->toString();
     //printf("content is %s \n",content->toChars());
     stream->close();
-    BIO* bio = BIO_new_mem_buf((void*)inputData->toValue(), -1 ) ; // -1: assume string is null terminated
+    BIO* bio = BIO_new_mem_buf((void*)inputData->toValue(), inputData->size() ) ; // -1: assume string is null terminated
     if(bio == nullptr) {
         BIO_free(bio);
         return -1;
     }
     BIO_set_flags( bio, BIO_FLAGS_BASE64_NO_NL ) ; // NO NL
 
-    mKeyType = getPaddingType(content);
-    switch(mKeyType) {
+    mKeyPaddingType = getPaddingType(content);
+    switch(mKeyPaddingType) {
         case PKCS1PublicKey:
             mRsaKey = PEM_read_bio_RSAPublicKey( bio, NULL, NULL, NULL ) ;
         break;
@@ -49,16 +50,15 @@ int _RsaSecretKey::loadEncryptKey(String path) {
         break;
 
         default:
-            BIO_free(bio);
-            return -1;
+            break;
     }
 
+    BIO_free(bio);
+    
     if(mRsaKey == nullptr) {
-        BIO_free(bio);
         return -1;
     }
     
-    BIO_free(bio);
     return 0;
 }
 
@@ -68,24 +68,23 @@ int _RsaSecretKey::loadDecryptKey(String path) {
     ByteArray inputData = stream->readAll();
     String content = inputData->toString();
     stream->close();
-    BIO* bio = BIO_new_mem_buf((void*)inputData->toValue(), -1 ) ; // -1: assume string is null terminated
+    BIO* bio = BIO_new_mem_buf((void*)inputData->toValue(), inputData->size()) ; // -1: assume string is null terminated
     if(bio == nullptr) {
         return -1;
     }
     BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL) ; // NO NL
-    mKeyType = getPaddingType(content);
-    switch(mKeyType) {
+    mKeyPaddingType = getPaddingType(content);
+    switch(mKeyPaddingType) {
         case PKCS1PrivateKey:
             mRsaKey = PEM_read_bio_RSAPrivateKey( bio, NULL, NULL, NULL ) ;
         break;
 
         default:
-            BIO_free(bio);
-            return -1;
+            break;
     }
 
+    BIO_free(bio);
     if(mRsaKey == nullptr) {
-        BIO_free(bio);
         return -1;
     }
 
@@ -94,33 +93,29 @@ int _RsaSecretKey::loadDecryptKey(String path) {
 
 //rsa keytype/rsa key headtype
 int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String>params) {
-    int keytype = st(Rsa)::RSA3;
-    int keyHeadType = st(Cipher)::PKCS1Padding;
-
-    if(params->size() == 2) {
-        String keytpeString = params->get(0);
-        if(keytpeString->equals("RSAF4")) {
-            keytype = st(Rsa)::RSAF4;
-        }
-
-        String keyHeadTypeString = params->get(1);
-        if(keytpeString->equals("PKCS1Padding")) {
-            keyHeadType = st(Cipher)::PKCS1Padding;
-        } else if(keytpeString->equals("PKCS8Padding")) {
-            keyHeadType = st(Cipher)::PKCS8Padding;
-        }
-    }
-
+    printf("start generate key \n");
     RSA *keypair = RSA_new();
     BIGNUM* e = BN_new();
-    int result = BN_set_word(e,keytype);
+
+    int result = -1;
+    printf("keymode is %d \n",mKeyMode);
+    switch(mKeyMode) {
+        case st(Cipher)::RSA3:
+            result = BN_set_word(e,RSA_3);
+        break;
+
+        case st(Cipher)::RSAF4:
+            result = BN_set_word(e,RSA_F4);
+            break;
+    }
+    
     if(result != 1) {
         LOG(ERROR)<<"Rsa secret ky:BN_set_word fail";
         return -1;
     }
-
+    printf("start generate key trace1 \n");
     result = RSA_generate_key_ex(keypair,2048, e, NULL);
-
+    printf("start generate key trace2 \n");
     File pubFile = createFile(encKeyFile);
     if(!pubFile->exists()) {
         pubFile->createNewFile();
@@ -128,7 +123,8 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
 
      // 2. save public key
     BIO *bp_public = BIO_new_file(pubFile->getAbsolutePath()->toChars(), "w+");
-    switch(keyHeadType) {
+    printf("public key is %s ,mKeyPaddingType is %d\n",pubFile->getAbsolutePath()->toChars(),mKeyPaddingType);
+    switch(mKeyPaddingType) {
         case st(Cipher)::PKCS1Padding:
             result = PEM_write_bio_RSA_PUBKEY(bp_public, keypair);
         break;
@@ -172,13 +168,22 @@ int _RsaSecretKey::getPaddingType(String content) {
 }
 
 int _RsaSecretKey::getKeyType() {
-    if(mKeyType == PKCS1PublicKey || mKeyType == PKCS8PublicKey) {
+    if(mKeyPaddingType == PKCS1PublicKey || mKeyPaddingType == PKCS8PublicKey) {
         return RsaPublicKey;
-    } else if(mKeyType == PKCS1PrivateKey || mKeyType == PKCS8PrivateKey) {
+    } else if(mKeyPaddingType == PKCS1PrivateKey || mKeyPaddingType == PKCS8PrivateKey) {
         return RsaPrivateKey;
     }
 
     return -1;
+}
+
+void _RsaSecretKey::setKeyPaddingType(int padding) {
+    printf("set padding type is %d \n",padding);
+    this->mKeyPaddingType = padding;
+}
+
+void _RsaSecretKey::setMode(int mode) {
+    this->mKeyMode = mode;
 }
 
 _RsaSecretKey::~_RsaSecretKey() {

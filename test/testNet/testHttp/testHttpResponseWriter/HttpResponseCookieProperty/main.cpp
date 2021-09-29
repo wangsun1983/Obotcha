@@ -15,12 +15,14 @@
 #include "CountDownLatch.hpp"
 #include "Handler.hpp"
 #include "Calendar.hpp"
+#include "TimeZone.hpp"
 
 using namespace obotcha;
 
 CountDownLatch latch = createCountDownLatch(1);
 int count = 0;
 
+long setExpires = 0;
 
 DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
   void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPacket msg){
@@ -37,18 +39,23 @@ DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
                 HttpCookie cookie1 = createHttpCookie("test2_tag1","test2_value1");
                 cookie1->setPropertySecure(true);
                 cookie1->setPropertyHttpOnly(true);
-                cookie1->setPropertyPath("/path123");
+                cookie1->setPropertyPath("path123");
                 //cookie1->setPropertyDomain("domain123");
-                cookie1->setPropertyExpires(createHttpDate(createCalendar()->getDateTime()));
+                Calendar c = createCalendar();//->getDateTime()
+                c->add(st(Calendar)::DayOfMonth,1);
+                printf("time zone is %d \n",st(TimeZone)::getZone());
+                setExpires = (c->toTimeMillis())/1000;
+
+                cookie1->setPropertyExpires(createHttpDate(c->getGmtDateTime()));
                 //cookie1->setPropertyMaxAge(100000);
 
 
-                HttpCookie cookie2 = createHttpCookie("test2_tag2","test2_value2");
+                //HttpCookie cookie2 = createHttpCookie("test2_tag2","test2_value2");
                 response->getHeader()->addCookie(cookie1);
-                response->getHeader()->addCookie(cookie2);
+                //response->getHeader()->addCookie(cookie2);
                 response->getHeader()->setResponseStatus(st(HttpStatus)::Ok);
                 w->write(response);
-                //count++;
+                count++;
               } else if(count == 1) {
                 //TODO
                 HttpEntity entity = msg->getEntity();
@@ -65,13 +72,24 @@ DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
                 }
 
                 auto keyvalue2 = lists->get(1);
-                //printf("key2 is %s,vaue2 is %s \n",keyvalue2->getKey()->toChars(),keyvalue2->getValue()->toChars());
-                if(!keyvalue2->getKey()->equals("test2_tag2")) {
-                    printf("---TestHttpResponseWriter Request Encode test3 [FAILED]---\n");
+
+                if(!keyvalue2->getKey()->equals("path")) {
+                    printf("---TestHttpResponseWriter Request Encode test3 [FAILED]---,keyvalue2 key is %s\n",keyvalue2->getKey()->toChars());
                 }
 
-                if(!keyvalue2->getValue()->equals("test2_value2")) {
-                    printf("---TestHttpResponseWriter Request Encode test4 [FAILED]---\n");
+                if(!keyvalue2->getValue()->equals("path123")) {
+                    printf("---TestHttpResponseWriter Request Encode test4 [FAILED]---,keyvalue2 value is %s \n",keyvalue2->getValue()->toChars());
+                }
+
+                auto keyvalue3 = lists->get(2);
+
+                if(!keyvalue3->getKey()->equals("expires")) {
+                    printf("---TestHttpResponseWriter Request Encode test5 [FAILED]---\n");
+                }
+
+                String expires = keyvalue3->getValue();
+                if(expires->toBasicLong() != setExpires) {
+                    printf("---TestHttpResponseWriter Request Encode test6 [FAILED]---,set is %ld,get is %ld\n",setExpires,expires->toBasicLong());
                 }
 
                 HttpResponse response = createHttpResponse();
@@ -79,6 +97,7 @@ DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
                 w->write(response);
                 //count = 0;
                 latch->countDown();
+                count = 0;
               }
               break;
           }
@@ -101,6 +120,7 @@ int main() {
   server->start();
   latch->await();
   server->close();
+  sleep(1);
   
   printf("---TestHttpResponseWriter cookie test100 [OK]---\n");
 }

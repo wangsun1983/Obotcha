@@ -30,7 +30,13 @@ Cipher _CipherCreator::getInstance(String param) {
         patternType = st(Cipher)::CFB8;
     } else if(pattern->equalsIgnoreCase(st(Cipher)::Cfb128Str)) {
         patternType = st(Cipher)::CFB128;
-    }
+    } else if(pattern->equalsIgnoreCase(st(Cipher)::Ofb128Str)) {
+        patternType = st(Cipher)::OFB128;
+    } else if(pattern->equalsIgnoreCase(st(Cipher)::Rsa3Str)) {
+        patternType = st(Cipher)::RSA3;
+    } else if(pattern->equalsIgnoreCase(st(Cipher)::Rsaf4Str)) {
+        patternType = st(Cipher)::RSAF4;
+    } 
 
     if(patternType == -1) {
         return nullptr;
@@ -57,6 +63,7 @@ Cipher _CipherCreator::getInstance(String param) {
 
     //get algorithm type
     String algorithm = params->get(0);
+    printf("algorithm is %s \n",algorithm->toChars());
     int algorithmType = -1;
     if(algorithm->equalsIgnoreCase(st(Cipher)::AesStr)) {
         algorithmType = st(Cipher)::CipherAES;

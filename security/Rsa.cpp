@@ -42,7 +42,8 @@ ByteArray _Rsa::doRsa(ByteArray inputdata,int mode /*Decrypt/Encrypt*/) {
 
     switch(getPadding()) {
         case PKCS1Padding:
-            encrypt_len = key_len - 11;
+            //encrypt_len = key_len - 11;
+            encrypt_len = key_len;
             paddingMode = RSA_PKCS1_PADDING;
         break;
 

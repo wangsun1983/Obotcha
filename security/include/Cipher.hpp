@@ -28,6 +28,8 @@ public:
 
     static const String DesStr;
     static const String RsaStr;
+    static const String Rsa3Str;
+    static const String Rsaf4Str;
 
     static const String CbcStr;
     static const String EcbStr;
@@ -71,7 +73,9 @@ public:
         CFB1,
         CFB8,
         CFB128,
-        OFB128
+        OFB128,
+        RSA3,
+        RSAF4,
     };
 
     virtual ByteArray encrypt(ByteArray in) = 0;

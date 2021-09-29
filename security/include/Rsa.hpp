@@ -22,10 +22,10 @@ public:
     ByteArray encrypt(ByteArray in);
     ByteArray decrypt(ByteArray in);
 
-    enum RsaKeyType {
-        RSA3 = RSA_3,
-        RSAF4 = RSA_F4,
-    };
+    //enum RsaKeyMode {
+    //    RSA3 = RSA_3,
+    //    RSAF4 = RSA_F4,
+    //};
 
 private:
     int prikey_encrypt(const unsigned char *in, int in_len,

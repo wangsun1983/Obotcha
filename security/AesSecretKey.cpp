@@ -40,7 +40,7 @@ int _AesSecretKey::getKeyLength() {
         return 16;
 
         case KeyAESOFB128:
-        //TODO
+        return 128;
         break;
     }
 
