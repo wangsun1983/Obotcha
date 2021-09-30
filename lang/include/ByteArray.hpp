@@ -20,7 +20,7 @@ public:
 
     explicit _ByteArray(int length);
 
-    explicit _ByteArray(const byte *data, uint32_t len);
+    explicit _ByteArray(const byte *data, uint32_t len,bool mapped = false);
 
     explicit _ByteArray(sp<_ByteArray> &, int start = 0, int len = 0);
 
@@ -59,6 +59,8 @@ public:
     int fill(byte v);
 
     int fill(int start, int length, byte v);
+
+    int fillFrom(byte *input,int start,int len);
 
     int append(const sp<_ByteArray> &);
 
@@ -105,6 +107,8 @@ private:
     bool isSafe;
 
     int mOriginalSize;
+
+    bool mMapped;
 };
 
 } // namespace obotcha

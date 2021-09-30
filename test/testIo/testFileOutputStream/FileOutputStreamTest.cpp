@@ -8,18 +8,16 @@
 
 using namespace obotcha;
 
-int fileoutput_trunc_test();
-int fileoutput_append_test();
-
-int main() {
+void fileoutput_base_test() {
     //writeline
     printf("---[FileOutputStream Test Start]--- \n");
 
     //bool _FileOutputStream::write(char c)
     while(1) {
-        File file = createFile("abc.txt");
+        File file = createFile("./tmp/base_test_1.txt");
+        file->createNewFile();
         FileOutputStream stream = createFileOutputStream(file);
-        stream->open(FileOpenType::Trunc);
+        stream->open(st(OutputStream)::Trunc);
         stream->write('a');
         stream->flush();
         stream->close();
@@ -37,18 +35,19 @@ int main() {
             break;
         }
 
-        file->removeAll();
+        //file->removeAll();
 
-        printf("---[TestFileOutputStream Test {write(char)} case3] [Success]--- \n");
+        printf("---[TestFileOutputStream Test {write(char)} case3] [OK]--- \n");
         break;
     }
 
     //bool _FileOutputStream::write(ByteArray buff)
     while(1) {
-        File file = createFile("abc.txt");
+        File file = createFile("./tmp/base_test_2.txt");
+        file->createNewFile();
         FileOutputStream stream = createFileOutputStream(file);
-        stream->open(FileOpenType::Trunc);
-        ByteArray b = createByteArray(createString("hello"));
+        stream->open(st(OutputStream)::Trunc);
+        ByteArray b = createString("hello")->toByteArray();
         stream->write(b);
         stream->flush();
         stream->close();
@@ -72,19 +71,20 @@ int main() {
             break;
         }
 
-        file->removeAll();
+        //file->removeAll();
 
-        printf("---[TestFileOutputStream Test {write(ByteArray)} case4] [Success]--- \n");
+        printf("---[TestFileOutputStream Test {write(ByteArray)} case4] [OK]--- \n");
         break;
     }
 
     //bool _FileOutputStream::write(ByteArray buff,long size)
     while(1) {
-        File file = createFile("abc.txt");
+        File file = createFile("./tmp/base_test_3.txt");
+        file->createNewFile();
         FileOutputStream stream = createFileOutputStream(file);
-        stream->open(FileOpenType::Trunc);
+        stream->open(st(OutputStream)::Trunc);
 
-        ByteArray b = createByteArray(createString("helloworld"));
+        ByteArray b = createString("helloworld")->toByteArray();
         stream->write(b,5);
         stream->flush();
         stream->close();
@@ -103,22 +103,23 @@ int main() {
         }
 
         String cc = content->toString();
-        if(!cc->equals("hello")) {
+        if(!cc->equals("world")) {
             printf("---[TestFileOutputStream Test {write(ByteArray,long)} case3] [FAILED]--- \n");
             break;
         }
 
-        file->removeAll();
+        //file->removeAll();
 
-        printf("---[TestFileOutputStream Test {write(ByteArray,long)} case4] [Success]--- \n");
+        printf("---[TestFileOutputStream Test {write(ByteArray,long)} case4] [OK]--- \n");
         break;
     }
 
     //bool _FileOutputStream::writeString(String s)
     while(1) {
-        File file = createFile("abc.txt");
+        File file = createFile("./tmp/base_test_4.txt");
+        file->createNewFile();
         FileOutputStream stream = createFileOutputStream(file);
-        stream->open(FileOpenType::Trunc);
+        stream->open(st(OutputStream)::Trunc);
         stream->writeString(createString("nihao,abc"));
         stream->flush();
         stream->close();
@@ -142,13 +143,9 @@ int main() {
             break;
         }
 
-        file->removeAll();
+        //file->removeAll();
 
-        printf("---[TestFileOutputStream Test {write(String)} case4] [Success]--- \n");
+        printf("---[TestFileOutputStream Test {write(String)} case4] [OK]--- \n");
         break;
     }
-
-    fileoutput_trunc_test();
-
-    fileoutput_append_test();
 }

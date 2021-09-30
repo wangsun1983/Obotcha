@@ -12,13 +12,13 @@ _FileDescriptor::_FileDescriptor(int fd) { _fd = fd; }
 uint64_t _FileDescriptor::hashcode() { return _fd; }
 
 int _FileDescriptor::close() {
-    int ret = 0;
     if (_fd != -1) {
-        ret = ::close(_fd);
+        if(::close(_fd) < 0) {
+            return -1;
+        }
         _fd = -1;
     }
-
-    return ret;
+    return 0;
 }
 
 _FileDescriptor::~_FileDescriptor() {

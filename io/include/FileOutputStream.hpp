@@ -46,6 +46,8 @@ private:
     String mPath;
 
     int fd;
+
+    bool isFdImport;
 };
 
 }

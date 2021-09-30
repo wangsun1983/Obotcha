@@ -25,11 +25,13 @@ _FileInputStream::_FileInputStream(const char *path)
 _FileInputStream::_FileInputStream(String path) {
     mPath = createString(path);
     this->fd = -1;
+    isFdImport = false;
 }
 
 _FileInputStream::_FileInputStream(int fd) {
     mPath = nullptr;
     this->fd = fd;
+    isFdImport = true;
 }
 
 ByteArray _FileInputStream::read(int size) {
@@ -89,6 +91,11 @@ void _FileInputStream::reset() {
     }
 }
 
-_FileInputStream::~_FileInputStream() { close(); }
+_FileInputStream::~_FileInputStream() { 
+    //if fd is transfer by called function,no need to close.
+    if(!isFdImport) {
+        close();
+    }
+}
 
 } // namespace obotcha

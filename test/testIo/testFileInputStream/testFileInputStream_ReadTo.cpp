@@ -9,15 +9,15 @@ using namespace obotcha;
 
 void testFileInputStreamReadTo() {
   while(1) {
-    File f = createFile("data.txt");
+    File f = createFile("./tmp/data.txt");
 
     FileInputStream stream = createFileInputStream(f);
     stream->open();
 
-    File f2 = createFile("read_to_case1.txt");
+    File f2 = createFile("./tmp/read_to_case1.txt");
     f2->removeAll();
 
-    int fd = open("read_to_case1.txt",O_CREAT|O_WRONLY|O_APPEND,0666);
+    int fd = open("./tmp/read_to_case1.txt",O_CREAT|O_WRONLY|O_APPEND,0666);
     ByteArray buff = createByteArray(32*1024);
     while(1) {
         int length = stream->readTo(buff);
@@ -26,12 +26,12 @@ void testFileInputStreamReadTo() {
         }
         write(fd,buff->toValue(),length);
     }
-    
+
     close(fd);
 
     Md md5 = createMd();
-    String v1 = md5->encrypt(createFile("data.txt"));
-    String v2 = md5->encrypt(createFile("read_case1.txt"));
+    String v1 = md5->encrypt(createFile("./tmp/data.txt"));
+    String v2 = md5->encrypt(createFile("./tmp/read_to_case1.txt"));
     if(v1 != v2) {
       printf("---testFileInputStreamReadTo test1 [FAILED]--- \n");
       break;

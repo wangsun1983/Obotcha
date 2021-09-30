@@ -7,11 +7,7 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/zipfilestream.o \
 	$(outtmp)/zipmemorystream.o \
 	$(outtmp)/filewatcher.o \
-	$(outtmp)/memoryfileinputstream.o \
-	$(outtmp)/memoryfileoutputstream.o \
 	$(outtmp)/libraryfileinputstream.o \
-	$(outtmp)/filenodereader.o \
-	$(outtmp)/filenodewriter.o \
 	$(outtmp)/epollfileobserver.o \
 	$(outtmp)/bytearrayreader.o \
 	$(outtmp)/bytearraywriter.o \
@@ -22,10 +18,13 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/asyncoutputchannel.o \
 	$(outtmp)/asyncoutputchannelpool.o \
 	$(outtmp)/filedescriptor.o \
+	$(outtmp)/mappedfile.o \
 	
-
 $(outtmp)/file.o :$(ioDir)/File.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/File.cpp -o $(outtmp)/file.o 
+
+$(outtmp)/mappedfile.o :$(ioDir)/MappedFile.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/MappedFile.cpp -o $(outtmp)/mappedfile.o 
 
 $(outtmp)/fileinputstream.o :$(ioDir)/FileInputStream.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileInputStream.cpp -o $(outtmp)/fileinputstream.o 
@@ -47,18 +46,6 @@ $(outtmp)/zipmemorystream.o :$(ioDir)/ZipMemoryStream.cpp
 
 $(outtmp)/filewatcher.o :$(ioDir)/FileWatcher.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileWatcher.cpp -o $(outtmp)/filewatcher.o 
-
-$(outtmp)/memoryfileinputstream.o :$(ioDir)/MemoryFileInputStream.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/MemoryFileInputStream.cpp -o $(outtmp)/memoryfileinputstream.o 
-
-$(outtmp)/memoryfileoutputstream.o :$(ioDir)/MemoryFileOutputStream.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/MemoryFileOutputStream.cpp -o $(outtmp)/memoryfileoutputstream.o 
-
-$(outtmp)/filenodereader.o :$(ioDir)/FileNodeReader.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileNodeReader.cpp -o $(outtmp)/filenodereader.o 
-
-$(outtmp)/filenodewriter.o :$(ioDir)/FileNodeWriter.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileNodeWriter.cpp -o $(outtmp)/filenodewriter.o 
 
 $(outtmp)/epollfileobserver.o :$(ioDir)/EPollFileObserver.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/EPollFileObserver.cpp -o $(outtmp)/epollfileobserver.o 

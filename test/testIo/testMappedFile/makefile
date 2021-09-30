@@ -37,7 +37,7 @@ sharelib = -Wl,-rpath=../../../out/lib/ \
 
 files =
 link =
-libname	= testFileInputStream
+libname	= testMappedFile
 
 everything : $(libname)
 

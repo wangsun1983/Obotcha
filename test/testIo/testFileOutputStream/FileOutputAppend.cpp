@@ -8,19 +8,20 @@
 
 using namespace obotcha;
 
-int fileoutput_append_test() {
-    
+void fileoutput_append_test() {
+
     //bool _FileOutputStream::write(char c)
     while(1) {
-        File file = createFile("abc.txt");
+        File file = createFile("./tmp/output_append_test.txt");
+        file->createNewFile();
         FileOutputStream stream = createFileOutputStream(file);
-        stream->open(FileOpenType::Trunc);
+        stream->open(st(OutputStream)::Trunc);
         stream->write('a');
         stream->flush();
         stream->close();
 
         FileOutputStream stream2 = createFileOutputStream(file);
-        stream2->open(FileOpenType::Append);
+        stream2->open(st(OutputStream)::Append);
         stream2->write('b');
         stream2->flush();
         stream2->close();
@@ -38,11 +39,11 @@ int fileoutput_append_test() {
             break;
         }
 
-        file->removeAll();
+        //file->removeAll();
 
-        printf("---[TestFileOutputStream Test {open(Append)} case3] [Success]--- \n");
+        printf("---[TestFileOutputStream Test {open(Append)} case3] [OK]--- \n");
         break;
     }
 
-    
+
 }

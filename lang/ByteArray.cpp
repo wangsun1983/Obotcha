@@ -36,6 +36,7 @@ _ByteArray::_ByteArray(sp<_ByteArray> &data, int start, int len) {
     memcpy(buff, data->toValue() + start, malloc_size);
     this->isSafe = unsafe;
     mOriginalSize = -1;
+    mMapped = false;
 }
 
 /**
@@ -52,6 +53,7 @@ _ByteArray::_ByteArray(int length) {
     mSize = length;
     this->isSafe = unsafe;
     mOriginalSize = -1;
+    mMapped = false;
 }
 
 /**
@@ -59,14 +61,20 @@ _ByteArray::_ByteArray(int length) {
  * @param data source data
  * @param len save data len
  */
-_ByteArray::_ByteArray(const byte *data, uint32_t len) {
+_ByteArray::_ByteArray(const byte *data, uint32_t len,bool mapped) {
     if (data == nullptr) {
         Trigger(InitializeException, "create ByteArray is nullptr");
     }
-    buff = (unsigned char *)malloc(len);
-
+    
+    mMapped = mapped;
     mSize = len;
-    memcpy(buff, data, len);
+    if(!mapped) {
+        buff = (unsigned char *)malloc(len);
+        memcpy(buff, data, len);
+    } else {
+        buff = (unsigned char *)data;
+    }
+    
     this->isSafe = unsafe;
     mOriginalSize = -1;
 }
@@ -98,7 +106,7 @@ byte &_ByteArray::operator[](int index) {
  * @brief ByteArray destruct function
  */
 _ByteArray::~_ByteArray() {
-    if (buff != nullptr) {
+    if (buff != nullptr && !mMapped) {
         free(buff);
         buff = nullptr;
     }
@@ -213,6 +221,15 @@ int _ByteArray::fill(int start, int length, byte v) {
 
     memset(&buff[start], v, length);
 
+    return 0;
+}
+
+int _ByteArray::fillFrom(byte *input,int start,int len) {
+    if ((start < 0) || (start + len > mSize)) {
+        Trigger(ArrayIndexOutOfBoundsException, "fill Stack Overflow");
+    }
+
+    memcpy(buff + start,input,len);
     return 0;
 }
 

@@ -3,7 +3,7 @@
 #include <errno.h>
 #include <limits.h>
 
-#include "FileNodeReader.hpp"
+#include "FileInputStream.hpp"
 #include "PosixMq.hpp"
 #include "System.hpp"
 #include "Error.hpp"
@@ -34,14 +34,19 @@ void _PosixMq::initParam(String name,int type,int msgsize,int maxmsgs) {
 }
 
 int _PosixMq::init() {
+    ByteArray readBuff = createByteArray(32);
     if(MAX_MSG_NUMS == -1) {
-        FileNodeReader reader = createFileNodeReader(createString("/proc/sys/fs/mqueue/msg_max"));
-        MAX_MSG_NUMS = reader->readInt();
+        FileInputStream reader = createFileInputStream("/proc/sys/fs/mqueue/msg_max");
+        reader->read(readBuff); 
+        MAX_MSG_NUMS = readBuff->toString()->toBasicInt();
     }
 
     if(MAX_MSG_SIZE == -1) {
-        FileNodeReader reader = createFileNodeReader(createString("/proc/sys/fs/mqueue/msgsize_max"));
-        MAX_MSG_SIZE = reader->readInt();
+        FileInputStream reader = createFileInputStream("/proc/sys/fs/mqueue/msgsize_max");
+        readBuff->clear();
+        reader->read(readBuff);
+
+        MAX_MSG_SIZE = readBuff->toString()->toBasicInt();
     }
 
     if(mMaxMsgs > MAX_MSG_NUMS) {

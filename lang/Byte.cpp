@@ -66,7 +66,7 @@ sp<_String> _Byte::toString(byte i) {
 
 sp<_Byte> _Byte::parseDecByte(const sp<_String> v) {
     try {
-        String pa = v->trimAll();
+        String pa = v->trimAll()->replaceAll(std::string("\n"),"")->replaceAll("\r","");
         int value = _Number::parseDecNumber(pa->getStdString());
         return createByte(value);
     } catch (int e) {
@@ -78,7 +78,7 @@ sp<_Byte> _Byte::parseDecByte(const sp<_String> v) {
 sp<_Byte> _Byte::parseHexByte(const sp<_String> v) {
     // check whether 0xaaa
     try {
-        String pa = v->trimAll();
+        String pa = v->trimAll()->replaceAll(std::string("\n"),"")->replaceAll("\r","");
         int value = _Number::parseHexNumber(pa->getStdString());
         return createByte(value);
     } catch (...) {
@@ -90,7 +90,7 @@ sp<_Byte> _Byte::parseHexByte(const sp<_String> v) {
 
 sp<_Byte> _Byte::parseOctByte(const sp<_String> v) {
     try {
-        String pa = v->trimAll();
+        String pa = v->trimAll()->replaceAll(std::string("\n"),"")->replaceAll("\r","");
         int value = _Number::parseOctNumber(pa->getStdString());
         return createByte(value);
     } catch (...) {
@@ -102,7 +102,7 @@ sp<_Byte> _Byte::parseOctByte(const sp<_String> v) {
 
 sp<_Byte> _Byte::parseBinaryByte(const sp<_String> v) {
     try {
-        String pa = v->trimAll();
+        String pa = v->trimAll()->replaceAll(std::string("\n"),"")->replaceAll("\r","");
         int value = _Number::parseBinaryNumber(pa->getStdString());
         return createByte(value);
     } catch (...) {
