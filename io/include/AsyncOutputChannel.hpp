@@ -18,9 +18,13 @@ DECLARE_CLASS(AsyncOutputChannel) {
 
     _AsyncOutputChannel(FileDescriptor fileDescriptor,
                         WriteCallback callback = nullptr, Handler h = nullptr);
+
     void write(ByteArray);
+
     void notifyWrite();
+    
     FileDescriptor getFileDescriptor();
+    
     void close();
 
   private:

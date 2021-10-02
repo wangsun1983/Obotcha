@@ -33,6 +33,8 @@ _Socket::_Socket(int v, InetAddress addr, SocketOption option) {
         return;
     }
 
+    mMutex = createMutex();
+
     Trigger(InitializeException, "ivalid type");
 }
 
@@ -41,6 +43,7 @@ _Socket::_Socket(FileDescriptor descriptor) {
     mOutput = nullptr;
     mSock = createSocketImpl(descriptor);
     type = Fd;
+    mMutex = createMutex();
 }
 
 void _Socket::setAsync(bool async) {
@@ -62,7 +65,11 @@ int _Socket::connect() { return mSock->connect(); }
 int _Socket::bind() { return mSock->bind(); }
 
 void _Socket::close() {
-    mSock->close();
+    AutoLock l(mMutex);
+    if (mSock != nullptr) {
+        mSock->close();
+        mSock = nullptr;
+    }
 
     if (mOutput != nullptr) {
         mOutput->close();
@@ -71,11 +78,12 @@ void _Socket::close() {
 
     if (mInput != nullptr) {
         mInput->close();
-        mOutput = nullptr;
+        mInput = nullptr;
     }
 }
 
 bool _Socket::isClosed() {
+    AutoLock l(mMutex);
     FileDescriptor fd = mSock->getFileDescriptor();
     if (fd != nullptr) {
         return fd->isClosed();

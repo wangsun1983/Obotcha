@@ -54,6 +54,7 @@ protected:
     SocketImpl mSock; 
     SocketInputStream mInput;
     SocketOutputStream mOutput;
+    Mutex mMutex;
 
 };
 

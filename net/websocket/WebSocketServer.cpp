@@ -44,8 +44,15 @@ int _WebSocketServer::start() {
 }
 
 int _WebSocketServer::close() {
-    mSocketMonitor->close();
-    mHttpServer->close();
+    if(mSocketMonitor != nullptr) {
+        mSocketMonitor->close();
+        mSocketMonitor = nullptr;
+    }
+
+    if(mHttpServer != nullptr) {
+        mHttpServer->close();
+        mHttpServer = nullptr;
+    }
     
     return 0;
 }

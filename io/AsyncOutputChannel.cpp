@@ -95,8 +95,12 @@ FileDescriptor _AsyncOutputChannel::getFileDescriptor() { return mFd; }
 
 void _AsyncOutputChannel::close() {
     AutoLock l(mMutex);
+    if(mDatas != nullptr) {
+        mDatas->clear();
+        mDatas = nullptr;
+    }
+
     isClosed = true;
-    mDatas->clear();
     st(AsyncOutputChannelPool)::getInstance()->remove(AutoClone(this));
 }
 

@@ -77,6 +77,7 @@ void _SocketOutputStream::close() {
     mSocket = nullptr;
     if (mChannel != nullptr) {
         mChannel->close();
+        mChannel = nullptr;
     }
 }
 
