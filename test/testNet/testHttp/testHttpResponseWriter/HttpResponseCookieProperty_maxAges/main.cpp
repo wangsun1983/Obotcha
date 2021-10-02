@@ -42,12 +42,12 @@ DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
                 cookie1->setPropertyPath("path123");
                 //cookie1->setPropertyDomain("domain123");
                 Calendar c = createCalendar();//->getDateTime()
-                c->add(st(Calendar)::DayOfMonth,1);
+                //c->add(st(Calendar)::DayOfMonth,1);
                 printf("time zone is %d \n",st(TimeZone)::getZone());
-                setExpires = (c->toTimeMillis())/1000;
+                setExpires = (c->toTimeMillis())/1000 + 10;
 
-                cookie1->setPropertyExpires(createHttpDate(c->getGmtDateTime()));
-                //cookie1->setPropertyMaxAge(100000);
+                //cookie1->setPropertyExpires(createHttpDate(c->getGmtDateTime()));
+                cookie1->setPropertyMaxAge(10);
 
 
                 //HttpCookie cookie2 = createHttpCookie("test2_tag2","test2_value2");
@@ -64,32 +64,33 @@ DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
                 
                 //printf("key1 is %s,vaue1 is %s \n",keyvalue1->getKey()->toChars(),keyvalue1->getValue()->toChars());
                 if(!keyvalue1->getKey()->equals("test2_tag1")) {
-                    printf("---TestHttpResponseWriter Request Encode test1 [FAILED]---\n");
+                    printf("---TestHttpResponseWriter Cookie Property MaxAges test1 [FAILED]---\n");
                 }
 
                 if(!keyvalue1->getValue()->equals("test2_value1")) {
-                    printf("---TestHttpResponseWriter Request Encode test2 [FAILED]---\n");
+                    printf("---TestHttpResponseWriter Cookie Property MaxAges test2 [FAILED]---\n");
                 }
 
                 auto keyvalue2 = lists->get(1);
 
                 if(!keyvalue2->getKey()->equals("path")) {
-                    printf("---TestHttpResponseWriter Request Encode test3 [FAILED]---,keyvalue2 key is %s\n",keyvalue2->getKey()->toChars());
+                    printf("---TestHttpResponseWriter Cookie Property MaxAges test3 [FAILED]---,keyvalue2 key is %s\n",keyvalue2->getKey()->toChars());
                 }
 
                 if(!keyvalue2->getValue()->equals("path123")) {
-                    printf("---TestHttpResponseWriter Request Encode test4 [FAILED]---,keyvalue2 value is %s \n",keyvalue2->getValue()->toChars());
+                    printf("---TestHttpResponseWriter Cookie Property MaxAges test4 [FAILED]---,keyvalue2 value is %s \n",keyvalue2->getValue()->toChars());
                 }
 
                 auto keyvalue3 = lists->get(2);
 
                 if(!keyvalue3->getKey()->equals("expires")) {
-                    printf("---TestHttpResponseWriter Request Encode test5 [FAILED]---\n");
+                    printf("---TestHttpResponseWriter Cookie Property MaxAges test5 [FAILED]---\n");
+                    break;
                 }
 
-                String expires = keyvalue3->getValue();
-                if(expires->toBasicLong() != setExpires) {
-                    printf("---TestHttpResponseWriter Request Encode test6 [FAILED]---,set is %ld,get is %ld\n",setExpires,expires->toBasicLong());
+                long expires = keyvalue3->getValue()->toBasicLong();
+                if(expires != setExpires) {
+                    printf("---TestHttpResponseWriter Cookie Property MaxAges test7 [FAILED]---,set is %ld,maxage is %ld\n",setExpires,expires);
                 }
 
                 HttpResponse response = createHttpResponse();
@@ -122,5 +123,5 @@ int main() {
   server->close();
   sleep(1);
   
-  printf("---TestHttpResponseWriter cookie test100 [OK]---\n");
+  printf("---TestHttpResponseWriter Cookie Property MaxAges test100 [OK]---\n");
 }

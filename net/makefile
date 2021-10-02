@@ -56,6 +56,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpresourcemanager.o \
 		$(outtmp)/httpresponseentity.o \
 		$(outtmp)/websocketserver.o \
+		$(outtmp)/websocketserverbuilder.o \
 		$(outtmp)/websocketclient.o \
 		$(outtmp)/websocketprotocol.o \
 		$(outtmp)/websocketframe.o \
@@ -265,6 +266,9 @@ $(outtmp)/httpsession.o :$(netDir)/http/HttpSession.cpp
 
 $(outtmp)/websocketserver.o :$(netDir)/websocket/WebSocketServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketServer.cpp -o $(outtmp)/websocketserver.o 
+
+$(outtmp)/websocketserverbuilder.o :$(netDir)/websocket/WebSocketServerBuilder.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketServerBuilder.cpp -o $(outtmp)/websocketserverbuilder.o 
 
 $(outtmp)/websocketclient.o :$(netDir)/websocket/WebSocketClient.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/websocket/WebSocketClient.cpp -o $(outtmp)/websocketclient.o 

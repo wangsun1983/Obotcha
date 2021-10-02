@@ -23,8 +23,6 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpLinkerManager) {
 public:
-    static sp<_HttpLinkerManager> getInstance();
-
     void addLinker(sp<_HttpLinker>);
 
     HttpLinker getLinker(Socket);
@@ -32,16 +30,15 @@ public:
     HttpLinker removeLinker(Socket);
     
     void clear();
+
+    _HttpLinkerManager();
+
+    ~_HttpLinkerManager();
     
 private:
-    static std::once_flag s_flag;
-    static sp<_HttpLinkerManager> mInstance;
-    
     Mutex mMutex;
 
     HashMap<Socket,HttpLinker> mClients;
-
-    _HttpLinkerManager();
 
     Random mRand;
 };

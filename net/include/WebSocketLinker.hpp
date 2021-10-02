@@ -5,24 +5,14 @@
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
-#include "InetAddress.hpp"
-#include "ByteArray.hpp"
-#include "ByteArrayReader.hpp"
-#include "HttpHeader.hpp"
-#include "ByteArray.hpp"
-#include "ByteRingArray.hpp"
-#include "Mutex.hpp"
-#include "Condition.hpp"
-#include "AtomicBoolean.hpp"
 #include "Socket.hpp"
-#include "SocketOutputStream.hpp"
-#include "WebSocketListener.hpp"
+#include "WebSocketComposer.hpp"
+#include "WebSocketParser.hpp"
+#include "WebSocketPermessageDeflate.hpp"
 
 namespace obotcha {
 
-class _WebSocketComposer;
-class _WebSocketParser;
-class _WebSocketPermessageDeflate;
+class _WebSocketListener;
 
 DECLARE_CLASS(WebSocketLinker) {
 public:

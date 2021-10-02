@@ -2,21 +2,9 @@
 
 namespace obotcha {
 
-std::once_flag _HttpLinkerManager::s_flag;
-sp<_HttpLinkerManager> _HttpLinkerManager::mInstance;
-
 _HttpLinkerManager::_HttpLinkerManager() {
     mClients = createHashMap<Socket, HttpLinker>();
     mMutex = createMutex("http client manager");
-}
-
-sp<_HttpLinkerManager> _HttpLinkerManager::getInstance() {
-    std::call_once(s_flag, [&]() {
-        _HttpLinkerManager *p = new _HttpLinkerManager();
-        p->mInstance.set_pointer(p);
-    });
-
-    return mInstance;
 }
 
 HttpLinker _HttpLinkerManager::getLinker(Socket s) {
@@ -33,13 +21,21 @@ HttpLinker _HttpLinkerManager::removeLinker(Socket s) {
     AutoLock l(mMutex);
     HttpLinker ret = mClients->get(s);
     mClients->remove(s);
-
     return ret;
 }
 
 void _HttpLinkerManager::clear() {
     AutoLock l(mMutex);
+    //mClients->clear();
+    mClients->foreach([](Socket s,HttpLinker l){
+        l->close();
+        return Global::Continue;
+    });
     mClients->clear();
+}
+
+ _HttpLinkerManager::~_HttpLinkerManager() {
+    clear();
 }
 
 } // namespace obotcha

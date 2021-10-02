@@ -6,33 +6,26 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
-#include "File.hpp"
-#include "String.hpp"
-#include "ByteArray.hpp"
-#include "HttpMultiPart.hpp"
 #include "HashMap.hpp"
-#include "WebSocketLinker.hpp"
+#include "Socket.hpp"
 
 namespace obotcha {
 
+class _WebSocketLinker;
+
 DECLARE_CLASS(WebSocketLinkerManager) {
 public:
-    static WebSocketLinkerManager getInstance();
-    
-    WebSocketLinker addLinker(Socket,int version);
+    _WebSocketLinkerManager();
 
-    WebSocketLinker getLinker(Socket);
+    sp<_WebSocketLinker> addLinker(Socket,int version);
+
+    sp<_WebSocketLinker> getLinker(Socket);
   
-    void removeLinker(WebSocketLinker);
+    void removeLinker(sp<_WebSocketLinker>);
 
 private:
-    static std::once_flag s_flag;
-    static WebSocketLinkerManager mInstance;
-   
     Mutex mMutex;
-    HashMap<Socket,WebSocketLinker> mClients;
-
-   _WebSocketLinkerManager();
+    HashMap<Socket,sp<_WebSocketLinker>> mClients;
 };
 
 

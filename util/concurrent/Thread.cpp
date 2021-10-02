@@ -24,6 +24,8 @@ void _Thread::doThreadExit(_Thread *thread) {
         thread->mStatus = st(Thread)::Complete;
         thread->mJoinCondition->notifyAll();
     }
+    auto tempPool = thread->mPoolObj;
+    thread->mPoolObj = nullptr;
     pthread_detach(thread->getThreadId());
     mThreads->remove(thread->getThreadId());
 }
@@ -66,6 +68,8 @@ void _Thread::threadInit(String name, Runnable run) {
     mMutex = createMutex();
     mSleepCondition = createCondition();
     mJoinCondition = createCondition();
+
+    mPoolObj = mThreads;
 }
 
 String _Thread::getName() { return mName; }

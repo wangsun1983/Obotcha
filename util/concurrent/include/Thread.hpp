@@ -137,6 +137,8 @@ DECLARE_CLASS(Thread) {
 
     void threadSleep(unsigned long millseconds);
     void threadInit(String name, Runnable run);
+
+    ThreadLocal<Thread> mPoolObj; //save thread local to prevent pool being realsed before all thread exit!!
 };
 
 } // namespace obotcha

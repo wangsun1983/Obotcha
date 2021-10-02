@@ -8,27 +8,16 @@
 #include "WebSocketHybi13Composer.hpp"
 #include "WebSocketHybi13Parser.hpp"
 #include "WebSocketLinker.hpp"
+#include "WebSocketListener.hpp"
 #include "AutoLock.hpp"
 #include "Log.hpp"
 
 namespace obotcha {
 
 //--------------------WebSocketLinkerManager-----------------
-std::once_flag _WebSocketLinkerManager::s_flag;
-WebSocketLinkerManager _WebSocketLinkerManager::mInstance;
-
 _WebSocketLinkerManager::_WebSocketLinkerManager() {
     mClients = createHashMap<Socket, WebSocketLinker>();
     mMutex = createMutex();
-}
-
-WebSocketLinkerManager _WebSocketLinkerManager::getInstance() {
-    std::call_once(s_flag, [&]() {
-        _WebSocketLinkerManager *p = new _WebSocketLinkerManager();
-        p->mInstance.set_pointer(p);
-    });
-
-    return mInstance;
 }
 
 WebSocketLinker _WebSocketLinkerManager::addLinker(Socket sock, int version) {

@@ -24,7 +24,7 @@ namespace obotcha {
 void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
     switch (event) {
     case SocketEvent::Message: {
-        HttpLinker info = st(HttpLinkerManager)::getInstance()->getLinker(r);
+        HttpLinker info = mLinkerManager->getLinker(r);
         if (info == nullptr) {
             LOG(ERROR) << "http linker already removed";
             return;
@@ -34,7 +34,7 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
             // some thing may be wrong(overflow)
             mHttpListener->onHttpMessage(SocketEvent::InternalError, info,
                                          nullptr, nullptr);
-            st(HttpLinkerManager)::getInstance()->removeLinker(r);
+            mLinkerManager->removeLinker(r);
             r->close();
             return;
         }
@@ -61,14 +61,14 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
                 info->setSSLInfo(ssl);
             }
         }
-        st(HttpLinkerManager)::getInstance()->addLinker(info);
+        mLinkerManager->addLinker(info);
         mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
     } break;
 
     case SocketEvent::Disconnect: {
-        HttpLinker info = st(HttpLinkerManager)::getInstance()->getLinker(r);
+        HttpLinker info = mLinkerManager->getLinker(r);
         mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
-        st(HttpLinkerManager)::getInstance()->removeLinker(r);
+        mLinkerManager->removeLinker(r);
     }
     }
 }
@@ -80,6 +80,7 @@ _HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option) {
     mSSLServer = nullptr;
     mAddress = addr;
     mOption = option;
+    mLinkerManager = createHttpLinkerManager();
 }
 
 void _HttpServer::start() {
@@ -136,7 +137,10 @@ void _HttpServer::close() {
         mSSLServer = nullptr;
     }
 
-    st(HttpLinkerManager)::getInstance()->clear();
+    if(mLinkerManager != nullptr) {
+        mLinkerManager->clear();
+        mLinkerManager = nullptr;
+    }
 }
 
 _HttpServer::~_HttpServer() { close(); }

@@ -43,7 +43,7 @@ sharelib = -Wl,-rpath=../../../../../out/lib/ \
 
 files =
 link =
-libname	= testWebScoektServerSimpleConnect
+libname	= testHttpServer
 
 everything : $(libname)
 

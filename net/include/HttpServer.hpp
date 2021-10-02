@@ -22,6 +22,7 @@
 #include "SocketMonitor.hpp"
 #include "HttpListener.hpp"
 #include "HttpOption.hpp"
+#include "HttpLinkerManager.hpp"
 
 namespace obotcha {
 
@@ -58,6 +59,8 @@ private:
     InetAddress mAddress;
 
     HttpOption mOption;
+
+    HttpLinkerManager mLinkerManager;
 
     bool isSSl;
 };

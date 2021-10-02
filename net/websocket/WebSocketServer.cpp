@@ -16,23 +16,15 @@
 namespace obotcha {
 
 //-----WebSocketServer-----
-_WebSocketServer::_WebSocketServer(InetAddress addr,WebSocketOption wsoption,HttpOption httpoption) {
-    int threadnum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
+_WebSocketServer::_WebSocketServer(int threadnum) {
     mSocketMonitor = createSocketMonitor(threadnum);
-    mAddress = addr;
     mHttpServer = nullptr;
-    mWsOption = wsoption;
-    mHttpOption = httpoption;
-    mListenersLock = createMutex();
     mWsListeners = createHashMap<String,WebSocketListener>();
+    mLinkerManager = createWebSocketLinkerManager();
 }
 
 int _WebSocketServer::bind(String path,WebSocketListener l) {
-    {
-        AutoLock lock(mListenersLock);
-        mWsListeners->put(path,l);
-    }
-
+    mWsListeners->put(path,l);
     return 0;
 }
 
@@ -59,8 +51,7 @@ int _WebSocketServer::close() {
 }
 
 void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
-    WebSocketLinker client =
-        st(WebSocketLinkerManager)::getInstance()->getLinker(s);
+    WebSocketLinker client = mLinkerManager->getLinker(s);
 
     WebSocketListener listener = client->getWebSocketListener();
     if(listener == nullptr) {
@@ -94,7 +85,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                     case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE: {
                         mSocketMonitor->remove(client->getSocket());
                         client->getSocket()->close();
-                        st(WebSocketLinkerManager)::getInstance()->removeLinker(client);
+                        mLinkerManager->removeLinker(client);
                         listener->onDisconnect(client);
                     }
                     break;
@@ -113,7 +104,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
 
         case SocketEvent::Disconnect: {
             if(client != nullptr) {
-                st(WebSocketLinkerManager)::getInstance()->removeLinker(client);
+                mLinkerManager->removeLinker(client);
                 listener->onDisconnect(client);
             } else {
                 LOG(ERROR)<<"client is already remove!!!";
@@ -129,11 +120,7 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,sp<_HttpRe
             HttpHeader header = request->getHeader();
             String path = header->getUrl()->getPath();
 
-            WebSocketListener listener = nullptr;
-            {
-                AutoLock l(mListenersLock);
-                listener = mWsListeners->get(path);
-            }
+            WebSocketListener listener = mWsListeners->get(path);
             
             if(listener == nullptr || path == nullptr) {
                 LOG(ERROR)<<"Unwanted websocket connection";
@@ -149,12 +136,12 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,sp<_HttpRe
                 // remove fd from http epoll
                 mHttpServer->deMonitor(client->getSocket());
 
-                while(st(WebSocketLinkerManager)::getInstance()->getLinker(client->getSocket())!= nullptr) {
+                while(mLinkerManager->getLinker(client->getSocket())!= nullptr) {
                     LOG(INFO)<<"websocket client is not removed";
                     usleep(1000*5);
                 }
                 
-                WebSocketLinker wsClient = st(WebSocketLinkerManager)::getInstance()->addLinker(client->getSocket(),
+                WebSocketLinker wsClient = mLinkerManager->addLinker(client->getSocket(),
                                                                     version->toBasicInt());
 
                 wsClient->setProtocols(header->getValue(st(HttpHeader)::SecWebSocketProtocol));
