@@ -14,9 +14,12 @@
 #include "File.hpp"
 #include "FileOutputStream.hpp"
 #include "AtomicInteger.hpp"
-
+#include "WebSocketServerBuilder.hpp"
+#include "CountDownLatch.hpp"
 
 using namespace obotcha;
+
+CountDownLatch latch = createCountDownLatch(1);
 
 DECLARE_CLASS(MyWsListener) IMPLEMENTS(WebSocketListener) {
 public:
@@ -25,21 +28,24 @@ public:
     }
 
     int onData(WebSocketFrame message,sp<_WebSocketLinker> client) {
-        //String msg = message->getMessage();
-        //printf("msg is %s \n",msg->toChars());
-        ByteArray data = message->getData();
-        printf("path is %s ,msg is %s \n",client->getPath()->toChars(),data->toString()->toChars());
+        String data = message->getData()->toString();
+        printf("data is %s \n",data->toChars());
+        if(!data->equals("Hello, World")) {
+            printf("---WebSocketServer Simple Connect test1 [FAILED]--- \n");
+        }
+        latch->countDown();
+
         return 0;
     }
 
     int onConnect(WebSocketLinker client) {
         //connectCount->incrementAndGet();
-        printf("on connect");
+        printf("on connect \n");
         return 0;
     }
 
     int onDisconnect(WebSocketLinker client) {
-        printf("on disconnect");
+        printf("on disconnect \n");
         return 0;
     }
 
@@ -59,12 +65,17 @@ int main() {
 
     
     InetAddress address = createInetAddress(1114);
-    WebSocketServer server = createWebSocketServer(address);
+    WebSocketServer server = createWebSocketServerBuilder()
+                            ->setInetAddr(address)
+                            ->addListener("mytest",l)
+                            ->addListener("mytest2",l)
+                            ->build();
 
-    server->bind("mytest",l);
-    server->bind("mytest2",l);
     server->start();
 
-    while(1) {sleep(100);}
+    latch->await();
     
+    printf("---WebSocketServer Simple Connect test100 [OK]--- \n");
+
+    server->close();
 }

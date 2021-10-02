@@ -173,6 +173,7 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,sp<_HttpRe
                 
                 mSocketMonitor->bind(client->getSocket(),AutoClone<SocketListener>(this));
                 //mWsListener->onConnect(wsClient);
+                listener->onConnect(wsClient);
                 wsClient->setWebSocketListener(listener);
                 wsClient->setPath(path);
 

@@ -14,13 +14,16 @@
 #include "File.hpp"
 #include "FileOutputStream.hpp"
 #include "AtomicInteger.hpp"
-
+#include "CountDownLatch.hpp"
+#include "WebSocketServerBuilder.hpp"
 
 using namespace obotcha;
 
+CountDownLatch latch = createCountDownLatch(1024*32);
+
+AtomicInteger messageCount = createAtomicInteger(0);
 AtomicInteger connectCount = createAtomicInteger(0);
 AtomicInteger disconnectCount = createAtomicInteger(0);
-AtomicInteger messageCount = createAtomicInteger(0);
 
 DECLARE_CLASS(MyWsListener) IMPLEMENTS(WebSocketListener) {
 public:
@@ -28,24 +31,23 @@ public:
         
     }
 
-    int onMessage(WebSocketLinker client,WebSocketFrame message) {
+    int onData(WebSocketFrame message,sp<_WebSocketLinker> client) {
         messageCount->incrementAndGet();
-        //String msg = message->getMessage();
-        //printf("msg is %s \n",msg->toChars());
-        return 0;
-    }
-
-    int onData(WebSocketLinker client,WebSocketFrame message) {
+        if(!message->getData()->toString()->equals("Hello, World")) {
+            printf("---WebSocketServer Simple Count test10 [FAILED]--- \n");
+        }
         return 0;
     }
 
     int onConnect(WebSocketLinker client) {
+        //printf("onConnect \n");
         connectCount->incrementAndGet();
         return 0;
     }
 
     int onDisconnect(WebSocketLinker client) {
         disconnectCount->incrementAndGet();
+        latch->countDown();
         return 0;
     }
 
@@ -63,14 +65,27 @@ public:
 int main() {
     MyWsListener l = createMyWsListener();
 
-    WebSocketServer server = createWebSocketServer();
-    InetAddress address = createInetAddress("192.168.1.9",1111);
+    InetAddress address = createInetAddress(1111);
     
-    server->bind(address,"/mytest",l);
-    server->start();
+    WebSocketServer server = createWebSocketServerBuilder()
+                            ->setInetAddr(address)
+                            ->addListener("mytest",l)
+                            ->build();
 
-    sleep(100);
-    printf("connectCount is %d,disconnectCount is %d,messageCount is %d \n",connectCount->get(),disconnectCount->get(),messageCount->get());
-    sleep(1);
-    
+    server->start();
+    latch->await();
+    server->close();
+    if(connectCount->get() != 1024*32) {
+        printf("---WebSocketServer Simple Count test1 [FAILED]---,connectCount is %d \n",connectCount->get());
+    }
+
+    if(disconnectCount->get() != 1024*32) {
+        printf("---WebSocketServer Simple Count test2 [FAILED]---,disconnectCount is %d \n",disconnectCount->get());
+    }
+
+    if(messageCount->get() != 1024*32) {
+        printf("---WebSocketServer Simple Count test3 [FAILED]---,messageCount is %d \n",messageCount->get());
+    }
+
+    printf("---WebSocketServer Simple Count test100 [OK]--- \n");
 }
