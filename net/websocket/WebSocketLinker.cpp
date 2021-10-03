@@ -75,6 +75,7 @@ sp<_WebSocketPermessageDeflate> _WebSocketLinker::getDeflater() {
 
 void _WebSocketLinker::setDeflater(sp<_WebSocketPermessageDeflate> d) {
     mDeflate = d;
+    this->mComposer->setDeflate(d);
 }
 
 void _WebSocketLinker::setWebSocketListener(sp<_WebSocketListener> l) {
