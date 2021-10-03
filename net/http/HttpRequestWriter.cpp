@@ -194,7 +194,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
                     createFileInputStream(partFile->getHttpFile()->getFile());
                 stream->open();
                 ByteArray readBuff = createByteArray(1024 * 16);
-                int index = 0;
+                //int index = 0;
                 while (1) {
                     // int count = stream->read(index,readBuff);
                     // if(count == 0) {

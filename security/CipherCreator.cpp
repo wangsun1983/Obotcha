@@ -64,39 +64,39 @@ Cipher _CipherCreator::getInstance(String param) {
     //get algorithm type
     String algorithm = params->get(0);
     printf("algorithm is %s \n",algorithm->toChars());
-    int algorithmType = -1;
+    //int algorithmType = -1;
     if(algorithm->equalsIgnoreCase(st(Cipher)::AesStr)) {
-        algorithmType = st(Cipher)::CipherAES;
+        //algorithmType = st(Cipher)::CipherAES;
         Aes c = createAes();
         c->setPadding(paddingType);
         c->setPattern(patternType);
         return (Cipher)c;
     } if(algorithm->equalsIgnoreCase(st(Cipher)::Aes128Str)) {
-        algorithmType = st(Cipher)::CipherAES128;
+        //algorithmType = st(Cipher)::CipherAES128;
         Aes c = createAes();
         c->setPadding(paddingType);
         c->setPattern(patternType);
         return (Cipher)c;
     } else if(algorithm->equalsIgnoreCase(st(Cipher)::Aes192Str)) {
-        algorithmType = st(Cipher)::CipherAES192;
+        //algorithmType = st(Cipher)::CipherAES192;
         Aes c = createAes();
         c->setPadding(paddingType);
         c->setPattern(patternType);
         return (Cipher)c;
     } else if(algorithm->equalsIgnoreCase(st(Cipher)::Aes256Str)) {
-        algorithmType = st(Cipher)::CipherAES256;
+        //algorithmType = st(Cipher)::CipherAES256;
         Aes c = createAes();
         c->setPadding(paddingType);
         c->setPattern(patternType);
         return (Cipher)c;
     } else if(algorithm->equalsIgnoreCase(st(Cipher)::DesStr)) {
-        algorithmType = st(Cipher)::CipherDES;
+        //algorithmType = st(Cipher)::CipherDES;
         Des c = createDes();
         c->setPadding(paddingType);
         c->setPattern(patternType);
         return (Cipher)c;
     } else if(algorithm->equalsIgnoreCase(st(Cipher)::RsaStr)) {
-        algorithmType = st(Cipher)::CipherRSA;
+        //algorithmType = st(Cipher)::CipherRSA;
         Rsa c = createRsa();
         c->setPadding(paddingType);
         c->setPattern(patternType);

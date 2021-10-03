@@ -140,7 +140,7 @@ void _HttpCacheControl::import(String value) {
 }
 
 void _HttpCacheControl::import(sp<_HttpHeader> headers) {
-    bool canUseHeaderValue = true;
+    //bool canUseHeaderValue = true;
     String value = headers->getValue(st(HttpHeader)::CacheControl);
     import(value);
 }

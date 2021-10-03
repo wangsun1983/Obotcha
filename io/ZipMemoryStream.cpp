@@ -76,8 +76,7 @@ ByteArray _ZipMemoryStream::decompress(ByteArray in, int flush_mode) {
         mDecompressStream.avail_out = ZIP_DECOMPRESS_BUFF_SIZE;
         mDecompressStream.next_out = zipBuff;
 
-        int ret = inflate(&mDecompressStream, Z_SYNC_FLUSH);
-
+        inflate(&mDecompressStream, Z_SYNC_FLUSH);
         int size = ZIP_COMPRESS_BUFF_SIZE - mDecompressStream.avail_out;
         // out->append(zipBuff,size);
         if (out == nullptr) {

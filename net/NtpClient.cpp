@@ -46,7 +46,7 @@ long _NtpClient::get() {
     generateNtpPacket(mNtpPacket);
 
     ByteArray packet = createByteArray((byte *)mNtpPacket, NTP_DATA_SIZE);
-    int ret = mSock->getOutputStream()->write(packet);
+    mSock->getOutputStream()->write(packet);
 
     ByteArray pack = createByteArray(1024 * 4);
     int len = mSock->getInputStream()->read(pack);

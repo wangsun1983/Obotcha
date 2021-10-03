@@ -13,7 +13,7 @@ namespace obotcha {
 void _EPollFileObserver::run() {
     struct epoll_event events[mSize];
     memset(events, 0, sizeof(struct epoll_event) * mSize);
-    byte readbuff[st(EPollFileObserver)::DefaultBufferSize];
+    //byte readbuff[st(EPollFileObserver)::DefaultBufferSize];
 
     while (1) {
         // printf("observer run start \n");
