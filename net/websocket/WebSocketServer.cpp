@@ -98,7 +98,11 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                     break;
 
                     default:
-                        listener->onData(frame,client);
+                        //python client will send a null data when finish sending file.
+                        //add a null data check
+                        if(frame->getData() != nullptr) {
+                            listener->onData(frame,client);
+                        }
                 }
                 return Global::Continue;
             });
