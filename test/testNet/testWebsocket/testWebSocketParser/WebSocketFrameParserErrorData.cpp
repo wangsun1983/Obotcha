@@ -46,4 +46,5 @@ int testFrameParserException() {
   }
 
   printf("testFrameParserException OK \n");
+  return 0;
 }

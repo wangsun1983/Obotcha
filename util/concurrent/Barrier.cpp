@@ -34,7 +34,7 @@ int _Barrier::await(long v) {
     if (mBarrierNums == 0) {
         cond->notifyAll();
     } else {
-        int ret = cond->wait(mutex, v);
+        cond->wait(mutex, v);
         if (isDestroy) {
             Trigger(InterruptedException, "barrier destroyed");
         }

@@ -32,6 +32,8 @@ public:
 
     static int myPid();
 
+    static int myTid();
+
     static void closeOnExit(Closeable);
 
 private:

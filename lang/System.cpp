@@ -2,6 +2,7 @@
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <sys/syscall.h>
 
 #include "AutoLock.hpp"
 #include "System.hpp"
@@ -73,6 +74,8 @@ void _System::getTimeVal(long timeInterval, struct timeval *tv) {
 }
 
 int _System::myPid() { return getpid(); }
+
+int _System::myTid() { return syscall(SYS_gettid);}
 
 void _System::closeOnExit(Closeable c) {
     AutoLock l(mMutex);

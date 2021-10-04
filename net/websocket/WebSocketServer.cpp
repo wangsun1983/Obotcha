@@ -110,7 +110,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
         break;
 
         case SocketEvent::Connect:
-        //TODO
+            //nothing,connect info is send to client by onHttpMessage
         break;
 
         case SocketEvent::Disconnect: {

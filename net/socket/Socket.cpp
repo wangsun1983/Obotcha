@@ -18,6 +18,7 @@ _Socket::_Socket(int v, InetAddress addr, SocketOption option) {
     mInput = nullptr;
     mOutput = nullptr;
     type = v;
+    mMutex = createMutex();
 
     switch (v) {
     case Tcp:
@@ -32,9 +33,6 @@ _Socket::_Socket(int v, InetAddress addr, SocketOption option) {
         mSock = createLocalSocketImpl(addr, option);
         return;
     }
-
-    mMutex = createMutex();
-
     Trigger(InitializeException, "ivalid type");
 }
 
@@ -84,12 +82,7 @@ void _Socket::close() {
 
 bool _Socket::isClosed() {
     AutoLock l(mMutex);
-    FileDescriptor fd = mSock->getFileDescriptor();
-    if (fd != nullptr) {
-        return fd->isClosed();
-    }
-
-    return false;
+    return mSock == nullptr;
 }
 
 InputStream _Socket::getInputStream() {

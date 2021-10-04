@@ -55,8 +55,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                         AutoLock l(monitor->mMutex);
 
                         if (monitor->mThreadNum > 1) {
-                            task = monitor->mThreadLocalTasks->get(index)
-                                       ->takeFirst();
+                            task = monitor->mThreadLocalTasks->get(index)->takeFirst();
                         }
                         if (task == nullptr) {
                             monitor->mCurrentSockets[index] = nullptr;
@@ -68,37 +67,44 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
 
                             if (monitor->mThreadNum > 1) {
                                 for (int i = 0; i < monitor->mThreadNum; i++) {
-                                    if (monitor->mCurrentSockets[i] ==
-                                        task->sock) {
-                                        monitor->mThreadLocalTasks->get(i)
-                                            ->putLast(task);
+                                    if (monitor->mCurrentSockets[i] == task->sock) {
+                                        monitor->mThreadLocalTasks->get(i)->putLast(task);
                                         task = nullptr;
                                         break;
                                     }
                                 }
 
                                 if (task != nullptr) {
-                                    monitor->mCurrentSockets[index] =
-                                        task->sock;
+                                    monitor->mCurrentSockets[index] = task->sock;
                                 }
                             }
                         }
                     }
-
+                    
+                    //Socket will be closed directly in websocket server.
+                    //We should check whether socket is still connected
+                    //to prevent nullpoint exception
                     if (task != nullptr) {
+                        if(task->sock->isClosed()) {
+                            task = nullptr;
+                            continue;
+                        }
+
                         SocketListener listener = nullptr;
                         {
                             AutoLock l(monitor->mListenerMutex);
                             listener = monitor->mListeners->get(
                                 task->sock->getFileDescriptor()->getFd());
+                            
                         }
                         if (listener != nullptr) {
                             listener->onSocketMessage(task->event, task->sock,
                                                       task->data);
-                            if (task->event == st(SocketListener)::Disconnect) {
-                                monitor->remove(task->sock);
-                                task->sock->close();
-                            }
+                        }
+                        
+                        if (task->event == st(SocketListener)::Disconnect) {
+                            monitor->remove(task->sock);
+                            task->sock->close();
                         }
                         task = nullptr;
                     }

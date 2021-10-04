@@ -127,7 +127,7 @@ int testFrameParser() {
       const char *payload = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin hendrerit ornare tortor ut euismod. Nunc finibus convallis sem, at imperdiet ligula commodo id. Nam bibendum nec augue in posuere mauris.";
       uint16_t length = strlen(payload);
       char *payload_copy = (char *)WSS_copy((void *)payload, length);
-      char *payload_frame = (char *)malloc((2+2+4+length)*sizeof(char));
+      char payload_frame[(2+2+4+length)*sizeof(char)];
       uint16_t len = htons(length);
       memcpy(payload_frame, header, 2);
       memcpy(payload_frame+2, &len, 2);
@@ -153,6 +153,7 @@ int testFrameParser() {
         printf("testFrameParser case3 frame check failed frame is %s \n",frame->getData()->toString()->toChars());
         return -1;
       }
+      free(payload_copy);
   }
 
   //case4
@@ -161,7 +162,9 @@ int testFrameParser() {
     const char *header = "\x81\xFF";
     const char *key = "\x37\xfa\x21\x3d";
     const char *p = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin hendrerit ornare tortor ut euismod. Nunc finibus convallis sem, at imperdiet ligula commodo id. Nam bibendum nec augue in posuere mauris.";
-    char *payload = (char*)malloc(66001);
+    char payload[66001];
+    memset(payload,0,66001);
+
     size_t plen = strlen(p);
     size_t poff = 0;
     while(poff != 66000) {
@@ -171,7 +174,7 @@ int testFrameParser() {
 
     uint64_t length = strlen(payload);
     char *payload_copy = (char *)WSS_copy((void *)payload, length);
-    char *payload_frame = (char *)malloc((2+sizeof(uint64_t)+4+length)*sizeof(char));
+    char payload_frame[(2+sizeof(uint64_t)+4+length)*sizeof(char)];//(char *)malloc((2+sizeof(uint64_t)+4+length)*sizeof(char));
     uint64_t len = htons64(length);
     memcpy(payload_frame, header, 2);
     memcpy(payload_frame+2, &len, sizeof(uint64_t));
@@ -197,6 +200,7 @@ int testFrameParser() {
       printf("testFrameParser case4 frame check failed frame is %s \n",frame->getData()->toString()->toChars());
       return -1;
     }
+    free(payload_copy);
   }
 
   //case6
@@ -344,4 +348,6 @@ int testFrameParser() {
   }
 
   printf("testFrameParser OK \n");
+
+  return 0;
 }

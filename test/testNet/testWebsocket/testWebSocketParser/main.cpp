@@ -22,7 +22,7 @@ extern int testFrameParserException();
 
 int main() {
     testSimpleFrameParser();
-	//testFrameParser();
-    //testFrameParserException();
+	testFrameParser();
+    testFrameParserException();
     return 0;
 }
