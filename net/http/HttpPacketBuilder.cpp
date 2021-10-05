@@ -32,9 +32,7 @@ _HttpPacketBuilder *_HttpPacketBuilder::setContentType(String type) {
 }
 
 // request
-_HttpPacketBuilder *_HttpPacketBuilder::addCookie(String key, String value) {
-    HttpCookie cookie = createHttpCookie();
-    cookie->setValue(key, value);
+_HttpPacketBuilder *_HttpPacketBuilder::addCookie(HttpCookie cookie) {
     header->addCookie(cookie);
     return this;
 }

@@ -30,6 +30,10 @@ long _ZipFileStream::read(ByteArray buffer) {
     Trigger(MethodNotSupportException, "ZipStream::read(ByteArray)");
 }
 
+long _ZipFileStream::read(ByteArray buffer,int start) {
+    Trigger(MethodNotSupportException, "ZipStream::read(ByteArray)");
+}
+
 bool _ZipFileStream::open() { return true; }
 
 void _ZipFileStream::close() {
@@ -37,6 +41,7 @@ void _ZipFileStream::close() {
 }
 
 int _ZipFileStream::compress(String src, String dest) {
+    printf("compress src is %s,dest is %s \n",src->toChars(),dest->toChars());
     if (src == nullptr) {
         return -InvalidParam;
     }
@@ -114,7 +119,7 @@ int _ZipFileStream::writeInZipFile(zipFile zFile, File file) {
 int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
                             char *password) {
     String srcPath = src->getAbsolutePath();
-    String destPath = dest->getAbsolutePath();
+    //String destPath = dest->getAbsolutePath();
     String srcName = src->getName();
     srcName = combine(currentZipFolder, srcName);
     int opt_compress_level = Z_DEFAULT_COMPRESSION;
@@ -122,9 +127,10 @@ int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
     if (src->isFile()) {
         zipFile zFile;
         if (!dest->exists()) {
-            zFile = zipOpen(destPath->toChars(), APPEND_STATUS_CREATE);
+            dest->createNewFile();
+            zFile = zipOpen(dest->getAbsolutePath()->toChars(), APPEND_STATUS_CREATE);
         } else {
-            zFile = zipOpen(destPath->toChars(), APPEND_STATUS_ADDINZIP);
+            zFile = zipOpen(dest->getAbsolutePath()->toChars(), APPEND_STATUS_ADDINZIP);
         }
 
         if (zFile == nullptr) {
@@ -163,6 +169,7 @@ int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
             isLarge);
 
         if (ret != ZIP_OK) {
+            LOG(ERROR)<<"zip open failed,ret is "<<ret;
             zipClose(zFile, NULL);
             return -1;
         }
@@ -170,6 +177,7 @@ int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
         ret = writeInZipFile(zFile, src);
         zipClose(zFile, NULL);
         if (ret != ZIP_OK) {
+            LOG(ERROR)<<"zip write failed,ret is "<<ret;
             return -1;
         }
     } else if (src->isDirectory()) {
@@ -293,16 +301,17 @@ int _ZipFileStream::isLargeFile(const char *filename) {
     return largeFile;
 }
 
-//----------------- uncompress -----------------//
-int _ZipFileStream::uncompress(String src) { return uncompress(src, nullptr); }
+//----------------- deCompress -----------------//
+int _ZipFileStream::deCompress(String src) { return deCompress(src, nullptr); }
 
-int _ZipFileStream::uncompress(String src, String dest) {
-    return uncompressWithPassword(src, dest, nullptr);
+int _ZipFileStream::deCompress(String src, String dest) {
+    return deCompressWithPassword(src, dest, nullptr);
 }
 
-int _ZipFileStream::uncompressWithPassword(String src, String dest,
+int _ZipFileStream::deCompressWithPassword(String src, String dest,
                                            String password) {
     char *_src = (char *)src->toChars();
+    //printf("deCompress src is %s,dest is %s \n",_src,dest->toChars());
     char *_dest = nullptr;
 
     if (dest != nullptr) {
@@ -322,6 +331,7 @@ int _ZipFileStream::uncompressWithPassword(String src, String dest,
                                opt_overwrite, (char *)password->toChars());
     }
 
+    unzClose(uf);
     return ret_value;
 }
 
@@ -454,7 +464,7 @@ int _ZipFileStream::do_extract(unzFile uf, char *dest,
 
     err = unzGetGlobalInfo64(uf, &gi);
     if (err != UNZ_OK) {
-        LOG(ERROR) << "error with zipfile in unzGetGlobalInfo";
+        LOG(ERROR) << "error with zipfile in unzGetGlobalInfo,err is "<<err;
         return -1;
     }
 

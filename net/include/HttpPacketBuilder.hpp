@@ -14,6 +14,7 @@
 #include "HttpPacket.hpp"
 #include "HttpUrl.hpp"
 #include "File.hpp"
+#include "HttpCookie.hpp"
 
 namespace obotcha {
 
@@ -29,7 +30,7 @@ public:
     _HttpPacketBuilder * addHeaderValue(String key,String value);
 
     //request
-    _HttpPacketBuilder * addCookie(String,String);
+    _HttpPacketBuilder * addCookie(HttpCookie cookie);
     _HttpPacketBuilder * setContent(ByteArray);
     _HttpPacketBuilder * addEncodeValue(String,String);
     _HttpPacketBuilder * setMethod(int);

@@ -7,11 +7,10 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/zipfilestream.o \
 	$(outtmp)/zipmemorystream.o \
 	$(outtmp)/filewatcher.o \
-	$(outtmp)/libraryfileinputstream.o \
+	$(outtmp)/libraryfile.o \
 	$(outtmp)/epollfileobserver.o \
 	$(outtmp)/bytearrayreader.o \
 	$(outtmp)/bytearraywriter.o \
-	$(outtmp)/stringreader.o \
 	$(outtmp)/byteringarrayreader.o \
 	$(outtmp)/socketinputstream.o \
 	$(outtmp)/socketoutputstream.o \
@@ -19,9 +18,14 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/asyncoutputchannelpool.o \
 	$(outtmp)/filedescriptor.o \
 	$(outtmp)/mappedfile.o \
+	$(outtmp)/linereader.o \
+	
 	
 $(outtmp)/file.o :$(ioDir)/File.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/File.cpp -o $(outtmp)/file.o 
+
+$(outtmp)/linereader.o :$(ioDir)/LineReader.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/LineReader.cpp -o $(outtmp)/linereader.o 
 
 $(outtmp)/mappedfile.o :$(ioDir)/MappedFile.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/MappedFile.cpp -o $(outtmp)/mappedfile.o 
@@ -29,8 +33,8 @@ $(outtmp)/mappedfile.o :$(ioDir)/MappedFile.cpp
 $(outtmp)/fileinputstream.o :$(ioDir)/FileInputStream.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileInputStream.cpp -o $(outtmp)/fileinputstream.o 
 
-$(outtmp)/libraryfileinputstream.o :$(ioDir)/LibraryFileInputStream.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/LibraryFileInputStream.cpp -o $(outtmp)/libraryfileinputstream.o 
+$(outtmp)/libraryfile.o :$(ioDir)/LibraryFile.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/LibraryFile.cpp -o $(outtmp)/libraryfile.o 
 
 $(outtmp)/fileoutputstream.o :$(ioDir)/FileOutputStream.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileOutputStream.cpp -o $(outtmp)/fileoutputstream.o 
@@ -55,9 +59,6 @@ $(outtmp)/bytearrayreader.o :$(ioDir)/ByteArrayReader.cpp
 
 $(outtmp)/bytearraywriter.o :$(ioDir)/ByteArrayWriter.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/ByteArrayWriter.cpp -o $(outtmp)/bytearraywriter.o 
-
-$(outtmp)/stringreader.o :$(ioDir)/StringReader.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/StringReader.cpp -o $(outtmp)/stringreader.o 
 
 $(outtmp)/byteringarrayreader.o :$(ioDir)/ByteRingArrayReader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/ByteRingArrayReader.cpp -o $(outtmp)/byteringarrayreader.o 

@@ -72,12 +72,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/websocketpermessagedeflate.o \
 		$(outtmp)/websocketlinkermanager.o \
 		$(outtmp)/websocketlinker.o \
-		$(outtmp)/httpv2hpackutil.o \
-		$(outtmp)/httpv2huffmandecoder.o \
-		$(outtmp)/httpv2huffmanencoder.o \
-		$(outtmp)/httpv2headerencoder.o \
-		$(outtmp)/httpv2headerdecoder.o \
-		$(outtmp)/httpv2headerfield.o \
 		$(outtmp)/sslserver.o \
 		$(outtmp)/sslinfo.o \
 		$(outtmp)/sslmanager.o \
@@ -317,27 +311,6 @@ $(outtmp)/websocketlinker.o :$(netDir)/websocket/WebSocketLinker.cpp
 
 $(outtmp)/ntpclient.o :$(netDir)/NtpClient.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/NtpClient.cpp -o $(outtmp)/ntpclient.o 
-
-$(outtmp)/httpv2hpackutil.o :$(netDir)/http/v2/HttpV2HpackUtil.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HpackUtil.cpp -o $(outtmp)/httpv2hpackutil.o 
-
-$(outtmp)/httpv2huffmandecoder.o :$(netDir)/http/v2/HttpV2HuffmanDecoder.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HuffmanDecoder.cpp -o $(outtmp)/httpv2huffmandecoder.o 
-
-$(outtmp)/httpv2huffmanencoder.o :$(netDir)/http/v2/HttpV2HuffmanEncoder.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HuffmanEncoder.cpp -o $(outtmp)/httpv2huffmanencoder.o 
-
-$(outtmp)/httpv2headerencoder.o :$(netDir)/http/v2/HttpV2HeaderEncoder.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HeaderEncoder.cpp -o $(outtmp)/httpv2headerencoder.o 
-
-$(outtmp)/httpv2headerdecoder.o :$(netDir)/http/v2/HttpV2HeaderDecoder.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HeaderDecoder.cpp -o $(outtmp)/httpv2headerdecoder.o 
-
-$(outtmp)/httpv2headerfield.o :$(netDir)/http/v2/HttpV2HeaderField.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2HeaderField.cpp -o $(outtmp)/httpv2headerfield.o 
-
-$(outtmp)/httpv2dynamictable.o :$(netDir)/http/v2/HttpV2DynamicTable.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HttpV2DynamicTable.cpp -o $(outtmp)/httpv2dynamictable.o 
 
 $(outtmp)/sslserver.o :$(netDir)/http/ssl/SSLServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/ssl/SSLServer.cpp -o $(outtmp)/sslserver.o 

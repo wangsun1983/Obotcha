@@ -32,6 +32,8 @@ DECLARE_CLASS(ZipFileStream) IMPLEMENTS(InputStream) {
 
     long read(ByteArray buffer);
 
+    long read(ByteArray, int start);
+
     bool open();
 
     void close();
@@ -40,11 +42,11 @@ DECLARE_CLASS(ZipFileStream) IMPLEMENTS(InputStream) {
 
     int compressWithPassword(String src, String dest, String password);
 
-    int uncompress(String src);
+    int deCompress(String src);
 
-    int uncompress(String src, String dest);
+    int deCompress(String src, String dest);
 
-    int uncompressWithPassword(String src, String dest, String password);
+    int deCompressWithPassword(String src, String dest, String password);
 
   private:
     String mPath;
