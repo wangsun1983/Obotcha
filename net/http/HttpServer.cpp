@@ -32,6 +32,7 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
 
         if (info->pushHttpData(pack) == -1) {
             // some thing may be wrong(overflow)
+            LOG(ERROR) << "push http data error";
             mHttpListener->onHttpMessage(SocketEvent::InternalError, info,
                                          nullptr, nullptr);
             mLinkerManager->removeLinker(r);

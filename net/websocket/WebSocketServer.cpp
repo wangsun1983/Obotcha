@@ -91,8 +91,8 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE: {
                         mSocketMonitor->remove(client->getSocket());
-                        client->getSocket()->close();
                         mLinkerManager->removeLinker(client);
+                        client->getSocket()->close();
                         listener->onDisconnect(client);
                     }
                     break;
@@ -115,7 +115,9 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
 
         case SocketEvent::Disconnect: {
             if(client != nullptr) {
+                LOG(ERROR)<<"client is removed by socket callback";
                 mLinkerManager->removeLinker(client);
+                mSocketMonitor->remove(client->getSocket());
                 listener->onDisconnect(client);
             } else {
                 LOG(ERROR)<<"client is already remove!!!";
@@ -160,6 +162,7 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,sp<_HttpRe
                 WebSocketParser parser = wsClient->getParser();
 
                 if (!parser->validateHandShake(header)) {
+                    LOG(INFO)<<"websocket client header is invalid";
                     return;
                 }
 
@@ -193,12 +196,16 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,sp<_HttpRe
                 if(writer->write(shakeresponse) < 0) {
                     LOG(ERROR)<<"Websocket Server send response fail,reason:"<<strerror(errno);
                 }
+            } else {
+                LOG(ERROR)<<"Websocket Server recv invalid";
             }
         }
         
         break;
 
         case HttpEvent::Connect:
+        break;
+
         case HttpEvent::Disconnect:
         break;
     }
