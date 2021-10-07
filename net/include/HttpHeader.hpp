@@ -35,6 +35,7 @@ public:
     void addCookie(HttpCookie);
     ArrayList<HttpCookie> getCookies();
 
+    void updateCacheControl();
     HttpCacheControl getCacheControl();
     void setCacheControl(HttpCacheControl);
     

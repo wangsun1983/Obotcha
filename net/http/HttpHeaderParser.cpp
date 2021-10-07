@@ -156,6 +156,9 @@ HttpHeader _HttpHeaderParser::doParse() {
                 ByteArray content = mReader->pop();
                 if (content->size() == 2 || content->size() == 1) {
                     mStatus = Idle;
+                    //update cache control
+                    mHeader->updateCacheControl();
+                    
                     return mHeader;
                 } else {
                     // if prev content value contains '\r\n'
@@ -249,9 +252,6 @@ int _HttpHeaderParser::parseParticularHeader(String key, String value) {
                 mHeader->addCookie(iterator->getValue());
                 iterator->next();
             }
-            return 0;
-        } else if (key->equals(st(HttpHeader)::CacheControl)) {
-            mHeader->setCacheControl(createHttpCacheControl(value));
             return 0;
         } else if (key->equals(st(HttpHeader)::ContentType)) {
             mHeader->setContentType(value);

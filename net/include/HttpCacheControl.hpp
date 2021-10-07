@@ -14,7 +14,7 @@ DECLARE_CLASS(HttpCacheControl) {
 
 public:
     _HttpCacheControl();
-    _HttpCacheControl(String);
+    _HttpCacheControl(sp<_HttpHeader>);
     /**
      * In a response, this field's name "no-cache" is misleading. It doesn't
      * prevent us from caching the response; it only means we have to validate the

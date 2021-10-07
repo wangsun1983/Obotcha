@@ -32,8 +32,13 @@ _HttpCacheControl::_HttpCacheControl() {
     mHeaderValue = nullptr;
 }
 
-_HttpCacheControl::_HttpCacheControl(String value):_HttpCacheControl() {
-    import(value);
+_HttpCacheControl::_HttpCacheControl(HttpHeader header):_HttpCacheControl() {
+    auto iterator = header->getIterator();
+    while(iterator->hasValue()) {
+        if(iterator->getKey()->equalsIgnoreCase(st(HttpHeader)::CacheControl)) {
+            import(iterator->getValue());
+        }
+    }
 }
 
 bool _HttpCacheControl::noCache() { return this->mNoCache; }
