@@ -226,9 +226,9 @@ ArrayList<HttpCookie> _HttpHeader::getCookies() { return mCookies; }
 
 HttpCacheControl _HttpHeader::getCacheControl() { return mCacheControl; }
 
-void _HttpHeader::updateCacheControl() {
-    mCacheControl = createHttpCacheControl(AutoClone(this));
-}
+//void _HttpHeader::updateCacheControl() {
+//    mCacheControl = createHttpCacheControl(AutoClone(this));
+//}
 
 void _HttpHeader::setCacheControl(HttpCacheControl c) { mCacheControl = c; }
 

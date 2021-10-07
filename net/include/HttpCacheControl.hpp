@@ -76,6 +76,8 @@ public:
 
     String toString(int type);
 
+    void import(String value);
+
     static const String NoCache;
     static const String NoStore;
     static const String MaxAge;
@@ -89,8 +91,6 @@ public:
     static const String NotTransform;
 
 private:
-
-    void import(String value);
 
     bool mNoCache;
     bool mNoStore;
