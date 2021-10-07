@@ -6,7 +6,7 @@
 
 using namespace obotcha;
 
-int testFileSetRwx() {
+void testFileSetRwx() {
     File file = createFile("setpropfle.data");
     //test1
     int value = file->setReadOnly();

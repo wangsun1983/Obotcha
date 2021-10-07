@@ -58,7 +58,7 @@ const String _HttpContentType::SuffixTxt = createString("txt");
 // text/vnd.sun.j2me.app-descriptor(jad)
 const String _HttpContentType::TextVndSunJ2meAppDes =
     createString("text/vnd.sun.j2me.app-descriptor");
-const String _HttpContentType::SuffixJad = createString("jar");
+const String _HttpContentType::SuffixJad = createString("jad");
 
 // text/vnd.wap.wml                                 wml;
 const String _HttpContentType::TextVndWapWml = createString("text/vnd.wap.wml");

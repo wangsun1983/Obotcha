@@ -5,7 +5,6 @@
 #include "Thread.hpp"
 #include "Object.hpp"
 #include "System.hpp"
-#include "Executors.hpp"
 #include "Barrier.hpp"
 #include "ByteArrayReader.hpp"
 
@@ -13,7 +12,7 @@
 using namespace obotcha;
 
 
-int basetest() {
+void basetest() {
     printf("---[ByteArrayReader Test Start]--- \n");
 
   /*
@@ -28,7 +27,7 @@ int basetest() {
   while(1) {
     ByteArray data = createByteArray(16);
     for(int i = 0;i<16;i++) {
-       data->fill(i,i);
+       data[i] = i;
     }
 
     ByteArrayReader reader = createByteArrayReader(data);
@@ -57,7 +56,8 @@ int basetest() {
   while(1) {
     ByteArray data = createByteArray(16);
     for(int i = 0;i<16;i++) {
-       data->fill(i,i+32);
+       //data->fill(i,i+32);
+       data[i] = i + 32;
     }
 
     ByteArrayReader reader = createByteArrayReader(data);
@@ -87,7 +87,8 @@ int basetest() {
   while(1) {
     ByteArray data = createByteArray(16);
     for(int i = 0;i<16;i++) {
-       data->fill(i,i+64);
+       //data->fill(i,i+64);
+       data[i] = i + 64;
     }
 
     ByteArrayReader reader = createByteArrayReader(data);
@@ -108,7 +109,8 @@ int basetest() {
   while(1) {
     ByteArray data = createByteArray(16);
     for(int i = 0;i<16;i++) {
-       data->fill(i,i+64);
+       //data->fill(i,i+64);
+       data[i] = i + 64;
     }
 
     ByteArrayReader reader = createByteArrayReader(data);

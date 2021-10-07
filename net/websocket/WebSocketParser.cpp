@@ -24,7 +24,7 @@ void _WebSocketParser::pushParseData(ByteArray data) {
         mData->append(data);
     }
 
-    mReader = createByteArrayReader(mData,st(ByteArrayReader)::BigEndian);
+    mReader = createByteArrayReader(mData,Global::BigEndian);
 }
 
 ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
@@ -106,7 +106,7 @@ ArrayList<WebSocketFrame> _WebSocketParser::doParse() {
         if (resetLength > 0) {
             byte *pdata = mData->toValue();
             mData = createByteArray(&pdata[readIndex], resetLength);
-            mReader = createByteArrayReader(mData,st(ByteArrayReader)::BigEndian);
+            mReader = createByteArrayReader(mData,Global::BigEndian);
             continue;
         } else {
             mData = nullptr;

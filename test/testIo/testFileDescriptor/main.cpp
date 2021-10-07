@@ -5,15 +5,14 @@
 #include "Thread.hpp"
 #include "Object.hpp"
 #include "System.hpp"
-#include "Executors.hpp"
 #include "Barrier.hpp"
 #include "ByteArrayReader.hpp"
 
-
 using namespace obotcha;
 
-extern int operatortest();
+extern void baseTest();
 
 int main() {
-    operatortest();
+    baseTest();
+    return 0;
 }

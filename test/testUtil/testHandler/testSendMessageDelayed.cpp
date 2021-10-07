@@ -31,7 +31,7 @@ public:
 };
 
 
-int testSendMessageDelayed() {
+void testSendMessageDelayed() {
   MyDelayedHandler m = createMyDelayedHandler();
   Random rnd = createRandom();
 

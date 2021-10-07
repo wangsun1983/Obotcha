@@ -82,4 +82,12 @@ void _System::closeOnExit(Closeable c) {
     mListeners->add(c);
 }
 
+int _System::getEndianness() {
+    short int x;
+    char x0;
+    x = 0x1122;
+    x0 = ((char*)&x)[0];
+    return (x0==0x11)?Global::BigEndian:Global::LittleEndian;
+}
+
 } // namespace obotcha

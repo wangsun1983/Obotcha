@@ -3,7 +3,6 @@ ioDir = io
 objs += $(outtmp)/file.o \
 	$(outtmp)/fileinputstream.o \
 	$(outtmp)/fileoutputstream.o \
-	$(outtmp)/printstream.o \
 	$(outtmp)/zipfilestream.o \
 	$(outtmp)/zipmemorystream.o \
 	$(outtmp)/filewatcher.o \
@@ -38,9 +37,6 @@ $(outtmp)/libraryfile.o :$(ioDir)/LibraryFile.cpp
 
 $(outtmp)/fileoutputstream.o :$(ioDir)/FileOutputStream.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/FileOutputStream.cpp -o $(outtmp)/fileoutputstream.o 
-
-$(outtmp)/printstream.o :$(ioDir)/PrintStream.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/PrintStream.cpp -o $(outtmp)/printstream.o 
 
 $(outtmp)/zipfilestream.o :$(ioDir)/ZipFileStream.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/ZipFileStream.cpp -o $(outtmp)/zipfilestream.o 

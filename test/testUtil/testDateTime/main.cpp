@@ -11,11 +11,13 @@
 
 using namespace obotcha;
 
-extern int tostringtest();
-extern int parsetest();
-extern int wrongformat();
+extern void tostringtest();
+extern void parsetest();
+extern void wrongformat();
+extern void testToTimeMillis();
 
 int main() {
+  testToTimeMillis();
   tostringtest();
   parsetest();
   wrongformat();

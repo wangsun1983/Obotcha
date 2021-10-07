@@ -6,7 +6,7 @@
 
 using namespace obotcha;
 
-int testCanRwx() {
+void testCanRwx() {
     File readFile = createFile("readonly");
     File executeFile = createFile("executeonly");
     File writeFile = createFile("writeonly");

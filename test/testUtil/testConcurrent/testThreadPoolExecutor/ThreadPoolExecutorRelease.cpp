@@ -45,7 +45,7 @@ public:
 };
 
 
-int releaseTest() {
+void releaseTest() {
     while(1) {
         {
             ThreadPoolExecutor pool = createExecutorBuilder()->setQueueSize(50)->setThreadNum(8)->newThreadPool();//st(Executors)::newFixedThreadPool(50,8);

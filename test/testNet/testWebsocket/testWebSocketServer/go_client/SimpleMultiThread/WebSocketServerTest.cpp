@@ -86,7 +86,7 @@ int main() {
 
     latch->await();
 
-    if(connectCount->get() != 12*1024 || disconnectCount->get() != 12*1024 || messageCount->get() != 12*1024) {
+    if(connectCount->get() != 10*1024 || disconnectCount->get() != 10*1024 || messageCount->get() != 10*1024) {
         printf("---WebSocketServer MultiThread test1 [FAILED]---,connect is %d,disconnect is %d,message is %d \n",
                 connectCount->get(),
                 disconnectCount->get(),

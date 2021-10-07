@@ -42,7 +42,7 @@ _ByteArrayWriter::_ByteArrayWriter(ByteArray data, int mod) {
 void _ByteArrayWriter::reset() { mIndex = 0; }
 
 bool _ByteArrayWriter::writeSizeCheck(int size) {
-    if ((mIndex + size) > (mSize - sizeof(short))) {
+    if ((mIndex + size) > mSize) {
         if (mType == Dynamic) {
             mSize = mData->size() * 7 / 4;
             mData->growTo(mSize);
@@ -54,7 +54,7 @@ bool _ByteArrayWriter::writeSizeCheck(int size) {
     return true;
 }
 
-int _ByteArrayWriter::writeShort(int s) {
+int _ByteArrayWriter::writeShort(short int s) {
     if (!writeSizeCheck(sizeof(short int))) {
         return -1;
     }
@@ -122,12 +122,12 @@ int _ByteArrayWriter::writeString(const char *str) {
     return 0;
 }
 
-int _ByteArrayWriter::writeByteArray(ByteArray b, int length) {
-    if (!writeSizeCheck(length)) {
+int _ByteArrayWriter::writeByteArray(ByteArray b, int start,int length) {
+    if (!writeSizeCheck(length) || start + length > b->size()) {
         return -1;
     }
 
-    memcpy(&mDataP[mIndex], b->toValue(), length);
+    memcpy(&mDataP[mIndex], b->toValue() + start, length);
     mIndex += length;
     return 0;
 }

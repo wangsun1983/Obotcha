@@ -13,7 +13,7 @@
 
 using namespace obotcha;
 
-int testThreadLambda() {
+void testThreadLambda() {
     ThreadPoolExecutor t = createExecutorBuilder()->newThreadPool();
 
     while(1) {

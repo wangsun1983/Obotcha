@@ -32,19 +32,7 @@ _HttpCacheControl::_HttpCacheControl() {
     mHeaderValue = nullptr;
 }
 
-_HttpCacheControl::_HttpCacheControl(String value) {
-    mNoCache = false;
-    mNoStore = false;
-    mMaxAgeSeconds = -1;
-    mSMaxAgeSeconds = -1;
-    mIsPrivate = false;
-    mIsPublic = false;
-    mMustRevalidate = false;
-    mMaxStaleSeconds = -1;
-    mMinFreshSeconds = -1;
-    mOnlyIfCached = false;
-    mNoTransform = false;
-    mHeaderValue = nullptr;
+_HttpCacheControl::_HttpCacheControl(String value):_HttpCacheControl() {
     import(value);
 }
 

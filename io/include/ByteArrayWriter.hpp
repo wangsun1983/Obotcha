@@ -15,12 +15,15 @@ DECLARE_CLASS(ByteArrayWriter) {
     _ByteArrayWriter(int mode = LittleEndian);
     _ByteArrayWriter(ByteArray, int mode = LittleEndian);
 
-    int writeShort(int v);
+    int writeShort(short int v);
     int writeByte(byte b);
     int writeInt(int v);
     long writeLong(long v);
+    
     int writeByteArray(ByteArray);
-    int writeByteArray(ByteArray, int);
+    int writeByteArray(ByteArray, int start,int length);
+    int write(byte *, int);
+
     int writeString(String);
     int writeString(const char *);
     void skipBy(int length);
@@ -29,14 +32,7 @@ DECLARE_CLASS(ByteArrayWriter) {
     void updateSize();
     void reset();
 
-    int write(byte *, int);
-
     ByteArray getByteArray();
-
-    enum WriteMode {
-        BigEndian = 0,
-        LittleEndian,
-    };
 
   private:
     ByteArray mData;
@@ -53,11 +49,11 @@ DECLARE_CLASS(ByteArrayWriter) {
 
     template <typename T> void _write(T & value) {
         switch (mode) {
-        case BigEndian:
+        case Global::BigEndian:
             _writeBigEndian(value);
             break;
 
-        case LittleEndian:
+        case Global::LittleEndian:
             _writeLittleEndian(value);
             break;
         }

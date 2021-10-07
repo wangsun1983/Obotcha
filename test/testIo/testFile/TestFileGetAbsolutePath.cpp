@@ -6,7 +6,7 @@
 
 using namespace obotcha;
 
-int testFileGetAbsPath() {
+void testFileGetAbsPath() {
     File file;
     String name;
 

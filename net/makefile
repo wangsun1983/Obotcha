@@ -25,7 +25,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpversion.o \
 		$(outtmp)/httpversionparser.o \
 		$(outtmp)/httpcontenttype.o \
-		$(outtmp)/httpcontenttypetranslator.o \
+		$(outtmp)/httpmime.o \
 		$(outtmp)/httpurlbuilder.o \
 		$(outtmp)/httpresponse.o \
 		$(outtmp)/httpconnection.o \
@@ -180,8 +180,8 @@ $(outtmp)/httpentity.o :$(netDir)/http/HttpEntity.cpp
 $(outtmp)/httpcontenttype.o :$(netDir)/http/HttpContentType.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpContentType.cpp -o $(outtmp)/httpcontenttype.o 
 
-$(outtmp)/httpcontenttypetranslator.o :$(netDir)/http/HttpContentTypeTranslator.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpContentTypeTranslator.cpp -o $(outtmp)/httpcontenttypetranslator.o 
+$(outtmp)/httpmime.o :$(netDir)/http/HttpMime.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMime.cpp -o $(outtmp)/httpmime.o 
 
 $(outtmp)/httpurlbuilder.o :$(netDir)/http/HttpUrlBuilder.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrlBuilder.cpp -o $(outtmp)/httpurlbuilder.o 

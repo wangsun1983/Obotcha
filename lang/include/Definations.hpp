@@ -9,6 +9,8 @@ enum Global {
     ASync,
     Break,
     Continue,
+    BigEndian,
+    LittleEndian,
 };
 
 }

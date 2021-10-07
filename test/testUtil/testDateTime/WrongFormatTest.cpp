@@ -14,7 +14,7 @@
 
 using namespace obotcha;
 
-int wrongformat() {
+void wrongformat() {
 	  try {
 		    DateTime t = createDateTime(st(DateTime)::FormatISO8601Frac,"2005-01-08T12.30:00Z");
 				printf("DateTime wrongformat test1-------[FAIL] \n");

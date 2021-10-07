@@ -13,7 +13,7 @@
 
 using namespace obotcha;
 
-int testPoolReferenceCount() {
+void testPoolReferenceCount() {
 
     while(1) {
         ThreadPoolExecutor pool = nullptr;
@@ -58,7 +58,5 @@ int testPoolReferenceCount() {
         printf("---[ThreadPoolExecutor Test Reference case4] [OK]--- \n");
         break;
     }
-
-    return 0;
 
 }

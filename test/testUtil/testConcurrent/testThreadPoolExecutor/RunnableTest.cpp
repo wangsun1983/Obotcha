@@ -36,7 +36,7 @@ public:
 
 
 
-int testRunnable_onInterrupt() {
+void testRunnable_onInterrupt() {
     printf("---[TestThreadPoolExecutor Test Start]--- \n");
 
     //void shutdown();

@@ -94,18 +94,20 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                         {
                             AutoLock l(monitor->mListenerMutex);
                             listener = monitor->mListeners->get(
-                                task->sock->getFileDescriptor()->getFd());
-                            
+                                task->sock->getFileDescriptor()->getFd());    
                         }
+
+                        if (task->event == st(SocketListener)::Disconnect) {
+                            monitor->remove(task->sock);
+                            task->sock->close();
+                        }
+
                         if (listener != nullptr) {
                             listener->onSocketMessage(task->event, task->sock,
                                                       task->data);
                         }
                         
-                        if (task->event == st(SocketListener)::Disconnect) {
-                            monitor->remove(task->sock);
-                            task->sock->close();
-                        }
+                        
                         task = nullptr;
                     }
                 }

@@ -36,6 +36,8 @@ public:
 
     static void closeOnExit(Closeable);
 
+    static int getEndianness();
+
 private:
     static Mutex mMutex;
     static ArrayList<Closeable> mListeners;

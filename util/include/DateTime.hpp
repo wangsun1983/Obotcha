@@ -72,6 +72,8 @@ DECLARE_CLASS(DateTime) {
 
     int tzd() const;
 
+    long int toTimeMillis();
+    
     String toString();
 
     String toString(int);

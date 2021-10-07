@@ -6,7 +6,7 @@
 
 using namespace obotcha;
 
-int testFileGetName() {
+void testFileGetName() {
     File file;
     String name;
 

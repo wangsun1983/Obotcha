@@ -220,7 +220,7 @@ void testCustom()
 	String str = dt->toString(createString("%w/%W/%b/%B/%d/%e/%f/%m/%n/%o/%y/%Y/%H/%h/%a/%A/%M/%S/%i/%c/%z/%Z/%%"));
 	if(!str->equals(createString("Sat/Saturday/Jan/January/08/8/ 8/01/1/ 1/05/2005/12/12/pm/PM/30/00/250/2/Z/GMT/%"))) {
 		printf("str is %s \n",str->toChars());
-		printf("Sat/Saturday/Jan/January/08/8/ 8/01/1/ 1/05/2005/12/12/pm/PM/30/00/250/2/Z/GMT/% \n");
+		printf("Sat/Saturday/Jan/January/08/8/ 8/01/1/ 1/05/2005/12/12/pm/PM/30/00/250/2/Z/GMT/ \n");
 
 		printf("DateTime toString Custom test1-------[FAIL] \n");
 		return;
@@ -230,7 +230,7 @@ void testCustom()
 
 }
 
-int tostringtest() {
+void tostringtest() {
 	testISO8601();
 	testISO8601Frac();
 	testRFC822();

@@ -238,6 +238,11 @@ int _DateTime::microsecond() const { return _microsecond; }
 
 int _DateTime::tzd() const { return _tzd; }
 
+long int _DateTime::toTimeMillis() {
+    auto c = createCalendar(_year,_month,_dayOfMonth,_hour,_minute,_second,_millisecond);
+    return c->toTimeMillis();
+}
+
 int _DateTime::isValid(String content) {
     for (int i = 0; i < FormatMax; i++) {
         std::string f = REGEX_LIST[i];

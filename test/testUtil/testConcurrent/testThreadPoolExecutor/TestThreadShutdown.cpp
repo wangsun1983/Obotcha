@@ -80,7 +80,7 @@ private:
     long interval;
 };
 
-int testThreadShutdown() {
+void testThreadShutdown() {
 
 
     //TestThread onInterrupt case1
@@ -153,7 +153,5 @@ int testThreadShutdown() {
         printf("---[ThreadPoolExecutor Test {shutdown()} special case9] [OK]--- \n");
         break;
     }
-
-    return 0;
 
 }

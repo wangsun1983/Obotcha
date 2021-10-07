@@ -21,7 +21,7 @@ public:
   int delayedCount;
 };
 
-int testHandlerSize() {
+void testHandlerSize() {
   //case 1
   while(1) {
     MyHandler1 handler1 = createMyHandler1();
@@ -32,7 +32,7 @@ int testHandlerSize() {
 
     if(handler1->size() != 4) {
       printf("---[Handler Test {Normal size()} case1] [FAILED]--- \n");
-      return 0;
+      break;
     }
 
     printf("---[Handler Test {Normal size()} case2] [OK]--- \n");
@@ -49,7 +49,7 @@ int testHandlerSize() {
     usleep(100);
     if(handler1->size() != 3) {
       printf("---[Handler Test {Normal size()} case3] [FAILED]--- \n");
-      return 0;
+      break;
     }
 
     printf("---[Handler Test {Normal size()} case4] [OK]--- \n");
@@ -65,7 +65,7 @@ int testHandlerSize() {
     usleep(100*5);
     if(handler1->size() != 0) {
       printf("---[Handler Test {Normal size()} case5] [FAILED]--- \n");
-      return 0;
+      break;
     }
 
     printf("---[Handler Test {Normal size()} case6] [OK]--- \n");
@@ -73,5 +73,4 @@ int testHandlerSize() {
   }
 
   printf("---[Handler Test {Normal size()} case7] [OK]--- \n");
-  return 0;
 }

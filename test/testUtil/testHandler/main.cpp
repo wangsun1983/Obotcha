@@ -7,13 +7,13 @@
 
 using namespace obotcha;
 
-extern int testHandler();
-extern int testSendMessageDelayed();
-extern int testHasMessage();
-extern int testHandlerSize();
-extern int testHandlerMultiSend();
-extern int testHandlerRemove();
-extern int testHandlerLambda();
+extern void testHandler();
+extern void testSendMessageDelayed();
+extern void testHasMessage();
+extern void testHandlerSize();
+extern void testHandlerMultiSend();
+extern void testHandlerRemove();
+extern void testHandlerLambda();
 
 int main() {
   testHandlerLambda();
@@ -23,4 +23,5 @@ int main() {
   testHandler();
   testSendMessageDelayed();
   testHasMessage();
+  return 0;
 }

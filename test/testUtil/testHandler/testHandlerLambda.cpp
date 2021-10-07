@@ -8,7 +8,7 @@
 using namespace obotcha;
 
 
-int testHandlerLambda() {
+void testHandlerLambda() {
   printf("---[HandlerLambda Test Start]--- \n");
   Handler h = createHandler();
   while(1) {

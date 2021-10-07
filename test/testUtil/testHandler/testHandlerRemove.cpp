@@ -21,7 +21,7 @@ public:
 };
 
 
-int testHandlerRemove() {
+void testHandlerRemove() {
   //case 1
   while(1) {
     MyTestHandler2 handler = createMyTestHandler2();
@@ -57,5 +57,4 @@ int testHandlerRemove() {
   }
 
   printf("---[Handler Test {Handler Remove} case5] [OK]--- \n");
-  return 0;
 }

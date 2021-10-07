@@ -673,7 +673,7 @@ void parseCustom() {
 	printf("DateTime parseCustom test5-------[OK] \n");
 }
 
-int parsetest() {
+void parsetest() {
 	parseISO8601();
 	parseISO8601Frac();
 	parseRFC822();

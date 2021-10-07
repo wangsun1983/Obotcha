@@ -24,7 +24,7 @@ public:
     }
 };
 
-int testThreadQuickShutDown() {
+void testThreadQuickShutDown() {
 
 
     //TestThread onInterrupt case1
@@ -47,8 +47,5 @@ int testThreadQuickShutDown() {
         printf("---[ThreadPoolExecutor Test {QuickShutDown()} special case1] [OK],count is %d--- \n",count);
         break;
     }
-
-
-    return 0;
 
 }

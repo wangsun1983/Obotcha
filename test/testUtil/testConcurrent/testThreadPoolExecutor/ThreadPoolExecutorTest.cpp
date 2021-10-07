@@ -54,7 +54,7 @@ public:
 };
 
 
-int normalTest() {
+void normalTest() {
     printf("---[TestThreadPoolExecutor Normal Test Start]--- \n");
     //_ThreadPoolExecutor(int queuesize,int threadnum);
 

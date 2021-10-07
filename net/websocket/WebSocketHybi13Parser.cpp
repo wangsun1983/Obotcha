@@ -203,7 +203,7 @@ bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
         return false;
     }
 
-    ByteArrayReader preReader = createByteArrayReader(pack,st(ByteArrayReader)::BigEndian);
+    ByteArrayReader preReader = createByteArrayReader(pack,Global::BigEndian);
     //check whether it has an entire header
     int b0 = (preReader->readByte() & 0xff);
     int b1 = (preReader->readByte() & 0xff);

@@ -27,11 +27,11 @@ public:
         TypeApplicationJs,
         TypeApplicationAtomXml,
         TypeApplicationRss,
-        TypeMathml,
+        TypeTextMathml,
         TypeTextPlain,
         TypeTextVndSunJ2meAppDes,
-        TypeVndWapWml,
-        TypeXComponent,
+        TypeTextVndWapWml,
+        TypeTextXComponent,
         TypeImagePng,
         TypeImageSvgXml,
         TypeImageTiff,
@@ -77,11 +77,10 @@ public:
         TypeApplicationXTcl,
         TypeApplicationXX509CaCert,
         TypeApplicationXXpinstall,
-        TypeApplicationXhtmXml,
+        TypeApplicationXhtmlXml,
         TypeApplicationXspfXml,
         TypeApplicationZip,
         TypeApplicationOctetStream,
-        TypeSuffixMsi,
         TypeAudioMidi,
         TypeAudioMpeg,
         TypeAudioOgg,
@@ -100,7 +99,8 @@ public:
         TypeVideoXMsWmv,
         TypeVideoXMsVideo,
         TypeMultiPartFormData,
-        TypeXFormUrlEncoded
+        TypeXFormUrlEncoded,
+        TypeMax,
     };
     //static ArrayList<String> getSupportFileSuffix(String);
     //static String getContentType(String suffix);

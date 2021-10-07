@@ -10,6 +10,7 @@ using namespace obotcha;
 DECLARE_CLASS(MyMultiHandler1) IMPLEMENTS(Handler) {
 public:
   _MyMultiHandler1() {
+    count = 0;
   }
 
   void handleMessage(Message msg) {
@@ -33,7 +34,7 @@ public:
   }
 };
 
-int testHandlerMultiSend() {
+void testHandlerMultiSend() {
   //case 1
   while(1) {
     SendThread t1 = createSendThread();
@@ -56,7 +57,7 @@ int testHandlerMultiSend() {
     if(mulitHandler->count != 1024*5*5) {
       printf("mulitHandler->count is %d \n",mulitHandler->count);
       printf("---[Handler Test {MultiSend} case1] [FAIL]--- \n");
-      return 0;
+      break;
     }
 
     printf("---[Handler Test {MultiSend} case2] [OK]--- \n");
@@ -64,5 +65,4 @@ int testHandlerMultiSend() {
   }
 
   printf("---[Handler Test {MultiSend} case3] [OK]--- \n");
-  return 0;
 }

@@ -46,7 +46,7 @@ public:
     }
 };
 
-int testThreadPoolLoopSubmit() {
+void testThreadPoolLoopSubmit() {
     printf("testThreadPoolLoopSubmit trace1 \n");
     //test1
     ThreadPoolExecutor executor = createThreadPoolExecutor(4,4);
@@ -87,7 +87,5 @@ int testThreadPoolLoopSubmit() {
     executor3->shutdown();
     printf("testThreadPoolLoopSubmit trace8 \n");
     printf("---[ThreadPoolExecutor Loop Submit} special case100] [OK]--- \n");
-
-    return 0;
 
 }

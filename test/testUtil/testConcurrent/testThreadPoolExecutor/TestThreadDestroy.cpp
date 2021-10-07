@@ -24,7 +24,7 @@ public:
     }
 };
 
-int testThreadDestroy() {
+void testThreadDestroy() {
 
     //TestThread onInterrupt case1
     while(1) {
@@ -43,7 +43,5 @@ int testThreadDestroy() {
         printf("---[ThreadPoolExecutor Test {destroy()} special case1] [OK]--- \n");
         break;
     }
-
-    return 0;
 
 }

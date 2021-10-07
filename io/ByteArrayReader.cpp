@@ -64,6 +64,7 @@ int _ByteArrayReader::getRemainSize() { return mSize - mIndex; }
 
 void _ByteArrayReader::setIndex(int index) { mIndex = index; }
 
+#if 0
 int _ByteArrayReader::appendWithAdjustment(ByteArray d) {
     int size = mData->size() - mIndex + d->size();
     ByteArray data = createByteArray(size);
@@ -80,6 +81,7 @@ int _ByteArrayReader::appendWithAdjustment(ByteArray d) {
     mIndex = 0;
     return 0;
 }
+#endif
 
 String _ByteArrayReader::readLine() {
     int start = mIndex;
@@ -87,28 +89,43 @@ String _ByteArrayReader::readLine() {
         return nullptr;
     }
 
-    while (mIndex < mData->size()) {
-        switch (mData->at(mIndex)) {
-        case '\r': {
-            String result =
-                createString((char *)mData->toValue(), start, mIndex - start);
-            mIndex++;
-            if (mIndex < mData->size() && mData->at(mIndex) == '\n') {
-                mIndex++;
+    while (start < mData->size()) {
+        switch (mData->at(start)) {
+            case '\r':{
+                String result =
+                    createByteArray((const byte *)mData->toValue() + mIndex, start - mIndex)->toString();
+                start++;
+                if (start < mData->size() && mData->at(start) == '\n') {
+                    start++;
+                }
+                mIndex = start;
+                return result;
             }
-            return result;
-        }
 
-        case '\n': {
-            String result =
-                createString((char *)mData->toValue(), start, mIndex - start);
-            mIndex++;
-            return result;
-        } break;
+            case '\n': {
+                String result =
+                    createByteArray((const byte *)mData->toValue() + mIndex, start - mIndex)->toString();
+                
+                start++;
+                if (start < mData->size() && mData->at(start) == '\r') {
+                    start++;
+                }
+                mIndex = start;
+                return result;
+            } 
+            break;
 
-        default:
-            mIndex++;
+            default:
+                start++;
         }
+    }
+
+    //last
+    if(mIndex != mData->size()) {
+        String result =
+                createByteArray((const byte *)mData->toValue() + mIndex, mData->size() - mIndex)->toString();
+        mIndex = mData->size();
+        return result;
     }
 
     return nullptr;

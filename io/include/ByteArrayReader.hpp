@@ -6,6 +6,7 @@
 
 #include "String.hpp"
 #include "ByteArray.hpp"
+#include "Definations.hpp"
 
 namespace obotcha {
 
@@ -22,21 +23,19 @@ public:
     int getIndex();
     int getRemainSize();
     void setIndex(int);
+#if 0    
     int appendWithAdjustment(ByteArray);
-    enum ReadMode{
-        BigEndian = 0,
-        LittleEndian,
-    };
-
+#endif
+    
 private:
     template<typename T>
     void _read(T &value) {
         switch(mode) {
-            case BigEndian:
+            case Global::BigEndian:
             _readBigEndian(value);
             break;
 
-            case LittleEndian:
+            case Global::LittleEndian:
             _readLittleEndian(value);
             break;
         }

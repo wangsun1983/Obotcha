@@ -25,7 +25,7 @@ _FileDescriptor::~_FileDescriptor() {
     //::close(_fd);
 }
 
-int _FileDescriptor::setFileOption(int cmd, int option) {
+int _FileDescriptor::setFileOption(int option) {
     return fcntl(_fd, F_SETFL, fcntl(_fd, F_GETFL, 0) | option);
 }
 
@@ -50,10 +50,12 @@ int _FileDescriptor::getSockOption(int level, int optname, void *optval,
 }
 
 bool _FileDescriptor::isAsync() {
-    return (fcntl(_fd, F_GETFL) & O_NONBLOCK) != 0;
+    return (fcntl(_fd, F_GETFL) & O_NONBLOCK) > 0;
 }
 
-bool _FileDescriptor::isClosed() { return (_fd < 0); }
+bool _FileDescriptor::isClosed() {
+    return fcntl(_fd,F_GETFL,0) == -1;
+}
 
 int _FileDescriptor::getFd() { return _fd; }
 

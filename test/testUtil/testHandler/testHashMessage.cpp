@@ -15,7 +15,7 @@ public:
 
 };
 
-int testHasMessage() {
+void testHasMessage() {
    HasMessageHandler h = createHasMessageHandler();
    for(int i = 0; i<1024;i++) {
     h->sendEmptyMessageDelayed(1,10000);
@@ -23,13 +23,11 @@ int testHasMessage() {
 
    if(!h->hasMessage(1)) {
     printf("---[Handler Test {hasMessage} case1] [FAILED]--- \n");
-    return 0;
    }
 
    h->removeMessages(1);
    if(h->hasMessage(1)) {
     printf("---[Handler Test {hasMessage} case2] [FAILED]--- \n");
-    return 0;
    }
 
   printf("---[Handler Test {hasMessage} case3] [OK]--- \n");

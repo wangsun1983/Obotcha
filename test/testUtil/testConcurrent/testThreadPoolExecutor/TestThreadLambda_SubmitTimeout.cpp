@@ -14,7 +14,7 @@
 
 using namespace obotcha;
 
-int testThreadLambdaSubmitTimeout() {
+void testThreadLambdaSubmitTimeout() {
   TimeWatcher watcher = createTimeWatcher();
   while(1) {
     auto pool = createExecutorBuilder()

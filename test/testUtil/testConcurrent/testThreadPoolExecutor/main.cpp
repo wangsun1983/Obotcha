@@ -11,16 +11,16 @@
 
 using namespace obotcha;
 
-extern int normalTest();
-extern int testRunnable_onInterrupt();
-extern int releaseTest();
-extern int testThreadShutdown();
-extern int testThreadDestroy();
-extern int testThreadPoolLoopSubmit();
-extern int testThreadPoolLoopShutdown();
-extern int testThreadLambda();
-extern int testThreadQuickShutDown();
-extern int testPoolReferenceCount();
+extern void normalTest();
+extern void testRunnable_onInterrupt();
+extern void releaseTest();
+extern void testThreadShutdown();
+extern void testThreadDestroy();
+extern void testThreadPoolLoopSubmit();
+extern void testThreadPoolLoopShutdown();
+extern void testThreadLambda();
+extern void testThreadQuickShutDown();
+extern void testPoolReferenceCount();
 extern void testThreadPoolSubmit_Wait();
 extern void testThreadPoolSubmit_ShutDown();
 extern void testThreadLambdaSubmitTimeout();

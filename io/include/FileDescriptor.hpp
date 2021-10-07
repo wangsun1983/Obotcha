@@ -23,7 +23,7 @@ public:
     int setSockOption(int level,int optname,void *optval,socklen_t oplen);
     int getSockOption(int level,int optname,void *optval,socklen_t*oplen);
 
-    int setFileOption(int cmd,int option);
+    int setFileOption(int option);
     int getFileOption();
 
     void setAsync(bool);
