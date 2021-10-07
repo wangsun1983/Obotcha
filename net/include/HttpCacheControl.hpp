@@ -62,10 +62,19 @@ public:
 
     bool noTransform();
 
-    void import(sp<_HttpHeader> headers);
-    void import(String value);
+    void setNoCache(bool);
+    void setNoStore(bool);
+    void setMaxAgeSeconds(int);
+    void setSMaxAgeSeconds(int);
+    void setPrivate();
+    void setPublic();
+    void setMustRevalidate(bool);
+    void setMaxStaleSeconds(int);
+    void setMinFreshSeconds(int);
+    void setOnlyIfCached(bool);
+    void setNoTransform(bool);
 
-    String toString();
+    String toString(int type);
 
     static const String NoCache;
     static const String NoStore;
@@ -80,6 +89,9 @@ public:
     static const String NotTransform;
 
 private:
+
+    void import(String value);
+
     bool mNoCache;
     bool mNoStore;
     int mMaxAgeSeconds;

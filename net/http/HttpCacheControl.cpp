@@ -1,6 +1,8 @@
 #include "HttpCacheControl.hpp"
 #include "HttpHeader.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "HttpProtocol.hpp"
+#include "HttpText.hpp"
 
 namespace obotcha {
 
@@ -10,8 +12,7 @@ const String _HttpCacheControl::MaxAge = createString("max-age");
 const String _HttpCacheControl::SMaxAge = createString("s-maxage");
 const String _HttpCacheControl::CachePrivate = createString("private");
 const String _HttpCacheControl::CachePublic = createString("public");
-const String _HttpCacheControl::MustRevalidate =
-    createString("must-revalidate");
+const String _HttpCacheControl::MustRevalidate = createString("must-revalidate");
 const String _HttpCacheControl::MaxStale = createString("max-stale");
 const String _HttpCacheControl::MinFresh = createString("min-fresh");
 const String _HttpCacheControl::OnlyIfCached = createString("only-if-cached");
@@ -132,66 +133,109 @@ void _HttpCacheControl::import(String value) {
     }
 }
 
-void _HttpCacheControl::import(sp<_HttpHeader> headers) {
-    //bool canUseHeaderValue = true;
-    String value = headers->getValue(st(HttpHeader)::CacheControl);
-    import(value);
+void _HttpCacheControl::setNoCache(bool v) {
+    this->mNoCache = v;
 }
 
-String _HttpCacheControl::toString() {
+void _HttpCacheControl::setNoStore(bool v) {
+    this->mNoStore = v;
+}
+
+void _HttpCacheControl::setMaxAgeSeconds(int v) {
+    this->mMaxAgeSeconds = v;
+}
+
+void _HttpCacheControl::setSMaxAgeSeconds(int v) {
+    this->mSMaxAgeSeconds = v;
+}
+
+void _HttpCacheControl::setPrivate() {
+    this->mIsPrivate = true;
+    this->mIsPublic = false;
+}
+
+void _HttpCacheControl::setPublic() {
+    this->mIsPrivate = false;
+    this->mIsPublic = true;
+}
+
+void _HttpCacheControl::setMustRevalidate(bool v) {
+    this->mMustRevalidate = v;
+}
+
+void _HttpCacheControl::setMaxStaleSeconds(int v) {
+    this->mMaxStaleSeconds = v;
+}
+
+void _HttpCacheControl::setMinFreshSeconds(int v) {
+    this->mMinFreshSeconds = v;
+}
+
+void _HttpCacheControl::setOnlyIfCached(bool v) {
+    this->mOnlyIfCached = v;
+}
+
+void _HttpCacheControl::setNoTransform(bool v) {
+    this->mNoTransform = v;
+}
+
+
+String _HttpCacheControl::toString(int type) {
     String result = createString("");
-    if (mNoCache) {
-        result = result->append("no-cache, ");
+
+    if(mNoCache) {
+        result = result->append(st(HttpHeader)::CacheControl, ":",NoCache,st(HttpText)::CRLF);
     }
 
     if (mNoStore) {
-        result = result->append("no-store, ");
+        result = result->append(st(HttpHeader)::CacheControl, ":",NoStore,st(HttpText)::CRLF);
     }
 
-    if (mMaxAgeSeconds != -1) {
-        result = result->append("max-age=", createString(mMaxAgeSeconds), ", ");
+    if(mMaxAgeSeconds != -1) {
+        result = result->append(st(HttpHeader)::CacheControl, ":",
+                                MaxAge,"=",createString(mMaxAgeSeconds),st(HttpText)::CRLF);
     }
 
-    if (mSMaxAgeSeconds != -1) {
-        result =
-            result->append("s-maxage=", createString(mSMaxAgeSeconds), ", ");
+    if(mMaxStaleSeconds != -1) {
+        result = result->append(st(HttpHeader)::CacheControl, ":",
+                                MaxStale,"=",createString(mMaxStaleSeconds),st(HttpText)::CRLF);
     }
 
-    if (mIsPrivate) {
-        result = result->append("private, ");
+    if(mMinFreshSeconds!= -1 && type == st(HttpProtocol)::HttpRequest) {
+        result = result->append(st(HttpHeader)::CacheControl, ":",
+                                MaxStale,"=",createString(mMaxStaleSeconds),st(HttpText)::CRLF);
     }
 
-    if (mIsPublic) {
-        result = result->append("public, ");
+    if(mOnlyIfCached && type == st(HttpProtocol)::HttpRequest) {
+        result = result->append(st(HttpHeader)::CacheControl, ":",OnlyIfCached,st(HttpText)::CRLF);
     }
 
-    if (mMustRevalidate) {
-        result = result->append("must-revalidate, ");
+    if(mNoTransform) {
+        result = result->append(st(HttpHeader)::CacheControl, ":",NotTransform,st(HttpText)::CRLF);
     }
 
-    if (mMaxStaleSeconds != -1) {
-        result =
-            result->append("max-stale=", createString(mMaxStaleSeconds), ", ");
+    if(mIsPublic && type == st(HttpProtocol)::HttpResponse) {
+        result = result->append(st(HttpHeader)::CacheControl, ":",CachePublic,st(HttpText)::CRLF);
+    }
+    
+    if(mIsPrivate && type == st(HttpProtocol)::HttpResponse) {
+        result = result->append(st(HttpHeader)::CacheControl, ":",CachePrivate,st(HttpText)::CRLF);
     }
 
-    if (mMinFreshSeconds != -1) {
-        result =
-            result->append("min-fresh=", createString(mMinFreshSeconds), ", ");
+    if(mMustRevalidate && type == st(HttpProtocol)::HttpResponse) {
+        result = result->append(st(HttpHeader)::CacheControl, ":",MustRevalidate,st(HttpText)::CRLF);
     }
 
-    if (mOnlyIfCached) {
-        result = result->append("only-if-cached, ");
+    if(mSMaxAgeSeconds != -1 && type == st(HttpProtocol)::HttpResponse) {
+        result = result->append(st(HttpHeader)::CacheControl, ":",
+                                SMaxAge,"=",createString(mSMaxAgeSeconds),st(HttpText)::CRLF);
     }
 
-    if (mNoTransform) {
-        result = result->append("no-transform, ");
+    if(result->size() > 0) {
+        return result->subString(0,result->size() - st(HttpText)::CRLF->size());
     }
 
-    if (result->size() == 0) {
-        return createString("");
-    }
-
-    return result->subString(0, result->size() - 2);
+    return result;
 }
 
 } // namespace obotcha

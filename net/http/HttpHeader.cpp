@@ -269,6 +269,10 @@ String _HttpHeader::toString(int type) {
         iterator->next();
     }
 
+    if(mCacheControl != nullptr) {
+        html->append(mCacheControl->toString(type));
+    }
+    
     if (html->size() == 0) {
         return html;
     }
