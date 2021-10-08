@@ -103,7 +103,6 @@ private:
     int mMinFreshSeconds;
     bool mOnlyIfCached;
     bool mNoTransform;
-    String mHeaderValue;
 };
 
 }

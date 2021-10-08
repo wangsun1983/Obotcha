@@ -490,8 +490,7 @@ public:
 
 private:
     String mContentType;
-    String mSubtype;
-    String mSubValue;
+    String mBoundary;
     String mCharset;
 
 };

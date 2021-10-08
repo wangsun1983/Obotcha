@@ -13,47 +13,7 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
     int mPropertyMaxAge = -1;
 
     ArrayList<HttpCookie> cookies = createArrayList<HttpCookie>();
-
-    while (pos < value->size()) {
-        int tokenStart = pos;
-        pos = st(HttpHeaderContentParser)::skipUntil(value, pos,
-                                                     createString("=,;"));
-        String directive =
-            value->subString(tokenStart, pos - tokenStart)->trim();
-        String parameter = nullptr;
-
-        if (pos == value->size() || value->charAt(pos) == ',' ||
-            value->charAt(pos) == ';') {
-            pos++; // consume ',' or ';' (if necessary)
-            parameter = nullptr;
-        } else {
-            pos++; // consume '='
-            pos = st(HttpHeaderContentParser)::skipWhitespace(value, pos);
-            // quoted string
-            if (pos < value->size() && value->charAt(pos) == '\"') {
-                pos++; // consume '"' open quote
-                int parameterStart = pos;
-                pos = st(HttpHeaderContentParser)::skipUntil(
-                    value, pos, createString("\""));
-                parameter = value->subString(parameterStart, pos);
-                pos++; // consume '"' close quote (if necessary)
-                // unquoted string
-            } else {
-                int parameterStart = pos;
-                if (directive->endsWithIgnoreCase(
-                        st(HttpCookie)::COOKIE_PROPERTY_EXPIRES)) {
-                    pos = st(HttpHeaderContentParser)::skipUntil(
-                        value, pos, createString(";"));
-                } else {
-                    pos = st(HttpHeaderContentParser)::skipUntil(
-                        value, pos, createString(",;"));
-                }
-                parameter =
-                    value->subString(parameterStart, (pos - parameterStart))
-                        ->trim();
-                pos++;
-            }
-        }
+    st(HttpHeaderContentParser)::import(value,[&](String directive,String parameter) {
         if (st(HttpCookie)::COOKIE_PROPERTY_SECURE->equalsIgnoreCase(
                 directive)) {
             mPropertySecure = true;
@@ -79,7 +39,7 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
             // mValue = parameter;
             cookies->add(createHttpCookie(directive, parameter));
         }
-    }
+    });
 
     auto iterator = cookies->getIterator();
     while (iterator->hasValue()) {

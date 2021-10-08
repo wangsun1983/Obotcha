@@ -38,4 +38,48 @@ int _HttpHeaderContentParser::parseSeconds(String value, int defaultValue) {
     }
 }
 
+int _HttpHeaderContentParser::import(String value,const ParseResult &callback) {
+    if (value != nullptr) {
+        int pos = 0;
+        while (pos < value->size()) {
+            int tokenStart = pos;
+            pos = st(HttpHeaderContentParser)::skipUntil(value, pos,
+                                                         createString("=,;"));
+            String directive =
+                value->subString(tokenStart, pos - tokenStart)->trim();
+            String parameter = nullptr;
+
+            if (pos == value->size() || value->charAt(pos) == ',' || value->charAt(pos) == ';') {
+                pos++; // consume ',' or ';' (if necessary)
+                parameter = nullptr;
+            } else {
+                pos++; // consume '='
+                pos = st(HttpHeaderContentParser)::skipWhitespace(value, pos);
+                // quoted string
+                if (pos < value->size() && value->charAt(pos) == '\"') {
+                    pos++; // consume '"' open quote
+                    int parameterStart = pos;
+                    pos = st(HttpHeaderContentParser)::skipUntil(
+                        value, pos, createString("\""));
+                    parameter = value->subString(parameterStart, pos);
+                    pos++; // consume '"' close quote (if necessary)
+                    // unquoted string
+                } else {
+                    int parameterStart = pos;
+                    pos = st(HttpHeaderContentParser)::skipUntil(
+                        value, pos, createString(",;"));
+                    parameter =
+                        value->subString(parameterStart, (pos - parameterStart))
+                            ->trim();
+                    pos++;
+                }
+            }
+            
+            callback(directive,parameter);
+        }
+    }
+
+    return 0;
+}
+
 } // namespace obotcha
