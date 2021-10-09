@@ -4,6 +4,7 @@
 #include "HttpText.hpp"
 #include "HttpUrlParser.hpp"
 #include "HttpVersionParser.hpp"
+#include "HttpHeaderLink.hpp"
 
 namespace obotcha {
 
@@ -161,7 +162,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                     return mHeader;
                 } else {
                     // if prev content value contains '\r\n'
-                    String value = mHeader->getValue(mKey);
+                    String value = mHeader->get(mKey);
                     const char *valuestr = (const char *)content->toValue();
                     int size = content->size();
                     int start = 0;
@@ -188,7 +189,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                     }
 
                     value = value->append(appendValue);
-                    mHeader->setValue(mKey, value);
+                    mHeader->set(mKey, value);
                     mCrlfCount = 0;
                 }
             }
@@ -226,8 +227,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                     //                      value->size() - mCrlfCount - start);
                 }
                 mCrlfCount = 0;
-                parseParticularHeader(mKey, mValue);
-                mHeader->setValue(mKey, mValue);
+                mHeader->set(mKey, mValue);
                 // may be we should parse value
                 mStatus = ContentKey;
                 mNextStatus = -1;
@@ -238,63 +238,6 @@ HttpHeader _HttpHeaderParser::doParse() {
     }
 
     return nullptr;
-}
-
-int _HttpHeaderParser::parseParticularHeader(String key, String value) {
-    const char *p = key->toChars();
-    switch (p[0]) {
-    case 'c': {
-        if (key->equals(st(HttpHeader)::Cookie)) {
-            ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
-            auto iterator = cookies->getIterator();
-            while (iterator->hasValue()) {
-                mHeader->addCookie(iterator->getValue());
-                iterator->next();
-            }
-            return 0;
-        } else if (key->equals(st(HttpHeader)::CacheControl)) {
-            auto cacheControl = mHeader->getCacheControl();
-            if(cacheControl == nullptr) {
-                cacheControl = createHttpCacheControl();
-                mHeader->setCacheControl(cacheControl);
-            }
-            cacheControl->import(value);
-            return 0;
-        } else if (key->equals(st(HttpHeader)::ContentType)) {
-            mHeader->setContentType(value);
-            return 0;
-        } else if (key->equals(st(HttpHeader)::ContentLength)) {
-            mHeader->setContentLength(value->trimAll()->toBasicInt());
-            return 0;
-        } else if (key->equals(st(HttpHeader)::Connection)) {
-            if (st(HttpHeader)::ConnectionClose->equals(value->trimAll())) {
-                mHeader->setConnected(false);
-                return 0;
-            }
-        }
-        break;
-    }
-
-    case 's': {
-        if (key->equals(st(HttpHeader)::SetCookie)) {
-            ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
-            auto iterator = cookies->getIterator();
-            while (iterator->hasValue()) {
-                mHeader->addCookie(iterator->getValue());
-                iterator->next();
-            }
-            return 0;
-        }
-    }
-
-    case 'l': {
-        if (key->equals(st(HttpHeader)::Link)) {
-            mHeader->addLink(value);
-            return 0;
-        }
-    }
-    }
-    return -1;
 }
 
 } // namespace obotcha

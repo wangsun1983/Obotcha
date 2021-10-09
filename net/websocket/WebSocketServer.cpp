@@ -141,9 +141,9 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,sp<_HttpRe
                 return;
             }
             
-            String upgrade = header->getValue(st(HttpHeader)::Upgrade);
-            String key = header->getValue(st(HttpHeader)::SecWebSocketKey);
-            String version = header->getValue(st(HttpHeader)::SecWebSocketVersion);
+            String upgrade = header->get(st(HttpHeader)::Upgrade);
+            String key = header->get(st(HttpHeader)::SecWebSocketKey);
+            String version = header->get(st(HttpHeader)::SecWebSocketVersion);
 
             if (upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
                 // remove fd from http epoll
@@ -157,8 +157,8 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,sp<_HttpRe
                 WebSocketLinker wsClient = mLinkerManager->addLinker(client->getSocket(),
                                                                     version->toBasicInt());
 
-                wsClient->setProtocols(header->getValue(st(HttpHeader)::SecWebSocketProtocol));
-                wsClient->setWebSocketKey(header->getValue(st(HttpHeader)::SecWebSocketKey));
+                wsClient->setProtocols(header->get(st(HttpHeader)::SecWebSocketProtocol));
+                wsClient->setWebSocketKey(header->get(st(HttpHeader)::SecWebSocketKey));
                 WebSocketParser parser = wsClient->getParser();
 
                 if (!parser->validateHandShake(header)) {

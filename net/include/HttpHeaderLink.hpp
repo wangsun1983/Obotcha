@@ -5,6 +5,7 @@
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
+#include "HashMap.hpp"
 
 namespace obotcha {
 
@@ -20,9 +21,13 @@ public:
     String getUrl();
     String getProp(String);
 
+    void removeProp(String);
+
+    String toString();
 private:
     String mUrl;
     HashMap<String,String> mProps;
+    void import(String);
 };
 
 }

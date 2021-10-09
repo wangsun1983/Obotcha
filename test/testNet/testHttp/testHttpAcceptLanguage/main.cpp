@@ -10,11 +10,11 @@
 
 using namespace obotcha;
 
-extern void testContentTypeParse();
-extern void testContentTypeToString();
+extern void testLanguageParse();
+extern void testLanguageToString();
 
 int main() {
-    testContentTypeToString();
-    testContentTypeParse();
+    testLanguageParse();
+    testLanguageToString();
     return 0;
 }

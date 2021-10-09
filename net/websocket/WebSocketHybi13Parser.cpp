@@ -128,7 +128,7 @@ ByteArray _WebSocketHybi13Parser::parsePingBuff(){
 }
 
 String _WebSocketHybi13Parser::getOrigin(HttpHeader h) {
-    return h->getValue(st(HttpHeader)::Origin);
+    return h->get(st(HttpHeader)::Origin);
 }
 
 int _WebSocketHybi13Parser::getVersion() {
@@ -136,7 +136,7 @@ int _WebSocketHybi13Parser::getVersion() {
 }
 
 WebSocketPermessageDeflate _WebSocketHybi13Parser::validateExtensions(HttpHeader h) {
-    String extensions = h->getValue(st(HttpHeader)::SecWebSocketExtensions);
+    String extensions = h->get(st(HttpHeader)::SecWebSocketExtensions);
     if(extensions == nullptr) {
         return nullptr;
     }
@@ -260,7 +260,7 @@ bool _WebSocketHybi13Parser::validateHandShake(HttpHeader h) {
         return false;
     }
 
-    if(h->getValue(st(HttpHeader)::SecWebSocketKey) == nullptr) {
+    if(h->get(st(HttpHeader)::SecWebSocketKey) == nullptr) {
         return false;
     }
 
@@ -269,7 +269,7 @@ bool _WebSocketHybi13Parser::validateHandShake(HttpHeader h) {
 
 ArrayList<String> _WebSocketHybi13Parser::extractSubprotocols(HttpHeader h) {
     ArrayList<String> protocols = createArrayList<String>();
-    String protocolstr = h->getValue(st(HttpHeader)::SecWebSocketProtocol);
+    String protocolstr = h->get(st(HttpHeader)::SecWebSocketProtocol);
     if(protocolstr == nullptr) {
         return nullptr;
     }

@@ -44,14 +44,14 @@ int _WebSocketHybi00Parser::getVersion() {
 
 bool _WebSocketHybi00Parser::validateHandShake(HttpHeader h) {
 
-    String method = h->getValue(st(HttpHeader)::Method);
+    String method = h->get(st(HttpHeader)::Method);
     if(h == nullptr || !method->equalsIgnoreCase("GET")) {
         return false;
     }
 
-    if(h->getValue(st(HttpHeader)::SecWebSocketKey1) == nullptr
-      ||h->getValue(st(HttpHeader)::SecWebSocketKey2) == nullptr
-      ||h->getValue(st(HttpHeader)::SecWebSocketKey3) == nullptr) {
+    if(h->get(st(HttpHeader)::SecWebSocketKey1) == nullptr
+      ||h->get(st(HttpHeader)::SecWebSocketKey2) == nullptr
+      ||h->get(st(HttpHeader)::SecWebSocketKey3) == nullptr) {
           return false;
     }
 
@@ -73,7 +73,7 @@ WebSocketPermessageDeflate _WebSocketHybi00Parser::validateExtensions(HttpHeader
 
 ArrayList<String> _WebSocketHybi00Parser::extractSubprotocols(HttpHeader h) {
     ArrayList<String> protocols = createArrayList<String>();
-    String protocolstr = h->getValue(st(HttpHeader)::SecWebSocketProtocol);
+    String protocolstr = h->get(st(HttpHeader)::SecWebSocketProtocol);
     if(protocolstr == nullptr) {
         return nullptr;
     }

@@ -14,68 +14,17 @@
 #include "HttpContentType.hpp"
 #include "HttpVersion.hpp"
 #include "HttpUrl.hpp"
+#include "HttpHeaderLink.hpp"
+#include "HttpAcceptEncoding.hpp"
+#include "HttpAcceptLanguage.hpp"
+#include "HttpAcceptCharSet.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(HttpHeader) {
 
 public:
-    _HttpHeader();
-
-    void addHttpHeader(sp<_HttpHeader>);
-    
-    void reset();
-    
-    void setValue(String header,String value);
-    
-    String getValue(String);
-
-    MapIterator<String,String> getIterator();
-
-    void addCookie(HttpCookie);
-    ArrayList<HttpCookie> getCookies();
-
-    //void updateCacheControl();
-    HttpCacheControl getCacheControl();
-    void setCacheControl(HttpCacheControl);
-    
-    void setContentType(String);
-    void setContentType(HttpContentType);
-    HttpContentType getContentType();
-
-    String toString(int);
-
-    int getMethod();
-    void setMethod(int);
-
-    HttpUrl getUrl();
-    void setUrl(HttpUrl);
-
-    HttpVersion getVersion();
-    void setVersion(HttpVersion);
-
-    int getResponseStatus();
-    void setResponseStatus(int);
-
-    String getResponseReason();
-    void setResponseReason(String);
-
-    int getContentLength();
-    void setContentLength(int);
-
-    bool isConnected();
-    void setConnected(bool);
-
-    void addLink(String);
-    ArrayList<String> getLink();
-
-    int getType();
-    void setType(int);
-
-    void clear();
-
-    int size();
-    
+    ////-------- defination ---------////
     const static String Method;
     const static String Path;
     const static String Scheme;
@@ -182,6 +131,72 @@ public:
     //http connection
     const static String ConnectionClose;
 
+    ////-------- function -------////
+    _HttpHeader();
+
+    void addHttpHeader(sp<_HttpHeader>);
+    
+    void reset();
+    
+    void set(String header,String value);
+    
+    String get(String);
+
+    MapIterator<String,String> getIterator();
+
+    void addCookie(HttpCookie);
+    ArrayList<HttpCookie> getCookies();
+
+    //void updateCacheControl();
+    HttpCacheControl getCacheControl();
+    void setCacheControl(HttpCacheControl);
+    
+    //void setContentType(String);
+    void setContentType(HttpContentType);
+    HttpContentType getContentType();
+
+    void setLink(HttpHeaderLink);
+    HttpHeaderLink getLink();
+
+    void setAcceptEncoding(HttpAcceptEncoding);
+    HttpAcceptEncoding getAcceptEncoding();
+
+    void setAcceptLanguage(HttpAcceptLanguage);
+    HttpAcceptLanguage getAcceptLanguage();
+
+    void setAcceptCharSet(HttpAcceptCharSet);
+    HttpAcceptCharSet getAcceptCharSet();
+
+    String toString(int);
+
+    int getMethod();
+    void setMethod(int);
+
+    HttpUrl getUrl();
+    void setUrl(HttpUrl);
+
+    HttpVersion getVersion();
+    void setVersion(HttpVersion);
+
+    int getResponseStatus();
+    void setResponseStatus(int);
+
+    String getResponseReason();
+    void setResponseReason(String);
+
+    int getContentLength();
+    void setContentLength(int);
+
+    bool isConnected();
+    void setConnected(bool);
+
+    int getType();
+    void setType(int);
+
+    void clear();
+
+    int size();
+    
     enum Type {
         Request = 100,
         Response
@@ -193,11 +208,17 @@ private:
 
     ArrayList<HttpCookie> mCookies;
 
-    ArrayList<String> mLinks;
+    HttpHeaderLink mLink;
 
     HttpCacheControl mCacheControl;
 
     HttpContentType mContentType;
+
+    HttpAcceptEncoding mAcceptEncoding;
+
+    HttpAcceptLanguage mAcceptLanguage;
+
+    HttpAcceptCharSet mAcceptCharSet;
 
     int mType;
 

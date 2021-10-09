@@ -10,7 +10,7 @@
 namespace obotcha {
 
 String _WebSocketHybi08Parser::getOrigin(HttpHeader h) {
-    return h->getValue(st(HttpHeader)::SecWebSocketOrigin);
+    return h->get(st(HttpHeader)::SecWebSocketOrigin);
 }
 
 int _WebSocketHybi08Parser::getVersion() { return 8; }

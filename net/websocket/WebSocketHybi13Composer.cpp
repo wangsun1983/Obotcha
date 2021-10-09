@@ -28,54 +28,55 @@ _WebSocketHybi13Composer::_WebSocketHybi13Composer(int type,int ver,int maxFrame
 
 HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl) {
     HttpRequest packet = createHttpRequest();
-    packet->getHeader()->setMethod(st(HttpMethod)::Get);
+    auto header = packet->getHeader();
+    header->setMethod(st(HttpMethod)::Get);
     //packet->setHeader(client->getHttpHeader());
-    packet->getHeader()->setUrl(httpUrl);
-    packet->getHeader()->setVersion(createHttpVersion(1,1));
+    header->setUrl(httpUrl);
+    header->setVersion(createHttpVersion(1,1));
 
     String host = httpUrl->getHost()->append(":",createString(httpUrl->getPort()));
-    packet->getHeader()->setValue(st(HttpHeader)::Host,host);
-    packet->getHeader()->setValue(st(HttpHeader)::SecWebSocketVersion,createString("13"));
-    if(packet->getHeader()->getValue(st(HttpHeader)::Accept) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::Accept,createString("*/*"));
+    header->set(st(HttpHeader)::Host,host);
+    header->set(st(HttpHeader)::SecWebSocketVersion,createString("13"));
+    if(header->get(st(HttpHeader)::Accept) == nullptr) {
+        header->set(st(HttpHeader)::Accept,createString("*/*"));
     }
 
-    if(packet->getHeader()->getValue(st(HttpHeader)::AcceptLanguage) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::AcceptLanguage,createString("en-US,en;q=0.5"));
+    if(header->get(st(HttpHeader)::AcceptLanguage) == nullptr) {
+        header->set(st(HttpHeader)::AcceptLanguage,createString("en-US,en;q=0.5"));
     }
 
-    if(packet->getHeader()->getValue(st(HttpHeader)::AcceptEncoding) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::AcceptEncoding,createString("gzip, deflate"));
+    if(header->getAcceptEncoding() == nullptr) {
+        header->set(st(HttpHeader)::AcceptEncoding,createString("gzip, deflate"));
     }
 
-    if(packet->getHeader()->getValue(st(HttpHeader)::Origin) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::Origin,createString("null"));
+    if(header->get(st(HttpHeader)::Origin) == nullptr) {
+        header->set(st(HttpHeader)::Origin,createString("null"));
     }
 
-    if(packet->getHeader()->getValue(st(HttpHeader)::SecWebSocketKey) == nullptr) {
+    if(header->get(st(HttpHeader)::SecWebSocketKey) == nullptr) {
         //we should gen a sec key
         Random rand = createRandom();
         ByteArray array = createByteArray(16);
         rand->nextBytes(array);
         Base64 base64key = createBase64();
         ByteArray key = base64key->encode(array);
-        packet->getHeader()->setValue(st(HttpHeader)::SecWebSocketKey,key->toString());
+        header->set(st(HttpHeader)::SecWebSocketKey,key->toString());
     }
 
-    if(packet->getHeader()->getValue(st(HttpHeader)::Connection) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::Connection,createString("keep-alive, Upgrade"));
+    if(header->get(st(HttpHeader)::Connection) == nullptr) {
+        header->set(st(HttpHeader)::Connection,createString("keep-alive, Upgrade"));
     }
 
-    if(packet->getHeader()->getValue(st(HttpHeader)::Upgrade) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::Upgrade,createString("websocket"));
+    if(header->get(st(HttpHeader)::Upgrade) == nullptr) {
+        header->set(st(HttpHeader)::Upgrade,createString("websocket"));
     }
 
-    if(packet->getHeader()->getValue(st(HttpHeader)::Pragma) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::Pragma,createString("no-cache"));
+    if(header->get(st(HttpHeader)::Pragma) == nullptr) {
+        header->set(st(HttpHeader)::Pragma,createString("no-cache"));
     }
 
-    if(packet->getHeader()->getValue(st(HttpHeader)::CacheControl) == nullptr) {
-        packet->getHeader()->setValue(st(HttpHeader)::CacheControl,createString("no-cache"));
+    if(header->get(st(HttpHeader)::CacheControl) == nullptr) {
+        header->set(st(HttpHeader)::CacheControl,createString("no-cache"));
     }
 
     return packet;

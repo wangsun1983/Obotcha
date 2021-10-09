@@ -76,6 +76,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
             }
 
             HttpHeader header = mHttpHeaderParser->doParse();
+            
             if (header == nullptr) {
                 if (mSubStatus == HeadKeyValueParse) {
                     packets->add(mHttpPacket);
@@ -95,9 +96,10 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
             // printf("HttpPacketParser BodyStart \n");
             // check whether there is a multipart
             int contentlength = mHttpPacket->getHeader()->getContentLength();
-            String contenttype =
-                mHttpPacket->getHeader()->getValue(st(HttpHeader)::ContentType);
-            String encodingtype = mHttpPacket->getHeader()->getValue(
+            //String contenttype =
+            //    mHttpPacket->getHeader()->get(st(HttpHeader)::ContentType);
+            auto contenttype = mHttpPacket->getHeader()->getContentType();
+            String encodingtype = mHttpPacket->getHeader()->get(
                 st(HttpHeader)::TransferEncoding);
             if (encodingtype != nullptr &&
                 encodingtype->indexOfIgnoreCase(
@@ -131,7 +133,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                  * the end of body is specified by the EOF.
                  */
                 // printf("HttpPacketParser BodyStart trace2\n");
-                if (mHttpPacket->getHeader()->getValue(
+                if (mHttpPacket->getHeader()->get(
                         st(HttpHeader)::Upgrade) != nullptr ||
                     mHttpPacket->getHeader()->getMethod() ==
                         st(HttpMethod)::Connect) {
@@ -162,13 +164,13 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
             }
 
             if (contenttype != nullptr &&
-                contenttype->indexOfIgnoreCase(
+                contenttype->getType()->indexOfIgnoreCase(
                     st(HttpContentType)::MultiPartFormData) >= 0) {
                 // printf("HttpPacketParser BodyStart trace3\n");
                 if (mMultiPartParser == nullptr) {
                     try {
                         mMultiPartParser = createHttpMultiPartParser(
-                            contenttype, contentlength);
+                            contenttype->getType(), contentlength);
                     } catch (InitializeException &e) {
                         printf("HttpPacketParser BodyStart trace1_1\n");
                     }
@@ -197,7 +199,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                     // check whether it is a X-URLEncoded
                     if (contenttype != nullptr &&
                         st(HttpContentType)::XFormUrlEncoded->indexOfIgnoreCase(
-                            contenttype) >= 0) {
+                            contenttype->getType()) >= 0) {
                         ArrayList<KeyValuePair<String, String>>
                             xFormEncodedPair =
                                 st(HttpXFormUrlEncodedParser)::parse(
@@ -214,7 +216,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                         }
                     }
                     // we should check whether it is a upgrade message
-                    if (mHttpPacket->getHeader()->getValue(
+                    if (mHttpPacket->getHeader()->get(
                             st(HttpHeader)::Upgrade) != nullptr) {
                         int resetLength = mReader->getReadableLength();
                         if (resetLength > 0) {

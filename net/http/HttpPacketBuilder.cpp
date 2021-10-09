@@ -61,7 +61,7 @@ _HttpPacketBuilder *_HttpPacketBuilder::setUrl(String url) {
 
 _HttpPacketBuilder *_HttpPacketBuilder::addHeaderValue(String key,
                                                        String value) {
-    header->setValue(key, value);
+    header->set(key, value);
     return this;
 }
 

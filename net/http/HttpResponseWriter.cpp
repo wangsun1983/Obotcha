@@ -81,11 +81,11 @@ int _HttpResponseWriter::write(HttpResponse response, bool flush) {
     // update content-length
     int contentlength = 0;
     if (file != nullptr) {
-        response->getHeader()->setValue(st(HttpHeader)::TransferEncoding,
+        response->getHeader()->set(st(HttpHeader)::TransferEncoding,
                                         st(HttpHeader)::TransferChunked);
     } else {
         contentlength = computeContentLength(response);
-        response->getHeader()->setValue(st(HttpHeader)::ContentLength,
+        response->getHeader()->set(st(HttpHeader)::ContentLength,
                                         createString(contentlength));
     }
     AUTO_FLUSH(writer->writeString(

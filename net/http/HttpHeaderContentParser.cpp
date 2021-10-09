@@ -61,7 +61,7 @@ int _HttpHeaderContentParser::import(String value,const ParseResult &callback) {
                     int parameterStart = pos;
                     pos = st(HttpHeaderContentParser)::skipUntil(
                         value, pos, createString("\""));
-                    parameter = value->subString(parameterStart, pos);
+                    parameter = value->subString(parameterStart, pos - parameterStart);
                     pos++; // consume '"' close quote (if necessary)
                     // unquoted string
                 } else {

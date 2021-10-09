@@ -38,8 +38,6 @@ private:
     int mStatus;
     int mNextStatus;
 
-    int parseParticularHeader(String key,String value);
-
     ByteRingArrayReader mReader;
     HttpHeader mHeader;
     int mCrlfCount;

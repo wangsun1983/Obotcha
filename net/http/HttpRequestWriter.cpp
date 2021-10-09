@@ -76,11 +76,11 @@ int _HttpRequestWriter::write(HttpRequest p) {
             p->getHeader()->setContentType(contentType);
             // p->setHeader(st(HttpHeader)::ContentType,contentType);
             long length = computeContentLength(p, boundary);
-            p->getHeader()->setValue(st(HttpHeader)::ContentLength,
+            p->getHeader()->set(st(HttpHeader)::ContentLength,
                                      createString(length));
         } else if (encodedUrlMap != nullptr && encodedUrlMap->size() != 0) {
             long length = computeContentLength(p);
-            p->getHeader()->setValue(st(HttpHeader)::ContentLength,
+            p->getHeader()->set(st(HttpHeader)::ContentLength,
                                      createString(length));
             // p->setHeader(st(HttpHeader)::ContentType,st(HttpContentType)::XFormUrlEncoded);
             contentType = createHttpContentType();
@@ -89,7 +89,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
         } else {
             ByteArray body = p->getEntity()->getContent();
             if (body != nullptr && body->size() > 0) {
-                p->getHeader()->setValue(st(HttpHeader)::ContentLength,
+                p->getHeader()->set(st(HttpHeader)::ContentLength,
                                          createString(body->size()));
             }
             // contentType = createHttpContentType();

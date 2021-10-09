@@ -10,6 +10,7 @@
 #include "HttpHeader.hpp"
 #include "HttpText.hpp"
 #include "String.hpp"
+#include "HttpCookieParser.hpp"
 
 namespace obotcha {
 
@@ -149,12 +150,12 @@ _HttpHeader::_HttpHeader() {
     mContentLength = -1;
     mIsConnected = true;
     mType = Type::Request;
-    mLinks = nullptr;
+    mLink = nullptr;
 }
 
 void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
     h->mValues->foreach ([this](String key, String value) {
-        this->setValue(key, value);
+        set(key, value);
         return Global::Continue;
     });
 
@@ -162,15 +163,112 @@ void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
         this->mCookies->add(cookie);
         return Global::Continue;
     });
+
+    //http cache control?
+    if(h->mCacheControl != nullptr) {
+        mCacheControl = h->mCacheControl;
+    }
+
+    if(h->mLink != nullptr) {
+        mLink = h->mLink;
+    }
 }
 
-void _HttpHeader::reset() { mValues->clear(); }
-
-void _HttpHeader::setValue(String header, String value) {
-    mValues->put(header->toLowerCase(), value);
+void _HttpHeader::reset() { 
+    mValues->clear(); 
+    mCookies->clear();
+    mVersion = createHttpVersion();
+    mCacheControl = nullptr;
+    mMethod = -1;
+    mResponseReason = nullptr;
+    mContentLength = -1;
+    mIsConnected = true;
+    mType = Type::Request;
+    mLink = nullptr;
 }
 
-String _HttpHeader::getValue(String header) {
+void _HttpHeader::set(String key, String value) {
+    const char *p = key->toChars();
+    switch (p[0]) {
+        case 'a': {
+            if(key->equals(st(HttpHeader)::AcceptEncoding)) {
+                if(mAcceptEncoding == nullptr) {
+                    mAcceptEncoding = createHttpAcceptEncoding();
+                }
+                mAcceptEncoding->import(value);
+            } else if(key->equals(st(HttpHeader)::AcceptLanguage)) {
+                if(mAcceptLanguage == nullptr) {
+                    mAcceptLanguage = createHttpAcceptLanguage();
+                }
+                mAcceptLanguage->import(value);
+            } else if(key->equals(st(HttpHeader)::AcceptCharset)) {
+                if(mAcceptCharSet == nullptr) {
+                    mAcceptCharSet = createHttpAcceptCharSet();
+                }
+                mAcceptCharSet->import(value);
+            }
+            break;
+        }
+        
+        case 'c': {
+            if (key->equals(st(HttpHeader)::Cookie)) {
+                ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
+                auto iterator = cookies->getIterator();
+                while (iterator->hasValue()) {
+                    addCookie(iterator->getValue());
+                    iterator->next();
+                }
+                return;
+            } else if (key->equals(st(HttpHeader)::CacheControl)) {
+                auto cacheControl = getCacheControl();
+                if(cacheControl == nullptr) {
+                    cacheControl = createHttpCacheControl();
+                    setCacheControl(cacheControl);
+                }
+                cacheControl->import(value);
+                return;
+            } else if (key->equals(st(HttpHeader)::ContentType)) {
+                //setContentType(value);
+                mContentType = createHttpContentType(value);
+                return;
+            } else if (key->equals(st(HttpHeader)::ContentLength)) {
+                setContentLength(value->trimAll()->toBasicInt());
+                return;
+            } else if (key->equals(st(HttpHeader)::Connection)) {
+                if (st(HttpHeader)::ConnectionClose->equals(value->trimAll())) {
+                    setConnected(false);
+                    return;
+                }
+            }
+            break;
+        }
+
+        case 's': {
+            if (key->equals(st(HttpHeader)::SetCookie)) {
+                ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
+                auto iterator = cookies->getIterator();
+                while (iterator->hasValue()) {
+                    addCookie(iterator->getValue());
+                    iterator->next();
+                }
+                return;
+            }
+        }
+
+        case 'l': {
+            if (key->equals(st(HttpHeader)::Link)) {
+                HttpHeaderLink link = createHttpHeaderLink(value);
+                setLink(link);
+                return;
+            }
+        }
+    }
+
+    mValues->put(key->toLowerCase(), value);
+}
+
+String _HttpHeader::get(String header) {
+    //TODO
     return mValues->get(header->toLowerCase());
 }
 
@@ -206,16 +304,6 @@ bool _HttpHeader::isConnected() { return mIsConnected; }
 
 void _HttpHeader::setConnected(bool v) { mIsConnected = v; }
 
-void _HttpHeader::addLink(String l) {
-    if (mLinks == nullptr) {
-        mLinks = createArrayList<String>();
-    }
-
-    mLinks->add(l);
-}
-
-ArrayList<String> _HttpHeader::getLink() { return mLinks; }
-
 int _HttpHeader::getType() { return mType; }
 
 void _HttpHeader::setType(int v) { mType = v; }
@@ -232,16 +320,48 @@ HttpCacheControl _HttpHeader::getCacheControl() { return mCacheControl; }
 
 void _HttpHeader::setCacheControl(HttpCacheControl c) { mCacheControl = c; }
 
-void _HttpHeader::setContentType(String value) {
-    mContentType = createHttpContentType(value);
-    mValues->put(st(HttpHeader)::ContentType, value);
-}
+//void _HttpHeader::setContentType(String value) {
+//    mContentType = createHttpContentType(value);
+//    mValues->put(st(HttpHeader)::ContentType, value);
+//}
 
 void _HttpHeader::setContentType(HttpContentType contenttype) {
     mContentType = contenttype;
 }
 
 HttpContentType _HttpHeader::getContentType() { return mContentType; }
+
+void _HttpHeader::setLink(HttpHeaderLink l) {
+    mLink = l;
+}
+
+HttpHeaderLink _HttpHeader::getLink() {
+    return mLink;
+}
+
+void _HttpHeader::setAcceptEncoding(HttpAcceptEncoding s) {
+    mAcceptEncoding = s;
+}
+
+HttpAcceptEncoding _HttpHeader::getAcceptEncoding() {
+    return mAcceptEncoding;
+}
+
+void _HttpHeader::setAcceptLanguage(HttpAcceptLanguage l) {
+    mAcceptLanguage = l;
+}
+
+HttpAcceptLanguage _HttpHeader::getAcceptLanguage() {
+    return mAcceptLanguage;
+}
+
+void _HttpHeader::setAcceptCharSet(HttpAcceptCharSet s) {
+    mAcceptCharSet = s;
+}
+
+HttpAcceptCharSet _HttpHeader::getAcceptCharSet() {
+    return mAcceptCharSet;
+}
 
 MapIterator<String, String> _HttpHeader::getIterator() {
     return mValues->getIterator();

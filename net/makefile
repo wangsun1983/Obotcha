@@ -31,6 +31,11 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpconnection.o \
 		$(outtmp)/httpmethod.o \
 		$(outtmp)/httpheader.o \
+		$(outtmp)/httpheaderlink.o \
+		$(outtmp)/httpacceptencoding.o \
+		$(outtmp)/httpacceptlanguage.o \
+		$(outtmp)/httpacceptcharset.o \
+		$(outtmp)/httpacceptpatch.o \
 		$(outtmp)/httpheaderparser.o \
 		$(outtmp)/httpmethodparser.o \
 		$(outtmp)/httpheadercontentparser.o \
@@ -212,6 +217,21 @@ $(outtmp)/httplinker.o :$(netDir)/http/HttpLinker.cpp
 
 $(outtmp)/httpheader.o :$(netDir)/http/HttpHeader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeader.cpp -o $(outtmp)/httpheader.o 
+
+$(outtmp)/httpheaderlink.o :$(netDir)/http/HttpHeaderLink.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeaderLink.cpp -o $(outtmp)/httpheaderlink.o 
+
+$(outtmp)/httpacceptencoding.o :$(netDir)/http/HttpAcceptEncoding.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAcceptEncoding.cpp -o $(outtmp)/httpacceptencoding.o 
+
+$(outtmp)/httpacceptlanguage.o :$(netDir)/http/HttpAcceptLanguage.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAcceptLanguage.cpp -o $(outtmp)/httpacceptlanguage.o 
+
+$(outtmp)/httpacceptcharset.o :$(netDir)/http/HttpAcceptCharSet.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAcceptCharSet.cpp -o $(outtmp)/httpacceptcharset.o 
+
+$(outtmp)/httpacceptpatch.o :$(netDir)/http/HttpAcceptPatch.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAcceptPatch.cpp -o $(outtmp)/httpacceptpatch.o 
 
 $(outtmp)/httpheaderparser.o :$(netDir)/http/HttpHeaderParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeaderParser.cpp -o $(outtmp)/httpheaderparser.o 

@@ -109,7 +109,7 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
         mOutputStream = mSocket->getOutputStream();
         //wangsl
        
-        String extentions = response->getHeader()->getValue(st(HttpHeader)::SecWebSocketExtensions);
+        String extentions = response->getHeader()->get(st(HttpHeader)::SecWebSocketExtensions);
         if(extentions != nullptr) {
             if(extentions->indexOf("sec-websocket-extensions") > 0) {
                 printf("this is deflat \n");

@@ -441,8 +441,8 @@ void _HttpContentType::import(String value) {
         if (parameter == nullptr) {
             mContentType = directive;
         } else if (CharSet->equalsIgnoreCase(directive)) {
-            this->mCharset = parameter;
-        } else {
+            mCharset = parameter;
+        } else if(Boundary->equalsIgnoreCase(directive)) {
             mBoundary = parameter;
         }
     });
@@ -464,11 +464,14 @@ String _HttpContentType::getBoundary() { return mBoundary; }
 
 String _HttpContentType::toString() {
     String result = mContentType;
+    printf("mContentType is %s \n",mContentType->toChars());
     if (mCharset != nullptr) {
-        result = result->append(";charset = ", mCharset);
+        printf("trace1 \n");
+        result = result->append(";charset=", mCharset);
     }
     if (mBoundary != nullptr) {
-        result = result->append("; boundary=", mBoundary);
+        printf("trace2 \n");
+        result = result->append(";boundary=", mBoundary);
     }
     return result;
 }
