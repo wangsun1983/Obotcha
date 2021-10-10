@@ -13,6 +13,7 @@
 #include "Log.hpp"
 #include "String.hpp"
 #include "UUID.hpp"
+#include "HttpMime.hpp"
 
 namespace obotcha {
 
@@ -72,7 +73,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
             // st(HttpContentType)::MultiPartFormData->append(";","boundary=",boundary);
             contentType = createHttpContentType();
             contentType->setBoundary(boundary);
-            contentType->setType(st(HttpContentType)::MultiPartFormData);
+            contentType->setType(st(HttpMime)::MultiPartFormData);
             p->getHeader()->setContentType(contentType);
             // p->setHeader(st(HttpHeader)::ContentType,contentType);
             long length = computeContentLength(p, boundary);
@@ -84,7 +85,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
                                      createString(length));
             // p->setHeader(st(HttpHeader)::ContentType,st(HttpContentType)::XFormUrlEncoded);
             contentType = createHttpContentType();
-            contentType->setType(st(HttpContentType)::XFormUrlEncoded);
+            contentType->setType(st(HttpMime)::XFormUrlEncoded);
             p->getHeader()->setContentType(contentType);
         } else {
             ByteArray body = p->getEntity()->getContent();
@@ -136,7 +137,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
                 AUTO_FLUSH(
                     writer->writeString(st(HttpHeader)::ContentDisposition));
                 AUTO_FLUSH(writer->writeString(createString(": ")));
-                AUTO_FLUSH(writer->writeString(st(HttpContentType)::FormData));
+                AUTO_FLUSH(writer->writeString(st(HttpMime)::FormData));
                 AUTO_FLUSH(writer->writeString(createString("; ")));
                 AUTO_FLUSH(writer->writeString(st(HttpText)::MultiPartName));
                 AUTO_FLUSH(writer->writeString(createString("=")));
@@ -165,7 +166,7 @@ int _HttpRequestWriter::write(HttpRequest p) {
                 AUTO_FLUSH(
                     writer->writeString(st(HttpHeader)::ContentDisposition));
                 AUTO_FLUSH(writer->writeString(createString(": ")));
-                AUTO_FLUSH(writer->writeString(st(HttpContentType)::FormData));
+                AUTO_FLUSH(writer->writeString(st(HttpMime)::FormData));
                 AUTO_FLUSH(writer->writeString(createString("; ")));
                 AUTO_FLUSH(writer->writeString(st(HttpText)::MultiPartName));
                 AUTO_FLUSH(writer->writeString(createString("=")));
@@ -287,7 +288,7 @@ long _HttpRequestWriter::computeContentLength(HttpRequest req,
             }
 
             length += (st(HttpHeader)::ContentDisposition->size() + 2 /*": "*/
-                       + st(HttpContentType)::FormData->size() + 2    /*"; "*/
+                       + st(HttpMime)::FormData->size() + 2    /*"; "*/
                        + st(HttpText)::MultiPartName->size() + 3      /*=""*/
                        + nameSize + st(HttpText)::CRLF->size());
             length += st(HttpText)::CRLF->size();
@@ -318,7 +319,7 @@ long _HttpRequestWriter::computeContentLength(HttpRequest req,
             }
 
             length += st(HttpHeader)::ContentDisposition->size() + 2 /*": "*/
-                      + st(HttpContentType)::FormData->size() + 2    /*"; "*/
+                      + st(HttpMime)::FormData->size() + 2    /*"; "*/
                       + st(HttpText)::MultiPartName->size() + 5      /*=""; */
                       + nameSize + st(HttpText)::MultiPartFileName->size() +
                       3 /*=""*/

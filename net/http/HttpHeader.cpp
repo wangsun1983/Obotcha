@@ -20,6 +20,7 @@ const String _HttpHeader::Scheme = createString(":schema");
 const String _HttpHeader::Status = createString(":status");
 const String _HttpHeader::Protocol = createString(":protocol");
 const String _HttpHeader::Accept = createString("accept");
+const String _HttpHeader::AcceptPatch = createString("accept-patch");
 const String _HttpHeader::AcceptCharset = createString("accept-charset");
 const String _HttpHeader::AcceptDatetime = createString("accept-datetime");
 const String _HttpHeader::AcceptEncoding = createString("accept-encoding");
@@ -206,6 +207,16 @@ void _HttpHeader::set(String key, String value) {
                     mAcceptCharSet = createHttpAcceptCharSet();
                 }
                 mAcceptCharSet->import(value);
+            } else if(key->equals(st(HttpHeader)::AcceptPatch)) {
+                if(mAcceptPatch == nullptr) {
+                    mAcceptPatch = createHttpAcceptPatch();
+                }
+                mAcceptPatch->import(value);
+            } else if(key->equals(st(HttpHeader)::Accept)) {
+                if(mAccept == nullptr) {
+                    mAccept = createHttpAccept();
+                }
+                mAccept->import(value);
             }
             break;
         }

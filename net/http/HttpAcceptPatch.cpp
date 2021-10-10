@@ -24,7 +24,7 @@ void _HttpAcceptPatch::import(String s) {
             item->type = directive;
             patches->add(item);
         } else {
-            if(directive->equals("q")) {
+            if(directive->equals("charset")) {
                 patches->get(patches->size() - 1)->charset = parameter;
             }
         }

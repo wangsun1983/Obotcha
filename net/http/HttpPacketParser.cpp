@@ -7,6 +7,7 @@
 #include "HttpXFormUrlEncodedParser.hpp"
 #include "InitializeException.hpp"
 #include "Log.hpp"
+#include "HttpMime.hpp"
 
 namespace obotcha {
 
@@ -165,7 +166,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
 
             if (contenttype != nullptr &&
                 contenttype->getType()->indexOfIgnoreCase(
-                    st(HttpContentType)::MultiPartFormData) >= 0) {
+                    st(HttpMime)::MultiPartFormData) >= 0) {
                 // printf("HttpPacketParser BodyStart trace3\n");
                 if (mMultiPartParser == nullptr) {
                     try {
@@ -198,7 +199,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                     ByteArray content = mReader->pop();
                     // check whether it is a X-URLEncoded
                     if (contenttype != nullptr &&
-                        st(HttpContentType)::XFormUrlEncoded->indexOfIgnoreCase(
+                        st(HttpMime)::XFormUrlEncoded->indexOfIgnoreCase(
                             contenttype->getType()) >= 0) {
                         ArrayList<KeyValuePair<String, String>>
                             xFormEncodedPair =

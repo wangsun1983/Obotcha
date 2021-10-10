@@ -18,6 +18,8 @@
 #include "HttpAcceptEncoding.hpp"
 #include "HttpAcceptLanguage.hpp"
 #include "HttpAcceptCharSet.hpp"
+#include "HttpAccept.hpp"
+#include "HttpAcceptPatch.hpp"
 
 namespace obotcha {
 
@@ -32,6 +34,7 @@ public:
     const static String Protocol;
     const static String Accept;
     const static String AcceptCharset;
+    const static String AcceptPatch;
     const static String AcceptDatetime;
     const static String AcceptEncoding;
     const static String AcceptLanguage;
@@ -219,6 +222,10 @@ private:
     HttpAcceptLanguage mAcceptLanguage;
 
     HttpAcceptCharSet mAcceptCharSet;
+
+    HttpAcceptPatch mAcceptPatch;
+
+    HttpAccept mAccept;
 
     int mType;
 

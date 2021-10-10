@@ -35,7 +35,11 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpacceptencoding.o \
 		$(outtmp)/httpacceptlanguage.o \
 		$(outtmp)/httpacceptcharset.o \
+		$(outtmp)/httpaccept.o \
 		$(outtmp)/httpacceptpatch.o \
+		$(outtmp)/httpheaderdigest.o \
+		$(outtmp)/httpauthorization.o \
+		$(outtmp)/httpcontentdisposition.o \
 		$(outtmp)/httpheaderparser.o \
 		$(outtmp)/httpmethodparser.o \
 		$(outtmp)/httpheadercontentparser.o \
@@ -194,6 +198,12 @@ $(outtmp)/httpurlbuilder.o :$(netDir)/http/HttpUrlBuilder.cpp
 $(outtmp)/httpcookie.o :$(netDir)/http/HttpCookie.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpCookie.cpp -o $(outtmp)/httpcookie.o 
 
+$(outtmp)/httpauthorization.o :$(netDir)/http/HttpAuthorization.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAuthorization.cpp -o $(outtmp)/httpauthorization.o 
+
+$(outtmp)/httpcontentdisposition.o :$(netDir)/http/HttpContentDisposition.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpContentDisposition.cpp -o $(outtmp)/httpcontentdisposition.o 
+
 $(outtmp)/httpdate.o :$(netDir)/http/HttpDate.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpDate.cpp -o $(outtmp)/httpdate.o 
 
@@ -230,8 +240,14 @@ $(outtmp)/httpacceptlanguage.o :$(netDir)/http/HttpAcceptLanguage.cpp
 $(outtmp)/httpacceptcharset.o :$(netDir)/http/HttpAcceptCharSet.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAcceptCharSet.cpp -o $(outtmp)/httpacceptcharset.o 
 
+$(outtmp)/httpaccept.o :$(netDir)/http/HttpAccept.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAccept.cpp -o $(outtmp)/httpaccept.o 
+
 $(outtmp)/httpacceptpatch.o :$(netDir)/http/HttpAcceptPatch.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAcceptPatch.cpp -o $(outtmp)/httpacceptpatch.o 
+
+$(outtmp)/httpheaderdigest.o :$(netDir)/http/HttpHeaderDigest.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeaderDigest.cpp -o $(outtmp)/httpheaderdigest.o 
 
 $(outtmp)/httpheaderparser.o :$(netDir)/http/HttpHeaderParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeaderParser.cpp -o $(outtmp)/httpheaderparser.o 

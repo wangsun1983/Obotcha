@@ -47,6 +47,7 @@ int _HttpHeaderContentParser::import(String value,const ParseResult &callback) {
                                                          createString("=,;"));
             String directive =
                 value->subString(tokenStart, pos - tokenStart)->trim();
+            printf("directive is %s \n",directive->toChars());
             String parameter = nullptr;
 
             if (pos == value->size() || value->charAt(pos) == ',' || value->charAt(pos) == ';') {
@@ -62,8 +63,10 @@ int _HttpHeaderContentParser::import(String value,const ParseResult &callback) {
                     pos = st(HttpHeaderContentParser)::skipUntil(
                         value, pos, createString("\""));
                     parameter = value->subString(parameterStart, pos - parameterStart);
-                    pos++; // consume '"' close quote (if necessary)
+                    //pos++; // consume '"' close quote (if necessary)
+                    pos = st(HttpHeaderContentParser)::skipUntil(value, pos, createString(",;"));
                     // unquoted string
+                    pos++;
                 } else {
                     int parameterStart = pos;
                     pos = st(HttpHeaderContentParser)::skipUntil(

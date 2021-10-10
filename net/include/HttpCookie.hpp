@@ -11,6 +11,7 @@
 
 namespace obotcha {
 
+
 DECLARE_CLASS(HttpCookie) {
 
 public:

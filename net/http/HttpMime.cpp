@@ -7,7 +7,6 @@
 #include "AutoLock.hpp"
 #include "ByteArray.hpp"
 #include "File.hpp"
-#include "HttpContentType.hpp"
 #include "HttpMime.hpp"
 #include "HttpCookie.hpp"
 #include "Mutex.hpp"
@@ -17,6 +16,421 @@ namespace obotcha {
 
 FileTypeSearchNode *_HttpMime::mSuffixRootNode = nullptr;
 FileTypeSearchNode *_HttpMime::mContentTypeNode = nullptr;
+
+// text/html(html htm shtml)
+const String _HttpMime::TextHtml =
+    createString("text/html"); // text/html(html htm shtml)
+const String _HttpMime::SuffixHtml = createString("html");
+const String _HttpMime::SuffixHtm = createString("htm");
+const String _HttpMime::SuffixShtml = createString("shtml");
+
+// text/css(css)
+const String _HttpMime::TextCss = createString("text/css");
+const String _HttpMime::SuffixCss = createString("css");
+
+// text/xml(xml)
+const String _HttpMime::TextXml = createString("text/xml");
+const String _HttpMime::SuffixXml = createString("xml");
+
+// image/gif(gif)
+const String _HttpMime::ImageGif = createString("image/gif");
+const String _HttpMime::SuffixGif = createString("gif");
+
+// image/jpeg(jpeg jpg)
+const String _HttpMime::ImageJpeg = createString("image/jpeg");
+const String _HttpMime::SuffixJpeg = createString("jpeg");
+const String _HttpMime::SuffixJpg = createString("jpg");
+
+// application/javascript(js)
+const String _HttpMime::ApplicationJs =
+    createString("application/javascript");
+const String _HttpMime::SuffixJs = createString("js");
+
+// application/atom+xml(atom)
+const String _HttpMime::ApplicationAtomXml =
+    createString("application/atom+xml");
+const String _HttpMime::SuffixAtom = createString("atom");
+
+// application/rss+xml(rss)
+const String _HttpMime::ApplicationRss =
+    createString("application/rss+xml");
+const String _HttpMime::SuffixRss = createString("rss");
+
+// text/mathml(mml)
+const String _HttpMime::TextMathml = createString("text/mathml");
+const String _HttpMime::SuffixMml = createString("mml");
+
+// text/plain(txt)
+const String _HttpMime::TextPlain = createString("text/plain");
+const String _HttpMime::SuffixTxt = createString("txt");
+
+// text/vnd.sun.j2me.app-descriptor(jad)
+const String _HttpMime::TextVndSunJ2meAppDes =
+    createString("text/vnd.sun.j2me.app-descriptor");
+const String _HttpMime::SuffixJad = createString("jad");
+
+// text/vnd.wap.wml                                 wml;
+const String _HttpMime::TextVndWapWml = createString("text/vnd.wap.wml");
+const String _HttpMime::SuffixWml = createString("wml");
+
+// text/x-component                                 htc;
+const String _HttpMime::TextXComponent =
+    createString("text/x-component");
+const String _HttpMime::SuffixHtc = createString("htc");
+
+// image/png      png;
+const String _HttpMime::ImagePng = createString("image/png");
+const String _HttpMime::SuffixPng = createString("png");
+
+// image/svg+xml     svg svgz;
+const String _HttpMime::ImageSvgXml = createString("image/svg+xml");
+const String _HttpMime::SuffixSvg = createString("svg");
+const String _HttpMime::SuffixSvgz = createString("svgz");
+
+// image/tiff     tif tiff;
+const String _HttpMime::ImageTiff = createString("image/tiff");
+const String _HttpMime::SuffixTif = createString("tif");
+const String _HttpMime::SuffixTiff = createString("tiff");
+
+// image/vnd.wap.wbmp                               wbmp;
+const String _HttpMime::ImageVndWapWbmp =
+    createString("image/vnd.wap.wbmp");
+const String _HttpMime::SuffixWbmp = createString("wbmp");
+
+// image/webp     webp;
+const String _HttpMime::ImageWebp = createString("image/webp");
+const String _HttpMime::SuffixWebp = createString("webp");
+
+// image/x-icon      ico;
+const String _HttpMime::ImageXIcon = createString("image/x-icon");
+const String _HttpMime::SuffixIco = createString("ico");
+
+// image/x-jng    jng;
+const String _HttpMime::ImageXJng = createString("image/x-jng");
+const String _HttpMime::SuffixJng = createString("jng");
+
+// image/x-ms-bmp    bmp;
+const String _HttpMime::ImageXMsBmp = createString("image/x-ms-bmp");
+const String _HttpMime::SuffixBmp = createString("bmp");
+
+// application/font-woff                            woff;
+const String _HttpMime::ApplicationFontWoff =
+    createString("application/font-woff");
+const String _HttpMime::SuffixWoff = createString("woff");
+
+// application/java-archive                         jar war ear;
+const String _HttpMime::ApplicationJavaArchive =
+    createString("application/java-archive");
+const String _HttpMime::SuffixJar = createString("jar");
+const String _HttpMime::SuffixWar = createString("war");
+const String _HttpMime::SuffixEar = createString("ear");
+
+// application/json                                 json;
+const String _HttpMime::ApplicationJson =
+    createString("application/json");
+const String _HttpMime::SuffixJson = createString("json");
+
+// application/mac-binhex40                         hqx;
+const String _HttpMime::ApplicationMaxBinhex40 =
+    createString("application/mac-binhex40");
+const String _HttpMime::SuffixHqx = createString("hqx");
+
+// application/msword                               doc;
+const String _HttpMime::ApplicationMsword =
+    createString("application/msword");
+const String _HttpMime::SuffixDoc = createString("doc");
+
+// application/pdf                                  pdf;
+const String _HttpMime::ApplicationPdf = createString("application/pdf");
+const String _HttpMime::SuffixPdf = createString("pdf");
+
+// application/postscript                           ps eps ai;
+const String _HttpMime::ApplicationPostScript =
+    createString("application/postscript");
+const String _HttpMime::SuffixPs = createString("ps");
+const String _HttpMime::SuffixEps = createString("eps");
+const String _HttpMime::SuffixAi = createString("ai");
+
+// application/rtf                                  rtf;
+const String _HttpMime::ApplicationRtf = createString("application/rtf");
+const String _HttpMime::SuffixRtf = createString("rtf");
+
+// application/vnd.apple.mpegurl                    m3u8;
+const String _HttpMime::ApplicationVndAppleMpegurl =
+    createString("application/vnd.apple.mpegurl");
+const String _HttpMime::SuffixM3u8 = createString("m3u8");
+
+// application/vnd.google-earth.kml+xml             kml;
+const String _HttpMime::ApplicationVndGoogleEarthKmlXml =
+    createString("application/vnd.google-earth.kml+xml");
+const String _HttpMime::SuffixKml = createString("kml");
+
+// application/vnd.google-earth.kmz                 kmz;
+const String _HttpMime::ApplicationVndGoogleEarthKmz =
+    createString("application/vnd.google-earth.kmz");
+const String _HttpMime::SuffixKmz = createString("kmz");
+
+// application/vnd.ms-excel                         xls;
+const String _HttpMime::ApplicationVndMsExcel =
+    createString("application/vnd.ms-excel");
+const String _HttpMime::SuffixXls = createString("xls");
+
+// application/vnd.ms-fontobject                    eot;
+const String _HttpMime::ApplicationVndMsFontObject =
+    createString("application/vnd.ms-fontobject");
+const String _HttpMime::SuffixEot = createString("eot");
+
+// application/vnd.ms-powerpoint                    ppt;
+const String _HttpMime::ApplicationVndMsPpt =
+    createString("application/vnd.ms-powerpoint");
+const String _HttpMime::SuffixPpt = createString("ppt");
+
+// application/vnd.oasis.opendocument.graphics      odg;
+const String _HttpMime::ApplicationVndOasisOpendocGraphics =
+    createString("application/vnd.oasis.opendocument.graphics");
+const String _HttpMime::SuffixOdj = createString("odg");
+
+// application/vnd.oasis.opendocument.presentation  odp;
+const String _HttpMime::ApplicationVndOasisOpendocPresentation =
+    createString("application/vnd.oasis.opendocument.presentation");
+const String _HttpMime::SuffixOdp = createString("odp");
+
+// application/vnd.oasis.opendocument.spreadsheet   ods;
+const String _HttpMime::ApplicationVndOasisOpendocSpreadsheet =
+    createString("application/vnd.oasis.opendocument.spreadsheet");
+const String _HttpMime::SuffixOds = createString("ods");
+
+// application/vnd.oasis.opendocument.text          odt;
+const String _HttpMime::ApplicationVndOasisOpendocText =
+    createString("application/vnd.oasis.opendocument.text");
+const String _HttpMime::SuffixOdt = createString("odt");
+
+// application/vnd.openxmlformats-officedocument.presentationml.presentation
+// pptx;
+const String _HttpMime::ApplicationVndOpenxmlPresentation = createString(
+    "application/"
+    "vnd.openxmlformats-officedocument.presentationml.presentation");
+const String _HttpMime::SuffixPptx = createString("pptx");
+
+// application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+//               xlsx;
+const String _HttpMime::ApplicationVndOpenXmlSheet = createString(
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+const String _HttpMime::SuffixXlsx = createString("xlsx");
+
+// application/vnd.openxmlformats-officedocument.wordprocessingml.document
+//               docx;
+const String _HttpMime::ApplicationVndOepnXmlDoc = createString(
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+const String _HttpMime::SuffixDocx = createString("docx");
+
+// application/vnd.wap.wmlc                         wmlc;
+const String _HttpMime::ApplicationVndWapWmls =
+    createString("application/vnd.wap.wmlc");
+const String _HttpMime::SuffixWmlc = createString("wmlc");
+
+// application/x-7z-compressed                      7z;
+const String _HttpMime::Application7z =
+    createString("application/x-7z-compressed");
+const String _HttpMime::Suffix7z = createString("7z");
+
+// application/x-cocoa                              cco;
+const String _HttpMime::ApplicationXCocoa =
+    createString("application/x-cocoa");
+const String _HttpMime::SuffixCco = createString("cco");
+
+// application/x-java-archive-diff                  jardiff;
+const String _HttpMime::ApplicationXJavaArch =
+    createString("application/x-java-archive-diff");
+const String _HttpMime::SuffixJardiff = createString("jardiff");
+
+// application/x-java-jnlp-file                     jnlp;
+const String _HttpMime::ApplicationXJavaJnlpFile =
+    createString("application/x-java-jnlp-file");
+const String _HttpMime::SuffixJnlp = createString("jnlp");
+
+// application/x-makeself                           run;
+const String _HttpMime::ApplicationXMakeself =
+    createString("application/x-makeself");
+const String _HttpMime::SuffixRun = createString("run");
+
+// application/x-perl                               pl pm;
+const String _HttpMime::ApplicationXPerl =
+    createString("application/x-perl");
+const String _HttpMime::SuffixPl = createString("pl");
+const String _HttpMime::SuffixPm = createString("pm");
+
+// application/x-pilot                              prc pdb;
+const String _HttpMime::ApplicationXPilot =
+    createString("application/x-pilot");
+const String _HttpMime::SuffixPrc = createString("prc");
+const String _HttpMime::SuffixPdb = createString("pdb");
+
+// application/x-rar-compressed                     rar;
+const String _HttpMime::ApplicationXRarCompressed =
+    createString("application/x-rar-compressed");
+const String _HttpMime::SuffixRar = createString("rar");
+
+// application/x-redhat-package-manager             rpm;
+const String _HttpMime::ApplicationXReadhatPkgManager =
+    createString("application/x-redhat-package-manager");
+const String _HttpMime::SuffixRpm = createString("rpm");
+
+// application/x-sea                                sea;
+const String _HttpMime::ApplicationXSea =
+    createString("application/x-sea");
+const String _HttpMime::SuffixSea = createString("sea");
+
+// application/x-shockwave-flash                    swf;
+const String _HttpMime::ApplicationXShockwaveFlash =
+    createString("application/x-shockwave-flash");
+const String _HttpMime::SuffixSwf = createString("swf");
+
+// application/x-stuffit                            sit;
+const String _HttpMime::ApplicationXStuffit =
+    createString("application/x-stuffit");
+const String _HttpMime::SuffixSit = createString("sit");
+
+// application/x-tcl                                tcl tk;
+const String _HttpMime::ApplicationXTcl =
+    createString("application/x-tcl");
+const String _HttpMime::SuffixTcl = createString("tcl");
+const String _HttpMime::SuffixTk = createString("tk");
+
+// application/x-x509-ca-cert                       der pem crt;
+const String _HttpMime::ApplicationXX509CaCert =
+    createString("application/x-x509-ca-cert");
+const String _HttpMime::SuffixDer = createString("der");
+const String _HttpMime::SuffixPem = createString("pem");
+const String _HttpMime::SuffixCrt = createString("crt");
+
+// application/x-xpinstall                          xpi;
+const String _HttpMime::ApplicationXXpinstall =
+    createString("application/x-xpinstall");
+const String _HttpMime::SuffixXpi = createString("xpi");
+
+// application/xhtml+xml                            xhtml;
+const String _HttpMime::ApplicationXhtmlXml =
+    createString("application/xhtml+xml");
+const String _HttpMime::SuffixXhtml = createString("xhtml");
+
+// application/xspf+xml                             xspf;
+const String _HttpMime::ApplicationXspfXml =
+    createString("application/xspf+xml");
+const String _HttpMime::SuffixXspf = createString("xspf");
+
+// application/zip                                  zip;
+const String _HttpMime::ApplicationZip = createString("application/zip");
+const String _HttpMime::SuffixZip = createString("zip");
+
+// application/octet-stream                         bin exe dll;
+const String _HttpMime::ApplicationOctetStream =
+    createString("application/octet-stream");
+const String _HttpMime::SuffixBin = createString("bin");
+const String _HttpMime::SuffixExe = createString("exe");
+const String _HttpMime::SuffixDll = createString("dll");
+
+// application/octet-stream                         deb;
+const String _HttpMime::SuffixDeb = createString("deb");
+
+// application/octet-stream                         dmg;
+const String _HttpMime::SuffixDmg = createString("dmg");
+
+// application/octet-stream                         iso img;
+const String _HttpMime::SuffixIso = createString("iso");
+const String _HttpMime::SuffixImg = createString("img");
+
+// application/octet-stream                         msi msp msm;
+const String _HttpMime::SuffixMsi = createString("msi");
+const String _HttpMime::SuffixMsp = createString("msp");
+const String _HttpMime::SuffixMsm = createString("msm");
+
+// audio/midi     mid midi kar;
+const String _HttpMime::AudioMidi = createString("audio/midi");
+const String _HttpMime::SuffixMid = createString("mid");
+const String _HttpMime::SuffixMidi = createString("midi");
+const String _HttpMime::SuffixKar = createString("kar");
+
+// audio/mpeg     mp3;
+const String _HttpMime::AudioMpeg = createString("audio/mpeg");
+const String _HttpMime::SuffixMp3 = createString("mp3");
+
+// audio/ogg      ogg;
+const String _HttpMime::AudioOgg = createString("audio/ogg");
+const String _HttpMime::SuffixOgg = createString("ogg");
+
+// audio/x-m4a    m4a;
+const String _HttpMime::AudioXM4a = createString("audio/x-m4a");
+const String _HttpMime::SuffixM4a = createString("m4a");
+
+// audio/x-realaudio                                ra;
+const String _HttpMime::AudioXRealAudio =
+    createString("audio/x-realaudio");
+const String _HttpMime::SuffixRa = createString("ra");
+
+// video/3gpp     3gpp 3gp;
+const String _HttpMime::Video3Gpp = createString("video/3gpp");
+const String _HttpMime::Suffix3Gpp = createString("3gpp");
+const String _HttpMime::Sufix3Gp = createString("3gp");
+
+// video/mp2t     ts;
+const String _HttpMime::VideoMp2t = createString("video/mp2t");
+const String _HttpMime::SuffixTs = createString("ts");
+
+// video/mp4      mp4;
+const String _HttpMime::VideoMp4 = createString("video/mp4");
+const String _HttpMime::SuffixMp4 = createString("mp4");
+
+// video/mpeg     mpeg mpg;
+const String _HttpMime::VideoMpeg = createString("video/mpeg");
+const String _HttpMime::SuffixMpeg = createString("mpeg");
+const String _HttpMime::SuffixMpg = createString("mpg");
+
+// video/quicktime                                  mov;
+const String _HttpMime::VidoQuicktime = createString("video/quicktime");
+const String _HttpMime::SuffixMov = createString("mov");
+
+// video/webm     webm;
+const String _HttpMime::VideoWebm = createString("video/webm");
+const String _HttpMime::SuffixWebm = createString("webm");
+
+// video/x-flv    flv;
+const String _HttpMime::VideoXflv = createString("video/x-flv");
+const String _HttpMime::SuffixFlv = createString("flv");
+
+// video/x-m4v    m4v;
+const String _HttpMime::VideoXM4v = createString("video/x-m4v");
+const String _HttpMime::SuffixM4V = createString("m4v");
+
+// video/x-mng    mng;
+const String _HttpMime::VideoXMng = createString("video/x-mng");
+const String _HttpMime::SuffixMng = createString("mng");
+
+// video/x-ms-asf    asx asf;
+const String _HttpMime::VideoXMsAsf = createString("video/x-ms-asf");
+const String _HttpMime::SuffixAsx = createString("asx");
+const String _HttpMime::SuffixAsf = createString("asf");
+
+// video/x-ms-wmv    wmv;
+const String _HttpMime::VideoXMsWmv = createString("video/x-ms-wmv");
+const String _HttpMime::SuffixWmv = createString("wmv");
+
+// video/x-msvideo                                  avi;
+const String _HttpMime::VideoXMsVideo = createString("video/x-msvideo");
+const String _HttpMime::SuffixAvi = createString("avi");
+
+// multipart/form-data
+const String _HttpMime::MultiPartFormData =
+    createString("multipart/form-data");
+const String _HttpMime::FormData = createString("form-data");
+const String _HttpMime::Boundary = createString("boundary");
+
+// x-www-form-urlencoded
+const String _HttpMime::XFormUrlEncoded =
+    createString("application/x-www-form-urlencoded");
+
+// CharSet
+const String _HttpMime::CharSet = createString("charset");
 
 void _HttpMime::setTypeName(String v) {
     String s = v->toLowerCase();
@@ -39,8 +453,8 @@ int _HttpMime::getTypeId() {
 String _HttpMime::getTypeName() {
 
 #define CASE_SWITCH(X, Y)                                                      \
-    case st(HttpContentType)::Y:                                               \
-        return st(HttpContentType)::X;
+    case st(HttpMime)::Y:                                               \
+        return st(HttpMime)::X;
 
     switch (mType) {
         CASE_SWITCH(TextHtml, TypeTextHtml);
@@ -183,8 +597,8 @@ _HttpMime::_HttpMime() {
         mContentTypeNode = new FileTypeSearchNode();
 
     #define ADD_NODE(X, Y)                                                         \
-        addNode(mSuffixRootNode, st(HttpContentType)::X->toChars(),                \
-                st(HttpContentType)::X->size(), st(HttpContentType)::Y)
+        addNode(mSuffixRootNode, st(HttpMime)::X->toChars(),                \
+                st(HttpMime)::X->size(), st(HttpMime)::Y)
 
         ADD_NODE(SuffixHtml, TypeTextHtml);
         ADD_NODE(SuffixHtm, TypeTextHtml);
@@ -296,8 +710,8 @@ _HttpMime::_HttpMime() {
     #undef ADD_NODE
 
     #define ADD_NODE(X, Y)                                                         \
-        addNode(mContentTypeNode, st(HttpContentType)::X->toChars(),               \
-                st(HttpContentType)::X->size(), st(HttpContentType)::Y)
+        addNode(mContentTypeNode, st(HttpMime)::X->toChars(),               \
+                st(HttpMime)::X->size(), st(HttpMime)::Y)
 
         ADD_NODE(TextHtml, TypeTextHtml);
         ADD_NODE(TextCss, TypeTextCss);
