@@ -20,6 +20,13 @@
 #include "HttpAcceptCharSet.hpp"
 #include "HttpAccept.hpp"
 #include "HttpAcceptPatch.hpp"
+#include "HttpStrictTransportSecurity.hpp"
+#include "HttpProxyAuthorization.hpp"
+#include "HttpProxyAuthenticate.hpp"
+#include "HttpXFrameOptions.hpp"
+#include "HttpForwarded.hpp"
+#include "HttpContentDisposition.hpp"
+#include "HttpHeaderDigest.hpp"
 
 namespace obotcha {
 
@@ -112,6 +119,7 @@ public:
     const static String XContentTypeOptions;
     const static String XForwardedFor;
     const static String XForwardedProto;
+    const static String Forwarded;
     const static String XFrameOptions;
     const static String XPoweredBy;
     const static String XRealIP;
@@ -127,12 +135,117 @@ public:
     const static String SecWebSocketKey2;
     const static String SecWebSocketKey3;
     const static String SecWebSocketProtocol;
-
+    const static String Digest;
     //Transfer-Encoding type
     const static String TransferChunked;
 
     //http connection
     const static String ConnectionClose;
+
+    enum type{
+        TypeMethod = 0,
+        TypePath,
+        TypeScheme,
+        TypeStatus,
+        TypeProtocol,
+        TypeAccept,
+        TypeAcceptCharset,
+        TypeAcceptPatch,
+        TypeAcceptDatetime,
+        TypeAcceptEncoding,
+        TypeAcceptLanguage,
+        TypeAcceptRanges,
+        TypeAccessControlAllowCredentials,
+        TypeAccessControlAllowHeaders,
+        TypeAccessControlAllowMethods,
+        TypeAccessControlAllowOrigin,
+        TypeAccessControlExposeHeaders,
+        TypeAccessControlMaxAge,
+        TypeAccessControlRequestHeaders,
+        TypeAccessControlRequestMethod,
+        TypeAge,
+        TypeAllow,
+        TypeAltSvc,
+        TypeAuthorization,
+        TypeCacheControl,
+        TypeConnection,
+        TypeContentDisposition,
+        TypeContentEncoding,
+        TypeContentLanguage,
+        TypeContentLength,
+        TypeContentLocation,
+        TypeContentMD5,
+        TypeContentRange,
+        TypeContentType,
+        TypeCookie,
+        TypeDNT,
+        TypeDate,
+        TypeETag,
+        TypeExpect,
+        TypeExpires,
+        TypeFrom,
+        TypeFrontEndHttps,
+        TypeHost,
+        TypeIfMatch,
+        TypeIfModifiedSince,
+        TypeIfNoneMatch,
+        TypeIfRange,
+        TypeIfUnmodifiedSince,
+        TypeKeepAlive,
+        TypeLastModified,
+        TypeLink,
+        TypeLocation,
+        TypeMaxForwards,
+        TypeOrigin,
+        TypeP3P,
+        TypePragma,
+        TypeProxyAuthenticate,
+        TypeProxyAuthorization,
+        TypeProxyConnection,
+        TypeRange,
+        TypeReferer,
+        TypeRefresh,
+        TypeRetryAfter,
+        TypeSecWebSocketKey,
+        TypeSecWebSocketAccept,
+        TypeServer,
+        TypeSetCookie,
+        TypeSecTokenBinding,
+        TypeStrictTransportSecurity,
+        TypeTE,
+        TypeTimestamp,
+        TypeTrailer,
+        TypeTransferEncoding,
+        TypeUpgrade,
+        TypeUserAgent,
+        TypeVIP,
+        TypeVary,
+        TypeVia,
+        TypeWWWAuthenticate,
+        TypeWarning,
+        TypeXAccelRedirect,
+        TypeXContentSecurityPolicyReportOnly,
+        TypeXContentTypeOptions,
+        TypeXForwardedFor,
+        TypeXForwardedProto,
+        TypeForwarded,
+        TypeXFrameOptions,
+        TypeXPoweredBy,
+        TypeXRealIP,
+        TypeXRequestedWith,
+        TypeXThriftProtocol,
+        TypeXUACompatible,
+        TypeXWapProfile,
+        TypeXXSSProtection,
+        TypeSecWebSocketVersion,
+        TypeSecWebSocketExtensions,
+        TypeSecWebSocketOrigin,
+        TypeSecWebSocketKey1,
+        TypeSecWebSocketKey2,
+        TypeSecWebSocketKey3,
+        TypeSecWebSocketProtocol,
+        TypeDigest,
+    };
 
     ////-------- function -------////
     _HttpHeader();
@@ -169,6 +282,33 @@ public:
 
     void setAcceptCharSet(HttpAcceptCharSet);
     HttpAcceptCharSet getAcceptCharSet();
+
+    void setHttpAcceptPatch(HttpAcceptPatch);
+    HttpAcceptPatch getHttpAcceptPatch();
+
+    void setHttpAccept(HttpAccept);
+    HttpAccept getHttpAccept();
+
+    void setHttpStrictTransportSecurity(HttpStrictTransportSecurity);
+    HttpStrictTransportSecurity getHttpStrictTransportSecurity();
+
+    void setHttpProxyAuthorization(HttpProxyAuthorization);
+    HttpProxyAuthorization getHttpProxyAuthorization();
+
+    void setHttpProxyAuthenticate(HttpProxyAuthenticate);
+    HttpProxyAuthenticate getHttpProxyAuthenticate();
+
+    void setHttpXFrameOptions(HttpXFrameOptions);
+    HttpXFrameOptions getHttpXFrameOptions();
+
+    void setHttpForwarded(HttpForwarded);
+    HttpForwarded getHttpForwarded();
+
+    void setHttpContentDisposition(HttpContentDisposition);
+    HttpContentDisposition getHttpContentDisposition();
+
+    void setHttpHeaderDigest(HttpHeaderDigest);
+    HttpHeaderDigest getHttpHeaderDigest();
 
     String toString(int);
 
@@ -227,6 +367,20 @@ private:
 
     HttpAccept mAccept;
 
+    HttpStrictTransportSecurity mTransportSecurity;
+
+    HttpProxyAuthorization mProxyAuthorization;
+
+    HttpProxyAuthenticate mProxyAuthenticate;
+
+    HttpXFrameOptions mXFrameOptions;
+
+    HttpForwarded mForwarded;
+
+    HttpContentDisposition mContentDisposition;
+
+    HttpHeaderDigest mHeaderDigest;
+
     int mType;
 
     int mMethod;
@@ -242,6 +396,8 @@ private:
     int mContentLength;
 
     bool mIsConnected;
+
+    static HashMap<String,Integer> idMaps;
 };
 
 }

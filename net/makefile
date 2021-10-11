@@ -35,7 +35,12 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpacceptencoding.o \
 		$(outtmp)/httpacceptlanguage.o \
 		$(outtmp)/httpacceptcharset.o \
+		$(outtmp)/httpxframeoptions.o \
 		$(outtmp)/httpaccept.o \
+		$(outtmp)/httpstricttransportsecurity.o \
+		$(outtmp)/httpproxyauthorization.o \
+		$(outtmp)/httpproxyauthenticate.o \
+		$(outtmp)/httpforwarded.o \
 		$(outtmp)/httpacceptpatch.o \
 		$(outtmp)/httpheaderdigest.o \
 		$(outtmp)/httpauthorization.o \
@@ -243,8 +248,23 @@ $(outtmp)/httpacceptcharset.o :$(netDir)/http/HttpAcceptCharSet.cpp
 $(outtmp)/httpaccept.o :$(netDir)/http/HttpAccept.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAccept.cpp -o $(outtmp)/httpaccept.o 
 
+$(outtmp)/httpstricttransportsecurity.o :$(netDir)/http/HttpStrictTransportSecurity.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpStrictTransportSecurity.cpp -o $(outtmp)/httpstricttransportsecurity.o 
+
+$(outtmp)/httpforwarded.o :$(netDir)/http/HttpForwarded.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpForwarded.cpp -o $(outtmp)/httpforwarded.o 
+
 $(outtmp)/httpacceptpatch.o :$(netDir)/http/HttpAcceptPatch.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpAcceptPatch.cpp -o $(outtmp)/httpacceptpatch.o 
+
+$(outtmp)/httpproxyauthenticate.o :$(netDir)/http/HttpProxyAuthenticate.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpProxyAuthenticate.cpp -o $(outtmp)/httpproxyauthenticate.o 
+
+$(outtmp)/httpproxyauthorization.o :$(netDir)/http/HttpProxyAuthorization.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpProxyAuthorization.cpp -o $(outtmp)/httpproxyauthorization.o 
+
+$(outtmp)/httpxframeoptions.o :$(netDir)/http/HttpXFrameOptions.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpXFrameOptions.cpp -o $(outtmp)/httpxframeoptions.o 
 
 $(outtmp)/httpheaderdigest.o :$(netDir)/http/HttpHeaderDigest.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeaderDigest.cpp -o $(outtmp)/httpheaderdigest.o 

@@ -1,5 +1,7 @@
 #include <map>
 #include <string.h>
+#include <thread>
+#include <mutex>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -11,6 +13,7 @@
 #include "HttpText.hpp"
 #include "String.hpp"
 #include "HttpCookieParser.hpp"
+
 
 namespace obotcha {
 
@@ -115,6 +118,7 @@ const String _HttpHeader::XContentTypeOptions =
     createString("x-content-type-options");
 const String _HttpHeader::XForwardedFor = createString("x-forwarded-for");
 const String _HttpHeader::XForwardedProto = createString("x-forwarded-proto");
+const String _HttpHeader::Forwarded = createString("forwarded");
 const String _HttpHeader::XFrameOptions = createString("x-frame-options");
 const String _HttpHeader::XPoweredBy = createString("x-powerd-by");
 const String _HttpHeader::XRealIP = createString("x-real-ip");
@@ -134,6 +138,7 @@ const String _HttpHeader::SecWebSocketKey2 = createString("sec-websocket-key2");
 const String _HttpHeader::SecWebSocketKey3 = createString("sec-websocket-key3");
 const String _HttpHeader::SecWebSocketProtocol =
     createString("sec-websocket-protocol");
+const String _HttpHeader::Digest = createString("digest");
 
 // Transfer-Encoding type
 const String _HttpHeader::TransferChunked = createString("chunked");
@@ -142,16 +147,117 @@ const String _HttpHeader::TransferChunked = createString("chunked");
 const String _HttpHeader::ConnectionClose = createString("close");
 
 _HttpHeader::_HttpHeader() {
+    {
+        static std::once_flag flag;
+        std::call_once(flag, [&]() {
+            idMaps->put(Accept,createInteger(TypeAccept));
+            idMaps->put(AcceptCharset,createInteger(TypeAcceptCharset));
+            idMaps->put(AcceptPatch,createInteger(TypeAcceptPatch));
+            idMaps->put(AcceptDatetime,createInteger(TypeAcceptDatetime));
+            idMaps->put(AcceptEncoding,createInteger(TypeAcceptEncoding));
+            idMaps->put(AcceptLanguage,createInteger(TypeAcceptLanguage));
+            idMaps->put(AcceptRanges,createInteger(TypeAcceptRanges));
+            idMaps->put(AccessControlAllowCredentials,createInteger(TypeAccessControlAllowCredentials));
+            idMaps->put(AccessControlAllowHeaders,createInteger(TypeAccessControlAllowHeaders));
+            idMaps->put(AccessControlAllowMethods,createInteger(TypeAccessControlAllowMethods));
+            idMaps->put(AccessControlAllowOrigin,createInteger(TypeAccessControlAllowOrigin));
+            idMaps->put(AccessControlExposeHeaders,createInteger(TypeAccessControlExposeHeaders));
+            idMaps->put(AccessControlMaxAge,createInteger(TypeAccessControlMaxAge));
+            idMaps->put(AccessControlRequestHeaders,createInteger(TypeAccessControlRequestHeaders));
+            idMaps->put(AccessControlRequestMethod,createInteger(TypeAccessControlRequestMethod));
+            idMaps->put(Age,createInteger(TypeAge));
+            idMaps->put(Allow,createInteger(TypeAllow));
+            idMaps->put(AltSvc,createInteger(TypeAltSvc));
+
+            idMaps->put(Authorization,createInteger(TypeAuthorization));
+            idMaps->put(CacheControl,createInteger(TypeCacheControl));
+            idMaps->put(Connection,createInteger(TypeConnection));
+            idMaps->put(ContentDisposition,createInteger(TypeContentDisposition));
+            idMaps->put(ContentEncoding,createInteger(TypeContentEncoding));
+            idMaps->put(ContentLanguage,createInteger(TypeContentLanguage));
+            idMaps->put(ContentLength,createInteger(TypeContentLength));
+            idMaps->put(ContentLocation,createInteger(TypeContentLocation));
+            idMaps->put(ContentMD5,createInteger(TypeContentMD5));
+            idMaps->put(ContentRange,createInteger(TypeContentRange));
+            idMaps->put(ContentType,createInteger(TypeContentType));
+            idMaps->put(Cookie,createInteger(TypeCookie));
+
+            
+            idMaps->put(DNT,createInteger(TypeDNT));
+            idMaps->put(Date,createInteger(TypeDate));
+            idMaps->put(ETag,createInteger(TypeETag));
+            idMaps->put(Expect,createInteger(TypeExpect));
+            idMaps->put(Expires,createInteger(TypeExpires));
+            idMaps->put(From,createInteger(TypeFrom));
+            idMaps->put(FrontEndHttps,createInteger(TypeFrontEndHttps));
+            idMaps->put(Host,createInteger(TypeHost));
+            idMaps->put(IfMatch,createInteger(TypeIfMatch));
+            idMaps->put(IfModifiedSince,createInteger(TypeIfModifiedSince));
+            idMaps->put(IfNoneMatch,createInteger(TypeIfNoneMatch));
+            idMaps->put(IfRange,createInteger(TypeIfRange));
+            idMaps->put(IfUnmodifiedSince,createInteger(TypeIfUnmodifiedSince));
+            idMaps->put(KeepAlive,createInteger(TypeKeepAlive));
+            idMaps->put(LastModified,createInteger(TypeLastModified));
+            idMaps->put(Link,createInteger(TypeLink));
+            idMaps->put(Location,createInteger(TypeLocation));
+            idMaps->put(MaxForwards,createInteger(TypeMaxForwards));
+            idMaps->put(Origin,createInteger(TypeOrigin));
+            idMaps->put(P3P,createInteger(TypeP3P));
+            idMaps->put(Pragma,createInteger(TypePragma));
+            idMaps->put(ProxyAuthenticate,createInteger(TypeProxyAuthenticate));
+            idMaps->put(ProxyAuthorization,createInteger(TypeProxyAuthorization));
+            idMaps->put(ProxyConnection,createInteger(TypeProxyConnection));
+            idMaps->put(Range,createInteger(TypeRange));
+            idMaps->put(Referer,createInteger(TypeReferer));
+
+            idMaps->put(Refresh,createInteger(TypeRefresh));
+            idMaps->put(RetryAfter,createInteger(TypeRetryAfter));
+            idMaps->put(SecWebSocketKey,createInteger(TypeSecWebSocketKey));
+            idMaps->put(SecWebSocketAccept,createInteger(TypeSecWebSocketAccept));
+            idMaps->put(Server,createInteger(TypeServer));
+            idMaps->put(SetCookie,createInteger(TypeSetCookie));
+            idMaps->put(SecTokenBinding,createInteger(TypeSecTokenBinding));
+            idMaps->put(StrictTransportSecurity,createInteger(TypeStrictTransportSecurity));
+            idMaps->put(TE,createInteger(TypeTE));
+            idMaps->put(Timestamp,createInteger(TypeTimestamp));
+            idMaps->put(Trailer,createInteger(TypeTrailer));
+            idMaps->put(TransferEncoding,createInteger(TypeTransferEncoding));
+
+            idMaps->put(Upgrade,createInteger(TypeUpgrade));
+            idMaps->put(UserAgent,createInteger(TypeUserAgent));
+            idMaps->put(VIP,createInteger(TypeVIP));
+            idMaps->put(Vary,createInteger(TypeVary));
+            idMaps->put(Via,createInteger(TypeVia));
+            idMaps->put(WWWAuthenticate,createInteger(TypeWWWAuthenticate));
+            idMaps->put(Warning,createInteger(TypeWarning));
+            idMaps->put(XAccelRedirect,createInteger(TypeXAccelRedirect));
+            idMaps->put(XContentSecurityPolicyReportOnly,createInteger(TypeXContentSecurityPolicyReportOnly));
+            idMaps->put(XContentTypeOptions,createInteger(TypeXContentTypeOptions));
+            idMaps->put(XForwardedFor,createInteger(TypeXForwardedFor));
+            idMaps->put(XForwardedProto,createInteger(TypeXForwardedProto));
+            idMaps->put(Forwarded,createInteger(TypeForwarded));
+            idMaps->put(XFrameOptions,createInteger(TypeXFrameOptions));
+            idMaps->put(XPoweredBy,createInteger(TypeXPoweredBy));
+            idMaps->put(XRealIP,createInteger(TypeXRealIP));
+            idMaps->put(XRequestedWith,createInteger(TypeXRequestedWith));
+            idMaps->put(XThriftProtocol,createInteger(TypeXThriftProtocol));
+            idMaps->put(XUACompatible,createInteger(TypeXUACompatible));
+            idMaps->put(XWapProfile,createInteger(TypeXWapProfile));
+            idMaps->put(XXSSProtection,createInteger(TypeXXSSProtection));
+            idMaps->put(SecWebSocketVersion,createInteger(TypeSecWebSocketVersion));
+            idMaps->put(SecWebSocketExtensions,createInteger(TypeSecWebSocketExtensions));
+            idMaps->put(SecWebSocketOrigin,createInteger(TypeSecWebSocketOrigin));
+            idMaps->put(SecWebSocketKey1,createInteger(TypeSecWebSocketKey1));
+            idMaps->put(SecWebSocketKey2,createInteger(TypeSecWebSocketKey2));
+            idMaps->put(SecWebSocketKey3,createInteger(TypeSecWebSocketKey3));
+            idMaps->put(SecWebSocketProtocol,createInteger(TypeSecWebSocketProtocol));
+            idMaps->put(Digest,createInteger(TypeDigest));
+        });
+    }
+    
     mValues = createHashMap<String, String>();
     mCookies = createArrayList<HttpCookie>();
-    mVersion = createHttpVersion();
-    mCacheControl = nullptr;
-    mMethod = -1;
-    mResponseReason = nullptr;
-    mContentLength = -1;
-    mIsConnected = true;
-    mType = Type::Request;
-    mLink = nullptr;
+    reset();
 }
 
 void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
@@ -179,7 +285,22 @@ void _HttpHeader::reset() {
     mValues->clear(); 
     mCookies->clear();
     mVersion = createHttpVersion();
+
     mCacheControl = nullptr;
+    mContentType = nullptr;
+    mAcceptEncoding = nullptr;
+    mAcceptLanguage = nullptr;
+    mAcceptCharSet = nullptr;
+    mAcceptPatch = nullptr;
+    mAccept = nullptr;
+    mTransportSecurity = nullptr;
+    mProxyAuthorization = nullptr;
+    mProxyAuthenticate = nullptr;
+    mXFrameOptions = nullptr;
+    mForwarded = nullptr;
+    mContentDisposition = nullptr;
+    mHeaderDigest = nullptr;
+
     mMethod = -1;
     mResponseReason = nullptr;
     mContentLength = -1;
@@ -189,40 +310,107 @@ void _HttpHeader::reset() {
 }
 
 void _HttpHeader::set(String key, String value) {
-    const char *p = key->toChars();
-    switch (p[0]) {
-        case 'a': {
-            if(key->equals(st(HttpHeader)::AcceptEncoding)) {
+    //const char *p = key->toChars();
+    Integer id = idMaps->get(key);
+    if(id != nullptr) {
+        switch(id->toValue()) {
+            case TypeDigest: {
+                if(mHeaderDigest == nullptr) {
+                    mHeaderDigest = createHttpHeaderDigest();
+                }
+                mHeaderDigest->import(value);
+                return;
+            }
+
+            case TypeContentDisposition: {
+                if(mContentDisposition == nullptr) {
+                    mContentDisposition = createHttpContentDisposition();
+                }
+                mContentDisposition->import(value);
+                return;
+            }
+
+            case TypeForwarded: {
+                if(mForwarded == nullptr) {
+                    mForwarded = createHttpForwarded();
+                }
+                mForwarded->import(value);
+                return;
+            }
+
+            case TypeXFrameOptions: {
+                if(mXFrameOptions == nullptr) {
+                    mXFrameOptions = createHttpXFrameOptions();
+                }
+                mXFrameOptions->import(value);
+                return;
+            }
+
+            case TypeProxyAuthenticate: {
+                if(mProxyAuthenticate == nullptr) {
+                    mProxyAuthenticate = createHttpProxyAuthenticate();
+                }
+                mProxyAuthenticate->import(value);
+                return;
+            }
+
+            case TypeProxyAuthorization: {
+                if(mProxyAuthorization == nullptr) {
+                    mProxyAuthorization = createHttpProxyAuthorization();
+                }
+                mProxyAuthorization->import(value);
+                return;
+            }
+
+            case TypeStrictTransportSecurity :{
+                if(mTransportSecurity == nullptr) {
+                    mTransportSecurity = createHttpStrictTransportSecurity();
+                }
+                mTransportSecurity->import(value);
+                return;
+            }
+
+            case TypeAcceptEncoding:{
                 if(mAcceptEncoding == nullptr) {
                     mAcceptEncoding = createHttpAcceptEncoding();
                 }
                 mAcceptEncoding->import(value);
-            } else if(key->equals(st(HttpHeader)::AcceptLanguage)) {
+                return;
+            }
+
+            case TypeAcceptLanguage: {
                 if(mAcceptLanguage == nullptr) {
                     mAcceptLanguage = createHttpAcceptLanguage();
                 }
                 mAcceptLanguage->import(value);
-            } else if(key->equals(st(HttpHeader)::AcceptCharset)) {
+                return;
+            }
+
+            case TypeAcceptCharset: {
                 if(mAcceptCharSet == nullptr) {
                     mAcceptCharSet = createHttpAcceptCharSet();
                 }
                 mAcceptCharSet->import(value);
-            } else if(key->equals(st(HttpHeader)::AcceptPatch)) {
+                return;
+            }
+
+            case TypeAcceptPatch: {
                 if(mAcceptPatch == nullptr) {
                     mAcceptPatch = createHttpAcceptPatch();
                 }
                 mAcceptPatch->import(value);
-            } else if(key->equals(st(HttpHeader)::Accept)) {
+                return;
+            }
+
+            case TypeAccept: {
                 if(mAccept == nullptr) {
                     mAccept = createHttpAccept();
                 }
                 mAccept->import(value);
+                return;
             }
-            break;
-        }
-        
-        case 'c': {
-            if (key->equals(st(HttpHeader)::Cookie)) {
+
+            case TypeCookie: {
                 ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
                 auto iterator = cookies->getIterator();
                 while (iterator->hasValue()) {
@@ -230,7 +418,9 @@ void _HttpHeader::set(String key, String value) {
                     iterator->next();
                 }
                 return;
-            } else if (key->equals(st(HttpHeader)::CacheControl)) {
+            }
+
+            case TypeCacheControl: {
                 auto cacheControl = getCacheControl();
                 if(cacheControl == nullptr) {
                     cacheControl = createHttpCacheControl();
@@ -238,24 +428,26 @@ void _HttpHeader::set(String key, String value) {
                 }
                 cacheControl->import(value);
                 return;
-            } else if (key->equals(st(HttpHeader)::ContentType)) {
-                //setContentType(value);
+            }
+
+            case TypeContentType: {
                 mContentType = createHttpContentType(value);
                 return;
-            } else if (key->equals(st(HttpHeader)::ContentLength)) {
+            }
+
+            case TypeContentLength: {
                 setContentLength(value->trimAll()->toBasicInt());
                 return;
-            } else if (key->equals(st(HttpHeader)::Connection)) {
+            }
+
+            case TypeConnection: {
                 if (st(HttpHeader)::ConnectionClose->equals(value->trimAll())) {
                     setConnected(false);
-                    return;
                 }
+                return;
             }
-            break;
-        }
 
-        case 's': {
-            if (key->equals(st(HttpHeader)::SetCookie)) {
+            case TypeSetCookie: {
                 ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
                 auto iterator = cookies->getIterator();
                 while (iterator->hasValue()) {
@@ -264,14 +456,15 @@ void _HttpHeader::set(String key, String value) {
                 }
                 return;
             }
-        }
 
-        case 'l': {
-            if (key->equals(st(HttpHeader)::Link)) {
+            case TypeLink:{
                 HttpHeaderLink link = createHttpHeaderLink(value);
                 setLink(link);
                 return;
             }
+
+            default:
+            break;
         }
     }
 
@@ -374,6 +567,78 @@ HttpAcceptCharSet _HttpHeader::getAcceptCharSet() {
     return mAcceptCharSet;
 }
 
+void _HttpHeader::setHttpAcceptPatch(HttpAcceptPatch v) {
+    this->mAcceptPatch = v;
+}
+
+HttpAcceptPatch _HttpHeader::getHttpAcceptPatch() {
+    return mAcceptPatch;
+}
+
+void _HttpHeader::setHttpAccept(HttpAccept v) {
+    this->mAccept = v;
+}
+
+HttpAccept _HttpHeader::getHttpAccept() {
+    return mAccept;
+}
+
+void _HttpHeader::setHttpStrictTransportSecurity(HttpStrictTransportSecurity v) {
+    mTransportSecurity = v;
+}
+
+HttpStrictTransportSecurity _HttpHeader::getHttpStrictTransportSecurity() {
+    return mTransportSecurity;
+}
+
+void _HttpHeader::setHttpProxyAuthorization(HttpProxyAuthorization v) {
+    mProxyAuthorization = v;
+}
+
+HttpProxyAuthorization _HttpHeader::getHttpProxyAuthorization() {
+    return mProxyAuthorization;
+}
+
+void _HttpHeader::setHttpProxyAuthenticate(HttpProxyAuthenticate v) {
+    mProxyAuthenticate = v;
+}
+
+HttpProxyAuthenticate _HttpHeader::getHttpProxyAuthenticate() {
+    return mProxyAuthenticate;
+}
+
+void _HttpHeader::setHttpXFrameOptions(HttpXFrameOptions v) {
+    mXFrameOptions = v;
+}
+
+HttpXFrameOptions _HttpHeader::getHttpXFrameOptions() {
+    return mXFrameOptions;
+}
+
+void _HttpHeader::setHttpForwarded(HttpForwarded v) {
+    mForwarded = v;
+}
+
+HttpForwarded _HttpHeader::getHttpForwarded() {
+    return mForwarded;
+}
+
+void _HttpHeader::setHttpContentDisposition(HttpContentDisposition v) {
+    mContentDisposition = v;
+}
+
+HttpContentDisposition _HttpHeader::getHttpContentDisposition() {
+    return mContentDisposition;
+}
+
+void _HttpHeader::setHttpHeaderDigest(HttpHeaderDigest v) {
+    mHeaderDigest = v;
+}
+
+HttpHeaderDigest _HttpHeader::getHttpHeaderDigest() {
+    return mHeaderDigest;
+}
+
 MapIterator<String, String> _HttpHeader::getIterator() {
     return mValues->getIterator();
 }
@@ -401,9 +666,61 @@ String _HttpHeader::toString(int type) {
     }
 
     if(mCacheControl != nullptr) {
-        html->append(mCacheControl->toString(type));
+        html = html->append(st(HttpHeader)::CacheControl,": ",mCacheControl->toString(type),st(HttpText)::CRLF);
+    }
+
+    if(mContentType != nullptr) {
+        html = html->append(st(HttpHeader)::ContentType,": ",mContentType->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mAcceptEncoding != nullptr) {
+        html = html->append(st(HttpHeader)::AcceptEncoding,": ",mAcceptEncoding->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mAcceptLanguage != nullptr) {
+        html = html->append(st(HttpHeader)::AcceptLanguage,": ",mAcceptLanguage->toString(),st(HttpText)::CRLF);
     }
     
+    if(mAcceptCharSet != nullptr) {
+        html = html->append(st(HttpHeader)::AcceptCharset,": ",mAcceptCharSet->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mAcceptPatch != nullptr) {
+        html = html->append(st(HttpHeader)::AcceptPatch,": ",mAcceptPatch->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mAccept != nullptr) {
+        html = html->append(st(HttpHeader)::Accept,": ",mAccept->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mTransportSecurity != nullptr) {
+        html = html->append(st(HttpHeader)::StrictTransportSecurity,": ",mTransportSecurity->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mProxyAuthorization != nullptr) {
+        html = html->append(st(HttpHeader)::ProxyAuthorization,": ",mProxyAuthorization->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mProxyAuthenticate != nullptr) {
+        html = html->append(st(HttpHeader)::ProxyAuthenticate,": ",mProxyAuthenticate->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mXFrameOptions != nullptr) {
+        html = html->append(st(HttpHeader)::XFrameOptions,": ",mXFrameOptions->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mForwarded != nullptr) {
+        html = html->append(st(HttpHeader)::Forwarded,": ",mForwarded->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mContentDisposition != nullptr) {
+        html = html->append(st(HttpHeader)::ContentDisposition,": ",mContentDisposition->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mHeaderDigest != nullptr) {
+        html = html->append(st(HttpHeader)::Digest,": ",mHeaderDigest->toString(),st(HttpText)::CRLF);
+    }
+
     if (html->size() == 0) {
         return html;
     }

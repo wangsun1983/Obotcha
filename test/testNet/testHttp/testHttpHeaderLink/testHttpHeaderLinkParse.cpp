@@ -12,12 +12,12 @@ using namespace obotcha;
 void testLinkParse() {
   while(1) {
     HttpHeaderLink link1 = createHttpHeaderLink("<https://example.com>; rel=\"preload\"");
-    if(link1->getUrl() == nullptr || !link1->getUrl()->equals("https://example.com")) {
-      printf("---[HttpHeaderLink test Parse case1] [FAILED]--- link is %s\n",link1->getUrl()->toChars());
+    if(link1->url == nullptr || !link1->url->equals("https://example.com")) {
+      printf("---[HttpHeaderLink test Parse case1] [FAILED]--- link is %s\n",link1->url->toChars());
     }
 
-    if(!link1->getProp("rel")->equals("preload")) {
-      printf("---[HttpHeaderLink test Parse case2] [FAILED]--- rel is %s\n",link1->getProp("rel")->toChars());
+    if(!link1->rel->equals("preload")) {
+      printf("---[HttpHeaderLink test Parse case2] [FAILED]--- rel is %s\n",link1->rel->toChars());
     }
     break;
   }

@@ -47,7 +47,6 @@ int _HttpHeaderContentParser::import(String value,const ParseResult &callback) {
                                                          createString("=,;"));
             String directive =
                 value->subString(tokenStart, pos - tokenStart)->trim();
-            printf("directive is %s \n",directive->toChars());
             String parameter = nullptr;
 
             if (pos == value->size() || value->charAt(pos) == ',' || value->charAt(pos) == ';') {

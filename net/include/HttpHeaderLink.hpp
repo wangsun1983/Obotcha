@@ -15,18 +15,18 @@ public:
     _HttpHeaderLink();
     _HttpHeaderLink(String);
 
-    void setUrl(String);
-    void setProp(String,String);
-
-    String getUrl();
-    String getProp(String);
-
-    void removeProp(String);
-
     String toString();
+
+    String rel;
+    String anchor;
+    String rev;
+    String hreflag;
+    String media;
+    String title;
+    String titleext;
+    String url;
+
 private:
-    String mUrl;
-    HashMap<String,String> mProps;
     void import(String);
 };
 
