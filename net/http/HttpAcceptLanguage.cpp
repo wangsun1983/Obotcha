@@ -9,7 +9,7 @@ _HttpAcceptLanguageItem::_HttpAcceptLanguageItem() {
 }
 
 _HttpAcceptLanguage::_HttpAcceptLanguage() {
-    encodings = createArrayList<HttpAcceptLanguageItem>();
+    languages = createArrayList<HttpAcceptLanguageItem>();
 }
 
 _HttpAcceptLanguage::_HttpAcceptLanguage(String s) {
@@ -21,22 +21,22 @@ void _HttpAcceptLanguage::import(String s) {
         if(parameter == nullptr) {
             HttpAcceptLanguageItem item = createHttpAcceptLanguageItem();
             item->lang = directive;
-            encodings->add(item);
+            languages->add(item);
         } else {
             if(directive->equals("q")) {
-                encodings->get(encodings->size() - 1)->weight = parameter->toBasicFloat();
+                languages->get(languages->size() - 1)->weight = parameter->toBasicFloat();
             }
         }
     });
 }
 
 ArrayList<HttpAcceptLanguageItem> _HttpAcceptLanguage::getLanguages() {
-    return encodings;
+    return languages;
 }
 
 String _HttpAcceptLanguage::toString() {
     String encoding = "";
-    auto iterator = encodings->getIterator();
+    auto iterator = languages->getIterator();
     while(iterator->hasValue()) {
         HttpAcceptLanguageItem item = iterator->getValue();
         if(st(Math)::compareFloat(item->weight,1.0) == st(Math)::AlmostEqual) {

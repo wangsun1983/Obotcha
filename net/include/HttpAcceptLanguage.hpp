@@ -29,7 +29,7 @@ public:
     String toString();
 
 private:
-    ArrayList<HttpAcceptLanguageItem> encodings;
+    ArrayList<HttpAcceptLanguageItem> languages;
 };
 
 }

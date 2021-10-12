@@ -66,8 +66,9 @@ HttpHeader _HttpHeaderParser::doParse() {
                 mStatus = ContentKey;
             } else if (v == 0x20) { // ' '
                 ByteArray state = mReader->pop();
-                String state_str = createString((const char *)state->toValue(),
-                                                0, state->size() - 1);
+                //String state_str = createString((const char *)state->toValue(),
+                //                                0, state->size() - 1);
+                String state_str = state->toString();
                 int status = state_str->toBasicInt();
                 mHeader->setResponseStatus(status);
                 mStatus = Reason;
@@ -81,7 +82,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                 String url_str = urlcontent->toString()->subString(0,urlcontent->size() - 1);
                     //createString((const char *)urlcontent->toValue(),0,
                     //             urlcontent->size() - 1);
-                
+                printf("parse url is %s \n",url_str->toChars());
                 HttpUrl url = st(HttpUrlParser)::parseUrl(url_str);
                 mHeader->setUrl(url);
                 mStatus = Version;
@@ -144,7 +145,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                 //mKey = createString((const char *)key->toValue(), 0,
                 //                    key->size() - 1)
                 //           ->toLowerCase();
-                mKey = key->toString()->subString(0,key->size() - 1)->toLowerCase();
+                mKey = key->toString()->subString(0,key->size() - 1);
                 mStatus = ContentValue;
             } else if (v == LF[0]) {
                 mCrlfCount = 1;

@@ -17,6 +17,8 @@
 
 namespace obotcha {
 
+HashMap<String,Integer> _HttpHeader::idMaps = createHashMap<String,Integer>();
+
 const String _HttpHeader::Method = createString(":method");
 const String _HttpHeader::Path = createString(":path");
 const String _HttpHeader::Scheme = createString(":schema");
@@ -257,6 +259,7 @@ _HttpHeader::_HttpHeader() {
     
     mValues = createHashMap<String, String>();
     mCookies = createArrayList<HttpCookie>();
+    mLinks = createArrayList<HttpHeaderLink>();
     reset();
 }
 
@@ -271,21 +274,74 @@ void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
         return Global::Continue;
     });
 
+    if(h->mLinks->size() != 0) {
+        mLinks->add(h->mLinks);
+    }
+
     //http cache control?
     if(h->mCacheControl != nullptr) {
         mCacheControl = h->mCacheControl;
     }
 
-    if(h->mLink != nullptr) {
-        mLink = h->mLink;
+    if(h->mContentType != nullptr) {
+        mContentType = h->mContentType;
+    }
+
+    if(h->mAcceptEncoding != nullptr) {
+        mAcceptEncoding = h->mAcceptEncoding;
+    }
+
+    if(h->mAcceptLanguage != nullptr) {
+        mAcceptLanguage = h->mAcceptLanguage;
+    }
+    
+    if(h->mAcceptCharSet != nullptr) {
+        mAcceptCharSet = h->mAcceptCharSet;
+    }
+
+    if(h->mAcceptPatch != nullptr) {
+        mAcceptPatch = h->mAcceptPatch;
+    }
+
+    if(h->mAccept != nullptr) {
+        mAccept = h->mAccept;
+    }
+
+    if(h->mTransportSecurity != nullptr) {
+        mTransportSecurity = h->mTransportSecurity;
+    }
+
+    if(h->mProxyAuthorization != nullptr) {
+        mProxyAuthorization = h->mProxyAuthorization;
+    }
+
+    if(h->mProxyAuthenticate != nullptr) {
+        mProxyAuthenticate = h->mProxyAuthenticate;
+    }
+
+    if(h->mXFrameOptions != nullptr) {
+        mXFrameOptions = h->mXFrameOptions;
+    }
+
+    if(h->mForwarded != nullptr) {
+        mForwarded = h->mForwarded;
+    }
+
+    if(h->mContentDisposition != nullptr) {
+        mContentDisposition = h->mContentDisposition;
+    }
+
+    if(h->mHeaderDigest != nullptr) {
+        mHeaderDigest = h->mHeaderDigest;
     }
 }
 
 void _HttpHeader::reset() { 
     mValues->clear(); 
     mCookies->clear();
+    mLinks->clear();
     mVersion = createHttpVersion();
-
+    
     mCacheControl = nullptr;
     mContentType = nullptr;
     mAcceptEncoding = nullptr;
@@ -304,14 +360,13 @@ void _HttpHeader::reset() {
     mMethod = -1;
     mResponseReason = nullptr;
     mContentLength = -1;
-    mIsConnected = true;
+    mConnection = nullptr;
     mType = Type::Request;
-    mLink = nullptr;
 }
 
 void _HttpHeader::set(String key, String value) {
     //const char *p = key->toChars();
-    Integer id = idMaps->get(key);
+    Integer id = idMaps->get(key->toLowerCase());
     if(id != nullptr) {
         switch(id->toValue()) {
             case TypeDigest: {
@@ -441,9 +496,7 @@ void _HttpHeader::set(String key, String value) {
             }
 
             case TypeConnection: {
-                if (st(HttpHeader)::ConnectionClose->equals(value->trimAll())) {
-                    setConnected(false);
-                }
+                mConnection = value;
                 return;
             }
 
@@ -459,7 +512,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeLink:{
                 HttpHeaderLink link = createHttpHeaderLink(value);
-                setLink(link);
+                mLinks->add(link);
                 return;
             }
 
@@ -472,11 +525,97 @@ void _HttpHeader::set(String key, String value) {
 }
 
 String _HttpHeader::get(String header) {
-    //TODO
+    Integer id = idMaps->get(header->toLowerCase());
+    if(id != nullptr) {
+        switch(id->toValue()) {
+            case TypeDigest: {
+                return (mHeaderDigest == nullptr)?nullptr:mHeaderDigest->toString();
+            }
+
+            case TypeContentDisposition: {
+                return (mContentDisposition == nullptr)?nullptr:mContentDisposition->toString();
+            }
+
+            case TypeForwarded: {
+                return (mForwarded == nullptr)?nullptr:mForwarded->toString();
+            }
+
+            case TypeXFrameOptions: {
+                return (mXFrameOptions == nullptr)?nullptr:mXFrameOptions->toString();
+            }
+
+            case TypeProxyAuthenticate: {
+                return (mProxyAuthenticate == nullptr)?nullptr:mProxyAuthenticate->toString();
+            }
+
+            case TypeProxyAuthorization: {
+                return (mProxyAuthorization == nullptr)?nullptr:mProxyAuthorization->toString();
+            }
+
+            case TypeStrictTransportSecurity :{
+                return (mTransportSecurity == nullptr)?nullptr:mTransportSecurity->toString();
+            }
+
+            case TypeAcceptEncoding:{
+                return (mAcceptEncoding == nullptr)?nullptr:mAcceptEncoding->toString();
+            }
+
+            case TypeAcceptLanguage: {
+                return (mAcceptLanguage == nullptr)?nullptr:mAcceptLanguage->toString();
+            }
+
+            case TypeAcceptCharset: {
+                return (mAcceptCharSet == nullptr)?nullptr:mAcceptCharSet->toString();
+            }
+
+            case TypeAcceptPatch: {
+                return (mAcceptPatch == nullptr)?nullptr:mAcceptPatch->toString();
+            }
+
+            case TypeAccept: {
+                return (mAccept == nullptr)?nullptr:mAccept->toString();
+            }
+
+            case TypeCookie: {
+                //TODO
+                return nullptr;
+            }
+
+            case TypeCacheControl: {
+                //return (mCacheControl == nullptr)?nullptr:mCacheControl->toString();
+                //TODO
+                return nullptr;
+            }
+
+            case TypeContentType: {
+                return (mContentType == nullptr)?nullptr:mContentType->toString();
+            }
+
+            case TypeContentLength: {
+                return createString(mContentLength);
+            }
+
+            case TypeConnection: {
+                return mConnection;
+            }
+
+            case TypeSetCookie: {
+                //TODO
+                return nullptr;
+            }
+
+            case TypeLink:{
+                //TODO
+                return nullptr;
+            }
+
+            default:
+            break;
+        }
+    }
+
     return mValues->get(header->toLowerCase());
 }
-
-void _HttpHeader::clear() { mValues->clear(); }
 
 int _HttpHeader::size() { return mValues->size(); }
 
@@ -504,9 +643,9 @@ int _HttpHeader::getContentLength() { return mContentLength; }
 
 void _HttpHeader::setContentLength(int c) { mContentLength = c; }
 
-bool _HttpHeader::isConnected() { return mIsConnected; }
+void _HttpHeader::setConnection(String c) { mConnection = c; }
 
-void _HttpHeader::setConnected(bool v) { mIsConnected = v; }
+String _HttpHeader::getConnection() { return mConnection; }
 
 int _HttpHeader::getType() { return mType; }
 
@@ -518,16 +657,8 @@ ArrayList<HttpCookie> _HttpHeader::getCookies() { return mCookies; }
 
 HttpCacheControl _HttpHeader::getCacheControl() { return mCacheControl; }
 
-//void _HttpHeader::updateCacheControl() {
-//    mCacheControl = createHttpCacheControl(AutoClone(this));
-//}
 
 void _HttpHeader::setCacheControl(HttpCacheControl c) { mCacheControl = c; }
-
-//void _HttpHeader::setContentType(String value) {
-//    mContentType = createHttpContentType(value);
-//    mValues->put(st(HttpHeader)::ContentType, value);
-//}
 
 void _HttpHeader::setContentType(HttpContentType contenttype) {
     mContentType = contenttype;
@@ -535,12 +666,12 @@ void _HttpHeader::setContentType(HttpContentType contenttype) {
 
 HttpContentType _HttpHeader::getContentType() { return mContentType; }
 
-void _HttpHeader::setLink(HttpHeaderLink l) {
-    mLink = l;
+void _HttpHeader::addLink(HttpHeaderLink l) {
+    mLinks->add(l);
 }
 
-HttpHeaderLink _HttpHeader::getLink() {
-    return mLink;
+ArrayList<HttpHeaderLink> _HttpHeader::getLinks() {
+    return mLinks;
 }
 
 void _HttpHeader::setAcceptEncoding(HttpAcceptEncoding s) {

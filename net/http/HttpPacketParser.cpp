@@ -134,6 +134,8 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                  * the end of body is specified by the EOF.
                  */
                 // printf("HttpPacketParser BodyStart trace2\n");
+                auto con = mHttpPacket->getHeader()->getConnection();
+
                 if (mHttpPacket->getHeader()->get(
                         st(HttpHeader)::Upgrade) != nullptr ||
                     mHttpPacket->getHeader()->getMethod() ==
@@ -145,7 +147,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                         mHttpPacket->getEntity()->setUpgrade(
                             content->toString());
                     }
-                } else if (!mHttpPacket->getHeader()->isConnected() ||
+                } else if (((con != nullptr) && con->equals("close"))||
                            mHttpPacket->getHeader()->getType() ==
                                st(HttpHeader)::Response) {
                     // connection:close,pop all data && close connection

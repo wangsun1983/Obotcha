@@ -12,6 +12,7 @@
 
 namespace obotcha {
 
+//<scheme>://<user>:<password>@<host>:<port>/<path>;<params>?<query>#<frag>
 String _HttpUrlParser::HttpScheme = createString("http");
 String _HttpUrlParser::HttpsScheme = createString("https");
 

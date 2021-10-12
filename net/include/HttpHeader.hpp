@@ -271,8 +271,8 @@ public:
     void setContentType(HttpContentType);
     HttpContentType getContentType();
 
-    void setLink(HttpHeaderLink);
-    HttpHeaderLink getLink();
+    void addLink(HttpHeaderLink);
+    ArrayList<HttpHeaderLink> getLinks();
 
     void setAcceptEncoding(HttpAcceptEncoding);
     HttpAcceptEncoding getAcceptEncoding();
@@ -330,13 +330,11 @@ public:
     int getContentLength();
     void setContentLength(int);
 
-    bool isConnected();
-    void setConnected(bool);
+    String getConnection();
+    void setConnection(String);
 
     int getType();
     void setType(int);
-
-    void clear();
 
     int size();
     
@@ -351,7 +349,7 @@ private:
 
     ArrayList<HttpCookie> mCookies;
 
-    HttpHeaderLink mLink;
+    ArrayList<HttpHeaderLink> mLinks;
 
     HttpCacheControl mCacheControl;
 
@@ -395,7 +393,7 @@ private:
 
     int mContentLength;
 
-    bool mIsConnected;
+    String mConnection;
 
     static HashMap<String,Integer> idMaps;
 };

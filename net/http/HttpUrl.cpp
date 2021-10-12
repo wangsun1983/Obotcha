@@ -11,7 +11,7 @@ namespace obotcha {
 
 _HttpUrl::_HttpUrl() {
     mQuery = createHashMap<String, String>();
-    mPort = 80;
+    mPort = -1;
     mSchema = nullptr;
     mHostName = nullptr;
     mPath = nullptr;
@@ -63,10 +63,14 @@ HashMap<String, String> _HttpUrl::getQuery() { return mQuery; }
 String _HttpUrl::getFragment() { return mFragment; }
 
 String _HttpUrl::toString() {
-    if (mSchema == nullptr || mHostName == nullptr) {
-        return nullptr;
+    //if (mSchema == nullptr || mHostName == nullptr) {
+    //    return nullptr;
+    //}
+    String url = createString("");
+
+    if(mSchema != nullptr) {
+        url = url->append(mSchema)->append("://");
     }
-    String url = createString("")->append(mSchema)->append("://");
 
     if (mUser != nullptr) {
         if (mPassword != nullptr) {
@@ -77,8 +81,10 @@ String _HttpUrl::toString() {
         }
     }
 
-    url = url->append(mHostName);
-
+    if(mHostName != nullptr) {
+        url = url->append(mHostName);
+    }
+    
     if (mPort != -1) {
         url = url->append(":")->append(createString(mPort));
     }
