@@ -203,12 +203,11 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                     if (contenttype != nullptr &&
                         st(HttpMime)::XFormUrlEncoded->indexOfIgnoreCase(
                             contenttype->getType()) >= 0) {
-                        ArrayList<KeyValuePair<String, String>>
-                            xFormEncodedPair =
-                                st(HttpXFormUrlEncodedParser)::parse(
-                                    content->toString());
-                        mHttpPacket->getEntity()->setEncodedKeyValues(
-                            xFormEncodedPair);
+                        //ArrayList<KeyValuePair<String, String>>
+                            //xFormEncodedPair =
+                            //    st(HttpXFormUrlEncodedParser)::parse(
+                             //       content->toString());
+                        mHttpPacket->getEntity()->setContent(content->toString()->toByteArray());
                     } else {
                         if (mHttpPacket->getHeader()->getMethod() ==
                             st(HttpMethod)::Connect) {

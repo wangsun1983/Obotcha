@@ -105,7 +105,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                     mHeader->setResponseReason(createString(""));
                 } else {
                     mHeader->setResponseReason(
-                        createString((const char *)reason->toValue(), 0,
+                        createString((const char *)reason->toString()->toChars(), 0,
                                      reason->size() - mCrlfCount));
                 }
                 mCrlfCount = 0;

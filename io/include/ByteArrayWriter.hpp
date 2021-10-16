@@ -32,6 +32,8 @@ DECLARE_CLASS(ByteArrayWriter) {
     void updateSize();
     void reset();
 
+    int getReminderSize();
+
     ByteArray getByteArray();
 
   private:

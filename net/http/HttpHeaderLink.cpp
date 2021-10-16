@@ -34,7 +34,7 @@ String _HttpHeaderLink::toString() {
         link = link->append("; title= \"",title,"\"");
     }
 
-    return link->subString(0,link->size() - 1);
+    return link;
 }
 
 } // namespace obotcha

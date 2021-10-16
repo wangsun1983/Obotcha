@@ -19,28 +19,24 @@ namespace obotcha {
 DECLARE_CLASS(HttpPacket) {
 
 public:
-
     friend class _HttpRequestParser;
     friend class _HttpResponseParser;
 
     _HttpPacket();
     
     void setHeader(HttpHeader);
-    
     HttpHeader getHeader();
 
     HttpEntity getEntity();
-
     void setEntity(HttpEntity);
 
-    void dump();
+    void setProtocol(int);
+    int getProtocol();
 
 private:
-    
     HttpHeader mHeader;
-
     HttpEntity mEntity;
-
+    int mProtocol;
 };
 
 }

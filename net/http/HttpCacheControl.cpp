@@ -137,55 +137,51 @@ String _HttpCacheControl::toString(int type) {
     String result = createString("");
 
     if(mNoCache) {
-        result = result->append(st(HttpHeader)::CacheControl, ":",NoCache,st(HttpText)::CRLF);
+        result = result->append(NoCache,",");
     }
 
     if (mNoStore) {
-        result = result->append(st(HttpHeader)::CacheControl, ":",NoStore,st(HttpText)::CRLF);
+        result = result->append(NoStore,",");
     }
 
     if(mMaxAgeSeconds != -1) {
-        result = result->append(st(HttpHeader)::CacheControl, ":",
-                                MaxAge,"=",createString(mMaxAgeSeconds),st(HttpText)::CRLF);
+        result = result->append(MaxAge,"=",createString(mMaxAgeSeconds),",");
     }
 
     if(mMaxStaleSeconds != -1) {
-        result = result->append(st(HttpHeader)::CacheControl, ":",
-                                MaxStale,"=",createString(mMaxStaleSeconds),st(HttpText)::CRLF);
+        result = result->append(MaxStale,"=",createString(mMaxStaleSeconds),",");
     }
 
     if(mMinFreshSeconds!= -1 && type == st(HttpProtocol)::HttpRequest) {
-        result = result->append(st(HttpHeader)::CacheControl, ":",
-                                MaxStale,"=",createString(mMaxStaleSeconds),st(HttpText)::CRLF);
+        result = result->append(MaxStale,"=",createString(mMaxStaleSeconds),",");
     }
 
     if(mOnlyIfCached && type == st(HttpProtocol)::HttpRequest) {
-        result = result->append(st(HttpHeader)::CacheControl, ":",OnlyIfCached,st(HttpText)::CRLF);
+        result = result->append(OnlyIfCached,",");
     }
 
     if(mNoTransform) {
-        result = result->append(st(HttpHeader)::CacheControl, ":",NotTransform,st(HttpText)::CRLF);
+        result = result->append(NotTransform,",");
     }
 
     if(mIsPublic && type == st(HttpProtocol)::HttpResponse) {
-        result = result->append(st(HttpHeader)::CacheControl, ":",CachePublic,st(HttpText)::CRLF);
+        result = result->append(CachePublic,",");
     }
     
     if(mIsPrivate && type == st(HttpProtocol)::HttpResponse) {
-        result = result->append(st(HttpHeader)::CacheControl, ":",CachePrivate,st(HttpText)::CRLF);
+        result = result->append(CachePrivate,",");
     }
 
     if(mMustRevalidate && type == st(HttpProtocol)::HttpResponse) {
-        result = result->append(st(HttpHeader)::CacheControl, ":",MustRevalidate,st(HttpText)::CRLF);
+        result = result->append(MustRevalidate,",");
     }
 
     if(mSMaxAgeSeconds != -1 && type == st(HttpProtocol)::HttpResponse) {
-        result = result->append(st(HttpHeader)::CacheControl, ":",
-                                SMaxAge,"=",createString(mSMaxAgeSeconds),st(HttpText)::CRLF);
+        result = result->append(SMaxAge,"=",createString(mSMaxAgeSeconds),",");
     }
 
     if(result->size() > 0) {
-        return result->subString(0,result->size() - st(HttpText)::CRLF->size());
+        return result->subString(0,result->size() - 1);
     }
 
     return result;

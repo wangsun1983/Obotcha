@@ -9,12 +9,8 @@
 #include "HashMap.hpp"
 #include "HttpCookie.hpp"
 #include "HttpPacketParser.hpp"
-#include "HttpRequest.hpp"
-#include "HttpResponse.hpp"
 #include "Socket.hpp"
-#include "HttpResponse.hpp"
 #include "SocketOutputStream.hpp"
-#include "HttpRequestWriter.hpp"
 #include "InputStream.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "Mutex.hpp"
@@ -23,7 +19,10 @@
 #include "HttpOption.hpp"
 #include "HttpConnectionListener.hpp"
 #include "SocketMonitor.hpp"
+#include "HttpRequest.hpp"
+#include "HttpResponse.hpp"
 #include "SocketListener.hpp"
+#include "HttpPacketWriter.hpp"
 
 namespace obotcha {
 
@@ -45,7 +44,7 @@ public:
 private:
     Socket mSocket;
 
-    HttpRequestWriter writer;
+    HttpPacketWriter writer;
 
     InputStream mInputStream;
 

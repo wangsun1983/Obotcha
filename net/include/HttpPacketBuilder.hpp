@@ -32,11 +32,11 @@ public:
     //request
     _HttpPacketBuilder * addCookie(HttpCookie cookie);
     _HttpPacketBuilder * setContent(ByteArray);
-    _HttpPacketBuilder * addEncodeValue(String,String);
+    //_HttpPacketBuilder * addEncodeValue(String,String);
     _HttpPacketBuilder * setMethod(int);
     _HttpPacketBuilder * setUrl(String url);
     _HttpPacketBuilder * setPort(int port);
-    _HttpPacketBuilder * addMultiPartFile(File);
+    _HttpPacketBuilder * addMultiPartFile(File,String name = nullptr);
     _HttpPacketBuilder * addMultiPartValue(String,String);
 
     //response

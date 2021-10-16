@@ -19,7 +19,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpurlparser.o \
 		$(outtmp)/httpoption.o \
 		$(outtmp)/httpurl.o \
-		$(outtmp)/httpfile.o \
 		$(outtmp)/httpstatus.o \
 		$(outtmp)/httpentity.o \
 		$(outtmp)/httpversion.o \
@@ -27,7 +26,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpcontenttype.o \
 		$(outtmp)/httpmime.o \
 		$(outtmp)/httpurlbuilder.o \
-		$(outtmp)/httpresponse.o \
 		$(outtmp)/httpconnection.o \
 		$(outtmp)/httpmethod.o \
 		$(outtmp)/httpheader.o \
@@ -50,10 +48,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheadercontentparser.o \
 		$(outtmp)/httppacket.o \
 		$(outtmp)/httptext.o \
-		$(outtmp)/httprequest.o \
-		$(outtmp)/httprequestwriter.o \
 		$(outtmp)/httpcachecontrol.o \
-		$(outtmp)/httpresponsewriter.o \
 		$(outtmp)/httppacketparser.o \
 		$(outtmp)/httppacketbuilder.o \
 		$(outtmp)/httplinkermanager.o \
@@ -68,7 +63,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httplinker.o \
 		$(outtmp)/httpxformparser.o \
 		$(outtmp)/httpresourcemanager.o \
-		$(outtmp)/httpresponseentity.o \
 		$(outtmp)/websocketserver.o \
 		$(outtmp)/websocketserverbuilder.o \
 		$(outtmp)/websocketclient.o \
@@ -97,6 +91,8 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httproutermap.o \
 		$(outtmp)/httproutermanager.o \
 		$(outtmp)/httpcookieparser.o \
+		$(outtmp)/httppacketwriter.o \
+		$(outtmp)/httpresponseentity.o	
 		
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
@@ -176,8 +172,8 @@ $(outtmp)/httpoption.o :$(netDir)/http/HttpOption.cpp
 $(outtmp)/httpurl.o :$(netDir)/http/HttpUrl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrl.cpp -o $(outtmp)/httpurl.o 
 
-$(outtmp)/httpfile.o :$(netDir)/http/HttpFile.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpFile.cpp -o $(outtmp)/httpfile.o 
+#$(outtmp)/httpfile.o :$(netDir)/http/HttpFile.cpp
+#	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpFile.cpp -o $(outtmp)/httpfile.o 
 
 $(outtmp)/httpstatus.o :$(netDir)/http/HttpStatus.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpStatus.cpp -o $(outtmp)/httpstatus.o 
@@ -284,20 +280,23 @@ $(outtmp)/httppacket.o :$(netDir)/http/HttpPacket.cpp
 $(outtmp)/httptext.o :$(netDir)/http/HttpText.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpText.cpp -o $(outtmp)/httptext.o 
 
-$(outtmp)/httprequest.o :$(netDir)/http/HttpRequest.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRequest.cpp -o $(outtmp)/httprequest.o 
+#$(outtmp)/httprequest.o :$(netDir)/http/HttpRequest.cpp
+#	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRequest.cpp -o $(outtmp)/httprequest.o 
 
-$(outtmp)/httprequestwriter.o :$(netDir)/http/HttpRequestWriter.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRequestWriter.cpp -o $(outtmp)/httprequestwriter.o 
+#$(outtmp)/httprequestwriter.o :$(netDir)/http/HttpRequestWriter.cpp
+#	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRequestWriter.cpp -o $(outtmp)/httprequestwriter.o 
 
 $(outtmp)/httpcachecontrol.o :$(netDir)/http/HttpCacheControl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpCacheControl.cpp -o $(outtmp)/httpcachecontrol.o 
 
-$(outtmp)/httpresponse.o :$(netDir)/http/HttpResponse.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponse.cpp -o $(outtmp)/httpresponse.o 
+#$(outtmp)/httpresponse.o :$(netDir)/http/HttpResponse.cpp
+#	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponse.cpp -o $(outtmp)/httpresponse.o 
 
-$(outtmp)/httpresponsewriter.o :$(netDir)/http/HttpResponseWriter.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o 
+#$(outtmp)/httpresponsewriter.o :$(netDir)/http/HttpResponseWriter.cpp
+#	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o 
+
+$(outtmp)/httppacketwriter.o :$(netDir)/http/HttpPacketWriter.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketWriter.cpp -o $(outtmp)/httppacketwriter.o 
 
 $(outtmp)/httppacketparser.o :$(netDir)/http/HttpPacketParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketParser.cpp -o $(outtmp)/httppacketparser.o 

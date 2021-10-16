@@ -13,7 +13,9 @@
 #include "HttpText.hpp"
 #include "String.hpp"
 #include "HttpCookieParser.hpp"
-
+#include "HttpProtocol.hpp"
+#include "HttpMethod.hpp"
+#include "HttpStatus.hpp"
 
 namespace obotcha {
 
@@ -334,6 +336,10 @@ void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
     if(h->mHeaderDigest != nullptr) {
         mHeaderDigest = h->mHeaderDigest;
     }
+
+    if(h->mAuthorization != nullptr) {
+        mAuthorization = h->mAuthorization;
+    }
 }
 
 void _HttpHeader::reset() { 
@@ -356,9 +362,12 @@ void _HttpHeader::reset() {
     mForwarded = nullptr;
     mContentDisposition = nullptr;
     mHeaderDigest = nullptr;
+    mAuthorization = nullptr;
 
     mMethod = -1;
     mResponseReason = nullptr;
+    mResponseStatus = st(HttpStatus)::Ok;
+
     mContentLength = -1;
     mConnection = nullptr;
     mType = Type::Request;
@@ -369,6 +378,14 @@ void _HttpHeader::set(String key, String value) {
     Integer id = idMaps->get(key->toLowerCase());
     if(id != nullptr) {
         switch(id->toValue()) {
+            case TypeAuthorization: {
+                if(mAuthorization == nullptr) {
+                    mAuthorization = createHttpAuthorization();
+                }
+                mAuthorization->import(value);
+                return;
+            }
+
             case TypeDigest: {
                 if(mHeaderDigest == nullptr) {
                     mHeaderDigest = createHttpHeaderDigest();
@@ -666,11 +683,11 @@ void _HttpHeader::setContentType(HttpContentType contenttype) {
 
 HttpContentType _HttpHeader::getContentType() { return mContentType; }
 
-void _HttpHeader::addLink(HttpHeaderLink l) {
+void _HttpHeader::addHeaderLink(HttpHeaderLink l) {
     mLinks->add(l);
 }
 
-ArrayList<HttpHeaderLink> _HttpHeader::getLinks() {
+ArrayList<HttpHeaderLink> _HttpHeader::getHeaderLinks() {
     return mLinks;
 }
 
@@ -698,76 +715,84 @@ HttpAcceptCharSet _HttpHeader::getAcceptCharSet() {
     return mAcceptCharSet;
 }
 
-void _HttpHeader::setHttpAcceptPatch(HttpAcceptPatch v) {
+void _HttpHeader::setAcceptPatch(HttpAcceptPatch v) {
     this->mAcceptPatch = v;
 }
 
-HttpAcceptPatch _HttpHeader::getHttpAcceptPatch() {
+HttpAcceptPatch _HttpHeader::getAcceptPatch() {
     return mAcceptPatch;
 }
 
-void _HttpHeader::setHttpAccept(HttpAccept v) {
+void _HttpHeader::setAccept(HttpAccept v) {
     this->mAccept = v;
 }
 
-HttpAccept _HttpHeader::getHttpAccept() {
+HttpAccept _HttpHeader::getAccept() {
     return mAccept;
 }
 
-void _HttpHeader::setHttpStrictTransportSecurity(HttpStrictTransportSecurity v) {
+void _HttpHeader::setStrictTransportSecurity(HttpStrictTransportSecurity v) {
     mTransportSecurity = v;
 }
 
-HttpStrictTransportSecurity _HttpHeader::getHttpStrictTransportSecurity() {
+HttpStrictTransportSecurity _HttpHeader::getStrictTransportSecurity() {
     return mTransportSecurity;
 }
 
-void _HttpHeader::setHttpProxyAuthorization(HttpProxyAuthorization v) {
+void _HttpHeader::setProxyAuthorization(HttpProxyAuthorization v) {
     mProxyAuthorization = v;
 }
 
-HttpProxyAuthorization _HttpHeader::getHttpProxyAuthorization() {
+HttpProxyAuthorization _HttpHeader::getProxyAuthorization() {
     return mProxyAuthorization;
 }
 
-void _HttpHeader::setHttpProxyAuthenticate(HttpProxyAuthenticate v) {
+void _HttpHeader::setProxyAuthenticate(HttpProxyAuthenticate v) {
     mProxyAuthenticate = v;
 }
 
-HttpProxyAuthenticate _HttpHeader::getHttpProxyAuthenticate() {
+HttpProxyAuthenticate _HttpHeader::getProxyAuthenticate() {
     return mProxyAuthenticate;
 }
 
-void _HttpHeader::setHttpXFrameOptions(HttpXFrameOptions v) {
+void _HttpHeader::setXFrameOptions(HttpXFrameOptions v) {
     mXFrameOptions = v;
 }
 
-HttpXFrameOptions _HttpHeader::getHttpXFrameOptions() {
+HttpXFrameOptions _HttpHeader::getXFrameOptions() {
     return mXFrameOptions;
 }
 
-void _HttpHeader::setHttpForwarded(HttpForwarded v) {
+void _HttpHeader::setForwarded(HttpForwarded v) {
     mForwarded = v;
 }
 
-HttpForwarded _HttpHeader::getHttpForwarded() {
+HttpForwarded _HttpHeader::getForwarded() {
     return mForwarded;
 }
 
-void _HttpHeader::setHttpContentDisposition(HttpContentDisposition v) {
+void _HttpHeader::setContentDisposition(HttpContentDisposition v) {
     mContentDisposition = v;
 }
 
-HttpContentDisposition _HttpHeader::getHttpContentDisposition() {
+HttpContentDisposition _HttpHeader::getContentDisposition() {
     return mContentDisposition;
 }
 
-void _HttpHeader::setHttpHeaderDigest(HttpHeaderDigest v) {
+void _HttpHeader::setHeaderDigest(HttpHeaderDigest v) {
     mHeaderDigest = v;
 }
 
-HttpHeaderDigest _HttpHeader::getHttpHeaderDigest() {
+HttpHeaderDigest _HttpHeader::getHeaderDigest() {
     return mHeaderDigest;
+}
+
+void _HttpHeader::setAuthorization(HttpAuthorization v) {
+    mAuthorization = v;
+}
+
+HttpAuthorization _HttpHeader::getAuthorization() {
+    return mAuthorization;
 }
 
 MapIterator<String, String> _HttpHeader::getIterator() {
@@ -775,14 +800,39 @@ MapIterator<String, String> _HttpHeader::getIterator() {
 }
 
 String _HttpHeader::toString(int type) {
+    //create method method.......
+    String header = nullptr;
+    switch(type) {
+        case st(HttpProtocol)::HttpRequest: {
+            header = st(HttpMethod)::toString(mMethod)->append(st(HttpText)::ContentSpace);
+            if (mUrl != nullptr) {
+                header = header->append(mUrl->toString());
+            } else {
+                header = header->append(createString("/"));
+            }
+            header = header->append(st(HttpText)::ContentSpace,mVersion->toString(),st(HttpText)::CRLF);
+            break;
+        }
+
+        case st(HttpProtocol)::HttpResponse: {
+            header = mVersion->toString()->append(st(HttpText)::ContentSpace,createString(mResponseStatus));
+            if (mResponseReason != nullptr) {
+                header = header->append(st(HttpText)::ContentSpace,mResponseReason,st(HttpText)::CRLF);
+            } else {
+                header = header->append(st(HttpText)::ContentSpace,st(HttpStatus)::toString(mResponseStatus),st(HttpText)::CRLF);
+            }
+            break;
+        }
+        break;
+    }
+    
     // conver header
     MapIterator<String, String> headerIte = mValues->getIterator();
 
-    String html = createString("");
     while (headerIte->hasValue()) {
         String headString = headerIte->getKey();
         if (headString != nullptr && !headString->equalsIgnoreCase(Status)) {
-            html = html->append(headString, ": ", headerIte->getValue(),
+            header = header->append(headString, ": ", headerIte->getValue(),
                                 st(HttpText)::CRLF);
         }
 
@@ -792,71 +842,87 @@ String _HttpHeader::toString(int type) {
     ListIterator<HttpCookie> iterator = mCookies->getIterator();
     while (iterator->hasValue()) {
         HttpCookie cookie = iterator->getValue();
-        html = html->append(cookie->toString(type), st(HttpText)::CRLF);
+        header = header->append(cookie->toString(type), st(HttpText)::CRLF);
         iterator->next();
     }
 
     if(mCacheControl != nullptr) {
-        html = html->append(st(HttpHeader)::CacheControl,": ",mCacheControl->toString(type),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::CacheControl,": ",mCacheControl->toString(type),st(HttpText)::CRLF);
     }
 
     if(mContentType != nullptr) {
-        html = html->append(st(HttpHeader)::ContentType,": ",mContentType->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::ContentType,": ",mContentType->toString(),st(HttpText)::CRLF);
     }
 
     if(mAcceptEncoding != nullptr) {
-        html = html->append(st(HttpHeader)::AcceptEncoding,": ",mAcceptEncoding->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::AcceptEncoding,": ",mAcceptEncoding->toString(),st(HttpText)::CRLF);
     }
 
     if(mAcceptLanguage != nullptr) {
-        html = html->append(st(HttpHeader)::AcceptLanguage,": ",mAcceptLanguage->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::AcceptLanguage,": ",mAcceptLanguage->toString(),st(HttpText)::CRLF);
     }
     
     if(mAcceptCharSet != nullptr) {
-        html = html->append(st(HttpHeader)::AcceptCharset,": ",mAcceptCharSet->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::AcceptCharset,": ",mAcceptCharSet->toString(),st(HttpText)::CRLF);
     }
 
     if(mAcceptPatch != nullptr) {
-        html = html->append(st(HttpHeader)::AcceptPatch,": ",mAcceptPatch->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::AcceptPatch,": ",mAcceptPatch->toString(),st(HttpText)::CRLF);
     }
 
     if(mAccept != nullptr) {
-        html = html->append(st(HttpHeader)::Accept,": ",mAccept->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::Accept,": ",mAccept->toString(),st(HttpText)::CRLF);
     }
 
     if(mTransportSecurity != nullptr) {
-        html = html->append(st(HttpHeader)::StrictTransportSecurity,": ",mTransportSecurity->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::StrictTransportSecurity,": ",mTransportSecurity->toString(),st(HttpText)::CRLF);
     }
 
     if(mProxyAuthorization != nullptr) {
-        html = html->append(st(HttpHeader)::ProxyAuthorization,": ",mProxyAuthorization->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::ProxyAuthorization,": ",mProxyAuthorization->toString(),st(HttpText)::CRLF);
     }
 
     if(mProxyAuthenticate != nullptr) {
-        html = html->append(st(HttpHeader)::ProxyAuthenticate,": ",mProxyAuthenticate->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::ProxyAuthenticate,": ",mProxyAuthenticate->toString(),st(HttpText)::CRLF);
     }
 
     if(mXFrameOptions != nullptr) {
-        html = html->append(st(HttpHeader)::XFrameOptions,": ",mXFrameOptions->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::XFrameOptions,": ",mXFrameOptions->toString(),st(HttpText)::CRLF);
     }
 
     if(mForwarded != nullptr) {
-        html = html->append(st(HttpHeader)::Forwarded,": ",mForwarded->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::Forwarded,": ",mForwarded->toString(),st(HttpText)::CRLF);
     }
 
     if(mContentDisposition != nullptr) {
-        html = html->append(st(HttpHeader)::ContentDisposition,": ",mContentDisposition->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::ContentDisposition,": ",mContentDisposition->toString(),st(HttpText)::CRLF);
     }
 
     if(mHeaderDigest != nullptr) {
-        html = html->append(st(HttpHeader)::Digest,": ",mHeaderDigest->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::Digest,": ",mHeaderDigest->toString(),st(HttpText)::CRLF);
     }
 
-    if (html->size() == 0) {
-        return html;
+    if(mAuthorization != nullptr) {
+        header = header->append(st(HttpHeader)::Authorization,": ",mAuthorization->toString(),st(HttpText)::CRLF);
     }
 
-    return html->subString(0, html->size() - 2);
+    if(mContentLength != -1) {
+        header = header->append(st(HttpHeader)::ContentLength,": ",createString(mContentLength),st(HttpText)::CRLF);
+    }
+
+    if(mLinks != nullptr && mLinks->size() != 0) {
+        auto linkIterator = mLinks->getIterator();
+        while(linkIterator->hasValue()) {
+            header = header->append(st(HttpHeader)::Link,": ",linkIterator->getValue()->toString(),st(HttpText)::CRLF);
+            linkIterator->next();
+        }
+    }
+
+    if (header->size() == 0) {
+        return header;
+    }
+
+    return header->subString(0, header->size() - 2);
 }
 
 } // namespace obotcha

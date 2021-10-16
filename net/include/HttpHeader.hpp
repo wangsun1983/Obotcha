@@ -27,6 +27,7 @@
 #include "HttpForwarded.hpp"
 #include "HttpContentDisposition.hpp"
 #include "HttpHeaderDigest.hpp"
+#include "HttpAuthorization.hpp"
 
 namespace obotcha {
 
@@ -271,8 +272,8 @@ public:
     void setContentType(HttpContentType);
     HttpContentType getContentType();
 
-    void addLink(HttpHeaderLink);
-    ArrayList<HttpHeaderLink> getLinks();
+    void addHeaderLink(HttpHeaderLink);
+    ArrayList<HttpHeaderLink> getHeaderLinks();
 
     void setAcceptEncoding(HttpAcceptEncoding);
     HttpAcceptEncoding getAcceptEncoding();
@@ -283,32 +284,35 @@ public:
     void setAcceptCharSet(HttpAcceptCharSet);
     HttpAcceptCharSet getAcceptCharSet();
 
-    void setHttpAcceptPatch(HttpAcceptPatch);
-    HttpAcceptPatch getHttpAcceptPatch();
+    void setAcceptPatch(HttpAcceptPatch);
+    HttpAcceptPatch getAcceptPatch();
 
-    void setHttpAccept(HttpAccept);
-    HttpAccept getHttpAccept();
+    void setAccept(HttpAccept);
+    HttpAccept getAccept();
 
-    void setHttpStrictTransportSecurity(HttpStrictTransportSecurity);
-    HttpStrictTransportSecurity getHttpStrictTransportSecurity();
+    void setStrictTransportSecurity(HttpStrictTransportSecurity);
+    HttpStrictTransportSecurity getStrictTransportSecurity();
 
-    void setHttpProxyAuthorization(HttpProxyAuthorization);
-    HttpProxyAuthorization getHttpProxyAuthorization();
+    void setProxyAuthorization(HttpProxyAuthorization);
+    HttpProxyAuthorization getProxyAuthorization();
 
-    void setHttpProxyAuthenticate(HttpProxyAuthenticate);
-    HttpProxyAuthenticate getHttpProxyAuthenticate();
+    void setProxyAuthenticate(HttpProxyAuthenticate);
+    HttpProxyAuthenticate getProxyAuthenticate();
 
-    void setHttpXFrameOptions(HttpXFrameOptions);
-    HttpXFrameOptions getHttpXFrameOptions();
+    void setXFrameOptions(HttpXFrameOptions);
+    HttpXFrameOptions getXFrameOptions();
 
-    void setHttpForwarded(HttpForwarded);
-    HttpForwarded getHttpForwarded();
+    void setForwarded(HttpForwarded);
+    HttpForwarded getForwarded();
 
-    void setHttpContentDisposition(HttpContentDisposition);
-    HttpContentDisposition getHttpContentDisposition();
+    void setContentDisposition(HttpContentDisposition);
+    HttpContentDisposition getContentDisposition();
 
-    void setHttpHeaderDigest(HttpHeaderDigest);
-    HttpHeaderDigest getHttpHeaderDigest();
+    void setHeaderDigest(HttpHeaderDigest);
+    HttpHeaderDigest getHeaderDigest();
+
+    void setAuthorization(HttpAuthorization);
+    HttpAuthorization getAuthorization();
 
     String toString(int);
 
@@ -379,13 +383,15 @@ private:
 
     HttpHeaderDigest mHeaderDigest;
 
-    int mType;
-
-    int mMethod;
+    HttpAuthorization mAuthorization;
 
     HttpVersion mVersion;
 
     HttpUrl mUrl;
+
+    int mType;
+
+    int mMethod;
 
     int mResponseStatus;
 

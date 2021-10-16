@@ -42,12 +42,12 @@ _HttpPacketBuilder *_HttpPacketBuilder::setContent(ByteArray c) {
     return this;
 }
 
-_HttpPacketBuilder *_HttpPacketBuilder::addEncodeValue(String key,
-                                                       String value) {
-    entity->getEncodedKeyValues()->add(
-        createKeyValuePair<String, String>(key, value));
-    return this;
-}
+//_HttpPacketBuilder *_HttpPacketBuilder::addEncodeValue(String key,
+//                                                       String value) {
+//    entity->getEncodedKeyValues()->add(
+//        createKeyValuePair<String, String>(key, value));
+//    return this;
+//}
 
 _HttpPacketBuilder *_HttpPacketBuilder::setMethod(int m) {
     method = m;
@@ -72,8 +72,9 @@ _HttpPacketBuilder *_HttpPacketBuilder::setPort(int port) {
     return this;
 }
 
-_HttpPacketBuilder *_HttpPacketBuilder::addMultiPartFile(File file) {
-    part->files->add(createHttpMultiPartFile(file));
+_HttpPacketBuilder *_HttpPacketBuilder::addMultiPartFile(File file,String name) {
+    HttpMultiPartFile f = createHttpMultiPartFile(file,name);
+    part->files->add(f);
     return this;
 }
 
@@ -102,10 +103,13 @@ _HttpPacketBuilder *_HttpPacketBuilder::setChunckedFile(File f) {
 }
 
 HttpRequest _HttpPacketBuilder::newHttpReqeust() {
-    HttpRequest req = createHttpRequest(method, url);
+    HttpRequest req = createHttpRequest();
+    req->getHeader()->setMethod(method);
+    req->getHeader()->setUrl(url);
+
     req->setHeader(header);
     req->setEntity(entity);
-    return req;
+    return createHttpRequest(req);
 }
 
 HttpResponse _HttpPacketBuilder::newHttpResponse() {

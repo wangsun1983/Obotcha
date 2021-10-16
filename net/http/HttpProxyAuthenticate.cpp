@@ -17,7 +17,8 @@ void _HttpProxyAuthenticate::import(String s) {
             int pos = directive->indexOf(" ");
             if(pos != -1) {
                 type = directive->subString(0,pos);
-                directive = directive->subString(++pos,directive->size() - pos);
+                pos++;
+                directive = directive->subString(pos,directive->size() - pos);
             } else {
                 type = directive;
                 return;

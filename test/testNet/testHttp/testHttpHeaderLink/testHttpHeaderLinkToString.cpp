@@ -12,7 +12,7 @@ using namespace obotcha;
 void testLinkToString() {
   while(1) {
     HttpHeaderLink link1 = createHttpHeaderLink("<https://example.com>; rel=\"preload\"");
-    if(link1->toString()->equals("<https://example.com>; rel=\"preload\"")) {
+    if(!link1->toString()->equals("<https://example.com>; rel=\"preload\"")) {
       printf("---[HttpHeaderLink test toString case1] [FAILED]--- link is %s\n",link1->toString()->toChars());
     }
     break;

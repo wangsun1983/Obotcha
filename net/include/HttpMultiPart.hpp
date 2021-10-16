@@ -7,32 +7,42 @@
 #include "ArrayList.hpp"
 #include "File.hpp"
 #include "HashMap.hpp"
-#include "HttpCookie.hpp"
-#include "HttpFile.hpp"
 #include "HttpHeader.hpp"
 #include "HttpUrl.hpp"
 #include "KeyValuePair.hpp"
 #include "String.hpp"
+#include "File.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(HttpMultiPartFile) {
 
-  public:
-    _HttpMultiPartFile(File);
-    _HttpMultiPartFile(HttpFile);
+public:
+    _HttpMultiPartFile(String filename,String key);
+    _HttpMultiPartFile(File filename,String key);
+    String getKey();
+    File getFile();
+    String getFileName();
 
-    HttpFile getHttpFile();
-
-  private:
-    HttpFile mFile;
+private:
+    File mFile;
+    String mKey;
+    String mFileName;
+    String mGenFileName;
 };
 
 DECLARE_CLASS(HttpMultiPart) {
-  public:
+public:
     _HttpMultiPart();
     ArrayList<HttpMultiPartFile> files;
     ArrayList<KeyValuePair<String, String>> contents;
+
+    String getBoundary();
+
+    long getContentLength();
+private:
+    String mBoundary;
+
 };
 
 } // namespace obotcha

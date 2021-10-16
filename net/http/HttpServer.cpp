@@ -9,7 +9,6 @@
 #include "HttpLinker.hpp"
 #include "HttpLinkerManager.hpp"
 #include "HttpPacket.hpp"
-#include "HttpResponseWriter.hpp"
 #include "HttpServer.hpp"
 #include "InetAddress.hpp"
 #include "InterruptedException.hpp"
@@ -18,59 +17,60 @@
 #include "SocketBuilder.hpp"
 #include "SocketOption.hpp"
 #include "String.hpp"
+#include "HttpPacketWriter.hpp"
 
 namespace obotcha {
 
 void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
     switch (event) {
-    case SocketEvent::Message: {
-        HttpLinker info = mLinkerManager->getLinker(r);
-        if (info == nullptr) {
-            LOG(ERROR) << "http linker already removed";
-            return;
-        }
+        case SocketEvent::Message: {
+            HttpLinker info = mLinkerManager->getLinker(r);
+            if (info == nullptr) {
+                LOG(ERROR) << "http linker already removed";
+                return;
+            }
 
-        if (info->pushHttpData(pack) == -1) {
-            // some thing may be wrong(overflow)
-            LOG(ERROR) << "push http data error";
-            mHttpListener->onHttpMessage(SocketEvent::InternalError, info,
-                                         nullptr, nullptr);
+            if (info->pushHttpData(pack) == -1) {
+                // some thing may be wrong(overflow)
+                LOG(ERROR) << "push http data error";
+                mHttpListener->onHttpMessage(SocketEvent::InternalError, info,
+                                            nullptr, nullptr);
+                mLinkerManager->removeLinker(r);
+                r->close();
+                return;
+            }
+
+            ArrayList<HttpPacket> packets = info->pollHttpPacket();
+            if (packets != nullptr && packets->size() != 0) {
+                HttpPacketWriter writer =
+                    createHttpPacketWriter(info->getSocket()->getOutputStream());
+                ListIterator<HttpPacket> iterator = packets->getIterator();
+                while (iterator->hasValue()) {
+                    mHttpListener->onHttpMessage(event, info, writer,
+                                                iterator->getValue());
+                    iterator->next();
+                }
+            }
+        } break;
+
+        case SocketEvent::Connect: {
+            HttpLinker info = createHttpLinker(r);
+            if (isSSl) {
+                SSLInfo ssl = st(SSLManager)::getInstance()->get(
+                    r->getFileDescriptor()->getFd());
+                if (info != nullptr) {
+                    info->setSSLInfo(ssl);
+                }
+            }
+            mLinkerManager->addLinker(info);
+            mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
+        } break;
+
+        case SocketEvent::Disconnect: {
+            HttpLinker info = mLinkerManager->getLinker(r);
+            mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
             mLinkerManager->removeLinker(r);
-            r->close();
-            return;
-        }
-
-        ArrayList<HttpPacket> packets = info->pollHttpPacket();
-        if (packets != nullptr && packets->size() != 0) {
-            HttpResponseWriter writer =
-                createHttpResponseWriter(info->getSocket()->getOutputStream());
-            ListIterator<HttpPacket> iterator = packets->getIterator();
-            while (iterator->hasValue()) {
-                mHttpListener->onHttpMessage(event, info, writer,
-                                             iterator->getValue());
-                iterator->next();
-            }
-        }
-    } break;
-
-    case SocketEvent::Connect: {
-        HttpLinker info = createHttpLinker(r);
-        if (isSSl) {
-            SSLInfo ssl = st(SSLManager)::getInstance()->get(
-                r->getFileDescriptor()->getFd());
-            if (info != nullptr) {
-                info->setSSLInfo(ssl);
-            }
-        }
-        mLinkerManager->addLinker(info);
-        mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
-    } break;
-
-    case SocketEvent::Disconnect: {
-        HttpLinker info = mLinkerManager->getLinker(r);
-        mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
-        mLinkerManager->removeLinker(r);
-    }
+        } break;
     }
 }
 

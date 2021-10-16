@@ -40,7 +40,7 @@ String _HttpForwarded::toString() {
         iterator->next();
     }
 
-    forwarded = forwarded->subString(0,forwarded->size() - 1)->append(";");
+    forwarded = forwarded->subString(0,forwarded->size() - 1)->append("; ");
     //proto
     if(proto != nullptr) {
         forwarded = forwarded->append("proto=",proto,"; ");
@@ -52,11 +52,11 @@ String _HttpForwarded::toString() {
     }
 
     if(host != nullptr) {
-        forwarded = forwarded->append("host=",host,";");
+        forwarded = forwarded->append("host=",host,"; ");
     }
 
 
-    return forwarded->subString(0,forwarded->size() - 1);
+    return forwarded->subString(0,forwarded->size() - 2);
 }
 
 }

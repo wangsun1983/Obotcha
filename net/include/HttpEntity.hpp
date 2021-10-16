@@ -9,6 +9,7 @@
 #include "HttpMultiPart.hpp"
 #include "HashMap.hpp"
 #include "KeyValuePair.hpp"
+#include "File.hpp"
 
 namespace obotcha {
 
@@ -17,18 +18,16 @@ public:
     _HttpEntity();
     
     void setMultiPart(HttpMultiPart);
-
     HttpMultiPart getMultiPart();
-
-    ArrayList<KeyValuePair<String,String>> getEncodedKeyValues();
-
-    void setEncodedKeyValues(ArrayList<KeyValuePair<String,String>>);
 
     ByteArray getContent();
     void setContent(ByteArray);
 
     String getUpgrade();
     void setUpgrade(String);
+
+    File getChunkFile();
+    void setChunkFile(File);
 
 private:
     HttpMultiPart mMultiPart;
@@ -38,6 +37,8 @@ private:
     ByteArray mContent;
 
     String mUpgrade;
+
+    File mChunkFile;
 
 };
 

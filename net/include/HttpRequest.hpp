@@ -1,29 +1,25 @@
 #ifndef __OBOTCHA_HTTP_REQUEST_HPP__
 #define __OBOTCHA_HTTP_REQUEST_HPP__
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "String.hpp"
 #include "HttpPacket.hpp"
-#include "HttpUrl.hpp"
-#include "HttpMultiPart.hpp"
-#include "HttpHeader.hpp"
-#include "HttpPacket.hpp"
+#include "HttpProtocol.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(HttpRequest) IMPLEMENTS(HttpPacket){
-
+DECLARE_CLASS(HttpRequest) IMPLEMENTS(HttpPacket) {
 public:
-    friend class _HttpRequestWriter;
-    _HttpRequest(int,HttpUrl);
-    _HttpRequest();
 
-    String toString();
-    
+	_HttpRequest(HttpPacket p) {
+        this->setProtocol(st(HttpProtocol)::HttpRequest);
+        this->setEntity(p->getEntity());
+        this->setProtocol(p->getProtocol());
+        this->setEntity(p->getEntity());
+    }
+
+	_HttpRequest():_HttpPacket(){
+        this->setProtocol(st(HttpProtocol)::HttpRequest);
+    }
 };
 
 }
-
 #endif

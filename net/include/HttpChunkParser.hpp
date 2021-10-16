@@ -7,7 +7,6 @@
 #include "ByteRingArrayReader.hpp"
 #include "Enviroment.hpp"
 #include "FileOutputStream.hpp"
-#include "HttpFile.hpp"
 #include "HttpMultiPart.hpp"
 #include "Mutex.hpp"
 #include "Pipe.hpp"

@@ -5,9 +5,9 @@
 #include "StrongPointer.hpp"
 
 #include "HashMap.hpp"
-#include "HttpResponseEntity.hpp"
 #include "String.hpp"
 #include "TextContent.hpp"
+#include "HttpResponseEntity.hpp"
 
 namespace obotcha {
 

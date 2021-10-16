@@ -144,6 +144,10 @@ int _ByteArrayWriter::write(byte *data, int length) {
 
 int _ByteArrayWriter::getIndex() { return mIndex; }
 
+int _ByteArrayWriter::getReminderSize() {
+    return mData->size() - mIndex;
+}
+
 ByteArray _ByteArrayWriter::getByteArray() {
     mData->quickShrink(mIndex);
     return mData;

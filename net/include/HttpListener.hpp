@@ -8,9 +8,9 @@
 #include "ArrayList.hpp"
 #include "Socket.hpp"
 #include "HttpLinker.hpp"
-#include "HttpResponseWriter.hpp"
 #include "HttpPacket.hpp"
 #include "SocketListener.hpp"
+#include "HttpPacketWriter.hpp"
 
 namespace obotcha {
 

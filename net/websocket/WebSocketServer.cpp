@@ -12,6 +12,7 @@
 #include "Log.hpp"
 #include "HttpServerBuilder.hpp"
 #include "HttpOption.hpp"
+#include "HttpPacketWriter.hpp"
 
 namespace obotcha {
 
@@ -127,7 +128,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
     }
 }
 
-void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,sp<_HttpResponseWriter> w,HttpPacket request) {
+void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,HttpResponseWriter w,HttpPacket request) {
     switch(event) {
         case HttpEvent::Message: {
             HttpHeader header = request->getHeader();
@@ -191,7 +192,7 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,sp<_HttpRe
                 String k = wsClient->getWebSocketKey();
                 HttpResponse shakeresponse = composer->genServerShakeHandMessage(k,p);
 
-                HttpResponseWriter writer = createHttpResponseWriter(client->getSocket()->getOutputStream());
+                HttpPacketWriter writer = createHttpPacketWriter(client->getSocket()->getOutputStream());
                 //long ret = client->getSocket()->getOutputStream()->write(shakeresponse);
                 if(writer->write(shakeresponse) < 0) {
                     LOG(ERROR)<<"Websocket Server send response fail,reason:"<<strerror(errno);

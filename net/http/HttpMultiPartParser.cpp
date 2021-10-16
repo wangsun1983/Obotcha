@@ -55,7 +55,7 @@ _HttpMultiPartParser::_HttpMultiPartParser(const String &contenttype,
     mContentTypeBuff = nullptr;
     mContentBuff = nullptr;
     mFileStream = nullptr;
-    mHttpFile = nullptr;
+    mMultiPartFile = nullptr;
 }
 
 // String _HttpMultiPartParser::getHeaderBoundary() {
@@ -240,9 +240,10 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         if (mFileStream == nullptr) {
                             String filename = mContentDisp->get(
                                 st(HttpText)::MultiPartFileName);
-                            mHttpFile = createHttpFile(filename);
-                            File file = mHttpFile->getFile();
-                            mFileStream = createFileOutputStream(file);
+                            String name = mContentDisp->get(st(HttpText)::MultiPartName);
+
+                            mMultiPartFile = createHttpMultiPartFile(filename,name);
+                            mFileStream = createFileOutputStream(mMultiPartFile->getFile());
                             mFileStream->open();
                         }
 
@@ -264,9 +265,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         mFileStream->flush();
                         mFileStream->close();
 
-                        HttpMultiPartFile file =
-                            createHttpMultiPartFile(mHttpFile);
-                        mMultiPart->files->add(file);
+                        mMultiPart->files->add(mMultiPartFile);
                         mFileStream = nullptr;
                         mContentBuff = nullptr;
                         mContentType = nullptr;
@@ -324,9 +323,9 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                 if (mFileStream == nullptr) {
                     String filename =
                         mContentDisp->get(st(HttpText)::MultiPartFileName);
-                    mHttpFile = createHttpFile(filename);
-                    File file = mHttpFile->getFile();
-                    mFileStream = createFileOutputStream(file);
+                    String name = mContentDisp->get(st(HttpText)::MultiPartName);
+                    mMultiPartFile = createHttpMultiPartFile(filename,name);
+                    mFileStream = createFileOutputStream(mMultiPartFile->getFile());
                     mFileStream->open();
                 }
                 if (mBoundaryIndex == 0) {

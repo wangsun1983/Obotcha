@@ -10,15 +10,6 @@ void _HttpEntity::setMultiPart(HttpMultiPart part) { mMultiPart = part; }
 
 HttpMultiPart _HttpEntity::getMultiPart() { return mMultiPart; }
 
-ArrayList<KeyValuePair<String, String>> _HttpEntity::getEncodedKeyValues() {
-    return mFormUrlEncodedMap;
-}
-
-void _HttpEntity::setEncodedKeyValues(
-    ArrayList<KeyValuePair<String, String>> map) {
-    mFormUrlEncodedMap = map;
-}
-
 ByteArray _HttpEntity::getContent() { return mContent; }
 
 void _HttpEntity::setContent(ByteArray data) { mContent = data; }
@@ -26,5 +17,8 @@ void _HttpEntity::setContent(ByteArray data) { mContent = data; }
 String _HttpEntity::getUpgrade() { return mUpgrade; }
 
 void _HttpEntity::setUpgrade(String u) { mUpgrade = u; }
+
+File _HttpEntity::getChunkFile() { return mChunkFile;}
+void _HttpEntity::setChunkFile(File f) { mChunkFile = f;}
 
 } // namespace obotcha

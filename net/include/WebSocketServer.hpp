@@ -45,7 +45,7 @@ public:
     int close();
 
 private:
-    void onHttpMessage(int, sp<_HttpLinker> client, sp<_HttpResponseWriter> w,
+    void onHttpMessage(int, sp<_HttpLinker> client, HttpResponseWriter w,
                        HttpPacket msg);
 
     void onSocketMessage(int, Socket, ByteArray);

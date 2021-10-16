@@ -8,7 +8,7 @@
 #include "HttpConnection.hpp"
 #include "HttpConnectionListener.hpp"
 #include "HttpHeader.hpp"
-#include "HttpRequestWriter.hpp"
+#include "HttpPacketWriter.hpp"
 #include "HttpUrl.hpp"
 #include "Inet4Address.hpp"
 #include "InetAddress.hpp"
@@ -57,7 +57,7 @@ int _HttpConnection::connect() {
     }
 
     mInputStream = mSocket->getInputStream();
-    writer = createHttpRequestWriter(mSocket->getOutputStream());
+    writer = createHttpPacketWriter(mSocket->getOutputStream());
 
     if (isAsync) {
         static std::once_flag flag;

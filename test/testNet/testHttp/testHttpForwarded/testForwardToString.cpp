@@ -33,8 +33,8 @@ void testForwardedToString() {
   while(1) {
     HttpForwarded encoding1 = createHttpForwarded();
     encoding1->import("for=192.0.2.60; proto=http; by=203.0.113.43");
-    if(encoding1->toString()->equalsIgnoreCase("for=192.0.2.60; proto=http; by=203.0.113.43")) {
-      printf("---[HttpForwarded test toString case3] [FAILED]--- \n");
+    if(!encoding1->toString()->equalsIgnoreCase("for=192.0.2.60; proto=http; by=203.0.113.43")) {
+      printf("---[HttpForwarded test toString case3] [FAILED]---,encoding is %s \n",encoding1->toString()->toChars());
       break;
     }
     break;

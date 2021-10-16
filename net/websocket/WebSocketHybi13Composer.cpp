@@ -13,7 +13,7 @@
 #include "HttpPacket.hpp"
 #include "Random.hpp"
 #include "Base64.hpp"
-#include "HttpRequestWriter.hpp"
+#include "HttpPacketWriter.hpp"
 #include "HttpRequest.hpp"
 #include "HttpPacketBuilder.hpp"
 #include "HttpStatus.hpp"
