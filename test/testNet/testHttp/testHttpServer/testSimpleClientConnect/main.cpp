@@ -22,8 +22,8 @@ AtomicInteger connectCount = createAtomicInteger(0);
 AtomicInteger disConnectCount = createAtomicInteger(0);
 AtomicInteger messageCount = createAtomicInteger(0);
 
-CountDownLatch connectlatch = createCountDownLatch(1024*32);
-CountDownLatch disconnetlatch = createCountDownLatch(1024*32);
+CountDownLatch connectlatch = createCountDownLatch(1);
+CountDownLatch disconnetlatch = createCountDownLatch(1);
 
 DECLARE_CLASS(MyHandler) IMPLEMENTS(Handler) {
 public:
@@ -73,5 +73,5 @@ int main() {
   disconnetlatch->await();
   server->close();
   
-  printf("---TestHttpServer MultiClientConnect test100 [OK]---\n");
+  printf("---TestHttpServer SimpleClientConnect test100 [OK]---\n");
 }

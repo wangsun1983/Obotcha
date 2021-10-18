@@ -2,7 +2,7 @@
 #include "StrongPointer.hpp"
 
 #include "ArrayList.hpp"
-#include "HashMap.hpp"
+#include "KeyValuePair.hpp"
 #include "HttpConnection.hpp"
 #include "HttpUrl.hpp"
 #include "String.hpp"
@@ -10,9 +10,8 @@
 namespace obotcha {
 
 _HttpUrl::_HttpUrl() {
-    mQuery = createHashMap<String, String>();
     mPort = -1;
-    mSchema = nullptr;
+    mScheme = nullptr;
     mHostName = nullptr;
     mPath = nullptr;
     mFragment = nullptr;
@@ -22,7 +21,213 @@ _HttpUrl::_HttpUrl() {
     mRawQuery = nullptr;
 }
 
-void _HttpUrl::setSchema(String data) { mSchema = data; }
+_HttpUrl::_HttpUrl(String v):_HttpUrl() {
+    import(v);
+}
+
+int _HttpUrl::skipLeadingAsciiWhitespace(String input, int pos, int limit) {
+    for (int i = pos; i < limit; i++) {
+        switch (input->charAt(i)) {
+            case '\t':
+            case '\n':
+            case '\f':
+            case '\r':
+            case ' ':
+            continue;
+            default:
+            return i;
+        }
+    }
+    return limit;
+}
+
+int _HttpUrl::skipTrailingAsciiWhitespace(String input, int pos, int limit) {
+    for (int i = limit - 1; i >= pos; i--) {
+        switch (input->charAt(i)) {
+            case '\t':
+            case '\n':
+            case '\f':
+            case '\r':
+            case ' ':
+            continue;
+            default:
+            return i + 1;
+        }
+    }
+    return pos;
+}
+
+int _HttpUrl::schemeDelimiterOffset(String input, int pos, int limit) {
+    if (limit - pos < 2) return -1;
+
+    char c0 = input->charAt(pos);
+    if ((c0 < 'a' || c0 > 'z') && (c0 < 'A' || c0 > 'Z')) return -1; // Not a scheme start char.
+
+    for (int i = pos + 1; i < limit; i++) {
+        char c = input->charAt(i);
+
+        if ((c >= 'a' && c <= 'z')
+            || (c >= 'A' && c <= 'Z')
+            || (c >= '0' && c <= '9')
+            || c == '+'
+            || c == '-'
+            || c == '.') {
+            continue; // Scheme character. Keep going.
+        } else if (c == ':') {
+            return i; // Scheme prefix!
+        } else {
+            return -1; // Non-scheme character before the first ':'.
+        }
+    }
+
+    return -1; // No ':'; doesn't start with a scheme.
+}
+
+/** Returns the number of '/' and '\' slashes in {@code input}, starting at {@code pos}. */
+int _HttpUrl::slashCount(String input, int pos, int limit) {
+    int slcount = 0;
+    while (pos < limit) {
+        char c = input->charAt(pos);
+        if (c == '\\' || c == '/') {
+            slcount++;
+            pos++;
+        } else {
+            break;
+        }
+    }
+    return slcount;
+}
+
+int _HttpUrl::portColonOffset(String input, int pos, int limit) {
+    for (int i = pos; i < limit; i++) {
+        switch (input->charAt(i)) {
+            case '[':
+            while (++i < limit) {
+                if (input->charAt(i) == ']') break;
+            }
+            break;
+            case ':':
+            return i;
+        }
+    }
+    return limit; // No colon.
+}
+
+int _HttpUrl::delimiterOffset(String input, int pos, int limit, String delimiters) {
+    for (int i = pos; i < limit; i++) {
+        if (delimiters->indexOf(input->charAt(i)) != -1) return i;
+    }
+    return limit;
+}
+
+void _HttpUrl::import(String input) {
+    int pos = skipLeadingAsciiWhitespace(input, 0, input->size());
+    int limit = skipTrailingAsciiWhitespace(input, pos, input->size());
+    // Scheme.
+    int schemeOffset = schemeDelimiterOffset(input, pos, limit);
+    if (schemeOffset != -1) {
+        if (input->regionMatches(pos, "https:", 0, 6)) {
+            mScheme = createString("https");
+            pos += createString("https:")->size();
+        } else if (input->regionMatches(pos, "http:", 0, 5)) {
+            mScheme = createString("http");
+            pos += createString("http:")->size();
+        }
+    }
+
+    // Authority.
+    bool hasUsername = false;
+    bool hasPassword = false;
+    int slcount = slashCount(input, pos, limit);
+    if (slcount >= 2 || slcount == 0) {
+        // Read an authority if either:
+        //  * The input starts with 2 or more slashes. These follow the scheme if it exists.
+        //  * The input scheme exists and is different from the base URL's scheme.
+        //
+        // The structure of an authority is:
+        //   username:password@host:port
+        //
+        // Username, password and port are optional.
+        //   [username[:password]@]host[:port]
+        bool jumpLoop = false;
+        pos += slcount;
+        while (true) {
+            int componentDelimiterOffset = delimiterOffset(input, pos, limit, "@/\\?#");
+            int c = componentDelimiterOffset != limit
+                ? input->charAt(componentDelimiterOffset)
+                : -1;
+            switch (c) {
+                case '@':
+                    // User info precedes.
+                    if (!hasPassword) {
+                        int passwordColonOffset = delimiterOffset(
+                            input, pos, componentDelimiterOffset, ":");
+                        this->mUser = input->subString(pos,passwordColonOffset-pos);
+                        if (passwordColonOffset != componentDelimiterOffset) {
+                            this->mPassword = input->subString(passwordColonOffset + 1,componentDelimiterOffset - passwordColonOffset - 1);
+                        }
+                        hasUsername = true;
+                    } else {
+                        //this.encodedPassword = this.encodedPassword + "%40" + canonicalize(input, pos,
+                        //    componentDelimiterOffset, PASSWORD_ENCODE_SET, true, false, false, true);
+                        this->mPassword = input->subString(pos,componentDelimiterOffset - pos);
+                    }
+                    pos = componentDelimiterOffset + 1;
+                    break;
+
+                case -1:
+                case '/':
+                case '\\':
+                case '?':
+                case '#':
+                    // Host info precedes.
+                    int portColonPos = portColonOffset(input, pos, componentDelimiterOffset);
+                    if (portColonPos + 1 < componentDelimiterOffset) {
+                        this->mHostName = input->subString(pos, portColonPos - pos);
+                        this->mPort = input->subString(portColonPos + 1, componentDelimiterOffset - portColonPos - 1)->toBasicInt();
+                    } else {
+                        mHostName = input->subString(pos,componentDelimiterOffset-pos);
+                    }
+                    //if (mHostName == nullptr) return; // Invalid host.
+                    pos = componentDelimiterOffset;
+                    //break authority;
+                    jumpLoop = true;
+                    break;
+            }
+
+            if(jumpLoop) {
+               break;
+            }
+        }
+    } else {
+        // This is a relative link. Copy over all authority components. Also maybe the path & query.
+        //TODO
+        //if (pos == limit || input->charAt(pos) == '#') {
+        //    encodedQuery(base.encodedQuery());
+        //}
+    }
+
+    
+    // Resolve the relative path.
+    int pathDelimiterOffset = delimiterOffset(input, pos, limit, "?#");
+
+    mPath = input->subString(pos + 1,pathDelimiterOffset - pos - 1);
+    pos = pathDelimiterOffset;
+    // Query.
+    if (pos < limit && input->charAt(pos) == '?') {
+        int queryDelimiterOffset = delimiterOffset(input, pos, limit, "#");
+        String query = input->subString(pos + 1,queryDelimiterOffset - pos-1);
+        this->mQuery = createHttpUrlEncodedValue(query);
+        pos = queryDelimiterOffset;
+    }
+
+    // Fragment.
+    if (pos < limit && input->charAt(pos) == '#') {
+        mFragment = input->subString(pos + 1, limit-pos-1);
+    }
+}
+
+void _HttpUrl::setScheme(String data) { mScheme = data; }
 
 void _HttpUrl::setHost(String data) { mHostName = data; }
 
@@ -30,7 +235,12 @@ void _HttpUrl::setPort(int data) { mPort = data; }
 
 void _HttpUrl::setPath(String data) { mPath = data; }
 
-void _HttpUrl::addQuery(String name, String value) { mQuery->put(name, value); }
+void _HttpUrl::addQuery(String name, String value) { 
+    if(mQuery != nullptr) {
+        mQuery = createHttpUrlEncodedValue();
+    }
+    mQuery->set(name, value); 
+}
 
 void _HttpUrl::setFragment(String data) { mFragment = data; }
 
@@ -50,7 +260,7 @@ String _HttpUrl::getRawQuery() { return mRawQuery; }
 
 void _HttpUrl::setRawQuery(String q) { mRawQuery = q; }
 
-String _HttpUrl::getSchema() { return mSchema; }
+String _HttpUrl::getScheme() { return mScheme; }
 
 String _HttpUrl::getHost() { return mHostName; }
 
@@ -58,18 +268,18 @@ int _HttpUrl::getPort() { return mPort; }
 
 String _HttpUrl::getPath() { return mPath; }
 
-HashMap<String, String> _HttpUrl::getQuery() { return mQuery; }
+HttpUrlEncodedValue _HttpUrl::getQuery() { return mQuery; }
 
 String _HttpUrl::getFragment() { return mFragment; }
 
 String _HttpUrl::toString() {
-    //if (mSchema == nullptr || mHostName == nullptr) {
+    //if (mScheme == nullptr || mHostName == nullptr) {
     //    return nullptr;
     //}
     String url = createString("");
 
-    if(mSchema != nullptr) {
-        url = url->append(mSchema)->append("://");
+    if(mScheme != nullptr) {
+        url = url->append(mScheme)->append("://");
     }
 
     if (mUser != nullptr) {
@@ -93,37 +303,13 @@ String _HttpUrl::toString() {
         url = url->append("/")->append(mPath);
     }
 
-    String query = toQueryString();
-    if (query != nullptr) {
-        url = url->append(query);
+    if(this->mQuery != nullptr) {
+        url = url->append("?",mQuery->toString());
     }
 
-    return url;
-}
-
-String _HttpUrl::toQueryString() {
-    if (mQuery->size() == 0) {
-        return nullptr;
+    if(this->mFragment != nullptr) {
+        url = url->append("#",mFragment);
     }
-
-    String url = createString("");
-    if (mQuery->size() != 0) {
-        url = url->append("?");
-        bool isFirst = true;
-        MapIterator<String, String> iterator = mQuery->getIterator();
-        while (iterator->hasValue()) {
-            String key = iterator->getKey();
-            String value = iterator->getValue();
-            iterator->next();
-            if (isFirst) {
-                url->append(key)->append("=")->append(value);
-                isFirst = false;
-            } else {
-                url->append("&")->append(key)->append("=")->append(value);
-            }
-        }
-    }
-
     return url;
 }
 
@@ -132,8 +318,8 @@ sp<_HttpConnection> _HttpUrl::openConnection(HttpOption o) {
 }
 
 void _HttpUrl::dump() {
-    if (getSchema() != nullptr) {
-        printf("schema is %s \n", getSchema()->toChars());
+    if (getScheme() != nullptr) {
+        printf("schema is %s \n", getScheme()->toChars());
     } else {
         printf("schema is NULL \n");
     }
@@ -171,13 +357,7 @@ void _HttpUrl::dump() {
     }
 
     if (mQuery != nullptr) {
-        MapIterator<String, String> iterator = mQuery->getIterator();
-        while (iterator->hasValue()) {
-            printf("query,key is %s,value is %s \n",
-                   iterator->getKey()->toChars(),
-                   iterator->getValue()->toChars());
-            iterator->next();
-        }
+       printf("query is %s \n",mQuery->toString()->toChars());
     } else {
         printf("query is NULL \n");
     }

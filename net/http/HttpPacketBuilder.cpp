@@ -1,5 +1,4 @@
 #include "HttpPacketBuilder.hpp"
-#include "HttpUrlParser.hpp"
 #include "KeyValuePair.hpp"
 
 namespace obotcha {
@@ -55,7 +54,7 @@ _HttpPacketBuilder *_HttpPacketBuilder::setMethod(int m) {
 }
 
 _HttpPacketBuilder *_HttpPacketBuilder::setUrl(String url) {
-    this->url = st(HttpUrlParser)::parseUrl(url);
+    this->url = createHttpUrl(url);
     return this;
 }
 

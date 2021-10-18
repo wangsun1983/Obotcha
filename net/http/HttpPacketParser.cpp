@@ -4,7 +4,6 @@
 #include "HttpContentType.hpp"
 #include "HttpInternalException.hpp"
 #include "HttpText.hpp"
-#include "HttpXFormUrlEncodedParser.hpp"
 #include "InitializeException.hpp"
 #include "Log.hpp"
 #include "HttpMime.hpp"

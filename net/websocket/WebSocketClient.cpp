@@ -24,7 +24,6 @@
 #include "HashMap.hpp"
 #include "WebSocketClient.hpp"
 #include "HttpUrl.hpp"
-#include "HttpUrlParser.hpp"
 #include "WebSocketProtocol.hpp"
 #include "WebSocketHybi00Parser.hpp"
 #include "WebSocketHybi07Parser.hpp"
@@ -90,7 +89,7 @@ _WebSocketClient::_WebSocketClient(int version) {
 
 int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) {
     //send http request
-    HttpUrl httpUrl = st(HttpUrlParser)::parseUrl(url);
+    HttpUrl httpUrl = createHttpUrl(url);
     mWsListener = l;
     HttpRequest shakeHandMsg = composer->genClientShakeHandMessage(httpUrl);
     HttpConnection connection = createHttpConnection(httpUrl);

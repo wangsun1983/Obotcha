@@ -130,6 +130,8 @@ public:
 
     int toBasicInt();
 
+    bool regionMatches(int toffset, String other, int ooffset,int len);
+
     byte toBasicByte();
 
     uint64_t hashcode();

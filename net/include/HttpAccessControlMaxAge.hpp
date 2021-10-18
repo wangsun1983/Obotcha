@@ -1,0 +1,31 @@
+#ifndef __OBOTCHA_HTTP_ACCESS_CONTROL_MAX_AGE_HPP__
+#define __OBOTCHA_HTTP_ACCESS_CONTROL_MAX_AGE_HPP__
+
+#include "Object.hpp"
+#include "StrongPointer.hpp"
+
+#include "String.hpp"
+#include "ArrayList.hpp"
+
+namespace obotcha {
+
+DECLARE_CLASS(HttpAccessControlMaxAge) {
+
+public:
+    _HttpAccessControlMaxAge();
+    _HttpAccessControlMaxAge(String);
+
+    void import(String);
+
+    void setMaxAge(int);
+
+    int getMaxAge();
+
+    String toString();
+
+private:
+    int maxage;
+};
+
+}
+#endif

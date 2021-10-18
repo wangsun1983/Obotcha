@@ -2,7 +2,6 @@
 #include "HttpCookieParser.hpp"
 #include "HttpMethodParser.hpp"
 #include "HttpText.hpp"
-#include "HttpUrlParser.hpp"
 #include "HttpVersionParser.hpp"
 #include "HttpHeaderLink.hpp"
 
@@ -83,7 +82,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                     //createString((const char *)urlcontent->toValue(),0,
                     //             urlcontent->size() - 1);
                 printf("parse url is %s \n",url_str->toChars());
-                HttpUrl url = st(HttpUrlParser)::parseUrl(url_str);
+                HttpUrl url = createHttpUrl(url_str);
                 mHeader->setUrl(url);
                 mStatus = Version;
             }

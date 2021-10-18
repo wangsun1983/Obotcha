@@ -9,7 +9,6 @@
 #include "WebSocketProtocol.hpp"
 #include "ByteArrayWriter.hpp"
 #include "HttpUrl.hpp"
-#include "HttpUrlParser.hpp"
 #include "HttpPacket.hpp"
 #include "Random.hpp"
 #include "Base64.hpp"

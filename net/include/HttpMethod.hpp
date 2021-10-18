@@ -88,7 +88,7 @@ public:
     const static String SourceString;
     
     static String toString(int);
-    int toInt(String method);
+    static int toInt(String method);
 
 };
 

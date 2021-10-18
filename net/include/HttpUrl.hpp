@@ -6,8 +6,9 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
-#include "HashMap.hpp"
+#include "KeyValuePair.hpp"
 #include "HttpOption.hpp"
+#include "HttpUrlEncodedValue.hpp"
 
 namespace obotcha {
 
@@ -17,12 +18,15 @@ class _HttpConnection;
 DECLARE_CLASS(HttpUrl) {
 public:
     _HttpUrl();
+    _HttpUrl(String);
+
+    void import(String);
     enum SchemaType {
         Http = 0,
         Https,
     };
 
-    void setSchema(String);
+    void setScheme(String);
     void setHost(String);
     void setPort(int);
     void setPath(String);
@@ -35,28 +39,34 @@ public:
     String getRawQuery();
     void setRawQuery(String);
 
-    String getSchema();
+    String getScheme();
     String getHost();
     int getPort();
     String getPath();
-    HashMap<String,String> getQuery();
+    HttpUrlEncodedValue getQuery();
     String getFragment();
     String getUser();
     String getPassword();
 
     String toString();
-    String toQueryString();
 
     sp<_HttpConnection> openConnection(HttpOption o = nullptr);
 
     void dump();
     
 private:
-    String mSchema;
+    int skipLeadingAsciiWhitespace(String input, int pos, int limit);
+    int skipTrailingAsciiWhitespace(String input, int pos, int limit);
+    int schemeDelimiterOffset(String input, int pos, int limit);
+    int slashCount(String input, int pos, int limit);
+    int portColonOffset(String input, int pos, int limit);
+    int delimiterOffset(String input, int pos, int limit, String delimiters);
+
+    String mScheme;
     String mHostName;
     int mPort;
     String mPath;
-    HashMap<String,String> mQuery;
+    HttpUrlEncodedValue mQuery;
     String mFragment;
     String mUser;
     String mPassword;

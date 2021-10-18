@@ -14,7 +14,8 @@ _HttpProxyAuthorization::_HttpProxyAuthorization(String s) {
 void _HttpProxyAuthorization::import(String s) {
     int index = s->indexOf(" ");
     type = s->subString(0,index);
-    credentials = s->subString(++index,s->size() - index);
+    index++;
+    credentials = s->subString(index,s->size() - index);
 }
 
 String _HttpProxyAuthorization::toString() {

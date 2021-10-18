@@ -38,7 +38,7 @@ int _HttpPacketWriter::_computeContentLength(HttpPacket packet) {
     }
 
     if(packet->getEntity()->getContent() != nullptr) {
-        return packet->getEntity()->getContent()->size() + st(HttpText)::CRLF->size();
+        return packet->getEntity()->getContent()->size();
     }
 
     return 0;
@@ -224,7 +224,7 @@ int _HttpPacketWriter::_flushResponse(HttpPacket packet,bool send) {
         auto content = packet->getEntity()->getContent();
         if(content != nullptr && content->size() != 0) {
             _write(packet->getEntity()->getContent(),send);
-            _write(st(HttpText)::CRLF->toByteArray(),send);
+            //_write(st(HttpText)::CRLF->toByteArray(),send);
         }
     }
 
