@@ -17,7 +17,7 @@ void _HttpAccessControlAllowHeaders::import(String s) {
     });
 }
 
-ArrayList<String> _HttpAccessControlAllowHeaders::getAllowedHeaders() {
+ArrayList<String> _HttpAccessControlAllowHeaders::getHeaders() {
     return allowedHeaders;
 }
 
@@ -29,11 +29,11 @@ String _HttpAccessControlAllowHeaders::toString() {
     String allow = "";
     auto iterator = allowedHeaders->getIterator();
     while(iterator->hasValue()) {
-        allow = allow->append(iterator->getValue(),",");
+        allow = allow->append(iterator->getValue(),", ");
         iterator->next();
     }
 
-    return allow->subString(0,allow->size() - 1);
+    return allow->subString(0,allow->size() - 2);
 }
 
 

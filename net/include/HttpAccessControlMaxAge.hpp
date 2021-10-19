@@ -17,9 +17,9 @@ public:
 
     void import(String);
 
-    void setMaxAge(int);
+    void set(int);
 
-    int getMaxAge();
+    int get();
 
     String toString();
 

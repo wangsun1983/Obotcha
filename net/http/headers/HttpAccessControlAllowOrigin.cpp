@@ -15,11 +15,11 @@ void _HttpAccessControlAllowOrigin::import(String v) {
     origin = v;
 }
 
-void _HttpAccessControlAllowOrigin::setOrigin(String v) {
+void _HttpAccessControlAllowOrigin::set(String v) {
     origin = v;
 }
 
-String _HttpAccessControlAllowOrigin::getOrigin() {
+String _HttpAccessControlAllowOrigin::get() {
     return origin;
 }
 

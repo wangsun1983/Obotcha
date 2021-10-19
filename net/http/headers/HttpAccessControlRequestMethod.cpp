@@ -16,11 +16,11 @@ void _HttpAccessControlRequestMethod::import(String v) {
     method = st(HttpMethod)::toInt(v);
 }
 
-void _HttpAccessControlRequestMethod::setMethod(int v) {
+void _HttpAccessControlRequestMethod::set(int v) {
     method = v;
 }
 
-int _HttpAccessControlRequestMethod::getMethod() {
+int _HttpAccessControlRequestMethod::get() {
     return method;
 }
 

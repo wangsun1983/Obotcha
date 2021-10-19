@@ -1,31 +1,31 @@
-#include "HttpAccessControlRequestHeaders.hpp"
+#include "HttpAccessControlExposeHeaders.hpp"
 #include "HttpHeaderContentParser.hpp"
 
 namespace obotcha {
 
-_HttpAccessCrontrolRequestHeaders::_HttpAccessCrontrolRequestHeaders() {
+_HttpAccessControlExposeHeaders::_HttpAccessControlExposeHeaders() {
     headers = createArrayList<String>();
 }
 
-_HttpAccessCrontrolRequestHeaders::_HttpAccessCrontrolRequestHeaders(String v):_HttpAccessCrontrolRequestHeaders() {
+_HttpAccessControlExposeHeaders::_HttpAccessControlExposeHeaders(String v):_HttpAccessControlExposeHeaders() {
     import(v);
 }
 
-void _HttpAccessCrontrolRequestHeaders::import(String v) {
+void _HttpAccessControlExposeHeaders::import(String v) {
     st(HttpHeaderContentParser)::import(v,[this](String directive,String parameter) {
         headers->add(directive);
     });
 }
 
-void _HttpAccessCrontrolRequestHeaders::addHeaders(String v) {
+void _HttpAccessControlExposeHeaders::addHeaders(String v) {
     headers->add(v);
 }
 
-ArrayList<String> _HttpAccessCrontrolRequestHeaders::getHeaders() {
+ArrayList<String> _HttpAccessControlExposeHeaders::getHeaders() {
     return headers;
 }
 
-String _HttpAccessCrontrolRequestHeaders::toString() {
+String _HttpAccessControlExposeHeaders::toString() {
     String expose = "";
     auto iterator = headers->getIterator();
     while(iterator->hasValue()) {

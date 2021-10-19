@@ -16,11 +16,11 @@ void _HttpAccessControlMaxAge::import(String v) {
     maxage = v->toBasicInt();
 }
 
-void _HttpAccessControlMaxAge::setMaxAge(int v) {
+void _HttpAccessControlMaxAge::set(int v) {
     maxage = v;
 }
 
-int _HttpAccessControlMaxAge::getMaxAge() {
+int _HttpAccessControlMaxAge::get() {
     return maxage;
 }
 

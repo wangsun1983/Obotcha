@@ -17,9 +17,9 @@ public:
 
     void import(String);
 
-    void setMethod(int);
+    void set(int);
 
-    int getMethod();
+    int get();
 
     String toString();
 

@@ -17,9 +17,9 @@ public:
 
     void import(String);
 
-    void setOrigin(String);
+    void set(String);
 
-    String getOrigin();
+    String get();
 
     String toString();
 

@@ -9,11 +9,11 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(HttpAccessCrontrolRequestHeaders) {
+DECLARE_CLASS(HttpAccessControlRequestHeaders) {
 
 public:
-    _HttpAccessCrontrolRequestHeaders();
-    _HttpAccessCrontrolRequestHeaders(String);
+    _HttpAccessControlRequestHeaders();
+    _HttpAccessControlRequestHeaders(String);
 
     void import(String);
 

@@ -27,7 +27,15 @@ ArrayList<Integer> _HttpAllow::getMethods() {
 }
 
 String _HttpAllow::toString() {
+    String method = "";
+    auto iterator = methods->getIterator();
+    while(iterator->hasValue()) {
+        Integer v = iterator->getValue();
+        method = method->append(st(HttpMethod)::toString(v->toValue()),", ");   
+        iterator->next();
+    }
 
+    return method->subString(0,method->size() - 2);
 }
 
 

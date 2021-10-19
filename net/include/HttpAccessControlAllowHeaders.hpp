@@ -19,7 +19,7 @@ public:
 
     void addHeader(String);
 
-    ArrayList<String> getAllowedHeaders();
+    ArrayList<String> getHeaders();
 
     String toString();
 

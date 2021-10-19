@@ -20,11 +20,11 @@ namespace obotcha {
 * Last-Modified
 * Pragma
 */
-DECLARE_CLASS(HttpAccessCrontrolExposeHeaders) {
+DECLARE_CLASS(HttpAccessControlExposeHeaders) {
 
 public:
-    _HttpAccessCrontrolExposeHeaders();
-    _HttpAccessCrontrolExposeHeaders(String);
+    _HttpAccessControlExposeHeaders();
+    _HttpAccessControlExposeHeaders(String);
 
     void import(String);
 
