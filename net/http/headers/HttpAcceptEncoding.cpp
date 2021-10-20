@@ -4,8 +4,9 @@
 
 namespace obotcha {
 
-_HttpAcceptEncodingItem::_HttpAcceptEncodingItem() {
-    weight = 1.0;
+_HttpAcceptEncodingItem::_HttpAcceptEncodingItem(String s,float w) {
+    weight = w;
+    type = s;
 }
 
 _HttpAcceptEncoding::_HttpAcceptEncoding() {
@@ -19,8 +20,7 @@ _HttpAcceptEncoding::_HttpAcceptEncoding(String s) {
 void _HttpAcceptEncoding::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         if(parameter == nullptr) {
-            HttpAcceptEncodingItem item = createHttpAcceptEncodingItem();
-            item->type = directive;
+            HttpAcceptEncodingItem item = createHttpAcceptEncodingItem(item->type);
             encodings->add(item);
         } else {
             if(directive->equals("q")) {
@@ -30,8 +30,12 @@ void _HttpAcceptEncoding::import(String s) {
     });
 }
 
-ArrayList<HttpAcceptEncodingItem> _HttpAcceptEncoding::getEncodings() {
+ArrayList<HttpAcceptEncodingItem> _HttpAcceptEncoding::get() {
     return encodings;
+}
+
+void _HttpAcceptEncoding::add(String s,float w) {
+    encodings->add(createHttpAcceptEncodingItem(s,w));
 }
 
 String _HttpAcceptEncoding::toString() {

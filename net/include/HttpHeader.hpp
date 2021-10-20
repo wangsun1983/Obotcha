@@ -28,6 +28,31 @@
 #include "HttpContentDisposition.hpp"
 #include "HttpHeaderDigest.hpp"
 #include "HttpAuthorization.hpp"
+#include "HttpAccessControlAllowCredentials.hpp"
+#include "HttpAccessControlAllowHeaders.hpp"
+#include "HttpAccessControlAllowMethods.hpp"
+#include "HttpAccessControlAllowOrigin.hpp"
+#include "HttpAccessControlExposeHeaders.hpp"
+#include "HttpAccessControlMaxAge.hpp"
+#include "HttpAccessControlRequestHeaders.hpp"
+#include "HttpAccessControlRequestMethod.hpp"
+#include "HttpAge.hpp"
+#include "HttpAllow.hpp"
+#include "HttpClearSiteData.hpp"
+#include "HttpContentEncoding.hpp"
+#include "HttpContentLanguage.hpp"
+#include "HttpContentLength.hpp"
+#include "HttpContentLocation.hpp"
+#include "HttpHeaderConnection.hpp"
+#include "HttpHeaderHost.hpp"
+#include "HttpHeaderKeepAlive.hpp"
+#include "HttpHeaderMatch.hpp"
+#include "HttpHeaderMatch.hpp"
+#include "HttpHeaderRetryAfter.hpp"
+#include "HttpHeaderUserAgent.hpp"
+#include "HttpIfModifiedSince.hpp"
+#include "HttpIfRange.hpp"
+#include "HttpIfUnmodifiedSince.hpp"
 
 namespace obotcha {
 
@@ -264,55 +289,174 @@ public:
     void addCookie(HttpCookie);
     ArrayList<HttpCookie> getCookies();
 
-    //void updateCacheControl();
+    //HttpAcceptCharSet
+    HttpAcceptCharSet getAcceptCharSet();
+    void setAcceptCharSet(HttpAcceptCharSet);
+
+    //HttpAccept
+    HttpAccept getAccept();
+    void setAccept(HttpAccept);
+
+    //HttpAcceptEncoding
+    HttpAcceptEncoding getAcceptEncoding();
+    void setAcceptEncoding(HttpAcceptEncoding);
+
+    //HttpAcceptLanguage
+    HttpAcceptLanguage getAcceptLanguage();
+    void setAcceptLanguage(HttpAcceptLanguage);
+
+    //HttpAcceptPatch
+    HttpAcceptPatch getAcceptPatch();
+    void setAcceptPatch(HttpAcceptPatch);
+
+    //HttpAccessControlAllowCredentials
+    HttpAccessControlAllowCredentials getAllowCredentials();
+    void setAllowCredentials(HttpAccessControlAllowCredentials);
+
+    //HttpAccessControlAllowHeaders
+    HttpAccessControlAllowHeaders getAllowHeaders();
+    void setAllowHeaders(HttpAccessControlAllowHeaders);
+
+    //HttpAccessControlAllowMethods
+    HttpAccessControlAllowMethods getAllowMethods();
+    void setAllowMethods(HttpAccessControlAllowMethods);
+
+    //HttpAccessControlAllowOrigin
+    HttpAccessControlAllowOrigin getAllowOrigin();
+    void setAllowOrigin(HttpAccessControlAllowOrigin);
+
+    //HttpAccessControlExposeHeaders
+    HttpAccessControlExposeHeaders getExposeHeaders();
+    void setExposeHeaders(HttpAccessControlExposeHeaders);
+
+    //HttpAccessControlMaxAge
+    HttpAccessControlMaxAge getMaxAge();
+    void setMaxAge(HttpAccessControlMaxAge);
+
+    //HttpAccessControlRequestHeaders
+    HttpAccessControlRequestHeaders getRequestHeaders();
+    void setReqeuestHeaders(HttpAccessControlRequestHeaders);
+
+    //HttpAccessControlRequestMethod
+    HttpAccessControlRequestMethod getRequestMethod();
+    void setRequestMethod(HttpAccessControlRequestMethod);
+
+    //HttpAge
+    HttpAge getAge();
+    void setAge(HttpAge);
+
+    //HttpAllow
+    HttpAllow getAllow();
+    void setAllow(HttpAllow);
+
+    //HttpAuthorization
+    HttpAuthorization getAuthorization();
+    void setAuthorization(HttpAuthorization);
+
+    //HttpCacheControl
     HttpCacheControl getCacheControl();
     void setCacheControl(HttpCacheControl);
-    
-    //void setContentType(String);
-    void setContentType(HttpContentType);
+
+    //HttpClearSiteData
+    HttpClearSiteData getClearSiteData();
+    void setClearSiteData(HttpClearSiteData);
+
+    //HttpContentDisposition
+    HttpContentDisposition getContentDisposition();
+    void setContentDisposition(HttpContentDisposition);
+
+    //HttpContentEncoding
+    HttpContentEncoding getContentEncoding();
+    void setContentEncoding(HttpContentEncoding);
+
+    //HttpContentLanguage
+    HttpContentLanguage getContentLanguage();
+    void setContentLanguage(HttpContentLanguage);
+
+    //HttpContentLength
+    HttpContentLength getContentLength();
+    void setContentLength(HttpContentLength);
+
+    //HttpContentLocation
+    HttpContentLocation getContentLocation();
+    void setContentLocation(HttpContentLocation);
+
+    //HttpContentType
     HttpContentType getContentType();
+    void setContentType(HttpContentType);
 
-    void addHeaderLink(HttpHeaderLink);
-    ArrayList<HttpHeaderLink> getHeaderLinks();
+    //HttpForwarded
+    HttpForwarded getForwarded();
+    void setForwarded(HttpForwarded);
 
-    void setAcceptEncoding(HttpAcceptEncoding);
-    HttpAcceptEncoding getAcceptEncoding();
+    //HttpHeaderConnection
+    HttpHeaderConnection getConnection();
+    void setConnection(HttpHeaderConnection);
 
-    void setAcceptLanguage(HttpAcceptLanguage);
-    HttpAcceptLanguage getAcceptLanguage();
+    //HttpHeaderDigest
+    HttpHeaderDigest getDigest();
+    void setDigest(HttpHeaderDigest);
 
-    void setAcceptCharSet(HttpAcceptCharSet);
-    HttpAcceptCharSet getAcceptCharSet();
+    //HttpHeaderHost
+    HttpHeaderHost getHost();
+    void setHost(HttpHeaderHost);
 
-    void setAcceptPatch(HttpAcceptPatch);
-    HttpAcceptPatch getAcceptPatch();
+    //HttpHeaderKeepAlive
+    HttpHeaderKeepAlive getKeepAlive();
+    void setKeepAlive(HttpHeaderKeepAlive);
 
-    void setAccept(HttpAccept);
-    HttpAccept getAccept();
+    //ArrayList<HttpHeaderLink>
+    ArrayList<HttpHeaderLink> getLinks();
+    void setLinks(ArrayList<HttpHeaderLink>);
+    void addLink(HttpHeaderLink);
 
-    void setStrictTransportSecurity(HttpStrictTransportSecurity);
-    HttpStrictTransportSecurity getStrictTransportSecurity();
+    //IfMatch
+    HttpHeaderMatch getIfMatch();
+    void setIfMatch(HttpHeaderMatch);
 
-    void setProxyAuthorization(HttpProxyAuthorization);
-    HttpProxyAuthorization getProxyAuthorization();
+    //IfNoneMatch
+    HttpHeaderMatch getIfNoneMatch();
+    void setIfNoneMatch(HttpHeaderMatch);
 
+    //HttpHeaderRetryAfter
+    HttpHeaderRetryAfter getRetryAfter();
+    void setRetryAfter(HttpHeaderRetryAfter);
+
+    //HttpHeaderUserAgent
+    HttpHeaderUserAgent getUserAgent();
+    void setUserAgent(HttpHeaderUserAgent);
+
+    //HttpIfModifiedSince
+    HttpIfModifiedSince getIfModifiedSince();
+    void setIfModifiedSince(HttpIfModifiedSince);
+
+    //HttpIfRange
+    HttpIfRange getIfRange();
+    void setIfRange(HttpIfRange);
+
+    //HttpIfUnmodifiedSince
+    HttpIfUnmodifiedSince getIfUnmodifiedSince();
+    void setIfUnmodifiedSince(HttpIfUnmodifiedSince);
+
+    //HttpProxyAuthenticate
     void setProxyAuthenticate(HttpProxyAuthenticate);
     HttpProxyAuthenticate getProxyAuthenticate();
 
+    //HttpProxyAuthorization
+    void setProxyAuthorization(HttpProxyAuthorization);
+    HttpProxyAuthorization getProxyAuthorization();
+
+    //HttpStrictTransportSecurity
+    void setStrictTransportSecurity(HttpStrictTransportSecurity);
+    HttpStrictTransportSecurity getStrictTransportSecurity();
+
+    //HttpVersion
+    HttpVersion getVersion();
+    void setVersion(HttpVersion);
+
+    //HttpXFrameOptions
     void setXFrameOptions(HttpXFrameOptions);
     HttpXFrameOptions getXFrameOptions();
-
-    void setForwarded(HttpForwarded);
-    HttpForwarded getForwarded();
-
-    void setContentDisposition(HttpContentDisposition);
-    HttpContentDisposition getContentDisposition();
-
-    void setHeaderDigest(HttpHeaderDigest);
-    HttpHeaderDigest getHeaderDigest();
-
-    void setAuthorization(HttpAuthorization);
-    HttpAuthorization getAuthorization();
 
     String toString(int);
 
@@ -322,20 +466,11 @@ public:
     HttpUrl getUrl();
     void setUrl(HttpUrl);
 
-    HttpVersion getVersion();
-    void setVersion(HttpVersion);
-
     int getResponseStatus();
     void setResponseStatus(int);
 
     String getResponseReason();
     void setResponseReason(String);
-
-    int getContentLength();
-    void setContentLength(int);
-
-    String getConnection();
-    void setConnection(String);
 
     int getType();
     void setType(int);
@@ -351,41 +486,92 @@ private:
 
     HashMap<String,String> mValues;
 
-    ArrayList<HttpCookie> mCookies;
+    //http header member 
+    HttpAcceptCharSet mAcceptCharSet;
 
-    ArrayList<HttpHeaderLink> mLinks;
-
-    HttpCacheControl mCacheControl;
-
-    HttpContentType mContentType;
+    HttpAccept mAccept;
 
     HttpAcceptEncoding mAcceptEncoding;
 
     HttpAcceptLanguage mAcceptLanguage;
 
-    HttpAcceptCharSet mAcceptCharSet;
-
     HttpAcceptPatch mAcceptPatch;
 
-    HttpAccept mAccept;
+    HttpAccessControlAllowCredentials mAllowCredentials;
 
-    HttpStrictTransportSecurity mTransportSecurity;
+    HttpAccessControlAllowHeaders mAllowHeaders;
 
-    HttpProxyAuthorization mProxyAuthorization;
+    HttpAccessControlAllowMethods mAllowMethods;
 
-    HttpProxyAuthenticate mProxyAuthenticate;
+    HttpAccessControlAllowOrigin mAllowOrigin;
 
-    HttpXFrameOptions mXFrameOptions;
+    HttpAccessControlExposeHeaders mExposeHeaders;
 
-    HttpForwarded mForwarded;
+    HttpAccessControlMaxAge mMaxAge;
 
-    HttpContentDisposition mContentDisposition;
+    HttpAccessControlRequestHeaders mRequestHeaders;
+    
+    HttpAccessControlRequestMethod mRequestMethod;
 
-    HttpHeaderDigest mHeaderDigest;
+    HttpAge mAge;
+
+    HttpAllow mAllow;
 
     HttpAuthorization mAuthorization;
 
+    HttpCacheControl mCacheControl;
+
+    HttpClearSiteData mClearSiteData;
+
+    HttpContentDisposition mContentDisposition;
+
+    HttpContentEncoding mContentEncoding;
+
+    HttpContentLanguage mContentLanguage;
+
+    HttpContentLength mContentLength;
+
+    HttpContentLocation mContentLocation;
+
+    HttpContentType mContentType;
+
+    HttpForwarded mForwarded;
+
+    HttpHeaderConnection mConnection;
+
+    HttpHeaderDigest mHeaderDigest;
+
+    HttpHeaderHost mHost;
+
+    HttpHeaderKeepAlive mKeepAlive;
+
+    ArrayList<HttpHeaderLink> mLinks;
+
+    HttpHeaderMatch mIfMatch;
+
+    HttpHeaderMatch mIfNoneMatch;
+
+    HttpHeaderRetryAfter mRetryAfter;
+
+    HttpHeaderUserAgent mUserAgent;
+
+    HttpIfModifiedSince mIfModifiedSince;
+
+    HttpIfRange mIfRange;
+
+    HttpIfUnmodifiedSince mIfUnmodifiedSince;
+    
+    HttpProxyAuthenticate mProxyAuthenticate;
+
+    HttpProxyAuthorization mProxyAuthorization;
+
+    HttpStrictTransportSecurity mTransportSecurity;
+
     HttpVersion mVersion;
+
+    HttpXFrameOptions mXFrameOptions;
+
+    ArrayList<HttpCookie> mCookies;
 
     HttpUrl mUrl;
 
@@ -396,10 +582,6 @@ private:
     int mResponseStatus;
 
     String mResponseReason;
-
-    int mContentLength;
-
-    String mConnection;
 
     static HashMap<String,Integer> idMaps;
 };

@@ -4,8 +4,9 @@
 
 namespace obotcha {
 
-_HttpAcceptLanguageItem::_HttpAcceptLanguageItem() {
-    weight = 1.0;
+_HttpAcceptLanguageItem::_HttpAcceptLanguageItem(String s,float w) {
+    weight = w;
+    lang = s;
 }
 
 _HttpAcceptLanguage::_HttpAcceptLanguage() {
@@ -19,8 +20,7 @@ _HttpAcceptLanguage::_HttpAcceptLanguage(String s) {
 void _HttpAcceptLanguage::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         if(parameter == nullptr) {
-            HttpAcceptLanguageItem item = createHttpAcceptLanguageItem();
-            item->lang = directive;
+            HttpAcceptLanguageItem item = createHttpAcceptLanguageItem(directive);
             languages->add(item);
         } else {
             if(directive->equals("q")) {
@@ -30,8 +30,12 @@ void _HttpAcceptLanguage::import(String s) {
     });
 }
 
-ArrayList<HttpAcceptLanguageItem> _HttpAcceptLanguage::getLanguages() {
+ArrayList<HttpAcceptLanguageItem> _HttpAcceptLanguage::get() {
     return languages;
+}
+
+void _HttpAcceptLanguage::add(String s,float w) {
+    languages->add(createHttpAcceptLanguageItem(s,w));
 }
 
 String _HttpAcceptLanguage::toString() {

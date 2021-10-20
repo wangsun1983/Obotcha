@@ -11,7 +11,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpAcceptEncodingItem) {
 public:
-    _HttpAcceptEncodingItem();
+    _HttpAcceptEncodingItem(String,float w = 1.0);
     String type;
     float weight;
 };
@@ -24,7 +24,8 @@ public:
 
     void import(String);
 
-    ArrayList<HttpAcceptEncodingItem> getEncodings();
+    ArrayList<HttpAcceptEncodingItem> get();
+    void add(String,float w = 1.0);
 
     String toString();
 

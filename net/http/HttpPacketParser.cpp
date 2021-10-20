@@ -95,7 +95,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
         case BodyStart: {
             // printf("HttpPacketParser BodyStart \n");
             // check whether there is a multipart
-            int contentlength = mHttpPacket->getHeader()->getContentLength();
+            int contentlength = mHttpPacket->getHeader()->getContentLength()->get();
             //String contenttype =
             //    mHttpPacket->getHeader()->get(st(HttpHeader)::ContentType);
             auto contenttype = mHttpPacket->getHeader()->getContentType();
@@ -133,7 +133,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                  * the end of body is specified by the EOF.
                  */
                 // printf("HttpPacketParser BodyStart trace2\n");
-                auto con = mHttpPacket->getHeader()->getConnection();
+                auto con = mHttpPacket->getHeader()->getConnection()->get();
 
                 if (mHttpPacket->getHeader()->get(
                         st(HttpHeader)::Upgrade) != nullptr ||

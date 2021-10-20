@@ -11,7 +11,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpAcceptCharSetItem) {
 public:
-    _HttpAcceptCharSetItem();
+    _HttpAcceptCharSetItem(String,float w = 1.0);
     String type;
     float weight;
 };
@@ -24,7 +24,8 @@ public:
 
     void import(String);
 
-    ArrayList<HttpAcceptCharSetItem> getCharSets();
+    ArrayList<HttpAcceptCharSetItem> get();
+    void add(String,float w = 1.0);
 
     String toString();
 

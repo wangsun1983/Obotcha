@@ -348,28 +348,52 @@ void _HttpHeader::reset() {
     mLinks->clear();
     mVersion = createHttpVersion();
     
-    mCacheControl = nullptr;
-    mContentType = nullptr;
+    mAcceptCharSet = nullptr;
+    mAccept = nullptr;
     mAcceptEncoding = nullptr;
     mAcceptLanguage = nullptr;
-    mAcceptCharSet = nullptr;
     mAcceptPatch = nullptr;
-    mAccept = nullptr;
-    mTransportSecurity = nullptr;
-    mProxyAuthorization = nullptr;
-    mProxyAuthenticate = nullptr;
-    mXFrameOptions = nullptr;
-    mForwarded = nullptr;
-    mContentDisposition = nullptr;
-    mHeaderDigest = nullptr;
+    mAllowCredentials = nullptr;
+    mAllowHeaders = nullptr;
+    mAllowMethods = nullptr;
+    mAllowOrigin = nullptr;
+    mExposeHeaders = nullptr;
+    mMaxAge = nullptr;
+    mRequestHeaders = nullptr;
+    mRequestMethod = nullptr;
+    mAge = nullptr;
+    mAllow = nullptr;
     mAuthorization = nullptr;
+    mCacheControl = nullptr;
+    mClearSiteData = nullptr;
+    mContentDisposition = nullptr;
+    mContentEncoding = nullptr;
+    mContentLanguage = nullptr;
+    mContentLength = nullptr;
+    mContentLocation = nullptr;
+    mContentType = nullptr;
+    mForwarded = nullptr;
+    mConnection = nullptr;
+    mHeaderDigest = nullptr;
+    mHost = nullptr;
+    mKeepAlive = nullptr;
+    mIfMatch = nullptr;
+    mIfNoneMatch = nullptr;
+    mRetryAfter = nullptr;
+    mUserAgent = nullptr;
+    mIfModifiedSince = nullptr;
+    mIfRange = nullptr;
+    mIfUnmodifiedSince = nullptr;
+    mProxyAuthenticate = nullptr;
+    mProxyAuthorization = nullptr;
+    mTransportSecurity = nullptr;
+    mVersion = nullptr;
+    mXFrameOptions = nullptr;
 
     mMethod = -1;
     mResponseReason = nullptr;
     mResponseStatus = st(HttpStatus)::Ok;
 
-    mContentLength = -1;
-    mConnection = nullptr;
     mType = Type::Request;
 }
 
@@ -378,67 +402,19 @@ void _HttpHeader::set(String key, String value) {
     Integer id = idMaps->get(key->toLowerCase());
     if(id != nullptr) {
         switch(id->toValue()) {
-            case TypeAuthorization: {
-                if(mAuthorization == nullptr) {
-                    mAuthorization = createHttpAuthorization();
+            case TypeAcceptCharset:{
+                if(mAcceptCharSet == nullptr) {
+                    mAcceptCharSet = createHttpAcceptCharSet();
                 }
-                mAuthorization->import(value);
+                mAcceptCharSet->import(value);
                 return;
             }
 
-            case TypeDigest: {
-                if(mHeaderDigest == nullptr) {
-                    mHeaderDigest = createHttpHeaderDigest();
+            case TypeAccept:{
+                if(mAccept == nullptr) {
+                    mAccept = createHttpAccept();
                 }
-                mHeaderDigest->import(value);
-                return;
-            }
-
-            case TypeContentDisposition: {
-                if(mContentDisposition == nullptr) {
-                    mContentDisposition = createHttpContentDisposition();
-                }
-                mContentDisposition->import(value);
-                return;
-            }
-
-            case TypeForwarded: {
-                if(mForwarded == nullptr) {
-                    mForwarded = createHttpForwarded();
-                }
-                mForwarded->import(value);
-                return;
-            }
-
-            case TypeXFrameOptions: {
-                if(mXFrameOptions == nullptr) {
-                    mXFrameOptions = createHttpXFrameOptions();
-                }
-                mXFrameOptions->import(value);
-                return;
-            }
-
-            case TypeProxyAuthenticate: {
-                if(mProxyAuthenticate == nullptr) {
-                    mProxyAuthenticate = createHttpProxyAuthenticate();
-                }
-                mProxyAuthenticate->import(value);
-                return;
-            }
-
-            case TypeProxyAuthorization: {
-                if(mProxyAuthorization == nullptr) {
-                    mProxyAuthorization = createHttpProxyAuthorization();
-                }
-                mProxyAuthorization->import(value);
-                return;
-            }
-
-            case TypeStrictTransportSecurity :{
-                if(mTransportSecurity == nullptr) {
-                    mTransportSecurity = createHttpStrictTransportSecurity();
-                }
-                mTransportSecurity->import(value);
+                mAccept->import(value);
                 return;
             }
 
@@ -458,14 +434,6 @@ void _HttpHeader::set(String key, String value) {
                 return;
             }
 
-            case TypeAcceptCharset: {
-                if(mAcceptCharSet == nullptr) {
-                    mAcceptCharSet = createHttpAcceptCharSet();
-                }
-                mAcceptCharSet->import(value);
-                return;
-            }
-
             case TypeAcceptPatch: {
                 if(mAcceptPatch == nullptr) {
                     mAcceptPatch = createHttpAcceptPatch();
@@ -474,67 +442,288 @@ void _HttpHeader::set(String key, String value) {
                 return;
             }
 
-            case TypeAccept: {
-                if(mAccept == nullptr) {
-                    mAccept = createHttpAccept();
+            case TypeAccessControlAllowCredentials: {
+                if(mAllowCredentials == nullptr) {
+                    mAllowCredentials = createHttpAccessControlAllowCredentials();
                 }
-                mAccept->import(value);
+                mAllowCredentials->import(value);
                 return;
             }
 
-            case TypeCookie: {
-                ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
-                auto iterator = cookies->getIterator();
-                while (iterator->hasValue()) {
-                    addCookie(iterator->getValue());
-                    iterator->next();
+            case TypeAccessControlAllowHeaders: {
+                if(mAllowHeaders == nullptr) {
+                    mAllowHeaders = createHttpAccessControlAllowHeaders();
                 }
+                mAllowHeaders->import(value);
                 return;
             }
 
+            case TypeAccessControlAllowMethods: {
+                if(mAllowMethods == nullptr) {
+                    mAllowMethods = createHttpAccessControlAllowMethods();
+                }
+                mAllowMethods->import(value);
+                return;
+            }
+
+            case TypeAccessControlAllowOrigin: {
+                if(mAllowOrigin == nullptr) {
+                    mAllowOrigin = createHttpAccessControlAllowOrigin();
+                }
+                mAllowOrigin->import(value);
+                return;
+            }
+
+            case TypeAccessControlExposeHeaders: {
+                if(mExposeHeaders == nullptr) {
+                    mExposeHeaders = createHttpAccessControlExposeHeaders();
+                }
+                mExposeHeaders->import(value);
+                return;
+            }
+            
+            case TypeAccessControlMaxAge: {
+                if(mMaxAge == nullptr) {
+                    mMaxAge = createHttpAccessControlMaxAge();
+                }
+                mMaxAge->import(value);
+                return;
+            }
+
+            case TypeAccessControlRequestHeaders: {
+                if(mRequestHeaders == nullptr) {
+                    mRequestHeaders = createHttpAccessControlRequestHeaders();
+                }
+                mRequestHeaders->import(value);
+                return;
+            }
+
+            case TypeAccessControlRequestMethod: {
+                if(mRequestMethod == nullptr) {
+                    mRequestMethod = createHttpAccessControlRequestMethod();
+                }
+                mRequestMethod->import(value);
+                return;
+            }
+
+            case TypeAge: {
+                if(mAge == nullptr) {
+                    mAge = createHttpAge();
+                }
+                mAge->import(value);
+                return;
+            }
+
+            case TypeAllow: {
+                if(mAllow == nullptr) {
+                    mAllow = createHttpAllow();
+                }
+                mAllow->import(value);
+                return;
+            }
+
+            case TypeAuthorization: {
+                if(mAuthorization == nullptr) {
+                    mAuthorization = createHttpAuthorization();
+                }
+                mAuthorization->import(value);
+                return;
+            }
+            
             case TypeCacheControl: {
-                auto cacheControl = getCacheControl();
-                if(cacheControl == nullptr) {
-                    cacheControl = createHttpCacheControl();
-                    setCacheControl(cacheControl);
+                if(mCacheControl == nullptr) {
+                    mCacheControl = createHttpCacheControl();
                 }
-                cacheControl->import(value);
+                mCacheControl->import(value);
                 return;
             }
 
-            case TypeContentType: {
-                mContentType = createHttpContentType(value);
+            //TODO:ClearSiteData
+
+            case TypeContentDisposition: {
+                if(mContentDisposition == nullptr) {
+                    mContentDisposition = createHttpContentDisposition();
+                }
+                mContentDisposition->import(value);
+                return;
+            }
+
+            case TypeContentEncoding: {
+                if(mContentEncoding == nullptr) {
+                    mContentEncoding = createHttpContentEncoding();
+                }
+                mContentEncoding->import(value);
+                return;
+            }
+
+            case TypeContentLanguage: {
+                if(mContentLanguage == nullptr) {
+                    mContentLanguage = createHttpContentLanguage();
+                }
+                mContentLanguage->import(value);
                 return;
             }
 
             case TypeContentLength: {
-                setContentLength(value->trimAll()->toBasicInt());
+                if(mContentLength == nullptr) {
+                    mContentLength = createHttpContentLength();
+                }
+                mContentLength->import(value);
+                return;
+            }
+
+            case TypeContentLocation: {
+                if(mContentLocation == nullptr) {
+                    mContentLocation = createHttpContentLocation();
+                }
+                mContentLocation->import(value);
+                return;
+            }
+
+            case TypeContentType: {
+                if(mContentType == nullptr) {
+                    mContentType = createHttpContentType();
+                }
+                mContentType->import(value);
+                return;
+            }
+
+            case TypeForwarded: {
+                if(mForwarded == nullptr) {
+                    mForwarded = createHttpForwarded();
+                }
+                mForwarded->import(value);
                 return;
             }
 
             case TypeConnection: {
-                mConnection = value;
-                return;
-            }
-
-            case TypeSetCookie: {
-                ArrayList<HttpCookie> cookies = st(HttpCookieParser)::parse(value);
-                auto iterator = cookies->getIterator();
-                while (iterator->hasValue()) {
-                    addCookie(iterator->getValue());
-                    iterator->next();
+                if(mConnection == nullptr) {
+                    mConnection = createHttpHeaderConnection();
                 }
+                mConnection->import(value);
                 return;
             }
 
-            case TypeLink:{
-                HttpHeaderLink link = createHttpHeaderLink(value);
-                mLinks->add(link);
+            case TypeDigest: {
+                if(mHeaderDigest == nullptr) {
+                    mHeaderDigest = createHttpHeaderDigest();
+                }
+                mHeaderDigest->import(value);
                 return;
             }
 
-            default:
-            break;
+            case TypeHost: {
+                if(mHost == nullptr) {
+                    mHost = createHttpHeaderHost();
+                }
+                mHost->import(value);
+                return;
+            }
+
+            case TypeKeepAlive: {
+                if(mKeepAlive == nullptr) {
+                    mKeepAlive = createHttpHeaderKeepAlive();
+                }
+                mKeepAlive->import(value);
+                return;
+            }
+
+            case TypeLink: {
+                if(mLinks == nullptr) {
+                    mLinks = createArrayList<HttpHeaderLink>();
+                }
+
+                HttpHeaderLink l = createHttpHeaderLink(value);
+                mLinks->add(l);
+            }
+
+            case TypeIfMatch: {
+                if(mIfMatch == nullptr) {
+                    mIfMatch = createHttpHeaderMatch();
+                }
+                mIfMatch->import(value);
+                return;
+            }
+
+            case TypeIfNoneMatch: {
+                if(mIfNoneMatch == nullptr) {
+                    mIfNoneMatch = createHttpHeaderMatch();
+                }
+                mIfNoneMatch->import(value);
+                return;
+            }
+
+            case TypeRetryAfter: {
+                if(mRetryAfter == nullptr) {
+                    mRetryAfter = createHttpHeaderRetryAfter();
+                }
+                mRetryAfter->import(value);
+                return;
+            }
+
+            case TypeUserAgent: {
+                if(mUserAgent == nullptr) {
+                    mUserAgent = createHttpHeaderUserAgent();
+                }
+                mUserAgent->import(value);
+                return;
+            }
+            
+            case TypeIfModifiedSince: {
+                if(mIfModifiedSince == nullptr) {
+                    mIfModifiedSince = createHttpIfModifiedSince();
+                }
+                mIfModifiedSince->import(value);
+                return;
+            }
+
+            case TypeIfRange: {
+                if(mIfRange == nullptr) {
+                    mIfRange = createHttpIfRange();
+                }
+                mIfRange->import(value);
+                return;
+            }
+
+            case TypeIfUnmodifiedSince: {
+                if(mIfUnmodifiedSince == nullptr) {
+                    mIfUnmodifiedSince = createHttpIfUnmodifiedSince();
+                }
+                mIfUnmodifiedSince->import(value);
+                return;
+            }
+
+            case TypeProxyAuthenticate: {
+                if(mProxyAuthenticate == nullptr) {
+                    mProxyAuthenticate = createHttpProxyAuthenticate();
+                }
+                mProxyAuthenticate->import(value);
+                return;
+            }
+
+            case TypeProxyAuthorization: {
+                if(mProxyAuthorization == nullptr) {
+                    mProxyAuthorization = createHttpProxyAuthorization();
+                }
+                mProxyAuthorization->import(value);
+                return;
+            }
+            
+            case TypeStrictTransportSecurity: {
+                if(mTransportSecurity == nullptr) {
+                    mTransportSecurity = createHttpStrictTransportSecurity();
+                }
+                mTransportSecurity->import(value);
+                return;
+            }
+
+            case TypeXFrameOptions: {
+                if(mXFrameOptions == nullptr) {
+                    mXFrameOptions = createHttpXFrameOptions();
+                }
+                mXFrameOptions->import(value);
+                return;
+            }
         }
     }
 
@@ -609,11 +798,11 @@ String _HttpHeader::get(String header) {
             }
 
             case TypeContentLength: {
-                return createString(mContentLength);
+                return mContentLength->toString();
             }
 
             case TypeConnection: {
-                return mConnection;
+                return mConnection->toString();
             }
 
             case TypeSetCookie: {
@@ -644,10 +833,6 @@ HttpUrl _HttpHeader::getUrl() { return mUrl; }
 
 void _HttpHeader::setUrl(HttpUrl u) { mUrl = u; }
 
-HttpVersion _HttpHeader::getVersion() { return mVersion; }
-
-void _HttpHeader::setVersion(HttpVersion v) { mVersion = v; }
-
 int _HttpHeader::getResponseStatus() { return mResponseStatus; }
 
 void _HttpHeader::setResponseStatus(int s) { mResponseStatus = s; }
@@ -655,14 +840,6 @@ void _HttpHeader::setResponseStatus(int s) { mResponseStatus = s; }
 String _HttpHeader::getResponseReason() { return mResponseReason; }
 
 void _HttpHeader::setResponseReason(String s) { mResponseReason = s; }
-
-int _HttpHeader::getContentLength() { return mContentLength; }
-
-void _HttpHeader::setContentLength(int c) { mContentLength = c; }
-
-void _HttpHeader::setConnection(String c) { mConnection = c; }
-
-String _HttpHeader::getConnection() { return mConnection; }
 
 int _HttpHeader::getType() { return mType; }
 
@@ -672,127 +849,386 @@ void _HttpHeader::addCookie(HttpCookie c) { mCookies->add(c); }
 
 ArrayList<HttpCookie> _HttpHeader::getCookies() { return mCookies; }
 
-HttpCacheControl _HttpHeader::getCacheControl() { return mCacheControl; }
-
-
-void _HttpHeader::setCacheControl(HttpCacheControl c) { mCacheControl = c; }
-
-void _HttpHeader::setContentType(HttpContentType contenttype) {
-    mContentType = contenttype;
+//HttpAcceptCharSet
+HttpAcceptCharSet _HttpHeader::getAcceptCharSet() {
+    return mAcceptCharSet;
 }
 
-HttpContentType _HttpHeader::getContentType() { return mContentType; }
-
-void _HttpHeader::addHeaderLink(HttpHeaderLink l) {
-    mLinks->add(l);
+void _HttpHeader::setAcceptCharSet(HttpAcceptCharSet v) {
+    mAcceptCharSet = v;
 }
 
-ArrayList<HttpHeaderLink> _HttpHeader::getHeaderLinks() {
-    return mLinks;
+//HttpAccept
+HttpAccept _HttpHeader::getAccept() {
+    return mAccept;
+}
+
+void _HttpHeader::setAccept(HttpAccept s) {
+    mAccept = s;
+}
+
+//HttpAcceptEncoding
+HttpAcceptEncoding _HttpHeader::getAcceptEncoding() {
+    return mAcceptEncoding;
 }
 
 void _HttpHeader::setAcceptEncoding(HttpAcceptEncoding s) {
     mAcceptEncoding = s;
 }
 
-HttpAcceptEncoding _HttpHeader::getAcceptEncoding() {
-    return mAcceptEncoding;
-}
-
-void _HttpHeader::setAcceptLanguage(HttpAcceptLanguage l) {
-    mAcceptLanguage = l;
-}
-
+//HttpAcceptLanguage
 HttpAcceptLanguage _HttpHeader::getAcceptLanguage() {
     return mAcceptLanguage;
 }
 
-void _HttpHeader::setAcceptCharSet(HttpAcceptCharSet s) {
-    mAcceptCharSet = s;
+void _HttpHeader::setAcceptLanguage(HttpAcceptLanguage s) {
+    mAcceptLanguage = s;
 }
 
-HttpAcceptCharSet _HttpHeader::getAcceptCharSet() {
-    return mAcceptCharSet;
-}
-
-void _HttpHeader::setAcceptPatch(HttpAcceptPatch v) {
-    this->mAcceptPatch = v;
-}
-
+//HttpAcceptPatch
 HttpAcceptPatch _HttpHeader::getAcceptPatch() {
     return mAcceptPatch;
 }
 
-void _HttpHeader::setAccept(HttpAccept v) {
-    this->mAccept = v;
+void _HttpHeader::setAcceptPatch(HttpAcceptPatch s) {
+    mAcceptPatch = s;
 }
 
-HttpAccept _HttpHeader::getAccept() {
-    return mAccept;
+//HttpAccessControlAllowCredentials
+HttpAccessControlAllowCredentials _HttpHeader::getAllowCredentials() {
+    return mAllowCredentials;
 }
 
-void _HttpHeader::setStrictTransportSecurity(HttpStrictTransportSecurity v) {
-    mTransportSecurity = v;
+void _HttpHeader::setAllowCredentials(HttpAccessControlAllowCredentials s) {
+    mAllowCredentials = s;
 }
 
-HttpStrictTransportSecurity _HttpHeader::getStrictTransportSecurity() {
-    return mTransportSecurity;
+//HttpAccessControlAllowHeaders
+HttpAccessControlAllowHeaders _HttpHeader::getAllowHeaders() {
+    return mAllowHeaders;
 }
 
-void _HttpHeader::setProxyAuthorization(HttpProxyAuthorization v) {
-    mProxyAuthorization = v;
+void _HttpHeader::setAllowHeaders(HttpAccessControlAllowHeaders s) {
+    mAllowHeaders = s;
 }
 
-HttpProxyAuthorization _HttpHeader::getProxyAuthorization() {
-    return mProxyAuthorization;
+//HttpAccessControlAllowMethods
+HttpAccessControlAllowMethods _HttpHeader::getAllowMethods() {
+    return mAllowMethods;
 }
 
-void _HttpHeader::setProxyAuthenticate(HttpProxyAuthenticate v) {
-    mProxyAuthenticate = v;
+void _HttpHeader::setAllowMethods(HttpAccessControlAllowMethods s) {
+    mAllowMethods = s;
 }
 
-HttpProxyAuthenticate _HttpHeader::getProxyAuthenticate() {
-    return mProxyAuthenticate;
+//HttpAccessControlAllowOrigin
+HttpAccessControlAllowOrigin _HttpHeader::getAllowOrigin() {
+    return mAllowOrigin;
 }
 
-void _HttpHeader::setXFrameOptions(HttpXFrameOptions v) {
-    mXFrameOptions = v;
+void _HttpHeader::setAllowOrigin(HttpAccessControlAllowOrigin s) {
+    mAllowOrigin = s;
 }
 
-HttpXFrameOptions _HttpHeader::getXFrameOptions() {
-    return mXFrameOptions;
+//HttpAccessControlExposeHeaders
+HttpAccessControlExposeHeaders _HttpHeader::getExposeHeaders() {
+    return mExposeHeaders;
 }
 
-void _HttpHeader::setForwarded(HttpForwarded v) {
-    mForwarded = v;
+void _HttpHeader::setExposeHeaders(HttpAccessControlExposeHeaders s) {
+    mExposeHeaders = s;
 }
 
-HttpForwarded _HttpHeader::getForwarded() {
-    return mForwarded;
+//HttpAccessControlMaxAge
+HttpAccessControlMaxAge _HttpHeader::getMaxAge() {
+    return mMaxAge;
 }
 
-void _HttpHeader::setContentDisposition(HttpContentDisposition v) {
-    mContentDisposition = v;
+void _HttpHeader::setMaxAge(HttpAccessControlMaxAge s) {
+    mMaxAge = s;
 }
 
+//HttpAccessControlRequestHeaders
+HttpAccessControlRequestHeaders _HttpHeader::getRequestHeaders() {
+    return mRequestHeaders;
+}
+
+void _HttpHeader::setReqeuestHeaders(HttpAccessControlRequestHeaders s) {
+    mRequestHeaders = s;
+}
+
+//HttpAccessControlRequestMethod
+HttpAccessControlRequestMethod _HttpHeader::getRequestMethod() {
+    return mRequestMethod;
+}
+
+void _HttpHeader::setRequestMethod(HttpAccessControlRequestMethod s) {
+    mRequestMethod = s;
+}
+
+//HttpAge
+HttpAge _HttpHeader::getAge() {
+    return mAge;
+}
+
+void _HttpHeader::setAge(HttpAge s) {
+    mAge = s;
+}
+
+//HttpAllow
+HttpAllow _HttpHeader::getAllow() {
+    return mAllow;
+}
+
+void _HttpHeader::setAllow(HttpAllow s) {
+    mAllow = s;
+}
+
+//HttpAuthorization
+HttpAuthorization _HttpHeader::getAuthorization() {
+    return mAuthorization;
+}
+
+void _HttpHeader::setAuthorization(HttpAuthorization s) {
+    mAuthorization = s;
+}
+
+//HttpCacheControl
+HttpCacheControl _HttpHeader::getCacheControl() {
+    return mCacheControl;
+}
+
+void _HttpHeader::setCacheControl(HttpCacheControl s) {
+    mCacheControl = s;
+}
+
+//HttpClearSiteData
+HttpClearSiteData _HttpHeader::getClearSiteData() {
+    return mClearSiteData;
+}
+
+void _HttpHeader::setClearSiteData(HttpClearSiteData s) {
+    mClearSiteData = s;
+}
+
+//HttpContentDisposition
 HttpContentDisposition _HttpHeader::getContentDisposition() {
     return mContentDisposition;
 }
 
-void _HttpHeader::setHeaderDigest(HttpHeaderDigest v) {
-    mHeaderDigest = v;
+void _HttpHeader::setContentDisposition(HttpContentDisposition s) {
+    mContentDisposition = s;
 }
 
-HttpHeaderDigest _HttpHeader::getHeaderDigest() {
+//HttpContentEncoding
+HttpContentEncoding _HttpHeader::getContentEncoding() {
+    return mContentEncoding;
+}
+
+void _HttpHeader::setContentEncoding(HttpContentEncoding s) {
+    mContentEncoding = s;
+}
+
+//HttpContentLanguage
+HttpContentLanguage _HttpHeader::getContentLanguage() {
+    return mContentLanguage;
+}
+
+void _HttpHeader::setContentLanguage(HttpContentLanguage s) {
+    mContentLanguage = s;
+}
+
+//HttpContentLength
+HttpContentLength _HttpHeader::getContentLength() {
+    return mContentLength;
+}
+
+void _HttpHeader::setContentLength(HttpContentLength s) {
+    mContentLength = s;
+}
+
+//HttpContentLocation
+HttpContentLocation _HttpHeader::getContentLocation() {
+    return mContentLocation;
+}
+
+void _HttpHeader::setContentLocation(HttpContentLocation s) {
+    mContentLocation = s;
+}
+
+//HttpContentType
+HttpContentType _HttpHeader::getContentType() {
+    return mContentType;
+}
+
+void _HttpHeader::setContentType(HttpContentType s) {
+    mContentType = s;
+}
+
+//HttpForwarded
+HttpForwarded _HttpHeader::getForwarded() {
+    return mForwarded;
+}
+
+void _HttpHeader::setForwarded(HttpForwarded s) {
+    mForwarded = s;
+}
+
+//HttpHeaderConnection
+HttpHeaderConnection _HttpHeader::getConnection() {
+    return mConnection;
+}
+
+void _HttpHeader::setConnection(HttpHeaderConnection s) {
+    mConnection = s;
+}
+
+//HttpHeaderDigest
+HttpHeaderDigest _HttpHeader::getDigest() {
     return mHeaderDigest;
 }
 
-void _HttpHeader::setAuthorization(HttpAuthorization v) {
-    mAuthorization = v;
+void _HttpHeader::setDigest(HttpHeaderDigest s) {
+    mHeaderDigest = s;
 }
 
-HttpAuthorization _HttpHeader::getAuthorization() {
-    return mAuthorization;
+//HttpHeaderHost
+HttpHeaderHost _HttpHeader::getHost() {
+    return mHost;
+}
+
+void _HttpHeader::setHost(HttpHeaderHost s) {
+    mHost = s;
+}
+
+//HttpHeaderKeepAlive
+HttpHeaderKeepAlive _HttpHeader::getKeepAlive() {
+    return mKeepAlive;
+}
+
+void _HttpHeader::setKeepAlive(HttpHeaderKeepAlive s) {
+    mKeepAlive = s;
+}
+
+//ArrayList<HttpHeaderLink>
+ArrayList<HttpHeaderLink> _HttpHeader::getLinks() {
+    return mLinks;
+}
+
+void _HttpHeader::setLinks(ArrayList<HttpHeaderLink> s) {
+    mLinks = s;
+}
+
+void _HttpHeader::addLink(HttpHeaderLink s) {
+    mLinks->add(s);
+}
+
+//IfMatch
+HttpHeaderMatch _HttpHeader::getIfMatch() {
+    return mIfMatch;
+}
+
+void _HttpHeader::setIfMatch(HttpHeaderMatch s) {
+    mIfMatch = s;
+}
+
+//IfNoneMatch
+HttpHeaderMatch _HttpHeader::getIfNoneMatch() {
+    return mIfNoneMatch;
+}
+
+void _HttpHeader::setIfNoneMatch(HttpHeaderMatch s) {
+    mIfNoneMatch = s;
+}
+
+//HttpHeaderRetryAfter
+HttpHeaderRetryAfter _HttpHeader::getRetryAfter() {
+    return mRetryAfter;
+}
+
+void _HttpHeader::setRetryAfter(HttpHeaderRetryAfter s) {
+    mRetryAfter = s;
+}
+
+//HttpHeaderUserAgent
+HttpHeaderUserAgent _HttpHeader::getUserAgent() {
+    return mUserAgent;
+}
+
+void _HttpHeader::setUserAgent(HttpHeaderUserAgent s) {
+    mUserAgent = s;
+}
+
+//HttpIfModifiedSince
+HttpIfModifiedSince _HttpHeader::getIfModifiedSince() {
+    return mIfModifiedSince;
+}
+
+void _HttpHeader::setIfModifiedSince(HttpIfModifiedSince s) {
+    mIfModifiedSince = s;
+}
+
+//HttpIfRange
+HttpIfRange _HttpHeader::getIfRange() {
+    return mIfRange;
+}
+
+void _HttpHeader::setIfRange(HttpIfRange s) {
+    mIfRange = s;
+}
+
+//HttpIfUnmodifiedSince
+HttpIfUnmodifiedSince _HttpHeader::getIfUnmodifiedSince() {
+    return mIfUnmodifiedSince;
+}
+
+void _HttpHeader::setIfUnmodifiedSince(HttpIfUnmodifiedSince s) {
+    mIfUnmodifiedSince = s;
+}
+
+//HttpProxyAuthenticate
+HttpProxyAuthenticate _HttpHeader::getProxyAuthenticate() {
+    return mProxyAuthenticate;
+}
+
+void _HttpHeader::setProxyAuthenticate(HttpProxyAuthenticate s) {
+    mProxyAuthenticate = s;
+}
+
+//HttpProxyAuthorization
+HttpProxyAuthorization _HttpHeader::getProxyAuthorization() {
+    return mProxyAuthorization;
+}
+
+void _HttpHeader::setProxyAuthorization(HttpProxyAuthorization s) {
+    mProxyAuthorization = s;
+}
+
+//HttpStrictTransportSecurity
+HttpStrictTransportSecurity _HttpHeader::getStrictTransportSecurity() {
+    return mTransportSecurity;
+}
+
+void _HttpHeader::setStrictTransportSecurity(HttpStrictTransportSecurity s) {
+    mTransportSecurity = s;
+}
+
+//HttpVersion
+HttpVersion _HttpHeader::getVersion() {
+    return mVersion;
+}
+
+void _HttpHeader::setVersion(HttpVersion s) {
+    mVersion = s;
+}
+
+//HttpXFrameOptions
+HttpXFrameOptions _HttpHeader::getXFrameOptions() {
+    return mXFrameOptions;
+}
+
+void _HttpHeader::setXFrameOptions(HttpXFrameOptions s) {
+    mXFrameOptions = s;
 }
 
 MapIterator<String, String> _HttpHeader::getIterator() {
@@ -846,12 +1282,13 @@ String _HttpHeader::toString(int type) {
         iterator->next();
     }
 
-    if(mCacheControl != nullptr) {
-        header = header->append(st(HttpHeader)::CacheControl,": ",mCacheControl->toString(type),st(HttpText)::CRLF);
+    ///////////
+    if(mAcceptCharSet != nullptr) {
+        header = header->append(st(HttpHeader)::AcceptCharset,": ",mAcceptCharSet->toString(),st(HttpText)::CRLF);
     }
 
-    if(mContentType != nullptr) {
-        header = header->append(st(HttpHeader)::ContentType,": ",mContentType->toString(),st(HttpText)::CRLF);
+    if(mAccept != nullptr) {
+        header = header->append(st(HttpHeader)::Accept,": ",mAccept->toString(),st(HttpText)::CRLF);
     }
 
     if(mAcceptEncoding != nullptr) {
@@ -859,55 +1296,152 @@ String _HttpHeader::toString(int type) {
     }
 
     if(mAcceptLanguage != nullptr) {
-        header = header->append(st(HttpHeader)::AcceptLanguage,": ",mAcceptLanguage->toString(),st(HttpText)::CRLF);
-    }
-    
-    if(mAcceptCharSet != nullptr) {
-        header = header->append(st(HttpHeader)::AcceptCharset,": ",mAcceptCharSet->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::AcceptLanguage,": ",mAcceptLanguage->toString(),st(HttpText)::CRLF);    
     }
 
     if(mAcceptPatch != nullptr) {
-        header = header->append(st(HttpHeader)::AcceptPatch,": ",mAcceptPatch->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::AcceptPatch,": ",mAcceptPatch->toString(),st(HttpText)::CRLF);        
     }
 
-    if(mAccept != nullptr) {
-        header = header->append(st(HttpHeader)::Accept,": ",mAccept->toString(),st(HttpText)::CRLF);
+    if(mAllowCredentials != nullptr) {
+        header = header->append(st(HttpHeader)::AccessControlAllowCredentials,": ",mAllowCredentials->toString(),st(HttpText)::CRLF);        
     }
 
-    if(mTransportSecurity != nullptr) {
-        header = header->append(st(HttpHeader)::StrictTransportSecurity,": ",mTransportSecurity->toString(),st(HttpText)::CRLF);
+    if(mAllowHeaders != nullptr) {
+        header = header->append(st(HttpHeader)::AccessControlAllowHeaders,": ",mAllowHeaders->toString(),st(HttpText)::CRLF);            
     }
 
-    if(mProxyAuthorization != nullptr) {
-        header = header->append(st(HttpHeader)::ProxyAuthorization,": ",mProxyAuthorization->toString(),st(HttpText)::CRLF);
+    if(mAllowMethods != nullptr) {
+        header = header->append(st(HttpHeader)::AccessControlAllowMethods,": ",mAllowMethods->toString(),st(HttpText)::CRLF);            
     }
 
-    if(mProxyAuthenticate != nullptr) {
-        header = header->append(st(HttpHeader)::ProxyAuthenticate,": ",mProxyAuthenticate->toString(),st(HttpText)::CRLF);
+    if(mAllowOrigin != nullptr) {
+        header = header->append(st(HttpHeader)::AccessControlAllowOrigin,": ",mAllowOrigin->toString(),st(HttpText)::CRLF);            
     }
 
-    if(mXFrameOptions != nullptr) {
-        header = header->append(st(HttpHeader)::XFrameOptions,": ",mXFrameOptions->toString(),st(HttpText)::CRLF);
+    if(mExposeHeaders != nullptr) {
+        header = header->append(st(HttpHeader)::AccessControlExposeHeaders,": ",mExposeHeaders->toString(),st(HttpText)::CRLF);            
     }
 
-    if(mForwarded != nullptr) {
-        header = header->append(st(HttpHeader)::Forwarded,": ",mForwarded->toString(),st(HttpText)::CRLF);
+    if(mMaxAge != nullptr) {
+        header = header->append(st(HttpHeader)::AccessControlMaxAge,": ",mMaxAge->toString(),st(HttpText)::CRLF);            
     }
 
-    if(mContentDisposition != nullptr) {
-        header = header->append(st(HttpHeader)::ContentDisposition,": ",mContentDisposition->toString(),st(HttpText)::CRLF);
+    if(mRequestHeaders != nullptr) {
+        header = header->append(st(HttpHeader)::AccessControlRequestHeaders,": ",mRequestHeaders->toString(),st(HttpText)::CRLF);            
     }
 
-    if(mHeaderDigest != nullptr) {
-        header = header->append(st(HttpHeader)::Digest,": ",mHeaderDigest->toString(),st(HttpText)::CRLF);
+    if(mRequestMethod != nullptr) {
+        header = header->append(st(HttpHeader)::AccessControlRequestMethod,": ",mRequestMethod->toString(),st(HttpText)::CRLF);            
+    }
+
+    if(mAge != nullptr) {
+        header = header->append(st(HttpHeader)::Age,": ",mAge->toString(),st(HttpText)::CRLF);            
+    }
+
+    if(mAllow != nullptr) {
+        header = header->append(st(HttpHeader)::Allow,": ",mAge->toString(),st(HttpText)::CRLF);
     }
 
     if(mAuthorization != nullptr) {
         header = header->append(st(HttpHeader)::Authorization,": ",mAuthorization->toString(),st(HttpText)::CRLF);
     }
 
-    if(mContentLength != -1) {
-        header = header->append(st(HttpHeader)::ContentLength,": ",createString(mContentLength),st(HttpText)::CRLF);
+    if(mCacheControl != nullptr) {
+        header = header->append(st(HttpHeader)::CacheControl,": ",mCacheControl->toString(mType),st(HttpText)::CRLF);
+    }
+
+    //TODO
+    //if(mClearSiteData != nullptr) {
+    //    header = header->append(st(HttpHeader)::Clear,": ",mClearSiteData->toString(),st(HttpText)::CRLF);
+    //}
+
+    if(mContentDisposition != nullptr) {
+        header = header->append(st(HttpHeader)::ContentDisposition,": ",mContentDisposition->toString(),st(HttpText)::CRLF);
+    }
+    
+    if(mContentEncoding != nullptr) {
+        header = header->append(st(HttpHeader)::ContentEncoding,": ",mContentEncoding->toString(),st(HttpText)::CRLF);
+    }
+    
+    if(mContentLanguage != nullptr) {
+        header = header->append(st(HttpHeader)::ContentLanguage,": ",mContentLanguage->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mContentLength != nullptr) {
+        header = header->append(st(HttpHeader)::ContentLength,": ",mContentLength->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mContentLocation != nullptr) {
+        header = header->append(st(HttpHeader)::ContentLocation,": ",mContentLocation->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mContentType != nullptr) {
+        header = header->append(st(HttpHeader)::ContentType,": ",mContentType->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mForwarded != nullptr) {
+        header = header->append(st(HttpHeader)::Forwarded,": ",mForwarded->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mConnection != nullptr) {
+        header = header->append(st(HttpHeader)::Connection,": ",mConnection->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mHeaderDigest != nullptr) {
+        header = header->append(st(HttpHeader)::Digest,": ",mHeaderDigest->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mHost != nullptr) {
+        header = header->append(st(HttpHeader)::Host,": ",mHost->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mKeepAlive != nullptr) {
+        header = header->append(st(HttpHeader)::KeepAlive,": ",mKeepAlive->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mIfMatch != nullptr) {
+        header = header->append(st(HttpHeader)::IfMatch,": ",mIfMatch->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mIfNoneMatch != nullptr) {
+        header = header->append(st(HttpHeader)::IfNoneMatch,": ",mIfNoneMatch->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mRetryAfter != nullptr) {
+        header = header->append(st(HttpHeader)::RetryAfter,": ",mRetryAfter->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mUserAgent != nullptr) {
+        header = header->append(st(HttpHeader)::UserAgent,": ",mUserAgent->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mIfModifiedSince != nullptr) {
+        header = header->append(st(HttpHeader)::IfModifiedSince,": ",mIfModifiedSince->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mIfRange != nullptr) {
+        header = header->append(st(HttpHeader)::IfRange,": ",mIfRange->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mIfUnmodifiedSince != nullptr) {
+        header = header->append(st(HttpHeader)::IfUnmodifiedSince,": ",mIfUnmodifiedSince->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mProxyAuthenticate != nullptr) {
+        header = header->append(st(HttpHeader)::ProxyAuthenticate,": ",mProxyAuthenticate->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mProxyAuthorization != nullptr) {
+        header = header->append(st(HttpHeader)::ProxyAuthorization,": ",mProxyAuthorization->toString(),st(HttpText)::CRLF);
+    }
+
+    if(mTransportSecurity != nullptr) {
+        header = header->append(st(HttpHeader)::StrictTransportSecurity,": ",mTransportSecurity->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mXFrameOptions != nullptr) {
+        header = header->append(st(HttpHeader)::XFrameOptions,": ",mXFrameOptions->toString(),st(HttpText)::CRLF);    
     }
 
     if(mLinks != nullptr && mLinks->size() != 0) {

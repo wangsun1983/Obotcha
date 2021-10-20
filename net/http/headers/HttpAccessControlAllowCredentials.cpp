@@ -10,7 +10,7 @@ _HttpAccessControlAllowCredentials::_HttpAccessControlAllowCredentials(String s)
     import(s);
 }
 
-void _HttpAccessControlAllowCredentials::setAllowed(bool v) {
+void _HttpAccessControlAllowCredentials::set(bool v) {
     allowed = v;
 }
 
@@ -22,7 +22,7 @@ void _HttpAccessControlAllowCredentials::import(String s) {
     }
 }
 
-bool _HttpAccessControlAllowCredentials::isAllowed() {
+bool _HttpAccessControlAllowCredentials::get() {
     return allowed;
 }
 

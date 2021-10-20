@@ -17,7 +17,6 @@ public:
 
     void import(String);
 
-    
     String toString();
 
     String type;

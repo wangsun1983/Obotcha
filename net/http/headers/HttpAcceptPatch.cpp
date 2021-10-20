@@ -4,9 +4,9 @@
 
 namespace obotcha {
 
-_HttpAcceptPatchItem::_HttpAcceptPatchItem() {
-    type = nullptr;
-    charset = nullptr;
+_HttpAcceptPatchItem::_HttpAcceptPatchItem(String t,String c) {
+    type = t;
+    charset = c;
 }
 
 _HttpAcceptPatch::_HttpAcceptPatch() {
@@ -20,8 +20,7 @@ _HttpAcceptPatch::_HttpAcceptPatch(String s) {
 void _HttpAcceptPatch::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         if(parameter == nullptr) {
-            HttpAcceptPatchItem item = createHttpAcceptPatchItem();
-            item->type = directive;
+            HttpAcceptPatchItem item = createHttpAcceptPatchItem(directive,nullptr);
             patches->add(item);
         } else {
             if(directive->equals("charset")) {
@@ -31,8 +30,12 @@ void _HttpAcceptPatch::import(String s) {
     });
 }
 
-ArrayList<HttpAcceptPatchItem> _HttpAcceptPatch::getAcceptPatches() {
+ArrayList<HttpAcceptPatchItem> _HttpAcceptPatch::get() {
     return patches;
+}
+
+void _HttpAcceptPatch::add(String type,String charset) {
+    patches->add(createHttpAcceptPatchItem(type,charset));
 }
 
 String _HttpAcceptPatch::toString() {

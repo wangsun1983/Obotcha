@@ -11,7 +11,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpAcceptPatchItem) {
 public:
-    _HttpAcceptPatchItem();
+    _HttpAcceptPatchItem(String t,String c);
     String type;
     String charset;
 };
@@ -24,7 +24,8 @@ public:
 
     void import(String);
 
-    ArrayList<HttpAcceptPatchItem> getAcceptPatches();
+    ArrayList<HttpAcceptPatchItem> get();
+    void add(String type,String charset);
 
     String toString();
 

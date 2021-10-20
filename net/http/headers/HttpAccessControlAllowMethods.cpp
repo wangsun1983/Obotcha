@@ -18,11 +18,11 @@ void _HttpAccessControlAllowMethods::import(String s) {
     });
 }
 
-void _HttpAccessControlAllowMethods::addMethod(int method) {
+void _HttpAccessControlAllowMethods::add(int method) {
     methods->add(createInteger(method));
 }
 
-ArrayList<Integer> _HttpAccessControlAllowMethods::getMethods() {
+ArrayList<Integer> _HttpAccessControlAllowMethods::get() {
     return methods;
 }
 

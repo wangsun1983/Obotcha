@@ -11,7 +11,7 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpAcceptLanguageItem) {
 public:
-    _HttpAcceptLanguageItem();
+    _HttpAcceptLanguageItem(String,float w = 1.0);
     String lang;
     float weight;
 };
@@ -24,7 +24,8 @@ public:
 
     void import(String);
 
-    ArrayList<HttpAcceptLanguageItem> getLanguages();
+    ArrayList<HttpAcceptLanguageItem> get();
+    void add(String,float w = 1.0);
 
     String toString();
 

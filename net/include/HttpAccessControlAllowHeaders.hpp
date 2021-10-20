@@ -17,9 +17,8 @@ public:
 
     void import(String);
 
-    void addHeader(String);
-
-    ArrayList<String> getHeaders();
+    ArrayList<String> get();
+    void add(String);
 
     String toString();
 

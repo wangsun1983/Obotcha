@@ -4,8 +4,9 @@
 
 namespace obotcha {
 
-_HttpAcceptCharSetItem::_HttpAcceptCharSetItem() {
-    weight = 1.0;
+_HttpAcceptCharSetItem::_HttpAcceptCharSetItem(String s,float w) {
+    weight = w;
+    type = s;
 }
 
 _HttpAcceptCharSet::_HttpAcceptCharSet() {
@@ -19,8 +20,7 @@ _HttpAcceptCharSet::_HttpAcceptCharSet(String s) {
 void _HttpAcceptCharSet::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         if(parameter == nullptr) {
-            HttpAcceptCharSetItem item = createHttpAcceptCharSetItem();
-            item->type = directive;
+            HttpAcceptCharSetItem item = createHttpAcceptCharSetItem(item->type);
             charsets->add(item);
         } else {
             if(directive->equals("q")) {
@@ -30,8 +30,12 @@ void _HttpAcceptCharSet::import(String s) {
     });
 }
 
-ArrayList<HttpAcceptCharSetItem> _HttpAcceptCharSet::getCharSets() {
+ArrayList<HttpAcceptCharSetItem> _HttpAcceptCharSet::get() {
     return charsets;
+}
+
+void _HttpAcceptCharSet::add(String s,float w) {
+    charsets->add(createHttpAcceptCharSetItem(s,w));
 }
 
 String _HttpAcceptCharSet::toString() {

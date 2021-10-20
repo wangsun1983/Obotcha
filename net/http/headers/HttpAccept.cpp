@@ -4,8 +4,9 @@
 
 namespace obotcha {
 
-_HttpAcceptItem::_HttpAcceptItem() {
-    weight = 1.0;
+_HttpAcceptItem::_HttpAcceptItem(String s,float w) {
+    weight = w;
+    type = s;
 }
 
 _HttpAccept::_HttpAccept() {
@@ -19,8 +20,7 @@ _HttpAccept::_HttpAccept(String s) {
 void _HttpAccept::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         if(parameter == nullptr) {
-            HttpAcceptItem item = createHttpAcceptItem();
-            item->type = directive;
+            HttpAcceptItem item = createHttpAcceptItem(directive);
             accepts->add(item);
         } else {
             if(directive->equals("q")) {
@@ -30,8 +30,12 @@ void _HttpAccept::import(String s) {
     });
 }
 
-ArrayList<HttpAcceptItem> _HttpAccept::getAccepts() {
+ArrayList<HttpAcceptItem> _HttpAccept::get() {
     return accepts;
+}
+
+void _HttpAccept::add(String s,float w) {
+    accepts->add(createHttpAcceptItem(s,w));
 }
 
 String _HttpAccept::toString() {

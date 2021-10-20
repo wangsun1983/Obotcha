@@ -2,7 +2,6 @@
 #include "HttpCookieParser.hpp"
 #include "HttpMethodParser.hpp"
 #include "HttpText.hpp"
-#include "HttpVersionParser.hpp"
 #include "HttpHeaderLink.hpp"
 
 namespace obotcha {
@@ -35,7 +34,9 @@ HttpHeader _HttpHeaderParser::doParse() {
                 } else {
                     // this may be a response
                     mHeader->setType(st(HttpHeader)::Response);
-                    HttpVersion ver = st(HttpVersionParser)::doParse(tag);
+                    HttpVersion ver = createHttpVersion();
+                    ver->import(tag);
+                    //HttpVersion ver = st(HttpVersionParser)::doParse(tag);
                     if (ver != nullptr) {
                         mHeader->setVersion(ver);
                         mStatus = State;
@@ -127,7 +128,9 @@ HttpHeader _HttpHeaderParser::doParse() {
                 String verstring = vercontent->toString()->subString(0,vercontent->size() - mCrlfCount);
                 //    createString((const char *)vercontent->toValue(), 0,
                 //                 vercontent->size() - mCrlfCount);
-                mHeader->setVersion(st(HttpVersionParser)::doParse(verstring));
+                HttpVersion ver = createHttpVersion();
+                ver->import(verstring);
+                mHeader->setVersion(ver);
                 mStatus = ContentKey;
                 mCrlfCount = 0;
             }

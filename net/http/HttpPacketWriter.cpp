@@ -69,7 +69,7 @@ void _HttpPacketWriter::_updateHttpHeader(HttpPacket packet) {
         }
     }
 
-    header->setContentLength(_computeContentLength(packet));
+    header->getContentLength()->set(_computeContentLength(packet));
 }
 
 int _HttpPacketWriter::_flush(HttpPacket packet,bool send) {

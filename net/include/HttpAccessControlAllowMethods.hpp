@@ -17,9 +17,9 @@ public:
 
     void import(String);
 
-    void addMethod(int);
+    void add(int);
 
-    ArrayList<Integer> getMethods();
+    ArrayList<Integer> get();
 
     String toString();
 

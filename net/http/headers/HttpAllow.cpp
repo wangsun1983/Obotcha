@@ -18,11 +18,11 @@ void _HttpAllow::import(String s) {
     });
 }
 
-void _HttpAllow::addMethod(int method) {
+void _HttpAllow::add(int method) {
     methods->add(createInteger(method));
 }
 
-ArrayList<Integer> _HttpAllow::getMethods() {
+ArrayList<Integer> _HttpAllow::get() {
     return methods;
 }
 

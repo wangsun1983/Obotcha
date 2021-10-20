@@ -17,11 +17,11 @@ void _HttpAccessControlRequestHeaders::import(String v) {
     });
 }
 
-void _HttpAccessControlRequestHeaders::addHeaders(String v) {
+void _HttpAccessControlRequestHeaders::add(String v) {
     headers->add(v);
 }
 
-ArrayList<String> _HttpAccessControlRequestHeaders::getHeaders() {
+ArrayList<String> _HttpAccessControlRequestHeaders::get() {
     return headers;
 }
 

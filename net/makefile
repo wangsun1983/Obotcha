@@ -21,7 +21,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpstatus.o \
 		$(outtmp)/httpentity.o \
 		$(outtmp)/httpversion.o \
-		$(outtmp)/httpversionparser.o \
 		$(outtmp)/httpcontenttype.o \
 		$(outtmp)/httpmime.o \
 		$(outtmp)/httpconnection.o \
@@ -108,6 +107,14 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpcontentlanguage.o \
 		$(outtmp)/httpcontentencoding.o \
 		$(outtmp)/httpheadermatch.o \
+		$(outtmp)/httpifmodifiedsince.o \
+		$(outtmp)/httpifrange.o \
+		$(outtmp)/httpifunmodifiedsince.o \
+		$(outtmp)/httpheaderkeepalive.o \
+		$(outtmp)/httpheaderretryafter.o \
+		$(outtmp)/httpheaderuseragent.o \
+		$(outtmp)/httpheaderhost.o \
+		
 		
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
@@ -217,6 +224,27 @@ $(outtmp)/httprequestmethod.o :$(netDir)/http/headers/HttpAccessControlRequestMe
 $(outtmp)/httpage.o :$(netDir)/http/headers/HttpAge.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpAge.cpp -o $(outtmp)/httpage.o 
 
+$(outtmp)/httpifmodifiedsince.o :$(netDir)/http/headers/HttpIfModifiedSince.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpIfModifiedSince.cpp -o $(outtmp)/httpifmodifiedsince.o 
+
+$(outtmp)/httpifrange.o :$(netDir)/http/headers/HttpIfRange.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpIfRange.cpp -o $(outtmp)/httpifrange.o 
+
+$(outtmp)/httpifunmodifiedsince.o :$(netDir)/http/headers/HttpIfUnmodifiedSince.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpIfUnmodifiedSince.cpp -o $(outtmp)/httpifunmodifiedsince.o 
+
+$(outtmp)/httpheaderkeepalive.o :$(netDir)/http/headers/HttpHeaderKeepAlive.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderKeepAlive.cpp -o $(outtmp)/httpheaderkeepalive.o 
+
+$(outtmp)/httpheaderretryafter.o :$(netDir)/http/headers/HttpHeaderRetryAfter.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderRetryAfter.cpp -o $(outtmp)/httpheaderretryafter.o 
+
+$(outtmp)/httpheaderuseragent.o :$(netDir)/http/headers/HttpHeaderUserAgent.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderUserAgent.cpp -o $(outtmp)/httpheaderuseragent.o 
+
+$(outtmp)/httpheaderhost.o :$(netDir)/http/headers/HttpHeaderHost.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderHost.cpp -o $(outtmp)/httpheaderhost.o 
+
 $(outtmp)/httpallow.o :$(netDir)/http/headers/HttpAllow.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpAllow.cpp -o $(outtmp)/httpallow.o 
 
@@ -244,17 +272,14 @@ $(outtmp)/httpheadermatch.o :$(netDir)/http/headers/HttpHeaderMatch.cpp
 $(outtmp)/httpstatus.o :$(netDir)/http/HttpStatus.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpStatus.cpp -o $(outtmp)/httpstatus.o 
 
-$(outtmp)/httpversion.o :$(netDir)/http/HttpVersion.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpVersion.cpp -o $(outtmp)/httpversion.o 
-
-$(outtmp)/httpversionparser.o :$(netDir)/http/HttpVersionParser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpVersionParser.cpp -o $(outtmp)/httpversionparser.o 
+$(outtmp)/httpversion.o :$(netDir)/http/headers/HttpVersion.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpVersion.cpp -o $(outtmp)/httpversion.o 
 
 $(outtmp)/httpentity.o :$(netDir)/http/HttpEntity.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpEntity.cpp -o $(outtmp)/httpentity.o 
 
-$(outtmp)/httpcontenttype.o :$(netDir)/http/HttpContentType.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpContentType.cpp -o $(outtmp)/httpcontenttype.o 
+$(outtmp)/httpcontenttype.o :$(netDir)/http/headers/HttpContentType.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpContentType.cpp -o $(outtmp)/httpcontenttype.o 
 
 $(outtmp)/httpmime.o :$(netDir)/http/HttpMime.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMime.cpp -o $(outtmp)/httpmime.o 

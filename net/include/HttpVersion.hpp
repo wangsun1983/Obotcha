@@ -20,6 +20,8 @@ public:
     int getMajorVer();
     int getMinorVer();
 
+    void import(String);
+    
     String toString();
 private:
 

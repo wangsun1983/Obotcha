@@ -17,9 +17,9 @@ public:
 
     void import(String);
 
-    bool isAllowed();
+    bool get();
     
-    void setAllowed(bool v);
+    void set(bool v);
 
     String toString();
 
