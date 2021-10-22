@@ -53,6 +53,8 @@
 #include "HttpIfModifiedSince.hpp"
 #include "HttpIfRange.hpp"
 #include "HttpIfUnmodifiedSince.hpp"
+#include "HttpTransferEncoding.hpp"
+#include "HttpHeaderUpgrade.hpp"
 
 namespace obotcha {
 
@@ -458,6 +460,14 @@ public:
     void setXFrameOptions(HttpXFrameOptions);
     HttpXFrameOptions getXFrameOptions();
 
+    //TransferEncoding
+    void setTransferEncoding(HttpTransferEncoding);
+    HttpTransferEncoding getTransferEncoding();
+
+    //Upgrade
+    void setUpgrade(HttpHeaderUpgrade);
+    HttpHeaderUpgrade getUpgrade();
+
     String toString(int);
 
     int getMethod();
@@ -570,6 +580,10 @@ private:
     HttpVersion mVersion;
 
     HttpXFrameOptions mXFrameOptions;
+
+    HttpTransferEncoding mTransferEncoding;
+
+    HttpHeaderUpgrade mUpgrade;
 
     ArrayList<HttpCookie> mCookies;
 

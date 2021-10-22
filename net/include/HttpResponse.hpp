@@ -13,8 +13,7 @@ public:
     _HttpResponse(HttpPacket p) {
         this->setProtocol(st(HttpProtocol)::HttpResponse);
         this->setEntity(p->getEntity());
-        this->setProtocol(p->getProtocol());
-        this->setEntity(p->getEntity());
+        this->setHeader(p->getHeader());
     }
 
 	_HttpResponse():_HttpPacket(){

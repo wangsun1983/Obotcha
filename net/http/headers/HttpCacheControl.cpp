@@ -32,6 +32,10 @@ _HttpCacheControl::_HttpCacheControl() {
     mNoTransform = false;
 }
 
+_HttpCacheControl::_HttpCacheControl(String s):_HttpCacheControl() {
+    import(s);
+}
+
 bool _HttpCacheControl::noCache() { return this->mNoCache; }
 
 bool _HttpCacheControl::noStore() { return this->mNoStore; }

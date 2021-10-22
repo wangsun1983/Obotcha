@@ -20,7 +20,7 @@ _HttpAcceptEncoding::_HttpAcceptEncoding(String s) {
 void _HttpAcceptEncoding::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         if(parameter == nullptr) {
-            HttpAcceptEncodingItem item = createHttpAcceptEncodingItem(item->type);
+            HttpAcceptEncodingItem item = createHttpAcceptEncodingItem(directive);
             encodings->add(item);
         } else {
             if(directive->equals("q")) {

@@ -16,6 +16,8 @@
 #include "HttpProtocol.hpp"
 #include "HttpMethod.hpp"
 #include "HttpStatus.hpp"
+#include "Log.hpp"
+#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 
@@ -262,6 +264,7 @@ _HttpHeader::_HttpHeader() {
     mValues = createHashMap<String, String>();
     mCookies = createArrayList<HttpCookie>();
     mLinks = createArrayList<HttpHeaderLink>();
+
     reset();
 }
 
@@ -280,66 +283,49 @@ void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
         mLinks->add(h->mLinks);
     }
 
-    //http cache control?
-    if(h->mCacheControl != nullptr) {
-        mCacheControl = h->mCacheControl;
-    }
-
-    if(h->mContentType != nullptr) {
-        mContentType = h->mContentType;
-    }
-
-    if(h->mAcceptEncoding != nullptr) {
-        mAcceptEncoding = h->mAcceptEncoding;
-    }
-
-    if(h->mAcceptLanguage != nullptr) {
-        mAcceptLanguage = h->mAcceptLanguage;
-    }
-    
-    if(h->mAcceptCharSet != nullptr) {
-        mAcceptCharSet = h->mAcceptCharSet;
-    }
-
-    if(h->mAcceptPatch != nullptr) {
-        mAcceptPatch = h->mAcceptPatch;
-    }
-
-    if(h->mAccept != nullptr) {
-        mAccept = h->mAccept;
-    }
-
-    if(h->mTransportSecurity != nullptr) {
-        mTransportSecurity = h->mTransportSecurity;
-    }
-
-    if(h->mProxyAuthorization != nullptr) {
-        mProxyAuthorization = h->mProxyAuthorization;
-    }
-
-    if(h->mProxyAuthenticate != nullptr) {
-        mProxyAuthenticate = h->mProxyAuthenticate;
-    }
-
-    if(h->mXFrameOptions != nullptr) {
-        mXFrameOptions = h->mXFrameOptions;
-    }
-
-    if(h->mForwarded != nullptr) {
-        mForwarded = h->mForwarded;
-    }
-
-    if(h->mContentDisposition != nullptr) {
-        mContentDisposition = h->mContentDisposition;
-    }
-
-    if(h->mHeaderDigest != nullptr) {
-        mHeaderDigest = h->mHeaderDigest;
-    }
-
-    if(h->mAuthorization != nullptr) {
-        mAuthorization = h->mAuthorization;
-    }
+#define SET_VALUE(X) X = (h->X != nullptr)?h->X:nullptr;
+    SET_VALUE(mAcceptCharSet);
+    SET_VALUE(mAccept);
+    SET_VALUE(mAcceptEncoding);
+    SET_VALUE(mAcceptLanguage);
+    SET_VALUE(mAcceptPatch);
+    SET_VALUE(mAllowCredentials);
+    SET_VALUE(mAllowHeaders);
+    SET_VALUE(mAllowMethods);
+    SET_VALUE(mAllowOrigin);
+    SET_VALUE(mExposeHeaders);
+    SET_VALUE(mMaxAge);
+    SET_VALUE(mRequestHeaders);
+    SET_VALUE(mRequestMethod);
+    SET_VALUE(mAge);
+    SET_VALUE(mAllow);
+    SET_VALUE(mAuthorization);
+    SET_VALUE(mCacheControl);
+    SET_VALUE(mClearSiteData);
+    SET_VALUE(mContentDisposition);
+    SET_VALUE(mContentEncoding);
+    SET_VALUE(mContentLanguage);
+    SET_VALUE(mContentLength);
+    SET_VALUE(mContentLocation);
+    SET_VALUE(mContentType);
+    SET_VALUE(mForwarded);
+    SET_VALUE(mConnection);
+    SET_VALUE(mHeaderDigest);
+    SET_VALUE(mHost);
+    SET_VALUE(mKeepAlive);
+    SET_VALUE(mIfMatch);
+    SET_VALUE(mIfNoneMatch);
+    SET_VALUE(mRetryAfter);
+    SET_VALUE(mUserAgent);
+    SET_VALUE(mIfModifiedSince);
+    SET_VALUE(mIfRange);
+    SET_VALUE(mIfUnmodifiedSince);
+    SET_VALUE(mProxyAuthenticate);
+    SET_VALUE(mProxyAuthorization);
+    SET_VALUE(mTransportSecurity);
+    SET_VALUE(mVersion);
+    SET_VALUE(mXFrameOptions);
+#undef SET_VALUE
 }
 
 void _HttpHeader::reset() { 
@@ -387,7 +373,6 @@ void _HttpHeader::reset() {
     mProxyAuthenticate = nullptr;
     mProxyAuthorization = nullptr;
     mTransportSecurity = nullptr;
-    mVersion = nullptr;
     mXFrameOptions = nullptr;
 
     mMethod = -1;
@@ -431,6 +416,14 @@ void _HttpHeader::set(String key, String value) {
                     mAcceptLanguage = createHttpAcceptLanguage();
                 }
                 mAcceptLanguage->import(value);
+                return;
+            }
+
+            case TypeTransferEncoding: {
+                if(mTransferEncoding == nullptr) {
+                    mTransferEncoding = createHttpTransferEncoding();
+                }
+                mTransferEncoding->import(value);
                 return;
             }
 
@@ -724,6 +717,14 @@ void _HttpHeader::set(String key, String value) {
                 mXFrameOptions->import(value);
                 return;
             }
+
+            case TypeUpgrade: {
+                if(mUpgrade == nullptr) {
+                    mUpgrade = createHttpHeaderUpgrade();
+                }
+                mUpgrade->import(value);
+                return;
+            }
         }
     }
 
@@ -733,91 +734,7 @@ void _HttpHeader::set(String key, String value) {
 String _HttpHeader::get(String header) {
     Integer id = idMaps->get(header->toLowerCase());
     if(id != nullptr) {
-        switch(id->toValue()) {
-            case TypeDigest: {
-                return (mHeaderDigest == nullptr)?nullptr:mHeaderDigest->toString();
-            }
-
-            case TypeContentDisposition: {
-                return (mContentDisposition == nullptr)?nullptr:mContentDisposition->toString();
-            }
-
-            case TypeForwarded: {
-                return (mForwarded == nullptr)?nullptr:mForwarded->toString();
-            }
-
-            case TypeXFrameOptions: {
-                return (mXFrameOptions == nullptr)?nullptr:mXFrameOptions->toString();
-            }
-
-            case TypeProxyAuthenticate: {
-                return (mProxyAuthenticate == nullptr)?nullptr:mProxyAuthenticate->toString();
-            }
-
-            case TypeProxyAuthorization: {
-                return (mProxyAuthorization == nullptr)?nullptr:mProxyAuthorization->toString();
-            }
-
-            case TypeStrictTransportSecurity :{
-                return (mTransportSecurity == nullptr)?nullptr:mTransportSecurity->toString();
-            }
-
-            case TypeAcceptEncoding:{
-                return (mAcceptEncoding == nullptr)?nullptr:mAcceptEncoding->toString();
-            }
-
-            case TypeAcceptLanguage: {
-                return (mAcceptLanguage == nullptr)?nullptr:mAcceptLanguage->toString();
-            }
-
-            case TypeAcceptCharset: {
-                return (mAcceptCharSet == nullptr)?nullptr:mAcceptCharSet->toString();
-            }
-
-            case TypeAcceptPatch: {
-                return (mAcceptPatch == nullptr)?nullptr:mAcceptPatch->toString();
-            }
-
-            case TypeAccept: {
-                return (mAccept == nullptr)?nullptr:mAccept->toString();
-            }
-
-            case TypeCookie: {
-                //TODO
-                return nullptr;
-            }
-
-            case TypeCacheControl: {
-                //return (mCacheControl == nullptr)?nullptr:mCacheControl->toString();
-                //TODO
-                return nullptr;
-            }
-
-            case TypeContentType: {
-                return (mContentType == nullptr)?nullptr:mContentType->toString();
-            }
-
-            case TypeContentLength: {
-                return mContentLength->toString();
-            }
-
-            case TypeConnection: {
-                return mConnection->toString();
-            }
-
-            case TypeSetCookie: {
-                //TODO
-                return nullptr;
-            }
-
-            case TypeLink:{
-                //TODO
-                return nullptr;
-            }
-
-            default:
-            break;
-        }
+        LOG(ERROR)<<"http header:" <<st(HttpHeader)::toString(id->toValue())->toChars()<<",should call get method directly";
     }
 
     return mValues->get(header->toLowerCase());
@@ -1231,6 +1148,24 @@ void _HttpHeader::setXFrameOptions(HttpXFrameOptions s) {
     mXFrameOptions = s;
 }
 
+//HttpTransferEncoding
+void _HttpHeader::setTransferEncoding(HttpTransferEncoding s) {
+    mTransferEncoding = s;
+}
+
+//HttpheaderUpgrade
+void _HttpHeader::setUpgrade(HttpHeaderUpgrade s) {
+    mUpgrade = s;
+}
+
+HttpHeaderUpgrade _HttpHeader::getUpgrade() {
+    return mUpgrade;
+}
+
+HttpTransferEncoding _HttpHeader::getTransferEncoding() {
+    return mTransferEncoding;
+}
+
 MapIterator<String, String> _HttpHeader::getIterator() {
     return mValues->getIterator();
 }
@@ -1238,6 +1173,7 @@ MapIterator<String, String> _HttpHeader::getIterator() {
 String _HttpHeader::toString(int type) {
     //create method method.......
     String header = nullptr;
+    printf("Http to type is %d \n",type);
     switch(type) {
         case st(HttpProtocol)::HttpRequest: {
             header = st(HttpMethod)::toString(mMethod)->append(st(HttpText)::ContentSpace);
@@ -1259,6 +1195,9 @@ String _HttpHeader::toString(int type) {
             }
             break;
         }
+
+        default:
+            Trigger(IllegalArgumentException,"no support");
         break;
     }
     
@@ -1363,6 +1302,10 @@ String _HttpHeader::toString(int type) {
     if(mContentEncoding != nullptr) {
         header = header->append(st(HttpHeader)::ContentEncoding,": ",mContentEncoding->toString(),st(HttpText)::CRLF);
     }
+
+    if(mTransferEncoding != nullptr) {
+        header = header->append(st(HttpHeader)::TransferEncoding,": ",mTransferEncoding->toString(),st(HttpText)::CRLF);
+    }
     
     if(mContentLanguage != nullptr) {
         header = header->append(st(HttpHeader)::ContentLanguage,": ",mContentLanguage->toString(),st(HttpText)::CRLF);
@@ -1442,6 +1385,10 @@ String _HttpHeader::toString(int type) {
 
     if(mXFrameOptions != nullptr) {
         header = header->append(st(HttpHeader)::XFrameOptions,": ",mXFrameOptions->toString(),st(HttpText)::CRLF);    
+    }
+
+    if(mUpgrade != nullptr) {
+        header = header->append(st(HttpHeader)::Upgrade,": ",mUpgrade->toString(),st(HttpText)::CRLF);    
     }
 
     if(mLinks != nullptr && mLinks->size() != 0) {

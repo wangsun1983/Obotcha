@@ -6,7 +6,6 @@
 #include "System.hpp"
 #include "ByteRingArray.hpp"
 #include "HttpServer.hpp"
-#include "HttpResponseWriter.hpp"
 #include "HttpCookie.hpp"
 #include "HttpResponse.hpp"
 #include "HttpStatus.hpp"
@@ -14,6 +13,8 @@
 #include "Inet4Address.hpp"
 #include "CountDownLatch.hpp"
 #include "Handler.hpp"
+#include "HttpPacketWriter.hpp"
+#include "Enviroment.hpp"
 
 using namespace obotcha;
 
@@ -21,8 +22,8 @@ AtomicInteger connectCount = createAtomicInteger(0);
 AtomicInteger disConnectCount = createAtomicInteger(0);
 AtomicInteger messageCount = createAtomicInteger(0);
 
-CountDownLatch connectlatch = createCountDownLatch(1024*32*16);
-CountDownLatch disconnetlatch = createCountDownLatch(1024*32*16);
+CountDownLatch connectlatch = createCountDownLatch(1024*32);
+CountDownLatch disconnetlatch = createCountDownLatch(1024*32);
 
 DECLARE_CLASS(MyHandler) IMPLEMENTS(Handler) {
 public:
@@ -33,7 +34,7 @@ public:
 };
 
 DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
-  void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPacket msg){
+  void onHttpMessage(int event,HttpLinker client,HttpResponseWriter w,HttpPacket msg){
       switch(event) {
           case HttpEvent::Connect: {
               connectlatch->countDown();
@@ -58,9 +59,10 @@ DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 int main() {
   MyHttpListener listener = createMyHttpListener();
   HttpServer server = createHttpServerBuilder()
-                    ->setAddress(createInet4Address(1256))
+                    ->setAddress(createInet4Address(1259))
                     ->setListener(listener)
                     ->build();
+  //printf("thread num is %d \n",st(Enviroment)::DefaultgHttpServerThreadsNum);
   server->start();
   MyHandler h = createMyHandler();
   h->sendEmptyMessageDelayed(0,10*1024);

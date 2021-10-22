@@ -114,7 +114,8 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheaderretryafter.o \
 		$(outtmp)/httpheaderuseragent.o \
 		$(outtmp)/httpheaderhost.o \
-		
+		$(outtmp)/httptransferencoding.o \
+		$(outtmp)/httpheaderupgrade.o \
 		
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
@@ -244,6 +245,12 @@ $(outtmp)/httpheaderuseragent.o :$(netDir)/http/headers/HttpHeaderUserAgent.cpp
 
 $(outtmp)/httpheaderhost.o :$(netDir)/http/headers/HttpHeaderHost.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderHost.cpp -o $(outtmp)/httpheaderhost.o 
+
+$(outtmp)/httptransferencoding.o :$(netDir)/http/headers/HttpTransferEncoding.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpTransferEncoding.cpp -o $(outtmp)/httptransferencoding.o 
+
+$(outtmp)/httpheaderupgrade.o :$(netDir)/http/headers/HttpHeaderUpgrade.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderUpgrade.cpp -o $(outtmp)/httpheaderupgrade.o 
 
 $(outtmp)/httpallow.o :$(netDir)/http/headers/HttpAllow.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpAllow.cpp -o $(outtmp)/httpallow.o 

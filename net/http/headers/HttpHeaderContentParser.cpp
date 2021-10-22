@@ -38,7 +38,7 @@ int _HttpHeaderContentParser::parseSeconds(String value, int defaultValue) {
     }
 }
 
-int _HttpHeaderContentParser::import(String value,const ParseResult &callback) {
+int _HttpHeaderContentParser::import(String value,const _ParseResult &callback) {
     if (value != nullptr) {
         int pos = 0;
         while (pos < value->size()) {

@@ -17,19 +17,29 @@ public:
 
     void import(String);
 
-    void addType(String);
-
-    ArrayList<String> getTypes();
-
     String toString();
 
+    bool isCache();
+    bool isCookies();
+    bool isExecutionContexts();
+    bool isStorage();
+    
+    void setCache(bool);
+    void setCookies(bool);
+    void setExecutionContexts(bool);
+    void setStorage(bool);
+
+private:
     static const String Cache;
     static const String Cookies;
     static const String ExecutionContexts;
     static const String Storage;
 
-private:
-    ArrayList<String> types;
+    bool mCache;
+    bool mCookies;
+    bool mExecutionContexts;
+    bool mStorage;
+
 };
 
 }

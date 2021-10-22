@@ -7,6 +7,10 @@ _HttpContentLength::_HttpContentLength() {
 
 }
 
+_HttpContentLength::_HttpContentLength(int v) {
+    length = v;
+}
+
 _HttpContentLength::_HttpContentLength(String v):_HttpContentLength() {
     import(v);
 }

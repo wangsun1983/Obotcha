@@ -14,6 +14,7 @@ DECLARE_CLASS(HttpContentLength) {
 public:
     _HttpContentLength();
     _HttpContentLength(String);
+    _HttpContentLength(int);
 
     void import(String);
 

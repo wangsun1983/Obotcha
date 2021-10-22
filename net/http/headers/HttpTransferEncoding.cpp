@@ -1,42 +1,41 @@
-#include "HttpContentEncoding.hpp"
+#include "HttpTransferEncoding.hpp"
 #include "HttpHeaderContentParser.hpp"
-#include "Math.hpp"
 
 namespace obotcha {
 
-
-_HttpContentEncoding::_HttpContentEncoding() {
+_HttpTransferEncoding::_HttpTransferEncoding() {
     encodings = createArrayList<String>();
 }
 
-_HttpContentEncoding::_HttpContentEncoding(String s):_HttpContentEncoding() {
+_HttpTransferEncoding::_HttpTransferEncoding(String s):_HttpTransferEncoding() {
     import(s);
 }
 
-void _HttpContentEncoding::import(String s) {
+void _HttpTransferEncoding::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         encodings->add(directive);
     });
 }
 
-ArrayList<String> _HttpContentEncoding::get() {
+ArrayList<String> _HttpTransferEncoding::get() {
     return encodings;
 }
 
-void _HttpContentEncoding::add(String v) {
-    encodings->add(v);
+void _HttpTransferEncoding::add(String s) {
+    encodings->add(s);
 }
 
-
-String _HttpContentEncoding::toString() {
+String _HttpTransferEncoding::toString() {
     String encoding = "";
     auto iterator = encodings->getIterator();
     while(iterator->hasValue()) {
         encoding = encoding->append(iterator->getValue(),", ");
         iterator->next();
     }
-
-    return encoding->subString(0,encoding->size() - 2);
+    
+    return encoding;
 }
+
+
 
 }

@@ -12,8 +12,7 @@ public:
 	_HttpRequest(HttpPacket p) {
         this->setProtocol(st(HttpProtocol)::HttpRequest);
         this->setEntity(p->getEntity());
-        this->setProtocol(p->getProtocol());
-        this->setEntity(p->getEntity());
+        this->setHeader(p->getHeader());
     }
 
 	_HttpRequest():_HttpPacket(){

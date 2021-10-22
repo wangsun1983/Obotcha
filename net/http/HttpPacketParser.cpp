@@ -95,15 +95,25 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
         case BodyStart: {
             // printf("HttpPacketParser BodyStart \n");
             // check whether there is a multipart
-            int contentlength = mHttpPacket->getHeader()->getContentLength()->get();
+            auto contentlength = mHttpPacket->getHeader()->getContentLength();
             //String contenttype =
             //    mHttpPacket->getHeader()->get(st(HttpHeader)::ContentType);
             auto contenttype = mHttpPacket->getHeader()->getContentType();
-            String encodingtype = mHttpPacket->getHeader()->get(
-                st(HttpHeader)::TransferEncoding);
-            if (encodingtype != nullptr &&
-                encodingtype->indexOfIgnoreCase(
-                    st(HttpHeader)::TransferChunked) >= 0) {
+
+            auto transferEncoding = mHttpPacket->getHeader()->getTransferEncoding();
+            bool isTransferChuncked = false;
+
+            if(transferEncoding != nullptr) {
+                ArrayList<String> encodings = transferEncoding->get();    
+                encodings->foreach([](String s) {
+                    if(s->equalsIgnoreCase(st(HttpHeader)::TransferChunked)) {
+                        return Global::Break;   
+                    }
+                    return Global::Continue;
+                });
+            }
+
+            if (isTransferChuncked) {
                 // this is a chunck parsesr
                 // printf("HttpPacketParser BodyStart trace1\n");
                 if (mSubStatus == HeadKeyValueParse) {
@@ -127,16 +137,15 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                 mStatus = Idle;
                 continue;
             }
-            if (contentlength <= 0) {
+            if (contentlength == nullptr || contentlength->get() <= 0) {
                 /*1. The client should wait for the server's EOF. That is, when
                  * neither content-length nor transfer-encoding is specified,
                  * the end of body is specified by the EOF.
                  */
                 // printf("HttpPacketParser BodyStart trace2\n");
-                auto con = mHttpPacket->getHeader()->getConnection()->get();
+                auto con = mHttpPacket->getHeader()->getConnection();
 
-                if (mHttpPacket->getHeader()->get(
-                        st(HttpHeader)::Upgrade) != nullptr ||
+                if (mHttpPacket->getHeader()->getUpgrade() != nullptr ||
                     mHttpPacket->getHeader()->getMethod() ==
                         st(HttpMethod)::Connect) {
                     int restLength = mReader->getReadableLength();
@@ -146,7 +155,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                         mHttpPacket->getEntity()->setUpgrade(
                             content->toString());
                     }
-                } else if (((con != nullptr) && con->equals("close"))||
+                } else if (((con != nullptr) && con->get()->equals("close"))||
                            mHttpPacket->getHeader()->getType() ==
                                st(HttpHeader)::Response) {
                     // connection:close,pop all data && close connection
@@ -172,7 +181,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                 if (mMultiPartParser == nullptr) {
                     try {
                         mMultiPartParser = createHttpMultiPartParser(
-                            contenttype->getType(), contentlength);
+                            contenttype->getType(), contentlength->get());
                     } catch (InitializeException &e) {
                         printf("HttpPacketParser BodyStart trace1_1\n");
                     }
@@ -193,10 +202,10 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                 }
             } else {
                 // printf("HttpPacketParser BodyStart trace5\n");
-                if (contentlength <= mReader->getReadableLength()) {
+                if (contentlength->get() <= mReader->getReadableLength()) {
                     // one packet get
                     // printf("HttpPacketParser BodyStart trace6\n");
-                    mReader->move(contentlength);
+                    mReader->move(contentlength->get());
                     ByteArray content = mReader->pop();
                     // check whether it is a X-URLEncoded
                     if (contenttype != nullptr &&
@@ -217,8 +226,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                         }
                     }
                     // we should check whether it is a upgrade message
-                    if (mHttpPacket->getHeader()->get(
-                            st(HttpHeader)::Upgrade) != nullptr) {
+                    if (mHttpPacket->getHeader()->getUpgrade() != nullptr) {
                         int resetLength = mReader->getReadableLength();
                         if (resetLength > 0) {
                             mReader->move(resetLength);

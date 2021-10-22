@@ -14,6 +14,7 @@ DECLARE_CLASS(HttpCacheControl) {
 
 public:
     _HttpCacheControl();
+    _HttpCacheControl(String);
 
     /**
      * In a response, this field's name "no-cache" is misleading. It doesn't

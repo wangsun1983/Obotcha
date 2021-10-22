@@ -10,7 +10,7 @@
 
 namespace obotcha {
 
-using ParseResult = std::function<void(String,String)>;
+using _ParseResult = std::function<void(String,String)>;
 
 DECLARE_CLASS(HttpHeaderContentParser) {
 
@@ -19,7 +19,7 @@ DECLARE_CLASS(HttpHeaderContentParser) {
     static int skipUntil(String input, int pos, String characters);
     static int skipWhitespace(String input, int pos);
     static int parseSeconds(String value, int defaultValue);
-    static int import(String,const ParseResult &);
+    static int import(String,const _ParseResult &);
 };
 
 } // namespace obotcha
