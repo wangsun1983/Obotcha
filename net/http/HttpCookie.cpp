@@ -77,19 +77,9 @@ String _HttpCookie::toString(int type) {
     return nullptr;
 }
 
-void _HttpCookie::dump() {
-    String dumpvalue = genHttpRequestCookie();
-    printf("%s \n", dumpvalue->toChars());
-}
-
 String _HttpCookie::genHttpResponseCookie() {
     // name
-    String content = createString("Set-Cookie: ");
-    // MapIterator<String,String> iterator = mValues->getIterator();
-    // while(iterator->hasValue()) {
-    //    String key = iterator->getKey();
-    //    String value = iterator->getValue();
-    content = content->append(mName, "=", mValue, ";");
+    String content = createString(mName)->append("=", mValue, ";");
     //    iterator->next();
     //}
 
@@ -126,14 +116,8 @@ String _HttpCookie::genHttpResponseCookie() {
 
 String _HttpCookie::genHttpRequestCookie() {
     String content = createString("Cookie: ");
-    // MapIterator<String,String> iterator = mValues->getIterator();
-    // while(iterator->hasValue()) {
-    //    String key = iterator->getKey();
-    //    String value = iterator->getValue();
     content = content->append(mName, "=", mValue,
                               ";"); // TODO:Cookie: name=value; name2=value2
-    //    iterator->next();
-    //}
     return content;
 }
 

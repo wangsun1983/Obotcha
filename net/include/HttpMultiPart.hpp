@@ -18,8 +18,8 @@ namespace obotcha {
 DECLARE_CLASS(HttpMultiPartFile) {
 
 public:
-    _HttpMultiPartFile(String filename,String key);
-    _HttpMultiPartFile(File filename,String key);
+    _HttpMultiPartFile(String filename,String key = nullptr);
+    _HttpMultiPartFile(File filename,String key = nullptr);
     String getKey();
     File getFile();
     String getFileName();

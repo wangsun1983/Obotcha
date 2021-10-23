@@ -725,6 +725,17 @@ void _HttpHeader::set(String key, String value) {
                 mUpgrade->import(value);
                 return;
             }
+
+            case TypeCookie:
+            case TypeSetCookie: {
+                auto c = createHttpCookieParser()->parse(value);
+                if(mCookies == nullptr) {
+                    mCookies = c;
+                } else {
+                    mCookies->add(c);
+                }
+                return;
+            }
         }
     }
 
@@ -1217,7 +1228,17 @@ String _HttpHeader::toString(int type) {
     ListIterator<HttpCookie> iterator = mCookies->getIterator();
     while (iterator->hasValue()) {
         HttpCookie cookie = iterator->getValue();
-        header = header->append(cookie->toString(type), st(HttpText)::CRLF);
+        switch(type) {
+            case st(HttpProtocol)::HttpRequest:
+            header = header->append(st(HttpHeader)::Cookie,cookie->toString(type), st(HttpText)::CRLF);
+            break;
+
+            case st(HttpProtocol)::HttpResponse:
+            header = header->append(st(HttpHeader)::SetCookie,cookie->toString(type), st(HttpText)::CRLF);
+            
+            break;
+        }
+        
         iterator->next();
     }
 

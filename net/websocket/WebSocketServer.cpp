@@ -142,11 +142,12 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,HttpRespon
                 return;
             }
             
-            String upgrade = header->get(st(HttpHeader)::Upgrade);
+            //String upgrade = header->get(st(HttpHeader)::Upgrade);
+            auto httpUpgrade = header->getUpgrade();
             String key = header->get(st(HttpHeader)::SecWebSocketKey);
             String version = header->get(st(HttpHeader)::SecWebSocketVersion);
 
-            if (upgrade != nullptr && upgrade->equalsIgnoreCase("websocket")) {
+            if (httpUpgrade != nullptr && httpUpgrade->get()->equalsIgnoreCase("websocket")) {
                 // remove fd from http epoll
                 mHttpServer->deMonitor(client->getSocket());
 

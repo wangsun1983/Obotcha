@@ -38,8 +38,6 @@ public:
 
     String toString(int);
 
-    void dump();
-
     const static String COOKIE_PROPERTY_SECURE;
     const static String COOKIE_PROPERTY_HTTPONLY;
     const static String COOKIE_PROPERTY_PATH;

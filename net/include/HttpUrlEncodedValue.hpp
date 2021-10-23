@@ -5,8 +5,7 @@
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
-#include "ArrayList.hpp"
-#include "KeyValuePair.hpp"
+#include "HashMap.hpp"
 
 namespace obotcha {
 
@@ -18,14 +17,15 @@ public:
 
     void import(String);
 
-    ArrayList<KeyValuePair<String,String>> getValues();
+    HashMap<String,String> getValues();
 
     void set(String,String);
+    String get(String);
 
     String toString();
 
 private:
-    ArrayList<KeyValuePair<String,String>> encodedValues;
+    HashMap<String,String> encodedValues;
 };
 
 }

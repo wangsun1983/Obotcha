@@ -4,7 +4,7 @@
 namespace obotcha {
 
 _HttpUrlEncodedValue::_HttpUrlEncodedValue() {
-    encodedValues = createArrayList<KeyValuePair<String,String>>();
+    encodedValues = createHashMap<String,String>();
 }
 
 _HttpUrlEncodedValue::_HttpUrlEncodedValue(String v):_HttpUrlEncodedValue() {
@@ -49,26 +49,28 @@ void _HttpUrlEncodedValue::import(String value) {
             }
         }
 
-        KeyValuePair<String,String> pair = createKeyValuePair<String,String>(directive,parameter);
-        encodedValues->add(pair);
+        encodedValues->put(directive,parameter);
     }
 }
 
-ArrayList<KeyValuePair<String,String>> _HttpUrlEncodedValue::getValues() {
+HashMap<String,String> _HttpUrlEncodedValue::getValues() {
     return encodedValues;
 }
 
 void _HttpUrlEncodedValue::set(String k,String v) {
-    encodedValues->add(createKeyValuePair<String,String>(k,v));
+    encodedValues->put(k,v);
+}
+
+String _HttpUrlEncodedValue::get(String k) {
+    return encodedValues->get(k);
 }
 
 String _HttpUrlEncodedValue::toString() {
     String v =createString("");
     auto iterator = encodedValues->getIterator();
     while (iterator->hasValue()) {
-        auto pair = iterator->getValue();
-        String key = pair->getKey();
-        String value = pair->getValue();
+        String key = iterator->getKey();
+        String value = iterator->getValue();
         v = v->append(key,"=",value,"&");
         iterator->next();
     }

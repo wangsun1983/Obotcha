@@ -181,7 +181,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                 if (mMultiPartParser == nullptr) {
                     try {
                         mMultiPartParser = createHttpMultiPartParser(
-                            contenttype->getType(), contentlength->get());
+                            contenttype->getBoundary(), contentlength->get());
                     } catch (InitializeException &e) {
                         printf("HttpPacketParser BodyStart trace1_1\n");
                     }

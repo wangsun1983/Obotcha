@@ -82,7 +82,6 @@ HttpHeader _HttpHeaderParser::doParse() {
                 String url_str = urlcontent->toString()->subString(0,urlcontent->size() - 1);
                     //createString((const char *)urlcontent->toValue(),0,
                     //             urlcontent->size() - 1);
-                printf("parse url is %s \n",url_str->toChars());
                 HttpUrl url = createHttpUrl(url_str);
                 mHeader->setUrl(url);
                 mStatus = Version;

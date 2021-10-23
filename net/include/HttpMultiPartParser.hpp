@@ -16,42 +16,32 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpMultiPartParser) {
 public:
-    _HttpMultiPartParser(const String&,int);
+    _HttpMultiPartParser(const String,int);
 
     HttpMultiPart parse(ByteRingArrayReader);
     
     //String getHeaderBoundary();
+private:
 
-    enum Status {
-        Complete = 0,
-        Continue,
-        NotMultiPart,
+     enum BoundaryCheckStatus {
+        _PartEnd = 0,
+        _BoundaryEnd,
+        _None,
     };
 
     enum ParseStatus {
         ParseStartBoundry = 0,
-        ParseStartBoundryEnd,
         ParseContentDisposition,
-        ParseContentDispositionEnd,
         ParseContentType,
-        ParseContentSkipNewLine,
+        ParseNextLineBeforeFormData,
+        ParseNextLineBeforeContent,
+        ParseFormData,
         ParseContent,
     };
 
-private:
-
     const char *CRLF;
-    const char *MultiPartEnd;
-    const char *Boundary;
-
-    int mBoundaryIndex;
-    int mBoundaryEndLineIndex;
-    int mBoundaryNextLineIndex;
-    int mNewLineTextIndex;
-
-    HashMap<String,String> parseContentDisposition(String);
-
-    String parseContentType(String);
+    const char *PartEnd;
+    const char *BoundaryEnd;
 
     HttpMultiPart mMultiPart;
 
@@ -65,28 +55,27 @@ private:
     int mRecvLength;
 
     String mBoundary;
+    String mBoundaryEnd;
+    String mPartEnd;
 
     int mStatus;
 
     //ByteRingArrayReader mReader;
 
     HashMap<String,String> mContentDisp;
-    
-    String mBoundaryHeader;
 
     String mContentType;
 
-    ByteArray mBoundaryBuff;
-
-    ByteArray mBoundaryEndingBuff;
-
-    ByteArray mContentDispositionBuff;
-
-    ByteArray mContentTypeBuff;
-
-    ByteArray mContentBuff;
-
     Enviroment mEnv;
+
+    int mCRLFIndex;
+    int mBoundaryIndex;
+
+    HttpContentDisposition mDisposition;
+    
+    bool isLineEnd(byte &v);
+    int checkBoudaryIndex(byte &v);
+    void flushData(ByteArray,int);
 };
 
 }
