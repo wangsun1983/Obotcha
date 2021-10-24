@@ -55,6 +55,14 @@
 #include "HttpIfUnmodifiedSince.hpp"
 #include "HttpTransferEncoding.hpp"
 #include "HttpHeaderUpgrade.hpp"
+#include "HttpSecWebSocketAccept.hpp" 
+#include "HttpSecWebSocketKey.hpp" 
+#include "HttpSecWebSocketProtocol.hpp"
+#include "HttpSecWebSocketVersion.hpp"
+#include "HttpSecWebSocketExtensions.hpp"
+#include "HttpSecWebSocketOrigin.hpp"
+#include "HttpHeaderOrigin.hpp"
+#include "HttpHeaderPragma.hpp"
 
 namespace obotcha {
 
@@ -468,6 +476,50 @@ public:
     void setUpgrade(HttpHeaderUpgrade);
     HttpHeaderUpgrade getUpgrade();
 
+    //HttpSecWebSocketKey
+    void setWebSocketAccept(HttpSecWebSocketAccept);
+    HttpSecWebSocketAccept getWebSocketAccept();
+
+    //HttpSecWebSocketKey 
+    void setWebSocketKey(HttpSecWebSocketKey);
+    HttpSecWebSocketKey getWebSocketKey();
+
+    //HttpSecWebSocketProtocol 
+    void setWebSocketProtocol(HttpSecWebSocketProtocol);
+    HttpSecWebSocketProtocol getWebSocketProtocol();
+
+    //HttpSecWebSocketKey 
+    void setWebSocketKey1(HttpSecWebSocketKey);
+    HttpSecWebSocketKey getWebSocketKey1();
+
+    //HttpSecWebSocketKey 
+    void setWebSocketKey2(HttpSecWebSocketKey);
+    HttpSecWebSocketKey getWebSocketKey2();
+
+    //HttpSecWebSocketKey 
+    void setWebSocketKey3(HttpSecWebSocketKey);
+    HttpSecWebSocketKey getWebSocketKey3();
+
+    //HttpSecWebSocketVersion mWebSocketVersion;
+    void setWebSocketVersion(HttpSecWebSocketVersion s);
+    HttpSecWebSocketVersion getWebSocketVersion();
+    
+    //HttpSecWebSocketExtensions mWebSocketExtensions;
+    void setWebSocketExtensions(HttpSecWebSocketExtensions s);
+    HttpSecWebSocketExtensions getWebSocketExtensions();
+
+    //HttpSecWebSocketOrigin
+    void setWebSocketOrigin(HttpSecWebSocketOrigin s);
+    HttpSecWebSocketOrigin getWebSocketOrigin();
+
+    //HttpHeaderOrigin
+    void setOrigin(HttpHeaderOrigin s);
+    HttpHeaderOrigin getOrigin();
+
+    //HttpHeaderPragma
+    void setPragma(HttpHeaderPragma s);
+    HttpHeaderPragma getPragma();
+
     String toString(int);
 
     int getMethod();
@@ -584,6 +636,23 @@ private:
     HttpTransferEncoding mTransferEncoding;
 
     HttpHeaderUpgrade mUpgrade;
+
+    HttpSecWebSocketAccept mWebSocketAccept;
+    HttpSecWebSocketKey mWebSocketKey;
+    HttpSecWebSocketProtocol mWebSocketProtocol;
+
+    HttpSecWebSocketKey mWebSocketKey1;
+    HttpSecWebSocketKey mWebSocketKey2;
+    HttpSecWebSocketKey mWebSocketKey3;
+
+    HttpSecWebSocketVersion mWebSocketVersion;
+    HttpSecWebSocketExtensions mWebSocketExtensions;
+    HttpSecWebSocketOrigin mWebSocketOrigin;
+
+    HttpHeaderOrigin mOrigin;
+    HttpHeaderPragma mPragma;
+    
+    /////
 
     ArrayList<HttpCookie> mCookies;
 

@@ -36,23 +36,28 @@ HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl)
     String host = httpUrl->getHost()->append(":",createString(httpUrl->getPort()));
     header->set(st(HttpHeader)::Host,host);
     header->set(st(HttpHeader)::SecWebSocketVersion,createString("13"));
-    if(header->get(st(HttpHeader)::Accept) == nullptr) {
+    //if(header->get(st(HttpHeader)::Accept) == nullptr) {
+    if(header->getAccept() == nullptr) {
         header->set(st(HttpHeader)::Accept,createString("*/*"));
     }
 
-    if(header->get(st(HttpHeader)::AcceptLanguage) == nullptr) {
+    //if(header->get(st(HttpHeader)::AcceptLanguage) == nullptr) {
+    if(header->getAcceptLanguage() == nullptr) {
         header->set(st(HttpHeader)::AcceptLanguage,createString("en-US,en;q=0.5"));
     }
 
+    //if(header->getAcceptEncoding() == nullptr) {
     if(header->getAcceptEncoding() == nullptr) {
         header->set(st(HttpHeader)::AcceptEncoding,createString("gzip, deflate"));
     }
 
-    if(header->get(st(HttpHeader)::Origin) == nullptr) {
+    //if(header->get(st(HttpHeader)::Origin) == nullptr) {
+    if(header->getOrigin() == nullptr) {
         header->set(st(HttpHeader)::Origin,createString("null"));
     }
 
-    if(header->get(st(HttpHeader)::SecWebSocketKey) == nullptr) {
+    //if(header->get(st(HttpHeader)::SecWebSocketKey) == nullptr) {
+    if(header->getWebSocketKey() == nullptr) {
         //we should gen a sec key
         Random rand = createRandom();
         ByteArray array = createByteArray(16);
@@ -62,11 +67,13 @@ HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl)
         header->set(st(HttpHeader)::SecWebSocketKey,key->toString());
     }
 
-    if(header->get(st(HttpHeader)::Connection) == nullptr) {
+    //if(header->get(st(HttpHeader)::Connection) == nullptr) {
+    if(header->getConnection() == nullptr) {    
         header->set(st(HttpHeader)::Connection,createString("keep-alive, Upgrade"));
     }
 
-    if(header->get(st(HttpHeader)::Upgrade) == nullptr) {
+    //if(header->get(st(HttpHeader)::Upgrade) == nullptr) {
+    if(header->getUpgrade() == nullptr) { 
         header->set(st(HttpHeader)::Upgrade,createString("websocket"));
     }
 
@@ -74,7 +81,8 @@ HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl)
         header->set(st(HttpHeader)::Pragma,createString("no-cache"));
     }
 
-    if(header->get(st(HttpHeader)::CacheControl) == nullptr) {
+    //if(header->get(st(HttpHeader)::CacheControl) == nullptr) {
+    if(header->getCacheControl() == nullptr) { 
         header->set(st(HttpHeader)::CacheControl,createString("no-cache"));
     }
 
@@ -87,26 +95,33 @@ HttpResponse _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSo
     ByteArray sha1_content = mSha->encryptRawData(key_mgic->toByteArray());
     String base64 = mBase64->encode(sha1_content)->toString();
 
-    HttpPacketBuilder builder = createHttpPacketBuilder();
-    builder->setVersion(1,1)
-        ->setResponseStatus(st(HttpStatus)::SwitchProtocls)
-        ->setResponseReason(st(HttpStatus)::toString(st(HttpStatus)::SwitchProtocls))
-        ->addHeaderValue(st(HttpHeader)::SecWebSocketAccept,base64)
-        ->addHeaderValue(st(HttpHeader)::Upgrade,createString("websocket"))
-        ->addHeaderValue(st(HttpHeader)::Connection,createString("Upgrade"));
+    //HttpPacketBuilder builder = createHttpPacketBuilder();
+    //builder->setVersion(1,1)
+    //    ->setResponseStatus(st(HttpStatus)::SwitchProtocls)
+    //    ->setResponseReason(st(HttpStatus)::toString(st(HttpStatus)::SwitchProtocls))
+    //    ->addHeaderValue(st(HttpHeader)::SecWebSocketAccept,base64)
+    //    ->addHeaderValue(st(HttpHeader)::Upgrade,createString("websocket"))
+    //    ->addHeaderValue(st(HttpHeader)::Connection,createString("Upgrade"));
+    HttpResponse response = createHttpResponse();
+    response->getHeader()->setResponseReason(st(HttpStatus)::toString(st(HttpStatus)::SwitchProtocls));
+    response->getHeader()->setResponseStatus(st(HttpStatus)::SwitchProtocls);
 
+    response->getHeader()->set(st(HttpHeader)::SecWebSocketAccept,base64);
+    response->getHeader()->setUpgrade(createString("websocket"));
+    response->getHeader()->setConnection(createString("Upgrade"));
+    
     if(protocols != nullptr) {
-        builder->addHeaderValue(st(HttpHeader)::SecWebSocketProtocol,protocols);
+        response->getHeader()->set(st(HttpHeader)::SecWebSocketProtocol,protocols);
     }
 
     if(mDeflate != nullptr) {
         String extension = createString("permessage-deflate")->append(";client_max_window_bits=",
                             createString(mDeflate->getServerMaxWindowBits()));
 
-        builder->addHeaderValue(st(HttpHeader)::SecWebSocketExtensions,extension);
+        response->getHeader()->set(st(HttpHeader)::SecWebSocketExtensions,extension);
     }
 
-    return builder->newHttpResponse();
+    return response;
 }
 
 ArrayList<ByteArray> _WebSocketHybi13Composer::genTextMessage(String content) {

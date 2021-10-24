@@ -325,6 +325,19 @@ void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
     SET_VALUE(mTransportSecurity);
     SET_VALUE(mVersion);
     SET_VALUE(mXFrameOptions);
+    SET_VALUE(mTransferEncoding);
+    SET_VALUE(mUpgrade);
+    SET_VALUE(mWebSocketAccept);
+    SET_VALUE(mWebSocketKey);
+    SET_VALUE(mWebSocketProtocol);
+    SET_VALUE(mWebSocketKey1);
+    SET_VALUE(mWebSocketKey2);
+    SET_VALUE(mWebSocketKey3);
+    SET_VALUE(mWebSocketVersion);
+    SET_VALUE(mWebSocketExtensions);
+    SET_VALUE(mWebSocketOrigin);
+    SET_VALUE(mOrigin);
+    SET_VALUE(mPragma);
 #undef SET_VALUE
 }
 
@@ -374,6 +387,20 @@ void _HttpHeader::reset() {
     mProxyAuthorization = nullptr;
     mTransportSecurity = nullptr;
     mXFrameOptions = nullptr;
+
+    mTransferEncoding = nullptr;
+    mUpgrade = nullptr;
+    mWebSocketAccept = nullptr;
+    mWebSocketKey = nullptr;
+    mWebSocketProtocol = nullptr;
+    mWebSocketKey1 = nullptr;
+    mWebSocketKey2 = nullptr;
+    mWebSocketKey3 = nullptr;
+    mWebSocketVersion = nullptr;
+    mWebSocketExtensions = nullptr;
+    mWebSocketOrigin = nullptr;
+    mOrigin = nullptr;
+    mPragma = nullptr;
 
     mMethod = -1;
     mResponseReason = nullptr;
@@ -734,6 +761,96 @@ void _HttpHeader::set(String key, String value) {
                 } else {
                     mCookies->add(c);
                 }
+                return;
+            }
+
+            case TypeSecWebSocketAccept: {
+                if(mWebSocketAccept == nullptr) {
+                    mWebSocketAccept = createHttpSecWebSocketAccept();
+                }
+                mWebSocketAccept->import(value);
+                return;
+            }
+
+            case TypeSecWebSocketKey: {
+                if(mWebSocketKey == nullptr) {
+                    mWebSocketKey = createHttpSecWebSocketKey();
+                }
+                mWebSocketKey->import(value);
+                return;
+            }
+
+            case TypeSecWebSocketVersion: {
+                if(mWebSocketVersion == nullptr) {
+                    mWebSocketVersion = createHttpSecWebSocketVersion();
+                }
+                printf("sec websocket version!!!");
+                mWebSocketVersion->import(value);
+                return;
+            }
+
+            case TypeSecWebSocketExtensions: {
+                if(mWebSocketExtensions == nullptr) {
+                    mWebSocketExtensions = createHttpSecWebSocketExtensions();
+                }
+                mWebSocketExtensions->import(value);
+                return;
+            }
+
+            case TypeSecWebSocketOrigin: {
+                if(mWebSocketOrigin == nullptr) {
+                    mWebSocketOrigin = createHttpSecWebSocketOrigin();
+                }
+                mWebSocketOrigin->import(value);
+                return;
+            }
+
+            case TypeSecWebSocketKey1: {
+                if(mWebSocketKey1 == nullptr) {
+                    mWebSocketKey1 = createHttpSecWebSocketKey();
+                }
+                mWebSocketKey1->import(value);
+                return;
+            }
+
+            case TypeSecWebSocketKey2: {
+                if(mWebSocketKey2 == nullptr) {
+                    mWebSocketKey2 = createHttpSecWebSocketKey();
+                }
+                mWebSocketKey2->import(value);
+                return;
+            }
+
+            case TypeSecWebSocketKey3: {
+                if(mWebSocketKey3 == nullptr) {
+                    mWebSocketKey3 = createHttpSecWebSocketKey();
+                }
+                mWebSocketKey3->import(value);
+                return;
+            }
+
+            case TypeSecWebSocketProtocol: {
+                if(mWebSocketProtocol == nullptr) {
+                    mWebSocketProtocol = createHttpSecWebSocketProtocol();
+                }
+                printf("websocket protocol!!!! \n");
+                mWebSocketProtocol->import(value);
+                return;
+            }
+
+            case TypeOrigin: {
+                if(mOrigin == nullptr) {
+                    mOrigin = createHttpHeaderOrigin();
+                }
+                mOrigin->import(value);
+                return;
+            }
+
+            case TypePragma: {
+                if(mPragma == nullptr) {
+                    mPragma = createHttpHeaderPragma();
+                }
+                mPragma->import(value);
                 return;
             }
         }
@@ -1173,6 +1290,105 @@ HttpHeaderUpgrade _HttpHeader::getUpgrade() {
     return mUpgrade;
 }
 
+ //HttpSecWebSocketAccept
+void _HttpHeader::setWebSocketAccept(HttpSecWebSocketAccept s) {
+    mWebSocketAccept = s;
+}
+
+HttpSecWebSocketAccept _HttpHeader::getWebSocketAccept() {
+    return mWebSocketAccept;
+}
+
+//HttpSecWebSocketKey 
+void _HttpHeader::setWebSocketKey(HttpSecWebSocketKey s) {
+    mWebSocketKey = s;
+}
+
+HttpSecWebSocketKey _HttpHeader::getWebSocketKey() {
+    return mWebSocketKey;
+}
+
+//HttpSecWebSocketProtocol 
+void _HttpHeader::setWebSocketProtocol(HttpSecWebSocketProtocol s) {
+    mWebSocketProtocol = s;
+}
+
+HttpSecWebSocketProtocol _HttpHeader::getWebSocketProtocol() {
+    return mWebSocketProtocol;
+}
+
+//HttpSecWebSocketKey1
+void _HttpHeader::setWebSocketKey1(HttpSecWebSocketKey s) {
+    mWebSocketKey1 = s;
+}
+
+HttpSecWebSocketKey _HttpHeader::getWebSocketKey1() {
+    return mWebSocketKey1;
+}
+
+//HttpSecWebSocketKey2
+void _HttpHeader::setWebSocketKey2(HttpSecWebSocketKey s) {
+    mWebSocketKey2 = s;
+}
+
+HttpSecWebSocketKey _HttpHeader::getWebSocketKey2() {
+    return mWebSocketKey2;
+}
+
+//HttpSecWebSocketKey3
+void _HttpHeader::setWebSocketKey3(HttpSecWebSocketKey s) {
+    mWebSocketKey3 = s;
+}
+
+HttpSecWebSocketKey _HttpHeader::getWebSocketKey3() {
+    return mWebSocketKey3;
+}
+
+//HttpSecWebSocketVersion
+void _HttpHeader::setWebSocketVersion(HttpSecWebSocketVersion s) {
+    mWebSocketVersion = s;
+}
+
+HttpSecWebSocketVersion _HttpHeader::getWebSocketVersion() {
+    return mWebSocketVersion;
+}
+
+//HttpSecWebSocketExtensions
+void _HttpHeader::setWebSocketExtensions(HttpSecWebSocketExtensions s) {
+    mWebSocketExtensions = s;
+}
+
+HttpSecWebSocketExtensions _HttpHeader::getWebSocketExtensions() {
+    return mWebSocketExtensions;
+}
+
+//HttpSecWebSocketOrigin
+void _HttpHeader::setWebSocketOrigin(HttpSecWebSocketOrigin s) {
+    mWebSocketOrigin = s;
+}
+
+HttpSecWebSocketOrigin _HttpHeader::getWebSocketOrigin() {
+    return mWebSocketOrigin;
+}
+
+//HttpHeaderOrigin
+void _HttpHeader::setOrigin(HttpHeaderOrigin s) {
+    mOrigin = s;
+}
+
+HttpHeaderOrigin _HttpHeader::getOrigin() {
+    return mOrigin;
+}
+
+//HttpHeaderPragma
+void _HttpHeader::setPragma(HttpHeaderPragma s) {
+    mPragma = s;
+}
+
+HttpHeaderPragma _HttpHeader::getPragma() {
+    return mPragma;
+}
+
 HttpTransferEncoding _HttpHeader::getTransferEncoding() {
     return mTransferEncoding;
 }
@@ -1418,6 +1634,50 @@ String _HttpHeader::toString(int type) {
             header = header->append(st(HttpHeader)::Link,": ",linkIterator->getValue()->toString(),st(HttpText)::CRLF);
             linkIterator->next();
         }
+    }
+
+    if(mWebSocketAccept != nullptr) {
+        header = header->append(st(HttpHeader)::SecWebSocketAccept,": ",mWebSocketAccept->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mWebSocketKey != nullptr) {
+        header = header->append(st(HttpHeader)::SecWebSocketKey,": ",mWebSocketKey->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mWebSocketProtocol != nullptr) {
+        header = header->append(st(HttpHeader)::SecWebSocketProtocol,": ",mWebSocketProtocol->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mWebSocketKey1 != nullptr) {
+        header = header->append(st(HttpHeader)::SecWebSocketKey1,": ",mWebSocketKey1->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mWebSocketKey2 != nullptr) {
+        header = header->append(st(HttpHeader)::SecWebSocketKey2,": ",mWebSocketKey2->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mWebSocketKey3 != nullptr) {
+        header = header->append(st(HttpHeader)::SecWebSocketKey3,": ",mWebSocketKey3->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mWebSocketVersion != nullptr) {
+        header = header->append(st(HttpHeader)::SecWebSocketVersion,": ",mWebSocketVersion->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mWebSocketExtensions != nullptr) {
+        header = header->append(st(HttpHeader)::SecWebSocketExtensions,": ",mWebSocketExtensions->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mWebSocketOrigin != nullptr) {
+        header = header->append(st(HttpHeader)::SecWebSocketOrigin,": ",mWebSocketOrigin->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mOrigin != nullptr) {
+        header = header->append(st(HttpHeader)::Origin,": ",mOrigin->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mPragma != nullptr) {
+        header = header->append(st(HttpHeader)::Pragma,": ",mPragma->toString(),st(HttpText)::CRLF); 
     }
 
     if (header->size() == 0) {

@@ -116,6 +116,14 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheaderhost.o \
 		$(outtmp)/httptransferencoding.o \
 		$(outtmp)/httpheaderupgrade.o \
+		$(outtmp)/httpheaderversion.o \
+		$(outtmp)/httpheaderorigin.o \
+		$(outtmp)/httpheaderextensions.o \
+		$(outtmp)/httpheaderwsprotocol.o \
+		$(outtmp)/httpheaderwsorigin.o \
+		$(outtmp)/httpheaderpragma.o \
+		$(outtmp)/httpwsaccept.o \
+		$(outtmp)/httpwskey.o \
 		
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
@@ -201,6 +209,12 @@ $(outtmp)/httpurl.o :$(netDir)/http/HttpUrl.cpp
 $(outtmp)/httpallowcreditial.o :$(netDir)/http/headers/HttpAccessControlAllowCredentials.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpAccessControlAllowCredentials.cpp -o $(outtmp)/httpallowcreditial.o 
 
+$(outtmp)/httpwsaccept.o :$(netDir)/http/headers/HttpSecWebSocketAccept.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpSecWebSocketAccept.cpp -o $(outtmp)/httpwsaccept.o 
+
+$(outtmp)/httpwskey.o :$(netDir)/http/headers/HttpSecWebSocketKey.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpSecWebSocketKey.cpp -o $(outtmp)/httpwskey.o 
+
 $(outtmp)/httpallowheaders.o :$(netDir)/http/headers/HttpAccessControlAllowHeaders.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpAccessControlAllowHeaders.cpp -o $(outtmp)/httpallowheaders.o 
 
@@ -224,6 +238,12 @@ $(outtmp)/httprequestmethod.o :$(netDir)/http/headers/HttpAccessControlRequestMe
 
 $(outtmp)/httpage.o :$(netDir)/http/headers/HttpAge.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpAge.cpp -o $(outtmp)/httpage.o 
+
+$(outtmp)/httpheaderorigin.o :$(netDir)/http/headers/HttpHeaderOrigin.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderOrigin.cpp -o $(outtmp)/httpheaderorigin.o 
+
+$(outtmp)/httpheaderpragma.o :$(netDir)/http/headers/HttpHeaderPragma.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderPragma.cpp -o $(outtmp)/httpheaderpragma.o 
 
 $(outtmp)/httpifmodifiedsince.o :$(netDir)/http/headers/HttpIfModifiedSince.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpIfModifiedSince.cpp -o $(outtmp)/httpifmodifiedsince.o 
@@ -251,6 +271,18 @@ $(outtmp)/httptransferencoding.o :$(netDir)/http/headers/HttpTransferEncoding.cp
 
 $(outtmp)/httpheaderupgrade.o :$(netDir)/http/headers/HttpHeaderUpgrade.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderUpgrade.cpp -o $(outtmp)/httpheaderupgrade.o 
+
+$(outtmp)/httpheaderversion.o :$(netDir)/http/headers/HttpSecWebSocketVersion.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpSecWebSocketVersion.cpp -o $(outtmp)/httpheaderversion.o 
+
+$(outtmp)/httpheaderwsorigin.o :$(netDir)/http/headers/HttpSecWebSocketOrigin.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpSecWebSocketOrigin.cpp -o $(outtmp)/httpheaderwsorigin.o 
+
+$(outtmp)/httpheaderextensions.o :$(netDir)/http/headers/HttpSecWebSocketExtensions.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpSecWebSocketExtensions.cpp -o $(outtmp)/httpheaderextensions.o 
+
+$(outtmp)/httpheaderwsprotocol.o :$(netDir)/http/headers/HttpSecWebSocketProtocol.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpSecWebSocketProtocol.cpp -o $(outtmp)/httpheaderwsprotocol.o 
 
 $(outtmp)/httpallow.o :$(netDir)/http/headers/HttpAllow.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpAllow.cpp -o $(outtmp)/httpallow.o 
