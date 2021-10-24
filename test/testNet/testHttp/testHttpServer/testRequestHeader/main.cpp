@@ -6,7 +6,7 @@
 #include "System.hpp"
 #include "ByteRingArray.hpp"
 #include "HttpServer.hpp"
-#include "HttpResponseWriter.hpp"
+#include "HttpPacketWriter.hpp"
 #include "HttpCookie.hpp"
 #include "HttpResponse.hpp"
 #include "HttpStatus.hpp"
@@ -21,7 +21,7 @@ CountDownLatch latch = createCountDownLatch(1);
 DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
 
-void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPacket msg){
+void onHttpMessage(int event,HttpLinker client,HttpResponseWriter w,HttpPacket msg){
     switch(event) {
         case HttpEvent::Connect: {
             //connectCount->incrementAndGet();
@@ -32,12 +32,12 @@ void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPac
             //messageCount->incrementAndGet();
             HttpHeader header = msg->getHeader();
             
-            auto v1 = header->getValue("tag1");
+            auto v1 = header->get("tag1");
             if(!v1->equals("value1")) {
                 printf("---TestHttpServer Request Header test1 [FAILED]---\n");
             }
 
-            auto v2 = header->getValue("tag2");
+            auto v2 = header->get("tag2");
             if(!v2->equals("value2")) {
                 printf("---TestHttpServer Request Header test2 [FAILED]---\n");
             }

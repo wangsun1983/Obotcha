@@ -15,7 +15,7 @@ class ConnectThread(threading.Thread):
         count = 0
         while count < 32*1024:
             try:
-                client = http.client.HTTPConnection("127.0.0.1:1256")
+                client = http.client.HTTPConnection("127.0.0.1:1259")
                 client.request("GET","/index")
                 r1 = client.getresponse()
                 #print(r1.read().decode("utf-8"))

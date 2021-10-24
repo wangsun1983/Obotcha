@@ -6,7 +6,7 @@
 #include "System.hpp"
 #include "ByteRingArray.hpp"
 #include "HttpServer.hpp"
-#include "HttpResponseWriter.hpp"
+#include "HttpPacketParser.hpp"
 #include "HttpCookie.hpp"
 #include "HttpResponse.hpp"
 #include "HttpStatus.hpp"
@@ -21,7 +21,7 @@ CountDownLatch latch = createCountDownLatch(1);
 DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
 
-void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPacket msg){
+void onHttpMessage(int event,HttpLinker client,HttpResponseWriter w,HttpPacket msg){
     switch(event) {
         case HttpEvent::Connect: {
             //connectCount->incrementAndGet();

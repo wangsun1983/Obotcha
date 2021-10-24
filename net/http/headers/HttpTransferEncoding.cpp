@@ -33,7 +33,7 @@ String _HttpTransferEncoding::toString() {
         iterator->next();
     }
     
-    return encoding;
+    return encoding->subString(0,encoding->size() - 2);
 }
 
 

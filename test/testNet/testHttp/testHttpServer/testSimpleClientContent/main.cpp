@@ -65,6 +65,8 @@ int main() {
   server->start();
   connectlatch->await();
   server->close();
-  
+
   printf("---TestHttpServer SimpleClientContent test100 [OK]---\n");
+
+  return 0;
 }

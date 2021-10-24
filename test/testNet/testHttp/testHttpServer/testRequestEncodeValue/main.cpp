@@ -6,7 +6,7 @@
 #include "System.hpp"
 #include "ByteRingArray.hpp"
 #include "HttpServer.hpp"
-#include "HttpResponseWriter.hpp"
+#include "HttpPacketWriter.hpp"
 #include "HttpCookie.hpp"
 #include "HttpResponse.hpp"
 #include "HttpStatus.hpp"
@@ -21,7 +21,7 @@ CountDownLatch latch = createCountDownLatch(1);
 DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
 
-void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPacket msg){
+void onHttpMessage(int event,HttpLinker client,HttpResponseWriter w,HttpPacket msg){
     switch(event) {
         case HttpEvent::Connect: {
             //connectCount->incrementAndGet();
@@ -31,31 +31,22 @@ void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPac
         case HttpEvent::Message: {
             //messageCount->incrementAndGet();
             HttpEntity entity = msg->getEntity();
-            auto lists = entity->getEncodedKeyValues();
+          
+            HttpUrlEncodedValue v = createHttpUrlEncodedValue(entity->getContent()->toString());
             
-            auto keyvalue1 = lists->get(0);
             //printf("key1 is %s,vaue1 is %s \n",keyvalue1->getKey()->toChars(),keyvalue1->getValue()->toChars());
-            if(!keyvalue1->getKey()->equals("tag1")) {
+            if(!v->get("tag1")->equals("value1")) {
                 printf("---TestHttpServer Request Encode test1 [FAILED]---\n");
             }
 
-            if(!keyvalue1->getValue()->equals("value1")) {
-                printf("---TestHttpServer Request Encode test2 [FAILED]---\n");
+            if(!v->get("tag2")->equals("value2")) {
+                printf("---TestHttpServer Request Encode test1 [FAILED]---\n");
             }
-
-            auto keyvalue2 = lists->get(1);
-            //printf("key2 is %s,vaue2 is %s \n",keyvalue2->getKey()->toChars(),keyvalue2->getValue()->toChars());
-            if(!keyvalue2->getKey()->equals("tag2")) {
-                printf("---TestHttpServer Request Encode test3 [FAILED]---\n");
-            }
-
-            if(!keyvalue2->getValue()->equals("value2")) {
-                printf("---TestHttpServer Request Encode test4 [FAILED]---\n");
-            }
-
+            
             HttpResponse response = createHttpResponse();
             response->getHeader()->setResponseStatus(st(HttpStatus)::Ok);
             w->write(response);
+          
             latch->countDown();
         }
         break;

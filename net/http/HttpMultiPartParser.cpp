@@ -131,7 +131,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         resizeSize = mPartEnd->size(); //boundary end "----xxxx\r\n"
                     case _BoundaryEnd:{
                         ByteArray data = reader->pop();
-                        flushData(data,resizeSize);
+                        flushData(data,resizeSize + 2); //last data has "\r\n"
                         mFileStream->close();
                         mFileStream = nullptr;
                         mStatus = ParseContentDisposition;

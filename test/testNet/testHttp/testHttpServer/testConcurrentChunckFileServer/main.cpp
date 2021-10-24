@@ -7,7 +7,7 @@
 #include "System.hpp"
 #include "ByteRingArray.hpp"
 #include "HttpServer.hpp"
-#include "HttpResponseWriter.hpp"
+#include "HttpPacketWriter.hpp"
 #include "HttpCookie.hpp"
 #include "HttpResponse.hpp"
 #include "HttpStatus.hpp"
@@ -25,7 +25,7 @@ CountDownLatch latch = createCountDownLatch(128*16);
 DECLARE_CLASS(MyHttpListener) IMPLEMENTS(HttpListener) {
 
 
-void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPacket msg){
+void onHttpMessage(int event,HttpLinker client,HttpResponseWriter w,HttpPacket msg){
     switch(event) {
         case HttpEvent::Connect: {
             //connectCount->incrementAndGet();
@@ -37,7 +37,7 @@ void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPac
             HttpResponse response = createHttpResponse();
             response->getHeader()->setResponseStatus(st(HttpStatus)::Ok);
             File file = createFile("data");
-            response->setFile(file);
+            response->getEntity()->setChunkFile(file);
             w->write(response);
             latch->countDown();
         }

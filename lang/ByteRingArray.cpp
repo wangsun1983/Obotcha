@@ -136,7 +136,7 @@ ByteArray _ByteRingArray::pop(int size) {
 
     int start = getStartIndex();
     ByteArray result = nullptr;
-    if (start + size < mCapacity) {
+    if ((start + size) < mCapacity) {
         result = createByteArray(&mBuff[start], size);
     } else {
         result = createByteArray(size);

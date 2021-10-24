@@ -6,7 +6,7 @@
 #include "System.hpp"
 #include "ByteRingArray.hpp"
 #include "HttpServer.hpp"
-#include "HttpResponseWriter.hpp"
+#include "HttpPacketParser.hpp"
 #include "HttpCookie.hpp"
 #include "HttpResponse.hpp"
 #include "HttpStatus.hpp"
@@ -38,11 +38,11 @@ public:
     filesize = prepareFilesize;
   }
 
-  void onHttpMessage(int event,HttpLinker client,sp<_HttpResponseWriter> w,HttpPacket msg){
+  void onHttpMessage(int event,HttpLinker client,HttpResponseWriter w,HttpPacket msg){
       switch(event) {
           case HttpEvent::Connect: {
               //TODO
-              //printf("Connect !!!! \n");
+              printf("Connect !!!! \n");
           }
           break;
 
@@ -59,7 +59,7 @@ public:
 
               if(multiPart != nullptr && multiPart->files != nullptr) {
                   multiPart->files->foreach([](HttpMultiPartFile file){
-                    HttpFile f = file->getHttpFile();
+                    File f = file->getFile();
                     //start md5 check
                     Md md5 = createMd();
                     String v1 = md5->encrypt(createFile("data"));

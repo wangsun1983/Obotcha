@@ -201,16 +201,18 @@ int _HttpPacketWriter::_flushResponse(HttpPacket packet,bool send) {
             if(filesize < mDefaultSize) {
                 readlength = filesize;
             }
-            String chunkLength = createInteger(readlength)
+
+            int len = stream->read(readBuff);
+            String chunkLength = createInteger(len)
                                 ->toHexString()
                                 ->append(st(HttpText)::CRLF);
             _write(chunkLength->toByteArray(),send);
 
-            int len = stream->read(readBuff);
             readBuff->quickShrink(len);
             _write(readBuff,send);
             readBuff->quickRestore();
             
+            filesize -= len;
             String end = nullptr;
             if (filesize == 0) {
                 end = st(HttpText)::CRLF->append(createString("0"),st(HttpText)::HttpEnd);
@@ -230,10 +232,8 @@ int _HttpPacketWriter::_flushResponse(HttpPacket packet,bool send) {
 
     //flush end
     int index = mWriter->getIndex();
-    printf("index is %d \n",index);
     if(index != 0) {
         int ret = mStream->write(mBuff, 0, index);
-        printf("stream write ret is %d \n",ret);
     }
 
     return 0;
@@ -258,7 +258,6 @@ int _HttpPacketWriter::_write(ByteArray data,bool send) {
         } else {
             mWriter->writeByteArray(data,start,data->size() - start);
             length = length - (data->size() - start);
-            printf("length is %d \n",length);
         }
     }
 

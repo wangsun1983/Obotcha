@@ -28,6 +28,8 @@ cflags = -fpic \
 		-I ../../../../../external/uuid/include \
 		-g \
 		-std=c++14 \
+		-fsanitize=address \
+		-fno-omit-frame-pointer
 
 external = -lpthread \
 				-ldl \

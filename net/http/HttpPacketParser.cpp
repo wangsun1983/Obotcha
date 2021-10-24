@@ -12,8 +12,7 @@ namespace obotcha {
 
 _HttpPacketParser::_HttpPacketParser() {
     mEnv = st(Enviroment)::getInstance();
-    mBuff = createByteRingArray(
-        mEnv->getInt(st(Enviroment)::gHttpBufferSize, 64 * 1024));
+    mBuff = createByteRingArray(mEnv->getInt(st(Enviroment)::gHttpBufferSize, 64 * 1024));
     mReader = createByteRingArrayReader(mBuff);
     mBodyStartCount = 0;
     mStatus = Idle;
