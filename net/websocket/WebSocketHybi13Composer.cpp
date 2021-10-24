@@ -89,7 +89,7 @@ HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl)
     return packet;
 }
 
-HttpResponse _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSocketKey,String protocols) {
+HttpResponse _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols) {
     String key = SecWebSocketKey;
     String key_mgic = key->append(st(WebSocketProtocol)::ACCEPT_MAGIC);
     ByteArray sha1_content = mSha->encryptRawData(key_mgic->toByteArray());
@@ -111,7 +111,9 @@ HttpResponse _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSo
     response->getHeader()->setConnection(createString("Upgrade"));
     
     if(protocols != nullptr) {
-        response->getHeader()->set(st(HttpHeader)::SecWebSocketProtocol,protocols);
+        HttpSecWebSocketProtocol protocol = createHttpSecWebSocketProtocol();
+        protocol->set(protocols);
+        response->getHeader()->setWebSocketProtocol(protocol);
     }
 
     if(mDeflate != nullptr) {

@@ -65,8 +65,8 @@ public:
     void setWebSocketKey(String);
     String getWebSocketKey();
 
-    void setProtocols(String);
-    String getProtocols();
+    void setProtocols(ArrayList<String>);
+    ArrayList<String> getProtocols();
 
     Socket getSocket();
 
@@ -88,7 +88,7 @@ private:
 
     String mKey;
 
-    String mProtocols;
+    ArrayList<String> mProtocols;
 
     String mPath;
 

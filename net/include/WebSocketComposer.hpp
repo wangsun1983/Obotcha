@@ -36,7 +36,7 @@ public:
 
     virtual HttpRequest genClientShakeHandMessage(HttpUrl) = 0;
 
-    virtual HttpResponse genServerShakeHandMessage(String SecWebSocketKey,String protocols) = 0;
+    virtual HttpResponse genServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols) = 0;
     
     virtual ArrayList<ByteArray> genTextMessage(String) = 0;
 

@@ -279,9 +279,13 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
 
 void _SocketMonitor::close() {
     mPoll->close();
-    isStop = 0;
     {
         AutoLock l(mMutex);
+        if(isStop == 0) {
+            return;
+        }
+
+        isStop = 0;
         mThreadLocalTasks->foreach ([](LinkedList<SocketMonitorTask> &list) {
             list->clear();
             return Global::Continue;
@@ -305,6 +309,10 @@ void _SocketMonitor::close() {
 int _SocketMonitor::remove(Socket s) {
     {
         AutoLock lock(mMutex);
+        if(isStop == 0) {
+            return 0;
+        }
+
         mSocks->remove(s->getFileDescriptor()->getFd());
         mServerSocks->remove(s->getFileDescriptor()->getFd());
     }

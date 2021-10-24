@@ -26,7 +26,7 @@ public:
 
     HttpRequest genClientShakeHandMessage(HttpUrl);
 
-    HttpResponse genServerShakeHandMessage(String SecWebSocketKey,String protocols);
+    HttpResponse genServerShakeHandMessage(String SecWebSocketKey,ArrayList<String> protocols);
     
     ArrayList<ByteArray> genTextMessage(String);
 

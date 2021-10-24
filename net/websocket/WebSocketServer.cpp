@@ -47,7 +47,6 @@ int _WebSocketServer::start() {
 int _WebSocketServer::close() {
     if(mSocketMonitor != nullptr) {
         mSocketMonitor->close();
-        mSocketMonitor = nullptr;
     }
 
     if(mHttpServer != nullptr) {
@@ -197,7 +196,7 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,HttpRespon
                 WebSocketComposer composer = wsClient->getComposer();
                 //String p = wsClient->getHttpHeader()->getValue(st(HttpHeader)::SecWebSocketProtocol);
                 //String k = wsClient->getHttpHeader()->getValue(st(HttpHeader)::SecWebSocketKey);
-                String p = wsClient->getProtocols();
+                ArrayList<String> p = wsClient->getProtocols();
                 String k = wsClient->getWebSocketKey();
                 HttpResponse shakeresponse = composer->genServerShakeHandMessage(k,p);
 

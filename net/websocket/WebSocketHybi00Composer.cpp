@@ -20,7 +20,7 @@ HttpRequest _WebSocketHybi00Composer::genClientShakeHandMessage(HttpUrl) {
 
 HttpResponse
 _WebSocketHybi00Composer::genServerShakeHandMessage(String SecWebSocketKey,
-                                                    String protocols) {
+                                                    ArrayList<String> protocols) {
     return nullptr;
 }
 

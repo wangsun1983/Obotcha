@@ -17,13 +17,14 @@ public:
 
     void import(String);
 
-    String get();
-    void set(String);
+    ArrayList<String> get();
+    void set(ArrayList<String>);
+    void add(String);
 
     String toString();
 
 private:
-    String extensions;
+    ArrayList<String> extensions;
 };
 
 }

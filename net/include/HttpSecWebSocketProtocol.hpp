@@ -17,13 +17,14 @@ public:
 
     void import(String);
 
-    String get();
-    void set(String);
+    ArrayList<String> get();
+    void add(String);
+    void set(ArrayList<String>);
 
     String toString();
 
 private:
-    String protocol;
+    ArrayList<String> protocols;
 };
 
 }

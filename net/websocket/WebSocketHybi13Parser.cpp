@@ -140,24 +140,12 @@ int _WebSocketHybi13Parser::getVersion() {
 WebSocketPermessageDeflate _WebSocketHybi13Parser::validateExtensions(HttpHeader h) {
     auto ext = h->getWebSocketExtensions();
 
-    String extensions = nullptr;
-    
-    if(ext != nullptr) {
-        extensions = ext->get();//h->get(st(HttpHeader)::SecWebSocketExtensions);
-    }
-
-    if(extensions == nullptr) {
+    if(ext == nullptr) {
         return nullptr;
     }
 
-    ArrayList<String> list = extensions->trimAll()->split(";");
-    if(list == nullptr){
-        list = createArrayList<String>();
-        list->add(extensions);
-    }
-
     mDeflate = createWebSocketPermessageDeflate();
-    if(mDeflate->fit(list)) {
+    if(mDeflate->fit(ext->get())) {
         return mDeflate;
     }
 
@@ -285,7 +273,7 @@ ArrayList<String> _WebSocketHybi13Parser::extractSubprotocols(HttpHeader h) {
         return nullptr;
     }
 
-    return protocol->get()->trimAll()->split(",");
+    return protocol->get();
 }
 
 ByteArray _WebSocketHybi13Parser::parsePongBuff() {

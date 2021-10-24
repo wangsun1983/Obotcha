@@ -53,9 +53,9 @@ void _WebSocketLinker::setWebSocketKey(String key) { this->mKey = key; }
 
 String _WebSocketLinker::getWebSocketKey() { return mKey; }
 
-void _WebSocketLinker::setProtocols(String p) { this->mProtocols = p; }
+void _WebSocketLinker::setProtocols(ArrayList<String> p) { this->mProtocols = p; }
 
-String _WebSocketLinker::getProtocols() { return this->mProtocols; }
+ArrayList<String> _WebSocketLinker::getProtocols() { return this->mProtocols; }
 
 sp<_WebSocketPermessageDeflate> _WebSocketLinker::getDeflater() {
     return mDeflate;
