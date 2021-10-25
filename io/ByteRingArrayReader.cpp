@@ -28,23 +28,23 @@ _ByteRingArrayReader::_ByteRingArrayReader(ByteRingArray b) {
 }
 
 ByteArray _ByteRingArrayReader::pop() {
-    ByteArray result = nullptr;
-
-    try {
-        if (mMark == Complete) {
-            result = mBuff->popAll();
+    switch(mMark) {
+        case Complete: {
             mMark = Idle;
-        } else {
+            return mBuff->popAll();
+        }
+
+        case Partial: {
             int index = mCursor - 1;
             if (index == -1) {
                 index = mBuff->getCapacity() - 1;
             }
-            result = mBuff->popTo(index);
+            mMark = Idle;
+            return mBuff->popTo(index);
         }
-    } catch (ArrayIndexOutOfBoundsException &e) {
     }
 
-    return result;
+    return nullptr;
 }
 
 int _ByteRingArrayReader::readNext(byte &value) {
@@ -54,11 +54,9 @@ int _ByteRingArrayReader::readNext(byte &value) {
 
     int end = mBuff->getEndIndex();
 
-    if (mCursor == end) {
-        if (mMark != Idle) {
-            mMark = Complete;
-            return NoContent;
-        }
+    if (mCursor == end && mMark != Idle) {
+        mMark = Complete;
+        return NoContent;
     }
 
     mMark = Partial;
@@ -72,9 +70,13 @@ int _ByteRingArrayReader::readNext(byte &value) {
     return Continue;
 }
 
-void _ByteRingArrayReader::setCursor(int c) { mCursor = c; }
+void _ByteRingArrayReader::setCursor(int c) { 
+    mCursor = c; 
+}
 
-int _ByteRingArrayReader::getCursor() { return mCursor; }
+int _ByteRingArrayReader::getCursor() { 
+    return mCursor; 
+}
 
 int _ByteRingArrayReader::move(int length) {
     if (length > mBuff->getAvailDataSize()) {

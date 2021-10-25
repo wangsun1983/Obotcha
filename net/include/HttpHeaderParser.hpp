@@ -11,9 +11,13 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderParser) {
 
 public:
-    enum ParseMode {
-        Full,
-        KeyValueOnly
+    enum ParseLineStatus {
+        LineParseStart = 0, //ResponseStatus or RequestMethod
+        ResponseReason,
+        ResponseStatus,
+        RequestUrl,
+        RequsetVersion,
+        ParseLineMax
     };
     _HttpHeaderParser(ByteRingArrayReader);
 
@@ -23,27 +27,24 @@ public:
 
 private:
     enum ParseStatus {
-        Idle = 0,
-        NextLine,
-        Method,
-        Url,
-        State,
-        Reason,
-        Version,
-        ContentKey,
-        ContentValue,
+        RequestLine = 0, //or response stats line
+        Header,
         End
     };
 
     int mStatus;
-    int mNextStatus;
+    int mParseLineStatus;
 
     ByteRingArrayReader mReader;
     HttpHeader mHeader;
-    int mCrlfCount;
+    int mCRLFIndex;
     String mKey;
     String mPrevKey;
     String mValue;
+
+    bool isLineEnd(byte &v);
+    void parseRequestLine(String);
+    void parseHeader(String);
 };
 
 }

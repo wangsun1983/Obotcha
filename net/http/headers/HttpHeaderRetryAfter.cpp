@@ -41,7 +41,11 @@ void _HttpHeaderRetryAfter::setDelayInterval(int v) {
 }
 
 String _HttpHeaderRetryAfter::toString() {
-
+    if(date != nullptr) {
+        return date->toString();
+    } else {
+        return createString(delay);
+    }
 }
 
 

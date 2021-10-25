@@ -3,239 +3,155 @@
 #include "HttpMethodParser.hpp"
 #include "HttpText.hpp"
 #include "HttpHeaderLink.hpp"
+#include "HttpMethodParser.hpp"
+#include "HttpHeaderContentParser.hpp"
 
 namespace obotcha {
 
 _HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r) {
     mReader = r;
-    mHeader = createHttpHeader();
-    mCrlfCount = 0;
-    mStatus = Idle;
-    // mPrevKey = nullptr;
+    mHeader = nullptr;
+    mStatus = RequestLine;
+    mParseLineStatus = LineParseStart;
+    mCRLFIndex = 0;
 }
 
-void _HttpHeaderParser::changeToParseKeyValue() { mStatus = ContentKey; }
+void _HttpHeaderParser::changeToParseKeyValue() { mStatus = Header; }
+
+bool _HttpHeaderParser::isLineEnd(byte &v) {
+    if(v == '\r' && mCRLFIndex == 0) {
+        mCRLFIndex = 1;
+    } else if(v == '\n' && mCRLFIndex == 1) {
+        mCRLFIndex = 0;
+        return true;
+    } else {
+        mCRLFIndex = 0;
+    }
+
+    return false;
+}
+
+void _HttpHeaderParser::parseRequestLine(String line) {
+    int pos = 0;
+    printf("parseRequestLine,line size is %d \n",line->size());
+    while (pos < line->size()) {
+        int tokenStart = pos;
+        pos = st(HttpHeaderContentParser)::skipUntil(line, pos,
+                                                        createString(" "));
+        printf("parseRequestLine,pos is %d,tokenStart s %d \n",pos,tokenStart);
+        String directive =
+                line->subString(tokenStart, pos - tokenStart)->trim();
+        printf("directive is %s,%d,mParseLineStatus is %d \n",directive->toChars(),directive->size(),mParseLineStatus);
+        pos++;
+
+        if(directive->size() == 1) {
+            continue;
+        }
+        printf("parseRequestLine trace,mParseLineStatus is %d \n",mParseLineStatus);
+
+        switch(mParseLineStatus) {
+            case LineParseStart: {
+                int method = st(HttpMethodParser)::doParse(directive);
+                
+                if(method != -1) {
+                    //this is a request
+                    mHeader->setMethod(method);
+                    mParseLineStatus = RequestUrl;
+                } else {
+                    //this is a response
+                    HttpVersion version = createHttpVersion();
+                    version->import(directive);
+                    mHeader->setVersion(version);
+                    mParseLineStatus = ResponseStatus;
+                }
+                printf("method is %d,mStatus is %d \n",method,mStatus);
+                break;
+            }
+
+            case ResponseReason: {
+                mHeader->setResponseReason(directive);
+                return;    
+            }
+
+            case ResponseStatus: {
+                mHeader->setResponseStatus(directive->toBasicInt());
+                mParseLineStatus = ResponseReason;
+                break;
+            }
+
+            case RequestUrl: {
+                printf("requestUrl is %s \n",directive->toChars());
+                HttpUrl url = createHttpUrl(directive);
+                mHeader->setUrl(url);
+                mParseLineStatus = RequsetVersion;
+                break;
+            }
+
+            case RequsetVersion: {
+                HttpVersion v = createHttpVersion();
+                v->import(directive);
+                mHeader->setVersion(v);
+
+                mParseLineStatus = LineParseStart;
+                return;
+            }
+        }
+    }
+}
+
+void _HttpHeaderParser::parseHeader(String line) {
+    int pos = 0;
+    printf("parseHeader line is %s \n",line->toChars());
+    while (pos < line->size()) {
+        int tokenStart = pos;
+        pos = st(HttpHeaderContentParser)::skipUntil(line, pos,
+                                                        createString(":"));
+        
+        String directive =
+                line->subString(tokenStart, pos - tokenStart)->trim();
+
+        pos++;
+        String content = line->subString(pos,line->size() - pos); //remove \r\n
+        //printf("directive is %s,content is %s \n",directive->toChars(),content->toChars());
+        mHeader->set(directive, content);
+    }
+}
 
 HttpHeader _HttpHeaderParser::doParse() {
     byte v = 0;
     const byte *CRLF = (const byte *)st(HttpText)::CRLF->toChars();
     const byte *LF = (const byte *)st(HttpText)::LF->toChars();
+    if(mHeader == nullptr) {
+        mHeader = createHttpHeader();
+    }
 
     while (mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
         switch (mStatus) {
-        case Idle: {
-            if (v == 0x20) { //' '
-                ByteArray method = mReader->pop();
-                String tag = method->toString()->trimAll();
-                int methodid = st(HttpMethodParser)::doParse(tag);
-                if (methodid != -1) {
-                    mHeader->setMethod(methodid);
-                    mStatus = Url;
-                } else {
-                    // this may be a response
-                    mHeader->setType(st(HttpHeader)::Response);
-                    HttpVersion ver = createHttpVersion();
-                    ver->import(tag);
-                    //HttpVersion ver = st(HttpVersionParser)::doParse(tag);
-                    if (ver != nullptr) {
-                        mHeader->setVersion(ver);
-                        mStatus = State;
-                    } else {
-                        // TODO
-                    }
+            case RequestLine: {
+                if(isLineEnd(v)) {
+                    //start parse method..
+                    String content = mReader->pop()->toString();
+                    printf("content is %s \n",content->toChars());
+                    parseRequestLine(content->subString(0,content->size() - 2)); //do not parse \r\n
+                    mStatus = Header;
                 }
-            }
-            continue;
-        }
-
-        case State: {
-            if (v == CRLF[mCrlfCount]) {
-                mCrlfCount++;
-            } else if (v == LF[0]) {
-                mCrlfCount = 1;
-            } else {
-                mCrlfCount = 0;
+                break;
             }
 
-            if (v == LF[0] || mCrlfCount == 2) {
-                ByteArray state = mReader->pop();
-                String state_str = createString((const char *)state->toValue(),
-                                                0, state->size() - mCrlfCount);
-                mHeader->setResponseStatus(state_str->toBasicInt());
-                mCrlfCount = 0;
-                mStatus = ContentKey;
-            } else if (v == 0x20) { // ' '
-                ByteArray state = mReader->pop();
-                //String state_str = createString((const char *)state->toValue(),
-                //                                0, state->size() - 1);
-                String state_str = state->toString();
-                int status = state_str->toBasicInt();
-                mHeader->setResponseStatus(status);
-                mStatus = Reason;
-            }
-            continue;
-        }
-
-        case Url: {
-            if (v == 0x20) { // ' '
-                ByteArray urlcontent = mReader->pop();
-                String url_str = urlcontent->toString()->subString(0,urlcontent->size() - 1);
-                    //createString((const char *)urlcontent->toValue(),0,
-                    //             urlcontent->size() - 1);
-                HttpUrl url = createHttpUrl(url_str);
-                mHeader->setUrl(url);
-                mStatus = Version;
-            }
-            continue;
-        }
-
-        case Reason: {
-            if (v == CRLF[mCrlfCount]) {
-                mCrlfCount++;
-            } else if (v == LF[0]) {
-                mCrlfCount = 1;
-            } else {
-                mCrlfCount = 0;
-            }
-
-            if (v == LF[0] || mCrlfCount == 2) {
-                ByteArray reason = mReader->pop();
-                if (reason->size() == mCrlfCount) {
-                    mHeader->setResponseReason(createString(""));
-                } else {
-                    mHeader->setResponseReason(
-                        createString((const char *)reason->toString()->toChars(), 0,
-                                     reason->size() - mCrlfCount));
-                }
-                mCrlfCount = 0;
-                mStatus = ContentKey;
-            }
-            continue;
-        }
-
-        case Version: {
-            if (v == CRLF[mCrlfCount]) {
-                mCrlfCount++;
-            } else if (v == LF[0]) {
-                mCrlfCount = 1;
-            } else {
-                mCrlfCount = 0;
-            }
-
-            if (v == LF[0] || mCrlfCount == 2) {
-                ByteArray vercontent = mReader->pop();
-                String verstring = vercontent->toString()->subString(0,vercontent->size() - mCrlfCount);
-                //    createString((const char *)vercontent->toValue(), 0,
-                //                 vercontent->size() - mCrlfCount);
-                HttpVersion ver = createHttpVersion();
-                ver->import(verstring);
-                mHeader->setVersion(ver);
-                mStatus = ContentKey;
-                mCrlfCount = 0;
-            }
-            continue;
-        }
-
-        case ContentKey: {
-            if (v == CRLF[mCrlfCount]) {
-                mCrlfCount++;
-            } else if (v == 0x3a) { //':'
-                mCrlfCount = 0;
-                ByteArray key = mReader->pop();
-
-                //mKey = createString((const char *)key->toValue(), 0,
-                //                    key->size() - 1)
-                //           ->toLowerCase();
-                mKey = key->toString()->subString(0,key->size() - 1);
-                mStatus = ContentValue;
-            } else if (v == LF[0]) {
-                mCrlfCount = 1;
-            } else {
-                mCrlfCount = 0;
-            }
-
-            if (v == LF[0] || mCrlfCount == 2) {
-                // we should check whether it is end
-                ByteArray content = mReader->pop();
-                if (content->size() == 2 || content->size() == 1) {
-                    mStatus = Idle;
-                    //update cache control
-                    //mHeader->updateCacheControl();
-                    return mHeader;
-                } else {
-                    // if prev content value contains '\r\n'
-                    String value = mHeader->get(mKey);
-                    const char *valuestr = (const char *)content->toValue();
-                    int size = content->size();
-                    int start = 0;
-                    if (value->size() == 0) {
-                        for (; start < size; start++) {
-                            if (valuestr[start] == ' ' ||
-                                valuestr[start] == '\t' ||
-                                valuestr[start] == '\r' ||
-                                valuestr[start] == '\n') {
-                                continue;
-                            }
-                            break;
-                        }
+            case Header: {
+                if(isLineEnd(v)) {
+                    String content = mReader->pop()->toString();
+                    if(content->size() == 2 && content->equals(st(HttpText)::CRLF)) {
+                        //This is end!!!
+                        auto result = mHeader;
+                        mHeader = nullptr;
+                        return result;
                     }
 
-                    String appendValue = nullptr;
-                    if ((content->size() - start) == mCrlfCount ||
-                        start == content->size()) {
-                        appendValue = createString("");
-                    } else {
-                        appendValue = content->toString()->subString(start,content->size() - mCrlfCount - start);
-                            //createString(&valuestr[start], 0,
-                            //             content->size() - mCrlfCount - start);
-                    }
-
-                    value = value->append(appendValue);
-                    mHeader->set(mKey, value);
-                    mCrlfCount = 0;
+                    parseHeader(content->subString(0,content->size() - 2));
                 }
+                break;
             }
-            continue;
-        }
-
-        case ContentValue: {
-            if (v == CRLF[mCrlfCount]) {
-                mCrlfCount++;
-            } else if (v == LF[0]) {
-                mCrlfCount = 1;
-            } else {
-                mCrlfCount = 0;
-            }
-
-            if (v == LF[0] || mCrlfCount == 2) {
-                ByteArray value = mReader->pop();
-                int start = 0;
-                int size = value->size();
-                const char *valuestr = (const char *)value->toValue();
-                for (; start < size; start++) {
-                    if (valuestr[start] == ' ' || valuestr[start] == '\t' ||
-                        valuestr[start] == '\r' || valuestr[start] == '\n') {
-                        continue;
-                    }
-                    break;
-                }
-
-                if ((value->size() - start) == mCrlfCount ||
-                    start == value->size()) {
-                    mValue = createString("");
-                } else {
-                    mValue = value->toString()->subString(start,value->size() - mCrlfCount - start);
-                    //mValue = createString(&valuestr[start], 0,
-                    //                      value->size() - mCrlfCount - start);
-                }
-                mCrlfCount = 0;
-                mHeader->set(mKey, mValue);
-                // may be we should parse value
-                mStatus = ContentKey;
-                mNextStatus = -1;
-            }
-            continue;
-        }
         }
     }
 

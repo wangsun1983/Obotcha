@@ -60,7 +60,7 @@ void testHttpHeaderParse() {
       break;
     }
 
-    ArrayList<HttpAcceptCharSetItem> charsets = charset->getCharSets();
+    ArrayList<HttpAcceptCharSetItem> charsets = charset->get();
     if(charsets->size() != 2) {
       printf("---[HttpHeaderParse test Parse case5] [FAILED]--- \n");
       break;
@@ -79,14 +79,14 @@ void testHttpHeaderParse() {
     }
 
     if(st(Math)::compareFloat(charSetItem2->weight,0.5) != st(Math)::AlmostEqual) {
-      printf("---[HttpHeaderParse test Parse case8] [FAILED]--- char set is %s \n",charSetItem2->type->toChars());
+      printf("---[HttpHeaderParse test Parse case8] [FAILED]--- charSetItem2->weight is %lf \n",charSetItem2->weight);
       break;
     }
 
     //Encoding
     //Accept-Encoding: deflate, gzip;q=1.0, *;q=0.5\r\n
     HttpAcceptEncoding encoding = header->getAcceptEncoding();
-    ArrayList<HttpAcceptEncodingItem> encodings = encoding->getEncodings();
+    ArrayList<HttpAcceptEncodingItem> encodings = encoding->get();
     if(encodings->size() != 3) {
       printf("---[HttpHeaderParse test Parse case9] [FAILED]--- \n");
       break;
@@ -122,7 +122,7 @@ void testHttpHeaderParse() {
 
     //Accept-Language: fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5
     HttpAcceptLanguage mAcceptLang = header->getAcceptLanguage();
-    ArrayList<HttpAcceptLanguageItem> langs = mAcceptLang->getLanguages();
+    ArrayList<HttpAcceptLanguageItem> langs = mAcceptLang->get();
     if(langs->size() != 5) {
       printf("---[HttpHeaderParse test Parse case14] [FAILED]--- \n");
       break;
@@ -180,7 +180,7 @@ void testHttpHeaderParse() {
 
     //Accept-Patch: application/example, text/example
     HttpAcceptPatch patch = header->getAcceptPatch();
-    ArrayList<HttpAcceptPatchItem> patches = patch->getAcceptPatches();
+    ArrayList<HttpAcceptPatchItem> patches = patch->get();
     HttpAcceptPatchItem patchItem1 = patches->get(0);
     if(!patchItem1->type->equals("application/example")) {
       printf("---[HttpHeaderParse test Parse case24] [FAILED]--- \n");
@@ -195,7 +195,7 @@ void testHttpHeaderParse() {
 
     //Accept: text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8
     HttpAccept accept = header->getAccept();
-    ArrayList<HttpAcceptItem> accepts = accept->getAccepts();
+    ArrayList<HttpAcceptItem> accepts = accept->get();
     if(accepts->size() != 4) {
       printf("---[HttpHeaderParse test Parse case26_0] [FAILED]--- \n");
       break;
@@ -236,16 +236,31 @@ void testHttpHeaderParse() {
     }
 
     //"Allow: GET, POST, HEAD\r\n"
-    String allow = header->get("Allow");
-    if(!allow->equals("GET, POST, HEAD")) {
-      printf("---[HttpHeaderParse test Parse case32] [FAILED]--- ,allow is %s\n",allow->toChars());
+    ArrayList<Integer> allows = header->getAllow()->get();
+    if(allows->size() != 3) {
+      printf("---[HttpHeaderParse test Parse case32] [FAILED]--- \n");
+      break;
+    }
+
+    if(allows->get(0)->toValue() != st(HttpMethod)::Get) {
+      printf("---[HttpHeaderParse test Parse case32_1] [FAILED]--- \n");
+      break;
+    }
+
+    if(allows->get(1)->toValue() != st(HttpMethod)::Post) {
+      printf("---[HttpHeaderParse test Parse case32_2] [FAILED]--- \n");
+      break;
+    }
+
+    if(allows->get(2)->toValue() != st(HttpMethod)::Head) {
+      printf("---[HttpHeaderParse test Parse case32_3] [FAILED]--- \n");
       break;
     }
 
     //Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l
     HttpAuthorization authorization = header->getAuthorization();
     if(!authorization->type->equals("Basic")) {
-      printf("---[HttpHeaderParse test Parse case33] [FAILED]--- ,allow is %s\n",allow->toChars());
+      printf("---[HttpHeaderParse test Parse case33] [FAILED]--- \n");
       break;
     }
 
@@ -272,9 +287,14 @@ void testHttpHeaderParse() {
     }
 
     //Content-Encoding: identity
-    String contentEncoding = header->get("Content-Encoding");
-    if(!contentEncoding->equals("identity")) {
+    ArrayList<String> contentEncoding = header->getContentEncoding()->get();
+    if(contentEncoding->size() != 1) {
       printf("---[HttpHeaderParse test Parse case38] [FAILED]--- \n");
+      break;
+    }
+
+    if(!contentEncoding->get(0)->equals("identity")) {
+      printf("---[HttpHeaderParse test Parse case38_1] [FAILED]--- \n");
       break;
     }
 
@@ -286,14 +306,14 @@ void testHttpHeaderParse() {
     }
 
     //Content-Length: 2000
-    int contentLen = header->getContentLength();
+    int contentLen = header->getContentLength()->get();
     if(contentLen != 2000) {
       printf("---[HttpHeaderParse test Parse case40] [FAILED]--- \n");
       break;
     }
 
     //Link: <https://example.com>; rel="preload"
-    ArrayList<HttpHeaderLink> links = header->getHeaderLinks();
+    ArrayList<HttpHeaderLink> links = header->getLinks();
     if(links->size() != 1) {
       printf("---[HttpHeaderParse test Parse case41] [FAILED]--- \n");
       break;

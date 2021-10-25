@@ -83,7 +83,7 @@ void testByteRingArrayPopWithParam() {
     bool isException = false;
     try {
       result = arr1->pop(1);
-    } catch(ArrayIndexOutOfBoundsException e){
+    } catch(...){
       isException = true;
     }
 
@@ -215,7 +215,7 @@ void testByteRingArrayPopWithParam() {
     isException = false;
     try {
       result = arr1->pop(1);
-    } catch(ArrayIndexOutOfBoundsException e) {
+    } catch(...) {
       isException = true;
     }
 
@@ -287,7 +287,7 @@ void testByteRingArrayPopWithParam() {
     isException = false;
     try {
       result = arr1->pop(1);
-    } catch(ArrayIndexOutOfBoundsException e) {
+    } catch(...) {
       isException = true;
     }
 
@@ -359,7 +359,7 @@ void testByteRingArrayPopWithParam() {
     isException = false;
     try {
       result = arr1->pop(1);
-    } catch(ArrayIndexOutOfBoundsException e) {
+    } catch(...) {
       isException = true;
     }
 

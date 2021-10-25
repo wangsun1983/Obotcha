@@ -20,7 +20,7 @@ _HttpAcceptCharSet::_HttpAcceptCharSet(String s) {
 void _HttpAcceptCharSet::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         if(parameter == nullptr) {
-            HttpAcceptCharSetItem item = createHttpAcceptCharSetItem(item->type);
+            HttpAcceptCharSetItem item = createHttpAcceptCharSetItem(directive);
             charsets->add(item);
         } else {
             if(directive->equals("q")) {
