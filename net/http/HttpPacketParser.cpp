@@ -78,9 +78,9 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
             HttpHeader header = mHttpHeaderParser->doParse();
 
             if (header == nullptr) {
-                if (mSubStatus == HeadKeyValueParse) {
-                    packets->add(mHttpPacket);
-                }
+                //if (mSubStatus == HeadKeyValueParse) {
+                //    packets->add(mHttpPacket);
+                //}
                 return packets;
             }
 

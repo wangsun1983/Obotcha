@@ -1367,7 +1367,13 @@ int main() {
         if(strlen(msg.request_path) > 0) {
             HttpUrl url = header->getUrl();
             String path = url->getPath();
-            if(path == nullptr || !path->equals(msg.request_path)) {
+
+            String f1 = createString(msg.request_path);
+            if(f1->size() != 1) {
+                f1 = createString("/")->append(f1);
+            }
+
+            if(path == nullptr || !path->equals(f1)) {
                 printf("HttpPacketParse CheckPath failed,msg.request_path is %s,parse result is %s \n",msg.request_path,path->toChars());
                 continue;
             }

@@ -43,7 +43,8 @@ void _HttpHeaderKeepAlive::setMax(int v) {
 String _HttpHeaderKeepAlive::toString() {
     String keepalive = "";
     if(max != -1) {
-        keepalive = keepalive->append("max=",createString(max),", ");
+        //keepalive = keepalive->append("max=",createString(max),", ");
+        keepalive = keepalive->append(createString(max),", ");
     }
 
     if(timeout != -1) {

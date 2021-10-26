@@ -3,8 +3,16 @@
 
 namespace obotcha {
 
+//If-Match: "bfc13a64729c4290ef5b2c2730249c88ca92d82d"
+//If-Match: W/"67ab43", "54ed21", "7892dd"
+//If-Match: *
 _HttpHeaderMatchItem::_HttpHeaderMatchItem(String tag,bool week) {
-    this->tag = tag;
+    if(tag->contains("\"")) {
+        this->tag = tag->subString(1,tag->size() - 2); //match item param
+    } else {
+        this->tag = tag;
+    }
+
     this->isWeakAlg = week;    
 }
 

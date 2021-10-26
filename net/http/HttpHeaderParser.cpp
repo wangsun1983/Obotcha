@@ -155,6 +155,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                         }
                         auto result = mHeader;
                         mHeader = nullptr;
+                        mStatus = RequestLine;
                         return result;
                     }
 
