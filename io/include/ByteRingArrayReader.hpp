@@ -11,7 +11,7 @@ namespace obotcha {
 
 DECLARE_CLASS(ByteRingArrayReader) {
 
-  public:
+public:
     enum ByteRingArrayReadStatus { Continue = 0, NoContent };
 
     _ByteRingArrayReader(ByteRingArray);
@@ -30,8 +30,12 @@ DECLARE_CLASS(ByteRingArrayReader) {
 
     void reset();
 
-  private:
-    enum ReadMark { Idle, Partial, Complete };
+private:
+    enum ReadMark { 
+      Idle = 0, 
+      Partial, 
+      Complete 
+    };
 
     ByteRingArray mBuff;
 

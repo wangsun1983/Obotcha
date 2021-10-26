@@ -7,6 +7,7 @@
 #include "InitializeException.hpp"
 #include "Log.hpp"
 #include "HttpMime.hpp"
+#include "HttpProtocol.hpp"
 
 namespace obotcha {
 
@@ -68,20 +69,27 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
     while (1) {
         switch (mStatus) {
         case Idle: {
-            // printf("HttpPacketParser idle \n");
+            printf("HttpPacketParser idle \n");
             if (mHttpHeaderParser == nullptr) {
                 mHttpHeaderParser = createHttpHeaderParser(mReader);
                 mHttpPacket = createHttpPacket();
             }
 
             HttpHeader header = mHttpHeaderParser->doParse();
-            
+
             if (header == nullptr) {
                 if (mSubStatus == HeadKeyValueParse) {
                     packets->add(mHttpPacket);
                 }
                 return packets;
             }
+
+            if(header->getResponseReason() != nullptr) {
+                mHttpPacket->setProtocol(st(HttpProtocol)::HttpResponse);
+            } else {
+                mHttpPacket->setProtocol(st(HttpProtocol)::HttpRequest);
+            }
+
             if (mSubStatus == HeadKeyValueParse) {
                 mHttpPacket->getHeader()->addHttpHeader(header);
             } else {
@@ -104,8 +112,9 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
 
             if(transferEncoding != nullptr) {
                 ArrayList<String> encodings = transferEncoding->get();    
-                encodings->foreach([](String s) {
+                encodings->foreach([&isTransferChuncked](String s) {
                     if(s->equalsIgnoreCase(st(HttpHeader)::TransferChunked)) {
+                        isTransferChuncked = true;
                         return Global::Break;   
                     }
                     return Global::Continue;
@@ -136,6 +145,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                 mStatus = Idle;
                 continue;
             }
+
             if (contentlength == nullptr || contentlength->get() <= 0) {
                 /*1. The client should wait for the server's EOF. That is, when
                  * neither content-length nor transfer-encoding is specified,
@@ -200,30 +210,20 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                     return packets;
                 }
             } else {
-                // printf("HttpPacketParser BodyStart trace5\n");
+                printf("HttpPacketParser BodyStart trace5\n");
                 if (contentlength->get() <= mReader->getReadableLength()) {
                     // one packet get
-                    // printf("HttpPacketParser BodyStart trace6\n");
                     mReader->move(contentlength->get());
+                    printf("contentlength->get() is %d\n",contentlength->get());
                     ByteArray content = mReader->pop();
+                    printf("HttpPacketParser BodyStart trace6,content is %s\n",content->toString()->toChars());
                     // check whether it is a X-URLEncoded
-                    if (contenttype != nullptr &&
-                        st(HttpMime)::XFormUrlEncoded->indexOfIgnoreCase(
-                            contenttype->getType()) >= 0) {
-                        //ArrayList<KeyValuePair<String, String>>
-                            //xFormEncodedPair =
-                            //    st(HttpXFormUrlEncodedParser)::parse(
-                             //       content->toString());
-                        mHttpPacket->getEntity()->setContent(content->toString()->toByteArray());
+                    if (mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Connect) {
+                        mHttpPacket->getEntity()->setUpgrade(content->toString());
                     } else {
-                        if (mHttpPacket->getHeader()->getMethod() ==
-                            st(HttpMethod)::Connect) {
-                            mHttpPacket->getEntity()->setUpgrade(
-                                content->toString());
-                        } else {
-                            mHttpPacket->getEntity()->setContent(content);
-                        }
+                        mHttpPacket->getEntity()->setContent(content);
                     }
+
                     // we should check whether it is a upgrade message
                     if (mHttpPacket->getHeader()->getUpgrade() != nullptr) {
                         int resetLength = mReader->getReadableLength();

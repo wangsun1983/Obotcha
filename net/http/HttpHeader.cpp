@@ -22,6 +22,7 @@
 namespace obotcha {
 
 HashMap<String,Integer> _HttpHeader::idMaps = createHashMap<String,Integer>();
+ArrayList<String> _HttpHeader::names = createArrayList<String>();
 
 const String _HttpHeader::Method = createString(":method");
 const String _HttpHeader::Path = createString(":path");
@@ -258,6 +259,110 @@ _HttpHeader::_HttpHeader() {
             idMaps->put(SecWebSocketKey3,createInteger(TypeSecWebSocketKey3));
             idMaps->put(SecWebSocketProtocol,createInteger(TypeSecWebSocketProtocol));
             idMaps->put(Digest,createInteger(TypeDigest));
+
+            //add names
+            names->add(Method);
+            names->add(Path);
+            names->add(Scheme);
+            names->add(Status);
+            names->add(Protocol);
+            names->add(Accept);
+            names->add(AcceptCharset);
+            names->add(AcceptPatch);
+            names->add(AcceptDatetime);
+            names->add(AcceptEncoding);
+            names->add(AcceptLanguage);
+            names->add(AcceptRanges);
+            names->add(AccessControlAllowCredentials);
+            names->add(AccessControlAllowHeaders);
+            names->add(AccessControlAllowMethods);
+            names->add(AccessControlAllowOrigin);
+            names->add(AccessControlExposeHeaders);
+            names->add(AccessControlMaxAge);
+            names->add(AccessControlRequestHeaders);
+            names->add(AccessControlRequestMethod);
+            names->add(Age);
+            names->add(Allow);
+            names->add(AltSvc);
+            names->add(Authorization);
+            names->add(CacheControl);
+            names->add(Connection);
+            names->add(ContentDisposition);
+            names->add(ContentEncoding);
+            names->add(ContentLanguage);
+            names->add(ContentLength);
+            names->add(ContentLocation);
+            names->add(ContentMD5);
+            names->add(ContentRange);
+            names->add(ContentType);
+            names->add(Cookie);
+            names->add(DNT);
+            names->add(Date);
+            names->add(ETag);
+            names->add(Expect);
+            names->add(Expires);
+            names->add(From);
+            names->add(FrontEndHttps);
+            names->add(Host);
+            names->add(IfMatch);
+            names->add(IfModifiedSince);
+            names->add(IfNoneMatch);
+            names->add(IfRange);
+            names->add(IfUnmodifiedSince);
+            names->add(KeepAlive);
+            names->add(LastModified);
+            names->add(Link);
+            names->add(Location);
+            names->add(MaxForwards);
+            names->add(Origin);
+            names->add(P3P);
+            names->add(Pragma);
+            names->add(ProxyAuthenticate);
+            names->add(ProxyAuthorization);
+            names->add(ProxyConnection);
+            names->add(Range);
+            names->add(Referer);
+            names->add(Refresh);
+            names->add(RetryAfter);
+            names->add(SecWebSocketKey);
+            names->add(SecWebSocketAccept);
+            names->add(Server);
+            names->add(SetCookie);
+            names->add(SecTokenBinding);
+            names->add(StrictTransportSecurity);
+            names->add(TE);
+            names->add(Timestamp);
+            names->add(Trailer);
+            names->add(TransferEncoding);
+            names->add(Upgrade);
+            names->add(UserAgent);
+            names->add(VIP);
+            names->add(Vary);
+            names->add(Via);
+            names->add(WWWAuthenticate);
+            names->add(Warning);
+            names->add(XAccelRedirect);
+            names->add(XContentSecurityPolicyReportOnly);
+            names->add(XContentTypeOptions);
+            names->add(XForwardedFor);
+            names->add(XForwardedProto);
+            names->add(Forwarded);
+            names->add(XFrameOptions);
+            names->add(XPoweredBy);
+            names->add(XRealIP);
+            names->add(XRequestedWith);
+            names->add(XThriftProtocol);
+            names->add(XUACompatible);
+            names->add(XWapProfile);
+            names->add(XXSSProtection);
+            names->add(SecWebSocketVersion);
+            names->add(SecWebSocketExtensions);
+            names->add(SecWebSocketOrigin);
+            names->add(SecWebSocketKey1);
+            names->add(SecWebSocketKey2);
+            names->add(SecWebSocketKey3);
+            names->add(SecWebSocketProtocol);
+            names->add(Digest);
         });
     }
     
@@ -860,9 +965,392 @@ void _HttpHeader::set(String key, String value) {
 }
 
 String _HttpHeader::get(String header) {
+    printf("get header is %s ]]]]\n",header->toChars());
     Integer id = idMaps->get(header->toLowerCase());
     if(id != nullptr) {
-        LOG(ERROR)<<"http header:" <<st(HttpHeader)::toString(id->toValue())->toChars()<<",should call get method directly";
+        LOG(ERROR)<<"http header:" <<names->get(id->toValue())->toChars()<<",should call get method directly";        
+        switch(id->toValue()) {
+            case TypeAcceptCharset:{
+                if(mAcceptCharSet != nullptr) {
+                    return mAcceptCharSet->toString();
+                }
+                break;
+            }
+
+            case TypeAccept:{
+                if(mAccept != nullptr) {
+                    return mAccept->toString();
+                }
+                break;
+            }
+
+            case TypeAcceptEncoding:{
+                if(mAcceptEncoding != nullptr) {
+                    return mAcceptEncoding->toString();
+                }
+                break;
+            }
+
+            case TypeAcceptLanguage: {
+                if(mAcceptLanguage != nullptr) {
+                    return mAcceptLanguage->toString();
+                }
+                break;
+            }
+
+            case TypeTransferEncoding: {
+                if(mTransferEncoding != nullptr) {
+                    return mTransferEncoding->toString();
+                }
+                break;
+            }
+
+            case TypeAcceptPatch: {
+                if(mAcceptPatch != nullptr) {
+                    return mAcceptPatch->toString();
+                }
+                break;
+            }
+
+            case TypeAccessControlAllowCredentials: {
+                if(mAllowCredentials != nullptr) {
+                    return mAllowCredentials->toString();
+                }
+                break;
+            }
+
+            case TypeAccessControlAllowHeaders: {
+                if(mAllowHeaders != nullptr) {
+                    return mAllowHeaders->toString();
+                }
+                break;
+            }
+
+            case TypeAccessControlAllowMethods: {
+                if(mAllowMethods != nullptr) {
+                    return mAllowMethods->toString();
+                }
+                break;
+            }
+
+            case TypeAccessControlAllowOrigin: {
+                if(mAllowOrigin != nullptr) {
+                    return mAllowOrigin->toString();
+                }
+                break;
+            }
+
+            case TypeAccessControlExposeHeaders: {
+                if(mExposeHeaders != nullptr) {
+                    return mExposeHeaders->toString();
+                }
+                break;
+            }
+            
+            case TypeAccessControlMaxAge: {
+                if(mMaxAge != nullptr) {
+                    return mMaxAge->toString();
+                }
+                break;
+            }
+
+            case TypeAccessControlRequestHeaders: {
+                if(mRequestHeaders != nullptr) {
+                    return mRequestHeaders->toString();
+                }
+                break;
+            }
+
+            case TypeAccessControlRequestMethod: {
+                if(mRequestMethod != nullptr) {
+                    return mRequestMethod->toString();
+                }
+                break;
+            }
+
+            case TypeAge: {
+                if(mAge != nullptr) {
+                    return mAge->toString();
+                }
+                break;
+            }
+
+            case TypeAllow: {
+                if(mAllow != nullptr) {
+                    return mAllow->toString();
+                }
+                break;
+            }
+
+            case TypeAuthorization: {
+                if(mAuthorization != nullptr) {
+                    return mAuthorization->toString();
+                }
+                break;
+            }
+            
+            case TypeCacheControl: {
+                if(mCacheControl != nullptr) {
+                    if(mResponseReason != nullptr) {
+                        return mCacheControl->toString(st(HttpProtocol)::HttpResponse);
+                    } else {
+                        return mCacheControl->toString(st(HttpProtocol)::HttpRequest);
+                    }
+                }
+                break;
+            }
+
+            //TODO:ClearSiteData
+
+            case TypeContentDisposition: {
+                if(mContentDisposition != nullptr) {
+                    return mContentDisposition->toString();
+                }
+                break;
+            }
+
+            case TypeContentEncoding: {
+                if(mContentEncoding != nullptr) {
+                    return mContentEncoding->toString();
+                }
+                break;
+            }
+
+            case TypeContentLanguage: {
+                if(mContentLanguage != nullptr) {
+                    return mContentLanguage->toString();
+                }
+                break;
+            }
+
+            case TypeContentLength: {
+                if(mContentLength != nullptr) {
+                    return mContentLength->toString();
+                }
+                break;
+            }
+
+            case TypeContentLocation: {
+                if(mContentLocation != nullptr) {
+                    return mContentLocation->toString();
+                }
+                break;
+            }
+
+            case TypeContentType: {
+                if(mContentType != nullptr) {
+                    return mContentType->toString();
+                }
+                break;
+            }
+
+            case TypeForwarded: {
+                if(mForwarded != nullptr) {
+                    return mForwarded->toString();
+                }
+                break;
+            }
+
+            case TypeConnection: {
+                if(mConnection != nullptr) {
+                    return mConnection->toString();
+                }
+                break;
+            }
+
+            case TypeDigest: {
+                if(mHeaderDigest != nullptr) {
+                    return mHeaderDigest->toString();
+                }
+                break;
+            }
+
+            case TypeHost: {
+                if(mHost != nullptr) {
+                    return mHost->toString();
+                }
+                break;
+            }
+
+            case TypeKeepAlive: {
+                if(mKeepAlive != nullptr) {
+                    return mKeepAlive->toString();
+                }
+                break;
+            }
+
+            case TypeLink: {
+                //TODO
+                break;
+            }
+
+            case TypeIfMatch: {
+                if(mIfMatch != nullptr) {
+                    return mIfMatch->toString();
+                }
+                break;
+            }
+
+            case TypeIfNoneMatch: {
+                if(mIfNoneMatch != nullptr) {
+                    return mIfNoneMatch->toString();
+                }
+                break;
+            }
+
+            case TypeRetryAfter: {
+                if(mRetryAfter != nullptr) {
+                    return mRetryAfter->toString();
+                }
+                break;
+            }
+
+            case TypeUserAgent: {
+                if(mUserAgent != nullptr) {
+                    return mUserAgent->toString();
+                }
+                break;
+            }
+            
+            case TypeIfModifiedSince: {
+                if(mIfModifiedSince != nullptr) {
+                    return mIfModifiedSince->toString();
+                }
+                break;
+            }
+
+            case TypeIfRange: {
+                if(mIfRange != nullptr) {
+                    return mIfRange->toString();
+                }
+                break;
+            }
+
+            case TypeIfUnmodifiedSince: {
+                if(mIfUnmodifiedSince != nullptr) {
+                    return mIfUnmodifiedSince->toString();
+                }
+                break;
+            }
+
+            case TypeProxyAuthenticate: {
+                if(mProxyAuthenticate != nullptr) {
+                    return mProxyAuthenticate->toString();
+                }
+                break;
+            }
+
+            case TypeProxyAuthorization: {
+                if(mProxyAuthorization != nullptr) {
+                    return mProxyAuthorization->toString();
+                }
+                break;
+            }
+            
+            case TypeStrictTransportSecurity: {
+                if(mTransportSecurity != nullptr) {
+                    return mTransportSecurity->toString();
+                }
+                break;
+            }
+
+            case TypeXFrameOptions: {
+                if(mXFrameOptions != nullptr) {
+                    return mXFrameOptions->toString();
+                }
+                break;
+            }
+
+            case TypeUpgrade: {
+                if(mUpgrade != nullptr) {
+                    return mUpgrade->toString();
+                }
+                break;
+            }
+
+            case TypeCookie:
+            case TypeSetCookie: {
+                //TODO
+                break;
+            }
+
+            case TypeSecWebSocketAccept: {
+                if(mWebSocketAccept != nullptr) {
+                    return mWebSocketAccept->toString();
+                }
+                break;
+            }
+
+            case TypeSecWebSocketKey: {
+                if(mWebSocketKey != nullptr) {
+                    return mWebSocketKey->toString();
+                }
+                break;
+            }
+
+            case TypeSecWebSocketVersion: {
+                if(mWebSocketVersion != nullptr) {
+                    return mWebSocketVersion->toString();
+                }
+                break;
+            }
+
+            case TypeSecWebSocketExtensions: {
+                if(mWebSocketExtensions != nullptr) {
+                    return mWebSocketExtensions->toString();
+                }
+                break;
+            }
+
+            case TypeSecWebSocketOrigin: {
+                if(mWebSocketOrigin != nullptr) {
+                    return mWebSocketOrigin->toString();
+                }
+                break;
+            }
+
+            case TypeSecWebSocketKey1: {
+                if(mWebSocketKey1 != nullptr) {
+                    return mWebSocketKey1->toString();
+                }
+                break;
+            }
+
+            case TypeSecWebSocketKey2: {
+                if(mWebSocketKey2 != nullptr) {
+                    return mWebSocketKey2->toString();
+                }
+                break;
+            }
+
+            case TypeSecWebSocketKey3: {
+                if(mWebSocketKey3 != nullptr) {
+                    return mWebSocketKey3->toString();
+                }
+                break;
+            }
+
+            case TypeSecWebSocketProtocol: {
+                if(mWebSocketProtocol != nullptr) {
+                    return mWebSocketProtocol->toString();
+                }
+                break;
+            }
+
+            case TypeOrigin: {
+                if(mOrigin != nullptr) {
+                    return mOrigin->toString();
+                }
+                break;
+            }
+
+            case TypePragma: {
+                if(mPragma != nullptr) {
+                    return mPragma->toString();
+                }
+                break;
+            }
+        }
     }
 
     return mValues->get(header->toLowerCase());

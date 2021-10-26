@@ -16,6 +16,8 @@ void _HttpHeaderHost::import(String v) {
     if(index > 0) {
         host = v->subString(0,index);
         port = v->subString(index + 1,v->size() - index - 1)->toBasicInt();
+    } else {
+        host = v;
     }
 }
 

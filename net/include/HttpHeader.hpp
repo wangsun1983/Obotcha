@@ -667,6 +667,7 @@ private:
     String mResponseReason;
 
     static HashMap<String,Integer> idMaps;
+    static ArrayList<String> names;
 };
 
 }

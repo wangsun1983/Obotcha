@@ -1387,6 +1387,9 @@ int main() {
         if(strlen(msg.query_string) > 0) {
             HttpUrl url = header->getUrl();
             String rawQuery = url->getRawQuery();
+            if(rawQuery == nullptr) {
+              printf("it is nullptr \n");
+            }
             if(rawQuery == nullptr || !rawQuery->equals(msg.query_string)) {
                 printf("HttpPacketParse CheckQuery failed,msg.query_string is %s,parse result is %s \n",msg.query_string,rawQuery->toChars());
                 continue;
@@ -1429,7 +1432,7 @@ int main() {
         if(header->size() != num_headers) {
             //check link size
             if(header->getMethod() == st(HttpMethod)::Link) {
-              if(header->getLink()->size() != num_headers) {
+              if(header->getLinks()->size() != num_headers) {
                   printf("HttpPacketParse CheckHeaderSize failed,msg.num_headers is %d,header size is %d \n",msg.num_headers,header->size());
                   continue;
               }
@@ -1440,7 +1443,8 @@ int main() {
         for(int i = 0;i<num_headers;i++) {
             char *key = msg.headers[i][0];
             char *value = msg.headers[i][1];
-            String fValue = packet->getHeader()->getValue(createString(key)->toLowerCase());
+            printf("key is %s,value is %s \n",key,value);
+            String fValue = packet->getHeader()->get(createString(key)->toLowerCase());
             if(fValue == nullptr) {
                 printf("HttpPacketParser CheckHeader Fail,packet value is null,key is %s \n",key);
                 continue;
@@ -1457,8 +1461,10 @@ int main() {
 
         //check key_value
         if(msg.key_value_size > 0) {
-            ArrayList<KeyValuePair<String,String>> list = entity->getEncodedKeyValues();
-            if(list == nullptr) {
+            String content = entity->getContent()->toString();
+            HttpUrlEncodedValue encodeValue = createHttpUrlEncodedValue(entity->getContent()->toString());
+            HashMap<String,String> map = encodeValue->getValues();
+            if(map == nullptr) {
                 printf("HttpPacketParser CheckKeyValue,parse EncodedKeyValues size is 0\n");
                 continue;
             }
@@ -1469,10 +1475,10 @@ int main() {
                 i++;
                 const char *value = msg.key_value[i];
 
-                KeyValuePair<String,String> pair = list->get(count);
-                if(!pair->getKey()->equals(key) || !pair->getValue()->equals(value)) {
-                    printf("HttpPacketParser CheckKeyValue Fail,parsed key is %s,key is %s,parser value is %s,value is %s\n",
-                                pair->getKey()->toChars(),key,pair->getValue()->toChars(),value);
+                String findValue = map->get(createString(key));
+                if(!findValue->equals(value)) {
+                    printf("HttpPacketParser CheckKeyValue Fail,parsed key is %s,parser value is %s\n",
+                                key,findValue->toChars());
                 }
                 count++;
             }

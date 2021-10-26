@@ -87,7 +87,8 @@ int _ByteRingArrayReader::move(int length) {
     if (mCursor >= mBuff->getCapacity()) {
         mCursor = (mCursor - mBuff->getCapacity());
     }
-
+    mMark = Partial;
+    
     return mCursor;
 }
 

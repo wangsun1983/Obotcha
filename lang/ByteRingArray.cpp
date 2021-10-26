@@ -108,7 +108,7 @@ bool _ByteRingArray::push(byte *array, int start, int length) {
 }
 
 ByteArray _ByteRingArray::pop(int size) {
-    printf("RingArray pop start \n");
+    printf("RingArray pop start,size is %d,mSize is %d \n",size,mSize);
     if (mSize < size || size == 0) {
         Trigger(IllegalArgumentException, "pop size error");
     }
@@ -156,7 +156,8 @@ byte _ByteRingArray::at(int m) {
     return mBuff[m]; 
 }
 
-ByteArray _ByteRingArray::popAll() { 
+ByteArray _ByteRingArray::popAll() {
+    printf("popAll mSize is %d \n",mSize);
     return pop(mSize); 
 }
 

@@ -42,4 +42,4 @@ libname	= testHttpRequestParser
 everything : $(libname)
 
 $(libname): $(link)
-	clang++ *.cpp $(cflags) -o mytest $(external) $(sharelib)
+	clang++ -O0 *.cpp $(cflags) -O0 -o mytest -O0 $(external) $(sharelib)

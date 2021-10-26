@@ -42,6 +42,8 @@ private:
     String mPrevKey;
     String mValue;
 
+    String mPredictValue;
+
     bool isLineEnd(byte &v);
     void parseRequestLine(String);
     void parseHeader(String);

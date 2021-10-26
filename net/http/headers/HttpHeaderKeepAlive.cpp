@@ -18,6 +18,8 @@ void _HttpHeaderKeepAlive::import(String s) {
             timeout = parameter->toBasicInt();
         } else if(directive->equalsIgnoreCase("max")) {
             max = parameter->toBasicInt();
+        } else {
+            max = directive->toBasicInt();
         }
     });
 }
