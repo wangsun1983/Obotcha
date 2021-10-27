@@ -889,7 +889,6 @@ void _HttpHeader::set(String key, String value) {
                 if(mWebSocketVersion == nullptr) {
                     mWebSocketVersion = createHttpSecWebSocketVersion();
                 }
-                printf("sec websocket version!!!");
                 mWebSocketVersion->import(value);
                 return;
             }
@@ -938,7 +937,6 @@ void _HttpHeader::set(String key, String value) {
                 if(mWebSocketProtocol == nullptr) {
                     mWebSocketProtocol = createHttpSecWebSocketProtocol();
                 }
-                printf("websocket protocol!!!! \n");
                 mWebSocketProtocol->import(value);
                 return;
             }
@@ -965,7 +963,6 @@ void _HttpHeader::set(String key, String value) {
 }
 
 String _HttpHeader::get(String header) {
-    printf("get header is %s ]]]]\n",header->toChars());
     Integer id = idMaps->get(header->toLowerCase());
     if(id != nullptr) {
         LOG(ERROR)<<"http header:" <<names->get(id->toValue())->toChars()<<",should call get method directly";        
@@ -1888,7 +1885,6 @@ MapIterator<String, String> _HttpHeader::getIterator() {
 String _HttpHeader::toString(int type) {
     //create method method.......
     String header = nullptr;
-    printf("Http to type is %d \n",type);
     switch(type) {
         case st(HttpProtocol)::HttpRequest: {
             header = st(HttpMethod)::toString(mMethod)->append(st(HttpText)::ContentSpace);

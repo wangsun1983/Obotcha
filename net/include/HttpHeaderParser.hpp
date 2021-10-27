@@ -21,7 +21,7 @@ public:
     };
     _HttpHeaderParser(ByteRingArrayReader);
 
-    void changeToParseKeyValue();
+    void changeToParseHeader();
 
     HttpHeader doParse();
 

@@ -57,7 +57,7 @@ bool _ByteRingArray::push(byte b) {
     if (mSize == mCapacity) {
         Trigger(ArrayIndexOutOfBoundsException,"Ring Array push full Array!!!");
     }
-    printf("push,mNext is %d \n",mNext);
+    
     mBuff[mNext] = b;
     mSize++;
     mNext++;
@@ -108,13 +108,11 @@ bool _ByteRingArray::push(byte *array, int start, int length) {
 }
 
 ByteArray _ByteRingArray::pop(int size) {
-    printf("RingArray pop start,size is %d,mSize is %d \n",size,mSize);
     if (mSize < size || size == 0) {
         Trigger(IllegalArgumentException, "pop size error");
     }
 
     int start = getStartIndex();
-    printf("RingArray pop start is %d,mSize is %d \n",start,mSize);
     ByteArray result = createByteArray(size);
     if ((start + size) < mCapacity) {
         memcpy(result->toValue(), mBuff + start, size);
@@ -157,7 +155,6 @@ byte _ByteRingArray::at(int m) {
 }
 
 ByteArray _ByteRingArray::popAll() {
-    printf("popAll mSize is %d \n",mSize);
     return pop(mSize); 
 }
 

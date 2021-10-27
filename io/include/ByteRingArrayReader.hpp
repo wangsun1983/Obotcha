@@ -30,6 +30,8 @@ public:
 
     void reset();
 
+    bool isDrained();
+
 private:
     enum ReadMark { 
       Idle = 0, 

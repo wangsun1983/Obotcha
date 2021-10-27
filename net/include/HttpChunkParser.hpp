@@ -21,13 +21,22 @@ DECLARE_CLASS(HttpChunkParser) {
     ByteArray doParse();
 
   private:
-    enum ParseStatus { Idle = 0, Recv, RecvEnd, End };
+    enum ParseStatus { 
+      Idle = 0, 
+      Recv, 
+      RecvEnd, 
+      End 
+    };
 
     int mChunkSize;
     int mStatus;
-    int mChunkEndCount;
+    int mCRLFIndex;
+
     ByteArray mBuff;
+
     ByteRingArrayReader mReader;
+
+    bool isLineEnd(byte &v);
 };
 
 } // namespace obotcha

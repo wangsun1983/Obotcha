@@ -70,6 +70,12 @@ private:
     HttpHeaderParser mHttpHeaderParser;
     
     HttpChunkParser mChunkParser;
+
+    ByteArray mSavedContentBuff;
+
+    //case CHUNKED_W_TRAILING_HEADERS
+    bool isChunkedWTrailingHeaders;
+    
 };
 
 }

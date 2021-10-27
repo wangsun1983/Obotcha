@@ -25,9 +25,22 @@ sequence
 _HttpChunkParser::_HttpChunkParser(ByteRingArrayReader r) {
     mChunkSize = -1;
     mStatus = Idle;
-    mChunkEndCount = 0;
+    mCRLFIndex = 0;
     mReader = r;
     mBuff = nullptr;
+}
+
+bool _HttpChunkParser::isLineEnd(byte &v) {
+    if(v == '\r' && mCRLFIndex == 0) {
+        mCRLFIndex = 1;
+    } else if(v == '\n' && mCRLFIndex == 1) {
+        mCRLFIndex = 0;
+        return true;
+    } else {
+        mCRLFIndex = 0;
+    }
+
+    return false;
 }
 
 ByteArray _HttpChunkParser::doParse() {
@@ -37,75 +50,61 @@ ByteArray _HttpChunkParser::doParse() {
     while (mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
         // printf("v is %x,status is %d \n",v,mStatus);
         switch (mStatus) {
-        case Idle: {
-            if (v == CRLF[mChunkEndCount]) {
-                mChunkEndCount++;
-            } else {
-                mChunkEndCount = 0;
+            case Idle: {
+                if(isLineEnd(v)) {
+                    String chunklength = mReader->pop()->toString();
+                    if (chunklength->size() == 2) {
+                        // first two is /r/n,return direct
+                        return nullptr;
+                    }
+
+                    chunklength = chunklength->subString(0, chunklength->size() - 2);
+                    mChunkSize = chunklength->toHexInt()->toValue();
+                    if (mChunkSize == 0) {
+                        printf("chunck get finished!!!!");
+                        return mBuff;
+                    }
+                    mStatus = Recv;
+                    printf("i get chunksize is %d \n",mChunkSize);
+                }
+                continue;
             }
 
-            if (mChunkEndCount != 2) {
-                continue;
-            } else {
-                mChunkEndCount = 0;
-                String chunklength = mReader->pop()->toString();
-                if (chunklength->size() == 2) {
-                    // first two is /r/n,return direct
+            case Recv: {
+                int readablelength = mReader->getReadableLength();
+                int popsize =
+                    (readablelength > mChunkSize) ? mChunkSize : readablelength;
+                printf("popsize is %d \n",popsize);
+
+                mReader->move(popsize - 1); //one byte already read by readNext
+                ByteArray data = mReader->pop();
+                // printf("recv ...... data is %s \n",data->toString()->toChars());
+                if (mBuff == nullptr) {
+                    mBuff = data;
+                } else {
+                    mBuff->append(data);
+                }
+
+                mChunkSize -= popsize;
+                printf("after mChunkSize is %d \n",mChunkSize);
+
+                if (mChunkSize == 0) {
+                    mStatus = RecvEnd;
+                    continue;
+                } else {
                     return nullptr;
                 }
 
-                chunklength =
-                    chunklength->subString(0, chunklength->size() - 2);
-                mChunkSize = chunklength->toHexInt()->toValue();
-                if (mChunkSize == 0) {
-                    mChunkEndCount = 0;
-                    return mBuff;
+                break;
+            }
+
+            case RecvEnd: {
+                if(isLineEnd(v)) {
+                    mReader->pop();
+                    mStatus = Idle;
                 }
-                mStatus = Recv;
+                break;
             }
-        }
-
-        case Recv: {
-            int readablelength = mReader->getReadableLength();
-            int popsize =
-                (readablelength > mChunkSize) ? mChunkSize : readablelength;
-
-            mReader->move(popsize);
-            ByteArray data = mReader->pop();
-            // printf("recv ...... data is %s \n",data->toString()->toChars());
-            if (mBuff == nullptr) {
-                mBuff = data;
-            } else {
-                mBuff->append(data);
-            }
-
-            mChunkSize -= popsize;
-            if (mChunkSize == 0) {
-                mStatus = RecvEnd;
-                continue;
-            } else {
-                return nullptr;
-            }
-
-            break;
-        }
-
-        case RecvEnd: {
-            if (v == CRLF[mChunkEndCount]) {
-                mChunkEndCount++;
-            } else {
-                mChunkEndCount = 0;
-            }
-
-            if (mChunkEndCount != 2) {
-                continue;
-            }
-
-            mChunkEndCount = 0;
-            mReader->pop();
-            mStatus = Idle;
-            break;
-        }
         }
     }
 

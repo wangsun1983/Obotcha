@@ -16,7 +16,7 @@ _HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r) {
     mCRLFIndex = 0;
 }
 
-void _HttpHeaderParser::changeToParseKeyValue() { mStatus = Header; }
+void _HttpHeaderParser::changeToParseHeader() { mStatus = Header; }
 
 bool _HttpHeaderParser::isLineEnd(byte &v) {
     if(v == '\r' && mCRLFIndex == 0) {
@@ -33,21 +33,13 @@ bool _HttpHeaderParser::isLineEnd(byte &v) {
 
 void _HttpHeaderParser::parseRequestLine(String line) {
     int pos = 0;
-    printf("parseRequestLine,line size is %d \n",line->size());
     while (pos < line->size()) {
         int tokenStart = pos;
         pos = st(HttpHeaderContentParser)::skipUntil(line, pos,
                                                         createString(" "));
-        printf("parseRequestLine,pos is %d,tokenStart s %d \n",pos,tokenStart);
         String directive =
                 line->subString(tokenStart, pos - tokenStart)->trim();
-        printf("directive is %s,%d,mParseLineStatus is %d \n",directive->toChars(),directive->size(),mParseLineStatus);
         pos++;
-
-        //if(directive->size() == 1) {
-        //    continue;
-        //}
-        printf("parseRequestLine trace,mParseLineStatus is %d \n",mParseLineStatus);
 
         switch(mParseLineStatus) {
             case LineParseStart: {
@@ -64,7 +56,6 @@ void _HttpHeaderParser::parseRequestLine(String line) {
                     mHeader->setVersion(version);
                     mParseLineStatus = ResponseStatus;
                 }
-                printf("method is %d,mStatus is %d \n",method,mParseLineStatus);
                 break;
             }
 
@@ -81,7 +72,6 @@ void _HttpHeaderParser::parseRequestLine(String line) {
             }
 
             case RequestUrl: {
-                printf("requestUrl is %s \n",directive->toChars());
                 HttpUrl url = createHttpUrl(directive);
                 mHeader->setUrl(url);
                 mParseLineStatus = RequsetVersion;
@@ -102,20 +92,17 @@ void _HttpHeaderParser::parseRequestLine(String line) {
 
 void _HttpHeaderParser::parseHeader(String line) {
     int pos = 0;
-    printf("parseHeader line is %s \n",line->toChars());
     //while (pos < line->size()) {
+    printf("line is %s \n",line->toChars());
     int tokenStart = pos;
     pos = st(HttpHeaderContentParser)::skipUntil(line, pos,
                                                     createString(":"));
-    printf("pos is %d \n",pos);
     String directive =
             line->subString(tokenStart, pos - tokenStart)->trim();
 
     pos++;
     String content = line->subString(pos,line->size() - pos)->trim(); //remove \r\n
-    //printf("directive is %s,content is %s \n",directive->toChars(),content->toChars());
     mHeader->set(directive, content);
-    //}
 }
 
 HttpHeader _HttpHeaderParser::doParse() {
@@ -136,7 +123,6 @@ HttpHeader _HttpHeaderParser::doParse() {
                         //strage!!! first head contain \r\n 
                         continue;
                     }
-                    printf("content is %s \n",content->toChars());
                     parseRequestLine(content->subString(0,content->size() - 2)); //do not parse \r\n
                     mStatus = Header;
                 }
@@ -146,10 +132,8 @@ HttpHeader _HttpHeaderParser::doParse() {
             case Header: {
                 if(isLineEnd(v)) {
                     String content = mReader->pop()->toString()->trim();
-                    printf("header: content is %s,size is %d \n",content->toChars(),content->size());
                     if(content->size() == 2 && content->equals(st(HttpText)::CRLF)) {
                         //This is end!!!
-                        printf("it is the head end!!! \n");
                         if(mPredictValue != nullptr) {
                             parseHeader(mPredictValue->subString(0,mPredictValue->size() - 2));
                         }
@@ -180,7 +164,6 @@ HttpHeader _HttpHeaderParser::doParse() {
             }
         }
     }
-
     return nullptr;
 }
 

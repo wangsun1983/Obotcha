@@ -121,7 +121,6 @@ int _HttpUrl::delimiterOffset(String input, int pos, int limit, String delimiter
 }
 
 void _HttpUrl::import(String input) {
-    printf("url input is %s \n",input->toChars());
     mRawUrl = input;
     //path is like *,/,do not parse!!!
     if(input->size() == 1) {
@@ -142,12 +141,11 @@ void _HttpUrl::import(String input) {
             pos += createString("http:")->size();
         }
     }
-    printf("trace1 pos is %d \n",pos);
     // Authority.
     bool hasUsername = false;
     bool hasPassword = false;
     int slcount = slashCount(input, pos, limit);
-    printf("trace2 slcount is %d \n",slcount);
+    
     if (slcount >= 2 || slcount == 0) {
         // Read an authority if either:
         //  * The input starts with 2 or more slashes. These follow the scheme if it exists.
@@ -220,8 +218,6 @@ void _HttpUrl::import(String input) {
     // Resolve the relative path.
     int pathDelimiterOffset = delimiterOffset(input, pos, limit, "?#");
 
-    printf("pathDelimiterOffset is %d,pos is %d \n",pathDelimiterOffset,pos);
-    
     mPath = input->subString(pos,pathDelimiterOffset - pos);
     pos = pathDelimiterOffset;
     // Query.

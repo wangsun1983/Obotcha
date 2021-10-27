@@ -106,6 +106,10 @@ int _ByteRingArrayReader::getReadableLength() {
     }
 }
 
+bool _ByteRingArrayReader::isDrained() {
+    return mMark != Partial;
+}
+
 void _ByteRingArrayReader::reset() {
     mBuff->reset();
     mCursor = mBuff->getStartIndex();

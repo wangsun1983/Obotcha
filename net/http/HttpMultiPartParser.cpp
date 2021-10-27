@@ -63,7 +63,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                 if(isLineEnd(v)) {
                     //i got the boundry!!!
                     ByteArray boundary = reader->pop();
-                    printf("boundary is %s \n",boundary->toString()->toChars());
                     mStatus = ParseContentDisposition;
                     continue;
                 }
@@ -73,7 +72,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             case ParseContentDisposition: {
                 if(isLineEnd(v)) {
                     String disposition = reader->pop()->toString();
-                    printf("contentdisp is %s \n",disposition->toChars());
                     String data = disposition->split(":")->get(1);
                     mDisposition = createHttpContentDisposition(data);
                     if(mDisposition->filename != nullptr) {
