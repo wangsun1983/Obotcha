@@ -63,21 +63,43 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                 if(isLineEnd(v)) {
                     //i got the boundry!!!
                     ByteArray boundary = reader->pop();
-                    mStatus = ParseContentDisposition;
+                    mStatus = ParseContentInfo;
                     continue;
                 }
                 break;
             }
             
-            case ParseContentDisposition: {
+            case ParseContentInfo: {
                 if(isLineEnd(v)) {
-                    String disposition = reader->pop()->toString();
-                    String data = disposition->split(":")->get(1);
-                    mDisposition = createHttpContentDisposition(data);
-                    if(mDisposition->filename != nullptr) {
-                        mStatus = ParseContentType;
-                    } else {
-                        mStatus = ParseNextLineBeforeFormData;
+                    String info = reader->pop()->toString();
+                    if(info->size() == 2 && info->equals(st(HttpText)::CRLF)) {
+                        printf("contentinfo end!!! \n");
+                        if(mDisposition->filename != nullptr) {
+                            mStatus = ParseContent;
+                        } else {
+                            mStatus = ParseFormData;
+                        }
+                        break;
+                    }
+
+                    auto params = info->split(":");
+                    String head = params->get(0);
+                    String data = params->get(1);
+                    
+                    int type = st(HttpHeader)::findId(head);
+                    printf("contentinfo head is %s,type is %d!!! \n",head->toChars(),type);
+                    switch(type) {
+                        case st(HttpHeader)::TypeContentDisposition:
+                            mDisposition = createHttpContentDisposition(data);
+                        break;
+
+                        case st(HttpHeader)::TypeContentType:
+                            mContentType = createHttpContentType(data);
+                        break;
+
+                        case st(HttpHeader)::TypeTransferEncoding:
+                            mTransferEncoding = createHttpTransferEncoding(data);
+                        break;
                     }
                 }
                 break;
@@ -90,7 +112,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                     case _BoundaryEnd:{
                         ByteArray data = reader->pop();
                         mMultiPart->contents->add(createKeyValuePair<String,String>(mDisposition->name,data->toString()));
-                        mStatus = ParseContentDisposition;
+                        mStatus = ParseContentInfo;
                         if(checkStatus == _PartEnd) {
                             auto result = mMultiPart;
                             mMultiPart = nullptr;
@@ -105,35 +127,21 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                 break;
             }
 
-            case ParseContentType:
-            case ParseNextLineBeforeFormData:
-            case ParseNextLineBeforeContent: {
-                if(isLineEnd(v)) {
-                    reader->pop();
-                    if(mStatus == ParseContentType) {
-                        mStatus = ParseNextLineBeforeContent;
-                    } else if(mStatus == ParseNextLineBeforeFormData) {
-                        mStatus = ParseFormData;
-                    } else if(mStatus == ParseNextLineBeforeContent) {
-                        mStatus = ParseContent;
-                    }
-                }
-                break;
-            }
-            
             case ParseContent: {
                 int checkStatus = checkBoudaryIndex(v);
-                int resizeSize = mBoundaryEnd->size(); // multi part end "----xxxx--\r\n"
+                printf("checkStatus is %d,mBoundaryIndex is %d \n",checkStatus,mBoundaryIndex);
+                int resizeSize = mBoundaryEnd->size(); // multi part end "----xxxx\r\n"
                 switch(checkStatus) {
                     case _PartEnd:
-                        resizeSize = mPartEnd->size(); //boundary end "----xxxx\r\n"
+                        resizeSize = mPartEnd->size(); //part end "----xxxx--\r\n"
                     case _BoundaryEnd:{
                         ByteArray data = reader->pop();
-                        flushData(data,resizeSize + 2); //last data has "\r\n"
+                        flushData(data,resizeSize); //last data has "\r\n"
                         mFileStream->close();
                         mFileStream = nullptr;
-                        mStatus = ParseContentDisposition;
+                        mStatus = ParseContentInfo;
                         if(checkStatus == _PartEnd) {
+                            printf("partend!!! \n");
                             auto result = mMultiPart;
                             mMultiPart = nullptr;
                             return result;
@@ -148,9 +156,11 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
         }
     }
 
-    if(mStatus == ParseContent) {
+    if(mStatus == ParseContent && mBoundaryEnd == 0) {
         ByteArray data = reader->pop();
-        flushData(data,0);
+        if(data != nullptr && data->size() != 0) {
+            flushData(data,0);
+        }
     }
 
     return nullptr;
@@ -163,7 +173,7 @@ void _HttpMultiPartParser::flushData(ByteArray data,int resizeSize) {
         mFileStream = createFileOutputStream(multiPartFile->getFile());
         mFileStream->open();
     }
-
+    printf("data size is %d,resizeSize is %d \n",data->size(),resizeSize);
     data->quickShrink(data->size() - resizeSize);
     mFileStream->write(data);
 }

@@ -1882,6 +1882,19 @@ MapIterator<String, String> _HttpHeader::getIterator() {
     return mValues->getIterator();
 }
 
+int _HttpHeader::findId(String s) {
+    Integer v = idMaps->get(s->toLowerCase());
+    if(v != nullptr) {
+        return v->toValue();
+    }
+
+    return -1;
+}
+
+String _HttpHeader::findString(int id) {
+    return names->get(id);
+}
+
 String _HttpHeader::toString(int type) {
     //create method method.......
     String header = nullptr;

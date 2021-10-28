@@ -11,6 +11,8 @@
 #include "ByteRingArrayReader.hpp"
 #include "Enviroment.hpp"
 #include "FileOutputStream.hpp"
+#include "HttpTransferEncoding.hpp"
+#include "HttpContentType.hpp"
 
 namespace obotcha {
 
@@ -31,10 +33,7 @@ private:
 
     enum ParseStatus {
         ParseStartBoundry = 0,
-        ParseContentDisposition,
-        ParseContentType,
-        ParseNextLineBeforeFormData,
-        ParseNextLineBeforeContent,
+        ParseContentInfo,
         ParseFormData,
         ParseContent,
     };
@@ -63,15 +62,14 @@ private:
     //ByteRingArrayReader mReader;
 
     HashMap<String,String> mContentDisp;
-
-    String mContentType;
-
     Enviroment mEnv;
 
     int mCRLFIndex;
     int mBoundaryIndex;
 
     HttpContentDisposition mDisposition;
+    HttpTransferEncoding mTransferEncoding;
+    HttpContentType mContentType;
     
     bool isLineEnd(byte &v);
     int checkBoudaryIndex(byte &v);

@@ -522,6 +522,9 @@ public:
 
     String toString(int);
 
+    static int findId(String);
+    static String findString(int);
+
     int getMethod();
     void setMethod(int);
 
