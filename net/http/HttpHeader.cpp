@@ -10,10 +10,10 @@
 #include "HashMap.hpp"
 #include "HttpContentType.hpp"
 #include "HttpHeader.hpp"
+#include "HttpPacket.hpp"
 #include "HttpText.hpp"
 #include "String.hpp"
 #include "HttpCookieParser.hpp"
-#include "HttpProtocol.hpp"
 #include "HttpMethod.hpp"
 #include "HttpStatus.hpp"
 #include "Log.hpp"
@@ -741,6 +741,7 @@ void _HttpHeader::set(String key, String value) {
                 if(mHost == nullptr) {
                     mHost = createHttpHeaderHost();
                 }
+                printf("value is %s \n",value->toChars());
                 mHost->import(value);
                 return;
             }
@@ -1089,9 +1090,9 @@ String _HttpHeader::get(String header) {
             case TypeCacheControl: {
                 if(mCacheControl != nullptr) {
                     if(mResponseReason != nullptr) {
-                        return mCacheControl->toString(st(HttpProtocol)::HttpResponse);
+                        return mCacheControl->toString(st(HttpPacket)::Response);
                     } else {
-                        return mCacheControl->toString(st(HttpProtocol)::HttpRequest);
+                        return mCacheControl->toString(st(HttpPacket)::Request);
                     }
                 }
                 break;
@@ -1899,8 +1900,8 @@ String _HttpHeader::toString(int type) {
     //create method method.......
     String header = nullptr;
     switch(type) {
-        case st(HttpProtocol)::HttpRequest: {
-            header = st(HttpMethod)::toString(mMethod)->append(st(HttpText)::ContentSpace);
+        case st(HttpPacket)::Request: {
+            header = st(HttpMethod)::findString(mMethod)->append(st(HttpText)::ContentSpace);
             if (mUrl != nullptr) {
                 header = header->append(mUrl->toString());
             } else {
@@ -1910,7 +1911,7 @@ String _HttpHeader::toString(int type) {
             break;
         }
 
-        case st(HttpProtocol)::HttpResponse: {
+        case st(HttpPacket)::Response: {
             header = mVersion->toString()->append(st(HttpText)::ContentSpace,createString(mResponseStatus));
             if (mResponseReason != nullptr) {
                 header = header->append(st(HttpText)::ContentSpace,mResponseReason,st(HttpText)::CRLF);
@@ -1942,11 +1943,11 @@ String _HttpHeader::toString(int type) {
     while (iterator->hasValue()) {
         HttpCookie cookie = iterator->getValue();
         switch(type) {
-            case st(HttpProtocol)::HttpRequest:
+            case st(HttpPacket)::Request:
             header = header->append(st(HttpHeader)::Cookie,cookie->toString(type), st(HttpText)::CRLF);
             break;
 
-            case st(HttpProtocol)::HttpResponse:
+            case st(HttpPacket)::Response:
             header = header->append(st(HttpHeader)::SetCookie,cookie->toString(type), st(HttpText)::CRLF);
             
             break;

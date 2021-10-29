@@ -15,20 +15,28 @@ _HttpPacket::_HttpPacket() {
     mEntity = createHttpEntity();
 }
 
-void _HttpPacket::setHeader(HttpHeader h) { mHeader = h; }
-
-HttpHeader _HttpPacket::getHeader() { return mHeader; }
-
-HttpEntity _HttpPacket::getEntity() { return mEntity; }
-
-void _HttpPacket::setEntity(HttpEntity entity) { mEntity = entity; }
-
-void _HttpPacket::setProtocol(int p) {
-    mProtocol = p;
+void _HttpPacket::setHeader(HttpHeader h) { 
+    mHeader = h; 
 }
 
-int _HttpPacket::getProtocol() {
-    return mProtocol;
+HttpHeader _HttpPacket::getHeader() { 
+    return mHeader; 
+}
+
+HttpEntity _HttpPacket::getEntity() { 
+    return mEntity; 
+}
+
+void _HttpPacket::setEntity(HttpEntity entity) { 
+    mEntity = entity; 
+}
+
+void _HttpPacket::setType(int p) {
+    mType = p;
+}
+
+int _HttpPacket::getType() {
+    return mType;
 }
 
 } // namespace obotcha

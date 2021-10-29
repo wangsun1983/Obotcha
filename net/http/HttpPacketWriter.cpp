@@ -3,7 +3,6 @@
 
 #include "HttpPacketWriter.hpp"
 #include "HttpText.hpp"
-#include "HttpProtocol.hpp"
 #include "HttpMime.hpp"
 #include "FileInputStream.hpp"
 
@@ -47,8 +46,8 @@ int _HttpPacketWriter::_computeContentLength(HttpPacket packet) {
 void _HttpPacketWriter::_updateHttpHeader(HttpPacket packet) {
     HttpHeader header = packet->getHeader();
 
-    switch(packet->getProtocol()) {
-        case st(HttpProtocol)::HttpRequest: {
+    switch(packet->getType()) {
+        case st(HttpPacket)::Request: {
             auto multiPart = packet->getEntity()->getMultiPart();
             if(multiPart != nullptr) {
                 HttpContentType contentType = createHttpContentType();
@@ -59,7 +58,7 @@ void _HttpPacketWriter::_updateHttpHeader(HttpPacket packet) {
             break;
         }
 
-        case st(HttpProtocol)::HttpResponse: {
+        case st(HttpPacket)::Response: {
             if(packet->getEntity()->getChunkFile() != nullptr) {
                 header->set(st(HttpHeader)::TransferEncoding,
                     st(HttpHeader)::TransferChunked);
@@ -79,7 +78,7 @@ int _HttpPacketWriter::_flush(HttpPacket packet,bool send) {
     _updateHttpHeader(packet);
 
     //start flush
-    String headString = header->toString(packet->getProtocol())->append(st(HttpText)::CRLF,// change line
+    String headString = header->toString(packet->getType())->append(st(HttpText)::CRLF,// change line
                                                                         st(HttpText)::CRLF // blank line
                                                                         );
     if(_write(headString->toByteArray(),send) != 0) {
@@ -87,12 +86,12 @@ int _HttpPacketWriter::_flush(HttpPacket packet,bool send) {
     }
     
     //start send content
-    switch(packet->getProtocol()) {
-        case st(HttpProtocol)::HttpRequest:
+    switch(packet->getType()) {
+        case st(HttpPacket)::Request:
             _flushRequest(packet,send);
         break;
 
-        case st(HttpProtocol)::HttpResponse:
+        case st(HttpPacket)::Response:
             _flushResponse(packet,send);
         break;
     }
@@ -178,7 +177,9 @@ int _HttpPacketWriter::_flushRequest(HttpPacket packet,bool send) {
         _write(finish->toByteArray(),send);
     } else {
         ByteArray body = packet->getEntity()->getContent();
-        _write(body,send);
+        if(body != nullptr && body->size() != 0) {
+            _write(body,send);
+        }
     }
 
     int index = mWriter->getIndex();

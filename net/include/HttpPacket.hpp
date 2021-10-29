@@ -19,6 +19,11 @@ namespace obotcha {
 DECLARE_CLASS(HttpPacket) {
 
 public:
+    enum Type {
+        Request = 0,
+        Response,
+    };
+    
     friend class _HttpRequestParser;
     friend class _HttpResponseParser;
 
@@ -30,13 +35,13 @@ public:
     HttpEntity getEntity();
     void setEntity(HttpEntity);
 
-    void setProtocol(int);
-    int getProtocol();
+    void setType(int);
+    int getType();
 
 private:
     HttpHeader mHeader;
     HttpEntity mEntity;
-    int mProtocol;
+    int mType;
 };
 
 }

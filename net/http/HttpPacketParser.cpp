@@ -7,7 +7,6 @@
 #include "InitializeException.hpp"
 #include "Log.hpp"
 #include "HttpMime.hpp"
-#include "HttpProtocol.hpp"
 
 namespace obotcha {
 
@@ -95,9 +94,9 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
 
                 if(!isChunkedWTrailingHeaders) {
                     if(header->getResponseReason() != nullptr) {
-                        mHttpPacket->setProtocol(st(HttpProtocol)::HttpResponse);
+                        mHttpPacket->setType(st(HttpPacket)::Response);
                     } else {
-                        mHttpPacket->setProtocol(st(HttpProtocol)::HttpRequest);
+                        mHttpPacket->setType(st(HttpPacket)::Request);
                     }
                     mHttpPacket->setHeader(header);
                 } else {

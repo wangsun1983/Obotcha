@@ -1,7 +1,7 @@
 #include "HttpCookie.hpp"
 #include "Calendar.hpp"
 #include "HttpHeaderContentParser.hpp"
-#include "HttpProtocol.hpp"
+#include "HttpPacket.hpp"
 
 namespace obotcha {
 
@@ -65,11 +65,11 @@ int _HttpCookie::getPropertyMaxAge() { return mPropertyMaxAge; }
 
 String _HttpCookie::toString(int type) {
     switch (type) {
-    case st(HttpProtocol)::HttpRequest:
+    case st(HttpPacket)::Request:
         return genHttpRequestCookie();
         break;
 
-    case st(HttpProtocol)::HttpResponse:
+    case st(HttpPacket)::Response:
         return genHttpResponseCookie();
         break;
     }

@@ -19,10 +19,12 @@ using namespace obotcha;
 extern int testFrameParser();
 extern int testSimpleFrameParser();
 extern int testFrameParserException();
+extern int testWebFrameOneByteParser();
 
 int main() {
     testSimpleFrameParser();
 	testFrameParser();
     testFrameParserException();
+    testWebFrameOneByteParser();
     return 0;
 }

@@ -1,8 +1,8 @@
 #include "HttpCacheControl.hpp"
 #include "HttpHeader.hpp"
 #include "HttpHeaderContentParser.hpp"
-#include "HttpProtocol.hpp"
 #include "HttpText.hpp"
+#include "HttpPacket.hpp"
 
 namespace obotcha {
 
@@ -156,11 +156,11 @@ String _HttpCacheControl::toString(int type) {
         result = result->append(MaxStale,"=",createString(mMaxStaleSeconds),",");
     }
 
-    if(mMinFreshSeconds!= -1 && type == st(HttpProtocol)::HttpRequest) {
+    if(mMinFreshSeconds!= -1 && type == st(HttpPacket)::Request) {
         result = result->append(MaxStale,"=",createString(mMaxStaleSeconds),",");
     }
 
-    if(mOnlyIfCached && type == st(HttpProtocol)::HttpRequest) {
+    if(mOnlyIfCached && type == st(HttpPacket)::Request) {
         result = result->append(OnlyIfCached,",");
     }
 
@@ -168,19 +168,19 @@ String _HttpCacheControl::toString(int type) {
         result = result->append(NotTransform,",");
     }
 
-    if(mIsPublic && type == st(HttpProtocol)::HttpResponse) {
+    if(mIsPublic && type == st(HttpPacket)::Response) {
         result = result->append(CachePublic,",");
     }
     
-    if(mIsPrivate && type == st(HttpProtocol)::HttpResponse) {
+    if(mIsPrivate && type == st(HttpPacket)::Response) {
         result = result->append(CachePrivate,",");
     }
 
-    if(mMustRevalidate && type == st(HttpProtocol)::HttpResponse) {
+    if(mMustRevalidate && type == st(HttpPacket)::Response) {
         result = result->append(MustRevalidate,",");
     }
 
-    if(mSMaxAgeSeconds != -1 && type == st(HttpProtocol)::HttpResponse) {
+    if(mSMaxAgeSeconds != -1 && type == st(HttpPacket)::Response) {
         result = result->append(SMaxAge,"=",createString(mSMaxAgeSeconds),",");
     }
 

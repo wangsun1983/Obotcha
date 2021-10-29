@@ -82,6 +82,45 @@ int testFrameParser() {
     }
   }
 
+  //case 1_1
+  {
+    //0x88 0x80 0xb3 0x24 0xb2 0x4e
+    size_t offset = 0;
+    const char *payload = "\x81\x85\x37\xfa\x21\x3d\x7f\x9f\x4d\x51\x58"
+                          "\x81\x85\x37\xfa\x21\x3d\x7f\x9f\x4d\x51\x58";
+
+    uint16_t length = strlen(payload);
+    WebSocketHybi13Parser parser = createWebSocketHybi13Parser();
+    ByteArray loadData = createByteArray((const byte *)payload,strlen(payload));
+    parser->pushParseData(loadData);
+    ArrayList<WebSocketFrame> msgDatas = parser->doParse();
+    if(msgDatas->size() != 2) {
+      printf("testFrameParser case1_1 size check failed,it is 0 \n");
+      return -1;
+    }
+
+    WebSocketFrame frame = msgDatas->get(0);
+    if(frame->getData() == nullptr) {
+      printf("testFrameParser case1_2 frame check failed frame is null \n");
+      return -1;
+    }
+
+    if(!frame->getData()->toString()->equals("Hello")) {
+      printf("testFrameParser case1_3 frame check failed frame is %s \n",frame->getData()->toString()->toChars());
+    }
+
+    WebSocketFrame frame1 = msgDatas->get(1);
+    if(frame1->getData() == nullptr) {
+      printf("testFrameParser case1_4 frame check failed frame is null \n");
+      return -1;
+    }
+
+    if(!frame1->getData()->toString()->equals("Hello")) {
+      printf("testFrameParser case1_5 frame check failed frame is %s \n",frame->getData()->toString()->toChars());
+    }
+  }
+
+
   //case2
   {
     //0x88 0x80 0xb3 0x24 0xb2 0x4e

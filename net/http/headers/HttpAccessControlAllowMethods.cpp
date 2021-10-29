@@ -14,7 +14,7 @@ _HttpAccessControlAllowMethods::_HttpAccessControlAllowMethods(String v):_HttpAc
 
 void _HttpAccessControlAllowMethods::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
-        methods->add(createInteger(st(HttpMethod)::toInt(directive)));
+        methods->add(createInteger(st(HttpMethod)::findId(directive)));
     });
 }
 
@@ -31,7 +31,7 @@ String _HttpAccessControlAllowMethods::toString() {
     auto iterator = methods->getIterator();
     while(iterator->hasValue()) {
         Integer v = iterator->getValue();
-        method = method->append(st(HttpMethod)::toString(v->toValue()),", ");
+        method = method->append(st(HttpMethod)::findString(v->toValue()),", ");
         iterator->next();
     }
 

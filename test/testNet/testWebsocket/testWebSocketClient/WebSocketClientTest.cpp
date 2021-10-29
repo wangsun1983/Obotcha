@@ -16,29 +16,29 @@ using namespace obotcha;
 DECLARE_CLASS(MyWsListener) IMPLEMENTS(WebSocketListener) {
 public:    
 
-    int onData(WebSocketFrame data,WebSocketLinker client) {
+    int onData(WebSocketFrame data) {
         if(data->getData() != nullptr) {
-            printf("ondata is %s \n",data->getData()->toValue());
+            printf("ondata is %s \n",data->getData()->toString()->toChars());
         }
         return 0;
     }
 
-    int onConnect(WebSocketLinker client) {
+    int onConnect() {
         printf("on connect fd \n");
         return 0;
     }
 
-    int onDisconnect(WebSocketLinker client) {
+    int onDisconnect() {
         printf("111111 on disconnect fd \n");
         return 0;
     }
 
-    int onPong(String,WebSocketLinker client) {
+    int onPong(String) {
         printf("111111 onPong fd \n");
         return 0;
     }
 
-    int onPing(String,WebSocketLinker client) {
+    int onPing(String) {
         printf("111111 onPing fd \n");
         return 0;
     }
@@ -49,8 +49,8 @@ public:
 int main() {
     MyWsListener l = createMyWsListener();
 
-    WebSocketClient client = createWebSocketClient(13);
-    client->connect(createString("ws://192.168.43.51:1111"),l);
+    WebSocketClient client = createWebSocketClient();
+    client->connect(createString("ws://192.168.1.10:1111"),l);
     
     client->sendTextMessage(createString("a"));
 

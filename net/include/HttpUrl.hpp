@@ -24,6 +24,7 @@ public:
     enum SchemaType {
         Http = 0,
         Https,
+        Ws,
     };
 
     void setScheme(String);

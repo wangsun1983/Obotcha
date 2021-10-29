@@ -41,7 +41,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpauthorization.o \
 		$(outtmp)/httpcontentdisposition.o \
 		$(outtmp)/httpheaderparser.o \
-		$(outtmp)/httpmethodparser.o \
 		$(outtmp)/httpheadercontentparser.o \
 		$(outtmp)/httppacket.o \
 		$(outtmp)/httptext.o \
@@ -124,6 +123,8 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheaderpragma.o \
 		$(outtmp)/httpwsaccept.o \
 		$(outtmp)/httpwskey.o \
+		$(outtmp)/httpresponse.o \
+		$(outtmp)/httprequest.o \
 		
 		
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
@@ -202,6 +203,12 @@ $(outtmp)/httpoption.o :$(netDir)/http/HttpOption.cpp
 
 $(outtmp)/httpurl.o :$(netDir)/http/HttpUrl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpUrl.cpp -o $(outtmp)/httpurl.o 
+
+$(outtmp)/httprequest.o :$(netDir)/http/HttpRequest.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpRequest.cpp -o $(outtmp)/httprequest.o 
+
+$(outtmp)/httpresponse.o :$(netDir)/http/HttpResponse.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponse.cpp -o $(outtmp)/httpresponse.o 
 
 #$(outtmp)/httpfile.o :$(netDir)/http/HttpFile.cpp
 #	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpFile.cpp -o $(outtmp)/httpfile.o 
@@ -397,9 +404,6 @@ $(outtmp)/httpheaderdigest.o :$(netDir)/http/headers/HttpHeaderDigest.cpp
 
 $(outtmp)/httpheaderparser.o :$(netDir)/http/HttpHeaderParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpHeaderParser.cpp -o $(outtmp)/httpheaderparser.o 
-
-$(outtmp)/httpmethodparser.o :$(netDir)/http/HttpMethodParser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMethodParser.cpp -o $(outtmp)/httpmethodparser.o 
 
 $(outtmp)/httpheadercontentparser.o :$(netDir)/http/headers/HttpHeaderContentParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderContentParser.cpp -o $(outtmp)/httpheadercontentparser.o 

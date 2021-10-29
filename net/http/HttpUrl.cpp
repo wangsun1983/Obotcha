@@ -139,6 +139,9 @@ void _HttpUrl::import(String input) {
         } else if (input->regionMatches(pos, "http:", 0, 5)) {
             mScheme = createString("http");
             pos += createString("http:")->size();
+        } else if (input->regionMatches(pos, "ws:", 0, 3)) {
+            mScheme = createString("ws");
+            pos += createString("ws:")->size();
         }
     }
     // Authority.

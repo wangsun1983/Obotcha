@@ -1,10 +1,9 @@
 #include "HttpHeaderParser.hpp"
 #include "HttpCookieParser.hpp"
-#include "HttpMethodParser.hpp"
 #include "HttpText.hpp"
 #include "HttpHeaderLink.hpp"
-#include "HttpMethodParser.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "HttpMethod.hpp"
 
 namespace obotcha {
 
@@ -43,7 +42,7 @@ void _HttpHeaderParser::parseRequestLine(String line) {
 
         switch(mParseLineStatus) {
             case LineParseStart: {
-                int method = st(HttpMethodParser)::doParse(directive);
+                int method = st(HttpMethod)::findId(directive);
                 
                 if(method != -1) {
                     //this is a request

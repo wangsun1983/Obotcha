@@ -87,8 +87,10 @@ public:
     const static String UnlinkString;
     const static String SourceString;
     
-    static String toString(int);
-    static int toInt(String method);
+    String toString(int);
+    
+    static int findId(String method);
+    static String findString(int);
 
 };
 
