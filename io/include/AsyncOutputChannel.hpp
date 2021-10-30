@@ -12,16 +12,18 @@
 
 namespace obotcha {
 
+class _AsyncOutputChannelPool;
+
 DECLARE_CLASS(AsyncOutputChannel) {
   public:
-    typedef std::function<long(FileDescriptor, ByteArray)> WriteCallback;
+    typedef std::function<long(FileDescriptor, ByteArray,int offset)> WriteCallback;
 
     _AsyncOutputChannel(FileDescriptor fileDescriptor,
-                        WriteCallback callback = nullptr, Handler h = nullptr);
+                        WriteCallback callback = nullptr);
 
-    void write(ByteArray);
+    int write(ByteArray);
 
-    void notifyWrite();
+    int notifyWrite();
     
     FileDescriptor getFileDescriptor();
     
@@ -31,11 +33,10 @@ DECLARE_CLASS(AsyncOutputChannel) {
     Mutex mMutex;
     LinkedList<ByteArray> mDatas;
     WriteCallback writeCb;
-    Handler mHandler;
     bool isClosed;
     FileDescriptor mFd;
 
-    void _write(ByteArray);
+    static sp<_AsyncOutputChannelPool> mPool;
 };
 
 } // namespace obotcha

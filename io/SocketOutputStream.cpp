@@ -18,12 +18,15 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
             server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
         }
     }
+    printf("SocketOutputStream create start \n");
 
     if (s->getFileDescriptor()->isAsync()) {
+        printf("SocketOutputStream create trace1 \n");
+    
         mChannel = createAsyncOutputChannel(
             s->getFileDescriptor(),
             std::bind(&_SocketOutputStream::_write, this, std::placeholders::_1,
-                      std::placeholders::_2));
+                      std::placeholders::_2,std::placeholders::_3));
     }
 }
 
@@ -34,15 +37,17 @@ long _SocketOutputStream::write(char c) {
 }
 
 long _SocketOutputStream::write(ByteArray data) {
+    printf("SocketOutputStream write start \n");
     if (mChannel != nullptr) {
+        printf("SocketOutputStream write trace1 \n");
         mChannel->write(data);
         return data->size();
     }
-    return _write(mSocket->getFileDescriptor(), data);
+    return _write(mSocket->getFileDescriptor(), data,0);
 }
 
 long _SocketOutputStream::write(ByteArray data, int start) {
-    return this->write(data, start, data->size() - 1);
+    return this->write(data, start, data->size() - start);
 }
 
 long _SocketOutputStream::write(ByteArray data, int start, int len) {
@@ -51,24 +56,25 @@ long _SocketOutputStream::write(ByteArray data, int start, int len) {
         mChannel->write(senddata);
         return senddata->size();
     }
-    return _write(mSocket->getFileDescriptor(), senddata);
+    return _write(mSocket->getFileDescriptor(), senddata,0);
 }
 
-long _SocketOutputStream::_write(FileDescriptor fd, ByteArray data) {
-    byte *sendData = data->toValue();
+long _SocketOutputStream::_write(FileDescriptor fd, ByteArray data,int offset) {
+    printf("SocketOutputStream _write start \n");
     if (mSocket == nullptr || mSocket->isClosed()) {
         return -1;
     }
 
+    byte *sendData = data->toValue();
     switch (mSocket->getType()) {
-    case st(Socket)::Udp: {
-        return ::sendto(fd->getFd(), data->toValue(), data->size(), 0,
-                        (struct sockaddr *)&server_addr, sizeof(sockaddr_in));
-    } break;
+        case st(Socket)::Udp: {
+            return ::sendto(fd->getFd(), data->toValue() + offset, data->size() - offset, 0,
+                            (struct sockaddr *)&server_addr, sizeof(sockaddr_in));
+        } break;
 
-    default:
-        return ::write(fd->getFd(), sendData, data->size());
-        break;
+        default:
+            return ::write(fd->getFd(), sendData + offset, data->size() - offset);
+            break;
     }
     return -1;
 }

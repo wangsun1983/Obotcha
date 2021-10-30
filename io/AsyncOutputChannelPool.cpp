@@ -1,18 +1,7 @@
 #include "AsyncOutputChannelPool.hpp"
+#include "Error.hpp"
 
 namespace obotcha {
-
-std::once_flag _AsyncOutputChannelPool::s_flag;
-sp<_AsyncOutputChannelPool> _AsyncOutputChannelPool::mInstance;
-
-sp<_AsyncOutputChannelPool> _AsyncOutputChannelPool::getInstance() {
-    std::call_once(s_flag, [&]() {
-        _AsyncOutputChannelPool *p = new _AsyncOutputChannelPool();
-        p->mInstance.set_pointer(p);
-    });
-
-    return mInstance;
-}
 
 void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel c) {
     AutoLock l(mMutex);
@@ -35,11 +24,14 @@ _AsyncOutputChannelPool::_AsyncOutputChannelPool() {
 
 int _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) {
     if ((events & st(EPollFileObserver)::EpollOut) != 0) {
+        printf("asyncoutput pool onevent!!!!!!!!!!!!!!!!!!!!!!!!! \n");
         AsyncOutputChannel ch = nullptr;
         {
             AutoLock l(mMutex);
             ch = mChannels->get(fd);
+            remove(ch);
         }
+
         if (ch != nullptr) {
             ch->notifyWrite();
         }

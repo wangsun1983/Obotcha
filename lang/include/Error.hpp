@@ -29,6 +29,7 @@ enum ErrorType {
     LockBusy,
     CreateFail,
     WriteFail,
+    WriteAgain,
     ReadFail,
     MmapFail,
     GenKeyFail,

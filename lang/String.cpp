@@ -518,6 +518,23 @@ bool _String::regionMatches(int toffset, String other, int ooffset,int len) {
     return true;
 }
 
+bool _String::regionMatchesIgnoreCase(int toffset, String other, int ooffset,int len) {
+    int to = toffset;
+    int po = ooffset;
+    // Note: toffset, ooffset, or len might be near -1>>>1.
+    if ((ooffset < 0) || (toffset < 0)
+            || (toffset > (long)size() - len)
+            || (ooffset > (long)other->size() - len)) {
+        return false;
+    }
+    while (len-- > 0) {
+        if (charAt(to++) != other->charAt(po++)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 byte _String::toBasicByte() {
     auto value = toByte();
     if (value == nullptr) {

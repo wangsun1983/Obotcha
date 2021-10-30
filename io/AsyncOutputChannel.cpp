@@ -1,97 +1,117 @@
 #include "AsyncOutputChannel.hpp"
 #include "ArrayList.hpp"
 #include "AsyncOutputChannelPool.hpp"
+#include "Error.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
+sp<_AsyncOutputChannelPool> _AsyncOutputChannel::mPool = nullptr;
+
 _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
-                                         WriteCallback callback, Handler h) {
+                                         WriteCallback callback) {
     mFd = fd;
     mMutex = createMutex();
     mDatas = createLinkedList<ByteArray>();
     writeCb = callback;
-    mHandler = h;
     isClosed = false;
+
+    std::once_flag s_flag;
+    std::call_once(s_flag, [&]() {
+        mPool = createAsyncOutputChannelPool();
+    });
 }
 
-void _AsyncOutputChannel::write(ByteArray data) {
-    if (mHandler != nullptr) {
-        mHandler->post([](AsyncOutputChannel channel,
-                          ByteArray data) { channel->_write(data); },
-                       AutoClone(this), data);
-    } else {
-        _write(data);
-    }
-}
-
-void _AsyncOutputChannel::_write(ByteArray data) {
+int _AsyncOutputChannel::write(ByteArray d) {
+    int result = 0;
+    int offset = 0;
+    printf("_AsyncOutputChannel write trace1 \n");
+    ByteArray data = createByteArray(d);
+    
     AutoLock l(mMutex);
     if (isClosed) {
-        return;
+        return -AlreadyDestroy;
     }
 
     if (mDatas->size() > 0) {
         mDatas->putLast(data);
-        return;
+        printf("_AsyncOutputChannel write trace2,size is %d \n",mDatas->size());
+        return 0;
     }
 
     while (1) {
-        int result = 0;
+        printf("_AsyncOutputChannel write trace3 \n");
         if (writeCb != nullptr) {
-            result = writeCb(mFd, data);
+            result = writeCb(mFd, data,offset);
         } else {
-            result = ::write(mFd->getFd(), data->toValue(), data->size());
+            result = ::write(mFd->getFd(), data->toValue() + offset, data->size() - offset);
         }
-
+        printf("_AsyncOutputChannel write trace4,result is %d,offset is %d,data size is %d \n",result,offset,data->size());
         if (result < 0) {
             if (errno == EAGAIN) {
-                mDatas->putLast(data);
-                st(AsyncOutputChannelPool)::getInstance()->addChannel(
-                    AutoClone(this));
-            }
-        } else if (result != data->size()) {
-            ByteArray rest_data = createByteArray(data->toValue() + result,
-                                                  data->size() - result);
-            data = rest_data;
-            continue;
-        }
-        break;
-    }
-}
-
-void _AsyncOutputChannel::notifyWrite() {
-    AutoLock l(mMutex);
-    if (isClosed) {
-        return;
-    }
-
-    while (mDatas->size() > 0) {
-        ByteArray data = mDatas->takeFirst();
-        int result = 0;
-        if (writeCb != nullptr) {
-            result = writeCb(mFd, data);
-        } else {
-            result = ::write(mFd->getFd(), data->toValue(), data->size());
-        }
-
-        if (result < 0) {
-            if (errno == EAGAIN) {
-                mDatas->putFirst(data);
+                printf("_AsyncOutputChannel write trace5 \n");
+                ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);
+                mDatas->putLast(restData);
+                mPool->addChannel(AutoClone(this));
                 break;
             }
-        } else if (result != data->size()) {
-            ByteArray rest_data = createByteArray(data->toValue() + result,
-                                                  data->size() - result);
-            mDatas->putFirst(rest_data);
-        }
-    }
 
-    if (mDatas->size() == 0) {
-        st(AsyncOutputChannelPool)::getInstance()->remove(AutoClone(this));
+            LOG(ERROR)<<"write failed,err is "<<strerror(errno);
+            return -WriteFail;
+        } else if (result != (data->size() - offset)) {
+            offset += result;
+            continue;
+        }
+        printf("_AsyncOutputChannel write trace6 \n");
+        break;
     }
+    
+    return 0;
 }
 
-FileDescriptor _AsyncOutputChannel::getFileDescriptor() { return mFd; }
+int _AsyncOutputChannel::notifyWrite() {
+    printf("asyncoutput channel notifywrite!!!mDatas->size() is %d \n",mDatas->size());
+    AutoLock l(mMutex);
+    if (isClosed) {
+        return -AlreadyDestroy;
+    }
+    
+    while (mDatas->size() > 0) {
+        printf("asyncoutput channel notifywrite data size is %d \n",mDatas->size());
+        ByteArray data = mDatas->takeFirst();
+        int offset = 0;
+        int result = 0;
+        while (1) {
+            printf("asyncoutput channel notifywrite write trace3 \n");
+            if (writeCb != nullptr) {
+                result = writeCb(mFd, data,offset);
+            } else {
+                result = ::write(mFd->getFd(), data->toValue() + offset, data->size() - offset);
+            }
+            printf("asyncoutput channel notifywrite write trace4,result is %d,offset is %d,data size is %d \n",result,offset,data->size());
+            if (result < 0) {
+                if (errno == EAGAIN) {
+                    printf("asyncoutput channel notifywrite write trace5 \n");
+                    ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);
+                    mDatas->putFirst(restData);
+                    mPool->addChannel(AutoClone(this));
+                }
+                LOG(ERROR)<<"write failed,err is "<<strerror(errno);
+                return -WriteFail;
+            } else if (result != (data->size() - offset)) {
+                offset += result;
+                continue;
+            } 
+            break;
+        }
+    }
+    printf("asyncoutput channel notifywrite!!! \n");
+    return 0;
+}
+
+FileDescriptor _AsyncOutputChannel::getFileDescriptor() { 
+    return mFd; 
+}
 
 void _AsyncOutputChannel::close() {
     AutoLock l(mMutex);
@@ -101,7 +121,7 @@ void _AsyncOutputChannel::close() {
     }
 
     isClosed = true;
-    st(AsyncOutputChannelPool)::getInstance()->remove(AutoClone(this));
+    mPool->remove(AutoClone(this));
 }
 
 } // namespace obotcha

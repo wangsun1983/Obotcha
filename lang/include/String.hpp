@@ -131,6 +131,7 @@ public:
     int toBasicInt();
 
     bool regionMatches(int toffset, String other, int ooffset,int len);
+    bool regionMatchesIgnoreCase(int toffset, String other, int ooffset,int len);
 
     byte toBasicByte();
 

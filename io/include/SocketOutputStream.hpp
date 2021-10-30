@@ -36,7 +36,7 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
     void flush();
 
   private:
-    long _write(FileDescriptor, ByteArray);
+    long _write(FileDescriptor, ByteArray,int offset);
 
     sp<_Socket> mSocket;
 

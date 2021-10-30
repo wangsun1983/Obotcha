@@ -15,16 +15,11 @@ namespace obotcha {
 
 DECLARE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollFileObserverListener) {
   public:
-    static sp<_AsyncOutputChannelPool> getInstance();
+    _AsyncOutputChannelPool();
     void addChannel(AsyncOutputChannel);
     void remove(AsyncOutputChannel);
 
   private:
-    _AsyncOutputChannelPool();
-
-    static std::once_flag s_flag;
-    static sp<_AsyncOutputChannelPool> mInstance;
-
     Mutex mMutex;
     HashMap<int, AsyncOutputChannel> mChannels;
 
