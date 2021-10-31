@@ -14,7 +14,6 @@
 #include "Base64.hpp"
 #include "HttpPacketWriter.hpp"
 #include "HttpRequest.hpp"
-#include "HttpPacketBuilder.hpp"
 #include "HttpStatus.hpp"
 
 namespace obotcha {
@@ -95,13 +94,6 @@ HttpResponse _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSo
     ByteArray sha1_content = mSha->encryptRawData(key_mgic->toByteArray());
     String base64 = mBase64->encode(sha1_content)->toString();
 
-    //HttpPacketBuilder builder = createHttpPacketBuilder();
-    //builder->setVersion(1,1)
-    //    ->setResponseStatus(st(HttpStatus)::SwitchProtocls)
-    //    ->setResponseReason(st(HttpStatus)::toString(st(HttpStatus)::SwitchProtocls))
-    //    ->addHeaderValue(st(HttpHeader)::SecWebSocketAccept,base64)
-    //    ->addHeaderValue(st(HttpHeader)::Upgrade,createString("websocket"))
-    //    ->addHeaderValue(st(HttpHeader)::Connection,createString("Upgrade"));
     HttpResponse response = createHttpResponse();
     response->getHeader()->setResponseReason(st(HttpStatus)::toString(st(HttpStatus)::SwitchProtocls));
     response->getHeader()->setResponseStatus(st(HttpStatus)::SwitchProtocls);

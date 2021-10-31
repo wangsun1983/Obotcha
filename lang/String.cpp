@@ -528,7 +528,7 @@ bool _String::regionMatchesIgnoreCase(int toffset, String other, int ooffset,int
         return false;
     }
     while (len-- > 0) {
-        if (charAt(to++) != other->charAt(po++)) {
+        if (IgnoreCaseTable[charAt(to++)] != IgnoreCaseTable[other->charAt(po++)]) {
             return false;
         }
     }

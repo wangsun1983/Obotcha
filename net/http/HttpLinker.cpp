@@ -29,19 +29,6 @@ ArrayList<HttpPacket> _HttpLinker::pollHttpPacket() {
     return mParser->doParse();
 }
 
-// int _HttpLinker::send(ByteArray data) {
-//    if(mSSLInfo != nullptr) {
-//        return mSSLInfo->write(data);
-//    }
-//    return mSocketOutput->write(data);
-//}
-
-// int _HttpLinker::send(ByteArray data,int size) {
-//    if(mSSLInfo != nullptr) {
-//        return mSSLInfo->write(data);
-//    }
-//    return mSocketOutput->write(data,size);
-//}
 
 SSLInfo _HttpLinker::getSSLInfo() { return mSSLInfo; }
 

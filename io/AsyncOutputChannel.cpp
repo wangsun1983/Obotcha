@@ -25,7 +25,6 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
 int _AsyncOutputChannel::write(ByteArray d) {
     int result = 0;
     int offset = 0;
-    printf("_AsyncOutputChannel write trace1 \n");
     ByteArray data = createByteArray(d);
     
     AutoLock l(mMutex);
@@ -35,34 +34,29 @@ int _AsyncOutputChannel::write(ByteArray d) {
 
     if (mDatas->size() > 0) {
         mDatas->putLast(data);
-        printf("_AsyncOutputChannel write trace2,size is %d \n",mDatas->size());
         return 0;
     }
 
     while (1) {
-        printf("_AsyncOutputChannel write trace3 \n");
         if (writeCb != nullptr) {
             result = writeCb(mFd, data,offset);
         } else {
             result = ::write(mFd->getFd(), data->toValue() + offset, data->size() - offset);
         }
-        printf("_AsyncOutputChannel write trace4,result is %d,offset is %d,data size is %d \n",result,offset,data->size());
+        
         if (result < 0) {
             if (errno == EAGAIN) {
-                printf("_AsyncOutputChannel write trace5 \n");
                 ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);
                 mDatas->putLast(restData);
                 mPool->addChannel(AutoClone(this));
                 break;
             }
 
-            LOG(ERROR)<<"write failed,err is "<<strerror(errno);
             return -WriteFail;
         } else if (result != (data->size() - offset)) {
             offset += result;
             continue;
         }
-        printf("_AsyncOutputChannel write trace6 \n");
         break;
     }
     
@@ -70,33 +64,27 @@ int _AsyncOutputChannel::write(ByteArray d) {
 }
 
 int _AsyncOutputChannel::notifyWrite() {
-    printf("asyncoutput channel notifywrite!!!mDatas->size() is %d \n",mDatas->size());
     AutoLock l(mMutex);
     if (isClosed) {
         return -AlreadyDestroy;
     }
     
     while (mDatas->size() > 0) {
-        printf("asyncoutput channel notifywrite data size is %d \n",mDatas->size());
         ByteArray data = mDatas->takeFirst();
         int offset = 0;
         int result = 0;
         while (1) {
-            printf("asyncoutput channel notifywrite write trace3 \n");
             if (writeCb != nullptr) {
                 result = writeCb(mFd, data,offset);
             } else {
                 result = ::write(mFd->getFd(), data->toValue() + offset, data->size() - offset);
             }
-            printf("asyncoutput channel notifywrite write trace4,result is %d,offset is %d,data size is %d \n",result,offset,data->size());
             if (result < 0) {
                 if (errno == EAGAIN) {
-                    printf("asyncoutput channel notifywrite write trace5 \n");
                     ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);
                     mDatas->putFirst(restData);
                     mPool->addChannel(AutoClone(this));
                 }
-                LOG(ERROR)<<"write failed,err is "<<strerror(errno);
                 return -WriteFail;
             } else if (result != (data->size() - offset)) {
                 offset += result;
@@ -105,7 +93,6 @@ int _AsyncOutputChannel::notifyWrite() {
             break;
         }
     }
-    printf("asyncoutput channel notifywrite!!! \n");
     return 0;
 }
 

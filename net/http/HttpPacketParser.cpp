@@ -72,13 +72,9 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                     mHttpHeaderParser = createHttpHeaderParser(mReader);
                     mHttpPacket = createHttpPacket();
                 }
-                printf("packet idle parse trace\n");
                 HttpHeader header = mHttpHeaderParser->doParse();
-                printf("packet idle parse trace2\n");
                 if (header == nullptr) {
-                    printf("packet idle parse trace2,len is %d\n",mReader->getReadableLength());
                     if(mReader->isDrained() || mReader->getReadableLength() == 0) {
-                        printf("packet idle parse trace4 \n");
                         if(isChunkedWTrailingHeaders) {
                             packets->add(mHttpPacket);
                             mHttpHeaderParser = nullptr;
@@ -88,7 +84,6 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                         }
                         return packets;
                     }
-                    printf("packet idle parse trace3\n");
                     continue;
                 }
 
@@ -126,7 +121,6 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                 }
 
                 if (isTransferChuncked) {
-                    //printf("transferChunck \n");
                     if (mChunkParser == nullptr) {
                         mChunkParser = createHttpChunkParser(mReader);
                     }
@@ -134,7 +128,6 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                     ByteArray data = mChunkParser->doParse();
                     
                     if (data != nullptr) {
-                        printf("finish chunk parse \n");
                         mHttpPacket->getEntity()->setContent(data);
                         mChunkParser = nullptr;
                         //case:CHUNKED_W_TRAILING_HEADERS
@@ -153,7 +146,6 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                     * neither content-length nor transfer-encoding is specified,
                     * the end of body is specified by the EOF.
                     */
-                    // printf("HttpPacketParser BodyStart trace2\n");
                     auto con = mHttpPacket->getHeader()->getConnection();
 
                     if (mHttpPacket->getHeader()->getUpgrade() != nullptr ||
@@ -189,13 +181,11 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
 
                 if (contenttype != nullptr && 
                     contenttype->getType()->containsIgnoreCase(st(HttpMime)::MultiPartFormData)) {
-                    // printf("HttpPacketParser BodyStart trace3\n");
                     if (mMultiPartParser == nullptr) {
                         mMultiPartParser = createHttpMultiPartParser(
                             contenttype->getBoundary(), contentlength->get());
                     }
 
-                    // printf("HttpPacketParser BodyStart trace4\n");
                     HttpMultiPart multipart = mMultiPartParser->parse(mReader);
                     if (multipart != nullptr) {
                         mHttpPacket->getEntity()->setMultiPart(multipart);

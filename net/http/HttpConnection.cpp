@@ -32,7 +32,9 @@ _HttpConnection::_HttpConnection(sp<_HttpUrl> url, HttpOption option,
     mListener = l;
 }
 
-Socket _HttpConnection::getSocket() { return mSocket; }
+Socket _HttpConnection::getSocket() { 
+    return mSocket; 
+}
 
 int _HttpConnection::connect() {
     InetAddress inetAddr = createInet4Address(mUrl->getPort());

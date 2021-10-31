@@ -48,7 +48,6 @@ ByteArray _HttpChunkParser::doParse() {
     byte v = 0;
 
     while (mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
-        // printf("v is %x,status is %d \n",v,mStatus);
         switch (mStatus) {
             case Idle: {
                 if(isLineEnd(v)) {
@@ -61,11 +60,9 @@ ByteArray _HttpChunkParser::doParse() {
                     chunklength = chunklength->subString(0, chunklength->size() - 2);
                     mChunkSize = chunklength->toHexInt()->toValue();
                     if (mChunkSize == 0) {
-                        printf("chunck get finished!!!!");
                         return mBuff;
                     }
                     mStatus = Recv;
-                    printf("i get chunksize is %d \n",mChunkSize);
                 }
                 continue;
             }
@@ -74,8 +71,7 @@ ByteArray _HttpChunkParser::doParse() {
                 int readablelength = mReader->getReadableLength();
                 int popsize =
                     (readablelength > mChunkSize) ? mChunkSize : readablelength;
-                printf("popsize is %d \n",popsize);
-
+                
                 mReader->move(popsize - 1); //one byte already read by readNext
                 ByteArray data = mReader->pop();
                 // printf("recv ...... data is %s \n",data->toString()->toChars());
@@ -86,8 +82,7 @@ ByteArray _HttpChunkParser::doParse() {
                 }
 
                 mChunkSize -= popsize;
-                printf("after mChunkSize is %d \n",mChunkSize);
-
+                
                 if (mChunkSize == 0) {
                     mStatus = RecvEnd;
                     continue;

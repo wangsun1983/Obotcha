@@ -73,7 +73,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                 if(isLineEnd(v)) {
                     String info = reader->pop()->toString();
                     if(info->size() == 2 && info->equals(st(HttpText)::CRLF)) {
-                        printf("contentinfo end!!! \n");
                         if(mDisposition->filename != nullptr) {
                             mStatus = ParseContent;
                         } else {
@@ -87,7 +86,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                     String data = params->get(1);
                     
                     int type = st(HttpHeader)::findId(head);
-                    printf("contentinfo head is %s,type is %d!!! \n",head->toChars(),type);
                     switch(type) {
                         case st(HttpHeader)::TypeContentDisposition:
                             mDisposition = createHttpContentDisposition(data);
@@ -129,7 +127,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
             case ParseContent: {
                 int checkStatus = checkBoudaryIndex(v);
-                printf("checkStatus is %d,mBoundaryIndex is %d \n",checkStatus,mBoundaryIndex);
                 int resizeSize = mBoundaryEnd->size(); // multi part end "----xxxx\r\n"
                 switch(checkStatus) {
                     case _PartEnd:
@@ -141,7 +138,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         mFileStream = nullptr;
                         mStatus = ParseContentInfo;
                         if(checkStatus == _PartEnd) {
-                            printf("partend!!! \n");
                             auto result = mMultiPart;
                             mMultiPart = nullptr;
                             return result;
@@ -173,7 +169,6 @@ void _HttpMultiPartParser::flushData(ByteArray data,int resizeSize) {
         mFileStream = createFileOutputStream(multiPartFile->getFile());
         mFileStream->open();
     }
-    printf("data size is %d,resizeSize is %d \n",data->size(),resizeSize);
     data->quickShrink(data->size() - resizeSize);
     mFileStream->write(data);
 }

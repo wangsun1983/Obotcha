@@ -741,7 +741,6 @@ void _HttpHeader::set(String key, String value) {
                 if(mHost == nullptr) {
                     mHost = createHttpHeaderHost();
                 }
-                printf("value is %s \n",value->toChars());
                 mHost->import(value);
                 return;
             }

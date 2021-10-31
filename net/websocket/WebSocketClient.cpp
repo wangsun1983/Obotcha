@@ -111,7 +111,6 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
         String extentions = response->getHeader()->get(st(HttpHeader)::SecWebSocketExtensions);
         if(extentions != nullptr) {
             if(extentions->indexOf("sec-websocket-extensions") > 0) {
-                printf("this is deflat \n");
                 composer->setDeflate(createWebSocketPermessageDeflate());
             }
         }

@@ -46,7 +46,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httptext.o \
 		$(outtmp)/httpcachecontrol.o \
 		$(outtmp)/httppacketparser.o \
-		$(outtmp)/httppacketbuilder.o \
 		$(outtmp)/httplinkermanager.o \
 		$(outtmp)/httpsession.o \
 		$(outtmp)/httpcookie.o \
@@ -437,9 +436,6 @@ $(outtmp)/httppacketparser.o :$(netDir)/http/HttpPacketParser.cpp
 
 $(outtmp)/httpcookieparser.o :$(netDir)/http/HttpCookieParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpCookieParser.cpp -o $(outtmp)/httpcookieparser.o 
-
-$(outtmp)/httppacketbuilder.o :$(netDir)/http/HttpPacketBuilder.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketBuilder.cpp -o $(outtmp)/httppacketbuilder.o 
 
 $(outtmp)/httplinkermanager.o :$(netDir)/http/HttpLinkerManager.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpLinkerManager.cpp -o $(outtmp)/httplinkermanager.o 

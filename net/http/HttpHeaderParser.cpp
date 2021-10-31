@@ -92,7 +92,6 @@ void _HttpHeaderParser::parseRequestLine(String line) {
 void _HttpHeaderParser::parseHeader(String line) {
     int pos = 0;
     //while (pos < line->size()) {
-    printf("line is %s \n",line->toChars());
     int tokenStart = pos;
     pos = st(HttpHeaderContentParser)::skipUntil(line, pos,
                                                     createString(":"));
