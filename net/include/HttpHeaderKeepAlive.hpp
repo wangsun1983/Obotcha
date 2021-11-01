@@ -25,8 +25,8 @@ public:
     String toString();
 
 private:
-    int timeout;
-    int max;
+    int timeout; //time for idle status (seconds)
+    int max; //max request nums before connection closed
 };
 
 }

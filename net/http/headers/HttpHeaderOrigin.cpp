@@ -3,27 +3,27 @@
 namespace obotcha {
 
 _HttpHeaderOrigin::_HttpHeaderOrigin() {
-
+    mUrl = createHttpUrl();
 }
 
 _HttpHeaderOrigin::_HttpHeaderOrigin(String s) {
-    origin = s;
+    import(s);
 }
 
 void _HttpHeaderOrigin::import(String s) {
-    origin = s;
+    mUrl->import(s);
 }
 
-String _HttpHeaderOrigin::get() {
-    return origin;
+HttpUrl _HttpHeaderOrigin::get() {
+    return mUrl;
 }
 
-void _HttpHeaderOrigin::set(String s) {
-    origin = s;
+void _HttpHeaderOrigin::set(HttpUrl s) {
+    mUrl = s;
 }
 
 String _HttpHeaderOrigin::toString() {
-    return origin;
+    return mUrl->toString();
 }
 
 }

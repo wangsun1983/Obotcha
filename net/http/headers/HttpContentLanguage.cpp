@@ -24,7 +24,7 @@ ArrayList<String> _HttpContentLanguage::get() {
 }
 
 void _HttpContentLanguage::add(String v) {
-    languages->add(v);
+    languages->add(v->trim());
 }
 
 

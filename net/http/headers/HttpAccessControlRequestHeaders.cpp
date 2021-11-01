@@ -18,7 +18,7 @@ void _HttpAccessControlRequestHeaders::import(String v) {
 }
 
 void _HttpAccessControlRequestHeaders::add(String v) {
-    headers->add(v);
+    headers->add(v->trim());
 }
 
 ArrayList<String> _HttpAccessControlRequestHeaders::get() {

@@ -15,7 +15,7 @@ void _HttpAccessControlAllowCredentials::set(bool v) {
 }
 
 void _HttpAccessControlAllowCredentials::import(String s) {
-    if(s->equalsIgnoreCase("true")) {
+    if(s->trim()->equalsIgnoreCase("true")) {
         allowed = true;
     } else {
         allowed = false;

@@ -27,6 +27,7 @@ public:
     void import(String);
 
     ArrayList<HttpHeaderDigestItem> getDigests();
+    void add(String,String);
 
     String toString();
 

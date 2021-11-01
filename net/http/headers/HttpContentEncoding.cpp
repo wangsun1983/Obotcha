@@ -24,7 +24,7 @@ ArrayList<String> _HttpContentEncoding::get() {
 }
 
 void _HttpContentEncoding::add(String v) {
-    encodings->add(v);
+    encodings->add(v->trim());
 }
 
 

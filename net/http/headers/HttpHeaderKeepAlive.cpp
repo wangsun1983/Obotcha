@@ -19,7 +19,7 @@ void _HttpHeaderKeepAlive::import(String s) {
         } else if(directive->equalsIgnoreCase("max")) {
             max = parameter->toBasicInt();
         } else {
-            max = directive->toBasicInt();
+            timeout = directive->toBasicInt();
         }
     });
 }
@@ -42,13 +42,12 @@ void _HttpHeaderKeepAlive::setMax(int v) {
 
 String _HttpHeaderKeepAlive::toString() {
     String keepalive = "";
-    if(max != -1) {
-        //keepalive = keepalive->append("max=",createString(max),", ");
-        keepalive = keepalive->append(createString(max),", ");
-    }
-
     if(timeout != -1) {
         keepalive = keepalive->append("timeout=",createString(timeout),", ");
+    }
+
+    if(max != -1) {
+        keepalive = keepalive->append("max=",createString(max),", ");
     }
     
     if(keepalive->size() > 0) {

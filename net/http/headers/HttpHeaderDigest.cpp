@@ -27,14 +27,18 @@ ArrayList<HttpHeaderDigestItem> _HttpHeaderDigest::getDigests() {
     return digests;
 }
 
+void _HttpHeaderDigest::add(String algorithm,String value) {
+    digests->add(createHttpHeaderDigestItem(algorithm->trim(),value->trim()));
+}
+
 String _HttpHeaderDigest::toString() {
     String digest = "";
     auto iterator = digests->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderDigestItem item = iterator->getValue();
-        digest->append(item->algorithm,"=",item->value,",");
+        digest = digest->append(item->algorithm,"=",item->value,",");
+        iterator->next();
     }
-
     return digest->subString(0,digest->size() - 1);
 }
 

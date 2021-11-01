@@ -26,7 +26,7 @@ _HttpHeaderMatch::_HttpHeaderMatch(String v):_HttpHeaderMatch() {
 
 void _HttpHeaderMatch::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
-        if(directive->contains("W/")) {
+        if(directive->containsIgnoreCase("W/")) {
             items->add(createHttpHeaderMatchItem(directive->subString(2,directive->size() - 2),true));
         } else {
             items->add(createHttpHeaderMatchItem(directive,false));
@@ -39,7 +39,15 @@ ArrayList<HttpHeaderMatchItem> _HttpHeaderMatch::get() {
 }
 
 void _HttpHeaderMatch::add(String v,bool isWeak) {
-    items->add(createHttpHeaderMatchItem(v,isWeak));
+    items->add(createHttpHeaderMatchItem(v->trim(),isWeak));
+}
+
+String _HttpHeaderMatch::_convertTag(String s) {
+    if(s->equals("*")) {
+        return s->append(", ");
+    } else {
+        return createString("\"")->append(s,"\", ");
+    }
 }
 
 String _HttpHeaderMatch::toString() {
@@ -48,9 +56,9 @@ String _HttpHeaderMatch::toString() {
     while(iterator->hasValue()) {
         HttpHeaderMatchItem item = iterator->getValue();
         if(item->isWeakAlg) {
-            match = match->append("W/\"",item->tag,"\", ");
+            match = match->append("W/",_convertTag(item->tag));
         } else {
-            match = match->append("\"",item->tag,"\", ");
+            match = match->append(_convertTag(item->tag));
         }
         iterator->next();
     }

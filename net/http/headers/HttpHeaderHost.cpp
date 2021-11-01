@@ -11,7 +11,8 @@ _HttpHeaderHost::_HttpHeaderHost(String v):_HttpHeaderHost() {
     import(v);
 }
 
-void _HttpHeaderHost::import(String v) {
+void _HttpHeaderHost::import(String h) {
+    String v = h->trim();
     int index = v->indexOf(":");
     if(index > 0) {
         host = v->subString(0,index);
@@ -22,7 +23,7 @@ void _HttpHeaderHost::import(String v) {
 }
 
 void _HttpHeaderHost::setHost(String v) {
-    host = v;
+    host = v->trim();
 }
 
 void _HttpHeaderHost::setPort(int v) {

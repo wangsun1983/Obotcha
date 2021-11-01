@@ -11,11 +11,11 @@ _HttpHeaderUserAgent::_HttpHeaderUserAgent(String v) {
 }
 
 void _HttpHeaderUserAgent::import(String v) {
-    agent = v;
+    agent = v->trim();
 }
 
 void _HttpHeaderUserAgent::set(String v) {
-    agent = v;
+    agent = v->trim();
 }
 
 String _HttpHeaderUserAgent::get() {

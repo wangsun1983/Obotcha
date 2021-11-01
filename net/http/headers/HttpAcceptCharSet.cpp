@@ -44,14 +44,14 @@ String _HttpAcceptCharSet::toString() {
     while(iterator->hasValue()) {
         HttpAcceptCharSetItem item = iterator->getValue();
         if(st(Math)::compareFloat(item->weight,1.0) == st(Math)::AlmostEqual) {
-            charset = charset->append(item->type,",");
+            charset = charset->append(item->type,", ");
         } else {
-            charset = charset->append(item->type,";q=",createString(item->weight,2),",");
+            charset = charset->append(item->type,";q=",createString(item->weight,2),", ");
         }
         iterator->next();
     }
 
-    return charset->subString(0,charset->size() - 1);
+    return charset->subString(0,charset->size() - 2);
 }
 
 }

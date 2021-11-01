@@ -12,11 +12,11 @@ _HttpHeaderConnection::_HttpHeaderConnection(String v):_HttpHeaderConnection() {
 }
 
 void _HttpHeaderConnection::import(String v) {
-    type = v;
+    type = v->trim();
 }
 
 void _HttpHeaderConnection::set(String v) {
-    type = v;
+    type = v->trim();
 }
 
 String _HttpHeaderConnection::get() {

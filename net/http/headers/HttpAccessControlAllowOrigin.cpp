@@ -12,11 +12,11 @@ _HttpAccessControlAllowOrigin::_HttpAccessControlAllowOrigin(String v):_HttpAcce
 }
 
 void _HttpAccessControlAllowOrigin::import(String v) {
-    origin = v;
+    origin = v->trim();
 }
 
 void _HttpAccessControlAllowOrigin::set(String v) {
-    origin = v;
+    origin = v->trim();
 }
 
 String _HttpAccessControlAllowOrigin::get() {

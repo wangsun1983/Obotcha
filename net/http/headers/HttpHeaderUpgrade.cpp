@@ -7,11 +7,11 @@ _HttpHeaderUpgrade::_HttpHeaderUpgrade() {
 }
 
 _HttpHeaderUpgrade::_HttpHeaderUpgrade(String s) {
-    upgrade = s;
+    upgrade = s->trim();
 }
 
 void _HttpHeaderUpgrade::import(String s) {
-    upgrade = s;
+    upgrade = s->trim();
 }
 
 String _HttpHeaderUpgrade::get() {
@@ -19,7 +19,7 @@ String _HttpHeaderUpgrade::get() {
 }
 
 void _HttpHeaderUpgrade::set(String s) {
-    upgrade = s;
+    upgrade = s->trim();
 }
 
 String _HttpHeaderUpgrade::toString() {

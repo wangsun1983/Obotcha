@@ -6,6 +6,7 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
+#include "HttpUrl.hpp"
 
 namespace obotcha {
 
@@ -16,14 +17,14 @@ public:
     _HttpHeaderOrigin(String);
 
     void import(String);
-
-    String get();
-    void set(String);
+    
+    HttpUrl get();
+    void set(HttpUrl);
 
     String toString();
 
 private:
-    String origin;
+    HttpUrl mUrl;
 };
 
 }
