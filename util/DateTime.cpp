@@ -265,12 +265,18 @@ int _DateTime::parse(std::string fmt, std::string str) {
             if (++itf != endf) {
                 switch (*itf) {
                 case 'w':
-                case 'W':
-                    while (it != end && std::isspace(*it))
+                case 'W': {
+                    auto start = it;
+                    while (it != end && std::isspace(*it)) {
                         ++it;
-                    while (it != end && std::isalpha(*it))
+                    }
+
+                    while (it != end && std::isalpha(*it)) {
                         ++it;
+                    }
+                    _dayOfWeek = parseDayOfWeek(start,it);
                     break;
+                }
                 case 'b':
                 case 'B':
                     _month = parseMonth(it, end);
@@ -409,6 +415,35 @@ int _DateTime::parseMonth(std::string::const_iterator &it,
         if (st(DateTime)::MONTH_NAMES[i].find(month) == 0) {
             return i;
         }
+    }
+
+    return -1;
+}
+
+int _DateTime::parseDayOfWeek(std::string::const_iterator & it,
+                const std::string::const_iterator &end) {
+    std::string dayOfWeek;
+    while (it != end && (std::isspace(*it) || std::ispunct(*it)))
+        ++it;
+    while (it != end && std::isalpha(*it)) {
+        char ch = (*it++);
+        dayOfWeek += static_cast<char>(std::toupper(ch));
+    }
+    printf("dayOfWeek is %s \n",dayOfWeek.c_str());
+    if(dayOfWeek == "MON") {
+        return st(Calendar)::Monday;
+    } else if(dayOfWeek == "TUE") {
+        return st(Calendar)::Tuesday;
+    } else if(dayOfWeek == "WED") {
+        return st(Calendar)::Wednesday;
+    } else if(dayOfWeek == "THU") {
+        return st(Calendar)::Thursday;
+    } else if(dayOfWeek == "FRI") {
+        return st(Calendar)::Friday;
+    } else if(dayOfWeek == "SAT") {
+        return st(Calendar)::Saturday;
+    } else if(dayOfWeek == "SUN") {
+        return st(Calendar)::Sunday;
     }
 
     return -1;

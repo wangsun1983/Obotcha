@@ -21,6 +21,7 @@ public:
     _HttpDate(String);
     
     String toString();
+    DateTime toDateTime();
 
 private:
     DateTime mDate;

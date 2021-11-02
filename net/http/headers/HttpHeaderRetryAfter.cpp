@@ -13,15 +13,12 @@ _HttpHeaderRetryAfter::_HttpHeaderRetryAfter(String s):_HttpHeaderRetryAfter() {
 }
 
 void _HttpHeaderRetryAfter::import(String s) {
-    st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
-        if(parameter == nullptr) {
-            if(directive->containsIgnoreCase("GMT")) {
-                date = createHttpDate(directive);
-            } else {
-                delay = directive->toBasicInt();
-            }
-        }
-    });
+    String value = s->trim();
+    if(value->containsIgnoreCase("GMT")) {
+        date = createHttpDate(value);
+    } else {
+        delay = value->toBasicInt();
+    }
 }
 
 HttpDate _HttpHeaderRetryAfter::getDate() {

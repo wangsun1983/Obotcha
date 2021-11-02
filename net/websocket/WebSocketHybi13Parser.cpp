@@ -130,7 +130,7 @@ ByteArray _WebSocketHybi13Parser::parsePingBuff(){
 String _WebSocketHybi13Parser::getOrigin(HttpHeader h) {
     //return h->get(st(HttpHeader)::Origin);
     auto origin = h->getOrigin();
-    return (origin != nullptr)?origin->get():nullptr;
+    return (origin != nullptr)?origin->get()->toString():nullptr;
 }
 
 int _WebSocketHybi13Parser::getVersion() {

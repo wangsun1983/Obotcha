@@ -51,9 +51,9 @@ HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl)
     }
 
     //if(header->get(st(HttpHeader)::Origin) == nullptr) {
-    if(header->getOrigin() == nullptr) {
-        header->set(st(HttpHeader)::Origin,createString("null"));
-    }
+    //if(header->getOrigin() == nullptr) {
+    //    header->set(st(HttpHeader)::Origin,createString("null"));
+    //}
 
     //if(header->get(st(HttpHeader)::SecWebSocketKey) == nullptr) {
     if(header->getWebSocketKey() == nullptr) {

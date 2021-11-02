@@ -149,6 +149,9 @@ DECLARE_CLASS(DateTime) {
     int parse(int type, String content);
     int parse(std::string format, std::string content);
 
+    int parseDayOfWeek(std::string::const_iterator & start,
+                   const std::string::const_iterator &end);
+
     int parseMonth(std::string::const_iterator & it,
                    const std::string::const_iterator &end);
     int parseAMPM(std::string::const_iterator & it,
