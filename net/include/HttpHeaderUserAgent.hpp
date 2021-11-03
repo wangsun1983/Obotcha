@@ -5,8 +5,18 @@
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
+#include "ArrayList.hpp"
 
 namespace obotcha {
+
+DECLARE_CLASS(HttpUserAgentDetail) {
+public:
+    _HttpUserAgentDetail(String,String,String);
+    _HttpUserAgentDetail();
+    String product;
+    String version;
+    String info;
+};
 
 DECLARE_CLASS(HttpHeaderUserAgent) {
 
@@ -15,13 +25,19 @@ public:
     _HttpHeaderUserAgent(String);
 
     void import(String);
-    void set(String);
-    String get();
+    void add(String product,String version,String info);
+    ArrayList<HttpUserAgentDetail> get();
 
     String toString();
 
 private:
-    String agent;
+    enum {
+        ParseProduct = 0,
+        ParseVersion,
+        ParseInfo
+    };
+    
+    ArrayList<HttpUserAgentDetail> agents;
 };
 
 }
