@@ -18,13 +18,17 @@ public:
 
     void import(String);
 
-    HttpDate get();
+    HttpDate getDate();
+    String getTag();
+
     void set(HttpDate);
+    void set(String);
 
     String toString();
 
 private:
     HttpDate date;
+    String tag;
 };
 
 }

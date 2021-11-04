@@ -875,17 +875,25 @@ int _String::lastIndexOf(const String &v) {
     return m_str.find_last_of(v->m_str);
 }
 
-int _String::lastIndexOf(const char *v) { return m_str.find_last_of(v); }
-
-int _String::lastIndexOf(std::string v) { return m_str.find_last_of(v); }
-
-bool _String::startsWith(const String &v) {
-    return (m_str.find(v->m_str) == v->size());
+int _String::lastIndexOf(const char *v) { 
+    return m_str.find_last_of(v);
 }
 
-bool _String::startsWith(const char *v) { return (m_str.find(v) == strlen(v)); }
+int _String::lastIndexOf(std::string v) { 
+    return m_str.find_last_of(v); 
+}
 
-bool _String::startsWith(std::string v) { return (m_str.find(v) == v.size()); }
+bool _String::startsWith(const String &v) {
+    return (m_str.find(v->m_str) == 0);
+}
+
+bool _String::startsWith(const char *v) { 
+    return (m_str.find(v) == 0); 
+}
+
+bool _String::startsWith(std::string v) { 
+    return (m_str.find(v) == 0); 
+}
 
 void _String::_append() {
     // Do nothing!!.just for _append

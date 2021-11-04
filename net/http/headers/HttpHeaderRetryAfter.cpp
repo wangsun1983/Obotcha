@@ -12,8 +12,7 @@ _HttpHeaderRetryAfter::_HttpHeaderRetryAfter(String s):_HttpHeaderRetryAfter() {
     import(s);
 }
 
-void _HttpHeaderRetryAfter::import(String s) {
-    String value = s->trim();
+void _HttpHeaderRetryAfter::import(String value) {
     if(value->containsIgnoreCase("GMT")) {
         date = createHttpDate(value);
     } else {

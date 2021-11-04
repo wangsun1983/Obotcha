@@ -45,37 +45,39 @@ void _HttpHeaderUserAgent::import(String value) {
             break;
 
             case ParseVersion:
+            printf("parse version v[%d] is %c \n",i,v[i]);
             if(v[i] == ' ') {
                 detail->version = createString(v,start,i-start);
                 start = i + 1;
                 status = ParseInfo;
-                if(start == size) {
-                    agents->add(detail);
-                }
                 printf("version is %s \n",detail->version->toChars());
-            } 
+            } else if(i == size - 1) {
+                detail->version = createString(v,start,i-start+1);
+                agents->add(detail);
+                printf("version2 is %s \n",detail->version->toChars());
+            }
+
             break;
 
             case ParseInfo:
-                printf("v[start] is %c ,i is %d,start is %d\n",v[start],i,start);
+                printf("v[i] is %c ,i is %d,start is %d\n",v[i],i,start);
                 if(v[i] == ' ') {
                     start++;
                     continue;
                 } else if(v[i] == '(') {
                     start++;
                     hasInfo = true;
-                    continue;
-                } else if(v[i] == ')' && hasInfo) {
-                    detail->info = createString(v,start,i-start);
-                    continue;
-                    printf("info is %s \n",detail->info->toChars());
+                    for(int next = i;next < size;next++) {
+                        if(v[next] == ')') {
+                            detail->info = createString(v,start,next - start);
+                            start = next+1;
+                            break;
+                        }
+                    }
+                } else {
+                    status = ParseProduct;
+                    agents->add(detail);
                 }
-
-                
-                status = ParseProduct;
-                agents->add(detail);
-                hasInfo = false;
-                
             break;
         }
     }
@@ -91,8 +93,22 @@ ArrayList<HttpUserAgentDetail> _HttpHeaderUserAgent::get() {
 }
 
 String _HttpHeaderUserAgent::toString() {
-    //return agent;
-    return nullptr;
+    String useragent = "";
+    if(agents->size() == 0){
+        return nullptr;
+    }
+    
+    auto iterator = agents->getIterator();
+    while(iterator->hasValue()) {
+        auto v = iterator->getValue();
+        useragent = useragent->append(v->product,"/",v->version," ");
+        if(v->info != nullptr) {
+            useragent = useragent->append("(",v->info,") ");
+        }
+        iterator->next();
+    }
+
+    return useragent->subString(0,useragent->size() - 1);
 }
 
 }

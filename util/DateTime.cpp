@@ -176,8 +176,7 @@ _DateTime::_DateTime(int year, int month, int day, int hour, int minute,
 
 _DateTime::_DateTime(String content) {
     init();
-
-    int type = isValid(content);
+    int type = isValid(content->trim());
     if (type == -1) {
         Trigger(InitializeException, "invalid date string");
     }
