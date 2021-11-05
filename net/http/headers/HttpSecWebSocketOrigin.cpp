@@ -7,11 +7,11 @@ _HttpSecWebSocketOrigin::_HttpSecWebSocketOrigin() {
 }
 
 _HttpSecWebSocketOrigin::_HttpSecWebSocketOrigin(String s) {
-    origin = s;
+    import(s);
 }
 
 void _HttpSecWebSocketOrigin::import(String s) {
-    origin = s;
+    origin = s->trim();
 }
 
 String _HttpSecWebSocketOrigin::get() {
@@ -19,7 +19,7 @@ String _HttpSecWebSocketOrigin::get() {
 }
 
 void _HttpSecWebSocketOrigin::set(String s) {
-    origin = s;
+    origin = s->trim();
 }
 
 String _HttpSecWebSocketOrigin::toString() {

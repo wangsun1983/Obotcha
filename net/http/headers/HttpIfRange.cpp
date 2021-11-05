@@ -12,13 +12,9 @@ _HttpIfRange::_HttpIfRange(String v):_HttpIfRange() {
 }
 
 void _HttpIfRange::import(String v) {
-    printf("ifrange is %s \n",v->toChars());
     if(v->trim()->startsWith("\"")) {
-        printf("it is a tag \n");
         tag = v->subString(1,v->size() -2 ); //remove \"
-        printf("tag is %s \n",tag->toChars());
     } else {
-        printf("it is a date \n");
         date = createHttpDate(v);
     }
 }

@@ -8,7 +8,7 @@ _HttpSecWebSocketExtensions::_HttpSecWebSocketExtensions() {
 }
 
 _HttpSecWebSocketExtensions::_HttpSecWebSocketExtensions(String s):_HttpSecWebSocketExtensions() {
-    import(s);
+    import(s->trim());
 }
 
 void _HttpSecWebSocketExtensions::import(String s) {
@@ -26,7 +26,7 @@ void _HttpSecWebSocketExtensions::set(ArrayList<String> s) {
 }
 
 void _HttpSecWebSocketExtensions::add(String s) {
-    extensions->add(s);
+    extensions->add(s->trim());
 }
 
 String _HttpSecWebSocketExtensions::toString() {
@@ -36,7 +36,7 @@ String _HttpSecWebSocketExtensions::toString() {
         extension = extension->append(iterator->getValue(),", ");
         iterator->next();
     }
-
+    
     return extension->subString(0,extension->size() - 2);
 }
 

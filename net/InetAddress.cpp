@@ -29,11 +29,17 @@ _InetAddress::_InetAddress(String addr, int port) {
     mPort = port;
 }
 
-_InetAddress::_InetAddress() { mPort = DefaultPort; }
+_InetAddress::_InetAddress() { 
+    mPort = DefaultPort; 
+}
 
-void _InetAddress::setPort(int p) { mPort = p; }
+void _InetAddress::setPort(int p) { 
+    mPort = p; 
+}
 
-int _InetAddress::getPort() { return mPort; }
+int _InetAddress::getPort() { 
+    return mPort; 
+}
 
 void _InetAddress::setAddress(String addr) {
     if (addr != nullptr) {
@@ -41,6 +47,12 @@ void _InetAddress::setAddress(String addr) {
     }
 }
 
-String _InetAddress::getAddress() { return mAddress; }
+String _InetAddress::getAddress() { 
+    return mAddress; 
+}
+
+int _InetAddress::getType() {
+    return mType;
+}
 
 } // namespace obotcha

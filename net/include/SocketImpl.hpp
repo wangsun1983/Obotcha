@@ -37,7 +37,10 @@ protected:
     FileDescriptor sock;
     InetAddress address;
     SocketOption option;
-    struct sockaddr_in mSockAddr;
+    
+    struct sockaddr_in mSockAddr; //ipv4
+    struct sockaddr_in6 mSockAddrV6; //ipv6
+
     int mBuffSize;
 
 private:

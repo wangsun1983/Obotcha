@@ -21,16 +21,37 @@ namespace obotcha {
 // socket
 _SocksSocketImpl::_SocksSocketImpl(InetAddress address, SocketOption option)
     : _SocketImpl(address, option) {
-    mSockAddr.sin_family = PF_INET;
-    mSockAddr.sin_port = htons(address->getPort());
-    if (address->getAddress() != nullptr) {
-        mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
-    } else {
-        mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    switch(address->getType()) {
+        case st(InetAddress)::IPV4: {
+            mSockAddr.sin_family = PF_INET;
+            mSockAddr.sin_port = htons(address->getPort());
+            if (address->getAddress() != nullptr) {
+                mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
+            } else {
+                mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+            }
+
+            this->sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0)));
+        }
+        break;
+
+        case st(InetAddress)::IPV6: {
+            mSockAddrV6.sin6_family = PF_INET6;
+            mSockAddrV6.sin6_port = htons(address->getPort());
+            if (address->getAddress() != nullptr) {
+                //mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
+                inet_pton(AF_INET6, address->getAddress()->toChars(), &mSockAddrV6.sin6_addr);
+            } else {
+                mSockAddrV6.sin6_addr = in6addr_any;
+            }
+
+            this->sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET6, SOCK_STREAM, 0)));
+        
+        }
+        break;
     }
 
-    this->sock = createFileDescriptor(
-        TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_STREAM, 0)));
+    
     setOptions();
 }
 

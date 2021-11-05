@@ -11,7 +11,7 @@ _HttpStrictTransportSecurity::_HttpStrictTransportSecurity() {
 }
 
 _HttpStrictTransportSecurity::_HttpStrictTransportSecurity(String s) {
-    import(s);
+    import(s->trim());
 }
 
 void _HttpStrictTransportSecurity::import(String s) {

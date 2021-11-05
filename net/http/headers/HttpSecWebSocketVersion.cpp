@@ -7,7 +7,7 @@ _HttpSecWebSocketVersion::_HttpSecWebSocketVersion() {
 }
 
 _HttpSecWebSocketVersion::_HttpSecWebSocketVersion(String s):_HttpSecWebSocketVersion() {
-    import(s);
+    import(s->trim());
 }
 
 void _HttpSecWebSocketVersion::import(String s) {

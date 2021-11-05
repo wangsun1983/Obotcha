@@ -26,7 +26,7 @@ void _HttpVersion::setMajorVer(int v) { mMajorVer = v; }
 void _HttpVersion::setMinorVer(int v) { mMinorVer = v; }
 
 void _HttpVersion::import(String s) {
-    ArrayList<String> strings = s->split("/");
+    ArrayList<String> strings = s->trim()->split("/");
     if (strings == nullptr || strings->size() != 2) {
         return;
     }

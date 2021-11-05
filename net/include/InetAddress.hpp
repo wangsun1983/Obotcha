@@ -32,6 +32,8 @@ public:
     String getAddress();
     void setAddress(String);
 
+    int getType();
+
 protected:
     String mAddress;
     int mPort;

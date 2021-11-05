@@ -7,11 +7,11 @@ _HttpSecWebSocketKey::_HttpSecWebSocketKey() {
 }
 
 _HttpSecWebSocketKey::_HttpSecWebSocketKey(String s) {
-    this->key = s;
+    import(s);
 }
 
 void _HttpSecWebSocketKey::import(String s) {
-    key = s;
+    key = s->trim();
 }
 
 String _HttpSecWebSocketKey::get() {
@@ -19,7 +19,7 @@ String _HttpSecWebSocketKey::get() {
 }
 
 void _HttpSecWebSocketKey::set(String s) {
-    key = s;
+    key = s->trim();
 }
 
 String _HttpSecWebSocketKey::toString() {

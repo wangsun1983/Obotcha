@@ -30,7 +30,6 @@ _WebSocketServerBuilder*_WebSocketServerBuilder::setThreadNum(int num) {
     return this;
 }
 
-
 WebSocketServer _WebSocketServerBuilder::build() {
     WebSocketServer server = createWebSocketServer(threadNum);
     server->mAddress = addr;

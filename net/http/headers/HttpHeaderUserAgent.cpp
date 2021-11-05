@@ -38,29 +38,24 @@ void _HttpHeaderUserAgent::import(String value) {
             } else if(v[i] == '/') {
                 detail = createHttpUserAgentDetail();
                 detail->product = createString(v,start,i-start);
-                printf("product is %s \n",detail->product->toChars());
                 start = i + 1;
                 status = ParseVersion;
             }
             break;
 
             case ParseVersion:
-            printf("parse version v[%d] is %c \n",i,v[i]);
             if(v[i] == ' ') {
                 detail->version = createString(v,start,i-start);
                 start = i + 1;
                 status = ParseInfo;
-                printf("version is %s \n",detail->version->toChars());
             } else if(i == size - 1) {
                 detail->version = createString(v,start,i-start+1);
                 agents->add(detail);
-                printf("version2 is %s \n",detail->version->toChars());
             }
 
             break;
 
             case ParseInfo:
-                printf("v[i] is %c ,i is %d,start is %d\n",v[i],i,start);
                 if(v[i] == ' ') {
                     start++;
                     continue;

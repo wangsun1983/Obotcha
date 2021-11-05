@@ -8,7 +8,7 @@ _HttpTransferEncoding::_HttpTransferEncoding() {
 }
 
 _HttpTransferEncoding::_HttpTransferEncoding(String s):_HttpTransferEncoding() {
-    import(s);
+    import(s->trim());
 }
 
 void _HttpTransferEncoding::import(String s) {

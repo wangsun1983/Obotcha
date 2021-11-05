@@ -9,7 +9,7 @@ _HttpXFrameOptions::_HttpXFrameOptions() {
 }
 
 _HttpXFrameOptions::_HttpXFrameOptions(String s) {
-    import(s);
+    import(s->trim());
 }
 
 void _HttpXFrameOptions::import(String s) {

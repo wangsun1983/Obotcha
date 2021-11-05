@@ -7,11 +7,11 @@ _HttpSecWebSocketAccept::_HttpSecWebSocketAccept() {
 }
 
 _HttpSecWebSocketAccept::_HttpSecWebSocketAccept(String s) {
-    this->accept = s;
+    this->accept = s->trim();
 }
 
 void _HttpSecWebSocketAccept::import(String s) {
-    accept = s;
+    accept = s->trim();
 }
 
 String _HttpSecWebSocketAccept::get() {
@@ -19,7 +19,7 @@ String _HttpSecWebSocketAccept::get() {
 }
 
 void _HttpSecWebSocketAccept::set(String s) {
-    accept = s;
+    accept = s->trim();
 }
 
 String _HttpSecWebSocketAccept::toString() {

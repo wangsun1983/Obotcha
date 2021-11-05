@@ -4,6 +4,7 @@
 
 #include "ServerSocketImpl.hpp"
 #include "SocketBuilder.hpp"
+#include "Inet6Address.hpp"
 
 namespace obotcha {
 
@@ -13,11 +14,23 @@ _ServerSocketImpl::_ServerSocketImpl(InetAddress address, SocketOption option)
     : _SocketImpl(address, option), _SocksSocketImpl(address, option) {}
 
 int _ServerSocketImpl::bind() {
-    if (::bind(sock->getFd(), (struct sockaddr *)&mSockAddr,
-               sizeof(mSockAddr)) < 0) {
-        return -NetBindFail;
-    }
+    switch(this->address->getType()) {
+        case st(InetAddress)::IPV4: {
+            if (::bind(sock->getFd(), (struct sockaddr *)&mSockAddr,sizeof(sockaddr)) < 0) {
+                return -NetBindFail;
+            }
+        }
+        break;
 
+        case st(InetAddress)::IPV6: {
+            if (::bind(sock->getFd(), (struct sockaddr *)&mSockAddr,sizeof(sockaddr_in6)) < 0) {
+                return -NetBindFail;
+            }
+        }
+        break;
+
+    }
+    
     int connectNum = DefaultConnectNum;
     if (option != nullptr) {
         connectNum = option->getConnectionNum();
@@ -36,14 +49,35 @@ Socket _ServerSocketImpl::accept() {
     int clientfd = ::accept(sock->getFd(), (struct sockaddr *)&client_address,
                             &client_addrLength);
     if (clientfd > 0) {
-        InetAddress address =
-            createInetAddress(createString(inet_ntoa(client_address.sin_addr)),
-                              ntohs(client_address.sin_port));
+        switch(this->address->getType()) {
+            case st(InetAddress)::IPV4: {
+                InetAddress clientAddr =
+                    createInetAddress(createString(inet_ntoa(client_address.sin_addr)),
+                                    ntohs(client_address.sin_port));
 
-        return createSocketBuilder()
-            ->setAddress(address)
-            ->setFileDescriptor(createFileDescriptor(clientfd))
-            ->newSocket();
+                return createSocketBuilder()
+                    ->setAddress(clientAddr)
+                    ->setFileDescriptor(createFileDescriptor(clientfd))
+                    ->newSocket();
+            }
+            break;
+
+            case st(InetAddress)::IPV6: {
+                char buf[256];
+                memset(buf,0,256);
+                struct sockaddr_in6 *client_address_ipv6 = (struct sockaddr_in6 *)&client_address;
+                inet_ntop(AF_INET6, &client_address_ipv6->sin6_addr, buf, sizeof(buf));
+                String ip = createString(buf);
+
+                Inet6Address clientAddr = createInet6Address(ip,client_address_ipv6->sin6_port);
+
+                return createSocketBuilder()
+                    ->setAddress(clientAddr)
+                    ->setFileDescriptor(createFileDescriptor(clientfd))
+                    ->newSocket();
+            }
+            break;
+        }
     }
 
     return nullptr;

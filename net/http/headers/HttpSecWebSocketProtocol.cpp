@@ -8,7 +8,7 @@ _HttpSecWebSocketProtocol::_HttpSecWebSocketProtocol() {
 }
 
 _HttpSecWebSocketProtocol::_HttpSecWebSocketProtocol(String s):_HttpSecWebSocketProtocol() {
-    import(s);
+    import(s->trim());
 }
 
 void _HttpSecWebSocketProtocol::import(String s) {
@@ -22,7 +22,7 @@ ArrayList<String> _HttpSecWebSocketProtocol::get() {
 }
 
 void _HttpSecWebSocketProtocol::add(String s) {
-    protocols->add(s);
+    protocols->add(s->trim());
 }
 
 void _HttpSecWebSocketProtocol::set(ArrayList<String> s) {
