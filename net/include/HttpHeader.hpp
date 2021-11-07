@@ -63,6 +63,10 @@
 #include "HttpSecWebSocketOrigin.hpp"
 #include "HttpHeaderOrigin.hpp"
 #include "HttpHeaderPragma.hpp"
+#include "HttpAcceptRanges.hpp"
+#include "HttpHeaderAltSvc.hpp"
+#include "HttpContentRange.hpp"
+#include "HttpContentSecurityPolicy.hpp"
 
 namespace obotcha {
 
@@ -103,6 +107,8 @@ public:
     const static String ContentLocation;
     const static String ContentMD5;
     const static String ContentRange;
+    const static String ContentSecurityPolicyReportOnly;
+    const static String ContentSecurityPolicy;
     const static String ContentType;
     const static String Cookie;
     const static String DNT;
@@ -212,6 +218,8 @@ public:
         TypeContentLocation,
         TypeContentMD5,
         TypeContentRange,
+        TypeContentSecurityPolicyReportOnly,
+        TypeContentSecurityPolicy,
         TypeContentType,
         TypeCookie,
         TypeDNT,
@@ -520,6 +528,25 @@ public:
     void setPragma(HttpHeaderPragma s);
     HttpHeaderPragma getPragma();
 
+    //HttpAcceptRanges
+    void setHttpAcceptRanges(HttpAcceptRanges s);
+    HttpAcceptRanges getAcceptRanges();
+
+    //HttpHeaderAltSvc
+    void setAltSvc(HttpHeaderAltSvc s);
+    HttpHeaderAltSvc getAltSvc();
+
+    //HttpContentRange
+    void setContentRange(HttpContentRange);
+    HttpContentRange getContentRange();
+
+    //HttpContentSecurityPolicy
+    void setSecurityPolicy(HttpContentSecurityPolicy);
+    HttpContentSecurityPolicy getSecurityPolicy();
+
+    void setSecurityPolicyReportOnly(HttpContentSecurityPolicy);
+    HttpContentSecurityPolicy getSecurityPolicyReportOnly();
+
     String toString(int);
 
     static int findId(String);
@@ -654,7 +681,15 @@ private:
 
     HttpHeaderOrigin mOrigin;
     HttpHeaderPragma mPragma;
+
+    HttpAcceptRanges mAcceptRanges;
+
+    HttpHeaderAltSvc mAltSvc;
     
+    HttpContentRange mContentRange;
+
+    HttpContentSecurityPolicy mSecurityPolicy;
+    HttpContentSecurityPolicy mSecurityPolicyReportOnly;
     /////
 
     ArrayList<HttpCookie> mCookies;

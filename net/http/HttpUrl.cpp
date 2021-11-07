@@ -238,13 +238,21 @@ void _HttpUrl::import(String input) {
     }
 }
 
-void _HttpUrl::setScheme(String data) { mScheme = data; }
+void _HttpUrl::setScheme(String data) { 
+    mScheme = data; 
+}
 
-void _HttpUrl::setHost(String data) { mHostName = data; }
+void _HttpUrl::setHost(String data) { 
+    mHostName = data; 
+}
 
-void _HttpUrl::setPort(int data) { mPort = data; }
+void _HttpUrl::setPort(int data) { 
+    mPort = data; 
+}
 
-void _HttpUrl::setPath(String data) { mPath = data; }
+void _HttpUrl::setPath(String data) { 
+    mPath = data; 
+}
 
 void _HttpUrl::addQuery(String name, String value) { 
     if(mQuery != nullptr) {
@@ -253,11 +261,17 @@ void _HttpUrl::addQuery(String name, String value) {
     mQuery->set(name, value); 
 }
 
-void _HttpUrl::setFragment(String data) { mFragment = data; }
+void _HttpUrl::setFragment(String data) { 
+    mFragment = data; 
+}
 
-void _HttpUrl::setUser(String data) { mUser = data; }
+void _HttpUrl::setUser(String data) { 
+    mUser = data; 
+}
 
-String _HttpUrl::getUser() { return mUser; }
+String _HttpUrl::getUser() { 
+    return mUser; 
+}
 
 void _HttpUrl::setPassword(String data) { mPassword = data; }
 

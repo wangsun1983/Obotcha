@@ -124,7 +124,12 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpwskey.o \
 		$(outtmp)/httpresponse.o \
 		$(outtmp)/httprequest.o \
-		
+		$(outtmp)/httpacceptranges.o \
+		$(outtmp)/httpheaderaltsvc.o \
+		$(outtmp)/httpcontentrange.o \
+		$(outtmp)/httpcontentsepolicy.o \
+
+
 		
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketImpl.cpp -o $(outtmp)/socketimpl.o 
@@ -223,6 +228,18 @@ $(outtmp)/httpwskey.o :$(netDir)/http/headers/HttpSecWebSocketKey.cpp
 
 $(outtmp)/httpallowheaders.o :$(netDir)/http/headers/HttpAccessControlAllowHeaders.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpAccessControlAllowHeaders.cpp -o $(outtmp)/httpallowheaders.o 
+
+$(outtmp)/httpacceptranges.o :$(netDir)/http/headers/HttpAcceptRanges.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpAcceptRanges.cpp -o $(outtmp)/httpacceptranges.o 
+
+$(outtmp)/httpheaderaltsvc.o :$(netDir)/http/headers/HttpHeaderAltSvc.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAltSvc.cpp -o $(outtmp)/httpheaderaltsvc.o 
+
+$(outtmp)/httpcontentrange.o :$(netDir)/http/headers/HttpContentRange.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpContentRange.cpp -o $(outtmp)/httpcontentrange.o 
+
+$(outtmp)/httpcontentsepolicy.o :$(netDir)/http/headers/HttpContentSecurityPolicy.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpContentSecurityPolicy.cpp -o $(outtmp)/httpcontentsepolicy.o 
 
 $(outtmp)/httpallowmethods.o :$(netDir)/http/headers/HttpAccessControlAllowMethods.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpAccessControlAllowMethods.cpp -o $(outtmp)/httpallowmethods.o 

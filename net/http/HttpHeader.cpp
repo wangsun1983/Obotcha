@@ -66,6 +66,8 @@ const String _HttpHeader::ContentLength = createString("content-length");
 const String _HttpHeader::ContentLocation = createString("content-location");
 const String _HttpHeader::ContentMD5 = createString("content-md5");
 const String _HttpHeader::ContentRange = createString("content-range");
+const String _HttpHeader::ContentSecurityPolicyReportOnly = createString("Content-Security-Policy-Report-Only");
+const String _HttpHeader::ContentSecurityPolicy = createString("Content-Security-Policy");
 const String _HttpHeader::ContentType = createString("content-type");
 const String _HttpHeader::Cookie = createString("cookie");
 const String _HttpHeader::DNT = createString("dnt");
@@ -186,6 +188,8 @@ _HttpHeader::_HttpHeader() {
             idMaps->put(ContentLocation,createInteger(TypeContentLocation));
             idMaps->put(ContentMD5,createInteger(TypeContentMD5));
             idMaps->put(ContentRange,createInteger(TypeContentRange));
+            idMaps->put(ContentSecurityPolicyReportOnly,createInteger(TypeContentSecurityPolicyReportOnly));
+            idMaps->put(ContentSecurityPolicy,createInteger(TypeContentSecurityPolicy));
             idMaps->put(ContentType,createInteger(TypeContentType));
             idMaps->put(Cookie,createInteger(TypeCookie));
 
@@ -294,6 +298,8 @@ _HttpHeader::_HttpHeader() {
             names->add(ContentLocation);
             names->add(ContentMD5);
             names->add(ContentRange);
+            names->add(ContentSecurityPolicyReportOnly);
+            names->add(ContentSecurityPolicy);
             names->add(ContentType);
             names->add(Cookie);
             names->add(DNT);
@@ -443,6 +449,11 @@ void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
     SET_VALUE(mWebSocketOrigin);
     SET_VALUE(mOrigin);
     SET_VALUE(mPragma);
+    SET_VALUE(mAcceptRanges);
+    SET_VALUE(mAltSvc);
+    SET_VALUE(mContentRange);
+    SET_VALUE(mSecurityPolicy);
+    SET_VALUE(mSecurityPolicyReportOnly);
 #undef SET_VALUE
 }
 
@@ -506,6 +517,11 @@ void _HttpHeader::reset() {
     mWebSocketOrigin = nullptr;
     mOrigin = nullptr;
     mPragma = nullptr;
+    mAcceptRanges = nullptr;
+    mAltSvc = nullptr;
+    mContentRange = nullptr;
+    mSecurityPolicy = nullptr;
+    mSecurityPolicyReportOnly = nullptr;
 
     mMethod = -1;
     mResponseReason = nullptr;
@@ -956,6 +972,46 @@ void _HttpHeader::set(String key, String value) {
                 mPragma->import(value);
                 return;
             }
+
+            case TypeAcceptRanges: {
+                if(mAcceptRanges == nullptr) {
+                    mAcceptRanges = createHttpAcceptRanges();
+                }
+                mAcceptRanges->import(value);
+                return;
+            }
+
+            case TypeAltSvc: {
+                if(mAltSvc == nullptr) {
+                    mAltSvc = createHttpHeaderAltSvc();
+                }
+                mAltSvc->import(value);
+                return;
+            }
+
+            case TypeContentRange: {
+                if(mContentRange == nullptr) {
+                    mContentRange = createHttpContentRange();
+                }
+                mContentRange->import(value);
+                return;
+            }
+
+            case TypeContentSecurityPolicy: {
+                if(mSecurityPolicy == nullptr) {
+                    mSecurityPolicy = createHttpContentSecurityPolicy();
+                }
+                mSecurityPolicy->import(value);
+                return;
+            }
+
+            case TypeContentSecurityPolicyReportOnly: {
+                if(mSecurityPolicyReportOnly == nullptr) {
+                    mSecurityPolicyReportOnly = createHttpContentSecurityPolicy();
+                }
+                mSecurityPolicyReportOnly->import(value);
+                return;
+            }
         }
     }
 
@@ -1347,37 +1403,98 @@ String _HttpHeader::get(String header) {
                 }
                 break;
             }
+
+            case TypeAcceptRanges: {
+                if(mAcceptRanges != nullptr) {
+                    return mAcceptRanges->toString();
+                }
+                break;
+            }
+
+            case TypeAltSvc: {
+                if(mAltSvc != nullptr) {
+                    return mAltSvc->toString();
+                }
+                break; 
+            }
+
+            case TypeContentRange: {
+                if(mContentRange != nullptr) {
+                    return mContentRange->toString();
+                }
+                break; 
+            }
+
+            case TypeContentSecurityPolicy: {
+                if(mSecurityPolicy != nullptr) {
+                    return mSecurityPolicy->toString();
+                }
+                break;
+            }
+
+            case TypeContentSecurityPolicyReportOnly: {
+                if(mSecurityPolicyReportOnly != nullptr) {
+                    return mSecurityPolicyReportOnly->toString();
+                }
+                break;
+            }
         }
     }
 
     return mValues->get(header->toLowerCase());
 }
 
-int _HttpHeader::size() { return mValues->size(); }
+int _HttpHeader::size() { 
+    return mValues->size(); 
+}
 
-int _HttpHeader::getMethod() { return mMethod; }
+int _HttpHeader::getMethod() { 
+    return mMethod; 
+}
 
-void _HttpHeader::setMethod(int v) { mMethod = v; }
+void _HttpHeader::setMethod(int v) { 
+    mMethod = v; 
+}
 
-HttpUrl _HttpHeader::getUrl() { return mUrl; }
+HttpUrl _HttpHeader::getUrl() { 
+    return mUrl; 
+}
 
-void _HttpHeader::setUrl(HttpUrl u) { mUrl = u; }
+void _HttpHeader::setUrl(HttpUrl u) { 
+    mUrl = u; 
+}
 
-int _HttpHeader::getResponseStatus() { return mResponseStatus; }
+int _HttpHeader::getResponseStatus() { 
+    return mResponseStatus; 
+}
 
-void _HttpHeader::setResponseStatus(int s) { mResponseStatus = s; }
+void _HttpHeader::setResponseStatus(int s) { 
+    mResponseStatus = s;
+}
 
-String _HttpHeader::getResponseReason() { return mResponseReason; }
+String _HttpHeader::getResponseReason() { 
+    return mResponseReason; 
+}
 
-void _HttpHeader::setResponseReason(String s) { mResponseReason = s; }
+void _HttpHeader::setResponseReason(String s) { 
+    mResponseReason = s; 
+}
 
-int _HttpHeader::getType() { return mType; }
+int _HttpHeader::getType() { 
+    return mType; 
+}
 
-void _HttpHeader::setType(int v) { mType = v; }
+void _HttpHeader::setType(int v) { 
+    mType = v; 
+}
 
-void _HttpHeader::addCookie(HttpCookie c) { mCookies->add(c); }
+void _HttpHeader::addCookie(HttpCookie c) { 
+    mCookies->add(c); 
+}
 
-ArrayList<HttpCookie> _HttpHeader::getCookies() { return mCookies; }
+ArrayList<HttpCookie> _HttpHeader::getCookies() { 
+    return mCookies; 
+}
 
 //HttpAcceptCharSet
 HttpAcceptCharSet _HttpHeader::getAcceptCharSet() {
@@ -1874,6 +1991,50 @@ HttpHeaderPragma _HttpHeader::getPragma() {
     return mPragma;
 }
 
+//HttpAcceptRanges
+void _HttpHeader::setHttpAcceptRanges(HttpAcceptRanges s) {
+    mAcceptRanges = s;
+}
+
+HttpAcceptRanges _HttpHeader::getAcceptRanges() {
+    return mAcceptRanges;
+}
+
+//HttpHeaderAltSvc
+void _HttpHeader::setAltSvc(HttpHeaderAltSvc s) {
+    mAltSvc = s;
+}
+
+HttpHeaderAltSvc _HttpHeader::getAltSvc() {
+    return mAltSvc;
+}
+
+//HttpContentRange
+void _HttpHeader::setContentRange(HttpContentRange s) {
+    mContentRange = s;
+}
+
+HttpContentRange _HttpHeader::getContentRange() {
+    return mContentRange;
+}
+
+//HttpContentSecurityPolicy
+void _HttpHeader::setSecurityPolicy(HttpContentSecurityPolicy s) {
+    mSecurityPolicy = s;
+}
+HttpContentSecurityPolicy _HttpHeader::getSecurityPolicy() {
+    return mSecurityPolicy;
+}
+
+void _HttpHeader::setSecurityPolicyReportOnly(HttpContentSecurityPolicy s) {
+    mSecurityPolicyReportOnly = s;
+}
+
+HttpContentSecurityPolicy _HttpHeader::getSecurityPolicyReportOnly() {
+    return mSecurityPolicyReportOnly;
+}
+
+//
 HttpTransferEncoding _HttpHeader::getTransferEncoding() {
     return mTransferEncoding;
 }
@@ -2175,6 +2336,26 @@ String _HttpHeader::toString(int type) {
 
     if(mPragma != nullptr) {
         header = header->append(st(HttpHeader)::Pragma,": ",mPragma->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mAcceptRanges != nullptr) {
+        header = header->append(st(HttpHeader)::AcceptRanges,": ",mAcceptRanges->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mAltSvc != nullptr) {
+        header = header->append(st(HttpHeader)::AltSvc,": ",mAltSvc->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mContentRange != nullptr) {
+        header = header->append(st(HttpHeader)::ContentRange,": ",mContentRange->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mSecurityPolicy != nullptr) {
+        header = header->append(st(HttpHeader)::ContentSecurityPolicy,": ",mSecurityPolicy->toString(),st(HttpText)::CRLF); 
+    }
+
+    if(mSecurityPolicyReportOnly != nullptr) {
+        header = header->append(st(HttpHeader)::ContentSecurityPolicyReportOnly,": ",mSecurityPolicyReportOnly->toString(),st(HttpText)::CRLF); 
     }
 
     if (header->size() == 0) {
