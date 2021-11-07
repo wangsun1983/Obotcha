@@ -50,17 +50,29 @@ void _Socket::setAsync(bool async) {
     mInput = nullptr;
 }
 
-bool _Socket::isAsync() { return mSock->getFileDescriptor()->isAsync(); }
+bool _Socket::isAsync() { 
+    return mSock->getFileDescriptor()->isAsync(); 
+}
 
-void _Socket::setInetAddress(InetAddress addr) { mSock->setInetAddress(addr); }
+void _Socket::setInetAddress(InetAddress addr) { 
+    mSock->setInetAddress(addr); 
+}
 
-InetAddress _Socket::getInetAddress() { return mSock->getInetAddress(); }
+InetAddress _Socket::getInetAddress() { 
+    return mSock->getInetAddress(); 
+}
 
-void _Socket::setType(int type) { this->type = type; }
+void _Socket::setType(int type) { 
+    this->type = type; 
+}
 
-int _Socket::connect() { return mSock->connect(); }
+int _Socket::connect() { 
+    return mSock->connect(); 
+}
 
-int _Socket::bind() { return mSock->bind(); }
+int _Socket::bind() { 
+    return mSock->bind(); 
+}
 
 void _Socket::close() {
     AutoLock l(mMutex);

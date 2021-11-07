@@ -17,17 +17,39 @@ namespace obotcha {
 _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
                                          SocketOption option)
     : _SocketImpl(address, option) {
-    mSockAddr.sin_family = AF_INET;
-    mSockAddr.sin_port = htons(address->getPort());
 
-    if (address->getAddress() != nullptr) {
-        mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
-    } else {
-        mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    switch(address->getType()) {
+        case st(InetAddress)::IPV4: {
+            mSockAddr.sin_family = AF_INET;
+            mSockAddr.sin_port = htons(address->getPort());
+
+            if (address->getAddress() != nullptr) {
+                mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
+            } else {
+                mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+            }
+
+            sock = createFileDescriptor(
+                TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)));
+        }
+        break;
+
+        case st(InetAddress)::IPV6: {
+            mSockAddrV6.sin6_family = AF_INET6;
+            mSockAddrV6.sin6_port = htons(address->getPort());
+            if (address->getAddress() != nullptr) {
+                //mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
+                inet_pton(AF_INET6, address->getAddress()->toChars(), &mSockAddrV6.sin6_addr);
+            } else {
+                mSockAddrV6.sin6_addr = in6addr_any;
+            }
+
+            this->sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET6, SOCK_DGRAM, 0)));
+        }
+        break;
     }
 
-    sock = createFileDescriptor(
-        TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)));
+    
     if (sock->getFd() < 0) {
         Trigger(InitializeException, "Datagram Socket create failed");
     }
@@ -42,8 +64,18 @@ int _DatagramSocketImpl::connect() {
 }
 
 int _DatagramSocketImpl::bind() {
-    return ::bind(sock->getFd(), (struct sockaddr *)&mSockAddr,
+    switch(this->address->getType()) {
+        case st(InetAddress)::IPV4: {
+            return ::bind(sock->getFd(), (struct sockaddr *)&mSockAddr,
                   sizeof(mSockAddr));
+        }
+
+        case st(InetAddress)::IPV6: {
+            return ::bind(sock->getFd(), (struct sockaddr *)&mSockAddrV6,
+                  sizeof(mSockAddrV6));
+        }
+    }
+    
 }
 
 } // namespace obotcha

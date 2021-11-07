@@ -23,7 +23,7 @@ int _ServerSocketImpl::bind() {
         break;
 
         case st(InetAddress)::IPV6: {
-            if (::bind(sock->getFd(), (struct sockaddr *)&mSockAddr,sizeof(sockaddr_in6)) < 0) {
+            if (::bind(sock->getFd(), (struct sockaddr *)&mSockAddrV6,sizeof(sockaddr_in6)) < 0) {
                 return -NetBindFail;
             }
         }
