@@ -22,8 +22,12 @@ FileDescriptor _ServerSocket::getFileDescriptor() {
     return mSock->getFileDescriptor();
 }
 
-int _ServerSocket::close() { return mSock->close(); }
+int _ServerSocket::close() { 
+    return mSock->close(); 
+}
 
-Socket _ServerSocket::accept() { return mSock->accept(); }
+Socket _ServerSocket::accept() { 
+    return mSock->accept(); 
+}
 
 } // namespace obotcha

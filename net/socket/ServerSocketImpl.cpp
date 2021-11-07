@@ -44,16 +44,35 @@ int _ServerSocketImpl::bind() {
 }
 
 Socket _ServerSocketImpl::accept() {
-    struct sockaddr_in client_address;
-    socklen_t client_addrLength = sizeof(struct sockaddr_in);
-    int clientfd = ::accept(sock->getFd(), (struct sockaddr *)&client_address,
+    
+    struct sockaddr_in *client_address;
+    socklen_t client_addrLength = 0;//sizeof(struct sockaddr_in);
+
+    struct sockaddr_in ipv4_addr;
+    struct sockaddr_in6 ipv6_addr;
+
+    switch(this->address->getType()) {
+        case st(InetAddress)::IPV4: {
+            client_address = &ipv4_addr;
+            client_addrLength = sizeof(struct sockaddr_in);
+        }
+        break;
+
+        case st(InetAddress)::IPV6: {
+            client_address = (struct sockaddr_in *)&ipv6_addr;
+            client_addrLength = sizeof(struct sockaddr_in6);
+        }
+    }
+    
+    
+    int clientfd = ::accept(sock->getFd(), (struct sockaddr *)client_address,
                             &client_addrLength);
     if (clientfd > 0) {
         switch(this->address->getType()) {
             case st(InetAddress)::IPV4: {
                 InetAddress clientAddr =
-                    createInetAddress(createString(inet_ntoa(client_address.sin_addr)),
-                                    ntohs(client_address.sin_port));
+                    createInetAddress(createString(inet_ntoa(ipv4_addr.sin_addr)),
+                                    ntohs(ipv4_addr.sin_port));
 
                 return createSocketBuilder()
                     ->setAddress(clientAddr)
@@ -66,10 +85,10 @@ Socket _ServerSocketImpl::accept() {
                 char buf[256];
                 memset(buf,0,256);
                 struct sockaddr_in6 *client_address_ipv6 = (struct sockaddr_in6 *)&client_address;
-                inet_ntop(AF_INET6, &client_address_ipv6->sin6_addr, buf, sizeof(buf));
+                inet_ntop(AF_INET6, &ipv6_addr.sin6_addr, buf, sizeof(buf));
                 String ip = createString(buf);
 
-                Inet6Address clientAddr = createInet6Address(ip,client_address_ipv6->sin6_port);
+                Inet6Address clientAddr = createInet6Address(ip,ipv6_addr.sin6_port);
 
                 return createSocketBuilder()
                     ->setAddress(clientAddr)

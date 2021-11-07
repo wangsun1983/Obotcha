@@ -61,21 +61,56 @@ int _SocksSocketImpl::connect() {
         LOG(ERROR) << "socket fd is async,connect will fail!!!";
     }
 
-    if (TEMP_FAILURE_RETRY(::connect(sock->getFd(),
-                                     (struct sockaddr *)&mSockAddr,
-                                     sizeof(mSockAddr))) < 0) {
-        sock->close();
+    struct sockaddr *sock_addr = nullptr;
+    long sock_length = 0;
 
+    switch(address->getType()) {
+        case st(InetAddress)::IPV4: {
+            sock_addr = (struct sockaddr *)&mSockAddr;
+            sock_length = sizeof(mSockAddr);
+        }
+        break;
+
+        case st(InetAddress)::IPV6: {
+            sock_addr = (struct sockaddr *)&mSockAddrV6;
+            sock_length = sizeof(mSockAddrV6);
+        }
+        break;
+    }
+
+    if (TEMP_FAILURE_RETRY(::connect(sock->getFd(),sock_addr,sock_length)) < 0) {
+        sock->close();
         return -1;
     }
 
     while (1) {
-        struct sockaddr_in local_address;
-        memset(&local_address, 0, sizeof(struct sockaddr_in));
-        socklen_t length = 0;
-        int ret = getpeername(sock->getFd(), (struct sockaddr *)&local_address,
-                              &length);
-        if (ntohs(local_address.sin_port) == 0) {
+        struct sockaddr_in sockAddrV4; //ipv4
+        struct sockaddr_in6 sockAddrV6; //ipv6
+
+        struct sockaddr *addr = nullptr;
+        socklen_t size = 0;
+
+        switch(address->getType()) {
+            case st(InetAddress)::IPV4: {
+                memset(&sockAddrV4, 0, sizeof(struct sockaddr_in));
+                addr = (struct sockaddr *)&sockAddrV4;
+                size = sizeof(sockAddrV4);
+            }
+            break;
+
+            case st(InetAddress)::IPV6: {
+                memset(&sockAddrV6, 0, sizeof(struct sockaddr_in6));
+                addr = (struct sockaddr *)&sockAddrV6;
+                size = sizeof(sockAddrV6);
+            }
+            break;
+        }
+
+        int ret = getpeername(sock->getFd(), addr,&size);
+
+        if (address->getType() == st(InetAddress)::IPV4 && ntohs(sockAddrV4.sin_port) == 0) {
+            break;
+        } else if (address->getType() == st(InetAddress)::IPV6 && ntohs(sockAddrV6.sin6_port) == 0) {
             break;
         }
         usleep(30 * 1000);
