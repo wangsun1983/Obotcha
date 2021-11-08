@@ -221,7 +221,8 @@ void _HttpUrl::import(String input) {
     // Resolve the relative path.
     int pathDelimiterOffset = delimiterOffset(input, pos, limit, "?#");
 
-    mPath = input->subString(pos,pathDelimiterOffset - pos);
+    //path does net '/',remove it 
+    mPath = input->subString(pos + 1,pathDelimiterOffset - pos - 1);
     pos = pathDelimiterOffset;
     // Query.
     if (pos < limit && input->charAt(pos) == '?') {

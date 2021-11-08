@@ -128,9 +128,11 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheaderaltsvc.o \
 		$(outtmp)/httpcontentrange.o \
 		$(outtmp)/httpcontentsepolicy.o \
+		$(outtmp)/httpheaderdate.o \
+		$(outtmp)/httpheaderexpect.o \
+		$(outtmp)/httpheaderexpectct.o \
 
 
-		
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketImpl.cpp -o $(outtmp)/socketimpl.o 
 
@@ -240,6 +242,15 @@ $(outtmp)/httpcontentrange.o :$(netDir)/http/headers/HttpContentRange.cpp
 
 $(outtmp)/httpcontentsepolicy.o :$(netDir)/http/headers/HttpContentSecurityPolicy.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpContentSecurityPolicy.cpp -o $(outtmp)/httpcontentsepolicy.o 
+
+$(outtmp)/httpheaderdate.o :$(netDir)/http/headers/HttpHeaderDate.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderDate.cpp -o $(outtmp)/httpheaderdate.o 
+
+$(outtmp)/httpheaderexpect.o :$(netDir)/http/headers/HttpHeaderExpect.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderExpect.cpp -o $(outtmp)/httpheaderexpect.o 
+
+$(outtmp)/httpheaderexpectct.o :$(netDir)/http/headers/HttpHeaderExpectCT.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderExpectCT.cpp -o $(outtmp)/httpheaderexpectct.o 
 
 $(outtmp)/httpallowmethods.o :$(netDir)/http/headers/HttpAccessControlAllowMethods.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpAccessControlAllowMethods.cpp -o $(outtmp)/httpallowmethods.o 
