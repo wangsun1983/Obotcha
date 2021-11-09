@@ -131,6 +131,14 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheaderdate.o \
 		$(outtmp)/httpheaderexpect.o \
 		$(outtmp)/httpheaderexpectct.o \
+		$(outtmp)/httpheaderexpires.o \
+		$(outtmp)/httpheaderfrom.o \
+		$(outtmp)/httpheaderlastmodified.o \
+		$(outtmp)/httpheaderlocation.o \
+		$(outtmp)/httpheaderrange.o \
+		$(outtmp)/httpheaderreferer.o \
+		$(outtmp)/httpheaderreferrerpolicy.o \
+		$(outtmp)/httpheadervary.o \
 
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
@@ -251,6 +259,30 @@ $(outtmp)/httpheaderexpect.o :$(netDir)/http/headers/HttpHeaderExpect.cpp
 
 $(outtmp)/httpheaderexpectct.o :$(netDir)/http/headers/HttpHeaderExpectCT.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderExpectCT.cpp -o $(outtmp)/httpheaderexpectct.o 
+
+$(outtmp)/httpheaderexpires.o :$(netDir)/http/headers/HttpHeaderExpires.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderExpires.cpp -o $(outtmp)/httpheaderexpires.o 
+
+$(outtmp)/httpheaderfrom.o :$(netDir)/http/headers/HttpHeaderFrom.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderFrom.cpp -o $(outtmp)/httpheaderfrom.o 
+
+$(outtmp)/httpheaderlastmodified.o :$(netDir)/http/headers/HttpHeaderLastModified.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderLastModified.cpp -o $(outtmp)/httpheaderlastmodified.o 
+
+$(outtmp)/httpheaderlocation.o :$(netDir)/http/headers/HttpHeaderLocation.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderLocation.cpp -o $(outtmp)/httpheaderlocation.o 
+
+$(outtmp)/httpheaderrange.o :$(netDir)/http/headers/HttpHeaderRange.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderRange.cpp -o $(outtmp)/httpheaderrange.o 
+
+$(outtmp)/httpheaderreferer.o :$(netDir)/http/headers/HttpHeaderReferer.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderReferer.cpp -o $(outtmp)/httpheaderreferer.o 
+
+$(outtmp)/httpheaderreferrerpolicy.o :$(netDir)/http/headers/HttpHeaderReferrerPolicy.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderReferrerPolicy.cpp -o $(outtmp)/httpheaderreferrerpolicy.o 
+
+$(outtmp)/httpheadervary.o :$(netDir)/http/headers/HttpHeaderVary.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderVary.cpp -o $(outtmp)/httpheadervary.o 
 
 $(outtmp)/httpallowmethods.o :$(netDir)/http/headers/HttpAccessControlAllowMethods.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpAccessControlAllowMethods.cpp -o $(outtmp)/httpallowmethods.o 

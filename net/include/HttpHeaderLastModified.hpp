@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_HTTP_HEADER_EXPIRES_HPP__
-#define __OBOTCHA_HTTP_HEADER_EXPIRES_HPP__
+#ifndef __OBOTCHA_HTTP_HEADER_LAST_MODIFIED_HPP__
+#define __OBOTCHA_HTTP_HEADER_LAST_MODIFIED_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -9,11 +9,11 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(HttpHeaderExpires) {
+DECLARE_CLASS(HttpHeaderLastModified) {
 
 public:
-    _HttpHeaderExpires();
-    _HttpHeaderExpires(String);
+    _HttpHeaderLastModified();
+    _HttpHeaderLastModified(String);
 
     void import(String);
 

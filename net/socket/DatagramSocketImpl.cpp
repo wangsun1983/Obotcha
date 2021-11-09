@@ -44,7 +44,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
                 mSockAddrV6.sin6_addr = in6addr_any;
             }
 
-            this->sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET6, SOCK_DGRAM, 0)));
+            this->sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP)));
         }
         break;
     }

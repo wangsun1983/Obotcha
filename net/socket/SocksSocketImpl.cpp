@@ -108,9 +108,9 @@ int _SocksSocketImpl::connect() {
 
         int ret = getpeername(sock->getFd(), addr,&size);
 
-        if (address->getType() == st(InetAddress)::IPV4 && ntohs(sockAddrV4.sin_port) == 0) {
+        if (address->getType() == st(InetAddress)::IPV4 && ntohs(sockAddrV4.sin_port) != 0) {
             break;
-        } else if (address->getType() == st(InetAddress)::IPV6 && ntohs(sockAddrV6.sin6_port) == 0) {
+        } else if (address->getType() == st(InetAddress)::IPV6 && ntohs(sockAddrV6.sin6_port) != 0) {
             break;
         }
         usleep(30 * 1000);
