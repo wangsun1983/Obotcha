@@ -67,7 +67,7 @@ private:
     int mCRLFIndex;
     int mBoundaryIndex;
 
-    HttpContentDisposition mDisposition;
+    HttpHeaderContentDisposition mDisposition;
     HttpTransferEncoding mTransferEncoding;
     HttpContentType mContentType;
     

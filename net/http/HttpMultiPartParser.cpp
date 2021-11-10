@@ -88,7 +88,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                     int type = st(HttpHeader)::findId(head);
                     switch(type) {
                         case st(HttpHeader)::TypeContentDisposition:
-                            mDisposition = createHttpContentDisposition(data);
+                            mDisposition = createHttpHeaderContentDisposition(data);
                         break;
 
                         case st(HttpHeader)::TypeContentType:

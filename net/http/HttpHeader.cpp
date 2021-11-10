@@ -537,7 +537,7 @@ void _HttpHeader::set(String key, String value) {
         switch(id->toValue()) {
             case TypeAcceptCharset:{
                 if(mAcceptCharSet == nullptr) {
-                    mAcceptCharSet = createHttpAcceptCharSet();
+                    mAcceptCharSet = createHttpHeaderAcceptCharSet();
                 }
                 mAcceptCharSet->import(value);
                 return;
@@ -545,7 +545,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAccept:{
                 if(mAccept == nullptr) {
-                    mAccept = createHttpAccept();
+                    mAccept = createHttpHeaderAccept();
                 }
                 mAccept->import(value);
                 return;
@@ -553,7 +553,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAcceptEncoding:{
                 if(mAcceptEncoding == nullptr) {
-                    mAcceptEncoding = createHttpAcceptEncoding();
+                    mAcceptEncoding = createHttpHeaderAcceptEncoding();
                 }
                 mAcceptEncoding->import(value);
                 return;
@@ -561,7 +561,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAcceptLanguage: {
                 if(mAcceptLanguage == nullptr) {
-                    mAcceptLanguage = createHttpAcceptLanguage();
+                    mAcceptLanguage = createHttpHeaderAcceptLanguage();
                 }
                 mAcceptLanguage->import(value);
                 return;
@@ -577,7 +577,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAcceptPatch: {
                 if(mAcceptPatch == nullptr) {
-                    mAcceptPatch = createHttpAcceptPatch();
+                    mAcceptPatch = createHttpHeaderAcceptPatch();
                 }
                 mAcceptPatch->import(value);
                 return;
@@ -585,7 +585,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAccessControlAllowCredentials: {
                 if(mAllowCredentials == nullptr) {
-                    mAllowCredentials = createHttpAccessControlAllowCredentials();
+                    mAllowCredentials = createHttpHeaderAccessControlAllowCredentials();
                 }
                 mAllowCredentials->import(value);
                 return;
@@ -593,7 +593,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAccessControlAllowHeaders: {
                 if(mAllowHeaders == nullptr) {
-                    mAllowHeaders = createHttpAccessControlAllowHeaders();
+                    mAllowHeaders = createHttpHeaderAccessControlAllowHeaders();
                 }
                 mAllowHeaders->import(value);
                 return;
@@ -601,7 +601,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAccessControlAllowMethods: {
                 if(mAllowMethods == nullptr) {
-                    mAllowMethods = createHttpAccessControlAllowMethods();
+                    mAllowMethods = createHttpHeaderAccessControlAllowMethods();
                 }
                 mAllowMethods->import(value);
                 return;
@@ -609,7 +609,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAccessControlAllowOrigin: {
                 if(mAllowOrigin == nullptr) {
-                    mAllowOrigin = createHttpAccessControlAllowOrigin();
+                    mAllowOrigin = createHttpHeaderAccessControlAllowOrigin();
                 }
                 mAllowOrigin->import(value);
                 return;
@@ -617,7 +617,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAccessControlExposeHeaders: {
                 if(mExposeHeaders == nullptr) {
-                    mExposeHeaders = createHttpAccessControlExposeHeaders();
+                    mExposeHeaders = createHttpHeaderAccessControlExposeHeaders();
                 }
                 mExposeHeaders->import(value);
                 return;
@@ -625,7 +625,7 @@ void _HttpHeader::set(String key, String value) {
             
             case TypeAccessControlMaxAge: {
                 if(mMaxAge == nullptr) {
-                    mMaxAge = createHttpAccessControlMaxAge();
+                    mMaxAge = createHttpHeaderAccessControlMaxAge();
                 }
                 mMaxAge->import(value);
                 return;
@@ -633,7 +633,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAccessControlRequestHeaders: {
                 if(mRequestHeaders == nullptr) {
-                    mRequestHeaders = createHttpAccessControlRequestHeaders();
+                    mRequestHeaders = createHttpHeaderAccessControlRequestHeaders();
                 }
                 mRequestHeaders->import(value);
                 return;
@@ -641,7 +641,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAccessControlRequestMethod: {
                 if(mRequestMethod == nullptr) {
-                    mRequestMethod = createHttpAccessControlRequestMethod();
+                    mRequestMethod = createHttpHeaderAccessControlRequestMethod();
                 }
                 mRequestMethod->import(value);
                 return;
@@ -649,7 +649,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAge: {
                 if(mAge == nullptr) {
-                    mAge = createHttpAge();
+                    mAge = createHttpHeaderAge();
                 }
                 mAge->import(value);
                 return;
@@ -657,7 +657,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAllow: {
                 if(mAllow == nullptr) {
-                    mAllow = createHttpAllow();
+                    mAllow = createHttpHeaderAllow();
                 }
                 mAllow->import(value);
                 return;
@@ -665,7 +665,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAuthorization: {
                 if(mAuthorization == nullptr) {
-                    mAuthorization = createHttpAuthorization();
+                    mAuthorization = createHttpHeaderAuthorization();
                 }
                 mAuthorization->import(value);
                 return;
@@ -673,7 +673,7 @@ void _HttpHeader::set(String key, String value) {
             
             case TypeCacheControl: {
                 if(mCacheControl == nullptr) {
-                    mCacheControl = createHttpCacheControl();
+                    mCacheControl = createHttpHeaderCacheControl();
                 }
                 mCacheControl->import(value);
                 return;
@@ -683,7 +683,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeContentDisposition: {
                 if(mContentDisposition == nullptr) {
-                    mContentDisposition = createHttpContentDisposition();
+                    mContentDisposition = createHttpHeaderContentDisposition();
                 }
                 mContentDisposition->import(value);
                 return;
@@ -691,7 +691,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeContentEncoding: {
                 if(mContentEncoding == nullptr) {
-                    mContentEncoding = createHttpContentEncoding();
+                    mContentEncoding = createHttpHeaderContentEncoding();
                 }
                 mContentEncoding->import(value);
                 return;
@@ -699,7 +699,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeContentLanguage: {
                 if(mContentLanguage == nullptr) {
-                    mContentLanguage = createHttpContentLanguage();
+                    mContentLanguage = createHttpHeaderContentLanguage();
                 }
                 mContentLanguage->import(value);
                 return;
@@ -707,7 +707,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeContentLength: {
                 if(mContentLength == nullptr) {
-                    mContentLength = createHttpContentLength();
+                    mContentLength = createHttpHeaderContentLength();
                 }
                 mContentLength->import(value);
                 return;
@@ -975,7 +975,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeAcceptRanges: {
                 if(mAcceptRanges == nullptr) {
-                    mAcceptRanges = createHttpAcceptRanges();
+                    mAcceptRanges = createHttpHeaderAcceptRanges();
                 }
                 mAcceptRanges->import(value);
                 return;
@@ -1496,201 +1496,201 @@ ArrayList<HttpCookie> _HttpHeader::getCookies() {
     return mCookies; 
 }
 
-//HttpAcceptCharSet
-HttpAcceptCharSet _HttpHeader::getAcceptCharSet() {
+//HttpHeaderAcceptCharSet
+HttpHeaderAcceptCharSet _HttpHeader::getAcceptCharSet() {
     return mAcceptCharSet;
 }
 
-void _HttpHeader::setAcceptCharSet(HttpAcceptCharSet v) {
+void _HttpHeader::setAcceptCharSet(HttpHeaderAcceptCharSet v) {
     mAcceptCharSet = v;
 }
 
-//HttpAccept
-HttpAccept _HttpHeader::getAccept() {
+//HttpHeaderAccept
+HttpHeaderAccept _HttpHeader::getAccept() {
     return mAccept;
 }
 
-void _HttpHeader::setAccept(HttpAccept s) {
+void _HttpHeader::setAccept(HttpHeaderAccept s) {
     mAccept = s;
 }
 
-//HttpAcceptEncoding
-HttpAcceptEncoding _HttpHeader::getAcceptEncoding() {
+//HttpHeaderAcceptEncoding
+HttpHeaderAcceptEncoding _HttpHeader::getAcceptEncoding() {
     return mAcceptEncoding;
 }
 
-void _HttpHeader::setAcceptEncoding(HttpAcceptEncoding s) {
+void _HttpHeader::setAcceptEncoding(HttpHeaderAcceptEncoding s) {
     mAcceptEncoding = s;
 }
 
-//HttpAcceptLanguage
-HttpAcceptLanguage _HttpHeader::getAcceptLanguage() {
+//HttpHeaderAcceptLanguage
+HttpHeaderAcceptLanguage _HttpHeader::getAcceptLanguage() {
     return mAcceptLanguage;
 }
 
-void _HttpHeader::setAcceptLanguage(HttpAcceptLanguage s) {
+void _HttpHeader::setAcceptLanguage(HttpHeaderAcceptLanguage s) {
     mAcceptLanguage = s;
 }
 
-//HttpAcceptPatch
-HttpAcceptPatch _HttpHeader::getAcceptPatch() {
+//HttpHeaderAcceptPatch
+HttpHeaderAcceptPatch _HttpHeader::getAcceptPatch() {
     return mAcceptPatch;
 }
 
-void _HttpHeader::setAcceptPatch(HttpAcceptPatch s) {
+void _HttpHeader::setAcceptPatch(HttpHeaderAcceptPatch s) {
     mAcceptPatch = s;
 }
 
-//HttpAccessControlAllowCredentials
-HttpAccessControlAllowCredentials _HttpHeader::getAllowCredentials() {
+//HttpHeaderAccessControlAllowCredentials
+HttpHeaderAccessControlAllowCredentials _HttpHeader::getAllowCredentials() {
     return mAllowCredentials;
 }
 
-void _HttpHeader::setAllowCredentials(HttpAccessControlAllowCredentials s) {
+void _HttpHeader::setAllowCredentials(HttpHeaderAccessControlAllowCredentials s) {
     mAllowCredentials = s;
 }
 
-//HttpAccessControlAllowHeaders
-HttpAccessControlAllowHeaders _HttpHeader::getAllowHeaders() {
+//HttpHeaderAccessControlAllowHeaders
+HttpHeaderAccessControlAllowHeaders _HttpHeader::getAllowHeaders() {
     return mAllowHeaders;
 }
 
-void _HttpHeader::setAllowHeaders(HttpAccessControlAllowHeaders s) {
+void _HttpHeader::setAllowHeaders(HttpHeaderAccessControlAllowHeaders s) {
     mAllowHeaders = s;
 }
 
-//HttpAccessControlAllowMethods
-HttpAccessControlAllowMethods _HttpHeader::getAllowMethods() {
+//HttpHeaderAccessControlAllowMethods
+HttpHeaderAccessControlAllowMethods _HttpHeader::getAllowMethods() {
     return mAllowMethods;
 }
 
-void _HttpHeader::setAllowMethods(HttpAccessControlAllowMethods s) {
+void _HttpHeader::setAllowMethods(HttpHeaderAccessControlAllowMethods s) {
     mAllowMethods = s;
 }
 
-//HttpAccessControlAllowOrigin
-HttpAccessControlAllowOrigin _HttpHeader::getAllowOrigin() {
+//HttpHeaderAccessControlAllowOrigin
+HttpHeaderAccessControlAllowOrigin _HttpHeader::getAllowOrigin() {
     return mAllowOrigin;
 }
 
-void _HttpHeader::setAllowOrigin(HttpAccessControlAllowOrigin s) {
+void _HttpHeader::setAllowOrigin(HttpHeaderAccessControlAllowOrigin s) {
     mAllowOrigin = s;
 }
 
-//HttpAccessControlExposeHeaders
-HttpAccessControlExposeHeaders _HttpHeader::getExposeHeaders() {
+//HttpHeaderAccessControlExposeHeaders
+HttpHeaderAccessControlExposeHeaders _HttpHeader::getExposeHeaders() {
     return mExposeHeaders;
 }
 
-void _HttpHeader::setExposeHeaders(HttpAccessControlExposeHeaders s) {
+void _HttpHeader::setExposeHeaders(HttpHeaderAccessControlExposeHeaders s) {
     mExposeHeaders = s;
 }
 
-//HttpAccessControlMaxAge
-HttpAccessControlMaxAge _HttpHeader::getMaxAge() {
+//HttpHeaderAccessControlMaxAge
+HttpHeaderAccessControlMaxAge _HttpHeader::getMaxAge() {
     return mMaxAge;
 }
 
-void _HttpHeader::setMaxAge(HttpAccessControlMaxAge s) {
+void _HttpHeader::setMaxAge(HttpHeaderAccessControlMaxAge s) {
     mMaxAge = s;
 }
 
-//HttpAccessControlRequestHeaders
-HttpAccessControlRequestHeaders _HttpHeader::getRequestHeaders() {
+//HttpHeaderAccessControlRequestHeaders
+HttpHeaderAccessControlRequestHeaders _HttpHeader::getRequestHeaders() {
     return mRequestHeaders;
 }
 
-void _HttpHeader::setReqeuestHeaders(HttpAccessControlRequestHeaders s) {
+void _HttpHeader::setReqeuestHeaders(HttpHeaderAccessControlRequestHeaders s) {
     mRequestHeaders = s;
 }
 
-//HttpAccessControlRequestMethod
-HttpAccessControlRequestMethod _HttpHeader::getRequestMethod() {
+//HttpHeaderAccessControlRequestMethod
+HttpHeaderAccessControlRequestMethod _HttpHeader::getRequestMethod() {
     return mRequestMethod;
 }
 
-void _HttpHeader::setRequestMethod(HttpAccessControlRequestMethod s) {
+void _HttpHeader::setRequestMethod(HttpHeaderAccessControlRequestMethod s) {
     mRequestMethod = s;
 }
 
-//HttpAge
-HttpAge _HttpHeader::getAge() {
+//HttpHeaderAge
+HttpHeaderAge _HttpHeader::getAge() {
     return mAge;
 }
 
-void _HttpHeader::setAge(HttpAge s) {
+void _HttpHeader::setAge(HttpHeaderAge s) {
     mAge = s;
 }
 
-//HttpAllow
-HttpAllow _HttpHeader::getAllow() {
+//HttpHeaderAllow
+HttpHeaderAllow _HttpHeader::getAllow() {
     return mAllow;
 }
 
-void _HttpHeader::setAllow(HttpAllow s) {
+void _HttpHeader::setAllow(HttpHeaderAllow s) {
     mAllow = s;
 }
 
-//HttpAuthorization
-HttpAuthorization _HttpHeader::getAuthorization() {
+//HttpHeaderAuthorization
+HttpHeaderAuthorization _HttpHeader::getAuthorization() {
     return mAuthorization;
 }
 
-void _HttpHeader::setAuthorization(HttpAuthorization s) {
+void _HttpHeader::setAuthorization(HttpHeaderAuthorization s) {
     mAuthorization = s;
 }
 
-//HttpCacheControl
-HttpCacheControl _HttpHeader::getCacheControl() {
+//HttpHeaderCacheControl
+HttpHeaderCacheControl _HttpHeader::getCacheControl() {
     return mCacheControl;
 }
 
-void _HttpHeader::setCacheControl(HttpCacheControl s) {
+void _HttpHeader::setCacheControl(HttpHeaderCacheControl s) {
     mCacheControl = s;
 }
 
-//HttpClearSiteData
-HttpClearSiteData _HttpHeader::getClearSiteData() {
+//HttpHeaderClearSiteData
+HttpHeaderClearSiteData _HttpHeader::getClearSiteData() {
     return mClearSiteData;
 }
 
-void _HttpHeader::setClearSiteData(HttpClearSiteData s) {
+void _HttpHeader::setClearSiteData(HttpHeaderClearSiteData s) {
     mClearSiteData = s;
 }
 
-//HttpContentDisposition
-HttpContentDisposition _HttpHeader::getContentDisposition() {
+//HttpHeaderContentDisposition
+HttpHeaderContentDisposition _HttpHeader::getContentDisposition() {
     return mContentDisposition;
 }
 
-void _HttpHeader::setContentDisposition(HttpContentDisposition s) {
+void _HttpHeader::setContentDisposition(HttpHeaderContentDisposition s) {
     mContentDisposition = s;
 }
 
-//HttpContentEncoding
-HttpContentEncoding _HttpHeader::getContentEncoding() {
+//HttpHeaderContentEncoding
+HttpHeaderContentEncoding _HttpHeader::getContentEncoding() {
     return mContentEncoding;
 }
 
-void _HttpHeader::setContentEncoding(HttpContentEncoding s) {
+void _HttpHeader::setContentEncoding(HttpHeaderContentEncoding s) {
     mContentEncoding = s;
 }
 
-//HttpContentLanguage
-HttpContentLanguage _HttpHeader::getContentLanguage() {
+//HttpHeaderContentLanguage
+HttpHeaderContentLanguage _HttpHeader::getContentLanguage() {
     return mContentLanguage;
 }
 
-void _HttpHeader::setContentLanguage(HttpContentLanguage s) {
+void _HttpHeader::setContentLanguage(HttpHeaderContentLanguage s) {
     mContentLanguage = s;
 }
 
-//HttpContentLength
-HttpContentLength _HttpHeader::getContentLength() {
+//HttpHeaderContentLength
+HttpHeaderContentLength _HttpHeader::getContentLength() {
     return mContentLength;
 }
 
-void _HttpHeader::setContentLength(HttpContentLength s) {
+void _HttpHeader::setContentLength(HttpHeaderContentLength s) {
     mContentLength = s;
 }
 
@@ -1991,12 +1991,12 @@ HttpHeaderPragma _HttpHeader::getPragma() {
     return mPragma;
 }
 
-//HttpAcceptRanges
-void _HttpHeader::setHttpAcceptRanges(HttpAcceptRanges s) {
+//HttpHeaderAcceptRanges
+void _HttpHeader::setHttpHeaderAcceptRanges(HttpHeaderAcceptRanges s) {
     mAcceptRanges = s;
 }
 
-HttpAcceptRanges _HttpHeader::getAcceptRanges() {
+HttpHeaderAcceptRanges _HttpHeader::getAcceptRanges() {
     return mAcceptRanges;
 }
 

@@ -17,7 +17,8 @@ public:
 
     void import(String);
 
-    ArrayList<String> getEncodings();
+    ArrayList<String> get();
+    void add(String);
 
     String toString();
 

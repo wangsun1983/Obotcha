@@ -10,38 +10,38 @@
 #include "ArrayList.hpp"
 #include "HashMap.hpp"
 #include "HttpCookie.hpp"
-#include "HttpCacheControl.hpp"
+#include "HttpHeaderCacheControl.hpp"
 #include "HttpContentType.hpp"
 #include "HttpVersion.hpp"
 #include "HttpUrl.hpp"
 #include "HttpHeaderLink.hpp"
-#include "HttpAcceptEncoding.hpp"
-#include "HttpAcceptLanguage.hpp"
-#include "HttpAcceptCharSet.hpp"
-#include "HttpAccept.hpp"
-#include "HttpAcceptPatch.hpp"
+#include "HttpHeaderAcceptEncoding.hpp"
+#include "HttpHeaderAcceptLanguage.hpp"
+#include "HttpHeaderAcceptCharSet.hpp"
+#include "HttpHeaderAccept.hpp"
+#include "HttpHeaderAcceptPatch.hpp"
 #include "HttpStrictTransportSecurity.hpp"
 #include "HttpProxyAuthorization.hpp"
 #include "HttpProxyAuthenticate.hpp"
 #include "HttpXFrameOptions.hpp"
 #include "HttpForwarded.hpp"
-#include "HttpContentDisposition.hpp"
+#include "HttpHeaderContentDisposition.hpp"
 #include "HttpHeaderDigest.hpp"
-#include "HttpAuthorization.hpp"
-#include "HttpAccessControlAllowCredentials.hpp"
-#include "HttpAccessControlAllowHeaders.hpp"
-#include "HttpAccessControlAllowMethods.hpp"
-#include "HttpAccessControlAllowOrigin.hpp"
-#include "HttpAccessControlExposeHeaders.hpp"
-#include "HttpAccessControlMaxAge.hpp"
-#include "HttpAccessControlRequestHeaders.hpp"
-#include "HttpAccessControlRequestMethod.hpp"
-#include "HttpAge.hpp"
-#include "HttpAllow.hpp"
-#include "HttpClearSiteData.hpp"
-#include "HttpContentEncoding.hpp"
-#include "HttpContentLanguage.hpp"
-#include "HttpContentLength.hpp"
+#include "HttpHeaderAuthorization.hpp"
+#include "HttpHeaderAccessControlAllowCredentials.hpp"
+#include "HttpHeaderAccessControlAllowHeaders.hpp"
+#include "HttpHeaderAccessControlAllowMethods.hpp"
+#include "HttpHeaderAccessControlAllowOrigin.hpp"
+#include "HttpHeaderAccessControlExposeHeaders.hpp"
+#include "HttpHeaderAccessControlMaxAge.hpp"
+#include "HttpHeaderAccessControlRequestHeaders.hpp"
+#include "HttpHeaderAccessControlRequestMethod.hpp"
+#include "HttpHeaderAge.hpp"
+#include "HttpHeaderAllow.hpp"
+#include "HttpHeaderClearSiteData.hpp"
+#include "HttpHeaderContentEncoding.hpp"
+#include "HttpHeaderContentLanguage.hpp"
+#include "HttpHeaderContentLength.hpp"
 #include "HttpContentLocation.hpp"
 #include "HttpHeaderConnection.hpp"
 #include "HttpHeaderHost.hpp"
@@ -63,7 +63,7 @@
 #include "HttpSecWebSocketOrigin.hpp"
 #include "HttpHeaderOrigin.hpp"
 #include "HttpHeaderPragma.hpp"
-#include "HttpAcceptRanges.hpp"
+#include "HttpHeaderAcceptRanges.hpp"
 #include "HttpHeaderAltSvc.hpp"
 #include "HttpContentRange.hpp"
 #include "HttpContentSecurityPolicy.hpp"
@@ -307,93 +307,93 @@ public:
     void addCookie(HttpCookie);
     ArrayList<HttpCookie> getCookies();
 
-    //HttpAcceptCharSet
-    HttpAcceptCharSet getAcceptCharSet();
-    void setAcceptCharSet(HttpAcceptCharSet);
+    //HttpHeaderAcceptCharSet
+    HttpHeaderAcceptCharSet getAcceptCharSet();
+    void setAcceptCharSet(HttpHeaderAcceptCharSet);
 
-    //HttpAccept
-    HttpAccept getAccept();
-    void setAccept(HttpAccept);
+    //HttpHeaderAccept
+    HttpHeaderAccept getAccept();
+    void setAccept(HttpHeaderAccept);
 
-    //HttpAcceptEncoding
-    HttpAcceptEncoding getAcceptEncoding();
-    void setAcceptEncoding(HttpAcceptEncoding);
+    //HttpHeaderAcceptEncoding
+    HttpHeaderAcceptEncoding getAcceptEncoding();
+    void setAcceptEncoding(HttpHeaderAcceptEncoding);
 
-    //HttpAcceptLanguage
-    HttpAcceptLanguage getAcceptLanguage();
-    void setAcceptLanguage(HttpAcceptLanguage);
+    //HttpHeaderAcceptLanguage
+    HttpHeaderAcceptLanguage getAcceptLanguage();
+    void setAcceptLanguage(HttpHeaderAcceptLanguage);
 
-    //HttpAcceptPatch
-    HttpAcceptPatch getAcceptPatch();
-    void setAcceptPatch(HttpAcceptPatch);
+    //HttpHeaderAcceptPatch
+    HttpHeaderAcceptPatch getAcceptPatch();
+    void setAcceptPatch(HttpHeaderAcceptPatch);
 
-    //HttpAccessControlAllowCredentials
-    HttpAccessControlAllowCredentials getAllowCredentials();
-    void setAllowCredentials(HttpAccessControlAllowCredentials);
+    //HttpHeaderAccessControlAllowCredentials
+    HttpHeaderAccessControlAllowCredentials getAllowCredentials();
+    void setAllowCredentials(HttpHeaderAccessControlAllowCredentials);
 
-    //HttpAccessControlAllowHeaders
-    HttpAccessControlAllowHeaders getAllowHeaders();
-    void setAllowHeaders(HttpAccessControlAllowHeaders);
+    //HttpHeaderAccessControlAllowHeaders
+    HttpHeaderAccessControlAllowHeaders getAllowHeaders();
+    void setAllowHeaders(HttpHeaderAccessControlAllowHeaders);
 
-    //HttpAccessControlAllowMethods
-    HttpAccessControlAllowMethods getAllowMethods();
-    void setAllowMethods(HttpAccessControlAllowMethods);
+    //HttpHeaderAccessControlAllowMethods
+    HttpHeaderAccessControlAllowMethods getAllowMethods();
+    void setAllowMethods(HttpHeaderAccessControlAllowMethods);
 
-    //HttpAccessControlAllowOrigin
-    HttpAccessControlAllowOrigin getAllowOrigin();
-    void setAllowOrigin(HttpAccessControlAllowOrigin);
+    //HttpHeaderAccessControlAllowOrigin
+    HttpHeaderAccessControlAllowOrigin getAllowOrigin();
+    void setAllowOrigin(HttpHeaderAccessControlAllowOrigin);
 
-    //HttpAccessControlExposeHeaders
-    HttpAccessControlExposeHeaders getExposeHeaders();
-    void setExposeHeaders(HttpAccessControlExposeHeaders);
+    //HttpHeaderAccessControlExposeHeaders
+    HttpHeaderAccessControlExposeHeaders getExposeHeaders();
+    void setExposeHeaders(HttpHeaderAccessControlExposeHeaders);
 
-    //HttpAccessControlMaxAge
-    HttpAccessControlMaxAge getMaxAge();
-    void setMaxAge(HttpAccessControlMaxAge);
+    //HttpHeaderAccessControlMaxAge
+    HttpHeaderAccessControlMaxAge getMaxAge();
+    void setMaxAge(HttpHeaderAccessControlMaxAge);
 
-    //HttpAccessControlRequestHeaders
-    HttpAccessControlRequestHeaders getRequestHeaders();
-    void setReqeuestHeaders(HttpAccessControlRequestHeaders);
+    //HttpHeaderAccessControlRequestHeaders
+    HttpHeaderAccessControlRequestHeaders getRequestHeaders();
+    void setReqeuestHeaders(HttpHeaderAccessControlRequestHeaders);
 
-    //HttpAccessControlRequestMethod
-    HttpAccessControlRequestMethod getRequestMethod();
-    void setRequestMethod(HttpAccessControlRequestMethod);
+    //HttpHeaderAccessControlRequestMethod
+    HttpHeaderAccessControlRequestMethod getRequestMethod();
+    void setRequestMethod(HttpHeaderAccessControlRequestMethod);
 
-    //HttpAge
-    HttpAge getAge();
-    void setAge(HttpAge);
+    //HttpHeaderAge
+    HttpHeaderAge getAge();
+    void setAge(HttpHeaderAge);
 
-    //HttpAllow
-    HttpAllow getAllow();
-    void setAllow(HttpAllow);
+    //HttpHeaderAllow
+    HttpHeaderAllow getAllow();
+    void setAllow(HttpHeaderAllow);
 
-    //HttpAuthorization
-    HttpAuthorization getAuthorization();
-    void setAuthorization(HttpAuthorization);
+    //HttpHeaderAuthorization
+    HttpHeaderAuthorization getAuthorization();
+    void setAuthorization(HttpHeaderAuthorization);
 
-    //HttpCacheControl
-    HttpCacheControl getCacheControl();
-    void setCacheControl(HttpCacheControl);
+    //HttpHeaderCacheControl
+    HttpHeaderCacheControl getCacheControl();
+    void setCacheControl(HttpHeaderCacheControl);
 
-    //HttpClearSiteData
-    HttpClearSiteData getClearSiteData();
-    void setClearSiteData(HttpClearSiteData);
+    //HttpHeaderClearSiteData
+    HttpHeaderClearSiteData getClearSiteData();
+    void setClearSiteData(HttpHeaderClearSiteData);
 
-    //HttpContentDisposition
-    HttpContentDisposition getContentDisposition();
-    void setContentDisposition(HttpContentDisposition);
+    //HttpHeaderContentDisposition
+    HttpHeaderContentDisposition getContentDisposition();
+    void setContentDisposition(HttpHeaderContentDisposition);
 
-    //HttpContentEncoding
-    HttpContentEncoding getContentEncoding();
-    void setContentEncoding(HttpContentEncoding);
+    //HttpHeaderContentEncoding
+    HttpHeaderContentEncoding getContentEncoding();
+    void setContentEncoding(HttpHeaderContentEncoding);
 
-    //HttpContentLanguage
-    HttpContentLanguage getContentLanguage();
-    void setContentLanguage(HttpContentLanguage);
+    //HttpHeaderContentLanguage
+    HttpHeaderContentLanguage getContentLanguage();
+    void setContentLanguage(HttpHeaderContentLanguage);
 
-    //HttpContentLength
-    HttpContentLength getContentLength();
-    void setContentLength(HttpContentLength);
+    //HttpHeaderContentLength
+    HttpHeaderContentLength getContentLength();
+    void setContentLength(HttpHeaderContentLength);
 
     //HttpContentLocation
     HttpContentLocation getContentLocation();
@@ -528,9 +528,9 @@ public:
     void setPragma(HttpHeaderPragma s);
     HttpHeaderPragma getPragma();
 
-    //HttpAcceptRanges
-    void setHttpAcceptRanges(HttpAcceptRanges s);
-    HttpAcceptRanges getAcceptRanges();
+    //HttpHeaderAcceptRanges
+    void setHttpHeaderAcceptRanges(HttpHeaderAcceptRanges s);
+    HttpHeaderAcceptRanges getAcceptRanges();
 
     //HttpHeaderAltSvc
     void setAltSvc(HttpHeaderAltSvc s);
@@ -579,49 +579,49 @@ private:
     HashMap<String,String> mValues;
 
     //http header member 
-    HttpAcceptCharSet mAcceptCharSet;
+    HttpHeaderAcceptCharSet mAcceptCharSet;
 
-    HttpAccept mAccept;
+    HttpHeaderAccept mAccept;
 
-    HttpAcceptEncoding mAcceptEncoding;
+    HttpHeaderAcceptEncoding mAcceptEncoding;
 
-    HttpAcceptLanguage mAcceptLanguage;
+    HttpHeaderAcceptLanguage mAcceptLanguage;
 
-    HttpAcceptPatch mAcceptPatch;
+    HttpHeaderAcceptPatch mAcceptPatch;
 
-    HttpAccessControlAllowCredentials mAllowCredentials;
+    HttpHeaderAccessControlAllowCredentials mAllowCredentials;
 
-    HttpAccessControlAllowHeaders mAllowHeaders;
+    HttpHeaderAccessControlAllowHeaders mAllowHeaders;
 
-    HttpAccessControlAllowMethods mAllowMethods;
+    HttpHeaderAccessControlAllowMethods mAllowMethods;
 
-    HttpAccessControlAllowOrigin mAllowOrigin;
+    HttpHeaderAccessControlAllowOrigin mAllowOrigin;
 
-    HttpAccessControlExposeHeaders mExposeHeaders;
+    HttpHeaderAccessControlExposeHeaders mExposeHeaders;
 
-    HttpAccessControlMaxAge mMaxAge;
+    HttpHeaderAccessControlMaxAge mMaxAge;
 
-    HttpAccessControlRequestHeaders mRequestHeaders;
+    HttpHeaderAccessControlRequestHeaders mRequestHeaders;
     
-    HttpAccessControlRequestMethod mRequestMethod;
+    HttpHeaderAccessControlRequestMethod mRequestMethod;
 
-    HttpAge mAge;
+    HttpHeaderAge mAge;
 
-    HttpAllow mAllow;
+    HttpHeaderAllow mAllow;
 
-    HttpAuthorization mAuthorization;
+    HttpHeaderAuthorization mAuthorization;
 
-    HttpCacheControl mCacheControl;
+    HttpHeaderCacheControl mCacheControl;
 
-    HttpClearSiteData mClearSiteData;
+    HttpHeaderClearSiteData mClearSiteData;
 
-    HttpContentDisposition mContentDisposition;
+    HttpHeaderContentDisposition mContentDisposition;
 
-    HttpContentEncoding mContentEncoding;
+    HttpHeaderContentEncoding mContentEncoding;
 
-    HttpContentLanguage mContentLanguage;
+    HttpHeaderContentLanguage mContentLanguage;
 
-    HttpContentLength mContentLength;
+    HttpHeaderContentLength mContentLength;
 
     HttpContentLocation mContentLocation;
 
@@ -682,7 +682,7 @@ private:
     HttpHeaderOrigin mOrigin;
     HttpHeaderPragma mPragma;
 
-    HttpAcceptRanges mAcceptRanges;
+    HttpHeaderAcceptRanges mAcceptRanges;
 
     HttpHeaderAltSvc mAltSvc;
     
