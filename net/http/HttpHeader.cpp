@@ -8,7 +8,7 @@
 
 #include "ArrayList.hpp"
 #include "HashMap.hpp"
-#include "HttpContentType.hpp"
+#include "HttpHeaderContentType.hpp"
 #include "HttpHeader.hpp"
 #include "HttpPacket.hpp"
 #include "HttpText.hpp"
@@ -36,44 +36,39 @@ const String _HttpHeader::AcceptDatetime = createString("accept-datetime");
 const String _HttpHeader::AcceptEncoding = createString("accept-encoding");
 const String _HttpHeader::AcceptLanguage = createString("accept-language");
 const String _HttpHeader::AcceptRanges = createString("accept-ranges");
-const String _HttpHeader::AccessControlAllowCredentials =
-    createString("access-control-allow-credentials");
-const String _HttpHeader::AccessControlAllowHeaders =
-    createString("access-control-allow-headers");
-const String _HttpHeader::AccessControlAllowMethods =
-    createString("access-control-allow-methods");
-const String _HttpHeader::AccessControlAllowOrigin =
-    createString("access-control-allow-origin");
-const String _HttpHeader::AccessControlExposeHeaders =
-    createString("access-control-expose-headers");
-const String _HttpHeader::AccessControlMaxAge =
-    createString("access-control-max-age");
-const String _HttpHeader::AccessControlRequestHeaders =
-    createString("access-control-request-headers");
-const String _HttpHeader::AccessControlRequestMethod =
-    createString("access-control-request-method");
+const String _HttpHeader::AccessControlAllowCredentials = createString("access-control-allow-credentials");
+const String _HttpHeader::AccessControlAllowHeaders = createString("access-control-allow-headers");
+const String _HttpHeader::AccessControlAllowMethods = createString("access-control-allow-methods");
+const String _HttpHeader::AccessControlAllowOrigin = createString("access-control-allow-origin");
+const String _HttpHeader::AccessControlExposeHeaders = createString("access-control-expose-headers");
+const String _HttpHeader::AccessControlMaxAge = createString("access-control-max-age");
+const String _HttpHeader::AccessControlRequestHeaders = createString("access-control-request-headers");
+const String _HttpHeader::AccessControlRequestMethod = createString("access-control-request-method");
 const String _HttpHeader::Age = createString("age");
 const String _HttpHeader::Allow = createString("allow");
 const String _HttpHeader::AltSvc = createString("alt-svc");
 const String _HttpHeader::Authorization = createString("authorization");
 const String _HttpHeader::CacheControl = createString("cache-control");
 const String _HttpHeader::Connection = createString("connection");
-const String _HttpHeader::ContentDisposition =
-    createString("content-disposition");
+const String _HttpHeader::ContentDisposition = createString("content-disposition");
 const String _HttpHeader::ContentEncoding = createString("content-encoding");
 const String _HttpHeader::ContentLanguage = createString("content-language");
 const String _HttpHeader::ContentLength = createString("content-length");
 const String _HttpHeader::ContentLocation = createString("content-location");
 const String _HttpHeader::ContentMD5 = createString("content-md5");
 const String _HttpHeader::ContentRange = createString("content-range");
-const String _HttpHeader::ContentSecurityPolicyReportOnly = createString("Content-Security-Policy-Report-Only");
-const String _HttpHeader::ContentSecurityPolicy = createString("Content-Security-Policy");
+const String _HttpHeader::ContentSecurityPolicyReportOnly = createString("content-security-policy-report-only");
+const String _HttpHeader::ContentSecurityPolicy = createString("content-security-policy");
 const String _HttpHeader::ContentType = createString("content-type");
 const String _HttpHeader::Cookie = createString("cookie");
+const String _HttpHeader::CrossOriginEmbederPolicy = createString("cross-origin-embedder-policy");
+const String _HttpHeader::CrossOriginOpenerPolicy = createString("cross-origin-opener-policy");;
+const String _HttpHeader::CrossOriginResourcePolicy = createString("cross-origin-resource-policy");;
 const String _HttpHeader::DNT = createString("dnt");
 const String _HttpHeader::Date = createString("date");
 const String _HttpHeader::ETag = createString("etag");
 const String _HttpHeader::Expect = createString("expect");
+const String _HttpHeader::ExpectCT = createString("expect-ct");
 const String _HttpHeader::Expires = createString("expires");
 const String _HttpHeader::From = createString("from");
 const String _HttpHeader::FrontEndHttps = createString("front-end-https");
@@ -82,8 +77,7 @@ const String _HttpHeader::IfMatch = createString("if-match");
 const String _HttpHeader::IfModifiedSince = createString("if-modified-since");
 const String _HttpHeader::IfNoneMatch = createString("if-none-match");
 const String _HttpHeader::IfRange = createString("if-range");
-const String _HttpHeader::IfUnmodifiedSince =
-    createString("if-unmodified-since");
+const String _HttpHeader::IfUnmodifiedSince = createString("if-unmodified-since");
 const String _HttpHeader::KeepAlive = createString("keep-alive");
 const String _HttpHeader::LastModified = createString("last-modified");
 const String _HttpHeader::Link = createString("link");
@@ -92,23 +86,20 @@ const String _HttpHeader::MaxForwards = createString("max-forwards");
 const String _HttpHeader::Origin = createString("origin");
 const String _HttpHeader::P3P = createString("psp");
 const String _HttpHeader::Pragma = createString("pragma");
-const String _HttpHeader::ProxyAuthenticate =
-    createString("proxy-authenticate");
-const String _HttpHeader::ProxyAuthorization =
-    createString("proxy-authorization");
+const String _HttpHeader::ProxyAuthenticate = createString("proxy-authenticate");
+const String _HttpHeader::ProxyAuthorization = createString("proxy-authorization");
 const String _HttpHeader::ProxyConnection = createString("proxy-connection");
 const String _HttpHeader::Range = createString("range");
 const String _HttpHeader::Referer = createString("referer");
+const String _HttpHeader::RefererPolicy = createString("referrer-policy");
 const String _HttpHeader::Refresh = createString("refresh");
 const String _HttpHeader::RetryAfter = createString("retry-after");
 const String _HttpHeader::SecWebSocketKey = createString("sec-websocket-key");
-const String _HttpHeader::SecWebSocketAccept =
-    createString("sec-websocket-accept");
+const String _HttpHeader::SecWebSocketAccept = createString("sec-websocket-accept");
 const String _HttpHeader::Server = createString("server");
 const String _HttpHeader::SetCookie = createString("set-cookie");
 const String _HttpHeader::SecTokenBinding = createString("sec-token-binding");
-const String _HttpHeader::StrictTransportSecurity =
-    createString("strict-transport-security");
+const String _HttpHeader::StrictTransportSecurity = createString("strict-transport-security");
 const String _HttpHeader::TE = createString("te");
 const String _HttpHeader::Timestamp = createString("timestamp");
 const String _HttpHeader::Trailer = createString("trailer");
@@ -121,10 +112,8 @@ const String _HttpHeader::Via = createString("via");
 const String _HttpHeader::WWWAuthenticate = createString("www-authenticate");
 const String _HttpHeader::Warning = createString("warning");
 const String _HttpHeader::XAccelRedirect = createString("x-accel-redirect");
-const String _HttpHeader::XContentSecurityPolicyReportOnly =
-    createString("x-content-security-policy-report-only");
-const String _HttpHeader::XContentTypeOptions =
-    createString("x-content-type-options");
+const String _HttpHeader::XContentSecurityPolicyReportOnly = createString("x-content-security-policy-report-only");
+const String _HttpHeader::XContentTypeOptions = createString("x-content-type-options");
 const String _HttpHeader::XForwardedFor = createString("x-forwarded-for");
 const String _HttpHeader::XForwardedProto = createString("x-forwarded-proto");
 const String _HttpHeader::Forwarded = createString("forwarded");
@@ -136,17 +125,13 @@ const String _HttpHeader::XThriftProtocol = createString("x-thrift-protocol");
 const String _HttpHeader::XUACompatible = createString("x-ua-compatible");
 const String _HttpHeader::XWapProfile = createString("x-wap-profile");
 const String _HttpHeader::XXSSProtection = createString("x-xss-protection");
-const String _HttpHeader::SecWebSocketVersion =
-    createString("sec-websocket-version");
-const String _HttpHeader::SecWebSocketExtensions =
-    createString("sec-websocket-extensions");
-const String _HttpHeader::SecWebSocketOrigin =
-    createString("sec-websocket-origin");
+const String _HttpHeader::SecWebSocketVersion = createString("sec-websocket-version");
+const String _HttpHeader::SecWebSocketExtensions = createString("sec-websocket-extensions");
+const String _HttpHeader::SecWebSocketOrigin = createString("sec-websocket-origin");
 const String _HttpHeader::SecWebSocketKey1 = createString("sec-websocket-key1");
 const String _HttpHeader::SecWebSocketKey2 = createString("sec-websocket-key2");
 const String _HttpHeader::SecWebSocketKey3 = createString("sec-websocket-key3");
-const String _HttpHeader::SecWebSocketProtocol =
-    createString("sec-websocket-protocol");
+const String _HttpHeader::SecWebSocketProtocol = createString("sec-websocket-protocol");
 const String _HttpHeader::Digest = createString("digest");
 
 // Transfer-Encoding type
@@ -192,12 +177,15 @@ _HttpHeader::_HttpHeader() {
             idMaps->put(ContentSecurityPolicy,createInteger(TypeContentSecurityPolicy));
             idMaps->put(ContentType,createInteger(TypeContentType));
             idMaps->put(Cookie,createInteger(TypeCookie));
-
+            idMaps->put(CrossOriginEmbederPolicy,createInteger(TypeCrossOriginEmbedderPolicy));
+            idMaps->put(CrossOriginOpenerPolicy,createInteger(TypeCrossOriginOpenerPolicy));
+            idMaps->put(CrossOriginResourcePolicy,createInteger(TypeCrossOriginResourcePolicy));
             
             idMaps->put(DNT,createInteger(TypeDNT));
             idMaps->put(Date,createInteger(TypeDate));
             idMaps->put(ETag,createInteger(TypeETag));
             idMaps->put(Expect,createInteger(TypeExpect));
+            idMaps->put(ExpectCT,createInteger(TypeExpectCT));
             idMaps->put(Expires,createInteger(TypeExpires));
             idMaps->put(From,createInteger(TypeFrom));
             idMaps->put(FrontEndHttps,createInteger(TypeFrontEndHttps));
@@ -220,6 +208,7 @@ _HttpHeader::_HttpHeader() {
             idMaps->put(ProxyConnection,createInteger(TypeProxyConnection));
             idMaps->put(Range,createInteger(TypeRange));
             idMaps->put(Referer,createInteger(TypeReferer));
+            idMaps->put(RefererPolicy,createInteger(TypeRefererPolicy));
 
             idMaps->put(Refresh,createInteger(TypeRefresh));
             idMaps->put(RetryAfter,createInteger(TypeRetryAfter));
@@ -302,10 +291,14 @@ _HttpHeader::_HttpHeader() {
             names->add(ContentSecurityPolicy);
             names->add(ContentType);
             names->add(Cookie);
+            names->add(CrossOriginEmbederPolicy);
+            names->add(CrossOriginOpenerPolicy);
+            names->add(CrossOriginResourcePolicy);
             names->add(DNT);
             names->add(Date);
             names->add(ETag);
             names->add(Expect);
+            names->add(ExpectCT);
             names->add(Expires);
             names->add(From);
             names->add(FrontEndHttps);
@@ -328,6 +321,7 @@ _HttpHeader::_HttpHeader() {
             names->add(ProxyConnection);
             names->add(Range);
             names->add(Referer);
+            names->add(RefererPolicy);
             names->add(Refresh);
             names->add(RetryAfter);
             names->add(SecWebSocketKey);
@@ -454,6 +448,23 @@ void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
     SET_VALUE(mContentRange);
     SET_VALUE(mSecurityPolicy);
     SET_VALUE(mSecurityPolicyReportOnly);
+
+    SET_VALUE(mCrossOriginEmbedderPolicy);
+    SET_VALUE(mCrossOriginOpenerPolicy);
+    SET_VALUE(mCrossOriginResourcePolicy);
+    SET_VALUE(mDate);
+    SET_VALUE(mExpect);
+    SET_VALUE(mExpectCT);
+    SET_VALUE(mExpires);
+    SET_VALUE(mFrom);
+    SET_VALUE(mRange);
+    SET_VALUE(mReferer);
+    SET_VALUE(mRefererPolicy);
+    SET_VALUE(mVary);
+    SET_VALUE(mVia);
+    SET_VALUE(mHeaderServer);
+    SET_VALUE(mWarning);
+
 #undef SET_VALUE
 }
 
@@ -461,7 +472,7 @@ void _HttpHeader::reset() {
     mValues->clear(); 
     mCookies->clear();
     mLinks->clear();
-    mVersion = createHttpVersion();
+    mVersion = createHttpHeaderVersion();
     
     mAcceptCharSet = nullptr;
     mAccept = nullptr;
@@ -523,6 +534,23 @@ void _HttpHeader::reset() {
     mSecurityPolicy = nullptr;
     mSecurityPolicyReportOnly = nullptr;
 
+    mCrossOriginEmbedderPolicy = nullptr;
+    mCrossOriginOpenerPolicy = nullptr;
+    mCrossOriginResourcePolicy = nullptr;
+
+    mDate = nullptr;
+    mExpect = nullptr;
+    mExpectCT = nullptr;
+    mExpires = nullptr;
+    mFrom = nullptr;
+    mRange = nullptr;
+    mReferer = nullptr;
+    mRefererPolicy = nullptr;
+    mVary = nullptr;
+    mVia = nullptr;
+    mHeaderServer = nullptr;
+    mWarning = nullptr;
+
     mMethod = -1;
     mResponseReason = nullptr;
     mResponseStatus = st(HttpStatus)::Ok;
@@ -569,7 +597,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeTransferEncoding: {
                 if(mTransferEncoding == nullptr) {
-                    mTransferEncoding = createHttpTransferEncoding();
+                    mTransferEncoding = createHttpHeaderTransferEncoding();
                 }
                 mTransferEncoding->import(value);
                 return;
@@ -715,7 +743,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeContentLocation: {
                 if(mContentLocation == nullptr) {
-                    mContentLocation = createHttpContentLocation();
+                    mContentLocation = createHttpHeaderContentLocation();
                 }
                 mContentLocation->import(value);
                 return;
@@ -723,7 +751,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeContentType: {
                 if(mContentType == nullptr) {
-                    mContentType = createHttpContentType();
+                    mContentType = createHttpHeaderContentType();
                 }
                 mContentType->import(value);
                 return;
@@ -731,7 +759,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeForwarded: {
                 if(mForwarded == nullptr) {
-                    mForwarded = createHttpForwarded();
+                    mForwarded = createHttpHeaderForwarded();
                 }
                 mForwarded->import(value);
                 return;
@@ -812,7 +840,7 @@ void _HttpHeader::set(String key, String value) {
             
             case TypeIfModifiedSince: {
                 if(mIfModifiedSince == nullptr) {
-                    mIfModifiedSince = createHttpIfModifiedSince();
+                    mIfModifiedSince = createHttpHeaderIfModifiedSince();
                 }
                 mIfModifiedSince->import(value);
                 return;
@@ -820,7 +848,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeIfRange: {
                 if(mIfRange == nullptr) {
-                    mIfRange = createHttpIfRange();
+                    mIfRange = createHttpHeaderIfRange();
                 }
                 mIfRange->import(value);
                 return;
@@ -828,7 +856,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeIfUnmodifiedSince: {
                 if(mIfUnmodifiedSince == nullptr) {
-                    mIfUnmodifiedSince = createHttpIfUnmodifiedSince();
+                    mIfUnmodifiedSince = createHttpHeaderIfUnmodifiedSince();
                 }
                 mIfUnmodifiedSince->import(value);
                 return;
@@ -836,7 +864,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeProxyAuthenticate: {
                 if(mProxyAuthenticate == nullptr) {
-                    mProxyAuthenticate = createHttpProxyAuthenticate();
+                    mProxyAuthenticate = createHttpHeaderProxyAuthenticate();
                 }
                 mProxyAuthenticate->import(value);
                 return;
@@ -844,7 +872,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeProxyAuthorization: {
                 if(mProxyAuthorization == nullptr) {
-                    mProxyAuthorization = createHttpProxyAuthorization();
+                    mProxyAuthorization = createHttpHeaderProxyAuthorization();
                 }
                 mProxyAuthorization->import(value);
                 return;
@@ -852,7 +880,7 @@ void _HttpHeader::set(String key, String value) {
             
             case TypeStrictTransportSecurity: {
                 if(mTransportSecurity == nullptr) {
-                    mTransportSecurity = createHttpStrictTransportSecurity();
+                    mTransportSecurity = createHttpHeaderStrictTransportSecurity();
                 }
                 mTransportSecurity->import(value);
                 return;
@@ -860,7 +888,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeXFrameOptions: {
                 if(mXFrameOptions == nullptr) {
-                    mXFrameOptions = createHttpXFrameOptions();
+                    mXFrameOptions = createHttpHeaderXFrameOptions();
                 }
                 mXFrameOptions->import(value);
                 return;
@@ -887,7 +915,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeSecWebSocketAccept: {
                 if(mWebSocketAccept == nullptr) {
-                    mWebSocketAccept = createHttpSecWebSocketAccept();
+                    mWebSocketAccept = createHttpHeaderSecWebSocketAccept();
                 }
                 mWebSocketAccept->import(value);
                 return;
@@ -895,7 +923,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeSecWebSocketKey: {
                 if(mWebSocketKey == nullptr) {
-                    mWebSocketKey = createHttpSecWebSocketKey();
+                    mWebSocketKey = createHttpHeaderSecWebSocketKey();
                 }
                 mWebSocketKey->import(value);
                 return;
@@ -903,7 +931,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeSecWebSocketVersion: {
                 if(mWebSocketVersion == nullptr) {
-                    mWebSocketVersion = createHttpSecWebSocketVersion();
+                    mWebSocketVersion = createHttpHeaderSecWebSocketVersion();
                 }
                 mWebSocketVersion->import(value);
                 return;
@@ -911,7 +939,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeSecWebSocketExtensions: {
                 if(mWebSocketExtensions == nullptr) {
-                    mWebSocketExtensions = createHttpSecWebSocketExtensions();
+                    mWebSocketExtensions = createHttpHeaderSecWebSocketExtensions();
                 }
                 mWebSocketExtensions->import(value);
                 return;
@@ -919,7 +947,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeSecWebSocketOrigin: {
                 if(mWebSocketOrigin == nullptr) {
-                    mWebSocketOrigin = createHttpSecWebSocketOrigin();
+                    mWebSocketOrigin = createHttpHeaderSecWebSocketOrigin();
                 }
                 mWebSocketOrigin->import(value);
                 return;
@@ -927,7 +955,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeSecWebSocketKey1: {
                 if(mWebSocketKey1 == nullptr) {
-                    mWebSocketKey1 = createHttpSecWebSocketKey();
+                    mWebSocketKey1 = createHttpHeaderSecWebSocketKey();
                 }
                 mWebSocketKey1->import(value);
                 return;
@@ -935,7 +963,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeSecWebSocketKey2: {
                 if(mWebSocketKey2 == nullptr) {
-                    mWebSocketKey2 = createHttpSecWebSocketKey();
+                    mWebSocketKey2 = createHttpHeaderSecWebSocketKey();
                 }
                 mWebSocketKey2->import(value);
                 return;
@@ -943,7 +971,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeSecWebSocketKey3: {
                 if(mWebSocketKey3 == nullptr) {
-                    mWebSocketKey3 = createHttpSecWebSocketKey();
+                    mWebSocketKey3 = createHttpHeaderSecWebSocketKey();
                 }
                 mWebSocketKey3->import(value);
                 return;
@@ -951,7 +979,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeSecWebSocketProtocol: {
                 if(mWebSocketProtocol == nullptr) {
-                    mWebSocketProtocol = createHttpSecWebSocketProtocol();
+                    mWebSocketProtocol = createHttpHeaderSecWebSocketProtocol();
                 }
                 mWebSocketProtocol->import(value);
                 return;
@@ -991,7 +1019,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeContentRange: {
                 if(mContentRange == nullptr) {
-                    mContentRange = createHttpContentRange();
+                    mContentRange = createHttpHeaderContentRange();
                 }
                 mContentRange->import(value);
                 return;
@@ -999,7 +1027,7 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeContentSecurityPolicy: {
                 if(mSecurityPolicy == nullptr) {
-                    mSecurityPolicy = createHttpContentSecurityPolicy();
+                    mSecurityPolicy = createHttpHeaderContentSecurityPolicy();
                 }
                 mSecurityPolicy->import(value);
                 return;
@@ -1007,9 +1035,129 @@ void _HttpHeader::set(String key, String value) {
 
             case TypeContentSecurityPolicyReportOnly: {
                 if(mSecurityPolicyReportOnly == nullptr) {
-                    mSecurityPolicyReportOnly = createHttpContentSecurityPolicy();
+                    mSecurityPolicyReportOnly = createHttpHeaderContentSecurityPolicy();
                 }
                 mSecurityPolicyReportOnly->import(value);
+                return;
+            }
+
+            case TypeCrossOriginEmbedderPolicy: {
+                if(mCrossOriginEmbedderPolicy == nullptr) {
+                    mCrossOriginEmbedderPolicy = createHttpHeaderCrossOriginEmbedderPolicy();
+                }
+                mCrossOriginEmbedderPolicy->import(value);
+                return;
+            }
+
+            case TypeCrossOriginOpenerPolicy: {
+                if(mCrossOriginOpenerPolicy == nullptr) {
+                    mCrossOriginOpenerPolicy = createHttpHeaderCrossOriginOpenerPolicy();
+                }
+                mCrossOriginOpenerPolicy->import(value);
+                return;
+            }
+
+            case TypeCrossOriginResourcePolicy: {
+                if(mCrossOriginResourcePolicy == nullptr) {
+                    mCrossOriginResourcePolicy = createHttpHeaderCrossOriginResourcePolicy();
+                }
+                mCrossOriginResourcePolicy->import(value);
+                return;
+            }
+
+            case TypeDate: {
+                if(mDate == nullptr) {
+                    mDate = createHttpHeaderDate();
+                }
+                mDate->import(value);
+                return;
+            }
+
+            case TypeExpect: {
+                if(mExpect == nullptr) {
+                    mExpect = createHttpHeaderExpect();
+                }
+                mExpect->import(value);
+                return;
+            }
+
+            case TypeExpectCT: {
+                if(mExpectCT == nullptr) {
+                    mExpectCT = createHttpHeaderExpectCT();
+                }
+                mExpectCT->import(value);
+                return;
+            }
+
+            case TypeExpires: {
+                if(mExpires == nullptr) {
+                    mExpires = createHttpHeaderExpires();
+                }
+                mExpires->import(value);
+                return;
+            }
+
+            case TypeFrom: {
+                if(mFrom == nullptr) {
+                    mFrom = createHttpHeaderFrom();
+                }
+                mFrom->import(value);
+                return;
+            }
+
+            case TypeRange: {
+                if(mRange == nullptr) {
+                    mRange = createHttpHeaderRange();
+                }
+                mRange->import(value);
+                return;
+            }
+
+            case TypeReferer: {
+                if(mReferer == nullptr) {
+                    mReferer = createHttpHeaderReferer();
+                }
+                mReferer->import(value);
+                return;
+            }
+
+            case TypeRefererPolicy: {
+                if(mRefererPolicy == nullptr) {
+                    mRefererPolicy = createHttpHeaderReferrerPolicy();
+                }
+                mRefererPolicy->import(value);
+                return;
+            }
+
+            case TypeVary: {
+                if(mVary == nullptr) {
+                    mVary = createHttpHeaderVary();
+                }
+                mVary->import(value);
+                return;
+            }
+
+            case TypeVia: {
+                if(mVia == nullptr) {
+                    mVia = createHttpHeaderVia();
+                }
+                mVia->import(value);
+                return;
+            }
+
+            case TypeServer: {
+                if(mHeaderServer == nullptr) {
+                    mHeaderServer = createHttpHeaderServer();
+                }
+                mHeaderServer->import(value);
+                return;
+            }
+
+            case TypeWarning: {
+                if(mWarning == nullptr) {
+                    mWarning = createHttpHeaderWarning();
+                }
+                mWarning->import(value);
                 return;
             }
         }
@@ -1438,6 +1586,113 @@ String _HttpHeader::get(String header) {
                 }
                 break;
             }
+
+            case TypeCrossOriginEmbedderPolicy: {
+                if(mCrossOriginEmbedderPolicy != nullptr) {
+                    return mCrossOriginEmbedderPolicy->toString();
+                }
+                break;
+            }
+
+            case TypeCrossOriginOpenerPolicy: {
+                if(mCrossOriginOpenerPolicy != nullptr) {
+                    return mCrossOriginOpenerPolicy->toString();
+                }
+                break;
+            }
+
+            case TypeCrossOriginResourcePolicy: {
+                if(mCrossOriginResourcePolicy != nullptr) {
+                    return mCrossOriginResourcePolicy->toString();
+                }
+                break;
+            }
+
+            case TypeDate: {
+                if(mDate != nullptr) {
+                    return mDate->toString();
+                }
+                break;
+            }
+
+            case TypeExpect: {
+                if(mExpect != nullptr) {
+                    return mExpect->toString();
+                }
+                break;
+            }
+
+            case TypeExpectCT: {
+                if(mExpectCT != nullptr) {
+                    return mExpectCT->toString();
+                }
+                break;
+            }
+
+            case TypeExpires: {
+                if(mExpires != nullptr) {
+                    return mExpires->toString();
+                }
+                break;
+            }
+
+            case TypeFrom: {
+                if(mFrom != nullptr) {
+                    return mFrom->toString();
+                }
+                break;
+            }
+
+            case TypeRange: {
+                if(mRange != nullptr) {
+                    return mRange->toString();
+                }
+                break;
+            }
+
+            case TypeReferer: {
+                if(mReferer != nullptr) {
+                    return mReferer->toString();
+                }
+                break;
+            }
+
+            case TypeRefererPolicy: {
+                if(mRefererPolicy != nullptr) {
+                    return mRefererPolicy->toString();
+                }
+                break;
+            }
+
+            case TypeVary: {
+                if(mVary != nullptr) {
+                    return mVary->toString();
+                }
+                break;
+            }
+
+            case TypeVia: {
+                if(mVia != nullptr) {
+                    return mVia->toString();
+                }
+                break;
+            }
+
+            case TypeServer: {
+                if(mHeaderServer != nullptr) {
+                    return mHeaderServer->toString();
+                }
+                break;
+            }
+
+            case TypeWarning: {
+                if(mWarning != nullptr) {
+                    return mWarning->toString();
+                }
+                break;
+            }
+
+            
         }
     }
 
@@ -1694,30 +1949,30 @@ void _HttpHeader::setContentLength(HttpHeaderContentLength s) {
     mContentLength = s;
 }
 
-//HttpContentLocation
-HttpContentLocation _HttpHeader::getContentLocation() {
+//HttpHeaderContentLocation
+HttpHeaderContentLocation _HttpHeader::getContentLocation() {
     return mContentLocation;
 }
 
-void _HttpHeader::setContentLocation(HttpContentLocation s) {
+void _HttpHeader::setContentLocation(HttpHeaderContentLocation s) {
     mContentLocation = s;
 }
 
-//HttpContentType
-HttpContentType _HttpHeader::getContentType() {
+//HttpHeaderContentType
+HttpHeaderContentType _HttpHeader::getContentType() {
     return mContentType;
 }
 
-void _HttpHeader::setContentType(HttpContentType s) {
+void _HttpHeader::setContentType(HttpHeaderContentType s) {
     mContentType = s;
 }
 
-//HttpForwarded
-HttpForwarded _HttpHeader::getForwarded() {
+//HttpHeaderForwarded
+HttpHeaderForwarded _HttpHeader::getForwarded() {
     return mForwarded;
 }
 
-void _HttpHeader::setForwarded(HttpForwarded s) {
+void _HttpHeader::setForwarded(HttpHeaderForwarded s) {
     mForwarded = s;
 }
 
@@ -1806,80 +2061,80 @@ void _HttpHeader::setUserAgent(HttpHeaderUserAgent s) {
     mUserAgent = s;
 }
 
-//HttpIfModifiedSince
-HttpIfModifiedSince _HttpHeader::getIfModifiedSince() {
+//HttpHeaderIfModifiedSince
+HttpHeaderIfModifiedSince _HttpHeader::getIfModifiedSince() {
     return mIfModifiedSince;
 }
 
-void _HttpHeader::setIfModifiedSince(HttpIfModifiedSince s) {
+void _HttpHeader::setIfModifiedSince(HttpHeaderIfModifiedSince s) {
     mIfModifiedSince = s;
 }
 
-//HttpIfRange
-HttpIfRange _HttpHeader::getIfRange() {
+//HttpHeaderIfRange
+HttpHeaderIfRange _HttpHeader::getIfRange() {
     return mIfRange;
 }
 
-void _HttpHeader::setIfRange(HttpIfRange s) {
+void _HttpHeader::setIfRange(HttpHeaderIfRange s) {
     mIfRange = s;
 }
 
-//HttpIfUnmodifiedSince
-HttpIfUnmodifiedSince _HttpHeader::getIfUnmodifiedSince() {
+//HttpHeaderIfUnmodifiedSince
+HttpHeaderIfUnmodifiedSince _HttpHeader::getIfUnmodifiedSince() {
     return mIfUnmodifiedSince;
 }
 
-void _HttpHeader::setIfUnmodifiedSince(HttpIfUnmodifiedSince s) {
+void _HttpHeader::setIfUnmodifiedSince(HttpHeaderIfUnmodifiedSince s) {
     mIfUnmodifiedSince = s;
 }
 
-//HttpProxyAuthenticate
-HttpProxyAuthenticate _HttpHeader::getProxyAuthenticate() {
+//HttpHeaderProxyAuthenticate
+HttpHeaderProxyAuthenticate _HttpHeader::getProxyAuthenticate() {
     return mProxyAuthenticate;
 }
 
-void _HttpHeader::setProxyAuthenticate(HttpProxyAuthenticate s) {
+void _HttpHeader::setProxyAuthenticate(HttpHeaderProxyAuthenticate s) {
     mProxyAuthenticate = s;
 }
 
-//HttpProxyAuthorization
-HttpProxyAuthorization _HttpHeader::getProxyAuthorization() {
+//HttpHeaderProxyAuthorization
+HttpHeaderProxyAuthorization _HttpHeader::getProxyAuthorization() {
     return mProxyAuthorization;
 }
 
-void _HttpHeader::setProxyAuthorization(HttpProxyAuthorization s) {
+void _HttpHeader::setProxyAuthorization(HttpHeaderProxyAuthorization s) {
     mProxyAuthorization = s;
 }
 
-//HttpStrictTransportSecurity
-HttpStrictTransportSecurity _HttpHeader::getStrictTransportSecurity() {
+//HttpHeaderStrictTransportSecurity
+HttpHeaderStrictTransportSecurity _HttpHeader::getStrictTransportSecurity() {
     return mTransportSecurity;
 }
 
-void _HttpHeader::setStrictTransportSecurity(HttpStrictTransportSecurity s) {
+void _HttpHeader::setStrictTransportSecurity(HttpHeaderStrictTransportSecurity s) {
     mTransportSecurity = s;
 }
 
-//HttpVersion
-HttpVersion _HttpHeader::getVersion() {
+//HttpHeaderVersion
+HttpHeaderVersion _HttpHeader::getVersion() {
     return mVersion;
 }
 
-void _HttpHeader::setVersion(HttpVersion s) {
+void _HttpHeader::setVersion(HttpHeaderVersion s) {
     mVersion = s;
 }
 
-//HttpXFrameOptions
-HttpXFrameOptions _HttpHeader::getXFrameOptions() {
+//HttpHeaderXFrameOptions
+HttpHeaderXFrameOptions _HttpHeader::getXFrameOptions() {
     return mXFrameOptions;
 }
 
-void _HttpHeader::setXFrameOptions(HttpXFrameOptions s) {
+void _HttpHeader::setXFrameOptions(HttpHeaderXFrameOptions s) {
     mXFrameOptions = s;
 }
 
-//HttpTransferEncoding
-void _HttpHeader::setTransferEncoding(HttpTransferEncoding s) {
+//HttpHeaderTransferEncoding
+void _HttpHeader::setTransferEncoding(HttpHeaderTransferEncoding s) {
     mTransferEncoding = s;
 }
 
@@ -1892,84 +2147,84 @@ HttpHeaderUpgrade _HttpHeader::getUpgrade() {
     return mUpgrade;
 }
 
- //HttpSecWebSocketAccept
-void _HttpHeader::setWebSocketAccept(HttpSecWebSocketAccept s) {
+ //HttpHeaderSecWebSocketAccept
+void _HttpHeader::setWebSocketAccept(HttpHeaderSecWebSocketAccept s) {
     mWebSocketAccept = s;
 }
 
-HttpSecWebSocketAccept _HttpHeader::getWebSocketAccept() {
+HttpHeaderSecWebSocketAccept _HttpHeader::getWebSocketAccept() {
     return mWebSocketAccept;
 }
 
-//HttpSecWebSocketKey 
-void _HttpHeader::setWebSocketKey(HttpSecWebSocketKey s) {
+//HttpHeaderSecWebSocketKey 
+void _HttpHeader::setWebSocketKey(HttpHeaderSecWebSocketKey s) {
     mWebSocketKey = s;
 }
 
-HttpSecWebSocketKey _HttpHeader::getWebSocketKey() {
+HttpHeaderSecWebSocketKey _HttpHeader::getWebSocketKey() {
     return mWebSocketKey;
 }
 
-//HttpSecWebSocketProtocol 
-void _HttpHeader::setWebSocketProtocol(HttpSecWebSocketProtocol s) {
+//HttpHeaderSecWebSocketProtocol 
+void _HttpHeader::setWebSocketProtocol(HttpHeaderSecWebSocketProtocol s) {
     mWebSocketProtocol = s;
 }
 
-HttpSecWebSocketProtocol _HttpHeader::getWebSocketProtocol() {
+HttpHeaderSecWebSocketProtocol _HttpHeader::getWebSocketProtocol() {
     return mWebSocketProtocol;
 }
 
-//HttpSecWebSocketKey1
-void _HttpHeader::setWebSocketKey1(HttpSecWebSocketKey s) {
+//HttpHeaderSecWebSocketKey1
+void _HttpHeader::setWebSocketKey1(HttpHeaderSecWebSocketKey s) {
     mWebSocketKey1 = s;
 }
 
-HttpSecWebSocketKey _HttpHeader::getWebSocketKey1() {
+HttpHeaderSecWebSocketKey _HttpHeader::getWebSocketKey1() {
     return mWebSocketKey1;
 }
 
-//HttpSecWebSocketKey2
-void _HttpHeader::setWebSocketKey2(HttpSecWebSocketKey s) {
+//HttpHeaderSecWebSocketKey2
+void _HttpHeader::setWebSocketKey2(HttpHeaderSecWebSocketKey s) {
     mWebSocketKey2 = s;
 }
 
-HttpSecWebSocketKey _HttpHeader::getWebSocketKey2() {
+HttpHeaderSecWebSocketKey _HttpHeader::getWebSocketKey2() {
     return mWebSocketKey2;
 }
 
-//HttpSecWebSocketKey3
-void _HttpHeader::setWebSocketKey3(HttpSecWebSocketKey s) {
+//HttpHeaderSecWebSocketKey3
+void _HttpHeader::setWebSocketKey3(HttpHeaderSecWebSocketKey s) {
     mWebSocketKey3 = s;
 }
 
-HttpSecWebSocketKey _HttpHeader::getWebSocketKey3() {
+HttpHeaderSecWebSocketKey _HttpHeader::getWebSocketKey3() {
     return mWebSocketKey3;
 }
 
-//HttpSecWebSocketVersion
-void _HttpHeader::setWebSocketVersion(HttpSecWebSocketVersion s) {
+//HttpHeaderSecWebSocketVersion
+void _HttpHeader::setWebSocketVersion(HttpHeaderSecWebSocketVersion s) {
     mWebSocketVersion = s;
 }
 
-HttpSecWebSocketVersion _HttpHeader::getWebSocketVersion() {
+HttpHeaderSecWebSocketVersion _HttpHeader::getWebSocketVersion() {
     return mWebSocketVersion;
 }
 
-//HttpSecWebSocketExtensions
-void _HttpHeader::setWebSocketExtensions(HttpSecWebSocketExtensions s) {
+//HttpHeaderSecWebSocketExtensions
+void _HttpHeader::setWebSocketExtensions(HttpHeaderSecWebSocketExtensions s) {
     mWebSocketExtensions = s;
 }
 
-HttpSecWebSocketExtensions _HttpHeader::getWebSocketExtensions() {
+HttpHeaderSecWebSocketExtensions _HttpHeader::getWebSocketExtensions() {
     return mWebSocketExtensions;
 }
 
-//HttpSecWebSocketOrigin
-void _HttpHeader::setWebSocketOrigin(HttpSecWebSocketOrigin s) {
+//HttpHeaderSecWebSocketOrigin
+void _HttpHeader::setWebSocketOrigin(HttpHeaderSecWebSocketOrigin s) {
     mWebSocketOrigin = s;
 }
 
-HttpSecWebSocketOrigin _HttpHeader::getWebSocketOrigin() {
+HttpHeaderSecWebSocketOrigin _HttpHeader::getWebSocketOrigin() {
     return mWebSocketOrigin;
 }
 
@@ -2009,33 +2264,154 @@ HttpHeaderAltSvc _HttpHeader::getAltSvc() {
     return mAltSvc;
 }
 
-//HttpContentRange
-void _HttpHeader::setContentRange(HttpContentRange s) {
+//HttpHeaderContentRange
+void _HttpHeader::setContentRange(HttpHeaderContentRange s) {
     mContentRange = s;
 }
 
-HttpContentRange _HttpHeader::getContentRange() {
+HttpHeaderContentRange _HttpHeader::getContentRange() {
     return mContentRange;
 }
 
-//HttpContentSecurityPolicy
-void _HttpHeader::setSecurityPolicy(HttpContentSecurityPolicy s) {
+//HttpHeaderContentSecurityPolicy
+void _HttpHeader::setSecurityPolicy(HttpHeaderContentSecurityPolicy s) {
     mSecurityPolicy = s;
 }
-HttpContentSecurityPolicy _HttpHeader::getSecurityPolicy() {
+HttpHeaderContentSecurityPolicy _HttpHeader::getSecurityPolicy() {
     return mSecurityPolicy;
 }
 
-void _HttpHeader::setSecurityPolicyReportOnly(HttpContentSecurityPolicy s) {
+void _HttpHeader::setSecurityPolicyReportOnly(HttpHeaderContentSecurityPolicy s) {
     mSecurityPolicyReportOnly = s;
 }
 
-HttpContentSecurityPolicy _HttpHeader::getSecurityPolicyReportOnly() {
+HttpHeaderContentSecurityPolicy _HttpHeader::getSecurityPolicyReportOnly() {
     return mSecurityPolicyReportOnly;
 }
 
+//HttpHeaderCrossOriginEmbedderPolicy
+HttpHeaderCrossOriginEmbedderPolicy _HttpHeader::getCrossOriginEmbedderPolicy() {
+    return mCrossOriginEmbedderPolicy;
+}
+
+void _HttpHeader::setCrossOriginEmbedderPolicy(HttpHeaderCrossOriginEmbedderPolicy s) {
+    mCrossOriginEmbedderPolicy = s;
+}
+
+HttpHeaderCrossOriginOpenerPolicy _HttpHeader::getCrossOriginOpenerPolicy() {
+    return mCrossOriginOpenerPolicy;
+}
+
+void _HttpHeader::setCrossOriginOpenerPolicy(HttpHeaderCrossOriginOpenerPolicy s) {
+    mCrossOriginOpenerPolicy = s;
+}
+
+HttpHeaderCrossOriginResourcePolicy _HttpHeader::getCrossOriginResourcePolicy() {
+    return mCrossOriginResourcePolicy;
+}
+
+void _HttpHeader::setCrossOriginResourcePolicy(HttpHeaderCrossOriginResourcePolicy s) {
+    mCrossOriginResourcePolicy = s;
+}
+
+HttpHeaderDate _HttpHeader::getDate() {
+    return mDate;
+}
+
+void _HttpHeader::setData(HttpHeaderDate s) {
+    mDate = s;
+}
+
+HttpHeaderExpect _HttpHeader::getExpect() {
+    return mExpect;
+}
+
+void _HttpHeader::setExpect(HttpHeaderExpect s) {
+    mExpect = s;
+}
+
+HttpHeaderExpectCT _HttpHeader::getExpectCT() {
+    return mExpectCT;
+}
+
+void _HttpHeader::setExpectCT(HttpHeaderExpectCT s) {
+    mExpectCT = s;
+}
+
+HttpHeaderExpires _HttpHeader::getExpires() {
+    return mExpires;
+}
+
+void _HttpHeader::setExpires(HttpHeaderExpires s) {
+    mExpires = s;
+}
+
+HttpHeaderFrom _HttpHeader::getFrom() {
+    return mFrom;
+}
+
+void _HttpHeader::setFrom(HttpHeaderFrom s) {
+    mFrom = s;
+}
+
+HttpHeaderRange _HttpHeader::getRange() {
+    return mRange;
+}
+
+void _HttpHeader::setRange(HttpHeaderRange s) {
+    mRange = s;
+}
+
+HttpHeaderReferer _HttpHeader::getReferer() {
+    return mReferer;
+}
+
+void _HttpHeader::setReferer(HttpHeaderReferer s) {
+    mReferer = s;
+}
+
+HttpHeaderReferrerPolicy _HttpHeader::getRefererPolicy() {
+    return mRefererPolicy;
+}
+
+void _HttpHeader::setRefererPolicy(HttpHeaderReferrerPolicy s) {
+    mRefererPolicy = s;
+}
+
+HttpHeaderVary _HttpHeader::getVary() {
+    return mVary;
+}
+
+void _HttpHeader::setVary(HttpHeaderVary s) {
+    mVary = s;
+}
+
+HttpHeaderVia _HttpHeader::getVia() {
+    return mVia;
+}
+
+void _HttpHeader::setVia(HttpHeaderVia s) {
+    mVia = s;
+}
+
+HttpHeaderServer _HttpHeader::getServer() {
+    return mHeaderServer;
+}
+
+void _HttpHeader::setServer(HttpHeaderServer s) {
+    mHeaderServer = s;
+}
+
+HttpHeaderWarning _HttpHeader::getWarning() {
+    return mWarning;
+}
+
+void _HttpHeader::setWarning(HttpHeaderWarning s) {
+    mWarning = s;
+}
+
 //
-HttpTransferEncoding _HttpHeader::getTransferEncoding() {
+HttpHeaderTransferEncoding _HttpHeader::getTransferEncoding() {
     return mTransferEncoding;
 }
 

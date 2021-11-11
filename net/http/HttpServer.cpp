@@ -120,7 +120,9 @@ void _HttpServer::start() {
 }
 
 // interface for websocket
-void _HttpServer::deMonitor(Socket s) { mSockMonitor->remove(s); }
+void _HttpServer::deMonitor(Socket s) { 
+    mSockMonitor->remove(s); 
+}
 
 void _HttpServer::close() {
     if (mSockMonitor != nullptr) {

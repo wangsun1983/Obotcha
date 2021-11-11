@@ -11,8 +11,8 @@
 #include "ByteRingArrayReader.hpp"
 #include "Enviroment.hpp"
 #include "FileOutputStream.hpp"
-#include "HttpTransferEncoding.hpp"
-#include "HttpContentType.hpp"
+#include "HttpHeaderTransferEncoding.hpp"
+#include "HttpHeaderContentType.hpp"
 
 namespace obotcha {
 
@@ -68,8 +68,8 @@ private:
     int mBoundaryIndex;
 
     HttpHeaderContentDisposition mDisposition;
-    HttpTransferEncoding mTransferEncoding;
-    HttpContentType mContentType;
+    HttpHeaderTransferEncoding mTransferEncoding;
+    HttpHeaderContentType mContentType;
     
     bool isLineEnd(byte &v);
     int checkBoudaryIndex(byte &v);

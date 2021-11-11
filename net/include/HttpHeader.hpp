@@ -11,8 +11,8 @@
 #include "HashMap.hpp"
 #include "HttpCookie.hpp"
 #include "HttpHeaderCacheControl.hpp"
-#include "HttpContentType.hpp"
-#include "HttpVersion.hpp"
+#include "HttpHeaderContentType.hpp"
+#include "HttpHeaderVersion.hpp"
 #include "HttpUrl.hpp"
 #include "HttpHeaderLink.hpp"
 #include "HttpHeaderAcceptEncoding.hpp"
@@ -20,11 +20,11 @@
 #include "HttpHeaderAcceptCharSet.hpp"
 #include "HttpHeaderAccept.hpp"
 #include "HttpHeaderAcceptPatch.hpp"
-#include "HttpStrictTransportSecurity.hpp"
-#include "HttpProxyAuthorization.hpp"
-#include "HttpProxyAuthenticate.hpp"
-#include "HttpXFrameOptions.hpp"
-#include "HttpForwarded.hpp"
+#include "HttpHeaderStrictTransportSecurity.hpp"
+#include "HttpHeaderProxyAuthorization.hpp"
+#include "HttpHeaderProxyAuthenticate.hpp"
+#include "HttpHeaderXFrameOptions.hpp"
+#include "HttpHeaderForwarded.hpp"
 #include "HttpHeaderContentDisposition.hpp"
 #include "HttpHeaderDigest.hpp"
 #include "HttpHeaderAuthorization.hpp"
@@ -42,7 +42,7 @@
 #include "HttpHeaderContentEncoding.hpp"
 #include "HttpHeaderContentLanguage.hpp"
 #include "HttpHeaderContentLength.hpp"
-#include "HttpContentLocation.hpp"
+#include "HttpHeaderContentLocation.hpp"
 #include "HttpHeaderConnection.hpp"
 #include "HttpHeaderHost.hpp"
 #include "HttpHeaderKeepAlive.hpp"
@@ -50,23 +50,38 @@
 #include "HttpHeaderMatch.hpp"
 #include "HttpHeaderRetryAfter.hpp"
 #include "HttpHeaderUserAgent.hpp"
-#include "HttpIfModifiedSince.hpp"
-#include "HttpIfRange.hpp"
-#include "HttpIfUnmodifiedSince.hpp"
-#include "HttpTransferEncoding.hpp"
+#include "HttpHeaderIfModifiedSince.hpp"
+#include "HttpHeaderIfRange.hpp"
+#include "HttpHeaderIfUnmodifiedSince.hpp"
+#include "HttpHeaderTransferEncoding.hpp"
 #include "HttpHeaderUpgrade.hpp"
-#include "HttpSecWebSocketAccept.hpp" 
-#include "HttpSecWebSocketKey.hpp" 
-#include "HttpSecWebSocketProtocol.hpp"
-#include "HttpSecWebSocketVersion.hpp"
-#include "HttpSecWebSocketExtensions.hpp"
-#include "HttpSecWebSocketOrigin.hpp"
+#include "HttpHeaderSecWebSocketAccept.hpp" 
+#include "HttpHeaderSecWebSocketKey.hpp" 
+#include "HttpHeaderSecWebSocketProtocol.hpp"
+#include "HttpHeaderSecWebSocketVersion.hpp"
+#include "HttpHeaderSecWebSocketExtensions.hpp"
+#include "HttpHeaderSecWebSocketOrigin.hpp"
 #include "HttpHeaderOrigin.hpp"
 #include "HttpHeaderPragma.hpp"
 #include "HttpHeaderAcceptRanges.hpp"
 #include "HttpHeaderAltSvc.hpp"
-#include "HttpContentRange.hpp"
-#include "HttpContentSecurityPolicy.hpp"
+#include "HttpHeaderContentRange.hpp"
+#include "HttpHeaderContentSecurityPolicy.hpp"
+#include "HttpHeaderCrossOriginEmbedderPolicy.hpp"
+#include "HttpHeaderCrossOriginOpenerPolicy.hpp"
+#include "HttpHeaderCrossOriginResourcePolicy.hpp"
+#include "HttpHeaderDate.hpp"
+#include "HttpHeaderExpect.hpp"
+#include "HttpHeaderExpectCT.hpp"
+#include "HttpHeaderExpires.hpp"
+#include "HttpHeaderFrom.hpp"
+#include "HttpHeaderRange.hpp"
+#include "HttpHeaderReferer.hpp"
+#include "HttpHeaderReferrerPolicy.hpp"
+#include "HttpHeaderVary.hpp"
+#include "HttpHeaderVia.hpp"
+#include "HttpHeaderServer.hpp"
+#include "HttpHeaderWarning.hpp"
 
 namespace obotcha {
 
@@ -111,10 +126,14 @@ public:
     const static String ContentSecurityPolicy;
     const static String ContentType;
     const static String Cookie;
+    const static String CrossOriginEmbederPolicy;
+    const static String CrossOriginOpenerPolicy;
+    const static String CrossOriginResourcePolicy;
     const static String DNT;
     const static String Date;
     const static String ETag;
     const static String Expect;
+    const static String ExpectCT;
     const static String Expires;
     const static String From;
     const static String FrontEndHttps;
@@ -137,6 +156,7 @@ public:
     const static String ProxyConnection;
     const static String Range;
     const static String Referer;
+    const static String RefererPolicy;
     const static String Refresh;
     const static String RetryAfter;
     const static String SecWebSocketKey;
@@ -222,10 +242,14 @@ public:
         TypeContentSecurityPolicy,
         TypeContentType,
         TypeCookie,
+        TypeCrossOriginEmbedderPolicy,
+        TypeCrossOriginOpenerPolicy,
+        TypeCrossOriginResourcePolicy,
         TypeDNT,
         TypeDate,
         TypeETag,
         TypeExpect,
+        TypeExpectCT,
         TypeExpires,
         TypeFrom,
         TypeFrontEndHttps,
@@ -248,6 +272,7 @@ public:
         TypeProxyConnection,
         TypeRange,
         TypeReferer,
+        TypeRefererPolicy,
         TypeRefresh,
         TypeRetryAfter,
         TypeSecWebSocketKey,
@@ -395,17 +420,17 @@ public:
     HttpHeaderContentLength getContentLength();
     void setContentLength(HttpHeaderContentLength);
 
-    //HttpContentLocation
-    HttpContentLocation getContentLocation();
-    void setContentLocation(HttpContentLocation);
+    //HttpHeaderContentLocation
+    HttpHeaderContentLocation getContentLocation();
+    void setContentLocation(HttpHeaderContentLocation);
 
-    //HttpContentType
-    HttpContentType getContentType();
-    void setContentType(HttpContentType);
+    //HttpHeaderContentType
+    HttpHeaderContentType getContentType();
+    void setContentType(HttpHeaderContentType);
 
-    //HttpForwarded
-    HttpForwarded getForwarded();
-    void setForwarded(HttpForwarded);
+    //HttpHeaderForwarded
+    HttpHeaderForwarded getForwarded();
+    void setForwarded(HttpHeaderForwarded);
 
     //HttpHeaderConnection
     HttpHeaderConnection getConnection();
@@ -444,81 +469,81 @@ public:
     HttpHeaderUserAgent getUserAgent();
     void setUserAgent(HttpHeaderUserAgent);
 
-    //HttpIfModifiedSince
-    HttpIfModifiedSince getIfModifiedSince();
-    void setIfModifiedSince(HttpIfModifiedSince);
+    //HttpHeaderIfModifiedSince
+    HttpHeaderIfModifiedSince getIfModifiedSince();
+    void setIfModifiedSince(HttpHeaderIfModifiedSince);
 
-    //HttpIfRange
-    HttpIfRange getIfRange();
-    void setIfRange(HttpIfRange);
+    //HttpHeaderIfRange
+    HttpHeaderIfRange getIfRange();
+    void setIfRange(HttpHeaderIfRange);
 
-    //HttpIfUnmodifiedSince
-    HttpIfUnmodifiedSince getIfUnmodifiedSince();
-    void setIfUnmodifiedSince(HttpIfUnmodifiedSince);
+    //HttpHeaderIfUnmodifiedSince
+    HttpHeaderIfUnmodifiedSince getIfUnmodifiedSince();
+    void setIfUnmodifiedSince(HttpHeaderIfUnmodifiedSince);
 
-    //HttpProxyAuthenticate
-    void setProxyAuthenticate(HttpProxyAuthenticate);
-    HttpProxyAuthenticate getProxyAuthenticate();
+    //HttpHeaderProxyAuthenticate
+    void setProxyAuthenticate(HttpHeaderProxyAuthenticate);
+    HttpHeaderProxyAuthenticate getProxyAuthenticate();
 
-    //HttpProxyAuthorization
-    void setProxyAuthorization(HttpProxyAuthorization);
-    HttpProxyAuthorization getProxyAuthorization();
+    //HttpHeaderProxyAuthorization
+    void setProxyAuthorization(HttpHeaderProxyAuthorization);
+    HttpHeaderProxyAuthorization getProxyAuthorization();
 
-    //HttpStrictTransportSecurity
-    void setStrictTransportSecurity(HttpStrictTransportSecurity);
-    HttpStrictTransportSecurity getStrictTransportSecurity();
+    //HttpHeaderStrictTransportSecurity
+    void setStrictTransportSecurity(HttpHeaderStrictTransportSecurity);
+    HttpHeaderStrictTransportSecurity getStrictTransportSecurity();
 
-    //HttpVersion
-    HttpVersion getVersion();
-    void setVersion(HttpVersion);
+    //HttpHeaderVersion
+    HttpHeaderVersion getVersion();
+    void setVersion(HttpHeaderVersion);
 
-    //HttpXFrameOptions
-    void setXFrameOptions(HttpXFrameOptions);
-    HttpXFrameOptions getXFrameOptions();
+    //HttpHeaderXFrameOptions
+    void setXFrameOptions(HttpHeaderXFrameOptions);
+    HttpHeaderXFrameOptions getXFrameOptions();
 
     //TransferEncoding
-    void setTransferEncoding(HttpTransferEncoding);
-    HttpTransferEncoding getTransferEncoding();
+    void setTransferEncoding(HttpHeaderTransferEncoding);
+    HttpHeaderTransferEncoding getTransferEncoding();
 
     //Upgrade
     void setUpgrade(HttpHeaderUpgrade);
     HttpHeaderUpgrade getUpgrade();
 
-    //HttpSecWebSocketKey
-    void setWebSocketAccept(HttpSecWebSocketAccept);
-    HttpSecWebSocketAccept getWebSocketAccept();
+    //HttpHeaderSecWebSocketKey
+    void setWebSocketAccept(HttpHeaderSecWebSocketAccept);
+    HttpHeaderSecWebSocketAccept getWebSocketAccept();
 
-    //HttpSecWebSocketKey 
-    void setWebSocketKey(HttpSecWebSocketKey);
-    HttpSecWebSocketKey getWebSocketKey();
+    //HttpHeaderSecWebSocketKey 
+    void setWebSocketKey(HttpHeaderSecWebSocketKey);
+    HttpHeaderSecWebSocketKey getWebSocketKey();
 
-    //HttpSecWebSocketProtocol 
-    void setWebSocketProtocol(HttpSecWebSocketProtocol);
-    HttpSecWebSocketProtocol getWebSocketProtocol();
+    //HttpHeaderSecWebSocketProtocol 
+    void setWebSocketProtocol(HttpHeaderSecWebSocketProtocol);
+    HttpHeaderSecWebSocketProtocol getWebSocketProtocol();
 
-    //HttpSecWebSocketKey 
-    void setWebSocketKey1(HttpSecWebSocketKey);
-    HttpSecWebSocketKey getWebSocketKey1();
+    //HttpHeaderSecWebSocketKey 
+    void setWebSocketKey1(HttpHeaderSecWebSocketKey);
+    HttpHeaderSecWebSocketKey getWebSocketKey1();
 
-    //HttpSecWebSocketKey 
-    void setWebSocketKey2(HttpSecWebSocketKey);
-    HttpSecWebSocketKey getWebSocketKey2();
+    //HttpHeaderSecWebSocketKey 
+    void setWebSocketKey2(HttpHeaderSecWebSocketKey);
+    HttpHeaderSecWebSocketKey getWebSocketKey2();
 
-    //HttpSecWebSocketKey 
-    void setWebSocketKey3(HttpSecWebSocketKey);
-    HttpSecWebSocketKey getWebSocketKey3();
+    //HttpHeaderSecWebSocketKey 
+    void setWebSocketKey3(HttpHeaderSecWebSocketKey);
+    HttpHeaderSecWebSocketKey getWebSocketKey3();
 
-    //HttpSecWebSocketVersion mWebSocketVersion;
-    void setWebSocketVersion(HttpSecWebSocketVersion s);
-    HttpSecWebSocketVersion getWebSocketVersion();
+    //HttpHeaderSecWebSocketVersion mWebSocketVersion;
+    void setWebSocketVersion(HttpHeaderSecWebSocketVersion s);
+    HttpHeaderSecWebSocketVersion getWebSocketVersion();
     
-    //HttpSecWebSocketExtensions mWebSocketExtensions;
-    void setWebSocketExtensions(HttpSecWebSocketExtensions s);
-    HttpSecWebSocketExtensions getWebSocketExtensions();
+    //HttpHeaderSecWebSocketExtensions mWebSocketExtensions;
+    void setWebSocketExtensions(HttpHeaderSecWebSocketExtensions s);
+    HttpHeaderSecWebSocketExtensions getWebSocketExtensions();
 
-    //HttpSecWebSocketOrigin
-    void setWebSocketOrigin(HttpSecWebSocketOrigin s);
-    HttpSecWebSocketOrigin getWebSocketOrigin();
+    //HttpHeaderSecWebSocketOrigin
+    void setWebSocketOrigin(HttpHeaderSecWebSocketOrigin s);
+    HttpHeaderSecWebSocketOrigin getWebSocketOrigin();
 
     //HttpHeaderOrigin
     void setOrigin(HttpHeaderOrigin s);
@@ -536,16 +561,61 @@ public:
     void setAltSvc(HttpHeaderAltSvc s);
     HttpHeaderAltSvc getAltSvc();
 
-    //HttpContentRange
-    void setContentRange(HttpContentRange);
-    HttpContentRange getContentRange();
+    //HttpHeaderContentRange
+    void setContentRange(HttpHeaderContentRange);
+    HttpHeaderContentRange getContentRange();
 
-    //HttpContentSecurityPolicy
-    void setSecurityPolicy(HttpContentSecurityPolicy);
-    HttpContentSecurityPolicy getSecurityPolicy();
+    //HttpHeaderContentSecurityPolicy
+    void setSecurityPolicy(HttpHeaderContentSecurityPolicy);
+    HttpHeaderContentSecurityPolicy getSecurityPolicy();
 
-    void setSecurityPolicyReportOnly(HttpContentSecurityPolicy);
-    HttpContentSecurityPolicy getSecurityPolicyReportOnly();
+    void setSecurityPolicyReportOnly(HttpHeaderContentSecurityPolicy);
+    HttpHeaderContentSecurityPolicy getSecurityPolicyReportOnly();
+
+    HttpHeaderCrossOriginEmbedderPolicy getCrossOriginEmbedderPolicy();
+    void setCrossOriginEmbedderPolicy(HttpHeaderCrossOriginEmbedderPolicy);
+
+    HttpHeaderCrossOriginOpenerPolicy getCrossOriginOpenerPolicy();
+    void setCrossOriginOpenerPolicy(HttpHeaderCrossOriginOpenerPolicy);
+
+    HttpHeaderCrossOriginResourcePolicy getCrossOriginResourcePolicy();
+    void setCrossOriginResourcePolicy(HttpHeaderCrossOriginResourcePolicy);
+
+    HttpHeaderDate getDate();
+    void setData(HttpHeaderDate);
+
+    HttpHeaderExpect getExpect();
+    void setExpect(HttpHeaderExpect);
+
+    HttpHeaderExpectCT getExpectCT();
+    void setExpectCT(HttpHeaderExpectCT);
+
+    HttpHeaderExpires getExpires();
+    void setExpires(HttpHeaderExpires);
+
+    HttpHeaderFrom getFrom();
+    void setFrom(HttpHeaderFrom);
+
+    HttpHeaderRange getRange();
+    void setRange(HttpHeaderRange);
+
+    HttpHeaderReferer getReferer();
+    void setReferer(HttpHeaderReferer);
+
+    HttpHeaderReferrerPolicy getRefererPolicy();
+    void setRefererPolicy(HttpHeaderReferrerPolicy);
+
+    HttpHeaderVary getVary();
+    void setVary(HttpHeaderVary);
+
+    HttpHeaderVia getVia();
+    void setVia(HttpHeaderVia);
+
+    HttpHeaderServer getServer();
+    void setServer(HttpHeaderServer);
+
+    HttpHeaderWarning getWarning();
+    void setWarning(HttpHeaderWarning);
 
     String toString(int);
 
@@ -623,11 +693,11 @@ private:
 
     HttpHeaderContentLength mContentLength;
 
-    HttpContentLocation mContentLocation;
+    HttpHeaderContentLocation mContentLocation;
 
-    HttpContentType mContentType;
+    HttpHeaderContentType mContentType;
 
-    HttpForwarded mForwarded;
+    HttpHeaderForwarded mForwarded;
 
     HttpHeaderConnection mConnection;
 
@@ -647,37 +717,37 @@ private:
 
     HttpHeaderUserAgent mUserAgent;
 
-    HttpIfModifiedSince mIfModifiedSince;
+    HttpHeaderIfModifiedSince mIfModifiedSince;
 
-    HttpIfRange mIfRange;
+    HttpHeaderIfRange mIfRange;
 
-    HttpIfUnmodifiedSince mIfUnmodifiedSince;
+    HttpHeaderIfUnmodifiedSince mIfUnmodifiedSince;
     
-    HttpProxyAuthenticate mProxyAuthenticate;
+    HttpHeaderProxyAuthenticate mProxyAuthenticate;
 
-    HttpProxyAuthorization mProxyAuthorization;
+    HttpHeaderProxyAuthorization mProxyAuthorization;
 
-    HttpStrictTransportSecurity mTransportSecurity;
+    HttpHeaderStrictTransportSecurity mTransportSecurity;
 
-    HttpVersion mVersion;
+    HttpHeaderVersion mVersion;
 
-    HttpXFrameOptions mXFrameOptions;
+    HttpHeaderXFrameOptions mXFrameOptions;
 
-    HttpTransferEncoding mTransferEncoding;
+    HttpHeaderTransferEncoding mTransferEncoding;
 
     HttpHeaderUpgrade mUpgrade;
 
-    HttpSecWebSocketAccept mWebSocketAccept;
-    HttpSecWebSocketKey mWebSocketKey;
-    HttpSecWebSocketProtocol mWebSocketProtocol;
+    HttpHeaderSecWebSocketAccept mWebSocketAccept;
+    HttpHeaderSecWebSocketKey mWebSocketKey;
+    HttpHeaderSecWebSocketProtocol mWebSocketProtocol;
 
-    HttpSecWebSocketKey mWebSocketKey1;
-    HttpSecWebSocketKey mWebSocketKey2;
-    HttpSecWebSocketKey mWebSocketKey3;
+    HttpHeaderSecWebSocketKey mWebSocketKey1;
+    HttpHeaderSecWebSocketKey mWebSocketKey2;
+    HttpHeaderSecWebSocketKey mWebSocketKey3;
 
-    HttpSecWebSocketVersion mWebSocketVersion;
-    HttpSecWebSocketExtensions mWebSocketExtensions;
-    HttpSecWebSocketOrigin mWebSocketOrigin;
+    HttpHeaderSecWebSocketVersion mWebSocketVersion;
+    HttpHeaderSecWebSocketExtensions mWebSocketExtensions;
+    HttpHeaderSecWebSocketOrigin mWebSocketOrigin;
 
     HttpHeaderOrigin mOrigin;
     HttpHeaderPragma mPragma;
@@ -686,10 +756,39 @@ private:
 
     HttpHeaderAltSvc mAltSvc;
     
-    HttpContentRange mContentRange;
+    HttpHeaderContentRange mContentRange;
 
-    HttpContentSecurityPolicy mSecurityPolicy;
-    HttpContentSecurityPolicy mSecurityPolicyReportOnly;
+    HttpHeaderContentSecurityPolicy mSecurityPolicy;
+    HttpHeaderContentSecurityPolicy mSecurityPolicyReportOnly;
+
+    HttpHeaderCrossOriginEmbedderPolicy mCrossOriginEmbedderPolicy;
+    HttpHeaderCrossOriginOpenerPolicy mCrossOriginOpenerPolicy;
+    HttpHeaderCrossOriginResourcePolicy mCrossOriginResourcePolicy;
+
+    HttpHeaderDate mDate;
+
+    HttpHeaderExpect mExpect;
+
+    HttpHeaderExpectCT mExpectCT;
+
+    HttpHeaderExpires mExpires;
+
+    HttpHeaderFrom mFrom;
+
+    HttpHeaderRange mRange;
+
+    HttpHeaderReferer mReferer;
+
+    HttpHeaderReferrerPolicy mRefererPolicy;
+
+    HttpHeaderVary mVary;
+
+    HttpHeaderVia mVia;
+
+    HttpHeaderServer mHeaderServer;
+
+    HttpHeaderWarning mWarning;
+
     /////
 
     ArrayList<HttpCookie> mCookies;

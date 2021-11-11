@@ -1,7 +1,7 @@
 #include "HttpPacketParser.hpp"
 #include "ArrayList.hpp"
 #include "HttpHeaderCacheControl.hpp"
-#include "HttpContentType.hpp"
+#include "HttpHeaderContentType.hpp"
 #include "HttpInternalException.hpp"
 #include "HttpText.hpp"
 #include "InitializeException.hpp"

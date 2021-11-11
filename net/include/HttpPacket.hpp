@@ -11,7 +11,7 @@
 #include "HttpCookie.hpp"
 
 #include "HttpMethod.hpp"
-#include "HttpVersion.hpp"
+#include "HttpHeaderVersion.hpp"
 #include "HttpEntity.hpp"
 
 namespace obotcha {

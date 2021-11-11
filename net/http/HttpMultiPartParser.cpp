@@ -92,11 +92,11 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         break;
 
                         case st(HttpHeader)::TypeContentType:
-                            mContentType = createHttpContentType(data);
+                            mContentType = createHttpHeaderContentType(data);
                         break;
 
                         case st(HttpHeader)::TypeTransferEncoding:
-                            mTransferEncoding = createHttpTransferEncoding(data);
+                            mTransferEncoding = createHttpHeaderTransferEncoding(data);
                         break;
                     }
                 }

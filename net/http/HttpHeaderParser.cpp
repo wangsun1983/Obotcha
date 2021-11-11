@@ -50,7 +50,7 @@ void _HttpHeaderParser::parseRequestLine(String line) {
                     mParseLineStatus = RequestUrl;
                 } else {
                     //this is a response
-                    HttpVersion version = createHttpVersion();
+                    HttpHeaderVersion version = createHttpHeaderVersion();
                     version->import(directive);
                     mHeader->setVersion(version);
                     mParseLineStatus = ResponseStatus;
@@ -78,7 +78,7 @@ void _HttpHeaderParser::parseRequestLine(String line) {
             }
 
             case RequsetVersion: {
-                HttpVersion v = createHttpVersion();
+                HttpHeaderVersion v = createHttpHeaderVersion();
                 v->import(directive);
                 mHeader->setVersion(v);
 

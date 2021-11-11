@@ -2,16 +2,6 @@
 
 namespace obotcha {
 
-//////////
-/*
-_HttpHeaderViaItem::_HttpHeaderViaItem() {
-    protocol = nullptr;
-    version = nullptr;
-    url = nullptr;
-    pseudonym = nullptr;
-}
-*/
-
 _HttpHeaderVia::_HttpHeaderVia() {
     vias = createArrayList<HttpHeaderViaItem>();
 }
@@ -44,13 +34,11 @@ void _HttpHeaderVia::import(String s) {
                         i++;
                         jumpSpace(p,i,size);
                         start = i;
-                        printf("protocol is %s,start is %d,i is %d \n",item->protocol->toChars(),start,i);
                     } else if(p[i] == ' ' || p[i] == ',') {
                         if(item == nullptr) {
                             item = createHttpHeaderViaItem();
                         }
                         item->version = createString(p,start,i-start);
-                        printf("version is %s \n",item->version->toChars());
                         i++;
                         jumpSpace(p,i,size);
                         start = i;
@@ -64,15 +52,14 @@ void _HttpHeaderVia::import(String s) {
                         status = ParseUrl;
                     } else if(p[i] == ',') {
                         item->pseudonym = createString(p,start,i-start);
-                        printf("pseudonym trace1 is %s \n",item->pseudonym->toChars());
                         vias->add(item);
                         i++;
                         jumpSpace(p,i,size);
                         start = i;
+                        item = nullptr;
                         status = ParseVersion;
                     } else if(i == size - 1) {
                         item->pseudonym = createString(p,start,i - start + 1);
-                        printf("pseudonym trace2 is %s \n",item->pseudonym->toChars());
                         vias->add(item);
                         return;
                     }
@@ -82,15 +69,14 @@ void _HttpHeaderVia::import(String s) {
                 case ParseUrl: {
                     if(p[i] == ',') {
                         String url = createString(p,start,i-start);
-                        printf("url trace1 is %s \n",url->toChars());
                         item->url = createHttpUrl(url);
                         vias->add(item);
                         jumpSpace(p,i,size);
                         start = i;
+                        item = nullptr;
                         status = ParseVersion;
                     } else if(i == size - 1) {
                         String url = createString(p,start,i-start + 1);
-                        printf("url trace2 is %s \n",url->toChars());
                         item->url = createHttpUrl(url);
                         printf("url create success \n");
                         vias->add(item);
@@ -117,7 +103,11 @@ String _HttpHeaderVia::toString() {
     while(iterator->hasValue()) {
         HttpHeaderViaItem item = iterator->getValue();
         if(item->protocol != nullptr) {
-            via = via->append(item->protocol,"/",item->version,", ");
+            via = via->append(item->protocol,"/",item->protocol,", ");
+        }
+
+        if(item->version != nullptr) {
+            via = via->append(item->version," ");
         }
 
         if(item->url != nullptr) {

@@ -20,25 +20,25 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpurl.o \
 		$(outtmp)/httpstatus.o \
 		$(outtmp)/httpentity.o \
-		$(outtmp)/httpversion.o \
-		$(outtmp)/httpcontenttype.o \
+		$(outtmp)/httpheaderversion.o \
+		$(outtmp)/httpheadercontenttype.o \
 		$(outtmp)/httpmime.o \
 		$(outtmp)/httpconnection.o \
 		$(outtmp)/httpmethod.o \
 		$(outtmp)/httpheader.o \
 		$(outtmp)/httpheaderlink.o \
-		$(outtmp)/HttpHeaderAcceptencoding.o \
-		$(outtmp)/HttpHeaderAcceptlanguage.o \
-		$(outtmp)/HttpHeaderAcceptcharset.o \
-		$(outtmp)/httpxframeoptions.o \
-		$(outtmp)/HttpHeaderAccept.o \
-		$(outtmp)/httpstricttransportsecurity.o \
-		$(outtmp)/httpproxyauthorization.o \
-		$(outtmp)/httpproxyauthenticate.o \
-		$(outtmp)/httpforwarded.o \
-		$(outtmp)/HttpHeaderAcceptpatch.o \
+		$(outtmp)/httpgeaderacceptencoding.o \
+		$(outtmp)/httpheaderacceptlanguage.o \
+		$(outtmp)/httpheaderacceptcharset.o \
+		$(outtmp)/httpheaderxframeoptions.o \
+		$(outtmp)/httpheaderaccept.o \
+		$(outtmp)/httpgeaderstricttransportsecurity.o \
+		$(outtmp)/httpheaderproxyauthorization.o \
+		$(outtmp)/httpheaderproxyauthenticate.o \
+		$(outtmp)/httpheaderforwarded.o \
+		$(outtmp)/httpheaderacceptpatch.o \
 		$(outtmp)/httpheaderdigest.o \
-		$(outtmp)/HttpHeaderAuthorization.o \
+		$(outtmp)/httpheaderauthorization.o \
 		$(outtmp)/HttpHeaderContentDisposition.o \
 		$(outtmp)/httpheaderparser.o \
 		$(outtmp)/httpheadercontentparser.o \
@@ -88,33 +88,33 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpcookieparser.o \
 		$(outtmp)/httppacketwriter.o \
 		$(outtmp)/httpresponseentity.o \
-		$(outtmp)/HttpHeaderAllowcreditial.o \
-		$(outtmp)/HttpHeaderAllowheaders.o \
-		$(outtmp)/HttpHeaderAllowmethods.o \
+		$(outtmp)/httpheaderallowcreditial.o \
+		$(outtmp)/httpheaderallowheaders.o \
+		$(outtmp)/httpheaderallowmethods.o \
 		$(outtmp)/HttpHeaderAlloworigin.o \
 		$(outtmp)/httpexposeheaders.o \
 		$(outtmp)/httpcontrolmaxage.o \
 		$(outtmp)/httprequestheaders.o \
 		$(outtmp)/httprequestmethod.o \
-		$(outtmp)/HttpHeaderAge.o \
+		$(outtmp)/httpheaderage.o \
 		$(outtmp)/HttpHeaderAllow.o \
 		$(outtmp)/HttpHeaderClearSiteData.o \
 		$(outtmp)/httpheaderconnection.o \
-		$(outtmp)/httpcontentlocation.o \
-		$(outtmp)/HttpHeaderContentLength.o \
-		$(outtmp)/HttpHeaderContentLanguage.o \
-		$(outtmp)/HttpHeaderContentEncoding.o \
+		$(outtmp)/httpheadercontentlocation.o \
+		$(outtmp)/httpheadercontentlength.o \
+		$(outtmp)/httpheadercontentlanguage.o \
+		$(outtmp)/httpheadercontentencoding.o \
 		$(outtmp)/httpheadermatch.o \
-		$(outtmp)/httpifmodifiedsince.o \
-		$(outtmp)/httpifrange.o \
-		$(outtmp)/httpifunmodifiedsince.o \
+		$(outtmp)/httpheaderIfmodifiedsince.o \
+		$(outtmp)/httpheaderifrange.o \
+		$(outtmp)/httpheaderifunmodifiedsince.o \
 		$(outtmp)/httpheaderkeepalive.o \
 		$(outtmp)/httpheaderretryafter.o \
 		$(outtmp)/httpheaderuseragent.o \
 		$(outtmp)/httpheaderhost.o \
-		$(outtmp)/httptransferencoding.o \
+		$(outtmp)/httpheadertransferencoding.o \
 		$(outtmp)/httpheaderupgrade.o \
-		$(outtmp)/httpheaderversion.o \
+		$(outtmp)/httpheadersecwebsocketversion.o \
 		$(outtmp)/httpheaderorigin.o \
 		$(outtmp)/httpheaderextensions.o \
 		$(outtmp)/httpheaderwsprotocol.o \
@@ -124,9 +124,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpwskey.o \
 		$(outtmp)/httpresponse.o \
 		$(outtmp)/httprequest.o \
-		$(outtmp)/HttpHeaderAcceptranges.o \
+		$(outtmp)/httpheaderacceptranges.o \
 		$(outtmp)/httpheaderaltsvc.o \
-		$(outtmp)/httpcontentrange.o \
+		$(outtmp)/httpheadercontentrange.o \
 		$(outtmp)/httpcontentsepolicy.o \
 		$(outtmp)/httpheaderdate.o \
 		$(outtmp)/httpheaderexpect.o \
@@ -140,7 +140,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheaderreferrerpolicy.o \
 		$(outtmp)/httpheadervary.o \
 		$(outtmp)/httpheadervia.o \
-
+		$(outtmp)/httpheaderwarning.o \
+		$(outtmp)/httpheaderserver.o \
+		
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketImpl.cpp -o $(outtmp)/socketimpl.o 
@@ -228,29 +230,29 @@ $(outtmp)/httpresponse.o :$(netDir)/http/HttpResponse.cpp
 #$(outtmp)/httpfile.o :$(netDir)/http/HttpFile.cpp
 #	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpFile.cpp -o $(outtmp)/httpfile.o 
 
-$(outtmp)/HttpHeaderAllowcreditial.o :$(netDir)/http/headers/HttpHeaderAccessControlAllowCredentials.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAccessControlAllowCredentials.cpp -o $(outtmp)/HttpHeaderAllowcreditial.o 
+$(outtmp)/httpheaderallowcreditial.o :$(netDir)/http/headers/HttpHeaderAccessControlAllowCredentials.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAccessControlAllowCredentials.cpp -o $(outtmp)/httpheaderallowcreditial.o 
 
-$(outtmp)/httpwsaccept.o :$(netDir)/http/headers/HttpSecWebSocketAccept.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpSecWebSocketAccept.cpp -o $(outtmp)/httpwsaccept.o 
+$(outtmp)/httpwsaccept.o :$(netDir)/http/headers/HttpHeaderSecWebSocketAccept.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderSecWebSocketAccept.cpp -o $(outtmp)/httpwsaccept.o 
 
-$(outtmp)/httpwskey.o :$(netDir)/http/headers/HttpSecWebSocketKey.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpSecWebSocketKey.cpp -o $(outtmp)/httpwskey.o 
+$(outtmp)/httpwskey.o :$(netDir)/http/headers/HttpHeaderSecWebSocketKey.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderSecWebSocketKey.cpp -o $(outtmp)/httpwskey.o 
 
-$(outtmp)/HttpHeaderAllowheaders.o :$(netDir)/http/headers/HttpHeaderAccessControlAllowHeaders.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAccessControlAllowHeaders.cpp -o $(outtmp)/HttpHeaderAllowheaders.o 
+$(outtmp)/httpheaderallowheaders.o :$(netDir)/http/headers/HttpHeaderAccessControlAllowHeaders.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAccessControlAllowHeaders.cpp -o $(outtmp)/httpheaderallowheaders.o 
 
-$(outtmp)/HttpHeaderAcceptranges.o :$(netDir)/http/headers/HttpHeaderAcceptRanges.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAcceptRanges.cpp -o $(outtmp)/HttpHeaderAcceptranges.o 
+$(outtmp)/httpheaderacceptranges.o :$(netDir)/http/headers/HttpHeaderAcceptRanges.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAcceptRanges.cpp -o $(outtmp)/httpheaderacceptranges.o 
 
 $(outtmp)/httpheaderaltsvc.o :$(netDir)/http/headers/HttpHeaderAltSvc.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAltSvc.cpp -o $(outtmp)/httpheaderaltsvc.o 
 
-$(outtmp)/httpcontentrange.o :$(netDir)/http/headers/HttpContentRange.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpContentRange.cpp -o $(outtmp)/httpcontentrange.o 
+$(outtmp)/httpheadercontentrange.o :$(netDir)/http/headers/HttpHeaderContentRange.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderContentRange.cpp -o $(outtmp)/httpheadercontentrange.o 
 
-$(outtmp)/httpcontentsepolicy.o :$(netDir)/http/headers/HttpContentSecurityPolicy.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpContentSecurityPolicy.cpp -o $(outtmp)/httpcontentsepolicy.o 
+$(outtmp)/httpcontentsepolicy.o :$(netDir)/http/headers/HttpHeaderContentSecurityPolicy.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderContentSecurityPolicy.cpp -o $(outtmp)/httpcontentsepolicy.o 
 
 $(outtmp)/httpheaderdate.o :$(netDir)/http/headers/HttpHeaderDate.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderDate.cpp -o $(outtmp)/httpheaderdate.o 
@@ -288,8 +290,14 @@ $(outtmp)/httpheadervary.o :$(netDir)/http/headers/HttpHeaderVary.cpp
 $(outtmp)/httpheadervia.o :$(netDir)/http/headers/HttpHeaderVia.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderVia.cpp -o $(outtmp)/httpheadervia.o 
 
-$(outtmp)/HttpHeaderAllowmethods.o :$(netDir)/http/headers/HttpHeaderAccessControlAllowMethods.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAccessControlAllowMethods.cpp -o $(outtmp)/HttpHeaderAllowmethods.o 
+$(outtmp)/httpheaderwarning.o :$(netDir)/http/headers/HttpHeaderWarning.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderWarning.cpp -o $(outtmp)/httpheaderwarning.o 
+
+$(outtmp)/httpheaderserver.o :$(netDir)/http/headers/HttpHeaderServer.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderServer.cpp -o $(outtmp)/httpheaderserver.o 
+
+$(outtmp)/httpheaderallowmethods.o :$(netDir)/http/headers/HttpHeaderAccessControlAllowMethods.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAccessControlAllowMethods.cpp -o $(outtmp)/httpheaderallowmethods.o 
 
 $(outtmp)/HttpHeaderAlloworigin.o :$(netDir)/http/headers/HttpHeaderAccessControlAllowOrigin.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAccessControlAllowOrigin.cpp -o $(outtmp)/HttpHeaderAlloworigin.o 
@@ -306,8 +314,8 @@ $(outtmp)/httprequestheaders.o :$(netDir)/http/headers/HttpHeaderAccessControlRe
 $(outtmp)/httprequestmethod.o :$(netDir)/http/headers/HttpHeaderAccessControlRequestMethod.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAccessControlRequestMethod.cpp -o $(outtmp)/httprequestmethod.o 
 
-$(outtmp)/HttpHeaderAge.o :$(netDir)/http/headers/HttpHeaderAge.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAge.cpp -o $(outtmp)/HttpHeaderAge.o 
+$(outtmp)/httpheaderage.o :$(netDir)/http/headers/HttpHeaderAge.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAge.cpp -o $(outtmp)/httpheaderage.o 
 
 $(outtmp)/httpheaderorigin.o :$(netDir)/http/headers/HttpHeaderOrigin.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderOrigin.cpp -o $(outtmp)/httpheaderorigin.o 
@@ -315,14 +323,14 @@ $(outtmp)/httpheaderorigin.o :$(netDir)/http/headers/HttpHeaderOrigin.cpp
 $(outtmp)/httpheaderpragma.o :$(netDir)/http/headers/HttpHeaderPragma.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderPragma.cpp -o $(outtmp)/httpheaderpragma.o 
 
-$(outtmp)/httpifmodifiedsince.o :$(netDir)/http/headers/HttpIfModifiedSince.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpIfModifiedSince.cpp -o $(outtmp)/httpifmodifiedsince.o 
+$(outtmp)/httpheaderIfmodifiedsince.o :$(netDir)/http/headers/HttpHeaderIfModifiedSince.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderIfModifiedSince.cpp -o $(outtmp)/httpheaderIfmodifiedsince.o 
 
-$(outtmp)/httpifrange.o :$(netDir)/http/headers/HttpIfRange.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpIfRange.cpp -o $(outtmp)/httpifrange.o 
+$(outtmp)/httpheaderifrange.o :$(netDir)/http/headers/HttpHeaderIfRange.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderIfRange.cpp -o $(outtmp)/httpheaderifrange.o 
 
-$(outtmp)/httpifunmodifiedsince.o :$(netDir)/http/headers/HttpIfUnmodifiedSince.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpIfUnmodifiedSince.cpp -o $(outtmp)/httpifunmodifiedsince.o 
+$(outtmp)/httpheaderifunmodifiedsince.o :$(netDir)/http/headers/HttpHeaderIfUnmodifiedSince.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderIfUnmodifiedSince.cpp -o $(outtmp)/httpheaderifunmodifiedsince.o 
 
 $(outtmp)/httpheaderkeepalive.o :$(netDir)/http/headers/HttpHeaderKeepAlive.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderKeepAlive.cpp -o $(outtmp)/httpheaderkeepalive.o 
@@ -336,23 +344,23 @@ $(outtmp)/httpheaderuseragent.o :$(netDir)/http/headers/HttpHeaderUserAgent.cpp
 $(outtmp)/httpheaderhost.o :$(netDir)/http/headers/HttpHeaderHost.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderHost.cpp -o $(outtmp)/httpheaderhost.o 
 
-$(outtmp)/httptransferencoding.o :$(netDir)/http/headers/HttpTransferEncoding.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpTransferEncoding.cpp -o $(outtmp)/httptransferencoding.o 
+$(outtmp)/httpheadertransferencoding.o :$(netDir)/http/headers/HttpHeaderTransferEncoding.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderTransferEncoding.cpp -o $(outtmp)/httpheadertransferencoding.o 
 
 $(outtmp)/httpheaderupgrade.o :$(netDir)/http/headers/HttpHeaderUpgrade.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderUpgrade.cpp -o $(outtmp)/httpheaderupgrade.o 
 
-$(outtmp)/httpheaderversion.o :$(netDir)/http/headers/HttpSecWebSocketVersion.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpSecWebSocketVersion.cpp -o $(outtmp)/httpheaderversion.o 
+$(outtmp)/httpheadersecwebsocketversion.o :$(netDir)/http/headers/HttpHeaderSecWebSocketVersion.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderSecWebSocketVersion.cpp -o $(outtmp)/httpheadersecwebsocketversion.o 
 
-$(outtmp)/httpheaderwsorigin.o :$(netDir)/http/headers/HttpSecWebSocketOrigin.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpSecWebSocketOrigin.cpp -o $(outtmp)/httpheaderwsorigin.o 
+$(outtmp)/httpheaderwsorigin.o :$(netDir)/http/headers/HttpHeaderSecWebSocketOrigin.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderSecWebSocketOrigin.cpp -o $(outtmp)/httpheaderwsorigin.o 
 
-$(outtmp)/httpheaderextensions.o :$(netDir)/http/headers/HttpSecWebSocketExtensions.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpSecWebSocketExtensions.cpp -o $(outtmp)/httpheaderextensions.o 
+$(outtmp)/httpheaderextensions.o :$(netDir)/http/headers/HttpHeaderSecWebSocketExtensions.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderSecWebSocketExtensions.cpp -o $(outtmp)/httpheaderextensions.o 
 
-$(outtmp)/httpheaderwsprotocol.o :$(netDir)/http/headers/HttpSecWebSocketProtocol.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpSecWebSocketProtocol.cpp -o $(outtmp)/httpheaderwsprotocol.o 
+$(outtmp)/httpheaderwsprotocol.o :$(netDir)/http/headers/HttpHeaderSecWebSocketProtocol.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderSecWebSocketProtocol.cpp -o $(outtmp)/httpheaderwsprotocol.o 
 
 $(outtmp)/HttpHeaderAllow.o :$(netDir)/http/headers/HttpHeaderAllow.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAllow.cpp -o $(outtmp)/HttpHeaderAllow.o 
@@ -363,17 +371,17 @@ $(outtmp)/HttpHeaderClearSiteData.o :$(netDir)/http/headers/HttpHeaderClearSiteD
 $(outtmp)/httpheaderconnection.o :$(netDir)/http/headers/HttpHeaderConnection.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderConnection.cpp -o $(outtmp)/httpheaderconnection.o 
 
-$(outtmp)/httpcontentlocation.o :$(netDir)/http/headers/HttpContentLocation.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpContentLocation.cpp -o $(outtmp)/httpcontentlocation.o 
+$(outtmp)/httpheadercontentlocation.o :$(netDir)/http/headers/HttpHeaderContentLocation.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderContentLocation.cpp -o $(outtmp)/httpheadercontentlocation.o 
 
-$(outtmp)/HttpHeaderContentLength.o :$(netDir)/http/headers/HttpHeaderContentLength.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderContentLength.cpp -o $(outtmp)/HttpHeaderContentLength.o 
+$(outtmp)/httpheadercontentlength.o :$(netDir)/http/headers/HttpHeaderContentLength.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderContentLength.cpp -o $(outtmp)/httpheadercontentlength.o 
 
-$(outtmp)/HttpHeaderContentLanguage.o :$(netDir)/http/headers/HttpHeaderContentLanguage.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderContentLanguage.cpp -o $(outtmp)/HttpHeaderContentLanguage.o 
+$(outtmp)/httpheadercontentlanguage.o :$(netDir)/http/headers/HttpHeaderContentLanguage.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderContentLanguage.cpp -o $(outtmp)/httpheadercontentlanguage.o 
 
-$(outtmp)/HttpHeaderContentEncoding.o :$(netDir)/http/headers/HttpHeaderContentEncoding.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderContentEncoding.cpp -o $(outtmp)/HttpHeaderContentEncoding.o 
+$(outtmp)/httpheadercontentencoding.o :$(netDir)/http/headers/HttpHeaderContentEncoding.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderContentEncoding.cpp -o $(outtmp)/httpheadercontentencoding.o 
 
 $(outtmp)/httpheadermatch.o :$(netDir)/http/headers/HttpHeaderMatch.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderMatch.cpp -o $(outtmp)/httpheadermatch.o 
@@ -381,14 +389,14 @@ $(outtmp)/httpheadermatch.o :$(netDir)/http/headers/HttpHeaderMatch.cpp
 $(outtmp)/httpstatus.o :$(netDir)/http/HttpStatus.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpStatus.cpp -o $(outtmp)/httpstatus.o 
 
-$(outtmp)/httpversion.o :$(netDir)/http/headers/HttpVersion.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpVersion.cpp -o $(outtmp)/httpversion.o 
+$(outtmp)/httpheaderversion.o :$(netDir)/http/headers/HttpHeaderVersion.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderVersion.cpp -o $(outtmp)/httpheaderversion.o 
 
 $(outtmp)/httpentity.o :$(netDir)/http/HttpEntity.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpEntity.cpp -o $(outtmp)/httpentity.o 
 
-$(outtmp)/httpcontenttype.o :$(netDir)/http/headers/HttpContentType.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpContentType.cpp -o $(outtmp)/httpcontenttype.o 
+$(outtmp)/httpheadercontenttype.o :$(netDir)/http/headers/HttpHeaderContentType.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderContentType.cpp -o $(outtmp)/httpheadercontenttype.o 
 
 $(outtmp)/httpmime.o :$(netDir)/http/HttpMime.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpMime.cpp -o $(outtmp)/httpmime.o 
@@ -399,8 +407,8 @@ $(outtmp)/httpmime.o :$(netDir)/http/HttpMime.cpp
 $(outtmp)/httpcookie.o :$(netDir)/http/HttpCookie.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpCookie.cpp -o $(outtmp)/httpcookie.o 
 
-$(outtmp)/HttpHeaderAuthorization.o :$(netDir)/http/headers/HttpHeaderAuthorization.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAuthorization.cpp -o $(outtmp)/HttpHeaderAuthorization.o 
+$(outtmp)/httpheaderauthorization.o :$(netDir)/http/headers/HttpHeaderAuthorization.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAuthorization.cpp -o $(outtmp)/httpheaderauthorization.o 
 
 $(outtmp)/HttpHeaderContentDisposition.o :$(netDir)/http/headers/HttpHeaderContentDisposition.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderContentDisposition.cpp -o $(outtmp)/HttpHeaderContentDisposition.o 
@@ -432,35 +440,35 @@ $(outtmp)/httpheader.o :$(netDir)/http/HttpHeader.cpp
 $(outtmp)/httpheaderlink.o :$(netDir)/http/headers/HttpHeaderLink.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderLink.cpp -o $(outtmp)/httpheaderlink.o 
 
-$(outtmp)/HttpHeaderAcceptencoding.o :$(netDir)/http/headers/HttpHeaderAcceptEncoding.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAcceptEncoding.cpp -o $(outtmp)/HttpHeaderAcceptencoding.o 
+$(outtmp)/httpgeaderacceptencoding.o :$(netDir)/http/headers/HttpHeaderAcceptEncoding.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAcceptEncoding.cpp -o $(outtmp)/httpgeaderacceptencoding.o 
 
-$(outtmp)/HttpHeaderAcceptlanguage.o :$(netDir)/http/headers/HttpHeaderAcceptLanguage.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAcceptLanguage.cpp -o $(outtmp)/HttpHeaderAcceptlanguage.o 
+$(outtmp)/httpheaderacceptlanguage.o :$(netDir)/http/headers/HttpHeaderAcceptLanguage.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAcceptLanguage.cpp -o $(outtmp)/httpheaderacceptlanguage.o 
 
-$(outtmp)/HttpHeaderAcceptcharset.o :$(netDir)/http/headers/HttpHeaderAcceptCharSet.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAcceptCharSet.cpp -o $(outtmp)/HttpHeaderAcceptcharset.o 
+$(outtmp)/httpheaderacceptcharset.o :$(netDir)/http/headers/HttpHeaderAcceptCharSet.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAcceptCharSet.cpp -o $(outtmp)/httpheaderacceptcharset.o 
 
-$(outtmp)/HttpHeaderAccept.o :$(netDir)/http/headers/HttpHeaderAccept.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAccept.cpp -o $(outtmp)/HttpHeaderAccept.o 
+$(outtmp)/httpheaderaccept.o :$(netDir)/http/headers/HttpHeaderAccept.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAccept.cpp -o $(outtmp)/httpheaderaccept.o 
 
-$(outtmp)/httpstricttransportsecurity.o :$(netDir)/http/headers/HttpStrictTransportSecurity.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpStrictTransportSecurity.cpp -o $(outtmp)/httpstricttransportsecurity.o 
+$(outtmp)/httpgeaderstricttransportsecurity.o :$(netDir)/http/headers/HttpHeaderStrictTransportSecurity.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderStrictTransportSecurity.cpp -o $(outtmp)/httpgeaderstricttransportsecurity.o 
 
-$(outtmp)/httpforwarded.o :$(netDir)/http/headers/HttpForwarded.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpForwarded.cpp -o $(outtmp)/httpforwarded.o 
+$(outtmp)/httpheaderforwarded.o :$(netDir)/http/headers/HttpHeaderForwarded.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderForwarded.cpp -o $(outtmp)/httpheaderforwarded.o 
 
-$(outtmp)/HttpHeaderAcceptpatch.o :$(netDir)/http/headers/HttpHeaderAcceptPatch.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAcceptPatch.cpp -o $(outtmp)/HttpHeaderAcceptpatch.o 
+$(outtmp)/httpheaderacceptpatch.o :$(netDir)/http/headers/HttpHeaderAcceptPatch.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAcceptPatch.cpp -o $(outtmp)/httpheaderacceptpatch.o 
 
-$(outtmp)/httpproxyauthenticate.o :$(netDir)/http/headers/HttpProxyAuthenticate.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpProxyAuthenticate.cpp -o $(outtmp)/httpproxyauthenticate.o 
+$(outtmp)/httpheaderproxyauthenticate.o :$(netDir)/http/headers/HttpHeaderProxyAuthenticate.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderProxyAuthenticate.cpp -o $(outtmp)/httpheaderproxyauthenticate.o 
 
-$(outtmp)/httpproxyauthorization.o :$(netDir)/http/headers/HttpProxyAuthorization.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpProxyAuthorization.cpp -o $(outtmp)/httpproxyauthorization.o 
+$(outtmp)/httpheaderproxyauthorization.o :$(netDir)/http/headers/HttpHeaderProxyAuthorization.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderProxyAuthorization.cpp -o $(outtmp)/httpheaderproxyauthorization.o 
 
-$(outtmp)/httpxframeoptions.o :$(netDir)/http/headers/HttpXFrameOptions.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpXFrameOptions.cpp -o $(outtmp)/httpxframeoptions.o 
+$(outtmp)/httpheaderxframeoptions.o :$(netDir)/http/headers/HttpHeaderXFrameOptions.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderXFrameOptions.cpp -o $(outtmp)/httpheaderxframeoptions.o 
 
 $(outtmp)/httpheaderdigest.o :$(netDir)/http/headers/HttpHeaderDigest.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderDigest.cpp -o $(outtmp)/httpheaderdigest.o 

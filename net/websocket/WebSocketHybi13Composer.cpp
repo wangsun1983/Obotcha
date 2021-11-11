@@ -30,7 +30,7 @@ HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl)
     header->setMethod(st(HttpMethod)::Get);
     //packet->setHeader(client->getHttpHeader());
     header->setUrl(httpUrl);
-    header->setVersion(createHttpVersion(1,1));
+    header->setVersion(createHttpHeaderVersion(1,1));
 
     String host = httpUrl->getHost()->append(":",createString(httpUrl->getPort()));
     header->set(st(HttpHeader)::Host,host);
@@ -103,7 +103,7 @@ HttpResponse _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSo
     response->getHeader()->setConnection(createString("Upgrade"));
     
     if(protocols != nullptr) {
-        HttpSecWebSocketProtocol protocol = createHttpSecWebSocketProtocol();
+        HttpHeaderSecWebSocketProtocol protocol = createHttpHeaderSecWebSocketProtocol();
         protocol->set(protocols);
         response->getHeader()->setWebSocketProtocol(protocol);
     }

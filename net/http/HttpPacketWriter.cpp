@@ -50,7 +50,7 @@ void _HttpPacketWriter::_updateHttpHeader(HttpPacket packet) {
         case st(HttpPacket)::Request: {
             auto multiPart = packet->getEntity()->getMultiPart();
             if(multiPart != nullptr) {
-                HttpContentType contentType = createHttpContentType();
+                HttpHeaderContentType contentType = createHttpHeaderContentType();
                 contentType->setBoundary(multiPart->getBoundary());
                 contentType->setType(st(HttpMime)::MultiPartFormData);
                 header->setContentType(contentType);
