@@ -2,6 +2,9 @@
 
 namespace obotcha {
 
+const String _HttpHeaderCrossOriginResourcePolicy::UnSafeNone = createString("unsafe-none");
+const String _HttpHeaderCrossOriginResourcePolicy::RequireCorp = createString("require-corp");
+
 _HttpHeaderCrossOriginResourcePolicy::_HttpHeaderCrossOriginResourcePolicy() {
 
 }
@@ -15,7 +18,7 @@ void _HttpHeaderCrossOriginResourcePolicy::import(String s) {
 }
 
 String _HttpHeaderCrossOriginResourcePolicy::get() {
-    return policy
+    return policy;
 }
 
 void _HttpHeaderCrossOriginResourcePolicy::set(String s) {

@@ -7,22 +7,37 @@ namespace obotcha {
 _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
     mSocket = s;
     if (mSocket->getType() == st(Socket)::Udp) {
-        server_addr.sin_family = AF_INET;
-        InetAddress address = s->getInetAddress();
-        server_addr.sin_port = htons(address->getPort());
+        auto address = s->getInetAddress();
 
-        if (address->getAddress() != nullptr) {
-            server_addr.sin_addr.s_addr =
-                inet_addr(address->getAddress()->toChars());
-        } else {
-            server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+        switch(address->getType()) {
+            case st(InetAddress)::IPV4: {
+                server_addr.sin_family = AF_INET;
+                server_addr.sin_port = htons(address->getPort());
+
+                if (address != nullptr) {
+                    server_addr.sin_addr.s_addr =
+                        inet_addr(address->getAddress()->toChars());
+                } else {
+                    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+                }
+            }
+            break;
+
+            case st(InetAddress)::IPV6: {
+                server_addr_v6.sin6_family = AF_INET6;
+                server_addr_v6.sin6_port = htons(s->getInetAddress()->getPort());
+                if (address->getAddress() != nullptr) {
+                    printf("socket output stream addr is %s \n",address->getAddress()->toChars());
+                    inet_pton(AF_INET6, address->getAddress()->toChars(), &server_addr_v6.sin6_addr);
+                } else {
+                    server_addr_v6.sin6_addr = in6addr_any;
+                }
+            }
+            break;
         }
     }
-    printf("SocketOutputStream create start \n");
-
-    if (s->getFileDescriptor()->isAsync()) {
-        printf("SocketOutputStream create trace1 \n");
     
+    if (s->getFileDescriptor()->isAsync()) {
         mChannel = createAsyncOutputChannel(
             s->getFileDescriptor(),
             std::bind(&_SocketOutputStream::_write, this, std::placeholders::_1,
@@ -37,9 +52,7 @@ long _SocketOutputStream::write(char c) {
 }
 
 long _SocketOutputStream::write(ByteArray data) {
-    printf("SocketOutputStream write start \n");
     if (mChannel != nullptr) {
-        printf("SocketOutputStream write trace1 \n");
         mChannel->write(data);
         return data->size();
     }
@@ -60,7 +73,6 @@ long _SocketOutputStream::write(ByteArray data, int start, int len) {
 }
 
 long _SocketOutputStream::_write(FileDescriptor fd, ByteArray data,int offset) {
-    printf("SocketOutputStream _write start \n");
     if (mSocket == nullptr || mSocket->isClosed()) {
         return -1;
     }
@@ -68,9 +80,27 @@ long _SocketOutputStream::_write(FileDescriptor fd, ByteArray data,int offset) {
     byte *sendData = data->toValue();
     switch (mSocket->getType()) {
         case st(Socket)::Udp: {
+            struct sockaddr * addr = nullptr;
+            int length = 0;
+
+            switch(mSocket->getInetAddress()->getType()) {
+                case st(InetAddress)::IPV4: {
+                    addr = (sockaddr *)&server_addr;
+                    length = sizeof(server_addr);
+                }
+                break;
+
+                case st(InetAddress)::IPV6: {
+                    addr = (sockaddr *)&server_addr_v6;
+                    length = sizeof(server_addr_v6);
+                }
+                break;
+            }
+
             return ::sendto(fd->getFd(), data->toValue() + offset, data->size() - offset, 0,
-                            (struct sockaddr *)&server_addr, sizeof(sockaddr_in));
-        } break;
+                            addr, length);
+        }
+        break;
 
         default:
             return ::write(fd->getFd(), sendData + offset, data->size() - offset);

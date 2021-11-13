@@ -142,6 +142,18 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheadervia.o \
 		$(outtmp)/httpheaderwarning.o \
 		$(outtmp)/httpheaderserver.o \
+		$(outtmp)/httpheadercorssoriginopenerpolicy.o \
+		$(outtmp)/httpheadercorssoriginembedderpolicy.o \
+		$(outtmp)/httpheadercorssoriginresourcepolicy.o \
+		$(outtmp)/httpheaderacceptch.o \
+		$(outtmp)/httpheaderdnt.o \
+		$(outtmp)/httpheadersavedata.o \
+		$(outtmp)/httpheadersecfetchdest.o \
+		$(outtmp)/httpheadersecfetchmode.o \
+		$(outtmp)/httpheadersecfetchsite.o \
+		$(outtmp)/httpheadersecfetchuser.o \
+		$(outtmp)/httpheaderservertiming.o \
+		$(outtmp)/httpheadersourcemap.o \
 		
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
@@ -295,6 +307,42 @@ $(outtmp)/httpheaderwarning.o :$(netDir)/http/headers/HttpHeaderWarning.cpp
 
 $(outtmp)/httpheaderserver.o :$(netDir)/http/headers/HttpHeaderServer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderServer.cpp -o $(outtmp)/httpheaderserver.o 
+
+$(outtmp)/httpheadercorssoriginopenerpolicy.o :$(netDir)/http/headers/HttpHeaderCrossOriginOpenerPolicy.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderCrossOriginOpenerPolicy.cpp -o $(outtmp)/httpheadercorssoriginopenerpolicy.o 
+
+$(outtmp)/httpheadercorssoriginresourcepolicy.o :$(netDir)/http/headers/HttpHeaderCrossOriginResourcePolicy.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderCrossOriginResourcePolicy.cpp -o $(outtmp)/httpheadercorssoriginresourcepolicy.o 
+
+$(outtmp)/httpheaderacceptch.o :$(netDir)/http/headers/HttpHeaderAcceptCh.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAcceptCh.cpp -o $(outtmp)/httpheaderacceptch.o 
+
+$(outtmp)/httpheaderdnt.o :$(netDir)/http/headers/HttpHeaderDnt.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderDnt.cpp -o $(outtmp)/httpheaderdnt.o 
+
+$(outtmp)/httpheadersavedata.o :$(netDir)/http/headers/HttpHeaderSaveData.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderSaveData.cpp -o $(outtmp)/httpheadersavedata.o 
+
+$(outtmp)/httpheadersecfetchdest.o :$(netDir)/http/headers/HttpHeaderSecFetchDest.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderSecFetchDest.cpp -o $(outtmp)/httpheadersecfetchdest.o 
+
+$(outtmp)/httpheadersecfetchmode.o :$(netDir)/http/headers/HttpHeaderSecFetchMode.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderSecFetchMode.cpp -o $(outtmp)/httpheadersecfetchmode.o 
+
+$(outtmp)/httpheadersecfetchsite.o :$(netDir)/http/headers/HttpHeaderSecFetchSite.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderSecFetchSite.cpp -o $(outtmp)/httpheadersecfetchsite.o 
+
+$(outtmp)/httpheadersecfetchuser.o :$(netDir)/http/headers/HttpHeaderSecFetchUser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderSecFetchUser.cpp -o $(outtmp)/httpheadersecfetchuser.o 
+
+$(outtmp)/httpheaderservertiming.o :$(netDir)/http/headers/HttpHeaderServerTiming.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderServerTiming.cpp -o $(outtmp)/httpheaderservertiming.o 
+
+$(outtmp)/httpheadersourcemap.o :$(netDir)/http/headers/HttpHeaderSourceMap.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderSourceMap.cpp -o $(outtmp)/httpheadersourcemap.o 
+
+$(outtmp)/httpheadercorssoriginembedderpolicy.o :$(netDir)/http/headers/HttpHeaderCrossOriginEmbedderPolicy.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderCrossOriginEmbedderPolicy.cpp -o $(outtmp)/httpheadercorssoriginembedderpolicy.o 
 
 $(outtmp)/httpheaderallowmethods.o :$(netDir)/http/headers/HttpHeaderAccessControlAllowMethods.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/headers/HttpHeaderAccessControlAllowMethods.cpp -o $(outtmp)/httpheaderallowmethods.o 

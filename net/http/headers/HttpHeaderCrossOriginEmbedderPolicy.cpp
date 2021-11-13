@@ -2,6 +2,9 @@
 
 namespace obotcha {
 
+const String _HttpHeaderCrossOriginEmbedderPolicy::UnSafeNone = createString("unsafe-none");
+const String _HttpHeaderCrossOriginEmbedderPolicy::RequireCorp = createString("require-corp");
+
 _HttpHeaderCrossOriginEmbedderPolicy::_HttpHeaderCrossOriginEmbedderPolicy() {
 
 }
@@ -15,7 +18,7 @@ void _HttpHeaderCrossOriginEmbedderPolicy::import(String s) {
 }
 
 String _HttpHeaderCrossOriginEmbedderPolicy::get() {
-    return policy
+    return policy;
 }
 
 void _HttpHeaderCrossOriginEmbedderPolicy::set(String s) {

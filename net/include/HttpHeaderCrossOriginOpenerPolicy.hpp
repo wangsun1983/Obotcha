@@ -20,9 +20,11 @@ public:
     void set(String);
     
     String toString();
-
+    static const String UnSafeNone;
+    static const String RequireCorp;
+    
 private:
-    int policy;
+    String policy;
 };
 
 }

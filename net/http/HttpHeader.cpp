@@ -30,6 +30,7 @@ const String _HttpHeader::Scheme = createString(":schema");
 const String _HttpHeader::Status = createString(":status");
 const String _HttpHeader::Protocol = createString(":protocol");
 const String _HttpHeader::Accept = createString("accept");
+const String _HttpHeader::AcceptCh = createString("accept-ch");
 const String _HttpHeader::AcceptPatch = createString("accept-patch");
 const String _HttpHeader::AcceptCharset = createString("accept-charset");
 const String _HttpHeader::AcceptDatetime = createString("accept-datetime");
@@ -96,9 +97,14 @@ const String _HttpHeader::Refresh = createString("refresh");
 const String _HttpHeader::RetryAfter = createString("retry-after");
 const String _HttpHeader::SecWebSocketKey = createString("sec-websocket-key");
 const String _HttpHeader::SecWebSocketAccept = createString("sec-websocket-accept");
+const String _HttpHeader::SaveData = createString("save-data");
 const String _HttpHeader::Server = createString("server");
 const String _HttpHeader::SetCookie = createString("set-cookie");
 const String _HttpHeader::SecTokenBinding = createString("sec-token-binding");
+const String _HttpHeader::SecFetchDest = createString("sec-fetch-dest");
+const String _HttpHeader::SecFetchMode = createString("sec-fetch-mode");
+const String _HttpHeader::SecFetchSite = createString("sec-fetch-site");
+const String _HttpHeader::SecFetchUser = createString("sec-fetch-user");
 const String _HttpHeader::StrictTransportSecurity = createString("strict-transport-security");
 const String _HttpHeader::TE = createString("te");
 const String _HttpHeader::Timestamp = createString("timestamp");
@@ -132,6 +138,8 @@ const String _HttpHeader::SecWebSocketKey1 = createString("sec-websocket-key1");
 const String _HttpHeader::SecWebSocketKey2 = createString("sec-websocket-key2");
 const String _HttpHeader::SecWebSocketKey3 = createString("sec-websocket-key3");
 const String _HttpHeader::SecWebSocketProtocol = createString("sec-websocket-protocol");
+const String _HttpHeader::ServerTiming = createString("server-timing");
+const String _HttpHeader::SourceMap = createString("sourcemap");
 const String _HttpHeader::Digest = createString("digest");
 
 // Transfer-Encoding type
@@ -146,6 +154,7 @@ _HttpHeader::_HttpHeader() {
         std::call_once(flag, [&]() {
             idMaps->put(Accept,createInteger(TypeAccept));
             idMaps->put(AcceptCharset,createInteger(TypeAcceptCharset));
+            idMaps->put(AcceptCh,createInteger(TypeAcceptCh));
             idMaps->put(AcceptPatch,createInteger(TypeAcceptPatch));
             idMaps->put(AcceptDatetime,createInteger(TypeAcceptDatetime));
             idMaps->put(AcceptEncoding,createInteger(TypeAcceptEncoding));
@@ -217,6 +226,11 @@ _HttpHeader::_HttpHeader() {
             idMaps->put(Server,createInteger(TypeServer));
             idMaps->put(SetCookie,createInteger(TypeSetCookie));
             idMaps->put(SecTokenBinding,createInteger(TypeSecTokenBinding));
+            idMaps->put(SecFetchDest,createInteger(TypeSecFetchDest));
+            idMaps->put(SecFetchMode,createInteger(TypeSecFetchMode));
+            idMaps->put(SecFetchSite,createInteger(TypeSecFetchSite));
+            idMaps->put(SecFetchUser,createInteger(TypeSecFetchUser));
+
             idMaps->put(StrictTransportSecurity,createInteger(TypeStrictTransportSecurity));
             idMaps->put(TE,createInteger(TypeTE));
             idMaps->put(Timestamp,createInteger(TypeTimestamp));
@@ -247,10 +261,13 @@ _HttpHeader::_HttpHeader() {
             idMaps->put(SecWebSocketVersion,createInteger(TypeSecWebSocketVersion));
             idMaps->put(SecWebSocketExtensions,createInteger(TypeSecWebSocketExtensions));
             idMaps->put(SecWebSocketOrigin,createInteger(TypeSecWebSocketOrigin));
+            idMaps->put(SaveData,createInteger(TypeSaveData));
             idMaps->put(SecWebSocketKey1,createInteger(TypeSecWebSocketKey1));
             idMaps->put(SecWebSocketKey2,createInteger(TypeSecWebSocketKey2));
             idMaps->put(SecWebSocketKey3,createInteger(TypeSecWebSocketKey3));
             idMaps->put(SecWebSocketProtocol,createInteger(TypeSecWebSocketProtocol));
+            idMaps->put(ServerTiming,createInteger(TypeServerTiming));
+            idMaps->put(SourceMap,createInteger(TypeSourceMap));
             idMaps->put(Digest,createInteger(TypeDigest));
 
             //add names
@@ -260,6 +277,7 @@ _HttpHeader::_HttpHeader() {
             names->add(Status);
             names->add(Protocol);
             names->add(Accept);
+            names->add(AcceptCh);
             names->add(AcceptCharset);
             names->add(AcceptPatch);
             names->add(AcceptDatetime);
@@ -324,11 +342,16 @@ _HttpHeader::_HttpHeader() {
             names->add(RefererPolicy);
             names->add(Refresh);
             names->add(RetryAfter);
+            names->add(SaveData);
             names->add(SecWebSocketKey);
             names->add(SecWebSocketAccept);
             names->add(Server);
             names->add(SetCookie);
             names->add(SecTokenBinding);
+            names->add(SecFetchDest);
+            names->add(SecFetchMode);
+            names->add(SecFetchSite);
+            names->add(SecFetchUser);
             names->add(StrictTransportSecurity);
             names->add(TE);
             names->add(Timestamp);
@@ -362,6 +385,8 @@ _HttpHeader::_HttpHeader() {
             names->add(SecWebSocketKey2);
             names->add(SecWebSocketKey3);
             names->add(SecWebSocketProtocol);
+            names->add(ServerTiming);
+            names->add(SourceMap);
             names->add(Digest);
         });
     }
@@ -390,6 +415,7 @@ void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
 
 #define SET_VALUE(X) X = (h->X != nullptr)?h->X:nullptr;
     SET_VALUE(mAcceptCharSet);
+    SET_VALUE(mAcceptCh);
     SET_VALUE(mAccept);
     SET_VALUE(mAcceptEncoding);
     SET_VALUE(mAcceptLanguage);
@@ -464,6 +490,14 @@ void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
     SET_VALUE(mVia);
     SET_VALUE(mHeaderServer);
     SET_VALUE(mWarning);
+    SET_VALUE(mDnt);
+    SET_VALUE(mSaveData);
+    SET_VALUE(mFetchDest);
+    SET_VALUE(mFetchMode);
+    SET_VALUE(mFetchSite);
+    SET_VALUE(mFetchUser);
+    SET_VALUE(mServerTiming);
+    SET_VALUE(mSourceMap);
 
 #undef SET_VALUE
 }
@@ -476,6 +510,7 @@ void _HttpHeader::reset() {
     
     mAcceptCharSet = nullptr;
     mAccept = nullptr;
+    mAcceptCh = nullptr;
     mAcceptEncoding = nullptr;
     mAcceptLanguage = nullptr;
     mAcceptPatch = nullptr;
@@ -551,6 +586,15 @@ void _HttpHeader::reset() {
     mHeaderServer = nullptr;
     mWarning = nullptr;
 
+    mDnt = nullptr;
+    mSaveData = nullptr;
+    mFetchDest = nullptr;
+    mFetchMode = nullptr;
+    mFetchSite = nullptr;
+    mFetchUser = nullptr;
+    mServerTiming = nullptr;
+    mSourceMap = nullptr;
+
     mMethod = -1;
     mResponseReason = nullptr;
     mResponseStatus = st(HttpStatus)::Ok;
@@ -568,6 +612,14 @@ void _HttpHeader::set(String key, String value) {
                     mAcceptCharSet = createHttpHeaderAcceptCharSet();
                 }
                 mAcceptCharSet->import(value);
+                return;
+            }
+
+            case TypeAcceptCh: {
+                if(mAcceptCh == nullptr) {
+                    mAcceptCh = createHttpHeaderAcceptCh();
+                }
+                mAcceptCh->import(value);
                 return;
             }
 
@@ -1160,6 +1212,70 @@ void _HttpHeader::set(String key, String value) {
                 mWarning->import(value);
                 return;
             }
+
+            case TypeDNT: {
+                if(mDnt == nullptr) {
+                    mDnt = createHttpHeaderDnt();
+                }
+                mDnt->import(value);
+                return;
+            }
+
+            case TypeSaveData: {
+                if(mSaveData == nullptr) {
+                    mSaveData = createHttpHeaderSaveData();
+                }
+                mSaveData->import(value);
+                return;
+            }
+
+            case TypeSecFetchDest: {
+                if(mFetchDest == nullptr) {
+                    mFetchDest = createHttpHeaderSecFetchDest();
+                }
+                mFetchDest->import(value);
+                return;
+            }
+
+            case TypeSecFetchMode: {
+                if(mFetchMode == nullptr) {
+                    mFetchMode = createHttpHeaderSecFetchMode();
+                }
+                mFetchMode->import(value);
+                return;
+            }
+
+            case TypeSecFetchSite: {
+                if(mFetchSite == nullptr) {
+                    mFetchSite = createHttpHeaderSecFetchSite();
+                }
+                mFetchSite->import(value);
+                return;
+            }
+
+            case TypeSecFetchUser: {
+                if(mFetchUser == nullptr) {
+                    mFetchUser = createHttpHeaderSecFetchUser();
+                }
+                mFetchUser->import(value);
+                return;
+            }
+
+            case TypeServerTiming: {
+                if(mServerTiming == nullptr) {
+                    mServerTiming = createHttpHeaderServerTiming();
+                }
+                mServerTiming->import(value);
+                return;
+            }
+
+            case TypeSourceMap: {
+                if(mSourceMap == nullptr) {
+                    mSourceMap = createHttpHeaderSourceMap();
+                }
+                mSourceMap->import(value);
+                return;
+            }
         }
     }
 
@@ -1181,6 +1297,13 @@ String _HttpHeader::get(String header) {
             case TypeAccept:{
                 if(mAccept != nullptr) {
                     return mAccept->toString();
+                }
+                break;
+            }
+
+            case TypeAcceptCh:{
+                if(mAcceptCh != nullptr) {
+                    return mAcceptCh->toString();
                 }
                 break;
             }
@@ -1692,7 +1815,61 @@ String _HttpHeader::get(String header) {
                 break;
             }
 
-            
+            case TypeDNT: {
+                if(mDnt != nullptr) {
+                    return mDnt->toString();
+                }
+                break;
+            }
+
+            case TypeSaveData: {
+                if(mSaveData != nullptr) {
+                    return mSaveData->toString();
+                }
+                break;
+            }
+
+            case TypeSecFetchDest: {
+                if(mFetchDest != nullptr) {
+                    return mFetchDest->toString();
+                }
+                break;
+            }
+
+            case TypeSecFetchMode: {
+                if(mFetchMode != nullptr) {
+                    return mFetchMode->toString();
+                }
+                break;
+            }
+
+            case TypeSecFetchSite: {
+                if(mFetchSite != nullptr) {
+                    return mFetchSite->toString();
+                }
+                break;
+            }
+
+            case TypeSecFetchUser: {
+                if(mFetchUser != nullptr) {
+                    return mFetchUser->toString();
+                }
+                break;
+            }
+
+            case TypeServerTiming: {
+                if(mServerTiming != nullptr) {
+                    return mServerTiming->toString();
+                }
+                break;
+            }
+
+            case TypeSourceMap: {
+                if(mSourceMap != nullptr) {
+                    return mSourceMap->toString();
+                }
+                break;
+            }
         }
     }
 
@@ -2410,6 +2587,70 @@ void _HttpHeader::setWarning(HttpHeaderWarning s) {
     mWarning = s;
 }
 
+HttpHeaderAcceptCh _HttpHeader::getAcceptCh() {
+    return mAcceptCh;
+}
+
+void _HttpHeader::setAcceptCh(HttpHeaderAcceptCh s) {
+    mAcceptCh = s;
+}
+
+HttpHeaderDnt _HttpHeader::getDnt() {
+    return mDnt;
+}
+
+void _HttpHeader::setDnt(HttpHeaderDnt s) {
+    mDnt = s;
+}
+
+HttpHeaderSaveData _HttpHeader::getSaveData() {
+    return mSaveData;
+}
+
+void _HttpHeader::setSaveData(HttpHeaderSaveData s) {
+    mSaveData = s;
+}
+
+HttpHeaderSecFetchDest _HttpHeader::getSecFetchDest() {
+    return mFetchDest;
+}
+
+void _HttpHeader::setSecFetchData(HttpHeaderSecFetchDest s) {
+    mFetchDest = s;
+}
+
+HttpHeaderSecFetchMode _HttpHeader::getSecFetchMode() {
+    return mFetchMode;
+}
+
+void _HttpHeader::setSecFetchMode(HttpHeaderSecFetchMode s) {
+    mFetchMode = s;
+}
+
+HttpHeaderSecFetchSite _HttpHeader::getSecFetchSite() {
+    return mFetchSite;
+}
+
+void _HttpHeader::setSecFetchSite(HttpHeaderSecFetchSite s) {
+    mFetchSite = s;
+}
+
+HttpHeaderSecFetchUser _HttpHeader::getSecFetchUser() {
+    return mFetchUser;
+}
+
+void _HttpHeader::setSecFetchUser(HttpHeaderSecFetchUser s) {
+    mFetchUser = s;
+}
+
+HttpHeaderSourceMap _HttpHeader::getSourceMap() {
+    return mSourceMap;
+}
+
+void _HttpHeader::setSourceMap(HttpHeaderSourceMap s) {
+    mSourceMap = s;
+}
+
 //
 HttpHeaderTransferEncoding _HttpHeader::getTransferEncoding() {
     return mTransferEncoding;
@@ -2501,6 +2742,10 @@ String _HttpHeader::toString(int type) {
         header = header->append(st(HttpHeader)::Accept,": ",mAccept->toString(),st(HttpText)::CRLF);
     }
 
+    if(mAcceptCh != nullptr) {
+        header = header->append(st(HttpHeader)::AcceptCh,": ",mAcceptCh->toString(),st(HttpText)::CRLF);
+    }
+
     if(mAcceptEncoding != nullptr) {
         header = header->append(st(HttpHeader)::AcceptEncoding,": ",mAcceptEncoding->toString(),st(HttpText)::CRLF);
     }
@@ -2550,7 +2795,7 @@ String _HttpHeader::toString(int type) {
     }
 
     if(mAllow != nullptr) {
-        header = header->append(st(HttpHeader)::Allow,": ",mAge->toString(),st(HttpText)::CRLF);
+        header = header->append(st(HttpHeader)::Allow,": ",mAllow->toString(),st(HttpText)::CRLF);
     }
 
     if(mAuthorization != nullptr) {

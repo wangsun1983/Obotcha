@@ -43,6 +43,7 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
     AsyncOutputChannel mChannel;
 
     struct sockaddr_in server_addr;
+    struct sockaddr_in6 server_addr_v6;
 };
 
 } // namespace obotcha

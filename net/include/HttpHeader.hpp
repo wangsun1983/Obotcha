@@ -82,6 +82,15 @@
 #include "HttpHeaderVia.hpp"
 #include "HttpHeaderServer.hpp"
 #include "HttpHeaderWarning.hpp"
+#include "HttpHeaderAcceptCh.hpp"
+#include "HttpHeaderSaveData.hpp"
+#include "HttpHeaderSecFetchMode.hpp"
+#include "HttpHeaderSecFetchDest.hpp"
+#include "HttpHeaderSecFetchSite.hpp"
+#include "HttpHeaderSecFetchUser.hpp"
+#include "HttpHeaderServerTiming.hpp"
+#include "HttpHeaderSourceMap.hpp"
+#include "HttpHeaderDnt.hpp"
 
 namespace obotcha {
 
@@ -95,6 +104,7 @@ public:
     const static String Status;
     const static String Protocol;
     const static String Accept;
+    const static String AcceptCh;
     const static String AcceptCharset;
     const static String AcceptPatch;
     const static String AcceptDatetime;
@@ -159,11 +169,16 @@ public:
     const static String RefererPolicy;
     const static String Refresh;
     const static String RetryAfter;
+    const static String SaveData;
     const static String SecWebSocketKey;
     const static String SecWebSocketAccept;
     const static String Server;
     const static String SetCookie;
     const static String SecTokenBinding;
+    const static String SecFetchDest;
+    const static String SecFetchMode;
+    const static String SecFetchSite;
+    const static String SecFetchUser;
     const static String StrictTransportSecurity;
     const static String TE;
     const static String Timestamp;
@@ -197,6 +212,8 @@ public:
     const static String SecWebSocketKey2;
     const static String SecWebSocketKey3;
     const static String SecWebSocketProtocol;
+    const static String ServerTiming;
+    const static String SourceMap;
     const static String Digest;
     //Transfer-Encoding type
     const static String TransferChunked;
@@ -211,6 +228,7 @@ public:
         TypeStatus,
         TypeProtocol,
         TypeAccept,
+        TypeAcceptCh,
         TypeAcceptCharset,
         TypeAcceptPatch,
         TypeAcceptDatetime,
@@ -275,11 +293,16 @@ public:
         TypeRefererPolicy,
         TypeRefresh,
         TypeRetryAfter,
+        TypeSaveData,
         TypeSecWebSocketKey,
         TypeSecWebSocketAccept,
         TypeServer,
         TypeSetCookie,
         TypeSecTokenBinding,
+        TypeSecFetchDest,
+        TypeSecFetchMode,
+        TypeSecFetchSite,
+        TypeSecFetchUser,
         TypeStrictTransportSecurity,
         TypeTE,
         TypeTimestamp,
@@ -313,6 +336,8 @@ public:
         TypeSecWebSocketKey2,
         TypeSecWebSocketKey3,
         TypeSecWebSocketProtocol,
+        TypeServerTiming,
+        TypeSourceMap,
         TypeDigest,
     };
 
@@ -617,6 +642,30 @@ public:
     HttpHeaderWarning getWarning();
     void setWarning(HttpHeaderWarning);
 
+    HttpHeaderAcceptCh getAcceptCh();
+    void setAcceptCh(HttpHeaderAcceptCh);
+
+    HttpHeaderDnt getDnt();
+    void setDnt(HttpHeaderDnt);
+
+    HttpHeaderSaveData getSaveData();
+    void setSaveData(HttpHeaderSaveData);
+    
+    HttpHeaderSecFetchDest getSecFetchDest();
+    void setSecFetchData(HttpHeaderSecFetchDest);
+
+    HttpHeaderSecFetchMode getSecFetchMode();
+    void setSecFetchMode(HttpHeaderSecFetchMode);
+
+    HttpHeaderSecFetchSite getSecFetchSite();
+    void setSecFetchSite(HttpHeaderSecFetchSite);
+
+    HttpHeaderSecFetchUser getSecFetchUser();
+    void setSecFetchUser(HttpHeaderSecFetchUser);
+
+    HttpHeaderSourceMap getSourceMap();
+    void setSourceMap(HttpHeaderSourceMap);
+
     String toString(int);
 
     static int findId(String);
@@ -789,6 +838,17 @@ private:
 
     HttpHeaderWarning mWarning;
 
+    HttpHeaderAcceptCh mAcceptCh;
+
+    HttpHeaderDnt mDnt;
+    HttpHeaderSaveData mSaveData;
+    HttpHeaderSecFetchDest mFetchDest;
+    HttpHeaderSecFetchMode mFetchMode;
+    HttpHeaderSecFetchSite mFetchSite;
+    HttpHeaderSecFetchUser mFetchUser;
+    HttpHeaderServerTiming mServerTiming;
+    HttpHeaderSourceMap mSourceMap;
+    
     /////
 
     ArrayList<HttpCookie> mCookies;
