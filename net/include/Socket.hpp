@@ -51,9 +51,7 @@ private:
     int type;
 
 protected:
-    SocketImpl mSock; 
-    SocketInputStream mInput;
-    SocketOutputStream mOutput;
+    SocketImpl mSock;
     Mutex mMutex;
 
 };

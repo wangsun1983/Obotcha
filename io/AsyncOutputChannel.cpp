@@ -16,7 +16,7 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
     writeCb = callback;
     isClosed = false;
 
-    std::once_flag s_flag;
+    static std::once_flag s_flag;
     std::call_once(s_flag, [&]() {
         mPool = createAsyncOutputChannelPool();
     });
