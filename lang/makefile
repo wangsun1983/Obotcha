@@ -17,6 +17,7 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/byte.o \
 	$(outtmp)/exception.o \
 	$(outtmp)/error.o \
+	$(outtmp)/stringbuffer.o \
 
 $(outtmp)/integer.o :$(langDir)/Integer.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(langDir)/Integer.cpp -o $(outtmp)/integer.o 
@@ -50,6 +51,9 @@ $(outtmp)/system.o :$(langDir)/System.cpp
 
 $(outtmp)/string.o :$(langDir)/String.cpp
 		$(cppcompiler) $(obotchacppflags) -c $(langDir)/String.cpp -o $(outtmp)/string.o 
+
+$(outtmp)/stringbuffer.o :$(langDir)/StringBuffer.cpp
+		$(cppcompiler) $(obotchacppflags) -c $(langDir)/StringBuffer.cpp -o $(outtmp)/stringbuffer.o 
 
 $(outtmp)/long.o :$(langDir)/Long.cpp
 		$(cppcompiler) $(obotchacppflags) -c $(langDir)/Long.cpp -o $(outtmp)/long.o 
