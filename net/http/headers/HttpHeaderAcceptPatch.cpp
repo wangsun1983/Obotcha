@@ -1,6 +1,7 @@
 #include "HttpHeaderAcceptPatch.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -39,19 +40,19 @@ void _HttpHeaderAcceptPatch::add(String type,String charset) {
 }
 
 String _HttpHeaderAcceptPatch::toString() {
-    String patch = "";
+    StringBuffer patch = createStringBuffer();
     auto iterator = patches->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderAcceptPatchItem item = iterator->getValue();
         if(item->charset == nullptr) {
-            patch = patch->append(item->type,",");
+            patch->append(item->type,",");
         } else {
-            patch = patch->append(item->type,";charset=",item->charset,",");
+            patch->append(item->type,";charset=",item->charset,",");
         }
         iterator->next();
     }
 
-    return patch->subString(0,patch->size() - 1);
+    return patch->toString(0,patch->size() - 1);
 }
 
 }

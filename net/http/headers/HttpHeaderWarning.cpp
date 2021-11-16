@@ -1,4 +1,5 @@
 #include "HttpHeaderWarning.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
     
@@ -123,24 +124,24 @@ HttpDate _HttpHeaderWarning::getDateTime() {
 }
 
 String _HttpHeaderWarning::toString() {
-    String warning = "";
+    StringBuffer warning = createStringBuffer();
     if(code != -1) {
-        warning = warning->append(createString(code)," ");
+        warning->append(createString(code)," ");
     }
 
     if(agent != nullptr) {
-        warning = warning->append(agent," ");
+        warning->append(agent," ");
     }
 
     if(text != nullptr) {
-        warning = warning->append("\"",text,"\" ");
+        warning->append("\"",text,"\" ");
     }
 
     if(date != nullptr) {
-        warning = warning->append("\"",date->toString(),"\" ");
+        warning->append("\"",date->toString(),"\" ");
     }
 
-    return warning->subString(0,warning->size() - 1);
+    return warning->toString(0,warning->size() - 1);
 }
 
 

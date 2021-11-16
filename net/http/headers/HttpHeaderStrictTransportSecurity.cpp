@@ -1,6 +1,7 @@
 #include "HttpHeaderStrictTransportSecurity.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -27,15 +28,19 @@ void _HttpHeaderStrictTransportSecurity::import(String s) {
 }
 
 String _HttpHeaderStrictTransportSecurity::toString() {
-    String accept = createString("max-age=")->append(createString(maxAge),";");
-    if(preload) {
-        accept = accept->append("preload;");
-    }
-    if(includeSubDomains) {
-        accept = accept->append("includeSubDomains;");
+    StringBuffer accept = createStringBuffer();
+    if(maxAge != -1) {
+        accept->append("max-age=",createString(maxAge),";");
     }
 
-    return accept->subString(0,accept->size() - 1);
+    if(preload) {
+        accept->append("preload;");
+    }
+    if(includeSubDomains) {
+        accept->append("includeSubDomains;");
+    }
+
+    return accept->toString(0,accept->size() - 1);
 }
 
 }

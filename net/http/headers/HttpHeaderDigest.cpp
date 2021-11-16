@@ -1,6 +1,7 @@
 #include "HttpHeaderDigest.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -32,14 +33,14 @@ void _HttpHeaderDigest::add(String algorithm,String value) {
 }
 
 String _HttpHeaderDigest::toString() {
-    String digest = "";
+    StringBuffer digest = createStringBuffer();
     auto iterator = digests->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderDigestItem item = iterator->getValue();
-        digest = digest->append(item->algorithm,"=",item->value,",");
+        digest->append(item->algorithm,"=",item->value,",");
         iterator->next();
     }
-    return digest->subString(0,digest->size() - 1);
+    return digest->toString(0,digest->size() - 1);
 }
 
 }

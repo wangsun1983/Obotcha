@@ -42,6 +42,7 @@ int _HttpPacketParser::pushHttpData(ByteArray data) {
 #endif
 
     try {
+        printf("mBuff size is %d,data size is %d \n",mBuff->getAvailDataSize(),data->size());
         mBuff->push(data);
     } catch (ArrayIndexOutOfBoundsException &e) {
         LOG(ERROR) << "HttpPacketParser error ,data overflow";
@@ -68,6 +69,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
     while (1) {
         switch (mStatus) {
             case Idle: {
+                printf("HttpPacketParser Idle trace1 \n");
                 if (mHttpHeaderParser == nullptr) {
                     mHttpHeaderParser = createHttpHeaderParser(mReader);
                     mHttpPacket = createHttpPacket();
@@ -86,7 +88,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                     }
                     continue;
                 }
-
+                printf("HttpPacketParser Idle trace2,header is %s \n",header->toString(st(HttpPacket)::Request)->toChars());
                 if(!isChunkedWTrailingHeaders) {
                     if(header->getResponseReason() != nullptr) {
                         mHttpPacket->setType(st(HttpPacket)::Response);
@@ -103,6 +105,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
             }
 
             case BodyStart: {
+                printf("HttpPacketParser BodyStart trace1 \n");
                 auto contentlength = mHttpPacket->getHeader()->getContentLength();
                 auto contenttype = mHttpPacket->getHeader()->getContentType();
                 auto transferEncoding = mHttpPacket->getHeader()->getTransferEncoding();
@@ -181,11 +184,11 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
 
                 if (contenttype != nullptr && 
                     contenttype->getType()->containsIgnoreCase(st(HttpMime)::MultiPartFormData)) {
+                    printf("HttpPacketParser BodyStart trace2 \n");
                     if (mMultiPartParser == nullptr) {
                         mMultiPartParser = createHttpMultiPartParser(
                             contenttype->getBoundary(), contentlength->get());
                     }
-
                     HttpMultiPart multipart = mMultiPartParser->parse(mReader);
                     if (multipart != nullptr) {
                         mHttpPacket->getEntity()->setMultiPart(multipart);

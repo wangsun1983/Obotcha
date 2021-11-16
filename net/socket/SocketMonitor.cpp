@@ -246,8 +246,8 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                     return st(EPollFileObserver)::OnEventOK;
                 } else {
                     int clientfd = -1;
-                    Socket s = nullptr;
-                    switch(s->getInetAddress()->getType()) {
+                    ServerSocket server = monitor->mServerSocks->get(fd);
+                    switch(server->getInetAddress()->getType()) {
                         case st(InetAddress)::IPV4: {
                             clientfd = accept(fd, (struct sockaddr *)&client_address,&client_addrLength);
                             s = createSocket(createFileDescriptor(clientfd));

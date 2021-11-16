@@ -2,6 +2,7 @@
 #include <mutex>
 
 #include "HttpHeaderContentSecurityPolicy.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -200,17 +201,17 @@ void _HttpHeaderContentSecurityPolicy::add(int c,int r,String src) {
 }
 
 String _HttpHeaderContentSecurityPolicy::toString() {
-    String policy = "";
+    StringBuffer policy = createStringBuffer();
     auto iterator = items->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderContentSecurityPolicyItem item = iterator->getValue();
         if(item->command != -1) {
-            policy = policy->append(CommandIdToStringMaps->get(createInteger(item->command))," ");
+            policy->append(CommandIdToStringMaps->get(createInteger(item->command))," ");
         }
 
         auto ruleIterator = item->rules->getIterator();
         while(ruleIterator->hasValue()) {
-            policy = policy->append("\'",RuleIdToStringMaps->get(ruleIterator->getValue()),"\' ");
+            policy->append("\'",RuleIdToStringMaps->get(ruleIterator->getValue()),"\' ");
             ruleIterator->next();
         }
 
@@ -218,16 +219,16 @@ String _HttpHeaderContentSecurityPolicy::toString() {
             //policy = policy->append(item->src);
             auto ite = item->sources->getIterator();
             while(ite->hasValue()) {
-                policy = policy->append(ite->getValue()," ");
+                policy->append(ite->getValue()," ");
                 ite->next();
             }
         }
-        policy = policy->subString(0,policy->size() - 1);
-        policy = policy->append("; ");
+        policy->subString(0,policy->size() - 1);
+        policy->append("; ");
         iterator->next();
     }
 
-    return policy->subString(0,policy->size() - 2);
+    return policy->toString(0,policy->size() - 2);
 }
 
 }

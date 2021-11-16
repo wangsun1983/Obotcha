@@ -1,6 +1,7 @@
 #include "HttpHeaderAccept.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -39,19 +40,19 @@ void _HttpHeaderAccept::add(String s,float w) {
 }
 
 String _HttpHeaderAccept::toString() {
-    String accept = "";
+    StringBuffer accept = createStringBuffer();
     auto iterator = accepts->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderAcceptItem item = iterator->getValue();
         if(st(Math)::compareFloat(item->weight,1.0) == st(Math)::AlmostEqual) {
-            accept = accept->append(item->type,",");
+            accept->append(item->type,",");
         } else {
-            accept = accept->append(item->type,";q=",createString(item->weight,2),",");
+            accept->append(item->type,";q=",createString(item->weight,2),",");
         }
         iterator->next();
     }
 
-    return accept->subString(0,accept->size() - 1);
+    return accept->toString(0,accept->size() - 1);
 }
 
 }

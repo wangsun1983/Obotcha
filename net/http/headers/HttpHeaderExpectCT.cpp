@@ -1,6 +1,7 @@
 #include "HttpHeaderExpectCT.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "HttpMethod.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -51,20 +52,20 @@ void _HttpHeaderExpectCT::setEnforce(bool s) {
 }
 
 String _HttpHeaderExpectCT::toString() {
-    String expect = "";
+    StringBuffer expect = createStringBuffer();
     if(maxAge != -1) {
-        expect = expect->append("max-age=",createString(maxAge),"; ");
+        expect->append("max-age=",createString(maxAge),"; ");
     }
 
     if(mEnforce) {
-        expect = expect->append("enforce; ");
+        expect->append("enforce; ");
     }
 
     if(reportUri != nullptr) {
-        expect = expect->append("report-uri=\"",reportUri->toString(),"\"; ");
+        expect->append("report-uri=\"",reportUri->toString(),"\"; ");
     }
 
-    return expect->subString(0,expect->size() - 2);
+    return expect->toString(0,expect->size() - 2);
 }
 
 }

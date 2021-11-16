@@ -420,8 +420,7 @@ const String _HttpMime::VideoXMsVideo = createString("video/x-msvideo");
 const String _HttpMime::SuffixAvi = createString("avi");
 
 // multipart/form-data
-const String _HttpMime::MultiPartFormData =
-    createString("multipart/form-data");
+const String _HttpMime::MultiPartFormData = createString("multipart/form-data");
 const String _HttpMime::FormData = createString("form-data");
 const String _HttpMime::Boundary = createString("boundary");
 

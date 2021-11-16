@@ -3,6 +3,7 @@
 #include "HttpHeaderContentParser.hpp"
 #include "HttpText.hpp"
 #include "HttpPacket.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -138,57 +139,57 @@ void _HttpHeaderCacheControl::setNoTransform(bool v) {
 
 
 String _HttpHeaderCacheControl::toString(int type) {
-    String result = createString("");
+    StringBuffer result = createStringBuffer();
 
     if(mNoCache) {
-        result = result->append(NoCache,",");
+        result->append(NoCache,",");
     }
 
     if (mNoStore) {
-        result = result->append(NoStore,",");
+        result->append(NoStore,",");
     }
 
     if(mMaxAgeSeconds != -1) {
-        result = result->append(MaxAge,"=",createString(mMaxAgeSeconds),",");
+        result->append(MaxAge,"=",createString(mMaxAgeSeconds),",");
     }
 
     if(mMaxStaleSeconds != -1) {
-        result = result->append(MaxStale,"=",createString(mMaxStaleSeconds),",");
+        result->append(MaxStale,"=",createString(mMaxStaleSeconds),",");
     }
 
     if(mMinFreshSeconds!= -1 && type == st(HttpPacket)::Request) {
-        result = result->append(MaxStale,"=",createString(mMaxStaleSeconds),",");
+        result->append(MaxStale,"=",createString(mMaxStaleSeconds),",");
     }
 
     if(mOnlyIfCached && type == st(HttpPacket)::Request) {
-        result = result->append(OnlyIfCached,",");
+        result->append(OnlyIfCached,",");
     }
 
     if(mNoTransform) {
-        result = result->append(NotTransform,",");
+        result->append(NotTransform,",");
     }
 
     if(mIsPublic && type == st(HttpPacket)::Response) {
-        result = result->append(CachePublic,",");
+        result->append(CachePublic,",");
     }
     
     if(mIsPrivate && type == st(HttpPacket)::Response) {
-        result = result->append(CachePrivate,",");
+        result->append(CachePrivate,",");
     }
 
     if(mMustRevalidate && type == st(HttpPacket)::Response) {
-        result = result->append(MustRevalidate,",");
+        result->append(MustRevalidate,",");
     }
 
     if(mSMaxAgeSeconds != -1 && type == st(HttpPacket)::Response) {
-        result = result->append(SMaxAge,"=",createString(mSMaxAgeSeconds),",");
+        result->append(SMaxAge,"=",createString(mSMaxAgeSeconds),",");
     }
 
     if(result->size() > 0) {
-        return result->subString(0,result->size() - 1);
+        return result->toString(0,result->size() - 1);
     }
 
-    return result;
+    return nullptr;
 }
 
 } // namespace obotcha

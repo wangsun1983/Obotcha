@@ -1,5 +1,6 @@
 #include "HttpHeaderKeepAlive.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -41,20 +42,20 @@ void _HttpHeaderKeepAlive::setMax(int v) {
 }
 
 String _HttpHeaderKeepAlive::toString() {
-    String keepalive = "";
+    StringBuffer keepalive = createStringBuffer();
     if(timeout != -1) {
-        keepalive = keepalive->append("timeout=",createString(timeout),", ");
+        keepalive->append("timeout=",createString(timeout),", ");
     }
 
     if(max != -1) {
-        keepalive = keepalive->append("max=",createString(max),", ");
+        keepalive->append("max=",createString(max),", ");
     }
     
     if(keepalive->size() > 0) {
-        return keepalive->subString(0,keepalive->size() - 2);
+        return keepalive->toString(0,keepalive->size() - 2);
     }
 
-    return keepalive;
+    return nullptr;
 }
 
 }

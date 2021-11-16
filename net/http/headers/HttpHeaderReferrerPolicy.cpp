@@ -1,5 +1,6 @@
 #include "HttpHeaderReferrerPolicy.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -31,14 +32,14 @@ void _HttpHeaderReferrerPolicy::add(String s) {
 }
 
 String _HttpHeaderReferrerPolicy::toString() {
-    String policy = "";
+    StringBuffer policy = createStringBuffer();
     auto iterator = policies->getIterator();
     while(iterator->hasValue()) {
-        policy = policy->append(iterator->getValue(),", ");
+        policy->append(iterator->getValue(),", ");
         iterator->next();
     }
 
-    return policy->subString(0,policy->size() - 2);
+    return policy->toString(0,policy->size() - 2);
 }
 
 

@@ -1,9 +1,9 @@
 #include "HttpHeaderAcceptEncoding.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
-
 _HttpHeaderAcceptEncodingItem::_HttpHeaderAcceptEncodingItem(String s,float w) {
     weight = w;
     type = s;
@@ -39,19 +39,19 @@ void _HttpHeaderAcceptEncoding::add(String s,float w) {
 }
 
 String _HttpHeaderAcceptEncoding::toString() {
-    String encoding = "";
+    StringBuffer encoding = createStringBuffer();
     auto iterator = encodings->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderAcceptEncodingItem item = iterator->getValue();
         if(st(Math)::compareFloat(item->weight,1.0) == st(Math)::AlmostEqual) {
-            encoding = encoding->append(item->type,",");
+            encoding->append(item->type,",");
         } else {
-            encoding = encoding->append(item->type,";q=",createString(item->weight,2),",");
+            encoding->append(item->type,";q=",createString(item->weight,2),",");
         }
         iterator->next();
     }
 
-    return encoding->subString(0,encoding->size() - 1);
+    return encoding->toString(0,encoding->size() - 1);
 }
 
 }

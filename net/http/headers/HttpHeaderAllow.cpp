@@ -1,6 +1,7 @@
 #include "HttpHeaderAllow.hpp"
 #include "HttpMethod.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -27,15 +28,15 @@ ArrayList<Integer> _HttpHeaderAllow::get() {
 }
 
 String _HttpHeaderAllow::toString() {
-    String method = "";
+    StringBuffer method = createStringBuffer();
     auto iterator = methods->getIterator();
     while(iterator->hasValue()) {
         Integer v = iterator->getValue();
-        method = method->append(st(HttpMethod)::findString(v->toValue()),", ");   
+        method->append(st(HttpMethod)::findString(v->toValue()),", ");   
         iterator->next();
     }
 
-    return method->subString(0,method->size() - 2);
+    return method->toString(0,method->size() - 2);
 }
 
 

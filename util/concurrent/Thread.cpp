@@ -46,7 +46,9 @@ void *_Thread::localRun(void *th) {
     return nullptr;
 }
 
-_Thread::_Thread() { threadInit(nullptr, nullptr); }
+_Thread::_Thread() { 
+    threadInit(nullptr, nullptr); 
+}
 
 int _Thread::setName(String name) {
     if (!isRunning()) {

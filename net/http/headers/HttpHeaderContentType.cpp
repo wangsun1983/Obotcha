@@ -6,6 +6,7 @@
 #include "HttpHeaderContentParser.hpp"
 #include "String.hpp"
 #include "HttpMime.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -49,14 +50,16 @@ String _HttpHeaderContentType::getCharSet() { return mCharset; }
 String _HttpHeaderContentType::getBoundary() { return mBoundary; }
 
 String _HttpHeaderContentType::toString() {
-    String result = mContentType;
+    StringBuffer result = createStringBuffer();
+    
+    result->append(mContentType);
     if (mCharset != nullptr) {
         result = result->append(";charset=", mCharset);
     }
     if (mBoundary != nullptr) {
         result = result->append(";boundary=", mBoundary);
     }
-    return result;
+    return result->toString();
 }
 
 } // namespace obotcha

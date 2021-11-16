@@ -1,6 +1,7 @@
 #include "HttpHeaderContentDisposition.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -27,21 +28,24 @@ void _HttpHeaderContentDisposition::import(String s) {
 }
 
 String _HttpHeaderContentDisposition::toString() {
-    String disposition = type;
     if(name == nullptr && filename == nullptr) {
         return type;
     }
-
+    StringBuffer disposition = createStringBuffer();
+    
+    if(type != nullptr) {
+        disposition->append(type);    
+    }
+    
     if(name != nullptr) {
-        disposition = disposition->append("; name=\"",name,"\"");
+        disposition->append("; name=\"",name,"\"");
     }
 
     if(filename != nullptr) {
-        disposition = disposition->append("; filename=\"",filename,"\"");
+        disposition->append("; filename=\"",filename,"\"");
     }
 
-    
-    return disposition->subString(0,disposition->size());
+    return disposition->toString(0,disposition->size());
 }
 
 }

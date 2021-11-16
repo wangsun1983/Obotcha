@@ -14,6 +14,7 @@ namespace obotcha {
 DECLARE_CLASS(ServerSocket) {
   public:
     _ServerSocket(int, InetAddress address, SocketOption option);
+    InetAddress getInetAddress();
     int bind();
     FileDescriptor getFileDescriptor();
     int close();
@@ -23,6 +24,7 @@ DECLARE_CLASS(ServerSocket) {
 
   private:
     SocketImpl mSock;
+    InetAddress mAddr;
 };
 
 } // namespace obotcha

@@ -1,5 +1,6 @@
 #include "HttpHeaderAccessControlExposeHeaders.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -26,13 +27,13 @@ ArrayList<String> _HttpHeaderAccessControlExposeHeaders::get() {
 }
 
 String _HttpHeaderAccessControlExposeHeaders::toString() {
-    String expose = "";
+    StringBuffer expose = createStringBuffer();
     auto iterator = headers->getIterator();
     while(iterator->hasValue()) {
-        expose = expose->append(iterator->getValue(),",");
+        expose->append(iterator->getValue(),",");
         iterator->next();
     }
-    return expose->subString(0,expose->size() - 1);
+    return expose->toString(0,expose->size() - 1);
 }
 
 }

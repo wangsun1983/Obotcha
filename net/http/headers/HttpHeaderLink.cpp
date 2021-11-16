@@ -1,5 +1,6 @@
 #include "HttpHeaderLink.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -25,16 +26,21 @@ void _HttpHeaderLink::import(String s) {
 }
 
 String _HttpHeaderLink::toString() {
-    String link = createString("<")->append(url,">");
+    StringBuffer link = createStringBuffer();
+
+    if(url != nullptr) {
+        link->append("<",url,">");
+    }
+
     if(rel != nullptr) {
-        link = link->append("; rel= \"",rel,"\"");
+        link->append("; rel= \"",rel,"\"");
     }
 
     if(title != nullptr) {
-        link = link->append("; title= \"",title,"\"");
+        link->append("; title= \"",title,"\"");
     }
 
-    return link;
+    return link->toString();
 }
 
 } // namespace obotcha

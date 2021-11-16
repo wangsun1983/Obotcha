@@ -1,6 +1,7 @@
 #include "HttpHeaderProxyAuthenticate.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -32,11 +33,16 @@ void _HttpHeaderProxyAuthenticate::import(String s) {
 }
 
 String _HttpHeaderProxyAuthenticate::toString() {
-    String prox = type;
-    if(realm != nullptr) {
-        prox = prox->append(" realm=\"",realm,"\"");
+    StringBuffer prox = createStringBuffer();
+    if(type != nullptr) {
+        prox->append(type);
     }
-    return prox;
+    
+    if(realm != nullptr) {
+        prox->append(" realm=\"",realm,"\"");
+    }
+
+    return prox->toString();
 }
 
 }

@@ -1,5 +1,6 @@
 #include "HttpHeaderAcceptCh.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -27,14 +28,14 @@ void _HttpHeaderAcceptCh::add(String s) {
 }
 
 String _HttpHeaderAcceptCh::toString() {
-    String acceptCh = "";
+    StringBuffer acceptCh = createStringBuffer();
     auto iterator = accepts->getIterator();
     while(iterator->hasValue()) {
-        acceptCh = acceptCh->append(iterator->getValue(),", ");
+        acceptCh->append(iterator->getValue(),", ");
         iterator->next();
     }
 
-    return acceptCh->subString(0,acceptCh->size() - 2);
+    return acceptCh->toString(0,acceptCh->size() - 2);
 }
 
 

@@ -1,4 +1,5 @@
 #include "HttpHeaderUserAgent.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -88,7 +89,7 @@ ArrayList<HttpUserAgentDetail> _HttpHeaderUserAgent::get() {
 }
 
 String _HttpHeaderUserAgent::toString() {
-    String useragent = "";
+    StringBuffer useragent = createStringBuffer();
     if(agents->size() == 0){
         return nullptr;
     }
@@ -96,14 +97,14 @@ String _HttpHeaderUserAgent::toString() {
     auto iterator = agents->getIterator();
     while(iterator->hasValue()) {
         auto v = iterator->getValue();
-        useragent = useragent->append(v->product,"/",v->version," ");
+        useragent->append(v->product,"/",v->version," ");
         if(v->info != nullptr) {
-            useragent = useragent->append("(",v->info,") ");
+            useragent->append("(",v->info,") ");
         }
         iterator->next();
     }
 
-    return useragent->subString(0,useragent->size() - 1);
+    return useragent->toString(0,useragent->size() - 1);
 }
 
 }

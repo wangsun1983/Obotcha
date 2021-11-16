@@ -1,6 +1,7 @@
 #include "HttpHeaderAltSvc.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "HttpUrl.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -57,29 +58,29 @@ int _HttpHeaderAltSvc::getPersist() {
 }
 
 String _HttpHeaderAltSvc::toString() {
-    String svc="";
+    StringBuffer svc = createStringBuffer();
     
     auto iterator = altSvcs->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderAltSvcServiceItem item = iterator->getValue();
-        svc = svc->append(item->serviceName,"=\"",item->url->toString(),"\", ");
+        svc->append(item->serviceName,"=\"",item->url->toString(),"\", ");
         iterator->next();
     }
 
     if(svc->size() != 0) {
-        svc = svc->subString(0,svc->size() - 2)->append("; ");
+        svc->subString(0,svc->size() - 2)->append("; ");
     }
 
     if(maxAge != -1) {
-        svc = svc->append("ma=",createString(maxAge),"; ");
+        svc->append("ma=",createString(maxAge),"; ");
     }
 
     if(persist != -1) {
-        svc = svc->append("persist=",createString(persist),"; ");
+        svc->append("persist=",createString(persist),"; ");
     }
 
     if(svc->size() != 0) {
-        return svc->subString(0,svc->size() - 2);
+        return svc->toString(0,svc->size() - 2);
     }
 
     return nullptr;

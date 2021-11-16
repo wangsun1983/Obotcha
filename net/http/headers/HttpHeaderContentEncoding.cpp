@@ -1,6 +1,7 @@
 #include "HttpHeaderContentEncoding.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -29,14 +30,14 @@ void _HttpHeaderContentEncoding::add(String v) {
 
 
 String _HttpHeaderContentEncoding::toString() {
-    String encoding = "";
+    StringBuffer encoding = createStringBuffer();
     auto iterator = encodings->getIterator();
     while(iterator->hasValue()) {
-        encoding = encoding->append(iterator->getValue(),", ");
+        encoding->append(iterator->getValue(),", ");
         iterator->next();
     }
 
-    return encoding->subString(0,encoding->size() - 2);
+    return encoding->toString(0,encoding->size() - 2);
 }
 
 }

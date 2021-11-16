@@ -1,5 +1,6 @@
 #include "HttpHeaderServerTiming.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -50,28 +51,28 @@ ArrayList<HttpHeaderServerTimingItem> _HttpHeaderServerTiming::get() {
 }
 
 String _HttpHeaderServerTiming::toString() {
-    String timming = "";
+    StringBuffer timming = createStringBuffer();
     auto iterator = lists->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderServerTimingItem item = iterator->getValue();
         if(item->name != nullptr) {
-            timming = timming->append(item->name,";");
+            timming->append(item->name,";");
         }
 
         if(item->desc != nullptr) {
-            timming = timming->append("desc=\"",item->desc,"\";");
+            timming->append("desc=\"",item->desc,"\";");
         }
 
         if(item->dur != nullptr) {
-            timming = timming->append("dur=",item->dur,";");
+            timming->append("dur=",item->dur,";");
         }
 
-        timming = timming->subString(0,timming->size() - 1)->append(", ");
+        timming->subString(0,timming->size() - 1)->append(", ");
 
         iterator->next();
     }
 
-    return timming->subString(0,timming->size() - 2);
+    return timming->toString(0,timming->size() - 2);
 }
 
 }

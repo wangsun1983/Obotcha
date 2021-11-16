@@ -1,6 +1,7 @@
 #include "HttpHeaderAcceptCharSet.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -39,19 +40,19 @@ void _HttpHeaderAcceptCharSet::add(String s,float w) {
 }
 
 String _HttpHeaderAcceptCharSet::toString() {
-    String charset = "";
+    StringBuffer charset = createStringBuffer();
     auto iterator = charsets->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderAcceptCharSetItem item = iterator->getValue();
         if(st(Math)::compareFloat(item->weight,1.0) == st(Math)::AlmostEqual) {
-            charset = charset->append(item->type,", ");
+            charset->append(item->type,", ");
         } else {
-            charset = charset->append(item->type,";q=",createString(item->weight,2),", ");
+            charset->append(item->type,";q=",createString(item->weight,2),", ");
         }
         iterator->next();
     }
 
-    return charset->subString(0,charset->size() - 2);
+    return charset->toString(0,charset->size() - 2);
 }
 
 }

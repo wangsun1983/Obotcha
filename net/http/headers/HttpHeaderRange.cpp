@@ -1,4 +1,5 @@
 #include "HttpHeaderRange.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -111,19 +112,23 @@ void _HttpHeaderRange::setRanges(ArrayList<HttpHeaderRangeItem> l) {
 }
 
 String _HttpHeaderRange::toString() {
-    String range = unit->append("=");
+    StringBuffer range = createStringBuffer();
+    if(unit != nullptr) {
+        range->append(unit,"=");
+    }
+
     auto iterator = ranges->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderRangeItem item = iterator->getValue();
         if(item->end == -1) {
-            range = range->append(createString(item->start),"-, ");
+            range->append(createString(item->start),"-, ");
         } else {
-            range = range->append(createString(item->start),"-",createString(item->end),", ");
+            range->append(createString(item->start),"-",createString(item->end),", ");
         }
         iterator->next();
     }
 
-    return range->subString(0,range->size() - 2);
+    return range->toString(0,range->size() - 2);
 }
 
 }

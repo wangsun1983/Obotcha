@@ -1,6 +1,7 @@
 #include "HttpHeaderAuthorization.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -68,52 +69,52 @@ void _HttpHeaderAuthorization::import(String s) {
 }
 
 String _HttpHeaderAuthorization::toString() {
-    String authorization = type;
+    StringBuffer authorization = createStringBuffer();
     
     if(credentials != nullptr) {
-        authorization = authorization->append(" ",credentials,",");
+        authorization->append(" ",credentials,",");
     } else {
         if(username != nullptr) {
-            authorization = authorization->append(" username=",username,",");
+            authorization->append(" username=",username,",");
         }
 
         if(realm != nullptr) {
-            authorization = authorization->append(" realm=\"",realm,"\",");
+            authorization->append(" realm=\"",realm,"\",");
         }
 
         if(uri != nullptr) {
-            authorization = authorization->append(" uri=\"",uri,"\",");
+            authorization->append(" uri=\"",uri,"\",");
         }
 
         if(algorithm != nullptr) {
-            authorization = authorization->append(" algorithm=",algorithm,",");
+            authorization->append(" algorithm=",algorithm,",");
         }
 
         if(nonce != nullptr) {
-            authorization = authorization->append(" nonce=\"",nonce,"\",");
+            authorization->append(" nonce=\"",nonce,"\",");
         }
 
         if(nc != nullptr) {
-            authorization = authorization->append(" nc=",nc,",");
+            authorization->append(" nc=",nc,",");
         }
 
         if(cnonce != nullptr) {
-            authorization = authorization->append(" cnonce=\"",cnonce,"\",");
+            authorization->append(" cnonce=\"",cnonce,"\",");
         }
 
         if(qop != nullptr) {
-            authorization = authorization->append(" qop=",qop,",");
+            authorization->append(" qop=",qop,",");
         }
 
         if(response != nullptr) {
-            authorization = authorization->append(" response=\"",response,"\",");
+            authorization->append(" response=\"",response,"\",");
         }
 
         if(opaque != nullptr) {
-            authorization = authorization->append(" opaque=\"",opaque,"\",");
+            authorization->append(" opaque=\"",opaque,"\",");
         }
     }
-    return authorization->subString(0,authorization->size() - 1);
+    return authorization->toString(0,authorization->size() - 1);
 }
 
 }

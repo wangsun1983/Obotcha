@@ -1,5 +1,6 @@
 #include "HttpHeaderClearSiteData.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -67,23 +68,24 @@ void _HttpHeaderClearSiteData::setStorage(bool v) {
 
 
 String _HttpHeaderClearSiteData::toString() {
-    String type = "";
+    StringBuffer type = createStringBuffer();
+
     if(mCache) {
-        type = type->append("\"",Cache,"\",");
+        type->append("\"",Cache,"\",");
     }
 
     if(mCookies) {
-        type = type->append("\"",Cookies,"\",");
+        type->append("\"",Cookies,"\",");
     }
 
     if(mExecutionContexts) {
-        type = type->append("\"",ExecutionContexts,"\",");
+        type->append("\"",ExecutionContexts,"\",");
     }
 
     if(mStorage) {
-        type = type->append("\"",Storage,"\",");
+        type->append("\"",Storage,"\",");
     }
 
-    return type->subString(0,type->size() - 1);
+    return type->toString(0,type->size() - 1);
 }
 }

@@ -1,4 +1,5 @@
 #include "HttpHeaderVia.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -98,32 +99,33 @@ void _HttpHeaderVia::add(HttpHeaderViaItem item) {
 }
 
 String _HttpHeaderVia::toString() {
-    String via = "";
+    StringBuffer via = createStringBuffer();
+
     auto iterator = vias->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderViaItem item = iterator->getValue();
         if(item->protocol != nullptr) {
-            via = via->append(item->protocol,"/",item->protocol,", ");
+            via->append(item->protocol,"/",item->protocol,", ");
         }
 
         if(item->version != nullptr) {
-            via = via->append(item->version," ");
+            via->append(item->version," ");
         }
 
         if(item->url != nullptr) {
-            via = via->append(item->url->toString()," ");
+            via->append(item->url->toString()," ");
         }
 
         if(item->pseudonym != nullptr) {
-            via = via->append(item->pseudonym," ");
+            via->append(item->pseudonym," ");
         }
 
-        via = via->subString(0,via->size() - 1)->append(", ");
+        via->subString(0,via->size() - 1)->append(", ");
 
         iterator->next();
     }
 
-    return via->subString(0,via->size() - 2);
+    return via->toString(0,via->size() - 2);
 }
 
 }

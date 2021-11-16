@@ -1,6 +1,7 @@
 #include "HttpHeaderForwarded.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -27,36 +28,36 @@ void _HttpHeaderForwarded::import(String s) {
 }
 
 String _HttpHeaderForwarded::toString() {
-    String forwarded = "";
+    StringBuffer forwarded = createStringBuffer();
     auto iterator = forIdentities->getIterator();
     //forward
     while(iterator->hasValue()) {
         String v = iterator->getValue();
         if(v->counts(":") > 1 || v->counts(".") == 0) {
-            forwarded = forwarded->append("for=\"",v,"\",");
+            forwarded->append("for=\"",v,"\",");
         } else {
-            forwarded = forwarded->append("for=",v,",");
+            forwarded->append("for=",v,",");
         }
         iterator->next();
     }
 
-    forwarded = forwarded->subString(0,forwarded->size() - 1)->append("; ");
+    forwarded->subString(0,forwarded->size() - 1)->append("; ");
     //proto
     if(proto != nullptr) {
-        forwarded = forwarded->append("proto=",proto,"; ");
+        forwarded->append("proto=",proto,"; ");
     }
 
     //by
     if(byIdentity != nullptr) {
-        forwarded = forwarded->append("by=",byIdentity,"; ");
+        forwarded->append("by=",byIdentity,"; ");
     }
 
     if(host != nullptr) {
-        forwarded = forwarded->append("host=",host,"; ");
+        forwarded->append("host=",host,"; ");
     }
 
 
-    return forwarded->subString(0,forwarded->size() - 2);
+    return forwarded->toString(0,forwarded->size() - 2);
 }
 
 }

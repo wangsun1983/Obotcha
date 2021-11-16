@@ -1,5 +1,6 @@
 #include "HttpHeaderVary.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -31,14 +32,14 @@ void _HttpHeaderVary::add(String s) {
 }
 
 String _HttpHeaderVary::toString() {
-    String vary = "";
+    StringBuffer vary = createStringBuffer();
     auto iterator = varies->getIterator();
     while(iterator->hasValue()) {
-        vary = vary->append(iterator->getValue(),", ");
+        vary->append(iterator->getValue(),", ");
         iterator->next();
     }
 
-    return vary->subString(0,vary->size() - 2);
+    return vary->toString(0,vary->size() - 2);
 }
 
 

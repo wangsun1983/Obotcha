@@ -1,5 +1,6 @@
 #include "HttpHeaderMatch.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -51,19 +52,19 @@ String _HttpHeaderMatch::_convertTag(String s) {
 }
 
 String _HttpHeaderMatch::toString() {
-    String match = "";
+    StringBuffer match = createStringBuffer();
     auto iterator = items->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderMatchItem item = iterator->getValue();
         if(item->isWeakAlg) {
-            match = match->append("W/",_convertTag(item->tag));
+            match->append("W/",_convertTag(item->tag));
         } else {
-            match = match->append(_convertTag(item->tag));
+            match->append(_convertTag(item->tag));
         }
         iterator->next();
     }
 
-    return match->subString(0,match->size() - 2);
+    return match->toString(0,match->size() - 2);
 }
 
 
