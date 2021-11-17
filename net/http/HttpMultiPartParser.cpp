@@ -137,7 +137,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         resizeSize = mPartEnd->size(); //part end "----xxxx--\r\n"
                     case _BoundaryEnd:{
                         ByteArray data = reader->pop();
-                        flushData(data,resizeSize); //last data has "\r\n"
+                        flushData(data,resizeSize + 2); //last data has "\r\n"
                         mFileStream->close();
                         mFileStream = nullptr;
                         mStatus = ParseContentInfo;
@@ -156,7 +156,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
         }
     }
 
-    printf("HttpMultiPartParser ParseStartBoundry trace5,mBoundaryEnd is %d \n",mBoundaryIndex);
     if(mStatus == ParseContent && mBoundaryIndex == 0) {
         ByteArray data = reader->pop();
         if(data != nullptr && data->size() != 0) {
