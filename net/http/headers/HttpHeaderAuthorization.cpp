@@ -26,21 +26,21 @@ _HttpHeaderAuthorization::_HttpHeaderAuthorization(String s) {
 
 void _HttpHeaderAuthorization::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
+        printf("directive is %s \n",directive->toChars());
         while(1) {
             if(type == nullptr) {
                 //first 
                 int pos = st(HttpHeaderContentParser)::skipUntil(directive, 0,createString(" "));
                 type = directive->subString(0,pos)->trimAll();
-                parameter = directive->subString(pos,directive->size() - pos)->trimAll();
+                String subParam = directive->subString(pos,directive->size() - pos)->trimAll();
                 if(type->equalsIgnoreCase("Basic")) {
-                    credentials = parameter;
+                    credentials = subParam;
                     break;
                 }
 
-                directive = parameter;
+                directive = subParam;
                 continue;
             } else {
-                
                 if(directive->equalsIgnoreCase("username")) {
                     username = parameter;
                 } else if(directive->equalsIgnoreCase("realm")) {
@@ -71,49 +71,53 @@ void _HttpHeaderAuthorization::import(String s) {
 String _HttpHeaderAuthorization::toString() {
     StringBuffer authorization = createStringBuffer();
     
-    if(credentials != nullptr) {
-        authorization->append(" ",credentials,",");
-    } else {
-        if(username != nullptr) {
-            authorization->append(" username=",username,",");
-        }
-
-        if(realm != nullptr) {
-            authorization->append(" realm=\"",realm,"\",");
-        }
-
-        if(uri != nullptr) {
-            authorization->append(" uri=\"",uri,"\",");
-        }
-
-        if(algorithm != nullptr) {
-            authorization->append(" algorithm=",algorithm,",");
-        }
-
-        if(nonce != nullptr) {
-            authorization->append(" nonce=\"",nonce,"\",");
-        }
-
-        if(nc != nullptr) {
-            authorization->append(" nc=",nc,",");
-        }
-
-        if(cnonce != nullptr) {
-            authorization->append(" cnonce=\"",cnonce,"\",");
-        }
-
-        if(qop != nullptr) {
-            authorization->append(" qop=",qop,",");
-        }
-
-        if(response != nullptr) {
-            authorization->append(" response=\"",response,"\",");
-        }
-
-        if(opaque != nullptr) {
-            authorization->append(" opaque=\"",opaque,"\",");
+    if(type != nullptr) {
+        authorization->append(type," ");
+        if(credentials != nullptr) {
+            authorization->append(credentials,",");
         }
     }
+    
+    if(username != nullptr) {
+        authorization->append("username=\"",username,"\",");
+    }
+
+    if(realm != nullptr) {
+        authorization->append("realm=\"",realm,"\",");
+    }
+
+    if(nonce != nullptr) {
+        authorization->append("nonce=\"",nonce,"\",");
+    }
+
+    if(uri != nullptr) {
+        authorization->append("uri=\"",uri,"\",");
+    }
+
+    if(qop != nullptr) {
+        authorization->append("qop=",qop,",");
+    }
+
+    if(nc != nullptr) {
+        authorization->append("nc=",nc,",");
+    }
+
+    if(cnonce != nullptr) {
+        authorization->append("cnonce=\"",cnonce,"\",");
+    }
+
+    if(response != nullptr) {
+        authorization->append("response=\"",response,"\",");
+    }    
+
+    if(opaque != nullptr) {
+        authorization->append("opaque=\"",opaque,"\",");
+    }
+
+    if(algorithm != nullptr) {
+        authorization->append("algorithm=",algorithm,",");
+    }
+
     return authorization->toString(0,authorization->size() - 1);
 }
 

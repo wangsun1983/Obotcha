@@ -1,5 +1,6 @@
 #include "HttpUrlEncodedValue.hpp"
 #include "HttpHeaderContentParser.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -66,15 +67,15 @@ String _HttpUrlEncodedValue::get(String k) {
 }
 
 String _HttpUrlEncodedValue::toString() {
-    String v =createString("");
+    StringBuffer v = createStringBuffer();
     auto iterator = encodedValues->getIterator();
     while (iterator->hasValue()) {
         String key = iterator->getKey();
         String value = iterator->getValue();
-        v = v->append(key,"=",value,"&");
+        v->append(key,"=",value,"&");
         iterator->next();
     }
-    return v->subString(0,v->size()-1);
+    return v->toString(0,v->size()-1);
 }
 
 }

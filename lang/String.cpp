@@ -109,27 +109,49 @@ const unsigned char _String::toUpCaseTable[128] = {
 
 _String::_String() {}
 
-_String::_String(const String &v) { m_str = v->m_str; }
+_String::_String(const String &v) { 
+    m_str = v->m_str; 
+}
 
-_String::_String(const Long &v) { m_str = std::to_string(v->toValue()); }
+_String::_String(const Long &v) { 
+    m_str = std::to_string(v->toValue()); 
+}
 
-_String::_String(const Byte &v) { m_str = std::to_string(v->toValue()); }
+_String::_String(const Byte &v) { 
+    m_str = std::to_string(v->toValue()); 
+}
 
-_String::_String(const Uint8 &v) { m_str = std::to_string(v->toValue()); }
+_String::_String(const Uint8 &v) { 
+    m_str = std::to_string(v->toValue()); 
+}
 
-_String::_String(const Uint16 &v) { m_str = std::to_string(v->toValue()); }
+_String::_String(const Uint16 &v) { 
+    m_str = std::to_string(v->toValue()); 
+}
 
-_String::_String(const Uint32 &v) { m_str = std::to_string(v->toValue()); }
+_String::_String(const Uint32 &v) { 
+    m_str = std::to_string(v->toValue()); 
+}
 
-_String::_String(const Uint64 &v) { m_str = std::to_string(v->toValue()); }
+_String::_String(const Uint64 &v) { 
+    m_str = std::to_string(v->toValue()); 
+}
 
-_String::_String(const std::string v) { m_str = v; }
+_String::_String(const std::string v) { 
+    m_str = v; 
+}
 
-_String::_String(std::string *v) { m_str = *v; }
+_String::_String(std::string *v) { 
+    m_str = *v; 
+}
 
-_String::_String(unsigned char *v) { m_str = std::string((char *)v); }
+_String::_String(unsigned char *v) { 
+    m_str = std::string((char *)v); 
+}
 
-_String::_String(const Integer &v) { m_str = std::to_string(v->toValue()); }
+_String::_String(const Integer &v) { 
+    m_str = std::to_string(v->toValue()); 
+}
 
 _String::_String(const Boolean &v) {
     if (v->toValue()) {
@@ -153,15 +175,9 @@ _String::_String(const Double &v, int precision) {
     ss >> m_str;
 }
 
-_String::_String(int v) { m_str = std::to_string(v); }
-
-//_String::_String(bool v) {
-//    if(v) {
-//        m_str = True;
-//    } else {
-//        m_str = False;
-//    }
-//}
+_String::_String(int v) { 
+    m_str = std::to_string(v); 
+}
 
 _String::_String(float v, int precision) {
     std::stringstream ss;
@@ -177,19 +193,33 @@ _String::_String(double v, int precision) {
     ss >> m_str;
 }
 
-_String::_String(long v) { m_str = std::to_string(v); }
+_String::_String(long v) { 
+    m_str = std::to_string(v); 
+}
 
-_String::_String(char v) { m_str = std::to_string(v); }
+_String::_String(char v) { 
+    m_str = std::to_string(v); 
+}
 
-_String::_String(uint8_t v) { m_str = std::to_string(v); }
+_String::_String(uint8_t v) { 
+    m_str = std::to_string(v); 
+}
 
-_String::_String(uint16_t v) { m_str = std::to_string(v); }
+_String::_String(uint16_t v) { 
+    m_str = std::to_string(v); 
+}
 
-_String::_String(uint32_t v) { m_str = std::to_string(v); }
+_String::_String(uint32_t v) { 
+    m_str = std::to_string(v); 
+}
 
-_String::_String(uint64_t v) { m_str = std::to_string(v); }
+_String::_String(uint64_t v) { 
+    m_str = std::to_string(v); 
+}
 
-_String::_String(const char *v) { m_str = std::string(v); }
+_String::_String(const char *v) { 
+    m_str = std::string(v); 
+}
 
 _String::_String(const char *v, int start,int length) {
     if (start < 0 || length <= 0 || ((start + length) > strlen(v))) {
@@ -197,20 +227,26 @@ _String::_String(const char *v, int start,int length) {
     }
 
     m_str = std::string(v + start, length);
-    
 }
 
 _String::~_String() {
-    // m_str = nullptr;
 }
 
-void _String::update(const char *v) { m_str = std::string(v); }
+void _String::update(const char *v) { 
+    m_str = std::string(v); 
+}
 
-void _String::update(const String &v) { m_str = v->m_str; }
+void _String::update(const String &v) { 
+    m_str = v->m_str; 
+}
 
-void _String::update(std::string v) { m_str = v; }
+void _String::update(std::string v) { 
+    m_str = v; 
+}
 
-const char *_String::toChars() { return m_str.c_str(); }
+const char *_String::toChars() { 
+    return m_str.c_str(); 
+}
 
 char _String::charAt(int index) {
     if (index >= m_str.size() || index < 0) {
@@ -227,35 +263,36 @@ String _String::subString(int start, int length) {
 }
 
 bool _String::contains(const String &val) {
-    if (m_str.find(val->m_str) != m_str.npos) {
-        return true;
-    }
-
-    return false;
+    return m_str.find(val->m_str) != m_str.npos;
 }
 
 bool _String::contains(std::string val) {
-    if (m_str.find(val) != m_str.npos) {
-        return true;
-    }
-
-    return false;
+    return m_str.find(val) != m_str.npos;
 }
 
 bool _String::contains(const char *val) {
-    if (m_str.find(val) != m_str.npos) {
-        return true;
-    }
-
-    return false;
+    return m_str.find(val) != m_str.npos;
 }
 
 String _String::trim() {
     if (m_str.size() != 0) {
-        std::string trim_str = std::string(m_str);
-        trim_str.erase(0, trim_str.find_first_not_of(" "));
-        trim_str.erase(trim_str.find_last_not_of(" ") + 1);
-        return createString(trim_str);
+        const char *p = m_str.c_str();
+        int size = m_str.size();
+        int start = 0;
+        int end = size - 1;
+        for(;start < size;start++) {
+            if(p[start] != ' ') {
+                break;
+            }
+        }
+
+        for(;end >= 0;end--) {
+            if(p[end] != ' ') {
+                break;
+            }
+        }
+
+        return createString(p,start,end - start + 1);
     }
 
     return nullptr;
@@ -263,49 +300,81 @@ String _String::trim() {
 
 String _String::trimAll() {
     if (m_str.size() != 0) {
-        std::string trim_str = std::string(m_str);
+        const char *p = m_str.c_str();
+        int size = m_str.size();
+
+        char data[size + 1];
+        data[size] = 0;
+
         int index = 0;
-        if (!trim_str.empty()) {
-            while ((index = trim_str.find(' ', index)) != std::string::npos) {
-                trim_str.erase(index, 1);
+        int start = 0;
+        for(;start < size;start++) {
+            if(p[start] != ' ') {
+                data[index] = p[start];
+                index++;
             }
         }
-
-        return createString(trim_str);
+        return createString((const char *)data,0,index);
     }
 
     return nullptr;
 }
 
-int _String::size() { return m_str.size(); }
+int _String::size() { 
+    return m_str.size(); 
+}
 
-int _String::indexOf(const String &v) { return m_str.find(v->m_str); }
+int _String::indexOf(const String &v) { 
+    return m_str.find(v->m_str); 
+}
 
-int _String::indexOf(std::string v) { return m_str.find(v); }
+int _String::indexOf(std::string v) { 
+    return m_str.find(v); 
+}
 
-int _String::indexOf(const char *v) { return m_str.find(v); }
+int _String::indexOf(const char *v) { 
+    return m_str.find(v); 
+}
 
-int _String::indexOf(char v) { return m_str.find(v); }
+int _String::indexOf(char v) { 
+    return m_str.find(v); 
+}
 
-String _String::valueOf(const Integer &v) { return valueOf(v->toValue()); }
+String _String::valueOf(const Integer &v) { 
+    return valueOf(v->toValue()); 
+}
 
-String _String::valueOf(const Boolean &v) { return valueOf(v->toValue()); }
+String _String::valueOf(const Boolean &v) { 
+    return valueOf(v->toValue()); 
+}
 
-String _String::valueOf(const Double &v) { return valueOf(v->toValue()); }
+String _String::valueOf(const Double &v) { 
+    return valueOf(v->toValue()); 
+}
 
-String _String::valueOf(const Float &v) { return valueOf(v->toValue()); }
+String _String::valueOf(const Float &v) { 
+    return valueOf(v->toValue()); 
+}
 
 String _String::valueOf(const Long &v) {
     return valueOf((uint64_t)v->toValue());
 }
 
-String _String::valueOf(const Uint8 &v) { return valueOf(v->toValue()); }
+String _String::valueOf(const Uint8 &v) { 
+    return valueOf(v->toValue()); 
+}
 
-String _String::valueOf(const Uint16 &v) { return valueOf(v->toValue()); }
+String _String::valueOf(const Uint16 &v) { 
+    return valueOf(v->toValue()); 
+}
 
-String _String::valueOf(const Uint32 &v) { return valueOf(v->toValue()); }
+String _String::valueOf(const Uint32 &v) { 
+    return valueOf(v->toValue()); 
+}
 
-String _String::valueOf(const Uint64 &v) { return valueOf(v->toValue()); }
+String _String::valueOf(const Uint64 &v) { 
+    return valueOf(v->toValue()); 
+}
 
 String _String::valueOf(int v) {
     std::string str = std::to_string(v);
@@ -355,13 +424,21 @@ String _String::valueOf(const char *p) {
     return createString(p);
 }
 
-uint64_t _String::hashcode() { return std::hash<std::string>{}(m_str); }
+uint64_t _String::hashcode() { 
+    return std::hash<std::string>{}(m_str); 
+}
 
-bool _String::equals(const String &s) { return (m_str.compare(s->m_str) == 0); }
+bool _String::equals(const String &s) { 
+    return (m_str.compare(s->m_str) == 0); 
+}
 
-bool _String::equals(const char *s) { return (m_str.compare(s) == 0); }
+bool _String::equals(const char *s) { 
+    return (m_str.compare(s) == 0); 
+}
 
-bool _String::equals(std::string p) { return (m_str.compare(p) == 0); }
+bool _String::equals(std::string p) { 
+    return (m_str.compare(p) == 0);
+}
 
 ArrayList<String> _String::split(const String &v) {
     return split(v->toChars(), v->size());
@@ -432,17 +509,29 @@ Integer _String::toBinaryInt() {
     return st(Integer)::parseBinaryInt(AutoClone(this));
 }
 
-Byte _String::toByte() { return st(Byte)::parseDecByte(AutoClone(this)); }
+Byte _String::toByte() { 
+    return st(Byte)::parseDecByte(AutoClone(this)); 
+}
 
-Boolean _String::toBoolean() { return st(Boolean)::parse(AutoClone(this)); }
+Boolean _String::toBoolean() { 
+    return st(Boolean)::parse(AutoClone(this)); 
+}
 
-Float _String::toFloat() { return st(Float)::parse(AutoClone(this)); }
+Float _String::toFloat() { 
+    return st(Float)::parse(AutoClone(this)); 
+}
 
-Double _String::toDouble() { return st(Double)::parse(AutoClone(this)); }
+Double _String::toDouble() { 
+    return st(Double)::parse(AutoClone(this)); 
+}
 
-Long _String::toLong() { return st(Long)::parseDecLong(AutoClone(this)); }
+Long _String::toLong() { 
+    return st(Long)::parseDecLong(AutoClone(this)); 
+}
 
-Uint8 _String::toUint8() { return st(Uint8)::parseDecUint8(AutoClone(this)); }
+Uint8 _String::toUint8() { 
+    return st(Uint8)::parseDecUint8(AutoClone(this)); 
+}
 
 Uint16 _String::toUint16() {
     return st(Uint16)::parseDecUint16(AutoClone(this));

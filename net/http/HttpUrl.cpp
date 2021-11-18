@@ -299,9 +299,6 @@ HttpUrlEncodedValue _HttpUrl::getQuery() { return mQuery; }
 String _HttpUrl::getFragment() { return mFragment; }
 
 String _HttpUrl::toString() {
-    //if (mScheme == nullptr || mHostName == nullptr) {
-    //    return nullptr;
-    //}
     String url = createString("");
 
     if(mScheme != nullptr) {

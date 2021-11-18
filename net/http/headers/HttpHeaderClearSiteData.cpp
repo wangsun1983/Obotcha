@@ -22,13 +22,14 @@ _HttpHeaderClearSiteData::_HttpHeaderClearSiteData(String v):_HttpHeaderClearSit
 
 void _HttpHeaderClearSiteData::import(String v) {
      st(HttpHeaderContentParser)::import(v,[this](String directive,String parameter) {
-        if(Cache->equalsIgnoreCase(directive)) {
+        String predict = createString(directive->toChars(),1,directive->size() - 2); //trim \"\"
+        if(Cache->equalsIgnoreCase(predict)) {
             mCache = true;
-        } else if(Cookies->equalsIgnoreCase(directive)){
+        } else if(Cookies->equalsIgnoreCase(predict)){
             mCookies = true;
-        } else if(ExecutionContexts->equalsIgnoreCase(directive)){
+        } else if(ExecutionContexts->equalsIgnoreCase(predict)){
             mExecutionContexts = true;
-        } else if(Storage->equalsIgnoreCase(directive)){
+        } else if(Storage->equalsIgnoreCase(predict)){
             mStorage = true;
         }
     });
@@ -69,20 +70,24 @@ void _HttpHeaderClearSiteData::setStorage(bool v) {
 
 String _HttpHeaderClearSiteData::toString() {
     StringBuffer type = createStringBuffer();
-
+    printf("start toString \n");
     if(mCache) {
+        printf("to 1\n");
         type->append("\"",Cache,"\",");
     }
 
     if(mCookies) {
+        printf("to 2\n");
         type->append("\"",Cookies,"\",");
     }
 
     if(mExecutionContexts) {
+        printf("to 3\n");
         type->append("\"",ExecutionContexts,"\",");
     }
 
     if(mStorage) {
+        printf("to 4\n");
         type->append("\"",Storage,"\",");
     }
 
