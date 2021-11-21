@@ -202,16 +202,43 @@ void _SocketImpl::setOptions() {
 
 int _SocketImpl::close() { return sock->close(); }
 
-ByteArray _SocketImpl::receive() {
-    byte buff[mBuffSize];
-    int length = ::read(sock->getFd(), buff, mBuffSize);
-    return createByteArray((const byte *)buff, length);
+FileDescriptor _SocketImpl::getFileDescriptor() { 
+    return sock; 
 }
 
-FileDescriptor _SocketImpl::getFileDescriptor() { return sock; }
+InetAddress _SocketImpl::getInetAddress() { 
+    return address; 
+}
 
-InetAddress _SocketImpl::getInetAddress() { return address; }
+void _SocketImpl::setInetAddress(InetAddress addr) { 
+    address = addr; 
+}
 
-void _SocketImpl::setInetAddress(InetAddress addr) { address = addr; }
+int _SocketImpl::write(ByteArray data,int start,int length) {
+    if(start + length > data->size()) {
+        //TODO
+        return -1;
+    }
+
+    int size = (length == -1?data->size() - start:length);
+    return ::write(sock->getFd(),data->toValue() + start,size);
+}
+
+int _SocketImpl::read(ByteArray data,int start,int length) {
+    if(start + length > data->size()) {
+        //TODO
+        return -1;
+    }
+
+    int size = (length == -1?data->size() - start:length);
+    return ::read(sock->getFd(),data->toValue() + start,size);
+}
+
+ByteArray _SocketImpl::read() {
+    ByteArray buff = createByteArray(mBuffSize);
+    int length = ::read(sock->getFd(), buff->toValue(), mBuffSize);
+    buff->quickShrink(length);
+    return buff;
+}
 
 } // namespace obotcha

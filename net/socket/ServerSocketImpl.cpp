@@ -64,7 +64,6 @@ Socket _ServerSocketImpl::accept() {
         }
     }
     
-    
     int clientfd = ::accept(sock->getFd(), (struct sockaddr *)client_address,
                             &client_addrLength);
     if (clientfd > 0) {

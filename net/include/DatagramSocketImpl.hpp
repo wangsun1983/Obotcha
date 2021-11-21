@@ -14,8 +14,11 @@ namespace obotcha {
 DECLARE_CLASS(DatagramSocketImpl) IMPLEMENTS(SocketImpl){
 public:
     _DatagramSocketImpl(InetAddress address,SocketOption option);
+    sp<_Socket> receiveFrom(ByteArray);
     int connect();
     int bind();
+
+    int write(ByteArray data,int start = 0,int length = -1);
 
 };
 

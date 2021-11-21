@@ -34,6 +34,8 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
     void close();
 
     void flush();
+    
+    ~_SocketOutputStream();
 
   private:
     long _write(FileDescriptor, ByteArray,int offset);

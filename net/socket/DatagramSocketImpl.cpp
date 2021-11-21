@@ -11,6 +11,8 @@
 #include "DatagramSocketImpl.hpp"
 #include "FileDescriptor.hpp"
 #include "InitializeException.hpp"
+#include "Socket.hpp"
+#include "Inet6Address.hpp"
 
 namespace obotcha {
 
@@ -57,6 +59,61 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
     setOptions();
 }
 
+Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
+    Socket newClient = nullptr;
+    int length = -1;
+    struct sockaddr_in client_address;
+    socklen_t client_addrLength = sizeof(struct sockaddr_in);
+    
+    struct sockaddr_in6 client_address_v6;
+    socklen_t client_addrLength_v6 = sizeof(struct sockaddr_in6);
+
+    switch(this->address->getType()) {
+        case st(InetAddress)::IPV4: {
+            printf("recv ipv4 \n");
+            length = recvfrom(
+                sock->getFd(), buff->toValue(), buff->size(), 0,
+                (sockaddr *)&client_address, &client_addrLength);
+
+            if(length > 0) {
+                newClient = createSocket(createFileDescriptor(sock->getFd()));
+                newClient->setType(st(Socket)::Udp);
+                newClient->setInetAddress(createInetAddress(
+                    createString(
+                        inet_ntoa(client_address.sin_addr)),
+                    ntohs(client_address.sin_port)));
+                buff->quickShrink(length);
+            }
+            
+        }
+        break;
+
+        case st(InetAddress)::IPV6: {
+            printf("recv ipv6 \n");
+            length = recvfrom(
+                sock->getFd(), buff->toValue(), buff->size(), 0,
+                (sockaddr *)&client_address_v6, &client_addrLength_v6);
+
+            if (length > 0) {
+                char buf_ip[128];
+                memset(buf_ip,0,128);
+
+                newClient = createSocket(createFileDescriptor(sock->getFd()));
+                newClient->setType(st(Socket)::Udp);
+                inet_ntop(AF_INET6, &client_address_v6.sin6_addr, buf_ip, sizeof(buf_ip));
+                printf("i recv ip is %s \n",buf_ip);
+                Inet6Address inet6Addr = createInet6Address(
+                    createString(buf_ip),ntohs(client_address_v6.sin6_port));
+                newClient->setInetAddress(inet6Addr);
+                buff->quickShrink(length);
+            }
+        }
+        break;
+    }
+
+    return newClient;
+}
+
 int _DatagramSocketImpl::connect() {
     // return ::connect(sock->getFd(),(struct
     // sockaddr*)&mSockAddr,sizeof(mSockAddr));
@@ -75,7 +132,35 @@ int _DatagramSocketImpl::bind() {
                   sizeof(mSockAddrV6));
         }
     }
-    
+
+    return -1;
+}
+
+int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
+    struct sockaddr * addr = nullptr;
+    int addrlen = 0;
+
+    switch(this->address->getType()) {
+        case st(InetAddress)::IPV4: {
+            addr = (sockaddr *)&mSockAddr;
+            addrlen = sizeof(mSockAddr);
+        }
+        break;
+
+        case st(InetAddress)::IPV6: {
+            addr = (sockaddr *)&mSockAddrV6;
+            addrlen = sizeof(mSockAddrV6);
+        }
+        break;
+    }
+
+    if(start + length > data->size()) {
+        //TODO
+        return -1;
+    }
+
+    int size = (length == -1?data->size() - start:length);
+    ::sendto(sock->getFd(), data->toValue() + start, size, 0,addr, addrlen);
 }
 
 } // namespace obotcha

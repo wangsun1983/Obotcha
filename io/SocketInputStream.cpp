@@ -17,17 +17,19 @@ namespace obotcha {
 _SocketInputStream::_SocketInputStream(sp<_Socket> s) { mSocket = s; }
 
 long _SocketInputStream::read(ByteArray buffer) {
-    return ::read(mSocket->getFileDescriptor()->getFd(), buffer->toValue(),
-                  buffer->size());
+    return mSocket->mSock->read(buffer);
 }
 
 long _SocketInputStream::read(ByteArray buffer, int start) {
-    return ::read(mSocket->getFileDescriptor()->getFd(),
-                  &buffer->toValue()[start], buffer->size() - start);
+    return mSocket->mSock->read(buffer,start);
 }
 
-void _SocketInputStream::close() { mSocket = nullptr; }
+void _SocketInputStream::close() { 
+    mSocket = nullptr; 
+}
 
-_SocketInputStream::~_SocketInputStream() {}
+_SocketInputStream::~_SocketInputStream() {
+    mSocket = nullptr;
+}
 
 } // namespace obotcha

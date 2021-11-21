@@ -19,17 +19,25 @@ public:
     _SocketBuilder* setAddress(InetAddress);
     _SocketBuilder* setOption(SocketOption);
     _SocketBuilder* setFileDescriptor(FileDescriptor);
+    _SocketBuilder* setSSLCretificatePath(String);
+    _SocketBuilder* setSSLKeyPath(String);
+    
 
     Socket newSocket();
     Socket newDatagramSocket();
     Socket newLocalSocket();
+    Socket newSSLSocket();
+    
     ServerSocket newServerSocket();
     ServerSocket newServerLocalSocket();
+    ServerSocket newSSLServerSocket();
     
 private:
     InetAddress address;
     SocketOption option;
     FileDescriptor fd;
+    String mCertificatePath;
+    String mKeyPath;
 };
 
 }

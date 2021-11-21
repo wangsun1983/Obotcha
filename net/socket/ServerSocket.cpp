@@ -1,11 +1,12 @@
 #include "ServerSocket.hpp"
 #include "ServerLocalSocketImpl.hpp"
 #include "ServerSocketImpl.hpp"
+#include "SSLServerSocketImpl.hpp"
 
 namespace obotcha {
 
 _ServerSocket::_ServerSocket(int type, InetAddress address,
-                             SocketOption option) {
+                             SocketOption option,String certificatePath,String keyPath) {
     switch (type) {
         case st(Socket)::Tcp:
             this->mSock = createServerSocketImpl(address, option);
@@ -13,6 +14,10 @@ _ServerSocket::_ServerSocket(int type, InetAddress address,
 
         case st(Socket)::Local:
             this->mSock = createServerLocalSocketImpl(address, option);
+            break;
+        
+        case st(Socket)::SSL:
+            this->mSock = createSSLServerSocketImpl(certificatePath,keyPath,address,option);
             break;
     }
 

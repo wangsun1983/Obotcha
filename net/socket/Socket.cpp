@@ -9,14 +9,17 @@
 #include "SocketInputStream.hpp"
 #include "SocketOutputStream.hpp"
 #include "SocksSocketImpl.hpp"
+#include "SSLSocksSocketImpl.hpp"
 
 namespace obotcha {
 
 int _Socket::DefaultBufferSize = 1024 * 4;
-
-_Socket::_Socket(int v, InetAddress addr, SocketOption option) {
+    
+_Socket::_Socket(int v, InetAddress addr, SocketOption option,String certificatePath,String keyPath) {
     type = v;
     mMutex = createMutex();
+    mOutputStream = nullptr;
+    mInputStream = nullptr;
 
     switch (v) {
     case Tcp:
@@ -30,11 +33,18 @@ _Socket::_Socket(int v, InetAddress addr, SocketOption option) {
     case Local:
         mSock = createLocalSocketImpl(addr, option);
         return;
+
+    case SSL:
+        mSock = createSSLSocksSocketImpl(certificatePath,keyPath,addr,option);
+        return;
     }
     Trigger(InitializeException, "ivalid type");
 }
 
 _Socket::_Socket(FileDescriptor descriptor) {
+    mOutputStream = nullptr;
+    mInputStream = nullptr;
+
     mSock = createSocketImpl(descriptor);
     type = Fd;
     mMutex = createMutex();
@@ -74,6 +84,14 @@ void _Socket::close() {
         mSock->close();
         mSock = nullptr;
     }
+
+    if(mOutputStream != nullptr) {
+        mOutputStream = nullptr;
+    }
+
+    if(mInputStream != nullptr) {
+        mInputStream = nullptr;
+    }
 }
 
 bool _Socket::isClosed() {
@@ -81,12 +99,22 @@ bool _Socket::isClosed() {
     return mSock == nullptr;
 }
 
+sp<_Socket> _Socket::receiveFrom(ByteArray buff) {
+    return mSock->receiveFrom(buff);
+}
+
 InputStream _Socket::getInputStream() {
-    return createSocketInputStream(AutoClone(this));
+    if(mInputStream == nullptr) {
+        mInputStream = createSocketInputStream(AutoClone(this));
+    }
+    return mInputStream;
 }
 
 OutputStream _Socket::getOutputStream() {
-    return createSocketOutputStream(AutoClone(this));
+    if(mOutputStream == nullptr) {
+        mOutputStream = createSocketOutputStream(AutoClone(this));
+    }
+    return mOutputStream;
 }
 
 FileDescriptor _Socket::getFileDescriptor() {
@@ -94,5 +122,13 @@ FileDescriptor _Socket::getFileDescriptor() {
 }
 
 int _Socket::getType() { return type; }
+
+void _Socket::setSockImpl(SocketImpl impl) {
+    this->mSock = impl;
+}
+
+SocketImpl _Socket::getSockImpl() {
+    return mSock;
+}
 
 } // namespace obotcha

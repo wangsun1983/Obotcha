@@ -13,7 +13,7 @@ namespace obotcha {
 
 DECLARE_CLASS(ServerSocket) {
   public:
-    _ServerSocket(int, InetAddress address, SocketOption option);
+    _ServerSocket(int, InetAddress address, SocketOption option,String certificatePath = nullptr,String keyPath = nullptr);
     InetAddress getInetAddress();
     int bind();
     FileDescriptor getFileDescriptor();

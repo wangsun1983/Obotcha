@@ -10,20 +10,29 @@
 #include "SocketInputStream.hpp"
 #include "SocketOutputStream.hpp"
 #include "FileDescriptor.hpp"
+#include "SocketImpl.hpp"
 #include <atomic>
 
 namespace obotcha {
 
+class _SocketMonitor;
+
 DECLARE_CLASS(Socket) {
 public:
+    friend class _SocketMonitor;
+    friend class _SocketOutputStream;
+    friend class _SocketInputStream;
+
     enum Type {
         Tcp,
         Udp,
         Local,
         Fd,
+        SSL, //default SSL tcp
     };
 
-    _Socket(int,InetAddress host,SocketOption option);
+    _Socket(){};
+    _Socket(int,InetAddress addr,SocketOption option,String certificatePath = nullptr,String keyPath = nullptr);
     _Socket(FileDescriptor);
     void setAsync(bool);
     bool isAsync();
@@ -42,10 +51,16 @@ public:
 
     InputStream getInputStream();
     OutputStream getOutputStream();
+    
+    //for udp socket
+    sp<_Socket> receiveFrom(ByteArray);
 
     void setType(int);
 
     static int DefaultBufferSize;
+    
+    void setSockImpl(SocketImpl);
+    SocketImpl getSockImpl();
     
 private:
     int type;
@@ -53,6 +68,9 @@ private:
 protected:
     SocketImpl mSock;
     Mutex mMutex;
+
+    SocketOutputStream mOutputStream;
+    SocketInputStream mInputStream;
 
 };
 

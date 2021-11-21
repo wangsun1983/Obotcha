@@ -181,93 +181,32 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                 
                 // may be this is udp wangsl
                 if (s != nullptr && s->getType() == st(Socket)::Udp) {
-                    // ByteArray buff =
-                    // createByteArray(st(Socket)::DefaultBufferSize);
                     Socket newClient = nullptr;
-                    byte buff[st(Socket)::DefaultBufferSize];
+                    ByteArray buff = createByteArray(st(Socket)::DefaultBufferSize);
                     int length = -1;
                     while (1) {
-                        switch(s->getInetAddress()->getType()) {
-                            case st(InetAddress)::IPV4: {
-                                printf("recv ipv4 \n");
-                                length = recvfrom(
-                                    fd, buff, st(Socket)::DefaultBufferSize, 0,
-                                    (sockaddr *)&client_address, &client_addrLength);
-
-                                if (newClient == nullptr) {
-                                    newClient = createSocket(createFileDescriptor(fd));
-                                    newClient->setType(st(Socket)::Udp);
-                                    newClient->setInetAddress(createInetAddress(
-                                        createString(
-                                            inet_ntoa(client_address.sin_addr)),
-                                        ntohs(client_address.sin_port)));
-                                }
-                            }
-                            break;
-
-                            case st(InetAddress)::IPV6: {
-                                printf("recv ipv6 \n");
-                                length = recvfrom(
-                                    fd, buff, st(Socket)::DefaultBufferSize, 0,
-                                    (sockaddr *)&client_address_v6, &client_addrLength_v6);
-
-                                if (newClient == nullptr) {
-                                    char buf_ip[128];
-                                    memset(buf_ip,0,128);
-
-                                    newClient = createSocket(createFileDescriptor(fd));
-                                    newClient->setType(st(Socket)::Udp);
-                                    inet_ntop(AF_INET6, &client_address_v6.sin6_addr, buf_ip, sizeof(buf_ip));
-                                    printf("i recv ip is %s \n",buf_ip);
-                                    Inet6Address inet6Addr = createInet6Address(
-                                        createString(buf_ip),ntohs(client_address_v6.sin6_port));
-                                    newClient->setInetAddress(inet6Addr);
-                                }
-                            }
-                            break;
-                        }
-                       
+                        newClient = s->receiveFrom(buff);
                         {
                             AutoLock l(monitor->mMutex);
                             if (length != -1) {
                                 monitor->mThreadPublicTasks->putLast(
-                                    createSocketMonitorTask(
-                                        st(SocketListener)::Message, newClient,
-                                        createByteArray((const byte *)buff,
-                                                        length)));
+                                    createSocketMonitorTask(st(SocketListener)::Message, newClient,buff));
                             }
                             monitor->mCondition->notify();
                         }
 
-                        if (length != st(Socket)::DefaultBufferSize) {
+                        if (buff->size() != st(Socket)::DefaultBufferSize) {
                             break;
                         }
+
+                        buff->quickRestore();
                     }
                     return st(EPollFileObserver)::OnEventOK;
                 } else {
                     int clientfd = -1;
                     ServerSocket server = monitor->mServerSocks->get(fd);
-                    switch(server->getInetAddress()->getType()) {
-                        case st(InetAddress)::IPV4: {
-                            clientfd = accept(fd, (struct sockaddr *)&client_address,&client_addrLength);
-                            s = createSocket(createFileDescriptor(clientfd));
-                            s->setInetAddress(createInetAddress(createString(inet_ntoa(client_address.sin_addr)),
-                                            ntohs(client_address.sin_port)));
-                        }
-                        break;
-
-                        case st(InetAddress)::IPV6: {
-                            char buf_ip[128];
-                            memset(buf_ip,0,128);
-                            
-                            clientfd = accept(fd, (struct sockaddr *)&client_address_v6,&client_addrLength_v6);
-                            s = createSocket(createFileDescriptor(clientfd));
-                            inet_ntop(AF_INET6, &client_address_v6.sin6_addr, buf_ip, sizeof(buf_ip));
-                            s->setInetAddress(createInet6Address(createString(buf_ip),ntohs(client_address_v6.sin6_port)));
-                        }
-                        break;
-                    }
-
+                    s = server->accept();
+                    
                     if (s != nullptr) {
                         {
                             monitor->addNewSocket(s, listener);
@@ -289,16 +228,14 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
             if ((events & EPOLLIN) != 0) {
                 {
                     while (1) {
-                        byte buff[st(Socket)::DefaultBufferSize];
-                        int length =
-                            read(fd, buff, st(Socket)::DefaultBufferSize);
+                        ByteArray buff = createByteArray(st(Socket)::DefaultBufferSize);
+                        int length = s->mSock->read(buff);
                         if (length > 0) {
-                            ByteArray data =
-                                createByteArray((const byte *)buff, length);
+                            buff->quickShrink(length);
                             AutoLock l(monitor->mMutex);
                             monitor->mThreadPublicTasks->putLast(
                                 createSocketMonitorTask(
-                                    st(SocketListener)::Message, s, data));
+                                    st(SocketListener)::Message, s, buff));
                             monitor->mCondition->notify();
                         }
 

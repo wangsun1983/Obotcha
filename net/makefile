@@ -11,7 +11,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/socketimpl.o \
 		$(outtmp)/socketoption.o \
 		$(outtmp)/sockssocketimpl.o \
+		$(outtmp)/sslsockssocketimpl.o \
 		$(outtmp)/serversocketimpl.o \
+		$(outtmp)/sslserversocketimpl.o \
 		$(outtmp)/localsocketimpl.o \
 		$(outtmp)/serverlocalsocketimpl.o \
 		$(outtmp)/datagramsocketimpl.o \
@@ -154,6 +156,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheadersecfetchuser.o \
 		$(outtmp)/httpheaderservertiming.o \
 		$(outtmp)/httpheadersourcemap.o \
+		$(outtmp)/http2hpackstatictable.o \
+		$(outtmp)/http2hpackdynamictable.o \
+		$(outtmp)/http2hpacktableitem.o \
 		
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
@@ -165,8 +170,15 @@ $(outtmp)/socketoption.o :$(netDir)/socket/SocketOption.cpp
 $(outtmp)/sockssocketimpl.o :$(netDir)/socket/SocksSocketImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocksSocketImpl.cpp -o $(outtmp)/sockssocketimpl.o 
 
+$(outtmp)/sslsockssocketimpl.o :$(netDir)/socket/SSLSocksSocketImpl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SSLSocksSocketImpl.cpp -o $(outtmp)/sslsockssocketimpl.o 
+
 $(outtmp)/serversocketimpl.o :$(netDir)/socket/ServerSocketImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/ServerSocketImpl.cpp -o $(outtmp)/serversocketimpl.o 
+
+$(outtmp)/sslserversocketimpl.o :$(netDir)/socket/SSLServerSocketImpl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SSLServerSocketImpl.cpp -o $(outtmp)/sslserversocketimpl.o 
+
 $(outtmp)/localsocketimpl.o :$(netDir)/socket/LocalSocketImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/LocalSocketImpl.cpp -o $(outtmp)/localsocketimpl.o 
 
@@ -637,3 +649,12 @@ $(outtmp)/url.o :$(netDir)/URL.cpp
 
 $(outtmp)/host.o :$(netDir)/Host.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/Host.cpp -o $(outtmp)/host.o 
+
+$(outtmp)/http2hpackstatictable.o :$(netDir)/http2/Http2HpackStaticTable.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http2/Http2HpackStaticTable.cpp -o $(outtmp)/http2hpackstatictable.o 
+
+$(outtmp)/http2hpacktableitem.o :$(netDir)/http2/Http2HpackTableItem.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http2/Http2HpackTableItem.cpp -o $(outtmp)/http2hpacktableitem.o 
+
+$(outtmp)/http2hpackdynamictable.o :$(netDir)/http2/Http2HpackDynamicTable.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http2/Http2HpackDynamicTable.cpp -o $(outtmp)/http2hpackdynamictable.o 

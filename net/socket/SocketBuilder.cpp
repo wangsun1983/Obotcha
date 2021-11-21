@@ -20,6 +20,14 @@ _SocketBuilder *_SocketBuilder::setFileDescriptor(FileDescriptor f) {
     return this;
 }
 
+_SocketBuilder* _SocketBuilder::setSSLCretificatePath(String path) {
+    mCertificatePath = path;
+}
+
+_SocketBuilder* _SocketBuilder::setSSLKeyPath(String path) {
+    mKeyPath = path;
+}
+
 _SocketBuilder::_SocketBuilder() {
     address = createInet4Address(st(InetAddress)::DefaultPort);
     fd = nullptr;
@@ -50,12 +58,20 @@ Socket _SocketBuilder::newLocalSocket() {
     return s;
 }
 
+Socket _SocketBuilder::newSSLSocket() {
+    return createSocket(st(Socket)::SSL,address,option,mCertificatePath,mKeyPath);
+}
+
 ServerSocket _SocketBuilder::newServerSocket() {
     return createServerSocket(st(Socket)::Tcp, address, option);
 }
 
 ServerSocket _SocketBuilder::newServerLocalSocket() {
     return createServerSocket(st(Socket)::Local, address, option);
+}
+
+ServerSocket _SocketBuilder::newSSLServerSocket() {
+    return createServerSocket(st(Socket)::SSL, address, option,mCertificatePath,mKeyPath);
 }
 
 } // namespace obotcha
