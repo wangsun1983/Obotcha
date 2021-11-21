@@ -24,6 +24,8 @@ public:
 
     //int read(ByteArray);
     //int write(ByteArray);
+
+    int close();
     
     int write(ByteArray,int start = 0,int length = -1);
     int read(ByteArray,int start = 0,int length = -1);

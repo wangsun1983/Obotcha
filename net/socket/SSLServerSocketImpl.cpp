@@ -67,5 +67,27 @@ Socket _SSLServerSocketImpl::accept() {
     return result;
 }
 
+int _SSLServerSocketImpl::close() {
+    if(mSocket != nullptr) {
+        return mSocket->close();
+        mSocket = nullptr;
+    }
+
+    return 0;
+}
+
+_SSLServerSocketImpl::~_SSLServerSocketImpl() {
+    if (mCtx != nullptr) {
+        SSL_CTX_free(mCtx);
+        mCtx = nullptr;
+    }
+
+    if (mSSL != nullptr) {
+        SSL_shutdown(mSSL);
+        SSL_free(mSSL);
+        mSSL = nullptr;
+    }
+}
+
 
 }

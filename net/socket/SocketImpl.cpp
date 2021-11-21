@@ -200,7 +200,9 @@ void _SocketImpl::setOptions() {
     }
 }
 
-int _SocketImpl::close() { return sock->close(); }
+int _SocketImpl::close() { 
+    return sock->close(); 
+}
 
 FileDescriptor _SocketImpl::getFileDescriptor() { 
     return sock; 

@@ -13,8 +13,14 @@
 #include "InitializeException.hpp"
 #include "Socket.hpp"
 #include "Inet6Address.hpp"
+#include "Inet4Address.hpp"
+#include "SocketBuilder.hpp"
 
 namespace obotcha {
+
+_DatagramSocketImpl::_DatagramSocketImpl():_SocketImpl(){
+
+}
 
 _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
                                          SocketOption option)
@@ -76,15 +82,22 @@ Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
                 (sockaddr *)&client_address, &client_addrLength);
 
             if(length > 0) {
-                newClient = createSocket(createFileDescriptor(sock->getFd()));
-                newClient->setType(st(Socket)::Udp);
-                newClient->setInetAddress(createInetAddress(
-                    createString(
+                auto addr = createInet4Address(createString(
                         inet_ntoa(client_address.sin_addr)),
-                    ntohs(client_address.sin_port)));
+                        ntohs(client_address.sin_port));
+
+                DatagramSocketImpl impl = createDatagramSocketImpl();
+                impl->address = addr;
+                memcpy(&impl->mSockAddr,&client_address,client_addrLength);
+
+                impl->sock = sock;
+                newClient = createSocket();
+                newClient->setSockImpl(impl);
+                newClient->setType(st(Socket)::Udp);
+
+                printf("addr is %s,port is %d,fd is %d \n",inet_ntoa(client_address.sin_addr),client_address.sin_port,sock->getFd());
                 buff->quickShrink(length);
             }
-            
         }
         break;
 
@@ -137,6 +150,7 @@ int _DatagramSocketImpl::bind() {
 }
 
 int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
+    printf("_DatagramSocketImpl write start \n");
     struct sockaddr * addr = nullptr;
     int addrlen = 0;
 
@@ -153,14 +167,16 @@ int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
         }
         break;
     }
-
+    printf("_DatagramSocketImpl write trace1 \n");
     if(start + length > data->size()) {
         //TODO
         return -1;
     }
-
+    printf("_DatagramSocketImpl write trace2,addr is %s ,port is %d \n",inet_ntoa(mSockAddr.sin_addr),mSockAddr.sin_port);
     int size = (length == -1?data->size() - start:length);
-    ::sendto(sock->getFd(), data->toValue() + start, size, 0,addr, addrlen);
+    int ret =  ::sendto(sock->getFd(), data->toValue() + start, size, 0,addr, addrlen);
+    printf("_DatagramSocketImpl write trace3 ret is %d \n",size);
+    return ret;
 }
 
 } // namespace obotcha

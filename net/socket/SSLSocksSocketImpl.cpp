@@ -25,7 +25,7 @@ void _SSLSocksSocketImpl::init(String certificatePath,String keyPath) {
     SSL_load_error_strings();
 
     /*can use SSLv2_server_method() or SSLv3_server_method()*/
-    mCtx = SSL_CTX_new(SSLv23_server_method());
+    mCtx = SSL_CTX_new(SSLv23_client_method());
     if (mCtx == NULL) {
         throw InitializeException("SSL Create error");
     }
@@ -50,6 +50,15 @@ void _SSLSocksSocketImpl::init(String certificatePath,String keyPath) {
 
 int _SSLSocksSocketImpl::connect() {
     return mSocket->connect();
+}
+
+int _SSLSocksSocketImpl::close() {
+    if(mSocket != nullptr) {
+        mSocket->close();
+        mSocket = nullptr;
+    }
+
+    return 0;
 }
 
 int _SSLSocksSocketImpl::write(ByteArray buff,int start,int length) {

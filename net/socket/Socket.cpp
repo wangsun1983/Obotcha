@@ -14,7 +14,13 @@
 namespace obotcha {
 
 int _Socket::DefaultBufferSize = 1024 * 4;
-    
+
+_Socket::_Socket() {
+    mMutex = createMutex();
+    mOutputStream = nullptr;
+    mInputStream = nullptr;
+}
+
 _Socket::_Socket(int v, InetAddress addr, SocketOption option,String certificatePath,String keyPath) {
     type = v;
     mMutex = createMutex();

@@ -31,7 +31,7 @@ public:
         SSL, //default SSL tcp
     };
 
-    _Socket(){};
+    _Socket();
     _Socket(int,InetAddress addr,SocketOption option,String certificatePath = nullptr,String keyPath = nullptr);
     _Socket(FileDescriptor);
     void setAsync(bool);

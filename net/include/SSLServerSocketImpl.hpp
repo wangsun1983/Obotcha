@@ -19,7 +19,9 @@ namespace obotcha {
 DECLARE_CLASS(SSLServerSocketImpl) IMPLEMENTS(SocketImpl) {
 public:
     _SSLServerSocketImpl(String certificatePath,String keyPath,InetAddress address,SocketOption option);
+    ~_SSLServerSocketImpl();
     int bind();
+    int close();
     Socket accept();
 
 private:

@@ -86,6 +86,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                     //We should check whether socket is still connected
                     //to prevent nullpoint exception
                     if (task != nullptr) {
+                        printf("process trace1 task is not nullptr \n");
                         if(task->sock->isClosed()) {
                             task = nullptr;
                             continue;
@@ -93,6 +94,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
 
                         SocketListener listener = nullptr;
                         {
+                            printf("process trace2 task is not nullptr,fd is %d \n",task->sock->getFileDescriptor()->getFd());
                             AutoLock l(monitor->mListenerMutex);
                             listener = monitor->mListeners->get(
                                 task->sock->getFileDescriptor()->getFd());    
@@ -102,10 +104,16 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                             monitor->remove(task->sock);
                             task->sock->close();
                         }
-
+                        printf("process trace3 task is not nullptr \n");
                         if (listener != nullptr) {
+                            printf("process trace4 task is not nullptr \n");
                             listener->onSocketMessage(task->event, task->sock,
                                                       task->data);
+                            //udp socket may be closed
+                            if(task->sock->getType() == st(Socket)::Udp) {
+                                task->sock->mOutputStream = nullptr;
+                                task->sock->mInputStream = nullptr;
+                            }
                         }
                         
                         
@@ -183,12 +191,14 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                 if (s != nullptr && s->getType() == st(Socket)::Udp) {
                     Socket newClient = nullptr;
                     ByteArray buff = createByteArray(st(Socket)::DefaultBufferSize);
-                    int length = -1;
+
                     while (1) {
                         newClient = s->receiveFrom(buff);
                         {
                             AutoLock l(monitor->mMutex);
-                            if (length != -1) {
+                            printf("socket monitor trace1 \n");
+                            if (newClient != nullptr) {
+                                printf("socket monitor trace2 \n");
                                 monitor->mThreadPublicTasks->putLast(
                                     createSocketMonitorTask(st(SocketListener)::Message, newClient,buff));
                             }

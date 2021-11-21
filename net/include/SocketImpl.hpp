@@ -32,7 +32,7 @@ public:
     virtual int read(ByteArray,int start = 0,int length = -1);
     virtual ByteArray read();
 
-    int close();
+    virtual int close();
     FileDescriptor getFileDescriptor();
 
     void setRecvBuff(int);
