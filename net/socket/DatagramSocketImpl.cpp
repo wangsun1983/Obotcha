@@ -110,14 +110,19 @@ Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
             if (length > 0) {
                 char buf_ip[128];
                 memset(buf_ip,0,128);
-
-                newClient = createSocket(createFileDescriptor(sock->getFd()));
-                newClient->setType(st(Socket)::Udp);
                 inet_ntop(AF_INET6, &client_address_v6.sin6_addr, buf_ip, sizeof(buf_ip));
                 printf("i recv ip is %s \n",buf_ip);
                 Inet6Address inet6Addr = createInet6Address(
                     createString(buf_ip),ntohs(client_address_v6.sin6_port));
-                newClient->setInetAddress(inet6Addr);
+
+                DatagramSocketImpl impl = createDatagramSocketImpl();
+                impl->address = inet6Addr;
+                memcpy(&impl->mSockAddrV6,&client_address_v6,client_addrLength_v6);
+
+                impl->sock = sock;
+                newClient = createSocket();
+                newClient->setSockImpl(impl);
+                newClient->setType(st(Socket)::Udp);
                 buff->quickShrink(length);
             }
         }
