@@ -22,10 +22,12 @@ _SocketBuilder *_SocketBuilder::setFileDescriptor(FileDescriptor f) {
 
 _SocketBuilder* _SocketBuilder::setSSLCretificatePath(String path) {
     mCertificatePath = path;
+    return this;
 }
 
 _SocketBuilder* _SocketBuilder::setSSLKeyPath(String path) {
     mKeyPath = path;
+    return this;
 }
 
 _SocketBuilder::_SocketBuilder() {

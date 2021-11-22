@@ -16,10 +16,13 @@ extern "C" {
 
 namespace obotcha {
 
+class _SSLServerSocketImpl;
+
 DECLARE_CLASS(SSLSocksSocketImpl) IMPLEMENTS(SocketImpl) {
 public:
-    _SSLSocksSocketImpl(String certificatePath,String keyPath,InetAddress address,SocketOption option);
-    _SSLSocksSocketImpl(String certificatePath,String keyPath,SocketImpl);
+    friend class _SSLServerSocketImpl;
+    _SSLSocksSocketImpl(String certificatePath,String keyPath,InetAddress address,SocketOption option,bool isServer = false);
+    _SSLSocksSocketImpl(String certificatePath,String keyPath,SocketImpl,bool isServer = false);
     int connect();
 
     //int read(ByteArray);
@@ -31,8 +34,10 @@ public:
     int read(ByteArray,int start = 0,int length = -1);
     ByteArray read();
 
+    FileDescriptor getFileDescriptor();
+
 private:
-    void init(String certificatePath,String keyPath);
+    void init(String certificatePath,String keyPath,bool isServer);
 
     static int DefaultConnectNum;
 

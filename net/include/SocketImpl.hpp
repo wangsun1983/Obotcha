@@ -33,7 +33,7 @@ public:
     virtual ByteArray read();
 
     virtual int close();
-    FileDescriptor getFileDescriptor();
+    virtual FileDescriptor getFileDescriptor();
 
     void setRecvBuff(int);
     

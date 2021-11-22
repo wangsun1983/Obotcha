@@ -23,6 +23,7 @@ public:
     int bind();
     int close();
     Socket accept();
+    FileDescriptor getFileDescriptor();
 
 private:
     static int DefaultConnectNum;
