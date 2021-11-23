@@ -12,7 +12,6 @@
 #include "Mutex.hpp"
 #include "SocketListener.hpp"
 #include "HttpMultiPart.hpp"
-#include "SSLServer.hpp"
 #include "BlockingLinkedList.hpp"
 #include "HashSet.hpp"
 #include "ThreadPoolExecutor.hpp"
@@ -52,8 +51,6 @@ private:
 
     SocketMonitor mSockMonitor;
 
-    SSLServer mSSLServer;
-
     HttpListener mHttpListener;
 
     InetAddress mAddress;
@@ -62,7 +59,6 @@ private:
 
     HttpLinkerManager mLinkerManager;
 
-    bool isSSl;
 };
 
 }

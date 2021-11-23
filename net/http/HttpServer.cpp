@@ -13,7 +13,6 @@
 #include "InetAddress.hpp"
 #include "InterruptedException.hpp"
 #include "Log.hpp"
-#include "SSLManager.hpp"
 #include "SocketBuilder.hpp"
 #include "SocketOption.hpp"
 #include "String.hpp"
@@ -55,13 +54,6 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
 
         case SocketEvent::Connect: {
             HttpLinker info = createHttpLinker(r);
-            //if (isSSl) {
-            //    SSLInfo ssl = st(SSLManager)::getInstance()->get(
-            //        r->getFileDescriptor()->getFd());
-            //    if (info != nullptr) {
-            //        info->setSSLInfo(ssl);
-            //    }
-            //}
             mLinkerManager->addLinker(info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
         } break;
@@ -78,7 +70,6 @@ _HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option) {
     mHttpListener = l;
     mServerSock = nullptr;
     mSockMonitor = nullptr;
-    mSSLServer = nullptr;
     mAddress = addr;
     mOption = option;
     mLinkerManager = createHttpLinkerManager();
@@ -93,14 +84,6 @@ void _HttpServer::start() {
         key = mOption->getKey();
     }
 
-    //if (certificate != nullptr && key != nullptr) {
-        // https server
-    //    isSSl = true;
-    //    mSSLServer =
-    //        createSSLServer(mAddress->getAddress(), mAddress->getPort(),
-    //                        AutoClone(this), certificate, key);
-    //} else {
-    //    isSSl = false;
     if(certificate != nullptr && key != nullptr) {
         mServerSock = createSocketBuilder()
                         ->setOption(mOption)
@@ -143,11 +126,6 @@ void _HttpServer::close() {
     if (mServerSock != nullptr) {
         mServerSock->close();
         mServerSock = nullptr;
-    }
-
-    if (mSSLServer != nullptr) {
-        mSSLServer->close();
-        mSSLServer = nullptr;
     }
 
     if(mLinkerManager != nullptr) {

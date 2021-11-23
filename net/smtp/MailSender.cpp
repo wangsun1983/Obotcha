@@ -15,7 +15,6 @@
 #include "FileInputStream.hpp"
 #include "MailSender.hpp"
 #include "Error.hpp"
-#include "SSLInfo.hpp"
 
 namespace obotcha {
 

@@ -13,7 +13,6 @@
 #include "ByteRingArray.hpp"
 #include "ByteRingArrayReader.hpp"
 #include "HttpPacket.hpp"
-#include "SSLInfo.hpp"
 #include "Random.hpp"
 #include "Socket.hpp"
 #include "HttpSession.hpp"
@@ -37,8 +36,6 @@ public:
 
     ArrayList<HttpPacket> pollHttpPacket();
 
-    SSLInfo getSSLInfo();
-
     String getClientIp();
 
     void close();
@@ -48,16 +45,13 @@ public:
     Socket getSocket();
 
 private:
-    void setSSLInfo(SSLInfo);
-
     //HttpRequestParser mParser;
     HttpPacketParser mParser;
 
     int mStatus;
 
-    SSLInfo mSSLInfo;
-
     Socket mSocket;
+
     OutputStream mSocketOutput;
 
     HttpSession mSession;

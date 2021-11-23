@@ -29,11 +29,6 @@ ArrayList<HttpPacket> _HttpLinker::pollHttpPacket() {
     return mParser->doParse();
 }
 
-
-SSLInfo _HttpLinker::getSSLInfo() { return mSSLInfo; }
-
-void _HttpLinker::setSSLInfo(SSLInfo info) { mSSLInfo = info; }
-
 Socket _HttpLinker::getSocket() { return mSocket; }
 
 HttpSession _HttpLinker::getSession() { return mSession; }
