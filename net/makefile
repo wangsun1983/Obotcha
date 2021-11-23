@@ -77,9 +77,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/websocketpermessagedeflate.o \
 		$(outtmp)/websocketlinkermanager.o \
 		$(outtmp)/websocketlinker.o \
-		$(outtmp)/sslserver.o \
-		$(outtmp)/sslinfo.o \
-		$(outtmp)/sslmanager.o \
 		$(outtmp)/smtpconnection.o \
 		$(outtmp)/mailsender.o \
 		$(outtmp)/url.o \
@@ -629,15 +626,6 @@ $(outtmp)/websocketlinker.o :$(netDir)/websocket/WebSocketLinker.cpp
 
 $(outtmp)/ntpclient.o :$(netDir)/NtpClient.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/NtpClient.cpp -o $(outtmp)/ntpclient.o 
-
-$(outtmp)/sslserver.o :$(netDir)/http/ssl/SSLServer.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/ssl/SSLServer.cpp -o $(outtmp)/sslserver.o 
-
-$(outtmp)/sslinfo.o :$(netDir)/http/ssl/SSLInfo.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/ssl/SSLInfo.cpp -o $(outtmp)/sslinfo.o 
-
-$(outtmp)/sslmanager.o :$(netDir)/http/ssl/SSLManager.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/ssl/SSLManager.cpp -o $(outtmp)/sslmanager.o 
 
 $(outtmp)/smtpconnection.o :$(netDir)/smtp/SmtpConnection.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/smtp/SmtpConnection.cpp -o $(outtmp)/smtpconnection.o 
