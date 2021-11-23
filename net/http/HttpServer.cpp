@@ -55,13 +55,13 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
 
         case SocketEvent::Connect: {
             HttpLinker info = createHttpLinker(r);
-            if (isSSl) {
-                SSLInfo ssl = st(SSLManager)::getInstance()->get(
-                    r->getFileDescriptor()->getFd());
-                if (info != nullptr) {
-                    info->setSSLInfo(ssl);
-                }
-            }
+            //if (isSSl) {
+            //    SSLInfo ssl = st(SSLManager)::getInstance()->get(
+            //        r->getFileDescriptor()->getFd());
+            //    if (info != nullptr) {
+            //        info->setSSLInfo(ssl);
+            //    }
+            //}
             mLinkerManager->addLinker(info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
         } break;
@@ -93,30 +93,40 @@ void _HttpServer::start() {
         key = mOption->getKey();
     }
 
-    if (certificate != nullptr && key != nullptr) {
+    //if (certificate != nullptr && key != nullptr) {
         // https server
-        isSSl = true;
-        mSSLServer =
-            createSSLServer(mAddress->getAddress(), mAddress->getPort(),
-                            AutoClone(this), certificate, key);
-    } else {
-        isSSl = false;
+    //    isSSl = true;
+    //    mSSLServer =
+    //        createSSLServer(mAddress->getAddress(), mAddress->getPort(),
+    //                        AutoClone(this), certificate, key);
+    //} else {
+    //    isSSl = false;
+    if(certificate != nullptr && key != nullptr) {
         mServerSock = createSocketBuilder()
-                          ->setOption(mOption)
-                          ->setAddress(mAddress)
-                          ->newServerSocket();
-
-        if (mServerSock->bind() < 0) {
-            LOG(ERROR) << "bind socket failed,reason " << strerror(errno);
-            this->close();
-            return;
-        }
-
-        int threadsNum = st(Enviroment)::getInstance()->getInt(
-            st(Enviroment)::gHttpServerThreadsNum, 4);
-        mSockMonitor = createSocketMonitor(threadsNum);
-        mSockMonitor->bind(mServerSock, AutoClone(this));
+                        ->setOption(mOption)
+                        ->setAddress(mAddress)
+                        ->setSSLCretificatePath(certificate)
+                        ->setSSLKeyPath(key)
+                        ->newSSLServerSocket();
+    } else {
+        mServerSock = createSocketBuilder()
+                        ->setOption(mOption)
+                        ->setAddress(mAddress)
+                        ->newServerSocket();
     }
+    
+
+    if (mServerSock->bind() < 0) {
+        LOG(ERROR) << "bind socket failed,reason " << strerror(errno);
+        this->close();
+        return;
+    }
+
+    int threadsNum = st(Enviroment)::getInstance()->getInt(
+        st(Enviroment)::gHttpServerThreadsNum, 4);
+    mSockMonitor = createSocketMonitor(threadsNum);
+    mSockMonitor->bind(mServerSock, AutoClone(this));
+    //}
 }
 
 // interface for websocket

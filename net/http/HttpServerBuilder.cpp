@@ -23,7 +23,24 @@ _HttpServerBuilder *_HttpServerBuilder::setOption(HttpOption option) {
     return this;
 }
 
+_HttpServerBuilder *_HttpServerBuilder::setCertificatePath(String s) {
+    mCertificatePath = s;
+    return this;
+}
+
+_HttpServerBuilder *_HttpServerBuilder::setKeyPath(String s) {
+    mKeyPath = s;
+    return this;
+}
+
 HttpServer _HttpServerBuilder::build() {
+    if(mOption == nullptr) {
+        mOption = createHttpOption();
+    }
+    
+    mOption->setCertificate(mCertificatePath);
+    mOption->setKey(mKeyPath);
+
     return createHttpServer(mAddress, mListener, mOption);
 }
 
