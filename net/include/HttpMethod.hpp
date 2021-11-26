@@ -50,6 +50,9 @@ public:
         Search,
         Unlink,
         Source,
+
+        /*Http2 */
+        Pri,
         Max
     };
 
@@ -86,6 +89,8 @@ public:
     const static String SearchString;
     const static String UnlinkString;
     const static String SourceString;
+
+    const static String PriString;
     
     String toString(int);
     

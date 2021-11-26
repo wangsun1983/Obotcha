@@ -47,7 +47,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httppacket.o \
 		$(outtmp)/httptext.o \
 		$(outtmp)/HttpHeaderCacheControl.o \
-		$(outtmp)/httppacketparser.o \
+		$(outtmp)/httppacketparserimpl.o \
 		$(outtmp)/httplinkermanager.o \
 		$(outtmp)/httpsession.o \
 		$(outtmp)/httpcookie.o \
@@ -156,6 +156,12 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/http2hpackstatictable.o \
 		$(outtmp)/http2hpackdynamictable.o \
 		$(outtmp)/http2hpacktableitem.o \
+		$(outtmp)/http2frametypes.o \
+		$(outtmp)/http2packetparserimpl.o \
+		$(outtmp)/http2streamid.o \
+		$(outtmp)/http2stream.o \
+		$(outtmp)/http2protocol.o \
+		
 		
 		
 
@@ -561,8 +567,8 @@ $(outtmp)/HttpHeaderCacheControl.o :$(netDir)/http/headers/HttpHeaderCacheContro
 $(outtmp)/httppacketwriter.o :$(netDir)/http/HttpPacketWriter.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketWriter.cpp -o $(outtmp)/httppacketwriter.o 
 
-$(outtmp)/httppacketparser.o :$(netDir)/http/HttpPacketParser.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketParser.cpp -o $(outtmp)/httppacketparser.o 
+$(outtmp)/httppacketparserimpl.o :$(netDir)/http/HttpPacketParserImpl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketParserImpl.cpp -o $(outtmp)/httppacketparserimpl.o 
 
 $(outtmp)/httpcookieparser.o :$(netDir)/http/HttpCookieParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpCookieParser.cpp -o $(outtmp)/httpcookieparser.o 
@@ -639,11 +645,27 @@ $(outtmp)/url.o :$(netDir)/URL.cpp
 $(outtmp)/host.o :$(netDir)/Host.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/Host.cpp -o $(outtmp)/host.o 
 
-$(outtmp)/http2hpackstatictable.o :$(netDir)/http2/Http2HpackStaticTable.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http2/Http2HpackStaticTable.cpp -o $(outtmp)/http2hpackstatictable.o 
+$(outtmp)/http2hpackstatictable.o :$(netDir)/http/v2/Http2HpackStaticTable.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2HpackStaticTable.cpp -o $(outtmp)/http2hpackstatictable.o 
 
-$(outtmp)/http2hpacktableitem.o :$(netDir)/http2/Http2HpackTableItem.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http2/Http2HpackTableItem.cpp -o $(outtmp)/http2hpacktableitem.o 
+$(outtmp)/http2hpacktableitem.o :$(netDir)/http/v2/Http2HpackTableItem.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2HpackTableItem.cpp -o $(outtmp)/http2hpacktableitem.o 
 
-$(outtmp)/http2hpackdynamictable.o :$(netDir)/http2/Http2HpackDynamicTable.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http2/Http2HpackDynamicTable.cpp -o $(outtmp)/http2hpackdynamictable.o 
+$(outtmp)/http2hpackdynamictable.o :$(netDir)/http/v2/Http2HpackDynamicTable.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2HpackDynamicTable.cpp -o $(outtmp)/http2hpackdynamictable.o 
+
+$(outtmp)/http2frametypes.o :$(netDir)/http/v2/Http2FrameTypes.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2FrameTypes.cpp -o $(outtmp)/http2frametypes.o 
+
+$(outtmp)/http2packetparserimpl.o :$(netDir)/http/v2/Http2PacketParserImpl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2PacketParserImpl.cpp -o $(outtmp)/http2packetparserimpl.o 
+
+$(outtmp)/http2streamid.o :$(netDir)/http/v2/Http2StreamId.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2StreamId.cpp -o $(outtmp)/http2streamid.o 
+
+$(outtmp)/http2stream.o :$(netDir)/http/v2/Http2Stream.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2Stream.cpp -o $(outtmp)/http2stream.o 
+
+$(outtmp)/http2protocol.o :$(netDir)/http/v2/Http2Protocol.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2Protocol.cpp -o $(outtmp)/http2protocol.o 
+

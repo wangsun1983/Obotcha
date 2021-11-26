@@ -31,6 +31,7 @@ const String _HttpMethod::LinkString = createString("LINK");
 const String _HttpMethod::SearchString = createString("SEARCH");
 const String _HttpMethod::UnlinkString = createString("UNLINK");
 const String _HttpMethod::SourceString = createString("SOURCE");
+const String _HttpMethod::PriString = createString("PRI");
 
 String _HttpMethod::toString(int method) {
     return findString(method);
@@ -121,7 +122,11 @@ String _HttpMethod::findString(int method) {
 
     case Source:
         return SourceString;
+
+    case Pri:
+        return PriString;
     }
+
 
     return nullptr;
 }
@@ -171,6 +176,8 @@ int _HttpMethod::findId(String m) {
             return st(HttpMethod)::PropPatch;
         } else if (method->equals(st(HttpMethod)::PurgeString)) {
             return st(HttpMethod)::Purge;
+        } else if (method->equals(st(HttpMethod)::PriString)) {
+            return st(HttpMethod)::Pri;
         }
         return -1;
     }

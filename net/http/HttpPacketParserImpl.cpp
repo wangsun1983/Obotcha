@@ -1,4 +1,4 @@
-#include "HttpPacketParser.hpp"
+#include "HttpPacketParserImpl.hpp"
 #include "ArrayList.hpp"
 #include "HttpHeaderCacheControl.hpp"
 #include "HttpHeaderContentType.hpp"
@@ -10,9 +10,9 @@
 
 namespace obotcha {
 
-_HttpPacketParser::_HttpPacketParser() {
+_HttpPacketParserImpl::_HttpPacketParserImpl(ByteRingArray ring) {
     mEnv = st(Enviroment)::getInstance();
-    mBuff = createByteRingArray(mEnv->getInt(st(Enviroment)::gHttpBufferSize, 64 * 1024));
+    mBuff = ring;
     mReader = createByteRingArrayReader(mBuff);
     mBodyStartCount = 0;
     mStatus = Idle;
@@ -20,7 +20,14 @@ _HttpPacketParser::_HttpPacketParser() {
     isChunkedWTrailingHeaders = false;
 }
 
-void _HttpPacketParser::reset() {
+_HttpPacketParserImpl::_HttpPacketParserImpl():
+                _HttpPacketParserImpl(createByteRingArray(mEnv->getInt(st(Enviroment)::gHttpBufferSize, 64 * 1024))) {
+
+}
+
+
+
+void _HttpPacketParserImpl::reset() {
     mBuff->reset();
     mReader->reset();
     mBodyStartCount = 0;
@@ -29,7 +36,7 @@ void _HttpPacketParser::reset() {
     isChunkedWTrailingHeaders = false;
 }
 
-int _HttpPacketParser::pushHttpData(ByteArray data) {
+int _HttpPacketParserImpl::pushHttpData(ByteArray data) {
     // write data
 #ifdef DUMP_HTTP_DATE
     File dumpfile = createFile("data.dt");
@@ -45,14 +52,14 @@ int _HttpPacketParser::pushHttpData(ByteArray data) {
         printf("mBuff size is %d,data size is %d \n",mBuff->getAvailDataSize(),data->size());
         mBuff->push(data);
     } catch (ArrayIndexOutOfBoundsException &e) {
-        LOG(ERROR) << "HttpPacketParser error ,data overflow";
+        LOG(ERROR) << "HttpPacketParserImpl error ,data overflow";
         return -1;
     }
 
     return 0;
 }
 
-HttpPacket _HttpPacketParser::parseEntireRequest(String request) {
+HttpPacket _HttpPacketParserImpl::parseEntireRequest(String request) {
     mBuff->reset();
     mBuff->push((byte *)request->toChars(), 0, request->size());
     ArrayList<HttpPacket> result = doParse();
@@ -63,13 +70,13 @@ HttpPacket _HttpPacketParser::parseEntireRequest(String request) {
     return result->get(0);
 }
 
-ArrayList<HttpPacket> _HttpPacketParser::doParse() {
+ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
 
     while (1) {
         switch (mStatus) {
             case Idle: {
-                printf("HttpPacketParser Idle trace1 \n");
+                printf("HttpPacketParserImpl Idle trace1 \n");
                 if (mHttpHeaderParser == nullptr) {
                     mHttpHeaderParser = createHttpHeaderParser(mReader);
                     mHttpPacket = createHttpPacket();
@@ -88,7 +95,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
                     }
                     continue;
                 }
-                printf("HttpPacketParser Idle trace2,header is %s \n",header->toString(st(HttpPacket)::Request)->toChars());
+                printf("HttpPacketParserImpl Idle trace2,header is %s \n",header->toString(st(HttpPacket)::Request)->toChars());
                 if(!isChunkedWTrailingHeaders) {
                     if(header->getResponseReason() != nullptr) {
                         mHttpPacket->setType(st(HttpPacket)::Response);
@@ -105,7 +112,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
             }
 
             case BodyStart: {
-                printf("HttpPacketParser BodyStart trace1 \n");
+                printf("HttpPacketParserImpl BodyStart trace1 \n");
                 auto contentlength = mHttpPacket->getHeader()->getContentLength();
                 auto contenttype = mHttpPacket->getHeader()->getContentType();
                 auto transferEncoding = mHttpPacket->getHeader()->getTransferEncoding();
@@ -184,7 +191,7 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
 
                 if (contenttype != nullptr && 
                     contenttype->getType()->containsIgnoreCase(st(HttpMime)::MultiPartFormData)) {
-                    printf("HttpPacketParser BodyStart trace2 \n");
+                    printf("HttpPacketParserImpl BodyStart trace2 \n");
                     if (mMultiPartParser == nullptr) {
                         mMultiPartParser = createHttpMultiPartParser(
                             contenttype->getBoundary(), contentlength->get());
@@ -260,6 +267,6 @@ ArrayList<HttpPacket> _HttpPacketParser::doParse() {
     return packets;
 }
 
-int _HttpPacketParser::getStatus() { return mStatus; }
+int _HttpPacketParserImpl::getStatus() { return mStatus; }
 
 } // namespace obotcha

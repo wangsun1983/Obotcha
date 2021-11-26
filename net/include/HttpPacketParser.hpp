@@ -23,59 +23,16 @@ namespace obotcha {
 DECLARE_CLASS(HttpPacketParser) {
 
 public:
-    _HttpPacketParser();
-
-    int pushHttpData(ByteArray);
-
-    ArrayList<HttpPacket> doParse();
-
-    int getStatus();
-
-    HttpPacket parseEntireRequest(String request);
-
-    void reset();
-
-private:
-    enum HttpParseStatus {
-        Idle = 0,
-        HeadStart,
-        BodyStart
-    };
-
-    enum HttpSubStatus {
-        None = 0,
-        HeadKeyValueParse,
-    };
     
-    int mStatus;
+    virtual int pushHttpData(ByteArray);
 
-    int mSubStatus;
+    virtual ArrayList<HttpPacket> doParse();
 
-    ByteRingArray mBuff;
+    virtual int getStatus();
 
-    ByteRingArrayReader mReader;
+    virtual HttpPacket parseEntireRequest(ByteArray request);
 
-    Enviroment mEnv;
-
-    int mBodyStartCount;
-
-    String mHeaderName;
-    
-    String mHeaderValue;
-
-    HttpPacket mHttpPacket;
-
-    HttpMultiPartParser mMultiPartParser;
-
-    HttpHeaderParser mHttpHeaderParser;
-    
-    HttpChunkParser mChunkParser;
-
-    ByteArray mSavedContentBuff;
-
-    //case CHUNKED_W_TRAILING_HEADERS
-    bool isChunkedWTrailingHeaders;
-    
+    virtual void reset();
 };
 
 }

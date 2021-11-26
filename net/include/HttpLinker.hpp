@@ -16,7 +16,9 @@
 #include "Random.hpp"
 #include "Socket.hpp"
 #include "HttpSession.hpp"
-#include "HttpPacketParser.hpp"
+#include "HttpPacketParserImpl.hpp"
+#include "Http2PacketParserImpl.hpp"
+#include "HttpProtocol.hpp"
 
 namespace obotcha {
 
@@ -26,7 +28,7 @@ DECLARE_CLASS(HttpLinker){
 public:
     friend class _HttpServer;
 
-    _HttpLinker(Socket);
+    _HttpLinker(Socket,int protocol = st(HttpProtocol)::Http);
 
     int pushHttpData(ByteArray array);
 
@@ -46,7 +48,7 @@ public:
 
 private:
     //HttpRequestParser mParser;
-    HttpPacketParser mParser;
+    HttpPacketParserImpl mParser;
 
     int mStatus;
 

@@ -44,8 +44,7 @@ public:
     bool isClosed();
 
     FileDescriptor getFileDescriptor();
-    int getType();
-
+    
     void setInetAddress(InetAddress);
     InetAddress getInetAddress();
 
@@ -54,7 +53,8 @@ public:
     
     //for udp socket
     sp<_Socket> receiveFrom(ByteArray);
-
+    
+    int getType();
     void setType(int);
 
     static int DefaultBufferSize;
