@@ -22,6 +22,7 @@
 #include "HttpListener.hpp"
 #include "HttpOption.hpp"
 #include "HttpLinkerManager.hpp"
+#include "Base64.hpp"
 
 namespace obotcha {
 
@@ -58,6 +59,8 @@ private:
     HttpOption mOption;
 
     HttpLinkerManager mLinkerManager;
+
+    Base64 mBase64;
 
 };
 

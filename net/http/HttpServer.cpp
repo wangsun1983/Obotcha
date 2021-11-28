@@ -17,6 +17,10 @@
 #include "SocketOption.hpp"
 #include "String.hpp"
 #include "HttpPacketWriter.hpp"
+#include "HttpPacketWriterImpl.hpp"
+#include "Http2PacketWriterImpl.hpp"
+#include "Base64.hpp"
+#include "Http2SettingFrame.hpp"
 
 namespace obotcha {
 
@@ -39,13 +43,45 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
                 return;
             }
 
+            //support http2
             ArrayList<HttpPacket> packets = info->pollHttpPacket();
+            printf("status is %d \n",info->mParser->getStatus());
+
+            if(info->mParser->getStatus() == st(HttpPacketParser)::ShakeHand
+                ||info->mParser->getStatus() == st(HttpPacketParser)::Preface) {
+                printf("i am http2 server trace1 \n");
+                HttpPacket packet = packets->get(0);
+                HttpHeader header = packet->getHeader();
+
+                printf("i am http2 server trace2,method is %d \n",header->getMethod());
+                printf("i am http2 server trace2,getUpgrade is %s \n",header->getUpgrade()->toString()->toChars());
+                
+                if(header->getMethod() == st(HttpMethod)::Pri 
+                    && header->getVersion()->getMajorVer() == 2
+                    && packet->getEntity()->getContent()->toString()->equals("SM\r\n")) {
+                    //response pri
+                    info->mParser->setStatus(st(HttpPacketParser)::Comunicated);
+                } else if(header->getMethod() == st(HttpMethod)::Get
+                    && header->getUpgrade()->toString()->equals("h2c")) {
+                    //we should decode it's setting frame
+                    String settingframe = header->get("http2-settings");
+                    printf("settingframe is %s \n",settingframe->toChars());
+                    ByteArray data = mBase64->decodeBase64Url(settingframe->toByteArray());
+                    data->dump("http settings!!!");
+                    //TEST
+                    Http2SettingFrame frame = createHttp2SettingFrame();
+                    frame->import(data);
+
+                    //response get method
+                    info->mParser->setStatus(st(HttpPacketParser)::Preface);
+                    
+                }
+            } 
+
             if (packets != nullptr && packets->size() != 0) {
-                HttpPacketWriter writer =
-                    createHttpPacketWriter(info->getSocket()->getOutputStream());
                 ListIterator<HttpPacket> iterator = packets->getIterator();
                 while (iterator->hasValue()) {
-                    mHttpListener->onHttpMessage(event, info, writer,
+                    mHttpListener->onHttpMessage(event, info, info->getWriter(),
                                                 iterator->getValue());
                     iterator->next();
                 }
@@ -53,7 +89,7 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
         } break;
 
         case SocketEvent::Connect: {
-            HttpLinker info = createHttpLinker(r);
+            HttpLinker info = createHttpLinker(r,mOption->getProtocol());
             mLinkerManager->addLinker(info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
         } break;
@@ -73,6 +109,7 @@ _HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option) {
     mAddress = addr;
     mOption = option;
     mLinkerManager = createHttpLinkerManager();
+    mBase64 = createBase64();
 }
 
 void _HttpServer::start() {

@@ -59,9 +59,9 @@ int _HttpPacketParserImpl::pushHttpData(ByteArray data) {
     return 0;
 }
 
-HttpPacket _HttpPacketParserImpl::parseEntireRequest(String request) {
+HttpPacket _HttpPacketParserImpl::parseEntireRequest(ByteArray request) {
     mBuff->reset();
-    mBuff->push((byte *)request->toChars(), 0, request->size());
+    mBuff->push((byte *)request->toString()->toChars(), 0, request->size());
     ArrayList<HttpPacket> result = doParse();
     if (result == nullptr || result->size() != 1) {
         return nullptr;
@@ -267,6 +267,5 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
     return packets;
 }
 
-int _HttpPacketParserImpl::getStatus() { return mStatus; }
 
 } // namespace obotcha

@@ -23,13 +23,16 @@ DECLARE_CLASS(HttpOption) IMPLEMENTS(SocketOption) {
     _HttpOption();
     _HttpOption *setCertificate(String);
     _HttpOption *setKey(String);
+    _HttpOption *setProtocol(int);
 
     String getCertificate();
     String getKey();
+    int getProtocol();
 
   private:
     String mCretificate;
     String mKey;
+    int mProtocol;
 };
 
 } // namespace obotcha

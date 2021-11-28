@@ -44,6 +44,18 @@ long _ByteArrayReader::readLong() {
     return value;
 }
 
+uint32_t _ByteArrayReader::readUint32() {
+    uint32_t value = 0;
+    _read(value);
+    return value;
+}
+
+uint16_t _ByteArrayReader::readUint16() {
+    uint16_t value = 0;
+    _read(value);
+    return value;
+}
+
 int _ByteArrayReader::readByteArray(ByteArray d) {
     if (mIndex >= mSize) {
         return -1;

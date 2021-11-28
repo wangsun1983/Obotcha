@@ -24,15 +24,30 @@ DECLARE_CLASS(HttpPacketParser) {
 
 public:
     
-    virtual int pushHttpData(ByteArray);
+    virtual int pushHttpData(ByteArray) = 0;
 
-    virtual ArrayList<HttpPacket> doParse();
+    virtual ArrayList<HttpPacket> doParse() = 0;
 
-    virtual int getStatus();
+    virtual HttpPacket parseEntireRequest(ByteArray request) = 0;
 
-    virtual HttpPacket parseEntireRequest(ByteArray request);
+    virtual void reset() = 0;
 
-    virtual void reset();
+    int getStatus();
+    
+    void setStatus(int);
+
+    enum Status {
+        Idle = 0,
+        ShakeHand,
+        Preface,
+        Comunicated, //used for http2
+        HeadStart,
+        BodyStart,
+        
+    };
+
+protected:
+    int mStatus;
 };
 
 }

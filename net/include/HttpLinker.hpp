@@ -19,6 +19,7 @@
 #include "HttpPacketParserImpl.hpp"
 #include "Http2PacketParserImpl.hpp"
 #include "HttpProtocol.hpp"
+#include "HttpPacketWriter.hpp"
 
 namespace obotcha {
 
@@ -38,6 +39,8 @@ public:
 
     ArrayList<HttpPacket> pollHttpPacket();
 
+    HttpPacketWriter getWriter();
+
     String getClientIp();
 
     void close();
@@ -48,7 +51,9 @@ public:
 
 private:
     //HttpRequestParser mParser;
-    HttpPacketParserImpl mParser;
+    HttpPacketParser mParser;
+
+    HttpPacketWriter mWriter;
 
     int mStatus;
 

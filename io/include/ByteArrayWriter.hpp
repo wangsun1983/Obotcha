@@ -19,6 +19,9 @@ DECLARE_CLASS(ByteArrayWriter) {
     int writeByte(byte b);
     int writeInt(int v);
     long writeLong(long v);
+
+    int writeUint32(uint32_t);
+    int writeUint16(uint16_t);
     
     int writeByteArray(ByteArray);
     int writeByteArray(ByteArray, int start,int length);

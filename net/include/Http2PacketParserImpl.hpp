@@ -22,24 +22,15 @@ public:
 
     ArrayList<HttpPacket> doParse();
 
-    int getStatus();
-
     HttpPacket parseEntireRequest(ByteArray request);
 
     void reset();
 
 private:
-    enum Status {
-        ShakeHand = 0,
-        Preface,
-        Comunicated,
-    };
-    
     Http2ShakeHandFrameParser mShakeHandParser;
 
-    int mStatus;
-
     ByteRingArray mRingArray;
+
 };
 
 }

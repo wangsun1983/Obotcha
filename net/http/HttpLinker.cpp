@@ -2,14 +2,28 @@
 #include "HttpLinkerManager.hpp"
 #include "HttpPacket.hpp"
 #include "HttpServer.hpp"
+#include "Http2PacketWriterImpl.hpp"
+#include "HttpPacketWriterImpl.hpp"
 
 namespace obotcha {
 
 _HttpLinker::_HttpLinker(Socket s,int protocol) {
-    mParser = createHttpPacketParserImpl();
     mSocket = s;
     mSocketOutput = s->getOutputStream();
     mSession = createHttpSession();
+
+    printf("HttpLinker protocol is %d \n",protocol);
+    switch(protocol) {
+        case st(HttpProtocol)::Http_H2:
+        case st(HttpProtocol)::Http_H2C:
+            mWriter = createHttp2PacketWriterImpl(mSocketOutput);
+            mParser = createHttp2PacketParserImpl();
+        break;
+
+        default:
+            mWriter = createHttpPacketWriterImpl(mSocketOutput);
+            mParser = createHttpPacketParserImpl();
+    }
 }
 
 void _HttpLinker::close() {
@@ -29,8 +43,16 @@ ArrayList<HttpPacket> _HttpLinker::pollHttpPacket() {
     return mParser->doParse();
 }
 
-Socket _HttpLinker::getSocket() { return mSocket; }
+Socket _HttpLinker::getSocket() { 
+    return mSocket; 
+}
 
-HttpSession _HttpLinker::getSession() { return mSession; }
+HttpSession _HttpLinker::getSession() { 
+    return mSession; 
+}
+
+HttpPacketWriter _HttpLinker::getWriter() {
+    return mWriter;
+}
 
 } // namespace obotcha

@@ -8,7 +8,7 @@
 #include "HttpConnection.hpp"
 #include "HttpConnectionListener.hpp"
 #include "HttpHeader.hpp"
-#include "HttpPacketWriter.hpp"
+#include "HttpPacketWriterImpl.hpp"
 #include "HttpUrl.hpp"
 #include "Inet4Address.hpp"
 #include "InetAddress.hpp"
@@ -18,6 +18,7 @@
 #include "String.hpp"
 #include "System.hpp"
 #include "URL.hpp"
+#include "HttpPacketParserImpl.hpp"
 
 namespace obotcha {
 
@@ -27,7 +28,8 @@ _HttpConnection::_HttpConnection(sp<_HttpUrl> url, HttpOption option,
                                  bool async, HttpConnectionListener l) {
     isAsync = async;
     mUrl = url;
-    mParser = createHttpPacketParser();
+    //TODO
+    mParser = createHttpPacketParserImpl();
     mOption = option;
     mListener = l;
 }
@@ -59,7 +61,7 @@ int _HttpConnection::connect() {
     }
 
     mInputStream = mSocket->getInputStream();
-    writer = createHttpPacketWriter(mSocket->getOutputStream());
+    writer = createHttpPacketWriterImpl(mSocket->getOutputStream());
 
     if (isAsync) {
         static std::once_flag flag;

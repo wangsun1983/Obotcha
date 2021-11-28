@@ -18,6 +18,8 @@ public:
     int readByte();
     int readInt();
     long readLong();
+    uint32_t readUint32();
+    uint16_t readUint16();
     String readLine();
     int readByteArray(ByteArray);
     int getIndex();

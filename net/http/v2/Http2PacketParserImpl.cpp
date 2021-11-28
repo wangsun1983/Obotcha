@@ -11,7 +11,14 @@ _Http2PacketParserImpl::_Http2PacketParserImpl() {
 }
 
 int _Http2PacketParserImpl::pushHttpData(ByteArray data) {
-    mRingArray->push(data);
+    try {
+        mRingArray->push(data);
+    } catch (ArrayIndexOutOfBoundsException &e) {
+        LOG(ERROR) << "Http2PacketParserImpl error ,data overflow";
+        return -1;
+    }
+
+    return 0;
 }
 
 ArrayList<HttpPacket> _Http2PacketParserImpl::doParse() {
@@ -32,22 +39,20 @@ ArrayList<HttpPacket> _Http2PacketParserImpl::doParse() {
                 mStatus = Comunicated;
                 mRingArray->reset();
             }
+            return packets;
         }
         break;
 
         case Comunicated:
+
         break;
     }
 
     return nullptr;
 }
 
-int _Http2PacketParserImpl::getStatus() {
-
-}
-
 HttpPacket _Http2PacketParserImpl::parseEntireRequest(ByteArray request) {
-
+    return nullptr;
 }
 
 void _Http2PacketParserImpl::reset() {

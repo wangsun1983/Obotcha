@@ -15,24 +15,10 @@ namespace obotcha {
 DECLARE_CLASS(HttpPacketWriter) {
 
 public:
-    _HttpPacketWriter(OutputStream stream,int defaultSize = 1024*32);
-    int write(HttpPacket);
-    ByteArray data(HttpPacket);
-private:
+    //_HttpPacketWriter(OutputStream stream,int defaultSize = 1024*32);
+    virtual int write(HttpPacket) = 0;
+    virtual ByteArray data(HttpPacket) = 0;
 
-    int mDefaultSize;
-    ByteArray mBuff;
-    ByteArrayWriter mWriter;
-    OutputStream mStream;
-
-    int _computeContentLength(HttpPacket);
-    int _flush(HttpPacket packet,bool send);
-    int _write(ByteArray,bool send);
-
-    int _flushRequest(HttpPacket packet,bool send);
-    int _flushResponse(HttpPacket packet,bool send);
-
-    void _updateHttpHeader(HttpPacket packet);
 };
 
 using HttpResponseWriter = sp<_HttpPacketWriter>;

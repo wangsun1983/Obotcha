@@ -6,6 +6,7 @@ _HttpServerBuilder::_HttpServerBuilder() {
     mAddress = createInetAddress();
     mOption = nullptr;
     mListener = nullptr;
+    mProtocol = st(HttpProtocol)::Http;
 }
 
 _HttpServerBuilder *_HttpServerBuilder::setAddress(InetAddress addr) {
@@ -17,6 +18,12 @@ _HttpServerBuilder *_HttpServerBuilder::setListener(HttpListener l) {
     mListener = l;
     return this;
 }
+
+_HttpServerBuilder *_HttpServerBuilder::setProtocol(int p) {
+    mProtocol = p;
+    return this;
+}
+
 
 _HttpServerBuilder *_HttpServerBuilder::setOption(HttpOption option) {
     mOption = option;
@@ -40,6 +47,7 @@ HttpServer _HttpServerBuilder::build() {
     
     mOption->setCertificate(mCertificatePath);
     mOption->setKey(mKeyPath);
+    mOption->setProtocol(mProtocol);
 
     return createHttpServer(mAddress, mListener, mOption);
 }

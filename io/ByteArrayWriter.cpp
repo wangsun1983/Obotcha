@@ -82,7 +82,25 @@ int _ByteArrayWriter::writeInt(int v) {
 }
 
 long _ByteArrayWriter::writeLong(long v) {
-    if (!writeSizeCheck(sizeof(int))) {
+    if (!writeSizeCheck(sizeof(long))) {
+        return -1;
+    }
+
+    _write(v);
+    return 0;
+}
+
+int _ByteArrayWriter::writeUint32(uint32_t v) {
+    if (!writeSizeCheck(sizeof(uint32_t))) {
+        return -1;
+    }
+
+    _write(v);
+    return 0;
+}
+
+int _ByteArrayWriter::writeUint16(uint16_t v) {
+    if (!writeSizeCheck(sizeof(uint16_t))) {
         return -1;
     }
 

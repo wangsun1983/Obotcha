@@ -32,25 +32,15 @@ public:
 
     ArrayList<HttpPacket> doParse();
 
-    int getStatus();
-
-    HttpPacket parseEntireRequest(String request);
+    HttpPacket parseEntireRequest(ByteArray request);
 
     void reset();
 
 private:
-    enum HttpParseStatus {
-        Idle = 0,
-        HeadStart,
-        BodyStart
-    };
-
     enum HttpSubStatus {
         None = 0,
         HeadKeyValueParse,
     };
-    
-    int mStatus;
 
     int mSubStatus;
 

@@ -47,6 +47,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httppacket.o \
 		$(outtmp)/httptext.o \
 		$(outtmp)/HttpHeaderCacheControl.o \
+		$(outtmp)/httppacketparser.o \
 		$(outtmp)/httppacketparserimpl.o \
 		$(outtmp)/httplinkermanager.o \
 		$(outtmp)/httpsession.o \
@@ -85,7 +86,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httproutermap.o \
 		$(outtmp)/httproutermanager.o \
 		$(outtmp)/httpcookieparser.o \
-		$(outtmp)/httppacketwriter.o \
+		$(outtmp)/httppacketwriterimpl.o \
 		$(outtmp)/httpresponseentity.o \
 		$(outtmp)/httpheaderallowcreditial.o \
 		$(outtmp)/httpheaderallowheaders.o \
@@ -161,8 +162,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/http2streamid.o \
 		$(outtmp)/http2stream.o \
 		$(outtmp)/http2protocol.o \
-		
-		
+		$(outtmp)/http2packetwriterimp.o \
+		$(outtmp)/http2shakehandframeparser.o \
+		$(outtmp)/http2settingframe.o \
 		
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
@@ -564,11 +566,14 @@ $(outtmp)/HttpHeaderCacheControl.o :$(netDir)/http/headers/HttpHeaderCacheContro
 #$(outtmp)/httpresponsewriter.o :$(netDir)/http/HttpResponseWriter.cpp
 #	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpResponseWriter.cpp -o $(outtmp)/httpresponsewriter.o 
 
-$(outtmp)/httppacketwriter.o :$(netDir)/http/HttpPacketWriter.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketWriter.cpp -o $(outtmp)/httppacketwriter.o 
+$(outtmp)/httppacketwriterimpl.o :$(netDir)/http/HttpPacketWriterImpl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketWriterImpl.cpp -o $(outtmp)/httppacketwriterimpl.o 
 
 $(outtmp)/httppacketparserimpl.o :$(netDir)/http/HttpPacketParserImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketParserImpl.cpp -o $(outtmp)/httppacketparserimpl.o 
+
+$(outtmp)/httppacketparser.o :$(netDir)/http/HttpPacketParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPacketParser.cpp -o $(outtmp)/httppacketparser.o 
 
 $(outtmp)/httpcookieparser.o :$(netDir)/http/HttpCookieParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpCookieParser.cpp -o $(outtmp)/httpcookieparser.o 
@@ -669,3 +674,11 @@ $(outtmp)/http2stream.o :$(netDir)/http/v2/Http2Stream.cpp
 $(outtmp)/http2protocol.o :$(netDir)/http/v2/Http2Protocol.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2Protocol.cpp -o $(outtmp)/http2protocol.o 
 
+$(outtmp)/http2packetwriterimp.o :$(netDir)/http/v2/Http2PacketWriterImpl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2PacketWriterImpl.cpp -o $(outtmp)/http2packetwriterimp.o 
+
+$(outtmp)/http2shakehandframeparser.o :$(netDir)/http/v2/Http2ShakeHandFrameParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2ShakeHandFrameParser.cpp -o $(outtmp)/http2shakehandframeparser.o 
+
+$(outtmp)/http2settingframe.o :$(netDir)/http/v2/Http2SettingFrame.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2SettingFrame.cpp -o $(outtmp)/http2settingframe.o 

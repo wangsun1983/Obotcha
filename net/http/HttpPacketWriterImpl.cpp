@@ -1,25 +1,25 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "HttpPacketWriter.hpp"
+#include "HttpPacketWriterImpl.hpp"
 #include "HttpText.hpp"
 #include "HttpMime.hpp"
 #include "FileInputStream.hpp"
 
 namespace obotcha {
 
-_HttpPacketWriter::_HttpPacketWriter(OutputStream stream,int defaultSize) {
+_HttpPacketWriterImpl::_HttpPacketWriterImpl(OutputStream stream,int defaultSize) {
     mStream = stream;
     mDefaultSize = defaultSize;
     mBuff = createByteArray(defaultSize);
     mWriter = createByteArrayWriter(mBuff);
 }
 
-int _HttpPacketWriter::write(HttpPacket packet) {
+int _HttpPacketWriterImpl::write(HttpPacket packet) {
     return _flush(packet,true);
 }
 
-ByteArray _HttpPacketWriter::data(HttpPacket packet) {
+ByteArray _HttpPacketWriterImpl::data(HttpPacket packet) {
     _flush(packet,false);
     return createByteArray(mBuff);
 }
@@ -28,7 +28,7 @@ ByteArray _HttpPacketWriter::data(HttpPacket packet) {
 * \r\n
 * contentxxxxxxxxx
 */
-int _HttpPacketWriter::_computeContentLength(HttpPacket packet) {
+int _HttpPacketWriterImpl::_computeContentLength(HttpPacket packet) {
     if(packet->getHeader()->getType() == st(HttpHeader)::Request) {
         auto multiPart = packet->getEntity()->getMultiPart();
         if(multiPart != nullptr) {
@@ -43,7 +43,7 @@ int _HttpPacketWriter::_computeContentLength(HttpPacket packet) {
     return 0;
 }
 
-void _HttpPacketWriter::_updateHttpHeader(HttpPacket packet) {
+void _HttpPacketWriterImpl::_updateHttpHeader(HttpPacket packet) {
     HttpHeader header = packet->getHeader();
 
     switch(packet->getType()) {
@@ -71,7 +71,7 @@ void _HttpPacketWriter::_updateHttpHeader(HttpPacket packet) {
     header->setContentLength(createHttpHeaderContentLength(_computeContentLength(packet)));
 }
 
-int _HttpPacketWriter::_flush(HttpPacket packet,bool send) {
+int _HttpPacketWriterImpl::_flush(HttpPacket packet,bool send) {
     //update content length
     auto header = packet->getHeader();
     
@@ -99,7 +99,7 @@ int _HttpPacketWriter::_flush(HttpPacket packet,bool send) {
     return 0;
 }
 
-int _HttpPacketWriter::_flushRequest(HttpPacket packet,bool send) {
+int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
     //http multipart
     HttpMultiPart multiPart = packet->getEntity()->getMultiPart();
 
@@ -190,7 +190,7 @@ int _HttpPacketWriter::_flushRequest(HttpPacket packet,bool send) {
     return 0;
 }
 
-int _HttpPacketWriter::_flushResponse(HttpPacket packet,bool send) {
+int _HttpPacketWriterImpl::_flushResponse(HttpPacket packet,bool send) {
     File file = packet->getEntity()->getChunkFile();
     if (file != nullptr) {
         FileInputStream stream = createFileInputStream(file);
@@ -240,7 +240,7 @@ int _HttpPacketWriter::_flushResponse(HttpPacket packet,bool send) {
     return 0;
 }
 
-int _HttpPacketWriter::_write(ByteArray data,bool send) {
+int _HttpPacketWriterImpl::_write(ByteArray data,bool send) {
     int length = data->size();
     int start = 0;
     while(length != 0) {

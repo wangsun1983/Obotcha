@@ -29,6 +29,11 @@ public:
 
     ByteArray decode(File f);
 
+    //https://base64.guru/standards/base64url
+    ByteArray decodeBase64Url(ByteArray data);
+
+    ByteArray encodeBase64Url(ByteArray data);
+
 private:
    char * _encode(const char * input, int length, bool with_new_line,int *);
    char * _decode(const char * input, int length, bool with_new_line,int *);

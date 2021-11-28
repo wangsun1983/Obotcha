@@ -17,6 +17,46 @@ String _Base64::decode(String str) {
     return result;
 }
 
+ByteArray _Base64::decodeBase64Url(ByteArray data) {
+    int size = data->size() + 2;
+    ByteArray decodeBuff = createByteArray(size);
+    memcpy(decodeBuff->toValue(),data->toValue(),data->size());
+    decodeBuff[size - 1] = '=';
+    decodeBuff[size - 2] = '=';
+    
+    auto p = decodeBuff->toValue();
+    for(int i = 0;i < size;i++) {
+        if(p[i] == '-') {
+            p[i] = '+';
+        } else if(p[i] == '_') {
+            p[i] = '/';
+        }
+    }
+
+    return decode(decodeBuff);
+}
+
+ByteArray _Base64::encodeBase64Url(ByteArray data) {
+    int size = 0;
+    char *p = _encode((const char *)data->toValue(),data->size(),false,&size);
+    //Replaces ¡°+¡± by ¡°-¡± (minus)
+    //Replaces ¡°/¡± by ¡°_¡± (underline)
+    for(int i = 0;i<size;i++) {
+        if(p[i] == '+') {
+            p[i] = '-';
+        } else if(p[i] == '/') {
+            p[i] = '_';
+        }
+    }
+
+    //remove last "=="
+    ByteArray result = createByteArray((byte *)p,size - 2);
+    free(p);
+    return result;
+}
+
+
+
 String _Base64::encode(String str) {
     int size = 0;
     char *p = _encode(str->toChars(),str->size(),false,&size);

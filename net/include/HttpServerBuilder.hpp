@@ -22,6 +22,7 @@ DECLARE_CLASS(HttpServerBuilder) {
     _HttpServerBuilder *setOption(HttpOption);
     _HttpServerBuilder *setCertificatePath(String);
     _HttpServerBuilder *setKeyPath(String);
+    _HttpServerBuilder *setProtocol(int);
 
     HttpServer build();
 
@@ -31,6 +32,7 @@ DECLARE_CLASS(HttpServerBuilder) {
     HttpListener mListener;
     String mCertificatePath;
     String mKeyPath;
+    int mProtocol;
 };
 
 } // namespace obotcha
