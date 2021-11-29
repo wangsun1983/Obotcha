@@ -48,6 +48,8 @@ private:
 
     void onSocketMessage(int,Socket,ByteArray);
 
+    void http2FrameProcessor(HttpLinker info);
+
     ServerSocket mServerSock;
 
     SocketMonitor mSockMonitor;

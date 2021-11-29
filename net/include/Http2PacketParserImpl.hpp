@@ -9,7 +9,7 @@
 #include "String.hpp"
 #include "HashMap.hpp"
 #include "HttpPacketParser.hpp"
-#include "Http2ShakeHandFrameParser.hpp"
+#include "Http2ShakeHandFrame.hpp"
 
 namespace obotcha {
 
@@ -27,10 +27,13 @@ public:
     void reset();
 
 private:
-    Http2ShakeHandFrameParser mShakeHandParser;
-
     ByteRingArray mRingArray;
 
+    Http2ShakeHandFrame shakeHandFrame;
+
+    ByteRingArrayReader mReader;
+
+    int mIndex;
 };
 
 }

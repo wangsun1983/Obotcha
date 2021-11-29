@@ -24,6 +24,21 @@ _HttpLinker::_HttpLinker(Socket s,int protocol) {
             mWriter = createHttpPacketWriterImpl(mSocketOutput);
             mParser = createHttpPacketParserImpl();
     }
+
+    mProtocol = protocol;
+    mShakeHandStatus = st(HttpPacketParser)::ShakeHand;
+}
+
+int _HttpLinker::getProtocol() {
+    return mProtocol;
+}
+
+int _HttpLinker::getHttp2ShakeHandStatus() {
+    return mShakeHandStatus;
+}
+
+void _HttpLinker::setHttp2ShakeHandStatus(int s) {
+    mShakeHandStatus = s;
 }
 
 void _HttpLinker::close() {

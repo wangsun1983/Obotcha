@@ -39,7 +39,7 @@ void _HttpHeaderParser::parseRequestLine(String line) {
         String directive =
                 line->subString(tokenStart, pos - tokenStart)->trim();
         pos++;
-
+        printf("directive is %s \n",directive->toChars());
         switch(mParseLineStatus) {
             case LineParseStart: {
                 int method = st(HttpMethod)::findId(directive);
@@ -121,6 +121,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                         //strage!!! first head contain \r\n 
                         continue;
                     }
+                    printf("request line is %s \n",content->subString(0,content->size() - 2)->toChars());
                     parseRequestLine(content->subString(0,content->size() - 2)); //do not parse \r\n
                     mStatus = Header;
                 }

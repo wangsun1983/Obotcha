@@ -49,19 +49,26 @@ public:
 
     Socket getSocket();
 
+    int getProtocol();
+
+    int getHttp2ShakeHandStatus();
+    void setHttp2ShakeHandStatus(int);
+
 private:
     //HttpRequestParser mParser;
     HttpPacketParser mParser;
 
     HttpPacketWriter mWriter;
 
-    int mStatus;
+    int mShakeHandStatus;
 
     Socket mSocket;
 
     OutputStream mSocketOutput;
 
     HttpSession mSession;
+
+    int mProtocol;
 };
 
 }

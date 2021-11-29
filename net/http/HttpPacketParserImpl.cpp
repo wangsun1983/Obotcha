@@ -95,7 +95,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                     }
                     continue;
                 }
-                printf("HttpPacketParserImpl Idle trace2,header is %s \n",header->toString(st(HttpPacket)::Request)->toChars());
+                //printf("HttpPacketParserImpl Idle trace2,header is %s \n",header->toString(st(HttpPacket)::Request)->toChars());
                 if(!isChunkedWTrailingHeaders) {
                     if(header->getResponseReason() != nullptr) {
                         mHttpPacket->setType(st(HttpPacket)::Response);
