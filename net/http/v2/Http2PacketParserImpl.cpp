@@ -34,7 +34,7 @@ ArrayList<HttpPacket> _Http2PacketParserImpl::doParse() {
                 return nullptr;
             }
             mStatus = Preface;
-            //mRingArray->reset();
+            mRingArray->reset();
             //mReader->reset();
             return packets;
         }
@@ -46,7 +46,7 @@ ArrayList<HttpPacket> _Http2PacketParserImpl::doParse() {
             const char *p = st(Http2ShakeHandFrame)::PreFace->toChars();
             int size = st(Http2ShakeHandFrame)::PreFace->size();
             printf("available size is %d \n",mReader->getReadableLength());
-            while(mReader->readNext(v) == Continue) {
+            while(mReader->readNext(v) == st(ByteRingArrayReader)::Continue) {
                 printf("preface parse trace1,v is %c,p is %c \n",v,p[mIndex]);
                 if(v != p[mIndex] || mIndex == size) {
                     break;
