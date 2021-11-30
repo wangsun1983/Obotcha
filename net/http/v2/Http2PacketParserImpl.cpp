@@ -15,7 +15,7 @@ _Http2PacketParserImpl::_Http2PacketParserImpl() {
 
 int _Http2PacketParserImpl::pushHttpData(ByteArray data) {
     try {
-        printf("push data,size is %d \n",data->size());
+        printf("push data,size is %d,\n",data->size());
         mRingArray->push(data);
     } catch (ArrayIndexOutOfBoundsException &e) {
         LOG(ERROR) << "Http2PacketParserImpl error ,data overflow";
@@ -53,7 +53,7 @@ ArrayList<HttpPacket> _Http2PacketParserImpl::doParse() {
                 }
                 mIndex++;
             }
-            printf("preface start parse2");
+            printf("available size is %d \n",mReader->getReadableLength());
             if(mIndex == size) {
                 return createArrayList<HttpPacket>();
             }
@@ -64,7 +64,7 @@ ArrayList<HttpPacket> _Http2PacketParserImpl::doParse() {
         break;
 
         case Comunicated:
-
+            //
         break;
     }
 

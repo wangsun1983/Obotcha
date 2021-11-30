@@ -29,6 +29,8 @@ _Http2SettingFrame::_Http2SettingFrame() {
     mInitialWindowSize = 0;
     mMaxFrameSize = 0;
     mMaxHeaderListSize = 0;
+
+    this->type = TypeSettings;
 }
 
 void _Http2SettingFrame::import(ByteArray data) {

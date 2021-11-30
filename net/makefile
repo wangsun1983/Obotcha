@@ -157,10 +157,10 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/http2hpackstatictable.o \
 		$(outtmp)/http2hpackdynamictable.o \
 		$(outtmp)/http2hpacktableitem.o \
-		$(outtmp)/http2frametypes.o \
 		$(outtmp)/http2packetparserimpl.o \
 		$(outtmp)/http2streamid.o \
 		$(outtmp)/http2stream.o \
+		$(outtmp)/http2frame.o \
 		$(outtmp)/http2protocol.o \
 		$(outtmp)/http2packetwriterimp.o \
 		$(outtmp)/http2shakehandframe.o \
@@ -659,8 +659,8 @@ $(outtmp)/http2hpacktableitem.o :$(netDir)/http/v2/Http2HpackTableItem.cpp
 $(outtmp)/http2hpackdynamictable.o :$(netDir)/http/v2/Http2HpackDynamicTable.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2HpackDynamicTable.cpp -o $(outtmp)/http2hpackdynamictable.o 
 
-$(outtmp)/http2frametypes.o :$(netDir)/http/v2/Http2FrameTypes.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2FrameTypes.cpp -o $(outtmp)/http2frametypes.o 
+$(outtmp)/http2frame.o :$(netDir)/http/v2/Http2Frame.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2Frame.cpp -o $(outtmp)/http2frame.o 
 
 $(outtmp)/http2packetparserimpl.o :$(netDir)/http/v2/Http2PacketParserImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2PacketParserImpl.cpp -o $(outtmp)/http2packetparserimpl.o 

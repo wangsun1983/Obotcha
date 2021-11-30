@@ -5,6 +5,7 @@
 #include "StrongPointer.hpp"
 
 #include "Byte.hpp"
+#include "Http2Frame.hpp"
 
 namespace obotcha {
 
@@ -28,8 +29,10 @@ namespace obotcha {
 +---------------------------------------------------------------+
  */
 
-DECLARE_CLASS(Http2HeaderFrame) {
-
+DECLARE_CLASS(Http2HeaderFrame) IMPLEMENTS(Http2Frame) {
+public:
+    _Http2HeaderFrame();
+    ByteArray toByteArray();
 };
 
 }

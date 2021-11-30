@@ -59,9 +59,13 @@ void _HttpServer::http2FrameProcessor(HttpLinker info) {
 
         case st(HttpPacketParser)::Preface: {
             printf("preface!!!!! \n");
-            auto shakeHande = createHttp2ShakeHandFrame();
-            info->getSocket()->getOutputStream()->write(shakeHande->toPriString());
+            //no need ack response
             info->setHttp2ShakeHandStatus(st(HttpPacketParser)::Comunicated);
+        }
+
+        case st(HttpPacketParser)::Comunicated: {
+            auto iterator = packets->getIterator();
+            
         }
         break;
     }
