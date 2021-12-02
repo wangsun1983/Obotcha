@@ -17,13 +17,19 @@ namespace obotcha {
 
 ByteArray _Http2Frame::toFrameData(int streamid,int flags) {
     ByteArray payload = toByteArray();
-    int length = payload->size();
+    int length = 0;
+    //setting ack frame has no payload
+    if(payload != nullptr) {
+        length = payload->size();
+    }
     ByteArray frame = createByteArray(length + 9);
     ByteArrayWriter writer = createByteArrayWriter(frame,BigEndian);
     writer->writeUint32(length << 8 | type);
     writer->writeByte(flags);
     writer->writeUint32(streamid & 0x7FFFFFFF);
-    writer->writeByteArray(payload);
+    if(payload != nullptr) {
+        writer->writeByteArray(payload);
+    }
 
     return frame;
 }

@@ -165,6 +165,8 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/http2packetwriterimp.o \
 		$(outtmp)/http2shakehandframe.o \
 		$(outtmp)/http2settingframe.o \
+		$(outtmp)/http2frameparser.o \
+		
 		
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
@@ -661,6 +663,9 @@ $(outtmp)/http2hpackdynamictable.o :$(netDir)/http/v2/Http2HpackDynamicTable.cpp
 
 $(outtmp)/http2frame.o :$(netDir)/http/v2/Http2Frame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2Frame.cpp -o $(outtmp)/http2frame.o 
+
+$(outtmp)/http2frameparser.o :$(netDir)/http/v2/Http2FrameParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2FrameParser.cpp -o $(outtmp)/http2frameparser.o 
 
 $(outtmp)/http2packetparserimpl.o :$(netDir)/http/v2/Http2PacketParserImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2PacketParserImpl.cpp -o $(outtmp)/http2packetparserimpl.o 

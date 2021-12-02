@@ -10,6 +10,7 @@
 #include "HashMap.hpp"
 #include "HttpPacketParser.hpp"
 #include "Http2ShakeHandFrame.hpp"
+#include "Http2FrameParser.hpp"
 
 namespace obotcha {
 
@@ -30,6 +31,8 @@ private:
     ByteRingArray mRingArray;
 
     Http2ShakeHandFrame shakeHandFrame;
+
+    Http2FrameParser mFrameParser;
 
     ByteRingArrayReader mReader;
 

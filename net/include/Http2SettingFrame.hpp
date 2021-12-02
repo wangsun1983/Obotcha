@@ -63,6 +63,9 @@ public:
     void setMaxHeaderListSize(uint32_t);
     uint32_t getMaxHeaderListSize();
 
+    void setAck(bool);
+    bool isAck();
+
     //void setStandardNum(uint32_t);
     //uint32_t getStandardNum();
 
@@ -73,6 +76,8 @@ private:
     uint32_t mInitialWindowSize;
     uint32_t mMaxFrameSize;
     uint32_t mMaxHeaderListSize;
+
+    bool mAck;
 };
 
 }

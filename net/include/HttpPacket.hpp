@@ -13,6 +13,7 @@
 #include "HttpMethod.hpp"
 #include "HttpHeaderVersion.hpp"
 #include "HttpEntity.hpp"
+#include "Http2Frame.hpp"
 
 namespace obotcha {
 
@@ -26,6 +27,8 @@ public:
     
     friend class _HttpRequestParser;
     friend class _HttpResponseParser;
+    friend class _HttpServer;
+    friend class _Http2PacketParserImpl;
 
     _HttpPacket();
     
@@ -38,7 +41,14 @@ public:
     void setType(int);
     int getType();
 
+
 private:
+    //wangsl
+    void setFrame(Http2Frame);
+    Http2Frame getFrame();
+    Http2Frame mFrame;
+    //wangsl
+
     HttpHeader mHeader;
     HttpEntity mEntity;
     int mType;

@@ -10,6 +10,7 @@ _Http2PacketParserImpl::_Http2PacketParserImpl() {
     mRingArray = createByteRingArray(st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpBufferSize, 4 * 1024));
     shakeHandFrame = createHttp2ShakeHandFrame(mRingArray);
     mReader = createByteRingArrayReader(mRingArray);
+    mFrameParser = createHttp2FrameParser(mReader);
     mIndex = 0;
 }
 
@@ -63,8 +64,20 @@ ArrayList<HttpPacket> _Http2PacketParserImpl::doParse() {
         }
         break;
 
-        case Comunicated:
-            //
+        case Comunicated: {
+            ArrayList<Http2Frame> frames = mFrameParser->doParse();
+            if(frames != nullptr && frames->size() != 0) {
+                ArrayList<HttpPacket> packets  = createArrayList<HttpPacket>();
+                auto iterator = frames->getIterator();
+                while(iterator->hasValue()) {
+                    HttpPacket p = createHttpPacket();
+                    p->setFrame(iterator->getValue());
+                    packets->add(p);
+                    iterator->next();
+                }
+                return packets;
+            }
+        }
         break;
     }
 

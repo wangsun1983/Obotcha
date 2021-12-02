@@ -39,4 +39,12 @@ int _HttpPacket::getType() {
     return mType;
 }
 
+void _HttpPacket::setFrame(Http2Frame frame) {
+    mFrame = frame;
+}
+
+Http2Frame _HttpPacket::getFrame() {
+    return mFrame;
+}
+
 } // namespace obotcha

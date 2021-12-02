@@ -22,6 +22,7 @@ namespace obotcha {
 +---------------------------------------------------------------+  
  */
 //https://skyao.io/learning-http2/frame/definition/settings.html
+
 _Http2SettingFrame::_Http2SettingFrame() {
     mHeaderTableSize = 0;
     mEnablePush = 0;
@@ -31,6 +32,7 @@ _Http2SettingFrame::_Http2SettingFrame() {
     mMaxHeaderListSize = 0;
 
     this->type = TypeSettings;
+    mAck = false;
 }
 
 void _Http2SettingFrame::import(ByteArray data) {
@@ -78,9 +80,13 @@ void _Http2SettingFrame::import(ByteArray data) {
 }
 
 ByteArray _Http2SettingFrame::toByteArray() {
+    if(mAck) {
+        return nullptr;
+    }
+    
     ByteArray data = createByteArray(48 * SettingStandardNum);
     ByteArrayWriter writer = createByteArrayWriter(data);
-
+    
     if(mHeaderTableSize > 0) {
         writer->writeUint16(SettingHeaderTableSize);
         writer->writeUint32(mHeaderTableSize);
@@ -113,6 +119,14 @@ ByteArray _Http2SettingFrame::toByteArray() {
 
     data->quickShrink(writer->getIndex());
     return data;
+}
+
+void _Http2SettingFrame::setAck(bool s) {
+    mAck = s;
+}
+
+bool _Http2SettingFrame::isAck() {
+    return mAck;
 }
 
 void _Http2SettingFrame::setHeaderTableSize(uint32_t v) {

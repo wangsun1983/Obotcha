@@ -65,6 +65,20 @@ void _HttpServer::http2FrameProcessor(HttpLinker info) {
 
         case st(HttpPacketParser)::Comunicated: {
             auto iterator = packets->getIterator();
+            while(iterator->hasValue()) {
+                HttpPacket packet = iterator->getValue();
+                Http2Frame frame = packet->getFrame();
+                switch(frame->getType()) {
+                    case st(Http2Frame)::TypeSettings: {
+                        Http2SettingFrame ackFrame = createHttp2SettingFrame();
+                        ackFrame->setAck(true);
+                        info->getSocket()->getOutputStream()->write(ackFrame->toFrameData());
+                    }
+                    break;
+                }
+                iterator->next();
+            }
+            
             
         }
         break;

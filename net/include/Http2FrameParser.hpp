@@ -18,8 +18,15 @@ public:
     ArrayList<Http2Frame> doParse();
 
 private:
+    enum Status{
+        //first 9 byte(length[24 bit] + type[8 bit] + flag[8 bit] + streamId[32 bit])
+        ParseHeadPart,
+        ParsePayload,
+    };
     ByteRingArrayReader mReader;
     Http2Frame mFrame;
+    int status;
+    int rest;
 
 };
 
