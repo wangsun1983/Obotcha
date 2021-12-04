@@ -131,6 +131,7 @@ HttpHeader _HttpHeaderParser::doParse() {
             case Header: {
                 if(isLineEnd(v)) {
                     String content = mReader->pop()->toString()->trim();
+                    printf("content size is %d \n",content->size());
                     if(content->size() == 2 && content->equals(st(HttpText)::CRLF)) {
                         //This is end!!!
                         if(mPredictValue != nullptr) {

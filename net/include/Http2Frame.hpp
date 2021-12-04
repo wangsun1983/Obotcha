@@ -6,6 +6,7 @@
 
 #include "ByteArray.hpp"
 #include "ByteRingArrayReader.hpp"
+#include "HashMap.hpp"
 
 namespace obotcha {
 
@@ -72,13 +73,23 @@ public:
     uint32_t getFlags();
     void setFlags(uint32_t);
 
-    ByteArray toFrameData(int streamid = 0x0,int flags = FlagNone);
+    uint32_t getStreamId();
+    void setStreamId(uint32_t);
 
+    ByteArray toFrameData(int streamid = 0x0,int flags = FlagNone);
+    virtual void import(ByteArray);
+
+    void setAck(bool);
+    bool isAck();
+    
 protected:
     virtual ByteArray toByteArray() = 0;
     int type;
     int flags;
     int length;
+    uint32_t streamid;
+
+    bool mAck;
 };
 
 }

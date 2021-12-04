@@ -5,6 +5,7 @@
 #include "StrongPointer.hpp"
 
 #include "Byte.hpp"
+#include "Http2Frame.hpp"
 
 namespace obotcha {
 
@@ -20,7 +21,16 @@ namespace obotcha {
 +-+-------------------------------------------------------------+
  */
 
-DECLARE_CLASS(Http2WindowUpdateFrame) {
+DECLARE_CLASS(Http2WindowUpdateFrame) IMPLEMENTS(Http2Frame) {
+public:
+    void import(ByteArray);
+    ByteArray toByteArray();
+
+    uint32_t getWindowSize();
+    void setWindowSize(uint32_t);
+
+private:
+    uint32_t windowSize;
 
 };
 

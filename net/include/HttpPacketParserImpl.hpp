@@ -18,6 +18,7 @@
 #include "HttpChunkParser.hpp"
 #include "HttpHeaderParser.hpp"
 #include "HttpPacketParser.hpp"
+#include "HttpPriContentParser.hpp"
 
 namespace obotcha {
 
@@ -63,6 +64,8 @@ private:
     HttpHeaderParser mHttpHeaderParser;
     
     HttpChunkParser mChunkParser;
+
+    HttpPriContentParser mPriContentParser;
 
     ByteArray mSavedContentBuff;
 

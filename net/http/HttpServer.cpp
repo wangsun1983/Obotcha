@@ -53,6 +53,12 @@ void _HttpServer::http2FrameProcessor(HttpLinker info) {
 
                 //response get method
                 info->setHttp2ShakeHandStatus(st(HttpPacketParser)::Preface);
+            } else if(header->getMethod() == st(HttpMethod)::Pri 
+                && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
+                info->setHttp2ShakeHandStatus(st(HttpPacketParser)::Comunicated);
+                //we should send a http setting frame;
+                Http2SettingFrame ackFrame = createHttp2SettingFrame();
+                info->getSocket()->getOutputStream()->write(ackFrame->toFrameData());
             }
         }
         break;
@@ -61,17 +67,22 @@ void _HttpServer::http2FrameProcessor(HttpLinker info) {
             printf("preface!!!!! \n");
             //no need ack response
             info->setHttp2ShakeHandStatus(st(HttpPacketParser)::Comunicated);
+            //we should send a http setting frame;
+            Http2SettingFrame ackFrame = createHttp2SettingFrame();
+            info->getSocket()->getOutputStream()->write(ackFrame->toFrameData());
         }
-
         case st(HttpPacketParser)::Comunicated: {
+            printf("i got a communicated message \n");
             auto iterator = packets->getIterator();
             while(iterator->hasValue()) {
                 HttpPacket packet = iterator->getValue();
                 Http2Frame frame = packet->getFrame();
+                printf("frame type is %d \n",frame->getType());
                 switch(frame->getType()) {
                     case st(Http2Frame)::TypeSettings: {
                         Http2SettingFrame ackFrame = createHttp2SettingFrame();
                         ackFrame->setAck(true);
+                        printf("send setting frame ack!!!!!!!!!!!!!!!!!!!!!!!!! \n");
                         info->getSocket()->getOutputStream()->write(ackFrame->toFrameData());
                     }
                     break;

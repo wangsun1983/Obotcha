@@ -157,8 +157,21 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                     * the end of body is specified by the EOF.
                     */
                     auto con = mHttpPacket->getHeader()->getConnection();
+                    if(mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Pri) {
+                        //TODO
+                        printf("it is a http2 pri \n");
+                        if(mPriContentParser == nullptr) {
+                            mPriContentParser = createHttpPriContentParser(mReader);
+                        }
 
-                    if (mHttpPacket->getHeader()->getUpgrade() != nullptr ||
+                        auto content = mPriContentParser->doParse();
+                        printf("content is %s \n",content->toString()->toChars());
+                        if(content != nullptr) {
+                            mHttpPacket->getEntity()->setContent(content);
+                        } else {
+                            continue;
+                        }
+                    } else if (mHttpPacket->getHeader()->getUpgrade() != nullptr ||
                         mHttpPacket->getHeader()->getMethod() ==
                             st(HttpMethod)::Connect) {
                         int restLength = mReader->getReadableLength();

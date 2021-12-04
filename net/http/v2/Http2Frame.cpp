@@ -23,8 +23,12 @@ ByteArray _Http2Frame::toFrameData(int streamid,int flags) {
         length = payload->size();
     }
     ByteArray frame = createByteArray(length + 9);
+    printf("to framedata size is %d \n",frame->size());
     ByteArrayWriter writer = createByteArrayWriter(frame,BigEndian);
     writer->writeUint32(length << 8 | type);
+    if(mAck) {
+        flags |= 1;
+    }
     writer->writeByte(flags);
     writer->writeUint32(streamid & 0x7FFFFFFF);
     if(payload != nullptr) {
@@ -52,6 +56,26 @@ uint32_t _Http2Frame::getFlags() {
 
 void _Http2Frame::setFlags(uint32_t s) {
     flags = s;
+}
+
+uint32_t _Http2Frame::getStreamId() {
+    return streamid;
+}
+
+void _Http2Frame::setStreamId(uint32_t s) {
+    streamid = s;
+}
+
+void _Http2Frame::import(ByteArray) {
+    //do nothing
+}
+
+void _Http2Frame::setAck(bool s) {
+    mAck = s;
+}
+
+bool _Http2Frame::isAck() {
+    return mAck;
 }
 
 }

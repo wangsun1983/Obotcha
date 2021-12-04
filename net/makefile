@@ -46,6 +46,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheadercontentparser.o \
 		$(outtmp)/httppacket.o \
 		$(outtmp)/httptext.o \
+		$(outtmp)/httphpack.o \
 		$(outtmp)/HttpHeaderCacheControl.o \
 		$(outtmp)/httppacketparser.o \
 		$(outtmp)/httppacketparserimpl.o \
@@ -86,6 +87,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httproutermap.o \
 		$(outtmp)/httproutermanager.o \
 		$(outtmp)/httpcookieparser.o \
+		$(outtmp)/httppricontentparser.o \
 		$(outtmp)/httppacketwriterimpl.o \
 		$(outtmp)/httpresponseentity.o \
 		$(outtmp)/httpheaderallowcreditial.o \
@@ -165,7 +167,10 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/http2packetwriterimp.o \
 		$(outtmp)/http2shakehandframe.o \
 		$(outtmp)/http2settingframe.o \
+		$(outtmp)/http2windowupdateframe.o \
 		$(outtmp)/http2frameparser.o \
+		$(outtmp)/hpackhuffmanencoder.o \
+		$(outtmp)/hpackhuffmandecoder.o \
 		
 		
 
@@ -580,6 +585,9 @@ $(outtmp)/httppacketparser.o :$(netDir)/http/HttpPacketParser.cpp
 $(outtmp)/httpcookieparser.o :$(netDir)/http/HttpCookieParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpCookieParser.cpp -o $(outtmp)/httpcookieparser.o 
 
+$(outtmp)/httppricontentparser.o :$(netDir)/http/HttpPriContentParser.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpPriContentParser.cpp -o $(outtmp)/httppricontentparser.o 
+
 $(outtmp)/httplinkermanager.o :$(netDir)/http/HttpLinkerManager.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/HttpLinkerManager.cpp -o $(outtmp)/httplinkermanager.o 
 
@@ -687,3 +695,15 @@ $(outtmp)/http2shakehandframe.o :$(netDir)/http/v2/Http2ShakeHandFrame.cpp
 
 $(outtmp)/http2settingframe.o :$(netDir)/http/v2/Http2SettingFrame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2SettingFrame.cpp -o $(outtmp)/http2settingframe.o 
+
+$(outtmp)/http2windowupdateframe.o :$(netDir)/http/v2/Http2WindowUpdateFrame.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2WindowUpdateFrame.cpp -o $(outtmp)/http2windowupdateframe.o 
+
+$(outtmp)/httphpack.o :$(netDir)/http/v2/HPack.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPack.cpp -o $(outtmp)/httphpack.o 
+
+$(outtmp)/hpackhuffmanencoder.o :$(netDir)/http/v2/HPackHuffmanEncoder.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPackHuffmanEncoder.cpp -o $(outtmp)/hpackhuffmanencoder.o 
+
+$(outtmp)/hpackhuffmandecoder.o :$(netDir)/http/v2/HPackHuffmanDecoder.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPackHuffmanDecoder.cpp -o $(outtmp)/hpackhuffmandecoder.o 

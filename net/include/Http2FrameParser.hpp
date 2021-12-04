@@ -7,6 +7,7 @@
 #include "Http2Frame.hpp"
 #include "ByteRingArrayReader.hpp"
 #include "ArrayList.hpp"
+#include "ByteArray.hpp"
 
 namespace obotcha {
 
@@ -24,9 +25,11 @@ private:
         ParsePayload,
     };
     ByteRingArrayReader mReader;
-    Http2Frame mFrame;
     int status;
     int rest;
+
+    Http2Frame mCurrentFrame;
+    ByteArray mCache;
 
 };
 
