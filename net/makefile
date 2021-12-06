@@ -156,9 +156,8 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheadersecfetchuser.o \
 		$(outtmp)/httpheaderservertiming.o \
 		$(outtmp)/httpheadersourcemap.o \
-		$(outtmp)/http2hpackstatictable.o \
-		$(outtmp)/http2hpackdynamictable.o \
-		$(outtmp)/http2hpacktableitem.o \
+		$(outtmp)/hpackstatictable.o \
+		$(outtmp)/hpackdynamictable.o \
 		$(outtmp)/http2packetparserimpl.o \
 		$(outtmp)/http2streamid.o \
 		$(outtmp)/http2stream.o \
@@ -171,6 +170,9 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/http2frameparser.o \
 		$(outtmp)/hpackhuffmanencoder.o \
 		$(outtmp)/hpackhuffmandecoder.o \
+		$(outtmp)/hpacktableitem.o \
+		$(outtmp)/hpackencoder.o \
+		$(outtmp)/hpacksensitivetable.o \
 		
 		
 
@@ -660,14 +662,11 @@ $(outtmp)/url.o :$(netDir)/URL.cpp
 $(outtmp)/host.o :$(netDir)/Host.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/Host.cpp -o $(outtmp)/host.o 
 
-$(outtmp)/http2hpackstatictable.o :$(netDir)/http/v2/Http2HpackStaticTable.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2HpackStaticTable.cpp -o $(outtmp)/http2hpackstatictable.o 
+$(outtmp)/hpackstatictable.o :$(netDir)/http/v2/HPackStaticTable.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPackStaticTable.cpp -o $(outtmp)/hpackstatictable.o 
 
-$(outtmp)/http2hpacktableitem.o :$(netDir)/http/v2/Http2HpackTableItem.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2HpackTableItem.cpp -o $(outtmp)/http2hpacktableitem.o 
-
-$(outtmp)/http2hpackdynamictable.o :$(netDir)/http/v2/Http2HpackDynamicTable.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2HpackDynamicTable.cpp -o $(outtmp)/http2hpackdynamictable.o 
+$(outtmp)/hpackdynamictable.o :$(netDir)/http/v2/HPackDynamicTable.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPackDynamicTable.cpp -o $(outtmp)/hpackdynamictable.o 
 
 $(outtmp)/http2frame.o :$(netDir)/http/v2/Http2Frame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2Frame.cpp -o $(outtmp)/http2frame.o 
@@ -707,3 +706,12 @@ $(outtmp)/hpackhuffmanencoder.o :$(netDir)/http/v2/HPackHuffmanEncoder.cpp
 
 $(outtmp)/hpackhuffmandecoder.o :$(netDir)/http/v2/HPackHuffmanDecoder.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPackHuffmanDecoder.cpp -o $(outtmp)/hpackhuffmandecoder.o 
+
+$(outtmp)/hpacktableitem.o :$(netDir)/http/v2/HPackTableItem.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPackTableItem.cpp -o $(outtmp)/hpacktableitem.o 
+
+$(outtmp)/hpackencoder.o :$(netDir)/http/v2/HPackEncoder.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPackEncoder.cpp -o $(outtmp)/hpackencoder.o 
+
+$(outtmp)/hpacksensitivetable.o :$(netDir)/http/v2/HPackSensitiveTable.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPackSensitiveTable.cpp -o $(outtmp)/hpacksensitivetable.o 

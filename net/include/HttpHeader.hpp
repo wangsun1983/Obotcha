@@ -221,6 +221,9 @@ public:
     //http connection
     const static String ConnectionClose;
 
+    //http2 authority
+    const static String Authority;
+
     enum type{
         TypeMethod = 0,
         TypePath,
@@ -339,6 +342,7 @@ public:
         TypeServerTiming,
         TypeSourceMap,
         TypeDigest,
+        TypeAuthority,
     };
 
     ////-------- function -------////
@@ -683,6 +687,9 @@ public:
     String getResponseReason();
     void setResponseReason(String);
 
+    String getAuthority();
+    void setAuthority(String);
+
     int getType();
     void setType(int);
 
@@ -849,6 +856,7 @@ private:
     HttpHeaderServerTiming mServerTiming;
     HttpHeaderSourceMap mSourceMap;
     
+    String mAuthority;
     /////
 
     ArrayList<HttpCookie> mCookies;

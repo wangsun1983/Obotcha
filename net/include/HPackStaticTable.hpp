@@ -1,17 +1,18 @@
-#ifndef __OBOTCHA_HTTP2_HPACK_STATIC_TABLE_HPP__
-#define __OBOTCHA_HTTP2_HPACK_STATIC_TABLE_HPP__
+#ifndef __OBOTCHA_HPACK_STATIC_TABLE_HPP__
+#define __OBOTCHA_HPACK_STATIC_TABLE_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
 #include "List.hpp"
-#include "Http2HpackTableItem.hpp"
+#include "HPackTableItem.hpp"
+#include "HashMap.hpp"
 
 namespace obotcha {
 
 //https://datatracker.ietf.org/doc/html/rfc7541#appendix-A
-DECLARE_CLASS(Http2HpackStaticTable) {
+DECLARE_CLASS(HPackStaticTable) {
 public:
     enum Id {
     /*  0 */ IdIdle = 0,
@@ -79,12 +80,15 @@ public:
     /* 62 */ IdMax
     };
 
-    _Http2HpackStaticTable();
+    _HPackStaticTable();
 
-    Http2HpackTableItem get(int);
+    HPackTableItem get(int);
+    HPackTableItem get(String);
+    HPackTableItem get(String,String);
 
 private:
-    static List<Http2HpackTableItem> STATIC_TABLE;
+    static List<HPackTableItem> STATIC_TABLE;
+    static HashMap<String,HPackTableItem> INDEX_TABLE;
 };
 
 }

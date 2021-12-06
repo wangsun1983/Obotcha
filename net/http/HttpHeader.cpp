@@ -149,10 +149,19 @@ const String _HttpHeader::TransferChunked = createString("chunked");
 // Http connection
 const String _HttpHeader::ConnectionClose = createString("close");
 
+// Http2 authority
+const String _HttpHeader::Authority = createString(":authority");
+
 _HttpHeader::_HttpHeader() {
     {
         static std::once_flag flag;
         std::call_once(flag, [&]() {
+            idMaps->put(Method,createInteger(TypeMethod));
+            idMaps->put(Path,createInteger(TypePath));
+            idMaps->put(Scheme,createInteger(TypeScheme));
+            idMaps->put(Status,createInteger(TypeStatus));
+            idMaps->put(Protocol,createInteger(TypeProtocol));
+
             idMaps->put(Accept,createInteger(TypeAccept));
             idMaps->put(AcceptCharset,createInteger(TypeAcceptCharset));
             idMaps->put(AcceptCh,createInteger(TypeAcceptCh));
@@ -270,6 +279,7 @@ _HttpHeader::_HttpHeader() {
             idMaps->put(ServerTiming,createInteger(TypeServerTiming));
             idMaps->put(SourceMap,createInteger(TypeSourceMap));
             idMaps->put(Digest,createInteger(TypeDigest));
+            idMaps->put(Authority,createInteger(TypeAuthority));
 
             //add names
             names->add(Method);
@@ -389,6 +399,7 @@ _HttpHeader::_HttpHeader() {
             names->add(ServerTiming);
             names->add(SourceMap);
             names->add(Digest);
+            names->add(Authority);
         });
     }
     
@@ -499,7 +510,7 @@ void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
     SET_VALUE(mFetchUser);
     SET_VALUE(mServerTiming);
     SET_VALUE(mSourceMap);
-
+    SET_VALUE(mAuthority);
 #undef SET_VALUE
 }
 
@@ -596,6 +607,8 @@ void _HttpHeader::reset() {
     mServerTiming = nullptr;
     mSourceMap = nullptr;
 
+    mAuthority = nullptr;
+
     mMethod = -1;
     mResponseReason = nullptr;
     mResponseStatus = st(HttpStatus)::Ok;
@@ -608,6 +621,37 @@ void _HttpHeader::set(String key, String value) {
     Integer id = idMaps->get(key->toLowerCase());
     if(id != nullptr) {
         switch(id->toValue()) {
+            case TypeAuthority: {
+                mAuthority = value;
+                return;
+            }
+
+            case TypePath: {
+                mUrl = createHttpUrl();
+                mUrl->import(value);
+                return;
+            }
+
+            case TypeMethod: {
+                mMethod = st(HttpMethod)::findId(value);
+                return;
+            }
+
+            case TypeScheme: {
+                //TODO
+                return;
+            }
+
+            case TypeStatus: {
+                mResponseStatus = value->toBasicInt();
+                return;
+            }
+
+            case TypeProtocol: {
+                //TODO
+                return;
+            }
+            
             case TypeAcceptCharset:{
                 if(mAcceptCharSet == nullptr) {
                     mAcceptCharSet = createHttpHeaderAcceptCharSet();
@@ -1911,6 +1955,14 @@ String _HttpHeader::getResponseReason() {
 
 void _HttpHeader::setResponseReason(String s) { 
     mResponseReason = s; 
+}
+
+String _HttpHeader::getAuthority() {
+    return mAuthority;
+}
+
+void _HttpHeader::setAuthority(String s) {
+    mAuthority = s;
 }
 
 int _HttpHeader::getType() { 

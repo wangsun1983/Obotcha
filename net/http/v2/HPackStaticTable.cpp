@@ -1,0 +1,186 @@
+#include <thread>
+#include <mutex>
+
+#include "HPackStaticTable.hpp"
+#include "HPackTableItem.hpp"
+
+namespace obotcha {
+
+List<HPackTableItem> _HPackStaticTable::STATIC_TABLE = nullptr;
+
+_HPackStaticTable::_HPackStaticTable() {
+    static std::once_flag s_flag;
+
+    std::call_once(s_flag, [&]() {
+
+#define INIT_STATIC_TABLE_ITEM_WITH_VALUE(index,vname,val) \
+    STATIC_TABLE[index]->name = vname;\
+    STATIC_TABLE[index]->value = val;\
+    STATIC_TABLE[index]->id = index;
+    
+        STATIC_TABLE = createList<HPackTableItem>(IdMax);
+        /*  1 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(1,":authority",nullptr);
+
+        /*  2 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(2,":method","GET");
+
+        /*  3 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(3,":method","POST");
+
+        /*  4 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(4,":path","/");
+
+        /*  5 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(5,":path","/index.html");
+
+        /*  6 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(6,":scheme","http");
+
+        /*  7 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(7,":scheme","https");
+
+        /*  8 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(8,":status","200");
+
+        /*  9 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(9,":status","204");
+                 
+        /* 10 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(10,":status","206");
+
+        /* 11 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(11,":status","304");
+        
+        /* 12 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(12,":status","400");
+
+        /* 13 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(13,":status","404");
+
+        /* 14 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(14,":status","500");
+
+        /* 15 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(15,"accept-charset",nullptr);
+
+        /* 16 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(16,"accept-encoding","gzip, deflate");
+
+        /* 17 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(17,"accept-language",nullptr);
+
+        /* 18 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(18,"accept-ranges",nullptr);
+
+        /* 19 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(19,"accept",nullptr);
+
+        /* 20 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(20,"access-control-allow-origin",nullptr);
+
+        /* 21 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(21,"age",nullptr);
+
+        /* 22 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(22,"allow",nullptr);
+
+        /* 23 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(23,"authorization",nullptr);
+
+        /* 24 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(24,"cache-control",nullptr);
+
+        /* 25 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(25,"content-disposition",nullptr);
+
+        /* 26 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(26,"content-encoding",nullptr);
+
+        /* 27 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(27,"content-language",nullptr);
+
+        /* 28 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(28,"content-length",nullptr);
+
+        /* 29 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(29,"content-location",nullptr);
+
+        /* 30 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(30,"content-range",nullptr);
+
+        /* 31 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(31,"content-type",nullptr);
+       
+        /* 32 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(32,"cookie",nullptr);
+        
+        /* 33 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(33,"data",nullptr);
+        
+        /* 34 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(34,"etag",nullptr);
+        
+        /* 35 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(35,"expect",nullptr);
+        
+        /* 36 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(36,"expires",nullptr);
+        
+        /* 37 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(37,"from",nullptr);
+        
+        /* 38 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(38,"host",nullptr);
+        
+        /* 39 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(39,"if-match",nullptr);
+        
+        /* 40 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(40,"if-modified-since",nullptr);
+        
+        /* 41 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(41,"if-none-match",nullptr);
+        
+        /* 42 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(42,"if-range",nullptr);
+        
+        /* 43 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(43,"if-unmodified-since",nullptr);
+        
+        /* 44 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(44,"last-modified",nullptr);
+        
+        /* 45 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(45,"link",nullptr);
+        
+        /* 46 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(46,"location",nullptr);
+        
+        /* 47 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(47,"max-forwards",nullptr);
+        
+        /* 48 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(48,"proxy-authenticate",nullptr);
+        
+        /* 49 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(49,"proxy-authorization",nullptr);
+        
+        /* 50 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(50,"range",nullptr);
+        
+        /* 51 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(51,"referer",nullptr);
+        
+        /* 52 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(52,"refresh",nullptr);
+        
+        /* 53 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(53,"retry-after",nullptr);
+        
+        /* 54 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(54,"server",nullptr);
+        
+        /* 55 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(55,"set-cookie",nullptr);
+        
+        /* 56 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(56,"strict-transport-security",nullptr);
+        
+        /* 57 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(57,"transfer-encoding",nullptr);
+        
+        /* 58 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(58,"user-agent",nullptr);
+        
+        /* 59 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(59,"vary",nullptr);
+        
+        /* 60 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(60,"via",nullptr);
+        
+        /* 61 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(61,"www-authenticate",nullptr);
+
+#undef INIT_STATIC_TABLE_ITEM_WITH_VALUE
+
+        //init index map
+        INDEX_TABLE = createHashMap<String,HPackTableItem>();
+        int size = STATIC_TABLE->size();
+        for(int i = 1;i<IdMax;i++) {
+            String tag = STATIC_TABLE[i]->name;
+            INDEX_TABLE->put(tag,STATIC_TABLE[i]);
+        }
+
+    });
+}
+
+HPackTableItem _HPackStaticTable::get(int id) {
+    if(id > IdMax || id < 1) {
+        return nullptr;
+    }
+
+    return STATIC_TABLE[id];
+}
+
+HPackTableItem _HPackStaticTable::get(String tag) {
+    return INDEX_TABLE->get(tag);
+}
+
+HPackTableItem _HPackStaticTable::get(String name,String val) {
+    HPackTableItem item = INDEX_TABLE->get(name);
+    if(item != nullptr) {
+        if(item->value == val) {
+            return item;
+        }
+
+        if(item->value != nullptr 
+            && val != nullptr 
+            && item->value->equalsIgnoreCase(val)) {
+            return item;
+        }
+    }
+
+    return nullptr;
+}
+
+}
