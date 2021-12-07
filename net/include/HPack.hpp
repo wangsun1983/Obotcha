@@ -180,11 +180,23 @@ public:
        (157)  |11111111|11111111|1100110                7fffe6  [23]
     */
 
+    // Section 6.2. Literal Header Field Representation
+    enum LiteralHeaderIndexType {
+        Incremental = 0, // Section 6.2.1. Literal Header Field with Incremental Indexing
+        None,            // Section 6.2.2. Literal Header Field without Indexing
+        Never            // Section 6.2.3. Literal Header Field never Indexed
+    };
+
     static const int HuffmanCodes[];
 
     static const byte HuffmanCodesLength[];
 
     static const int HUFFMAN_EOS;
+
+    static const int MinHeaderTableSize;
+    static const int MaxHeaderTableSize;
+    
+
 };
 
 }

@@ -8,6 +8,7 @@
 
 #include "String.hpp"
 #include "Byte.hpp"
+#include "ByteArrayWriter.hpp"
 
 namespace obotcha {
 
@@ -15,7 +16,9 @@ DECLARE_CLASS(HPackHuffmanEncoder) {
 
 public:
     uint32_t getEncodedLength(String);
+
     ByteArray encode(String);
+    void encode(ByteArrayWriter,String);
 };
 
 }

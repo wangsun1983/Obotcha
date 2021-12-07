@@ -284,4 +284,6 @@ const byte _HPack::HuffmanCodesLength[] = {
 
 const int _HPack::HUFFMAN_EOS = 256;
 
+const int _HPack::MinHeaderTableSize = 0;
+const int _HPack::MaxHeaderTableSize = 0xffffffffL;
 }
