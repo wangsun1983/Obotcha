@@ -85,10 +85,19 @@ public:
     HPackTableItem get(int);
     HPackTableItem get(String);
     HPackTableItem get(String,String);
+    
+    int getIndexInsensitive(String name, String value);
+    int size();
+    int getIndex(String name);
 
 private:
     static List<HPackTableItem> STATIC_TABLE;
     static HashMap<String,HPackTableItem> INDEX_TABLE;
+
+    HPackTableItem getEntry(int index);
+
+    static int MaxSameNameFieldIndex;
+    
 };
 
 }

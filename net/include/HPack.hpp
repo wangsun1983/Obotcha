@@ -1,8 +1,6 @@
 #ifndef __OBOTCHA_HTTP_HPACK_HPP__
 #define __OBOTCHA_HTTP_HPACK_HPP__
 
-#include <map>
-
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
@@ -195,6 +193,8 @@ public:
 
     static const int MinHeaderTableSize;
     static const int MaxHeaderTableSize;
+    static const int DefaultHeaderTableSize;
+    static const int MaxHeaderListSize;
     
 
 };

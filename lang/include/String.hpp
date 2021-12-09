@@ -316,6 +316,9 @@ public:
 
     bool matches(const String &regex); // Not Test
 
+    static bool contentEquals(sp<_String>,sp<_String>);
+    static bool contentEqualsIgnoreCase(sp<_String>,sp<_String>);
+
     ~_String();
 
 private:

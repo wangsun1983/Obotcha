@@ -44,11 +44,19 @@ public:
 DECLARE_CLASS(HPackEncoder) {
 
 public:
-    _HPackEncoder();
+    _HPackEncoder(bool ignoreMaxSizeList = false,int tableSize = 16);
 
 private:
     static const int HuffCodeThreshold;
 
+    bool ignoreMaxSizeList;
+    int dynamicHeaderSize;
+
+    int maxDynamicTableSize;
+    int maxHeaderListSize;
+    int maxHeaderTableSize;
+    byte mask;
+    
     void encodeHeader(String name,String value,bool isSensitive,long headerSize);
 
     void encodeInteger(int mask,int n,long i);
@@ -71,7 +79,15 @@ private:
     completely independent, i.e., the request and response dynamic tables
     are separate.
      */
-    HPackEncoderEntry mEncoderTableHeader;
+    //HPackEncoderEntry mEncoderTableHeader;
+    List<HPackEncoderEntry> mEncoderEntries;
+    HPackEncoderEntry header;
+
+    //convert hash code to index;
+    int index(int h);
+
+    int getIndex(String name);
+    int getIndex(int);
 };
 
 }

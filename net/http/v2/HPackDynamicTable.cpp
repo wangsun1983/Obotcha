@@ -39,10 +39,6 @@ HPackTableItem _HPackDynamicTable::getEntry(int index) {
     }
 }
 
-int _HPackDynamicTable::getEntryIndex(String name) {
-    
-}
-
 void _HPackDynamicTable::add(HPackTableItem header) {
     int headerSize = header->size();
     if (headerSize > mCapacity) {

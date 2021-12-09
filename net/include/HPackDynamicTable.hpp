@@ -26,8 +26,6 @@ public:
     
     HPackTableItem getEntry(int index);
 
-    int getEntryIndex(String);
-
     void add(HPackTableItem header);
     
     /**

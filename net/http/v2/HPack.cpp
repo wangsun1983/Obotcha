@@ -286,4 +286,7 @@ const int _HPack::HUFFMAN_EOS = 256;
 
 const int _HPack::MinHeaderTableSize = 0;
 const int _HPack::MaxHeaderTableSize = 0xffffffffL;
+const int _HPack::DefaultHeaderTableSize = 4096;
+const int _HPack::MaxHeaderListSize = 0xffffffffL;
+
 }

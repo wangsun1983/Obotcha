@@ -908,6 +908,22 @@ bool _String::matches(const String &regex) {
     return std::regex_match(m_str, std::regex(regex->m_str));
 }
 
+bool _String::contentEquals(sp<_String> a,sp<_String> b) {
+    if(a != nullptr && b != nullptr) {
+        return a->equals(b);
+    }
+
+    return a == b;
+}
+
+bool _String::contentEqualsIgnoreCase(sp<_String>a,sp<_String>b) {
+     if(a != nullptr && b != nullptr) {
+        return a->equalsIgnoreCase(b);
+    }
+
+    return a == b;
+}
+
 sp<_String> _String::replaceFirst(const String &regex, String value) {
     std::string result =
         std::regex_replace(m_str, std::regex(regex->m_str), value->m_str,

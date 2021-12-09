@@ -7,6 +7,9 @@
 namespace obotcha {
 
 List<HPackTableItem> _HPackStaticTable::STATIC_TABLE = nullptr;
+HashMap<String,HPackTableItem> _HPackStaticTable::INDEX_TABLE = nullptr;
+
+int _HPackStaticTable::MaxSameNameFieldIndex = 0;
 
 _HPackStaticTable::_HPackStaticTable() {
     static std::once_flag s_flag;
@@ -151,6 +154,23 @@ _HPackStaticTable::_HPackStaticTable() {
             INDEX_TABLE->put(tag,STATIC_TABLE[i]);
         }
 
+        /**
+        * Returns the last position in the array that contains multiple
+        * fields with the same name. Starting from this position, all
+        * names are unique. 
+        */
+        int length = STATIC_TABLE->size();
+        HPackTableItem cursor = getEntry(length);
+        for (int index = length - 1; index > 0; index--) {
+            HPackTableItem entry = getEntry(index);
+            if (st(String)::contentEquals(entry->name,cursor->name)) {
+                MaxSameNameFieldIndex = index + 1;
+            } else {
+                cursor = entry;
+            }
+        }
+        
+        MaxSameNameFieldIndex = length;
     });
 }
 
@@ -173,14 +193,64 @@ HPackTableItem _HPackStaticTable::get(String name,String val) {
             return item;
         }
 
-        if(item->value != nullptr 
-            && val != nullptr 
-            && item->value->equalsIgnoreCase(val)) {
+        if(st(String)::contentEquals(item->value,val)) {
             return item;
         }
     }
 
     return nullptr;
+}
+
+int _HPackStaticTable::getIndexInsensitive(String name, String value) {
+    auto id = getIndex(name);
+    if(id == -1) {
+        return -1;
+    }
+
+    // Compare values for the first name match
+    HPackTableItem entry = getEntry(id);
+    if (entry->value == value || entry->value->equals(value)) {
+        return id;
+    }
+
+    // Note this assumes all entries for a given header field are sequential.
+    id++;
+    
+    // Note this assumes all entries for a given header field are sequential.
+    while (id <= MaxSameNameFieldIndex) {
+        entry = getEntry(id);
+        if (!st(String)::contentEquals(name, entry->name)) {
+            // As far as fields with the same name are placed in the table sequentially
+            // and INDEX_BY_NAME returns index of the fist position, - it's safe to
+            // exit immediately.
+            return -1;
+        }
+        if (st(String)::contentEquals(value, entry->value)) {
+            return id;
+        }
+        id++;
+    }
+    return -1;    
+}
+
+int _HPackStaticTable::size() {
+    return STATIC_TABLE->size();
+}
+
+HPackTableItem _HPackStaticTable::getEntry(int index) {
+    return STATIC_TABLE[index - 1];
+}
+
+/**
+ * Returns the lowest index value for the given header field name in the static table. Returns
+ * -1 if the header field name is not in the static table.
+ */
+int _HPackStaticTable::getIndex(String name) {
+    HPackTableItem item = INDEX_TABLE->get(name);
+    if (item == nullptr) {
+        return -1;
+    }
+    return item->id;
 }
 
 }
