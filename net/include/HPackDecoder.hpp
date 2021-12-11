@@ -5,6 +5,7 @@
 #include "StrongPointer.hpp"
 #include "ByteArrayWriter.hpp"
 #include "HPackHuffmanEncoder.hpp"
+#include "HPackHuffmanDecoder.hpp"
 #include "HPackDynamicTable.hpp"
 #include "HPackStaticTable.hpp"
 #include "String.hpp"
@@ -70,7 +71,7 @@ private:
         ReadLiteralHeaderName,
         ReadLiteralHeaderValueLengthPrefix,
         ReadLiteralHeaderValueLength,
-        ReadLiteraHeaderValue,
+        ReadLiteralHeaderValue,
     };
 
     int decode(int streamId, ByteArray in, HttpHeader headers, bool validateHeaders);
@@ -81,6 +82,8 @@ private:
     long decodeULE128(ByteArrayReader in, long result);
     void setDynamicTableSize(long dynamicTableSize);
 
+    void insertHeader(HPackDecoderSink sink, String name, String value, int type);
+
     HPackDynamicTable mDynamicTable;
     long maxHeaderListSize;
     long maxDynamicTableSize;
@@ -89,6 +92,8 @@ private:
     HPackStaticTable mStaticTable;
 
     bool maxDynamicTableSizeChangeRequired;
+
+    HPackHuffmanDecoder mHuffmanDecoder;
 };
 
 }
