@@ -72,7 +72,7 @@ _HttpRouterMap::_findRouter(ArrayList<String> &segments, int segmentStartIndex,
                 }
 
                 HashMap<String, String> queryResult = _parseQuery(queryContent);
-                result->merge(queryResult);
+                result->append(queryResult);
                 return node->mRouter;
             }
         }
@@ -90,14 +90,14 @@ _HttpRouterMap::_findRouter(ArrayList<String> &segments, int segmentStartIndex,
                     createHashMap<String, String>();
                 tempResult->put(paramTag, paramValue);
                 if (segmentStartIndex == segments->size() - 1) {
-                    result->merge(tempResult);
+                    result->append(tempResult);
                     return node->mRouter;
                 }
 
                 router = _findRouter(segments, segmentStartIndex + 1,
                                      node->mNextNodes, tempResult);
                 if (router != nullptr) {
-                    result->merge(tempResult);
+                    result->append(tempResult);
                     return router;
                 }
             }

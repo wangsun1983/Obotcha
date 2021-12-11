@@ -78,7 +78,6 @@ void _EPollFileObserver::addEpollFd(int fd, uint32_t events) {
 
     struct epoll_event ev;
     memset(&ev, 0, sizeof(struct epoll_event));
-
     ev.data.fd = fd;
     ev.events = events;
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);

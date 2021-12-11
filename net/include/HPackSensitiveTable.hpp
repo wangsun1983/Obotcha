@@ -14,9 +14,9 @@ namespace obotcha {
 DECLARE_CLASS(HPackSensitiveTable) {
 
 public:
-    bool isSensitive(String);
-    void add(String);
-    void remove(String);
+    static bool isSensitive(String);
+    static void add(String);
+    static void remove(String);
 
 private:
     static HashMap<String,Integer> maps;

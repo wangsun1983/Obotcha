@@ -172,6 +172,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/hpackhuffmandecoder.o \
 		$(outtmp)/hpacktableitem.o \
 		$(outtmp)/hpackencoder.o \
+		$(outtmp)/hpackdecoder.o \
 		$(outtmp)/hpacksensitivetable.o \
 		
 		
@@ -712,6 +713,9 @@ $(outtmp)/hpacktableitem.o :$(netDir)/http/v2/HPackTableItem.cpp
 
 $(outtmp)/hpackencoder.o :$(netDir)/http/v2/HPackEncoder.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPackEncoder.cpp -o $(outtmp)/hpackencoder.o 
+
+$(outtmp)/hpackdecoder.o :$(netDir)/http/v2/HPackDecoder.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPackDecoder.cpp -o $(outtmp)/hpackdecoder.o 
 
 $(outtmp)/hpacksensitivetable.o :$(netDir)/http/v2/HPackSensitiveTable.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPackSensitiveTable.cpp -o $(outtmp)/hpacksensitivetable.o 

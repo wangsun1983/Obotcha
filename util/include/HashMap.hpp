@@ -100,7 +100,7 @@ DECLARE_TEMPLATE_CLASS(HashMap, 2) {
         return AutoClone(new _MapIterator<T, U>(this));
     }
 
-    void merge(sp<_HashMap<T, U>> m) {
+    void append(sp<_HashMap<T, U>> m) {
         auto iterator = m->getIterator();
         while (iterator->hasValue()) {
             T key = iterator->getKey();

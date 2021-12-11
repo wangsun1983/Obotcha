@@ -2,6 +2,8 @@
 #include "IllegalArgumentException.hpp"
 #include "HPack.hpp"
 #include "HPackStaticTable.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
+#include "HPackSensitiveTable.hpp"
 
 namespace obotcha {
 
@@ -38,10 +40,10 @@ void _HPackEncoderEntry::addBefore(HPackEncoderEntry existingEntry) {
 //------HPackEncoder-----
 const int _HPackEncoder::HuffCodeThreshold = 512;
 
-_HPackEncoder::_HPackEncoder(bool ignoreMaxSizeList,int tableSize) {
+_HPackEncoder::_HPackEncoder(bool ignoreMaxHeaderListSize,int tableSize) {
     mHuffEncoder = createHPackHuffmanEncoder();
     mStaticTable = createHPackStaticTable();
-    this->ignoreMaxSizeList = ignoreMaxSizeList;
+    this->ignoreMaxHeaderListSize = ignoreMaxHeaderListSize;
     dynamicHeaderSize = tableSize;
     maxDynamicTableSize = st(HPack)::DefaultHeaderTableSize;
     maxHeaderListSize = st(HPack)::MaxHeaderListSize;
@@ -52,8 +54,43 @@ _HPackEncoder::_HPackEncoder(bool ignoreMaxSizeList,int tableSize) {
 
     header = createHPackEncoderEntry(-1, "","",st(Integer)::MAX_VALUE, nullptr);
     header->before = header->after = header;
+}
 
-    
+
+void _HPackEncoder::encodeHeaders(int streamId, ByteArrayWriter writer, HttpHeader headers) {
+    this->writer = writer;
+    if (ignoreMaxHeaderListSize) {
+        encodeHeadersIgnoreMaxHeaderListSize(headers);
+    } else {
+        encodeHeadersEnforceMaxHeaderListSize(streamId,headers);
+    }
+}
+
+void _HPackEncoder::encodeHeadersEnforceMaxHeaderListSize(int streamId, HttpHeader headers) {
+    long headerSize = 0;
+    // To ensure we stay consistent with our peer check the size is valid before we potentially modify HPACK state.
+    auto iterator = headers->getIterator();
+    while(iterator->hasValue()) {
+        String name = iterator->getKey();
+        String value = iterator->getValue();
+        // OK to increment now and check for bounds after because this value is limited to unsigned int and will not
+        // overflow.
+        headerSize += st(HPackTableItem)::sizeOf(name, value);
+        if (headerSize > maxHeaderListSize) {
+            Trigger(ArrayIndexOutOfBoundsException,"over size");
+        }
+    }
+    encodeHeadersIgnoreMaxHeaderListSize(headers);
+}
+
+void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
+    auto iterator = headers->getIterator();
+    while (iterator->hasValue()) {
+        String name = iterator->getKey();
+        String value = iterator->getValue();
+        encodeHeader(name, value, st(HPackSensitiveTable)::isSensitive(name),
+                        st(HPackTableItem)::sizeOf(name, value));
+    }
 }
 
 void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long headerSize) {
@@ -74,6 +111,30 @@ void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long 
             encodeInteger(0x80, 7, staticTableIndex);
         }
         return;
+    }
+
+    // If the headerSize is greater than the max table size then it must be encoded literally
+    if (headerSize > maxHeaderTableSize) {
+        int nameIndex = getNameIndex(name);
+        encodeLiteral(name, value, st(HPack)::None, nameIndex);
+        return;
+    }
+
+    HPackTableItem headerField = getEntry(name, value);
+    if (headerField != nullptr) {
+        int index = getIndex(headerField->id) + mStaticTable->size();
+        // Section 6.1. Indexed Header Field Representation
+        encodeInteger(0x80, 7, index);
+    } else {
+        int staticTableIndex = mStaticTable->getIndexInsensitive(name, value);//HpackStaticTable.getIndexInsensitive(name, value);
+        if (staticTableIndex != -1) {
+            // Section 6.1. Indexed Header Field Representation
+            encodeInteger(0x80, 7, staticTableIndex);
+        } else {
+            ensureCapacity(headerSize);
+            encodeLiteral(name, value, st(HPack)::Incremental, getNameIndex(name));
+            add(name, value, headerSize);
+        }
     }
 }
 
@@ -217,7 +278,7 @@ int _HPackEncoder::getNameIndex(String name) {
     //find in dynamic table
     int index = getIndex(name);
     if (index >= 0) {
-        //TODO
+        index += mStaticTable->size();
     }
     return -1;
 }
@@ -243,6 +304,92 @@ int _HPackEncoder::getIndex(int index) {
 
 int _HPackEncoder::index(int h) {
     return h & mask;
+}
+
+HPackTableItem _HPackEncoder::getEntry(String name,String value) {
+    int h = name->hashcode();
+    int i = index(h);
+    for (HPackEncoderEntry e = mEncoderEntries[i]; e != nullptr; e = e->next) {
+        // Check the value before then name, as it is more likely the value will be different incase there is no
+        // match.
+        if (e->hash == h 
+            && st(String)::contentEquals(value, e->value) 
+            && st(String)::contentEquals(name, e->name)) {
+            return e;
+        }
+    }
+    return nullptr;
+}
+
+void _HPackEncoder::ensureCapacity(long headerSize) {
+    while (maxHeaderTableSize - mSize < headerSize) {
+        int index = size();
+        if (index == 0) {
+            break;
+        }
+        remove();
+    }
+}
+
+void _HPackEncoder::add(String name, String value, long headerSize) {
+    // Clear the table if the header field size is larger than the maxHeaderTableSize.
+    if (headerSize > maxHeaderTableSize) {
+        clear();
+        return;
+    }
+
+    // Evict oldest entries until we have enough maxHeaderTableSize.
+    while (maxHeaderTableSize - mSize < headerSize) {
+        remove();
+    }
+
+    int h = name->hashcode();
+    int i = index(h);
+    HPackEncoderEntry old = mEncoderEntries[i];
+    HPackEncoderEntry e = createHPackEncoderEntry(h, name, value, header->before->id - 1, old);
+    mEncoderEntries[i] = e;
+    e->addBefore(header);
+    mSize += headerSize;
+}
+
+HPackEncoderEntry _HPackEncoder::remove() {
+    if (mSize == 0) {
+        return nullptr;
+    }
+
+    HPackEncoderEntry eldest = header->after;
+    int h = eldest->hash;
+    int i = index(h);
+    HPackEncoderEntry prev = mEncoderEntries[i];
+    HPackEncoderEntry e = prev;
+    while (e != nullptr) {
+        HPackEncoderEntry next = e->next;
+        if (e == eldest) {
+            if (prev == eldest) {
+                mEncoderEntries[i] = next;
+            } else {
+                prev->next = next;
+            }
+            eldest->remove();
+            mSize -= eldest->size();
+            return eldest;
+        }
+        prev = e;
+        e = next;
+    }
+
+    return nullptr;
+}
+
+void _HPackEncoder::clear() {
+    mEncoderEntries = createList<HPackEncoderEntry>(maxDynamicTableSize);
+    header = createHPackEncoderEntry(-1, "","",st(Integer)::MAX_VALUE, nullptr);
+    header->before = header->after = header;
+    mSize = 0;
+}
+
+int _HPackEncoder::size() {
+    return mSize == 0 ? 0 : header->after->id - header->before->id + 1;
 }
 
 }

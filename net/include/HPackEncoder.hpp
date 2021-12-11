@@ -8,6 +8,7 @@
 #include "HPackDynamicTable.hpp"
 #include "HPackStaticTable.hpp"
 #include "String.hpp"
+#include "HttpHeader.hpp"
 
 namespace obotcha {
 
@@ -44,12 +45,13 @@ public:
 DECLARE_CLASS(HPackEncoder) {
 
 public:
-    _HPackEncoder(bool ignoreMaxSizeList = false,int tableSize = 16);
+    _HPackEncoder(bool ignoreMaxHeaderListSize = false,int tableSize = 16);
+    void encodeHeaders(int streamId, ByteArrayWriter writer, HttpHeader headers);
 
 private:
     static const int HuffCodeThreshold;
 
-    bool ignoreMaxSizeList;
+    bool ignoreMaxHeaderListSize;
     int dynamicHeaderSize;
 
     int maxDynamicTableSize;
@@ -88,6 +90,19 @@ private:
 
     int getIndex(String name);
     int getIndex(int);
+    HPackTableItem getEntry(String,String);
+
+    void ensureCapacity(long headerSize);
+
+    void add(String name, String value, long headerSize);
+    HPackEncoderEntry remove();
+    void clear();
+
+    int size();
+    int mSize;
+
+    void encodeHeadersEnforceMaxHeaderListSize(int streamId, HttpHeader headers);
+    void encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers);
 };
 
 }

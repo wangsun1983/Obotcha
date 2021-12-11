@@ -25,6 +25,8 @@ public:
     int getIndex();
     int getRemainSize();
     void setIndex(int);
+
+    bool isReadable();
 #if 0    
     int appendWithAdjustment(ByteArray);
 #endif

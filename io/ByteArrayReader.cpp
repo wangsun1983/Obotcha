@@ -70,30 +70,22 @@ int _ByteArrayReader::readByteArray(ByteArray d) {
     return copySize;
 }
 
-int _ByteArrayReader::getIndex() { return mIndex; }
-
-int _ByteArrayReader::getRemainSize() { return mSize - mIndex; }
-
-void _ByteArrayReader::setIndex(int index) { mIndex = index; }
-
-#if 0
-int _ByteArrayReader::appendWithAdjustment(ByteArray d) {
-    int size = mData->size() - mIndex + d->size();
-    ByteArray data = createByteArray(size);
-    if (mIndex < mData->size()) {
-        memcpy(data->toValue(), mData->toValue() + mIndex,
-               mData->size() - mIndex);
-    }
-
-    memcpy((data->toValue() + (mData->size() - mIndex)), d->toValue(),
-           d->size());
-    mData = data;
-    mDataP = mData->toValue();
-    mSize = data->size();
-    mIndex = 0;
-    return 0;
+int _ByteArrayReader::getIndex() { 
+    return mIndex; 
 }
-#endif
+
+int _ByteArrayReader::getRemainSize() { 
+    return mSize - mIndex; 
+}
+
+void _ByteArrayReader::setIndex(int index) { 
+    mIndex = index; 
+}
+
+bool _ByteArrayReader::isReadable() {
+    return mSize > mIndex;    
+}
+
 
 String _ByteArrayReader::readLine() {
     int start = mIndex;
