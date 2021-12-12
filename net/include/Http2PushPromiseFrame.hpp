@@ -5,6 +5,8 @@
 #include "StrongPointer.hpp"
 
 #include "Byte.hpp"
+#include "Http2Frame.hpp"
+#include "HttpHeader.hpp"
 
 namespace obotcha {
 
@@ -26,8 +28,17 @@ namespace obotcha {
 +---------------------------------------------------------------+
  */
 
-DECLARE_CLASS(Http2PushPromiseFrame) {
+DECLARE_CLASS(Http2PushPromiseFrame) IMPLEMENTS(Http2Frame) {
 
+public:
+    ByteArray toByteArray();
+    void import(ByteArray);
+
+    void setHttpHeaders(HttpHeader h);
+    HttpHeader getHttpHeaders();
+
+public:
+    HttpHeader headers;
 };
 
 }

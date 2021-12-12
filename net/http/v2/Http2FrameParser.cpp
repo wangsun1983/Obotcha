@@ -12,6 +12,8 @@ _Http2FrameParser::_Http2FrameParser(ByteRingArrayReader r) {
     mCurrentFrame = nullptr;
     mCache = nullptr;
     status = ParseHeadPart;
+
+    mDecoders = createHashMap<Integer,HPackDecoder>();
 }
 
 ArrayList<Http2Frame> _Http2FrameParser::doParse() {

@@ -5,6 +5,7 @@
 #include "StrongPointer.hpp"
 
 #include "Byte.hpp"
+#include "Http2Frame.hpp"
 
 namespace obotcha {
 
@@ -24,8 +25,14 @@ namespace obotcha {
 +---------------------------------------------------------------+
  */
 
-DECLARE_CLASS(Http2GoAwayFrame) {
+DECLARE_CLASS(Http2GoAwayFrame) IMPLEMENTS(Http2Frame){
+public:
+    void import(ByteArray);
+    ByteArray toByteArray();
 
+private:
+    uint32_t lastStreamId;
+    uint32_t errorCode;
 };
 
 }

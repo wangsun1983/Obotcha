@@ -24,6 +24,7 @@ void _Http2RstFrame::import(ByteArray bytes) {
 ByteArray _Http2RstFrame::toByteArray() {
     ByteArray data = createByteArray(1);
     ByteArrayWriter writer = createByteArrayWriter(data,BigEndian);
+    writer->writeUint32(errcode);
     return data;
 }
 

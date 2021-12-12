@@ -5,6 +5,7 @@
 #include "StrongPointer.hpp"
 
 #include "Byte.hpp"
+#include "Http2Frame.hpp"
 
 namespace obotcha {
 
@@ -20,8 +21,15 @@ namespace obotcha {
 +---------------------------------------------------------------+
  */
 
-DECLARE_CLASS(Http2RstFrame) {
+DECLARE_CLASS(Http2RstFrame) IMPLEMENTS(Http2Frame) {
+public:
+    void import(ByteArray);
+    ByteArray toByteArray();
 
+    int getErrorCode();
+    void setErrorCode(int);
+private:
+    uint32_t errcode;
 };
 
 }

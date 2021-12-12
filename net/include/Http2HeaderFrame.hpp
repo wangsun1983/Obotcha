@@ -33,6 +33,11 @@ DECLARE_CLASS(Http2HeaderFrame) IMPLEMENTS(Http2Frame) {
 public:
     _Http2HeaderFrame();
     ByteArray toByteArray();
+
+private:
+    uint8_t padLength;
+    uint32_t dependency;
+    uint8_t weight;
 };
 
 }

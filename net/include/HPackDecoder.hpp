@@ -58,6 +58,8 @@ public:
         ResponsePsedoHeader
     };
 
+    int decode(int streamId, ByteArray in, HttpHeader headers, bool validateHeaders);
+    
     static int validate(int streamId, String name,int previousHeaderType);
 
 private:
@@ -74,7 +76,6 @@ private:
         ReadLiteralHeaderValue,
     };
 
-    int decode(int streamId, ByteArray in, HttpHeader headers, bool validateHeaders);
     int decode(ByteArray in,Http2HeadersSink sink);
 
     HPackTableItem getIndexedHeader(int index);

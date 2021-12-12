@@ -23,6 +23,15 @@ namespace obotcha {
 
 DECLARE_CLASS(Http2PingFrame) IMPLEMENTS(Http2Frame){
 
+public:
+    void import(ByteArray);
+    ByteArray toByteArray();
+
+    bool isAck();
+    void setAck(bool);
+
+private:
+    bool ack;
 };
 
 }

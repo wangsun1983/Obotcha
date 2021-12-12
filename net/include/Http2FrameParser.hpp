@@ -8,6 +8,7 @@
 #include "ByteRingArrayReader.hpp"
 #include "ArrayList.hpp"
 #include "ByteArray.hpp"
+#include "HPackDecoder.hpp"
 
 namespace obotcha {
 
@@ -30,7 +31,7 @@ private:
 
     Http2Frame mCurrentFrame;
     ByteArray mCache;
-
+    HashMap<Integer,HPackDecoder> mDecoders;
 };
 
 }
