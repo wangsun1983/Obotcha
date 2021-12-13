@@ -15,6 +15,84 @@ namespace obotcha {
 +---------------------------------------------------------------+
  */
 
+_Http2Frame::_Http2Frame() {
+    type = 0;
+    flags = 0;
+    length = 0;
+    weight = 0;
+    streamid = 0;
+}
+
+void _Http2Frame::setEndStream(bool s) {
+    if(s) {
+        flags |= FlagEndStream;
+    } else {
+        flags &= ~FlagEndStream;
+    }
+}
+
+bool _Http2Frame::isEndStream() {
+    return (flags & FlagEndStream) != 0;
+}
+
+void _Http2Frame::setEndHeaders(bool s) {
+    if(s) {
+        flags |= FlagEndHeaders;
+    } else {
+        flags &= ~FlagEndHeaders;
+    }
+}
+
+bool _Http2Frame::isEndHeaders() {
+    return (flags & FlagEndHeaders) != 0;
+}
+
+void _Http2Frame::setAck(bool s) {
+    if(s) {
+        flags |= FlagAck;
+    } else {
+        flags &= ~FlagAck;
+    }
+}
+
+bool _Http2Frame::isAck() {
+    return (flags & FlagAck) != 0;
+}
+
+void _Http2Frame::setPadding(bool s) {
+    if(s) {
+        flags |= FlagPadded;
+    } else {
+        flags &= ~FlagPadded;
+    }
+}
+
+bool _Http2Frame::isPadding() {
+    return (flags & FlagPadded) != 0;
+}
+
+void _Http2Frame::setPriority(bool s) {
+    if(s) {
+        flags |= FlagPriority;
+    } else {
+        flags &= ~FlagPriority;
+    }
+}
+
+bool _Http2Frame::isPrioroty() {
+    return (flags & FlagPriority) != 0; 
+}
+
+void _Http2Frame::setWeight(int s) {
+    weight = s;
+    setPriority(true);
+}
+
+int _Http2Frame::getWeight() {
+    return weight;
+}
+
+
 ByteArray _Http2Frame::toFrameData(int streamid,int flags) {
     ByteArray payload = toByteArray();
     int length = 0;
@@ -26,9 +104,6 @@ ByteArray _Http2Frame::toFrameData(int streamid,int flags) {
     printf("to framedata size is %d \n",frame->size());
     ByteArrayWriter writer = createByteArrayWriter(frame,BigEndian);
     writer->writeUint32(length << 8 | type);
-    if(mAck) {
-        flags |= 1;
-    }
     writer->writeByte(flags);
     writer->writeUint32(streamid & 0x7FFFFFFF);
     if(payload != nullptr) {
@@ -70,12 +145,20 @@ void _Http2Frame::import(ByteArray) {
     //do nothing
 }
 
-void _Http2Frame::setAck(bool s) {
-    mAck = s;
+void _Http2Frame::setExclusive(bool s) {
+    exclusive = s;
 }
 
-bool _Http2Frame::isAck() {
-    return mAck;
+bool _Http2Frame::getExclusive() {
+    return exclusive;
+}
+
+uint32_t _Http2Frame::getDependency() {
+    return dependency;
+}
+
+void _Http2Frame::setDependency(uint32_t s) {
+    dependency = s;
 }
 
 }

@@ -166,9 +166,13 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/http2packetwriterimp.o \
 		$(outtmp)/http2shakehandframe.o \
 		$(outtmp)/http2settingframe.o \
+		$(outtmp)/http2headerframe.o \
 		$(outtmp)/http2rstframe.o \
+		$(outtmp)/http2dataframe.o \
 		$(outtmp)/http2priorityframe.o \
 		$(outtmp)/http2windowupdateframe.o \
+		$(outtmp)/http2continuationframe.o \
+		$(outtmp)/http2goawayframe.o \
 		$(outtmp)/http2frameparser.o \
 		$(outtmp)/hpackhuffmanencoder.o \
 		$(outtmp)/hpackhuffmandecoder.o \
@@ -698,14 +702,26 @@ $(outtmp)/http2shakehandframe.o :$(netDir)/http/v2/Http2ShakeHandFrame.cpp
 $(outtmp)/http2settingframe.o :$(netDir)/http/v2/Http2SettingFrame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2SettingFrame.cpp -o $(outtmp)/http2settingframe.o 
 
+$(outtmp)/http2headerframe.o :$(netDir)/http/v2/Http2HeaderFrame.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2HeaderFrame.cpp -o $(outtmp)/http2headerframe.o 
+
 $(outtmp)/http2rstframe.o :$(netDir)/http/v2/Http2RstFrame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2RstFrame.cpp -o $(outtmp)/http2rstframe.o 
+
+$(outtmp)/http2dataframe.o :$(netDir)/http/v2/Http2DataFrame.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2DataFrame.cpp -o $(outtmp)/http2dataframe.o 
 
 $(outtmp)/http2priorityframe.o :$(netDir)/http/v2/Http2PriorityFrame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2PriorityFrame.cpp -o $(outtmp)/http2priorityframe.o 
 
 $(outtmp)/http2windowupdateframe.o :$(netDir)/http/v2/Http2WindowUpdateFrame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2WindowUpdateFrame.cpp -o $(outtmp)/http2windowupdateframe.o 
+
+$(outtmp)/http2continuationframe.o :$(netDir)/http/v2/Http2ContinuationFrame.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2ContinuationFrame.cpp -o $(outtmp)/http2continuationframe.o 
+
+$(outtmp)/http2goawayframe.o :$(netDir)/http/v2/Http2GoAwayFrame.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2GoAwayFrame.cpp -o $(outtmp)/http2goawayframe.o 
 
 $(outtmp)/httphpack.o :$(netDir)/http/v2/HPack.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPack.cpp -o $(outtmp)/httphpack.o 

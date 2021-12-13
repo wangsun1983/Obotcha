@@ -3,9 +3,15 @@
 #include "Http2Frame.hpp"
 #include "Http2SettingFrame.hpp"
 #include "Http2WindowUpdateFrame.hpp"
+#include "Http2HeaderFrame.hpp"
+#include "Http2RstFrame.hpp"
+#include "Http2PriorityFrame.hpp"
+#include "Http2PushPromiseFrame.hpp"
+#include "Http2PingFrame.hpp"
+#include "Http2GoAwayFrame.hpp"
+#include "Http2ContinuationFrame.hpp"
 
 namespace obotcha {
-
 
 _Http2FrameParser::_Http2FrameParser(ByteRingArrayReader r) {
     mReader = r;
@@ -58,42 +64,39 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                     break;
                     
                     case st(Http2Frame)::TypeHeaders:
-                    //TODO
+                        mCurrentFrame = createHttp2HeaderFrame();
                     break;
 
                     case st(Http2Frame)::TypePriority:
-                    //TODO
+                        mCurrentFrame = createHttp2PriorityFrame();
                     break;
 
                     case st(Http2Frame)::TypeRstStream:
-                    //TODO
+                        mCurrentFrame = createHttp2RstFrame();
                     break;
 
                     case st(Http2Frame)::TypeSettings:
-                        printf("it is a setting frame \n");
                         mCurrentFrame = createHttp2SettingFrame();
                     break;
 
                     case st(Http2Frame)::TypePushPromise:
-                    //TODO
+                        mCurrentFrame = createHttp2PushPromiseFrame();
                     break;
 
                     case st(Http2Frame)::TypePing:
-                    //TODO
+                        mCurrentFrame = createHttp2PingFrame();
                     break;
 
                     case st(Http2Frame)::TypeGoAway:
-                    //TODO
+                        mCurrentFrame = createHttp2GoAwayFrame();
                     break;
 
                     case st(Http2Frame)::TypeWindowUpdate:
-                        printf("it is a windowupdate frame \n");
                         mCurrentFrame = createHttp2WindowUpdateFrame();
-                    //TODO
                     break;
 
                     case st(Http2Frame)::TypeContinuation:
-                    //TODO
+                        mCurrentFrame = createHttp2ContinuationFrame();
                     break;
                 }
 

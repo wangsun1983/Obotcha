@@ -23,6 +23,8 @@ namespace obotcha {
 
 DECLARE_CLASS(Http2RstFrame) IMPLEMENTS(Http2Frame) {
 public:
+    _Http2RstFrame();
+    
     void import(ByteArray);
     ByteArray toByteArray();
 

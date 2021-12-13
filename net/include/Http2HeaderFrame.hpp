@@ -6,6 +6,9 @@
 
 #include "Byte.hpp"
 #include "Http2Frame.hpp"
+#include "HttpHeader.hpp"
+#include "HPackDecoder.hpp"
+#include "HPackEncoder.hpp"
 
 namespace obotcha {
 
@@ -27,17 +30,44 @@ namespace obotcha {
 +---------------------------------------------------------------+
 |                           Padding (*)                       ...
 +---------------------------------------------------------------+
- */
+
+Pad Length:  An 8-bit field containing the length of the frame
+    padding in units of octets.  This field is only present if the
+    PADDED flag is set.
+
+E: A single-bit flag indicating that the stream dependency is
+    exclusive (see Section 5.3).  This field is only present if the
+    PRIORITY flag is set.
+
+Stream Dependency:  A 31-bit stream identifier for the stream that
+    this stream depends on (see Section 5.3).  This field is only
+    present if the PRIORITY flag is set.
+
+Weight:  An unsigned 8-bit integer representing a priority weight for
+    the stream (see Section 5.3).  Add one to the value to obtain a
+    weight between 1 and 256.  This field is only present if the
+    PRIORITY flag is set.
+*/
 
 DECLARE_CLASS(Http2HeaderFrame) IMPLEMENTS(Http2Frame) {
 public:
-    _Http2HeaderFrame();
-    ByteArray toByteArray();
+    _Http2HeaderFrame(HPackDecoder decoder = nullptr,HPackEncoder encoder = nullptr);
 
+    ByteArray toByteArray();
+    void import(ByteArray); 
+
+    HttpHeader getHeader();
+    void setHeader(HttpHeader);
+
+    ByteArray getPaddingData();
+    void setPaddingData(ByteArray);
+    
 private:
-    uint8_t padLength;
-    uint32_t dependency;
-    uint8_t weight;
+    HttpHeader headers;
+    ByteArray paddingData;
+    
+    HPackDecoder decoder;
+    HPackEncoder encoder;
 };
 
 }

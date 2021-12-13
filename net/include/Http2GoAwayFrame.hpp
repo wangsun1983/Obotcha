@@ -30,6 +30,12 @@ public:
     void import(ByteArray);
     ByteArray toByteArray();
 
+    uint32_t getLastStreamId();
+    void setLastStreamId(uint32_t);
+
+    uint32_t getErrorCode();
+    void setErrorCode(uint32_t);
+
 private:
     uint32_t lastStreamId;
     uint32_t errorCode;

@@ -65,6 +65,8 @@ public:
         TypeContinuation,
         TypeMax
     };
+    
+    _Http2Frame();
 
     int getType();
     int getLength();
@@ -76,20 +78,43 @@ public:
     uint32_t getStreamId();
     void setStreamId(uint32_t);
 
-    ByteArray toFrameData(int streamid = 0x0,int flags = FlagNone);
-    virtual void import(ByteArray);
+    void setExclusive(bool);
+    bool getExclusive();
+
+    uint32_t getDependency();
+    void setDependency(uint32_t);
+
+    void setEndStream(bool);
+    bool isEndStream();
+
+    void setEndHeaders(bool);
+    bool isEndHeaders();
 
     void setAck(bool);
     bool isAck();
+
+    void setPadding(bool);
+    bool isPadding();
+
+    void setPriority(bool);
+    bool isPrioroty();
+
+    void setWeight(int);
+    int getWeight();
+
+    ByteArray toFrameData(int streamid = 0x0,int flags = FlagNone);
+    virtual void import(ByteArray);
     
 protected:
     virtual ByteArray toByteArray() = 0;
     int type;
     int flags;
     int length;
-    uint32_t streamid;
+    int weight;
+    bool exclusive;
+    uint32_t dependency;
 
-    bool mAck;
+    uint32_t streamid;
 };
 
 }
