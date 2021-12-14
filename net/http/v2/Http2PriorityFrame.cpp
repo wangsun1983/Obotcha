@@ -5,7 +5,7 @@
 namespace obotcha {
 
 _Http2PriorityFrame::_Http2PriorityFrame():_Http2Frame() {
-    
+    this->type = TypePriority;
 }
 
 void _Http2PriorityFrame::import(ByteArray data) {

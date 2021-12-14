@@ -65,6 +65,23 @@ public:
         TypeContinuation,
         TypeMax
     };
+
+    enum Error {
+        NoError = 0x0,
+        ProtocolError,
+        InternalError,
+        FlowControlError,
+        SettingsTimeout,
+        StreamClosed,
+        FrameSizeError,
+        RefusedStream,
+        Cancel,
+        CompressionError,
+        ConnectError,
+        EnhanceYourCalm,
+        InadequateSecurity,
+        Http1v1Required,
+    };
     
     _Http2Frame();
 
@@ -104,6 +121,8 @@ public:
 
     ByteArray toFrameData(int streamid = 0x0,int flags = FlagNone);
     virtual void import(ByteArray);
+
+    static const int DefaultWeight;
     
 protected:
     virtual ByteArray toByteArray() = 0;

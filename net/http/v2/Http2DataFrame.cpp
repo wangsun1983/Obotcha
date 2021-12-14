@@ -7,6 +7,7 @@ namespace obotcha {
 _Http2DataFrame::_Http2DataFrame():_Http2Frame() {
     data = nullptr;
     paddingData = nullptr;
+    this->type = TypeData;
 }
 
 ByteArray _Http2DataFrame::toByteArray() {

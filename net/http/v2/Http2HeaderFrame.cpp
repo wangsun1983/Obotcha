@@ -28,6 +28,8 @@ _Http2HeaderFrame::_Http2HeaderFrame(HPackDecoder decoder,HPackEncoder encoder):
     this->encoder = encoder;
     dependency = 0;
     exclusive = false;
+    this->type = TypeHeaders;
+    headers = createHttpHeader();
 }
 
 ByteArray _Http2HeaderFrame::toByteArray() {
@@ -90,7 +92,6 @@ HttpHeader _Http2HeaderFrame::getHeader() {
 void _Http2HeaderFrame::setHeader(HttpHeader h) {
     headers = h;
 }
-
 
 ByteArray _Http2HeaderFrame::getPaddingData() {
     this->flags |= FlagPadded;

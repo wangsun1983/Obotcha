@@ -27,6 +27,7 @@ namespace obotcha {
 
 DECLARE_CLASS(Http2GoAwayFrame) IMPLEMENTS(Http2Frame){
 public:
+    _Http2GoAwayFrame();
     void import(ByteArray);
     ByteArray toByteArray();
 
@@ -36,9 +37,13 @@ public:
     uint32_t getErrorCode();
     void setErrorCode(uint32_t);
 
+    void setDebugData(ByteArray);
+    ByteArray getDebugData();
+
 private:
     uint32_t lastStreamId;
     uint32_t errorCode;
+    ByteArray additionalDebugData;
 };
 
 }

@@ -1,22 +1,31 @@
 #include "Http2PingFrame.hpp"
 #include "MethodNotSupportException.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
+_Http2PingFrame::_Http2PingFrame() {
+    this->type = TypePing;
+}
+
 void _Http2PingFrame::import(ByteArray data) {
-    Trigger(MethodNotSupportException,"no ping data");
+    if(data->size() != 8) {
+        LOG(ERROR)<<"Ping Frame data is too long";
+    }
+
+    info = data;
 }
 
 ByteArray _Http2PingFrame::toByteArray() {
-    return nullptr;
+    return info;
 }
 
-bool _Http2PingFrame::isAck() {
-    return ack;
+ByteArray _Http2PingFrame::getInfo() {
+    return info;
 }
 
-void _Http2PingFrame::setAck(bool s) {
-    ack = s;
+void _Http2PingFrame::setInfo(ByteArray s) {
+    info = s;
 }
 
 

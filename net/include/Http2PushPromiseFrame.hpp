@@ -7,6 +7,8 @@
 #include "Byte.hpp"
 #include "Http2Frame.hpp"
 #include "HttpHeader.hpp"
+#include "HPackEncoder.hpp"
+#include "HPackDecoder.hpp"
 
 namespace obotcha {
 
@@ -26,19 +28,45 @@ namespace obotcha {
 +---------------------------------------------------------------+
 |                           Padding (*)                     . . .
 +---------------------------------------------------------------+
+Pad Length:  An 8-bit field containing the length of the frame
+      padding in units of octets.  This field is only present if the
+      PADDED flag is set.
+
+R: A single reserved bit.
+
+Promised Stream ID:  An unsigned 31-bit integer that identifies the
+    stream that is reserved by the PUSH_PROMISE.  The promised stream
+    identifier MUST be a valid choice for the next stream sent by the
+    sender (see "new stream identifier" in Section 5.1.1).
+
+Header Block Fragment:  A header block fragment (Section 4.3)
+    containing request header fields.
+
+Padding:  Padding octets.
  */
 
 DECLARE_CLASS(Http2PushPromiseFrame) IMPLEMENTS(Http2Frame) {
 
 public:
+    _Http2PushPromiseFrame(HPackDecoder,HPackEncoder);
+
     ByteArray toByteArray();
     void import(ByteArray);
 
     void setHttpHeaders(HttpHeader h);
     HttpHeader getHttpHeaders();
 
+    ByteArray getPaddingData();
+    void setPaddingData(ByteArray);
+
 public:
     HttpHeader headers;
+    ByteArray paddingData;
+    
+    uint32_t promiseStreamId;
+
+    HPackEncoder encoder;
+    HPackDecoder decoder;
 };
 
 }

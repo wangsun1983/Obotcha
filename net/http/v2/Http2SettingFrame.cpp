@@ -23,7 +23,7 @@ namespace obotcha {
  */
 //https://skyao.io/learning-http2/frame/definition/settings.html
 
-_Http2SettingFrame::_Http2SettingFrame() {
+_Http2SettingFrame::_Http2SettingFrame():_Http2Frame() {
     mHeaderTableSize = 0;
     mEnablePush = 0;
     mMaxConcurrentStreams = 0;
@@ -32,13 +32,12 @@ _Http2SettingFrame::_Http2SettingFrame() {
     mMaxHeaderListSize = 0;
 
     this->type = TypeSettings;
-    mAck = false;
 }
 
 void _Http2SettingFrame::import(ByteArray data) {
     ByteArrayReader reader = createByteArrayReader(data,Global::BigEndian);
     printf("reader size is %d \n",reader->getRemainSize());
-    while(reader->getRemainSize() > 0) {
+    while(reader->isReadable()) {
         uint16_t identity = reader->readUint16();
         uint32_t value = reader->readUint32();
         printf("identity is %d,value is %d \n",identity,value);

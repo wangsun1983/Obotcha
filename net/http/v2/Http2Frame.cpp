@@ -3,23 +3,13 @@
 
 namespace obotcha {
 
-/* Common frame format
-+-----------------------------------------------+
-|                Length (24)                    |
-+---------------+---------------+---------------+
-|  Type (8)     |  Flags (8)    |
-+-+-------------+---------------+-------------------------------+
-|R|                Stream Identifier (31)                       |
-+=+=============================================================+
-|                  Frame Payload (0...)                       ...
-+---------------------------------------------------------------+
- */
+const int _Http2Frame::DefaultWeight = 16;
 
 _Http2Frame::_Http2Frame() {
     type = 0;
     flags = 0;
     length = 0;
-    weight = 0;
+    weight = DefaultWeight;
     streamid = 0;
 }
 

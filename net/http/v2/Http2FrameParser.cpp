@@ -64,7 +64,8 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                     break;
                     
                     case st(Http2Frame)::TypeHeaders:
-                        mCurrentFrame = createHttp2HeaderFrame();
+                        //TODO
+                        //mCurrentFrame = createHttp2HeaderFrame();
                     break;
 
                     case st(Http2Frame)::TypePriority:
@@ -80,7 +81,8 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                     break;
 
                     case st(Http2Frame)::TypePushPromise:
-                        mCurrentFrame = createHttp2PushPromiseFrame();
+                        //TODO
+                        //mCurrentFrame = createHttp2PushPromiseFrame();
                     break;
 
                     case st(Http2Frame)::TypePing:

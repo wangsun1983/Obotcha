@@ -23,6 +23,7 @@ namespace obotcha {
 
 DECLARE_CLASS(Http2WindowUpdateFrame) IMPLEMENTS(Http2Frame) {
 public:
+    _Http2WindowUpdateFrame();
     void import(ByteArray);
     ByteArray toByteArray();
 

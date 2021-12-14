@@ -4,17 +4,9 @@
 
 namespace obotcha {
 
-/*
-+-----------------------------------------------+
-|                0x4 (24)                       |
-+---------------+---------------+---------------+
-|   0x8 (8)     |    0x0 (8)    |
-+-+-------------+---------------+-------------------------------+
-|R|                Stream Identifier (31)                       |
-+=+=============================================================+
-|R|              Window Size Increment (31)                     |
-+-+-------------------------------------------------------------+
- */
+_Http2WindowUpdateFrame::_Http2WindowUpdateFrame() {
+    type = TypeWindowUpdate;
+}
 
 void _Http2WindowUpdateFrame::import(ByteArray s) {
     ByteArrayReader reader = createByteArrayReader(s,Global::BigEndian);
