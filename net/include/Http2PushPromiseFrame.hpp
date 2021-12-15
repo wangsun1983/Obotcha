@@ -48,7 +48,7 @@ Padding:  Padding octets.
 DECLARE_CLASS(Http2PushPromiseFrame) IMPLEMENTS(Http2Frame) {
 
 public:
-    _Http2PushPromiseFrame(HPackDecoder,HPackEncoder);
+    _Http2PushPromiseFrame(HPackDecoder d = nullptr,HPackEncoder e = nullptr);
 
     ByteArray toByteArray();
     void import(ByteArray);

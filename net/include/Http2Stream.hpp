@@ -7,6 +7,7 @@
 #include "StrongPointer.hpp"
 #include "HPackEncoder.hpp"
 #include "HPackDecoder.hpp"
+#include "Http2Frame.hpp"
 
 namespace obotcha {
 
@@ -88,6 +89,8 @@ public:
     int getStreamId();
     void setStreamId(int);
 
+    bool applyFrame(Http2Frame);
+
     int getStatus();
 
 private:
@@ -101,6 +104,8 @@ private:
     
     HPackEncoder encoder;
     HPackDecoder decoder;
+
+    HttpHeader header;
 };
 
 }

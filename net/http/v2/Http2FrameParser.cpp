@@ -13,13 +13,13 @@
 
 namespace obotcha {
 
-_Http2FrameParser::_Http2FrameParser(ByteRingArrayReader r) {
+_Http2FrameParser::_Http2FrameParser(ByteRingArrayReader r,HPackDecoder d) {
     mReader = r;
     mCurrentFrame = nullptr;
     mCache = nullptr;
     status = ParseHeadPart;
 
-    mDecoders = createHashMap<Integer,HPackDecoder>();
+    decoder = d;
 }
 
 ArrayList<Http2Frame> _Http2FrameParser::doParse() {
@@ -64,8 +64,7 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                     break;
                     
                     case st(Http2Frame)::TypeHeaders:
-                        //TODO
-                        //mCurrentFrame = createHttp2HeaderFrame();
+                        mCurrentFrame = createHttp2HeaderFrame(decoder);
                     break;
 
                     case st(Http2Frame)::TypePriority:
@@ -81,8 +80,7 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                     break;
 
                     case st(Http2Frame)::TypePushPromise:
-                        //TODO
-                        //mCurrentFrame = createHttp2PushPromiseFrame();
+                        mCurrentFrame = createHttp2PushPromiseFrame(decoder);
                     break;
 
                     case st(Http2Frame)::TypePing:
@@ -98,7 +96,7 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                     break;
 
                     case st(Http2Frame)::TypeContinuation:
-                        mCurrentFrame = createHttp2ContinuationFrame();
+                        mCurrentFrame = createHttp2ContinuationFrame(decoder);
                     break;
                 }
 

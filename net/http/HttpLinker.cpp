@@ -4,6 +4,7 @@
 #include "HttpServer.hpp"
 #include "Http2PacketWriterImpl.hpp"
 #include "HttpPacketWriterImpl.hpp"
+#include "Http2StreamController.hpp"
 
 namespace obotcha {
 
@@ -16,8 +17,8 @@ _HttpLinker::_HttpLinker(Socket s,int protocol) {
     switch(protocol) {
         case st(HttpProtocol)::Http_H2:
         case st(HttpProtocol)::Http_H2C:
-            mWriter = createHttp2PacketWriterImpl(mSocketOutput);
-            mParser = createHttp2PacketParserImpl();
+            mWriter = createHttp2PacketWriterImpl(mSocketOutput);//TODO
+            mParser = createHttp2StreamController();
         break;
 
         default:

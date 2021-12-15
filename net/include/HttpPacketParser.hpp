@@ -43,7 +43,6 @@ public:
         Comunicated, //used for http2
         HeadStart,
         BodyStart,
-        
     };
 
 protected:

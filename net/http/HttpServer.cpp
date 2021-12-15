@@ -21,6 +21,7 @@
 #include "Http2PacketWriterImpl.hpp"
 #include "Base64.hpp"
 #include "Http2SettingFrame.hpp"
+#include "Http2ShakeHandFrame.hpp"
 
 namespace obotcha {
 

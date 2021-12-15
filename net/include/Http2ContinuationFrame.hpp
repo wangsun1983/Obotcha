@@ -6,6 +6,9 @@
 
 #include "Byte.hpp"
 #include "Http2Frame.hpp"
+#include "HPackDecoder.hpp"
+#include "HPackEncoder.hpp"
+#include "HttpHeader.hpp"
 
 namespace obotcha {
 
@@ -24,9 +27,17 @@ namespace obotcha {
 DECLARE_CLASS(Http2ContinuationFrame) IMPLEMENTS(Http2Frame){
 
 public:
+    _Http2ContinuationFrame(HPackDecoder d = nullptr,HPackEncoder e = nullptr);
     void import(ByteArray);
     ByteArray toByteArray();
 
+    void setHeaders(HttpHeader);
+    HttpHeader getHeaders();
+
+private:
+    HPackDecoder decoder;
+    HPackEncoder encoder;
+    HttpHeader headers;
 };
 
 }

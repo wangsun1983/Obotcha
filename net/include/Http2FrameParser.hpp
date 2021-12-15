@@ -16,7 +16,7 @@ namespace obotcha {
 DECLARE_CLASS(Http2FrameParser) {
 
 public:
-    _Http2FrameParser(ByteRingArrayReader);
+    _Http2FrameParser(ByteRingArrayReader,HPackDecoder);
     ArrayList<Http2Frame> doParse();
 
 private:
@@ -31,7 +31,7 @@ private:
 
     Http2Frame mCurrentFrame;
     ByteArray mCache;
-    HashMap<Integer,HPackDecoder> mDecoders;
+    HPackDecoder decoder;
 };
 
 }

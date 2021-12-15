@@ -158,8 +158,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/httpheadersourcemap.o \
 		$(outtmp)/hpackstatictable.o \
 		$(outtmp)/hpackdynamictable.o \
-		$(outtmp)/http2packetparserimpl.o \
-		$(outtmp)/http2streamid.o \
+		$(outtmp)/http2streamcontroller.o \
 		$(outtmp)/http2stream.o \
 		$(outtmp)/http2frame.o \
 		$(outtmp)/http2protocol.o \
@@ -681,11 +680,8 @@ $(outtmp)/http2frame.o :$(netDir)/http/v2/Http2Frame.cpp
 $(outtmp)/http2frameparser.o :$(netDir)/http/v2/Http2FrameParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2FrameParser.cpp -o $(outtmp)/http2frameparser.o 
 
-$(outtmp)/http2packetparserimpl.o :$(netDir)/http/v2/Http2PacketParserImpl.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2PacketParserImpl.cpp -o $(outtmp)/http2packetparserimpl.o 
-
-$(outtmp)/http2streamid.o :$(netDir)/http/v2/Http2StreamId.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2StreamId.cpp -o $(outtmp)/http2streamid.o 
+$(outtmp)/http2streamcontroller.o :$(netDir)/http/v2/Http2StreamController.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2StreamController.cpp -o $(outtmp)/http2streamcontroller.o 
 
 $(outtmp)/http2stream.o :$(netDir)/http/v2/Http2Stream.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2Stream.cpp -o $(outtmp)/http2stream.o 

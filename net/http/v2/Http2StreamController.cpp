@@ -1,20 +1,25 @@
-#include "Http2PacketParserImpl.hpp"
-#include "Http2ShakeHandFrame.hpp"
-#include "Enviroment.hpp"
+#include "Http2StreamController.hpp"
+#include "Http2Frame.hpp"
 #include "Log.hpp"
+#include "AutoLock.hpp"
 
 namespace obotcha {
 
-_Http2PacketParserImpl::_Http2PacketParserImpl() {
+_Http2StreamController::_Http2StreamController() {
     mStatus = ShakeHand;
     mRingArray = createByteRingArray(st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpBufferSize, 4 * 1024));
     shakeHandFrame = createHttp2ShakeHandFrame(mRingArray);
     mReader = createByteRingArrayReader(mRingArray);
-    mFrameParser = createHttp2FrameParser(mReader);
+    mFrameParser = createHttp2FrameParser(mReader,decoder);
     mIndex = 0;
+
+    encoder = createHPackEncoder();
+    decoder = createHPackDecoder();
+    mMutex = createMutex();
+    streams = createHashMap<Integer,Http2Stream>();
 }
 
-int _Http2PacketParserImpl::pushHttpData(ByteArray data) {
+int _Http2StreamController::pushHttpData(ByteArray data) {
     try {
         printf("push data,size is %d,\n",data->size());
         mRingArray->push(data);
@@ -26,7 +31,7 @@ int _Http2PacketParserImpl::pushHttpData(ByteArray data) {
     return 0;
 }
 
-ArrayList<HttpPacket> _Http2PacketParserImpl::doParse() {
+ArrayList<HttpPacket> _Http2StreamController::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
     while(mReader->getReadableLength() > 9) {
         switch(mStatus) {
@@ -71,10 +76,17 @@ ArrayList<HttpPacket> _Http2PacketParserImpl::doParse() {
                     ArrayList<HttpPacket> packets  = createArrayList<HttpPacket>();
                     auto iterator = frames->getIterator();
                     while(iterator->hasValue()) {
-                        HttpPacket p = createHttpPacket();
-                        p->setFrame(iterator->getValue());
-                        packets->add(p);
-                        iterator->next();
+                        //we should check every frame to do some action
+                        //only data/header frame should send user.
+                        Http2Frame frame = iterator->getValue();
+                        Http2Stream stream = streams->get(createInteger(frame->getStreamId()));
+                        //TODO
+                        if(stream->applyFrame(frame)) {
+                            HttpPacket p = createHttpPacket();
+                            p->setFrame(frame);
+                            packets->add(p);
+                            iterator->next();
+                        }
                     }
                     return packets;
                 }
@@ -86,12 +98,22 @@ ArrayList<HttpPacket> _Http2PacketParserImpl::doParse() {
     return nullptr;
 }
 
-HttpPacket _Http2PacketParserImpl::parseEntireRequest(ByteArray request) {
+HttpPacket _Http2StreamController::parseEntireRequest(ByteArray request) {
+    //TODO
     return nullptr;
 }
 
-void _Http2PacketParserImpl::reset() {
+void _Http2StreamController::reset() {
 
 }
 
-} // namespace obotcha
+Http2Stream _Http2StreamController::newStream() {
+    Http2Stream stream = createHttp2Stream(encoder,decoder);
+    AutoLock l(mMutex);
+    streams->put(createInteger(stream->getStreamId()),stream);
+    return stream;
+}
+
+
+
+}

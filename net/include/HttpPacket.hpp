@@ -28,7 +28,7 @@ public:
     friend class _HttpRequestParser;
     friend class _HttpResponseParser;
     friend class _HttpServer;
-    friend class _Http2PacketParserImpl;
+    friend class _Http2StreamController;
 
     _HttpPacket();
     

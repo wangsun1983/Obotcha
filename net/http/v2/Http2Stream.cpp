@@ -2,6 +2,8 @@
 #include <thread>
 
 #include "Http2Stream.hpp"
+#include "Http2HeaderFrame.hpp"
+#include "Http2ContinuationFrame.hpp"
 
 namespace obotcha {
 
@@ -36,5 +38,58 @@ void _Http2Stream::setStreamId(int id) {
     mStreamId = id;
 }
 
+bool _Http2Stream::applyFrame(Http2Frame frame) {
+    
+    switch(frame->getType()) {
+        case st(Http2Frame)::TypeData:
+            return true;
+        break;
+        
+        case st(Http2Frame)::TypeHeaders:{
+            Http2HeaderFrame headerFrame = Cast<Http2HeaderFrame>(frame);
+            header = headerFrame->getHeader();
+            if(frame->isEndHeaders()) {
+                mStatus = Open;
+            }
+        }
+        break;
+
+        case st(Http2Frame)::TypePriority:
+            //TODO
+        break;
+
+        case st(Http2Frame)::TypeRstStream:
+            //TODO
+        break;
+
+        case st(Http2Frame)::TypeSettings:
+            //TODO
+        break;
+
+        case st(Http2Frame)::TypePushPromise:
+            //TODO
+        break;
+
+        case st(Http2Frame)::TypePing:
+            //TODO
+        break;
+
+        case st(Http2Frame)::TypeGoAway:
+            //TODO
+        break;
+
+        case st(Http2Frame)::TypeWindowUpdate:
+            //TODO
+        break;
+
+        case st(Http2Frame)::TypeContinuation:{
+            Http2ContinuationFrame continueFrame = Cast<Http2ContinuationFrame>(frame);
+            header->addHttpHeader(continueFrame->getHeaders());
+        }
+        break;
+    }
+    
+    return false;
+}
 
 }

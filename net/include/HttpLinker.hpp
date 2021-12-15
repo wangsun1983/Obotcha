@@ -17,7 +17,6 @@
 #include "Socket.hpp"
 #include "HttpSession.hpp"
 #include "HttpPacketParserImpl.hpp"
-#include "Http2PacketParserImpl.hpp"
 #include "HttpProtocol.hpp"
 #include "HttpPacketWriter.hpp"
 
