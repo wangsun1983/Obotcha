@@ -4,14 +4,317 @@
 #include "Http2Stream.hpp"
 #include "Http2HeaderFrame.hpp"
 #include "Http2ContinuationFrame.hpp"
+#include "Http2PushPromiseFrame.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
-_Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,int id):_Http2Stream(e,d,(id%2) == 0) {
+//Http2StreamState
+_Http2StreamState::_Http2StreamState(_Http2Stream * p) {
+    stream = p;
+}
+
+//------------------ state:Idle -------------------------
+_Http2StreamIdle::_Http2StreamIdle(_Http2Stream *p):_Http2StreamState(p) {
+    mState = st(Http2Stream)::Idle;
+}
+
+Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
+    int type = frame->getType();
+    switch(type) {
+        case st(Http2Frame)::TypeHeaders:{
+            Http2HeaderFrame headerFrame = Cast<Http2HeaderFrame>(frame);
+            stream->header = headerFrame->getHeader();
+            stream->moveTo(stream->OpenState);
+            if(headerFrame->isEndHeaders()) {
+                return createHttp2Packet(headerFrame->getStreamId(),stream->header,nullptr);
+            }
+        }
+        break;
+
+        case st(Http2Frame)::TypePushPromise: {
+            Http2PushPromiseFrame pushpromiseFrame = Cast<Http2PushPromiseFrame>(frame);
+            stream->header = pushpromiseFrame->getHttpHeaders();
+            stream->moveTo(stream->ReservedRemoteState);
+        }
+        break;
+
+        default:
+            LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :Idle , FrameType :"<<type;
+        break;
+    }
+
+    return nullptr;
+}
+
+bool _Http2StreamIdle::onSend(Http2Frame frame) {
+    int type = frame->getType();
+    switch(type) {
+        case st(Http2Frame)::TypeHeaders:{
+            stream->out->write(frame->toFrameData());
+            stream->moveTo(stream->OpenState);
+            return true;
+        }
+        break;
+
+        case st(Http2Frame)::TypePushPromise:{
+            stream->out->write(frame->toFrameData());
+            stream->moveTo(stream->ReservedLocalState);
+            return true;
+        }
+        break;
+
+        default:
+            LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :Idle , FrameType :"<<type;
+        break;
+    }
+
+    return false;
+}
+
+//------------------ state:ReservedLocal -------------------------
+_Http2StreamReservedLocal::_Http2StreamReservedLocal(_Http2Stream *p):_Http2StreamState(p) {
+    mState = st(Http2Stream)::ReservedLocal;
+}
+
+Http2Packet _Http2StreamReservedLocal::onReceived(Http2Frame frame) {
+    int type = frame->getType();
+    switch(frame->getType()) {
+        case st(Http2Frame)::TypeRstStream:{
+            stream->moveTo(stream->ClosedState);
+            break;
+        }
+
+        default:
+            LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :ReservedLocal , FrameType :"<<type;
+        break;
+    }
+    return nullptr;
+}
+
+bool _Http2StreamReservedLocal::onSend(Http2Frame frame) {
+    int type = frame->getType();
+    switch(frame->getType()) {
+        case st(Http2Frame)::TypeHeaders: {
+            stream->moveTo(stream->HalfClosedRemoteState);
+            return true;
+        }
+        break;
+
+        case st(Http2Frame)::TypeRstStream: {
+            stream->moveTo(stream->ClosedState);
+            return true;
+        }
+
+        default:
+            LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :ReservedLocal , FrameType :"<<type;
+        break;
+    }
+
+    return false;
+}
+
+//------------------ state:ReservedRemote -------------------------
+_Http2StreamReservedRemote::_Http2StreamReservedRemote(_Http2Stream *p):_Http2StreamState(p) {
+    mState = st(Http2Stream)::ReservedRemote;
+}
+
+Http2Packet _Http2StreamReservedRemote::onReceived(Http2Frame frame) {
+    int type = frame->getType();
+    switch(type) {
+        case st(Http2Frame)::TypeHeaders: {
+            Http2HeaderFrame headerFrame = Cast<Http2HeaderFrame>(frame);
+            stream->header = headerFrame->getHeader();
+            stream->moveTo(stream->HalfClosedLocalState);
+            return nullptr;
+        }
+        break;
+
+        case st(Http2Frame)::TypeRstStream: {
+            stream->moveTo(stream->ClosedState);
+        }
+        break;
+
+        default:
+            LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :ReservedRemote , FrameType :"<<type;
+        break;
+    }
+    return nullptr;
+}
+
+bool _Http2StreamReservedRemote::onSend(Http2Frame frame) {
+    int type = frame->getType();
+    switch(type) {
+        case st(Http2Frame)::TypeRstStream: {
+            stream->moveTo(stream->ClosedState);
+        }
+        break;
+
+        default:
+            LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :ReservedRemote , FrameType :"<<type;
+        break;
+    }
+
+    return false;
+}
+
+//------------------ state:Open -------------------------
+_Http2StreamOpen::_Http2StreamOpen(_Http2Stream *p):_Http2StreamState(p) {
+    mState = st(Http2Stream)::Open;
+}
+
+Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
+    switch(frame->getType()) {
+        case st(Http2Frame)::TypeContinuation: {
+            Http2ContinuationFrame continuationFrame = Cast<Http2ContinuationFrame>(frame);
+            stream->header->addHttpHeader(continuationFrame->getHeaders());
+            if(continuationFrame->isEndHeaders()) {
+                return createHttp2Packet(continuationFrame->getStreamId(),stream->header,nullptr);
+            }
+            break;
+        }
+
+        case st(Http2Frame)::TypeRstStream: {
+            stream->moveTo(stream->ClosedState);
+            return nullptr;
+        }
+        break;
+    }
+
+    if(frame->isEndStream()) {
+        stream->moveTo(stream->HalfClosedRemoteState);
+    }
+
+    return nullptr;
+}
+
+bool _Http2StreamOpen::onSend(Http2Frame frame) {
+    int type = frame->getType();
+    switch(type) {
+        case st(Http2Frame)::TypeRstStream:
+            stream->moveTo(stream->ClosedState);
+        break;
+    }
+
+    return false;
+}
+
+//------------------ state:HalfClosedLocal -------------------------
+_Http2StreamHalfClosedLocal::_Http2StreamHalfClosedLocal(_Http2Stream *p):_Http2StreamState(p) {
+    mState = st(Http2Stream)::HalfClosedLocal;
+}
+
+Http2Packet _Http2StreamHalfClosedLocal::onReceived(Http2Frame frame) {
+    int type = frame->getType();
+    switch(type) {
+        case st(Http2Frame)::TypeRstStream:
+            stream->moveTo(stream->ClosedState);
+        break;
+    }
+
+    if(frame->isEndStream()) {
+        stream->moveTo(stream->ClosedState);
+    }
+
+    return nullptr;
+}
+
+bool _Http2StreamHalfClosedLocal::onSend(Http2Frame frame) {
+    int type = frame->getType();
+    switch(type) {
+        case st(Http2Frame)::TypeRstStream:
+            stream->moveTo(stream->ClosedState);
+        break;
+
+        default:
+            LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :HalfClosedLocal , FrameType :"<<type;
+        break;
+    }
+    return false;
+}
+
+//------------------ state:HalfClosedRemote -------------------------
+_Http2StreamHalfClosedRemote::_Http2StreamHalfClosedRemote(_Http2Stream *p):_Http2StreamState(p) {
+    mState = st(Http2Stream)::HalfClosedRemote;
+}
+
+Http2Packet _Http2StreamHalfClosedRemote::onReceived(Http2Frame frame) {
+    int type = frame->getType();
+    switch(type) {
+        case st(Http2Frame)::TypeRstStream:
+            stream->moveTo(stream->ClosedState);
+        break;
+    }
+    return nullptr;
+}
+
+bool _Http2StreamHalfClosedRemote::onSend(Http2Frame frame) {
+    int type = frame->getType();
+    switch(type) {
+        case st(Http2Frame)::TypeRstStream:
+            stream->moveTo(stream->ClosedState);
+        break;
+    }
+
+    return false;
+}
+
+//------------------ state:Closed -------------------------
+_Http2StreamClosed::_Http2StreamClosed(_Http2Stream *p):_Http2StreamState(p) {
+    mState = st(Http2Stream)::Closed;
+}
+
+Http2Packet _Http2StreamClosed::onReceived(Http2Frame frame) {
+    LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :Closed , FrameType :"<<frame->getType();
+    return nullptr;
+}
+
+bool _Http2StreamClosed::onSend(Http2Frame frame) {
+    LOG(ERROR)<<"Http2Stream Send Illegal Frame,Current :Closed , FrameType :"<<frame->getType();
+    return false;
+}
+
+//------------------ Http2Stream -------------------------
+const char* IdleString = "Idle";
+const char* ReservedLocalString = "ReservedLocal";
+const char* ReservedRemoteString = "ReservedRemote";
+const char* OpenString = "Open";
+const char* HalfClosedLocalString = "HalfClosedLocal";
+const char* HalfClosedRemoteString = "HalfCLosedRemote";
+const char* ClosedString = "Closed";
+
+const char *_Http2Stream::stateToString(int s) {
+    switch(s) {
+        case Idle:
+        return IdleString;
+
+        case ReservedLocal:
+        return ReservedLocalString;
+
+        case ReservedRemote:
+        return ReservedRemoteString;
+
+        case Open:
+        return OpenString;
+
+        case HalfClosedLocal:
+        return HalfClosedLocalString;
+
+        case HalfClosedRemote:
+        return HalfClosedRemoteString;
+
+        case Closed:
+        return ClosedString;
+    }
+
+    return nullptr;
+}
+    
+_Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,int id,OutputStream stream):_Http2Stream(e,d,(id%2) == 0,stream) {
     mStreamId = id;
 }
 
-_Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,bool isServer) {
+_Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,bool isServer,OutputStream stream) {
     static std::once_flag flag;
     std::call_once(flag, [&]() {
         mServerStreamId = 2;
@@ -27,7 +330,16 @@ _Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,bool isServer) {
     encoder = e;
     decoder = d;
     
-    mStatus = Idle;
+    IdleState = createHttp2StreamIdle(this);
+    ReservedLocalState = createHttp2StreamReservedLocal(this);
+    ReservedRemoteState = createHttp2StreamReservedRemote(this);
+    OpenState = createHttp2StreamOpen(this);
+    HalfClosedLocalState = createHttp2StreamHalfClosedLocal(this);
+    HalfClosedRemoteState = createHttp2StreamHalfClosedRemote(this);
+    ClosedState = createHttp2StreamClosed(this);
+    mState = IdleState;
+
+    out = stream;
 }
 
 int _Http2Stream::getStreamId() {
@@ -38,58 +350,12 @@ void _Http2Stream::setStreamId(int id) {
     mStreamId = id;
 }
 
-bool _Http2Stream::applyFrame(Http2Frame frame) {
-    
-    switch(frame->getType()) {
-        case st(Http2Frame)::TypeData:
-            return true;
-        break;
-        
-        case st(Http2Frame)::TypeHeaders:{
-            Http2HeaderFrame headerFrame = Cast<Http2HeaderFrame>(frame);
-            header = headerFrame->getHeader();
-            if(frame->isEndHeaders()) {
-                mStatus = Open;
-            }
-        }
-        break;
+void _Http2Stream::moveTo(Http2StreamState s) {
+    mState = s;
+}
 
-        case st(Http2Frame)::TypePriority:
-            //TODO
-        break;
-
-        case st(Http2Frame)::TypeRstStream:
-            //TODO
-        break;
-
-        case st(Http2Frame)::TypeSettings:
-            //TODO
-        break;
-
-        case st(Http2Frame)::TypePushPromise:
-            //TODO
-        break;
-
-        case st(Http2Frame)::TypePing:
-            //TODO
-        break;
-
-        case st(Http2Frame)::TypeGoAway:
-            //TODO
-        break;
-
-        case st(Http2Frame)::TypeWindowUpdate:
-            //TODO
-        break;
-
-        case st(Http2Frame)::TypeContinuation:{
-            Http2ContinuationFrame continueFrame = Cast<Http2ContinuationFrame>(frame);
-            header->addHttpHeader(continueFrame->getHeaders());
-        }
-        break;
-    }
-    
-    return false;
+Http2Packet _Http2Stream::applyFrame(Http2Frame frame) {
+    return nullptr;
 }
 
 }

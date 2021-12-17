@@ -12,7 +12,6 @@
 #include "Mutex.hpp"
 #include "SocketListener.hpp"
 #include "HttpMultiPart.hpp"
-#include "SSLServer.hpp"
 #include "BlockingLinkedList.hpp"
 #include "HashSet.hpp"
 #include "ThreadPoolExecutor.hpp"
@@ -23,18 +22,17 @@
 #include "HttpListener.hpp"
 #include "HttpOption.hpp"
 #include "HttpLinkerManager.hpp"
+#include "Base64.hpp"
+#include "Http2Listener.hpp"
 
 namespace obotcha {
-
-class _HttpLinker;
-class _HttpResponseWriter;
 
 DECLARE_CLASS(Http2Server) IMPLEMENTS(SocketListener) {
 
 public:
     friend class _HttpSocketListener;
     
-    _Http2Server(InetAddress addr,HttpListener,HttpOption option = nullptr);
+    _Http2Server(InetAddress addr,Http2Listener,HttpOption option = nullptr);
 
     void start();
     
@@ -43,20 +41,22 @@ public:
     ~_Http2Server();
 
 private:
-
     void onSocketMessage(int,Socket,ByteArray);
-
+    
     ServerSocket mServerSock;
 
     SocketMonitor mSockMonitor;
 
-    HttpListener mHttpListener;
+    Http2Listener mHttpListener;
 
     InetAddress mAddress;
 
     HttpOption mOption;
 
     HttpLinkerManager mLinkerManager;
+
+    Base64 mBase64;
+
 };
 
 }

@@ -18,84 +18,9 @@
 #include "String.hpp"
 #include "HttpPacketWriter.hpp"
 #include "HttpPacketWriterImpl.hpp"
-#include "Http2PacketWriterImpl.hpp"
 #include "Base64.hpp"
-#include "Http2SettingFrame.hpp"
-#include "Http2ShakeHandFrame.hpp"
 
 namespace obotcha {
-
-void _HttpServer::http2FrameProcessor(HttpLinker info) {
-    
-    ArrayList<HttpPacket> packets = info->pollHttpPacket();
-    if(packets == nullptr) {
-        return;
-    }
-    printf("status is %d \n",info->mParser->getStatus());
-    //if this client has not shakehanded.
-    switch(info->getHttp2ShakeHandStatus()) {
-        case st(HttpPacketParser)::ShakeHand: {
-            HttpPacket packet = packets->get(0);
-            HttpHeader header = packet->getHeader();
-            if(header->getMethod() == st(HttpMethod)::Get
-                && header->getUpgrade()->toString()->equals("h2c")) {
-                //we should decode it's setting frame
-                String settingframe = header->get("http2-settings");
-                printf("settingframe is %s \n",settingframe->toChars());
-                ByteArray data = mBase64->decodeBase64Url(settingframe->toByteArray());
-                data->dump("http settings!!!");
-                //TEST
-                Http2SettingFrame frame = createHttp2SettingFrame();
-                frame->import(data);
-
-                HttpPacketWriterImpl impl = createHttpPacketWriterImpl(info->getSocket()->getOutputStream());
-                auto shakeHande = createHttp2ShakeHandFrame();
-                impl->write(shakeHande->toShakeHandPacket(st(HttpProtocol)::Http_H2));
-
-                //response get method
-                info->setHttp2ShakeHandStatus(st(HttpPacketParser)::Preface);
-            } else if(header->getMethod() == st(HttpMethod)::Pri 
-                && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
-                info->setHttp2ShakeHandStatus(st(HttpPacketParser)::Comunicated);
-                //we should send a http setting frame;
-                Http2SettingFrame ackFrame = createHttp2SettingFrame();
-                info->getSocket()->getOutputStream()->write(ackFrame->toFrameData());
-            }
-        }
-        break;
-
-        case st(HttpPacketParser)::Preface: {
-            printf("preface!!!!! \n");
-            //no need ack response
-            info->setHttp2ShakeHandStatus(st(HttpPacketParser)::Comunicated);
-            //we should send a http setting frame;
-            Http2SettingFrame ackFrame = createHttp2SettingFrame();
-            info->getSocket()->getOutputStream()->write(ackFrame->toFrameData());
-        }
-        case st(HttpPacketParser)::Comunicated: {
-            printf("i got a communicated message \n");
-            auto iterator = packets->getIterator();
-            while(iterator->hasValue()) {
-                HttpPacket packet = iterator->getValue();
-                Http2Frame frame = packet->getFrame();
-                printf("frame type is %d \n",frame->getType());
-                switch(frame->getType()) {
-                    case st(Http2Frame)::TypeSettings: {
-                        Http2SettingFrame ackFrame = createHttp2SettingFrame();
-                        ackFrame->setAck(true);
-                        printf("send setting frame ack!!!!!!!!!!!!!!!!!!!!!!!!! \n");
-                        info->getSocket()->getOutputStream()->write(ackFrame->toFrameData());
-                    }
-                    break;
-                }
-                iterator->next();
-            }
-            
-            
-        }
-        break;
-    }
-}
 
 void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
     switch (event) {
@@ -116,26 +41,15 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
                 return;
             }
 
-            //support http2
-            switch(info->getProtocol()) {
-                case st(HttpProtocol)::Http_H2:
-                case st(HttpProtocol)::Http_H2C: {
-                    http2FrameProcessor(info);
-                    break;
+            ArrayList<HttpPacket> packets = info->pollHttpPacket();
+            if (packets != nullptr && packets->size() != 0) {
+                ListIterator<HttpPacket> iterator = packets->getIterator();
+                while (iterator->hasValue()) {
+                    mHttpListener->onHttpMessage(event, info, info->getWriter(),
+                                                iterator->getValue());
+                    iterator->next();
                 }
-                default: {
-                    ArrayList<HttpPacket> packets = info->pollHttpPacket();
-                    if (packets != nullptr && packets->size() != 0) {
-                        ListIterator<HttpPacket> iterator = packets->getIterator();
-                        while (iterator->hasValue()) {
-                            mHttpListener->onHttpMessage(event, info, info->getWriter(),
-                                                        iterator->getValue());
-                            iterator->next();
-                        }
-                    }
-                    break;
-                }
-            }            
+            }
         }
         break;
 
@@ -155,8 +69,6 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
     }
 }
 
-
-
 _HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option) {
     mHttpListener = l;
     mServerSock = nullptr;
@@ -164,7 +76,6 @@ _HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option) {
     mAddress = addr;
     mOption = option;
     mLinkerManager = createHttpLinkerManager();
-    mBase64 = createBase64();
 }
 
 void _HttpServer::start() {
@@ -226,6 +137,8 @@ void _HttpServer::close() {
     }
 }
 
-_HttpServer::~_HttpServer() { close(); }
+_HttpServer::~_HttpServer() { 
+    close(); 
+}
 
 } // namespace obotcha

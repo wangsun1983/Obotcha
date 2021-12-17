@@ -13,12 +13,12 @@ _HttpLinker::_HttpLinker(Socket s,int protocol) {
     mSocketOutput = s->getOutputStream();
     mSession = createHttpSession();
 
-    printf("HttpLinker protocol is %d \n",protocol);
     switch(protocol) {
         case st(HttpProtocol)::Http_H2:
         case st(HttpProtocol)::Http_H2C:
             mWriter = createHttp2PacketWriterImpl(mSocketOutput);//TODO
-            mParser = createHttp2StreamController();
+            //default use httpv1 parser
+            mParser = createHttpPacketParserImpl();
         break;
 
         default:
@@ -27,19 +27,22 @@ _HttpLinker::_HttpLinker(Socket s,int protocol) {
     }
 
     mProtocol = protocol;
-    mShakeHandStatus = st(HttpPacketParser)::ShakeHand;
+    mHttp2Status = st(HttpPacketParser)::ShakeHand;
 }
 
 int _HttpLinker::getProtocol() {
     return mProtocol;
 }
 
-int _HttpLinker::getHttp2ShakeHandStatus() {
-    return mShakeHandStatus;
+int _HttpLinker::getHttp2Status() {
+    return mHttp2Status;
 }
 
-void _HttpLinker::setHttp2ShakeHandStatus(int s) {
-    mShakeHandStatus = s;
+void _HttpLinker::setHttp2Status(int s) {
+    mHttp2Status = s;
+    if(s == st(HttpProtocol)::Http_H2 || s == st(HttpProtocol)::Http_H2C) {
+        mParser = createHttp2StreamController();
+    }
 }
 
 void _HttpLinker::close() {

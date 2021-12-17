@@ -173,6 +173,8 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/http2continuationframe.o \
 		$(outtmp)/http2goawayframe.o \
 		$(outtmp)/http2frameparser.o \
+		$(outtmp)/http2server.o \
+		$(outtmp)/http2packet.o \
 		$(outtmp)/hpackhuffmanencoder.o \
 		$(outtmp)/hpackhuffmandecoder.o \
 		$(outtmp)/hpacktableitem.o \
@@ -680,6 +682,9 @@ $(outtmp)/http2frame.o :$(netDir)/http/v2/Http2Frame.cpp
 $(outtmp)/http2frameparser.o :$(netDir)/http/v2/Http2FrameParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2FrameParser.cpp -o $(outtmp)/http2frameparser.o 
 
+$(outtmp)/http2packet.o :$(netDir)/http/v2/Http2Packet.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2Packet.cpp -o $(outtmp)/http2packet.o 
+
 $(outtmp)/http2streamcontroller.o :$(netDir)/http/v2/Http2StreamController.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2StreamController.cpp -o $(outtmp)/http2streamcontroller.o 
 
@@ -739,3 +744,6 @@ $(outtmp)/hpackdecoder.o :$(netDir)/http/v2/HPackDecoder.cpp
 
 $(outtmp)/hpacksensitivetable.o :$(netDir)/http/v2/HPackSensitiveTable.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/HPackSensitiveTable.cpp -o $(outtmp)/hpacksensitivetable.o 
+
+$(outtmp)/http2server.o :$(netDir)/http/v2/Http2Server.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2Server.cpp -o $(outtmp)/http2server.o 

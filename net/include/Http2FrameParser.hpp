@@ -9,6 +9,7 @@
 #include "ArrayList.hpp"
 #include "ByteArray.hpp"
 #include "HPackDecoder.hpp"
+#include "Http2Packet.hpp"
 
 namespace obotcha {
 

@@ -8,6 +8,8 @@
 #include "HPackEncoder.hpp"
 #include "HPackDecoder.hpp"
 #include "Http2Frame.hpp"
+#include "Http2Packet.hpp"
+#include "OutputStream.hpp"
 
 namespace obotcha {
 
@@ -70,9 +72,46 @@ open:
     Either endpoint can send a RST_STREAM frame from this state,
     causing it to transition immediately to "closed".
  */
+class _Http2Stream;
+
+DECLARE_CLASS(Http2StreamState) {
+public:
+    _Http2StreamState(_Http2Stream *);
+    virtual Http2Packet onReceived(Http2Frame) = 0;
+    virtual bool onSend(Http2Frame) = 0;
+    int state();
+
+protected:
+    int mState;
+    _Http2Stream * stream;
+};
+
+#define GEN_HTTP2_STATE(X) \
+DECLARE_CLASS(Http2Stream##X) IMPLEMENTS(Http2StreamState) {\
+public:\
+    _Http2Stream##X(_Http2Stream *);\
+    Http2Packet onReceived(Http2Frame);\
+    bool onSend(Http2Frame);\
+};\
+
+GEN_HTTP2_STATE(Idle)
+GEN_HTTP2_STATE(ReservedLocal)
+GEN_HTTP2_STATE(ReservedRemote)
+GEN_HTTP2_STATE(Open)
+GEN_HTTP2_STATE(HalfClosedLocal)
+GEN_HTTP2_STATE(HalfClosedRemote)
+GEN_HTTP2_STATE(Closed)
 
 DECLARE_CLASS(Http2Stream) {
 public:
+    friend class _Http2StreamIdle;
+    friend class _Http2StreamReservedLocal;
+    friend class _Http2StreamReservedRemote;
+    friend class _Http2StreamOpen;
+    friend class _Http2StreamHalfClosedLocal;
+    friend class _Http2StreamHalfClosedRemote;
+    friend class _Http2StreamClosed;
+    
     enum Status {
         Idle = 0,
         ReservedLocal,
@@ -83,21 +122,41 @@ public:
         Closed,
     };
     
-    _Http2Stream(HPackEncoder,HPackDecoder,int);
-    _Http2Stream(HPackEncoder,HPackDecoder,bool isServer = true);
+    _Http2Stream(HPackEncoder,HPackDecoder,int,OutputStream stream = nullptr);
+    _Http2Stream(HPackEncoder,HPackDecoder,bool isServer = true,OutputStream stream = nullptr);
     
     int getStreamId();
     void setStreamId(int);
 
-    bool applyFrame(Http2Frame);
+    Http2Packet applyFrame(Http2Frame);
+    void sendFrame(Http2Frame);
 
     int getStatus();
 
 private:
+    Http2StreamIdle IdleState;
+    Http2StreamReservedLocal ReservedLocalState;
+    Http2StreamReservedRemote ReservedRemoteState;
+    Http2StreamOpen OpenState;
+    Http2StreamHalfClosedLocal HalfClosedLocalState;
+    Http2StreamHalfClosedRemote HalfClosedRemoteState;
+    Http2StreamClosed ClosedState;
+    Http2StreamState mState;
+
+    static const char* IdleString;
+    static const char* ReservedLocalString;
+    static const char* ReservedRemoteString;
+    static const char* OpenString;
+    static const char* HalfClosedLocalString;
+    static const char* HalfClosedRemoteString;
+    static const char* ClosedString;
+
+    const char *stateToString(int);
+    
+    void moveTo(Http2StreamState);
+    
     int mStreamId;
     bool isServer;
-
-    int mStatus;
 
     static std::atomic_int mServerStreamId;
     static std::atomic_int mClientStreamId;
@@ -106,6 +165,8 @@ private:
     HPackDecoder decoder;
 
     HttpHeader header;
+
+    OutputStream out;
 };
 
 }

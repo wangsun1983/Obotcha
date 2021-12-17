@@ -43,12 +43,6 @@ public:
 
 
 private:
-    //wangsl
-    void setFrame(Http2Frame);
-    Http2Frame getFrame();
-    Http2Frame mFrame;
-    //wangsl
-
     HttpHeader mHeader;
     HttpEntity mEntity;
     int mType;

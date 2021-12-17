@@ -83,7 +83,7 @@ int _Http2Frame::getWeight() {
 }
 
 
-ByteArray _Http2Frame::toFrameData(int streamid,int flags) {
+ByteArray _Http2Frame::toFrameData() {
     ByteArray payload = toByteArray();
     int length = 0;
     //setting ack frame has no payload

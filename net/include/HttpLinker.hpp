@@ -32,10 +32,6 @@ public:
 
     int pushHttpData(ByteArray array);
 
-    //int send(ByteArray);
-
-    //int send(ByteArray,int);
-
     ArrayList<HttpPacket> pollHttpPacket();
 
     HttpPacketWriter getWriter();
@@ -50,8 +46,8 @@ public:
 
     int getProtocol();
 
-    int getHttp2ShakeHandStatus();
-    void setHttp2ShakeHandStatus(int);
+    int getHttp2Status();
+    void setHttp2Status(int);
 
 private:
     //HttpRequestParser mParser;
@@ -59,7 +55,7 @@ private:
 
     HttpPacketWriter mWriter;
 
-    int mShakeHandStatus;
+    int mHttp2Status;
 
     Socket mSocket;
 

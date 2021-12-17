@@ -14,6 +14,7 @@
 #include "Http2FrameParser.hpp"
 #include "Http2ShakeHandFrame.hpp"
 #include "Mutex.hpp"
+#include "Http2Packet.hpp"
 
 namespace obotcha {
 

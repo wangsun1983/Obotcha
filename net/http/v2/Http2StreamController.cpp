@@ -81,12 +81,16 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                         Http2Frame frame = iterator->getValue();
                         Http2Stream stream = streams->get(createInteger(frame->getStreamId()));
                         //TODO
-                        if(stream->applyFrame(frame)) {
-                            HttpPacket p = createHttpPacket();
-                            p->setFrame(frame);
+                        HttpPacket p = stream->applyFrame(frame);
+                        if(p != nullptr) {
                             packets->add(p);
-                            iterator->next();
                         }
+                        //if(stream->applyFrame(frame)) {
+                        //    Http2Packet p = createHttp2Packet();
+                            //p->setFrame(frame);
+                        //    packets->add(p);
+                        //   iterator->next();
+                        //}
                     }
                     return packets;
                 }

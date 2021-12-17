@@ -119,7 +119,7 @@ public:
     void setWeight(int);
     int getWeight();
 
-    ByteArray toFrameData(int streamid = 0x0,int flags = FlagNone);
+    ByteArray toFrameData();
     virtual void import(ByteArray);
 
     static const int DefaultWeight;
