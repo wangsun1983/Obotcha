@@ -38,9 +38,6 @@ public:
 
     enum Status {
         Idle = 0,
-        ShakeHand,
-        Preface,
-        Comunicated, //used for http2
         HeadStart,
         BodyStart,
     };

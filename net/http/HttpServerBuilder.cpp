@@ -24,6 +24,11 @@ _HttpServerBuilder *_HttpServerBuilder::setProtocol(int p) {
     return this;
 }
 
+_HttpServerBuilder *_HttpServerBuilder::setHttp2Listener(Http2Listener l) {
+    mHttp2Listener = l;
+    return this;
+}
+
 
 _HttpServerBuilder *_HttpServerBuilder::setOption(HttpOption option) {
     mOption = option;
@@ -50,6 +55,18 @@ HttpServer _HttpServerBuilder::build() {
     mOption->setProtocol(mProtocol);
 
     return createHttpServer(mAddress, mListener, mOption);
+}
+
+Http2Server _HttpServerBuilder::buildHttp2Server() {
+    if(mOption == nullptr) {
+        mOption = createHttpOption();
+    }
+    
+    mOption->setCertificate(mCertificatePath);
+    mOption->setKey(mKeyPath);
+    mOption->setProtocol(mProtocol);
+
+    return createHttp2Server(mAddress, mHttp2Listener, mOption);
 }
 
 } // namespace obotcha

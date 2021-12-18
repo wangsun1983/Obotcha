@@ -11,6 +11,9 @@
 #include "Socket.hpp"
 #include "SocketOption.hpp"
 
+#include "Http2Listener.hpp"
+#include "Http2Server.hpp"
+
 namespace obotcha {
 
 DECLARE_CLASS(HttpServerBuilder) {
@@ -24,7 +27,11 @@ DECLARE_CLASS(HttpServerBuilder) {
     _HttpServerBuilder *setKeyPath(String);
     _HttpServerBuilder *setProtocol(int);
 
+    _HttpServerBuilder *setHttp2Listener(Http2Listener);
+
     HttpServer build();
+    Http2Server buildHttp2Server();
+    
 
   private:
     InetAddress mAddress;
@@ -33,6 +40,8 @@ DECLARE_CLASS(HttpServerBuilder) {
     String mCertificatePath;
     String mKeyPath;
     int mProtocol;
+
+    Http2Listener mHttp2Listener;
 };
 
 } // namespace obotcha

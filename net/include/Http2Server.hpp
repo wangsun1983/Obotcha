@@ -55,8 +55,6 @@ private:
 
     HttpLinkerManager mLinkerManager;
 
-    Base64 mBase64;
-
 };
 
 }

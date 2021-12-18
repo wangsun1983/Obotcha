@@ -423,7 +423,7 @@ void _HPackDecoder::setDynamicTableSize(long dynamicTableSize) {
     mDynamicTable->setCapacity(dynamicTableSize);
 }
 
-void _HPackDecoder::insertHeader(HPackDecoderSink sink, String name, String value, int type) {
+void _HPackDecoder::insertHeader(Http2HeadersSink sink, String name, String value, int type) {
     sink->appendToHeaderList(name, value);
 
     switch (type) {

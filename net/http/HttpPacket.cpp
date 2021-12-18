@@ -31,4 +31,12 @@ void _HttpPacket::setEntity(HttpEntity entity) {
     mEntity = entity; 
 }
 
+void _HttpPacket::setType(int type) {
+    mType = type;
+}
+
+int _HttpPacket::getType() {
+    return mType;
+}
+
 } // namespace obotcha

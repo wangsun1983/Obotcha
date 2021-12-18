@@ -5,6 +5,7 @@
 #include "Http2HeaderFrame.hpp"
 #include "Http2ContinuationFrame.hpp"
 #include "Http2PushPromiseFrame.hpp"
+#include "HttpPacketParserImpl.hpp"
 #include "Log.hpp"
 
 namespace obotcha {
@@ -275,13 +276,16 @@ bool _Http2StreamClosed::onSend(Http2Frame frame) {
 }
 
 //------------------ Http2Stream -------------------------
-const char* IdleString = "Idle";
-const char* ReservedLocalString = "ReservedLocal";
-const char* ReservedRemoteString = "ReservedRemote";
-const char* OpenString = "Open";
-const char* HalfClosedLocalString = "HalfClosedLocal";
-const char* HalfClosedRemoteString = "HalfCLosedRemote";
-const char* ClosedString = "Closed";
+const char* _Http2Stream::IdleString = "Idle";
+const char* _Http2Stream::ReservedLocalString = "ReservedLocal";
+const char* _Http2Stream::ReservedRemoteString = "ReservedRemote";
+const char* _Http2Stream::OpenString = "Open";
+const char* _Http2Stream::HalfClosedLocalString = "HalfClosedLocal";
+const char* _Http2Stream::HalfClosedRemoteString = "HalfCLosedRemote";
+const char* _Http2Stream::ClosedString = "Closed";
+
+std::atomic_int _Http2Stream::mServerStreamId(2);
+std::atomic_int _Http2Stream::mClientStreamId(3);
 
 const char *_Http2Stream::stateToString(int s) {
     switch(s) {
@@ -315,12 +319,6 @@ _Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,int id,OutputStream str
 }
 
 _Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,bool isServer,OutputStream stream) {
-    static std::once_flag flag;
-    std::call_once(flag, [&]() {
-        mServerStreamId = 2;
-        mClientStreamId = 3;
-    });
-
     if(isServer) {
         mStreamId = mServerStreamId++;
     } else {
@@ -337,7 +335,6 @@ _Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,bool isServer,OutputStr
     HalfClosedLocalState = createHttp2StreamHalfClosedLocal(this);
     HalfClosedRemoteState = createHttp2StreamHalfClosedRemote(this);
     ClosedState = createHttp2StreamClosed(this);
-    mState = IdleState;
 
     out = stream;
 }

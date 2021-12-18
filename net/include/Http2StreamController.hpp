@@ -15,12 +15,14 @@
 #include "Http2ShakeHandFrame.hpp"
 #include "Mutex.hpp"
 #include "Http2Packet.hpp"
+#include "OutputStream.hpp"
+#include "Base64.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(Http2StreamController) IMPLEMENTS(HttpPacketParser){
 public:
-    _Http2StreamController();
+    _Http2StreamController(OutputStream);
     Http2Stream newStream();
     
     int pushHttpData(ByteArray);
@@ -29,6 +31,12 @@ public:
     void reset();
 
 private:
+    enum ControllerStatus {
+        ShakeHand = 0,
+        Preface,
+        Comunicate
+    };
+
     HPackEncoder encoder;
     HPackDecoder decoder;
 
@@ -41,6 +49,10 @@ private:
     Http2FrameParser mFrameParser;
     ByteRingArrayReader mReader;
     int mIndex;
+
+    OutputStream out;
+
+    Base64 mBase64;
 
 };
 

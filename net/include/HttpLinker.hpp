@@ -46,11 +46,12 @@ public:
 
     int getProtocol();
 
+    //support for http2
     int getHttp2Status();
+
     void setHttp2Status(int);
 
 private:
-    //HttpRequestParser mParser;
     HttpPacketParser mParser;
 
     HttpPacketWriter mWriter;

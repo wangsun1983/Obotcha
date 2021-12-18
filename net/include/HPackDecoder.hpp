@@ -15,13 +15,7 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(HPackDecoderSink) {
-public:
-    void appendToHeaderList(String name, String value);
-    void finish();
-};
-
-DECLARE_CLASS(Http2HeadersSink) IMPLEMENTS(HPackDecoderSink) {
+DECLARE_CLASS(Http2HeadersSink) {
 
 public:
     _Http2HeadersSink(int streamId, HttpHeader headers, long maxHeaderListSize, bool validate);
@@ -83,7 +77,7 @@ private:
     long decodeULE128(ByteArrayReader in, long result);
     void setDynamicTableSize(long dynamicTableSize);
 
-    void insertHeader(HPackDecoderSink sink, String name, String value, int type);
+    void insertHeader(Http2HeadersSink sink, String name, String value, int type);
 
     HPackDynamicTable mDynamicTable;
     long maxHeaderListSize;

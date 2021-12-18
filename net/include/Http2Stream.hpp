@@ -10,6 +10,7 @@
 #include "Http2Frame.hpp"
 #include "Http2Packet.hpp"
 #include "OutputStream.hpp"
+#include "HttpPacketParser.hpp"
 
 namespace obotcha {
 
@@ -113,6 +114,7 @@ public:
     friend class _Http2StreamClosed;
     
     enum Status {
+        //Http2 status
         Idle = 0,
         ReservedLocal,
         ReservedRemote,
@@ -167,6 +169,7 @@ private:
     HttpHeader header;
 
     OutputStream out;
+
 };
 
 }

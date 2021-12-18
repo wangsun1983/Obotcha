@@ -10,78 +10,31 @@ namespace obotcha {
 void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
     switch (event) {
         case SocketEvent::Message: {
+            printf("Http2Server on message start\n");
             HttpLinker info = mLinkerManager->getLinker(r);
-            ArrayList<HttpPacket> packets = info->pollHttpPacket();
-            if(packets == nullptr) {
+            if (info == nullptr) {
+                LOG(ERROR) << "http linker already removed";
                 return;
             }
 
-            switch(info->getHttp2Status()) {
-                case st(HttpPacketParser)::ShakeHand: {
-                    HttpPacket packet = packets->get(0);
-                    HttpHeader header = packet->getHeader();
-                    if(header->getMethod() == st(HttpMethod)::Get
-                        && header->getUpgrade()->toString()->equals("h2c")) {
-                        //we should decode it's setting frame
-                        String settingframe = header->get("http2-settings");
-                        printf("settingframe is %s \n",settingframe->toChars());
-                        ByteArray data = mBase64->decodeBase64Url(settingframe->toByteArray());
-                        data->dump("http settings!!!");
-                        //TEST
-                        Http2SettingFrame frame = createHttp2SettingFrame();
-                        frame->import(data);
-
-                        HttpPacketWriterImpl impl = createHttpPacketWriterImpl(info->getSocket()->getOutputStream());
-                        auto shakeHande = createHttp2ShakeHandFrame();
-                        impl->write(shakeHande->toShakeHandPacket(st(HttpProtocol)::Http_H2));
-
-                        //response get method
-                        info->setHttp2Status(st(HttpPacketParser)::Preface);
-                    } else if(header->getMethod() == st(HttpMethod)::Pri 
-                        && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
-                        info->setHttp2Status(st(HttpPacketParser)::Comunicated);
-                        //we should send a http setting frame;
-                        Http2SettingFrame ackFrame = createHttp2SettingFrame();
-                        info->getSocket()->getOutputStream()->write(ackFrame->toFrameData());
-                    }
-                }
-                break;
-
-                case st(HttpPacketParser)::Preface: {
-                    printf("preface!!!!! \n");
-                    //no need ack response
-                    info->setHttp2Status(st(HttpPacketParser)::Comunicated);
-                    //we should send a http setting frame;
-                    Http2SettingFrame ackFrame = createHttp2SettingFrame();
-                    info->getSocket()->getOutputStream()->write(ackFrame->toFrameData());
-                }
-                case st(HttpPacketParser)::Comunicated: {
-                    printf("i got a communicated message \n");
-                    auto iterator = packets->getIterator();
-                    while(iterator->hasValue()) {
-                        HttpPacket packet = iterator->getValue();
-                        /*
-                        TODO
-                        Http2Frame frame = packet->getFrame();
-                        printf("frame type is %d \n",frame->getType());
-                        switch(frame->getType()) {
-                            case st(Http2Frame)::TypeSettings: {
-                                Http2SettingFrame ackFrame = createHttp2SettingFrame();
-                                ackFrame->setAck(true);
-                                printf("send setting frame ack!!!!!!!!!!!!!!!!!!!!!!!!! \n");
-                                info->getSocket()->getOutputStream()->write(ackFrame->toFrameData());
-                            }
-                            break;
-                        }
-                        iterator->next();
-                         */
-                    }
-                }
-                break;
+            if (info->pushHttpData(pack) == -1) {
+                // some thing may be wrong(overflow)
+                LOG(ERROR) << "push http data error";
+                mHttpListener->onHttpMessage(SocketEvent::InternalError, info,
+                                            nullptr, nullptr);
+                mLinkerManager->removeLinker(r);
+                r->close();
+                return;
             }
-        }
-        break;
-        
+            printf("Http2Server on message trace1\n");
+            ArrayList<HttpPacket> packets = info->pollHttpPacket();
+            printf("Http2Server on message star2\n");
+            if(packets == nullptr) {
+                return;
+            }
+            
+            break;
+        }    
 
         case SocketEvent::Connect: {
             HttpLinker info = createHttpLinker(r,mOption->getProtocol());
@@ -107,7 +60,6 @@ _Http2Server::_Http2Server(InetAddress addr,Http2Listener l,HttpOption option) {
     mAddress = addr;
     mOption = option;
     mLinkerManager = createHttpLinkerManager();
-    mBase64 = createBase64();
 }
 
 void _Http2Server::start() {

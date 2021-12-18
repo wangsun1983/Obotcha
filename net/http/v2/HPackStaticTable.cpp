@@ -15,12 +15,15 @@ _HPackStaticTable::_HPackStaticTable() {
     static std::once_flag s_flag;
 
     std::call_once(s_flag, [&]() {
-
+    int count = 0;
 #define INIT_STATIC_TABLE_ITEM_WITH_VALUE(index,vname,val) \
-    STATIC_TABLE[index]->name = vname;\
-    STATIC_TABLE[index]->value = val;\
-    STATIC_TABLE[index]->id = index;
-    
+    HPackTableItem item_##index = createHPackTableItem();\
+    item_##index->name = vname;\
+    item_##index->value = val;\
+    item_##index->id = index;\
+    STATIC_TABLE[count] = item_##index;\
+    count++;\
+
         STATIC_TABLE = createList<HPackTableItem>(IdMax);
         /*  1 */ INIT_STATIC_TABLE_ITEM_WITH_VALUE(1,":authority",nullptr);
 
@@ -149,7 +152,7 @@ _HPackStaticTable::_HPackStaticTable() {
         //init index map
         INDEX_TABLE = createHashMap<String,HPackTableItem>();
         int size = STATIC_TABLE->size();
-        for(int i = 1;i<IdMax;i++) {
+        for(int i = 0;i<IdMax - 1;i++) {
             String tag = STATIC_TABLE[i]->name;
             INDEX_TABLE->put(tag,STATIC_TABLE[i]);
         }
@@ -160,7 +163,7 @@ _HPackStaticTable::_HPackStaticTable() {
         * names are unique. 
         */
         int length = STATIC_TABLE->size();
-        HPackTableItem cursor = getEntry(length);
+        HPackTableItem cursor = getEntry(length - 1);
         for (int index = length - 1; index > 0; index--) {
             HPackTableItem entry = getEntry(index);
             if (st(String)::contentEquals(entry->name,cursor->name)) {
