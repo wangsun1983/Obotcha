@@ -3066,7 +3066,7 @@ String _HttpHeader::toString(int type) {
     }
     
     // conver header
-    MapIterator<String, String> headerIte = mValues->getIterator();
+    MapIterator<String, String> headerIte = getIterator();
 
     while (headerIte->hasValue()) {
         String headString = headerIte->getKey();

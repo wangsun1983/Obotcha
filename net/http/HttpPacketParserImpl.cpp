@@ -21,11 +21,9 @@ _HttpPacketParserImpl::_HttpPacketParserImpl(ByteRingArray ring) {
 }
 
 _HttpPacketParserImpl::_HttpPacketParserImpl():
-                _HttpPacketParserImpl(createByteRingArray(mEnv->getInt(st(Enviroment)::gHttpBufferSize, 64 * 1024))) {
+                _HttpPacketParserImpl(createByteRingArray(st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpBufferSize, 64 * 1024))) {
 
 }
-
-
 
 void _HttpPacketParserImpl::reset() {
     mBuff->reset();
