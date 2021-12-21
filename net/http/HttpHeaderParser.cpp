@@ -15,7 +15,9 @@ _HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r) {
     mCRLFIndex = 0;
 }
 
-void _HttpHeaderParser::changeToParseHeader() { mStatus = Header; }
+void _HttpHeaderParser::changeToParseHeader() { 
+    mStatus = Header; 
+}
 
 bool _HttpHeaderParser::isLineEnd(byte &v) {
     if(v == '\r' && mCRLFIndex == 0) {

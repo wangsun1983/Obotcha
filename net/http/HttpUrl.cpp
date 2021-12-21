@@ -274,7 +274,9 @@ String _HttpUrl::getUser() {
     return mUser; 
 }
 
-void _HttpUrl::setPassword(String data) { mPassword = data; }
+void _HttpUrl::setPassword(String data) { 
+    mPassword = data; 
+}
 
 String _HttpUrl::getPassword() { return mPassword; }
 

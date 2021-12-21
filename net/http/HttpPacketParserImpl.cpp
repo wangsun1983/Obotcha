@@ -17,7 +17,7 @@ _HttpPacketParserImpl::_HttpPacketParserImpl(ByteRingArray ring) {
     mBodyStartCount = 0;
     mStatus = Idle;
     mSubStatus = None;
-    isChunkedWTrailingHeaders = false;
+    //isChunkedWTrailingHeaders = false;
 }
 
 _HttpPacketParserImpl::_HttpPacketParserImpl():
@@ -31,7 +31,7 @@ void _HttpPacketParserImpl::reset() {
     mBodyStartCount = 0;
     mStatus = Idle;
     mSubStatus = None;
-    isChunkedWTrailingHeaders = false;
+    //isChunkedWTrailingHeaders = false;
 }
 
 int _HttpPacketParserImpl::pushHttpData(ByteArray data) {
@@ -81,29 +81,29 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                 }
                 HttpHeader header = mHttpHeaderParser->doParse();
                 if (header == nullptr) {
-                    if(mReader->isDrained() || mReader->getReadableLength() == 0) {
-                        if(isChunkedWTrailingHeaders) {
-                            packets->add(mHttpPacket);
-                            mHttpHeaderParser = nullptr;
-                            mMultiPartParser = nullptr;
-                            mChunkParser = nullptr;
-                            isChunkedWTrailingHeaders = false;
-                        }
-                        return packets;
-                    }
-                    continue;
+                    //if(mReader->isDrained() || mReader->getReadableLength() == 0) {
+                    //    if(isChunkedWTrailingHeaders) {
+                    //        packets->add(mHttpPacket);
+                    //       mHttpHeaderParser = nullptr;
+                    //        mMultiPartParser = nullptr;
+                    //        mChunkParser = nullptr;
+                    //        isChunkedWTrailingHeaders = false;
+                    //    }
+                    //    return packets;
+                    //}
+                    //continue;
+                    printf("parse finished!!! \n");
+                    return packets;
                 }
                 //printf("HttpPacketParserImpl Idle trace2,header is %s \n",header->toString(st(HttpPacket)::Request)->toChars());
-                if(!isChunkedWTrailingHeaders) {
-                    if(header->getResponseReason() != nullptr) {
-                        mHttpPacket->setType(st(HttpPacket)::Response);
-                    } else {
-                        mHttpPacket->setType(st(HttpPacket)::Request);
-                    }
-                    mHttpPacket->setHeader(header);
+                
+                if(header->getResponseReason() != nullptr) {
+                    mHttpPacket->setType(st(HttpPacket)::Response);
                 } else {
-                    mHttpPacket->getHeader()->addHttpHeader(header);
+                    mHttpPacket->setType(st(HttpPacket)::Request);
                 }
+                mHttpPacket->setHeader(header);
+                
 
                 mStatus = BodyStart;
                 continue;
@@ -118,35 +118,36 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
 
                 //check whether there is a chunck transfer
                 if(transferEncoding != nullptr) {
+                    printf("HttpPacketParserImpl BodyStart trace1_1 \n");
                     ArrayList<String> encodings = transferEncoding->get();    
                     encodings->foreach([&isTransferChuncked](String s) {
+                        printf("HttpPacketParserImpl BodyStart trace1_2,s is %s\n",s->toChars());
                         if(s->equalsIgnoreCase(st(HttpHeader)::TransferChunked)) {
+                            printf("HttpPacketParserImpl BodyStart trace1_3 \n");
                             isTransferChuncked = true;
                             return Global::Break;   
                         }
                         return Global::Continue;
                     });
                 }
-
+                printf("HttpPacketParserImpl BodyStart trace1_3 \n");
                 if (isTransferChuncked) {
+                    printf("HttpPacketParserImpl BodyStart trace1_4 \n");
                     if (mChunkParser == nullptr) {
                         mChunkParser = createHttpChunkParser(mReader);
                     }
 
                     ByteArray data = mChunkParser->doParse();
-                    
+                    printf("data is %s \n",data->toString()->toChars());
                     if (data != nullptr) {
                         mHttpPacket->getEntity()->setContent(data);
+                        packets->add(mHttpPacket);
+                        mHttpHeaderParser = nullptr;
+                        mMultiPartParser = nullptr;
                         mChunkParser = nullptr;
-                        //case:CHUNKED_W_TRAILING_HEADERS
-                        //httpheader exists after chunked message.
                         mStatus = Idle;
-                        mHttpHeaderParser->changeToParseHeader();
-                        isChunkedWTrailingHeaders = true;
-                        continue;
                     }
-
-                    return packets;
+                    continue;
                 }
 
                 if (contentlength == nullptr || contentlength->get() <= 0) {
@@ -195,7 +196,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                     mHttpHeaderParser = nullptr;
                     mMultiPartParser = nullptr;
                     mChunkParser = nullptr;
-                    isChunkedWTrailingHeaders = false;
+                    //isChunkedWTrailingHeaders = false;
                     mStatus = Idle;
                     continue;
                 }
@@ -214,7 +215,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         mHttpHeaderParser = nullptr;
                         mMultiPartParser = nullptr;
                         mChunkParser = nullptr;
-                        isChunkedWTrailingHeaders = false;
+                        //isChunkedWTrailingHeaders = false;
                         mStatus = Idle;
                         continue;
                     }
@@ -255,7 +256,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         mHttpHeaderParser = nullptr;
                         mMultiPartParser = nullptr;
                         mChunkParser = nullptr;
-                        isChunkedWTrailingHeaders = false;
+                        //isChunkedWTrailingHeaders = false;
                         continue;
                     } else {
                         int length = mReader->getReadableLength();
