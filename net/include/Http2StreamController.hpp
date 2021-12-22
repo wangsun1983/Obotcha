@@ -17,6 +17,7 @@
 #include "Http2Packet.hpp"
 #include "OutputStream.hpp"
 #include "Base64.hpp"
+#include "HttpPacketWriter.hpp"
 
 namespace obotcha {
 

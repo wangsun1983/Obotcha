@@ -11,6 +11,7 @@
 #include "Http2Packet.hpp"
 #include "OutputStream.hpp"
 #include "HttpPacketParser.hpp"
+#include "HttpPacketWriter.hpp"
 
 namespace obotcha {
 
@@ -103,7 +104,7 @@ GEN_HTTP2_STATE(HalfClosedLocal)
 GEN_HTTP2_STATE(HalfClosedRemote)
 GEN_HTTP2_STATE(Closed)
 
-DECLARE_CLASS(Http2Stream) {
+DECLARE_CLASS(Http2Stream) IMPLEMENTS(HttpPacketWriter){
 public:
     friend class _Http2StreamIdle;
     friend class _Http2StreamReservedLocal;
@@ -132,6 +133,10 @@ public:
 
     Http2Packet applyFrame(Http2Frame);
     void sendFrame(Http2Frame);
+
+    //TODO
+    int write(HttpPacket);
+    ByteArray data(HttpPacket);
 
     int getStatus();
 

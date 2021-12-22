@@ -17,7 +17,6 @@ _HttpPacketParserImpl::_HttpPacketParserImpl(ByteRingArray ring) {
     mBodyStartCount = 0;
     mStatus = Idle;
     mSubStatus = None;
-    //isChunkedWTrailingHeaders = false;
 }
 
 _HttpPacketParserImpl::_HttpPacketParserImpl():
@@ -31,7 +30,6 @@ void _HttpPacketParserImpl::reset() {
     mBodyStartCount = 0;
     mStatus = Idle;
     mSubStatus = None;
-    //isChunkedWTrailingHeaders = false;
 }
 
 int _HttpPacketParserImpl::pushHttpData(ByteArray data) {
@@ -74,29 +72,15 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
     while (1) {
         switch (mStatus) {
             case Idle: {
-                printf("HttpPacketParserImpl Idle trace1 \n");
                 if (mHttpHeaderParser == nullptr) {
                     mHttpHeaderParser = createHttpHeaderParser(mReader);
                     mHttpPacket = createHttpPacket();
                 }
                 HttpHeader header = mHttpHeaderParser->doParse();
                 if (header == nullptr) {
-                    //if(mReader->isDrained() || mReader->getReadableLength() == 0) {
-                    //    if(isChunkedWTrailingHeaders) {
-                    //        packets->add(mHttpPacket);
-                    //       mHttpHeaderParser = nullptr;
-                    //        mMultiPartParser = nullptr;
-                    //        mChunkParser = nullptr;
-                    //        isChunkedWTrailingHeaders = false;
-                    //    }
-                    //    return packets;
-                    //}
-                    //continue;
-                    printf("parse finished!!! \n");
                     return packets;
                 }
-                //printf("HttpPacketParserImpl Idle trace2,header is %s \n",header->toString(st(HttpPacket)::Request)->toChars());
-                
+
                 if(header->getResponseReason() != nullptr) {
                     mHttpPacket->setType(st(HttpPacket)::Response);
                 } else {
@@ -104,13 +88,11 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                 }
                 mHttpPacket->setHeader(header);
                 
-
                 mStatus = BodyStart;
                 continue;
             }
 
             case BodyStart: {
-                printf("HttpPacketParserImpl BodyStart trace1 \n");
                 auto contentlength = mHttpPacket->getHeader()->getContentLength();
                 auto contenttype = mHttpPacket->getHeader()->getContentType();
                 auto transferEncoding = mHttpPacket->getHeader()->getTransferEncoding();
@@ -118,27 +100,21 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
 
                 //check whether there is a chunck transfer
                 if(transferEncoding != nullptr) {
-                    printf("HttpPacketParserImpl BodyStart trace1_1 \n");
                     ArrayList<String> encodings = transferEncoding->get();    
                     encodings->foreach([&isTransferChuncked](String s) {
-                        printf("HttpPacketParserImpl BodyStart trace1_2,s is %s\n",s->toChars());
                         if(s->equalsIgnoreCase(st(HttpHeader)::TransferChunked)) {
-                            printf("HttpPacketParserImpl BodyStart trace1_3 \n");
                             isTransferChuncked = true;
                             return Global::Break;   
                         }
                         return Global::Continue;
                     });
                 }
-                printf("HttpPacketParserImpl BodyStart trace1_3 \n");
                 if (isTransferChuncked) {
-                    printf("HttpPacketParserImpl BodyStart trace1_4 \n");
                     if (mChunkParser == nullptr) {
                         mChunkParser = createHttpChunkParser(mReader);
                     }
 
                     ByteArray data = mChunkParser->doParse();
-                    printf("data is %s \n",data->toString()->toChars());
                     if (data != nullptr) {
                         mHttpPacket->getEntity()->setContent(data);
                         packets->add(mHttpPacket);
@@ -158,27 +134,23 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                     auto con = mHttpPacket->getHeader()->getConnection();
                     if(mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Pri) {
                         //TODO
-                        printf("it is a http2 pri \n");
                         if(mPriContentParser == nullptr) {
                             mPriContentParser = createHttpPriContentParser(mReader);
                         }
 
                         auto content = mPriContentParser->doParse();
-                        printf("content is %s \n",content->toString()->toChars());
                         if(content != nullptr) {
                             mHttpPacket->getEntity()->setContent(content);
                         } else {
                             continue;
                         }
                     } else if (mHttpPacket->getHeader()->getUpgrade() != nullptr ||
-                        mHttpPacket->getHeader()->getMethod() ==
-                            st(HttpMethod)::Connect) {
+                        mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Connect) {
                         int restLength = mReader->getReadableLength();
                         if (restLength != 0) {
                             mReader->move(restLength);
                             ByteArray content = mReader->pop();
-                            mHttpPacket->getEntity()->setUpgrade(
-                                content->toString());
+                            mHttpPacket->getEntity()->setUpgradeContent(content->toString());
                         }
                     } else if (((con != nullptr) && con->get()->equals("close"))||
                             mHttpPacket->getHeader()->getType() == st(HttpHeader)::Response) {
@@ -203,7 +175,6 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
 
                 if (contenttype != nullptr && 
                     contenttype->getType()->containsIgnoreCase(st(HttpMime)::MultiPartFormData)) {
-                    printf("HttpPacketParserImpl BodyStart trace2 \n");
                     if (mMultiPartParser == nullptr) {
                         mMultiPartParser = createHttpMultiPartParser(
                             contenttype->getBoundary(), contentlength->get());
@@ -215,7 +186,6 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         mHttpHeaderParser = nullptr;
                         mMultiPartParser = nullptr;
                         mChunkParser = nullptr;
-                        //isChunkedWTrailingHeaders = false;
                         mStatus = Idle;
                         continue;
                     }
@@ -233,7 +203,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         }
                         // check whether it is a X-URLEncoded
                         if (mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Connect) {
-                            mHttpPacket->getEntity()->setUpgrade(content->toString());
+                            mHttpPacket->getEntity()->setUpgradeContent(content->toString());
                         } else {
                             mHttpPacket->getEntity()->setContent(content);
                         }
@@ -241,22 +211,21 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         mSavedContentBuff = nullptr;
 
                         // we should check whether it is a upgrade message
-                        //if (mHttpPacket->getHeader()->getUpgrade() != nullptr) {
-                        //    int resetLength = mReader->getReadableLength();
-                        //    if (resetLength > 0) {
-                        //        mReader->move(resetLength);
-                        //        ByteArray content = mReader->pop();
-                        //        mHttpPacket->getEntity()->setUpgrade(
-                        //            content->toString());
-                        //    }
-                        //}
+                        //Test Case UPGRADE_POST_REQUEST
+                        if (mHttpPacket->getHeader()->getUpgrade() != nullptr) {
+                            int resetLength = mReader->getReadableLength();
+                            if (resetLength > 0) {
+                                mReader->move(resetLength);
+                                ByteArray content = mReader->pop();
+                                mHttpPacket->getEntity()->setUpgradeContent(content->toString());
+                            }
+                        }
 
                         mStatus = Idle;
                         packets->add(mHttpPacket);
                         mHttpHeaderParser = nullptr;
                         mMultiPartParser = nullptr;
                         mChunkParser = nullptr;
-                        //isChunkedWTrailingHeaders = false;
                         continue;
                     } else {
                         int length = mReader->getReadableLength();

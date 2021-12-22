@@ -95,6 +95,10 @@ void _HttpHeaderParser::parseHeader(String line) {
     int pos = 0;
     //while (pos < line->size()) {
     int tokenStart = pos;
+    printf("line is %s \n",line->toChars());
+    //remove all \r\n
+    line = line->replaceAll("\r\n","");
+    
     pos = st(HttpHeaderContentParser)::skipUntil(line, pos,
                                                     createString(":"));
     String directive =
@@ -102,6 +106,7 @@ void _HttpHeaderParser::parseHeader(String line) {
 
     pos++;
     String content = line->subString(pos,line->size() - pos)->trim(); //remove \r\n
+    printf("directive is %s,content is %s \n",directive->toChars(),content->toChars());
     mHeader->set(directive, content);
 }
 
@@ -137,7 +142,7 @@ HttpHeader _HttpHeaderParser::doParse() {
                     if(content->size() == 2 && content->equals(st(HttpText)::CRLF)) {
                         //This is end!!!
                         if(mPredictValue != nullptr) {
-                            parseHeader(mPredictValue->subString(0,mPredictValue->size() - 2));
+                            parseHeader(mPredictValue);
                         }
                         auto result = mHeader;
                         mHeader = nullptr;
@@ -151,11 +156,11 @@ HttpHeader _HttpHeaderParser::doParse() {
                         if(mPredictValue == nullptr) {
                             mPredictValue = content;
                         } else {
-                            mPredictValue = mPredictValue->append(content->subString(0,content->size() - 2));
+                            mPredictValue = mPredictValue->append(content);
                         }
                     } else {
                         if(mPredictValue != nullptr) {
-                            parseHeader(mPredictValue->subString(0,mPredictValue->size() - 2));
+                            parseHeader(mPredictValue);
                             mPredictValue = content;
                         } 
 

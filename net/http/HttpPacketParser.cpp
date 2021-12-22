@@ -3,7 +3,6 @@
 namespace obotcha {
 
 int _HttpPacketParser::getStatus() {
-    printf("parser get status is %d \n",mStatus);
     return mStatus;
 }
     

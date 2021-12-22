@@ -23,8 +23,8 @@ public:
     ByteArray getContent();
     void setContent(ByteArray);
 
-    String getUpgrade();
-    void setUpgrade(String);
+    String getUpgradeContent();
+    void setUpgradeContent(String);
 
     File getChunkFile();
     void setChunkFile(File);

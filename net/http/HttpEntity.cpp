@@ -22,11 +22,11 @@ void _HttpEntity::setContent(ByteArray data) {
     mContent = data; 
 }
 
-String _HttpEntity::getUpgrade() { 
+String _HttpEntity::getUpgradeContent() { 
     return mUpgrade; 
 }
 
-void _HttpEntity::setUpgrade(String u) { 
+void _HttpEntity::setUpgradeContent(String u) { 
     mUpgrade = u; 
 }
 

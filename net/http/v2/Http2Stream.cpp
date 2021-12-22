@@ -6,6 +6,8 @@
 #include "Http2ContinuationFrame.hpp"
 #include "Http2PushPromiseFrame.hpp"
 #include "HttpPacketParserImpl.hpp"
+#include "Http2DataFrame.hpp"
+#include "Http2Packet.hpp"
 #include "Log.hpp"
 
 namespace obotcha {
@@ -179,6 +181,11 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
             stream->moveTo(stream->ClosedState);
             return nullptr;
         }
+
+        case st(Http2Frame)::TypeData: {
+            Http2DataFrame dataFrame = Cast<Http2DataFrame>(frame);
+            return createHttp2Packet(stream->getStreamId(),stream->header,dataFrame->getData());
+        }
         break;
     }
 
@@ -192,8 +199,14 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
 bool _Http2StreamOpen::onSend(Http2Frame frame) {
     int type = frame->getType();
     switch(type) {
-        case st(Http2Frame)::TypeRstStream:
+        case st(Http2Frame)::TypeRstStream: {
             stream->moveTo(stream->ClosedState);
+        }
+        break;
+
+        case st(Http2Frame)::TypeData: {
+            stream->out->write(frame->toFrameData());
+        }
         break;
     }
 
@@ -352,6 +365,29 @@ void _Http2Stream::moveTo(Http2StreamState s) {
 }
 
 Http2Packet _Http2Stream::applyFrame(Http2Frame frame) {
+    return nullptr;
+}
+
+
+int _Http2Stream::write(HttpPacket packet) {
+    Http2Packet pack = Cast<Http2Packet>(packet);
+
+    //this is called from user's Http2ResponseWriter....
+    Http2HeaderFrame frame  = createHttp2HeaderFrame(decoder,encoder);
+    frame->setHeader(pack->getHeader());
+    frame->setStreamId(this->getStreamId());
+    mState->onSend(frame);
+
+    Http2DataFrame dataFrame = createHttp2DataFrame();
+    dataFrame->setData(pack->getData());
+    dataFrame->setStreamId(this->getStreamId());
+    mState->onSend(dataFrame);
+
+    return 0;
+}
+
+ByteArray _Http2Stream::data(HttpPacket) {
+    //TODO
     return nullptr;
 }
 

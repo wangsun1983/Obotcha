@@ -14,12 +14,13 @@ _Http2StreamController::_Http2StreamController(OutputStream out) {
     mRingArray = createByteRingArray(st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpBufferSize, 4 * 1024));
     shakeHandFrame = createHttp2ShakeHandFrame(mRingArray);
     mReader = createByteRingArrayReader(mRingArray);
-    mFrameParser = createHttp2FrameParser(mReader,decoder);
     mBase64 = createBase64();
     mIndex = 0;
 
     encoder = createHPackEncoder();
     decoder = createHPackDecoder();
+    mFrameParser = createHttp2FrameParser(mReader,decoder);
+    
     mMutex = createMutex();
     streams = createHashMap<Integer,Http2Stream>();
     this->out = out;
@@ -97,7 +98,6 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     && packet->getEntity()->getContent()->toString()->equalsIgnoreCase("SM")) {
                     mStatus = Comunicate;
                     //we should send a http setting frame;
-                    mStatus = Preface;
                     mRingArray->reset();
                     Http2SettingFrame ackFrame = createHttp2SettingFrame();
                     out->write(ackFrame->toFrameData());
