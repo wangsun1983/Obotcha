@@ -19,6 +19,7 @@
 #include "HttpPacketParserImpl.hpp"
 #include "HttpProtocol.hpp"
 #include "HttpPacketWriter.hpp"
+#include "Http2StreamController.hpp"
 
 namespace obotcha {
 
@@ -46,17 +47,13 @@ public:
 
     int getProtocol();
 
-    //support for http2
-    int getHttp2Status();
-
-    void setHttp2Status(int);
+    //use to http2
+    int pushPacket(HttpPacket);
 
 private:
     HttpPacketParser mParser;
 
     HttpPacketWriter mWriter;
-
-    int mHttp2Status;
 
     Socket mSocket;
 
@@ -65,6 +62,9 @@ private:
     HttpSession mSession;
 
     int mProtocol;
+
+    //Http2Stream Controller
+    Http2StreamController mHttp2StreamController;
 };
 
 }

@@ -182,7 +182,7 @@ HPackTableItem _HPackStaticTable::get(int id) {
         return nullptr;
     }
 
-    return STATIC_TABLE[id];
+    return STATIC_TABLE[id - 1];
 }
 
 HPackTableItem _HPackStaticTable::get(String tag) {

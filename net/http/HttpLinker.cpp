@@ -17,8 +17,10 @@ _HttpLinker::_HttpLinker(Socket s,int protocol) {
         case st(HttpProtocol)::Http_H2:
         case st(HttpProtocol)::Http_H2C:
             mWriter = createHttp2PacketWriterImpl(mSocketOutput);//TODO
+            
             //default use httpv1 parser
-            mParser = createHttp2StreamController(mSocketOutput);
+            mHttp2StreamController = createHttp2StreamController(mSocketOutput);
+            mParser = mHttp2StreamController;
         break;
 
         default:
@@ -31,14 +33,6 @@ _HttpLinker::_HttpLinker(Socket s,int protocol) {
 
 int _HttpLinker::getProtocol() {
     return mProtocol;
-}
-
-int _HttpLinker::getHttp2Status() {
-    return mHttp2Status;
-}
-
-void _HttpLinker::setHttp2Status(int s) {
-    mHttp2Status = s;
 }
 
 void _HttpLinker::close() {
@@ -68,6 +62,12 @@ HttpSession _HttpLinker::getSession() {
 
 HttpPacketWriter _HttpLinker::getWriter() {
     return mWriter;
+}
+
+int _HttpLinker::pushPacket(HttpPacket p) {
+    Http2Packet packet = Cast<Http2Packet>(p);
+    Http2Stream stream = mHttp2StreamController->newStream();
+    return stream->write(packet);
 }
 
 } // namespace obotcha
