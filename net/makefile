@@ -162,8 +162,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/http2stream.o \
 		$(outtmp)/http2frame.o \
 		$(outtmp)/http2protocol.o \
-		$(outtmp)/http2packetwriterimp.o \
-		$(outtmp)/http2shakehandframe.o \
+		$(outtmp)/http2packetwriterimpl.o \
 		$(outtmp)/http2settingframe.o \
 		$(outtmp)/http2headerframe.o \
 		$(outtmp)/http2rstframe.o \
@@ -173,10 +172,12 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/http2continuationframe.o \
 		$(outtmp)/http2goawayframe.o \
 		$(outtmp)/http2frameparser.o \
+		$(outtmp)/http2responsewriter.o \
 		$(outtmp)/http2pingframe.o \
 		$(outtmp)/http2server.o \
 		$(outtmp)/http2packet.o \
 		$(outtmp)/http2pushpromiseframe.o \
+		$(outtmp)/http2shakehandframe.o \
 		$(outtmp)/hpackhuffmanencoder.o \
 		$(outtmp)/hpackhuffmandecoder.o \
 		$(outtmp)/hpacktableitem.o \
@@ -684,6 +685,9 @@ $(outtmp)/http2frame.o :$(netDir)/http/v2/Http2Frame.cpp
 $(outtmp)/http2frameparser.o :$(netDir)/http/v2/Http2FrameParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2FrameParser.cpp -o $(outtmp)/http2frameparser.o 
 
+$(outtmp)/http2responsewriter.o :$(netDir)/http/v2/Http2ResponseWriter.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2ResponseWriter.cpp -o $(outtmp)/http2responsewriter.o 
+
 $(outtmp)/http2pingframe.o :$(netDir)/http/v2/Http2PingFrame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2PingFrame.cpp -o $(outtmp)/http2pingframe.o 
 
@@ -699,11 +703,8 @@ $(outtmp)/http2stream.o :$(netDir)/http/v2/Http2Stream.cpp
 $(outtmp)/http2protocol.o :$(netDir)/http/v2/Http2Protocol.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2Protocol.cpp -o $(outtmp)/http2protocol.o 
 
-$(outtmp)/http2packetwriterimp.o :$(netDir)/http/v2/Http2PacketWriterImpl.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2PacketWriterImpl.cpp -o $(outtmp)/http2packetwriterimp.o 
-
-$(outtmp)/http2shakehandframe.o :$(netDir)/http/v2/Http2ShakeHandFrame.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2ShakeHandFrame.cpp -o $(outtmp)/http2shakehandframe.o 
+$(outtmp)/http2packetwriterimpl.o :$(netDir)/http/v2/Http2PacketWriterImpl.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2PacketWriterImpl.cpp -o $(outtmp)/http2packetwriterimpl.o 
 
 $(outtmp)/http2settingframe.o :$(netDir)/http/v2/Http2SettingFrame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2SettingFrame.cpp -o $(outtmp)/http2settingframe.o 
@@ -725,6 +726,9 @@ $(outtmp)/http2windowupdateframe.o :$(netDir)/http/v2/Http2WindowUpdateFrame.cpp
 
 $(outtmp)/http2pushpromiseframe.o :$(netDir)/http/v2/Http2PushPromiseFrame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2PushPromiseFrame.cpp -o $(outtmp)/http2pushpromiseframe.o 
+
+$(outtmp)/http2shakehandframe.o :$(netDir)/http/v2/Http2ShakeHandFrame.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2ShakeHandFrame.cpp -o $(outtmp)/http2shakehandframe.o 
 
 $(outtmp)/http2continuationframe.o :$(netDir)/http/v2/Http2ContinuationFrame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2ContinuationFrame.cpp -o $(outtmp)/http2continuationframe.o 

@@ -11,12 +11,18 @@
 #include "HttpPacket.hpp"
 #include "SocketListener.hpp"
 #include "HttpPacketWriter.hpp"
+#include "Http2Frame.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(Http2ResponseWriter) {
+DECLARE_CLASS(Http2ResponseWriter) IMPLEMENTS(HttpPacketWriter){
 public:
+    _Http2ResponseWriter(Http2Stream);
+    int write(HttpPacket);
+    ByteArray data(HttpPacket);
 
+private:
+    Http2Stream stream;
 };
 
 }

@@ -3,7 +3,6 @@
 #include "Log.hpp"
 #include "Http2SettingFrame.hpp"
 #include "HttpPacketWriterImpl.hpp"
-#include "Http2ShakeHandFrame.hpp"
 
 namespace obotcha {
 
@@ -29,8 +28,19 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
             printf("Http2Server on message trace1\n");
             ArrayList<HttpPacket> packets = info->pollHttpPacket();
             printf("Http2Server on message star2\n");
-            if(packets == nullptr) {
+            if(packets == nullptr||packets->size() == 0) {
                 return;
+            }
+
+            auto iterator = packets->getIterator();
+            while(iterator->hasValue()) {
+                HttpPacket p = iterator->getValue();
+                Http2Packet p2 = Cast<Http2Packet>(p);
+
+                Http2Stream stream = info->getStreamController()->getStream(p2->getStreamId());
+                Http2ResponseWriter writer = createHttp2ResponseWriter(stream);
+
+                mHttpListener->onHttpMessage(SocketEvent::Message, info,writer, p2);
             }
             
             break;

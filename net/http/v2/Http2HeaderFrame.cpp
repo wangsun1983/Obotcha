@@ -81,8 +81,10 @@ void _Http2HeaderFrame::import(ByteArray data) {
     reader->readByteArray(headerBlock);
     decoder->decode(this->streamid,headerBlock,headers,true);
 
-    paddingData = createByteArray(paddingLength);
-    reader->readByteArray(paddingData);
+    if(paddingLength > 0) {
+        paddingData = createByteArray(paddingLength);
+        reader->readByteArray(paddingData);
+    }
 }
 
 HttpHeader _Http2HeaderFrame::getHeader() {

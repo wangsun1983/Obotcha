@@ -327,7 +327,7 @@ const char *_Http2Stream::stateToString(int s) {
     return nullptr;
 }
     
-_Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,int id,OutputStream stream):_Http2Stream(e,d,(id%2) == 0,stream) {
+_Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,uint32_t id,OutputStream stream):_Http2Stream(e,d,(id%2) == 0,stream) {
     mStreamId = id;
 }
 
@@ -384,11 +384,6 @@ int _Http2Stream::write(HttpPacket packet) {
     mState->onSend(dataFrame);
 
     return 0;
-}
-
-ByteArray _Http2Stream::data(HttpPacket) {
-    //TODO
-    return nullptr;
 }
 
 }

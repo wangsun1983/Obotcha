@@ -48,7 +48,8 @@ public:
     int getProtocol();
 
     //use to http2
-    int pushPacket(HttpPacket);
+    //int pushPacket(HttpPacket);
+    Http2StreamController getStreamController();
 
 private:
     HttpPacketParser mParser;

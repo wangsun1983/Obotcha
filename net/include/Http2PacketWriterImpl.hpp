@@ -10,15 +10,19 @@
 #include "ByteArray.hpp"
 #include "ByteArrayWriter.hpp"
 #include "HttpPacketWriter.hpp"
+#include "Http2StreamController.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(Http2PacketWriterImpl) IMPLEMENTS(HttpPacketWriter) {
 
 public:
-    _Http2PacketWriterImpl(OutputStream stream,int defaultSize = 1024*32);
+    _Http2PacketWriterImpl(Http2StreamController);
     int write(HttpPacket);
     ByteArray data(HttpPacket);
+
+private:
+    Http2StreamController controller;
 
 };
 

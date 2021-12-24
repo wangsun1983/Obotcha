@@ -384,6 +384,8 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
             break;
         }
     }
+
+    return 0;
 }
 
 HPackTableItem _HPackDecoder::getIndexedHeader(int index) {

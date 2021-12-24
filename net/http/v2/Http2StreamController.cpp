@@ -137,7 +137,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
         }
     }
 
-    return nullptr;
+    return packets;
 }
 
 HttpPacket _Http2StreamController::parseEntireRequest(ByteArray request) {
@@ -156,6 +156,16 @@ Http2Stream _Http2StreamController::newStream() {
     return stream;
 }
 
+Http2Stream _Http2StreamController::newStream(uint32_t streamid) {
+    Http2Stream stream = createHttp2Stream(encoder,decoder,streamid);
+    AutoLock l(mMutex);
+    streams->put(createInteger(stream->getStreamId()),stream);
+    return stream;
+}
 
+Http2Stream _Http2StreamController::getStream(uint32_t id) {
+    AutoLock l(mMutex);
+    return streams->get(createInteger(id));
+}
 
 }

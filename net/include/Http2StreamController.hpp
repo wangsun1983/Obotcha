@@ -25,6 +25,8 @@ DECLARE_CLASS(Http2StreamController) IMPLEMENTS(HttpPacketParser){
 public:
     _Http2StreamController(OutputStream);
     Http2Stream newStream();
+    Http2Stream newStream(uint32_t);
+    Http2Stream getStream(uint32_t);
     
     int pushHttpData(ByteArray);
     ArrayList<HttpPacket> doParse();

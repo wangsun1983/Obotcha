@@ -2,16 +2,17 @@
 
 namespace obotcha {
 
-_Http2PacketWriterImpl::_Http2PacketWriterImpl(OutputStream stream,int defaultSize) {
-
+_Http2PacketWriterImpl::_Http2PacketWriterImpl(Http2StreamController c) {
+    controller = c;
 }
 
 int _Http2PacketWriterImpl::write(HttpPacket p) {
-
-    return 0;
+    Http2Packet packet = Cast<Http2Packet>(p);
+    auto stream = controller->newStream();
+    return stream->write(packet);
 }
 
-ByteArray _Http2PacketWriterImpl::data(HttpPacket p) {
+ByteArray _Http2PacketWriterImpl::data(HttpPacket) {
     return nullptr;
 }
 

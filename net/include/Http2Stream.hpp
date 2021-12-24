@@ -104,7 +104,7 @@ GEN_HTTP2_STATE(HalfClosedLocal)
 GEN_HTTP2_STATE(HalfClosedRemote)
 GEN_HTTP2_STATE(Closed)
 
-DECLARE_CLASS(Http2Stream) IMPLEMENTS(HttpPacketWriter){
+DECLARE_CLASS(Http2Stream) {
 public:
     friend class _Http2StreamIdle;
     friend class _Http2StreamReservedLocal;
@@ -125,7 +125,7 @@ public:
         Closed,
     };
     
-    _Http2Stream(HPackEncoder,HPackDecoder,int,OutputStream stream = nullptr);
+    _Http2Stream(HPackEncoder,HPackDecoder,uint32_t,OutputStream stream = nullptr);
     _Http2Stream(HPackEncoder,HPackDecoder,bool isServer = true,OutputStream stream = nullptr);
     
     int getStreamId();
@@ -134,9 +134,7 @@ public:
     Http2Packet applyFrame(Http2Frame);
     void sendFrame(Http2Frame);
 
-    //TODO
     int write(HttpPacket);
-    ByteArray data(HttpPacket);
 
     int getStatus();
 
@@ -162,7 +160,7 @@ private:
     
     void moveTo(Http2StreamState);
     
-    int mStreamId;
+    uint32_t mStreamId;
     bool isServer;
 
     static std::atomic_int mServerStreamId;
