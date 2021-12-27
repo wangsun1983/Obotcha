@@ -10,6 +10,7 @@
 #include "Http2PingFrame.hpp"
 #include "Http2GoAwayFrame.hpp"
 #include "Http2ContinuationFrame.hpp"
+#include "Http2DataFrame.hpp"
 
 namespace obotcha {
 
@@ -55,12 +56,12 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                 mReader->move(4);
                 data = mReader->pop();
                 uint32_t streamid = data[0]<<24|data[1]<<16|data[2]<<8|data[3];
-                printf("streamid is %d \n",streamid);
+                printf("streamid is %d,type is %d \n",streamid,type);
 
                 //create frame
                 switch(type) {
                     case st(Http2Frame)::TypeData:
-                    //TODO
+                       mCurrentFrame = createHttp2DataFrame();
                     break;
                     
                     case st(Http2Frame)::TypeHeaders:
@@ -137,7 +138,9 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                     }
                     
                     mCurrentFrame->import(mCache);
-                    list->add(mCurrentFrame);
+                    if(mCurrentFrame->isEndStream()) {
+                        list->add(mCurrentFrame);
+                    }
                     mCache = nullptr;
                     mCurrentFrame = nullptr;
                     status = ParseHeadPart;

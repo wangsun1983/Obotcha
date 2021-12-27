@@ -6,6 +6,7 @@
 #include "Http2SettingFrame.hpp"
 #include "HttpPacketWriterImpl.hpp"
 #include "HttpProtocol.hpp"
+#include "Http2DataFrame.hpp"
 
 namespace obotcha {
 
@@ -117,18 +118,27 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                         //we should check every frame to do some action
                         //only data/header frame should send user.
                         Http2Frame frame = iterator->getValue();
+                        printf("Http2StreamController frame type is %d,streamid is %d \n",frame->getType(),frame->getStreamId());
                         Http2Stream stream = streams->get(createInteger(frame->getStreamId()));
-                        //TODO
-                        HttpPacket p = stream->applyFrame(frame);
-                        if(p != nullptr) {
-                            packets->add(p);
+                        if(stream == nullptr) {
+                            stream = newStream(frame->getStreamId());
                         }
-                        //if(stream->applyFrame(frame)) {
-                        //    Http2Packet p = createHttp2Packet();
-                            //p->setFrame(frame);
-                        //    packets->add(p);
-                        //   iterator->next();
-                        //}
+
+                        stream->applyFrame(frame); //update stream status;
+
+                        //HttpPacket p = stream->applyFrame(frame);
+                        HttpPacket pack = nullptr;
+                        if(frame->getType() == st(Http2Frame)::TypeData) {
+                            Http2DataFrame dataFrame = Cast<Http2DataFrame>(frame);
+                            pack = createHttp2Packet(frame->getStreamId(),stream->getHeader(),dataFrame->getData());
+                        } else if(frame->getType() == st(Http2Frame)::TypeHeaders) {
+                            pack = createHttp2Packet(frame->getStreamId(),stream->getHeader(),nullptr);
+                        }
+
+                        if(pack != nullptr) {
+                            packets->add(pack);
+                        }
+                        iterator->next();
                     }
                     return packets;
                 }

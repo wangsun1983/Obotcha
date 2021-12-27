@@ -131,6 +131,8 @@ public:
     int getStreamId();
     void setStreamId(int);
 
+    HttpHeader getHeader();
+
     Http2Packet applyFrame(Http2Frame);
     void sendFrame(Http2Frame);
 

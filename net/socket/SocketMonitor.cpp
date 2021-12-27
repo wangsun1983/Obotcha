@@ -13,6 +13,7 @@
 #include "Log.hpp"
 #include "SocketMonitor.hpp"
 #include "Inet6Address.hpp"
+#include "NetEvent.hpp"
 
 namespace obotcha {
 
@@ -100,7 +101,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                                 task->sock->getFileDescriptor()->getFd());    
                         }
 
-                        if (task->event == st(SocketListener)::Disconnect) {
+                        if (task->event == st(NetEvent)::Disconnect) {
                             monitor->remove(task->sock);
                             task->sock->close();
                         }
@@ -196,11 +197,9 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                         newClient = s->receiveFrom(buff);
                         {
                             AutoLock l(monitor->mMutex);
-                            printf("socket monitor trace1 \n");
                             if (newClient != nullptr) {
-                                printf("socket monitor trace2 \n");
                                 monitor->mThreadPublicTasks->putLast(
-                                    createSocketMonitorTask(st(SocketListener)::Message, newClient,buff));
+                                    createSocketMonitorTask(st(NetEvent)::Message, newClient,buff));
                             }
                             monitor->mCondition->notify();
                         }
@@ -224,7 +223,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                                 AutoLock l(monitor->mMutex);
                                 monitor->mThreadPublicTasks->putLast(
                                     createSocketMonitorTask(
-                                        st(SocketListener)::Connect, s));
+                                        st(NetEvent)::Connect, s));
                                 monitor->mCondition->notify();
                             }
                             monitor->bind(s->getFileDescriptor()->getFd(),
@@ -245,7 +244,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                             AutoLock l(monitor->mMutex);
                             monitor->mThreadPublicTasks->putLast(
                                 createSocketMonitorTask(
-                                    st(SocketListener)::Message, s, buff));
+                                    st(NetEvent)::Message, s, buff));
                             monitor->mCondition->notify();
                         }
 
@@ -260,8 +259,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                 {
                     AutoLock l(monitor->mMutex);
                     monitor->mThreadPublicTasks->putLast(
-                        createSocketMonitorTask(st(SocketListener)::Disconnect,
-                                                s));
+                        createSocketMonitorTask(st(NetEvent)::Disconnect,s));
                     monitor->mCondition->notify();
                     return st(EPollFileObserver)::OnEventRemoveObserver;
                 }

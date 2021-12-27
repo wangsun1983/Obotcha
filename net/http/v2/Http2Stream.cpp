@@ -349,6 +349,8 @@ _Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,bool isServer,OutputStr
     HalfClosedRemoteState = createHttp2StreamHalfClosedRemote(this);
     ClosedState = createHttp2StreamClosed(this);
 
+    mState = IdleState;
+    
     out = stream;
 }
 
@@ -365,7 +367,7 @@ void _Http2Stream::moveTo(Http2StreamState s) {
 }
 
 Http2Packet _Http2Stream::applyFrame(Http2Frame frame) {
-    return nullptr;
+    return mState->onReceived(frame);
 }
 
 
@@ -384,6 +386,10 @@ int _Http2Stream::write(HttpPacket packet) {
     mState->onSend(dataFrame);
 
     return 0;
+}
+
+HttpHeader _Http2Stream::getHeader() {
+    return header;
 }
 
 }

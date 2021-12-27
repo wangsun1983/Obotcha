@@ -29,7 +29,7 @@ _Http2HeaderFrame::_Http2HeaderFrame(HPackDecoder decoder,HPackEncoder encoder):
     dependency = 0;
     exclusive = false;
     this->type = TypeHeaders;
-    headers = createHttpHeader();
+    headers = nullptr;
 }
 
 ByteArray _Http2HeaderFrame::toByteArray() {
@@ -79,7 +79,14 @@ void _Http2HeaderFrame::import(ByteArray data) {
     
     ByteArray headerBlock = createByteArray(datasize);
     reader->readByteArray(headerBlock);
-    decoder->decode(this->streamid,headerBlock,headers,true);
+    HttpHeader h = createHttpHeader();
+
+    decoder->decode(this->streamid,headerBlock,h,true);
+    if(headers == nullptr) {
+        headers = h;
+    } else {
+        headers->addHttpHeader(h);
+    }
 
     if(paddingLength > 0) {
         paddingData = createByteArray(paddingLength);

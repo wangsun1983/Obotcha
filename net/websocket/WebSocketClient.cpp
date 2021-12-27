@@ -38,6 +38,7 @@
 #include "FileInputStream.hpp"
 #include "HttpConnection.hpp"
 #include "HttpStatus.hpp"
+#include "NetEvent.hpp"
 
 
 namespace obotcha {
@@ -174,7 +175,7 @@ int _WebSocketClient::_send(ByteArray data) {
 
 void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
     switch(event) {
-        case Message: {
+        case st(NetEvent)::Message: {
             int len = pack->size();
             int readIndex = 0;
             ByteArray mPack = pack;
@@ -203,12 +204,12 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
             }
         }
 
-        case Disconnect: {
+        case st(NetEvent)::Disconnect: {
             mWsListener->onDisconnect();
             break;
         }
 
-        case Connect: {
+        case st(NetEvent)::Connect: {
             mWsListener->onConnect();
             break;
         }

@@ -76,9 +76,7 @@ int _SSLSocksSocketImpl::write(ByteArray buff,int start,int length) {
     }
 
     
-    int ret = SSL_write(mSSL, buff->toValue() + start, size);
-    printf("_SSLSocksSocketImpl write ret is %d \n");
-    return ret;
+    return SSL_write(mSSL, buff->toValue() + start, size);
 }
 
 int _SSLSocksSocketImpl::read(ByteArray buff,int start,int length) {

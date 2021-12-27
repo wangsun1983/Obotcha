@@ -13,6 +13,7 @@
 #include "HttpServerBuilder.hpp"
 #include "HttpOption.hpp"
 #include "HttpPacketWriterImpl.hpp"
+#include "NetEvent.hpp"
 
 namespace obotcha {
 
@@ -67,7 +68,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
     }
 
     switch(event) {
-        case SocketEvent::Message: {
+        case st(NetEvent)::Message: {
             WebSocketParser parser = client->getParser();
 
             parser->pushParseData(pack);
@@ -109,11 +110,11 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
         }
         break;
 
-        case SocketEvent::Connect:
+        case st(NetEvent)::Connect:
             //nothing,connect info is send to client by onHttpMessage
         break;
 
-        case SocketEvent::Disconnect: {
+        case st(NetEvent)::Disconnect: {
             if(client != nullptr) {
                 LOG(ERROR)<<"client is removed by socket callback";
                 mLinkerManager->removeLinker(client);
@@ -129,7 +130,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
 
 void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,HttpResponseWriter w,HttpPacket request) {
     switch(event) {
-        case HttpEvent::Message: {
+        case st(NetEvent)::Message: {
             HttpHeader header = request->getHeader();
             String path = header->getUrl()->getPath();
 
@@ -212,10 +213,10 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,HttpRespon
         
         break;
 
-        case HttpEvent::Connect:
+        case st(NetEvent)::Connect:
         break;
 
-        case HttpEvent::Disconnect:
+        case st(NetEvent)::Disconnect:
         break;
     }
 }

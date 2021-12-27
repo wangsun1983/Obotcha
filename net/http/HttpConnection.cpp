@@ -19,6 +19,7 @@
 #include "System.hpp"
 #include "URL.hpp"
 #include "HttpPacketParserImpl.hpp"
+#include "NetEvent.hpp"
 
 namespace obotcha {
 
@@ -123,21 +124,21 @@ int _HttpConnection::close() {
 
 void _HttpConnection::onSocketMessage(int event, Socket sock, ByteArray data) {
     switch (event) {
-    case st(SocketListener)::Disconnect:
-        mListener->onDisconnect();
-        break;
+        case st(NetEvent)::Disconnect:
+            mListener->onDisconnect();
+            break;
 
-    case st(SocketListener)::Message:
-        mParser->pushHttpData(data);
-        ArrayList<HttpPacket> responses = mParser->doParse();
-        if (responses->size() > 0) {
-            ListIterator<HttpPacket> iterator = responses->getIterator();
-            while (iterator->hasValue()) {
-                mListener->onResponse(createHttpResponse(iterator->getValue()));
-                iterator->next();
+        case st(NetEvent)::Message:
+            mParser->pushHttpData(data);
+            ArrayList<HttpPacket> responses = mParser->doParse();
+            if (responses->size() > 0) {
+                ListIterator<HttpPacket> iterator = responses->getIterator();
+                while (iterator->hasValue()) {
+                    mListener->onResponse(createHttpResponse(iterator->getValue()));
+                    iterator->next();
+                }
             }
-        }
-        break;
+            break;
     }
 }
 

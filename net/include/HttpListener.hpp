@@ -16,13 +16,6 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpListener) {
 public:
-    enum HttpEvent{    
-        Connect = st(SocketListener)::Connect,
-        Message = st(SocketListener)::Message,
-        Disconnect = st(SocketListener)::Disconnect,
-        InternalError = st(SocketListener)::InternalError
-    };
-
     virtual void onHttpMessage(int event,HttpLinker client,HttpResponseWriter w,HttpPacket msg) = 0;
     virtual ~_HttpListener(){}
 };

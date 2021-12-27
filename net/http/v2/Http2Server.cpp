@@ -3,12 +3,13 @@
 #include "Log.hpp"
 #include "Http2SettingFrame.hpp"
 #include "HttpPacketWriterImpl.hpp"
+#include "NetEvent.hpp"
 
 namespace obotcha {
 
 void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
     switch (event) {
-        case SocketEvent::Message: {
+        case st(NetEvent)::Message: {
             printf("Http2Server on message start\n");
             HttpLinker info = mLinkerManager->getLinker(r);
             if (info == nullptr) {
@@ -19,7 +20,7 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
             if (info->pushHttpData(pack) == -1) {
                 // some thing may be wrong(overflow)
                 LOG(ERROR) << "push http data error";
-                mHttpListener->onHttpMessage(SocketEvent::InternalError, info,
+                mHttpListener->onHttpMessage(st(NetEvent)::InternalError, info,
                                             nullptr, nullptr);
                 mLinkerManager->removeLinker(r);
                 r->close();
@@ -40,20 +41,21 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
                 Http2Stream stream = info->getStreamController()->getStream(p2->getStreamId());
                 Http2ResponseWriter writer = createHttp2ResponseWriter(stream);
 
-                mHttpListener->onHttpMessage(SocketEvent::Message, info,writer, p2);
+                mHttpListener->onHttpMessage(st(NetEvent)::Message, info,writer, p2);
+                iterator->next();
             }
             
             break;
         }    
 
-        case SocketEvent::Connect: {
+        case st(NetEvent)::Connect: {
             HttpLinker info = createHttpLinker(r,mOption->getProtocol());
             mLinkerManager->addLinker(info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
             break;
         }
 
-        case SocketEvent::Disconnect: {
+        case st(NetEvent)::Disconnect: {
             HttpLinker info = mLinkerManager->getLinker(r);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
             mLinkerManager->removeLinker(r);
