@@ -147,7 +147,6 @@ template <typename U> sp<U> AutoClone(U *v) {
 template <typename U, int N> class AutoCreator {
 public:
     U get() {
-        printf("AutoCreator 2222 \n");
         return nullptr;
     }
 };
