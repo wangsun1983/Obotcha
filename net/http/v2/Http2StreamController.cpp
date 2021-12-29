@@ -122,6 +122,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                         Http2Stream stream = streams->get(createInteger(frame->getStreamId()));
                         if(stream == nullptr) {
                             stream = newStream(frame->getStreamId());
+                            
                         }
 
                         stream->applyFrame(frame); //update stream status;
@@ -160,14 +161,15 @@ void _Http2StreamController::reset() {
 }
 
 Http2Stream _Http2StreamController::newStream() {
-    Http2Stream stream = createHttp2Stream(encoder,decoder);
+    Http2Stream stream = createHttp2Stream(encoder,decoder,true,out);
+
     AutoLock l(mMutex);
     streams->put(createInteger(stream->getStreamId()),stream);
     return stream;
 }
 
 Http2Stream _Http2StreamController::newStream(uint32_t streamid) {
-    Http2Stream stream = createHttp2Stream(encoder,decoder,streamid);
+    Http2Stream stream = createHttp2Stream(encoder,decoder,(uint32_t)streamid,out);
     AutoLock l(mMutex);
     streams->put(createInteger(stream->getStreamId()),stream);
     return stream;

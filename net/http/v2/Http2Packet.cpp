@@ -6,7 +6,12 @@ _Http2Packet::_Http2Packet(uint32_t streamid,HttpHeader h,ByteArray d) {
     data = d;
     end = false;
     streamId = streamid;
+    h->setProtocol(st(HttpProtocol)::Http_H2);
     setHeader(h);
+}
+
+_Http2Packet::_Http2Packet(HttpHeader h,ByteArray b):_Http2Packet(-1,h,b) {
+
 }
 
 ByteArray _Http2Packet::getData() {

@@ -22,7 +22,8 @@ DECLARE_CLASS(Http2Packet) IMPLEMENTS(HttpPacket) {
 
 public:
     _Http2Packet(uint32_t streamid,HttpHeader = nullptr,ByteArray = nullptr);
-
+    _Http2Packet(HttpHeader = nullptr,ByteArray = nullptr);
+    
     ByteArray getData();
     void setData(ByteArray);
 

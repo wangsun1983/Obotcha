@@ -152,7 +152,7 @@ const String _HttpHeader::ConnectionClose = createString("close");
 // Http2 authority
 const String _HttpHeader::Authority = createString(":authority");
 
-_HttpHeader::_HttpHeader() {
+_HttpHeader::_HttpHeader(int protocol) {
     {
         static std::once_flag flag;
         std::call_once(flag, [&]() {
@@ -403,6 +403,7 @@ _HttpHeader::_HttpHeader() {
         });
     }
     
+    mProtocol = protocol;
     mValues = createHashMap<String, String>();
     mCookies = createArrayList<HttpCookie>();
     mLinks = createArrayList<HttpHeaderLink>();
@@ -1973,6 +1974,14 @@ void _HttpHeader::setType(int v) {
     mType = v; 
 }
 
+int _HttpHeader::getProtocol() {
+    return mProtocol;
+}
+
+void _HttpHeader::setProtocol(int protocol) {
+    mProtocol = protocol;
+}
+
 void _HttpHeader::addCookie(HttpCookie c) { 
     mCookies->add(c); 
 }
@@ -2709,97 +2718,114 @@ HttpHeaderTransferEncoding _HttpHeader::getTransferEncoding() {
     return mTransferEncoding;
 }
 
-MapIterator<String, String> _HttpHeader::getIterator() {
+
+ListIterator<KeyValuePair<String,String>> _HttpHeader::getIterator() {
     //try to get all data
-    HashMap<String,String> values = createHashMap<String,String>();
+    //HashMap<String,String> values = createHashMap<String,String>();
+    ArrayList<KeyValuePair<String,String>> values = createArrayList<KeyValuePair<String,String>>();
+
+    printf("getIterator,mProtocol is %d,mType is %d \n",mProtocol,mType);
+
+#define SET_HEAD_VALUE(X,Y) \
+    values->add(createKeyValuePair<String,String>(X,Y))
+
+    //pseudo header field should set before regular
+    if(mProtocol == st(HttpProtocol)::Http_H2 
+    || mProtocol == st(HttpProtocol)::Http_H2C) {
+        if(mType == Type::Response) {
+            //values->add(createKeyValuePair<String,String>(st(HttpHeader)::Status,createString(mResponseStatus)));
+            SET_HEAD_VALUE(st(HttpHeader)::Status,createString(mResponseStatus));
+        }
+    }
+
     if(mAcceptCharSet != nullptr) {
         //header->append(st(HttpHeader)::AcceptCharset,": ",mAcceptCharSet->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::AcceptCharset,mAcceptCharSet->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AcceptCharset,mAcceptCharSet->toString());
     }
 
     if(mAccept != nullptr) {
         //header->append(st(HttpHeader)::Accept,": ",mAccept->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::Accept,mAccept->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::Accept,mAccept->toString());
     }
 
     if(mAcceptCh != nullptr) {
         //header->append(st(HttpHeader)::AcceptCh,": ",mAcceptCh->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::AcceptCh,mAcceptCh->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AcceptCh,mAcceptCh->toString());
     }
 
     if(mAcceptEncoding != nullptr) {
         //header->append(st(HttpHeader)::AcceptEncoding,": ",mAcceptEncoding->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::AcceptEncoding,mAcceptEncoding->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AcceptEncoding,mAcceptEncoding->toString());
     }
 
     if(mAcceptLanguage != nullptr) {
         //header->append(st(HttpHeader)::AcceptLanguage,": ",mAcceptLanguage->toString(),st(HttpText)::CRLF);    
-        values->put(st(HttpHeader)::AcceptLanguage,mAcceptLanguage->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AcceptLanguage,mAcceptLanguage->toString());
     }
 
     if(mAcceptPatch != nullptr) {
         //header->append(st(HttpHeader)::AcceptPatch,": ",mAcceptPatch->toString(),st(HttpText)::CRLF);        
-        values->put(st(HttpHeader)::AcceptPatch,mAcceptPatch->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AcceptPatch,mAcceptPatch->toString());
     }
 
     if(mAllowCredentials != nullptr) {
         //header->append(st(HttpHeader)::AccessControlAllowCredentials,": ",mAllowCredentials->toString(),st(HttpText)::CRLF);        
-        values->put(st(HttpHeader)::AccessControlAllowCredentials,mAllowCredentials->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AccessControlAllowCredentials,mAllowCredentials->toString());
     }
 
     if(mAllowHeaders != nullptr) {
         //header->append(st(HttpHeader)::AccessControlAllowHeaders,": ",mAllowHeaders->toString(),st(HttpText)::CRLF);            
-        values->put(st(HttpHeader)::AccessControlAllowHeaders,mAllowHeaders->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AccessControlAllowHeaders,mAllowHeaders->toString());
     }
 
     if(mAllowMethods != nullptr) {
         //header->append(st(HttpHeader)::AccessControlAllowMethods,": ",mAllowMethods->toString(),st(HttpText)::CRLF);            
-        values->put(st(HttpHeader)::AccessControlAllowMethods,mAllowMethods->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AccessControlAllowMethods,mAllowMethods->toString());
     }
 
     if(mAllowOrigin != nullptr) {
         //header->append(st(HttpHeader)::AccessControlAllowOrigin,": ",mAllowOrigin->toString(),st(HttpText)::CRLF);            
-        values->put(st(HttpHeader)::AccessControlAllowOrigin,mAllowOrigin->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AccessControlAllowOrigin,mAllowOrigin->toString());
     }
 
     if(mExposeHeaders != nullptr) {
         //header->append(st(HttpHeader)::AccessControlExposeHeaders,": ",mExposeHeaders->toString(),st(HttpText)::CRLF);            
-        values->put(st(HttpHeader)::AccessControlExposeHeaders,mExposeHeaders->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AccessControlExposeHeaders,mExposeHeaders->toString());
     }
 
     if(mMaxAge != nullptr) {
         //header->append(st(HttpHeader)::AccessControlMaxAge,": ",mMaxAge->toString(),st(HttpText)::CRLF);            
-        values->put(st(HttpHeader)::AccessControlMaxAge,mMaxAge->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AccessControlMaxAge,mMaxAge->toString());
     }
 
     if(mRequestHeaders != nullptr) {
         //header->append(st(HttpHeader)::AccessControlRequestHeaders,": ",mRequestHeaders->toString(),st(HttpText)::CRLF);            
-        values->put(st(HttpHeader)::AccessControlRequestHeaders,mRequestHeaders->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AccessControlRequestHeaders,mRequestHeaders->toString());
     }
 
     if(mRequestMethod != nullptr) {
         //header->append(st(HttpHeader)::AccessControlRequestMethod,": ",mRequestMethod->toString(),st(HttpText)::CRLF);            
-        values->put(st(HttpHeader)::AccessControlRequestMethod,mRequestMethod->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AccessControlRequestMethod,mRequestMethod->toString());
     }
 
     if(mAge != nullptr) {
         //header->append(st(HttpHeader)::Age,": ",mAge->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::Age,mAge->toString());           
+        SET_HEAD_VALUE(st(HttpHeader)::Age,mAge->toString());           
     }
 
     if(mAllow != nullptr) {
         //header->append(st(HttpHeader)::Allow,": ",mAllow->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::Allow,mAllow->toString());  
+        SET_HEAD_VALUE(st(HttpHeader)::Allow,mAllow->toString());  
     }
 
     if(mAuthorization != nullptr) {
         //header->append(st(HttpHeader)::Authorization,": ",mAuthorization->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::Authorization,mAuthorization->toString());  
+        SET_HEAD_VALUE(st(HttpHeader)::Authorization,mAuthorization->toString());  
     }
 
     if(mCacheControl != nullptr) {
         //header->append(st(HttpHeader)::CacheControl,": ",mCacheControl->toString(mType),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::CacheControl,mCacheControl->toString(mType));
+        SET_HEAD_VALUE(st(HttpHeader)::CacheControl,mCacheControl->toString(mType));
     }
 
     //TODO
@@ -2809,122 +2835,122 @@ MapIterator<String, String> _HttpHeader::getIterator() {
 
     if(mContentDisposition != nullptr) {
         //header->append(st(HttpHeader)::ContentDisposition,": ",mContentDisposition->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::ContentDisposition,mContentDisposition->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::ContentDisposition,mContentDisposition->toString());
     }
     
     if(mContentEncoding != nullptr) {
         //header->append(st(HttpHeader)::ContentEncoding,": ",mContentEncoding->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::ContentEncoding,mContentEncoding->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::ContentEncoding,mContentEncoding->toString());
     }
 
     if(mTransferEncoding != nullptr) {
         //header->append(st(HttpHeader)::TransferEncoding,": ",mTransferEncoding->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::TransferEncoding,mTransferEncoding->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::TransferEncoding,mTransferEncoding->toString());
     }
     
     if(mContentLanguage != nullptr) {
         //header->append(st(HttpHeader)::ContentLanguage,": ",mContentLanguage->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::ContentLanguage,mContentLanguage->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::ContentLanguage,mContentLanguage->toString());
     }
 
     if(mContentLength != nullptr) {
         //header->append(st(HttpHeader)::ContentLength,": ",mContentLength->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::ContentLength,mContentLength->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::ContentLength,mContentLength->toString());
     }
 
     if(mContentLocation != nullptr) {
         //header->append(st(HttpHeader)::ContentLocation,": ",mContentLocation->toString(),st(HttpText)::CRLF);    
-        values->put(st(HttpHeader)::ContentLocation,mContentLocation->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::ContentLocation,mContentLocation->toString());
     }
 
     if(mContentType != nullptr) {
         //header->append(st(HttpHeader)::ContentType,": ",mContentType->toString(),st(HttpText)::CRLF);    
-        values->put(st(HttpHeader)::ContentType,mContentType->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::ContentType,mContentType->toString());
     }
 
     if(mForwarded != nullptr) {
         //header->append(st(HttpHeader)::Forwarded,": ",mForwarded->toString(),st(HttpText)::CRLF);    
-        values->put(st(HttpHeader)::Forwarded,mForwarded->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::Forwarded,mForwarded->toString());
     }
 
     if(mConnection != nullptr) {
         //header->append(st(HttpHeader)::Connection,": ",mConnection->toString(),st(HttpText)::CRLF);    
-        values->put(st(HttpHeader)::Connection,mConnection->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::Connection,mConnection->toString());
     }
 
     if(mHeaderDigest != nullptr) {
         //header->append(st(HttpHeader)::Digest,": ",mHeaderDigest->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::Digest,mHeaderDigest->toString());  
+        SET_HEAD_VALUE(st(HttpHeader)::Digest,mHeaderDigest->toString());  
     }
 
     if(mHost != nullptr) {
         //header->append(st(HttpHeader)::Host,": ",mHost->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::Host,mHost->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::Host,mHost->toString());
     }
 
     if(mKeepAlive != nullptr) {
         //header->append(st(HttpHeader)::KeepAlive,": ",mKeepAlive->toString(),st(HttpText)::CRLF);    
-        values->put(st(HttpHeader)::KeepAlive,mKeepAlive->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::KeepAlive,mKeepAlive->toString());
     }
 
     if(mIfMatch != nullptr) {
         //header->append(st(HttpHeader)::IfMatch,": ",mIfMatch->toString(),st(HttpText)::CRLF);    
-        values->put(st(HttpHeader)::IfMatch,mIfMatch->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::IfMatch,mIfMatch->toString());
     }
 
     if(mIfNoneMatch != nullptr) {
         //header->append(st(HttpHeader)::IfNoneMatch,": ",mIfNoneMatch->toString(),st(HttpText)::CRLF);    
-        values->put(st(HttpHeader)::IfNoneMatch,mIfNoneMatch->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::IfNoneMatch,mIfNoneMatch->toString());
     }
 
     if(mRetryAfter != nullptr) {
         //header->append(st(HttpHeader)::RetryAfter,": ",mRetryAfter->toString(),st(HttpText)::CRLF);    
-        values->put(st(HttpHeader)::RetryAfter,mRetryAfter->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::RetryAfter,mRetryAfter->toString());
     }
 
     if(mUserAgent != nullptr) {
         //header->append(st(HttpHeader)::UserAgent,": ",mUserAgent->toString(),st(HttpText)::CRLF);    
-        values->put(st(HttpHeader)::UserAgent,mUserAgent->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::UserAgent,mUserAgent->toString());
     }
 
     if(mIfModifiedSince != nullptr) {
         //header->append(st(HttpHeader)::IfModifiedSince,": ",mIfModifiedSince->toString(),st(HttpText)::CRLF);    
-        values->put(st(HttpHeader)::IfModifiedSince,mIfModifiedSince->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::IfModifiedSince,mIfModifiedSince->toString());
     }
 
     if(mIfRange != nullptr) {
         //header->append(st(HttpHeader)::IfRange,": ",mIfRange->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::IfRange,mIfRange->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::IfRange,mIfRange->toString());
     }
 
     if(mIfUnmodifiedSince != nullptr) {
         //header->append(st(HttpHeader)::IfUnmodifiedSince,": ",mIfUnmodifiedSince->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::IfUnmodifiedSince,mIfUnmodifiedSince->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::IfUnmodifiedSince,mIfUnmodifiedSince->toString());
     }
 
     if(mProxyAuthenticate != nullptr) {
         //header->append(st(HttpHeader)::ProxyAuthenticate,": ",mProxyAuthenticate->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::ProxyAuthenticate,mProxyAuthenticate->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::ProxyAuthenticate,mProxyAuthenticate->toString());
     }
 
     if(mProxyAuthorization != nullptr) {
         //header->append(st(HttpHeader)::ProxyAuthorization,": ",mProxyAuthorization->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::ProxyAuthorization,mProxyAuthorization->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::ProxyAuthorization,mProxyAuthorization->toString());
     }
 
     if(mTransportSecurity != nullptr) {
         //header->append(st(HttpHeader)::StrictTransportSecurity,": ",mTransportSecurity->toString(),st(HttpText)::CRLF);    
-        values->put(st(HttpHeader)::StrictTransportSecurity,mTransportSecurity->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::StrictTransportSecurity,mTransportSecurity->toString());
     }
 
     if(mXFrameOptions != nullptr) {
         //header->append(st(HttpHeader)::XFrameOptions,": ",mXFrameOptions->toString(),st(HttpText)::CRLF);    
-        values->put(st(HttpHeader)::XFrameOptions,mXFrameOptions->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::XFrameOptions,mXFrameOptions->toString());
     }
 
     if(mUpgrade != nullptr) {
         //header->append(st(HttpHeader)::Upgrade,": ",mUpgrade->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::Upgrade,mUpgrade->toString());    
+        SET_HEAD_VALUE(st(HttpHeader)::Upgrade,mUpgrade->toString());    
     }
 
     /*
@@ -2939,85 +2965,92 @@ MapIterator<String, String> _HttpHeader::getIterator() {
 
     if(mWebSocketAccept != nullptr) {
         //header->append(st(HttpHeader)::SecWebSocketAccept,": ",mWebSocketAccept->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::SecWebSocketAccept,mWebSocketAccept->toString());  
+        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketAccept,mWebSocketAccept->toString());  
     }
 
     if(mWebSocketKey != nullptr) {
         //header->append(st(HttpHeader)::SecWebSocketKey,": ",mWebSocketKey->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::SecWebSocketKey,mWebSocketKey->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketKey,mWebSocketKey->toString());
     }
 
     if(mWebSocketProtocol != nullptr) {
         //header->append(st(HttpHeader)::SecWebSocketProtocol,": ",mWebSocketProtocol->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::SecWebSocketProtocol,mWebSocketProtocol->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketProtocol,mWebSocketProtocol->toString());
     }
 
     if(mWebSocketKey1 != nullptr) {
         //header->append(st(HttpHeader)::SecWebSocketKey1,": ",mWebSocketKey1->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::SecWebSocketKey1,mWebSocketKey1->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketKey1,mWebSocketKey1->toString());
     }
 
     if(mWebSocketKey2 != nullptr) {
         //header->append(st(HttpHeader)::SecWebSocketKey2,": ",mWebSocketKey2->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::SecWebSocketKey2,mWebSocketKey2->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketKey2,mWebSocketKey2->toString());
     }
 
     if(mWebSocketKey3 != nullptr) {
         //header->append(st(HttpHeader)::SecWebSocketKey3,": ",mWebSocketKey3->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::SecWebSocketKey3,mWebSocketKey3->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketKey3,mWebSocketKey3->toString());
     }
 
     if(mWebSocketVersion != nullptr) {
         //header->append(st(HttpHeader)::SecWebSocketVersion,": ",mWebSocketVersion->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::SecWebSocketVersion,mWebSocketVersion->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketVersion,mWebSocketVersion->toString());
     }
 
     if(mWebSocketExtensions != nullptr) {
         //header->append(st(HttpHeader)::SecWebSocketExtensions,": ",mWebSocketExtensions->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::SecWebSocketExtensions,mWebSocketExtensions->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketExtensions,mWebSocketExtensions->toString());
     }
 
     if(mWebSocketOrigin != nullptr) {
         //header->append(st(HttpHeader)::SecWebSocketOrigin,": ",mWebSocketOrigin->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::SecWebSocketOrigin,mWebSocketOrigin->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::SecWebSocketOrigin,mWebSocketOrigin->toString());
     }
 
     if(mOrigin != nullptr) {
         //header->append(st(HttpHeader)::Origin,": ",mOrigin->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::Origin,mOrigin->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::Origin,mOrigin->toString());
     }
 
     if(mPragma != nullptr) {
         //header->append(st(HttpHeader)::Pragma,": ",mPragma->toString(),st(HttpText)::CRLF);
-        values->put(st(HttpHeader)::Pragma,mPragma->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::Pragma,mPragma->toString());
     }
 
     if(mAcceptRanges != nullptr) {
         //header->append(st(HttpHeader)::AcceptRanges,": ",mAcceptRanges->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::AcceptRanges,mAcceptRanges->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AcceptRanges,mAcceptRanges->toString());
     }
 
     if(mAltSvc != nullptr) {
         //header->append(st(HttpHeader)::AltSvc,": ",mAltSvc->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::AltSvc,mAltSvc->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::AltSvc,mAltSvc->toString());
     }
 
     if(mContentRange != nullptr) {
         //header->append(st(HttpHeader)::ContentRange,": ",mContentRange->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::ContentRange,mContentRange->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::ContentRange,mContentRange->toString());
     }
 
     if(mSecurityPolicy != nullptr) {
         //header->append(st(HttpHeader)::ContentSecurityPolicy,": ",mSecurityPolicy->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::ContentSecurityPolicy,mSecurityPolicy->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::ContentSecurityPolicy,mSecurityPolicy->toString());
     }
 
     if(mSecurityPolicyReportOnly != nullptr) {
         //header->append(st(HttpHeader)::ContentSecurityPolicyReportOnly,": ",mSecurityPolicyReportOnly->toString(),st(HttpText)::CRLF); 
-        values->put(st(HttpHeader)::ContentSecurityPolicyReportOnly,mSecurityPolicyReportOnly->toString());
+        SET_HEAD_VALUE(st(HttpHeader)::ContentSecurityPolicyReportOnly,mSecurityPolicyReportOnly->toString());
     }
 
-    values->append(mValues);
+    //values->append(mValues);
+    MapIterator<String,String> mapIterator = mValues->getIterator();
+    while(mapIterator->hasValue()) {
+        SET_HEAD_VALUE(mapIterator->getKey(),mapIterator->getValue());
+        mapIterator->next();
+    }
+#undef SET_HEAD_VALUE
+
     return values->getIterator();
 }
 
@@ -3066,12 +3099,14 @@ String _HttpHeader::toString(int type) {
     }
     
     // conver header
-    MapIterator<String, String> headerIte = getIterator();
+    //MapIterator<String, String> headerIte = getIterator();
+    ListIterator<KeyValuePair<String,String>> headerIte = getIterator();
 
     while (headerIte->hasValue()) {
-        String headString = headerIte->getKey();
+        KeyValuePair<String,String> pair = headerIte->getValue();
+        String headString = pair->getKey();
         if (headString != nullptr && !headString->equalsIgnoreCase(Status)) {
-            header->append(headString, ": ", headerIte->getValue(),
+            header->append(headString, ": ", pair->getValue(),
                                 st(HttpText)::CRLF);
         }
 

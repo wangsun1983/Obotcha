@@ -191,10 +191,10 @@ public:
 
     static const int HUFFMAN_EOS;
 
-    static const int MinHeaderTableSize;
-    static const int MaxHeaderTableSize;
-    static const int DefaultHeaderTableSize;
-    static const int MaxHeaderListSize;
+    static const long MinHeaderTableSize;
+    static const long MaxHeaderTableSize;
+    static const long DefaultHeaderTableSize;
+    static const long MaxHeaderListSize;
     
 
 };

@@ -54,9 +54,9 @@ private:
     bool ignoreMaxHeaderListSize;
     int dynamicHeaderSize;
 
-    int maxDynamicTableSize;
-    int maxHeaderListSize;
-    int maxHeaderTableSize;
+    long maxDynamicTableSize;
+    long maxHeaderListSize;
+    long maxHeaderTableSize;
     byte mask;
     
     void encodeHeader(String name,String value,bool isSensitive,long headerSize);

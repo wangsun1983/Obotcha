@@ -42,6 +42,11 @@ Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
         }
         break;
 
+        case st(Http2Frame)::TypeSettings: {
+            //TODO
+        }
+        break;
+
         default:
             LOG(ERROR)<<"Http2Stream Receive Illegal Frame,Current :Idle , FrameType :"<<type;
         break;
@@ -52,6 +57,7 @@ Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
 
 bool _Http2StreamIdle::onSend(Http2Frame frame) {
     int type = frame->getType();
+    printf("http2streamidle onSend \n");
     switch(type) {
         case st(Http2Frame)::TypeHeaders:{
             stream->out->write(frame->toFrameData());
@@ -198,13 +204,19 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
 
 bool _Http2StreamOpen::onSend(Http2Frame frame) {
     int type = frame->getType();
+    printf("http2stream open onsend,type is %d \n",type);
+    if(stream->out == nullptr) {
+        printf("stream out is nullptr \n");
+    }
+    
     switch(type) {
         case st(Http2Frame)::TypeRstStream: {
             stream->moveTo(stream->ClosedState);
         }
         break;
 
-        case st(Http2Frame)::TypeData: {
+        case st(Http2Frame)::TypeData:
+        case st(Http2Frame)::TypeHeaders:  {
             stream->out->write(frame->toFrameData());
         }
         break;
@@ -372,17 +384,24 @@ Http2Packet _Http2Stream::applyFrame(Http2Frame frame) {
 
 
 int _Http2Stream::write(HttpPacket packet) {
+    //TODO
     Http2Packet pack = Cast<Http2Packet>(packet);
-
+    printf("http2stream write start \n");
     //this is called from user's Http2ResponseWriter....
     Http2HeaderFrame frame  = createHttp2HeaderFrame(decoder,encoder);
-    frame->setHeader(pack->getHeader());
+    HttpHeader h = pack->getHeader();
+    h->setType(st(HttpHeader)::Response);
+    frame->setHeader(h);
+    
     frame->setStreamId(this->getStreamId());
+    frame->setEndHeaders(true);
     mState->onSend(frame);
 
+    printf("http2stream write trace1 \n");
     Http2DataFrame dataFrame = createHttp2DataFrame();
     dataFrame->setData(pack->getData());
     dataFrame->setStreamId(this->getStreamId());
+    dataFrame->setEndStream(true);
     mState->onSend(dataFrame);
 
     return 0;

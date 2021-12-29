@@ -91,6 +91,9 @@
 #include "HttpHeaderServerTiming.hpp"
 #include "HttpHeaderSourceMap.hpp"
 #include "HttpHeaderDnt.hpp"
+#include "HttpProtocol.hpp"
+#include "ArrayList.hpp"
+#include "KeyValuePair.hpp"
 
 namespace obotcha {
 
@@ -98,11 +101,14 @@ DECLARE_CLASS(HttpHeader) {
 
 public:
     ////-------- defination ---------////
+    //http2 pseudo header
     const static String Method;
     const static String Path;
     const static String Scheme;
     const static String Status;
     const static String Protocol;
+
+    //regular http header
     const static String Accept;
     const static String AcceptCh;
     const static String AcceptCharset;
@@ -346,7 +352,7 @@ public:
     };
 
     ////-------- function -------////
-    _HttpHeader();
+    _HttpHeader(int protocol = st(HttpProtocol)::Http);
 
     void addHttpHeader(sp<_HttpHeader>);
     
@@ -356,7 +362,8 @@ public:
     
     String get(String);
 
-    MapIterator<String,String> getIterator();
+    //MapIterator<String,String> getIterator();
+    ListIterator<KeyValuePair<String,String>> getIterator();
 
     void addCookie(HttpCookie);
     ArrayList<HttpCookie> getCookies();
@@ -693,6 +700,9 @@ public:
     int getType();
     void setType(int);
 
+    int getProtocol();
+    void setProtocol(int);
+
     int size();
     
     enum Type {
@@ -864,6 +874,8 @@ private:
     HttpUrl mUrl;
 
     int mType;
+
+    int mProtocol;
 
     int mMethod;
 

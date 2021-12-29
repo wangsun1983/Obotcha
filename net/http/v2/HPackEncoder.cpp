@@ -71,14 +71,18 @@ void _HPackEncoder::encodeHeadersEnforceMaxHeaderListSize(int streamId, HttpHead
     // To ensure we stay consistent with our peer check the size is valid before we potentially modify HPACK state.
     auto iterator = headers->getIterator();
     while(iterator->hasValue()) {
-        String name = iterator->getKey();
-        String value = iterator->getValue();
+        KeyValuePair<String,String> pair = iterator->getValue();
+        String name = pair->getKey();
+        String value = pair->getValue();
         // OK to increment now and check for bounds after because this value is limited to unsigned int and will not
         // overflow.
         headerSize += st(HPackTableItem)::sizeOf(name, value);
+        printf("_HPackEncoder MaxHeaderList,name is %s,value is %s,headerSize is %ld \n",name->toChars(),value->toChars(),headerSize);
         if (headerSize > maxHeaderListSize) {
             Trigger(ArrayIndexOutOfBoundsException,"over size");
         }
+
+        iterator->next();
     }
     encodeHeadersIgnoreMaxHeaderListSize(headers);
 }
@@ -86,10 +90,12 @@ void _HPackEncoder::encodeHeadersEnforceMaxHeaderListSize(int streamId, HttpHead
 void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
     auto iterator = headers->getIterator();
     while (iterator->hasValue()) {
-        String name = iterator->getKey();
-        String value = iterator->getValue();
+        KeyValuePair<String,String> pair = iterator->getValue();
+        String name = pair->getKey();
+        String value = pair->getValue();
         encodeHeader(name, value, st(HPackSensitiveTable)::isSensitive(name),
                         st(HPackTableItem)::sizeOf(name, value));
+        iterator->next();
     }
 }
 
@@ -139,7 +145,7 @@ void _HPackEncoder::encodeHeader(String name,String value,bool isSensitive,long 
 }
 
 void _HPackEncoder::encodeInteger(int mask,int n,long i) {
-    if(n >= 0 && n <= 8) {
+    if(n < 0 || n > 8) {
         Trigger(IllegalArgumentException,"n is illegal");
     }
 

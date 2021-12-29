@@ -7,7 +7,7 @@ _Http2PushPromiseFrame::_Http2PushPromiseFrame(HPackDecoder d,HPackEncoder e):_H
     this->type = TypePushPromise;
     this->decoder = d;
     this->encoder = e;
-    headers = createHttpHeader();
+    headers = createHttpHeader(st(HttpProtocol)::Http_H2);
     promiseStreamId = 0;
 }
 
