@@ -61,6 +61,9 @@ public:
 
     ByteArray getPaddingData();
     void setPaddingData(ByteArray);
+
+    uint32_t getDependency();
+    void setDependency(uint32_t);
     
 private:
     HttpHeader headers;
@@ -68,6 +71,8 @@ private:
     
     HPackDecoder decoder;
     HPackEncoder encoder;
+
+    uint32_t dependencyStream;
 };
 
 }

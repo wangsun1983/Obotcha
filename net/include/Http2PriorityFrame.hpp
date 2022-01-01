@@ -29,6 +29,8 @@ E: A single-bit flag indicating that the stream dependency is
 
 Stream Dependency:  A 31-bit stream identifier for the stream that
   this stream depends on (see Section 5.3).
+  the stream on which this stream should depend, or 0 if it should 
+  depend on the connection.
 
 Weight:  An unsigned 8-bit integer representing a priority weight for
   the stream (see Section 5.3).  Add one to the value to obtain a
@@ -41,8 +43,15 @@ DECLARE_CLASS(Http2PriorityFrame) IMPLEMENTS(Http2Frame){
 public:
     _Http2PriorityFrame();
 
+    uint32_t getDependency();
+    void setDependency(uint32_t);
+
     void import(ByteArray);
     ByteArray toByteArray();
+
+    static const int DefaultPriority;
+private:
+    uint32_t dependencyStream;
 };
 
 }

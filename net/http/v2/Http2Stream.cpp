@@ -29,7 +29,7 @@ Http2Packet _Http2StreamIdle::onReceived(Http2Frame frame) {
             Http2HeaderFrame headerFrame = Cast<Http2HeaderFrame>(frame);
             stream->header = headerFrame->getHeader();
             stream->moveTo(stream->OpenState);
-            if(headerFrame->isEndHeaders()) {
+            if(headerFrame->isEndStream()) {
                 return createHttp2Packet(headerFrame->getStreamId(),stream->header,nullptr);
             }
         }
@@ -142,6 +142,12 @@ Http2Packet _Http2StreamReservedRemote::onReceived(Http2Frame frame) {
         case st(Http2Frame)::TypeRstStream: {
             stream->moveTo(stream->ClosedState);
         }
+        break;
+
+        case st(Http2Frame)::TypeContinuation: {
+            //TODO
+        }
+
         break;
 
         default:

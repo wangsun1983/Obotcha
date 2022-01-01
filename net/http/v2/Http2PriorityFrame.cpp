@@ -4,24 +4,35 @@
 
 namespace obotcha {
 
+//每个请求都可以带一个31bit的优先值,0表示最高优先级, 数值越大优先级越低
+const int _Http2PriorityFrame::DefaultPriority = 16;
+
 _Http2PriorityFrame::_Http2PriorityFrame():_Http2Frame() {
     this->type = TypePriority;
+}
+
+uint32_t _Http2PriorityFrame::getDependency() {
+    return dependencyStream;
+}
+
+void _Http2PriorityFrame::setDependency(uint32_t s) {
+    dependencyStream = s;
 }
 
 void _Http2PriorityFrame::import(ByteArray data) {
     ByteArrayReader reader = createByteArrayReader(data);
     uint32_t dependencyData = reader->readUint32();
     exclusive = (((dependencyData >>24) & 0x80) != 0);
-    dependency = dependencyData & 0x7FFFFFFF;
+    dependencyStream = dependencyData & 0x7FFFFFFF;
     weight = reader->readByte();
 }
 
 ByteArray _Http2PriorityFrame::toByteArray() {
     ByteArray data = createByteArray(5);
     ByteArrayWriter writer = createByteArrayWriter(data,BigEndian);
-    uint32_t data1 = dependency;
+    uint32_t data1 = dependencyStream;
     if(exclusive) {
-        dependency |= 0x8000000000;
+        data1 |= 0x8000000000;
     }
 
     writer->writeUint32(data1);

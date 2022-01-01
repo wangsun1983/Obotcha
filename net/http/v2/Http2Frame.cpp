@@ -143,12 +143,5 @@ bool _Http2Frame::getExclusive() {
     return exclusive;
 }
 
-uint32_t _Http2Frame::getDependency() {
-    return dependency;
-}
-
-void _Http2Frame::setDependency(uint32_t s) {
-    dependency = s;
-}
 
 }

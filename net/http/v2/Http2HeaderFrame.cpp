@@ -26,7 +26,7 @@ namespace obotcha {
 _Http2HeaderFrame::_Http2HeaderFrame(HPackDecoder decoder,HPackEncoder encoder):_Http2Frame() {
     this->decoder = decoder;
     this->encoder = encoder;
-    dependency = 0;
+    dependencyStream = 0;
     exclusive = false;
     this->type = TypeHeaders;
     headers = nullptr;
@@ -41,7 +41,7 @@ ByteArray _Http2HeaderFrame::toByteArray() {
     }
 
     if(isPrioroty()) {
-        uint32_t dependencyData = dependency;
+        uint32_t dependencyData = dependencyStream;
         if(exclusive) {
             dependencyData |= (1<<31);
         }
@@ -72,7 +72,7 @@ void _Http2HeaderFrame::import(ByteArray data) {
     if(isPrioroty()) {
         uint32_t dependencyData = reader->readUint32();
         exclusive = (((dependencyData >>24) & 0x80) != 0);
-        dependency = dependencyData & 0x7FFFFFFF;
+        dependencyStream = dependencyData & 0x7FFFFFFF;
         weight = reader->readByte();
         datasize = datasize - 1 - 4;
     }
@@ -100,6 +100,14 @@ HttpHeader _Http2HeaderFrame::getHeader() {
 
 void _Http2HeaderFrame::setHeader(HttpHeader h) {
     headers = h;
+}
+
+uint32_t _Http2HeaderFrame::getDependency() {
+    return dependencyStream;
+}
+
+void _Http2HeaderFrame::setDependency(uint32_t s) {
+    dependencyStream = s;
 }
 
 ByteArray _Http2HeaderFrame::getPaddingData() {

@@ -37,6 +37,7 @@ _ByteArray::_ByteArray(sp<_ByteArray> &data, int start, int len) {
     this->isSafe = unsafe;
     mOriginalSize = -1;
     mMapped = false;
+    mPriority = 0;
 }
 
 /**
@@ -54,6 +55,7 @@ _ByteArray::_ByteArray(int length) {
     this->isSafe = unsafe;
     mOriginalSize = -1;
     mMapped = false;
+    mPriority = 0;
 }
 
 /**
@@ -77,6 +79,7 @@ _ByteArray::_ByteArray(const byte *data, uint32_t len,bool mapped) {
     
     this->isSafe = unsafe;
     mOriginalSize = -1;
+    mPriority = 0;
 }
 
 /**
@@ -88,6 +91,7 @@ void _ByteArray::clear() {
     }
     memset(buff, 0, mSize);
     mOriginalSize = -1;
+    mPriority = 0;
 }
 
 byte &_ByteArray::operator[](int index) {
@@ -301,5 +305,13 @@ void _ByteArray::dumpToFile(const char *path) {
 }
 
 void _ByteArray::dumpToFile(const String &path) { dumpToFile(path->toChars()); }
+
+void _ByteArray::setPriority(int p) {
+    this->mPriority = p;
+}
+
+int _ByteArray::getPriority() {
+    return mPriority;
+}
 
 } // namespace obotcha

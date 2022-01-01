@@ -99,6 +99,9 @@ public:
 
     void dumpToFile(const sp<_String> &path);
 
+    void setPriority(int);
+    int getPriority();
+
 private:
     byte *buff;
 
@@ -109,6 +112,8 @@ private:
     int mOriginalSize;
 
     bool mMapped;
+
+    int mPriority;
 };
 
 } // namespace obotcha

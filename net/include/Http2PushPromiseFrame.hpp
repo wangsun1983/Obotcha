@@ -59,6 +59,9 @@ public:
     ByteArray getPaddingData();
     void setPaddingData(ByteArray);
 
+    uint32_t getPromiseStream();
+    void setPromiseStream(uint32_t);
+
 public:
     HttpHeader headers;
     ByteArray paddingData;

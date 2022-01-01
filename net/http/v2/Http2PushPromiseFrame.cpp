@@ -65,4 +65,12 @@ void _Http2PushPromiseFrame::setPaddingData(ByteArray s) {
     paddingData = s;
 }
 
+uint32_t _Http2PushPromiseFrame::getPromiseStream() {
+    return promiseStreamId;
+}
+
+void _Http2PushPromiseFrame::setPromiseStream(uint32_t s) {
+    promiseStreamId = s;
+}
+
 }
