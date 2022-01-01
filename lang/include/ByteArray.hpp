@@ -99,8 +99,8 @@ public:
 
     void dumpToFile(const sp<_String> &path);
 
-    void setPriority(int);
-    int getPriority();
+    void setPriorityWeight(int);
+    int getPriorityWeight();
 
 private:
     byte *buff;

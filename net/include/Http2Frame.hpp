@@ -130,9 +130,10 @@ public:
 
     ByteArray toFrameData();
     virtual void import(ByteArray);
-
-    static const int DefaultWeight;
     
+    static const int DefaultWeight;
+    static const int MaxWeight;
+
 protected:
     virtual ByteArray toByteArray() = 0;
     int type;

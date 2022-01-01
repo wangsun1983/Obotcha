@@ -306,11 +306,11 @@ void _ByteArray::dumpToFile(const char *path) {
 
 void _ByteArray::dumpToFile(const String &path) { dumpToFile(path->toChars()); }
 
-void _ByteArray::setPriority(int p) {
+void _ByteArray::setPriorityWeight(int p) {
     this->mPriority = p;
 }
 
-int _ByteArray::getPriority() {
+int _ByteArray::getPriorityWeight() {
     return mPriority;
 }
 

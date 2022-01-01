@@ -4,6 +4,7 @@
 namespace obotcha {
 
 const int _Http2Frame::DefaultWeight = 16;
+const int _Http2Frame::MaxWeight = 256;
 
 _Http2Frame::_Http2Frame() {
     type = 0;
@@ -99,6 +100,8 @@ ByteArray _Http2Frame::toFrameData() {
     if(payload != nullptr) {
         writer->writeByteArray(payload);
     }
+
+    frame->setPriorityWeight(weight);
 
     return frame;
 }

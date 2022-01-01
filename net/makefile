@@ -180,6 +180,7 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/http2pushpromiseframe.o \
 		$(outtmp)/http2shakehandframe.o \
 		$(outtmp)/http2errorcode.o \
+		$(outtmp)/http2streamsender.o \
 		$(outtmp)/hpackhuffmanencoder.o \
 		$(outtmp)/hpackhuffmandecoder.o \
 		$(outtmp)/hpacktableitem.o \
@@ -737,6 +738,9 @@ $(outtmp)/http2shakehandframe.o :$(netDir)/http/v2/Http2ShakeHandFrame.cpp
 
 $(outtmp)/http2errorcode.o :$(netDir)/http/v2/Http2ErrorCode.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2ErrorCode.cpp -o $(outtmp)/http2errorcode.o 
+
+$(outtmp)/http2streamsender.o :$(netDir)/http/v2/Http2StreamSender.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2StreamSender.cpp -o $(outtmp)/http2streamsender.o 
 
 $(outtmp)/http2continuationframe.o :$(netDir)/http/v2/Http2ContinuationFrame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/http/v2/Http2ContinuationFrame.cpp -o $(outtmp)/http2continuationframe.o 

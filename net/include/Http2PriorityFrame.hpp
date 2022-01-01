@@ -49,7 +49,6 @@ public:
     void import(ByteArray);
     ByteArray toByteArray();
 
-    static const int DefaultPriority;
 private:
     uint32_t dependencyStream;
 };

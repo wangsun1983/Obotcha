@@ -12,6 +12,7 @@
 #include "OutputStream.hpp"
 #include "HttpPacketParser.hpp"
 #include "HttpPacketWriter.hpp"
+#include "Http2StreamSender.hpp"
 
 namespace obotcha {
 
@@ -282,8 +283,8 @@ public:
         Closed,
     };
     
-    _Http2Stream(HPackEncoder,HPackDecoder,uint32_t,OutputStream stream = nullptr);
-    _Http2Stream(HPackEncoder,HPackDecoder,bool isServer = true,OutputStream stream = nullptr);
+    _Http2Stream(HPackEncoder,HPackDecoder,uint32_t,Http2StreamSender sender = nullptr);
+    _Http2Stream(HPackEncoder,HPackDecoder,bool isServer = true,Http2StreamSender sender = nullptr);
     
     int getStreamId();
     void setStreamId(int);
@@ -333,7 +334,7 @@ private:
 
     HttpHeader header;
 
-    OutputStream out;
+    Http2StreamSender out;
 
     int mPriority;
 

@@ -17,6 +17,10 @@ _Http2StreamState::_Http2StreamState(_Http2Stream * p) {
     stream = p;
 }
 
+int _Http2StreamState::state() {
+    return mState;
+}
+
 //------------------ state:Idle -------------------------
 _Http2StreamIdle::_Http2StreamIdle(_Http2Stream *p):_Http2StreamState(p) {
     mState = st(Http2Stream)::Idle;
@@ -210,11 +214,6 @@ Http2Packet _Http2StreamOpen::onReceived(Http2Frame frame) {
 
 bool _Http2StreamOpen::onSend(Http2Frame frame) {
     int type = frame->getType();
-    printf("http2stream open onsend,type is %d \n",type);
-    if(stream->out == nullptr) {
-        printf("stream out is nullptr \n");
-    }
-    
     switch(type) {
         case st(Http2Frame)::TypeRstStream: {
             stream->moveTo(stream->ClosedState);
@@ -345,11 +344,11 @@ const char *_Http2Stream::stateToString(int s) {
     return nullptr;
 }
     
-_Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,uint32_t id,OutputStream stream):_Http2Stream(e,d,(id%2) == 0,stream) {
+_Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,uint32_t id,Http2StreamSender stream):_Http2Stream(e,d,(id%2) == 0,stream) {
     mStreamId = id;
 }
 
-_Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,bool isServer,OutputStream stream) {
+_Http2Stream::_Http2Stream(HPackEncoder e,HPackDecoder d,bool isServer,Http2StreamSender stream) {
     if(isServer) {
         mStreamId = mServerStreamId++;
     } else {
@@ -392,7 +391,7 @@ Http2Packet _Http2Stream::applyFrame(Http2Frame frame) {
 int _Http2Stream::write(HttpPacket packet) {
     //TODO
     Http2Packet pack = Cast<Http2Packet>(packet);
-    printf("http2stream write start \n");
+    printf("http2stream write start,state is %d \n",mState->state());
     //this is called from user's Http2ResponseWriter....
     Http2HeaderFrame frame  = createHttp2HeaderFrame(decoder,encoder);
     HttpHeader h = pack->getHeader();

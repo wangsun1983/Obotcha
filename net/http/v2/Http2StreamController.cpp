@@ -25,6 +25,9 @@ _Http2StreamController::_Http2StreamController(OutputStream out) {
     mMutex = createMutex();
     streams = createHashMap<Integer,Http2Stream>();
     this->out = out;
+
+    mSender = createHttp2StreamSender(out);
+    mSender->start();
 }
 
 int _Http2StreamController::pushHttpData(ByteArray data) {
@@ -161,7 +164,7 @@ void _Http2StreamController::reset() {
 }
 
 Http2Stream _Http2StreamController::newStream() {
-    Http2Stream stream = createHttp2Stream(encoder,decoder,true,out);
+    Http2Stream stream = createHttp2Stream(encoder,decoder,true,mSender);
 
     AutoLock l(mMutex);
     streams->put(createInteger(stream->getStreamId()),stream);
@@ -169,7 +172,7 @@ Http2Stream _Http2StreamController::newStream() {
 }
 
 Http2Stream _Http2StreamController::newStream(uint32_t streamid) {
-    Http2Stream stream = createHttp2Stream(encoder,decoder,(uint32_t)streamid,out);
+    Http2Stream stream = createHttp2Stream(encoder,decoder,(uint32_t)streamid,mSender);
     AutoLock l(mMutex);
     streams->put(createInteger(stream->getStreamId()),stream);
     return stream;

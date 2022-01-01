@@ -4,9 +4,6 @@
 
 namespace obotcha {
 
-//每个请求都可以带一个31bit的优先值,0表示最高优先级, 数值越大优先级越低
-const int _Http2PriorityFrame::DefaultPriority = 16;
-
 _Http2PriorityFrame::_Http2PriorityFrame():_Http2Frame() {
     this->type = TypePriority;
 }

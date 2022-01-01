@@ -57,6 +57,8 @@ private:
 
     Base64 mBase64;
 
+    Http2StreamSender mSender;
+
 };
 
 }
