@@ -29,10 +29,8 @@ void _HPackHuffmanEncoder::encode(ByteArrayWriter writer,String data) {
         current <<= nbits;
         current |= code;
         n += nbits;
-        printf("n is %d,code is %x,nbits is %d \n",n,code,nbits);
         while (n >= 8) {
             n -= 8;
-            printf("write data is %x \n",current>>n);
             writer->writeByte((current >> n));
         }
     }
@@ -40,7 +38,6 @@ void _HPackHuffmanEncoder::encode(ByteArrayWriter writer,String data) {
     if (n > 0) {
         current <<= (8 - n);
         current |= ((unsigned int)0xFF >> n); // this should be EOS symbol
-        printf("write2 data is %x \n",current);
         writer->writeByte((int) current);
     }
 }
@@ -49,7 +46,6 @@ ByteArray _HPackHuffmanEncoder::encode(String data) {
     int size = data->size();
     //get codec length
     int length = getEncodedLength(data);
-    printf("length is %d,size is %d\n",length,size);
     ByteArray out = createByteArray(length);
     ByteArrayWriter writer = createByteArrayWriter(out);
     encode(writer,data);

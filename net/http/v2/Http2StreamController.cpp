@@ -32,7 +32,6 @@ _Http2StreamController::_Http2StreamController(OutputStream out) {
 
 int _Http2StreamController::pushHttpData(ByteArray data) {
     try {
-        printf("Http2StreamController push data,size is %d,\n",data->size());
         mRingArray->push(data);
     } catch (ArrayIndexOutOfBoundsException &e) {
         LOG(ERROR) << "Http2PacketParserImpl error ,data overflow";
@@ -44,11 +43,10 @@ int _Http2StreamController::pushHttpData(ByteArray data) {
 
 ArrayList<HttpPacket> _Http2StreamController::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
-    printf("Http2StreamController doParse\n");
+    
     while(mReader->getReadableLength() > 9) {
         switch(mStatus) {
             case ShakeHand:{
-                printf("Http2StreamController doParse ShakeHand start\n");
                 ArrayList<HttpPacket> packets = shakeHandFrame->doParser();
                 if(packets->size() > 1) {
                     LOG(ERROR)<<"HttpV2 parse shake message size > 1";
@@ -61,7 +59,6 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     && header->getUpgrade()->toString()->equals("h2c")) {
                     //we should decode it's setting frame
                     String settingframe = header->get("http2-settings");
-                    printf("Http2StreamController settingframe is %s \n",settingframe->toChars());
                     ByteArray data = mBase64->decodeBase64Url(settingframe->toByteArray());
                     data->dump("Http2StreamController http settings!!!");
                     //TEST
@@ -71,7 +68,6 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     HttpPacketWriterImpl impl = createHttpPacketWriterImpl(out);
                     auto shakeHande = createHttp2ShakeHandFrame();
                     int ret = impl->write(shakeHande->toShakeHandPacket(st(HttpProtocol)::Http_H2));
-                    printf("Http2StreamController ret is %d \n",ret);
                     data->dump("Http2StreamController http settings!!!");
                     //response get method
                     mStatus = Preface;
@@ -89,13 +85,11 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
             break;
 
             case Preface:{
-                printf("Http2StreamController Preface start \n");
                 ArrayList<HttpPacket> packets = shakeHandFrame->doParser();
                 if(packets->size() > 1) {
                     LOG(ERROR)<<"HttpV2 parse Preface size > 1";
                     return nullptr;
                 }
-                printf("Http2StreamController Preface trace1 \n");
                 HttpPacket packet = packets->get(0);
                 HttpHeader header = packet->getHeader();
                 if(header->getMethod() == st(HttpMethod)::Pri 
@@ -106,14 +100,11 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                     Http2SettingFrame ackFrame = createHttp2SettingFrame();
                     out->write(ackFrame->toFrameData());
                 }
-                printf("Http2StreamController Preface trace2 \n");
             }
             break;
 
             case Comunicate: {
-                printf("Http2StreamController Comunicated start \n");
                 ArrayList<Http2Frame> frames = mFrameParser->doParse();
-                printf("Http2StreamController Comunicated trace frames size is %d \n",frames->size());
                 if(frames != nullptr && frames->size() != 0) {
                     ArrayList<HttpPacket> packets  = createArrayList<HttpPacket>();
                     auto iterator = frames->getIterator();
@@ -121,7 +112,6 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
                         //we should check every frame to do some action
                         //only data/header frame should send user.
                         Http2Frame frame = iterator->getValue();
-                        printf("Http2StreamController frame type is %d,streamid is %d \n",frame->getType(),frame->getStreamId());
                         Http2Stream stream = streams->get(createInteger(frame->getStreamId()));
                         if(stream == nullptr) {
                             stream = newStream(frame->getStreamId());

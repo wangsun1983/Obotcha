@@ -70,24 +70,19 @@ void _HttpHeaderClearSiteData::setStorage(bool v) {
 
 String _HttpHeaderClearSiteData::toString() {
     StringBuffer type = createStringBuffer();
-    printf("start toString \n");
     if(mCache) {
-        printf("to 1\n");
         type->append("\"",Cache,"\",");
     }
 
     if(mCookies) {
-        printf("to 2\n");
         type->append("\"",Cookies,"\",");
     }
 
     if(mExecutionContexts) {
-        printf("to 3\n");
         type->append("\"",ExecutionContexts,"\",");
     }
 
     if(mStorage) {
-        printf("to 4\n");
         type->append("\"",Storage,"\",");
     }
 

@@ -33,15 +33,12 @@ void _HttpHeaderRange::import(String s) {
     int status = ParseUinit;
     
     HttpHeaderRangeItem item = nullptr;
-    printf("start import \n");
     for(int i = 0;i < size;i++) {
-        printf("start import trace p is %c\n",p[i]);
         if(p[i] == '='||p[i] == ',' || p[i] == '-' || i == size - 1) {
             switch(status) {
                 case ParseUinit: {
                     if(p[i] == '=') {
                         this->unit = createString(p,start,i-start);
-                        printf("unit is %s \n",unit->toChars());
                         i = i+1;
                         jumpSpace(p,i,size);
                         start = i;
@@ -55,15 +52,12 @@ void _HttpHeaderRange::import(String s) {
                         int startInt = createString(p,start,i-start)->toBasicInt();
                         item = createHttpHeaderRangeItem();
                         item->start = startInt;
-                        printf("start is %d \n",item->start);
                         i++;
                         jumpSpace(p,i,size);
                         
-                        printf("i is %d,size is %d \n",i,size);
                         if(i == size) {
                             //no end 
                             item->end = -1;
-                            printf("trace1 end is %d \n",item->end);
                             ranges->add(item);
                             return;
                         }
@@ -78,7 +72,6 @@ void _HttpHeaderRange::import(String s) {
                     if(p[i] == ',' ||i == size - 1) {
                         int endInt = createString(p,start,i-start)->toBasicInt();
                         item->end = endInt;
-                        printf("trace2 end is %d \n",item->start);
                         ranges->add(item);
                         i++;
                         jumpSpace(p,i,size);

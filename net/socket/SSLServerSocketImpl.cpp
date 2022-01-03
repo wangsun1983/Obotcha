@@ -51,21 +51,14 @@ int _SSLServerSocketImpl::bind() {
 
 Socket _SSLServerSocketImpl::accept() {
     Socket s = mSocket->accept();
-    if(s->getFileDescriptor() == nullptr) {
-        printf("s fd is nullptr \n");
-    }
+    
     auto client = createSSLSocksSocketImpl(mCertificate,mKey,s->getSockImpl(),true);
     s->getFileDescriptor()->setAsync(false);
-    printf("ssl accept trace1,fd is %d \n",s->getFileDescriptor()->getFd());
     int ret = SSL_set_fd(client->mSSL, s->getFileDescriptor()->getFd());
 
-    printf("ssl accept trace2,ret is %d \n",ret);
     ret = SSL_accept(client->mSSL);
-    printf("ssl accept ret2 is %d \n",ret);
-
     s->getFileDescriptor()->setAsync(true);
     
-    printf("ssl accept trace3,fd is %d \n",s->getFileDescriptor()->getFd());
     Socket result = createSocket();
     result->setSockImpl(client);
     result->setType(st(Socket)::SSL);

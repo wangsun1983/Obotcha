@@ -60,7 +60,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
     while (reader->readNext(v) == st(ByteRingArrayReader)::Continue) {
         switch (mStatus) {
             case ParseStartBoundry: {
-                printf("HttpMultiPartParser ParseStartBoundry trace1 \n");
                 if(isLineEnd(v)) {
                     //i got the boundry!!!
                     ByteArray boundary = reader->pop();
@@ -71,7 +70,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             }
             
             case ParseContentInfo: {
-                printf("HttpMultiPartParser ParseStartBoundry trace2 \n");
                 if(isLineEnd(v)) {
                     String info = reader->pop()->toString();
                     if(info->size() == 2 && info->equals(st(HttpText)::CRLF)) {
@@ -106,7 +104,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             }
 
             case ParseFormData:{
-                printf("HttpMultiPartParser ParseStartBoundry trace3 \n");
                 int checkStatus = checkBoudaryIndex(v);
                 switch(checkStatus) {
                     case _PartEnd:
@@ -129,7 +126,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             }
 
             case ParseContent: {
-                //printf("HttpMultiPartParser ParseStartBoundry trace4 \n");
                 int checkStatus = checkBoudaryIndex(v);
                 int resizeSize = mBoundaryEnd->size(); // multi part end "----xxxx\r\n"
                 switch(checkStatus) {

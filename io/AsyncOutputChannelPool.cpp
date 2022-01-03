@@ -24,7 +24,6 @@ _AsyncOutputChannelPool::_AsyncOutputChannelPool() {
 
 int _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) {
     if ((events & st(EPollFileObserver)::EpollOut) != 0) {
-        printf("asyncoutput pool onevent!!!!!!!!!!!!!!!!!!!!!!!!! \n");
         AsyncOutputChannel ch = nullptr;
         {
             AutoLock l(mMutex);

@@ -26,9 +26,7 @@ _Http2FrameParser::_Http2FrameParser(ByteRingArrayReader r,HPackDecoder d) {
 ArrayList<Http2Frame> _Http2FrameParser::doParse() {
     ArrayList<Http2Frame> list = createArrayList<Http2Frame>();
     bool isComplete = false;
-    printf("http2frame doParse \n");
     while(!isComplete) {
-        printf("http2frame status is %d \n",status);
         switch(status) {
             case ParseHeadPart: {
                 if(mReader->getReadableLength() < 9) {
@@ -39,25 +37,20 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
                 //read length
                 mReader->move(3);
                 ByteArray data = mReader->pop();
-                printf("data[0] is %x,data[1] is %x,data[2] is %x",data[0],data[1],data[2]);
                 uint32_t length = data[0]<<16|data[1]<<8|data[2]; //big endian
-                printf("parse length is %x \n",length);
                 //read type
                 mReader->move(1);
                 uint32_t type = mReader->pop()[0];
-                printf("parse type is %d \n",type);
-
+    
                 //flag
                 mReader->move(1);
                 uint32_t flags = mReader->pop()[0];
-                printf("parse flags is %d \n",flags);
-
+    
                 //stream id
                 mReader->move(4);
                 data = mReader->pop();
                 uint32_t streamid = data[0]<<24|data[1]<<16|data[2]<<8|data[3];
-                printf("streamid is %d,type is %d \n",streamid,type);
-
+    
                 //create frame
                 switch(type) {
                     case st(Http2Frame)::TypeData:
@@ -117,7 +110,6 @@ ArrayList<Http2Frame> _Http2FrameParser::doParse() {
 
             case ParsePayload: {
                 int rest = (mCache == nullptr)?mCurrentFrame->getLength():mCurrentFrame->getLength() - mCache->size();
-                printf("rest is %d ,readable length is %d \n",rest,mReader->getReadableLength());
                 if(rest > mReader->getReadableLength()) {
                     //we should save bytearray;
                     mReader->move(mReader->getReadableLength());

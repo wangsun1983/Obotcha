@@ -454,7 +454,6 @@ public:
 
             case st(Field)::FieldTypeObject: {
                 // create Objectt
-                printf("field name is %s \n",name.c_str());
                 sp<_Object> newObject = field->createObject();
                 //auto reflectValue = field->getObjectValue();
                 if(IsInstance(Integer,newObject)) {

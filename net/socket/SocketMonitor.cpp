@@ -87,7 +87,6 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                     //We should check whether socket is still connected
                     //to prevent nullpoint exception
                     if (task != nullptr) {
-                        printf("process trace1 task is not nullptr \n");
                         if(task->sock->isClosed()) {
                             task = nullptr;
                             continue;
@@ -95,7 +94,6 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
 
                         SocketListener listener = nullptr;
                         {
-                            printf("process trace2 task is not nullptr,fd is %d \n",task->sock->getFileDescriptor()->getFd());
                             AutoLock l(monitor->mListenerMutex);
                             listener = monitor->mListeners->get(
                                 task->sock->getFileDescriptor()->getFd());    
@@ -105,9 +103,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                             monitor->remove(task->sock);
                             task->sock->close();
                         }
-                        printf("process trace3 task is not nullptr \n");
                         if (listener != nullptr) {
-                            printf("process trace4 task is not nullptr \n");
                             listener->onSocketMessage(task->event, task->sock,
                                                       task->data);
                             //udp socket may be closed

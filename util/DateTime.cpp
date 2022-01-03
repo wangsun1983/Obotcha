@@ -428,7 +428,7 @@ int _DateTime::parseDayOfWeek(std::string::const_iterator & it,
         char ch = (*it++);
         dayOfWeek += static_cast<char>(std::toupper(ch));
     }
-    printf("dayOfWeek is %s \n",dayOfWeek.c_str());
+    
     if(dayOfWeek == "MON") {
         return st(Calendar)::Monday;
     } else if(dayOfWeek == "TUE") {

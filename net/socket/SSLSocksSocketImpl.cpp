@@ -16,7 +16,6 @@ _SSLSocksSocketImpl::_SSLSocksSocketImpl(String certificatePath,String keyPath,I
 void _SSLSocksSocketImpl::init(String certificatePath,String keyPath,bool isServer) {
     mCertificate = certificatePath;
     mKey = keyPath;
-    printf("_SSLSocksSocketImpl init!! \n");
     /* int ssl  */
     SSL_library_init();
     /* load SSL algorithms */
@@ -50,7 +49,6 @@ void _SSLSocksSocketImpl::init(String certificatePath,String keyPath,bool isServ
     }
 
     mSSL = SSL_new(mCtx);
-    printf("_SSLSocksSocketImpl init finish!! mSSL is %p\n",mSSL);
 }
 
 int _SSLSocksSocketImpl::connect() {
@@ -68,7 +66,6 @@ int _SSLSocksSocketImpl::close() {
 
 int _SSLSocksSocketImpl::write(ByteArray buff,int start,int length) {
     int size = (length == -1?buff->size() - start:length);
-    printf("_SSLSocksSocketImpl write start is %d,length is %d,size is %d,buffsize is %d \n",start,length,size,buff->size());
     
     if(start + length > buff->size()) {
         //TODO
@@ -87,10 +84,7 @@ int _SSLSocksSocketImpl::read(ByteArray buff,int start,int length) {
         return -1;
     }
 
-    printf("_SSLSocksSocketImpl read size is %d \n",size);
-    int ret =  SSL_read(mSSL,buff->toValue() + start,size);
-    printf("_SSLSocksSocketImpl read ret is %d errno is %s\n",ret,strerror(errno));
-    return ret;
+    return SSL_read(mSSL,buff->toValue() + start,size);
 }
 
 ByteArray _SSLSocksSocketImpl::read() {

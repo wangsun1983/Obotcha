@@ -33,7 +33,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
 
             if (address->getAddress() != nullptr) {
                 mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
-            } else {
+        } else {
                 mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
             }
 
@@ -76,7 +76,6 @@ Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
 
     switch(this->address->getType()) {
         case st(InetAddress)::IPV4: {
-            printf("recv ipv4 \n");
             length = recvfrom(
                 sock->getFd(), buff->toValue(), buff->size(), 0,
                 (sockaddr *)&client_address, &client_addrLength);
@@ -95,14 +94,12 @@ Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
                 newClient->setSockImpl(impl);
                 newClient->setType(st(Socket)::Udp);
 
-                printf("addr is %s,port is %d,fd is %d \n",inet_ntoa(client_address.sin_addr),client_address.sin_port,sock->getFd());
                 buff->quickShrink(length);
             }
         }
         break;
 
         case st(InetAddress)::IPV6: {
-            printf("recv ipv6 \n");
             length = recvfrom(
                 sock->getFd(), buff->toValue(), buff->size(), 0,
                 (sockaddr *)&client_address_v6, &client_addrLength_v6);
@@ -111,7 +108,6 @@ Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
                 char buf_ip[128];
                 memset(buf_ip,0,128);
                 inet_ntop(AF_INET6, &client_address_v6.sin6_addr, buf_ip, sizeof(buf_ip));
-                printf("i recv ip is %s \n",buf_ip);
                 Inet6Address inet6Addr = createInet6Address(
                     createString(buf_ip),ntohs(client_address_v6.sin6_port));
 
@@ -155,7 +151,6 @@ int _DatagramSocketImpl::bind() {
 }
 
 int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
-    printf("_DatagramSocketImpl write start \n");
     struct sockaddr * addr = nullptr;
     int addrlen = 0;
 
@@ -172,15 +167,12 @@ int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
         }
         break;
     }
-    printf("_DatagramSocketImpl write trace1 \n");
     if(start + length > data->size()) {
         //TODO
         return -1;
     }
-    printf("_DatagramSocketImpl write trace2,addr is %s ,port is %d \n",inet_ntoa(mSockAddr.sin_addr),mSockAddr.sin_port);
     int size = (length == -1?data->size() - start:length);
     int ret =  ::sendto(sock->getFd(), data->toValue() + start, size, 0,addr, addrlen);
-    printf("_DatagramSocketImpl write trace3 ret is %d \n",size);
     return ret;
 }
 

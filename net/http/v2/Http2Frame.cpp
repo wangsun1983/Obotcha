@@ -92,7 +92,6 @@ ByteArray _Http2Frame::toFrameData() {
         length = payload->size();
     }
     ByteArray frame = createByteArray(length + 9);
-    printf("to framedata size is %d \n",frame->size());
     ByteArrayWriter writer = createByteArrayWriter(frame,BigEndian);
     writer->writeUint32(length << 8 | type);
     writer->writeByte(flags);

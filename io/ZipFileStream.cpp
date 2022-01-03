@@ -41,7 +41,6 @@ void _ZipFileStream::close() {
 }
 
 int _ZipFileStream::compress(String src, String dest) {
-    printf("compress src is %s,dest is %s \n",src->toChars(),dest->toChars());
     if (src == nullptr) {
         return -InvalidParam;
     }
@@ -311,7 +310,6 @@ int _ZipFileStream::deCompress(String src, String dest) {
 int _ZipFileStream::deCompressWithPassword(String src, String dest,
                                            String password) {
     char *_src = (char *)src->toChars();
-    //printf("deCompress src is %s,dest is %s \n",_src,dest->toChars());
     char *_dest = nullptr;
 
     if (dest != nullptr) {

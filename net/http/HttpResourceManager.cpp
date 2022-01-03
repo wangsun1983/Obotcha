@@ -43,19 +43,16 @@ File _HttpResourceManager::findResource(String path) {
 
     // we check file
     int index = path->lastIndexOf("/");
-    printf("index is %d \n", index);
     String lastPath = nullptr;
     String checkFilePath = nullptr;
     if (index == -1) {
         lastPath = mRedirectMaps->get(path);
     } else {
         String tempPath = path->subString(index + 1, path->size() - index - 1);
-        printf("tempPath is %s \n", tempPath->toChars());
         lastPath = mRedirectMaps->get(tempPath);
     }
 
     if (lastPath != nullptr) {
-        printf("lastPath is %s \n", lastPath->toChars());
         if (lastPath->indexOf(".") == -1) {
             return nullptr;
         }
@@ -63,16 +60,13 @@ File _HttpResourceManager::findResource(String path) {
         checkFilePath = path->subString(0, index + 1);
         checkFilePath = checkFilePath->append(lastPath);
         checkFilePath = mResourceDir->append("/")->append(checkFilePath);
-        printf("checkFilePath is %s \n", checkFilePath->toChars());
     } else {
         if (path->indexOf(".") == -1) {
             return nullptr;
         }
-        printf("find trace1 !!!!!\n");
         checkFilePath = mResourceDir->append("/")->append(path);
     }
 
-    printf("checkFilePath trace is %s \n", checkFilePath->toChars());
     File file = createFile(checkFilePath);
 
     if (file->exists()) {

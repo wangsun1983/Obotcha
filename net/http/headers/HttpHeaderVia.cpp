@@ -79,7 +79,6 @@ void _HttpHeaderVia::import(String s) {
                     } else if(i == size - 1) {
                         String url = createString(p,start,i-start + 1);
                         item->url = createHttpUrl(url);
-                        printf("url create success \n");
                         vias->add(item);
                         return;
                     }

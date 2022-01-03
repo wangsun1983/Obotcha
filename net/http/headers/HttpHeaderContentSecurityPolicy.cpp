@@ -140,7 +140,6 @@ void _HttpHeaderContentSecurityPolicy::import(String s) {
                 item = createHttpHeaderContentSecurityPolicyItem();
                 String command = createString(p,start,i-start);
                 item->command = CommandStringToIdMaps->get(command)->toValue();
-                printf("command is %s,id is %d \n",command->toChars(),item->command);
                 jumpSpace(p,i,size);
                 start = i;
                 status = ParseRuleOrSource;
@@ -157,7 +156,6 @@ void _HttpHeaderContentSecurityPolicy::import(String s) {
                     }
 
                     String rule = createString(p,start+1,end-start-1);
-                    printf("rule is %s \n",rule->toChars());
                     item->rules->add(RuleStringToIdMaps->get(rule));
                     jumpSpace(p,i,size);
                 } else {
@@ -167,13 +165,11 @@ void _HttpHeaderContentSecurityPolicy::import(String s) {
                     } else {
                         src = createString(p,start,i-start);
                     }
-                    printf("src is %s \n",src->toChars());
                     item->sources->add(src);
                     jumpSpace(p,i,size);
                 }
                 
                 if(p[i] == ';' || i == size - 1) {
-                    printf("add item!!! \n");
                     items->add(item);
                     status = ParseCommand;
                     i++;

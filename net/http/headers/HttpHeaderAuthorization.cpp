@@ -26,7 +26,6 @@ _HttpHeaderAuthorization::_HttpHeaderAuthorization(String s) {
 
 void _HttpHeaderAuthorization::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
-        printf("directive is %s \n",directive->toChars());
         while(1) {
             if(type == nullptr) {
                 //first 

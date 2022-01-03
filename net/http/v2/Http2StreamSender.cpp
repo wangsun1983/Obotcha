@@ -30,7 +30,6 @@ void _Http2StreamSender::close() {
 
 void _Http2StreamSender::run() {
     while(isRunning) {
-        printf("Http2StreamSender run start \n");
         ConcurrentQueue<ByteArray> queue = nullptr;
         {   
             AutoLock l(mMutex);
@@ -50,7 +49,6 @@ void _Http2StreamSender::run() {
 
         while(queue->size() != 0) {
             auto d = queue->takeFirst();
-            printf("Http2StreamSender run write \n");
             out->write(d);
         }
     }

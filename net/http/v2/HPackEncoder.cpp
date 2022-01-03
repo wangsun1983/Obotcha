@@ -77,7 +77,6 @@ void _HPackEncoder::encodeHeadersEnforceMaxHeaderListSize(int streamId, HttpHead
         // OK to increment now and check for bounds after because this value is limited to unsigned int and will not
         // overflow.
         headerSize += st(HPackTableItem)::sizeOf(name, value);
-        printf("_HPackEncoder MaxHeaderList,name is %s,value is %s,headerSize is %ld \n",name->toChars(),value->toChars(),headerSize);
         if (headerSize > maxHeaderListSize) {
             Trigger(ArrayIndexOutOfBoundsException,"over size");
         }

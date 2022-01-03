@@ -74,7 +74,6 @@ ByteArray _HttpChunkParser::doParse() {
                 
                 mReader->move(popsize - 1); //one byte already read by readNext
                 ByteArray data = mReader->pop();
-                // printf("recv ...... data is %s \n",data->toString()->toChars());
                 if (mBuff == nullptr) {
                     mBuff = data;
                 } else {

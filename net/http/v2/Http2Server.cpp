@@ -10,7 +10,6 @@ namespace obotcha {
 void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
     switch (event) {
         case st(NetEvent)::Message: {
-            printf("Http2Server on message start\n");
             HttpLinker info = mLinkerManager->getLinker(r);
             if (info == nullptr) {
                 LOG(ERROR) << "http linker already removed";
@@ -26,9 +25,7 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
                 r->close();
                 return;
             }
-            printf("Http2Server on message trace1\n");
             ArrayList<HttpPacket> packets = info->pollHttpPacket();
-            printf("Http2Server on message star2\n");
             if(packets == nullptr||packets->size() == 0) {
                 return;
             }

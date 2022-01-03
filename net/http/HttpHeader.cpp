@@ -2724,8 +2724,6 @@ ListIterator<KeyValuePair<String,String>> _HttpHeader::getIterator() {
     //HashMap<String,String> values = createHashMap<String,String>();
     ArrayList<KeyValuePair<String,String>> values = createArrayList<KeyValuePair<String,String>>();
 
-    printf("getIterator,mProtocol is %d,mType is %d \n",mProtocol,mType);
-
 #define SET_HEAD_VALUE(X,Y) \
     values->add(createKeyValuePair<String,String>(X,Y))
 

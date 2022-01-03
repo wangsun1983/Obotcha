@@ -104,12 +104,10 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
     ByteArrayReader reader = createByteArrayReader(in,BigEndian);
     byte v = 0;
     while(reader->isReadable()) {
-        printf("decode start is %d \n",state);
         switch(state) {
             //rfc7541#section-6.1
             case ReadHeaderRepresentation: {
                 byte b = reader->readByte();
-                printf("ReadHeaderRepresentation,b is %x \n",b);
                 //Dynamic Table Size Update
                 /*
                     rfc7541
@@ -128,7 +126,6 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                 }
 
                 if ((b&0x80) == 0x80) {
-                    printf("Indexed Header Field,b is %x \n",b);
                     /*
                         rfc7541
                         6.1.  Indexed Header Field Representation
@@ -142,7 +139,6 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                     */
                     // Indexed Header Field
                     index = b & 0x7F;
-                    printf("Indexed Header Field,index is %x \n",index);
                     switch (index) {
                         case 0:
                             /*
@@ -173,7 +169,6 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                             sink->appendToHeaderList(indexedHeader->name, indexedHeader->value);
                     }
                 } else if ((b & 0x40) == 0x40) {
-                    printf("Literal Header Field with Incremental Indexing,b is %x \n",b);
                     /*
                         rfc7541
                         6.2.1.  Literal Header Field with Incremental Indexing
@@ -208,8 +203,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                     // Literal Header Field with Incremental Indexing
                     indexType = st(HPack)::Incremental;
                     index = (b & 0x3F);
-                    printf("Literal Header Field with Incremental Indexing,index is %x \n",index);
-
+                    
                     switch (index) {
                         case 0:
                             //(Figure 2)
@@ -223,13 +217,10 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                             //(Figure 1)
                             HPackTableItem indexedHeader = getIndexedHeader(index);
                             name = indexedHeader->name;
-                            printf("Index was stored as the prefix,name is %s \n",name->toChars());
                             nameLength = name->size();
-                            printf("Index was stored as the prefix,nameLength is %d \n",nameLength);
                             state = ReadLiteralHeaderValueLengthPrefix;;
                     }
                 } else if ((b & 0x20) == 0x20) {
-                    printf("Dynamic Table Size Update Indexing,b is %x \n",b);
                     // Dynamic Table Size Update
                     /*
                         A dynamic table size update signals a change to the size of the
@@ -251,11 +242,9 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                         state = ReadHeaderRepresentation;
                     }
                 } else {
-                    printf("Literal Header Field without Indexing / never Indexed,b is %x \n",b);
                     // Literal Header Field without Indexing / never Indexed
                     indexType = (b & 0x10) == 0x10 ? st(HPack)::Never : st(HPack)::None;
                     index = b & 0x0F;
-                    printf("Literal Header Field without Indexing / never Indexed,index is %x \n",index);
                     switch (index) {
                         case 0:
                             state = ReadLiteralHeaderNameLengthPrefix;
@@ -335,10 +324,8 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
 
             case ReadLiteralHeaderValueLengthPrefix: {
                 byte b = reader->readByte();
-                printf("ReadLiteralHeaderValueLengthPrefix b is %x \n",b);
                 huffmanEncoded = (b & 0x80) == 0x80;
                 index = (b & 0x7F);
-                printf("ReadLiteralHeaderValueLengthPrefix,index is %x \n",index);
                 switch (index) {
                     case 0x7f:
                         state = ReadLiteralHeaderValueLength;
@@ -377,7 +364,6 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                 } else {
                     value = data->toString();
                 }
-                printf("parse name is %s ,value is %s\n",name->toChars(),value->toChars());
                 insertHeader(sink, name, value, indexType);
                 state = ReadHeaderRepresentation;
             }

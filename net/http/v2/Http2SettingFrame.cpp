@@ -36,40 +36,32 @@ _Http2SettingFrame::_Http2SettingFrame():_Http2Frame() {
 
 void _Http2SettingFrame::import(ByteArray data) {
     ByteArrayReader reader = createByteArrayReader(data,Global::BigEndian);
-    printf("reader size is %d \n",reader->getRemainSize());
     while(reader->isReadable()) {
         uint16_t identity = reader->readUint16();
         uint32_t value = reader->readUint32();
-        printf("identity is %d,value is %d \n",identity,value);
         switch(identity) {
             case SettingHeaderTableSize:
                 mHeaderTableSize = value;
-                printf("mHeaderTableSize is %d \n",mHeaderTableSize);
             break;
 
             case SettingEnablePush:
                 mEnablePush = value;
-                printf("mEnablePush is %d \n",mEnablePush);
             break;
 
             case SetttingMaxConcurrentStreams:
                 mMaxConcurrentStreams = value;
-                printf("mMaxConcurrentStreams is %d \n",mMaxConcurrentStreams);
             break;
 
             case SettingInitialWindowSize:
                 mInitialWindowSize = value;
-                printf("mInitialWindowSize is %d \n",mInitialWindowSize);
             break;
 
             case SettingMaxFrameSize:
                 mMaxFrameSize = value;
-                printf("mMaxFrameSize is %d \n",mMaxFrameSize);
             break;
 
             case SettingMaxHeaderListSize:
                 mMaxHeaderListSize = value;
-                printf("mMaxHeaderListSize is %d \n",mMaxHeaderListSize);
             break;
             
             default:
