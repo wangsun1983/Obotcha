@@ -24,13 +24,28 @@ _Float::_Float(Float &v) {
 float _Float::toValue() { return val; }
 
 sp<_Float> _Float::parse(sp<_String> s) {
+    //add float check
+    const char *p = s->toChars();
+    int dotNum = 0;
+    for(int i = 0;i < s->size();i++) {
+        if(p[i] == '.') {
+            dotNum++;
+            if(dotNum > 1) {
+                goto Fail;
+            }
+        } else if(p[i] < '0' || p[i] > '9') {
+            goto Fail;
+        }
+    }
+
     try {
         String pa = s->trimAll();
-        float v = _Number<float>::parseNumber(pa->getStdString(), false);
+        float v = _Number<float>::parseNumber(pa->getStdString());
         return createFloat(v);
     } catch (int e) {
     }
 
+Fail:
     return nullptr;
 }
 

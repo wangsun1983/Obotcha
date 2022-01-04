@@ -197,6 +197,15 @@ _String::_String(long v) {
     m_str = std::to_string(v); 
 }
 
+_String::_String(bool v) {
+    if(v) {
+        m_str = True;
+    } else {
+        m_str = False;
+    }
+
+}
+
 _String::_String(char v) { 
     m_str = std::to_string(v); 
 }

@@ -92,7 +92,7 @@ Integer _Integer::parseDecInt(const sp<_String> &v) {
 Integer _Integer::parseHexInt(const sp<_String> &v) {
     try {
         String pa = v->trimAll()->replaceAll(std::string("\n"),"")->replaceAll("\r","");
-        int value = _Number::parseHexNumber(pa->getStdString(),false);
+        int value = _Number::parseHexNumber(pa->getStdString());
         return createInteger(value);
     } catch (...) {
         // nothing

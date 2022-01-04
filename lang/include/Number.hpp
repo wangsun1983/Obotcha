@@ -14,21 +14,165 @@ namespace obotcha {
 
 class _String;
 
+template<typename T>
+class _NumberChecker_ {
+public:
+    bool _isCorrectDecInputNumber(std::string v) {return false;}
+    bool _isCorrectHexInputNumber(std::string v) {return false;}
+    bool _isCorrectBinInputNumber(std::string v) {return false;}
+    bool _isCorrectOctInputNumber(std::string v) {return false;}
+private:
+    T v;
+};
+
+
+#define _NUMBER_CHECK_DECLARE(X) \
+template<>\
+class _NumberChecker_<X> {\
+public:\
+    bool _isCorrectDecInputNumber(std::string v) {\
+        const char *p = v.c_str();\
+        int size = v.size();\
+        for(int i = 0;i<size;i++) {\
+            if(p[i] < '0' || p[i] > '9') {\
+                return false;\
+            }\
+        }\
+        return true;\
+    }\
+    bool _isCorrectHexInputNumber(std::string v) {\
+        const char *p = v.c_str();\
+        int size = v.size();\
+        for(int i = 0;i<size;i++) {\
+            switch(p[i]) {\
+                case '0':\
+                case '1':\
+                case '2':\
+                case '3':\
+                case '4':\
+                case '5':\
+                case '6':\
+                case '7':\
+                case '8':\
+                case '9':\
+                case 'a':\
+                case 'A':\
+                case 'b':\
+                case 'B':\
+                case 'c':\
+                case 'C':\
+                case 'd':\
+                case 'D':\
+                case 'e':\
+                case 'E':\
+                case 'f':\
+                case 'F':\
+                continue;\
+                default:\
+                return false;\
+            }\
+        }\
+        return true;\
+    }\
+    bool _isCorrectBinInputNumber(std::string v) {\
+        const char *p = v.c_str();\
+        int size = v.size();\
+        for(int i = 0;i<size;i++) {\
+            switch(p[i]) {\
+                case '0':\
+                case '1':\
+                continue;\
+                default:\
+                return false;\
+            }\
+        }\
+        return true;\
+    }\
+    bool _isCorrectOctInputNumber(std::string v) {\
+        const char *p = v.c_str();\
+        int size = v.size();\
+        for(int i = 0;i<size;i++) {\
+            switch(p[i]) {\
+                case '0':\
+                case '1':\
+                case '2':\
+                case '3':\
+                case '4':\
+                case '5':\
+                case '6':\
+                case '7':\
+                continue;\
+                default:\
+                return false;\
+            }\
+        }\
+        return true;\
+    }\
+private:\
+    X v;\
+};
+
+_NUMBER_CHECK_DECLARE(int)
+_NUMBER_CHECK_DECLARE(long)
+_NUMBER_CHECK_DECLARE(uint8_t)
+_NUMBER_CHECK_DECLARE(uint16_t)
+_NUMBER_CHECK_DECLARE(uint32_t)
+_NUMBER_CHECK_DECLARE(uint64_t)
+
+#define _NUMBER_CHECK_DECLARE_DOUBLE(X) \
+template<>\
+class _NumberChecker_<X> {\
+public:\
+    bool _isCorrectDecInputNumber(std::string v) {\
+        int dotCount = 0; \
+        const char *p = v.c_str();\
+        int size = v.size(); \
+        for(int i = 0;i < size;i++) {\
+            if(p[i] >= '0' && p[i] <= '9') {\
+                continue;\
+            } else if(p[i] == '.') {\
+                dotCount++;\
+                if(dotCount > 1) {\
+                    return false;\
+                }\
+                continue;\
+            }\
+            return false;\
+        }\
+        return true;\
+    }\
+    bool _isCorrectHexInputNumber(std::string v) {\
+        return false;\
+    }\
+    bool _isCorrectBinInputNumber(std::string v) {\
+        return false;\
+    }\
+    bool _isCorrectOctInputNumber(std::string v) {\
+        return false;\
+    }\
+private:\
+    X v;\
+};
+
+_NUMBER_CHECK_DECLARE_DOUBLE(double)
+_NUMBER_CHECK_DECLARE_DOUBLE(float)
+
+
 DECLARE_TEMPLATE_CLASS(Number,1) {
 
 public:
-    static T parseNumber(std::string v,bool check = true) {
+    static T parseNumber(std::string v) {
+        _NumberChecker_<T> checker;
+        if(!checker._isCorrectDecInputNumber(v)) {
+            throw(-1); 
+        }
+
         std::stringstream ss;
         ss<< v;
         T value;
         ss>>value;
 
-        std::string checkValue = toDecString(value);
-
-        if(!check || checkValue.compare(v) == 0) {
-            return value;
-        }
-        throw(-1);
+        return value;
     }
 
 protected:
@@ -79,68 +223,57 @@ protected:
     }
 
     static T parseDecNumber(std::string v) {
+        _NumberChecker_<T> checker;
+        if(!checker._isCorrectDecInputNumber(v)) {
+            throw(-1); 
+        }
+
         std::stringstream ss;
         ss<<v;
         T value;
         ss>>value;
         
-        std::string checkValue = toDecString(value);
-
-        if(checkValue.compare(v) == 0) {
-            return value;
-        }
-
-        throw(-1);
+        return value;
     }
 
-    static T parseHexNumber(std::string v,bool isChcked = false) {
+    static T parseHexNumber(std::string v) {
         if(v.size() >= 3 && (v.c_str()[1] == 'x' || v.c_str()[1] == 'X')) {
             v = v.substr(2,v.size() - 2);
+        }
+
+        _NumberChecker_<T> checker;
+        if(!checker._isCorrectHexInputNumber(v)) {
+            throw(-1); 
         }
 
         std::stringstream ss;
         ss<< std::hex <<v;
         T value;
         ss>>value;
-        if(isChcked) {
-            std::string checkValue = toHexString(value);
-            if(checkValue.size() == v.size()) {
-                //ingore Lower/Upper case
-                int len = v.size();
-                const char * str1 = v.c_str();
-                const char * str2 = checkValue.c_str();
-                for(int i = 0;i<len;i++) {
-                    if(str1[i] != str2[i] && std::abs((str1[i] - str2[i])) != 0x20) {
-                        throw(-1);
-                    }
-                }
-
-                return value;
-            }
-        } else {
-            return value;
-        }
-        throw(-1);
+        return value;
     }
 
     static T parseOctNumber(std::string v) {
+        _NumberChecker_<T> checker;
+        if(!checker._isCorrectOctInputNumber(v)) {
+            throw(-1); 
+        }
+
         std::stringstream ss;
         ss<< std::oct <<v;
         T value;
         ss>>value;
-
-        std::string checkValue = toOctalString(value);
-
-        if(checkValue.compare(v) == 0) {
-            return value;
-        }
-
-        throw(-1);
+        return value;
     }
 
     static T parseBinaryNumber(std::string v) {
         if(v.size() >= 3 && (v.c_str()[1] == 'b' || v.c_str()[1] == 'B')) {
             v = v.substr(2,v.size() - 2);
+        }
+
+        _NumberChecker_<T> checker;
+        if(!checker._isCorrectBinInputNumber(v)) {
+            throw(-1); 
         }
 
         int lastIndex = v.size() - 1;
@@ -153,13 +286,7 @@ protected:
             }
         }
 
-        std::string checkValue = toBinaryString(parseBinary);
-
-        if(checkValue.compare(v) == 0) {
-            return parseBinary;
-        }
-
-        throw(-1);
+        return parseBinary;
     }
 
     bool isIntNumber(const char *p,int size) {

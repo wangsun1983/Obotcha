@@ -50,13 +50,27 @@ bool _Double::isEqual(double x, double y) {
 }
 
 sp<_Double> _Double::parse(sp<_String> s) {
+    const char *p = s->toChars();
+    int dotNum = 0;
+    for(int i = 0;i < s->size();i++) {
+        if(p[i] == '.') {
+            dotNum++;
+            if(dotNum > 1) {
+                goto Fail;
+            }
+        } else if(p[i] < '0' || p[i] > '9') {
+            goto Fail;
+        }
+    }
+
     try {
         String pa = s->trimAll();
-        double v = _Number<double>::parseNumber(pa->getStdString(), false);
+        double v = _Number<double>::parseNumber(pa->getStdString());
         return createDouble(v);
     } catch (int e) {
     }
 
+Fail:
     return nullptr;
 }
 
