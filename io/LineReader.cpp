@@ -13,7 +13,7 @@
 
 namespace obotcha {
 
-_LineReader::_LineReader(File file):mFileStream(file->getAbsolutePath()->toChars()) {
+_LineReader::_LineReader(File file):mFileStream(file->getAbsolutePath()->toChars(),std::ifstream::in) {
     if (!file->exists()) {
         Trigger(InitializeException, "file not exists");
     }
@@ -30,20 +30,19 @@ _LineReader::_LineReader(ByteArray data) {
     mStringStream <<data->toValue();
 }
 
-String _LineReader::readLine() {
+String _LineReader::readLine() {    
+    std::string s;
+
     switch(type) {
-        case ReadFile: {
-            ByteArray temp = createByteArray(1024*4);
-            mFileStream.getline((char *)temp->toValue(),1024*4);
-            return temp->toString();
+        case ReadContent:
+        if (std::getline(mStringStream, s)) {
+            return createString(s);
         }
         break;
 
-        case ReadContent: {
-            std::string s;
-            if (std::getline(mStringStream, s)) {
-                return createString(s);
-            }
+        case ReadFile:
+        if (std::getline(mFileStream, s)) {
+            return createString(s);
         }
         break;
     }

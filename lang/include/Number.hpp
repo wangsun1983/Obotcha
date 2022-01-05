@@ -288,7 +288,7 @@ protected:
 
         return parseBinary;
     }
-
+#if 0
     bool isIntNumber(const char *p,int size) {
         for(int i = 0;i < size;i++) {
             if(p[i] >= '0' && p[i] <= '9') {
@@ -351,7 +351,7 @@ protected:
         }
         return true;
     }
-
+#endif
 };
 
 }
