@@ -25,6 +25,8 @@ ByteArray _Http2PushPromiseFrame::toByteArray() {
     if(isPadding() && paddingData != nullptr) {
         writer->writeByteArray(paddingData);
     }
+
+    return data;
 }
 
 void _Http2PushPromiseFrame::import(ByteArray data) {

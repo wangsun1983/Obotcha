@@ -886,7 +886,6 @@ int _String::lastIndexOfIgnoreCase(const char *str, int csize) {
     while (index >= subIndex) {
         int v1 = m[index];
         int v2 = str[subIndex];
-        // printf("v2 is %d,v2 is %d,index is %d \n",v1,v2,index);
         if (IgnoreCaseTable[v1] == IgnoreCaseTable[v2]) {
             if (subIndex == 0) {
                 return index;

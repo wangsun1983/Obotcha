@@ -17,6 +17,8 @@ class V:public Exception
 void _translateException(char *buff,const char *err);
 void _translateException(char *buff,String err);
 
+//#define EXPORT_EXCEPTION_INFO 1
+
 #if EXPORT_EXCEPTION_INFO
 #define Trigger(V,info) \
     char buff[256] = {0};\

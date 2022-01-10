@@ -70,6 +70,7 @@ namespace obotcha {
             return ContainerValue<T>(nullptr).get();                           \
         }                                                                      \
         Action if (mCapacity > 0) { notFull->notify(); }                       \
+        return ret;                                                            \
     }                                                                          \
     return ContainerValue<T>(nullptr).get();
 

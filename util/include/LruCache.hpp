@@ -44,6 +44,20 @@ public:
         mHashMap = createHashMap<T, sp<_LruNode<T, U>>>();
     }
 
+    ~_LruCache() {
+        mHashMap->clear();
+        auto current = mCurrent;
+        while(current != nullptr) {
+            if(current->prev != nullptr) {
+                current->prev->next = nullptr;
+            }
+            auto next = current->prev;
+            current->prev = nullptr;
+            current->next = nullptr;
+            current = next;
+        }
+    }
+
     void put(T t, U u) {
         sp<_LruNode<T, U>> node = mHashMap->get(t);
         if (node != nullptr) {
