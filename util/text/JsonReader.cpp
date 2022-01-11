@@ -34,7 +34,7 @@ JsonValue _JsonReader::parse(String content) {
         return nullptr;
     }
 
-    if (value->jvalue.empty() && value->jvalue.isNull()) {
+    if (value->jvalue.empty() || value->jvalue.isNull()) {
         return nullptr;
     }
 

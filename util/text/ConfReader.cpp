@@ -38,7 +38,9 @@ int _ConfReader::parse() {
     return -1;
 }
 
-_ConfReader::~_ConfReader() {}
+_ConfReader::~_ConfReader() {
+    ccl_release(&config);
+}
 
 sp<_ConfIterator> _ConfReader::getIterator() {
     return createConfIterator(AutoClone(this));
