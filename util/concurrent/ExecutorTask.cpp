@@ -26,7 +26,9 @@ _ExecutorTask::_ExecutorTask(Runnable r) {
     mStatus = Waiting;
 }
 
-_ExecutorTask::~_ExecutorTask() { this->mRunnable = nullptr; }
+_ExecutorTask::~_ExecutorTask() { 
+    this->mRunnable = nullptr; 
+}
 
 int _ExecutorTask::wait(long interval) {
     AutoLock l(mMutex);
@@ -38,7 +40,7 @@ int _ExecutorTask::wait(long interval) {
 
 void _ExecutorTask::cancel() {
     AutoLock l(mMutex);
-    if (mStatus == Cancel || mStatus == Complete || mStatus == Running) {
+    if (mStatus == Cancel || mStatus == Complete) {
         return;
     }
 
@@ -57,6 +59,8 @@ int _ExecutorTask::getStatus() {
 }
 
 void _ExecutorTask::execute() {
+    Runnable r = nullptr;
+
     {
         AutoLock l(mMutex);
         if (mStatus == Complete || mStatus == Cancel) {
@@ -64,12 +68,13 @@ void _ExecutorTask::execute() {
         }
 
         mStatus = Running;
+        r = mRunnable;
     }
 
     st(TaskResult)::addTask(AutoClone(this));
-
-    if (mRunnable != nullptr) {
-        mRunnable->run();
+    
+    if (r != nullptr) {
+        r->run();
     }
 
     st(TaskResult)::removeTask();
@@ -81,22 +86,40 @@ void _ExecutorTask::execute() {
     }
 }
 
-Runnable _ExecutorTask::getRunnable() { return mRunnable; }
+Runnable _ExecutorTask::getRunnable() { 
+    return mRunnable; 
+}
 
-void _ExecutorTask::setResult(int v) { mResult = createInteger(v); }
+void _ExecutorTask::setResult(int v) { 
+    mResult = createInteger(v); 
+}
 
-void _ExecutorTask::setResult(byte v) { mResult = createByte(v); }
+void _ExecutorTask::setResult(byte v) { 
+    mResult = createByte(v); 
+}
 
-void _ExecutorTask::setResult(double v) { mResult = createDouble(v); }
+void _ExecutorTask::setResult(double v) { 
+    mResult = createDouble(v); 
+}
 
-void _ExecutorTask::setResult(bool v) { mResult = createBoolean(v); }
+void _ExecutorTask::setResult(bool v) { 
+    mResult = createBoolean(v); 
+}
 
-void _ExecutorTask::setResult(long v) { mResult = createLong(v); }
+void _ExecutorTask::setResult(long v) { 
+    mResult = createLong(v); 
+}
 
-void _ExecutorTask::setResult(uint16_t v) { mResult = createUint16(v); }
+void _ExecutorTask::setResult(uint16_t v) { 
+    mResult = createUint16(v); 
+}
 
-void _ExecutorTask::setResult(uint32_t v) { mResult = createUint32(v); }
+void _ExecutorTask::setResult(uint32_t v) { 
+    mResult = createUint32(v); 
+}
 
-void _ExecutorTask::setResult(uint64_t v) { mResult = createUint64(v); }
+void _ExecutorTask::setResult(uint64_t v) { 
+    mResult = createUint64(v); 
+}
 
 } // namespace obotcha

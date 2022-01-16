@@ -30,6 +30,11 @@ public:
         return mMap->put(key, value);
     }
 
+    void remove(const T &key) {
+        AutoLock l(mutex);
+        mMap->remove(key);
+    }
+
     void clear() {
         AutoLock l(mutex);
         mMap->clear();

@@ -44,8 +44,7 @@ _Mutex::_Mutex(const char *v, int type) : _Mutex(type) {
 }
 
 int _Mutex::lock() {
-    pthread_mutex_lock(&mutex_t);
-    return 0;
+    return (pthread_mutex_lock(&mutex_t) == 0)? 0:-LockFail;
 }
 
 int _Mutex::lock(long timeInterval) {
@@ -68,8 +67,7 @@ int _Mutex::lock(long timeInterval) {
 }
 
 int _Mutex::unlock() {
-    int ret = pthread_mutex_unlock(&mutex_t);
-    return 0;
+    return (pthread_mutex_unlock(&mutex_t) == 0)?0:-1;
 }
 
 int _Mutex::tryLock() {
@@ -86,9 +84,13 @@ int _Mutex::tryLock() {
     }
 }
 
-String _Mutex::toString() { return mMutexName; }
+String _Mutex::toString() { 
+    return mMutexName; 
+}
 
-pthread_mutex_t *_Mutex::getMutex_t() { return &mutex_t; }
+pthread_mutex_t *_Mutex::getMutex_t() { 
+    return &mutex_t; 
+}
 
 _Mutex::~_Mutex() {
     pthread_mutex_destroy(&mutex_t);

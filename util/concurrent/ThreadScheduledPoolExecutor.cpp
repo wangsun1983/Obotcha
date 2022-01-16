@@ -17,6 +17,10 @@ _WaitingTask::_WaitingTask(long int interval, Runnable r) : _ExecutorTask(r) {
     nextTime = st(System)::currentTimeMillis() + interval;
 }
 
+//_WaitingTask::~WaitingTask() {
+    //nothing
+//}
+
 //---------------ScheduleService---------------//
 _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity) {
     mCachedExecutor =
@@ -35,6 +39,7 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity) {
 }
 
 int _ThreadScheduledPoolExecutor::shutdown() {
+    printf("_ThreadScheduledPoolExecutor shutdown start \n");
     {
         AutoLock l(mTaskMutex);
         if (mStatus == ShutDown) {
@@ -52,8 +57,9 @@ int _ThreadScheduledPoolExecutor::shutdown() {
         notEmpty->notify();
         mTaskWaitCond->notify();
     }
-
+    printf("_ThreadScheduledPoolExecutor shutdown trace1 \n");
     mCachedExecutor->shutdown();
+    printf("_ThreadScheduledPoolExecutor shutdown trace2 \n");
     return 0;
 }
 
@@ -66,7 +72,9 @@ bool _ThreadScheduledPoolExecutor::isTerminated() {
     return mCachedExecutor->isTerminated();
 }
 
-void _ThreadScheduledPoolExecutor::awaitTermination() { awaitTermination(0); }
+void _ThreadScheduledPoolExecutor::awaitTermination() { 
+    awaitTermination(0); 
+}
 
 int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
     return mCachedExecutor->awaitTermination(timeout);

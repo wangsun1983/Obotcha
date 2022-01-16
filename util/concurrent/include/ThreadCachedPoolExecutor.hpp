@@ -13,6 +13,7 @@
 #include "Runnable.hpp"
 #include "StrongPointer.hpp"
 #include "Thread.hpp"
+#include "HashMap.hpp"
 
 namespace obotcha {
 
@@ -105,6 +106,11 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
     BlockingLinkedList<ExecutorTask> mTasks;
 
     AtomicInteger mIdleNum;
+
+    std::atomic_int handlerId;
+    
+    Mutex mRunningTaskMutex;
+    HashMap<Integer,ExecutorTask> mRunningTasks;
 };
 
 } // namespace obotcha

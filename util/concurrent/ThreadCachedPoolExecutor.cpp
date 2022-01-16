@@ -36,8 +36,11 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int queuesize,
     mHandlers = createArrayList<Thread>();
     mMutex = createMutex();
     mTasks = createBlockingLinkedList<ExecutorTask>(queuesize);
+    mRunningTaskMutex = createMutex();
+    mRunningTasks = createHashMap<Integer,ExecutorTask>();
     mStatus = Executing;
     mIdleNum = createAtomicInteger(0);
+    handlerId = 0;
 }
 
 int _ThreadCachedPoolExecutor::shutdown() {
@@ -49,7 +52,7 @@ int _ThreadCachedPoolExecutor::shutdown() {
 
         mStatus = ShutDown;
     }
-
+    printf("ThreadCachedPoolExecutor start \n");
     mTasks->freeze();
     mTasks->foreach ([](ExecutorTask t) {
         t->cancel();
@@ -58,7 +61,17 @@ int _ThreadCachedPoolExecutor::shutdown() {
     // notify all thread to close
     mTasks->destroy();
     mTasks->unfreeze();
-
+    printf("ThreadCachedPoolExecutor trace1 \n");
+    {
+        AutoLock l(mRunningTaskMutex);
+        auto iterator = mRunningTasks->getIterator();
+        while(iterator->hasValue()) {
+            auto value = iterator->getValue();
+            value->cancel();
+            iterator->next();
+        }
+    }
+    printf("ThreadCachedPoolExecutor trace2 \n");
     {
         AutoLock l(mMutex);
         mHandlers->foreach ([](Thread &t) {
@@ -66,6 +79,7 @@ int _ThreadCachedPoolExecutor::shutdown() {
             return Global::Continue;
         });
     }
+    printf("ThreadCachedPoolExecutor trace3 \n");
     return 0;
 }
 
@@ -88,9 +102,12 @@ bool _ThreadCachedPoolExecutor::isTerminated() {
     return true;
 }
 
-void _ThreadCachedPoolExecutor::awaitTermination() { awaitTermination(0); }
+void _ThreadCachedPoolExecutor::awaitTermination() { 
+    awaitTermination(0); 
+}
 
 int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
+    printf("ThreadCachedPoolExecutor await trace1 \n");
     {
         AutoLock l(mMutex);
         if (mStatus == Executing) {
@@ -106,7 +123,7 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
         AutoLock l(mMutex);
         list->add(mHandlers);
     }
-
+    printf("ThreadCachedPoolExecutor await trace2 \n");
     auto iterator = list->getIterator();
     TimeWatcher watcher = createTimeWatcher();
 
@@ -124,7 +141,7 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
         }
         iterator->next();
     }
-
+    printf("ThreadCachedPoolExecutor await trace3 \n");
     return 0;
 }
 
@@ -133,7 +150,9 @@ int _ThreadCachedPoolExecutor::getThreadsNum() {
     return mHandlers->size();
 }
 
-int _ThreadCachedPoolExecutor::getTasksNum() { return mTasks->size(); }
+int _ThreadCachedPoolExecutor::getTasksNum() { 
+    return mTasks->size(); 
+}
 
 Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r, long interval) {
     {
@@ -159,7 +178,10 @@ void _ThreadCachedPoolExecutor::submitTask(ExecutorTask task, long interval) {
     }
 }
 
-_ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {}
+_ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
+    this->shutdown();
+    this->awaitTermination();
+}
 
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
     {
@@ -170,10 +192,10 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
     }
 
     Thread handler = createThread(
-        [](ThreadCachedPoolExecutor executor) {
-            ExecutorTask mCurrentTask = nullptr;
+        [this](ThreadCachedPoolExecutor executor) {
+            handlerId++;
             while (1) {
-                mCurrentTask =
+                auto mCurrentTask =
                     executor->mTasks->takeFirst(executor->mThreadTimeout);
                 executor->mIdleNum->subAndGet(1);
                 if (mCurrentTask == nullptr) {
@@ -185,10 +207,20 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
                     }
                     return;
                 }
-
+                
+                {
+                    AutoLock l(mRunningTaskMutex);
+                    executor->mRunningTasks->put(createInteger(handlerId),mCurrentTask);
+                }
+                
                 mCurrentTask->execute();
+
+                {
+                    AutoLock l(mRunningTaskMutex);
+                    executor->mRunningTasks->remove(createInteger(handlerId));
+                }
+                
                 executor->mIdleNum->addAndGet(1);
-                mCurrentTask = nullptr;
             }
         },
         AutoClone(this));

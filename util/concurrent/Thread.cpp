@@ -348,6 +348,9 @@ void _Thread::interrupt() {
         mStatus = Interrupting;
         mSleepCondition->notifyAll();
         mJoinCondition->notifyAll();
+        if(mRunnable != nullptr) {
+            mRunnable->onInterrupt();
+        }
     }
 }
 
