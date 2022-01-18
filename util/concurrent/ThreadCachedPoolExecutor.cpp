@@ -52,7 +52,7 @@ int _ThreadCachedPoolExecutor::shutdown() {
 
         mStatus = ShutDown;
     }
-    printf("ThreadCachedPoolExecutor start \n");
+    
     mTasks->freeze();
     mTasks->foreach ([](ExecutorTask t) {
         t->cancel();
@@ -61,7 +61,6 @@ int _ThreadCachedPoolExecutor::shutdown() {
     // notify all thread to close
     mTasks->destroy();
     mTasks->unfreeze();
-    printf("ThreadCachedPoolExecutor trace1 \n");
     {
         AutoLock l(mRunningTaskMutex);
         auto iterator = mRunningTasks->getIterator();
@@ -70,8 +69,10 @@ int _ThreadCachedPoolExecutor::shutdown() {
             value->cancel();
             iterator->next();
         }
+
+        mRunningTasks->clear();
     }
-    printf("ThreadCachedPoolExecutor trace2 \n");
+    
     {
         AutoLock l(mMutex);
         mHandlers->foreach ([](Thread &t) {
@@ -79,7 +80,6 @@ int _ThreadCachedPoolExecutor::shutdown() {
             return Global::Continue;
         });
     }
-    printf("ThreadCachedPoolExecutor trace3 \n");
     return 0;
 }
 
@@ -107,7 +107,6 @@ void _ThreadCachedPoolExecutor::awaitTermination() {
 }
 
 int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
-    printf("ThreadCachedPoolExecutor await trace1 \n");
     {
         AutoLock l(mMutex);
         if (mStatus == Executing) {
@@ -123,7 +122,6 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
         AutoLock l(mMutex);
         list->add(mHandlers);
     }
-    printf("ThreadCachedPoolExecutor await trace2 \n");
     auto iterator = list->getIterator();
     TimeWatcher watcher = createTimeWatcher();
 
@@ -141,7 +139,6 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
         }
         iterator->next();
     }
-    printf("ThreadCachedPoolExecutor await trace3 \n");
     return 0;
 }
 
@@ -179,8 +176,8 @@ void _ThreadCachedPoolExecutor::submitTask(ExecutorTask task, long interval) {
 }
 
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
-    this->shutdown();
-    this->awaitTermination();
+    //this->shutdown();
+    //this->awaitTermination();
 }
 
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
@@ -212,7 +209,7 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
                     AutoLock l(mRunningTaskMutex);
                     executor->mRunningTasks->put(createInteger(handlerId),mCurrentTask);
                 }
-                
+
                 mCurrentTask->execute();
 
                 {

@@ -17,9 +17,9 @@ _WaitingTask::_WaitingTask(long int interval, Runnable r) : _ExecutorTask(r) {
     nextTime = st(System)::currentTimeMillis() + interval;
 }
 
-//_WaitingTask::~WaitingTask() {
+_WaitingTask::~_WaitingTask() {
     //nothing
-//}
+}
 
 //---------------ScheduleService---------------//
 _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity) {
@@ -39,7 +39,6 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity) {
 }
 
 int _ThreadScheduledPoolExecutor::shutdown() {
-    printf("_ThreadScheduledPoolExecutor shutdown start \n");
     {
         AutoLock l(mTaskMutex);
         if (mStatus == ShutDown) {
@@ -47,19 +46,20 @@ int _ThreadScheduledPoolExecutor::shutdown() {
         }
 
         mStatus = ShutDown;
-
-        WaitingTask task = mTaskPool;
-        while (task != nullptr) {
-            task->cancel();
-            task = task->next;
+        auto t = mTaskPool;
+        while (mTaskPool != nullptr) {
+            mTaskPool->cancel();
+            auto header = mTaskPool;
+            mTaskPool = mTaskPool->next;
+            header->next = nullptr;
         }
         notFull->notify();
         notEmpty->notify();
         mTaskWaitCond->notify();
     }
-    printf("_ThreadScheduledPoolExecutor shutdown trace1 \n");
+
     mCachedExecutor->shutdown();
-    printf("_ThreadScheduledPoolExecutor shutdown trace2 \n");
+    
     return 0;
 }
 
@@ -143,6 +143,7 @@ void _ThreadScheduledPoolExecutor::run() {
                 if (interval <= 0) {
                     mCurrentTask = mTaskPool;
                     mTaskPool = mTaskPool->next;
+                    mCurrentTask->next = nullptr; //remove task link for stack overflow
                 } else {
                     mTaskWaitCond->wait(mTaskMutex, interval);
                     continue;
@@ -165,7 +166,9 @@ void _ThreadScheduledPoolExecutor::run() {
     }
 }
 
-_ThreadScheduledPoolExecutor::~_ThreadScheduledPoolExecutor() {}
+_ThreadScheduledPoolExecutor::~_ThreadScheduledPoolExecutor() {
+
+}
 
 void _ThreadScheduledPoolExecutor::close() {
     this->shutdown();

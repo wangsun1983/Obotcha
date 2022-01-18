@@ -24,6 +24,7 @@ public:
     friend class _ThreadScheduledPoolExecutor;
 
     _WaitingTask(long int interval, Runnable);
+    ~_WaitingTask();
 
 private:
     long int nextTime;
