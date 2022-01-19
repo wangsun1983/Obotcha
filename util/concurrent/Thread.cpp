@@ -142,7 +142,6 @@ int _Thread::join(long timeInterval) {
             return mJoinCondition->wait(mMutex, timeInterval);
         }
     }
-
     return -AlreadyExists;
 }
 

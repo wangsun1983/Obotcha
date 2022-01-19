@@ -145,6 +145,7 @@ void _Handler::run() {
                 if (interval <= 0) {
                     msg = mMessagePool;
                     mMessagePool = mMessagePool->next;
+                    msg->next = nullptr; //remove task link for stack overflow
                 } else {
                     mCondition->wait(mMutex, interval);
                     continue;

@@ -15,7 +15,7 @@ DECLARE_CLASS(Runnable) {
 public:
     virtual void run() = 0;
 
-    virtual void onInterrupt(){};
+    virtual bool onInterrupt(){ return false;};
 
     virtual ~_Runnable() {}
 };

@@ -30,7 +30,7 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity) {
     mStatus = Executing;
     mCount = 0;
     mCapacity = capacity;
-    notEmpty = createCondition();
+    //notEmpty = createCondition();
     notFull = createCondition();
     mTaskWaitCond = createCondition();
     mTaskPool = nullptr;
@@ -53,8 +53,9 @@ int _ThreadScheduledPoolExecutor::shutdown() {
             mTaskPool = mTaskPool->next;
             header->next = nullptr;
         }
+
         notFull->notify();
-        notEmpty->notify();
+        //notEmpty->notify();
         mTaskWaitCond->notify();
     }
 
@@ -99,6 +100,7 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
         WaitingTask p = mTaskPool;
         WaitingTask prev = mTaskPool;
         for (;;) {
+            //printf("p->nextTime is %ld,task->nextTime is %ld \n",p->nextTime,task->nextTime);
             if (p->nextTime > task->nextTime) {
                 if (p == mTaskPool) {
                     task->next = p;
@@ -120,7 +122,8 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
     }
 
     mCount++;
-    notEmpty->notify();
+    //notEmpty->notify();
+    mTaskWaitCond->notify();
     return 0;
 }
 
@@ -135,11 +138,12 @@ void _ThreadScheduledPoolExecutor::run() {
             }
 
             if (mTaskPool == nullptr) {
-                notEmpty->wait(mTaskMutex);
+                mTaskWaitCond->wait(mTaskMutex);
                 continue;
             } else {
                 long interval =
                     (mTaskPool->nextTime - st(System)::currentTimeMillis());
+                //printf("interval is %d \n",interval);
                 if (interval <= 0) {
                     mCurrentTask = mTaskPool;
                     mTaskPool = mTaskPool->next;
