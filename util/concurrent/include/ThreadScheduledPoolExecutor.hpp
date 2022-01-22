@@ -31,8 +31,7 @@ private:
     sp<_WaitingTask> next;
 };
 
-DECLARE_CLASS(ThreadScheduledPoolExecutor)
-IMPLEMENTS(Thread, Executor, Closeable) {
+DECLARE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(Thread, Executor, Closeable) {
 
 public:
     _ThreadScheduledPoolExecutor(int capacity = -1);
@@ -56,6 +55,10 @@ public:
             return createFuture(task);
         }
         return nullptr;
+    }
+
+    template <typename X> Future submit(sp<X> r) {
+        return submitWithInTime(0, 0, r);
     }
 
     template <typename X> Future submit(long delay, sp<X> r) {
@@ -89,6 +92,8 @@ private:
     Condition notEmpty;
     Condition notFull;
     Condition mTaskWaitCond;
+
+    WaitingTask mCurrentTask;
 
     int mCount;
     int mCapacity;

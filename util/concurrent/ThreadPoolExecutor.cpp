@@ -15,10 +15,11 @@ namespace obotcha {
 _ThreadPoolExecutor::_ThreadPoolExecutor(int capacity, int threadnum) {
     mPool = createBlockingLinkedList<ExecutorTask>(capacity);
     mHandlers = createArrayList<Thread>();
-
+    mRunningTaskMutex = createMutex();
+    mRunningTasks = new ExecutorTask[threadnum];
     for (int i = 0; i < threadnum; i++) {
         Thread thread = createThread(
-            [](ThreadPoolExecutor executor) {
+            [](int id,ThreadPoolExecutor executor) {
                 while (1) {
                     ExecutorTask mCurrentTask = executor->mPool->takeFirst();
 
@@ -27,9 +28,21 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int capacity, int threadnum) {
                         executor = nullptr;
                         return;
                     }
+
+                    {
+                        AutoLock l(executor->mRunningTaskMutex);
+                        executor->mRunningTasks[id] = mCurrentTask;
+                    }
+
                     mCurrentTask->execute();
+
+                    {
+                        AutoLock l(executor->mRunningTaskMutex);
+                        executor->mRunningTasks[id] = nullptr;
+                    }
                 }
             },
+            i,
             AutoClone(this));
 
         thread->start();
@@ -58,6 +71,17 @@ int _ThreadPoolExecutor::shutdown() {
 
     mPool->destroy();
     mPool->unfreeze();
+
+    {
+        AutoLock l(mRunningTaskMutex);
+        int size = mHandlers->size();
+        for(int i = 0;i<size;i++) {
+            auto t = mRunningTasks[i];
+            if(t != nullptr) {
+                t->cancel();
+            }
+        }
+    }
 
     // interrupt all thread
     mHandlers->foreach ([](Thread t) {
@@ -114,10 +138,16 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     return 0;
 }
 
-int _ThreadPoolExecutor::getThreadsNum() { return mHandlers->size(); }
+int _ThreadPoolExecutor::getThreadsNum() { 
+    return mHandlers->size(); 
+}
 
-int _ThreadPoolExecutor::getTasksNum() { return mPool->size(); }
+int _ThreadPoolExecutor::getTasksNum() { 
+    return mPool->size(); 
+}
 
-_ThreadPoolExecutor::~_ThreadPoolExecutor() {}
+_ThreadPoolExecutor::~_ThreadPoolExecutor() {
+    delete []mRunningTasks;
+}
 
 } // namespace obotcha

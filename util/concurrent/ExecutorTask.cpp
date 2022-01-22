@@ -40,18 +40,17 @@ int _ExecutorTask::wait(long interval) {
 
 void _ExecutorTask::cancel() {
     AutoLock l(mMutex);
-
     if (mStatus == Cancel || mStatus == Complete) {
         return;
     }
-
+    
     if (mRunnable != nullptr) {
         bool ret = mRunnable->onInterrupt();
         if(!ret && mStatus == Running) {
             return;
         }
     }
-
+    
     mStatus = Cancel;
 
     mCompleteCond->notify();

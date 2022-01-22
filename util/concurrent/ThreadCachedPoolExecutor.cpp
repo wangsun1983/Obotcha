@@ -61,6 +61,7 @@ int _ThreadCachedPoolExecutor::shutdown() {
     // notify all thread to close
     mTasks->destroy();
     mTasks->unfreeze();
+    
     {
         AutoLock l(mRunningTaskMutex);
         auto iterator = mRunningTasks->getIterator();
@@ -72,7 +73,7 @@ int _ThreadCachedPoolExecutor::shutdown() {
 
         mRunningTasks->clear();
     }
-    
+
     {
         AutoLock l(mMutex);
         mHandlers->foreach ([](Thread &t) {
@@ -209,9 +210,9 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
                     AutoLock l(mRunningTaskMutex);
                     executor->mRunningTasks->put(createInteger(handlerId),mCurrentTask);
                 }
-
+                
                 mCurrentTask->execute();
-
+                
                 {
                     AutoLock l(mRunningTaskMutex);
                     executor->mRunningTasks->remove(createInteger(handlerId));

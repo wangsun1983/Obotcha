@@ -32,9 +32,12 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int capacity,
 
     mStatus = Running;
 
+    mRunningTaskMutex = createMutex();
+    mRunningTasks = new ExecutorTask[threadnum];
+
     for (int i = 0; i < threadnum; i++) {
         Thread thread = createThread(
-            [](ThreadPriorityPoolExecutor &executor) {
+            [](int id,ThreadPriorityPoolExecutor &executor) {
                 ExecutorTask mCurrentTask = nullptr;
                 while (1) {
                     {
@@ -63,10 +66,23 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int capacity,
                         }
                         executor->notFull->notify();
                     }
+
+                    {
+                        AutoLock l(executor->mRunningTaskMutex);
+                        executor->mRunningTasks[id] = mCurrentTask;
+                    }
+
                     mCurrentTask->execute();
+
+                    {
+                        AutoLock l(executor->mRunningTaskMutex);
+                        executor->mRunningTasks[id] = nullptr;
+                    }
+
                     mCurrentTask = nullptr;
                 }
             },
+            i,
             AutoClone(this));
 
         thread->start();
@@ -101,6 +117,17 @@ int _ThreadPriorityPoolExecutor::shutdown() {
         notEmpty->notifyAll();
         notFull->notifyAll();
     }
+    
+    {
+        AutoLock l(mRunningTaskMutex);
+        int size = mThreads->size();
+        for(int i = 0;i<size;i++) {
+            auto t = mRunningTasks[i];
+            if(t != nullptr) {
+                t->cancel();
+            }
+        }
+    }
 
     mThreads->foreach ([](Thread &t) {
         t->interrupt();
@@ -108,6 +135,10 @@ int _ThreadPriorityPoolExecutor::shutdown() {
     });
 
     return 0;
+}
+
+Future _ThreadPriorityPoolExecutor::submit(Runnable task) {
+    return submit(Medium,task);
 }
 
 bool _ThreadPriorityPoolExecutor::isShutDown() {
@@ -128,7 +159,9 @@ bool _ThreadPriorityPoolExecutor::isTerminated() {
     return isTerminated;
 }
 
-void _ThreadPriorityPoolExecutor::awaitTermination() { awaitTermination(0); }
+void _ThreadPriorityPoolExecutor::awaitTermination() { 
+    awaitTermination(0); 
+}
 
 int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
     {
@@ -156,8 +189,12 @@ int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
     return 0;
 }
 
-int _ThreadPriorityPoolExecutor::getThreadsNum() { return mThreads->size(); }
+int _ThreadPriorityPoolExecutor::getThreadsNum() { 
+    return mThreads->size(); 
+}
 
-_ThreadPriorityPoolExecutor::~_ThreadPriorityPoolExecutor() {}
+_ThreadPriorityPoolExecutor::~_ThreadPriorityPoolExecutor() {
+    delete []mRunningTasks;
+}
 
 } // namespace obotcha

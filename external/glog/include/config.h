@@ -131,7 +131,7 @@
 #define LT_OBJDIR ".libs/"
 
 /* Name of package */
-#define PACKAGE "glog"
+#define GLOG_PACKAGE "glog"
 
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT "opensource@google.com"

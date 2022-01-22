@@ -34,6 +34,7 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity) {
     notFull = createCondition();
     mTaskWaitCond = createCondition();
     mTaskPool = nullptr;
+    mCurrentTask = nullptr;
 
     start();
 }
@@ -57,6 +58,12 @@ int _ThreadScheduledPoolExecutor::shutdown() {
         notFull->notify();
         //notEmpty->notify();
         mTaskWaitCond->notify();
+        
+        if(mCurrentTask != nullptr) {
+            mCurrentTask->cancel();
+        }
+
+        mCurrentTask = nullptr;
     }
 
     mCachedExecutor->shutdown();
@@ -128,8 +135,6 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
 }
 
 void _ThreadScheduledPoolExecutor::run() {
-    WaitingTask mCurrentTask = nullptr;
-
     while (1) {
         {
             AutoLock ll(mTaskMutex);
@@ -161,12 +166,11 @@ void _ThreadScheduledPoolExecutor::run() {
 
         mCachedExecutor->submitTask(mCurrentTask);
         {
-
             AutoLock l(mTaskMutex);
             notFull->notify();
             mCount--;
+            mCurrentTask = nullptr;
         }
-        mCurrentTask = nullptr;
     }
 }
 

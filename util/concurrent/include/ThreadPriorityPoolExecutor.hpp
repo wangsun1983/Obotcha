@@ -131,6 +131,9 @@ private:
     LinkedList<ExecutorTask> mMidPriorityTasks;
     LinkedList<ExecutorTask> mLowPriorityTasks;
 
+    Mutex mRunningTaskMutex;
+    ExecutorTask *mRunningTasks;
+
     int mStatus;
     int mCapacity;
 

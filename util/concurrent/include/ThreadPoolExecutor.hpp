@@ -91,6 +91,9 @@ DECLARE_CLASS(ThreadPoolExecutor) IMPLEMENTS(Executor) {
 
     ArrayList<Thread> mHandlers;
 
+    Mutex mRunningTaskMutex;
+    ExecutorTask *mRunningTasks;
+
     Mutex mMutex;
     int mStatus;
 };
