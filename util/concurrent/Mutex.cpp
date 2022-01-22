@@ -37,7 +37,9 @@ _Mutex::_Mutex(int type) {
     pthread_mutex_init(&mutex_t, &mutex_attr);
 }
 
-_Mutex::_Mutex(String v, int type) : _Mutex(type) { mMutexName = v; }
+_Mutex::_Mutex(String v, int type) : _Mutex(type) { 
+    mMutexName = v; 
+}
 
 _Mutex::_Mutex(const char *v, int type) : _Mutex(type) {
     mMutexName = createString(v);
@@ -67,7 +69,18 @@ int _Mutex::lock(long timeInterval) {
 }
 
 int _Mutex::unlock() {
-    return (pthread_mutex_unlock(&mutex_t) == 0)?0:-1;
+    switch(pthread_mutex_unlock(&mutex_t)) {
+        case EINVAL:
+        return -UnLockInvalid;
+
+        case EFAULT:
+        return -UnLockFail;
+
+        case EPERM:
+        return -UnLockPerm;
+    }
+    
+    return 0;
 }
 
 int _Mutex::tryLock() {
@@ -76,12 +89,10 @@ int _Mutex::tryLock() {
     case EBUSY:
         return -LockBusy;
 
-    case Success:
-        return Success;
-
     default:
         return -LockFail;
     }
+    return 0;
 }
 
 String _Mutex::toString() { 
