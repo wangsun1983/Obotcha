@@ -63,7 +63,6 @@ Cipher _CipherCreator::getInstance(String param) {
 
     //get algorithm type
     String algorithm = params->get(0);
-    printf("algorithm is %s \n",algorithm->toChars());
     //int algorithmType = -1;
     if(algorithm->equalsIgnoreCase(st(Cipher)::AesStr)) {
         //algorithmType = st(Cipher)::CipherAES;

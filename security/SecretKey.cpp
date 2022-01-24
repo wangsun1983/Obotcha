@@ -11,7 +11,8 @@ int _SecretKey::generate(String decKeyFile,String encKeyFile,String params) {
     }
 
     ArrayList<String> paramlist = params->split("/");
-    if(paramlist->size() == 0) {
+    if(paramlist == nullptr) {
+        paramlist = createArrayList<String>();
         paramlist->add(params);
     }
     return generate(decKeyFile,encKeyFile,paramlist);

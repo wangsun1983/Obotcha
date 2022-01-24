@@ -18,7 +18,8 @@ SecretKey _SecretKeyCreator::getInstance(String param) {
     //get algorithm type
     int algorithmType = -1;
     ArrayList<String> params = param->split("/");
-    if(params == nullptr || params->size() == 0) {
+    if(params == nullptr) {
+        params = createArrayList<String>();
         params->add(param);
     }
 

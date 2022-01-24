@@ -34,7 +34,6 @@ ByteArray _Aes::encrypt(ByteArray buff) {
         break;
 
         case CFB1:
-            printf("_aseCFB1 encrypt \n");
             return _aesCFB1(buff);
         
         case CFB8:
@@ -67,7 +66,6 @@ ByteArray _Aes::decrypt(ByteArray buff) {
             return _aesCBC(buff);
 
         case CFB1:
-            printf("_aseCFB1 dec \n");
             return _aesCFB1(buff);
         
         case CFB8:
@@ -135,12 +133,9 @@ ByteArray _Aes::_aesCBC(ByteArray data) {
     unsigned char ivec[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
     int inputSize = data->size();
-    printf("aescbc data size is %d \n",data->size());
     if(getMode() == Encrypt) {
         doPadding(data,AES_BLOCK_SIZE);
     }
-    printf("aescbc data2 size is %d \n",data->size());
-
     ByteArray out = createByteArray(data->size());
     char *output = (char *)out->toValue();
     char *input = (char *)data->toValue();

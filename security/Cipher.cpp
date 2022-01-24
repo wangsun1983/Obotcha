@@ -77,7 +77,6 @@ void _Cipher::decrypt(File in,File out) {
 }
 
 void _Cipher::doPadding(ByteArray data,int blocksize) {
-    printf("paddingtype is %d \n",paddingType);
     switch(paddingType) {
         case ZeroPadding:
             doPKCSZeroPadding(data,blocksize);
@@ -161,7 +160,6 @@ void _Cipher::doPKCS7UnPadding(ByteArray data) {
 
 void _Cipher::doPKCS5UnPadding(ByteArray data) {
     int paddingsize = data->at(data->size() - 1);
-    printf("paddingsize is %d,data size is %d \n",paddingsize,data->size());
     data->quickShrink(data->size() - paddingsize);
 }
 
@@ -192,7 +190,6 @@ void _Cipher::doEncryptOrDescrypt(File in,File out) {
         
         switch(getMode()) {
             case Decrypt: {
-                printf("doEncryptOrDescrypt,input data size is %d \n",inputData->size());
                 outputData = decrypt(inputData);
             }
             break;

@@ -26,13 +26,13 @@ void _AesSecretKey::setType(int type) {
 int _AesSecretKey::getKeyLength() {
     switch(mType) {
         case KeyAES128:
-        return 128;
+        return 128/8;
 
         case KeyAES192:
-        return 192;
+        return 192/8;
 
         case KeyAES256:
-        return 256;
+        return 256/8;
 
         case KeyAESCFB1:
         case KeyAESCFB8:
@@ -40,7 +40,7 @@ int _AesSecretKey::getKeyLength() {
         return 16;
 
         case KeyAESOFB128:
-        return 128;
+        return 128/8;
         break;
     }
 
@@ -52,7 +52,6 @@ int _AesSecretKey::keyCheck(String key) {
         case KeyAESCFB1:
         case KeyAESCFB8:
         case KeyAESCFB128:
-        printf("key size is %d \n",key->size());
         if(key->size() != 16 && key->size() != 24 && key->size() != 32) {
             Trigger(InvalidKeyException,"CFB key size must be 16/24/32");
         }
@@ -69,11 +68,9 @@ int _AesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
     AES_KEY decryptKey;
     
     if(params != nullptr && params->size() != 0) {
-        printf("genkey by param,key is %s \n",params->get(0)->toChars());
         keyCheck(params->get(0));
         result = genKey(params->get(0),&encryptKey,&decryptKey);
     } else {
-        printf("genkey by nullptr \n");
         result = genKey(nullptr,&encryptKey,&decryptKey);
     }
 
@@ -99,7 +96,6 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
         content = uuid->generate();
         //if it is a cfb,size must be 8/16/32
         content = content->subString(0,32);
-        printf("content size is %d \n",content->size());
     }
 
     const char *c = content->toChars();
@@ -110,22 +106,22 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
 
     int length = (content->size() > keylength)?keylength:content->size();
     memcpy(keyBuff,c,length);
-    printf("gen key size is %d ,keylength is %d\n",length,keylength);
-
-    if(AES_set_encrypt_key((const unsigned char*)keyBuff,length*8,encrypt) != 0) {
+    int ret = AES_set_encrypt_key((const unsigned char*)keyBuff,keylength*8,encrypt);
+    if( ret!= 0) {
         return -GenKeyFail;
     }
 
     //Aes cfb/ofb's dec key is same as enc key!!!
     if(mType == KeyAESCFB1 || mType == KeyAESCFB8 || mType == KeyAESCFB128 || mType == KeyAESOFB128) {
-        if(AES_set_encrypt_key((const unsigned char*)keyBuff,length*8,decrypt) != 0) {
+        if(AES_set_encrypt_key((const unsigned char*)keyBuff,keylength*8,decrypt) != 0) {
             return -GenKeyFail;
         }
     } else {
-        if(AES_set_decrypt_key((const unsigned char*)keyBuff,length*8,decrypt) != 0) {
+        if(AES_set_decrypt_key((const unsigned char*)keyBuff,keylength*8,decrypt) != 0) {
             return -GenKeyFail;
         }
     }
+
     return 0;
 }
 
