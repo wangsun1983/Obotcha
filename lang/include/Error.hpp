@@ -27,6 +27,9 @@ enum ErrorType {
     OpenFail,
     LockFail,
     LockBusy,
+    UnLockInvalid,
+    UnLockFail,
+    UnLockPerm, //The calling thread does not own the mutex. 
     CreateFail,
     WriteFail,
     WriteAgain,
@@ -81,6 +84,10 @@ private:
     static const String SqlFailNoDbString;
     static const String SqlExecFailString;
     static const String SqlTransactionFailString;
+    static const String UnLockInvalidString;
+    static const String UnLockFailString;
+    static const String UnLockPermString;
+    static const String UnknownErrorString;
 };
 
 } // namespace obotcha

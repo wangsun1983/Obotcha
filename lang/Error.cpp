@@ -18,8 +18,7 @@ const String _Error::NetBindFailString = createString("Net Bind Fail");
 const String _Error::NetListenFailString = createString("Net Listen Fail");
 const String _Error::NetConnectFailString = createString("Net Connect Fail");
 const String _Error::CreateFailString = createString("Create Fail");
-const String _Error::AttributeSetFailString =
-    createString("Attribute Set Fail");
+const String _Error::AttributeSetFailString = createString("Attribute Set Fail");
 const String _Error::OpenFailString = createString("Open Fail");
 const String _Error::WriteFailString = createString("Write Fail");
 const String _Error::ReadFailString = createString("Read Fail");
@@ -34,8 +33,11 @@ const String _Error::SqlFailWrongParamString = createString("Sql Wrong Param");
 const String _Error::SqlFailOpenString = createString("Sql Open Fail");
 const String _Error::SqlFailNoDbString = createString("Sql No Db");
 const String _Error::SqlExecFailString = createString("Sql Exec Error");
-const String _Error::SqlTransactionFailString =
-    createString("Sql Transaction Error");
+const String _Error::SqlTransactionFailString = createString("Sql Transaction Error");
+const String _Error::UnLockInvalidString = createString("Mutex is not an initialized mutex");
+const String _Error::UnLockFailString = createString("Mutex is an invalid pointer ");
+const String _Error::UnLockPermString = createString("The calling thread does not own the mutex");
+const String _Error::UnknownErrorString = createString("Unknown error");
 
 String _Error::toString(int error) {
     switch (error) {
@@ -114,23 +116,33 @@ String _Error::toString(int error) {
     case -NotSupport:
         return NotSupportString;
 
-    case SqlFailWrongParam:
+    case -SqlFailWrongParam:
         return SqlFailWrongParamString;
 
-    case SqlFailOpen:
+    case -SqlFailOpen:
         return SqlFailOpenString;
 
-    case SqlFailNoDb:
+    case -SqlFailNoDb:
         return SqlFailNoDbString;
 
-    case SqlExecFail:
+    case -SqlExecFail:
         return SqlExecFailString;
 
-    case SqlTransactionFail:
+    case -SqlTransactionFail:
         return SqlTransactionFailString;
+
+    case -UnLockInvalid:
+        return UnLockInvalidString;
+
+    case -UnLockFail:
+        return UnLockFailString;
+
+    case -UnLockPerm:
+        return UnLockPermString;
+
     }
 
-    return nullptr;
+    return UnknownErrorString;
 }
 
 } // namespace obotcha
