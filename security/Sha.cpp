@@ -31,47 +31,50 @@ String _Sha::encrypt(String str) {
 
     switch(mType) {
         case SHA_1: {
-            unsigned char encryptData[SHA_DIGEST_LENGTH] = {0};
-            calc_stringSHA1(str->toChars(),str->size(),encryptData);
-            data = encryptData;
+            //unsigned char encryptData[SHA_DIGEST_LENGTH] = {0};
+            data = (unsigned char *)malloc(SHA_DIGEST_LENGTH);
+            calc_stringSHA1(str->toChars(),str->size(),data);
             length = SHA_DIGEST_LENGTH;
         }
         break;
 
         case SHA_224: {
-            unsigned char encryptData[SHA224_DIGEST_LENGTH] = {0};
-            calc_stringSHA224(str->toChars(),str->size(),encryptData);
-            data = encryptData;
+            //unsigned char encryptData[SHA224_DIGEST_LENGTH] = {0};
+            data = (unsigned char *)malloc(SHA224_DIGEST_LENGTH);
+            calc_stringSHA224(str->toChars(),str->size(),data);
             length = SHA224_DIGEST_LENGTH;
         }
         break;
 
         case SHA_256: {
-            unsigned char encryptData[SHA256_DIGEST_LENGTH] = {0};
-            calc_stringSHA256(str->toChars(),str->size(),encryptData);
-            data = encryptData;
+            //unsigned char encryptData[SHA256_DIGEST_LENGTH] = {0};
+            data = (unsigned char *)malloc(SHA256_DIGEST_LENGTH);
+            calc_stringSHA256(str->toChars(),str->size(),data);
             length = SHA256_DIGEST_LENGTH;
         }
         break;
 
         case SHA_384: {
-            unsigned char encryptData[SHA384_DIGEST_LENGTH] = {0};
-            calc_stringSHA384(str->toChars(),str->size(),encryptData);
-            data = encryptData;
+            //unsigned char encryptData[SHA384_DIGEST_LENGTH] = {0};
+            data = (unsigned char *)malloc(SHA384_DIGEST_LENGTH);
+            calc_stringSHA384(str->toChars(),str->size(),data);
             length = SHA384_DIGEST_LENGTH;
         }
         break;
 
         case SHA_512: {
-            unsigned char encryptData[SHA512_DIGEST_LENGTH] = {0};
-            calc_stringSHA512(str->toChars(),str->size(),encryptData);
-            data = encryptData;
+            //unsigned char encryptData[SHA512_DIGEST_LENGTH] = {0};
+            data = (unsigned char *)malloc(SHA512_DIGEST_LENGTH);
+            calc_stringSHA512(str->toChars(),str->size(),data);
             length = SHA512_DIGEST_LENGTH;
         }
         break;
     }
 
-    return convert(data,length);
+    String result = convert(data,length);
+    free(data);
+
+    return result;
 }
 
 ByteArray _Sha::encryptRawData(ByteArray data) {
@@ -282,8 +285,9 @@ void _Sha::calc_stringSHA512(const char *content,int length,unsigned char *dgst)
 
 String _Sha::convert(unsigned char *content,int length) {
     char mdString[length*2+1];
+    memset(mdString,0,length*2+1);
     for (int i = 0; i < length; i++) {
-        sprintf(&mdString[i*2], "%02x", (unsigned int)content[i]);        
+        sprintf(&mdString[i*2], "%02x", (unsigned int)content[i]);    
     }
     return createString(&mdString[0]);
 }

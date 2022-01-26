@@ -93,12 +93,10 @@ int _RsaSecretKey::loadDecryptKey(String path) {
 
 //rsa keytype/rsa key headtype
 int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String>params) {
-    printf("start generate key \n");
     RSA *keypair = RSA_new();
     BIGNUM* e = BN_new();
 
     int result = -1;
-    printf("keymode is %d \n",mKeyMode);
     switch(mKeyMode) {
         case st(Cipher)::RSA3:
             result = BN_set_word(e,RSA_3);
@@ -113,9 +111,7 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
         LOG(ERROR)<<"Rsa secret ky:BN_set_word fail";
         return -1;
     }
-    printf("start generate key trace1 \n");
     result = RSA_generate_key_ex(keypair,2048, e, NULL);
-    printf("start generate key trace2 \n");
     File pubFile = createFile(encKeyFile);
     if(!pubFile->exists()) {
         pubFile->createNewFile();
@@ -123,7 +119,6 @@ int _RsaSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
 
      // 2. save public key
     BIO *bp_public = BIO_new_file(pubFile->getAbsolutePath()->toChars(), "w+");
-    printf("public key is %s ,mKeyPaddingType is %d\n",pubFile->getAbsolutePath()->toChars(),mKeyPaddingType);
     switch(mKeyPaddingType) {
         case st(Cipher)::PKCS1Padding:
             result = PEM_write_bio_RSA_PUBKEY(bp_public, keypair);
@@ -178,7 +173,6 @@ int _RsaSecretKey::getKeyType() {
 }
 
 void _RsaSecretKey::setKeyPaddingType(int padding) {
-    printf("set padding type is %d \n",padding);
     this->mKeyPaddingType = padding;
 }
 
