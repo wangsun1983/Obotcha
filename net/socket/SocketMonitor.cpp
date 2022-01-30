@@ -99,10 +99,6 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                                 task->sock->getFileDescriptor()->getFd());    
                         }
 
-                        if (task->event == st(NetEvent)::Disconnect) {
-                            monitor->remove(task->sock);
-                            task->sock->close();
-                        }
                         if (listener != nullptr) {
                             listener->onSocketMessage(task->event, task->sock,
                                                       task->data);
@@ -113,6 +109,11 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                             }
                         }
                         
+                        if(task->event == st(NetEvent)::Disconnect) {
+                            printf("disconnect!!! sock is %p \n",task->sock.get_pointer());
+                            monitor->remove(task->sock);
+                            task->sock->close();
+                        }
                         
                         task = nullptr;
                     }
@@ -298,23 +299,24 @@ void _SocketMonitor::close() {
 }
 
 int _SocketMonitor::remove(Socket s) {
+    auto fileDescriptor = s->getFileDescriptor();
+    mPoll->removeObserver(fileDescriptor->getFd());
     {
         AutoLock lock(mMutex);
         if(isStop == 0) {
             return 0;
         }
 
-        mSocks->remove(s->getFileDescriptor()->getFd());
-        mServerSocks->remove(s->getFileDescriptor()->getFd());
+        mSocks->remove(fileDescriptor->getFd());
+        mServerSocks->remove(fileDescriptor->getFd());
+    
+
     }
 
     {
         AutoLock lock(mListenerMutex);
-        mListeners->remove(s->getFileDescriptor()->getFd());
+        mListeners->remove(fileDescriptor->getFd());
     }
-
-    mPoll->removeObserver(s->getFileDescriptor()->getFd());
-
     return 0;
 }
 

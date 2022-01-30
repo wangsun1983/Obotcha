@@ -43,6 +43,10 @@ String _HttpHeaderAcceptEncoding::toString() {
     auto iterator = encodings->getIterator();
     while(iterator->hasValue()) {
         HttpHeaderAcceptEncodingItem item = iterator->getValue();
+        //rfc2616 14.4 Accept-Language
+        //The quality value defaults to "q=1". For
+        //example,
+        //Accept-Language: da, en-gb;q=0.8, en;q=0.7
         if(st(Math)::compareFloat(item->weight,1.0) == st(Math)::AlmostEqual) {
             encoding->append(item->type,",");
         } else {

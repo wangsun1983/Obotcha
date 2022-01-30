@@ -22,15 +22,18 @@ int _InetAddress::DefaultPort = 8080;
 _InetAddress::_InetAddress(int port) {
     mPort = port;
     mAddress = nullptr;
+    mType = -1;
 }
 
 _InetAddress::_InetAddress(String addr, int port) {
     mAddress = addr;
     mPort = port;
+    mType = -1;
 }
 
 _InetAddress::_InetAddress() { 
-    mPort = DefaultPort; 
+    mPort = DefaultPort;
+    mType = -1; 
 }
 
 void _InetAddress::setPort(int p) { 

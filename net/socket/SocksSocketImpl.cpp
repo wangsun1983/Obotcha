@@ -49,6 +49,10 @@ _SocksSocketImpl::_SocksSocketImpl(InetAddress address, SocketOption option)
         
         }
         break;
+
+        default:
+            LOG(ERROR)<<"create server socket type unknown";
+        break;
     }
 
     

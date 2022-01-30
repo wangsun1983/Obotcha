@@ -33,7 +33,7 @@ String _HttpHeaderLink::toString() {
     }
 
     if(rel != nullptr) {
-        link->append("; rel= \"",rel,"\"");
+        link->append("; rel=\"",rel,"\"");
     }
 
     if(title != nullptr) {
