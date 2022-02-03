@@ -10,6 +10,7 @@
 #include "SocketOutputStream.hpp"
 #include "SocksSocketImpl.hpp"
 #include "SSLSocksSocketImpl.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
@@ -19,6 +20,7 @@ _Socket::_Socket() {
     mMutex = createMutex();
     mOutputStream = nullptr;
     mInputStream = nullptr;
+    tag = st(System)::currentTimeMillis();
 }
 
 _Socket::_Socket(int v, InetAddress addr, SocketOption option,String certificatePath,String keyPath) {
@@ -26,7 +28,7 @@ _Socket::_Socket(int v, InetAddress addr, SocketOption option,String certificate
     mMutex = createMutex();
     mOutputStream = nullptr;
     mInputStream = nullptr;
-
+    tag = st(System)::currentTimeMillis();
     switch (v) {
     case Tcp:
         mSock = createSocksSocketImpl(addr, option);
@@ -54,6 +56,7 @@ _Socket::_Socket(FileDescriptor descriptor) {
     mSock = createSocketImpl(descriptor);
     type = Fd;
     mMutex = createMutex();
+    tag = st(System)::currentTimeMillis();
 }
 
 void _Socket::setAsync(bool async) {
@@ -124,17 +127,27 @@ OutputStream _Socket::getOutputStream() {
 }
 
 FileDescriptor _Socket::getFileDescriptor() {
+    if(mSock == nullptr) {
+        return nullptr;
+    }
+
     return mSock->getFileDescriptor();
 }
 
 int _Socket::getType() { return type; }
 
 void _Socket::setSockImpl(SocketImpl impl) {
+    AutoLock l(mMutex);
     this->mSock = impl;
 }
 
 SocketImpl _Socket::getSockImpl() {
+    AutoLock l(mMutex);
     return mSock;
+}
+
+long _Socket::getTag() {
+    return tag;
 }
 
 } // namespace obotcha

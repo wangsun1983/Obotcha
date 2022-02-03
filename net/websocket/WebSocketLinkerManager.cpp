@@ -21,6 +21,8 @@ _WebSocketLinkerManager::_WebSocketLinkerManager() {
 }
 
 WebSocketLinker _WebSocketLinkerManager::addLinker(Socket sock, int version) {
+    AutoLock ll(mMutex);
+    
     WebSocketLinker client = createWebSocketLinker(sock);
     client->setVersion(version);
 
@@ -54,7 +56,6 @@ WebSocketLinker _WebSocketLinkerManager::addLinker(Socket sock, int version) {
             return nullptr;
     }
 
-    AutoLock ll(mMutex);
     mClients->put(sock, client);
     return client;
 }

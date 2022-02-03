@@ -109,7 +109,7 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
     static const int OnEventOK = 0;
     static const int OnEventRemoveObserver = 1;
 
-    static const int DefaultEpollSize = 1024 * 8;
+    static const int DefaultEpollSize = 1024 * 64;
 
   private:
     static const int DefaultBufferSize = 16 * 1024;
