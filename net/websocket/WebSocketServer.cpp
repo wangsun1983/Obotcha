@@ -78,7 +78,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
             parser->pushParseData(pack);
             ArrayList<WebSocketFrame> lists = parser->doParse();
             auto iterator = lists->getIterator();
-            for(iterator->hasValue()) {
+            while(iterator->hasValue()) {
                 WebSocketFrame frame = iterator->getValue();
                 int opcode = frame->getHeader()->getOpCode();
                 switch(opcode) {
@@ -110,6 +110,7 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                             listener->onData(frame,client);
                         }
                 }
+                iterator->next();
             }
         }
         break;
