@@ -72,7 +72,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                                 for (int i = 0; i < monitor->mThreadNum; i++) {
                                     if (monitor->mCurrentSockets[i] == task->sock) {
                                         monitor->mThreadLocalTasks->get(i)->putLast(task);
-                                        monitor->mCondition->notifyAll();
+                                        monitor->mCondition->notify();
                                         task = nullptr;
                                         break;
                                     }
@@ -108,8 +108,6 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                                 task->sock->mOutputStream = nullptr;
                                 task->sock->mInputStream = nullptr;
                             }
-                        } else {
-                            printf("no listener1!!! \n");
                         }
 
                         if(task->event == st(NetEvent)::Disconnect) {
@@ -145,6 +143,7 @@ int _SocketMonitor::bind(Socket s, SocketListener l) {
         LOG(ERROR)<<"bind socket already exists!!!";
         return -AlreadyExists;
     }
+
     addNewSocket(s,l);
     s->setAsync(true);
 
@@ -170,8 +169,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
     if (isServer) {
         serversocket = fd;
     }
-
-    AutoLock lock(mMutex);     
+   
     mPoll->addObserver(
         fd, EPOLLIN | EPOLLRDHUP | EPOLLHUP,
         [](int fd, uint32_t events, SocketListener &listener, int serverfd,SocketMonitor &monitor) {
@@ -198,7 +196,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                             if (newClient != nullptr) {
                                 monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message, newClient,buff));
                             }
-                            monitor->mCondition->notifyAll();
+                            monitor->mCondition->notify();
                         }
 
                         if (buff->size() != st(Socket)::DefaultBufferSize) {
@@ -212,14 +210,14 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                     ServerSocket server = monitor->mServerSocks->get(fd);
                     s = server->accept();
                     monitor->bind(s,listener);
-
                     if (s != nullptr) {
                         {
-                            //AutoLock l(monitor->mMutex);
-                            //monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Connect, s));
-                            //monitor->mCondition->notifyAll();
-                            listener->onSocketMessage(st(NetEvent)::Connect,s,nullptr);
+                            AutoLock l(monitor->mMutex);
+                            monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Connect, s));
+                            monitor->mCondition->notify();
                         }
+                    } else {
+                        LOG(ERROR)<<"SocketMonitor accept null socket!!!!";
                     }
                 }
                 return st(EPollFileObserver)::OnEventOK;
@@ -234,35 +232,22 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                         if (length > 0) {
                             buff->quickShrink(length);
                             AutoLock l(monitor->mMutex);
-                            listener->onSocketMessage(st(NetEvent)::Message,s,
-                                                      buff);
-                            //monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message, s, buff));
-                            //monitor->mCondition->notifyAll();
+                            monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message, s, buff));
+                            monitor->mCondition->notify();
                         }
 
-                        if(length == -1) {
-                            printf("i read -1!!! \n");
-                        }
                         if (length != st(Socket)::DefaultBufferSize) {
                             break;
                         }
                     }
-                } else {
-                    printf("sock is closed in epoll!!! \n");
                 }
             }
 
             if ((events & (EPOLLRDHUP | EPOLLHUP)) != 0) {
-                //int v = cc->addAndGet(1);
-                //printf("v is %ld \n",s->getTag());
-                //AutoLock l(monitor->mMutex);
-                //monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Disconnect,s));
-                //monitor->mCondition->notifyAll();
-                //if(monitor->mSocks->get(s->getFileDescriptor()->getFd))
-                if(!s->isClosed()) {
-                    listener->onSocketMessage(st(NetEvent)::Disconnect,s,nullptr);
-                }
-                //printf("[this is %p],hungup socket,fd is %d \n",monitor.get_pointer(),s->getFileDescriptor()->getFd());
+                AutoLock l(monitor->mMutex);
+                monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Disconnect, s));
+                monitor->mCondition->notify();
+
                 return st(EPollFileObserver)::OnEventRemoveObserver;
             }
             return st(EPollFileObserver)::OnEventOK;
@@ -304,10 +289,8 @@ void _SocketMonitor::close() {
 int _SocketMonitor::remove(Socket s,bool isClose) {
     AutoLock l(mMutex);
     if(isClose) {
-        //mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Disconnect,s));
-        //mCondition->notifyAll();
-        _remove(s);
-        s->close();
+        mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Disconnect,s));
+        mCondition->notify();
     } else {
         _remove(s);
     }
@@ -315,9 +298,28 @@ int _SocketMonitor::remove(Socket s,bool isClose) {
     return 0;
 }
 
+int _SocketMonitor::_remove(FileDescriptor fd) {
+    if(fd == nullptr) {
+        return 0;
+    }
+    
+    {
+        AutoLock lock(mMutex);
+        mPoll->removeObserver(fd->getFd());
+        mSocks->remove(fd->getFd());
+        mServerSocks->remove(fd->getFd());
+    }
+
+    {
+        AutoLock lock(mListenerMutex);
+        mListeners->remove(fd->getFd());
+    }
+    return 0;
+
+}
+
 int _SocketMonitor::_remove(Socket s) {
     if(s->isClosed()) {
-        //printf("closed!!! \n");
         return 0;
     }
     
@@ -355,6 +357,8 @@ void _SocketMonitor::dump() {
     printf("public task size is %d \n",mThreadPublicTasks->size());
 }
 
-_SocketMonitor::~_SocketMonitor() { delete[] mCurrentSockets; }
+_SocketMonitor::~_SocketMonitor() { 
+    delete[] mCurrentSockets; 
+}
 
 } // namespace obotcha

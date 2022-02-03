@@ -44,6 +44,8 @@ public:
 
     int close();
 
+    void dump();
+
 private:
     void onHttpMessage(int, sp<_HttpLinker> client, HttpResponseWriter w,
                        HttpPacket msg);

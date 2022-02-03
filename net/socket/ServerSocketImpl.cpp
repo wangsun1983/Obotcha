@@ -5,13 +5,15 @@
 #include "ServerSocketImpl.hpp"
 #include "SocketBuilder.hpp"
 #include "Inet6Address.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
 int _ServerSocketImpl::DefaultConnectNum = 16;
 
 _ServerSocketImpl::_ServerSocketImpl(InetAddress address, SocketOption option)
-    : _SocketImpl(address, option), _SocksSocketImpl(address, option) {}
+    : _SocketImpl(address, option), _SocksSocketImpl(address, option) {
+}
 
 int _ServerSocketImpl::bind() {
     switch(this->address->getType()) {
@@ -95,7 +97,13 @@ Socket _ServerSocketImpl::accept() {
                     ->newSocket();
             }
             break;
+
+            default:
+            LOG(ERROR)<<"accept address error!!!!,type is"<<this->address->getType();
+            break;
         }
+    } else {
+        printf("accept failed error is %s\n",strerror(errno));
     }
 
     return nullptr;

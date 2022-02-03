@@ -70,6 +70,9 @@ public:
 
     Socket getSocket();
 
+    void drop();
+    bool isDropped();
+
 private:
     //int mClientFd;
     Socket mSock;
@@ -95,6 +98,8 @@ private:
     int mWsVersion;
 
     long _send(int type,ByteArray data);
+
+    bool mDrop;
 };
 
 }

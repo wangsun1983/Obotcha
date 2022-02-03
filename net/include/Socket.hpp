@@ -61,6 +61,8 @@ public:
     
     void setSockImpl(SocketImpl);
     SocketImpl getSockImpl();
+
+    long getTag();
     
 private:
     int type;
@@ -71,6 +73,8 @@ protected:
 
     SocketOutputStream mOutputStream;
     SocketInputStream mInputStream;
+
+    long tag;
 
 };
 

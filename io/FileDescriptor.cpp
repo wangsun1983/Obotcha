@@ -2,6 +2,8 @@
 #include <sys/socket.h>
 #include <sys/types.h> /* See NOTES */
 #include <unistd.h>
+#include <error.h>
+#include <string.h>
 
 #include "FileDescriptor.hpp"
 

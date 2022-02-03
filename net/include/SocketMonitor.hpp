@@ -35,15 +35,19 @@ public:
 
     int bind(Socket,SocketListener);
     int bind(ServerSocket,SocketListener);
-    
-    int remove(Socket);
+   
+    int remove(Socket,bool isClose = false);
 
     void close();
+
+    void dump();
     
 private:
     void addNewSocket(Socket s,SocketListener l);
     bool isSocketExist(Socket s);
     int bind(int,SocketListener,bool isServer = false);
+    int _remove(Socket);
+    int _remove(FileDescriptor);
 
     EPollFileObserver mPoll;
 

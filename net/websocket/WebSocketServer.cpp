@@ -77,12 +77,9 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
 
             parser->pushParseData(pack);
             ArrayList<WebSocketFrame> lists = parser->doParse();
-            if(lists->size() == 0) {
-                printf("list size is nullptr!!!!! \n");
-            }
-            //lists->foreach([this,&client,&listener](WebSocketFrame &frame) {
-            for(int i = 0;i<lists->size();i++) {
-                WebSocketFrame frame = lists->get(i);
+            auto iterator = lists->getIterator();
+            for(iterator->hasValue()) {
+                WebSocketFrame frame = iterator->getValue();
                 int opcode = frame->getHeader()->getOpCode();
                 switch(opcode) {
                     case st(WebSocketProtocol)::OPCODE_CONTROL_PING: {
@@ -99,12 +96,10 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                     break;
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE: {
-                        //printf("pin control close!!!! \n");
-                        mSocketMonitor->remove(client->getSocket(),true);
-                        //mLinkerManager->removeLinker(client);
-                        //client->getSocket()->close();
-                        //listener->onDisconnect(client);
-                        listener->onDisconnect(client);
+                        //do not do any operation until client close!!!.
+                        //if server close directly,server will wait for 
+                        //shakehands....
+                        client->drop();
                     }
                     break;
 
@@ -116,7 +111,6 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                         }
                 }
             }
-            //});
         }
         break;
 
@@ -129,7 +123,6 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                 //LOG(ERROR)<<"client is removed by socket callback";
                 mLinkerManager->removeLinker(client);
                 listener->onDisconnect(client);
-                mSocketMonitor->remove(client->getSocket());
             } else {
                 LOG(ERROR)<<"client is already remove!!!";
             }

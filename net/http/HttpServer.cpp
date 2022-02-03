@@ -101,7 +101,6 @@ void _HttpServer::start() {
                         ->setAddress(mAddress)
                         ->newServerSocket();
     }
-    
 
     if (mServerSock->bind() < 0) {
         LOG(ERROR) << "bind socket failed,reason " << strerror(errno);
@@ -113,7 +112,6 @@ void _HttpServer::start() {
         st(Enviroment)::gHttpServerThreadsNum, 4);
     mSockMonitor = createSocketMonitor(threadsNum);
     mSockMonitor->bind(mServerSock, AutoClone(this));
-    //}
 }
 
 // interface for websocket

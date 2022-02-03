@@ -58,7 +58,6 @@ _EPollFileObserver::_EPollFileObserver(int size) {
     mEpollFd = epoll_create(size);
     mPipe = createPipe();
     mPipe->init();
-
     addEpollFd(mPipe->getReadPipe(), EPOLLIN | EPOLLRDHUP | EPOLLHUP);
     start();
 }
@@ -69,7 +68,7 @@ _EPollFileObserver::_EPollFileObserver()
 int _EPollFileObserver::removeObserver(int fd) {
     // we should clear
     AutoLock l(mListenerMutex);
-    epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
+    int ret = epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
     mListeners->remove(fd);
     return 0;
 }
@@ -81,7 +80,9 @@ void _EPollFileObserver::addEpollFd(int fd, uint32_t events) {
     ev.data.fd = fd;
     ev.events = events;
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
-    epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev);
+    if(epoll_ctl(mEpollFd, EPOLL_CTL_ADD, fd, &ev) != 0) {
+        LOG(ERROR)<<"add epoll fd,reason is "<<strerror(errno);
+    }
 }
 
 int _EPollFileObserver::close() {

@@ -15,6 +15,7 @@
 #include "Log.hpp"
 #include "SocksSocketImpl.hpp"
 #include "System.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 

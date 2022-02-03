@@ -35,11 +35,17 @@ void _WebSocketLinker::reset() {
     mConnectUrl = nullptr;
     mCallback = nullptr;
     mWsVersion = -1;
+
+    mDrop = false;
 }
 
-sp<_WebSocketParser> _WebSocketLinker::getParser() { return this->mParser; }
+sp<_WebSocketParser> _WebSocketLinker::getParser() { 
+    return this->mParser; 
+}
 
-void _WebSocketLinker::setParser(sp<_WebSocketParser> p) { this->mParser = p; }
+void _WebSocketLinker::setParser(sp<_WebSocketParser> p) { 
+    this->mParser = p; 
+}
 
 sp<_WebSocketComposer> _WebSocketLinker::getComposer() {
     return this->mComposer;
@@ -49,13 +55,21 @@ void _WebSocketLinker::setComposer(sp<_WebSocketComposer> p) {
     this->mComposer = p;
 }
 
-void _WebSocketLinker::setWebSocketKey(String key) { this->mKey = key; }
+void _WebSocketLinker::setWebSocketKey(String key) { 
+    this->mKey = key; 
+}
 
-String _WebSocketLinker::getWebSocketKey() { return mKey; }
+String _WebSocketLinker::getWebSocketKey() { 
+    return mKey; 
+}
 
-void _WebSocketLinker::setProtocols(ArrayList<String> p) { this->mProtocols = p; }
+void _WebSocketLinker::setProtocols(ArrayList<String> p) { 
+    this->mProtocols = p; 
+}
 
-ArrayList<String> _WebSocketLinker::getProtocols() { return this->mProtocols; }
+ArrayList<String> _WebSocketLinker::getProtocols() { 
+    return this->mProtocols; 
+}
 
 sp<_WebSocketPermessageDeflate> _WebSocketLinker::getDeflater() {
     return mDeflate;
@@ -74,13 +88,21 @@ sp<_WebSocketListener> _WebSocketLinker::getWebSocketListener() {
     return mCallback;
 }
 
-void _WebSocketLinker::setPath(String path) { mPath = path; }
+void _WebSocketLinker::setPath(String path) { 
+    mPath = path; 
+}
 
-String _WebSocketLinker::getPath() { return mPath; }
+String _WebSocketLinker::getPath() { 
+    return mPath; 
+}
 
-String _WebSocketLinker::getConnectUrl() { return mConnectUrl; }
+String _WebSocketLinker::getConnectUrl() { 
+    return mConnectUrl; 
+}
 
-void _WebSocketLinker::setConnectUrl(String l) { mConnectUrl = l; }
+void _WebSocketLinker::setConnectUrl(String l) { 
+    mConnectUrl = l; 
+}
 
 long _WebSocketLinker::_send(int type, ByteArray msg) {
     if (mSock != nullptr) {
@@ -152,10 +174,24 @@ long _WebSocketLinker::sendCloseMessage(ByteArray data) {
     return _send(st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE, data);
 }
 
-int _WebSocketLinker::getVersion() { return mWsVersion; }
+int _WebSocketLinker::getVersion() { 
+    return mWsVersion; 
+}
 
-void _WebSocketLinker::setVersion(int ver) { mWsVersion = ver; }
+void _WebSocketLinker::setVersion(int ver) { 
+    mWsVersion = ver; 
+}
 
-Socket _WebSocketLinker::getSocket() { return mSock; }
+Socket _WebSocketLinker::getSocket() { 
+    return mSock; 
+}
+
+void _WebSocketLinker::drop() {
+    mDrop = true;
+}
+
+bool _WebSocketLinker::isDropped() {
+    return mDrop;
+}
 
 } // namespace obotcha
