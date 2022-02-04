@@ -100,6 +100,10 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
                         //if server close directly,server will wait for 
                         //shakehands....
                         client->drop();
+                        ByteArray data = createString("end")->toByteArray();
+                        client->sendCloseMessage(data);
+                        //mSocketMonitor->remove(client->getSocket());
+                        //client->getSocket()->close();
                     }
                     break;
 
