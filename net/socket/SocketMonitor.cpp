@@ -111,8 +111,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                         }
 
                         if(task->event == st(NetEvent)::Disconnect) {
-                            //printf("close socket!!!! \n");
-                            monitor->_remove(task->sock);
+                            monitor->_remove(task->sock->getFileDescriptor());
                             task->sock->close();
                         }
                         task = nullptr;
@@ -292,7 +291,7 @@ int _SocketMonitor::remove(Socket s,bool isClose) {
         mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Disconnect,s));
         mCondition->notify();
     } else {
-        _remove(s);
+        _remove(s->getFileDescriptor());
     }
     
     return 0;
@@ -316,32 +315,6 @@ int _SocketMonitor::_remove(FileDescriptor fd) {
     }
     return 0;
 
-}
-
-int _SocketMonitor::_remove(Socket s) {
-    if(s->isClosed()) {
-        return 0;
-    }
-    
-    auto fileDescriptor = s->getFileDescriptor();
-    {
-        AutoLock lock(mMutex);
-        auto sock = mSocks->get(fileDescriptor->getFd());
-        if(sock != nullptr && sock->getTag() != s->getTag()) {
-            LOG(ERROR)<<"remove different socket!!!";
-            return 0;
-        }
-
-        mPoll->removeObserver(fileDescriptor->getFd());
-        mSocks->remove(fileDescriptor->getFd());
-        mServerSocks->remove(fileDescriptor->getFd());
-    }
-
-    {
-        AutoLock lock(mListenerMutex);
-        mListeners->remove(fileDescriptor->getFd());
-    }
-    return 0;
 }
 
 bool _SocketMonitor::isSocketExist(Socket s) {
