@@ -188,15 +188,20 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
                 WebSocketFrame frame = iterator->getValue();
                 switch(frame->getHeader()->getOpCode()) {
                     case st(WebSocketProtocol)::OPCODE_TEXT:
-                    mWsListener->onData(frame);
+                        mWsListener->onData(frame);
                     break;
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_PING:
-                    mWsListener->onPing(frame->getData()->toString());
+                        mWsListener->onPing(frame->getData()->toString());
                     break;
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:
-                    mWsListener->onPong(frame->getData()->toString());
+                        mWsListener->onPong(frame->getData()->toString());
+                    break;
+
+                    case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
+                        mSocket->close();
+                        mSocketMonitor->close();
                     break;
                 }
 
@@ -220,8 +225,10 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
 }
 
 void _WebSocketClient::close() {
-    mSocketMonitor->close();
-    mSocket->close();
+    //mSocketMonitor->close();
+    //mSocket->close();
+    //send close message to server
+    sendCloseMessage(createString("end"));
 }
 
 }

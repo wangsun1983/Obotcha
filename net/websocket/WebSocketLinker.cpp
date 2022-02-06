@@ -35,8 +35,6 @@ void _WebSocketLinker::reset() {
     mConnectUrl = nullptr;
     mCallback = nullptr;
     mWsVersion = -1;
-
-    mDrop = false;
 }
 
 sp<_WebSocketParser> _WebSocketLinker::getParser() { 
@@ -184,14 +182,6 @@ void _WebSocketLinker::setVersion(int ver) {
 
 Socket _WebSocketLinker::getSocket() { 
     return mSock; 
-}
-
-void _WebSocketLinker::drop() {
-    mDrop = true;
-}
-
-bool _WebSocketLinker::isDropped() {
-    return mDrop;
 }
 
 } // namespace obotcha

@@ -46,7 +46,6 @@ private:
     void addNewSocket(Socket s,SocketListener l);
     bool isSocketExist(Socket s);
     int bind(int,SocketListener,bool isServer = false);
-    int _remove(Socket);
     int _remove(FileDescriptor);
 
     EPollFileObserver mPoll;
