@@ -124,19 +124,11 @@ sp<_String> _Boolean::className() { return createString("Boolean"); }
 int _Boolean::_parse(sp<_String> str) {
     String trimStr = str->trimAll();
     const char *data = trimStr->toChars();
-
-    if ((trimStr->size() == 4) && (data[0] == 't' || data[0] == 'T') &&
-        (data[1] == 'r' || data[1] == 'R') &&
-        (data[2] == 'u' || data[2] == 'U') &&
-        (data[3] == 'e' || data[3] == 'E')) {
+    if(trimStr->equalsIgnoreCase("true")) {
         return 1;
     }
 
-    if ((trimStr->size() == 5) && (data[0] == 'f' || data[0] == 'F') &&
-        (data[1] == 'a' || data[1] == 'A') &&
-        (data[2] == 'l' || data[2] == 'L') &&
-        (data[3] == 's' || data[3] == 'S') &&
-        (data[4] == 'e' || data[4] == 'E')) {
+    if(trimStr->equalsIgnoreCase("false")) {
         return 0;
     }
 

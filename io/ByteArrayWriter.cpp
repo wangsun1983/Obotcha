@@ -39,7 +39,9 @@ _ByteArrayWriter::_ByteArrayWriter(ByteArray data, int mod) {
     mType = Static;
 }
 
-void _ByteArrayWriter::reset() { mIndex = 0; }
+void _ByteArrayWriter::reset() { 
+    mIndex = 0; 
+}
 
 bool _ByteArrayWriter::writeSizeCheck(int size) {
     if ((mIndex + size) > mSize) {

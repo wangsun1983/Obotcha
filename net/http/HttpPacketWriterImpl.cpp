@@ -232,11 +232,13 @@ int _HttpPacketWriterImpl::_flushResponse(HttpPacket packet,bool send) {
     }
 
     //flush end
-    int index = mWriter->getIndex();
-    if(index != 0) {
-        int ret = mStream->write(mBuff, 0, index);
-    }
-
+    //int index = mWriter->getIndex();
+    //printf("index is %d \n",index);
+    //if(index != 0) {
+    //    int ret = mStream->write(mBuff, 0, index);
+    //}
+    //mWriter->reset();
+    
     return 0;
 }
 
@@ -262,6 +264,12 @@ int _HttpPacketWriterImpl::_write(ByteArray data,bool send) {
         }
     }
 
+    int index = mWriter->getIndex();
+    if(index != 0 && send) {
+        mStream->write(mBuff, 0, index);
+        mWriter->reset();
+    }
+    
     return 0;
 }
 

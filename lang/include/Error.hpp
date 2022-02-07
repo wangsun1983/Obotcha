@@ -51,43 +51,10 @@ enum ErrorType {
 
 DECLARE_CLASS(Error) {
 public:
-    String toString(int error);
+    static String toString(int error);
 
 private:
-    static const String ErrorString;
-    static const String InvalidParamString;
-    static const String InvalidStatusString;
-    static const String FileNotExistsString;
-    static const String AlreadyExistsString;
-    static const String AlreadyDestroyString;
-    static const String NotCreateString;
-    static const String NotStartString;
-    static const String OverSizeString;
-    static const String MiniZipFailString;
-    static const String NetBindFailString;
-    static const String NetListenFailString;
-    static const String NetConnectFailString;
-    static const String CreateFailString;
-    static const String AttributeSetFailString;
-    static const String OpenFailString;
-    static const String WriteFailString;
-    static const String ReadFailString;
-    static const String MmapFailString;
-    static const String GenKeyFailString;
-    static const String SetKeyFailString;
-    static const String NotFoundString;
-    static const String WaitTimeoutString;
-    static const String WaitFailString;
-    static const String NotSupportString;
-    static const String SqlFailWrongParamString;
-    static const String SqlFailOpenString;
-    static const String SqlFailNoDbString;
-    static const String SqlExecFailString;
-    static const String SqlTransactionFailString;
-    static const String UnLockInvalidString;
-    static const String UnLockFailString;
-    static const String UnLockPermString;
-    static const String UnknownErrorString;
+    const static char* errors[];
 };
 
 } // namespace obotcha
