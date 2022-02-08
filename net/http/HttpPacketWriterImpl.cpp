@@ -182,10 +182,10 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
         }
     }
 
-    int index = mWriter->getIndex();
-    if(index != 0) {
-        mStream->write(mBuff, 0, index);
-    }
+    //int index = mWriter->getIndex();
+    //if(index != 0) {
+    //    mStream->write(mBuff, 0, index);
+    //}
 
     return 0;
 }
