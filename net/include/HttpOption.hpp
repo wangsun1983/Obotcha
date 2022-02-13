@@ -21,12 +21,12 @@ namespace obotcha {
 DECLARE_CLASS(HttpOption) IMPLEMENTS(SocketOption) {
   public:
     _HttpOption();
-    _HttpOption *setCertificate(String);
-    _HttpOption *setKey(String);
+    _HttpOption *setOpenSSLCertificate(String);
+    _HttpOption *setOpenSSLKey(String);
     _HttpOption *setProtocol(int);
 
-    String getCertificate();
-    String getKey();
+    String getOpenSSLCertificate();
+    String getOpenSSLKey();
     int getProtocol();
 
   private:

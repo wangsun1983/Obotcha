@@ -50,8 +50,8 @@ HttpServer _HttpServerBuilder::build() {
         mOption = createHttpOption();
     }
     
-    mOption->setCertificate(mCertificatePath);
-    mOption->setKey(mKeyPath);
+    mOption->setOpenSSLCertificate(mCertificatePath);
+    mOption->setOpenSSLKey(mKeyPath);
     mOption->setProtocol(mProtocol);
 
     return createHttpServer(mAddress, mListener, mOption);
@@ -62,8 +62,8 @@ Http2Server _HttpServerBuilder::buildHttp2Server() {
         mOption = createHttpOption();
     }
     
-    mOption->setCertificate(mCertificatePath);
-    mOption->setKey(mKeyPath);
+    mOption->setOpenSSLCertificate(mCertificatePath);
+    mOption->setOpenSSLKey(mKeyPath);
     mOption->setProtocol(mProtocol);
 
     return createHttp2Server(mAddress, mHttp2Listener, mOption);

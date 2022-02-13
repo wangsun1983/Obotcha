@@ -58,4 +58,14 @@ int _InetAddress::getType() {
     return mType;
 }
 
+uint64_t _InetAddress::hashcode() {
+    return mAddress->hashcode();
+}
+
+bool _InetAddress::equals(InetAddress addr) {
+    return this->mPort == addr->mPort
+           && mType == addr->mType
+           && (mAddress != nullptr)?mAddress->equals(addr->mAddress):addr->mAddress == nullptr;
+}
+
 } // namespace obotcha

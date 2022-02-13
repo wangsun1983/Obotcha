@@ -10,7 +10,7 @@
 namespace obotcha {
 
 _HttpUrl::_HttpUrl() {
-    mPort = -1;
+    mPort = 80;
     mScheme = nullptr;
     mHostName = nullptr;
     mPath = nullptr;

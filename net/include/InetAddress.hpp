@@ -34,6 +34,9 @@ public:
 
     int getType();
 
+    uint64_t hashcode();
+    bool equals(InetAddress);
+
 protected:
     String mAddress;
     int mPort;

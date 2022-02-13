@@ -84,8 +84,8 @@ void _HttpServer::start() {
     String key = nullptr;
 
     if (mOption != nullptr) {
-        certificate = mOption->getCertificate();
-        key = mOption->getKey();
+        certificate = mOption->getOpenSSLCertificate();
+        key = mOption->getOpenSSLKey();
     }
 
     if(certificate != nullptr && key != nullptr) {

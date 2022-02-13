@@ -118,7 +118,15 @@ int _HttpConnection::close() {
         mSocketMonitor->remove(mSocket);
     }
 
-    mSocket->close();
+    if(mSocket != nullptr) {
+        mSocket->close();
+        mSocket = nullptr;
+    }
+
+    if(mInputStream != nullptr) {
+        mInputStream->close();
+        mInputStream = nullptr;
+    }
     return 0;
 }
 

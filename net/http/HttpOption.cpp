@@ -9,13 +9,13 @@ _HttpOption::_HttpOption() {
     mProtocol = st(HttpProtocol)::Http;
 }
 
-_HttpOption *_HttpOption::setCertificate(String v) {
+_HttpOption *_HttpOption::setOpenSSLCertificate(String v) {
     mProtocol = st(HttpProtocol)::Https;
     mCretificate = v;
     return this;
 }
 
-_HttpOption *_HttpOption::setKey(String v) {
+_HttpOption *_HttpOption::setOpenSSLKey(String v) {
     mProtocol = st(HttpProtocol)::Https;
     mKey = v;
     return this;
@@ -26,11 +26,11 @@ _HttpOption * _HttpOption::setProtocol(int p) {
     return this;
 }
 
-String _HttpOption::getCertificate() { 
+String _HttpOption::getOpenSSLCertificate() { 
     return mCretificate; 
 }
 
-String _HttpOption::getKey() { 
+String _HttpOption::getOpenSSLKey() { 
     return mKey; 
 }
 

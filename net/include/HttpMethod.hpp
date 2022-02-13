@@ -92,7 +92,7 @@ public:
 
     const static String PriString;
     
-    String toString(int);
+    static String toString(int);
     
     static int findId(String method);
     static String findString(int);
