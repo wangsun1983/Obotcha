@@ -5,7 +5,9 @@
 namespace obotcha {
 
 _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
-    mSocket = s;
+    //mSocket = s;
+    impl = s->getSockImpl();
+    fileDescriptor = s->getFileDescriptor();
     
     if (s->getFileDescriptor()->isAsync()) {
         mChannel = createAsyncOutputChannel(
@@ -26,7 +28,7 @@ long _SocketOutputStream::write(ByteArray data) {
         mChannel->write(data);
         return data->size();
     }
-    return _write(mSocket->getFileDescriptor(), data,0);
+    return _write(fileDescriptor, data,0);
 }
 
 long _SocketOutputStream::write(ByteArray data, int start) {
@@ -39,19 +41,19 @@ long _SocketOutputStream::write(ByteArray data, int start, int len) {
         mChannel->write(senddata);
         return senddata->size();
     }
-    return _write(mSocket->getFileDescriptor(), senddata,0);
+    return _write(fileDescriptor, senddata,0);
 }
 
 long _SocketOutputStream::_write(FileDescriptor fd, ByteArray data,int offset) {
-    if (mSocket == nullptr || mSocket->isClosed()) {
-        return -1;
-    }
-
-    return mSocket->mSock->write(data,offset);
+    //if (mSocket == nullptr || mSocket->isClosed()) {
+    //    return -1;
+    //}
+    //return mSocket->mSock->write(data,offset);
+    return impl->write(data,offset);
 }
 
 void _SocketOutputStream::close() {
-    mSocket = nullptr;
+    //mSocket = nullptr;
     if (mChannel != nullptr) {
         mChannel->close();
         mChannel = nullptr;
@@ -63,7 +65,7 @@ void _SocketOutputStream::flush() {
 }
 
 _SocketOutputStream::~_SocketOutputStream() {
-    mSocket = nullptr;
+    //mSocket = nullptr;
 }
 
 } // namespace obotcha

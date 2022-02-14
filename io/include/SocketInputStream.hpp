@@ -6,6 +6,7 @@
 #include "StrongPointer.hpp"
 
 #include "InputStream.hpp"
+#include "SocketImpl.hpp"
 
 namespace obotcha {
 
@@ -29,7 +30,8 @@ public:
     void setAsync(bool async); 
 
 private:
-    sp<_Socket> mSocket;
+    //sp<_Socket> mSocket;
+    SocketImpl impl;
 };
 
 }

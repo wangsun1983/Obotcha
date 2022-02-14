@@ -14,6 +14,7 @@
 #include "AsyncOutputChannel.hpp"
 #include "FileDescriptor.hpp"
 #include "OutputStream.hpp"
+#include "SocketImpl.hpp"
 
 namespace obotcha {
 
@@ -40,7 +41,9 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
   private:
     long _write(FileDescriptor, ByteArray,int offset);
 
-    sp<_Socket> mSocket;
+    //sp<_Socket> mSocket;
+    FileDescriptor fileDescriptor;
+    SocketImpl impl;
 
     AsyncOutputChannel mChannel;
 

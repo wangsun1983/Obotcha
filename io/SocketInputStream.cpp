@@ -14,22 +14,24 @@
 
 namespace obotcha {
 
-_SocketInputStream::_SocketInputStream(sp<_Socket> s) { mSocket = s; }
+_SocketInputStream::_SocketInputStream(sp<_Socket> s) { 
+    impl = s->getSockImpl(); 
+}
 
 long _SocketInputStream::read(ByteArray buffer) {
-    return mSocket->mSock->read(buffer);
+    return impl->read(buffer);
 }
 
 long _SocketInputStream::read(ByteArray buffer, int start) {
-    return mSocket->mSock->read(buffer,start);
+    return impl->read(buffer,start);
 }
 
 void _SocketInputStream::close() { 
-    mSocket = nullptr; 
+    impl = nullptr; 
 }
 
 _SocketInputStream::~_SocketInputStream() {
-    mSocket = nullptr;
+    impl = nullptr;
 }
 
 } // namespace obotcha
