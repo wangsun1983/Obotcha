@@ -339,7 +339,7 @@ String _HttpUrl::toString() {
 }
 
 sp<_HttpConnection> _HttpUrl::openConnection(HttpOption o) {
-    return createHttpConnection(AutoClone(this), o, false, nullptr);
+    return createHttpConnection(AutoClone(this), o);
 }
 
 void _HttpUrl::dump() {

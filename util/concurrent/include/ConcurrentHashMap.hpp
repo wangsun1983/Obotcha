@@ -13,7 +13,10 @@ namespace obotcha {
 
 DECLARE_TEMPLATE_CLASS(ConcurrentHashMap, 2) {
 public:
-    _ConcurrentHashMap() { mutex = createMutex("ConcurrentHashMap"); };
+    _ConcurrentHashMap() { 
+        mMap = createHashMap<T, U>();
+        mutex = createMutex("ConcurrentHashMap"); 
+    };
 
     int size() {
         AutoLock l(mutex);

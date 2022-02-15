@@ -20,15 +20,14 @@ _Socket::_Socket() {
     mMutex = createMutex();
     mOutputStream = nullptr;
     mInputStream = nullptr;
-    tag = st(System)::currentTimeMillis();
 }
 
 _Socket::_Socket(int v, InetAddress addr, SocketOption option,String certificatePath,String keyPath) {
-    type = v;
+    protocol = v;
     mMutex = createMutex();
     mOutputStream = nullptr;
     mInputStream = nullptr;
-    tag = st(System)::currentTimeMillis();
+
     switch (v) {
     case Tcp:
         mSock = createSocksSocketImpl(addr, option);
@@ -46,6 +45,7 @@ _Socket::_Socket(int v, InetAddress addr, SocketOption option,String certificate
         mSock = createSSLSocksSocketImpl(certificatePath,keyPath,addr,option);
         return;
     }
+
     Trigger(InitializeException, "ivalid type");
 }
 
@@ -54,9 +54,8 @@ _Socket::_Socket(FileDescriptor descriptor) {
     mInputStream = nullptr;
 
     mSock = createSocketImpl(descriptor);
-    type = Fd;
+    protocol = Fd;
     mMutex = createMutex();
-    tag = st(System)::currentTimeMillis();
 }
 
 void _Socket::setAsync(bool async) {
@@ -75,8 +74,8 @@ InetAddress _Socket::getInetAddress() {
     return mSock->getInetAddress(); 
 }
 
-void _Socket::setType(int type) { 
-    this->type = type; 
+void _Socket::setProtocol(int protocol) { 
+    this->protocol = protocol; 
 }
 
 int _Socket::connect() { 
@@ -95,10 +94,12 @@ void _Socket::close() {
     }
 
     if(mOutputStream != nullptr) {
+        mOutputStream->close();
         mOutputStream = nullptr;
     }
 
     if(mInputStream != nullptr) {
+        mOutputStream->close();
         mInputStream = nullptr;
     }
 }
@@ -134,7 +135,9 @@ FileDescriptor _Socket::getFileDescriptor() {
     return mSock->getFileDescriptor();
 }
 
-int _Socket::getType() { return type; }
+int _Socket::getProtocol() { 
+    return protocol; 
+}
 
 void _Socket::setSockImpl(SocketImpl impl) {
     AutoLock l(mMutex);
@@ -144,10 +147,6 @@ void _Socket::setSockImpl(SocketImpl impl) {
 SocketImpl _Socket::getSockImpl() {
     AutoLock l(mMutex);
     return mSock;
-}
-
-long _Socket::getTag() {
-    return tag;
 }
 
 } // namespace obotcha

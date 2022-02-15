@@ -13,9 +13,10 @@ namespace obotcha {
 DECLARE_CLASS(HttpClientConnKey) {
 public:
     String host;
+    String path;
     int port;
 
-    _HttpClientConnKey(String host,int port = 80);
+    _HttpClientConnKey(String host,String path,int port = 80);
     bool equals(HttpClientConnKey);
     uint64_t hashcode();
 };

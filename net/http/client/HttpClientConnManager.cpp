@@ -2,22 +2,21 @@
 
 namespace obotcha {
 
-_HttpClientConnKey::_HttpClientConnKey(String host,int port) {
-    if(host == nullptr) {
-        printf("host is nullptr \n");
-    } else {
-        printf("host is %s \n",host->toChars());
-    }
+_HttpClientConnKey::_HttpClientConnKey(String host,String path,int port) {
     this->host = host;
     this->port = port;
+    this->path = path;
+    if(path == nullptr) {
+        path = createString("");
+    }
 }
 
 bool _HttpClientConnKey::equals(HttpClientConnKey k) {
-    return host->equals(k->host) && port == k->port;
+    return host->equals(k->host) && port == k->port && path->equals(k->path);
 }
 
 uint64_t _HttpClientConnKey::hashcode() {
-    return host->append(createString(port))->hashcode();
+    return host->append(createString(port),path)->hashcode();
 }
 
 _HttpClientConnManager::_HttpClientConnManager() {

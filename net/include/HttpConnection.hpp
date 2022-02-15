@@ -28,10 +28,10 @@ namespace obotcha {
 
 class _HttpUrl;
 
-DECLARE_CLASS(HttpConnection) IMPLEMENTS(SocketListener){
+DECLARE_CLASS(HttpConnection) {
 
 public:
-    _HttpConnection(sp<_HttpUrl> url,HttpOption option = nullptr,bool async = false, HttpConnectionListener l = nullptr);
+    _HttpConnection(sp<_HttpUrl> url,HttpOption option = nullptr);
     
     Socket getSocket();
     
@@ -54,13 +54,7 @@ private:
 
     HttpOption mOption;
 
-    HttpConnectionListener mListener;
-
-    bool isAsync;
-
-    static SocketMonitor mSocketMonitor;
-
-    void onSocketMessage(int,Socket,ByteArray);
+    Mutex mMutex;
 };
 
 }

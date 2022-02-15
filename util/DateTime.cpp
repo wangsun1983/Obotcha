@@ -550,11 +550,17 @@ int _DateTime::parseTZD(std::string::const_iterator &it,
     return tzd;
 }
 
-String _DateTime::toString() { return format(FormatHTTP); }
+String _DateTime::toString() { 
+    return format(FormatHTTP); 
+}
 
-String _DateTime::toString(int type) { return format(type); }
+String _DateTime::toString(int type) { 
+    return format(type); 
+}
 
-String _DateTime::toString(String fmt) { return format(0, fmt); }
+String _DateTime::toString(String fmt) { 
+    return format(0, fmt); 
+}
 
 String _DateTime::toStringWithTimeZone(int timezone) {
     return format(FormatHTTP, nullptr, timezone);

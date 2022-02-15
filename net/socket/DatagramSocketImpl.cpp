@@ -33,7 +33,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
 
             if (address->getAddress() != nullptr) {
                 mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
-        } else {
+            } else {
                 mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
             }
 
@@ -46,13 +46,12 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
             mSockAddrV6.sin6_family = AF_INET6;
             mSockAddrV6.sin6_port = htons(address->getPort());
             if (address->getAddress() != nullptr) {
-                //mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
                 inet_pton(AF_INET6, address->getAddress()->toChars(), &mSockAddrV6.sin6_addr);
             } else {
                 mSockAddrV6.sin6_addr = in6addr_any;
             }
 
-            this->sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP)));
+            sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP)));
         }
         break;
     }
@@ -68,14 +67,12 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
 Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
     Socket newClient = nullptr;
     int length = -1;
-    struct sockaddr_in client_address;
-    socklen_t client_addrLength = sizeof(struct sockaddr_in);
     
-    struct sockaddr_in6 client_address_v6;
-    socklen_t client_addrLength_v6 = sizeof(struct sockaddr_in6);
-
     switch(this->address->getType()) {
         case st(InetAddress)::IPV4: {
+            struct sockaddr_in client_address;
+            socklen_t client_addrLength = sizeof(struct sockaddr_in);
+
             length = recvfrom(
                 sock->getFd(), buff->toValue(), buff->size(), 0,
                 (sockaddr *)&client_address, &client_addrLength);
@@ -92,7 +89,7 @@ Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
                 impl->sock = sock;
                 newClient = createSocket();
                 newClient->setSockImpl(impl);
-                newClient->setType(st(Socket)::Udp);
+                newClient->setProtocol(st(Socket)::Udp);
 
                 buff->quickShrink(length);
             }
@@ -100,6 +97,9 @@ Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
         break;
 
         case st(InetAddress)::IPV6: {
+            struct sockaddr_in6 client_address_v6;
+            socklen_t client_addrLength_v6 = sizeof(struct sockaddr_in6);
+
             length = recvfrom(
                 sock->getFd(), buff->toValue(), buff->size(), 0,
                 (sockaddr *)&client_address_v6, &client_addrLength_v6);
@@ -118,7 +118,7 @@ Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
                 impl->sock = sock;
                 newClient = createSocket();
                 newClient->setSockImpl(impl);
-                newClient->setType(st(Socket)::Udp);
+                newClient->setProtocol(st(Socket)::Udp);
                 buff->quickShrink(length);
             }
         }

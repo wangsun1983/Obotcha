@@ -61,7 +61,7 @@ Socket _SSLServerSocketImpl::accept() {
     
     Socket result = createSocket();
     result->setSockImpl(client);
-    result->setType(st(Socket)::SSL);
+    result->setProtocol(st(Socket)::SSL);
 
     return result;
 }

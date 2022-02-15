@@ -104,7 +104,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                             listener->onSocketMessage(task->event, task->sock,
                                                       task->data);
                             //udp socket may be closed
-                            if(task->sock->getType() == st(Socket)::Udp) {
+                            if(task->sock->getProtocol() == st(Socket)::Protocol::Udp) {
                                 task->sock->mOutputStream = nullptr;
                                 task->sock->mInputStream = nullptr;
                             }
@@ -146,7 +146,7 @@ int _SocketMonitor::bind(Socket s, SocketListener l) {
     addNewSocket(s,l);
     s->setAsync(true);
 
-    if (s->getType() == st(Socket)::Udp) {
+    if (s->getProtocol() == st(Socket)::Protocol::Udp) {
         return bind(s->getFileDescriptor()->getFd(), l, true);
     } else {
         return bind(s->getFileDescriptor()->getFd(), l, false);
@@ -184,7 +184,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
             }
             if (fd == serverfd) {
                 // may be this is udp wangsl
-                if (s != nullptr && s->getType() == st(Socket)::Udp) {
+                if (s != nullptr && s->getProtocol() == st(Socket)::Protocol::Udp) {
                     Socket newClient = nullptr;
                     ByteArray buff = createByteArray(st(Socket)::DefaultBufferSize);
 

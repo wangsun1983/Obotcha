@@ -23,16 +23,11 @@
 
 namespace obotcha {
 
-SocketMonitor _HttpConnection::mSocketMonitor = nullptr;
-
-_HttpConnection::_HttpConnection(sp<_HttpUrl> url, HttpOption option,
-                                 bool async, HttpConnectionListener l) {
-    isAsync = async;
+_HttpConnection::_HttpConnection(sp<_HttpUrl> url, HttpOption option) {
     mUrl = url;
-    //TODO
     mParser = createHttpPacketParserImpl();
     mOption = option;
-    mListener = l;
+    mMutex = createMutex();
 }
 
 Socket _HttpConnection::getSocket() { 
@@ -64,27 +59,15 @@ int _HttpConnection::connect() {
     mInputStream = mSocket->getInputStream();
     writer = createHttpPacketWriterImpl(mSocket->getOutputStream());
 
-    if (isAsync) {
-        static std::once_flag flag;
-        std::call_once(flag, [&]() {
-            mSocketMonitor = createSocketMonitor();
-            st(System)::closeOnExit(mSocketMonitor);
-        });
-
-        mSocketMonitor->bind(mSocket, AutoClone(this));
-    }
-
     return 0;
 }
 
 HttpResponse _HttpConnection::execute(HttpRequest req) {
+    AutoLock l(mMutex);
+    
     if (writer->write(req) < 0) {
         LOG(ERROR) << "Cannot send request!!!";
         return nullptr;
-    }
-
-    if (isAsync) {
-        return createHttpResponse(); // return dummy response
     }
 
     int buffsize = (mOption == nullptr ? st(HttpOption)::DefaultBuffSize
@@ -114,10 +97,6 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
 }
 
 int _HttpConnection::close() {
-    if (isAsync) {
-        mSocketMonitor->remove(mSocket);
-    }
-
     if(mSocket != nullptr) {
         mSocket->close();
         mSocket = nullptr;
@@ -128,26 +107,6 @@ int _HttpConnection::close() {
         mInputStream = nullptr;
     }
     return 0;
-}
-
-void _HttpConnection::onSocketMessage(int event, Socket sock, ByteArray data) {
-    switch (event) {
-        case st(NetEvent)::Disconnect:
-            mListener->onDisconnect();
-            break;
-
-        case st(NetEvent)::Message:
-            mParser->pushHttpData(data);
-            ArrayList<HttpPacket> responses = mParser->doParse();
-            if (responses->size() > 0) {
-                ListIterator<HttpPacket> iterator = responses->getIterator();
-                while (iterator->hasValue()) {
-                    mListener->onResponse(createHttpResponse(iterator->getValue()));
-                    iterator->next();
-                }
-            }
-            break;
-    }
 }
 
 } // namespace obotcha

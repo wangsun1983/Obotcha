@@ -23,7 +23,7 @@ public:
     friend class _SocketOutputStream;
     friend class _SocketInputStream;
 
-    enum Type {
+    enum Protocol {
         Tcp,
         Udp,
         Local,
@@ -54,8 +54,8 @@ public:
     //for udp socket
     sp<_Socket> receiveFrom(ByteArray);
     
-    int getType();
-    void setType(int);
+    int getProtocol();
+    void setProtocol(int);
 
     static int DefaultBufferSize;
     
@@ -65,7 +65,7 @@ public:
     long getTag();
     
 private:
-    int type;
+    int protocol;
 
 protected:
     SocketImpl mSock;
@@ -73,9 +73,6 @@ protected:
 
     SocketOutputStream mOutputStream;
     SocketInputStream mInputStream;
-
-    long tag;
-
 };
 
 }
