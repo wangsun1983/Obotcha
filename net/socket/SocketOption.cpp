@@ -3,6 +3,8 @@
 namespace obotcha {
 
 const int _SocketOption::DefaultBuffSize = 4 * 1024;
+const int _SocketOption::DefaultConnectNum = 4 * 1024;
+
 
 _SocketOption::_SocketOption() {
     mReUseAddr = -1;
@@ -36,6 +38,7 @@ _SocketOption::_SocketOption() {
     mReusePortCbpf = nullptr;
     mReusePortEbpf = -1;
     mZeroCopy = -1;
+    mConnectNum = DefaultConnectNum;
     mBuffSize = DefaultBuffSize;
 }
 

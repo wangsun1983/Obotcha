@@ -47,7 +47,6 @@ _SocksSocketImpl::_SocksSocketImpl(InetAddress address, SocketOption option)
             }
 
             this->sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET6, SOCK_STREAM, 0)));
-        
         }
         break;
 

@@ -26,6 +26,7 @@ public:
     friend class _HttpOption;
 
     static const int DefaultBuffSize;
+    static const int DefaultConnectNum;
 
     _SocketOption();
     ~_SocketOption();

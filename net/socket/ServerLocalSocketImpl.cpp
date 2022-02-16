@@ -13,8 +13,7 @@ _ServerLocalSocketImpl::_ServerLocalSocketImpl(InetAddress address,
     : _SocketImpl(address, option), _LocalSocketImpl(address, option) {}
 
 int _ServerLocalSocketImpl::bind() {
-    int len =
-        offsetof(struct sockaddr_un, sun_path) + strlen(serverAddr.sun_path);
+    int len = offsetof(struct sockaddr_un, sun_path) + strlen(serverAddr.sun_path);
 
     if (::bind(sock->getFd(), (struct sockaddr *)&serverAddr, len) < 0) {
         if (errno == EADDRINUSE) {
@@ -24,10 +23,9 @@ int _ServerLocalSocketImpl::bind() {
         return -NetBindFail;
     }
 
-    int connectNum = 32;
-    if (option != nullptr) {
-        connectNum = option->getConnectionNum();
-    }
+    int connectNum = (option == nullptr)?
+                        st(SocketOption)::DefaultConnectNum:option->getConnectionNum();
+
     if (listen(sock->getFd(), connectNum) < 0) {
         return -NetListenFail;
     }

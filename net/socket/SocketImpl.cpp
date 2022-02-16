@@ -1,5 +1,6 @@
 #include "SocketImpl.hpp"
 #include "Socket.hpp"
+#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 
@@ -219,8 +220,7 @@ void _SocketImpl::setInetAddress(InetAddress addr) {
 int _SocketImpl::write(ByteArray data,int start,int length) {
     int size = (length == -1?data->size() - start:length);
     if(start + size > data->size()) {
-        //TODO
-        return -1;
+        Trigger(IllegalArgumentException,"oversize");
     }
 
     return ::write(sock->getFd(),data->toValue() + start,size);
@@ -230,9 +230,9 @@ int _SocketImpl::read(ByteArray data,int start,int length) {
     int size = (length == -1?data->size() - start:length);
 
     if(start + size > data->size()) {
-        //TODO
-        return -1;
+        Trigger(IllegalArgumentException,"oversize");
     }
+
     return ::read(sock->getFd(),data->toValue() + start,size);
 }
 

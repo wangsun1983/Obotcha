@@ -15,6 +15,7 @@
 #include "Inet6Address.hpp"
 #include "Inet4Address.hpp"
 #include "SocketBuilder.hpp"
+#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 
@@ -65,9 +66,10 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
 }
 
 Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
-    Socket newClient = nullptr;
+    Socket newClient = createSocket();
     int length = -1;
-    
+    DatagramSocketImpl impl = createDatagramSocketImpl();
+
     switch(this->address->getType()) {
         case st(InetAddress)::IPV4: {
             struct sockaddr_in client_address;
@@ -82,16 +84,9 @@ Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
                         inet_ntoa(client_address.sin_addr)),
                         ntohs(client_address.sin_port));
 
-                DatagramSocketImpl impl = createDatagramSocketImpl();
                 impl->address = addr;
                 memcpy(&impl->mSockAddr,&client_address,client_addrLength);
-
                 impl->sock = sock;
-                newClient = createSocket();
-                newClient->setSockImpl(impl);
-                newClient->setProtocol(st(Socket)::Udp);
-
-                buff->quickShrink(length);
             }
         }
         break;
@@ -105,32 +100,32 @@ Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
                 (sockaddr *)&client_address_v6, &client_addrLength_v6);
 
             if (length > 0) {
-                char buf_ip[128];
-                memset(buf_ip,0,128);
+                char buf_ip[128] = {0};
                 inet_ntop(AF_INET6, &client_address_v6.sin6_addr, buf_ip, sizeof(buf_ip));
                 Inet6Address inet6Addr = createInet6Address(
                     createString(buf_ip),ntohs(client_address_v6.sin6_port));
 
-                DatagramSocketImpl impl = createDatagramSocketImpl();
                 impl->address = inet6Addr;
                 memcpy(&impl->mSockAddrV6,&client_address_v6,client_addrLength_v6);
-
                 impl->sock = sock;
-                newClient = createSocket();
-                newClient->setSockImpl(impl);
-                newClient->setProtocol(st(Socket)::Udp);
-                buff->quickShrink(length);
             }
         }
         break;
     }
 
-    return newClient;
+    if(length > 0) {
+        newClient = createSocket();
+        newClient->setSockImpl(impl);
+        newClient->setProtocol(st(Socket)::Udp);
+        buff->quickShrink(length);
+        return newClient;
+    }
+
+    return nullptr;
 }
 
 int _DatagramSocketImpl::connect() {
-    // return ::connect(sock->getFd(),(struct
-    // sockaddr*)&mSockAddr,sizeof(mSockAddr));
+    //UDP do not need to do connect
     return 0;
 }
 
@@ -147,12 +142,16 @@ int _DatagramSocketImpl::bind() {
         }
     }
 
-    return -1;
+    Trigger(IllegalArgumentException,"DatagramSocket must be IPV4 or IPV6");
 }
 
 int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
     struct sockaddr * addr = nullptr;
     int addrlen = 0;
+
+    if(start + length > data->size()) {
+        Trigger(IllegalArgumentException,"DatagramSocket write size too large");
+    }
 
     switch(this->address->getType()) {
         case st(InetAddress)::IPV4: {
@@ -167,13 +166,9 @@ int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
         }
         break;
     }
-    if(start + length > data->size()) {
-        //TODO
-        return -1;
-    }
+
     int size = (length == -1?data->size() - start:length);
-    int ret =  ::sendto(sock->getFd(), data->toValue() + start, size, 0,addr, addrlen);
-    return ret;
+    return ::sendto(sock->getFd(), data->toValue() + start, size, 0,addr, addrlen);
 }
 
 } // namespace obotcha
