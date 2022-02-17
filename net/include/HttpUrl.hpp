@@ -27,7 +27,7 @@ public:
         Ws,
     };
 
-    void setScheme(String);
+    void setScheme(int);
     void setHost(String);
     void setPort(int);
     void setPath(String);
@@ -40,7 +40,7 @@ public:
     String getRawQuery();
     void setRawQuery(String);
 
-    String getScheme();
+    int getScheme();
     String getHost();
     int getPort();
     String getPath();
@@ -63,7 +63,7 @@ private:
     int portColonOffset(String input, int pos, int limit);
     int delimiterOffset(String input, int pos, int limit, String delimiters);
 
-    String mScheme;
+    int mScheme;
     String mHostName;
     int mPort;
     String mPath;

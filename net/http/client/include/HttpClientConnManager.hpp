@@ -14,9 +14,10 @@ DECLARE_CLASS(HttpClientConnKey) {
 public:
     String host;
     String path;
+    int scheme;
     int port;
 
-    _HttpClientConnKey(String host,String path,int port = 80);
+    _HttpClientConnKey(int scheme,String host,String path,int port = 80);
     bool equals(HttpClientConnKey);
     uint64_t hashcode();
 };

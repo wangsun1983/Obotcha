@@ -3,56 +3,67 @@
 
 namespace obotcha {
 
-_SSLSocksSocketImpl::_SSLSocksSocketImpl(String certificatePath,String keyPath,SocketImpl s,bool isServer) {
-    init(certificatePath,keyPath,isServer);
+//this is used for creating new socket in server
+_SSLSocksSocketImpl::_SSLSocksSocketImpl(String certificatePath,String keyPath,SocketImpl s) {
     mSocket = s;
+    init(certificatePath,keyPath);
 }
 
-_SSLSocksSocketImpl::_SSLSocksSocketImpl(String certificatePath,String keyPath,InetAddress address,SocketOption option,bool isServer) {
-    init(certificatePath,keyPath,isServer);
+_SSLSocksSocketImpl::_SSLSocksSocketImpl(String certificatePath,String keyPath,InetAddress address,SocketOption option) {
     mSocket = createSocksSocketImpl(address,option);
+    init(certificatePath,keyPath);
+}
+    
+_SSLSocksSocketImpl::_SSLSocksSocketImpl(SocketImpl s) {
+    mSocket = s;
+    init(nullptr,nullptr);
 }
 
-void _SSLSocksSocketImpl::init(String certificatePath,String keyPath,bool isServer) {
-    mCertificate = certificatePath;
-    mKey = keyPath;
-    /* int ssl  */
-    SSL_library_init();
-    /* load SSL algorithms */
-    OpenSSL_add_all_algorithms();
-    /* load SSL error strings */
-    SSL_load_error_strings();
+_SSLSocksSocketImpl::_SSLSocksSocketImpl(InetAddress address,SocketOption option) {
+    mSocket = createSocksSocketImpl(address,option);
+    init(nullptr,nullptr);
+}
 
-    /*can use SSLv2_server_method() or SSLv3_server_method()*/
-    if(isServer) {
-        mCtx = SSL_CTX_new(SSLv23_server_method());
-    } else {
-        mCtx = SSL_CTX_new(SSLv23_client_method());
-    }
-    if (mCtx == NULL) {
-        throw InitializeException("SSL Create error");
-    }
-    /* load user certificate,this certificati is used to send to
-     * client,certificate contains public key */
-    if (SSL_CTX_use_certificate_file(mCtx, mCertificate->toChars(),
+void _SSLSocksSocketImpl::init(String certificatePath,String keyPath) {
+    printf("SSLSocksSocketImpl init start \n");
+    if(certificatePath != nullptr) {
+        printf("SSLSocksSocketImpl init trace1 \n");
+        mContext = createSSLSocketContext(st(SSLSocketContext)::SERVER);
+        if (SSL_CTX_use_certificate_file(mContext->getCtx(), certificatePath->toChars(),
                                      SSL_FILETYPE_PEM) <= 0) {
-        throw InitializeException("SSL certificate use error");
+            throw InitializeException("SSL certificate use error");
+        }
+        /* load private key */
+        if (SSL_CTX_use_PrivateKey_file(mContext->getCtx(), keyPath->toChars(), SSL_FILETYPE_PEM) <=
+            0) {
+            throw InitializeException("SSL private key use error");
+        }
+        /* check whether private is ok */
+        if (!SSL_CTX_check_private_key(mContext->getCtx())) {
+            throw InitializeException("SSL private key check error");
+        }
+    } else {
+        printf("SSLSocksSocketImpl init trace2 \n");
+        mContext = createSSLSocketContext(st(SSLSocketContext)::CLIENT);
     }
-    /* load private key */
-    if (SSL_CTX_use_PrivateKey_file(mCtx, mKey->toChars(), SSL_FILETYPE_PEM) <=
-        0) {
-        throw InitializeException("SSL private key use error");
+    printf("SSLSocksSocketImpl init trace3,fd is %d \n",mSocket->getFileDescriptor()->getFd());
+    if(!SSL_set_fd(mContext->getSSL(),mSocket->getFileDescriptor()->getFd())) {
+        ERR_print_errors_fp (stderr);
     }
-    /* check whether private is ok */
-    if (!SSL_CTX_check_private_key(mCtx)) {
-        throw InitializeException("SSL private key check error");
-    }
-
-    mSSL = SSL_new(mCtx);
 }
 
 int _SSLSocksSocketImpl::connect() {
-    return mSocket->connect();
+    printf("SSLSocksSocketImpl connect start \n");
+    mSocket->getFileDescriptor()->setAsync(false);
+
+    int ret = mSocket->connect();
+    printf("SSLSocksSocketImpl connect trace1,ret is %d \n",ret);
+    
+    ret = SSL_connect(mContext->getSSL());
+    if(ret < 0) {
+        ERR_print_errors_fp (stderr);
+    }
+    return ret;
 }
 
 int _SSLSocksSocketImpl::close() {
@@ -73,10 +84,11 @@ int _SSLSocksSocketImpl::write(ByteArray buff,int start,int length) {
     }
 
     
-    return SSL_write(mSSL, buff->toValue() + start, size);
+    return SSL_write(mContext->getSSL(), buff->toValue() + start, size);
 }
 
 int _SSLSocksSocketImpl::read(ByteArray buff,int start,int length) {
+    printf("SSLSocksSocketImpl read a start \n");
     int size = (length == -1?buff->size() - start:length);
     
     if(start + size > buff->size()) {
@@ -84,12 +96,13 @@ int _SSLSocksSocketImpl::read(ByteArray buff,int start,int length) {
         return -1;
     }
 
-    return SSL_read(mSSL,buff->toValue() + start,size);
+    return SSL_read(mContext->getSSL(),buff->toValue() + start,size);
 }
 
 ByteArray _SSLSocksSocketImpl::read() {
+    printf("SSLSocksSocketImpl read b start \n");
     ByteArray buff = createByteArray(1024*16);
-    int size = SSL_write(mSSL, buff->toValue(), 1024*16);
+    int size = SSL_read(mContext->getSSL(), buff->toValue(), 1024*16);
     buff->quickShrink(size);
     return buff;
 }
@@ -98,5 +111,8 @@ FileDescriptor _SSLSocksSocketImpl::getFileDescriptor() {
     return mSocket->getFileDescriptor();
 }
 
+SSLSocketContext _SSLSocksSocketImpl::getSSLContext() {
+    return this->mContext;
+}
 
 }

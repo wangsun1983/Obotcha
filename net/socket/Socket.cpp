@@ -99,7 +99,7 @@ void _Socket::close() {
     }
 
     if(mInputStream != nullptr) {
-        mOutputStream->close();
+        mInputStream->close();
         mInputStream = nullptr;
     }
 }

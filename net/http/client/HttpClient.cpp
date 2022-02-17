@@ -22,10 +22,13 @@ HttpResponse _HttpClient::execute(HttpClientBaseRequest r,HttpOption option) {
     mCurrentUrl = r->getUrl();
     r->getHeader()->setHost(mCurrentUrl->getHost());
 
-    HttpClientConnKey key = createHttpClientConnKey(mCurrentUrl->getHost(),mCurrentUrl->getPath(),mCurrentUrl->getPort());
+    HttpClientConnKey key = createHttpClientConnKey(mCurrentUrl->getScheme(),
+                                                    mCurrentUrl->getHost(),
+                                                    mCurrentUrl->getPath(),
+                                                    mCurrentUrl->getPort());
     auto c = connMgr->get(key);
     HttpResponse response = nullptr;
-
+    printf("HttpClient execute start \n");
     while(1) {
         if(c == nullptr) {
             if(formerUrl != nullptr) {
@@ -35,10 +38,13 @@ HttpResponse _HttpClient::execute(HttpClientBaseRequest r,HttpOption option) {
 
             c = createHttpConnection(mCurrentUrl,option);
             connMgr->add(key,c);
+            printf("HttpClient execute trace1 \n");
             c->connect();
+            printf("HttpClient execute trace1_1 \n");
         }
-        
+        printf("HttpClient execute trace1_2 \n");
         response = c->execute(r);
+        printf("HttpClient execute trace2 \n");
         if(response == nullptr && errno == EPIPE) {
             continue;
         }
@@ -52,12 +58,15 @@ void _HttpClient::close(HttpUrl url) {
     auto u = (url==nullptr)?mCurrentUrl:url;
 
     if(u != nullptr) {
-        HttpClientConnKey key = createHttpClientConnKey(u->getHost(),
+        HttpClientConnKey key = createHttpClientConnKey(u->getScheme(),
+                                                        u->getHost(),
                                                         u->getPath(),
                                                         u->getPort());
         auto c = connMgr->get(key);
-        c->close();
-        connMgr->remove(key);
+        if(c != nullptr) {
+            c->close();
+            connMgr->remove(key);
+        }
     }
 }
 

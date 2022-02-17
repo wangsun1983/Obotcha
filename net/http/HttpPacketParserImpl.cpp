@@ -67,10 +67,11 @@ HttpPacket _HttpPacketParserImpl::parseEntireRequest(ByteArray request) {
 
 ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
-
+    printf("PacketParserImpl doParse \n");
     while (1) {
         switch (mStatus) {
             case Idle: {
+                printf("PacketParserImpl doParse Idle\n");
                 if (mHttpHeaderParser == nullptr) {
                     mHttpHeaderParser = createHttpHeaderParser(mReader);
                     mHttpPacket = createHttpPacket();
@@ -92,6 +93,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
             }
 
             case BodyStart: {
+                printf("PacketParserImpl doParse BodyStart\n");
                 auto contentlength = mHttpPacket->getHeader()->getContentLength();
                 auto contenttype = mHttpPacket->getHeader()->getContentType();
                 auto transferEncoding = mHttpPacket->getHeader()->getTransferEncoding();
@@ -108,7 +110,9 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         return Global::Continue;
                     });
                 }
+                printf("PacketParserImpl doParse BodyStart trace1\n");
                 if (isTransferChuncked) {
+                    printf("PacketParserImpl doParse BodyStart2\n");
                     if (mChunkParser == nullptr) {
                         mChunkParser = createHttpChunkParser(mReader);
                     }
@@ -121,8 +125,9 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         mMultiPartParser = nullptr;
                         mChunkParser = nullptr;
                         mStatus = Idle;
+                        continue;
                     }
-                    continue;
+                    return nullptr;
                 }
 
                 if (contentlength == nullptr || contentlength->get() <= 0) {
@@ -228,6 +233,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         continue;
                     } else {
                         int length = mReader->getReadableLength();
+                        printf("i get length is %d \n");
                         if(length != 0) {
                             mReader->move(length);
                             ByteArray content = mReader->pop();
@@ -244,6 +250,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
             break;
         }
     }
+    printf("PacketParserImpl doParse end\n");
     return packets;
 }
 

@@ -46,11 +46,20 @@ int _HttpConnection::connect() {
 
         inetAddr->setAddress(address->get(0)->getAddress());
     }
+    printf("HttpConnection,scheme is %d,inetAddr is %s \n",mUrl->getScheme(),inetAddr->getAddress()->toChars());
+    if(mUrl->getScheme() == st(HttpUrl)::Http) {
+        mSocket = createSocketBuilder()
+                    ->setAddress(inetAddr)
+                    ->setOption(mOption)
+                    ->newSocket();
+    } else {
+        mSocket = createSocketBuilder()
+                    ->setAddress(inetAddr)
+                    ->setOption(mOption)
+                    ->newSSLSocket();
+    }
 
-    mSocket = createSocketBuilder()
-                  ->setAddress(inetAddr)
-                  ->setOption(mOption)
-                  ->newSocket();
+    printf("HttpConnection start connect \n");
     if (mSocket->connect() < 0) {
         LOG(ERROR) << "Connect failed,reason is " << strerror(errno);
         return -NetConnectFail;
@@ -64,7 +73,7 @@ int _HttpConnection::connect() {
 
 HttpResponse _HttpConnection::execute(HttpRequest req) {
     AutoLock l(mMutex);
-    
+    printf("HttpConnection execute start \n");
     if (writer->write(req) < 0) {
         LOG(ERROR) << "Cannot send request!!!";
         return nullptr;
@@ -74,7 +83,9 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
                                        : mOption->getBuffSize());
     ByteArray result = createByteArray(buffsize);
     while (1) {
+        printf("HttpConnection execute trace0 \n");
         int len = mInputStream->read(result);
+        printf("HttpConnection execute trace1,len is %d,result is \n %s \n",len,result->toString()->toChars());
         if (len <= 0) {
             mParser->reset();
             LOG(ERROR) << "Cannot get response!!!,len is " << len;
@@ -85,11 +96,14 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
         ArrayList<HttpPacket> packets = mParser->doParse();
         result->quickRestore();
         if (packets == nullptr) {
+            printf("HttpConnection execute trace1_1 \n");
             continue;
         } else if (packets->size() > 1) {
+            printf("HttpConnection execute trace1_2 \n");
             mParser->reset();
             LOG(ERROR) << "get too many responses,size is " << packets->size();
         } else if (packets->size() == 1) {
+            printf("HttpConnection execute trace1_3 \n");
             return createHttpResponse(packets->get(0));
         }
     }

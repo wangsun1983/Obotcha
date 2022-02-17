@@ -12,10 +12,15 @@ objs += $(outtmp)/socket.o \
 		$(outtmp)/localsocketimpl.o \
 		$(outtmp)/serverlocalsocketimpl.o \
 		$(outtmp)/datagramsocketimpl.o \
-		$(outtmp)/socketmonitor.o 
+		$(outtmp)/socketmonitor.o \
+		$(outtmp)/sslsocketcontext.o \
+		
 
 $(outtmp)/socketimpl.o :$(netDir)/socket/SocketImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketImpl.cpp -o $(outtmp)/socketimpl.o 
+
+$(outtmp)/sslsocketcontext.o :$(netDir)/socket/SSLSocketContext.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SSLSocketContext.cpp -o $(outtmp)/sslsocketcontext.o 
 
 $(outtmp)/socketoption.o :$(netDir)/socket/SocketOption.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SocketOption.cpp -o $(outtmp)/socketoption.o 

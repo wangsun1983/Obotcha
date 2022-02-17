@@ -11,38 +11,23 @@ _SSLServerSocketImpl::_SSLServerSocketImpl(String certificatePath,
     mCertificate = certificatePath;
     mKey = keyPath;
 
-    /* int ssl  */
-    SSL_library_init();
-    /* load SSL algorithms */
-    OpenSSL_add_all_algorithms();
-    /* load SSL error strings */
-    SSL_load_error_strings();
-
-    /*can use SSLv2_server_method() or SSLv3_server_method()*/
-    mCtx = SSL_CTX_new(SSLv23_server_method());
-    if (mCtx == NULL) {
-        throw InitializeException("SSL Create error");
-    }
+    mSSLContext = createSSLSocketContext(st(SSLSocketContext)::SERVER);
     /* load user certificate,this certificati is used to send to
      * client,certificate contains public key */
-    if (SSL_CTX_use_certificate_file(mCtx, mCertificate->toChars(),
+    if (SSL_CTX_use_certificate_file(mSSLContext->getCtx(), mCertificate->toChars(),
                                      SSL_FILETYPE_PEM) <= 0) {
         throw InitializeException("SSL certificate use error");
     }
     /* load private key */
-    if (SSL_CTX_use_PrivateKey_file(mCtx, mKey->toChars(), SSL_FILETYPE_PEM) <=
-        0) {
+    if (SSL_CTX_use_PrivateKey_file(mSSLContext->getCtx(), mKey->toChars(), SSL_FILETYPE_PEM) <= 0) {
         throw InitializeException("SSL private key use error");
     }
     /* check whether private is ok */
-    if (!SSL_CTX_check_private_key(mCtx)) {
+    if (!SSL_CTX_check_private_key(mSSLContext->getCtx())) {
         throw InitializeException("SSL private key check error");
     }
 
-    mSSL = SSL_new(mCtx);
-
     mSocket = createServerSocketImpl(address,option);
-
 }
 
 int _SSLServerSocketImpl::bind() {
@@ -52,11 +37,11 @@ int _SSLServerSocketImpl::bind() {
 Socket _SSLServerSocketImpl::accept() {
     Socket s = mSocket->accept();
     
-    auto client = createSSLSocksSocketImpl(mCertificate,mKey,s->getSockImpl(),true);
+    auto client = createSSLSocksSocketImpl(mCertificate,mKey,s->getSockImpl());
     s->getFileDescriptor()->setAsync(false);
-    int ret = SSL_set_fd(client->mSSL, s->getFileDescriptor()->getFd());
+    //int ret = SSL_set_fd(client->mSSL, s->getFileDescriptor()->getFd());
 
-    ret = SSL_accept(client->mSSL);
+    int ret = SSL_accept(client->getSSLContext()->getSSL());
     s->getFileDescriptor()->setAsync(true);
     
     Socket result = createSocket();
@@ -80,16 +65,7 @@ int _SSLServerSocketImpl::close() {
 }
 
 _SSLServerSocketImpl::~_SSLServerSocketImpl() {
-    if (mCtx != nullptr) {
-        SSL_CTX_free(mCtx);
-        mCtx = nullptr;
-    }
 
-    if (mSSL != nullptr) {
-        SSL_shutdown(mSSL);
-        SSL_free(mSSL);
-        mSSL = nullptr;
-    }
 }
 
 

@@ -11,9 +11,8 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
     String mPropertyDomain = nullptr;
     HttpDate mPropertyExpires = nullptr;
     int mPropertyMaxAge = -1;
-
     ArrayList<HttpCookie> cookies = createArrayList<HttpCookie>();
-    st(HttpHeaderContentParser)::import(value,[&](String directive,String parameter) {
+    st(HttpHeaderContentParser)::import(value,createString("=;"),[&](String directive,String parameter) {
         if (st(HttpCookie)::COOKIE_PROPERTY_SECURE->equalsIgnoreCase(
                 directive)) {
             mPropertySecure = true;

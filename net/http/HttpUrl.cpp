@@ -11,7 +11,7 @@ namespace obotcha {
 
 _HttpUrl::_HttpUrl() {
     mPort = 80;
-    mScheme = nullptr;
+    mScheme = SchemaType::Http;
     mHostName = nullptr;
     mPath = nullptr;
     mFragment = nullptr;
@@ -134,13 +134,19 @@ void _HttpUrl::import(String input) {
     int schemeOffset = schemeDelimiterOffset(input, pos, limit);
     if (schemeOffset != -1) {
         if (input->regionMatches(pos, "https:", 0, 6)) {
-            mScheme = createString("https");
+            //mScheme = createString("https");
+            mScheme = SchemaType::Https;
+            mPort = 443;
             pos += createString("https:")->size();
         } else if (input->regionMatches(pos, "http:", 0, 5)) {
-            mScheme = createString("http");
+            //mScheme = createString("http");
+            mScheme = SchemaType::Http;
+            mPort = 80;
             pos += createString("http:")->size();
         } else if (input->regionMatches(pos, "ws:", 0, 3)) {
-            mScheme = createString("ws");
+            //mScheme = createString("ws");
+            mScheme = SchemaType::Ws;
+            mPort = 80;
             pos += createString("ws:")->size();
         }
     }
@@ -239,7 +245,7 @@ void _HttpUrl::import(String input) {
     }
 }
 
-void _HttpUrl::setScheme(String data) { 
+void _HttpUrl::setScheme(int data) { 
     mScheme = data; 
 }
 
@@ -278,33 +284,65 @@ void _HttpUrl::setPassword(String data) {
     mPassword = data; 
 }
 
-String _HttpUrl::getPassword() { return mPassword; }
+String _HttpUrl::getPassword() { 
+    return mPassword; 
+}
 
-String _HttpUrl::getRawUrl() { return mRawUrl; }
+String _HttpUrl::getRawUrl() { 
+    return mRawUrl; 
+}
 
-void _HttpUrl::setRawUrl(String u) { mRawUrl = u; }
+void _HttpUrl::setRawUrl(String u) { 
+    mRawUrl = u; 
+}
 
-String _HttpUrl::getRawQuery() { return mRawQuery; }
+String _HttpUrl::getRawQuery() { 
+    return mRawQuery; 
+}
 
-void _HttpUrl::setRawQuery(String q) { mRawQuery = q; }
+void _HttpUrl::setRawQuery(String q) { 
+    mRawQuery = q; 
+}
 
-String _HttpUrl::getScheme() { return mScheme; }
+int _HttpUrl::getScheme() { 
+    return mScheme; 
+}
 
-String _HttpUrl::getHost() { return mHostName; }
+String _HttpUrl::getHost() { 
+    return mHostName; 
+}
 
-int _HttpUrl::getPort() { return mPort; }
+int _HttpUrl::getPort() { 
+    return mPort; 
+}
 
-String _HttpUrl::getPath() { return mPath; }
+String _HttpUrl::getPath() { 
+    return mPath;
+}
 
-HttpUrlEncodedValue _HttpUrl::getQuery() { return mQuery; }
+HttpUrlEncodedValue _HttpUrl::getQuery() { 
+    return mQuery; 
+}
 
-String _HttpUrl::getFragment() { return mFragment; }
+String _HttpUrl::getFragment() { 
+    return mFragment;
+}
 
 String _HttpUrl::toString() {
     String url = createString("");
 
-    if(mScheme != nullptr) {
-        url = url->append(mScheme)->append("://");
+    switch(mScheme) {
+        case SchemaType::Http:
+            url = url->append(createString("http"))->append("://");
+        break;
+
+        case SchemaType::Https:
+            url = url->append(createString("https"))->append("://");
+        break;
+
+        case SchemaType::Ws:
+            url = url->append(createString("ws"))->append("://");
+        break;
     }
 
     if (mUser != nullptr) {
@@ -343,12 +381,8 @@ sp<_HttpConnection> _HttpUrl::openConnection(HttpOption o) {
 }
 
 void _HttpUrl::dump() {
-    if (getScheme() != nullptr) {
-        printf("schema is %s \n", getScheme()->toChars());
-    } else {
-        printf("schema is NULL \n");
-    }
-
+    printf("schema is %d \n", mScheme);
+    
     if (getHost() != nullptr) {
         printf("host is %s \n", getHost()->toChars());
     } else {

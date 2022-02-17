@@ -98,9 +98,11 @@ int _ByteRingArrayReader::getReadableLength() {
     }
 
     int end = mBuff->getEndIndex();
+    printf("mCursor is %d,end is %d,availDataSize is %d,capacity is %d \n",mCursor,end,mBuff->getAvailDataSize(),mBuff->getCapacity());
 
     if (mCursor >= end) {
-        return mBuff->getAvailDataSize() - (mCursor - end);
+        //return mBuff->getAvailDataSize() - (mCursor - end);
+        return mBuff->getCapacity() - mCursor + end;
     } else {
         return end - mCursor;
     }

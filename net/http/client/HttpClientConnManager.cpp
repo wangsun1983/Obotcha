@@ -2,21 +2,23 @@
 
 namespace obotcha {
 
-_HttpClientConnKey::_HttpClientConnKey(String host,String path,int port) {
+_HttpClientConnKey::_HttpClientConnKey(int scheme,String host,String path,int port) {
+    this->scheme = scheme;
     this->host = host;
     this->port = port;
-    this->path = path;
     if(path == nullptr) {
-        path = createString("");
+        this->path = createString("");
+    } else {
+        this->path = path;
     }
 }
 
 bool _HttpClientConnKey::equals(HttpClientConnKey k) {
-    return host->equals(k->host) && port == k->port && path->equals(k->path);
+    return scheme == k->scheme && host->equals(k->host) && port == k->port && path->equals(k->path);
 }
 
 uint64_t _HttpClientConnKey::hashcode() {
-    return host->append(createString(port),path)->hashcode();
+    return createString(scheme)->append(host,createString(port),path)->hashcode();
 }
 
 _HttpClientConnManager::_HttpClientConnManager() {

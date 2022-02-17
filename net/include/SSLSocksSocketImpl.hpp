@@ -1,16 +1,13 @@
 #ifndef __OBOTCHA_SSL_SOCKS_SOCKET_IMPL_HPP__
 #define __OBOTCHA_SSL_SOCKS_SOCKET_IMPL_HPP__
 
-extern "C" {
-#include "openssl/ssl.h"
-#include "openssl/err.h"
-}
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
 #include "SocksSocketImpl.hpp"
 #include "ServerSocketImpl.hpp"
+#include "SSLSocketContext.hpp"
 #include "Socket.hpp"
 #include "Error.hpp"
 
@@ -21,8 +18,14 @@ class _SSLServerSocketImpl;
 DECLARE_CLASS(SSLSocksSocketImpl) IMPLEMENTS(SocketImpl) {
 public:
     friend class _SSLServerSocketImpl;
-    _SSLSocksSocketImpl(String certificatePath,String keyPath,InetAddress address,SocketOption option,bool isServer = false);
-    _SSLSocksSocketImpl(String certificatePath,String keyPath,SocketImpl,bool isServer = false);
+    _SSLSocksSocketImpl(String certificatePath,String keyPath,SocketImpl s);
+    _SSLSocksSocketImpl(String certificatePath,String keyPath,InetAddress address,SocketOption option);
+
+    _SSLSocksSocketImpl(InetAddress address,SocketOption option);
+    _SSLSocksSocketImpl(SocketImpl impl);
+
+    SSLSocketContext getSSLContext();
+
     int connect();
 
     //int read(ByteArray);
@@ -37,15 +40,16 @@ public:
     FileDescriptor getFileDescriptor();
 
 private:
-    void init(String certificatePath,String keyPath,bool isServer);
+    void init(String,String);
 
     static int DefaultConnectNum;
 
-    SSL *mSSL;
-    SSL_CTX *mCtx;
+    //SSL *mSSL;
+    //SSL_CTX *mCtx;
 
-    String mCertificate;
-    String mKey;
+    //String mCertificate;
+    //String mKey;
+    SSLSocketContext mContext;
 
     SocketImpl mSocket;
 };

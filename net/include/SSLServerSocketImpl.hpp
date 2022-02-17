@@ -11,6 +11,7 @@ extern "C" {
 
 #include "SocksSocketImpl.hpp"
 #include "ServerSocketImpl.hpp"
+#include "SSLSocketContext.hpp"
 #include "Socket.hpp"
 #include "Error.hpp"
 
@@ -28,9 +29,10 @@ public:
 private:
     static int DefaultConnectNum;
 
-    SSL *mSSL;
-    SSL_CTX *mCtx;
-
+    //SSL *mSSL;
+    //SSL_CTX *mCtx;
+    SSLSocketContext mSSLContext;
+    
     String mCertificate;
     String mKey;
 

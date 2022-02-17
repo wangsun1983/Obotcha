@@ -35,33 +35,61 @@ void _HttpCookie::setValue(String name, String value) {
     mValue = value;
 }
 
-String _HttpCookie::getName() { return mName; }
+String _HttpCookie::getName() { 
+    return mName; 
+}
 
-String _HttpCookie::getValue() { return mValue; }
+String _HttpCookie::getValue() { 
+    return mValue; 
+}
 
-void _HttpCookie::setPropertySecure(bool flag) { mPropertySecure = flag; }
+void _HttpCookie::setPropertySecure(bool flag) { 
+    mPropertySecure = flag; 
+}
 
-void _HttpCookie::setPropertyHttpOnly(bool flag) { mPropertyHttpOnly = flag; }
+void _HttpCookie::setPropertyHttpOnly(bool flag) { 
+    mPropertyHttpOnly = flag; 
+}
 
-void _HttpCookie::setPropertyPath(String data) { mPropertyPath = data; }
+void _HttpCookie::setPropertyPath(String data) { 
+    mPropertyPath = data; 
+}
 
-void _HttpCookie::setPropertyDomain(String data) { mPropertyDomain = data; }
+void _HttpCookie::setPropertyDomain(String data) { 
+    mPropertyDomain = data; 
+}
 
-void _HttpCookie::setPropertyExpires(HttpDate date) { mPropertyExpires = date; }
+void _HttpCookie::setPropertyExpires(HttpDate date) { 
+    mPropertyExpires = date; 
+}
 
-void _HttpCookie::setPropertyMaxAge(int data) { mPropertyMaxAge = data; }
+void _HttpCookie::setPropertyMaxAge(int data) { 
+    mPropertyMaxAge = data; 
+}
 
-bool _HttpCookie::getPropertySecure() { return mPropertySecure; }
+bool _HttpCookie::getPropertySecure() { 
+    return mPropertySecure; 
+}
 
-bool _HttpCookie::getPropertyHttpOnly() { return mPropertyHttpOnly; }
+bool _HttpCookie::getPropertyHttpOnly() { 
+    return mPropertyHttpOnly; 
+}
 
-String _HttpCookie::getPropertyPath() { return mPropertyPath; }
+String _HttpCookie::getPropertyPath() { 
+    return mPropertyPath; 
+}
 
-String _HttpCookie::getPropertyDomain() { return mPropertyDomain; }
+String _HttpCookie::getPropertyDomain() { 
+    return mPropertyDomain; 
+}
 
-HttpDate _HttpCookie::getPropertyExpires() { return mPropertyExpires; }
+HttpDate _HttpCookie::getPropertyExpires() { 
+    return mPropertyExpires; 
+}
 
-int _HttpCookie::getPropertyMaxAge() { return mPropertyMaxAge; }
+int _HttpCookie::getPropertyMaxAge() { 
+    return mPropertyMaxAge; 
+}
 
 String _HttpCookie::toString(int type) {
     switch (type) {
