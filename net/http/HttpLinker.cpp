@@ -14,8 +14,8 @@ _HttpLinker::_HttpLinker(Socket s,int protocol) {
     mSession = createHttpSession();
 
     switch(protocol) {
-        case st(HttpProtocol)::Http_H2:
-        case st(HttpProtocol)::Http_H2C:
+        case st(NetProtocol)::Http_H2:
+        case st(NetProtocol)::Http_H2C:
             //default use httpv1 parser
             mHttp2StreamController = createHttp2StreamController(mSocketOutput);
             mParser = mHttp2StreamController;

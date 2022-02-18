@@ -17,7 +17,7 @@
 #include "Socket.hpp"
 #include "HttpSession.hpp"
 #include "HttpPacketParserImpl.hpp"
-#include "HttpProtocol.hpp"
+#include "NetProtocol.hpp"
 #include "HttpPacketWriter.hpp"
 #include "Http2StreamController.hpp"
 
@@ -29,7 +29,7 @@ DECLARE_CLASS(HttpLinker){
 public:
     friend class _HttpServer;
 
-    _HttpLinker(Socket,int protocol = st(HttpProtocol)::Http);
+    _HttpLinker(Socket,int protocol = st(NetProtocol)::Http);
 
     int pushHttpData(ByteArray array);
 

@@ -6,7 +6,7 @@ _Http2Packet::_Http2Packet(uint32_t streamid,HttpHeader h,ByteArray d) {
     data = d;
     end = false;
     streamId = streamid;
-    h->setProtocol(st(HttpProtocol)::Http_H2);
+    h->setProtocol(st(NetProtocol)::Http_H2);
     setHeader(h);
 }
 

@@ -28,7 +28,6 @@ HttpResponse _HttpClient::execute(HttpClientBaseRequest r,HttpOption option) {
                                                     mCurrentUrl->getPort());
     auto c = connMgr->get(key);
     HttpResponse response = nullptr;
-    printf("HttpClient execute start \n");
     while(1) {
         if(c == nullptr) {
             if(formerUrl != nullptr) {
@@ -38,13 +37,9 @@ HttpResponse _HttpClient::execute(HttpClientBaseRequest r,HttpOption option) {
 
             c = createHttpConnection(mCurrentUrl,option);
             connMgr->add(key,c);
-            printf("HttpClient execute trace1 \n");
             c->connect();
-            printf("HttpClient execute trace1_1 \n");
         }
-        printf("HttpClient execute trace1_2 \n");
         response = c->execute(r);
-        printf("HttpClient execute trace2 \n");
         if(response == nullptr && errno == EPIPE) {
             continue;
         }

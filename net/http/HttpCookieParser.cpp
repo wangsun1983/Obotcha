@@ -36,6 +36,9 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
             // mValues->put(directive,parameter);
             // mName = directive;
             // mValue = parameter;
+            if(parameter == nullptr) {
+                parameter = createString("");
+            }
             cookies->add(createHttpCookie(directive, parameter));
         }
     });

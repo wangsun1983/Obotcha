@@ -6,7 +6,7 @@ _Http2ContinuationFrame::_Http2ContinuationFrame(HPackDecoder d,HPackEncoder e):
     encoder = e;
     decoder = d;
     type = TypeContinuation;
-    headers = createHttpHeader(st(HttpProtocol)::Http_H2);
+    headers = createHttpHeader(st(NetProtocol)::Http_H2);
 }
 
 void _Http2ContinuationFrame::import(ByteArray headerBlock) {

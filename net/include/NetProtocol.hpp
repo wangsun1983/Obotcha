@@ -1,12 +1,12 @@
-#ifndef __OBOTCHA_HTTP_PROTOCOL_HPP__
-#define __OBOTCHA_HTTP_PROTOCOL_HPP__
+#ifndef __OBOTCHA_NET_PROTOCOL_HPP__
+#define __OBOTCHA_NET_PROTOCOL_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(HttpProtocol) {
+DECLARE_CLASS(NetProtocol) {
 
 public:
     enum Type {

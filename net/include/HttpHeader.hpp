@@ -91,7 +91,7 @@
 #include "HttpHeaderServerTiming.hpp"
 #include "HttpHeaderSourceMap.hpp"
 #include "HttpHeaderDnt.hpp"
-#include "HttpProtocol.hpp"
+#include "NetProtocol.hpp"
 #include "ArrayList.hpp"
 #include "KeyValuePair.hpp"
 
@@ -352,7 +352,7 @@ public:
     };
 
     ////-------- function -------////
-    _HttpHeader(int protocol = st(HttpProtocol)::Http);
+    _HttpHeader(int protocol = st(NetProtocol)::Http);
 
     void addHttpHeader(sp<_HttpHeader>);
     

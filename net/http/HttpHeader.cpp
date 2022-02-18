@@ -2728,8 +2728,8 @@ ListIterator<KeyValuePair<String,String>> _HttpHeader::getIterator() {
     values->add(createKeyValuePair<String,String>(X,Y))
 
     //pseudo header field should set before regular
-    if(mProtocol == st(HttpProtocol)::Http_H2 
-    || mProtocol == st(HttpProtocol)::Http_H2C) {
+    if(mProtocol == st(NetProtocol)::Http_H2 
+    || mProtocol == st(NetProtocol)::Http_H2C) {
         if(mType == Type::Response) {
             //values->add(createKeyValuePair<String,String>(st(HttpHeader)::Status,createString(mResponseStatus)));
             SET_HEAD_VALUE(st(HttpHeader)::Status,createString(mResponseStatus));

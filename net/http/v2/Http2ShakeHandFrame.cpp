@@ -2,7 +2,7 @@
 #include "HttpStatus.hpp"
 #include "HttpResponse.hpp"
 #include "HttpHeaderConnection.hpp"
-#include "HttpProtocol.hpp"
+#include "NetProtocol.hpp"
 #include "HttpHeaderUpgrade.hpp"
 
 namespace obotcha {
@@ -32,12 +32,12 @@ HttpPacket _Http2ShakeHandFrame::toShakeHandPacket(int type) {
 
     HttpHeaderUpgrade upgrade = createHttpHeaderUpgrade();
     switch(type) {
-        case st(HttpProtocol)::Http_H2: {
+        case st(NetProtocol)::Http_H2: {
             upgrade->set("h2");
             break;
         }
 
-        case st(HttpProtocol)::Http_H2C:
+        case st(NetProtocol)::Http_H2C:
             upgrade->set("h2c");
         break;
     }

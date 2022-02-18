@@ -6,7 +6,7 @@ _HttpServerBuilder::_HttpServerBuilder() {
     mAddress = createInetAddress();
     mOption = nullptr;
     mListener = nullptr;
-    mProtocol = st(HttpProtocol)::Http;
+    mProtocol = st(NetProtocol)::Http;
 }
 
 _HttpServerBuilder *_HttpServerBuilder::setAddress(InetAddress addr) {

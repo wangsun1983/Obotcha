@@ -74,9 +74,14 @@ int _HttpHeaderContentParser::import(String value,String skip,const _ParseResult
                     int parameterStart = pos;
                     pos = st(HttpHeaderContentParser)::skipUntil(
                         value, pos, skip/*createString(",;")*/);
-                    parameter =
-                        value->subString(parameterStart, (pos - parameterStart))
-                            ->trim();
+                    
+                    if((pos - parameterStart) == 0) {
+                        parameter = createString("");
+                    } else {
+                        parameter =
+                            value->subString(parameterStart, (pos - parameterStart))
+                                ->trim();
+                    }
                     pos++;
                 }
             }

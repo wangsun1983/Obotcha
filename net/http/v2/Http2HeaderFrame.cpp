@@ -79,7 +79,7 @@ void _Http2HeaderFrame::import(ByteArray data) {
     
     ByteArray headerBlock = createByteArray(datasize);
     reader->readByteArray(headerBlock);
-    HttpHeader h = createHttpHeader(st(HttpProtocol)::Http_H2);
+    HttpHeader h = createHttpHeader(st(NetProtocol)::Http_H2);
 
     decoder->decode(this->streamid,headerBlock,h,true);
     if(headers == nullptr) {

@@ -5,7 +5,7 @@
 
 #include "Http2SettingFrame.hpp"
 #include "HttpPacketWriterImpl.hpp"
-#include "HttpProtocol.hpp"
+#include "NetProtocol.hpp"
 #include "Http2DataFrame.hpp"
 
 namespace obotcha {
@@ -67,7 +67,7 @@ ArrayList<HttpPacket> _Http2StreamController::doParse() {
 
                     HttpPacketWriterImpl impl = createHttpPacketWriterImpl(out);
                     auto shakeHande = createHttp2ShakeHandFrame();
-                    int ret = impl->write(shakeHande->toShakeHandPacket(st(HttpProtocol)::Http_H2));
+                    int ret = impl->write(shakeHande->toShakeHandPacket(st(NetProtocol)::Http_H2));
                     data->dump("Http2StreamController http settings!!!");
                     //response get method
                     mStatus = Preface;

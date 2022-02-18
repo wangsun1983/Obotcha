@@ -1,22 +1,22 @@
 #include "HttpOption.hpp"
-#include "HttpProtocol.hpp"
+#include "NetProtocol.hpp"
 
 namespace obotcha {
 
 _HttpOption::_HttpOption() {
     mKey = nullptr;
     mCretificate = nullptr;
-    mProtocol = st(HttpProtocol)::Http;
+    mProtocol = st(NetProtocol)::Http;
 }
 
 _HttpOption *_HttpOption::setOpenSSLCertificate(String v) {
-    mProtocol = st(HttpProtocol)::Https;
+    mProtocol = st(NetProtocol)::Https;
     mCretificate = v;
     return this;
 }
 
 _HttpOption *_HttpOption::setOpenSSLKey(String v) {
-    mProtocol = st(HttpProtocol)::Https;
+    mProtocol = st(NetProtocol)::Https;
     mKey = v;
     return this;
 }
