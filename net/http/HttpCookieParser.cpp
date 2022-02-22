@@ -12,7 +12,10 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
     HttpDate mPropertyExpires = nullptr;
     int mPropertyMaxAge = -1;
     ArrayList<HttpCookie> cookies = createArrayList<HttpCookie>();
-    st(HttpHeaderContentParser)::import(value,createString("=;"),[&](String directive,String parameter) {
+    st(HttpHeaderContentParser)::import(value,
+                                        createString("=;"), /*skip directive*/
+                                        createString(";"),  /*skip paramter*/
+        [&](String directive,String parameter) {
         if (st(HttpCookie)::COOKIE_PROPERTY_SECURE->equalsIgnoreCase(
                 directive)) {
             mPropertySecure = true;

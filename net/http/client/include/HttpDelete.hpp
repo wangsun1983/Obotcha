@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_HTTP_PUT_HPP__
-#define __OBOTCHA_HTTP_PUT_HPP__
+#ifndef __OBOTCHA_HTTP_DELETE_HPP__
+#define __OBOTCHA_HTTP_DELETE_HPP__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -9,9 +9,9 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(HttpPut) IMPLEMENTS(HttpClientBaseRequest){
+DECLARE_CLASS(HttpDelete) IMPLEMENTS(HttpClientBaseRequest){
 public:
-    _HttpPut(String);
+    _HttpDelete(String);
 
     String getMethodName();
 

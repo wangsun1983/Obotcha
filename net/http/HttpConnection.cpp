@@ -47,7 +47,7 @@ int _HttpConnection::connect() {
         inetAddr->setAddress(address->get(0)->getAddress());
     }
     printf("HttpConnection,scheme is %d,inetAddr is %s \n",mUrl->getScheme(),inetAddr->getAddress()->toChars());
-    if(mUrl->getScheme() == st(HttpUrl)::Http) {
+    if(mUrl->getScheme() == st(NetProtocol)::Http) {
         mSocket = createSocketBuilder()
                     ->setAddress(inetAddr)
                     ->setOption(mOption)

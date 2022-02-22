@@ -17,6 +17,8 @@ public:
         Http_H2C
     };
     
+    static const int DefaultHttpPort = 80;
+    static const int DefaultHttpsPort = 443;
 };
 
 }

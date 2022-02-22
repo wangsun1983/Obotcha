@@ -18,6 +18,7 @@ public:
     int readByte();
     int readInt();
     long readLong();
+    uint64_t readUint64();
     uint32_t readUint32();
     uint16_t readUint16();
     String readLine();

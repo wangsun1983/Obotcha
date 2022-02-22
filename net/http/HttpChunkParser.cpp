@@ -44,7 +44,6 @@ bool _HttpChunkParser::isLineEnd(byte &v) {
 }
 
 ByteArray _HttpChunkParser::doParse() {
-    printf("HttpChunkParser doParse start \n");
     static byte *CRLF = (byte *)st(HttpText)::CRLF->toChars();
     byte v = 0;
 
@@ -59,7 +58,6 @@ ByteArray _HttpChunkParser::doParse() {
                     }
 
                     chunklength = chunklength->subString(0, chunklength->size() - 2);
-                    printf("chunklength is %s \n",chunklength->toChars());
                     mChunkSize = chunklength->toHexInt()->toValue();
                     if (mChunkSize == 0) {
                         return mBuff;

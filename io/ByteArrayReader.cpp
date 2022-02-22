@@ -44,6 +44,12 @@ long _ByteArrayReader::readLong() {
     return value;
 }
 
+uint64_t _ByteArrayReader::readUint64() {
+    uint64_t value = 0;
+    _read(value);
+    return value;
+}
+
 uint32_t _ByteArrayReader::readUint32() {
     uint32_t value = 0;
     _read(value);

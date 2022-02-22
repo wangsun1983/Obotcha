@@ -20,7 +20,7 @@ DECLARE_CLASS(HttpHeaderContentParser) {
     static int skipWhitespace(String input, int pos);
     static int parseSeconds(String value, int defaultValue);
     static int import(String content,const _ParseResult &);
-    static int import(String content,String skip,const _ParseResult &);
+    static int import(String content,String skipdirective,String skieparam,const _ParseResult &);
 };
 
 } // namespace obotcha

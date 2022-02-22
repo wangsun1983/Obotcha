@@ -6,8 +6,7 @@ namespace obotcha {
 // const String _HttpText::DoubleLineEnd = createString("\r\n\r\n");
 const String _HttpText::HttpEnd = createString("\r\n\r\n");
 const String _HttpText::Boundary = createString("boundary");
-const String _HttpText::BoundarySeperator =
-    createString("--------------------------");
+const String _HttpText::BoundarySeperator = createString("--------------------------");
 const String _HttpText::BoundaryBeginning = createString("--");
 const String _HttpText::MultiPartFileName = createString("filename");
 const String _HttpText::MultiPartName = createString("name");

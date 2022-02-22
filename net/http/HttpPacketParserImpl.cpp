@@ -233,7 +233,6 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         continue;
                     } else {
                         int length = mReader->getReadableLength();
-                        printf("i get length is %d \n");
                         if(length != 0) {
                             mReader->move(length);
                             ByteArray content = mReader->pop();

@@ -6,12 +6,15 @@
 #include "HttpConnection.hpp"
 #include "HttpUrl.hpp"
 #include "String.hpp"
+#include "NetProtocol.hpp"
 
 namespace obotcha {
 
 _HttpUrl::_HttpUrl() {
-    mPort = 80;
-    mScheme = SchemaType::Http;
+    //mPort = st(NetProtocol)::DefaultHttpPort;
+    //mScheme = st(NetProtocol)::Http;
+    mPort = -1;
+    mScheme = -1;
     mHostName = nullptr;
     mPath = nullptr;
     mFragment = nullptr;
@@ -135,18 +138,18 @@ void _HttpUrl::import(String input) {
     if (schemeOffset != -1) {
         if (input->regionMatches(pos, "https:", 0, 6)) {
             //mScheme = createString("https");
-            mScheme = SchemaType::Https;
-            mPort = 443;
+            mScheme = st(NetProtocol)::Https;
+            mPort = st(NetProtocol)::DefaultHttpsPort;
             pos += createString("https:")->size();
         } else if (input->regionMatches(pos, "http:", 0, 5)) {
             //mScheme = createString("http");
-            mScheme = SchemaType::Http;
-            mPort = 80;
+            mScheme = st(NetProtocol)::Http;
+            mPort = st(NetProtocol)::DefaultHttpPort;
             pos += createString("http:")->size();
         } else if (input->regionMatches(pos, "ws:", 0, 3)) {
             //mScheme = createString("ws");
-            mScheme = SchemaType::Ws;
-            mPort = 80;
+            mScheme = st(NetProtocol)::Ws;
+            mPort = st(NetProtocol)::DefaultHttpPort;
             pos += createString("ws:")->size();
         }
     }
@@ -330,18 +333,28 @@ String _HttpUrl::getFragment() {
 
 String _HttpUrl::toString() {
     String url = createString("");
+    String portStr = nullptr;
 
     switch(mScheme) {
-        case SchemaType::Http:
+        case st(NetProtocol)::Http:
             url = url->append(createString("http"))->append("://");
+            if(mPort != st(NetProtocol)::DefaultHttpPort) {
+                portStr = createString(":")->append(createString(mPort));
+            }
         break;
 
-        case SchemaType::Https:
+        case st(NetProtocol)::Https:
             url = url->append(createString("https"))->append("://");
+            if(mPort != st(NetProtocol)::DefaultHttpsPort) {
+                portStr = createString(":")->append(createString(mPort));
+            }
         break;
 
-        case SchemaType::Ws:
+        case st(NetProtocol)::Ws:
             url = url->append(createString("ws"))->append("://");
+            if(mPort != st(NetProtocol)::DefaultHttpPort) {
+                portStr = createString(":")->append(createString(mPort));
+            }
         break;
     }
 
@@ -358,11 +371,12 @@ String _HttpUrl::toString() {
         url = url->append(mHostName);
     }
     
-    if (mPort != -1) {
-        url = url->append(":")->append(createString(mPort));
+    //if (mPort != -1) {
+    if(portStr != nullptr) {
+        url = url->append(portStr);
     }
 
-    if (mPath != nullptr) {
+    if(mPath != nullptr) {
         url = url->append("/")->append(mPath);
     }
 

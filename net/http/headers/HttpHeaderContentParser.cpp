@@ -39,16 +39,16 @@ int _HttpHeaderContentParser::parseSeconds(String value, int defaultValue) {
 }
 
 int _HttpHeaderContentParser::import(String content,const _ParseResult &func) {
-    return import(content,createString("=,;"),func);
+    return import(content,createString("=,;"),createString(",;"),func);
 }
 
-int _HttpHeaderContentParser::import(String value,String skip,const _ParseResult &callback) {
+int _HttpHeaderContentParser::import(String value,String skipDirective,String skipParam,const _ParseResult &callback) {
     if (value != nullptr) {
         int pos = 0;
         while (pos < value->size()) {
             int tokenStart = pos;
             pos = st(HttpHeaderContentParser)::skipUntil(value, pos,
-                                                         skip/*createString("=,;")*/);
+                                                         skipDirective/*createString("=,;")*/);
             String directive =
                 value->subString(tokenStart, pos - tokenStart)->trim();
             String parameter = nullptr;
@@ -73,7 +73,7 @@ int _HttpHeaderContentParser::import(String value,String skip,const _ParseResult
                 } else {
                     int parameterStart = pos;
                     pos = st(HttpHeaderContentParser)::skipUntil(
-                        value, pos, skip/*createString(",;")*/);
+                        value, pos, skipParam/*createString(",;")*/);
                     
                     if((pos - parameterStart) == 0) {
                         parameter = createString("");

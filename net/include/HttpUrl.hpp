@@ -21,12 +21,6 @@ public:
     _HttpUrl(String);
 
     void import(String);
-    enum SchemaType {
-        Http = 0,
-        Https,
-        Ws,
-    };
-
     void setScheme(int);
     void setHost(String);
     void setPort(int);
@@ -55,6 +49,7 @@ public:
 
     void dump();
     
+
 private:
     int skipLeadingAsciiWhitespace(String input, int pos, int limit);
     int skipTrailingAsciiWhitespace(String input, int pos, int limit);

@@ -3,11 +3,20 @@
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "HttpRequest.hpp"
+#include "URL.hpp"
+#include "HttpClientBaseRequest.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(HttpPost) {
+DECLARE_CLASS(HttpPost) IMPLEMENTS(HttpClientBaseRequest){
+public:
+    _HttpPost(String);
 
+    String getMethodName();
+
+private:
+    HttpUrl mUrl;
 };
 
 }
