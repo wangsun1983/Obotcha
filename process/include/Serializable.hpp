@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_ORPC_SERIALIZABLE_H__
-#define __OBOTCHA_ORPC_SERIALIZABLE_H__
+#ifndef __OBOTCHA_SERIALIZABLE_H__
+#define __OBOTCHA_SERIALIZABLE_H__
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -10,15 +10,20 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(OrpcSerializable) {
+DECLARE_CLASS(Serializable) {
 
 public:
     ByteArray toByteArray();
     
     void import(ByteArray);
 
+    int calculateSize();
+
 private:
-    int caculateSize();
+
+    ByteArray toByteArray(Object obj);
+
+    void import(Object,ByteArray);
 };
 
 }

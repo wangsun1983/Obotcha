@@ -6,7 +6,7 @@ objs += $(outtmp)/pipe.o \
 		$(outtmp)/posixsem.o \
 		$(outtmp)/posixsharememory.o \
 		$(outtmp)/systemsignalhandler.o \
-		$(outtmp)/orpcserializable.o \
+		$(outtmp)/serializable.o \
 
 
 $(outtmp)/pipe.o :$(processDir)/Pipe.cpp
@@ -30,5 +30,5 @@ $(outtmp)/posixsharememory.o :$(processDir)/PosixShareMemory.cpp
 $(outtmp)/systemsignalhandler.o :$(processDir)/SystemSignalHandler.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/SystemSignalHandler.cpp -o $(outtmp)/systemsignalhandler.o
 
-$(outtmp)/orpcserializable.o :$(processDir)/OrpcSerializable.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(processDir)/OrpcSerializable.cpp -o $(outtmp)/orpcserializable.o
+$(outtmp)/serializable.o :$(processDir)/Serializable.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(processDir)/Serializable.cpp -o $(outtmp)/serializable.o
