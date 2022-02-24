@@ -13,17 +13,17 @@ namespace obotcha {
 DECLARE_CLASS(Serializable) {
 
 public:
-    ByteArray toByteArray();
+    ByteArray serialize();
     
-    void import(ByteArray);
+    void deserialize(ByteArray);
 
     int calculateSize();
 
 private:
 
-    ByteArray toByteArray(Object obj);
+    ByteArray serialize(Object obj);
 
-    void import(Object,ByteArray);
+    void deserialize(Object,ByteArray);
 };
 
 }

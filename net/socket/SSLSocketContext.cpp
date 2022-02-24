@@ -25,7 +25,9 @@ _SSLSocketContext::_SSLSocketContext(int type) {
     if (mCtx == NULL) {
         throw InitializeException("SSL Create error");
     }
-    
+}
+
+void _SSLSocketContext::initSSL() {
     mSSL = SSL_new(mCtx);
 }
 

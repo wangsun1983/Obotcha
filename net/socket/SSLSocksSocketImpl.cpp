@@ -42,9 +42,11 @@ void _SSLSocksSocketImpl::init(String certificatePath,String keyPath) {
         if (!SSL_CTX_check_private_key(mContext->getCtx())) {
             throw InitializeException("SSL private key check error");
         }
+        mContext->initSSL();
     } else {
         printf("SSLSocksSocketImpl init trace2 \n");
         mContext = createSSLSocketContext(st(SSLSocketContext)::CLIENT);
+        mContext->initSSL();
     }
     printf("SSLSocksSocketImpl init trace3,fd is %d \n",mSocket->getFileDescriptor()->getFd());
     if(!SSL_set_fd(mContext->getSSL(),mSocket->getFileDescriptor()->getFd())) {
@@ -88,14 +90,14 @@ int _SSLSocksSocketImpl::write(ByteArray buff,int start,int length) {
 }
 
 int _SSLSocksSocketImpl::read(ByteArray buff,int start,int length) {
-    printf("SSLSocksSocketImpl read a start \n");
+    printf("SSLSocksSocketImpl read a start,buff size is %d,start is %d,length is %d \n",buff->size(),start,length);
     int size = (length == -1?buff->size() - start:length);
     
     if(start + size > buff->size()) {
         //TODO
         return -1;
     }
-
+    printf("SSLSocksSocketImpl read a trace,size is %d \n",size);
     return SSL_read(mContext->getSSL(),buff->toValue() + start,size);
 }
 

@@ -14,6 +14,8 @@ namespace obotcha {
 DECLARE_CLASS(SSLSocketContext) {
 public:
     _SSLSocketContext(int);
+    void initSSL();
+    
     SSL *getSSL();
     SSL_CTX *getCtx();
     ~_SSLSocketContext();

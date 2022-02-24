@@ -20,6 +20,12 @@
 
 namespace obotcha {
 
+const int _ByteArray::DefaultSize = 32;
+
+_ByteArray::_ByteArray():_ByteArray(DefaultSize) {
+
+};
+
 /**
  * @brief ByteArray construct function
  * @param b copy value

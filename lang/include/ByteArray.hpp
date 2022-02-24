@@ -18,6 +18,8 @@ public:
         unsafe,
     };
 
+    explicit _ByteArray();
+
     explicit _ByteArray(int length);
 
     explicit _ByteArray(const byte *data, uint32_t len,bool mapped = false);
@@ -101,6 +103,8 @@ public:
 
     void setPriorityWeight(int);
     int getPriorityWeight();
+
+    static const int DefaultSize;
 
 private:
     byte *buff;
