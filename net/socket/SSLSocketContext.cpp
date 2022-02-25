@@ -4,6 +4,9 @@
 namespace obotcha {
 
 _SSLSocketContext::_SSLSocketContext(int type) {
+    mSSL = nullptr;
+    mCtx = nullptr;
+    
     /* int ssl  */
     SSL_library_init();
     /* load SSL algorithms */
@@ -43,6 +46,7 @@ _SSLSocketContext::~_SSLSocketContext() {
     if(mSSL != nullptr) {
         SSL_shutdown (mSSL);
         SSL_free (mSSL);
+        mSSL = nullptr;
     }
 
     if (mCtx != nullptr) {

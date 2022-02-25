@@ -11,13 +11,13 @@
 #include "Mutex.hpp"
 #include "Pipe.hpp"
 #include "String.hpp"
+#include "CRLFDetector.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(HttpChunkParser) {
   public:
     _HttpChunkParser(ByteRingArrayReader);
-
     ByteArray doParse();
 
   private:
@@ -30,13 +30,10 @@ DECLARE_CLASS(HttpChunkParser) {
 
     int mChunkSize;
     int mStatus;
-    int mCRLFIndex;
 
-    ByteArray mBuff;
-
+    ByteArray currentBuff;
     ByteRingArrayReader mReader;
-
-    bool isLineEnd(byte &v);
+    CRLFDetector endDetector;
 };
 
 } // namespace obotcha

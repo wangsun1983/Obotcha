@@ -3,6 +3,7 @@ httpDir = $(netDir)/http
 include $(httpDir)/client/makefile
 
 objs += $(outtmp)/httpchunkparser.o \
+		$(outtmp)/crlfdector.o \
 		$(outtmp)/httpoption.o \
 		$(outtmp)/httpurl.o \
 		$(outtmp)/httpstatus.o \
@@ -152,6 +153,9 @@ objs += $(outtmp)/httpchunkparser.o \
 
 $(outtmp)/httpchunkparser.o :$(httpDir)/HttpChunkParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpChunkParser.cpp -o $(outtmp)/httpchunkparser.o 
+
+$(outtmp)/crlfdector.o :$(httpDir)/CRLFDetector.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/CRLFDetector.cpp -o $(outtmp)/crlfdector.o 
 
 $(outtmp)/httpurlencodedvalue.o :$(httpDir)/HttpUrlEncodedValue.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpUrlEncodedValue.cpp -o $(outtmp)/httpurlencodedvalue.o 

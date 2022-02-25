@@ -26,8 +26,11 @@ public:
     String getUpgradeContent();
     void setUpgradeContent(String);
 
-    File getChunkFile();
-    void setChunkFile(File);
+    //File getChunkFile();
+    //void setChunkFile(File);
+
+    //ArrayList<ByteArray> getChunks();
+    //void setChunks(ArrayList<ByteArray>);
 
 private:
     HttpMultiPart mMultiPart;
@@ -38,7 +41,8 @@ private:
 
     String mUpgrade;
 
-    File mChunkFile;
+    //File mChunkFile;
+    //ArrayList<ByteArray> mChunks;
 
 };
 

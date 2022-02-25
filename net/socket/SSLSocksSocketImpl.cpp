@@ -90,19 +90,16 @@ int _SSLSocksSocketImpl::write(ByteArray buff,int start,int length) {
 }
 
 int _SSLSocksSocketImpl::read(ByteArray buff,int start,int length) {
-    printf("SSLSocksSocketImpl read a start,buff size is %d,start is %d,length is %d \n",buff->size(),start,length);
     int size = (length == -1?buff->size() - start:length);
     
     if(start + size > buff->size()) {
         //TODO
         return -1;
     }
-    printf("SSLSocksSocketImpl read a trace,size is %d \n",size);
     return SSL_read(mContext->getSSL(),buff->toValue() + start,size);
 }
 
 ByteArray _SSLSocksSocketImpl::read() {
-    printf("SSLSocksSocketImpl read b start \n");
     ByteArray buff = createByteArray(1024*16);
     int size = SSL_read(mContext->getSSL(), buff->toValue(), 1024*16);
     buff->quickShrink(size);

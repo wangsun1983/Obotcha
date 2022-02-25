@@ -87,6 +87,16 @@ public:
         return val;
     }
 
+    inline bool contains(T t) {
+        for (T &value : elements) {
+            if(value->equals(t)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     inline int remove(const T &val) {
         typename std::vector<T>::iterator result =
             find(elements.begin(), elements.end(), val);

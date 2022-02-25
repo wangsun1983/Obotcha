@@ -113,9 +113,9 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                 printf("PacketParserImpl doParse BodyStart trace1\n");
                 if (isTransferChuncked) {
                     printf("PacketParserImpl doParse BodyStart2\n");
-                    if (mChunkParser == nullptr) {
-                        mChunkParser = createHttpChunkParser(mReader);
-                    }
+                    //if (mChunkParser == nullptr) {
+                    //    mChunkParser = createHttpChunkParser(mReader);
+                    //}
 
                     ByteArray data = mChunkParser->doParse();
                     if (data != nullptr) {

@@ -28,6 +28,7 @@ _SSLServerSocketImpl::_SSLServerSocketImpl(String certificatePath,
         throw InitializeException("SSL private key check error");
     }
 
+    mSSLContext->initSSL();
     mSocket = createServerSocketImpl(address,option);
 }
 

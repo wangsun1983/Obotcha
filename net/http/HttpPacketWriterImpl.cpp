@@ -59,11 +59,12 @@ void _HttpPacketWriterImpl::_updateHttpHeader(HttpPacket packet) {
         }
 
         case st(HttpPacket)::Response: {
-            if(packet->getEntity()->getChunkFile() != nullptr) {
-                header->set(st(HttpHeader)::TransferEncoding,
-                    st(HttpHeader)::TransferChunked);
-                return;
-            }
+            //ArrayList<ByteArray> chunks = packet->getEntity()->getChunks();
+            //if(chunks != nullptr && chunks->size() != 0) {
+            //    header->set(st(HttpHeader)::TransferEncoding,
+            //        st(HttpHeader)::TransferChunked);
+            //    return;
+            //}
             break;
         }
     }
@@ -191,38 +192,30 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
 }
 
 int _HttpPacketWriterImpl::_flushResponse(HttpPacket packet,bool send) {
-    File file = packet->getEntity()->getChunkFile();
-    if (file != nullptr) {
-        FileInputStream stream = createFileInputStream(file);
-        stream->open();
-        long filesize = file->length();
-        ByteArray readBuff = createByteArray(mDefaultSize);
-        while (filesize != 0) {
-            int readlength = mDefaultSize;
-            if(filesize < mDefaultSize) {
-                readlength = filesize;
-            }
+    //File file = packet->getEntity()->getChunkFile();
+    //ArrayList<ByteArray> chunks = packet->getEntity()->getChunks();
+    HttpHeader header = packet->getHeader();
+    auto encodings = header->getTransferEncoding();
 
-            int len = stream->read(readBuff);
-            String chunkLength = createInteger(len)
+    if (encodings->get()->contains("chunked")) {
+        int contentSize = packet->getEntity()->getContent()->size();
+        ByteArray content = packet->getEntity()->getContent();
+        int start = 0;
+        while (contentSize > 0) {
+            int chunksize = (contentSize > mDefaultSize)?mDefaultSize:contentSize;
+            String chunkLength = createInteger(chunksize)
                                 ->toHexString()
                                 ->append(st(HttpText)::CRLF);
+            printf("chunkLength is %s \n",chunkLength->toChars());
             _write(chunkLength->toByteArray(),send);
-
-            readBuff->quickShrink(len);
-            _write(readBuff,send);
-            readBuff->quickRestore();
-            
-            filesize -= len;
-            String end = nullptr;
-            if (filesize == 0) {
-                end = st(HttpText)::CRLF->append(createString("0"),st(HttpText)::HttpEnd);
-            } else {
-                end = st(HttpText)::CRLF;
-            }
-
-            _write(end->toByteArray(),send);
+            ByteArray data = createByteArray(content,start,chunksize);
+            _write(data,send);
+            _write(st(HttpText)::CRLF->toByteArray(),send);
+            contentSize -= chunksize;
+            start += chunksize;
         }
+        String end = createString("0")->append(st(HttpText)::HttpEnd);
+        _write(end->toByteArray(),send);
     } else {
         auto content = packet->getEntity()->getContent();
         if(content != nullptr && content->size() != 0) {
