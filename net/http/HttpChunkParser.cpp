@@ -5,8 +5,12 @@
 namespace obotcha {
 
 /**
- * [chunk size][\r\n][chunk data][\r\n][chunk size][\r\n][chunk data][\r\n]
- * [chunk size = 0][\r\n][\r\n]
+ * [chunk size][\r\n]
+ * [chunk data][\r\n]
+ * [chunk size][\r\n]
+ * [chunk data][\r\n]
+ * [chunk size = 0][\r\n]
+ * [\r\n]
  * */
 _HttpChunkParser::_HttpChunkParser(ByteRingArrayReader r) {
     mChunkSize = -1;

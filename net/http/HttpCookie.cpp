@@ -108,8 +108,6 @@ String _HttpCookie::toString(int type) {
 String _HttpCookie::genHttpResponseCookie() {
     // name
     String content = createString(mName)->append("=", mValue, ";");
-    //    iterator->next();
-    //}
 
     if (mPropertyHttpOnly) {
         content = content->append(COOKIE_PROPERTY_HTTPONLY, ";");
@@ -120,17 +118,16 @@ String _HttpCookie::genHttpResponseCookie() {
     }
 
     if (mPropertyDomain != nullptr) {
-        content =
-            content->append(COOKIE_PROPERTY_DOMAIN, "=", mPropertyDomain, ";");
+        content = content->append(COOKIE_PROPERTY_DOMAIN, "=", mPropertyDomain, ";");
     }
 
     if (mPropertyPath != nullptr) {
-        content =
-            content->append(COOKIE_PROPERTY_PATH, "=", mPropertyPath, ";");
+        content = content->append(COOKIE_PROPERTY_PATH, "=", mPropertyPath, ";");
     }
 
     if (mPropertyMaxAge != -1) {
-        content = content->append(COOKIE_PROPERTY_MAX_AGE, "=",
+        content = content->append(COOKIE_PROPERTY_MAX_AGE, 
+                                  "=",
                                   createString(mPropertyMaxAge), ";");
     }
 
@@ -138,15 +135,11 @@ String _HttpCookie::genHttpResponseCookie() {
         content = content->append(COOKIE_PROPERTY_EXPIRES, "=", mPropertyExpires->toString(), ";");
     }
 
-    content = content->subString(0,content->size() - 1);
-    return content;
+    return content->subString(0,content->size() - 1);
 }
 
 String _HttpCookie::genHttpRequestCookie() {
-    String content = createString("Cookie: ");
-    content = content->append(mName, "=", mValue,
-                              ";"); // TODO:Cookie: name=value; name2=value2
-    return content;
+    return mName->append("=", mValue,";"); // TODO:Cookie: name=value; name2=value2
 }
 
 } // namespace obotcha

@@ -28,7 +28,7 @@ public:
     Http2Stream newStream(uint32_t);
     Http2Stream getStream(uint32_t);
     
-    int pushHttpData(ByteArray);
+    int pushData(ByteArray);
     ArrayList<HttpPacket> doParse();
     HttpPacket parseEntireRequest(ByteArray request);
     void reset();

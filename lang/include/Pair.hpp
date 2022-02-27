@@ -6,16 +6,20 @@
 
 namespace obotcha {
 
-DECLARE_TEMPLATE_CLASS(KeyValuePair, 2) {
+DECLARE_TEMPLATE_CLASS(Pair, 2) {
 public:
-    _KeyValuePair(T key, U value) {
+    _Pair(T key, U value) {
         mkey = key;
         mvalue = value;
     }
 
-    T getKey() { return mkey; }
+    T getKey() { 
+        return mkey; 
+    }
 
-    U getValue() { return mvalue; }
+    U getValue() { 
+        return mvalue; 
+    }
 
 private:
     T mkey;

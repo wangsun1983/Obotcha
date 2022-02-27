@@ -2,6 +2,7 @@
 #include "HttpHeaderContentParser.hpp"
 #include "Math.hpp"
 #include "StringBuffer.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -16,7 +17,14 @@ _HttpHeaderContentDisposition::_HttpHeaderContentDisposition(String s) {
 void _HttpHeaderContentDisposition::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
         if(parameter == nullptr) {
-            type = directive;
+            //type = directive;
+            if(directive->equalsIgnoreCase("inline")) {
+                type = Inline;
+            } else if(directive->equalsIgnoreCase("attachmemt")) {
+                type = Attachment;
+            } else {
+                type = FormData;
+            }
         } else {
             if(directive->equalsIgnoreCase("name")) {
                 name = parameter;
@@ -27,25 +35,56 @@ void _HttpHeaderContentDisposition::import(String s) {
     });
 }
 
+void _HttpHeaderContentDisposition::setFileName(String filename) {
+    this->filename = filename;
+}
+
+String _HttpHeaderContentDisposition::getFileName() {
+    return filename;
+}
+
+void _HttpHeaderContentDisposition::setName(String name) {
+    this->name = name;
+}
+
+String _HttpHeaderContentDisposition::getName() {
+    return name;
+}
+
 String _HttpHeaderContentDisposition::toString() {
+    String content = nullptr;
+
+    switch(type) {
+        case Inline:
+            content = createString("inline");
+        break;
+
+        case FormData:
+            content = createString("form-data");
+        break;
+
+        case Attachment:
+            content = createString("attachment");
+        break;
+
+        default:
+            LOG(ERROR)<<"Content-Disposition toString,invalid params";
+        break;
+    }
+
     if(name == nullptr && filename == nullptr) {
-        return type;
+        return content;
     }
-    StringBuffer disposition = createStringBuffer();
-    
-    if(type != nullptr) {
-        disposition->append(type);    
-    }
-    
+
     if(name != nullptr) {
-        disposition->append("; name=\"",name,"\"");
+        content->append("; name=\"",name,"\"");
     }
 
     if(filename != nullptr) {
-        disposition->append("; filename=\"",filename,"\"");
+        content->append("; filename=\"",filename,"\"");
     }
 
-    return disposition->toString(0,disposition->size());
+    return content;
 }
 
 }

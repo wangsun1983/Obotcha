@@ -33,7 +33,6 @@ public:
     String getCharSet();
     String getBoundary();
 
-
 private:
     String mContentType;
     String mBoundary;

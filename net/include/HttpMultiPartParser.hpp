@@ -13,12 +13,13 @@
 #include "FileOutputStream.hpp"
 #include "HttpHeaderTransferEncoding.hpp"
 #include "HttpHeaderContentType.hpp"
+#include "CRLFDetector.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(HttpMultiPartParser) {
 public:
-    _HttpMultiPartParser(const String,int);
+    _HttpMultiPartParser(const String);
 
     HttpMultiPart parse(ByteRingArrayReader);
     
@@ -38,20 +39,20 @@ private:
         ParseContent,
     };
 
-    const char *CRLF;
+    //const char *CRLF;
     const char *PartEnd;
     const char *BoundaryEnd;
 
     HttpMultiPart mMultiPart;
 
     //File mFile;
-    HttpMultiPartFile mMultiPartFile;
+    //HttpMultiPartFile mMultiPartFile;
 
     FileOutputStream mFileStream;
     
-    int mContentLength;
+    //int mContentLength;
 
-    int mRecvLength;
+    //int mRecvLength;
 
     String mBoundary;
     String mBoundaryEnd;
@@ -61,19 +62,20 @@ private:
 
     //ByteRingArrayReader mReader;
 
-    HashMap<String,String> mContentDisp;
-    Enviroment mEnv;
+    //HashMap<String,String> mContentDisp;
+    //Enviroment mEnv;
 
-    int mCRLFIndex;
+    //int mCRLFIndex;
     int mBoundaryIndex;
 
     HttpHeaderContentDisposition mDisposition;
     HttpHeaderTransferEncoding mTransferEncoding;
     HttpHeaderContentType mContentType;
     
-    bool isLineEnd(byte &v);
+    //bool isLineEnd(byte &v);
+    CRLFDetector endDetector;
     int checkBoudaryIndex(byte &v);
-    void flushData(ByteArray,int);
+    void flushData(ByteArray);
 };
 
 }

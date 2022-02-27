@@ -39,4 +39,14 @@ int _HttpPacket::getType() {
     return mType;
 }
 
+bool _HttpPacket::isChunked() {
+    auto encoding = mHeader->getTransferEncoding();
+    if(encoding != nullptr) {
+        ArrayList<String> items = encoding->get();
+        return items->contains(st(HttpHeader)::TransferChunked);
+    }
+
+    return false;
+}
+
 } // namespace obotcha

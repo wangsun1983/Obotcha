@@ -20,6 +20,7 @@
 #include "NetProtocol.hpp"
 #include "HttpPacketWriter.hpp"
 #include "Http2StreamController.hpp"
+#include "InetAddress.hpp"
 
 namespace obotcha {
 
@@ -28,22 +29,24 @@ class _HttpServer;
 DECLARE_CLASS(HttpLinker){
 public:
     friend class _HttpServer;
+    friend class _HttpLinkerManager;
+    friend class _WebSocketServer;
 
     _HttpLinker(Socket,int protocol = st(NetProtocol)::Http);
 
-    int pushHttpData(ByteArray array);
+    int pushData(ByteArray array);
 
-    ArrayList<HttpPacket> pollHttpPacket();
+    ArrayList<HttpPacket> pollPacket();
 
     HttpPacketWriter getWriter();
 
-    String getClientIp();
+    InetAddress getInetAddress();
 
     void close();
 
     HttpSession getSession();
 
-    Socket getSocket();
+    //Socket getSocket();
 
     int getProtocol();
 
@@ -58,7 +61,7 @@ private:
 
     Socket mSocket;
 
-    OutputStream mSocketOutput;
+    //OutputStream mSocketOutput;
 
     HttpSession mSession;
 

@@ -104,7 +104,7 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
 
         mSocket = connection->getSocket();
 
-        mSocketMonitor->bind(connection->getSocket(),AutoClone(this));
+        mSocketMonitor->bind(mSocket,AutoClone(this));
        
         mOutputStream = mSocket->getOutputStream();
         //wangsl

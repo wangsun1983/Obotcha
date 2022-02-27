@@ -9,7 +9,7 @@
 #include "ArrayList.hpp"
 #include "Field.hpp"
 #include "HashMap.hpp"
-#include "KeyValuePair.hpp"
+#include "Pair.hpp"
 #include "ReflectUtil.hpp"
 #include "StrongPointer.hpp"
 
@@ -110,10 +110,10 @@
     void __ReflectAddListItem##MEMBER(Object v) {                              \
         return addArrayListData(MEMBER, v);                                    \
     }                                                                          \
-    KeyValuePair<Object, Object> __ReflectCreateMapMember##MEMBER() {          \
+    Pair<Object, Object> __ReflectCreateMapMember##MEMBER() {          \
         return genHashMapData(MEMBER);                                         \
     }                                                                          \
-    ArrayList<KeyValuePair<Object, Object>> __ReflectGetMapItems##MEMBER() {   \
+    ArrayList<Pair<Object, Object>> __ReflectGetMapItems##MEMBER() {   \
         return getHashMapItems(MEMBER);                                        \
     }                                                                          \
     void __ReflectAddMapItem##MEMBER(Object k, Object v) {                     \
@@ -307,9 +307,9 @@
 #define __LIA(MEMBER) std::function<void(Object)> // list add function
 
 #define __MI(MEMBER)                                                           \
-    std::function<KeyValuePair<Object, Object>()> // create map item(key,value)
+    std::function<Pair<Object, Object>()> // create map item(key,value)
 #define __MIG(MEMBER)                                                          \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> // get map items
+    std::function<ArrayList<Pair<Object, Object>>()> // get map items
 #define __MIA(MEMBER) std::function<void(Object, Object)>    // add map item
 
 #define __OBJSIZE(MEMBER) std::function<int()> // list size function
@@ -1369,9 +1369,9 @@
         &CLASS::__ReflectGetListItem##M1, this, std::placeholders::_1);        \
     std::function<int()> getContainerSize =                                    \
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
-    std::function<KeyValuePair<Object, Object>()> createMapObj =               \
+    std::function<Pair<Object, Object>()> createMapObj =               \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems =     \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems =     \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -1480,13 +1480,13 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M1, this);                \
     std::function<int()> getContainerSize2 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -1610,17 +1610,17 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M2, this);                \
     std::function<int()> getContainerSize3 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -1759,21 +1759,21 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M3, this);                \
     std::function<int()> getContainerSize4 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj4 =              \
+    std::function<Pair<Object, Object>()> createMapObj4 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M4, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems4 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems4 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M4, this);                     \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -1928,25 +1928,25 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M4, this);                \
     std::function<int()> getContainerSize5 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj4 =              \
+    std::function<Pair<Object, Object>()> createMapObj4 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M4, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems4 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems4 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M4, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj5 =              \
+    std::function<Pair<Object, Object>()> createMapObj5 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M5, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems5 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems5 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M5, this);                     \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -2114,29 +2114,29 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M5, this);                \
     std::function<int()> getContainerSize6 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M6, this);                \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj4 =              \
+    std::function<Pair<Object, Object>()> createMapObj4 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M4, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems4 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems4 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M4, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj5 =              \
+    std::function<Pair<Object, Object>()> createMapObj5 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M5, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems5 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems5 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M5, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj6 =              \
+    std::function<Pair<Object, Object>()> createMapObj6 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M6, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems6 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems6 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M6, this);                     \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -2318,33 +2318,33 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M6, this);                \
     std::function<int()> getContainerSize7 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M7, this);                \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj4 =              \
+    std::function<Pair<Object, Object>()> createMapObj4 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M4, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems4 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems4 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M4, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj5 =              \
+    std::function<Pair<Object, Object>()> createMapObj5 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M5, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems5 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems5 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M5, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj6 =              \
+    std::function<Pair<Object, Object>()> createMapObj6 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M6, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems6 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems6 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M6, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj7 =              \
+    std::function<Pair<Object, Object>()> createMapObj7 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M7, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems7 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems7 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M7, this);                     \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -2541,37 +2541,37 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M7, this);                \
     std::function<int()> getContainerSize8 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M8, this);                \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj4 =              \
+    std::function<Pair<Object, Object>()> createMapObj4 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M4, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems4 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems4 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M4, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj5 =              \
+    std::function<Pair<Object, Object>()> createMapObj5 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M5, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems5 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems5 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M5, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj6 =              \
+    std::function<Pair<Object, Object>()> createMapObj6 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M6, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems6 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems6 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M6, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj7 =              \
+    std::function<Pair<Object, Object>()> createMapObj7 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M7, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems7 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems7 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M7, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj8 =              \
+    std::function<Pair<Object, Object>()> createMapObj8 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M8, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems8 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems8 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M8, this);                     \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -2783,41 +2783,41 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M8, this);                \
     std::function<int()> getContainerSize9 =                                   \
         std::bind(&CLASS::__ReflectGetContainerSize##M9, this);                \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj4 =              \
+    std::function<Pair<Object, Object>()> createMapObj4 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M4, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems4 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems4 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M4, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj5 =              \
+    std::function<Pair<Object, Object>()> createMapObj5 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M5, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems5 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems5 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M5, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj6 =              \
+    std::function<Pair<Object, Object>()> createMapObj6 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M6, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems6 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems6 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M6, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj7 =              \
+    std::function<Pair<Object, Object>()> createMapObj7 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M7, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems7 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems7 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M7, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj8 =              \
+    std::function<Pair<Object, Object>()> createMapObj8 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M8, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems8 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems8 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M8, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj9 =              \
+    std::function<Pair<Object, Object>()> createMapObj9 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M9, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems9 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems9 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M9, this);                     \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -3045,45 +3045,45 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M9, this);                \
     std::function<int()> getContainerSize10 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M10, this);               \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj4 =              \
+    std::function<Pair<Object, Object>()> createMapObj4 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M4, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems4 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems4 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M4, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj5 =              \
+    std::function<Pair<Object, Object>()> createMapObj5 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M5, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems5 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems5 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M5, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj6 =              \
+    std::function<Pair<Object, Object>()> createMapObj6 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M6, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems6 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems6 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M6, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj7 =              \
+    std::function<Pair<Object, Object>()> createMapObj7 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M7, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems7 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems7 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M7, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj8 =              \
+    std::function<Pair<Object, Object>()> createMapObj8 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M8, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems8 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems8 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M8, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj9 =              \
+    std::function<Pair<Object, Object>()> createMapObj9 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M9, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems9 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems9 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M9, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj10 =             \
+    std::function<Pair<Object, Object>()> createMapObj10 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M10, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems10 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems10 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M10, this);                    \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -3327,49 +3327,49 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M10, this);               \
     std::function<int()> getContainerSize11 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M11, this);               \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj4 =              \
+    std::function<Pair<Object, Object>()> createMapObj4 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M4, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems4 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems4 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M4, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj5 =              \
+    std::function<Pair<Object, Object>()> createMapObj5 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M5, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems5 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems5 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M5, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj6 =              \
+    std::function<Pair<Object, Object>()> createMapObj6 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M6, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems6 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems6 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M6, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj7 =              \
+    std::function<Pair<Object, Object>()> createMapObj7 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M7, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems7 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems7 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M7, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj8 =              \
+    std::function<Pair<Object, Object>()> createMapObj8 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M8, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems8 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems8 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M8, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj9 =              \
+    std::function<Pair<Object, Object>()> createMapObj9 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M9, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems9 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems9 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M9, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj10 =             \
+    std::function<Pair<Object, Object>()> createMapObj10 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M10, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems10 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems10 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M10, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj11 =             \
+    std::function<Pair<Object, Object>()> createMapObj11 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M11, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems11 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems11 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M11, this);                    \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -3627,53 +3627,53 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M11, this);               \
     std::function<int()> getContainerSize12 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M12, this);               \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj4 =              \
+    std::function<Pair<Object, Object>()> createMapObj4 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M4, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems4 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems4 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M4, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj5 =              \
+    std::function<Pair<Object, Object>()> createMapObj5 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M5, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems5 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems5 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M5, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj6 =              \
+    std::function<Pair<Object, Object>()> createMapObj6 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M6, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems6 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems6 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M6, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj7 =              \
+    std::function<Pair<Object, Object>()> createMapObj7 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M7, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems7 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems7 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M7, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj8 =              \
+    std::function<Pair<Object, Object>()> createMapObj8 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M8, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems8 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems8 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M8, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj9 =              \
+    std::function<Pair<Object, Object>()> createMapObj9 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M9, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems9 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems9 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M9, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj10 =             \
+    std::function<Pair<Object, Object>()> createMapObj10 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M10, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems10 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems10 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M10, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj11 =             \
+    std::function<Pair<Object, Object>()> createMapObj11 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M11, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems11 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems11 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M11, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj12 =             \
+    std::function<Pair<Object, Object>()> createMapObj12 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M12, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems12 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems12 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M12, this);                    \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -3945,57 +3945,57 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M12, this);               \
     std::function<int()> getContainerSize13 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M13, this);               \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj4 =              \
+    std::function<Pair<Object, Object>()> createMapObj4 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M4, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems4 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems4 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M4, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj5 =              \
+    std::function<Pair<Object, Object>()> createMapObj5 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M5, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems5 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems5 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M5, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj6 =              \
+    std::function<Pair<Object, Object>()> createMapObj6 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M6, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems6 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems6 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M6, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj7 =              \
+    std::function<Pair<Object, Object>()> createMapObj7 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M7, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems7 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems7 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M7, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj8 =              \
+    std::function<Pair<Object, Object>()> createMapObj8 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M8, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems8 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems8 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M8, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj9 =              \
+    std::function<Pair<Object, Object>()> createMapObj9 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M9, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems9 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems9 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M9, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj10 =             \
+    std::function<Pair<Object, Object>()> createMapObj10 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M10, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems10 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems10 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M10, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj11 =             \
+    std::function<Pair<Object, Object>()> createMapObj11 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M11, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems11 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems11 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M11, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj12 =             \
+    std::function<Pair<Object, Object>()> createMapObj12 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M12, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems12 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems12 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M12, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj13 =             \
+    std::function<Pair<Object, Object>()> createMapObj13 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M13, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems13 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems13 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M13, this);                    \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -4283,61 +4283,61 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M13, this);               \
     std::function<int()> getContainerSize14 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M14, this);               \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj4 =              \
+    std::function<Pair<Object, Object>()> createMapObj4 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M4, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems4 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems4 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M4, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj5 =              \
+    std::function<Pair<Object, Object>()> createMapObj5 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M5, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems5 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems5 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M5, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj6 =              \
+    std::function<Pair<Object, Object>()> createMapObj6 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M6, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems6 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems6 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M6, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj7 =              \
+    std::function<Pair<Object, Object>()> createMapObj7 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M7, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems7 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems7 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M7, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj8 =              \
+    std::function<Pair<Object, Object>()> createMapObj8 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M8, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems8 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems8 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M8, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj9 =              \
+    std::function<Pair<Object, Object>()> createMapObj9 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M9, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems9 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems9 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M9, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj10 =             \
+    std::function<Pair<Object, Object>()> createMapObj10 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M10, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems10 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems10 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M10, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj11 =             \
+    std::function<Pair<Object, Object>()> createMapObj11 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M11, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems11 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems11 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M11, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj12 =             \
+    std::function<Pair<Object, Object>()> createMapObj12 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M12, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems12 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems12 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M12, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj13 =             \
+    std::function<Pair<Object, Object>()> createMapObj13 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M13, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems13 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems13 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M13, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj14 =             \
+    std::function<Pair<Object, Object>()> createMapObj14 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M14, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems14 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems14 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M14, this);                    \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -4641,65 +4641,65 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M14, this);               \
     std::function<int()> getContainerSize15 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M15, this);               \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj4 =              \
+    std::function<Pair<Object, Object>()> createMapObj4 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M4, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems4 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems4 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M4, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj5 =              \
+    std::function<Pair<Object, Object>()> createMapObj5 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M5, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems5 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems5 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M5, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj6 =              \
+    std::function<Pair<Object, Object>()> createMapObj6 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M6, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems6 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems6 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M6, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj7 =              \
+    std::function<Pair<Object, Object>()> createMapObj7 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M7, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems7 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems7 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M7, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj8 =              \
+    std::function<Pair<Object, Object>()> createMapObj8 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M8, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems8 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems8 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M8, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj9 =              \
+    std::function<Pair<Object, Object>()> createMapObj9 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M9, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems9 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems9 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M9, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj10 =             \
+    std::function<Pair<Object, Object>()> createMapObj10 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M10, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems10 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems10 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M10, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj11 =             \
+    std::function<Pair<Object, Object>()> createMapObj11 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M11, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems11 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems11 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M11, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj12 =             \
+    std::function<Pair<Object, Object>()> createMapObj12 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M12, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems12 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems12 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M12, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj13 =             \
+    std::function<Pair<Object, Object>()> createMapObj13 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M13, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems13 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems13 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M13, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj14 =             \
+    std::function<Pair<Object, Object>()> createMapObj14 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M14, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems14 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems14 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M14, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj15 =             \
+    std::function<Pair<Object, Object>()> createMapObj15 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M15, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems15 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems15 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M15, this);                    \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -5016,69 +5016,69 @@
         std::bind(&CLASS::__ReflectGetContainerSize##M15, this);               \
     std::function<int()> getContainerSize16 =                                  \
         std::bind(&CLASS::__ReflectGetContainerSize##M16, this);               \
-    std::function<KeyValuePair<Object, Object>()> createMapObj1 =              \
+    std::function<Pair<Object, Object>()> createMapObj1 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M1, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems1 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems1 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M1, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj2 =              \
+    std::function<Pair<Object, Object>()> createMapObj2 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M2, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems2 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems2 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M2, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj3 =              \
+    std::function<Pair<Object, Object>()> createMapObj3 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M3, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems3 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems3 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M3, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj4 =              \
+    std::function<Pair<Object, Object>()> createMapObj4 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M4, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems4 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems4 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M4, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj5 =              \
+    std::function<Pair<Object, Object>()> createMapObj5 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M5, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems5 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems5 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M5, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj6 =              \
+    std::function<Pair<Object, Object>()> createMapObj6 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M6, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems6 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems6 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M6, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj7 =              \
+    std::function<Pair<Object, Object>()> createMapObj7 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M7, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems7 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems7 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M7, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj8 =              \
+    std::function<Pair<Object, Object>()> createMapObj8 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M8, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems8 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems8 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M8, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj9 =              \
+    std::function<Pair<Object, Object>()> createMapObj9 =              \
         std::bind(&CLASS::__ReflectCreateMapMember##M9, this);                 \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems9 =    \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems9 =    \
         std::bind(&CLASS::__ReflectGetMapItems##M9, this);                     \
-    std::function<KeyValuePair<Object, Object>()> createMapObj10 =             \
+    std::function<Pair<Object, Object>()> createMapObj10 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M10, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems10 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems10 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M10, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj11 =             \
+    std::function<Pair<Object, Object>()> createMapObj11 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M11, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems11 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems11 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M11, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj12 =             \
+    std::function<Pair<Object, Object>()> createMapObj12 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M12, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems12 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems12 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M12, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj13 =             \
+    std::function<Pair<Object, Object>()> createMapObj13 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M13, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems13 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems13 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M13, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj14 =             \
+    std::function<Pair<Object, Object>()> createMapObj14 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M14, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems14 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems14 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M14, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj15 =             \
+    std::function<Pair<Object, Object>()> createMapObj15 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M15, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems15 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems15 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M15, this);                    \
-    std::function<KeyValuePair<Object, Object>()> createMapObj16 =             \
+    std::function<Pair<Object, Object>()> createMapObj16 =             \
         std::bind(&CLASS::__ReflectCreateMapMember##M16, this);                \
-    std::function<ArrayList<KeyValuePair<Object, Object>>()> getMapItems16 =   \
+    std::function<ArrayList<Pair<Object, Object>>()> getMapItems16 =   \
         std::bind(&CLASS::__ReflectGetMapItems##M16, this);                    \
     std::function<void(Object)> addListItem = std::bind(                       \
         &CLASS::__ReflectAddListItem##M1, this, std::placeholders::_1);        \
@@ -5250,8 +5250,8 @@
     int __ReflectDummy() { return 0; }                                         \
     Object __ReflectCreateDummy() { return nullptr; }                          \
     Object __ReflectListItemGetDummy(int) { return nullptr; }                  \
-    KeyValuePair<Object, Object> __createMapItemDummy() { return nullptr; }    \
-    ArrayList<KeyValuePair<Object, Object>> __getMapItemsDummy() {             \
+    Pair<Object, Object> __createMapItemDummy() { return nullptr; }    \
+    ArrayList<Pair<Object, Object>> __getMapItemsDummy() {             \
         return nullptr;                                                        \
     }                                                                          \
     void __addListItemDummy(Object) {}                                         \
@@ -5269,9 +5269,9 @@
         std::function<Object(int)> dummyligobj =                               \
             std::bind(&_##CLASS::__ReflectListItemGetDummy, this,              \
                       std::placeholders::_1);                                  \
-        std::function<KeyValuePair<Object, Object>()> dummycreateMapItem =     \
+        std::function<Pair<Object, Object>()> dummycreateMapItem =     \
             std::bind(&_##CLASS::__createMapItemDummy, this);                  \
-        std::function<ArrayList<KeyValuePair<Object, Object>>()>               \
+        std::function<ArrayList<Pair<Object, Object>>()>               \
             dummygetMapItems = std::bind(&_##CLASS::__getMapItemsDummy, this); \
         std::function<void(Object)> dummyAddListItem = std::bind(              \
             &_##CLASS::__addListItemDummy, this, std::placeholders::_1);       \
@@ -5292,14 +5292,14 @@
         return data;                                                           \
     }                                                                          \
     template <typename Q, typename P>                                          \
-    KeyValuePair<Object, Object> genHashMapData(HashMap<Q, P> map) {           \
+    Pair<Object, Object> genHashMapData(HashMap<Q, P> map) {           \
         Q key;                                                                 \
         auto keyP = genDataPoint(key);                                         \
         key.set_pointer(keyP);                                                 \
         P value;                                                               \
         auto valueP = genDataPoint(value);                                     \
         value.set_pointer(valueP);                                             \
-        return createKeyValuePair<Object, Object>(key, value);                 \
+        return createPair<Object, Object>(key, value);                 \
     }                                                                          \
     template <typename Q> Object genArrayListData(ArrayList<Q> list) {         \
         Q param;                                                               \
@@ -5307,7 +5307,7 @@
         param.set_pointer(pointer);                                            \
         return param;                                                          \
     }                                                                          \
-    template <typename Q> KeyValuePair<Object, Object> genHashMapData(Q t) {   \
+    template <typename Q> Pair<Object, Object> genHashMapData(Q t) {   \
         return nullptr;                                                        \
     }                                                                          \
     template <typename Q> Object genArrayListData(Q t) { return nullptr; }     \
@@ -5318,14 +5318,14 @@
     template <typename Q>                                                      \
     void addHashMapItem(Q t, Object key, Object value) {}                      \
     template <typename Q, typename P>                                          \
-    ArrayList<KeyValuePair<Object, Object>> getHashMapItems(                   \
+    ArrayList<Pair<Object, Object>> getHashMapItems(                   \
         HashMap<Q, P> map) {                                                   \
-        ArrayList<KeyValuePair<Object, Object>> list =                         \
-            createArrayList<KeyValuePair<Object, Object>>();                   \
+        ArrayList<Pair<Object, Object>> list =                         \
+            createArrayList<Pair<Object, Object>>();                   \
         MapIterator<Q, P> iterator = map->getIterator();                       \
         while (iterator->hasValue()) {                                         \
-            KeyValuePair<Object, Object> pair =                                \
-                createKeyValuePair<Object, Object>(iterator->getKey(),         \
+            Pair<Object, Object> pair =                                \
+                createPair<Object, Object>(iterator->getKey(),         \
                                                    iterator->getValue());      \
             list->add(pair);                                                   \
             iterator->next();                                                  \
@@ -5347,7 +5347,7 @@
         return nullptr;                                                        \
     }                                                                          \
     template <typename Q>                                                      \
-    ArrayList<KeyValuePair<Object, Object>> getHashMapItems(Q t) {             \
+    ArrayList<Pair<Object, Object>> getHashMapItems(Q t) {             \
         return nullptr;                                                        \
     }                                                                          \
     template <typename Q> int __getContainerSize(ArrayList<Q> list) {          \
@@ -5562,7 +5562,7 @@
             break;                                                             \
         }                                                                      \
     }                                                                          \
-    KeyValuePair<Object, Object> __createMapItemObject(std::string name) {     \
+    Pair<Object, Object> __createMapItemObject(std::string name) {     \
         Field f = __maps->get(createString(name));                             \
         switch (f->getId()) {                                                  \
         case 0:                                                                \
@@ -5831,7 +5831,7 @@
             break;                                                             \
         }                                                                      \
     }                                                                          \
-    ArrayList<KeyValuePair<Object, Object>> __getMapItemObjects(               \
+    ArrayList<Pair<Object, Object>> __getMapItemObjects(               \
         std::string name) {                                                    \
         Field f = __maps->get(createString(name));                             \
         switch (f->getId()) {                                                  \

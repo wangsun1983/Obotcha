@@ -10,22 +10,22 @@ namespace obotcha {
 void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
     switch (event) {
         case st(NetEvent)::Message: {
-            HttpLinker info = mLinkerManager->getLinker(r);
+            HttpLinker info = mLinkerManager->get(r);
             if (info == nullptr) {
                 LOG(ERROR) << "http linker already removed";
                 return;
             }
 
-            if (info->pushHttpData(pack) == -1) {
+            if (info->pushData(pack) == -1) {
                 // some thing may be wrong(overflow)
                 LOG(ERROR) << "push http data error";
                 mHttpListener->onHttpMessage(st(NetEvent)::InternalError, info,
                                             nullptr, nullptr);
-                mLinkerManager->removeLinker(r);
+                mLinkerManager->remove(r);
                 r->close();
                 return;
             }
-            ArrayList<HttpPacket> packets = info->pollHttpPacket();
+            ArrayList<HttpPacket> packets = info->pollPacket();
             if(packets == nullptr||packets->size() == 0) {
                 return;
             }
@@ -47,15 +47,15 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
 
         case st(NetEvent)::Connect: {
             HttpLinker info = createHttpLinker(r,mOption->getProtocol());
-            mLinkerManager->addLinker(info);
+            mLinkerManager->add(info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
             break;
         }
 
         case st(NetEvent)::Disconnect: {
-            HttpLinker info = mLinkerManager->getLinker(r);
+            HttpLinker info = mLinkerManager->get(r);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
-            mLinkerManager->removeLinker(r);
+            mLinkerManager->remove(r);
             break;
         }
     }

@@ -118,12 +118,12 @@ ByteArray _Serializable::serialize() {
             break;
 
             case st(Field)::FieldTypeHashMap: {
-                ArrayList<KeyValuePair<Object, Object>> members = f->getMapItemObjects();
+                ArrayList<Pair<Object, Object>> members = f->getMapItemObjects();
                 int count = members->size();
                 int size = 0;
                 //calculate size
                 for(int i = 0;i < count;i++) {
-                    KeyValuePair<Object,Object> pair = members->get(i);
+                    Pair<Object,Object> pair = members->get(i);
                     Serializable serialzabledKey = Cast<Serializable>(pair->getKey());
 
                     Serializable serialzabledValue = Cast<Serializable>(pair->getValue());
@@ -142,7 +142,7 @@ ByteArray _Serializable::serialize() {
 
                 writer->writeInt(size);
                 for(int i = 0;i < count;i++) {
-                    KeyValuePair<Object,Object> pair = members->get(i);
+                    Pair<Object,Object> pair = members->get(i);
                     ByteArray data = serialize(pair->getKey());
                     writer->writeByteArray(data);
                     data = serialize(pair->getValue());
@@ -373,7 +373,7 @@ void _Serializable::deserialize(ByteArray data) {
                 ByteArrayReader arrayReader = createByteArrayReader(content);
                 f->createObject();
                 while(arrayReader->getRemainSize() != 0) {
-                    KeyValuePair<Object,Object> memberObj = f->createMapItemObject();
+                    Pair<Object,Object> memberObj = f->createMapItemObject();
                     Object key = memberObj->getKey();
                     Object value = memberObj->getValue();
 
@@ -530,12 +530,12 @@ int _Serializable::calculateSize() {
             break;
 
             case st(Field)::FieldTypeHashMap: {
-                ArrayList<KeyValuePair<Object, Object>> members = f->getMapItemObjects();
+                ArrayList<Pair<Object, Object>> members = f->getMapItemObjects();
                 int count = members->size();
                 int size = 0;
                 //calculate size
                 for(int i = 0;i < count;i++) {
-                    KeyValuePair<Object,Object> pair = members->get(i);
+                    Pair<Object,Object> pair = members->get(i);
                     Serializable serialzabledKey = Cast<Serializable>(pair->getKey());
                     Serializable serialzabledValue = Cast<Serializable>(pair->getValue());
                     size += (serialzabledKey->calculateSize() + serialzabledValue->calculateSize());

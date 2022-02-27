@@ -4,7 +4,7 @@
 #include "ArrayList.hpp"
 #include "ByteArray.hpp"
 #include "HashMap.hpp"
-#include "KeyValuePair.hpp"
+#include "Pair.hpp"
 #include "Object.hpp"
 #include "String.hpp"
 #include <functional>
@@ -122,8 +122,8 @@ public:
     void addListItemObject(sp<_Object>);
 
     // hashmap
-    sp<_KeyValuePair<sp<_Object>, sp<_Object>>> createMapItemObject();
-    sp<_ArrayList<sp<_KeyValuePair<sp<_Object>, sp<_Object>>>>>
+    sp<_Pair<sp<_Object>, sp<_Object>>> createMapItemObject();
+    sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>
     getMapItemObjects();
     void addMapItemObject(sp<_Object>, sp<_Object>);
 

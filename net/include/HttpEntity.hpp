@@ -8,8 +8,9 @@
 #include "ByteArray.hpp"
 #include "HttpMultiPart.hpp"
 #include "HashMap.hpp"
-#include "KeyValuePair.hpp"
+#include "Pair.hpp"
 #include "File.hpp"
+#include "HttpChunk.hpp"
 
 namespace obotcha {
 
@@ -23,8 +24,12 @@ public:
     ByteArray getContent();
     void setContent(ByteArray);
 
-    String getUpgradeContent();
-    void setUpgradeContent(String);
+    void setChunk(ByteArray);
+    void setChunk(File);
+
+    HttpChunk getChunk();
+    //String getUpgradeContent();
+    //void setUpgradeContent(String);
 
     //File getChunkFile();
     //void setChunkFile(File);
@@ -35,11 +40,13 @@ public:
 private:
     HttpMultiPart mMultiPart;
 
-    ArrayList<KeyValuePair<String,String>>mFormUrlEncodedMap;
+    //ArrayList<Pair<String,String>>mFormUrlEncodedMap;
     
     ByteArray mContent;
 
-    String mUpgrade;
+    HttpChunk mChunk;
+
+    //String mUpgrade;
 
     //File mChunkFile;
     //ArrayList<ByteArray> mChunks;

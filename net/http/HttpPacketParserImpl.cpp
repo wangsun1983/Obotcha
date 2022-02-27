@@ -14,9 +14,9 @@ _HttpPacketParserImpl::_HttpPacketParserImpl(ByteRingArray ring) {
     mEnv = st(Enviroment)::getInstance();
     mBuff = ring;
     mReader = createByteRingArrayReader(mBuff);
-    mBodyStartCount = 0;
+    //mBodyStartCount = 0;
     mStatus = Idle;
-    mSubStatus = None;
+    // mSubStatus = None;
 }
 
 _HttpPacketParserImpl::_HttpPacketParserImpl():
@@ -27,12 +27,12 @@ _HttpPacketParserImpl::_HttpPacketParserImpl():
 void _HttpPacketParserImpl::reset() {
     mBuff->reset();
     mReader->reset();
-    mBodyStartCount = 0;
+    //mBodyStartCount = 0;
     mStatus = Idle;
-    mSubStatus = None;
+    // mSubStatus = None;
 }
 
-int _HttpPacketParserImpl::pushHttpData(ByteArray data) {
+int _HttpPacketParserImpl::pushData(ByteArray data) {
     // write data
 #ifdef DUMP_HTTP_DATE
     File dumpfile = createFile("data.dt");
@@ -54,20 +54,20 @@ int _HttpPacketParserImpl::pushHttpData(ByteArray data) {
     return 0;
 }
 
-HttpPacket _HttpPacketParserImpl::parseEntireRequest(ByteArray request) {
-    mBuff->reset();
-    mBuff->push((byte *)request->toString()->toChars(), 0, request->size());
-    ArrayList<HttpPacket> result = doParse();
-    if (result == nullptr || result->size() != 1) {
-        return nullptr;
-    }
+// HttpPacket _HttpPacketParserImpl::parseEntireRequest(ByteArray request) {
+//     mBuff->reset();
+//     mBuff->push((byte *)request->toString()->toChars(), 0, request->size());
+//     ArrayList<HttpPacket> result = doParse();
+//     if (result == nullptr || result->size() != 1) {
+//         return nullptr;
+//     }
 
-    return result->get(0);
-}
+//     return result->get(0);
+// }
 
 ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
-    printf("PacketParserImpl doParse \n");
+    //printf("PacketParserImpl doParse \n");
     while (1) {
         switch (mStatus) {
             case Idle: {
@@ -76,8 +76,10 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                     mHttpHeaderParser = createHttpHeaderParser(mReader);
                     mHttpPacket = createHttpPacket();
                 }
+                printf("PacketParserImpl doParse Idle trace1\n");
                 HttpHeader header = mHttpHeaderParser->doParse();
                 if (header == nullptr) {
+                    printf("PacketParserImpl doParse Idle trace2\n");
                     return packets;
                 }
 
@@ -86,8 +88,9 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                 } else {
                     mHttpPacket->setType(st(HttpPacket)::Request);
                 }
+
+                printf("PacketParserImpl doParse Idle trace3\n");
                 mHttpPacket->setHeader(header);
-                
                 mStatus = BodyStart;
                 continue;
             }
@@ -119,7 +122,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
 
                     ByteArray data = mChunkParser->doParse();
                     if (data != nullptr) {
-                        mHttpPacket->getEntity()->setContent(data);
+                        mHttpPacket->getEntity()->setChunk(data);
                         packets->add(mHttpPacket);
                         mHttpHeaderParser = nullptr;
                         mMultiPartParser = nullptr;
@@ -154,7 +157,8 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         if (restLength != 0) {
                             mReader->move(restLength);
                             ByteArray content = mReader->pop();
-                            mHttpPacket->getEntity()->setUpgradeContent(content->toString());
+                            //mHttpPacket->getEntity()->setUpgradeContent(content->toString());
+                            mHttpPacket->getEntity()->setContent(content);
                         }
                     } else if (((con != nullptr) && con->get()->equals("close"))||
                             mHttpPacket->getHeader()->getType() == st(HttpHeader)::Response) {
@@ -179,12 +183,14 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
 
                 if (contenttype != nullptr && 
                     contenttype->getType()->containsIgnoreCase(st(HttpMime)::MultiPartFormData)) {
+                    printf("PacketParserImpl doParse BodyStart trace2\n");
                     if (mMultiPartParser == nullptr) {
-                        mMultiPartParser = createHttpMultiPartParser(
-                            contenttype->getBoundary(), contentlength->get());
+                        mMultiPartParser = createHttpMultiPartParser(contenttype->getBoundary());
                     }
+
                     HttpMultiPart multipart = mMultiPartParser->parse(mReader);
                     if (multipart != nullptr) {
+                        printf("PacketParserImpl doParse BodyStart trace3\n");
                         mHttpPacket->getEntity()->setMultiPart(multipart);
                         packets->add(mHttpPacket);
                         mHttpHeaderParser = nullptr;
@@ -207,7 +213,8 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         }
                         // check whether it is a X-URLEncoded
                         if (mHttpPacket->getHeader()->getMethod() == st(HttpMethod)::Connect) {
-                            mHttpPacket->getEntity()->setUpgradeContent(content->toString());
+                            //mHttpPacket->getEntity()->setUpgradeContent(content->toString());
+                            mHttpPacket->getEntity()->setContent(content);
                         } else {
                             mHttpPacket->getEntity()->setContent(content);
                         }
@@ -221,7 +228,8 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                             if (resetLength > 0) {
                                 mReader->move(resetLength);
                                 ByteArray content = mReader->pop();
-                                mHttpPacket->getEntity()->setUpgradeContent(content->toString());
+                                //mHttpPacket->getEntity()->setUpgradeContent(content->toString());
+                                mHttpPacket->getEntity()->setContent(content);
                             }
                         }
 

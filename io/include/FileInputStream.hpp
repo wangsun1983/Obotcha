@@ -50,6 +50,8 @@ private:
     int fd;
 
     bool isFdImport;
+
+    int position;
 };
 
 }

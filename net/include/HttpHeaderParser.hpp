@@ -5,6 +5,7 @@
 #include "StrongPointer.hpp"
 #include "ByteRingArrayReader.hpp"
 #include "HttpHeader.hpp"
+#include "CRLFDetector.hpp"
 
 namespace obotcha {
 
@@ -21,7 +22,7 @@ public:
     };
     _HttpHeaderParser(ByteRingArrayReader);
 
-    void changeToParseHeader();
+    //void changeToParseHeader();
 
     HttpHeader doParse();
 
@@ -37,14 +38,15 @@ private:
 
     ByteRingArrayReader mReader;
     HttpHeader mHeader;
-    int mCRLFIndex;
+    //int mCRLFIndex;
     String mKey;
     String mPrevKey;
     String mValue;
 
     String mPredictValue;
 
-    bool isLineEnd(byte &v);
+    //bool isLineEnd(byte &v);
+    CRLFDetector endDetector;
     void parseRequestLine(String);
     void parseHeader(String);
 };

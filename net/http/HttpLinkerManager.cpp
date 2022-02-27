@@ -7,21 +7,21 @@ _HttpLinkerManager::_HttpLinkerManager() {
     mMutex = createMutex("http client manager");
 }
 
-HttpLinker _HttpLinkerManager::getLinker(Socket s) {
+HttpLinker _HttpLinkerManager::get(Socket s) {
     AutoLock l(mMutex);
     return mClients->get(s);
 }
 
-void _HttpLinkerManager::addLinker(sp<_HttpLinker> info) {
+void _HttpLinkerManager::add(sp<_HttpLinker> info) {
     AutoLock l(mMutex);
-    mClients->put(info->getSocket(), info);
+    mClients->put(info->mSocket, info);
 }
 
-HttpLinker _HttpLinkerManager::removeLinker(Socket s) {
+void _HttpLinkerManager::remove(sp<_HttpLinker> linker) {
     AutoLock l(mMutex);
-    HttpLinker ret = mClients->get(s);
-    mClients->remove(s);
-    return ret;
+    //HttpLinker ret = mClients->get(s);
+    //mClients->remove(s);
+    mClients->remove(linker->mSocket);
 }
 
 void _HttpLinkerManager::clear() {

@@ -2,7 +2,7 @@
 #include "StrongPointer.hpp"
 
 #include "ArrayList.hpp"
-#include "KeyValuePair.hpp"
+#include "Pair.hpp"
 #include "HttpConnection.hpp"
 #include "HttpUrl.hpp"
 #include "String.hpp"

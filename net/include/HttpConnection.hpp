@@ -31,9 +31,10 @@ class _HttpUrl;
 DECLARE_CLASS(HttpConnection) {
 
 public:
+    friend class _WebSocketClient;
     _HttpConnection(sp<_HttpUrl> url,HttpOption option = nullptr);
     
-    Socket getSocket();
+    //Socket getSocket();
     
     int connect();
 
@@ -42,6 +43,7 @@ public:
     HttpResponse execute(HttpRequest req);
 
 private:
+    Socket getSocket();
     Socket mSocket;
 
     HttpPacketWriter writer;

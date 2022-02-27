@@ -43,6 +43,12 @@ public:
         mMap->clear();
     }
 
+    ArrayList<U> entrySet() {
+        AutoLock l(mutex);
+        return mMap->entrySet();
+    }
+
+
 private:
     HashMap<T, U> mMap;
     Mutex mutex;

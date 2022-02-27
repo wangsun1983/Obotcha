@@ -26,23 +26,23 @@ namespace obotcha {
 void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
     switch (event) {
         case st(NetEvent)::Message: {
-            HttpLinker info = mLinkerManager->getLinker(r);
+            HttpLinker info = mLinkerManager->get(r);
             if (info == nullptr) {
-                LOG(ERROR) << "http linker already removed";
+                LOG(ERROR) << "http linker already removed,fail to get message";
                 return;
             }
 
-            if (info->pushHttpData(pack) == -1) {
+            if (info->pushData(pack) == -1) {
                 // some thing may be wrong(overflow)
                 LOG(ERROR) << "push http data error";
                 mHttpListener->onHttpMessage(st(NetEvent)::InternalError, info,
                                             nullptr, nullptr);
-                mLinkerManager->removeLinker(r);
+                mLinkerManager->remove(info);
                 r->close();
                 return;
             }
 
-            ArrayList<HttpPacket> packets = info->pollHttpPacket();
+            ArrayList<HttpPacket> packets = info->pollPacket();
             if (packets != nullptr && packets->size() != 0) {
                 ListIterator<HttpPacket> iterator = packets->getIterator();
                 while (iterator->hasValue()) {
@@ -51,20 +51,24 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
                     iterator->next();
                 }
             }
+            break;
         }
-        break;
 
         case st(NetEvent)::Connect: {
             HttpLinker info = createHttpLinker(r,mOption->getProtocol());
-            mLinkerManager->addLinker(info);
+            mLinkerManager->add(info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
             break;
         }
 
         case st(NetEvent)::Disconnect: {
-            HttpLinker info = mLinkerManager->getLinker(r);
+            HttpLinker info = mLinkerManager->get(r);
+            if (info == nullptr) {
+                LOG(ERROR) << "http linker already removed,fail to disconnect";
+                return;
+            }
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
-            mLinkerManager->removeLinker(r);
+            mLinkerManager->remove(r);
             break;
         }
     }
@@ -79,7 +83,7 @@ _HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option) {
     mLinkerManager = createHttpLinkerManager();
 }
 
-void _HttpServer::start() {
+int _HttpServer::start() {
     String certificate = nullptr;
     String key = nullptr;
 
@@ -105,18 +109,21 @@ void _HttpServer::start() {
     if (mServerSock->bind() < 0) {
         LOG(ERROR) << "bind socket failed,reason " << strerror(errno);
         this->close();
-        return;
+        return -NetBindFail;
     }
 
     int threadsNum = st(Enviroment)::getInstance()->getInt(
         st(Enviroment)::gHttpServerThreadsNum, 4);
     mSockMonitor = createSocketMonitor(threadsNum);
     mSockMonitor->bind(mServerSock, AutoClone(this));
+
+    return 0;
 }
 
 // interface for websocket
-void _HttpServer::deMonitor(Socket s) { 
-    mSockMonitor->remove(s); 
+void _HttpServer::remove(HttpLinker linker) { 
+    mSockMonitor->remove(linker->mSocket);
+    mLinkerManager->remove(linker);
 }
 
 void _HttpServer::close() {

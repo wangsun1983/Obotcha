@@ -5,7 +5,7 @@
 namespace obotcha {
 
 _WebSocketServerBuilder::_WebSocketServerBuilder(){
-    pairs = createArrayList<KeyValuePair<String,WebSocketListener>>();
+    pairs = createArrayList<Pair<String,WebSocketListener>>();
     threadNum = st(Enviroment)::getInstance()->getInt(st(Enviroment)::gHttpServerThreadsNum,4);
     httpoption = nullptr;
 }
@@ -21,7 +21,7 @@ _WebSocketServerBuilder* _WebSocketServerBuilder::setOption(HttpOption option) {
 }
 
 _WebSocketServerBuilder* _WebSocketServerBuilder::addListener(String path,WebSocketListener l) {
-    pairs->add(createKeyValuePair<String,WebSocketListener>(path,l));
+    pairs->add(createPair<String,WebSocketListener>(path,l));
     return this;
 }
 

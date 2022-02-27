@@ -2,10 +2,28 @@
 
 namespace obotcha {
 
-_HttpSession::_HttpSession() { data = createHashMap<String, String>(); }
+_HttpSession::_HttpSession() { 
+    sessions = createConcurrentHashMap<String, Object>(); 
+}
 
-String _HttpSession::get(String key) { return data->get(key); }
+void _HttpSession::setAttribute(String name, Object value) {
+    sessions->put(name,value);
+}
 
-void _HttpSession::set(String key, String value) { data->put(key, value); }
+Object _HttpSession::getAttribute(String name) {
+    return sessions->get(name);
+}
+
+void _HttpSession::invalidate() {
+    sessions->clear();
+}
+
+void _HttpSession::removeAttribute(String name) {
+    sessions->remove(name);
+}
+
+ArrayList<String> _HttpSession::getAttributeNames() {
+    return sessions->entrySet();
+}
 
 } // namespace obotcha

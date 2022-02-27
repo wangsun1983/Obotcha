@@ -3,7 +3,7 @@
 namespace obotcha {
 
 _HttpEntity::_HttpEntity() {
-    mFormUrlEncodedMap = createArrayList<KeyValuePair<String, String>>();
+    //mFormUrlEncodedMap = createArrayList<Pair<String, String>>();
     //mChunks != nullptr;
 }
 
@@ -23,13 +23,25 @@ void _HttpEntity::setContent(ByteArray data) {
     mContent = data; 
 }
 
-String _HttpEntity::getUpgradeContent() { 
-    return mUpgrade; 
+void _HttpEntity::setChunk(ByteArray data) {
+    mChunk = createHttpChunk(data);
 }
 
-void _HttpEntity::setUpgradeContent(String u) { 
-    mUpgrade = u; 
+void _HttpEntity::setChunk(File file) {
+    mChunk = createHttpChunk(file);
 }
+
+HttpChunk _HttpEntity::getChunk() {
+    return mChunk;
+}
+
+// String _HttpEntity::getUpgradeContent() { 
+//     return mUpgrade; 
+// }
+
+// void _HttpEntity::setUpgradeContent(String u) { 
+//     mUpgrade = u; 
+// }
 
 //File _HttpEntity::getChunkFile() { 
 //    return mChunkFile;

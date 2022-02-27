@@ -17,11 +17,11 @@ DECLARE_CLASS(WebSocketLinkerManager) {
 public:
     _WebSocketLinkerManager();
 
-    sp<_WebSocketLinker> addLinker(Socket,int version);
+    sp<_WebSocketLinker> add(Socket,int version);
 
-    sp<_WebSocketLinker> getLinker(Socket);
+    sp<_WebSocketLinker> get(Socket);
   
-    void removeLinker(sp<_WebSocketLinker>);
+    void remove(sp<_WebSocketLinker>);
 
 private:
     Mutex mMutex;

@@ -14,14 +14,29 @@ namespace obotcha {
 DECLARE_CLASS(HttpHeaderContentDisposition) {
 
 public:
+    enum Type {
+        Inline = 0,
+        Attachment,
+        FormData,
+    };
+
     _HttpHeaderContentDisposition();
     _HttpHeaderContentDisposition(String);
 
     void import(String);
-
     String toString();
-    
-    String type;
+
+    int getType();
+    int setType(int);
+
+    void setFileName(String);
+    String getFileName();
+
+    void setName(String);
+    String getName();
+
+private:    
+    int type;
     String filename;
     String name;
 };

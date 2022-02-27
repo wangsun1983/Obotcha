@@ -31,7 +31,7 @@ private:
     int threadNum;
     //WebSocketOption wsoption;
     HttpOption httpoption;
-    ArrayList<KeyValuePair<String,WebSocketListener>> pairs;
+    ArrayList<Pair<String,WebSocketListener>> pairs;
 };
 
 } // namespace obotcha

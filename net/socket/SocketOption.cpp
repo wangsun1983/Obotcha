@@ -299,7 +299,9 @@ void _SocketOption::getReusePortCbpf(struct sock_fprog *v) {
     }
 }
 
-int _SocketOption::getReusePortEbpf() { return mReusePortEbpf; }
+int _SocketOption::getReusePortEbpf() { 
+    return mReusePortEbpf; 
+}
 
 int _SocketOption::getZeroCopy() { return mZeroCopy; }
 

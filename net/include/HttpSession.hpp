@@ -5,7 +5,8 @@
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
-#include "HashMap.hpp"
+#include "ConcurrentHashMap.hpp"
+#include "ArrayList.hpp"
 
 namespace obotcha {
 
@@ -13,13 +14,18 @@ DECLARE_CLASS(HttpSession) {
 
 public:
     _HttpSession();
-    String get(String);
-    void set(String,String);
-    String operator[] (String key) {
-        return data->get(key);
+    void setAttribute(String name, Object value);
+    Object getAttribute(String name);
+    void invalidate();
+
+    void removeAttribute(String);
+    ArrayList<String> getAttributeNames();
+
+    Object operator[] (String key) {
+        return sessions->get(key);
     }
 private:
-    HashMap<String,String> data;
+    ConcurrentHashMap<String,Object> sessions;
 };
 
 }

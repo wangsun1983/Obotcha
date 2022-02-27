@@ -23,11 +23,11 @@ namespace obotcha {
 
 DECLARE_CLASS(HttpLinkerManager) {
 public:
-    void addLinker(sp<_HttpLinker>);
+    void add(sp<_HttpLinker>);
 
-    HttpLinker getLinker(Socket);
+    HttpLinker get(Socket);
 
-    HttpLinker removeLinker(Socket);
+    void remove(sp<_HttpLinker>);
     
     void clear();
 
@@ -40,7 +40,7 @@ private:
 
     HashMap<Socket,HttpLinker> mClients;
 
-    Random mRand;
+    //Random mRand;
 };
 
 

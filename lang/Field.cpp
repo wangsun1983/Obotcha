@@ -181,11 +181,11 @@ int _Field::getContainerSize() {
     return object->__getContainerSize(name->getStdString());
 }
 
-sp<_KeyValuePair<sp<_Object>, sp<_Object>>> _Field::createMapItemObject() {
+sp<_Pair<sp<_Object>, sp<_Object>>> _Field::createMapItemObject() {
     return object->__createMapItemObject(name->getStdString());
 }
 
-ArrayList<KeyValuePair<sp<_Object>, sp<_Object>>> _Field::getMapItemObjects() {
+ArrayList<Pair<sp<_Object>, sp<_Object>>> _Field::getMapItemObjects() {
     return object->__getMapItemObjects(name->getStdString());
 }
 

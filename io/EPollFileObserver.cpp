@@ -74,7 +74,6 @@ int _EPollFileObserver::removeObserver(int fd) {
 }
 
 void _EPollFileObserver::addEpollFd(int fd, uint32_t events) {
-
     struct epoll_event ev;
     memset(&ev, 0, sizeof(struct epoll_event));
     ev.data.fd = fd;

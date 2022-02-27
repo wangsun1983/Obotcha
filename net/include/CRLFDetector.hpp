@@ -14,6 +14,7 @@ public:
 
 private:
     int index;
+    static const char *CRLF;
 };
 
 }

@@ -45,6 +45,7 @@ int _HttpPacketWriterImpl::_computeContentLength(HttpPacket packet) {
 
 void _HttpPacketWriterImpl::_updateHttpHeader(HttpPacket packet) {
     HttpHeader header = packet->getHeader();
+    bool isNeedUpdateContentLength = true;
 
     switch(packet->getType()) {
         case st(HttpPacket)::Request: {
@@ -59,17 +60,27 @@ void _HttpPacketWriterImpl::_updateHttpHeader(HttpPacket packet) {
         }
 
         case st(HttpPacket)::Response: {
-            //ArrayList<ByteArray> chunks = packet->getEntity()->getChunks();
-            //if(chunks != nullptr && chunks->size() != 0) {
-            //    header->set(st(HttpHeader)::TransferEncoding,
-            //        st(HttpHeader)::TransferChunked);
-            //    return;
-            //}
+            HttpChunk chunk = packet->getEntity()->getChunk();
+            if (chunk != nullptr) {
+                auto encodings = header->getTransferEncoding();
+                if(encodings == nullptr) {
+                    encodings = createHttpHeaderTransferEncoding();
+                    header->setTransferEncoding(encodings);
+                }
+
+                if(!encodings->get()->contains(st(HttpHeader)::TransferChunked)){
+                    encodings->add(st(HttpHeader)::TransferChunked);
+                }
+
+                isNeedUpdateContentLength = false;
+            }
             break;
         }
     }
-
-    header->setContentLength(createHttpHeaderContentLength(_computeContentLength(packet)));
+    
+    if(isNeedUpdateContentLength) {
+        header->setContentLength(createHttpHeaderContentLength(_computeContentLength(packet)));
+    }
 }
 
 int _HttpPacketWriterImpl::_flush(HttpPacket packet,bool send) {
@@ -106,10 +117,10 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
 
     if (multiPart != nullptr) {
         if (multiPart->contents->size() > 0) {
-            ListIterator<KeyValuePair<String, String>> iterator =
+            ListIterator<Pair<String, String>> iterator =
                 multiPart->contents->getIterator();
             while (iterator->hasValue()) {
-                KeyValuePair<String, String> content = iterator->getValue();
+                Pair<String, String> content = iterator->getValue();
                 String v = st(HttpText)::BoundaryBeginning
                             ->append(multiPart->getBoundary(),st(HttpText)::CRLF,
                                     st(HttpHeader)::ContentDisposition,
@@ -144,7 +155,7 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
                                                     st(HttpText)::MultiPartName,
                                                     createString("="),
                                                     createString("\""),
-                                                    partFile->getKey(),
+                                                    partFile->getName(),
                                                     createString("\";"),
                                                     st(HttpText)::MultiPartFileName,
                                                     createString("=\""),
@@ -161,7 +172,7 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
                 //int index = 0;
                 int count = 1;
                 while (count > 0) {
-                    count = stream->readTo(readBuff);
+                    count = stream->read(readBuff);
                     readBuff->quickShrink(count);
                     _write(readBuff,send);
                     readBuff->quickRestore();
@@ -195,25 +206,30 @@ int _HttpPacketWriterImpl::_flushResponse(HttpPacket packet,bool send) {
     //File file = packet->getEntity()->getChunkFile();
     //ArrayList<ByteArray> chunks = packet->getEntity()->getChunks();
     HttpHeader header = packet->getHeader();
-    auto encodings = header->getTransferEncoding();
-
-    if (encodings->get()->contains("chunked")) {
-        int contentSize = packet->getEntity()->getContent()->size();
-        ByteArray content = packet->getEntity()->getContent();
+    HttpChunk chunk = packet->getEntity()->getChunk();
+    if (chunk != nullptr) {
+        HttpChunk chunk = packet->getEntity()->getChunk();
+        int contentSize = chunk->size();
+        InputStream input = chunk->getInputStream();
+        ByteArray data = createByteArray(mDefaultSize);
         int start = 0;
-        while (contentSize > 0) {
-            int chunksize = (contentSize > mDefaultSize)?mDefaultSize:contentSize;
-            String chunkLength = createInteger(chunksize)
+        while (1) {
+            long len = input->read(data);
+            if(len <= 0) {
+                break;
+            }
+
+            String chunkLength = createInteger(len)
                                 ->toHexString()
                                 ->append(st(HttpText)::CRLF);
-            printf("chunkLength is %s \n",chunkLength->toChars());
-            _write(chunkLength->toByteArray(),send);
-            ByteArray data = createByteArray(content,start,chunksize);
-            _write(data,send);
+            int rs = _write(chunkLength->toByteArray(),send);
+            data->quickShrink(len);
+            rs = _write(data,send);
+            data->quickRestore();
+
             _write(st(HttpText)::CRLF->toByteArray(),send);
-            contentSize -= chunksize;
-            start += chunksize;
         }
+
         String end = createString("0")->append(st(HttpText)::HttpEnd);
         _write(end->toByteArray(),send);
     } else {
@@ -240,12 +256,13 @@ int _HttpPacketWriterImpl::_write(ByteArray data,bool send) {
     int start = 0;
     while(length != 0) {
         int remiderSize = mWriter->getReminderSize();
+        
         if(length > remiderSize) {
             mWriter->writeByteArray(data,start,remiderSize);
             length = length - remiderSize;
             start += remiderSize;
             if(send) {
-                mStream->write(mBuff);
+                int ret = mStream->write(mBuff);
                 mWriter->reset();
             } else {
                 //TODO Log!!!
@@ -259,7 +276,7 @@ int _HttpPacketWriterImpl::_write(ByteArray data,bool send) {
 
     int index = mWriter->getIndex();
     if(index != 0 && send) {
-        mStream->write(mBuff, 0, index);
+        int ret = mStream->write(mBuff, 0, index);
         mWriter->reset();
     }
     

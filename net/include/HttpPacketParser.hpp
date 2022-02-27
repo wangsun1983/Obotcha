@@ -24,11 +24,11 @@ DECLARE_CLASS(HttpPacketParser) {
 
 public:
     
-    virtual int pushHttpData(ByteArray) = 0;
+    virtual int pushData(ByteArray) = 0;
 
     virtual ArrayList<HttpPacket> doParse() = 0;
 
-    virtual HttpPacket parseEntireRequest(ByteArray request) = 0;
+    //virtual HttpPacket parseEntireRequest(ByteArray request) = 0;
 
     virtual void reset() = 0;
 

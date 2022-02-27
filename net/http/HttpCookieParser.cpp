@@ -16,29 +16,20 @@ ArrayList<HttpCookie> _HttpCookieParser::parse(String value) {
                                         createString("=;"), /*skip directive*/
                                         createString(";"),  /*skip paramter*/
         [&](String directive,String parameter) {
-        if (st(HttpCookie)::COOKIE_PROPERTY_SECURE->equalsIgnoreCase(
-                directive)) {
+        if (st(HttpCookie)::COOKIE_PROPERTY_SECURE->equalsIgnoreCase(directive)) {
             mPropertySecure = true;
-        } else if (st(HttpCookie)::COOKIE_PROPERTY_HTTPONLY->equalsIgnoreCase(
-                       directive)) {
+        } else if (st(HttpCookie)::COOKIE_PROPERTY_HTTPONLY->equalsIgnoreCase(directive)) {
             mPropertyHttpOnly = true;
-        } else if (st(HttpCookie)::COOKIE_PROPERTY_PATH->equalsIgnoreCase(
-                       directive)) {
+        } else if (st(HttpCookie)::COOKIE_PROPERTY_PATH->equalsIgnoreCase(directive)) {
             mPropertyPath = parameter;
-        } else if (st(HttpCookie)::COOKIE_PROPERTY_DOMAIN->equalsIgnoreCase(
-                       directive)) {
+        } else if (st(HttpCookie)::COOKIE_PROPERTY_DOMAIN->equalsIgnoreCase(directive)) {
             mPropertyDomain = parameter;
-        } else if (st(HttpCookie)::COOKIE_PROPERTY_EXPIRES->equalsIgnoreCase(
-                       directive)) {
+        } else if (st(HttpCookie)::COOKIE_PROPERTY_EXPIRES->equalsIgnoreCase(directive)) {
             mPropertyExpires = createHttpDate(parameter);
-        } else if (st(HttpCookie)::COOKIE_PROPERTY_MAX_AGE->equalsIgnoreCase(
-                       directive)) {
-            mPropertyMaxAge = st(HttpHeaderContentParser)::parseSeconds(
-                parameter, st(Integer)::MAX_VALUE);
+        } else if (st(HttpCookie)::COOKIE_PROPERTY_MAX_AGE->equalsIgnoreCase(directive)) {
+            mPropertyMaxAge = st(HttpHeaderContentParser)::parseSeconds(parameter, 
+                                                                        st(Integer)::MAX_VALUE);
         } else {
-            // mValues->put(directive,parameter);
-            // mName = directive;
-            // mValue = parameter;
             if(parameter == nullptr) {
                 parameter = createString("");
             }

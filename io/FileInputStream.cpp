@@ -26,12 +26,14 @@ _FileInputStream::_FileInputStream(String path) {
     mPath = createString(path);
     this->fd = -1;
     isFdImport = false;
+    position = 0;
 }
 
 _FileInputStream::_FileInputStream(int fd) {
     mPath = nullptr;
     this->fd = fd;
     isFdImport = true;
+    position = 0;
 }
 
 ByteArray _FileInputStream::read(int size) {
@@ -42,22 +44,37 @@ ByteArray _FileInputStream::read(int size) {
     } else if (length < data->size()) {
         data->quickShrink(length);
     }
+
+    position += length;
+    seekTo(position);
+
     return data;
 }
 
-int _FileInputStream::seekTo(int index) { return lseek(fd, index, SEEK_SET); }
+int _FileInputStream::seekTo(int index) { 
+    return lseek(fd, index, SEEK_SET); 
+}
 
 long _FileInputStream::readTo(ByteArray buff, int pos, int length) {
-    int len = (length == 0) ? buff->size() : length;
-    return ::read(fd, buff->toValue() + pos, len);
+    long len = (length == 0) ? buff->size() : length;
+    len = ::read(fd, buff->toValue() + pos, len);
+    position += len;
+    seekTo(position);
+    return len;
 }
 
 long _FileInputStream::read(ByteArray data) {
-    return ::read(fd, data->toValue(), data->size());
+    long len = ::read(fd, data->toValue(), data->size());
+    position += len;
+    seekTo(position);
+    return len;
 }
 
 long _FileInputStream::read(ByteArray data, int start) {
-    return ::read(fd, &data->toValue()[start], data->size() - start);
+    long len = ::read(fd, &data->toValue()[start], data->size() - start);
+    position += len;
+    seekTo(position);
+    return len;
 }
 
 ByteArray _FileInputStream::readAll() {
@@ -82,12 +99,14 @@ void _FileInputStream::close() {
     if (fd >= 0) {
         ::close(fd);
         fd = -1;
+        position = 0;
     }
 }
 
 void _FileInputStream::reset() {
     if (fd >= 0) {
         lseek(fd, 0, SEEK_SET);
+        position = 0;
     }
 }
 

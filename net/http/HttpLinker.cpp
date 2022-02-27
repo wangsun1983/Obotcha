@@ -10,21 +10,19 @@ namespace obotcha {
 
 _HttpLinker::_HttpLinker(Socket s,int protocol) {
     mSocket = s;
-    mSocketOutput = s->getOutputStream();
     mSession = createHttpSession();
 
     switch(protocol) {
         case st(NetProtocol)::Http_H2:
         case st(NetProtocol)::Http_H2C:
             //default use httpv1 parser
-            mHttp2StreamController = createHttp2StreamController(mSocketOutput);
+            mHttp2StreamController = createHttp2StreamController(s->getOutputStream());
             mParser = mHttp2StreamController;
-
             //mWriter = createHttp2PacketWriterImpl(mHttp2StreamController);//TODO
         break;
 
         default:
-            mWriter = createHttpPacketWriterImpl(mSocketOutput);
+            mWriter = createHttpPacketWriterImpl(s->getOutputStream());
             mParser = createHttpPacketParserImpl();
     }
 
@@ -37,24 +35,25 @@ int _HttpLinker::getProtocol() {
 
 void _HttpLinker::close() {
     mSocket->close();
+    mSession->invalidate();
     mParser = nullptr;
 }
 
-String _HttpLinker::getClientIp() {
-    return mSocket->getInetAddress()->getAddress();
+InetAddress _HttpLinker::getInetAddress() {
+    return mSocket->getInetAddress();
 }
 
-int _HttpLinker::pushHttpData(ByteArray array) {
-    return mParser->pushHttpData(array);
+int _HttpLinker::pushData(ByteArray array) {
+    return mParser->pushData(array);
 }
 
-ArrayList<HttpPacket> _HttpLinker::pollHttpPacket() {
+ArrayList<HttpPacket> _HttpLinker::pollPacket() {
     return mParser->doParse();
 }
 
-Socket _HttpLinker::getSocket() { 
-    return mSocket; 
-}
+//Socket _HttpLinker::getSocket() { 
+//    return mSocket; 
+//}
 
 HttpSession _HttpLinker::getSession() { 
     return mSession; 

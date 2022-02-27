@@ -9,7 +9,7 @@
 #include "StrongPointer.hpp"
 
 #include "HashKey.hpp"
-#include "KeyValuePair.hpp"
+#include "Pair.hpp"
 #include "NullPointerException.hpp"
 #include "ValueNotFoundException.hpp"
 
@@ -21,12 +21,12 @@ template <typename T, typename U> class _MapIterator;
     template <typename E> class reflectItemFunc<X, E> {                        \
       public:                                                                  \
         reflectItemFunc(_HashMap<X, E> *p) {}                                  \
-        sp<_ArrayList<sp<_KeyValuePair<sp<_Object>, sp<_Object>>>>>            \
+        sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>            \
         get(std::string name) {                                                \
             return nullptr;                                                    \
         }                                                                      \
         void add(std::string name, sp<_Object> key, sp<_Object> value) {}      \
-        sp<_KeyValuePair<sp<_Object>, sp<_Object>>> create(std::string name) { \
+        sp<_Pair<sp<_Object>, sp<_Object>>> create(std::string name) { \
             return nullptr;                                                    \
         }                                                                      \
     };
@@ -117,13 +117,13 @@ DECLARE_TEMPLATE_CLASS(HashMap, 2) {
       public:
         reflectItemFunc(_HashMap<D, E> *p) { ptr = p; }
 
-        sp<_ArrayList<sp<_KeyValuePair<sp<_Object>, sp<_Object>>>>>
+        sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>
         get(std::string name) {
             auto iterator = ptr->hashmap.begin();
-            ArrayList<KeyValuePair<Object, Object>> values =
-                createArrayList<KeyValuePair<Object, Object>>();
+            ArrayList<Pair<Object, Object>> values =
+                createArrayList<Pair<Object, Object>>();
             while (iterator != ptr->hashmap.end()) {
-                values->add(createKeyValuePair<sp<_Object>, sp<_Object>>(
+                values->add(createPair<sp<_Object>, sp<_Object>>(
                     iterator->first, iterator->second));
                 iterator++;
             }
@@ -135,10 +135,10 @@ DECLARE_TEMPLATE_CLASS(HashMap, 2) {
             ptr->hashmap[Cast<T>(key)] = Cast<U>(value);
         }
 
-        sp<_KeyValuePair<sp<_Object>, sp<_Object>>> create(std::string name) {
+        sp<_Pair<sp<_Object>, sp<_Object>>> create(std::string name) {
             AutoCreator<D, D::isReflect()> keyCreator;
             AutoCreator<E, E::isReflect()> valueCreator;
-            return createKeyValuePair<Object, Object>(keyCreator.get(),
+            return createPair<Object, Object>(keyCreator.get(),
                                                       valueCreator.get());
         }
 
@@ -157,7 +157,7 @@ DECLARE_TEMPLATE_CLASS(HashMap, 2) {
     DUMMY_REFLECT_HASHMAP_FUNCTION(uint64_t)
     DUMMY_REFLECT_HASHMAP_FUNCTION(std::string)
 
-    inline sp<_ArrayList<sp<_KeyValuePair<sp<_Object>, sp<_Object>>>>>
+    inline sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>
     __getMapItemObjects(std::string name) {
         return reflectItemFunc<T, U>(this).get(name);
     }
@@ -167,7 +167,7 @@ DECLARE_TEMPLATE_CLASS(HashMap, 2) {
         return reflectItemFunc<T, U>(this).add(name, key, value);
     }
 
-    inline sp<_KeyValuePair<sp<_Object>, sp<_Object>>> __createMapItemObject(
+    inline sp<_Pair<sp<_Object>, sp<_Object>>> __createMapItemObject(
         std::string name) {
         return reflectItemFunc<T, U>(this).create(name);
     }

@@ -16,12 +16,12 @@
 namespace obotcha {
 
 //-----------------HttpMultiPartFile-----------------
-_HttpMultiPartFile::_HttpMultiPartFile(File file,String k) {
-    mFile = file;
-    mKey = (k == nullptr)?file->getName():k;    
-}
+// _HttpMultiPartFile::_HttpMultiPartFile(File file,String k) {
+//     mFile = file;
+//     mKey = (k == nullptr)?file->getName():k;    
+// }
 
-_HttpMultiPartFile::_HttpMultiPartFile(String filename,String k) {
+_HttpMultiPartFile::_HttpMultiPartFile(String filename,String name,HttpHeaderContentType type) {
 
     String filepath = st(Enviroment)::getInstance()->get(
         st(Enviroment)::gHttpMultiPartFilePath);
@@ -33,8 +33,8 @@ _HttpMultiPartFile::_HttpMultiPartFile(String filename,String k) {
 
     UUID uuid = createUUID();
     while (1) {
-        mGenFileName = uuid->generate();
-        mFile = createFile(filepath->append(mGenFileName));
+        String mUuidFileName = uuid->generate();
+        mFile = createFile(filepath->append(mUuidFileName));
 
         if (!mFile->exists()) {
             mFile->createNewFile();
@@ -42,26 +42,54 @@ _HttpMultiPartFile::_HttpMultiPartFile(String filename,String k) {
         }
     }
 
-    mFileName = filename;
-    mKey = (k == nullptr)?mFile->getName():k;    
+    mName = name;
+    mContentType = type;
+    mOriginalFileName = filename;
 }
 
-String _HttpMultiPartFile::getKey() {
-    return mKey;
+//this construct function used by http client to create request;
+_HttpMultiPartFile::_HttpMultiPartFile(File file,String name) {
+    mName = name;
+
+    String filename = file->getName();
+    mFile = filename;
+    mOriginalFileName= filename;
+
+    mFile = file;
+}
+
+String _HttpMultiPartFile::getName() {
+    return mName;
+}
+
+String _HttpMultiPartFile::getOriginalFileName() {
+    return mOriginalFileName;
+}
+
+HttpHeaderContentType _HttpMultiPartFile::getContentType() {
+    return mContentType;
 }
 
 File _HttpMultiPartFile::getFile() {
     return mFile;
 }
 
-String _HttpMultiPartFile::getFileName() {
-    return mFileName;
-}
+// String _HttpMultiPartFile::getKey() {
+//     return mKey;
+// }
+
+// File _HttpMultiPartFile::getFile() {
+//     return mFile;
+// }
+
+// String _HttpMultiPartFile::getFileName() {
+//     return mFileName;
+// }
 
 //_HttpMultiPart();
 _HttpMultiPart::_HttpMultiPart() {
     files = createArrayList<HttpMultiPartFile>();
-    contents = createArrayList<KeyValuePair<String, String>>();
+    contents = createArrayList<Pair<String, String>>();
 
     UUID uuid = createUUID();
     mBoundary = uuid->generate()->replaceAll("-", "");
@@ -114,9 +142,9 @@ long _HttpMultiPart::getContentLength() {
     //get all keyValueLength except key/value length
     keyValueLength = keyValueLength *contents->size();
 
-    ListIterator<KeyValuePair<String, String>> contentIterator = contents->getIterator();
+    ListIterator<Pair<String, String>> contentIterator = contents->getIterator();
     while (contentIterator->hasValue()) {
-        KeyValuePair<String, String> content = contentIterator->getValue();
+        Pair<String, String> content = contentIterator->getValue();
         keyValueLength += content->getKey()->size();
         keyValueLength += content->getValue()->size();
     }
@@ -137,7 +165,7 @@ long _HttpMultiPart::getContentLength() {
     ListIterator<HttpMultiPartFile> fileIterator = files->getIterator();
     while (fileIterator->hasValue()) {
         HttpMultiPartFile content = fileIterator->getValue();
-        fileContentLength += content->getKey()->size();
+        fileContentLength += content->getName()->size();
         fileContentLength += content->getFile()->getName()->size();
         fileIterator->next();
     }

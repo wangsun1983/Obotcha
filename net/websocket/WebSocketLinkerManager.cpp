@@ -20,7 +20,7 @@ _WebSocketLinkerManager::_WebSocketLinkerManager() {
     mMutex = createMutex();
 }
 
-WebSocketLinker _WebSocketLinkerManager::addLinker(Socket sock, int version) {
+WebSocketLinker _WebSocketLinkerManager::add(Socket sock, int version) {
     AutoLock ll(mMutex);
     
     WebSocketLinker client = createWebSocketLinker(sock);
@@ -60,12 +60,12 @@ WebSocketLinker _WebSocketLinkerManager::addLinker(Socket sock, int version) {
     return client;
 }
 
-WebSocketLinker _WebSocketLinkerManager::getLinker(Socket s) {
+WebSocketLinker _WebSocketLinkerManager::get(Socket s) {
     AutoLock ll(mMutex);
     return mClients->get(s);
 }
 
-void _WebSocketLinkerManager::removeLinker(WebSocketLinker client) {
+void _WebSocketLinkerManager::remove(WebSocketLinker client) {
     AutoLock ll(mMutex);
     mClients->remove(client->getSocket());
 }

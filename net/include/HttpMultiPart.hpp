@@ -9,40 +9,44 @@
 #include "HashMap.hpp"
 #include "HttpHeader.hpp"
 #include "HttpUrl.hpp"
-#include "KeyValuePair.hpp"
+#include "Pair.hpp"
 #include "String.hpp"
 #include "File.hpp"
+#include "HttpHeaderContentType.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(HttpMultiPartFile) {
 
 public:
-    _HttpMultiPartFile(String filename,String key = nullptr);
-    _HttpMultiPartFile(File filename,String key = nullptr);
-    String getKey();
+    _HttpMultiPartFile(String filename,String name = nullptr,HttpHeaderContentType contentType = nullptr);
+    _HttpMultiPartFile(File filename,String name = nullptr);
+    //String getKey();
+    //File getFile();
+    //String getFileName();
+
+    String getName();
+    String getOriginalFileName();
+    HttpHeaderContentType getContentType();
     File getFile();
-    String getFileName();
 
 private:
     File mFile;
-    String mKey;
-    String mFileName;
-    String mGenFileName;
+    String mName;
+    String mOriginalFileName;
+    HttpHeaderContentType mContentType;
 };
 
 DECLARE_CLASS(HttpMultiPart) {
 public:
     _HttpMultiPart();
     ArrayList<HttpMultiPartFile> files;
-    ArrayList<KeyValuePair<String, String>> contents;
-
+    ArrayList<Pair<String, String>> contents;
     String getBoundary();
-
     long getContentLength();
+
 private:
     String mBoundary;
-
 };
 
 } // namespace obotcha

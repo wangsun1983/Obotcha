@@ -30,7 +30,7 @@ _Http2StreamController::_Http2StreamController(OutputStream out) {
     mSender->start();
 }
 
-int _Http2StreamController::pushHttpData(ByteArray data) {
+int _Http2StreamController::pushData(ByteArray data) {
     try {
         mRingArray->push(data);
     } catch (ArrayIndexOutOfBoundsException &e) {

@@ -290,7 +290,7 @@ public:
         while (iterator->hasValue()) {
             JsonValue jvalue = iterator->getValue();
             String tag = iterator->getTag();
-            KeyValuePair<Object, Object> pair = obj->__createMapItemObject("");
+            Pair<Object, Object> pair = obj->__createMapItemObject("");
 
             Object key = pair->getKey();
             if (IsInstance(Integer, key)) {
@@ -518,14 +518,14 @@ public:
 
     // wangsl
     void importFrom(sp<_JsonValue> jsonNode,
-                    ArrayList<KeyValuePair<Object, Object>> members) {
-        // ArrayList<KeyValuePair<Object,Object>> members =
+                    ArrayList<Pair<Object, Object>> members) {
+        // ArrayList<Pair<Object,Object>> members =
         // field->getMapItemObjects();
         int count = 0;
         int size = members->size();
 
         while (count < size) {
-            KeyValuePair<Object, Object> pair = members->get(count);
+            Pair<Object, Object> pair = members->get(count);
             Object key = pair->getKey();
             String keyStr = nullptr;
 
@@ -679,7 +679,7 @@ public:
         } else if (value->__ReflectClassName()->equals("_HashMap")) {
             int size = value->__getContainerSize("");
             // JsonValue mapItemValue = createJsonValue();
-            ArrayList<KeyValuePair<Object, Object>> members =
+            ArrayList<Pair<Object, Object>> members =
                 value->__getMapItemObjects("");
             importFrom(AutoClone(this), members);
             // this->append(mapItemValue);
@@ -852,7 +852,7 @@ public:
                 int count = 0;
                 int size = field->getContainerSize();
                 JsonValue mapNode = createJsonValue();
-                ArrayList<KeyValuePair<Object, Object>> members =
+                ArrayList<Pair<Object, Object>> members =
                     field->getMapItemObjects();
                 importFrom(mapNode, members);
                 this->put(name, mapNode);

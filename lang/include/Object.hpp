@@ -25,7 +25,7 @@ class _JsonValue;
 
 template <typename T> class _ArrayList;
 
-template <typename T, typename U> class _KeyValuePair;
+template <typename T, typename U> class _Pair;
 
 //-------------------------- Declaration ----------------------------------//
 class _Object {
@@ -114,11 +114,11 @@ public:
     }
 
     // hashmap function
-    inline virtual sp<_KeyValuePair<sp<_Object>, sp<_Object>>>
+    inline virtual sp<_Pair<sp<_Object>, sp<_Object>>>
     __createMapItemObject(std::string name) {
         throw "not support";
     }
-    inline virtual sp<_ArrayList<sp<_KeyValuePair<sp<_Object>, sp<_Object>>>>>
+    inline virtual sp<_ArrayList<sp<_Pair<sp<_Object>, sp<_Object>>>>>
     __getMapItemObjects(std::string name) {
         throw "not support";
     }

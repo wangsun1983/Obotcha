@@ -93,7 +93,7 @@
 #include "HttpHeaderDnt.hpp"
 #include "NetProtocol.hpp"
 #include "ArrayList.hpp"
-#include "KeyValuePair.hpp"
+#include "Pair.hpp"
 
 namespace obotcha {
 
@@ -363,7 +363,7 @@ public:
     String get(String);
 
     //MapIterator<String,String> getIterator();
-    ListIterator<KeyValuePair<String,String>> getIterator();
+    ListIterator<Pair<String,String>> getIterator();
 
     void addCookie(HttpCookie);
     ArrayList<HttpCookie> getCookies();

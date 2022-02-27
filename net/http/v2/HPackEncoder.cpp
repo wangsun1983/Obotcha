@@ -71,7 +71,7 @@ void _HPackEncoder::encodeHeadersEnforceMaxHeaderListSize(int streamId, HttpHead
     // To ensure we stay consistent with our peer check the size is valid before we potentially modify HPACK state.
     auto iterator = headers->getIterator();
     while(iterator->hasValue()) {
-        KeyValuePair<String,String> pair = iterator->getValue();
+        Pair<String,String> pair = iterator->getValue();
         String name = pair->getKey();
         String value = pair->getValue();
         // OK to increment now and check for bounds after because this value is limited to unsigned int and will not
@@ -89,7 +89,7 @@ void _HPackEncoder::encodeHeadersEnforceMaxHeaderListSize(int streamId, HttpHead
 void _HPackEncoder::encodeHeadersIgnoreMaxHeaderListSize(HttpHeader headers) {
     auto iterator = headers->getIterator();
     while (iterator->hasValue()) {
-        KeyValuePair<String,String> pair = iterator->getValue();
+        Pair<String,String> pair = iterator->getValue();
         String name = pair->getKey();
         String value = pair->getValue();
         encodeHeader(name, value, st(HPackSensitiveTable)::isSensitive(name),

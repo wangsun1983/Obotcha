@@ -26,8 +26,8 @@
 
 namespace obotcha {
 
-class _HttpLinker;
-class _HttpResponseWriter;
+//class _HttpLinker;
+//class _HttpResponseWriter;
 
 DECLARE_CLASS(HttpServer) IMPLEMENTS(SocketListener) {
 
@@ -36,9 +36,9 @@ public:
     
     _HttpServer(InetAddress addr,HttpListener,HttpOption option = nullptr);
 
-    void start();
+    int start();
     
-    void deMonitor(Socket);
+    void remove(HttpLinker);
     
     void close();
     
@@ -61,8 +61,6 @@ private:
     HttpOption mOption;
 
     HttpLinkerManager mLinkerManager;
-
-
 };
 
 }

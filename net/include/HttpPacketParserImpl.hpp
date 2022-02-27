@@ -29,11 +29,11 @@ public:
 
     _HttpPacketParserImpl(ByteRingArray);
 
-    int pushHttpData(ByteArray);
+    int pushData(ByteArray);
 
     ArrayList<HttpPacket> doParse();
 
-    HttpPacket parseEntireRequest(ByteArray request);
+    // HttpPacket parseEntireRequest(ByteArray request);
 
     void reset();
 
@@ -46,16 +46,15 @@ private:
     int mSubStatus;
 
     ByteRingArray mBuff;
-
     ByteRingArrayReader mReader;
 
     Enviroment mEnv;
 
-    int mBodyStartCount;
+    //int mBodyStartCount;
 
-    String mHeaderName;
+    //String mHeaderName;
     
-    String mHeaderValue;
+    //String mHeaderValue;
 
     HttpPacket mHttpPacket;
 

@@ -6,7 +6,7 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
-#include "KeyValuePair.hpp"
+#include "Pair.hpp"
 #include "HttpOption.hpp"
 #include "HttpUrlEncodedValue.hpp"
 

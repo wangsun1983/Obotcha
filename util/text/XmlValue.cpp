@@ -401,7 +401,7 @@ void _XmlValue::reflectToHashMap(Object obj) {
     auto sub_iterator = this->getValueIterator();
     while (sub_iterator->hasValue()) {
         sp<_XmlValue> xmlnode = sub_iterator->getValue();
-        KeyValuePair<Object, Object> pair = obj->__createMapItemObject("");
+        Pair<Object, Object> pair = obj->__createMapItemObject("");
         Object key = pair->getKey();
         String name = xmlnode->getName();
         if (IsInstance(Integer, key)) {
@@ -630,11 +630,11 @@ void _XmlValue::reflectTo(Object obj) {
 
 void _XmlValue::importHashMapFrom(Object hashmap) {
     int size = this->__getContainerSize("");
-    ArrayList<KeyValuePair<Object, Object>> members =
+    ArrayList<Pair<Object, Object>> members =
         hashmap->__getMapItemObjects("");
     auto iterator = members->getIterator();
     while (iterator->hasValue()) {
-        KeyValuePair<Object, Object> node = iterator->getValue();
+        Pair<Object, Object> node = iterator->getValue();
         Object key = node->getKey();
         Object value = node->getValue();
         sp<_XmlValue> item;

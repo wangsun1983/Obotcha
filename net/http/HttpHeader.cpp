@@ -2719,19 +2719,19 @@ HttpHeaderTransferEncoding _HttpHeader::getTransferEncoding() {
 }
 
 
-ListIterator<KeyValuePair<String,String>> _HttpHeader::getIterator() {
+ListIterator<Pair<String,String>> _HttpHeader::getIterator() {
     //try to get all data
     //HashMap<String,String> values = createHashMap<String,String>();
-    ArrayList<KeyValuePair<String,String>> values = createArrayList<KeyValuePair<String,String>>();
+    ArrayList<Pair<String,String>> values = createArrayList<Pair<String,String>>();
 
 #define SET_HEAD_VALUE(X,Y) \
-    values->add(createKeyValuePair<String,String>(X,Y))
+    values->add(createPair<String,String>(X,Y))
 
     //pseudo header field should set before regular
     if(mProtocol == st(NetProtocol)::Http_H2 
     || mProtocol == st(NetProtocol)::Http_H2C) {
         if(mType == Type::Response) {
-            //values->add(createKeyValuePair<String,String>(st(HttpHeader)::Status,createString(mResponseStatus)));
+            //values->add(createPair<String,String>(st(HttpHeader)::Status,createString(mResponseStatus)));
             SET_HEAD_VALUE(st(HttpHeader)::Status,createString(mResponseStatus));
         }
     }
@@ -3098,10 +3098,10 @@ String _HttpHeader::toString(int type) {
     
     // conver header
     //MapIterator<String, String> headerIte = getIterator();
-    ListIterator<KeyValuePair<String,String>> headerIte = getIterator();
+    ListIterator<Pair<String,String>> headerIte = getIterator();
 
     while (headerIte->hasValue()) {
-        KeyValuePair<String,String> pair = headerIte->getValue();
+        Pair<String,String> pair = headerIte->getValue();
         String headString = pair->getKey();
         if (headString != nullptr && !headString->equalsIgnoreCase(Status)) {
             header->append(headString, ": ", pair->getValue(),

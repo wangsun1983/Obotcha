@@ -41,7 +41,8 @@ public:
     void setType(int);
     int getType();
 
-
+    bool isChunked();
+    
 private:
     HttpHeader mHeader;
     HttpEntity mEntity;

@@ -6,28 +6,27 @@
 
 namespace obotcha {
 
-_HttpMultiPartParser::_HttpMultiPartParser(const String boundary,
-                                           int length) {
-    mContentLength = length;
-    mBoundary = createString("--");
-    mBoundary = mBoundary->append(boundary);
-
-    mBoundaryEnd = mBoundary->append("\r\n");
-    mPartEnd = mBoundary->append("--\r\n");
+_HttpMultiPartParser::_HttpMultiPartParser(const String boundary) {
+    //mContentLength = length;
+    //mBoundary = createString("--");
+    mBoundary = st(HttpText)::BoundaryBeginning->append(boundary);
+    mBoundaryEnd = mBoundary->append(st(HttpText)::CRLF);
+    mPartEnd = mBoundary->append(st(HttpText)::MultiPartEnd);
 
     BoundaryEnd = mBoundaryEnd->toChars();
     PartEnd = mPartEnd->toChars();
 
     mStatus = ParseStartBoundry;
 
-    mEnv = st(Enviroment)::getInstance();
+    //mEnv = st(Enviroment)::getInstance();
 
-    CRLF = st(HttpText)::CRLF->toChars();
+    //CRLF = st(HttpText)::CRLF->toChars();
 
     mBoundaryIndex = 0;
 
     mFileStream = nullptr;
-    mMultiPartFile = nullptr;
+    //mMultiPartFile = nullptr;
+    endDetector = createCRLFDetector();
 }
 
 // String _HttpMultiPartParser::getHeaderBoundary() {
@@ -48,9 +47,6 @@ _HttpMultiPartParser::_HttpMultiPartParser(const String boundary,
 // PNG ..... content of chrome.png .....
 //--------WebKitFormBoundaryrGKCBY7qhFd3TrwA--
 HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
-    if (mBoundary == nullptr) {
-        return nullptr;
-    }
 
     if (mMultiPart == nullptr) {
         mMultiPart = createHttpMultiPart();
@@ -58,9 +54,10 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
     byte v = 0;
     while (reader->readNext(v) == st(ByteRingArrayReader)::Continue) {
+        //printf("HttpMultiPartParser,v is %x,status is %d \n",v,mStatus);
         switch (mStatus) {
             case ParseStartBoundry: {
-                if(isLineEnd(v)) {
+                if(endDetector->isEnd(v)) {
                     //i got the boundry!!!
                     ByteArray boundary = reader->pop();
                     mStatus = ParseContentInfo;
@@ -70,10 +67,10 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
             }
             
             case ParseContentInfo: {
-                if(isLineEnd(v)) {
+                if(endDetector->isEnd(v)) {
                     String info = reader->pop()->toString();
                     if(info->size() == 2 && info->equals(st(HttpText)::CRLF)) {
-                        if(mDisposition->filename != nullptr) {
+                        if(mDisposition->getFileName() != nullptr) {
                             mStatus = ParseContent;
                         } else {
                             mStatus = ParseFormData;
@@ -105,17 +102,23 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
             case ParseFormData:{
                 int checkStatus = checkBoudaryIndex(v);
+                //printf("ParseFormData checkStatus is %d \n",checkStatus);
+                int resizeSize = mBoundaryEnd->size();
                 switch(checkStatus) {
                     case _PartEnd:
+                        resizeSize = mPartEnd->size();
                     case _BoundaryEnd:{
                         ByteArray data = reader->pop();
-                        mMultiPart->contents->add(createKeyValuePair<String,String>(mDisposition->name,data->toString()));
-                        mStatus = ParseContentInfo;
+                        //substring to remove boundary
+                        data->quickShrink(data->size() - resizeSize - 2); //the end of data is /r/n,remove it.
+                        mMultiPart->contents->add(createPair<String,String>(mDisposition->getName(),data->toString()));
                         if(checkStatus == _PartEnd) {
                             auto result = mMultiPart;
                             mMultiPart = nullptr;
+                            mStatus = ParseStartBoundry;
                             return result;
                         }
+                        mStatus = ParseContentInfo;
                     }
                     break;
 
@@ -127,19 +130,25 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
             case ParseContent: {
                 int checkStatus = checkBoudaryIndex(v);
+                //printf("HttpMultiPartParser checkStatus is %d \n",checkStatus);
                 int resizeSize = mBoundaryEnd->size(); // multi part end "----xxxx\r\n"
                 switch(checkStatus) {
                     case _PartEnd:
                         resizeSize = mPartEnd->size(); //part end "----xxxx--\r\n"
                     case _BoundaryEnd:{
                         ByteArray data = reader->pop();
-                        flushData(data,resizeSize + 2); //last data has "\r\n"
+                        data->quickShrink(data->size() - resizeSize - 2); //the end of data is /r/n,remove it.
+                        flushData(data);
                         mFileStream->close();
                         mFileStream = nullptr;
                         mStatus = ParseContentInfo;
+                        //printf("HttpMultiPartParser,flush content,checkStatus is %d \n",checkStatus);
                         if(checkStatus == _PartEnd) {
                             auto result = mMultiPart;
                             mMultiPart = nullptr;
+                            mDisposition = nullptr;
+                            mTransferEncoding = nullptr;
+                            mContentType = nullptr;
                             return result;
                         }
                     }
@@ -155,56 +164,54 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
     if(mStatus == ParseContent && mBoundaryIndex == 0) {
         ByteArray data = reader->pop();
         if(data != nullptr && data->size() != 0) {
-            flushData(data,0);
+            flushData(data);
         }
     }
 
     return nullptr;
 }
 
-void _HttpMultiPartParser::flushData(ByteArray data,int resizeSize) {
+void _HttpMultiPartParser::flushData(ByteArray data) {
     if(mFileStream == nullptr){
-        HttpMultiPartFile multiPartFile = createHttpMultiPartFile(mDisposition->filename);
+        HttpMultiPartFile multiPartFile = createHttpMultiPartFile(mDisposition->getFileName(),mContentType,mDisposition->getName());
         mMultiPart->files->add(multiPartFile);
         mFileStream = createFileOutputStream(multiPartFile->getFile());
         mFileStream->open();
     }
-    data->quickShrink(data->size() - resizeSize);
     mFileStream->write(data);
 }
 
-bool _HttpMultiPartParser::isLineEnd(byte &v) {
-    if(v == '\r' && mCRLFIndex == 0) {
-        mCRLFIndex = 1;
-    } else if(v == '\n' && mCRLFIndex == 1) {
-        mCRLFIndex = 0;
-        return true;
-    } else {
-        mCRLFIndex = 0;
-    }
+// bool _HttpMultiPartParser::isLineEnd(byte &v) {
+//     if(v == '\r' && mCRLFIndex == 0) {
+//         mCRLFIndex = 1;
+//     } else if(v == '\n' && mCRLFIndex == 1) {
+//         mCRLFIndex = 0;
+//         return true;
+//     } else {
+//         mCRLFIndex = 0;
+//     }
 
-    return false;
-}
+//     return false;
+// }
 
 int _HttpMultiPartParser::checkBoudaryIndex(byte &v) {
-    if(v == PartEnd[mBoundaryIndex]){
-        if(mBoundaryIndex == (mPartEnd->size() - 1)){
-            mBoundaryIndex = 0;
-            return _PartEnd;
-        }
-        mBoundaryIndex++;
-    } else if(v == BoundaryEnd[mBoundaryIndex]) {
-        if(mBoundaryIndex == (mBoundaryEnd->size() -1)){
+    if(v == BoundaryEnd[mBoundaryIndex]) {
+        if(mBoundaryIndex == (mBoundaryEnd->size() - 1)) {
             mBoundaryIndex = 0;
             return _BoundaryEnd;
         }
         mBoundaryIndex++;
-    }  else {
+    } else if(v == PartEnd[mBoundaryIndex]) {
+        if(mBoundaryIndex == (mPartEnd->size() - 1)) {
+            mBoundaryIndex = 0;
+            return _PartEnd;
+        }
+        mBoundaryIndex++;
+    } else {
         mBoundaryIndex = 0;
     }
 
     return _None;
 }
-
 
 } // namespace obotcha
