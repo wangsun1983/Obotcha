@@ -122,7 +122,8 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
             while (iterator->hasValue()) {
                 Pair<String, String> content = iterator->getValue();
                 String v = st(HttpText)::BoundaryBeginning
-                            ->append(multiPart->getBoundary(),st(HttpText)::CRLF,
+                            ->append(st(HttpText)::BoundarySeperator,
+                                    multiPart->getBoundary(),st(HttpText)::CRLF,
                                     st(HttpHeader)::ContentDisposition,
                                     createString(": "),
                                     st(HttpMime)::FormData,
@@ -134,6 +135,9 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
                                     st(HttpText)::CRLF,
                                     st(HttpText)::CRLF,
                                     content->getValue(),
+                                    st(HttpText)::CRLF,
+                                    st(HttpText)::BoundarySeperator,
+                                    multiPart->getBoundary(),
                                     st(HttpText)::CRLF);
                 _write(v->toByteArray(),send);
                 iterator->next();
@@ -146,7 +150,8 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
             while (iterator->hasValue()) {
                 HttpMultiPartFile partFile = iterator->getValue();
                 String contentDisposition =  st(HttpText)::BoundaryBeginning
-                                            ->append(multiPart->getBoundary(),
+                                            ->append(st(HttpText)::BoundarySeperator,
+                                                    multiPart->getBoundary(),
                                                     st(HttpText)::CRLF,
                                                     st(HttpHeader)::ContentDisposition,
                                                     createString(": "),
@@ -170,10 +175,10 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
                 stream->open();
                 ByteArray readBuff = createByteArray(mDefaultSize);
                 //int index = 0;
-                int count = 1;
-                while (count > 0) {
-                    count = stream->read(readBuff);
-                    readBuff->quickShrink(count);
+                int readSize = 1;
+                while (readSize > 0) {
+                    readSize = stream->read(readBuff);
+                    readBuff->quickShrink(readSize);
                     _write(readBuff,send);
                     readBuff->quickRestore();
                 }
@@ -183,7 +188,8 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
             }
         }
         
-        String finish = st(HttpText)::BoundaryBeginning ->append(multiPart->getBoundary(),
+        String finish = st(HttpText)::BoundaryBeginning->append(st(HttpText)::BoundarySeperator,
+                                                        multiPart->getBoundary(),
                                                         st(HttpText)::BoundaryBeginning,
                                                         st(HttpText)::CRLF);
         _write(finish->toByteArray(),send);

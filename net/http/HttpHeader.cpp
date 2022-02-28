@@ -3073,7 +3073,7 @@ String _HttpHeader::toString(int type) {
         case st(HttpPacket)::Request: {
             header->append(st(HttpMethod)::findString(mMethod),st(HttpText)::ContentSpace);
             if (mUrl != nullptr) {
-                header->append(mUrl->toString());
+                header->append(createString("/")->append(mUrl->getPath()));
             } else {
                 header->append(createString("/"));
             }

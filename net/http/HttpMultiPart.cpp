@@ -99,6 +99,17 @@ String _HttpMultiPart::getBoundary() {
     return mBoundary;
 }
 
+
+void _HttpMultiPart::addFile(File f,String name) {
+    HttpMultiPartFile part = createHttpMultiPartFile(f,name);
+    files->add(part);
+}
+
+void _HttpMultiPart::addContents(String name,String value) {
+    contents->add(createPair<String,String>(name,value));
+}
+
+
 /*
 *
 \r\n ->did not compute in httpmultipart,but should add in compute all content length.
@@ -129,13 +140,15 @@ long _HttpMultiPart::getContentLength() {
     long length = 0;
 
     //comput key/value length
-    long keyValueLength = (mBoundary->size() + st(HttpText)::BoundaryBeginning->size() +
-                st(HttpText)::CRLF->size());
+    long keyValueLength = (mBoundary->size() 
+                        + st(HttpText)::BoundaryBeginning->size() 
+                        + st(HttpText)::BoundarySeperator->size()
+                        + st(HttpText)::CRLF->size());
     
     keyValueLength += (st(HttpHeader)::ContentDisposition->size() + 2 /*": "*/
                     + st(HttpMime)::FormData->size() + 2    /*"; "*/
                     + st(HttpText)::MultiPartName->size() + 3      /*=""*/
-                    + /*key size*/ + st(HttpText)::CRLF->size());
+                    + 0 /*key size*/ + st(HttpText)::CRLF->size());
 
     keyValueLength += st(HttpText)::CRLF->size();
 
@@ -149,14 +162,16 @@ long _HttpMultiPart::getContentLength() {
         keyValueLength += content->getValue()->size();
     }
 
-    long fileContentLength = (mBoundary->size() + st(HttpText)::BoundaryBeginning->size() +
-                st(HttpText)::CRLF->size());
+    long fileContentLength = (mBoundary->size() 
+                            + st(HttpText)::BoundaryBeginning->size() 
+                            + st(HttpText)::BoundarySeperator->size()
+                            + st(HttpText)::CRLF->size());
+
     fileContentLength += st(HttpHeader)::ContentDisposition->size() + 2 /*": "*/
                     + st(HttpMime)::FormData->size() + 2    /*"; "*/
                     + st(HttpText)::MultiPartName->size() + 5      /*=""; */
-                    + /*key size*/ + st(HttpText)::MultiPartFileName->size() +
-                    3 /*=""*/
-                    + /*filename size*/ + st(HttpText)::CRLF->size();
+                    + 0 /*key size*/ + st(HttpText)::MultiPartFileName->size() + 3 /*=""*/
+                    + 0 /*filename size*/ + st(HttpText)::CRLF->size();
     fileContentLength += st(HttpText)::CRLF->size();
     fileContentLength += st(HttpText)::CRLF->size();
 
@@ -167,14 +182,18 @@ long _HttpMultiPart::getContentLength() {
         HttpMultiPartFile content = fileIterator->getValue();
         fileContentLength += content->getName()->size();
         fileContentLength += content->getFile()->getName()->size();
+        fileContentLength += content->getFile()->length();
         fileIterator->next();
     }
 
     length += fileContentLength;
     length += keyValueLength;
 
-    length += (mBoundary->size() + st(HttpText)::BoundaryBeginning->size() * 2); //end
-
+    length += (mBoundary->size() + 
+            + st(HttpText)::BoundarySeperator->size()
+            + st(HttpText)::BoundaryBeginning->size() * 2
+            + st(HttpText)::CRLF->size()); //end
+    printf("calc length is %d \n",length);
     return length;
 }
 

@@ -7,6 +7,7 @@
 #include "String.hpp"
 #include "HttpMime.hpp"
 #include "StringBuffer.hpp"
+#include "HttpText.hpp"
 
 namespace obotcha {
 
@@ -30,7 +31,9 @@ void _HttpHeaderContentType::import(String value) {
         } else if (st(HttpMime)::CharSet->equalsIgnoreCase(directive)) {
             mCharset = parameter;
         } else if(st(HttpMime)::Boundary->equalsIgnoreCase(directive)) {
-            mBoundary = parameter;
+            //we should remove BoundarySeperator
+
+            mBoundary = parameter->subString(st(HttpText)::BoundarySeperator->size() - 1,parameter->size());
         }
     });
 }
@@ -57,7 +60,7 @@ String _HttpHeaderContentType::toString() {
         result = result->append(";charset=", mCharset);
     }
     if (mBoundary != nullptr) {
-        result = result->append(";boundary=", mBoundary);
+        result = result->append(";boundary=", st(HttpText)::BoundarySeperator,mBoundary);
     }
     return result->toString();
 }

@@ -40,6 +40,9 @@ private:
 DECLARE_CLASS(HttpMultiPart) {
 public:
     _HttpMultiPart();
+    void addFile(File,String name = nullptr);
+    void addContents(String name,String value);
+    
     ArrayList<HttpMultiPartFile> files;
     ArrayList<Pair<String, String>> contents;
     String getBoundary();
