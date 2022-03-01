@@ -14,8 +14,10 @@
 
 namespace obotcha {
 
-FileTypeSearchNode *_HttpMime::mSuffixRootNode = nullptr;
-FileTypeSearchNode *_HttpMime::mContentTypeNode = nullptr;
+//FileTypeSearchNode *_HttpMime::mSuffixRootNode = nullptr;
+//FileTypeSearchNode *_HttpMime::mContentTypeNode = nullptr;
+HashMap<String,Integer> _HttpMime::nameToId = nullptr;
+HashMap<String,Integer> _HttpMime::suffixToId = nullptr;
 
 // text/html(html htm shtml)
 const String _HttpMime::TextHtml =
@@ -431,31 +433,36 @@ const String _HttpMime::XFormUrlEncoded =
 // CharSet
 const String _HttpMime::CharSet = createString("charset");
 
-void _HttpMime::setTypeName(String v) {
-    String s = v->toLowerCase();
-    mType = searchNode(mContentTypeNode, s->toChars(), s->size());
+sp<_HttpMime> _HttpMime::createBySuffix(String s) {
+    _HttpMime *instance = new _HttpMime(nullptr,s);
+    return AutoClone(instance);
 }
 
-void _HttpMime::setTypeId(int id) {
-    mType = id;
+sp<_HttpMime> _HttpMime::createByType(String s) {
+    _HttpMime *instance = new _HttpMime(s,nullptr);
+    return AutoClone(instance);
 }
 
-void _HttpMime::setSuffix(String v) {
-    String s = v->toLowerCase();
-    mType = searchNode(mSuffixRootNode, s->toChars(), s->size());
+sp<_HttpMime> _HttpMime::createById(int s) {
+    _HttpMime *instance = new _HttpMime(s);
+    return AutoClone(instance);
 }
 
-int _HttpMime::getTypeId() {
-    return mType;
+int _HttpMime::getId() {
+    return this->id;
 }
 
-String _HttpMime::getTypeName() {
+String _HttpMime::getName() {
+    return name;
+}
+
+String _HttpMime::getName(int type) {
 
 #define CASE_SWITCH(X, Y)                                                      \
     case st(HttpMime)::Y:                                               \
         return st(HttpMime)::X;
 
-    switch (mType) {
+    switch (type) {
         CASE_SWITCH(TextHtml, TypeTextHtml);
         CASE_SWITCH(TextCss, TypeTextCss);
         CASE_SWITCH(TextXml, TypeTextXml);
@@ -554,50 +561,38 @@ String _HttpMime::getTypeName() {
     return nullptr;
 }
 
-void _HttpMime::addNode(FileTypeSearchNode *root,
-                                         const char *content, int size,
-                                         int type) {
-    int index = content[0] - 0x21;
-    if (root->next[index] == nullptr) {
-        root->next[index] = new FileTypeSearchNode();
-    }
 
-    FileTypeSearchNode *node = root->next[index];
-    if (size == 1) {
-        node->type = type;
-        return;
-    } else {
-        char *p = ((char *)content) + 1;
-        size--;
-        addNode(node, p, size, type);
+_HttpMime::_HttpMime(String name,String suffix):_HttpMime() {
+    if(name != nullptr) {
+        this->name = name;
+        Integer v = nameToId->get(name);
+        if(v != nullptr) {
+            id = v->toValue();
+        }
+    } else if(suffix != nullptr) {
+        Integer v = suffixToId->get(suffix);
+        if(v != nullptr) {
+            id = v->toValue();
+            name = getName(id);
+        }
     }
 }
 
-int _HttpMime::searchNode(FileTypeSearchNode *root,
-                                           const char *content, int size) {
-    int index = content[0] - 0x21;
-    if (root->next[index] == nullptr) {
-        return -1;
-    }
-
-    size--;
-    content++;
-    if (size == 0) {
-        return root->next[index]->type;
-    } else {
-        return searchNode(root->next[index], content, size);
-    }
+_HttpMime::_HttpMime(int id):_HttpMime() {
+    this->id = id;
+    name = getName(id);
 }
 
 _HttpMime::_HttpMime() {
     static std::once_flag flag;
     std::call_once(flag, [&]() {
-        mSuffixRootNode = new FileTypeSearchNode();
-        mContentTypeNode = new FileTypeSearchNode();
+        //mSuffixRootNode = new FileTypeSearchNode();
+        //mContentTypeNode = new FileTypeSearchNode();
+        nameToId = createHashMap<String,Integer>();
+        suffixToId = createHashMap<String,Integer>();
 
     #define ADD_NODE(X, Y)                                                         \
-        addNode(mSuffixRootNode, st(HttpMime)::X->toChars(),                \
-                st(HttpMime)::X->size(), st(HttpMime)::Y)
+        suffixToId->put(st(HttpMime)::X,createInteger(st(HttpMime)::Y))
 
         ADD_NODE(SuffixHtml, TypeTextHtml);
         ADD_NODE(SuffixHtm, TypeTextHtml);
@@ -709,8 +704,7 @@ _HttpMime::_HttpMime() {
     #undef ADD_NODE
 
     #define ADD_NODE(X, Y)                                                         \
-        addNode(mContentTypeNode, st(HttpMime)::X->toChars(),               \
-                st(HttpMime)::X->size(), st(HttpMime)::Y)
+        nameToId->put(st(HttpMime)::X,createInteger(st(HttpMime)::Y))
 
         ADD_NODE(TextHtml, TypeTextHtml);
         ADD_NODE(TextCss, TypeTextCss);
@@ -801,8 +795,6 @@ _HttpMime::_HttpMime() {
         ADD_NODE(XFormUrlEncoded, TypeXFormUrlEncoded);
     #undef ADD_NODE
     }); 
-
-    mType = -1;   
 }
 
 } // namespace obotcha

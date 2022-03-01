@@ -107,7 +107,6 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
         mSocketMonitor->bind(mSocket,AutoClone(this));
        
         mOutputStream = mSocket->getOutputStream();
-        //wangsl
        
         String extentions = response->getHeader()->get(st(HttpHeader)::SecWebSocketExtensions);
         if(extentions != nullptr) {
@@ -116,7 +115,6 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
             }
         }
         
-        //wangsl
         return 0;
     }
     

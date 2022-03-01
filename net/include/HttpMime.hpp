@@ -14,23 +14,25 @@
 #include "HttpCookie.hpp"
 #include "Mutex.hpp"
 #include "File.hpp"
+#include "HashMap.hpp"
 
 namespace obotcha {
 
-class FileTypeSearchNode {
-public:
-    FileTypeSearchNode() {
-        type = -1;
-        memset(next,0,sizeof(FileTypeSearchNode*) *96);
-    }
+// class FileTypeSearchNode {
+// public:
+//     FileTypeSearchNode() {
+//         type = -1;
+//         memset(next,0,sizeof(FileTypeSearchNode*) *96);
+//     }
     
-    FileTypeSearchNode* next[96];
-    int type;
-};
+//     FileTypeSearchNode* next[96];
+//     int type;
+// };
 
 DECLARE_CLASS(HttpMime) {
 
 public:
+
     enum Type {
         TypeTextHtml = 0,
         TypeTextCss,
@@ -485,23 +487,43 @@ public:
     //charset
     const static String CharSet;
 
-    _HttpMime();
-    void setTypeName(String);
-    void setTypeId(int);
-    void setSuffix(String);
+    //_HttpMime();
+    //_HttpMime(String);
+    //_HttpMime(int);
+
+    static sp<_HttpMime> createBySuffix(String);
+    static sp<_HttpMime> createByType(String);
+    static sp<_HttpMime> createById(int);
+
+    //static int getIdBySuffix(String);
+    //static int getId(String);
+    //static String getType(int);
+
+    //void setTypeName(String);
+    //void setTypeId(int);
+    //void setSuffix(String);
     
-    String getTypeName();
-    int getTypeId();
+    //String getTypeName();
+    //int getTypeId();
     //String getSuffix();
 
+    ArrayList<String> getSuffixs();
+    int getId();
+    String getName();
+
 private:
-    static FileTypeSearchNode *mSuffixRootNode;
-    static FileTypeSearchNode *mContentTypeNode;
+    _HttpMime();
+    _HttpMime(String,String);
+    _HttpMime(int);
 
-    static void addNode(FileTypeSearchNode *root,const char *,int,int);
-    int searchNode(FileTypeSearchNode *root,const char *,int);
+    String getName(int);
 
-    int mType;
+    static HashMap<String,Integer> nameToId;
+    static HashMap<String,Integer> suffixToId;
+
+    int id;
+    String name;
+    ArrayList<String> suffixs;
 };
 
 }

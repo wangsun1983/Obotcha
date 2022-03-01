@@ -20,10 +20,7 @@ DECLARE_CLASS(HttpMultiPartFile) {
 
 public:
     _HttpMultiPartFile(String filename,String name = nullptr,HttpHeaderContentType contentType = nullptr);
-    _HttpMultiPartFile(File filename,String name = nullptr);
-    //String getKey();
-    //File getFile();
-    //String getFileName();
+    _HttpMultiPartFile(File file,String name = nullptr,HttpHeaderContentType contentType = nullptr);
 
     String getName();
     String getOriginalFileName();
@@ -31,6 +28,7 @@ public:
     File getFile();
 
 private:
+    void updateContentType(String suffix);
     File mFile;
     String mName;
     String mOriginalFileName;
@@ -40,15 +38,20 @@ private:
 DECLARE_CLASS(HttpMultiPart) {
 public:
     _HttpMultiPart();
+    _HttpMultiPart(String boundary);
     void addFile(File,String name = nullptr);
-    void addContents(String name,String value);
-    
-    ArrayList<HttpMultiPartFile> files;
-    ArrayList<Pair<String, String>> contents;
+    void addFile(HttpMultiPartFile);
+
+    void addContent(String name,String value);
+    ArrayList<HttpMultiPartFile> getFiles();
+    ArrayList<Pair<String, String>> getContents();
+        
     String getBoundary();
     long getContentLength();
-
 private:
+    ArrayList<HttpMultiPartFile> files;
+    ArrayList<Pair<String, String>> contents;
+
     String mBoundary;
 };
 

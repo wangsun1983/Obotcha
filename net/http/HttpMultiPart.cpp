@@ -44,11 +44,15 @@ _HttpMultiPartFile::_HttpMultiPartFile(String filename,String name,HttpHeaderCon
 
     mName = name;
     mContentType = type;
+    if(mContentType == nullptr) {
+        String suffix = mFile->getSuffix();
+        updateContentType(suffix);
+    }
     mOriginalFileName = filename;
 }
 
 //this construct function used by http client to create request;
-_HttpMultiPartFile::_HttpMultiPartFile(File file,String name) {
+_HttpMultiPartFile::_HttpMultiPartFile(File file,String name,HttpHeaderContentType type) {
     mName = name;
 
     String filename = file->getName();
@@ -56,6 +60,21 @@ _HttpMultiPartFile::_HttpMultiPartFile(File file,String name) {
     mOriginalFileName= filename;
 
     mFile = file;
+
+    mContentType = type;
+    if(mContentType == nullptr) {
+        String suffix = mFile->getSuffix();
+        updateContentType(suffix);
+    }
+}
+
+void _HttpMultiPartFile::updateContentType(String suffix) {
+    HttpMime mime = st(HttpMime)::createBySuffix(suffix);
+    String name = mime->getName();
+    if(name == nullptr) {
+        name = st(HttpMime)::MultiPartFormData;
+    }
+    mContentType = createHttpHeaderContentType(name);
 }
 
 String _HttpMultiPartFile::getName() {
@@ -87,12 +106,23 @@ File _HttpMultiPartFile::getFile() {
 // }
 
 //_HttpMultiPart();
-_HttpMultiPart::_HttpMultiPart() {
-    files = createArrayList<HttpMultiPartFile>();
-    contents = createArrayList<Pair<String, String>>();
-
+_HttpMultiPart::_HttpMultiPart():_HttpMultiPart(nullptr) {
     UUID uuid = createUUID();
     mBoundary = uuid->generate()->replaceAll("-", "");
+}
+
+_HttpMultiPart::_HttpMultiPart(String boundary) {
+    mBoundary = boundary;
+    files = createArrayList<HttpMultiPartFile>();
+    contents = createArrayList<Pair<String, String>>();
+}
+
+ArrayList<HttpMultiPartFile> _HttpMultiPart::getFiles() {
+    return files;
+}
+
+ArrayList<Pair<String, String>> _HttpMultiPart::getContents() {
+    return contents;
 }
 
 String _HttpMultiPart::getBoundary() {
@@ -105,7 +135,11 @@ void _HttpMultiPart::addFile(File f,String name) {
     files->add(part);
 }
 
-void _HttpMultiPart::addContents(String name,String value) {
+void _HttpMultiPart::addFile(HttpMultiPartFile file) {
+    files->add(file);
+}
+
+void _HttpMultiPart::addContent(String name,String value) {
     contents->add(createPair<String,String>(name,value));
 }
 
@@ -140,50 +174,63 @@ long _HttpMultiPart::getContentLength() {
     long length = 0;
 
     //comput key/value length
-    long keyValueLength = (mBoundary->size() 
-                        + st(HttpText)::BoundaryBeginning->size() 
-                        + st(HttpText)::BoundarySeperator->size()
-                        + st(HttpText)::CRLF->size());
-    
-    keyValueLength += (st(HttpHeader)::ContentDisposition->size() + 2 /*": "*/
-                    + st(HttpMime)::FormData->size() + 2    /*"; "*/
-                    + st(HttpText)::MultiPartName->size() + 3      /*=""*/
-                    + 0 /*key size*/ + st(HttpText)::CRLF->size());
+    long keyValueLength = 0;
+    long fileContentLength = 0;
 
-    keyValueLength += st(HttpText)::CRLF->size();
-
-    //get all keyValueLength except key/value length
-    keyValueLength = keyValueLength *contents->size();
-
-    ListIterator<Pair<String, String>> contentIterator = contents->getIterator();
-    while (contentIterator->hasValue()) {
-        Pair<String, String> content = contentIterator->getValue();
-        keyValueLength += content->getKey()->size();
-        keyValueLength += content->getValue()->size();
-    }
-
-    long fileContentLength = (mBoundary->size() 
+    if(contents->size() != 0) {
+        keyValueLength = (mBoundary->size() 
                             + st(HttpText)::BoundaryBeginning->size() 
                             + st(HttpText)::BoundarySeperator->size()
                             + st(HttpText)::CRLF->size());
+        
+        keyValueLength += (st(HttpHeader)::ContentDisposition->size() + 2 /*": "*/
+                        + st(HttpMime)::FormData->size() + 2    /*"; "*/
+                        + st(HttpText)::MultiPartName->size() + 3      /*=""*/
+                        + 0 /*key size*/ + st(HttpText)::CRLF->size());
 
-    fileContentLength += st(HttpHeader)::ContentDisposition->size() + 2 /*": "*/
-                    + st(HttpMime)::FormData->size() + 2    /*"; "*/
-                    + st(HttpText)::MultiPartName->size() + 5      /*=""; */
-                    + 0 /*key size*/ + st(HttpText)::MultiPartFileName->size() + 3 /*=""*/
-                    + 0 /*filename size*/ + st(HttpText)::CRLF->size();
-    fileContentLength += st(HttpText)::CRLF->size();
-    fileContentLength += st(HttpText)::CRLF->size();
+        keyValueLength += st(HttpText)::CRLF->size();
 
-    fileContentLength = fileContentLength*files->size();
+        //get all keyValueLength except key/value length
+        keyValueLength = keyValueLength *contents->size();
 
-    ListIterator<HttpMultiPartFile> fileIterator = files->getIterator();
-    while (fileIterator->hasValue()) {
-        HttpMultiPartFile content = fileIterator->getValue();
-        fileContentLength += content->getName()->size();
-        fileContentLength += content->getFile()->getName()->size();
-        fileContentLength += content->getFile()->length();
-        fileIterator->next();
+        ListIterator<Pair<String, String>> contentIterator = contents->getIterator();
+        while (contentIterator->hasValue()) {
+            Pair<String, String> content = contentIterator->getValue();
+            keyValueLength += content->getKey()->size();
+            keyValueLength += content->getValue()->size();
+        }
+    }
+
+    if(files->size() != 0) {
+        fileContentLength = (mBoundary->size() 
+                                + st(HttpText)::BoundaryBeginning->size() 
+                                + st(HttpText)::BoundarySeperator->size()
+                                + st(HttpText)::CRLF->size());
+
+        fileContentLength += st(HttpHeader)::ContentDisposition->size() + 2 /*": "*/
+                        + st(HttpMime)::FormData->size() + 2    /*"; "*/
+                        + st(HttpText)::MultiPartName->size() + 4      /*="";*/
+                        + 0 /*key size*/ + st(HttpText)::MultiPartFileName->size() + 3 /*=""*/
+                        + 0 /*filename size*/ + st(HttpText)::CRLF->size();
+        fileContentLength += st(HttpText)::CRLF->size();
+
+        fileContentLength += st(HttpHeader)::ContentType->size() + 2; /*: */
+        fileContentLength += st(HttpText)::CRLF->size();
+        fileContentLength += st(HttpText)::CRLF->size();
+        
+        fileContentLength = fileContentLength*files->size();
+
+        ListIterator<HttpMultiPartFile> fileIterator = files->getIterator();
+        while (fileIterator->hasValue()) {
+            HttpMultiPartFile content = fileIterator->getValue();
+            fileContentLength += content->getName()->size();
+            fileContentLength += content->getFile()->getName()->size();
+            fileContentLength += content->getFile()->length();
+            //add content type 
+            
+            fileContentLength += content->getContentType()->toString()->size();
+            fileIterator->next();
+        }
     }
 
     length += fileContentLength;

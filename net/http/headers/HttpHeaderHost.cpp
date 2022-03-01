@@ -7,8 +7,9 @@ _HttpHeaderHost::_HttpHeaderHost() {
     port = -1;
 }
 
-_HttpHeaderHost::_HttpHeaderHost(String v):_HttpHeaderHost() {
-    import(v);
+_HttpHeaderHost::_HttpHeaderHost(String v,int p):_HttpHeaderHost() {
+    host = v;
+    port = p;
 }
 
 void _HttpHeaderHost::import(String h) {

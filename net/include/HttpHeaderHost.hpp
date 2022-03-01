@@ -12,7 +12,7 @@ DECLARE_CLASS(HttpHeaderHost) {
 
 public:
     _HttpHeaderHost();
-    _HttpHeaderHost(String);
+    _HttpHeaderHost(String,int);
 
     void import(String);
 

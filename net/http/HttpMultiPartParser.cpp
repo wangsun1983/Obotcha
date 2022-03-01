@@ -9,6 +9,7 @@ namespace obotcha {
 _HttpMultiPartParser::_HttpMultiPartParser(const String boundary) {
     //mContentLength = length;
     //mBoundary = createString("--");
+    mRawBoundary = boundary;
     mBoundary = st(HttpText)::BoundaryBeginning->append(boundary);
     mBoundaryEnd = mBoundary->append(st(HttpText)::CRLF);
     mPartEnd = mBoundary->append(st(HttpText)::MultiPartEnd);
@@ -49,7 +50,7 @@ _HttpMultiPartParser::_HttpMultiPartParser(const String boundary) {
 HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
     if (mMultiPart == nullptr) {
-        mMultiPart = createHttpMultiPart();
+        mMultiPart = createHttpMultiPart(mRawBoundary);
     }
 
     byte v = 0;
@@ -111,7 +112,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         ByteArray data = reader->pop();
                         //substring to remove boundary
                         data->quickShrink(data->size() - resizeSize - 2); //the end of data is /r/n,remove it.
-                        mMultiPart->contents->add(createPair<String,String>(mDisposition->getName(),data->toString()));
+                        mMultiPart->addContent(mDisposition->getName(),data->toString());
                         if(checkStatus == _PartEnd) {
                             auto result = mMultiPart;
                             mMultiPart = nullptr;
@@ -174,7 +175,7 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 void _HttpMultiPartParser::flushData(ByteArray data) {
     if(mFileStream == nullptr){
         HttpMultiPartFile multiPartFile = createHttpMultiPartFile(mDisposition->getFileName(),mContentType,mDisposition->getName());
-        mMultiPart->files->add(multiPartFile);
+        mMultiPart->addFile(multiPartFile);
         mFileStream = createFileOutputStream(multiPartFile->getFile());
         mFileStream->open();
     }

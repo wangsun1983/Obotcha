@@ -20,17 +20,14 @@ public:
 
     //Parser
     sp<_WebSocketParser> getParser();
-
     void setParser(sp<_WebSocketParser>);
 
     //Composer
     sp<_WebSocketComposer> getComposer();
-
     void setComposer(sp<_WebSocketComposer>);
 
     //PermessageDeflater
     sp<_WebSocketPermessageDeflate> getDeflater();
-
     void setDeflater(sp<_WebSocketPermessageDeflate>);
 
     //Listener

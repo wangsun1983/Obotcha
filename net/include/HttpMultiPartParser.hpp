@@ -57,6 +57,7 @@ private:
     String mBoundary;
     String mBoundaryEnd;
     String mPartEnd;
+    String mRawBoundary;
 
     int mStatus;
 

@@ -32,7 +32,7 @@ int _HttpPacketWriterImpl::_computeContentLength(HttpPacket packet) {
     if(packet->getHeader()->getType() == st(HttpHeader)::Request) {
         auto multiPart = packet->getEntity()->getMultiPart();
         if(multiPart != nullptr) {
-            return multiPart->getContentLength() + st(HttpText)::CRLF->size();
+            return multiPart->getContentLength();
         }
     }
 
@@ -116,9 +116,9 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
     HttpMultiPart multiPart = packet->getEntity()->getMultiPart();
 
     if (multiPart != nullptr) {
-        if (multiPart->contents->size() > 0) {
+        if (multiPart->getContents()->size() > 0) {
             ListIterator<Pair<String, String>> iterator =
-                multiPart->contents->getIterator();
+                multiPart->getContents()->getIterator();
             while (iterator->hasValue()) {
                 Pair<String, String> content = iterator->getValue();
                 String v = st(HttpText)::BoundaryBeginning
@@ -144,8 +144,8 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
             }
         }
         
-        if (multiPart->files->size() > 0) {
-            ListIterator<HttpMultiPartFile> iterator = multiPart->files->getIterator();
+        if (multiPart->getFiles()->size() > 0) {
+            ListIterator<HttpMultiPartFile> iterator = multiPart->getFiles()->getIterator();
 
             while (iterator->hasValue()) {
                 HttpMultiPartFile partFile = iterator->getValue();
@@ -166,6 +166,10 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
                                                     createString("=\""),
                                                     partFile->getFile()->getName(),
                                                     createString("\""),
+                                                    st(HttpText)::CRLF,
+                                                    st(HttpHeader)::ContentType,
+                                                    createString(": "),
+                                                    partFile->getContentType()->toString(),
                                                     st(HttpText)::CRLF,
                                                     st(HttpText)::CRLF);
                 _write(contentDisposition->toByteArray(),send);
