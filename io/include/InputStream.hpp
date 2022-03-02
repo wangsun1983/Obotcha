@@ -13,6 +13,10 @@ DECLARE_CLASS(InputStream) {
 
     virtual long read(ByteArray, int start) = 0;
 
+    virtual long read(ByteArray, int start,int length) = 0;
+
+    virtual ByteArray readAll() {return nullptr;};
+
     virtual bool open() { return false; }
 
     virtual void close() {}

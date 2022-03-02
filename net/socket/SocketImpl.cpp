@@ -229,11 +229,9 @@ int _SocketImpl::write(ByteArray data,int start,int length) {
 int _SocketImpl::read(ByteArray data,int start,int length) {
     int size = (length == -1?data->size() - start:length);
 
-    if(start + size > data->size()) {
-        Trigger(IllegalArgumentException,"oversize");
-    }
+    int destLength = ((start + size) > data->size())?(data->size() - start):size;
 
-    return ::read(sock->getFd(),data->toValue() + start,size);
+    return ::read(sock->getFd(),data->toValue() + start,destLength);
 }
 
 ByteArray _SocketImpl::read() {

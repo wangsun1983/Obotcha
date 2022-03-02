@@ -60,7 +60,6 @@ ByteArray _HttpChunkParser::doParse() {
                 }
 
                 mChunkSize -= popsize;
-                
                 if (mChunkSize == 0) {
                     mStatus = Idle;
                     continue;

@@ -7,7 +7,7 @@
 #include "SocketBuilder.hpp"
 #include "System.hpp"
 #include "TimeZone.hpp"
-#include "URL.hpp"
+#include "HttpUrl.hpp"
 
 namespace obotcha {
 
@@ -24,7 +24,7 @@ namespace obotcha {
 _NtpClient::_NtpClient() {}
 
 int _NtpClient::bind(String url, int port, long duration) {
-    ArrayList<InetAddress> servers = createURL(url)->getInetAddress();
+    ArrayList<InetAddress> servers = createHttpUrl(url)->getInetAddress();
     if (servers->size() == 0) {
         return -NetConnectFail;
     }

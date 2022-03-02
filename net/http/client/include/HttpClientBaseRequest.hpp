@@ -4,7 +4,6 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "HttpRequest.hpp"
-#include "URL.hpp"
 
 namespace obotcha {
 

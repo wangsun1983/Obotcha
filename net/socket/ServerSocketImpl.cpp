@@ -30,7 +30,6 @@ int _ServerSocketImpl::bind() {
             }
         }
         break;
-
     }
     
     int connectNum = DefaultConnectNum;

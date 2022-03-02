@@ -15,6 +15,8 @@ public:
     _HttpChunkInputStream(ByteArray);
     long read(ByteArray);
     long read(ByteArray, int start);
+    long read(ByteArray, int start,int length);
+    ByteArray readAll();
     bool open();
     void close();
 

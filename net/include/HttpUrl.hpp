@@ -45,6 +45,8 @@ public:
 
     String toString();
 
+    ArrayList<InetAddress> getInetAddress();
+
     sp<_HttpConnection> openConnection(HttpOption o = nullptr);
 
     void dump();

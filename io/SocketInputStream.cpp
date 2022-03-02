@@ -26,6 +26,10 @@ long _SocketInputStream::read(ByteArray buffer, int start) {
     return impl->read(buffer,start);
 }
 
+long _SocketInputStream::read(ByteArray buffer,int start,int length) {
+    return impl->read(buffer,start,length);
+}
+
 void _SocketInputStream::close() { 
     impl = nullptr; 
 }

@@ -12,7 +12,6 @@ objs += $(outtmp)/inetaddress.o \
 		$(outtmp)/inet6address.o \
 		$(outtmp)/inetlocaladdress.o \
 		$(outtmp)/ntpclient.o \
-		$(outtmp)/url.o \
 		$(outtmp)/host.o \
 
 $(outtmp)/inetaddress.o :$(netDir)/InetAddress.cpp
@@ -32,9 +31,6 @@ $(outtmp)/inetlocaladdress.o :$(netDir)/InetLocalAddress.cpp
 
 $(outtmp)/ntpclient.o :$(netDir)/NtpClient.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/NtpClient.cpp -o $(outtmp)/ntpclient.o 
-
-$(outtmp)/url.o :$(netDir)/URL.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/URL.cpp -o $(outtmp)/url.o 
 
 $(outtmp)/host.o :$(netDir)/Host.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/Host.cpp -o $(outtmp)/host.o 

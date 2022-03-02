@@ -1,35 +1,40 @@
 #include "HttpChunk.hpp"
 #include "FileInputStream.hpp"
+#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 
 //--------------- HttpChunkInputStream ------------------//
 _HttpChunkInputStream::_HttpChunkInputStream(ByteArray d) {
     data = d;
+    index = 0;
 }
 
 long _HttpChunkInputStream::read(ByteArray d) {
-    if(index == d->size()) {
-        return 0;
-    }
-
-    long restSize = data->size() - index;
-    long len = (d->size() > restSize)?d->size():restSize;
-    d->fillFrom(data->toValue(),index,len);
-    index += len;
-    return len;
+    return read(d,0);
 }
 
 long _HttpChunkInputStream::read(ByteArray d, int start) {
-    if(index == d->size()) {
+    return read(d,start,d->size() - start);
+}
+
+long _HttpChunkInputStream::read(ByteArray d, int start,int length) {
+    if(index == data->size()) {
         return 0;
     }
     
-    long restSize = data->size() - index;
-    long len = (d->size() > restSize)?d->size():restSize;
-    d->fillFrom(&data->toValue()[start],index,len);
-    index += len;
-    return len;
+    long srcRestLength = data->size() - index;
+    long destRestLength = d->size() - start;
+    destRestLength = (destRestLength > length)?length:destRestLength;
+    long size = (srcRestLength > destRestLength)?destRestLength:srcRestLength;
+    
+    d->fillFrom(&data->toValue()[index],start,size);
+    index += size;
+    return size;
+}
+
+ByteArray _HttpChunkInputStream::readAll() {
+    return data;
 }
 
 bool _HttpChunkInputStream::open() {

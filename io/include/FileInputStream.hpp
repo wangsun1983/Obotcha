@@ -29,11 +29,10 @@ public:
 
     long read(ByteArray);
     long read(ByteArray,int start);
+    long read(ByteArray,int start,int length);
 
     int seekTo(int index);
     
-    long readTo(ByteArray,int pos = 0,int length = 0);
-
     ByteArray readAll();
 
     bool open();
@@ -51,7 +50,7 @@ private:
 
     bool isFdImport;
 
-    int position;
+    //int position;
 };
 
 }
