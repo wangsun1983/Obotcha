@@ -34,6 +34,10 @@ long _ZipFileStream::read(ByteArray buffer,int start) {
     Trigger(MethodNotSupportException, "ZipStream::read(ByteArray)");
 }
 
+long _ZipFileStream::read(ByteArray, int start,int length) {
+    Trigger(MethodNotSupportException, "ZipStream::read(ByteArray)");
+}
+
 bool _ZipFileStream::open() { return true; }
 
 void _ZipFileStream::close() {

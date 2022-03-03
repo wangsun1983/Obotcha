@@ -16,10 +16,6 @@
 namespace obotcha {
 
 //-----------------HttpMultiPartFile-----------------
-// _HttpMultiPartFile::_HttpMultiPartFile(File file,String k) {
-//     mFile = file;
-//     mKey = (k == nullptr)?file->getName():k;    
-// }
 
 _HttpMultiPartFile::_HttpMultiPartFile(String filename,String name,HttpHeaderContentType type) {
 
@@ -240,7 +236,6 @@ long _HttpMultiPart::getContentLength() {
             + st(HttpText)::BoundarySeperator->size()
             + st(HttpText)::BoundaryBeginning->size() * 2
             + st(HttpText)::CRLF->size()); //end
-    printf("calc length is %d \n",length);
     return length;
 }
 

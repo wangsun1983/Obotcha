@@ -59,6 +59,8 @@ private:
 
     Http2StreamSender mSender;
 
+    int mStatus;
+
 };
 
 }

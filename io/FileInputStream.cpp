@@ -64,7 +64,7 @@ long _FileInputStream::read(ByteArray data, int start) {
 }
 
 ByteArray _FileInputStream::readAll() {
-    struct stat stbuf;
+    struct stat stbuf = {0};
     if ((fstat(fd, &stbuf) != 0) || (!S_ISREG(stbuf.st_mode))) {
         return nullptr;
     }

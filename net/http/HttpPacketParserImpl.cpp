@@ -11,12 +11,9 @@
 namespace obotcha {
 
 _HttpPacketParserImpl::_HttpPacketParserImpl(ByteRingArray ring) {
-    mEnv = st(Enviroment)::getInstance();
     mBuff = ring;
     mReader = createByteRingArrayReader(mBuff);
-    //mBodyStartCount = 0;
     mStatus = Idle;
-    // mSubStatus = None;
 }
 
 _HttpPacketParserImpl::_HttpPacketParserImpl():
@@ -27,9 +24,7 @@ _HttpPacketParserImpl::_HttpPacketParserImpl():
 void _HttpPacketParserImpl::reset() {
     mBuff->reset();
     mReader->reset();
-    //mBodyStartCount = 0;
     mStatus = Idle;
-    // mSubStatus = None;
 }
 
 int _HttpPacketParserImpl::pushData(ByteArray data) {
@@ -54,32 +49,17 @@ int _HttpPacketParserImpl::pushData(ByteArray data) {
     return 0;
 }
 
-// HttpPacket _HttpPacketParserImpl::parseEntireRequest(ByteArray request) {
-//     mBuff->reset();
-//     mBuff->push((byte *)request->toString()->toChars(), 0, request->size());
-//     ArrayList<HttpPacket> result = doParse();
-//     if (result == nullptr || result->size() != 1) {
-//         return nullptr;
-//     }
-
-//     return result->get(0);
-// }
-
 ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
     ArrayList<HttpPacket> packets = createArrayList<HttpPacket>();
-    //printf("PacketParserImpl doParse \n");
     while (1) {
         switch (mStatus) {
             case Idle: {
-                printf("PacketParserImpl doParse Idle\n");
                 if (mHttpHeaderParser == nullptr) {
                     mHttpHeaderParser = createHttpHeaderParser(mReader);
                     mHttpPacket = createHttpPacket();
                 }
-                printf("PacketParserImpl doParse Idle trace1\n");
                 HttpHeader header = mHttpHeaderParser->doParse();
                 if (header == nullptr) {
-                    printf("PacketParserImpl doParse Idle trace2\n");
                     return packets;
                 }
 
@@ -89,14 +69,12 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                     mHttpPacket->setType(st(HttpPacket)::Request);
                 }
 
-                printf("PacketParserImpl doParse Idle trace3\n");
                 mHttpPacket->setHeader(header);
                 mStatus = BodyStart;
                 continue;
             }
 
             case BodyStart: {
-                printf("PacketParserImpl doParse BodyStart\n");
                 auto contentlength = mHttpPacket->getHeader()->getContentLength();
                 auto contenttype = mHttpPacket->getHeader()->getContentType();
                 auto transferEncoding = mHttpPacket->getHeader()->getTransferEncoding();
@@ -113,9 +91,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         return Global::Continue;
                     });
                 }
-                printf("PacketParserImpl doParse BodyStart trace1\n");
                 if (isTransferChuncked) {
-                    printf("PacketParserImpl doParse BodyStart2\n");
                     //if (mChunkParser == nullptr) {
                     //    mChunkParser = createHttpChunkParser(mReader);
                     //}
@@ -183,14 +159,12 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
 
                 if (contenttype != nullptr && 
                     contenttype->getType()->containsIgnoreCase(st(HttpMime)::MultiPartFormData)) {
-                    printf("PacketParserImpl doParse BodyStart trace2\n");
                     if (mMultiPartParser == nullptr) {
                         mMultiPartParser = createHttpMultiPartParser(contenttype->getBoundary());
                     }
 
                     HttpMultiPart multipart = mMultiPartParser->parse(mReader);
                     if (multipart != nullptr) {
-                        printf("PacketParserImpl doParse BodyStart trace3\n");
                         mHttpPacket->getEntity()->setMultiPart(multipart);
                         packets->add(mHttpPacket);
                         mHttpHeaderParser = nullptr;
@@ -257,7 +231,6 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
             break;
         }
     }
-    printf("PacketParserImpl doParse end\n");
     return packets;
 }
 

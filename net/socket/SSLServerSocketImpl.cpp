@@ -37,17 +37,10 @@ int _SSLServerSocketImpl::bind() {
 }
 
 Socket _SSLServerSocketImpl::accept() {
-    printf("SSL serverSocket accept start \n");
     Socket s = mSocket->accept();
     
     auto client = createSSLSocksSocketImpl(mCertificate,mKey,s->getSockImpl());
-    printf("SSL serverSocket accept trace1 \n");
     s->getFileDescriptor()->setAsync(false);
-    //int ret = SSL_set_fd(client->getSSLContext()->getSSL(), s->getFileDescriptor()->getFd());
-    //if(ret < 0) {
-    //    LOG(ERROR)<<"SSLServerSocketImpl SSL_set_fd failed";
-    //}
-
     int ret = SSL_accept(client->getSSLContext()->getSSL());
     if(ret < 0) {
         LOG(ERROR)<<"SSLServerSocketImpl SSL_accept failed";

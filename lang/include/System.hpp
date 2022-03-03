@@ -38,6 +38,10 @@ public:
 
     static int getEndianness();
 
+    static void arrayCopy(ByteArray dest,int destPos,
+                          ByteArray src,int srcPos,
+                          int length);
+
 private:
     static Mutex mMutex;
     static ArrayList<Closeable> mListeners;

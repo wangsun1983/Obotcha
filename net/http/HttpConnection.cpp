@@ -35,13 +35,12 @@ Socket _HttpConnection::getSocket() {
 
 int _HttpConnection::connect() {
     InetAddress inetAddr = createInet4Address(mUrl->getPort());
-
+    
     if (mUrl->getHost() != nullptr) {
         ArrayList<InetAddress> address = mUrl->getInetAddress();
         if (address == nullptr || address->size() == 0) {
             return -NetConnectFail;
         }
-
         inetAddr->setAddress(address->get(0)->getAddress());
     }
     

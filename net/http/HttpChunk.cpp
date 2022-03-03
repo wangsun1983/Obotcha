@@ -50,11 +50,17 @@ void _HttpChunkInputStream::close() {
 _HttpChunk::_HttpChunk(File file) {
     mInput = createFileInputStream(file);
     mSize = file->length();
+    mIsFile = true;
 }
 
 _HttpChunk::_HttpChunk(ByteArray data) {
     mInput = createHttpChunkInputStream(data);
     mSize = data->size();
+    mIsFile = false;
+}
+
+bool _HttpChunk::isFile() {
+    return mIsFile;
 }
 
 InputStream _HttpChunk::getInputStream() {

@@ -38,17 +38,25 @@ public:
     void reset();
 
 private:
-    enum HttpSubStatus {
-        None = 0,
-        HeadKeyValueParse,
+    // enum HttpSubStatus {
+    //     None = 0,
+    //     HeadKeyValueParse,
+    // };
+
+    enum Status {
+        Idle = 0,
+        HeadStart,
+        BodyStart,
     };
 
-    int mSubStatus;
+    //int mSubStatus;
 
     ByteRingArray mBuff;
     ByteRingArrayReader mReader;
 
-    Enviroment mEnv;
+    //Enviroment mEnv;
+
+    int mStatus;
 
     //int mBodyStartCount;
 

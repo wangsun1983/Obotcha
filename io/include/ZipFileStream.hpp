@@ -34,6 +34,8 @@ DECLARE_CLASS(ZipFileStream) IMPLEMENTS(InputStream) {
 
     long read(ByteArray, int start);
 
+    long read(ByteArray, int start,int length);
+
     bool open();
 
     void close();

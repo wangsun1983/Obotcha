@@ -32,18 +32,11 @@ public:
 
     virtual void reset() = 0;
 
-    int getStatus();
-    
-    void setStatus(int);
+    //int getStatus();
+    //void setStatus(int);
 
-    enum Status {
-        Idle = 0,
-        HeadStart,
-        BodyStart,
-    };
-
-protected:
-    int mStatus;
+//protected:
+    //int mStatus;
 };
 
 }

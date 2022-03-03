@@ -32,11 +32,14 @@ public:
 
     InputStream getInputStream();
     long size();
+    bool isFile();
+
     ~_HttpChunk();
 
 private:
     InputStream mInput;
     long mSize;
+    bool mIsFile;
 };
 
 } // namespace obotcha

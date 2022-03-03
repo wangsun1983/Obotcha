@@ -55,7 +55,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
     byte v = 0;
     while (reader->readNext(v) == st(ByteRingArrayReader)::Continue) {
-        //printf("HttpMultiPartParser,v is %x,status is %d \n",v,mStatus);
         switch (mStatus) {
             case ParseStartBoundry: {
                 if(endDetector->isEnd(v)) {
@@ -103,7 +102,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
             case ParseFormData:{
                 int checkStatus = checkBoudaryIndex(v);
-                //printf("ParseFormData checkStatus is %d \n",checkStatus);
                 int resizeSize = mBoundaryEnd->size();
                 switch(checkStatus) {
                     case _PartEnd:
@@ -131,7 +129,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
             case ParseContent: {
                 int checkStatus = checkBoudaryIndex(v);
-                //printf("HttpMultiPartParser checkStatus is %d \n",checkStatus);
                 int resizeSize = mBoundaryEnd->size(); // multi part end "----xxxx\r\n"
                 switch(checkStatus) {
                     case _PartEnd:
@@ -143,7 +140,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         mFileStream->close();
                         mFileStream = nullptr;
                         mStatus = ParseContentInfo;
-                        //printf("HttpMultiPartParser,flush content,checkStatus is %d \n",checkStatus);
                         if(checkStatus == _PartEnd) {
                             auto result = mMultiPart;
                             mMultiPart = nullptr;

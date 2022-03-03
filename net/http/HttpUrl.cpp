@@ -397,13 +397,14 @@ String _HttpUrl::toString() {
 
 ArrayList<InetAddress> _HttpUrl::getInetAddress() {
     ArrayList<InetAddress> hosts = createArrayList<InetAddress>();
-    struct hostent *hptr = gethostbyname(mRawUrl->toChars());
+
+    struct hostent *hptr = gethostbyname(getHost()->toChars());
     if (hptr == nullptr) {
         return nullptr;
     }
 
     char **pptr = hptr->h_addr_list;
-    char str[64];
+    char str[64] = {0};
     for (; *pptr != NULL; pptr++) {
         inet_ntop(hptr->h_addrtype, *pptr, str, sizeof(str));
         InetAddress address = nullptr;
@@ -412,7 +413,6 @@ ArrayList<InetAddress> _HttpUrl::getInetAddress() {
         } else if (hptr->h_addrtype == AF_INET6) {
             address = createInet6Address(createString(str), -1);
         }
-
         hosts->add(address);
     }
 

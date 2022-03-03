@@ -6,6 +6,8 @@
 
 #include "AutoLock.hpp"
 #include "System.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
+#include "IllegalArgumentException.hpp"
 
 namespace obotcha {
 
@@ -88,6 +90,21 @@ int _System::getEndianness() {
     x = 0x1122;
     x0 = ((char*)&x)[0];
     return (x0==0x11)?Global::BigEndian:Global::LittleEndian;
+}
+
+void _System::arrayCopy(ByteArray dest,int destPos,
+                        ByteArray src,int srcPos,
+                        int length) {
+    if(destPos < 0 || srcPos < 0) {
+        Trigger(IllegalArgumentException,"illeagl param");
+    }
+
+    if(srcPos > src->size() - length ||
+       destPos > dest->size() - length) {
+        Trigger(ArrayIndexOutOfBoundsException,"oversize");
+    }
+
+    memcpy(&dest->toValue()[destPos],&src->toValue()[srcPos],length);
 }
 
 } // namespace obotcha
