@@ -92,9 +92,9 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                     });
                 }
                 if (isTransferChuncked) {
-                    //if (mChunkParser == nullptr) {
-                    //    mChunkParser = createHttpChunkParser(mReader);
-                    //}
+                    if (mChunkParser == nullptr) {
+                        mChunkParser = createHttpChunkParser(mReader);
+                    }
 
                     ByteArray data = mChunkParser->doParse();
                     if (data != nullptr) {

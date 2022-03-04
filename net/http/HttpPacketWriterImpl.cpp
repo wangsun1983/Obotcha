@@ -16,6 +16,7 @@ _HttpPacketWriterImpl::_HttpPacketWriterImpl(OutputStream stream,int defaultSize
 }
 
 int _HttpPacketWriterImpl::write(HttpPacket packet) {
+    printf("_HttpPacketWriterImpl write \n");
     return _flush(packet,true);
 }
 
@@ -86,9 +87,7 @@ void _HttpPacketWriterImpl::_updateHttpHeader(HttpPacket packet) {
 int _HttpPacketWriterImpl::_flush(HttpPacket packet,bool send) {
     //update content length
     auto header = packet->getHeader();
-    
     _updateHttpHeader(packet);
-
     //start flush
     String headString = header->toString(packet->getType())->append(st(HttpText)::CRLF,// change line
                                                                         st(HttpText)::CRLF // blank line
@@ -96,7 +95,7 @@ int _HttpPacketWriterImpl::_flush(HttpPacket packet,bool send) {
     if(_write(headString->toByteArray(),send) != 0) {
         return -1;
     }
-    
+
     //start send content
     switch(packet->getType()) {
         case st(HttpPacket)::Request:
@@ -112,91 +111,12 @@ int _HttpPacketWriterImpl::_flush(HttpPacket packet,bool send) {
 }
 
 int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
-    //http multipart
     HttpMultiPart multiPart = packet->getEntity()->getMultiPart();
 
     if (multiPart != nullptr) {
-        if (multiPart->getContents()->size() > 0) {
-            ListIterator<Pair<String, String>> iterator =
-                multiPart->getContents()->getIterator();
-            while (iterator->hasValue()) {
-                Pair<String, String> content = iterator->getValue();
-                String v = st(HttpText)::BoundaryBeginning
-                            ->append(st(HttpText)::BoundarySeperator,
-                                    multiPart->getBoundary(),st(HttpText)::CRLF,
-                                    st(HttpHeader)::ContentDisposition,
-                                    createString(": "),
-                                    st(HttpMime)::FormData,
-                                    createString("; "),
-                                    st(HttpText)::MultiPartName,
-                                    createString("=\""),
-                                    content->getKey(),
-                                    createString("\""),
-                                    st(HttpText)::CRLF,
-                                    st(HttpText)::CRLF,
-                                    content->getValue(),
-                                    st(HttpText)::CRLF,
-                                    st(HttpText)::BoundarySeperator,
-                                    multiPart->getBoundary(),
-                                    st(HttpText)::CRLF);
-                _write(v->toByteArray(),send);
-                iterator->next();
-            }
-        }
-        
-        if (multiPart->getFiles()->size() > 0) {
-            ListIterator<HttpMultiPartFile> iterator = multiPart->getFiles()->getIterator();
-
-            while (iterator->hasValue()) {
-                HttpMultiPartFile partFile = iterator->getValue();
-                String contentDisposition =  st(HttpText)::BoundaryBeginning
-                                            ->append(st(HttpText)::BoundarySeperator,
-                                                    multiPart->getBoundary(),
-                                                    st(HttpText)::CRLF,
-                                                    st(HttpHeader)::ContentDisposition,
-                                                    createString(": "),
-                                                    st(HttpMime)::FormData,
-                                                    createString("; "),
-                                                    st(HttpText)::MultiPartName,
-                                                    createString("="),
-                                                    createString("\""),
-                                                    partFile->getName(),
-                                                    createString("\";"),
-                                                    st(HttpText)::MultiPartFileName,
-                                                    createString("=\""),
-                                                    partFile->getFile()->getName(),
-                                                    createString("\""),
-                                                    st(HttpText)::CRLF,
-                                                    st(HttpHeader)::ContentType,
-                                                    createString(": "),
-                                                    partFile->getContentType()->toString(),
-                                                    st(HttpText)::CRLF,
-                                                    st(HttpText)::CRLF);
-                _write(contentDisposition->toByteArray(),send);
-
-                FileInputStream stream =
-                    createFileInputStream(partFile->getFile());
-                stream->open();
-                ByteArray readBuff = createByteArray(mDefaultSize);
-                //int index = 0;
-                int readSize = 1;
-                while (readSize > 0) {
-                    readSize = stream->read(readBuff);
-                    readBuff->quickShrink(readSize);
-                    _write(readBuff,send);
-                    readBuff->quickRestore();
-                }
-
-                _write(st(HttpText)::CRLF->toByteArray(),send);
-                iterator->next();
-            }
-        }
-        
-        String finish = st(HttpText)::BoundaryBeginning->append(st(HttpText)::BoundarySeperator,
-                                                        multiPart->getBoundary(),
-                                                        st(HttpText)::BoundaryBeginning,
-                                                        st(HttpText)::CRLF);
-        _write(finish->toByteArray(),send);
+        multiPart->onCompose([this,send](ByteArray data) {
+            this->_write(data,send);
+        });
     } else {
         ByteArray body = packet->getEntity()->getContent();
         if(body != nullptr && body->size() != 0) {
@@ -204,60 +124,22 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
         }
     }
 
-    //int index = mWriter->getIndex();
-    //if(index != 0) {
-    //    mStream->write(mBuff, 0, index);
-    //}
-
     return 0;
 }
 
 int _HttpPacketWriterImpl::_flushResponse(HttpPacket packet,bool send) {
-    //File file = packet->getEntity()->getChunkFile();
-    //ArrayList<ByteArray> chunks = packet->getEntity()->getChunks();
-    HttpHeader header = packet->getHeader();
     HttpChunk chunk = packet->getEntity()->getChunk();
     if (chunk != nullptr) {
         HttpChunk chunk = packet->getEntity()->getChunk();
-        int contentSize = chunk->size();
-        InputStream input = chunk->getInputStream();
-        ByteArray data = createByteArray(mDefaultSize);
-        int start = 0;
-        while (1) {
-            long len = input->read(data);
-            if(len <= 0) {
-                break;
-            }
-
-            String chunkLength = createInteger(len)
-                                ->toHexString()
-                                ->append(st(HttpText)::CRLF);
-            int rs = _write(chunkLength->toByteArray(),send);
-            data->quickShrink(len);
-            rs = _write(data,send);
-            data->quickRestore();
-
-            _write(st(HttpText)::CRLF->toByteArray(),send);
-        }
-
-        String end = createString("0")->append(st(HttpText)::HttpEnd);
-        _write(end->toByteArray(),send);
+        chunk->onCompose([this,send](ByteArray data) {
+            _write(data,send);
+        });
     } else {
         auto content = packet->getEntity()->getContent();
         if(content != nullptr && content->size() != 0) {
             _write(packet->getEntity()->getContent(),send);
-            //_write(st(HttpText)::CRLF->toByteArray(),send);
         }
     }
-
-    //flush end
-    //int index = mWriter->getIndex();
-    //printf("index is %d \n",index);
-    //if(index != 0) {
-    //    int ret = mStream->write(mBuff, 0, index);
-    //}
-    //mWriter->reset();
-    
     return 0;
 }
 

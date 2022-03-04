@@ -19,14 +19,11 @@ void _HttpLinkerManager::add(sp<_HttpLinker> info) {
 
 void _HttpLinkerManager::remove(sp<_HttpLinker> linker) {
     AutoLock l(mMutex);
-    //HttpLinker ret = mClients->get(s);
-    //mClients->remove(s);
     mClients->remove(linker->mSocket);
 }
 
 void _HttpLinkerManager::clear() {
     AutoLock l(mMutex);
-    //mClients->clear();
     mClients->foreach([](Socket s,HttpLinker l){
         l->close();
         return Global::Continue;

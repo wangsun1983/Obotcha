@@ -14,8 +14,6 @@
 
 namespace obotcha {
 
-//FileTypeSearchNode *_HttpMime::mSuffixRootNode = nullptr;
-//FileTypeSearchNode *_HttpMime::mContentTypeNode = nullptr;
 HashMap<String,Integer> _HttpMime::nameToId = nullptr;
 HashMap<String,Integer> _HttpMime::suffixToId = nullptr;
 

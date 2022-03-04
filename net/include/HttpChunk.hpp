@@ -27,6 +27,7 @@ private:
 
 DECLARE_CLASS(HttpChunk) {
 public:
+    friend class _HttpPacketWriterImpl;
     _HttpChunk(File);
     _HttpChunk(ByteArray);
 
@@ -40,6 +41,9 @@ private:
     InputStream mInput;
     long mSize;
     bool mIsFile;
+
+    using composeCallBack = std::function<void(ByteArray)>;
+    void onCompose(composeCallBack callback);
 };
 
 } // namespace obotcha

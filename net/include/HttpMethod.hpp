@@ -93,9 +93,10 @@ public:
     const static String PriString;
     
     static String toString(int);
-    
-    static int findId(String method);
-    static String findString(int);
+    static int toId(String);
+
+    //static int findId(String method);
+    //static String findString(int);
 
 };
 

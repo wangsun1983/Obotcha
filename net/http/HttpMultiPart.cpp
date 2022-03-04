@@ -12,6 +12,7 @@
 #include "HttpText.hpp"
 #include "HttpMime.hpp"
 #include "Enviroment.hpp"
+#include "FileInputStream.hpp"
 
 namespace obotcha {
 
@@ -185,6 +186,7 @@ long _HttpMultiPart::getContentLength() {
                         + 0 /*key size*/ + st(HttpText)::CRLF->size());
 
         keyValueLength += st(HttpText)::CRLF->size();
+        keyValueLength += st(HttpText)::CRLF->size();
 
         //get all keyValueLength except key/value length
         keyValueLength = keyValueLength *contents->size();
@@ -194,6 +196,7 @@ long _HttpMultiPart::getContentLength() {
             Pair<String, String> content = contentIterator->getValue();
             keyValueLength += content->getKey()->size();
             keyValueLength += content->getValue()->size();
+            contentIterator->next();
         }
     }
 
@@ -237,6 +240,92 @@ long _HttpMultiPart::getContentLength() {
             + st(HttpText)::BoundaryBeginning->size() * 2
             + st(HttpText)::CRLF->size()); //end
     return length;
+}
+
+void _HttpMultiPart::onCompose(composeCallBack callback) {
+    if (contents->size() > 0) {
+        ListIterator<Pair<String, String>> iterator = contents->getIterator();
+        while (iterator->hasValue()) {
+            Pair<String, String> content = iterator->getValue();
+            String v = st(HttpText)::BoundaryBeginning
+                        ->append(st(HttpText)::BoundarySeperator,
+                                //multiPart->getBoundary(),
+                                mBoundary,
+                                st(HttpText)::CRLF,
+                                st(HttpHeader)::ContentDisposition,
+                                createString(": "),
+                                st(HttpMime)::FormData,
+                                createString("; "),
+                                st(HttpText)::MultiPartName,
+                                createString("=\""),
+                                content->getKey(),
+                                createString("\""),
+                                st(HttpText)::CRLF,
+                                st(HttpText)::CRLF,
+                                content->getValue(),
+                                st(HttpText)::CRLF);
+            //_write(v->toByteArray(),send);
+            callback(v->toByteArray());
+            iterator->next();
+        }
+    }
+        
+    if (files->size() > 0) {
+        ListIterator<HttpMultiPartFile> iterator = files->getIterator();
+
+        while (iterator->hasValue()) {
+            HttpMultiPartFile partFile = iterator->getValue();
+            String contentDisposition =  st(HttpText)::BoundaryBeginning
+                                        ->append(st(HttpText)::BoundarySeperator,
+                                                //multiPart->getBoundary(),
+                                                mBoundary,
+                                                st(HttpText)::CRLF,
+                                                st(HttpHeader)::ContentDisposition,
+                                                createString(": "),
+                                                st(HttpMime)::FormData,
+                                                createString("; "),
+                                                st(HttpText)::MultiPartName,
+                                                createString("="),
+                                                createString("\""),
+                                                partFile->getName(),
+                                                createString("\";"),
+                                                st(HttpText)::MultiPartFileName,
+                                                createString("=\""),
+                                                partFile->getFile()->getName(),
+                                                createString("\""),
+                                                st(HttpText)::CRLF,
+                                                st(HttpHeader)::ContentType,
+                                                createString(": "),
+                                                partFile->getContentType()->toString(),
+                                                st(HttpText)::CRLF,
+                                                st(HttpText)::CRLF);
+            //_write(contentDisposition->toByteArray(),send);
+            callback(contentDisposition->toByteArray());
+
+            FileInputStream stream =
+                createFileInputStream(partFile->getFile());
+            stream->open();
+            ByteArray readBuff = createByteArray(1024*32);
+            //int index = 0;
+            int readSize = 1;
+            while (readSize > 0) {
+                readSize = stream->read(readBuff);
+                readBuff->quickShrink(readSize);
+                callback(readBuff);
+                readBuff->quickRestore();
+            }
+
+            callback(st(HttpText)::CRLF->toByteArray());
+            iterator->next();
+        }
+    }
+        
+    String finish = st(HttpText)::BoundaryBeginning->append(st(HttpText)::BoundarySeperator,
+                                                    //multiPart->getBoundary(),
+                                                    mBoundary,
+                                                    st(HttpText)::BoundaryBeginning,
+                                                    st(HttpText)::CRLF);
+    callback(finish->toByteArray());
 }
 
 }

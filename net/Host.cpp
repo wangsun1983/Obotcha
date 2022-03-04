@@ -16,7 +16,7 @@ _Host::_Host() {}
 
 String _Host::getHostName() {
     // get hostname;
-    char hostname[128];
+    char hostname[128] = {0};
     int ret = gethostname(hostname, sizeof(hostname));
     if (ret != -1) {
         return createString(hostname);

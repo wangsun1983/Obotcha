@@ -34,10 +34,6 @@ const String _HttpMethod::SourceString = createString("SOURCE");
 const String _HttpMethod::PriString = createString("PRI");
 
 String _HttpMethod::toString(int method) {
-    return findString(method);
-}
-
-String _HttpMethod::findString(int method) {
     switch (method) {
     case Delete:
         return DeleteString;
@@ -131,7 +127,7 @@ String _HttpMethod::findString(int method) {
     return nullptr;
 }
 
-int _HttpMethod::findId(String m) {
+int _HttpMethod::toId(String m) {
     const char *p = m->toChars();
     for (int i = 0; i < m->size(); i++) {
         if ((*p <= 'Z' && *p >= 'A') || (*p <= 'z' && *p >= 'a')) {

@@ -16,23 +16,6 @@ _HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r) {
     endDetector = createCRLFDetector();
 }
 
-//void _HttpHeaderParser::changeToParseHeader() { 
-//    mStatus = Header; 
-//}
-
-// bool _HttpHeaderParser::isLineEnd(byte &v) {
-//     if(v == '\r' && mCRLFIndex == 0) {
-//         mCRLFIndex = 1;
-//     } else if(v == '\n' && mCRLFIndex == 1) {
-//         mCRLFIndex = 0;
-//         return true;
-//     } else {
-//         mCRLFIndex = 0;
-//     }
-
-//     return false;
-// }
-
 void _HttpHeaderParser::parseRequestLine(String line) {
     int pos = 0;
     while (pos < line->size()) {
@@ -43,7 +26,7 @@ void _HttpHeaderParser::parseRequestLine(String line) {
         pos++;
         switch(mParseLineStatus) {
             case LineParseStart: {
-                int method = st(HttpMethod)::findId(directive);
+                int method = st(HttpMethod)::toId(directive);
                 
                 if(method != -1) {
                     //this is a request
@@ -92,7 +75,6 @@ void _HttpHeaderParser::parseRequestLine(String line) {
 
 void _HttpHeaderParser::parseHeader(String line) {
     int pos = 0;
-    //while (pos < line->size()) {
     int tokenStart = pos;
     //remove all \r\n
     line = line->replaceAll("\r\n","");
@@ -109,8 +91,6 @@ void _HttpHeaderParser::parseHeader(String line) {
 
 HttpHeader _HttpHeaderParser::doParse() {
     byte v = 0;
-    //const byte *CRLF = (const byte *)st(HttpText)::CRLF->toChars();
-    //const byte *LF = (const byte *)st(HttpText)::LF->toChars();
     if(mHeader == nullptr) {
         mHeader = createHttpHeader();
     }

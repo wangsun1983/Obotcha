@@ -138,8 +138,12 @@ void _NtpClient::generateNtpPacket(char *v) {
     data[11] = htonl(NTPFRAC(now.tv_usec));
 }
 
-void _NtpClient::close() { mSock->close(); }
+void _NtpClient::close() { 
+    mSock->close(); 
+}
 
-_NtpClient::~_NtpClient() { mSock->close(); }
+_NtpClient::~_NtpClient() { 
+    mSock->close(); 
+}
 
 } // namespace obotcha

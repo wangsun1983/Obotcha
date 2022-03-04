@@ -15,7 +15,7 @@ _HttpHeaderAllow::_HttpHeaderAllow(String v):_HttpHeaderAllow() {
 
 void _HttpHeaderAllow::import(String s) {
     st(HttpHeaderContentParser)::import(s,[this](String directive,String parameter) {
-        methods->add(createInteger(st(HttpMethod)::findId(directive)));
+        methods->add(createInteger(st(HttpMethod)::toId(directive)));
     });
 }
 
@@ -32,7 +32,7 @@ String _HttpHeaderAllow::toString() {
     auto iterator = methods->getIterator();
     while(iterator->hasValue()) {
         Integer v = iterator->getValue();
-        method->append(st(HttpMethod)::findString(v->toValue()),", ");   
+        method->append(st(HttpMethod)::toString(v->toValue()),", ");   
         iterator->next();
     }
 

@@ -13,7 +13,7 @@ _HttpHeaderAccessControlRequestMethod::_HttpHeaderAccessControlRequestMethod(Str
 }
 
 void _HttpHeaderAccessControlRequestMethod::import(String v) {
-    method = st(HttpMethod)::findId(v->trim());
+    method = st(HttpMethod)::toId(v->trim());
 }
 
 void _HttpHeaderAccessControlRequestMethod::set(int v) {
@@ -25,7 +25,7 @@ int _HttpHeaderAccessControlRequestMethod::get() {
 }
 
 String _HttpHeaderAccessControlRequestMethod::toString() {
-    return st(HttpMethod)::findString(method);
+    return st(HttpMethod)::toString(method);
 }
 
 }

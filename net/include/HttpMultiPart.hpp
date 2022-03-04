@@ -37,6 +37,7 @@ private:
 
 DECLARE_CLASS(HttpMultiPart) {
 public:
+    friend class _HttpPacketWriterImpl;
     _HttpMultiPart();
     _HttpMultiPart(String boundary);
     void addFile(File,String name = nullptr);
@@ -53,6 +54,9 @@ private:
     ArrayList<Pair<String, String>> contents;
 
     String mBoundary;
+
+    using composeCallBack = std::function<void(ByteArray)>;
+    void onCompose(composeCallBack callback);
 };
 
 } // namespace obotcha

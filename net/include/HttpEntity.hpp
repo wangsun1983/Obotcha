@@ -28,29 +28,13 @@ public:
     void setChunk(File);
 
     HttpChunk getChunk();
-    //String getUpgradeContent();
-    //void setUpgradeContent(String);
-
-    //File getChunkFile();
-    //void setChunkFile(File);
-
-    //ArrayList<ByteArray> getChunks();
-    //void setChunks(ArrayList<ByteArray>);
 
 private:
     HttpMultiPart mMultiPart;
 
-    //ArrayList<Pair<String,String>>mFormUrlEncodedMap;
-    
     ByteArray mContent;
 
     HttpChunk mChunk;
-
-    //String mUpgrade;
-
-    //File mChunkFile;
-    //ArrayList<ByteArray> mChunks;
-
 };
 
 }

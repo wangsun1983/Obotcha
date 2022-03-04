@@ -51,10 +51,6 @@ ArrayList<HttpPacket> _HttpLinker::pollPacket() {
     return mParser->doParse();
 }
 
-//Socket _HttpLinker::getSocket() { 
-//    return mSocket; 
-//}
-
 HttpSession _HttpLinker::getSession() { 
     return mSession; 
 }
@@ -66,11 +62,5 @@ HttpPacketWriter _HttpLinker::getWriter() {
 Http2StreamController _HttpLinker::getStreamController() {
     return mHttp2StreamController;
 }
-
-//int _HttpLinker::pushPacket(HttpPacket p) {
-//    Http2Packet packet = Cast<Http2Packet>(p);
-//    Http2Stream stream = mHttp2StreamController->newStream();
-//    return stream->write(packet);
-//}
 
 } // namespace obotcha
