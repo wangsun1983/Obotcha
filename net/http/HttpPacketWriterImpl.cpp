@@ -16,7 +16,6 @@ _HttpPacketWriterImpl::_HttpPacketWriterImpl(OutputStream stream,int defaultSize
 }
 
 int _HttpPacketWriterImpl::write(HttpPacket packet) {
-    printf("_HttpPacketWriterImpl write \n");
     return _flush(packet,true);
 }
 

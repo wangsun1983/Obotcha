@@ -29,6 +29,10 @@ ByteArray _HttpChunkParser::doParse() {
                 if(endDetector->isEnd(v)) {
                     String chunklength = mReader->pop()->toString();
                     if (chunklength->size() <= 2) {
+                        if(chunklength->equals(st(HttpText)::CRLF)) {
+                            continue;
+                        }
+                        
                         // first two is /r/n,return direct
                         LOG(ERROR)<<"HttpChunkParser invalid content size";
                         return nullptr;
