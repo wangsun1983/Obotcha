@@ -9,37 +9,17 @@ namespace obotcha {
 
 DECLARE_CLASS(Calendar) {
   public:
-    _Calendar();
-
-    _Calendar(sp<_Calendar>);
-
-    _Calendar(int _year, int _month, int _dayOfMonth, int _hour, int _minute,
-              int _seconds, int mseconds);
-
-    _Calendar(long long timeMillis);
-
-    void add(int type, uint64_t v);
-
-    bool equals(Calendar);
-
-    bool set(int type, int value);
-
-    int get(int type);
-
-    long int toTimeMillis();
-
-    void setTime(long int msec);
-
-    DateTime getDateTime();
-
-    DateTime getGmtDateTime();
-
-    static bool isLeapYear(int year);
-
-    static int caculateDayOfWeek(int y, int m, int d);
-
-    static bool isValid(int year, int month, int day, int hour, int minute,
-                        int second, int millisecond);
+    enum TimeType {
+        Year = 0,
+        Month,
+        DayOfWeek,
+        DayOfMonth,
+        DayOfYear,
+        Hour,
+        Minute,
+        Second,
+        MSecond,
+    };
 
     enum Month {
         January = 0,
@@ -66,17 +46,39 @@ DECLARE_CLASS(Calendar) {
         Saturday,
     };
 
-    enum TimeType {
-        Year = 0,
-        Month,
-        DayOfWeek,
-        DayOfMonth,
-        DayOfYear,
-        Hour,
-        Minute,
-        Second,
-        MSecond,
-    };
+
+
+    _Calendar();
+
+    _Calendar(sp<_Calendar>);
+
+    _Calendar(int _year, int _month, int _dayOfMonth, int _hour, int _minute,
+              int _seconds, int mseconds);
+
+    _Calendar(long long timeMillis);
+
+    int add(_Calendar::TimeType type, uint64_t v);
+
+    bool equals(Calendar);
+
+    int set(_Calendar::TimeType type, int value);
+
+    int get(_Calendar::TimeType type);
+
+    long int toTimeMillis();
+
+    void setTime(long int msec);
+
+    DateTime getDateTime();
+
+    DateTime getGmtDateTime();
+
+    static bool isLeapYear(int year);
+
+    static int caculateDayOfWeek(int y, int m, int d);
+
+    static bool isValid(int year, int month, int day, int hour, int minute,
+                        int second, int millisecond);
 
   private:
     long long timeMillis;
@@ -103,15 +105,15 @@ DECLARE_CLASS(Calendar) {
 
     int getMonthDays(int month);
 
-    bool onUpdateByYear(int v);
+    int onUpdateByYear(int v);
 
-    bool onUpdateByMonth(int v);
+    int onUpdateByMonth(int v);
 
-    bool onUpdateByDayOfWeek(int v);
+    int onUpdateByDayOfWeek(int v);
 
-    bool onUpdateByDayOfMonth(int v);
+    int onUpdateByDayOfMonth(int v);
 
-    bool onUpdateByDayOfYear(int v);
+    int onUpdateByDayOfYear(int v);
 
     void onUpdateMillseconds(uint64_t interval);
 

@@ -5,6 +5,8 @@
 #include "InitializeException.hpp"
 #include "System.hpp"
 #include "TimeZone.hpp"
+#include "Error.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -66,21 +68,13 @@ int _Calendar::caculateDayOfWeek(int y, int m, int d) {
         y--;
     }
 
-    int week =
-        (d + 2 * m + 3 * (m + 1) / 5 + y + y / 4 - y / 100 + y / 400) % 7;
-    return week;
+    return (d + 2 * m + 3 * (m + 1) / 5 + y + y / 4 - y / 100 + y / 400) % 7;
 }
 
 bool _Calendar::isValid(int year, int month, int day, int hour, int minute,
                         int second, int millisecond) {
-    int *_days = nullptr;
-    bool isLeap = isLeapYear(year);
-    if (isLeap) {
-        _days = leapDays;
-    } else {
-        _days = commonDays;
-    }
-
+    int *_days = isLeapYear(year)?leapDays:commonDays;
+    
     return (year >= 0 && year <= 9999) && (month >= 0 && month <= 11) &&
            (day >= 1 && day <= _days[month]) && (hour >= 0 && hour <= 23) &&
            (minute >= 0 && minute <= 59) && (second >= 0 && second <= 60) &&
@@ -112,20 +106,12 @@ bool _Calendar::equals(Calendar c) {
 }
 
 int *_Calendar::getDays(int year) {
-    bool isLeap = isLeapYear(year);
-    if (isLeap) {
-        return leapDays;
-    }
-
-    return commonDays;
+    return isLeapYear(year)?leapDays:commonDays;
 }
 
-bool _Calendar::onUpdateByYear(int value) {
-    year = value;
-
+int _Calendar::onUpdateByYear(int year) {
     // update dayOfMonth
-    bool isLeap = isLeapYear(year);
-    if (!isLeap && month == February && dayOfMonth == 29) {
+    if (!isLeapYear(year) && month == February && dayOfMonth == 29) {
         dayOfMonth = 28;
     }
 
@@ -135,13 +121,14 @@ bool _Calendar::onUpdateByYear(int value) {
     // update dayOfYear
     dayOfYear = caculateDayOfYear(year, month, dayOfMonth);
 
-    return true;
+    return SUCCESS;
 }
 
-bool _Calendar::onUpdateByMonth(int mon) {
+int _Calendar::onUpdateByMonth(int mon) {
     // update dayOfMonth
     if (month < 0 || month > December) {
-        return false;
+        LOG(ERROR)<<"Calendar,onUpdateByMonth invalid params,mon is "<<mon;
+        return FAIL;
     }
 
     int *_days = getDays(year);
@@ -157,34 +144,31 @@ bool _Calendar::onUpdateByMonth(int mon) {
     // update dayOfYear
     dayOfYear = caculateDayOfYear(year, month, dayOfMonth);
 
-    return true;
+    return SUCCESS;
 }
 
-bool _Calendar::onUpdateByDayOfWeek(int day) {
+int _Calendar::onUpdateByDayOfWeek(int day) {
     if (day <= 0 || day > Saturday) {
-        return false;
+        LOG(ERROR)<<"Calendar,onUpdateByDayOfWeek invalid params,day is "<<day;
+        return FAIL;
     }
 
     int days = day - dayOfWeek;
-
     dayOfWeek = day;
     add(DayOfYear, days);
 
-    return true;
+    return SUCCESS;
 }
 
-bool _Calendar::onUpdateByDayOfMonth(int day) {
+int _Calendar::onUpdateByDayOfMonth(int day) {
     if (day < 0) {
-        return false;
+        LOG(ERROR)<<"Calendar,onUpdateByDayOfMonth invalid params,day is "<<day;
+        return FAIL;
     }
 
     // update dayOfMonth
     int *_days = getDays(year);
-    if (day <= _days[month]) {
-        dayOfMonth = day;
-    } else {
-        dayOfMonth = _days[month];
-    }
+    dayOfMonth = (day <= _days[month])?day:_days[month];
 
     // update dayOfWeek
     dayOfWeek = caculateDayOfWeek(year, month, dayOfMonth);
@@ -192,12 +176,13 @@ bool _Calendar::onUpdateByDayOfMonth(int day) {
     // update dayOfYear
     dayOfYear = caculateDayOfYear(year, month, dayOfMonth);
 
-    return true;
+    return SUCCESS;
 }
 
-bool _Calendar::onUpdateByDayOfYear(int day) {
+int _Calendar::onUpdateByDayOfYear(int day) {
     if (day < 0) {
-        return false;
+        LOG(ERROR)<<"Calendar,onUpdateByDayOfYear invalid params,day is "<<day;
+        return FAIL;
     }
 
     // update dayOfMonth
@@ -218,7 +203,7 @@ bool _Calendar::onUpdateByDayOfYear(int day) {
     // update dayOfWeek
     dayOfWeek = caculateDayOfWeek(year, month, dayOfMonth);
 
-    return true;
+    return SUCCESS;
 }
 
 int _Calendar::caculateDayOfYear(int _year, int _month, int _dayOfMonth) {
@@ -238,168 +223,149 @@ int _Calendar::caculateDayOfYear(int _year, int _month, int _dayOfMonth) {
     return allDays;
 }
 
-void _Calendar::add(int type, uint64_t v) {
+int _Calendar::add(_Calendar::TimeType type, uint64_t v) {
     switch (type) {
-    case Year: {
-        year += v;
-        onUpdateByYear(year);
-        break;
-    }
-
-    case Month: {
-        long int currentMonth = (month + v);
-        year += currentMonth / 12;
-        month = currentMonth % 12;
-        if (month < 0) {
-            year--;
-            month += 12;
+        case Year: {
+            year += v;
+            return onUpdateByYear(year);
         }
-        onUpdateByMonth(month);
-        break;
+
+        case Month: {
+            long int currentMonth = (month + v);
+            year += currentMonth / 12;
+            month = currentMonth % 12;
+            if (month < 0) {
+                year--;
+                month += 12;
+            }
+            return onUpdateByMonth(month);
+        }
+
+        case DayOfYear:
+        case DayOfMonth:
+        case DayOfWeek: {
+            onUpdateMillseconds(v * DayMillsecond);
+            break;
+        }
+
+        case Hour: {
+            onUpdateMillseconds(v * HourMillsecond);
+            break;
+        }
+
+        case Minute: {
+            onUpdateMillseconds(v * MinuteMillsecond);
+            break;
+        }
+
+        case Second: {
+            onUpdateMillseconds(v * SecondMillsecond);
+            break;
+        }
+
+        case MSecond: {
+            onUpdateMillseconds(v);
+            break;
+        }
+
+        default:
+            return FAIL;
     }
 
-    case DayOfYear:
-    case DayOfMonth:
-    case DayOfWeek: {
-        onUpdateMillseconds(v * DayMillsecond);
-        break;
-    } break;
-
-    case Hour: {
-        onUpdateMillseconds(v * HourMillsecond);
-        break;
-    }
-
-    case Minute: {
-        onUpdateMillseconds(v * MinuteMillsecond);
-        break;
-    }
-
-    case Second: {
-        onUpdateMillseconds(v * SecondMillsecond);
-        break;
-    }
-
-    case MSecond: {
-        onUpdateMillseconds(v);
-        break;
-    }
-
-    default:
-        break;
-    }
+    return SUCCESS;
 }
 
 void _Calendar::onUpdateMillseconds(uint64_t interval) {
-    this->timeMillis = toTimeMillis();
-    this->timeMillis += interval;
+    this->timeMillis = toTimeMillis() + interval;
     init();
 }
 
-bool _Calendar::set(int type, int value) {
-    bool ret = false;
+int _Calendar::set(_Calendar::TimeType type, int value) {
     switch (type) {
-    case Year: {
-        ret = onUpdateByYear(value);
-        break;
-    }
-
-    case Month: {
-        ret = onUpdateByMonth(value);
-        break;
-    }
-
-    case DayOfWeek: {
-        ret = onUpdateByDayOfWeek(value);
-        break;
-    }
-
-    case DayOfMonth: {
-        ret = onUpdateByDayOfMonth(value);
-        break;
-    } break;
-
-    case DayOfYear: {
-        ret = onUpdateByDayOfYear(value);
-        break;
-    } break;
-
-    case Hour: {
-        if (value >= 0 && value <= 23) {
-            hour = value;
-            ret = true;
+        case Year: {
+            return onUpdateByYear(value);
         }
-        break;
-    }
 
-    case Minute: {
-        if (value >= 0 && value <= 59) {
-            minute = value;
-            ret = true;
+        case Month: {
+            return onUpdateByMonth(value);
         }
-        break;
-    }
 
-    case Second: {
-        if (value >= 0 && value <= 59) {
-            second = value;
-            ret = true;
+        case DayOfWeek: {
+            return onUpdateByDayOfWeek(value);
         }
-        break;
-    }
 
-    case MSecond: {
-        if (value >= 0 && value <= 999) {
-            msec = value;
-            ret = true;
+        case DayOfMonth: {
+            return onUpdateByDayOfMonth(value);
         }
-        break;
-    }
-    }
 
-    return ret;
+        case DayOfYear: {
+            return onUpdateByDayOfYear(value);
+        }
+
+        case Hour: {
+            if (value >= 0 && value <= 23) {
+                hour = value;
+                return SUCCESS;
+            }
+        }
+
+        case Minute: {
+            if (value >= 0 && value <= 59) {
+                minute = value;
+                return SUCCESS;
+            }
+        }
+
+        case Second: {
+            if (value >= 0 && value <= 59) {
+                second = value;
+                return SUCCESS;
+            }
+        }
+
+        case MSecond: {
+            if (value >= 0 && value <= 999) {
+                msec = value;
+                return SUCCESS;
+            }
+        }
+
+        default:
+            return FAIL;
+    }
 }
 
-int _Calendar::get(int type) {
+int _Calendar::get(_Calendar::TimeType type) {
     switch (type) {
-    case Year:
-        return year;
-        break;
+        case Year:
+            return year;
 
-    case Month:
-        return month;
-        break;
+        case Month:
+            return month;
 
-    case DayOfWeek:
-        return dayOfWeek;
-        break;
+        case DayOfWeek:
+            return dayOfWeek;
 
-    case DayOfMonth:
-        return dayOfMonth;
-        break;
+        case DayOfMonth:
+            return dayOfMonth;
 
-    case DayOfYear:
-        return dayOfYear;
-        break;
+        case DayOfYear:
+            return dayOfYear;
 
-    case Hour:
-        return hour;
-        break;
+        case Hour:
+            return hour;
 
-    case Minute:
-        return minute;
-        break;
+        case Minute:
+            return minute;
 
-    case Second:
-        return second;
-        break;
+        case Second:
+            return second;
 
-    case MSecond:
-        return msec;
-        break;
+        case MSecond:
+            return msec;
     }
 
-    return -1;
+    return FAIL;
 }
 
 long int _Calendar::toTimeMillis() {
@@ -433,10 +399,8 @@ int _Calendar::getMonthDays(int _month) {
 }
 
 DateTime _Calendar::getDateTime() {
-    DateTime date = createDateTime(year, month, dayOfMonth, hour, minute,
+    return createDateTime(year, month, dayOfMonth, hour, minute,
                                    second, msec, 0, dayOfWeek, dayOfYear);
-
-    return date;
 }
 
 DateTime _Calendar::getGmtDateTime() {

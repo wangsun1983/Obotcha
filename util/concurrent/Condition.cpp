@@ -46,14 +46,20 @@ int _Condition::wait(Mutex m, long int timeInterval) {
     } else if (ret == 0) {
         return 0;
     }
-    Trigger(IllegalStateException, "wait failed!!");
+    
     return -1;
 }
 
-void _Condition::notify() { pthread_cond_signal(&cond_t); }
+void _Condition::notify() { 
+    pthread_cond_signal(&cond_t); 
+}
 
-void _Condition::notifyAll() { pthread_cond_broadcast(&cond_t); }
+void _Condition::notifyAll() { 
+    pthread_cond_broadcast(&cond_t); 
+}
 
-_Condition::~_Condition() { pthread_cond_destroy(&cond_t); }
+_Condition::~_Condition() { 
+    pthread_cond_destroy(&cond_t); 
+}
 
 } // namespace obotcha

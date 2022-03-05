@@ -28,7 +28,7 @@ int _CountDownLatch::countDown() {
         waitCond->notifyAll();
     }
 
-    return 0;
+    return SUCCESS;
 }
 
 int _CountDownLatch::getCount() {

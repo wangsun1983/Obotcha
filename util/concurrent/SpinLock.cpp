@@ -37,8 +37,8 @@ int _SpinLock::tryLock() {
     case EBUSY:
         return -LockBusy;
 
-    case Success:
-        return Success;
+    case SUCCESS:
+        return SUCCESS;
 
     default:
         return -LockFail;
@@ -46,12 +46,15 @@ int _SpinLock::tryLock() {
 }
 
 int _SpinLock::unlock() {
-    int ret = pthread_spin_unlock(&mLock);
-    return 0;
+    return pthread_spin_unlock(&mLock);
 }
 
-_SpinLock::~_SpinLock() { pthread_spin_destroy(&mLock); }
+_SpinLock::~_SpinLock() { 
+    pthread_spin_destroy(&mLock); 
+}
 
-String _SpinLock::toString() { return mSpinLockName; }
+String _SpinLock::toString() { 
+    return mSpinLockName; 
+}
 
 } // namespace obotcha

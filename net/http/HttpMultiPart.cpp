@@ -90,18 +90,6 @@ File _HttpMultiPartFile::getFile() {
     return mFile;
 }
 
-// String _HttpMultiPartFile::getKey() {
-//     return mKey;
-// }
-
-// File _HttpMultiPartFile::getFile() {
-//     return mFile;
-// }
-
-// String _HttpMultiPartFile::getFileName() {
-//     return mFileName;
-// }
-
 //_HttpMultiPart();
 _HttpMultiPart::_HttpMultiPart():_HttpMultiPart(nullptr) {
     UUID uuid = createUUID();
@@ -177,7 +165,7 @@ long _HttpMultiPart::getContentLength() {
     if(contents->size() != 0) {
         keyValueLength = (mBoundary->size() 
                             + st(HttpText)::BoundaryBeginning->size() 
-                            + st(HttpText)::BoundarySeperator->size()
+                            //+ st(HttpText)::BoundarySeperator->size()
                             + st(HttpText)::CRLF->size());
         
         keyValueLength += (st(HttpHeader)::ContentDisposition->size() + 2 /*": "*/
@@ -203,7 +191,7 @@ long _HttpMultiPart::getContentLength() {
     if(files->size() != 0) {
         fileContentLength = (mBoundary->size() 
                                 + st(HttpText)::BoundaryBeginning->size() 
-                                + st(HttpText)::BoundarySeperator->size()
+                                //+ st(HttpText)::BoundarySeperator->size()
                                 + st(HttpText)::CRLF->size());
 
         fileContentLength += st(HttpHeader)::ContentDisposition->size() + 2 /*": "*/
@@ -236,19 +224,35 @@ long _HttpMultiPart::getContentLength() {
     length += keyValueLength;
 
     length += (mBoundary->size() + 
-            + st(HttpText)::BoundarySeperator->size()
+            //+ st(HttpText)::BoundarySeperator->size()
             + st(HttpText)::BoundaryBeginning->size() * 2
             + st(HttpText)::CRLF->size()); //end
     return length;
 }
 
+/**
+* RFC1867 6. Examples
+* The client might send back the following data:
+*    Content-type: multipart/form-data, boundary=AaB03x
+*
+*    --AaB03x
+*    content-disposition: form-data; name="field1"
+*
+*    Joe Blow
+*    --AaB03x
+*    content-disposition: form-data; name="pics"; filename="file1.txt"
+*    Content-Type: text/plain
+*
+*        ... contents of file1.txt ...
+*    --AaB03x--
+*/
 void _HttpMultiPart::onCompose(composeCallBack callback) {
     if (contents->size() > 0) {
         ListIterator<Pair<String, String>> iterator = contents->getIterator();
         while (iterator->hasValue()) {
             Pair<String, String> content = iterator->getValue();
             String v = st(HttpText)::BoundaryBeginning
-                        ->append(st(HttpText)::BoundarySeperator,
+                        ->append(//st(HttpText)::BoundarySeperator,
                                 //multiPart->getBoundary(),
                                 mBoundary,
                                 st(HttpText)::CRLF,
@@ -276,7 +280,7 @@ void _HttpMultiPart::onCompose(composeCallBack callback) {
         while (iterator->hasValue()) {
             HttpMultiPartFile partFile = iterator->getValue();
             String contentDisposition =  st(HttpText)::BoundaryBeginning
-                                        ->append(st(HttpText)::BoundarySeperator,
+                                        ->append(//st(HttpText)::BoundarySeperator,
                                                 //multiPart->getBoundary(),
                                                 mBoundary,
                                                 st(HttpText)::CRLF,
@@ -320,7 +324,7 @@ void _HttpMultiPart::onCompose(composeCallBack callback) {
         }
     }
         
-    String finish = st(HttpText)::BoundaryBeginning->append(st(HttpText)::BoundarySeperator,
+    String finish = st(HttpText)::BoundaryBeginning->append(//st(HttpText)::BoundarySeperator,
                                                     //multiPart->getBoundary(),
                                                     mBoundary,
                                                     st(HttpText)::BoundaryBeginning,

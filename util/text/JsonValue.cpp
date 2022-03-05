@@ -47,7 +47,9 @@ void _JsonValue::put(String tag, Integer value) {
     }
 }
 
-void _JsonValue::put(String tag, int value) { jvalue[tag->toChars()] = value; }
+void _JsonValue::put(String tag, int value) { 
+    jvalue[tag->toChars()] = value; 
+}
 
 void _JsonValue::put(String tag, Boolean value) {
     if(value != nullptr) {
@@ -55,7 +57,9 @@ void _JsonValue::put(String tag, Boolean value) {
     }
 }
 
-void _JsonValue::put(String tag, bool value) { jvalue[tag->toChars()] = value; }
+void _JsonValue::put(String tag, bool value) { 
+    jvalue[tag->toChars()] = value; 
+}
 
 void _JsonValue::put(String tag, Double value) {
     if(value != nullptr) {

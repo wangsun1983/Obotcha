@@ -35,28 +35,4 @@ HttpChunk _HttpEntity::getChunk() {
     return mChunk;
 }
 
-// String _HttpEntity::getUpgradeContent() { 
-//     return mUpgrade; 
-// }
-
-// void _HttpEntity::setUpgradeContent(String u) { 
-//     mUpgrade = u; 
-// }
-
-//File _HttpEntity::getChunkFile() { 
-//    return mChunkFile;
-//}
-
-//void _HttpEntity::setChunkFile(File f) { 
-//    mChunkFile = f;
-//}
-
-//ArrayList<ByteArray> _HttpEntity::getChunks() {
-//    return mChunks;
-//}
-
-//void _HttpEntity::setChunks(ArrayList<ByteArray> data) {
-//    mChunks = data;
-//}
-
 } // namespace obotcha

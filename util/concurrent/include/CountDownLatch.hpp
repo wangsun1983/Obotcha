@@ -19,6 +19,8 @@ DECLARE_CLASS(CountDownLatch) {
 
     int getCount();
 
+    int release();
+
   private:
     int count;
     Condition waitCond;

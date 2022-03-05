@@ -33,24 +33,34 @@ void _HttpHeaderContentType::import(String value) {
         } else if(st(HttpMime)::Boundary->equalsIgnoreCase(directive)) {
             //we should remove BoundarySeperator
 
-            mBoundary = parameter->subString(st(HttpText)::BoundarySeperator->size() - 1,parameter->size());
+            mBoundary = parameter;//parameter->subString(st(HttpText)::BoundarySeperator->size() - 1,parameter->size());
         }
     });
 }
 
-void _HttpHeaderContentType::setType(String value) { mContentType = value; }
+void _HttpHeaderContentType::setType(String value) { 
+    mContentType = value; 
+}
 
-void _HttpHeaderContentType::setCharSet(String value) { mCharset = value; }
+void _HttpHeaderContentType::setCharSet(String value) { 
+    mCharset = value; 
+}
 
 void _HttpHeaderContentType::setBoundary(String value) {
     mBoundary = value;
 }
 
-String _HttpHeaderContentType::getType() { return mContentType; }
+String _HttpHeaderContentType::getType() { 
+    return mContentType; 
+}
 
-String _HttpHeaderContentType::getCharSet() { return mCharset; }
+String _HttpHeaderContentType::getCharSet() { 
+    return mCharset; 
+}
 
-String _HttpHeaderContentType::getBoundary() { return mBoundary; }
+String _HttpHeaderContentType::getBoundary() { 
+    return mBoundary; 
+}
 
 String _HttpHeaderContentType::toString() {
     StringBuffer result = createStringBuffer();
@@ -60,7 +70,9 @@ String _HttpHeaderContentType::toString() {
         result = result->append(";charset=", mCharset);
     }
     if (mBoundary != nullptr) {
-        result = result->append(";boundary=", st(HttpText)::BoundarySeperator,mBoundary);
+        result = result->append(";boundary=", 
+                                /*st(HttpText)::BoundarySeperator,*/
+                                mBoundary);
     }
     return result->toString();
 }

@@ -32,10 +32,10 @@ int _ConfReader::parse() {
 
     if (0 == ccl_parse(&config,
                        (const char *)mConfFile->getAbsolutePath()->toChars())) {
-        return 0;
+        return SUCCESS;
     }
 
-    return -1;
+    return FAIL;
 }
 
 _ConfReader::~_ConfReader() {
@@ -79,7 +79,9 @@ String _ConfIterator::getValue() {
     return nullptr;
 }
 
-bool _ConfIterator::hasValue() { return iterator != nullptr; }
+bool _ConfIterator::hasValue() { 
+    return iterator != nullptr; 
+}
 
 bool _ConfIterator::next() {
     ccl_t *pair = &(reader->config);

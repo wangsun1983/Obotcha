@@ -129,7 +129,6 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
 int _HttpPacketWriterImpl::_flushResponse(HttpPacket packet,bool send) {
     HttpChunk chunk = packet->getEntity()->getChunk();
     if (chunk != nullptr) {
-        HttpChunk chunk = packet->getEntity()->getChunk();
         chunk->onCompose([this,send](ByteArray data) {
             _write(data,send);
         });

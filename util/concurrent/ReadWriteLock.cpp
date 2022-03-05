@@ -42,8 +42,8 @@ int _ReadLock::tryLock() {
     case EBUSY:
         return -LockBusy;
 
-    case Success:
-        return Success;
+    case SUCCESS:
+        return SUCCESS;
 
     default:
         return -LockFail;
@@ -85,8 +85,8 @@ int _WriteLock::tryLock() {
     case EBUSY:
         return -LockBusy;
 
-    case Success:
-        return Success;
+    case SUCCESS:
+        return SUCCESS;
 
     default:
         return -LockFail;

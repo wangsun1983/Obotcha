@@ -4,8 +4,7 @@
 
 namespace obotcha {
 
-std::once_flag _Enviroment::s_flag;
-Enviroment _Enviroment::mInstance;
+Enviroment _Enviroment::mInstance = nullptr;
 
 String const _Enviroment::gHttpBufferSize =
     createString("env.http.buffer.size");
@@ -117,9 +116,11 @@ String const _Enviroment::gHttpSslCertificatePath =
 String const _Enviroment::DefaultHttpSslCertificatePath = createString("");
 
 sp<_Enviroment> _Enviroment::getInstance() {
+    static std::once_flag s_flag;
     std::call_once(s_flag, [&]() {
         _Enviroment *p = new _Enviroment();
-        p->mInstance.set_pointer(p);
+        //p->mInstance.set_pointer(p);
+        mInstance = AutoClone(p);
     });
 
     return mInstance;
@@ -128,89 +129,61 @@ sp<_Enviroment> _Enviroment::getInstance() {
 _Enviroment::_Enviroment() {
     mProp = createHashMap<String, String>();
 
-    mProp->put(gHttpBufferSize, st(String)::valueOf(DefaultHttpBufferSize));
-    mProp->put(gHttpServerThreadsNum,
-               st(String)::valueOf(DefaultgHttpServerThreadsNum));
-    mProp->put(gWebSocketBufferSize,
-               st(String)::valueOf(DefaultWebSocketBufferSize));
-    mProp->put(gWebSocketBufferSize,
-               st(String)::valueOf(DefaultWebSocketRcvThreadsNum));
-    mProp->put(gWebSocketFrameSize,
-               st(String)::valueOf(DefaultWebSocketFrameSize));
-    mProp->put(gLocalSocketServerRcvBufferSize,
-               st(String)::valueOf(DefaultLocalSocketServerRcvBufferSize));
-    mProp->put(gLocalSocketServerClientNums,
-               st(String)::valueOf(DefaultLocalSocketServerClientNums));
-    mProp->put(gTcpServerEpollSize,
-               st(String)::valueOf(DefaultTcpServerEpollSize));
-    mProp->put(gTcpServerRcvBuffSize,
-               st(String)::valueOf(DefaultTcpServerRcvBuffSize));
-    mProp->put(gTcpServerClientNums,
-               st(String)::valueOf(DefaultTcpServerClientNums));
-    mProp->put(gLocalSocketServerEpollSize,
-               st(String)::valueOf(DefaultLocalSocketServerEpollSize));
-    mProp->put(gLocalSocketBufferSize,
-               st(String)::valueOf(DefaultLocalSocketBufferSize));
-    mProp->put(gLocalSocketClientEpollSize,
-               st(String)::valueOf(DefaultLocalSocketClientEpollSize));
-    mProp->put(gAsyncTcpClientEpollSize,
-               st(String)::valueOf(DefaultAsyncTcpClientEpollSize));
-    mProp->put(gAsyncTcpClientBufferSize,
-               st(String)::valueOf(DefaultAsyncTcpClientBufferSize));
-    mProp->put(gUdpClientEpollSize,
-               st(String)::valueOf(DefaultUdpClientEpollSize));
-    mProp->put(gUdpClientBufferSize,
-               st(String)::valueOf(DefaultUdpClientBufferSize));
-    mProp->put(gUdpServerEpollSize,
-               st(String)::valueOf(DefaultUdpServerEpollSize));
-    mProp->put(gUdpServerBufferSize,
-               st(String)::valueOf(DefaultUdpServerBufferSize));
-    mProp->put(gHttpServerPort, st(String)::valueOf(DefaultHttpServerPort));
-    mProp->put(gHttpServerSendFileBufferSize,
-               st(String)::valueOf(DefaultHttpServerSendFileBufferSize));
-    mProp->put(gHttpMultiPartDispositionSize,
-               st(String)::valueOf(DefaultHttpMultiPartDispositionSize));
-    mProp->put(gHttpMultiPartContentTypeSize,
-               st(String)::valueOf(DefaultHttpMultiContentTypeSize));
-    mProp->put(gHttpMultiPartContentSize,
-               st(String)::valueOf(DefaultHttpMultiContentSize));
+#define SET_VALUE(X,Y) mProp->put(X,st(String)::valueOf(Y))
+
+    SET_VALUE(gHttpBufferSize,DefaultHttpBufferSize);
+    SET_VALUE(gHttpServerThreadsNum,DefaultgHttpServerThreadsNum);
+    SET_VALUE(gWebSocketBufferSize,DefaultWebSocketBufferSize);
+    SET_VALUE(gWebSocketBufferSize,DefaultWebSocketRcvThreadsNum);
+    SET_VALUE(gWebSocketFrameSize,DefaultWebSocketFrameSize);
+    SET_VALUE(gLocalSocketServerRcvBufferSize,DefaultLocalSocketServerRcvBufferSize);
+    SET_VALUE(gLocalSocketServerClientNums,DefaultLocalSocketServerClientNums);
+    SET_VALUE(gTcpServerEpollSize,DefaultTcpServerEpollSize);
+    SET_VALUE(gTcpServerRcvBuffSize,DefaultTcpServerRcvBuffSize);
+    SET_VALUE(gTcpServerClientNums,DefaultTcpServerClientNums);
+    SET_VALUE(gLocalSocketServerEpollSize,DefaultLocalSocketServerEpollSize);
+    SET_VALUE(gLocalSocketBufferSize,DefaultLocalSocketBufferSize);
+    SET_VALUE(gLocalSocketClientEpollSize,DefaultLocalSocketClientEpollSize);
+    SET_VALUE(gAsyncTcpClientEpollSize,DefaultAsyncTcpClientEpollSize);
+    SET_VALUE(gAsyncTcpClientBufferSize,DefaultAsyncTcpClientBufferSize);
+    SET_VALUE(gUdpClientEpollSize,DefaultUdpClientEpollSize);
+    SET_VALUE(gUdpClientBufferSize,DefaultUdpClientBufferSize);
+    SET_VALUE(gUdpServerEpollSize,DefaultUdpServerEpollSize);
+    SET_VALUE(gUdpServerBufferSize,DefaultUdpServerBufferSize);
+    SET_VALUE(gHttpServerPort, DefaultHttpServerPort);
+    SET_VALUE(gHttpServerSendFileBufferSize,DefaultHttpServerSendFileBufferSize);
+    SET_VALUE(gHttpMultiPartDispositionSize,DefaultHttpMultiPartDispositionSize);
+    SET_VALUE(gHttpMultiPartContentTypeSize,DefaultHttpMultiContentTypeSize);
+    SET_VALUE(gHttpMultiPartContentSize,DefaultHttpMultiContentSize);
+
+#undef SET_VALUE
+
     mProp->put(gHttpMultiPartFilePath, DefaultMultiPartFilePath);
     mProp->put(gHttpSslKeyPath, DefaultHttpSslKeyPath);
     mProp->put(gHttpSslCertificatePath, DefaultHttpSslCertificatePath);
 }
 
-void _Enviroment::set(String tag, String v) { mProp->put(tag, v); }
+void _Enviroment::set(String tag, String v) { 
+    mProp->put(tag, v); 
+}
 
 int _Enviroment::getInt(String v, int defaultvalue) {
     String value = mProp->get(v);
-    if (value != nullptr) {
-        return value->toBasicInt();
-    }
-
-    return defaultvalue;
+    return (value != nullptr)?value->toBasicInt():defaultvalue;
 }
 
 bool _Enviroment::getBoolean(String v, bool defaultvalue) {
     String value = mProp->get(v);
-    if (value != nullptr) {
-        return value->toBasicBool();
-    }
-
-    return defaultvalue;
+    return (value != nullptr)?value->toBasicBool():defaultvalue;
 }
 
 String _Enviroment::get(String v) {
     return mProp->get(v);
-    ;
 }
 
 String _Enviroment::get(String v, String defaultvalue) {
     String value = mProp->get(v);
-    if (value == nullptr) {
-        return defaultvalue;
-    }
-
-    return value;
+    return (value != nullptr)?value:defaultvalue;
 }
 
 } // namespace obotcha

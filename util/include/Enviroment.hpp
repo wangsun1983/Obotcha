@@ -109,8 +109,6 @@ DECLARE_CLASS(Enviroment) {
 
   private:
     _Enviroment();
-
-    static std::once_flag s_flag;
     static Enviroment mInstance;
 
     HashMap<String, String> mProp;

@@ -6,6 +6,12 @@
 
 namespace obotcha {
 
+//if we are lazy,use Fail/Success as return value;
+enum GeneralResultType{
+    FAIL = -1,
+    SUCCESS = 0
+};
+
 enum ErrorType {
     InvalidParam = 200,
     InvalidStatus,

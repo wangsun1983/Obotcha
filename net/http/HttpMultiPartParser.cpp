@@ -19,14 +19,9 @@ _HttpMultiPartParser::_HttpMultiPartParser(const String boundary) {
 
     mStatus = ParseStartBoundry;
 
-    //mEnv = st(Enviroment)::getInstance();
-
-    //CRLF = st(HttpText)::CRLF->toChars();
-
     mBoundaryIndex = 0;
 
     mFileStream = nullptr;
-    //mMultiPartFile = nullptr;
     endDetector = createCRLFDetector();
 }
 
@@ -81,7 +76,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                     auto params = info->split(":");
                     String head = params->get(0);
                     String data = params->get(1);
-                    
                     int type = st(HttpHeader)::findId(head);
                     switch(type) {
                         case st(HttpHeader)::TypeContentDisposition:
@@ -178,27 +172,14 @@ void _HttpMultiPartParser::flushData(ByteArray data) {
     mFileStream->write(data);
 }
 
-// bool _HttpMultiPartParser::isLineEnd(byte &v) {
-//     if(v == '\r' && mCRLFIndex == 0) {
-//         mCRLFIndex = 1;
-//     } else if(v == '\n' && mCRLFIndex == 1) {
-//         mCRLFIndex = 0;
-//         return true;
-//     } else {
-//         mCRLFIndex = 0;
-//     }
-
-//     return false;
-// }
-
 int _HttpMultiPartParser::checkBoudaryIndex(byte &v) {
-    if(v == BoundaryEnd[mBoundaryIndex]) {
+    if(mBoundaryIndex < mBoundaryEnd->size() && v == BoundaryEnd[mBoundaryIndex]) {
         if(mBoundaryIndex == (mBoundaryEnd->size() - 1)) {
             mBoundaryIndex = 0;
             return _BoundaryEnd;
         }
         mBoundaryIndex++;
-    } else if(v == PartEnd[mBoundaryIndex]) {
+    } else if(mBoundaryIndex < mPartEnd->size() && v == PartEnd[mBoundaryIndex]) {
         if(mBoundaryIndex == (mPartEnd->size() - 1)) {
             mBoundaryIndex = 0;
             return _PartEnd;

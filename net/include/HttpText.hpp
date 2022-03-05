@@ -21,7 +21,7 @@ public:
    //static const String DoubleLineEnd;
    static const String HttpEnd;
    static const String Boundary;
-   static const String BoundarySeperator;
+   //static const String BoundarySeperator;
    static const String BoundaryBeginning;
    static const String MultiPartFileName;
    static const String MultiPartName;

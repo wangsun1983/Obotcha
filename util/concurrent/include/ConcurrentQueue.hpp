@@ -9,23 +9,30 @@
 #include "Mutex.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "ReadWriteLock.hpp"
 
 namespace obotcha {
 
 DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
   public:
-    inline _ConcurrentQueue() { mutex_t = createMutex("ConcurrentQueueMutex"); }
+    inline _ConcurrentQueue() {
+        rdwrLock = createReadWriteLock();
+        rdLock = rdwrLock->getReadLock();
+        wrLock = rdwrLock->getWriteLock();
+    }
 
     inline int size() {
-        AutoLock l(mutex_t);
+        AutoLock l(rdLock);
         return mQueue.size();
     }
 
     // interface like ArrayList
-    inline void add(T value) { putLast(value); }
+    inline void add(T value) { 
+        putLast(value); 
+    }
 
     inline T get(int index) {
-        AutoLock l(mutex_t);
+        AutoLock l(rdLock);
         if (index >= mQueue.size()) {
             return ContainerValue<T>(nullptr).get();
         }
@@ -34,7 +41,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
     }
 
     ArrayList<T> toArray() {
-        AutoLock l(mutex_t);
+        AutoLock l(rdLock);
         ArrayList<T> list = createArrayList<T>();
         for (T v : mQueue) {
             list->add(v);
@@ -45,17 +52,17 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
 
     // interface like queue
     inline void putFirst(const T &val) {
-        AutoLock l(mutex_t);
+        AutoLock l(wrLock);
         mQueue.insert(mQueue.begin(), val);
     }
 
     inline void putLast(const T &val) {
-        AutoLock l(mutex_t);
+        AutoLock l(wrLock);
         mQueue.push_back(val);
     }
 
     inline int remove(const T &val) {
-        AutoLock l(mutex_t);
+        AutoLock l(wrLock);
         typename std::vector<T>::iterator result =
             find(mQueue.begin(), mQueue.end(), val);
         if (result != mQueue.end()) {
@@ -67,7 +74,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
     }
 
     inline T removeAt(int index) {
-        AutoLock l(mutex_t);
+        AutoLock l(wrLock);
         if (index < 0 || index >= mQueue.size() || mQueue.size() == 0) {
             Trigger(ArrayIndexOutOfBoundsException, "incorrect index");
         }
@@ -78,7 +85,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
     }
 
     inline T takeFirst() {
-        AutoLock l(mutex_t);
+        AutoLock l(wrLock);
 
         if (mQueue.size() == 0) {
             return ContainerValue<T>(nullptr).get();
@@ -91,7 +98,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
     }
 
     inline T takeLast() {
-        AutoLock l(mutex_t);
+        AutoLock l(wrLock);
 
         if (mQueue.size() == 0) {
             return ContainerValue<T>(nullptr).get();
@@ -105,14 +112,16 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
     }
 
     inline void clear() {
-        AutoLock l(mutex_t);
+        AutoLock l(wrLock);
         mQueue.clear();
     }
 
   private:
     std::vector<T> mQueue;
 
-    Mutex mutex_t;
+    ReadWriteLock rdwrLock;
+    ReadLock rdLock;
+    WriteLock wrLock;
 };
 
 } // namespace obotcha

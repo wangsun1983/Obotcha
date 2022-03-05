@@ -40,7 +40,9 @@ sp<_Message> _Handler::obtainMessage(int w) {
     return msg;
 }
 
-sp<_Message> _Handler::obtainMessage() { return createMessage(-1); }
+sp<_Message> _Handler::obtainMessage() { 
+    return createMessage(-1); 
+}
 
 int _Handler::sendEmptyMessage(int what) {
     Message msg = createMessage(what);
@@ -167,7 +169,9 @@ void _Handler::destroy() {
     mCondition->notify();
 }
 
-bool _Handler::isRunning() { return mStatus->get() == StatusRunning; }
+bool _Handler::isRunning() { 
+    return mStatus->get() == StatusRunning; 
+}
 
 int _Handler::size() {
     AutoLock l(mMutex);

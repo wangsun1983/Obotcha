@@ -18,7 +18,7 @@ DECLARE_CLASS(Barrier) {
 
     int getWaitNums();
 
-    bool destroy();
+    int release();
 
   private:
     Mutex mutex;

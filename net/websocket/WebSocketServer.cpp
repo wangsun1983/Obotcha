@@ -14,6 +14,7 @@
 #include "HttpOption.hpp"
 #include "HttpPacketWriterImpl.hpp"
 #include "NetEvent.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -26,6 +27,11 @@ _WebSocketServer::_WebSocketServer(int threadnum) {
 }
 
 int _WebSocketServer::bind(String path,WebSocketListener l) {
+    if(mWsListeners->get(path) != nullptr) {
+        LOG(ERROR)<<"websocket server path:"<<path->toChars()<<",already registed!!!";
+        return -1;
+    }
+
     mWsListeners->put(path,l);
     return 0;
 }

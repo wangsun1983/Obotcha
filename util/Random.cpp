@@ -36,7 +36,9 @@ int _Random::nextInt(int min, int max) {
     return value;
 }
 
-int _Random::nextInt(int min) { return nextInt(min, st(Integer)::MAX_VALUE); }
+int _Random::nextInt(int min) { 
+    return nextInt(min, st(Integer)::MAX_VALUE); 
+}
 
 double _Random::nextDouble() {
     std::uniform_real_distribution<> dis;
@@ -50,7 +52,9 @@ double _Random::nextDouble(double min, double max) {
     return value;
 }
 
-double _Random::nextDouble(double min) { return nextDouble(min, DBL_MAX); }
+double _Random::nextDouble(double min) { 
+    return nextDouble(min, DBL_MAX); 
+}
 
 void _Random::nextBytes(ByteArray bytes) {
     srand((int)time(NULL));

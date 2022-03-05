@@ -46,8 +46,6 @@ public:
 
     HttpSession getSession();
 
-    //Socket getSocket();
-
     int getProtocol();
 
     //use to http2
@@ -60,8 +58,6 @@ private:
     HttpPacketWriter mWriter;
 
     Socket mSocket;
-
-    //OutputStream mSocketOutput;
 
     HttpSession mSession;
 

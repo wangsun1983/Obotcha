@@ -15,9 +15,13 @@ _JsonReader::_JsonReader(File f) {
     mValue = parse(f);
 }
 
-_JsonReader::_JsonReader(String content) { mValue = parse(content); }
+_JsonReader::_JsonReader(String content) { 
+    mValue = parse(content); 
+}
 
-JsonValue _JsonReader::get() { return mValue; }
+JsonValue _JsonReader::get() { 
+    return mValue; 
+}
 
 JsonValue _JsonReader::parse(File f) {
     auto stream = createFileInputStream(f);
