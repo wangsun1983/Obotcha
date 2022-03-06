@@ -18,7 +18,7 @@
 namespace obotcha {
 
 _InetLocalAddress::_InetLocalAddress(String addr) : _InetAddress(addr, -1) {
-    mType = LOCAL;
+    mFamily = LOCAL;
 }
 
 } // namespace obotcha

@@ -17,8 +17,12 @@ _AutoTimeWatcher::~_AutoTimeWatcher() {
               << " cost :" << st(System)::currentTimeMillis() - current;
 }
 
-void _TimeWatcher::start() { current = st(System)::currentTimeMillis(); }
+void _TimeWatcher::start() { 
+    current = st(System)::currentTimeMillis(); 
+}
 
-long _TimeWatcher::stop() { return st(System)::currentTimeMillis() - current; }
+long _TimeWatcher::stop() { 
+    return st(System)::currentTimeMillis() - current; 
+}
 
 } // namespace obotcha

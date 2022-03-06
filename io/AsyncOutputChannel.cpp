@@ -37,30 +37,7 @@ int _AsyncOutputChannel::write(ByteArray d) {
         return 0;
     }
 
-    while (1) {
-        if (writeCb != nullptr) {
-            result = writeCb(mFd, data,offset);
-        } else {
-            result = ::write(mFd->getFd(), data->toValue() + offset, data->size() - offset);
-        }
-        
-        if (result < 0) {
-            if (errno == EAGAIN) {
-                ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);
-                mDatas->putLast(restData);
-                mPool->addChannel(AutoClone(this));
-                break;
-            }
-
-            return -WriteFail;
-        } else if (result != (data->size() - offset)) {
-            offset += result;
-            continue;
-        }
-        break;
-    }
-    
-    return 0;
+    return _write(data);
 }
 
 int _AsyncOutputChannel::notifyWrite() {
@@ -71,29 +48,38 @@ int _AsyncOutputChannel::notifyWrite() {
     
     while (mDatas->size() > 0) {
         ByteArray data = mDatas->takeFirst();
-        int offset = 0;
-        int result = 0;
-        while (1) {
-            if (writeCb != nullptr) {
-                result = writeCb(mFd, data,offset);
-            } else {
-                result = ::write(mFd->getFd(), data->toValue() + offset, data->size() - offset);
-            }
-            if (result < 0) {
-                if (errno == EAGAIN) {
-                    ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);
-                    mDatas->putFirst(restData);
-                    mPool->addChannel(AutoClone(this));
-                }
-                return -WriteFail;
-            } else if (result != (data->size() - offset)) {
-                offset += result;
-                continue;
-            } 
+        if(_write(data) != SUCCESS) {
             break;
         }
     }
     return 0;
+}
+
+int _AsyncOutputChannel::_write(ByteArray data) {
+    int offset = 0;
+    int result = 0;
+    while (1) {
+        if (writeCb != nullptr) {
+            result = writeCb(mFd, data,offset);
+        } else {
+            result = ::write(mFd->getFd(), data->toValue() + offset, data->size() - offset);
+        }
+
+        if (result < 0) {
+            if (errno == EAGAIN) {
+                ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);
+                mDatas->putFirst(restData);
+                mPool->addChannel(AutoClone(this));
+            }
+            return -WriteFail;
+        } else if (result != (data->size() - offset)) {
+            offset += result;
+            continue;
+        } 
+        break;
+    }
+
+    return SUCCESS;
 }
 
 FileDescriptor _AsyncOutputChannel::getFileDescriptor() { 

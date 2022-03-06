@@ -36,20 +36,22 @@ Obotcha是基于C++14开发的一个工具库，该工具库目前提供了如�
     - 支持Tcp服务端，客户端管理
     - 支持Udp服务端，客户端管理
     - 支持WebSocket服务端，客户端管理
-    - 支持Http V1协议
+    - 支持Http1.1/2.0协议
     - 支持Https
 -  [进程间通信工具库 ](https://github.com/wangsun1983/Obotcha/tree/master/process)
      - 支持Posix标准的进程间通信。
+     - 支持对象序列化/反序列化
 -  [安全相关工具库](https://github.com/wangsun1983/Obotcha/tree/master/security)
      - 支持Aes，Base64，Crc32，Des，Md，Rsa，Sha加密。
 
 ### Obotcha的原由
 2019年初的时候和朋友讨论用C++编写一个后台服务器程序，使用了一段时间发现虽然boost，poco这些工具库提供了很多强大的功能，但是对于初学者来说，使用还是非常的不方便。   
--  内存管理，这个是C++/C语言老生常谈的问题。
--  类功能的不聚合。
--  范型编程后代码会变得非常难理解。
+- 内存管理，这个是C++/C语言老生常谈的问题。
+- 类功能的不聚合。
+- 范型编程后代码会变得非常难理解。
 - C++各种开源库散布在各个角落，没有统一集中管理。
 - 没有反射导致ORM无法实现。
+- 没有序列化/反序列化的实现，导致进程间通信非常麻烦
 基于上面这些原因，所以我就开始了Obotcha的编写。
 
 ### Obotcha的设计
@@ -58,6 +60,26 @@ Obotcha是基于C++14开发的一个工具库，该工具库目前提供了如�
     DECLARE_CLASS(Data) {
     public:
         int i;
+    };
+    ```
+- Obotcha使用DECLARE_REFLECT_FIELD定义可反射/序列化成员变量，示例如下：
+    ```
+    DECLARE_CLASS(SampleData) {
+    public:
+        int intData;
+        byte byteData;
+        double doubleData;
+        float floatData;
+        long longData;
+        String stringData;
+        uint8_t uint8Data;
+        uint16_t uint16Data;
+        uint32_t uint32Data;
+        uint64_t uint64Data;
+        bool boolData;
+        DECLARE_REFLECT_FIELD(SampleData,intData,byteData,doubleData,
+                                floatData,longData,stringData,uint8Data,uint16Data,uint32Data,
+                                uint64Data,boolData)
     };
     ```
 - Obotcha的整体代码架构均参考了Java的代码结构和实现。目的是能使用Obotcha很快地将java代码转换C++代码。
@@ -69,7 +91,8 @@ Obotcha是基于C++14开发的一个工具库，该工具库目前提供了如�
 - 之后每次编译可以直接使用`make`命令来编译。
 
 ### Obotcha的示例
-- Obotcha的测试代码是最好的例子，这些代码存放在test目录下 。test目录下存放了Obotcha所有类的接口测试函数。
+- Obotcha的测试代码是最好的例子，这些代码存放在ObotchaTestSuite仓库下 。
+- ObotchaTestSuite存放了Obotcha所有类的接口测试函数。
 
 ### Obotcha的未来
--   预计2022年开始使用Obotcha开始进行后台服务器Gagira的开发。
+- 预计2022年开始使用Obotcha开始进行后台服务器Gagira的开发。

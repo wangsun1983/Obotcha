@@ -16,7 +16,7 @@ _ServerSocketImpl::_ServerSocketImpl(InetAddress address, SocketOption option)
 }
 
 int _ServerSocketImpl::bind() {
-    switch(this->address->getType()) {
+    switch(this->address->getFamily()) {
         case st(InetAddress)::IPV4: {
             if (::bind(sock->getFd(), (struct sockaddr *)&mSockAddr,sizeof(sockaddr)) < 0) {
                 return -NetBindFail;
@@ -52,7 +52,7 @@ Socket _ServerSocketImpl::accept() {
     struct sockaddr_in ipv4_addr;
     struct sockaddr_in6 ipv6_addr;
 
-    switch(this->address->getType()) {
+    switch(this->address->getFamily()) {
         case st(InetAddress)::IPV4: {
             client_address = &ipv4_addr;
             client_addrLength = sizeof(struct sockaddr_in);
@@ -68,7 +68,7 @@ Socket _ServerSocketImpl::accept() {
     int clientfd = ::accept(sock->getFd(), (struct sockaddr *)client_address,
                             &client_addrLength);
     if (clientfd > 0) {
-        switch(this->address->getType()) {
+        switch(this->address->getFamily()) {
             case st(InetAddress)::IPV4: {
                 InetAddress clientAddr =
                     createInetAddress(createString(inet_ntoa(ipv4_addr.sin_addr)),
@@ -98,7 +98,7 @@ Socket _ServerSocketImpl::accept() {
             break;
 
             default:
-            LOG(ERROR)<<"accept address error!!!!,type is"<<this->address->getType();
+            LOG(ERROR)<<"accept address error!!!!,type is"<<this->address->getFamily();
             break;
         }
     } else {

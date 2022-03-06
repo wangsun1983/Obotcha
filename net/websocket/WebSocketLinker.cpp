@@ -109,32 +109,32 @@ long _WebSocketLinker::_send(int type, ByteArray msg) {
         ArrayList<ByteArray> data = nullptr;
 
         switch (type) {
-        case st(WebSocketProtocol)::OPCODE_TEXT:
-            data = mComposer->genTextMessage(msg->toString());
-            break;
+            case st(WebSocketProtocol)::OPCODE_TEXT:
+                data = mComposer->genTextMessage(msg->toString());
+                break;
 
-        case st(WebSocketProtocol)::OPCODE_BINARY:
-            data = mComposer->genBinaryMessage(msg);
-            break;
+            case st(WebSocketProtocol)::OPCODE_BINARY:
+                data = mComposer->genBinaryMessage(msg);
+                break;
 
-        case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
-            data = createArrayList<ByteArray>();
-            data->add(mComposer->genCloseMessage(msg->toString()));
-            break;
+            case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
+                data = createArrayList<ByteArray>();
+                data->add(mComposer->genCloseMessage(msg->toString()));
+                break;
 
-        case st(WebSocketProtocol)::OPCODE_CONTROL_PING:
-            data = createArrayList<ByteArray>();
-            data->add(mComposer->genPingMessage(msg->toString()));
-            break;
+            case st(WebSocketProtocol)::OPCODE_CONTROL_PING:
+                data = createArrayList<ByteArray>();
+                data->add(mComposer->genPingMessage(msg->toString()));
+                break;
 
-        case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:
-            data = createArrayList<ByteArray>();
-            data->add(mComposer->genPongMessage(msg->toString()));
-            break;
+            case st(WebSocketProtocol)::OPCODE_CONTROL_PONG:
+                data = createArrayList<ByteArray>();
+                data->add(mComposer->genPongMessage(msg->toString()));
+                break;
 
-        default:
-            throw ProtocolNotSupportException(
-                "WebSocketLinker not support OPCODE");
+            default:
+                throw ProtocolNotSupportException(
+                    "WebSocketLinker not support OPCODE");
         }
 
         ListIterator<ByteArray> iterator = data->getIterator();

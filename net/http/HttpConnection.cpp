@@ -44,7 +44,8 @@ int _HttpConnection::connect() {
         inetAddr->setAddress(address->get(0)->getAddress());
     }
     
-    if(mUrl->getScheme() == st(NetProtocol)::Http) {
+    if(mUrl->getScheme() == st(NetProtocol)::Http
+        ||mUrl->getScheme() == st(NetProtocol)::Ws) {
         mSocket = createSocketBuilder()
                     ->setAddress(inetAddr)
                     ->setOption(mOption)

@@ -24,6 +24,7 @@ public:
     friend class _SocketInputStream;
 
     enum Protocol {
+        UnKnown = 0,
         Tcp,
         Udp,
         Local,

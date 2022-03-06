@@ -20,42 +20,35 @@ _Socket::_Socket() {
     mMutex = createMutex();
     mOutputStream = nullptr;
     mInputStream = nullptr;
+    protocol = UnKnown;
 }
 
-_Socket::_Socket(int v, InetAddress addr, SocketOption option,String certificatePath,String keyPath) {
+_Socket::_Socket(int v, InetAddress addr, SocketOption option,String certificatePath,String keyPath):_Socket() {
     protocol = v;
-    mMutex = createMutex();
-    mOutputStream = nullptr;
-    mInputStream = nullptr;
-
     switch (v) {
-    case Tcp:
-        mSock = createSocksSocketImpl(addr, option);
-        return;
+        case Tcp:
+            mSock = createSocksSocketImpl(addr, option);
+            return;
 
-    case Udp:
-        mSock = createDatagramSocketImpl(addr, option);
-        return;
+        case Udp:
+            mSock = createDatagramSocketImpl(addr, option);
+            return;
 
-    case Local:
-        mSock = createLocalSocketImpl(addr, option);
-        return;
+        case Local:
+            mSock = createLocalSocketImpl(addr, option);
+            return;
 
-    case SSL:
-        mSock = createSSLSocksSocketImpl(certificatePath,keyPath,addr,option);
-        return;
+        case SSL:
+            mSock = createSSLSocksSocketImpl(certificatePath,keyPath,addr,option);
+            return;
     }
 
     Trigger(InitializeException, "ivalid type");
 }
 
-_Socket::_Socket(FileDescriptor descriptor) {
-    mOutputStream = nullptr;
-    mInputStream = nullptr;
-
+_Socket::_Socket(FileDescriptor descriptor):_Socket() {
     mSock = createSocketImpl(descriptor);
     protocol = Fd;
-    mMutex = createMutex();
 }
 
 void _Socket::setAsync(bool async) {
@@ -128,11 +121,7 @@ OutputStream _Socket::getOutputStream() {
 }
 
 FileDescriptor _Socket::getFileDescriptor() {
-    if(mSock == nullptr) {
-        return nullptr;
-    }
-
-    return mSock->getFileDescriptor();
+    return (mSock == nullptr)?nullptr:mSock->getFileDescriptor();
 }
 
 int _Socket::getProtocol() { 

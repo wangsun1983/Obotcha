@@ -125,7 +125,6 @@ WebSocketHeader _WebSocketFrame::getHeader() {
     return mHeader;
 }
 
-
 void _WebSocketFrame::setData(ByteArray data) {
     mData = data;
 }

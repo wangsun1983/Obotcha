@@ -25,12 +25,12 @@ _Handler::_Handler() {
     mMutex = createMutex("HandlerMutex");
     mCondition = createCondition();
     mMessagePool = nullptr;
-    mStatus = createAtomicInteger(StatusRunning);
+    mIsRunning = true;
     start();
 }
 
 _Handler::~_Handler() {
-    destroy();
+    release();
     join();
 }
 
@@ -59,7 +59,7 @@ int _Handler::sendEmptyMessageDelayed(int what, long delay) {
 }
 
 int _Handler::sendMessageDelayed(sp<_Message> msg, long delay) {
-    if (mStatus->get() != StatusRunning) {
+    if (mIsRunning) {
         return -1;
     }
     msg->nextTime = st(System)::currentTimeMillis() + delay;
@@ -134,7 +134,7 @@ void _Handler::removeMessages(int what) {
 
 void _Handler::run() {
     long waitTime = 0;
-    while (mStatus->get() != StatusDestroy) {
+    while (mIsRunning) {
         Message msg = nullptr;
         {
             AutoLock l(mMutex);
@@ -155,22 +155,23 @@ void _Handler::run() {
             }
         }
         if (msg != nullptr) {
-            if (msg->mRunnable == nullptr) {
-                handleMessage(msg);
-            } else {
-                msg->mRunnable->run();
-            }
+            // if (msg->mRunnable == nullptr) {
+            //     handleMessage(msg);
+            // } else {
+            //     msg->mRunnable->run();
+            // }
+            (msg->mRunnable == nullptr)?handleMessage(msg):msg->mRunnable->run();
         }
     }
 }
 
-void _Handler::destroy() {
-    mStatus->set(StatusDestroy);
+void _Handler::release() {
+    mIsRunning = false;
     mCondition->notify();
 }
 
 bool _Handler::isRunning() { 
-    return mStatus->get() == StatusRunning; 
+    return mIsRunning; 
 }
 
 int _Handler::size() {

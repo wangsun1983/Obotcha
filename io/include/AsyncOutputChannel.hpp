@@ -16,6 +16,8 @@ class _AsyncOutputChannelPool;
 
 DECLARE_CLASS(AsyncOutputChannel) {
   public:
+    friend class _AsyncOutputChannelPool;
+
     typedef std::function<long(FileDescriptor, ByteArray,int offset)> WriteCallback;
 
     _AsyncOutputChannel(FileDescriptor fileDescriptor,
@@ -23,8 +25,6 @@ DECLARE_CLASS(AsyncOutputChannel) {
 
     int write(ByteArray);
 
-    int notifyWrite();
-    
     FileDescriptor getFileDescriptor();
     
     void close();
@@ -35,6 +35,9 @@ DECLARE_CLASS(AsyncOutputChannel) {
     WriteCallback writeCb;
     bool isClosed;
     FileDescriptor mFd;
+
+    int notifyWrite();
+    int _write(ByteArray);
 
     static sp<_AsyncOutputChannelPool> mPool;
 };

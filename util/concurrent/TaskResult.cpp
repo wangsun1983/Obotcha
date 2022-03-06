@@ -2,67 +2,54 @@
 
 namespace obotcha {
 
-ThreadLocal<ExecutorTask> _TaskResult::mTasks =
-    createThreadLocal<ExecutorTask>();
+ThreadLocal<ExecutorTask> _TaskResult::mTasks = createThreadLocal<ExecutorTask>();
+
+#define TASK_RESULT_SET(X)              \
+    ExecutorTask t = mTasks->get();     \
+    if (t != nullptr) {                 \
+        t->setResult(X);                \
+    }
 
 void _TaskResult::set(int v) {
-    ExecutorTask t = mTasks->get();
-    if (t != nullptr) {
-        t->setResult(createInteger(v));
-    }
+    TASK_RESULT_SET(createInteger(v));
 }
 
 void _TaskResult::set(byte v) {
-    ExecutorTask t = mTasks->get();
-    if (t != nullptr) {
-        t->setResult(createByte(v));
-    }
+    TASK_RESULT_SET(createByte(v));
 }
 
 void _TaskResult::set(double v) {
-    ExecutorTask t = mTasks->get();
-    if (t != nullptr) {
-        t->setResult(createDouble(v));
-    }
+    TASK_RESULT_SET(createDouble(v));
 }
 
 void _TaskResult::set(bool v) {
-    ExecutorTask t = mTasks->get();
-    if (t != nullptr) {
-        t->setResult(createBoolean(v));
-    }
+    TASK_RESULT_SET(createBoolean(v));
 }
 
 void _TaskResult::set(long v) {
-    ExecutorTask t = mTasks->get();
-    if (t != nullptr) {
-        t->setResult(createLong(v));
-    }
+    TASK_RESULT_SET(createLong(v));
 }
 
 void _TaskResult::set(uint16_t v) {
-    ExecutorTask t = mTasks->get();
-    if (t != nullptr) {
-        t->setResult(createUint16(v));
-    }
+    TASK_RESULT_SET(createUint16(v));
 }
 
 void _TaskResult::set(uint32_t v) {
-    ExecutorTask t = mTasks->get();
-    if (t != nullptr) {
-        t->setResult(createUint32(v));
-    }
+    TASK_RESULT_SET(createUint32(v));
 }
 
 void _TaskResult::set(uint64_t v) {
-    ExecutorTask t = mTasks->get();
-    if (t != nullptr) {
-        t->setResult(createUint64(v));
-    }
+    TASK_RESULT_SET(createUint64(v));
 }
 
-void _TaskResult::addTask(ExecutorTask t) { mTasks->set(t); }
+#undef TASK_RESULT_SET
 
-void _TaskResult::removeTask() { mTasks->remove(); }
+void _TaskResult::addTask(ExecutorTask t) { 
+    mTasks->set(t); 
+}
+
+void _TaskResult::removeTask() { 
+    mTasks->remove(); 
+}
 
 } // namespace obotcha

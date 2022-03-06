@@ -25,13 +25,13 @@ namespace obotcha {
 _Mutex::_Mutex(int type) {
     pthread_mutexattr_init(&mutex_attr);
     switch (type) {
-    case Recursive:
-        pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_RECURSIVE);
-        break;
+        case Recursive:
+            pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_RECURSIVE);
+            break;
 
-    case Normal:
-        pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_NORMAL);
-        break;
+        case Normal:
+            pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_NORMAL);
+            break;
     }
 
     pthread_mutex_init(&mutex_t, &mutex_attr);
@@ -80,7 +80,7 @@ int _Mutex::unlock() {
         return -UnLockPerm;
     }
     
-    return 0;
+    return SUCCESS;
 }
 
 int _Mutex::tryLock() {
@@ -92,7 +92,7 @@ int _Mutex::tryLock() {
     default:
         return -LockFail;
     }
-    return 0;
+    return SUCCESS;
 }
 
 String _Mutex::toString() { 

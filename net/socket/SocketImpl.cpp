@@ -23,7 +23,9 @@ void _SocketImpl::_init() {
     mBuffSize = st(Socket)::DefaultBufferSize;
 }
 
-void _SocketImpl::setRecvBuff(int v) { mBuffSize = v; }
+void _SocketImpl::setRecvBuff(int v) { 
+    mBuffSize = v; 
+}
 
 void _SocketImpl::setOptions() {
     if (option != nullptr) {

@@ -22,18 +22,18 @@ int _InetAddress::DefaultPort = 8080;
 _InetAddress::_InetAddress(int port) {
     mPort = port;
     mAddress = nullptr;
-    mType = -1;
+    mFamily = -1;
 }
 
 _InetAddress::_InetAddress(String addr, int port) {
     mAddress = addr;
     mPort = port;
-    mType = -1;
+    mFamily = -1;
 }
 
 _InetAddress::_InetAddress() { 
     mPort = DefaultPort;
-    mType = -1; 
+    mFamily = -1; 
 }
 
 void _InetAddress::setPort(int p) { 
@@ -54,8 +54,8 @@ String _InetAddress::getAddress() {
     return mAddress; 
 }
 
-int _InetAddress::getType() {
-    return mType;
+int _InetAddress::getFamily() {
+    return mFamily;
 }
 
 uint64_t _InetAddress::hashcode() {
@@ -64,7 +64,7 @@ uint64_t _InetAddress::hashcode() {
 
 bool _InetAddress::equals(InetAddress addr) {
     return this->mPort == addr->mPort
-           && mType == addr->mType
+           && mFamily == addr->mFamily
            && (mAddress != nullptr)?mAddress->equals(addr->mAddress):addr->mAddress == nullptr;
 }
 

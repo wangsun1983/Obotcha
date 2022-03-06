@@ -18,11 +18,11 @@
 namespace obotcha {
 
 _Inet4Address::_Inet4Address(String addr, int port) : _InetAddress(addr, port) {
-    mType = IPV4;
+    mFamily = IPV4;
 }
 
 _Inet4Address::_Inet4Address(int port) : _InetAddress(port) { 
-    mType = IPV4; 
+    mFamily = IPV4; 
 }
 
 String _Inet4Address::getLocalAddress() { 

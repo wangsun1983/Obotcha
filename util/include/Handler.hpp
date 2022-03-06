@@ -65,12 +65,15 @@ public:
         return postDelayed(delay, createLambdaRunnable(f, args...));
     }
 
-    void destroy();
+    void release();
 
     int size();
 
 private:
-    enum Status { StatusRunning = 0, StatusDestroy };
+    //enum Status { 
+    //    Running = 0, 
+    //    StatusDestroy 
+    //};
 
     bool isRunning();
 
@@ -79,7 +82,8 @@ private:
     // LinkedList<Message> mMessagePool;
     Message mMessagePool;
 
-    AtomicInteger mStatus;
+    //AtomicInteger mStatus;
+    volatile bool mIsRunning;
 };
 
 } // namespace obotcha

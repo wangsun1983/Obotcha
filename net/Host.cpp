@@ -9,12 +9,13 @@
 #include <sys/socket.h>
 
 #include "Host.hpp"
+#include "InetAddress.hpp"
 
 namespace obotcha {
 
 _Host::_Host() {}
 
-String _Host::getHostName() {
+String _Host::getName() {
     // get hostname;
     char hostname[128] = {0};
     int ret = gethostname(hostname, sizeof(hostname));
@@ -25,54 +26,55 @@ String _Host::getHostName() {
     return nullptr;
 }
 
-ArrayList<InetHostAddress> _Host::getHostAddress() {
-    struct ifaddrs *ifAddrStruct = NULL;
-    void *tmpAddrPtr = NULL;
-
-    ArrayList<InetHostAddress> addressList = createArrayList<InetHostAddress>();
-
-    if (getifaddrs(&ifAddrStruct) != 0) {
+ArrayList<HostAddress> _Host::getAddresses() {
+    struct ifaddrs *iter = nullptr;
+    
+    if (getifaddrs(&iter) != 0) {
         // if wrong, go out!
         return nullptr;
     }
 
-    struct ifaddrs *iter = ifAddrStruct;
+    ArrayList<HostAddress> addressList = createArrayList<HostAddress>();
+    char addressBuffer[256] = {0};
+    struct ifaddrs *orig = iter;
 
-    while (iter != NULL) {
+    while (iter != nullptr) {
+        HostAddress address = createHostAddress();
+        void * tmpAddrPtr = &((struct sockaddr_in *)iter->ifa_addr)->sin_addr;
+        bool found = false;
+
         if (iter->ifa_addr->sa_family == AF_INET) { // if ip4
             // is a valid IP4 Address
-            tmpAddrPtr = &((struct sockaddr_in *)iter->ifa_addr)->sin_addr;
-            char addressBuffer[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-            InetHostAddress address = createInetHostAddress();
-            address->interface = createString(iter->ifa_name);
-            address->ip = createString(addressBuffer);
-            addressList->add(address);
+            address->type = st(InetAddress)::IPV4;
+            found = true;
         } else if (iter->ifa_addr->sa_family == AF_INET6) { // check it is IP6
-            tmpAddrPtr =
-                &((struct sockaddr_in *)ifAddrStruct->ifa_addr)->sin_addr;
-            char addressBuffer[INET6_ADDRSTRLEN];
             inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
-            InetHostAddress address = createInetHostAddress();
+            address->type = st(InetAddress)::IPV6;
+            found = true;
+        }
+
+        if(found) {
             address->interface = createString(iter->ifa_name);
             address->ip = createString(addressBuffer);
             addressList->add(address);
         }
+
         iter = iter->ifa_next;
     }
 
     // release the struct
-    freeifaddrs(ifAddrStruct);
+    freeifaddrs(orig);
     return addressList;
 }
 
-ArrayList<InetHostMac> getMacAddress() {
+ArrayList<HostMac> _Host::getMacAddresses() {
     int fd = 0;
     int interface = 0;
     struct ifreq buf[128];
     struct ifconf ifc;
 
-    ArrayList<InetHostMac> list = createArrayList<InetHostMac>();
+    ArrayList<HostMac> list = createArrayList<HostMac>();
 
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) >= 0) {
         int i = 0;
@@ -90,7 +92,7 @@ ArrayList<InetHostMac> getMacAddress() {
                             (unsigned char)buf[i].ifr_hwaddr.sa_data[3],
                             (unsigned char)buf[i].ifr_hwaddr.sa_data[4],
                             (unsigned char)buf[i].ifr_hwaddr.sa_data[5]);
-                    InetHostMac inetMac = createInetHostMac();
+                    HostMac inetMac = createHostMac();
                     inetMac->interface =
                         createString(buf[i].ifr_ifrn.ifrn_name);
                     inetMac->mac = createString(mac);
@@ -104,6 +106,7 @@ ArrayList<InetHostMac> getMacAddress() {
     if (fd != 0) {
         close(fd);
     }
+
     return list;
 }
 

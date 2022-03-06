@@ -30,7 +30,7 @@ int _ServerLocalSocketImpl::bind() {
         return -NetListenFail;
     }
 
-    return 0;
+    return SUCCESS;
 }
 
 Socket _ServerLocalSocketImpl::accept() {

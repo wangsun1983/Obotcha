@@ -9,13 +9,14 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(InetHostAddress) {
+DECLARE_CLASS(HostAddress) {
 public:
     String interface;
     String ip;
+    int type;
 };
 
-DECLARE_CLASS(InetHostMac) {
+DECLARE_CLASS(HostMac) {
 public:
     String interface;
     String mac;
@@ -25,9 +26,9 @@ DECLARE_CLASS(Host) {
 public:
     _Host();
     
-    String getHostName();
-    ArrayList<InetHostAddress> getHostAddress();
-    ArrayList<InetHostMac> getMacAddress();
+    String getName();
+    ArrayList<HostAddress> getAddresses();
+    ArrayList<HostMac> getMacAddresses();
 };
 
 }

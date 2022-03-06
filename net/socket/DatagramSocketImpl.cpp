@@ -27,7 +27,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
                                          SocketOption option)
     : _SocketImpl(address, option) {
 
-    switch(address->getType()) {
+    switch(address->getFamily()) {
         case st(InetAddress)::IPV4: {
             mSockAddr.sin_family = AF_INET;
             mSockAddr.sin_port = htons(address->getPort());
@@ -70,7 +70,7 @@ Socket _DatagramSocketImpl::receiveFrom(ByteArray buff) {
     int length = -1;
     DatagramSocketImpl impl = createDatagramSocketImpl();
 
-    switch(this->address->getType()) {
+    switch(this->address->getFamily()) {
         case st(InetAddress)::IPV4: {
             struct sockaddr_in client_address;
             socklen_t client_addrLength = sizeof(struct sockaddr_in);
@@ -130,7 +130,7 @@ int _DatagramSocketImpl::connect() {
 }
 
 int _DatagramSocketImpl::bind() {
-    switch(this->address->getType()) {
+    switch(this->address->getFamily()) {
         case st(InetAddress)::IPV4: {
             return ::bind(sock->getFd(), (struct sockaddr *)&mSockAddr,
                   sizeof(mSockAddr));
@@ -153,7 +153,7 @@ int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
         Trigger(IllegalArgumentException,"DatagramSocket write size too large");
     }
 
-    switch(this->address->getType()) {
+    switch(this->address->getFamily()) {
         case st(InetAddress)::IPV4: {
             addr = (sockaddr *)&mSockAddr;
             addrlen = sizeof(mSockAddr);

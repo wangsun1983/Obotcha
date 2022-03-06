@@ -34,14 +34,14 @@ int _SpinLock::lock() {
 int _SpinLock::tryLock() {
     int ret = pthread_spin_trylock(&mLock);
     switch (ret) {
-    case EBUSY:
-        return -LockBusy;
+        case EBUSY:
+            return -LockBusy;
 
-    case SUCCESS:
-        return SUCCESS;
+        case SUCCESS:
+            return SUCCESS;
 
-    default:
-        return -LockFail;
+        default:
+            return -LockFail;
     }
 }
 

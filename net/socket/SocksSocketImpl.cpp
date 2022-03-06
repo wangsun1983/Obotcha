@@ -22,7 +22,7 @@ namespace obotcha {
 // socket
 _SocksSocketImpl::_SocksSocketImpl(InetAddress address, SocketOption option)
     : _SocketImpl(address, option) {
-    switch(address->getType()) {
+    switch(address->getFamily()) {
         case st(InetAddress)::IPV4: {
             mSockAddr.sin_family = PF_INET;
             mSockAddr.sin_port = htons(address->getPort());
@@ -68,7 +68,7 @@ int _SocksSocketImpl::connect() {
     struct sockaddr *sock_addr = nullptr;
     long sock_length = 0;
 
-    switch(address->getType()) {
+    switch(address->getFamily()) {
         case st(InetAddress)::IPV4: {
             sock_addr = (struct sockaddr *)&mSockAddr;
             sock_length = sizeof(mSockAddr);
@@ -94,7 +94,7 @@ int _SocksSocketImpl::connect() {
         struct sockaddr *addr = nullptr;
         socklen_t size = 0;
 
-        switch(address->getType()) {
+        switch(address->getFamily()) {
             case st(InetAddress)::IPV4: {
                 memset(&sockAddrV4, 0, sizeof(struct sockaddr_in));
                 addr = (struct sockaddr *)&sockAddrV4;
@@ -112,9 +112,9 @@ int _SocksSocketImpl::connect() {
 
         int ret = getpeername(sock->getFd(), addr,&size);
 
-        if (address->getType() == st(InetAddress)::IPV4 && ntohs(sockAddrV4.sin_port) != 0) {
+        if (address->getFamily() == st(InetAddress)::IPV4 && ntohs(sockAddrV4.sin_port) != 0) {
             break;
-        } else if (address->getType() == st(InetAddress)::IPV6 && ntohs(sockAddrV6.sin6_port) != 0) {
+        } else if (address->getFamily() == st(InetAddress)::IPV6 && ntohs(sockAddrV6.sin6_port) != 0) {
             break;
         }
         usleep(30 * 1000);

@@ -5,6 +5,8 @@
 #include <mqueue.h>
 #include <fstream>
 #include <sys/un.h>
+#include <mutex>
+#include <thread>
 
 
 #include "Object.hpp"
@@ -43,18 +45,19 @@
 
 namespace obotcha {
 
-#define TAG "WebSocketClient"
+SocketMonitor _WebSocketClient::mSocketMonitor = nullptr;
 
 _WebSocketClient::_WebSocketClient(int version) {
-    mVersion = version;
-    mSocketMonitor = createSocketMonitor();
+    static std::once_flag s_flag;
+    std::call_once(s_flag, [&]() {
+        mSocketMonitor = createSocketMonitor();
+    });
+    
+    //mVersion = version;
     mWsListener = nullptr;
     mHttpOption = nullptr;
     mOutputStream = nullptr;
     mSocket = nullptr;
-
-    parser = nullptr;
-    composer = nullptr;
 
     switch(version) {
         case 0:{
@@ -82,7 +85,7 @@ _WebSocketClient::_WebSocketClient(int version) {
         }
         
         default:{
-            throw InitializeException("Websocket Client not support version!!!");
+            Trigger(InitializeException,"Websocket Client not support version!!!");
         }
     }
 }
@@ -149,6 +152,8 @@ int _WebSocketClient::sendFile(File file) {
     FileInputStream stream = createFileInputStream(file);
     stream->open();
     ByteArray content = stream->readAll();
+    stream->close();
+
     return sendBinaryData(content);
 }
 
@@ -198,8 +203,10 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
                     break;
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
+                        mSocketMonitor->remove(mSocket);
                         mSocket->close();
-                        mSocketMonitor->close();
+                        mOutputStream->close();
+                        //mSocketMonitor->close();
                     break;
                 }
 
@@ -223,8 +230,6 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
 }
 
 void _WebSocketClient::close() {
-    //mSocketMonitor->close();
-    //mSocket->close();
     //send close message to server
     sendCloseMessage(createString("end"));
 }

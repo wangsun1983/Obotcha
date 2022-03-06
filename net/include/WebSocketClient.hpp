@@ -28,7 +28,7 @@ DECLARE_CLASS(WebSocketClient) IMPLEMENTS(SocketListener){
 public:
     _WebSocketClient(int version = 13);
     
-    void updateMask(bool);
+    //void updateMask(bool);
 
     int connect(String url,WebSocketListener l,HttpOption option = nullptr);
 
@@ -54,13 +54,13 @@ private:
     
     void onSocketMessage(int,Socket,ByteArray);
 
-    int mVersion;
+    //int mVersion;
 
     WebSocketListener mWsListener;
 
     HttpOption mHttpOption;
 
-    SocketMonitor mSocketMonitor;
+    static SocketMonitor mSocketMonitor;
 
     WebSocketParser parser;
     WebSocketComposer composer;

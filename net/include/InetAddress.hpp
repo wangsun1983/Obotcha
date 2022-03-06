@@ -14,7 +14,7 @@ namespace obotcha {
 DECLARE_CLASS(InetAddress) {
 
 public:
-    enum Type {
+    enum Family {
         IPV4 = 0,
         IPV6,
         LOCAL
@@ -32,7 +32,7 @@ public:
     String getAddress();
     void setAddress(String);
 
-    int getType();
+    int getFamily();
 
     uint64_t hashcode();
     bool equals(InetAddress);
@@ -40,7 +40,7 @@ public:
 protected:
     String mAddress;
     int mPort;
-    int mType;
+    int mFamily;
 };
 
 }
