@@ -5,11 +5,17 @@
 namespace obotcha {
 
 _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
-    //mSocket = s;
     impl = s->getSockImpl();
+    
     fileDescriptor = s->getFileDescriptor();
     
     if (s->getFileDescriptor()->isAsync()) {
+        //Add a mutex to protect channle for the following issue
+        //1.Thread A:call write function to send data
+        //2.Thread B(SocketMonitor) :if peer disconnet,close SocketOutputStream.
+        //                         mChannel will be set as nullptr.
+        //3.Thread A:call mChannel->write and crash(NullPointer...);
+        mChannelMutex = createMutex();
         mChannel = createAsyncOutputChannel(
             s->getFileDescriptor(),
             std::bind(&_SocketOutputStream::_write, this, std::placeholders::_1,
@@ -24,10 +30,14 @@ long _SocketOutputStream::write(char c) {
 }
 
 long _SocketOutputStream::write(ByteArray data) {
-    if (mChannel != nullptr) {
-        mChannel->write(data);
-        return data->size();
+    if(mChannelMutex != nullptr) {
+        AutoLock l(mChannelMutex);
+        if (mChannel != nullptr) {
+            mChannel->write(data);
+            return data->size();
+        }
     }
+
     return _write(fileDescriptor, data,0);
 }
 
@@ -37,35 +47,36 @@ long _SocketOutputStream::write(ByteArray data, int start) {
 
 long _SocketOutputStream::write(ByteArray data, int start, int len) {
     ByteArray senddata = createByteArray(&data->toValue()[start], len);
-    if (mChannel != nullptr) {
-        mChannel->write(senddata);
-        return senddata->size();
+    if(mChannelMutex != nullptr) {
+        AutoLock l(mChannelMutex);
+        if (mChannel != nullptr) {
+            mChannel->write(senddata);
+            return senddata->size();
+        }
     }
     return _write(fileDescriptor, senddata,0);
 }
 
 long _SocketOutputStream::_write(FileDescriptor fd, ByteArray data,int offset) {
-    //if (mSocket == nullptr || mSocket->isClosed()) {
-    //    return -1;
-    //}
-    //return mSocket->mSock->write(data,offset);
     return impl->write(data,offset);
 }
 
 void _SocketOutputStream::close() {
-    //mSocket = nullptr;
-    if (mChannel != nullptr) {
-        mChannel->close();
-        mChannel = nullptr;
+    if(mChannelMutex != nullptr) {   
+        AutoLock l(mChannelMutex);
+        if (mChannel != nullptr) {
+            mChannel->close();
+            mChannel = nullptr;
+        }
     }
 }
 
 void _SocketOutputStream::flush() {
-    // TODO
+    //do nothing
 }
 
 _SocketOutputStream::~_SocketOutputStream() {
-    //mSocket = nullptr;
+    //do nothing
 }
 
 } // namespace obotcha

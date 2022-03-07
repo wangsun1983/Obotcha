@@ -9,9 +9,13 @@
 
 namespace obotcha {
 
-_FileDescriptor::_FileDescriptor(int fd) { _fd = fd; }
+_FileDescriptor::_FileDescriptor(int fd) { 
+    _fd = fd; 
+}
 
-uint64_t _FileDescriptor::hashcode() { return _fd; }
+uint64_t _FileDescriptor::hashcode() { 
+    return _fd; 
+}
 
 int _FileDescriptor::close() {
     if (_fd != -1) {
@@ -31,7 +35,9 @@ int _FileDescriptor::setFileOption(int option) {
     return fcntl(_fd, F_SETFL, fcntl(_fd, F_GETFL, 0) | option);
 }
 
-int _FileDescriptor::getFileOption() { return fcntl(_fd, F_GETFL); }
+int _FileDescriptor::getFileOption() { 
+    return fcntl(_fd, F_GETFL); 
+}
 
 void _FileDescriptor::setAsync(bool async) {
     if (async) {
@@ -55,10 +61,18 @@ bool _FileDescriptor::isAsync() {
     return (fcntl(_fd, F_GETFL) & O_NONBLOCK) > 0;
 }
 
+bool _FileDescriptor::isSocket() {
+    int error;
+    socklen_t error_length = sizeof(error);
+    return TEMP_FAILURE_RETRY(getsockopt(_fd, SOL_SOCKET, SO_ERROR, &error, &error_length)) == 0;
+}
+
 bool _FileDescriptor::isClosed() {
     return fcntl(_fd,F_GETFL,0) == -1;
 }
 
-int _FileDescriptor::getFd() { return _fd; }
+int _FileDescriptor::getFd() { 
+    return _fd; 
+}
 
 } // namespace obotcha

@@ -29,6 +29,8 @@ public:
     void setAsync(bool);
     bool isAsync();
 
+    bool isSocket();
+
     bool isClosed();
 
     uint64_t hashcode();

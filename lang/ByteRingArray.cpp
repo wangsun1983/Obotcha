@@ -15,7 +15,7 @@ namespace obotcha {
 
 _ByteRingArray::_ByteRingArray(int size) {
     if (size <= 0) {
-        Trigger(InitializeException, "size is illeagle");
+        Trigger(InitializeException, "size is invalid");
     }
 
     mCapacity = size;

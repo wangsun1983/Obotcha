@@ -15,6 +15,8 @@
 #include "FileDescriptor.hpp"
 #include "OutputStream.hpp"
 #include "SocketImpl.hpp"
+#include "Mutex.hpp"
+#include "AutoLock.hpp"
 
 namespace obotcha {
 
@@ -45,6 +47,7 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
     FileDescriptor fileDescriptor;
     SocketImpl impl;
 
+    Mutex mChannelMutex;
     AsyncOutputChannel mChannel;
 
     struct sockaddr_in server_addr;
