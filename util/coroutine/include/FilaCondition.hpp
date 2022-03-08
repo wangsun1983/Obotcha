@@ -6,12 +6,16 @@
 #include "Object.hpp"
 #include "Runnable.hpp"
 #include "StrongPointer.hpp"
+#include "ThreadLocal.hpp"
 
 namespace obotcha {
+
+class _FilaCroutine;
 
 DECLARE_CLASS(FilaCondition) {
 
   public:
+    friend class _FilaCroutine;
     _FilaCondition();
     void wait();
     void wait(long mseconds);
@@ -21,6 +25,8 @@ DECLARE_CLASS(FilaCondition) {
 
   private:
     stCoCond_t *mCond;
+    void doNotifyAll();
+    void doNotify();
 };
 
 } // namespace obotcha

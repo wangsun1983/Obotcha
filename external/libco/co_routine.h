@@ -42,6 +42,7 @@ struct stCoRoutineAttr_t
 struct stCoEpoll_t;
 typedef int (*pfn_co_eventloop_t)(void *);
 typedef void *(*pfn_co_routine_t)( void * );
+typedef void (*pfn_idle)(void *);
 
 //2.co_routine
 
@@ -54,7 +55,7 @@ void    co_release( stCoRoutine_t *co );
 stCoRoutine_t *co_self();
 
 int		co_poll( stCoEpoll_t *ctx,struct pollfd fds[], nfds_t nfds, int timeout_ms );
-void 	co_eventloop( stCoEpoll_t *ctx,pfn_co_eventloop_t pfn,void *arg );
+void 	co_eventloop( stCoEpoll_t *ctx,pfn_co_eventloop_t pfn,void *arg,pfn_idle func,void *data);
 
 //3.specific
 
