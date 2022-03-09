@@ -6,28 +6,31 @@ namespace obotcha {
 
 _FilaMutex::_FilaMutex() {
     mMutex = createMutex();
+    mOwnerMutex = createMutex();
     owner = nullptr;
 }
 
 int _FilaMutex::lock() {
     auto coa = GetCurrThreadCo();
-    while(1) {
-        printf("lock trace1 \n");
+    if(coa == nullptr) {
+        //it is not a routine
         mMutex->lock();
-        printf("lock trace2 \n");
-        if(owner == nullptr) {
-            printf("lock trace3 \n");
-            owner = coa;
-            //mMutex->unlock();
-            printf("lock trace4 \n");
-            break;
-        }else if(owner == coa) {
-            printf("lock trace5 \n");
-            //mMutex->unlock();
-            printf("lock trace6 \n");
-            break;
+    } else {
+        while(1) {
+            AutoLock l(mOwnerMutex);
+
+            if(owner == nullptr) {
+                owner = coa;
+                mMutex->lock();
+                //mMutex->unlock();
+                break;
+            }else if(owner == coa) {
+                //mMutex->unlock();
+                mMutex->lock();
+                break;
+            }
+            poll(NULL, 0, 1);
         }
-        mMutex->unlock();
     }
 
     return 0;
@@ -35,11 +38,11 @@ int _FilaMutex::lock() {
 
 int _FilaMutex::unlock() {
     auto coa = GetCurrThreadCo();
-    mMutex->lock();
+    AutoLock l(mOwnerMutex);
     if(owner == coa) {
         owner = nullptr;
+        mMutex->unlock();
     }
-    mMutex->unlock();
     return 0;
 }
 

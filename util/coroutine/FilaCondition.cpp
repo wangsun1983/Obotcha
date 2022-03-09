@@ -1,5 +1,5 @@
 #include "FilaCondition.hpp"
-#include "FilaCroutineManager.hpp"
+#include "FilaRoutineManager.hpp"
 
 namespace obotcha {
 
@@ -8,7 +8,7 @@ _FilaCondition::_FilaCondition() {
 }
 
 void _FilaCondition::wait() {
-    st(FilaCroutineManager)::getInstance()->addWaitCondition(AutoClone(this));
+    st(FilaRoutineManager)::getInstance()->addWaitCondition(AutoClone(this));
     co_cond_timedwait(mCond, -1); 
 }
 
@@ -17,15 +17,15 @@ void _FilaCondition::wait(long mseconds) {
 }
 
 void _FilaCondition::notify() {
-    auto sets = st(FilaCroutineManager)::getInstance()->getWaitCroutine(AutoClone(this));
+    auto sets = st(FilaRoutineManager)::getInstance()->getWaitCroutine(AutoClone(this));
     if(sets != nullptr) {
         auto iterator = sets->getIterator();
-        FilaCoutineInnerEvent event = createFilaCoutineInnerEvent();
-        event->event = st(FilaCoutineInnerEvent)::Notify;
+        FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
+        event->event = st(FilaRoutineInnerEvent)::Notify;
         event->cond = AutoClone(this);
 
         while(iterator->hasValue()) {
-            FilaCroutine c = iterator->getValue();
+            FilaRoutine c = iterator->getValue();
             c->postEvent(event);
             break;
         }
@@ -35,11 +35,11 @@ void _FilaCondition::notify() {
 }
 
 void _FilaCondition::notifyAll() {
-    auto sets = st(FilaCroutineManager)::getInstance()->getWaitCroutine(AutoClone(this));
+    auto sets = st(FilaRoutineManager)::getInstance()->getWaitCroutine(AutoClone(this));
     if(sets != nullptr) {
         auto iterator = sets->getIterator();
-        FilaCoutineInnerEvent event = createFilaCoutineInnerEvent();
-        event->event = st(FilaCoutineInnerEvent)::NotifyAll;
+        FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
+        event->event = st(FilaRoutineInnerEvent)::NotifyAll;
         event->cond = AutoClone(this);
         while(iterator->hasValue()) {
             int size = sets->size();

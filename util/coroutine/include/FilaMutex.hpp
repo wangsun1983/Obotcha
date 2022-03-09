@@ -23,6 +23,7 @@ public:
 
 private:
     Mutex mMutex;
+    Mutex mOwnerMutex;
     stCoRoutine_t *owner;
     //void setOwner(stCoRoutine_t *);
 };

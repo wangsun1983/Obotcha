@@ -8,21 +8,25 @@
 #include "String.hpp"
 #include "StrongPointer.hpp"
 #include "FilaMutex.hpp"
+#include "OStdApply.hpp"
+#include "FilaFuture.hpp"
 
 namespace obotcha {
 
-class _FilaCroutine;
+class _FilaRoutine;
 class _FilaMutex;
 
 DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
 
   public:
-    friend class _FilaCroutine;
+    friend class _FilaRoutine;
     friend class _FilaMutex;
 
     virtual void run() {};
 
     void start();
+
+    void start(FilaFuture);
 
     void resume();
 
@@ -36,6 +40,8 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
     stCoRoutine_t *coa;
 
     String mName;
+
+    FilaFuture mFuture;
 };
 
 template <class Function, class... Args>

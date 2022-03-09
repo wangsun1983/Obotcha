@@ -15,7 +15,7 @@ class _FilaCroutine;
 DECLARE_CLASS(FilaCondition) {
 
   public:
-    friend class _FilaCroutine;
+    friend class _FilaRoutine;
     _FilaCondition();
     void wait();
     void wait(long mseconds);

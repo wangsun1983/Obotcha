@@ -8,31 +8,31 @@
 #include "StrongPointer.hpp"
 #include "ThreadLocal.hpp"
 #include "HashMap.hpp"
-#include "FilaCroutine.hpp"
+#include "FilaRoutine.hpp"
 #include "FilaCondition.hpp"
 #include "HashSet.hpp"
 
 namespace obotcha {
 
-DECLARE_CLASS(FilaCroutineManager) {
+DECLARE_CLASS(FilaRoutineManager) {
 public:
     void addWaitCondition(FilaCondition);
     void removeWaitCondition(FilaCondition);
-    HashSet<FilaCroutine> getWaitCroutine(FilaCondition);
+    HashSet<FilaRoutine> getWaitCroutine(FilaCondition);
 
-    void addCroutine(FilaCroutine);
-    void removeFilaCroutine();
+    void addCroutine(FilaRoutine);
+    void removeFilaRoutine();
 
-    static FilaCroutineManager getInstance();
+    static FilaRoutineManager getInstance();
   
 private:
-    _FilaCroutineManager();
-    static FilaCroutineManager mInstance;
+    _FilaRoutineManager();
+    static FilaRoutineManager mInstance;
 
     Mutex mMutex;
-    ThreadLocal<FilaCroutine> croutines;
-    //HashMap<FilaCroutine,HashSet<FilaCondition>> conditionMaps;
-    HashMap<FilaCondition,HashSet<FilaCroutine>> conditionMaps;
+    ThreadLocal<FilaRoutine> croutines;
+    //HashMap<FilaRoutine,HashSet<FilaCondition>> conditionMaps;
+    HashMap<FilaCondition,HashSet<FilaRoutine>> conditionMaps;
 };
 
 } // namespace obotcha
