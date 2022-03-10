@@ -1,6 +1,7 @@
 #ifndef __OBOTCHA_FILA_CONDITION_HPP__
 #define __OBOTCHA_FILA_CONDITION_HPP__
 
+#include <map>
 #include "co_routine.h"
 
 #include "Object.hpp"

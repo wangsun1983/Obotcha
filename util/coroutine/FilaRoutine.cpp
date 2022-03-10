@@ -26,10 +26,17 @@ void _FilaRoutine::postEvent(FilaRoutineInnerEvent event) {
     innerEvents->add(event);
 }
 
+_FilaRoutine::~_FilaRoutine() {
+}
+
+void _FilaRoutine::onComplete() {
+    st(FilaRoutineManager)::getInstance()->removeRoutine();
+}
+
 void _FilaRoutine::run() {
     co_init_curr_thread_env();
     co_enable_hook_sys();
-    st(FilaRoutineManager)::getInstance()->addCroutine(AutoClone(this));
+    st(FilaRoutineManager)::getInstance()->addRoutine(AutoClone(this));
     co_eventloop(co_get_epoll_ct(), 0, 0,onIdle,this);
 }
 
@@ -65,7 +72,8 @@ void _FilaRoutine::onIdle(void * data) {
                 }
                 
                 case st(FilaRoutineInnerEvent)::Notify: {
-                    //TODO
+                    FilaCondition cond = event->cond;
+                    cond->doNotify();
                     break;
                 }
 

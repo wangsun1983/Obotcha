@@ -38,7 +38,7 @@ void _FilaRoutineManager::addWaitCondition(FilaCondition f) {
     waitSets->add(croutine);
 }
 
-HashSet<FilaRoutine> _FilaRoutineManager::getWaitCroutine(FilaCondition f) {
+HashSet<FilaRoutine> _FilaRoutineManager::getWaitRoutine(FilaCondition f) {
     return conditionMaps->get(f);
 }
 
@@ -46,12 +46,12 @@ void _FilaRoutineManager::removeWaitCondition(FilaCondition) {
     //TODO
 }
 
-void _FilaRoutineManager::addCroutine(FilaRoutine c) {
+void _FilaRoutineManager::addRoutine(FilaRoutine c) {
     croutines->set(c);
 }
 
-void _FilaRoutineManager::removeFilaRoutine() {
-  //TODO
+void _FilaRoutineManager::removeRoutine() {
+    croutines->remove();
 }
 
 

@@ -21,6 +21,7 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
   public:
     friend class _FilaRoutine;
     friend class _FilaMutex;
+    _Filament();
 
     virtual void run() {};
 
@@ -33,6 +34,8 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
     void yield();
 
     void destroy();
+    
+    ~_Filament();
 
   private:
     static void *localFilaRun(void *args);

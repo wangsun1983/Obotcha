@@ -18,10 +18,10 @@ DECLARE_CLASS(FilaRoutineManager) {
 public:
     void addWaitCondition(FilaCondition);
     void removeWaitCondition(FilaCondition);
-    HashSet<FilaRoutine> getWaitCroutine(FilaCondition);
+    HashSet<FilaRoutine> getWaitRoutine(FilaCondition);
 
-    void addCroutine(FilaRoutine);
-    void removeFilaRoutine();
+    void addRoutine(FilaRoutine);
+    void removeRoutine();
 
     static FilaRoutineManager getInstance();
   

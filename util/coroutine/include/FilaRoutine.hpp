@@ -66,8 +66,11 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     void run();
 
     void onInterrupt();
+    void onComplete();
   
     void postEvent(FilaRoutineInnerEvent);
+
+    ~_FilaRoutine();
     
   private:
     Mutex mDataMutex;

@@ -22,10 +22,8 @@ int _FilaMutex::lock() {
             if(owner == nullptr) {
                 owner = coa;
                 mMutex->lock();
-                //mMutex->unlock();
                 break;
             }else if(owner == coa) {
-                //mMutex->unlock();
                 mMutex->lock();
                 break;
             }

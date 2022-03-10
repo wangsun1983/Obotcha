@@ -27,9 +27,7 @@ public:
             auto result = FilaExecuteResults->get((uint64_t)owner);
             AutoLock l(mMutex);
             if(result == nullptr) {
-                printf("getResult trace1\n");
                 mCond->wait(mMutex);
-                printf("getResult trace2\n");
                 continue;
             }
             return __ExecutorTaskResult<T>().get(result);

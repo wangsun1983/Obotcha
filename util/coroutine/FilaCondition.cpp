@@ -8,16 +8,17 @@ _FilaCondition::_FilaCondition() {
 }
 
 void _FilaCondition::wait() {
-    st(FilaRoutineManager)::getInstance()->addWaitCondition(AutoClone(this));
-    co_cond_timedwait(mCond, -1); 
+    wait(-1);
 }
 
 void _FilaCondition::wait(long mseconds) { 
+    st(FilaRoutineManager)::getInstance()->addWaitCondition(AutoClone(this));
     co_cond_timedwait(mCond, mseconds); 
+    st(FilaRoutineManager)::getInstance()->removeWaitCondition(AutoClone(this));
 }
 
 void _FilaCondition::notify() {
-    auto sets = st(FilaRoutineManager)::getInstance()->getWaitCroutine(AutoClone(this));
+    auto sets = st(FilaRoutineManager)::getInstance()->getWaitRoutine(AutoClone(this));
     if(sets != nullptr) {
         auto iterator = sets->getIterator();
         FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
@@ -30,12 +31,10 @@ void _FilaCondition::notify() {
             break;
         }
     }
-    
-    //co_cond_signal(mCond); 
 }
 
 void _FilaCondition::notifyAll() {
-    auto sets = st(FilaRoutineManager)::getInstance()->getWaitCroutine(AutoClone(this));
+    auto sets = st(FilaRoutineManager)::getInstance()->getWaitRoutine(AutoClone(this));
     if(sets != nullptr) {
         auto iterator = sets->getIterator();
         FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
@@ -49,7 +48,6 @@ void _FilaCondition::notifyAll() {
             iterator->next();
         }
     }
-    //co_cond_broadcast(mCond); 
 }
 
 void _FilaCondition::doNotifyAll() {
