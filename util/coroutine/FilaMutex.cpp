@@ -17,16 +17,19 @@ int _FilaMutex::lock() {
         mMutex->lock();
     } else {
         while(1) {
-            AutoLock l(mOwnerMutex);
-
+            //AutoLock l(mOwnerMutex);
+            mOwnerMutex->lock();
             if(owner == nullptr) {
                 owner = coa;
+                mOwnerMutex->unlock();
                 mMutex->lock();
                 break;
             }else if(owner == coa) {
+                mOwnerMutex->unlock();
                 mMutex->lock();
                 break;
             }
+            mOwnerMutex->unlock();
             poll(NULL, 0, 1);
         }
     }
@@ -37,12 +40,11 @@ int _FilaMutex::lock() {
 int _FilaMutex::unlock() {
     auto coa = GetCurrThreadCo();
     AutoLock l(mOwnerMutex);
-    if(owner == coa) {
+    if(owner == coa || coa == nullptr) {
         owner = nullptr;
         mMutex->unlock();
     }
     return 0;
 }
-
 
 } // namespace obotcha

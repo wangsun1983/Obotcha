@@ -23,7 +23,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
 
     inline int size() {
         AutoLock l(rdLock);
-        return mQueue.size();
+        return mQueue->size();
     }
 
     // interface like ArrayList
@@ -33,18 +33,16 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
 
     inline T get(int index) {
         AutoLock l(rdLock);
-        if (index >= mQueue.size()) {
-            return ContainerValue<T>(nullptr).get();
-        }
-
-        return mQueue.at(index);
+        return mQueue->at(index);
     }
 
     ArrayList<T> toArray() {
         AutoLock l(rdLock);
         ArrayList<T> list = createArrayList<T>();
-        for (T v : mQueue) {
-            list->add(v);
+        auto iterator = mQueue->getIterator();
+        while(iterator->hasValue()) {
+            list->add(iterator->getValue());
+            iterator->next();
         }
 
         return list;
@@ -53,71 +51,63 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
     // interface like queue
     inline void putFirst(const T &val) {
         AutoLock l(wrLock);
-        mQueue.insert(mQueue.begin(), val);
+        mQueue->insertFirst(val);
     }
 
     inline void putLast(const T &val) {
         AutoLock l(wrLock);
-        mQueue.push_back(val);
+        //mQueue.push_back(val);
+        mQueue->add(val);
     }
 
     inline int remove(const T &val) {
         AutoLock l(wrLock);
-        typename std::vector<T>::iterator result =
-            find(mQueue.begin(), mQueue.end(), val);
-        if (result != mQueue.end()) {
-            mQueue.erase(result);
-            return result - mQueue.begin();
-        }
-
-        return -1;
+        return mQueue->remvoe(val);
     }
 
     inline T removeAt(int index) {
         AutoLock l(wrLock);
-        if (index < 0 || index >= mQueue.size() || mQueue.size() == 0) {
-            Trigger(ArrayIndexOutOfBoundsException, "incorrect index");
-        }
-
-        T value = mQueue.at(index);
-        mQueue.erase(mQueue.begin() + index);
-        return value;
+        return mQueue->removeAt(index);
     }
 
     inline T takeFirst() {
         AutoLock l(wrLock);
-
-        if (mQueue.size() == 0) {
-            return ContainerValue<T>(nullptr).get();
-        }
-
-        T ret = mQueue.at(0);
-        mQueue.erase(mQueue.begin());
-
-        return ret;
+        return mQueue->removeAt(0);
     }
 
     inline T takeLast() {
         AutoLock l(wrLock);
+        return mQueue->removeAt(mQueue->size() - 1);
+    }
 
-        if (mQueue.size() == 0) {
-            return ContainerValue<T>(nullptr).get();
-        }
-
-        // return mQueue.pop_back();
-        T ret = mQueue.back();
-        mQueue.pop_back();
-
-        return ret;
+    inline ListIterator<T> getIterator() {
+        AutoLock l(rdLock);
+        return mQueue->getIterator();
     }
 
     inline void clear() {
         AutoLock l(wrLock);
-        mQueue.clear();
+        mQueue->clear();
+    }
+
+    void freezeWrite() {
+        rdLock->lock();
+    }
+
+    void freezeRead() {
+        wrLock->lock();
+    }
+
+    void unfreezeWrite() {
+        rdLock->unlock();
+    }
+
+    void unfreezeRead() {
+        wrLock->unlock();
     }
 
   private:
-    std::vector<T> mQueue;
+    ArrayList<T> mQueue;
 
     ReadWriteLock rdwrLock;
     ReadLock rdLock;

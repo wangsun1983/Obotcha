@@ -14,9 +14,11 @@ namespace obotcha {
 
 class _FilaCroutine;
 class _Filament;
+class _FilaCondtion;
 
 DECLARE_CLASS(FilaMutex) IMPLEMENTS(Lock){
 public:
+    friend class _FilaCondition;
     _FilaMutex();
     int lock();
     int unlock();

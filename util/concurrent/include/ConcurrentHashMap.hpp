@@ -46,11 +46,44 @@ public:
         mMap->clear();
     }
 
-    ArrayList<U> entrySet() {
+    //remove this
+    HashMap<T,U> toMap() {
         AutoLock l(rdLock);
-        return mMap->entrySet();
+        HashMap<T,U> map = createHashMap<T,U>();
+        auto iterator = mMap->getIterator();
+        while(iterator->hasValue()) {
+            map->put(iterator->getKey(),iterator->getValue());
+            iterator->next();
+        }
+
+        return map;
     }
 
+    MapIterator<T,U> getIterator() {
+        AutoLock l(rdLock);
+        return mMap->getIterator();
+    }
+
+    ArrayList<U> entrySet() {
+        AutoLock l(rdLock);
+        return mMap->getIterator();
+    }
+
+    void freezeWrite() {
+        rdLock->lock();
+    }
+
+    void freezeRead() {
+        wrLock->lock();
+    }
+
+    void unfreezeWrite() {
+        rdLock->unlock();
+    }
+
+    void unfreezeRead() {
+        wrLock->unlock();
+    }
 
 private:
     HashMap<T, U> mMap;

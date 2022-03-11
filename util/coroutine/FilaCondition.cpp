@@ -4,17 +4,24 @@
 namespace obotcha {
 
 _FilaCondition::_FilaCondition() { 
-    mCond = co_cond_alloc(); 
+    mCond = co_cond_alloc();
+    mOriCond = createCondition();
 }
 
-void _FilaCondition::wait() {
-    wait(-1);
+void _FilaCondition::wait(FilaMutex m) {
+    wait(m,-1);
 }
 
-void _FilaCondition::wait(long mseconds) { 
-    st(FilaRoutineManager)::getInstance()->addWaitCondition(AutoClone(this));
-    co_cond_timedwait(mCond, mseconds); 
-    st(FilaRoutineManager)::getInstance()->removeWaitCondition(AutoClone(this));
+void _FilaCondition::wait(FilaMutex m,long mseconds) {
+    auto coa = GetCurrThreadCo();
+    if(coa == nullptr) {
+        AutoLock l(m->mMutex);
+        mOriCond->wait(m->mMutex);
+    } else {
+        st(FilaRoutineManager)::getInstance()->addWaitCondition(AutoClone(this));
+        co_cond_timedwait(mCond, mseconds); 
+        st(FilaRoutineManager)::getInstance()->removeWaitCondition(AutoClone(this));
+    }
 }
 
 void _FilaCondition::notify() {
@@ -31,6 +38,8 @@ void _FilaCondition::notify() {
             break;
         }
     }
+
+    mOriCond->notify();
 }
 
 void _FilaCondition::notifyAll() {
@@ -48,6 +57,8 @@ void _FilaCondition::notifyAll() {
             iterator->next();
         }
     }
+
+    mOriCond->notifyAll();
 }
 
 void _FilaCondition::doNotifyAll() {
@@ -59,7 +70,10 @@ void _FilaCondition::doNotify() {
 }
 
 _FilaCondition::~_FilaCondition() { 
-    co_cond_free(mCond); 
+    if(mCond != nullptr) {
+        co_cond_free(mCond);
+        mCond = nullptr;
+    }
 }
 
 } // namespace obotcha

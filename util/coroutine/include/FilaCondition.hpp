@@ -8,6 +8,8 @@
 #include "Runnable.hpp"
 #include "StrongPointer.hpp"
 #include "ThreadLocal.hpp"
+#include "FilaMutex.hpp"
+#include "Condition.hpp"
 
 namespace obotcha {
 
@@ -18,16 +20,19 @@ DECLARE_CLASS(FilaCondition) {
   public:
     friend class _FilaRoutine;
     _FilaCondition();
-    void wait();
-    void wait(long mseconds);
+    void wait(FilaMutex);
+    void wait(FilaMutex,long mseconds);
     void notify();
     void notifyAll();
     ~_FilaCondition();
 
   private:
     stCoCond_t *mCond;
+
     void doNotifyAll();
     void doNotify();
+
+    Condition mOriCond;
 };
 
 } // namespace obotcha

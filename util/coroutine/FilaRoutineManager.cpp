@@ -42,8 +42,8 @@ HashSet<FilaRoutine> _FilaRoutineManager::getWaitRoutine(FilaCondition f) {
     return conditionMaps->get(f);
 }
 
-void _FilaRoutineManager::removeWaitCondition(FilaCondition) {
-    //TODO
+void _FilaRoutineManager::removeWaitCondition(FilaCondition f) {
+    conditionMaps->remove(f);
 }
 
 void _FilaRoutineManager::addRoutine(FilaRoutine c) {

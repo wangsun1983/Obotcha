@@ -86,7 +86,7 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, 1) {
 
     inline int capacity() { return mCapacity; }
 
-    inline void freeze() { mMutex->unlock(); }
+    inline void freeze() { mMutex->lock(); }
 
     inline void unfreeze() { mMutex->unlock(); }
 
@@ -191,6 +191,10 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, 1) {
         AutoLock l(mMutex);
         mList->clear();
         notFull->notifyAll();
+    }
+
+    LinkedListIterator<T> getIterator() {
+        return mList->getIterator();
     }
 
   private:

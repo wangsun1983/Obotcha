@@ -14,7 +14,9 @@ void _Filament::start() {
 void _Filament::start(FilaFuture future) {
     mFuture = future;
     co_create(&coa, nullptr, localFilaRun, this);
-    mFuture->setOwner(coa);
+    if(mFuture != nullptr) {
+        mFuture->setOwner(coa);
+    }
     co_resume(coa);
 }
 
