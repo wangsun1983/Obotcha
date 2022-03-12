@@ -21,7 +21,8 @@ public:
   enum {
     NewTask = 0,
     Notify,
-    NotifyAll
+    NotifyAll,
+    RemoveFilament,
   };
 
   int event;
@@ -65,19 +66,27 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
 
     void run();
 
+    void stop();
+
     void onInterrupt();
     void onComplete();
   
     void postEvent(FilaRoutineInnerEvent);
 
+    void removeFilament(Filament);
+
+    int getFilamentSize();
+
     ~_FilaRoutine();
     
   private:
     Mutex mDataMutex;
+    FilaMutex mFilaMutex;
     ArrayList<Filament> mFilaments;
     ArrayList<FilaRoutineInnerEvent> innerEvents;
-    
-    static void onIdle(void *);
+    volatile bool isStop;
+
+    static int onIdle(void *);
 };
 
 } // namespace obotcha

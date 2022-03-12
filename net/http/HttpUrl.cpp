@@ -366,7 +366,7 @@ String _HttpUrl::toString() {
     if (mUser != nullptr) {
         if (mPassword != nullptr) {
             url =
-                url->append(mUser)->append(":")->append(mPassword)->append("@");
+                url->append(mUser)->append(":",mPassword,"@");
         } else {
             url = url->append(mUser)->append("@");
         }
@@ -382,7 +382,7 @@ String _HttpUrl::toString() {
     }
 
     if(mPath != nullptr) {
-        url = url->append("/")->append(mPath);
+        url = url->append("/",mPath);
     }
 
     if(this->mQuery != nullptr) {

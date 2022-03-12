@@ -11,6 +11,7 @@
 #include "FilaRoutine.hpp"
 #include "FilaCondition.hpp"
 #include "HashSet.hpp"
+#include "ConcurrentHashSet.hpp"
 
 namespace obotcha {
 
@@ -21,6 +22,7 @@ public:
     HashSet<FilaRoutine> getWaitRoutine(FilaCondition);
 
     void addRoutine(FilaRoutine);
+    FilaRoutine getRoutine();
     void removeRoutine();
 
     static FilaRoutineManager getInstance();
@@ -30,9 +32,8 @@ private:
     static FilaRoutineManager mInstance;
 
     Mutex mMutex;
-    ThreadLocal<FilaRoutine> croutines;
-    //HashMap<FilaRoutine,HashSet<FilaCondition>> conditionMaps;
-    HashMap<FilaCondition,HashSet<FilaRoutine>> conditionMaps;
+    ThreadLocal<FilaRoutine> routines;
+    HashMap<FilaCondition,ConcurrentHashSet<FilaRoutine>> conditionMaps;
 };
 
 } // namespace obotcha

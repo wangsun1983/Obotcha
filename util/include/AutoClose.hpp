@@ -11,21 +11,31 @@ namespace obotcha {
 
 class AutoClose {
 public:
-    AutoClose(int fd) : AutoClose(fd, nullptr, nullptr) {}
+    AutoClose(int fd) : AutoClose(fd, nullptr, nullptr) {
+        //Nothing
+    }
 
-    AutoClose(FileDescriptor fd) : AutoClose(fd->getFd(), nullptr, nullptr) {}
+    AutoClose(FileDescriptor fd) : AutoClose(fd->getFd(), nullptr, nullptr) {
+        //Nothing
+    }
 
-    AutoClose(InputStream input) : AutoClose(-1, input, nullptr) {}
+    AutoClose(InputStream input) : AutoClose(-1, input, nullptr) {
+        //Nothing
+    }
 
-    AutoClose(OutputStream output) : AutoClose(-1, nullptr, output) {}
+    AutoClose(OutputStream output) : AutoClose(-1, nullptr, output) {
+        //Nothing
+    }
+
+    AutoClose() : AutoClose(-1,nullptr,nullptr) {
+        //Nothing
+    }
 
     AutoClose(int fd, InputStream input, OutputStream output) {
         this->fd = fd;
         mOut = output;
         mInput = input;
     }
-
-    AutoClose() {}
 
     ~AutoClose() {
         if (fd > 0) {
@@ -35,10 +45,12 @@ public:
 
         if (mOut != nullptr) {
             mOut->close();
+            mOut = nullptr;
         }
 
         if (mInput != nullptr) {
             mInput->close();
+            mOut = nullptr;
         }
     }
 

@@ -67,16 +67,22 @@ public:
 
     _ArrayList(sp<_ArrayList<T>> l) : elements(l->elements) {}
 
-    _ArrayList(int size) { elements.reserve(size); }
+    _ArrayList(int size) { 
+        elements.reserve(size); 
+    }
 
-    inline void add(const T val) { elements.push_back(val); }
+    inline void add(const T val) { 
+        elements.push_back(val); 
+    }
 
     inline void add(sp<_ArrayList<T>> list) {
         elements.insert(elements.end(), list->elements.begin(),
                         list->elements.end());
     }
 
-    inline void clear() { elements.clear(); }
+    inline void clear() { 
+        elements.clear(); 
+    }
 
     inline T removeAt(int index) {
         if (index < 0 || index >= elements.size() || elements.size() == 0) {
@@ -249,7 +255,9 @@ public:
         return *iterator;
     }
 
-    bool hasValue() { return iterator != mList->end(); }
+    bool hasValue() { 
+        return iterator != mList->end(); 
+    }
 
     bool next() {
         if (iterator != mList->end()) {
@@ -268,7 +276,9 @@ public:
         return true;
     }
 
-    void insert(T value) { iterator = mList->elements.insert(iterator, value); }
+    void insert(T value) { 
+        iterator = mList->elements.insert(iterator, value); 
+    }
 
 private:
     ArrayList<T> mList;

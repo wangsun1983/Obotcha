@@ -19,19 +19,19 @@ FilaRoutineManager _FilaRoutineManager::getInstance() {
 }
 
 _FilaRoutineManager::_FilaRoutineManager() {
-    croutines = createThreadLocal<FilaRoutine>();
-    conditionMaps = createHashMap<FilaCondition,HashSet<FilaRoutine>>();
+    routines = createThreadLocal<FilaRoutine>();
+    conditionMaps = createHashMap<FilaCondition,ConcurrentHashSet<FilaRoutine>>();
 }
 
 void _FilaRoutineManager::addWaitCondition(FilaCondition f) {
-    auto croutine = croutines->get();
+    auto croutine = routines->get();
     if(croutine == nullptr) {
       LOG(ERROR)<<"FilaRoutineManager addWaitCondition,croutine is null";
       return;
     }
-    HashSet<FilaRoutine> waitSets = conditionMaps->get(f);
+    ConcurrentHashSet<FilaRoutine> waitSets = conditionMaps->get(f);
     if(waitSets == nullptr) {
-      waitSets = createHashSet<FilaRoutine>();
+      waitSets = createConcurrentHashSet<FilaRoutine>();
       conditionMaps->put(f,waitSets);
     }
     
@@ -39,7 +39,12 @@ void _FilaRoutineManager::addWaitCondition(FilaCondition f) {
 }
 
 HashSet<FilaRoutine> _FilaRoutineManager::getWaitRoutine(FilaCondition f) {
-    return conditionMaps->get(f);
+    auto sets = conditionMaps->get(f);
+    if(sets != nullptr) {
+        return sets->toSet();
+    }
+
+    return nullptr;
 }
 
 void _FilaRoutineManager::removeWaitCondition(FilaCondition f) {
@@ -47,12 +52,15 @@ void _FilaRoutineManager::removeWaitCondition(FilaCondition f) {
 }
 
 void _FilaRoutineManager::addRoutine(FilaRoutine c) {
-    croutines->set(c);
+    routines->set(c);
 }
 
 void _FilaRoutineManager::removeRoutine() {
-    croutines->remove();
+    routines->remove();
 }
 
+FilaRoutine _FilaRoutineManager::getRoutine() {
+    return routines->get();
+}
 
 } // namespace obotcha

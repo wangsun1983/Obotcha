@@ -20,7 +20,7 @@ namespace obotcha {
 
 DECLARE_TEMPLATE_CLASS(ConcurrentHashSet, 1) {
 public:
-    _HashSet() {
+    _ConcurrentHashSet() {
         rdwrLock = createReadWriteLock();
         rdLock = rdwrLock->getReadLock();
         wrLock = rdwrLock->getWriteLock();
@@ -44,22 +44,22 @@ public:
 
     inline void clear() { 
         AutoLock l(wrLock);
-        hashset.clear(); 
+        mSets->clear(); 
     }
 
     inline int remove(T val) { 
         AutoLock l(wrLock);
-        return hashset.erase(val); 
+        return mSets->erase(val); 
     }
 
     inline T get(int index) { 
         AutoLock l(rdLock);
-        return hashset[index]; 
+        return mSets->get(index); 
     }
 
     inline int size() { 
         AutoLock l(rdLock);
-        return hashset.size(); 
+        return mSets->size(); 
     }
 
     void freezeWrite() {
@@ -78,8 +78,19 @@ public:
         wrLock->unlock();
     }
 
-    HashSetIterator<Ｔ> getIterator() {
+    HashSetIterator<T> getIterator() {
         return mSets->getIterator();
+    }
+
+    HashSet<T> toSet() {
+        AutoLock l(rdLock);
+        HashSet<T> sets = createHashSet<T>();
+        auto iterator = mSets->getIterator();
+        while(iterator->hasValue()) {
+            sets->add(iterator->getValue());
+            iterator->next();
+        }
+        return sets;
     }
 
 private:

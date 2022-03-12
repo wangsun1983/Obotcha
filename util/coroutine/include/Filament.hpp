@@ -34,11 +34,14 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
     void yield();
 
     void destroy();
-    
+
+    bool onInterrupt();
+
     ~_Filament();
 
   private:
     static void *localFilaRun(void *args);
+    static void *onComplete(void *args);
 
     stCoRoutine_t *coa;
 

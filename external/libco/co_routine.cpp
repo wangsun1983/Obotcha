@@ -728,6 +728,20 @@ void co_init_curr_thread_env()
 	stCoEpoll_t *ev = AllocEpoll();
 	SetEpoll( env,ev );
 }
+
+//wangsl
+void co_free_curr_thread_env() {
+	stCoRoutineEnv_t *env = gCoEnvPerThread;
+	for(int i = 0;i < env->iCallStackSize;i++) {
+		auto routine = env->pCallStack[env->iCallStackSize];
+		FreeEpoll(env->pEpoll);
+		co_free(routine);
+	}
+	free(gCoEnvPerThread);
+	gCoEnvPerThread = NULL;
+}
+//wangsl
+
 stCoRoutineEnv_t *co_get_curr_thread_env()
 {
 	return gCoEnvPerThread;
@@ -771,8 +785,10 @@ void co_eventloop( stCoEpoll_t *ctx,pfn_co_eventloop_t pfn,void *arg,pfn_idle on
 
 	for(;;)
 	{
-		//call idle function
-		on_idle(data);
+		//call idle function,if it return false,direct stop eventloop;
+		if(on_idle(data) != 0) {
+			break;
+		}
 
 		int ret = co_epoll_wait( ctx->iEpollFd,result,stCoEpoll_t::_EPOLL_SIZE, 1 );
 

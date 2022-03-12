@@ -47,7 +47,9 @@ public:
 
     void run();
 
-    template <typename X> int post(sp<X> r) { return postDelayed(0, r); }
+    template <typename X> int post(sp<X> r) { 
+        return postDelayed(0, r); 
+    }
 
     template <class Function, class... Args>
     int post(Function && f, Args && ... args) {
@@ -70,16 +72,10 @@ public:
     int size();
 
 private:
-    //enum Status { 
-    //    Running = 0, 
-    //    StatusDestroy 
-    //};
-
     bool isRunning();
 
     Mutex mMutex;
     Condition mCondition;
-    // LinkedList<Message> mMessagePool;
     Message mMessagePool;
 
     //AtomicInteger mStatus;
