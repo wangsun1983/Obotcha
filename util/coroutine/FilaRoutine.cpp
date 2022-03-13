@@ -25,12 +25,17 @@ void _FilaRoutine::start() {
 }
 
 void _FilaRoutine::postEvent(FilaRoutineInnerEvent event) {
-    AutoLock l(mDataMutex);
+    AutoLock l(mFilaMutex);
     innerEvents->add(event);
 }
 
 _FilaRoutine::~_FilaRoutine() {
-    //TODO release routine statck
+    {
+        AutoLock l(mFilaMutex);
+        isStop = true;
+    }
+
+    join();
     co_free_curr_thread_env();
 }
 
@@ -43,12 +48,11 @@ void _FilaRoutine::run() {
     co_enable_hook_sys();
     st(FilaRoutineManager)::getInstance()->addRoutine(AutoClone(this));
     co_eventloop(co_get_epoll_ct(), 0, 0,onIdle,this);
-    printf("fila run1!!! \n");
 }
 
 void _FilaRoutine::onInterrupt() {
     {
-        AutoLock l(mDataMutex);
+        AutoLock l(mFilaMutex);
         ListIterator<Filament> iterator = mFilaments->getIterator();
         while (iterator->hasValue()) {
             Filament fila = iterator->getValue();
@@ -68,12 +72,11 @@ void _FilaRoutine::stop() {
 
 int _FilaRoutine::onIdle(void * data) {
     _FilaRoutine *croutine =(_FilaRoutine *)data;
+    AutoLock l(croutine->mFilaMutex);
     if(croutine->isStop) {
-        printf("onIdle stop!!!! \n");
         return -1;
     }
 
-    AutoLock l(croutine->mDataMutex);
     if(croutine->innerEvents->size() != 0) {
         auto iterator = croutine->innerEvents->getIterator();
         while(iterator->hasValue()) {
@@ -107,17 +110,16 @@ int _FilaRoutine::onIdle(void * data) {
         }
         croutine->innerEvents->clear();
     }
-
     return 0;
 }
 
 void _FilaRoutine::removeFilament(Filament f) {
-    AutoLock l(mFilaMutex);
+    AutoLock l(mDataMutex);
     mFilaments->remove(f);
 }
 
 int _FilaRoutine::getFilamentSize() {
-    AutoLock l(mFilaMutex);
+    AutoLock l(mDataMutex);
     return mFilaments->size();
 }
 

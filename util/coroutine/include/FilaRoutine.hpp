@@ -35,7 +35,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
 
   public:
     _FilaRoutine();
-
+    
     template <typename X>
     FilaFuture submit(sp<X> f) {
       FilaFuture future = createFilaFuture();

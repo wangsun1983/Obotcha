@@ -37,19 +37,15 @@ void *_Filament::localFilaRun(void *args) {
     if(fila->mFuture != nullptr) {
         fila->mFuture->wakeAll();
     }
-    printf("localfinal run \n");
     //remove myself from routine's filaments
     auto routine = st(FilaRoutineManager)::getInstance()->getRoutine();
-    printf("localfinal run1 \n");
     if(routine != nullptr) {
-        printf("localfinal run2 \n");
         //routine->removeFilament(AutoClone(fila));
         FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
         event->event = st(FilaRoutineInnerEvent)::RemoveFilament;
         event->filament = AutoClone(fila);
         routine->postEvent(event);
     }
-    printf("localfinal run3 \n");
     return nullptr;
 }
 
@@ -62,17 +58,13 @@ void _Filament::yield() {
 }
 
 void _Filament::destroy() { 
-    printf("filament destroy1 \n");
     if(coa != nullptr) {
-        printf("filament destroy2\n");
         co_release(coa);
-        printf("filament destroy3 \n");
         coa = nullptr;
     }
 }
 
 _Filament::~_Filament() {
-    printf("filament  \n");
     destroy();
 }
 
