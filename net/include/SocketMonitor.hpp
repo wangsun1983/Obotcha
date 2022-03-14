@@ -1,6 +1,8 @@
 #ifndef __OBOTCHA_SOCKET_MONITOR_HPP__
 #define __OBOTCHA_SOCKET_MONITOR_HPP__
 
+#include <map>
+
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
@@ -15,6 +17,7 @@
 #include "ThreadPoolExecutor.hpp"
 #include "SpinLock.hpp"
 #include "Closeable.hpp"
+#include "ConcurrentHashMap.hpp"
 
 namespace obotcha {
 
@@ -49,24 +52,19 @@ private:
     int _remove(FileDescriptor);
 
     EPollFileObserver mPoll;
+    ConcurrentHashMap<int,Socket> mSocks;
+    ConcurrentHashMap<int,ServerSocket> mServerSocks;
+
+    int mThreadNum;
 
     Mutex mMutex;
-    HashMap<int,Socket> mSocks;
-
-    HashMap<int,ServerSocket> mServerSocks;
-
-    //Multi Threads
-    int mThreadNum;
-    ArrayList<LinkedList<SocketMonitorTask>>  mThreadLocalTasks;
+    std::map<int,int> currentProcessingFds;
     LinkedList<SocketMonitorTask> mThreadPublicTasks;
     ThreadPoolExecutor mExecutor;
-    Socket *mCurrentSockets;
     Condition mCondition;
 
-    SpinLock mListenerMutex;
-    HashMap<int,SocketListener> mListeners;
+    ConcurrentHashMap<int,SocketListener> mListeners;
 
-    //bool isStop
     mutable volatile int32_t isStop;
 };
 
