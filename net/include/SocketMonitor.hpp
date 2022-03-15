@@ -42,8 +42,6 @@ public:
     int remove(Socket,bool isClose = false);
 
     void close();
-
-    void dump();
     
 private:
     void addNewSocket(Socket s,SocketListener l);
@@ -58,7 +56,7 @@ private:
     int mThreadNum;
 
     Mutex mMutex;
-    std::map<int,int> currentProcessingFds;
+    int *currentProcessingFds;
     LinkedList<SocketMonitorTask> mThreadPublicTasks;
     ThreadPoolExecutor mExecutor;
     Condition mCondition;

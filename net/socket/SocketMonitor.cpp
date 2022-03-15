@@ -14,6 +14,7 @@
 #include "SocketMonitor.hpp"
 #include "Inet6Address.hpp"
 #include "NetEvent.hpp"
+#include "TimeWatcher.hpp"
 
 namespace obotcha {
 
@@ -29,6 +30,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
     mMutex = createMutex();
     mSocks = createConcurrentHashMap<int, Socket>();
     mServerSocks = createConcurrentHashMap<int, ServerSocket>();
+    currentProcessingFds = new int[threadnum];
 
     mPoll = createEPollFileObserver();
     mPoll->start();
@@ -38,6 +40,10 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
     mListeners = createConcurrentHashMap<int, SocketListener>();
     mThreadNum = threadnum;
     isStop = 1;
+
+    for(int i = 0;i < threadnum;i++) {
+        currentProcessingFds[i] = -1;
+    }
 
     this->mExecutor =
         createExecutorBuilder()->setThreadNum(mThreadNum)->newThreadPool();
@@ -50,22 +56,42 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                     {
                         AutoLock l(monitor->mMutex);
                         auto iterator = monitor->mThreadPublicTasks->getIterator();
+                        //printf("mThreadPublicTasks index is %d size is %d \n",index,monitor->mThreadPublicTasks->size());
                         while(iterator->hasValue()) {
+                            //printf("mThreadPublicTasks loop trace1 \n");
                             task = iterator->getValue();
                             auto desc = task->sock->getFileDescriptor();
                             if(desc != nullptr) {
+                                //printf("mThreadPublicTasks loop trace2 \n");
                                 int fd = desc->getFd();
-                                if(monitor->currentProcessingFds.find(fd) 
-                                        == monitor->currentProcessingFds.end()) {
-                                    monitor->currentProcessingFds[fd] = 1;
-                                    iterator->remove();
-                                    break;
+                                bool found = false;
+                                for(int i = 0;i<monitor->mThreadNum;i++) {
+                                    //printf("current index is %d,scan fd[%d] is %d,task fd is %d \n",index,i,monitor->currentProcessingFds[i],fd);
+                                    if(monitor->currentProcessingFds[i] == fd) {
+                                        found = true;
+                                        break;
+                                    }
                                 }
+
+                                if(found) {
+                                    iterator->next();
+                                    task = nullptr;
+                                    continue;
+                                } else {
+                                    monitor->currentProcessingFds[index] = fd;
+                                    iterator->remove();
+                                    //printf("mThreadPublicTasks index is %d after remove size is %d,fd is %d,task sock is %lx \n",index,monitor->mThreadPublicTasks->size(),fd,task->sock.get_pointer());
+                                }
+                            } else {
+                                //printf("desc is nullptr,index is %d,sock is %lx \n",index,task->sock.get_pointer());
+                                //usleep(1000*1000*1000);
                             }
-                            iterator->next();
+                            //printf("mThreadPublicTasks loop trace3 \n");
+                            break;
                         }
 
                         if (task == nullptr) {
+                            //printf("mThreadPublicTasks loop trace4,index is %d\n",index);
                             monitor->mCondition->wait(monitor->mMutex);
                             continue;
                         }
@@ -75,15 +101,14 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                     //We should check whether socket is still connected
                     //to prevent nullpoint exception
                     if (task != nullptr) {
+                        ////printf("execute socket task[%d] trace1 \n",index);
                         auto desc = task->sock->getFileDescriptor();
                         if(task->sock->isClosed()) {
+                            ////printf("execute socket task[%d] closed trace2 \n",index);
                             {
                                 if(desc != nullptr) {
                                     AutoLock l(monitor->mMutex);
-                                    auto ite = monitor->currentProcessingFds.find(desc->getFd());
-                                    if(ite != monitor->currentProcessingFds.end()) {
-                                        monitor->currentProcessingFds.erase(ite);
-                                    }
+                                    monitor->currentProcessingFds[index] = -1;
                                 }
                             }
                             task = nullptr;
@@ -92,7 +117,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                         
                         SocketListener listener = monitor->mListeners
                                                          ->get(task->sock->getFileDescriptor()->getFd());    
-                        
+                        ////printf("execute socket task[%d] trace3 \n",index);
                         if (listener != nullptr) {
                             listener->onSocketMessage(task->event, task->sock,
                                                       task->data);
@@ -103,19 +128,16 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                             }
                         }
 
-                        
-                        int fd = desc->getFd();
                         if(task->event == st(NetEvent)::Disconnect) {
                             monitor->_remove(desc);
                             task->sock->close();
+                            //printf("close socket,index is %d,sock is %lx \n",index,task->sock.get_pointer());
                         }
                         
-                        if(fd != -1) {
+                        {
                             AutoLock l(monitor->mMutex);
-                            auto ite = monitor->currentProcessingFds.find(fd);
-                            if(ite != monitor->currentProcessingFds.end()) {
-                                monitor->currentProcessingFds.erase(ite);
-                            }
+                            monitor->currentProcessingFds[index] = -1;
+                            //printf("reset fd[%d] \n",index);
                         }
                         task = nullptr;
                     }
@@ -300,12 +322,8 @@ bool _SocketMonitor::isSocketExist(Socket s) {
     return mSocks->get(descriptor->getFd()) != nullptr;
 }
 
-void _SocketMonitor::dump() {
-    printf("public task size is %d \n",mThreadPublicTasks->size());
-}
-
-_SocketMonitor::~_SocketMonitor() { 
-    //delete[] mCurrentSockets; 
+_SocketMonitor::~_SocketMonitor() {
+    delete[]currentProcessingFds;
 }
 
 } // namespace obotcha

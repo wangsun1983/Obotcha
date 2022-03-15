@@ -65,7 +65,7 @@ int _WebSocketServer::close() {
 }
 
 void _WebSocketServer::dump() {
-    mSocketMonitor->dump();
+    //mSocketMonitor->dump();
 }
 
 void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
