@@ -19,6 +19,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
         rdwrLock = createReadWriteLock();
         rdLock = rdwrLock->getReadLock();
         wrLock = rdwrLock->getWriteLock();
+        mQueue = createArrayList<T>();
     }
 
     inline int size() {
@@ -33,7 +34,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
 
     inline T get(int index) {
         AutoLock l(rdLock);
-        return mQueue->at(index);
+        return mQueue->get(index);
     }
 
     ArrayList<T> toArray() {
@@ -62,7 +63,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
 
     inline int remove(const T &val) {
         AutoLock l(wrLock);
-        return mQueue->remvoe(val);
+        return mQueue->remove(val);
     }
 
     inline T removeAt(int index) {

@@ -20,7 +20,7 @@ void _HttpHeaderContentDisposition::import(String s) {
             //type = directive;
             if(directive->equalsIgnoreCase("inline")) {
                 type = Inline;
-            } else if(directive->equalsIgnoreCase("attachmemt")) {
+            } else if(directive->equalsIgnoreCase("attachment")) {
                 type = Attachment;
             } else {
                 type = FormData;
@@ -51,6 +51,14 @@ String _HttpHeaderContentDisposition::getName() {
     return name;
 }
 
+int _HttpHeaderContentDisposition::getType() {
+    return type;
+}
+
+int _HttpHeaderContentDisposition::setType(int t) {
+    type = t;
+}
+
 String _HttpHeaderContentDisposition::toString() {
     String content = nullptr;
 
@@ -77,11 +85,11 @@ String _HttpHeaderContentDisposition::toString() {
     }
 
     if(name != nullptr) {
-        content->append("; name=\"",name,"\"");
+        content = content->append("; name=\"",name,"\"");
     }
 
     if(filename != nullptr) {
-        content->append("; filename=\"",filename,"\"");
+        content = content->append("; filename=\"",filename,"\"");
     }
 
     return content;

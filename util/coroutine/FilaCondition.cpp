@@ -19,7 +19,9 @@ void _FilaCondition::wait(FilaMutex m,long mseconds) {
         mOriCond->wait(m->mMutex);
     } else {
         st(FilaRoutineManager)::getInstance()->addWaitCondition(AutoClone(this));
+        m->unlock();
         co_cond_timedwait(mCond, mseconds); 
+        m->lock();
         st(FilaRoutineManager)::getInstance()->removeWaitCondition(AutoClone(this));
     }
 }
