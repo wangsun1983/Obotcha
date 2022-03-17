@@ -103,4 +103,20 @@ void _HttpChunk::onCompose(composeCallBack callback) {
     callback(end->toByteArray());
 }
 
+ByteArray _HttpChunk::getData() {
+    if(mInput != nullptr) {
+        ByteArray data = mInput->readAll();
+        return data;
+    }
+    return nullptr;
+}
+
+HttpHeader _HttpChunk::getTrailingHeader() {
+    return mTrailingHeader;
+}
+
+void _HttpChunk::setTrailingHeader(HttpHeader h) {
+    mTrailingHeader = h;
+}
+
 } // namespace obotcha

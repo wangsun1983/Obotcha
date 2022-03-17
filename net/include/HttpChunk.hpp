@@ -7,6 +7,7 @@
 #include "ByteArray.hpp"
 #include "File.hpp"
 #include "InputStream.hpp"
+#include "HttpHeader.hpp"
 
 namespace obotcha {
 
@@ -32,8 +33,12 @@ public:
     _HttpChunk(ByteArray);
 
     InputStream getInputStream();
+    ByteArray getData();
     long size();
     bool isFile();
+
+    HttpHeader getTrailingHeader();
+    void setTrailingHeader(HttpHeader);
 
     ~_HttpChunk();
 
@@ -41,6 +46,8 @@ private:
     InputStream mInput;
     long mSize;
     bool mIsFile;
+
+    HttpHeader mTrailingHeader;
 
     using composeCallBack = std::function<void(ByteArray)>;
     void onCompose(composeCallBack callback);

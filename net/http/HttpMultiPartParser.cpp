@@ -129,6 +129,13 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                         resizeSize = mPartEnd->size(); //part end "----xxxx--\r\n"
                     case _BoundaryEnd:{
                         ByteArray data = reader->pop();
+                        if(mCacheContent != nullptr) {
+                            mCacheContent->append(data);
+                            data = mCacheContent;
+                            mCacheContent = nullptr;
+                        }
+                        printf("data->size() is %d,resizeSize is %d \n",data->size(),resizeSize);
+                        
                         data->quickShrink(data->size() - resizeSize - 2); //the end of data is /r/n,remove it.
                         flushData(data);
                         mFileStream->close();
@@ -154,8 +161,22 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
 
     if(mStatus == ParseContent && mBoundaryIndex == 0) {
         ByteArray data = reader->pop();
-        if(data != nullptr && data->size() != 0) {
-            flushData(data);
+        //check whether last data is \r or \n
+        if(data == nullptr || data->size() == 0) {
+            return nullptr;
+        }
+
+        byte v = data->at(data->size() - 1);
+        if(v != '\r' && v != '\n') {
+            if(data != nullptr && data->size() != 0) {
+                flushData(data);
+            }
+        } else {
+            if(mCacheContent == nullptr) {
+                mCacheContent = data;
+            } else {
+                mCacheContent->append(data);
+            }
         }
     }
 

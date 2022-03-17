@@ -96,9 +96,9 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         mChunkParser = createHttpChunkParser(mReader);
                     }
 
-                    ByteArray data = mChunkParser->doParse();
-                    if (data != nullptr) {
-                        mHttpPacket->getEntity()->setChunk(data);
+                    HttpChunk chunk = mChunkParser->doParse();
+                    if (chunk != nullptr) {
+                        mHttpPacket->getEntity()->setChunk(chunk);
                         packets->add(mHttpPacket);
                         mHttpHeaderParser = nullptr;
                         mMultiPartParser = nullptr;

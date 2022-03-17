@@ -20,18 +20,21 @@ public:
         RequsetVersion,
         ParseLineMax
     };
-    _HttpHeaderParser(ByteRingArrayReader);
+
+    enum ParseStatus {
+        RequestLine = 0, //or response stats line
+        Header,
+        End
+    };
+    
+    _HttpHeaderParser(ByteRingArrayReader,int status = RequestLine);
 
     //void changeToParseHeader();
 
     HttpHeader doParse();
 
 private:
-    enum ParseStatus {
-        RequestLine = 0, //or response stats line
-        Header,
-        End
-    };
+    
 
     int mStatus;
     int mParseLineStatus;

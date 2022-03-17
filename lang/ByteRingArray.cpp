@@ -62,8 +62,8 @@ bool _ByteRingArray::push(byte b) {
     mSize++;
     mNext++;
 
-    if (mNext >= mCapacity) {
-        mNext = mNext - mCapacity;
+    if (mNext == mCapacity) {
+        mNext = 0;
     }
     return true;
 }

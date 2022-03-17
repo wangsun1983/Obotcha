@@ -93,13 +93,13 @@ int _ByteRingArrayReader::move(int length) {
 }
 
 int _ByteRingArrayReader::getReadableLength() {
-    if (mBuff->getAvailDataSize() == 0) {
+    if (mBuff->getAvailDataSize() == 0 || mMark == Complete) {
         return 0;
     }
 
     int end = mBuff->getEndIndex();
     
-    if (mCursor >= end) {
+    if (mCursor > end) {
         //return mBuff->getAvailDataSize() - (mCursor - end);
         return mBuff->getCapacity() - mCursor + end;
     } else {

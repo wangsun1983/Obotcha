@@ -12,19 +12,22 @@
 #include "Pipe.hpp"
 #include "String.hpp"
 #include "CRLFDetector.hpp"
+#include "HttpChunk.hpp"
+#include "HttpHeaderParser.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(HttpChunkParser) {
-  public:
+public:
     _HttpChunkParser(ByteRingArrayReader);
-    ByteArray doParse();
+    HttpChunk doParse();
 
-  private:
+private:
     enum ParseStatus { 
       Idle = 0, 
       Recv, 
-      RecvEnd, 
+      RecvEnd,
+      TrailingHeader,
       End 
     };
 
@@ -34,6 +37,10 @@ DECLARE_CLASS(HttpChunkParser) {
     ByteArray currentBuff;
     ByteRingArrayReader mReader;
     CRLFDetector endDetector;
+    HttpHeaderParser mHeaderParser;
+
+    int calculateChunkSize(String);
+
 };
 
 } // namespace obotcha

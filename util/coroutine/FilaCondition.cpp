@@ -15,7 +15,6 @@ void _FilaCondition::wait(FilaMutex m) {
 void _FilaCondition::wait(FilaMutex m,long mseconds) {
     auto coa = GetCurrThreadCo();
     if(coa == nullptr) {
-        AutoLock l(m->mMutex);
         mOriCond->wait(m->mMutex);
     } else {
         st(FilaRoutineManager)::getInstance()->addWaitCondition(AutoClone(this));

@@ -7,10 +7,10 @@
 
 namespace obotcha {
 
-_HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r) {
+_HttpHeaderParser::_HttpHeaderParser(ByteRingArrayReader r,int status) {
     mReader = r;
     mHeader = nullptr;
-    mStatus = RequestLine;
+    mStatus = status;
     mParseLineStatus = LineParseStart;
     //mCRLFIndex = 0;
     endDetector = createCRLFDetector();
@@ -96,6 +96,7 @@ HttpHeader _HttpHeaderParser::doParse() {
     }
 
     while (mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
+        printf("HeaderParser v is %c,status is %d \n",v,mStatus);
         switch (mStatus) {
             case RequestLine: {
                 if(endDetector->isEnd(v)) {

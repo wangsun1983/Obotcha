@@ -45,14 +45,7 @@ private:
 
     HttpMultiPart mMultiPart;
 
-    //File mFile;
-    //HttpMultiPartFile mMultiPartFile;
-
     FileOutputStream mFileStream;
-    
-    //int mContentLength;
-
-    //int mRecvLength;
 
     String mBoundary;
     String mBoundaryEnd;
@@ -61,12 +54,6 @@ private:
 
     int mStatus;
 
-    //ByteRingArrayReader mReader;
-
-    //HashMap<String,String> mContentDisp;
-    //Enviroment mEnv;
-
-    //int mCRLFIndex;
     int mBoundaryIndex;
 
     HttpHeaderContentDisposition mDisposition;
@@ -77,6 +64,8 @@ private:
     CRLFDetector endDetector;
     int checkBoudaryIndex(byte &v);
     void flushData(ByteArray);
+
+    ByteArray mCacheContent;
 };
 
 }

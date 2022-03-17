@@ -31,6 +31,10 @@ void _HttpEntity::setChunk(File file) {
     mChunk = createHttpChunk(file);
 }
 
+void _HttpEntity::setChunk(HttpChunk c) {
+    mChunk = c;
+}
+
 HttpChunk _HttpEntity::getChunk() {
     return mChunk;
 }

@@ -46,6 +46,7 @@ _Mutex::_Mutex(const char *v, int type) : _Mutex(type) {
 }
 
 int _Mutex::lock() {
+    //printf("owner is %d \n",mutex_t.__data.__owner);
     return (pthread_mutex_lock(&mutex_t) == 0)? 0:-LockFail;
 }
 

@@ -26,6 +26,7 @@ public:
 
     void setChunk(ByteArray);
     void setChunk(File);
+    void setChunk(HttpChunk);
 
     HttpChunk getChunk();
 
