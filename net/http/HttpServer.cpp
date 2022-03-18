@@ -105,11 +105,14 @@ int _HttpServer::start() {
                         ->setAddress(mAddress)
                         ->newServerSocket();
     }
-
-    if (mServerSock->bind() < 0) {
-        LOG(ERROR) << "bind socket failed,reason " << strerror(errno);
-        this->close();
-        return -NetBindFail;
+    
+    while(mServerSock->bind() < 0) {
+        //if (mServerSock->bind() < 0) {
+        LOG(ERROR) << "bind socket failed,reason " << strerror(errno)<<";port is "<<mAddress->getPort();
+        //    this->close();
+        //    return -NetBindFail;
+        //}
+        st(Thread)::msleep(1000*1);
     }
 
     int threadsNum = st(Enviroment)::getInstance()->getInt(
@@ -127,20 +130,13 @@ void _HttpServer::remove(HttpLinker linker) {
 }
 
 void _HttpServer::close() {
-    if (mSockMonitor != nullptr) {
-        mSockMonitor->close();
-        mSockMonitor = nullptr;
-    }
-
-    if (mServerSock != nullptr) {
-        mServerSock->close();
-        mServerSock = nullptr;
-    }
-
-    if(mLinkerManager != nullptr) {
-        mLinkerManager->clear();
-        mLinkerManager = nullptr;
-    }
+    //Do not set instance to null for the following issue:
+    //Thread A:                     close HttServer
+    //Thread B(SocketMonitor):      one client is disconnected
+    //                            ->use linkermanager to find callback
+    mSockMonitor->close();
+    mServerSock->close();
+    mLinkerManager->clear();
 }
 
 _HttpServer::~_HttpServer() { 

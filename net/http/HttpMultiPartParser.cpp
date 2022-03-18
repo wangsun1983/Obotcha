@@ -134,7 +134,6 @@ HttpMultiPart _HttpMultiPartParser::parse(ByteRingArrayReader reader) {
                             data = mCacheContent;
                             mCacheContent = nullptr;
                         }
-                        printf("data->size() is %d,resizeSize is %d \n",data->size(),resizeSize);
                         
                         data->quickShrink(data->size() - resizeSize - 2); //the end of data is /r/n,remove it.
                         flushData(data);

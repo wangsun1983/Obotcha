@@ -96,7 +96,6 @@ HttpHeader _HttpHeaderParser::doParse() {
     }
 
     while (mReader->readNext(v) != st(ByteRingArrayReader)::NoContent) {
-        printf("HeaderParser v is %c,status is %d \n",v,mStatus);
         switch (mStatus) {
             case RequestLine: {
                 if(endDetector->isEnd(v)) {

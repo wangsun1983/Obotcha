@@ -59,7 +59,7 @@ int _Handler::sendEmptyMessageDelayed(int what, long delay) {
 }
 
 int _Handler::sendMessageDelayed(sp<_Message> msg, long delay) {
-    if (mIsRunning) {
+    if (!mIsRunning) {
         return -1;
     }
     msg->nextTime = st(System)::currentTimeMillis() + delay;

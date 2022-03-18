@@ -361,6 +361,13 @@ String _HttpUrl::toString() {
                 portStr = createString(":")->append(createString(mPort));
             }
         break;
+
+        //support for :su:abc@localhost:1234/test.cgi?a=b&c=d#fffsss
+        default:
+            if(mPort != -1) {
+                portStr = createString(":")->append(createString(mPort));
+            }
+        break;
     }
 
     if (mUser != nullptr) {
