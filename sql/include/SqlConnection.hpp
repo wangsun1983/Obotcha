@@ -8,6 +8,7 @@
 #include "ArrayList.hpp"
 #include "MySqlClient.hpp"
 #include "Sqlite3Client.hpp"
+#include "SqlConnectParam.hpp"
 
 namespace obotcha {
 
@@ -19,25 +20,13 @@ enum {
 DECLARE_CLASS(SqlConnection) {
 
 public:
-    static const String MySqlParamHost;
-    static const String MySqlParamUser;
-    static const String MySqlParamPassword;
-    static const String MySqlParamDbName;
-    static const String MySqlParamPort;
-    static const String MySqlParamUnixSocketName;
-    static const String MySqlParamClientFlg;
-
-    static const String Sqlite3ParamPath;
-
-    static const String MySqlLocalHost;
-
-    _SqlConnection(int);
+    _SqlConnection();
 
     int exec(SqlQuery query);
     
     SqlRecords query(SqlQuery query);
 
-    int connect(HashMap<String,String>args);
+    int connect(SqlConnectParam args);
 
     template <typename T>
     ArrayList<T> query(SqlQuery query) {
@@ -50,13 +39,15 @@ public:
             return mSqlite3Client->query<T>(query);
         break;
         }
+
+        return nullptr;
     }
 
 private:
     int mType;
 
     MySqlClient mMySqlClient;
-    
+
     Sqlite3Client mSqlite3Client;
 };
 

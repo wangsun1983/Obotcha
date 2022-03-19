@@ -2,6 +2,11 @@
 
 namespace obotcha {
 
+//-------------------SqlRecordsIterator-------------------
+_SqlRecordsIterator::_SqlRecordsIterator(SqlRecords r) {
+    records = r;
+}
+
 bool _SqlRecordsIterator::hasValue() {
     return (index < records->getRowNum());
 }
@@ -15,6 +20,7 @@ List<String> _SqlRecordsIterator::next() {
     return records->mRecords[index-1];
 }
 
+//----------------SqlRecords--------------------
 int _SqlRecords::getRowNum() {
     return rows;
 }
@@ -34,10 +40,7 @@ void _SqlRecords::setOneRow(int index,List<String> list) {
 }
 
 sp<_SqlRecordsIterator> _SqlRecords::getIterator() {
-    SqlRecordsIterator iterator = createSqlRecordsIterator();
-    iterator->index = 0;
-    iterator->records.set_pointer(this);
-    return iterator;
+    return createSqlRecordsIterator(AutoClone(this));
 }
 
 }

@@ -7,8 +7,8 @@
 
 namespace obotcha {
 
-int _Sqlite3Client::connect(HashMap<String,String>args) {
-    mPath = args->get(st(SqlConnection)::Sqlite3ParamPath);
+int _Sqlite3Client::connect(Sqlite3ConnectParam arg) {
+    mPath = arg->getPath();
     if(mPath == nullptr) {
         return -SqlFailWrongParam;
     }
@@ -17,6 +17,8 @@ int _Sqlite3Client::connect(HashMap<String,String>args) {
     if(result < 0) {
         return -SqlFailOpen;
     }
+
+    isClosed = false;
 
     return 0;
 }
@@ -44,10 +46,16 @@ SqlRecords _Sqlite3Client::query(SqlQuery query) {
     return nullptr;
 }
 
-int _Sqlite3Client::count(String) {
-    //int result = sqlite3_data_count()
-    //TODO
-    return -1;
+int _Sqlite3Client::count(SqlQuery query) {
+    const char *sql = query->toString()->toChars();
+    char **dbResult;
+    int nRow = 0;
+    int nColumn = 0;
+    char *errmsg = NULL;
+    if(sqlite3_get_table(mSqlDb, sql, &dbResult, &nRow, &nColumn, &errmsg) == SQLITE_OK) {
+        sqlite3_free_table(dbResult);
+    }
+    return nRow;
 }
 
 int _Sqlite3Client::exec(SqlQuery query) {
@@ -91,8 +99,12 @@ int _Sqlite3Client::rollabckTransaction() {
 }
 
 int _Sqlite3Client::close() {
-    sqlite3_close(mSqlDb);
-    return 0;
+    isClosed = true;
+    return sqlite3_close(mSqlDb);
+}
+
+_Sqlite3Client::~_Sqlite3Client() {
+    close();
 }
 
 };

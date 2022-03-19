@@ -12,6 +12,7 @@
 #include "ReflectUtil.hpp"
 #include "SqlQuery.hpp"
 #include "SqlRecords.hpp"
+#include "MySqlConnectParam.hpp"
 
 namespace obotcha
 {
@@ -19,7 +20,7 @@ namespace obotcha
 DECLARE_CLASS(MySqlClient)
 {
 public:
-    int connect(HashMap<String, String> args);
+    int connect(MySqlConnectParam args);
     
     SqlRecords query(SqlQuery query);
 

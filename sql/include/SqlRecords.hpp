@@ -14,6 +14,8 @@ class _SqlRecordsIterator;
 DECLARE_CLASS(SqlRecordsIterator) {
 public:
     friend class _SqlRecords;
+    
+    _SqlRecordsIterator(sp<_SqlRecords>);
 
     bool hasValue();
 

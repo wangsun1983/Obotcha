@@ -10,17 +10,19 @@
 #include "ReflectUtil.hpp"
 #include "SqlQuery.hpp"
 #include "SqlRecords.hpp"
+#include "Sqlite3ConnectParam.hpp"
+#include "AtomicBoolean.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(Sqlite3Client) {
 
 public:
-    int connect(HashMap<String, String> args);
+    int connect(Sqlite3ConnectParam args);
     
     SqlRecords query(SqlQuery query);
 
-    int count(String);
+    int count(SqlQuery);
 
     template <typename T>
     ArrayList<T> query(SqlQuery query) {
@@ -122,10 +124,14 @@ public:
 
     int rollabckTransaction();
 
+    ~_Sqlite3Client();
+
 private:
     sqlite3 *mSqlDb;
 
     String mPath;
+
+    std::atomic<bool> isClosed;
 };
 
 } // namespace obotcha

@@ -7,53 +7,45 @@
 
 namespace obotcha {
 
-int _MySqlClient::connect(HashMap<String,String>args) {
+int _MySqlClient::connect(MySqlConnectParam arg) {
     if (mysql_init(&mysql) == nullptr) {
         LOG(ERROR)<<"mysql init fail";
         return -1;  
     }  
 
-    String host = args->get(st(SqlConnection)::MySqlParamHost);
+    String host = arg->getHost();
     if(host == nullptr) {
-        host = st(SqlConnection)::MySqlLocalHost;
+        host = "host";
     }
     const char *param_host = host->toChars();
 
-    String user = args->get(st(SqlConnection)::MySqlParamUser);
+    String user = arg->getUser();
     const char *param_user = nullptr;
     if(user != nullptr) {
         param_user = user->toChars();
     }
 
-    String password = args->get(st(SqlConnection)::MySqlParamPassword);
+    String password = arg->getUser();
     const char *param_password = nullptr;
     if(password != nullptr) {
         param_password = password->toChars();
     }
 
-    String db = args->get(st(SqlConnection)::MySqlParamDbName);
+    String db = arg->getDbName();
     const char *param_db = nullptr;
     if(db != nullptr) {
         param_db = db->toChars();
     }
     
-    int param_port = 0;
-    String portStr = args->get(st(SqlConnection)::MySqlParamPort);
-    if(portStr != nullptr) {
-        param_port = portStr->toBasicInt();
-    }
-
-    String unixsock = args->get(st(SqlConnection)::MySqlParamUnixSocketName);
+    int param_port = arg->getPort();
+    
+    String unixsock = arg->getSocketName();
     const char *param_unixsock = nullptr;
     if(unixsock != nullptr) {
         param_unixsock = unixsock->toChars();
     }
 
-    uint64_t param_flag = 0;
-    String clientflag = args->get(st(SqlConnection)::MySqlParamClientFlg);
-    if(clientflag != nullptr) {
-        param_flag = clientflag->toBasicUint64();
-    }
+    uint64_t param_flag = arg->getClientFlag();
     
     if(nullptr ==  mysql_real_connect(&mysql,
                                     param_host,
