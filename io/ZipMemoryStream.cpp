@@ -35,7 +35,6 @@ _ZipMemoryStream::_ZipMemoryStream(int compress_bit, int decompress_bit) {
 }
 
 ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
-    int ret;
     unsigned char zipBuff[ZIP_COMPRESS_BUFF_SIZE];
     memset(zipBuff, 0, ZIP_COMPRESS_BUFF_SIZE);
     ByteArray out = createByteArray(ZIP_COMPRESS_BUFF_SIZE);
@@ -48,7 +47,7 @@ ByteArray _ZipMemoryStream::compress(ByteArray in, int flush_mode) {
         mCompressStream.avail_out = ZIP_COMPRESS_BUFF_SIZE;
         mCompressStream.next_out = &zipBuff[0];
 
-        ret = deflate(&mCompressStream, flush_mode);
+        int ret = deflate(&mCompressStream, flush_mode);
         if (ret == Z_NEED_DICT || ret == Z_DATA_ERROR || ret == Z_MEM_ERROR) {
             return nullptr;
         }

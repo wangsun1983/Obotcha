@@ -379,12 +379,12 @@ void _Serializable::deserialize(ByteArray data) {
 
                     int keySize = arrayReader->readInt();
                     ByteArray keyArray = createByteArray(keySize);
-                    int rs = arrayReader->readByteArray(keyArray);
+                    arrayReader->readByteArray(keyArray);
                     deserialize(key,keyArray);
 
                     int valueSize = arrayReader->readInt();
                     ByteArray valueArray = createByteArray(valueSize);
-                    rs = arrayReader->readByteArray(valueArray);
+                    arrayReader->readByteArray(valueArray);
                     deserialize(value,valueArray);
 
                     f->addMapItemObject(key,value);

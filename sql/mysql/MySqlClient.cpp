@@ -66,8 +66,7 @@ SqlRecords _MySqlClient::query(SqlQuery query) {
     String sql = query->toString();
     int ret = mysql_real_query(&mysql, sql->toChars(),sql->size());
     if(ret == 0) {
-        MYSQL_RES *res = nullptr;
-        res = mysql_store_result(&mysql);
+        MYSQL_RES *res = mysql_store_result(&mysql);
         int columnNum = mysql_num_fields(res);
         int rowNum = mysql_num_rows(res);
         SqlRecords records = createSqlRecords(rowNum,columnNum);

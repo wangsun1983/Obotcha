@@ -70,7 +70,6 @@ ArrayList<HostAddress> _Host::getAddresses() {
 
 ArrayList<HostMac> _Host::getMacAddresses() {
     int fd = 0;
-    int interface = 0;
     struct ifreq buf[128];
     struct ifconf ifc;
 
@@ -81,7 +80,7 @@ ArrayList<HostMac> _Host::getMacAddresses() {
         ifc.ifc_len = sizeof(buf);
         ifc.ifc_buf = (caddr_t)buf;
         if (!ioctl(fd, SIOCGIFCONF, (char *)&ifc)) {
-            interface = ifc.ifc_len / sizeof(struct ifreq);
+            int interface = ifc.ifc_len / sizeof(struct ifreq);
             char mac[32] = {0};
             while (i < interface) {
                 if (!(ioctl(fd, SIOCGIFHWADDR, (char *)&buf[i]))) {

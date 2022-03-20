@@ -133,7 +133,6 @@ void _Handler::removeMessages(int what) {
 }
 
 void _Handler::run() {
-    long waitTime = 0;
     while (mIsRunning) {
         Message msg = nullptr;
         {
@@ -155,11 +154,6 @@ void _Handler::run() {
             }
         }
         if (msg != nullptr) {
-            // if (msg->mRunnable == nullptr) {
-            //     handleMessage(msg);
-            // } else {
-            //     msg->mRunnable->run();
-            // }
             (msg->mRunnable == nullptr)?handleMessage(msg):msg->mRunnable->run();
         }
     }

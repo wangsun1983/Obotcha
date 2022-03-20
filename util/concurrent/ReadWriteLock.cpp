@@ -70,12 +70,18 @@ _WriteLock::_WriteLock(sp<_ReadWriteLock> l, String s) {
 }
 
 int _WriteLock::lock() {
-    int ret = pthread_rwlock_wrlock(&rwlock->rwlock);
+    if(pthread_rwlock_wrlock(&rwlock->rwlock) != 0) {
+        return -LockFail;
+    }
+
     return 0;
 }
 
 int _WriteLock::unlock() {
-    int ret = pthread_rwlock_unlock(&rwlock->rwlock);
+    if(pthread_rwlock_unlock(&rwlock->rwlock) != 0) {
+        return -LockFail;
+    }
+
     return 0;
 }
 
@@ -124,8 +130,12 @@ sp<_WriteLock> _ReadWriteLock::getWriteLock() {
     return AutoClone(l);
 }
 
-String _ReadWriteLock::getName() { return mName; }
+String _ReadWriteLock::getName() { 
+    return mName; 
+}
 
-_ReadWriteLock::~_ReadWriteLock() { pthread_rwlock_destroy(&rwlock); }
+_ReadWriteLock::~_ReadWriteLock() { 
+    pthread_rwlock_destroy(&rwlock); 
+}
 
 } // namespace obotcha

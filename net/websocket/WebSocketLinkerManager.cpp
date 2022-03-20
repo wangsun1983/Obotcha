@@ -17,7 +17,10 @@ namespace obotcha {
 //--------------------WebSocketLinkerManager-----------------
 _WebSocketLinkerManager::_WebSocketLinkerManager() {
     mClients = createHashMap<Socket, WebSocketLinker>();
-    mMutex = createMutex();
+    //mMutex = createMutex();
+    mReadWriteLock = createReadWriteLock();
+    mReadLock = mReadWriteLock->getReadLock();
+    mWriteLock = mReadWriteLock->getWriteLock();
 }
 
 WebSocketLinker _WebSocketLinkerManager::add(Socket sock, int version) {
@@ -54,18 +57,18 @@ WebSocketLinker _WebSocketLinkerManager::add(Socket sock, int version) {
             return nullptr;
     }
 
-    AutoLock ll(mMutex);
+    AutoLock ll(mWriteLock);
     mClients->put(sock, client);
     return client;
 }
 
 WebSocketLinker _WebSocketLinkerManager::get(Socket s) {
-    AutoLock ll(mMutex);
+    AutoLock ll(mReadLock);
     return mClients->get(s);
 }
 
 void _WebSocketLinkerManager::remove(WebSocketLinker client) {
-    AutoLock ll(mMutex);
+    AutoLock ll(mWriteLock);
     mClients->remove(client->getSocket());
 }
 

@@ -116,7 +116,7 @@ long _NtpClient::get() {
 }
 
 void _NtpClient::generateNtpPacket(char *v) {
-    int ret;
+    //int ret;
     struct timeval now;
 
 #define LI 0   // head

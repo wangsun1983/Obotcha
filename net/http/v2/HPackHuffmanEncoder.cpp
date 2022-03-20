@@ -43,7 +43,6 @@ void _HPackHuffmanEncoder::encode(ByteArrayWriter writer,String data) {
 }
 
 ByteArray _HPackHuffmanEncoder::encode(String data) {
-    int size = data->size();
     //get codec length
     int length = getEncodedLength(data);
     ByteArray out = createByteArray(length);

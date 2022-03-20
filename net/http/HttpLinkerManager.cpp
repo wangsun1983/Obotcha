@@ -4,26 +4,29 @@ namespace obotcha {
 
 _HttpLinkerManager::_HttpLinkerManager() {
     mClients = createHashMap<Socket, HttpLinker>();
-    mMutex = createMutex("http client manager");
+    //mMutex = createMutex("http client manager");
+    mReadWriteLock = createReadWriteLock();
+    mReadLock = mReadWriteLock->getReadLock();
+    mWriteLock = mReadWriteLock->getWriteLock();
 }
 
 HttpLinker _HttpLinkerManager::get(Socket s) {
-    AutoLock l(mMutex);
+    AutoLock l(mReadLock);
     return mClients->get(s);
 }
 
 void _HttpLinkerManager::add(sp<_HttpLinker> info) {
-    AutoLock l(mMutex);
+    AutoLock l(mWriteLock);
     mClients->put(info->mSocket, info);
 }
 
 void _HttpLinkerManager::remove(sp<_HttpLinker> linker) {
-    AutoLock l(mMutex);
+    AutoLock l(mWriteLock);
     mClients->remove(linker->mSocket);
 }
 
 void _HttpLinkerManager::clear() {
-    AutoLock l(mMutex);
+    AutoLock l(mWriteLock);
     mClients->foreach([](Socket s,HttpLinker l){
         l->close();
         return Global::Continue;

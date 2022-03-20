@@ -56,17 +56,29 @@ _Boolean::_Boolean(const Boolean &v) {
     val = v->val;
 }
 
-bool _Boolean::toValue() { return val; }
+bool _Boolean::toValue() { 
+    return val; 
+}
 
-bool _Boolean::equals(const Boolean &p) { return val == p->val; }
+bool _Boolean::equals(const Boolean &p) { 
+    return val == p->val; 
+}
 
-bool _Boolean::equals(const _Boolean *p) { return val == p->val; }
+bool _Boolean::equals(const _Boolean *p) { 
+    return val == p->val; 
+}
 
-void _Boolean::update(bool v) { val = v; }
+void _Boolean::update(bool v) { 
+    val = v; 
+}
 
-void _Boolean::update(const sp<_Boolean> v) { val = v->val; }
+void _Boolean::update(const sp<_Boolean> v) { 
+    val = v->val; 
+}
 
-bool _Boolean::equals(bool p) { return val == p; }
+bool _Boolean::equals(bool p) { 
+    return val == p; 
+}
 
 sp<_String> _Boolean::toString() {
     if (val) {
@@ -115,15 +127,20 @@ sp<_Boolean> _Boolean::parse(const sp<_String> str) {
     return nullptr;
 }
 
-sp<_Boolean> _Boolean::parse(const char *v) { return parse(createString(v)); }
+sp<_Boolean> _Boolean::parse(const char *v) { 
+    return parse(createString(v)); 
+}
 
-sp<_Boolean> _Boolean::parse(bool v) { return createBoolean(v); }
+sp<_Boolean> _Boolean::parse(bool v) { 
+    return createBoolean(v); 
+}
 
-sp<_String> _Boolean::className() { return createString("Boolean"); }
+sp<_String> _Boolean::className() { 
+    return createString("Boolean"); 
+}
 
 int _Boolean::_parse(sp<_String> str) {
     String trimStr = str->trimAll();
-    const char *data = trimStr->toChars();
     if(trimStr->equalsIgnoreCase("true")) {
         return 1;
     }

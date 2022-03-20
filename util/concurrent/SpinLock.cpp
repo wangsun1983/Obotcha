@@ -18,16 +18,23 @@
 
 namespace obotcha {
 
-_SpinLock::_SpinLock(String n) : _SpinLock() { mSpinLockName = n; }
+_SpinLock::_SpinLock(String n) : _SpinLock() { 
+    mSpinLockName = n; 
+}
 
 _SpinLock::_SpinLock(const char *n) : _SpinLock() {
     mSpinLockName = createString(n);
 }
 
-_SpinLock::_SpinLock() { pthread_spin_init(&mLock, PTHREAD_PROCESS_PRIVATE); }
+_SpinLock::_SpinLock() { 
+    pthread_spin_init(&mLock, PTHREAD_PROCESS_PRIVATE); 
+}
 
 int _SpinLock::lock() {
-    int ret = pthread_spin_lock(&mLock);
+    if(pthread_spin_lock(&mLock) != 0) {
+        return -LockFail;
+    }
+
     return 0;
 }
 
@@ -46,7 +53,11 @@ int _SpinLock::tryLock() {
 }
 
 int _SpinLock::unlock() {
-    return pthread_spin_unlock(&mLock);
+    if(pthread_spin_unlock(&mLock) != 0) {
+        return LockFail;
+    }
+
+    return 0;
 }
 
 _SpinLock::~_SpinLock() { 

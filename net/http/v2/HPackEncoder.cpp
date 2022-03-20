@@ -285,6 +285,7 @@ int _HPackEncoder::getNameIndex(String name) {
     if (index >= 0) {
         index += mStaticTable->size();
     }
+    //TODO
     return -1;
 }
 

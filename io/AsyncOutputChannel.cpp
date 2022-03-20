@@ -23,8 +23,6 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
 }
 
 int _AsyncOutputChannel::write(ByteArray d) {
-    int result = 0;
-    int offset = 0;
     ByteArray data = createByteArray(d);
     
     AutoLock l(mMutex);
@@ -64,7 +62,6 @@ int _AsyncOutputChannel::_write(ByteArray data) {
         } else {
             result = ::write(mFd->getFd(), data->toValue() + offset, data->size() - offset);
         }
-
         if (result < 0) {
             if (errno == EAGAIN) {
                 ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);

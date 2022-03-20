@@ -51,9 +51,7 @@ void _FilaCondition::notifyAll() {
         event->event = st(FilaRoutineInnerEvent)::NotifyAll;
         event->cond = AutoClone(this);
         while(iterator->hasValue()) {
-            int size = sets->size();
             auto c = iterator->getValue();
-            
             c->postEvent(event);
             iterator->next();
         }

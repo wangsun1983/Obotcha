@@ -152,7 +152,7 @@ int _HttpPacketWriterImpl::_write(ByteArray data,bool send) {
             length = length - remiderSize;
             start += remiderSize;
             if(send) {
-                int ret = mStream->write(mBuff);
+                mStream->write(mBuff);
                 mWriter->reset();
             } else {
                 //TODO Log!!!
@@ -166,7 +166,7 @@ int _HttpPacketWriterImpl::_write(ByteArray data,bool send) {
 
     int index = mWriter->getIndex();
     if(index != 0 && send) {
-        int ret = mStream->write(mBuff, 0, index);
+        mStream->write(mBuff, 0, index);
         mWriter->reset();
     }
     

@@ -188,7 +188,7 @@ int _ZipFileStream::minizip(File src, File dest, String currentZipFolder,
 
         String mfolder = combine(currentZipFolder, src->getName());
 
-        std::vector<std::string> vFiles;
+        //std::vector<std::string> vFiles;
         ArrayList<File> files = src->listFiles();
         ListIterator<File> iterator = files->getIterator();
 
@@ -255,13 +255,14 @@ int _ZipFileStream::getFileCrc(const char *filenameinzip, char *buf,
     int err = ZIP_OK;
     FILE *fin = FOPEN_FUNC(filenameinzip, "rb");
 
-    unsigned long size_read = 0;
-    unsigned long total_read = 0;
     if (fin == nullptr) {
         err = ZIP_ERRNO;
     }
 
     if (err == ZIP_OK) {
+        unsigned long size_read = 0;
+        unsigned long total_read = 0;
+
         do {
             err = ZIP_OK;
             size_read = (int)fread(buf, 1, size_buf, fin);

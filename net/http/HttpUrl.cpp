@@ -159,8 +159,8 @@ void _HttpUrl::import(String input) {
         }
     }
     // Authority.
-    bool hasUsername = false;
-    bool hasPassword = false;
+    //bool hasUsername = false;
+    //bool hasPassword = false;
     int slcount = slashCount(input, pos, limit);
     
     if (slcount >= 2 || slcount == 0) {
@@ -181,29 +181,28 @@ void _HttpUrl::import(String input) {
                 ? input->charAt(componentDelimiterOffset)
                 : -1;
             switch (c) {
-                case '@':
+                case '@':{
                     // User info precedes.
-                    if (!hasPassword) {
+                    //if (!hasPassword) {
                         int passwordColonOffset = delimiterOffset(
                             input, pos, componentDelimiterOffset, ":");
                         this->mUser = input->subString(pos,passwordColonOffset-pos);
                         if (passwordColonOffset != componentDelimiterOffset) {
                             this->mPassword = input->subString(passwordColonOffset + 1,componentDelimiterOffset - passwordColonOffset - 1);
                         }
-                        hasUsername = true;
-                    } else {
-                        //this.encodedPassword = this.encodedPassword + "%40" + canonicalize(input, pos,
-                        //    componentDelimiterOffset, PASSWORD_ENCODE_SET, true, false, false, true);
-                        this->mPassword = input->subString(pos,componentDelimiterOffset - pos);
-                    }
+                        //hasUsername = true;
+                    //} else {
+                    //    this->mPassword = input->subString(pos,componentDelimiterOffset - pos);
+                    //}
                     pos = componentDelimiterOffset + 1;
-                    break;
+                }
+                break;
 
                 case -1:
                 case '/':
                 case '\\':
                 case '?':
-                case '#':
+                case '#': {
                     // Host info precedes.
                     int portColonPos = portColonOffset(input, pos, componentDelimiterOffset);
                     if (portColonPos + 1 < componentDelimiterOffset) {
@@ -217,6 +216,7 @@ void _HttpUrl::import(String input) {
                     //break authority;
                     jumpLoop = true;
                     break;
+                }
             }
 
             if(jumpLoop) {
@@ -369,6 +369,7 @@ String _HttpUrl::toString() {
             }
         break;
     }
+    
 
     if (mUser != nullptr) {
         if (mPassword != nullptr) {

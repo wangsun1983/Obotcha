@@ -188,7 +188,7 @@ int _MailSender::send() {
     //char *FileBuf = NULL;
 	FILE* hFile = NULL;
     int res = 0;
-    std::string fileName;
+    //std::string fileName;
     std::string encodedFileName;
     if(connectRemoteServer() != 0) {
         return -1;
@@ -313,8 +313,6 @@ int _MailSender::send() {
 }
 
 int _MailSender::connectRemoteServer() {
-    int res = 0;
-    
     if((mConnection->mSocket = socket(PF_INET, SOCK_STREAM,0)) < 0) {
         return -OpenFail;
     }
@@ -355,6 +353,7 @@ int _MailSender::connectRemoteServer() {
     fd_set fdwrite;
     fd_set fdexcept;
     while(true) {
+        int res = 0;
         FD_ZERO(&fdwrite);
         FD_ZERO(&fdexcept);
 
@@ -824,7 +823,6 @@ SmtpCommandEntry *_MailSender::getCommandEntry(int command) {
 }
 
 int _MailSender::receiveDataSSL(SSL* ssl, SmtpCommandEntry* pEntry) {
-    int res = 0;
     int offset = 0;
     fd_set fdread;
     fd_set fdwrite;
@@ -838,6 +836,8 @@ int _MailSender::receiveDataSSL(SSL* ssl, SmtpCommandEntry* pEntry) {
     bool bFinish = false;
 
     while(!bFinish) {
+        int res = 0;
+        
         FD_ZERO(&fdread);
         FD_ZERO(&fdwrite);
 
@@ -920,7 +920,7 @@ int _MailSender::receiveDataSSL(SSL* ssl, SmtpCommandEntry* pEntry) {
 }
 
 int _MailSender::sendDataSSL(SSL* ssl, SmtpCommandEntry* pEntry) {
-    int offset = 0,res,nLeft = strlen(mSendBuf);
+    int offset = 0,nLeft = strlen(mSendBuf);
 	fd_set fdwrite;
 	fd_set fdread;
 	timeval time;
@@ -932,6 +932,7 @@ int _MailSender::sendDataSSL(SSL* ssl, SmtpCommandEntry* pEntry) {
 
 
 	while(nLeft > 0) {
+        int res = 0;
 		FD_ZERO(&fdwrite);
 		FD_ZERO(&fdread);
 
@@ -1002,7 +1003,7 @@ int _MailSender::sendData(SmtpCommandEntry* pEntry) {
 	{
 		return sendDataSSL(mSSL, pEntry);
 	}
-	int idx = 0,res,nLeft = strlen(mSendBuf);
+	int idx = 0,nLeft = strlen(mSendBuf);
 	fd_set fdwrite;
 	timeval time;
 
@@ -1011,8 +1012,9 @@ int _MailSender::sendData(SmtpCommandEntry* pEntry) {
 
 
 	while(nLeft > 0) {
-		FD_ZERO(&fdwrite);
+        int res = 0;
 
+		FD_ZERO(&fdwrite);
 		FD_SET(mConnection->mSocket,&fdwrite);
 
 		if((res = select(mConnection->mSocket+1,NULL,&fdwrite,NULL,&time)) == -1) {

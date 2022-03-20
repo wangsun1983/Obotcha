@@ -62,8 +62,9 @@ FileDescriptor _SSLServerSocketImpl::getFileDescriptor() {
 
 int _SSLServerSocketImpl::close() {
     if(mSocket != nullptr) {
-        return mSocket->close();
+        int ret = mSocket->close();
         mSocket = nullptr;
+        return ret;
     }
 
     return 0;

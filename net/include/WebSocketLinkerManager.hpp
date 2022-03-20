@@ -8,6 +8,7 @@
 #include "StrongPointer.hpp"
 #include "HashMap.hpp"
 #include "Socket.hpp"
+#include "ReadWriteLock.hpp"
 
 namespace obotcha {
 
@@ -24,7 +25,10 @@ public:
     void remove(sp<_WebSocketLinker>);
 
 private:
-    Mutex mMutex;
+    //Mutex mMutex;
+    ReadWriteLock mReadWriteLock;
+    ReadLock mReadLock;
+    WriteLock mWriteLock;
     HashMap<Socket,sp<_WebSocketLinker>> mClients;
 };
 

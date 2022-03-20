@@ -629,7 +629,7 @@ void _XmlValue::reflectTo(Object obj) {
 }
 
 void _XmlValue::importHashMapFrom(Object hashmap) {
-    int size = this->__getContainerSize("");
+    //int size = this->__getContainerSize("");
     ArrayList<Pair<Object, Object>> members =
         hashmap->__getMapItemObjects("");
     auto iterator = members->getIterator();

@@ -28,7 +28,7 @@ void _HttpHeaderUserAgent::import(String value) {
     int start = 0;
 
     HttpUserAgentDetail detail = nullptr;
-    bool hasInfo = false;
+    //bool hasInfo = false;
 
     for(int i = 0;i < size;i++) {
         switch(status) {
@@ -62,7 +62,7 @@ void _HttpHeaderUserAgent::import(String value) {
                     continue;
                 } else if(v[i] == '(') {
                     start++;
-                    hasInfo = true;
+                    //hasInfo = true;
                     for(int next = i;next < size;next++) {
                         if(v[next] == ')') {
                             detail->info = createString(v,start,next - start);

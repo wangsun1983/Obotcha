@@ -39,12 +39,12 @@ void _IniReader::parse() {
     int sections = iniparser_getnsec(dict);
 
     for (int i = 0; i < sections; i++) {
-        bool isRoot = false;
+        //bool isRoot = false;
         char *sectionName = (char *)iniparser_getsecname(dict, i);
         HashMap<String, String> mKeyValue = createHashMap<String, String>();
         if (RootSectionName->equals(sectionName)) {
             mIniValues->put(createString(""), mKeyValue);
-            isRoot = true;
+            //isRoot = true;
         } else {
             mIniValues->put(createString(sectionName), mKeyValue);
         }

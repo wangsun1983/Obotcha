@@ -18,11 +18,14 @@
 #include "HttpLinker.hpp"
 #include "Random.hpp"
 #include "Socket.hpp"
+#include "ReadWriteLock.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(HttpLinkerManager) {
 public:
+    _HttpLinkerManager();
+
     void add(sp<_HttpLinker>);
 
     HttpLinker get(Socket);
@@ -31,12 +34,13 @@ public:
     
     void clear();
 
-    _HttpLinkerManager();
-
     ~_HttpLinkerManager();
     
 private:
-    Mutex mMutex;
+    //Mutex mMutex;
+    ReadWriteLock mReadWriteLock;
+    ReadLock mReadLock;
+    WriteLock mWriteLock;
 
     HashMap<Socket,HttpLinker> mClients;
 
