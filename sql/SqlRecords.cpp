@@ -5,6 +5,7 @@ namespace obotcha {
 //-------------------SqlRecordsIterator-------------------
 _SqlRecordsIterator::_SqlRecordsIterator(SqlRecords r) {
     records = r;
+    index = 0;
 }
 
 bool _SqlRecordsIterator::hasValue() {

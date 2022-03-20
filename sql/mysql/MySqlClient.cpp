@@ -90,9 +90,9 @@ SqlRecords _MySqlClient::query(SqlQuery query) {
     return nullptr;
 }
 
-int _MySqlClient::exec(SqlQuery) {
-    
-    return 0;
+int _MySqlClient::exec(SqlQuery query) {
+    String sql = query->toString();
+    return mysql_real_query(&mysql, sql->toChars(),sql->size());
 }
 
 int _MySqlClient::startTransaction() {

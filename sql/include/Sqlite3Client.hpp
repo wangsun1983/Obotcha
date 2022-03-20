@@ -12,6 +12,7 @@
 #include "SqlRecords.hpp"
 #include "Sqlite3ConnectParam.hpp"
 #include "AtomicBoolean.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -100,15 +101,17 @@ public:
                             }
                             break;
                         }
-                        index++;
-                        
                     }
+                    index++;
                 }
 
                 queryResult->add(data);
             }
             sqlite3_free_table(dbResult);
             return queryResult;
+        } else {
+            LOG(ERROR)<<"Sqlite3 query error,reason is "<<errmsg;
+            sqlite3_free(errmsg);
         }
 
         return nullptr;

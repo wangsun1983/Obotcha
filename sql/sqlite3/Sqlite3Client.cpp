@@ -4,6 +4,7 @@
 #include "Error.hpp"
 #include "SqlRecords.hpp"
 #include "SqlConnection.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -53,9 +54,19 @@ int _Sqlite3Client::count(SqlQuery query) {
     int nColumn = 0;
     char *errmsg = NULL;
     if(sqlite3_get_table(mSqlDb, sql, &dbResult, &nRow, &nColumn, &errmsg) == SQLITE_OK) {
+        char *data = dbResult[1];
+        if(data != nullptr) {
+            int rs = createString(data)->toBasicInt();
+            sqlite3_free_table(dbResult);
+            return rs;
+        }
         sqlite3_free_table(dbResult);
+    } else {
+        LOG(ERROR)<<"Sqlite3 Count error,reason is "<<errmsg;
+        sqlite3_free(errmsg);
     }
-    return nRow;
+
+    return 0;
 }
 
 int _Sqlite3Client::exec(SqlQuery query) {
@@ -64,7 +75,11 @@ int _Sqlite3Client::exec(SqlQuery query) {
     }
 
     String sqlstring = query->toString();
+    char *errmsg = NULL;
+
     if(SQLITE_OK != sqlite3_exec(mSqlDb, sqlstring->toChars(), NULL,NULL,NULL)) {
+        LOG(ERROR)<<"Sqlite3 exec error,reason is "<<errmsg;
+        sqlite3_free(errmsg);
         return -SqlExecFail;
     }
 
