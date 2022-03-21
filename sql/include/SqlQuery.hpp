@@ -45,7 +45,7 @@ private:
 
     template <typename T,typename... U>
     void bind1(std::string &ss,int index,T t,U... args) {
-        std::string search = "%";
+        std::string search = "$";
         search.append(toStr(index));
         int startpos = ss.find(search);  
         if( startpos != std::string::npos ) {

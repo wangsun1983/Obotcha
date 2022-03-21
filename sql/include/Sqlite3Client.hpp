@@ -32,7 +32,9 @@ public:
         int nRow, nColumn;
         char *errmsg = NULL;
         ArrayList<T> queryResult = createArrayList<T>();
+        mMutex->lock();
         int result = sqlite3_get_table(mSqlDb, sql->toChars(), &dbResult, &nRow, &nColumn, &errmsg);
+        mMutex->unlock();
         if (SQLITE_OK == result) {
             int index = nColumn;
             for (int i = 0; i < nRow; i++) {
@@ -45,6 +47,7 @@ public:
                     Field field = data->getField(createString(dbResult[j]));
                     if (field != nullptr) {
                         String value = createString(dbResult[index]);
+                        printf("value is %s \n",value->toChars());
                         switch (field->getType()) {
                             case st(Field)::FieldTypeLong: {
                                 field->setValue(value->toBasicLong());
@@ -134,7 +137,10 @@ private:
 
     String mPath;
 
-    std::atomic<bool> isClosed;
+    bool isClosed;
+
+    //maybe we should use this mutex to make one client one operation.
+    Mutex mMutex; 
 };
 
 } // namespace obotcha

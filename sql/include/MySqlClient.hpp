@@ -13,6 +13,7 @@
 #include "SqlQuery.hpp"
 #include "SqlRecords.hpp"
 #include "MySqlConnectParam.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha
 {
@@ -21,6 +22,8 @@ DECLARE_CLASS(MySqlClient)
 {
 public:
     int connect(MySqlConnectParam args);
+
+    int count(SqlQuery query);
     
     SqlRecords query(SqlQuery query);
 
@@ -28,6 +31,7 @@ public:
     ArrayList<T> query(SqlQuery query) {
         String sql = query->toString();
         int ret = mysql_real_query(&mysql, sql->toChars(),sql->size());
+        
         if(ret == 0) {
             MYSQL_RES *res = nullptr;
             res = mysql_store_result(&mysql);
@@ -48,6 +52,9 @@ public:
                     for (int i = 0; i < columnNum; i++) {
                         String val = createString(row[i]);
                         Field field = objvalue->getField(columns[i]);
+                        if(field == nullptr) {
+                            continue;
+                        }
                         switch(field->getType()) {
                             case st(Field)::FieldTypeLong:{
                                 field->setValue(val->toBasicLong());
@@ -108,6 +115,7 @@ public:
 
                     results->add(objvalue);
                 }
+                mysql_free_result(res);
                 return results;
             }
             mysql_free_result(res);
@@ -125,8 +133,11 @@ public:
 
     int rollabckTransaction();
 
+    ~_MySqlClient();
+
 private:
     MYSQL mysql;
+    Mutex mMutex;
 };
 
 } // namespace obotcha

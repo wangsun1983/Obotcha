@@ -1,18 +1,17 @@
-#include "sqlite3.h"
-
 #include "MySqlClient.hpp"
 #include "SqlConnection.hpp"
 #include "Error.hpp"
+#include "AutoLock.hpp"
 #include "Log.hpp"
 
 namespace obotcha {
 
 int _MySqlClient::connect(MySqlConnectParam arg) {
+    mMutex = createMutex();
     if (mysql_init(&mysql) == nullptr) {
         LOG(ERROR)<<"mysql init fail";
         return -1;  
-    }  
-
+    }
     String host = arg->getHost();
     if(host == nullptr) {
         host = "host";
@@ -24,8 +23,7 @@ int _MySqlClient::connect(MySqlConnectParam arg) {
     if(user != nullptr) {
         param_user = user->toChars();
     }
-
-    String password = arg->getUser();
+    String password = arg->getPassword();
     const char *param_password = nullptr;
     if(password != nullptr) {
         param_password = password->toChars();
@@ -36,7 +34,6 @@ int _MySqlClient::connect(MySqlConnectParam arg) {
     if(db != nullptr) {
         param_db = db->toChars();
     }
-    
     int param_port = arg->getPort();
     
     String unixsock = arg->getSocketName();
@@ -44,9 +41,7 @@ int _MySqlClient::connect(MySqlConnectParam arg) {
     if(unixsock != nullptr) {
         param_unixsock = unixsock->toChars();
     }
-
     uint64_t param_flag = arg->getClientFlag();
-    
     if(nullptr ==  mysql_real_connect(&mysql,
                                     param_host,
                                     param_user,
@@ -55,18 +50,19 @@ int _MySqlClient::connect(MySqlConnectParam arg) {
                                     param_port,
                                     param_unixsock,
                                     param_flag)) {
-        LOG(ERROR)<<"mysql connect failed";
+        LOG(ERROR)<<"mysql connect failed,reason is "<<mysql_error(&mysql);
         return -1;
     }
-
     return 0;
 }
 
 SqlRecords _MySqlClient::query(SqlQuery query) {
     String sql = query->toString();
+    mMutex->lock();
     int ret = mysql_real_query(&mysql, sql->toChars(),sql->size());
     if(ret == 0) {
         MYSQL_RES *res = mysql_store_result(&mysql);
+        mMutex->unlock();
         int columnNum = mysql_num_fields(res);
         int rowNum = mysql_num_rows(res);
         SqlRecords records = createSqlRecords(rowNum,columnNum);
@@ -86,27 +82,39 @@ SqlRecords _MySqlClient::query(SqlQuery query) {
         return records;
     }
 
+    mMutex->unlock();
     return nullptr;
 }
 
 int _MySqlClient::exec(SqlQuery query) {
     String sql = query->toString();
+    AutoLock l(mMutex);
     return mysql_real_query(&mysql, sql->toChars(),sql->size());
 }
 
-int _MySqlClient::startTransaction() {
+int _MySqlClient::count(SqlQuery query) {
+    String sql = query->toString();
+    mMutex->lock();
+    int ret = mysql_real_query(&mysql, sql->toChars(),sql->size());
+    MYSQL_RES *res = mysql_store_result(&mysql);
+    mMutex->unlock();
     
-    return 0;
+    MYSQL_ROW row = mysql_fetch_row(res);
+    int resut = createString(row[0])->toBasicInt();
+    mysql_free_result(res);
+    return resut;
+}
+
+int _MySqlClient::startTransaction() {
+    return mysql_query(&mysql,"BEGIN");
 }
 
 int _MySqlClient::commitTransaction() {
-    
-    return 0;
+    return mysql_query(&mysql,"COMMIT");
 }
 
 int _MySqlClient::rollabckTransaction() {
-    
-    return 0;
+    return mysql_query(&mysql,"ROLLBACK");
 }
 
 int _MySqlClient::close() {
@@ -114,4 +122,8 @@ int _MySqlClient::close() {
     return 0;
 }
 
-};
+_MySqlClient::~_MySqlClient() {
+    this->close();
+}
+
+}

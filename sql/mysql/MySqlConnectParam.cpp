@@ -69,9 +69,9 @@ String _MySqlConnectParam::getSocketName() {
 }
 
 uint64_t _MySqlConnectParam::getClientFlag() {
-    Uint64  value = mParams->get(ClientFlg);
+    String value = mParams->get(ClientFlg);
     if(value != nullptr) {
-        return value->toValue();
+        return value->toBasicUint64();
     }
 
     return 0;

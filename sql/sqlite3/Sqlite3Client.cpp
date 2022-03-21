@@ -5,10 +5,12 @@
 #include "SqlRecords.hpp"
 #include "SqlConnection.hpp"
 #include "Log.hpp"
+#include "AutoLock.hpp"
 
 namespace obotcha {
 
 int _Sqlite3Client::connect(Sqlite3ConnectParam arg) {
+    mMutex = createMutex();
     mPath = arg->getPath();
     if(mPath == nullptr) {
         return -SqlFailWrongParam;
@@ -29,7 +31,9 @@ SqlRecords _Sqlite3Client::query(SqlQuery query) {
     char **dbResult;
     int nRow, nColumn;
     char *errmsg = NULL;
+    mMutex->lock();
     if(sqlite3_get_table(mSqlDb, sql->toChars(), &dbResult, &nRow, &nColumn, &errmsg) == SQLITE_OK) {
+        mMutex->unlock();
         SqlRecords records = createSqlRecords(nRow,nColumn);
         int index = nColumn;
         for (int i = 0; i < nRow; i++) {
@@ -43,7 +47,7 @@ SqlRecords _Sqlite3Client::query(SqlQuery query) {
         sqlite3_free_table(dbResult);
         return records;
     }
-
+    mMutex->unlock();
     return nullptr;
 }
 
@@ -53,7 +57,9 @@ int _Sqlite3Client::count(SqlQuery query) {
     int nRow = 0;
     int nColumn = 0;
     char *errmsg = NULL;
+    mMutex->lock();
     if(sqlite3_get_table(mSqlDb, sql, &dbResult, &nRow, &nColumn, &errmsg) == SQLITE_OK) {
+        mMutex->unlock();
         char *data = dbResult[1];
         if(data != nullptr) {
             int rs = createString(data)->toBasicInt();
@@ -65,7 +71,7 @@ int _Sqlite3Client::count(SqlQuery query) {
         LOG(ERROR)<<"Sqlite3 Count error,reason is "<<errmsg;
         sqlite3_free(errmsg);
     }
-
+    mMutex->unlock();
     return 0;
 }
 
@@ -76,18 +82,20 @@ int _Sqlite3Client::exec(SqlQuery query) {
 
     String sqlstring = query->toString();
     char *errmsg = NULL;
-
-    if(SQLITE_OK != sqlite3_exec(mSqlDb, sqlstring->toChars(), NULL,NULL,NULL)) {
+    mMutex->lock();
+    if(SQLITE_OK != sqlite3_exec(mSqlDb, sqlstring->toChars(), nullptr,nullptr,&errmsg)) {
         LOG(ERROR)<<"Sqlite3 exec error,reason is "<<errmsg;
+        mMutex->unlock();
         sqlite3_free(errmsg);
         return -SqlExecFail;
     }
-
+    mMutex->unlock();
     return 0;
 }
 
 int _Sqlite3Client::startTransaction() {
-    int ret = sqlite3_exec(mSqlDb,"begin transaction",0,0,nullptr);
+    AutoLock l(mMutex);
+    int ret = sqlite3_exec(mSqlDb,"BEGIN",0,0,nullptr);
     if(ret != SQLITE_OK) {
         return -SqlTransactionFail;
     }
@@ -96,7 +104,8 @@ int _Sqlite3Client::startTransaction() {
 }
 
 int _Sqlite3Client::commitTransaction() {
-    int ret = sqlite3_exec(mSqlDb,"commit transaction",0,0,nullptr);
+    AutoLock l(mMutex);
+    int ret = sqlite3_exec(mSqlDb,"COMMIT",0,0,nullptr);
     if(ret != SQLITE_OK) {
         return -SqlTransactionFail;
     }
@@ -105,7 +114,8 @@ int _Sqlite3Client::commitTransaction() {
 }
 
 int _Sqlite3Client::rollabckTransaction() {
-    int ret = sqlite3_exec(mSqlDb,"rollback transaction",0,0,nullptr);
+    AutoLock l(mMutex);
+    int ret = sqlite3_exec(mSqlDb,"ROLLBACK",0,0,nullptr);
     if(ret != SQLITE_OK) {
         return -SqlTransactionFail;
     }
@@ -114,6 +124,7 @@ int _Sqlite3Client::rollabckTransaction() {
 }
 
 int _Sqlite3Client::close() {
+    AutoLock l(mMutex);
     isClosed = true;
     return sqlite3_close(mSqlDb);
 }
