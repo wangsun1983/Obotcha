@@ -1,4 +1,4 @@
-#include "MySqlClient.hpp"
+#include "MySqlConnection.hpp"
 #include "SqlConnection.hpp"
 #include "Error.hpp"
 #include "AutoLock.hpp"
@@ -6,8 +6,15 @@
 
 namespace obotcha {
 
-int _MySqlClient::connect(MySqlConnectParam arg) {
+
+_MySqlConnection::_MySqlConnection() {
+    mType = MySqlConnection;
+}
+
+int _MySqlConnection::connect(SqlConnectParam param) {
     mMutex = createMutex();
+    auto arg = Cast<MySqlConnectParam>(param);
+
     if (mysql_init(&mysql) == nullptr) {
         LOG(ERROR)<<"mysql init fail";
         return -1;  
@@ -56,7 +63,7 @@ int _MySqlClient::connect(MySqlConnectParam arg) {
     return 0;
 }
 
-SqlRecords _MySqlClient::query(SqlQuery query) {
+SqlRecords _MySqlConnection::query(SqlQuery query) {
     String sql = query->toString();
     mMutex->lock();
     int ret = mysql_real_query(&mysql, sql->toChars(),sql->size());
@@ -86,13 +93,13 @@ SqlRecords _MySqlClient::query(SqlQuery query) {
     return nullptr;
 }
 
-int _MySqlClient::exec(SqlQuery query) {
+int _MySqlConnection::exec(SqlQuery query) {
     String sql = query->toString();
     AutoLock l(mMutex);
     return mysql_real_query(&mysql, sql->toChars(),sql->size());
 }
 
-int _MySqlClient::count(SqlQuery query) {
+int _MySqlConnection::count(SqlQuery query) {
     String sql = query->toString();
     mMutex->lock();
     int ret = mysql_real_query(&mysql, sql->toChars(),sql->size());
@@ -105,25 +112,53 @@ int _MySqlClient::count(SqlQuery query) {
     return resut;
 }
 
-int _MySqlClient::startTransaction() {
+int _MySqlConnection::startTransaction() {
     return mysql_query(&mysql,"BEGIN");
 }
 
-int _MySqlClient::commitTransaction() {
+int _MySqlConnection::commitTransaction() {
     return mysql_query(&mysql,"COMMIT");
 }
 
-int _MySqlClient::rollabckTransaction() {
+int _MySqlConnection::rollabckTransaction() {
     return mysql_query(&mysql,"ROLLBACK");
 }
 
-int _MySqlClient::close() {
+int _MySqlConnection::close() {
     mysql_close(&mysql);
     return 0;
 }
 
-_MySqlClient::~_MySqlClient() {
+_MySqlConnection::~_MySqlConnection() {
     this->close();
+}
+
+void _MySqlConnection::queryWithEachRow(SqlQuery query,onRowStartCallback onStart,onRowNewDataCallback onData,onRowEndCallback onEnd) {
+    String sql = query->toString();
+    int ret = mysql_real_query(&mysql, sql->toChars(),sql->size());
+    
+    if(ret == 0) {
+        MYSQL_RES *res = nullptr;
+        res = mysql_store_result(&mysql);
+        int columnNum = mysql_num_fields(res);
+        List<String> columns = createList<String>(columnNum);
+        if (res != nullptr) {
+            for(int i=0; i < columnNum; i++) {
+                MYSQL_FIELD *field = mysql_fetch_field_direct(res,i);
+                columns[i] = createString(field->name);
+            }
+            
+            MYSQL_ROW row;
+            while ((row = mysql_fetch_row(res))) {
+                onStart();
+                for (int i = 0; i < columnNum; i++) {
+                    onData(createString(columns[i]),createString(row[i]));
+                }
+                onEnd();
+            }
+        }
+        mysql_free_result(res);
+    }
 }
 
 }
