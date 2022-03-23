@@ -6,14 +6,17 @@
 #include "InitializeException.hpp"
 #include "ArrayList.hpp"
 #include "AutoLock.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
+
 //http://doc.redisfans.com/
 
 _RedisConnection::_RedisConnection() {
     mMutex = createMutex();
     aSyncContext = nullptr;
     mContext = nullptr;
+    isInLooper = false;
 }
 
 int _RedisConnection::connect(String server,int port,long millseconds) {
@@ -110,44 +113,111 @@ void _RedisConnection::_InitAsyncContext() {
     if(aSyncContext == nullptr) {
         aSyncContext = redisAsyncConnect(mServer->toChars(), mPort);
         mChannelListeners = createHashMap<String,HashSet<RedisSubscribeListener>>();
+
+        aSyncContext->ev.data = this;
+        aSyncContext->ev.addRead = _RedisAddRead;
+        aSyncContext->ev.delRead = _RedisDelRead;
+        aSyncContext->ev.addWrite = _RedisAddWrite;
+        aSyncContext->ev.delWrite = _RedisDelWrite;
+        aSyncContext->ev.cleanup = _RedisCleanup;
+
+        mEpoll = createEPollFileObserver();
+        mEpoll->addObserver(aSyncContext->c.fd,EPOLLIN|EPOLLET,AutoClone(this));
+    
     }
 }
 
-void _RedisConnection::commandCallback(redisAsyncContext *redis_context,void *reply, void *privdata) {
-    printf("onCommand!!!! \n");
+void _RedisConnection::_RedisAddRead(void * c) {
+    printf("_RedisAddRead \n");
+    redisAsyncContext *ctx = (redisAsyncContext *)c;
+    //redisAsyncHandleRead(ctx);
+}
+
+void _RedisConnection::_RedisDelRead(void * c) {
+    printf("_RedisDelRead \n");
+}
+
+void _RedisConnection::_RedisAddWrite(void * c) {
+    printf("_RedisAddWrite \n");
+    _RedisConnection *connection = (_RedisConnection *)c;
+    redisAsyncHandleWrite(connection->aSyncContext);
+}
+
+void _RedisConnection::_RedisDelWrite(void * c) {
+    printf("_RedisDelWrite \n");
+}
+
+void _RedisConnection::_RedisCleanup(void * c) {
+    printf("_RedisCleanup \n");
+}
+
+
+void _RedisConnection::_CommandCallback(redisAsyncContext *redis_context,void *reply, void *privdata) {
     if (nullptr == reply || nullptr == privdata) {
         return ;
     }
 
+    _RedisConnection *c = (_RedisConnection *)privdata;
     redisReply *redis_reply = reinterpret_cast<redisReply *>(reply);
 
-    // 订阅接收到的消息是一个带三元素的数组
     if (redis_reply->type == REDIS_REPLY_ARRAY && redis_reply->elements == 3) {
-        printf("Recieve message:%s %s %s\n",
-        redis_reply->element[0]->str,
-        redis_reply->element[1]->str,
-        redis_reply->element[2]->str);
+        String type = createString(redis_reply->element[0]->str);
+        int event = Message;
+
+        if(type->equalsIgnoreCase("subscribe")) {
+            event = RedisEvent::Subscribe;
+        } else if(type->equalsIgnoreCase("message")) {
+            event = RedisEvent::Message;
+        } else if(type->equalsIgnoreCase("unsubscribe")) {
+            event = RedisEvent::UnSubscribe;
+        } else {
+            LOG(ERROR)<<"unsupport redis response :"<<type->toChars();
+        }
+        
+        String key = createString(redis_reply->element[1]->str);
+        String value = nullptr;
+        if(redis_reply->element[2]->str != nullptr) {
+            value = createString(redis_reply->element[2]->str);
+        }
+        c->_onEventTrigger(event,key,value);
     } 
+}
+
+void _RedisConnection::_onEventTrigger(int event,String key,String value) {
+    AutoLock l(mMutex);
+    auto set = mChannelListeners->get(key);
+    auto iterator = set->getIterator();
+    isInLooper = true;
+    while(iterator->hasValue()) {
+        RedisSubscribeListener l = iterator->getValue();
+        l->onEvent(event,key,value);
+        iterator->next();
+    }
+    isInLooper = false;
 }
 
 int _RedisConnection::subscribe(String channel,RedisSubscribeListener l) {
     _InitAsyncContext();
-    printf("subscribe trace1 \n");
+    if(isInLooper) {
+        LOG(ERROR)<<"can not subscribe channel in RedisSubscribeListener";
+        return 0;
+    }
+
     bool isNeedSubscribe = false;
     {
-        AutoLock l(mMutex);
-        auto list = mChannelListeners->get(channel);
+        AutoLock ll(mMutex);
+        HashSet<RedisSubscribeListener> list = mChannelListeners->get(channel);
         if(list == nullptr) {
             list = createHashSet<RedisSubscribeListener>();
             mChannelListeners->put(channel,list);
             isNeedSubscribe = true;
         }
-    }
 
+        list->add(l);
+    }
+    
     if(isNeedSubscribe) {
-        printf("subscribe trace2,channe is %s \n",channel->toChars());
-        int ret = redisAsyncCommand(aSyncContext,&commandCallback, this, "SUBSCRIBE %s",channel->toChars()); //订阅一个频道
-        printf("ret is %d \n",ret);
+        int ret = redisAsyncCommand(aSyncContext,&_CommandCallback, this, "SUBSCRIBE %s",channel->toChars());
         if (REDIS_ERR == ret) {
             LOG(ERROR)<< "subscribe failed!!!";
             return -1;
@@ -157,10 +227,39 @@ int _RedisConnection::subscribe(String channel,RedisSubscribeListener l) {
     return 0;
 }
 
-int _RedisConnection::desubscribe(String channel,RedisSubscribeListener l) {
+int _RedisConnection::onEvent(int fd, uint32_t events) {
+    redisAsyncRead(aSyncContext);
+    return st(EPollFileObserver)::OnEventOK;
+}
+
+int _RedisConnection::unsubscribe(String channel,RedisSubscribeListener l) {
+    AutoLock ll(mMutex);
+    if(isInLooper) {
+        LOG(ERROR)<<"can not subscribe channel in RedisSubscribeListener";
+        return 0;
+    }
+
+    HashSet<RedisSubscribeListener> list = mChannelListeners->get(channel);
+    list->remove(l);
+    if(list->size() == 0) {
+        int ret = redisAsyncCommand(aSyncContext,&_CommandCallback, this, "UNSUBSCRIBE %s",channel->toChars());
+        if (REDIS_ERR == ret) {
+            LOG(ERROR)<< "subscribe failed!!!";
+            return -1;
+        } 
+    }
     return 0;
 }
 
-//https://blog.csdn.net/educast/article/details/37698809
+int _RedisConnection::publish(String key,String value) {
+    _InitAsyncContext();
+    int ret = redisAsyncCommand(aSyncContext,&_CommandCallback, this, "PUBLISH %s %s",key->toChars(),value->toChars());
+    if (REDIS_ERR == ret) {
+        LOG(ERROR)<< "publish failed!!!";
+        return -1;
+    }
+
+    return 0;
+}
 
 }

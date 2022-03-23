@@ -10,20 +10,25 @@
 #include "async.h"
 #include "HashMap.hpp"
 #include "HashSet.hpp"
-extern "C" {
-#include "ae.h"
-}
+#include "Thread.hpp"
+#include "EPollFileObserver.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(RedisSubscribeListener) {
 public:
-    virtual void onEvent(String,String) = 0;
+    virtual void onEvent(int type,String,String) = 0;
 };
 
-DECLARE_CLASS(RedisConnection) {
+DECLARE_CLASS(RedisConnection) IMPLEMENTS(EPollFileObserverListener) {
 
 public:
+    enum RedisEvent {
+        Message = 0,
+        Subscribe,
+        UnSubscribe,
+    };
+
     _RedisConnection();
     int connect(String server,int port,long millseconds);
     int set(String,String);
@@ -38,26 +43,36 @@ public:
     int set(String,ArrayList<String>);
 
     int subscribe(String,RedisSubscribeListener);
-    int desubscribe(String,RedisSubscribeListener);
-
+    int unsubscribe(String,RedisSubscribeListener);
     int publish(String,String);
 
     ~_RedisConnection();
 
 private:
     void _InitAsyncContext();
-    static void commandCallback(redisAsyncContext *redis_context,void *reply, void *privdata);
+    static void _RedisAddRead(void * c);
+    static void _RedisDelRead(void * c);
+    static void _RedisAddWrite(void * c);
+    static void _RedisDelWrite(void * c);
+    static void _RedisCleanup(void * c);
+    static void _CommandCallback(redisAsyncContext *redis_context,void *reply, void *privdata);
+    
+    void _onEventTrigger(int,String,String);
 
+    int onEvent(int fd, uint32_t events);
+
+    EPollFileObserver mEpoll;
+    
     redisContext *mContext;
     redisAsyncContext *aSyncContext;
-    struct event_base *base;
+
     Mutex mMutex;
 
+    bool isInLooper;
     HashMap<String,HashSet<RedisSubscribeListener>> mChannelListeners;
     String mServer;
     int mPort;
 
-    struct aeEventLoop *loop;
     Thread loopThread;
 };
 
