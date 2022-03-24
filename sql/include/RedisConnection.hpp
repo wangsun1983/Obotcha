@@ -20,6 +20,25 @@ public:
     virtual void onEvent(int type,String,String) = 0;
 };
 
+using _RedisSubscribeLambda = std::function<void(int,String,String)>;
+DECLARE_CLASS(LambdaRedisSubscribeListener) IMPLEMENTS (RedisSubscribeListener) {
+public:
+    _LambdaRedisSubscribeListener(_RedisSubscribeLambda f){
+        func = f;
+    }
+
+    void onEvent(int type,String key,String value) {
+        func(type,key,value);
+    }
+
+    ~_LambdaRedisSubscribeListener() {
+        // do nothing
+    }
+
+private:
+    _RedisSubscribeLambda func;
+};
+
 DECLARE_CLASS(RedisConnection) IMPLEMENTS(EPollFileObserverListener) {
 
 public:
@@ -43,9 +62,12 @@ public:
     int set(String,ArrayList<String>);
 
     int subscribe(String,RedisSubscribeListener);
+    int subscribe(String key,_RedisSubscribeLambda);
     int unsubscribe(String,RedisSubscribeListener);
+
     int publish(String,String);
 
+    int close();
     ~_RedisConnection();
 
 private:
@@ -72,8 +94,6 @@ private:
     HashMap<String,HashSet<RedisSubscribeListener>> mChannelListeners;
     String mServer;
     int mPort;
-
-    Thread loopThread;
 };
 
 } // namespace obotcha

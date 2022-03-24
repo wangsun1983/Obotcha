@@ -11,7 +11,6 @@
 namespace obotcha {
 
 //http://doc.redisfans.com/
-
 _RedisConnection::_RedisConnection() {
     mMutex = createMutex();
     aSyncContext = nullptr;
@@ -101,13 +100,6 @@ int _RedisConnection::set(String key,ArrayList<String> list){
     return 0;
 }
 
-_RedisConnection::~_RedisConnection() {
-    if(mContext != nullptr) {
-        redisFree(mContext);
-        mContext = nullptr;
-    }
-}
-
 void _RedisConnection::_InitAsyncContext() {
     AutoLock l(mMutex);
     if(aSyncContext == nullptr) {
@@ -134,21 +126,21 @@ void _RedisConnection::_RedisAddRead(void * c) {
 }
 
 void _RedisConnection::_RedisDelRead(void * c) {
-    printf("_RedisDelRead \n");
+    //printf("_RedisDelRead \n");
 }
 
 void _RedisConnection::_RedisAddWrite(void * c) {
-    printf("_RedisAddWrite \n");
+    //printf("_RedisAddWrite \n");
     _RedisConnection *connection = (_RedisConnection *)c;
     redisAsyncHandleWrite(connection->aSyncContext);
 }
 
 void _RedisConnection::_RedisDelWrite(void * c) {
-    printf("_RedisDelWrite \n");
+    //printf("_RedisDelWrite \n");
 }
 
 void _RedisConnection::_RedisCleanup(void * c) {
-    printf("_RedisCleanup \n");
+    //printf("_RedisCleanup \n");
 }
 
 
@@ -194,6 +186,11 @@ void _RedisConnection::_onEventTrigger(int event,String key,String value) {
         iterator->next();
     }
     isInLooper = false;
+}
+
+int _RedisConnection::subscribe(String channel,_RedisSubscribeLambda l) {
+    auto listener = createLambdaRedisSubscribeListener(l);
+    return subscribe(channel,listener);
 }
 
 int _RedisConnection::subscribe(String channel,RedisSubscribeListener l) {
@@ -260,6 +257,29 @@ int _RedisConnection::publish(String key,String value) {
     }
 
     return 0;
+}
+
+int _RedisConnection::close() {
+    if(mEpoll != nullptr) {
+        mEpoll->close();
+        mEpoll = nullptr;
+    }
+
+    if(aSyncContext != nullptr) {
+        redisAsyncFree(aSyncContext);
+        aSyncContext = nullptr;
+    }
+
+    if(mContext != nullptr) {
+        redisFree(mContext);
+        mContext = nullptr;
+    }
+
+    return 0;
+}
+
+_RedisConnection::~_RedisConnection() {
+    close();
 }
 
 }
