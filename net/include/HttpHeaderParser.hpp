@@ -28,7 +28,6 @@ public:
     };
     
     _HttpHeaderParser(ByteRingArrayReader,int status = RequestLine);
-
     //void changeToParseHeader();
 
     HttpHeader doParse();

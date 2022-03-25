@@ -71,6 +71,18 @@ void _HttpHeaderParser::parseRequestLine(String line) {
             }
         }
     }
+
+    if(mParseLineStatus == RequsetVersion) {
+        //http1.0_memo 
+        //4.1 http message
+        //HTTP-message   = Simple-Request            ; HTTP/0.9 messages
+        //...
+        //Simple-Request  = "GET" SP Request-URI CRLF
+        //Simple-Response = [ Entity-Body ]
+        auto v = mHeader->getVersion();
+        v->setMajorVer(0);
+        v->setMinorVer(9);
+    }
 }
 
 void _HttpHeaderParser::parseHeader(String line) {

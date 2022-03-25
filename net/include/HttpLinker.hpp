@@ -40,6 +40,8 @@ public:
 
     HttpPacketWriter getWriter();
 
+    HttpPacketWriter getSimpleWriter();
+
     InetAddress getInetAddress();
 
     void close();
@@ -56,6 +58,8 @@ private:
     HttpPacketParser mParser;
 
     HttpPacketWriter mWriter;
+
+    HttpPacketWriter mSimpleWriter;
 
     Socket mSocket;
 

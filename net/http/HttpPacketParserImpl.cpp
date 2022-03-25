@@ -91,6 +91,7 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         return Global::Continue;
                     });
                 }
+
                 if (isTransferChuncked) {
                     if (mChunkParser == nullptr) {
                         mChunkParser = createHttpChunkParser(mReader);
@@ -147,7 +148,16 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                         }
                     }
 
-                    // no contentlength,maybe it is only a html request
+                    //no contentlength,maybe it is only a html request or link
+                    //Link:
+                    //https://tools.ietf.org/id/draft-snell-link-method-01.html
+                    //A payload within a LINK request message has no defined semantics.
+                    //LINK /images/my_dog.jpg HTTP/1.1
+                    //Host: example.org
+                    //Link: <http://example.com/profiles/joe>; rel="tag"
+                    //Link: <http://example.com/profiles/sally>; rel="tag"
+                    // \r\n
+
                     packets->add(mHttpPacket);
                     mHttpHeaderParser = nullptr;
                     mMultiPartParser = nullptr;
@@ -197,15 +207,14 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
 
                         // we should check whether it is a upgrade message
                         //Test Case UPGRADE_POST_REQUEST
-                        if (mHttpPacket->getHeader()->getUpgrade() != nullptr) {
-                            int resetLength = mReader->getReadableLength();
-                            if (resetLength > 0) {
-                                mReader->move(resetLength);
-                                ByteArray content = mReader->pop();
-                                //mHttpPacket->getEntity()->setUpgradeContent(content->toString());
-                                mHttpPacket->getEntity()->setContent(content);
-                            }
-                        }
+                        //if (mHttpPacket->getHeader()->getUpgrade() != nullptr) {
+                        //    int resetLength = mReader->getReadableLength();
+                        //    if (resetLength > 0) {
+                        //        mReader->move(resetLength);
+                        //        ByteArray content = mReader->pop();
+                        //        mHttpPacket->getEntity()->setUpgradeContent(content->toString());
+                        //    }
+                        //}
 
                         mStatus = Idle;
                         packets->add(mHttpPacket);

@@ -130,20 +130,24 @@ HttpChunk _HttpChunkParser::doParse() {
             }
 
             case TrailingHeader: {
-                if(mHeaderParser == nullptr) {
-                    mHeaderParser = createHttpHeaderParser(mReader,st(HttpHeaderParser)::Header);
-                }
-                HttpHeader header = mHeaderParser->doParse();
-                if(header != nullptr) {
-                    auto rs = createHttpChunk(currentBuff);
-                    currentBuff = nullptr;
+                if(endDetector->isOnlyCRLF(v)) {
+                    ByteArray tailingContent = mReader->pop();
+                    ByteRingArray ringArray = createByteRingArray(tailingContent->size());
+                    ringArray->push(tailingContent);
 
-                    rs->setTrailingHeader(header);
-                    mHeaderParser = nullptr;
-                    mStatus = Idle;
-                    return rs;
-                }
+                    mHeaderParser = createHttpHeaderParser(createByteRingArrayReader(ringArray),st(HttpHeaderParser)::Header);
+                    
+                    HttpHeader header = mHeaderParser->doParse();
+                    if(header != nullptr) {
+                        auto rs = createHttpChunk(currentBuff);
+                        currentBuff = nullptr;
 
+                        rs->setTrailingHeader(header);
+                        mHeaderParser = nullptr;
+                        mStatus = Idle;
+                        return rs;
+                    }
+                }
                 continue;
             }
         }

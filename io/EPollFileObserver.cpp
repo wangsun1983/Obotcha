@@ -6,6 +6,7 @@
 #include "Error.hpp"
 #include "Log.hpp"
 #include "String.hpp"
+#include "TimeWatcher.hpp"
 
 namespace obotcha {
 
@@ -16,8 +17,8 @@ void _EPollFileObserver::run() {
     //byte readbuff[st(EPollFileObserver)::DefaultBufferSize];
 
     while (1) {
-        // printf("observer run start \n");
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
+        //AutoTimeWatcher watcher = createAutoTimeWatcher("Epoll monitor");
         if (epoll_events_count < 0) {
             LOG(ERROR) << "epoll_wait count is -1";
             return;
@@ -70,7 +71,7 @@ int _EPollFileObserver::removeObserver(int fd) {
     AutoLock l(mListenerMutex);
     int ret = epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
     mListeners->remove(fd);
-    return 0;
+    return ret;
 }
 
 void _EPollFileObserver::addEpollFd(int fd, uint32_t events) {

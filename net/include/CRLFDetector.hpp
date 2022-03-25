@@ -11,9 +11,11 @@ DECLARE_CLASS(CRLFDetector) {
 public:
     _CRLFDetector();
     bool isEnd(byte &);
+    bool isOnlyCRLF(byte &);
 
 private:
     int index;
+    int onlyCRLFIndex;
     static const char *CRLF;
 };
 

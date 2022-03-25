@@ -899,7 +899,6 @@ void _HttpHeader::set(String key, String value) {
                 if(mLinks == nullptr) {
                     mLinks = createArrayList<HttpHeaderLink>();
                 }
-
                 HttpHeaderLink l = createHttpHeaderLink(value);
                 mLinks->add(l);
             }
@@ -1550,7 +1549,7 @@ String _HttpHeader::get(String header) {
             }
 
             case TypeLink: {
-                //TODO
+                LOG(ERROR)<<"not support get function fro link";
                 break;
             }
 

@@ -5,6 +5,7 @@
 #include "Http2PacketWriterImpl.hpp"
 #include "HttpPacketWriterImpl.hpp"
 #include "Http2StreamController.hpp"
+#include "HttpSimplePacketWriterImpl.hpp"
 
 namespace obotcha {
 
@@ -23,6 +24,7 @@ _HttpLinker::_HttpLinker(Socket s,int protocol) {
 
         default:
             mWriter = createHttpPacketWriterImpl(s->getOutputStream());
+            mSimpleWriter = createHttpSimplePacketWriterImpl(s->getOutputStream());
             mParser = createHttpPacketParserImpl();
     }
 
@@ -57,6 +59,10 @@ HttpSession _HttpLinker::getSession() {
 
 HttpPacketWriter _HttpLinker::getWriter() {
     return mWriter;
+}
+
+HttpPacketWriter _HttpLinker::getSimpleWriter() {
+    return mSimpleWriter;
 }
 
 Http2StreamController _HttpLinker::getStreamController() {

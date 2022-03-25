@@ -93,7 +93,6 @@ void _Http2Server::start() {
                         ->setAddress(mAddress)
                         ->newServerSocket();
     }
-    
 
     if (mServerSock->bind() < 0) {
         LOG(ERROR) << "bind socket failed,reason " << strerror(errno);
@@ -103,6 +102,7 @@ void _Http2Server::start() {
 
     int threadsNum = st(Enviroment)::getInstance()->getInt(
         st(Enviroment)::gHttpServerThreadsNum, 4);
+
     mSockMonitor = createSocketMonitor(threadsNum);
     mSockMonitor->bind(mServerSock, AutoClone(this));
 }

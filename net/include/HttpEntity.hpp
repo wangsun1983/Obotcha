@@ -30,6 +30,8 @@ public:
 
     HttpChunk getChunk();
 
+
+
 private:
     HttpMultiPart mMultiPart;
 

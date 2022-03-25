@@ -46,8 +46,15 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
             if (packets != nullptr && packets->size() != 0) {
                 ListIterator<HttpPacket> iterator = packets->getIterator();
                 while (iterator->hasValue()) {
-                    mHttpListener->onHttpMessage(event, info, info->getWriter(),
-                                                iterator->getValue());
+                    HttpPacket p = iterator->getValue();
+                    HttpHeaderVersion v = p->getHeader()->getVersion();
+                    HttpPacketWriter w = nullptr;
+                    if(v->getMajorVer() == 0 && v->getMinorVer() == 9) {
+                        w = info->getSimpleWriter();
+                    } else {
+                        w = info->getWriter();
+                    }
+                    mHttpListener->onHttpMessage(event, info, w,p);
                     iterator->next();
                 }
             }
