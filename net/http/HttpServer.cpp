@@ -119,7 +119,7 @@ int _HttpServer::start() {
         //    this->close();
         //    return -NetBindFail;
         //}
-        st(Thread)::msleep(1000*1);
+        st(Thread)::sleep(1000*1);
     }
 
     int threadsNum = st(Enviroment)::getInstance()->getInt(

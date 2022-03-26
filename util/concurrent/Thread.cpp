@@ -47,7 +47,7 @@ void *_Thread::localRun(void *th) {
 }
 
 _Thread::_Thread() { 
-    threadInit(nullptr, nullptr); 
+    _threadInit(nullptr, nullptr); 
 }
 
 int _Thread::setName(String name) {
@@ -59,7 +59,7 @@ int _Thread::setName(String name) {
     return pthread_setname_np(mPthread, name->toChars());
 }
 
-void _Thread::threadInit(String name, Runnable run) {
+void _Thread::_threadInit(String name, Runnable run) {
     mName =
         (name == nullptr)
             ? DefaultThreadName->append(createString(threadCount->addAndGet(1)))
@@ -74,13 +74,17 @@ void _Thread::threadInit(String name, Runnable run) {
     mPoolObj = mThreads;
 }
 
-String _Thread::getName() { return mName; }
+String _Thread::getName() { 
+    return mName; 
+}
 
 _Thread::~_Thread() {
     // do nothing
 }
 
-Runnable _Thread::getRunnable() { return mRunnable; }
+Runnable _Thread::getRunnable() { 
+    return mRunnable; 
+}
 
 void _Thread::run() {
     // child thread can overwrite it.
@@ -271,18 +275,24 @@ int _Thread::getSchedPolicy() {
     return policy;
 }
 
-pthread_t _Thread::getThreadId() { return mPthread; }
+pthread_t _Thread::getThreadId() { 
+    return mPthread; 
+}
 
-void _Thread::yield() { pthread_yield(); }
+void _Thread::yield() { 
+    pthread_yield(); 
+}
 
-void _Thread::msleep(unsigned long millseconds) { usleep(1000 * millseconds); }
+//void _Thread::msleep(unsigned long millseconds) { 
+//    usleep(1000 * millseconds); 
+//}
 
-void _Thread::interruptableSleep(unsigned long millseconds) {
+void _Thread::sleep(unsigned long millseconds) {
     Thread thread = mThreads->get();
     if (thread == nullptr) {
         usleep(1000 * millseconds);
     } else {
-        thread->threadSleep(millseconds);
+        thread->_threadSleep(millseconds);
     }
 }
 
@@ -320,14 +330,16 @@ int _Thread::getThreadSchedPolicy() {
     return -1;
 }
 
-Thread _Thread::current() { return mThreads->get(); }
+Thread _Thread::current() { 
+    return mThreads->get(); 
+}
 
 bool _Thread::isRunning() {
     AutoLock l(mMutex);
     return mStatus == Running;
 }
 
-void _Thread::threadSleep(unsigned long interval) {
+void _Thread::_threadSleep(unsigned long interval) {
     int result = 0;
     {
         AutoLock l(mMutex);

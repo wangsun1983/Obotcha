@@ -19,10 +19,8 @@ namespace obotcha {
 
 _ExecutorTask::_ExecutorTask(Runnable r) {
     this->mRunnable = r;
-
     mMutex = createMutex("ExecutorTaskMutex");
     mCompleteCond = createCondition();
-
     mStatus = Waiting;
 }
 

@@ -5,6 +5,7 @@
 #include <pthread.h>
 
 #include "Object.hpp"
+#include "AutoLock.hpp"
 
 namespace obotcha {
 
@@ -17,6 +18,7 @@ public:
     ~_Condition();
 
     int wait(sp<_Mutex> m, long int millseconds = 0);
+    int wait(AutoLock &m, long int millseconds = 0);
 
     void notify();
 

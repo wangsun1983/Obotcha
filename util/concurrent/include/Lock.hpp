@@ -16,6 +16,9 @@ DECLARE_CLASS(Lock) {
     virtual int lock() = 0;
 
     virtual int unlock() = 0;
+
+protected:
+    int convertResult(int);  
 };
 
 } // namespace obotcha

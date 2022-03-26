@@ -15,7 +15,9 @@ namespace obotcha {
 
 template <typename T> class __ExecutorTaskResult {
 public:
-    T get(Object value) { return Cast<T>(value); }
+    T get(Object value) { 
+        return Cast<T>(value); 
+    }
 };
 
 #define __ExecutorTaskResultMacro(X, Y)                                        \
@@ -80,7 +82,9 @@ public:
         Complete,
     };
 
-    template <typename T> void setResult(T value) { mResult = value; }
+    template <typename T> void setResult(T value) { 
+        mResult = value; 
+    }
 
     void setResult(int);
     void setResult(byte);

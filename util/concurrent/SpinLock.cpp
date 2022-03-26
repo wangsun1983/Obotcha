@@ -31,33 +31,15 @@ _SpinLock::_SpinLock() {
 }
 
 int _SpinLock::lock() {
-    if(pthread_spin_lock(&mLock) != 0) {
-        return -LockFail;
-    }
-
-    return 0;
+    return convertResult(pthread_spin_lock(&mLock));
 }
 
 int _SpinLock::tryLock() {
-    int ret = pthread_spin_trylock(&mLock);
-    switch (ret) {
-        case EBUSY:
-            return -LockBusy;
-
-        case SUCCESS:
-            return SUCCESS;
-
-        default:
-            return -LockFail;
-    }
+    return convertResult(pthread_spin_trylock(&mLock));
 }
 
 int _SpinLock::unlock() {
-    if(pthread_spin_unlock(&mLock) != 0) {
-        return LockFail;
-    }
-
-    return 0;
+    return convertResult(pthread_spin_unlock(&mLock));
 }
 
 _SpinLock::~_SpinLock() { 

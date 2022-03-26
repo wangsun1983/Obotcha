@@ -17,7 +17,7 @@ _CountDownLatch::_CountDownLatch(int v) {
 
 int _CountDownLatch::countDown() {
     AutoLock l(waitMutex);
-
+    
     if (count == 0) {
         return -AlreadyDestroy;
     }
@@ -38,11 +38,17 @@ int _CountDownLatch::getCount() {
 
 int _CountDownLatch::await(long v) {
     AutoLock l(waitMutex);
-    if (count == 0) {
-        return -AlreadyDestroy;
+    return (count == 0)? -AlreadyDestroy:waitCond->wait(waitMutex, v);
+}
+
+int _CountDownLatch::release() {
+    AutoLock l(waitMutex);
+    if(count != 0) {
+        count = 0;
+        waitCond->notifyAll();
     }
 
-    return waitCond->wait(waitMutex, v);
+    return 0;
 }
 
 } // namespace obotcha

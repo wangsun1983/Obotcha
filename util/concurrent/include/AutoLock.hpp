@@ -7,8 +7,11 @@
 
 namespace obotcha {
 
+class _Condition;
+
 class AutoLock {
 public:
+    friend class _Condition;
     AutoLock(Lock lock){
         lock->lock();
         mLock = lock;

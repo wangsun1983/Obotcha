@@ -27,40 +27,25 @@ _ReadLock::_ReadLock(sp<_ReadWriteLock> l, String s) {
 }
 
 int _ReadLock::lock() {
-    int ret = pthread_rwlock_rdlock(&rwlock->rwlock);
-    return 0;
+    return convertResult(pthread_rwlock_rdlock(&rwlock->rwlock));
 }
 
 int _ReadLock::unlock() {
-    int ret = pthread_rwlock_unlock(&rwlock->rwlock);
-    return ret;
+    return convertResult(pthread_rwlock_unlock(&rwlock->rwlock));
 }
 
 int _ReadLock::tryLock() {
-    int ret = pthread_rwlock_tryrdlock(&rwlock->rwlock);
-    switch (ret) {
-    case EBUSY:
-        return -LockBusy;
-
-    case SUCCESS:
-        return SUCCESS;
-
-    default:
-        return -LockFail;
-    }
+    return convertResult(pthread_rwlock_tryrdlock(&rwlock->rwlock));
 }
 
-String _ReadLock::getName() { return mName; }
+String _ReadLock::getName() { 
+    return mName; 
+}
 
 int _ReadLock::lock(long timeInterval) {
-    struct timespec ts;
-
+    struct timespec ts = {0};
     st(System)::getNextTime(timeInterval, &ts);
-    if (pthread_rwlock_timedrdlock(&rwlock->rwlock, &ts) == ETIMEDOUT) {
-        return -WaitTimeout;
-    }
-
-    return 0;
+    return convertResult(pthread_rwlock_timedrdlock(&rwlock->rwlock, &ts));
 }
 
 //------------ WriteLock ------------//
@@ -70,46 +55,25 @@ _WriteLock::_WriteLock(sp<_ReadWriteLock> l, String s) {
 }
 
 int _WriteLock::lock() {
-    if(pthread_rwlock_wrlock(&rwlock->rwlock) != 0) {
-        return -LockFail;
-    }
-
-    return 0;
+    return convertResult(pthread_rwlock_wrlock(&rwlock->rwlock));
 }
 
 int _WriteLock::unlock() {
-    if(pthread_rwlock_unlock(&rwlock->rwlock) != 0) {
-        return -LockFail;
-    }
-
-    return 0;
+    return convertResult(pthread_rwlock_unlock(&rwlock->rwlock));
 }
 
 int _WriteLock::tryLock() {
-    int ret = pthread_rwlock_trywrlock(&rwlock->rwlock);
-    switch (ret) {
-    case EBUSY:
-        return -LockBusy;
-
-    case SUCCESS:
-        return SUCCESS;
-
-    default:
-        return -LockFail;
-    }
+    return convertResult(pthread_rwlock_trywrlock(&rwlock->rwlock));
 }
 
-String _WriteLock::getName() { return mName; }
+String _WriteLock::getName() { 
+    return mName;
+}
 
 int _WriteLock::lock(long timeInterval) {
-    struct timespec ts;
+    struct timespec ts = {0};
     st(System)::getNextTime(timeInterval, &ts);
-
-    if (pthread_rwlock_timedwrlock(&rwlock->rwlock, &ts) == ETIMEDOUT) {
-        return -WaitTimeout;
-    }
-
-    return 0;
+    return convertResult(pthread_rwlock_timedwrlock(&rwlock->rwlock, &ts));
 }
 
 //------------ ReadWriteLock ------------

@@ -69,9 +69,10 @@ DECLARE_CLASS(Thread) {
 
     static void yield();
 
-    static void msleep(unsigned long = 0);
+    //static void msleep(unsigned long = 0);
+    static void sleep(unsigned long = 0);
 
-    static void interruptableSleep(unsigned long = 0);
+    //static void interruptableSleep(unsigned long = 0);
 
     static void setThreadPriority(int priority);
 
@@ -135,10 +136,11 @@ DECLARE_CLASS(Thread) {
 
     Condition mJoinCondition;
 
-    void threadSleep(unsigned long millseconds);
-    void threadInit(String name, Runnable run);
+    void _threadSleep(unsigned long millseconds);
+    void _threadInit(String name, Runnable run);
 
-    ThreadLocal<Thread> mPoolObj; //save thread local to prevent pool being realsed before all thread exit!!
+    //save thread local to prevent pool being realsed before all thread exit!!
+    ThreadLocal<Thread> mPoolObj; 
 };
 
 } // namespace obotcha

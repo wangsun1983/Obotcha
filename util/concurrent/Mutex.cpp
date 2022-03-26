@@ -21,7 +21,6 @@
 
 namespace obotcha {
 
-//----------- Mutex -----------
 _Mutex::_Mutex(int type) {
     pthread_mutexattr_init(&mutex_attr);
     switch (type) {
@@ -47,53 +46,28 @@ _Mutex::_Mutex(const char *v, int type) : _Mutex(type) {
 
 int _Mutex::lock() {
     //printf("owner is %d \n",mutex_t.__data.__owner);
-    return (pthread_mutex_lock(&mutex_t) == 0)? 0:-LockFail;
+    return convertResult(pthread_mutex_lock(&mutex_t) == 0);
 }
 
 int _Mutex::lock(long timeInterval) {
-    struct timespec ts;
-
     // if(mutex_t.__data.__owner == syscall(SYS_gettid)) {
     //    return 0;
     //}
     if (timeInterval == 0) {
-        return pthread_mutex_lock(&mutex_t);
+        return convertResult(pthread_mutex_lock(&mutex_t));
+    } else {
+        struct timespec ts = {0};
+        st(System)::getNextTime(timeInterval, &ts);
+        return convertResult(pthread_mutex_timedlock(&mutex_t, &ts));
     }
-
-    st(System)::getNextTime(timeInterval, &ts);
-    int result = pthread_mutex_timedlock(&mutex_t, &ts);
-    if (result == ETIMEDOUT) {
-        return -WaitTimeout;
-    }
-
-    return 0;
 }
 
 int _Mutex::unlock() {
-    switch(pthread_mutex_unlock(&mutex_t)) {
-        case EINVAL:
-        return -UnLockInvalid;
-
-        case EFAULT:
-        return -UnLockFail;
-
-        case EPERM:
-        return -UnLockPerm;
-    }
-    
-    return SUCCESS;
+    return convertResult(pthread_mutex_unlock(&mutex_t));
 }
 
 int _Mutex::tryLock() {
-    int ret = pthread_mutex_trylock(&mutex_t);
-    switch (ret) {
-    case EBUSY:
-        return -LockBusy;
-
-    default:
-        return -LockFail;
-    }
-    return SUCCESS;
+    return convertResult(pthread_mutex_trylock(&mutex_t));
 }
 
 String _Mutex::toString() { 

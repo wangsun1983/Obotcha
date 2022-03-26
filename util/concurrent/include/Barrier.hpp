@@ -26,10 +26,6 @@ DECLARE_CLASS(Barrier) {
     Condition cond;
 
     int mBarrierNums;
-
-    int mBarrierBack;
-
-    bool isDestroy;
 };
 
 } // namespace obotcha

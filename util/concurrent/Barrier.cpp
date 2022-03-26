@@ -21,12 +21,11 @@ _Barrier::_Barrier(int n) {
     mBarrierNums = n;
     mutex = createMutex("BarrierMutex");
     cond = createCondition();
-    isDestroy = false;
 }
 
 int _Barrier::await(long v) {
     AutoLock l(mutex);
-    if (mBarrierNums == 0 || isDestroy) {
+    if (mBarrierNums == 0) {
         return -InvalidStatus;
     }
 
@@ -35,16 +34,13 @@ int _Barrier::await(long v) {
         cond->notifyAll();
     } else {
         cond->wait(mutex, v);
-        if (isDestroy) {
-            Trigger(InterruptedException, "barrier destroyed");
-        }
     }
 
     return SUCCESS;
 }
 
 int _Barrier::await() { 
-    return await(0); 
+    return await(0);
 }
 
 int _Barrier::getWaitNums() {
@@ -54,8 +50,10 @@ int _Barrier::getWaitNums() {
 
 int _Barrier::release() {
     AutoLock l(mutex);
-    isDestroy = true;
-    cond->notifyAll();
+    if(mBarrierNums != 0) {
+        mBarrierNums = 0;
+        cond->notifyAll();
+    }
     return SUCCESS;
 }
 
