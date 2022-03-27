@@ -19,6 +19,7 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/executorbuilder.o \
 	$(outtmp)/future.o \
 	$(outtmp)/executortask.o \
+	$(outtmp)/executor.o \
     $(outtmp)/barrier.o \
 	$(outtmp)/timer.o \
 	$(outtmp)/spinlock.o \
@@ -79,6 +80,9 @@ $(outtmp)/future.o :$(concurrentDir)/Future.cpp
 
 $(outtmp)/executortask.o :$(concurrentDir)/ExecutorTask.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ExecutorTask.cpp -o $(outtmp)/executortask.o
+
+$(outtmp)/executor.o :$(concurrentDir)/Executor.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Executor.cpp -o $(outtmp)/executor.o
 
 $(outtmp)/barrier.o :$(concurrentDir)/Barrier.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Barrier.cpp -o $(outtmp)/barrier.o

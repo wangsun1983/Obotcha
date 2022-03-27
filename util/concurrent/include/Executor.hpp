@@ -7,17 +7,74 @@
 #include "OStdInstanceOf.hpp"
 #include "Runnable.hpp"
 #include "TimeOutException.hpp"
+#include "Future.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 
 DECLARE_CLASS(Executor) {
 public:
     enum Status {
-        Executing = 0,
+        Idle = 0,
+        Executing,
         ShutDown,
     };
 
     enum Priority { Low = 0, Medium, High, NoUse };
+    
+    _Executor();
+    bool isExecuting();
+    bool isShutDown();
+
+    template <typename T>
+    Future submit(sp<T> r) {
+        return submitRunnable(r);
+    }
+
+    template <typename T>
+    Future schedule(long delay,sp<T> r) {
+        r->setDelay(delay);
+        return submitRunnable(r);
+    }
+
+    template<typename T>
+    Future preempt(int priority,sp<T> r) {
+        r->setPriority(priority);
+        return submitRunnable(r);
+    }
+
+    template <class Function, class... Args>
+    Future submit(Function && f, Args && ... args) {
+        return submitRunnable(Cast<Runnable>(createLambdaRunnable(f, args...)));
+    }
+
+    template <class Function, class... Args>
+    Future schedule(long delay,Function && f, Args && ... args) {
+        Runnable r = createLambdaRunnable(f, args...);
+        r->setDelay(delay);
+        return submitRunnable(r);
+    }
+
+    template <class Function, class... Args>
+    Future preempt(int priority,Function && f, Args && ... args) {
+        Runnable r = createLambdaRunnable(f, args...);
+        r->setPriority(priority);
+        return submitRunnable(r);
+    }
+
+    void setQueueTimeout(long);
+    long getQueueTimeout();
+
+protected:
+    void updateStatus(int);
+    virtual Future submitRunnable(Runnable r) = 0;
+    virtual Future submitTask(ExecutorTask task) = 0;
+    long mQueueTimeout;
+
+private:
+    Mutex mMutex;
+    int mStatus;
+    
 };
 
 } // namespace obotcha

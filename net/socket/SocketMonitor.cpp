@@ -49,7 +49,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
         createExecutorBuilder()->setThreadNum(mThreadNum)->newThreadPool();
 
     for (int i = 0; i < mThreadNum; i++) {
-        mExecutor->execute(
+        mExecutor->submit(
             [](int index, SocketMonitor &monitor) {
                 SocketMonitorTask task = nullptr;
                 while (monitor->isStop == 1) {

@@ -12,7 +12,7 @@
 
 namespace obotcha {
 
-_ThreadPoolExecutor::_ThreadPoolExecutor(int capacity, int threadnum) {
+_ThreadPoolExecutor::_ThreadPoolExecutor(int capacity, int threadnum):_Executor() {
     mPool = createBlockingLinkedList<ExecutorTask>(capacity);
     mHandlers = createArrayList<Thread>();
     mRunningTaskMutex = createMutex();
@@ -50,18 +50,31 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int capacity, int threadnum) {
     }
 
     mMutex = createMutex();
-    mStatus = Executing;
+    updateStatus(Executing);
 }
 
-int _ThreadPoolExecutor::shutdown() {
-    {
-        AutoLock l(mMutex);
-        if (mStatus != Executing) {
-            return -AlreadyDestroy;
-        }
-
-        mStatus = ShutDown;
+Future _ThreadPoolExecutor::submitRunnable(Runnable r) {
+    if(isShutDown()) {
+        return nullptr;
     }
+
+    return submitTask(createExecutorTask(r));
+}
+
+Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
+    if (mPool->putLast(task, mQueueTimeout)) {
+        return createFuture(task);
+    }
+    return nullptr;
+}
+
+
+int _ThreadPoolExecutor::shutdown() {
+    if(!isExecuting()) {
+        return -AlreadyDestroy;
+    }
+
+    updateStatus(ShutDown);
 
     mPool->freeze();
     mPool->foreach ([](ExecutorTask task) {
@@ -92,11 +105,6 @@ int _ThreadPoolExecutor::shutdown() {
     return 0;
 }
 
-bool _ThreadPoolExecutor::isShtuDown() {
-    AutoLock l(mMutex);
-    return mStatus == ShutDown;
-}
-
 bool _ThreadPoolExecutor::isTerminated() {
     bool isAllTerminated = true;
     mHandlers->foreach ([&isAllTerminated](Thread &t) {
@@ -111,11 +119,8 @@ bool _ThreadPoolExecutor::isTerminated() {
 }
 
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
-    {
-        AutoLock l(mMutex);
-        if (mStatus != ShutDown) {
-            return -InvalidStatus;
-        }
+    if(!isShutDown()) {
+        return -InvalidStatus;
     }
 
     bool isWaitForever = (millseconds == 0);

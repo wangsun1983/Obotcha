@@ -27,7 +27,7 @@ public:
     String toString();
 
     int getType();
-    int setType(int);
+    void setType(int);
 
     void setFileName(String);
     String getFileName();

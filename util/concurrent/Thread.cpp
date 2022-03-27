@@ -56,7 +56,12 @@ int _Thread::setName(String name) {
     }
 
     mName = name;
-    return pthread_setname_np(mPthread, name->toChars());
+    
+    if(pthread_setname_np(mPthread, name->toChars()) == 0) {
+        return 0;
+    }
+
+    return -1;
 }
 
 void _Thread::_threadInit(String name, Runnable run) {
@@ -243,9 +248,9 @@ int _Thread::setPriority(int priority) {
         param.sched_priority = top_prio;
         break;
     }
-    int rc = pthread_setschedparam(mPthread, policy, &param);
-    if (rc != 0) {
-        return -rc;
+    
+    if (pthread_setschedparam(mPthread, policy, &param) != 0) {
+        return -1;
     }
     return 0;
 }
@@ -283,10 +288,6 @@ void _Thread::yield() {
     pthread_yield(); 
 }
 
-//void _Thread::msleep(unsigned long millseconds) { 
-//    usleep(1000 * millseconds); 
-//}
-
 void _Thread::sleep(unsigned long millseconds) {
     Thread thread = mThreads->get();
     if (thread == nullptr) {
@@ -296,39 +297,39 @@ void _Thread::sleep(unsigned long millseconds) {
     }
 }
 
-void _Thread::setThreadPriority(int priority) {
-    Thread thread = mThreads->get();
-    if (thread != nullptr) {
-        thread->setPriority(priority);
-    }
-}
+//void _Thread::setPriority(int priority) {
+//    Thread thread = mThreads->get();
+//    if (thread != nullptr) {
+//        thread->setPriority(priority);
+//    }
+//}
 
-int _Thread::getThreadPriority() {
-    Thread thread = mThreads->get();
-    if (thread != nullptr) {
-        return thread->getPriority();
-    }
+//int _Thread::getPriority() {
+//    Thread thread = mThreads->get();
+//    if (thread != nullptr) {
+//        return thread->getPriority();
+//    }
+//
+//    return -1;
+//}
 
-    return -1;
-}
+//int _Thread::setSchedPolicy(int policy) {
+//    Thread thread = mThreads->get();
+//    if (thread != nullptr) {
+//        return thread->setSchedPolicy(policy);
+//    }
+//
+//    return -1;
+//}
 
-int _Thread::setThreadSchedPolicy(int policy) {
-    Thread thread = mThreads->get();
-    if (thread != nullptr) {
-        return thread->setSchedPolicy(policy);
-    }
-
-    return -1;
-}
-
-int _Thread::getThreadSchedPolicy() {
-    Thread thread = mThreads->get();
-    if (thread != nullptr) {
-        return thread->getSchedPolicy();
-    }
-
-    return -1;
-}
+//int _Thread::getSchedPolicy() {
+//    Thread thread = mThreads->get();
+//    if (thread != nullptr) {
+//        return thread->getSchedPolicy();
+//    }
+//
+//    return -1;
+//}
 
 Thread _Thread::current() { 
     return mThreads->get(); 

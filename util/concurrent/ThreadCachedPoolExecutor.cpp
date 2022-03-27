@@ -24,7 +24,7 @@ namespace obotcha {
 _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int queuesize,
                                                      int minthreadnum,
                                                      int maxthreadnum,
-                                                     long timeout) {
+                                                     long timeout):_Executor() {
     if (queuesize == 0 || minthreadnum > maxthreadnum) {
         Trigger(InitializeException, "ThreadCachedPool illeagal param");
     }
@@ -38,20 +38,16 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int queuesize,
     mTasks = createBlockingLinkedList<ExecutorTask>(queuesize);
     mRunningTaskMutex = createMutex();
     mRunningTasks = createHashMap<Integer,ExecutorTask>();
-    mStatus = Executing;
+    updateStatus(Executing);
     mIdleNum = createAtomicInteger(0);
     handlerId = 0;
 }
 
 int _ThreadCachedPoolExecutor::shutdown() {
-    {
-        AutoLock l(mMutex);
-        if (mStatus != Executing) {
-            return -AlreadyDestroy;
-        }
-
-        mStatus = ShutDown;
+    if(!isExecuting()) {
+        return -AlreadyDestroy;
     }
+    updateStatus(ShutDown);
     
     mTasks->freeze();
     mTasks->foreach ([](ExecutorTask t) {
@@ -84,11 +80,6 @@ int _ThreadCachedPoolExecutor::shutdown() {
     return 0;
 }
 
-bool _ThreadCachedPoolExecutor::isShutDown() {
-    AutoLock l(mMutex);
-    return mStatus == ShutDown;
-}
-
 bool _ThreadCachedPoolExecutor::isTerminated() {
     AutoLock l(mMutex);
     ListIterator<Thread> iterator = mHandlers->getIterator();
@@ -108,11 +99,8 @@ void _ThreadCachedPoolExecutor::awaitTermination() {
 }
 
 int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
-    {
-        AutoLock l(mMutex);
-        if (mStatus == Executing) {
-            return -InvalidStatus;
-        }
+    if(isExecuting()) {
+        return -InvalidStatus;
     }
 
     bool isWaitForever = (millseconds == 0);
@@ -152,16 +140,12 @@ int _ThreadCachedPoolExecutor::getTasksNum() {
     return mTasks->size(); 
 }
 
-Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r, long interval) {
-    {
-        AutoLock l(mMutex);
-        if (mStatus != Executing) {
-            return nullptr;
-        }
+Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
+    if(!isExecuting()) {
+        return nullptr;
     }
 
-    ExecutorTask task = createExecutorTask(r);
-    mTasks->putLast(task, interval);
+    mTasks->putLast(task, mQueueTimeout);
     if (mIdleNum->get() == 0) {
         setUpOneIdleThread();
     }
@@ -169,11 +153,9 @@ Future _ThreadCachedPoolExecutor::poolSubmit(Runnable r, long interval) {
     return createFuture(task);
 }
 
-void _ThreadCachedPoolExecutor::submitTask(ExecutorTask task, long interval) {
-    mTasks->putLast(task, interval);
-    if (mIdleNum->get() == 0) {
-        setUpOneIdleThread();
-    }
+Future _ThreadCachedPoolExecutor::submitRunnable(Runnable r) {
+    ExecutorTask task = createExecutorTask(r);
+    return submitTask(task);    
 }
 
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
@@ -182,9 +164,13 @@ _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
 }
 
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
+    if(!isExecuting()) {
+        return;
+    }
+
     {
         AutoLock l(mMutex);
-        if (mStatus != Executing || mHandlers->size() >= maxThreadNum) {
+        if (mHandlers->size() >= maxThreadNum) {
             return;
         }
     }

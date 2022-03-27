@@ -16,7 +16,7 @@ _Timer::_Timer() {
 }
 
 Future _Timer::schedule(long m, Runnable r) {
-    return mScheduledExecutor->submit(m, r);
+    return mScheduledExecutor->schedule(m,r);
 }
 
 Future _Timer::schedule(DateTime t, Runnable r) {
@@ -24,7 +24,7 @@ Future _Timer::schedule(DateTime t, Runnable r) {
     if (interval < 0) {
         return nullptr;
     }
-    return mScheduledExecutor->submit(interval, r);
+    return mScheduledExecutor->schedule(interval, r);
 }
 
 _Timer::~_Timer() {

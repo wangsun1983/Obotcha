@@ -22,12 +22,11 @@ _WaitingTask::~_WaitingTask() {
 }
 
 //---------------ScheduleService---------------//
-_ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity) {
+_ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity):_Executor() {
     mCachedExecutor =
         createExecutorBuilder()->setTimeout(60 * 1000)->newCachedThreadPool();
 
     mTaskMutex = createMutex();
-    mStatus = Executing;
     mCount = 0;
     mCapacity = capacity;
     //notEmpty = createCondition();
@@ -35,24 +34,25 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity) {
     mTaskWaitCond = createCondition();
     mTaskPool = nullptr;
     mCurrentTask = nullptr;
-
+    updateStatus(Executing);
     start();
 }
 
 int _ThreadScheduledPoolExecutor::shutdown() {
+    if(isShutDown()) {
+        return -AlreadyDestroy;
+    }
+    updateStatus(ShutDown);
+
     {
         AutoLock l(mTaskMutex);
-        if (mStatus == ShutDown) {
-            return -AlreadyDestroy;
-        }
-
-        mStatus = ShutDown;
         auto t = mTaskPool;
         while (mTaskPool != nullptr) {
             mTaskPool->cancel();
             auto header = mTaskPool;
             mTaskPool = mTaskPool->next;
             header->next = nullptr;
+            mTaskPool = nullptr;
         }
 
         notFull->notify();
@@ -71,11 +71,6 @@ int _ThreadScheduledPoolExecutor::shutdown() {
     return 0;
 }
 
-bool _ThreadScheduledPoolExecutor::isShutdown() {
-    AutoLock l(mTaskMutex);
-    return mStatus == ShutDown;
-}
-
 bool _ThreadScheduledPoolExecutor::isTerminated() {
     return mCachedExecutor->isTerminated();
 }
@@ -88,13 +83,29 @@ int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
     return mCachedExecutor->awaitTermination(timeout);
 }
 
+Future _ThreadScheduledPoolExecutor::submitRunnable(Runnable r) {
+    WaitingTask task = createWaitingTask(r->getDelay(), r);
+    return submitTask(task);
+}
+
+Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
+    if(isShutDown()) {
+        return nullptr;
+    }
+
+    if (addWaitingTaskLocked(Cast<WaitingTask>(task), mQueueTimeout) == 0) {
+        return createFuture(task);
+    }
+    return nullptr; 
+}
+
 int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
                                                        long timeout) {
-    AutoLock l(mTaskMutex);
-    if (mStatus == ShutDown) {
+    if(isShutDown()) {
         return -1;
     }
 
+    AutoLock l(mTaskMutex);
     if (mCapacity > 0 && mCount == mCapacity) {
         if (notFull->wait(mTaskMutex, timeout) == -WaitTimeout) {
             return -1;
@@ -136,12 +147,12 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
 
 void _ThreadScheduledPoolExecutor::run() {
     while (1) {
+        if(isShutDown()) {
+            return;
+        }
+
         {
             AutoLock ll(mTaskMutex);
-            if (mStatus == ShutDown) {
-                return;
-            }
-
             if (mTaskPool == nullptr) {
                 mTaskWaitCond->wait(mTaskMutex);
                 continue;

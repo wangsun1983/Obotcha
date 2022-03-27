@@ -55,7 +55,7 @@ int _HttpHeaderContentDisposition::getType() {
     return type;
 }
 
-int _HttpHeaderContentDisposition::setType(int t) {
+void _HttpHeaderContentDisposition::setType(int t) {
     type = t;
 }
 

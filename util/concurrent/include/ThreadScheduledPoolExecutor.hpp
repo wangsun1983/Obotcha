@@ -44,40 +44,12 @@ public:
 
     int awaitTermination(long timeout);
 
-    bool isShutdown();
-
     bool isTerminated();
 
-    template <typename X>
-    Future submitWithInTime(long timeout, long delay, sp<X> r) {
-        WaitingTask task = createWaitingTask(delay, r);
-        if (addWaitingTaskLocked(task, timeout) == 0) {
-            return createFuture(task);
-        }
-        return nullptr;
-    }
-
-    template <typename X> Future submit(sp<X> r) {
-        return submitWithInTime(0, 0, r);
-    }
-
-    template <typename X> Future submit(long delay, sp<X> r) {
-        return submitWithInTime(0, delay, r);
-    }
-
-    template <class Function, class... Args>
-    Future submit(long delay, Function &&f, Args &&... args) {
-        return submitWithInTime(0, delay, createLambdaRunnable(f, args...));
-    }
-
-    template <class Function, class... Args>
-    Future submitWithInTime(long timeout, long delay, Function &&f,
-                            Args &&... args) {
-        return submitWithInTime(timeout, delay,
-                                createLambdaRunnable(f, args...));
-    }
-
 private:
+    Future submitRunnable(Runnable r);
+    Future submitTask(ExecutorTask task);
+    
     void run();
 
     void close();
@@ -85,8 +57,6 @@ private:
     int addWaitingTaskLocked(WaitingTask, long);
 
     ThreadCachedPoolExecutor mCachedExecutor;
-
-    int mStatus;
 
     Mutex mTaskMutex;
     Condition notEmpty;

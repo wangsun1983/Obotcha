@@ -18,67 +18,16 @@ namespace obotcha {
 
 DECLARE_CLASS(ThreadPoolExecutor) IMPLEMENTS(Executor) {
 
-  public:
+public:
     friend class _ExecutorTask;
 
     _ThreadPoolExecutor(int capacity, int threadnum);
 
     int shutdown();
 
-    template <typename X> int execute(sp<X> runnable) {
-        return executeWithInTime(0, runnable);
-    }
-
-    template <typename X> int executeWithInTime(long timeout, sp<X> runnable) {
-        if (submitWithInTime(timeout, runnable) != nullptr) {
-            return 0;
-        }
-
-        return -InvalidStatus;
-    }
-
-    template <class Function, class... Args>
-    int execute(Function && f, Args && ... args) {
-        return executeWithInTime(0, createLambdaRunnable(f, args...));
-    }
-
-    template <class Function, class... Args>
-    int executeWithInTime(long timeout, Function &&f, Args &&... args) {
-        return executeWithInTime(timeout, createLambdaRunnable(f, args...));
-    }
-
-    bool isShtuDown();
     bool isTerminated();
 
     int awaitTermination(long timeout = 0);
-
-    template <typename X> Future submit(sp<X> r) {
-        return submitWithInTime(0, r);
-    }
-
-    template <typename X> Future submitWithInTime(long timeout, sp<X> r) {
-        {
-            AutoLock l(mMutex);
-            if (mStatus == ShutDown) {
-                return nullptr;
-            }
-        }
-        ExecutorTask task = createExecutorTask(r);
-        if (mPool->putLast(task, timeout)) {
-            return createFuture(task);
-        }
-        return nullptr;
-    }
-
-    template <class Function, class... Args>
-    Future submit(Function && f, Args && ... args) {
-        return submitWithInTime(0, createLambdaRunnable(f, args...));
-    }
-
-    template <class Function, class... Args>
-    Future submitWithInTime(long time, Function &&f, Args &&... args) {
-        return submitWithInTime(time, createLambdaRunnable(f, args...));
-    }
 
     int getThreadsNum();
 
@@ -86,7 +35,10 @@ DECLARE_CLASS(ThreadPoolExecutor) IMPLEMENTS(Executor) {
 
     ~_ThreadPoolExecutor();
 
-  private:
+private:
+    Future submitRunnable(Runnable r);
+    Future submitTask(ExecutorTask task);
+    
     BlockingLinkedList<ExecutorTask> mPool;
 
     ArrayList<Thread> mHandlers;
@@ -95,7 +47,6 @@ DECLARE_CLASS(ThreadPoolExecutor) IMPLEMENTS(Executor) {
     ExecutorTask *mRunningTasks;
 
     Mutex mMutex;
-    int mStatus;
 };
 
 } // namespace obotcha

@@ -74,13 +74,13 @@ DECLARE_CLASS(Thread) {
 
     //static void interruptableSleep(unsigned long = 0);
 
-    static void setThreadPriority(int priority);
+    //static void setPriority(int priority);
 
-    static int getThreadPriority();
+    //static int getPriority();
 
-    static int setThreadSchedPolicy(int policy);
+    //static int setSchedPolicy(int policy);
 
-    static int getThreadSchedPolicy();
+    //static int getSchedPolicy();
 
     static Thread current();
 

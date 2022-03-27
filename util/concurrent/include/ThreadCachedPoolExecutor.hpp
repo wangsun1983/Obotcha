@@ -23,36 +23,10 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
   public:
     friend class _ThreadScheduledPoolExecutor;
 
-    _ThreadCachedPoolExecutor(int queuesize, int minthreadnum, int maxthreadnum,
+    _ThreadCachedPoolExecutor(int queuesize = -1, int minthreadnum = 1, int maxthreadnum = 4,
                               long timeout = 10 * 1000);
 
     int shutdown();
-
-    template <typename X> int execute(sp<X> r) {
-        if (poolSubmit(r) == nullptr) {
-            return -InvalidStatus;
-        }
-        return 0;
-    }
-
-    template <typename X> int executeWithInTime(long timeout, sp<X> r) {
-        if (poolSubmit(r, timeout) == nullptr) {
-            return -InvalidStatus;
-        }
-        return 0;
-    }
-
-    template <class Function, class... Args>
-    int execute(Function && f, Args && ... args) {
-        return execute(createLambdaRunnable(f, args...));
-    }
-
-    template <class Function, class... Args>
-    int executeWithInTime(long timeout, Function &&f, Args &&... args) {
-        return execute(timeout, createLambdaRunnable(f, args...));
-    }
-
-    bool isShutDown();
 
     bool isTerminated();
 
@@ -60,23 +34,7 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
 
     int awaitTermination(long timeout);
 
-    template <typename X> Future submit(sp<X> r) { return poolSubmit(r); }
-
-    template <typename X> Future submitWithInTime(long timeout, sp<X> r) {
-        return poolSubmit(r, timeout);
-    }
-
-    template <class Function, class... Args>
-    Future submit(Function && f, Args && ... args) {
-        return poolSubmit(createLambdaRunnable(f, args...));
-    }
-
-    template <class Function, class... Args>
-    Future submitWithInTime(long timeout, Function &&f, Args &&... args) {
-        return poolSubmit(createLambdaRunnable(f, args...), timeout);
-    }
-
-    void submitTask(ExecutorTask task, long interval = 0);
+    //void submitTask(ExecutorTask task, long interval = 0);
 
     int getThreadsNum();
 
@@ -86,16 +44,15 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
 
   private:
     void setUpOneIdleThread();
-
-    Future poolSubmit(Runnable r, long interval = 0);
+    Future submitRunnable(Runnable r);
+    Future submitTask(ExecutorTask task); 
+    //Future poolSubmit(Runnable r, long interval = 0);
 
     Mutex mMutex;
 
     int threadNum;
 
     ArrayList<Thread> mHandlers;
-
-    int mStatus;
 
     long mThreadTimeout;
 
