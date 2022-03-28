@@ -44,10 +44,10 @@ int _Condition::wait(Mutex m, long int timeInterval) {
     st(System)::getNextTime(timeInterval, &ts);
     int ret = pthread_cond_timedwait(&cond_t, mutex_t, &ts);
     if(ret != 0) {
-        LOG(ERROR)<<"Condition wait failed";
         if (ret == ETIMEDOUT) {
             return -WaitTimeout;
         }
+        LOG(ERROR)<<"Condition wait failed";
         return -1;
     }
 

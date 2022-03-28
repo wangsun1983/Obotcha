@@ -21,21 +21,11 @@ public:
 
     virtual ~_Runnable() {}
 
-    void setPriority(int p) {
-        priority = p;
-    }
+    void setPriority(int p);
+    int getPriority();
+    void setDelay(int p);
+    int getDelay();
 
-    int getPriority() {
-        return priority;
-    }
-
-    void setDelay(int p) {
-        delay = p;
-    }
-
-    int getDelay() {
-        return delay;
-    }
 private:
     //support for PriorityPoolExecutor;
     int priority;

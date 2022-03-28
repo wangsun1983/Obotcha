@@ -24,7 +24,7 @@ _WaitingTask::~_WaitingTask() {
 //---------------ScheduleService---------------//
 _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity):_Executor() {
     mCachedExecutor =
-        createExecutorBuilder()->setTimeout(60 * 1000)->newCachedThreadPool();
+        createExecutorBuilder()->setCacheTimeout(60 * 1000)->newCachedThreadPool();
 
     mTaskMutex = createMutex();
     mCount = 0;
@@ -52,7 +52,6 @@ int _ThreadScheduledPoolExecutor::shutdown() {
             auto header = mTaskPool;
             mTaskPool = mTaskPool->next;
             header->next = nullptr;
-            mTaskPool = nullptr;
         }
 
         notFull->notify();

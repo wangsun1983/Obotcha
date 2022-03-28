@@ -23,13 +23,15 @@ DECLARE_CLASS(ExecutorBuilder) {
 
     _ExecutorBuilder *setQueueSize(int v);
 
+    _ExecutorBuilder *setQueueTimeout(long v);
+
     _ExecutorBuilder *setThreadNum(int v);
 
     _ExecutorBuilder *setMaxThreadNum(int v);
 
     _ExecutorBuilder *setMinThreadNum(int v);
 
-    _ExecutorBuilder *setTimeout(int v);
+    _ExecutorBuilder *setCacheTimeout(long v);
 
     ThreadPoolExecutor newThreadPool();
 
@@ -45,6 +47,9 @@ DECLARE_CLASS(ExecutorBuilder) {
     int maxthreadnum;
     int minthreadnum;
     long timeout;
+    long queueTimeout;
+
+    void updateQueueTimeout(Executor exec);
 };
 
 } // namespace obotcha

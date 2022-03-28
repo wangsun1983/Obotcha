@@ -24,7 +24,8 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/timer.o \
 	$(outtmp)/spinlock.o \
 	$(outtmp)/taskresult.o \
-	$(outtmp)/lock.o
+	$(outtmp)/lock.o \
+	$(outtmp)/runnable.o
 	
 
 $(outtmp)/taskresult.o :$(concurrentDir)/TaskResult.cpp
@@ -101,3 +102,7 @@ $(outtmp)/threadprioritypoolexecutor.o :$(concurrentDir)/ThreadPriorityPoolExecu
 
 $(outtmp)/lock.o :$(concurrentDir)/Lock.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Lock.cpp -o $(outtmp)/lock.o
+
+$(outtmp)/runnable.o :$(concurrentDir)/Runnable.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Runnable.cpp -o $(outtmp)/runnable.o
+

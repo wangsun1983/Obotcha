@@ -27,7 +27,9 @@ DECLARE_CLASS(Thread) {
     // friend void doThreadExit(sp<Thread> thread);
     _Thread();
 
-    template <typename X> _Thread(sp<X> run) { threadInit(nullptr, run); }
+    template <typename X> _Thread(sp<X> run) { 
+      _threadInit(nullptr, run); 
+    }
 
     // We should not use C++ reference in Lambda function.
     // The count of pointer will not be increased if we pass

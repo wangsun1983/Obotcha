@@ -20,6 +20,7 @@ _ExecutorBuilder::_ExecutorBuilder() {
     threadnum = st(System)::availableProcessors();
     maxthreadnum = st(System)::availableProcessors() * 2;
     minthreadnum = 1;
+    queueTimeout = 0;
     timeout = 1000 * 10;
 }
 
@@ -43,26 +44,49 @@ _ExecutorBuilder *_ExecutorBuilder::setMinThreadNum(int v) {
     return this;
 }
 
-_ExecutorBuilder *_ExecutorBuilder::setTimeout(int v) {
+_ExecutorBuilder *_ExecutorBuilder::setCacheTimeout(long v) {
     timeout = v;
     return this;
 }
 
+_ExecutorBuilder *_ExecutorBuilder::setQueueTimeout(long v) {
+    queueTimeout = v;
+    return this;
+}
+
 ThreadPoolExecutor _ExecutorBuilder::newThreadPool() {
-    return createThreadPoolExecutor(queuesize, threadnum);
+    auto executor = createThreadPoolExecutor(queuesize, threadnum);
+    updateQueueTimeout(executor);
+
+    return executor;
 }
 
 ThreadCachedPoolExecutor _ExecutorBuilder::newCachedThreadPool() {
-    return createThreadCachedPoolExecutor(queuesize, minthreadnum, maxthreadnum,
+    auto executor = createThreadCachedPoolExecutor(queuesize, minthreadnum, maxthreadnum,
                                           timeout);
+    updateQueueTimeout(executor);
+
+    return executor;
 }
 
 ThreadScheduledPoolExecutor _ExecutorBuilder::newScheduledThreadPool() {
-    return createThreadScheduledPoolExecutor(queuesize);
+    auto executor = createThreadScheduledPoolExecutor(queuesize);
+    updateQueueTimeout(executor);
+
+    return executor;
 }
 
 ThreadPriorityPoolExecutor _ExecutorBuilder::newPriorityThreadPool() {
-    return createThreadPriorityPoolExecutor(queuesize, threadnum);
+    auto executor = createThreadPriorityPoolExecutor(queuesize, threadnum);
+    updateQueueTimeout(executor);
+
+    return executor;
+}
+
+void _ExecutorBuilder::updateQueueTimeout(Executor exec) {
+    if(queueTimeout != 0) {
+        exec->setQueueTimeout(queueTimeout);
+    }
 }
 
 } // namespace obotcha
