@@ -9,6 +9,7 @@
 #include "Mutex.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "ReadWriteLock.hpp"
 
 namespace obotcha {
 
@@ -35,58 +36,64 @@ public:
     ~_ThreadLocal();
 
 private:
-    Mutex mutex;
+    //Mutex mutex;
+    ReadWriteLock rwLock;
+    ReadLock rLock;
+    WriteLock wLock;
 
     HashMap<pthread_t, T> mLocalMap;
 };
 
 template <typename T> _ThreadLocal<T>::_ThreadLocal() {
     mLocalMap = createHashMap<pthread_t, T>();
-    mutex = createMutex("ThreadLocalMutex");
+    //mutex = createMutex("ThreadLocalMutex");
+    rwLock = createReadWriteLock();
+    rLock = rwLock->getReadLock();
+    wLock = rwLock->getWriteLock();
 }
 
 template <typename T> void _ThreadLocal<T>::set(pthread_t pthread, T t) {
-    AutoLock l(mutex);
+    AutoLock l(wLock);
     mLocalMap->put(pthread, t);
 }
 
 template <typename T> void _ThreadLocal<T>::set(T t) {
-    AutoLock l(mutex);
+    AutoLock l(wLock);
     mLocalMap->put(pthread_self(), t);
 }
 
 template <typename T> void _ThreadLocal<T>::remove(pthread_t ptread) {
-    AutoLock l(mutex);
+    AutoLock l(wLock);
     mLocalMap->remove(ptread);
 }
 
 template <typename T> void _ThreadLocal<T>::remove() {
-    AutoLock l(mutex);
+    AutoLock l(wLock);
     mLocalMap->remove(pthread_self());
 }
 
 template <typename T> T _ThreadLocal<T>::get() {
-    AutoLock l(mutex);
+    AutoLock l(rLock);
     return mLocalMap->get(pthread_self());
 }
 
 template <typename T> T _ThreadLocal<T>::get(pthread_t t) {
-    AutoLock l(mutex);
+    AutoLock l(rLock);
     return mLocalMap->get(t);
 }
 
 template <typename T> int _ThreadLocal<T>::size() {
-    AutoLock l(mutex);
+    AutoLock l(rLock);
     return mLocalMap->size();
 }
 
 template <typename T> _ThreadLocal<T>::~_ThreadLocal() {
-    AutoLock l(mutex);
+    AutoLock l(wLock);
     mLocalMap->clear();
 }
 
 template <typename T> void _ThreadLocal<T>::clear() {
-    AutoLock l(mutex);
+    AutoLock l(wLock);
     mLocalMap->clear();
 }
 

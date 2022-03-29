@@ -79,6 +79,7 @@ public:
     }
 
     HashSetIterator<T> getIterator() {
+        AutoLock l(rdLock);
         return mSets->getIterator();
     }
 

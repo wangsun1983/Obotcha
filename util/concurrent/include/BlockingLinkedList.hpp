@@ -84,11 +84,17 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, 1) {
         return mList->size();
     }
 
-    inline int capacity() { return mCapacity; }
+    inline int capacity() { 
+        return mCapacity; 
+    }
 
-    inline void freeze() { mMutex->lock(); }
+    inline void freeze() { 
+        mMutex->lock(); 
+    }
 
-    inline void unfreeze() { mMutex->unlock(); }
+    inline void unfreeze() { 
+        mMutex->unlock(); 
+    }
 
     inline bool putFirst(const T &val, long timeout = 0) {
         LINKED_LIST_ADD(mList->putFirst(val));
@@ -194,6 +200,7 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, 1) {
     }
 
     LinkedListIterator<T> getIterator() {
+        AutoLock l(mMutex);
         return mList->getIterator();
     }
 

@@ -241,46 +241,7 @@ public:
         for (int index = 0; index < size; index++) {
             auto newObject = obj->__createListItemObject("");
             JsonValue value = this->getListItemAt(index);
-            if (IsInstance(Integer, newObject)) {
-                Integer data = Cast<Integer>(newObject);
-                data->update(value->getInteger()->toValue());
-            } else if (IsInstance(Long, newObject)) {
-                Long data = Cast<Long>(newObject);
-                data->update(value->getLong()->toValue());
-            } else if (IsInstance(Boolean, newObject)) {
-                Boolean data = Cast<Boolean>(newObject);
-                data->update(value->getBoolean()->toValue());
-            } else if (IsInstance(Double, newObject)) {
-                Double data = Cast<Double>(newObject);
-                data->update(value->getDouble()->toValue());
-            } else if (IsInstance(Float, newObject)) {
-                Float data = Cast<Float>(newObject);
-                data->update(value->getDouble()->toValue());
-            } else if (IsInstance(Byte, newObject)) {
-                Byte data = Cast<Byte>(newObject);
-                data->update(value->getUint64()->toValue());
-            } else if (IsInstance(Uint8, newObject)) {
-                Uint8 data = Cast<Uint8>(newObject);
-                data->update(value->getUint64()->toValue());
-            } else if (IsInstance(Uint16, newObject)) {
-                Uint16 data = Cast<Uint16>(newObject);
-                data->update(value->getUint64()->toValue());
-            } else if (IsInstance(Uint32, newObject)) {
-                Uint32 data = Cast<Uint32>(newObject);
-                data->update(value->getUint64()->toValue());
-            } else if (IsInstance(Uint64, newObject)) {
-                Uint64 data = Cast<Uint64>(newObject);
-                data->update(value->getUint64()->toValue());
-            } else if (IsInstance(String, newObject)) {
-                String data = Cast<String>(newObject);
-                data->update(value->getString()->getStdString());
-            } else if (newObject->__ReflectClassName()->equals("_ArrayList")) {
-                value->reflectToArrayList(newObject);
-            } else if (newObject->__ReflectClassName()->equals("_HashMap")) {
-                value->reflectToHashMap(newObject);
-            } else {
-                value->reflectTo(newObject);
-            }
+            value->reflectTo(newObject);
             obj->__addListItemObject("", newObject);
         }
     }
@@ -293,101 +254,71 @@ public:
             Pair<Object, Object> pair = obj->__createMapItemObject("");
 
             Object key = pair->getKey();
-            if (IsInstance(Integer, key)) {
-                Integer data = Cast<Integer>(key);
-                data->update(tag->toBasicInt());
-            } else if (IsInstance(Long, key)) {
-                Long data = Cast<Long>(key);
-                data->update(tag->toBasicLong());
-            } else if (IsInstance(Boolean, key)) {
-                Boolean data = Cast<Boolean>(key);
-                data->update(tag->toBasicBool());
-            } else if (IsInstance(Double, key)) {
-                Double data = Cast<Double>(key);
-                data->update(tag->toBasicDouble());
-            } else if (IsInstance(Float, key)) {
-                Float data = Cast<Float>(key);
-                data->update(tag->toBasicFloat());
-            } else if (IsInstance(Byte, key)) {
-                Byte data = Cast<Byte>(key);
-                data->update(tag->toBasicByte());
-            } else if (IsInstance(Uint8, key)) {
-                Uint8 data = Cast<Uint8>(key);
-                data->update(tag->toBasicUint8());
-            } else if (IsInstance(Uint16, key)) {
-                Uint16 data = Cast<Uint16>(key);
-                data->update(tag->toBasicUint16());
-            } else if (IsInstance(Uint32, key)) {
-                Uint32 data = Cast<Uint32>(key);
-                data->update(tag->toBasicUint32());
-            } else if (IsInstance(Uint64, key)) {
-                Uint64 data = Cast<Uint64>(key);
-                data->update(tag->toBasicUint64());
-            } else if (IsInstance(String, key)) {
-                String data = Cast<String>(key);
-                data->update(tag->toChars());
-            } else {
-                Trigger(TransformException, "not support key type");
-            }
+            jvalue->reflectTo(key,ReflectName);
 
             Object pairValue = pair->getValue();
-            if (IsInstance(Integer, pairValue)) {
-                Integer data = Cast<Integer>(pairValue);
-                data->update(jvalue->getInteger()->toValue());
-            } else if (IsInstance(Long, pairValue)) {
-                Long data = Cast<Long>(pairValue);
-                data->update(jvalue->getLong()->toValue());
-            } else if (IsInstance(Boolean, pairValue)) {
-                Boolean data = Cast<Boolean>(pairValue);
-                data->update(jvalue->getBoolean()->toValue());
-            } else if (IsInstance(Double, pairValue)) {
-                Double data = Cast<Double>(pairValue);
-                data->update(jvalue->getDouble()->toValue());
-            } else if (IsInstance(Float, pairValue)) {
-                Float data = Cast<Float>(pairValue);
-                data->update(jvalue->getDouble()->toValue());
-            } else if (IsInstance(Byte, pairValue)) {
-                Byte data = Cast<Byte>(pairValue);
-                data->update(jvalue->getUint64()->toValue());
-            } else if (IsInstance(Uint8, pairValue)) {
-                Uint8 data = Cast<Uint8>(pairValue);
-                data->update(jvalue->getUint64()->toValue());
-            } else if (IsInstance(Uint16, pairValue)) {
-                Uint16 data = Cast<Uint16>(pairValue);
-                data->update(jvalue->getUint64()->toValue());
-            } else if (IsInstance(Uint32, pairValue)) {
-                Uint32 data = Cast<Uint32>(pairValue);
-                data->update(jvalue->getUint64()->toValue());
-            } else if (IsInstance(Uint64, pairValue)) {
-                Uint64 data = Cast<Uint64>(pairValue);
-                data->update(jvalue->getUint64()->toValue());
-            } else if (IsInstance(String, pairValue)) {
-                String data = Cast<String>(pairValue);
-                data->update(jvalue->getString()->getStdString());
-            } else if (pairValue->__ReflectClassName()->equals("_ArrayList")) {
-                int datasize = jvalue->size();
-                for (int index = 0; index < datasize; index++) {
-                    JsonValue oo = jvalue->getListItemAt(index);
-                    Object vv = pairValue->__createListItemObject("");
-                    oo->reflectTo(vv);
-                    pairValue->__addListItemObject("", vv);
-                }
-            } else if (pairValue->__ReflectClassName()->equals("_HashMap")) {
-                jvalue->reflectToHashMap(pairValue);
-            } else {
-                jvalue->reflectTo(pairValue);
-            }
+            jvalue->reflectTo(pairValue);
+
             obj->__addMapItemObject("", key, pairValue);
             iterator->next();
         }
     }
 
-    template <typename T> void reflectTo(T obj) {
-        if (obj->__ReflectClassName()->equals("_ArrayList")) {
-            reflectToArrayList(obj);
+    template <typename T> void reflectTo(T obj,int type = ReflectValue) {
+        //if it is a Lang/Container class
+        try {
+            if (obj->__ReflectClassName()->equals("_ArrayList")) {
+                reflectToArrayList(obj);
+                return;
+            } else if (obj->__ReflectClassName()->equals("_HashMap")) {
+                reflectToHashMap(obj);
+                return;
+            }
+        } catch(...){} 
+
+        if (IsInstance(Integer, obj)) {
+            String v = (type == ReflectValue)?this->getString():this->getName();
+            Cast<Integer>(obj)->update(v->toBasicInt());
             return;
-        } else if (obj->__ReflectClassName()->equals("_HashMap")) {
-            reflectToHashMap(obj);
+        } else if (IsInstance(Long, obj)) {
+            String v = (type == ReflectValue)?this->getString():this->getName();
+            Cast<Long>(obj)->update(v->toBasicLong());
+            return;
+        } else if (IsInstance(Boolean, obj)) {
+            String v = (type == ReflectValue)?this->getString():this->getName();
+            Cast<Long>(obj)->update(v->toBasicBool());
+            return;
+        } else if (IsInstance(Double, obj)) {
+            String v = (type == ReflectValue)?this->getString():this->getName();
+            Cast<Double>(obj)->update(v->toBasicDouble());
+            return;
+        } else if (IsInstance(Float, obj)) {
+            String v = (type == ReflectValue)?this->getString():this->getName();
+            Cast<Float>(obj)->update(v->toBasicFloat());
+            return;
+        } else if (IsInstance(Byte, obj)) {
+            String v = (type == ReflectValue)?this->getString():this->getName();
+            Cast<Byte>(obj)->update(v->toBasicByte());
+            return;
+        } else if (IsInstance(Uint8, obj)) {
+            String v = (type == ReflectValue)?this->getString():this->getName();
+            Cast<Uint8>(obj)->update(v->toBasicUint8());
+            return;
+        } else if (IsInstance(Uint16, obj)) {
+            String v = (type == ReflectValue)?this->getString():this->getName();
+            Cast<Uint16>(obj)->update(v->toBasicUint16());
+            return;
+        } else if (IsInstance(Uint32, obj)) {
+            String v = (type == ReflectValue)?this->getString():this->getName();
+            Cast<Uint32>(obj)->update(v->toBasicUint32());
+            return;
+        } else if (IsInstance(Uint64, obj)) {
+            String v = (type == ReflectValue)?this->getString():this->getName();
+            Cast<Uint64>(obj)->update(v->toBasicUint64());
+            return;
+        } else if (IsInstance(String, obj)) {
+            String v = (type == ReflectValue)?this->getString():this->getName();
+            Cast<String>(obj)->update(v->toChars());
             return;
         }
 
@@ -402,287 +333,186 @@ public:
             std::string name = field->getName()->getStdString();
             JsonValue jsonnode = iterator->getValue();
             switch (field->getType()) {
-            case st(Field)::FieldTypeLong: {
-                String value = jsonnode->getString();
-                field->setValue(value->toBasicLong());
-            } break;
+                case st(Field)::FieldTypeLong: {
+                    field->setValue(jsonnode->getString()->toBasicLong());
+                } break;
 
-            case st(Field)::FieldTypeInt: {
-                String value = jsonnode->getString();
-                field->setValue(value->toBasicInt());
-            } break;
+                case st(Field)::FieldTypeInt: {
+                    field->setValue(jsonnode->getString()->toBasicInt());
+                } break;
 
-            case st(Field)::FieldTypeByte: {
-                String value = jsonnode->getString();
-                field->setValue(value->toBasicByte());
-            } break;
+                case st(Field)::FieldTypeByte: {
+                    field->setValue(jsonnode->getString()->toBasicByte());
+                } break;
 
-            case st(Field)::FieldTypeBool: {
-                String value = jsonnode->getString();
-                field->setValue(value->toBasicBool());
-            } break;
+                case st(Field)::FieldTypeBool: {
+                    field->setValue(jsonnode->getString()->toBasicBool());
+                } break;
 
-            case st(Field)::FieldTypeDouble: {
-                String value = jsonnode->getString();
-                field->setValue(value->toBasicDouble());
-            } break;
+                case st(Field)::FieldTypeDouble: {
+                    field->setValue(jsonnode->getString()->toBasicDouble());
+                } break;
 
-            case st(Field)::FieldTypeFloat: {
-                String value = jsonnode->getString();
-                field->setValue(value->toBasicFloat());
-            } break;
+                case st(Field)::FieldTypeFloat: {
+                    field->setValue(jsonnode->getString()->toBasicFloat());
+                } break;
 
-            case st(Field)::FieldTypeString: {
-                String value = jsonnode->getString();
-                field->setValue(value);
-            } break;
+                case st(Field)::FieldTypeString: {
+                    field->setValue(jsonnode->getString());
+                } break;
 
-            case st(Field)::FieldTypeUint16: {
-                String value = jsonnode->getString();
-                field->setValue(value->toBasicUint16());
-            } break;
+                case st(Field)::FieldTypeUint16: {
+                    field->setValue(jsonnode->getString()->toBasicUint16());
+                } break;
 
-            case st(Field)::FieldTypeUint32: {
-                String value = jsonnode->getString();
-                field->setValue(value->toBasicUint32());
-            } break;
+                case st(Field)::FieldTypeUint32: {
+                    field->setValue(jsonnode->getString()->toBasicUint32());
+                } break;
 
-            case st(Field)::FieldTypeUint64: {
-                String value = jsonnode->getString();
-                field->setValue(value->toBasicUint64());
-            } break;
+                case st(Field)::FieldTypeUint64: {
+                    field->setValue(jsonnode->getString()->toBasicUint64());
+                } break;
 
-            case st(Field)::FieldTypeObject: {
-                // create Objectt
-                sp<_Object> newObject = field->createObject();
-                //auto reflectValue = field->getObjectValue();
-                if(IsInstance(Integer,newObject)) {
-                    String value = jsonnode->getString();
-                    Integer data = Cast<Integer>(newObject);
-                    data->update(value->toBasicInt());
-                } else if(IsInstance(Long,newObject)) {
-                    String value = jsonnode->getString();
-                    Long data = Cast<Long>(newObject);
-                    data->update(value->toBasicLong());
-                } else if(IsInstance(Boolean,newObject)) {
-                    String value = jsonnode->getString();
-                    Boolean data = Cast<Boolean>(newObject);
-                    data->update(value->toBasicBool());
-                } else if(IsInstance(Double,newObject)) {
-                    String value = jsonnode->getString();
-                    Double data = Cast<Double>(newObject);
-                    data->update(value->toBasicDouble());
-                } else if(IsInstance(Float,newObject)) {
-                    String value = jsonnode->getString();
-                    Float data = Cast<Float>(newObject);
-                    data->update(value->toBasicFloat());
-                } else if(IsInstance(Byte,newObject)) {
-                    String value = jsonnode->getString();
-                    Byte data = Cast<Byte>(newObject);
-                    data->update(value->toBasicByte());
-                } else if(IsInstance(Uint8,newObject)) {
-                    String value = jsonnode->getString();
-                    Uint8 data = Cast<Uint8>(newObject);
-                    data->update(value->toBasicUint8());
-                } else if(IsInstance(Uint16,newObject)) {
-                    String value = jsonnode->getString();
-                    Uint16 data = Cast<Uint16>(newObject);
-                    data->update(value->toBasicUint16());
-                } else if(IsInstance(Uint32,newObject)) {
-                    String value = jsonnode->getString();
-                    Uint32 data = Cast<Uint32>(newObject);
-                    data->update(value->toBasicUint32());
-                } else if(IsInstance(Uint64,newObject)) {
-                    String value = jsonnode->getString();
-                    Uint64 data = Cast<Uint64>(newObject);
-                    data->update(value->toBasicUint64());
-                } else {
+                case st(Field)::FieldTypeObject: {
+                    // create Objectt
+                    sp<_Object> newObject = field->createObject();
                     jsonnode->reflectTo(newObject);
-                }
-            } break;
+                } break;
 
-            case st(Field)::FieldTypeArrayList: {
-                Object newObject = field->createObject();
-                jsonnode->reflectToArrayList(newObject);
-            } break;
+                case st(Field)::FieldTypeArrayList: {
+                    Object newObject = field->createObject();
+                    jsonnode->reflectToArrayList(newObject);
+                } break;
 
-            case st(Field)::FieldTypeHashMap: {
-                Object newObject = field->createObject();
-                jsonnode->reflectToHashMap(newObject);
-            } break;
+                case st(Field)::FieldTypeHashMap: {
+                    Object newObject = field->createObject();
+                    jsonnode->reflectToHashMap(newObject);
+                } break;
             }
-
             iterator->next();
         }
     }
 
     // wangsl
-    void importFrom(sp<_JsonValue> jsonNode,
-                    ArrayList<Pair<Object, Object>> members) {
-        // ArrayList<Pair<Object,Object>> members =
-        // field->getMapItemObjects();
-        int count = 0;
-        int size = members->size();
+    template <typename T> void importFromArrayList(String name,T value) {
+        int size = value->__getContainerSize("");
+        JsonValue arrayNode = nullptr;
+        if(name != nullptr) {
+            arrayNode = createJsonValue();
+        } else {
+            arrayNode = AutoClone(this);
+        }
 
-        while (count < size) {
-            Pair<Object, Object> pair = members->get(count);
+        //arrayNode->jvalue.resize(size);
+
+        for (int i = 0; i < size; i++) {
+            JsonValue item = createJsonValue();
+            auto newObject = value->__getListItemObject("", i);
+            item->importFrom(newObject);
+            arrayNode->append(item);
+        }
+
+        if(name != nullptr) {
+            this->put(name, arrayNode);
+        }
+    }
+
+    template <typename T> void importFromHashMap(String name,T value) {
+        int size = value->__getContainerSize("");
+        ArrayList<Pair<Object, Object>> members = value->__getMapItemObjects("");
+        JsonValue mapItems = nullptr;
+
+        if(name != nullptr){
+            mapItems = createJsonValue();
+        } else {
+            mapItems = AutoClone(this);
+        }
+
+        for (int i = 0;i< size;i++) {
+            Pair<Object, Object> pair = members->get(i);
             Object key = pair->getKey();
-            String keyStr = nullptr;
-
-            if (key != nullptr) {
-                if (IsInstance(Integer, key)) {
-                    Integer data = Cast<Integer>(key);
-                    keyStr = createString(data);
-                } else if (IsInstance(Long, key)) {
-                    Long data = Cast<Long>(key);
-                    keyStr = createString(data);
-                } else if (IsInstance(Boolean, key)) {
-                    Boolean data = Cast<Boolean>(key);
-                    keyStr = createString(data);
-                } else if (IsInstance(Double, key)) {
-                    Double data = Cast<Double>(key);
-                    keyStr = createString(data);
-                } else if (IsInstance(Float, key)) {
-                    Float data = Cast<Float>(key);
-                    keyStr = createString(data);
-                } else if (IsInstance(Byte, key)) {
-                    Byte data = Cast<Byte>(key);
-                    keyStr = createString(data);
-                } else if (IsInstance(Uint8, key)) {
-                    Uint8 data = Cast<Uint8>(key);
-                    keyStr = createString(data);
-                } else if (IsInstance(Uint16, key)) {
-                    Uint16 data = Cast<Uint16>(key);
-                    keyStr = createString(data);
-                } else if (IsInstance(Uint32, key)) {
-                    Uint32 data = Cast<Uint32>(key);
-                    keyStr = createString(data);
-                } else if (IsInstance(Uint64, key)) {
-                    Uint64 data = Cast<Uint64>(key);
-                    keyStr = createString(data);
-                } else if (IsInstance(String, key)) {
-                    String data = Cast<String>(key);
-                    keyStr = createString(data);
-                } else {
-                    Trigger(TransformException, "not support key type");
-                }
-            }
-
             Object value = pair->getValue();
-            JsonValue mapItemNode = createJsonValue();
-            if (value != nullptr) {
-                if (IsInstance(Integer, value)) {
-                    Integer data = Cast<Integer>(value);
-                    // mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr, data->toValue());
-                } else if (IsInstance(Long, value)) {
-                    Long data = Cast<Long>(value);
-                    // mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr, data->toValue());
-                } else if (IsInstance(Boolean, value)) {
-                    Boolean data = Cast<Boolean>(value);
-                    // mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr, data->toValue());
-                } else if (IsInstance(Double, value)) {
-                    Double data = Cast<Double>(value);
-                    // mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr, data->toValue());
-                } else if (IsInstance(Float, value)) {
-                    Float data = Cast<Float>(value);
-                    // mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr, data->toValue());
-                } else if (IsInstance(Byte, value)) {
-                    Byte data = Cast<Byte>(value);
-                    // mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr, data->toValue());
-                } else if (IsInstance(Uint8, value)) {
-                    Uint8 data = Cast<Uint8>(value);
-                    // mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr, data->toValue());
-                } else if (IsInstance(Uint16, value)) {
-                    Uint16 data = Cast<Uint16>(value);
-                    // mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr, data->toValue());
-                } else if (IsInstance(Uint32, value)) {
-                    Uint32 data = Cast<Uint32>(value);
-                    // mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr, (uint64_t)data->toValue());
-                } else if (IsInstance(Uint64, value)) {
-                    Uint64 data = Cast<Uint64>(value);
-                    // mapItemNode->append(data->toValue());
-                    jsonNode->put(keyStr, data->toValue());
-                } else if (IsInstance(String, value)) {
-                    String data = Cast<String>(value);
-                    // mapItemNode->append(data->toChars());
-                    jsonNode->put(keyStr, data->toChars());
-                } else {
-                    JsonValue newValue = createJsonValue();
-                    newValue->importFrom(value);
-                    jsonNode->put(keyStr, newValue);
-                }
+            JsonValue newValue = createJsonValue();
+            newValue->importFrom(value);
+
+            String keyStr = nullptr;
+            if (IsInstance(Integer, key)) {
+                keyStr = createString(Cast<Integer>(key));
+            } else if (IsInstance(Long, key)) {
+                keyStr = createString(Cast<Long>(key));
+            } else if (IsInstance(Boolean, key)) {
+                keyStr = createString(Cast<Boolean>(key));
+            } else if (IsInstance(Double, key)) {
+                keyStr = createString(Cast<Double>(key));
+            } else if (IsInstance(Float, key)) {
+                keyStr = createString(Cast<Float>(key));
+            } else if (IsInstance(Byte, key)) {
+                keyStr = createString(Cast<Byte>(key));
+            } else if (IsInstance(Uint8, key)) {
+                keyStr = createString(Cast<Uint8>(key));
+            } else if (IsInstance(Uint16, key)) {
+                keyStr = createString(Cast<Uint16>(key));
+            } else if (IsInstance(Uint32, key)) {
+                keyStr = createString(Cast<Uint32>(key));
+            } else if (IsInstance(Uint64, key)) {
+                keyStr = createString(Cast<Uint64>(key));
+            } else if (IsInstance(String, key)) {
+                keyStr = Cast<String>(key);
             }
-            // arrayNode->put(keyStr,mapItemNode);
-            count++;
+
+            if(keyStr != nullptr) {
+                mapItems->put(keyStr, newValue);
+            }
+        }
+
+        if(name != nullptr) {
+            this->put(name,mapItems);
         }
     }
 
     template <typename T> void importFrom(T value) {
-        if (value->__ReflectClassName()->equals("_ArrayList")) {
-            int size = value->__getContainerSize("");
-            this->jvalue.resize(size);
-            for (int i = 0; i < size; i++) {
-                auto newObject = value->__getListItemObject("", i);
-                // newValue->importFrom(nValue);
-                if (IsInstance(Integer, newObject)) {
-                    Integer data = Cast<Integer>(newObject);
-                    this->jvalue[i] = data->toValue();
-                } else if (IsInstance(Long, newObject)) {
-                    Long data = Cast<Long>(newObject);
-                    this->jvalue[i] = data->toValue();
-                } else if (IsInstance(Boolean, newObject)) {
-                    Boolean data = Cast<Boolean>(newObject);
-                    this->jvalue[i] = data->toValue();
-                } else if (IsInstance(Double, newObject)) {
-                    Double data = Cast<Double>(newObject);
-                    this->jvalue[i] = data->toValue();
-                } else if (IsInstance(Float, newObject)) {
-                    Float data = Cast<Float>(newObject);
-                    this->jvalue[i] = data->toValue();
-                } else if (IsInstance(Byte, newObject)) {
-                    Byte data = Cast<Byte>(newObject);
-                    this->jvalue[i] = data->toValue();
-                } else if (IsInstance(Uint8, newObject)) {
-                    Uint8 data = Cast<Uint8>(newObject);
-                    this->jvalue[i] = data->toValue();
-                } else if (IsInstance(Uint16, newObject)) {
-                    Uint16 data = Cast<Uint16>(newObject);
-                    this->jvalue[i] = data->toValue();
-                } else if (IsInstance(Uint32, newObject)) {
-                    Uint32 data = Cast<Uint32>(newObject);
-                    this->jvalue[i] = data->toValue();
-                } else if (IsInstance(Uint64, newObject)) {
-                    Uint64 data = Cast<Uint64>(newObject);
-                    this->jvalue[i] = data->toValue();
-                } else if (IsInstance(String, newObject)) {
-                    String data = Cast<String>(newObject);
-                    // this->put(name,data->getStdString());
-                    this->jvalue[i] = data->getStdString();
-                } else {
-                    JsonValue newValue = createJsonValue();
-                    newValue->importFrom(newObject);
-                    // this->put(name,newValue);
-                    this->jvalue[i] = newValue->jvalue;
-                }
-                // this->append(newValue);
+        try {
+            if (value->__ReflectClassName()->equals("_ArrayList")) {
+                importFromArrayList(nullptr,value);
+                return;
+            } else if (value->__ReflectClassName()->equals("_HashMap")) {
+                importFromHashMap(nullptr,value);
+                return;
             }
+        } catch(...){}
+
+        if (IsInstance(Integer, value)) {
+            jvalue = Cast<Integer>(value)->toValue();
             return;
-        } else if (value->__ReflectClassName()->equals("_HashMap")) {
-            int size = value->__getContainerSize("");
-            // JsonValue mapItemValue = createJsonValue();
-            ArrayList<Pair<Object, Object>> members =
-                value->__getMapItemObjects("");
-            importFrom(AutoClone(this), members);
-            // this->append(mapItemValue);
+        } else if (IsInstance(Long, value)) {
+            jvalue = Cast<Long>(value)->toValue();
+            return;
+        } else if (IsInstance(Boolean, value)) {
+            jvalue = Cast<Boolean>(value)->toValue();
+            return;
+        } else if (IsInstance(Double, value)) {
+            jvalue = Cast<Double>(value)->toValue();
+            return;
+        } else if (IsInstance(Float, value)) {
+            jvalue = Cast<Float>(value)->toValue();
+            return;
+        } else if (IsInstance(Byte, value)) {
+            jvalue = (uint64_t)(Cast<Byte>(value)->toValue());
+            return;
+        } else if (IsInstance(Uint8, value)) {
+            jvalue = (uint64_t)(Cast<Uint8>(value)->toValue());
+            return;
+        } else if (IsInstance(Uint16, value)) {
+            jvalue = (uint64_t)(Cast<Uint16>(value)->toValue());
+            return;
+        } else if (IsInstance(Uint32, value)) {
+            jvalue = (uint64_t)(Cast<Uint32>(value)->toValue());
+            return;
+        } else if (IsInstance(Uint64, value)) {
+            jvalue = (uint64_t)(Cast<Uint64>(value)->toValue());
+            return;
+        } else if (IsInstance(String, value)) {
+            jvalue = Cast<String>(value)->getStdString();
             return;
         }
 
@@ -696,167 +526,63 @@ public:
             Field field = iterator->getValue();
             String name = field->getName();
             switch (field->getType()) {
-            case st(Field)::FieldTypeLong: {
-                this->put(name, field->getLongValue());
-            } break;
+                case st(Field)::FieldTypeLong: {
+                    this->put(name, field->getLongValue());
+                } break;
 
-            case st(Field)::FieldTypeInt: {
-                this->put(name, field->getIntValue());
-            } break;
+                case st(Field)::FieldTypeInt: {
+                    this->put(name, field->getIntValue());
+                } break;
 
-                // case st(Field)::FieldTypeByte:{
-                //    this->put(name,field->getByteValue());
-                //}
-                // break;
+                case st(Field)::FieldTypeBool: {
+                    this->put(name, field->getBoolValue());
+                } break;
 
-            case st(Field)::FieldTypeBool: {
-                this->put(name, field->getBoolValue());
-            } break;
+                case st(Field)::FieldTypeDouble: {
+                    this->put(name, field->getDoubleValue());
+                } break;
 
-            case st(Field)::FieldTypeDouble: {
-                this->put(name, field->getDoubleValue());
-            } break;
+                case st(Field)::FieldTypeFloat: {
+                    this->put(name, field->getFloatValue());
+                } break;
 
-            case st(Field)::FieldTypeFloat: {
-                this->put(name, field->getFloatValue());
-            } break;
+                case st(Field)::FieldTypeString: {
+                    this->put(name, field->getStringValue());
+                } break;
 
-            case st(Field)::FieldTypeString: {
-                this->put(name, field->getStringValue());
-            } break;
+                case st(Field)::FieldTypeUint8: {
+                    this->put(name, (uint64_t)field->getByteValue());
+                } break;
 
-            case st(Field)::FieldTypeUint8: {
-                this->put(name, (uint64_t)field->getByteValue());
-            } break;
+                case st(Field)::FieldTypeUint16: {
+                    this->put(name, (uint64_t)field->getUint16Value());
+                } break;
 
-            case st(Field)::FieldTypeUint16: {
-                this->put(name, (uint64_t)field->getUint16Value());
-            } break;
+                case st(Field)::FieldTypeUint32: {
+                    this->put(name, (uint64_t)field->getUint32Value());
+                } break;
 
-            case st(Field)::FieldTypeUint32: {
-                this->put(name, (uint64_t)field->getUint32Value());
-            } break;
+                case st(Field)::FieldTypeUint64: {
+                    this->put(name, (uint64_t)field->getUint64Value());
+                } break;
 
-            case st(Field)::FieldTypeUint64: {
-                this->put(name, (uint64_t)field->getUint64Value());
-            } break;
-
-            case st(Field)::FieldTypeObject: {
-                // check whether it is Number
-                auto newObject = field->getObjectValue();
-                JsonValue newValue = createJsonValue();
-                if (IsInstance(Integer, newObject)) {
-                    Integer data = Cast<Integer>(newObject);
-                    this->put(name, data->toValue());
-                } else if (IsInstance(Long, newObject)) {
-                    Long data = Cast<Long>(newObject);
-                    this->put(name, data->toValue());
-                } else if (IsInstance(Boolean, newObject)) {
-                    Boolean data = Cast<Boolean>(newObject);
-                    this->put(name, data->toValue());
-                } else if (IsInstance(Double, newObject)) {
-                    Double data = Cast<Double>(newObject);
-                    this->put(name, data->toValue());
-                } else if (IsInstance(Float, newObject)) {
-                    Float data = Cast<Float>(newObject);
-                    this->put(name, data->toValue());
-                } else if (IsInstance(Byte, newObject)) {
-                    Byte data = Cast<Byte>(newObject);
-                    this->put(name, (uint64_t)data->toValue());
-                } else if (IsInstance(Uint8, newObject)) {
-                    Uint8 data = Cast<Uint8>(newObject);
-                    this->put(name, (uint64_t)data->toValue());
-                } else if (IsInstance(Uint16, newObject)) {
-                    Uint16 data = Cast<Uint16>(newObject);
-                    this->put(name, (uint64_t)data->toValue());
-                } else if (IsInstance(Uint32, newObject)) {
-                    Uint32 data = Cast<Uint32>(newObject);
-                    this->put(name, (uint64_t)data->toValue());
-                } else if (IsInstance(Uint64, newObject)) {
-                    Uint64 data = Cast<Uint64>(newObject);
-                    this->put(name, (uint64_t)data->toValue());
-                } else if (IsInstance(String, newObject)) {
-                    String data = Cast<String>(newObject);
-                    this->put(name, data->getStdString());
-                } else {
+                case st(Field)::FieldTypeObject: {
+                    // check whether it is Number
+                    auto newObject = field->getObjectValue();
+                    JsonValue newValue = createJsonValue();
                     newValue->importFrom(newObject);
                     this->put(name, newValue);
-                }
-            } break;
+                }break;
 
-            case st(Field)::FieldTypeArrayList: {
-                int count = 0;
-                int size = field->getContainerSize();
-                JsonValue arrayNode = createJsonValue();
-                while (count < size) {
-                    auto newObject = field->getListItemObject(count);
-                    if (newObject != nullptr) {
-                        if (IsInstance(Integer, newObject)) {
-                            Integer data = Cast<Integer>(newObject);
-                            arrayNode->append(data->toValue());
-                        } else if (IsInstance(Long, newObject)) {
-                            Long data = Cast<Long>(newObject);
-                            arrayNode->append(data->toValue());
-                        } else if (IsInstance(Boolean, newObject)) {
-                            Boolean data = Cast<Boolean>(newObject);
-                            arrayNode->append(data->toValue());
-                        } else if (IsInstance(Double, newObject)) {
-                            Double data = Cast<Double>(newObject);
-                            arrayNode->append(data->toValue());
-                        } else if (IsInstance(Float, newObject)) {
-                            Float data = Cast<Float>(newObject);
-                            arrayNode->append(data->toValue());
-                        } else if (IsInstance(Byte, newObject)) {
-                            Byte data = Cast<Byte>(newObject);
-                            arrayNode->append(data->toValue());
-                        } else if (IsInstance(Uint8, newObject)) {
-                            Uint8 data = Cast<Uint8>(newObject);
-                            arrayNode->append(data->toValue());
-                        } else if (IsInstance(Uint16, newObject)) {
-                            Uint16 data = Cast<Uint16>(newObject);
-                            arrayNode->append(data->toValue());
-                        } else if (IsInstance(Uint32, newObject)) {
-                            Uint32 data = Cast<Uint32>(newObject);
-                            arrayNode->append(data->toValue());
-                        } else if (IsInstance(Uint64, newObject)) {
-                            Uint64 data = Cast<Uint64>(newObject);
-                            arrayNode->append(data->toValue());
-                        } else if (IsInstance(String, newObject)) {
-                            String data = Cast<String>(newObject);
-                            arrayNode->append(data->toChars());
-                        } else if (newObject->__ReflectClassName()->equals(
-                                       "_ArrayList")) {
-                            int size = newObject->__getContainerSize("");
-                            JsonValue arrayItemValue = createJsonValue();
-                            arrayItemValue->importFrom(newObject);
-                            arrayNode->append(arrayItemValue);
-                        } else if (newObject->__ReflectClassName()->equals(
-                                       "_HashMap")) {
-                            int size = newObject->__getContainerSize("");
-                            JsonValue mapItemValue = createJsonValue();
-                            auto members = newObject->__getMapItemObjects("");
-                            importFrom(mapItemValue, members);
-                            arrayNode->append(mapItemValue);
-                        } else {
-                            JsonValue newValue = createJsonValue();
-                            newValue->importFrom(newObject);
-                            arrayNode->append(newValue);
-                        }
-                    }
-                    count++;
-                }
-                this->put(name, arrayNode);
-            } break;
+                case st(Field)::FieldTypeArrayList: {
+                    auto newObject = field->getObjectValue();
+                    importFromArrayList(name,newObject);
+                } break;
 
-            case st(Field)::FieldTypeHashMap: {
-                int count = 0;
-                int size = field->getContainerSize();
-                JsonValue mapNode = createJsonValue();
-                ArrayList<Pair<Object, Object>> members =
-                    field->getMapItemObjects();
-                importFrom(mapNode, members);
-                this->put(name, mapNode);
-            } break;
+                case st(Field)::FieldTypeHashMap: {
+                    auto newObject = field->getObjectValue();
+                    importFromHashMap(name,newObject);
+                } break;
             }
             iterator->next();
         }
@@ -865,6 +591,11 @@ public:
     ~_JsonValue();
 
 private:
+    enum ReflectType{
+        ReflectValue = 0,
+        ReflectName,
+    };
+
     String mName;
 
     Json::Value jvalue;
