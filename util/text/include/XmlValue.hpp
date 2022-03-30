@@ -136,9 +136,14 @@ public:
 
     void importFrom(Object);
 
-    void reflectTo(Object);
+    void reflectTo(Object,int type = ReflectValue);
 
 private:
+    enum ReflectType {
+        ReflectName = 0,
+        ReflectValue,
+    };
+
     String value;
 
     String name;
@@ -147,10 +152,13 @@ private:
 
     xml_node<> *node;
 
+    bool mNeedUpdateName;
+
     String searchNode(String name);
 
     void reflectToArrayList(Object obj);
     void reflectToHashMap(Object obj);
+    void importArrayListFrom(Object value);
     void importHashMapFrom(Object value);
 };
 

@@ -75,12 +75,6 @@ XmlValue _XmlDocument::newNode(String nodename) {
     return xmlnode;
 }
 
-// sp<_XmlAttribute> _XmlDocument::newAttribute(String name,String value) {
-//    xml_attribute<> *attr =
-//    xmlDoc.allocate_attribute(name->toChars(),value->toChars()); return
-//    createXmlAttribute(attr,this,name,value);
-//}
-
 XmlValue _XmlDocument::getRootNode() {
     xml_node<> *node = xmlDoc.first_node();
     // String name = createString(node->name());

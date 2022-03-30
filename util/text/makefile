@@ -4,6 +4,8 @@ objs += $(outtmp)/jsonvalue.o \
 		$(outtmp)/jsonwriter.o \
 		$(outtmp)/jsonreader.o \
 		$(outtmp)/inireader.o \
+		$(outtmp)/iniwriter.o \
+		$(outtmp)/inivalue.o \
 		$(outtmp)/xmlreader.o \
 		$(outtmp)/xmlwriter.o \
 		$(outtmp)/xmlvalue.o \
@@ -22,6 +24,12 @@ $(outtmp)/jsonwriter.o :$(textDir)/JsonWriter.cpp
 
 $(outtmp)/jsonreader.o :$(textDir)/JsonReader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/JsonReader.cpp -o $(outtmp)/jsonreader.o
+
+$(outtmp)/iniwriter.o :$(textDir)/IniWriter.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(textDir)/IniWriter.cpp -o $(outtmp)/iniwriter.o
+
+$(outtmp)/inivalue.o :$(textDir)/IniValue.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(textDir)/IniValue.cpp -o $(outtmp)/inivalue.o
 
 $(outtmp)/inireader.o :$(textDir)/IniReader.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(textDir)/IniReader.cpp -o $(outtmp)/inireader.o

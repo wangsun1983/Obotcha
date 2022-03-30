@@ -10,8 +10,6 @@
 
 namespace obotcha {
 
-String _IniReader::RootSectionName = createString("__root__");
-
 _IniReader::_IniReader(String content) {
     // TODO
 }
@@ -22,35 +20,31 @@ _IniReader::_IniReader(File file) {
     }
 
     filepath = file->getAbsolutePath();
-
-    mIniValues = createHashMap<String, HashMap<String, String>>();
-    parse();
 }
 
-void _IniReader::parse() {
+IniValue _IniReader::parse() {
+    IniValue iniValue = createIniValue();
     if (!st(File)::exists(filepath)) {
         LOG(ERROR) << "InitReader file not exsits";
-        return;
+        return nullptr;
     }
 
-    dict = iniparser_load(filepath->toChars());
+    if(iniValue->dict != nullptr) {
+        iniparser_freedict(iniValue->dict);
+    }
+    
+    iniValue->dict = iniparser_load(filepath->toChars());
 
     // reflect to HashMap
-    int sections = iniparser_getnsec(dict);
-
+    int sections = iniparser_getnsec(iniValue->dict);
     for (int i = 0; i < sections; i++) {
         //bool isRoot = false;
-        char *sectionName = (char *)iniparser_getsecname(dict, i);
+        char *sectionName = (char *)iniparser_getsecname(iniValue->dict, i);
         HashMap<String, String> mKeyValue = createHashMap<String, String>();
-        if (RootSectionName->equals(sectionName)) {
-            mIniValues->put(createString(""), mKeyValue);
-            //isRoot = true;
-        } else {
-            mIniValues->put(createString(sectionName), mKeyValue);
-        }
-
+        iniValue->mValues->put(createString(sectionName), mKeyValue);
+        
         const char *keys[1024] = {0};
-        auto k = iniparser_getseckeys(dict, sectionName, keys);
+        auto k = iniparser_getseckeys(iniValue->dict, sectionName, keys);
 
         if (k == nullptr) {
             continue;
@@ -61,26 +55,18 @@ void _IniReader::parse() {
                 break;
             }
 
-            char *v = (char *)iniparser_getstring(dict, k[j], "");
+            char *v = (char *)iniparser_getstring(iniValue->dict, k[j], "");
+            //section:key
             ArrayList<String> p = createString(k[j])->split(":");
             mKeyValue->put(p->get(p->size() - 1), createString(v));
         }
     }
-}
 
-HashMap<String, String> _IniReader::get(String section) {
-    return mIniValues->get(section);
-}
-
-HashMap<String, HashMap<String, String>> _IniReader::getAll() {
-    return mIniValues;
+    return iniValue;
 }
 
 _IniReader::~_IniReader() {
-    if (dict != nullptr) {
-        iniparser_freedict(dict);
-        dict = nullptr;
-    }
+    
 }
 
 } // namespace obotcha

@@ -12,6 +12,12 @@ class _YamlReader;
 
 DECLARE_CLASS(TextContent) {
 public:
+    enum Type {
+        Json = 0,
+        Xml,
+        Serialize
+    };
+
     _TextContent(const Integer &v);
     _TextContent(const Boolean &v);
     _TextContent(const Float &v);
@@ -33,10 +39,23 @@ public:
     _TextContent(uint32_t);
     _TextContent(uint64_t);
 
-    template <typename T> _TextContent(sp<T> value) {
-        JsonValue jvalue = createJsonValue();
-        jvalue->importFrom(value);
-        mContent = jvalue->toString();
+    template <typename T> _TextContent(sp<T> value, int type = Json) {
+        switch(type) {
+            case Json: {
+                JsonValue jvalue = createJsonValue();
+                jvalue->importFrom(value);
+                mContent = jvalue->toString();
+            }
+            break;
+
+            case Xml:
+                //TODO
+            break;
+
+            case Serialize:
+                //TODO
+            break;
+        }
     }
 
     String get();

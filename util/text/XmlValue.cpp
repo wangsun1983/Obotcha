@@ -45,7 +45,9 @@ _XmlValueIterator::_XmlValueIterator(sp<_XmlValue> n, sp<_XmlDocument> r) {
     node = xmlValue->node->first_node();
 }
 
-bool _XmlValueIterator::hasValue() { return node != nullptr; }
+bool _XmlValueIterator::hasValue() { 
+    return node != nullptr; 
+}
 
 bool _XmlValueIterator::next() {
     node = node->next_sibling();
@@ -57,34 +59,21 @@ XmlValue _XmlValueIterator::getValue() {
         return nullptr;
     }
 
-    // String n = createString(node->name());
-    // String v = createString(node->value());
     XmlValue value = createXmlValue(node, reader);
     return value;
 }
 
 //------------------ XmlValue -----------------//
-//_XmlValue::_XmlValue(xml_node<> *n) {
-//    node = n;
-//}
-
-//_XmlValue::_XmlValue(sp<_XmlDocument> r) {
-//    doc = r;
-//    node = doc->xmlDoc.allocate_node(node_element);
-//}
-
-//_XmlValue::_XmlValue(xml_node<> *n,sp<_XmlDocument> d,String _name,String
-//_value) {
 _XmlValue::_XmlValue(xml_node<> *n, sp<_XmlDocument> d) {
     node = n;
     doc = d;
+    mNeedUpdateName = false;
 }
 
-//_XmlValue::_XmlValue(xml_node<> *n,_XmlDocument* r,String _name,String _value)
-//{
 _XmlValue::_XmlValue(xml_node<> *n, _XmlDocument *r) {
     node = n;
     doc.set_pointer(r);
+    mNeedUpdateName = false;
 }
 
 String _XmlValue::getStringAttr(String attr) {
@@ -344,294 +333,191 @@ sp<_XmlValueIterator> _XmlValue::getValueIterator() {
 
 void _XmlValue::reflectToArrayList(Object obj) {
     auto iterator = this->getValueIterator();
-
     while (iterator->hasValue()) {
         auto newObject = obj->__createListItemObject("");
         XmlValue value = iterator->getValue();
-        if (IsInstance(Integer, newObject)) {
-            Integer data = Cast<Integer>(newObject);
-            data->update(value->getStringValue()->toBasicInt());
-        } else if (IsInstance(Long, newObject)) {
-            Long data = Cast<Long>(newObject);
-            data->update(value->getStringValue()->toBasicLong());
-        } else if (IsInstance(Boolean, newObject)) {
-            Boolean data = Cast<Boolean>(newObject);
-            if (value->getStringValue()->toBasicInt() == 0) {
-                data->update(false);
-            } else {
-                data->update(true);
-            }
-        } else if (IsInstance(Double, newObject)) {
-            Double data = Cast<Double>(newObject);
-            data->update(value->getStringValue()->toBasicDouble());
-        } else if (IsInstance(Float, newObject)) {
-            Float data = Cast<Float>(newObject);
-            data->update(value->getStringValue()->toBasicDouble());
-        } else if (IsInstance(Byte, newObject)) {
-            Byte data = Cast<Byte>(newObject);
-            data->update(value->getStringValue()->toBasicByte());
-        } else if (IsInstance(Uint8, newObject)) {
-            Uint8 data = Cast<Uint8>(newObject);
-            data->update(value->getStringValue()->toBasicUint8());
-        } else if (IsInstance(Uint16, newObject)) {
-            Uint16 data = Cast<Uint16>(newObject);
-            data->update(value->getStringValue()->toBasicUint16());
-        } else if (IsInstance(Uint32, newObject)) {
-            Uint32 data = Cast<Uint32>(newObject);
-            data->update(value->getStringValue()->toBasicUint32());
-        } else if (IsInstance(Uint64, newObject)) {
-            Uint64 data = Cast<Uint64>(newObject);
-            data->update(value->getStringValue()->toBasicUint64());
-        } else if (IsInstance(String, newObject)) {
-            String data = Cast<String>(newObject);
-            data->update(value->getStringValue()->getStdString());
-        } else if (newObject->__ReflectClassName()->equals("_ArrayList")) {
-            value->reflectToArrayList(newObject);
-        } else if (newObject->__ReflectClassName()->equals("_HashMap")) {
-            value->reflectToHashMap(newObject);
-        } else {
-            value->reflectTo(newObject);
-        }
+        value->reflectTo(newObject);
         obj->__addListItemObject("", newObject);
         iterator->next();
     }
 }
 
 void _XmlValue::reflectToHashMap(Object obj) {
-    auto sub_iterator = this->getValueIterator();
-    while (sub_iterator->hasValue()) {
-        sp<_XmlValue> xmlnode = sub_iterator->getValue();
+    XmlValueIterator iterator = this->getValueIterator();
+    while (iterator->hasValue()) {
+        XmlValue xmlnode = iterator->getValue();
         Pair<Object, Object> pair = obj->__createMapItemObject("");
         Object key = pair->getKey();
-        String name = xmlnode->getName();
-        if (IsInstance(Integer, key)) {
-            Integer data = Cast<Integer>(key);
-            data->update(name->toBasicInt());
-        } else if (IsInstance(Long, key)) {
-            Long data = Cast<Long>(key);
-            data->update(name->toBasicLong());
-        } else if (IsInstance(Boolean, key)) {
-            Boolean data = Cast<Boolean>(key);
-            data->update(name->toBasicBool());
-        } else if (IsInstance(Double, key)) {
-            Double data = Cast<Double>(key);
-            data->update(name->toBasicDouble());
-        } else if (IsInstance(Float, key)) {
-            Float data = Cast<Float>(key);
-            data->update(name->toBasicFloat());
-        } else if (IsInstance(Byte, key)) {
-            Byte data = Cast<Byte>(key);
-            data->update(name->toBasicByte());
-        } else if (IsInstance(Uint8, key)) {
-            Uint8 data = Cast<Uint8>(key);
-            data->update(name->toBasicUint8());
-        } else if (IsInstance(Uint16, key)) {
-            Uint16 data = Cast<Uint16>(key);
-            data->update(name->toBasicUint16());
-        } else if (IsInstance(Uint32, key)) {
-            Uint32 data = Cast<Uint32>(key);
-            data->update(name->toBasicUint32());
-        } else if (IsInstance(Uint64, key)) {
-            Uint64 data = Cast<Uint64>(key);
-            data->update(name->toBasicUint64());
-        } else if (IsInstance(String, key)) {
-            String data = Cast<String>(key);
-            data->update(name->toChars());
-        } else {
-            Trigger(TransformException, "not support key type");
-        }
-
+        xmlnode->reflectTo(key,ReflectName);
         Object pairValue = pair->getValue();
-        String xmlValue = xmlnode->getStringValue();
-        if (IsInstance(Integer, pairValue)) {
-            Integer data = Cast<Integer>(pairValue);
-            data->update(xmlValue->toBasicInt());
-        } else if (IsInstance(Long, pairValue)) {
-            Long data = Cast<Long>(pairValue);
-            data->update(xmlValue->toBasicLong());
-        } else if (IsInstance(Boolean, pairValue)) {
-            Boolean data = Cast<Boolean>(pairValue);
-            data->update(xmlValue->toBasicBool());
-        } else if (IsInstance(Double, pairValue)) {
-            Double data = Cast<Double>(pairValue);
-            data->update(xmlValue->toBasicDouble());
-        } else if (IsInstance(Float, pairValue)) {
-            Float data = Cast<Float>(pairValue);
-            data->update(xmlValue->toBasicFloat());
-        } else if (IsInstance(Byte, pairValue)) {
-            Byte data = Cast<Byte>(pairValue);
-            data->update(xmlValue->toBasicByte());
-        } else if (IsInstance(Uint8, pairValue)) {
-            Uint8 data = Cast<Uint8>(pairValue);
-            data->update(xmlValue->toBasicUint8());
-        } else if (IsInstance(Uint16, pairValue)) {
-            Uint16 data = Cast<Uint16>(pairValue);
-            data->update(xmlValue->toBasicUint16());
-        } else if (IsInstance(Uint32, pairValue)) {
-            Uint32 data = Cast<Uint32>(pairValue);
-            data->update(xmlValue->toBasicUint32());
-        } else if (IsInstance(Uint64, pairValue)) {
-            Uint64 data = Cast<Uint64>(pairValue);
-            data->update(xmlValue->toBasicUint64());
-        } else if (IsInstance(String, pairValue)) {
-            String data = Cast<String>(pairValue);
-            data->update(xmlValue->toChars());
-        } else if (pairValue->__ReflectClassName()->equals("_ArrayList")) {
-            xmlnode->reflectToArrayList(pairValue);
-        } else if (pairValue->__ReflectClassName()->equals("_HashMap")) {
-            xmlnode->reflectToHashMap(pairValue);
-        } else {
-            xmlnode->reflectTo(pairValue);
-        }
+        xmlnode->reflectTo(pairValue);
         obj->__addMapItemObject("", key, pairValue);
-        sub_iterator->next();
+        iterator->next();
     }
 }
 
-void _XmlValue::reflectTo(Object obj) {
-    if (obj->__ReflectClassName()->equals("_ArrayList")) {
-        this->reflectToArrayList(obj);
+
+void _XmlValue::reflectTo(Object obj,int type) {
+    try {
+        if (obj->__ReflectClassName()->equals("_ArrayList")) {
+            this->reflectToArrayList(obj);
+            return;
+        } else if (obj->__ReflectClassName()->equals("_HashMap")) {
+            this->reflectToHashMap(obj);
+            return;
+        }
+    }catch(...){}
+    if (IsInstance(Integer, obj)) {
+        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        Cast<Integer>(obj)->update(v->toBasicInt());
         return;
-    } else if (obj->__ReflectClassName()->equals("_HashMap")) {
-        this->reflectToHashMap(obj);
+    } else if (IsInstance(Long, obj)) {
+        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        Cast<Long>(obj)->update(v->toBasicLong());
+        return;
+    } else if (IsInstance(Boolean, obj)) {
+        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        if (v->equalsIgnoreCase("true")) {
+            Cast<Boolean>(obj)->update(true);
+        } else {
+            Cast<Boolean>(obj)->update(false);
+        }
+        return;
+    } else if (IsInstance(Double, obj)) {
+        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        Cast<Double>(obj)->update(v->toBasicDouble());
+        return;
+    } else if (IsInstance(Float, obj)) {
+        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        Cast<Float>(obj)->update(v->toBasicFloat());
+        return;
+    } else if (IsInstance(Byte, obj)) {
+        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        Cast<Byte>(obj)->update(v->toBasicByte());
+        return;
+    } else if (IsInstance(Uint8, obj)) {
+        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        Cast<Uint8>(obj)->update(v->toBasicUint8());
+        return;
+    } else if (IsInstance(Uint16, obj)) {
+        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        Cast<Uint16>(obj)->update(v->toBasicUint16());
+        return;
+    } else if (IsInstance(Uint32, obj)) {
+        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        Cast<Uint32>(obj)->update(v->toBasicUint32());
+        return;
+    } else if (IsInstance(Uint64, obj)) {
+        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        Cast<Uint64>(obj)->update(v->toBasicUint64());
+        return;
+    } else if (IsInstance(String, obj)) {
+        String v = (type == ReflectValue)?this->getStringValue():this->getName();
+        Cast<String>(obj)->update(v->toChars());
         return;
     }
-
+    
     sp<_XmlValueIterator> iterator = getValueIterator();
     while (iterator->hasValue()) {
         sp<_XmlValue> node = iterator->getValue();
-        Field field = obj->getField(node->getName());
+        Field field = obj->getField(node->getName());       
+
         if (field == nullptr) {
-            LOG(ERROR) << "reflect to fields is null!!!";
+            LOG(ERROR) << "reflect to fields is null!!!,name is "<<node->getName()->toChars();
             iterator->next();
             continue;
         }
 
         switch (field->getType()) {
-        case st(Field)::FieldTypeLong: {
-            String value = node->getStringValue();
-            field->setValue(value->toBasicLong());
-        } break;
-
-        case st(Field)::FieldTypeInt: {
-            String value = node->getStringValue();
-            field->setValue(value->toBasicInt());
-        } break;
-
-        case st(Field)::FieldTypeBool: {
-            String value = node->getStringValue();
-            if (value->toBasicInt() > 0) {
-                field->setValue(true);
-            } else {
-                field->setValue(false);
-            }
-        } break;
-
-        case st(Field)::FieldTypeDouble: {
-            String value = node->getStringValue();
-            field->setValue(value->toBasicDouble());
-        } break;
-
-        case st(Field)::FieldTypeFloat: {
-            String value = node->getStringValue();
-            field->setValue(value->toBasicFloat());
-        } break;
-
-        case st(Field)::FieldTypeString: {
-            String value = node->getStringValue();
-            field->setValue(value);
-        } break;
-
-        case st(Field)::FieldTypeUint8: {
-            String value = node->getStringValue();
-            field->setValue(value->toBasicUint8());
-        } break;
-
-        case st(Field)::FieldTypeUint16: {
-            String value = node->getStringValue();
-            field->setValue(value->toBasicUint16());
-        } break;
-
-        case st(Field)::FieldTypeUint32: {
-            String value = node->getStringValue();
-            field->setValue(value->toBasicUint32());
-        } break;
-
-        case st(Field)::FieldTypeUint64: {
-            String value = node->getStringValue();
-            field->setValue(value->toBasicUint64());
-        } break;
-
-        case st(Field)::FieldTypeObject: {
-            auto newObject = field->createObject();
-            if (IsInstance(Integer, newObject)) {
+            case st(Field)::FieldTypeLong: {
                 String value = node->getStringValue();
-                Integer data = Cast<Integer>(newObject);
-                data->update(value->toBasicInt());
-            } else if (IsInstance(Long, newObject)) {
+                field->setValue(value->toBasicLong());
+            } break;
+
+            case st(Field)::FieldTypeInt: {
                 String value = node->getStringValue();
-                Long data = Cast<Long>(newObject);
-                data->update(value->toBasicLong());
-            } else if (IsInstance(Boolean, newObject)) {
+                field->setValue(value->toBasicInt());
+            } break;
+
+            case st(Field)::FieldTypeBool: {
                 String value = node->getStringValue();
-                Boolean data = Cast<Boolean>(newObject);
-                if (value->toBasicInt() == 0) {
-                    data->update(false);
+                if (value->equalsIgnoreCase("true")) {
+                    field->setValue(true);
                 } else {
-                    data->update(true);
+                    field->setValue(false);
                 }
-            } else if (IsInstance(Double, newObject)) {
+            } break;
+
+            case st(Field)::FieldTypeDouble: {
                 String value = node->getStringValue();
-                Double data = Cast<Double>(newObject);
-                data->update(value->toBasicDouble());
-            } else if (IsInstance(Float, newObject)) {
+                field->setValue(value->toBasicDouble());
+            } break;
+
+            case st(Field)::FieldTypeFloat: {
                 String value = node->getStringValue();
-                Float data = Cast<Float>(newObject);
-                data->update(value->toBasicFloat());
-            } else if (IsInstance(Byte, newObject)) {
+                field->setValue(value->toBasicFloat());
+            } break;
+
+            case st(Field)::FieldTypeString: {
                 String value = node->getStringValue();
-                Byte data = Cast<Byte>(newObject);
-                data->update(value->toBasicByte());
-            } else if (IsInstance(Uint8, newObject)) {
+                field->setValue(value);
+            } break;
+
+            case st(Field)::FieldTypeUint8: {
                 String value = node->getStringValue();
-                Uint8 data = Cast<Uint8>(newObject);
-                data->update(value->toBasicByte());
-            } else if (IsInstance(Uint16, newObject)) {
+                field->setValue(value->toBasicUint8());
+            } break;
+
+            case st(Field)::FieldTypeUint16: {
                 String value = node->getStringValue();
-                Uint16 data = Cast<Uint16>(newObject);
-                data->update(value->toBasicUint16());
-            } else if (IsInstance(Uint32, newObject)) {
+                field->setValue(value->toBasicUint16());
+            } break;
+
+            case st(Field)::FieldTypeUint32: {
                 String value = node->getStringValue();
-                Uint32 data = Cast<Uint32>(newObject);
-                data->update(value->toBasicUint32());
-            } else if (IsInstance(Uint64, newObject)) {
+                field->setValue(value->toBasicUint32());
+            } break;
+
+            case st(Field)::FieldTypeUint64: {
                 String value = node->getStringValue();
-                Uint64 data = Cast<Uint64>(newObject);
-                data->update(value->toBasicUint64());
-            } else {
+                field->setValue(value->toBasicUint64());
+            } break;
+
+            case st(Field)::FieldTypeObject: {
+                auto newObject = field->createObject();
                 node->reflectTo(newObject);
-            }
-        } break;
+            } break;
 
-        case st(Field)::FieldTypeArrayList: {
-            auto newObject = field->createObject();
-            node->reflectToArrayList(newObject);
-        } break;
+            case st(Field)::FieldTypeArrayList: {
+                auto newObject = field->createObject();
+                node->reflectToArrayList(newObject);
+            } break;
 
-        case st(Field)::FieldTypeHashMap: {
-            auto newObject = field->createObject();
-            node->reflectToHashMap(newObject);
-        } break;
+            case st(Field)::FieldTypeHashMap: {
+                auto newObject = field->createObject();
+                node->reflectToHashMap(newObject);
+            } break;
         }
 
         iterator->next();
     }
 }
 
+//import
+void _XmlValue::importArrayListFrom(Object value) {
+    int size = value->__getContainerSize("");
+    for (int i = 0; i < size; i++) {
+        XmlValue item = doc->newNode("tmp");
+        item->mNeedUpdateName = true;
+        auto newObject = value->__getListItemObject("", i);
+        item->importFrom(newObject);
+        appendNode(item);
+    }
+}
+    
 void _XmlValue::importHashMapFrom(Object hashmap) {
     //int size = this->__getContainerSize("");
-    ArrayList<Pair<Object, Object>> members =
-        hashmap->__getMapItemObjects("");
+    ArrayList<Pair<Object, Object>> members = hashmap->__getMapItemObjects("");
     auto iterator = members->getIterator();
     while (iterator->hasValue()) {
         Pair<Object, Object> node = iterator->getValue();
@@ -673,115 +559,75 @@ void _XmlValue::importHashMapFrom(Object hashmap) {
         } else {
             Trigger(TransformException, "not support key type");
         }
-
-        if (IsInstance(Integer, value)) {
-            Integer data = Cast<Integer>(value);
-            item->updateValue(createString(data->toValue()));
-        } else if (IsInstance(Long, value)) {
-            Long data = Cast<Long>(value);
-            item->updateValue(createString(data->toValue()));
-        } else if (IsInstance(Boolean, value)) {
-            Boolean data = Cast<Boolean>(value);
-            item->updateValue(createString(data->toValue()));
-        } else if (IsInstance(Double, value)) {
-            Double data = Cast<Double>(value);
-            item->updateValue(createString(data->toValue()));
-        } else if (IsInstance(Float, value)) {
-            Float data = Cast<Float>(value);
-            item->updateValue(createString(data->toValue()));
-        } else if (IsInstance(Byte, value)) {
-            Byte data = Cast<Byte>(value);
-            item->updateValue(createString(data->toValue()));
-        } else if (IsInstance(Uint8, value)) {
-            Uint8 data = Cast<Uint8>(value);
-            item->updateValue(createString(data->toValue()));
-        } else if (IsInstance(Uint16, value)) {
-            Uint16 data = Cast<Uint16>(value);
-            item->updateValue(createString(data->toValue()));
-        } else if (IsInstance(Uint32, value)) {
-            Uint32 data = Cast<Uint32>(value);
-            item->updateValue(createString(data->toValue()));
-        } else if (IsInstance(Uint64, value)) {
-            Uint64 data = Cast<Uint64>(value);
-            item->updateValue(createString(data->toValue()));
-        } else if (IsInstance(String, value)) {
-            String data = Cast<String>(value);
-            item->updateValue(data);
-        } else {
-            item->importFrom(value);
-        }
+        
+        item->importFrom(value);
         this->appendNode(item);
         iterator->next();
     }
 }
 
 void _XmlValue::importFrom(Object value) {
-    if (value->__ReflectClassName()->equals("_ArrayList")) {
-        int size = value->__getContainerSize("");
-        for (int i = 0; i < size; i++) {
-            //sp<_XmlValue> refNode = doc->newNode(createString("_array_item"));
-            auto newObject = value->__getListItemObject("", i);
-            //refNode->importFrom(nValue);
-            if (newObject != nullptr) {
-                sp<_XmlValue> item;
-                if (IsInstance(Integer, newObject)) {
-                    item = doc->newNode(st(Integer)::className());
-                    Integer data = Cast<Integer>(newObject);
-                    item->updateValue(createString(data->toValue()));
-                } else if (IsInstance(Long, newObject)) {
-                    item = doc->newNode(st(Long)::className());
-                    Long data = Cast<Long>(newObject);
-                    item->updateValue(createString(data->toValue()));
-                } else if (IsInstance(Boolean, newObject)) {
-                    item = doc->newNode(st(Boolean)::className());
-                    Boolean data = Cast<Boolean>(newObject);
-                    item->updateValue(createString((int)data->toValue()));
-                } else if (IsInstance(Double, newObject)) {
-                    item = doc->newNode(st(Double)::className());
-                    Double data = Cast<Double>(newObject);
-                    item->updateValue(createString(data->toValue()));
-                } else if (IsInstance(Float, newObject)) {
-                    item = doc->newNode(st(Float)::className());
-                    Float data = Cast<Float>(newObject);
-                    item->updateValue(createString(data->toValue()));
-                } else if (IsInstance(Byte, newObject)) {
-                    item = doc->newNode(st(Byte)::className());
-                    Byte data = Cast<Byte>(newObject);
-                    item->updateValue(createString(data->toValue()));
-                } else if (IsInstance(Uint8, newObject)) {
-                    item = doc->newNode(st(Uint8)::className());
-                    Uint8 data = Cast<Uint8>(newObject);
-                    item->updateValue(createString(data->toValue()));
-                } else if (IsInstance(Uint16, newObject)) {
-                    item = doc->newNode(st(Uint16)::className());
-                    Uint16 data = Cast<Uint16>(newObject);
-                    item->updateValue(createString(data->toValue()));
-                } else if (IsInstance(Uint32, newObject)) {
-                    item = doc->newNode(st(Uint32)::className());
-                    Uint32 data = Cast<Uint32>(newObject);
-                    item->updateValue(createString(data->toValue()));
-                } else if (IsInstance(Uint64, newObject)) {
-                    item = doc->newNode(st(Uint64)::className());
-                    Uint64 data = Cast<Uint64>(newObject);
-                    item->updateValue(createString(data->toValue()));
-                } else if (IsInstance(String, newObject)) {
-                    item = doc->newNode(st(String)::className());
-                    String data = Cast<String>(newObject);
-                    item->updateValue(data);
-                } else {
-                    item = doc->newNode(newObject->__ReflectClassName());
-                    item->importFrom(newObject);
-                }
-                this->appendNode(item);
-            }
+    try {
+        if (value->__ReflectClassName()->equals("_ArrayList")) {
+            this->importArrayListFrom(value);
+            return;
+        } else if (value->__ReflectClassName()->equals("_HashMap")) {
+            this->importHashMapFrom(value);
+            return;
         }
+    } catch(...){}
+
+    if (IsInstance(Integer, value)) {
+        Integer data = Cast<Integer>(value);
+        updateValue(createString(data->toValue()));
         return;
-    } else if (value->__ReflectClassName()->equals("_HashMap")) {
-        this->importHashMapFrom(value);
+    } else if (IsInstance(Long, value)) {
+        Long data = Cast<Long>(value);
+        updateValue(createString(data->toValue()));
+        return;
+    } else if (IsInstance(Boolean, value)) {
+        Boolean data = Cast<Boolean>(value);
+        updateValue(data->toString());
+        return;
+    } else if (IsInstance(Double, value)) {
+        Double data = Cast<Double>(value);
+        updateValue(createString(data->toValue()));
+        return;
+    } else if (IsInstance(Float, value)) {
+        Float data = Cast<Float>(value);
+        updateValue(createString(data->toValue()));
+        return;
+    } else if (IsInstance(Byte, value)) {
+        Byte data = Cast<Byte>(value);
+        updateValue(createString(data->toValue()));
+        return;
+    } else if (IsInstance(Uint8, value)) {
+        Uint8 data = Cast<Uint8>(value);
+        updateValue(createString(data->toValue()));
+        return;
+    } else if (IsInstance(Uint16, value)) {
+        Uint16 data = Cast<Uint16>(value);
+        updateValue(createString(data->toValue()));
+        return;
+    } else if (IsInstance(Uint32, value)) {
+        Uint32 data = Cast<Uint32>(value);
+        updateValue(createString(data->toValue()));
+        return;
+    } else if (IsInstance(Uint64, value)) {
+        Uint64 data = Cast<Uint64>(value);
+        updateValue(createString(data->toValue()));
+        return;
+    } else if (IsInstance(String, value)) {
+        String data = Cast<String>(value);
+        updateValue(data);
         return;
     }
 
     String name = value->__ReflectClassName();
+    if(mNeedUpdateName) {
+        updateName(name);
+    }
+    
     ArrayList<Field> fields = value->getAllFields();
     if (fields == nullptr) {
         LOG(ERROR) << "XmlVale importFrom fields is null!!!";
@@ -794,156 +640,63 @@ void _XmlValue::importFrom(Object value) {
         String name = field->getName();
         sp<_XmlValue> refNode = nullptr;
         switch (field->getType()) {
-        case st(Field)::FieldTypeLong: {
-            refNode = doc->newNode(name, createString(field->getLongValue()));
-        } break;
+            case st(Field)::FieldTypeLong: {
+                refNode = doc->newNode(name, createString(field->getLongValue()));
+            } break;
 
-        case st(Field)::FieldTypeInt: {
-            refNode = doc->newNode(name, createString(field->getIntValue()));
-        } break;
+            case st(Field)::FieldTypeInt: {
+                refNode = doc->newNode(name, createString(field->getIntValue()));
+            } break;
 
-        case st(Field)::FieldTypeBool: {
-            refNode = doc->newNode(name, createString(field->getBoolValue()));
-        } break;
+            case st(Field)::FieldTypeBool: {
+                refNode = doc->newNode(name, createString(field->getBoolValue()));
+            } break;
 
-        case st(Field)::FieldTypeDouble: {
-            refNode = doc->newNode(name, createString(field->getDoubleValue()));
-        } break;
+            case st(Field)::FieldTypeDouble: {
+                refNode = doc->newNode(name, createString(field->getDoubleValue()));
+            } break;
 
-        case st(Field)::FieldTypeFloat: {
-            refNode = doc->newNode(name, createString(field->getFloatValue()));
-        } break;
+            case st(Field)::FieldTypeFloat: {
+                refNode = doc->newNode(name, createString(field->getFloatValue()));
+            } break;
 
-        case st(Field)::FieldTypeString: {
-            refNode = doc->newNode(name, field->getStringValue());
-        } break;
+            case st(Field)::FieldTypeString: {
+                refNode = doc->newNode(name, field->getStringValue());
+            } break;
 
-        case st(Field)::FieldTypeUint8: {
-            refNode = doc->newNode(name, createString(field->getByteValue()));
-        } break;
+            case st(Field)::FieldTypeUint8: {
+                refNode = doc->newNode(name, createString(field->getByteValue()));
+            } break;
 
-        case st(Field)::FieldTypeUint16: {
-            refNode = doc->newNode(name, createString(field->getUint16Value()));
-        } break;
+            case st(Field)::FieldTypeUint16: {
+                refNode = doc->newNode(name, createString(field->getUint16Value()));
+            } break;
 
-        case st(Field)::FieldTypeUint32: {
-            refNode = doc->newNode(name, createString(field->getUint32Value()));
-        } break;
+            case st(Field)::FieldTypeUint32: {
+                refNode = doc->newNode(name, createString(field->getUint32Value()));
+            } break;
 
-        case st(Field)::FieldTypeUint64: {
-            refNode = doc->newNode(name, createString(field->getUint64Value()));
-        } break;
+            case st(Field)::FieldTypeUint64: {
+                refNode = doc->newNode(name, createString(field->getUint64Value()));
+            } break;
 
-        case st(Field)::FieldTypeObject: {
-            auto newObject = field->getObjectValue();
-            refNode = doc->newNode(name);
-            if (IsInstance(Integer, newObject)) {
-                Integer data = Cast<Integer>(newObject);
-                refNode->updateValue(createString(data->toValue()));
-            } else if (IsInstance(Long, newObject)) {
-                Long data = Cast<Long>(newObject);
-                refNode->updateValue(createString(data->toValue()));
-            } else if (IsInstance(Boolean, newObject)) {
-                Boolean data = Cast<Boolean>(newObject);
-                refNode->updateValue(createString((int)data->toValue()));
-            } else if (IsInstance(Double, newObject)) {
-                Double data = Cast<Double>(newObject);
-                refNode->updateValue(createString(data->toValue()));
-            } else if (IsInstance(Float, newObject)) {
-                Float data = Cast<Float>(newObject);
-                refNode->updateValue(createString(data->toValue()));
-            } else if (IsInstance(Byte, newObject)) {
-                Byte data = Cast<Byte>(newObject);
-                refNode->updateValue(createString(data->toValue()));
-            } else if (IsInstance(Uint8, newObject)) {
-                Uint8 data = Cast<Uint8>(newObject);
-                refNode->updateValue(createString(data->toValue()));
-            } else if (IsInstance(Uint16, newObject)) {
-                Uint16 data = Cast<Uint16>(newObject);
-                refNode->updateValue(createString(data->toValue()));
-            } else if (IsInstance(Uint32, newObject)) {
-                Uint32 data = Cast<Uint32>(newObject);
-                refNode->updateValue(createString(data->toValue()));
-            } else if (IsInstance(Uint64, newObject)) {
-                Uint64 data = Cast<Uint64>(newObject);
-                refNode->updateValue(createString(data->toValue()));
-            } else if (IsInstance(String, newObject)) {
-                String data = Cast<String>(newObject);
-                refNode->updateValue(data);
-            } else {
+            case st(Field)::FieldTypeObject: {
                 auto newObject = field->getObjectValue();
+                refNode = doc->newNode(name);
                 refNode->importFrom(newObject);
-            }
-        } break;
+            } break;
 
-        case st(Field)::FieldTypeArrayList: {
-            int count = 0;
-            int length = field->getContainerSize();
+            case st(Field)::FieldTypeArrayList: {
+                auto newObject = field->getObjectValue();
+                refNode = doc->newNode(name);
+                refNode->importArrayListFrom(newObject);
+            } break;
 
-            refNode = doc->newNode(name);
-            while (count < length) {
-                auto newObject = field->getListItemObject(count);
-                if (newObject != nullptr) {
-                    sp<_XmlValue> item;
-                    if (IsInstance(Integer, newObject)) {
-                        item = doc->newNode(st(Integer)::className());
-                        Integer data = Cast<Integer>(newObject);
-                        item->updateValue(createString(data->toValue()));
-                    } else if (IsInstance(Long, newObject)) {
-                        item = doc->newNode(st(Long)::className());
-                        Long data = Cast<Long>(newObject);
-                        item->updateValue(createString(data->toValue()));
-                    } else if (IsInstance(Boolean, newObject)) {
-                        item = doc->newNode(st(Boolean)::className());
-                        Boolean data = Cast<Boolean>(newObject);
-                        item->updateValue(createString((int)data->toValue()));
-                    } else if (IsInstance(Double, newObject)) {
-                        item = doc->newNode(st(Double)::className());
-                        Double data = Cast<Double>(newObject);
-                        item->updateValue(createString(data->toValue()));
-                    } else if (IsInstance(Float, newObject)) {
-                        item = doc->newNode(st(Float)::className());
-                        Float data = Cast<Float>(newObject);
-                        item->updateValue(createString(data->toValue()));
-                    } else if (IsInstance(Byte, newObject)) {
-                        item = doc->newNode(st(Byte)::className());
-                        Byte data = Cast<Byte>(newObject);
-                        item->updateValue(createString(data->toValue()));
-                    } else if (IsInstance(Uint8, newObject)) {
-                        item = doc->newNode(st(Uint8)::className());
-                        Uint8 data = Cast<Uint8>(newObject);
-                        item->updateValue(createString(data->toValue()));
-                    } else if (IsInstance(Uint16, newObject)) {
-                        item = doc->newNode(st(Uint16)::className());
-                        Uint16 data = Cast<Uint16>(newObject);
-                        item->updateValue(createString(data->toValue()));
-                    } else if (IsInstance(Uint32, newObject)) {
-                        item = doc->newNode(st(Uint32)::className());
-                        Uint32 data = Cast<Uint32>(newObject);
-                        item->updateValue(createString(data->toValue()));
-                    } else if (IsInstance(Uint64, newObject)) {
-                        item = doc->newNode(st(Uint64)::className());
-                        Uint64 data = Cast<Uint64>(newObject);
-                        item->updateValue(createString(data->toValue()));
-                    } else if (IsInstance(String, newObject)) {
-                        item = doc->newNode(st(String)::className());
-                        String data = Cast<String>(newObject);
-                        item->updateValue(data);
-                    } else {
-                        item = doc->newNode(newObject->__ReflectClassName());
-                        item->importFrom(newObject);
-                    }
-                    refNode->appendNode(item);
-                }
-                count++;
-            }
-        } break;
-
-        case st(Field)::FieldTypeHashMap: {
-            auto newObject = field->getObjectValue();
-            refNode = doc->newNode(name);
-            refNode->importHashMapFrom(newObject);
-        } break;
+            case st(Field)::FieldTypeHashMap: {
+                auto newObject = field->getObjectValue();
+                refNode = doc->newNode(name);
+                refNode->importHashMapFrom(newObject);
+            } break;
         }
 
         if (refNode != nullptr) {

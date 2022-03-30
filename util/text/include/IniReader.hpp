@@ -7,6 +7,7 @@
 #include "HashMap.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "IniValue.hpp"
 
 namespace obotcha {
 
@@ -22,20 +23,11 @@ public:
 
     ~_IniReader();
 
-    HashMap<String, String> get(String section = createString(""));
-    HashMap<String, HashMap<String, String>> getAll();
+    IniValue parse();
 
 private:
-    static String RootSectionName;
 
     String filepath;
-
-    dictionary *dict;
-
-    void parse();
-
-    //<Section,HashMap<Key,Value>
-    HashMap<String, HashMap<String, String>> mIniValues;
 };
 
 } // namespace obotcha
