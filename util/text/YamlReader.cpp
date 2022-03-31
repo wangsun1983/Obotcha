@@ -1,6 +1,5 @@
 #include "YamlReader.hpp"
 #include "InitializeException.hpp"
-#include "YamlArray.hpp"
 #include "YamlValue.hpp"
 
 namespace obotcha {

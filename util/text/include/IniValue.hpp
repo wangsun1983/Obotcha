@@ -31,12 +31,13 @@ public:
     String get(String key);
 
     HashMap<String,String> getSection(String section);
+    HashMap<String,HashMap<String,String>> getAll();
 
     ~_IniValue();
 
-private:
-    static String RootSectionName;
+    static String RootSection;
 
+private:
     dictionary *dict;
     
     HashMap<String, HashMap<String, String>> mValues;

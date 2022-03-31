@@ -4,7 +4,7 @@
 
 namespace obotcha {
 
-String _IniValue::RootSectionName = createString("__root__");
+String _IniValue::RootSection = createString("__root__");
 
 _IniValue::_IniValue() {
     mValues = createHashMap<String, HashMap<String, String>>();
@@ -16,7 +16,7 @@ void _IniValue::reflectTo(Object obj) {
     while(iterator->hasValue()) {
         String section = iterator->getKey();
         HashMap<String,String> values = iterator->getValue();
-        if(section->equals(RootSectionName)) {
+        if(section->equals(RootSection)) {
             reflectWithObject(obj,values);
         } else {
             Field f = obj->getField(section);
@@ -53,78 +53,129 @@ void _IniValue::importFrom(Object obj,String section) {
     while(iterator->hasValue()) {
         Field f = iterator->getValue();
         String sectionKey = nullptr;
+        String name = f->getName();
+
         if(section != nullptr) {
             dictionary_set(dict, section->toChars(), "");
             sectionKey = section->append(":",f->getName());
         } else {
-            dictionary_set(dict, RootSectionName->toChars(), "");
-            sectionKey = RootSectionName->append(":",f->getName());;
+            dictionary_set(dict, RootSection->toChars(), "");
+            sectionKey = RootSection->append(":",f->getName());
+            section = RootSection;
+        }
+
+        HashMap<String,String> map = mValues->get(section);
+        if(map == nullptr) {
+            map = createHashMap<String,String>();
+            mValues->put(section,map);
         }
 
         switch (f->getType()) {
             case st(Field)::FieldTypeLong: {
-                iniparser_set(dict,sectionKey->toChars(),createString(f->getLongValue())->toChars());
+                String value = createString(f->getLongValue());
+                map->put(name,value);
+                iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::FieldTypeInt: {
-                iniparser_set(dict,sectionKey->toChars(),createString(f->getIntValue())->toChars());
+                String value = createString(f->getIntValue());
+                map->put(name,value);
+                iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::FieldTypeByte: {
-                iniparser_set(dict,sectionKey->toChars(),createString(f->getByteValue())->toChars());
+                String value = createString(f->getByteValue());
+                map->put(name,value);
+                iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::FieldTypeBool: {
-                iniparser_set(dict,sectionKey->toChars(),createString(f->getBoolValue())->toChars());
+                String value = createString(f->getBoolValue());
+                map->put(name,value);
+                iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::FieldTypeDouble: {
-                iniparser_set(dict,sectionKey->toChars(),createString(f->getDoubleValue())->toChars());
+                String value = createString(f->getDoubleValue());
+                map->put(name,value);
+                iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::FieldTypeFloat: {
-                iniparser_set(dict,sectionKey->toChars(),createString(f->getFloatValue())->toChars());
+                String value = createString(f->getFloatValue());
+                map->put(name,value);
+                iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::FieldTypeString: {
-                iniparser_set(dict,sectionKey->toChars(),f->getStringValue()->toChars());
+                String value = f->getStringValue();
+                map->put(name,value);
+                iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::FieldTypeUint16: {
-                iniparser_set(dict,sectionKey->toChars(),createString(f->getUint16Value())->toChars());
+                String value = createString(f->getUint16Value());
+                map->put(name,value);
+                iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::FieldTypeUint32: {
-                iniparser_set(dict,sectionKey->toChars(),createString(f->getUint32Value())->toChars());
+                String value = createString(f->getUint32Value());
+                map->put(name,value);
+                iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::FieldTypeUint64: {
-                iniparser_set(dict,sectionKey->toChars(),createString(f->getUint64Value())->toChars());
+                String value = createString(f->getUint64Value());
+                map->put(name,value);
+                iniparser_set(dict,sectionKey->toChars(),value->toChars());
             } break;
 
             case st(Field)::FieldTypeObject: {
                 Object o = f->getObjectValue();
                 if (IsInstance(Integer, o)) {
-                    iniparser_set(dict,sectionKey->toChars(),createString(Cast<Integer>(o))->toChars());
+                    String value = createString(Cast<Integer>(o));
+                    map->put(name,value);
+                    iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Long, o)) {
-                    iniparser_set(dict,sectionKey->toChars(),createString(Cast<Long>(o))->toChars());
+                    String value = createString(Cast<Long>(o));
+                    map->put(name,value);
+                    iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Boolean, o)) {
-                    iniparser_set(dict,sectionKey->toChars(),createString(Cast<Boolean>(o))->toChars());
+                    String value = createString(Cast<Boolean>(o));
+                    map->put(name,value);
+                    iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Double, o)) {
-                    iniparser_set(dict,sectionKey->toChars(),createString(Cast<Double>(o))->toChars());
+                    String value = createString(Cast<Double>(o));
+                    map->put(name,value);
+                    iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Float, o)) {
-                    iniparser_set(dict,sectionKey->toChars(),createString(Cast<Float>(o))->toChars());
+                    String value = createString(Cast<Float>(o));
+                    map->put(name,value);
+                    iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Byte, o)) {
-                    iniparser_set(dict,sectionKey->toChars(),createString(Cast<Byte>(o))->toChars());
+                    String value = createString(Cast<Byte>(o));
+                    map->put(name,value);
+                    iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Uint8, o)) {
-                    iniparser_set(dict,sectionKey->toChars(),createString(Cast<Uint8>(o))->toChars());
+                    String value = createString(Cast<Uint8>(o));
+                    map->put(name,value);
+                    iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Uint16, o)) {
-                    iniparser_set(dict,sectionKey->toChars(),createString(Cast<Uint16>(o))->toChars());
+                    String value = createString(Cast<Uint16>(o));
+                    map->put(name,value);
+                    iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Uint32, o)) {
-                    iniparser_set(dict,sectionKey->toChars(),createString(Cast<Uint32>(o))->toChars());
+                    String value = createString(Cast<Uint32>(o));
+                    map->put(name,value);
+                    iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(Uint64, o)) {
-                    iniparser_set(dict,sectionKey->toChars(),createString(Cast<Uint64>(o))->toChars());
+                    String value = createString(Cast<Uint64>(o));
+                    map->put(name,value);
+                    iniparser_set(dict,sectionKey->toChars(),value->toChars());
                 } else if (IsInstance(String, o)) {
+                    String value = Cast<String>(o);
+                    map->put(name,value);
                     iniparser_set(dict,sectionKey->toChars(),Cast<String>(o)->toChars());
                 } else {
                     importFrom(o,f->getName());
@@ -221,6 +272,7 @@ _IniValue::~_IniValue() {
 }
 
 void _IniValue::set(String section,String key,String value) {
+    //save to map
     auto map = mValues->get(section);
     if(map == nullptr) {
         map = createHashMap<String,String>();
@@ -230,12 +282,12 @@ void _IniValue::set(String section,String key,String value) {
     map->put(key,value);
 
     //start write to dict
-    String comm = section->append(":","key");
+    String comm = section->append(":",key);
     iniparser_set(dict,comm->toChars(),value->toChars());
 }
 
 void _IniValue::set(String key,String value) {
-    set(RootSectionName,key,value);
+    set(RootSection,key,value);
 }
 
 String _IniValue::get(String section,String key) {
@@ -248,11 +300,16 @@ String _IniValue::get(String section,String key) {
 }
 
 String _IniValue::get(String key) {
-    return get(RootSectionName,key);
+    return get(RootSection,key);
 }
 
 HashMap<String,String> _IniValue::getSection(String section) {
     return mValues->get(section);
 }
+
+HashMap<String,HashMap<String,String>> _IniValue::getAll() {
+    return mValues;
+}
+    
 
 } // namespace obotcha

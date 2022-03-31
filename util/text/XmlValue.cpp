@@ -367,6 +367,7 @@ void _XmlValue::reflectTo(Object obj,int type) {
             return;
         }
     }catch(...){}
+
     if (IsInstance(Integer, obj)) {
         String v = (type == ReflectValue)?this->getStringValue():this->getName();
         Cast<Integer>(obj)->update(v->toBasicInt());
