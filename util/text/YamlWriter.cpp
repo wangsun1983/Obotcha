@@ -12,6 +12,9 @@ _YamlWriter::_YamlWriter(File file) {
 }
 
 void _YamlWriter::write(YamlValue value) {
+    if(!mFile->exists()) {
+        mFile->createNewFile();
+    }
     std::ofstream fout(mFile->getAbsolutePath()->toChars());
     fout << value->yamlNode;
     fout.close();

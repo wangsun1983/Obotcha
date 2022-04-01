@@ -10,6 +10,7 @@ namespace obotcha {
 
 class _YamlReader;
 class _YamlWriter;
+class _YamlValue;
 
 DECLARE_CLASS(YamlValue) {
 public:
@@ -20,48 +21,30 @@ public:
 
     _YamlValue(YAML::Node);
 
-    _YamlValue(YamlValue);
+    //_YamlValue(YamlValue);
 
-    sp<_YamlValue> getYamlValue(String);
-
-/*
-    int getInt(String, int def);
-
-    String getString(String, String def);
-
-    double getDouble(String, double def);
-
-    long getLong(String, long def);
-
-    bool getBool(String, bool def);
- */
     template <typename T>
-    T get(String key) {
-        return yamlNode[index].as<T>();
-    }
+    T get(String key);
 
-    template<typename T = String>
-    String get(String key) {
-        return createString(yamlNode[index].as<std::string>());
-    }
+    template <typename T>
+    T getAt(int index);
 
-    int getIntAt(int, int def);
+    void set(String,String);
+    void set(String,YamlValue);
+    void set(int,String);
+    void set(int,YamlValue);
+    void set(String);
+    void set(YamlValue);
 
-    String getStringAt(int, String def);
-
-    double getDoubleAt(int, double def);
-
-    long getLongAt(int, long def);
-
-    bool getBoolAt(int, bool def);
-
-    sp<_YamlValue> getYamlValueAt(int);
+    void pushBack(String);
+    void pushBack(YamlValue);
 
     ~_YamlValue();
 
     int size();
 
     String getTag();
+    void setTag(String);
 
     void reflectTo(Object o,int type = ReflectValue);
     void importFrom(Object obj);
@@ -78,7 +61,84 @@ private:
 
     void reflectToArrayList(Object obj);
     void reflectToHashMap(Object obj);
+
+    void importArrayListFrom(Object value);
+    void importHashMapFrom(Object value);
 };
+
+template<typename T>
+class _YamlValueHelper {
+public:
+    _YamlValueHelper(YAML::Node p) {
+        node = p;
+    }
+
+    T get(String key) {
+        return node[key->toChars()].template as<T>();
+    }
+
+    T getAt(int index) {
+        return node[index].template as<T>();
+    }
+
+private:
+    YAML::Node node;
+};
+
+template<>
+class _YamlValueHelper<String> {
+public:
+    _YamlValueHelper(YAML::Node p) {
+        node = p;
+    }
+
+    String get(String key) {
+        return createString(node[key->toChars()].as<std::string>());
+    }
+
+    String getAt(int index) {
+        return createString(node[index].as<std::string>());
+    }
+
+private:
+    YAML::Node node;
+};
+
+template<>
+class _YamlValueHelper<YamlValue> {
+public:
+    _YamlValueHelper(YAML::Node p) {
+        node = p;
+    }
+
+    YamlValue get(String key) {
+        YAML::Node newNode = node[key->toChars()].as<YAML::Node>();
+        YamlValue result = createYamlValue(newNode);
+        result->setTag(createString(node[key->toChars()].Tag()));
+        return result;
+    }
+
+    YamlValue getAt(int index) {
+        YAML::Node newNode = node[index].as<YAML::Node>();
+        YamlValue result = createYamlValue(newNode);
+        //printf("yamlvalue index is %d,tag is %s \n",index,node[index]);
+        result->setTag(createString(node[index].Tag()));
+        return result;
+    }
+
+private:
+    YAML::Node node;
+};
+
+template <typename T>
+T _YamlValue::get(String key) {
+    return _YamlValueHelper<T>(yamlNode).get(key);
+}
+
+template <typename T>
+T _YamlValue::getAt(int index) {
+    return _YamlValueHelper<T>(yamlNode).getAt(index);
+}
 
 } // namespace obotcha
 

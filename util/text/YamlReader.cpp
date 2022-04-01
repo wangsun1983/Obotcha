@@ -18,7 +18,9 @@ _YamlReader::_YamlReader(File file) {
     mValue->yamlNode = YAML::LoadFile(file->getAbsolutePath()->toChars());
 }
 
-sp<_YamlValue> _YamlReader::get() { return mValue; }
+sp<_YamlValue> _YamlReader::parse() { 
+    return mValue; 
+}
 
 _YamlReader::~_YamlReader() {
     // TOOD

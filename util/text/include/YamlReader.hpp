@@ -16,7 +16,7 @@ public:
 
     ~_YamlReader();
 
-    sp<_YamlValue> get();
+    sp<_YamlValue> parse();
 
 private:
     sp<_YamlValue> mValue;
