@@ -39,7 +39,7 @@ int _HttpConnection::connect() {
     if (mUrl->getHost() != nullptr) {
         ArrayList<InetAddress> address = mUrl->getInetAddress();
         if (address == nullptr || address->size() == 0) {
-            return -NetConnectFail;
+            return -ENOTCONN;
         }
         inetAddr->setAddress(address->get(0)->getAddress());
     }
@@ -59,7 +59,7 @@ int _HttpConnection::connect() {
 
     if (mSocket->connect() < 0) {
         LOG(ERROR) << "Connect failed,reason is " << strerror(errno);
-        return -NetConnectFail;
+        return -ENOTCONN;
     }
 
     mInputStream = mSocket->getInputStream();

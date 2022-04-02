@@ -3,6 +3,7 @@
 
 namespace obotcha {
 
+/*
 int _Lock::convertResult(int ret) {
     switch(ret) {
         case EINVAL:
@@ -27,5 +28,6 @@ int _Lock::convertResult(int ret) {
             return -LockFail;
     }
 }
+*/
 
 } // namespace obotcha

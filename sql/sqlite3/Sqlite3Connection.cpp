@@ -15,17 +15,13 @@ int _Sqlite3Connection::connect(SqlConnectParam param) {
     auto arg = Cast<Sqlite3ConnectParam>(param);
     mPath = arg->getPath();
     if(mPath == nullptr) {
-        return -SqlFailWrongParam;
+        return -EINVAL;
     }
 
     int result = sqlite3_open(mPath->toChars(), &mSqlDb);
-    if(result < 0) {
-        return -SqlFailOpen;
-    }
-
     isClosed = false;
 
-    return 0;
+    return result;
 }
 
 SqlRecords _Sqlite3Connection::query(SqlQuery query) {
@@ -79,7 +75,7 @@ int _Sqlite3Connection::count(SqlQuery query) {
 
 int _Sqlite3Connection::exec(SqlQuery query) {
     if(mPath == nullptr) {
-        return -SqlFailNoDb;
+        return -1;
     }
 
     String sqlstring = query->toString();
@@ -89,7 +85,7 @@ int _Sqlite3Connection::exec(SqlQuery query) {
         LOG(ERROR)<<"Sqlite3 exec error,reason is "<<errmsg;
         mMutex->unlock();
         sqlite3_free(errmsg);
-        return -SqlExecFail;
+        return -1;
     }
     mMutex->unlock();
     return 0;
@@ -99,7 +95,7 @@ int _Sqlite3Connection::startTransaction() {
     AutoLock l(mMutex);
     int ret = sqlite3_exec(mSqlDb,"BEGIN",0,0,nullptr);
     if(ret != SQLITE_OK) {
-        return -SqlTransactionFail;
+        return -1;
     }
 
     return 0;
@@ -109,7 +105,7 @@ int _Sqlite3Connection::commitTransaction() {
     AutoLock l(mMutex);
     int ret = sqlite3_exec(mSqlDb,"COMMIT",0,0,nullptr);
     if(ret != SQLITE_OK) {
-        return -SqlTransactionFail;
+        return -1;
     }
 
     return 0;
@@ -119,7 +115,7 @@ int _Sqlite3Connection::rollabckTransaction() {
     AutoLock l(mMutex);
     int ret = sqlite3_exec(mSqlDb,"ROLLBACK",0,0,nullptr);
     if(ret != SQLITE_OK) {
-        return -SqlTransactionFail;
+        return -1;
     }
 
     return 0;

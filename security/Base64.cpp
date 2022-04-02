@@ -39,8 +39,8 @@ ByteArray _Base64::decodeBase64Url(ByteArray data) {
 ByteArray _Base64::encodeBase64Url(ByteArray data) {
     int size = 0;
     char *p = _encode((const char *)data->toValue(),data->size(),false,&size);
-    //Replaces ¡°+¡± by ¡°-¡± (minus)
-    //Replaces ¡°/¡± by ¡°_¡± (underline)
+    //Replaces â€œ+â€ by â€œ-â€ (minus)
+    //Replaces â€œ/â€ by â€œ_â€ (underline)
     for(int i = 0;i<size;i++) {
         if(p[i] == '+') {
             p[i] = '-';

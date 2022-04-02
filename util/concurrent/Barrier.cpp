@@ -26,7 +26,7 @@ _Barrier::_Barrier(int n) {
 int _Barrier::await(long v) {
     AutoLock l(mutex);
     if (mBarrierNums == 0) {
-        return -InvalidStatus;
+        return -1;
     }
 
     mBarrierNums--;
@@ -36,7 +36,7 @@ int _Barrier::await(long v) {
         cond->wait(mutex, v);
     }
 
-    return SUCCESS;
+    return 0;
 }
 
 int _Barrier::await() { 
@@ -54,7 +54,7 @@ int _Barrier::release() {
         mBarrierNums = 0;
         cond->notifyAll();
     }
-    return SUCCESS;
+    return 0;
 }
 
 } // namespace obotcha

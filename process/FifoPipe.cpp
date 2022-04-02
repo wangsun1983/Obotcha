@@ -27,7 +27,7 @@ _FifoPipe::_FifoPipe(String name,int type) {
 
 int _FifoPipe::init() {
     if(isCreated) {
-        return -AlreadyExists;
+        return -1;
     }
 
     if(access(mPipeName->toChars(),F_OK) != 0){
@@ -53,15 +53,15 @@ int _FifoPipe::init() {
 
 int _FifoPipe::writeTo(ByteArray data) {
     if(!isCreated){
-        return -NotCreate;
+        return -1;
     }
 
     if(mType == FifoReadPipe) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     if(data->size() > PIPE_BUF) {
-        return -OverSize;
+        return -EINVAL;
     }
 
     return write(fifoId, data->toValue(), data->size());
@@ -69,11 +69,11 @@ int _FifoPipe::writeTo(ByteArray data) {
 
 int _FifoPipe::readFrom(ByteArray buff) {
     if(!isCreated) {
-        return -NotCreate;
+        return -1;
     }
 
     if(mType == FifoWritePipe) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     return read(fifoId, buff->toValue(), buff->size());

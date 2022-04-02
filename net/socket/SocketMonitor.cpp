@@ -143,7 +143,7 @@ int _SocketMonitor::bind(Socket s, SocketListener l) {
 
     if (isSocketExist(s)) {
         LOG(ERROR)<<"bind socket already exists!!!";
-        return -AlreadyExists;
+        return 0;
     }
 
     addNewSocket(s,l);

@@ -31,7 +31,7 @@ _ExecutorTask::~_ExecutorTask() {
 int _ExecutorTask::wait(long interval) {
     AutoLock l(mMutex);
     if (mStatus == Complete || mStatus == Cancel) {
-        return -AlreadyComplete;
+        return -1;
     }
     return mCompleteCond->wait(mMutex, interval);
 }

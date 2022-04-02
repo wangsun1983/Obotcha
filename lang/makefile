@@ -16,7 +16,6 @@ objs += $(outtmp)/integer.o \
 	$(outtmp)/uint8.o \
 	$(outtmp)/byte.o \
 	$(outtmp)/exception.o \
-	$(outtmp)/error.o \
 	$(outtmp)/stringbuffer.o \
 
 $(outtmp)/integer.o :$(langDir)/Integer.cpp
@@ -69,6 +68,3 @@ $(outtmp)/byte.o :$(langDir)/Byte.cpp
 
 $(outtmp)/exception.o :$(langDir)/Exception.cpp
 		$(cppcompiler) $(obotchacppflags) -c $(langDir)/Exception.cpp -o $(outtmp)/exception.o 
-
-$(outtmp)/error.o :$(langDir)/Error.cpp
-		$(cppcompiler) $(obotchacppflags) -c $(langDir)/Error.cpp -o $(outtmp)/error.o 

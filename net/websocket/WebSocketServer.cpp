@@ -47,7 +47,7 @@ int _WebSocketServer::start() {
         return 0;
     }
 
-    return -AlreadyExists;
+    return -1;
 }
 
 int _WebSocketServer::close() {

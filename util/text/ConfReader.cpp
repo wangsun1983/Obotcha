@@ -23,7 +23,7 @@ _ConfReader::_ConfReader(File file) {
 
 int _ConfReader::parse() {
     if (!mConfFile->exists()) {
-        return -FileNotExists;
+        return -ENOENT;
     }
 
     config.comment_char = '#';
@@ -32,10 +32,10 @@ int _ConfReader::parse() {
 
     if (0 == ccl_parse(&config,
                        (const char *)mConfFile->getAbsolutePath()->toChars())) {
-        return SUCCESS;
+        return 0;
     }
 
-    return FAIL;
+    return -1;
 }
 
 _ConfReader::~_ConfReader() {

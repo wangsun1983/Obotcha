@@ -50,11 +50,11 @@ int _PosixMq::init() {
     }
 
     if(mMaxMsgs > MAX_MSG_NUMS) {
-        return -OverSize;
+        return -EINVAL;
     }
 
     if(mMsgSize > MAX_MSG_SIZE) {
-        return -OverSize;
+        return -EINVAL;
     }
 
     struct mq_attr mqAttr;
@@ -72,13 +72,13 @@ int _PosixMq::init() {
     if(mqAttr.mq_maxmsg != mMaxMsgs) {
         close(mQid);
         mQid = -1;
-        return -AttributeSetFail;
+        return -1;
     }
 
     if(mqAttr.mq_msgsize != mMsgSize) {
         close(mQid);
         mQid = -1;
-        return -AttributeSetFail;
+        return -1;
     }
 
     return mQid;
@@ -86,15 +86,15 @@ int _PosixMq::init() {
 
 int _PosixMq::send(ByteArray data,PosixMqPriority prio) {
     if(mType == RecvMq) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     if(mQid == -1) {
-        return -NotCreate;
+        return -EINVAL;
     }
 
     if(data->size() > mMsgSize) {
-        return -OverSize;
+        return -EINVAL;
     }
 
     return mq_send(mQid, (char *)data->toValue(), data->size(), prio);
@@ -106,7 +106,7 @@ int _PosixMq::send(ByteArray data) {
 
 int _PosixMq::receive(ByteArray buff) {
     if(mType == SendMq) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     unsigned int priority = 0;
@@ -115,15 +115,15 @@ int _PosixMq::receive(ByteArray buff) {
 
 int _PosixMq::sendTimeout(ByteArray data,PosixMqPriority prio,long timeInterval) {
     if(mType == SendMq) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     if(mQid == -1) {
-        return -NotCreate;
+        return -1;
     }
 
     if(data->size() > mMsgSize) {
-        return -OverSize;
+        return -EINVAL;
     }
 
 
@@ -149,7 +149,7 @@ int _PosixMq::sendTimeout(ByteArray data,long waittime) {
 
 int _PosixMq::receiveTimeout(ByteArray buff,long timeInterval) {
     if(mType == SendMq) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     struct timespec ts;

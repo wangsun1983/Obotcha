@@ -36,7 +36,7 @@ _LocalSocketImpl::_LocalSocketImpl(InetAddress address, SocketOption option)
 int _LocalSocketImpl::connect() {
     if (::connect(sock->getFd(), (struct sockaddr *)&serverAddr,
                   sizeof(serverAddr)) < 0) {
-        return -NetConnectFail;
+        return -errno;
     }
 
     while (1) {

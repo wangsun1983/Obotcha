@@ -34,7 +34,7 @@ namespace obotcha {
     while (!isDestroy) {                                                       \
         int size = mQueue.size();                                              \
         if (mCapacity > 0 && size == mCapacity) {                              \
-            if (-WaitTimeout == notFull->wait(mMutex, timeout)) {              \
+            if (-ETIMEDOUT == notFull->wait(mMutex, timeout)) {              \
                 return false;                                                  \
             }                                                                  \
             continue;                                                          \
@@ -51,7 +51,7 @@ namespace obotcha {
     while (!isDestroy) {                                                       \
         int size = mQueue.size();                                              \
         if (size == 0) {                                                       \
-            if (-WaitTimeout == notEmpty->wait(mMutex, timeout)) {             \
+            if (-ETIMEDOUT == notEmpty->wait(mMutex, timeout)) {             \
                 return ContainerValue<T>(nullptr).get();                       \
             }                                                                  \
             continue;                                                          \

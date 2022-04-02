@@ -108,17 +108,17 @@ int _AesSecretKey::genKey(String content,AES_KEY *encrypt,AES_KEY *decrypt) {
     memcpy(keyBuff,c,length);
     int ret = AES_set_encrypt_key((const unsigned char*)keyBuff,keylength*8,encrypt);
     if( ret!= 0) {
-        return -GenKeyFail;
+        return -1;
     }
 
     //Aes cfb/ofb's dec key is same as enc key!!!
     if(mType == KeyAESCFB1 || mType == KeyAESCFB8 || mType == KeyAESCFB128 || mType == KeyAESOFB128) {
         if(AES_set_encrypt_key((const unsigned char*)keyBuff,keylength*8,decrypt) != 0) {
-            return -GenKeyFail;
+            return -1;
         }
     } else {
         if(AES_set_decrypt_key((const unsigned char*)keyBuff,keylength*8,decrypt) != 0) {
-            return -GenKeyFail;
+            return -1;
         }
     }
 
@@ -131,13 +131,13 @@ int _AesSecretKey::loadKey(String path) {
     FILE *key_file = fopen(file->getAbsolutePath()->toChars(), "rb");
 
     if (!key_file) {
-        return -FileNotExists;
+        return -ENOENT;
     }
     int size = fread(&mKey, 1, sizeof(AES_KEY), key_file);
     fclose(key_file);
 
     if(size <= 0) {
-        return -ReadFail;
+        return -1;
     }
 
     return size;

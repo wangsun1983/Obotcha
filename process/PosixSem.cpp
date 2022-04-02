@@ -32,7 +32,7 @@ bool _PosixSem::init() {
 
 int _PosixSem::wait() {
     if(sem == SEM_FAILED) {
-        return -NotCreate;
+        return -1;
     }
 
     return sem_wait(sem);
@@ -40,7 +40,7 @@ int _PosixSem::wait() {
 
 int _PosixSem::wait(long timeInterval) {
     if(sem == SEM_FAILED) {
-        return -NotCreate;
+        return -1;
     }
 
     struct timespec ts;
@@ -61,7 +61,7 @@ int _PosixSem::wait(long timeInterval) {
 
 int _PosixSem::tryWait() {
     if(sem == SEM_FAILED) {
-        return -NotCreate;
+        return -1;
     }
 
     return sem_trywait(sem);
@@ -69,7 +69,7 @@ int _PosixSem::tryWait() {
 
 int _PosixSem::post() {
     if(sem == SEM_FAILED) {
-        return -NotCreate;
+        return -1;
     }
 
     return sem_post(sem);
@@ -77,7 +77,7 @@ int _PosixSem::post() {
 
 int _PosixSem::getValue() {
     if(sem == SEM_FAILED) {
-        return -NotCreate;
+        return -1;
     }
 
     int value;

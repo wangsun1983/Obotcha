@@ -71,7 +71,7 @@ Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
 
 int _ThreadPoolExecutor::shutdown() {
     if(!isExecuting()) {
-        return -AlreadyDestroy;
+        return 0;
     }
 
     updateStatus(ShutDown);
@@ -120,7 +120,7 @@ bool _ThreadPoolExecutor::isTerminated() {
 
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     if(!isShutDown()) {
-        return -InvalidStatus;
+        return -1;
     }
 
     bool isWaitForever = (millseconds == 0);
@@ -134,7 +134,7 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
         if (!isWaitForever) {
             millseconds -= watcher->stop();
             if (millseconds <= 0) {
-                return -WaitTimeout;
+                return -ETIMEDOUT;
             }
         }
         iterator->next();

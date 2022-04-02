@@ -265,7 +265,7 @@ void _XmlValue::appendNode(String name, String value) {
 
 int _XmlValue::updateAttr(String name, String newvalue) {
     if (name == nullptr || newvalue == nullptr) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     xml_attribute<> *attr = node->first_attribute(name->toChars());
@@ -275,12 +275,12 @@ int _XmlValue::updateAttr(String name, String newvalue) {
         return 0;
     }
 
-    return -NotFound;
+    return -1;
 }
 
 int _XmlValue::renameAttr(String name, String newname) {
     if (name == nullptr || newname == nullptr) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     xml_attribute<> *attr = node->first_attribute(name->toChars());
@@ -290,7 +290,7 @@ int _XmlValue::renameAttr(String name, String newname) {
         return 0;
     }
 
-    return -NotFound;
+    return -1;
 }
 
 void _XmlValue::appendAttr(String name, String value) {

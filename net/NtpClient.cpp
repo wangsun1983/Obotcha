@@ -26,7 +26,7 @@ _NtpClient::_NtpClient() {}
 int _NtpClient::bind(String url, int port, long duration) {
     ArrayList<InetAddress> servers = createHttpUrl(url)->getInetAddress();
     if (servers->size() == 0) {
-        return -NetConnectFail;
+        return -1;
     }
     InetAddress address = servers->get(0);
     address->setPort(port);

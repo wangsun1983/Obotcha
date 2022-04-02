@@ -169,7 +169,6 @@ int _Md::computeStringMd2(unsigned char *dest_str, unsigned int dest_len, char *
 int _Md::computeFileMd5(const char *file_path, char *md5_str) {
     int i;
     int fd;
-    int ret;
     unsigned char data[ReadDataSize];
     unsigned char md5_value[MD5_DIGEST_LENGTH];
     MD5_CTX md5;
@@ -184,7 +183,7 @@ int _Md::computeFileMd5(const char *file_path, char *md5_str) {
     MD5_Init(&md5);
 
     while (1) {
-        ret = read(fd, data, ReadDataSize);
+        int ret = read(fd, data, ReadDataSize);
         if (-1 == ret) {
             perror("read");
             close(fd);
@@ -213,7 +212,6 @@ int _Md::computeFileMd5(const char *file_path, char *md5_str) {
 int _Md::computeFileMd4(const char *file_path, char *md4_str) {
     int i;
     int fd;
-    int ret;
     unsigned char data[ReadDataSize];
     unsigned char md4_value[MD4_DIGEST_LENGTH];
     MD4_CTX md4;
@@ -228,7 +226,7 @@ int _Md::computeFileMd4(const char *file_path, char *md4_str) {
     MD4_Init(&md4);
 
     while (1) {
-        ret = read(fd, data, ReadDataSize);
+        int ret = read(fd, data, ReadDataSize);
         if (-1 == ret) {
             perror("read");
             close(fd);

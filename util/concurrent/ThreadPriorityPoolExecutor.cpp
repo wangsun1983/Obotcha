@@ -90,7 +90,7 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int capacity,
 
 int _ThreadPriorityPoolExecutor::shutdown() {
     if(isShutDown()) {
-        return -InvalidStatus;
+        return 0;
     }
     updateStatus(ShutDown);
 
@@ -198,7 +198,7 @@ void _ThreadPriorityPoolExecutor::awaitTermination() {
 
 int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
     if(!isShutDown()) {
-        return -InvalidStatus;
+        return -1;
     }
 
     bool isWaitForever = (millseconds == 0);
@@ -211,7 +211,7 @@ int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
         if (!isWaitForever) {
             millseconds -= interval;
             if (millseconds <= 0) {
-                return -WaitTimeout;
+                return -ETIMEDOUT;
             }
         }
         iterator->next();

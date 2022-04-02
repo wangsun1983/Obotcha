@@ -45,7 +45,7 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int queuesize,
 
 int _ThreadCachedPoolExecutor::shutdown() {
     if(!isExecuting()) {
-        return -AlreadyDestroy;
+        return 0;
     }
     updateStatus(ShutDown);
     
@@ -100,7 +100,7 @@ void _ThreadCachedPoolExecutor::awaitTermination() {
 
 int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
     if(isExecuting()) {
-        return -InvalidStatus;
+        return -1;
     }
 
     bool isWaitForever = (millseconds == 0);
@@ -123,7 +123,7 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
         if (!isWaitForever) {
             millseconds -= interval;
             if (millseconds <= 0) {
-                return -WaitTimeout;
+                return -ETIMEDOUT;
             }
         }
         iterator->next();

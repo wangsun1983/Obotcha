@@ -17,7 +17,7 @@ namespace obotcha {
     AutoLock l(mMutex);                                                        \
     while (!isDestroy) {                                                       \
         if (mCapacity != -1 && mList->size() == mCapacity) {                   \
-            if (notFull->wait(mMutex, timeout) == -WaitTimeout) {              \
+            if (notFull->wait(mMutex, timeout) == -ETIMEDOUT) {              \
                 return false;                                                  \
             }                                                                  \
             continue;                                                          \
@@ -44,7 +44,7 @@ namespace obotcha {
     AutoLock l(mMutex);                                                        \
     while (!isDestroy) {                                                       \
         if (mList->size() == 0) {                                              \
-            if (notEmpty->wait(mMutex, timeout) == -WaitTimeout) {             \
+            if (notEmpty->wait(mMutex, timeout) == -ETIMEDOUT) {             \
                 return ContainerValue<T>(nullptr).get();                       \
             }                                                                  \
             continue;                                                          \

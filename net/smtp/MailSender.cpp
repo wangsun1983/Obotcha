@@ -314,7 +314,7 @@ int _MailSender::send() {
 
 int _MailSender::connectRemoteServer() {
     if((mConnection->mSocket = socket(PF_INET, SOCK_STREAM,0)) < 0) {
-        return -OpenFail;
+        return -errno;
     }
 
     if(mConnection->mSmtpPort != 0) {
@@ -330,20 +330,20 @@ int _MailSender::connectRemoteServer() {
         if (host != nullptr) {
             memcpy(&sockAddr.sin_addr,host->h_addr_list[0],host->h_length);
         } else {
-            return -OpenFail;
+            return -errno;
         }
     }
     
     unsigned long ul = 1;
     if(ioctl(mConnection->mSocket,FIONBIO, (unsigned long*)&ul) == -1) {
         close(mConnection->mSocket);
-        return -OpenFail;
+        return -errno;
     }
 
     if(connect(mConnection->mSocket,(struct sockaddr *)&sockAddr,sizeof(sockAddr)) == -1) {
         if(errno != EINPROGRESS) {
             close(mConnection->mSocket);
-            return -OpenFail;
+            return -errno;
         }
     } else {
         //TODO
@@ -366,12 +366,12 @@ int _MailSender::connectRemoteServer() {
         
         if((res = select(mConnection->mSocket + 1,NULL,&fdwrite,&fdexcept,&timeout)) == -1) {
             close(mConnection->mSocket);
-            return -OpenFail;
+            return -errno;
         }
 
         if(!res) {
             close(mConnection->mSocket);
-            return -OpenFail;
+            return -errno;
         }
         
         if(res && FD_ISSET(mConnection->mSocket,&fdwrite)) {
@@ -732,7 +732,7 @@ int _MailSender::initOpenSSL() {
     SSL_load_error_strings();
     mSSLContext = SSL_CTX_new (SSLv23_client_method());
     if(mSSLContext == NULL) {
-        return -CreateFail; 
+        return -1; 
     }
 
     return 0;
@@ -740,12 +740,12 @@ int _MailSender::initOpenSSL() {
 
 int _MailSender::openSSLConnection() {
     if(mSSLContext == NULL) {
-        return -InvalidParam;
+        return -1;
     }
 
     mSSL = SSL_new (mSSLContext);   
     if(mSSL == NULL) {
-        return -OpenFail;
+        return -1;
     }
     SSL_set_fd (mSSL, (int)mConnection->mSocket);
     SSL_set_mode(mSSL, SSL_MODE_AUTO_RETRY);
@@ -777,13 +777,13 @@ int _MailSender::openSSLConnection() {
             if((res = select(mConnection->mSocket +1,&fdread,&fdwrite,NULL,&time)) == -1) {
                 FD_ZERO(&fdwrite);
                 FD_ZERO(&fdread);
-                return -OpenFail;
+                return -1;
             }
             if(!res) {
                 //timeout
                 FD_ZERO(&fdwrite);
                 FD_ZERO(&fdread);
-                return -OpenFail;
+                return -1;
             }
         }
 
@@ -806,7 +806,7 @@ int _MailSender::openSSLConnection() {
           default:          
             FD_ZERO(&fdwrite);
             FD_ZERO(&fdread);
-            return -WaitFail;
+            return -1;
         }
     }
 }

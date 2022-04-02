@@ -31,13 +31,13 @@ int _DesSecretKey::generate(String decKeyFile,String encKeyFile,ArrayList<String
 int _DesSecretKey::saveKey(String filepath,DES_cblock *block) {
     FILE *key_file = fopen(filepath->toChars(), "wb");
     if(key_file == nullptr) {
-        return -OpenFail;
+        return -ENOENT;
     }
 
     short int bytes_written = fwrite(block, 1, DesKeySize, key_file);
     if (bytes_written != DesKeySize) {
         fclose(key_file);
-        return -WriteFail;
+        return -1;
     }
 
     fclose(key_file);
@@ -47,14 +47,14 @@ int _DesSecretKey::saveKey(String filepath,DES_cblock *block) {
 int _DesSecretKey::loadKey(String path) {
     FILE *key_file = fopen(path->toChars(), "rb");
     if (!key_file) {
-        return -FileNotExists;
+        return -ENOENT;
     }
 
     short int bytes_read;
     bytes_read = fread(&mKey, sizeof(unsigned char), DesKeySize, key_file);
     if (bytes_read != DesKeySize) {
         fclose(key_file);
-        return -OpenFail;
+        return -1;
     }
 
     fclose(key_file);

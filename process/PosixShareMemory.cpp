@@ -34,7 +34,7 @@ int _PosixShareMemory::init() {
             continue;
         }
 
-        return -OpenFail;
+        return -errno;
     }
 
     struct stat ss;
@@ -55,7 +55,7 @@ int _PosixShareMemory::init() {
     close(shareMemoryFd);
 
     if(mPtr == nullptr) {
-        return -MmapFail;
+        return -1;
     }
 
     isCreated = true;
@@ -65,11 +65,11 @@ int _PosixShareMemory::init() {
 
 int _PosixShareMemory::write(ByteArray arr) {
     if(!isCreated) {
-        return -NotCreate;
+        return -1;
     }
 
     if(arr->size() > size) {
-        return -OverSize;
+        return -EINVAL;
     }
 
     memcpy(mPtr,arr->toValue(),arr->size());
@@ -79,11 +79,11 @@ int _PosixShareMemory::write(ByteArray arr) {
 
 int _PosixShareMemory::write(int index,ByteArray arr) {
     if(!isCreated) {
-        return -NotCreate;
+        return -1;
     }
 
     if((index + arr->size()) > size) {
-        return -OverSize;
+        return -EINVAL;
     }
 
     memcpy(&mPtr[index],arr->toValue(),arr->size());
@@ -93,11 +93,11 @@ int _PosixShareMemory::write(int index,ByteArray arr) {
 
 int _PosixShareMemory::write(int index,char v) {
     if(!isCreated) {
-        return -NotCreate;
+        return -1;
     }
 
     if(index >= size) {
-        return -OverSize;
+        return -EINVAL;
     }
 
     mPtr[index] = v;
@@ -107,7 +107,7 @@ int _PosixShareMemory::write(int index,char v) {
 
 int _PosixShareMemory::read(ByteArray arr) {
     if(!isCreated) {
-        return -NotCreate;
+        return -1;
     }
 
     int ll = arr->size() > size?size:arr->size();
@@ -118,11 +118,11 @@ int _PosixShareMemory::read(ByteArray arr) {
 
 int _PosixShareMemory::read(int index,ByteArray arr) {
     if(!isCreated) {
-        return -NotCreate;
+        return -1;
     }
 
     if(index >= size) {
-        return -OverSize;
+        return -EINVAL;
     }
 
     int ll = (arr->size() + index) > size?size:(arr->size() + index);
@@ -132,11 +132,11 @@ int _PosixShareMemory::read(int index,ByteArray arr) {
 
 int _PosixShareMemory::read(int index) {
     if(!isCreated) {
-        return -NotCreate;
+        return -1;
     }
 
     if(index >= size) {
-        return -OverSize;
+        return -EINVAL;
     }
 
     return mPtr[index];

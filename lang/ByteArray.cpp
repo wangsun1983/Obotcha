@@ -142,7 +142,7 @@ int _ByteArray::size() { return mSize; }
 
 int _ByteArray::quickShrink(int size) {
     if (size >= mSize) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     buff[size] = 0;
@@ -162,7 +162,7 @@ int _ByteArray::quickRestore() {
 
 int _ByteArray::growTo(int size) {
     if (size <= mSize) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     int len = size - mSize;
@@ -185,7 +185,7 @@ int _ByteArray::growTo(int size) {
 
 int _ByteArray::growBy(int size) {
     if (size <= 0) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     int nextSize = mSize + size;
@@ -245,7 +245,7 @@ int _ByteArray::fillFrom(byte *input,int start,int len) {
 
 int _ByteArray::append(const sp<_ByteArray> &b) {
     if (b == nullptr) {
-        return -InvalidParam;
+        return -EINVAL;
     }
     return append(b->toValue(), b->size());
 }
@@ -256,7 +256,7 @@ int _ByteArray::append(const sp<_ByteArray> &b, int len) {
 
 int _ByteArray::append(byte *data, int len) {
     if (data == nullptr || len <= 0) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     int nextSize = mSize + len;

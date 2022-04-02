@@ -121,14 +121,14 @@ int _Calendar::onUpdateByYear(int year) {
     // update dayOfYear
     dayOfYear = caculateDayOfYear(year, month, dayOfMonth);
 
-    return SUCCESS;
+    return 0;
 }
 
 int _Calendar::onUpdateByMonth(int mon) {
     // update dayOfMonth
     if (month < 0 || month > December) {
         LOG(ERROR)<<"Calendar,onUpdateByMonth invalid params,mon is "<<mon;
-        return FAIL;
+        return -1;
     }
 
     int *_days = getDays(year);
@@ -144,26 +144,26 @@ int _Calendar::onUpdateByMonth(int mon) {
     // update dayOfYear
     dayOfYear = caculateDayOfYear(year, month, dayOfMonth);
 
-    return SUCCESS;
+    return 0;
 }
 
 int _Calendar::onUpdateByDayOfWeek(int day) {
     if (day <= 0 || day > Saturday) {
         LOG(ERROR)<<"Calendar,onUpdateByDayOfWeek invalid params,day is "<<day;
-        return FAIL;
+        return -1;
     }
 
     int days = day - dayOfWeek;
     dayOfWeek = day;
     add(DayOfYear, days);
 
-    return SUCCESS;
+    return 0;
 }
 
 int _Calendar::onUpdateByDayOfMonth(int day) {
     if (day < 0) {
         LOG(ERROR)<<"Calendar,onUpdateByDayOfMonth invalid params,day is "<<day;
-        return FAIL;
+        return -1;
     }
 
     // update dayOfMonth
@@ -176,13 +176,13 @@ int _Calendar::onUpdateByDayOfMonth(int day) {
     // update dayOfYear
     dayOfYear = caculateDayOfYear(year, month, dayOfMonth);
 
-    return SUCCESS;
+    return 0;
 }
 
 int _Calendar::onUpdateByDayOfYear(int day) {
     if (day < 0) {
         LOG(ERROR)<<"Calendar,onUpdateByDayOfYear invalid params,day is "<<day;
-        return FAIL;
+        return -1;
     }
 
     // update dayOfMonth
@@ -203,7 +203,7 @@ int _Calendar::onUpdateByDayOfYear(int day) {
     // update dayOfWeek
     dayOfWeek = caculateDayOfWeek(year, month, dayOfMonth);
 
-    return SUCCESS;
+    return 0;
 }
 
 int _Calendar::caculateDayOfYear(int _year, int _month, int _dayOfMonth) {
@@ -269,10 +269,10 @@ int _Calendar::add(_Calendar::TimeType type, uint64_t v) {
         }
 
         default:
-            return FAIL;
+            return -1;
     }
 
-    return SUCCESS;
+    return 0;
 }
 
 void _Calendar::onUpdateMillseconds(uint64_t interval) {
@@ -305,33 +305,33 @@ int _Calendar::set(_Calendar::TimeType type, int value) {
         case Hour: {
             if (value >= 0 && value <= 23) {
                 hour = value;
-                return SUCCESS;
+                return 0;
             }
         }
 
         case Minute: {
             if (value >= 0 && value <= 59) {
                 minute = value;
-                return SUCCESS;
+                return 0;
             }
         }
 
         case Second: {
             if (value >= 0 && value <= 59) {
                 second = value;
-                return SUCCESS;
+                return 0;
             }
         }
 
         case MSecond: {
             if (value >= 0 && value <= 999) {
                 msec = value;
-                return SUCCESS;
+                return 0;
             }
         }
 
         default:
-            return FAIL;
+            return -1;
     }
 }
 
@@ -365,7 +365,7 @@ int _Calendar::get(_Calendar::TimeType type) {
             return msec;
     }
 
-    return FAIL;
+    return -1;
 }
 
 long int _Calendar::toTimeMillis() {

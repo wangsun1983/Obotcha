@@ -16,7 +16,6 @@ namespace obotcha {
 //RSA or ECB
 SecretKey _SecretKeyCreator::getInstance(String param) {
     //get algorithm type
-    int algorithmType = -1;
     ArrayList<String> params = param->split("/");
     if(params == nullptr) {
         params = createArrayList<String>();
@@ -56,7 +55,6 @@ SecretKey _SecretKeyCreator::getInstance(String param) {
         c->setType(keytype);
         return (SecretKey)c;
     } else if(param->equalsIgnoreCase(st(Cipher)::DesStr)) {
-        int keytype = st(SecretKey)::KeyDES;
         DesSecretKey c = createDesSecretKey();
         return (SecretKey)c;
     } else if(param->equalsIgnoreCase(st(Cipher)::RsaStr)) {

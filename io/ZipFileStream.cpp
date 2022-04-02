@@ -46,12 +46,12 @@ void _ZipFileStream::close() {
 
 int _ZipFileStream::compress(String src, String dest) {
     if (src == nullptr) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     File srcFile = createFile(src);
     if (!srcFile->exists()) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     File destFile = createFile(dest);
@@ -59,22 +59,18 @@ int _ZipFileStream::compress(String src, String dest) {
         destFile->removeAll();
     }
 
-    if (minizip(srcFile, destFile, nullptr, nullptr) == -1) {
-        return -MiniZipFail;
-    }
-
-    return 0;
+    return minizip(srcFile, destFile, nullptr, nullptr);
 }
 
 int _ZipFileStream::compressWithPassword(String src, String dest,
                                          String password) {
     if (src == nullptr || dest == nullptr || password == nullptr) {
-        return -InvalidParam;
+        return -EINVAL;
     }
 
     File srcFile = createFile(src);
     if (!srcFile->exists()) {
-        return -InvalidParam;
+        return -ENOENT;
     }
 
     File destFile = createFile(dest);
@@ -82,12 +78,7 @@ int _ZipFileStream::compressWithPassword(String src, String dest,
         destFile->removeAll();
     }
 
-    if (minizip(srcFile, destFile, nullptr, (char *)password->toChars()) ==
-        -1) {
-        return -MiniZipFail;
-    }
-
-    return 0;
+    return minizip(srcFile, destFile, nullptr, (char *)password->toChars());
 }
 
 int _ZipFileStream::writeInZipFile(zipFile zFile, File file) {

@@ -62,7 +62,7 @@ public:
     Runnable getRunnable();
 
     template <typename T> T getResult(int interval = 0) {
-        if (this->wait(interval) != -WaitTimeout) {
+        if (this->wait(interval) != -ETIMEDOUT) {
             {
                 AutoLock l(mMutex);
                 if (mStatus != Complete) {

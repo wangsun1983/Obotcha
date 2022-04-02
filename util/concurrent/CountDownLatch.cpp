@@ -19,7 +19,7 @@ int _CountDownLatch::countDown() {
     AutoLock l(waitMutex);
     
     if (count == 0) {
-        return -AlreadyDestroy;
+        return -1;
     }
 
     count--;
@@ -28,7 +28,7 @@ int _CountDownLatch::countDown() {
         waitCond->notifyAll();
     }
 
-    return SUCCESS;
+    return 0;
 }
 
 int _CountDownLatch::getCount() {
@@ -38,7 +38,7 @@ int _CountDownLatch::getCount() {
 
 int _CountDownLatch::await(long v) {
     AutoLock l(waitMutex);
-    return (count == 0)? -AlreadyDestroy:waitCond->wait(waitMutex, v);
+    return (count == 0)? -1:waitCond->wait(waitMutex, v);
 }
 
 int _CountDownLatch::release() {

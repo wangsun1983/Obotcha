@@ -52,7 +52,7 @@ _Thread::_Thread() {
 
 int _Thread::setName(String name) {
     if (!isRunning()) {
-        return -InvalidStatus;
+        return -1;
     }
 
     mName = name;
@@ -97,7 +97,7 @@ void _Thread::run() {
 
 int _Thread::detach() {
     if (!isRunning()) {
-        return -AlreadyExists;
+        return 0;
     }
 
     return pthread_detach(getThreadId());
@@ -121,7 +121,7 @@ int _Thread::start() {
     {
         AutoLock l(mMutex);
         if (mStatus != NotStart) {
-            return -AlreadyExecute;
+            return -EALREADY;
         }
 
         mStatus = Idle;
@@ -151,7 +151,7 @@ int _Thread::join(long timeInterval) {
             return mJoinCondition->wait(mMutex, timeInterval);
         }
     }
-    return -AlreadyExists;
+    return -EALREADY;
 }
 
 int _Thread::getStatus() {
@@ -165,24 +165,24 @@ void _Thread::onComplete() {
 
 int _Thread::getPriority() {
     if (!isRunning()) {
-        return -InvalidStatus;
+        return -1;
     }
 
     int policy = getSchedPolicy();
 
     if (policy == SCHED_NORMAL) {
-        return -NotSupport;
+        return -EOPNOTSUPP;
     }
 
     const int min_prio = sched_get_priority_min(policy);
     const int max_prio = sched_get_priority_max(policy);
 
     if (min_prio == -1 || max_prio == -1) {
-        return -InvalidStatus;
+        return -1;
     }
 
     if (max_prio - min_prio <= 2) {
-        return -InvalidStatus;
+        return -1;
     }
 
     sched_param param;
@@ -210,21 +210,21 @@ int _Thread::getPriority() {
 
 int _Thread::setPriority(int priority) {
     if (!isRunning()) {
-        return -InvalidStatus;
+        return -1;
     }
 
     int policy = getSchedPolicy();
     if (policy == SCHED_NORMAL) {
-        return -NotSupport;
+        return -EOPNOTSUPP;
     }
 
     const int min_prio = sched_get_priority_min(policy);
     const int max_prio = sched_get_priority_max(policy);
     if (min_prio == -1 || max_prio == -1) {
-        return -InvalidStatus;
+        return -1;
     }
     if (max_prio - min_prio <= 2) {
-        return -InvalidStatus;
+        return -1;
     }
     sched_param param;
     const int top_prio = max_prio - 1;
@@ -257,7 +257,7 @@ int _Thread::setPriority(int priority) {
 
 int _Thread::setSchedPolicy(int policy) {
     if (!isRunning()) {
-        return -InvalidStatus;
+        return -1;
     }
 
     if (pthread_attr_setschedpolicy(&mThreadAttr, policy) != 0) {
@@ -269,7 +269,7 @@ int _Thread::setSchedPolicy(int policy) {
 
 int _Thread::getSchedPolicy() {
     if (!isRunning()) {
-        return -InvalidStatus;
+        return -1;
     }
 
     int policy = Other;

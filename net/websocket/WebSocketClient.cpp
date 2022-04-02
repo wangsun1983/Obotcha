@@ -98,7 +98,7 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
     HttpRequest shakeHandMsg = composer->genClientShakeHandMessage(httpUrl);
     HttpConnection connection = createHttpConnection(httpUrl);
     if(connection->connect() < 0) {
-        return -NetConnectFail;
+        return -1;
     }
 
     HttpResponse response = connection->execute(shakeHandMsg);
@@ -121,7 +121,7 @@ int _WebSocketClient::connect(String url,WebSocketListener l,HttpOption option) 
         return 0;
     }
     
-    return -NetConnectFail;
+    return -1;
 }
 
 int _WebSocketClient::sendTextMessage(String msg) {
@@ -159,7 +159,7 @@ int _WebSocketClient::sendFile(File file) {
 
 int _WebSocketClient::_send(ArrayList<ByteArray> data) {
     if(mOutputStream == nullptr) {
-        return -NetConnectFail;
+        return -1;
     }
 
     ListIterator<ByteArray> iterator = data->getIterator();

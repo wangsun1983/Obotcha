@@ -16,21 +16,17 @@ int _ServerLocalSocketImpl::bind() {
     int len = offsetof(struct sockaddr_un, sun_path) + strlen(serverAddr.sun_path);
 
     if (::bind(sock->getFd(), (struct sockaddr *)&serverAddr, len) < 0) {
-        if (errno == EADDRINUSE) {
-            return -NetAddrAlreadyUseFail;
-        }
-
-        return -NetBindFail;
+        return -errno;
     }
 
     int connectNum = (option == nullptr)?
                         st(SocketOption)::DefaultConnectNum:option->getConnectionNum();
 
     if (listen(sock->getFd(), connectNum) < 0) {
-        return -NetListenFail;
+        return -errno;
     }
 
-    return SUCCESS;
+    return 0;
 }
 
 Socket _ServerLocalSocketImpl::accept() {

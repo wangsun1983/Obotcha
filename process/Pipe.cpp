@@ -15,7 +15,7 @@ _Pipe::_Pipe():_Pipe(PipeDefault) {
 
 int _Pipe::init() {
     if(pipeFd[WritePipe] != -1 && pipeFd[ReadPipe] != -1) {
-        return -AlreadyExists;
+        return -1;
     }
 
     int result = -1;
@@ -36,11 +36,11 @@ int _Pipe::init() {
 
 int _Pipe::writeTo(ByteArray data) {
     if(pipeFd[WritePipe] == -1) {
-        return -NotCreate;
+        return -1;
     }
 
     if(data->size() > PIPE_BUF) {
-        return -OverSize;
+        return -EINVAL;
     }
 
     return write(pipeFd[WritePipe],data->toValue(),data->size());
@@ -48,7 +48,7 @@ int _Pipe::writeTo(ByteArray data) {
 
 int  _Pipe::readFrom(ByteArray buff) {
     if(pipeFd[ReadPipe] == -1) {
-        return -NotCreate;
+        return -1;
     }
     int nbytes = read(pipeFd[ReadPipe],buff->toValue(),buff->size());
     return nbytes;
@@ -56,7 +56,7 @@ int  _Pipe::readFrom(ByteArray buff) {
 
 int _Pipe::closeReadPipe() {
     if(pipeFd[ReadPipe] == -1) {
-        return -NotCreate;
+        return -1;
     }
     int ret = close(pipeFd[ReadPipe]);
     pipeFd[ReadPipe] = -1;
@@ -65,7 +65,7 @@ int _Pipe::closeReadPipe() {
 
 int _Pipe::closeWritePipe() {
     if(pipeFd[WritePipe] == -1) {
-        return -NotCreate;
+        return -1;
     }
     int ret = close(pipeFd[WritePipe]);
     pipeFd[WritePipe] = -1;
@@ -74,14 +74,14 @@ int _Pipe::closeWritePipe() {
 
 int _Pipe::getReadPipe() {
     if(pipeFd[ReadPipe] == -1) {
-        return -NotCreate;
+        return -1;
     }
     return pipeFd[ReadPipe];
 }
 
 int _Pipe::getWritePipe() {
     if(pipeFd[WritePipe] == -1) {
-        return -NotCreate;
+        return -1;
     }
     return pipeFd[WritePipe];
 }

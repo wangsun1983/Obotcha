@@ -19,14 +19,14 @@ int _ServerSocketImpl::bind() {
     switch(this->address->getFamily()) {
         case st(InetAddress)::IPV4: {
             if (::bind(sock->getFd(), (struct sockaddr *)&mSockAddr,sizeof(sockaddr)) < 0) {
-                return -NetBindFail;
+                return -errno;
             }
         }
         break;
 
         case st(InetAddress)::IPV6: {
             if (::bind(sock->getFd(), (struct sockaddr *)&mSockAddrV6,sizeof(sockaddr_in6)) < 0) {
-                return -NetBindFail;
+                return -errno;
             }
         }
         break;
@@ -38,7 +38,7 @@ int _ServerSocketImpl::bind() {
     }
 
     if (listen(sock->getFd(), connectNum) < 0) {
-        return -NetListenFail;
+        return -errno;
     }
 
     return 0;

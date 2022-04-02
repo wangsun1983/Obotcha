@@ -40,7 +40,7 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity):_Execut
 
 int _ThreadScheduledPoolExecutor::shutdown() {
     if(isShutDown()) {
-        return -AlreadyDestroy;
+        return 0;
     }
     updateStatus(ShutDown);
 
@@ -106,7 +106,7 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
 
     AutoLock l(mTaskMutex);
     if (mCapacity > 0 && mCount == mCapacity) {
-        if (notFull->wait(mTaskMutex, timeout) == -WaitTimeout) {
+        if (notFull->wait(mTaskMutex, timeout) == -ETIMEDOUT) {
             return -1;
         }
     }

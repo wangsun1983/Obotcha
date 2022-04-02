@@ -27,7 +27,7 @@ int _AsyncOutputChannel::write(ByteArray d) {
     
     AutoLock l(mMutex);
     if (isClosed) {
-        return -AlreadyDestroy;
+        return -1;
     }
 
     if (mDatas->size() > 0) {
@@ -41,12 +41,12 @@ int _AsyncOutputChannel::write(ByteArray d) {
 int _AsyncOutputChannel::notifyWrite() {
     AutoLock l(mMutex);
     if (isClosed) {
-        return -AlreadyDestroy;
+        return -1;
     }
     
     while (mDatas->size() > 0) {
         ByteArray data = mDatas->takeFirst();
-        if(_write(data) != SUCCESS) {
+        if(_write(data) != 0) {
             break;
         }
     }
@@ -68,7 +68,7 @@ int _AsyncOutputChannel::_write(ByteArray data) {
                 mDatas->putFirst(restData);
                 mPool->addChannel(AutoClone(this));
             }
-            return -WriteFail;
+            return -1;
         } else if (result != (data->size() - offset)) {
             offset += result;
             continue;
@@ -76,7 +76,7 @@ int _AsyncOutputChannel::_write(ByteArray data) {
         break;
     }
 
-    return SUCCESS;
+    return 0;
 }
 
 FileDescriptor _AsyncOutputChannel::getFileDescriptor() { 

@@ -330,7 +330,7 @@ int _File::setExecuteOnly() { return setMode(S_IXUSR | S_IXGRP | S_IXOTH); }
 int _File::setWritable() {
     struct stat info = {0};
     if (updateFileInfo(&info) != 0) {
-        return -InvalidStatus;
+        return -1;
     }
 
     mode_t mode = info.st_mode;
@@ -338,17 +338,13 @@ int _File::setWritable() {
     mode |= S_IWGRP;
     mode |= S_IWOTH;
 
-    if (setMode(mode) == 0) {
-        return 0;
-    }
-
-    return -InvalidStatus;
+    return setMode(mode);
 }
 
 int _File::setReadable() {
     struct stat info = {0};
     if (updateFileInfo(&info) != 0) {
-        return -InvalidStatus;
+        return -1;
     }
 
     mode_t mode = info.st_mode;
@@ -356,17 +352,13 @@ int _File::setReadable() {
     mode |= S_IRGRP;
     mode |= S_IROTH;
 
-    if (setMode(mode) == 0) {
-        return 0;
-    }
-
-    return -InvalidStatus;
+    return setMode(mode);
 }
 
 int _File::setExecutable() {
     struct stat info = {0};
     if (updateFileInfo(&info) != 0) {
-        return -InvalidStatus;
+        return -1;
     }
 
     mode_t mode = info.st_mode;
@@ -374,11 +366,7 @@ int _File::setExecutable() {
     mode |= S_IXGRP;
     mode |= S_IXOTH;
 
-    if (setMode(mode) == 0) {
-        return 0;
-    }
-
-    return -InvalidStatus;
+    return setMode(mode);
 }
 
 bool _File::exists(String path) { return (access(path->toChars(), F_OK) == 0); }
@@ -396,7 +384,7 @@ int _File::updateFileInfo(struct stat *info) {
 mode_t _File::getMode() {
     struct stat info = {0};
     if (updateFileInfo(&info) != 0) {
-        return -InvalidStatus;
+        return -1;
     }
 
     return info.st_mode;
@@ -410,7 +398,7 @@ int _File::setMode(mode_t mode) {
     }
 
     umask(mask);
-    return -InvalidStatus;
+    return -1;
 }
 
 _File::~_File() {}
