@@ -286,7 +286,7 @@ public:
             return;
         } else if (IsInstance(Boolean, obj)) {
             String v = (type == ReflectValue)?this->getString():this->getName();
-            Cast<Long>(obj)->update(v->toBasicBool());
+            Cast<Boolean>(obj)->update(v->toBasicBool());
             return;
         } else if (IsInstance(Double, obj)) {
             String v = (type == ReflectValue)?this->getString():this->getName();
