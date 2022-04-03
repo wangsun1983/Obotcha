@@ -27,15 +27,15 @@ _ReadLock::_ReadLock(sp<_ReadWriteLock> l, String s) {
 }
 
 int _ReadLock::lock() {
-    return pthread_rwlock_rdlock(&rwlock->rwlock);
+    return -pthread_rwlock_rdlock(&rwlock->rwlock);
 }
 
 int _ReadLock::unlock() {
-    return pthread_rwlock_unlock(&rwlock->rwlock);
+    return -pthread_rwlock_unlock(&rwlock->rwlock);
 }
 
 int _ReadLock::tryLock() {
-    return pthread_rwlock_tryrdlock(&rwlock->rwlock);
+    return -pthread_rwlock_tryrdlock(&rwlock->rwlock);
 }
 
 String _ReadLock::getName() { 
@@ -45,7 +45,7 @@ String _ReadLock::getName() {
 int _ReadLock::lock(long timeInterval) {
     struct timespec ts = {0};
     st(System)::getNextTime(timeInterval, &ts);
-    return pthread_rwlock_timedrdlock(&rwlock->rwlock, &ts);
+    return -pthread_rwlock_timedrdlock(&rwlock->rwlock, &ts);
 }
 
 //------------ WriteLock ------------//
@@ -55,15 +55,15 @@ _WriteLock::_WriteLock(sp<_ReadWriteLock> l, String s) {
 }
 
 int _WriteLock::lock() {
-    return pthread_rwlock_wrlock(&rwlock->rwlock);
+    return -pthread_rwlock_wrlock(&rwlock->rwlock);
 }
 
 int _WriteLock::unlock() {
-    return pthread_rwlock_unlock(&rwlock->rwlock);
+    return -pthread_rwlock_unlock(&rwlock->rwlock);
 }
 
 int _WriteLock::tryLock() {
-    return pthread_rwlock_trywrlock(&rwlock->rwlock);
+    return -pthread_rwlock_trywrlock(&rwlock->rwlock);
 }
 
 String _WriteLock::getName() { 
@@ -73,7 +73,7 @@ String _WriteLock::getName() {
 int _WriteLock::lock(long timeInterval) {
     struct timespec ts = {0};
     st(System)::getNextTime(timeInterval, &ts);
-    return pthread_rwlock_timedwrlock(&rwlock->rwlock, &ts);
+    return -pthread_rwlock_timedwrlock(&rwlock->rwlock, &ts);
 }
 
 //------------ ReadWriteLock ------------

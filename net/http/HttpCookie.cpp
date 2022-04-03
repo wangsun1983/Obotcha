@@ -2,6 +2,7 @@
 #include "Calendar.hpp"
 #include "HttpHeaderContentParser.hpp"
 #include "HttpPacket.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -107,32 +108,33 @@ String _HttpCookie::toString(int type) {
 
 String _HttpCookie::genHttpResponseCookie() {
     // name
-    String content = createString(mName)->append("=", mValue, ";");
+    StringBuffer content = createStringBuffer();
+    content->append(mName,"=", mValue, ";");
 
     if (mPropertyHttpOnly) {
-        content = content->append(COOKIE_PROPERTY_HTTPONLY, ";");
+        content->append(COOKIE_PROPERTY_HTTPONLY, ";");
     }
 
     if (mPropertySecure) {
-        content = content->append(COOKIE_PROPERTY_SECURE, ";");
+        content->append(COOKIE_PROPERTY_SECURE, ";");
     }
 
     if (mPropertyDomain != nullptr) {
-        content = content->append(COOKIE_PROPERTY_DOMAIN, "=", mPropertyDomain, ";");
+        content->append(COOKIE_PROPERTY_DOMAIN, "=", mPropertyDomain, ";");
     }
 
     if (mPropertyPath != nullptr) {
-        content = content->append(COOKIE_PROPERTY_PATH, "=", mPropertyPath, ";");
+        content->append(COOKIE_PROPERTY_PATH, "=", mPropertyPath, ";");
     }
 
     if (mPropertyMaxAge != -1) {
-        content = content->append(COOKIE_PROPERTY_MAX_AGE, 
+        content->append(COOKIE_PROPERTY_MAX_AGE, 
                                   "=",
                                   createString(mPropertyMaxAge), ";");
     }
 
     if (mPropertyExpires != nullptr) {
-        content = content->append(COOKIE_PROPERTY_EXPIRES, "=", mPropertyExpires->toString(), ";");
+        content->append(COOKIE_PROPERTY_EXPIRES, "=", mPropertyExpires->toString(), ";");
     }
 
     return content->subString(0,content->size() - 1);

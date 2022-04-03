@@ -3,6 +3,7 @@
 #include "Math.hpp"
 #include "StringBuffer.hpp"
 #include "Log.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -60,19 +61,19 @@ void _HttpHeaderContentDisposition::setType(int t) {
 }
 
 String _HttpHeaderContentDisposition::toString() {
-    String content = nullptr;
+    StringBuffer content = createStringBuffer();
 
     switch(type) {
         case Inline:
-            content = createString("inline");
+            content->append(createString("inline"));
         break;
 
         case FormData:
-            content = createString("form-data");
+            content->append(createString("form-data"));
         break;
 
         case Attachment:
-            content = createString("attachment");
+            content->append(createString("attachment"));
         break;
 
         default:
@@ -81,18 +82,18 @@ String _HttpHeaderContentDisposition::toString() {
     }
 
     if(name == nullptr && filename == nullptr) {
-        return content;
+        return content->toString();
     }
 
     if(name != nullptr) {
-        content = content->append("; name=\"",name,"\"");
+        content->append("; name=\"",name,"\"");
     }
 
     if(filename != nullptr) {
-        content = content->append("; filename=\"",filename,"\"");
+        content->append("; filename=\"",filename,"\"");
     }
 
-    return content;
+    return content->toString();
 }
 
 }

@@ -34,12 +34,12 @@ _Condition::_Condition() {
 int _Condition::wait(Mutex m, long int timeInterval) {
     pthread_mutex_t *mutex_t = m->getMutex_t();
     if (timeInterval == 0) {
-        return pthread_cond_wait(&cond_t, m->getMutex_t());
+        return -pthread_cond_wait(&cond_t, m->getMutex_t());
     }
 
     struct timespec ts = {0};
     st(System)::getNextTime(timeInterval, &ts);
-    return pthread_cond_timedwait(&cond_t, mutex_t, &ts);
+    return -pthread_cond_timedwait(&cond_t, mutex_t, &ts);
 }
 
 int _Condition::wait(AutoLock &m, long int millseconds) {

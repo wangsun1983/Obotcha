@@ -46,7 +46,7 @@ _Mutex::_Mutex(const char *v, int type) : _Mutex(type) {
 
 int _Mutex::lock() {
     //printf("owner is %d \n",mutex_t.__data.__owner);
-    return pthread_mutex_lock(&mutex_t);
+    return -pthread_mutex_lock(&mutex_t);
 }
 
 int _Mutex::lock(long timeInterval) {
@@ -54,20 +54,20 @@ int _Mutex::lock(long timeInterval) {
     //    return 0;
     //}
     if (timeInterval == 0) {
-        return pthread_mutex_lock(&mutex_t);
+        return -pthread_mutex_lock(&mutex_t);
     } else {
         struct timespec ts = {0};
         st(System)::getNextTime(timeInterval, &ts);
-        return pthread_mutex_timedlock(&mutex_t, &ts);
+        return -pthread_mutex_timedlock(&mutex_t, &ts);
     }
 }
 
 int _Mutex::unlock() {
-    return pthread_mutex_unlock(&mutex_t);
+    return -pthread_mutex_unlock(&mutex_t);
 }
 
 int _Mutex::tryLock() {
-    return pthread_mutex_trylock(&mutex_t);
+    return -pthread_mutex_trylock(&mutex_t);
 }
 
 String _Mutex::toString() { 

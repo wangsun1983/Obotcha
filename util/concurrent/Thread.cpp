@@ -57,11 +57,7 @@ int _Thread::setName(String name) {
 
     mName = name;
     
-    if(pthread_setname_np(mPthread, name->toChars()) == 0) {
-        return 0;
-    }
-
-    return -1;
+    return -pthread_setname_np(mPthread, name->toChars());
 }
 
 void _Thread::_threadInit(String name, Runnable run) {
@@ -100,7 +96,7 @@ int _Thread::detach() {
         return 0;
     }
 
-    return pthread_detach(getThreadId());
+    return -pthread_detach(getThreadId());
 }
 
 int _Thread::start() {
@@ -128,9 +124,10 @@ int _Thread::start() {
     }
 
     pthread_attr_init(&mThreadAttr);
-    if (pthread_create(&mPthread, &mThreadAttr, localRun, this) != 0) {
+    int ret = pthread_create(&mPthread, &mThreadAttr, localRun, this);
+    if(ret != 0) {
         mStatus = Error;
-        return -1;
+        return -ret;
     }
 
     while (getStatus() == Idle) {
@@ -249,10 +246,7 @@ int _Thread::setPriority(int priority) {
         break;
     }
     
-    if (pthread_setschedparam(mPthread, policy, &param) != 0) {
-        return -1;
-    }
-    return 0;
+    return pthread_setschedparam(mPthread, policy, &param);
 }
 
 int _Thread::setSchedPolicy(int policy) {
@@ -260,11 +254,7 @@ int _Thread::setSchedPolicy(int policy) {
         return -1;
     }
 
-    if (pthread_attr_setschedpolicy(&mThreadAttr, policy) != 0) {
-        return -1;
-    }
-
-    return 0;
+    return pthread_attr_setschedpolicy(&mThreadAttr, policy);
 }
 
 int _Thread::getSchedPolicy() {

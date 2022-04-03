@@ -12,6 +12,7 @@
 #include "NetProtocol.hpp"
 #include "Inet4Address.hpp"
 #include "Inet6Address.hpp"
+#include "StringBuffer.hpp"
 
 namespace obotcha {
 
@@ -337,26 +338,26 @@ String _HttpUrl::getFragment() {
 }
 
 String _HttpUrl::toString() {
-    String url = createString("");
+    StringBuffer url = createStringBuffer();
     String portStr = nullptr;
 
     switch(mScheme) {
         case st(NetProtocol)::Http:
-            url = url->append(createString("http"))->append("://");
+            url->append(createString("http"))->append("://");
             if(mPort != st(NetProtocol)::DefaultHttpPort) {
                 portStr = createString(":")->append(createString(mPort));
             }
         break;
 
         case st(NetProtocol)::Https:
-            url = url->append(createString("https"))->append("://");
+            url->append(createString("https"))->append("://");
             if(mPort != st(NetProtocol)::DefaultHttpsPort) {
                 portStr = createString(":")->append(createString(mPort));
             }
         break;
 
         case st(NetProtocol)::Ws:
-            url = url->append(createString("ws"))->append("://");
+            url->append(createString("ws"))->append("://");
             if(mPort != st(NetProtocol)::DefaultHttpPort) {
                 portStr = createString(":")->append(createString(mPort));
             }
@@ -376,31 +377,31 @@ String _HttpUrl::toString() {
             url =
                 url->append(mUser)->append(":",mPassword,"@");
         } else {
-            url = url->append(mUser)->append("@");
+            url->append(mUser)->append("@");
         }
     }
 
     if(mHostName != nullptr) {
-        url = url->append(mHostName);
+        url->append(mHostName);
     }
     
     //if (mPort != -1) {
     if(portStr != nullptr) {
-        url = url->append(portStr);
+        url->append(portStr);
     }
 
     if(mPath != nullptr) {
-        url = url->append("/",mPath);
+        url->append("/",mPath);
     }
 
     if(this->mQuery != nullptr) {
-        url = url->append("?",mQuery->toString());
+        url->append("?",mQuery->toString());
     }
 
     if(this->mFragment != nullptr) {
-        url = url->append("#",mFragment);
+        url->append("#",mFragment);
     }
-    return url;
+    return url->toString();
 }
 
 ArrayList<InetAddress> _HttpUrl::getInetAddress() {

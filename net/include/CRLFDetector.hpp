@@ -15,8 +15,15 @@ public:
 
 private:
     int index;
-    int onlyCRLFIndex;
-    static const char *CRLF;
+    bool hasOtherChar;
+    
+    enum CheckStatus{
+        ItIsCRLF = 0,
+        OnlyCRLF,
+        None,
+    };
+
+    int _LocalCheck(byte &);
 };
 
 }

@@ -3,45 +3,49 @@
 
 namespace obotcha {
 
-const char *_CRLFDetector::CRLF = "\r\n";//st(HttpText)::CRLF->toChars();
-
 _CRLFDetector::_CRLFDetector() {
     index = 0;
-    onlyCRLFIndex = 0;
+    hasOtherChar = false;
 }
 
 bool _CRLFDetector::isEnd(byte &v) {
-    if(CRLF[index] == v) {
-        if(index == 0) {
-            index++;
-        } else {
-            index = 0;
-            return true;
-        }
-    } else {
-        index = 0;
-    }
-
-    return false;
+    return _LocalCheck(v) != CheckStatus::None;
 }
 
 bool _CRLFDetector::isOnlyCRLF(byte &v) {
-    if(CRLF[index] == v) {
-        if(index == 0) {
-            index++;
-        } else {
-            index = 0;
-            if(onlyCRLFIndex == 1) {
-                return true;
+    return _LocalCheck(v) == CheckStatus::OnlyCRLF;
+}
+
+int _CRLFDetector::_LocalCheck(byte & v) {
+    int ret = None;
+    switch(v) {
+        case '\r':
+            if(index == 1) {
+                hasOtherChar = true;
+            } else {
+                index = 1;
             }
-            onlyCRLFIndex = 0;
-            return false;
-        }
-    } else {
-        index = 0;
+            break;
+        
+        case '\n':
+            if(index == 1) {
+                if(hasOtherChar) {
+                    ret = ItIsCRLF;
+                } else {
+                    ret = OnlyCRLF;
+                }
+                index = 0;
+                hasOtherChar = false;
+            }
+            break;
+
+        default:
+            index = 0;
+            hasOtherChar = true;
     }
-    onlyCRLFIndex++;
-    return false;
+
+    return ret;
+
 }
 
 }

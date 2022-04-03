@@ -31,15 +31,15 @@ _SpinLock::_SpinLock() {
 }
 
 int _SpinLock::lock() {
-    return pthread_spin_lock(&mLock);
+    return -pthread_spin_lock(&mLock);
 }
 
 int _SpinLock::tryLock() {
-    return pthread_spin_trylock(&mLock);
+    return -pthread_spin_trylock(&mLock);
 }
 
 int _SpinLock::unlock() {
-    return pthread_spin_unlock(&mLock);
+    return -pthread_spin_unlock(&mLock);
 }
 
 _SpinLock::~_SpinLock() { 
