@@ -114,11 +114,7 @@ int _HttpServer::start() {
     }
     
     while(mServerSock->bind() < 0) {
-        //if (mServerSock->bind() < 0) {
-        LOG(ERROR) << "bind socket failed,reason " << strerror(errno)<<";port is "<<mAddress->getPort();
-        //    this->close();
-        //    return -NetBindFail;
-        //}
+        LOG(ERROR) << "bind socket failed,reason " << CurrentError<<";port is "<<mAddress->getPort();
         st(Thread)::sleep(1000*1);
     }
 

@@ -25,9 +25,7 @@ _SSLSocksSocketImpl::_SSLSocksSocketImpl(InetAddress address,SocketOption option
 }
 
 void _SSLSocksSocketImpl::init(String certificatePath,String keyPath) {
-    printf("SSLSocksSocketImpl init start \n");
     if(certificatePath != nullptr) {
-        printf("SSLSocksSocketImpl init trace1 \n");
         mContext = createSSLSocketContext(st(SSLSocketContext)::SERVER);
         if (SSL_CTX_use_certificate_file(mContext->getCtx(), certificatePath->toChars(),
                                      SSL_FILETYPE_PEM) <= 0) {
@@ -44,22 +42,19 @@ void _SSLSocksSocketImpl::init(String certificatePath,String keyPath) {
         }
         mContext->initSSL();
     } else {
-        printf("SSLSocksSocketImpl init trace2 \n");
         mContext = createSSLSocketContext(st(SSLSocketContext)::CLIENT);
         mContext->initSSL();
     }
-    printf("SSLSocksSocketImpl init trace3,fd is %d \n",mSocket->getFileDescriptor()->getFd());
+    
     if(!SSL_set_fd(mContext->getSSL(),mSocket->getFileDescriptor()->getFd())) {
         ERR_print_errors_fp (stderr);
     }
 }
 
 int _SSLSocksSocketImpl::connect() {
-    printf("SSLSocksSocketImpl connect start \n");
     mSocket->getFileDescriptor()->setAsync(false);
 
     int ret = mSocket->connect();
-    printf("SSLSocksSocketImpl connect trace1,ret is %d \n",ret);
     
     ret = SSL_connect(mContext->getSSL());
     if(ret < 0) {

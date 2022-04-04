@@ -10,8 +10,12 @@ _HttpRouter::_HttpRouter(String p, RouterListener l) {
     mListener = l;
 }
 
-String _HttpRouter::getPath() { return mPath; }
+String _HttpRouter::getPath() { 
+    return mPath; 
+}
 
-RouterListener _HttpRouter::getListener() { return mListener; }
+RouterListener _HttpRouter::getListener() { 
+    return mListener; 
+}
 
 }

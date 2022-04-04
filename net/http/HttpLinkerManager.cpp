@@ -4,7 +4,6 @@ namespace obotcha {
 
 _HttpLinkerManager::_HttpLinkerManager() {
     mClients = createHashMap<Socket, HttpLinker>();
-    //mMutex = createMutex("http client manager");
     mReadWriteLock = createReadWriteLock();
     mReadLock = mReadWriteLock->getReadLock();
     mWriteLock = mReadWriteLock->getWriteLock();

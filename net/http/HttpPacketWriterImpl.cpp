@@ -24,10 +24,6 @@ ByteArray _HttpPacketWriterImpl::data(HttpPacket packet) {
     return createByteArray(mBuff);
 }
 
-/*
-* \r\n
-* contentxxxxxxxxx
-*/
 int _HttpPacketWriterImpl::_computeContentLength(HttpPacket packet) {
     if(packet->getHeader()->getType() == st(HttpHeader)::Request) {
         auto multiPart = packet->getEntity()->getMultiPart();

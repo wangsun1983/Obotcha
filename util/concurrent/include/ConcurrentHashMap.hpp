@@ -66,7 +66,26 @@ public:
 
     ArrayList<U> entrySet() {
         AutoLock l(rdLock);
-        return mMap->getIterator();
+        auto iterator = mMap->getIterator();
+        ArrayList<U> lists = createArrayList<U>();
+        while(iterator->hasValue()) {
+            lists->add(iterator->getValue());
+            iterator->next();
+        }
+
+        return lists;
+    }
+
+    ArrayList<T> keySet() {
+        AutoLock l(rdLock);
+        auto iterator = mMap->getIterator();
+        ArrayList<T> lists = createArrayList<T>();
+        while(iterator->hasValue()) {
+            lists->add(iterator->getKey());
+            iterator->next();
+        }
+
+        return lists;
     }
 
     void freezeWrite() {

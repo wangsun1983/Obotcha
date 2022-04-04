@@ -3,10 +3,16 @@
 
 namespace obotcha {
 
-int _HttpResponseEntity::getStatus() { return mStatus; }
+int _HttpResponseEntity::getStatus() { 
+    return mStatus; 
+}
 
-ArrayList<HttpCookie> _HttpResponseEntity::getCookies() { return mCookies; }
+ArrayList<HttpCookie> _HttpResponseEntity::getCookies() { 
+    return mCookies; 
+}
 
-TextContent _HttpResponseEntity::getContent() { return mContent; }
+TextContent _HttpResponseEntity::getContent() { 
+    return mContent; 
+}
 
 } // namespace obotcha

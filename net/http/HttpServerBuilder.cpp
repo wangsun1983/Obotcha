@@ -46,23 +46,16 @@ _HttpServerBuilder *_HttpServerBuilder::setKeyPath(String s) {
 }
 
 HttpServer _HttpServerBuilder::build() {
-    if(mOption == nullptr) {
-        mOption = createHttpOption();
-    }
-    
-    if(mCertificatePath != nullptr) {
-        mOption->setOpenSSLCertificate(mCertificatePath);
-    }
-
-    if(mKeyPath != nullptr) {
-        mOption->setOpenSSLKey(mKeyPath);
-    }
-
-    mOption->setProtocol(mProtocol);
+    updateOption();
     return createHttpServer(mAddress, mListener, mOption);
 }
 
 Http2Server _HttpServerBuilder::buildHttp2Server() {
+    updateOption();
+    return createHttp2Server(mAddress, mHttp2Listener, mOption);
+}
+
+void _HttpServerBuilder::updateOption() {
     if(mOption == nullptr) {
         mOption = createHttpOption();
     }
@@ -74,9 +67,6 @@ Http2Server _HttpServerBuilder::buildHttp2Server() {
     if(mKeyPath != nullptr) {
         mOption->setOpenSSLKey(mKeyPath);
     }
-
-    mOption->setProtocol(mProtocol);
-    return createHttp2Server(mAddress, mHttp2Listener, mOption);
 }
 
 } // namespace obotcha

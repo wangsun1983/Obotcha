@@ -7,6 +7,7 @@
 
 namespace obotcha {
 
+#define CurrentError strerror(errno)
 } // namespace obotcha
 
 #endif

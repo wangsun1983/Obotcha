@@ -15,10 +15,16 @@ const char _StringBuffer::charAt(int index) {
 }
 
 String _StringBuffer::toString() {
+    if(mIndex == 0) {
+        return createString("");
+    }
     return createString(mContent,0,mIndex);
 }
 
 String _StringBuffer::toString(int start,int length) {
+    if(length == 0) {
+        return createString("");
+    }
     return createString(mContent,start,length);
 }
 

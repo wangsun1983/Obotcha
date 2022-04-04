@@ -34,6 +34,8 @@ DECLARE_CLASS(HttpServerBuilder) {
     
 
   private:
+    void updateOption();
+    
     InetAddress mAddress;
     HttpOption mOption;
     HttpListener mListener;

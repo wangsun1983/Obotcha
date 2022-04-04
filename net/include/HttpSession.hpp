@@ -15,15 +15,19 @@ DECLARE_CLASS(HttpSession) {
 public:
     _HttpSession();
     void setAttribute(String name, Object value);
-    Object getAttribute(String name);
+    
+    template <typename T>
+    T getAttribute(String name) {
+        Object o = sessions->get(name);
+        return Cast<T>(o);
+    }
+
     void invalidate();
 
     void removeAttribute(String);
     ArrayList<String> getAttributeNames();
 
-    Object operator[] (String key) {
-        return sessions->get(key);
-    }
+    int size();
 private:
     ConcurrentHashMap<String,Object> sessions;
 };
