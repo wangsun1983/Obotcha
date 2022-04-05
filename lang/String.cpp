@@ -686,6 +686,10 @@ ByteArray _String::toByteArray() {
     return createByteArray((const byte *)m_str.c_str(), m_str.size());
 }
 
+sp<_String> _String::clone() {
+    return createString(m_str.c_str());
+}
+
 std::string _String::getStdString() { return m_str; }
 
 String _String::toLowerCase() {

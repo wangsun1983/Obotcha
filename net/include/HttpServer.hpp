@@ -23,6 +23,7 @@
 #include "HttpOption.hpp"
 #include "HttpLinkerManager.hpp"
 #include "Base64.hpp"
+#include "CountDownLatch.hpp"
 
 namespace obotcha {
 
@@ -41,6 +42,8 @@ public:
     void remove(HttpLinker);
     
     void close();
+
+    void join();
     
     ~_HttpServer();
 
@@ -61,6 +64,8 @@ private:
     HttpOption mOption;
 
     HttpLinkerManager mLinkerManager;
+
+    CountDownLatch mLatch;
 };
 
 }

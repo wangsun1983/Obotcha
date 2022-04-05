@@ -102,7 +102,10 @@ public:
     void dumpToFile(const sp<_String> &path);
 
     void setPriorityWeight(int);
+
     int getPriorityWeight();
+
+    sp<_ByteArray> clone();
 
     static const int DefaultSize;
 

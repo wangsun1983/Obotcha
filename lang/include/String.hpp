@@ -155,6 +155,8 @@ public:
 
     ByteArray toByteArray();
 
+    sp<_String> clone();
+
     static String valueOf(const Integer &v);
 
     static String valueOf(const Boolean &v);

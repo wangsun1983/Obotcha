@@ -320,4 +320,10 @@ int _ByteArray::getPriorityWeight() {
     return mPriority;
 }
 
+sp<_ByteArray> _ByteArray::clone() {
+    ByteArray array = createByteArray(mSize);
+    memcpy(array->buff,buff,mSize);
+    return array;
+}
+
 } // namespace obotcha

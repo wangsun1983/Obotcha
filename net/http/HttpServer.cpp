@@ -88,6 +88,7 @@ _HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option) {
     mAddress = addr;
     mOption = option;
     mLinkerManager = createHttpLinkerManager();
+    mLatch = createCountDownLatch(1);
 }
 
 int _HttpServer::start() {
@@ -140,10 +141,15 @@ void _HttpServer::close() {
     mSockMonitor->close();
     mServerSock->close();
     mLinkerManager->clear();
+    mLatch->countDown();
 }
 
 _HttpServer::~_HttpServer() { 
     close(); 
+}
+
+void _HttpServer::join() {
+    mLatch->await();
 }
 
 } // namespace obotcha
