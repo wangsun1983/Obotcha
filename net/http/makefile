@@ -47,14 +47,9 @@ objs += $(outtmp)/httpchunk.o \
 		$(outtmp)/httpserverbuilder.o \
 		$(outtmp)/httplinker.o \
 		$(outtmp)/httpurlencodedvalue.o \
-		$(outtmp)/httpresourcemanager.o \
-		$(outtmp)/httprouter.o \
-		$(outtmp)/httproutermap.o \
-		$(outtmp)/httproutermanager.o \
 		$(outtmp)/httpcookieparser.o \
 		$(outtmp)/httppricontentparser.o \
 		$(outtmp)/httppacketwriterimpl.o \
-		$(outtmp)/httpresponseentity.o \
 		$(outtmp)/httpheaderallowcreditial.o \
 		$(outtmp)/httpheaderallowheaders.o \
 		$(outtmp)/httpheaderallowmethods.o \
@@ -166,23 +161,8 @@ $(outtmp)/crlfdector.o :$(httpDir)/CRLFDetector.cpp
 $(outtmp)/httpurlencodedvalue.o :$(httpDir)/HttpUrlEncodedValue.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpUrlEncodedValue.cpp -o $(outtmp)/httpurlencodedvalue.o 
 
-$(outtmp)/httpresourcemanager.o :$(httpDir)/HttpResourceManager.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpResourceManager.cpp -o $(outtmp)/httpresourcemanager.o 
-
-$(outtmp)/httpresponseentity.o :$(httpDir)/HttpResponseEntity.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpResponseEntity.cpp -o $(outtmp)/httpresponseentity.o 
-
 $(outtmp)/httpconnection.o :$(httpDir)/HttpConnection.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpConnection.cpp -o $(outtmp)/httpconnection.o 
-
-$(outtmp)/httprouter.o :$(httpDir)/HttpRouter.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpRouter.cpp -o $(outtmp)/httprouter.o 
-
-$(outtmp)/httproutermap.o :$(httpDir)/HttpRouterMap.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpRouterMap.cpp -o $(outtmp)/httproutermap.o 
-
-$(outtmp)/httproutermanager.o :$(httpDir)/HttpRouterManager.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpRouterManager.cpp -o $(outtmp)/httproutermanager.o 
 
 $(outtmp)/httpmethod.o :$(httpDir)/HttpMethod.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpMethod.cpp -o $(outtmp)/httpmethod.o 

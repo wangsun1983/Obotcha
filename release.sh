@@ -44,6 +44,10 @@ cp -rf ./util/include/*.* ./$RELEASE_DIR/include/util/
 mkdir ./$RELEASE_DIR/include/net
 cp -rf ./net/include/*.* ./$RELEASE_DIR/include/net/
 
+mkdir ./$RELEASE_DIR/include/net/http/
+mkdir ./$RELEASE_DIR/include/net/http/client/
+mkdir ./$RELEASE_DIR/include/net/http/client/include/
+cp -rf ./net/http/client/include/*.* ./$RELEASE_DIR/include/net/http/client/include
 
 #-I ./security/include \
 mkdir ./$RELEASE_DIR/include/security
