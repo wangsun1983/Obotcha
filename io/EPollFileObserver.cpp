@@ -26,7 +26,7 @@ void _EPollFileObserver::run() {
 
         for (int i = 0; i < epoll_events_count; i++) {
             int fd = events[i].data.fd;
-            if (fd == mPipe->getReadPipe()) {
+            if (fd == mPipe->getReadChannel()) {
                 return;
             }
             uint32_t recvEvents = events[i].events;
@@ -58,8 +58,7 @@ _EPollFileObserver::_EPollFileObserver(int size) {
     mListenerMutex = createMutex("Epoll Listener Mutex");
     mEpollFd = epoll_create(size);
     mPipe = createPipe();
-    mPipe->init();
-    addEpollFd(mPipe->getReadPipe(), EPOLLIN | EPOLLRDHUP | EPOLLHUP);
+    addEpollFd(mPipe->getReadChannel(), EPOLLIN | EPOLLRDHUP | EPOLLHUP);
     start();
 }
 
@@ -95,12 +94,12 @@ int _EPollFileObserver::close() {
 
     ByteArray data = createByteArray(1);
     data[0] = 1;
-    mPipe->writeTo(data);
+    mPipe->write(data);
 
     join();
 
-    mPipe->closeReadPipe();
-    mPipe->closeWritePipe();
+    mPipe->closeReadChannel();
+    mPipe->closeWriteChannel();
 
     AutoLock l(mListenerMutex);
     mListeners->clear();

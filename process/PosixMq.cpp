@@ -2,65 +2,43 @@
 #include <string.h>     //for strerror()
 #include <errno.h>
 #include <limits.h>
+ #include <mutex>
 
 #include "FileInputStream.hpp"
 #include "PosixMq.hpp"
 #include "System.hpp"
 #include "Error.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
-int _PosixMq::MAX_MSG_NUMS = -1;
-int _PosixMq::MAX_MSG_SIZE = -1;
+int _PosixMq::MaxMsgNums = -1;
+int _PosixMq::MaxMsgSize = -1;
 
-_PosixMq::_PosixMq(String name,int type) {
-    initParam(name,type,DEFAULT_MQ_MSG_SIZE,DEFAULT_MQ_MSG_NUMS);
-}
-
-_PosixMq::_PosixMq(String name,int type,int msgsize) {
-    initParam(name,type,msgsize,DEFAULT_MQ_MSG_NUMS);
-}
-    
 _PosixMq::_PosixMq(String name,int type,int msgsize,int maxmsgs) {
-    initParam(name,type,msgsize,maxmsgs);
-}
+    static std::once_flag s_flag;
+    std::call_once(s_flag, [&]() {
+        MaxMsgNums = getSystemMqAttr("/proc/sys/fs/mqueue/msg_max");
+        MaxMsgSize = getSystemMqAttr("/proc/sys/fs/mqueue/msgsize_max");
+    });
 
-void _PosixMq::initParam(String name,int type,int msgsize,int maxmsgs) {
-    String sp = createString("/");
-    mQName = sp->append(name);
-    mType = type;
-    mMsgSize = msgsize;
+    if(maxmsgs > MaxMsgNums || msgsize > MaxMsgSize) {
+        Trigger(InitializeException,"invald param");
+    }
+
+    if(name->startsWith("/")) {
+        mQName = name;
+    } else {
+        mQName = createString("/")->append(name);
+    }
+    
     mMaxMsgs = maxmsgs;
-}
-
-int _PosixMq::init() {
-    ByteArray readBuff = createByteArray(32);
-    if(MAX_MSG_NUMS == -1) {
-        FileInputStream reader = createFileInputStream("/proc/sys/fs/mqueue/msg_max");
-        reader->read(readBuff); 
-        MAX_MSG_NUMS = readBuff->toString()->toBasicInt();
-    }
-
-    if(MAX_MSG_SIZE == -1) {
-        FileInputStream reader = createFileInputStream("/proc/sys/fs/mqueue/msgsize_max");
-        readBuff->clear();
-        reader->read(readBuff);
-
-        MAX_MSG_SIZE = readBuff->toString()->toBasicInt();
-    }
-
-    if(mMaxMsgs > MAX_MSG_NUMS) {
-        return -EINVAL;
-    }
-
-    if(mMsgSize > MAX_MSG_SIZE) {
-        return -EINVAL;
-    }
+    mMsgSize = msgsize;
 
     struct mq_attr mqAttr;
     mqAttr.mq_maxmsg = mMaxMsgs;
     mqAttr.mq_msgsize = mMsgSize;
-
+    
     mQid = mq_open(mQName->toChars(), O_RDWR|O_CREAT, S_IWUSR|S_IRUSR, &mqAttr);
     if (mQid < 0) {
         if (errno == EEXIST) {
@@ -69,31 +47,15 @@ int _PosixMq::init() {
     }
 
     mq_getattr(mQid, &mqAttr);
-    if(mqAttr.mq_maxmsg != mMaxMsgs) {
-        close(mQid);
+    if(mqAttr.mq_maxmsg != mMaxMsgs || mqAttr.mq_msgsize != mMsgSize) {
+        ::close(mQid);
         mQid = -1;
-        return -1;
+        Trigger(InitializeException,"open msg queue failed");
     }
-
-    if(mqAttr.mq_msgsize != mMsgSize) {
-        close(mQid);
-        mQid = -1;
-        return -1;
-    }
-
-    return mQid;
 }
 
-int _PosixMq::send(ByteArray data,PosixMqPriority prio) {
-    if(mType == RecvMq) {
-        return -EINVAL;
-    }
-
-    if(mQid == -1) {
-        return -EINVAL;
-    }
-
-    if(data->size() > mMsgSize) {
+int _PosixMq::send(ByteArray data,Priority prio) {
+    if(mType == Recv || mQid == -1 || data->size() > mMsgSize) {
         return -EINVAL;
     }
 
@@ -101,11 +63,11 @@ int _PosixMq::send(ByteArray data,PosixMqPriority prio) {
 }
 
 int _PosixMq::send(ByteArray data) {
-    return send(data,PosixMqPriortyLow);
+    return send(data,Priority::Low);
 }
 
 int _PosixMq::receive(ByteArray buff) {
-    if(mType == SendMq) {
+    if(mType == Type::Send || buff->size() < mMsgSize) {
         return -EINVAL;
     }
 
@@ -113,78 +75,59 @@ int _PosixMq::receive(ByteArray buff) {
     return mq_receive(mQid, (char *)buff->toValue(),mMsgSize, &priority);;
 }
 
-int _PosixMq::sendTimeout(ByteArray data,PosixMqPriority prio,long timeInterval) {
-    if(mType == SendMq) {
+int _PosixMq::sendTimeout(ByteArray data,long timeInterval,Priority prio) {
+    if(mType == Recv || mQid == -1 || data->size() > mMsgSize) {
         return -EINVAL;
     }
-
-    if(mQid == -1) {
-        return -1;
-    }
-
-    if(data->size() > mMsgSize) {
-        return -EINVAL;
-    }
-
 
     struct timespec ts;
-    /* 
-    clock_gettime(CLOCK_REALTIME, &ts);
-    long secs = timeInterval/1000;
-    timeInterval = timeInterval%1000;
-    
-    long add = 0;
-    timeInterval = timeInterval*1000*1000 + ts.tv_nsec;
-    add = timeInterval / (1000*1000*1000);
-    ts.tv_sec += (add + secs);
-    ts.tv_nsec = timeInterval%(1000*1000*1000);*/
     st(System)::getNextTime(timeInterval,&ts);
 
     return mq_timedsend(mQid, (char *)data->toValue(), data->size(), prio,&ts);;
 }
 
-int _PosixMq::sendTimeout(ByteArray data,long waittime) {
-    return sendTimeout(data,PosixMqPriortyLow,waittime);
-}
-
 int _PosixMq::receiveTimeout(ByteArray buff,long timeInterval) {
-    if(mType == SendMq) {
+    if(mType == Send) {
         return -EINVAL;
     }
 
     struct timespec ts;
-    /*
-    clock_gettime(CLOCK_REALTIME, &ts);
-    long secs = timeInterval/1000;
-    timeInterval = timeInterval%1000;
-    
-    long add = 0;
-    timeInterval = timeInterval*1000*1000 + ts.tv_nsec;
-    add = timeInterval / (1000*1000*1000);
-    ts.tv_sec += (add + secs);
-    ts.tv_nsec = timeInterval%(1000*1000*1000);
-    */
     st(System)::getNextTime(timeInterval,&ts);
     unsigned int priority = 0;
 
     return mq_timedreceive(mQid, (char *)buff->toValue(),mMsgSize, &priority,&ts);
 }
 
+int _PosixMq::getMsgSize() {
+    return mMsgSize;
+}
+
 _PosixMq::~_PosixMq() {
     mq_close(mQid);
 }
 
-void _PosixMq::clean() {
+void _PosixMq::clear() {
+    mq_close(mQid);
     mq_unlink(mQName->toChars());
 }
 
-void _PosixMq::release() {
+void _PosixMq::close() {
     mq_close(mQid);
 }
 
-void _PosixMq::destroy() {
-    mq_close(mQid);
-    mq_unlink(mQName->toChars());
+int _PosixMq::getSystemMqAttr(String path) {
+    ByteArray readBuff = createByteArray(32);
+    FileInputStream reader = createFileInputStream(path);
+    reader->open();
+    reader->read(readBuff);
+    int ret = readBuff->toString()->toBasicInt();
+    reader->close();
+
+    return ret;
+}
+
+void _PosixMq::notifyAll() {
+    mq_notify(mQid,nullptr);
 }
 
 }

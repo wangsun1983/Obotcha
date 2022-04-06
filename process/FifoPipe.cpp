@@ -8,92 +8,72 @@
 
 #include "FifoPipe.hpp"
 #include "Error.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
 _FifoPipe::_FifoPipe(String name,int type,int filemode) {
     mPipeName = name;
     mType = type;
-    isCreated = false;
-    mMode = filemode;
-}
-
-_FifoPipe::_FifoPipe(String name,int type) {
-    mPipeName = name;
-    mType = type;
-    isCreated = false;
-    mMode = S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH;
-}
-
-int _FifoPipe::init() {
-    if(isCreated) {
-        return -1;
+    
+    
+    if(mkfifo(mPipeName->toChars(),S_IFIFO|filemode) < 0 && (errno != EEXIST)){
+        Trigger(InitializeException,"fifo create failed");
     }
 
-    if(access(mPipeName->toChars(),F_OK) != 0){
-        int err = mkfifo(mPipeName->toChars(),S_IFIFO|mMode);
-        if(err < 0){
-            return err;
-        }
-    }
-
+    //Notice:
+    //1.if we do not set O_NONBLOCK,
+    //  write pipe will wait until read pipe is opened.
+    //  read pipe will wait until write pipe open;
+    //2.if there is no client is reading fifo pipe,
+    //  write pipe with O_NONBLOCK will be failed to create.
     switch(mType) {
-        case FifoWritePipe:
-            fifoId = open(mPipeName->toChars(),O_WRONLY);
+        case Write:
+            fifoId = ::open(mPipeName->toChars(),O_WRONLY,0);
         break;
 
-        case FifoReadPipe:
-            fifoId = open(mPipeName->toChars(),O_RDONLY);
+        case AsyncWrite:
+            fifoId = ::open(mPipeName->toChars(),O_WRONLY|O_NONBLOCK,0);
+        break;
+
+        case Read:
+            fifoId = ::open(mPipeName->toChars(),O_RDONLY,0);
+        break;
+
+        case AsyncRead:
+            fifoId = ::open(mPipeName->toChars(),O_RDONLY|O_NONBLOCK,0);
         break;
     }
-
-    isCreated = (fifoId != -1);
-    return fifoId;
+    if(fifoId < 0) {
+        Trigger(InitializeException,"fifo open failed");
+    }
 }
 
-int _FifoPipe::writeTo(ByteArray data) {
-    if(!isCreated){
-        return -1;
-    }
-
-    if(mType == FifoReadPipe) {
+int _FifoPipe::write(ByteArray data) {
+    if(mType == Read || mType == AsyncRead || data->size() > PIPE_BUF) {
         return -EINVAL;
     }
 
-    if(data->size() > PIPE_BUF) {
+    return ::write(fifoId, data->toValue(), data->size());
+}
+
+int _FifoPipe::read(ByteArray buff) {
+    if(mType == Write || mType == AsyncWrite) {
         return -EINVAL;
     }
 
-    return write(fifoId, data->toValue(), data->size());
+    return ::read(fifoId, buff->toValue(), buff->size());
 }
 
-int _FifoPipe::readFrom(ByteArray buff) {
-    if(!isCreated) {
-        return -1;
-    }
-
-    if(mType == FifoWritePipe) {
-        return -EINVAL;
-    }
-
-    return read(fifoId, buff->toValue(), buff->size());
-}
-
-void _FifoPipe::release() {
+void _FifoPipe::close() {
     if(fifoId != -1) {
-        close(fifoId);
-        //unlink(mPipeName->toChars());
+        ::close(fifoId);
+        fifoId = -1;
     }
 }
 
-void _FifoPipe::destroy() {
-    if(fifoId != -1) {
-        close(fifoId);
-        unlink(mPipeName->toChars());
-    }
-}
-
-void _FifoPipe::clean() {
+void _FifoPipe::clear() {
+    close();
     unlink(mPipeName->toChars());
 }
 
@@ -101,11 +81,16 @@ int _FifoPipe::getMaxSize() {
     return PIPE_BUF;
 }
 
+int _FifoPipe::getChannel() {
+    return fifoId;
+}
+
+String _FifoPipe::getName() {
+    return mPipeName;
+}
+
 _FifoPipe::~_FifoPipe() {
-    if(fifoId != -1) {
-        close(fifoId);
-        //unlink(mPipeName->toChars());
-    }
+    close();
 }
 
 }

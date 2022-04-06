@@ -20,8 +20,6 @@ _PosixSem::_PosixSem(String name,int n) {
 }
 
 bool _PosixSem::init() {
-    //printf("Posix sem init num is %d \n",num);
-
     if(num > SEM_MAX_VALUE) {
         return false;
     }
@@ -44,17 +42,6 @@ int _PosixSem::wait(long timeInterval) {
     }
 
     struct timespec ts;
-    /*
-    clock_gettime(CLOCK_REALTIME, &ts);
-    long secs = timeInterval/1000;
-    timeInterval = timeInterval%1000;
-    
-    long add = 0;
-    timeInterval = timeInterval*1000*1000 + ts.tv_nsec;
-    add = timeInterval / (1000*1000*1000);
-    ts.tv_sec += (add + secs);
-    ts.tv_nsec = timeInterval%(1000*1000*1000);
-    */
     st(System)::getNextTime(timeInterval,&ts);
     return sem_timedwait(sem, &ts);
 }

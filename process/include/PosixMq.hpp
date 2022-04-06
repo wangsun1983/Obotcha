@@ -15,54 +15,52 @@
 
 namespace obotcha {
 
-enum PosixMqType {
-    SendMq = 0,
-    RecvMq
-};
-
-enum PosixMqPriority {
-    PosixMqPriortyLow = 0,
-    PosixMqPriortyNormal,
-    PosixMqPriortyHigh,
-    PosixMqPriortyUrgent
-};
-
-#define DEFAULT_MQ_MSG_SIZE 1024*4
-#define DEFAULT_MQ_MSG_NUMS 8
+/*
+ * only point to point.can not 1 to 2(3,4....)
+ */
 
 DECLARE_CLASS(PosixMq) {
 public:
-    _PosixMq(String name,int type);
+    enum Type {
+        Send = 0,
+        Recv,
+        AsyncSend,
+        AsyncRecv,
+    };
 
-    _PosixMq(String name,int type,int msgsize);
-
-    _PosixMq(String name,int type,int msgsize,int maxmsgs);
+    enum Priority {
+        Low = 0,
+        Normal,
+        High,
+        Urgent
+    };
+    
+    _PosixMq(String name,int type,int msgsize = 1024,int maxmsgs = 8);
 
     int init();
 
-    void release();
+    void close();
 
-    void destroy();
+    void clear();
 
-    void clean();
-
-    int send(ByteArray data,PosixMqPriority prio);
+    int send(ByteArray data,Priority prio);
 
     int send(ByteArray data);
 
     int receive(ByteArray buff);
 
-    int sendTimeout(ByteArray data,PosixMqPriority prio,long waittime);
-
-    int sendTimeout(ByteArray data,long waittime);
+    int sendTimeout(ByteArray data,long waittime,Priority prio = Priority::Low);
 
     int receiveTimeout(ByteArray buff,long waittime);
+
+    int getMsgSize();
+
+    void notifyAll();
 
     ~_PosixMq();
 
 private:
-
-    void initParam(String name,int type,int msgsize,int maxmsgs);
+    int getSystemMqAttr(String);
 
     mqd_t mQid;
 
@@ -76,9 +74,9 @@ private:
 
     int mMaxMsgs;
 
-    static int MAX_MSG_NUMS;
+    static int MaxMsgNums;
 
-    static int MAX_MSG_SIZE;
+    static int MaxMsgSize;
 };
 
 }

@@ -5,7 +5,7 @@ objs += $(outtmp)/pipe.o \
 		$(outtmp)/posixmq.o \
 		$(outtmp)/posixsem.o \
 		$(outtmp)/posixsharememory.o \
-		$(outtmp)/systemsignalhandler.o \
+		$(outtmp)/signalcatcher.o \
 		$(outtmp)/serializable.o \
 
 
@@ -27,8 +27,8 @@ $(outtmp)/posixanonymoussem.o :$(processDir)/PosixAnonymousSem.cpp
 $(outtmp)/posixsharememory.o :$(processDir)/PosixShareMemory.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/PosixShareMemory.cpp -o $(outtmp)/posixsharememory.o
 
-$(outtmp)/systemsignalhandler.o :$(processDir)/SystemSignalHandler.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(processDir)/SystemSignalHandler.cpp -o $(outtmp)/systemsignalhandler.o
+$(outtmp)/signalcatcher.o :$(processDir)/SignalCatcher.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(processDir)/SignalCatcher.cpp -o $(outtmp)/signalcatcher.o
 
 $(outtmp)/serializable.o :$(processDir)/Serializable.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/Serializable.cpp -o $(outtmp)/serializable.o

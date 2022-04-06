@@ -13,33 +13,36 @@
 
 namespace obotcha {
 
-enum FifoPipeType {
-    FifoReadPipe = 0,
-    FifoWritePipe
-};
 
 DECLARE_CLASS(FifoPipe) {
 public:
 
-    _FifoPipe(String name,int type,int filemode);
+    enum Type {
+        Read = 0,
+        Write,
+        AsyncRead,
+        AsyncWrite,
+    };
 
-    _FifoPipe(String,int type);
+    _FifoPipe(String name,int type,int filemode = 0666);
 
     int init();
 
-    int writeTo(ByteArray data);
+    int write(ByteArray data);
 
-    int readFrom(ByteArray buff);
+    int read(ByteArray buff);
 
     int getMaxSize();
 
-    void release();
+    void close();
 
-    void destroy();
+    void clear();
 
-    void clean();
+    String getName();
 
     ~_FifoPipe();
+
+    int getChannel();
 
 private:
 
@@ -48,8 +51,6 @@ private:
     int mMode;
 
     int fifoId;
-
-    bool isCreated;
 
     String mPipeName;
    

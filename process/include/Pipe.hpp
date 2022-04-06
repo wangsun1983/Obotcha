@@ -16,51 +16,46 @@
 
 namespace obotcha {
 
-enum PipeIoType {
-    PipeDefault = 0,
-    PipeCloseOnExec = O_CLOEXEC,
-    PipeDirect = O_DIRECT,
-    PipeNonBlock = O_NONBLOCK
-};
-
-enum PipeType {
-    ReadPipe = 0,
-    WritePipe
-};
-
 DECLARE_CLASS(Pipe) {
+
 public:
+    enum Type {
+        Default = 0,
+        CloseOnExec = O_CLOEXEC,
+        Direct = O_DIRECT,
+        NonBlock = O_NONBLOCK
+    };
+
+    enum Channel {
+        ReadChannel = 0,
+        WriteChannel
+    };
+
     _Pipe();
 
-    _Pipe(PipeIoType);
+    _Pipe(Type);
 
-    int init();
+    int write(ByteArray data);
 
-    int writeTo(ByteArray data);
+    int read(ByteArray buff);
 
-    int readFrom(ByteArray buff);
+    int closeReadChannel();
 
-    int closeReadPipe();
+    int closeWriteChannel();
 
-    int closeWritePipe();
+    int getReadChannel();
 
-    int getReadPipe();
-
-    int getWritePipe();
+    int getWriteChannel();
 
     int getMaxSize();
 
-    void release();
+    void close();
 
     ~_Pipe();
 
 private:
 
     int pipeFd[2];
-
-    PipeIoType mIoType;
-
-    //bool isCreated;
 };
 
 }

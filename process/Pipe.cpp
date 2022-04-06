@@ -3,100 +3,70 @@
 
 namespace obotcha {
 
-_Pipe::_Pipe(PipeIoType type) {
-    mIoType = type;
-    pipeFd[WritePipe] = -1;
-    pipeFd[ReadPipe] = -1;
+_Pipe::_Pipe(Type type) {
+    pipeFd[WriteChannel] = -1;
+    pipeFd[ReadChannel] = -1;
+    pipe2(pipeFd,type);
 }
 
-_Pipe::_Pipe():_Pipe(PipeDefault) {
-
+_Pipe::_Pipe():_Pipe(Type::Default) {
 }
 
-int _Pipe::init() {
-    if(pipeFd[WritePipe] != -1 && pipeFd[ReadPipe] != -1) {
-        return -1;
-    }
 
-    int result = -1;
-    switch(mIoType) {
-        case PipeDefault:
-            result = pipe(pipeFd);
-        break;
-
-        case PipeCloseOnExec:
-        case PipeDirect:
-        case PipeNonBlock:
-            result = pipe2(pipeFd,mIoType);
-        break;
-    }
-
-    return result;
-}
-
-int _Pipe::writeTo(ByteArray data) {
-    if(pipeFd[WritePipe] == -1) {
-        return -1;
-    }
-
-    if(data->size() > PIPE_BUF) {
+int _Pipe::write(ByteArray data) {
+    if(data->size() > PIPE_BUF || pipeFd[WriteChannel] == -1) {
         return -EINVAL;
     }
 
-    return write(pipeFd[WritePipe],data->toValue(),data->size());
+    return ::write(pipeFd[WriteChannel],data->toValue(),data->size());
 }
 
-int  _Pipe::readFrom(ByteArray buff) {
-    if(pipeFd[ReadPipe] == -1) {
+int  _Pipe::read(ByteArray buff) {
+    if(pipeFd[ReadChannel] == -1) {
         return -1;
     }
-    int nbytes = read(pipeFd[ReadPipe],buff->toValue(),buff->size());
-    return nbytes;
+    return ::read(pipeFd[ReadChannel],buff->toValue(),buff->size());
 }
 
-int _Pipe::closeReadPipe() {
-    if(pipeFd[ReadPipe] == -1) {
-        return -1;
+int _Pipe::closeReadChannel() {
+    int ret = 0;
+    if(pipeFd[ReadChannel] != -1) {
+        ret = ::close(pipeFd[ReadChannel]);
+        pipeFd[ReadChannel] = -1;
     }
-    int ret = close(pipeFd[ReadPipe]);
-    pipeFd[ReadPipe] = -1;
+
     return ret;
 }
 
-int _Pipe::closeWritePipe() {
-    if(pipeFd[WritePipe] == -1) {
-        return -1;
+int _Pipe::closeWriteChannel() {
+    int ret = 0;
+    if(pipeFd[WriteChannel] != -1) {
+        ret = ::close(pipeFd[WriteChannel]);
+        pipeFd[WriteChannel] = -1;
     }
-    int ret = close(pipeFd[WritePipe]);
-    pipeFd[WritePipe] = -1;
+
     return ret;
 }
 
-int _Pipe::getReadPipe() {
-    if(pipeFd[ReadPipe] == -1) {
-        return -1;
-    }
-    return pipeFd[ReadPipe];
+int _Pipe::getReadChannel() {
+    return pipeFd[ReadChannel];
 }
 
-int _Pipe::getWritePipe() {
-    if(pipeFd[WritePipe] == -1) {
-        return -1;
-    }
-    return pipeFd[WritePipe];
+int _Pipe::getWriteChannel() {
+    return pipeFd[WriteChannel];
 }
 
 int _Pipe::getMaxSize() {
     return PIPE_BUF;
 }
 
-void _Pipe::release() {
-    closeWritePipe();
-    closeReadPipe();
+void _Pipe::close() {
+    closeWriteChannel();
+    closeReadChannel();
 }
 
 _Pipe::~_Pipe() {
-   release();
+   close();
 }
 
 }
