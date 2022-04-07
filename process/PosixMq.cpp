@@ -2,18 +2,33 @@
 #include <string.h>     //for strerror()
 #include <errno.h>
 #include <limits.h>
- #include <mutex>
+#include <mutex>
 
 #include "FileInputStream.hpp"
 #include "PosixMq.hpp"
 #include "System.hpp"
 #include "Error.hpp"
 #include "InitializeException.hpp"
+#include "Log.hpp"
+#include "AutoLock.hpp"
 
 namespace obotcha {
 
+//PosixMqListenerLambda
+_PosixMqListenerLambda::_PosixMqListenerLambda(_PosixMqLambda f) {
+    func = f;
+}
+
+void _PosixMqListenerLambda::onData(ByteArray data) {
+    func(data);
+}
+
+//PosixMq
 int _PosixMq::MaxMsgNums = -1;
 int _PosixMq::MaxMsgSize = -1;
+
+Mutex _PosixMq::mMutex = createMutex();
+PosixMq _PosixMq::Mq = nullptr;
 
 _PosixMq::_PosixMq(String name,int type,int msgsize,int maxmsgs) {
     static std::once_flag s_flag;
@@ -52,6 +67,25 @@ _PosixMq::_PosixMq(String name,int type,int msgsize,int maxmsgs) {
         mQid = -1;
         Trigger(InitializeException,"open msg queue failed");
     }
+}
+
+_PosixMq::_PosixMq(String name,PosixMqListener listener,int msgsize,int maxmsgs)
+            :_PosixMq(name,AsyncRecv,msgsize,maxmsgs) {
+    AutoLock l(mMutex);
+    mqListener = listener;
+    if(Mq != nullptr) {
+        LOG(ERROR)<<"Async Mq["<<name->toChars()<<"] already registed";
+        //Trigger(InitializeException,"fail to regist Mq");
+    }
+    ::signal(SIGUSR1,onSigUsr1);
+    sigev.sigev_notify = SIGEV_SIGNAL;
+    sigev.sigev_signo = SIGUSR1;
+    Mq = AutoClone(this);
+    mq_notify(mQid,&sigev);
+}
+
+_PosixMq::_PosixMq(String name,_PosixMqLambda l,int msgsize,int maxmsgs):_PosixMq(name,createPosixMqListenerLambda(l),msgsize,maxmsgs) {
+    
 }
 
 int _PosixMq::send(ByteArray data,Priority prio) {
@@ -107,12 +141,15 @@ _PosixMq::~_PosixMq() {
 }
 
 void _PosixMq::clear() {
-    mq_close(mQid);
+    close();
     mq_unlink(mQName->toChars());
 }
 
 void _PosixMq::close() {
     mq_close(mQid);
+    if(Mq == AutoClone(this)) {
+        Mq = nullptr;
+    }
 }
 
 int _PosixMq::getSystemMqAttr(String path) {
@@ -126,8 +163,14 @@ int _PosixMq::getSystemMqAttr(String path) {
     return ret;
 }
 
-void _PosixMq::notifyAll() {
-    mq_notify(mQid,nullptr);
+void _PosixMq::onSigUsr1(int signo) {
+    AutoLock l(mMutex);
+    mq_notify(Mq->mQid,&Mq->sigev);
+    ByteArray data = createByteArray(Mq->getMsgSize());
+    int n = Mq->receive(data);
+    data->quickShrink(n);
+    Mq->mqListener->onData(data);
 }
+
 
 }

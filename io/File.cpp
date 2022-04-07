@@ -183,12 +183,11 @@ int _File::createNewFile(int flag, mode_t mode) {
     flag |= O_CREAT;
     int fd = ::open(mPath->toChars(), flag, mode);
     umask(m);
-    if (fd > 0) {
-        close(fd);
+    if (fd < 0) {
         return -1;
     }
 
-    return 0;
+    return close(fd);
 }
 
 bool _File::removeAll() {

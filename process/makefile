@@ -7,7 +7,10 @@ objs += $(outtmp)/pipe.o \
 		$(outtmp)/posixsharememory.o \
 		$(outtmp)/signalcatcher.o \
 		$(outtmp)/serializable.o \
-
+		$(outtmp)/processmutex.o \
+		$(outtmp)/processreadwritelock.o \
+		
+		
 
 $(outtmp)/pipe.o :$(processDir)/Pipe.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/Pipe.cpp -o $(outtmp)/pipe.o
@@ -17,6 +20,12 @@ $(outtmp)/fifopipe.o :$(processDir)/FifoPipe.cpp
 
 $(outtmp)/posixmq.o :$(processDir)/PosixMq.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/PosixMq.cpp -o $(outtmp)/posixmq.o
+
+$(outtmp)/processmutex.o :$(processDir)/ProcessMutex.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(processDir)/ProcessMutex.cpp -o $(outtmp)/processmutex.o
+
+$(outtmp)/processreadwritelock.o :$(processDir)/ProcessReadWriteLock.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(processDir)/ProcessReadWriteLock.cpp -o $(outtmp)/processreadwritelock.o
 
 $(outtmp)/posixsem.o :$(processDir)/PosixSem.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/PosixSem.cpp -o $(outtmp)/posixsem.o

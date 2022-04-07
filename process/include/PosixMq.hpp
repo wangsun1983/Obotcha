@@ -5,19 +5,37 @@
 #include <unistd.h>    
 #include <sys/types.h>
 #include <mqueue.h>
+#include <signal.h>
 #include <fstream>
-
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "ByteArray.hpp"
 #include "ArrayList.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 
 /*
- * only point to point.can not 1 to 2(3,4....)
+ * only point to point.
+ * can not 1 to 2(3,4....)
  */
+
+DECLARE_CLASS(PosixMqListener) {
+public:
+    virtual void onData(ByteArray) = 0;
+};
+
+using _PosixMqLambda = std::function<void(ByteArray)>;
+DECLARE_CLASS(PosixMqListenerLambda) IMPLEMENTS(PosixMqListener) {
+public:
+    _PosixMqListenerLambda(_PosixMqLambda f);
+    
+    void onData(ByteArray data);
+
+private:
+    _PosixMqLambda func;
+};
 
 DECLARE_CLASS(PosixMq) {
 public:
@@ -37,6 +55,10 @@ public:
     
     _PosixMq(String name,int type,int msgsize = 1024,int maxmsgs = 8);
 
+    _PosixMq(String name,PosixMqListener listener,int msgsize = 1024,int maxmsgs = 8);
+    
+    _PosixMq(String name,_PosixMqLambda,int msgsize = 1024,int maxmsgs = 8);
+
     int init();
 
     void close();
@@ -55,11 +77,13 @@ public:
 
     int getMsgSize();
 
-    void notifyAll();
-
     ~_PosixMq();
 
 private:
+    static Mutex mMutex;
+    static PosixMq Mq;
+    static void onSigUsr1(int signo);
+
     int getSystemMqAttr(String);
 
     mqd_t mQid;
@@ -73,6 +97,9 @@ private:
     int mMsgSize;
 
     int mMaxMsgs;
+
+    struct sigevent sigev;
+    PosixMqListener mqListener;
 
     static int MaxMsgNums;
 
