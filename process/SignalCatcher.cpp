@@ -5,8 +5,16 @@
 
 namespace obotcha {
 
-//SIGPIPE!!!
 
+_SignalListenerLambda::_SignalListenerLambda(_SignalLambda s) {
+    func = s;
+}
+
+void _SignalListenerLambda::onSignal(int sig) {
+    func(sig);
+}
+
+//SIGPIPE!!!
 SignalCatcher _SignalCatcher::mInstance = nullptr;
 
 void _handleSignal(int sig) {
@@ -45,6 +53,10 @@ void _SignalCatcher::regist(int event,SignalListener l) {
     list->add(l);
 }
 
+void _SignalCatcher::regist(int event,_SignalLambda f) {
+    SignalListener l = createSignalListenerLambda(f);
+    regist(event,l);
+}
 
 void _SignalCatcher::ignore(int sig) {
     signal(sig ,_ignoreSignal);

@@ -8,10 +8,12 @@
 namespace obotcha {
 
 class _Condition;
+class _ProcessCondition;
 
 class AutoLock {
 public:
     friend class _Condition;
+    friend class _ProcessCondition;
     AutoLock(Lock lock){
         lock->lock();
         mLock = lock;

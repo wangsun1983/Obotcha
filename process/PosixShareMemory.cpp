@@ -12,6 +12,7 @@
 #include "StrongPointer.hpp"
 #include "ByteArray.hpp"
 #include "Error.hpp"
+#include "InitializeException.hpp"
 
 //#define DEBUG_SHAREMEM_DUMP
 
@@ -21,106 +22,81 @@ _PosixShareMemory::_PosixShareMemory(String name,int length,int type) {
     mName = name;
     size = length;
     mType = type;
-    isCreated = false;
-
-    mPtr = nullptr;
-}
-
-int _PosixShareMemory::init() {
+    
     shareMemoryFd = shm_open(mName->toChars(),mType, S_IWUSR|S_IRUSR);
-    while(shareMemoryFd == -1) {
+    if(shareMemoryFd == -1) {
         if(errno == ENOENT) {
             shareMemoryFd = shm_open(mName->toChars(),mType|O_CREAT|O_EXCL, S_IWUSR|S_IRUSR);
-            continue;
+            struct stat ss;
+            fstat(shareMemoryFd,&ss);
+            
+            if(ss.st_size < size) {
+                if(ftruncate(shareMemoryFd, size) == -1) {
+                    Trigger(InitializeException,"create share memory failed");
+                }
+            }
         }
 
-        return -errno;
-    }
-
-    struct stat ss;
-    fstat(shareMemoryFd,&ss);
-    
-    if(ss.st_size < size) {
-        if(ftruncate(shareMemoryFd, size) == -1) {
-            return false;
+        if(shareMemoryFd == -1) {
+            Trigger(InitializeException,"create share memory failed");
         }
     }
 
-    if(mType == PosixShareMemoryRead) {
+    if(mType == Type::Read) {
         mPtr = (char *)mmap(NULL,size,PROT_READ,MAP_SHARED,shareMemoryFd,0);
     } else {
         mPtr = (char *)mmap(NULL,size,PROT_READ|PROT_WRITE,MAP_SHARED,shareMemoryFd,0);
     }
     
-    close(shareMemoryFd);
-
     if(mPtr == nullptr) {
-        return -1;
+        Trigger(InitializeException,"mmap share memory failed");
     }
-
-    isCreated = true;
-
-    return 0;
 }
 
 int _PosixShareMemory::write(ByteArray arr) {
-    if(!isCreated) {
-        return -1;
-    }
-
     if(arr->size() > size) {
         return -EINVAL;
     }
 
-    memcpy(mPtr,arr->toValue(),arr->size());
+    if(mPtr != nullptr) {
+        memcpy(mPtr,arr->toValue(),arr->size());
+        return 0;
+    }
 
-    return 0;
+    return -1;
 }
 
 int _PosixShareMemory::write(int index,ByteArray arr) {
-    if(!isCreated) {
-        return -1;
-    }
-
     if((index + arr->size()) > size) {
         return -EINVAL;
     }
 
-    memcpy(&mPtr[index],arr->toValue(),arr->size());
+    if(mPtr != nullptr) {
+        memcpy(&mPtr[index],arr->toValue(),arr->size());
+        return 0;
+    }
 
-    return 0;
+    return -1;
 }
 
 int _PosixShareMemory::write(int index,char v) {
-    if(!isCreated) {
-        return -1;
-    }
-
     if(index >= size) {
         return -EINVAL;
     }
 
-    mPtr[index] = v;
+    if(mPtr != nullptr) {
+        mPtr[index] = v;
+        return 0;
+    }
 
-    return 0;
+    return -1;
 }
 
 int _PosixShareMemory::read(ByteArray arr) {
-    if(!isCreated) {
-        return -1;
-    }
-
-    int ll = arr->size() > size?size:arr->size();
-    memcpy(arr->toValue(),mPtr,ll);
-
-    return ll;
+    return read(0,arr);
 }
 
 int _PosixShareMemory::read(int index,ByteArray arr) {
-    if(!isCreated) {
-        return -1;
-    }
-
     if(index >= size) {
         return -EINVAL;
     }
@@ -131,31 +107,39 @@ int _PosixShareMemory::read(int index,ByteArray arr) {
 }
 
 int _PosixShareMemory::read(int index) {
-    if(!isCreated) {
-        return -1;
-    }
-
     if(index >= size) {
         return -EINVAL;
     }
+    
+    if(mPtr != nullptr) {
+        return mPtr[index];
+    }
 
-    return mPtr[index];
+    return -1;
 }
 
-void _PosixShareMemory::destroy() {
+void _PosixShareMemory::clear() {
     shm_unlink(mName->toChars());
 }
 
-void _PosixShareMemory::release() {
-    //shm_unlink(mName->toChars());
+void _PosixShareMemory::close() {
+    if(mPtr != nullptr) {
+        munmap(mPtr,size);
+        mPtr = nullptr;
+    }
+
+    if(shareMemoryFd != -1) {
+        ::close(shareMemoryFd);
+        shareMemoryFd = -1;
+    }
 }
 
-void _PosixShareMemory::clean() {
-    //shm_unlink(mName->toChars());
+int _PosixShareMemory::getChannel() {
+    return shareMemoryFd;
 }
 
 _PosixShareMemory::~_PosixShareMemory() {
-    //shm_unlink(mName->toChars());
+    close();
 }
 
 }

@@ -18,7 +18,7 @@ DECLARE_CLASS(PosixSem) {
 
 public:
 
-    _PosixSem(String name,int n);
+    _PosixSem(String name,int n = 1);
 
     bool init();
 
@@ -32,11 +32,9 @@ public:
 
     int getValue();
 
-    void destroy();
+    void clear();
 
-    void release();
-
-    void clean();
+    void close();
     
     ~_PosixSem();
 

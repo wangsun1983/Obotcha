@@ -9,7 +9,7 @@ objs += $(outtmp)/pipe.o \
 		$(outtmp)/serializable.o \
 		$(outtmp)/processmutex.o \
 		$(outtmp)/processreadwritelock.o \
-		
+		$(outtmp)/processcondition.o		
 		
 
 $(outtmp)/pipe.o :$(processDir)/Pipe.cpp
@@ -23,6 +23,9 @@ $(outtmp)/posixmq.o :$(processDir)/PosixMq.cpp
 
 $(outtmp)/processmutex.o :$(processDir)/ProcessMutex.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/ProcessMutex.cpp -o $(outtmp)/processmutex.o
+
+$(outtmp)/processcondition.o :$(processDir)/ProcessCondition.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(processDir)/ProcessCondition.cpp -o $(outtmp)/processcondition.o
 
 $(outtmp)/processreadwritelock.o :$(processDir)/ProcessReadWriteLock.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/ProcessReadWriteLock.cpp -o $(outtmp)/processreadwritelock.o

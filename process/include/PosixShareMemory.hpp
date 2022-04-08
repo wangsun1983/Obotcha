@@ -15,17 +15,14 @@
 
 namespace obotcha {
 
-enum PosixShareMemoryType {
-    PosixShareMemoryRead = O_RDONLY,
-    PosixShareMemoryWriteRead = O_RDWR,
-};
-
 DECLARE_CLASS(PosixShareMemory) {
 public:
+    enum Type {
+        Read = O_RDONLY,
+        WriteRead = O_RDWR,
+    };
 
     _PosixShareMemory(String,int,int type);
-
-    int init();
 
     int write(ByteArray);
 
@@ -39,11 +36,11 @@ public:
 
     int read(int);
 
-    void destroy();
+    void close();
 
-    void release();
+    void clear();
 
-    void clean();
+    int getChannel();
 
     ~_PosixShareMemory();
 
@@ -57,8 +54,6 @@ private:
     char *mPtr;
 
     int mType;
-
-    bool isCreated;
    
 };
 
