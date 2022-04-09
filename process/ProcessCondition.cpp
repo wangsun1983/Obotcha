@@ -63,4 +63,15 @@ void _ProcessCondition::notifyAll() {
     mCount->write(data);
 }
 
+_ProcessCondition::~_ProcessCondition() {
+    sem->close();
+    mCount->close();
+}
+
+void _ProcessCondition::clear() {
+    sem->clear();
+    mCount->clear();
+}
+
+
 }

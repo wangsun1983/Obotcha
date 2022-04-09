@@ -17,14 +17,14 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/asyncoutputchannelpool.o \
 	$(outtmp)/filedescriptor.o \
 	$(outtmp)/mappedfile.o \
-	$(outtmp)/linereader.o \
+	$(outtmp)/bufferedreader.o \
 	
 	
 $(outtmp)/file.o :$(ioDir)/File.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/File.cpp -o $(outtmp)/file.o 
 
-$(outtmp)/linereader.o :$(ioDir)/LineReader.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/LineReader.cpp -o $(outtmp)/linereader.o 
+$(outtmp)/bufferedreader.o :$(ioDir)/BufferedReader.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/BufferedReader.cpp -o $(outtmp)/bufferedreader.o 
 
 $(outtmp)/mappedfile.o :$(ioDir)/MappedFile.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/MappedFile.cpp -o $(outtmp)/mappedfile.o 

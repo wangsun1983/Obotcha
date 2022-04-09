@@ -1,5 +1,5 @@
-#ifndef __OBOTCHA_LINE_READER_HPP__
-#define __OBOTCHA_LINE_READER_HPP__
+#ifndef __OBOTCHA_BUFFERED_READER_HPP__
+#define __OBOTCHA_BUFFERED_READER_HPP__
 
 #include <fstream>
 #include <iostream>
@@ -18,28 +18,33 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(LineReader) {
-  public:
-    _LineReader(File);
+DECLARE_CLASS(BufferedReader) {
 
-    _LineReader(String);
+public:
+    _BufferedReader(File);
 
-    _LineReader(ByteArray); 
+    _BufferedReader(String);
+
+    _BufferedReader(ByteArray); 
 
     String readLine();
 
+    ArrayList<String> lines();
+
     void reset();
 
-    ~_LineReader();
+    ~_BufferedReader();
 
-  private:
+private:
     enum type {
-      ReadFile,
-      ReadContent
+        ReadFile = 0,
+        ReadContent
     };
 
+    bool isSetStringStream = false;
     std::stringstream mStringStream;
     std::ifstream mFileStream;
+    ByteArray mData;
 
     int type;
 };

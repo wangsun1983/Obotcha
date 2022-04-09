@@ -21,13 +21,18 @@ namespace obotcha {
 
 class _FileWatcher;
 
-DECLARE_CLASS(FileObserver) {
-  public:
+DECLARE_CLASS(FileUpdateListener) {
+public:
     friend class _FileWatcher;
-    virtual void onFileUpdate(String filepath, int op) = 0;
+    virtual void onFileUpdate(String filepath, int op,int origid,int currentid) = 0;
+};
 
-  private:
-    std::vector<int> ids;
+DECLARE_CLASS(FileUpdateNode) {
+public:
+    _FileUpdateNode(FileUpdateListener,String,int);
+    FileUpdateListener l;
+    String path;
+    int operations;
 };
 
 DECLARE_CLASS(FileWatcher) IMPLEMENTS(Thread) {
@@ -61,11 +66,11 @@ DECLARE_CLASS(FileWatcher) IMPLEMENTS(Thread) {
 
     _FileWatcher();
 
-    int startWatch(String filepath, int op, sp<_FileObserver> observer);
+    int startWatch(String filepath, int op, FileUpdateListener observer);
 
-    void stopWatch(int id, sp<_FileObserver> observer);
+    void stopWatch(int id);
 
-    void release();
+    void close();
 
   private:
     void run();
@@ -78,9 +83,7 @@ DECLARE_CLASS(FileWatcher) IMPLEMENTS(Thread) {
 
     int readEvent();
 
-    HashMap<int, ArrayList<sp<_FileObserver>>> mListeners;
-    HashMap<int, String> mFiles;
-    HashMap<String, Integer> mOps;
+    HashMap<int, FileUpdateNode> mNodes;
 };
 
 } // namespace obotcha

@@ -52,6 +52,10 @@ public:
 
     long lastModified();
 
+    long lastAccess();
+
+    long lastStatusChanged();
+
     long length();
 
     int createNewFile(int flags=O_CREAT, mode_t mode=0666);
@@ -86,8 +90,8 @@ public:
 
     ~_File();
     
-    static const String gPathSeparator;
-    static const String gPathSuffix;
+    static const String PathSeparator;
+    static const String PathSuffix;
     
     static bool exists(String);
     

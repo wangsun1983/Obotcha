@@ -28,6 +28,10 @@ public:
     void notify();
     void notifyAll();
 
+    void clear();
+
+    ~_ProcessCondition();
+
 private:
     void increase(int);
     String mPath;

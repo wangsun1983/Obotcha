@@ -16,71 +16,38 @@
 
 namespace obotcha {
 
+//FileUpdateNode
+_FileUpdateNode::_FileUpdateNode(FileUpdateListener l,String p,int op) {
+    this->l = l;
+    this->path = p;
+    this->operations = op;
+}
+
+//FileWatcher
 _FileWatcher::_FileWatcher() {
-    mutex = createMutex("FileWatchMutex");
-    mListeners = createHashMap<int, ArrayList<sp<_FileObserver>>>();
-    mFiles = createHashMap<int, String>();
-    mOps = createHashMap<String, Integer>();
+    mutex = createMutex();
+    mNodes = createHashMap<int, FileUpdateNode>();
     notifyFd = inotify_init();
     start();
 }
 
-int _FileWatcher::startWatch(String filepath, int op,
-                             sp<_FileObserver> observer) {
-    AutoLock l(mutex);
-    Integer formerOp = mOps->get(filepath);
-    if (formerOp != nullptr) {
-        op += formerOp->toValue();
-    }
-
+int _FileWatcher::startWatch(String filepath, int op,FileUpdateListener l) {
+    AutoLock lock(mutex);
     int id = inotify_add_watch(notifyFd, filepath->toChars(), op);
-    if (std::find(observer->ids.begin(), observer->ids.end(), id) !=
-        observer->ids.end()) {
-        return id;
-    }
-
-    mFiles->put(id, filepath);
-    mOps->put(filepath, createInteger(op));
-
-    observer->ids.push_back(id);
-    ArrayList<FileObserver> list = mListeners->get(id);
-    if (list == nullptr) {
-        list = createArrayList<FileObserver>();
-        mListeners->put(id, list);
-    }
-
-    list->add(observer);
+    auto node = createFileUpdateNode(l,filepath,op);
+    mNodes->put(id,node);
     return id;
 }
 
-void _FileWatcher::stopWatch(int id, FileObserver observer) {
+void _FileWatcher::stopWatch(int id) {
     AutoLock l(mutex);
-
-    ArrayList<FileObserver> list = mListeners->get(id);
-    if (list != nullptr) {
-        ListIterator<FileObserver> iterator = list->getIterator();
-        while (iterator->hasValue()) {
-            FileObserver monitor = iterator->getValue();
-            if (monitor == observer) {
-                iterator->remove();
-                continue;
-            }
-            iterator->next();
-        }
-    }
-
-    if (list->size() == 0) {
-        inotify_rm_watch(notifyFd, id);
-        String path = mFiles->get(id);
-        mFiles->remove(id);
-        mOps->remove(path);
-    }
+    mNodes->remove(id);
 }
 
-void _FileWatcher::release() {
+void _FileWatcher::close() {
     AutoLock l(mutex);
-    mListeners->clear();
-    close(notifyFd);
+    mNodes->clear();
+    ::close(notifyFd);
 }
 
 void _FileWatcher::run() {
@@ -104,38 +71,32 @@ void _FileWatcher::run() {
             int changeid = event->wd;
             {
                 AutoLock l(mutex);
-                String path = mFiles->get(changeid);
+                FileUpdateNode node = mNodes->get(changeid);
+                if(node == nullptr) {
+                    continue;
+                }
                 // when vim/gedit opens a file ,it will create a bak file.
                 // if the edited file is saved,vim/gedit will delete the origin
                 // file,and change the bak file to origin file.
                 // this is the reason why use vim/gedit to modify a file,inotify
                 // only accepts IGNORE event.
                 int ignoreid = -1;
-                if ((access(path->toChars(), F_OK) == 0) &&
+                if ((access(node->path->toChars(), F_OK) == 0) &&
                     ((event->mask & Ignored) != 0)) {
                     event->mask &= ~Ignored;
                     event->mask |= Modify;
-                    Integer regOp = mOps->get(path);
-                    ignoreid = inotify_add_watch(notifyFd, path->toChars(),
-                                                 regOp->toValue());
-                }
-
-                ArrayList<FileObserver> monitors = mListeners->get(changeid);
-                if (monitors != nullptr) {
-                    ListIterator<FileObserver> iterator =
-                        monitors->getIterator();
-                    while (iterator->hasValue()) {
-                        FileObserver monitor = iterator->getValue();
-                        monitor->onFileUpdate(path, event->mask);
-                        iterator->next();
-                    }
+                    ignoreid = inotify_add_watch(notifyFd, 
+                                                node->path->toChars(),
+                                                node->operations);
                 }
 
                 if (ignoreid != -1) {
+                    node->l->onFileUpdate(node->path,event->mask,changeid,ignoreid);
                     inotify_rm_watch(notifyFd, changeid);
-                    mFiles->remove(changeid);
-                    mFiles->put(ignoreid, path);
-                    mListeners->put(ignoreid, monitors);
+                    mNodes->remove(changeid);
+                    mNodes->put(ignoreid,node);
+                } else {
+                    node->l->onFileUpdate(node->path,event->mask,changeid,changeid);
                 }
             }
 
