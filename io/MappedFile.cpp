@@ -6,72 +6,62 @@
 #include <unistd.h>
 
 #include "MappedFile.hpp"
+#include "MappedFileInputStream.hpp"
+#include "MappedFileOutputStream.hpp"
+#include "Log.hpp"
+#include "InitializeException.hpp"
 
 namespace obotcha {
 
-//-------- MappedFileBuilder --------
-_MappedFileBuilder::_MappedFileBuilder(String p) {
-    path = p;
-    protType = PROT_READ|PROT_WRITE;
-    mapFlag = MAP_SHARED;
-}
-
-_MappedFileBuilder::_MappedFileBuilder(const char *p):_MappedFileBuilder(createString(p)) {
-
-}
-
-_MappedFileBuilder* _MappedFileBuilder::setSize(int s) {
-    size = s;
-    return this;
-}
-
-_MappedFileBuilder* _MappedFileBuilder::setProtType(int t) {
-    protType = t;
-    return this;
-}
-
-_MappedFileBuilder* _MappedFileBuilder::setMapFlag(int t) {
-    mapFlag = t;
-    return this;
-}
-
-MappedFile _MappedFileBuilder::create() {
+//-------- MappedFile --------
+_MappedFile::_MappedFile(String path,long size,int type,int flag) {
     File f = createFile(path);
     if(!f->exists()) {
-      return nullptr;
+      f->createNewFile();
     }
 
-    int fd = open(f->getAbsolutePath()->toChars(),O_RDWR);
-    void *ptr = mmap(nullptr,size,protType,mapFlag,fd,0);
-    if(ptr != nullptr) {
-      MappedFile file = createMappedFile();
-      file->size = size;
-      file->mapPtr = ptr;
-      file->mdata = createByteArray((const byte *)ptr,size,true);
-      return file;
+    int fd = -1;
+    if(type == PROT_READ) {
+        fd = ::open(f->getAbsolutePath()->toChars(),O_RDONLY);
+    } else if(type == PROT_WRITE) {
+        fd = ::open(f->getAbsolutePath()->toChars(),O_WRONLY);
+    } else {
+        fd = ::open(f->getAbsolutePath()->toChars(),O_RDWR);
     }
 
-    return nullptr;
+    if(size == 0) {
+        mSize = f->length();
+    } else {
+        mSize = size;
+    }
+
+    mapPtr = (byte *)mmap(nullptr,mSize,type,flag,fd,0);
+    if(mapPtr == MAP_FAILED) {
+        Trigger(InitializeException,"map file failed");
+    }
 }
 
-//-------- MappedFile --------
-void _MappedFile::close() {
+_MappedFile::~_MappedFile() {
     if(mapPtr != nullptr) {
-        munmap((void *)mapPtr, size);
+        munmap((void *)mapPtr, mSize);
         mapPtr = nullptr;
     }
 }
 
 void _MappedFile::sync() {
-    msync((void *)mapPtr, size, MS_SYNC);
+    msync((void *)mapPtr, mSize, MS_SYNC);
 }
 
-ByteArray _MappedFile::getData() {
-    return mdata;
+InputStream _MappedFile::getInputStream() {
+    return createMappedFileInputStream(AutoClone(this));
 }
 
-_MappedFile::_MappedFile() {
-    mapPtr = nullptr;
+OutputStream _MappedFile::getOutputStream() {
+    return createMappedFileOutputStream(AutoClone(this));
+}
+
+long _MappedFile::size() {
+    return mSize;
 }
 
 }

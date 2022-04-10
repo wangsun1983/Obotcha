@@ -20,10 +20,14 @@
 namespace obotcha {
 
 _FileOutputStream::_FileOutputStream(File file)
-    : _FileOutputStream(file->getAbsolutePath()) {}
+    : _FileOutputStream(file->getAbsolutePath()) {
+    
+}
 
 _FileOutputStream::_FileOutputStream(const char *path)
-    : _FileOutputStream(createString(path)) {}
+    : _FileOutputStream(createString(path)) {
+    
+}
 
 _FileOutputStream::_FileOutputStream(String path) {
     mPath = path;
@@ -86,8 +90,7 @@ bool _FileOutputStream::open() {
         return false;
     }
 
-    fd =
-        ::open(mPath->toChars(), O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
+    fd = ::open(mPath->toChars(), O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
     return (fd >= 0);
 }
 

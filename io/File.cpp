@@ -179,11 +179,6 @@ bool _File::isFile() {
     return !S_ISDIR(info.st_mode);
 }
 
-bool _File::isHidden() {
-    // TODO
-    return false;
-}
-
 long _File::lastModified() {
     struct stat info = {0};
     if (updateFileInfo(&info) != 0) {

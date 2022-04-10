@@ -19,9 +19,7 @@ uint64_t _FileDescriptor::hashcode() {
 
 int _FileDescriptor::close() {
     if (_fd != -1) {
-        if(::close(_fd) < 0) {
-            return -1;
-        }
+        ::close(_fd);
         _fd = -1;
     }
     return 0;
@@ -62,7 +60,7 @@ bool _FileDescriptor::isAsync() {
 }
 
 bool _FileDescriptor::isSocket() {
-    int error;
+    int error = 0;
     socklen_t error_length = sizeof(error);
     return TEMP_FAILURE_RETRY(getsockopt(_fd, SOL_SOCKET, SO_ERROR, &error, &error_length)) == 0;
 }

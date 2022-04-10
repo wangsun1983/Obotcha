@@ -14,31 +14,21 @@
 #include "File.hpp"
 #include "String.hpp"
 #include "ByteArray.hpp"
+#include "Byte.hpp"
+#include "InputStream.hpp"
+#include "OutputStream.hpp"
 
 namespace obotcha {
 
-class _MappedFile;
-
-DECLARE_CLASS(MappedFileBuilder) {
-public:
-    _MappedFileBuilder(String);
-    _MappedFileBuilder(const char *);
-
-    _MappedFileBuilder* setSize(int);
-    _MappedFileBuilder* setProtType(int);
-    _MappedFileBuilder* setMapFlag(int);
-    
-    sp<_MappedFile> create();
-private:
-    String path;
-    int size;
-    int protType;
-    int mapFlag;
-};
+class _MappedFileOutputStream;
+class _MappedFileInputStream;
 
 DECLARE_CLASS(MappedFile) {
 public:
-    friend class _MappedFileBuilder;
+
+    friend class _MappedFileOutputStream;
+    friend class _MappedFileInputStream;
+
     enum Prot{
       Read = PROT_READ,
       Write = PROT_WRITE 
@@ -49,15 +39,23 @@ public:
       Private = MAP_PRIVATE
     };
 
-    _MappedFile();
-    void close();
-    void sync();
-    ByteArray getData();
+    _MappedFile(String path,long size = 0,int type = PROT_READ|PROT_WRITE,int flag = MAP_SHARED);
+    
+    InputStream getInputStream();
+    OutputStream getOutputStream();
+
+    long size();
+    ~_MappedFile();
+
+    ByteArray read(int start,int length);
 
 private:
     ByteArray mdata;
-    void *mapPtr;
-    int size;
+    byte *mapPtr;
+    long mSize;
+
+    void sync();
+    
 };
 
 } // namespace obotcha

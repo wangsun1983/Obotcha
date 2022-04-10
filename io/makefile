@@ -18,8 +18,10 @@ objs += $(outtmp)/file.o \
 	$(outtmp)/filedescriptor.o \
 	$(outtmp)/mappedfile.o \
 	$(outtmp)/bufferedreader.o \
+	$(outtmp)/mappedfileinputstream.o \
+	$(outtmp)/mappedfileoutputstream.o
 	
-	
+
 $(outtmp)/file.o :$(ioDir)/File.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/File.cpp -o $(outtmp)/file.o 
 
@@ -62,8 +64,14 @@ $(outtmp)/byteringarrayreader.o :$(ioDir)/ByteRingArrayReader.cpp
 $(outtmp)/socketinputstream.o :$(ioDir)/SocketInputStream.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/SocketInputStream.cpp -o $(outtmp)/socketinputstream.o 
 
+$(outtmp)/mappedfileinputstream.o :$(ioDir)/MappedFileInputStream.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/MappedFileInputStream.cpp -o $(outtmp)/mappedfileinputstream.o 
+
 $(outtmp)/socketoutputstream.o :$(ioDir)/SocketOutputStream.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/SocketOutputStream.cpp -o $(outtmp)/socketoutputstream.o 
+
+$(outtmp)/mappedfileoutputstream.o :$(ioDir)/MappedFileOutputStream.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/MappedFileOutputStream.cpp -o $(outtmp)/mappedfileoutputstream.o 
 
 $(outtmp)/asyncoutputchannel.o :$(ioDir)/AsyncOutputChannel.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(ioDir)/AsyncOutputChannel.cpp -o $(outtmp)/asyncoutputchannel.o 

@@ -282,10 +282,6 @@ bool _ByteArray::isSafeMode() { return (this->isSafe == st(ByteArray)::safe); }
 
 String _ByteArray::toString() {
     int len = mSize + 1;
-    //if (buff[mSize - 1] != 0) {
-    //    len += 1;
-    //}
-
     char _buff[len];
     memcpy(_buff, buff, mSize);
     _buff[len - 1] = 0;

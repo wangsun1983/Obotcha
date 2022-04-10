@@ -48,8 +48,6 @@ public:
 
     bool isFile();
 
-    bool isHidden();
-
     long lastModified();
 
     long lastAccess();

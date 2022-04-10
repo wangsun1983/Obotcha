@@ -26,10 +26,11 @@ _LibraryFile::_LibraryFile(const char *path) {
         Trigger(FileNotFoundException,"lib file not found");
     }
 
+    dlerror();
     mHandle = dlopen(f->getAbsolutePath()->toChars(), RTLD_LAZY | RTLD_GLOBAL);
-
-    char *error = dlerror();
-    if (error != NULL) {
+    if (!mHandle) {
+        LOG(ERROR)<<"LibraryFile open lib fail,reason is "<<dlerror();
+        
         Trigger(InitializeException,"lib file open failed");
     }
 }
