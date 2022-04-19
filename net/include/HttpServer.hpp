@@ -43,7 +43,7 @@ public:
     
     void close();
 
-    void join();
+    void join(long interval = 0);
     
     ~_HttpServer();
 

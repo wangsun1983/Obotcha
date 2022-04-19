@@ -5,49 +5,22 @@
 #include "StrongPointer.hpp"
 #include "String.hpp"
 #include "ArrayList.hpp"
+#include "MailRecipient.hpp"
 
 namespace obotcha {
 
 class _SmtpConnection;
 
-DECLARE_CLASS(MailRecipient) {
-public:
-    _MailRecipient();
-    _MailRecipient(String,String);
-    String name;
-    String mail;
-};
-
-DECLARE_CLASS(SmtpConnectionBuilder) {
-public:
-    _SmtpConnectionBuilder();
-    sp<_SmtpConnectionBuilder> setHostName(String);
-    sp<_SmtpConnectionBuilder> setMailFrom(String);
-    sp<_SmtpConnectionBuilder> setNameFrom(String);
-    sp<_SmtpConnectionBuilder> setSubject(String);
-    sp<_SmtpConnectionBuilder> setReplyTo(String);
-    sp<_SmtpConnectionBuilder> setUsername(String);
-    sp<_SmtpConnectionBuilder> setPassword(String);
-    sp<_SmtpConnectionBuilder> setSmtpServer(String);
-    sp<_SmtpConnectionBuilder> setSecurityType(int);
-    sp<_SmtpConnectionBuilder> setSmtpPort(int);
-    sp<_SmtpConnectionBuilder> setAuthenticate(bool);
-    
-    sp<_SmtpConnection> build();
-private:
-    sp<_SmtpConnection> mConnection;
-};
-
 DECLARE_CLASS(SmtpConnection) {
 
 public:
     enum SmtpSecurityType {
-        NoSecurity,
+        NoSecurity = 0,
         TLS,
         SSL,
     };
 
-    friend class _SmtpConnectionBuilder;
+    //friend class _SmtpConnectionBuilder;
     friend class _MailSender;
     _SmtpConnection();
     String getHostName();
@@ -60,6 +33,18 @@ public:
     String getSmtpServer();
     int getSmtpPort();
     bool isAuthenticate();
+
+    void setHostName(String);
+    void setMailFrom(String);
+    void setNameFrom(String);
+    void setSubject(String);
+    void setReplyTo(String);
+    void setUsername(String);
+    void setPassword(String);
+    void setSmtpServer(String);
+    void setSecurityType(int);
+    void setSmtpPort(int);
+    void setAuthenticate(bool);
 
 private:
     String mHostName;

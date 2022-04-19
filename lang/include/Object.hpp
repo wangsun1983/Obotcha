@@ -144,6 +144,12 @@ template <typename U> sp<U> AutoClone(U *v) {
     return data;
 }
 
+template <typename T> T AutoCreate() {
+    T data;
+    __AutoCreate(data);
+    return data;
+}
+
 template <typename U, int N> class AutoCreator {
 public:
     U get() {

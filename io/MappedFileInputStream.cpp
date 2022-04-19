@@ -16,12 +16,10 @@ long _MappedFileInputStream::read(ByteArray data, int start) {
 }
 
 long _MappedFileInputStream::read(ByteArray buff, int pos,int length) {
-    printf("pos is %d,length is %d,buff size is %d \n",pos,length,buff->size());
     long len = ((pos + length) > buff->size()) ? buff->size() : (long)length;
     if(len > mFile->size() - mIndex - 1) {
         len = mFile->size() - mIndex;
     }
-    printf("len is %d,mapPtr is %lx \n",len,mFile->mapPtr);
     memcpy(buff->toValue() + pos,mFile->mapPtr + mIndex,len);
     mIndex += len;
     return len;

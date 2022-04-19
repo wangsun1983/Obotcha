@@ -18,6 +18,7 @@
 #include "Base64.hpp"
 #include "Md.hpp"
 #include "String.hpp"
+#include "MailRecipient.hpp"
 
 extern "C" {
 #include "openssl/ssl.h"
@@ -51,20 +52,20 @@ private:
 DECLARE_CLASS(MailSenderBuilder) {
 public:
     _MailSenderBuilder();
-    sp<_MailSenderBuilder> addRecipient(MailRecipient);
-    sp<_MailSenderBuilder> addRecipients(ArrayList<MailRecipient>);
-    sp<_MailSenderBuilder> addCcRecipient(MailRecipient);
-    sp<_MailSenderBuilder> addCcRecipients(ArrayList<MailRecipient>);
-    sp<_MailSenderBuilder> addBccRecipient(MailRecipient);
-    sp<_MailSenderBuilder> addBccRecipients(ArrayList<MailRecipient>);
-    sp<_MailSenderBuilder> addAttachment(File);
-    sp<_MailSenderBuilder> addAttachments(ArrayList<File>);
-    sp<_MailSenderBuilder> setMessage(String);
-    sp<_MailSenderBuilder> setConnection(SmtpConnection);
-    sp<_MailSenderBuilder> setReplyTo(String);
-    sp<_MailSenderBuilder> setPriority(int);
-    sp<_MailSenderBuilder> setSubject(String);
-    sp<_MailSenderBuilder> setCharSet(String);
+    _MailSenderBuilder * addRecipient(MailRecipient);
+    _MailSenderBuilder * addRecipients(ArrayList<MailRecipient>);
+    _MailSenderBuilder * addCcRecipient(MailRecipient);
+    _MailSenderBuilder * addCcRecipients(ArrayList<MailRecipient>);
+    _MailSenderBuilder * addBccRecipient(MailRecipient);
+    _MailSenderBuilder * addBccRecipients(ArrayList<MailRecipient>);
+    _MailSenderBuilder * addAttachment(File);
+    _MailSenderBuilder * addAttachments(ArrayList<File>);
+    _MailSenderBuilder * setMessage(String);
+    _MailSenderBuilder * setConnection(SmtpConnection);
+    _MailSenderBuilder * setReplyTo(String);
+    _MailSenderBuilder * setPriority(int);
+    _MailSenderBuilder * setSubject(String);
+    _MailSenderBuilder * setCharSet(String);
 
     sp<_MailSender> build();
     

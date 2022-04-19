@@ -419,26 +419,26 @@ void _YamlValue::importFrom(Object value) {
 
             case st(Field)::FieldTypeObject: {
                 auto newObject = field->getObjectValue();
-                YamlValue value = createYamlValue();
-                value->setTag(name);
-                value->importFrom(newObject);
-                set(name,value);
+                YamlValue newValue = createYamlValue();
+                newValue->setTag(name);
+                newValue->importFrom(newObject);
+                set(name,newValue);
             } break;
 
             case st(Field)::FieldTypeArrayList: {
                 auto newObject = field->getObjectValue();
-                YamlValue value = createYamlValue();
-                value->setTag(name);
-                value->importArrayListFrom(newObject);
-                set(name,value);
+                YamlValue newValue = createYamlValue();
+                newValue->setTag(name);
+                newValue->importArrayListFrom(newObject);
+                set(name,newValue);
             } break;
 
             case st(Field)::FieldTypeHashMap: {
                 auto newObject = field->getObjectValue();
-                YamlValue value = createYamlValue();
-                value->setTag(name);
-                value->importHashMapFrom(newObject);
-                set(name,value);
+                YamlValue newValue = createYamlValue();
+                newValue->setTag(name);
+                newValue->importHashMapFrom(newObject);
+                set(name,newValue);
             } break;
         }
         iterator->next();

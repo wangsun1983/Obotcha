@@ -13,72 +13,7 @@ _MailRecipient::_MailRecipient(String name,String mail) {
     this->mail = mail;
 }
 
-//--------------- SmtpConnectionBuilder -----------------------//
-_SmtpConnectionBuilder::_SmtpConnectionBuilder() {
-    mConnection = createSmtpConnection();
-}
-
-sp<_SmtpConnectionBuilder> _SmtpConnectionBuilder::setHostName(String value) {
-    mConnection->mHostName = value;
-    return AutoClone(this);
-}
-
-sp<_SmtpConnectionBuilder> _SmtpConnectionBuilder::setMailFrom(String value) {
-    mConnection->mMailFrom = value;
-    return AutoClone(this);
-}
-
-sp<_SmtpConnectionBuilder> _SmtpConnectionBuilder::setNameFrom(String value) {
-    mConnection->mNameFrom = value;
-    return AutoClone(this);
-}
-
-sp<_SmtpConnectionBuilder> _SmtpConnectionBuilder::setSubject(String value) {
-    mConnection->mSubject = value;
-    return AutoClone(this);
-}
-
-sp<_SmtpConnectionBuilder> _SmtpConnectionBuilder::setReplyTo(String value) {
-    mConnection->mReplyTo = value;
-    return AutoClone(this);
-}
-
-sp<_SmtpConnectionBuilder> _SmtpConnectionBuilder::setUsername(String value) {
-    mConnection->mUsername = value;
-    return AutoClone(this);
-}
-
-sp<_SmtpConnectionBuilder> _SmtpConnectionBuilder::setPassword(String value) {
-    mConnection->mPassword = value;
-    return AutoClone(this);
-}
-
-sp<_SmtpConnectionBuilder> _SmtpConnectionBuilder::setSmtpServer(String value) {
-    mConnection->mSmtpServer = value;
-    return AutoClone(this);
-}
-
-sp<_SmtpConnectionBuilder> _SmtpConnectionBuilder::setSecurityType(int value) {
-    mConnection->mSecurityType = value;
-    return AutoClone(this);
-}
-
-sp<_SmtpConnectionBuilder> _SmtpConnectionBuilder::setSmtpPort(int value) {
-    mConnection->mSmtpPort = value;
-    return AutoClone(this);
-}
-
-sp<_SmtpConnectionBuilder> _SmtpConnectionBuilder::setAuthenticate(bool value) {
-    mConnection->mAuthenticate = value;
-    return AutoClone(this);
-}
-
-sp<_SmtpConnection> _SmtpConnectionBuilder::build() {
-    return mConnection;
-}
-
 //--------------- SmtpConnection -----------------------//
-
 _SmtpConnection::_SmtpConnection() {
     mSecurityType = NoSecurity;
     mSmtpPort = 25;
@@ -125,5 +60,49 @@ bool _SmtpConnection::isAuthenticate() {
     return mAuthenticate;
 }
 
+void _SmtpConnection::setHostName(String value) {
+    this->mHostName = value;
+    
+}
+
+void _SmtpConnection::setMailFrom(String value) {
+    this->mMailFrom = value;
+}
+
+void _SmtpConnection::setNameFrom(String value) {
+    this->mNameFrom = value;
+}
+
+void _SmtpConnection::setSubject(String value) {
+    this->mSubject = value;
+}
+
+void _SmtpConnection::setReplyTo(String value) {
+    this->mReplyTo = value;
+}
+
+void _SmtpConnection::setUsername(String value) {
+    this->mUsername = value;
+}
+
+void _SmtpConnection::setPassword(String value) {
+    this->mPassword = value;
+}
+
+void _SmtpConnection::setSmtpServer(String value) {
+    this->mSmtpServer = value;
+}
+
+void _SmtpConnection::setSecurityType(int value) {
+    this->mSecurityType = value;
+}
+
+void _SmtpConnection::setSmtpPort(int value) {
+    this->mSmtpPort = value;
+}
+
+void _SmtpConnection::setAuthenticate(bool value) {
+    this->mAuthenticate = value;
+}
 
 }

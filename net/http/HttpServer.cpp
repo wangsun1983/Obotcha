@@ -148,8 +148,8 @@ _HttpServer::~_HttpServer() {
     close(); 
 }
 
-void _HttpServer::join() {
-    mLatch->await();
+void _HttpServer::join(long interval) {
+    mLatch->await(interval);
 }
 
 } // namespace obotcha

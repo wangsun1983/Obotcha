@@ -73,74 +73,74 @@ _MailSenderBuilder::_MailSenderBuilder() {
     mSender = createMailSender();
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::addRecipient(MailRecipient value) {
+_MailSenderBuilder * _MailSenderBuilder::addRecipient(MailRecipient value) {
     mSender->mRecipients->add(value);
-    return AutoClone(this);
+    return this;
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::addRecipients(ArrayList<MailRecipient> value) {
+_MailSenderBuilder * _MailSenderBuilder::addRecipients(ArrayList<MailRecipient> value) {
     mSender->mRecipients->add(value);
-    return AutoClone(this);
+    return this;
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::addCcRecipient(MailRecipient value) {
+_MailSenderBuilder * _MailSenderBuilder::addCcRecipient(MailRecipient value) {
     mSender->mCcRecipients->add(value);
-    return AutoClone(this);
+    return this;
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::addCcRecipients(ArrayList<MailRecipient> value) {
+_MailSenderBuilder * _MailSenderBuilder::addCcRecipients(ArrayList<MailRecipient> value) {
     mSender->mCcRecipients->add(value);
-    return AutoClone(this);
+    return this;
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::addBccRecipient(MailRecipient value) {
+_MailSenderBuilder * _MailSenderBuilder::addBccRecipient(MailRecipient value) {
     mSender->mBccRecipients->add(value);
-    return AutoClone(this);
+    return this;
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::addBccRecipients(ArrayList<MailRecipient> value) {
+_MailSenderBuilder * _MailSenderBuilder::addBccRecipients(ArrayList<MailRecipient> value) {
     mSender->mBccRecipients->add(value);
-    return AutoClone(this);
+    return this;
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::addAttachment(File f) {
+_MailSenderBuilder * _MailSenderBuilder::addAttachment(File f) {
     mSender->mAttachments->add(f);
-    return AutoClone(this);
+    return this;
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::addAttachments(ArrayList<File> files) {
+_MailSenderBuilder * _MailSenderBuilder::addAttachments(ArrayList<File> files) {
     mSender->mAttachments->add(files);
-    return AutoClone(this);
+    return this;
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::setMessage(String msg) {
+_MailSenderBuilder * _MailSenderBuilder::setMessage(String msg) {
     mSender->mMsgBody = msg;
-    return AutoClone(this);
+    return this;
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::setConnection(SmtpConnection c) {
+_MailSenderBuilder * _MailSenderBuilder::setConnection(SmtpConnection c) {
     mSender->mConnection = c;
-    return AutoClone(this);
+    return this;
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::setReplyTo(String replyto) {
+_MailSenderBuilder * _MailSenderBuilder::setReplyTo(String replyto) {
     mSender->mReplyTo = replyto;
-    return AutoClone(this);
+    return this;
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::setPriority(int priority) {
+_MailSenderBuilder * _MailSenderBuilder::setPriority(int priority) {
     mSender->mPriority = priority;
-    return AutoClone(this);
+    return this;
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::setSubject(String subject) {
+_MailSenderBuilder * _MailSenderBuilder::setSubject(String subject) {
     mSender->mSubject = subject;
-    return AutoClone(this);
+    return this;
 }
 
-sp<_MailSenderBuilder> _MailSenderBuilder::setCharSet(String charset) {
+_MailSenderBuilder * _MailSenderBuilder::setCharSet(String charset) {
     mSender->mCharSet = charset; 
-    return AutoClone(this);
+    return this;
 }
 
 sp<_MailSender> _MailSenderBuilder::build() {
@@ -159,7 +159,7 @@ _MailSender::_MailSender() {
     mBccRecipients = createArrayList<MailRecipient>();
     mAttachments = createArrayList<File>();
     //mMsgBody = createArrayList<String>();
-
+    mSSL = nullptr;
     mSendBuf = new char[BuffSize];
     mRecvBuf = new char[BuffSize];
 
@@ -310,6 +310,9 @@ int _MailSender::send() {
     snprintf(mSendBuf, BuffSize, "\r\n.\r\n");
     sendData(pEntry);
     receiveResponse(pEntry);
+
+    //TODO
+    return 0;
 }
 
 int _MailSender::connectRemoteServer() {
@@ -382,9 +385,10 @@ int _MailSender::connectRemoteServer() {
             close(mConnection->mSocket);
         }
     }//while
+
     FD_CLR(mConnection->mSocket,&fdwrite);
     FD_CLR(mConnection->mSocket,&fdexcept);
-
+    //printf("mConnection mSecurityType is %d \n",mConnection->mSecurityType);
     if(mConnection->mSecurityType == st(SmtpConnection)::TLS || mConnection->mSecurityType == st(SmtpConnection)::SSL) {
         initOpenSSL();
         if(mConnection->mSecurityType == st(SmtpConnection)::SSL) {
@@ -996,6 +1000,9 @@ int _MailSender::sendDataSSL(SSL* ssl, SmtpCommandEntry* pEntry) {
 	//OutputDebugStringA(SendBuf);
 	FD_ZERO(&fdwrite);
 	FD_ZERO(&fdread);
+
+    //TODO
+    return 0;
 }
 
 int _MailSender::sendData(SmtpCommandEntry* pEntry) {
@@ -1042,6 +1049,9 @@ int _MailSender::sendData(SmtpCommandEntry* pEntry) {
 
 	//OutputDebugStringA(SendBuf);
 	FD_CLR(mConnection->mSocket,&fdwrite);
+
+    //TODO
+    return 0;
 }
 
 int _MailSender::receiveData(SmtpCommandEntry* pEntry) {
@@ -1129,7 +1139,7 @@ int _MailSender::receiveResponse(SmtpCommandEntry* pEntry)
         }
     }
 
-    snprintf(mRecvBuf, BuffSize, line.c_str());
+    snprintf(mRecvBuf, BuffSize, "%s",line.c_str());
     //OutputDebugStringA(RecvBuf);
     if(reply_code != pEntry->valid_reply_code) {
         return -1;

@@ -41,7 +41,7 @@ long _MappedFileOutputStream::write(ByteArray buff,int start,int len) {
 }
 
 long _MappedFileOutputStream::writeString(String s) {
-    write(s->toByteArray());
+    return write(s->toByteArray());
 }
 
 bool _MappedFileOutputStream::open(int opentype) {

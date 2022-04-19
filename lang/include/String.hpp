@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdarg.h>
 #include <string>
+#include <functional>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -314,13 +315,16 @@ public:
 
     int counts(String);
 
+    //find 
+    int find(String,int start = 0);
+
     bool isEmpty();
 
     bool matches(const String &regex); // Not Test
 
     static bool contentEquals(sp<_String>,sp<_String>);
     static bool contentEqualsIgnoreCase(sp<_String>,sp<_String>);
-
+    
     ~_String();
 
 private:

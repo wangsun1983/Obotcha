@@ -502,6 +502,16 @@ int _String::counts(String str) {
     return count;
 }
 
+//find 
+int _String::find(String s,int start) {
+    int index = m_str.find(s->m_str, start);
+    if(index == std::string::npos) {
+        return -1;
+    }
+
+    return index;
+}
+
 Integer _String::toInteger() {
     return st(Integer)::parseDecInt(AutoClone(this));
 }

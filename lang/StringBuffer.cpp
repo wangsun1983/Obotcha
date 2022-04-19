@@ -10,8 +10,8 @@ _StringBuffer::_StringBuffer(int length) {
     memset(mContent,0,mCapacity);
 }
 
-const char _StringBuffer::charAt(int index) {
-    return (const char)mContent[index];
+char _StringBuffer::charAt(int index) {
+    return mContent[index];
 }
 
 String _StringBuffer::toString() {

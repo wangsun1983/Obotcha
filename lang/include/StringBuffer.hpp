@@ -18,7 +18,7 @@ public:
     _StringBuffer(int length = 256);
     ~_StringBuffer();
 
-    const char charAt(int);
+    char charAt(int);
 
     template <class... Args>
     _StringBuffer *append(Args... args) {
