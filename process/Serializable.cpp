@@ -6,10 +6,10 @@
 namespace obotcha {
 
 ByteArray _Serializable::serialize() {
-    ByteArray data = createByteArray(256);
-    ByteArrayWriter writer = createByteArrayWriter(data);
-    //int size = caculateSize();
-    //int ret = writer->writeInt(size);
+    ByteArray outPutData = createByteArray(256);
+    ByteArrayWriter writer = createByteArrayWriter(outPutData);
+    //int size = calculateSize();
+    //writer->writeInt(size);
 
     ArrayList<Field> fields = getAllFields();
     ListIterator<Field> iterator = fields->getIterator();
@@ -17,8 +17,6 @@ ByteArray _Serializable::serialize() {
         Field f = iterator->getValue();
         int type = f->getType();
 
-        //writer->writeByte((byte)type);
-        //printf("type is %d \n",type);
         switch(f->getType()) {
             case st(Field)::FieldTypeInt: {
                 writer->writeInt(sizeof(int));
@@ -66,8 +64,12 @@ ByteArray _Serializable::serialize() {
 
             case st(Field)::FieldTypeString: {
                 String value = f->getStringValue();
-                writer->writeInt(value->size());
-                writer->writeByteArray(value->toByteArray());
+                if(value == nullptr) {
+                    writer->writeInt(0);
+                } else {
+                    writer->writeInt(value->size());
+                    writer->writeByteArray(value->toByteArray());
+                }
             }
             break;
 
@@ -94,66 +96,79 @@ ByteArray _Serializable::serialize() {
 
             case st(Field)::FieldTypeArrayList: {
                 int count = f->getContainerSize();
-                //calculate size first
-                int size = 0;
-                for(int i = 0;i < count;i++) {
-                    Serializable serialzabledData = Cast<Serializable>(f->getListItemObject(i));
-                    //printf("serialzabledData size is %d,field size is %d \n",serialzabledData->calculateSize(),serialzabledData->getAllFields()->size());
+                if(count == 0) {
+                    writer->writeInt(0);
+                } else {
+                    //calculate size first
+                    int size = 0;
+                    for(int i = 0;i < count;i++) {
+                        Serializable serialzabledData = Cast<Serializable>(f->getListItemObject(i));
+                        //printf("serialzabledData size is %d,field size is %d \n",serialzabledData->calculateSize(),serialzabledData->getAllFields()->size());
 
-                    size += (serialzabledData->calculateSize() 
-                            + serialzabledData->getAllFields()->size() * sizeof(int));
-                    
-                    size += sizeof(int);
-                }
-                //printf("write array size is %d \n",size);
-                writer->writeInt(size);
+                        size += (serialzabledData->calculateSize() 
+                                + serialzabledData->getAllFields()->size() * sizeof(int));
+                        
+                        size += sizeof(int);
+                    }
+                    //printf("write array size is %d \n",size);
+                    writer->writeInt(size);
 
-                //write each object
-                for(int i = 0;i < count;i++) {
-                    ByteArray data = serialize(f->getListItemObject(i));
-                    writer->writeByteArray(data);
-                    //printf("write data size is %d \n",data->size());
+                    //write each object
+                    for(int i = 0;i < count;i++) {
+                        ByteArray data = serialize(f->getListItemObject(i));
+                        writer->writeByteArray(data);
+                        //printf("write data size is %d \n",data->size());
+                    }
                 }
             }
             break;
 
             case st(Field)::FieldTypeHashMap: {
                 ArrayList<Pair<Object, Object>> members = f->getMapItemObjects();
-                int count = members->size();
-                int size = 0;
-                //calculate size
-                for(int i = 0;i < count;i++) {
-                    Pair<Object,Object> pair = members->get(i);
-                    Serializable serialzabledKey = Cast<Serializable>(pair->getKey());
+                if(members == nullptr) {
+                    writer->writeInt(0);
+                } else {
+                    int count = members->size();
+                    int size = 0;
+                    //calculate size
+                    for(int i = 0;i < count;i++) {
+                        Pair<Object,Object> pair = members->get(i);
+                        Serializable serialzabledKey = Cast<Serializable>(pair->getKey());
 
-                    Serializable serialzabledValue = Cast<Serializable>(pair->getValue());
+                        Serializable serialzabledValue = Cast<Serializable>(pair->getValue());
 
-                    size += (serialzabledKey->calculateSize() 
-                            + serialzabledKey->getAllFields()->size() * sizeof(int));
-                    size += sizeof(int);
-                    //printf("FieldTypeHashMap size is %d \n",size);
+                        size += (serialzabledKey->calculateSize() 
+                                + serialzabledKey->getAllFields()->size() * sizeof(int));
+                        size += sizeof(int);
+                        //printf("FieldTypeHashMap size is %d \n",size);
 
-                    size += (serialzabledValue->calculateSize() 
-                            + serialzabledValue->getAllFields()->size() * sizeof(int));
-                    //printf("FieldTypeHashMap2 size is %d \n",size);
-                    size += sizeof(int);
-                    //printf("FieldTypeHashMap3 size is %d \n",size);
-                }
+                        size += (serialzabledValue->calculateSize() 
+                                + serialzabledValue->getAllFields()->size() * sizeof(int));
+                        //printf("FieldTypeHashMap2 size is %d \n",size);
+                        size += sizeof(int);
+                        //printf("FieldTypeHashMap3 size is %d \n",size);
+                    }
 
-                writer->writeInt(size);
-                for(int i = 0;i < count;i++) {
-                    Pair<Object,Object> pair = members->get(i);
-                    ByteArray data = serialize(pair->getKey());
-                    writer->writeByteArray(data);
-                    data = serialize(pair->getValue());
-                    writer->writeByteArray(data);
+                    writer->writeInt(size);
+                    for(int i = 0;i < count;i++) {
+                        Pair<Object,Object> pair = members->get(i);
+                        ByteArray data = serialize(pair->getKey());
+                        writer->writeByteArray(data);
+                        data = serialize(pair->getValue());
+                        writer->writeByteArray(data);
+                    }
                 }
             }
             break;
 
             case st(Field)::FieldTypeObject: {
-                ByteArray data = serialize(f->getObjectValue());
-                writer->writeByteArray(data);
+                Object obj = f->getObjectValue();
+                if(obj == nullptr) {
+                    writer->writeInt(0);
+                } else {
+                    ByteArray data = serialize(f->getObjectValue());
+                    writer->writeByteArray(data);
+                }
             }
             break;
         }
@@ -271,6 +286,10 @@ void _Serializable::deserialize(ByteArray data) {
     while(reader->getRemainSize() != 0) {
         //byte type = reader->readByte();
         int size = reader->readInt();
+        if(size == 0) {
+            index++;
+            continue;
+        }
         Field f = fields->get(index);
         //printf("type is %d,size is %d \n",f->getType(),size);
         
@@ -394,7 +413,9 @@ void _Serializable::deserialize(ByteArray data) {
 
             case st(Field)::FieldTypeObject: {
                 ByteArray content = createByteArray(size);
+                printf("FieldTypeObject,size is %d \n",size);
                 reader->readByteArray(content);
+                Object obj = f->createObject();
                 deserialize(f->createObject(),content);
                 //Serializable data = Cast<Serializable>(fields->get(index)->createObject());
                 //data->import(byteArray);
@@ -453,6 +474,11 @@ void _Serializable::deserialize(Object obj,ByteArray data) {
         v->update(value);
     } else if (IsInstance(ByteArray,obj)) {
         ByteArray v = Cast<ByteArray>(obj);
+        if(v->size() < data->size()) {
+            v->growTo(data->size());
+        } else {
+            v->quickShrink(data->size());
+        }
         v->fillFrom(data->toValue(),0,data->size());
     } else {
         Serializable serializedObj = Cast<Serializable>(obj);
@@ -500,7 +526,10 @@ int _Serializable::calculateSize() {
             break;
 
             case st(Field)::FieldTypeString: {
-                size += f->getStringValue()->size();
+                String str = f->getStringValue();
+                if(str != nullptr) {
+                    size += f->getStringValue()->size();
+                }
             }
             break;
 
@@ -521,33 +550,39 @@ int _Serializable::calculateSize() {
 
             case st(Field)::FieldTypeArrayList: {
                 int count = f->getContainerSize();
-                //calculate size first
-                for(int i = 0;i < count;i++) {
-                    Serializable serialzabledData = Cast<Serializable>(f->getListItemObject(i));
-                    size += serialzabledData->calculateSize();
+                if(count != -1) {
+                    //calculate size first
+                    for(int i = 0;i < count;i++) {
+                        Serializable serialzabledData = Cast<Serializable>(f->getListItemObject(i));
+                        size += serialzabledData->calculateSize();
+                    }
                 }
             }
             break;
 
             case st(Field)::FieldTypeHashMap: {
                 ArrayList<Pair<Object, Object>> members = f->getMapItemObjects();
-                int count = members->size();
-                int size = 0;
-                //calculate size
-                for(int i = 0;i < count;i++) {
-                    Pair<Object,Object> pair = members->get(i);
-                    Serializable serialzabledKey = Cast<Serializable>(pair->getKey());
-                    Serializable serialzabledValue = Cast<Serializable>(pair->getValue());
-                    size += (serialzabledKey->calculateSize() + serialzabledValue->calculateSize());
+                if(members != nullptr) {
+                    int count = members->size();
+                    int size = 0;
+                    //calculate size
+                    for(int i = 0;i < count;i++) {
+                        Pair<Object,Object> pair = members->get(i);
+                        Serializable serialzabledKey = Cast<Serializable>(pair->getKey());
+                        Serializable serialzabledValue = Cast<Serializable>(pair->getValue());
+                        size += (serialzabledKey->calculateSize() + serialzabledValue->calculateSize());
+                    }
                 }
             }
             break;
 
             case st(Field)::FieldTypeObject: {
                 Object obj = f->getObjectValue();
-                if(IsInstance(Serializable,obj)) {
-                    Serializable serializedData = Cast<Serializable>(obj);
-                    size += serializedData->calculateSize();
+                if(obj != nullptr) {
+                    if(IsInstance(Serializable,obj)) {
+                        Serializable serializedData = Cast<Serializable>(obj);
+                        size += serializedData->calculateSize();
+                    }
                 }
                 //size += (Serializable)f->getObjectValue())
             }

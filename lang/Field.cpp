@@ -178,6 +178,9 @@ sp<_Object> _Field::getListItemObject(int index) {
 }
 
 int _Field::getContainerSize() {
+    if(object == nullptr) {
+        return 0;
+    }
     return object->__getContainerSize(name->getStdString());
 }
 
@@ -186,6 +189,9 @@ sp<_Pair<sp<_Object>, sp<_Object>>> _Field::createMapItemObject() {
 }
 
 ArrayList<Pair<sp<_Object>, sp<_Object>>> _Field::getMapItemObjects() {
+    if(object == nullptr) {
+        return nullptr;
+    }
     return object->__getMapItemObjects(name->getStdString());
 }
 

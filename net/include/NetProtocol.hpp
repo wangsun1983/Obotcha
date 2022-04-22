@@ -14,7 +14,8 @@ public:
         Https,
         Ws,
         Http_H2,
-        Http_H2C
+        Http_H2C,
+        Tcp,
     };
     
     static const int DefaultHttpPort = 80;

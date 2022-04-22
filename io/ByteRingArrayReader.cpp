@@ -21,10 +21,11 @@
 
 namespace obotcha {
 
-_ByteRingArrayReader::_ByteRingArrayReader(ByteRingArray b) {
+_ByteRingArrayReader::_ByteRingArrayReader(ByteRingArray b,int mod) {
     mBuff = b;
     mCursor = mBuff->getStartIndex();
     mMark = Idle;
+    mMode = mod;
 }
 
 ByteArray _ByteRingArrayReader::pop() {
@@ -98,10 +99,11 @@ int _ByteRingArrayReader::getReadableLength() {
     }
 
     int end = mBuff->getEndIndex();
-    
     if (mCursor > end) {
         //return mBuff->getAvailDataSize() - (mCursor - end);
         return mBuff->getCapacity() - mCursor + end;
+    } else if(mCursor == end && mMark == Idle){
+        return mBuff->getCapacity();
     } else {
         return end - mCursor;
     }

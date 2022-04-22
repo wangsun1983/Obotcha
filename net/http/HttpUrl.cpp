@@ -157,6 +157,11 @@ void _HttpUrl::import(String input) {
             mScheme = st(NetProtocol)::Ws;
             mPort = st(NetProtocol)::DefaultHttpPort;
             pos += createString("ws:")->size();
+        } else if (input->regionMatches(pos, "tcp:", 0, 4)) {
+            //mScheme = createString("ws");
+            mScheme = st(NetProtocol)::Tcp;
+            mPort = -1;
+            pos += createString("tcp:")->size();
         }
     }
     // Authority.
@@ -358,6 +363,13 @@ String _HttpUrl::toString() {
 
         case st(NetProtocol)::Ws:
             url->append(createString("ws"))->append("://");
+            if(mPort != st(NetProtocol)::DefaultHttpPort) {
+                portStr = createString(":")->append(createString(mPort));
+            }
+        break;
+
+        case st(NetProtocol)::Tcp:
+            url->append(createString("tcp"))->append("://");
             if(mPort != st(NetProtocol)::DefaultHttpPort) {
                 portStr = createString(":")->append(createString(mPort));
             }
