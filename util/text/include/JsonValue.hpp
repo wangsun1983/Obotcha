@@ -569,19 +569,25 @@ public:
                 case st(Field)::FieldTypeObject: {
                     // check whether it is Number
                     auto newObject = field->getObjectValue();
-                    JsonValue newValue = createJsonValue();
-                    newValue->importFrom(newObject);
-                    this->put(name, newValue);
+                    if(newObject != nullptr) {
+                        JsonValue newValue = createJsonValue();
+                        newValue->importFrom(newObject);
+                        this->put(name, newValue);
+                    }
                 }break;
 
                 case st(Field)::FieldTypeArrayList: {
                     auto newObject = field->getObjectValue();
-                    importFromArrayList(name,newObject);
+                    if(newObject != nullptr) {
+                        importFromArrayList(name,newObject);
+                    }
                 } break;
 
                 case st(Field)::FieldTypeHashMap: {
                     auto newObject = field->getObjectValue();
-                    importFromHashMap(name,newObject);
+                    if(newObject != nullptr) {
+                        importFromHashMap(name,newObject);
+                    }
                 } break;
             }
             iterator->next();

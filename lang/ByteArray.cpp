@@ -322,4 +322,22 @@ sp<_ByteArray> _ByteArray::clone() {
     return array;
 }
 
+bool _ByteArray::equals(const ByteArray &s) {
+    if(s == nullptr || s->size() != mSize) {
+        return false;
+    }
+
+    if(this == s.get_pointer()) {
+        return true;
+    }
+
+    for(int i = 0 ; i<mSize;i++) {
+        if(buff[i] != s->at(i)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 } // namespace obotcha

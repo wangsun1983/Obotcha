@@ -26,5 +26,14 @@ private:
     void deserialize(Object,ByteArray);
 };
 
+#define Serialize(X) X->serialize()
+
+template <typename T>
+T DeSerialize(ByteArray data) {
+    T t = AutoCreate<T>();
+    t->deserialize(data);
+    return t;
+}
+
 }
 #endif

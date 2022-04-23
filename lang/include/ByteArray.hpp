@@ -107,6 +107,8 @@ public:
 
     sp<_ByteArray> clone();
 
+    bool equals(const ByteArray &s);
+
     static const int DefaultSize;
 
 private:

@@ -662,7 +662,10 @@ void _XmlValue::importFrom(Object value) {
             } break;
 
             case st(Field)::FieldTypeString: {
-                refNode = doc->newNode(name, field->getStringValue());
+                String str = field->getStringValue();
+                if(str != nullptr) {
+                    refNode = doc->newNode(name, str);
+                }
             } break;
 
             case st(Field)::FieldTypeUint8: {
@@ -683,20 +686,26 @@ void _XmlValue::importFrom(Object value) {
 
             case st(Field)::FieldTypeObject: {
                 auto newObject = field->getObjectValue();
-                refNode = doc->newNode(name);
-                refNode->importFrom(newObject);
+                if(newObject != nullptr) {
+                    refNode = doc->newNode(name);
+                    refNode->importFrom(newObject);
+                }
             } break;
 
             case st(Field)::FieldTypeArrayList: {
                 auto newObject = field->getObjectValue();
-                refNode = doc->newNode(name);
-                refNode->importArrayListFrom(newObject);
+                if(newObject != nullptr) {
+                    refNode = doc->newNode(name);
+                    refNode->importArrayListFrom(newObject);
+                }
             } break;
 
             case st(Field)::FieldTypeHashMap: {
                 auto newObject = field->getObjectValue();
-                refNode = doc->newNode(name);
-                refNode->importHashMapFrom(newObject);
+                if(newObject != nullptr) {
+                    refNode = doc->newNode(name);
+                    refNode->importHashMapFrom(newObject);
+                }
             } break;
         }
 

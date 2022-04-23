@@ -413,7 +413,6 @@ void _Serializable::deserialize(ByteArray data) {
 
             case st(Field)::FieldTypeObject: {
                 ByteArray content = createByteArray(size);
-                printf("FieldTypeObject,size is %d \n",size);
                 reader->readByteArray(content);
                 Object obj = f->createObject();
                 deserialize(f->createObject(),content);
