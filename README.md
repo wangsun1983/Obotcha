@@ -1,68 +1,70 @@
-Obotcha:基于C++14的开源工具库
+Obotcha:Tools library based on  C++14
 -[![Total alerts](https://img.shields.io/lgtm/alerts/g/wangsun1983/Obotcha.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/wangsun1983/Obotcha/alerts/)
 
 -----------------------------------
 ### 什么是Obotcha
-Obotcha是基于C++14开发的一个工具库，该工具库目前提供了如下的功能。  
+Obotcha is a tool library based on C++14.it provides the following functions.
 
--   [基础类](https://github.com/wangsun1983/Obotcha/tree/master/lang)  
-    -  Object类 （所有Class父类）
-    -  Reflect类（支持C++类反射）
-    -  Exception类（各类异常）
--   [多线程工具类](https://github.com/wangsun1983/Obotcha/tree/master/util/concurrent)  
-    - Thread类 （实现了线程的创建，退出）
-    - 线程池类  （实现了ThreadExecutorPool，ThreadCachedPoolExecutor，ScheduledThreadPoolExecutor） 
-    - 线程锁（Mutex，Condition） ，读写锁（ReadWriteLock）
-    - 线程等待锁（CountDownLatch，Barrier）
-    - 基本数据类型的原子操作（AtomicBoolean，AtomicInteger等） 
--   [IO工具库](https://github.com/wangsun1983/Obotcha/tree/master/io)  
-    - 文件读取/写入类（FileInputStream/FileOutputStream类）
-    - 文件节点读取类（FileNodeReader类）
-    - 文件状态监听类（FileWatcher类）
-    - Zip文件操作类（ZipStream类）
-    - 内存映射文件操作类（MemoryFileInputStream，MemoryFileOutputStream类）  
-    - so库文件读取类（LibraryFileInputStream类）
-- [数据库工具库](https://github.com/wangsun1983/Obotcha/tree/master/sql)
-    - 支持Sqlite3搜索，执行
-    - 支持MySql搜索，执行
-    - 支持数据ORM反射
--  [文本处理工具库](https://github.com/wangsun1983/Obotcha/tree/master/util/text)
-    - xml文件读写类 （XmlDocument，XmlValue，XmlWriter类）
-    - json文件读写类（JsonArray，JsonReader，JsonWriter类）
-    - ini文件读取类（IniReader，IniValue类）
-    - yaml文件读取类（YamlReader类）
-    - conf文件读取类（ConfReader类）
--  [网络处理工具库](https://github.com/wangsun1983/Obotcha/tree/master/net)   
-    - 支持Tcp服务端，客户端管理
-    - 支持Udp服务端，客户端管理
-    - 支持WebSocket服务端，客户端管理
-    - 支持Http1.1/2.0协议
-    - 支持Https
--  [进程间通信工具库 ](https://github.com/wangsun1983/Obotcha/tree/master/process)
-     - 支持Posix标准的进程间通信。
-     - 支持对象序列化/反序列化
--  [安全相关工具库](https://github.com/wangsun1983/Obotcha/tree/master/security)
-     - 支持Aes，Base64，Crc32，Des，Md，Rsa，Sha加密。
+-   [Base Class](https://github.com/wangsun1983/Obotcha/tree/master/lang)  
+    -  Object （SuperClass）
+    -  Reflect（provide reflect functions ）
+    -  Exception（provide Exception function ）
+-   [Thread](https://github.com/wangsun1983/Obotcha/tree/master/util/concurrent)  
+    - Thread（provide methods to create/start a thread）
+    - Executor （provide ThreadExecutorPool，ThreadCachedPoolExecutor，ScheduledThreadPoolExecutor） 
+    - Mutex（Mutex，Condition......）
+    - ReadWriteLock（ReadWriteLock......）
+    - ConcurrentLock（CountDownLatch，Barrier......）
+    - Atomic Data（AtomicBoolean，AtomicInteger......） 
+-   [IO](https://github.com/wangsun1983/Obotcha/tree/master/io)  
+    - FileInputStream/FileOutputStream (provide methods to read/write file)
+    - FileNodeReader (provide methods to read/write a node）
+    - FileWatcher (provide methods to monitor file's changes) 
+    - ZipStream（provide methods to zip/unzip files）
+    - LibraryFile (provide methods to open library)
+- [Db](https://github.com/wangsun1983/Obotcha/tree/master/sql)
+    - Provide ORM for sqlite/mysql
+    - Provide methods to use redis
+-  [Text](https://github.com/wangsun1983/Obotcha/tree/master/util/text)
+    - Xml  （XmlDocument，XmlValue，XmlWriter）
+    - Json（JsonArray，JsonReader，JsonWriter）
+    - Ini（IniReader，IniValue）
+    - Yaml（YamlReader）
+    - Conf（ConfReader）
+-  [Net](https://github.com/wangsun1983/Obotcha/tree/master/net)   
+    - Support Tcp client/server
+    - Support Udp client/server
+    - Support Websocket client/server
+    - Support Http1.1/Http 2.0
+    - Support Https
+-  [Process ](https://github.com/wangsun1983/Obotcha/tree/master/process)
+     - Provide methods to do IPC transaction。
+     - Provider class(Serializable) to do data serialization
+-  [Security](https://github.com/wangsun1983/Obotcha/tree/master/security)
+     - Support Aes，Base64，Crc32，Des，Md，Rsa，Sha。
 
-### Obotcha的原由
-2019年初的时候和朋友讨论用C++编写一个后台服务器程序，使用了一段时间发现虽然boost，poco这些工具库提供了很多强大的功能，但是对于初学者来说，使用还是非常的不方便。   
-- 内存管理，这个是C++/C语言老生常谈的问题。
-- 类功能的不聚合。
-- 范型编程后代码会变得非常难理解。
-- C++各种开源库散布在各个角落，没有统一集中管理。
-- 没有反射导致ORM无法实现。
-- 没有序列化/反序列化的实现，导致进程间通信非常麻烦
-基于上面这些原因，所以我就开始了Obotcha的编写。
+### Why Obotcha
+In early 2019, I discussed with my friends to write a  server program in C + +. After using C++ for some time, I found that although boost and poco tool libraries provide many powerful functions, they are still very inconvenient for beginners. 
 
-### Obotcha的设计
-- Obotcha使用了自己的sp智能指针来做内存管理。为了达到这个目的，所有的类申明都需要使用DELCARE_CLASS和DECLARE_TEMPLATE_CLASS。前者用于非模板类申明，后者用于模板类申明。示例如下：
+- Memory management, this is an old issue.
+- Non aggregation of class functions.
+- After paradigm programming, the code becomes very difficult to understand.
+- Various open source libraries of C + + are scattered in every corner without unified and centralized management.
+- Without reflection, ORM cannot be realized.
+- There is no implementation of serialization / deserialization, which makes  process communication very troublesome
+
+For these reasons, I started writing obotcha.
+
+
+### How to use Obotcha
+-  Obotcha uses its own smart pointer(sp) for memory management. To achieve this, all class declarations need to use DECLARE_ Class or DECLARE_ TEMPLATE_ CLASS. The former is used for non template class declaration, and the latter is used for template class declaration. Examples are as follows：
     ```
     DECLARE_CLASS(Data) {
     public:
         int i;
     };
     ```
-- Obotcha使用DECLARE_REFLECT_FIELD定义可反射/序列化成员变量，示例如下：
+- Obotcha uses DECLARE_ REFLECT_ Field defines reflective / serializable member variables, Examples are as follows：
     ```
     DECLARE_CLASS(SampleData) {
     public:
@@ -81,18 +83,18 @@ Obotcha是基于C++14开发的一个工具库，该工具库目前提供了如�
                                 floatData,longData,stringData,uint8Data,uint16Data,uint32Data,
                                 uint64Data,boolData)
     };
-    ```
-- Obotcha的整体代码架构均参考了Java的代码结构和实现。目的是能使用Obotcha很快地将java代码转换C++代码。
-- Obotcha使用了部分第三方库（openssl，zlib等），这些使用的开源库代码均存放在external目录下。
-- Obotcha可以使用g++/gcc/clang作为主要编译器。
+     ```
+- The overall code architecture of obotcha refers to the code structure and implementation of Java. The purpose is to use obotcha to quickly convert java code into C + + code.
+- Obotcha uses some third-party libraries (OpenSSL, zlib, etc.), and the open source library codes used are stored in the external directory.
+- Obotcha can use G + + / GCC / clang as the main compiler.
 
-### Obotcha的编译
-- 第一次编译需要在代码根目录下运行`./build.sh`，这样可以生成对应的out目录。
-- 之后每次编译可以直接使用`make`命令来编译。
+### How to build Obotcha
+-The first compilation needs to run in the code root directory/ build. SH `, which can generate the corresponding out directory.
+-After the first time, you can directly use the 'make' command to compile.
 
-### Obotcha的示例
-- Obotcha的测试代码是最好的例子，这些代码存放在ObotchaTestSuite仓库下 。
-- ObotchaTestSuite存放了Obotcha所有类的接口测试函数。
+### Obotcha's Sample Code
+- Obotcha's test code is the best example. These codes are stored in the [obotcha TestSuite](https://github.com/wangsun1983/Obotcha/tree/master/security) .
+- Obotchatestsuite stores the interface test functions of all classes of obotcha.
 
-### Obotcha的未来
-- 预计2022年开始使用Obotcha开始进行后台服务器Gagira的开发。
+### Obotcha's Future
+-I t is expected that obotcha will be used in 2022 to start the development of  server Gagira.
