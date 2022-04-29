@@ -9,7 +9,7 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
     
     fileDescriptor = s->getFileDescriptor();
     
-    if (s->getFileDescriptor()->isAsync()) {
+    if (fileDescriptor!= nullptr && fileDescriptor->isAsync()) {
         //Add a mutex to protect channle for the following issue
         //1.Thread A:call write function to send data
         //2.Thread B(SocketMonitor) :if peer disconnet,close SocketOutputStream.
@@ -17,7 +17,7 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
         //3.Thread A:call mChannel->write and crash(NullPointer...);
         mChannelMutex = createMutex();
         mChannel = createAsyncOutputChannel(
-            s->getFileDescriptor(),
+            fileDescriptor,
             std::bind(&_SocketOutputStream::_write, this, std::placeholders::_1,
                       std::placeholders::_2,std::placeholders::_3));
     }
@@ -58,7 +58,11 @@ long _SocketOutputStream::write(ByteArray data, int start, int len) {
 }
 
 long _SocketOutputStream::_write(FileDescriptor fd, ByteArray data,int offset) {
-    return impl->write(data,offset);
+    if(impl != nullptr) {
+        return impl->write(data,offset);
+    }
+
+    return -1;
 }
 
 void _SocketOutputStream::close() {

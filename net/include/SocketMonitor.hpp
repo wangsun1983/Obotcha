@@ -40,6 +40,7 @@ public:
     int bind(ServerSocket,SocketListener);
    
     int remove(Socket,bool isClose = false);
+    int remove(ServerSocket,bool isClose = false);
 
     void close();
     

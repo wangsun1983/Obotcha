@@ -203,8 +203,8 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                     int clientfd = -1;
                     ServerSocket server = monitor->mServerSocks->get(fd);
                     s = server->accept();
-                    monitor->bind(s,listener);
                     if (s != nullptr) {
+                        monitor->bind(s,listener);
                         {
                             AutoLock l(monitor->mMutex);
                             monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Connect, s));
@@ -281,6 +281,14 @@ int _SocketMonitor::remove(Socket s,bool isClose) {
         _remove(s->getFileDescriptor());
     }
     
+    return 0;
+}
+
+int _SocketMonitor::remove(ServerSocket s,bool isClose) {
+    _remove(s->getFileDescriptor());
+    if(isClose) {
+        s->close();
+    }
     return 0;
 }
 
