@@ -112,6 +112,7 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
         multiPart->onCompose([this,send](ByteArray data) {
             this->_write(data,send);
         });
+        
     } else {
         ByteArray body = packet->getEntity()->getContent();
         if(body != nullptr && body->size() != 0) {
@@ -119,7 +120,7 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
         }
     }
 
-    return 0;
+    return _finishWrite();
 }
 
 int _HttpPacketWriterImpl::_flushResponse(HttpPacket packet,bool send) {
@@ -134,7 +135,7 @@ int _HttpPacketWriterImpl::_flushResponse(HttpPacket packet,bool send) {
             _write(packet->getEntity()->getContent(),send);
         }
     }
-    return 0;
+    return _finishWrite();
 }
 
 int _HttpPacketWriterImpl::_write(ByteArray data,bool send) {
@@ -142,7 +143,7 @@ int _HttpPacketWriterImpl::_write(ByteArray data,bool send) {
     int start = 0;
     while(length != 0) {
         int remiderSize = mWriter->getReminderSize();
-        
+        printf("remiderSize is %d,length is %d \n",remiderSize,length);
         if(length > remiderSize) {
             mWriter->writeByteArray(data,start,remiderSize);
             length = length - remiderSize;
@@ -159,13 +160,16 @@ int _HttpPacketWriterImpl::_write(ByteArray data,bool send) {
             length = length - (data->size() - start);
         }
     }
+    return 0;
+}
 
+int _HttpPacketWriterImpl::_finishWrite() {
     int index = mWriter->getIndex();
     if(index != 0 && send) {
         mStream->write(mBuff, 0, index);
         mWriter->reset();
     }
-    
+
     return 0;
 }
 

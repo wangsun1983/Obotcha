@@ -29,6 +29,7 @@ private:
     int _computeContentLength(HttpPacket);
     int _flush(HttpPacket packet,bool send);
     int _write(ByteArray,bool send);
+    int _finishWrite();
 
     int _flushRequest(HttpPacket packet,bool send);
     int _flushResponse(HttpPacket packet,bool send);
