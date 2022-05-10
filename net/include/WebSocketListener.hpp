@@ -41,6 +41,8 @@ public:
     virtual int onPong(String) {return PingResultResponse;}
 
     virtual int onPing(String)  {return PingResultResponse;}
+
+    ~_WebSocketListener(){}
 };
 
 }

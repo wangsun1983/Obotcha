@@ -17,7 +17,7 @@ class _WebSocketListener;
 DECLARE_CLASS(WebSocketLinker) {
 public:
     _WebSocketLinker(Socket sock);
-
+    ~_WebSocketLinker();
     //Parser
     sp<_WebSocketParser> getParser();
     void setParser(sp<_WebSocketParser>);

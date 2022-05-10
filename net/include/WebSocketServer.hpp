@@ -46,13 +46,13 @@ public:
 
     void dump();
 
+    int bind(String, WebSocketListener);
+
 private:
     void onHttpMessage(int, sp<_HttpLinker> client, HttpResponseWriter w,
                        HttpPacket msg);
 
     void onSocketMessage(int, Socket, ByteArray);
-
-    int bind(String, WebSocketListener);
 
     InetAddress mAddress;
 

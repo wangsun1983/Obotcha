@@ -26,6 +26,10 @@ _WebSocketLinker::_WebSocketLinker(Socket sock) {
     mOutputStream = sock->getOutputStream();
 }
 
+_WebSocketLinker::~_WebSocketLinker() {
+    //nothing
+}
+
 void _WebSocketLinker::reset() {
     mParser = nullptr;
     mComposer = nullptr;
