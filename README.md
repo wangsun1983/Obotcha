@@ -93,7 +93,7 @@ For these reasons, I started writing obotcha.
 -After the first time, you can directly use the 'make' command to compile.
 
 ### Obotcha's Sample Code
-- Obotcha's test code is the best example. These codes are stored in the [obotcha TestSuite](https://github.com/wangsun1983/Obotcha/tree/master/security) .
+- Obotcha's test code is the best example. These codes are stored in the [obotcha TestSuite](https://github.com/wangsun1983/ObotchaTestSuite) .
 - Obotchatestsuite stores the interface test functions of all classes of obotcha.
 
 ### Obotcha's Future
