@@ -152,7 +152,9 @@ void _MySqlConnection::queryWithEachRow(SqlQuery query,onRowStartCallback onStar
             while ((row = mysql_fetch_row(res))) {
                 onStart();
                 for (int i = 0; i < columnNum; i++) {
-                    onData(createString(columns[i]),createString(row[i]));
+                    if(row[i] != nullptr) {
+                        onData(createString(columns[i]),createString(row[i]));
+                    }
                 }
                 onEnd();
             }
