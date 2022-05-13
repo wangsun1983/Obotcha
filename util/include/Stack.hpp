@@ -12,7 +12,7 @@ namespace obotcha {
 
 template <typename T> class _StackIterator;
 
-DECLARE_TEMPLATE_CLASS(Stack, 1) {
+DECLARE_TEMPLATE_CLASS(Stack, T) {
 public:
     friend class _StackIterator<T>;
 
@@ -42,7 +42,7 @@ private:
     typename std::vector<T>::iterator end() { return element.end(); }
 };
 
-DECLARE_TEMPLATE_CLASS(StackIterator, 1) {
+DECLARE_TEMPLATE_CLASS(StackIterator, T) {
 public:
     _StackIterator(_Stack<T> * list) {
         mStack.set_pointer(list);

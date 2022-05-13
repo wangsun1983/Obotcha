@@ -56,7 +56,8 @@ DUMMY_REFLECT_ARRAY_FUNCTION(uint64_t)
 DUMMY_REFLECT_ARRAY_FUNCTION(std::string)
 
 //----------------- ArrayList ---------------------
-DECLARE_TEMPLATE_CLASS(ArrayList, 1) {
+DECLARE_TEMPLATE_CLASS(ArrayList, T)
+{
 public:
     friend class __reflectArrayListItemFunc<T>;
     friend class _ListIterator<T>;
@@ -236,7 +237,7 @@ private:
 };
 
 //----------------- ArrayListIterator ---------------------
-DECLARE_TEMPLATE_CLASS(ListIterator, 1) {
+DECLARE_TEMPLATE_CLASS(ListIterator, T) {
 public:
     _ListIterator(_ArrayList<T> * list) {
         mList.set_pointer(list);

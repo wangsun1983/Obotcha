@@ -13,7 +13,7 @@
 
 namespace obotcha {
 
-DECLARE_TEMPLATE_CLASS(ConcurrentQueue, 1) {
+DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
   public:
     inline _ConcurrentQueue() {
         rdwrLock = createReadWriteLock();

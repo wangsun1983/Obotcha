@@ -14,6 +14,7 @@
 #include "AtomicBoolean.hpp"
 #include "Log.hpp"
 #include "SqlConnection.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 

@@ -2,11 +2,10 @@
 #define __OBOTCHA_ATOMIC_BYTE_HPP__
 
 #include <atomic>
-#include <pthread.h>
-#include <sys/time.h>
 
-#include "Mutex.hpp"
+#include "Object.hpp"
 #include "StrongPointer.hpp"
+#include "Byte.hpp"
 
 namespace obotcha {
 

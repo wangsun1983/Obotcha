@@ -152,7 +152,7 @@ _NUMBER_CHECK_DECLARE(uint64_t)
 _NUMBER_CHECK_DECLARE_DOUBLE(double)
 _NUMBER_CHECK_DECLARE_DOUBLE(float)
 
-DECLARE_TEMPLATE_CLASS(Number, 1) {
+DECLARE_TEMPLATE_CLASS(Number, T) {
 
   public:
     static T parseNumber(std::string v) {

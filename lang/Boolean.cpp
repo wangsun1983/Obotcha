@@ -28,9 +28,13 @@ const sp<_String> _Boolean::FalseString = createString("False");
 
 const sp<_String> _Boolean::TrueString = createString("True");
 
-_Boolean::_Boolean() : val(true) {}
+_Boolean::_Boolean() : val(true) {
+    //nothing
+}
 
-_Boolean::_Boolean(bool v) : val(v) {}
+_Boolean::_Boolean(bool v) : val(v) {
+    //nothing
+}
 
 _Boolean::_Boolean(const char *s) : _Boolean(createString(s)) {}
 
@@ -56,28 +60,28 @@ _Boolean::_Boolean(const Boolean &v) {
     val = v->val;
 }
 
-bool _Boolean::toValue() { 
-    return val; 
+bool _Boolean::toValue() {
+    return val;
 }
 
-bool _Boolean::equals(const Boolean &p) { 
-    return val == p->val; 
+bool _Boolean::equals(const Boolean &p) {
+    return val == p->val;
 }
 
-bool _Boolean::equals(const _Boolean *p) { 
-    return val == p->val; 
+bool _Boolean::equals(const _Boolean *p) {
+    return val == p->val;
 }
 
-void _Boolean::update(bool v) { 
-    val = v; 
+void _Boolean::update(bool v) {
+    val = v;
 }
 
-void _Boolean::update(const sp<_Boolean> v) { 
-    val = v->val; 
+void _Boolean::update(const sp<_Boolean> &v) {
+    val = v->val;
 }
 
-bool _Boolean::equals(bool p) { 
-    return val == p; 
+bool _Boolean::equals(bool p) {
+    return val == p;
 }
 
 sp<_String> _Boolean::toString() {
@@ -94,7 +98,7 @@ bool _Boolean::logicOr(bool v) {
     return val;
 }
 
-bool _Boolean::logicOr(const sp<_Boolean> v) {
+bool _Boolean::logicOr(const sp<_Boolean> &v) {
     val |= v->toValue();
 
     return val;
@@ -106,15 +110,17 @@ bool _Boolean::logicAnd(bool v) {
     return val;
 }
 
-bool _Boolean::logicAnd(const sp<_Boolean> v) {
+bool _Boolean::logicAnd(const sp<_Boolean> &v) {
     val &= v->toValue();
 
     return val;
 }
 
-uint64_t _Boolean::hashcode() { return std::hash<bool>{}(val); }
+uint64_t _Boolean::hashcode() { 
+    return std::hash<bool>{}(val); 
+}
 
-sp<_Boolean> _Boolean::parse(const sp<_String> str) {
+sp<_Boolean> _Boolean::parse(const sp<_String> &str) {
     int value = _Boolean::_parse(str);
     switch (value) {
     case 1:
@@ -127,16 +133,16 @@ sp<_Boolean> _Boolean::parse(const sp<_String> str) {
     return nullptr;
 }
 
-sp<_Boolean> _Boolean::parse(const char *v) { 
-    return parse(createString(v)); 
+sp<_Boolean> _Boolean::parse(const char *v) {
+    return parse(createString(v));
 }
 
-sp<_Boolean> _Boolean::parse(bool v) { 
-    return createBoolean(v); 
+sp<_Boolean> _Boolean::parse(bool v) {
+    return createBoolean(v);
 }
 
-sp<_String> _Boolean::className() { 
-    return createString("Boolean"); 
+sp<_String> _Boolean::className() {
+    return createString("Boolean");
 }
 
 int _Boolean::_parse(sp<_String> str) {

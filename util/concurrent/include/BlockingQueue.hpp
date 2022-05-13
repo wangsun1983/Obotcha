@@ -74,7 +74,7 @@ namespace obotcha {
     }                                                                          \
     return ContainerValue<T>(nullptr).get();
 
-DECLARE_TEMPLATE_CLASS(BlockingQueue, 1) {
+DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
   public:
     _BlockingQueue(int size) : mCapacity(size) {
         mMutex = createMutex("BlockingQueueMutex");

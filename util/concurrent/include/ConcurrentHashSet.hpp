@@ -18,7 +18,7 @@
 
 namespace obotcha {
 
-DECLARE_TEMPLATE_CLASS(ConcurrentHashSet, 1) {
+DECLARE_TEMPLATE_CLASS(ConcurrentHashSet, T) {
 public:
     _ConcurrentHashSet() {
         rdwrLock = createReadWriteLock();

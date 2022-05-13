@@ -32,7 +32,7 @@ template <typename T, typename U> class _MapIterator;
     };
 
 //----------------------- HashMap<T,U> -----------------------
-DECLARE_TEMPLATE_CLASS(HashMap, 2) {
+DECLARE_TEMPLATE_CLASS(HashMap, T,U) {
   public:
     friend class _MapIterator<T, U>;
 
@@ -189,7 +189,7 @@ DECLARE_TEMPLATE_CLASS(HashMap, 2) {
 };
 
 //----------------- MapIterator ---------------------
-DECLARE_TEMPLATE_CLASS(MapIterator, 2) {
+DECLARE_TEMPLATE_CLASS(MapIterator, T,U) {
 
   public:
     _MapIterator(_HashMap<T, U> * map) {

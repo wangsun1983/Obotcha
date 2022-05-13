@@ -68,7 +68,7 @@ namespace obotcha {
     }                                                                          \
     return ContainerValue<T>(nullptr).get();
 
-DECLARE_TEMPLATE_CLASS(BlockingLinkedList, 1) {
+DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
   public:
     _BlockingLinkedList(int capacity = -1) {
         mMutex = createMutex("BlockingLinkedList");

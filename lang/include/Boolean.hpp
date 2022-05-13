@@ -31,21 +31,21 @@ public:
 
     void update(bool v);
 
-    void update(const sp<_Boolean> v);
+    void update(const sp<_Boolean> &v);
 
     sp<_String> toString();
 
     bool logicOr(bool);
 
-    bool logicOr(const sp<_Boolean>);
+    bool logicOr(const sp<_Boolean>&);
 
     bool logicAnd(bool);
 
-    bool logicAnd(const sp<_Boolean>);
+    bool logicAnd(const sp<_Boolean>&);
 
     uint64_t hashcode();
 
-    static sp<_Boolean> parse(const sp<_String>);
+    static sp<_Boolean> parse(const sp<_String> &);
 
     static sp<_Boolean> parse(const char *);
 

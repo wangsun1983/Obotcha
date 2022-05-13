@@ -148,7 +148,7 @@ private:
     void __setFieldBoolValue(std::string name, bool) {}
 };
 
-DECLARE_TEMPLATE_CLASS(FieldContent, 1) IMPLEMENTS(Field) {
+DECLARE_TEMPLATE_CLASS(FieldContent, T) IMPLEMENTS(Field) {
 public:
     std::function<void(T)> setfunc;
 

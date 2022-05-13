@@ -2,11 +2,8 @@
 #define __OBOTCHA_ATOMIC_LONG_HPP__
 
 #include <atomic>
-#include <pthread.h>
-#include <sys/time.h>
 
-#include "AutoLock.hpp"
-#include "Mutex.hpp"
+#include "Object.hpp"
 #include "StrongPointer.hpp"
 
 namespace obotcha {

@@ -17,7 +17,7 @@
 namespace obotcha {
 
 //----------------- List ---------------------
-DECLARE_TEMPLATE_CLASS(List, 1) {
+DECLARE_TEMPLATE_CLASS(List, T) {
 public:
     _List(int length) {
         mSize = length;

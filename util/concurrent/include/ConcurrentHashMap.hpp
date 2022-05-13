@@ -12,7 +12,7 @@
 
 namespace obotcha {
 
-DECLARE_TEMPLATE_CLASS(ConcurrentHashMap, 2) {
+DECLARE_TEMPLATE_CLASS(ConcurrentHashMap, T,U) {
 public:
     _ConcurrentHashMap() { 
         mMap = createHashMap<T, U>();

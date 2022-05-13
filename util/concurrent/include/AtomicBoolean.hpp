@@ -1,11 +1,10 @@
 #ifndef __OBOTCHA_ATOMIC_BOOLEANR_HPP__
 #define __OBOTCHA_ATOMIC_BOOLEANR_HPP__
 
-#include <pthread.h>
-#include <sys/time.h>
-
-#include "Mutex.hpp"
 #include <atomic>
+
+#include "Object.hpp"
+#include "StrongPointer.hpp"
 
 namespace obotcha {
 

@@ -194,44 +194,117 @@ template <typename X, typename V> X Cast(sp<V> t) {
         return AutoClone<sp<A>>(obj);                                          \
     }
 
-#define MAKE_FUNCTION_1(Y)                                                     \
-    template <typename T, typename A = _##Y<T>, typename... Args>              \
-    sp<A> create##Y(Args &&... args) {                                         \
-        _Object *obj = new A(std::forward<Args>(args)...);                     \
-        obj->__ReflectInit();                                                  \
-        return AutoClone<sp<A>>(obj);                                          \
-    }
+#define ARG_0(N, ...) N
 
-#define MAKE_FUNCTION_2(Y)                                                     \
-    template <typename T, typename U, typename A = _##Y<T, U>,                 \
-              typename... Args>                                                \
-    sp<A> create##Y(Args &&... args) {                                         \
-        _Object *obj = new A(std::forward<Args>(args)...);                     \
-        obj->__ReflectInit();                                                  \
-        return AutoClone<sp<A>>(obj);                                          \
-    }
+#define ARG_1(_1, N, ...) N
+
+#define ARG_2(_1, _2, N, ...) N
+
+#define ARG_3(_1, _2, _3, N, ...) N
+
+#define ARG_4(_1, _2, _3, _4, N, ...) N
+
+#define ARG_5(_1, _2, _3, _4, _5, N, ...) N
+
+#define ARG_6(_1, _2, _3, _4, _5, _6, N, ...) N
+
+#define ARG_7(_1, _2, _3, _4, _5, _6, _7, N, ...) N
+
+#define ARG_8(_1, _2, _3, _4, _5, _6, _7, _8, N, ...) N
+
+#define ARG_9(_1, _2, _3, _4, _5, _6, _7, _8, _9, N, ...) N
+
+#define ARG_10(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N, ...) N
+
+#define ARG_11(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, N, ...) N
+
+#define ARG_12(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, N, ...) N
+
+#define ARG_13(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, N, ...) N
+
+#define ARG_14(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, N, \
+               ...)                                                            \
+    N
+
+#define ARG_15(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14,    \
+               _15, N, ...)                                                    \
+    N
+
+#define RSEQ_N()                                                               \
+    119, 118, 117, 116, 115, 114, 113, 112, 111, 110, 109, 108, 107, 106, 105, \
+        104, 103, 102, 101, 100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89,   \
+        88, 87, 86, 85, 84, 83, 82, 81, 80, 79, 78, 77, 76, 75, 74, 73, 72,    \
+        71, 70, 69, 68, 67, 66, 65, 64, 63, 62, 61, 60, 59, 58, 57, 56, 55,    \
+        54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38,    \
+        37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21,    \
+        20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, \
+        0
+
+#define ARG_N(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14,     \
+              _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, \
+              _28, _29, _30, _31, _32, _33, _34, _35, _36, _37, _38, _39, _40, \
+              _41, _42, _43, _44, _45, _46, _47, _48, _49, _50, _51, _52, _53, \
+              _54, _55, _56, _57, _58, _59, _60, _61, _62, _63, _64, _65, _66, \
+              _67, _68, _69, _70, _71, _72, _73, _74, _75, _76, _77, _78, _79, \
+              _80, _81, _82, _83, _84, _85, _86, _87, _88, _89, _90, _91, _92, \
+              _93, _94, _95, _96, _97, _98, _99, _100, _101, _102, _103, _104, \
+              _105, _106, _107, _108, _109, _110, _111, _112, _113, _114,      \
+              _115, _116, _117, _118, _119, N, ...)                            \
+    N
+
+#define MARCO_EXPAND(...) __VA_ARGS__
+#define GET_ARG_COUNT_INNER(...) MARCO_EXPAND(ARG_N(__VA_ARGS__))
+#define GET_ARG_COUNT(...) GET_ARG_COUNT_INNER(__VA_ARGS__, RSEQ_N())
 
 #define CLASS_PRE_DEF_0(YY) class _##YY
-#define CLASS_PRE_DEF_1(YY) template <typename X> class _##YY
-#define CLASS_PRE_DEF_2(YY) template <typename X, typename Z> class _##YY
+#define CLASS_PRE_DEF_1(classname,templatename)  template <typename templatename> class _##classname
+#define CLASS_PRE_DEF_2(classname,templatename1,template2)  template <typename templatename1,typename template2> class _##classname
 
-#define TYPE_DEF_0(YY) typedef sp<_##YY> YY
-#define TYPE_DEF_1(YY) template <typename UU> using YY = sp<_##YY<UU>>;
+#define TYPE_DEF_1(classname,templatename) \
+    template <typename templatename> using classname = sp<_##classname<templatename>>;
 
-#define TYPE_DEF_2(YY)                                                         \
-    template <typename UU, typename VV> using YY = sp<_##YY<UU, VV>>;
+#define TYPE_DEF_2(classname,templatename1,templatename2) \
+    template <typename templatename1, typename templatename2> using classname = sp<_##classname<templatename1,templatename2>>;
 
-#define TEPMLATE_DECLARE_0
-#define TEPMLATE_DECLARE_1 template <typename T>
-#define TEPMLATE_DECLARE_2 template <typename T, typename U>
 
-#define DECLARE_TEMPLATE_CLASS(Y, U)                                           \
-    CLASS_PRE_DEF_##U(Y);                                                      \
-    TYPE_DEF_##U(Y);                                                           \
-    MAKE_FUNCTION_##U(Y) TEPMLATE_DECLARE_##U class _##Y                       \
-        : virtual public _Object
+#define MAKE_FUNCTION_1(classname,templatename1)                                                     \
+    template <typename templatename1, typename A = _##classname<templatename1>, typename... Args>              \
+    sp<A> create##classname(Args &&... args) {                                         \
+        _Object *obj = new A(std::forward<Args>(args)...);                     \
+        obj->__ReflectInit();                                                  \
+        return AutoClone<sp<A>>(obj);                                          \
+    }
 
-#define DECLARE_CLASS(Y) DECLARE_TEMPLATE_CLASS(Y, 0)
+#define MAKE_FUNCTION_2(classname,templatename1,templatename2)                                                     \
+    template <typename templatename1, typename templatename2, typename A = _##classname<templatename1,templatename2>,                 \
+              typename... Args>                                                \
+    sp<A> create##classname(Args &&... args) {                                         \
+        _Object *obj = new A(std::forward<Args>(args)...);                     \
+        obj->__ReflectInit();                                                  \
+        return AutoClone<sp<A>>(obj);                                          \
+    }
+
+#define TEMPLATE_DECLARE_1(templatename) template <typename templatename>
+
+#define TEMPLATE_DECLARE_2(templatename1,templatename2) template <typename templatename1,typename templatename2> 
+
+
+#define CLASS_PRE_DEF_FUNC_INTERFACE(Y,COUNT,...) CLASS_PRE_DEF_FUNC(Y,COUNT,__VA_ARGS__)
+
+#define CLASS_PRE_DEF_FUNC(Y,COUNT,...) \
+    CLASS_PRE_DEF_##COUNT(Y,__VA_ARGS__); \
+    TYPE_DEF_##COUNT(Y,__VA_ARGS__);  \
+    MAKE_FUNCTION_##COUNT(Y,__VA_ARGS__); \
+    TEMPLATE_DECLARE_##COUNT(__VA_ARGS__) class _##Y: virtual public _Object
+
+
+#define DECLARE_TEMPLATE_CLASS(Y, ...)                                         \
+    CLASS_PRE_DEF_FUNC_INTERFACE(Y,GET_ARG_COUNT(__VA_ARGS__),__VA_ARGS__)
+
+#define DECLARE_CLASS(Y) class _##Y; \
+    typedef sp<_##Y> Y; \
+    MAKE_FUNCTION_0(Y); \
+    class _##Y:virtual public _Object
 
 //-------------------------- Macro for Static Class Declaration
 //----------------------------------//
