@@ -13,11 +13,6 @@ class _String;
 
 DECLARE_CLASS(ByteArray) {
 public:
-    enum Type {
-        safe = 0,
-        unsafe,
-    };
-
     explicit _ByteArray();
 
     explicit _ByteArray(int length);
@@ -26,25 +21,15 @@ public:
 
     explicit _ByteArray(sp<_ByteArray> &, int start = 0, int len = 0);
 
-    template <typename T> static ByteArray alloc() {
-        return createByteArray(sizeof(T));
-    }
-
     ~_ByteArray();
 
-    byte *toValue();
+    byte *toValue(bool copy = false);
 
     int size();
 
     void clear();
 
     byte &operator[](int i);
-
-    void setSafe();
-
-    void setUnSafe();
-
-    bool isSafeMode();
 
     int growTo(int size);
 
@@ -70,7 +55,14 @@ public:
 
     int append(byte * data, int len);
 
-    template <typename U> U *get() { return (U *)buff; }
+    //convert struct start
+    template <typename T> static ByteArray alloc() {
+        return createByteArray(sizeof(T));
+    }
+
+    template <typename U> U *get() {
+      return (U *)buff;
+    }
 
     template <typename U> int apply(U * p) {
         if (mSize < sizeof(U)) {
@@ -80,16 +72,7 @@ public:
         memcpy(buff, p, sizeof(U));
         return 0;
     }
-
-    // add foreach lambda
-    using foreachCallback = std::function<int(byte &)>;
-    inline void foreach (foreachCallback callback) {
-        for (int i = 0; i < mSize; i++) {
-            if (callback(buff[i]) == Global::Break) {
-                break;
-            }
-        }
-    }
+    //convert struct end
 
     sp<_String> toString();
 
@@ -100,10 +83,6 @@ public:
     void dumpToFile(const char *path);
 
     void dumpToFile(const sp<_String> &path);
-
-    void setPriorityWeight(int);
-
-    int getPriorityWeight();
 
     sp<_ByteArray> clone();
 
@@ -116,13 +95,9 @@ private:
 
     int mSize;
 
-    bool isSafe;
-
     int mOriginalSize;
 
     bool mMapped;
-
-    int mPriority;
 };
 
 } // namespace obotcha

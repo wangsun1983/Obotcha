@@ -14,42 +14,17 @@ class Exception;
 #define DECLARE_EXCEPTION(V) \
 class V:public Exception
 
-void _translateException(char *buff,const char *err);
-void _translateException(char *buff,String err);
-
-//#define EXPORT_EXCEPTION_INFO 1
-
-#if EXPORT_EXCEPTION_INFO
-#define Trigger(V,info) \
-    char buff[256] = {0};\
-    sprintf(buff,"\n-------%s START-------- \n[File]:%s \n[Line]:%d\n",#V,__FILE__,__LINE__);\
-    printf("%s \n",buff);\
-    _translateException(buff,info);\
-    throw V(buff);
-#else 
-#define Trigger(V,info) \
-    char buff[256] = {0};\
-    sprintf(buff,"\n-------%s START-------- \n[File]:%s \n[Line]:%d\n",#V,__FILE__,__LINE__);\
-    _translateException(buff,info);\
-    throw V(buff);
-#endif
+#define Trigger(V,...) {\
+  printf("---[Exception]:%s, [File]:%s, [Line]:%d ---\n",#V,__FILE__,__LINE__); \
+  printf(__VA_ARGS__);\
+  throw V();\
+}
 
 class Exception :public std::exception{
 public:
-    Exception(const char *);
-
-    Exception(String);
-
-    Exception(int);
-
-    Exception(){}
-
-    String getErrInfo();   
+    Exception();
 
     void printStack();
-
-protected:
-    String mErrInfo;
 };
 
 }

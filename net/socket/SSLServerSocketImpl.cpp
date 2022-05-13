@@ -17,15 +17,15 @@ _SSLServerSocketImpl::_SSLServerSocketImpl(String certificatePath,
      * client,certificate contains public key */
     if (SSL_CTX_use_certificate_file(mSSLContext->getCtx(), mCertificate->toChars(),
                                      SSL_FILETYPE_PEM) <= 0) {
-        throw InitializeException("SSL certificate use error");
+        Trigger(InitializeException,"SSL certificate use error");
     }
     /* load private key */
     if (SSL_CTX_use_PrivateKey_file(mSSLContext->getCtx(), mKey->toChars(), SSL_FILETYPE_PEM) <= 0) {
-        throw InitializeException("SSL private key use error");
+        Trigger(InitializeException,"SSL private key use error");
     }
     /* check whether private is ok */
     if (!SSL_CTX_check_private_key(mSSLContext->getCtx())) {
-        throw InitializeException("SSL private key check error");
+        Trigger(InitializeException,"SSL private key check error");
     }
 
     mSSLContext->initSSL();

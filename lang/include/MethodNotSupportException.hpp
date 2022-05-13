@@ -2,7 +2,7 @@
 #define __OBOTCHA_METHOD_NOT_SUPPORT_EXCEPTION_HPP__
 
 #include <sys/stat.h>
-#include <unistd.h>    
+#include <unistd.h>
 #include <sys/types.h>
 #include <fstream>
 
@@ -15,8 +15,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(MethodNotSupportException) {
 public:
-	MethodNotSupportException(const char * str):Exception(str){}
-	MethodNotSupportException(String str):Exception(str) {}
+	MethodNotSupportException(){}
 };
 
 }

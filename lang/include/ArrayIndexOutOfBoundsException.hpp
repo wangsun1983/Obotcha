@@ -14,9 +14,8 @@
 namespace obotcha {
 
 DECLARE_EXCEPTION(ArrayIndexOutOfBoundsException){
-public: 
-	ArrayIndexOutOfBoundsException(const char *str):Exception(str){} 
-	ArrayIndexOutOfBoundsException(String str):Exception(str){}
+public:
+	ArrayIndexOutOfBoundsException() {}
 };
 
 }

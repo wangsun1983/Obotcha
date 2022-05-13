@@ -7,6 +7,7 @@
 #include "ByteArray.hpp"
 #include "ByteRingArrayReader.hpp"
 #include "HashMap.hpp"
+#include "Http2PriorityByteArray.hpp"
 
 namespace obotcha {
 
@@ -128,9 +129,9 @@ public:
     void setWeight(int);
     int getWeight();
 
-    ByteArray toFrameData();
+    Http2PriorityByteArray toFrameData();
     virtual void import(ByteArray);
-    
+
     static const int DefaultWeight;
     static const int MaxWeight;
 

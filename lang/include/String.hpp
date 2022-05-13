@@ -158,44 +158,11 @@ public:
 
     sp<_String> clone();
 
-    static String valueOf(const Integer &v);
-
-    static String valueOf(const Boolean &v);
-
-    static String valueOf(const Double &v);
-
-    static String valueOf(const Float &v);
-
-    static String valueOf(const Long &v);
-
-    static String valueOf(const Uint8 &v);
-
-    static String valueOf(const Uint16 &v);
-
-    static String valueOf(const Uint32 &v);
-
-    static String valueOf(const Uint64 &v);
-
-    static String valueOf(int v);
-
-    static String valueOf(bool v);
-
-    static String valueOf(double v);
-
-    static String valueOf(float v);
-
-    static String valueOf(std::uint16_t);
-
-    static String valueOf(std::uint32_t);
-
-    static String valueOf(std::uint64_t);
-
-    static String valueOf(const char *p);
-
     static String format(const char *fmt, ...);
 
     static String className();
 
+    static bool equals(sp<_String>,sp<_String>);
     static bool equalsIgnoreCase(const char *, const char *, int len = -1);
 
     std::string getStdString();
@@ -315,16 +282,16 @@ public:
 
     int counts(String);
 
-    //find 
+    //find
     int find(String,int start = 0);
 
     bool isEmpty();
 
     bool matches(const String &regex); // Not Test
 
-    static bool contentEquals(sp<_String>,sp<_String>);
-    static bool contentEqualsIgnoreCase(sp<_String>,sp<_String>);
-    
+    //static bool contentEquals(sp<_String>,sp<_String>);
+    //static bool contentEqualsIgnoreCase(sp<_String>,sp<_String>);
+
     ~_String();
 
 private:

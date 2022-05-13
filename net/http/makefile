@@ -140,6 +140,7 @@ objs += $(outtmp)/httpchunk.o \
 		$(outtmp)/http2shakehandframe.o \
 		$(outtmp)/http2errorcode.o \
 		$(outtmp)/http2streamsender.o \
+		$(outtmp)/http2prioritybytearray.o \
 		$(outtmp)/hpackhuffmanencoder.o \
 		$(outtmp)/hpackhuffmandecoder.o \
 		$(outtmp)/hpacktableitem.o \
@@ -571,6 +572,9 @@ $(outtmp)/http2errorcode.o :$(httpDir)/v2/Http2ErrorCode.cpp
 
 $(outtmp)/http2streamsender.o :$(httpDir)/v2/Http2StreamSender.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/v2/Http2StreamSender.cpp -o $(outtmp)/http2streamsender.o 
+
+$(outtmp)/http2prioritybytearray.o :$(httpDir)/v2/Http2PriorityByteArray.cpp
+		$(cppcompiler) $(obotchacppflags) -c $(httpDir)/v2/Http2PriorityByteArray.cpp -o $(outtmp)/http2prioritybytearray.o
 
 $(outtmp)/http2continuationframe.o :$(httpDir)/v2/Http2ContinuationFrame.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/v2/Http2ContinuationFrame.cpp -o $(outtmp)/http2continuationframe.o 

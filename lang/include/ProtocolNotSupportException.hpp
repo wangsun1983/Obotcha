@@ -2,7 +2,7 @@
 #define __OBOTCHA_PROTOCOL_NOT_SUPPORT_EXCEPTION_HPP__
 
 #include <sys/stat.h>
-#include <unistd.h>    
+#include <unistd.h>
 #include <sys/types.h>
 #include <fstream>
 
@@ -16,8 +16,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(ProtocolNotSupportException) {
 public:
-	ProtocolNotSupportException(const char * str):Exception(str){}
-	ProtocolNotSupportException(String str):Exception(str) {}
+	ProtocolNotSupportException(){}
 };
 
 }

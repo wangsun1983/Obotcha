@@ -137,8 +137,7 @@ long _WebSocketLinker::_send(int type, ByteArray msg) {
                 break;
 
             default:
-                throw ProtocolNotSupportException(
-                    "WebSocketLinker not support OPCODE");
+                Trigger(ProtocolNotSupportException,"WebSocketLinker not support OPCODE");
         }
 
         ListIterator<ByteArray> iterator = data->getIterator();

@@ -71,7 +71,7 @@ void _Http2Frame::setPriority(bool s) {
 }
 
 bool _Http2Frame::isPrioroty() {
-    return (flags & FlagPriority) != 0; 
+    return (flags & FlagPriority) != 0;
 }
 
 void _Http2Frame::setWeight(int s) {
@@ -84,14 +84,15 @@ int _Http2Frame::getWeight() {
 }
 
 
-ByteArray _Http2Frame::toFrameData() {
+Http2PriorityByteArray _Http2Frame::toFrameData() {
     ByteArray payload = toByteArray();
     int length = 0;
     //setting ack frame has no payload
     if(payload != nullptr) {
         length = payload->size();
     }
-    ByteArray frame = createByteArray(length + 9);
+    
+    Http2PriorityByteArray frame = createHttp2PriorityByteArray(length + 9);
     ByteArrayWriter writer = createByteArrayWriter(frame,BigEndian);
     writer->writeUint32(length << 8 | type);
     writer->writeByte(flags);

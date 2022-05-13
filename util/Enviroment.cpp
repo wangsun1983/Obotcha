@@ -129,7 +129,7 @@ sp<_Enviroment> _Enviroment::getInstance() {
 _Enviroment::_Enviroment() {
     mProp = createHashMap<String, String>();
 
-#define SET_VALUE(X,Y) mProp->put(X,st(String)::valueOf(Y))
+#define SET_VALUE(X,Y) mProp->put(X,createString(Y))
 
     SET_VALUE(gHttpBufferSize,DefaultHttpBufferSize);
     SET_VALUE(gHttpServerThreadsNum,DefaultgHttpServerThreadsNum);

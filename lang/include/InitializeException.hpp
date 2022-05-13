@@ -2,7 +2,7 @@
 #define __OBOTCHA_INITIALIZE_EXCEPTION_HPP__
 
 #include <sys/stat.h>
-#include <unistd.h>    
+#include <unistd.h>
 #include <sys/types.h>
 #include <fstream>
 
@@ -15,8 +15,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(InitializeException) {
 public:
-	InitializeException(const char * str):Exception(str){}
-	InitializeException(String str):Exception(str) {}
+	InitializeException(){}
 };
 
 }

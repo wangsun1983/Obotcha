@@ -22,7 +22,7 @@ public:
 
     template <typename T>
     void set(String key ,T value) {
-        mParams->put(key,st(String)::valueOf(value));
+        mParams->put(key,createString(value));
     }
 
     String get(String);

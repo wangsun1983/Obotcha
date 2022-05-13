@@ -109,56 +109,52 @@ const unsigned char _String::toUpCaseTable[128] = {
 
 _String::_String() {}
 
-_String::_String(const String &v) { 
-    m_str = v->m_str; 
+_String::_String(const String &v) {
+    m_str = v->m_str;
 }
 
-_String::_String(const Long &v) { 
-    m_str = std::to_string(v->toValue()); 
+_String::_String(const Long &v) {
+    m_str = std::to_string(v->toValue());
 }
 
-_String::_String(const Byte &v) { 
-    m_str = std::to_string(v->toValue()); 
+_String::_String(const Byte &v) {
+    m_str = std::to_string(v->toValue());
 }
 
-_String::_String(const Uint8 &v) { 
-    m_str = std::to_string(v->toValue()); 
+_String::_String(const Uint8 &v) {
+    m_str = std::to_string(v->toValue());
 }
 
-_String::_String(const Uint16 &v) { 
-    m_str = std::to_string(v->toValue()); 
+_String::_String(const Uint16 &v) {
+    m_str = std::to_string(v->toValue());
 }
 
-_String::_String(const Uint32 &v) { 
-    m_str = std::to_string(v->toValue()); 
+_String::_String(const Uint32 &v) {
+    m_str = std::to_string(v->toValue());
 }
 
-_String::_String(const Uint64 &v) { 
-    m_str = std::to_string(v->toValue()); 
+_String::_String(const Uint64 &v) {
+    m_str = std::to_string(v->toValue());
 }
 
-_String::_String(const std::string v) { 
-    m_str = v; 
+_String::_String(const std::string v) {
+    m_str = v;
 }
 
-_String::_String(std::string *v) { 
-    m_str = *v; 
+_String::_String(std::string *v) {
+    m_str = *v;
 }
 
-_String::_String(unsigned char *v) { 
-    m_str = std::string((char *)v); 
+_String::_String(unsigned char *v) {
+    m_str = std::string((char *)v);
 }
 
-_String::_String(const Integer &v) { 
-    m_str = std::to_string(v->toValue()); 
+_String::_String(const Integer &v) {
+    m_str = std::to_string(v->toValue());
 }
 
 _String::_String(const Boolean &v) {
-    if (v->toValue()) {
-        m_str = True;
-    } else {
-        m_str = False;
-    }
+    m_str = (v->toValue()? True:False);
 }
 
 _String::_String(const Float &v, int precision) {
@@ -175,8 +171,8 @@ _String::_String(const Double &v, int precision) {
     ss >> m_str;
 }
 
-_String::_String(int v) { 
-    m_str = std::to_string(v); 
+_String::_String(int v) {
+    m_str = std::to_string(v);
 }
 
 _String::_String(float v, int precision) {
@@ -193,8 +189,8 @@ _String::_String(double v, int precision) {
     ss >> m_str;
 }
 
-_String::_String(long v) { 
-    m_str = std::to_string(v); 
+_String::_String(long v) {
+    m_str = std::to_string(v);
 }
 
 _String::_String(bool v) {
@@ -206,28 +202,28 @@ _String::_String(bool v) {
 
 }
 
-_String::_String(char v) { 
-    m_str = std::to_string(v); 
+_String::_String(char v) {
+    m_str = std::to_string(v);
 }
 
-_String::_String(uint8_t v) { 
-    m_str = std::to_string(v); 
+_String::_String(uint8_t v) {
+    m_str = std::to_string(v);
 }
 
-_String::_String(uint16_t v) { 
-    m_str = std::to_string(v); 
+_String::_String(uint16_t v) {
+    m_str = std::to_string(v);
 }
 
-_String::_String(uint32_t v) { 
-    m_str = std::to_string(v); 
+_String::_String(uint32_t v) {
+    m_str = std::to_string(v);
 }
 
-_String::_String(uint64_t v) { 
-    m_str = std::to_string(v); 
+_String::_String(uint64_t v) {
+    m_str = std::to_string(v);
 }
 
-_String::_String(const char *v) { 
-    m_str = std::string(v); 
+_String::_String(const char *v) {
+    m_str = std::string(v);
 }
 
 _String::_String(const char *v, int start,int length) {
@@ -241,20 +237,20 @@ _String::_String(const char *v, int start,int length) {
 _String::~_String() {
 }
 
-void _String::update(const char *v) { 
-    m_str = std::string(v); 
+void _String::update(const char *v) {
+    m_str = std::string(v);
 }
 
-void _String::update(const String &v) { 
-    m_str = v->m_str; 
+void _String::update(const String &v) {
+    m_str = v->m_str;
 }
 
-void _String::update(std::string v) { 
-    m_str = v; 
+void _String::update(std::string v) {
+    m_str = v;
 }
 
-const char *_String::toChars() { 
-    return m_str.c_str(); 
+const char *_String::toChars() {
+    return m_str.c_str();
 }
 
 char _String::charAt(int index) {
@@ -285,167 +281,54 @@ bool _String::contains(const char *val) {
 
 String _String::trim() {
     if (m_str.size() != 0) {
-        const char *p = m_str.c_str();
-        int size = m_str.size();
-        int start = 0;
-        int end = size - 1;
-        for(;start < size;start++) {
-            if(p[start] != ' ') {
-                break;
-            }
-        }
-
-        for(;end >= 0;end--) {
-            if(p[end] != ' ') {
-                break;
-            }
-        }
-
-        return createString(p,start,end - start + 1);
+        int start = m_str.find_first_not_of (' ');
+        int end = m_str.find_last_not_of(' ');
+        return createString(m_str.c_str(),start,end - start + 1);
     }
 
     return nullptr;
 }
 
 String _String::trimAll() {
-    if (m_str.size() != 0) {
-        const char *p = m_str.c_str();
-        int size = m_str.size();
-
-        char data[size + 1];
-        data[size] = 0;
-
-        int index = 0;
-        int start = 0;
-        for(;start < size;start++) {
-            if(p[start] != ' ') {
-                data[index] = p[start];
-                index++;
-            }
-        }
-        return createString((const char *)data,0,index);
-    }
-
-    return nullptr;
+    String str = createString(m_str);
+    std::string::iterator end_pos = std::remove(str->m_str.begin(), str->m_str.end(), ' ');
+    str->m_str.erase(end_pos, str->m_str.end());
+    return str;
 }
 
-int _String::size() { 
-    return m_str.size(); 
+int _String::size() {
+    return m_str.size();
 }
 
-int _String::indexOf(const String &v) { 
-    return m_str.find(v->m_str); 
+int _String::indexOf(const String &v) {
+    return m_str.find(v->m_str);
 }
 
-int _String::indexOf(std::string v) { 
-    return m_str.find(v); 
+int _String::indexOf(std::string v) {
+    return m_str.find(v);
 }
 
-int _String::indexOf(const char *v) { 
-    return m_str.find(v); 
+int _String::indexOf(const char *v) {
+    return m_str.find(v);
 }
 
-int _String::indexOf(char v) { 
-    return m_str.find(v); 
+int _String::indexOf(char v) {
+    return m_str.find(v);
 }
 
-String _String::valueOf(const Integer &v) { 
-    return valueOf(v->toValue()); 
+uint64_t _String::hashcode() {
+    return std::hash<std::string>{}(m_str);
 }
 
-String _String::valueOf(const Boolean &v) { 
-    return valueOf(v->toValue()); 
+bool _String::equals(const String &s) {
+    return (m_str.compare(s->m_str) == 0);
 }
 
-String _String::valueOf(const Double &v) { 
-    return valueOf(v->toValue()); 
+bool _String::equals(const char *s) {
+    return (m_str.compare(s) == 0);
 }
 
-String _String::valueOf(const Float &v) { 
-    return valueOf(v->toValue()); 
-}
-
-String _String::valueOf(const Long &v) {
-    return valueOf((uint64_t)v->toValue());
-}
-
-String _String::valueOf(const Uint8 &v) { 
-    return valueOf(v->toValue()); 
-}
-
-String _String::valueOf(const Uint16 &v) { 
-    return valueOf(v->toValue()); 
-}
-
-String _String::valueOf(const Uint32 &v) { 
-    return valueOf(v->toValue()); 
-}
-
-String _String::valueOf(const Uint64 &v) { 
-    return valueOf(v->toValue()); 
-}
-
-String _String::valueOf(int v) {
-    std::string str = std::to_string(v);
-    return createString(str);
-}
-
-String _String::valueOf(std::uint16_t v) {
-    std::string str = std::to_string(v);
-    return createString(str);
-}
-
-String _String::valueOf(std::uint32_t v) {
-    std::string str = std::to_string(v);
-    return createString(str);
-}
-
-String _String::valueOf(std::uint64_t v) {
-    std::string str = std::to_string(v);
-    return createString(str);
-}
-
-String _String::valueOf(bool v) {
-    if (v) {
-        return createString(True);
-    }
-
-    return createString(False);
-}
-
-String _String::valueOf(double v) {
-    std::stringstream ss;
-    ss << v;
-    return createString(ss.str());
-}
-
-String _String::valueOf(float v) {
-    std::stringstream ss;
-    ss << v;
-    return createString(ss.str());
-}
-
-String _String::valueOf(const char *p) {
-    if (p == nullptr) {
-        return nullptr;
-    }
-
-    return createString(p);
-}
-
-uint64_t _String::hashcode() { 
-    return std::hash<std::string>{}(m_str); 
-}
-
-bool _String::equals(const String &s) { 
-    return (m_str.compare(s->m_str) == 0); 
-}
-
-bool _String::equals(const char *s) { 
-    return (m_str.compare(s) == 0); 
-}
-
-bool _String::equals(std::string p) { 
+bool _String::equals(std::string p) {
     return (m_str.compare(p) == 0);
 }
 
@@ -502,7 +385,7 @@ int _String::counts(String str) {
     return count;
 }
 
-//find 
+//find
 int _String::find(String s,int start) {
     int index = m_str.find(s->m_str, start);
     if(index == std::string::npos) {
@@ -528,28 +411,28 @@ Integer _String::toBinaryInt() {
     return st(Integer)::parseBinaryInt(AutoClone(this));
 }
 
-Byte _String::toByte() { 
-    return st(Byte)::parseDecByte(AutoClone(this)); 
+Byte _String::toByte() {
+    return st(Byte)::parseDecByte(AutoClone(this));
 }
 
-Boolean _String::toBoolean() { 
-    return st(Boolean)::parse(AutoClone(this)); 
+Boolean _String::toBoolean() {
+    return st(Boolean)::parse(AutoClone(this));
 }
 
-Float _String::toFloat() { 
-    return st(Float)::parse(AutoClone(this)); 
+Float _String::toFloat() {
+    return st(Float)::parse(AutoClone(this));
 }
 
-Double _String::toDouble() { 
-    return st(Double)::parse(AutoClone(this)); 
+Double _String::toDouble() {
+    return st(Double)::parse(AutoClone(this));
 }
 
-Long _String::toLong() { 
-    return st(Long)::parseDecLong(AutoClone(this)); 
+Long _String::toLong() {
+    return st(Long)::parseDecLong(AutoClone(this));
 }
 
-Uint8 _String::toUint8() { 
-    return st(Uint8)::parseDecUint8(AutoClone(this)); 
+Uint8 _String::toUint8() {
+    return st(Uint8)::parseDecUint8(AutoClone(this));
 }
 
 Uint16 _String::toUint16() {
@@ -700,7 +583,9 @@ sp<_String> _String::clone() {
     return createString(m_str.c_str());
 }
 
-std::string _String::getStdString() { return m_str; }
+std::string _String::getStdString() {
+  return m_str;
+}
 
 String _String::toLowerCase() {
     int size = m_str.size();
@@ -729,10 +614,14 @@ String _String::toUpperCase() {
 }
 
 bool _String::equalsIgnoreCase(const String &str) {
-    return equalsIgnoreCase(str->toChars());
+    if(m_str.size() != str->size()) {
+        return false;
+    }
+    return equalsIgnoreCase(m_str.c_str(),str->m_str.c_str());
 }
 
-bool _String::equalsIgnoreCase(std::string str) {
+
+bool _String::equalsIgnoreCase(const std::string str) {
     return equalsIgnoreCase(str.data());
 }
 
@@ -748,6 +637,7 @@ bool _String::equalsIgnoreCase(const char *str, int csize) {
 
     return equalsIgnoreCase(str, m_str.c_str(), size);
 }
+
 
 bool _String::equalsIgnoreCase(const char *str1, const char *str2, int len) {
     int size = (len == -1) ? strlen(str1) : len;
@@ -847,9 +737,9 @@ bool _String::endsWithIgnoreCase(std::string str) {
     return endsWithIgnoreCase(str.data(), str.size());
 }
 
-bool _String::endsWithIgnoreCase(const char *str) {
-    return endsWithIgnoreCase(str, strlen(str));
-}
+//bool _String::endsWithIgnoreCase(const char *str) {
+//    return endsWithIgnoreCase(str, strlen(str));
+//}
 
 bool _String::endsWithIgnoreCase(const char *str, int csize) {
     int size = m_str.size();
@@ -930,20 +820,12 @@ bool _String::matches(const String &regex) {
     return std::regex_match(m_str, std::regex(regex->m_str));
 }
 
-bool _String::contentEquals(sp<_String> a,sp<_String> b) {
+bool _String::equals(sp<_String> a,sp<_String> b) {
     if(a != nullptr && b != nullptr) {
-        return a->equals(b);
+         return a->equals(b);
     }
 
-    return a == b;
-}
-
-bool _String::contentEqualsIgnoreCase(sp<_String>a,sp<_String>b) {
-     if(a != nullptr && b != nullptr) {
-        return a->equalsIgnoreCase(b);
-    }
-
-    return a == b;
+    return false;
 }
 
 sp<_String> _String::replaceFirst(const String &regex, String value) {
@@ -1002,24 +884,24 @@ int _String::lastIndexOf(const String &v) {
     return m_str.find_last_of(v->m_str);
 }
 
-int _String::lastIndexOf(const char *v) { 
+int _String::lastIndexOf(const char *v) {
     return m_str.find_last_of(v);
 }
 
-int _String::lastIndexOf(std::string v) { 
-    return m_str.find_last_of(v); 
+int _String::lastIndexOf(std::string v) {
+    return m_str.find_last_of(v);
 }
 
 bool _String::startsWith(const String &v) {
     return (m_str.find(v->m_str) == 0);
 }
 
-bool _String::startsWith(const char *v) { 
-    return (m_str.find(v) == 0); 
+bool _String::startsWith(const char *v) {
+    return (m_str.find(v) == 0);
 }
 
-bool _String::startsWith(std::string v) { 
-    return (m_str.find(v) == 0); 
+bool _String::startsWith(std::string v) {
+    return (m_str.find(v) == 0);
 }
 
 void _String::_append() {
@@ -1035,7 +917,9 @@ String _String::format(const char *fmt, ...) {
     return str;
 }
 
-sp<_String> _String::className() { return createString("String"); }
+sp<_String> _String::className() {
+  return createString("String");
+}
 
 String _String::_format(const char *fmt, va_list args) {
     constexpr size_t oldlen = FormatBuffLength;

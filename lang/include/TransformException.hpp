@@ -2,7 +2,7 @@
 #define __OBOTCHA_TRANSFORM_EXCEPTION_HPP__
 
 #include <sys/stat.h>
-#include <unistd.h>    
+#include <unistd.h>
 #include <sys/types.h>
 #include <fstream>
 
@@ -16,8 +16,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(TransformException) {
 public:
-	TransformException(const char * str):Exception(str){}
-	TransformException(String str):Exception(str) {}
+	TransformException(){}
 };
 
 }

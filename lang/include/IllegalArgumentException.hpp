@@ -2,7 +2,7 @@
 #define __OBOTCHA_ILLEGAL_ARGUMENT_EXCEPTION_HPP__
 
 #include <sys/stat.h>
-#include <unistd.h>    
+#include <unistd.h>
 #include <sys/types.h>
 #include <fstream>
 
@@ -15,8 +15,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(IllegalArgumentException) {
 public:
-	IllegalArgumentException(const char * str):Exception(str){}
-	IllegalArgumentException(String str):Exception(str) {}
+	IllegalArgumentException() {}
 };
 
 }

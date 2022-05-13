@@ -2,7 +2,7 @@
 #define __OBOTCHA_TIME_OUT_EXCEPTION_HPP__
 
 #include <sys/stat.h>
-#include <unistd.h>    
+#include <unistd.h>
 #include <sys/types.h>
 #include <fstream>
 #include <string>
@@ -16,8 +16,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(TimeOutException) {
 public:
-	TimeOutException(const char * str):Exception(str){}
-	TimeOutException(String str):Exception(str) {}
+	TimeOutException() {}
 };
 
 }

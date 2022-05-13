@@ -11,8 +11,7 @@ namespace obotcha {
 
 DECLARE_EXCEPTION(InterruptedException) {
 public:
-	InterruptedException(const char * str):Exception(str){}
-	InterruptedException(String str):Exception(str) {}
+	InterruptedException() {}
 };
 
 }

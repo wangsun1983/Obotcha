@@ -20,12 +20,8 @@ _ByteRingArray::_ByteRingArray(int size) {
 
     mCapacity = size;
     mSize = 0;
-    mBuff = (byte *)malloc(size);
     mNext = 0;
-
-    if (mBuff == nullptr) {
-        Trigger(InitializeException, "alloc fail");
-    }
+    mBuff = (byte *)malloc(size);
 }
 
 _ByteRingArray::_ByteRingArray(sp<_ByteRingArray> data) {
@@ -34,9 +30,6 @@ _ByteRingArray::_ByteRingArray(sp<_ByteRingArray> data) {
     mNext = data->mNext;
 
     mBuff = (byte *)malloc(data->mCapacity);
-    if (mBuff == nullptr) {
-        Trigger(InitializeException, "alloc fail");
-    }
     memcpy(mBuff, data->mBuff, mCapacity);
 }
 
@@ -57,7 +50,7 @@ bool _ByteRingArray::push(byte b) {
     if (mSize == mCapacity) {
         Trigger(ArrayIndexOutOfBoundsException,"Ring Array push full Array!!!");
     }
-    
+
     mBuff[mNext] = b;
     mSize++;
     mNext++;
@@ -90,7 +83,7 @@ bool _ByteRingArray::push(byte *array, int start, int length) {
     if (length > (mCapacity - mSize)) {
         Trigger(ArrayIndexOutOfBoundsException, "Ring Array Push Overflow!!!");
     }
-    
+
     if ((mNext + length) < mCapacity) {
         memcpy(mBuff + mNext, &array[start], length);
     } else {
@@ -125,20 +118,20 @@ ByteArray _ByteRingArray::pop(int size) {
     return result;
 }
 
-int _ByteRingArray::getNextIndex() { 
-    return mNext; 
+int _ByteRingArray::getNextIndex() {
+    return mNext;
 }
 
-void _ByteRingArray::setNextIndex(int n) { 
-    mNext = n; 
+void _ByteRingArray::setNextIndex(int n) {
+    mNext = n;
 }
 
-void _ByteRingArray::setSize(int s) { 
-    mSize = s; 
+void _ByteRingArray::setSize(int s) {
+    mSize = s;
 }
 
-int _ByteRingArray::getCapacity() { 
-    return mCapacity; 
+int _ByteRingArray::getCapacity() {
+    return mCapacity;
 }
 
 int _ByteRingArray::getStartIndex() {
@@ -146,16 +139,16 @@ int _ByteRingArray::getStartIndex() {
     return (start < 0)?start += mCapacity:start;
 }
 
-int _ByteRingArray::getEndIndex() { 
-    return mNext; 
+int _ByteRingArray::getEndIndex() {
+    return mNext;
 }
 
-byte _ByteRingArray::at(int m) { 
-    return mBuff[m]; 
+byte _ByteRingArray::at(int m) {
+    return mBuff[m];
 }
 
 ByteArray _ByteRingArray::popAll() {
-    return pop(mSize); 
+    return pop(mSize);
 }
 
 // for ByteRingArrayReader,include end
@@ -169,8 +162,8 @@ ByteArray _ByteRingArray::popTo(int index) {
     return pop(interval);
 }
 
-int _ByteRingArray::getAvailDataSize() { 
-    return mSize; 
+int _ByteRingArray::getAvailDataSize() {
+    return mSize;
 }
 
 // just for test
@@ -183,8 +176,8 @@ void _ByteRingArray::setStartIndex(int index) {
     mSize -= interval;
 }
 
-void _ByteRingArray::setEndIndex(int index) { 
-    mNext = index; 
+void _ByteRingArray::setEndIndex(int index) {
+    mNext = index;
 }
 
 } // namespace obotcha

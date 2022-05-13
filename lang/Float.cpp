@@ -9,9 +9,13 @@
 
 namespace obotcha {
 
-_Float::_Float() : val(0) {}
+_Float::_Float() : val(0) {
 
-_Float::_Float(float v) : val(v) {}
+}
+
+_Float::_Float(float v) : val(v) {
+
+}
 
 _Float::_Float(Float &v) {
     if (v == nullptr) {
@@ -21,7 +25,9 @@ _Float::_Float(Float &v) {
     val = v->val;
 }
 
-float _Float::toValue() { return val; }
+float _Float::toValue() {
+    return val;
+}
 
 sp<_Float> _Float::parse(sp<_String> s) {
     //add float check

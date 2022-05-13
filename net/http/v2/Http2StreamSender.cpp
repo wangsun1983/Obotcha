@@ -1,5 +1,6 @@
 #include "Http2StreamSender.hpp"
 #include "Http2Frame.hpp"
+#include "Http2PriorityByteArray.hpp"
 
 namespace obotcha {
 
@@ -15,7 +16,7 @@ _Http2StreamSender::_Http2StreamSender(OutputStream out) {
     isRunning = true;
 }
 
-void _Http2StreamSender::write(ByteArray b) {
+void _Http2StreamSender::write(Http2PriorityByteArray b) {
     int priority = b->getPriorityWeight();
     auto l = list[priority];
     l->putLast(b);
@@ -31,7 +32,7 @@ void _Http2StreamSender::close() {
 void _Http2StreamSender::run() {
     while(isRunning) {
         ConcurrentQueue<ByteArray> queue = nullptr;
-        {   
+        {
             AutoLock l(mMutex);
             for(int i = 0; i<st(Http2Frame)::MaxWeight;i++) {
                 auto ll = list[i];

@@ -33,17 +33,15 @@ _ByteArray::_ByteArray():_ByteArray(DefaultSize) {
 _ByteArray::_ByteArray(sp<_ByteArray> &data, int start, int len) {
     int malloc_size = (len == 0) ? data->size() - start : len;
 
-    if (malloc_size > data->size()) {
+    if (malloc_size > data->size() || malloc_size <= 0) {
         Trigger(InitializeException, "create ByteArray overflow");
     }
 
     buff = (unsigned char *)malloc(malloc_size);
     mSize = malloc_size;
     memcpy(buff, data->toValue() + start, malloc_size);
-    this->isSafe = unsafe;
     mOriginalSize = -1;
     mMapped = false;
-    mPriority = 0;
 }
 
 /**
@@ -54,14 +52,13 @@ _ByteArray::_ByteArray(int length) {
     if (length <= 0) {
         Trigger(InitializeException, "create ByteArray is nullptr");
     }
-    buff = (unsigned char *)malloc(length);
 
+    buff = (unsigned char *)malloc(length);
     memset(buff, 0, length);
+
     mSize = length;
-    this->isSafe = unsafe;
     mOriginalSize = -1;
     mMapped = false;
-    mPriority = 0;
 }
 
 /**
@@ -73,7 +70,7 @@ _ByteArray::_ByteArray(const byte *data, uint32_t len,bool mapped) {
     if (data == nullptr) {
         Trigger(InitializeException, "create ByteArray is nullptr");
     }
-    
+
     mMapped = mapped;
     mSize = len;
     if(!mapped) {
@@ -82,10 +79,8 @@ _ByteArray::_ByteArray(const byte *data, uint32_t len,bool mapped) {
     } else {
         buff = (unsigned char *)data;
     }
-    
-    this->isSafe = unsafe;
+
     mOriginalSize = -1;
-    mPriority = 0;
 }
 
 /**
@@ -97,16 +92,11 @@ void _ByteArray::clear() {
     }
     memset(buff, 0, mSize);
     mOriginalSize = -1;
-    mPriority = 0;
 }
 
 byte &_ByteArray::operator[](int index) {
     if (index >= mSize || index < 0) {
-        String exception = createString("ByteArray [] fail")
-                               ->append("size is", createString(mSize),
-                                        "index is ", createString(index));
-
-        Trigger(ArrayIndexOutOfBoundsException, exception);
+        Trigger(ArrayIndexOutOfBoundsException, "size is %d,index is %d \n",mSize,index);
     }
 
     return buff[index];
@@ -124,13 +114,9 @@ _ByteArray::~_ByteArray() {
     mSize = 0;
 }
 
-byte *_ByteArray::toValue() {
-    if (isSafe == safe) {
+byte *_ByteArray::toValue(bool copy) {
+    if (copy) {
         byte *v = (byte *)malloc(mSize);
-        if (v == nullptr) {
-            Trigger(OutOfMemoryException, "alloc failed");
-        }
-
         memcpy(v, buff, mSize);
         return v;
     }
@@ -138,7 +124,9 @@ byte *_ByteArray::toValue() {
     return buff;
 }
 
-int _ByteArray::size() { return mSize; }
+int _ByteArray::size() {
+    return mSize;
+}
 
 int _ByteArray::quickShrink(int size) {
     if (size >= mSize) {
@@ -184,37 +172,16 @@ int _ByteArray::growTo(int size) {
 }
 
 int _ByteArray::growBy(int size) {
-    if (size <= 0) {
-        return -EINVAL;
-    }
-
-    int nextSize = mSize + size;
-    if (nextSize <= mOriginalSize) {
-        memset(buff + mSize, 0, size);
-        mSize = nextSize;
-        return mSize;
-    }
-
-    byte *ptr = (byte *)realloc(buff, nextSize);
-    if (ptr == nullptr) {
-        Trigger(OutOfMemoryException, "alloc failed");
-    }
-    memset(ptr + mSize, 0, size);
-
-    buff = ptr;
-    mSize = nextSize;
-    return mSize;
+    return growTo(mSize + size);
 }
 
-bool _ByteArray::isEmpty() { return mSize == 0; }
+bool _ByteArray::isEmpty() {
+  return mSize == 0;
+}
 
 byte _ByteArray::at(int index) {
     if (index >= mSize || index < 0) {
-        String exception = createString("ByteArray at fail")
-                               ->append("size is", createString(mSize),
-                                        "index is ", createString(index));
-
-        Trigger(ArrayIndexOutOfBoundsException, exception);
+        Trigger(ArrayIndexOutOfBoundsException, "size is %d,index is %d \n",mSize,index);
     }
     return buff[index];
 }
@@ -259,26 +226,10 @@ int _ByteArray::append(byte *data, int len) {
         return -EINVAL;
     }
 
-    int nextSize = mSize + len;
-    if (nextSize <= mOriginalSize) {
-        memset(buff + mSize, 0, len);
-        memcpy(&buff[mSize], data, len);
-        mSize = nextSize;
-        return mSize;
-    }
-
-    buff = (byte *)realloc(buff, mSize + len);
+    growBy(len);
     memcpy(&buff[mSize], data, len);
-    mSize += len;
-    mOriginalSize = -1;
     return mSize;
 }
-
-void _ByteArray::setSafe() { this->isSafe = st(ByteArray)::safe; }
-
-void _ByteArray::setUnSafe() { this->isSafe = st(ByteArray)::unsafe; }
-
-bool _ByteArray::isSafeMode() { return (this->isSafe == st(ByteArray)::safe); }
 
 String _ByteArray::toString() {
     int len = mSize + 1;
@@ -296,7 +247,9 @@ void _ByteArray::dump(const char *v) {
     printf("\n");
 }
 
-void _ByteArray::dump(const String &v) { dump(v->toChars()); }
+void _ByteArray::dump(const String &v) {
+  dump(v->toChars());
+}
 
 void _ByteArray::dumpToFile(const char *path) {
     std::ofstream fstream;
@@ -306,14 +259,8 @@ void _ByteArray::dumpToFile(const char *path) {
     fstream.close();
 }
 
-void _ByteArray::dumpToFile(const String &path) { dumpToFile(path->toChars()); }
-
-void _ByteArray::setPriorityWeight(int p) {
-    this->mPriority = p;
-}
-
-int _ByteArray::getPriorityWeight() {
-    return mPriority;
+void _ByteArray::dumpToFile(const String &path) {
+  dumpToFile(path->toChars());
 }
 
 sp<_ByteArray> _ByteArray::clone() {
@@ -327,17 +274,7 @@ bool _ByteArray::equals(const ByteArray &s) {
         return false;
     }
 
-    if(this == s.get_pointer()) {
-        return true;
-    }
-
-    for(int i = 0 ; i<mSize;i++) {
-        if(buff[i] != s->at(i)) {
-            return false;
-        }
-    }
-
-    return true;
+    return (this == s.get_pointer()) && (memcmp(buff,s->buff,mSize) == 0);
 }
 
 } // namespace obotcha

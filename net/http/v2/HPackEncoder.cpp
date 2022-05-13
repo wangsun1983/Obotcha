@@ -318,9 +318,9 @@ HPackTableItem _HPackEncoder::getEntry(String name,String value) {
     for (HPackEncoderEntry e = mEncoderEntries[i]; e != nullptr; e = e->next) {
         // Check the value before then name, as it is more likely the value will be different incase there is no
         // match.
-        if (e->hash == h 
-            && st(String)::contentEquals(value, e->value) 
-            && st(String)::contentEquals(name, e->name)) {
+        if (e->hash == h
+            && st(String)::equals(value, e->value)
+            && st(String)::equals(name, e->name)) {
             return e;
         }
     }

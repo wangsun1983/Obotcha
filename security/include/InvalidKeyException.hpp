@@ -14,9 +14,8 @@
 namespace obotcha {
 
 DECLARE_EXCEPTION(InvalidKeyException){
-public: 
-	InvalidKeyException(const char *str):Exception(str){} 
-	InvalidKeyException(String str):Exception(str){}
+public:
+	InvalidKeyException() {}
 };
 
 }

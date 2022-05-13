@@ -17,24 +17,9 @@
 
 namespace obotcha {
 
-void _translateException(char *buff, const char *err) {
-    char errormsg[256];
-    sprintf(errormsg, "[Info]:%s \n----------END-----------\n\n", err);
-    strcat(buff, errormsg);
+Exception::Exception() {
+    //Nothing
 }
-
-void _translateException(char *buff, String err) {
-    char errormsg[256];
-    sprintf(errormsg, "[Info]:%s \n----------END-----------\n\n",
-            err->toChars());
-    strcat(buff, errormsg);
-}
-
-Exception::Exception(const char *v) { mErrInfo = createString(v); }
-
-Exception::Exception(String v) { mErrInfo = v; }
-
-String Exception::getErrInfo() { return mErrInfo; }
 
 void Exception::printStack() {
     printf("-----------------[maps dump start]--------------- \n");

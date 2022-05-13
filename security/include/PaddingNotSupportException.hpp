@@ -14,9 +14,8 @@
 namespace obotcha {
 
 DECLARE_EXCEPTION(PaddingNotSupportException){
-public: 
-	PaddingNotSupportException(const char *str):Exception(str){} 
-	PaddingNotSupportException(String str):Exception(str){}
+public:
+	PaddingNotSupportException() {}
 };
 
 }

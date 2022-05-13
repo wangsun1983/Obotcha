@@ -28,7 +28,7 @@ void _MySqlConnectParam::setDbName(String dbname) {
 }
 
 void _MySqlConnectParam::setPort(int port) {
-    mParams->put(Port,st(String)::valueOf(port));
+    mParams->put(Port,createString(port));
 }
 
 void _MySqlConnectParam::setSocketName(String socketname) {
@@ -36,7 +36,7 @@ void _MySqlConnectParam::setSocketName(String socketname) {
 }
 
 void _MySqlConnectParam::setClientFlag(uint64_t flag) {
-    mParams->put(ClientFlg,st(String)::valueOf(flag));
+    mParams->put(ClientFlg,createString(flag));
 }
 
 String _MySqlConnectParam::getHost() {

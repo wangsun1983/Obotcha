@@ -257,14 +257,22 @@ template <typename X, typename V> X Cast(sp<V> t) {
 #define GET_ARG_COUNT(...) GET_ARG_COUNT_INNER(__VA_ARGS__, RSEQ_N())
 
 #define CLASS_PRE_DEF_0(YY) class _##YY
+
 #define CLASS_PRE_DEF_1(classname,templatename)  template <typename templatename> class _##classname
-#define CLASS_PRE_DEF_2(classname,templatename1,template2)  template <typename templatename1,typename template2> class _##classname
+
+#define CLASS_PRE_DEF_2(classname,templatename1,templatename2)  template <typename templatename1,typename templatename2> class _##classname
+
+#define CLASS_PRE_DEF_3(classname,templatename1,templatename2,templatename3)  template <typename templatename1,typename templatename2,typename templatename3> class _##classname
+
 
 #define TYPE_DEF_1(classname,templatename) \
     template <typename templatename> using classname = sp<_##classname<templatename>>;
 
 #define TYPE_DEF_2(classname,templatename1,templatename2) \
     template <typename templatename1, typename templatename2> using classname = sp<_##classname<templatename1,templatename2>>;
+
+#define TYPE_DEF_3(classname,templatename1,templatename2,templatename3) \
+    template <typename templatename1, typename templatename2,typename templatename3> using classname = sp<_##classname<templatename1,templatename2,templatename3>>;
 
 
 #define MAKE_FUNCTION_1(classname,templatename1)                                                     \
@@ -284,10 +292,20 @@ template <typename X, typename V> X Cast(sp<V> t) {
         return AutoClone<sp<A>>(obj);                                          \
     }
 
+#define MAKE_FUNCTION_3(classname,templatename1,templatename2,templatename3)                                                     \
+    template <typename templatename1, typename templatename2, typename typenamename3,typename A = _##classname<templatename1,templatename2,typenamename3>,                 \
+              typename... Args>                                                \
+    sp<A> create##classname(Args &&... args) {                                         \
+        _Object *obj = new A(std::forward<Args>(args)...);                     \
+        obj->__ReflectInit();                                                  \
+        return AutoClone<sp<A>>(obj);                                          \
+    }
+
 #define TEMPLATE_DECLARE_1(templatename) template <typename templatename>
 
-#define TEMPLATE_DECLARE_2(templatename1,templatename2) template <typename templatename1,typename templatename2> 
+#define TEMPLATE_DECLARE_2(templatename1,templatename2) template <typename templatename1,typename templatename2>
 
+#define TEMPLATE_DECLARE_3(templatename1,templatename2,templatename3) template <typename templatename1,typename templatename2,typename templatename3>
 
 #define CLASS_PRE_DEF_FUNC_INTERFACE(Y,COUNT,...) CLASS_PRE_DEF_FUNC(Y,COUNT,__VA_ARGS__)
 
