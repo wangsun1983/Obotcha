@@ -25,7 +25,7 @@ public:
         _append(std::forward<Args>(args)...);
         return this;
     }
-    
+
     String toString();
 
     String toString(int start,int length);
@@ -41,27 +41,29 @@ private:
     template <class... Args>
     _StringBuffer *_append(String v, Args... args) {
         _base_append(v->toChars(),v->size());
-        return _append(std::forward<Args>(args)...); 
+        return _append(std::forward<Args>(args)...);
     }
 
     template <class... Args>
     _StringBuffer *_append(const char *v, Args... args) {
         _base_append(v,strlen(v));
-        return _append(std::forward<Args>(args)...); 
+        return _append(std::forward<Args>(args)...);
     }
 
     template <class... Args>
     _StringBuffer *_append(char v, Args... args) {
         _base_append((const char *)&v,1);
-        return _append(std::forward<Args>(args)...); 
+        return _append(std::forward<Args>(args)...);
     }
 
     _StringBuffer *_append();
+
     void _base_append(const char *p,int size);
-    
+
     int mCapacity;
 
     int mIndex;
+
     char *mContent;
 };
 

@@ -64,7 +64,7 @@ sp<_String> _Uint16::toString(uint16_t i) {
 
 sp<_Uint16> _Uint16::parseDecUint16(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll(std::string("\n"),"")->replaceAll("\r","");
+        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
         uint16_t value = _Number::parseDecNumber(pa->getStdString());
         return createUint16(value);
     } catch (int e) {
@@ -75,7 +75,7 @@ sp<_Uint16> _Uint16::parseDecUint16(const sp<_String> &v) {
 
 sp<_Uint16> _Uint16::parseHexUint16(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll(std::string("\n"),"")->replaceAll("\r","");
+        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
         uint16_t value = _Number::parseHexNumber(pa->getStdString());
         return createUint16(value);
     } catch (...) {
@@ -87,7 +87,7 @@ sp<_Uint16> _Uint16::parseHexUint16(const sp<_String> &v) {
 
 sp<_Uint16> _Uint16::parseOctUint16(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll(std::string("\n"),"")->replaceAll("\r","");
+        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
         uint16_t value = _Number::parseOctNumber(pa->getStdString());
         return createUint16(value);
     } catch (...) {
@@ -99,7 +99,7 @@ sp<_Uint16> _Uint16::parseOctUint16(const sp<_String> &v) {
 
 sp<_Uint16> _Uint16::parseBinaryUint16(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll(std::string("\n"),"")->replaceAll("\r","");
+        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
         uint16_t value = _Number::parseBinaryNumber(pa->getStdString());
         return createUint16(value);
     } catch (...) {

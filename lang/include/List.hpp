@@ -40,7 +40,9 @@ public:
         }
     }
 
-    int size() { return mSize; }
+    int size() {
+      return mSize;
+    }
 
     T &operator[](int index) {
         if (index >= mSize) {

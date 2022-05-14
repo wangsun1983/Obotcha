@@ -22,6 +22,7 @@
 #include "System.hpp"
 #include "Log.hpp"
 #include "OStdInstanceOf.hpp"
+#include <condition_variable>
 
 namespace obotcha {
 
@@ -49,6 +50,32 @@ int _Condition::wait(AutoLock &m, long int millseconds) {
     }
 
     return -1;
+}
+
+int _Condition::wait(sp<_Mutex> m,std::function<bool()> p)  {
+    while(!p()) {
+        wait(m);
+    }
+
+    return 0;
+}
+
+int _Condition::wait(AutoLock & m,std::function<bool()> p) {
+    return wait(m.mLock,p);
+}
+
+int _Condition::wait(sp<_Mutex> m,long int millseconds,std::function<bool()> p) {
+    while(!p()) {
+        if(wait(m,millseconds) != 0) {
+            return -ETIMEDOUT;
+        }
+    }
+
+    return 0;
+}
+
+int _Condition::wait(AutoLock & m,long int millseconds,std::function<bool()> p) {
+    return wait(m.mLock,millseconds,p);
 }
 
 void _Condition::notify() { 

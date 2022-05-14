@@ -14,7 +14,7 @@ namespace obotcha {
 
 DECLARE_TEMPLATE_CLASS(ConcurrentHashMap, T,U) {
 public:
-    _ConcurrentHashMap() { 
+    _ConcurrentHashMap() {
         mMap = createHashMap<T, U>();
         rdwrLock = createReadWriteLock();
         rdLock = rdwrLock->getReadLock();
@@ -88,20 +88,29 @@ public:
         return lists;
     }
 
-    void freezeWrite() {
-        rdLock->lock();
-    }
+    void foreach(std::function<int(const T&,const U&)> f,
+                 std::function<void()> after = nullptr) {
+         if(after != nullptr) {
+             wrLock->lock();
+         } else {
+             rdLock->unlock();
+         }
 
-    void freezeRead() {
-        wrLock->lock();
-    }
+         auto iterator = mMap->getIterator();
+         while(iterator->hasValue()) {
+             if(f(iterator->getKey(),iterator->getValue()) != Continue) {
+                 break;
+             }
+             iterator->next();
+         }
 
-    void unfreezeWrite() {
-        rdLock->unlock();
-    }
+         if(after != nullptr) {
+             after();
+             wrLock->unlock();
+             return;
+         }
 
-    void unfreezeRead() {
-        wrLock->unlock();
+         rdLock->unlock();
     }
 
 private:

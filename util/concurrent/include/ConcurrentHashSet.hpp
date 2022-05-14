@@ -27,14 +27,14 @@ public:
         mSets = createHashSet<T>();
     }
 
-    void add(T val) {  
+    void add(T val) {
         AutoLock l(wrLock);
         mSets->add(val);
     }
 
     bool contains(T val) {
         AutoLock l(rdLock);
-        return mSets->contains;
+        return mSets->contains(val);
     }
 
     void add(HashSet<T> list) {
@@ -42,40 +42,48 @@ public:
         mSets->add(list);
     }
 
-    inline void clear() { 
+    inline void clear() {
         AutoLock l(wrLock);
-        mSets->clear(); 
+        mSets->clear();
     }
 
-    inline int remove(T val) { 
+    inline int remove(T val) {
         AutoLock l(wrLock);
-        return mSets->erase(val); 
+        return mSets->erase(val);
     }
 
-    inline T get(int index) { 
+    inline T get(int index) {
         AutoLock l(rdLock);
-        return mSets->get(index); 
+        return mSets->get(index);
     }
 
-    inline int size() { 
+    inline int size() {
         AutoLock l(rdLock);
-        return mSets->size(); 
+        return mSets->size();
     }
 
-    void freezeWrite() {
-        rdLock->lock();
-    }
+    void foreach(std::function<int(const T &)> f,std::function<void()> after = nullptr) {
+        if(after != nullptr) {
+            wrLock->lock();
+        } else {
+            rdLock->unlock();
+        }
 
-    void freezeRead() {
-        wrLock->lock();
-    }
+        auto iterator = mSets->getIterator();
+        while(iterator->hasValue()) {
+            if(f(iterator->getValue()) != Continue) {
+                break;
+            }
+            iterator->next();
+        }
 
-    void unfreezeWrite() {
+        if(after != nullptr) {
+            after();
+            wrLock->unlock();
+            return;
+        }
+
         rdLock->unlock();
-    }
-
-    void unfreezeRead() {
-        wrLock->unlock();
     }
 
     HashSetIterator<T> getIterator() {

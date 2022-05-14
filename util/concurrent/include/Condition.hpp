@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include <pthread.h>
+#include <functional>
 
 #include "Object.hpp"
 #include "AutoLock.hpp"
@@ -19,6 +20,12 @@ public:
 
     int wait(sp<_Mutex> m, long int millseconds = 0);
     int wait(AutoLock &m, long int millseconds = 0);
+    
+    int wait(sp<_Mutex> m,std::function<bool()> p);
+    int wait(AutoLock & m,std::function<bool()> p);
+
+    int wait(sp<_Mutex> m,long int millseconds,std::function<bool()> p);
+    int wait(AutoLock & m,long int millseconds,std::function<bool()> p);
 
     void notify();
 

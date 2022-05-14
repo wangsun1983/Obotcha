@@ -62,9 +62,14 @@ Future _ThreadPoolExecutor::submitRunnable(Runnable r) {
 }
 
 Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
+    if(isShutDown()) {
+        return nullptr;
+    }
+
     if (mPool->putLast(task, mQueueTimeout)) {
         return createFuture(task);
     }
+
     return nullptr;
 }
 
@@ -76,14 +81,15 @@ int _ThreadPoolExecutor::shutdown() {
 
     updateStatus(ShutDown);
 
-    mPool->freeze();
-    mPool->foreach ([](ExecutorTask task) {
+    //mPool->freeze();
+    mPool->foreach ([](const ExecutorTask &task) {
         task->cancel();
         return Global::Continue;
+    },[this]() {
+      mPool->destroy();
     });
 
-    mPool->destroy();
-    mPool->unfreeze();
+    //mPool->unfreeze();
 
     {
         AutoLock l(mRunningTaskMutex);
@@ -143,12 +149,12 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     return 0;
 }
 
-int _ThreadPoolExecutor::getThreadsNum() { 
-    return mHandlers->size(); 
+int _ThreadPoolExecutor::getThreadsNum() {
+    return mHandlers->size();
 }
 
-int _ThreadPoolExecutor::getTasksNum() { 
-    return mPool->size(); 
+int _ThreadPoolExecutor::getTasksNum() {
+    return mPool->size();
 }
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {

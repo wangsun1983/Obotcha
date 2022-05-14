@@ -245,34 +245,26 @@ void _String::update(const String &v) {
     m_str = v->m_str;
 }
 
-void _String::update(std::string v) {
-    m_str = v;
-}
-
 const char *_String::toChars() {
     return m_str.c_str();
 }
 
 char _String::charAt(int index) {
     if (index >= m_str.size() || index < 0) {
-        Trigger(ArrayIndexOutOfBoundsException, "incorrect index")
+        Trigger(ArrayIndexOutOfBoundsException, "incorrect index");
     }
     return m_str.data()[index];
 }
 
 String _String::subString(int start, int length) {
     if (start < 0 || length <= 0 || ((start + length) > m_str.length())) {
-        return nullptr;
+        Trigger(ArrayIndexOutOfBoundsException, "incorrect index");
     }
     return createString(m_str.substr(start, length));
 }
 
 bool _String::contains(const String &val) {
     return m_str.find(val->m_str) != m_str.npos;
-}
-
-bool _String::contains(std::string val) {
-    return m_str.find(val) != m_str.npos;
 }
 
 bool _String::contains(const char *val) {
@@ -304,10 +296,6 @@ int _String::indexOf(const String &v) {
     return m_str.find(v->m_str);
 }
 
-int _String::indexOf(std::string v) {
-    return m_str.find(v);
-}
-
 int _String::indexOf(const char *v) {
     return m_str.find(v);
 }
@@ -328,10 +316,6 @@ bool _String::equals(const char *s) {
     return (m_str.compare(s) == 0);
 }
 
-bool _String::equals(std::string p) {
-    return (m_str.compare(p) == 0);
-}
-
 ArrayList<String> _String::split(const String &v) {
     return split(v->toChars(), v->size());
 }
@@ -340,7 +324,9 @@ sp<_ArrayList<String>> _String::split(const char *v) {
     return split(v, strlen(v));
 }
 
-sp<_ArrayList<String>> _String::split(std::string separator) {
+sp<_ArrayList<String>> _String::split(const char *v, int size) {
+
+    std::string separator = std::string(v, size);
 
     ArrayList<String> t = createArrayList<String>();
 
@@ -366,12 +352,6 @@ sp<_ArrayList<String>> _String::split(std::string separator) {
     }
 
     return t;
-}
-
-sp<_ArrayList<String>> _String::split(const char *v, int size) {
-    std::string str = std::string(v, size);
-
-    return split(str);
 }
 
 int _String::counts(String str) {
@@ -584,7 +564,7 @@ sp<_String> _String::clone() {
 }
 
 std::string _String::getStdString() {
-  return m_str;
+    return m_str;
 }
 
 String _String::toLowerCase() {
@@ -614,32 +594,22 @@ String _String::toUpperCase() {
 }
 
 bool _String::equalsIgnoreCase(const String &str) {
-    if(m_str.size() != str->size()) {
-        return false;
-    }
-    return equalsIgnoreCase(m_str.c_str(),str->m_str.c_str());
-}
-
-
-bool _String::equalsIgnoreCase(const std::string str) {
-    return equalsIgnoreCase(str.data());
-}
-
-bool _String::equalsIgnoreCase(const char *str) {
-    return equalsIgnoreCase(str, strlen(str));
-}
-
-bool _String::equalsIgnoreCase(const char *str, int csize) {
-    int size = m_str.size();
-    if (csize > size) {
+    if(str->size() != size()) {
         return false;
     }
 
-    return equalsIgnoreCase(str, m_str.c_str(), size);
+    return isEqualsIgnoreCase(m_str.c_str(),str->m_str.c_str());
 }
 
+bool _String::equalsIgnoreCase(const char *str, int size) {
+    if(size == -1) {
+        size = strlen(str);
+    }
 
-bool _String::equalsIgnoreCase(const char *str1, const char *str2, int len) {
+    return (size == m_str.size())?isEqualsIgnoreCase(str, m_str.c_str(), size):false;
+}
+
+bool _String::isEqualsIgnoreCase(const char *str1, const char *str2, int len) {
     int size = (len == -1) ? strlen(str1) : len;
 
     int index = 0;
@@ -657,10 +627,6 @@ bool _String::equalsIgnoreCase(const char *str1, const char *str2, int len) {
 
 int _String::indexOfIgnoreCase(const String &str) {
     return indexOfIgnoreCase(str->toChars(), str->size());
-}
-
-int _String::indexOfIgnoreCase(std::string str) {
-    return indexOfIgnoreCase(str.data(), str.size());
 }
 
 int _String::indexOfIgnoreCase(const char *str) {
@@ -709,19 +675,11 @@ bool _String::containsIgnoreCase(const String &val) {
     return (indexOfIgnoreCase(val) != -1);
 }
 
-bool _String::containsIgnoreCase(std::string val) {
-    return (indexOfIgnoreCase(val) != -1);
-}
-
 bool _String::containsIgnoreCase(const char *val) {
     return (indexOfIgnoreCase(val) != -1);
 }
 
 bool _String::startsWithIgnoreCase(const String &str) {
-    return (indexOfIgnoreCase(str) == 0);
-}
-
-bool _String::startsWithIgnoreCase(std::string str) {
     return (indexOfIgnoreCase(str) == 0);
 }
 
@@ -733,13 +691,9 @@ bool _String::endsWithIgnoreCase(const String &s) {
     return endsWithIgnoreCase(s->toChars(), s->size());
 }
 
-bool _String::endsWithIgnoreCase(std::string str) {
-    return endsWithIgnoreCase(str.data(), str.size());
+bool _String::endsWithIgnoreCase(const char *str) {
+    return endsWithIgnoreCase(str, strlen(str));
 }
-
-//bool _String::endsWithIgnoreCase(const char *str) {
-//    return endsWithIgnoreCase(str, strlen(str));
-//}
 
 bool _String::endsWithIgnoreCase(const char *str, int csize) {
     int size = m_str.size();
@@ -766,10 +720,6 @@ bool _String::endsWithIgnoreCase(const char *str, int csize) {
 
 int _String::lastIndexOfIgnoreCase(const String &v) {
     return lastIndexOfIgnoreCase(v->toChars(), v->size());
-}
-
-int _String::lastIndexOfIgnoreCase(std::string v) {
-    return lastIndexOfIgnoreCase(v.data(), v.size());
 }
 
 int _String::lastIndexOfIgnoreCase(const char *str) {
@@ -807,20 +757,19 @@ int _String::lastIndexOfIgnoreCase(const char *str, int csize) {
     return -1;
 }
 
-bool _String::isEmpty() { return m_str.size() == 0; }
+bool _String::isEmpty() {
+  return m_str.size() == 0;
+}
 
 bool _String::matches(const String &regex) {
     if (m_str.size() == 0) {
-        if (regex != nullptr) {
-            return false;
-        }
-        return true;
+        return false;
     }
 
     return std::regex_match(m_str, std::regex(regex->m_str));
 }
 
-bool _String::equals(sp<_String> a,sp<_String> b) {
+bool _String::isEquals(sp<_String> a,sp<_String> b) {
     if(a != nullptr && b != nullptr) {
          return a->equals(b);
     }
@@ -828,40 +777,16 @@ bool _String::equals(sp<_String> a,sp<_String> b) {
     return false;
 }
 
-sp<_String> _String::replaceFirst(const String &regex, String value) {
+sp<_String> _String::replaceFirst(const String &regex,const String &value) {
     std::string result =
         std::regex_replace(m_str, std::regex(regex->m_str), value->m_str,
                            std::regex_constants::format_first_only);
     return createString(result);
 }
 
-sp<_String> _String::replaceFirst(const char *regex, const char *v) {
-    std::string result = std::regex_replace(
-        m_str, std::regex(regex), v, std::regex_constants::format_first_only);
-
-    return createString(result);
-}
-
-sp<_String> _String::replaceFirst(std::string regex, std::string v) {
-    std::string result = std::regex_replace(
-        m_str, std::regex(regex), v, std::regex_constants::format_first_only);
-
-    return createString(result);
-}
-
 sp<_String> _String::replaceAll(const String &regex, const String &value) {
     std::string result =
         std::regex_replace(m_str, std::regex(regex->m_str), value->m_str);
-    return createString(result);
-}
-
-sp<_String> _String::replaceAll(const char *regex, const char *v) {
-    std::string result = std::regex_replace(m_str, std::regex(regex), v);
-    return createString(result);
-}
-
-sp<_String> _String::replaceAll(std::string regex, std::string v) {
-    std::string result = std::regex_replace(m_str, std::regex(regex), v);
     return createString(result);
 }
 
@@ -875,11 +800,6 @@ bool _String::endsWith(const char *s) {
     return (result == (m_str.size() - 1));
 }
 
-bool _String::endsWith(std::string s) {
-    std::string::size_type result = m_str.find_last_of(s);
-    return (result == (m_str.size() - 1));
-}
-
 int _String::lastIndexOf(const String &v) {
     return m_str.find_last_of(v->m_str);
 }
@@ -888,19 +808,11 @@ int _String::lastIndexOf(const char *v) {
     return m_str.find_last_of(v);
 }
 
-int _String::lastIndexOf(std::string v) {
-    return m_str.find_last_of(v);
-}
-
 bool _String::startsWith(const String &v) {
     return (m_str.find(v->m_str) == 0);
 }
 
 bool _String::startsWith(const char *v) {
-    return (m_str.find(v) == 0);
-}
-
-bool _String::startsWith(std::string v) {
     return (m_str.find(v) == 0);
 }
 

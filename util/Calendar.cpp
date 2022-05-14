@@ -74,7 +74,7 @@ int _Calendar::caculateDayOfWeek(int y, int m, int d) {
 bool _Calendar::isValid(int year, int month, int day, int hour, int minute,
                         int second, int millisecond) {
     int *_days = isLeapYear(year)?leapDays:commonDays;
-    
+
     return (year >= 0 && year <= 9999) && (month >= 0 && month <= 11) &&
            (day >= 1 && day <= _days[month]) && (hour >= 0 && hour <= 23) &&
            (minute >= 0 && minute <= 59) && (second >= 0 && second <= 60) &&

@@ -33,7 +33,9 @@ byte _AtomicByte::xorAndGet(byte val) {
     return mValue;
 }
 
-byte _AtomicByte::getAndIncrement() { return mValue++; }
+byte _AtomicByte::getAndIncrement() {
+    return mValue++; 
+}
 
 byte _AtomicByte::getAndDecrement() { return mValue--; }
 

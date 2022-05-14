@@ -28,9 +28,13 @@ const int _Integer::MAX_VALUE = 0x7fffffff;
 
 const int _Integer::MIN_VALUE = 0x80000000;
 
-_Integer::_Integer() : val(0) {}
+_Integer::_Integer() : val(0) {
+    //Nothing
+}
 
-_Integer::_Integer(int v) : val(v) {}
+_Integer::_Integer(int v) : val(v) {
+    //Nothing
+}
 
 _Integer::_Integer(const Integer &v) {
     if (v == nullptr) {
@@ -40,19 +44,33 @@ _Integer::_Integer(const Integer &v) {
     val = v->toValue();
 }
 
-int _Integer::toValue() { return val; }
+int _Integer::toValue() {
+    return val;
+}
 
-bool _Integer::equals(const Integer &p) { return val == p->val; }
+bool _Integer::equals(const Integer &p) {
+    return val == p->val;
+}
 
-uint64_t _Integer::hashcode() { return std::hash<int>{}(val); }
+uint64_t _Integer::hashcode() {
+    return std::hash<int>{}(val);
+}
 
-bool _Integer::equals(int p) { return val == p; }
+bool _Integer::equals(int p) {
+    return val == p;
+}
 
-bool _Integer::equals(const _Integer *p) { return val == p->val; }
+bool _Integer::equals(const _Integer *p) {
+    return val == p->val;
+}
 
-void _Integer::update(int v) { val = v; }
+void _Integer::update(int v) {
+    val = v;
+}
 
-void _Integer::update(const sp<_Integer> &v) { val = v->val; }
+void _Integer::update(const sp<_Integer> &v) {
+    val = v->val;
+}
 
 // 16
 sp<_String> _Integer::toHexString() {
@@ -80,7 +98,7 @@ sp<_String> _Integer::toString(int i) {
 
 Integer _Integer::parseDecInt(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll(std::string("\n"),"")->replaceAll("\r","");
+        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
         int value = _Number::parseDecNumber(pa->getStdString());
         return createInteger(value);
     } catch (...) {
@@ -91,7 +109,7 @@ Integer _Integer::parseDecInt(const sp<_String> &v) {
 
 Integer _Integer::parseHexInt(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll(std::string("\n"),"")->replaceAll("\r","");
+        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
         int value = _Number::parseHexNumber(pa->getStdString());
         return createInteger(value);
     } catch (...) {
@@ -103,7 +121,7 @@ Integer _Integer::parseHexInt(const sp<_String> &v) {
 
 Integer _Integer::parseOctInt(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll(std::string("\n"),"")->replaceAll("\r","");
+        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
         int value = _Number::parseOctNumber(pa->getStdString());
         return createInteger(value);
     } catch (...) {
@@ -115,7 +133,7 @@ Integer _Integer::parseOctInt(const sp<_String> &v) {
 
 Integer _Integer::parseBinaryInt(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll(std::string("\n"),"")->replaceAll("\r","");
+        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
         int value = _Number::parseBinaryNumber(pa->getStdString());
         return createInteger(value);
     } catch (...) {
@@ -125,7 +143,9 @@ Integer _Integer::parseBinaryInt(const sp<_String> &v) {
     return nullptr;
 }
 
-String _Integer::className() { return createString("Integer"); }
+String _Integer::className() {
+    return createString("Integer");
+}
 
 _Integer::~_Integer() {}
 

@@ -26,7 +26,7 @@ namespace obotcha {
         notEmpty->notify();                                                    \
         break;                                                                 \
     }                                                                          \
-    return true;
+    return false;
 
 #define LINKED_LIST_ADD_NOBLOCK(Action)                                        \
     AutoLock l(mMutex);                                                        \
@@ -37,7 +37,7 @@ namespace obotcha {
         Action;                                                                \
         notEmpty->notify();                                                    \
     }                                                                          \
-    return true;
+    return false;
 
 #define LINKED_LIST_REMOVE(Action)                                             \
     T data;                                                                    \
@@ -84,17 +84,17 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
         return mList->size();
     }
 
-    inline int capacity() { 
-        return mCapacity; 
+    inline int capacity() {
+        return mCapacity;
     }
 
-    inline void freeze() { 
-        mMutex->lock(); 
-    }
+    //inline void freeze() {
+    //    mMutex->lock();
+    //}
 
-    inline void unfreeze() { 
-        mMutex->unlock(); 
-    }
+    //inline void unfreeze() {
+    //    mMutex->unlock();
+    //}
 
     inline bool putFirst(const T &val, long timeout = 0) {
         LINKED_LIST_ADD(mList->putFirst(val));
@@ -167,9 +167,12 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
         return index;
     }
 
-    inline void foreach (std::function<int(T)> callback) {
+    inline void foreach (std::function<int(const T&)> callback,std::function<void()> after = nullptr) {
         AutoLock l(mMutex);
         mList->foreach ([&callback](T v) { return callback(v); });
+        if(after != nullptr) {
+          after();
+        }
     }
 
     ArrayList<T> toArray() {

@@ -89,8 +89,6 @@ public:
 
     void update(const sp<_String> &str);
 
-    void update(std::string);
-
     const char *toChars();
 
     char charAt(int index);
@@ -162,8 +160,8 @@ public:
 
     static String className();
 
-    static bool equals(sp<_String>,sp<_String>);
-    static bool equalsIgnoreCase(const char *, const char *, int len = -1);
+    static bool isEquals(sp<_String>,sp<_String>);
+    static bool isEqualsIgnoreCase(const char *, const char *, int len = -1);
 
     std::string getStdString();
 
@@ -171,114 +169,73 @@ public:
 
     String toUpperCase();
 
-    // need support String/std::string/char *
-    //----------------------------
     bool contains(const String &val);
 
-    bool contains(std::string val);
-
     bool contains(const char *val);
-    //----------------------------
-    int indexOf(const String &v);
 
-    int indexOf(std::string v);
+    int indexOf(const String &v);
 
     int indexOf(const char *v);
 
     int indexOf(char v);
-    //----------------------------
+
     template <class... T> String append(T... args);
-    //----------------------------
+
     bool equals(const String &s);
 
-    bool equals(std::string s);
-
     bool equals(const char *s);
-    //----------------------------
+
     bool equalsIgnoreCase(const String &str);
 
-    bool equalsIgnoreCase(std::string str);
+    bool equalsIgnoreCase(const char *str, int size = -1);
 
-    bool equalsIgnoreCase(const char *str);
-
-    bool equalsIgnoreCase(const char *str, int csize);
-
-    //----------------------------
     int indexOfIgnoreCase(const String &str);
-
-    int indexOfIgnoreCase(std::string str);
 
     int indexOfIgnoreCase(const char *str);
 
     int indexOfIgnoreCase(const char *str, int size);
 
-    //----------------------------
     bool containsIgnoreCase(const String &val);
 
-    bool containsIgnoreCase(std::string str);
-
     bool containsIgnoreCase(const char *str);
-    //----------------------------
+
     bool startsWithIgnoreCase(const String &str);
 
-    bool startsWithIgnoreCase(std::string str);
-
     bool startsWithIgnoreCase(const char *str);
-    //----------------------------
-    bool endsWithIgnoreCase(const String &s);
 
-    bool endsWithIgnoreCase(std::string str);
+    bool endsWithIgnoreCase(const String &s);
 
     bool endsWithIgnoreCase(const char *str);
 
     bool endsWithIgnoreCase(const char *str, int size);
-    //----------------------------
-    int lastIndexOfIgnoreCase(const String &v);
 
-    int lastIndexOfIgnoreCase(std::string v);
+    int lastIndexOfIgnoreCase(const String &v);
 
     int lastIndexOfIgnoreCase(const char *v);
 
     int lastIndexOfIgnoreCase(const char *v, int size);
-    //----------------------------
-    sp<_String> replaceFirst(const String &regex, String v);
 
-    sp<_String> replaceFirst(const char *regex, const char *v);
+    sp<_String> replaceFirst(const String &regex, const String &v);
 
-    sp<_String> replaceFirst(std::string regex, std::string v);
-    //----------------------------
     sp<_String> replaceAll(const String &regex, const String &v);
 
-    sp<_String> replaceAll(const char *regex, const char *v);
-
-    sp<_String> replaceAll(std::string regex, std::string v);
-    //----------------------------
     bool endsWith(const String &s);
 
     bool endsWith(const char *s);
 
-    bool endsWith(std::string s);
-    //----------------------------
     int lastIndexOf(const String &v);
 
     int lastIndexOf(const char *v);
 
-    int lastIndexOf(std::string v);
-    //----------------------------
     bool startsWith(const String &v);
 
     bool startsWith(const char *v);
 
-    bool startsWith(std::string v);
-    //----------------------------
     sp<_ArrayList<String>> split(const String &v);
 
     sp<_ArrayList<String>> split(const char *v);
 
     sp<_ArrayList<String>> split(const char *v, int size);
-
-    sp<_ArrayList<String>> split(std::string v);
-    //----------------------------
 
     int counts(String);
 
@@ -288,9 +245,6 @@ public:
     bool isEmpty();
 
     bool matches(const String &regex); // Not Test
-
-    //static bool contentEquals(sp<_String>,sp<_String>);
-    //static bool contentEqualsIgnoreCase(sp<_String>,sp<_String>);
 
     ~_String();
 
@@ -302,8 +256,6 @@ private:
     void _append(const sp<_String> &v, Args... args);
 
     template <typename... Args> void _append(const char *v, Args... args);
-
-    template <typename... Args> void _append(std::string, Args... args);
 
     void _append();
 
@@ -337,11 +289,6 @@ template <class... Args> void _String::_append(const char *v, Args... args) {
         m_str.append(v);
         _append(std::forward<Args>(args)...);
     }
-}
-
-template <class... Args> void _String::_append(std::string v, Args... args) {
-    m_str.append(v);
-    _append(std::forward<Args>(args)...);
 }
 
 } // namespace obotcha

@@ -48,16 +48,18 @@ int _ThreadCachedPoolExecutor::shutdown() {
         return 0;
     }
     updateStatus(ShutDown);
-    
-    mTasks->freeze();
-    mTasks->foreach ([](ExecutorTask t) {
+
+    //mTasks->freeze();
+    mTasks->foreach ([](const ExecutorTask &t) {
         t->cancel();
         return Global::Continue;
+    },[this](){
+        mTasks->destroy();
     });
     // notify all thread to close
-    mTasks->destroy();
-    mTasks->unfreeze();
-    
+
+    //mTasks->unfreeze();
+
     {
         AutoLock l(mRunningTaskMutex);
         auto iterator = mRunningTasks->getIterator();
@@ -94,8 +96,8 @@ bool _ThreadCachedPoolExecutor::isTerminated() {
     return true;
 }
 
-void _ThreadCachedPoolExecutor::awaitTermination() { 
-    awaitTermination(0); 
+void _ThreadCachedPoolExecutor::awaitTermination() {
+    awaitTermination(0);
 }
 
 int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
@@ -136,8 +138,8 @@ int _ThreadCachedPoolExecutor::getThreadsNum() {
     return mHandlers->size();
 }
 
-int _ThreadCachedPoolExecutor::getTasksNum() { 
-    return mTasks->size(); 
+int _ThreadCachedPoolExecutor::getTasksNum() {
+    return mTasks->size();
 }
 
 Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
@@ -155,7 +157,7 @@ Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
 
 Future _ThreadCachedPoolExecutor::submitRunnable(Runnable r) {
     ExecutorTask task = createExecutorTask(r);
-    return submitTask(task);    
+    return submitTask(task);
 }
 
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
@@ -191,19 +193,19 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
                     }
                     return;
                 }
-                
+
                 {
                     AutoLock l(mRunningTaskMutex);
                     executor->mRunningTasks->put(createInteger(handlerId),mCurrentTask);
                 }
-                
+
                 mCurrentTask->execute();
-                
+
                 {
                     AutoLock l(mRunningTaskMutex);
                     executor->mRunningTasks->remove(createInteger(handlerId));
                 }
-                
+
                 executor->mIdleNum->addAndGet(1);
             }
         },

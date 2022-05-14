@@ -163,8 +163,8 @@ _Enviroment::_Enviroment() {
     mProp->put(gHttpSslCertificatePath, DefaultHttpSslCertificatePath);
 }
 
-void _Enviroment::set(String tag, String v) { 
-    mProp->put(tag, v); 
+void _Enviroment::set(String tag, String v) {
+    mProp->put(tag, v);
 }
 
 int _Enviroment::getInt(String v, int defaultvalue) {

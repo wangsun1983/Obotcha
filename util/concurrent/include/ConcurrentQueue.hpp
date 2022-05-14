@@ -28,8 +28,8 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
     }
 
     // interface like ArrayList
-    inline void add(T value) { 
-        putLast(value); 
+    inline void add(T value) {
+        putLast(value);
     }
 
     inline T get(int index) {
@@ -91,20 +91,28 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
         mQueue->clear();
     }
 
-    void freezeWrite() {
-        rdLock->lock();
-    }
+    void foreach(std::function<int(const T &)> f,std::function<void()> after) {
+        if(after != nullptr) {
+            wrLock->lock();
+        } else {
+            rdLock->unlock();
+        }
 
-    void freezeRead() {
-        wrLock->lock();
-    }
+        auto iterator = mQueue->getIterator();
+        while(iterator->hasValue()) {
+            if(f(iterator->getValue()) != Continue) {
+                break;
+            }
+            iterator->next();
+        }
 
-    void unfreezeWrite() {
+        if(after != nullptr) {
+            after();
+            wrLock->unlock();
+            return;
+        }
+
         rdLock->unlock();
-    }
-
-    void unfreezeRead() {
-        wrLock->unlock();
     }
 
   private:

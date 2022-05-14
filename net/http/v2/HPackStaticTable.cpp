@@ -166,7 +166,7 @@ _HPackStaticTable::_HPackStaticTable() {
         HPackTableItem cursor = getEntry(length - 1);
         for (int index = length - 1; index > 0; index--) {
             HPackTableItem entry = getEntry(index);
-            if (st(String)::equals(entry->name,cursor->name)) {
+            if (st(String)::isEquals(entry->name,cursor->name)) {
                 MaxSameNameFieldIndex = index + 1;
             } else {
                 cursor = entry;
@@ -196,7 +196,7 @@ HPackTableItem _HPackStaticTable::get(String name,String val) {
             return item;
         }
 
-        if(st(String)::equals(item->value,val)) {
+        if(st(String)::isEquals(item->value,val)) {
             return item;
         }
     }
@@ -222,13 +222,13 @@ int _HPackStaticTable::getIndexInsensitive(String name, String value) {
     // Note this assumes all entries for a given header field are sequential.
     while (id <= MaxSameNameFieldIndex) {
         entry = getEntry(id);
-        if (!st(String)::equals(name, entry->name)) {
+        if (!st(String)::isEquals(name, entry->name)) {
             // As far as fields with the same name are placed in the table sequentially
             // and INDEX_BY_NAME returns index of the fist position, - it's safe to
             // exit immediately.
             return -1;
         }
-        if (st(String)::equals(value, entry->value)) {
+        if (st(String)::isEquals(value, entry->value)) {
             return id;
         }
         id++;

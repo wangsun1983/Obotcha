@@ -67,7 +67,7 @@ void _StringBuffer::_base_append(const char *p,int size) {
         mCapacity = (mCapacity + size)*2;
     }
     memcpy(&mContent[mIndex],p,size);
-    mIndex += size; 
+    mIndex += size;
 }
 
 _StringBuffer *_StringBuffer::_append() {
@@ -87,4 +87,4 @@ int _StringBuffer::capacity() {
     return mCapacity;
 }
 
-} 
+}

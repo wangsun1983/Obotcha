@@ -191,11 +191,17 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     }
 
     // add some simple function
-    inline bool put(T v) { return putLast(v); }
+    inline bool put(T v) {
+        return putLast(v);
+    }
 
-    inline T take() { return takeFirst(); }
+    inline T take() {
+        return takeFirst();
+    }
 
-    inline T peek() { return peekLast(); }
+    inline T peek() {
+        return peekLast();
+    }
 
     inline ArrayList<T> toArray() {
         AutoLock l(mMutex);
@@ -207,16 +213,21 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     }
 
     // add foreach lambda
-    using foreachCallback = std::function<int(T &)>;
-    inline void foreach (foreachCallback callback) {
+    inline void foreach (std::function<int(const T &)> callback,
+                         std::function<void()> after = nullptr) {
         AutoLock l(mMutex);
         for (T value : mQueue) {
             if (callback(value) == Global::Break) {
                 break;
             }
         }
+
+        if(after != nullptr) {
+          after();
+        }
     }
 
+    //
     // destroy
     inline void destroy() {
         AutoLock l(mMutex);
