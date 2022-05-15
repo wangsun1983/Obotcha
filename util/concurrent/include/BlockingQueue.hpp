@@ -18,45 +18,38 @@
 namespace obotcha {
 
 #define BLOCK_QUEUE_ADD_NOLOCK(Action)                                         \
-    if (!isDestroy) {                                                          \
-        int size = mQueue.size();                                              \
-        if (mCapacity > 0 && size == mCapacity) {                              \
-            return false;                                                      \
-        }                                                                      \
-        Action;                                                                \
-        notEmpty->notify();                                                    \
-        return true;                                                           \
-    }                                                                          \
-    return false;
+      if (isDestroy ||(mCapacity > 0 && mQueue.size() == mCapacity)) {         \
+          return false;                                                        \
+      }                                                                        \
+      Action;                                                                  \
+      notEmpty->notify();                                                      \
+      return true;
 
 #define BLOCK_QUEUE_ADD(Action)                                                \
     AutoLock l(mMutex);                                                        \
-    while (!isDestroy) {                                                       \
-        int size = mQueue.size();                                              \
-        if (mCapacity > 0 && size == mCapacity) {                              \
-            if (-ETIMEDOUT == notFull->wait(mMutex, timeout)) {              \
-                return false;                                                  \
-            }                                                                  \
-            continue;                                                          \
-        }                                                                      \
-        Action;                                                                \
-        notEmpty->notify();                                                    \
-        return true;                                                           \
+    if(notFull->wait(mMutex,timeout,[this]{                                    \
+          return isDestroy ||mCapacity < 0 || mQueue.size() != mCapacity;})    \
+          == -ETIMEDOUT) {                                                     \
+        return false;                                                          \
+    }                                                                          \
+    if(!isDestroy) {                                                           \
+      Action;                                                                  \
+      notEmpty->notify();                                                      \
+      return true;                                                             \
     }                                                                          \
     return false;
+
 
 #define BLOCK_QUEUE_REMOVE(Action)                                             \
     T ret;                                                                     \
     AutoLock l(mMutex);                                                        \
-    while (!isDestroy) {                                                       \
-        int size = mQueue.size();                                              \
-        if (size == 0) {                                                       \
-            if (-ETIMEDOUT == notEmpty->wait(mMutex, timeout)) {             \
-                return ContainerValue<T>(nullptr).get();                       \
-            }                                                                  \
-            continue;                                                          \
-        }                                                                      \
-        Action if (mCapacity > 0) { notFull->notify(); }                       \
+    if(notEmpty->wait(mMutex, timeout,[this]{                                  \
+        return isDestroy || mQueue.size() != 0;}) == -ETIMEDOUT) {             \
+        return ContainerValue<T>(nullptr).get();                               \
+    }                                                                          \
+    if(!isDestroy) {                                                           \
+        Action;                                                                \
+        if (mCapacity > 0) { notFull->notify(); }                              \
         return ret;                                                            \
     }                                                                          \
     return ContainerValue<T>(nullptr).get();
@@ -65,11 +58,11 @@ namespace obotcha {
     T ret;                                                                     \
     AutoLock l(mMutex);                                                        \
     if (!isDestroy) {                                                          \
-        int size = mQueue.size();                                              \
-        if (size == 0) {                                                       \
+        if (mQueue.size() == 0) {                                              \
             return ContainerValue<T>(nullptr).get();                           \
         }                                                                      \
-        Action if (mCapacity > 0) { notFull->notify(); }                       \
+        Action;                                                                \
+        if (mCapacity > 0) { notFull->notify(); }                              \
         return ret;                                                            \
     }                                                                          \
     return ContainerValue<T>(nullptr).get();
@@ -94,10 +87,6 @@ DECLARE_TEMPLATE_CLASS(BlockingQueue, T) {
     }
 
     inline int capacity() { return mCapacity; }
-
-    inline void freeze() { mMutex->lock(); }
-
-    inline void unfreeze() { mMutex->unlock(); }
 
     /**
      * Retrieves and removes the head of the queue represented by this deque

@@ -53,11 +53,12 @@ int _Condition::wait(AutoLock &m, long int millseconds) {
 }
 
 int _Condition::wait(sp<_Mutex> m,std::function<bool()> p)  {
+    int ret = 0;
     while(!p()) {
-        wait(m);
+        ret = wait(m);
     }
 
-    return 0;
+    return ret;
 }
 
 int _Condition::wait(AutoLock & m,std::function<bool()> p) {
@@ -78,15 +79,15 @@ int _Condition::wait(AutoLock & m,long int millseconds,std::function<bool()> p) 
     return wait(m.mLock,millseconds,p);
 }
 
-void _Condition::notify() { 
+void _Condition::notify() {
     pthread_cond_signal(&cond_t);
 }
 
-void _Condition::notifyAll() { 
+void _Condition::notifyAll() {
     pthread_cond_broadcast(&cond_t);
 }
 
-_Condition::~_Condition() { 
+_Condition::~_Condition() {
     pthread_cond_destroy(&cond_t);
 }
 

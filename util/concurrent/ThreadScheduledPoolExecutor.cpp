@@ -57,7 +57,7 @@ int _ThreadScheduledPoolExecutor::shutdown() {
         notFull->notify();
         //notEmpty->notify();
         mTaskWaitCond->notify();
-        
+
         if(mCurrentTask != nullptr) {
             mCurrentTask->cancel();
         }
@@ -66,7 +66,7 @@ int _ThreadScheduledPoolExecutor::shutdown() {
     }
 
     mCachedExecutor->shutdown();
-    
+
     return 0;
 }
 
@@ -74,8 +74,8 @@ bool _ThreadScheduledPoolExecutor::isTerminated() {
     return mCachedExecutor->isTerminated();
 }
 
-void _ThreadScheduledPoolExecutor::awaitTermination() { 
-    awaitTermination(0); 
+void _ThreadScheduledPoolExecutor::awaitTermination() {
+    awaitTermination(0);
 }
 
 int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
@@ -95,7 +95,7 @@ Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
     if (addWaitingTaskLocked(Cast<WaitingTask>(task), mQueueTimeout) == 0) {
         return createFuture(task);
     }
-    return nullptr; 
+    return nullptr;
 }
 
 int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,

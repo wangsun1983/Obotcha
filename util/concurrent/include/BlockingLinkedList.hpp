@@ -15,42 +15,37 @@ namespace obotcha {
 
 #define LINKED_LIST_ADD(Action)                                                \
     AutoLock l(mMutex);                                                        \
-    while (!isDestroy) {                                                       \
-        if (mCapacity != -1 && mList->size() == mCapacity) {                   \
-            if (notFull->wait(mMutex, timeout) == -ETIMEDOUT) {              \
-                return false;                                                  \
-            }                                                                  \
-            continue;                                                          \
-        }                                                                      \
+    if(notFull->wait(mMutex,timeout,[this]{                                    \
+          return isDestroy ||mCapacity < 0 || mList->size() != mCapacity;})    \
+          == -ETIMEDOUT) {                                                     \
+        return false;                                                          \
+    }                                                                          \
+    if(!isDestroy) {                                                           \
         Action;                                                                \
         notEmpty->notify();                                                    \
-        break;                                                                 \
+        return true;                                                           \
     }                                                                          \
     return false;
 
 #define LINKED_LIST_ADD_NOBLOCK(Action)                                        \
     AutoLock l(mMutex);                                                        \
-    if (!isDestroy) {                                                          \
-        if (mCapacity != -1 && mList->size() == mCapacity) {                   \
-            return false;                                                      \
-        }                                                                      \
-        Action;                                                                \
-        notEmpty->notify();                                                    \
+    if (isDestroy ||(mCapacity != -1 && mList->size() == mCapacity)) {         \
+        return false;                                                          \
     }                                                                          \
-    return false;
+    Action;                                                                    \
+    notEmpty->notify();                                                        \
+    return true;
 
 #define LINKED_LIST_REMOVE(Action)                                             \
     T data;                                                                    \
     AutoLock l(mMutex);                                                        \
-    while (!isDestroy) {                                                       \
-        if (mList->size() == 0) {                                              \
-            if (notEmpty->wait(mMutex, timeout) == -ETIMEDOUT) {             \
-                return ContainerValue<T>(nullptr).get();                       \
-            }                                                                  \
-            continue;                                                          \
-        }                                                                      \
+    if(notEmpty->wait(mMutex, timeout,[this]{                                  \
+        return isDestroy || mList->size() != 0;}) == -ETIMEDOUT) {             \
+        return ContainerValue<T>(nullptr).get();                               \
+    }                                                                          \
+    if(!isDestroy) {                                                           \
         Action;                                                                \
-        notFull->notify();                                                     \
+        if (mCapacity > 0) { notFull->notify(); }                              \
         return data;                                                           \
     }                                                                          \
     return ContainerValue<T>(nullptr).get();
@@ -58,15 +53,12 @@ namespace obotcha {
 #define LINKED_LIST_REMOVE_NOBLOCK(Action)                                     \
     T data;                                                                    \
     AutoLock l(mMutex);                                                        \
-    while (!isDestroy) {                                                       \
-        if (mList->size() == 0) {                                              \
-            return ContainerValue<T>(nullptr).get();                           \
-        }                                                                      \
-        Action;                                                                \
-        notFull->notify();                                                     \
-        return data;                                                           \
+    if (isDestroy || mList->size() == 0) {                                     \
+        return ContainerValue<T>(nullptr).get();                               \
     }                                                                          \
-    return ContainerValue<T>(nullptr).get();
+    Action;                                                                    \
+    notFull->notify();                                                         \
+    return data;
 
 DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
   public:
