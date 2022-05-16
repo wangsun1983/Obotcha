@@ -9,7 +9,7 @@ ByteArray _Serializable::serialize() {
     ByteArray outPutData = createByteArray(256);
     ByteArrayWriter writer = createByteArrayWriter(outPutData);
     //int size = calculateSize();
-    //writer->writeInt(size);
+    //writer->write<int>(size);
 
     ArrayList<Field> fields = getAllFields();
     ListIterator<Field> iterator = fields->getIterator();
@@ -19,85 +19,85 @@ ByteArray _Serializable::serialize() {
 
         switch(f->getType()) {
             case st(Field)::FieldTypeInt: {
-                writer->writeInt(sizeof(int));
-                writer->writeInt(f->getIntValue());
+                writer->write<int>(sizeof(int));
+                writer->write<int>(f->getIntValue());
             }
             break;
 
             case st(Field)::FieldTypeBool: {
-                writer->writeInt(1);
+                writer->write<int>(1);
                 bool value = f->getBoolValue();
                 if(value) {
-                    writer->writeByte(1);
+                    writer->write<byte>(1);
                 } else {
-                    writer->writeByte(0);
+                    writer->write<byte>(0);
                 }
             }
             break;
 
             case st(Field)::FieldTypeByte: {
-                writer->writeInt(1);
+                writer->write<int>(1);
                 byte value = f->getByteValue();
-                writer->writeByte(value);
+                writer->write<byte>(value);
             }
             break;
 
             case st(Field)::FieldTypeDouble:{
                 String value = createString(f->getDoubleValue());
-                writer->writeInt(value->size());
-                writer->writeByteArray(value->toByteArray());
+                writer->write<int>(value->size());
+                writer->write(value->toByteArray());
             }
             break;
 
             case st(Field)::FieldTypeFloat:{
                 String value = createString(f->getDoubleValue());
-                writer->writeInt(value->size());
-                writer->writeByteArray(value->toByteArray());
+                writer->write<int>(value->size());
+                writer->write(value->toByteArray());
             }
             break;
 
             case st(Field)::FieldTypeLong: {
-                writer->writeByte(sizeof(long));
-                writer->writeLong(f->getLongValue());
+                writer->write<byte>(sizeof(long));
+                writer->write<long>(f->getLongValue());
             }
             break;
 
             case st(Field)::FieldTypeString: {
                 String value = f->getStringValue();
                 if(value == nullptr) {
-                    writer->writeInt(0);
+                    writer->write<int>(0);
                 } else {
-                    writer->writeInt(value->size());
-                    writer->writeByteArray(value->toByteArray());
+                    writer->write<int>(value->size());
+                    writer->write(value->toByteArray());
                 }
             }
             break;
 
             case st(Field)::FieldTypeUint16:{
                 uint16_t value = f->getUint16Value();
-                writer->writeInt(sizeof(uint16_t));
-                writer->writeUint16(value);
+                writer->write<int>(sizeof(uint16_t));
+                writer->write<uint16_t>(value);
             }
             break;
 
             case st(Field)::FieldTypeUint32:{
                 uint32_t value = f->getUint32Value();
-                writer->writeInt(sizeof(uint32_t));
-                writer->writeUint32(value);
+                writer->write<int>(sizeof(uint32_t));
+                writer->write<uint32_t>(value);
             }
             break;
 
             case st(Field)::FieldTypeUint64: {
                 uint64_t value = f->getUint64Value();
-                writer->writeInt(sizeof(uint64_t));
-                writer->writeUint64(value);
+                writer->write<int>(sizeof(uint64_t));
+                writer->write<uint64_t>(value);
             }
             break;
 
             case st(Field)::FieldTypeArrayList: {
                 int count = f->getContainerSize();
                 if(count == 0) {
-                    writer->writeInt(0);
+                    writer->write<int>(0);
                 } else {
                     //calculate size first
                     int size = 0;
@@ -105,18 +105,18 @@ ByteArray _Serializable::serialize() {
                         Serializable serialzabledData = Cast<Serializable>(f->getListItemObject(i));
                         //printf("serialzabledData size is %d,field size is %d \n",serialzabledData->calculateSize(),serialzabledData->getAllFields()->size());
 
-                        size += (serialzabledData->calculateSize() 
+                        size += (serialzabledData->calculateSize()
                                 + serialzabledData->getAllFields()->size() * sizeof(int));
-                        
+
                         size += sizeof(int);
                     }
                     //printf("write array size is %d \n",size);
-                    writer->writeInt(size);
+                    writer->write<int>(size);
 
                     //write each object
                     for(int i = 0;i < count;i++) {
                         ByteArray data = serialize(f->getListItemObject(i));
-                        writer->writeByteArray(data);
+                        writer->write(data);
                         //printf("write data size is %d \n",data->size());
                     }
                 }
@@ -126,7 +126,7 @@ ByteArray _Serializable::serialize() {
             case st(Field)::FieldTypeHashMap: {
                 ArrayList<Pair<Object, Object>> members = f->getMapItemObjects();
                 if(members == nullptr) {
-                    writer->writeInt(0);
+                    writer->write<int>(0);
                 } else {
                     int count = members->size();
                     int size = 0;
@@ -137,25 +137,25 @@ ByteArray _Serializable::serialize() {
 
                         Serializable serialzabledValue = Cast<Serializable>(pair->getValue());
 
-                        size += (serialzabledKey->calculateSize() 
+                        size += (serialzabledKey->calculateSize()
                                 + serialzabledKey->getAllFields()->size() * sizeof(int));
                         size += sizeof(int);
                         //printf("FieldTypeHashMap size is %d \n",size);
 
-                        size += (serialzabledValue->calculateSize() 
+                        size += (serialzabledValue->calculateSize()
                                 + serialzabledValue->getAllFields()->size() * sizeof(int));
                         //printf("FieldTypeHashMap2 size is %d \n",size);
                         size += sizeof(int);
                         //printf("FieldTypeHashMap3 size is %d \n",size);
                     }
 
-                    writer->writeInt(size);
+                    writer->write<int>(size);
                     for(int i = 0;i < count;i++) {
                         Pair<Object,Object> pair = members->get(i);
                         ByteArray data = serialize(pair->getKey());
-                        writer->writeByteArray(data);
+                        writer->write(data);
                         data = serialize(pair->getValue());
-                        writer->writeByteArray(data);
+                        writer->write(data);
                     }
                 }
             }
@@ -164,10 +164,10 @@ ByteArray _Serializable::serialize() {
             case st(Field)::FieldTypeObject: {
                 Object obj = f->getObjectValue();
                 if(obj == nullptr) {
-                    writer->writeInt(0);
+                    writer->write<int>(0);
                 } else {
                     ByteArray data = serialize(f->getObjectValue());
-                    writer->writeByteArray(data);
+                    writer->write(data);
                 }
             }
             break;
@@ -185,25 +185,25 @@ ByteArray _Serializable::serialize(Object obj) {
         Integer data = Cast<Integer>(obj);
         content = createByteArray(sizeof(int) + sizeof(int));
         ByteArrayWriter writer = createByteArrayWriter(content);
-        writer->writeInt(sizeof(int));
-        writer->writeInt(data->toValue());
+        writer->write<int>(sizeof(int));
+        writer->write<int>(data->toValue());
     } else if (IsInstance(Long, obj)) {
         //printf("toByteArray Long \n");
         Long data = Cast<Long>(obj);
         content = createByteArray(sizeof(long));
         ByteArrayWriter writer = createByteArrayWriter(sizeof(int) + sizeof(long));
-        writer->writeInt(sizeof(long));
-        writer->writeLong(data->toValue());
+        writer->write<int>(sizeof(long));
+        writer->write<long>(data->toValue());
     } else if (IsInstance(Boolean, obj)) {
         //printf("toByteArray boolean \n");
         Boolean data = Cast<Boolean>(obj);
         content = createByteArray(sizeof(int) + 1);
         ByteArrayWriter writer = createByteArrayWriter(content);
-        writer->writeInt(1);
+        writer->write<int>(1);
         if(data->toValue()) {
-            writer->writeByte(1);
+            writer->write<byte>(1);
         } else {
-            writer->writeByte(0);
+            writer->write<byte>(0);
         }
     } else if (IsInstance(Double, obj)) {
         //printf("toByteArray double \n");
@@ -211,66 +211,66 @@ ByteArray _Serializable::serialize(Object obj) {
         String value = createString(data->toValue());
         content = createByteArray(sizeof(int) + value->size());
         ByteArrayWriter writer = createByteArrayWriter(content);
-        writer->writeInt(value->size());
-        writer->writeByteArray(value->toByteArray());
+        writer->write<int>(value->size());
+        writer->write(value->toByteArray());
     } else if (IsInstance(Float, obj)) {
         //printf("toByteArray float \n");
         Float data = Cast<Float>(obj);
         String value = createString(data->toValue());
         content = createByteArray(sizeof(int) + value->size());
         ByteArrayWriter writer = createByteArrayWriter(content);
-        writer->writeInt(value->size());
-        writer->writeByteArray(value->toByteArray());
+        writer->write<int>(value->size());
+        writer->write(value->toByteArray());
     } else if (IsInstance(Byte, obj)) {
         //printf("toByteArray byte \n");
         Byte data = Cast<Byte>(obj);
         content = createByteArray(sizeof(int) + 1);
         ByteArrayWriter writer = createByteArrayWriter(content);
-        writer->writeInt(1);
-        writer->writeByte(data->toValue());
+        writer->write<int>(1);
+        writer->write<byte>(data->toValue());
     } else if (IsInstance(Uint8, obj)) {
         //printf("toByteArray uint8 \n");
         Uint8 data = Cast<Uint8>(obj);
         content = createByteArray(sizeof(int) + 1);
         ByteArrayWriter writer = createByteArrayWriter(content);
-        writer->writeInt(sizeof(uint8_t));
-        writer->writeByte(data->toValue());
+        writer->write<int>(sizeof(uint8_t));
+        writer->write<byte>(data->toValue());
     } else if (IsInstance(Uint16, obj)) {
         //printf("toByteArray uint16 \n");
         Uint16 data = Cast<Uint16>(obj);
         content = createByteArray(sizeof(int) + sizeof(uint16_t));
         ByteArrayWriter writer = createByteArrayWriter(content);
-        writer->writeInt(sizeof(uint16_t));
-        writer->writeUint16(data->toValue());
+        writer->write<int>(sizeof(uint16_t));
+        writer->write<uint16_t>(data->toValue());
     } else if (IsInstance(Uint32, obj)) {
         //printf("toByteArray uint32 \n");
         Uint32 data = Cast<Uint32>(obj);
         content = createByteArray(sizeof(int) + sizeof(uint32_t));
         ByteArrayWriter writer = createByteArrayWriter(content);
-        writer->writeInt(sizeof(uint32_t));
-        writer->writeUint32(data->toValue());
+        writer->write<int>(sizeof(uint32_t));
+        writer->write<uint32_t>(data->toValue());
     } else if (IsInstance(Uint64, obj)) {
         //printf("toByteArray uint64 \n");
         Uint64 data = Cast<Uint64>(obj);
         content = createByteArray(sizeof(int) + sizeof(uint64_t));
         ByteArrayWriter writer = createByteArrayWriter(content);
-        writer->writeInt(sizeof(uint64_t));
-        writer->writeUint64(data->toValue());
+        writer->write<int>(sizeof(uint64_t));
+        writer->write<uint64_t>(data->toValue());
     } else if (IsInstance(ByteArray,obj)) {
         //printf("toByteArray byteArray \n");
         ByteArray array = Cast<ByteArray>(obj);
         content = createByteArray(sizeof(int) + array->size());
         ByteArrayWriter writer = createByteArrayWriter(content);
-        writer->writeInt(array->size());
-        writer->writeByteArray(array);
+        writer->write<int>(array->size());
+        writer->write(array);
     } else {
         //printf("toByteArray object \n");
         Serializable data = Cast<Serializable>(obj);
         ByteArray array = data->serialize();
         content = createByteArray(sizeof(int) + array->size());
         ByteArrayWriter writer = createByteArrayWriter(content);
-        writer->writeInt(array->size());
-        writer->writeByteArray(array);
+        writer->write<int>(array->size());
+        writer->write(array);
     }
 
     return content;
@@ -279,7 +279,7 @@ ByteArray _Serializable::serialize(Object obj) {
 void _Serializable::deserialize(ByteArray data) {
     int index = 0;
     ByteArrayReader reader = createByteArrayReader(data);
-    
+
     ArrayList<Field> fields = getAllFields();
     ListIterator<Field> iterator = fields->getIterator();
 
@@ -292,7 +292,7 @@ void _Serializable::deserialize(ByteArray data) {
         }
         Field f = fields->get(index);
         //printf("type is %d,size is %d \n",f->getType(),size);
-        
+
         switch(f->getType()) {
             case st(Field)::FieldTypeInt: {
                 int v = reader->readInt();
@@ -365,7 +365,7 @@ void _Serializable::deserialize(ByteArray data) {
                 ByteArray content = createByteArray(size);
                 //printf("arraylist total size is %d \n",size);
                 reader->readByteArray(content);
-                
+
                 ByteArrayReader arrayReader = createByteArrayReader(content);
                 f->createObject();
                 while(arrayReader->getRemainSize() != 0) {
@@ -388,7 +388,7 @@ void _Serializable::deserialize(ByteArray data) {
                 ByteArray content = createByteArray(size);
                 //printf("arraylist total size is %d \n",size);
                 reader->readByteArray(content);
-                
+
                 ByteArrayReader arrayReader = createByteArrayReader(content);
                 f->createObject();
                 while(arrayReader->getRemainSize() != 0) {

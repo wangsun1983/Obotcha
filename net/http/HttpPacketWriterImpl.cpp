@@ -73,7 +73,7 @@ void _HttpPacketWriterImpl::_updateHttpHeader(HttpPacket packet) {
             break;
         }
     }
-    
+
     if(isNeedUpdateContentLength) {
         header->setContentLength(createHttpHeaderContentLength(_computeContentLength(packet)));
     }
@@ -112,7 +112,7 @@ int _HttpPacketWriterImpl::_flushRequest(HttpPacket packet,bool send) {
         multiPart->onCompose([this,send](ByteArray data) {
             this->_write(data,send);
         });
-        
+
     } else {
         ByteArray body = packet->getEntity()->getContent();
         if(body != nullptr && body->size() != 0) {
@@ -145,7 +145,7 @@ int _HttpPacketWriterImpl::_write(ByteArray data,bool send) {
         int remiderSize = mWriter->getReminderSize();
         printf("remiderSize is %d,length is %d \n",remiderSize,length);
         if(length > remiderSize) {
-            mWriter->writeByteArray(data,start,remiderSize);
+            mWriter->write(data,start,remiderSize);
             length = length - remiderSize;
             start += remiderSize;
             if(send) {
@@ -156,7 +156,7 @@ int _HttpPacketWriterImpl::_write(ByteArray data,bool send) {
                 return -1;
             }
         } else {
-            mWriter->writeByteArray(data,start,data->size() - start);
+            mWriter->write(data,start,data->size() - start);
             length = length - (data->size() - start);
         }
     }
@@ -165,7 +165,7 @@ int _HttpPacketWriterImpl::_write(ByteArray data,bool send) {
 
 int _HttpPacketWriterImpl::_finishWrite() {
     int index = mWriter->getIndex();
-    if(index != 0 && send) {
+    if(index != 0) {
         mStream->write(mBuff, 0, index);
         mWriter->reset();
     }

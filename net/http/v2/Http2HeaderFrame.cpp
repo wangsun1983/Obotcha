@@ -37,7 +37,7 @@ ByteArray _Http2HeaderFrame::toByteArray() {
     ByteArrayWriter writer = createByteArrayWriter(data,BigEndian);
 
     if(isPadding() && paddingData != nullptr) {
-        writer->writeByte(paddingData->size());
+        writer->write<byte>(paddingData->size());
     }
 
     if(isPrioroty()) {
@@ -45,14 +45,14 @@ ByteArray _Http2HeaderFrame::toByteArray() {
         if(exclusive) {
             dependencyData |= (1<<31);
         }
-        writer->writeUint32(dependencyData);
-        writer->writeByte(weight);
+        writer->write<uint32_t>(dependencyData);
+        writer->write<byte>(weight);
     }
 
     encoder->encodeHeaders(streamid,writer,headers);
 
     if(isPadding()) {
-        writer->writeByteArray(paddingData);
+        writer->write(paddingData);
     }
 
     data->quickShrink(writer->getIndex());
@@ -76,7 +76,7 @@ void _Http2HeaderFrame::import(ByteArray data) {
         weight = reader->readByte();
         datasize = datasize - 1 - 4;
     }
-    
+
     ByteArray headerBlock = createByteArray(datasize);
     reader->readByteArray(headerBlock);
     HttpHeader h = createHttpHeader(st(NetProtocol)::Http_H2);
@@ -122,4 +122,3 @@ void _Http2HeaderFrame::setPaddingData(ByteArray s) {
 
 
 }
-

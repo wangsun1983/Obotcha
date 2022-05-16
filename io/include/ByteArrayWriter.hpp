@@ -15,21 +15,59 @@ DECLARE_CLASS(ByteArrayWriter) {
     _ByteArrayWriter(int mode = LittleEndian);
     _ByteArrayWriter(ByteArray, int mode = LittleEndian);
 
-    int writeShort(short int v);
-    int writeByte(byte b);
-    int writeInt(int v);
-    long writeLong(long v);
+    template <typename T>
+    int write(T value) {
+        if (!writeSizeCheck(sizeof(T))) {
+            return -1;
+        }
+        switch (mode) {
+            case Global::BigEndian:
+                _writeBigEndian(value);
+                break;
 
-    int writeUint64(uint64_t);
-    int writeUint32(uint32_t);
-    int writeUint16(uint16_t);
-    
-    int writeByteArray(ByteArray);
-    int writeByteArray(ByteArray, int start,int length);
+            case Global::LittleEndian:
+                _writeLittleEndian(value);
+                break;
+        }
+
+        return 0;
+    }
+
+    template <typename T = ByteArray>
+    int write(ByteArray data) {
+        if (!writeSizeCheck(data->size())) {
+            return -1;
+        }
+
+        memcpy(&mDataP[mIndex], data->toValue(), data->size());
+        mIndex += data->size();
+
+        return 0;
+    }
+
+    int write(ByteArray, int start,int length);
     int write(byte *, int);
 
-    int writeString(String);
-    int writeString(const char *);
+    template<typename T = String>
+    int write(String str) {
+        return write(str->toChars(),str->size());
+    }
+
+
+    int write(const char *str,int size = -1) {
+        if(size == -1) {
+            size = strlen(str);
+        }
+
+        if (!writeSizeCheck(size)) {
+            return -1;
+        }
+
+        memcpy(&mDataP[mIndex], str, size);
+        mIndex += size;
+        return 0;
+    }
+
     void skipBy(int length);
     int getIndex();
 
@@ -53,19 +91,7 @@ DECLARE_CLASS(ByteArrayWriter) {
 
     bool writeSizeCheck(int size);
 
-    template <typename T> void _write(T & value) {
-        switch (mode) {
-        case Global::BigEndian:
-            _writeBigEndian(value);
-            break;
-
-        case Global::LittleEndian:
-            _writeLittleEndian(value);
-            break;
-        }
-    }
-
-    template <typename T> void _writeLittleEndian(T & value) {
+    template <typename T> void _writeLittleEndian(T  value) {
         int count = 0;
         while (count < sizeof(T)) {
             mDataP[mIndex] = (value >> (count * 8) & 0xff);
@@ -74,7 +100,7 @@ DECLARE_CLASS(ByteArrayWriter) {
         }
     }
 
-    template <typename T> void _writeBigEndian(T & value) {
+    template <typename T> void _writeBigEndian(T  value) {
         int count = sizeof(T) - 1;
         while (count >= 0) {
             mDataP[mIndex] = (value >> (count * 8) & 0xff);

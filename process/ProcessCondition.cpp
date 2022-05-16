@@ -27,7 +27,7 @@ int _ProcessCondition::wait(AutoLock &m, long int millseconds) {
     return ret;
 }
 
-void _ProcessCondition::increase(int v) { 
+void _ProcessCondition::increase(int v) {
     AutoLock l(mMutex);
     ByteArray data = createByteArray(sizeof(int));
     mCount->read(data);
@@ -36,7 +36,7 @@ void _ProcessCondition::increase(int v) {
     int count = r->readInt();
     count += v;
     ByteArrayWriter w = createByteArrayWriter(data);
-    w->writeInt(count);
+    w->write<int>(count);
     mCount->write(data);
 }
 
@@ -59,7 +59,7 @@ void _ProcessCondition::notifyAll() {
     }
 
     ByteArrayWriter w = createByteArrayWriter(data);
-    w->writeInt(0);
+    w->write<int>(0);
     mCount->write(data);
 }
 

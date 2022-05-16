@@ -30,11 +30,11 @@ ByteArray _Http2GoAwayFrame::toByteArray() {
     ByteArray data = createByteArray(size);
     ByteArrayWriter writer = createByteArray(data,BigEndian);
 
-    writer->writeUint32(lastStreamId);
-    writer->writeUint32(errorCode);
+    writer->write<uint32_t>(lastStreamId);
+    writer->write<uint32_t>(errorCode);
 
     if(additionalDebugData != nullptr) {
-        writer->writeByteArray(additionalDebugData);
+        writer->write(additionalDebugData);
     }
 
     return data;
@@ -53,7 +53,7 @@ uint32_t _Http2GoAwayFrame::getErrorCode() {
 }
 
 void _Http2GoAwayFrame::setErrorCode(uint32_t e) {
-    errorCode = e; 
+    errorCode = e;
 }
 
 void _Http2GoAwayFrame::setDebugData(ByteArray s) {

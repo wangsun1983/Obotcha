@@ -67,12 +67,12 @@ HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl)
     }
 
     //if(header->get(st(HttpHeader)::Connection) == nullptr) {
-    if(header->getConnection() == nullptr) {    
+    if(header->getConnection() == nullptr) {
         header->set(st(HttpHeader)::Connection,createString("keep-alive, Upgrade"));
     }
 
     //if(header->get(st(HttpHeader)::Upgrade) == nullptr) {
-    if(header->getUpgrade() == nullptr) { 
+    if(header->getUpgrade() == nullptr) {
         header->set(st(HttpHeader)::Upgrade,createString("websocket"));
     }
 
@@ -81,7 +81,7 @@ HttpRequest _WebSocketHybi13Composer::genClientShakeHandMessage(HttpUrl httpUrl)
     }
 
     //if(header->get(st(HttpHeader)::CacheControl) == nullptr) {
-    if(header->getCacheControl() == nullptr) { 
+    if(header->getCacheControl() == nullptr) {
         header->set(st(HttpHeader)::CacheControl,createString("no-cache"));
     }
 
@@ -101,7 +101,7 @@ HttpResponse _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSo
     response->getHeader()->set(st(HttpHeader)::SecWebSocketAccept,base64);
     response->getHeader()->setUpgrade(createString("websocket"));
     response->getHeader()->setConnection(createString("Upgrade"));
-    
+
     if(protocols != nullptr) {
         HttpHeaderSecWebSocketProtocol protocol = createHttpHeaderSecWebSocketProtocol();
         protocol->set(protocols);
@@ -119,11 +119,11 @@ HttpResponse _WebSocketHybi13Composer::genServerShakeHandMessage(String SecWebSo
 }
 
 ArrayList<ByteArray> _WebSocketHybi13Composer::genTextMessage(String content) {
-    
+
     switch(mType) {
         case WsClientComposer:
         return _genClientMessage(content->toByteArray(),st(WebSocketProtocol)::OPCODE_TEXT);
-        
+
 
         case WsServerComposer:
         return _genServerMessage(content->toByteArray(),st(WebSocketProtocol)::OPCODE_TEXT);
@@ -136,7 +136,7 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(ByteArray conte
     ArrayList<ByteArray> genResult = createArrayList<ByteArray>();
 
     ByteArray entireMessage = nullptr;
-    
+
     if(mDeflate != nullptr) {
         entireMessage = mDeflate->compress(content);
     } else {
@@ -170,41 +170,41 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genClientMessage(ByteArray conte
             b0 |= st(WebSocketProtocol)::B0_FLAG_FIN;
         }
 
-        sinkWriter->writeByte(b0);
+        sinkWriter->write<byte>(b0);
 
         //wangsl
         if(mDeflate != nullptr) {
            b0 |= st(WebSocketProtocol)::B0_FLAG_RSV1;
         }
         //wangsl
-        
+
         ByteArray maskKey = createByteArray(4);
         int b1 = 0;
-        
+
         //client message need use mask.
         b1 = st(WebSocketProtocol)::B1_FLAG_MASK;
         mRand->nextBytes(maskKey);
-    
+
         int byteCount = message->size();
         if (byteCount <= st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
             b1 |= (int) byteCount;
-            sinkWriter->writeByte(b1);
+            sinkWriter->write<byte>(b1);
         } else if (byteCount <= st(WebSocketProtocol)::PAYLOAD_SHORT_MAX) {
             b1 |= st(WebSocketProtocol)::PAYLOAD_SHORT;
-            sinkWriter->writeByte(b1);
-            sinkWriter->writeShort((int) byteCount);
+            sinkWriter->write<byte>(b1);
+            sinkWriter->write<short int>((int) byteCount);
         } else {
             b1 |= st(WebSocketProtocol)::PAYLOAD_LONG;
-            sinkWriter->writeByte(b1);
-            sinkWriter->writeLong(byteCount);
+            sinkWriter->write<byte>(b1);
+            sinkWriter->write<long>(byteCount);
         }
 
         //client message need use mask.
-        sinkWriter->writeByteArray(maskKey);
+        sinkWriter->write(maskKey);
         ByteArray maskBuff = createByteArray(message);
         toggleMask(maskBuff,maskKey);
-        sinkWriter->writeByteArray(maskBuff);
-        
+        sinkWriter->write(maskBuff);
+
         sink->quickShrink(sinkWriter->getIndex());
 
         genResult->add(sink);
@@ -249,20 +249,20 @@ ArrayList<ByteArray> _WebSocketHybi13Composer::_genServerMessage(ByteArray conte
             b0 |= st(WebSocketProtocol)::B0_FLAG_FIN;
         }
 
-        sinkWriter->writeByte(b0);
+        sinkWriter->write<byte>(b0);
 
         int b1 = message->size();
         if (b1 <= st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
-            sinkWriter->writeByte(b1);
+            sinkWriter->write<byte>(b1);
         } else if (b1 <= st(WebSocketProtocol)::PAYLOAD_SHORT_MAX) {
-            sinkWriter->writeByte(st(WebSocketProtocol)::PAYLOAD_SHORT);
-            sinkWriter->writeShort(b1);
+            sinkWriter->write<byte>(st(WebSocketProtocol)::PAYLOAD_SHORT);
+            sinkWriter->write<short int>(b1);
         } else {
-            sinkWriter->writeByte(st(WebSocketProtocol)::PAYLOAD_BYTE_MAX);
-            sinkWriter->writeLong(b1);
+            sinkWriter->write<byte>(st(WebSocketProtocol)::PAYLOAD_BYTE_MAX);
+            sinkWriter->write<long>(b1);
         }
 
-        sinkWriter->writeByteArray(message);
+        sinkWriter->write(message);
         sink->quickShrink(sinkWriter->getIndex());
 
         genResult->add(sink);
@@ -334,22 +334,22 @@ ByteArray _WebSocketHybi13Composer::_genClientControlMessage(ByteArray payload,i
     ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
 
     int b0 = st(WebSocketProtocol)::B0_FLAG_FIN | type;
-    sinkWriter->writeByte(b0);
+    sinkWriter->write<byte>(b0);
 
     int b1 = payload->size();
     b1 |= st(WebSocketProtocol)::B1_FLAG_MASK;
-    sinkWriter->writeByte(b1);
+    sinkWriter->write<byte>(b1);
 
     ByteArray maskKey = createByteArray(4);
     mRand->nextBytes(maskKey);
-    sinkWriter->writeByteArray(maskKey);
+    sinkWriter->write(maskKey);
 
     if (payload != nullptr) {
         ByteArray maskBuff = createByteArray(payload);
         toggleMask(maskBuff,maskKey);
-        sinkWriter->writeByteArray(maskBuff);
+        sinkWriter->write(maskBuff);
     }
-    
+
     sink->quickShrink(sinkWriter->getIndex());
     return sink;
 }
@@ -359,12 +359,12 @@ ByteArray _WebSocketHybi13Composer::_genServerControlMessage(ByteArray payload,i
     ByteArrayWriter sinkWriter = createByteArrayWriter(sink);
 
     int b0 = st(WebSocketProtocol)::B0_FLAG_FIN | type;
-    sinkWriter->writeByte(b0);
+    sinkWriter->write<byte>(b0);
 
     int b1 = payload->size();
-    sinkWriter->writeByte(b1);
+    sinkWriter->write<byte>(b1);
     if (payload != nullptr) {
-        sinkWriter->writeByteArray(payload);
+        sinkWriter->write(payload);
     }
     sink->quickShrink(sinkWriter->getIndex());
     return sink;

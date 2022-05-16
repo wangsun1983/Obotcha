@@ -39,8 +39,8 @@ _ByteArrayWriter::_ByteArrayWriter(ByteArray data, int mod) {
     mType = Static;
 }
 
-void _ByteArrayWriter::reset() { 
-    mIndex = 0; 
+void _ByteArrayWriter::reset() {
+    mIndex = 0;
 }
 
 bool _ByteArrayWriter::writeSizeCheck(int size) {
@@ -56,102 +56,7 @@ bool _ByteArrayWriter::writeSizeCheck(int size) {
     return true;
 }
 
-int _ByteArrayWriter::writeShort(short int s) {
-    if (!writeSizeCheck(sizeof(short int))) {
-        return -1;
-    }
-
-    _write(s);
-    return 0;
-}
-
-int _ByteArrayWriter::writeByte(byte v) {
-    if (!writeSizeCheck(sizeof(byte))) {
-        return -1;
-    }
-
-    mDataP[mIndex++] = v;
-    return 0;
-}
-
-int _ByteArrayWriter::writeInt(int v) {
-    if (!writeSizeCheck(sizeof(int))) {
-        return -1;
-    }
-
-    _write(v);
-    return 0;
-}
-
-long _ByteArrayWriter::writeLong(long v) {
-    if (!writeSizeCheck(sizeof(long))) {
-        return -1;
-    }
-
-    _write(v);
-    return 0;
-}
-
-int _ByteArrayWriter::writeUint64(uint64_t v) {
-    if (!writeSizeCheck(sizeof(uint32_t))) {
-        return -1;
-    }
-
-    _write(v);
-    return 0;
-}
-
-int _ByteArrayWriter::writeUint32(uint32_t v) {
-    if (!writeSizeCheck(sizeof(uint32_t))) {
-        return -1;
-    }
-
-    _write(v);
-    return 0;
-}
-
-int _ByteArrayWriter::writeUint16(uint16_t v) {
-    if (!writeSizeCheck(sizeof(uint16_t))) {
-        return -1;
-    }
-
-    _write(v);
-    return 0;
-}
-
-int _ByteArrayWriter::writeByteArray(ByteArray b) {
-    if (!writeSizeCheck(b->size())) {
-        return -1;
-    }
-
-    memcpy(&mDataP[mIndex], b->toValue(), b->size());
-    mIndex += b->size();
-
-    return 0;
-}
-
-int _ByteArrayWriter::writeString(String str) {
-    if (!writeSizeCheck(str->size())) {
-        return -1;
-    }
-
-    memcpy(&mDataP[mIndex], str->toChars(), str->size());
-    mIndex += str->size();
-    return 0;
-}
-
-int _ByteArrayWriter::writeString(const char *str) {
-    int size = strlen(str);
-    if (!writeSizeCheck(size)) {
-        return -1;
-    }
-
-    memcpy(&mDataP[mIndex], str, size);
-    mIndex += size;
-    return 0;
-}
-
-int _ByteArrayWriter::writeByteArray(ByteArray b, int start,int length) {
+int _ByteArrayWriter::write(ByteArray b, int start,int length) {
     if (!writeSizeCheck(length) || start + length > b->size()) {
         return -1;
     }
@@ -182,8 +87,8 @@ ByteArray _ByteArrayWriter::getByteArray() {
     return mData;
 }
 
-void _ByteArrayWriter::updateSize() { 
-    mSize = mData->size(); 
+void _ByteArrayWriter::updateSize() {
+    mSize = mData->size();
     mDataP = mData->toValue();
 }
 

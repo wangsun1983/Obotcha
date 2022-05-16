@@ -91,14 +91,14 @@ Http2PriorityByteArray _Http2Frame::toFrameData() {
     if(payload != nullptr) {
         length = payload->size();
     }
-    
+
     Http2PriorityByteArray frame = createHttp2PriorityByteArray(length + 9);
     ByteArrayWriter writer = createByteArrayWriter(frame,BigEndian);
-    writer->writeUint32(length << 8 | type);
-    writer->writeByte(flags);
-    writer->writeUint32(streamid & 0x7FFFFFFF);
+    writer->write((uint32_t)(length << 8 | type));
+    writer->write((byte)flags);
+    writer->write((uint32_t)(streamid & 0x7FFFFFFF));
     if(payload != nullptr) {
-        writer->writeByteArray(payload);
+        writer->write(payload);
     }
 
     frame->setPriorityWeight(weight);

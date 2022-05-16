@@ -20,13 +20,13 @@ ByteArray _Http2DataFrame::toByteArray() {
     ByteArray out = createByteArray(size);
     ByteArrayWriter writer = createByteArrayWriter(out,BigEndian);
     if(paddingData != nullptr) {
-        writer->writeByte(paddingData->size());
+        writer->write<byte>(paddingData->size());
     }
 
-    writer->writeByteArray(data);
+    writer->write(data);
 
     if(paddingData != nullptr) {
-        writer->writeByteArray(paddingData);
+        writer->write(paddingData);
     }
 
     return out;

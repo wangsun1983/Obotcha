@@ -16,7 +16,7 @@ void _Http2WindowUpdateFrame::import(ByteArray s) {
 ByteArray _Http2WindowUpdateFrame::toByteArray() {
     ByteArray data = createByteArray(4);
     ByteArrayWriter writer = createByteArrayWriter(data,BigEndian);
-    writer->writeUint32(windowSize);
+    writer->write<uint32_t>(windowSize);
     return data;
 }
 

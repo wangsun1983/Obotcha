@@ -19,27 +19,30 @@ namespace obotcha {
 
 _Barrier::_Barrier(int n) {
     mBarrierNums = n;
-    mutex = createMutex("BarrierMutex");
+    mutex = createMutex();
     cond = createCondition();
 }
 
 int _Barrier::await(long v) {
     AutoLock l(mutex);
-    if (mBarrierNums == 0) {
-        return -1;
-    }
+    switch(mBarrierNums) {
+        case 0: {
+            return -1;
+        }
 
-    mBarrierNums--;
-    if (mBarrierNums == 0) {
-        cond->notifyAll();
-    } else {
-        cond->wait(mutex, v);
-    }
+        case 1: {
+          mBarrierNums = 0;
+          cond->notifyAll();
+          return 0;
+        }
 
-    return 0;
+        default:
+          mBarrierNums--;
+          return cond->wait(mutex, v);
+    }
 }
 
-int _Barrier::await() { 
+int _Barrier::await() {
     return await(0);
 }
 

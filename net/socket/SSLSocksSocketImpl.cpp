@@ -13,7 +13,7 @@ _SSLSocksSocketImpl::_SSLSocksSocketImpl(String certificatePath,String keyPath,I
     mSocket = createSocksSocketImpl(address,option);
     init(certificatePath,keyPath);
 }
-    
+
 _SSLSocksSocketImpl::_SSLSocksSocketImpl(SocketImpl s) {
     mSocket = s;
     init(nullptr,nullptr);
@@ -45,7 +45,7 @@ void _SSLSocksSocketImpl::init(String certificatePath,String keyPath) {
         mContext = createSSLSocketContext(st(SSLSocketContext)::CLIENT);
         mContext->initSSL();
     }
-    
+
     if(!SSL_set_fd(mContext->getSSL(),mSocket->getFileDescriptor()->getFd())) {
         ERR_print_errors_fp (stderr);
     }
@@ -55,7 +55,7 @@ int _SSLSocksSocketImpl::connect() {
     mSocket->getFileDescriptor()->setAsync(false);
 
     int ret = mSocket->connect();
-    
+
     ret = SSL_connect(mContext->getSSL());
     if(ret < 0) {
         ERR_print_errors_fp (stderr);
@@ -74,19 +74,19 @@ int _SSLSocksSocketImpl::close() {
 
 int _SSLSocksSocketImpl::write(ByteArray buff,int start,int length) {
     int size = (length == -1?buff->size() - start:length);
-    
+
     if(start + length > buff->size()) {
         //TODO
         return -1;
     }
 
-    
+
     return SSL_write(mContext->getSSL(), buff->toValue() + start, size);
 }
 
 int _SSLSocksSocketImpl::read(ByteArray buff,int start,int length) {
     int size = (length == -1?buff->size() - start:length);
-    
+
     if(start + size > buff->size()) {
         //TODO
         return -1;

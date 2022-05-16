@@ -150,14 +150,14 @@ void _HPackEncoder::encodeInteger(int mask,int n,long i) {
 
     int nbits = (unsigned int)0xFF >> (8 - n);
     if (i < nbits) {
-        writer->writeByte((int) (mask | i));
+        writer->write<byte>((int) (mask | i));
     } else {
-        writer->writeByte(mask | nbits);
+        writer->write<byte>(mask | nbits);
         unsigned long length = i - nbits;
         for (; (length & ~0x7F) != 0; length >>= 7) {
-            writer->writeByte((int) (length & 0x7F | 0x80));
+            writer->write<byte>((int) (length & 0x7F | 0x80));
         }
-        writer->writeByte((int) length);
+        writer->write<byte>((int) length);
     }
 }
 
@@ -270,7 +270,7 @@ void _HPackEncoder::encodeString(String data) {
     } else {
         encodeInteger(0x00, 7, data->size());
         //https://tools.ietf.org/html/rfc7540#section-8.1.2
-        writer->writeByteArray(data->toByteArray());
+        writer->write(data->toByteArray());
     }
 }
 

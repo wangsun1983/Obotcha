@@ -23,13 +23,12 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
 }
 
 int _AsyncOutputChannel::write(ByteArray d) {
-    ByteArray data = createByteArray(d);
-    
     AutoLock l(mMutex);
     if (isClosed) {
         return -1;
     }
 
+    ByteArray data = createByteArray(d);
     if (mDatas->size() > 0) {
         mDatas->putLast(data);
         return 0;
@@ -43,7 +42,7 @@ int _AsyncOutputChannel::notifyWrite() {
     if (isClosed) {
         return -1;
     }
-    
+
     while (mDatas->size() > 0) {
         ByteArray data = mDatas->takeFirst();
         if(_write(data) != 0) {
@@ -62,25 +61,30 @@ int _AsyncOutputChannel::_write(ByteArray data) {
         } else {
             result = ::write(mFd->getFd(), data->toValue() + offset, data->size() - offset);
         }
+
         if (result < 0) {
             if (errno == EAGAIN) {
                 ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);
                 mDatas->putFirst(restData);
                 mPool->addChannel(AutoClone(this));
+            } else {
+                //Write failed,remove channel
+                mPool->remove(AutoClone(this));
             }
             return -1;
-        } else if (result != (data->size() - offset)) {
+        } else if (result < (data->size() - offset)) {
             offset += result;
             continue;
-        } 
+        }
+
         break;
     }
 
     return 0;
 }
 
-FileDescriptor _AsyncOutputChannel::getFileDescriptor() { 
-    return mFd; 
+FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
+    return mFd;
 }
 
 void _AsyncOutputChannel::close() {
@@ -88,6 +92,10 @@ void _AsyncOutputChannel::close() {
     if(mDatas != nullptr) {
         mDatas->clear();
         mDatas = nullptr;
+    }
+
+    if(writeCb != nullptr) {
+        writeCb = nullptr;
     }
 
     isClosed = true;

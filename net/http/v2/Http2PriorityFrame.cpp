@@ -32,11 +32,11 @@ ByteArray _Http2PriorityFrame::toByteArray() {
         data1 |= 0x8000000000;
     }
 
-    writer->writeUint32(data1);
-    writer->writeByte(weight);
+    writer->write<uint32_t>(data1);
+    writer->write<byte>(weight);
 
     return data;
 }
-    
+
 
 }

@@ -27,11 +27,10 @@ _BufferedReader::_BufferedReader(String str) {
 
 _BufferedReader::_BufferedReader(ByteArray data) {
     type = ReadContent;
-    //mStringStream <<data->toValue();
     mData = data;
 }
 
-String _BufferedReader::readLine() {    
+String _BufferedReader::readLine() {
     std::string s;
 
     switch(type) {
@@ -52,22 +51,17 @@ String _BufferedReader::readLine() {
             }
         break;
     }
-    
+
 
     return nullptr;
 }
 
 ArrayList<String> _BufferedReader::lines() {
     ArrayList<String> list = createArrayList<String>();
-    while(1) {
-        String str = readLine();
-        if(str != nullptr) {
-            list->add(str);
-        } else {
-            break;
-        }
+    String str = nullptr;
+    while((str = readLine())!= nullptr) {
+        list->add(str);
     }
-
     return list;
 }
 
@@ -79,11 +73,11 @@ void _BufferedReader::reset() {
                 mStringStream.seekg(0, mStringStream.beg);
             }
             break;
-        
+
         case ReadFile:
             mFileStream.seekg(0);
         break;
-    } 
+    }
 }
 
 _BufferedReader::~_BufferedReader() {
@@ -91,12 +85,12 @@ _BufferedReader::~_BufferedReader() {
         case ReadContent:
             //mStringStream.close();
         break;
-        
+
         case ReadFile:
             mFileStream.close();
         break;
     }
-    
+
 }
 
 } // namespace obotcha

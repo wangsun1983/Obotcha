@@ -20,7 +20,7 @@ void _HPackHuffmanEncoder::encode(ByteArrayWriter writer,String data) {
     int n = 0;
     const char *p = data->toChars();
     int size = data->size();
-    
+
     for (int i = 0; i < size; i++) {
         int b = p[i] & 0xFF;
         int code = st(HPack)::HuffmanCodes[b];
@@ -31,14 +31,14 @@ void _HPackHuffmanEncoder::encode(ByteArrayWriter writer,String data) {
         n += nbits;
         while (n >= 8) {
             n -= 8;
-            writer->writeByte((current >> n));
+            writer->write<byte>((current >> n));
         }
     }
 
     if (n > 0) {
         current <<= (8 - n);
         current |= ((unsigned int)0xFF >> n); // this should be EOS symbol
-        writer->writeByte((int) current);
+        writer->write<byte>((int) current);
     }
 }
 
@@ -48,7 +48,7 @@ ByteArray _HPackHuffmanEncoder::encode(String data) {
     ByteArray out = createByteArray(length);
     ByteArrayWriter writer = createByteArrayWriter(out);
     encode(writer,data);
-    
+
     return out;
 }
 

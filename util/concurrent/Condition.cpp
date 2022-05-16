@@ -15,14 +15,11 @@
 #include "AutoLock.hpp"
 #include "Condition.hpp"
 #include "Error.hpp"
-#include "IllegalStateException.hpp"
 #include "InitializeException.hpp"
 #include "Mutex.hpp"
-#include "Object.hpp"
 #include "System.hpp"
 #include "Log.hpp"
 #include "OStdInstanceOf.hpp"
-#include <condition_variable>
 
 namespace obotcha {
 
@@ -62,7 +59,11 @@ int _Condition::wait(sp<_Mutex> m,std::function<bool()> p)  {
 }
 
 int _Condition::wait(AutoLock & m,std::function<bool()> p) {
-    return wait(m.mLock,p);
+    if(IsInstance(Mutex,m.mLock)) {
+        Mutex mu = Cast<Mutex>(m.mLock);
+        return wait(m.mLock,p);
+    }
+    return -1;
 }
 
 int _Condition::wait(sp<_Mutex> m,long int millseconds,std::function<bool()> p) {
@@ -76,7 +77,11 @@ int _Condition::wait(sp<_Mutex> m,long int millseconds,std::function<bool()> p) 
 }
 
 int _Condition::wait(AutoLock & m,long int millseconds,std::function<bool()> p) {
-    return wait(m.mLock,millseconds,p);
+    if(IsInstance(Mutex,m.mLock)) {
+        Mutex mu = Cast<Mutex>(m.mLock);
+        return wait(mu,millseconds,p);
+    }
+    return -1;
 }
 
 void _Condition::notify() {

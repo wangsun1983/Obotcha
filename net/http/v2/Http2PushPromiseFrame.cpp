@@ -16,14 +16,14 @@ ByteArray _Http2PushPromiseFrame::toByteArray() {
     ByteArrayWriter writer = createByteArrayWriter(data,BigEndian);
 
     if(isPadding() && paddingData != nullptr) {
-        writer->writeByte(paddingData->size());
+        writer->write<byte>(paddingData->size());
     }
 
-    writer->writeUint32(promiseStreamId);
+    writer->write<uint32_t>(promiseStreamId);
     encoder->encodeHeaders(streamid,writer,headers);
 
     if(isPadding() && paddingData != nullptr) {
-        writer->writeByteArray(paddingData);
+        writer->write(paddingData);
     }
 
     return data;

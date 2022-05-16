@@ -19,7 +19,7 @@ namespace obotcha {
 |       Identifier (16)         |
 +-------------------------------+-------------------------------+
 |                        Value (32)                             |
-+---------------------------------------------------------------+  
++---------------------------------------------------------------+
  */
 //https://skyao.io/learning-http2/frame/definition/settings.html
 
@@ -63,7 +63,7 @@ void _Http2SettingFrame::import(ByteArray data) {
             case SettingMaxHeaderListSize:
                 mMaxHeaderListSize = value;
             break;
-            
+
             default:
             break;
         }
@@ -73,35 +73,35 @@ void _Http2SettingFrame::import(ByteArray data) {
 ByteArray _Http2SettingFrame::toByteArray() {
     ByteArray data = createByteArray(48 * SettingStandardNum);
     ByteArrayWriter writer = createByteArrayWriter(data,BigEndian);
-    
+
     if(mHeaderTableSize > 0) {
-        writer->writeUint16(SettingHeaderTableSize);
-        writer->writeUint32(mHeaderTableSize);
+        writer->write<uint32_t>(SettingHeaderTableSize);
+        writer->write<uint32_t>(mHeaderTableSize);
     }
 
     if(mEnablePush > 0) {
-        writer->writeUint16(SettingEnablePush);
-        writer->writeUint32(mEnablePush);
+        writer->write<uint16_t>(SettingEnablePush);
+        writer->write<uint32_t>(mEnablePush);
     }
 
     if(mMaxConcurrentStreams > 0) {
-        writer->writeUint16(SetttingMaxConcurrentStreams);
-        writer->writeUint32(mMaxConcurrentStreams);
+        writer->write<uint16_t>(SetttingMaxConcurrentStreams);
+        writer->write<uint32_t>(mMaxConcurrentStreams);
     }
 
     if(mInitialWindowSize > 0) {
-        writer->writeUint16(SettingInitialWindowSize);
-        writer->writeUint32(mInitialWindowSize);
+        writer->write<uint16_t>(SettingInitialWindowSize);
+        writer->write<uint32_t>(mInitialWindowSize);
     }
 
     if(mMaxFrameSize > 0) {
-        writer->writeUint16(SettingMaxFrameSize);
-        writer->writeUint32(mMaxFrameSize);
+        writer->write<uint16_t>(SettingMaxFrameSize);
+        writer->write<uint32_t>(mMaxFrameSize);
     }
 
     if(mMaxHeaderListSize > 0) {
-        writer->writeUint16(SettingMaxHeaderListSize);
-        writer->writeUint32(mMaxHeaderListSize);
+        writer->write<uint16_t>(SettingMaxHeaderListSize);
+        writer->write<uint32_t>(mMaxHeaderListSize);
     }
 
     data->quickShrink(writer->getIndex());
