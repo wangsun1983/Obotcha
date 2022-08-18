@@ -6,9 +6,9 @@ namespace obotcha {
 
 _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
     impl = s->getSockImpl();
-    
+
     fileDescriptor = s->getFileDescriptor();
-    
+
     if (fileDescriptor!= nullptr && fileDescriptor->isAsync()) {
         //Add a mutex to protect channle for the following issue
         //1.Thread A:call write function to send data
@@ -66,7 +66,7 @@ long _SocketOutputStream::_write(FileDescriptor fd, ByteArray data,int offset) {
 }
 
 void _SocketOutputStream::close() {
-    if(mChannelMutex != nullptr) {   
+    if(mChannelMutex != nullptr) {
         AutoLock l(mChannelMutex);
         if (mChannel != nullptr) {
             mChannel->close();

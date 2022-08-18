@@ -226,8 +226,9 @@ int _ByteArray::append(byte *data, int len) {
         return -EINVAL;
     }
 
+    int currentSize = mSize;
     growBy(len);
-    memcpy(&buff[mSize], data, len);
+    memcpy(&buff[currentSize], data, len);
     return mSize;
 }
 
@@ -274,7 +275,7 @@ bool _ByteArray::equals(const ByteArray &s) {
         return false;
     }
 
-    return (this == s.get_pointer()) && (memcmp(buff,s->buff,mSize) == 0);
+    return (this == s.get_pointer()) || (memcmp(buff,s->buff,mSize) == 0);
 }
 
 } // namespace obotcha

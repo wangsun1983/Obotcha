@@ -11,7 +11,8 @@ class _String;
 
 #define byte uint8_t
 
-DECLARE_CLASS(Byte) IMPLEMENTS(Number)<uint8_t> {
+//define uint16_t to avoid sstream change assic to character.
+DECLARE_CLASS(Byte) IMPLEMENTS(Number)<uint16_t> {
 public:
     static const int __isReflected = 1;
 

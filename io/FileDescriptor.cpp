@@ -9,12 +9,12 @@
 
 namespace obotcha {
 
-_FileDescriptor::_FileDescriptor(int fd) { 
-    _fd = fd; 
+_FileDescriptor::_FileDescriptor(int fd) {
+    _fd = fd;
 }
 
-uint64_t _FileDescriptor::hashcode() { 
-    return _fd; 
+uint64_t _FileDescriptor::hashcode() {
+    return _fd;
 }
 
 int _FileDescriptor::close() {
@@ -33,8 +33,8 @@ int _FileDescriptor::setFileOption(int option) {
     return fcntl(_fd, F_SETFL, fcntl(_fd, F_GETFL, 0) | option);
 }
 
-int _FileDescriptor::getFileOption() { 
-    return fcntl(_fd, F_GETFL); 
+int _FileDescriptor::getFileOption() {
+    return fcntl(_fd, F_GETFL);
 }
 
 void _FileDescriptor::setAsync(bool async) {
@@ -69,8 +69,8 @@ bool _FileDescriptor::isClosed() {
     return fcntl(_fd,F_GETFL,0) == -1;
 }
 
-int _FileDescriptor::getFd() { 
-    return _fd; 
+int _FileDescriptor::getFd() {
+    return _fd;
 }
 
 } // namespace obotcha

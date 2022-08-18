@@ -21,12 +21,12 @@ namespace obotcha {
 
 _FileOutputStream::_FileOutputStream(File file)
     : _FileOutputStream(file->getAbsolutePath()) {
-    
+
 }
 
 _FileOutputStream::_FileOutputStream(const char *path)
     : _FileOutputStream(createString(path)) {
-    
+
 }
 
 _FileOutputStream::_FileOutputStream(String path) {
@@ -121,11 +121,13 @@ void _FileOutputStream::close() {
     }
 }
 
-void _FileOutputStream::flush() { fdatasync(fd); }
+void _FileOutputStream::flush() {
+    fdatasync(fd);
+}
 
 _FileOutputStream::~_FileOutputStream() {
     if(!isFdImport) {
-       close(); 
+       close();
     }
 }
 

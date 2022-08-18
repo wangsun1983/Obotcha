@@ -34,20 +34,20 @@ void _Http2PushPromiseFrame::import(ByteArray data) {
     int paddingLength = 0;
     ByteArrayReader reader = createByteArrayReader(data);
     if(isPadding()) {
-        paddingLength = reader->readByte();
+        paddingLength = reader->read<byte>();
         size -= paddingLength;
     }
 
-    uint32_t promiseId = reader->readUint32();
+    uint32_t promiseId = reader->read<uint32_t>();
     promiseStreamId = promiseId & 0x7FFFFFFF;
     //decode(int streamId, ByteArray in, HttpHeader headers, bool validateHeaders)
     ByteArray input = createByteArray(size);
-    reader->readByteArray(input);
+    reader->read(input);
     decoder->decode(streamid,input,headers,false);
 
     if(paddingLength != 0) {
         paddingData = createByteArray(paddingLength);
-        reader->readByteArray(paddingData);
+        reader->read(paddingData);
     }
 }
 

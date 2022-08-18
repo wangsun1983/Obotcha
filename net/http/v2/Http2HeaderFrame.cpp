@@ -65,20 +65,20 @@ void _Http2HeaderFrame::import(ByteArray data) {
     int datasize = this->length;
 
     if(isPadding()) {
-        paddingLength = reader->readByte();
+        paddingLength = reader->read<byte>();
         datasize = datasize - paddingLength - 1;
     }
 
     if(isPrioroty()) {
-        uint32_t dependencyData = reader->readUint32();
+        uint32_t dependencyData = reader->read<uint32_t>();
         exclusive = (((dependencyData >>24) & 0x80) != 0);
         dependencyStream = dependencyData & 0x7FFFFFFF;
-        weight = reader->readByte();
+        weight = reader->read<byte>();
         datasize = datasize - 1 - 4;
     }
 
     ByteArray headerBlock = createByteArray(datasize);
-    reader->readByteArray(headerBlock);
+    reader->read(headerBlock);
     HttpHeader h = createHttpHeader(st(NetProtocol)::Http_H2);
 
     decoder->decode(this->streamid,headerBlock,h,true);
@@ -90,7 +90,7 @@ void _Http2HeaderFrame::import(ByteArray data) {
 
     if(paddingLength > 0) {
         paddingData = createByteArray(paddingLength);
-        reader->readByteArray(paddingData);
+        reader->read(paddingData);
     }
 }
 

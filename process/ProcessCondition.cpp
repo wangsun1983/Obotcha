@@ -33,7 +33,7 @@ void _ProcessCondition::increase(int v) {
     mCount->read(data);
 
     ByteArrayReader r = createByteArrayReader(data);
-    int count = r->readInt();
+    int count = r->read<int>();
     count += v;
     ByteArrayWriter w = createByteArrayWriter(data);
     w->write<int>(count);
@@ -52,7 +52,7 @@ void _ProcessCondition::notifyAll() {
     mCount->read(data);
 
     ByteArrayReader r = createByteArrayReader(data);
-    int count = r->readInt();
+    int count = r->read<int>();
     while(count > 0) {
         sem->post();
         count--;

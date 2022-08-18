@@ -23,8 +23,8 @@ void _SocketImpl::_init() {
     mBuffSize = st(Socket)::DefaultBufferSize;
 }
 
-void _SocketImpl::setRecvBuff(int v) { 
-    mBuffSize = v; 
+void _SocketImpl::setRecvBuff(int v) {
+    mBuffSize = v;
 }
 
 void _SocketImpl::setOptions() {
@@ -203,20 +203,20 @@ void _SocketImpl::setOptions() {
     }
 }
 
-int _SocketImpl::close() { 
-    return sock->close(); 
+int _SocketImpl::close() {
+    return sock->close();
 }
 
-FileDescriptor _SocketImpl::getFileDescriptor() { 
-    return sock; 
+FileDescriptor _SocketImpl::getFileDescriptor() {
+    return sock;
 }
 
-InetAddress _SocketImpl::getInetAddress() { 
-    return address; 
+InetAddress _SocketImpl::getInetAddress() {
+    return address;
 }
 
-void _SocketImpl::setInetAddress(InetAddress addr) { 
-    address = addr; 
+void _SocketImpl::setInetAddress(InetAddress addr) {
+    address = addr;
 }
 
 int _SocketImpl::write(ByteArray data,int start,int length) {

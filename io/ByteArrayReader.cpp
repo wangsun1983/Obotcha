@@ -15,6 +15,7 @@ _ByteArrayReader::_ByteArrayReader(ByteArray data, int mod) {
     mode = mod;
 }
 
+/*
 int _ByteArrayReader::readShort() {
     short int value = 0;
     _read(value);
@@ -61,8 +62,9 @@ uint16_t _ByteArrayReader::readUint16() {
     _read(value);
     return value;
 }
+*/
 
-int _ByteArrayReader::readByteArray(ByteArray d) {
+int _ByteArrayReader::read(ByteArray d) {
     if (mIndex >= mSize) {
         return -1;
     }
@@ -76,20 +78,20 @@ int _ByteArrayReader::readByteArray(ByteArray d) {
     return copySize;
 }
 
-int _ByteArrayReader::getIndex() { 
-    return mIndex; 
+int _ByteArrayReader::getIndex() {
+    return mIndex;
 }
 
-int _ByteArrayReader::getRemainSize() { 
-    return mSize - mIndex; 
+int _ByteArrayReader::getRemainSize() {
+    return mSize - mIndex;
 }
 
-void _ByteArrayReader::setIndex(int index) { 
-    mIndex = index; 
+void _ByteArrayReader::setIndex(int index) {
+    mIndex = index;
 }
 
 bool _ByteArrayReader::isReadable() {
-    return mSize > mIndex;    
+    return mSize > mIndex;
 }
 
 
@@ -115,14 +117,14 @@ String _ByteArrayReader::readLine() {
             case '\n': {
                 String result =
                     createByteArray((const byte *)mData->toValue() + mIndex, start - mIndex)->toString();
-                
+
                 start++;
                 if (start < mData->size() && mData->at(start) == '\r') {
                     start++;
                 }
                 mIndex = start;
                 return result;
-            } 
+            }
             break;
 
             default:

@@ -48,11 +48,11 @@ bool _ByteArrayWriter::writeSizeCheck(int size) {
         if (mType == Dynamic) {
             mSize = mData->size() * 7 / 4;
             mData->growTo(mSize);
+            mDataP = mData->toValue();
         } else {
             return false;
         }
     }
-
     return true;
 }
 

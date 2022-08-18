@@ -121,6 +121,8 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
     Mutex mListenerMutex;
     HashMap<int, EPollFileObserverListener> mListeners;
 
+    Mutex mCloseMutex;
+    bool isClosed;
     Pipe mPipe;
     int mSize;
 };

@@ -11,7 +11,7 @@ _Http2RstFrame::_Http2RstFrame():_Http2Frame() {
 
 void _Http2RstFrame::import(ByteArray bytes) {
     auto reader = createByteArrayReader(bytes,BigEndian);
-    this->errcode = reader->readUint32();
+    this->errcode = reader->read<uint32_t>();
 }
 
 ByteArray _Http2RstFrame::toByteArray() {

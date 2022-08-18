@@ -41,16 +41,16 @@ void _Http2DataFrame::import(ByteArray s) {
 
     if((this->flags & FlagPadded) != 0) {
         //it contains padding
-        paddingLength = reader->readByte();
+        paddingLength = reader->read<byte>();
         dataSize = dataSize - paddingLength - 1 /*1 byte padding length*/;
     }
 
     ByteArray data = createByteArray(dataSize);
-    reader->readByteArray(data);
+    reader->read(data);
 
     if(paddingLength != 0) {
         paddingData = createByteArray(paddingLength);
-        reader->readByteArray(paddingData);
+        reader->read(paddingData);
     }
 }
 

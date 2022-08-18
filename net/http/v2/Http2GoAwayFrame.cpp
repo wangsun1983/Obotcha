@@ -11,13 +11,13 @@ _Http2GoAwayFrame::_Http2GoAwayFrame():_Http2Frame() {
 
 void _Http2GoAwayFrame::import(ByteArray data) {
     ByteArrayReader reader = createByteArrayReader(data,BigEndian);
-    lastStreamId = reader->readUint32();
-    errorCode = reader->readUint32();
+    lastStreamId = reader->read<uint32_t>();
+    errorCode = reader->read<uint32_t>();
 
     if(reader->isReadable()) {
         int size = reader->getRemainSize();
         additionalDebugData = createByteArray(size);
-        reader->readByteArray(additionalDebugData);
+        reader->read(additionalDebugData);
     }
 }
 

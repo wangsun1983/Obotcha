@@ -2,7 +2,7 @@
 #define __OBOTCHA_FILE_HPP__
 
 #include <sys/stat.h>
-#include <unistd.h>    
+#include <unistd.h>
 #include <sys/types.h>
 #include <fstream>
 #include <stdio.h>
@@ -23,7 +23,7 @@ namespace obotcha {
 DECLARE_CLASS(File) {
 public:
     _File(const char *);
-    
+
     _File(String path);
 
     _File();
@@ -87,12 +87,12 @@ public:
     mode_t getMode();
 
     ~_File();
-    
-    static const String PathSeparator;
-    static const String PathSuffix;
-    
+
+    static const String Separator;
+    static const String Suffix;
+
     static bool exists(String);
-    
+
     enum OpenType {
         ReadOnly = O_RDONLY,
         WriteOnly = O_WRONLY,
@@ -133,7 +133,7 @@ private:
     int mFlags;
 
     mode_t mMode;
-    
+
     String mPath;
 };
 

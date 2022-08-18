@@ -26,7 +26,7 @@ DECLARE_CLASS(AsyncOutputChannel) {
     int write(ByteArray);
 
     FileDescriptor getFileDescriptor();
-    
+
     void close();
 
   private:

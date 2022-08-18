@@ -18,10 +18,10 @@ void _Http2PriorityFrame::setDependency(uint32_t s) {
 
 void _Http2PriorityFrame::import(ByteArray data) {
     ByteArrayReader reader = createByteArrayReader(data);
-    uint32_t dependencyData = reader->readUint32();
+    uint32_t dependencyData = reader->read<uint32_t>();
     exclusive = (((dependencyData >>24) & 0x80) != 0);
     dependencyStream = dependencyData & 0x7FFFFFFF;
-    weight = reader->readByte();
+    weight = reader->read<byte>();
 }
 
 ByteArray _Http2PriorityFrame::toByteArray() {

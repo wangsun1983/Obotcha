@@ -57,7 +57,7 @@ _HPackDecoder::_HPackDecoder(long maxHeaderListSize, int maxHeaderTableSize) {
 //check request head or response head
 int _HPackDecoder::validate(int streamId, String name,int previousHeaderType) {
     int headid = st(HttpHeader)::findId(name);
-    
+
     switch(headid) {
         case st(HttpHeader)::TypeStatus:
         case st(HttpHeader)::TypeMethod:
@@ -107,7 +107,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
         switch(state) {
             //rfc7541#section-6.1
             case ReadHeaderRepresentation: {
-                byte b = reader->readByte();
+                byte b = reader->read<byte>();
                 //Dynamic Table Size Update
                 /*
                     rfc7541
@@ -203,7 +203,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                     // Literal Header Field with Incremental Indexing
                     indexType = st(HPack)::Incremental;
                     index = (b & 0x3F);
-                    
+
                     switch (index) {
                         case 0:
                             //(Figure 2)
@@ -284,7 +284,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
             }
 
             case ReadLiteralHeaderNameLengthPrefix: {
-                byte b = reader->readByte();
+                byte b = reader->read<byte>();
                 huffmanEncoded = (b & 0x80) == 0x80;
                 index = b & 0x7F;
                 if (index == 0x7f) {
@@ -311,19 +311,19 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                 }
 
                 ByteArray data = createByteArray(nameLength);
-                reader->readByteArray(data);
+                reader->read(data);
                 if(huffmanEncoded) {
                     name = mHuffmanDecoder->decode(data)->toString();
                 } else {
                     name = data->toString();
                 }
-                
+
                 state = ReadLiteralHeaderValueLengthPrefix;
                 break;
             }
 
             case ReadLiteralHeaderValueLengthPrefix: {
-                byte b = reader->readByte();
+                byte b = reader->read<byte>();
                 huffmanEncoded = (b & 0x80) == 0x80;
                 index = (b & 0x7F);
                 switch (index) {
@@ -357,7 +357,7 @@ int _HPackDecoder::decode(ByteArray in,Http2HeadersSink sink) {
                 }
 
                 ByteArray data = createByteArray(valueLength);
-                reader->readByteArray(data);
+                reader->read(data);
                 String value = nullptr;
                 if(huffmanEncoded) {
                     value = mHuffmanDecoder->decode(data)->toString();
@@ -393,7 +393,7 @@ long _HPackDecoder::decodeULE128(ByteArrayReader in, long result) {
     bool resultStartedAtZero = (result == 0);
     int end = in->getRemainSize();
     for (int readerIndex = in->getIndex(), shift = 0; readerIndex < end; ++readerIndex, shift += 7) {
-        byte b = in->readByte();
+        byte b = in->read<byte>();
         if (shift == 56 && ((b & 0x80) != 0 || b == 0x7F && !resultStartedAtZero)) {
             // the maximum value that can be represented by a signed 64 bit number is:
             // [0x01L, 0x7fL] + 0x7fL + (0x7fL << 7) + (0x7fL << 14) + (0x7fL << 21) + (0x7fL << 28) + (0x7fL << 35)
@@ -419,7 +419,7 @@ void _HPackDecoder::setDynamicTableSize(long dynamicTableSize) {
         LOG(ERROR)<<"HPackDecoder dynamicTable size is too large,it is "<<dynamicTableSize;
         return;
     }
-    
+
     encoderMaxDynamicTableSize = dynamicTableSize;
     maxDynamicTableSizeChangeRequired = false;
     mDynamicTable->setCapacity(dynamicTableSize);
@@ -443,4 +443,3 @@ void _HPackDecoder::insertHeader(Http2HeadersSink sink, String name, String valu
 }
 
 }
-

@@ -20,7 +20,7 @@ void _EPollFileObserver::run() {
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
         //AutoTimeWatcher watcher = createAutoTimeWatcher("Epoll monitor");
         if (epoll_events_count < 0) {
-            LOG(ERROR) << "epoll_wait count is -1";
+            LOG(ERROR) << "epoll_wait count is -1,error is "<<CurrentError;
             return;
         }
 
@@ -44,8 +44,8 @@ void _EPollFileObserver::run() {
                 continue;
             }
 
-            int result = listener->onEvent(fd, recvEvents);
-            if (result == st(EPollFileObserver)::OnEventRemoveObserver) {
+            if (listener->onEvent(fd, recvEvents) ==
+                      st(EPollFileObserver)::OnEventRemoveObserver) {
                 removeObserver(fd);
             }
         }
@@ -59,6 +59,10 @@ _EPollFileObserver::_EPollFileObserver(int size) {
     mEpollFd = epoll_create(size);
     mPipe = createPipe();
     addEpollFd(mPipe->getReadChannel(), EPOLLIN | EPOLLRDHUP | EPOLLHUP);
+
+    mCloseMutex = createMutex();
+    isClosed = false;
+
     start();
 }
 
@@ -85,11 +89,13 @@ void _EPollFileObserver::addEpollFd(int fd, uint32_t events) {
 }
 
 int _EPollFileObserver::close() {
-    if (mEpollFd != -1) {
-        ::close(mEpollFd);
-        mEpollFd = -1;
-    } else {
-        return 0;
+    {
+        AutoLock l(mCloseMutex);
+        if(isClosed) {
+            return 0;
+        }
+
+        isClosed = true;
     }
 
     ByteArray data = createByteArray(1);
@@ -101,11 +107,18 @@ int _EPollFileObserver::close() {
     mPipe->closeReadChannel();
     mPipe->closeWriteChannel();
 
+    if (mEpollFd != -1) {
+        ::close(mEpollFd);
+        mEpollFd = -1;
+    }
+
     AutoLock l(mListenerMutex);
     mListeners->clear();
     return 0;
 }
 
-_EPollFileObserver::~_EPollFileObserver() { close(); }
+_EPollFileObserver::~_EPollFileObserver() {
+  close();
+}
 
 } // namespace obotcha

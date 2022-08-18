@@ -18,9 +18,9 @@ _WebSocketHybi13Parser::_WebSocketHybi13Parser() :_WebSocketParser(),mDeflate(nu
 WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
     WebSocketHeader header = createWebSocketHeader();
 
-    int b0 = mReader->readByte() & 0xff;
+    int b0 = mReader->read<byte>() & 0xff;
     header->setOpCode(b0 & st(WebSocketProtocol)::B0_MASK_OPCODE);
-    
+
     header->setIsFinalFrame((b0 & st(WebSocketProtocol)::B0_FLAG_FIN) != 0);
     header->setIsControlFrame((b0 & st(WebSocketProtocol)::OPCODE_FLAG_CONTROL) != 0);
 
@@ -29,22 +29,22 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
         //throw new ProtocolException("Control frames must be final.");
         return header;
     }
-    
+
     header->setReservedFlag1((b0 & st(WebSocketProtocol)::B0_FLAG_RSV1) != 0);
     header->setReservedFlag2((b0 & st(WebSocketProtocol)::B0_FLAG_RSV2) != 0);
     header->setReservedFlag3((b0 & st(WebSocketProtocol)::B0_FLAG_RSV3) != 0);
-    
-    int b1 = mReader->readByte() & 0xff;
-    
+
+    int b1 = mReader->read<byte>() & 0xff;
+
     header->setMasked((b1 & st(WebSocketProtocol)::B1_FLAG_MASK) != 0);
-    
+
     // Get frame length, optionally reading from follow-up bytes if indicated by special values.
     long frameLength = b1 & st(WebSocketProtocol)::B1_MASK_LENGTH;
-    
+
     if (frameLength == st(WebSocketProtocol)::PAYLOAD_SHORT) {
-        header->setFrameLength(mReader->readShort() & 0xffffL); // Value is unsigned.
+        header->setFrameLength(mReader->read<short int>() & 0xffffL); // Value is unsigned.
     } else if (frameLength == st(WebSocketProtocol)::PAYLOAD_LONG) {
-        frameLength = mReader->readLong();
+        frameLength = mReader->read<long>();
         if (frameLength < 0) {
             return nullptr;
         }
@@ -53,18 +53,18 @@ WebSocketHeader _WebSocketHybi13Parser::parseHeader() {
     } else {
         header->setFrameLength(frameLength);
     }
-    
-    if (header->getIsControlFrame() 
+
+    if (header->getIsControlFrame()
         && header->getFrameLength() > st(WebSocketProtocol)::PAYLOAD_BYTE_MAX) {
         return header;
     }
-    
+
     if(header->getMasked()) {
         ByteArray maskKey = createByteArray(4);
-        mReader->readByteArray(maskKey);
+        mReader->read(maskKey);
         header->setMaskKey(maskKey);
     }
-    
+
     mHeader = header;
     header->setHeadSize(mReader->getIndex());
     return header;
@@ -80,7 +80,7 @@ ByteArray _WebSocketHybi13Parser::parseContent(bool isDeflate) {
     byte *payload = load->toValue();
     byte *msg = mData->toValue();
     int pos = mReader->getIndex();
-    
+
     if(!mHeader->getMasked()){
         memcpy(payload,(const char *)&msg[pos],mHeader->getFrameLength());
 	} else {
@@ -111,13 +111,13 @@ ByteArray _WebSocketHybi13Parser::parsePingBuff(){
     int pos = mReader->getIndex();
 
 	if(!mHeader->getMasked()){
-		memcpy(payload, 
-        (const char *)&msg[pos], 
+		memcpy(payload,
+        (const char *)&msg[pos],
         mHeader->getFrameLength());
 	} else {
         int framesize = mHeader->getFrameLength();
         byte *masking_key_ = mHeader->getMaskKey()->toValue();
-        
+
 		for(uint i = 0; i < framesize; i++){
 			int j = i % 4;
 			payload[i] = msg[pos + i] ^ masking_key_[j];
@@ -184,15 +184,15 @@ ByteArray _WebSocketHybi13Parser::validateContinuationContent(ByteArray in) {
 * 2.Unmasking Head Size:
 *   2.1 FrameSize <= 125
 *       |++++++++++++|++++++++++++++|
-*          1byte(op)     1byte(size) 
+*          1byte(op)     1byte(size)
 *
 *   2.2 FrameSize = 126
 *       |++++++++++++|++++++++++++++|++++++++++++++++++++++++++++|
-*          1byte(op)     1byte(size)         2byte(real size)     
+*          1byte(op)     1byte(size)         2byte(real size)
 *
 *   2.3 FrameSize > 126
 *       |++++++++++++|++++++++++++++|++++++++++++++++++++++++++++|
-*          1byte(op)     1byte(size)         8byte(real size)     
+*          1byte(op)     1byte(size)         8byte(real size)
 *-----------------------------------------------------------------------------------
 */
 bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
@@ -202,8 +202,8 @@ bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
 
     ByteArrayReader preReader = createByteArrayReader(pack,Global::BigEndian);
     //check whether it has an entire header
-    int b0 = (preReader->readByte() & 0xff);
-    int b1 = (preReader->readByte() & 0xff);
+    int b0 = (preReader->read<byte>() & 0xff);
+    int b1 = (preReader->read<byte>() & 0xff);
     int opcode = b0 & st(WebSocketProtocol)::B0_MASK_OPCODE;
 
     bool isMask = ((b1 & st(WebSocketProtocol)::B1_FLAG_MASK) != 0);
@@ -211,17 +211,17 @@ bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
     long frameLength = b1 & st(WebSocketProtocol)::B1_MASK_LENGTH;
     int headSize = 0;
     long contentSize = 0;
-    
+
     if(isMask) {
         if(frameLength < st(WebSocketProtocol)::PAYLOAD_SHORT) {
             headSize = 6;
             contentSize = frameLength;
         } else if(frameLength == st(WebSocketProtocol)::PAYLOAD_SHORT) {
             headSize = 8;
-            contentSize = (preReader->readShort() & 0xffffL);
+            contentSize = (preReader->read<short int>() & 0xffffL);
         } else if(frameLength == st(WebSocketProtocol)::PAYLOAD_LONG) {
             headSize = 14;
-            contentSize = preReader->readLong();
+            contentSize = preReader->read<long>();
         }
     } else {
         if(frameLength < st(WebSocketProtocol)::PAYLOAD_SHORT) {
@@ -229,17 +229,17 @@ bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
             contentSize = frameLength;
         } else if(frameLength == st(WebSocketProtocol)::PAYLOAD_SHORT) {
             headSize = 4;
-            contentSize = (preReader->readShort() & 0xffffL);
+            contentSize = (preReader->read<short int>() & 0xffffL);
         } else if(frameLength == st(WebSocketProtocol)::PAYLOAD_LONG) {
             headSize = 10;
-            contentSize = preReader->readLong();
+            contentSize = preReader->read<long>();
         }
     }
-    
+
     if(opcode == st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE && contentSize == 0) {
         return true;
     }
-    
+
     if(headSize >= pack->size() && (frameLength != 0)) {
         return false;
     }
@@ -253,7 +253,7 @@ bool _WebSocketHybi13Parser::validateEntirePacket(ByteArray pack) {
 }
 
 bool _WebSocketHybi13Parser::validateHandShake(HttpHeader h) {
-    if(h->getMethod() != st(HttpMethod)::Get) {        
+    if(h->getMethod() != st(HttpMethod)::Get) {
         return false;
     }
 
@@ -298,4 +298,3 @@ ByteArray _WebSocketHybi13Parser::parsePongBuff() {
 }
 
 }
-

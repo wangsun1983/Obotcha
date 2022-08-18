@@ -7,27 +7,30 @@
 #include "Log.hpp"
 #include "System.hpp"
 
+
 namespace obotcha {
 
-const String _File::PathSeparator = createString("/");
-const String _File::PathSuffix = createString("/");
+const String _File::Separator = createString("/");
+const String _File::Suffix = createString(".");
 
-_File::_File(const char *s) { 
-    mPath = createString(s); 
+_File::_File(const char *s):_File(createString(s)) {
 }
 
-_File::_File(String path) { 
-    mPath = path; 
+_File::_File(String path) {
+    mPath = path;
 }
 
-_File::_File() { 
-    mPath = createString(""); 
+_File::_File() {
+    mPath = createString("");
 }
 
 String _File::getName() {
-    const char *data = mPath->toChars();
-    int start = mPath->size() - 1;
     int size = mPath->size();
+    int start = size - 1;
+    const char *data = mPath->toChars();
+    if(size == 1) {
+        return mPath;
+    }
 
     for (; start >= 0; start--) {
         if (data[start] == '/' && start != size - 1) {
@@ -49,47 +52,42 @@ String _File::getName() {
 }
 
 String _File::getSuffix() {
-    const char *data = mPath->toChars();
-    int index = mPath->size() - 1;
-    for (; index >= 0; index--) {
-        if (data[index] == '.') {
-            break;
-        }
-    }
-
-    if (index != -1 && index != mPath->size() - 1) {
-        return createString(data, index + 1, mPath->size() - index - 1);
+    int index = mPath->lastIndexOf(".");
+    if(index != -1 && index != mPath->size() - 1) {
+        return mPath->subString(index + 1,mPath->size() - index - 1);
     }
 
     return nullptr;
 }
 
 String _File::getNameWithNoSuffix() {
-    String filename = getName();
-    const char *data = filename->toChars();
-    int index = filename->size() - 1;
-    int size = filename->size();
-    for (; index >= 0; index--) {
-        if (data[index] == '.' && index != size - 1) {
-            break;
+    int size = mPath->size();
+    int index = size - 1;
+    const char *data = mPath->toChars();
+
+    int end = size;
+    int start = 0;
+    for(;index >= 0;index--) {
+        if (data[index] == '.' && end == size) {
+            end = index;
+        }
+
+        if (data[index] == '/') {
+            return mPath->subString(index + 1,end - index - 1);
         }
     }
 
-    if (index != -1) {
-        return createString(data, 0, index);
+    if(end != 0) {
+        return mPath->subString(0,end - start);
     }
 
-    return filename;
+    return mPath;
 }
 
 String _File::getAbsolutePath() {
-    char abs_path_buff[PATH_MAX];
+    char abs_path_buff[PATH_MAX] = {0};
     char *p = realpath(mPath->toChars(), abs_path_buff);
-    if (p == nullptr) {
-        return nullptr;
-    }
-
-    return createString((const char *)p);
+    return (p == nullptr)?nullptr:createString((const char *)p);
 }
 
 bool _File::canRead() {
@@ -302,7 +300,7 @@ ArrayList<File> _File::listFiles() {
         } /// current dir OR parrent dir
 
         String path =
-            createString(mPath)->append(PathSeparator)->append(ptr->d_name);
+            createString(mPath)->append(Separator)->append(ptr->d_name);
 
         File file = createFile(path);
         files->add(file);
@@ -313,10 +311,12 @@ ArrayList<File> _File::listFiles() {
     return files;
 }
 
-bool _File::createDir() { return (mkdir(mPath->toChars(), 0755) == 0); }
+bool _File::createDir() {
+  return (mkdir(mPath->toChars(), 0755) == 0);
+}
 
 bool _File::createDirs() {
-    ArrayList<String> splits = mPath->split(PathSeparator);
+    ArrayList<String> splits = mPath->split(Separator);
     if (splits == nullptr) {
         return false;
     }
@@ -328,7 +328,7 @@ bool _File::createDirs() {
         String p = splits->get(i);
 
         if (i != 0) {
-            path = path->append(PathSeparator);
+            path = path->append(Separator);
         }
 
         path = path->append(p);
@@ -354,15 +354,15 @@ int _File::rename(String name) {
     return ::rename(mPath->toChars(), newPath->toChars());
 }
 
-int _File::setReadOnly() { 
-    return setMode(S_IRUSR | S_IRGRP | S_IROTH); 
+int _File::setReadOnly() {
+    return setMode(S_IRUSR | S_IRGRP | S_IROTH);
 }
 
-int _File::setWriteOnly() { 
-    return setMode(S_IWUSR | S_IWGRP | S_IWOTH); 
+int _File::setWriteOnly() {
+    return setMode(S_IWUSR | S_IWGRP | S_IWOTH);
 }
 
-int _File::setExecuteOnly() { 
+int _File::setExecuteOnly() {
     return setMode(S_IXUSR | S_IXGRP | S_IXOTH);
 }
 
@@ -408,8 +408,8 @@ int _File::setExecutable() {
     return setMode(mode);
 }
 
-bool _File::exists(String path) { 
-    return (access(path->toChars(), F_OK) == 0); 
+bool _File::exists(String path) {
+    return (access(path->toChars(), F_OK) == 0);
 }
 
 int _File::updateFileInfo(struct stat *info) {

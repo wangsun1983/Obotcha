@@ -86,7 +86,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                             continue;
                         }
                     }
-                    
+
                     //Socket will be closed directly in websocket server.
                     //We should check whether socket is still connected
                     //to prevent nullpoint exception
@@ -102,9 +102,9 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                             task = nullptr;
                             continue;
                         }
-                        
+
                         SocketListener listener = monitor->mListeners
-                                                         ->get(task->sock->getFileDescriptor()->getFd());    
+                                                         ->get(task->sock->getFileDescriptor()->getFd());
                         if (listener != nullptr) {
                             listener->onSocketMessage(task->event, task->sock,
                                                       task->data);
@@ -119,7 +119,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                             monitor->_remove(desc);
                             task->sock->close();
                         }
-                        
+
                         {
                             AutoLock l(monitor->mMutex);
                             monitor->currentProcessingFds[index] = -1;
@@ -168,7 +168,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
     if (isServer) {
         serversocket = fd;
     }
-   
+
     mPoll->addObserver(
         fd, EPOLLIN | EPOLLRDHUP | EPOLLHUP,
         [](int fd, uint32_t events, SocketListener &listener, int serverfd,SocketMonitor &monitor) {
@@ -176,7 +176,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
             if (s == nullptr && fd != serverfd) {
                 return st(EPollFileObserver)::OnEventRemoveObserver;
             }
-            
+
             if (fd == serverfd) {
                 // may be this is udp wangsl
                 if (s != nullptr && s->getProtocol() == st(Socket)::Protocol::Udp) {
@@ -185,7 +185,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                         ByteArray buff = createByteArray(st(Socket)::DefaultBufferSize);
                         newClient = s->receiveFrom(buff);
                         if(newClient == nullptr) {
-                            LOG(ERROR)<<"SocketMonitor accept udp is a null socket!!!!";
+                            //LOG(ERROR)<<"SocketMonitor accept udp is a null socket!!!!";
                             break;
                         }
 
@@ -216,7 +216,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                 }
                 return st(EPollFileObserver)::OnEventOK;
             }
-            
+
             if ((events & EPOLLIN) != 0) {
                 auto sock = s->getSockImpl();
                 if(sock != nullptr) {
@@ -267,7 +267,7 @@ void _SocketMonitor::close() {
 
     mSocks->clear();
     mServerSocks->clear();
-    
+
     mListeners->clear();
     mExecutor->shutdown();
 }
@@ -280,7 +280,7 @@ int _SocketMonitor::remove(Socket s,bool isClose) {
     } else {
         _remove(s->getFileDescriptor());
     }
-    
+
     return 0;
 }
 
@@ -296,7 +296,7 @@ int _SocketMonitor::_remove(FileDescriptor fd) {
     if(fd == nullptr) {
         return 0;
     }
-    
+
     {
         AutoLock lock(mMutex);
         mPoll->removeObserver(fd->getFd());

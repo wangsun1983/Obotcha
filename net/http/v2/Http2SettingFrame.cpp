@@ -37,8 +37,8 @@ _Http2SettingFrame::_Http2SettingFrame():_Http2Frame() {
 void _Http2SettingFrame::import(ByteArray data) {
     ByteArrayReader reader = createByteArrayReader(data,Global::BigEndian);
     while(reader->isReadable()) {
-        uint16_t identity = reader->readUint16();
-        uint32_t value = reader->readUint32();
+        uint16_t identity = reader->read<uint16_t>();
+        uint32_t value = reader->read<uint32_t>();
         switch(identity) {
             case SettingHeaderTableSize:
                 mHeaderTableSize = value;
