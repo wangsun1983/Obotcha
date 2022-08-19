@@ -236,13 +236,19 @@ void _HttpUrl::import(String input) {
         //    encodedQuery(base.encodedQuery());
         //}
     }
-
     
+    if(pos >= input->size()) {
+        return;
+    }
+
     // Resolve the relative path.
     int pathDelimiterOffset = delimiterOffset(input, pos, limit, "?#");
 
-    //path does net '/',remove it 
-    mPath = input->subString(pos + 1,pathDelimiterOffset - pos - 1);
+    //path does net '/',remove it
+    if(pos < pathDelimiterOffset) {
+        mPath = input->subString(pos + 1,pathDelimiterOffset - pos - 1);
+    }
+
     pos = pathDelimiterOffset;
     // Query.
     if (pos < limit && input->charAt(pos) == '?') {
