@@ -145,10 +145,16 @@ _String::_String(const std::string v) {
 }
 
 _String::_String(std::string *v) {
+    if(v == nullptr) {
+        Trigger(InitializeException,"create null string");
+    }
     m_str = *v;
 }
 
 _String::_String(unsigned char *v) {
+    if(v == nullptr) {
+        Trigger(InitializeException,"create null string");
+    }
     m_str = std::string((char *)v);
 }
 
@@ -226,11 +232,14 @@ _String::_String(uint64_t v) {
 }
 
 _String::_String(const char *v) {
+    if(v == nullptr) {
+        Trigger(InitializeException,"create null string");
+    }
     m_str = std::string(v);
 }
 
 _String::_String(const char *v, int start,int length) {
-    if (start < 0 || length <= 0 || ((start + length) > strlen(v))) {
+    if (v == nullptr || start < 0 || length <= 0 || ((start + length) > strlen(v))) {
         Trigger(InitializeException, "char * is null");
     }
 
@@ -248,6 +257,10 @@ void _String::update(const String &v) {
     m_str = v->m_str;
 }
 
+void _String::update(const std::string &str) {
+    m_str = str;
+}
+
 const char *_String::toChars() {
     return m_str.c_str();
 }
@@ -261,7 +274,7 @@ char _String::charAt(int index) {
 
 String _String::subString(int start, int length) {
     if (start < 0 || length <= 0 || ((start + length) > m_str.length())) {
-        Trigger(ArrayIndexOutOfBoundsException, "incorrect index");
+        Trigger(ArrayIndexOutOfBoundsException, "incorrect start is %d,length is %d",start,length);
     }
     return createString(m_str.substr(start, length));
 }
@@ -317,6 +330,10 @@ bool _String::equals(const String &s) {
 
 bool _String::equals(const char *s) {
     return (m_str.compare(s) == 0);
+}
+
+bool _String::equals(const std::string &s) {
+    return m_str.compare(s) == 0;
 }
 
 ArrayList<String> _String::split(const String &v) {
@@ -604,6 +621,14 @@ bool _String::equalsIgnoreCase(const String &str) {
     return isEqualsIgnoreCase(m_str.c_str(),str->m_str.c_str());
 }
 
+bool _String::equalsIgnoreCase(const std::string str) {
+    if(str.size() != size()) {
+        return false;
+    }
+
+    return isEqualsIgnoreCase(m_str.c_str(),str.c_str());
+}
+
 bool _String::equalsIgnoreCase(const char *str, int size) {
     if(size == -1) {
         size = strlen(str);
@@ -630,6 +655,10 @@ bool _String::isEqualsIgnoreCase(const char *str1, const char *str2, int len) {
 
 int _String::indexOfIgnoreCase(const String &str) {
     return indexOfIgnoreCase(str->toChars(), str->size());
+}
+
+int _String::indexOfIgnoreCase(const std::string &str) {
+    return indexOfIgnoreCase(str.c_str(), str.size());
 }
 
 int _String::indexOfIgnoreCase(const char *str) {
@@ -678,7 +707,12 @@ bool _String::containsIgnoreCase(const String &val) {
     return (indexOfIgnoreCase(val) != -1);
 }
 
+
 bool _String::containsIgnoreCase(const char *val) {
+    return (indexOfIgnoreCase(val) != -1);
+}
+
+bool _String::containsIgnoreCase(const std::string &val) {
     return (indexOfIgnoreCase(val) != -1);
 }
 
@@ -690,12 +724,20 @@ bool _String::startsWithIgnoreCase(const char *str) {
     return (indexOfIgnoreCase(str) == 0);
 }
 
+bool _String::startsWithIgnoreCase(const std::string &str) {
+    return (indexOfIgnoreCase(str) == 0);
+}
+
 bool _String::endsWithIgnoreCase(const String &s) {
     return endsWithIgnoreCase(s->toChars(), s->size());
 }
 
 bool _String::endsWithIgnoreCase(const char *str) {
     return endsWithIgnoreCase(str, strlen(str));
+}
+
+bool _String::endsWithIgnoreCase(const std::string &str) {
+    return endsWithIgnoreCase(str.c_str(), str.size());
 }
 
 bool _String::endsWithIgnoreCase(const char *str, int csize) {
@@ -727,6 +769,10 @@ int _String::lastIndexOfIgnoreCase(const String &v) {
 
 int _String::lastIndexOfIgnoreCase(const char *str) {
     return lastIndexOfIgnoreCase(str, strlen(str));
+}
+
+int _String::lastIndexOfIgnoreCase(const std::string &str) {
+    return lastIndexOfIgnoreCase(str.c_str(),str.size());
 }
 
 int _String::lastIndexOfIgnoreCase(const char *str, int csize) {
@@ -803,6 +849,10 @@ bool _String::endsWith(const char *s) {
     return (result == (m_str.size() - 1));
 }
 
+bool _String::endsWith(const std::string &s) {
+    return endsWith(s.c_str());
+}
+
 int _String::lastIndexOf(const String &v) {
     return m_str.find_last_of(v->m_str);
 }
@@ -811,12 +861,20 @@ int _String::lastIndexOf(const char *v) {
     return m_str.find_last_of(v);
 }
 
+int _String::lastIndexOf(const std::string &v) {
+    return lastIndexOf(v.c_str());
+}
+
 bool _String::startsWith(const String &v) {
     return (m_str.find(v->m_str) == 0);
 }
 
 bool _String::startsWith(const char *v) {
     return (m_str.find(v) == 0);
+}
+
+bool _String::startsWith(const std::string &v) {
+    return m_str.find(v) == 0;
 }
 
 void _String::_append() {

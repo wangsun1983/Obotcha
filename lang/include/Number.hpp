@@ -14,6 +14,68 @@ namespace obotcha {
 
 class _String;
 
+template<typename T> class _NumberParser_ {
+public:
+    T convert(std::string v) {
+        std::stringstream ss;
+        ss << v;
+        T value;
+        ss >> value;
+        return value;
+    }
+};
+
+template<> class _NumberParser_<uint8_t> {
+public:
+    uint8_t convert(std::string v) {
+        return atoi(v.c_str());
+    }
+};
+
+template<typename T> class _HexNumberParser_ {
+public:
+    T convert(std::string v) {
+        std::stringstream ss;
+        ss << std::hex << v;
+        T value;
+        ss >> value;
+        return value;
+    }
+};
+
+template<> class _HexNumberParser_<uint8_t> {
+public:
+    uint8_t convert(std::string v) {
+        std::stringstream ss;
+        ss << std::hex << v;
+        uint16_t value;
+        ss >> value;
+        return value;
+    }
+};
+
+template<typename T> class _OctNumberParser_ {
+public:
+    T convert(std::string v) {
+        std::stringstream ss;
+        ss << std::hex << v;
+        T value;
+        ss >> value;
+        return value;
+    }
+};
+
+template<> class _OctNumberParser_<uint8_t> {
+public:
+    uint8_t convert(std::string v) {
+        std::stringstream ss;
+        ss << std::oct << v;
+        uint16_t value;
+        ss >> value;
+        return value;
+    }
+};
+
 template <typename T> class _NumberChecker_ {
   public:
     bool _isCorrectDecInputNumber(std::string v) { return false; }
@@ -161,12 +223,8 @@ DECLARE_TEMPLATE_CLASS(Number, T) {
             throw(-1);
         }
 
-        std::stringstream ss;
-        ss << v;
-        T value;
-        ss >> value;
-
-        return value;
+        _NumberParser_<T>  parser;
+        return parser.convert(v);
     }
 
   protected:
@@ -222,12 +280,8 @@ DECLARE_TEMPLATE_CLASS(Number, T) {
             throw(-1);
         }
 
-        std::stringstream ss;
-        ss << v;
-        T value;
-        ss >> value;
-
-        return value;
+        _NumberParser_<T>  parser;
+        return parser.convert(v);
     }
 
     static T parseHexNumber(std::string v) {
@@ -240,11 +294,8 @@ DECLARE_TEMPLATE_CLASS(Number, T) {
             throw(-1);
         }
 
-        std::stringstream ss;
-        ss << std::hex << v;
-        T value;
-        ss >> value;
-        return value;
+        _HexNumberParser_<T> parser;
+        return parser.convert(v);
     }
 
     static T parseOctNumber(std::string v) {
@@ -253,11 +304,8 @@ DECLARE_TEMPLATE_CLASS(Number, T) {
             throw(-1);
         }
 
-        std::stringstream ss;
-        ss << std::oct << v;
-        T value;
-        ss >> value;
-        return value;
+        _OctNumberParser_<T> parser;
+        return parser.convert(v);
     }
 
     static T parseBinaryNumber(std::string v) {

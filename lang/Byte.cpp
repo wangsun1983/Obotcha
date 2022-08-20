@@ -67,7 +67,7 @@ sp<_String> _Byte::toString(byte i) {
 sp<_Byte> _Byte::parseDecByte(const sp<_String> v) {
     try {
         String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        int value = _Number::parseDecNumber(pa->getStdString());
+        byte value = _Number::parseDecNumber(pa->getStdString());
         return createByte(value);
     } catch (int e) {
     }

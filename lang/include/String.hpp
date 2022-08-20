@@ -89,6 +89,8 @@ public:
 
     void update(const sp<_String> &str);
 
+    void update(const std::string &str);
+
     const char *toChars();
 
     char charAt(int index);
@@ -130,6 +132,7 @@ public:
     int toBasicInt();
 
     bool regionMatches(int toffset, String other, int ooffset,int len);
+
     bool regionMatchesIgnoreCase(int toffset, String other, int ooffset,int len);
 
     byte toBasicByte();
@@ -185,9 +188,13 @@ public:
 
     bool equals(const char *s);
 
+    bool equals(const std::string &s);
+
     bool equalsIgnoreCase(const String &str);
 
     bool equalsIgnoreCase(const char *str, int size = -1);
+
+    bool equalsIgnoreCase(const std::string str);
 
     int indexOfIgnoreCase(const String &str);
 
@@ -195,13 +202,19 @@ public:
 
     int indexOfIgnoreCase(const char *str, int size);
 
+    int indexOfIgnoreCase(const std::string &str);
+
     bool containsIgnoreCase(const String &val);
 
     bool containsIgnoreCase(const char *str);
 
+    bool containsIgnoreCase(const std::string &str);
+
     bool startsWithIgnoreCase(const String &str);
 
     bool startsWithIgnoreCase(const char *str);
+
+    bool startsWithIgnoreCase(const std::string &str);
 
     bool endsWithIgnoreCase(const String &s);
 
@@ -209,11 +222,15 @@ public:
 
     bool endsWithIgnoreCase(const char *str, int size);
 
+    bool endsWithIgnoreCase(const std::string &str);
+
     int lastIndexOfIgnoreCase(const String &v);
 
     int lastIndexOfIgnoreCase(const char *v);
 
     int lastIndexOfIgnoreCase(const char *v, int size);
+
+    int lastIndexOfIgnoreCase(const std::string &str);
 
     sp<_String> replaceFirst(const String &regex, const String &v);
 
@@ -223,13 +240,19 @@ public:
 
     bool endsWith(const char *s);
 
+    bool endsWith(const std::string &s);
+
     int lastIndexOf(const String &v);
 
     int lastIndexOf(const char *v);
 
+    int lastIndexOf(const std::string &v);
+
     bool startsWith(const String &v);
 
     bool startsWith(const char *v);
+
+    bool startsWith(const std::string &v);
 
     sp<_ArrayList<String>> split(const String &v);
 
@@ -256,6 +279,7 @@ private:
     void _append(const sp<_String> &v, Args... args);
 
     template <typename... Args> void _append(const char *v, Args... args);
+    template <typename... Args> void _append(std::string v, Args... args);
 
     void _append();
 
@@ -289,6 +313,11 @@ template <class... Args> void _String::_append(const char *v, Args... args) {
         m_str.append(v);
         _append(std::forward<Args>(args)...);
     }
+}
+
+template <class... Args> void _String::_append(std::string v, Args... args) {
+        m_str.append(v);
+        _append(std::forward<Args>(args)...);
 }
 
 } // namespace obotcha
