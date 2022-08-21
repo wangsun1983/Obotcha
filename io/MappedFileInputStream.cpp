@@ -4,7 +4,6 @@ namespace obotcha {
 
 _MappedFileInputStream::_MappedFileInputStream(MappedFile file) {
     mFile = file;
-    mIndex = 0;
 }
 
 long _MappedFileInputStream::read(ByteArray data) {
@@ -16,12 +15,8 @@ long _MappedFileInputStream::read(ByteArray data, int start) {
 }
 
 long _MappedFileInputStream::read(ByteArray buff, int pos,int length) {
-    long len = ((pos + length) > buff->size()) ? buff->size() : (long)length;
-    if(len > mFile->size() - mIndex - 1) {
-        len = mFile->size() - mIndex;
-    }
-    memcpy(buff->toValue() + pos,mFile->mapPtr + mIndex,len);
-    mIndex += len;
+    long len = ((pos + length) > buff->size()) ? buff->size() - pos : (long)length;
+    memcpy(buff->toValue() + pos,mFile->mapPtr,len);
     return len;
 }
 

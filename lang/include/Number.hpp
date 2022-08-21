@@ -58,7 +58,7 @@ template<typename T> class _OctNumberParser_ {
 public:
     T convert(std::string v) {
         std::stringstream ss;
-        ss << std::hex << v;
+        ss << std::oct << v;
         T value;
         ss >> value;
         return value;

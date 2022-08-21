@@ -16,8 +16,11 @@ namespace obotcha {
 //-------- MappedFile --------
 _MappedFile::_MappedFile(String path,long size,int type,int flag) {
     File f = createFile(path);
+    bool isNew = false;
+
     if(!f->exists()) {
-      f->createNewFile();
+        f->createNewFile();
+        isNew = true;
     }
 
     int fd = -1;
@@ -27,6 +30,10 @@ _MappedFile::_MappedFile(String path,long size,int type,int flag) {
         fd = ::open(f->getAbsolutePath()->toChars(),O_WRONLY);
     } else {
         fd = ::open(f->getAbsolutePath()->toChars(),O_RDWR);
+    }
+
+    if(isNew || f->length() == 0) {
+        ftruncate(fd,size);
     }
 
     if(size == 0) {

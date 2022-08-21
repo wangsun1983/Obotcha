@@ -35,7 +35,6 @@ public:
 
 private:
     MappedFile mFile;
-    long mIndex;
 };
 
 }

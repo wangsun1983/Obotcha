@@ -4,17 +4,14 @@ namespace obotcha {
 
 _MappedFileOutputStream::_MappedFileOutputStream(MappedFile f) {
     mFile = f;
-    mIndex = 0;
 }
 
 long _MappedFileOutputStream::write(char c) {
-    if(mIndex >= mFile->size()) {
-        return -EOVERFLOW;
+    if(mFile->mSize <= 0) {
+        return -1;
     }
 
-    mFile->mapPtr[mIndex] = c;
-    mIndex++;
-
+    mFile->mapPtr[0] = c;
     return 1;
 }
 
@@ -28,15 +25,11 @@ long _MappedFileOutputStream::write(ByteArray buff,int start) {
 }
 
 long _MappedFileOutputStream::write(ByteArray buff,int start,int len) {
-    if (len > (buff->size() - start)) {
+    if ((start + len) > buff->size()) {
         return -EOVERFLOW;
     }
-
-    if((mIndex + len) >= mFile->size()) {
-        return -EOVERFLOW;
-    }
-
-    memcpy(mFile->mapPtr+mIndex,buff->toValue() + start,len);
+    
+    memcpy(mFile->mapPtr,buff->toValue() + start,len);
     return len;
 }
 
