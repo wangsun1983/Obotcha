@@ -98,8 +98,7 @@ sp<_String> _Integer::toString(int i) {
 
 Integer _Integer::parseDecInt(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        int value = _Number::parseDecNumber(pa->getStdString());
+        int value = _Number::parseDecNumber(v->getStdString());
         return createInteger(value);
     } catch (...) {
     }
@@ -109,8 +108,7 @@ Integer _Integer::parseDecInt(const sp<_String> &v) {
 
 Integer _Integer::parseHexInt(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        int value = _Number::parseHexNumber(pa->getStdString());
+        int value = _Number::parseHexNumber(v->getStdString());
         return createInteger(value);
     } catch (...) {
         // nothing
@@ -121,8 +119,7 @@ Integer _Integer::parseHexInt(const sp<_String> &v) {
 
 Integer _Integer::parseOctInt(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        int value = _Number::parseOctNumber(pa->getStdString());
+        int value = _Number::parseOctNumber(v->getStdString());
         return createInteger(value);
     } catch (...) {
         // nothing
@@ -133,8 +130,7 @@ Integer _Integer::parseOctInt(const sp<_String> &v) {
 
 Integer _Integer::parseBinaryInt(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        int value = _Number::parseBinaryNumber(pa->getStdString());
+        int value = _Number::parseBinaryNumber(v->getStdString());
         return createInteger(value);
     } catch (...) {
         // nothing

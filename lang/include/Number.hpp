@@ -14,8 +14,8 @@ namespace obotcha {
 
 class _String;
 
-template<typename T> class _NumberParser_ {
-public:
+template <typename T> class _NumberParser_ {
+  public:
     T convert(std::string v) {
         std::stringstream ss;
         ss << v;
@@ -25,15 +25,13 @@ public:
     }
 };
 
-template<> class _NumberParser_<uint8_t> {
-public:
-    uint8_t convert(std::string v) {
-        return atoi(v.c_str());
-    }
+template <> class _NumberParser_<uint8_t> {
+  public:
+    uint8_t convert(std::string v) { return atoi(v.c_str()); }
 };
 
-template<typename T> class _HexNumberParser_ {
-public:
+template <typename T> class _HexNumberParser_ {
+  public:
     T convert(std::string v) {
         std::stringstream ss;
         ss << std::hex << v;
@@ -43,8 +41,8 @@ public:
     }
 };
 
-template<> class _HexNumberParser_<uint8_t> {
-public:
+template <> class _HexNumberParser_<uint8_t> {
+  public:
     uint8_t convert(std::string v) {
         std::stringstream ss;
         ss << std::hex << v;
@@ -54,8 +52,8 @@ public:
     }
 };
 
-template<typename T> class _OctNumberParser_ {
-public:
+template <typename T> class _OctNumberParser_ {
+  public:
     T convert(std::string v) {
         std::stringstream ss;
         ss << std::oct << v;
@@ -65,8 +63,8 @@ public:
     }
 };
 
-template<> class _OctNumberParser_<uint8_t> {
-public:
+template <> class _OctNumberParser_<uint8_t> {
+  public:
     uint8_t convert(std::string v) {
         std::stringstream ss;
         ss << std::oct << v;
@@ -78,10 +76,10 @@ public:
 
 template <typename T> class _NumberChecker_ {
   public:
-    bool _isCorrectDecInputNumber(std::string v) { return false; }
-    bool _isCorrectHexInputNumber(std::string v) { return false; }
-    bool _isCorrectBinInputNumber(std::string v) { return false; }
-    bool _isCorrectOctInputNumber(std::string v) { return false; }
+    bool _isCorrectDecInputNumber(std::string &v) { return false; }
+    bool _isCorrectHexInputNumber(std::string &v) { return false; }
+    bool _isCorrectBinInputNumber(std::string &v) { return false; }
+    bool _isCorrectOctInputNumber(std::string &v) { return false; }
 
   private:
     T v;
@@ -90,22 +88,62 @@ template <typename T> class _NumberChecker_ {
 #define _NUMBER_CHECK_DECLARE(X)                                               \
     template <> class _NumberChecker_<X> {                                     \
       public:                                                                  \
-        bool _isCorrectDecInputNumber(std::string v) {                         \
+        bool _isCorrectDecInputNumber(std::string &v) {                        \
             const char *p = v.c_str();                                         \
             int size = v.size();                                               \
+            int end = v.size();                                            \
+            int start = -1;                                                    \
+            bool foundCRLF = false;                                            \
             for (int i = 0; i < size; i++) {                                   \
+                if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {             \
+                    start = i;                                                 \
+                    continue;                                                  \
+                }                                                              \
+                break;                                                         \
+            }                                                                  \
+            start++;                                                           \
+            for (int i = start; i < size; i++) {                               \
                 if (p[i] == '-' && i == 0) {                                   \
                     continue;                                                  \
-                } else if (p[i] < '0' || p[i] > '9') {                         \
-                    return false;                                              \
+                } else if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {      \
+                    if (!foundCRLF) {                                          \
+                        end = i;                                               \
+                        foundCRLF = true;                                      \
+                    }                                                          \
+                    continue;                                                  \
+                } else if (!foundCRLF && p[i] > '0' || p[i] < '9') {           \
+                    continue;                                                  \
                 }                                                              \
+                return false;                                                  \
+            }                                                                  \
+            if (start != 0 || end != size) {                               \
+                v = v.substr(start, end - start);                              \
             }                                                                  \
             return true;                                                       \
         }                                                                      \
         bool _isCorrectHexInputNumber(std::string v) {                         \
             const char *p = v.c_str();                                         \
             int size = v.size();                                               \
+            int end = v.size();                                            \
+            int start = -1;                                                    \
+            bool foundCRLF = false;                                            \
             for (int i = 0; i < size; i++) {                                   \
+                if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {             \
+                    start = i;                                                 \
+                    continue;                                                  \
+                }                                                              \
+                break;                                                         \
+            }                                                                  \
+            start++;                                                           \
+            if (start + 1 < size && p[start + 1] == 'x' ||                     \
+                p[start + 1] == 'X') {                                         \
+                if (p[start] == '0') {                                         \
+                    start = start + 2;                                         \
+                } else {                                                       \
+                    return false;                                              \
+                }                                                              \
+            }                                                                  \
+            for (int i = start; i < size; i++) {                               \
                 switch (p[i]) {                                                \
                 case '0':                                                      \
                 case '1':                                                      \
@@ -129,31 +167,84 @@ template <typename T> class _NumberChecker_ {
                 case 'E':                                                      \
                 case 'f':                                                      \
                 case 'F':                                                      \
+                    if (foundCRLF) {                                           \
+                        return false;                                          \
+                    }                                                          \
+                    continue;                                                  \
+                case '\r':                                                     \
+                case '\n':                                                     \
+                case ' ':                                                      \
+                    if (!foundCRLF) {                                          \
+                        end = i;                                               \
+                        foundCRLF = true;                                      \
+                    }                                                          \
                     continue;                                                  \
                 default:                                                       \
                     return false;                                              \
                 }                                                              \
             }                                                                  \
+            if (start != 0 || end != size) {                               \
+                v = v.substr(start, end - start);                              \
+            }                                                                  \
             return true;                                                       \
         }                                                                      \
-        bool _isCorrectBinInputNumber(std::string v) {                         \
+        bool _isCorrectBinInputNumber(std::string &v) {                        \
             const char *p = v.c_str();                                         \
             int size = v.size();                                               \
+            int end = v.size();                                            \
+            int start = -1;                                                    \
+            bool foundCRLF = false;                                            \
             for (int i = 0; i < size; i++) {                                   \
+                if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {             \
+                    start = i;                                                 \
+                    continue;                                                  \
+                }                                                              \
+                break;                                                         \
+            }                                                                  \
+            start++;                                                           \
+            if (p[start] == 'b' || p[start] == 'B') {                          \
+                start++;                                                       \
+            }                                                                  \
+            for (int i = start; i < size; i++) {                               \
                 switch (p[i]) {                                                \
                 case '0':                                                      \
                 case '1':                                                      \
+                    if (foundCRLF) {                                           \
+                        return false;                                          \
+                    }                                                          \
+                    continue;                                                  \
+                case '\r':                                                     \
+                case '\n':                                                     \
+                case ' ':                                                      \
+                    if (!foundCRLF) {                                          \
+                        end = i;                                               \
+                        foundCRLF = true;                                      \
+                    }                                                          \
                     continue;                                                  \
                 default:                                                       \
                     return false;                                              \
                 }                                                              \
+            }                                                                  \
+            if (start != 0 || end != size) {                               \
+                v = v.substr(start, end - start);                              \
             }                                                                  \
             return true;                                                       \
         }                                                                      \
         bool _isCorrectOctInputNumber(std::string v) {                         \
             const char *p = v.c_str();                                         \
             int size = v.size();                                               \
+            int end = v.size();                                            \
+            int start = -1;                                                    \
+            bool foundCRLF = false;                                            \
             for (int i = 0; i < size; i++) {                                   \
+                if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {             \
+                    start = i;                                                 \
+                    continue;                                                  \
+                }                                                              \
+                break;                                                         \
+            }                                                                  \
+            start++;                                                           \
+            for (int i = start; i < size; i++) {                               \
                 switch (p[i]) {                                                \
                 case '0':                                                      \
                 case '1':                                                      \
@@ -163,13 +254,28 @@ template <typename T> class _NumberChecker_ {
                 case '5':                                                      \
                 case '6':                                                      \
                 case '7':                                                      \
+                    if (foundCRLF) {                                           \
+                        return false;                                          \
+                    }                                                          \
+                    continue;                                                  \
+                case '\r':                                                     \
+                case '\n':                                                     \
+                case ' ':                                                      \
+                    if (!foundCRLF) {                                          \
+                        end = i;                                               \
+                        foundCRLF = true;                                      \
+                    }                                                          \
                     continue;                                                  \
                 default:                                                       \
                     return false;                                              \
                 }                                                              \
             }                                                                  \
+            if (start != 0 || end != size) {                               \
+                v = v.substr(start, end - start);                              \
+            }                                                                  \
             return true;                                                       \
         }                                                                      \
+                                                                               \
       private:                                                                 \
         X v;                                                                   \
     };
@@ -188,10 +294,27 @@ _NUMBER_CHECK_DECLARE(uint64_t)
             int dotCount = 0;                                                  \
             const char *p = v.c_str();                                         \
             int size = v.size();                                               \
+            int end = v.size() - 1;                                            \
+            int start = -1;                                                    \
+            bool foundCRLF = false;                                            \
             for (int i = 0; i < size; i++) {                                   \
+                if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {             \
+                    start = i;                                                 \
+                    continue;                                                  \
+                }                                                              \
+                break;                                                         \
+            }                                                                  \
+            start++;                                                           \
+            for (int i = start; i < size; i++) {                               \
                 if (p[i] == '-' && i == 0) {                                   \
                     continue;                                                  \
-                } else if (p[i] >= '0' && p[i] <= '9') {                       \
+                } else if (p[i] == '\n' || p[i] == '\r' || p[i] == ' ') {      \
+                    if (!foundCRLF) {                                          \
+                        end = i;                                               \
+                        foundCRLF = true;                                      \
+                    }                                                          \
+                    continue;                                                  \
+                } else if (!foundCRLF && p[i] >= '0' && p[i] <= '9') {         \
                     continue;                                                  \
                 } else if (p[i] == '.') {                                      \
                     dotCount++;                                                \
@@ -202,11 +325,15 @@ _NUMBER_CHECK_DECLARE(uint64_t)
                 }                                                              \
                 return false;                                                  \
             }                                                                  \
+            if (start != 0 || end != size - 1) {                               \
+                v = v.substr(start, end - start);                              \
+            }                                                                  \
             return true;                                                       \
         }                                                                      \
         bool _isCorrectHexInputNumber(std::string v) { return false; }         \
         bool _isCorrectBinInputNumber(std::string v) { return false; }         \
         bool _isCorrectOctInputNumber(std::string v) { return false; }         \
+                                                                               \
       private:                                                                 \
         X v;                                                                   \
     };
@@ -214,123 +341,118 @@ _NUMBER_CHECK_DECLARE(uint64_t)
 _NUMBER_CHECK_DECLARE_DOUBLE(double)
 _NUMBER_CHECK_DECLARE_DOUBLE(float)
 
-DECLARE_TEMPLATE_CLASS(Number, T) {
+DECLARE_TEMPLATE_CLASS(Number, T){
 
-  public:
-    static T parseNumber(std::string v) {
-        _NumberChecker_<T> checker;
-        if (!checker._isCorrectDecInputNumber(v)) {
-            throw(-1);
+    public : static T parseNumber(std::string v){_NumberChecker_<T> checker;
+if (!checker._isCorrectDecInputNumber(v)) {
+    throw(-1);
+}
+
+_NumberParser_<T> parser;
+return parser.convert(v);
+} // namespace obotcha
+
+protected:
+static void binaryRecursion(T n, std::stringstream &ss) {
+    T a;
+    a = n % 2;
+    n = n >> 1;
+    if (n == 0) {
+        // donothing
+    } else {
+        binaryRecursion(n, ss);
+    }
+    ss << a;
+}
+
+static std::string toHexString(T i) {
+    std::stringstream ss;
+    ss << std::hex << i;
+
+    std::string str;
+    ss >> str;
+    return str;
+}
+
+static std::string toOctalString(T i) {
+    std::stringstream ss;
+    ss << std::oct << i;
+    std::string str;
+    ss >> str;
+    return str;
+}
+
+static std::string toBinaryString(T i) {
+    std::stringstream ss;
+    binaryRecursion(i, ss);
+    std::string str;
+    ss >> str;
+
+    return str;
+}
+
+static std::string toDecString(T i) {
+    std::stringstream ss;
+    ss << i;
+    std::string str;
+    ss >> str;
+    return str;
+}
+
+static T parseDecNumber(std::string v) {
+    _NumberChecker_<T> checker;
+    if (!checker._isCorrectDecInputNumber(v)) {
+        throw(-1);
+    }
+
+    _NumberParser_<T> parser;
+    return parser.convert(v);
+}
+
+static T parseHexNumber(std::string v) {
+    _NumberChecker_<T> checker;
+    if (!checker._isCorrectHexInputNumber(v)) {
+        throw(-1);
+    }
+
+    _HexNumberParser_<T> parser;
+    return parser.convert(v);
+}
+
+static T parseOctNumber(std::string v) {
+    _NumberChecker_<T> checker;
+    if (!checker._isCorrectOctInputNumber(v)) {
+        throw(-1);
+    }
+
+    _OctNumberParser_<T> parser;
+    return parser.convert(v);
+}
+
+static T parseBinaryNumber(std::string v) {
+    if (v.size() >= 3 && (v.c_str()[1] == 'b' || v.c_str()[1] == 'B')) {
+        v = v.substr(2, v.size() - 2);
+    }
+
+    _NumberChecker_<T> checker;
+    if (!checker._isCorrectBinInputNumber(v)) {
+        throw(-1);
+    }
+
+    int lastIndex = v.size() - 1;
+    const char *str = v.c_str();
+
+    T parseBinary = 0;
+    for (int i = lastIndex; i >= 0; --i) {
+        if (str[i] == '1') {
+            parseBinary += pow(2.0, lastIndex - i);
         }
-
-        _NumberParser_<T>  parser;
-        return parser.convert(v);
     }
 
-  protected:
-    static void binaryRecursion(T n, std::stringstream & ss) {
-        T a;
-        a = n % 2;
-        n = n >> 1;
-        if (n == 0) {
-            // donothing
-        } else {
-            binaryRecursion(n, ss);
-        }
-        ss << a;
-    }
-
-    static std::string toHexString(T i) {
-        std::stringstream ss;
-        ss << std::hex << i;
-
-        std::string str;
-        ss >> str;
-        return str;
-    }
-
-    static std::string toOctalString(T i) {
-        std::stringstream ss;
-        ss << std::oct << i;
-        std::string str;
-        ss >> str;
-        return str;
-    }
-
-    static std::string toBinaryString(T i) {
-        std::stringstream ss;
-        binaryRecursion(i, ss);
-        std::string str;
-        ss >> str;
-
-        return str;
-    }
-
-    static std::string toDecString(T i) {
-        std::stringstream ss;
-        ss << i;
-        std::string str;
-        ss >> str;
-        return str;
-    }
-
-    static T parseDecNumber(std::string v) {
-        _NumberChecker_<T> checker;
-        if (!checker._isCorrectDecInputNumber(v)) {
-            throw(-1);
-        }
-
-        _NumberParser_<T>  parser;
-        return parser.convert(v);
-    }
-
-    static T parseHexNumber(std::string v) {
-        if (v.size() >= 3 && (v.c_str()[1] == 'x' || v.c_str()[1] == 'X')) {
-            v = v.substr(2, v.size() - 2);
-        }
-
-        _NumberChecker_<T> checker;
-        if (!checker._isCorrectHexInputNumber(v)) {
-            throw(-1);
-        }
-
-        _HexNumberParser_<T> parser;
-        return parser.convert(v);
-    }
-
-    static T parseOctNumber(std::string v) {
-        _NumberChecker_<T> checker;
-        if (!checker._isCorrectOctInputNumber(v)) {
-            throw(-1);
-        }
-
-        _OctNumberParser_<T> parser;
-        return parser.convert(v);
-    }
-
-    static T parseBinaryNumber(std::string v) {
-        if (v.size() >= 3 && (v.c_str()[1] == 'b' || v.c_str()[1] == 'B')) {
-            v = v.substr(2, v.size() - 2);
-        }
-
-        _NumberChecker_<T> checker;
-        if (!checker._isCorrectBinInputNumber(v)) {
-            throw(-1);
-        }
-
-        int lastIndex = v.size() - 1;
-        const char *str = v.c_str();
-
-        T parseBinary = 0;
-        for (int i = lastIndex; i >= 0; --i) {
-            if (str[i] == '1') {
-                parseBinary += pow(2.0, lastIndex - i);
-            }
-        }
-
-        return parseBinary;
-    }
-};
+    return parseBinary;
+}
+}
+;
 
 } // namespace obotcha
 

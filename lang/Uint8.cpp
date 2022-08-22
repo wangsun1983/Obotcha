@@ -66,8 +66,7 @@ sp<_String> _Uint8::toString(uint8_t i) {
 
 sp<_Uint8> _Uint8::parseDecUint8(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        uint8_t value = _Number::parseDecNumber(pa->getStdString());
+        uint8_t value = _Number::parseDecNumber(v->getStdString());
         return createUint8(value);
     } catch (int e) {
     }
@@ -77,8 +76,7 @@ sp<_Uint8> _Uint8::parseDecUint8(const sp<_String> &v) {
 
 sp<_Uint8> _Uint8::parseHexUint8(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        uint8_t value = _Number::parseHexNumber(pa->getStdString());
+        uint8_t value = _Number::parseHexNumber(v->getStdString());
         return createUint8(value);
     } catch (...) {
         // nothing
@@ -89,8 +87,7 @@ sp<_Uint8> _Uint8::parseHexUint8(const sp<_String> &v) {
 
 sp<_Uint8> _Uint8::parseOctUint8(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        uint8_t value = _Number::parseOctNumber(pa->getStdString());
+        uint8_t value = _Number::parseOctNumber(v->getStdString());
         return createUint8(value);
     } catch (...) {
         // nothing
@@ -101,8 +98,7 @@ sp<_Uint8> _Uint8::parseOctUint8(const sp<_String> &v) {
 
 sp<_Uint8> _Uint8::parseBinaryUint8(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        uint8_t value = _Number::parseBinaryNumber(pa->getStdString());
+        uint8_t value = _Number::parseBinaryNumber(v->getStdString());
         return createUint8(value);
     } catch (...) {
         // nothing
