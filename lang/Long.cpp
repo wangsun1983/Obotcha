@@ -66,8 +66,7 @@ sp<_String> _Long::toString(int i) {
 
 sp<_Long> _Long::parseDecLong(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        long value = _Number::parseDecNumber(pa->getStdString());
+        long value = _Number::parseDecNumber(v->getStdString());
         return createLong(value);
     } catch (...) {
     }
@@ -77,8 +76,7 @@ sp<_Long> _Long::parseDecLong(const sp<_String> &v) {
 
 sp<_Long> _Long::parseHexLong(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        long value = _Number::parseHexNumber(pa->getStdString());
+        long value = _Number::parseHexNumber(v->getStdString());
         return createLong(value);
     } catch (...) {
         // nothing
@@ -89,8 +87,7 @@ sp<_Long> _Long::parseHexLong(const sp<_String> &v) {
 
 sp<_Long> _Long::parseOctLong(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        long value = _Number::parseOctNumber(pa->getStdString());
+        long value = _Number::parseOctNumber(v->getStdString());
         return createLong(value);
     } catch (...) {
         // nothing
@@ -101,8 +98,7 @@ sp<_Long> _Long::parseOctLong(const sp<_String> &v) {
 
 sp<_Long> _Long::parseBinaryLong(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        long value = _Number::parseBinaryNumber(pa->getStdString());
+        long value = _Number::parseBinaryNumber(v->getStdString());
         return createLong(value);
     } catch (...) {
         // nothing

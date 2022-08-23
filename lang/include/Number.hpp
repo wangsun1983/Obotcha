@@ -111,7 +111,7 @@ template <typename T> class _NumberChecker_ {
                         foundCRLF = true;                                      \
                     }                                                          \
                     continue;                                                  \
-                } else if (!foundCRLF && p[i] > '0' || p[i] < '9') {           \
+                } else if (!foundCRLF && p[i] >= '0' && p[i] <= '9') {           \
                     continue;                                                  \
                 }                                                              \
                 return false;                                                  \
