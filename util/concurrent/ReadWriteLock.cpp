@@ -17,6 +17,7 @@
 #include "ReadWriteLock.hpp"
 #include "StrongPointer.hpp"
 #include "System.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -27,14 +28,27 @@ _ReadLock::_ReadLock(sp<_ReadWriteLock> l, String s) {
 }
 
 int _ReadLock::lock() {
+    if(rwlock->rwOwner == st(System)::myTid()) {
+        LOG(ERROR)<<"Read lock acquire error,this thread already own write lock";
+        return -1;
+    }
     return -pthread_rwlock_rdlock(&rwlock->rwlock);
 }
 
 int _ReadLock::unlock() {
+    if(rwlock->rwOwner == st(System)::myTid()) {
+        LOG(ERROR)<<"Read lock release error,this thread already own write lock";
+        return -1;
+    }
+
     return -pthread_rwlock_unlock(&rwlock->rwlock);
 }
 
 int _ReadLock::tryLock() {
+    if(rwlock->rwOwner == st(System)::myTid()) {
+        LOG(ERROR)<<"Read lock acquire error,this thread already own write lock";
+        return -1;
+    }
     return -pthread_rwlock_tryrdlock(&rwlock->rwlock);
 }
 
@@ -43,6 +57,10 @@ String _ReadLock::getName() {
 }
 
 int _ReadLock::lock(long timeInterval) {
+    if(rwlock->rwOwner == st(System)::myTid()) {
+        LOG(ERROR)<<"Read lock acquire error,this thread already own write lock";
+        return -1;
+    }
     struct timespec ts = {0};
     st(System)::getNextTime(timeInterval, &ts);
     return -pthread_rwlock_timedrdlock(&rwlock->rwlock, &ts);
@@ -55,15 +73,28 @@ _WriteLock::_WriteLock(sp<_ReadWriteLock> l, String s) {
 }
 
 int _WriteLock::lock() {
-    return -pthread_rwlock_wrlock(&rwlock->rwlock);
+    int result = -pthread_rwlock_wrlock(&rwlock->rwlock);
+    if(result == 0) {
+        rwlock->rwOwner = st(System)::myTid();
+    }
+    return result;
 }
 
 int _WriteLock::unlock() {
+    if(rwlock->rwOwner == st(System)::myTid()) {
+        rwlock->rwOwner = 0;
+    }
+    
     return -pthread_rwlock_unlock(&rwlock->rwlock);
+    
 }
 
 int _WriteLock::tryLock() {
-    return -pthread_rwlock_trywrlock(&rwlock->rwlock);
+    int result = -pthread_rwlock_trywrlock(&rwlock->rwlock);
+    if(result == 0) {
+        rwlock->rwOwner = st(System)::myTid();
+    }
+    return result;
 }
 
 String _WriteLock::getName() { 
@@ -73,7 +104,11 @@ String _WriteLock::getName() {
 int _WriteLock::lock(long timeInterval) {
     struct timespec ts = {0};
     st(System)::getNextTime(timeInterval, &ts);
-    return -pthread_rwlock_timedwrlock(&rwlock->rwlock, &ts);
+    int ret = -pthread_rwlock_timedwrlock(&rwlock->rwlock, &ts);
+    if(ret == 0) {
+        rwlock->rwOwner = st(System)::myTid();
+    }
+    return ret;
 }
 
 //------------ ReadWriteLock ------------

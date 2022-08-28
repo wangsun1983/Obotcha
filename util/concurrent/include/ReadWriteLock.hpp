@@ -78,6 +78,7 @@ DECLARE_CLASS(ReadWriteLock) {
 
   private:
     pthread_rwlock_t rwlock;
+    std::atomic<int> rwOwner;
 
     String mName;
 };

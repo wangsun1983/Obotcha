@@ -10,6 +10,7 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "ReadWriteLock.hpp"
+#include "System.hpp"
 
 namespace obotcha {
 
@@ -91,7 +92,24 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
         mQueue->clear();
     }
 
-    void foreach(std::function<int(const T &)> f,std::function<void()> after) {
+    void syncReadAction(std::function<void()> action) {
+        printf("concurrent read this is %p,tid is %d \n",this,st(System)::myTid());
+        AutoLock l(rdLock);
+        action();
+    }
+
+    void syncWriteAction(std::function<void()> action) {
+        printf("concurrent write this is %p,tid is %d \n",this,st(System)::myTid());
+        AutoLock l(wrLock);
+        action();
+    }
+
+    int removeAll(ArrayList<T> list) {
+        AutoLock l(wrLock);
+        return mQueue->removeAll(list);
+    }
+
+    void foreach(std::function<int(const T &)> f,std::function<void()> after = nullptr) {
         if(after != nullptr) {
             wrLock->lock();
         } else {
