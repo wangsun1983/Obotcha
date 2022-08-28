@@ -125,6 +125,14 @@ public:
         }
     }
 
+    inline int removeAll(const sp<_ArrayList<T>> &val) {
+        int valsize = val->size();
+        for(int i = 0;i<valsize;i++) {
+            remove(val->get(i));
+        }
+        return 0;
+    }
+
     inline int indexOf(const T &val) {
         typename std::vector<T>::iterator result =
             find(elements.begin(), elements.end(), val);

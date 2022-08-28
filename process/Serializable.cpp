@@ -167,7 +167,7 @@ ByteArray _Serializable::serialize() {
                     writer->write<int>(0);
                 } else {
                     ByteArray data = serialize(f->getObjectValue());
-                    printf("data size is %d \n",data->size());
+                    //printf("data size is %d \n",data->size());
                     writer->write(data);
                 }
             }
