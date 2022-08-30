@@ -3,11 +3,14 @@
 
 #include <pthread.h>
 #include <sys/time.h>
+#include <map>
 
 #include "Lock.hpp"
 #include "Object.hpp"
 #include "String.hpp"
 #include "StrongPointer.hpp"
+#include "Mutex.hpp"
+#include "Condition.hpp"
 
 namespace obotcha {
 
@@ -77,10 +80,33 @@ DECLARE_CLASS(ReadWriteLock) {
     ~_ReadWriteLock();
 
   private:
-    pthread_rwlock_t rwlock;
-    std::atomic<int> rwOwner;
+    int mWriteCount;
+    bool mIsWrite;
+    int mWrOwner;
+    //<tid,counts>
+    std::map<int,int> readOwners;
+
+    Mutex mMutex;
+    Condition mReadCondition;
+    Condition mWriteCondition;
 
     String mName;
+
+    int _readlock();
+
+    int _unReadlock();
+
+    int _tryReadLock();
+
+    int _readlock(long);
+
+    int _writelock();
+
+    int _unWritelock();
+
+    int _tryWriteLock();
+
+    int _writelock(long);
 };
 
 } // namespace obotcha

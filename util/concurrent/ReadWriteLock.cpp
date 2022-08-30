@@ -28,28 +28,15 @@ _ReadLock::_ReadLock(sp<_ReadWriteLock> l, String s) {
 }
 
 int _ReadLock::lock() {
-    if(rwlock->rwOwner == st(System)::myTid()) {
-        LOG(ERROR)<<"Read lock acquire error,this thread already own write lock";
-        return -1;
-    }
-    return -pthread_rwlock_rdlock(&rwlock->rwlock);
+    return rwlock->_readlock();
 }
 
 int _ReadLock::unlock() {
-    if(rwlock->rwOwner == st(System)::myTid()) {
-        LOG(ERROR)<<"Read lock release error,this thread already own write lock";
-        return -1;
-    }
-
-    return -pthread_rwlock_unlock(&rwlock->rwlock);
+    return rwlock->_unReadlock();
 }
 
 int _ReadLock::tryLock() {
-    if(rwlock->rwOwner == st(System)::myTid()) {
-        LOG(ERROR)<<"Read lock acquire error,this thread already own write lock";
-        return -1;
-    }
-    return -pthread_rwlock_tryrdlock(&rwlock->rwlock);
+    return rwlock->_tryReadLock();
 }
 
 String _ReadLock::getName() { 
@@ -57,13 +44,7 @@ String _ReadLock::getName() {
 }
 
 int _ReadLock::lock(long timeInterval) {
-    if(rwlock->rwOwner == st(System)::myTid()) {
-        LOG(ERROR)<<"Read lock acquire error,this thread already own write lock";
-        return -1;
-    }
-    struct timespec ts = {0};
-    st(System)::getNextTime(timeInterval, &ts);
-    return -pthread_rwlock_timedrdlock(&rwlock->rwlock, &ts);
+    return rwlock->_readlock(timeInterval);
 }
 
 //------------ WriteLock ------------//
@@ -73,28 +54,15 @@ _WriteLock::_WriteLock(sp<_ReadWriteLock> l, String s) {
 }
 
 int _WriteLock::lock() {
-    int result = -pthread_rwlock_wrlock(&rwlock->rwlock);
-    if(result == 0) {
-        rwlock->rwOwner = st(System)::myTid();
-    }
-    return result;
+    return rwlock->_writelock();
 }
 
 int _WriteLock::unlock() {
-    if(rwlock->rwOwner == st(System)::myTid()) {
-        rwlock->rwOwner = 0;
-    }
-    
-    return -pthread_rwlock_unlock(&rwlock->rwlock);
-    
+    return rwlock->_unWritelock();
 }
 
 int _WriteLock::tryLock() {
-    int result = -pthread_rwlock_trywrlock(&rwlock->rwlock);
-    if(result == 0) {
-        rwlock->rwOwner = st(System)::myTid();
-    }
-    return result;
+    return rwlock->_tryWriteLock();
 }
 
 String _WriteLock::getName() { 
@@ -102,20 +70,20 @@ String _WriteLock::getName() {
 }
 
 int _WriteLock::lock(long timeInterval) {
-    struct timespec ts = {0};
-    st(System)::getNextTime(timeInterval, &ts);
-    int ret = -pthread_rwlock_timedwrlock(&rwlock->rwlock, &ts);
-    if(ret == 0) {
-        rwlock->rwOwner = st(System)::myTid();
-    }
-    return ret;
+    return rwlock->_writelock(timeInterval);
 }
 
 //------------ ReadWriteLock ------------
 _ReadWriteLock::_ReadWriteLock() : _ReadWriteLock(nullptr) {}
 
 _ReadWriteLock::_ReadWriteLock(String s) {
-    pthread_rwlock_init(&rwlock, nullptr);
+    mWriteCount = 0;
+    mIsWrite = false;
+
+    mMutex = createMutex();
+    mReadCondition = createCondition();
+    mWriteCondition = createCondition();
+
     mName = s;
 }
 
@@ -134,7 +102,138 @@ String _ReadWriteLock::getName() {
 }
 
 _ReadWriteLock::~_ReadWriteLock() { 
-    pthread_rwlock_destroy(&rwlock); 
+    
+}
+
+int _ReadWriteLock::_readlock(long interval) {
+    AutoLock l(mMutex);
+    int mytid = st(System)::myTid();
+
+    while(mWriteCount != 0 && mytid != mWrOwner) {
+        int ret = mReadCondition->wait(mMutex,interval);
+        if(ret != 0) {
+            return ret;
+        }
+    }
+
+    printf("readlock trace1,mytid is %d \n",mytid);
+    auto iterator = readOwners.find(mytid);
+    if(iterator == readOwners.end()) {
+        printf("readlock trace2\n");
+        readOwners[mytid] = 1;
+    } else {
+        printf("readlock trace3 \n");
+        iterator->second++;
+    }
+    return 0;
+}
+
+int _ReadWriteLock::_unReadlock() {
+    AutoLock l(mMutex);
+    int mytid = st(System)::myTid();
+    auto iterator = readOwners.find(mytid);
+    if(iterator == readOwners.end()) {
+        return -1;
+    }
+
+    iterator->second--;
+    if(iterator->second == 0) {
+        readOwners.erase(iterator);
+    }
+
+    if(readOwners.size() == 0 && mWriteCount > 0) {
+        mWriteCondition->notify();
+    }
+
+    return 0;
+}
+
+int _ReadWriteLock::_tryReadLock() {
+    AutoLock l(mMutex);
+    int mytid = st(System)::myTid();
+    if(mWrOwner == mytid || mIsWrite == false) {
+        return _readlock();
+    }
+    return -1;
+}
+
+int _ReadWriteLock::_readlock() {
+    return _readlock(0);
+}
+
+int _ReadWriteLock::_writelock(long interval) {
+    AutoLock l(mMutex);
+    mWriteCount++;
+
+    //check whether owner is myself
+    int mytid = st(System)::myTid();
+    auto iterator = readOwners.find(mytid);
+    if(mWrOwner == mytid) {
+        return 0;
+    }
+    printf("trace1,readOwners.size() is %d \n",readOwners.size());
+    if(mIsWrite) {
+        printf("mIsWrite is true \n");
+    } else {
+        printf("mIsWrite is false \n");
+    }
+
+    if(iterator == readOwners.end()) {
+        printf("cannot find tid \n");
+    } else {
+        printf("find tid \n");
+    }
+
+    if(!mIsWrite && readOwners.size() == 1 && iterator != readOwners.end()) {
+        printf("trace2 \n");
+        goto end;
+    }
+
+    while(readOwners.size() != 0 || mIsWrite) {
+        int ret = mWriteCondition->wait(mMutex,interval);
+        if(ret != 0) {
+            return ret;
+        }
+    }
+
+end:
+    mIsWrite = true;
+    mWrOwner = mytid;
+    return 0;
+}
+
+int _ReadWriteLock::_unWritelock() {
+    AutoLock l(mMutex);
+    int mytid = st(System)::myTid();
+
+    if(mytid != mWrOwner) {
+        return -1;
+    }
+
+    mIsWrite = false;
+    mWrOwner = -1;
+    mWriteCount--;
+    if(mWriteCount == 0) {
+        mReadCondition->notifyAll();
+    } else {
+        mWriteCondition->notify();
+    }
+    return 0;
+}
+
+int _ReadWriteLock::_tryWriteLock() {
+    AutoLock l(mMutex);
+    int mytid = st(System)::myTid();
+    if(mWrOwner == mytid || mIsWrite == false) {
+        if(readOwners.size() != 0) {
+            return _readlock();
+        }
+    }
+    return -1;
+}
+
+int _ReadWriteLock::_writelock() {
+    return _writelock(0);
 }
 
 } // namespace obotcha
