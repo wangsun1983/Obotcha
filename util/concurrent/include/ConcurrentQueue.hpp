@@ -113,7 +113,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
         if(after != nullptr) {
             wrLock->lock();
         } else {
-            rdLock->unlock();
+            rdLock->lock();
         }
 
         auto iterator = mQueue->getIterator();

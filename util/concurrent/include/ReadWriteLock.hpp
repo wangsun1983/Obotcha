@@ -80,9 +80,10 @@ DECLARE_CLASS(ReadWriteLock) {
     ~_ReadWriteLock();
 
   private:
-    int mWriteCount;
+    int mWriteReqCount;
     bool mIsWrite;
     int mWrOwner;
+    int mOwnerCount;
     //<tid,counts>
     std::map<int,int> readOwners;
 
