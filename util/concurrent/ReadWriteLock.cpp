@@ -110,7 +110,6 @@ _ReadWriteLock::~_ReadWriteLock() {
 int _ReadWriteLock::_readlock(long interval) {
     AutoLock l(mMutex);
     int mytid = st(System)::myTid();
-    printf("mOwnerCount is %d,mytid is %d,mWrowner is %d \n",mOwnerCount,mytid,mWrOwner);
     while(mOwnerCount != 0 && mytid != mWrOwner) {
         int ret = mReadCondition->wait(mMutex,interval);
         if(ret != 0) {
@@ -165,14 +164,12 @@ int _ReadWriteLock::_writelock(long interval) {
     int mytid = st(System)::myTid();
     if(mWrOwner == mytid) {
         mOwnerCount++;
-        //printf("mWrOwner is %d,mytid is %d,mWriteReqCount is %d \n",mWrOwner,mytid,mWriteReqCount);
         return 0;
     }
 
     if(!mIsWrite) {
         auto iterator = readOwners.find(mytid);
         if(iterator != readOwners.end() && readOwners.size() == 1) {
-            //printf("readOwners size is %d,iterator tid is %d,mytid is %d \n",mWrOwner,iterator->first,mytid);
             mOwnerCount++;
             goto end;
         }
@@ -196,14 +193,12 @@ end:
 
 int _ReadWriteLock::_unWritelock() {
     AutoLock l(mMutex);
-    //printf("unWritelock trace1 \n");
     int mytid = st(System)::myTid();
     if(mytid != mWrOwner) {
         return -1;
     }
     
     mOwnerCount--;
-    //printf("unWritelock trace1,mOwnerCount is %d,mWriteReqCount is %d \n",mOwnerCount,mWriteReqCount);
     
     if(mOwnerCount == 0) {
         mIsWrite = false;

@@ -46,10 +46,19 @@ public:
         mMap->clear();
     }
 
-    //remove this
-    HashMap<T,U> toMap() {
+    void syncReadAction(std::function<void()> action) {
         AutoLock l(rdLock);
+        action();
+    }
+
+    void syncWriteAction(std::function<void()> action) {
+        AutoLock l(wrLock);
+        action();
+    }
+
+    HashMap<T,U> toMap() {
         HashMap<T,U> map = createHashMap<T,U>();
+        AutoLock l(rdLock);
         auto iterator = mMap->getIterator();
         while(iterator->hasValue()) {
             map->put(iterator->getKey(),iterator->getValue());
@@ -59,58 +68,39 @@ public:
         return map;
     }
 
-    MapIterator<T,U> getIterator() {
-        AutoLock l(rdLock);
-        return mMap->getIterator();
-    }
+    //remove this function,iterator is not threadsafe
+    //MapIterator<T,U> getIterator() {
+    //    AutoLock l(rdLock);
+    //    return mMap->getIterator();
+    //}
 
     ArrayList<U> entrySet() {
         AutoLock l(rdLock);
-        auto iterator = mMap->getIterator();
-        ArrayList<U> lists = createArrayList<U>();
-        while(iterator->hasValue()) {
-            lists->add(iterator->getValue());
-            iterator->next();
-        }
-
-        return lists;
+        return mMap->entrySet();
     }
 
     ArrayList<T> keySet() {
         AutoLock l(rdLock);
-        auto iterator = mMap->getIterator();
-        ArrayList<T> lists = createArrayList<T>();
-        while(iterator->hasValue()) {
-            lists->add(iterator->getKey());
-            iterator->next();
-        }
-
-        return lists;
+        return mMap->keySet();
     }
 
     void foreach(std::function<int(const T&,const U&)> f,
                  std::function<void()> after = nullptr) {
-         if(after != nullptr) {
-             wrLock->lock();
-         } else {
-             rdLock->unlock();
-         }
+        auto lock = ((after == nullptr)?Cast<Lock>(rdLock):Cast<Lock>(wrLock));
+        AutoLock l(lock);
 
-         auto iterator = mMap->getIterator();
-         while(iterator->hasValue()) {
-             if(f(iterator->getKey(),iterator->getValue()) != Continue) {
-                 break;
-             }
-             iterator->next();
-         }
+        auto iterator = mMap->getIterator();
+        while(iterator->hasValue()) {
+            if(f(iterator->getKey(),iterator->getValue()) != Continue) {
+                break;
+            }
+            iterator->next();
+        }
 
-         if(after != nullptr) {
-             after();
-             wrLock->unlock();
-             return;
-         }
-
-         rdLock->unlock();
+        if(after != nullptr) {
+            after();
+            return;
+        }
     }
 
 private:

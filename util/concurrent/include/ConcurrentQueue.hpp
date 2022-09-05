@@ -93,13 +93,11 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
     }
 
     void syncReadAction(std::function<void()> action) {
-        printf("concurrent read this is %p,tid is %d \n",this,st(System)::myTid());
         AutoLock l(rdLock);
         action();
     }
 
     void syncWriteAction(std::function<void()> action) {
-        printf("concurrent write this is %p,tid is %d \n",this,st(System)::myTid());
         AutoLock l(wrLock);
         action();
     }
@@ -110,11 +108,8 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
     }
 
     void foreach(std::function<int(const T &)> f,std::function<void()> after = nullptr) {
-        if(after != nullptr) {
-            wrLock->lock();
-        } else {
-            rdLock->lock();
-        }
+        auto lock = ((after == nullptr)?Cast<Lock>(rdLock):Cast<Lock>(wrLock));
+        AutoLock l(lock);
 
         auto iterator = mQueue->getIterator();
         while(iterator->hasValue()) {
@@ -123,14 +118,10 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
             }
             iterator->next();
         }
-
         if(after != nullptr) {
             after();
-            wrLock->unlock();
             return;
         }
-
-        rdLock->unlock();
     }
 
   private:
