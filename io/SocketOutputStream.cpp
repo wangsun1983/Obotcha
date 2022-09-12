@@ -15,7 +15,7 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
         //2.Thread B(SocketMonitor) :if peer disconnet,close SocketOutputStream.
         //                         mChannel will be set as nullptr.
         //3.Thread A:call mChannel->write and crash(NullPointer...);
-        mChannelMutex = createMutex();
+        //mChannelMutex = createMutex();
         mChannel = createAsyncOutputChannel(
             fileDescriptor,
             std::bind(&_SocketOutputStream::_write, this, std::placeholders::_1,
@@ -30,13 +30,14 @@ long _SocketOutputStream::write(char c) {
 }
 
 long _SocketOutputStream::write(ByteArray data) {
-    if(mChannelMutex != nullptr) {
-        AutoLock l(mChannelMutex);
+    //if(mChannelMutex != nullptr) {
+    //    AutoLock l(mChannelMutex);
         if (mChannel != nullptr) {
-            mChannel->write(data);
-            return data->size();
+            return mChannel->write(data);
+            //if(mChannel->write(data) > 0);
+            //return data->size();
         }
-    }
+    //}
 
     return _write(fileDescriptor, data,0);
 }
@@ -47,13 +48,11 @@ long _SocketOutputStream::write(ByteArray data, int start) {
 
 long _SocketOutputStream::write(ByteArray data, int start, int len) {
     ByteArray senddata = createByteArray(&data->toValue()[start], len);
-    if(mChannelMutex != nullptr) {
-        AutoLock l(mChannelMutex);
-        if (mChannel != nullptr) {
-            mChannel->write(senddata);
-            return senddata->size();
-        }
+    
+    if (mChannel != nullptr) {
+        return mChannel->write(senddata);
     }
+
     return _write(fileDescriptor, senddata,0);
 }
 
@@ -66,13 +65,15 @@ long _SocketOutputStream::_write(FileDescriptor fd, ByteArray data,int offset) {
 }
 
 void _SocketOutputStream::close() {
-    if(mChannelMutex != nullptr) {
-        AutoLock l(mChannelMutex);
+    //if(mChannelMutex != nullptr) {
+    //    AutoLock l(mChannelMutex);
         if (mChannel != nullptr) {
             mChannel->close();
-            mChannel = nullptr;
+    //        mChannel = nullptr;
         }
-    }
+
+        impl = nullptr;
+    //}
 }
 
 void _SocketOutputStream::flush() {

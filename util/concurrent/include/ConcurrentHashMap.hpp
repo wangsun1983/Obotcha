@@ -36,9 +36,9 @@ public:
         return mMap->put(key, value);
     }
 
-    void remove(const T &key) {
+    U remove(const T &key) {
         AutoLock l(wrLock);
-        mMap->remove(key);
+        return mMap->remove(key);
     }
 
     void clear() {

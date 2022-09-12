@@ -11,6 +11,7 @@
  */
 #include "FileInputStream.hpp"
 #include "FileNotFoundException.hpp"
+#include "IOException.hpp"
 #include "Log.hpp"
 #include <iostream>
 
@@ -78,7 +79,11 @@ bool _FileInputStream::open() {
     }
 
     fd = ::open(mPath->toChars(), O_RDONLY);
-    return (fd >= 0);
+    if(fd < 0) {
+        Trigger(IOException,"fail to open file,err is %s",strerror(errno));
+    }
+
+    return true;
 }
 
 void _FileInputStream::close() {

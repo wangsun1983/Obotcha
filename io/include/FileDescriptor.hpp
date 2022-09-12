@@ -33,10 +33,13 @@ public:
 
     bool isClosed();
 
+    void setAsMonitored(bool);
+
     uint64_t hashcode();
 
 private:
     int _fd;
+    bool isMonitored;
 };
 
 }

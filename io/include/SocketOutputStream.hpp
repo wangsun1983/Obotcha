@@ -47,7 +47,7 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
     FileDescriptor fileDescriptor;
     SocketImpl impl;
 
-    Mutex mChannelMutex;
+    //Mutex mChannelMutex;
     AsyncOutputChannel mChannel;
 
     struct sockaddr_in server_addr;

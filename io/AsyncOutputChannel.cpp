@@ -31,7 +31,7 @@ int _AsyncOutputChannel::write(ByteArray d) {
     ByteArray data = createByteArray(d);
     if (mDatas->size() > 0) {
         mDatas->putLast(data);
-        return 0;
+        return data->size();
     }
 
     return _write(data);
@@ -89,6 +89,10 @@ FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
 
 void _AsyncOutputChannel::close() {
     AutoLock l(mMutex);
+    if(isClosed) {
+        return;
+    }
+
     if(mDatas != nullptr) {
         mDatas->clear();
         mDatas = nullptr;
@@ -100,6 +104,15 @@ void _AsyncOutputChannel::close() {
 
     isClosed = true;
     mPool->remove(AutoClone(this));
+}
+
+void _AsyncOutputChannel::dump() {
+    printf("---AsyncOutputChannel dump start --- \n");
+    if(mDatas != nullptr) {
+        printf("data size is %d \n",mDatas->size());
+    }
+    mPool->dump();
+    printf("---AsyncOutputChannel dump end --- \n");
 }
 
 } // namespace obotcha

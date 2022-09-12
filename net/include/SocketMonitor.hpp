@@ -18,6 +18,7 @@
 #include "SpinLock.hpp"
 #include "Closeable.hpp"
 #include "ConcurrentHashMap.hpp"
+#include "ConcurrentLinkedList.hpp"
 
 namespace obotcha {
 
@@ -43,6 +44,8 @@ public:
     int remove(ServerSocket,bool isClose = false);
 
     void close();
+
+    void dump();
     
 private:
     void addNewSocket(Socket s,SocketListener l);
@@ -59,12 +62,17 @@ private:
     Mutex mMutex;
     int *currentProcessingFds;
     LinkedList<SocketMonitorTask> mThreadPublicTasks;
+
+    //wangsl
+    HashMap<int,ConcurrentLinkedList<SocketMonitorTask>> mThreadTaskMap;
+    //wangsl
+    
     ThreadPoolExecutor mExecutor;
     Condition mCondition;
 
     ConcurrentHashMap<int,SocketListener> mListeners;
 
-    mutable volatile int32_t isStop;
+    mutable volatile bool isStop;
 };
 
 }

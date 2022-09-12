@@ -29,6 +29,8 @@ DECLARE_CLASS(AsyncOutputChannel) {
 
     void close();
 
+    void dump();
+
   private:
     Mutex mMutex;
     LinkedList<ByteArray> mDatas;

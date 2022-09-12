@@ -15,8 +15,10 @@ class Exception;
 class V:public Exception
 
 #define Trigger(V,...) {\
-  printf("---[Exception]:%s, [File]:%s, [Line]:%d ---\n",#V,__FILE__,__LINE__); \
+  printf("---Execption Detected!!!--- \n    Error info:");\
   printf(__VA_ARGS__);\
+  printf("\n    [Exception]:%s, [File]:%s, [Line]:%d ---\n",#V,__FILE__,__LINE__); \
+  printf("---Execption Dump Complete!!!--- \n");\
   throw V();\
 }
 

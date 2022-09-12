@@ -50,12 +50,16 @@ DECLARE_TEMPLATE_CLASS(HashMap, T,U) {
         return v.getValue();
     }
 
-    void remove(const T &t) {
+    U remove(const T &t) {
         auto ite = hashmap.find(t);
         if (ite == hashmap.end()) {
-            return;
+            __NotFoundValue<U> v;
+            return v.getValue();;
         }
+
+        auto result = ite->second;
         hashmap.erase(ite);
+        return result;
     }
 
     bool isEmpty() { return hashmap.size() == 0; }

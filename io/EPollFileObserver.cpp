@@ -30,9 +30,7 @@ void _EPollFileObserver::run() {
                 return;
             }
             uint32_t recvEvents = events[i].events;
-            // printf("observer run fd is %d,events is %x \n",fd,recvEvents);
             EPollFileObserverListener listener = nullptr;
-
             {
                 AutoLock l(mListenerMutex);
                 listener = mListeners->get(fd);
@@ -119,6 +117,10 @@ int _EPollFileObserver::close() {
 
 _EPollFileObserver::~_EPollFileObserver() {
   close();
+}
+
+void _EPollFileObserver::dump() {
+    printf("EPollFileObserver,mListeners is %d \n",mListeners->size());
 }
 
 } // namespace obotcha

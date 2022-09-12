@@ -17,10 +17,8 @@ namespace obotcha {
 int _Socket::DefaultBufferSize = 1024 * 4;
 
 _Socket::_Socket() {
-    mMutex = createMutex();
-    mOutputStream = nullptr;
-    mInputStream = nullptr;
     protocol = UnKnown;
+    mClosed = false;
 }
 
 _Socket::_Socket(int v, InetAddress addr, SocketOption option,String certificatePath,String keyPath):_Socket() {
@@ -80,26 +78,16 @@ int _Socket::bind() {
 }
 
 void _Socket::close() {
-    AutoLock l(mMutex);
-    if (mSock != nullptr) {
-        mSock->close();
-        mSock = nullptr;
-    }
-
-    if(mOutputStream != nullptr) {
-        mOutputStream->close();
-        mOutputStream = nullptr;
-    }
-
-    if(mInputStream != nullptr) {
-        mInputStream->close();
-        mInputStream = nullptr;
+    if(!mClosed) {
+        mClosed = true;
+        if (mSock != nullptr) {
+            mSock->close();
+        }
     }
 }
 
 bool _Socket::isClosed() {
-    AutoLock l(mMutex);
-    return mSock == nullptr;
+    return mClosed;
 }
 
 sp<_Socket> _Socket::receiveFrom(ByteArray buff) {
@@ -107,21 +95,15 @@ sp<_Socket> _Socket::receiveFrom(ByteArray buff) {
 }
 
 InputStream _Socket::getInputStream() {
-    if(mInputStream == nullptr) {
-        mInputStream = createSocketInputStream(AutoClone(this));
-    }
-    return mInputStream;
+    return createSocketInputStream(AutoClone(this));
 }
 
 OutputStream _Socket::getOutputStream() {
-    if(mOutputStream == nullptr) {
-        mOutputStream = createSocketOutputStream(AutoClone(this));
-    }
-    return mOutputStream;
+    return createSocketOutputStream(AutoClone(this));
 }
 
 FileDescriptor _Socket::getFileDescriptor() {
-    return (mSock == nullptr)?nullptr:mSock->getFileDescriptor();
+    return mSock->getFileDescriptor();
 }
 
 int _Socket::getProtocol() {
@@ -129,12 +111,10 @@ int _Socket::getProtocol() {
 }
 
 void _Socket::setSockImpl(SocketImpl impl) {
-    AutoLock l(mMutex);
     this->mSock = impl;
 }
 
 SocketImpl _Socket::getSockImpl() {
-    AutoLock l(mMutex);
     return mSock;
 }
 

@@ -70,10 +70,7 @@ private:
 
 protected:
     SocketImpl mSock;
-    Mutex mMutex;
-
-    SocketOutputStream mOutputStream;
-    SocketInputStream mInputStream;
+    bool mClosed;
 };
 
 }

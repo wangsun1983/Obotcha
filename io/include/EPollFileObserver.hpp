@@ -58,12 +58,9 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
     _EPollFileObserver();
 
     template <typename X> int addObserver(int fd, uint32_t events, sp<X> l) {
-        int regEvents = 0;
-        regEvents |= events;
-
         AutoLock mylock(mListenerMutex);
         mListeners->put(fd, l);
-        addEpollFd(fd, regEvents);
+        addEpollFd(fd, events);
         return 0;
     }
 
@@ -83,6 +80,8 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
     int close();
 
     void run();
+    
+    void dump();
 
     ~_EPollFileObserver();
 
