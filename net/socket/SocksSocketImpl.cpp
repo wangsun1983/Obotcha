@@ -81,7 +81,6 @@ int _SocksSocketImpl::connect() {
         }
         break;
     }
-
     if (TEMP_FAILURE_RETRY(::connect(sock->getFd(),sock_addr,sock_length)) < 0) {
         sock->close();
         return -1;

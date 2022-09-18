@@ -15,7 +15,7 @@ void _EPollFileObserver::run() {
     struct epoll_event events[mSize];
     memset(events, 0, sizeof(struct epoll_event) * mSize);
     //byte readbuff[st(EPollFileObserver)::DefaultBufferSize];
-
+    int mPipeFd = mPipe->getReadChannel();
     while (1) {
         int epoll_events_count = epoll_wait(mEpollFd, events, mSize, -1);
         //AutoTimeWatcher watcher = createAutoTimeWatcher("Epoll monitor");
@@ -26,16 +26,12 @@ void _EPollFileObserver::run() {
 
         for (int i = 0; i < epoll_events_count; i++) {
             int fd = events[i].data.fd;
-            if (fd == mPipe->getReadChannel()) {
+            if (fd == mPipeFd) {
                 return;
             }
             uint32_t recvEvents = events[i].events;
-            EPollFileObserverListener listener = nullptr;
-            {
-                AutoLock l(mListenerMutex);
-                listener = mListeners->get(fd);
-            }
-
+            EPollFileObserverListener listener = mListeners->get(fd);
+        
             if (listener == nullptr) {
                 LOG(ERROR) << "EpollObserver get event,but no callback,fd is "
                            << fd << "event is " << recvEvents;
@@ -51,9 +47,8 @@ void _EPollFileObserver::run() {
 }
 
 _EPollFileObserver::_EPollFileObserver(int size) {
-    mListeners = createHashMap<int, EPollFileObserverListener>();
+    mListeners = createConcurrentHashMap<int, EPollFileObserverListener>();
     mSize = size;
-    mListenerMutex = createMutex("Epoll Listener Mutex");
     mEpollFd = epoll_create(size);
     mPipe = createPipe();
     addEpollFd(mPipe->getReadChannel(), EPOLLIN | EPOLLRDHUP | EPOLLHUP);
@@ -69,7 +64,6 @@ _EPollFileObserver::_EPollFileObserver()
 
 int _EPollFileObserver::removeObserver(int fd) {
     // we should clear
-    AutoLock l(mListenerMutex);
     int ret = epoll_ctl(mEpollFd, EPOLL_CTL_DEL, fd, NULL);
     mListeners->remove(fd);
     return ret;
@@ -110,7 +104,6 @@ int _EPollFileObserver::close() {
         mEpollFd = -1;
     }
 
-    AutoLock l(mListenerMutex);
     mListeners->clear();
     return 0;
 }

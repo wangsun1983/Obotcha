@@ -15,6 +15,7 @@
 #include "Inet6Address.hpp"
 #include "NetEvent.hpp"
 #include "TimeWatcher.hpp"
+#include "Definations.hpp"
 
 namespace obotcha {
 
@@ -30,7 +31,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
     mMutex = createMutex();
     mSocks = createConcurrentHashMap<int, Socket>();
     mServerSocks = createConcurrentHashMap<int, ServerSocket>();
-    currentProcessingFds = new int[threadnum];
+    //currentProcessingFds = new int[threadnum];
 
     mPoll = createEPollFileObserver();
     mPoll->start();
@@ -41,11 +42,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
     mThreadNum = threadnum;
     isStop = false;
 
-    for(int i = 0;i < threadnum;i++) {
-        currentProcessingFds[i] = -1;
-    }
-
-    mThreadTaskMap = createHashMap<int,ConcurrentLinkedList<SocketMonitorTask>>();
+    mThreadTaskMap = createHashMap<int,LinkedList<SocketMonitorTask>>();
 
     this->mExecutor =
         createExecutorBuilder()->setThreadNum(mThreadNum)->newThreadPool();
@@ -54,46 +51,44 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
         mExecutor->submit(
             [this](int index, SocketMonitor &monitor) {
                 SocketMonitorTask task = nullptr;
-                //wangsl
-                ConcurrentLinkedList<SocketMonitorTask> localTasks = createConcurrentLinkedList<SocketMonitorTask>();
+                LinkedList<SocketMonitorTask> localTasks = createLinkedList<SocketMonitorTask>();
                 int currentFd = -1;
-                //wangsl
 
                 while (!monitor->isStop) {
                     //check myself task
-                    task = localTasks->takeFirst();
-                    if(task == nullptr) {
+                    {
                         AutoLock l(monitor->mMutex);
-                        if(currentFd != -1) {
-                            mThreadTaskMap->remove(currentFd);
-                            currentFd = -1;
-                        }
-
-                        auto iterator = monitor->mThreadPublicTasks->getIterator();
-                        while(iterator->hasValue()) {
-                            task = iterator->getValue();
-                            auto desc = task->sock->getFileDescriptor();
-                            int taskFd = desc->getFd();
-                            auto tasks = mThreadTaskMap->get(taskFd);
-                            if(tasks != nullptr) {
-                                tasks->putLast(task);
-                                mCondition->notifyAll(); //TODO:move to one thread one mutex
-                            } else {
-                                mThreadTaskMap->put(taskFd,localTasks);
-                                currentFd = taskFd;
-                            }
-                            iterator->remove();
+                        task = localTasks->takeFirst();
+                        if(task == nullptr) {
                             if(currentFd != -1) {
+                                mThreadTaskMap->remove(currentFd);
+                                currentFd = -1;
+                            }
+
+                            while(1) {
+                                task = mThreadPublicTasks->takeFirst();
+                                if(task != nullptr) {
+                                    int taskFd = task->sock->getFileDescriptor()->getFd();
+                                    auto tasks = mThreadTaskMap->get(taskFd);
+                                    if(tasks != nullptr) {
+                                        tasks->putLast(task);
+                                        mCondition->notifyAll(); //TODO:move to one thread one mutex
+                                        continue;
+                                    } else {
+                                        mThreadTaskMap->put(taskFd,localTasks);
+                                        currentFd = taskFd;
+                                    }
+                                }
                                 break;
                             }
-                            task = nullptr;
+                            
+                            if (task == nullptr) {
+                                monitor->mCondition->wait(monitor->mMutex);
+                                continue;
+                            }
                         }
                     }
 
-                    if (task == nullptr) {
-                        monitor->mCondition->wait(monitor->mMutex);
-                        continue;
-                    }
                     //Socket will be closed directly in websocket server.
                     //We should check whether socket is still connected
                     //to prevent nullpoint exception
@@ -111,6 +106,14 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
 
                     if(task->event == st(NetEvent)::Disconnect) {
                         monitor->_remove(desc);
+                        if(localTasks->size() != 0) {
+                            printf("---- [start] close socket,but task is not null,socket is %d ----\n",task->sock->getFileDescriptor()->getFd());
+                            localTasks->foreach([](const SocketMonitorTask &task){
+                                printf("task fd is %d,task event is %d \n",task->sock->getFileDescriptor()->getFd(),task->event);
+                                return Global::Continue;
+                            });
+                            printf("---- [end] close socket,but task is not null ----\n");
+                        }
                         task->sock->close();
                     }
                 }
@@ -148,8 +151,6 @@ int _SocketMonitor::bind(ServerSocket s, SocketListener l) {
     mServerSocks->put(s->getFileDescriptor()->getFd(), s);
     return bind(s->getFileDescriptor()->getFd(), l, true);
 }
-
-AtomicInteger cc = createAtomicInteger(0);
 
 int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
     int serversocket = -1;
@@ -225,8 +226,8 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
             }
 
             if ((events & (EPOLLRDHUP | EPOLLHUP)) != 0) {
-                AutoLock l(monitor->mMutex);
                 s->getFileDescriptor()->setAsMonitored(false);
+                AutoLock l(monitor->mMutex);
                 monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Disconnect, s));
                 monitor->mCondition->notify();
 
@@ -306,7 +307,7 @@ bool _SocketMonitor::isSocketExist(Socket s) {
 }
 
 _SocketMonitor::~_SocketMonitor() {
-    delete[]currentProcessingFds;
+    //delete[]currentProcessingFds;
 }
 
 } // namespace obotcha

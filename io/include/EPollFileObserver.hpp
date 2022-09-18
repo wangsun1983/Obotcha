@@ -15,6 +15,7 @@
 #include "Pipe.hpp"
 #include "String.hpp"
 #include "Thread.hpp"
+#include "ConcurrentHashMap.hpp"
 
 namespace obotcha {
 
@@ -58,7 +59,7 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
     _EPollFileObserver();
 
     template <typename X> int addObserver(int fd, uint32_t events, sp<X> l) {
-        AutoLock mylock(mListenerMutex);
+        //AutoLock mylock(mListenerMutex);
         mListeners->put(fd, l);
         addEpollFd(fd, events);
         return 0;
@@ -117,8 +118,8 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
     void addEpollFd(int fd, uint32_t events);
     int mEpollFd;
 
-    Mutex mListenerMutex;
-    HashMap<int, EPollFileObserverListener> mListeners;
+    //Mutex mListenerMutex;
+    ConcurrentHashMap<int, EPollFileObserverListener> mListeners;
 
     Mutex mCloseMutex;
     bool isClosed;

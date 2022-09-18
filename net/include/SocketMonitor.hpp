@@ -60,11 +60,11 @@ private:
     int mThreadNum;
 
     Mutex mMutex;
-    int *currentProcessingFds;
+    //int *currentProcessingFds;
     LinkedList<SocketMonitorTask> mThreadPublicTasks;
 
     //wangsl
-    HashMap<int,ConcurrentLinkedList<SocketMonitorTask>> mThreadTaskMap;
+    HashMap<int,LinkedList<SocketMonitorTask>> mThreadTaskMap;
     //wangsl
     
     ThreadPoolExecutor mExecutor;
