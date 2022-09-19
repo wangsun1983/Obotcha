@@ -80,6 +80,14 @@ int _Socket::bind() {
 void _Socket::close() {
     if(!mClosed) {
         mClosed = true;
+        if(mInputStream != nullptr) {
+            mInputStream->close();
+        }
+
+        if(mOutPutStream != nullptr) {
+            mOutPutStream->close();
+        }
+
         if (mSock != nullptr) {
             mSock->close();
         }
@@ -95,11 +103,17 @@ sp<_Socket> _Socket::receiveFrom(ByteArray buff) {
 }
 
 InputStream _Socket::getInputStream() {
-    return createSocketInputStream(AutoClone(this));
+    if(mInputStream == nullptr) {
+        mInputStream = createSocketInputStream(AutoClone(this));
+    }
+    return mInputStream;
 }
 
 OutputStream _Socket::getOutputStream() {
-    return createSocketOutputStream(AutoClone(this));
+    if(mOutPutStream == nullptr) {
+        mOutPutStream = createSocketOutputStream(AutoClone(this));
+    }
+    return mOutPutStream;
 }
 
 FileDescriptor _Socket::getFileDescriptor() {

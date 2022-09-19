@@ -17,6 +17,7 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
         //3.Thread A:call mChannel->write and crash(NullPointer...);
         //mChannelMutex = createMutex();
         mChannel = createAsyncOutputChannel(
+            AutoClone(this),
             fileDescriptor,
             std::bind(&_SocketOutputStream::_write, this, std::placeholders::_1,
                       std::placeholders::_2,std::placeholders::_3));

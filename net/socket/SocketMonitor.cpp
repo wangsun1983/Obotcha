@@ -25,7 +25,7 @@ _SocketMonitorTask::_SocketMonitorTask(int event, Socket s, ByteArray data) {
     this->data = data;
 }
 
-_SocketMonitor::_SocketMonitor() : _SocketMonitor(1) {}
+_SocketMonitor::_SocketMonitor() : _SocketMonitor(4) {}
 
 _SocketMonitor::_SocketMonitor(int threadnum) {
     mMutex = createMutex();

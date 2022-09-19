@@ -160,6 +160,7 @@ public:
 
         T result = iterator->getValue();
         iterator->remove();
+        count--;
         return result;
     }
 
@@ -169,6 +170,7 @@ public:
         while (iterator->hasValue()) {
             if (iterator->getValue() == v) {
                 iterator->remove();
+                count--;
                 return index;
             }
             index++;

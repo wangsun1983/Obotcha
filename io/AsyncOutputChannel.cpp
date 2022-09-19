@@ -8,13 +8,15 @@ namespace obotcha {
 
 sp<_AsyncOutputChannelPool> _AsyncOutputChannel::mPool = nullptr;
 
-_AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
+_AsyncOutputChannel::_AsyncOutputChannel(OutputStream stream,FileDescriptor fd,
                                          WriteCallback callback) {
     mFd = fd;
     mMutex = createMutex();
     mDatas = createLinkedList<ByteArray>();
     writeCb = callback;
     isClosed = false;
+
+    mOutputStream = stream;
 
     static std::once_flag s_flag;
     std::call_once(s_flag, [&]() {
@@ -27,13 +29,13 @@ int _AsyncOutputChannel::write(ByteArray d) {
     if (isClosed) {
         return -1;
     }
-
+    
     ByteArray data = createByteArray(d);
     if (mDatas->size() > 0) {
         mDatas->putLast(data);
         return data->size();
     }
-
+    
     return _write(data);
 }
 
@@ -103,7 +105,10 @@ void _AsyncOutputChannel::close() {
     }
 
     isClosed = true;
+
     mPool->remove(AutoClone(this));
+
+    mOutputStream = nullptr;
 }
 
 void _AsyncOutputChannel::dump() {
