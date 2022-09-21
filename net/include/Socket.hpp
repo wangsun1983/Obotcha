@@ -67,6 +67,9 @@ public:
     
 private:
     int protocol;
+    OutputStream mOutputStream;
+    InputStream mInputStream;
+    bool mIsAsync;
 
 protected:
     SocketImpl mSock;

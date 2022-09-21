@@ -4,24 +4,27 @@
 
 namespace obotcha {
 
-_SocketOutputStream::_SocketOutputStream(sp<_Socket> s) {
-    impl = s->getSockImpl();
+_SocketOutputStream::_SocketOutputStream(sp<_Socket> s):_SocketOutputStream(s->getSockImpl()) {
+}
 
-    fileDescriptor = s->getFileDescriptor();
-
-    if (fileDescriptor!= nullptr && fileDescriptor->isAsync()) {
+_SocketOutputStream::_SocketOutputStream(SocketImpl sockimpl) {
+    impl = sockimpl;
+    fileDescriptor = impl->getFileDescriptor();
+    if(fileDescriptor == nullptr) {
+        printf("socket ouputstream  fd is null");
+    }
+    printf("socket ouputstream init \n");
+    if (fileDescriptor != nullptr && fileDescriptor->isAsync()) {
         //Add a mutex to protect channle for the following issue
         //1.Thread A:call write function to send data
         //2.Thread B(SocketMonitor) :if peer disconnet,close SocketOutputStream.
         //                         mChannel will be set as nullptr.
         //3.Thread A:call mChannel->write and crash(NullPointer...);
         //mChannelMutex = createMutex();
-        mChannel = createAsyncOutputChannel(
-            AutoClone(this),
-            fileDescriptor,
-            std::bind(&_SocketOutputStream::_write, this, std::placeholders::_1,
-                      std::placeholders::_2,std::placeholders::_3));
+        printf("socket ouputstream init2 \n");
+        mChannel = createAsyncOutputChannel(AutoClone(this),fileDescriptor);
     }
+    printf("socket ouputstream init3 \n");
 }
 
 long _SocketOutputStream::write(char c) {
@@ -31,16 +34,10 @@ long _SocketOutputStream::write(char c) {
 }
 
 long _SocketOutputStream::write(ByteArray data) {
-    //if(mChannelMutex != nullptr) {
-    //    AutoLock l(mChannelMutex);
-        if (mChannel != nullptr) {
-            return mChannel->write(data);
-            //if(mChannel->write(data) > 0);
-            //return data->size();
-        }
-    //}
-
-    return _write(fileDescriptor, data,0);
+    if (mChannel != nullptr) {
+        return mChannel->write(data);
+    }
+    return _write(data,0);
 }
 
 long _SocketOutputStream::write(ByteArray data, int start) {
@@ -54,10 +51,10 @@ long _SocketOutputStream::write(ByteArray data, int start, int len) {
         return mChannel->write(senddata);
     }
 
-    return _write(fileDescriptor, senddata,0);
+    return _write(senddata,0);
 }
 
-long _SocketOutputStream::_write(FileDescriptor fd, ByteArray data,int offset) {
+long _SocketOutputStream::_write(ByteArray data,int offset) {
     if(impl != nullptr) {
         return impl->write(data,offset);
     }
@@ -66,19 +63,19 @@ long _SocketOutputStream::_write(FileDescriptor fd, ByteArray data,int offset) {
 }
 
 void _SocketOutputStream::close() {
-    //if(mChannelMutex != nullptr) {
-    //    AutoLock l(mChannelMutex);
-        if (mChannel != nullptr) {
-            mChannel->close();
-    //        mChannel = nullptr;
-        }
+    if (mChannel != nullptr) {
+        mChannel->close();
+    }
 
-        impl = nullptr;
-    //}
+    impl = nullptr;
 }
 
 void _SocketOutputStream::flush() {
     //do nothing
+}
+
+long _SocketOutputStream::asyncWrite(ByteArray data,int offset) {
+    return _write(data,offset);
 }
 
 _SocketOutputStream::~_SocketOutputStream() {

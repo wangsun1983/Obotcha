@@ -22,9 +22,10 @@ namespace obotcha {
 
 class _Socket;
 
-DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
+DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream,AsyncOutputWriter) {
   public:
     _SocketOutputStream(sp<_Socket>);
+    _SocketOutputStream(SocketImpl);
 
     long write(char c);
 
@@ -38,10 +39,12 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
 
     void flush();
     
+    long asyncWrite(ByteArray,int);
+
     ~_SocketOutputStream();
 
   private:
-    long _write(FileDescriptor, ByteArray,int offset);
+    long _write(ByteArray,int offset);
 
     //sp<_Socket> mSocket;
     FileDescriptor fileDescriptor;

@@ -8,15 +8,13 @@ namespace obotcha {
 
 sp<_AsyncOutputChannelPool> _AsyncOutputChannel::mPool = nullptr;
 
-_AsyncOutputChannel::_AsyncOutputChannel(OutputStream stream,FileDescriptor fd,
-                                         WriteCallback callback) {
+_AsyncOutputChannel::_AsyncOutputChannel(AsyncOutputWriter stream,FileDescriptor fd) {
     mFd = fd;
     mMutex = createMutex();
     mDatas = createLinkedList<ByteArray>();
-    writeCb = callback;
     isClosed = false;
 
-    mOutputStream = stream;
+    mWriter = stream;
 
     static std::once_flag s_flag;
     std::call_once(s_flag, [&]() {
@@ -31,6 +29,7 @@ int _AsyncOutputChannel::write(ByteArray d) {
     }
     
     ByteArray data = createByteArray(d);
+    printf("write,data size is %d \n",mDatas->size());
     if (mDatas->size() > 0) {
         mDatas->putLast(data);
         return data->size();
@@ -44,7 +43,7 @@ int _AsyncOutputChannel::notifyWrite() {
     if (isClosed) {
         return -1;
     }
-
+    printf("notify write,data size is %d \n",mDatas->size());
     while (mDatas->size() > 0) {
         ByteArray data = mDatas->takeFirst();
         if(_write(data) != 0) {
@@ -58,18 +57,16 @@ int _AsyncOutputChannel::_write(ByteArray data) {
     int offset = 0;
     int result = 0;
     while (1) {
-        if (writeCb != nullptr) {
-            result = writeCb(mFd, data,offset);
-        } else {
-            result = ::write(mFd->getFd(), data->toValue() + offset, data->size() - offset);
-        }
-
+        result = mWriter->asyncWrite(data,offset);
+        printf("write result is %d \n",result);
         if (result < 0) {
             if (errno == EAGAIN) {
                 ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);
                 mDatas->putFirst(restData);
+                printf("AsyncOutputChannel add channel \n");
                 mPool->addChannel(AutoClone(this));
             } else {
+                printf("AsyncOutputChannel write fail,reason is %s \n",strerror(errno));
                 //Write failed,remove channel
                 mPool->remove(AutoClone(this));
             }
@@ -100,15 +97,11 @@ void _AsyncOutputChannel::close() {
         mDatas = nullptr;
     }
 
-    if(writeCb != nullptr) {
-        writeCb = nullptr;
-    }
-
     isClosed = true;
 
     mPool->remove(AutoClone(this));
 
-    mOutputStream = nullptr;
+    mWriter = nullptr;
 }
 
 void _AsyncOutputChannel::dump() {

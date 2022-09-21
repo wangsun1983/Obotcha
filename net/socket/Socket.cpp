@@ -19,6 +19,8 @@ int _Socket::DefaultBufferSize = 1024 * 4;
 _Socket::_Socket() {
     protocol = UnKnown;
     mClosed = false;
+    mSock = nullptr;
+    mIsAsync = false;
 }
 
 _Socket::_Socket(int v, InetAddress addr, SocketOption option,String certificatePath,String keyPath):_Socket() {
@@ -41,16 +43,23 @@ _Socket::_Socket(int v, InetAddress addr, SocketOption option,String certificate
             return;
     }
 
-    Trigger(InitializeException, "ivalid type");
+    Trigger(InitializeException, "invalid type");
 }
 
 _Socket::_Socket(FileDescriptor descriptor):_Socket() {
     mSock = createSocketImpl(descriptor);
     protocol = Fd;
+    mOutputStream = createSocketOutputStream(mSock);
+    mInputStream = createSocketInputStream(mSock);
 }
 
 void _Socket::setAsync(bool async) {
     mSock->getFileDescriptor()->setAsync(async);
+    if(mIsAsync != async) {
+        mIsAsync = async;
+        mOutputStream = createSocketOutputStream(mSock);
+        mInputStream = createSocketInputStream(mSock);
+    }
 }
 
 bool _Socket::isAsync() {
@@ -70,7 +79,12 @@ void _Socket::setProtocol(int protocol) {
 }
 
 int _Socket::connect() {
-    return mSock->connect();
+    if(mSock->connect() == 0) {
+        mOutputStream = createSocketOutputStream(mSock);
+        mInputStream = createSocketInputStream(mSock);
+    }
+
+    return -1;
 }
 
 int _Socket::bind() {
@@ -84,8 +98,9 @@ void _Socket::close() {
             mInputStream->close();
         }
 
-        if(mOutPutStream != nullptr) {
-            mOutPutStream->close();
+        if(mOutputStream != nullptr) {
+            printf("mOutputStream close!! \n");
+            mOutputStream->close();
         }
 
         if (mSock != nullptr) {
@@ -103,17 +118,17 @@ sp<_Socket> _Socket::receiveFrom(ByteArray buff) {
 }
 
 InputStream _Socket::getInputStream() {
-    if(mInputStream == nullptr) {
-        mInputStream = createSocketInputStream(AutoClone(this));
-    }
+    //if(mInputStream == nullptr) {
+    //    mInputStream = createSocketInputStream(AutoClone(this));
+    //}
     return mInputStream;
 }
 
 OutputStream _Socket::getOutputStream() {
-    if(mOutPutStream == nullptr) {
-        mOutPutStream = createSocketOutputStream(AutoClone(this));
-    }
-    return mOutPutStream;
+    //if(mOutputStream == nullptr) {
+    //    mOutputStream = createSocketOutputStream(AutoClone(this));
+    //}
+    return mOutputStream;
 }
 
 FileDescriptor _Socket::getFileDescriptor() {

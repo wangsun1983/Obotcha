@@ -15,15 +15,17 @@ namespace obotcha {
 
 class _AsyncOutputChannelPool;
 
+DECLARE_CLASS(AsyncOutputWriter) {
+public:
+  virtual long asyncWrite(ByteArray,int) = 0;
+};
+
 DECLARE_CLASS(AsyncOutputChannel) {
   public:
     friend class _AsyncOutputChannelPool;
 
-    typedef std::function<long(FileDescriptor, ByteArray,int offset)> WriteCallback;
-
-    _AsyncOutputChannel(OutputStream stream,
-                        FileDescriptor fileDescriptor,
-                        WriteCallback callback = nullptr);
+    _AsyncOutputChannel(AsyncOutputWriter stream,
+                        FileDescriptor fileDescriptor);
 
     int write(ByteArray);
 
@@ -36,14 +38,13 @@ DECLARE_CLASS(AsyncOutputChannel) {
   private:
     Mutex mMutex;
     LinkedList<ByteArray> mDatas;
-    WriteCallback writeCb;
     bool isClosed;
     FileDescriptor mFd;
 
     int notifyWrite();
     int _write(ByteArray);
 
-    OutputStream mOutputStream;
+    AsyncOutputWriter mWriter;
 
     static sp<_AsyncOutputChannelPool> mPool;
 };

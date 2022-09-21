@@ -14,8 +14,11 @@
 
 namespace obotcha {
 
-_SocketInputStream::_SocketInputStream(sp<_Socket> s) { 
-    impl = s->getSockImpl(); 
+_SocketInputStream::_SocketInputStream(sp<_Socket> s):_SocketInputStream(s->getSockImpl()) { 
+}
+
+_SocketInputStream::_SocketInputStream(SocketImpl sockimpl) {
+    impl = sockimpl;
 }
 
 long _SocketInputStream::read(ByteArray buffer) {
