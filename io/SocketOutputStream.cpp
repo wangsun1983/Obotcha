@@ -10,10 +10,6 @@ _SocketOutputStream::_SocketOutputStream(sp<_Socket> s):_SocketOutputStream(s->g
 _SocketOutputStream::_SocketOutputStream(SocketImpl sockimpl) {
     impl = sockimpl;
     fileDescriptor = impl->getFileDescriptor();
-    if(fileDescriptor == nullptr) {
-        printf("socket ouputstream  fd is null");
-    }
-    printf("socket ouputstream init \n");
     if (fileDescriptor != nullptr && fileDescriptor->isAsync()) {
         //Add a mutex to protect channle for the following issue
         //1.Thread A:call write function to send data
@@ -21,10 +17,8 @@ _SocketOutputStream::_SocketOutputStream(SocketImpl sockimpl) {
         //                         mChannel will be set as nullptr.
         //3.Thread A:call mChannel->write and crash(NullPointer...);
         //mChannelMutex = createMutex();
-        printf("socket ouputstream init2 \n");
         mChannel = createAsyncOutputChannel(AutoClone(this),fileDescriptor);
     }
-    printf("socket ouputstream init3 \n");
 }
 
 long _SocketOutputStream::write(char c) {
@@ -55,11 +49,7 @@ long _SocketOutputStream::write(ByteArray data, int start, int len) {
 }
 
 long _SocketOutputStream::_write(ByteArray data,int offset) {
-    if(impl != nullptr) {
-        return impl->write(data,offset);
-    }
-
-    return -1;
+    return impl->write(data,offset);
 }
 
 void _SocketOutputStream::close() {

@@ -28,14 +28,13 @@ int _AsyncOutputChannel::write(ByteArray d) {
         return -1;
     }
     
-    ByteArray data = createByteArray(d);
-    printf("write,data size is %d \n",mDatas->size());
     if (mDatas->size() > 0) {
+        ByteArray data = createByteArray(d);
         mDatas->putLast(data);
         return data->size();
     }
     
-    return _write(data);
+    return _write(d);
 }
 
 int _AsyncOutputChannel::notifyWrite() {
@@ -43,7 +42,7 @@ int _AsyncOutputChannel::notifyWrite() {
     if (isClosed) {
         return -1;
     }
-    printf("notify write,data size is %d \n",mDatas->size());
+    
     while (mDatas->size() > 0) {
         ByteArray data = mDatas->takeFirst();
         if(_write(data) != 0) {
@@ -58,15 +57,12 @@ int _AsyncOutputChannel::_write(ByteArray data) {
     int result = 0;
     while (1) {
         result = mWriter->asyncWrite(data,offset);
-        printf("write result is %d \n",result);
         if (result < 0) {
             if (errno == EAGAIN) {
                 ByteArray restData = createByteArray(data->toValue() + offset,data->size() - offset);
                 mDatas->putFirst(restData);
-                printf("AsyncOutputChannel add channel \n");
                 mPool->addChannel(AutoClone(this));
             } else {
-                printf("AsyncOutputChannel write fail,reason is %s \n",strerror(errno));
                 //Write failed,remove channel
                 mPool->remove(AutoClone(this));
             }

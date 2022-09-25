@@ -54,11 +54,11 @@ _Socket::_Socket(FileDescriptor descriptor):_Socket() {
 }
 
 void _Socket::setAsync(bool async) {
-    mSock->getFileDescriptor()->setAsync(async);
     if(mIsAsync != async) {
+        mSock->getFileDescriptor()->setAsync(async);
         mIsAsync = async;
-        mOutputStream = createSocketOutputStream(mSock);
-        mInputStream = createSocketInputStream(mSock);
+        //mOutputStream = createSocketOutputStream(mSock);
+        //mInputStream = createSocketInputStream(mSock);
     }
 }
 
@@ -82,8 +82,8 @@ int _Socket::connect() {
     if(mSock->connect() == 0) {
         mOutputStream = createSocketOutputStream(mSock);
         mInputStream = createSocketInputStream(mSock);
+        return 0;
     }
-
     return -1;
 }
 
@@ -99,7 +99,6 @@ void _Socket::close() {
         }
 
         if(mOutputStream != nullptr) {
-            printf("mOutputStream close!! \n");
             mOutputStream->close();
         }
 

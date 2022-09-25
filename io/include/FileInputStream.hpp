@@ -31,7 +31,7 @@ public:
     long read(ByteArray,int start);
     long read(ByteArray,int start,int length);
 
-    int seekTo(int index);
+    long seekTo(int index);
     
     ByteArray readAll();
 

@@ -436,9 +436,9 @@ ArrayList<InetAddress> _HttpUrl::getInetAddress() {
         inet_ntop(hptr->h_addrtype, *pptr, str, sizeof(str));
         InetAddress address = nullptr;
         if (hptr->h_addrtype == AF_INET) {
-            address = createInet4Address(createString(str), -1);
+            address = createInet4Address(createString(str), mPort);
         } else if (hptr->h_addrtype == AF_INET6) {
-            address = createInet6Address(createString(str), -1);
+            address = createInet6Address(createString(str), mPort);
         }
         hosts->add(address);
     }

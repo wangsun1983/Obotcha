@@ -1,3 +1,15 @@
+/**
+ * @file ArrayList.hpp
+ * @brief Resizable-array
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #ifndef __OBOTCHA_ARRAYLIST_HPP__
 #define __OBOTCHA_ARRAYLIST_HPP__
 
@@ -68,12 +80,12 @@ public:
 
     _ArrayList(sp<_ArrayList<T>> l) : elements(l->elements) {}
 
-    _ArrayList(int size) { 
-        elements.reserve(size); 
+    _ArrayList(int size) {
+        elements.reserve(size);
     }
 
-    inline void add(const T val) { 
-        elements.push_back(val); 
+    inline void add(const T val) {
+        elements.push_back(val);
     }
 
     inline void add(sp<_ArrayList<T>> list) {
@@ -81,14 +93,15 @@ public:
                         list->elements.end());
     }
 
-    inline void clear() { 
-        elements.clear(); 
+    inline void clear() {
+        elements.clear();
     }
 
     inline T removeAt(int index) {
         if (index < 0 || index >= elements.size() || elements.size() == 0) {
             Trigger(ArrayIndexOutOfBoundsException, "incorrect index[%d]",index);
         }
+
         T val = elements.at(index);
         elements.erase(elements.begin() + index);
         return val;
@@ -127,10 +140,13 @@ public:
 
     inline int removeAll(const sp<_ArrayList<T>> &val) {
         int valsize = val->size();
+        int count = 0;
         for(int i = 0;i<valsize;i++) {
-            remove(val->get(i));
+            if(remove(val->get(i)) != -1) {
+                count++;
+            }
         }
-        return 0;
+        return count;
     }
 
     inline int indexOf(const T &val) {
@@ -153,7 +169,7 @@ public:
 
     inline T get(int index) {
         if (index < 0 || index >= elements.size()) {
-            Trigger(ArrayIndexOutOfBoundsException, "incorrect index");
+            Trigger(ArrayIndexOutOfBoundsException, "incorrect index,index is %d,size is %ld",index,elements.size());
         }
         return elements[index];
     }
@@ -264,8 +280,8 @@ public:
         return *iterator;
     }
 
-    bool hasValue() { 
-        return iterator != mList->end(); 
+    bool hasValue() {
+        return iterator != mList->end();
     }
 
     bool next() {
@@ -285,8 +301,8 @@ public:
         return true;
     }
 
-    void insert(T value) { 
-        iterator = mList->elements.insert(iterator, value); 
+    void insert(T value) {
+        iterator = mList->elements.insert(iterator, value);
     }
 
 private:

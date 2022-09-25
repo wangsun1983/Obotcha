@@ -10,6 +10,11 @@
 
 namespace obotcha {
 
+/**
+ * 
+ * [|size|data1,size|data2,size|data3 ...]
+ * 
+ */
 DECLARE_CLASS(Serializable) {
 
 public:

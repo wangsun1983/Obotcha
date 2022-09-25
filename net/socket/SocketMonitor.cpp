@@ -106,14 +106,6 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
 
                     if(task->event == st(NetEvent)::Disconnect) {
                         monitor->_remove(desc);
-                        if(localTasks->size() != 0) {
-                            printf("---- [start] close socket,but task is not null,socket is %d ----\n",task->sock->getFileDescriptor()->getFd());
-                            localTasks->foreach([](const SocketMonitorTask &task){
-                                printf("task fd is %d,task event is %d \n",task->sock->getFileDescriptor()->getFd(),task->event);
-                                return Global::Continue;
-                            });
-                            printf("---- [end] close socket,but task is not null ----\n");
-                        }
                         task->sock->close();
                     }
                 }

@@ -47,7 +47,7 @@ ByteArray _FileInputStream::read(int size) {
     return data;
 }
 
-int _FileInputStream::seekTo(int index) { 
+long _FileInputStream::seekTo(int index) { 
     return lseek(fd, index, SEEK_SET); 
 }
 
