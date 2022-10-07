@@ -99,6 +99,12 @@ sp<_WriteLock> _ReadWriteLock::getWriteLock() {
     return AutoClone(l);
 }
 
+bool _ReadWriteLock::isOwner() {
+    AutoLock l(mMutex);
+    int tid = st(System)::myTid();
+    return (mWrOwner == tid || readOwners.find(tid) != readOwners.end());
+}
+
 String _ReadWriteLock::getName() { 
     return mName; 
 }

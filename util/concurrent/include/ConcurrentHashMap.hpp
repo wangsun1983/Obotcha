@@ -69,8 +69,10 @@ public:
     }
 
     MapIterator<T,U> getIterator() {
-        AutoLock l(rdLock);
-        return mMap->getIterator();
+        if(rdwrLock->isOwner()) {
+            return mMap->getIterator();
+        }
+        return nullptr;
     }
 
     ArrayList<U> entrySet() {

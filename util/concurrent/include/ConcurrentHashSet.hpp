@@ -88,8 +88,11 @@ public:
 
 
     HashSetIterator<T> getIterator() {
-        AutoLock l(rdLock);
-        return mSets->getIterator();
+        if(rdwrLock->isOwner()) {
+            return mSets->getIterator();
+        }
+
+        return nullptr;
     }
 
     HashSet<T> toSet() {

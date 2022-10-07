@@ -73,8 +73,11 @@ DECLARE_TEMPLATE_CLASS(ConcurrentLinkedList, T) {
     }
 
     inline ListIterator<T> getIterator() {
-        AutoLock l(rdLock);
-        return mQueue->getIterator();
+        if(rdwrLock->isOwner()) {
+            return mQueue->getIterator();
+        }
+
+        return nullptr;
     }
 
     inline void clear() {

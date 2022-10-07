@@ -77,6 +77,8 @@ DECLARE_CLASS(ReadWriteLock) {
 
     String getName();
 
+    bool isOwner();
+
     ~_ReadWriteLock();
 
   private:
