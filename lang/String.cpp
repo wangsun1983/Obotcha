@@ -208,7 +208,6 @@ _String::_String(bool v) {
     } else {
         m_str = False;
     }
-
 }
 
 _String::_String(char v) {
@@ -891,7 +890,7 @@ String _String::format(const char *fmt, ...) {
 }
 
 sp<_String> _String::className() {
-  return createString("String");
+    return createString("String");
 }
 
 String _String::_format(const char *fmt, va_list args) {

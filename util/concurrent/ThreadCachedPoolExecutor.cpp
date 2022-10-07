@@ -17,6 +17,7 @@
 #include "Thread.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
 #include "TimeWatcher.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -50,12 +51,17 @@ int _ThreadCachedPoolExecutor::shutdown() {
     updateStatus(ShutDown);
 
     //mTasks->freeze();
-    mTasks->foreach ([](const ExecutorTask &t) {
-        t->cancel();
-        return Global::Continue;
-    },[this](){
-        mTasks->destroy();
-    });
+    //mTasks->foreach ([](const ExecutorTask &t) {
+    //    t->cancel();
+    //    return Global::Continue;
+    //},[this](){
+    //    mTasks->destroy();
+    //});
+    ForEveryOne(task,mTasks) {
+        task->cancel();
+    }
+
+    mTasks->destroy();
     // notify all thread to close
 
     //mTasks->unfreeze();
@@ -74,10 +80,13 @@ int _ThreadCachedPoolExecutor::shutdown() {
 
     {
         AutoLock l(mMutex);
-        mHandlers->foreach ([](Thread &t) {
+        //mHandlers->foreach ([](Thread &t) {
+        //    t->interrupt();
+        //    return Global::Continue;
+        //});
+        ForEveryOne(t,mHandlers) {
             t->interrupt();
-            return Global::Continue;
-        });
+        }
     }
     return 0;
 }

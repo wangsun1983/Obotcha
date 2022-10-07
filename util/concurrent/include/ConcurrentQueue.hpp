@@ -107,6 +107,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
         return mQueue->removeAll(list);
     }
 
+    /*
     void foreach(std::function<int(const T &)> f,std::function<void()> after = nullptr) {
         auto lock = ((after == nullptr)?Cast<Lock>(rdLock):Cast<Lock>(wrLock));
         AutoLock l(lock);
@@ -122,6 +123,10 @@ DECLARE_TEMPLATE_CLASS(ConcurrentQueue, T) {
             after();
             return;
         }
+    }*/
+
+    Lock acquireReadLock() {
+        return rdLock;
     }
 
   private:

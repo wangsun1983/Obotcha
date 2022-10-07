@@ -12,6 +12,7 @@
 #include "StrongPointer.hpp"
 #include "System.hpp"
 #include "ThreadPriorityPoolExecutor.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -126,23 +127,30 @@ int _ThreadPriorityPoolExecutor::shutdown() {
         }
     }
 
-    mThreads->foreach ([](Thread &t) {
+    ForEveryOne(t,mThreads) {
         t->interrupt();
-        return Global::Continue;
-    });
+    }
 
     return 0;
 }
 
 bool _ThreadPriorityPoolExecutor::isTerminated() {
     bool isTerminated = true;
+    ForEveryOne(t,mThreads) {
+        if (t->getStatus() != st(Thread)::Complete) {
+            isTerminated = false;
+            break;
+        }
+    }
+
+    /*
     mThreads->foreach ([&isTerminated](Thread &t) {
         if (t->getStatus() != st(Thread)::Complete) {
             isTerminated = false;
             return Global::Break;
         }
         return Global::Continue;
-    });
+    });*/
 
     return isTerminated;
 }

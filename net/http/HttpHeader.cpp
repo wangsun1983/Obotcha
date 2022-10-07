@@ -19,6 +19,7 @@
 #include "Log.hpp"
 #include "IllegalArgumentException.hpp"
 #include "StringBuffer.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -412,15 +413,21 @@ _HttpHeader::_HttpHeader(int protocol) {
 }
 
 void _HttpHeader::addHttpHeader(sp<_HttpHeader> h) {
-    h->mValues->foreach ([this](String key, String value) {
-        set(key, value);
-        return Global::Continue;
-    });
+    //h->mValues->foreach ([this](String key, String value) {
+    //    set(key, value);
+    //    return Global::Continue;
+    //});
+    ForEveryOne(pairValue,h->mValues) {
+        set(pairValue->getKey(),pairValue->getValue());
+    }
 
-    h->mCookies->foreach ([this](HttpCookie cookie) {
-        this->mCookies->add(cookie);
-        return Global::Continue;
-    });
+    //h->mCookies->foreach ([this](HttpCookie cookie) {
+    //    this->mCookies->add(cookie);
+    //    return Global::Continue;
+    //});
+    ForEveryOne(pairCookie,h->mCookies) {
+        mCookies->add(pairCookie);
+    }
 
     if(h->mLinks->size() != 0) {
         mLinks->add(h->mLinks);

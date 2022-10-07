@@ -21,6 +21,9 @@
 
 namespace obotcha {
 
+/**
+ * Default constructor
+ */
 _Handler::_Handler() {
     mMutex = createMutex("HandlerMutex");
     mCondition = createCondition();
@@ -59,11 +62,12 @@ int _Handler::sendEmptyMessageDelayed(int what, long delay) {
 }
 
 int _Handler::sendMessageDelayed(sp<_Message> msg, long delay) {
-    if (!mIsRunning) {
-        return -1;
-    }
     msg->nextTime = st(System)::currentTimeMillis() + delay;
     AutoLock l(mMutex);
+    if(!mIsRunning) {
+        return -1;
+    }
+
     if (mMessagePool == nullptr) {
         mMessagePool = msg;
     } else {
@@ -92,6 +96,19 @@ int _Handler::sendMessageDelayed(sp<_Message> msg, long delay) {
     mCondition->notify();
 
     return 0;
+}
+
+int _Handler::sendMessageAtFrontOfQueue(Message msg) {
+    AutoLock l(mMutex);
+    if (mMessagePool == nullptr) {
+        mMessagePool = msg;
+    } else {
+        msg->nextTime = st(System)::currentTimeMillis();
+        msg->next = mMessagePool;
+        mMessagePool = msg;
+    }
+
+    return 1;
 }
 
 void _Handler::handleMessage(sp<_Message> msg) {
@@ -132,11 +149,36 @@ void _Handler::removeMessages(int what) {
     }
 }
 
+void _Handler::removeCallbacks(sp<_Runnable> r) {
+    AutoLock l(mMutex);
+    Message p = mMessagePool;
+    Message prev = nullptr;
+    while (p != nullptr) {
+        if (p->mRunnable == r) {
+            if (mMessagePool == p) {
+                mMessagePool = mMessagePool->next;
+                p = mMessagePool;
+            } else {
+                prev->next = p->next;
+                p = p->next;
+            }
+            continue;
+        }
+
+        prev = p;
+        p = p->next;
+    }   
+}
+
 void _Handler::run() {
-    while (mIsRunning) {
+    while (1) {
         Message msg = nullptr;
         {
             AutoLock l(mMutex);
+            if(!mIsRunning) {
+                break;
+            }
+
             if (mMessagePool == nullptr) {
                 mCondition->wait(mMutex);
                 continue;
@@ -160,11 +202,15 @@ void _Handler::run() {
 }
 
 void _Handler::release() {
-    mIsRunning = false;
-    mCondition->notify();
+    AutoLock l(mMutex);
+    if(mIsRunning) {
+        mIsRunning = false;
+        mCondition->notify();
+    }
 }
 
-bool _Handler::isRunning() { 
+bool _Handler::isRunning() {
+    AutoLock l(mMutex);
     return mIsRunning; 
 }
 

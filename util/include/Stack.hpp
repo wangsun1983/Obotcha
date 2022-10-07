@@ -2,6 +2,7 @@
 #define __OBOTCHA_STACK_HPP__
 
 #include <vector>
+#include <stack>
 
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "ContainerValue.hpp"
@@ -30,15 +31,22 @@ public:
         return result;
     }
 
+    T top() {
+        if (element.size() == 0) {
+            return ContainerValue<T>(nullptr).get();
+        }
+
+        T result = element.back();
+        return result;    
+    }
+
     inline int size() { return element.size(); }
 
     sp<_StackIterator<T>> getIterator() { return new _StackIterator<T>(this); }
 
 private:
     std::vector<T> element;
-
     typename std::vector<T>::iterator begin() { return element.begin(); }
-
     typename std::vector<T>::iterator end() { return element.end(); }
 };
 
@@ -77,9 +85,16 @@ public:
             return false;
         }
 
-        mStack->element.erase(iterator);
-        iterator++;
+        iterator = mStack->element.erase(iterator);
         return true;
+    }
+
+    T getItem() {
+        if (iterator == mStack->end()) {
+            Trigger(ArrayIndexOutOfBoundsException, "iterator error");
+        }
+
+        return *iterator;
     }
 
 private:

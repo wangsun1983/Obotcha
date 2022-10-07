@@ -72,10 +72,10 @@ DECLARE_TEMPLATE_CLASS(ConcurrentLinkedList, T) {
         return mQueue->taskLast();
     }
 
-    //inline ListIterator<T> getIterator() {
-    //    AutoLock l(rdLock);
-    //    return mQueue->getIterator();
-    //}
+    inline ListIterator<T> getIterator() {
+        AutoLock l(rdLock);
+        return mQueue->getIterator();
+    }
 
     inline void clear() {
         AutoLock l(wrLock);
@@ -92,6 +92,7 @@ DECLARE_TEMPLATE_CLASS(ConcurrentLinkedList, T) {
         action();
     }
 
+/*
     void foreach(std::function<int(const T &)> f,std::function<void()> after = nullptr) {
         auto lock = ((after == nullptr)?Cast<Lock>(rdLock):Cast<Lock>(wrLock));
         AutoLock l(lock);
@@ -107,6 +108,10 @@ DECLARE_TEMPLATE_CLASS(ConcurrentLinkedList, T) {
             after();
             return;
         }
+    }
+*/
+    Lock acquireReadLock() {
+        return rdLock;
     }
 
   private:

@@ -1,3 +1,17 @@
+/**
+ * @file HashMap.hpp
+ * @brief Hash table based implementation of the std::unordered_map.  This
+ *        implementation provides all of the optional map operations, and permits
+ *        Object values and the int/uint32_t.... key. 
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #ifndef __OBOTCHA_HASHMAP_HPP__
 #define __OBOTCHA_HASHMAP_HPP__
 
@@ -32,7 +46,7 @@ template <typename T, typename U> class _MapIterator;
     };
 
 //----------------------- HashMap<T,U> -----------------------
-DECLARE_TEMPLATE_CLASS(HashMap, T,U) {
+DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
   public:
     friend class _MapIterator<T, U>;
 
@@ -80,23 +94,23 @@ DECLARE_TEMPLATE_CLASS(HashMap, T,U) {
 
     // template<typename V>
     ArrayList<U> entrySet() {
-        ArrayList<U> keyset = createArrayList<U>();
+        ArrayList<U> entrySet = createArrayList<U>();
         for (auto it = hashmap.begin(); it != hashmap.end(); it++) {
-            keyset->add(it->second);
+            entrySet->add(it->second);
         }
 
-        return keyset;
+        return entrySet;
     }
 
     // add foreach lambda
-    using foreachCallback = std::function<int(T, U)>;
-    inline void foreach (foreachCallback callback) {
-        for (auto it = hashmap.begin(); it != hashmap.end(); it++) {
-            if (callback(it->first, it->second) == Global::Break) {
-                break;
-            }
-        }
-    }
+    //using foreachCallback = std::function<int(T, U)>;
+    //inline void foreach (foreachCallback callback) {
+    //    for (auto it = hashmap.begin(); it != hashmap.end(); it++) {
+    //        if (callback(it->first, it->second) == Global::Break) {
+    //            break;
+    //        }
+    //    }
+    //}
 
     U &operator[](const T &k) { return hashmap[k]; }
 
@@ -238,6 +252,10 @@ DECLARE_TEMPLATE_CLASS(MapIterator, T,U) {
         }
 
         iterator = mHashMap->hashmap.erase(iterator);
+    }
+
+    Pair<T,U> getItem() {
+        return createPair<T,U>(iterator->first,iterator->second);
     }
 
   private:

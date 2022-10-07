@@ -68,11 +68,10 @@ public:
         return map;
     }
 
-    //remove this function,iterator is not threadsafe
-    //MapIterator<T,U> getIterator() {
-    //    AutoLock l(rdLock);
-    //    return mMap->getIterator();
-    //}
+    MapIterator<T,U> getIterator() {
+        AutoLock l(rdLock);
+        return mMap->getIterator();
+    }
 
     ArrayList<U> entrySet() {
         AutoLock l(rdLock);
@@ -84,6 +83,7 @@ public:
         return mMap->keySet();
     }
 
+    /*
     void foreach(std::function<int(const T&,const U&)> f,
                  std::function<void()> after = nullptr) {
         auto lock = ((after == nullptr)?Cast<Lock>(rdLock):Cast<Lock>(wrLock));
@@ -101,7 +101,12 @@ public:
             after();
             return;
         }
+    }*/
+
+    Lock acquireReadLock() {
+        return rdLock;
     }
+
 
 private:
     HashMap<T, U> mMap;

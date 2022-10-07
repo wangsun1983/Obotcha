@@ -1,3 +1,18 @@
+/**
+ * @file Handler.hpp
+ * @brief A Handler allows you to send and process and Runnable
+ *        objects associated with a thread's MessageQueue.
+ *        Each Handler instance is associated with a single thread.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
+
 #ifndef __OBOTCHA_HANDLER_HPP__
 #define __OBOTCHA_HANDLER_HPP__
 
@@ -39,13 +54,15 @@ public:
 
     int sendMessage(sp<_Message>);
 
+    int sendMessageAtFrontOfQueue(Message msg);
+
     virtual void handleMessage(sp<_Message> msg);
 
     bool hasMessage(int what);
 
     void removeMessages(int what);
 
-    void run();
+    void removeCallbacks(sp<_Runnable> r);
 
     template <typename X> int post(sp<X> r) { 
         return postDelayed(0, r); 
@@ -73,6 +90,7 @@ public:
 
 private:
     bool isRunning();
+    void run();
 
     Mutex mMutex;
     Condition mCondition;

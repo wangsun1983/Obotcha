@@ -95,6 +95,9 @@ public:
         return true;
     }
 
+    T getItem() { return *iterator; }
+
+
 private:
     HashSet<T> mList;
     typename std::unordered_set<T, KeyHash<T>, KeyComapre<T>>::iterator

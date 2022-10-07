@@ -159,21 +159,39 @@ DECLARE_TEMPLATE_CLASS(BlockingLinkedList, T) {
         return index;
     }
 
+    /*
     inline void foreach (std::function<int(const T&)> callback,std::function<void()> after = nullptr) {
         AutoLock l(mMutex);
-        mList->foreach ([&callback](T v) { return callback(v); });
+        //mList->foreach ([&callback](T v) { return callback(v); });
+        ForEveryOne(c,mList) {
+            callback(c);
+        }
+        
         if(after != nullptr) {
           after();
         }
+    }
+    */
+    Lock acquireReadLock() {
+        return mMutex;
     }
 
     ArrayList<T> toArray() {
         AutoLock l(mMutex);
         ArrayList<T> list = createArrayList<T>();
-        mList->foreach ([&list](T value) {
-            list->add(value);
-            return Global::Continue;
-        });
+        //mList->foreach ([&list](T value) {
+        //    list->add(value);
+        //    return Global::Continue;
+        //});
+        //ForEveryOne(v,mList) {
+        //    list->add(v);
+        //}
+        auto iterator = mList->getIterator();
+        while(iterator->hasValue()) {
+            list->add(iterator->getValue());
+            iterator->next();
+        }
+
         return list;
     }
 

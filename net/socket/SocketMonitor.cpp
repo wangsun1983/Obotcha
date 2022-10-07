@@ -81,7 +81,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
                                 }
                                 break;
                             }
-                            
+
                             if (task == nullptr) {
                                 monitor->mCondition->wait(monitor->mMutex);
                                 continue;

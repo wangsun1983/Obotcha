@@ -129,14 +129,14 @@ public:
     }
 
     // add foreach lambda
-    using foreachCallback = std::function<int(T &)>;
-    inline void foreach (foreachCallback callback) {
-        for (T &value : elements) {
-            if (callback(value) == Global::Break) {
-                break;
-            }
-        }
-    }
+    //using foreachCallback = std::function<int(T &)>;
+    //inline void foreach (foreachCallback callback) {
+    //    for (T &value : elements) {
+    //        if (callback(value) == Global::Break) {
+    //            break;
+    //        }
+    //    }
+    //}
 
     inline int removeAll(const sp<_ArrayList<T>> &val) {
         int valsize = val->size();
@@ -303,6 +303,13 @@ public:
 
     void insert(T value) {
         iterator = mList->elements.insert(iterator, value);
+    }
+
+    T getItem() {
+        if (iterator == mList->end()) {
+            Trigger(ArrayIndexOutOfBoundsException, "no data");
+        }
+        return *iterator;
     }
 
 private:

@@ -1,4 +1,5 @@
 #include "HttpLinkerManager.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -26,10 +27,13 @@ void _HttpLinkerManager::remove(sp<_HttpLinker> linker) {
 
 void _HttpLinkerManager::clear() {
     AutoLock l(mWriteLock);
-    mClients->foreach([](Socket s,HttpLinker l){
-        l->close();
-        return Global::Continue;
-    });
+    //mClients->foreach([](Socket s,HttpLinker l){
+    //    l->close();
+    //    return Global::Continue;
+    //});
+    ForEveryOne(pair,mClients) {
+        pair->getValue()->close();
+    }
     mClients->clear();
 }
 

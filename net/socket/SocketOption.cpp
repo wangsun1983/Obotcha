@@ -271,13 +271,15 @@ int _SocketOption::getSndTimeout() { return mSendTimeout; }
 
 void _SocketOption::getBindToDevice(struct ifreq *v) {
     if (mBindToDevice != nullptr) {
-        memcpy(mBindToDevice, v, sizeof(struct ifreq));
+        //memcpy(mBindToDevice, v, sizeof(struct ifreq));
+        memcpy(v,mBindToDevice, sizeof(struct ifreq));
     }
 }
 
 void _SocketOption::getAttachFilter(struct sock_fprog *v) {
     if (mAttachFilter != nullptr) {
-        memcpy(mAttachFilter, v, sizeof(struct sock_fprog));
+        //memcpy(mAttachFilter, v, sizeof(struct sock_fprog));
+        memcpy(v,mAttachFilter,sizeof(struct sock_fprog));
     }
 }
 

@@ -7,6 +7,7 @@
 #include "InitializeException.hpp"
 #include "Log.hpp"
 #include "HttpMime.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -83,13 +84,19 @@ ArrayList<HttpPacket> _HttpPacketParserImpl::doParse() {
                 //check whether there is a chunck transfer
                 if(transferEncoding != nullptr) {
                     ArrayList<String> encodings = transferEncoding->get();    
-                    encodings->foreach([&isTransferChuncked](String s) {
+                    //encodings->foreach([&isTransferChuncked](String s) {
+                    //    if(s->equalsIgnoreCase(st(HttpHeader)::TransferChunked)) {
+                    //        isTransferChuncked = true;
+                    //        return Global::Break;   
+                    //    }
+                    //    return Global::Continue;
+                    //});
+                    ForEveryOne(s,encodings) {
                         if(s->equalsIgnoreCase(st(HttpHeader)::TransferChunked)) {
                             isTransferChuncked = true;
-                            return Global::Break;   
+                            break;
                         }
-                        return Global::Continue;
-                    });
+                    }
                 }
 
                 if (isTransferChuncked) {

@@ -62,6 +62,7 @@ public:
         return mSets->size();
     }
 
+/*
     void foreach(std::function<int(const T &)> f,std::function<void()> after = nullptr) {
         auto lock = ((after == nullptr)?Cast<Lock>(rdLock):Cast<Lock>(wrLock));
         AutoLock l(lock);
@@ -79,12 +80,17 @@ public:
             return;
         }
     }
+*/
 
-    //remove this function,iterator is not threadsafe
-    //HashSetIterator<T> getIterator() {
-    //    AutoLock l(rdLock);
-    //    return mSets->getIterator();
-    //}
+    Lock acquireReadLock() {
+        return rdLock;
+    }
+
+
+    HashSetIterator<T> getIterator() {
+        AutoLock l(rdLock);
+        return mSets->getIterator();
+    }
 
     HashSet<T> toSet() {
         AutoLock l(rdLock);

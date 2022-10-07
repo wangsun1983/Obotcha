@@ -15,12 +15,16 @@ public:
     friend class _Condition;
     friend class _ProcessCondition;
     AutoLock(Lock lock){
-        lock->lock();
-        mLock = lock;
+        if(lock != nullptr) {
+            lock->lock();
+            mLock = lock;
+        }
     }
 
     ~AutoLock() {
-        mLock->unlock();
+        if(mLock != nullptr) {
+            mLock->unlock();
+        }
     }
 
 private:

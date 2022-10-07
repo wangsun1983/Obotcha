@@ -2,6 +2,7 @@
 
 #include "SignalCatcher.hpp"
 #include "AutoLock.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -21,10 +22,13 @@ void _handleSignal(int sig) {
     SignalCatcher catcher = st(SignalCatcher)::getInstance();
     AutoLock l(catcher->mMutex);
     ArrayList<SignalListener> list = catcher->mListenersMap->get(createInteger(sig));
-    list->foreach([&sig](SignalListener l) {
-        l->onSignal(sig);
-        return 1;
-    });
+    //list->foreach([&sig](SignalListener l) {
+    //    l->onSignal(sig);
+    //    return 1;
+    //});
+    ForEveryOne(ll,list) {
+        ll->onSignal(sig);
+    }
 }
 
 void _ignoreSignal(int) {

@@ -9,6 +9,7 @@
 #include "Thread.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "TimeWatcher.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
@@ -82,12 +83,18 @@ int _ThreadPoolExecutor::shutdown() {
     updateStatus(ShutDown);
 
     //mPool->freeze();
-    mPool->foreach ([](const ExecutorTask &task) {
+    
+    //mPool->foreach ([](const ExecutorTask &task) {
+    //    task->cancel();
+    //    return Global::Continue;
+    //},[this]() {
+    //  mPool->destroy();
+    //});
+    ForEveryOne(task,mPool) {
         task->cancel();
-        return Global::Continue;
-    },[this]() {
-      mPool->destroy();
-    });
+    }
+
+    mPool->destroy();
 
     //mPool->unfreeze();
 
@@ -103,23 +110,33 @@ int _ThreadPoolExecutor::shutdown() {
     }
 
     // interrupt all thread
-    mHandlers->foreach ([](Thread t) {
+    //mHandlers->foreach ([](Thread t) {
+    //    t->interrupt();
+    //    return Global::Continue;
+    //});
+    ForEveryOne(t,mHandlers) {
         t->interrupt();
-        return Global::Continue;
-    });
+    }
 
     return 0;
 }
 
 bool _ThreadPoolExecutor::isTerminated() {
     bool isAllTerminated = true;
-    mHandlers->foreach ([&isAllTerminated](Thread &t) {
+    ForEveryOne(t,mHandlers) {
         if (t->getStatus() != st(Thread)::Complete) {
             isAllTerminated = false;
-            return Global::Break;
+            break;
         }
-        return Global::Continue;
-    });
+    }
+    
+    //mHandlers->foreach ([&isAllTerminated](Thread &t) {
+    //    if (t->getStatus() != st(Thread)::Complete) {
+    //        isAllTerminated = false;
+    //        return Global::Break;
+    //    }
+    //    return Global::Continue;
+    //});
 
     return isAllTerminated;
 }
