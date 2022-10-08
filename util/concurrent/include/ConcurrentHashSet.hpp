@@ -62,37 +62,13 @@ public:
         return mSets->size();
     }
 
-/*
-    void foreach(std::function<int(const T &)> f,std::function<void()> after = nullptr) {
-        auto lock = ((after == nullptr)?Cast<Lock>(rdLock):Cast<Lock>(wrLock));
-        AutoLock l(lock);
-
-        auto iterator = mSets->getIterator();
-        while(iterator->hasValue()) {
-            if(f(iterator->getValue()) != Continue) {
-                break;
-            }
-            iterator->next();
-        }
-
-        if(after != nullptr) {
-            after();
-            return;
-        }
-    }
-*/
-
     Lock acquireReadLock() {
         return rdLock;
     }
 
 
     HashSetIterator<T> getIterator() {
-        if(rdwrLock->isOwner()) {
-            return mSets->getIterator();
-        }
-
-        return nullptr;
+        return mSets->getIterator();
     }
 
     HashSet<T> toSet() {

@@ -47,9 +47,9 @@ Lock __forEveryOneAcquireLock(sp<_BlockingLinkedList<U>> list) {
 
 #define ForEveryOne(X,Y) \
     auto X##__m_lock = __forEveryOneAcquireLock(Y);\
-    AutoLock X##__forEveryOne_l(X##__m_lock);\
     auto X##__iterator = Y->getIterator();\
-    for(auto X = X##__iterator->getItem();\
+    auto X = X##__iterator->getItem();\
+    for(AutoLock X##__forEveryOne_l(X##__m_lock);\
     X##__iterator->hasValue();\
     X##__iterator->next(),X##__iterator->hasValue()?X = X##__iterator->getItem():X=X)
 

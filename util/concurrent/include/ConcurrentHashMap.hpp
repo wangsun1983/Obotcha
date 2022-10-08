@@ -69,10 +69,7 @@ public:
     }
 
     MapIterator<T,U> getIterator() {
-        if(rdwrLock->isOwner()) {
-            return mMap->getIterator();
-        }
-        return nullptr;
+        return mMap->getIterator();
     }
 
     ArrayList<U> entrySet() {
@@ -84,26 +81,6 @@ public:
         AutoLock l(rdLock);
         return mMap->keySet();
     }
-
-    /*
-    void foreach(std::function<int(const T&,const U&)> f,
-                 std::function<void()> after = nullptr) {
-        auto lock = ((after == nullptr)?Cast<Lock>(rdLock):Cast<Lock>(wrLock));
-        AutoLock l(lock);
-
-        auto iterator = mMap->getIterator();
-        while(iterator->hasValue()) {
-            if(f(iterator->getKey(),iterator->getValue()) != Continue) {
-                break;
-            }
-            iterator->next();
-        }
-
-        if(after != nullptr) {
-            after();
-            return;
-        }
-    }*/
 
     Lock acquireReadLock() {
         return rdLock;
