@@ -61,7 +61,11 @@ sp<_String> _Uint32::toString(uint32_t i) {
     return createString(_Number::toDecString(i));
 }
 
-sp<_Uint32> _Uint32::parseDecUint32(const sp<_String> &v) {
+sp<_Uint32> _Uint32::parse(const sp<_String> &v) {
+    return parseDecString(v);
+}
+
+sp<_Uint32> _Uint32::parseDecString(const sp<_String> &v) {
     try {
         uint32_t value = _Number::parseDecNumber(v->getStdString());
         return createUint32(value);
@@ -71,7 +75,7 @@ sp<_Uint32> _Uint32::parseDecUint32(const sp<_String> &v) {
     return nullptr;
 }
 
-sp<_Uint32> _Uint32::parseHexUint32(const sp<_String> &v) {
+sp<_Uint32> _Uint32::parseHexString(const sp<_String> &v) {
     try {
         uint32_t value = _Number::parseHexNumber(v->getStdString());
         return createUint32(value);
@@ -82,7 +86,7 @@ sp<_Uint32> _Uint32::parseHexUint32(const sp<_String> &v) {
     return nullptr;
 }
 
-sp<_Uint32> _Uint32::parseOctUint32(const sp<_String> &v) {
+sp<_Uint32> _Uint32::parseOctString(const sp<_String> &v) {
     try {
         uint32_t value = _Number::parseOctNumber(v->getStdString());
         return createUint32(value);
@@ -93,7 +97,7 @@ sp<_Uint32> _Uint32::parseOctUint32(const sp<_String> &v) {
     return nullptr;
 }
 
-sp<_Uint32> _Uint32::parseBinaryUint32(const sp<_String> &v) {
+sp<_Uint32> _Uint32::parseBinaryString(const sp<_String> &v) {
     try {
         uint32_t value = _Number::parseBinaryNumber(v->getStdString());
         return createUint32(value);

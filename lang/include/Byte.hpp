@@ -4,14 +4,12 @@
 #include "Number.hpp"
 #include "Object.hpp"
 
-
 namespace obotcha {
 
 class _String;
 
 #define byte uint8_t
 
-//define uint16_t to avoid sstream change assic to character.
 DECLARE_CLASS(Byte) IMPLEMENTS(Number)<uint8_t> {
 public:
     static const int __isReflected = 1;
@@ -21,6 +19,8 @@ public:
     _Byte(unsigned char v);
 
     _Byte(const Byte &v);
+
+    _Byte(sp<_String> &v);
 
     byte toValue();
 
@@ -32,7 +32,7 @@ public:
 
     void update(byte v);
 
-    void update(const sp<_Byte> v);
+    void update(const sp<_Byte> &v);
 
     sp<_String> toHexString();
 
@@ -44,13 +44,15 @@ public:
 
     static sp<_String> toString(byte i);
 
-    static sp<_Byte> parseDecByte(const sp<_String>);
+    static sp<_Byte> parse(const sp<_String> &);
 
-    static sp<_Byte> parseHexByte(const sp<_String>);
+    static sp<_Byte> parseDecString(const sp<_String> &);
 
-    static sp<_Byte> parseOctByte(const sp<_String>);
+    static sp<_Byte> parseHexString(const sp<_String> &);
 
-    static sp<_Byte> parseBinaryByte(const sp<_String>);
+    static sp<_Byte> parseOctString(const sp<_String> &);
+
+    static sp<_Byte> parseBinaryString(const sp<_String> &);
 
     static sp<_String> className();
 

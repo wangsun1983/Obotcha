@@ -61,7 +61,11 @@ sp<_String> _Uint64::toString(uint64_t i) {
     return createString(_Number::toDecString(i));
 }
 
-sp<_Uint64> _Uint64::parseDecUint64(const sp<_String> &v) {
+sp<_Uint64> _Uint64::parse(const sp<_String> &v) {
+    return nullptr;
+}
+
+sp<_Uint64> _Uint64::parseDecString(const sp<_String> &v) {
     try {
         uint64_t value = _Number::parseDecNumber(v->getStdString());
         return createUint64(value);
@@ -71,7 +75,7 @@ sp<_Uint64> _Uint64::parseDecUint64(const sp<_String> &v) {
     return nullptr;
 }
 
-sp<_Uint64> _Uint64::parseHexUint64(const sp<_String> &v) {
+sp<_Uint64> _Uint64::parseHexString(const sp<_String> &v) {
     try {
         uint64_t value = _Number::parseHexNumber(v->getStdString());
         return createUint64(value);
@@ -82,7 +86,7 @@ sp<_Uint64> _Uint64::parseHexUint64(const sp<_String> &v) {
     return nullptr;
 }
 
-sp<_Uint64> _Uint64::parseOctUint64(const sp<_String> &v) {
+sp<_Uint64> _Uint64::parseOctString(const sp<_String> &v) {
     try {
         uint64_t value = _Number::parseOctNumber(v->getStdString());
         return createUint64(value);
@@ -93,7 +97,7 @@ sp<_Uint64> _Uint64::parseOctUint64(const sp<_String> &v) {
     return nullptr;
 }
 
-sp<_Uint64> _Uint64::parseBinaryUint64(const sp<_String> &v) {
+sp<_Uint64> _Uint64::parseBinaryString(const sp<_String> &v) {
     try {
         uint32_t value = _Number::parseBinaryNumber(v->getStdString());
         return createUint64(value);

@@ -120,18 +120,6 @@ public:
         return data;
     }
 
-    // add foreach lambda
-    //using foreachCallback = std::function<int(T)>;
-    //inline void foreach (foreachCallback callback) {
-    //    LinkedListData<T> current = head;
-    //    while (current != nullptr) {
-    //        if (callback(current->data) == Global::Break) {
-    //            break;
-    //        }
-    //        current = current->next;
-    //    }
-    //}
-
     sp<_LinkedListIterator<T>> getIterator() {
         return new _LinkedListIterator<T>(this);
     }
@@ -160,7 +148,7 @@ public:
 
         T result = iterator->getValue();
         iterator->remove();
-        count--;
+        //count--;
         return result;
     }
 
@@ -170,7 +158,7 @@ public:
         while (iterator->hasValue()) {
             if (iterator->getValue() == v) {
                 iterator->remove();
-                count--;
+                //count--;
                 return index;
             }
             index++;

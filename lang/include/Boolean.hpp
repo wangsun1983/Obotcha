@@ -43,6 +43,10 @@ public:
 
     bool logicAnd(const sp<_Boolean>&);
 
+    bool logicXor(bool);
+
+    bool logicXor(const sp<_Boolean>&);
+
     uint64_t hashcode();
 
     static sp<_Boolean> parse(const sp<_String> &);
@@ -50,14 +54,6 @@ public:
     static sp<_Boolean> parse(const char *);
 
     static sp<_Boolean> parse(bool);
-
-    static const sp<_Boolean> False;
-
-    static const sp<_Boolean> True;
-
-    static const sp<_String> FalseString;
-
-    static const sp<_String> TrueString;
 
     static sp<_String> className();
 

@@ -30,20 +30,16 @@ float _Float::toValue() {
 }
 
 sp<_Float> _Float::parse(sp<_String> s) {
-    _NumberChecker_<float> checker;
-    auto str = s->getStdString();
-
-    if(!checker._isCorrectDecInputNumber(str)) {
-        return nullptr;
+    if(s == nullptr) {
+        Trigger(NullPointerException, "Object is null");
     }
 
     try {
-        float v = _Number<float>::parseNumber(str);
+        float v = _Number<float>::parseNumber(s->getStdString());
         return createFloat(v);
     } catch (int e) {
     }
 
-Fail:
     return nullptr;
 }
 
@@ -58,21 +54,37 @@ bool _Float::isEqual(float x, float y) {
            || std::fabs(x - y) < std::numeric_limits<float>::min();
 }
 
-bool _Float::equals(Float &p) { return isEqual(p->val, val); }
+bool _Float::equals(Float &p) { 
+    return isEqual(p->val, val); 
+}
 
-bool _Float::equals(const _Float *p) { return isEqual(p->val, val); }
+bool _Float::equals(const _Float *p) { 
+    return isEqual(p->val, val); 
+}
 
-bool _Float::equals(float p) { return isEqual(val, p); }
+bool _Float::equals(float p) { 
+    return isEqual(val, p); 
+}
 
-uint64_t _Float::hashcode() { return std::hash<float>{}(val); }
+uint64_t _Float::hashcode() { 
+    return std::hash<float>{}(val); 
+}
 
-String _Float::toString() { return createString(this->val); }
+String _Float::toString() { 
+    return createString(this->val); 
+}
 
-void _Float::update(float v) { val = v; }
+void _Float::update(float v) { 
+    val = v; 
+}
 
-void _Float::update(sp<_Float> v) { val = v->val; }
+void _Float::update(sp<_Float> v) { 
+    val = v->val; 
+}
 
-sp<_String> _Float::className() { return createString("Float"); }
+sp<_String> _Float::className() { 
+    return createString("Float"); 
+}
 
 _Float::~_Float() {}
 

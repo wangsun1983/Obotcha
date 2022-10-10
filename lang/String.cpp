@@ -395,23 +395,23 @@ int _String::find(String s,int start) {
 }
 
 Integer _String::toInteger() {
-    return st(Integer)::parseDecInt(AutoClone(this));
+    return st(Integer)::parseDecString(AutoClone(this));
 }
 
 Integer _String::toHexInt() {
-    return st(Integer)::parseHexInt(AutoClone(this));
+    return st(Integer)::parseHexString(AutoClone(this));
 }
 
 Integer _String::toOctInt() {
-    return st(Integer)::parseOctInt(AutoClone(this));
+    return st(Integer)::parseOctString(AutoClone(this));
 }
 
 Integer _String::toBinaryInt() {
-    return st(Integer)::parseBinaryInt(AutoClone(this));
+    return st(Integer)::parseBinaryString(AutoClone(this));
 }
 
 Byte _String::toByte() {
-    return st(Byte)::parseDecByte(AutoClone(this));
+    return st(Byte)::parseDecString(AutoClone(this));
 }
 
 Boolean _String::toBoolean() {
@@ -431,19 +431,19 @@ Long _String::toLong() {
 }
 
 Uint8 _String::toUint8() {
-    return st(Uint8)::parseDecUint8(AutoClone(this));
+    return st(Uint8)::parseDecString(AutoClone(this));
 }
 
 Uint16 _String::toUint16() {
-    return st(Uint16)::parseDecUint16(AutoClone(this));
+    return st(Uint16)::parseDecString(AutoClone(this));
 }
 
 Uint32 _String::toUint32() {
-    return st(Uint32)::parseDecUint32(AutoClone(this));
+    return st(Uint32)::parseDecString(AutoClone(this));
 }
 
 Uint64 _String::toUint64() {
-    return st(Uint64)::parseDecUint64(AutoClone(this));
+    return st(Uint64)::parseDecString(AutoClone(this));
 }
 
 uint8_t _String::toBasicUint8() {

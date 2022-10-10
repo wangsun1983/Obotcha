@@ -20,13 +20,12 @@
 
 namespace obotcha {
 
-const sp<_Boolean> _Boolean::False = createBoolean(false);
+#define __VAL_TRUE__ 0
+#define __VAL_FALSE__ 1    
+#define __VAL_INVALID__ -1
 
-const sp<_Boolean> _Boolean::True = createBoolean(true);
-
-const sp<_String> _Boolean::FalseString = createString("False");
-
-const sp<_String> _Boolean::TrueString = createString("True");
+#define __STRING_FALSE__ "false"
+#define __STRING_TRUE__ "true"
 
 _Boolean::_Boolean() : val(true) {
     //nothing
@@ -36,16 +35,18 @@ _Boolean::_Boolean(bool v) : val(v) {
     //nothing
 }
 
-_Boolean::_Boolean(const char *s) : _Boolean(createString(s)) {}
+_Boolean::_Boolean(const char *s) : _Boolean(createString(s)) {
+    //nothing
+}
 
 _Boolean::_Boolean(const sp<_String> str) {
     int value = _Boolean::_parse(str);
     switch (value) {
-    case 1:
+    case __VAL_TRUE__:
         this->val = true;
         return;
 
-    case 0:
+    case __VAL_FALSE__:
         this->val = false;
         return;
     }
@@ -85,49 +86,56 @@ bool _Boolean::equals(bool p) {
 }
 
 sp<_String> _Boolean::toString() {
-    if (val) {
-        return TrueString;
-    }
-
-    return FalseString;
+    return val?createString(__STRING_TRUE__):createString(__STRING_FALSE__);
 }
 
 bool _Boolean::logicOr(bool v) {
     val |= v;
-
     return val;
 }
 
 bool _Boolean::logicOr(const sp<_Boolean> &v) {
     val |= v->toValue();
-
     return val;
 }
 
 bool _Boolean::logicAnd(bool v) {
     val &= v;
-
     return val;
 }
 
 bool _Boolean::logicAnd(const sp<_Boolean> &v) {
     val &= v->toValue();
-
     return val;
 }
 
+bool _Boolean::logicXor(bool v) {
+    val = val ^ v;
+    return val;
+}
+
+bool _Boolean::logicXor(const sp<_Boolean>&v) {
+    val = val ^ v->toValue();
+    return val;   
+}
+
+
 uint64_t _Boolean::hashcode() { 
-    return std::hash<bool>{}(val); 
+    return val?2097 : 144;
 }
 
 sp<_Boolean> _Boolean::parse(const sp<_String> &str) {
+    if(str == nullptr) {
+        Trigger(NullPointerException, "Parse String is null");
+    }
+
     int value = _Boolean::_parse(str);
     switch (value) {
-    case 1:
-        return createBoolean(true);
+        case __VAL_TRUE__:
+            return createBoolean(true);
 
-    case 0:
-        return createBoolean(false);
+        case __VAL_FALSE__:
+            return createBoolean(false);
     }
 
     return nullptr;
@@ -147,15 +155,15 @@ sp<_String> _Boolean::className() {
 
 int _Boolean::_parse(sp<_String> str) {
     String trimStr = str->trimAll();
-    if(trimStr->equalsIgnoreCase("true")) {
-        return 1;
+    if(trimStr->equalsIgnoreCase(__STRING_TRUE__)) {
+        return __VAL_TRUE__;
     }
 
-    if(trimStr->equalsIgnoreCase("false")) {
-        return 0;
+    if(trimStr->equalsIgnoreCase(__STRING_FALSE__)) {
+        return __VAL_FALSE__;
     }
 
-    return -1;
+    return __VAL_INVALID__;
 }
 
 _Boolean::~_Boolean() {}

@@ -19,25 +19,49 @@
 
 namespace obotcha {
 
-_Byte::_Byte() : val(0) {}
+_Byte::_Byte() : val(0) {
+    //nothing
+}
 
-_Byte::_Byte(byte v) : val(v) {}
+_Byte::_Byte(byte v) : val(v) {
+    //nothing
+}
 
-_Byte::_Byte(const Byte &v) { val = v->val; }
+_Byte::_Byte(const Byte &v) { 
+    val = v->val; 
+}
 
-byte _Byte::toValue() { return val; }
+_Byte::_Byte(sp<_String> &v) {
+    val = _Number::parseDecNumber(v->getStdString());
+}
 
-bool _Byte::equals(const Byte &p) { return val == p->val; }
+byte _Byte::toValue() { 
+    return val;
+}
 
-bool _Byte::equals(byte p) { return val == p; }
+bool _Byte::equals(const Byte &p) { 
+    return val == p->val; 
+}
 
-bool _Byte::equals(const _Byte *p) { return val == p->val; }
+bool _Byte::equals(byte p) { 
+    return val == p; 
+}
 
-void _Byte::update(byte v) { val = v; }
+bool _Byte::equals(const _Byte *p) { 
+    return val == p->val; 
+}
 
-void _Byte::update(const sp<_Byte> v) { val = v->val; }
+void _Byte::update(byte v) { 
+    val = v;
+}
 
-uint64_t _Byte::hashcode() { return std::hash<byte>{}(val); }
+void _Byte::update(const sp<_Byte> &v) { 
+    val = v->val; 
+}
+
+uint64_t _Byte::hashcode() { 
+    return std::hash<byte>{}(val); 
+}
 
 sp<_String> _Byte::toHexString() {
     Integer v = createInteger(val);
@@ -64,22 +88,23 @@ sp<_String> _Byte::toString(byte i) {
     return v->toString();
 }
 
-sp<_Byte> _Byte::parseDecByte(const sp<_String> v) {
+sp<_Byte> _Byte::parse(const sp<_String> &v) {
+    return parseDecString(v);
+}
+
+sp<_Byte> _Byte::parseDecString(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        byte value = _Number::parseDecNumber(pa->getStdString());
+        byte value = _Number::parseDecNumber(v->getStdString());
         return createByte(value);
-    } catch (int e) {
-    }
+    } catch(...){}
 
     return nullptr;
 }
 
-sp<_Byte> _Byte::parseHexByte(const sp<_String> v) {
+sp<_Byte> _Byte::parseHexString(const sp<_String> &v) {
     // check whether 0xaaa
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        int value = _Number::parseHexNumber(pa->getStdString());
+        byte value = _Number::parseHexNumber(v->getStdString());
         return createByte(value);
     } catch (...) {
         // nothing
@@ -88,10 +113,9 @@ sp<_Byte> _Byte::parseHexByte(const sp<_String> v) {
     return nullptr;
 }
 
-sp<_Byte> _Byte::parseOctByte(const sp<_String> v) {
+sp<_Byte> _Byte::parseOctString(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        int value = _Number::parseOctNumber(pa->getStdString());
+        byte value = _Number::parseOctNumber(v->getStdString());
         return createByte(value);
     } catch (...) {
         // nothing
@@ -100,10 +124,9 @@ sp<_Byte> _Byte::parseOctByte(const sp<_String> v) {
     return nullptr;
 }
 
-sp<_Byte> _Byte::parseBinaryByte(const sp<_String> v) {
+sp<_Byte> _Byte::parseBinaryString(const sp<_String> &v) {
     try {
-        String pa = v->trimAll()->replaceAll("\n","")->replaceAll("\r","");
-        int value = _Number::parseBinaryNumber(pa->getStdString());
+        byte value = _Number::parseBinaryNumber(v->getStdString());
         return createByte(value);
     } catch (...) {
         // nothing
@@ -112,7 +135,9 @@ sp<_Byte> _Byte::parseBinaryByte(const sp<_String> v) {
     return nullptr;
 }
 
-sp<_String> _Byte::className() { return createString("Byte"); }
+sp<_String> _Byte::className() { 
+    return createString("Byte"); 
+}
 
 _Byte::~_Byte() {}
 

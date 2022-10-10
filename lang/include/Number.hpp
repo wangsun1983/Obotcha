@@ -12,8 +12,6 @@
 
 namespace obotcha {
 
-class _String;
-
 template <typename T> class _NumberParser_ {
   public:
     T convert(std::string v) {
@@ -343,14 +341,16 @@ _NUMBER_CHECK_DECLARE_DOUBLE(float)
 
 DECLARE_TEMPLATE_CLASS(Number, T){
 
-    public : static T parseNumber(std::string v){_NumberChecker_<T> checker;
-if (!checker._isCorrectDecInputNumber(v)) {
-    throw(-1);
-}
+public:
+static T parseNumber(std::string v){
+    _NumberChecker_<T> checker;
+    if (!checker._isCorrectDecInputNumber(v)) {
+        throw(-1);
+    }
 
-_NumberParser_<T> parser;
-return parser.convert(v);
-} // namespace obotcha
+    _NumberParser_<T> parser;
+    return parser.convert(v);
+}
 
 protected:
 static void binaryRecursion(T n, std::stringstream &ss) {
@@ -451,8 +451,7 @@ static T parseBinaryNumber(std::string v) {
 
     return parseBinary;
 }
-}
-;
+};
 
 } // namespace obotcha
 

@@ -50,34 +50,42 @@ bool _Double::isEqual(double x, double y) {
 }
 
 sp<_Double> _Double::parse(sp<_String> s) {
-    _NumberChecker_<double> checker;
-    auto str = s->getStdString();
-
-    if(!checker._isCorrectDecInputNumber(str)) {
-        return nullptr;
+    if (s == nullptr) {
+        Trigger(NullPointerException, "Object is null");
     }
 
     try {
-        double v = _Number<double>::parseNumber(str);
+        double v = _Number<double>::parseNumber(s->getStdString());
         return createDouble(v);
     } catch (int e) {
     }
 
-Fail:
     return nullptr;
 }
 
-bool _Double::equals(const _Double *p) { return equals(p->val); }
+bool _Double::equals(const _Double *p) { 
+    return equals(p->val); 
+}
 
-void _Double::update(double v) { this->val = v; }
+void _Double::update(double v) { 
+    this->val = v; 
+}
 
-void _Double::update(const sp<_Double> &v) { this->val = v->val; }
+void _Double::update(const sp<_Double> &v) { 
+    this->val = v->val; 
+}
 
-sp<_String> _Double::className() { return createString("Double"); }
+sp<_String> _Double::className() { 
+    return createString("Double"); 
+}
 
-sp<_String> _Double::toString() { return createString(val); }
+sp<_String> _Double::toString() { 
+    return createString(val); 
+}
 
-uint64_t _Double::hashcode() { return std::hash<double>{}(val); }
+uint64_t _Double::hashcode() { 
+    return std::hash<double>{}(val);
+}
 
 _Double::~_Double() {}
 
