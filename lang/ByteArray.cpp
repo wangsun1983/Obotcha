@@ -33,7 +33,7 @@ _ByteArray::_ByteArray():_ByteArray(DefaultSize) {
 _ByteArray::_ByteArray(sp<_ByteArray> &data, int start, int len) {
     int malloc_size = (len == 0) ? data->size() - start : len;
 
-    if (malloc_size > data->size() || malloc_size <= 0) {
+    if (malloc_size > data->size() - start || malloc_size <= 0) {
         Trigger(InitializeException, "create ByteArray overflow");
     }
 
@@ -134,7 +134,9 @@ int _ByteArray::quickShrink(int size) {
     }
 
     buff[size] = 0;
-    mOriginalSize = mSize;
+    if(mOriginalSize == -1) {
+        mOriginalSize = mSize;
+    }
     mSize = size;
     return 0;
 }

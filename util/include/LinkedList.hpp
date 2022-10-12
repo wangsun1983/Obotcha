@@ -230,7 +230,12 @@ public:
         return true;
     }
 
-    T getItem() { return current->data; }
+    T getItem() {
+        if(mList->count == 0) {
+            Trigger(ArrayIndexOutOfBoundsException, "no data");
+        }
+        return current->data;
+    }
 
 private:
     LinkedList<T> mList;

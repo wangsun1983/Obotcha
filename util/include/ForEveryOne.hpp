@@ -48,9 +48,15 @@ Lock __forEveryOneAcquireLock(sp<_BlockingLinkedList<U>> list) {
 #define ForEveryOne(X,Y) \
     auto X##__m_lock = __forEveryOneAcquireLock(Y);\
     auto X##__iterator = Y->getIterator();\
-    auto X = X##__iterator->getItem();\
+    bool X##__is_ok = true;\
+    decltype(X##__iterator->getItem()) X;\
+    try {\
+        X = X##__iterator->getItem();\
+    } catch(...) {\
+        X##__is_ok = false;\
+    }\
     for(AutoLock X##__forEveryOne_l(X##__m_lock);\
-    X##__iterator->hasValue();\
+    X##__iterator->hasValue() && X##__is_ok;\
     X##__iterator->next(),X##__iterator->hasValue()?X = X##__iterator->getItem():X=X)
 
 } // namespace obotcha
