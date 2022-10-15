@@ -82,6 +82,16 @@ public:
         return sets;
     }
 
+    void syncReadAction(std::function<void()> action) {
+        AutoLock l(rdLock);
+        action();
+    }
+
+    void syncWriteAction(std::function<void()> action) {
+        AutoLock l(wrLock);
+        action();
+    }
+
 private:
     ReadWriteLock rdwrLock;
     ReadLock rdLock;
