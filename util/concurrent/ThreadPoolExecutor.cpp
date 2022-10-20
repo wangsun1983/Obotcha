@@ -17,29 +17,30 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int capacity, int threadnum):_Executor(
     mPool = createBlockingLinkedList<ExecutorTask>(capacity);
     mHandlers = createArrayList<Thread>();
     mRunningTaskMutex = createMutex();
-    mRunningTasks = new ExecutorTask[threadnum];
+    mRunningTasks = createList<ExecutorTask>(threadnum);
     for (int i = 0; i < threadnum; i++) {
         Thread thread = createThread(
-            [](int id,ThreadPoolExecutor executor) {
+            [this](int id,ThreadPoolExecutor executor) {
+                auto exec = executor; //use this to keep executor instance
                 while (1) {
-                    ExecutorTask mCurrentTask = executor->mPool->takeFirst();
+                    ExecutorTask mCurrentTask = mPool->takeFirst();
 
                     if (mCurrentTask == nullptr) {
                         // clear executor to enable executor release.
-                        executor = nullptr;
+                        exec = nullptr;
                         return;
                     }
 
                     {
-                        AutoLock l(executor->mRunningTaskMutex);
-                        executor->mRunningTasks[id] = mCurrentTask;
+                        AutoLock l(mRunningTaskMutex);
+                        mRunningTasks[id] = mCurrentTask;
                     }
 
                     mCurrentTask->execute();
 
                     {
-                        AutoLock l(executor->mRunningTaskMutex);
-                        executor->mRunningTasks[id] = nullptr;
+                        AutoLock l(mRunningTaskMutex);
+                        mRunningTasks[id] = nullptr;
                     }
                 }
             },
@@ -50,15 +51,10 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int capacity, int threadnum):_Executor(
         mHandlers->add(thread);
     }
 
-    mMutex = createMutex();
     updateStatus(Executing);
 }
 
 Future _ThreadPoolExecutor::submitRunnable(Runnable r) {
-    if(isShutDown()) {
-        return nullptr;
-    }
-
     return submitTask(createExecutorTask(r));
 }
 
@@ -82,21 +78,11 @@ int _ThreadPoolExecutor::shutdown() {
 
     updateStatus(ShutDown);
 
-    //mPool->freeze();
-    
-    //mPool->foreach ([](const ExecutorTask &task) {
-    //    task->cancel();
-    //    return Global::Continue;
-    //},[this]() {
-    //  mPool->destroy();
-    //});
     ForEveryOne(task,mPool) {
         task->cancel();
     }
 
     mPool->destroy();
-
-    //mPool->unfreeze();
 
     {
         AutoLock l(mRunningTaskMutex);
@@ -109,11 +95,6 @@ int _ThreadPoolExecutor::shutdown() {
         }
     }
 
-    // interrupt all thread
-    //mHandlers->foreach ([](Thread t) {
-    //    t->interrupt();
-    //    return Global::Continue;
-    //});
     ForEveryOne(t,mHandlers) {
         t->interrupt();
     }
@@ -122,23 +103,13 @@ int _ThreadPoolExecutor::shutdown() {
 }
 
 bool _ThreadPoolExecutor::isTerminated() {
-    bool isAllTerminated = true;
     ForEveryOne(t,mHandlers) {
         if (t->getStatus() != st(Thread)::Complete) {
-            isAllTerminated = false;
-            break;
+            return false;
         }
     }
-    
-    //mHandlers->foreach ([&isAllTerminated](Thread &t) {
-    //    if (t->getStatus() != st(Thread)::Complete) {
-    //        isAllTerminated = false;
-    //        return Global::Break;
-    //    }
-    //    return Global::Continue;
-    //});
 
-    return isAllTerminated;
+    return true;
 }
 
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
@@ -147,11 +118,9 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     }
 
     bool isWaitForever = (millseconds == 0);
-    ListIterator<Thread> iterator = mHandlers->getIterator();
     TimeWatcher watcher = createTimeWatcher();
 
-    while (iterator->hasValue()) {
-        Thread handler = iterator->getValue();
+    ForEveryOne(handler,mHandlers) {
         watcher->start();
         handler->join(millseconds);
         if (!isWaitForever) {
@@ -160,7 +129,6 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
                 return -ETIMEDOUT;
             }
         }
-        iterator->next();
     }
 
     return 0;
@@ -175,7 +143,7 @@ int _ThreadPoolExecutor::getTasksNum() {
 }
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
-    delete []mRunningTasks;
+    //delete []mRunningTasks;
 }
 
 } // namespace obotcha

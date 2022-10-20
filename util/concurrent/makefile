@@ -14,6 +14,7 @@ objs += $(outtmp)/condition.o \
 	$(outtmp)/atomicuint64.o \
 	$(outtmp)/atomicuint32.o \
 	$(outtmp)/atomicuint16.o \
+	$(outtmp)/atomicuint8.o \
 	$(outtmp)/atomicbyte.o \
 	$(outtmp)/readwritelock.o \
 	$(outtmp)/executorbuilder.o \
@@ -68,6 +69,9 @@ $(outtmp)/atomicuint32.o :$(concurrentDir)/atomic/AtomicUint32.cpp
 
 $(outtmp)/atomicuint16.o :$(concurrentDir)/atomic/AtomicUint16.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicUint16.cpp -o $(outtmp)/atomicuint16.o
+
+$(outtmp)/atomicuint8.o :$(concurrentDir)/atomic/AtomicUint8.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicUint8.cpp -o $(outtmp)/atomicuint8.o
 
 $(outtmp)/atomicbyte.o :$(concurrentDir)/atomic/AtomicByte.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/atomic/AtomicByte.cpp -o $(outtmp)/atomicbyte.o

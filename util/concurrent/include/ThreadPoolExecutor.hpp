@@ -1,18 +1,28 @@
+/**
+ * @file ThreadPoolExecutor.hpp
+ * @brief An ThreadPool that executes each submitted task using
+ *        one of possibly several pooled threads, normally configured
+ *        using ExecutorBuilder factory methods.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2022-10-19
+ * @license none
+ * @history
+ */
+
 #ifndef __OBOTCHA_THREAD_POOL_EXECUTOR_HPP__
 #define __OBOTCHA_THREAD_POOL_EXECUTOR_HPP__
 
-#include <vector>
-
-#include "AutoLock.hpp"
 #include "BlockingLinkedList.hpp"
-#include "Condition.hpp"
 #include "Executor.hpp"
 #include "ExecutorTask.hpp"
 #include "Future.hpp"
-#include "Object.hpp"
 #include "Runnable.hpp"
-#include "StrongPointer.hpp"
 #include "Thread.hpp"
+#include "List.hpp"
 
 namespace obotcha {
 
@@ -37,6 +47,7 @@ public:
 
 private:
     Future submitRunnable(Runnable r);
+
     Future submitTask(ExecutorTask task);
     
     BlockingLinkedList<ExecutorTask> mPool;
@@ -44,9 +55,8 @@ private:
     ArrayList<Thread> mHandlers;
 
     Mutex mRunningTaskMutex;
-    ExecutorTask *mRunningTasks;
 
-    Mutex mMutex;
+    List<ExecutorTask> mRunningTasks;
 };
 
 } // namespace obotcha

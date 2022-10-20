@@ -151,6 +151,28 @@ ByteArray _ByteRingArray::popAll() {
     return pop(mSize);
 }
 
+void _ByteRingArray::dump(const char *tag) {
+    printf("ByteRingArry dump,%s is : \n ", tag);
+    int start = getStartIndex();
+    int end = getEndIndex();
+    
+    while(start != end) {
+        printf("data[%d] is %x \n",start,mBuff[start]);
+        start++;
+        if(start == mCapacity) {
+            start = 0;
+        }
+    }
+}
+
+
+void _ByteRingArray::dumpFull(const char * tag) {
+    printf("ByteRingArry dump,%s is : \n ", tag);
+    for(int i = 0; i < mCapacity;i++) {
+        printf("data[%d] is %x \n",i,mBuff[i]);
+    }
+}
+
 // for ByteRingArrayReader,include end
 ByteArray _ByteRingArray::popTo(int index) {
     int start = getStartIndex();

@@ -30,9 +30,9 @@ public:
 
     static void getTimeVal(long timeInterval, struct timeval *tv);
 
-    static int myPid();
+    //static int myPid();
 
-    static int myTid();
+    //static int myTid();
 
     static void closeOnExit(Closeable);
 

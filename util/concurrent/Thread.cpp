@@ -10,6 +10,8 @@
 #include "System.hpp"
 #include "Thread.hpp"
 #include "ThreadLocal.hpp"
+#include "AtomicInteger.hpp"
+#include "InterruptedException.hpp"
 
 namespace obotcha {
 
@@ -142,11 +144,9 @@ int _Thread::join(long timeInterval) {
         yield();
     }
 
-    {
-        AutoLock l(mMutex);
-        if (mStatus == Running || mStatus == Interrupting) {
-            return mJoinCondition->wait(mMutex, timeInterval);
-        }
+    AutoLock l(mMutex);
+    if (mStatus == Running || mStatus == Interrupting) {
+        return mJoinCondition->wait(mMutex, timeInterval);
     }
     return -EALREADY;
 }
@@ -250,24 +250,24 @@ int _Thread::setPriority(int priority) {
 }
 
 int _Thread::setSchedPolicy(int policy) {
-    if (!isRunning()) {
-        return -1;
-    }
+   if (!isRunning()) {
+       return -1;
+   }
 
-    return pthread_attr_setschedpolicy(&mThreadAttr, policy);
+   return pthread_attr_setschedpolicy(&mThreadAttr, policy);
 }
 
+
 int _Thread::getSchedPolicy() {
-    if (!isRunning()) {
-        return -1;
-    }
+   if (!isRunning()) {
+       return -1;
+   }
 
-    int policy = Other;
-    if (pthread_attr_getschedpolicy(&mThreadAttr, &policy) != 0) {
-        return -1;
-    }
-
-    return policy;
+   int policy = Other;
+   if (pthread_attr_getschedpolicy(&mThreadAttr, &policy) != 0) {
+       return -1;
+   }
+   return policy;
 }
 
 pthread_t _Thread::getThreadId() { 
@@ -286,22 +286,6 @@ void _Thread::sleep(unsigned long millseconds) {
         thread->_threadSleep(millseconds);
     }
 }
-
-//void _Thread::setPriority(int priority) {
-//    Thread thread = mThreads->get();
-//    if (thread != nullptr) {
-//        thread->setPriority(priority);
-//    }
-//}
-
-//int _Thread::getPriority() {
-//    Thread thread = mThreads->get();
-//    if (thread != nullptr) {
-//        return thread->getPriority();
-//    }
-//
-//    return -1;
-//}
 
 //int _Thread::setSchedPolicy(int policy) {
 //    Thread thread = mThreads->get();
@@ -331,16 +315,11 @@ bool _Thread::isRunning() {
 }
 
 void _Thread::_threadSleep(unsigned long interval) {
-    int result = 0;
-    {
-        AutoLock l(mMutex);
-        if (mStatus == Running) {
-            result = mSleepCondition->wait(mMutex, interval);
+    AutoLock l(mMutex);
+    if (mStatus == Running) {
+        if(mSleepCondition->wait(mMutex, interval) == 0) {
+            Trigger(InterruptedException, "thread interrupt while sleeping!!!");
         }
-    }
-
-    if (result == 0) {
-        Trigger(InterruptedException, "thread interrupt while sleeping!!!");
     }
 }
 
@@ -355,5 +334,7 @@ void _Thread::interrupt() {
         }
     }
 }
+
+
 
 } // namespace obotcha

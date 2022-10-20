@@ -9,8 +9,9 @@ objs += $(outtmp)/pipe.o \
 		$(outtmp)/serializable.o \
 		$(outtmp)/processmutex.o \
 		$(outtmp)/processreadwritelock.o \
-		$(outtmp)/processcondition.o		
-		
+		$(outtmp)/processcondition.o \
+		$(outtmp)/process.o \
+				
 
 $(outtmp)/pipe.o :$(processDir)/Pipe.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/Pipe.cpp -o $(outtmp)/pipe.o
@@ -44,3 +45,6 @@ $(outtmp)/signalcatcher.o :$(processDir)/SignalCatcher.cpp
 
 $(outtmp)/serializable.o :$(processDir)/Serializable.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(processDir)/Serializable.cpp -o $(outtmp)/serializable.o
+
+$(outtmp)/process.o :$(processDir)/Process.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(processDir)/Process.cpp -o $(outtmp)/process.o

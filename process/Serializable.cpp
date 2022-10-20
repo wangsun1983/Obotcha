@@ -6,11 +6,8 @@
 namespace obotcha {
 
 ByteArray _Serializable::serialize() {
-    //ByteArray outPutData = createByteArray(256);
     ByteArrayWriter writer = createByteArrayWriter();
-    //int size = calculateSize();
-    //writer->write<int>(size);
-
+    
     ArrayList<Field> fields = getAllFields();
     ListIterator<Field> iterator = fields->getIterator();
     while(iterator->hasValue()) {
@@ -57,7 +54,7 @@ ByteArray _Serializable::serialize() {
             break;
 
             case st(Field)::FieldTypeLong: {
-                writer->write<byte>(sizeof(long));
+                writer->write<int>(sizeof(long));
                 writer->write<long>(f->getLongValue());
             }
             break;
@@ -191,7 +188,7 @@ ByteArray _Serializable::serialize(Object obj) {
     } else if (IsInstance(Long, obj)) {
         //printf("toByteArray Long \n");
         Long data = Cast<Long>(obj);
-        content = createByteArray(sizeof(long));
+        content = createByteArray(sizeof(int) + sizeof(long));
         ByteArrayWriter writer = createByteArrayWriter(sizeof(int) + sizeof(long));
         writer->write<int>(sizeof(long));
         writer->write<long>(data->toValue());
@@ -209,19 +206,19 @@ ByteArray _Serializable::serialize(Object obj) {
     } else if (IsInstance(Double, obj)) {
         //printf("toByteArray double \n");
         Double data = Cast<Double>(obj);
-        String value = createString(data->toValue());
+        auto value = createString(data->toValue())->toByteArray();
         content = createByteArray(sizeof(int) + value->size());
         ByteArrayWriter writer = createByteArrayWriter(content);
         writer->write<int>(value->size());
-        writer->write(value->toByteArray());
+        writer->write(value);
     } else if (IsInstance(Float, obj)) {
         //printf("toByteArray float \n");
         Float data = Cast<Float>(obj);
-        String value = createString(data->toValue());
+        auto value = createString(data->toValue())->toByteArray();
         content = createByteArray(sizeof(int) + value->size());
         ByteArrayWriter writer = createByteArrayWriter(content);
         writer->write<int>(value->size());
-        writer->write(value->toByteArray());
+        writer->write(value);
     } else if (IsInstance(Byte, obj)) {
         //printf("toByteArray byte \n");
         Byte data = Cast<Byte>(obj);
@@ -244,7 +241,6 @@ ByteArray _Serializable::serialize(Object obj) {
         writer->write<int>(sizeof(uint16_t));
         writer->write<uint16_t>(data->toValue());
     } else if (IsInstance(Uint32, obj)) {
-        //printf("toByteArray uint32 \n");
         Uint32 data = Cast<Uint32>(obj);
         content = createByteArray(sizeof(int) + sizeof(uint32_t));
         ByteArrayWriter writer = createByteArrayWriter(content);
@@ -495,6 +491,7 @@ int _Serializable::calculateSize() {
     while(iterator->hasValue()) {
         Field f = iterator->getValue();
         int type = f->getType();
+        //size += sizeof(int); //wangsl
 
         switch(f->getType()) {
             case st(Field)::FieldTypeInt: {

@@ -47,17 +47,24 @@ Lock __forEveryOneAcquireLock(sp<_BlockingLinkedList<U>> list) {
 
 #define ForEveryOne(X,Y) \
     auto X##__m_lock = __forEveryOneAcquireLock(Y);\
-    auto X##__iterator = Y->getIterator();\
-    bool X##__is_ok = true;\
+    decltype(Y->getIterator()) X##__iterator;\
     decltype(X##__iterator->getItem()) X;\
-    try {\
-        X = X##__iterator->getItem();\
-    } catch(...) {\
-        X##__is_ok = false;\
-    }\
+    int X##_dummy = 0;\
+    auto X##_Func = ([&X##__iterator,&X](decltype(Y) container)->decltype(true){\
+        if(X##__iterator == nullptr){\
+            X##__iterator = container->getIterator();\
+            if(!X##__iterator->hasValue()) {\
+                return false;\
+            }\
+        }\
+        if(X##__iterator->hasValue()) {\
+            X = X##__iterator->getItem();\
+        }\
+        return true;\
+    });\
     for(AutoLock X##__forEveryOne_l(X##__m_lock);\
-    X##__iterator->hasValue() && X##__is_ok;\
-    X##__iterator->next(),X##__iterator->hasValue()?X = X##__iterator->getItem():X=X)
+    X##_Func(Y) && X##__iterator->hasValue();\
+    X##__iterator->next())
 
 } // namespace obotcha
 

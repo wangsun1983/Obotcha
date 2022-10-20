@@ -11,9 +11,12 @@ namespace obotcha {
 
 class Exception;
 
+#define EXCEPTION_DEBUG 0
+
 #define DECLARE_EXCEPTION(V) \
 class V:public Exception
 
+#if EXCEPTION_DEBUG
 #define Trigger(V,...) {\
   printf("---Execption Detected!!!--- \n    Error info:");\
   printf(__VA_ARGS__);\
@@ -21,6 +24,11 @@ class V:public Exception
   printf("---Execption Dump Complete!!!--- \n");\
   throw V();\
 }
+#else
+#define Trigger(V,...) {\
+  throw V();\
+}
+#endif
 
 class Exception :public std::exception{
 public:

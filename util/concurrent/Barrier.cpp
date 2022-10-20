@@ -23,27 +23,8 @@ _Barrier::_Barrier(int n) {
     cond = createCondition();
 }
 
-int _Barrier::await(long v) {
-    AutoLock l(mutex);
-    switch(mBarrierNums) {
-        case 0: {
-            return -1;
-        }
-
-        case 1: {
-          mBarrierNums = 0;
-          cond->notifyAll();
-          return 0;
-        }
-
-        default:
-          mBarrierNums--;
-          return cond->wait(mutex, v);
-    }
-}
-
-int _Barrier::await() {
-    return await(0);
+int _Barrier::await(long interval) {
+    return await(nullptr,interval);
 }
 
 int _Barrier::getWaitNums() {

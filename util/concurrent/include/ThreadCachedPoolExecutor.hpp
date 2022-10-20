@@ -14,6 +14,8 @@
 #include "StrongPointer.hpp"
 #include "Thread.hpp"
 #include "HashMap.hpp"
+#include "ConcurrentHashMap.hpp"
+#include "ConcurrentQueue.hpp"
 
 namespace obotcha {
 
@@ -52,7 +54,7 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
 
     int threadNum;
 
-    ArrayList<Thread> mHandlers;
+    ConcurrentQueue<Thread> mHandlers;
 
     long mThreadTimeout;
 
@@ -66,8 +68,7 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
 
     std::atomic_int handlerId;
     
-    Mutex mRunningTaskMutex;
-    HashMap<Integer,ExecutorTask> mRunningTasks;
+    ConcurrentHashMap<int,ExecutorTask> mRunningTasks;
 };
 
 } // namespace obotcha

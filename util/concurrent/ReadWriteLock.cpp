@@ -16,7 +16,7 @@
 #include "Error.hpp"
 #include "ReadWriteLock.hpp"
 #include "StrongPointer.hpp"
-#include "System.hpp"
+#include "Process.hpp"
 #include "Log.hpp"
 
 namespace obotcha {
@@ -101,7 +101,7 @@ sp<_WriteLock> _ReadWriteLock::getWriteLock() {
 
 bool _ReadWriteLock::isOwner() {
     AutoLock l(mMutex);
-    int tid = st(System)::myTid();
+    int tid = st(Process)::myTid();
     return (mWrOwner == tid || readOwners.find(tid) != readOwners.end());
 }
 
@@ -115,7 +115,7 @@ _ReadWriteLock::~_ReadWriteLock() {
 
 int _ReadWriteLock::_readlock(long interval) {
     AutoLock l(mMutex);
-    int mytid = st(System)::myTid();
+    int mytid = st(Process)::myTid();
     while(mOwnerCount != 0 && mytid != mWrOwner) {
         int ret = mReadCondition->wait(mMutex,interval);
         if(ret != 0) {
@@ -133,7 +133,7 @@ int _ReadWriteLock::_readlock(long interval) {
 
 int _ReadWriteLock::_unReadlock() {
     AutoLock l(mMutex);
-    int mytid = st(System)::myTid();
+    int mytid = st(Process)::myTid();
     auto iterator = readOwners.find(mytid);
     if(iterator == readOwners.end()) {
         return -1;
@@ -153,7 +153,7 @@ int _ReadWriteLock::_unReadlock() {
 
 int _ReadWriteLock::_tryReadLock() {
     AutoLock l(mMutex);
-    int mytid = st(System)::myTid();
+    int mytid = st(Process)::myTid();
     if(mWrOwner == mytid || mIsWrite == false) {
         return _readlock();
     }
@@ -167,7 +167,7 @@ int _ReadWriteLock::_readlock() {
 int _ReadWriteLock::_writelock(long interval) {
     AutoLock l(mMutex);
     //check whether owner is myself
-    int mytid = st(System)::myTid();
+    int mytid = st(Process)::myTid();
     if(mWrOwner == mytid) {
         mOwnerCount++;
         return 0;
@@ -199,7 +199,7 @@ end:
 
 int _ReadWriteLock::_unWritelock() {
     AutoLock l(mMutex);
-    int mytid = st(System)::myTid();
+    int mytid = st(Process)::myTid();
     if(mytid != mWrOwner) {
         return -1;
     }
@@ -220,7 +220,7 @@ int _ReadWriteLock::_unWritelock() {
 
 int _ReadWriteLock::_tryWriteLock() {
     AutoLock l(mMutex);
-    int mytid = st(System)::myTid();
+    int mytid = st(Process)::myTid();
 
     if(mWrOwner == mytid) {
         return 0;

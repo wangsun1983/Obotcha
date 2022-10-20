@@ -75,10 +75,6 @@ void _System::getTimeVal(long timeInterval, struct timeval *tv) {
     tv->tv_usec = (timeInterval % 1000) * 1000;
 }
 
-int _System::myPid() { return getpid(); }
-
-int _System::myTid() { return syscall(SYS_gettid);}
-
 void _System::closeOnExit(Closeable c) {
     AutoLock l(mMutex);
     mListeners->add(c);

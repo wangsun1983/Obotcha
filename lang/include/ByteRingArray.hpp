@@ -56,6 +56,10 @@ public:
 
     void reset();
 
+    void dump(const char *);
+
+    void dumpFull(const char *);
+
 private:
     byte *mBuff;
 

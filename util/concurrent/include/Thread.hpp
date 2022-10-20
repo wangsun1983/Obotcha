@@ -1,21 +1,31 @@
+/**
+ * @file Thread.hpp
+ * @brief A thread is a thread of execution in a program.
+ *        Every thread has a priority. Threads with higher priority are
+ *        executed in preference to threads with lower priority. Each thread
+ *        may or may not also be marked as a daemon.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
 #ifndef __OBOTCHA_THREAD_H__
 #define __OBOTCHA_THREAD_H__
 
-#include <atomic>
 #include <cstdint>
 #include <linux/sched.h>
-#include <map>
 #include <pthread.h>
-#include <thread>
 
-#include "AtomicInteger.hpp"
 #include "Condition.hpp"
-#include "InterruptedException.hpp"
 #include "Object.hpp"
 #include "Runnable.hpp"
 #include "String.hpp"
-#include "StrongPointer.hpp"
 #include "ThreadLocal.hpp"
+
+#define _ENABLE_THREAD_SET_SCHED_POLICY_ 0
 
 namespace obotcha {
 
@@ -24,7 +34,6 @@ class _Thread;
 DECLARE_CLASS(Thread) {
 
   public:
-    // friend void doThreadExit(sp<Thread> thread);
     _Thread();
 
     template <typename X> _Thread(sp<X> run) { 
@@ -73,8 +82,6 @@ DECLARE_CLASS(Thread) {
 
     //static void msleep(unsigned long = 0);
     static void sleep(unsigned long = 0);
-
-    //static void interruptableSleep(unsigned long = 0);
 
     //static void setPriority(int priority);
 

@@ -1,5 +1,18 @@
-#ifndef __OBOTCHA_ATOMIC_BOOLEANR_HPP__
-#define __OBOTCHA_ATOMIC_BOOLEANR_HPP__
+/**
+ * @file AtomicBoolean.hpp
+ * @brief An bool value that may be updated atomically.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2022-10-19
+ * @license none
+ * @history
+ */
+
+#ifndef __OBOTCHA_ATOMIC_BOOLEAN_HPP__
+#define __OBOTCHA_ATOMIC_BOOLEAN_HPP__
 
 #include <atomic>
 

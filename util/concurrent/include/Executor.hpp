@@ -9,6 +9,7 @@
 #include "TimeOutException.hpp"
 #include "Future.hpp"
 #include "Mutex.hpp"
+#include "AtomicInteger.hpp"
 
 namespace obotcha {
 
@@ -25,6 +26,12 @@ public:
     _Executor();
     bool isExecuting();
     bool isShutDown();
+
+    virtual int shutdown() = 0;
+
+    virtual bool isTerminated() = 0;
+
+    virtual int awaitTermination(long timeout = 0) = 0;
 
     template <typename T>
     Future submit(sp<T> r) {
@@ -72,8 +79,8 @@ protected:
     long mQueueTimeout;
 
 private:
-    Mutex mMutex;
-    int mStatus;
+    //Mutex mMutex;
+    AtomicInteger mStatus;
     
 };
 
