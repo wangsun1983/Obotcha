@@ -70,6 +70,7 @@ DECLARE_CLASS(ByteArrayWriter) {
 
     void skipBy(int length);
     int getIndex();
+    void setIndex(int);
 
     void updateSize();
     void reset();

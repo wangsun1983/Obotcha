@@ -76,7 +76,13 @@ int _ByteArrayWriter::write(byte *data, int length) {
     return 0;
 }
 
-int _ByteArrayWriter::getIndex() { return mIndex; }
+int _ByteArrayWriter::getIndex() { 
+    return mIndex; 
+}
+
+void _ByteArrayWriter::setIndex(int index) { 
+    mIndex = index; 
+}
 
 int _ByteArrayWriter::getReminderSize() {
     return mData->size() - mIndex;

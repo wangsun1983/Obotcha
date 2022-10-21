@@ -22,8 +22,6 @@ public:
     
     void deserialize(ByteArray);
 
-    int calculateSize();
-
 private:
 
     ByteArray serialize(Object obj);
