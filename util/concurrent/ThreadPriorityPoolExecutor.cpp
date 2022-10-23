@@ -16,13 +16,15 @@
 
 namespace obotcha {
 
-_ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int capacity,
-                                                         int threadnum):_Executor() {
+_ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int maxPendingTaskNum, 
+                                                        int defaultThreadNum,
+                                                        uint32_t maxSubmitTaskWaitTime):_Executor() {
     mTaskMutex = createMutex();
     notEmpty = createCondition();
     notFull = createCondition();
 
-    mCapacity = capacity;
+    mMaxPendingTaskNum = maxPendingTaskNum;
+    mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;
 
     mThreads = createArrayList<Thread>();
 
@@ -33,9 +35,9 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int capacity,
     updateStatus(Executing);
 
     mRunningTaskMutex = createMutex();
-    mRunningTasks = new ExecutorTask[threadnum];
+    mRunningTasks = new ExecutorTask[defaultThreadNum];
 
-    for (int i = 0; i < threadnum; i++) {
+    for (int i = 0; i < defaultThreadNum; i++) {
         Thread thread = createThread(
             [](int id,ThreadPriorityPoolExecutor &executor) {
                 ExecutorTask mCurrentTask = nullptr;
@@ -169,25 +171,25 @@ Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
     Runnable r = task->getRunnable();
     switch (r->getPriority()) {
         case High:
-            if (mCapacity != -1 &&
-                mHighPriorityTasks->size() == mCapacity) {
-                notFull->wait(mTaskMutex, mQueueTimeout);
+            if (mMaxPendingTaskNum != -1 &&
+                mHighPriorityTasks->size() == mMaxPendingTaskNum) {
+                notFull->wait(mTaskMutex, mMaxSubmitTaskWaitTime);
             }
             mHighPriorityTasks->putLast(task);
             notEmpty->notify();
             break;
 
         case Medium:
-            if (mCapacity != -1 && mMidPriorityTasks->size() == mCapacity) {
-                notFull->wait(mTaskMutex, mQueueTimeout);
+            if (mMaxPendingTaskNum != -1 && mMidPriorityTasks->size() == mMaxPendingTaskNum) {
+                notFull->wait(mTaskMutex, mMaxSubmitTaskWaitTime);
             }
             mMidPriorityTasks->putLast(task);
             notEmpty->notify();
             break;
 
         case Low:
-            if (mCapacity != -1 && mLowPriorityTasks->size() == mCapacity) {
-                notFull->wait(mTaskMutex, mQueueTimeout);
+            if (mMaxPendingTaskNum != -1 && mLowPriorityTasks->size() == mMaxPendingTaskNum) {
+                notFull->wait(mTaskMutex, mMaxSubmitTaskWaitTime);
             }
             mLowPriorityTasks->putLast(task);
             notEmpty->notify();

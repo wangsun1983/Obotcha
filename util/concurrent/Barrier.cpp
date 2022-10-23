@@ -1,15 +1,3 @@
-/**
- * @file Barrier.cpp
- * @brief barrier wait
- * @details none
- * @mainpage none
- * @author sunli.wang
- * @email wang_sun_1983@yahoo.co.jp
- * @version 0.0.1
- * @date 2019-07-12
- * @license none
- */
-
 #include "Barrier.hpp"
 #include "AutoLock.hpp"
 #include "Error.hpp"

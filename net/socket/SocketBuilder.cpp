@@ -30,6 +30,11 @@ _SocketBuilder* _SocketBuilder::setSSLKeyPath(String path) {
     return this;
 }
 
+_SocketBuilder* _SocketBuilder::setAsync(bool s) {
+    mIsAsync = s;
+    return this;
+}
+
 _SocketBuilder::_SocketBuilder() {
     address = createInet4Address(st(InetAddress)::DefaultPort);
     fd = nullptr;
@@ -38,12 +43,18 @@ _SocketBuilder::_SocketBuilder() {
 
 Socket _SocketBuilder::newSocket() {
     if (fd == nullptr) {
-        return createSocket(st(Socket)::Tcp, address, option);
+        return createSocket(st(Socket)::Tcp, address, option,nullptr,nullptr,mIsAsync,mPool);
     }
 
     Socket s = createSocket(fd);
     s->setInetAddress(address);
     return s;
+}
+
+_SocketBuilder* _SocketBuilder::setAsyncPool(AsyncOutputChannelPool pool) {
+    mPool = pool;
+    mIsAsync = true;
+    return this;
 }
 
 Socket _SocketBuilder::newDatagramSocket() {
@@ -61,7 +72,7 @@ Socket _SocketBuilder::newLocalSocket() {
 }
 
 Socket _SocketBuilder::newSSLSocket() {
-    return createSocket(st(Socket)::SSL,address,option,mCertificatePath,mKeyPath);
+    return createSocket(st(Socket)::SSL,address,option,mCertificatePath,mKeyPath,mIsAsync,mPool);
 }
 
 ServerSocket _SocketBuilder::newServerSocket() {

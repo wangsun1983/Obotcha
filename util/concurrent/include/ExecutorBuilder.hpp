@@ -21,17 +21,21 @@ DECLARE_CLASS(ExecutorBuilder) {
   public:
     _ExecutorBuilder();
 
-    _ExecutorBuilder *setQueueSize(int v);
+    //_ExecutorBuilder *setQueueSize(int v);
+    _ExecutorBuilder *setMaxPendingTaskNum(uint32_t);
 
-    _ExecutorBuilder *setQueueTimeout(long v);
+    //_ExecutorBuilder *setQueueTimeout(long v);
+    _ExecutorBuilder *setMaxSubmitTaskWaitTime(uint32_t v);
 
-    _ExecutorBuilder *setThreadNum(int v);
+    //_ExecutorBuilder *setThreadNum(int v);
+    _ExecutorBuilder *setDefaultThreadNum(int v);
 
     _ExecutorBuilder *setMaxThreadNum(int v);
 
     _ExecutorBuilder *setMinThreadNum(int v);
 
-    _ExecutorBuilder *setCacheTimeout(long v);
+    //_ExecutorBuilder *setCacheTimeout(long v);
+    _ExecutorBuilder *setMaxNoWorkingTime(uint32_t v);
 
     ThreadPoolExecutor newThreadPool();
 
@@ -42,12 +46,15 @@ DECLARE_CLASS(ExecutorBuilder) {
     ThreadPriorityPoolExecutor newPriorityThreadPool();
 
   private:
-    int queuesize;
-    int threadnum;
-    int maxthreadnum;
-    int minthreadnum;
-    long timeout;
-    long queueTimeout;
+    static int DefaultMaxNoWorkingTime;
+    static int DefaultMaxSubmitTaskWatiTime;
+
+    int mMaxPendingTaskNum;
+    int mDefaultThreadNum;
+    int mMaxThreadNum;
+    int mMinThreadNum;
+    uint32_t mMaxNoWorkingTime;
+    uint32_t mMaxSubmitTaskWaitTime;
 
     void updateQueueTimeout(Executor exec);
 };

@@ -25,8 +25,11 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
   public:
     friend class _ThreadScheduledPoolExecutor;
 
-    _ThreadCachedPoolExecutor(int queuesize = -1, int minthreadnum = 1, int maxthreadnum = 4,
-                              long timeout = 10 * 1000);
+    _ThreadCachedPoolExecutor(int maxPendingTaskNum, 
+                              int maxThreadNum, 
+                              int minThreadNum,
+                              uint32_t maxSubmitTaskWaittime,
+                              uint32_t maxNoWorkingTime);
 
     int shutdown();
 
@@ -56,11 +59,11 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
 
     ConcurrentQueue<Thread> mHandlers;
 
-    long mThreadTimeout;
-
-    int maxThreadNum;
-
-    int minThreadNum;
+    int mMaxPendingTaskNum;
+    int mMaxThreadNum; 
+    int mMinThreadNum;
+    int mMaxSubmitTaskWaitTime;
+    int mMaxNoWorkingTime;
 
     BlockingLinkedList<ExecutorTask> mTasks;
 

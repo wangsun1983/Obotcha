@@ -34,7 +34,8 @@ private:
 DECLARE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(Thread, Executor, Closeable) {
 
 public:
-    _ThreadScheduledPoolExecutor(int capacity = -1);
+    _ThreadScheduledPoolExecutor(int maxPendingTaskNum,
+                                 uint32_t maxSubmitTaskWaitTime);
 
     ~_ThreadScheduledPoolExecutor();
 
@@ -65,8 +66,10 @@ private:
 
     WaitingTask mCurrentTask;
 
+    int mMaxPendingTaskNum;
+    uint32_t mMaxSubmitTaskWaitTime;
+
     int mCount;
-    int mCapacity;
 
     WaitingTask mTaskPool;
 };

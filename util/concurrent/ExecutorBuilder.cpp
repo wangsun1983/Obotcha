@@ -15,78 +15,79 @@
 
 namespace obotcha {
 
+int _ExecutorBuilder::DefaultMaxNoWorkingTime = 10*1000;
+int _ExecutorBuilder::DefaultMaxSubmitTaskWatiTime = 10*1000;
+
 _ExecutorBuilder::_ExecutorBuilder() {
-    queuesize = -1;
-    threadnum = st(System)::availableProcessors();
-    maxthreadnum = st(System)::availableProcessors() * 2;
-    minthreadnum = 1;
-    queueTimeout = 0;
-    timeout = 1000 * 10;
+    mMaxPendingTaskNum = -1;
+    mDefaultThreadNum = st(System)::availableProcessors();
+    mMaxThreadNum = st(System)::availableProcessors() * 2;
+    mMinThreadNum = 1;
+    mMaxNoWorkingTime = DefaultMaxNoWorkingTime;
+    mMaxSubmitTaskWaitTime = 0;
 }
 
-_ExecutorBuilder *_ExecutorBuilder::setQueueSize(int v) {
-    queuesize = v;
+_ExecutorBuilder *_ExecutorBuilder::setMaxPendingTaskNum(uint32_t v) {
+    mMaxPendingTaskNum = v;
     return this;
 }
 
-_ExecutorBuilder *_ExecutorBuilder::setThreadNum(int v) {
-    threadnum = v;
+_ExecutorBuilder *_ExecutorBuilder::setDefaultThreadNum(int v) {
+    mDefaultThreadNum = v;
     return this;
 }
 
 _ExecutorBuilder *_ExecutorBuilder::setMaxThreadNum(int v) {
-    maxthreadnum = v;
+    mMaxThreadNum = v;
     return this;
 }
 
 _ExecutorBuilder *_ExecutorBuilder::setMinThreadNum(int v) {
-    minthreadnum = v;
+    mMinThreadNum = v;
     return this;
 }
 
-_ExecutorBuilder *_ExecutorBuilder::setCacheTimeout(long v) {
-    timeout = v;
+_ExecutorBuilder *_ExecutorBuilder::setMaxNoWorkingTime(uint32_t v) {
+    mMaxNoWorkingTime = v;
     return this;
 }
 
-_ExecutorBuilder *_ExecutorBuilder::setQueueTimeout(long v) {
-    queueTimeout = v;
+_ExecutorBuilder *_ExecutorBuilder::setMaxSubmitTaskWaitTime(uint32_t v) {
+    mMaxSubmitTaskWaitTime = v;
     return this;
 }
 
 ThreadPoolExecutor _ExecutorBuilder::newThreadPool() {
-    auto executor = createThreadPoolExecutor(queuesize, threadnum);
-    updateQueueTimeout(executor);
-
-    return executor;
+    return createThreadPoolExecutor(mMaxPendingTaskNum, 
+                                    mDefaultThreadNum,
+                                    mMaxSubmitTaskWaitTime);
 }
 
 ThreadCachedPoolExecutor _ExecutorBuilder::newCachedThreadPool() {
-    auto executor = createThreadCachedPoolExecutor(queuesize, minthreadnum, maxthreadnum,
-                                          timeout);
-    updateQueueTimeout(executor);
-
-    return executor;
+    return createThreadCachedPoolExecutor(mMaxPendingTaskNum, 
+                                                   mMaxThreadNum, 
+                                                   mMinThreadNum,
+                                                   mMaxSubmitTaskWaitTime,
+                                                   mMaxNoWorkingTime);;
 }
 
 ThreadScheduledPoolExecutor _ExecutorBuilder::newScheduledThreadPool() {
-    auto executor = createThreadScheduledPoolExecutor(queuesize);
-    updateQueueTimeout(executor);
+    auto executor = createThreadScheduledPoolExecutor(mMaxPendingTaskNum,
+                                                      mMaxSubmitTaskWaitTime);
 
     return executor;
 }
 
 ThreadPriorityPoolExecutor _ExecutorBuilder::newPriorityThreadPool() {
-    auto executor = createThreadPriorityPoolExecutor(queuesize, threadnum);
-    updateQueueTimeout(executor);
-
-    return executor;
+    return createThreadPriorityPoolExecutor(mMaxPendingTaskNum, 
+                                                     mDefaultThreadNum,
+                                                     mMaxSubmitTaskWaitTime);
 }
 
-void _ExecutorBuilder::updateQueueTimeout(Executor exec) {
-    if(queueTimeout != 0) {
-        exec->setQueueTimeout(queueTimeout);
-    }
-}
+//void _ExecutorBuilder::updateQueueTimeout(Executor exec) {
+//    if(queueTimeout != 0) {
+//        exec->setQueueTimeout(queueTimeout);
+//    }
+//}
 
 } // namespace obotcha

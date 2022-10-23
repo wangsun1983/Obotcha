@@ -13,17 +13,21 @@
 
 namespace obotcha {
 
-_ThreadPoolExecutor::_ThreadPoolExecutor(int capacity, int threadnum):_Executor() {
-    mPool = createBlockingLinkedList<ExecutorTask>(capacity);
+_ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
+                                         int defalutThreadNum,
+                                         uint32_t maxSubmitTaskWaitTime):_Executor() {
+    mPendingTasks = createBlockingLinkedList<ExecutorTask>(maxPendingTaskNum);
     mHandlers = createArrayList<Thread>();
     mRunningTaskMutex = createMutex();
-    mRunningTasks = createList<ExecutorTask>(threadnum);
-    for (int i = 0; i < threadnum; i++) {
+    mRunningTasks = createList<ExecutorTask>(defalutThreadNum);
+    mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;
+
+    for (int i = 0; i < defalutThreadNum; i++) {
         Thread thread = createThread(
             [this](int id,ThreadPoolExecutor executor) {
                 auto exec = executor; //use this to keep executor instance
                 while (1) {
-                    ExecutorTask mCurrentTask = mPool->takeFirst();
+                    ExecutorTask mCurrentTask = mPendingTasks->takeFirst();
 
                     if (mCurrentTask == nullptr) {
                         // clear executor to enable executor release.
@@ -63,7 +67,7 @@ Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
         return nullptr;
     }
 
-    if (mPool->putLast(task, mQueueTimeout)) {
+    if (mPendingTasks->putLast(task, mMaxSubmitTaskWaitTime)) {
         return createFuture(task);
     }
 
@@ -78,11 +82,11 @@ int _ThreadPoolExecutor::shutdown() {
 
     updateStatus(ShutDown);
 
-    ForEveryOne(task,mPool) {
+    ForEveryOne(task,mPendingTasks) {
         task->cancel();
     }
 
-    mPool->destroy();
+    mPendingTasks->destroy();
 
     {
         AutoLock l(mRunningTaskMutex);
@@ -139,7 +143,7 @@ int _ThreadPoolExecutor::getThreadsNum() {
 }
 
 int _ThreadPoolExecutor::getTasksNum() {
-    return mPool->size();
+    return mPendingTasks->size();
 }
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {

@@ -20,6 +20,7 @@
 #include "System.hpp"
 #include "Log.hpp"
 #include "OStdInstanceOf.hpp"
+#include "TimeWatcher.hpp"
 
 namespace obotcha {
 
@@ -29,57 +30,71 @@ _Condition::_Condition() {
     }
 }
 
-int _Condition::wait(Mutex m, long int timeInterval) {
+int _Condition::wait(Mutex &m, long int interval) {
     pthread_mutex_t *mutex_t = m->getMutex_t();
-    if (timeInterval == 0) {
+    if (interval == 0) {
         return -pthread_cond_wait(&cond_t, m->getMutex_t());
     }
 
     struct timespec ts = {0};
-    st(System)::getNextTime(timeInterval, &ts);
+    st(System)::getNextTime(interval, &ts);
     return -pthread_cond_timedwait(&cond_t, mutex_t, &ts);
 }
 
-int _Condition::wait(AutoLock &m, long int millseconds) {
+int _Condition::wait(AutoLock &m, long int interval) {
     if(IsInstance(Mutex,m.mLock)) {
         Mutex mu = Cast<Mutex>(m.mLock);
-        return wait(mu,millseconds);
+        return wait(mu,interval);
     }
-
     return -1;
 }
 
-int _Condition::wait(sp<_Mutex> m,std::function<bool()> p)  {
+int _Condition::wait(sp<_Mutex> &m,std::function<bool()> conditionalFunc)  {
     int ret = 0;
-    while(!p()) {
+    while(!conditionalFunc()) {
         ret = wait(m);
     }
 
     return ret;
 }
 
-int _Condition::wait(AutoLock & m,std::function<bool()> p) {
+int _Condition::wait(AutoLock &m,std::function<bool()> conditionalFunc) {
     if(IsInstance(Mutex,m.mLock)) {
         Mutex mu = Cast<Mutex>(m.mLock);
-        return wait(m.mLock,p);
+        return wait(mu,conditionalFunc);
     }
     return -1;
 }
 
-int _Condition::wait(sp<_Mutex> m,long int millseconds,std::function<bool()> p) {
-    while(!p()) {
+int _Condition::wait(sp<_Mutex> &m,long int millseconds,std::function<bool()> conditionalFunc) {
+    TimeWatcher watch = createTimeWatcher();
+    bool isWaitForEver = (millseconds == 0);
+
+    while(!conditionalFunc()) {
+        if(isWaitForEver) {
+            watch->start();
+        }
+        
         if(wait(m,millseconds) != 0) {
             return -ETIMEDOUT;
+        }
+
+        if(!isWaitForEver) {
+            millseconds -= watch->stop();
+            
+            if(millseconds < 0) {
+                return -ETIMEDOUT;
+            }
         }
     }
 
     return 0;
 }
 
-int _Condition::wait(AutoLock & m,long int millseconds,std::function<bool()> p) {
+int _Condition::wait(AutoLock &m,long int millseconds,std::function<bool()> conditionalFunc) {
     if(IsInstance(Mutex,m.mLock)) {
         Mutex mu = Cast<Mutex>(m.mLock);
-        return wait(mu,millseconds,p);
+        return wait(mu,millseconds,conditionalFunc);
     }
     return -1;
 }

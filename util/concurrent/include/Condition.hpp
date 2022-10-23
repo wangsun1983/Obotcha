@@ -18,14 +18,14 @@ public:
 
     ~_Condition();
 
-    int wait(sp<_Mutex> m, long int millseconds = 0);
-    int wait(AutoLock &m, long int millseconds = 0);
+    int wait(sp<_Mutex> &m, long int interval = 0);
+    int wait(AutoLock &m, long int interval = 0);
     
-    int wait(sp<_Mutex> m,std::function<bool()> p);
-    int wait(AutoLock & m,std::function<bool()> p);
+    int wait(sp<_Mutex> &m,std::function<bool()> conditionalFunc);
+    int wait(AutoLock & m,std::function<bool()> conditionalFunc);
 
-    int wait(sp<_Mutex> m,long int millseconds,std::function<bool()> p);
-    int wait(AutoLock & m,long int millseconds,std::function<bool()> p);
+    int wait(sp<_Mutex> &m,long int interval,std::function<bool()> conditionalFunc);
+    int wait(AutoLock &m,long int interval,std::function<bool()> conditionalFunc);
 
     void notify();
 

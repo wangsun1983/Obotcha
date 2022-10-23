@@ -22,13 +22,16 @@ _WaitingTask::~_WaitingTask() {
 }
 
 //---------------ScheduleService---------------//
-_ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int capacity):_Executor() {
+_ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int maxPendingTaskNum,
+                                                           uint32_t maxSubmitTaskWaitTime):_Executor() {
     mCachedExecutor =
-        createExecutorBuilder()->setCacheTimeout(60 * 1000)->newCachedThreadPool();
+        createExecutorBuilder()->newCachedThreadPool();
 
     mTaskMutex = createMutex();
     mCount = 0;
-    mCapacity = capacity;
+    mMaxPendingTaskNum = maxPendingTaskNum;
+    mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;
+    
     //notEmpty = createCondition();
     notFull = createCondition();
     mTaskWaitCond = createCondition();
@@ -92,7 +95,7 @@ Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
         return nullptr;
     }
 
-    if (addWaitingTaskLocked(Cast<WaitingTask>(task), mQueueTimeout) == 0) {
+    if (addWaitingTaskLocked(Cast<WaitingTask>(task), mMaxSubmitTaskWaitTime) == 0) {
         return createFuture(task);
     }
     return nullptr;
@@ -105,7 +108,7 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
     }
 
     AutoLock l(mTaskMutex);
-    if (mCapacity > 0 && mCount == mCapacity) {
+    if (mMaxPendingTaskNum > 0 && mCount == mMaxPendingTaskNum) {
         if (notFull->wait(mTaskMutex, timeout) == -ETIMEDOUT) {
             return -1;
         }

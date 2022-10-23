@@ -21,21 +21,23 @@
 namespace obotcha {
 
 //---------------ThreadCachedPoolExecutor ---------------------
-_ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int queuesize,
-                                                     int minthreadnum,
-                                                     int maxthreadnum,
-                                                     long timeout):_Executor() {
-    if (queuesize == 0 || minthreadnum > maxthreadnum) {
+_ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxPendingTaskNum, 
+                                                     int maxThreadNum, 
+                                                     int minThreadNum,
+                                                     uint32_t maxSubmitTaskWaittime,
+                                                     uint32_t maxNoWorkingTime):_Executor() {
+    if (minThreadNum > maxThreadNum) {
         Trigger(InitializeException, "ThreadCachedPool illeagal param");
     }
 
-    maxThreadNum = maxthreadnum;
-    minThreadNum = minthreadnum;
-    mThreadTimeout = timeout;
+    mMaxThreadNum = maxThreadNum;
+    mMinThreadNum = minThreadNum;
+    mMaxNoWorkingTime = maxNoWorkingTime;
+    mMaxSubmitTaskWaitTime = maxSubmitTaskWaittime;
 
     mHandlers = createConcurrentQueue<Thread>();
     //mMutex = createMutex();
-    mTasks = createBlockingLinkedList<ExecutorTask>(queuesize);
+    mTasks = createBlockingLinkedList<ExecutorTask>(maxPendingTaskNum);
     //mRunningTaskMutex = createMutex();
     mRunningTasks = createConcurrentHashMap<int,ExecutorTask>();
     updateStatus(Executing);
@@ -133,7 +135,7 @@ Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
         return nullptr;
     }
 
-    mTasks->putLast(task, mQueueTimeout);
+    mTasks->putLast(task, mMaxSubmitTaskWaitTime);
     if (mIdleNum->get() == 0) {
         setUpOneIdleThread();
     }
@@ -158,7 +160,7 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
 
     //{
         //AutoLock l(mMutex);
-    if (mHandlers->size() >= maxThreadNum) {
+    if (mHandlers->size() >= mMaxThreadNum) {
         return;
     }
     //}
@@ -168,7 +170,7 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
             auto exec = executor;//use this to keep executor instance
             handlerId++;
             while (1) {
-                auto mCurrentTask = mTasks->takeFirst(mThreadTimeout);
+                auto mCurrentTask = mTasks->takeFirst(mMaxNoWorkingTime);
                 mIdleNum->subAndGet(1);
                 if (mCurrentTask == nullptr) {
                     Thread handler = st(Thread)::current();

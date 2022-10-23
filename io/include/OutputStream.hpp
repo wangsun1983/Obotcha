@@ -7,6 +7,8 @@
 
 namespace obotcha {
 
+class _AsyncOutputChannelPool;
+
 DECLARE_CLASS(OutputStream) {
   public:
     virtual long write(char c) { return -1; }
@@ -24,6 +26,8 @@ DECLARE_CLASS(OutputStream) {
     virtual void close() {}
 
     virtual void flush() {}
+
+    virtual void setAsync(bool,sp<_AsyncOutputChannelPool> pool = nullptr) {}
 
     enum FileOpenType { Append, Trunc };
 };

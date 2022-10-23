@@ -24,9 +24,6 @@ DECLARE_CLASS(AsyncOutputChannel) {
   public:
     friend class _AsyncOutputChannelPool;
 
-    _AsyncOutputChannel(AsyncOutputWriter stream,
-                        FileDescriptor fileDescriptor);
-
     int write(ByteArray);
 
     FileDescriptor getFileDescriptor();
@@ -34,19 +31,26 @@ DECLARE_CLASS(AsyncOutputChannel) {
     void close();
 
     void dump();
-
+    
   private:
+    _AsyncOutputChannel(FileDescriptor descriptor,
+                        AsyncOutputWriter stream,
+                        sp<_AsyncOutputChannelPool> pool);
+
     Mutex mMutex;
     LinkedList<ByteArray> mDatas;
+    
     bool isClosed;
+    
     FileDescriptor mFd;
 
     int notifyWrite();
+
     int _write(ByteArray);
 
     AsyncOutputWriter mWriter;
 
-    static sp<_AsyncOutputChannelPool> mPool;
+    sp<_AsyncOutputChannelPool> mPool;
 };
 
 } // namespace obotcha

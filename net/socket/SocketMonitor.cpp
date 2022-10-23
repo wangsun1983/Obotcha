@@ -28,6 +28,8 @@ _SocketMonitorTask::_SocketMonitorTask(int event, Socket s, ByteArray data) {
 _SocketMonitor::_SocketMonitor() : _SocketMonitor(4) {}
 
 _SocketMonitor::_SocketMonitor(int threadnum) {
+    mAsyncOutputPool = createAsyncOutputChannelPool();
+
     mMutex = createMutex();
     mSocks = createConcurrentHashMap<int, Socket>();
     mServerSocks = createConcurrentHashMap<int, ServerSocket>();
@@ -45,7 +47,7 @@ _SocketMonitor::_SocketMonitor(int threadnum) {
     mThreadTaskMap = createHashMap<int,LinkedList<SocketMonitorTask>>();
 
     this->mExecutor =
-        createExecutorBuilder()->setThreadNum(mThreadNum)->newThreadPool();
+        createExecutorBuilder()->setDefaultThreadNum(mThreadNum)->newThreadPool();
 
     for (int i = 0; i < mThreadNum; i++) {
         mExecutor->submit(
@@ -127,9 +129,8 @@ int _SocketMonitor::bind(Socket s, SocketListener l) {
         LOG(ERROR)<<"bind socket already exists!!!";
         return 0;
     }
-
     addNewSocket(s,l);
-    s->setAsync(true);
+    s->setAsync(true,mAsyncOutputPool);
     s->getFileDescriptor()->setAsMonitored(true);
 
     if (s->getProtocol() == st(Socket)::Protocol::Udp) {
@@ -270,6 +271,8 @@ int _SocketMonitor::remove(Socket s,bool isClose) {
     } else {
         _remove(s->getFileDescriptor());
     }
+
+    //mAsyncOutputPool->remove(s);
 
     return 0;
 }

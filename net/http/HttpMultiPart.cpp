@@ -53,7 +53,7 @@ _HttpMultiPartFile::_HttpMultiPartFile(File file,String name,HttpHeaderContentTy
     mName = name;
 
     String filename = file->getName();
-    mFile = filename;
+    mFile = createFile(filename);
     mOriginalFileName= filename;
 
     mFile = file;

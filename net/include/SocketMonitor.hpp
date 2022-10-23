@@ -72,6 +72,8 @@ private:
 
     ConcurrentHashMap<int,SocketListener> mListeners;
 
+    AsyncOutputChannelPool mAsyncOutputPool;
+
     mutable volatile bool isStop;
 };
 

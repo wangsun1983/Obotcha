@@ -11,6 +11,7 @@
 #include "SocketOutputStream.hpp"
 #include "FileDescriptor.hpp"
 #include "SocketImpl.hpp"
+#include "AsyncOutputChannelPool.hpp"
 #include <atomic>
 
 namespace obotcha {
@@ -33,9 +34,16 @@ public:
     };
 
     _Socket();
-    _Socket(int,InetAddress addr,SocketOption option,String certificatePath = nullptr,String keyPath = nullptr);
+    _Socket(int protocol,
+            InetAddress addr,
+            SocketOption option,
+            String certificatePath = nullptr,
+            String keyPath = nullptr,
+            bool isAsync = false,
+            AsyncOutputChannelPool pool = nullptr);
+
     _Socket(FileDescriptor);
-    void setAsync(bool);
+    void setAsync(bool,AsyncOutputChannelPool pool);
     bool isAsync();
     
     int connect();
@@ -66,9 +74,11 @@ public:
     long getTag();
     
 private:
-    int protocol;
+    int mProtocol;
     OutputStream mOutputStream;
     InputStream mInputStream;
+
+    AsyncOutputChannelPool mPool;
     bool mIsAsync;
 
 protected:

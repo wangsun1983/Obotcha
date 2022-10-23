@@ -11,7 +11,7 @@ namespace obotcha {
 
 DECLARE_CLASS(CountDownLatch) {
   public:
-    _CountDownLatch(int v);
+    _CountDownLatch(int count);
 
     int countDown();
 
@@ -22,9 +22,9 @@ DECLARE_CLASS(CountDownLatch) {
     int release();
 
   private:
-    int count;
-    Condition waitCond;
-    Mutex waitMutex;
+    int mCount;
+    Condition mWaitCond;
+    Mutex mWaitMutex;
 };
 
 } // namespace obotcha

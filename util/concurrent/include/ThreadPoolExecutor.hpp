@@ -31,7 +31,9 @@ DECLARE_CLASS(ThreadPoolExecutor) IMPLEMENTS(Executor) {
 public:
     friend class _ExecutorTask;
 
-    _ThreadPoolExecutor(int capacity, int threadnum);
+    _ThreadPoolExecutor(int maxPendingTaskNum,
+                        int defalutThreadNum,
+                        uint32_t maxSubmitTaskWaitTime);
 
     int shutdown();
 
@@ -50,7 +52,9 @@ private:
 
     Future submitTask(ExecutorTask task);
     
-    BlockingLinkedList<ExecutorTask> mPool;
+    BlockingLinkedList<ExecutorTask> mPendingTasks;
+
+    uint32_t mMaxSubmitTaskWaitTime;
 
     ArrayList<Thread> mHandlers;
 

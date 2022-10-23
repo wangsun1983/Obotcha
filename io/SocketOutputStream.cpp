@@ -4,11 +4,20 @@
 
 namespace obotcha {
 
-_SocketOutputStream::_SocketOutputStream(sp<_Socket> s):_SocketOutputStream(s->getSockImpl()) {
+AsyncOutputChannelPool _SocketOutputStream::defaultOutputChannelPool = nullptr;
+
+_SocketOutputStream::_SocketOutputStream(sp<_Socket> s,AsyncOutputChannelPool pool):_SocketOutputStream(s->getSockImpl(),pool) {
 }
 
-_SocketOutputStream::_SocketOutputStream(SocketImpl sockimpl) {
+_SocketOutputStream::_SocketOutputStream(SocketImpl sockimpl,AsyncOutputChannelPool pool) {
+    static std::once_flag s_flag;
+    std::call_once(s_flag, [&]() {
+        defaultOutputChannelPool = createAsyncOutputChannelPool();
+    });
+
     impl = sockimpl;
+    mPool = (pool == nullptr)?defaultOutputChannelPool:pool;
+
     fileDescriptor = impl->getFileDescriptor();
     if (fileDescriptor != nullptr && fileDescriptor->isAsync()) {
         //Add a mutex to protect channle for the following issue
@@ -17,7 +26,8 @@ _SocketOutputStream::_SocketOutputStream(SocketImpl sockimpl) {
         //                         mChannel will be set as nullptr.
         //3.Thread A:call mChannel->write and crash(NullPointer...);
         //mChannelMutex = createMutex();
-        mChannel = createAsyncOutputChannel(AutoClone(this),fileDescriptor);
+        //mChannel = createAsyncOutputChannel(AutoClone(this),fileDescriptor);
+        mChannel = mPool->createChannel(fileDescriptor,AutoClone(this));
     }
 }
 
@@ -25,6 +35,15 @@ long _SocketOutputStream::write(char c) {
     ByteArray data = createByteArray(1);
     data[0] = c;
     return write(data, 1);
+}
+
+void _SocketOutputStream::setAsync(bool async,AsyncOutputChannelPool pool) {
+    mPool->remove(mChannel);
+    if(!async) {
+        mChannel = nullptr;
+    } else {
+        mChannel = mPool->createChannel(fileDescriptor,AutoClone(this));
+    }
 }
 
 long _SocketOutputStream::write(ByteArray data) {
@@ -55,6 +74,7 @@ long _SocketOutputStream::_write(ByteArray data,int offset) {
 void _SocketOutputStream::close() {
     if (mChannel != nullptr) {
         mChannel->close();
+        mChannel = nullptr;
     }
 
     impl = nullptr;

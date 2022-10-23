@@ -69,14 +69,14 @@ public:
         return submitRunnable(r);
     }
 
-    void setQueueTimeout(long);
-    long getQueueTimeout();
+    //void setQueueTimeout(long);
+    //long getQueueTimeout();
 
 protected:
     void updateStatus(int);
     virtual Future submitRunnable(Runnable r) = 0;
     virtual Future submitTask(ExecutorTask task) = 0;
-    long mQueueTimeout;
+    //long mQueueTimeout;
 
 private:
     //Mutex mMutex;

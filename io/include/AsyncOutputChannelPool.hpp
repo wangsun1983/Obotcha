@@ -17,14 +17,15 @@ namespace obotcha {
 DECLARE_CLASS(AsyncOutputChannelPool) IMPLEMENTS(EPollFileObserverListener) {
   public:
     _AsyncOutputChannelPool();
+    ~_AsyncOutputChannelPool();
+    AsyncOutputChannel createChannel(FileDescriptor fd,AsyncOutputWriter stream);
+    
     void addChannel(AsyncOutputChannel);
     void remove(AsyncOutputChannel);
-
     void close();
     void dump();
 
   private:
-    //Mutex mMutex;
     ConcurrentHashMap<int, AsyncOutputChannel> mChannels;
 
     EPollFileObserver mObserver;
