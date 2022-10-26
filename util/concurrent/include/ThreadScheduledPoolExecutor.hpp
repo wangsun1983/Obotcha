@@ -66,8 +66,8 @@ private:
 
     WaitingTask mCurrentTask;
 
-    int mMaxPendingTaskNum;
-    uint32_t mMaxSubmitTaskWaitTime;
+    //int mMaxPendingTaskNum;
+    //uint32_t mMaxSubmitTaskWaitTime;
 
     int mCount;
 

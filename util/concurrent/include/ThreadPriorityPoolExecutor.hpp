@@ -50,8 +50,8 @@ private:
     ExecutorTask *mRunningTasks;
 
     //int mCapacity;
-    int mMaxPendingTaskNum;
-    uint32_t mMaxSubmitTaskWaitTime;
+    //int mMaxPendingTaskNum;
+    //uint32_t mMaxSubmitTaskWaitTime;
     
     ArrayList<Thread> mThreads;
 };

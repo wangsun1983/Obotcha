@@ -7,11 +7,13 @@
 #include "OStdInstanceOf.hpp"
 #include "Runnable.hpp"
 #include "TimeOutException.hpp"
-#include "Future.hpp"
 #include "Mutex.hpp"
 #include "AtomicInteger.hpp"
+#include "ThreadLocal.hpp"
 
 namespace obotcha {
+class _ExecutorTask;
+class _Future;
 
 DECLARE_CLASS(Executor) {
 public:
@@ -21,9 +23,15 @@ public:
         ShutDown,
     };
 
-    enum Priority { Low = 0, Medium, High, NoUse };
+    enum Priority { 
+        Low = 0, 
+        Medium, 
+        High, 
+        NoUse 
+    };
     
     _Executor();
+    
     bool isExecuting();
     bool isShutDown();
 
@@ -34,54 +42,67 @@ public:
     virtual int awaitTermination(long timeout = 0) = 0;
 
     template <typename T>
-    Future submit(sp<T> r) {
+    sp<_Future> submit(sp<T> r) {
         return submitRunnable(r);
     }
 
     template <typename T>
-    Future schedule(long delay,sp<T> r) {
+    sp<_Future> schedule(long delay,sp<T> r) {
         r->setDelay(delay);
         return submitRunnable(r);
     }
 
     template<typename T>
-    Future preempt(int priority,sp<T> r) {
+    sp<_Future> preempt(int priority,sp<T> r) {
         r->setPriority(priority);
         return submitRunnable(r);
     }
 
     template <class Function, class... Args>
-    Future submit(Function && f, Args && ... args) {
+    sp<_Future> submit(Function && f, Args && ... args) {
         return submitRunnable(Cast<Runnable>(createLambdaRunnable(f, args...)));
     }
 
     template <class Function, class... Args>
-    Future schedule(long delay,Function && f, Args && ... args) {
+    sp<_Future> schedule(long delay,Function && f, Args && ... args) {
         Runnable r = createLambdaRunnable(f, args...);
         r->setDelay(delay);
         return submitRunnable(r);
     }
 
     template <class Function, class... Args>
-    Future preempt(int priority,Function && f, Args && ... args) {
+    sp<_Future> preempt(int priority,Function && f, Args && ... args) {
         Runnable r = createLambdaRunnable(f, args...);
         r->setPriority(priority);
         return submitRunnable(r);
     }
 
-    //void setQueueTimeout(long);
-    //long getQueueTimeout();
+    int getMaxPendingTaskNum();
+    int getDefaultThreadNum();
+    int getMaxThreadNum();
+    int getMinThreadNum();
+    uint32_t getMaxNoWorkingTime();
+    uint32_t getMaxSubmitTaskWaitTime();
+
+    static sp<_ExecutorTask> getCurrentTask();
+    static void setCurrentTask(sp<_ExecutorTask>);
+    static void removeCurrentTask();
 
 protected:
     void updateStatus(int);
-    virtual Future submitRunnable(Runnable r) = 0;
-    virtual Future submitTask(ExecutorTask task) = 0;
-    //long mQueueTimeout;
+    virtual sp<_Future> submitRunnable(Runnable r) = 0;
+    virtual sp<_Future> submitTask(sp<_ExecutorTask> task) = 0;
+
+    int mMaxPendingTaskNum;
+    int mDefaultThreadNum;
+    int mMaxThreadNum;
+    int mMinThreadNum;
+    uint32_t mMaxNoWorkingTime;
+    uint32_t mMaxSubmitTaskWaitTime;
 
 private:
-    //Mutex mMutex;
     AtomicInteger mStatus;
-    
+    static ThreadLocal<sp<_ExecutorTask>> ExecutorTasks;
 };
 
 } // namespace obotcha

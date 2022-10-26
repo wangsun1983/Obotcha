@@ -54,7 +54,7 @@ private:
     
     BlockingLinkedList<ExecutorTask> mPendingTasks;
 
-    uint32_t mMaxSubmitTaskWaitTime;
+    //uint32_t mMaxSubmitTaskWaitTime;
 
     ArrayList<Thread> mHandlers;
 

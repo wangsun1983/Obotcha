@@ -21,7 +21,8 @@ int _CountDownLatch::countDown() {
     if (mCount == 0) {
         mWaitCond->notifyAll();
     }
-    return 0;
+
+    return (mCount >= 0)?0:-1;
 }
 
 int _CountDownLatch::getCount() {
@@ -31,7 +32,7 @@ int _CountDownLatch::getCount() {
 
 int _CountDownLatch::await(long interval) {
     AutoLock l(mWaitMutex);
-    return (mCount > 0)? -1:mWaitCond->wait(mWaitMutex, interval);
+    return (mCount > 0)? mWaitCond->wait(mWaitMutex, interval):-1;
 }
 
 int _CountDownLatch::release() {

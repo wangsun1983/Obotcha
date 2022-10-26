@@ -12,7 +12,7 @@
 #include "OStdApply.hpp"
 #include "ConcurrentHashMap.hpp"
 #include "Condition.hpp"
-#include "ExecutorTask.hpp"
+#include "ExecutorResult.hpp"
 
 namespace obotcha {
 
@@ -35,7 +35,7 @@ public:
                 mCond->wait(mMutex);
                 continue;
             }
-            return __ExecutorTaskResult<T>().get(result);
+            return __ExecutorTaskResult__<T>().get(result);
         }
     }
 

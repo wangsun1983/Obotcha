@@ -1,15 +1,3 @@
-/**
- * @file Executors.cpp
- * @brief Executor Factory
- * @details none
- * @mainpage none
- * @author sunli.wang
- * @email wang_sun_1983@yahoo.co.jp
- * @version 0.0.1
- * @date 2019-07-12
- * @license none
- */
-
 #include "ExecutorBuilder.hpp"
 #include "System.hpp"
 
@@ -27,7 +15,7 @@ _ExecutorBuilder::_ExecutorBuilder() {
     mMaxSubmitTaskWaitTime = 0;
 }
 
-_ExecutorBuilder *_ExecutorBuilder::setMaxPendingTaskNum(uint32_t v) {
+_ExecutorBuilder *_ExecutorBuilder::setMaxPendingTaskNum(int v) {
     mMaxPendingTaskNum = v;
     return this;
 }
@@ -72,10 +60,8 @@ ThreadCachedPoolExecutor _ExecutorBuilder::newCachedThreadPool() {
 }
 
 ThreadScheduledPoolExecutor _ExecutorBuilder::newScheduledThreadPool() {
-    auto executor = createThreadScheduledPoolExecutor(mMaxPendingTaskNum,
-                                                      mMaxSubmitTaskWaitTime);
-
-    return executor;
+    return createThreadScheduledPoolExecutor(mMaxPendingTaskNum,
+                                                      mMaxSubmitTaskWaitTime);;
 }
 
 ThreadPriorityPoolExecutor _ExecutorBuilder::newPriorityThreadPool() {
@@ -83,11 +69,5 @@ ThreadPriorityPoolExecutor _ExecutorBuilder::newPriorityThreadPool() {
                                                      mDefaultThreadNum,
                                                      mMaxSubmitTaskWaitTime);
 }
-
-//void _ExecutorBuilder::updateQueueTimeout(Executor exec) {
-//    if(queueTimeout != 0) {
-//        exec->setQueueTimeout(queueTimeout);
-//    }
-//}
 
 } // namespace obotcha

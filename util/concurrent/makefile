@@ -24,12 +24,12 @@ objs += $(outtmp)/condition.o \
     $(outtmp)/barrier.o \
 	$(outtmp)/timer.o \
 	$(outtmp)/spinlock.o \
-	$(outtmp)/taskresult.o \
+	$(outtmp)/executorresult.o \
 	$(outtmp)/runnable.o
 
 
-$(outtmp)/taskresult.o :$(concurrentDir)/TaskResult.cpp
-	$(cppcompiler) $(cppflags) -c $(concurrentDir)/TaskResult.cpp -o $(outtmp)/taskresult.o
+$(outtmp)/executorresult.o :$(concurrentDir)/ExecutorResult.cpp
+	$(cppcompiler) $(cppflags) -c $(concurrentDir)/ExecutorResult.cpp -o $(outtmp)/executorresult.o
 
 $(outtmp)/condition.o :$(concurrentDir)/Condition.cpp
 	$(cppcompiler) $(cppflags) -c $(concurrentDir)/Condition.cpp -o $(outtmp)/condition.o

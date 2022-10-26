@@ -28,6 +28,8 @@ public:
 
     int tryLock();
 
+    bool isOwner();
+
     ~_Mutex();
 
     String toString();

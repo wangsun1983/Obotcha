@@ -59,11 +59,11 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
 
     ConcurrentQueue<Thread> mHandlers;
 
-    int mMaxPendingTaskNum;
-    int mMaxThreadNum; 
-    int mMinThreadNum;
-    int mMaxSubmitTaskWaitTime;
-    int mMaxNoWorkingTime;
+    //int mMaxPendingTaskNum;
+    //int mMaxThreadNum; 
+    //int mMinThreadNum;
+    //int mMaxSubmitTaskWaitTime;
+    //int mMaxNoWorkingTime;
 
     BlockingLinkedList<ExecutorTask> mTasks;
 

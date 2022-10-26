@@ -49,6 +49,10 @@ int _Mutex::lock() {
     return -pthread_mutex_lock(&mutex_t);
 }
 
+bool _Mutex::isOwner() {
+    return mutex_t.__data.__owner == syscall(SYS_gettid);
+}
+
 int _Mutex::lock(long timeInterval) {
     // if(mutex_t.__data.__owner == syscall(SYS_gettid)) {
     //    return 0;

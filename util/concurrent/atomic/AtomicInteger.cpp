@@ -2,9 +2,13 @@
 
 namespace obotcha {
 
-_AtomicInteger::_AtomicInteger() { value = 0; }
+_AtomicInteger::_AtomicInteger() { 
+    value = 0; 
+}
 
-_AtomicInteger::_AtomicInteger(int val) { value = val; }
+_AtomicInteger::_AtomicInteger(int val) { 
+    value = val; 
+}
 
 int _AtomicInteger::incrementAndGet() {
     return __sync_add_and_fetch(&value, 1);
@@ -72,6 +76,8 @@ int _AtomicInteger::compareAndSet(int val) {
     return result;
 }
 
-int _AtomicInteger::get() { return getAndAdd(0); }
+int _AtomicInteger::get() { 
+    return getAndAdd(0); 
+}
 
 } // namespace obotcha

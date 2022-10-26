@@ -2,6 +2,7 @@
 #define __OBOTCHA_FUTURE_HPP__
 
 #include "ExecutorTask.hpp"
+#include "ExecutorResult.hpp"
 
 namespace obotcha {
 
@@ -14,9 +15,13 @@ public:
     int wait(long interval = 0);
 
     void cancel();
-
+    
     template <typename T> T getResult(long millseconds = 0) {
-        return mTask->getResult<T>(millseconds);
+        if(mTask->wait(millseconds) != -ETIMEDOUT) {
+            return mTask->mResult->get<T>();
+        }
+
+        Trigger(TimeOutException, "time out");
     }
 
     int getStatus();

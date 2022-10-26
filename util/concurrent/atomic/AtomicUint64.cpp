@@ -2,11 +2,17 @@
 
 namespace obotcha {
 
-_AtomicUint64::_AtomicUint64(uint64_t val) { mValue = val; }
+_AtomicUint64::_AtomicUint64(uint64_t val) { 
+    mValue = val; 
+}
 
-uint64_t _AtomicUint64::incrementAndGet() { return ++mValue; }
+uint64_t _AtomicUint64::incrementAndGet() { 
+    return ++mValue; 
+}
 
-uint64_t _AtomicUint64::decrementAndGet() { return --mValue; }
+uint64_t _AtomicUint64::decrementAndGet() { 
+    return --mValue; 
+}
 
 uint64_t _AtomicUint64::addAndGet(uint64_t val) {
     mValue += val;
@@ -33,9 +39,13 @@ uint64_t _AtomicUint64::xorAndGet(uint64_t val) {
     return mValue;
 }
 
-uint64_t _AtomicUint64::getAndIncrement() { return mValue++; }
+uint64_t _AtomicUint64::getAndIncrement() { 
+    return mValue++; 
+}
 
-uint64_t _AtomicUint64::getAndDecrement() { return mValue--; }
+uint64_t _AtomicUint64::getAndDecrement() { 
+    return mValue--; 
+}
 
 uint64_t _AtomicUint64::getAndAdd(uint64_t val) {
     return mValue.fetch_add(val);

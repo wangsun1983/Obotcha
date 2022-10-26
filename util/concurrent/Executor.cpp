@@ -1,11 +1,20 @@
 #include "Executor.hpp"
 #include "AutoLock.hpp"
+#include "ExecutorTask.hpp"
+#include "Future.hpp"
 
 namespace obotcha {
 
+ThreadLocal<ExecutorTask> _Executor::ExecutorTasks = createThreadLocal<sp<_ExecutorTask>>();;
+
 _Executor::_Executor() {
     mStatus = createAtomicInteger(Idle);
-    //mQueueTimeout = 0;
+    mMaxPendingTaskNum = 0;
+    mDefaultThreadNum = 0;
+    mMaxThreadNum = 0;
+    mMinThreadNum = 0;
+    mMaxNoWorkingTime = 0;
+    mMaxSubmitTaskWaitTime = 0;
 }
 
 bool _Executor::isExecuting() {
@@ -20,12 +29,40 @@ void _Executor::updateStatus(int s) {
     mStatus->set(s);
 }
 
-//void _Executor::setQueueTimeout(long l) {
-    //mQueueTimeout = l;
-//}
+int _Executor::getMaxPendingTaskNum() {
+    return mMaxPendingTaskNum;
+}
 
-//long _Executor::getQueueTimeout() {
-//    return mQueueTimeout;
-//}
+int _Executor::getDefaultThreadNum() {
+    return mDefaultThreadNum;
+}
+
+int _Executor::getMaxThreadNum() {
+    return mMaxThreadNum;
+}
+
+int _Executor::getMinThreadNum() {
+    return mMinThreadNum;
+}
+
+uint32_t _Executor::getMaxNoWorkingTime() {
+    return mMaxNoWorkingTime;
+}
+
+uint32_t _Executor::getMaxSubmitTaskWaitTime() {
+    return mMaxSubmitTaskWaitTime;
+}
+
+ExecutorTask _Executor::getCurrentTask() {
+    return ExecutorTasks->get();
+}
+
+void _Executor::setCurrentTask(sp<_ExecutorTask> task) {
+    ExecutorTasks->set(task);
+}
+
+void _Executor::removeCurrentTask() {
+    ExecutorTasks->remove();
+}
 
 } // namespace obotcha
