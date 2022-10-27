@@ -10,6 +10,7 @@
 #include "ThreadPoolExecutor.hpp"
 #include "TimeWatcher.hpp"
 #include "ForEveryOne.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
@@ -66,6 +67,8 @@ Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
     if(isShutDown()) {
         return nullptr;
     }
+
+    task->setPending();
 
     if (mPendingTasks->putLast(task, mMaxSubmitTaskWaitTime)) {
         return createFuture(task);
@@ -148,6 +151,11 @@ int _ThreadPoolExecutor::getTasksNum() {
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
     //delete []mRunningTasks;
+    if(!isShutDown()) {
+        LOG(ERROR)<<"ThreadPoolExecutor release without shutdown!!!!";
+        shutdown();
+        awaitTermination();
+    }
 }
 
 } // namespace obotcha

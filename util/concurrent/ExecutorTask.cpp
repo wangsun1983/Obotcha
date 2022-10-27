@@ -61,6 +61,11 @@ int _ExecutorTask::getStatus() {
     return mStatus;
 }
 
+void _ExecutorTask::setPending() {
+    AutoLock l(mMutex);
+    mStatus = Pending;
+}
+
 void _ExecutorTask::execute() {
     Runnable r = nullptr;
 

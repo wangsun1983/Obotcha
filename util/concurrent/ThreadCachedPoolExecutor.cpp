@@ -135,6 +135,8 @@ Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
         return nullptr;
     }
 
+    task->setPending();
+    
     mTasks->putLast(task, mMaxSubmitTaskWaitTime);
     if (mIdleNum->get() == 0) {
         setUpOneIdleThread();
@@ -151,6 +153,11 @@ Future _ThreadCachedPoolExecutor::submitRunnable(Runnable r) {
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
     //this->shutdown();
     //this->awaitTermination();
+    if(!isShutDown()) {
+        LOG(ERROR)<<"ThreadCachedPoolExecutor release without shutdown!!!!";
+        shutdown();
+        awaitTermination();
+    }
 }
 
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {

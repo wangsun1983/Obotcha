@@ -50,7 +50,7 @@ Lock __forEveryOneAcquireLock(sp<_BlockingLinkedList<U>> list) {
     decltype(Y->getIterator()) X##__iterator;\
     decltype(X##__iterator->getItem()) X;\
     int X##_dummy = 0;\
-    auto X##_Func = ([&X##__iterator,&X](decltype(Y) container)->decltype(true){\
+    auto X##_Func = ([&X##__iterator,&X](decltype(Y) &container)->decltype(true){\
         if(X##__iterator == nullptr){\
             X##__iterator = container->getIterator();\
             if(!X##__iterator->hasValue()) {\

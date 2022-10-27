@@ -31,12 +31,15 @@ public:
 
     int getStatus();
 
+    void setPending();
+
     void execute();
 
     Runnable getRunnable();
 
     enum Status {
         Waiting = 0,
+        Pending,
         Running,
         Cancel,
         Complete,

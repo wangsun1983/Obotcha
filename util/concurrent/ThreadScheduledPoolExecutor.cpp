@@ -47,6 +47,8 @@ int _ThreadScheduledPoolExecutor::shutdown() {
     }
     updateStatus(ShutDown);
 
+    mCachedExecutor->shutdown();
+
     {
         AutoLock l(mTaskMutex);
         auto t = mTaskPool;
@@ -67,8 +69,6 @@ int _ThreadScheduledPoolExecutor::shutdown() {
 
         mCurrentTask = nullptr;
     }
-
-    mCachedExecutor->shutdown();
 
     return 0;
 }
@@ -95,6 +95,7 @@ Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
         return nullptr;
     }
 
+    task->setPending();
     if (addWaitingTaskLocked(Cast<WaitingTask>(task), mMaxSubmitTaskWaitTime) == 0) {
         return createFuture(task);
     }
@@ -188,7 +189,10 @@ void _ThreadScheduledPoolExecutor::run() {
 }
 
 _ThreadScheduledPoolExecutor::~_ThreadScheduledPoolExecutor() {
-
+    if(!isShutDown()) {
+        LOG(ERROR)<<"ThreadScheduledPoolExecutor release without shutdown!!!!";
+        close();
+    }
 }
 
 void _ThreadScheduledPoolExecutor::close() {
