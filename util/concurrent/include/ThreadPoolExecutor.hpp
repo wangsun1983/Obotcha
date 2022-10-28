@@ -41,20 +41,17 @@ public:
 
     int awaitTermination(long timeout = 0);
 
-    int getThreadsNum();
-
-    int getTasksNum();
+    int getPendingTaskNum();
+    
+    int getExecutingThreadNum();
 
     ~_ThreadPoolExecutor();
 
 private:
-    Future submitRunnable(Runnable r);
-
+    
     Future submitTask(ExecutorTask task);
     
     BlockingLinkedList<ExecutorTask> mPendingTasks;
-
-    //uint32_t mMaxSubmitTaskWaitTime;
 
     ArrayList<Thread> mHandlers;
 

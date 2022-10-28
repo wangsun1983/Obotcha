@@ -168,8 +168,8 @@ Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
     }
 
     AutoLock l(mTaskMutex);
-    Runnable r = task->getRunnable();
-    switch (r->getPriority()) {
+    //Runnable r = task->getRunnable();
+    switch (task->getPriority()) {
         case High:
             if (mMaxPendingTaskNum != -1 &&
                 mHighPriorityTasks->size() == mMaxPendingTaskNum) {
@@ -229,8 +229,13 @@ int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
     return 0;
 }
 
-int _ThreadPriorityPoolExecutor::getThreadsNum() { 
+int _ThreadPriorityPoolExecutor::getExecutingThreadNum() { 
     return mThreads->size(); 
+}
+
+int _ThreadPriorityPoolExecutor::getPendingTaskNum() {
+    AutoLock l(mTaskMutex);
+    return mMidPriorityTasks->size() + mLowPriorityTasks->size() + mHighPriorityTasks->size();
 }
 
 _ThreadPriorityPoolExecutor::~_ThreadPriorityPoolExecutor() {

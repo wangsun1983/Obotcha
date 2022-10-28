@@ -1,21 +1,7 @@
-/**
- * @file ReadWriteLock.cpp
- * @brief  ReadWriteLock is a tool for read/write access to a shared resource by
- * multiple threads
- * @details none
- * @mainpage none
- * @author sunli.wang
- * @email wang_sun_1983@yahoo.co.jp
- * @version 0.0.1
- * @date 2019-07-12
- * @license none
- */
-
 #include <pthread.h>
 
 #include "Error.hpp"
 #include "ReadWriteLock.hpp"
-#include "StrongPointer.hpp"
 #include "Process.hpp"
 #include "Log.hpp"
 
@@ -78,7 +64,7 @@ _ReadWriteLock::_ReadWriteLock() : _ReadWriteLock(nullptr) {}
 
 _ReadWriteLock::_ReadWriteLock(String s) {
     mWriteReqCount = 0;
-    mOwnerCount = 0;
+    mWrOwnerCount = 0;
     mIsWrite = false;
     mWrOwner = -1;
 
@@ -110,18 +96,19 @@ String _ReadWriteLock::getName() {
 }
 
 _ReadWriteLock::~_ReadWriteLock() { 
-    
+    //nothing
 }
 
 int _ReadWriteLock::_readlock(long interval) {
     AutoLock l(mMutex);
     int mytid = st(Process)::myTid();
-    while(mOwnerCount != 0 && mytid != mWrOwner) {
+    while(mWrOwnerCount != 0 && mytid != mWrOwner) {
         int ret = mReadCondition->wait(mMutex,interval);
         if(ret != 0) {
             return ret;
         }
     }
+
     auto iterator = readOwners.find(mytid);
     if(iterator == readOwners.end()) {
         readOwners[mytid] = 1;
@@ -169,14 +156,14 @@ int _ReadWriteLock::_writelock(long interval) {
     //check whether owner is myself
     int mytid = st(Process)::myTid();
     if(mWrOwner == mytid) {
-        mOwnerCount++;
+        mWrOwnerCount++;
         return 0;
     }
 
     if(!mIsWrite) {
         auto iterator = readOwners.find(mytid);
         if(iterator != readOwners.end() && readOwners.size() == 1) {
-            mOwnerCount++;
+            mWrOwnerCount++;
             goto end;
         }
     }
@@ -190,7 +177,7 @@ int _ReadWriteLock::_writelock(long interval) {
         }
     }
     mWriteReqCount--;
-    mOwnerCount++;
+    mWrOwnerCount++;
 end:
     mIsWrite = true;
     mWrOwner = mytid;
@@ -204,9 +191,9 @@ int _ReadWriteLock::_unWritelock() {
         return -1;
     }
     
-    mOwnerCount--;
+    mWrOwnerCount--;
     
-    if(mOwnerCount == 0) {
+    if(mWrOwnerCount == 0) {
         mIsWrite = false;
         mWrOwner = -1;
         if(mWriteReqCount == 0) {

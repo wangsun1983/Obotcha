@@ -31,7 +31,9 @@ public:
 
     int awaitTermination(long timeout);
 
-    int getThreadsNum();
+    int getPendingTaskNum();
+    
+    int getExecutingThreadNum();
 
     ~_ThreadPriorityPoolExecutor();
 

@@ -1,3 +1,15 @@
+/**
+ * @file Mutex.cpp
+ * @brief  Mutex is a tool for controlling access to a shared resource by
+ * multiple threads
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
 #ifndef __OBOTCHA_MUTEX_HPP__
 #define __OBOTCHA_MUTEX_HPP__
 
@@ -32,7 +44,7 @@ public:
 
     ~_Mutex();
 
-    String toString();
+    String getName();
 
 private:
     pthread_mutex_t *getMutex_t();

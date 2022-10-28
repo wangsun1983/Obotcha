@@ -1,16 +1,3 @@
-/**
- * @file Mutex.cpp
- * @brief  Mutex is a tool for controlling access to a shared resource by
- * multiple threads
- * @details none
- * @mainpage none
- * @author sunli.wang
- * @email wang_sun_1983@yahoo.co.jp
- * @version 0.0.1
- * @date 2019-07-12
- * @license none
- */
-
 #include <stdio.h>
 #include <sys/syscall.h>
 #include <unistd.h>
@@ -45,7 +32,6 @@ _Mutex::_Mutex(const char *v, int type) : _Mutex(type) {
 }
 
 int _Mutex::lock() {
-    //printf("owner is %d \n",mutex_t.__data.__owner);
     return -pthread_mutex_lock(&mutex_t);
 }
 
@@ -54,9 +40,6 @@ bool _Mutex::isOwner() {
 }
 
 int _Mutex::lock(long timeInterval) {
-    // if(mutex_t.__data.__owner == syscall(SYS_gettid)) {
-    //    return 0;
-    //}
     if (timeInterval == 0) {
         return -pthread_mutex_lock(&mutex_t);
     } else {
@@ -74,7 +57,7 @@ int _Mutex::tryLock() {
     return -pthread_mutex_trylock(&mutex_t);
 }
 
-String _Mutex::toString() { 
+String _Mutex::getName() { 
     return mMutexName; 
 }
 

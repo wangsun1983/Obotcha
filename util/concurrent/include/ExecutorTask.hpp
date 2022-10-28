@@ -1,3 +1,15 @@
+/**
+ * @file ExecutorTask.cpp
+ * @brief Executor process uinit
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #ifndef __OBOTCHA_EXECUTOR_TASK_HPP__
 #define __OBOTCHA_EXECUTOR_TASK_HPP__
 
@@ -23,6 +35,8 @@ public:
     
     _ExecutorTask(Runnable);
 
+    _ExecutorTask(Runnable,int delay,int priority);
+
     ~_ExecutorTask();
 
     int wait(long interval = 0);
@@ -35,10 +49,18 @@ public:
 
     void execute();
 
+    //Priority
+    void setPriority(int);
+    int getPriority();
+
+    //Delay
+    void setDelay(int);
+    int getDelay();
+
     Runnable getRunnable();
 
     enum Status {
-        Waiting = 0,
+        Idle = 0,
         Pending,
         Running,
         Cancel,
@@ -53,6 +75,10 @@ private:
     Mutex mMutex;
 
     Condition mCompleteCond;
+
+    int mDelay;
+
+    int mPriority;
 
     //Object mResult;
     sp<_ExecutorResult> mResult;

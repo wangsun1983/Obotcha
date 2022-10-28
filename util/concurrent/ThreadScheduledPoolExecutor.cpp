@@ -12,9 +12,10 @@
 namespace obotcha {
 
 //---------------WaitingTask---------------//
-_WaitingTask::_WaitingTask(long int interval, Runnable r) : _ExecutorTask(r) {
+_WaitingTask::_WaitingTask(ExecutorTask task){
     next = nullptr;
-    nextTime = st(System)::currentTimeMillis() + interval;
+    nextTime = st(System)::currentTimeMillis() + task->getDelay();
+    this->task = task;
 }
 
 _WaitingTask::~_WaitingTask() {
@@ -31,7 +32,7 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int maxPendingTaskNum
     mCount = 0;
     mMaxPendingTaskNum = maxPendingTaskNum;
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;
-    
+    printf("_ThreadScheduledPoolExecutor,mMaxPendingTaskNum is %d \n",mMaxPendingTaskNum);
     //notEmpty = createCondition();
     notFull = createCondition();
     mTaskWaitCond = createCondition();
@@ -53,7 +54,7 @@ int _ThreadScheduledPoolExecutor::shutdown() {
         AutoLock l(mTaskMutex);
         auto t = mTaskPool;
         while (mTaskPool != nullptr) {
-            mTaskPool->cancel();
+            mTaskPool->task->cancel();
             auto header = mTaskPool;
             mTaskPool = mTaskPool->next;
             header->next = nullptr;
@@ -64,7 +65,7 @@ int _ThreadScheduledPoolExecutor::shutdown() {
         mTaskWaitCond->notify();
 
         if(mCurrentTask != nullptr) {
-            mCurrentTask->cancel();
+            mCurrentTask->task->cancel();
         }
 
         mCurrentTask = nullptr;
@@ -85,19 +86,26 @@ int _ThreadScheduledPoolExecutor::awaitTermination(long timeout) {
     return mCachedExecutor->awaitTermination(timeout);
 }
 
-Future _ThreadScheduledPoolExecutor::submitRunnable(Runnable r) {
-    WaitingTask task = createWaitingTask(r->getDelay(), r);
-    return submitTask(task);
+int _ThreadScheduledPoolExecutor::getPendingTaskNum() {
+    AutoLock l(mTaskMutex);
+    return mCount;
+}
+
+int _ThreadScheduledPoolExecutor::getExecutingThreadNum() {
+    return mCachedExecutor->getExecutingThreadNum();
 }
 
 Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
     if(isShutDown()) {
         return nullptr;
     }
-
+    
     task->setPending();
-    if (addWaitingTaskLocked(Cast<WaitingTask>(task), mMaxSubmitTaskWaitTime) == 0) {
-        return createFuture(task);
+
+    WaitingTask waitTask = createWaitingTask(task);
+
+    if (addWaitingTaskLocked(waitTask, mMaxSubmitTaskWaitTime) == 0) {
+        return createFuture(Cast<ExecutorTask>(waitTask));
     }
     return nullptr;
 }
@@ -149,11 +157,12 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
 }
 
 void _ThreadScheduledPoolExecutor::run() {
+    auto instance = AutoClone(this);
     while (1) {
         if(isShutDown()) {
+            instance = nullptr;
             return;
         }
-
         {
             AutoLock ll(mTaskMutex);
             if (mTaskPool == nullptr) {
@@ -173,12 +182,12 @@ void _ThreadScheduledPoolExecutor::run() {
                 }
             }
 
-            if (mCurrentTask->getStatus() == st(Future)::Cancel) {
+            if (mCurrentTask->task->getStatus() == st(ExecutorTask)::Cancel) {
                 continue;
             }
         }
 
-        mCachedExecutor->submitTask(mCurrentTask);
+        mCachedExecutor->submitTask(mCurrentTask->task);
         {
             AutoLock l(mTaskMutex);
             notFull->notify();

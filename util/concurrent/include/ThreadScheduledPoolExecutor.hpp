@@ -19,16 +19,16 @@ namespace obotcha {
 class _WaitingTask;
 class _ThreadScheduledPoolExecutor;
 
-DECLARE_CLASS(WaitingTask) IMPLEMENTS(ExecutorTask) {
+DECLARE_CLASS(WaitingTask) {
 public:
     friend class _ThreadScheduledPoolExecutor;
 
-    _WaitingTask(long int interval, Runnable);
+    _WaitingTask(ExecutorTask);
     ~_WaitingTask();
 
-private:
     long int nextTime;
     sp<_WaitingTask> next;
+    ExecutorTask task;
 };
 
 DECLARE_CLASS(ThreadScheduledPoolExecutor) IMPLEMENTS(Thread, Executor, Closeable) {
@@ -45,10 +45,14 @@ public:
 
     int awaitTermination(long timeout);
 
+    int getPendingTaskNum();
+    
+    int getExecutingThreadNum();
+
     bool isTerminated();
 
 private:
-    Future submitRunnable(Runnable r);
+    //Future submitRunnable(Runnable r,int delay,int priority);
     Future submitTask(ExecutorTask task);
     
     void run();
@@ -65,9 +69,6 @@ private:
     Condition mTaskWaitCond;
 
     WaitingTask mCurrentTask;
-
-    //int mMaxPendingTaskNum;
-    //uint32_t mMaxSubmitTaskWaitTime;
 
     int mCount;
 

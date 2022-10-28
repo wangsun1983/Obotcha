@@ -1,16 +1,3 @@
-/**
- * @file ExecutorTask.cpp
- * @brief A cancellable asynchronous computation.  This class provides a base
- * implementation of Future
- * @details none
- * @mainpage none
- * @author sunli.wang
- * @email wang_sun_1983@yahoo.co.jp
- * @version 0.0.1
- * @date 2019-07-12
- * @license none
- */
-
 #include "ExecutorTask.hpp"
 #include "AutoLock.hpp"
 #include "ExecutorResult.hpp"
@@ -21,8 +8,13 @@ _ExecutorTask::_ExecutorTask(Runnable r) {
     this->mRunnable = r;
     mMutex = createMutex("ExecutorTaskMutex");
     mCompleteCond = createCondition();
-    mStatus = Waiting;
+    mStatus = Idle;
     mResult = createExecutorResult();
+}
+
+_ExecutorTask::_ExecutorTask(Runnable r,int delay,int priority):_ExecutorTask(r) {
+    mDelay = delay;
+    mPriority = priority;
 }
 
 _ExecutorTask::~_ExecutorTask() { 
@@ -96,6 +88,24 @@ void _ExecutorTask::execute() {
 
 Runnable _ExecutorTask::getRunnable() { 
     return mRunnable; 
+}
+
+//Priority
+void _ExecutorTask::setPriority(int prio) {
+    this->mPriority = prio;
+}
+
+int _ExecutorTask::getPriority() {
+    return mPriority;
+}
+
+//Delay
+void _ExecutorTask::setDelay(int delay) {
+    mDelay = delay;
+}
+
+int _ExecutorTask::getDelay() {
+    return mDelay;
 }
 
 } // namespace obotcha

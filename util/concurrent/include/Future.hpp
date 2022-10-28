@@ -21,12 +21,12 @@ public:
     template <typename T> T getResult(long millseconds = 0) {
         switch(mTask->getStatus()) {
             case st(ExecutorTask)::Cancel:
-            case st(ExecutorTask)::Waiting:
+            case st(ExecutorTask)::Idle:
             Trigger(IllegalStateException,"task is not excuted");
         }
         if(mTask->wait(millseconds) != -ETIMEDOUT) {
-            if(mTask->getStatus() == Cancel) {
-                Trigger(InterruptedException, "task has been cancelled");
+            if(mTask->getStatus() == st(ExecutorTask)::Cancel) {
+                Trigger(InterruptedException, "Task has been cancelled");
             }
             return mTask->mResult->get<T>();
         }
@@ -35,13 +35,6 @@ public:
     }
 
     int getStatus();
-
-    enum Status {
-        Waiting = st(ExecutorTask)::Waiting,
-        Running,
-        Cancel,
-        Complete,
-    };
 
 private:
     ExecutorTask mTask;

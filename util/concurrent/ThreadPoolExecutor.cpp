@@ -59,9 +59,9 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
     updateStatus(Executing);
 }
 
-Future _ThreadPoolExecutor::submitRunnable(Runnable r) {
-    return submitTask(createExecutorTask(r));
-}
+//Future _ThreadPoolExecutor::submitRunnable(Runnable r) {
+//    return submitTask(createExecutorTask(r));
+//}
 
 Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
     if(isShutDown()) {
@@ -141,11 +141,11 @@ int _ThreadPoolExecutor::awaitTermination(long millseconds) {
     return 0;
 }
 
-int _ThreadPoolExecutor::getThreadsNum() {
+int _ThreadPoolExecutor::getExecutingThreadNum() {
     return mHandlers->size();
 }
 
-int _ThreadPoolExecutor::getTasksNum() {
+int _ThreadPoolExecutor::getPendingTaskNum() {
     return mPendingTasks->size();
 }
 

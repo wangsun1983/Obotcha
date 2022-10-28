@@ -65,4 +65,9 @@ void _Executor::removeCurrentTask() {
     ExecutorTasks->remove();
 }
 
+sp<_Future> _Executor::submitRunnable(Runnable r,int delay,int priority) {
+    auto task = createExecutorTask(r,delay,priority);
+    return this->submitTask(task);
+}
+
 } // namespace obotcha

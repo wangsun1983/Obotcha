@@ -121,12 +121,11 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
     return 0;
 }
 
-int _ThreadCachedPoolExecutor::getThreadsNum() {
-    //AutoLock l(mMutex);
+int _ThreadCachedPoolExecutor::getExecutingThreadNum() {
     return mHandlers->size();
 }
 
-int _ThreadCachedPoolExecutor::getTasksNum() {
+int _ThreadCachedPoolExecutor::getPendingTaskNum() {
     return mTasks->size();
 }
 
@@ -145,10 +144,10 @@ Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
     return createFuture(task);
 }
 
-Future _ThreadCachedPoolExecutor::submitRunnable(Runnable r) {
-    ExecutorTask task = createExecutorTask(r);
-    return submitTask(task);
-}
+//Future _ThreadCachedPoolExecutor::submitRunnable(Runnable r) {
+//    ExecutorTask task = createExecutorTask(r);
+//    return submitTask(task);
+//}
 
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
     //this->shutdown();

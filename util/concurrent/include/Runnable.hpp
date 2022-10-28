@@ -21,17 +21,17 @@ public:
 
     virtual ~_Runnable() {}
 
-    void setPriority(int p);
-    int getPriority();
-    void setDelay(int p);
-    int getDelay();
+    //void setPriority(int p);
+    //int getPriority();
+    //void setDelay(int p);
+    //int getDelay();
 
 private:
     //support for PriorityPoolExecutor;
-    int priority;
+    //int priority;
 
     //support forScheduledPoolExecutor;
-    int delay;
+    //int delay;
 };
 
 template <class Function, class... Args>

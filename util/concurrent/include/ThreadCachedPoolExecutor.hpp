@@ -39,20 +39,16 @@ DECLARE_CLASS(ThreadCachedPoolExecutor) IMPLEMENTS(Executor) {
 
     int awaitTermination(long timeout);
 
-    //void submitTask(ExecutorTask task, long interval = 0);
-
-    int getThreadsNum();
-
-    int getTasksNum();
+    int getPendingTaskNum();
+    
+    int getExecutingThreadNum();
 
     ~_ThreadCachedPoolExecutor();
 
   private:
     void setUpOneIdleThread();
-    Future submitRunnable(Runnable r);
     Future submitTask(ExecutorTask task); 
-    //Future poolSubmit(Runnable r, long interval = 0);
-
+    
     Mutex mMutex;
 
     int threadNum;

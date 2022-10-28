@@ -1,3 +1,16 @@
+/**
+ * @file ReadWriteLock.cpp
+ * @brief  ReadWriteLock is a tool for read/write access to a shared resource by
+ * multiple threads
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
+
 #ifndef __OBOTCHA_READ_WRITE_HPP__
 #define __OBOTCHA_READ_WRITE_HPP__
 
@@ -85,7 +98,7 @@ DECLARE_CLASS(ReadWriteLock) {
     int mWriteReqCount;
     bool mIsWrite;
     int mWrOwner;
-    int mOwnerCount;
+    int mWrOwnerCount;
     //<tid,counts>
     std::map<int,int> readOwners;
 
