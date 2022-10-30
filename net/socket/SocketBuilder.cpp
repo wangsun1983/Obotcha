@@ -44,11 +44,13 @@ _SocketBuilder::_SocketBuilder() {
 Socket _SocketBuilder::newSocket() {
     if (fd == nullptr) {
         return createSocket(st(Socket)::Tcp, address, option,nullptr,nullptr,mIsAsync,mPool);
+    } else {
+        return createSocket(fd);
     }
 
-    Socket s = createSocket(fd);
-    s->setInetAddress(address);
-    return s;
+    //Socket s = createSocket(fd);
+    //s->setInetAddress(address);
+    //return s;
 }
 
 _SocketBuilder* _SocketBuilder::setAsyncPool(AsyncOutputChannelPool pool) {
@@ -64,11 +66,13 @@ Socket _SocketBuilder::newDatagramSocket() {
 Socket _SocketBuilder::newLocalSocket() {
     if (fd == nullptr) {
         return createSocket(st(Socket)::Local, address, option);
+    } else {
+        return createSocket(fd);
     }
 
-    Socket s = createSocket(fd);
-    s->setInetAddress(address);
-    return s;
+    //Socket s = createSocket(fd);
+    //s->setInetAddress(address);
+    //return s;
 }
 
 Socket _SocketBuilder::newSSLSocket() {

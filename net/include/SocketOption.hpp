@@ -25,7 +25,7 @@ public:
     friend class _SocketImpl;
     friend class _HttpOption;
 
-    static const int DefaultBuffSize;
+    static const int DefaultRecvBuffSize;
     static const int DefaultConnectNum;
 
     _SocketOption();
@@ -169,6 +169,7 @@ private:
 
     int mConnectNum;
     int mBuffSize;
+
 };
 
 }

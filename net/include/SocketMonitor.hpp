@@ -34,7 +34,7 @@ public:
 DECLARE_CLASS(SocketMonitor) IMPLEMENTS(Closeable){
 public:
     _SocketMonitor();
-    _SocketMonitor(int);
+    _SocketMonitor(int,int recvBuffSize = st(SocketOption)::DefaultRecvBuffSize);
     ~_SocketMonitor();
 
     int bind(Socket,SocketListener);
@@ -58,6 +58,8 @@ private:
     ConcurrentHashMap<int,ServerSocket> mServerSocks;
 
     int mThreadNum;
+
+    int mRecvBuffSize;
 
     Mutex mMutex;
     //int *currentProcessingFds;

@@ -14,7 +14,7 @@
 
 namespace obotcha {
 
-_SocketInputStream::_SocketInputStream(sp<_Socket> s):_SocketInputStream(s->getSockImpl()) { 
+_SocketInputStream::_SocketInputStream(sp<_Socket> s):_SocketInputStream(s->mSockImpl) { 
 }
 
 _SocketInputStream::_SocketInputStream(SocketImpl sockimpl) {

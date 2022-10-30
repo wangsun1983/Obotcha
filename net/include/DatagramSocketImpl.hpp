@@ -15,7 +15,7 @@ DECLARE_CLASS(DatagramSocketImpl) IMPLEMENTS(SocketImpl){
 public:
     _DatagramSocketImpl();
     _DatagramSocketImpl(InetAddress address,SocketOption option);
-    sp<_Socket> receiveFrom(ByteArray);
+    sp<_Socket> recvDatagram(ByteArray);
     int connect();
     int bind();
 

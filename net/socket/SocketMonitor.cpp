@@ -27,8 +27,10 @@ _SocketMonitorTask::_SocketMonitorTask(int event, Socket s, ByteArray data) {
 
 _SocketMonitor::_SocketMonitor() : _SocketMonitor(4) {}
 
-_SocketMonitor::_SocketMonitor(int threadnum) {
+_SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
     mAsyncOutputPool = createAsyncOutputChannelPool();
+
+    mRecvBuffSize = recvBuffSize;
 
     mMutex = createMutex();
     mSocks = createConcurrentHashMap<int, Socket>();
@@ -152,7 +154,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
     }
     mPoll->addObserver(
         fd, EPOLLIN | EPOLLRDHUP | EPOLLHUP,
-        [](int fd, uint32_t events, SocketListener &listener, int serverfd,SocketMonitor &monitor) {
+        [this](int fd, uint32_t events, SocketListener &listener, int serverfd,SocketMonitor &monitor) {
             Socket s = monitor->mSocks->get(fd);
             if (s == nullptr && fd != serverfd) {
                 return st(EPollFileObserver)::OnEventRemoveObserver;
@@ -163,8 +165,8 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                 if (s != nullptr && s->getProtocol() == st(Socket)::Protocol::Udp) {
                     Socket newClient = nullptr;
                     while (1) {
-                        ByteArray buff = createByteArray(st(Socket)::DefaultBufferSize);
-                        newClient = s->receiveFrom(buff);
+                        ByteArray buff = createByteArray(mRecvBuffSize);
+                        newClient = s->recvDatagram(buff);
                         if(newClient == nullptr) {
                             //LOG(ERROR)<<"SocketMonitor accept udp is a null socket!!!!";
                             break;
@@ -176,7 +178,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                             monitor->mCondition->notify();
                         }
 
-                        if (buff->size() != st(Socket)::DefaultBufferSize) {
+                        if (buff->size() != mRecvBuffSize) {
                             break;
                         }
                     }
@@ -199,11 +201,13 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
             }
 
             if ((events & EPOLLIN) != 0) {
-                auto sock = s->getSockImpl();
-                if(sock != nullptr) {
+                //auto sock = s->getSockImpl();
+                auto inputStream = s->getInputStream();
+                if(inputStream != nullptr) {
                     while (1) {
-                        ByteArray buff = createByteArray(st(Socket)::DefaultBufferSize);
-                        int length = sock->read(buff);
+                        ByteArray buff = createByteArray(mRecvBuffSize);
+                        //int length = sock->read(buff);
+                        long length = inputStream->read(buff);
                         if (length > 0) {
                             buff->quickShrink(length);
                             AutoLock l(monitor->mMutex);
@@ -211,7 +215,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                             monitor->mCondition->notify();
                         }
 
-                        if (length != st(Socket)::DefaultBufferSize) {
+                        if (length != mRecvBuffSize) {
                             break;
                         }
                     }

@@ -4,6 +4,10 @@
 
 namespace obotcha {
 
+_SocketImpl::_SocketImpl() {
+    _init();
+}
+
 _SocketImpl::_SocketImpl(FileDescriptor fd) {
     _init();
     sock = fd;
@@ -13,18 +17,16 @@ _SocketImpl::_SocketImpl(InetAddress address, SocketOption option) {
     _init();
     this->address = address;
     this->option = option;
+    if(option != nullptr) {
+        mBuffSize = option->getRcvBuffSize();
+    }
 }
 
 void _SocketImpl::_init() {
     sock = nullptr;
     address = nullptr;
     option = nullptr;
-    memset((void *)&mSockAddr, 0, sizeof(struct sockaddr_in));
-    mBuffSize = st(Socket)::DefaultBufferSize;
-}
-
-void _SocketImpl::setRecvBuff(int v) {
-    mBuffSize = v;
+    mBuffSize = st(SocketOption)::DefaultRecvBuffSize;
 }
 
 void _SocketImpl::setOptions() {
@@ -215,13 +217,9 @@ InetAddress _SocketImpl::getInetAddress() {
     return address;
 }
 
-void _SocketImpl::setInetAddress(InetAddress addr) {
-    address = addr;
-}
-
 int _SocketImpl::write(ByteArray data,int start,int length) {
     int size = (length == -1?data->size() - start:length);
-    if(start + size > data->size()) {
+    if(size > data->size()) {
         Trigger(IllegalArgumentException,"oversize");
     }
 

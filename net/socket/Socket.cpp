@@ -14,12 +14,10 @@
 
 namespace obotcha {
 
-int _Socket::DefaultBufferSize = 1024 * 4;
-
 _Socket::_Socket() {
     mProtocol = UnKnown;
     mClosed = false;
-    mSock = nullptr;
+    mSockImpl = nullptr;
     mIsAsync = false;
     mPool = nullptr;
 }
@@ -37,19 +35,19 @@ _Socket::_Socket(int protocol,
 
     switch (protocol) {
         case Tcp:
-            mSock = createSocksSocketImpl(addr, option);
+            mSockImpl = createSocksSocketImpl(addr, option);
             return;
 
         case Udp:
-            mSock = createDatagramSocketImpl(addr, option);
+            mSockImpl = createDatagramSocketImpl(addr, option);
             return;
 
         case Local:
-            mSock = createLocalSocketImpl(addr, option);
+            mSockImpl = createLocalSocketImpl(addr, option);
             return;
 
         case SSL:
-            mSock = createSSLSocksSocketImpl(certificatePath,keyPath,addr,option);
+            mSockImpl = createSSLSocksSocketImpl(certificatePath,keyPath,addr,option);
             return;
     }
 
@@ -57,16 +55,20 @@ _Socket::_Socket(int protocol,
 }
 
 _Socket::_Socket(FileDescriptor descriptor):_Socket() {
-    mSock = createSocketImpl(descriptor);
-    mOutputStream = createSocketOutputStream(mSock,mPool);
-    mInputStream = createSocketInputStream(mSock);
+    mSockImpl = createSocketImpl(descriptor);
+    mOutputStream = createSocketOutputStream(mSockImpl,mPool);
+    mInputStream = createSocketInputStream(mSockImpl);
     mProtocol = Fd;
+}
+_Socket::_Socket(int protocol,SocketImpl impl):_Socket() {
+    mSockImpl = impl;
+    mProtocol = protocol;
 }
 
 void _Socket::setAsync(bool async,AsyncOutputChannelPool pool) {
     bool formerAsync = mIsAsync;
     if(formerAsync != async) {
-        mSock->getFileDescriptor()->setAsync(async);
+        mSockImpl->getFileDescriptor()->setAsync(async);
         //firstly,remove ouputstream from async pool£¡£¡£¡£¡;
         mOutputStream->setAsync(false);
         if(pool != nullptr) {
@@ -74,42 +76,30 @@ void _Socket::setAsync(bool async,AsyncOutputChannelPool pool) {
         }
         mIsAsync = async;
         mOutputStream->setAsync(async,mPool);
-        //mOutputStream = createSocketOutputStream(mSock,mPool);
-        //mInputStream = createSocketInputStream(mSock);
     }
 }
 
 bool _Socket::isAsync() {
-    return mSock->getFileDescriptor()->isAsync();
-}
-
-void _Socket::setInetAddress(InetAddress addr) {
-    mSock->setInetAddress(addr);
+    return mSockImpl->getFileDescriptor()->isAsync();
 }
 
 InetAddress _Socket::getInetAddress() {
-    return mSock->getInetAddress();
-}
-
-void _Socket::setProtocol(int protocol) {
-    this->mProtocol = protocol;
+    return mSockImpl->getInetAddress();
 }
 
 int _Socket::connect() {
-    if(mSock->connect() == 0) {
-        mSock->getFileDescriptor()->setAsync(mIsAsync);
+    if(mSockImpl->connect() == 0) {
+        mSockImpl->getFileDescriptor()->setAsync(mIsAsync);
         setAsync(mIsAsync,mPool);
-        //mOutputStream = createSocketOutputStream(mSock,mPool);
-        //mInputStream = createSocketInputStream(mSock);
         return 0;
     }
     return -1;
 }
 
 int _Socket::bind() {
-    int ret = mSock->bind();
-    mOutputStream = createSocketOutputStream(mSock,mPool);
-    mInputStream = createSocketInputStream(mSock);
+    int ret = mSockImpl->bind();
+    mOutputStream = createSocketOutputStream(mSockImpl,mPool);
+    mInputStream = createSocketInputStream(mSockImpl);
 
     return ret;
 }
@@ -125,8 +115,8 @@ void _Socket::close() {
             mOutputStream->close();
         }
 
-        if (mSock != nullptr) {
-            mSock->close();
+        if (mSockImpl != nullptr) {
+            mSockImpl->close();
         }
     }
 }
@@ -135,38 +125,24 @@ bool _Socket::isClosed() {
     return mClosed;
 }
 
-sp<_Socket> _Socket::receiveFrom(ByteArray buff) {
-    return mSock->receiveFrom(buff);
+sp<_Socket> _Socket::recvDatagram(ByteArray buff) {
+    return mSockImpl->recvDatagram(buff);
 }
 
 InputStream _Socket::getInputStream() {
-    //if(mInputStream == nullptr) {
-    //    mInputStream = createSocketInputStream(AutoClone(this));
-    //}
     return mInputStream;
 }
 
 OutputStream _Socket::getOutputStream() {
-    //if(mOutputStream == nullptr) {
-    //    mOutputStream = createSocketOutputStream(AutoClone(this));
-    //}
     return mOutputStream;
 }
 
 FileDescriptor _Socket::getFileDescriptor() {
-    return mSock->getFileDescriptor();
+    return mSockImpl->getFileDescriptor();
 }
 
 int _Socket::getProtocol() {
     return mProtocol;
-}
-
-void _Socket::setSockImpl(SocketImpl impl) {
-    this->mSock = impl;
-}
-
-SocketImpl _Socket::getSockImpl() {
-    return mSock;
 }
 
 } // namespace obotcha

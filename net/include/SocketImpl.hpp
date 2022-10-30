@@ -17,14 +17,13 @@ namespace obotcha {
 class _Socket;
 DECLARE_CLASS(SocketImpl) {
 public:
-    _SocketImpl(){};
+    _SocketImpl();
     _SocketImpl(FileDescriptor);
     _SocketImpl(InetAddress,SocketOption);
     virtual int connect() {Trigger(MethodNotSupportException,"not support");}
     virtual int bind() {Trigger(MethodNotSupportException,"not support");}
     virtual sp<_Socket> accept() {Trigger(MethodNotSupportException,"not support");}//TOOD
-    
-    virtual sp<_Socket> receiveFrom(ByteArray){Trigger(MethodNotSupportException,"not support");}
+    virtual sp<_Socket> recvDatagram(ByteArray){Trigger(MethodNotSupportException,"not support");}
 
     //move all read write function to socket
     //default is tcp's read & write function
@@ -35,19 +34,19 @@ public:
     virtual int close();
     virtual FileDescriptor getFileDescriptor();
 
-    void setRecvBuff(int);
-    
     InetAddress getInetAddress();
-    void setInetAddress(InetAddress);
     
 protected:
     void setOptions();
+    
     FileDescriptor sock;
+    
     InetAddress address;
+    
     SocketOption option;
     
-    struct sockaddr_in mSockAddr; //ipv4
-    struct sockaddr_in6 mSockAddrV6; //ipv6
+    //struct sockaddr_in mSockAddr; //ipv4
+    //struct sockaddr_in6 mSockAddrV6; //ipv6
 
     int mBuffSize;
 

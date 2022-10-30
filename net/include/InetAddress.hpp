@@ -1,15 +1,46 @@
 #ifndef __OBOTCHA_INET_ADDRESS_HPP__
 #define __OBOTCHA_INET_ADDRESS_HPP__
 
+#include <arpa/inet.h>
+#include <cstring>
+#include <ifaddrs.h>
+#include <net/if.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
 #include "ArrayList.hpp"
 
+#include "OStdReturnValue.hpp"
+
 #define MAX_LENGTH 256
 
 namespace obotcha {
+
+class _InetAddress;
+
+DECLARE_CLASS(SockAddress) {
+public:
+    _SockAddress(int family);
+    _SockAddress(int family,String address,int port);
+
+    DefRet(int,struct sockaddr *) get();
+    int port();
+    int family();
+
+    sp<_InetAddress> toInetAddress();
+
+private:
+    struct sockaddr_in mSockAddr; //ipv4
+    struct sockaddr_in6 mSockAddrV6; //ipv6
+    int mFamily;
+};
 
 DECLARE_CLASS(InetAddress) {
 
@@ -32,6 +63,8 @@ public:
     String getAddress();
     void setAddress(String);
 
+    SockAddress getSockAddress();
+
     int getFamily();
 
     uint64_t hashcode();
@@ -41,6 +74,8 @@ protected:
     String mAddress;
     int mPort;
     int mFamily;
+
+    SockAddress mSockAddress;
 };
 
 }

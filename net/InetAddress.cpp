@@ -1,24 +1,125 @@
-#include <arpa/inet.h>
-#include <cstring>
-#include <ifaddrs.h>
-#include <net/if.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <stdio.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
 #include "InetAddress.hpp"
 #include "Log.hpp"
 #include "String.hpp"
+#include "Inet6Address.hpp"
 
 namespace obotcha {
 
 int _InetAddress::DefaultPort = 8080;
 
+//---------------SockAddress-------------
+_SockAddress::_SockAddress(int family) {
+    this->mFamily = family;
+    switch(family) {
+        case st(InetAddress)::IPV4: {
+            memset(&mSockAddr, 0, sizeof(struct sockaddr_in));
+        }
+        break;
+
+        case st(InetAddress)::IPV6: {
+            memset(&mSockAddrV6, 0, sizeof(struct sockaddr_in6));
+        }
+        break;
+    }
+}
+
+_SockAddress::_SockAddress(int family,String address,int port) {
+    this->mFamily = family;
+    switch(mFamily) {
+        case st(InetAddress)::IPV4: {
+                mSockAddr.sin_family = AF_INET;
+                mSockAddr.sin_port = htons(port);
+                if (address != nullptr) {
+                    mSockAddr.sin_addr.s_addr = inet_addr(address->toChars());
+                } else {
+                    mSockAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+                }
+            }
+            break;
+
+        case st(InetAddress)::IPV6: {
+            mSockAddrV6.sin6_family = AF_INET;
+            mSockAddrV6.sin6_port = htons(port);
+            if (address != nullptr) {
+                //mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
+                inet_pton(AF_INET6, address->toChars(), &mSockAddrV6.sin6_addr);
+            } else {
+                mSockAddrV6.sin6_addr = in6addr_any;
+            }
+        }
+        break;
+    }
+}
+
+DefRet(int,sockaddr *) _SockAddress::get() {
+    switch(mFamily) {
+        case st(InetAddress)::IPV4: {
+            return MakeRet(sizeof(mSockAddr),(sockaddr *)&mSockAddr);
+        }
+        
+        case st(InetAddress)::IPV6: {
+            return MakeRet(sizeof(mSockAddrV6),(sockaddr *)&mSockAddrV6);
+        }
+    }
+
+    return MakeRet(-1,nullptr);
+}
+
+int _SockAddress::port() {
+    switch(mFamily) {
+        case st(InetAddress)::IPV4: {
+            return mSockAddr.sin_port;
+        }
+        
+        case st(InetAddress)::IPV6: {
+            return mSockAddrV6.sin6_port;
+        }
+    }
+
+    return -1;
+}
+
+int _SockAddress::family() {
+    switch(mFamily) {
+        case st(InetAddress)::IPV4: {
+            return AF_INET;
+        }
+        
+        case st(InetAddress)::IPV6: {
+            return AF_INET6;
+        }
+    }
+    return -1;
+}
+
+sp<_InetAddress> _SockAddress::toInetAddress() {
+    switch(mFamily) {
+        case st(InetAddress)::IPV4: {
+            return createInetAddress(createString(inet_ntoa(mSockAddr.sin_addr)),
+                                ntohs(mSockAddr.sin_port));
+
+        }
+        break;
+
+        case st(InetAddress)::IPV6: {
+            char buf[256];
+            memset(buf,0,256);
+            inet_ntop(AF_INET6, &mSockAddrV6.sin6_addr, buf, sizeof(buf));
+
+            String ip = createString(buf);
+            return createInet6Address(ip,mSockAddrV6.sin6_port);
+        }
+        break;
+    }
+    return nullptr;
+}
+
+
+
+//---------------InetAddress-------------
 _InetAddress::_InetAddress(int port) {
     mPort = port;
     mAddress = nullptr;
@@ -52,6 +153,14 @@ void _InetAddress::setAddress(String addr) {
 
 String _InetAddress::getAddress() { 
     return mAddress; 
+}
+
+SockAddress _InetAddress::getSockAddress() {
+    if(mSockAddress == nullptr) {
+        mSockAddress = createSockAddress(mFamily,mAddress,mPort);
+    }
+    
+    return mSockAddress;
 }
 
 int _InetAddress::getFamily() {

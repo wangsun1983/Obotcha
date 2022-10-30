@@ -17,12 +17,15 @@
 namespace obotcha {
 
 class _SocketMonitor;
+class _SSLServerSocketImpl;
 
 DECLARE_CLASS(Socket) {
 public:
     friend class _SocketMonitor;
     friend class _SocketOutputStream;
     friend class _SocketInputStream;
+
+    friend class _SSLServerSocketImpl;
 
     enum Protocol {
         UnKnown = 0,
@@ -34,6 +37,7 @@ public:
     };
 
     _Socket();
+
     _Socket(int protocol,
             InetAddress addr,
             SocketOption option,
@@ -43,46 +47,48 @@ public:
             AsyncOutputChannelPool pool = nullptr);
 
     _Socket(FileDescriptor);
-    void setAsync(bool,AsyncOutputChannelPool pool);
+
+    _Socket(int protocol,SocketImpl impl);
+
+    void setAsync(bool,AsyncOutputChannelPool pool = nullptr);
+
     bool isAsync();
     
     int connect();
+    
     int bind();
 
     void close();
+
     bool isClosed();
 
     FileDescriptor getFileDescriptor();
     
-    void setInetAddress(InetAddress);
     InetAddress getInetAddress();
 
     InputStream getInputStream();
+
     OutputStream getOutputStream();
     
     //for udp socket
-    sp<_Socket> receiveFrom(ByteArray);
+    sp<_Socket> recvDatagram(ByteArray);
     
     int getProtocol();
-    void setProtocol(int);
-
-    static int DefaultBufferSize;
-    
-    void setSockImpl(SocketImpl);
-    SocketImpl getSockImpl();
-
-    long getTag();
     
 private:
     int mProtocol;
+    
     OutputStream mOutputStream;
+    
     InputStream mInputStream;
 
     AsyncOutputChannelPool mPool;
+    
     bool mIsAsync;
 
 protected:
-    SocketImpl mSock;
+    SocketImpl mSockImpl;
+    
     bool mClosed;
 };
 

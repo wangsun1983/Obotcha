@@ -6,7 +6,7 @@ namespace obotcha {
 
 AsyncOutputChannelPool _SocketOutputStream::defaultOutputChannelPool = nullptr;
 
-_SocketOutputStream::_SocketOutputStream(sp<_Socket> s,AsyncOutputChannelPool pool):_SocketOutputStream(s->getSockImpl(),pool) {
+_SocketOutputStream::_SocketOutputStream(sp<_Socket> s,AsyncOutputChannelPool pool):_SocketOutputStream(s->mSockImpl,pool) {
 }
 
 _SocketOutputStream::_SocketOutputStream(SocketImpl sockimpl,AsyncOutputChannelPool pool) {

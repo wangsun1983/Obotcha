@@ -39,7 +39,7 @@ int _SSLServerSocketImpl::bind() {
 Socket _SSLServerSocketImpl::accept() {
     Socket s = mSocket->accept();
 
-    auto client = createSSLSocksSocketImpl(mCertificate,mKey,s->getSockImpl());
+    auto client = createSSLSocksSocketImpl(mCertificate,mKey,s->mSockImpl);
     s->getFileDescriptor()->setAsync(false);
     int ret = SSL_accept(client->getSSLContext()->getSSL());
     if(ret < 0) {
@@ -49,9 +49,9 @@ Socket _SSLServerSocketImpl::accept() {
 
     s->getFileDescriptor()->setAsync(true);
 
-    Socket result = createSocket();
-    result->setSockImpl(client);
-    result->setProtocol(st(Socket)::SSL);
+    Socket result = createSocket(st(Socket)::SSL,client);
+    //result->setSockImpl(client);
+    //result->setProtocol(st(Socket)::SSL);
 
     return result;
 }

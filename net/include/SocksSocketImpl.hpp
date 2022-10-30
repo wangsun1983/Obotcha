@@ -14,7 +14,6 @@ DECLARE_CLASS(SocksSocketImpl) IMPLEMENTS(SocketImpl){
 public:
     _SocksSocketImpl(InetAddress host,SocketOption option = nullptr);
     int connect();
-    //~_SocksSocketImpl();
 };
 
 }
