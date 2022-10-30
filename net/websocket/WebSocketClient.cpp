@@ -203,9 +203,10 @@ void _WebSocketClient::onSocketMessage(int event,Socket sockt,ByteArray pack) {
                     break;
 
                     case st(WebSocketProtocol)::OPCODE_CONTROL_CLOSE:
-                        mSocketMonitor->remove(mSocket);
+                        mSocketMonitor->unbind(mSocket);
                         mSocket->close();
                         mOutputStream->close();
+                        //TODO?
                         //mSocketMonitor->close();
                     break;
                 }

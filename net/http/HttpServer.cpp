@@ -129,7 +129,7 @@ int _HttpServer::start() {
 
 // interface for websocket
 void _HttpServer::remove(HttpLinker linker) { 
-    mSockMonitor->remove(linker->mSocket);
+    mSockMonitor->unbind(linker->mSocket);
     mLinkerManager->remove(linker);
 }
 

@@ -10,11 +10,8 @@
 
 namespace obotcha {
 
-class _SocketMonitor;
-
 DECLARE_CLASS(FileDescriptor) {
 public:
-    friend class _SocketMonitor;
     _FileDescriptor(int fd);
 
     ~_FileDescriptor();
@@ -35,13 +32,15 @@ public:
     bool isSocket();
 
     bool isClosed();
-
+    
     uint64_t hashcode();
+
+    void setShutdownBeforeClose(bool);
 
 private:
     int _fd;
-    bool isMonitored;
-    void setAsMonitored(bool);
+    bool mShutdownBeforeClose;
+    
 };
 
 }

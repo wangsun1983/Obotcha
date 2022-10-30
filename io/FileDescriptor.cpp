@@ -11,7 +11,7 @@ namespace obotcha {
 
 _FileDescriptor::_FileDescriptor(int fd) {
     _fd = fd;
-    isMonitored = false;
+    mShutdownBeforeClose = false;
 }
 
 uint64_t _FileDescriptor::hashcode() {
@@ -19,7 +19,7 @@ uint64_t _FileDescriptor::hashcode() {
 }
 
 int _FileDescriptor::close() {
-    if(isMonitored && isAsync()) {
+    if(mShutdownBeforeClose && isAsync()) {
         return ::shutdown(_fd,SHUT_RDWR);
     }
 
@@ -30,9 +30,10 @@ int _FileDescriptor::close() {
     return 0;
 }
 
-void _FileDescriptor::setAsMonitored(bool monitor) {
-    isMonitored = monitor;
+void _FileDescriptor::setShutdownBeforeClose(bool v) {
+    mShutdownBeforeClose = v;
 }
+
 
 _FileDescriptor::~_FileDescriptor() {
     //::close(_fd);

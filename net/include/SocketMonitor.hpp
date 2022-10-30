@@ -40,8 +40,8 @@ public:
     int bind(Socket,SocketListener);
     int bind(ServerSocket,SocketListener);
    
-    int remove(Socket,bool isClose = false);
-    int remove(ServerSocket,bool isClose = false);
+    int unbind(Socket,bool isClose = false);
+    int unbind(ServerSocket,bool isClose = false);
 
     void close();
 
@@ -51,10 +51,10 @@ private:
     void addNewSocket(Socket s,SocketListener l);
     bool isSocketExist(Socket s);
     int bind(int,SocketListener,bool isServer = false);
-    int _remove(FileDescriptor);
+    int remove(FileDescriptor);
 
     EPollFileObserver mPoll;
-    ConcurrentHashMap<int,Socket> mSocks;
+    ConcurrentHashMap<int,Socket> mClientSocks;
     ConcurrentHashMap<int,ServerSocket> mServerSocks;
 
     int mThreadNum;
@@ -63,7 +63,7 @@ private:
 
     Mutex mMutex;
     //int *currentProcessingFds;
-    LinkedList<SocketMonitorTask> mThreadPublicTasks;
+    LinkedList<SocketMonitorTask> mPendingTasks;
 
     //wangsl
     HashMap<int,LinkedList<SocketMonitorTask>> mThreadTaskMap;

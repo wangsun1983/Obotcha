@@ -33,13 +33,13 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
     mRecvBuffSize = recvBuffSize;
 
     mMutex = createMutex();
-    mSocks = createConcurrentHashMap<int, Socket>();
+    mClientSocks = createConcurrentHashMap<int, Socket>();
     mServerSocks = createConcurrentHashMap<int, ServerSocket>();
     //currentProcessingFds = new int[threadnum];
 
     mPoll = createEPollFileObserver();
     mPoll->start();
-    mThreadPublicTasks = createLinkedList<SocketMonitorTask>();
+    mPendingTasks = createLinkedList<SocketMonitorTask>();
     mCondition = createCondition();
 
     mListeners = createConcurrentHashMap<int, SocketListener>();
@@ -48,21 +48,25 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
 
     mThreadTaskMap = createHashMap<int,LinkedList<SocketMonitorTask>>();
 
-    this->mExecutor =
-        createExecutorBuilder()->setDefaultThreadNum(mThreadNum)->newThreadPool();
+    this->mExecutor = createExecutorBuilder()
+                    ->setDefaultThreadNum(mThreadNum)
+                    ->newThreadPool();
 
     for (int i = 0; i < mThreadNum; i++) {
         mExecutor->submit(
             [this](int index, SocketMonitor &monitor) {
                 SocketMonitorTask task = nullptr;
-                LinkedList<SocketMonitorTask> localTasks = createLinkedList<SocketMonitorTask>();
                 int currentFd = -1;
-
+                LinkedList<SocketMonitorTask> localTasks = createLinkedList<SocketMonitorTask>();
+                
                 while (!monitor->isStop) {
                     //check myself task
                     {
                         AutoLock l(monitor->mMutex);
-                        task = localTasks->takeFirst();
+                        if(currentFd != -1) {
+                            task = localTasks->takeFirst();
+                        }
+
                         if(task == nullptr) {
                             if(currentFd != -1) {
                                 mThreadTaskMap->remove(currentFd);
@@ -70,13 +74,13 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
                             }
 
                             while(1) {
-                                task = mThreadPublicTasks->takeFirst();
+                                task = mPendingTasks->takeFirst();
                                 if(task != nullptr) {
                                     int taskFd = task->sock->getFileDescriptor()->getFd();
                                     auto tasks = mThreadTaskMap->get(taskFd);
-                                    if(tasks != nullptr) {
+                                    if(tasks != nullptr && taskFd != currentFd) {
                                         tasks->putLast(task);
-                                        mCondition->notifyAll(); //TODO:move to one thread one mutex
+                                        //mCondition->notifyAll(); //TODO:move to one thread one mutex
                                         continue;
                                     } else {
                                         mThreadTaskMap->put(taskFd,localTasks);
@@ -96,8 +100,8 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
                     //Socket will be closed directly in websocket server.
                     //We should check whether socket is still connected
                     //to prevent nullpoint exception
-                    auto desc = task->sock->getFileDescriptor();
-                    SocketListener listener = monitor->mListeners->get(desc->getFd());
+                    //autoauto desc = task->sock->getFileDescriptor();
+                    SocketListener listener = monitor->mListeners->get(currentFd);
                     if (listener != nullptr) {
                         listener->onSocketMessage(task->event, task->sock,
                                                     task->data);
@@ -109,7 +113,7 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
                     }
 
                     if(task->event == st(NetEvent)::Disconnect) {
-                        monitor->_remove(desc);
+                        monitor->remove(task->sock->getFileDescriptor());
                         task->sock->close();
                     }
                 }
@@ -121,8 +125,9 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
 }
 
 void _SocketMonitor::addNewSocket(Socket s, SocketListener l) {
-    mSocks->put(s->getFileDescriptor()->getFd(), s);
-    mListeners->put(s->getFileDescriptor()->getFd(), l);
+    int fd = s->getFileDescriptor()->getFd();
+    mClientSocks->put(fd, s);
+    mListeners->put(fd, l);
 }
 
 int _SocketMonitor::bind(Socket s, SocketListener l) {
@@ -133,7 +138,7 @@ int _SocketMonitor::bind(Socket s, SocketListener l) {
     }
     addNewSocket(s,l);
     s->setAsync(true,mAsyncOutputPool);
-    s->getFileDescriptor()->setAsMonitored(true);
+    s->getFileDescriptor()->setShutdownBeforeClose(true);
 
     if (s->getProtocol() == st(Socket)::Protocol::Udp) {
         return bind(s->getFileDescriptor()->getFd(), l, true);
@@ -155,7 +160,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
     mPoll->addObserver(
         fd, EPOLLIN | EPOLLRDHUP | EPOLLHUP,
         [this](int fd, uint32_t events, SocketListener &listener, int serverfd,SocketMonitor &monitor) {
-            Socket s = monitor->mSocks->get(fd);
+            Socket s = monitor->mClientSocks->get(fd);
             if (s == nullptr && fd != serverfd) {
                 return st(EPollFileObserver)::OnEventRemoveObserver;
             }
@@ -174,7 +179,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
 
                         {
                             AutoLock l(monitor->mMutex);
-                            monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message, newClient,buff));
+                            monitor->mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message, newClient,buff));
                             monitor->mCondition->notify();
                         }
 
@@ -190,7 +195,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                         monitor->bind(s,listener);
                         {
                             AutoLock l(monitor->mMutex);
-                            monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Connect, s));
+                            monitor->mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Connect, s));
                             monitor->mCondition->notify();
                         }
                     } else {
@@ -211,7 +216,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                         if (length > 0) {
                             buff->quickShrink(length);
                             AutoLock l(monitor->mMutex);
-                            monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message, s, buff));
+                            monitor->mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message, s, buff));
                             monitor->mCondition->notify();
                         }
 
@@ -223,9 +228,9 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
             }
 
             if ((events & (EPOLLRDHUP | EPOLLHUP)) != 0) {
-                s->getFileDescriptor()->setAsMonitored(false);
+                s->getFileDescriptor()->setShutdownBeforeClose(false);
                 AutoLock l(monitor->mMutex);
-                monitor->mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Disconnect, s));
+                monitor->mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Disconnect, s));
                 monitor->mCondition->notify();
 
                 return st(EPollFileObserver)::OnEventRemoveObserver;
@@ -247,11 +252,11 @@ void _SocketMonitor::close() {
 
         isStop = true;
 
-        mThreadPublicTasks->clear();
+        mPendingTasks->clear();
         mCondition->notifyAll();
     }
 
-    mSocks->clear();
+    mClientSocks->clear();
     mServerSocks->clear();
 
     mListeners->clear();
@@ -261,19 +266,19 @@ void _SocketMonitor::close() {
 
 void _SocketMonitor::dump() {
     printf("---SocketMonitor dump start --- \n");
-    printf("mSocks size is %d \n",mSocks->size());
+    printf("mSocks size is %d \n",mClientSocks->size());
     mPoll->dump();
     printf("---SocketMonitor dump end --- \n");
 }
 
-int _SocketMonitor::remove(Socket s,bool isClose) {
+int _SocketMonitor::unbind(Socket s,bool isClose) {
     AutoLock l(mMutex);
     if(isClose) {
-        s->getFileDescriptor()->setAsMonitored(false);
-        mThreadPublicTasks->putLast(createSocketMonitorTask(st(NetEvent)::Disconnect,s));
+        s->getFileDescriptor()->setShutdownBeforeClose(false);
+        mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Disconnect,s));
         mCondition->notify();
     } else {
-        _remove(s->getFileDescriptor());
+        remove(s->getFileDescriptor());
     }
 
     //mAsyncOutputPool->remove(s);
@@ -281,19 +286,19 @@ int _SocketMonitor::remove(Socket s,bool isClose) {
     return 0;
 }
 
-int _SocketMonitor::remove(ServerSocket s,bool isClose) {
-    _remove(s->getFileDescriptor());
+int _SocketMonitor::unbind(ServerSocket s,bool isClose) {
+    remove(s->getFileDescriptor());
     if(isClose) {
-        s->getFileDescriptor()->setAsMonitored(false);
+        s->getFileDescriptor()->setShutdownBeforeClose(false);
         s->close();
     }
     return 0;
 }
 
-int _SocketMonitor::_remove(FileDescriptor fd) {
+int _SocketMonitor::remove(FileDescriptor fd) {
     if(fd != nullptr) {
         mPoll->removeObserver(fd->getFd());
-        mSocks->remove(fd->getFd());
+        mClientSocks->remove(fd->getFd());
         mServerSocks->remove(fd->getFd());
         mListeners->remove(fd->getFd());
     }
@@ -301,8 +306,9 @@ int _SocketMonitor::_remove(FileDescriptor fd) {
 }
 
 bool _SocketMonitor::isSocketExist(Socket s) {
-    auto descriptor = s->getFileDescriptor();
-    return mSocks->get(descriptor->getFd()) != nullptr;
+    //auto descriptor = s->getFileDescriptor();
+    int fd = s->getFileDescriptor()->getFd();
+    return mClientSocks->get(fd) != nullptr;
 }
 
 _SocketMonitor::~_SocketMonitor() {
