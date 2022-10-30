@@ -31,25 +31,6 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
     sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(address->getSockAddress()->family(), 
                                 SOCK_DGRAM,
                                 IPPROTO_UDP)));
-
-    // switch(address->getFamily()) {
-    //     case st(InetAddress)::IPV4: {
-    //         sock = createFileDescriptor(
-    //             TEMP_FAILURE_RETRY(socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)));
-    //     }
-    //     break;
-
-    //     case st(InetAddress)::IPV6: {
-    //         //this->sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET6, SOCK_STREAM, 0)));
-    //         sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP)));
-    //     }
-    //     break;
-
-    //     default:
-    //         LOG(ERROR)<<"create DatagramSocketImpl socket type unknown";
-    //     break;
-    // }
-
     
     if (sock->getFd() < 0) {
         Trigger(InitializeException, "Datagram Socket create failed");
@@ -75,8 +56,6 @@ Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
 
     if(length > 0) {
         newClient = createSocket(st(Socket)::Udp,impl);
-        //newClient->setSockImpl(impl);
-        //newClient->setProtocol(st(Socket)::Udp);
         buff->quickShrink(length);
         return newClient;
     }
@@ -96,43 +75,14 @@ int _DatagramSocketImpl::bind() {
     FetchRet(len,addr) = address->getSockAddress()->get();
 
     return ::bind(sock->getFd(),addr,len);
-
-    // switch(this->address->getFamily()) {
-    //     case st(InetAddress)::IPV4: {
-    //         return ::bind(sock->getFd(), (struct sockaddr *)&mSockAddr,
-    //               sizeof(mSockAddr));
-    //     }
-
-    //     case st(InetAddress)::IPV6: {
-    //         return ::bind(sock->getFd(), (struct sockaddr *)&mSockAddrV6,
-    //               sizeof(mSockAddrV6));
-    //     }
-    // }
-    // Trigger(IllegalArgumentException,"DatagramSocket must be IPV4 or IPV6");
 }
 
 int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
 
-    //struct sockaddr * addr = nullptr;
-    //int addrlen = 0;
     if(start + length > data->size()) {
         Trigger(IllegalArgumentException,"DatagramSocket write size too large");
     }
 
-    // switch(this->address->getFamily()) {
-    //     case st(InetAddress)::IPV4: {
-    //         addr = (sockaddr *)&mSockAddr;
-    //         addrlen = sizeof(mSockAddr);
-    //     }
-    //     break;
-
-    //     case st(InetAddress)::IPV6: {
-    //         addr = (sockaddr *)&mSockAddrV6;
-    //         addrlen = sizeof(mSockAddrV6);
-    //     }
-    //     break;
-    // }
-    
     struct sockaddr * addr = nullptr;
     socklen_t addrlen = 0;
     FetchRet(addrlen,addr) = address->getSockAddress()->get();
