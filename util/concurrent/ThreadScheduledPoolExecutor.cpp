@@ -32,7 +32,6 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int maxPendingTaskNum
     mCount = 0;
     mMaxPendingTaskNum = maxPendingTaskNum;
     mMaxSubmitTaskWaitTime = maxSubmitTaskWaitTime;
-    printf("_ThreadScheduledPoolExecutor,mMaxPendingTaskNum is %d \n",mMaxPendingTaskNum);
     //notEmpty = createCondition();
     notFull = createCondition();
     mTaskWaitCond = createCondition();
@@ -99,13 +98,11 @@ Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
     if(isShutDown()) {
         return nullptr;
     }
-    
-    task->setPending();
-
     WaitingTask waitTask = createWaitingTask(task);
-
+    
     if (addWaitingTaskLocked(waitTask, mMaxSubmitTaskWaitTime) == 0) {
-        return createFuture(Cast<ExecutorTask>(waitTask));
+        task->setPending();
+        return createFuture(task);
     }
     return nullptr;
 }

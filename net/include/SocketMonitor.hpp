@@ -40,15 +40,14 @@ public:
     int bind(Socket,SocketListener);
     int bind(ServerSocket,SocketListener);
    
-    int unbind(Socket,bool isClose = false);
-    int unbind(ServerSocket,bool isClose = false);
+    int unbind(Socket);
+    int unbind(ServerSocket);
 
     void close();
 
     void dump();
     
 private:
-    void addNewSocket(Socket s,SocketListener l);
     bool isSocketExist(Socket s);
     int bind(int,SocketListener,bool isServer = false);
     int remove(FileDescriptor);

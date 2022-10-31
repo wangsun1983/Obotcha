@@ -41,6 +41,7 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxPendingTaskNum,
     //mRunningTaskMutex = createMutex();
     mRunningTasks = createConcurrentHashMap<int,ExecutorTask>();
     updateStatus(Executing);
+
     mIdleNum = createAtomicInteger(0);
     handlerId = 0;
 }
@@ -73,9 +74,6 @@ int _ThreadCachedPoolExecutor::shutdown() {
 }
 
 bool _ThreadCachedPoolExecutor::isTerminated() {
-    //AutoLock l(mMutex);
-    //ListIterator<Thread> iterator = mHandlers->getIterator();
-    //while (iterator->hasValue()) {
     ForEveryOne(t,mHandlers) {
         if (t->getStatus() != st(Thread)::Complete) {
             return false;
@@ -96,11 +94,7 @@ int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
 
     bool isWaitForever = (millseconds == 0);
     ArrayList<Thread> list = mHandlers->toArray();
-    //{
-    //    AutoLock l(mMutex);
-    //    list->add(mHandlers);
-    //}
-
+    
     auto iterator = list->getIterator();
     TimeWatcher watcher = createTimeWatcher();
 
@@ -144,14 +138,7 @@ Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
     return createFuture(task);
 }
 
-//Future _ThreadCachedPoolExecutor::submitRunnable(Runnable r) {
-//    ExecutorTask task = createExecutorTask(r);
-//    return submitTask(task);
-//}
-
 _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
-    //this->shutdown();
-    //this->awaitTermination();
     if(!isShutDown()) {
         LOG(ERROR)<<"ThreadCachedPoolExecutor release without shutdown!!!!";
         shutdown();
@@ -164,12 +151,9 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
         return;
     }
 
-    //{
-        //AutoLock l(mMutex);
     if (mHandlers->size() >= mMaxThreadNum) {
         return;
     }
-    //}
 
     Thread handler = createThread(
         [this](ThreadCachedPoolExecutor executor) {
@@ -180,11 +164,8 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
                 mIdleNum->subAndGet(1);
                 if (mCurrentTask == nullptr) {
                     Thread handler = st(Thread)::current();
-                    //{
-                    //    AutoLock l(mMutex);
                     mHandlers->remove(handler);
                     exec = nullptr;
-                    //}
                     return;
                 }
 
@@ -196,13 +177,9 @@ void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
         },
         AutoClone(this));
 
-    handler->start();
-    //{
-    //    AutoLock l(mMutex);
     mHandlers->add(handler);
-    //}
-
     mIdleNum->addAndGet(1);
+    handler->start();
 }
 
 } // namespace obotcha
