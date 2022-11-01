@@ -96,7 +96,6 @@ int _ThreadPriorityPoolExecutor::shutdown() {
         return 0;
     }
     updateStatus(ShutDown);
-
     {
         AutoLock l(mTaskMutex);
         while (!mHighPriorityTasks->isEmpty()) {

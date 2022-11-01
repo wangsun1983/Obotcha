@@ -8,19 +8,19 @@ ConcurrentHashMap<uint64_t,Object> _FilaFuture::FilaExecuteResults
 _FilaFuture::_FilaFuture() {
     mMutex = createMutex();
     mCond = createCondition();
-    mResultType = ResultType::Success;
+    mStatus = Idle;
 }
 
 void _FilaFuture::setOwner(stCoRoutine_t *owner) {
     this->owner = owner;
 }
 
-int _FilaFuture::getResultType() {
-    return mResultType;
+int _FilaFuture::getStatus() {
+    return mStatus;
 }
 
-void _FilaFuture::setResultType(int type) {
-    mResultType = type;
+void _FilaFuture::setStatus(int type) {
+    mStatus = type;
 }
 
 void _FilaFuture::setResult(int v) {

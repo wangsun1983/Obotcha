@@ -10,22 +10,18 @@ _Filament::_Filament() {
 
 bool _Filament::onInterrupt() {
     if(mFuture != nullptr) {
-        mFuture->setResultType(st(FilaFuture)::Interrupt);
+        mFuture->setStatus(st(FilaFuture)::Interrupt);
         mFuture->wakeAll();
     }
 
     return true;
 }
 
-void _Filament::start() {
-    co_create(&coa, nullptr, localFilaRun, this);
-    co_resume(coa);
-}
-
 void _Filament::start(FilaFuture future) {
     mFuture = future;
     co_create(&coa, nullptr, localFilaRun, this);
     if(mFuture != nullptr) {
+        mFuture->setStatus(st(FilaFuture)::Running);
         mFuture->setOwner(coa);
     }
     co_resume(coa);
@@ -35,10 +31,13 @@ void *_Filament::localFilaRun(void *args) {
     _Filament *fila = static_cast<_Filament *>(args);
     fila->run();
     if(fila->mFuture != nullptr) {
+        fila->mFuture->setStatus(st(FilaFuture)::Complete);
         fila->mFuture->wakeAll();
     }
+
     //remove myself from routine's filaments
-    auto routine = st(FilaRoutineManager)::getInstance()->getRoutine();
+    auto routine = Cast<FilaRoutine>(st(Thread)::current());
+    //auto routine = st(FilaRoutineManager)::getInstance()->getRoutine();
     if(routine != nullptr) {
         //routine->removeFilament(AutoClone(fila));
         FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();

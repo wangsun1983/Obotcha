@@ -266,6 +266,10 @@ void _SocketMonitor::close() {
     mListeners->clear();
     mExecutor->shutdown();
     mExecutor->awaitTermination();
+
+    if(mAsyncOutputPool != nullptr) {
+        mAsyncOutputPool->close();
+    }
 }
 
 void _SocketMonitor::dump() {

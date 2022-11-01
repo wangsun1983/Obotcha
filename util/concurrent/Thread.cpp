@@ -12,6 +12,7 @@
 #include "ThreadLocal.hpp"
 #include "AtomicInteger.hpp"
 #include "InterruptedException.hpp"
+#include "IllegalStateException.hpp"
 
 namespace obotcha {
 
@@ -320,6 +321,8 @@ void _Thread::_threadSleep(unsigned long interval) {
         if(mSleepCondition->wait(mMutex, interval) == 0) {
             Trigger(InterruptedException, "thread interrupt while sleeping!!!");
         }
+    } else {
+        Trigger(IllegalStateException, "thread status is illegal!!!");
     }
 }
 

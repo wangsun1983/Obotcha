@@ -38,13 +38,13 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     
     template <typename X>
     FilaFuture submit(sp<X> f) {
-      FilaFuture future = createFilaFuture();
-      FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
-      event->event = st(FilaRoutineInnerEvent)::NewTask;
-      event->filament = f;
-      event->future = future;
-      innerEvents->add(event);
-      return future;
+        FilaFuture future = createFilaFuture();
+        FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
+        event->event = st(FilaRoutineInnerEvent)::NewTask;
+        event->filament = f;
+        event->future = future;
+        innerEvents->add(event);
+        return future;
     }
 
     template <typename X>

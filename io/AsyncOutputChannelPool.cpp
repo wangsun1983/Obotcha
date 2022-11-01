@@ -36,8 +36,6 @@ void _AsyncOutputChannelPool::remove(AsyncOutputChannel c) {
     if(channel == c) {
         mChannels->remove(fd);
         mObserver->removeObserver(fd);
-        //channel->mPool = nullptr;
-        //channel->mWriter = nullptr;
     }
 }
 
@@ -52,8 +50,6 @@ int _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) {
     if (channel != nullptr) {
         if((events & (st(EPollFileObserver)::EpollHup|st(EPollFileObserver)::EpollRdHup)) != 0) {
             channel->close();
-            //channel->mPool = nullptr;
-            //channel->mWriter = nullptr;
         }else if ((events & st(EPollFileObserver)::EpollOut) != 0) {
             channel->notifyWrite();
         }
@@ -67,8 +63,6 @@ void _AsyncOutputChannelPool::close() {
     ForEveryOne(pair,mChannels) {
         auto channel = pair->getValue();
         channel->close();
-        //channel->mPool = nullptr;
-        //channel->mWriter = nullptr;
     }
 
     mChannels->clear();
@@ -76,6 +70,7 @@ void _AsyncOutputChannelPool::close() {
 
 _AsyncOutputChannelPool::~_AsyncOutputChannelPool() {
     close();
+    mObserver->join();
 }
 
 void _AsyncOutputChannelPool::dump() {

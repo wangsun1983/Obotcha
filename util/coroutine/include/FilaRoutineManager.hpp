@@ -21,9 +21,9 @@ public:
     void removeWaitCondition(FilaCondition);
     HashSet<FilaRoutine> getWaitRoutine(FilaCondition);
 
-    void addRoutine(FilaRoutine);
-    FilaRoutine getRoutine();
-    void removeRoutine();
+    //void addRoutine(FilaRoutine);
+    //FilaRoutine getRoutine();
+    //void removeRoutine();
 
     static FilaRoutineManager getInstance();
   
@@ -32,7 +32,7 @@ private:
     static FilaRoutineManager mInstance;
 
     Mutex mMutex;
-    ThreadLocal<FilaRoutine> routines;
+    //ThreadLocal<FilaRoutine> routines;
     HashMap<FilaCondition,ConcurrentHashSet<FilaRoutine>> conditionMaps;
 };
 

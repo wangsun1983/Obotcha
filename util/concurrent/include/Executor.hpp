@@ -43,13 +43,13 @@ public:
 
     template <typename T>
     sp<_Future> submit(sp<T> r) {
-        return submitRunnable(r,-1,-1);
+        return submitRunnable(r,-1,Medium);
     }
 
     template <typename T>
     sp<_Future> schedule(long delay,sp<T> r) {
         //r->setDelay(delay);
-        return submitRunnable(r,delay,-1);
+        return submitRunnable(r,delay,Medium);
     }
 
     template<typename T>
@@ -67,7 +67,7 @@ public:
     sp<_Future> schedule(long delay,Function && f, Args && ... args) {
         Runnable r = createLambdaRunnable(f, args...);
         //r->setDelay(delay);
-        return submitRunnable(r,delay,-1);
+        return submitRunnable(r,delay,Medium);
     }
 
     template <class Function, class... Args>

@@ -25,9 +25,7 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
 
     virtual void run() {};
 
-    void start();
-
-    void start(FilaFuture);
+    void start(FilaFuture future = nullptr);
 
     void resume();
 

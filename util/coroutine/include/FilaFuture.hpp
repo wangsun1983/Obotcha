@@ -19,9 +19,11 @@ namespace obotcha {
 DECLARE_CLASS(FilaFuture) {
 
 public:
-    enum ResultType {
-        Success = 0,
-        Interrupt,
+    enum Status {
+        Idle = 0,
+        Running,
+        Complete,
+        Interrupt
     };
 
     _FilaFuture();
@@ -61,15 +63,15 @@ public:
 
     void setOwner(stCoRoutine_t *owner);
 
-    int getResultType();
-    void setResultType(int);
+    int getStatus();
+    void setStatus(int);
 
 private:
     stCoRoutine_t *owner;
     static ConcurrentHashMap<uint64_t,Object> FilaExecuteResults;
     Mutex mMutex;
     Condition mCond;
-    int mResultType;
+    int mStatus;
 };
 
 } // namespace obotcha

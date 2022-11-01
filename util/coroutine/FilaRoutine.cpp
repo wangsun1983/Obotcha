@@ -40,13 +40,13 @@ _FilaRoutine::~_FilaRoutine() {
 }
 
 void _FilaRoutine::onComplete() {
-    st(FilaRoutineManager)::getInstance()->removeRoutine();
+    //st(FilaRoutineManager)::getInstance()->removeRoutine();
 }
 
 void _FilaRoutine::run() {
     co_init_curr_thread_env();
     co_enable_hook_sys();
-    st(FilaRoutineManager)::getInstance()->addRoutine(AutoClone(this));
+    //st(FilaRoutineManager)::getInstance()->addRoutine(AutoClone(this));
     co_eventloop(co_get_epoll_ct(), 0, 0,onIdle,this);
 }
 
@@ -77,39 +77,38 @@ int _FilaRoutine::onIdle(void * data) {
         return -1;
     }
 
-    if(croutine->innerEvents->size() != 0) {
-        auto iterator = croutine->innerEvents->getIterator();
-        while(iterator->hasValue()) {
-            auto event = iterator->getValue();
-            switch(event->event) {
-                case st(FilaRoutineInnerEvent)::NewTask: {
-                    Filament f = event->filament;
-                    f->start(event->future);
-                    croutine->mFilaments->add(f);
-                    break;
-                }
-                
-                case st(FilaRoutineInnerEvent)::Notify: {
-                    FilaCondition cond = event->cond;
-                    cond->doNotify();
-                    break;
-                }
-
-                case st(FilaRoutineInnerEvent)::NotifyAll: {
-                    FilaCondition cond = event->cond;
-                    cond->doNotifyAll();
-                    break;
-                }
-
-                case st(FilaRoutineInnerEvent)::RemoveFilament: {
-                    croutine->removeFilament(event->filament);
-                }
+    auto iterator = croutine->innerEvents->getIterator();
+    while(iterator->hasValue()) {
+        auto event = iterator->getValue();
+        switch(event->event) {
+            case st(FilaRoutineInnerEvent)::NewTask: {
+                Filament f = event->filament;
+                f->start(event->future);
+                croutine->mFilaments->add(f);
+                break;
             }
             
-            iterator->next();
+            case st(FilaRoutineInnerEvent)::Notify: {
+                FilaCondition cond = event->cond;
+                cond->doNotify();
+                break;
+            }
+
+            case st(FilaRoutineInnerEvent)::NotifyAll: {
+                FilaCondition cond = event->cond;
+                cond->doNotifyAll();
+                break;
+            }
+
+            case st(FilaRoutineInnerEvent)::RemoveFilament: {
+                croutine->removeFilament(event->filament);
+            }
         }
-        croutine->innerEvents->clear();
+        
+        iterator->next();
     }
+    croutine->innerEvents->clear();
+   
     return 0;
 }
 
