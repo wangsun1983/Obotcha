@@ -6,7 +6,8 @@ namespace obotcha {
 
 //ProcessReadLock
 
-int _ProcessReadLock::lock() {
+int _ProcessReadLock::lock(long interval) {
+    //TODO?
     struct flock s_flock;
     s_flock.l_type = F_RDLCK;
     
@@ -37,7 +38,8 @@ _ProcessReadLock::_ProcessReadLock(sp<_ProcessReadWriteLock> lock) {
 }
 
 //ProcessWriteLock
-int _ProcessWriteLock::lock() {
+int _ProcessWriteLock::lock(long interval) {
+    //TODO
     struct flock s_flock;
     s_flock.l_type = F_WRLCK;
     

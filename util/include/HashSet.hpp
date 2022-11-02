@@ -41,7 +41,15 @@ public:
 
     inline int remove(T val) { return hashset.erase(val); }
 
-    inline T get(int index) { return hashset[index]; }
+    inline T get(int index) { 
+        //return hashset[index];
+        auto iterator = hashset.begin();
+        for(int i = 0;i < index;i++) {
+            iterator++;
+        }
+        
+        return *iterator; 
+    }
 
     inline int size() { return hashset.size(); }
 

@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
+#include <sys/un.h>
 
 #include "Object.hpp"
 #include "StrongPointer.hpp"
@@ -39,6 +40,7 @@ public:
 private:
     struct sockaddr_in mSockAddr; //ipv4
     struct sockaddr_in6 mSockAddrV6; //ipv6
+    struct sockaddr_un mLocalSockAddr; //local socket 
     int mFamily;
 };
 

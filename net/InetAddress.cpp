@@ -5,6 +5,7 @@
 #include "Log.hpp"
 #include "String.hpp"
 #include "Inet6Address.hpp"
+#include "InetLocalAddress.hpp"
 
 namespace obotcha {
 
@@ -21,6 +22,10 @@ _SockAddress::_SockAddress(int family) {
 
         case st(InetAddress)::IPV6: {
             memset(&mSockAddrV6, 0, sizeof(struct sockaddr_in6));
+        }
+
+        case st(InetAddress)::LOCAL: {
+            memset(&mLocalSockAddr, 0, sizeof(struct sockaddr_un));
         }
         break;
     }
@@ -50,6 +55,11 @@ _SockAddress::_SockAddress(int family,String address,int port) {
                 mSockAddrV6.sin6_addr = in6addr_any;
             }
         }
+
+        case st(InetAddress)::LOCAL: {
+            mLocalSockAddr.sun_family = AF_UNIX;
+            strcpy(mLocalSockAddr.sun_path, address->toChars());
+        }
         break;
     }
 }
@@ -62,6 +72,10 @@ DefRet(int,sockaddr *) _SockAddress::get() {
         
         case st(InetAddress)::IPV6: {
             return MakeRet(sizeof(mSockAddrV6),(sockaddr *)&mSockAddrV6);
+        }
+
+        case st(InetAddress)::LOCAL: {
+            return MakeRet(sizeof(mLocalSockAddr),(sockaddr *)&mLocalSockAddr);
         }
     }
 
@@ -91,6 +105,10 @@ int _SockAddress::family() {
         case st(InetAddress)::IPV6: {
             return AF_INET6;
         }
+
+        case st(InetAddress)::LOCAL: {
+            return AF_UNIX;
+        }
     }
     return -1;
 }
@@ -111,6 +129,12 @@ sp<_InetAddress> _SockAddress::toInetAddress() {
 
             String ip = createString(buf);
             return createInet6Address(ip,mSockAddrV6.sin6_port);
+        }
+        break;
+
+        case st(InetAddress)::LOCAL: {
+            return createInetLocalAddress(createString(mLocalSockAddr.sun_path));
+
         }
         break;
     }

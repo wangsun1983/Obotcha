@@ -20,7 +20,7 @@ DECLARE_CLASS(ProcessReadLock) IMPLEMENTS(Lock) {
   public:
     friend class _ProcessReadWriteLock;
 
-    int lock();
+    int lock(long interval = 0);
 
     int unlock();
 
@@ -36,7 +36,7 @@ DECLARE_CLASS(ProcessWriteLock) IMPLEMENTS(Lock) {
   public:
     friend class _ProcessReadWriteLock;
 
-    int lock();
+    int lock(long interval = 0);
 
     int unlock();
 

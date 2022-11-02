@@ -33,7 +33,7 @@ DECLARE_CLASS(ReadLock) IMPLEMENTS(Lock) {
   public:
     friend class _ReadWriteLock;
 
-    int lock();
+    //int lock();
 
     int unlock();
 
@@ -55,7 +55,7 @@ DECLARE_CLASS(WriteLock) IMPLEMENTS(Lock) {
   public:
     friend class _ReadWriteLock;
 
-    int lock();
+    //int lock();
 
     int unlock();
 
@@ -108,7 +108,7 @@ DECLARE_CLASS(ReadWriteLock) {
 
     String mName;
 
-    int _readlock();
+    //int _readlock();
 
     int _unReadlock();
 
@@ -116,7 +116,7 @@ DECLARE_CLASS(ReadWriteLock) {
 
     int _readlock(long);
 
-    int _writelock();
+    //int _writelock();
 
     int _unWritelock();
 

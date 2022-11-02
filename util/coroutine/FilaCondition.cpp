@@ -1,11 +1,17 @@
 #include "FilaCondition.hpp"
-#include "FilaRoutineManager.hpp"
+#include "FilaRoutine.hpp"
+#include "Log.hpp"
+#include "IllegalStateException.hpp"
 
 namespace obotcha {
 
+FilaMutex _FilaCondition::mWaitMutex = createFilaMutex();
+HashMap<FilaCondition,HashSet<FilaRoutine>>_FilaCondition::mWaitConditions
+    = createHashMap<FilaCondition,HashSet<FilaRoutine>>();
+
 _FilaCondition::_FilaCondition() { 
     mCond = co_cond_alloc();
-    mOriCond = createCondition();
+    mThreadCond = createCondition();
 }
 
 void _FilaCondition::wait(FilaMutex m) {
@@ -13,38 +19,65 @@ void _FilaCondition::wait(FilaMutex m) {
 }
 
 void _FilaCondition::wait(FilaMutex m,long mseconds) {
+    if(!m->isOwner()) {
+        Trigger(IllegalStateException,
+                "Wait without getting the ownership of mutex");
+    }
+
     auto coa = GetCurrThreadCo();
     if(coa == nullptr) {
-        mOriCond->wait(m->mMutex);
+        mThreadCond->wait(m->mMutex);
     } else {
-        st(FilaRoutineManager)::getInstance()->addWaitCondition(AutoClone(this));
+        addWaitRoutine();
         m->unlock();
         co_cond_timedwait(mCond, mseconds); 
         m->lock();
-        st(FilaRoutineManager)::getInstance()->removeWaitCondition(AutoClone(this));
+        removeWaitRoutine();
     }
+}
+
+void _FilaCondition::addWaitRoutine() {
+    AutoLock l(mWaitMutex);
+    auto croutine = Cast<FilaRoutine>(st(Thread)::current());
+    if(croutine == nullptr) {
+      LOG(ERROR)<<"addWaitCondition,croutine is null";
+      return;
+    }
+
+    auto waitSets = mWaitConditions->get(AutoClone(this));
+    if(waitSets == nullptr) {
+      waitSets = createHashSet<FilaRoutine>();
+      mWaitConditions->put(AutoClone(this),waitSets);
+    }
+    waitSets->add(croutine);
+}
+
+void _FilaCondition::removeWaitRoutine() {
+    auto croutine = Cast<FilaRoutine>(st(Thread)::current());
+
+    AutoLock l(mWaitMutex);
+    auto waitSets = mWaitConditions->get(AutoClone(this));
+    waitSets->remove(croutine);
 }
 
 void _FilaCondition::notify() {
-    auto sets = st(FilaRoutineManager)::getInstance()->getWaitRoutine(AutoClone(this));
-    if(sets != nullptr) {
-        auto iterator = sets->getIterator();
+    //auto sets = st(FilaRoutineManager)::getInstance()->getWaitRoutine(AutoClone(this));
+    AutoLock l(mWaitMutex);
+    auto sets = mWaitConditions->get(AutoClone(this));
+    if(sets != nullptr && sets->size() != 0) {
         FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
         event->event = st(FilaRoutineInnerEvent)::Notify;
         event->cond = AutoClone(this);
-
-        while(iterator->hasValue()) {
-            FilaRoutine c = iterator->getValue();
-            c->postEvent(event);
-            break;
-        }
+        sets->get(0)->postEvent(event);
     }
 
-    mOriCond->notify();
+    mThreadCond->notify();
 }
 
 void _FilaCondition::notifyAll() {
-    auto sets = st(FilaRoutineManager)::getInstance()->getWaitRoutine(AutoClone(this));
+    AutoLock l(mWaitMutex);
+    auto sets = mWaitConditions->get(AutoClone(this));
+
     if(sets != nullptr) {
         auto iterator = sets->getIterator();
         FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
@@ -57,7 +90,7 @@ void _FilaCondition::notifyAll() {
         }
     }
 
-    mOriCond->notifyAll();
+    mThreadCond->notifyAll();
 }
 
 void _FilaCondition::doNotifyAll() {

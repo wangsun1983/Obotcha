@@ -22,7 +22,8 @@ _ProcessMutex::_ProcessMutex(String path) {
  *  pid_t l_pid;         //锁定动作的进程
  * };
  */
-int _ProcessMutex::lock() {
+int _ProcessMutex::lock(long interval) {
+    //TODO
     struct flock s_flock;
     s_flock.l_type = F_WRLCK;
     

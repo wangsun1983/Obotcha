@@ -1,50 +1,65 @@
 #include "co_routine_inner.h"
 #include "FilaMutex.hpp"
 #include "Filament.hpp"
+#include "Fila.hpp"
 #include "System.hpp"
 
 namespace obotcha {
 
 _FilaMutex::_FilaMutex() {
     mMutex = createMutex();
-    mOwnerMutex = createMutex();
     owner = nullptr;
 }
 
-int _FilaMutex::lock() {
+int _FilaMutex::lock(long interval) {
     auto coa = GetCurrThreadCo();
     if(coa == nullptr) {
         //it is not a routine
-        mMutex->lock();
+        mMutex->lock(interval);
     } else {
+        bool isWaitForEver = (interval == 0);
         while(1) {
-            //AutoLock l(mOwnerMutex);
-            mOwnerMutex->lock();
-            if(owner == nullptr) {
-                owner = coa;
-                mOwnerMutex->unlock();
-                mMutex->lock();
-                break;
-            }else if(owner == coa) {
-                mOwnerMutex->unlock();
-                mMutex->lock();
-                break;
+            if(!isWaitForEver && interval == 0) {
+                return -ETIMEDOUT;
             }
-            mOwnerMutex->unlock();
-            poll(NULL, 0, 1);
+            if(mMutex->isOwner() || mMutex->tryLock() == 0) {
+                if(owner == nullptr || owner == coa) {
+                    owner = coa;
+                    break;
+                }
+            }
+            if(!isWaitForEver) {
+                interval--;
+            }
+            st(Fila)::sleep(1);
         }
     }
 
     return 0;
 }
 
+bool _FilaMutex::isOwner() {
+    auto current = GetCurrThreadCo();
+    if(owner != nullptr && current == owner) {
+        return true;
+    }
+
+    if(mMutex->isOwner() && current == nullptr) {
+        return true;
+    }
+
+    return false;
+}
+
 int _FilaMutex::unlock() {
-    auto coa = GetCurrThreadCo();
-    AutoLock l(mOwnerMutex);
-    if(owner == coa || coa == nullptr) {
+    if(GetCurrThreadCo() == owner) {
         owner = nullptr;
+    }
+
+    if(mMutex->isOwner()) {
         mMutex->unlock();
     }
+
     return 0;
 }
 

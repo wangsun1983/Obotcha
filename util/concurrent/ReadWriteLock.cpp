@@ -13,9 +13,9 @@ _ReadLock::_ReadLock(sp<_ReadWriteLock> l, String s) {
     mName = s;
 }
 
-int _ReadLock::lock() {
-    return rwlock->_readlock();
-}
+//int _ReadLock::lock() {
+//    return rwlock->_readlock();
+//}
 
 int _ReadLock::unlock() {
     return rwlock->_unReadlock();
@@ -39,9 +39,9 @@ _WriteLock::_WriteLock(sp<_ReadWriteLock> l, String s) {
     mName = s;
 }
 
-int _WriteLock::lock() {
-    return rwlock->_writelock();
-}
+//int _WriteLock::lock() {
+//    return rwlock->_writelock();
+//}
 
 int _WriteLock::unlock() {
     return rwlock->_unWritelock();
@@ -142,14 +142,14 @@ int _ReadWriteLock::_tryReadLock() {
     AutoLock l(mMutex);
     int mytid = st(Process)::myTid();
     if(mWrOwner == mytid || mIsWrite == false) {
-        return _readlock();
+        return _readlock(0);
     }
     return -EBUSY;
 }
 
-int _ReadWriteLock::_readlock() {
-    return _readlock(0);
-}
+//int _ReadWriteLock::_readlock() {
+//    return _readlock(0);
+//}
 
 int _ReadWriteLock::_writelock(long interval) {
     AutoLock l(mMutex);
@@ -221,14 +221,14 @@ int _ReadWriteLock::_tryWriteLock() {
     }
 
     if(readOwners.size() == 0 && !mIsWrite) {
-        return _writelock();
+        return _writelock(0);
     }
 
     return -EBUSY;
 }
 
-int _ReadWriteLock::_writelock() {
-    return _writelock(0);
-}
+//int _ReadWriteLock::_writelock() {
+//    return _writelock(0);
+//}
 
 } // namespace obotcha

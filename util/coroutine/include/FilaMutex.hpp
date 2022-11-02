@@ -19,15 +19,17 @@ class _FilaCondtion;
 DECLARE_CLASS(FilaMutex) IMPLEMENTS(Lock){
 public:
     friend class _FilaCondition;
+    
     _FilaMutex();
-    int lock();
+    
+    int lock(long interval = 0);
+
     int unlock();
 
+    bool isOwner();
 private:
     Mutex mMutex;
-    Mutex mOwnerMutex;
     stCoRoutine_t *owner;
-    //void setOwner(stCoRoutine_t *);
 };
 
 } // namespace obotcha

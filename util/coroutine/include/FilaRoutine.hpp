@@ -5,14 +5,15 @@
 
 #include "ArrayList.hpp"
 #include "Filament.hpp"
-#include "FilaCondition.hpp"
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 #include "Thread.hpp"
 #include "FilaFuture.hpp"
+#include "FilaCondition.hpp"
 
 namespace obotcha {
 
+//class _FilaCondition;
 
 void filaSleep(long);
 
@@ -27,7 +28,7 @@ public:
 
   int event;
   Filament filament;
-  FilaCondition cond;
+  sp<_FilaCondition> cond;
   FilaFuture future;
 };
 
@@ -69,6 +70,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     void stop();
 
     void onInterrupt();
+    
     void onComplete();
   
     void postEvent(FilaRoutineInnerEvent);

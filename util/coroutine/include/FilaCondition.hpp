@@ -10,10 +10,12 @@
 #include "ThreadLocal.hpp"
 #include "FilaMutex.hpp"
 #include "Condition.hpp"
+#include "HashSet.hpp"
+#include "HashMap.hpp"
 
 namespace obotcha {
 
-class _FilaCroutine;
+class _FilaRoutine;
 
 DECLARE_CLASS(FilaCondition) {
 
@@ -29,10 +31,16 @@ DECLARE_CLASS(FilaCondition) {
   private:
     stCoCond_t *mCond;
 
+    void addWaitRoutine();
+    void removeWaitRoutine();
+
     void doNotifyAll();
     void doNotify();
 
-    Condition mOriCond;
+    Condition mThreadCond;
+
+    static FilaMutex mWaitMutex;
+    static HashMap<sp<_FilaCondition>,HashSet<sp<_FilaRoutine>>> mWaitConditions;
 };
 
 } // namespace obotcha
