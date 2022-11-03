@@ -10,25 +10,25 @@
 #include "Thread.hpp"
 #include "FilaFuture.hpp"
 #include "FilaCondition.hpp"
+#include "FilaExecutorResult.hpp"
 
 namespace obotcha {
 
 //class _FilaCondition;
 
-void filaSleep(long);
-
 DECLARE_CLASS(FilaRoutineInnerEvent) {
 public:
   enum {
-    NewTask = 0,
-    Notify,
-    NotifyAll,
-    RemoveFilament,
+      NewTask = 0,
+      Notify,
+      NotifyAll,
+      RemoveFilament,
+      Stop,
   };
 
   int event;
   Filament filament;
-  sp<_FilaCondition> cond;
+  FilaCondition cond;
   FilaFuture future;
 };
 
@@ -63,6 +63,12 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
         submit(filament);
     }
 
+    template <class Function, class... Args>
+    FilaFuture submit(Function && f, Args && ... args){
+        auto filament = createLambdaFilament(f, args...);
+        return submit(filament);
+    }
+
     void start();
 
     void run();
@@ -86,7 +92,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     FilaMutex mFilaMutex;
     ArrayList<Filament> mFilaments;
     ArrayList<FilaRoutineInnerEvent> innerEvents;
-    volatile bool isStop;
+    //volatile bool isStop;
 
     static int onIdle(void *);
 };

@@ -13,6 +13,13 @@ int _ServerSocketImpl::DefaultConnectNum = 16;
 
 _ServerSocketImpl::_ServerSocketImpl(InetAddress address, SocketOption option)
     : _SocketImpl(address, option), _SocksSocketImpl(address, option) {
+
+    // if client setReUseAddr,connect will failed!!
+    if (option != nullptr
+        && address->getFamily() == st(InetAddress)::LOCAL
+        && option->getReUseAddr() == st(SocketOption)::On) {
+        unlink(address->getAddress()->toChars());
+    }
 }
 
 int _ServerSocketImpl::bind() {

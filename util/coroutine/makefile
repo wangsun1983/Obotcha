@@ -5,7 +5,9 @@ objs += $(outtmp)/filament.o \
 		$(outtmp)/filaroutine.o \
 		$(outtmp)/filamutex.o \
 		$(outtmp)/filafuture.o \
-		$(outtmp)/fila.o 
+		$(outtmp)/fila.o \
+		$(outtmp)/filaexecutorresult.o 
+		
 		
 $(outtmp)/filafuture.o :$(coroutineDir)/FilaFuture.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(coroutineDir)/FilaFuture.cpp -o $(outtmp)/filafuture.o
@@ -15,6 +17,9 @@ $(outtmp)/filamutex.o :$(coroutineDir)/FilaMutex.cpp
 
 $(outtmp)/fila.o :$(coroutineDir)/Fila.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(coroutineDir)/Fila.cpp -o $(outtmp)/fila.o
+
+$(outtmp)/filaexecutorresult.o :$(coroutineDir)/FilaExecutorResult.cpp
+	$(cppcompiler) $(obotchacppflags) -c $(coroutineDir)/FilaExecutorResult.cpp -o $(outtmp)/filaexecutorresult.o
 
 #$(outtmp)/filaroutinemgr.o :$(coroutineDir)/FilaRoutineManager.cpp
 #	$(cppcompiler) $(obotchacppflags) -c $(coroutineDir)/FilaRoutineManager.cpp -o $(outtmp)/filaroutinemgr.o

@@ -7,17 +7,13 @@
 
 namespace obotcha {
 
-void filaSleep(long t) {
-    poll(0,0,t);
-}
-
 _FilaRoutine::_FilaRoutine() {
     mDataMutex = createMutex();
     innerEvents = createArrayList<FilaRoutineInnerEvent>();
 
     mFilaMutex = createFilaMutex();
     mFilaments = createArrayList<Filament>();
-    isStop = false;
+    //isStop = false;
 }
 
 void _FilaRoutine::start() { 
@@ -30,13 +26,13 @@ void _FilaRoutine::postEvent(FilaRoutineInnerEvent event) {
 }
 
 _FilaRoutine::~_FilaRoutine() {
-    {
-        AutoLock l(mFilaMutex);
-        isStop = true;
-    }
-
+    //{
+    //    AutoLock l(mFilaMutex);
+    //    isStop = true;
+    //}
     join();
-    co_free_curr_thread_env();
+    //mFilaments->clear();
+    //co_free_curr_thread_env();
 }
 
 void _FilaRoutine::onComplete() {
@@ -60,6 +56,7 @@ void _FilaRoutine::onInterrupt() {
         }
     }
 
+    //TOOD
     stCoEpoll_t *epoll = co_get_epoll_ct();
     if (epoll != nullptr) {
         FreeEpoll(epoll);
@@ -67,16 +64,14 @@ void _FilaRoutine::onInterrupt() {
 }
 
 void _FilaRoutine::stop() {
-    isStop = true;
+    auto event = createFilaRoutineInnerEvent();
+    event->event = st(FilaRoutineInnerEvent)::Stop;
+    postEvent(event);
 }
 
 int _FilaRoutine::onIdle(void * data) {
     _FilaRoutine *croutine =(_FilaRoutine *)data;
     AutoLock l(croutine->mFilaMutex);
-    if(croutine->isStop) {
-        return -1;
-    }
-
     auto iterator = croutine->innerEvents->getIterator();
     while(iterator->hasValue()) {
         auto event = iterator->getValue();
@@ -103,12 +98,23 @@ int _FilaRoutine::onIdle(void * data) {
             case st(FilaRoutineInnerEvent)::RemoveFilament: {
                 croutine->removeFilament(event->filament);
             }
+            break;
+
+            case st(FilaRoutineInnerEvent)::Stop: {
+                ListIterator<Filament> iterator = croutine->mFilaments->getIterator();
+                while (iterator->hasValue()) {
+                    Filament fila = iterator->getValue();
+                    fila->markAsReleased();
+                    iterator->next();
+                }
+                croutine->mFilaments->clear();
+                co_free_curr_thread_env();
+                return -1;
+            }
         }
-        
         iterator->next();
     }
     croutine->innerEvents->clear();
-   
     return 0;
 }
 

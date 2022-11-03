@@ -4,7 +4,6 @@
 
 #include "DatagramSocketImpl.hpp"
 #include "InitializeException.hpp"
-#include "LocalSocketImpl.hpp"
 #include "Socket.hpp"
 #include "SocketInputStream.hpp"
 #include "SocketOutputStream.hpp"
@@ -35,6 +34,7 @@ _Socket::_Socket(int protocol,
 
     switch (protocol) {
         case Tcp:
+        case Local:
             mSockImpl = createSocksSocketImpl(addr, option);
             return;
 
@@ -42,9 +42,9 @@ _Socket::_Socket(int protocol,
             mSockImpl = createDatagramSocketImpl(addr, option);
             return;
 
-        case Local:
-            mSockImpl = createLocalSocketImpl(addr, option);
-            return;
+        //case Local:
+        //    mSockImpl = createLocalSocketImpl(addr, option);
+        //    return;
 
         case SSL:
             mSockImpl = createSSLSocksSocketImpl(certificatePath,keyPath,addr,option);
@@ -91,6 +91,8 @@ int _Socket::connect() {
     if(mSockImpl->connect() == 0) {
         mSockImpl->getFileDescriptor()->setAsync(mIsAsync);
         setAsync(mIsAsync,mPool);
+        mOutputStream = createSocketOutputStream(mSockImpl,mPool);
+        mInputStream = createSocketInputStream(mSockImpl);
         return 0;
     }
     return -1;

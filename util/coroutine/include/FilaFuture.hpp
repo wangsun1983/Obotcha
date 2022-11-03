@@ -12,7 +12,10 @@
 #include "OStdApply.hpp"
 #include "ConcurrentHashMap.hpp"
 #include "Condition.hpp"
-#include "ExecutorResult.hpp"
+#include "FilaCondition.hpp"
+#include "FilaExecutorResult.hpp"
+#include "NullPointerException.hpp"
+#include "IllegalStateException.hpp"
 
 namespace obotcha {
 
@@ -30,47 +33,49 @@ public:
 
     template <typename T> 
     T getResult(long millseconds = 0) {
-        while(1) {
-            auto result = FilaExecuteResults->get((uint64_t)owner);
-            AutoLock l(mMutex);
-            if(result == nullptr) {
-                mCond->wait(mMutex);
-                continue;
+        switch(mStatus) {
+            case Interrupt:
+            Trigger(IllegalStateException,"task is not excuted");
+            break;
+
+            case Idle:
+            case Running: {
+                AutoLock l(mMutex);
+                if(mCond->wait(mMutex,millseconds) == -ETIMEDOUT) {
+                    Trigger(TimeOutException, "time out");
+                }
             }
-            return __ExecutorTaskResult__<T>().get(result);
+
+            case Complete: {
+                if(mResult == nullptr) {
+                    Trigger(NullPointerException,"no result");
+                }
+
+                return mResult->get<T>();
+            }
+            break;
         }
-    }
 
-
-    template <typename T> static void setResult(T value) {
-        auto coa = GetCurrThreadCo();
-        FilaExecuteResults->put((uint64_t)coa,value);
+        Trigger(IllegalStateException,"unknown state");
     }
 
     void wait();
 
     void wakeAll();
     void wake();
-
-    static void setResult(int);
-    static void setResult(byte);
-    static void setResult(double);
-    static void setResult(bool);
-    static void setResult(long);
-    static void setResult(uint16_t);
-    static void setResult(uint32_t);
-    static void setResult(uint64_t);
-
     void setOwner(stCoRoutine_t *owner);
 
     int getStatus();
     void setStatus(int);
 
+    FilaExecutorResult genResult();
+
 private:
     stCoRoutine_t *owner;
-    static ConcurrentHashMap<uint64_t,Object> FilaExecuteResults;
-    Mutex mMutex;
-    Condition mCond;
+    FilaMutex mMutex;
+    FilaCondition mCond;
+    FilaExecutorResult mResult;
+
     int mStatus;
 };
 

@@ -10,6 +10,7 @@
 #include "FilaMutex.hpp"
 #include "OStdApply.hpp"
 #include "FilaFuture.hpp"
+#include "FilaExecutorResult.hpp"
 
 namespace obotcha {
 
@@ -31,7 +32,7 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
 
     void yield();
 
-    void destroy();
+    //void destroy();
 
     bool onInterrupt();
 
@@ -40,6 +41,8 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
   private:
     static void *localFilaRun(void *args);
     static void *onComplete(void *args);
+    
+    void markAsReleased();
 
     stCoRoutine_t *coa;
 

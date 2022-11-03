@@ -2,6 +2,7 @@
 #include "FilaRoutine.hpp"
 #include "Log.hpp"
 #include "IllegalStateException.hpp"
+#include "TimeWatcher.hpp"
 
 namespace obotcha {
 
@@ -14,11 +15,7 @@ _FilaCondition::_FilaCondition() {
     mThreadCond = createCondition();
 }
 
-void _FilaCondition::wait(FilaMutex m) {
-    wait(m,-1);
-}
-
-void _FilaCondition::wait(FilaMutex m,long mseconds) {
+int _FilaCondition::wait(FilaMutex m,long mseconds) {
     if(!m->isOwner()) {
         Trigger(IllegalStateException,
                 "Wait without getting the ownership of mutex");
@@ -26,14 +23,29 @@ void _FilaCondition::wait(FilaMutex m,long mseconds) {
 
     auto coa = GetCurrThreadCo();
     if(coa == nullptr) {
-        mThreadCond->wait(m->mMutex);
+        return mThreadCond->wait(m->mMutex);
     } else {
         addWaitRoutine();
         m->unlock();
+
+        TimeWatcher watch = createTimeWatcher();
+        if(mseconds > 0) {
+            watch->start();
+        }
+
         co_cond_timedwait(mCond, mseconds); 
+
+        if(mseconds > 0) {
+            long interval = watch->stop();
+            if(interval >= mseconds) {
+                return -ETIMEDOUT;
+            }
+        }
         m->lock();
         removeWaitRoutine();
     }
+
+    return 0;
 }
 
 void _FilaCondition::addWaitRoutine() {

@@ -23,6 +23,7 @@ namespace obotcha {
 // socket
 _SocksSocketImpl::_SocksSocketImpl(InetAddress address, SocketOption option)
     : _SocketImpl(address, option) {
+    
     sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(address->getSockAddress()->family(), 
                                 SOCK_STREAM, 
                                 0)));

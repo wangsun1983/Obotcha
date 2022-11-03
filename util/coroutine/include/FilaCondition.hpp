@@ -22,8 +22,7 @@ DECLARE_CLASS(FilaCondition) {
   public:
     friend class _FilaRoutine;
     _FilaCondition();
-    void wait(FilaMutex);
-    void wait(FilaMutex,long mseconds);
+    int wait(FilaMutex,long mseconds = -1);
     void notify();
     void notifyAll();
     ~_FilaCondition();

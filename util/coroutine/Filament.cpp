@@ -23,6 +23,7 @@ void _Filament::start(FilaFuture future) {
     if(mFuture != nullptr) {
         mFuture->setStatus(st(FilaFuture)::Running);
         mFuture->setOwner(coa);
+        st(FilaExecutorResult)::bindResult(coa,mFuture->genResult());
     }
     co_resume(coa);
 }
@@ -32,6 +33,7 @@ void *_Filament::localFilaRun(void *args) {
     fila->run();
     if(fila->mFuture != nullptr) {
         fila->mFuture->setStatus(st(FilaFuture)::Complete);
+        st(FilaExecutorResult)::unBindResult(GetCurrThreadCo());
         fila->mFuture->wakeAll();
     }
 
@@ -56,15 +58,16 @@ void _Filament::yield() {
     co_yield(coa); 
 }
 
-void _Filament::destroy() { 
+_Filament::~_Filament() {
     if(coa != nullptr) {
         co_release(coa);
         coa = nullptr;
     }
 }
 
-_Filament::~_Filament() {
-    destroy();
+void _Filament::markAsReleased() {
+    //released by stopping FilaRoutine 
+    coa = nullptr;
 }
 
 } // namespace obotcha

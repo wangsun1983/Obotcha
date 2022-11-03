@@ -9,8 +9,6 @@ objs += $(outtmp)/socket.o \
 		$(outtmp)/sslsockssocketimpl.o \
 		$(outtmp)/serversocketimpl.o \
 		$(outtmp)/sslserversocketimpl.o \
-		$(outtmp)/localsocketimpl.o \
-		$(outtmp)/serverlocalsocketimpl.o \
 		$(outtmp)/datagramsocketimpl.o \
 		$(outtmp)/socketmonitor.o \
 		$(outtmp)/sslsocketcontext.o \
@@ -37,11 +35,11 @@ $(outtmp)/serversocketimpl.o :$(netDir)/socket/ServerSocketImpl.cpp
 $(outtmp)/sslserversocketimpl.o :$(netDir)/socket/SSLServerSocketImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/SSLServerSocketImpl.cpp -o $(outtmp)/sslserversocketimpl.o 
 
-$(outtmp)/localsocketimpl.o :$(netDir)/socket/LocalSocketImpl.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/LocalSocketImpl.cpp -o $(outtmp)/localsocketimpl.o 
+#$(outtmp)/localsocketimpl.o :$(netDir)/socket/LocalSocketImpl.cpp
+#	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/LocalSocketImpl.cpp -o $(outtmp)/localsocketimpl.o 
 
-$(outtmp)/serverlocalsocketimpl.o :$(netDir)/socket/ServerLocalSocketImpl.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/ServerLocalSocketImpl.cpp -o $(outtmp)/serverlocalsocketimpl.o 
+#$(outtmp)/serverlocalsocketimpl.o :$(netDir)/socket/ServerLocalSocketImpl.cpp
+#	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/ServerLocalSocketImpl.cpp -o $(outtmp)/serverlocalsocketimpl.o 
 
 $(outtmp)/datagramsocketimpl.o :$(netDir)/socket/DatagramSocketImpl.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(netDir)/socket/DatagramSocketImpl.cpp -o $(outtmp)/datagramsocketimpl.o 
