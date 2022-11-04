@@ -22,17 +22,26 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
   public:
     friend class _FilaRoutine;
     friend class _FilaMutex;
+    
+    enum Type {
+        RunWithFuture = 0,
+        RunWithOutFuture
+    };
+    
     _Filament();
 
     virtual void run() {};
 
-    void start(FilaFuture future = nullptr);
+    void start();
 
     void resume();
 
     void yield();
 
     //void destroy();
+    void setType(int);
+
+    FilaFuture getFuture();
 
     bool onInterrupt();
 
@@ -43,6 +52,8 @@ DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
     static void *onComplete(void *args);
     
     void markAsReleased();
+
+    FilaFuture genFuture();
 
     stCoRoutine_t *coa;
 

@@ -7,6 +7,16 @@
 
 namespace obotcha {
 
+//------- FilaRoutineInnerEvent -------
+_FilaRoutineInnerEvent::_FilaRoutineInnerEvent(int e,
+                                               Filament f,
+                                               FilaCondition c) {
+    this->event = e;
+    this->filament = f;
+    this->cond = c;
+}
+
+//------- FilaRoutine -------
 _FilaRoutine::_FilaRoutine() {
     mDataMutex = createMutex();
     innerEvents = createArrayList<FilaRoutineInnerEvent>();
@@ -64,8 +74,10 @@ void _FilaRoutine::onInterrupt() {
 }
 
 void _FilaRoutine::stop() {
-    auto event = createFilaRoutineInnerEvent();
-    event->event = st(FilaRoutineInnerEvent)::Stop;
+    auto event = createFilaRoutineInnerEvent(
+                    st(FilaRoutineInnerEvent)::Stop,
+                    nullptr,
+                    nullptr);
     postEvent(event);
 }
 
@@ -78,7 +90,7 @@ int _FilaRoutine::onIdle(void * data) {
         switch(event->event) {
             case st(FilaRoutineInnerEvent)::NewTask: {
                 Filament f = event->filament;
-                f->start(event->future);
+                f->start();
                 croutine->mFilaments->add(f);
                 break;
             }

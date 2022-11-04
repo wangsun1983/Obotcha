@@ -17,8 +17,7 @@ bool _Filament::onInterrupt() {
     return true;
 }
 
-void _Filament::start(FilaFuture future) {
-    mFuture = future;
+void _Filament::start() {
     co_create(&coa, nullptr, localFilaRun, this);
     if(mFuture != nullptr) {
         mFuture->setStatus(st(FilaFuture)::Running);
@@ -42,9 +41,13 @@ void *_Filament::localFilaRun(void *args) {
     //auto routine = st(FilaRoutineManager)::getInstance()->getRoutine();
     if(routine != nullptr) {
         //routine->removeFilament(AutoClone(fila));
-        FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
-        event->event = st(FilaRoutineInnerEvent)::RemoveFilament;
-        event->filament = AutoClone(fila);
+        auto event = createFilaRoutineInnerEvent(
+                            st(FilaRoutineInnerEvent)::RemoveFilament,
+                            AutoClone(fila),
+                            nullptr);
+        //FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
+        //event->event = st(FilaRoutineInnerEvent)::RemoveFilament;
+        //event->filament = AutoClone(fila);
         routine->postEvent(event);
     }
     return nullptr;
@@ -68,6 +71,15 @@ _Filament::~_Filament() {
 void _Filament::markAsReleased() {
     //released by stopping FilaRoutine 
     coa = nullptr;
+}
+
+FilaFuture _Filament::getFuture() {
+    return mFuture;
+}
+
+FilaFuture _Filament::genFuture() {
+    mFuture = createFilaFuture();
+    return mFuture;
 }
 
 } // namespace obotcha

@@ -6,8 +6,6 @@
 
 namespace obotcha {
 
-//class _FilaCondition;
-
 DECLARE_CLASS(Fila) {
 public:
     static int sleep(long interval = 0);

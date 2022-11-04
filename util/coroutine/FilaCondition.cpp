@@ -20,21 +20,18 @@ int _FilaCondition::wait(FilaMutex m,long mseconds) {
         Trigger(IllegalStateException,
                 "Wait without getting the ownership of mutex");
     }
-
     auto coa = GetCurrThreadCo();
     if(coa == nullptr) {
-        return mThreadCond->wait(m->mMutex);
+        return mThreadCond->wait(m->mMutex,mseconds);
     } else {
         addWaitRoutine();
         m->unlock();
-
         TimeWatcher watch = createTimeWatcher();
         if(mseconds > 0) {
             watch->start();
         }
-
         co_cond_timedwait(mCond, mseconds); 
-
+    
         if(mseconds > 0) {
             long interval = watch->stop();
             if(interval >= mseconds) {
@@ -44,7 +41,6 @@ int _FilaCondition::wait(FilaMutex m,long mseconds) {
         m->lock();
         removeWaitRoutine();
     }
-
     return 0;
 }
 
@@ -77,13 +73,18 @@ void _FilaCondition::notify() {
     AutoLock l(mWaitMutex);
     auto sets = mWaitConditions->get(AutoClone(this));
     if(sets != nullptr && sets->size() != 0) {
-        FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
-        event->event = st(FilaRoutineInnerEvent)::Notify;
-        event->cond = AutoClone(this);
+        //FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
+        //event->event = st(FilaRoutineInnerEvent)::Notify;
+        //event->cond = AutoClone(this);
+        auto event = createFilaRoutineInnerEvent(
+            st(FilaRoutineInnerEvent)::Notify,
+            nullptr,
+            AutoClone(this)
+        );
         sets->get(0)->postEvent(event);
+    } else {
+        mThreadCond->notify();
     }
-
-    mThreadCond->notify();
 }
 
 void _FilaCondition::notifyAll() {
@@ -92,9 +93,15 @@ void _FilaCondition::notifyAll() {
 
     if(sets != nullptr) {
         auto iterator = sets->getIterator();
-        FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
-        event->event = st(FilaRoutineInnerEvent)::NotifyAll;
-        event->cond = AutoClone(this);
+        // FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
+        // event->event = st(FilaRoutineInnerEvent)::NotifyAll;
+        // event->cond = AutoClone(this);
+        auto event = createFilaRoutineInnerEvent(
+            st(FilaRoutineInnerEvent)::NotifyAll,
+            nullptr,
+            AutoClone(this)
+        );
+
         while(iterator->hasValue()) {
             auto c = iterator->getValue();
             c->postEvent(event);

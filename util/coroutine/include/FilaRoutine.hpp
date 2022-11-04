@@ -18,18 +18,19 @@ namespace obotcha {
 
 DECLARE_CLASS(FilaRoutineInnerEvent) {
 public:
-  enum {
-      NewTask = 0,
-      Notify,
-      NotifyAll,
-      RemoveFilament,
-      Stop,
-  };
-
-  int event;
-  Filament filament;
-  FilaCondition cond;
-  FilaFuture future;
+    enum {
+        NewTask = 0,
+        Notify,
+        NotifyAll,
+        RemoveFilament,
+        Stop,
+    };
+    
+    _FilaRoutineInnerEvent(int e,Filament f,FilaCondition c);
+    
+    int event;
+    Filament filament;
+    FilaCondition cond;
 };
 
 DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
@@ -39,11 +40,14 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     
     template <typename X>
     FilaFuture submit(sp<X> f) {
-        FilaFuture future = createFilaFuture();
-        FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
-        event->event = st(FilaRoutineInnerEvent)::NewTask;
-        event->filament = f;
-        event->future = future;
+        FilaRoutineInnerEvent event = createFilaRoutineInnerEvent(
+            st(FilaRoutineInnerEvent)::NewTask,
+            f,
+            nullptr
+        );
+        //event->event = st(FilaRoutineInnerEvent)::NewTask;
+        //event->filament = f;
+        auto future = event->filament->genFuture();
         innerEvents->add(event);
         return future;
     }
@@ -51,16 +55,20 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     template <typename X>
     void execute(sp<X> f) {
         AutoLock l(mDataMutex);
-        FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
-        event->event = st(FilaRoutineInnerEvent)::NewTask;
-        event->filament = f;
+        //FilaRoutineInnerEvent event = createFilaRoutineInnerEvent();
+        //event->event = st(FilaRoutineInnerEvent)::NewTask;
+        //event->filament = f;
+        auto event = createFilaRoutineInnerEvent(
+              st(FilaRoutineInnerEvent)::NewTask,
+              f,
+              nullptr);
         innerEvents->add(event);
     }
 
     template <class Function, class... Args>
     void execute(Function && f, Args && ... args){
         auto filament = createLambdaFilament(f, args...);
-        submit(filament);
+        execute(filament);
     }
 
     template <class Function, class... Args>
@@ -92,8 +100,7 @@ DECLARE_CLASS(FilaRoutine) IMPLEMENTS(Thread) {
     FilaMutex mFilaMutex;
     ArrayList<Filament> mFilaments;
     ArrayList<FilaRoutineInnerEvent> innerEvents;
-    //volatile bool isStop;
-
+    
     static int onIdle(void *);
 };
 
