@@ -8,7 +8,7 @@ namespace obotcha {
 
 _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
                                          AsyncOutputWriter stream,
-                                         AsyncOutputChannelPool pool) {
+                                         _AsyncOutputChannelPool* pool) {
     mFd = fd;
     mMutex = createMutex();
     mDatas = createLinkedList<ByteArray>();
@@ -95,7 +95,7 @@ void _AsyncOutputChannel::close() {
     //do not clear this.because ouputstream maybe used in
     //other thread.
     //mWriter = nullptr;
-    mPool = nullptr;
+    //mPool = nullptr;
 }
 
 void _AsyncOutputChannel::dump() {

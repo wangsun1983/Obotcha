@@ -2,22 +2,31 @@
 #include "AsyncOutputChannel.hpp"
 #include "ForEveryOne.hpp"
 #include "Error.hpp"
+#include "Log.hpp"
+#include "Synchronized.hpp"
 
 namespace obotcha {
 
 AsyncOutputChannel _AsyncOutputChannelPool::createChannel(FileDescriptor descriptor,AsyncOutputWriter stream) {
-    auto *_channel = new _AsyncOutputChannel(descriptor,stream,AutoClone(this));
-    auto channel = AutoClone(_channel);
-
+    auto channel = AutoClone(new _AsyncOutputChannel(descriptor,stream,this));
     addChannel(channel);
+    
     return channel;
 }
 
 void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel channel) {
-    //AutoLock l(mMutex);
     int fd = channel->getFileDescriptor()->getFd();
 
-    mChannels->put(fd, channel);
+    Synchronized(mMutex) {
+        auto oldChannel = mChannels->get(fd);
+        if(oldChannel != nullptr) {
+            LOG(ERROR)<<"AsyncOutputChannel already add!!!";
+            oldChannel->close();
+            mObserver->removeObserver(fd);
+        }
+        mChannels->put(fd, channel);
+    }
+    
     mObserver->addObserver(fd,
                            st(EPollFileObserver)::EpollOut
                            |st(EPollFileObserver)::EpollHup
@@ -31,21 +40,28 @@ void _AsyncOutputChannelPool::remove(AsyncOutputChannel c) {
     }
 
     int fd = c->getFileDescriptor()->getFd();
-
-    auto channel = mChannels->get(fd);
-    if(channel == c) {
-        mChannels->remove(fd);
-        mObserver->removeObserver(fd);
+    Synchronized(mMutex) {
+        auto channel = mChannels->get(fd);
+        if(channel == c) {
+            mChannels->remove(fd);
+            mObserver->removeObserver(fd);
+        }
     }
 }
 
 _AsyncOutputChannelPool::_AsyncOutputChannelPool() {
     mObserver = createEPollFileObserver();
-    mChannels = createConcurrentHashMap<int, AsyncOutputChannel>();
+    mChannels = createHashMap<int, AsyncOutputChannel>();
+    mMutex = createMutex();
 }
 
 int _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) {
-    auto channel = mChannels->remove(fd);
+    AsyncOutputChannel channel = nullptr;
+    
+    Synchronized(mMutex) {
+        channel = mChannels->remove(fd);
+    }
+
     mObserver->removeObserver(fd);
     if (channel != nullptr) {
         if((events & (st(EPollFileObserver)::EpollHup|st(EPollFileObserver)::EpollRdHup)) != 0) {
@@ -59,13 +75,16 @@ int _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) {
 
 void _AsyncOutputChannelPool::close() {
     mObserver->close();
-    //remove all channel
-    ForEveryOne(pair,mChannels) {
-        auto channel = pair->getValue();
-        channel->close();
-    }
 
-    mChannels->clear();
+    //remove all channel
+    Synchronized(mMutex) {
+        ForEveryOne(pair,mChannels) {
+            auto channel = pair->getValue();
+            channel->close();
+        }
+
+        mChannels->clear();
+    }
 }
 
 _AsyncOutputChannelPool::~_AsyncOutputChannelPool() {

@@ -35,7 +35,7 @@ DECLARE_CLASS(AsyncOutputChannel) {
   private:
     _AsyncOutputChannel(FileDescriptor descriptor,
                         AsyncOutputWriter stream,
-                        sp<_AsyncOutputChannelPool> pool);
+                        _AsyncOutputChannelPool* pool);
 
     Mutex mMutex;
     LinkedList<ByteArray> mDatas;
@@ -50,7 +50,7 @@ DECLARE_CLASS(AsyncOutputChannel) {
 
     AsyncOutputWriter mWriter;
 
-    sp<_AsyncOutputChannelPool> mPool;
+    _AsyncOutputChannelPool *mPool;
 };
 
 } // namespace obotcha

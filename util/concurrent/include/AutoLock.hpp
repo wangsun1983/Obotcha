@@ -27,6 +27,10 @@ public:
         }
     }
 
+    void release() {
+        mLock->unlock();
+    }
+
 private:
     Lock mLock;
 };
