@@ -9,17 +9,23 @@ AsyncOutputChannelPool _SocketOutputStream::defaultOutputChannelPool = nullptr;
 _SocketOutputStream::_SocketOutputStream(sp<_Socket> s,AsyncOutputChannelPool pool):_SocketOutputStream(s->mSockImpl,pool) {
 }
 
-_SocketOutputStream::_SocketOutputStream(SocketImpl sockimpl,AsyncOutputChannelPool pool) {
+_SocketOutputStream::_SocketOutputStream(SocketImpl sockImpl,AsyncOutputChannelPool pool) {
     static std::once_flag s_flag;
     std::call_once(s_flag, [&]() {
         defaultOutputChannelPool = createAsyncOutputChannelPool();
     });
 
-    impl = sockimpl;
-    mPool = (pool == nullptr)?defaultOutputChannelPool:pool;
+    mImpl = sockImpl;
+    mFileDescriptor = mImpl->getFileDescriptor();
 
-    fileDescriptor = impl->getFileDescriptor();
-    if (fileDescriptor != nullptr && fileDescriptor->isAsync()) {
+    if(pool != nullptr) {
+        mFileDescriptor->setAsync(true);
+        mPool = pool; 
+    } else {
+        mPool = defaultOutputChannelPool;
+    }
+    
+    if (mFileDescriptor != nullptr && mFileDescriptor->isAsync()) {
         //Add a mutex to protect channle for the following issue
         //1.Thread A:call write function to send data
         //2.Thread B(SocketMonitor) :if peer disconnet,close SocketOutputStream.
@@ -27,7 +33,7 @@ _SocketOutputStream::_SocketOutputStream(SocketImpl sockimpl,AsyncOutputChannelP
         //3.Thread A:call mChannel->write and crash(NullPointer...);
         //mChannelMutex = createMutex();
         //mChannel = createAsyncOutputChannel(AutoClone(this),fileDescriptor);
-        mChannel = mPool->createChannel(fileDescriptor,AutoClone(this));
+        mChannel = mPool->createChannel(mFileDescriptor,mImpl);
     }
 }
 
@@ -42,7 +48,7 @@ void _SocketOutputStream::setAsync(bool async,AsyncOutputChannelPool pool) {
     if(!async) {
         mChannel = nullptr;
     } else {
-        mChannel = mPool->createChannel(fileDescriptor,AutoClone(this));
+        mChannel = mPool->createChannel(mFileDescriptor,mImpl);
     }
 }
 
@@ -68,7 +74,7 @@ long _SocketOutputStream::write(ByteArray data, int start, int len) {
 }
 
 long _SocketOutputStream::_write(ByteArray data,int offset) {
-    return impl->write(data,offset);
+    return mImpl->write(data,offset);
 }
 
 void _SocketOutputStream::close() {
@@ -77,19 +83,20 @@ void _SocketOutputStream::close() {
         mChannel = nullptr;
     }
 
-    impl = nullptr;
+    mImpl = nullptr;
 }
 
 void _SocketOutputStream::flush() {
     //do nothing
 }
 
-long _SocketOutputStream::asyncWrite(ByteArray data,int offset) {
-    return _write(data,offset);
-}
+//long _SocketOutputStream::asyncWrite(ByteArray data,int offset) {
+//    return _write(data,offset);
+//}
 
 _SocketOutputStream::~_SocketOutputStream() {
     //do nothing
+    //close();
 }
 
 } // namespace obotcha

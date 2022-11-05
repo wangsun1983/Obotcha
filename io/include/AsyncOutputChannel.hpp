@@ -10,15 +10,16 @@
 #include "Handler.hpp"
 #include "LinkedList.hpp"
 #include "OutputStream.hpp"
+#include "OutputWriter.hpp"
 
 namespace obotcha {
 
 class _AsyncOutputChannelPool;
 
-DECLARE_CLASS(AsyncOutputWriter) {
-public:
-  virtual long asyncWrite(ByteArray,int) = 0;
-};
+//DECLARE_CLASS(AsyncOutputWriter) {
+//public:
+//  virtual long asyncWrite(ByteArray,int) = 0;
+//};
 
 DECLARE_CLASS(AsyncOutputChannel) {
   public:
@@ -34,7 +35,7 @@ DECLARE_CLASS(AsyncOutputChannel) {
     
   private:
     _AsyncOutputChannel(FileDescriptor descriptor,
-                        AsyncOutputWriter stream,
+                        OutputWriter writer,
                         _AsyncOutputChannelPool* pool);
 
     Mutex mMutex;
@@ -48,7 +49,7 @@ DECLARE_CLASS(AsyncOutputChannel) {
 
     int _write(ByteArray);
 
-    AsyncOutputWriter mWriter;
+    OutputWriter mWriter;
 
     _AsyncOutputChannelPool *mPool;
 };

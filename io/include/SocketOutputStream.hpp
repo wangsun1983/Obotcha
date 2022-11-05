@@ -21,7 +21,7 @@ namespace obotcha {
 
 class _Socket;
 
-DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream,AsyncOutputWriter) {
+DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream) {
   public:
     _SocketOutputStream(sp<_Socket>,AsyncOutputChannelPool pool = nullptr);
     _SocketOutputStream(SocketImpl,AsyncOutputChannelPool pool = nullptr);
@@ -40,7 +40,7 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream,AsyncOutputWriter) {
 
     void flush();
     
-    long asyncWrite(ByteArray,int);
+    //long asyncWrite(ByteArray,int);
 
     ~_SocketOutputStream();
 
@@ -48,8 +48,8 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream,AsyncOutputWriter) {
     long _write(ByteArray,int offset);
 
     //sp<_Socket> mSocket;
-    FileDescriptor fileDescriptor;
-    SocketImpl impl;
+    FileDescriptor mFileDescriptor;
+    SocketImpl mImpl;
 
     //Mutex mChannelMutex;
     AsyncOutputChannel mChannel;
@@ -57,8 +57,8 @@ DECLARE_CLASS(SocketOutputStream) IMPLEMENTS(OutputStream,AsyncOutputWriter) {
 
     static AsyncOutputChannelPool defaultOutputChannelPool;
 
-    struct sockaddr_in server_addr;
-    struct sockaddr_in6 server_addr_v6;
+    //struct sockaddr_in server_addr;
+    //struct sockaddr_in6 server_addr_v6;
 };
 
 } // namespace obotcha

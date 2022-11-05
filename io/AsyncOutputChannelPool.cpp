@@ -7,7 +7,7 @@
 
 namespace obotcha {
 
-AsyncOutputChannel _AsyncOutputChannelPool::createChannel(FileDescriptor descriptor,AsyncOutputWriter stream) {
+AsyncOutputChannel _AsyncOutputChannelPool::createChannel(FileDescriptor descriptor,OutputWriter stream) {
     auto channel = AutoClone(new _AsyncOutputChannel(descriptor,stream,this));
     addChannel(channel);
     

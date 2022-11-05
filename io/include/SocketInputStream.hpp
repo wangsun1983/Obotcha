@@ -34,7 +34,7 @@ public:
 
 private:
     //sp<_Socket> mSocket;
-    SocketImpl impl;
+    SocketImpl mImpl;
 };
 
 }

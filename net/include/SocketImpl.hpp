@@ -11,11 +11,12 @@
 #include "Error.hpp"
 #include "MethodNotSupportException.hpp"
 #include "FileDescriptor.hpp"
+#include "OutputWriter.hpp"
 
 namespace obotcha {
 
 class _Socket;
-DECLARE_CLASS(SocketImpl) {
+DECLARE_CLASS(SocketImpl) IMPLEMENTS(OutputWriter){
 public:
     _SocketImpl();
     _SocketImpl(FileDescriptor);
@@ -24,7 +25,7 @@ public:
     virtual int bind() {Trigger(MethodNotSupportException,"not support");}
     virtual sp<_Socket> accept() {Trigger(MethodNotSupportException,"not support");}//TOOD
     virtual sp<_Socket> recvDatagram(ByteArray){Trigger(MethodNotSupportException,"not support");}
-
+    
     //move all read write function to socket
     //default is tcp's read & write function
     virtual int write(ByteArray,int start = 0,int length = -1);

@@ -28,7 +28,9 @@ public:
     }
 
     void release() {
-        mLock->unlock();
+        if(mLock != nullptr) {
+            mLock->unlock();
+        }
     }
 
 private:

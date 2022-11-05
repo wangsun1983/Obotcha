@@ -17,28 +17,28 @@ namespace obotcha {
 _SocketInputStream::_SocketInputStream(sp<_Socket> s):_SocketInputStream(s->mSockImpl) { 
 }
 
-_SocketInputStream::_SocketInputStream(SocketImpl sockimpl) {
-    impl = sockimpl;
+_SocketInputStream::_SocketInputStream(SocketImpl impl) {
+    mImpl = impl;
 }
 
 long _SocketInputStream::read(ByteArray buffer) {
-    return impl->read(buffer);
+    return mImpl->read(buffer);
 }
 
 long _SocketInputStream::read(ByteArray buffer, int start) {
-    return impl->read(buffer,start);
+    return mImpl->read(buffer,start);
 }
 
 long _SocketInputStream::read(ByteArray buffer,int start,int length) {
-    return impl->read(buffer,start,length);
+    return mImpl->read(buffer,start,length);
 }
 
 void _SocketInputStream::close() { 
-    impl = nullptr; 
+    mImpl = nullptr; 
 }
 
 _SocketInputStream::~_SocketInputStream() {
-    impl = nullptr;
+    mImpl = nullptr;
 }
 
 } // namespace obotcha
