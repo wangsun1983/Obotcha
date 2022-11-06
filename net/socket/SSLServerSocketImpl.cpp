@@ -49,7 +49,7 @@ Socket _SSLServerSocketImpl::accept() {
 
     s->getFileDescriptor()->setAsync(true);
 
-    Socket result = createSocket(st(Socket)::SSL,client);
+    Socket result = createSocket(client);
     //result->setSockImpl(client);
     //result->setProtocol(st(Socket)::SSL);
 

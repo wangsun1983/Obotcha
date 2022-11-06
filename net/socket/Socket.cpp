@@ -10,6 +10,7 @@
 #include "SocksSocketImpl.hpp"
 #include "SSLSocksSocketImpl.hpp"
 #include "System.hpp"
+#include "OStdInstanceOf.hpp"
 
 namespace obotcha {
 
@@ -34,7 +35,6 @@ _Socket::_Socket(int protocol,
 
     switch (protocol) {
         case Tcp:
-        case Local:
             mSockImpl = createSocksSocketImpl(addr, option);
             return;
 
@@ -42,27 +42,25 @@ _Socket::_Socket(int protocol,
             mSockImpl = createDatagramSocketImpl(addr, option);
             return;
 
-        //case Local:
-        //    mSockImpl = createLocalSocketImpl(addr, option);
-        //    return;
-
-        case SSL:
+        case Ssl:
             mSockImpl = createSSLSocksSocketImpl(certificatePath,keyPath,addr,option);
             return;
     }
 
-    Trigger(InitializeException, "invalid type");
+    Trigger(InitializeException, "invalid protockl");
 }
 
-_Socket::_Socket(FileDescriptor descriptor):_Socket() {
-    mSockImpl = createSocketImpl(descriptor);
-    mOutputStream = createSocketOutputStream(mSockImpl,mPool);
-    mInputStream = createSocketInputStream(mSockImpl);
-    mProtocol = Fd;
-}
-_Socket::_Socket(int protocol,SocketImpl impl):_Socket() {
+_Socket::_Socket(SocketImpl impl,AsyncOutputChannelPool pool):_Socket() {
+    mPool = pool;
+    if(IsInstance(SocksSocketImpl,impl)) {
+        mProtocol = Tcp;
+    } else if(IsInstance(DatagramSocketImpl,impl)) {
+        mProtocol = Udp;
+    } else if(IsInstance(SSLSocksSocketImpl,impl)) {
+        mProtocol = Ssl;
+    }
     mSockImpl = impl;
-    mProtocol = protocol;
+    updateStream();
 }
 
 void _Socket::setAsync(bool async,AsyncOutputChannelPool pool) {
@@ -91,8 +89,7 @@ int _Socket::connect() {
     if(mSockImpl->connect() == 0) {
         mSockImpl->getFileDescriptor()->setAsync(mIsAsync);
         setAsync(mIsAsync,mPool);
-        mOutputStream = createSocketOutputStream(mSockImpl,mPool);
-        mInputStream = createSocketInputStream(mSockImpl);
+        updateStream();
         return 0;
     }
     return -1;
@@ -100,8 +97,7 @@ int _Socket::connect() {
 
 int _Socket::bind() {
     int ret = mSockImpl->bind();
-    mOutputStream = createSocketOutputStream(mSockImpl,mPool);
-    mInputStream = createSocketInputStream(mSockImpl);
+    updateStream();
 
     return ret;
 }
@@ -145,6 +141,11 @@ FileDescriptor _Socket::getFileDescriptor() {
 
 int _Socket::getProtocol() {
     return mProtocol;
+}
+
+void _Socket::updateStream() {
+    mOutputStream = createSocketOutputStream(mSockImpl,mPool);
+    mInputStream = createSocketInputStream(mSockImpl);
 }
 
 } // namespace obotcha

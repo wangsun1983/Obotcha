@@ -39,25 +39,30 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
     setOptions();
 }
 
-Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
-    Socket newClient = createSocket();
-    int length = -1;
-    DatagramSocketImpl impl = createDatagramSocketImpl();
 
+Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
     SockAddress client = createSockAddress(address->getFamily());
     struct sockaddr *client_addr = nullptr;
     socklen_t client_len = 0;
 
     FetchRet(client_len,client_addr) = client->get();
-    length = recvfrom(sock->getFd(), buff->toValue(), buff->size(), 0, client_addr, &client_len);
-    
-    impl->address = client->toInetAddress();
-    impl->sock = sock;
+    //TODO
+    //1.shall we reset buff size before receive data???
+    int length = recvfrom(sock->getFd(), 
+                          buff->toValue(), 
+                          buff->size(), 
+                          0, 
+                          client_addr, 
+                          &client_len);
 
     if(length > 0) {
-        newClient = createSocket(st(Socket)::Udp,impl);
+        //TODO
+        DatagramSocketImpl impl = createDatagramSocketImpl();
+        impl->address = client->toInetAddress();
+        impl->sock = sock;
+
         buff->quickShrink(length);
-        return newClient;
+        return createSocket(impl);
     }
 
     return nullptr;

@@ -8,15 +8,10 @@ _ServerSocket::_ServerSocket(int type, InetAddress address,
                              SocketOption option,String certificatePath,String keyPath) {
     switch (type) {
         case st(Socket)::Tcp:
-        case st(Socket)::Local:
             this->mSock = createServerSocketImpl(address, option);
             break;
-
-        //case st(Socket)::Local:
-            //this->mSock = createServerLocalSocketImpl(address, option);
-        //    break;
         
-        case st(Socket)::SSL:
+        case st(Socket)::Ssl:
             this->mSock = createSSLServerSocketImpl(certificatePath,keyPath,address,option);
             break;
     }

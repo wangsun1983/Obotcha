@@ -12,7 +12,6 @@
 #include "FileDescriptor.hpp"
 #include "SocketImpl.hpp"
 #include "AsyncOutputChannelPool.hpp"
-#include <atomic>
 
 namespace obotcha {
 
@@ -24,16 +23,13 @@ public:
     friend class _SocketMonitor;
     friend class _SocketOutputStream;
     friend class _SocketInputStream;
-
     friend class _SSLServerSocketImpl;
 
     enum Protocol {
-        UnKnown = 0,
         Tcp,
         Udp,
-        Local,
-        Fd,
-        SSL, //default SSL tcp
+        Ssl,//default SSL tcp
+        UnKnown,
     };
 
     _Socket();
@@ -46,9 +42,7 @@ public:
             bool isAsync = false,
             AsyncOutputChannelPool pool = nullptr);
 
-    _Socket(FileDescriptor);
-
-    _Socket(int protocol,SocketImpl impl);
+    _Socket(SocketImpl impl,AsyncOutputChannelPool pool = nullptr);
 
     void setAsync(bool,AsyncOutputChannelPool pool = nullptr);
 
@@ -85,6 +79,8 @@ private:
     AsyncOutputChannelPool mPool;
     
     bool mIsAsync;
+
+    void updateStream();
 
 protected:
     SocketImpl mSockImpl;

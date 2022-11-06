@@ -27,11 +27,9 @@ public:
     
     Socket newSocket();
     Socket newDatagramSocket();
-    Socket newLocalSocket();
     Socket newSSLSocket();
     
     ServerSocket newServerSocket();
-    ServerSocket newServerLocalSocket();
     ServerSocket newSSLServerSocket();
     
 private:
