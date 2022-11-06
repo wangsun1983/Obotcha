@@ -8,6 +8,7 @@
 #include "System.hpp"
 #include "Thread.hpp"
 #include "ThreadScheduledPoolExecutor.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -42,9 +43,11 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int maxPendingTaskNum
 }
 
 int _ThreadScheduledPoolExecutor::shutdown() {
-    if(isShutDown()) {
-        return 0;
-    }
+    // if(isShutDown()) {
+    //     return 0;
+    // }
+    Inspect(isShutDown(),0);
+
     updateStatus(ShutDown);
 
     mCachedExecutor->shutdown();
@@ -95,9 +98,11 @@ int _ThreadScheduledPoolExecutor::getExecutingThreadNum() {
 }
 
 Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
-    if(isShutDown()) {
-        return nullptr;
-    }
+    // if(isShutDown()) {
+    //     return nullptr;
+    // }
+    Inspect(isShutDown(),nullptr);
+
     WaitingTask waitTask = createWaitingTask(task);
     
     if (addWaitingTaskLocked(waitTask, mMaxSubmitTaskWaitTime) == 0) {
@@ -109,9 +114,10 @@ Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
 
 int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
                                                        long timeout) {
-    if(isShutDown()) {
-        return -1;
-    }
+    // if(isShutDown()) {
+    //     return -1;
+    // }
+    Inspect(isShutDown(),-1);
 
     AutoLock l(mTaskMutex);
     if (mMaxPendingTaskNum > 0 && mCount == mMaxPendingTaskNum) {
@@ -156,10 +162,12 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
 void _ThreadScheduledPoolExecutor::run() {
     auto instance = AutoClone(this);
     while (1) {
-        if(isShutDown()) {
-            instance = nullptr;
-            return;
-        }
+        // if(isShutDown()) {
+        //     instance = nullptr;
+        //     return;
+        // }
+        Inspect(isShutDown());
+        
         {
             AutoLock ll(mTaskMutex);
             if (mTaskPool == nullptr) {

@@ -3,6 +3,7 @@
 #include "AsyncOutputChannelPool.hpp"
 #include "Error.hpp"
 #include "Log.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -19,9 +20,7 @@ _AsyncOutputChannel::_AsyncOutputChannel(FileDescriptor fd,
 
 int _AsyncOutputChannel::write(ByteArray d) {
     AutoLock l(mMutex);
-    if (isClosed) {
-        return -1;
-    }
+    Inspect(isClosed,-1);
     
     if (mDatas->size() > 0) {
         ByteArray data = createByteArray(d);
@@ -34,9 +33,7 @@ int _AsyncOutputChannel::write(ByteArray d) {
 
 int _AsyncOutputChannel::notifyWrite() {
     AutoLock l(mMutex);
-    if (isClosed) {
-        return -1;
-    }
+    Inspect(isClosed,-1);
     
     while (mDatas->size() > 0) {
         ByteArray data = mDatas->takeFirst();
@@ -79,10 +76,8 @@ FileDescriptor _AsyncOutputChannel::getFileDescriptor() {
 
 void _AsyncOutputChannel::close() {
     AutoLock l(mMutex);
-    if(isClosed) {
-        return;
-    }
-
+    Inspect(isClosed);
+    
     if(mDatas != nullptr) {
         mDatas->clear();
         mDatas = nullptr;

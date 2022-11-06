@@ -16,11 +16,6 @@ namespace obotcha {
 
 class _AsyncOutputChannelPool;
 
-//DECLARE_CLASS(AsyncOutputWriter) {
-//public:
-//  virtual long asyncWrite(ByteArray,int) = 0;
-//};
-
 DECLARE_CLASS(AsyncOutputChannel) {
   public:
     friend class _AsyncOutputChannelPool;
@@ -39,6 +34,7 @@ DECLARE_CLASS(AsyncOutputChannel) {
                         _AsyncOutputChannelPool* pool);
 
     Mutex mMutex;
+
     LinkedList<ByteArray> mDatas;
     
     bool isClosed;

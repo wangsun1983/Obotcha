@@ -14,6 +14,7 @@
 #include "InterruptedException.hpp"
 #include "IllegalStateException.hpp"
 #include "Synchronized.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -53,9 +54,10 @@ _Thread::_Thread() {
 }
 
 int _Thread::setName(String name) {
-    if (!isRunning()) {
-        return -1;
-    }
+    // if (!isRunning()) {
+    //     return -1;
+    // }
+    Inspect(!isRunning(),-1);
 
     mName = name;
     
@@ -94,9 +96,10 @@ void _Thread::run() {
 }
 
 int _Thread::detach() {
-    if (!isRunning()) {
-        return 0;
-    }
+    // if (!isRunning()) {
+    //     return 0;
+    // }
+    Inspect(!isRunning(),0);
 
     return -pthread_detach(getThreadId());
 }
@@ -160,9 +163,10 @@ void _Thread::onComplete() {
 }
 
 int _Thread::getPriority() {
-    if (!isRunning()) {
-        return -1;
-    }
+    // if (!isRunning()) {
+    //     return -1;
+    // }
+    Inspect(!isRunning(),-1);
 
     int policy = getSchedPolicy();
 
@@ -205,9 +209,10 @@ int _Thread::getPriority() {
 }
 
 int _Thread::setPriority(int priority) {
-    if (!isRunning()) {
-        return -1;
-    }
+    // if (!isRunning()) {
+    //     return -1;
+    // }
+    Inspect(!isRunning(),-1);
 
     int policy = getSchedPolicy();
     if (policy == SCHED_NORMAL) {
@@ -249,24 +254,25 @@ int _Thread::setPriority(int priority) {
 }
 
 int _Thread::setSchedPolicy(int policy) {
-   if (!isRunning()) {
-       return -1;
-   }
-
-   return pthread_attr_setschedpolicy(&mThreadAttr, policy);
+//    if (!isRunning()) {
+//        return -1;
+//    }
+    Inspect(!isRunning(),-1);
+    return pthread_attr_setschedpolicy(&mThreadAttr, policy);
 }
 
 
 int _Thread::getSchedPolicy() {
-   if (!isRunning()) {
-       return -1;
-   }
+//    if (!isRunning()) {
+//        return -1;
+//    }
+    Inspect(!isRunning(),-1);
 
-   int policy = Other;
-   if (pthread_attr_getschedpolicy(&mThreadAttr, &policy) != 0) {
-       return -1;
-   }
-   return policy;
+    int policy = Other;
+    if (pthread_attr_getschedpolicy(&mThreadAttr, &policy) != 0) {
+        return -1;
+    }
+    return policy;
 }
 
 pthread_t _Thread::getThreadId() { 

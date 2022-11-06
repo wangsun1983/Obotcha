@@ -1,17 +1,18 @@
 #include "ServerSocket.hpp"
 #include "ServerSocketImpl.hpp"
 #include "SSLServerSocketImpl.hpp"
+#include "NetProtocol.hpp"
 
 namespace obotcha {
 
 _ServerSocket::_ServerSocket(int type, InetAddress address,
                              SocketOption option,String certificatePath,String keyPath) {
     switch (type) {
-        case st(Socket)::Tcp:
+        case st(NetProtocol)::Tcp:
             this->mSock = createServerSocketImpl(address, option);
             break;
         
-        case st(Socket)::Ssl:
+        case st(NetProtocol)::Ssl:
             this->mSock = createSSLServerSocketImpl(certificatePath,keyPath,address,option);
             break;
     }

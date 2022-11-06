@@ -14,7 +14,7 @@
 #include "ThreadPriorityPoolExecutor.hpp"
 #include "ForEveryOne.hpp"
 #include "Synchronized.hpp"
-
+#include "Inspect.hpp"
 namespace obotcha {
 
 _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int maxPendingTaskNum, 
@@ -85,9 +85,10 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int maxPendingTaskNum,
 }
 
 int _ThreadPriorityPoolExecutor::shutdown() {
-    if(isShutDown()) {
-        return 0;
-    }
+    // if(isShutDown()) {
+    //     return 0;
+    // }
+    Inspect(isShutDown(),0);
 
     updateStatus(ShutDown);
 
@@ -146,9 +147,10 @@ Future _ThreadPriorityPoolExecutor::submitRunnable(Runnable r) {
 }
 
 Future _ThreadPriorityPoolExecutor::submitTask(ExecutorTask task) {
-    if(isShutDown()) {
-        return nullptr;
-    }
+    // if(isShutDown()) {
+    //     return nullptr;
+    // }
+    Inspect(isShutDown(),nullptr);
 
     AutoLock l(mTaskMutex);
     //Runnable r = task->getRunnable();
@@ -190,9 +192,10 @@ void _ThreadPriorityPoolExecutor::awaitTermination() {
 }
 
 int _ThreadPriorityPoolExecutor::awaitTermination(long millseconds) {
-    if(!isShutDown()) {
-        return -1;
-    }
+    // if(!isShutDown()) {
+    //     return -1;
+    // }
+    Inspect(!isShutDown(),-1);
 
     bool isWaitForever = (millseconds == 0);
     ListIterator<Thread> iterator = mThreads->getIterator();

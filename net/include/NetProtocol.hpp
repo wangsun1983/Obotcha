@@ -10,12 +10,15 @@ DECLARE_CLASS(NetProtocol) {
 
 public:
     enum Type {
-        Http = 0,
+        Tcp = 0,
+        Udp,
+        Ssl,
+        Http,
         Https,
         Ws,
         Http_H2,
         Http_H2C,
-        Tcp,
+        UnKnown
     };
     
     static const int DefaultHttpPort = 80;

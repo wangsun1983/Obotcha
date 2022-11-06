@@ -4,13 +4,13 @@
 #include "Error.hpp"
 #include "Log.hpp"
 #include "Synchronized.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
 AsyncOutputChannel _AsyncOutputChannelPool::createChannel(FileDescriptor descriptor,OutputWriter stream) {
     auto channel = AutoClone(new _AsyncOutputChannel(descriptor,stream,this));
     addChannel(channel);
-    
     return channel;
 }
 
@@ -35,9 +35,10 @@ void _AsyncOutputChannelPool::addChannel(AsyncOutputChannel channel) {
 }
 
 void _AsyncOutputChannelPool::remove(AsyncOutputChannel c) {
-    if(c == nullptr) {
-        return;
-    }
+    //if(c == nullptr) {
+    //    return;
+    //}
+    Inspect(c == nullptr);
 
     int fd = c->getFileDescriptor()->getFd();
     Synchronized(mMutex) {

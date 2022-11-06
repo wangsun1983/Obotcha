@@ -1,5 +1,6 @@
 #include "SocketBuilder.hpp"
 #include "Inet4Address.hpp"
+#include "NetProtocol.hpp"
 
 namespace obotcha {
 
@@ -43,7 +44,7 @@ _SocketBuilder::_SocketBuilder() {
 
 Socket _SocketBuilder::newSocket() {
     if (fd == nullptr) {
-        return createSocket(st(Socket)::Tcp, address, option,nullptr,nullptr,mIsAsync,mPool);
+        return createSocket(st(NetProtocol)::Tcp, address, option,nullptr,nullptr,mIsAsync,mPool);
     }
     
     return createSocket(fd,mPool);
@@ -56,19 +57,19 @@ _SocketBuilder* _SocketBuilder::setAsyncPool(AsyncOutputChannelPool pool) {
 }
 
 Socket _SocketBuilder::newDatagramSocket() {
-    return createSocket(st(Socket)::Udp, address, option);
+    return createSocket(st(NetProtocol)::Udp, address, option);
 }
 
 Socket _SocketBuilder::newSSLSocket() {
-    return createSocket(st(Socket)::Ssl,address,option,mCertificatePath,mKeyPath,mIsAsync,mPool);
+    return createSocket(st(NetProtocol)::Ssl,address,option,mCertificatePath,mKeyPath,mIsAsync,mPool);
 }
 
 ServerSocket _SocketBuilder::newServerSocket() {
-    return createServerSocket(st(Socket)::Tcp, address, option);
+    return createServerSocket(st(NetProtocol)::Tcp, address, option);
 }
 
 ServerSocket _SocketBuilder::newSSLServerSocket() {
-    return createServerSocket(st(Socket)::Ssl, address, option,mCertificatePath,mKeyPath);
+    return createServerSocket(st(NetProtocol)::Ssl, address, option,mCertificatePath,mKeyPath);
 }
 
 } // namespace obotcha

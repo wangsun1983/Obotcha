@@ -17,6 +17,7 @@
 #include "ThreadCachedPoolExecutor.hpp"
 #include "TimeWatcher.hpp"
 #include "ForEveryOne.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -47,9 +48,10 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxPendingTaskNum,
 }
 
 int _ThreadCachedPoolExecutor::shutdown() {
-    if(!isExecuting()) {
-        return 0;
-    }
+    // if(!isExecuting()) {
+    //     return 0;
+    // }
+    Inspect(!isExecuting(),0);
 
     updateStatus(ShutDown);
 
@@ -88,9 +90,10 @@ void _ThreadCachedPoolExecutor::awaitTermination() {
 }
 
 int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
-    if(isExecuting()) {
-        return -1;
-    }
+    // if(isExecuting()) {
+    //     return -1;
+    // }
+    Inspect(isExecuting(),-1);
 
     bool isWaitForever = (millseconds == 0);
     ArrayList<Thread> list = mHandlers->toArray();
@@ -124,9 +127,10 @@ int _ThreadCachedPoolExecutor::getPendingTaskNum() {
 }
 
 Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
-    if(!isExecuting()) {
-        return nullptr;
-    }
+    // if(!isExecuting()) {
+    //     return nullptr;
+    // }
+    Inspect(!isExecuting(),nullptr);
 
     task->setPending();
     
@@ -147,14 +151,15 @@ _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
 }
 
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
-    if(!isExecuting()) {
-        return;
-    }
+    // if(!isExecuting()) {
+    //     return;
+    // }
 
-    if (mHandlers->size() >= mMaxThreadNum) {
-        return;
-    }
-
+    // if (mHandlers->size() >= mMaxThreadNum) {
+    //     return;
+    // }
+    Inspect(!isExecuting()||mHandlers->size() >= mMaxThreadNum);
+    
     Thread handler = createThread(
         [this](ThreadCachedPoolExecutor executor) {
             auto exec = executor;//use this to keep executor instance

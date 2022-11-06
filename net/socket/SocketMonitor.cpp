@@ -16,6 +16,7 @@
 #include "NetEvent.hpp"
 #include "TimeWatcher.hpp"
 #include "Definations.hpp"
+#include "Synchronized.hpp"
 
 namespace obotcha {
 
@@ -54,15 +55,14 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
 
     for (int i = 0; i < mThreadNum; i++) {
         mExecutor->submit(
-            [this](int index, SocketMonitor &monitor) {
+            [this](int index, SocketMonitor monitor) {
                 SocketMonitorTask task = nullptr;
                 int currentFd = -1;
                 LinkedList<SocketMonitorTask> localTasks = createLinkedList<SocketMonitorTask>();
                 
                 while (!monitor->isStop) {
                     //check myself task
-                    {
-                        AutoLock l(monitor->mMutex);
+                    Synchronized(monitor->mMutex) {
                         if(currentFd != -1) {
                             task = localTasks->takeFirst();
                         }
@@ -91,7 +91,7 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
                             }
 
                             if (task == nullptr) {
-                                monitor->mCondition->wait(monitor->mMutex);
+                                mCondition->wait(monitor->mMutex);
                                 continue;
                             }
                         }
@@ -113,22 +113,15 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
                     }
 
                     if(task->event == st(NetEvent)::Disconnect) {
-                        monitor->remove(task->sock->getFileDescriptor());
+                        remove(task->sock->getFileDescriptor());
                         task->sock->close();
                     }
                 }
                 localTasks->clear();
-                monitor = nullptr;
             },
             i, AutoClone(this));
     }
 }
-
-//void _SocketMonitor::addNewSocket(Socket s, SocketListener l) {
-//    int fd = s->getFileDescriptor()->getFd();
-//    mClientSocks->put(fd, s);
-//    mListeners->put(fd, l);
-//}
 
 int _SocketMonitor::bind(Socket s, SocketListener l) {
     AutoLock ll(mMutex);
@@ -148,7 +141,7 @@ int _SocketMonitor::bind(Socket s, SocketListener l) {
     
     return bind(fd, 
                 l, 
-                s->getProtocol() == st(Socket)::Protocol::Udp);
+                s->getProtocol() == st(NetProtocol)::Udp);
 }
 
 int _SocketMonitor::bind(ServerSocket s, SocketListener l) {
@@ -169,7 +162,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
 
             if (fd == serverfd) {
                 // may be this is udp wangsl
-                if (s != nullptr && s->getProtocol() == st(Socket)::Protocol::Udp) {
+                if (s != nullptr && s->getProtocol() == st(NetProtocol)::Udp) {
                     Socket newClient = nullptr;
                     while (1) {
                         ByteArray buff = createByteArray(mRecvBuffSize);
@@ -180,8 +173,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                             break;
                         }
 
-                        {
-                            AutoLock l(mMutex);
+                        Synchronized(mMutex){
                             mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message, newClient,buff));
                             mCondition->notify();
                         }
@@ -196,8 +188,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                     s = server->accept();
                     if (s != nullptr) {
                         bind(s,listener);
-                        {
-                            AutoLock l(mMutex);
+                        Synchronized(mMutex){
                             mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Connect, s));
                             mCondition->notify();
                         }
@@ -247,8 +238,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
 
 void _SocketMonitor::close() {
     mPoll->close();
-    {
-        AutoLock l(mMutex);
+    Synchronized(mMutex) {
         if(isStop) {
             return;
         }

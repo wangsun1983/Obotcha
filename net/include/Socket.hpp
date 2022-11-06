@@ -12,25 +12,19 @@
 #include "FileDescriptor.hpp"
 #include "SocketImpl.hpp"
 #include "AsyncOutputChannelPool.hpp"
+#include "NetProtocol.hpp"
 
 namespace obotcha {
 
 class _SocketMonitor;
 class _SSLServerSocketImpl;
 
-DECLARE_CLASS(Socket) {
+DECLARE_CLASS(Socket) IMPLEMENTS(NetProtocol) {
 public:
     friend class _SocketMonitor;
     friend class _SocketOutputStream;
     friend class _SocketInputStream;
     friend class _SSLServerSocketImpl;
-
-    enum Protocol {
-        Tcp,
-        Udp,
-        Ssl,//default SSL tcp
-        UnKnown,
-    };
 
     _Socket();
 
@@ -63,10 +57,7 @@ public:
     InputStream getInputStream();
 
     OutputStream getOutputStream();
-    
-    //for udp socket
-    //sp<_Socket> recvDatagram(ByteArray);
-    
+
     int getProtocol();
     
 private:
