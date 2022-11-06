@@ -13,6 +13,7 @@
 #include "AtomicInteger.hpp"
 #include "InterruptedException.hpp"
 #include "IllegalStateException.hpp"
+#include "Synchronized.hpp"
 
 namespace obotcha {
 
@@ -21,8 +22,7 @@ static AtomicInteger threadCount = createAtomicInteger(0);
 String _Thread::DefaultThreadName = createString("thread_");
 
 void _Thread::doThreadExit(_Thread *thread) {
-    {
-        AutoLock l(thread->mMutex);
+    Synchronized(thread->mMutex) {
         thread->mRunnable = nullptr;
         thread->mStatus = st(Thread)::Complete;
         thread->mJoinCondition->notifyAll();
@@ -38,8 +38,7 @@ void *_Thread::localRun(void *th) {
     _Thread *thread = static_cast<_Thread *>(th);
     mThreads->set(thread->getThreadId(), AutoClone(thread));
     pthread_setname_np(thread->mPthread, thread->mName->toChars());
-    {
-        AutoLock l(thread->mMutex);
+    Synchronized(thread->mMutex) {
         thread->mStatus = st(Thread)::Running;
     }
 
@@ -117,8 +116,7 @@ int _Thread::start() {
     // incStrong(0);
     // sp<_Thread> localThread;
     // localThread.set_pointer(this);
-    {
-        AutoLock l(mMutex);
+    Synchronized(mMutex) {
         if (mStatus != NotStart) {
             return -EALREADY;
         }

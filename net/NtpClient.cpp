@@ -41,16 +41,19 @@ int _NtpClient::bind(String url, int port, long duration) {
 }
 
 long _NtpClient::get() {
-    char mNtpPacket[NTP_DATA_SIZE];
-    memset(mNtpPacket, 0, sizeof(mNtpPacket));
-    generateNtpPacket(mNtpPacket);
+    //char mNtpPacket[NTP_DATA_SIZE];
+    //memset(mNtpPacket, 0, sizeof(mNtpPacket));
+    //generateNtpPacket(mNtpPacket);
 
-    ByteArray packet = createByteArray((byte *)mNtpPacket, NTP_DATA_SIZE);
+    ByteArray packet = createByteArray(NTP_DATA_SIZE);
+    generateNtpPacket((char *)packet->toValue());
+
     mSock->getOutputStream()->write(packet);
 
     ByteArray pack = createByteArray(1024 * 4);
-    int len = mSock->getInputStream()->read(pack);
-    pack->quickShrink(len);
+    if(mSock->getInputStream()->read(pack) < 0) {
+        return -1;
+    }
 
     unsigned int *data = (unsigned int *)pack->toValue();
 

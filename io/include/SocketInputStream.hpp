@@ -32,6 +32,9 @@ public:
     
     void setAsync(bool async); 
 
+    //used for udp
+    sp<_Socket> recvDatagram(ByteArray);
+
 private:
     //sp<_Socket> mSocket;
     SocketImpl mImpl;

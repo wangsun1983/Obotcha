@@ -65,7 +65,7 @@ public:
     OutputStream getOutputStream();
     
     //for udp socket
-    sp<_Socket> recvDatagram(ByteArray);
+    //sp<_Socket> recvDatagram(ByteArray);
     
     int getProtocol();
     

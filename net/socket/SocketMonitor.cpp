@@ -157,10 +157,8 @@ int _SocketMonitor::bind(ServerSocket s, SocketListener l) {
 }
 
 int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
-    int serversocket = -1;
-    if (isServer) {
-        serversocket = fd;
-    }
+    int serversocket = isServer?fd:-1;
+
     mPoll->addObserver(
         fd, EPOLLIN | EPOLLRDHUP | EPOLLHUP,
         [this](int fd, uint32_t events, SocketListener &listener, int serverfd,SocketMonitor monitor) {
@@ -175,7 +173,8 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
                     Socket newClient = nullptr;
                     while (1) {
                         ByteArray buff = createByteArray(mRecvBuffSize);
-                        newClient = s->recvDatagram(buff);
+                        auto stream = Cast<SocketInputStream>(s->getInputStream());
+                        newClient = stream->recvDatagram(buff);
                         if(newClient == nullptr) {
                             //LOG(ERROR)<<"SocketMonitor accept udp is a null socket!!!!";
                             break;

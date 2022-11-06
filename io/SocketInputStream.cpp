@@ -41,4 +41,8 @@ _SocketInputStream::~_SocketInputStream() {
     mImpl = nullptr;
 }
 
+sp<_Socket> _SocketInputStream::recvDatagram(ByteArray buff) {
+    return mImpl->recvDatagram(buff);
+}
+
 } // namespace obotcha

@@ -13,6 +13,7 @@
 #include "System.hpp"
 #include "ThreadPriorityPoolExecutor.hpp"
 #include "ForEveryOne.hpp"
+#include "Synchronized.hpp"
 
 namespace obotcha {
 
@@ -39,44 +40,36 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int maxPendingTaskNum,
 
     for (int i = 0; i < defaultThreadNum; i++) {
         Thread thread = createThread(
-            [](int id,ThreadPriorityPoolExecutor &executor) {
+            [this](int id,ThreadPriorityPoolExecutor executor) {
                 ExecutorTask mCurrentTask = nullptr;
                 while (1) {
-                    {
-                        AutoLock l(executor->mTaskMutex);
-                        if (executor->mHighPriorityTasks->size() > 0) {
-                            mCurrentTask =
-                                executor->mHighPriorityTasks->takeFirst();
+                    Synchronized(mTaskMutex) {
+                        if (mHighPriorityTasks->size() > 0) {
+                            mCurrentTask = mHighPriorityTasks->takeFirst();
                         } else if (executor->mMidPriorityTasks->size() > 0) {
-                            mCurrentTask =
-                                executor->mMidPriorityTasks->takeFirst();
+                            mCurrentTask = mMidPriorityTasks->takeFirst();
                         } else if (executor->mLowPriorityTasks->size() > 0) {
-                            mCurrentTask =
-                                executor->mLowPriorityTasks->takeFirst();
+                            mCurrentTask = mLowPriorityTasks->takeFirst();
                         }
 
-                        if (executor->isShutDown()) {
-                            executor = nullptr;
+                        if (isShutDown()) {
                             return;
                         }
 
                         if (mCurrentTask == nullptr) {
-                            // executor->mTaskCond->wait(executor->mTaskMutex);
-                            executor->notEmpty->wait(executor->mTaskMutex);
+                            notEmpty->wait(executor->mTaskMutex);
                             continue;
                         }
-                        executor->notFull->notify();
+                        notFull->notify();
                     }
 
-                    {
-                        AutoLock l(executor->mRunningTaskMutex);
+                    Synchronized(mRunningTaskMutex) {
                         executor->mRunningTasks[id] = mCurrentTask;
                     }
 
                     mCurrentTask->execute();
 
-                    {
-                        AutoLock l(executor->mRunningTaskMutex);
+                    Synchronized(mRunningTaskMutex) {
                         executor->mRunningTasks[id] = nullptr;
                     }
 
@@ -95,9 +88,10 @@ int _ThreadPriorityPoolExecutor::shutdown() {
     if(isShutDown()) {
         return 0;
     }
+
     updateStatus(ShutDown);
-    {
-        AutoLock l(mTaskMutex);
+
+    Synchronized(mTaskMutex) {
         while (!mHighPriorityTasks->isEmpty()) {
             ExecutorTask task = mHighPriorityTasks->takeLast();
             task->cancel();
@@ -117,8 +111,7 @@ int _ThreadPriorityPoolExecutor::shutdown() {
         notFull->notifyAll();
     }
     
-    {
-        AutoLock l(mRunningTaskMutex);
+    Synchronized(mRunningTaskMutex) {
         int size = mThreads->size();
         for(int i = 0;i<size;i++) {
             auto t = mRunningTasks[i];
@@ -143,15 +136,6 @@ bool _ThreadPriorityPoolExecutor::isTerminated() {
             break;
         }
     }
-
-    /*
-    mThreads->foreach ([&isTerminated](Thread &t) {
-        if (t->getStatus() != st(Thread)::Complete) {
-            isTerminated = false;
-            return Global::Break;
-        }
-        return Global::Continue;
-    });*/
 
     return isTerminated;
 }

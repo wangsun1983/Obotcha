@@ -1,6 +1,7 @@
 #include "ExecutorTask.hpp"
 #include "AutoLock.hpp"
 #include "ExecutorResult.hpp"
+#include "Synchronized.hpp"
 
 namespace obotcha {
 
@@ -61,8 +62,7 @@ void _ExecutorTask::setPending() {
 void _ExecutorTask::execute() {
     Runnable r = nullptr;
 
-    {
-        AutoLock l(mMutex);
+    Synchronized(mMutex) {
         if (mStatus == Complete || mStatus == Cancel) {
             return;
         }
@@ -79,8 +79,7 @@ void _ExecutorTask::execute() {
 
     st(Executor)::removeCurrentTask();
 
-    {
-        AutoLock l(mMutex);
+    Synchronized(mMutex) {
         mStatus = Complete;
         mCompleteCond->notify();
     }

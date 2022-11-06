@@ -2,6 +2,7 @@
 
 #include "FilaRoutine.hpp"
 #include "FilaCondition.hpp"
+#include "Synchronized.hpp"
 
 #include <sys/types.h>
 
@@ -57,8 +58,7 @@ void _FilaRoutine::run() {
 }
 
 void _FilaRoutine::onInterrupt() {
-    {
-        AutoLock l(mFilaMutex);
+    Synchronized(mFilaMutex){
         ListIterator<Filament> iterator = mFilaments->getIterator();
         while (iterator->hasValue()) {
             Filament fila = iterator->getValue();

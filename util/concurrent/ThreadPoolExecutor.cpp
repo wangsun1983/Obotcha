@@ -11,6 +11,7 @@
 #include "TimeWatcher.hpp"
 #include "ForEveryOne.hpp"
 #include "Log.hpp"
+#include "Synchronized.hpp"
 
 namespace obotcha {
 
@@ -36,15 +37,13 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
                         return;
                     }
 
-                    {
-                        AutoLock l(mRunningTaskMutex);
+                    Synchronized(mRunningTaskMutex) {
                         mRunningTasks[id] = mCurrentTask;
                     }
 
                     mCurrentTask->execute();
 
-                    {
-                        AutoLock l(mRunningTaskMutex);
+                    Synchronized(mRunningTaskMutex) {
                         mRunningTasks[id] = nullptr;
                     }
                 }
@@ -58,10 +57,6 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
 
     updateStatus(Executing);
 }
-
-//Future _ThreadPoolExecutor::submitRunnable(Runnable r) {
-//    return submitTask(createExecutorTask(r));
-//}
 
 Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
     if(isShutDown()) {
@@ -91,8 +86,7 @@ int _ThreadPoolExecutor::shutdown() {
 
     mPendingTasks->destroy();
 
-    {
-        AutoLock l(mRunningTaskMutex);
+    Synchronized(mRunningTaskMutex) {
         int size = mHandlers->size();
         for(int i = 0;i<size;i++) {
             auto t = mRunningTasks[i];

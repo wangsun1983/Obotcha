@@ -123,10 +123,6 @@ bool _Socket::isClosed() {
     return mClosed;
 }
 
-sp<_Socket> _Socket::recvDatagram(ByteArray buff) {
-    return mSockImpl->recvDatagram(buff);
-}
-
 InputStream _Socket::getInputStream() {
     return mInputStream;
 }
