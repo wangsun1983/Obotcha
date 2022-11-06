@@ -14,18 +14,11 @@ DECLARE_CLASS(ByteArrayReader) {
 
 public:
     _ByteArrayReader(ByteArray,int mod = LittleEndian);
-    /*
-    int readShort();
-    int readByte();
-    int readInt();
-    long readLong();
-    uint64_t readUint64();
-    uint32_t readUint32();
-    uint16_t readUint16();*/
+    
     template <typename T>
     T read() {
         T value = 0;
-        switch(mode) {
+        switch(mMode) {
             case Global::BigEndian:
             _readBigEndian(value);
             break;
@@ -37,16 +30,13 @@ public:
         return value;
     }
 
-    String readLine();
+    //String readLine();
     int read(ByteArray);
     int getIndex();
     int getRemainSize();
     void setIndex(int);
 
     bool isReadable();
-#if 0
-    int appendWithAdjustment(ByteArray);
-#endif
 
 private:
     template<typename T>
@@ -83,7 +73,7 @@ private:
     int mIndex;
     int mResult;
     int mSize;
-    int mode;
+    int mMode;
 };
 
 }

@@ -12,7 +12,6 @@
 #include "StrongPointer.hpp"
 
 #include "ArrayList.hpp"
-#include "FileInputStream.hpp"
 #include "String.hpp"
 #include "File.hpp"
 
@@ -37,16 +36,13 @@ public:
 
 private:
     enum type {
-        ReadFile = 0,
-        ReadContent
+        Document = 0,
+        Content
     };
 
-    bool isSetStringStream = false;
     std::stringstream mStringStream;
     std::ifstream mFileStream;
-    ByteArray mData;
-
-    int type;
+    int mType;
 };
 
 } // namespace obotcha

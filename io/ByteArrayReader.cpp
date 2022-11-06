@@ -3,77 +3,32 @@
 
 #include "ByteArray.hpp"
 #include "ByteArrayReader.hpp"
+#include "Inspect.hpp"
 #include "String.hpp"
 
 namespace obotcha {
 
 _ByteArrayReader::_ByteArrayReader(ByteArray data, int mod) {
-    this->mData = data;
+    mData = data;
     mDataP = data->toValue();
     mSize = data->size();
     mIndex = 0;
-    mode = mod;
+    mMode = mod;
 }
 
-/*
-int _ByteArrayReader::readShort() {
-    short int value = 0;
-    _read(value);
-    return value;
-}
+int _ByteArrayReader::read(ByteArray data) {
+    // if (mIndex >= mSize) {
+    //     return -1;
+    // }
+    Inspect(mIndex > mSize,-1);
 
-int _ByteArrayReader::readByte() {
-    if (mIndex >= mSize) {
-        return -1;
-    }
+    //int leftSize = mSize - mIndex;
+    //int dataSize = data->size();
 
-    int value = mDataP[mIndex];
-    mIndex++;
-
-    return value;
-}
-
-int _ByteArrayReader::readInt() {
-    int value = 0;
-    _read(value);
-    return value;
-}
-
-long _ByteArrayReader::readLong() {
-    long value = 0;
-    _read(value);
-    return value;
-}
-
-uint64_t _ByteArrayReader::readUint64() {
-    uint64_t value = 0;
-    _read(value);
-    return value;
-}
-
-uint32_t _ByteArrayReader::readUint32() {
-    uint32_t value = 0;
-    _read(value);
-    return value;
-}
-
-uint16_t _ByteArrayReader::readUint16() {
-    uint16_t value = 0;
-    _read(value);
-    return value;
-}
-*/
-
-int _ByteArrayReader::read(ByteArray d) {
-    if (mIndex >= mSize) {
-        return -1;
-    }
-
-    int leftSize = mSize - mIndex;
-    int dataSize = d->size();
-
-    int copySize = (leftSize < dataSize ? leftSize : dataSize);
-    memcpy(d->toValue(), &mDataP[mIndex], copySize);
+    int copySize = std::min(mSize - mIndex,data->size());
+    //(leftSize < dataSize ? leftSize : dataSize);
+    
+    memcpy(data->toValue(), &mDataP[mIndex], copySize);
     mIndex += copySize;
     return copySize;
 }
@@ -94,7 +49,7 @@ bool _ByteArrayReader::isReadable() {
     return mSize > mIndex;
 }
 
-
+/*
 String _ByteArrayReader::readLine() {
     int start = mIndex;
     if (mIndex >= mData->size()) {
@@ -142,5 +97,5 @@ String _ByteArrayReader::readLine() {
 
     return nullptr;
 }
-
+*/
 } // namespace obotcha

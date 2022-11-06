@@ -1,14 +1,4 @@
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <iostream>
-#include <sstream>
-
-#include "ArrayList.hpp"
 #include "InitializeException.hpp"
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "File.hpp"
 #include "BufferedReader.hpp"
 
 namespace obotcha {
@@ -17,42 +7,35 @@ _BufferedReader::_BufferedReader(File file):mFileStream(file->getAbsolutePath()-
     if (!file->exists()) {
         Trigger(InitializeException, "file not exists");
     }
-    type = ReadFile;
+    mType = Document;
 }
 
 _BufferedReader::_BufferedReader(String str) {
-    type = ReadContent;
-    mData = str->toByteArray();
+    mType = Content;
+    mStringStream << str->toChars();
 }
 
 _BufferedReader::_BufferedReader(ByteArray data) {
-    type = ReadContent;
-    mData = data;
+    mType = Content;
+    mStringStream << data->toValue()<<'\0';
 }
 
 String _BufferedReader::readLine() {
     std::string s;
 
-    switch(type) {
-        case ReadContent:
-            if(!isSetStringStream) {
-                mStringStream << mData->toString()->toChars();
-                isSetStringStream = true;
-            }
-
+    switch(mType) {
+        case Content:
             if (std::getline(mStringStream, s)) {
                 return createString(s);
             }
         break;
 
-        case ReadFile:
+        case Document:
             if (std::getline(mFileStream, s)) {
                 return createString(s);
             }
         break;
     }
-
-
     return nullptr;
 }
 
@@ -66,31 +49,19 @@ ArrayList<String> _BufferedReader::lines() {
 }
 
 void _BufferedReader::reset() {
-    switch(type) {
-        case ReadContent:
-            if(isSetStringStream) {
-                mStringStream.clear();
-                mStringStream.seekg(0, mStringStream.beg);
-            }
-            break;
+    switch(mType) {
+        case Content:
+            mStringStream.clear();
+            mStringStream.seekg(0, mStringStream.beg);
+        break;
 
-        case ReadFile:
+        case Document:
             mFileStream.seekg(0);
         break;
     }
 }
 
 _BufferedReader::~_BufferedReader() {
-    switch(type) {
-        case ReadContent:
-            //mStringStream.close();
-        break;
-
-        case ReadFile:
-            mFileStream.close();
-        break;
-    }
-
 }
 
 } // namespace obotcha
