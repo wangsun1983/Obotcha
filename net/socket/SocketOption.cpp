@@ -305,12 +305,204 @@ int _SocketOption::getReusePortEbpf() {
     return mReusePortEbpf; 
 }
 
-int _SocketOption::getZeroCopy() { return mZeroCopy; }
+int _SocketOption::getZeroCopy() { 
+    return mZeroCopy; 
+}
 
-int _SocketOption::getRecvTimeout() { return mRcvTimeout; }
+int _SocketOption::getRecvTimeout() { 
+    return mRcvTimeout; 
+}
 
-int _SocketOption::getSendTimeout() { return mSendTimeout; }
+int _SocketOption::getSendTimeout() { 
+    return mSendTimeout; 
+}
 
-int _SocketOption::getBuffSize() { return mBuffSize; }
+int _SocketOption::getBuffSize() { 
+    return mBuffSize; 
+}
+
+void _SocketOption::update(FileDescriptor fd) {
+    int sock = fd->getFd();
+
+    if (mReUseAddr != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_REUSEADDR, &mReUseAddr,
+                            sizeof(mReUseAddr));
+    }
+
+    if (mDontRoute != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_DONTROUTE, &mDontRoute,
+                            sizeof(mDontRoute));
+    }
+
+    if (mBroadCast != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_BROADCAST, &mBroadCast,
+                            sizeof(mBroadCast));
+    }
+
+    if (mSendBuf != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_SNDBUF, &mSendBuf,
+                            sizeof(mSendBuf));
+    }
+
+    if (mRcvBuff != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_RCVBUF, &mRcvBuff,
+                            sizeof(mRcvBuff));
+    }
+
+    if (mSendBuffForce != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_SNDBUFFORCE,
+                            &mSendBuffForce,
+                            sizeof(mSendBuffForce));
+    }
+
+    if (mRcvBuffForce != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_RCVBUFFORCE,
+                            &mRcvBuffForce,
+                            sizeof(mRcvBuffForce));
+    }
+
+    if (mKeepAlive != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_KEEPALIVE, &mKeepAlive,
+                            sizeof(mKeepAlive));
+    }
+
+    if (mOobInline != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_OOBINLINE, &mOobInline,
+                            sizeof(mOobInline));
+    }
+
+    if (mNoCheck != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_NO_CHECK, &mNoCheck,
+                            sizeof(mNoCheck));
+    }
+
+    if (mPriority != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_PRIORITY, &mPriority,
+                            sizeof(mPriority));
+    }
+
+    if (mLingerOnOff != -1 && mLingerValue != -1) {
+        struct linger ll;
+        ll.l_onoff = mLingerOnOff;
+        ll.l_linger = mLingerValue;
+
+        ::setsockopt(sock,SOL_SOCKET, SO_LINGER, &ll,
+                            sizeof(struct linger));
+    }
+
+    if (mReUsePort != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_REUSEPORT, &mReUsePort,
+                            sizeof(mReUsePort));
+    }
+
+    if (mPassCred != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_PASSCRED, &mPassCred,
+                            sizeof(mPassCred));
+    }
+
+    if (mPeerCred != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_PEERCRED, &mPeerCred,
+                            sizeof(mPeerCred));
+    }
+
+    if (mRcvLoWat != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_RCVLOWAT, &mRcvLoWat,
+                            sizeof(mRcvLoWat));
+    }
+
+    if (mSndLoWat != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_SNDLOWAT, &mSndLoWat,
+                            sizeof(mSndLoWat));
+    }
+
+    if (mRcvTimeout != -1) {
+        timeval tv;
+        tv.tv_sec = mRcvTimeout / 1000;
+        tv.tv_usec = (mRcvTimeout % 1000) * 1000;
+        ::setsockopt(sock,SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    }
+
+    if (mSendTimeout != -1) {
+        timeval tv;
+        tv.tv_sec = mSendTimeout / 1000;
+        tv.tv_usec = (mSendTimeout % 1000) * 1000;
+        ::setsockopt(sock,SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+    }
+
+    if (mBindToDevice != nullptr) {
+        ::setsockopt(sock,SOL_SOCKET, SO_BINDTODEVICE,
+                            mBindToDevice, sizeof(struct ifreq));
+    }
+
+    if (mAttachFilter != nullptr) {
+        ::setsockopt(sock,SOL_SOCKET, SO_ATTACH_FILTER,
+                            &mAttachFilter,
+                            sizeof(struct sock_fprog));
+    }
+
+    if (mDetachFilter != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_DETACH_FILTER,
+                            &mDetachFilter,
+                            sizeof(mDetachFilter));
+    }
+
+    if (mTimeStamp != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_TIMESTAMP, &mTimeStamp,
+                            sizeof(mTimeStamp));
+    }
+
+    if (mTimeStampNs != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_TIMESTAMPNS,
+                            &mTimeStampNs,
+                            sizeof(mTimeStampNs));
+    }
+
+    if (mTimeStampIng != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_TIMESTAMPING,
+                            &mTimeStampIng,
+                            sizeof(mTimeStampIng));
+    }
+
+    if (mBusyPoll != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_BUSY_POLL, &mBusyPoll,
+                            sizeof(mBusyPoll));
+    }
+
+    if (mMaxPacingRate != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_MAX_PACING_RATE,
+                            &mMaxPacingRate,
+                            sizeof(mMaxPacingRate));
+    }
+#ifdef SO_ATTACH_REUSEPORT_CBPF
+    if (mReusePortCbpf != nullptr) {
+        ::setsockopt(sock,SOL_SOCKET, SO_ATTACH_REUSEPORT_CBPF,
+                            mReusePortCbpf,
+                            sizeof(struct sock_fprog));
+    }
+#endif
+
+#ifdef SO_ATTACH_REUSEPORT_EBPF
+    if (mReusePortEbpf != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_ATTACH_REUSEPORT_EBPF,
+                            &mReusePortEbpf,
+                            sizeof(mReusePortEbpf));
+    }
+#endif
+
+#ifdef SO_ZEROCOPY
+    if (mZeroCopy != -1) {
+        ::setsockopt(sock,SOL_SOCKET, SO_ZEROCOPY, &mZeroCopy,
+                            sizeof(mZeroCopy));
+    }
+#endif
+}
+
+int _SocketOption::get(FileDescriptor fd,
+                       int level, 
+                       int optname, 
+                       void *optval,
+                       socklen_t *oplen) {
+    return ::getsockopt(fd->getFd(), level, optname, optval, oplen);
+}
 
 } // namespace obotcha

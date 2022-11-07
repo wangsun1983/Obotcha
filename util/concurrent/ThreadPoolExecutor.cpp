@@ -28,15 +28,9 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
     for (int i = 0; i < defalutThreadNum; i++) {
         Thread thread = createThread(
             [this](int id,ThreadPoolExecutor executor) {
-                //auto exec = executor; //use this to keep executor instance
                 while (1) {
                     ExecutorTask mCurrentTask = mPendingTasks->takeFirst();
 
-                    //if (mCurrentTask == nullptr) {
-                        // clear executor to enable executor release.
-                    //    exec = nullptr;
-                    //    return;
-                    //}
                     Inspect(mCurrentTask == nullptr);
 
                     Synchronized(mRunningTaskMutex) {
@@ -61,9 +55,6 @@ _ThreadPoolExecutor::_ThreadPoolExecutor(int maxPendingTaskNum,
 }
 
 Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
-    //if(isShutDown()) {
-    //    return nullptr;
-    //}
     Inspect(isShutDown(),nullptr);
 
     task->setPending();
@@ -77,9 +68,6 @@ Future _ThreadPoolExecutor::submitTask(ExecutorTask task) {
 
 
 int _ThreadPoolExecutor::shutdown() {
-    //if(!isExecuting()) {
-    //    return 0;
-    //}
     Inspect(!isExecuting(),0);
 
     updateStatus(ShutDown);
@@ -118,9 +106,6 @@ bool _ThreadPoolExecutor::isTerminated() {
 }
 
 int _ThreadPoolExecutor::awaitTermination(long millseconds) {
-    //if(!isShutDown()) {
-    //    return -1;
-    //}
     Inspect(!isShutDown(),-1);
 
     bool isWaitForever = (millseconds == 0);
@@ -149,7 +134,6 @@ int _ThreadPoolExecutor::getPendingTaskNum() {
 }
 
 _ThreadPoolExecutor::~_ThreadPoolExecutor() {
-    //delete []mRunningTasks;
     if(!isShutDown()) {
         LOG(ERROR)<<"ThreadPoolExecutor release without shutdown!!!!";
         shutdown();

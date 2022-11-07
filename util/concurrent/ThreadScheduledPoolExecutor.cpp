@@ -43,9 +43,6 @@ _ThreadScheduledPoolExecutor::_ThreadScheduledPoolExecutor(int maxPendingTaskNum
 }
 
 int _ThreadScheduledPoolExecutor::shutdown() {
-    // if(isShutDown()) {
-    //     return 0;
-    // }
     Inspect(isShutDown(),0);
 
     updateStatus(ShutDown);
@@ -98,9 +95,6 @@ int _ThreadScheduledPoolExecutor::getExecutingThreadNum() {
 }
 
 Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
-    // if(isShutDown()) {
-    //     return nullptr;
-    // }
     Inspect(isShutDown(),nullptr);
 
     WaitingTask waitTask = createWaitingTask(task);
@@ -114,9 +108,6 @@ Future _ThreadScheduledPoolExecutor::submitTask(ExecutorTask task) {
 
 int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
                                                        long timeout) {
-    // if(isShutDown()) {
-    //     return -1;
-    // }
     Inspect(isShutDown(),-1);
 
     AutoLock l(mTaskMutex);
@@ -132,7 +123,6 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
         WaitingTask p = mTaskPool;
         WaitingTask prev = mTaskPool;
         for (;;) {
-            //printf("p->nextTime is %ld,task->nextTime is %ld \n",p->nextTime,task->nextTime);
             if (p->nextTime > task->nextTime) {
                 if (p == mTaskPool) {
                     task->next = p;
@@ -162,10 +152,6 @@ int _ThreadScheduledPoolExecutor::addWaitingTaskLocked(WaitingTask task,
 void _ThreadScheduledPoolExecutor::run() {
     auto instance = AutoClone(this);
     while (1) {
-        // if(isShutDown()) {
-        //     instance = nullptr;
-        //     return;
-        // }
         Inspect(isShutDown());
         
         {
@@ -176,7 +162,6 @@ void _ThreadScheduledPoolExecutor::run() {
             } else {
                 long interval =
                     (mTaskPool->nextTime - st(System)::currentTimeMillis());
-                //printf("interval is %d \n",interval);
                 if (interval <= 0) {
                     mCurrentTask = mTaskPool;
                     mTaskPool = mTaskPool->next;

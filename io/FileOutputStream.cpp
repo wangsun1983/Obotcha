@@ -32,49 +32,36 @@ _FileOutputStream::_FileOutputStream(const char *path)
 
 _FileOutputStream::_FileOutputStream(String path) {
     mPath = path;
-    fd = -1;
-    isFdImport = false;
+    mIsFdImport = false;
 }
 
-_FileOutputStream::_FileOutputStream(int fd) {
+_FileOutputStream::_FileOutputStream(FileDescriptor fd) {
     mPath = nullptr;
-    this->fd = fd;
-    isFdImport = true;
+    mFd = fd;
+    mIsFdImport = true;
 }
 
 long _FileOutputStream::write(char c) {
-    // if (fd < 0) {
-    //     return -1;
-    // }
+    int fd = mFd->getFd();
     Inspect(fd < 0,-1);
-
     return ::write(fd, &c, 1);
 }
 
 long _FileOutputStream::write(ByteArray buff) {
-    // if (fd < 0) {
-    //     return -1;
-    // }
+    int fd = mFd->getFd();
     Inspect(fd < 0,-1);
-
     return ::write(fd, buff->toValue(), buff->size());
 }
 
 long _FileOutputStream::write(ByteArray buff, int start) {
-    // if (fd < 0) {
-    //     return -1;
-    // }
+    int fd = mFd->getFd();
     Inspect(fd < 0,-1);
-
     return ::write(fd, &buff->toValue()[start], buff->size() - start);
 }
 
 long _FileOutputStream::write(ByteArray buff, int start, int len) {
-    // if (fd < 0) {
-    //     return -1;
-    // }
+    int fd = mFd->getFd();
     Inspect(fd < 0,-1);
-
     if (len > (buff->size() - start)) {
         Trigger(ArrayIndexOutOfBoundsException, "out ouf bound");
     }
@@ -83,60 +70,47 @@ long _FileOutputStream::write(ByteArray buff, int start, int len) {
 }
 
 long _FileOutputStream::writeString(String s) {
-    // if (fd < 0) {
-    //     return -1;
-    // }
+    int fd = mFd->getFd();
     Inspect(fd < 0,-1);
-
     return ::write(fd, s->toChars(), s->size());
 }
 
 bool _FileOutputStream::open() {
-    // if (fd >= 0) {
-    //     return false;
-    // }
-    Inspect(fd >= 0,false);
-
-    fd = ::open(mPath->toChars(), O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
+    Inspect(mFd != nullptr,false);
+    auto fd = ::open(mPath->toChars(), O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
+    mFd = createFileDescriptor(fd);
     return (fd >= 0);
 }
 
 bool _FileOutputStream::open(int opentype) {
-    // if (fd >= 0) {
-    //     return false;
-    // }
-    Inspect(fd >= 0,false);
-
+    Inspect(mFd != nullptr,false);
+    int fd = -1;
     switch (opentype) {
-    case FileOpenType::Append:
-        fd = ::open(mPath->toChars(), O_CREAT | O_RDWR | O_APPEND,
-                    S_IRUSR | S_IWUSR);
-        break;
+        case FileOpenType::Append:
+            fd = ::open(mPath->toChars(), O_CREAT | O_RDWR | O_APPEND,
+                        S_IRUSR | S_IWUSR);
+            break;
 
-    case FileOpenType::Trunc:
-        fd = ::open(mPath->toChars(), O_CREAT | O_RDWR | O_TRUNC,
-                    S_IRUSR | S_IWUSR);
-        break;
+        case FileOpenType::Trunc:
+            fd = ::open(mPath->toChars(), O_CREAT | O_RDWR | O_TRUNC,
+                        S_IRUSR | S_IWUSR);
+            break;
     }
 
+    mFd = createFileDescriptor(fd);
     return (fd >= 0);
 }
 
 void _FileOutputStream::close() {
-    if (fd >= 0) {
-        ::close(fd);
-        fd = -1;
-    }
+    mFd->close();
 }
 
 void _FileOutputStream::flush() {
-    fdatasync(fd);
+    fdatasync(mFd->close());
 }
 
 _FileOutputStream::~_FileOutputStream() {
-    if(!isFdImport) {
-       close();
-    }
+
 }
 
 } // namespace obotcha

@@ -1,19 +1,11 @@
-/**
- * @file FileInputStream.cpp
- * @brief FileInputStream obtains input bytes from a file in a file system.
- * @details none
- * @mainpage none
- * @author sunli.wang
- * @email wang_sun_1983@yahoo.co.jp
- * @version 0.0.1
- * @date 2019-07-12
- * @license none
- */
+#include <iostream>
+
 #include "FileInputStream.hpp"
 #include "FileNotFoundException.hpp"
 #include "IOException.hpp"
+#include "Inspect.hpp"
 #include "Log.hpp"
-#include <iostream>
+
 
 namespace obotcha {
 
@@ -25,19 +17,20 @@ _FileInputStream::_FileInputStream(const char *path)
 
 _FileInputStream::_FileInputStream(String path) {
     mPath = createString(path);
-    this->fd = -1;
-    isFdImport = false;
+    //this->fd = -1;
+    mFd = nullptr;
+    mIsFdImport = false;
 }
 
-_FileInputStream::_FileInputStream(int fd) {
+_FileInputStream::_FileInputStream(FileDescriptor fd) {
     mPath = nullptr;
-    this->fd = fd;
-    isFdImport = true;
+    mFd = fd;
+    mIsFdImport = true;
 }
 
 ByteArray _FileInputStream::read(int size) {
     ByteArray data = createByteArray(size);
-    int length = ::read(fd, data->toValue(), data->size());
+    int length = ::read(mFd->getFd(), data->toValue(), data->size());
     if (length <= 0) {
         return nullptr;
     } else if (length < data->size()) {
@@ -48,25 +41,25 @@ ByteArray _FileInputStream::read(int size) {
 }
 
 long _FileInputStream::seekTo(int index) { 
-    return lseek(fd, index, SEEK_SET); 
+    return lseek(mFd->getFd(), index, SEEK_SET); 
 }
 
 long _FileInputStream::read(ByteArray buff, int pos, int length) {
     long len = ((pos + length) > buff->size()) ? buff->size() : length;
-    return ::read(fd, buff->toValue() + pos, len);;
+    return ::read(mFd->getFd(), buff->toValue() + pos, len);;
 }
 
 long _FileInputStream::read(ByteArray data) {
-    return ::read(fd, data->toValue(), data->size());
+    return ::read(mFd->getFd(), data->toValue(), data->size());
 }
 
 long _FileInputStream::read(ByteArray data, int start) {
-    return ::read(fd, &data->toValue()[start], data->size() - start);
+    return ::read(mFd->getFd(), &data->toValue()[start], data->size() - start);
 }
 
 ByteArray _FileInputStream::readAll() {
     struct stat stbuf = {0};
-    if ((fstat(fd, &stbuf) != 0) || (!S_ISREG(stbuf.st_mode))) {
+    if ((fstat(mFd->getFd(), &stbuf) != 0) || (!S_ISREG(stbuf.st_mode))) {
         return nullptr;
     }
 
@@ -74,36 +67,32 @@ ByteArray _FileInputStream::readAll() {
 }
 
 bool _FileInputStream::open() {
-    if (fd >= 0) {
-        return false;
-    }
+    Inspect(mFd != nullptr,true);
 
-    fd = ::open(mPath->toChars(), O_RDONLY);
+    int fd = ::open(mPath->toChars(), O_RDONLY);
     if(fd < 0) {
         Trigger(IOException,"fail to open file,err is %s",strerror(errno));
     }
 
+    mFd = createFileDescriptor(fd);
     return true;
 }
 
 void _FileInputStream::close() {
-    if (fd >= 0) {
-        ::close(fd);
-        fd = -1;
+    if(!mIsFdImport) {
+        mFd->close();
     }
 }
 
 void _FileInputStream::reset() {
-    if (fd >= 0) {
+    int fd = mFd->getFd();
+    if(fd >= 0) {
         lseek(fd, 0, SEEK_SET);
     }
 }
 
 _FileInputStream::~_FileInputStream() { 
-    //if fd is transfer by called function,no need to close.
-    if(!isFdImport) {
-        close();
-    }
+    close();
 }
 
 } // namespace obotcha

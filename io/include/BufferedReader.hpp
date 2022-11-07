@@ -32,8 +32,6 @@ public:
 
     void reset();
 
-    ~_BufferedReader();
-
 private:
     enum type {
         Document = 0,

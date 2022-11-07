@@ -4,9 +4,9 @@
 
 #include "Error.hpp"
 #include "File.hpp"
+#include "Inspect.hpp"
 #include "Log.hpp"
 #include "System.hpp"
-
 
 namespace obotcha {
 
@@ -26,27 +26,22 @@ _File::_File() {
 
 String _File::getName() {
     int size = mPath->size();
+    Inspect(size == 1,mPath);
+
     int start = size - 1;
     const char *data = mPath->toChars();
-    if(size == 1) {
-        return mPath;
-    }
-
     for (; start >= 0; start--) {
         if (data[start] == '/' && start != size - 1) {
             break;
         }
     }
-
-    if(start == -1) {
-        return mPath;
-    }
+    Inspect(start == -1,mPath);
 
     int len = 0;
     if(data[size - 1] == '/') {
-        len = mPath->size() - start - 1 - 1; //remove '/',it is a directory
+        len = size - start - 1 - 1; //remove '/',it is a directory
     } else {
-        len = mPath->size() - start - 1;
+        len = size - start - 1;
     }
     return mPath->subString(start + 1,len);
 }
@@ -91,14 +86,10 @@ String _File::getAbsolutePath() {
 }
 
 bool _File::canRead() {
-    if (geteuid() == 0) {
-        return true;
-    }
+    Inspect(geteuid() == 0,true);
 
     struct stat info = {0};
-    if (updateFileInfo(&info) != 0) {
-        return false;
-    }
+    Inspect(updateFileInfo(&info) != 0,false);
 
     if (info.st_uid == geteuid()) {
         return (info.st_mode & S_IRUSR) != 0;
@@ -112,15 +103,11 @@ bool _File::canRead() {
 }
 
 bool _File::canWrite() {
-    if (geteuid() == 0) {
-        return true;
-    }
+    Inspect(geteuid() == 0,true);
 
     struct stat info = {0};
-    if (updateFileInfo(&info) != 0) {
-        return false;
-    }
-
+    Inspect(updateFileInfo(&info) != 0,false);
+    
     if (info.st_uid == geteuid()) {
         return (info.st_mode & S_IWUSR) != 0;
     } else if (info.st_gid == getegid()) {
@@ -134,10 +121,8 @@ bool _File::canWrite() {
 
 bool _File::canExecute() {
     struct stat info = {0};
-    if (updateFileInfo(&info) != 0) {
-        return false;
-    }
-
+    Inspect(updateFileInfo(&info) != 0,false);
+    
     // root may have no permission to execute
     if (info.st_uid == geteuid() || geteuid() == 0) {
         return (info.st_mode & S_IXUSR) != 0;
@@ -152,55 +137,37 @@ bool _File::canExecute() {
 
 bool _File::exists() {
     String path = getAbsolutePath();
-    if (path == nullptr) {
-        return false;
-    }
-
-    return (access(path->toChars(), F_OK) == 0);
+    return (path != nullptr) &&
+        (access(path->toChars(), F_OK) == 0);
 }
 
 bool _File::isDirectory() {
     struct stat info = {0};
-    if (updateFileInfo(&info) != 0) {
-        return false;
-    }
-
+    Inspect(updateFileInfo(&info) != 0,false);
     return S_ISDIR(info.st_mode);
 }
 
 bool _File::isFile() {
     struct stat info = {0};
-    if (updateFileInfo(&info) != 0) {
-        return false;
-    }
-
+    Inspect(updateFileInfo(&info) != 0,false);    
     return !S_ISDIR(info.st_mode);
 }
 
 long _File::lastModified() {
     struct stat info = {0};
-    if (updateFileInfo(&info) != 0) {
-        return -1;
-    }
-
+    Inspect(updateFileInfo(&info) != 0,-1);
     return info.st_mtim.tv_sec*1000 + info.st_mtim.tv_nsec/1000000;
 }
 
 long _File::lastAccess() {
     struct stat info = {0};
-    if (updateFileInfo(&info) != 0) {
-        return -1;
-    }
-
+    Inspect(updateFileInfo(&info) != 0,-1);
     return info.st_atim.tv_sec*1000 + info.st_atim.tv_nsec/1000000;
 }
 
 long _File::lastStatusChanged() {
     struct stat info = {0};
-    if (updateFileInfo(&info) != 0) {
-        return -1;
-    }
-
+    Inspect(updateFileInfo(&info) != 0,-1);    
     return info.st_ctim.tv_sec*1000 + info.st_ctim.tv_nsec/1000000;
 }
 
@@ -215,25 +182,19 @@ int _File::createNewFile(int flag, mode_t mode) {
     flag |= O_CREAT;
     int fd = ::open(mPath->toChars(), flag, mode);
     umask(m);
-    if (fd < 0) {
-        return -1;
-    }
 
+    Inspect(fd < 0,-1);
     return close(fd);
 }
 
 bool _File::removeAll() {
-    if (!exists()) {
-        return true;
-    }
+    Inspect(!exists(),true);
+
     if (isFile()) {
-        // delete file;
         remove(mPath->toChars());
     } else {
-        // delete dir
         deleteDir(this);
     }
-
     return true;
 }
 
@@ -255,10 +216,8 @@ void _File::deleteDir(File f) {
 ArrayList<String> _File::list() {
     DIR *dir;
     struct dirent *ptr;
-
-    if (isFile()) {
-        return nullptr;
-    }
+    
+    Inspect(isFile(),nullptr);
 
     ArrayList<String> files = createArrayList<String>();
 
@@ -273,20 +232,15 @@ ArrayList<String> _File::list() {
 
         files->add(createString(ptr->d_name));
     }
-
     closedir(dir);
-
     return files;
 }
 
 ArrayList<File> _File::listFiles() {
     DIR *dir;
     struct dirent *ptr;
-    // char base[PATH_MAX];
-
-    if (isFile()) {
-        return nullptr;
-    }
+    
+    Inspect(isFile(),nullptr);
 
     ArrayList<File> files = createArrayList<File>();
 
@@ -299,15 +253,12 @@ ArrayList<File> _File::listFiles() {
             continue;
         } /// current dir OR parrent dir
 
-        String path =
-            createString(mPath)->append(Separator)->append(ptr->d_name);
-
+        String path = createString(mPath)->append(Separator)->append(ptr->d_name);
         File file = createFile(path);
         files->add(file);
     }
 
     closedir(dir);
-
     return files;
 }
 
@@ -317,9 +268,7 @@ bool _File::createDir() {
 
 bool _File::createDirs() {
     ArrayList<String> splits = mPath->split(Separator);
-    if (splits == nullptr) {
-        return false;
-    }
+    Inspect(splits == nullptr,false);
 
     int size = splits->size();
     String path = createString();
@@ -368,9 +317,7 @@ int _File::setExecuteOnly() {
 
 int _File::setWritable() {
     struct stat info = {0};
-    if (updateFileInfo(&info) != 0) {
-        return -1;
-    }
+    Inspect(updateFileInfo(&info) != 0,-1);
 
     mode_t mode = info.st_mode;
     mode |= S_IWUSR;
@@ -382,9 +329,7 @@ int _File::setWritable() {
 
 int _File::setReadable() {
     struct stat info = {0};
-    if (updateFileInfo(&info) != 0) {
-        return -1;
-    }
+    Inspect(updateFileInfo(&info) != 0,-1);
 
     mode_t mode = info.st_mode;
     mode |= S_IRUSR;
@@ -396,9 +341,7 @@ int _File::setReadable() {
 
 int _File::setExecutable() {
     struct stat info = {0};
-    if (updateFileInfo(&info) != 0) {
-        return -1;
-    }
+    Inspect(updateFileInfo(&info) != 0,-1);
 
     mode_t mode = info.st_mode;
     mode |= S_IXUSR;
@@ -415,18 +358,14 @@ bool _File::exists(String path) {
 int _File::updateFileInfo(struct stat *info) {
     memset(info, 0, sizeof(struct stat));
     String path = getAbsolutePath();
-    if (path == nullptr) {
-        return -1;
-    }
+    Inspect(path == nullptr,-1);
 
-    return stat(getAbsolutePath()->toChars(), info);
+    return stat(path->toChars(), info);
 }
 
 mode_t _File::getMode() {
     struct stat info = {0};
-    if (updateFileInfo(&info) != 0) {
-        return -1;
-    }
+    Inspect(updateFileInfo(&info) != 0,-1);
 
     return info.st_mode;
 }

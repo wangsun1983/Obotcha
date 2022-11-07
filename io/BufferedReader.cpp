@@ -1,4 +1,11 @@
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <iostream>
+#include <sstream>
+
 #include "InitializeException.hpp"
+#include "File.hpp"
 #include "BufferedReader.hpp"
 
 namespace obotcha {
@@ -17,7 +24,7 @@ _BufferedReader::_BufferedReader(String str) {
 
 _BufferedReader::_BufferedReader(ByteArray data) {
     mType = Content;
-    mStringStream << data->toValue()<<'\0';
+    mStringStream << data->toValue() <<'\0';
 }
 
 String _BufferedReader::readLine() {
@@ -59,9 +66,6 @@ void _BufferedReader::reset() {
             mFileStream.seekg(0);
         break;
     }
-}
-
-_BufferedReader::~_BufferedReader() {
 }
 
 } // namespace obotcha

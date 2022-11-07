@@ -31,10 +31,6 @@ _Mutex::_Mutex(const char *v, int type) : _Mutex(type) {
     mMutexName = createString(v);
 }
 
-//int _Mutex::lock() {
-//    return -pthread_mutex_lock(&mutex_t);
-//}
-
 bool _Mutex::isOwner() {
     return mutex_t.__data.__owner == syscall(SYS_gettid);
 }

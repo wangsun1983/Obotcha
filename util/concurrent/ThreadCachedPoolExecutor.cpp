@@ -48,9 +48,6 @@ _ThreadCachedPoolExecutor::_ThreadCachedPoolExecutor(int maxPendingTaskNum,
 }
 
 int _ThreadCachedPoolExecutor::shutdown() {
-    // if(!isExecuting()) {
-    //     return 0;
-    // }
     Inspect(!isExecuting(),0);
 
     updateStatus(ShutDown);
@@ -90,9 +87,6 @@ void _ThreadCachedPoolExecutor::awaitTermination() {
 }
 
 int _ThreadCachedPoolExecutor::awaitTermination(long millseconds) {
-    // if(isExecuting()) {
-    //     return -1;
-    // }
     Inspect(isExecuting(),-1);
 
     bool isWaitForever = (millseconds == 0);
@@ -127,9 +121,6 @@ int _ThreadCachedPoolExecutor::getPendingTaskNum() {
 }
 
 Future _ThreadCachedPoolExecutor::submitTask(ExecutorTask task) {
-    // if(!isExecuting()) {
-    //     return nullptr;
-    // }
     Inspect(!isExecuting(),nullptr);
 
     task->setPending();
@@ -151,13 +142,6 @@ _ThreadCachedPoolExecutor::~_ThreadCachedPoolExecutor() {
 }
 
 void _ThreadCachedPoolExecutor::setUpOneIdleThread() {
-    // if(!isExecuting()) {
-    //     return;
-    // }
-
-    // if (mHandlers->size() >= mMaxThreadNum) {
-    //     return;
-    // }
     Inspect(!isExecuting()||mHandlers->size() >= mMaxThreadNum);
     
     Thread handler = createThread(

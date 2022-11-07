@@ -137,7 +137,7 @@ int _SocketMonitor::bind(Socket s, SocketListener l) {
     
     s->setAsync(true,mAsyncOutputPool);
     
-    descriptor->setShutdownBeforeClose(true);
+    //descriptor->setShutdownBeforeClose(true);
     
     return bind(fd, 
                 l, 
@@ -222,7 +222,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
             }
 
             if ((events & (EPOLLRDHUP | EPOLLHUP)) != 0) {
-                s->getFileDescriptor()->setShutdownBeforeClose(false);
+                //s->getFileDescriptor()->setShutdownBeforeClose(false);
                 AutoLock l(mMutex);
                 mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Disconnect, s));
                 mCondition->notify();
@@ -270,14 +270,14 @@ void _SocketMonitor::dump() {
 
 int _SocketMonitor::unbind(Socket s) {
     AutoLock l(mMutex);
-    s->getFileDescriptor()->setShutdownBeforeClose(false);
+    //s->getFileDescriptor()->setShutdownBeforeClose(false);
     remove(s->getFileDescriptor());
     return 0;
 }
 
 int _SocketMonitor::unbind(ServerSocket s) {
     AutoLock l(mMutex);
-    s->getFileDescriptor()->setShutdownBeforeClose(false);
+    //s->getFileDescriptor()->setShutdownBeforeClose(false);
     remove(s->getFileDescriptor());
     return 0;
 }

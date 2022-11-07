@@ -8,6 +8,7 @@
 #include "File.hpp"
 #include "ByteArray.hpp"
 #include "OutputStream.hpp"
+#include "FileDescriptor.hpp"
 
 namespace obotcha {
 
@@ -20,7 +21,7 @@ public:
 
     _FileOutputStream(const char *);
 
-    _FileOutputStream(int fd);
+    _FileOutputStream(FileDescriptor fd);
 
     long write(char c);
 
@@ -45,9 +46,9 @@ public:
 private:
     String mPath;
 
-    int fd;
+    FileDescriptor mFd;
 
-    bool isFdImport;
+    bool mIsFdImport;
 };
 
 }

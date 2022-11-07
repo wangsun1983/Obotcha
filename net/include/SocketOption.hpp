@@ -16,6 +16,7 @@
 
 #include "String.hpp"
 #include "InetAddress.hpp"
+#include "FileDescriptor.hpp"
 
 
 namespace obotcha {
@@ -30,6 +31,13 @@ public:
 
     _SocketOption();
     ~_SocketOption();
+
+    void update(FileDescriptor);
+    static int get(FileDescriptor,
+                  int level, 
+                  int optname, 
+                  void *optval,
+                  socklen_t *oplen);
     
     _SocketOption* setReUseAddr(int);
     _SocketOption* setDnotRoute(int);

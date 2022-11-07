@@ -13,10 +13,6 @@ _ReadLock::_ReadLock(sp<_ReadWriteLock> l, String s) {
     mName = s;
 }
 
-//int _ReadLock::lock() {
-//    return rwlock->_readlock();
-//}
-
 int _ReadLock::unlock() {
     return rwlock->_unReadlock();
 }
@@ -38,10 +34,6 @@ _WriteLock::_WriteLock(sp<_ReadWriteLock> l, String s) {
     rwlock = l;
     mName = s;
 }
-
-//int _WriteLock::lock() {
-//    return rwlock->_writelock();
-//}
 
 int _WriteLock::unlock() {
     return rwlock->_unWritelock();
@@ -147,10 +139,6 @@ int _ReadWriteLock::_tryReadLock() {
     return -EBUSY;
 }
 
-//int _ReadWriteLock::_readlock() {
-//    return _readlock(0);
-//}
-
 int _ReadWriteLock::_writelock(long interval) {
     AutoLock l(mMutex);
     //check whether owner is myself
@@ -226,9 +214,5 @@ int _ReadWriteLock::_tryWriteLock() {
 
     return -EBUSY;
 }
-
-//int _ReadWriteLock::_writelock() {
-//    return _writelock(0);
-//}
 
 } // namespace obotcha

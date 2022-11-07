@@ -28,7 +28,10 @@ _SocksSocketImpl::_SocksSocketImpl(InetAddress address, SocketOption option)
                                 SOCK_STREAM, 
                                 0)));
     
-    setOptions();
+    //setOptions();
+    if(option != nullptr) {
+        option->update(sock);
+    }
 }
 
 int _SocksSocketImpl::connect() {

@@ -36,7 +36,10 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
         Trigger(InitializeException, "Datagram Socket create failed");
     }
 
-    setOptions();
+    //setOptions();
+    if(option != nullptr) {
+        option->update(sock);
+    }
 }
 
 

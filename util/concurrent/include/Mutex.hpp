@@ -32,8 +32,6 @@ public:
 
     _Mutex(int type = Recursive);
 
-    //int lock();
-
     int lock(long interval = 0);
 
     int unlock();

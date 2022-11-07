@@ -7,6 +7,8 @@
 #include "Log.hpp"
 #include "String.hpp"
 #include "TimeWatcher.hpp"
+#include "Synchronized.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -53,8 +55,8 @@ _EPollFileObserver::_EPollFileObserver(int size) {
     mPipe = createPipe();
     addEpollFd(mPipe->getReadChannel(), EPOLLIN | EPOLLRDHUP | EPOLLHUP);
 
-    mCloseMutex = createMutex();
-    isClosed = false;
+    //mCloseMutex = createMutex();
+    //isClosed = false;
 
     start();
 }
@@ -81,14 +83,10 @@ void _EPollFileObserver::addEpollFd(int fd, uint32_t events) {
 }
 
 int _EPollFileObserver::close() {
-    {
-        AutoLock l(mCloseMutex);
-        if(isClosed) {
-            return 0;
-        }
-
-        isClosed = true;
-    }
+    //Synchronized(mCloseMutex) {
+    //    Inspect(isClosed,0);
+    //    isClosed = true;
+    //}
 
     ByteArray data = createByteArray(1);
     data[0] = 1;

@@ -38,7 +38,7 @@ public:
     InetAddress getInetAddress();
     
 protected:
-    void setOptions();
+    //void setOptions();
     
     FileDescriptor sock;
     

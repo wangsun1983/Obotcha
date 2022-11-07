@@ -1,3 +1,14 @@
+/**
+ * @file FileInputStream.cpp
+ * @brief FileInputStream obtains input bytes from a file in a file system.
+ * @details none
+ * @mainpage none
+ * @author sunli.wang
+ * @email wang_sun_1983@yahoo.co.jp
+ * @version 0.0.1
+ * @date 2019-07-12
+ * @license none
+ */
 #ifndef __OBOTCHA_FILE_INPUT_STREAM_HPP__
 #define __OBOTCHA_FILE_INPUT_STREAM_HPP__
 
@@ -11,6 +22,7 @@
 #include "File.hpp"
 #include "InputStream.hpp"
 #include "ByteArray.hpp"
+#include "FileDescriptor.hpp"
 
 namespace obotcha {
 
@@ -23,7 +35,7 @@ public:
 
     _FileInputStream(const char *);
 
-    _FileInputStream(int fd);
+    _FileInputStream(FileDescriptor fd);
 
     ByteArray read(int size = 1024*4);
 
@@ -46,11 +58,9 @@ public:
 private:
     String mPath;
 
-    int fd;
+    FileDescriptor mFd;
 
-    bool isFdImport;
-
-    //int position;
+    bool mIsFdImport;
 };
 
 }

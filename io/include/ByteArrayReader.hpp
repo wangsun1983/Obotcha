@@ -1,10 +1,11 @@
 #ifndef __OBOTCHA_BYTE_ARRAY_READER_HPP__
 #define __OBOTCHA_BYTE_ARRAY_READER_HPP__
 
+#include <iostream>
+
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
 #include "ByteArray.hpp"
 #include "Definations.hpp"
 
@@ -14,57 +15,46 @@ DECLARE_CLASS(ByteArrayReader) {
 
 public:
     _ByteArrayReader(ByteArray,int mod = LittleEndian);
-    
+
     template <typename T>
     T read() {
         T value = 0;
         switch(mMode) {
-            case Global::BigEndian:
-            _readBigEndian(value);
+            case BigEndian:
+                _readBigEndian(value);
             break;
 
-            case Global::LittleEndian:
-            _readLittleEndian(value);
+            case LittleEndian:
+                _readLittleEndian(value);
             break;
         }
         return value;
     }
 
-    //String readLine();
     int read(ByteArray);
     int getIndex();
     int getRemainSize();
     void setIndex(int);
-
     bool isReadable();
 
 private:
     template<typename T>
     void _readLittleEndian(T &value) {
-        int count = sizeof(T)-1;
-        while(count >= 0) {
-            if((mIndex + count) > mSize) {
-                count--;
-                continue;
-            }
-            value |= (((T)(mDataP[mIndex + count]&0xff))<<(8*count));
-            count--;
+        int end = std::min((int)sizeof(T) - 1,mSize - mIndex - 1);
+        int next = end + 1;
+        while(end >= 0) {
+            value |= (((T)(mDataP[mIndex + end]&0xff))<<(8*end));
+            end--;
         }
 
-        mIndex += sizeof(T);
+        mIndex += next;
     }
 
     template<typename T>
     void _readBigEndian(T &value) {
-        int count = sizeof(T);
-        while(count > 0) {
-            if(mIndex >= mSize) {
-                break;
-            }
-
+        int count = std::min((int)sizeof(T),mSize - mIndex);
+        for(;count > 0;count--,mIndex++) {
             value = ((T)(value<<8)|mDataP[mIndex]);
-            count--;
-            mIndex++;
         }
     }
 

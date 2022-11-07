@@ -17,20 +17,12 @@ _ByteArrayReader::_ByteArrayReader(ByteArray data, int mod) {
 }
 
 int _ByteArrayReader::read(ByteArray data) {
-    // if (mIndex >= mSize) {
-    //     return -1;
-    // }
-    Inspect(mIndex > mSize,-1);
+    Inspect(mIndex >= mSize,-1);
 
-    //int leftSize = mSize - mIndex;
-    //int dataSize = data->size();
-
-    int copySize = std::min(mSize - mIndex,data->size());
-    //(leftSize < dataSize ? leftSize : dataSize);
-    
-    memcpy(data->toValue(), &mDataP[mIndex], copySize);
-    mIndex += copySize;
-    return copySize;
+    int size = std::min(mSize - mIndex,data->size());
+    memcpy(data->toValue(), &mDataP[mIndex], size);
+    mIndex += size;
+    return size;
 }
 
 int _ByteArrayReader::getIndex() {
@@ -49,53 +41,4 @@ bool _ByteArrayReader::isReadable() {
     return mSize > mIndex;
 }
 
-/*
-String _ByteArrayReader::readLine() {
-    int start = mIndex;
-    if (mIndex >= mData->size()) {
-        return nullptr;
-    }
-
-    while (start < mData->size()) {
-        switch (mData->at(start)) {
-            case '\r':{
-                String result =
-                    createByteArray((const byte *)mData->toValue() + mIndex, start - mIndex)->toString();
-                start++;
-                if (start < mData->size() && mData->at(start) == '\n') {
-                    start++;
-                }
-                mIndex = start;
-                return result;
-            }
-
-            case '\n': {
-                String result =
-                    createByteArray((const byte *)mData->toValue() + mIndex, start - mIndex)->toString();
-
-                start++;
-                if (start < mData->size() && mData->at(start) == '\r') {
-                    start++;
-                }
-                mIndex = start;
-                return result;
-            }
-            break;
-
-            default:
-                start++;
-        }
-    }
-
-    //last
-    if(mIndex != mData->size()) {
-        String result =
-                createByteArray((const byte *)mData->toValue() + mIndex, mData->size() - mIndex)->toString();
-        mIndex = mData->size();
-        return result;
-    }
-
-    return nullptr;
-}
-*/
 } // namespace obotcha

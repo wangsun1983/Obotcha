@@ -90,13 +90,8 @@ void _SocketOutputStream::flush() {
     //do nothing
 }
 
-//long _SocketOutputStream::asyncWrite(ByteArray data,int offset) {
-//    return _write(data,offset);
-//}
-
 _SocketOutputStream::~_SocketOutputStream() {
     //do nothing
-    //close();
 }
 
 } // namespace obotcha

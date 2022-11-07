@@ -10,12 +10,7 @@
  * @license none
  */
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "ByteArray.hpp"
 #include "ByteArrayWriter.hpp"
-#include "String.hpp"
 
 namespace obotcha {
 
@@ -26,7 +21,7 @@ _ByteArrayWriter::_ByteArrayWriter(int mod) {
     mDataP = mData->toValue();
     mSize = DefaultDataSize;
     mIndex = 0;
-    mode = mod;
+    mMode = mod;
     mType = Dynamic;
 }
 
@@ -35,7 +30,7 @@ _ByteArrayWriter::_ByteArrayWriter(ByteArray data, int mod) {
     mDataP = data->toValue();
     mSize = data->size();
     mIndex = 0;
-    mode = mod;
+    mMode = mod;
     mType = Static;
 }
 
@@ -43,31 +38,32 @@ void _ByteArrayWriter::reset() {
     mIndex = 0;
 }
 
-bool _ByteArrayWriter::writeSizeCheck(int size) {
+bool _ByteArrayWriter::preCheck(int size) {
     if ((mIndex + size) > mSize) {
         if (mType == Dynamic) {
             mSize = mData->size() * 7 / 4;
             mData->growTo(mSize);
             mDataP = mData->toValue();
-        } else {
-            return false;
-        }
+            return true;
+        } 
+
+        return false;
     }
     return true;
 }
 
-int _ByteArrayWriter::write(ByteArray b, int start,int length) {
-    if (!writeSizeCheck(length) || start + length > b->size()) {
+int _ByteArrayWriter::write(ByteArray data, int start,int length) {
+    if (!preCheck(length) || start + length > data->size()) {
         return -1;
     }
 
-    memcpy(&mDataP[mIndex], b->toValue() + start, length);
+    memcpy(&mDataP[mIndex], data->toValue() + start, length);
     mIndex += length;
     return 0;
 }
 
 int _ByteArrayWriter::write(byte *data, int length) {
-    if (!writeSizeCheck(length)) {
+    if (!preCheck(length)) {
         return -1;
     }
 
@@ -75,6 +71,14 @@ int _ByteArrayWriter::write(byte *data, int length) {
     mIndex += length;
     return 0;
 }
+
+int _ByteArrayWriter::write(const char *str,int size) {
+    if(size == -1) {
+        size = strlen(str);
+    }
+    return write((byte *)str,size);
+}
+
 
 int _ByteArrayWriter::getIndex() { 
     return mIndex; 
@@ -93,11 +97,8 @@ ByteArray _ByteArrayWriter::getByteArray() {
     return mData;
 }
 
-void _ByteArrayWriter::updateSize() {
-    mSize = mData->size();
-    mDataP = mData->toValue();
+void _ByteArrayWriter::skipBy(int length) { 
+    mIndex += length; 
 }
-
-void _ByteArrayWriter::skipBy(int length) { mIndex += length; }
 
 } // namespace obotcha
