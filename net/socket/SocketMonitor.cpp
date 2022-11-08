@@ -13,6 +13,7 @@
 #include "Log.hpp"
 #include "SocketMonitor.hpp"
 #include "Inet6Address.hpp"
+#include "Inspect.hpp"
 #include "NetEvent.hpp"
 #include "TimeWatcher.hpp"
 #include "Definations.hpp"
@@ -62,17 +63,18 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
                 
                 while (!monitor->isStop) {
                     //check myself task
-                    Synchronized(monitor->mMutex) {
+                    printf("eventloop start \n");
+                    {
+                        AutoLock l(monitor->mMutex);
                         if(currentFd != -1) {
                             task = localTasks->takeFirst();
                         }
-
+                        printf("eventloop trace1 \n");
                         if(task == nullptr) {
                             if(currentFd != -1) {
                                 mThreadTaskMap->remove(currentFd);
                                 currentFd = -1;
                             }
-
                             while(1) {
                                 task = mPendingTasks->takeFirst();
                                 if(task != nullptr) {
@@ -96,22 +98,18 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
                             }
                         }
                     }
-
+                    printf("eventloop trace2,currentFd is %d \n",currentFd);
                     //Socket will be closed directly in websocket server.
                     //We should check whether socket is still connected
                     //to prevent nullpoint exception
                     //autoauto desc = task->sock->getFileDescriptor();
                     SocketListener listener = monitor->mListeners->get(currentFd);
                     if (listener != nullptr) {
+                        printf("eventloop trace3 \n");
                         listener->onSocketMessage(task->event, task->sock,
                                                     task->data);
-                        //udp socket may be closed
-                        //if(task->sock->getProtocol() == st(Socket)::Protocol::Udp) {
-                        //    task->sock->mOutputStream = nullptr;
-                        //    task->sock->mInputStream = nullptr;
-                        //}
                     }
-
+                    
                     if(task->event == st(NetEvent)::Disconnect) {
                         remove(task->sock->getFileDescriptor());
                         task->sock->close();
@@ -125,13 +123,14 @@ _SocketMonitor::_SocketMonitor(int threadnum,int recvBuffSize) {
 
 int _SocketMonitor::bind(Socket s, SocketListener l) {
     AutoLock ll(mMutex);
+    printf("bind socket!!!");
     if (isSocketExist(s)) {
         LOG(ERROR)<<"bind socket already exists!!!";
         return 0;
     }
     auto descriptor = s->getFileDescriptor();
     int fd = descriptor->getFd();
-
+    printf("bind socket2!!!,fd is %d \n",fd);
     mClientSocks->put(fd, s);
     mListeners->put(fd, l);
     
@@ -159,20 +158,22 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
             if (s == nullptr && fd != serverfd) {
                 return st(EPollFileObserver)::OnEventRemoveObserver;
             }
-
+            printf("socketmonitor trace1 \n");
             if (fd == serverfd) {
                 // may be this is udp wangsl
                 if (s != nullptr && s->getProtocol() == st(NetProtocol)::Udp) {
+                    printf("socketmonitor trace2 \n");
                     Socket newClient = nullptr;
                     while (1) {
                         ByteArray buff = createByteArray(mRecvBuffSize);
                         auto stream = Cast<SocketInputStream>(s->getInputStream());
                         newClient = stream->recvDatagram(buff);
+                        printf("socketmonitor trace3 \n");
+                        bind(newClient,listener);//TODO?????
                         if(newClient == nullptr) {
                             //LOG(ERROR)<<"SocketMonitor accept udp is a null socket!!!!";
                             break;
                         }
-
                         Synchronized(mMutex){
                             mPendingTasks->putLast(createSocketMonitorTask(st(NetEvent)::Message, newClient,buff));
                             mCondition->notify();
@@ -239,10 +240,7 @@ int _SocketMonitor::bind(int fd, SocketListener l, bool isServer) {
 void _SocketMonitor::close() {
     mPoll->close();
     Synchronized(mMutex) {
-        if(isStop) {
-            return;
-        }
-
+        Inspect(isStop);
         isStop = true;
 
         mPendingTasks->clear();

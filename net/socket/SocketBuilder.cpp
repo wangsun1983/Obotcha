@@ -1,6 +1,7 @@
 #include "SocketBuilder.hpp"
 #include "Inet4Address.hpp"
 #include "NetProtocol.hpp"
+#include "DatagramSocketImpl.hpp"
 
 namespace obotcha {
 
@@ -57,7 +58,12 @@ _SocketBuilder* _SocketBuilder::setAsyncPool(AsyncOutputChannelPool pool) {
 }
 
 Socket _SocketBuilder::newDatagramSocket() {
-    return createSocket(st(NetProtocol)::Udp, address, option);
+    if(fd == nullptr) {
+        return createSocket(st(NetProtocol)::Udp, address, option);
+    } else {
+        auto datagramImpl = createDatagramSocketImpl(fd,address,option);
+        return createSocket(datagramImpl,mPool);
+    }
 }
 
 Socket _SocketBuilder::newSSLSocket() {

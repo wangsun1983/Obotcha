@@ -68,12 +68,19 @@ void _Socket::setAsync(bool async,AsyncOutputChannelPool pool) {
     if(formerAsync != async) {
         mSockImpl->getFileDescriptor()->setAsync(async);
         //firstly,remove ouputstream from async pool！！！！;
-        mOutputStream->setAsync(false);
+        if(mOutputStream != nullptr) {
+            mOutputStream->setAsync(false);
+        }
+
         if(pool != nullptr) {
             mPool = pool;
         }
+
         mIsAsync = async;
-        mOutputStream->setAsync(async,mPool);
+        
+        if(mOutputStream != nullptr) {
+            mOutputStream->setAsync(async,mPool);
+        }
     }
 }
 

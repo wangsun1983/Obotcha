@@ -5,7 +5,9 @@
 #include "Log.hpp"
 #include "String.hpp"
 #include "Inet6Address.hpp"
+#include "Inet4Address.hpp"
 #include "InetLocalAddress.hpp"
+
 
 namespace obotcha {
 
@@ -116,7 +118,7 @@ int _SockAddress::family() {
 sp<_InetAddress> _SockAddress::toInetAddress() {
     switch(mFamily) {
         case st(InetAddress)::IPV4: {
-            return createInetAddress(createString(inet_ntoa(mSockAddr.sin_addr)),
+            return createInet4Address(createString(inet_ntoa(mSockAddr.sin_addr)),
                                 ntohs(mSockAddr.sin_port));
 
         }

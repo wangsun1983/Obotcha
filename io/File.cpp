@@ -187,6 +187,16 @@ int _File::createNewFile(int flag, mode_t mode) {
     return close(fd);
 }
 
+FileDescriptor _File::open(String path,int flags,int mode) {
+    File file = createFile(path);
+    return file->open(flags,mode);
+}
+
+FileDescriptor _File::open(int flags,int mode) {
+    int fd = ::open(mPath->toChars(),flags,mode);
+    return createFileDescriptor(fd);
+}
+
 bool _File::removeAll() {
     Inspect(!exists(),true);
 

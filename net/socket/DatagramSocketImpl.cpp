@@ -24,6 +24,11 @@ _DatagramSocketImpl::_DatagramSocketImpl():_SocketImpl(){
 
 }
 
+_DatagramSocketImpl::_DatagramSocketImpl(FileDescriptor fd,InetAddress address,SocketOption option) 
+    :_SocketImpl(address, option){
+    sock = fd;
+}
+
 _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
                                          SocketOption option)
     : _SocketImpl(address, option) {
@@ -58,14 +63,23 @@ Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
                           client_addr, 
                           &client_len);
 
+    struct sockaddr_in *addr_in = (struct sockaddr_in*)client_addr;
+    printf("new client ip is %s,port is %d \n",inet_ntoa(addr_in->sin_addr), ntohs(addr_in->sin_port));
     if(length > 0) {
         //TODO
-        DatagramSocketImpl impl = createDatagramSocketImpl();
-        impl->address = client->toInetAddress();
-        impl->sock = sock;
+        //DatagramSocketImpl impl = createDatagramSocketImpl();
+        //impl->address = client->toInetAddress();
+        //impl->sock = sock;
 
+        //buff->quickShrink(length);
+        //return createSocket(impl);
         buff->quickShrink(length);
-        return createSocket(impl);
+        auto dataGramSock = createSocketBuilder()
+                            ->setAddress(client->toInetAddress())
+                            ->setFileDescriptor(this->getFileDescriptor())
+                            ->newDatagramSocket();
+        //dataGramSock->connect();
+        return dataGramSock;
     }
 
     return nullptr;
@@ -95,8 +109,14 @@ int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
     socklen_t addrlen = 0;
     FetchRet(addrlen,addr) = address->getSockAddress()->get();
 
+    struct sockaddr_in *addr_in = (struct sockaddr_in*)addr;
+    printf("sendip is %s,port is %d \n",inet_ntoa(addr_in->sin_addr), ntohs(addr_in->sin_port));
+    
     int size = (length == -1?data->size() - start:length);
-    return ::sendto(sock->getFd(), data->toValue() + start, size, 0,addr, addrlen);
+    printf("Datagram write trace3,size is %d,sock->fd is %d \n",size,sock->getFd());
+    int ret = ::sendto(sock->getFd(), data->toValue() + start, size, 0,addr, addrlen);
+    printf("Datagram write trace3,fd is %d,ret is %d,errno is %s \n",sock->getFd(),ret,strerror(errno));
+    return ret;
 }
 
 } // namespace obotcha

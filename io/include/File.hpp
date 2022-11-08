@@ -17,6 +17,7 @@
 
 #include "String.hpp"
 #include "ArrayList.hpp"
+#include "FileDescriptor.hpp"
 
 namespace obotcha {
 
@@ -85,6 +86,9 @@ public:
     int setMode(mode_t);
 
     mode_t getMode();
+
+    static FileDescriptor open(String path,int opentype=ReadWriteOnly,int mode=0666);
+    FileDescriptor open(int opentype=ReadWriteOnly,int mode=0666);
 
     ~_File();
 

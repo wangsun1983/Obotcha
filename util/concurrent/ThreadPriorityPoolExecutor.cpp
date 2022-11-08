@@ -43,7 +43,8 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int maxPendingTaskNum,
             [this](int id,ThreadPriorityPoolExecutor executor) {
                 ExecutorTask mCurrentTask = nullptr;
                 while (1) {
-                    Synchronized(mTaskMutex) {
+                    {
+                        AutoLock l(mTaskMutex);
                         if (mHighPriorityTasks->size() > 0) {
                             mCurrentTask = mHighPriorityTasks->takeFirst();
                         } else if (executor->mMidPriorityTasks->size() > 0) {
@@ -85,9 +86,6 @@ _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int maxPendingTaskNum,
 }
 
 int _ThreadPriorityPoolExecutor::shutdown() {
-    // if(isShutDown()) {
-    //     return 0;
-    // }
     Inspect(isShutDown(),0);
 
     updateStatus(ShutDown);

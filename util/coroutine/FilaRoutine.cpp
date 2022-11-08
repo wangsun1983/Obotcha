@@ -58,7 +58,8 @@ void _FilaRoutine::run() {
 }
 
 void _FilaRoutine::onInterrupt() {
-    Synchronized(mFilaMutex){
+    {
+        AutoLock l(mFilaMutex);
         ListIterator<Filament> iterator = mFilaments->getIterator();
         while (iterator->hasValue()) {
             Filament fila = iterator->getValue();

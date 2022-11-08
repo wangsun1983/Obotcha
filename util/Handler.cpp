@@ -174,7 +174,8 @@ void _Handler::removeCallbacks(sp<_Runnable> r) {
 void _Handler::run() {
     while (1) {
         Message msg = nullptr;
-        Synchronized(mMutex) {
+        {
+            AutoLock l(mMutex);
             if(!mIsRunning) {
                 break;
             }

@@ -29,11 +29,11 @@ public:
     bool isClosed();
     
     uint64_t hashcode();
+    
 
 private:
     int _fd;
-    bool mShutdownBeforeClose;
-    
+    //bool mShutdownBeforeClose;
 };
 
 }
