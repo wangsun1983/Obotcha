@@ -38,6 +38,7 @@ jobs:
           echo "$HOME/.sonar/build-wrapper-linux-x86" >> $GITHUB_PATH
       - name: Run build-wrapper
         run: |
+          chmod 777 ./build.sh
           ./build.sh
       - name: Run sonar-scanner
         env:
