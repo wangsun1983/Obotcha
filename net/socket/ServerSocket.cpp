@@ -9,35 +9,35 @@ _ServerSocket::_ServerSocket(int type, InetAddress address,
                              SocketOption option,String certificatePath,String keyPath) {
     switch (type) {
         case st(NetProtocol)::Tcp:
-            this->mSock = createServerSocketImpl(address, option);
+            mSockImpl = createServerSocketImpl(address, option);
             break;
         
         case st(NetProtocol)::Ssl:
-            this->mSock = createSSLServerSocketImpl(certificatePath,keyPath,address,option);
+            mSockImpl = createSSLServerSocketImpl(certificatePath,keyPath,address,option);
             break;
     }
 
     mAddr = address;
 }
 
-InetAddress _ServerSocket::getInetAddress() {
-    return mAddr;
-}
+//InetAddress _ServerSocket::getInetAddress() {
+//    return mAddr;
+//}
 
 int _ServerSocket::bind() { 
-    return mSock->bind(); 
+    return mSockImpl->bind(); 
 }
 
-FileDescriptor _ServerSocket::getFileDescriptor() {
-    return mSock->getFileDescriptor();
-}
+//FileDescriptor _ServerSocket::getFileDescriptor() {
+//    return mSock->getFileDescriptor();
+//}
 
 int _ServerSocket::close() { 
-    return mSock->close(); 
+    return mSockImpl->close(); 
 }
 
 Socket _ServerSocket::accept() { 
-    return mSock->accept(); 
+    return mSockImpl->accept(); 
 }
 
 } // namespace obotcha

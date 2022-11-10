@@ -106,8 +106,13 @@ DECLARE_CLASS(EPollFileObserver) IMPLEMENTS(Thread) {
         EpollEt = EPOLLET,
     };
 
-    static const int OnEventOK = 0;
-    static const int OnEventRemoveObserver = 1;
+    enum EpollResult {
+        OK = 0,
+        Remove
+    };
+
+    //static const int OnEventOK = 0;
+    //static const int OnEventRemoveObserver = 1;
 
     static const int DefaultEpollSize = 1024 * 64;
 

@@ -11,6 +11,7 @@
 
 #include "Socket.hpp"
 #include "SocketInputStream.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
@@ -22,14 +23,17 @@ _SocketInputStream::_SocketInputStream(SocketImpl impl) {
 }
 
 long _SocketInputStream::read(ByteArray buffer) {
+    Inspect(mImpl == nullptr,-1);
     return mImpl->read(buffer);
 }
 
 long _SocketInputStream::read(ByteArray buffer, int start) {
+    Inspect(mImpl == nullptr,-1);
     return mImpl->read(buffer,start);
 }
 
 long _SocketInputStream::read(ByteArray buffer,int start,int length) {
+    Inspect(mImpl == nullptr,-1);
     return mImpl->read(buffer,start,length);
 }
 

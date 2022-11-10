@@ -14,6 +14,7 @@
 #include "Socket.hpp"
 #include "Inet6Address.hpp"
 #include "Inet4Address.hpp"
+#include "Inspect.hpp"
 #include "SocketBuilder.hpp"
 #include "IllegalArgumentException.hpp"
 #include "Log.hpp"
@@ -38,6 +39,7 @@ _DatagramSocketImpl::_DatagramSocketImpl(InetAddress address,
                                 IPPROTO_UDP)));
     
     if (sock->getFd() < 0) {
+        LOG(ERROR)<<"DatagramSocket open fd failed,reason is "<<strerror(errno);
         Trigger(InitializeException, "Datagram Socket create failed");
     }
 
@@ -62,27 +64,14 @@ Socket _DatagramSocketImpl::recvDatagram(ByteArray buff) {
                           0, 
                           client_addr, 
                           &client_len);
+    
+    Inspect(length <= 0,nullptr);
 
-    struct sockaddr_in *addr_in = (struct sockaddr_in*)client_addr;
-    printf("new client ip is %s,port is %d \n",inet_ntoa(addr_in->sin_addr), ntohs(addr_in->sin_port));
-    if(length > 0) {
-        //TODO
-        //DatagramSocketImpl impl = createDatagramSocketImpl();
-        //impl->address = client->toInetAddress();
-        //impl->sock = sock;
-
-        //buff->quickShrink(length);
-        //return createSocket(impl);
-        buff->quickShrink(length);
-        auto dataGramSock = createSocketBuilder()
-                            ->setAddress(client->toInetAddress())
-                            ->setFileDescriptor(this->getFileDescriptor())
-                            ->newDatagramSocket();
-        //dataGramSock->connect();
-        return dataGramSock;
-    }
-
-    return nullptr;
+    buff->quickShrink(length);
+    return createSocketBuilder()
+                ->setAddress(client->toInetAddress())
+                ->setFileDescriptor(this->getFileDescriptor())
+                ->newDatagramSocket();        
 }
 
 int _DatagramSocketImpl::connect() {
@@ -91,16 +80,13 @@ int _DatagramSocketImpl::connect() {
 }
 
 int _DatagramSocketImpl::bind() {
-
     struct sockaddr *addr = nullptr;
     socklen_t len = 0;
     FetchRet(len,addr) = address->getSockAddress()->get();
-
     return ::bind(sock->getFd(),addr,len);
 }
 
 int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
-
     if(start + length > data->size()) {
         Trigger(IllegalArgumentException,"DatagramSocket write size too large");
     }
@@ -110,13 +96,8 @@ int _DatagramSocketImpl::write(ByteArray data,int start,int length) {
     FetchRet(addrlen,addr) = address->getSockAddress()->get();
 
     struct sockaddr_in *addr_in = (struct sockaddr_in*)addr;
-    printf("sendip is %s,port is %d \n",inet_ntoa(addr_in->sin_addr), ntohs(addr_in->sin_port));
-    
     int size = (length == -1?data->size() - start:length);
-    printf("Datagram write trace3,size is %d,sock->fd is %d \n",size,sock->getFd());
-    int ret = ::sendto(sock->getFd(), data->toValue() + start, size, 0,addr, addrlen);
-    printf("Datagram write trace3,fd is %d,ret is %d,errno is %s \n",sock->getFd(),ret,strerror(errno));
-    return ret;
+    return ::sendto(sock->getFd(), data->toValue() + start, size, 0,addr, addrlen);
 }
 
 } // namespace obotcha

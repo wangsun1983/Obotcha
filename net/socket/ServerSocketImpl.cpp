@@ -23,7 +23,6 @@ _ServerSocketImpl::_ServerSocketImpl(InetAddress address, SocketOption option)
 }
 
 int _ServerSocketImpl::bind() {
-
     struct sockaddr *addr = nullptr;
     socklen_t length = 0;
 
@@ -45,7 +44,6 @@ int _ServerSocketImpl::bind() {
 }
 
 Socket _ServerSocketImpl::accept() {
-
     SockAddress client = createSockAddress(this->address->getFamily());
     struct sockaddr *client_address = nullptr;
     socklen_t client_length = 0;

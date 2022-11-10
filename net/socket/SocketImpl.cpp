@@ -29,10 +29,6 @@ void _SocketImpl::_init() {
     mBuffSize = st(SocketOption)::DefaultRecvBuffSize;
 }
 
-//void _SocketImpl::setOptions() {
-//    
-//}
-
 int _SocketImpl::close() {
     return sock->close();
 }

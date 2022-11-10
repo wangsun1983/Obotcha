@@ -14,7 +14,6 @@ class _Socket;
 
 DECLARE_CLASS(SocketInputStream) IMPLEMENTS(InputStream) {
 public:
-
     _SocketInputStream(sp<_Socket>);
     _SocketInputStream(SocketImpl);
 

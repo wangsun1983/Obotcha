@@ -17,17 +17,23 @@
 #include "System.hpp"
 #include "Log.hpp"
 #include "OStdReturnValue.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 
 // socket
 _SocksSocketImpl::_SocksSocketImpl(InetAddress address, SocketOption option)
     : _SocketImpl(address, option) {
-    
+    printf("_SocksSocketImpl,create !! \n");
     sock = createFileDescriptor(TEMP_FAILURE_RETRY(socket(address->getSockAddress()->family(), 
                                 SOCK_STREAM, 
                                 0)));
     
+    if(sock->getFd() < 0) {
+        LOG(ERROR)<<"SocksSocket open fd failed,reason is "<<strerror(errno);
+        Trigger(InitializeException,"create socket fd failed")
+    }
+
     //setOptions();
     if(option != nullptr) {
         option->update(sock);
@@ -41,12 +47,12 @@ int _SocksSocketImpl::connect() {
         return -1;
     }
 
-    
     socklen_t sock_length = 0;
     struct sockaddr *sock_addr = nullptr;
     FetchRet(sock_length,sock_addr) = address->getSockAddress()->get();
 
     if (TEMP_FAILURE_RETRY(::connect(sock->getFd(),sock_addr,sock_length)) < 0) {
+        printf("connect error is %s \n",strerror(errno));
         sock->close();
         return -1;
     }

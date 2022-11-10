@@ -9,17 +9,36 @@ namespace obotcha {
 
 _FileDescriptor::_FileDescriptor(int fd) {
     _fd = fd;
+    mMonitorCount = 0;
+    isClosedRequired = false;
 }
 
 uint64_t _FileDescriptor::hashcode() {
     return _fd;
 }
 
+void _FileDescriptor::monitor() {
+    mMonitorCount++;
+}
+
+void _FileDescriptor::unMonitor(bool isAutoClosed) {
+    mMonitorCount--;
+    if(mMonitorCount == 0) {
+        if(isClosedRequired || isAutoClosed) {
+            close();
+        }
+    }
+}
+
 int _FileDescriptor::close() {
+    isClosedRequired = true;
     if (_fd > 0) {
-        ::shutdown(_fd,SHUT_RDWR);
-        ::close(_fd);
-        _fd = -1;
+        if(mMonitorCount == 0) {
+            ::close(_fd);
+            _fd = -1;
+        } else {
+            ::shutdown(_fd,SHUT_RDWR);
+        }
     }
     return 0;
 }

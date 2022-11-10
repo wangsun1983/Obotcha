@@ -47,7 +47,7 @@ _Socket::_Socket(int protocol,
             return;
     }
 
-    Trigger(InitializeException, "invalid protockl");
+    Trigger(InitializeException, "invalid protocol");
 }
 
 _Socket::_Socket(SocketImpl impl,AsyncOutputChannelPool pool):_Socket() {
@@ -67,7 +67,7 @@ void _Socket::setAsync(bool async,AsyncOutputChannelPool pool) {
     bool formerAsync = mIsAsync;
     if(formerAsync != async) {
         mSockImpl->getFileDescriptor()->setAsync(async);
-        //firstly,remove ouputstream from async pool！！！！;
+        //firstly,remove ouputstream from async pool!!!!;
         if(mOutputStream != nullptr) {
             mOutputStream->setAsync(false);
         }

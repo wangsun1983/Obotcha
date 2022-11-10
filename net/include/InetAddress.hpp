@@ -37,6 +37,8 @@ public:
 
     sp<_InetAddress> toInetAddress();
 
+    String toString();
+
 private:
     struct sockaddr_in mSockAddr; //ipv4
     struct sockaddr_in6 mSockAddrV6; //ipv6

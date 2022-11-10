@@ -52,6 +52,9 @@ private:
     int bind(int,SocketListener,bool isServer = false);
     int remove(FileDescriptor);
 
+    int onServerEvent(int fd,uint32_t events,SocketListener &listener);
+    int onClientEvent(int fd,uint32_t events,SocketListener &listener);
+
     EPollFileObserver mPoll;
     ConcurrentHashMap<int,Socket> mClientSocks;
     ConcurrentHashMap<int,ServerSocket> mServerSocks;

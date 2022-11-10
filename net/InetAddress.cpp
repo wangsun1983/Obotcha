@@ -4,6 +4,7 @@
 #include "InetAddress.hpp"
 #include "Log.hpp"
 #include "String.hpp"
+#include "StringBuffer.hpp"
 #include "Inet6Address.hpp"
 #include "Inet4Address.hpp"
 #include "InetLocalAddress.hpp"
@@ -136,14 +137,48 @@ sp<_InetAddress> _SockAddress::toInetAddress() {
 
         case st(InetAddress)::LOCAL: {
             return createInetLocalAddress(createString(mLocalSockAddr.sun_path));
-
         }
         break;
     }
     return nullptr;
 }
 
+String _SockAddress::toString() {
+    StringBuffer result = createStringBuffer();
+    switch(mFamily) {
+        case st(InetAddress)::IPV4: {
+            //struct sockaddr_in *addr_in = (struct sockaddr_in*)client_addr;
+            //printf("new client ip is %s,port is %d \n",inet_ntoa(addr_in->sin_addr), ntohs(addr_in->sin_port));
+            result->append("ip is ")
+                  ->append(inet_ntoa(mSockAddr.sin_addr))
+                  ->append(",port is ")
+                  ->append(createString(mSockAddr.sin_port));
+            return result->toString();
+        }
+        break;
 
+        case st(InetAddress)::IPV6: {
+            char buf[256];
+            memset(buf,0,256);
+            inet_ntop(AF_INET6, &mSockAddrV6.sin6_addr, buf, sizeof(buf));
+            result->append("ip is ")
+                  ->append(createString((const char *)buf))
+                  ->append(",port is ")
+                  ->append(createString(mSockAddr.sin_port));
+            return result->toString();
+        }
+        break;
+
+        case st(InetAddress)::LOCAL: {
+            result->append("local path is ")
+                  ->append(createString(mLocalSockAddr.sun_path));
+            return result->toString();
+        }
+        break;
+    }
+
+    return nullptr;
+}
 
 //---------------InetAddress-------------
 _InetAddress::_InetAddress(int port) {

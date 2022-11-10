@@ -11,19 +11,23 @@
 
 namespace obotcha {
 
-DECLARE_CLASS(ServerSocket) {
+DECLARE_CLASS(ServerSocket) IMPLEMENTS(Socket) {
   public:
-    _ServerSocket(int, InetAddress address, SocketOption option,String certificatePath = nullptr,String keyPath = nullptr);
-    InetAddress getInetAddress();
+    _ServerSocket(int, InetAddress address, 
+                  SocketOption option,
+                  String certificatePath = nullptr,
+                  String keyPath = nullptr);
+
+    //InetAddress getInetAddress();
     int bind();
-    FileDescriptor getFileDescriptor();
+    //FileDescriptor getFileDescriptor();
     int close();
 
     // add
     Socket accept();
 
   private:
-    SocketImpl mSock;
+    //SocketImpl mSock;
     InetAddress mAddr;
 };
 

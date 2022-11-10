@@ -71,7 +71,7 @@ int _AsyncOutputChannelPool::onEvent(int fd, uint32_t events) {
             channel->notifyWrite();
         }
     }
-    return st(EPollFileObserver)::OnEventOK;
+    return st(EPollFileObserver)::OK;
 }
 
 void _AsyncOutputChannelPool::close() {

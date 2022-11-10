@@ -41,7 +41,7 @@ void _EPollFileObserver::run() {
             }
 
             if (listener->onEvent(fd, recvEvents) ==
-                      st(EPollFileObserver)::OnEventRemoveObserver) {
+                      st(EPollFileObserver)::Remove) {
                 removeObserver(fd);
             }
         }
