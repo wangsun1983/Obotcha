@@ -39,8 +39,7 @@ jobs:
       - name: Run build-wrapper
         run: |
           chmod 777 ./build.sh
-          ./build.sh
-          ./build.sh
+
       - name: Run sonar-scanner
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
