@@ -12,6 +12,8 @@
 
 namespace obotcha {
 
+#define INET6_ADDRSTRLEN 46
+
 int _InetAddress::DefaultPort = 8080;
 
 //---------------SockAddress-------------
@@ -26,6 +28,7 @@ _SockAddress::_SockAddress(int family) {
         case st(InetAddress)::IPV6: {
             memset(&mSockAddrV6, 0, sizeof(struct sockaddr_in6));
         }
+        break;
 
         case st(InetAddress)::LOCAL: {
             memset(&mLocalSockAddr, 0, sizeof(struct sockaddr_un));
@@ -49,15 +52,17 @@ _SockAddress::_SockAddress(int family,String address,int port) {
             break;
 
         case st(InetAddress)::IPV6: {
-            mSockAddrV6.sin6_family = AF_INET;
+            mSockAddrV6.sin6_family = AF_INET6;
             mSockAddrV6.sin6_port = htons(port);
             if (address != nullptr) {
-                //mSockAddr.sin_addr.s_addr = inet_addr(address->getAddress()->toChars());
                 inet_pton(AF_INET6, address->toChars(), &mSockAddrV6.sin6_addr);
             } else {
                 mSockAddrV6.sin6_addr = in6addr_any;
             }
+
+            
         }
+        break;
 
         case st(InetAddress)::LOCAL: {
             mLocalSockAddr.sun_family = AF_UNIX;
@@ -147,24 +152,21 @@ String _SockAddress::toString() {
     StringBuffer result = createStringBuffer();
     switch(mFamily) {
         case st(InetAddress)::IPV4: {
-            //struct sockaddr_in *addr_in = (struct sockaddr_in*)client_addr;
-            //printf("new client ip is %s,port is %d \n",inet_ntoa(addr_in->sin_addr), ntohs(addr_in->sin_port));
             result->append("ip is ")
                   ->append(inet_ntoa(mSockAddr.sin_addr))
                   ->append(",port is ")
-                  ->append(createString(mSockAddr.sin_port));
+                  ->append(createString(ntohs(mSockAddr.sin_port)));
             return result->toString();
         }
         break;
 
         case st(InetAddress)::IPV6: {
-            char buf[256];
-            memset(buf,0,256);
+            char buf[INET6_ADDRSTRLEN];
             inet_ntop(AF_INET6, &mSockAddrV6.sin6_addr, buf, sizeof(buf));
             result->append("ip is ")
                   ->append(createString((const char *)buf))
                   ->append(",port is ")
-                  ->append(createString(mSockAddr.sin_port));
+                  ->append(createString(ntohs(mSockAddrV6.sin6_port)));
             return result->toString();
         }
         break;
@@ -229,13 +231,17 @@ int _InetAddress::getFamily() {
 }
 
 uint64_t _InetAddress::hashcode() {
-    return mAddress->hashcode();
+    return mAddress->append(createString(mPort))->hashcode();
 }
 
 bool _InetAddress::equals(InetAddress addr) {
-    return this->mPort == addr->mPort
+    return mPort == addr->mPort
            && mFamily == addr->mFamily
            && (mAddress != nullptr)?mAddress->equals(addr->mAddress):addr->mAddress == nullptr;
+}
+
+String _InetAddress::toString() {
+    return getSockAddress()->toString();
 }
 
 } // namespace obotcha

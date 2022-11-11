@@ -25,8 +25,6 @@ _Socket::_Socket() {
 _Socket::_Socket(int protocol, 
                  InetAddress addr, 
                  SocketOption option,
-                 String certificatePath,
-                 String keyPath,
                  bool isAsync,
                  AsyncOutputChannelPool pool):_Socket() {
     mProtocol = protocol;
@@ -43,7 +41,7 @@ _Socket::_Socket(int protocol,
             return;
 
         case Ssl:
-            mSockImpl = createSSLSocksSocketImpl(certificatePath,keyPath,addr,option);
+            mSockImpl = createSSLSocksSocketImpl(addr,option);
             return;
     }
 

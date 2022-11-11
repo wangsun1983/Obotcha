@@ -16,8 +16,6 @@
 #include "StrongPointer.hpp"
 
 #include "String.hpp"
-#include "ArrayList.hpp"
-
 #include "OStdReturnValue.hpp"
 
 #define MAX_LENGTH 256
@@ -73,6 +71,8 @@ public:
 
     uint64_t hashcode();
     bool equals(InetAddress);
+
+    String toString();
 
 protected:
     String mAddress;

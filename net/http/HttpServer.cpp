@@ -92,20 +92,13 @@ _HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option) {
 }
 
 int _HttpServer::start() {
-    String certificate = nullptr;
-    String key = nullptr;
+    //String certificate = nullptr;
+    //String key = nullptr;
 
-    if (mOption != nullptr) {
-        certificate = mOption->getOpenSSLCertificate();
-        key = mOption->getOpenSSLKey();
-    }
-
-    if(certificate != nullptr && key != nullptr) {
+    if(mOption->getSSLCertificatePath() != nullptr) {
         mServerSock = createSocketBuilder()
                         ->setOption(mOption)
                         ->setAddress(mAddress)
-                        ->setSSLCretificatePath(certificate)
-                        ->setSSLKeyPath(key)
                         ->newSSLServerSocket();
     } else {
         mServerSock = createSocketBuilder()

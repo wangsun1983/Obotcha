@@ -34,8 +34,6 @@ public:
     friend class _WebSocketClient;
     _HttpConnection(sp<_HttpUrl> url,HttpOption option = nullptr);
     
-    //Socket getSocket();
-    
     int connect();
 
     int close();
@@ -44,9 +42,10 @@ public:
 
 private:
     Socket getSocket();
+    
     Socket mSocket;
 
-    HttpPacketWriter writer;
+    HttpPacketWriter mWriter;
 
     InputStream mInputStream;
 

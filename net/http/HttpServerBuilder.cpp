@@ -61,11 +61,11 @@ void _HttpServerBuilder::updateOption() {
     }
     
     if(mCertificatePath != nullptr) {
-        mOption->setOpenSSLCertificate(mCertificatePath);
+        mOption->setSSLCertificatePath(mCertificatePath);
     }
 
     if(mKeyPath != nullptr) {
-        mOption->setOpenSSLKey(mKeyPath);
+        mOption->setSSLKeyPath(mKeyPath);
     }
 }
 

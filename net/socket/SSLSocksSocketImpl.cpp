@@ -4,6 +4,7 @@
 namespace obotcha {
 
 //this is used for creating new socket in server
+/*
 _SSLSocksSocketImpl::_SSLSocksSocketImpl(String certificatePath,String keyPath,SocketImpl s) {
     mSocket = s;
     init(certificatePath,keyPath);
@@ -21,6 +22,23 @@ _SSLSocksSocketImpl::_SSLSocksSocketImpl(SocketImpl s) {
 
 _SSLSocksSocketImpl::_SSLSocksSocketImpl(InetAddress address,SocketOption option) {
     mSocket = createSocksSocketImpl(address,option);
+    init(nullptr,nullptr);
+}
+*/
+
+//this is used for creating new socket in server
+_SSLSocksSocketImpl::_SSLSocksSocketImpl(SocketImpl s,SocketOption option) {
+    mSocket = s;
+    init(option->getSSLCertificatePath(),option->getSSLKeyPath());
+}
+
+_SSLSocksSocketImpl::_SSLSocksSocketImpl(InetAddress address,SocketOption option) {
+    mSocket = createSocksSocketImpl(address,option);
+    init(option->getSSLCertificatePath(),option->getSSLKeyPath());
+}
+
+_SSLSocksSocketImpl::_SSLSocksSocketImpl(SocketImpl impl) {
+    mSocket = impl;
     init(nullptr,nullptr);
 }
 

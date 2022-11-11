@@ -14,8 +14,8 @@ public:
     bool isOnlyCRLF(byte &);
 
 private:
-    int index;
-    bool hasOtherChar;
+    int mState;
+    bool mHasOtherChar;
     
     enum CheckStatus{
         ItIsCRLF = 0,
@@ -23,7 +23,7 @@ private:
         None,
     };
 
-    int _LocalCheck(byte &);
+    int check(byte &);
 };
 
 }

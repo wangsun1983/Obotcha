@@ -72,20 +72,10 @@ _Http2Server::_Http2Server(InetAddress addr,Http2Listener l,HttpOption option) {
 }
 
 void _Http2Server::start() {
-    String certificate = nullptr;
-    String key = nullptr;
-
-    if (mOption != nullptr) {
-        certificate = mOption->getOpenSSLCertificate();
-        key = mOption->getOpenSSLKey();
-    }
-
-    if(certificate != nullptr && key != nullptr) {
+    if(mOption->getSSLCertificatePath() != nullptr) {
         mServerSock = createSocketBuilder()
                         ->setOption(mOption)
                         ->setAddress(mAddress)
-                        ->setSSLCretificatePath(certificate)
-                        ->setSSLKeyPath(key)
                         ->newSSLServerSocket();
     } else {
         mServerSock = createSocketBuilder()

@@ -22,8 +22,8 @@ public:
     void close();
 
 private:
-    ByteArray data;
-    int index;
+    ByteArray mChunkData;
+    int mIndex;
 };
 
 DECLARE_CLASS(HttpChunk) {

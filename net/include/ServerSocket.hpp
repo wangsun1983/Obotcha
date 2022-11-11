@@ -14,9 +14,7 @@ namespace obotcha {
 DECLARE_CLASS(ServerSocket) IMPLEMENTS(Socket) {
   public:
     _ServerSocket(int, InetAddress address, 
-                  SocketOption option,
-                  String certificatePath = nullptr,
-                  String keyPath = nullptr);
+                  SocketOption option);
 
     //InetAddress getInetAddress();
     int bind();

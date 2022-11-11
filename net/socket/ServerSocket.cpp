@@ -6,14 +6,14 @@
 namespace obotcha {
 
 _ServerSocket::_ServerSocket(int type, InetAddress address,
-                             SocketOption option,String certificatePath,String keyPath) {
+                             SocketOption option) {
     switch (type) {
         case st(NetProtocol)::Tcp:
             mSockImpl = createServerSocketImpl(address, option);
             break;
         
         case st(NetProtocol)::Ssl:
-            mSockImpl = createSSLServerSocketImpl(certificatePath,keyPath,address,option);
+            mSockImpl = createSSLServerSocketImpl(address,option);
             break;
     }
 

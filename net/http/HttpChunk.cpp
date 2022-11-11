@@ -2,40 +2,37 @@
 #include "FileInputStream.hpp"
 #include "IllegalArgumentException.hpp"
 #include "HttpText.hpp"
+#include "Inspect.hpp"
 
 namespace obotcha {
 
 //--------------- HttpChunkInputStream ------------------//
-_HttpChunkInputStream::_HttpChunkInputStream(ByteArray d) {
-    data = d;
-    index = 0;
+_HttpChunkInputStream::_HttpChunkInputStream(ByteArray data) {
+    mChunkData = data;
+    mIndex = 0;
 }
 
-long _HttpChunkInputStream::read(ByteArray d) {
-    return read(d,0);
+long _HttpChunkInputStream::read(ByteArray data) {
+    return read(data,0);
 }
 
-long _HttpChunkInputStream::read(ByteArray d, int start) {
-    return read(d,start,d->size() - start);
+long _HttpChunkInputStream::read(ByteArray data, int start) {
+    return read(data,start,data->size() - start);
 }
 
-long _HttpChunkInputStream::read(ByteArray d, int start,int length) {
-    if(index == data->size()) {
-        return 0;
-    }
+long _HttpChunkInputStream::read(ByteArray data, int start,int length) {
+    Inspect(mIndex == mChunkData->size(),0);
+
+    long size = std::min(mChunkData->size() - mIndex, // src rest length
+                         std::min(data->size() - start,length));
     
-    long srcRestLength = data->size() - index;
-    long destRestLength = d->size() - start;
-    destRestLength = (destRestLength > length)?length:destRestLength;
-    long size = (srcRestLength > destRestLength)?destRestLength:srcRestLength;
-    
-    d->fillFrom(&data->toValue()[index],start,size);
-    index += size;
+    data->fillFrom(&mChunkData->toValue()[mIndex],start,size);
+    mIndex += size;
     return size;
 }
 
 ByteArray _HttpChunkInputStream::readAll() {
-    return data;
+    return mChunkData;
 }
 
 bool _HttpChunkInputStream::open() {
@@ -44,7 +41,7 @@ bool _HttpChunkInputStream::open() {
 }
 
 void _HttpChunkInputStream::close() {
-    data = nullptr;
+    mChunkData = nullptr;
 }
 
 //--------------- HttpChunk ------------------//
@@ -79,15 +76,9 @@ _HttpChunk::~_HttpChunk() {
 }
 
 void _HttpChunk::onCompose(composeCallBack callback) {
-    //InputStream input = mInput;
     ByteArray data = createByteArray(1024*16);
-    int start = 0;
-    while (1) {
-        long len = mInput->read(data);
-        if(len <= 0) {
-            break;
-        }
-
+    long len = 0;
+    while ((len = mInput->read(data)) > 0) {
         String chunkLength = createInteger(len)
                             ->toHexString()
                             ->append(st(HttpText)::CRLF);
@@ -99,16 +90,11 @@ void _HttpChunk::onCompose(composeCallBack callback) {
         callback(st(HttpText)::CRLF->toByteArray());
     }
 
-    String end = createString("0")->append(st(HttpText)::HttpEnd);
-    callback(end->toByteArray());
+    callback(st(HttpText)::HttpChunkEnd->toByteArray());
 }
 
 ByteArray _HttpChunk::getData() {
-    if(mInput != nullptr) {
-        ByteArray data = mInput->readAll();
-        return data;
-    }
-    return nullptr;
+    return (mInput != nullptr)? mInput->readAll():nullptr;
 }
 
 HttpHeader _HttpChunk::getTrailingHeader() {

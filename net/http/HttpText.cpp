@@ -14,6 +14,7 @@ const String _HttpText::LF                =   createString("\n");
 const String _HttpText::ContentSpace      =   createString(" ");
 const String _HttpText::ContentHttp       =   createString("HTTP");
 
+const String _HttpText::HttpChunkEnd      =   createString("0\r\n\r\n");
 //const String _HttpText::BoundarySeperator = createString("-----------------------------");
 
 } // namespace obotcha

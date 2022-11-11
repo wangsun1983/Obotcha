@@ -3,49 +3,42 @@
 
 namespace obotcha {
 
+#define NO_FOUND 0
+#define R_FOUND  1
+
 _CRLFDetector::_CRLFDetector() {
-    index = 0;
-    hasOtherChar = false;
+    mState = NO_FOUND;
+    mHasOtherChar = false;
 }
 
 bool _CRLFDetector::isEnd(byte &v) {
-    return _LocalCheck(v) != CheckStatus::None;
+    return check(v) != CheckStatus::None;
 }
 
 bool _CRLFDetector::isOnlyCRLF(byte &v) {
-    return _LocalCheck(v) == CheckStatus::OnlyCRLF;
+    return check(v) == CheckStatus::OnlyCRLF;
 }
 
-int _CRLFDetector::_LocalCheck(byte & v) {
+int _CRLFDetector::check(byte & v) {
     int ret = None;
     switch(v) {
         case '\r':
-            if(index == 1) {
-                hasOtherChar = true;
-            } else {
-                index = 1;
-            }
+            (mState == R_FOUND)?mHasOtherChar = true:mState = R_FOUND;
             break;
         
         case '\n':
-            if(index == 1) {
-                if(hasOtherChar) {
-                    ret = ItIsCRLF;
-                } else {
-                    ret = OnlyCRLF;
-                }
-                index = 0;
-                hasOtherChar = false;
+            if(mState == R_FOUND) {
+                ret = (mHasOtherChar)?ItIsCRLF:OnlyCRLF;
+                mState = NO_FOUND;
+                mHasOtherChar = false;
             }
             break;
 
         default:
-            index = 0;
-            hasOtherChar = true;
+            mState = NO_FOUND;
+            mHasOtherChar = true;
     }
-
     return ret;
-
 }
 
 }

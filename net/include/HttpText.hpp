@@ -34,6 +34,8 @@ public:
    //static const String PartFileName;
    static const String ContentSpace;
    static const String ContentHttp;
+
+   static const String HttpChunkEnd;
 };
 
 }

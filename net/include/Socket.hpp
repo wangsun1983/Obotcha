@@ -31,8 +31,6 @@ public:
     _Socket(int protocol,
             InetAddress addr,
             SocketOption option,
-            String certificatePath = nullptr,
-            String keyPath = nullptr,
             bool isAsync = false,
             AsyncOutputChannelPool pool = nullptr);
 

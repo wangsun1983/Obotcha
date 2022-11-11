@@ -44,17 +44,18 @@ int _HttpConnection::connect() {
         inetAddr->setAddress(address->get(0)->getAddress());
     }
     
-    if(mUrl->getScheme() == st(NetProtocol)::Http
-        ||mUrl->getScheme() == st(NetProtocol)::Ws) {
-        mSocket = createSocketBuilder()
-                    ->setAddress(inetAddr)
-                    ->setOption(mOption)
-                    ->newSocket();
-    } else {
-        mSocket = createSocketBuilder()
-                    ->setAddress(inetAddr)
-                    ->setOption(mOption)
-                    ->newSSLSocket();
+    auto builder = createSocketBuilder();
+    builder->setAddress(inetAddr)
+           ->setOption(mOption);
+
+    switch(mUrl->getScheme()) {
+        case st(NetProtocol)::Http:
+        case st(NetProtocol)::Ws:
+            mSocket = builder->newSocket();
+        break;
+
+        default:
+            mSocket = builder->newSSLSocket();        
     }
 
     if (mSocket->connect() < 0) {
@@ -63,14 +64,13 @@ int _HttpConnection::connect() {
     }
 
     mInputStream = mSocket->getInputStream();
-    writer = createHttpPacketWriterImpl(mSocket->getOutputStream());
-
+    mWriter = createHttpPacketWriterImpl(mSocket->getOutputStream());
     return 0;
 }
 
 HttpResponse _HttpConnection::execute(HttpRequest req) {
     AutoLock l(mMutex);
-    if (writer->write(req) < 0) {
+    if (mWriter->write(req) < 0) {
         LOG(ERROR) << "Cannot send request!!!";
         return nullptr;
     }

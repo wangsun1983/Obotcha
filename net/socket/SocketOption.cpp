@@ -229,6 +229,18 @@ _SocketOption *_SocketOption::setBuffSize(int s) {
     return this;
 }
 
+_SocketOption* _SocketOption::setSSLCertificatePath(String path) {
+    mSSLCertificatePath = path;
+    return this;
+}
+
+_SocketOption* _SocketOption::setSSLKeyPath(String path) {
+    mSSLKeyPath = path;
+    return this;
+}
+
+//---------- Get Function --------------
+
 int _SocketOption::getConnectionNum() { return mConnectNum; }
 
 int _SocketOption::getReUseAddr() { return mReUseAddr; }
@@ -320,6 +332,15 @@ int _SocketOption::getSendTimeout() {
 int _SocketOption::getBuffSize() { 
     return mBuffSize; 
 }
+
+String _SocketOption::getSSLCertificatePath() {
+    return mSSLCertificatePath;
+}
+
+String _SocketOption::getSSLKeyPath() {
+    return mSSLKeyPath;
+}
+
 
 void _SocketOption::update(FileDescriptor fd) {
     int sock = fd->getFd();

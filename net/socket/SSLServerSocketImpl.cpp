@@ -5,12 +5,10 @@
 
 namespace obotcha {
 
-_SSLServerSocketImpl::_SSLServerSocketImpl(String certificatePath,
-                                           String keyPath,
-                                           InetAddress address,
-                                           SocketOption option){
-    mCertificate = certificatePath;
-    mKey = keyPath;
+_SSLServerSocketImpl::_SSLServerSocketImpl(InetAddress address,
+                                           SocketOption option) {                                            
+    mCertificate = option->getSSLCertificatePath();
+    mKey = option->getSSLKeyPath();
 
     mSSLContext = createSSLSocketContext(st(SSLSocketContext)::SERVER);
     /* load user certificate,this certificati is used to send to
@@ -38,8 +36,13 @@ int _SSLServerSocketImpl::bind() {
 
 Socket _SSLServerSocketImpl::accept() {
     Socket s = mSocket->accept();
-
-    auto client = createSSLSocksSocketImpl(mCertificate,mKey,s->mSockImpl);
+    //wangsl
+    SocketOption option = createSocketOption();
+    option->setSSLCertificatePath(mCertificate)
+          ->setSSLKeyPath(mKey);
+    auto client = createSSLSocksSocketImpl(s->mSockImpl,option);
+    //wangsl
+    
     s->getFileDescriptor()->setAsync(false);
     int ret = SSL_accept(client->getSSLContext()->getSSL());
     if(ret < 0) {
@@ -48,12 +51,7 @@ Socket _SSLServerSocketImpl::accept() {
     }
 
     s->getFileDescriptor()->setAsync(true);
-
-    Socket result = createSocket(client);
-    //result->setSockImpl(client);
-    //result->setProtocol(st(Socket)::SSL);
-
-    return result;
+    return createSocket(client);
 }
 
 FileDescriptor _SSLServerSocketImpl::getFileDescriptor() {

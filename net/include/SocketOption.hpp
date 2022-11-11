@@ -23,9 +23,6 @@ namespace obotcha {
 
 DECLARE_CLASS(SocketOption) {
 public:
-    friend class _SocketImpl;
-    friend class _HttpOption;
-
     static const int DefaultRecvBuffSize;
     static const int DefaultConnectNum;
 
@@ -71,6 +68,10 @@ public:
     _SocketOption* setConnectionNum(int);
     _SocketOption* setBuffSize(int);
 
+    //support for SSL Socket
+    _SocketOption* setSSLCertificatePath(String);
+    _SocketOption* setSSLKeyPath(String);
+
     int getReUseAddr();
     int getDnotRoute();
     int getBroadcast();
@@ -105,6 +106,10 @@ public:
     int getSendTimeout();
     int getBuffSize();
     int getConnectionNum();
+
+    //support SSL Socket
+    String getSSLCertificatePath();
+    String getSSLKeyPath();
 
     enum Switcher {
         Off = 0,
@@ -172,12 +177,12 @@ private:
                                             //SO_PEERGROUPS(no use)
     int mZeroCopy;                          //SO_ZEROCOPY
 
-
-
-
     int mConnectNum;
     int mBuffSize;
 
+    //support SSL Socket
+    String mSSLCertificatePath;
+    String mSSLKeyPath;
 };
 
 }

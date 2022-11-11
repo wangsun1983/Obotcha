@@ -6,29 +6,19 @@
 namespace obotcha {
 
 _SocketBuilder *_SocketBuilder::setAddress(InetAddress addr) {
-    address = addr;
+    mAddress = addr;
     return this;
 }
 
 _SocketBuilder *_SocketBuilder::setOption(SocketOption o) {
     if (o != nullptr) {
-        option = o;
+        mOption = o;
     }
     return this;
 }
 
 _SocketBuilder *_SocketBuilder::setFileDescriptor(FileDescriptor f) {
-    fd = f;
-    return this;
-}
-
-_SocketBuilder* _SocketBuilder::setSSLCretificatePath(String path) {
-    mCertificatePath = path;
-    return this;
-}
-
-_SocketBuilder* _SocketBuilder::setSSLKeyPath(String path) {
-    mKeyPath = path;
+    mFd = f;
     return this;
 }
 
@@ -38,17 +28,18 @@ _SocketBuilder* _SocketBuilder::setAsync(bool s) {
 }
 
 _SocketBuilder::_SocketBuilder() {
-    address = createInet4Address(st(InetAddress)::DefaultPort);
-    fd = nullptr;
-    option = nullptr;
+    mAddress = createInet4Address(st(InetAddress)::DefaultPort);
+    mFd = nullptr;
+    mOption = nullptr;
 }
 
 Socket _SocketBuilder::newSocket() {
-    if (fd == nullptr) {
-        return createSocket(st(NetProtocol)::Tcp, address, option,nullptr,nullptr,mIsAsync,mPool);
+    if (mFd == nullptr) {
+        return createSocket(st(NetProtocol)::Tcp, 
+                            mAddress, mOption,mIsAsync,mPool);
     }
     
-    return createSocket(fd,mPool);
+    return createSocket(mFd,mPool);
 }
 
 _SocketBuilder* _SocketBuilder::setAsyncPool(AsyncOutputChannelPool pool) {
@@ -58,24 +49,30 @@ _SocketBuilder* _SocketBuilder::setAsyncPool(AsyncOutputChannelPool pool) {
 }
 
 Socket _SocketBuilder::newDatagramSocket() {
-    if(fd == nullptr) {
-        return createSocket(st(NetProtocol)::Udp, address, option);
+    if(mFd == nullptr) {
+        return createSocket(st(NetProtocol)::Udp, mAddress, mOption);
     } else {
-        auto datagramImpl = createDatagramSocketImpl(fd,address,option);
+        auto datagramImpl = createDatagramSocketImpl(mFd,mAddress,mOption);
         return createSocket(datagramImpl,mPool);
     }
 }
 
 Socket _SocketBuilder::newSSLSocket() {
-    return createSocket(st(NetProtocol)::Ssl,address,option,mCertificatePath,mKeyPath,mIsAsync,mPool);
+    return createSocket(st(NetProtocol)::Ssl,
+                        mAddress,
+                        mOption,
+                        mIsAsync,
+                        mPool);
 }
 
 ServerSocket _SocketBuilder::newServerSocket() {
-    return createServerSocket(st(NetProtocol)::Tcp, address, option);
+    return createServerSocket(st(NetProtocol)::Tcp, mAddress, mOption);
 }
 
 ServerSocket _SocketBuilder::newSSLServerSocket() {
-    return createServerSocket(st(NetProtocol)::Ssl, address, option,mCertificatePath,mKeyPath);
+    return createServerSocket(st(NetProtocol)::Ssl, 
+                              mAddress, 
+                              mOption);
 }
 
 } // namespace obotcha

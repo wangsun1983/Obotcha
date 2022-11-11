@@ -20,8 +20,6 @@ public:
     _SocketBuilder* setAddress(InetAddress);
     _SocketBuilder* setOption(SocketOption);
     _SocketBuilder* setFileDescriptor(FileDescriptor);
-    _SocketBuilder* setSSLCretificatePath(String);
-    _SocketBuilder* setSSLKeyPath(String);
     _SocketBuilder* setAsync(bool);
     _SocketBuilder* setAsyncPool(AsyncOutputChannelPool);
     
@@ -33,11 +31,9 @@ public:
     ServerSocket newSSLServerSocket();
     
 private:
-    InetAddress address;
-    SocketOption option;
-    FileDescriptor fd;
-    String mCertificatePath;
-    String mKeyPath;
+    InetAddress mAddress;
+    SocketOption mOption;
+    FileDescriptor mFd;
     bool mIsAsync;
     AsyncOutputChannelPool mPool;
 };

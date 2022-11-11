@@ -18,9 +18,14 @@ class _SSLServerSocketImpl;
 DECLARE_CLASS(SSLSocksSocketImpl) IMPLEMENTS(SocketImpl) {
 public:
     friend class _SSLServerSocketImpl;
-    _SSLSocksSocketImpl(String certificatePath,String keyPath,SocketImpl s);
-    _SSLSocksSocketImpl(String certificatePath,String keyPath,InetAddress address,SocketOption option);
+    
+    //_SSLSocksSocketImpl(String certificatePath,String keyPath,SocketImpl s);
+    //_SSLSocksSocketImpl(String certificatePath,String keyPath,InetAddress address,SocketOption option);
 
+    //_SSLSocksSocketImpl(InetAddress address,SocketOption option);
+    //_SSLSocksSocketImpl(SocketImpl impl);
+
+    _SSLSocksSocketImpl(SocketImpl s,SocketOption option);
     _SSLSocksSocketImpl(InetAddress address,SocketOption option);
     _SSLSocksSocketImpl(SocketImpl impl);
 
