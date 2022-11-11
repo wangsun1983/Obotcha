@@ -39,7 +39,7 @@ jobs:
       - name: Run build-wrapper
         run: |
           chmod 777 ./build.sh
-          mkdir build_wrapper_output_directory
+          mkdir ${{ env.BUILD_WRAPPER_OUT_DIR }}
 
       - name: Run sonar-scanner
         env:
