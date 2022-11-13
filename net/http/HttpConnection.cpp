@@ -75,8 +75,10 @@ HttpResponse _HttpConnection::execute(HttpRequest req) {
         return nullptr;
     }
 
-    int buffsize = (mOption == nullptr ? st(HttpOption)::DefaultRecvBuffSize
-                                       : mOption->getBuffSize());
+    int buffsize = 0;
+    if((mOption == nullptr || (buffsize = mOption->getRcvBuffSize()) == -1)) {
+        buffsize = st(HttpOption)::DefaultBuffSize;
+    }
 
     ByteArray result = createByteArray(buffsize);
     while (1) {

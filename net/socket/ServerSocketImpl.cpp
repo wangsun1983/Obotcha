@@ -26,17 +26,17 @@ int _ServerSocketImpl::bind() {
     struct sockaddr *addr = nullptr;
     socklen_t length = 0;
 
-    FetchRet(length,addr) = this->address->getSockAddress()->get();
-    if(::bind(sock->getFd(),addr,length) < 0) {
+    FetchRet(length,addr) = this->mAddress->getSockAddress()->get();
+    if(::bind(mSock->getFd(),addr,length) < 0) {
         return -errno;
     }
 
     int connectNum = DefaultConnectNum;
-    if (option != nullptr) {
-        connectNum = option->getConnectionNum();
+    if (mOption != nullptr) {
+        connectNum = mOption->getConnectionNum();
     }
 
-    if (listen(sock->getFd(), connectNum) < 0) {
+    if (listen(mSock->getFd(), connectNum) < 0) {
         return -errno;
     }
 
@@ -44,12 +44,12 @@ int _ServerSocketImpl::bind() {
 }
 
 Socket _ServerSocketImpl::accept() {
-    SockAddress client = createSockAddress(this->address->getFamily());
+    SockAddress client = createSockAddress(this->mAddress->getFamily());
     struct sockaddr *client_address = nullptr;
     socklen_t client_length = 0;
     FetchRet(client_length,client_address) = client->get();
     
-    int clientfd = ::accept(sock->getFd(), (struct sockaddr *)client_address,
+    int clientfd = ::accept(mSock->getFd(), (struct sockaddr *)client_address,
                             &client_length);
     if (clientfd > 0) {
         InetAddress address = client->toInetAddress();

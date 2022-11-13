@@ -37,7 +37,6 @@ objs += $(outtmp)/httpchunk.o \
 		$(outtmp)/HttpHeaderCacheControl.o \
 		$(outtmp)/httppacketparser.o \
 		$(outtmp)/httppacketparserimpl.o \
-		$(outtmp)/httplinkermanager.o \
 		$(outtmp)/httpsession.o \
 		$(outtmp)/httpcookie.o \
 		$(outtmp)/httpdate.o \
@@ -503,9 +502,6 @@ $(outtmp)/httpcookieparser.o :$(httpDir)/HttpCookieParser.cpp
 
 $(outtmp)/httppricontentparser.o :$(httpDir)/HttpPriContentParser.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpPriContentParser.cpp -o $(outtmp)/httppricontentparser.o
-
-$(outtmp)/httplinkermanager.o :$(httpDir)/HttpLinkerManager.cpp
-	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpLinkerManager.cpp -o $(outtmp)/httplinkermanager.o
 
 $(outtmp)/httpsession.o :$(httpDir)/HttpSession.cpp
 	$(cppcompiler) $(obotchacppflags) -c $(httpDir)/HttpSession.cpp -o $(outtmp)/httpsession.o

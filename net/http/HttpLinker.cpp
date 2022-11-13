@@ -1,5 +1,4 @@
 #include "HttpLinker.hpp"
-#include "HttpLinkerManager.hpp"
 #include "HttpPacket.hpp"
 #include "HttpServer.hpp"
 #include "Http2PacketWriterImpl.hpp"

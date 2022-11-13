@@ -4,13 +4,15 @@
 #include "Http2SettingFrame.hpp"
 #include "HttpPacketWriterImpl.hpp"
 #include "NetEvent.hpp"
+#include "ConcurrentHashMap.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
 void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
     switch (event) {
         case st(NetEvent)::Message: {
-            HttpLinker info = mLinkerManager->get(r);
+            HttpLinker info = mLinkers->get(r);
             if (info == nullptr) {
                 LOG(ERROR) << "http linker already removed";
                 return;
@@ -21,7 +23,7 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
                 LOG(ERROR) << "push http data error";
                 mHttpListener->onHttpMessage(st(NetEvent)::InternalError, info,
                                             nullptr, nullptr);
-                mLinkerManager->remove(r);
+                mLinkers->remove(r);
                 r->close();
                 return;
             }
@@ -47,15 +49,15 @@ void _Http2Server::onSocketMessage(int event, Socket r, ByteArray pack) {
 
         case st(NetEvent)::Connect: {
             HttpLinker info = createHttpLinker(r,mOption->getProtocol());
-            mLinkerManager->add(info);
+            mLinkers->put(info->mSocket,info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
             break;
         }
 
         case st(NetEvent)::Disconnect: {
-            HttpLinker info = mLinkerManager->get(r);
+            HttpLinker info = mLinkers->get(r);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
-            mLinkerManager->remove(r);
+            mLinkers->remove(r);
             break;
         }
     }
@@ -68,7 +70,8 @@ _Http2Server::_Http2Server(InetAddress addr,Http2Listener l,HttpOption option) {
     mSockMonitor = nullptr;
     mAddress = addr;
     mOption = option;
-    mLinkerManager = createHttpLinkerManager();
+    mLinkers = createConcurrentHashMap<Socket,HttpLinker>();
+    //mLinkerManager = createHttpLinkerManager();
 }
 
 void _Http2Server::start() {
@@ -108,10 +111,14 @@ void _Http2Server::close() {
         mServerSock = nullptr;
     }
 
-    if(mLinkerManager != nullptr) {
-        mLinkerManager->clear();
-        mLinkerManager = nullptr;
+    //if(mLinkerManager != nullptr) {
+    //    mLinkerManager->clear();
+    //    mLinkerManager = nullptr;
+    //}
+    ForEveryOne(client,mLinkers) {
+        client->getValue()->close();
     }
+    mLinkers->clear();
 }
 
 _Http2Server::~_Http2Server() { 

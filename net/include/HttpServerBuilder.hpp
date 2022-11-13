@@ -23,25 +23,24 @@ DECLARE_CLASS(HttpServerBuilder) {
     _HttpServerBuilder *setAddress(InetAddress);
     _HttpServerBuilder *setListener(HttpListener);
     _HttpServerBuilder *setOption(HttpOption);
-    _HttpServerBuilder *setCertificatePath(String);
-    _HttpServerBuilder *setKeyPath(String);
-    _HttpServerBuilder *setProtocol(int);
+    // _HttpServerBuilder *setCertificatePath(String);
+    // _HttpServerBuilder *setKeyPath(String);
+    // _HttpServerBuilder *setProtocol(int);
 
     _HttpServerBuilder *setHttp2Listener(Http2Listener);
 
     HttpServer build();
     Http2Server buildHttp2Server();
-    
 
   private:
-    void updateOption();
+    //void updateOption();
     
     InetAddress mAddress;
     HttpOption mOption;
     HttpListener mListener;
-    String mCertificatePath;
-    String mKeyPath;
-    int mProtocol;
+    // String mCertificatePath;
+    // String mKeyPath;
+    // int mProtocol;
 
     Http2Listener mHttp2Listener;
 };

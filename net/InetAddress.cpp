@@ -136,7 +136,7 @@ sp<_InetAddress> _SockAddress::toInetAddress() {
             inet_ntop(AF_INET6, &mSockAddrV6.sin6_addr, buf, sizeof(buf));
 
             String ip = createString(buf);
-            return createInet6Address(ip,mSockAddrV6.sin6_port);
+            return createInet6Address(ip,ntohs(mSockAddrV6.sin6_port));
         }
         break;
 

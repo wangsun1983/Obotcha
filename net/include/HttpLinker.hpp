@@ -25,11 +25,12 @@
 namespace obotcha {
 
 class _HttpServer;
+class _Http2Server;
 
 DECLARE_CLASS(HttpLinker){
 public:
     friend class _HttpServer;
-    friend class _HttpLinkerManager;
+    friend class _Http2Server;
     friend class _WebSocketServer;
 
     _HttpLinker(Socket,int protocol = st(NetProtocol)::Http);

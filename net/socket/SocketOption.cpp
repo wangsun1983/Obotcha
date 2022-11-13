@@ -2,7 +2,7 @@
 
 namespace obotcha {
 
-const int _SocketOption::DefaultRecvBuffSize = 4 * 1024;
+const int _SocketOption::DefaultBuffSize = 4 * 1024;
 const int _SocketOption::DefaultConnectNum = 4 * 1024;
 
 
@@ -39,7 +39,7 @@ _SocketOption::_SocketOption() {
     mReusePortEbpf = -1;
     mZeroCopy = -1;
     mConnectNum = DefaultConnectNum;
-    mBuffSize = DefaultRecvBuffSize;
+    //mBuffSize = DefaultRecvBuffSize;
 }
 
 _SocketOption::~_SocketOption() {
@@ -224,10 +224,10 @@ _SocketOption *_SocketOption::setConnectionNum(int v) {
     return this;
 }
 
-_SocketOption *_SocketOption::setBuffSize(int s) {
-    mBuffSize = s;
-    return this;
-}
+// _SocketOption *_SocketOption::setBuffSize(int s) {
+//     mBuffSize = s;
+//     return this;
+// }
 
 _SocketOption* _SocketOption::setSSLCertificatePath(String path) {
     mSSLCertificatePath = path;
@@ -329,9 +329,9 @@ int _SocketOption::getSendTimeout() {
     return mSendTimeout; 
 }
 
-int _SocketOption::getBuffSize() { 
-    return mBuffSize; 
-}
+// int _SocketOption::getBuffSize() { 
+//     return mBuffSize; 
+// }
 
 String _SocketOption::getSSLCertificatePath() {
     return mSSLCertificatePath;

@@ -34,7 +34,7 @@ public:
 DECLARE_CLASS(SocketMonitor) IMPLEMENTS(Closeable){
 public:
     _SocketMonitor();
-    _SocketMonitor(int,int recvBuffSize = st(SocketOption)::DefaultRecvBuffSize);
+    _SocketMonitor(int,int recvBuffSize = st(SocketOption)::DefaultBuffSize);
     ~_SocketMonitor();
 
     int bind(Socket,SocketListener);

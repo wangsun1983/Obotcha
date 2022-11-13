@@ -4,36 +4,20 @@
 #include "Object.hpp"
 #include "StrongPointer.hpp"
 
-#include "String.hpp"
-#include "ArrayList.hpp"
-#include "HashMap.hpp"
-#include "HttpCookie.hpp"
-#include "HttpUrl.hpp"
-#include "Mutex.hpp"
 #include "SocketListener.hpp"
-#include "HttpMultiPart.hpp"
-#include "BlockingLinkedList.hpp"
-#include "HashSet.hpp"
-#include "ThreadPoolExecutor.hpp"
-#include "HttpPacket.hpp"
 #include "Mutex.hpp"
 #include "ServerSocket.hpp"
 #include "SocketMonitor.hpp"
 #include "HttpListener.hpp"
 #include "HttpOption.hpp"
-#include "HttpLinkerManager.hpp"
-#include "Base64.hpp"
 #include "CountDownLatch.hpp"
 
 namespace obotcha {
 
-//class _HttpLinker;
-//class _HttpResponseWriter;
-
 DECLARE_CLASS(HttpServer) IMPLEMENTS(SocketListener) {
 
 public:
-    friend class _HttpSocketListener;
+    //friend class _HttpSocketListener;
     
     _HttpServer(InetAddress addr,HttpListener,HttpOption option = nullptr);
 
@@ -51,7 +35,7 @@ private:
 
     void onSocketMessage(int,Socket,ByteArray);
 
-    void http2FrameProcessor(HttpLinker info);
+    //void http2FrameProcessor(HttpLinker info);
 
     ServerSocket mServerSock;
 
@@ -63,9 +47,10 @@ private:
 
     HttpOption mOption;
 
-    HttpLinkerManager mLinkerManager;
+    //HttpLinkerManager mLinkerManager;
+    ConcurrentHashMap<Socket,HttpLinker> mLinkers;
 
-    CountDownLatch mLatch;
+    CountDownLatch mExitLatch;
 };
 
 }

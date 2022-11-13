@@ -23,7 +23,7 @@ namespace obotcha {
 
 DECLARE_CLASS(SocketOption) {
 public:
-    static const int DefaultRecvBuffSize;
+    static const int DefaultBuffSize;
     static const int DefaultConnectNum;
 
     _SocketOption();
@@ -66,7 +66,7 @@ public:
     _SocketOption* setReusePortEbpf(int);
     _SocketOption* setZeroCopy(int);
     _SocketOption* setConnectionNum(int);
-    _SocketOption* setBuffSize(int);
+    //_SocketOption* setBuffSize(int);
 
     //support for SSL Socket
     _SocketOption* setSSLCertificatePath(String);
@@ -104,7 +104,7 @@ public:
     int getZeroCopy();
     int getRecvTimeout();
     int getSendTimeout();
-    int getBuffSize();
+    //int getBuffSize();
     int getConnectionNum();
 
     //support SSL Socket
@@ -178,7 +178,7 @@ private:
     int mZeroCopy;                          //SO_ZEROCOPY
 
     int mConnectNum;
-    int mBuffSize;
+    //int mBuffSize;
 
     //support SSL Socket
     String mSSLCertificatePath;

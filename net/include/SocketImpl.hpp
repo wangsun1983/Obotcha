@@ -40,11 +40,11 @@ public:
 protected:
     //void setOptions();
     
-    FileDescriptor sock;
+    FileDescriptor mSock;
     
-    InetAddress address;
+    InetAddress mAddress;
     
-    SocketOption option;
+    SocketOption mOption;
     
     //struct sockaddr_in mSockAddr; //ipv4
     //struct sockaddr_in6 mSockAddrV6; //ipv6
@@ -52,7 +52,7 @@ protected:
     int mBuffSize;
 
 private:
-    void _init();
+    void init();
 };
 
 }

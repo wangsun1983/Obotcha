@@ -7,7 +7,6 @@
 #include "HttpHeader.hpp"
 #include "HttpInternalException.hpp"
 #include "HttpLinker.hpp"
-#include "HttpLinkerManager.hpp"
 #include "HttpPacket.hpp"
 #include "HttpServer.hpp"
 #include "InetAddress.hpp"
@@ -20,13 +19,15 @@
 #include "HttpPacketWriterImpl.hpp"
 #include "Base64.hpp"
 #include "NetEvent.hpp"
+#include "ForEveryOne.hpp"
 
 namespace obotcha {
 
 void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
     switch (event) {
         case st(NetEvent)::Message: {
-            HttpLinker info = mLinkerManager->get(r);
+            //HttpLinker info = mLinkerManager->get(r);
+            HttpLinker info = mLinkers->get(r);
             if (info == nullptr) {
                 LOG(ERROR) << "http linker already removed,fail to get message";
                 return;
@@ -37,7 +38,8 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
                 LOG(ERROR) << "push http data error";
                 mHttpListener->onHttpMessage(st(NetEvent)::InternalError, info,
                                             nullptr, nullptr);
-                mLinkerManager->remove(info);
+                //mLinkerManager->remove(info);
+                mLinkers->remove(info->mSocket);
                 r->close();
                 return;
             }
@@ -63,19 +65,22 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
 
         case st(NetEvent)::Connect: {
             HttpLinker info = createHttpLinker(r,mOption->getProtocol());
-            mLinkerManager->add(info);
+            //mLinkerManager->add(info);
+            mLinkers->put(info->mSocket,info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
             break;
         }
 
         case st(NetEvent)::Disconnect: {
-            HttpLinker info = mLinkerManager->get(r);
+            //HttpLinker info = mLinkerManager->get(r);
+            HttpLinker info = mLinkers->get(r);
             if (info == nullptr) {
                 LOG(ERROR) << "http linker already removed,fail to disconnect";
                 return;
             }
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
-            mLinkerManager->remove(r);
+            //mLinkerManager->remove(r);
+            mLinkers->remove(r);
             break;
         }
     }
@@ -87,24 +92,19 @@ _HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option) {
     mSockMonitor = nullptr;
     mAddress = addr;
     mOption = option;
-    mLinkerManager = createHttpLinkerManager();
-    mLatch = createCountDownLatch(1);
+    //mLinkerManager = createHttpLinkerManager();
+    mLinkers = createConcurrentHashMap<Socket,HttpLinker>();
+    mExitLatch = createCountDownLatch(1);
 }
 
 int _HttpServer::start() {
-    //String certificate = nullptr;
-    //String key = nullptr;
+    auto builder = createSocketBuilder();
+    builder->setOption(mOption)->setAddress(mAddress);
 
     if(mOption->getSSLCertificatePath() != nullptr) {
-        mServerSock = createSocketBuilder()
-                        ->setOption(mOption)
-                        ->setAddress(mAddress)
-                        ->newSSLServerSocket();
+        mServerSock = builder->newSSLServerSocket();
     } else {
-        mServerSock = createSocketBuilder()
-                        ->setOption(mOption)
-                        ->setAddress(mAddress)
-                        ->newServerSocket();
+        mServerSock = builder->newServerSocket();
     }
     
     while(mServerSock->bind() < 0) {
@@ -123,18 +123,25 @@ int _HttpServer::start() {
 // interface for websocket
 void _HttpServer::remove(HttpLinker linker) { 
     mSockMonitor->unbind(linker->mSocket);
-    mLinkerManager->remove(linker);
+    //mLinkerManager->remove(linker);
+    mLinkers->remove(linker->mSocket);
 }
 
 void _HttpServer::close() {
+    Inspect(mExitLatch->getCount() <= 0);
+
     //Do not set instance to null for the following issue:
     //Thread A:                     close HttServer
     //Thread B(SocketMonitor):      one client is disconnected
     //                            ->use linkermanager to find callback
     mSockMonitor->close();
     mServerSock->close();
-    mLinkerManager->clear();
-    mLatch->countDown();
+    //mLinkerManager->clear();
+    ForEveryOne(client,mLinkers) {
+        client->getValue()->close();
+    }
+    mLinkers->clear();
+    mExitLatch->countDown();
 }
 
 _HttpServer::~_HttpServer() { 
@@ -142,7 +149,7 @@ _HttpServer::~_HttpServer() {
 }
 
 void _HttpServer::join(long interval) {
-    mLatch->await(interval);
+    mExitLatch->await(interval);
 }
 
 } // namespace obotcha

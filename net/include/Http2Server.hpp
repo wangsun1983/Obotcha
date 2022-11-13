@@ -21,9 +21,9 @@
 #include "SocketMonitor.hpp"
 #include "HttpListener.hpp"
 #include "HttpOption.hpp"
-#include "HttpLinkerManager.hpp"
 #include "Base64.hpp"
 #include "Http2Listener.hpp"
+#include "ConcurrentHashMap.hpp"
 
 namespace obotcha {
 
@@ -53,7 +53,8 @@ private:
 
     HttpOption mOption;
 
-    HttpLinkerManager mLinkerManager;
+    //HttpLinkerManager mLinkerManager;
+    ConcurrentHashMap<Socket,HttpLinker> mLinkers;
 
 };
 

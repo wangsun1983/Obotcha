@@ -20,8 +20,7 @@ void _HttpHeaderParser::parseRequestLine(String line) {
     int pos = 0;
     while (pos < line->size()) {
         int tokenStart = pos;
-        pos = st(HttpHeaderContentParser)::skipUntil(line, pos,
-                                                        createString(" "));
+        pos = st(HttpHeaderContentParser)::skipUntil(line, pos,createString(" "));
         String directive = line->subString(tokenStart, pos - tokenStart)->trim();
         pos++;
         switch(mParseLineStatus) {
