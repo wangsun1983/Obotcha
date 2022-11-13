@@ -16,17 +16,9 @@
 #ifndef __OBOTCHA_HANDLER_HPP__
 #define __OBOTCHA_HANDLER_HPP__
 
-#include <vector>
-
-#include "ArrayList.hpp"
-#include "ConcurrentQueue.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "Thread.hpp"
-
-#include "AtomicInteger.hpp"
 #include "Condition.hpp"
-#include "LinkedList.hpp"
 #include "Message.hpp"
 #include "Mutex.hpp"
 #include "Runnable.hpp"

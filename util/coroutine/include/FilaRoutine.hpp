@@ -3,14 +3,12 @@
 
 #include "co_routine.h"
 
+#include "Object.hpp"
 #include "ArrayList.hpp"
 #include "Filament.hpp"
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "Thread.hpp"
 #include "FilaFuture.hpp"
 #include "FilaCondition.hpp"
-#include "FilaExecutorResult.hpp"
 
 namespace obotcha {
 

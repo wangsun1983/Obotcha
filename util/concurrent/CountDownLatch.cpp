@@ -1,7 +1,5 @@
 #include "CountDownLatch.hpp"
-#include "Error.hpp"
 #include "InitializeException.hpp"
-#include "Thread.hpp"
 
 namespace obotcha {
 

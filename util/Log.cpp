@@ -1,9 +1,12 @@
-#include "Log.hpp"
 #include <initializer_list>
+
+#include "Log.hpp"
 
 namespace obotcha {
 
-void InitLog() { google::InitGoogleLogging("Obotcha"); }
+void InitLog() { 
+    google::InitGoogleLogging("Obotcha"); 
+}
 
 void SetLogFile(String infoPrefix, String warningPrefix, String errorPrefix,
                 String fatalPrefix) {
@@ -25,8 +28,12 @@ void SetLogFile(String infoPrefix, String warningPrefix, String errorPrefix,
     }
 }
 
-void SetPrintLogLevel(int level) { google::SetStderrLogging(level); }
+void SetPrintLogLevel(int level) { 
+    google::SetStderrLogging(level); 
+}
 
-void DeInitLog() { google::ShutdownGoogleLogging(); }
+void DeInitLog() { 
+    google::ShutdownGoogleLogging(); 
+}
 
 } // namespace obotcha

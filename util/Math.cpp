@@ -14,6 +14,7 @@
 #include <limits>
 
 #include "Double.hpp"
+#include "Float.hpp"
 #include "Math.hpp"
 
 namespace obotcha {

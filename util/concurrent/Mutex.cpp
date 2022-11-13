@@ -2,7 +2,6 @@
 #include <sys/syscall.h>
 #include <unistd.h>
 
-#include "Error.hpp"
 #include "Mutex.hpp"
 #include "System.hpp"
 

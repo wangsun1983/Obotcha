@@ -1,20 +1,7 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <vector>
-
-#include "AutoLock.hpp"
-#include "BlockingQueue.hpp"
-#include "Error.hpp"
-#include "ExecutorTask.hpp"
-#include "Future.hpp"
-#include "InitializeException.hpp"
-#include "Integer.hpp"
-#include "Log.hpp"
-#include "Runnable.hpp"
-#include "StrongPointer.hpp"
-#include "System.hpp"
-#include "Thread.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
+#include "InitializeException.hpp"
+#include "Log.hpp"
+#include "Thread.hpp"
 #include "TimeWatcher.hpp"
 #include "ForEveryOne.hpp"
 #include "Inspect.hpp"

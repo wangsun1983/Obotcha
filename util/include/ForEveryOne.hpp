@@ -1,12 +1,8 @@
 #ifndef __OBOTCHA_FOR_EVERY_ONE_HPP__
 #define __OBOTCHA_FOR_EVERY_ONE_HPP__
 
-#include "FileDescriptor.hpp"
 #include "Lock.hpp"
-#include "InputStream.hpp"
 #include "Object.hpp"
-#include "OutputStream.hpp"
-#include "StrongPointer.hpp"
 #include "ConcurrentHashMap.hpp"
 #include "ConcurrentHashSet.hpp"
 #include "ConcurrentLinkedList.hpp"

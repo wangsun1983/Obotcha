@@ -3,6 +3,7 @@
 #include "Error.hpp"
 #include "AutoLock.hpp"
 #include "Log.hpp"
+#include "MySqlConnectParam.hpp"
 
 namespace obotcha {
 

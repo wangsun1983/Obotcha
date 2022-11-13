@@ -1,13 +1,8 @@
 #ifndef __OBOTCHA_EXECUTOR_HPP__
 #define __OBOTCHA_EXECUTOR_HPP__
 
-#include "Condition.hpp"
-#include "InterruptedException.hpp"
-#include "Mutex.hpp"
-#include "OStdInstanceOf.hpp"
+#include "Object.hpp"
 #include "Runnable.hpp"
-#include "TimeOutException.hpp"
-#include "Mutex.hpp"
 #include "AtomicInteger.hpp"
 #include "ThreadLocal.hpp"
 

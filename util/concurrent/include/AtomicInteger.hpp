@@ -1,11 +1,7 @@
 #ifndef __OBOTCHA_ATOMIC_INTEGER_HPP__
 #define __OBOTCHA_ATOMIC_INTEGER_HPP__
 
-#include <pthread.h>
-#include <sys/time.h>
-
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

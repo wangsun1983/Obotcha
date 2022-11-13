@@ -2,7 +2,6 @@
 #define __OBOTCHA_TIME_ZONE_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

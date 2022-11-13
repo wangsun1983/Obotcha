@@ -1,13 +1,13 @@
 #ifndef __OBOTCHA_OBOTCHA_LOG_HPP__
 #define __OBOTCHA_OBOTCHA_LOG_HPP__
 
-#include <initializer_list>
-#include <iostream>
+//#include <initializer_list>
+//#include <iostream>
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "utilities.h"
 #include "logging.h"
+
+#include "Object.hpp"
 #include "String.hpp"
 
 namespace obotcha {

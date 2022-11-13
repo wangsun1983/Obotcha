@@ -1,13 +1,16 @@
 #ifndef __OBOTCHA_SQL_CONNECTION_HPP__
 #define __OBOTCHA_SQL_CONNECTION_HPP__
 
-#include <map>
-#include "String.hpp"
-#include "StrongPointer.hpp"
+#include <functional>
+
 #include "Object.hpp"
+#include "String.hpp"
 #include "ArrayList.hpp"
 #include "SqlConnectParam.hpp"
-#include <functional>
+#include "ReflectUtil.hpp"
+#include "Field.hpp"
+#include "SqlQuery.hpp"
+#include "SqlRecords.hpp"
 
 namespace obotcha {
 
@@ -48,15 +51,12 @@ public:
     ArrayList<T> query(SqlQuery query) {
         ArrayList<T> result = createArrayList<T>();
         T dataset;
-        printf("sql start query \n");
         queryWithEachRow(query,
             [&dataset]() {
-                printf("sql start query,on start \n");
                 st(ReflectUtil)::createObject(dataset);
             },
 
             [&dataset](String name,String value) {
-                printf("sql start query,on data,name is %s,value is %s \n",name->toChars(),value->toChars());
                 Field field = dataset->getField(name);
                 if (field != nullptr) {
                     switch (field->getType()) {
@@ -118,9 +118,7 @@ public:
                 }
             },
             [&dataset,&result]() {
-                printf("sql finis query \n");
                 result->add(dataset);
-                printf("result size is %d \n",result->size());
             }
         );
         

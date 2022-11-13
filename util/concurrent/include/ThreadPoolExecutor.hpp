@@ -16,11 +16,11 @@
 #ifndef __OBOTCHA_THREAD_POOL_EXECUTOR_HPP__
 #define __OBOTCHA_THREAD_POOL_EXECUTOR_HPP__
 
+#include "Object.hpp"
 #include "BlockingLinkedList.hpp"
 #include "Executor.hpp"
 #include "ExecutorTask.hpp"
 #include "Future.hpp"
-#include "Runnable.hpp"
 #include "Thread.hpp"
 #include "List.hpp"
 
@@ -48,7 +48,6 @@ public:
     ~_ThreadPoolExecutor();
 
 private:
-    
     Future submitTask(ExecutorTask task);
     
     BlockingLinkedList<ExecutorTask> mPendingTasks;

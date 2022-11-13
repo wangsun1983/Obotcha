@@ -6,16 +6,12 @@
 #include "Object.hpp"
 #include "Runnable.hpp"
 #include "String.hpp"
-#include "StrongPointer.hpp"
 #include "FilaMutex.hpp"
-#include "OStdApply.hpp"
 #include "FilaFuture.hpp"
-#include "FilaExecutorResult.hpp"
 
 namespace obotcha {
 
 class _FilaRoutine;
-class _FilaMutex;
 
 DECLARE_CLASS(Filament) IMPLEMENTS(Runnable){
 

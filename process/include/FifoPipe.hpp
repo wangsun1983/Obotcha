@@ -32,7 +32,7 @@ public:
 
     int read(ByteArray buff);
 
-    int getMaxSize();
+    //int getMaxSize();
 
     void close();
 
@@ -43,6 +43,8 @@ public:
     ~_FifoPipe();
 
     int getChannel();
+
+    static const int MaxBuffSize;
 
 private:
 

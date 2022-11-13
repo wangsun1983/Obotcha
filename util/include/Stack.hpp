@@ -4,10 +4,9 @@
 #include <vector>
 #include <stack>
 
+#include "Object.hpp"
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "ContainerValue.hpp"
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

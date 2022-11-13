@@ -1,17 +1,13 @@
 #ifndef __OBOTCHA_THREAD_SCHEDULED_POOL_EXECUTOR_HPP__
 #define __OBOTCHA_THREAD_SCHEDULED_POOL_EXECUTOR_HPP__
 
-#include <vector>
-
-#include "AutoLock.hpp"
-#include "Closeable.hpp"
+#include "Object.hpp"
 #include "Condition.hpp"
 #include "ExecutorTask.hpp"
 #include "Future.hpp"
-#include "LinkedList.hpp"
 #include "Mutex.hpp"
-#include "Object.hpp"
 #include "Thread.hpp"
+#include "Closeable.hpp"
 #include "ThreadCachedPoolExecutor.hpp"
 
 namespace obotcha {

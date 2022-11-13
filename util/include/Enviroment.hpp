@@ -1,13 +1,8 @@
 #ifndef __OBOTCHA_ENVIROMENT_HPP__
 #define __OBOTCHA_ENVIROMENT_HPP__
 
-#include <mutex>
-#include <thread>
-
 #include "HashMap.hpp"
-#include "Mutex.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

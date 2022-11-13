@@ -2,17 +2,11 @@
 #define __OBOTCHA_MY_SQL_CONNECTION_H__
 
 #include "mysql.h"
+
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "HashMap.hpp"
 #include "ArrayList.hpp"
-#include "Reflect.hpp"
-#include "ReflectUtil.hpp"
-#include "List.hpp"
-#include "ReflectUtil.hpp"
 #include "SqlQuery.hpp"
 #include "SqlRecords.hpp"
-#include "MySqlConnectParam.hpp"
 #include "Mutex.hpp"
 #include "SqlConnection.hpp"
 

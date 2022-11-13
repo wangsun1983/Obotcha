@@ -5,10 +5,8 @@
 
 #include "Object.hpp"
 #include "Runnable.hpp"
-#include "StrongPointer.hpp"
-#include "ThreadLocal.hpp"
 #include "Lock.hpp"
-#include "AtomicInteger.hpp"
+#include "Mutex.hpp"
 
 namespace obotcha {
 

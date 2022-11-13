@@ -1,16 +1,15 @@
 #ifndef __OBOTCHA_REDIS_CONNECTION_H__
 #define __OBOTCHA_REDIS_CONNECTION_H__
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "String.hpp"
 #include "hiredis.h"
+#include "async.h"
+
+#include "Object.hpp"
+#include "String.hpp"
 #include "ArrayList.hpp"
 #include "Mutex.hpp"
-#include "async.h"
 #include "HashMap.hpp"
 #include "HashSet.hpp"
-#include "Thread.hpp"
 #include "EPollFileObserver.hpp"
 
 namespace obotcha {

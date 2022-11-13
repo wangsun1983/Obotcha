@@ -1,20 +1,11 @@
 #ifndef __OBOTCHA_CONCURRENT_HASHSET_HPP__
 #define __OBOTCHA_CONCURRENT_HASHSET_HPP__
 
-#include <algorithm>
-#include <unordered_set>
-
-#include "HashKey.hpp"
-#include "Long.hpp"
 #include "Object.hpp"
-#include "String.hpp"
-#include "StrongPointer.hpp"
-#include "Mutex.hpp"
+#include "HashKey.hpp"
 #include "AutoLock.hpp"
 #include "HashSet.hpp"
 #include "ReadWriteLock.hpp"
-
-#include <set>
 
 namespace obotcha {
 

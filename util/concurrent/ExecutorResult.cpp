@@ -1,5 +1,4 @@
 #include "ExecutorResult.hpp"
-#include "Executor.hpp"
 
 namespace obotcha {
 

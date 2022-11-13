@@ -15,12 +15,11 @@
 #ifndef __OBOTCHA_THREAD_H__
 #define __OBOTCHA_THREAD_H__
 
-#include <cstdint>
 #include <linux/sched.h>
 #include <pthread.h>
 
-#include "Condition.hpp"
 #include "Object.hpp"
+#include "Condition.hpp"
 #include "Runnable.hpp"
 #include "String.hpp"
 #include "ThreadLocal.hpp"

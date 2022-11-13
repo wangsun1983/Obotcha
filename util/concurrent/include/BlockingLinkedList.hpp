@@ -1,6 +1,7 @@
 #ifndef __OBOTCHA_BLOCKING_LINKED_LIST_HPP__
 #define __OBOTCHA_BLOCKING_LINKED_LIST_HPP__
 
+#include "Object.hpp"
 #include "ArrayList.hpp"
 #include "AutoLock.hpp"
 #include "Condition.hpp"
@@ -8,8 +9,6 @@
 #include "Error.hpp"
 #include "LinkedList.hpp"
 #include "Mutex.hpp"
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

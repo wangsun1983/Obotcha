@@ -1,9 +1,7 @@
 #include "sqlite3.h"
 
 #include "Sqlite3Connection.hpp"
-#include "Error.hpp"
 #include "SqlRecords.hpp"
-#include "SqlConnection.hpp"
 #include "Log.hpp"
 #include "AutoLock.hpp"
 

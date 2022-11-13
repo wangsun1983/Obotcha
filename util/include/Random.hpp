@@ -6,10 +6,7 @@
 #include <time.h>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "ByteArray.hpp"
-#include "String.hpp"
 
 namespace obotcha {
 

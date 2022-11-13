@@ -1,5 +1,4 @@
 #include "Executor.hpp"
-#include "AutoLock.hpp"
 #include "ExecutorTask.hpp"
 #include "Future.hpp"
 

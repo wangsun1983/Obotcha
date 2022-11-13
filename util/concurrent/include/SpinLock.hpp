@@ -3,10 +3,9 @@
 
 #include <pthread.h>
 
-#include "Lock.hpp"
 #include "Object.hpp"
+#include "Lock.hpp"
 #include "String.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

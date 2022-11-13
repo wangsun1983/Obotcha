@@ -23,7 +23,6 @@
 #ifndef __OBOTCHA_CONDITION_HPP__
 #define __OBOTCHA_CONDITION_HPP__
 
-#include <atomic>
 #include <pthread.h>
 #include <functional>
 

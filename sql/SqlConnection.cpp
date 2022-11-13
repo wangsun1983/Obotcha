@@ -1,5 +1,4 @@
 #include "SqlConnection.hpp"
-#include "OStdInstanceOf.hpp"
 
 namespace obotcha {
 

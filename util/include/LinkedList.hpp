@@ -5,17 +5,9 @@
 #include <functional>
 #include <vector>
 
-#include "ArrayIndexOutOfBoundsException.hpp"
-#include "Boolean.hpp"
-#include "ContainerValue.hpp"
-#include "Double.hpp"
-#include "Float.hpp"
-#include "Integer.hpp"
-#include "Long.hpp"
-#include "MethodNotSupportException.hpp"
 #include "Object.hpp"
-#include "String.hpp"
-#include "StrongPointer.hpp"
+#include "ArrayIndexOutOfBoundsException.hpp"
+#include "ContainerValue.hpp"
 
 namespace obotcha {
 

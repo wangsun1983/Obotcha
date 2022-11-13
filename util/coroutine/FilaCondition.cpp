@@ -1,8 +1,8 @@
 #include "FilaCondition.hpp"
 #include "FilaRoutine.hpp"
-#include "Log.hpp"
 #include "IllegalStateException.hpp"
 #include "TimeWatcher.hpp"
+#include "Log.hpp"
 
 namespace obotcha {
 

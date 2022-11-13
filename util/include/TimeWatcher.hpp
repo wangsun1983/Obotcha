@@ -2,8 +2,6 @@
 #define __OBOTCHA_TIME_WATCHER_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "String.hpp"
 
 namespace obotcha {

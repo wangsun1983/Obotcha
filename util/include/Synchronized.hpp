@@ -1,6 +1,7 @@
 #ifndef __OBOTCHA_SYNCHRONIZED_HPP__
 #define __OBOTCHA_SYNCHRONIZED_HPP__
 
+#include "AutoLock.hpp"
 
 namespace obotcha {
 

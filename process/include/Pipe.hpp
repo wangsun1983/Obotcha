@@ -53,6 +53,8 @@ public:
 
     ~_Pipe();
 
+    static const int MaxBuffSize;
+
 private:
 
     int pipeFd[2];

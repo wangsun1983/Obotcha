@@ -6,15 +6,11 @@
 #include <unordered_map>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
-#include "ArrayList.hpp"
-#include "NullPointerException.hpp"
 
 namespace obotcha {
 
 // hash function of map
-template <typename T> class KeyHash {
+template <typename T> class HashKey {
   public:
     size_t operator()(const T &A) const {
         if (A == nullptr) {
@@ -24,22 +20,22 @@ template <typename T> class KeyHash {
     }
 };
 
-#define KeyHashSimpleDataTypeFunc(X)                                           \
-    template <> class KeyHash<X> {                                             \
+#define HashKeySimpleDataTypeFunc(X)                                           \
+    template <> class HashKey<X> {                                             \
       public:                                                                  \
         size_t operator()(const X &A) const { return std::hash<X>{}(A); }      \
     }
 
-KeyHashSimpleDataTypeFunc(bool);
-KeyHashSimpleDataTypeFunc(double);
-KeyHashSimpleDataTypeFunc(float);
-KeyHashSimpleDataTypeFunc(int);
-KeyHashSimpleDataTypeFunc(long);
-KeyHashSimpleDataTypeFunc(uint8_t);
-KeyHashSimpleDataTypeFunc(uint16_t);
-KeyHashSimpleDataTypeFunc(uint32_t);
-KeyHashSimpleDataTypeFunc(uint64_t);
-KeyHashSimpleDataTypeFunc(std::string);
+HashKeySimpleDataTypeFunc(bool);
+HashKeySimpleDataTypeFunc(double);
+HashKeySimpleDataTypeFunc(float);
+HashKeySimpleDataTypeFunc(int);
+HashKeySimpleDataTypeFunc(long);
+HashKeySimpleDataTypeFunc(uint8_t);
+HashKeySimpleDataTypeFunc(uint16_t);
+HashKeySimpleDataTypeFunc(uint32_t);
+HashKeySimpleDataTypeFunc(uint64_t);
+HashKeySimpleDataTypeFunc(std::string);
 
 // compare function of map
 template <typename T> class KeyComapre {

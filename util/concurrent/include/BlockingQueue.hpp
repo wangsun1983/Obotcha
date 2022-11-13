@@ -1,19 +1,15 @@
 #ifndef __OBOTCHA_BLOCKING_QUEUE_HPP__
 #define __OBOTCHA_BLOCKING_QUEUE_HPP__
 
-#include <errno.h>
 #include <unistd.h>
 #include <vector>
 
+#include "Object.hpp"
 #include "ArrayList.hpp"
 #include "AutoLock.hpp"
 #include "Condition.hpp"
 #include "ContainerValue.hpp"
-#include "Error.hpp"
-#include "InitializeException.hpp"
 #include "Mutex.hpp"
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

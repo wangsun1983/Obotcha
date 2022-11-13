@@ -13,16 +13,10 @@
 #ifndef __OBOTCHA_EXECUTOR_TASK_HPP__
 #define __OBOTCHA_EXECUTOR_TASK_HPP__
 
-#include "AutoLock.hpp"
+#include "Object.hpp"
 #include "Condition.hpp"
-#include "Error.hpp"
-#include "InterruptedException.hpp"
 #include "Mutex.hpp"
-#include "NullPointerException.hpp"
-#include "OStdInstanceOf.hpp"
 #include "Runnable.hpp"
-#include "TimeOutException.hpp"
-
 
 namespace obotcha {
 class _ExecutorResult;

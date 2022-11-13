@@ -5,9 +5,8 @@
 #include <stdio.h>
 #include <utility>
 
-#include "OStdApply.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
+#include "OStdApply.hpp"
 
 namespace obotcha {
 

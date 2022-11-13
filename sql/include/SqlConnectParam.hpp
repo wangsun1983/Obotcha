@@ -2,14 +2,10 @@
 #define __OBOTCHA_SQL_CONNECT_PARAM_H__
 
 #include "sqlite3.h"
+
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "HashMap.hpp"
 #include "ArrayList.hpp"
-#include "Reflect.hpp"
-#include "ReflectUtil.hpp"
-#include "SqlQuery.hpp"
-#include "SqlRecords.hpp"
 
 namespace obotcha {
 

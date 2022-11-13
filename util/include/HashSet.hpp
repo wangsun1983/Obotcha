@@ -3,14 +3,10 @@
 
 #include <algorithm>
 #include <unordered_set>
-
-#include "HashKey.hpp"
-#include "Long.hpp"
-#include "Object.hpp"
-#include "String.hpp"
-#include "StrongPointer.hpp"
-
 #include <set>
+
+#include "Object.hpp"
+#include "HashKey.hpp"
 
 namespace obotcha {
 
@@ -58,14 +54,14 @@ public:
     }
 
 private:
-    std::unordered_set<T, KeyHash<T>, KeyComapre<T>> hashset;
+    std::unordered_set<T, HashKey<T>, KeyComapre<T>> hashset;
 
-    typename std::unordered_set<T, KeyHash<T>, KeyComapre<T>>::iterator
+    typename std::unordered_set<T, HashKey<T>, KeyComapre<T>>::iterator
     begin() {
         return hashset.begin();
     }
 
-    typename std::unordered_set<T, KeyHash<T>, KeyComapre<T>>::iterator end() {
+    typename std::unordered_set<T, HashKey<T>, KeyComapre<T>>::iterator end() {
         return hashset.end();
     }
 };
@@ -108,7 +104,7 @@ public:
 
 private:
     HashSet<T> mList;
-    typename std::unordered_set<T, KeyHash<T>, KeyComapre<T>>::iterator
+    typename std::unordered_set<T, HashKey<T>, KeyComapre<T>>::iterator
         iterator;
 };
 

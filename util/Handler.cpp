@@ -11,9 +11,6 @@
  * @license none
  */
 
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "Handler.hpp"
 #include "Message.hpp"
 #include "String.hpp"
@@ -38,13 +35,13 @@ _Handler::~_Handler() {
     join();
 }
 
-sp<_Message> _Handler::obtainMessage(int w) {
+Message _Handler::obtainMessage(int w) {
     Message msg = obtainMessage();
     msg->what = w;
     return msg;
 }
 
-sp<_Message> _Handler::obtainMessage() { 
+Message _Handler::obtainMessage() { 
     return createMessage(-1); 
 }
 

@@ -2,8 +2,8 @@
 #define __OBOTCHA_SQLITE3_CONNECTION_H__
 
 #include "sqlite3.h"
+
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "HashMap.hpp"
 #include "ArrayList.hpp"
 #include "Reflect.hpp"

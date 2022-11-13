@@ -1,6 +1,3 @@
-#include <pthread.h>
-
-#include "Error.hpp"
 #include "ReadWriteLock.hpp"
 #include "Process.hpp"
 #include "Log.hpp"

@@ -1,18 +1,14 @@
 #ifndef __OBOTCHA_THREAD_PRIORITY_POOL_EXECUTOR_SERVICE_H__
 #define __OBOTCHA_THREAD_PRIORITY_POOL_EXECUTOR_SERVICE_H__
 
-#include <map>
-#include <pthread.h>
+#include "Object.hpp"
 
 #include "ArrayList.hpp"
 #include "Condition.hpp"
-#include "Error.hpp"
 #include "Executor.hpp"
 #include "Future.hpp"
 #include "LinkedList.hpp"
-#include "Object.hpp"
 #include "Runnable.hpp"
-#include "StrongPointer.hpp"
 #include "Thread.hpp"
 
 namespace obotcha {

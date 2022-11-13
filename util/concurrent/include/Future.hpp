@@ -1,10 +1,12 @@
 #ifndef __OBOTCHA_FUTURE_HPP__
 #define __OBOTCHA_FUTURE_HPP__
 
+#include "Object.hpp"
 #include "ExecutorTask.hpp"
-#include "ExecutorResult.hpp"
 #include "IllegalStateException.hpp"
 #include "InterruptedException.hpp"
+#include "ExecutorResult.hpp"
+#include "TimeOutException.hpp"
 
 namespace obotcha {
 

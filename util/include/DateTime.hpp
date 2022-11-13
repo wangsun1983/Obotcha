@@ -5,14 +5,8 @@
 #include <sys/time.h>
 #include <vector>
 
-#include "Boolean.hpp"
-#include "Double.hpp"
-#include "Float.hpp"
-#include "Integer.hpp"
-#include "Long.hpp"
 #include "Object.hpp"
 #include "String.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

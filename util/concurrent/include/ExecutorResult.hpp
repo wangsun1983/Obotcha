@@ -1,10 +1,11 @@
 #ifndef __OBOTCHA_EXECUTOR_RESULT_HPP__
 #define __OBOTCHA_EXECUTOR_RESULT_HPP__
 
+#include "Object.hpp"
+
 #include "Byte.hpp"
 #include "Executor.hpp"
-#include "Object.hpp"
-#include "ThreadLocal.hpp"
+#include "NullPointerException.hpp"
 #include "ExecutorTask.hpp"
 
 namespace obotcha {

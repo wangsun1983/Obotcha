@@ -1,6 +1,3 @@
-#include "Object.hpp"
-#include "StrongPointer.hpp"
-#include "String.hpp"
 #include "RedisConnection.hpp"
 #include "Log.hpp"
 #include "InitializeException.hpp"

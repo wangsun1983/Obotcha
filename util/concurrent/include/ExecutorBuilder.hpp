@@ -12,9 +12,6 @@
 #ifndef __OBOTCHA_EXECUTORS_HPP__
 #define __OBOTCHA_EXECUTORS_HPP__
 
-#include <map>
-#include <pthread.h>
-
 #include "ThreadCachedPoolExecutor.hpp"
 #include "ThreadPoolExecutor.hpp"
 #include "ThreadPriorityPoolExecutor.hpp"

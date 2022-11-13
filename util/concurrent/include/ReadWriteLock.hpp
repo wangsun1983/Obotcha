@@ -18,10 +18,9 @@
 #include <sys/time.h>
 #include <map>
 
-#include "Lock.hpp"
 #include "Object.hpp"
+#include "Lock.hpp"
 #include "String.hpp"
-#include "StrongPointer.hpp"
 #include "Mutex.hpp"
 #include "Condition.hpp"
 

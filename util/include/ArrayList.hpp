@@ -19,7 +19,6 @@
 
 #include "ArrayIndexOutOfBoundsException.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

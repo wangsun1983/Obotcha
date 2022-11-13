@@ -10,11 +10,8 @@
  * @license none
  */
 
-#include <pthread.h>
-
 #include "AutoLock.hpp"
 #include "Condition.hpp"
-#include "Error.hpp"
 #include "InitializeException.hpp"
 #include "Mutex.hpp"
 #include "System.hpp"

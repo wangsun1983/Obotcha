@@ -1,11 +1,8 @@
 #ifndef __OBOTCHA_TIMER_HPP__
 #define __OBOTCHA_TIMER_HPP__
 
-#include <stdio.h>
-
-#include "DateTime.hpp"
 #include "Object.hpp"
-#include "StrongPointer.hpp"
+#include "DateTime.hpp"
 #include "ThreadScheduledPoolExecutor.hpp"
 
 namespace obotcha {

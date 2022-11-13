@@ -1,14 +1,9 @@
 #ifndef __OBOTCHA_THREAD_LOCAL_HPP__
 #define __OBOTCHA_THREAD_LOCAL_HPP__
 
-#include <pthread.h>
-#include <vector>
-
+#include "Object.hpp"
 #include "AutoLock.hpp"
 #include "HashMap.hpp"
-#include "Mutex.hpp"
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "ReadWriteLock.hpp"
 
 namespace obotcha {

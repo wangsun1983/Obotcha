@@ -4,16 +4,14 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "Thread.hpp"
 #include "AutoLock.hpp"
 #include "Error.hpp"
 #include "Log.hpp"
-#include "System.hpp"
-#include "Thread.hpp"
-#include "ThreadLocal.hpp"
-#include "AtomicInteger.hpp"
 #include "InterruptedException.hpp"
 #include "IllegalStateException.hpp"
 #include "Synchronized.hpp"
+#include "AtomicInteger.hpp"
 #include "Inspect.hpp"
 
 namespace obotcha {

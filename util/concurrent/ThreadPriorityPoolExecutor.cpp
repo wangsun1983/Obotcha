@@ -1,20 +1,12 @@
-#include <map>
-#include <pthread.h>
-#include <stdio.h>
-
+#include "ThreadPriorityPoolExecutor.hpp"
 #include "ArrayList.hpp"
 #include "AutoLock.hpp"
-#include "Error.hpp"
-#include "Future.hpp"
 #include "Log.hpp"
-#include "Object.hpp"
-#include "Runnable.hpp"
-#include "StrongPointer.hpp"
 #include "System.hpp"
-#include "ThreadPriorityPoolExecutor.hpp"
 #include "ForEveryOne.hpp"
 #include "Synchronized.hpp"
 #include "Inspect.hpp"
+
 namespace obotcha {
 
 _ThreadPriorityPoolExecutor::_ThreadPriorityPoolExecutor(int maxPendingTaskNum, 

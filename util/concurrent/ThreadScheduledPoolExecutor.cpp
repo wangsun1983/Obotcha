@@ -1,13 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-
+#include "ThreadScheduledPoolExecutor.hpp"
 #include "AutoLock.hpp"
 #include "Error.hpp"
 #include "ExecutorBuilder.hpp"
 #include "Log.hpp"
 #include "System.hpp"
-#include "Thread.hpp"
-#include "ThreadScheduledPoolExecutor.hpp"
 #include "Inspect.hpp"
 
 namespace obotcha {

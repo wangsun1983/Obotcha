@@ -1,19 +1,10 @@
 #include <algorithm>
 #include <regex>
 #include <sys/time.h>
-#include <vector>
 
-#include "Boolean.hpp"
 #include "Calendar.hpp"
 #include "DateTime.hpp"
-#include "Double.hpp"
-#include "Float.hpp"
 #include "InitializeException.hpp"
-#include "Integer.hpp"
-#include "Long.hpp"
-#include "Object.hpp"
-#include "String.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 #define SKIP_JUNK()                                                            \

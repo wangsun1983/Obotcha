@@ -2,7 +2,6 @@
 #define __OBOTCHA_LOCK_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "MethodNotSupportException.hpp"
 
 namespace obotcha {
@@ -18,7 +17,9 @@ DECLARE_CLASS(Lock) {
 
     virtual int unlock() = 0;
 
-    virtual bool isOwner() {Trigger(MethodNotSupportException,"Not Support")};
+    virtual bool isOwner() {
+        Trigger(MethodNotSupportException,"Not Support");
+    };
 };
 
 } // namespace obotcha

@@ -2,18 +2,13 @@
 #define __OBOTCHA_THREAD_CACHED_POOL_EXECUTOR_HPP__
 
 #include <atomic>
-#include <vector>
 
-#include "AutoLock.hpp"
+#include "Object.hpp"
 #include "BlockingLinkedList.hpp"
 #include "Executor.hpp"
 #include "ExecutorTask.hpp"
 #include "Future.hpp"
-#include "Object.hpp"
-#include "Runnable.hpp"
-#include "StrongPointer.hpp"
 #include "Thread.hpp"
-#include "HashMap.hpp"
 #include "ConcurrentHashMap.hpp"
 #include "ConcurrentQueue.hpp"
 

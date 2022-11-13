@@ -11,7 +11,6 @@
  */
 
 #include "Future.hpp"
-#include "Error.hpp"
 
 namespace obotcha {
 

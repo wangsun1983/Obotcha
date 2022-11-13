@@ -1,8 +1,6 @@
 #ifndef __OBOTCHA_AUTO_LOCK_HPP__
 #define __OBOTCHA_AUTO_LOCK_HPP__
 
-#include <stdio.h>
-
 #include "Lock.hpp"
 
 namespace obotcha {

@@ -20,12 +20,11 @@
 #include <unordered_map>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
+#include "ArrayList.hpp"
+#include "ValueNotFoundException.hpp"
 
 #include "HashKey.hpp"
 #include "Pair.hpp"
-#include "NullPointerException.hpp"
-#include "ValueNotFoundException.hpp"
 
 namespace obotcha {
 
@@ -193,14 +192,14 @@ DECLARE_TEMPLATE_CLASS(HashMap,T,U) {
     inline sp<_String> __ReflectClassName() { return createString("_HashMap"); }
 
   private:
-    std::unordered_map<T, U, KeyHash<T>, KeyComapre<T>> hashmap;
+    std::unordered_map<T, U, HashKey<T>, KeyComapre<T>> hashmap;
 
-    typename std::unordered_map<T, U, KeyHash<T>, KeyComapre<T>>::iterator
+    typename std::unordered_map<T, U, HashKey<T>, KeyComapre<T>>::iterator
     begin() {
         return hashmap.begin();
     }
 
-    typename std::unordered_map<T, U, KeyHash<T>, KeyComapre<T>>::iterator
+    typename std::unordered_map<T, U, HashKey<T>, KeyComapre<T>>::iterator
     end() {
         return hashmap.end();
     }
@@ -260,7 +259,7 @@ DECLARE_TEMPLATE_CLASS(MapIterator, T,U) {
 
   private:
     HashMap<T, U> mHashMap;
-    typename std::unordered_map<T, U, KeyHash<T>, KeyComapre<T>>::iterator
+    typename std::unordered_map<T, U, HashKey<T>, KeyComapre<T>>::iterator
         iterator;
 };
 

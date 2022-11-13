@@ -13,8 +13,6 @@
  */
 
 #include "SpinLock.hpp"
-#include "Error.hpp"
-#include "String.hpp"
 
 namespace obotcha {
 

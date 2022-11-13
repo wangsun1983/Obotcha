@@ -4,7 +4,6 @@
 #include <atomic>
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

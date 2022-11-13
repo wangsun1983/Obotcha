@@ -1,16 +1,12 @@
 #ifndef __OBOTCHA_CONCURRENT_LINKEDLIST_HPP__
 #define __OBOTCHA_CONCURRENT_LINKEDLIST_HPP__
 
-#include <vector>
 
+#include "Object.hpp"
 #include "LinkedList.hpp"
 #include "AutoLock.hpp"
 #include "ContainerValue.hpp"
-#include "Mutex.hpp"
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "ReadWriteLock.hpp"
-#include "System.hpp"
 
 namespace obotcha {
 

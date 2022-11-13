@@ -1,11 +1,10 @@
 #ifndef __OBOTCHA_AUTO_CLOSE_HPP__
 #define __OBOTCHA_AUTO_CLOSE_HPP__
 
+#include "Object.hpp"
 #include "FileDescriptor.hpp"
 #include "InputStream.hpp"
-#include "Object.hpp"
 #include "OutputStream.hpp"
-#include "StrongPointer.hpp"
 
 namespace obotcha {
 

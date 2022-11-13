@@ -1,13 +1,9 @@
 #ifndef __OBOTCHA_CONCURRENT_HASHMAP_HPP__
 #define __OBOTCHA_CONCURRENT_HASHMAP_HPP__
 
-#include <vector>
-
+#include "Object.hpp"
 #include "AutoLock.hpp"
 #include "HashMap.hpp"
-#include "Mutex.hpp"
-#include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "ReadWriteLock.hpp"
 
 namespace obotcha {

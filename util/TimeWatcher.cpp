@@ -1,9 +1,7 @@
-#include "Object.hpp"
-#include "StrongPointer.hpp"
+#include "TimeWatcher.hpp"
 
 #include "Log.hpp"
 #include "System.hpp"
-#include "TimeWatcher.hpp"
 
 namespace obotcha {
 

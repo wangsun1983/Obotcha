@@ -2,7 +2,6 @@
 #define __OBOTCHA_SQL_RECORDS_H__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "String.hpp"
 #include "List.hpp"
 

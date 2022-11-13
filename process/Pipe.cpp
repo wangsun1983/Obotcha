@@ -3,6 +3,9 @@
 
 namespace obotcha {
 
+
+const int _Pipe::MaxBuffSize = PIPE_BUF;
+
 _Pipe::_Pipe(Type type) {
     pipeFd[WriteChannel] = -1;
     pipeFd[ReadChannel] = -1;
@@ -56,9 +59,9 @@ int _Pipe::getWriteChannel() {
     return pipeFd[WriteChannel];
 }
 
-int _Pipe::getMaxSize() {
-    return PIPE_BUF;
-}
+//int _Pipe::getMaxSize() {
+//    return PIPE_BUF;
+//}
 
 void _Pipe::close() {
     closeWriteChannel();

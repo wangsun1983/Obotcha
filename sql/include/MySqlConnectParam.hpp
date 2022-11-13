@@ -2,7 +2,6 @@
 #define __OBOTCHA_MY_SQL_CONNECT_PARAM_H__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "String.hpp"
 #include "SqlConnectParam.hpp"
 

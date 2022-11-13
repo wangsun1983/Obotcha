@@ -5,7 +5,6 @@
 #include "co_routine_inner.h"
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
 #include "ExecutorResult.hpp"
 #include "HashMap.hpp"
 

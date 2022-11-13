@@ -16,8 +16,6 @@
 #define __OBOTCHA_COUNT_DOWN_LATCH_HPP__
 
 #include "Object.hpp"
-#include "StrongPointer.hpp"
-
 #include "Condition.hpp"
 #include "Mutex.hpp"
 

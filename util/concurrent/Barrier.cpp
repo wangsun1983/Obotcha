@@ -1,7 +1,6 @@
 #include "Barrier.hpp"
 #include "AutoLock.hpp"
 #include "Error.hpp"
-#include "InterruptedException.hpp"
 
 namespace obotcha {
 
