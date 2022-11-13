@@ -51,6 +51,8 @@ private:
     ConcurrentHashMap<Socket,HttpLinker> mLinkers;
 
     CountDownLatch mExitLatch;
+
+    int mProtocol;
 };
 
 }

@@ -15,6 +15,14 @@
 #include "HttpPacketWriterImpl.hpp"
 #include "NetEvent.hpp"
 #include "Log.hpp"
+#include "WebSocketHybi00Composer.hpp"
+#include "WebSocketHybi00Parser.hpp"
+#include "WebSocketHybi07Composer.hpp"
+#include "WebSocketHybi07Parser.hpp"
+#include "WebSocketHybi08Composer.hpp"
+#include "WebSocketHybi08Parser.hpp"
+#include "WebSocketHybi13Composer.hpp"
+#include "WebSocketHybi13Parser.hpp"
 
 namespace obotcha {
 
@@ -23,7 +31,8 @@ _WebSocketServer::_WebSocketServer(int threadnum) {
     mSocketMonitor = createSocketMonitor(threadnum);
     mHttpServer = nullptr;
     mWsListeners = createHashMap<String,WebSocketListener>();
-    mLinkerManager = createWebSocketLinkerManager();
+    //mLinkerManager = createWebSocketLinkerManager();
+    mLinkers = createConcurrentHashMap<Socket,sp<_WebSocketLinker>>();
 }
 
 int _WebSocketServer::bind(String path,WebSocketListener l) {
@@ -69,7 +78,7 @@ void _WebSocketServer::dump() {
 }
 
 void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
-    WebSocketLinker client = mLinkerManager->get(s);
+    WebSocketLinker client = mLinkers->get(s);//mLinkerManager->get(s);
 
     WebSocketListener listener = client->getWebSocketListener();
     if(listener == nullptr) {
@@ -129,7 +138,8 @@ void _WebSocketServer::onSocketMessage(int event,Socket s,ByteArray pack) {
         case st(NetEvent)::Disconnect: {
             if(client != nullptr) {
                 //LOG(ERROR)<<"client is removed by socket callback";
-                mLinkerManager->remove(client);
+                //mLinkerManager->remove(client);
+                mLinkers->remove(s);
                 listener->onDisconnect(client);
             } else {
                 LOG(ERROR)<<"client is already remove!!!";
@@ -160,18 +170,19 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,HttpRespon
 
             //String version = header->get(st(HttpHeader)::SecWebSocketVersion);
             int version = header->getWebSocketVersion()->get();
-
             if (httpUpgrade != nullptr && httpUpgrade->get()->equalsIgnoreCase("websocket")) {
                 // remove fd from http epoll
                 //mHttpServer->deMonitor(client->getSocket());
                 mHttpServer->remove(client);
 
-                while(mLinkerManager->get((client->mSocket))!= nullptr) {
+                //while(mLinkerManager->get((client->mSocket))!= nullptr) {
+                while(mLinkers->get((client->mSocket))!= nullptr) {
                     LOG(INFO)<<"websocket client is not removed";
                     usleep(1000*5);
                 }
                 
-                WebSocketLinker wsClient = mLinkerManager->add(client->mSocket,version);
+                //WebSocketLinker wsClient = mLinkerManager->add(client->mSocket,version);
+                WebSocketLinker wsClient = createLinker(client,version);
 
                 //wsClient->setProtocols(header->get(st(HttpHeader)::SecWebSocketProtocol));
                 //wsClient->setWebSocketKey(header->get(st(HttpHeader)::SecWebSocketKey));
@@ -181,17 +192,18 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,HttpRespon
                 wsClient->setWebSocketKey(header->getWebSocketKey()->get());
 
                 WebSocketParser parser = wsClient->getParser();
-
                 if (!parser->validateHandShake(header)) {
                     LOG(INFO)<<"websocket client header is invalid";
                     return;
                 }
 
+                mLinkers->put(wsClient->getSocket(),wsClient);
                 // Try to check whether extension support deflate.
                 WebSocketPermessageDeflate deflate = parser->validateExtensions(header);
                 if (deflate != nullptr) {
                     wsClient->setDeflater(deflate);
                 }
+                
                 ArrayList<String> protocols = parser->extractSubprotocols(header);
                 if (protocols != nullptr && protocols->size() != 0) {
                     LOG(ERROR)<<"Websocket Server Protocol is not null";
@@ -204,14 +216,12 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,HttpRespon
                 wsClient->setWebSocketListener(listener);
                 wsClient->setPath(path);
                 mSocketMonitor->bind(client->mSocket,AutoClone<SocketListener>(this));
-                
                 WebSocketComposer composer = wsClient->getComposer();
                 //String p = wsClient->getHttpHeader()->getValue(st(HttpHeader)::SecWebSocketProtocol);
                 //String k = wsClient->getHttpHeader()->getValue(st(HttpHeader)::SecWebSocketKey);
                 ArrayList<String> p = wsClient->getProtocols();
                 String k = wsClient->getWebSocketKey();
                 HttpResponse shakeresponse = composer->genServerShakeHandMessage(k,p);
-
                 HttpPacketWriter writer = client->getWriter();//createHttpPacketWriterImpl(client->mSocket->getOutputStream());
                 //long ret = client->getSocket()->getOutputStream()->write(shakeresponse);
                 if(writer->write(shakeresponse) < 0) {
@@ -230,6 +240,43 @@ void _WebSocketServer::onHttpMessage(int event,sp<_HttpLinker> client,HttpRespon
         case st(NetEvent)::Disconnect:
         break;
     }
+}
+
+WebSocketLinker _WebSocketServer::createLinker(sp<_HttpLinker> linker,int version) {
+    WebSocketLinker client = createWebSocketLinker(linker->mSocket);
+    client->setVersion(version);
+
+    switch (version) {
+        case 0: {
+            client->setParser(createWebSocketHybi00Parser());
+            client->setComposer(createWebSocketHybi00Composer(WsServerComposer));
+            break;
+        }
+
+        case 7: {
+            client->setParser(createWebSocketHybi07Parser());
+            client->setComposer(createWebSocketHybi07Composer(WsServerComposer));
+            break;
+        }
+
+        case 8: {
+            client->setParser(createWebSocketHybi08Parser());
+            client->setComposer(createWebSocketHybi08Composer(WsServerComposer));
+            break;
+        }
+
+        case 13: {
+            client->setParser(createWebSocketHybi13Parser());
+            client->setComposer(createWebSocketHybi13Composer(WsServerComposer));
+            break;
+        }
+
+        default:
+            LOG(ERROR)<<"WebSocket Protocol Not Support,Version is "<<version;
+            return nullptr;
+    }
+
+    return client;
 }
 
 }  // namespace obotcha

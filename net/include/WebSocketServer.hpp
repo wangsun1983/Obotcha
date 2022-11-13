@@ -28,6 +28,7 @@
 #include "WebSocketListener.hpp"
 #include "WebSocketOption.hpp"
 #include "WebSocketParser.hpp"
+#include "ConcurrentHashMap.hpp"
 
 namespace obotcha {
 
@@ -54,6 +55,8 @@ private:
 
     void onSocketMessage(int, Socket, ByteArray);
 
+    WebSocketLinker createLinker(sp<_HttpLinker>,int ver);
+
     InetAddress mAddress;
 
     HttpServer mHttpServer;
@@ -66,7 +69,8 @@ private:
 
     HttpOption mHttpOption;
 
-    WebSocketLinkerManager mLinkerManager;
+    //WebSocketLinkerManager mLinkerManager;
+    ConcurrentHashMap<Socket,sp<_WebSocketLinker>> mLinkers;
 };
 
 } // namespace obotcha

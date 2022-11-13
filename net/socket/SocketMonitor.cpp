@@ -262,17 +262,17 @@ void _SocketMonitor::dump() {
     printf("---SocketMonitor dump end --- \n");
 }
 
-int _SocketMonitor::unbind(Socket s) {
+int _SocketMonitor::unbind(Socket s,bool isAutoClose) {
     AutoLock l(mMutex);
     remove(s->getFileDescriptor());
-    s->getFileDescriptor()->unMonitor();
+    s->getFileDescriptor()->unMonitor(isAutoClose);
     return 0;
 }
 
-int _SocketMonitor::unbind(ServerSocket s) {
+int _SocketMonitor::unbind(ServerSocket s,bool isAutoClose) {
     AutoLock l(mMutex);
     remove(s->getFileDescriptor());
-    s->getFileDescriptor()->unMonitor();
+    s->getFileDescriptor()->unMonitor(isAutoClose);
     return 0;
 }
 

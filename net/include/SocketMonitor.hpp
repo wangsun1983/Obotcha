@@ -40,8 +40,8 @@ public:
     int bind(Socket,SocketListener);
     int bind(ServerSocket,SocketListener);
    
-    int unbind(Socket);
-    int unbind(ServerSocket);
+    int unbind(Socket,bool isAutoClose = true);
+    int unbind(ServerSocket,bool isAutoClose = true);
 
     void close();
 

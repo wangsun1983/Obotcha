@@ -64,7 +64,7 @@ void _HttpServer::onSocketMessage(int event, Socket r, ByteArray pack) {
         }
 
         case st(NetEvent)::Connect: {
-            HttpLinker info = createHttpLinker(r,mOption->getProtocol());
+            HttpLinker info = createHttpLinker(r,mProtocol);
             //mLinkerManager->add(info);
             mLinkers->put(info->mSocket,info);
             mHttpListener->onHttpMessage(event, info, nullptr, nullptr);
@@ -92,6 +92,7 @@ _HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option) {
     mSockMonitor = nullptr;
     mAddress = addr;
     mOption = option;
+    mProtocol = st(NetProtocol)::Http;
     //mLinkerManager = createHttpLinkerManager();
     mLinkers = createConcurrentHashMap<Socket,HttpLinker>();
     mExitLatch = createCountDownLatch(1);
@@ -100,8 +101,9 @@ _HttpServer::_HttpServer(InetAddress addr, HttpListener l, HttpOption option) {
 int _HttpServer::start() {
     auto builder = createSocketBuilder();
     builder->setOption(mOption)->setAddress(mAddress);
-
-    if(mOption->getSSLCertificatePath() != nullptr) {
+    
+    if(mOption!= nullptr && mOption->getSSLCertificatePath() != nullptr) {
+        mProtocol = st(NetProtocol)::Https;
         mServerSock = builder->newSSLServerSocket();
     } else {
         mServerSock = builder->newServerSocket();
@@ -122,7 +124,7 @@ int _HttpServer::start() {
 
 // interface for websocket
 void _HttpServer::remove(HttpLinker linker) { 
-    mSockMonitor->unbind(linker->mSocket);
+    mSockMonitor->unbind(linker->mSocket,false);
     //mLinkerManager->remove(linker);
     mLinkers->remove(linker->mSocket);
 }
